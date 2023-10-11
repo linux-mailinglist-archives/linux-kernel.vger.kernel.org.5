@@ -2,149 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0DA7C51FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D95007C5205
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345959AbjJKL07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56642 "EHLO
+        id S1346029AbjJKL1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234781AbjJKL04 (ORCPT
+        with ESMTP id S231736AbjJKL1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:26:56 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472669D;
-        Wed, 11 Oct 2023 04:26:54 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BAxlA4013997;
-        Wed, 11 Oct 2023 11:26:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=tnGoTFkoJrPWMi3LmZbVVptnwMyne89C+2c9NCHF0uo=;
- b=BNvxTM+N0ynRdL0Uq9EyC4wxqecZjxpcun18xBn/dceJ6ELX3dAlHk2EqYtpnovXVeBr
- Q3wyHMQ7w35ESDD4kzEycPojLUK2Jc9U8KnKWkF42n0A6GXKU9C/JqXhYXR60VEOCUFi
- KcBx7iD0eekexHTE+0m0cQJwuZ7BqxJ4/qb2yAXq8Fb9ejl5RwbbMKGa81v1nkFY3wMd
- Dp3GlbSBMiPDhjoQv49dr8gPfFkrOwenYPhMmUtSJkz9Ynq02CCauYolYevTJH6ke+kK
- uRGOncFrgCTBMTaotgZaWPwsLoLa5/nYRsuTXvnJQxpJ+my6rLQAENVKnUxL5gOWNmmR QQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnstyr512-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 11:26:38 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39BBQc2f029508
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 11:26:38 GMT
-Received: from [10.253.39.162] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 11 Oct
- 2023 04:26:34 -0700
-Message-ID: <49c8a8ff-bdb9-a523-9587-d2a46d401e41@quicinc.com>
-Date:   Wed, 11 Oct 2023 19:26:31 +0800
+        Wed, 11 Oct 2023 07:27:32 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F4519D
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:27:30 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5041335fb9cso8553758e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:27:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697023648; x=1697628448; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/zWK+bD8Aid1fpusuW1MHz1xIacL85O9/h4oyYVsZ/0=;
+        b=Ej8D5yfkmy8v6C8HTqPcdvZP6KPW2sG9mFYuuLI04Az5JtVjtW3ZJFCiiOfvPt6DCT
+         fY86pJktZ1gyYRs7skZCyvJBZT5zTQZes7jVwGAezewb/YcRYLSlop7+SwMCY0dZpT6B
+         7JvZSxv7Nxt2YtxLTynNLvfGfJ56mt3JRHIOzrCx2cTJ8O8TvaZwuC4EQucG3rHAtOkE
+         RlTuMxMQXONDQn8l7xIIBN0MSkCY5Fn3IqRTKS36g9PdjyCIAC8HdJEkbSm4IfQnnC8K
+         fKgKPDNzeEmKqP1CT1ZGrQTpUYnqP5t5Nz1XdfzhhdrFwThwTsPQAiGpyMXjpNF0SnZE
+         LdFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697023648; x=1697628448;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/zWK+bD8Aid1fpusuW1MHz1xIacL85O9/h4oyYVsZ/0=;
+        b=klGdUYGCe0AuhSVNQlRk5qwZ6UKGbCtStN4+/iWFoooIq/jgzxm+Ht4HV5Gi+4pFRx
+         M8/eDnJJ4bHnHgka40jkM3pnpILfK0Z/fcNBWAN7TaGeDtI0dZ1OopuWSeSrTgsVBG5F
+         f1WZ9n62rQFAMrAD5GPTU7INFoI323v1YqSHJvM5ewhcBu/4htW1NL6kO51wZXHVdzRS
+         gAJPr1GUq8J6J+xLyEBIkbQcV9mycNofBFcetw6qTpMHcUzUj0CsKkQXRnGyeO+mpvWQ
+         fYHsIg08W7vMrH9eZJD4dNem5CL9AgFJJ52B8D6Ip79d9gE3qsZj2s4VOUE0fF95yqqg
+         b77Q==
+X-Gm-Message-State: AOJu0YxC9hciC7jdWZISUfbHSjDd7/LjytjWxmyZtHPEUkUyJD9kc7h4
+        Y+Ib/L+ePkUBObNux2cKqSG8sw==
+X-Google-Smtp-Source: AGHT+IGvenwk2MJkOq3Kj8WNWwdd/u1jV8TzOJNidj7MkUHF50J7iU+JoTJQf+ppFys3K+MXURN1ow==
+X-Received: by 2002:a05:6512:6c7:b0:503:95d:f2bd with SMTP id u7-20020a05651206c700b00503095df2bdmr20944407lff.34.1697023648266;
+        Wed, 11 Oct 2023 04:27:28 -0700 (PDT)
+Received: from umbar.unikie.fi ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id a29-20020a056512021d00b005008c11ca6dsm2228154lfo.184.2023.10.11.04.27.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 04:27:27 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [PATCH] of: export of_find_next_cache_node() for modules
+Date:   Wed, 11 Oct 2023 14:27:26 +0300
+Message-Id: <20231011112726.166052-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v9 4/4] clk: qcom: add clock controller driver for
- qca8386/qca8084
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        <andersson@kernel.org>, <agross@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <p.zabel@pengutronix.de>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>
-References: <20230923112105.18102-1-quic_luoj@quicinc.com>
- <20230923112105.18102-5-quic_luoj@quicinc.com>
- <10bcb0cc-19db-4914-bbc4-ef79c238a70d@linaro.org>
-Content-Language: en-US
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <10bcb0cc-19db-4914-bbc4-ef79c238a70d@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: dUA-wU0uTkaeUhmTA2v6l2Rxv4Ly_Y8H
-X-Proofpoint-GUID: dUA-wU0uTkaeUhmTA2v6l2Rxv4Ly_Y8H
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_09,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- bulkscore=0 malwarescore=0 suspectscore=0 priorityscore=1501
- impostorscore=0 mlxlogscore=861 lowpriorityscore=0 clxscore=1011
- spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310110100
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The qcom-cpufreq-nvmem module uses of_find_next_cache_node() function,
+so export it to be available to the modules.
 
+Fixes: 7683a63c08ff ("cpufreq: qcom-nvmem: create L2 cache device")
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
 
-On 10/11/2023 6:25 PM, Bryan O'Donoghue wrote:
-> On 23/09/2023 12:21, Luo Jie wrote:
->> The clock controller driver of qca8386/qca8084 is registered
->> as the MDIO device, the hardware register is accessed by MDIO bus
->> that is normally used to access general PHY device, which is
->> different from the current existed qcom clock controller drivers
->> using ioremap to access hardware clock registers.
-> 
-> "nsscc-qca8k is accessed via an MDIO bus"
-> 
->> MDIO bus is common utilized by both qca8386/qca8084 and other
-> 
-> commonly
-> 
->> PHY devices, so the mutex lock mdio_bus->mdio_lock should be
->> used instead of using the mutex lock of remap.
->>
->> To access the hardware clock registers of qca8386/qca8084, there
->> is special MDIO frame sequence(three MDIO read/write operations)
->> need to be sent to device.
-> 
-> "there is a special MDIO frame sequence"
-> 
-> "which needs to be sent to the device"
+This patch fixes the discrepancy caused by the patch for the
+qcom-cpufreq-nvmem. I'd like to ask for this patch to be also merged via
+the cpufreq tree.
 
-I will update the comments, thanks Bryan.
+---
+ drivers/of/base.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> the following indentation splat from checkpatch
-> 
-> CHECK: Alignment should match open parenthesis
-> #2071: FILE: drivers/clk/qcom/nsscc-qca8k.c:2004:
-> +        ret = __mdiobus_write(bus, switch_phy_id, (reg | 
-> QCA8K_REG_DATA_UPPER_16_BITS),
-> +                upper_16_bits(val));
-> 
-> CHECK: Alignment should match open parenthesis
-> #2131: FILE: drivers/clk/qcom/nsscc-qca8k.c:2064:
-> +static int qca8k_regmap_update_bits(void *context, unsigned int regaddr,
-> +        unsigned int mask, unsigned int value)
-> 
-> total: 0 errors, 1 warnings, 2 checks, 2162 lines checked
-> 
-> NOTE: For some of the reported defects, checkpatch may be able to
->        mechanically convert to the typical style using --fix or 
-> --fix-inplace.
-> 
-> 0004-clk-qcom-add-clock-controller-driver-for-qca8386-qca.patch has 
-> style problems, please review.
+diff --git a/drivers/of/base.c b/drivers/of/base.c
+index 8d93cb6ea9cd..c4cf558e60d9 100644
+--- a/drivers/of/base.c
++++ b/drivers/of/base.c
+@@ -1905,6 +1905,7 @@ struct device_node *of_find_next_cache_node(const struct device_node *np)
+ 
+ 	return NULL;
+ }
++EXPORT_SYMBOL_GPL(of_find_next_cache_node);
+ 
+ /**
+  * of_find_last_cache_level - Find the level at which the last cache is
+-- 
+2.39.2
 
-Thanks Bryan for the review. The code line mentioned by CHECK is more 
-than 100 columns, so i separate the lines.
-
-> 
-> Once fixed
-> 
-> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
