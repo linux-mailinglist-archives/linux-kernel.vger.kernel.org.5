@@ -2,160 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F947C5426
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8080B7C542F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234885AbjJKMjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 08:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46596 "EHLO
+        id S234862AbjJKMlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 08:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346697AbjJKMjS (ORCPT
+        with ESMTP id S231327AbjJKMlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 08:39:18 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2043.outbound.protection.outlook.com [40.107.101.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF886A9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:39:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NvclB0Wgd22IjeFNO01rg1Xmd0E5NfL81sGECmayujJ09KC4toQeJ+RRW3gD9VMuN5feodJBhfDQJuKtsETaUPPXiltXx0hyskJHaMYhJGoFv7lCtxqdOIRsvZkUTn6mcmz8+pRG74wrCvi/HyvF4w8jbHO/hkG8xPL8RvG08M9wqR3xLVXpHtzBd2DJaAZjueIlIbFp8gRHbWCqqLv+uFWey0YpF4ylNYJMoz1M3VNfRKvA+C3FvTu7jSLpSAUAHWBEVnmRHYaGa++t5OqFfhk075OVKgakEDruAnkdvjS7gKZXXOXciM9aYKENW7tVcv3sTvx7Dzjqq+kJ+k/hOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oflGDO8jqLP9GRifYqcqkmK4tp3EjzApoCByGavTI5A=;
- b=dmGSbDWn5Ix7v5BUAswu+TjLGv6Ryfc2V1tZ9ZYk1EtfmPkhTs9g3hfYCujj9fxTiiwcFq7XuFWvtuMY/WonBA49y03cbKX8i4Fi4hPfGVsGVvx5c4GNCJ5RBqV/FabSLfrLYWzdyly2gdU3QFzTIm8urRbt4HkxgjGaDGI3Pffy5GgJpxCe6ozbAOy1zfRXS5baidqLccANd8Cf3QgygnL8LsQDxNQNq3rbCFqwrXg/CAS0HYd64gho3Xadvu6vP+ixEVzntlUm7zbu83w81kmuIY3aJqdmiBCkCY11BLvVn8d/2JiJ19MXV7kK5xU3nXEnHECwHQLc1edg/Q3VJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oflGDO8jqLP9GRifYqcqkmK4tp3EjzApoCByGavTI5A=;
- b=h+dDdJDvO4bYPWpwhKvibWZKlrOUHheyAvgwIDL+GUetxyUyHahuCU3/tuTHE4QKpbmMKefPbTANq8+l8Hqawf21gPZt3r/7zyCUeO/Rbb5A9e+oeB13OSVtPZTVsPE6YYJ+egmlw5ufnMkZj/TP2Ph9bjDi6x1UEKfdeH1SkQURS8pCPEy3W8Gl0wZHx4+oeA+1LHlNM0UI0ZkjPQGeMY16GS/WLgSL9eapKg1zDk6k1tqfxoB1buh265pMXyd7nhMm56FlrDEdOQmE+cycB7e/d1uNCwWigAWuCvq4Tizl0Fdq56SL9sUhazntH/LSPIDTYeLj+w5SESxd6vFonQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM4PR12MB6136.namprd12.prod.outlook.com (2603:10b6:8:a9::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Wed, 11 Oct
- 2023 12:39:11 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6863.032; Wed, 11 Oct 2023
- 12:39:11 +0000
-Date:   Wed, 11 Oct 2023 09:39:10 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Tina Zhang <tina.zhang@intel.com>,
-        Nicolin Chen <nicolinc@nvidia.com>
-Cc:     Kevin Tian <kevin.tian@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Vasant Hegde <vasant.hegde@amd.com>
-Subject: Re: [v6 PATCH 4/5] iommu: Support mm PASID 1:n with sva domains
-Message-ID: <20231011123910.GD55194@ziepe.ca>
-References: <20231011065132.102676-1-tina.zhang@intel.com>
- <20231011065132.102676-5-tina.zhang@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011065132.102676-5-tina.zhang@intel.com>
-X-ClientProxiedBy: BLAPR03CA0090.namprd03.prod.outlook.com
- (2603:10b6:208:329::35) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Wed, 11 Oct 2023 08:41:16 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D054491;
+        Wed, 11 Oct 2023 05:41:14 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BCOpTH024354;
+        Wed, 11 Oct 2023 12:40:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=UZpYFbzXOrXENSAWmRlHpKkAEdevo6eS+r/KdkhBvk4=;
+ b=lDPWi64w5irorUuxteH6raNoS9ZNXTmDjRWJybaI9r8HDaPuHJbyxLAlMP7Sv0n04WKt
+ 7X2FnzSnSENqQEbP6qV879MJfI1MNjVlQMj3yP1yD0ecoJfsHWmmFoho/g3Ey58w8ub0
+ omb1kQHB3ENs6iTsZn5aSbqK0gzrjw+929QQ7gwizQB1YK9kAoOlq/DaOg1+wvC0fsYH
+ a+IkAwmFATZaHOvBEN/8p7JhcukYJD8VLhzYAc/NJ3eCk6dSAWuxmhvqbA9URZ2NyQjf
+ NS431fZmcrzTkhRCTzkd9aNtyPFn9ulw/sH79oxv2luembky03RTkNnC60sBeiHWyKbI vA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnmds90nn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 12:40:59 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39BCewWw022591
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 12:40:58 GMT
+Received: from [10.253.39.162] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 11 Oct
+ 2023 05:40:54 -0700
+Message-ID: <c3914104-e2eb-44c1-4d5f-304c51b89c1a@quicinc.com>
+Date:   Wed, 11 Oct 2023 20:40:52 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB6136:EE_
-X-MS-Office365-Filtering-Correlation-Id: fe727fbe-0636-4485-4768-08dbca5711d3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ue+YFLgt60W41WUnrc19xfls6Zg2jys1TEPx+TcvVcqpwu5pB2k1RG/FuRHqKyEw9Ojzj7p0sD/LA6pCebuAxtuuhbT5o3C5KULCz9nlyOPWS8iawwcKBXe/mS4G4Tz64XxDhbaoKb5KUymdejW+lch8zJrJKeG7iu2iW4ox6bX5j6uGXi8HeSV0ybazlQSeNZWbc0lNSVtb/qf+4m+mtg3kEsPSlUvORxFaGtgUhDrhMSvUmvtx5NL2gO1bWR+cDk1GB9A3bw7a2T8dj9mK4iVDC1HfDYoPenpLbfu3+YF94o7wQkMwJDOButVrn278n5vxXfCwHRHkxN0fobxb//gEhFksFNh3BWCBU8bvXvuQHM8a2+kH96qer6nEk6z5vF8TqYOsMSmZVJ3vBobpHjPpTBI69A3/9+MaEj2bTY1enlUKjglPhr9gwjEhnxETqNttchnZfwpU9aKNrwZrOF6M1QOs7djzItboKarM7Xiic1K6RpBZbls8dEVDDUtRgHVeFfhOL5m6/Y5oYASR2IQgp1M8IQ6ROZyaZSDG06McxkhW0XpnSmbrlGwASg+R
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(136003)(39860400002)(366004)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(9686003)(6512007)(478600001)(33656002)(6486002)(86362001)(36756003)(6506007)(8676002)(8936002)(4326008)(38100700002)(5660300002)(316002)(54906003)(6636002)(66476007)(66556008)(110136005)(66946007)(2906002)(41300700001)(1076003)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wYhbpIT4K+IvgbnITapVm6OKH5aKcYPFkPKGugzjYfvQFAlhg1yCg8AeY+QI?=
- =?us-ascii?Q?vcUJ6ok5kD1vuQD/Qa1pQRLV3gxJ1k2OkeG8zdAB23TZZd4328AlM7FGEnt5?=
- =?us-ascii?Q?H3h2cvkdtDlPTJ+0ctxEZrCR2naYw9ovfXGK5z1VxU+jW0c+liuKHI+3dpMH?=
- =?us-ascii?Q?kh7rh0tl4NfvS9KoRYvQM2AB15jv9lxfoPlPNxvzUonh5DstrLORRprNxcrB?=
- =?us-ascii?Q?LXLp8iDAaFoLOZ5xc4+choDncwS+QWu8ceCgkl0Fnv4PFPFe2LemAwRxB5L6?=
- =?us-ascii?Q?FTU1Kw9By/2+067wIhcTlmW/aSNmHqI7zWHCZJs0swDny7H242xanKaqMLl6?=
- =?us-ascii?Q?KVriClileIGyOrL0VXWP3MbIkVvQpZ+WEO5qZpYB4XJfqvh+UlAxW0n/kOCD?=
- =?us-ascii?Q?raTSihhjIZLQ718s/LcMtnPbZ2cvoPOIBwcY95x/rietZoOKcf5WBUzM9Je5?=
- =?us-ascii?Q?lRmbPhZ56QWxigpQ3C1OwxXyygwIonWPr3MEDSbQUkFO329t4271gqYlI7AZ?=
- =?us-ascii?Q?9fRQAsSEHTPy9875A7hn9UZOPHFGeMiV36oeEL4T6m/S0KPilaof8weps9Q2?=
- =?us-ascii?Q?u7Eng4E/tKhqqJzKcBIFJMyhssVdNERb3bWluhPX4nbknV9o/OJ+mazgIOgZ?=
- =?us-ascii?Q?2qHZkcy5ITPNG8/RuHRX4l10fIDCs4nfZ8cKBQqPxw9T/uty6CumMgAsdsRE?=
- =?us-ascii?Q?J93rnrsqHq+mNc2tnlf3onABG4W6ApcLY2yEnAYVWVTkTA6ydh9kaCSjKkDV?=
- =?us-ascii?Q?ozaaQeLLPcy2+4WOOlfCRUdfTOCiUHdjVieTLouNHs6MfGrJjcDzcevSuW+5?=
- =?us-ascii?Q?WxMws2kTfdSB3jiR+QOdbjLaO5ADc1y5/uOkj34fVf0wlxueSVOqiUwuXa27?=
- =?us-ascii?Q?XvtFVTW07Wrx3n3Ix62LjNBVd0YfFQlSYUfSw6DANFY9lFMdYDgXF3fHVN40?=
- =?us-ascii?Q?mqNGoL5RbUE86soFf1FL+UOn2ULnki9Bp/69xxfMP+QavBur2zJG26tPRaTz?=
- =?us-ascii?Q?Cva/6lF1vilVod8QYgw/vb67wrFqCXcdLV3H1oBFJTwV5T28c4KZQLb5dUfe?=
- =?us-ascii?Q?4Lhx2u6jR8qw0DtwesogwvihCo0NYNIZlex+6eAtLTw20sO1PpmoLjZlJUwo?=
- =?us-ascii?Q?nuZuWIi2qT8DeFETkvvieQ1jDUO/jWecG2Ye1muIqbhZdU+P5uIpWw86QsMQ?=
- =?us-ascii?Q?+gNRpijEtmhbPEu24s5Wj8mjYDr4O/MCzGFxbSE2lXRryrKOToBKUOc4FKuA?=
- =?us-ascii?Q?5rKiFMG6xiPj+klFbQypow6c+I8LeOrhJbJ5jH3FeqIWlxD1ID+LZonYRS2R?=
- =?us-ascii?Q?JWk0gsECFwEx7I/f5CraXDforadAufGqaC5f3LqMUu7WqOOZJVb1QyAvqH/N?=
- =?us-ascii?Q?MtKpZDzHqqxpkcJcMXfNKQ0t8+x5vg9hA4Xv5dwb3d1lnCn8p/EbjCG/1oC5?=
- =?us-ascii?Q?iHX19GAmA0O/ud7JWSau9MSl/9M+nt2OtBlw8USBn3TPgsX0lwrsvWxRIVLi?=
- =?us-ascii?Q?rHKqApQanEiKxvUteIwNgi8sQZUfVoJk+7pvXG9pqi2RA8eC6RazQt1BJ/eh?=
- =?us-ascii?Q?sRu2fUOkG8jomZJmSqAaoenOTBaprVMVL1MXReT2?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe727fbe-0636-4485-4768-08dbca5711d3
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2023 12:39:11.4752
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BDQ5TkywiuvZ7ogDBUxLFr/8Aum/KjuXM5bYHxeUBIwHp8C1QFv5V7rqMctvGJmm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6136
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v9 4/4] clk: qcom: add clock controller driver for
+ qca8386/qca8084
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        <andersson@kernel.org>, <agross@kernel.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <p.zabel@pengutronix.de>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20230923112105.18102-1-quic_luoj@quicinc.com>
+ <20230923112105.18102-5-quic_luoj@quicinc.com>
+ <10bcb0cc-19db-4914-bbc4-ef79c238a70d@linaro.org>
+ <49c8a8ff-bdb9-a523-9587-d2a46d401e41@quicinc.com>
+ <f97d167e-688e-428d-8463-5b315b9a9593@linaro.org>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <f97d167e-688e-428d-8463-5b315b9a9593@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: CYuis6oZakva4pExzS48HlWBAcD-Sq5-
+X-Proofpoint-GUID: CYuis6oZakva4pExzS48HlWBAcD-Sq5-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_09,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0
+ clxscore=1015 spamscore=0 phishscore=0 impostorscore=0 mlxlogscore=802
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310110111
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 02:51:31PM +0800, Tina Zhang wrote:
 
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 3b6d20dfb9a8..985403a7a747 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1277,7 +1277,6 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
->  	mm_init_cpumask(mm);
->  	mm_init_aio(mm);
->  	mm_init_owner(mm, p);
-> -	mm_pasid_init(mm);
->  	RCU_INIT_POINTER(mm->exe_file, NULL);
->  	mmu_notifier_subscriptions_init(mm);
->  	init_tlb_flush_pending(mm);
 
-Nicolin debugged his crash report last night and sent me the details.
+On 10/11/2023 7:32 PM, Konrad Dybcio wrote:
+> 
+> 
+> On 10/11/23 13:26, Jie Luo wrote:
+>>
+>>
+>> On 10/11/2023 6:25 PM, Bryan O'Donoghue wrote:
+>>> On 23/09/2023 12:21, Luo Jie wrote:
+>>>> The clock controller driver of qca8386/qca8084 is registered
+>>>> as the MDIO device, the hardware register is accessed by MDIO bus
+>>>> that is normally used to access general PHY device, which is
+>>>> different from the current existed qcom clock controller drivers
+>>>> using ioremap to access hardware clock registers.
+>>>
+>>> "nsscc-qca8k is accessed via an MDIO bus"
+>>>
+>>>> MDIO bus is common utilized by both qca8386/qca8084 and other
+>>>
+>>> commonly
+>>>
+>>>> PHY devices, so the mutex lock mdio_bus->mdio_lock should be
+>>>> used instead of using the mutex lock of remap.
+>>>>
+>>>> To access the hardware clock registers of qca8386/qca8084, there
+>>>> is special MDIO frame sequence(three MDIO read/write operations)
+>>>> need to be sent to device.
+>>>
+>>> "there is a special MDIO frame sequence"
+>>>
+>>> "which needs to be sent to the device"
+>>
+>> I will update the comments, thanks Bryan.
+>>
+>>>
+>>> the following indentation splat from checkpatch
+>>>
+>>> CHECK: Alignment should match open parenthesis
+>>> #2071: FILE: drivers/clk/qcom/nsscc-qca8k.c:2004:
+>>> +        ret = __mdiobus_write(bus, switch_phy_id, (reg | 
+>>> QCA8K_REG_DATA_UPPER_16_BITS),
+>>> +                upper_16_bits(val));
+>>>
+>>> CHECK: Alignment should match open parenthesis
+>>> #2131: FILE: drivers/clk/qcom/nsscc-qca8k.c:2064:
+>>> +static int qca8k_regmap_update_bits(void *context, unsigned int 
+>>> regaddr,
+>>> +        unsigned int mask, unsigned int value)
+>>>
+>>> total: 0 errors, 1 warnings, 2 checks, 2162 lines checked
+>>>
+>>> NOTE: For some of the reported defects, checkpatch may be able to
+>>>        mechanically convert to the typical style using --fix or 
+>>> --fix-inplace.
+>>>
+>>> 0004-clk-qcom-add-clock-controller-driver-for-qca8386-qca.patch has 
+>>> style problems, please review.
+>>
+>> Thanks Bryan for the review. The code line mentioned by CHECK is more 
+>> than 100 columns, so i separate the lines.
+> Please read what checkpatch tells you.
+> 
+> It asks you to change
+> 
+> very_long_func_name(arg1, arg2,
+>      arg3);
+> 
+> to
+> 
+> very_long_func_name(arg1, arg2,
+>              arg3);
+> 
+> (remember tab len is 8 for the linux kernel)
+> 
+> Konrad
 
-This hunk is the cause of the bug that Nicolin reported.
-
-The dup_mm() flow does:
-
-static struct mm_struct *dup_mm(struct task_struct *tsk,
-				struct mm_struct *oldmm)
-{
-	struct mm_struct *mm;
-	int err;
-
-	mm = allocate_mm();
-	if (!mm)
-		goto fail_nomem;
-
-	memcpy(mm, oldmm, sizeof(*mm));
-
-	if (!mm_init(mm, tsk, mm->user_ns))
-		goto fail_nomem;
-
-It is essential that mm_pasid_init() zero the new pointer otherwise,
-due to the memcpy, after a fork two mm structs will point to the same
-thing and one will UAF/doube free.
-
-Keep mm_pasid_init() and add zeroing the new pointer to it.
-
-Jason
+Got it, thanks Konrad for the reminder.
