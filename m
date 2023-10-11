@@ -2,128 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D30F87C5EDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C675E7C5EE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233441AbjJKVEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57114 "EHLO
+        id S233410AbjJKVJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 17:09:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233278AbjJKVEk (ORCPT
+        with ESMTP id S231912AbjJKVJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:04:40 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED4E9E
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:04:39 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7ac9c1522so4467247b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697058278; x=1697663078; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BxaWGDSeY2dIkY2twK1W0ApQNsW9w47t9mTViMZ06zU=;
-        b=pTRnspRKfDoJ3DiY2sGbABeR0vRBs5KytRvmTbcy4qcz8mCnaD0IYssPeKUbiiHpet
-         3OKQFgagX6LnyqJvGsspp6CmB1ev/hyu70aR9Bg7E4iy76wnfgiQMTyR+zr3M68bdgaB
-         OZLQGZYPp9LgUn7FlK5ZhhXyso8TtDFDi8JE077S1FM1ZpBvhQHIcUOReZ7swkbcrw/F
-         f+vM/4grWm0UNcGJ8BGaIOtuJ2daMqvGjm4pnFCYc5/76L54TyiLe0uw1i/Rq0ygVWah
-         35FfXP2T51hzFniuT/KAJbhXuFwXVhp5QNhQMmkDELd1TLjqPQV4VB4dbyJHD2E4Xrm2
-         /qXg==
+        Wed, 11 Oct 2023 17:09:11 -0400
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B0F90
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:08:23 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-d77ad095f13so261253276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:08:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697058278; x=1697663078;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BxaWGDSeY2dIkY2twK1W0ApQNsW9w47t9mTViMZ06zU=;
-        b=CnqOuhDVt2eYkhyLlKk+vMlBJS5JXYYPN13l2oMlhXd+dVYTbLPn9jmkd3GyJGE2jb
-         eM5/QXZ9S/XdDhbjaM2T39wEO6lVcENohki3hspKqPGdRpT5JciOEdhmkJWaxzp8cxKV
-         Aq+HZgKL+YtfDi1iq3qBHE0CwfXoYIadaZn4g5cOXlZocuYgSCMqrcOTJtN6Sx0MmFee
-         trNr1yUcnk2ZnXYYPyPb9z2KyHMVwUOTdqetj2AS+n7yiZhB6eTjsj9EWaniCsWjfTNe
-         uThL8wi+9QozhXQrf3aw8j2fW5kobRFZq/9jUDjOnCQtzpvoe/YJwfrViotw73ZfPs8R
-         xJDQ==
-X-Gm-Message-State: AOJu0Yy2Xa1OP/FkzTZIp/p1ZwkeSnGKftgVlyKl41/fpXQ+Ppr3zzN0
-        gRTyehm99nxJ5vluFUoIMjk9PqRu9BJZ1Z7FEQ==
-X-Google-Smtp-Source: AGHT+IEwQ2LwAmN3p2AyQxhcz2QzPlunl9q2EyaOioXCheByednY9g118PcUomxF897RqpVZ2rL7NqiTzxx+BrIMzg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a81:a909:0:b0:59b:e97e:f7e3 with SMTP
- id g9-20020a81a909000000b0059be97ef7e3mr403659ywh.2.1697058278584; Wed, 11
- Oct 2023 14:04:38 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 21:04:37 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAOUNJ2UC/x2NQQ6CMBAAv0L27CYtiopfIR6adpFNykK2DdYQ/
- m71NnOZ2SGRMiV4NDsobZx4kSr21ICfnLwIOVSH1rRna6zFlFX8+sGgvJEmFMpIeSL9wUwxOlk KzrFccHyjx+vtbvqu60OwDmp1VRq5/I/D8zi+U+4EDIEAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697058277; l=1896;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=iM4RgTWWhWZP4eA/MAnbDxA0QWNmel85KFAk0bSECCw=; b=Mi1kOWdyu5N3mq/FWAZBWweOspZuCsbEWolDFFAMzhwq3MN2xlS5N+hX0SBc+sEuxPp+FXaxs
- S1P44k6m1RVCBibuSe6W6nXbwXsKcpeyoPtF3ALMhXIAUT5jMNiVGKY
-X-Mailer: b4 0.12.3
-Message-ID: <20231011-strncpy-drivers-net-ethernet-mellanox-mlx4-fw-c-v1-1-4d7b5d34c933@google.com>
-Subject: [PATCH] net/mlx4_core: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697058503; x=1697663303;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6vFhMHCh6uUl8avUdhvw8MzdlyCHTFfcctmbku9CIHU=;
+        b=QmbidjCqDQ20pVwR51nBt+Zo+PR6AUTeqaEUf/Sbo8Zctb+S3gwpfye4dFwdbrLcLt
+         z0S9v2Wk1y7kPaUejakr0y0LeOebmMlEJdmZ0Jx2fI7MyCM1U4ZJfCThAzFunRKTXnOQ
+         M0VE5vllX9fIB4oRutWr78nRY7S4zmR902kiCxS4Yv6Ixx8xXtLaN5jv0bUQqZ67MrP8
+         +48Z2ZGfmDTq7ukZJOa4Y4RAfTWa0sYFpIcraoiVnZfrCgd5Gm5seMeKyLxB7sOTrPen
+         ae23eITx33duX+l2RKGuGKSHwkS3HAoviVi9aFNqpMx1AJ+t0BRB4mfJRAKhx6I3lZQd
+         L6bg==
+X-Gm-Message-State: AOJu0YyZZLaFAohZgyZfx94qcWXfpg9ToJjh2DjaIFp/c67OSQTV2QJA
+        KkkJ5LjsK3kIEs8fhBVtSSLJV9dPEMB7610+1w==
+X-Google-Smtp-Source: AGHT+IFqA6QGfUWZi1RXIloHbmN4XvJcpqvKaIcnLySXfbMdpQuScK+rDzGXX5QOE6SPYfejs9SWUg==
+X-Received: by 2002:a25:aaad:0:b0:d9a:526a:2514 with SMTP id t42-20020a25aaad000000b00d9a526a2514mr6479268ybi.62.1697058502868;
+        Wed, 11 Oct 2023 14:08:22 -0700 (PDT)
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id d7-20020a0cb2c7000000b0064f5d70d072sm6049114qvf.37.2023.10.11.14.08.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 14:08:22 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 17:08:21 -0400
+From:   Mike Snitzer <snitzer@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        stable@vger.kernel.org, "Darrick J . Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: block: Don't invalidate pagecache for invalid falloc modes
+Message-ID: <ZScOxR5p0Bhzy2Uk@redhat.com>
+References: <20231011201230.750105-1-sarthakkukreti@chromium.org>
+ <b068c2ef-5de3-44fb-a55d-2cbe5a7f1158@kernel.dk>
+ <ZScKlejOlxIXYmWI@redhat.com>
+ <d5e95ca1-aa20-43da-92f8-3860e744337e@kernel.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d5e95ca1-aa20-43da-92f8-3860e744337e@kernel.dk>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Wed, Oct 11 2023 at  4:53P -0400,
+Jens Axboe <axboe@kernel.dk> wrote:
 
-We expect `dst` to be NUL-terminated based on its use with format
-strings:
-|       mlx4_dbg(dev, "Reporting Driver Version to FW: %s\n", dst);
+> On 10/11/23 2:50 PM, Mike Snitzer wrote:
+> > On Wed, Oct 11 2023 at  4:20P -0400,
+> > Jens Axboe <axboe@kernel.dk> wrote:
+> > 
+> >> On 10/11/23 2:12 PM, Sarthak Kukreti wrote:
+> >>> Only call truncate_bdev_range() if the fallocate mode is
+> >>> supported. This fixes a bug where data in the pagecache
+> >>> could be invalidated if the fallocate() was called on the
+> >>> block device with an invalid mode.
+> >>
+> >> Fix looks fine, but would be nicer if we didn't have to duplicate the
+> >> truncate_bdev_range() in each switch clause. Can we check this upfront
+> >> instead?
+> > 
+> > No, if you look at the function (rather than just the patch in
+> > isolation) we need to make the call for each case rather than collapse
+> > to a single call at the front (that's the reason for this fix, because
+> > otherwise the default: error case will invalidate the page cache too).
+> 
+> Yes that part is clear, but it might look cleaner to check a valid mask
+> first rather than have 3 duplicate calls.
 
-Moreover, NUL-padding is not required.
-
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
-
-Found with: $ rg "strncpy\("
----
- drivers/net/ethernet/mellanox/mlx4/fw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx4/fw.c b/drivers/net/ethernet/mellanox/mlx4/fw.c
-index fe48d20d6118..0005d9e2c2d6 100644
---- a/drivers/net/ethernet/mellanox/mlx4/fw.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
-@@ -1967,7 +1967,7 @@ int mlx4_INIT_HCA(struct mlx4_dev *dev, struct mlx4_init_hca_param *param)
- 	if (dev->caps.flags2 & MLX4_DEV_CAP_FLAG2_DRIVER_VERSION_TO_FW) {
- 		u8 *dst = (u8 *)(inbox + INIT_HCA_DRIVER_VERSION_OFFSET / 4);
+OK.
  
--		strncpy(dst, DRV_NAME_FOR_FW, INIT_HCA_DRIVER_VERSION_SZ - 1);
-+		strscpy(dst, DRV_NAME_FOR_FW, INIT_HCA_DRIVER_VERSION_SZ);
- 		mlx4_dbg(dev, "Reporting Driver Version to FW: %s\n", dst);
- 	}
- 
+> > Just so you're aware, I also had this feedback that shaped the patch a
+> > bit back in April:
+> > https://listman.redhat.com/archives/dm-devel/2023-April/053986.html
+> > 
+> >> Also, please wrap commit messages at 72-74 chars.
+> > 
+> > Not seeing where the header should be wrapped.  You referring to the
+> > Fixes: line?  I've never seen those wrapped.
+> 
+> I'm referring to the commit message itself.
 
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20231011-strncpy-drivers-net-ethernet-mellanox-mlx4-fw-c-67809559dd1a
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+Ah, you'd like lines extended because they are too short.
