@@ -2,140 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E24F57C5063
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9777C5065
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346404AbjJKKkk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Oct 2023 06:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58108 "EHLO
+        id S1346320AbjJKKlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:41:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345805AbjJKKkh (ORCPT
+        with ESMTP id S1346498AbjJKKk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:40:37 -0400
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E2D194;
-        Wed, 11 Oct 2023 03:40:35 -0700 (PDT)
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-d8168d08bebso6998274276.0;
-        Wed, 11 Oct 2023 03:40:35 -0700 (PDT)
+        Wed, 11 Oct 2023 06:40:59 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816E4A7;
+        Wed, 11 Oct 2023 03:40:56 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-5031ccf004cso8105135e87.2;
+        Wed, 11 Oct 2023 03:40:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697020855; x=1697625655; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MIwLub0INRRdgrIISIRMpvUCD9eeyw981wkAi0ZsffY=;
+        b=b9JHr/l5yZOWbtM0htenDtYya+erZmxpwEjq9V1g09/1HHvq82U9KNuUODldNxXU3Z
+         PvWyZfjgmxsFtVsh0r7w5QZ0tbxhvQqi6AtrX9eJSBRkH+GMKZfn2rtL96oYnyOvaDSV
+         POHUCkaJRdsrAZaOyCWZ2X5wWslHm0AyqI8IcMYLgrA3FiKR2lNQxRztgWz2aRdk5B1c
+         unHVsEPX3SXm+9C6caOhUiQDIJuLIowikR3QpjgKjFgBrAZIh5ITwnpROuY2X/s7WjmX
+         K8p/uHdZ+Mj2Z6P9YdEVr2qMDarHfAhjnCsy0jEJ1cKFgI/mHkcjw9adofhRrr9mK7o8
+         yKpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697020834; x=1697625634;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EtGuYBlgTBTwodGa4asWZDEh9ZL8e/zNjMxyzD1YoqA=;
-        b=bOFXFCWIk2W5HKQxhuXpsfFwIHoAWS5JQdWA6FAbx3d0neYg/g/zIuItM/BL4+xc/1
-         +jbqTAFwKV7lcJCB9g3KthE+kUG3i+BqIe/bY8kFlM7AkFX0IoEbZspDc38QaabEYI0o
-         +0szds9EmFhKKJxVnugIOCCDEjC+fbi5ejAzXBGqDZ0cuU8Hb/0aWRIxuDnMUVolM9Yx
-         j89QfrhroMGVrEdSUW/n9KWIph8rqT8nsgFG3IFELtVAYoyeE+5huD7dxkdL2lM+WGFZ
-         IgRibVwg9/7BE7d00aifdyRS9j4OOutvPq5BLXYAWNUfBIS5tKR92+GvnYzF9RM8QlOg
-         Qvaw==
-X-Gm-Message-State: AOJu0YzZdqH5foFRBE9HXdjpwuoFIy5IjkHq9gd2vH2RgFI2FKev2kI3
-        wMd6KTBOQMrRnisSox21K9QP61v4FETKLg==
-X-Google-Smtp-Source: AGHT+IHIExlvrDLK4rkpJ4T50qI22Dwy/QCRmv+GsAOM4DsClIeWa+lPGNjUXWhFO9bzzNQUUvMJUw==
-X-Received: by 2002:a25:ae4f:0:b0:d9a:58e1:106d with SMTP id g15-20020a25ae4f000000b00d9a58e1106dmr4526527ybe.52.1697020834218;
-        Wed, 11 Oct 2023 03:40:34 -0700 (PDT)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id n7-20020a259f07000000b00d3596aca5bcsm4326868ybq.34.2023.10.11.03.40.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 03:40:33 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5a7dd65052aso8580107b3.0;
-        Wed, 11 Oct 2023 03:40:33 -0700 (PDT)
-X-Received: by 2002:a81:8a03:0:b0:598:9df6:1a4f with SMTP id
- a3-20020a818a03000000b005989df61a4fmr22565294ywg.39.1697020833149; Wed, 11
- Oct 2023 03:40:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697020855; x=1697625655;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MIwLub0INRRdgrIISIRMpvUCD9eeyw981wkAi0ZsffY=;
+        b=Ex/k4MOqttxsdQ3gHYTa0t4Op4mxNi8aaKzcgac25AnobLE77svpAnClvSYNVa/6Rq
+         V30Yyn0mQ2msjQ+7wIw8ieDrxpYvFnaBioYPJdaWh7ohOQnQCfDRlB7Ug8UpSYLHe+xS
+         scw3cEKWDJp+Gydjsg6dsZtW2LLJaUZfblAtaqsyXLMc+exSjeVTv/PHzRnbo4vQefHK
+         DDnS9NRxgnp2wdQqRCgMv58Av7V5y3J0trCAEpq3a/veb1RdVoI1e/1iYrSLSGAkwQAx
+         ATIeA5o0R5wAaZ7XsCgJUJIgRI3JMAR6KuQuubt3EzImWoOF3IWkzaf9cS7dL0soT24N
+         owuw==
+X-Gm-Message-State: AOJu0YxYpe5axx6+PmTWTDYYQB7ZpkR2EeYn9P6b2KkJK8NW01u91U7K
+        HbGBFP4cAIUxyKbGtCEhrW4=
+X-Google-Smtp-Source: AGHT+IEoHHRIumi6Qc+UuPZifX5OUKY2Y/hEgTETmsyuhl5/tQcdFXRkyRkdXG0q9gZXcwWgIz1GRQ==
+X-Received: by 2002:ac2:5f08:0:b0:503:383c:996d with SMTP id 8-20020ac25f08000000b00503383c996dmr15544417lfq.12.1697020854490;
+        Wed, 11 Oct 2023 03:40:54 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id p7-20020a19f007000000b004ff8631d6c0sm2190574lfc.278.2023.10.11.03.40.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 03:40:54 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 13:40:52 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Kory Maincent <kory.maincent@bootlin.com>,
+        Cai Huoqing <cai.huoqing@linux.dev>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Herve Codina <herve.codina@bootlin.com>
+Subject: Re: [PATCH v3 1/6] dmaengine: dw-edma: Fix the ch_count hdma callback
+Message-ID: <blylz7am3w2yi45aaraunjmzhd3prvpvrnsdseuccuprtj4gcv@fdewoi2n54fk>
+References: <20231011-b4-feature_hdma_mainline-v3-0-24ee0c979c6f@bootlin.com>
+ <20231011-b4-feature_hdma_mainline-v3-1-24ee0c979c6f@bootlin.com>
 MIME-Version: 1.0
-References: <707e5e6dd0db9a663cf443564d1f8ee1c10a0086.1697018818.git.geert+renesas@glider.be>
-In-Reply-To: <707e5e6dd0db9a663cf443564d1f8ee1c10a0086.1697018818.git.geert+renesas@glider.be>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 11 Oct 2023 12:40:21 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXh8ZvVFinFv0b8M9iOxTG4Estvm7Kimv-ytLHTtna_dw@mail.gmail.com>
-Message-ID: <CAMuHMdXh8ZvVFinFv0b8M9iOxTG4Estvm7Kimv-ytLHTtna_dw@mail.gmail.com>
-Subject: Re: [PATCH] sunrpc: Use no_printk() in dfprintk*() dummies
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011-b4-feature_hdma_mainline-v3-1-24ee0c979c6f@bootlin.com>
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 12:07 PM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
-> When building NFS with W=1 and CONFIG_WERROR=y, but
-> CONFIG_SUNRPC_DEBUG=n:
->
->     fs/nfs/nfs4proc.c: In function ‘nfs4_proc_create_session’:
->     fs/nfs/nfs4proc.c:9276:19: error: variable ‘ptr’ set but not used [-Werror=unused-but-set-variable]
->      9276 |         unsigned *ptr;
->           |                   ^~~
->       CC      fs/nfs/callback.o
->     fs/nfs/callback.c: In function ‘nfs41_callback_svc’:
->     fs/nfs/callback.c:98:13: error: variable ‘error’ set but not used [-Werror=unused-but-set-variable]
->        98 |         int error;
->           |             ^~~~~
->       CC      fs/nfs/flexfilelayout/flexfilelayout.o
->     fs/nfs/flexfilelayout/flexfilelayout.c: In function ‘ff_layout_io_track_ds_error’:
->     fs/nfs/flexfilelayout/flexfilelayout.c:1230:13: error: variable ‘err’ set but not used [-Werror=unused-but-set-variable]
->      1230 |         int err;
->           |             ^~~
->       CC      fs/nfs/flexfilelayout/flexfilelayoutdev.o
->     fs/nfs/flexfilelayout/flexfilelayoutdev.c: In function ‘nfs4_ff_alloc_deviceid_node’:
->     fs/nfs/flexfilelayout/flexfilelayoutdev.c:55:16: error: variable ‘ret’ set but not used [-Werror=unused-but-set-variable]
->        55 |         int i, ret = -ENOMEM;
->           |                ^~~
->
-> All these are due to variables that are set uncontionally, but are used
-> only when debugging is enabled.
->
-> Fix this by changing the dfprintk*() dummy macros from empty loops to
-> calls to the no_printk() helper.  This informs the compiler that the
-> passed debug parameters are actually used, and enables format specifier
-> checking as a bonus.
->
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On Wed, Oct 11, 2023 at 10:11:40AM +0200, Kory Maincent wrote:
+> The current check of ch_en enabled to know the maximum number of available
+> hardware channels is wrong as it check the number of ch_en register set
+> but all of them are unset at probe. This register is set at the
+> dw_hdma_v0_core_start function which is run lately before a DMA transfer.
+> 
+> The HDMA IP have no way to know the number of hardware channels available
+> like the eDMA IP, then let set it to maximum channels and let the platform
+> set the right number of channels.
+> 
+> Fixes: e74c39573d35 ("dmaengine: dw-edma: Add support for native HDMA")
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+So no news from Cai... I guess we can accept it as is then.
+
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+
+-Serge(y)
+
 > ---
->  include/linux/sunrpc/debug.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/sunrpc/debug.h b/include/linux/sunrpc/debug.h
-> index f6aeed07fe04e3d5..76539c6673f2fb15 100644
-> --- a/include/linux/sunrpc/debug.h
-> +++ b/include/linux/sunrpc/debug.h
-> @@ -67,9 +67,9 @@ do {                                                                  \
->  # define RPC_IFDEBUG(x)                x
->  #else
->  # define ifdebug(fac)          if (0)
-> -# define dfprintk(fac, fmt, ...)       do {} while (0)
-> -# define dfprintk_cont(fac, fmt, ...)  do {} while (0)
-> -# define dfprintk_rcu(fac, fmt, ...)   do {} while (0)
-> +# define dfprintk(fac, fmt, ...)       no_printk(fmt, ##__VA_ARGS__)
-> +# define dfprintk_cont(fac, fmt, ...)  no_printk(fmt, ##__VA_ARGS__)
-> +# define dfprintk_rcu(fac, fmt, ...)   no_printk(fmt, ##__VA_ARGS__)
->  # define RPC_IFDEBUG(x)
->  #endif
-
-Bummer, this is causing issues in fs/lockd/svclock.c
-Will fix in v2.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> 
+> See the following thread mail that talk about this issue:
+> https://lore.kernel.org/lkml/20230607095832.6d6b1a73@kmaincent-XPS-13-7390/
+> 
+> Changes in v2:
+> - Add comment
+> 
+> Changes in v3:
+> - Fix comment style.
+> ---
+>  drivers/dma/dw-edma/dw-hdma-v0-core.c | 18 ++++++------------
+>  1 file changed, 6 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/dma/dw-edma/dw-hdma-v0-core.c b/drivers/dma/dw-edma/dw-hdma-v0-core.c
+> index 00b735a0202a..1f4cb7db5475 100644
+> --- a/drivers/dma/dw-edma/dw-hdma-v0-core.c
+> +++ b/drivers/dma/dw-edma/dw-hdma-v0-core.c
+> @@ -65,18 +65,12 @@ static void dw_hdma_v0_core_off(struct dw_edma *dw)
+>  
+>  static u16 dw_hdma_v0_core_ch_count(struct dw_edma *dw, enum dw_edma_dir dir)
+>  {
+> -	u32 num_ch = 0;
+> -	int id;
+> -
+> -	for (id = 0; id < HDMA_V0_MAX_NR_CH; id++) {
+> -		if (GET_CH_32(dw, id, dir, ch_en) & BIT(0))
+> -			num_ch++;
+> -	}
+> -
+> -	if (num_ch > HDMA_V0_MAX_NR_CH)
+> -		num_ch = HDMA_V0_MAX_NR_CH;
+> -
+> -	return (u16)num_ch;
+> +	/*
+> +	 * The HDMA IP have no way to know the number of hardware channels
+> +	 * available, we set it to maximum channels and let the platform
+> +	 * set the right number of channels.
+> +	 */
+> +	return HDMA_V0_MAX_NR_CH;
+>  }
+>  
+>  static enum dma_status dw_hdma_v0_core_ch_status(struct dw_edma_chan *chan)
+> 
+> -- 
+> 2.25.1
+> 
