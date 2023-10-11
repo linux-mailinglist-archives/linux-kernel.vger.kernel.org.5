@@ -2,196 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85DC97C604F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384217C6055
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376496AbjJKWXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 18:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58576 "EHLO
+        id S1347010AbjJKWZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 18:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376488AbjJKWXj (ORCPT
+        with ESMTP id S231927AbjJKWZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 18:23:39 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767E091;
-        Wed, 11 Oct 2023 15:23:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-        :Date:subject:date:message-id:reply-to;
-        bh=j7/rAcr/21dThCW85EtuvPfnqYwhIU+45crbdPVz4mw=; b=STnvZbTWPHyh5AAvkmT17TLtI/
-        HG7zPDvFtoc2wjEIKUbyuigMurzO1tUomYhMhLwFNl8bhiRJc3vlfNYUuQnBz+4XhV3/agxIg8ITh
-        R/+7kg6i6PrPzBH/3saIAOr3DhhysAFTGC2wt+3AMVwCqSsRc5J+Hn51OwHuvSj+cCbU=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:60512 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qqhc2-0007Sp-Pj; Wed, 11 Oct 2023 18:23:31 -0400
-Date:   Wed, 11 Oct 2023 18:23:30 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Conor Dooley <conor@kernel.org>, a.zummo@towertech.it,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bruno.thomsen@gmail.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Message-Id: <20231011182330.393f4ec10ba53c85cb09c7e8@hugovil.com>
-In-Reply-To: <20230919113423.6c8c48cb1b89275f5b4f3cc2@hugovil.com>
-References: <20230802191153.952667-1-hugo@hugovil.com>
-        <20230802191153.952667-2-hugo@hugovil.com>
-        <20230808-capsize-deodorize-5776d3dbb192@spud>
-        <20230808082533.b608c9a2a4bd922920643c4b@hugovil.com>
-        <202308081232266ec8a9b7@mail.local>
-        <20230808084426.fc7e432a9d85e5caf72d3ffe@hugovil.com>
-        <20230905113058.0fed933265fb68cd53b6d0fa@hugovil.com>
-        <20230919113423.6c8c48cb1b89275f5b4f3cc2@hugovil.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Wed, 11 Oct 2023 18:25:44 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B462AF
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:25:42 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53da72739c3so602178a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:25:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697063141; x=1697667941; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0zNZbeMMG66zQaffulwZBSRVTQq7xegGVzsE2aBNQYM=;
+        b=Vk/CYjVRmA34OY+cWbPCRDyipcQMzmvE274FhS1JKNS7qXEDNQCfkR6gNwl/dE5tDp
+         8MEkMZUYsKWt5LARKCwqd7jGWhaSVohomXmAWgjXc2TjBsvZHLy45m3IW1jAbPQNmXe9
+         KrxqDKnv+5hedt45/0i1elPvPUD82nDWJwOn9mheHyXBowaOfT0McQqHUcBmRXoBqlD1
+         Ih0evblLZSAJNkvwxxRqkm7CE89EeVc6euI21eVVQ/yuFO9+/NltplYmM1wsejtlMA2a
+         gm1kuU0JDdUVxSSxPsU9L+M65R93YQTlqSeGeKf8dO5ByvmTyW4g2VcuTbx3j72Hs+5X
+         QI3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697063141; x=1697667941;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0zNZbeMMG66zQaffulwZBSRVTQq7xegGVzsE2aBNQYM=;
+        b=bP1nxEhChd6gZsrWLUs8SFUiv+7QLwOqoOdlcTDUshoJPgpbPnYCNZEwf67jE6PiQo
+         iOC2XBrUFo+bVt8ekbO2NNf6RnSkzbQnoEWCv1Wt04NnuHTS1B2zIPJi91tBv78vF+H5
+         oM5YcYPX+EeYVpFxicqkgkz6GTRHxnipH1nj+WLaR1yuDqWS1L+eKrY8HlfNKMTgyNxa
+         xzBvizicN1+zNBlld3ktRrRlU++7BVZfEc5sAg7jIjMhV2pEQYY8MKaLco7D/hhR8ENT
+         ZMMyRxfTIvGo2t+J2YWtGdx0tSt+DGa6DxtoMdNx0yDQDV9/yxxREaunJ6oCEeIE8Xhi
+         AsiQ==
+X-Gm-Message-State: AOJu0YxCVs6tbeocMg/Jg1cn4oAm/1ZQHrgV499WC6QF/VLtMrApQ09k
+        gJ42NloNXhC/UmYGCdkJsnQ7lCT7fG1wYezJZMi7Zw==
+X-Google-Smtp-Source: AGHT+IH82POX7rEVI8+B5B5Y6q0ivHvbcCUnUMV5joor+RIQWbQw8OHBFlxjr3E9HWXtTSFfxwUwfy6oVuwv/HSjUd4=
+X-Received: by 2002:aa7:d297:0:b0:533:1acb:7134 with SMTP id
+ w23-20020aa7d297000000b005331acb7134mr21589053edq.23.1697063141000; Wed, 11
+ Oct 2023 15:25:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231011-strncpy-drivers-net-ethernet-pensando-ionic-ionic_main-c-v1-1-23c62a16ff58@google.com>
+ <cadf72fc-2c0b-428a-b445-0f6a34c18d9b@amd.com>
+In-Reply-To: <cadf72fc-2c0b-428a-b445-0f6a34c18d9b@amd.com>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Wed, 11 Oct 2023 15:25:29 -0700
+Message-ID: <CAFhGd8q-q+DfQz_a_NKLmP_CG_fgYz29jZdoqT3qDMBm46VWHw@mail.gmail.com>
+Subject: Re: [PATCH] ionic: replace deprecated strncpy with strscpy
+To:     "Nelson, Shannon" <shannon.nelson@amd.com>
+Cc:     Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH 1/2] dt-bindings: rtc: add properties to set
- battery-related functions
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sep 2023 11:34:23 -0400
-Hugo Villeneuve <hugo@hugovil.com> wrote:
+On Wed, Oct 11, 2023 at 3:17=E2=80=AFPM Nelson, Shannon <shannon.nelson@amd=
+.com> wrote:
+>
+> On 10/11/2023 2:53 PM, 'Justin Stitt' via Pensando Drivers wrote:
+> >
+> > strncpy() is deprecated for use on NUL-terminated destination strings
+> > [1] and as such we should prefer more robust and less ambiguous string
+> > interfaces.
+> >
+> > NUL-padding is not needed due to `ident` being memset'd to 0 just befor=
+e
+> > the copy.
+> >
+> > Considering the above, a suitable replacement is `strscpy` [2] due to
+> > the fact that it guarantees NUL-termination on the destination buffer
+> > without unnecessarily NUL-padding.
+> >
+> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#st=
+rncpy-on-nul-terminated-strings [1]
+> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en=
+.html [2]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+>
+> Thanks, I suspected this was coming soon :-)
+>
+> Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
 
-> On Tue, 5 Sep 2023 11:30:58 -0400
-> Hugo Villeneuve <hugo@hugovil.com> wrote:
-> 
-> > On Tue, 8 Aug 2023 08:44:26 -0400
-> > Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > 
-> > > On Tue, 8 Aug 2023 14:32:26 +0200
-> > > Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
-> > > 
-> > > > On 08/08/2023 08:25:33-0400, Hugo Villeneuve wrote:
-> > > > > On Tue, 8 Aug 2023 12:21:24 +0100
-> > > > > Conor Dooley <conor@kernel.org> wrote:
-> > > > > 
-> > > > > > Hey Hugo,
-> > > > > > 
-> > > > > > On Wed, Aug 02, 2023 at 03:11:52PM -0400, Hugo Villeneuve wrote:
-> > > > > > > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > > > > > > 
-> > > > > > > These properties can be defined in the board's device tree to set the
-> > > > > > > default power-on values for battery-related functions.
-> > > > > > > 
-> > > > > > > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > > > > > > ---
-> > > > > > >  .../devicetree/bindings/rtc/rtc.yaml          | 19 +++++++++++++++++++
-> > > > > > >  1 file changed, 19 insertions(+)
-> > > > > > > 
-> > > > > > > diff --git a/Documentation/devicetree/bindings/rtc/rtc.yaml b/Documentation/devicetree/bindings/rtc/rtc.yaml
-> > > > > > > index efb66df82782..0217d229e3fa 100644
-> > > > > > > --- a/Documentation/devicetree/bindings/rtc/rtc.yaml
-> > > > > > > +++ b/Documentation/devicetree/bindings/rtc/rtc.yaml
-> > > > > > > @@ -26,6 +26,25 @@ properties:
-> > > > > > >        0: not chargeable
-> > > > > > >        1: chargeable
-> > > > > > >  
-> > > > > > > +  battery-low-detect:
-> > > > > > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > > > > > +    enum: [0, 1]
-> > > > > > > +    description: |
-> > > > > > > +      For RTC devices supporting a backup battery/supercap, this flag can be
-> > > > > > > +      used to configure the battery low detection reporting function:
-> > > > > > > +      0: disabled
-> > > > > > > +      1: enabled
-> > > > > > > +
-> > > > > > > +  battery-switch-over:
-> > > > > > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > > > > > +    enum: [0, 1]
-> > > > > > > +    description: |
-> > > > > > > +      For RTC devices supporting a backup battery/supercap, this flag can be
-> > > > > > > +      used to configure the battery switch over when the main voltage source is
-> > > > > > > +      turned off:
-> > > > > > > +      0: disabled
-> > > > > > > +      1: enabled
-> > > > > > 
-> > > > > > Why are these implemented as enums? This seems to fall into the category
-> > > > > > of using DT to determine software policy - why's it not sufficient to
-> > > > > > have boolean properties that indicate hardware support and let the software
-> > > > > > decide what to do with them?
-> > > > > 
-> > > > > Hi Conor,
-> > > > > the reason is that I based the new properties on the existing property
-> > > > > "aux-voltage-chargeable":
-> > > > > 
-> > > > > -------------------
-> > > > >  aux-voltage-chargeable:
-> > > > >     $ref: /schemas/types.yaml#/definitions/uint32
-> > > > >     enum: [0, 1]
-> > > > >     description: |
-> > > > >       Tells whether the battery/supercap of the RTC (if any) is
-> > > > >       chargeable or not:
-> > > > >       0: not chargeable
-> > > > >       1: chargeable
-> > > > > -------------------
-> > > > > 
-> > > > > I agree with you that a boolean would be more appropriate. Should I
-> > > > > also submit a (separate) patch to fix the "aux-voltage-chargeable"
-> > > > > property to a boolean?
-> > > > > 
-> > > > 
-> > > > No, this is an enum on purpose.
-> > > > I will not take battery switch over related properties, this is not
-> > > > hardware description but software configuration. There is an ioctl for
-> > > > this.
-> > > 
-> > > Hi Alexandre,
-> > > can you suggest then how we can set default PWRMNG values for the
-> > > PCF2131 then?
-> > > 
-> > > I looked at Documentation/ABI/testing/rtc-cdev but couldn't find an
-> > > ioctl to activate the battery switch over function, nor one to activate
-> > > the battery-low detection...
-> > 
-> > Ping...
-> 
-> Second ping...
-> 
-> Hugo.
+Thanks Shannon!
 
-Third ping...
-
-Hugo.
-
-
-> 
-> 
-> > > Thank you,
-> > > Hugo.
-> > > 
-> > > 
-> > > > 
-> > > > > Hugo.
-> > > > > 
-> > > > > 
-> > > > > > Thanks,
-> > > > > > Conor.
-> > > > > > 
-> > > > > > > +
-> > > > > > >    quartz-load-femtofarads:
-> > > > > > >      description:
-> > > > > > >        The capacitive load of the quartz(x-tal), expressed in femto
-> > > > > > > -- 
-> > > > > > > 2.30.2
-> > > > > > > 
-> > > > 
-> > > > -- 
-> > > > Alexandre Belloni, co-owner and COO, Bootlin
-> > > > Embedded Linux and Kernel engineering
-> > > > https://bootlin.com
-> > 
+>
+>
+> > ---
+> > Note: build-tested only.
+> >
+> > Found with: $ rg "strncpy\("
+> > ---
+> >   drivers/net/ethernet/pensando/ionic/ionic_main.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/pensando/ionic/ionic_main.c b/drivers=
+/net/ethernet/pensando/ionic/ionic_main.c
+> > index 1dc79cecc5cc..835577392178 100644
+> > --- a/drivers/net/ethernet/pensando/ionic/ionic_main.c
+> > +++ b/drivers/net/ethernet/pensando/ionic/ionic_main.c
+> > @@ -554,8 +554,8 @@ int ionic_identify(struct ionic *ionic)
+> >          memset(ident, 0, sizeof(*ident));
+> >
+> >          ident->drv.os_type =3D cpu_to_le32(IONIC_OS_TYPE_LINUX);
+> > -       strncpy(ident->drv.driver_ver_str, UTS_RELEASE,
+> > -               sizeof(ident->drv.driver_ver_str) - 1);
+> > +       strscpy(ident->drv.driver_ver_str, UTS_RELEASE,
+> > +               sizeof(ident->drv.driver_ver_str));
+> >
+> >          mutex_lock(&ionic->dev_cmd_lock);
+> >
+> >
+> > ---
+> > base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+> > change-id: 20231011-strncpy-drivers-net-ethernet-pensando-ionic-ionic_m=
+ain-c-709f8f1ea312
+> >
+> > Best regards,
+> > --
+> > Justin Stitt <justinstitt@google.com>
+> >
