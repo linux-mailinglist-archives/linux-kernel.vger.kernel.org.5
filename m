@@ -2,128 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D94B77C5F93
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5117C5F99
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235169AbjJKVxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36786 "EHLO
+        id S233451AbjJKVyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 17:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233771AbjJKVxr (ORCPT
+        with ESMTP id S233714AbjJKVyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:53:47 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC3DAF
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:53:46 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7c97d5d5aso4664727b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:53:46 -0700 (PDT)
+        Wed, 11 Oct 2023 17:54:16 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0C6C4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:54:12 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-7a24c86aae3so5701639f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:54:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697061225; x=1697666025; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=z0mEh2eQbdOiMZkH+CgX68hk8AnM/JOc/WD0lj3h3vo=;
-        b=X34h2Y2P+Q5oHS2+qlEu/nfKIp10yRHS09FNOvi88rGu7EqT8oo+vSeY+8nLAEikoj
-         w3Hs1IuM/aATxMb5GxxI4jS9vGCLEdQwyz8wgCTVsvz8mKNJnE0IzRGcvAKk5Z+Ve6NJ
-         kLolAGeqle0xrOHIEC0OYQNgtiy4syqDeq3d9RybMa7/dHc/uf4PKcRDYFSEVEC7EVGy
-         VVuzW2DtKNhowJ80PlhTEfnNKNF9/QwW+EYyYM47e13lPreGMwMUvN1ahRZA9+e90F8Z
-         CU1FRlvwPqXBPbAvLG1VhuPKSrh5Pyhc7RZbbv9RhBxfDmtqwr6kGKMP9jyvX3zotKTA
-         G2lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697061225; x=1697666025;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697061252; x=1697666052; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=z0mEh2eQbdOiMZkH+CgX68hk8AnM/JOc/WD0lj3h3vo=;
-        b=RPukG9lnlEdbGLt5PH78Jvq7amDkmLuk2IoOh23DusM3426ACR/zl574+KmCsH7lUG
-         Bdko892gxz/9N270KvcIHuUpUgF3w8xenF896iflnA/NNSm7AMRsNAdYnQ61EI3Qn+k0
-         bM0sD5tYX/vEbIivEIlmERTErox61zdC71BE2ZWh4gnhPAChFV72v6IytqlaJ8bDKXW/
-         7Rsu3ln6KeTdtJ11u+ZkxhSnZMbAxj1oi9PBzky/yT9sZQ9cSlJFmnNH8vncrmBzmLqA
-         0/zQMmXja7mPZuwx4VXEJsaAVCOr2QBU5lHKkaXjUUPPUy6SYqBAfaeW/Qphj1Xrs1hE
-         EFLQ==
-X-Gm-Message-State: AOJu0YxEB2uJo3Hs8yk3cuiIHKHQVX0NlRArrggVkdctiebkUrzBGlwl
-        q080DQaN5IgFlUEQ6G+MoQd6KFPXbCUFhrwBwg==
-X-Google-Smtp-Source: AGHT+IEXNxC5u7cyo6EzXWEZxvQryMMMVtV0GnYvMVdnh1TDPLsWmBI2chv/jJx3JlUicFWGPx//4VMX8BWxX8RTxw==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:1f56:0:b0:d7e:7a8a:2159 with SMTP
- id f83-20020a251f56000000b00d7e7a8a2159mr373076ybf.5.1697061225382; Wed, 11
- Oct 2023 14:53:45 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 21:53:44 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAGcZJ2UC/yWNSwrDMAwFrxK0rsByFv1cpZRibKXRooqRTGgJu
- XvddvOY2czbwNmEHS7DBsaruCzahQ4D5Dnpg1FKd4ghjhSI0Jtprm8sJiubo3JDbjPbFyqrJy0 L9ork/96fSRQzHsN5Ok3EaaQIPV+NJ3n9rq+3ff8AtMyfvYoAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697061224; l=1801;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=nMuSVOhysev7uUh/Sd/w6qnA6sjV53pd+anm3qSOdWM=; b=YIDWB6LpP36QEb79ACUN9X7xFlKvJc7IleF4p1QG5Yl7uybR9TYv1KHDJInStRLYBNOkkGYBj
- dIGBBHJSvRSBT/tC28YNnxzt1ZJI6cXmWHQHfQRcbejP0mHLDgv4Y5x
-X-Mailer: b4 0.12.3
-Message-ID: <20231011-strncpy-drivers-net-ethernet-pensando-ionic-ionic_main-c-v1-1-23c62a16ff58@google.com>
-Subject: [PATCH] ionic: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Shannon Nelson <shannon.nelson@amd.com>,
-        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        bh=S+WmDnmtn43/fhK77i3ikEqdFMWWB4Npron6CccFQK8=;
+        b=Fn5JL8VUgbigQjRLNEoBUKdCj/Si74J9WkW+2FDfb4gCVupynvnQgcX5B9B+vaoI8P
+         tLUn2urWu1Hz2ZHssxtt40bS44ByKOBWei/qqjjqG/cnH0wO8ls8DggQ+iXsljTR3Bk4
+         iYTGJtzY+EmFOP2qs2xQYCKmB+5HbD7C8We780UGaldipJjDWFN7kDCpQIBe6Srz1rRS
+         goNZHDjrhz1ShQv+LJpQm9oHIflpurrH4x/Y/Lr3BlwVIjCEOqR6YXVE22QzwIQBOxjK
+         +faZqXpy5hSMSzAAa9pUDziUXhqGdTbse6+Ayfra1VQnRz/k8iLQvG03apQ7LxRH8Gln
+         MAvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697061252; x=1697666052;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S+WmDnmtn43/fhK77i3ikEqdFMWWB4Npron6CccFQK8=;
+        b=Hlb5azlDHsA3xzS4aBtDVxMewVk7SiUqYT0HORIfbcx5Fivx9YhPgdrXKrBgESeUQv
+         vcy2pPLXLMXPS1MMZamySmGEntIhUpNp9f/RXCRtMf0FK4cAMbX68hY/04h//yqtJfQg
+         QTpL4jxIbS+UY+C145M7/9kcnNRIa8K4WtLjZmJrPVWK2Nex9wjVsdEgnvQeA8KEKAFr
+         /qkmM/oFBYBaRBDoV2i6aHovi+1ONVx0jwrKpanWpqnGEAHzlFvUKxwL3SRjoPwEWIsg
+         Tus63IrrKWe5rKIRwfTUALOb7sFGdyNXOuEOFHPp7xvNueLtEqVJqhNBFE+0szB4Ob6f
+         V8eg==
+X-Gm-Message-State: AOJu0Yy8k76UMqj/9y0EUWYhyWzbgkwOa4LR7RAU3dprkZkXR2mJXey0
+        wrzL+u+mU92rpb79YSmGYXByjg==
+X-Google-Smtp-Source: AGHT+IFOnwcS9Io13fTYmd4tFOslv8p8Ucz3NNFkLx5qrd1CxmroPKPHhrf2oeN9KXrFqSAY64/KPA==
+X-Received: by 2002:a05:6602:3a11:b0:79f:922b:3809 with SMTP id by17-20020a0566023a1100b0079f922b3809mr23849277iob.1.1697061252038;
+        Wed, 11 Oct 2023 14:54:12 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id m11-20020a02c88b000000b0042b35e163besm3635311jao.88.2023.10.11.14.54.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 14:54:11 -0700 (PDT)
+Message-ID: <8edda030-9394-4252-bf43-3cb1207cf640@kernel.dk>
+Date:   Wed, 11 Oct 2023 15:54:10 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] block: Don't invalidate pagecache for invalid falloc
+ modes
+Content-Language: en-US
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        stable@vger.kernel.org, "Darrick J . Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mike Snitzer <snitzer@kernel.org>
+References: <20231011201230.750105-1-sarthakkukreti@chromium.org>
+ <b068c2ef-5de3-44fb-a55d-2cbe5a7f1158@kernel.dk>
+In-Reply-To: <b068c2ef-5de3-44fb-a55d-2cbe5a7f1158@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On 10/11/23 2:20 PM, Jens Axboe wrote:
+> On 10/11/23 2:12 PM, Sarthak Kukreti wrote:
+>> Only call truncate_bdev_range() if the fallocate mode is
+>> supported. This fixes a bug where data in the pagecache
+>> could be invalidated if the fallocate() was called on the
+>> block device with an invalid mode.
+> 
+> Fix looks fine, but would be nicer if we didn't have to duplicate the
+> truncate_bdev_range() in each switch clause. Can we check this upfront
+> instead?
 
-NUL-padding is not needed due to `ident` being memset'd to 0 just before
-the copy.
+Don't see a good way to do it on my end, so let's just go with what is
+there now. I applied it with the commit message reformatted.
 
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
-
-Found with: $ rg "strncpy\("
----
- drivers/net/ethernet/pensando/ionic/ionic_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/pensando/ionic/ionic_main.c b/drivers/net/ethernet/pensando/ionic/ionic_main.c
-index 1dc79cecc5cc..835577392178 100644
---- a/drivers/net/ethernet/pensando/ionic/ionic_main.c
-+++ b/drivers/net/ethernet/pensando/ionic/ionic_main.c
-@@ -554,8 +554,8 @@ int ionic_identify(struct ionic *ionic)
- 	memset(ident, 0, sizeof(*ident));
- 
- 	ident->drv.os_type = cpu_to_le32(IONIC_OS_TYPE_LINUX);
--	strncpy(ident->drv.driver_ver_str, UTS_RELEASE,
--		sizeof(ident->drv.driver_ver_str) - 1);
-+	strscpy(ident->drv.driver_ver_str, UTS_RELEASE,
-+		sizeof(ident->drv.driver_ver_str));
- 
- 	mutex_lock(&ionic->dev_cmd_lock);
- 
-
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20231011-strncpy-drivers-net-ethernet-pensando-ionic-ionic_main-c-709f8f1ea312
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+-- 
+Jens Axboe
 
