@@ -2,102 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 034037C505C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719637C505D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346312AbjJKKjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:39:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40478 "EHLO
+        id S1345992AbjJKKjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234808AbjJKKi7 (ORCPT
+        with ESMTP id S229750AbjJKKjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:38:59 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD77394
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:38:57 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5035C1480;
-        Wed, 11 Oct 2023 03:39:38 -0700 (PDT)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.38.165])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C33993F762;
-        Wed, 11 Oct 2023 03:38:55 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 11:38:50 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Yicong Yang <yangyicong@huawei.com>
-Cc:     Marc Zyngier <maz@kernel.org>, yangyicong@hisilicon.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        daniel.lezcano@linaro.org, tglx@linutronix.de,
-        jonathan.cameron@huawei.com, prime.zeng@huawei.com,
-        wanghuiqiang@huawei.com, wangwudi@hisilicon.com,
-        guohanjun@huawei.com, linuxarm@huawei.com
-Subject: Re: [RFC PATCH 0/3] Add HiSilicon system timer driver
-Message-ID: <ZSZ7OiySl1wcG3CD@FVFF77S0Q05N.cambridge.arm.com>
-References: <20231010123033.23258-1-yangyicong@huawei.com>
- <874jiymo2l.wl-maz@kernel.org>
- <a170493f-cd9f-a0d9-432a-2ae07d18d429@huawei.com>
+        Wed, 11 Oct 2023 06:39:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF87C0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:39:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697020761; x=1728556761;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=gXkJ9Rz4wh3rd3Sz4VQwFqIASu0MtsnAvP+47lbpfF8=;
+  b=Q7fKpUdVVrFlNq/KXY2A1byxTeFvthpw12Wckr2txiLoYo1N/LZPr0VT
+   RqZsAJmBvDg3bCAwctQKELuWYRCq2TOxbeMaEqebhmtSZM8gxHEs2Prac
+   2Dg/t+dZyDv5EyGwycJU1jnIf4lbkcmLjwrp3ours44rYeJZQcKXqXlfv
+   8J2fuMspX//VZPRTrTKfcjQ1dirFd6dvjGnHnFEyE+U/hSIhscYvXIJq3
+   Ppa2r27pyMaI/fOlm5AtIitDIwZq3HY7GRgt5+aSai4AOZ6vguab8pwmy
+   aO3hkrDCYb54x8HtwyIIwNQLjx0nwseG20z8EmT8qRbROSjZD5EBu9U3A
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="451121937"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="451121937"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 03:39:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="1001058836"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="1001058836"
+Received: from unknown (HELO smile.fi.intel.com) ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 03:39:16 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qqWcT-00000004b1I-0Ivx;
+        Wed, 11 Oct 2023 13:39:13 +0300
+Date:   Wed, 11 Oct 2023 13:39:12 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Ankit Jain <ankitja@vmware.com>
+Cc:     peterz@infradead.org, yury.norov@gmail.com,
+        linux@rasmusvillemoes.dk, qyousef@layalina.io, pjt@google.com,
+        joshdon@google.com, bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org, namit@vmware.com,
+        amakhalov@vmware.com, srinidhir@vmware.com, vsirnapalli@vmware.com,
+        vbrahmajosyula@vmware.com, akaher@vmware.com,
+        srivatsa@csail.mit.edu
+Subject: Re: [PATCH RFC] cpumask: Randomly distribute the tasks within
+ affinity mask
+Message-ID: <ZSZ7UOBupdHHB24h@smile.fi.intel.com>
+References: <20231011071925.761590-1-ankitja@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <a170493f-cd9f-a0d9-432a-2ae07d18d429@huawei.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231011071925.761590-1-ankitja@vmware.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 10:10:11AM +0800, Yicong Yang wrote:
-> On 2023/10/11 0:36, Marc Zyngier wrote:
-> > On Tue, 10 Oct 2023 13:30:30 +0100,
-> > Yicong Yang <yangyicong@huawei.com> wrote:
-> >>
-> >> From: Yicong Yang <yangyicong@hisilicon.com>
-> >>
-> >> HiSilicon system timer is a memory mapped platform timer compatible with
-> >> the arm's generic timer specification. The timer supports both SPI and
-> >> LPI interrupt and can be enumerated through ACPI DSDT table. Since the
-> >> timer is fully compatible with the spec, it can reuse most codes of the
-> >> arm_arch_timer driver. However since the arm_arch_timer driver only
-> >> supports GTDT and SPI interrupt, this series support the HiSilicon system
-> >> timer by:
-> >>
-> >> - refactor some of the arm_arch_timer codes and export the function to
-> >>   register a arch memory timer by other drivers
-> >> - retrieve the IO memory and interrupt resource through DSDT in a separate
-> >>   driver, then setup and register the clockevent device reuse the arm_arch_timer
-> >>   function
-> >>
-> >> Using LPI for the timer is mentioned in BSA Spec section 3.8.1 (DEN0094C 1.0C).
-> > 
-> > This strikes me as pretty odd. LPIs are, by definition, *edge*
-> > triggered. The timer interrupt must be *level* triggered. So there
-> > must be some bridge in the middle that is going to regenerate edges on
-> > EOI, and that cannot be architectural.
-> > 
-> > What am I missing?
+On Wed, Oct 11, 2023 at 12:49:25PM +0530, Ankit Jain wrote:
+> commit 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
+> and commit 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
+> introduced the logic to distribute the tasks at initial wakeup on cpus
+> where load balancing works poorly or disabled at all (isolated cpus).
 > 
-> In our case, if the timer is working on LPI mode, it's not directly connected
-> to the GIC. It'll be wired to hisi-mbigen irqchip which will send LPIs to the
-> GIC.
+> There are cases in which the distribution of tasks
+> that are spawned on isolcpus does not happen properly.
+> In production deployment, initial wakeup of tasks spawn from
+> housekeeping cpus to isolcpus[nohz_full cpu] happens on first cpu
+> within isolcpus range instead of distributed across isolcpus.
+> 
+> Usage of distribute_cpu_mask_prev from one processes group,
+> will clobber previous value of another or other groups and vice-versa.
+> 
+> When housekeeping cpus spawn multiple child tasks to wakeup on
+> isolcpus[nohz_full cpu], using cpusets.cpus/sched_setaffinity(),
+> distribution is currently performed based on per-cpu
+> distribute_cpu_mask_prev counter.
+> At the same time, on housekeeping cpus there are percpu
+> bounded timers interrupt/rcu threads and other system/user tasks
+> would be running with affinity as housekeeping cpus. In a real-life
+> environment, housekeeping cpus are much fewer and are too much loaded.
+> So, distribute_cpu_mask_prev value from these tasks impacts
+> the offset value for the tasks spawning to wakeup on isolcpus and
+> thus most of the tasks end up waking up on first cpu within the
+> isolcpus set.
+> 
+> Steps to reproduce:
+> Kernel cmdline parameters:
+> isolcpus=2-5 skew_tick=1 nohz=on nohz_full=2-5
+> rcu_nocbs=2-5 rcu_nocb_poll idle=poll irqaffinity=0-1
+> 
+> * pid=$(echo $$)
+> * taskset -pc 0 $pid
+> * cat loop-normal.c
+> int main(void)
+> {
+>         while (1)
+>                 ;
+>         return 0;
+> }
+> * gcc -o loop-normal loop-normal.c
+> * for i in {1..50}; do ./loop-normal & done
+> * pids=$(ps -a | grep loop-normal | cut -d' ' -f5)
+> * for i in $pids; do taskset -pc 2-5 $i ; done
+> 
+> Expected output:
+> * All 50 “loop-normal” tasks should wake up on cpu2-5
+> equally distributed.
+> * ps -eLo cpuid,pid,tid,ppid,cls,psr,cls,cmd | grep "^    [2345]"
+> 
+> Actual output:
+> * All 50 “loop-normal” tasks got woken up on cpu2 only
+> 
+> Analysis:
+> There are percpu bounded timer interrupt/rcu threads activities
+> going on every few microseconds on housekeeping cpus, exercising
+> find_lowest_rq() -> cpumask_any_and_distribute()/cpumask_any_distribute()
+> So, per cpu variable distribute_cpu_mask_prev for housekeeping cpus
+> keep on getting set to housekeeping cpus. Bash/docker processes
+> are sharing same per cpu variable as they run on housekeeping cpus.
+> Thus intersection of clobbered distribute_cpu_mask_prev and
+> new mask(isolcpus) return always first cpu within the new mask(isolcpus)
+> in accordance to the logic mentioned in commits above.
+> 
+> Fix the issue by using random cores out of the applicable CPU set
+> instead of relying on distribute_cpu_mask_prev.
 
-In that case, the timerr itself isn't using an LPI: it's wired to a secondary
-interrupt controller, and the secondary interrupt controller is using an LPI.
+> Fixes: 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
+> Fixes: 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
 
-The BSA doesn't describe that as a permitted configuration.
+> 
 
-I think there are two problems here:
+Blank lines are not allowed in the tag block.
 
-(1) The BSA spec is wrong, and shouldn't say "or LPI" here as it simply doesn't
-    make sense.
+> Signed-off-by: Ankit Jain <ankitja@vmware.com>
 
-    I think this should be fixed by removing the "or LPI" wording form the BSA
-    spec for this interrupt.
+...
 
-(2) This platform is not compatible with the BSA, and is not compatible with
-    the existing ACPI bindings in the GTDT.
+> +/**
+> + * Returns an arbitrary cpu within srcp.
+> + *
+> + * Iterated calls using the same srcp will be randomly distributed
+> + */
 
-Do you actually need this wakeup timer?
+This is invalid. Always run
 
-Thanks,
-Mark.
+	scripts/kernel-doc -v -none -Wall ...
+
+against the file of interest and fix all warnings and errors reported.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
