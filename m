@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F37A7C46A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9396F7C45DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344462AbjJKA3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 20:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
+        id S1344289AbjJKAIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 20:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344928AbjJKA3J (ORCPT
+        with ESMTP id S229523AbjJKAIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 20:29:09 -0400
-X-Greylist: delayed 961 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 10 Oct 2023 17:28:42 PDT
-Received: from smtp.bekkoame.ne.jp (lbkksmtpnat.bekkoame.ne.jp [150.95.255.128])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C40F2172D
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:28:41 -0700 (PDT)
-Received: from smtp.3web.ne.jp (localhost [127.0.0.1])
-        by smtp.bekkoame.ne.jp (Postfix) with ESMTP id 773CC105227
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:08:07 +0900 (JST)
-Received: from [127.0.0.1] (unknown [20.243.88.45])
-        by mx3.osk3.3web.ne.jp (Postfix) with ESMTPA id 74DED105225
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:08:07 +0900 (JST)
-Content-Type: text/plain; charset=utf-8
-From:   "mail@vger.kernel.org" <nestor@osk3.3web.ne.jp>
-To:     linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?dmdlci5rZXJuZWwub3Jn44Gu6YeN6KaB44Gq44K1?=
- =?UTF-8?B?44O844OT44K55pu05paw44Gr44Gk44GE44Gm?=
-Message-ID: <b5cc13b2-4bf8-47a0-bda3-834ccec08e99@osk3.3web.ne.jp>
-X-Priority: 1 (Highest)
-X-Msmail-Priority: High
-Importance: High
-Content-Transfer-Encoding: base64
-Date:   Wed, 11 Oct 2023 00:08:07 +0000
-MIME-Version: 1.0
-X-Spam-Status: No, score=4.7 required=5.0 tests=BAYES_99,BAYES_999,
-        PDS_BRAND_SUBJ_NAKED_TO,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+        Tue, 10 Oct 2023 20:08:12 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964FF94
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:08:10 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d815354ea7fso8335949276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696982890; x=1697587690; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zd/nacEbxpo/jAXF8pqfkyF745LkcXcc4cVmKOG5Cnc=;
+        b=bRa8OQEfYVX+NWc9dsps3hAtbxwl6xhCaCdfGPb87lERItoje9u/wLlc3eTE1P/HKz
+         6ydAbsbZUrgaUXU9Ylm9JRFz403scKolnCxHRBnlLuSrIUuPyEpi5WtanqHUBfqy+21k
+         x/q68oIwG/LOcIFMOnJNYYZ6ypdDEn9NfetUhrylfesVTehhXNAjn51Ds9QnQdRmL74p
+         zjK5F37/623wxaY2VSS5rPwxoRRXrgslMrF4FqSlz5h8fJaQMZkI9akUkbaEe9U9U+6y
+         ssvLfTeJH54fo+yzuWA5dE5c76t4ZLv8xl1gojIT5VYiS3cNPV8NJXG3xVVYtzSW92qA
+         U8fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696982890; x=1697587690;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zd/nacEbxpo/jAXF8pqfkyF745LkcXcc4cVmKOG5Cnc=;
+        b=OEWzpZqGVmhafpQSPkz1i+JJRyA912hMdEUxT+adPFj1zVqSun4kC8QH7Tzu3IPD4S
+         HzwsR36U6f8xuUaNSDHlcP6RBtNMqMcXzwfdgpd1SmjNdcmFpgOG/Me2+dEbXKWEMVxJ
+         bjmJPaiMdTfbbD83vVOPT3M52KNL8kXXebkEcwLYnMCu39Yh2WIxCVHFO5XtfG0UhLBc
+         sr87xrrVEQzTPpriPNgnAcMDjOHKe3FFqyiHPCIyayxNvrBIoUd463NvEeXtJBws+95x
+         +ThVqjDQClRq4XkJ5YZ93SJczJD48yA2cMgy14hXljSyELWC7gZYfvXHX4Q0GbeV2qcS
+         7cng==
+X-Gm-Message-State: AOJu0YxPEKXjhfunkB8LKvIJi3OPBVXKhYiPGihMlNYtjqPUdoCzZOUF
+        ZKZ1F61bqwfiaan84zWSc2e/t7YnlKU=
+X-Google-Smtp-Source: AGHT+IFQ66Ca540lvih4SLhNTTRYCUUNHt9H2N1GvXrlAGsoLUfqbdcMRs9ubpWDRQxYrK7C/D1lL1ukK7c=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:514:0:b0:d91:c7f2:764 with SMTP id
+ 20-20020a250514000000b00d91c7f20764mr272449ybf.0.1696982889881; Tue, 10 Oct
+ 2023 17:08:09 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 17:08:08 -0700
+In-Reply-To: <ZSTJEJepdnmC5PA5@yzhao56-desk.sh.intel.com>
+Mime-Version: 1.0
+References: <20230714064656.20147-1-yan.y.zhao@intel.com> <20230714065006.20201-1-yan.y.zhao@intel.com>
+ <553e3a0f-156b-e5d2-037b-2d9acaf52329@gmail.com> <ZSRZ_y64UPXBG6lA@google.com>
+ <ZSRwNO4xWU6Dx1ne@google.com> <ZSTJEJepdnmC5PA5@yzhao56-desk.sh.intel.com>
+Message-ID: <ZSXnaIi454ATEdH0@google.com>
+Subject: Re: [PATCH v4 01/12] KVM: x86/mmu: helpers to return if KVM honors
+ guest MTRRs
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     Like Xu <like.xu.linux@gmail.com>, pbonzini@redhat.com,
+        chao.gao@intel.com, kai.huang@intel.com,
+        robert.hoo.linux@gmail.com, yuan.yao@linux.intel.com,
+        kvm list <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-5bCK5pWs44GZ44KLdmdlci5rZXJuZWwub3Jn44Gu44GK5a6i5qeY44G444CBDQoNCuOBiuefpeOC
-ieOBm+OBjOOBlOOBluOBhOOBvuOBmeOAgiBWZ2Vy44Gv44CBMjAyM+W5tDEw5pyIMTHml6Xjgojj
-gorjgIx2Z2VyLmtlcm5lbC5vcmfjg6Hjg7zjg6vjgI3jga7jgrXjg7zjg5Pjgrnku5Xmp5jjgpLk
-uIDpg6jlpInmm7TjgZXjgZvjgabjgYTjgZ/jgaDjgY3jgb7jgZnjgIINCg0K44K144O844OT44K5
-44Gu5Lit5pat44KS6YG/44GR44KL44Gf44KB44CB5YWo44Gm44Gu44GK5a6i5qeY44Gr5paw44GX
-44GE6Kit5a6a44G444Gu44Ki44OD44OX44OH44O844OI44KS6KGM44Gj44Gm44GE44Gf44Gg44GP
-5b+F6KaB44GM44GC44KK44G+44GZ44CC5Lul5LiL44Gu44Oq44Oz44Kv44GL44KJ44Ot44Kw44Kk
-44Oz44GX44CB6Kit5a6a44Gu5pu05paw44KS44GK6aGY44GE55Sz44GX5LiK44GS44G+44GZ44CC
-DQoNCmh0dHBzOi8vbW9zdG9mYXVwaG9sc3RlcnkuY29tL3N2LXNlcnZlci9zZWN1cmUvdXNlci9v
-bmxpbmU/dWlkPWxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCg0K44Gq44GK44CBdmdlci5r
-ZXJuZWwub3Jn44Gu44Oh44O844Or44Gr6Zai44GX44Gm44CB5Lul5LiL44Gu5p2h5Lu244Gu5Lih
-5pa544KS5rqA44Gf44GV44Gq44GE5aC05ZCI44CB5YmK6Zmk44Gu5a++6LGh44Go44Gq44KL5Y+v
-6IO95oCn44GM44GC44KK44G+44GZ44Gu44Gn44GU5rOo5oSP44GP44Gg44GV44GE44CCDQoNCg0K
-44Km44Kn44OW44Oh44O844Or44KS6YCa44GY44Gmdmdlci5rZXJuZWwub3Jn44Oh44O844Or44KS
-OTDml6XplpPku6XkuIrkvb/nlKjjgZfjgabjgYTjgarjgYTloLTlkIjjgIINCuODoeODvOODq+OC
-veODleODiO+8iOOCs+ODs+ODlOODpeODvOOCvy/jgrnjg57jg7zjg4jjg5Xjgqnjg7PvvInjgpLk
-vb/nlKjjgZfjgaY5MOaXpemWk+S7peS4iuODoeODvOODq+OCkumAgeWPl+S/oeOBl+OBpuOBhOOB
-quOBhOWgtOWQiOOAgg0KDQoNCnZnZXIua2VybmVsLm9yZ+OBuOOBruOBlOaEm+mhp+OBq+W/g+OC
-iOOCiuaEn+isneeUs+OBl+S4iuOBkuOBvuOBmeOAgg0KDQoNCuOBlOizquWVj+OChOOBiuaJi+S8
-neOBhOOBjOW/heimgeOBquWgtOWQiOOBr+OAgeS7peS4i+OBruODquOCveODvOOCueOCkuOBlOWP
-gueFp+OBj+OBoOOBleOBhOOAgg0KDQril4/jgojjgY/jgYLjgovjgZTos6rllY8gfCBodHRwczov
-L2ZhcS7jg4njg6HjgqTjg7Mvcy8NCuKXj+OCteODneODvOODiOOCteOCpOODiO+9nGh0dHBzOi8v
-d3d3LnZnZXIua2VybmVsLm9yZy9zdXBwb3J0Lw0K4peP44GK5ZWP44GE5ZCI44KP44Gb772caHR0
-cHM6Ly9mb3JtLnZnZXIua2VybmVsLm9yZy9jb250YWN0Lw0KDQrjgYrlrqLmp5jjgYvjgonjga7j
-gZTmhI/opovjgoTjgZTopoHmnJvjgpLlpKfliIfjgavjgZfjgabjgYrjgorjgb7jgZnjgILjgrXj
-g7zjg5PjgrnjgavplqLjgZnjgovjgZTmhI/opovjgoTjg6rjgq/jgqjjgrnjg4jjgpLku6XkuIvj
-ga7mj5Dlh7rjg5Xjgqnjg7zjg6DjgpLpgJrjgZjjgabjgYrlr4TjgZvjgYTjgZ/jgaDjgZHjgb7j
-gZnjgIINCg0K5pyA5paw5oOF5aCx44KE55m66KGo44Gr44Gk44GE44Gm44Gv44CB5YWs5byPRmFj
-ZWJvb2vjgafjgZTnorroqo3jgYTjgZ/jgaDjgZHjgb7jgZnjgIINCg0Kdmdlci5rZXJuZWwub3Jn
-44KS44GU6YG45oqe44GE44Gf44Gg44GN44CB6Kqg44Gr44GC44KK44GM44Go44GG44GU44GW44GE
-44G+44GZ44CC5LuK5b6M44KC44GU5rqA6Laz44GE44Gf44Gg44GR44KL44K144O844OT44K544KS
-5o+Q5L6b44Gn44GN44KL44GT44Go44KS5qW944GX44G/44Gr44GX44Gm44GK44KK44G+44GZ44CC
-DQoNCuS9leOBi+OBlOizquWVj+OBjOOBlOOBluOBhOOBvuOBl+OBn+OCieOAgeOBiuawl+i7veOB
-q+OBiuefpeOCieOBm+OBj+OBoOOBleOBhOOAgg==
+On Tue, Oct 10, 2023, Yan Zhao wrote:
+> BTW, as param "kvm" is now removed from the helper, better to remove the word
+> "second" in comment in patch 4, i.e.
+> 
+> -        * So, specify the second parameter as true here to indicate
+> -        * non-coherent DMAs are/were involved and TDP zap might be
+> -        * necessary.
+> +        * So, specify the parameter as true here to indicate non-coherent
+> +        * DMAs are/were involved and TDP zap might be necessary.
+> 
+> Sorry and thanks a lot for helps on this series!
+
+Heh, don't be sorry, it's not your fault I can't get this quite right.  Fixed
+up yet again, hopefully for the last time.  This is what I ended up with for the
+comment:
+
+	/*
+	 * Non-coherent DMA assignment and de-assignment will affect
+	 * whether KVM honors guest MTRRs and cause changes in memtypes
+	 * in TDP.
+	 * So, pass %true unconditionally to indicate non-coherent DMA was,
+	 * or will be involved, and that zapping SPTEs might be necessary.
+	 */
+
+and the hashes:
+
+[1/5] KVM: x86/mmu: Add helpers to return if KVM honors guest MTRRs
+      https://github.com/kvm-x86/linux/commit/1affe455d66d
+[2/5] KVM: x86/mmu: Zap SPTEs when CR0.CD is toggled iff guest MTRRs are honored
+      https://github.com/kvm-x86/linux/commit/7a18c7c2b69a
+[3/5] KVM: x86/mmu: Zap SPTEs on MTRR update iff guest MTRRs are honored
+      https://github.com/kvm-x86/linux/commit/9a3768191d95
+[4/5] KVM: x86/mmu: Zap KVM TDP when noncoherent DMA assignment starts/stops
+      https://github.com/kvm-x86/linux/commit/362ff6dca541
+[5/5] KVM: VMX: drop IPAT in memtype when CD=1 for KVM_X86_QUIRK_CD_NW_CLEARED
+      https://github.com/kvm-x86/linux/commit/c9f65a3f2d92
