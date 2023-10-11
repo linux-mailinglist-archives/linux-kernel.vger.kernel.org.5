@@ -2,146 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F40587C55CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC127C55D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346879AbjJKNqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48024 "EHLO
+        id S1346886AbjJKNra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234904AbjJKNql (ORCPT
+        with ESMTP id S231879AbjJKNr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:46:41 -0400
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3EE6B0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:46:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=p6UCNceHOuV04IW+X+h7Oj6O5SM6pFqNphUsXx7LFEU=;
-  b=ICKt+cZe+4JGa4EZFRys4MWKoQ7+kqqek9WVP/KK/FkxVCW9vQBl6JRB
-   VNXnPlZcWAAiekWTcAUke2d1hQRah9Zn0bTtX81mLSvg/Q+nkPhkz9lGn
-   kaYxUxWqPxBui5hlnl29ffxpH4ZCUtY71LdijqaJCATiq7Q+aMxHiSe5p
-   c=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.03,216,1694728800"; 
-   d="scan'208";a="130688632"
-Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 15:46:36 +0200
-Date:   Wed, 11 Oct 2023 15:46:36 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-To:     Anton Eliasson <anton.eliasson@axis.com>
-cc:     Nicolas Palix <nicolas.palix@imag.fr>, cocci@inria.fr,
-        linux-kernel@vger.kernel.org, kernel@axis.com
-Subject: Re: [cocci] [PATCH 2/2] scripts: coccicheck: Separate spatch stdout
- and stderr
-In-Reply-To: <d6ab6509-9969-4f36-96fe-b6ce6bc74b73@axis.com>
-Message-ID: <e695187c-e83-c844-7f70-7bb9d952569@inria.fr>
-References: <20231003-coccicheck-v1-0-07d2d900a52a@axis.com> <20231003-coccicheck-v1-2-07d2d900a52a@axis.com> <alpine.DEB.2.22.394.2310072140340.36842@hadrien> <5c76da14-e34e-afbd-4265-493c66e0bc60@axis.com> <b37c26-154a-2db9-4944-26a8aa8af7af@inria.fr>
- <d6ab6509-9969-4f36-96fe-b6ce6bc74b73@axis.com>
+        Wed, 11 Oct 2023 09:47:28 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD9593;
+        Wed, 11 Oct 2023 06:47:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71568C433C7;
+        Wed, 11 Oct 2023 13:47:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697032047;
+        bh=A5R1N4i5dYgS9Mh45qtMqLkrTE+4rVvgMDrLUY39uGY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nldvgnAGE1XBHU47MQmkFhIYbuKjLtxqWSDmAz9Db1SUruTak3jLR44Dt8b38UFFd
+         DLzBZ0xQ5BH5ugmpLGKRBOtgaqw0/ecFVVeymMLJ1xXn9uOSsH6X3dgo2YNWdabfBj
+         KGEc6FdLkjVFpG3AMgqoTiJviziNMx3uE6itxSy/nTcQGCHxgFMElf2KyRpDJLnPW0
+         5KU3unsV3htIRbC9l04Ui4aw+QT/xUl9D+w/Fq4FADx0//cYciW8hcGx5Z/ROw217h
+         etDpJHKXJMKctkVvDION9l+5uv69ubxQDyhaJ6iFtUpB0vjyjHgtyRQKSPVjFx3u4a
+         L6rrUNWwik2Ag==
+Date:   Wed, 11 Oct 2023 15:47:23 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, Chengming Zhou <zhouchengming@bytedance.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ovidiu Panait <ovidiu.panait@windriver.com>,
+        Ingo Molnar <mingo@kernel.org>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 5.15 000/183] 5.15.134-rc1 review
+Message-ID: <ZSana69n6RWgCnqi@localhost.localdomain>
+References: <20231004175203.943277832@linuxfoundation.org>
+ <CA+G9fYunnEUT2evdabX1KOTiryP1heNHWDH4LWZCt2SVRmnKOA@mail.gmail.com>
+ <20231006162038.d3q7sl34b4ouvjxf@revolver>
+ <57c1ff4d-f138-4f89-8add-c96fb3ba6701@paulmck-laptop>
+ <20231006175714.begtgj6wrs46ukmo@revolver>
+ <7652477c-a37c-4509-9dc9-7f9d1dc08291@paulmck-laptop>
+ <CAEXW_YS16NxPxg52T=3FcyZ2qocj36zKyhPnEQL3nBTbD-qJ-A@mail.gmail.com>
+ <9470dab6-dee5-4505-95a2-f6782b648726@paulmck-laptop>
+ <433f5823-059c-4b51-8d18-8b356a5a507f@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <433f5823-059c-4b51-8d18-8b356a5a507f@paulmck-laptop>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Le Tue, Oct 10, 2023 at 06:34:35PM -0700, Paul E. McKenney a écrit :
+> If this problem is real, fixes include:
+> 
+> o	Revert Liam's patch and make Tiny RCU's call_rcu() deal with
+> 	the problem.  This is overhead and non-tinyness, but to Joel's
+> 	point, it might be best.
+
+But what is calling call_rcu() or start_poll_synchronize_rcu() so
+early that the CPU is not even online? (that's before boot_cpu_init() !)
+
+Deferring PF_IDLE setting might pave the way for more issues like this one,
+present or future. Though is_idle_task() returning true when the task is not
+in the idle loop but is playing the init/0 role is debatable.
+
+An alternative for tiny RCU is to force waking up ksoftirqd when call_rcu()
+is in the idle task. Since rcu_qs() during the context switch raises a softirq
+anyway. It's more overhead for start_poll_synchronize_rcu() though but do we
+expect much RCU polling in idle?
+
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index a92bce40b04b..6ab15233e2be 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -604,6 +604,7 @@ extern void __raise_softirq_irqoff(unsigned int nr);
+ 
+ extern void raise_softirq_irqoff(unsigned int nr);
+ extern void raise_softirq(unsigned int nr);
++extern void raise_ksoftirqd_irqsoff(unsigned int nr);
+ 
+ DECLARE_PER_CPU(struct task_struct *, ksoftirqd);
+ 
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index 42f7589e51e0..872dab8b8b53 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -189,12 +189,12 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	local_irq_save(flags);
+ 	*rcu_ctrlblk.curtail = head;
+ 	rcu_ctrlblk.curtail = &head->next;
+-	local_irq_restore(flags);
+ 
+ 	if (unlikely(is_idle_task(current))) {
+ 		/* force scheduling for rcu_qs() */
+-		resched_cpu(0);
++		raise_ksoftirqd_irqsoff(RCU_SOFTIRQ);
+ 	}
++	local_irq_restore(flags);
+ }
+ EXPORT_SYMBOL_GPL(call_rcu);
+ 
+@@ -225,10 +225,13 @@ EXPORT_SYMBOL_GPL(get_state_synchronize_rcu);
+ unsigned long start_poll_synchronize_rcu(void)
+ {
+ 	unsigned long gp_seq = get_state_synchronize_rcu();
++	unsigned long flags;
+ 
+ 	if (unlikely(is_idle_task(current))) {
++		local_irq_save(flags);
+ 		/* force scheduling for rcu_qs() */
+-		resched_cpu(0);
++		raise_ksoftirqd_irqsoff(RCU_SOFTIRQ);
++		local_irq_restore(flags);
+ 	}
+ 	return gp_seq;
+ }
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index 210cf5f8d92c..ef105cbdc705 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -695,6 +695,14 @@ void __raise_softirq_irqoff(unsigned int nr)
+ 	or_softirq_pending(1UL << nr);
+ }
+ 
++#ifdef CONFIG_RCU_TINY
++void raise_ksoftirqd(unsigned int nr)
++{
++	__raise_softirq_irqoff(nr);
++	wakeup_softirqd();
++}
++#endif
++
+ void open_softirq(int nr, void (*action)(struct softirq_action *))
+ {
+ 	softirq_vec[nr].action = action;
 
 
-On Wed, 11 Oct 2023, Anton Eliasson wrote:
-
-> On 10/10/2023 18.11, Julia Lawall wrote:
-> >
-> > On Tue, 10 Oct 2023, Anton Eliasson wrote:
-> >
-> > > On 07/10/2023 21.41, Julia Lawall wrote:
-> > > > On Tue, 3 Oct 2023, Anton Eliasson wrote:
-> > > >
-> > > > > This helps automating coccicheck runs by discarding stderr and only
-> > > > > looking at the output of stdout. In report mode the only remaining
-> > > > > output on stdout is the initial "Please check for false positives"
-> > > > > message followed by each spatch warning found.
-> > > > What is getting dropped is the spatch command lines indicating the
-> > > > semantic patch.  Is this desirable?
-> > > >
-> > > > julia
-> > > It's not ideal but it's the best compromise that I have found. The problem
-> > > I'm
-> > > trying to solve is to be able to diff the output of two coccicheck runs
-> > > and
-> > > notify the developer if any new warnings were introduced. That requires
-> > > the
-> > > output to be stable. spatch is always invoked for each cocci file in the
-> > > same
-> > > order. However, the output from each spatch invocation is not stable as it
-> > > examines each source file in an arbitrary order.
-> > >
-> > > My workaround is to sort the output before diffing. The line-by-line
-> > > sorted
-> > > output only makes sense if the input is one line per warning found and
-> > > that is
-> > > why I try to discard all output except the single line per spatch warning.
-> > > While the terse output doesn't tell which semantic patch file generated
-> > > the
-> > > warning, it does usually contain the offending file, line number and a
-> > > summary
-> > > of the issue.
-> > Why does the command line pose a problem for sorting?
-> >
-> > julia
->
-> You're right. I was overthinking it. Since the sorted command lines will be
-> common for the two runs they will disappear after diffing.
->
-> So at this point I don't have any need for this patch. I'll reach out to you
-> again if it turns out to be an issue after we have gotten the continuous
-> integration check in place. Thanks for the feedback and I'm sorry about the
-> noise.
-
-OK, thanks for the discussion.  I was also thinking about whether it could
-be possible to make the output always come out in the same order, based on
-the name of the analyzed file.  Maybe it is possible.
-
-julia
 
 
->
->
-> Anton
->
-> >
-> > >
-> > > Anton
-> > > > > Signed-off-by: Anton Eliasson <anton.eliasson@axis.com>
-> > > > > ---
-> > > > >    scripts/coccicheck | 4 ++--
-> > > > >    1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/scripts/coccicheck b/scripts/coccicheck
-> > > > > index 95a312730e98..7e7c44125f47 100755
-> > > > > --- a/scripts/coccicheck
-> > > > > +++ b/scripts/coccicheck
-> > > > > @@ -146,8 +146,8 @@ run_cmd_parmap() {
-> > > > >                    echo $@>>$DEBUG_FILE
-> > > > >                    $@ 2>>$DEBUG_FILE
-> > > > >            else
-> > > > > -                echo $@
-> > > > > -                $@ 2>&1
-> > > > > +                echo $@ >&2
-> > > > > +                $@
-> > > > >    	fi
-> > > > >
-> > > > >    	err=$?
-> > > > >
-> > > > > --
-> > > > > 2.30.2
-> > > > >
-> > > > >
-> > >
->
->
