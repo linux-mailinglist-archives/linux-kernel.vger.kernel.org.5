@@ -2,1627 +2,699 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F7E7C47BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 04:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2A27C47C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 04:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344823AbjJKCW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 22:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
+        id S1344859AbjJKCYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 22:24:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344739AbjJKCW0 (ORCPT
+        with ESMTP id S1344739AbjJKCYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 22:22:26 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0C78E
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 19:22:21 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c8a6aa0cd1so19085175ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 19:22:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1696990940; x=1697595740; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=18c1bqqqYDFurmc7hGxkBC2j6kV6V38X9LaJJM9bVok=;
-        b=CGkhvMbRvyN1JsvTkHlOGeWwd6BRmmDtrschLrB4fansabGTbwZBJUYJcnuBz7DmrJ
-         ZUlkblMwyKJff0zy7IWZIFsiB1pSCB/ATPIi+q7LcJwrjWI6HaNBwW5316ngwhPT6Al3
-         Zuve2YUTfExu46gM8CP1JGEr/8Q8grWkwrbRu5288yRMAltEoIv1YwX++rkUH5rQEeP3
-         nn3+9idrd1AultfBvV5DsW5Bp5fFpMcy7cbdtrdAjmj2Ol4WTPPO9Efcf8SS7gMikQ2Q
-         VUl/GY9GWrXkd9nwFGkuF8Fu402Zv+MZoOjk+lk249XV14GCvZZpnZN0q03N7sAVkP8k
-         2z6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696990940; x=1697595740;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=18c1bqqqYDFurmc7hGxkBC2j6kV6V38X9LaJJM9bVok=;
-        b=e7TZJ7vh/3dFkDsnB2fGrLqvR9mDxdlrrlUbggsdDw1tC6PzCSYfYAN9d/tTv6c9sU
-         h2ATywJ3f4L2zgiCuLWgL+ITIMvApEpAKDSexqmSwKH91d237r2s7ZEr2rRPH6rwOVyc
-         9UCir1MIHQOcxUbdOqA9JxfLdbAqXjWl/NMFNVg24njVRSA6uV42jxlsdF6CWMvpz8Li
-         cEnsjStrz57FYSCRgjrsVYeAfJxojllyeUSOtxltvGyktq/HfAdDqTc07eaKlvmvu7sx
-         28ZAxFCEfyVM6cdzG2lXuOrx8xpiJJMuRwG7SFvRh602/aTaR5+M9fCbx7O/COVuY/SB
-         WttQ==
-X-Gm-Message-State: AOJu0Yxa32FWh7Q2Oa+kWOwrnRc5pWl9aA4/cjb5cqhJ/65XB2A7mopZ
-        ixb3n9waYXDke4TBiRWygIJAwg==
-X-Google-Smtp-Source: AGHT+IFnRqxmmom0U18evRuoRb7uQWUCSf62xYcEAxpipr7xiJCtsbqcSsbsbsqX40yMigLiyddGwA==
-X-Received: by 2002:a17:903:234e:b0:1c9:c9ad:fab5 with SMTP id c14-20020a170903234e00b001c9c9adfab5mr1141824plh.60.1696990940122;
-        Tue, 10 Oct 2023 19:22:20 -0700 (PDT)
-Received: from [10.54.24.52] ([143.92.118.3])
-        by smtp.gmail.com with ESMTPSA id t5-20020a170902e84500b001c60a04e1cesm12504092plg.36.2023.10.10.19.22.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Oct 2023 19:22:18 -0700 (PDT)
-Message-ID: <3eee0e4f-aff1-9e35-8411-13787dab97c1@shopee.com>
-Date:   Wed, 11 Oct 2023 10:22:13 +0800
+        Tue, 10 Oct 2023 22:24:18 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BE992;
+        Tue, 10 Oct 2023 19:24:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33904C433CC;
+        Wed, 11 Oct 2023 02:24:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696991051;
+        bh=RHFN1FO9/ftnJhtd5wsYZBpO5z3hsvR+2HgNHN/aptw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=D5tPoW1AAFWi8mmnq3Qm/p73nSW6zxWxZQgnhx9woStByx0mTImSgwgCCUm4euyam
+         FQX0K8rWsGZiXgCeYQ5DiSZT2kQmH9OrenZQt/Ya3K7qXbbdNwJidbqQobQZtBCqaO
+         1xkR2NaAomyHqFc4Z0WlKdYybOuBFB8PTmTZZc6ki5ZvxBRhRO9v2v28mdZp32VQsv
+         MkbhnIGaf7NfDDKzI9BXwA0HCehj1tu+DJjUZKol8ARQR1kGhaHR/XLkrSbjStHNPm
+         5RqFUtWI9Ag75jWvJvZz+Qe2TrRfwgpLIMRadbG9CLnt1Z/t/4MAF4nEK1HPUh7+CN
+         qjfZVm6XelN7w==
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-32d834ec222so377327f8f.0;
+        Tue, 10 Oct 2023 19:24:11 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyM76eJsUg8cQgSfzLYHwCT2kvL3A6ZjWrINPx67hfQwPTolqD4
+        8rILykFexUZS7RAwc4zVDm9mVqVMaFOm8QWvjQI=
+X-Google-Smtp-Source: AGHT+IE7xntPJSkBNkeGpTc53bJWGKzf4kw+kCkaQkuXM8kgw2ahLlmtMqnS4LxDn8NEGp4CP9kmgt/C6oNK+XzDp8g=
+X-Received: by 2002:a5d:60d1:0:b0:321:7052:6406 with SMTP id
+ x17-20020a5d60d1000000b0032170526406mr16510458wrt.12.1696991049407; Tue, 10
+ Oct 2023 19:24:09 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH RESEND 2/2] vfs: replace d_backing_inode() with d_inode()
- globally
-To:     akpm@linux-foundation.org
-Cc:     viro@zeniv.linux.org.uk, mszeredi@redhat.com,
-        bigeasy@linutronix.de, mcgrof@kernel.org, xiubli@redhat.com,
-        linux-kernel@vger.kernel.org
-References: <20230930100156.24014-2-haifeng.xu@shopee.com>
-From:   Haifeng Xu <haifeng.xu@shopee.com>
-In-Reply-To: <20230930100156.24014-2-haifeng.xu@shopee.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231009124210.1064021-1-masahiroy@kernel.org> <20231009124210.1064021-4-masahiroy@kernel.org>
+In-Reply-To: <20231009124210.1064021-4-masahiroy@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 11 Oct 2023 10:23:57 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTDpGgzsiRk=q6FCdX_g5maY-sT9h0jiW=p6HLziq97yA@mail.gmail.com>
+Message-ID: <CAJF2gTTDpGgzsiRk=q6FCdX_g5maY-sT9h0jiW=p6HLziq97yA@mail.gmail.com>
+Subject: Re: [PATCH 4/5] kbuild: unify vdso_install rules
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
+        loongarch@lists.linux.dev, sparclinux@vger.kernel.org,
+        x86@kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/9/30 18:01, Haifeng Xu wrote:
-> d_backing_inode() does the same thing with d_inode(), so using
-> d_inode() to get the inode of dentry instead of d_backing_inode().
-> 
-> Following are the steps to complete search-and-replace:
-> 
-> 1) replacing the definition and comment of d_backing_inode() with
->    #define d_backing_inode d_inode
-> 
-> 2) sed -i -e "s/\<d_backing_inode\>/d_inode/g" $(git grep -l -w "d_backing_inode")
->    sed -i -e "/#define d_inode d_inode/d" include/linux/dcache.h
-> 
-> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
-> Suggested-by: Miklos Szeredi <mszeredi@redhat.com>
-> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> Reviewed-by: Al Viro <viro@zeniv.linux.org.uk>
+On Mon, Oct 9, 2023 at 8:42=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.or=
+g> wrote:
+>
+> Currently, there is no standard implementation for vdso_install,
+> leading to various issues:
+>
+>  1. Code duplication
+>
+>     Many architectures duplicate similar code just for copying files
+>     to the install destination.
+>
+>     Some architectures (arm, sparc, x86) create build-id symlinks,
+>     introducing more code duplication.
+>
+>  2. Accidental updates of in-tree build artifacts
+>
+>     The vdso_install rule depends on the vdso files to install.
+>     It may update in-tree build artifacts. This can be problematic,
+>     as explained in commit 19514fc665ff ("arm, kbuild: make
+>     "make install" not depend on vmlinux").
+>
+>  3. Broken code in some architectures
+>
+>     Makefile code is often copied from one architecture to another
+>     without proper adaptation or testing.
+>
+>     The previous commits removed broken code from csky, UML, and parisc.
+>
+>     Another issue is that 'make vdso_install' for ARCH=3Ds390 installs
+>     vdso64, but not vdso32.
+>
+> To address these problems, this commit introduces the generic vdso_instal=
+l.
+>
+> Architectures that support vdso_install need to define vdso-install-y
+> in arch/*/Makefile.
+>
+> vdso-install-y lists the files to install. For example, arch/x86/Makefile
+> looks like this:
+>
+>   vdso-install-$(CONFIG_X86_64)           +=3D arch/x86/entry/vdso/vdso64=
+.so.dbg
+>   vdso-install-$(CONFIG_X86_X32_ABI)      +=3D arch/x86/entry/vdso/vdsox3=
+2.so.dbg
+>   vdso-install-$(CONFIG_X86_32)           +=3D arch/x86/entry/vdso/vdso32=
+.so.dbg
+>   vdso-install-$(CONFIG_IA32_EMULATION)   +=3D arch/x86/entry/vdso/vdso32=
+.so.dbg
+>
+> These files will be installed to $(MODLIB)/vdso/ with the .dbg suffix,
+> if exists, stripped away.
+>
+> vdso-install-y can optionally take the second field after the colon
+> separator. This is needed because some architectures install vdso
+> files as a different base name.
+>
+> The following is a snippet from arch/arm64/Makefile.
+>
+>   vdso-install-$(CONFIG_COMPAT_VDSO)      +=3D arch/arm64/kernel/vdso32/v=
+dso.so.dbg:vdso32.so
+>
+> This will rename vdso.so.dbg to vdso32.so during installation. If such
+> architectures change their implementation so that the file names match,
+> this workaround will go away.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
-
-Hi, Andrew. Do you have any suggestions or more concerns about this change? 
-
->  block/bdev.c                          |  2 +-
->  drivers/block/ublk_drv.c              |  2 +-
->  fs/cachefiles/cache.c                 |  8 ++--
->  fs/cachefiles/namei.c                 | 38 +++++++++---------
->  fs/cachefiles/security.c              |  6 +--
->  fs/cachefiles/xattr.c                 |  2 +-
->  fs/exfat/file.c                       |  2 +-
->  fs/fs_parser.c                        |  2 +-
->  fs/namei.c                            |  4 +-
->  fs/open.c                             |  6 +--
->  fs/posix_acl.c                        |  2 +-
->  fs/reiserfs/xattr.c                   |  2 +-
->  fs/stat.c                             |  6 +--
->  fs/udf/symlink.c                      |  2 +-
->  include/linux/dcache.h                | 18 +--------
->  include/trace/events/cachefiles.h     | 10 ++---
->  kernel/audit_tree.c                   |  4 +-
->  kernel/audit_watch.c                  |  8 ++--
->  kernel/auditsc.c                      |  6 +--
->  kernel/bpf/inode.c                    |  4 +-
->  net/unix/af_unix.c                    |  6 +--
->  net/unix/diag.c                       |  2 +-
->  security/apparmor/file.c              |  4 +-
->  security/apparmor/lsm.c               | 14 +++----
->  security/commoncap.c                  |  8 ++--
->  security/integrity/evm/evm_crypto.c   |  4 +-
->  security/integrity/evm/evm_main.c     | 24 +++++------
->  security/integrity/ima/ima_appraise.c | 10 ++---
->  security/landlock/fs.c                | 10 ++---
->  security/landlock/syscalls.c          |  2 +-
->  security/lsm_audit.c                  |  4 +-
->  security/security.c                   | 54 ++++++++++++-------------
->  security/selinux/hooks.c              | 20 ++++-----
->  security/smack/smack_lsm.c            | 58 +++++++++++++--------------
->  security/tomoyo/condition.c           |  2 +-
->  security/tomoyo/realpath.c            |  8 ++--
->  36 files changed, 174 insertions(+), 190 deletions(-)
-> 
-> diff --git a/block/bdev.c b/block/bdev.c
-> index f3b13aa1b7d4..72c7429db18e 100644
-> --- a/block/bdev.c
-> +++ b/block/bdev.c
-> @@ -927,7 +927,7 @@ int lookup_bdev(const char *pathname, dev_t *dev)
->  	if (error)
->  		return error;
->  
-> -	inode = d_backing_inode(path.dentry);
-> +	inode = d_inode(path.dentry);
->  	error = -ENOTBLK;
->  	if (!S_ISBLK(inode->i_mode))
->  		goto out_path_put;
-> diff --git a/drivers/block/ublk_drv.c b/drivers/block/ublk_drv.c
-> index 630ddfe6657b..3650aa869943 100644
-> --- a/drivers/block/ublk_drv.c
-> +++ b/drivers/block/ublk_drv.c
-> @@ -2707,7 +2707,7 @@ static int ublk_char_dev_permission(struct ublk_device *ub,
->  		goto exit;
->  
->  	err = inode_permission(&nop_mnt_idmap,
-> -			d_backing_inode(path.dentry), mask);
-> +			d_inode(path.dentry), mask);
->  exit:
->  	path_put(&path);
->  	return err;
-> diff --git a/fs/cachefiles/cache.c b/fs/cachefiles/cache.c
-> index 7077f72e6f47..86078ba0e637 100644
-> --- a/fs/cachefiles/cache.c
-> +++ b/fs/cachefiles/cache.c
-> @@ -59,10 +59,10 @@ int cachefiles_add_cache(struct cachefiles_cache *cache)
->  	 */
->  	ret = -EOPNOTSUPP;
->  	if (d_is_negative(root) ||
-> -	    !d_backing_inode(root)->i_op->lookup ||
-> -	    !d_backing_inode(root)->i_op->mkdir ||
-> -	    !d_backing_inode(root)->i_op->tmpfile ||
-> -	    !(d_backing_inode(root)->i_opflags & IOP_XATTR) ||
-> +	    !d_inode(root)->i_op->lookup ||
-> +	    !d_inode(root)->i_op->mkdir ||
-> +	    !d_inode(root)->i_op->tmpfile ||
-> +	    !(d_inode(root)->i_opflags & IOP_XATTR) ||
->  	    !root->d_sb->s_op->statfs ||
->  	    !root->d_sb->s_op->sync_fs ||
->  	    root->d_sb->s_blocksize > PAGE_SIZE)
-> diff --git a/fs/cachefiles/namei.c b/fs/cachefiles/namei.c
-> index 7bf7a5fcc045..b39ab2159361 100644
-> --- a/fs/cachefiles/namei.c
-> +++ b/fs/cachefiles/namei.c
-> @@ -103,7 +103,7 @@ struct dentry *cachefiles_get_directory(struct cachefiles_cache *cache,
->  		subdir = ERR_PTR(ret);
->  	trace_cachefiles_lookup(NULL, dir, subdir);
->  	if (IS_ERR(subdir)) {
-> -		trace_cachefiles_vfs_error(NULL, d_backing_inode(dir),
-> +		trace_cachefiles_vfs_error(NULL, d_inode(dir),
->  					   PTR_ERR(subdir),
->  					   cachefiles_trace_lookup_error);
->  		if (PTR_ERR(subdir) == -ENOMEM)
-> @@ -112,7 +112,7 @@ struct dentry *cachefiles_get_directory(struct cachefiles_cache *cache,
->  	}
->  
->  	_debug("subdir -> %pd %s",
-> -	       subdir, d_backing_inode(subdir) ? "positive" : "negative");
-> +	       subdir, d_inode(subdir) ? "positive" : "negative");
->  
->  	/* we need to create the subdir if it doesn't exist yet */
->  	if (d_is_negative(subdir)) {
-> @@ -142,10 +142,10 @@ struct dentry *cachefiles_get_directory(struct cachefiles_cache *cache,
->  			cachefiles_put_directory(subdir);
->  			goto retry;
->  		}
-> -		ASSERT(d_backing_inode(subdir));
-> +		ASSERT(d_inode(subdir));
->  
->  		_debug("mkdir -> %pd{ino=%lu}",
-> -		       subdir, d_backing_inode(subdir)->i_ino);
-> +		       subdir, d_inode(subdir)->i_ino);
->  		if (_is_new)
->  			*_is_new = true;
->  	}
-> @@ -163,7 +163,7 @@ struct dentry *cachefiles_get_directory(struct cachefiles_cache *cache,
->  	inode_unlock(d_inode(subdir));
->  
->  	/* we need to make sure the subdir is a directory */
-> -	ASSERT(d_backing_inode(subdir));
-> +	ASSERT(d_inode(subdir));
->  
->  	if (!d_can_lookup(subdir)) {
->  		pr_err("%s is not a directory\n", dirname);
-> @@ -172,15 +172,15 @@ struct dentry *cachefiles_get_directory(struct cachefiles_cache *cache,
->  	}
->  
->  	ret = -EPERM;
-> -	if (!(d_backing_inode(subdir)->i_opflags & IOP_XATTR) ||
-> -	    !d_backing_inode(subdir)->i_op->lookup ||
-> -	    !d_backing_inode(subdir)->i_op->mkdir ||
-> -	    !d_backing_inode(subdir)->i_op->rename ||
-> -	    !d_backing_inode(subdir)->i_op->rmdir ||
-> -	    !d_backing_inode(subdir)->i_op->unlink)
-> +	if (!(d_inode(subdir)->i_opflags & IOP_XATTR) ||
-> +	    !d_inode(subdir)->i_op->lookup ||
-> +	    !d_inode(subdir)->i_op->mkdir ||
-> +	    !d_inode(subdir)->i_op->rename ||
-> +	    !d_inode(subdir)->i_op->rmdir ||
-> +	    !d_inode(subdir)->i_op->unlink)
->  		goto check_error;
->  
-> -	_leave(" = [%lu]", d_backing_inode(subdir)->i_ino);
-> +	_leave(" = [%lu]", d_inode(subdir)->i_ino);
->  	return subdir;
->  
->  check_error:
-> @@ -245,12 +245,12 @@ static int cachefiles_unlink(struct cachefiles_cache *cache,
->  
->  	ret = cachefiles_inject_remove_error();
->  	if (ret == 0) {
-> -		ret = vfs_unlink(&nop_mnt_idmap, d_backing_inode(dir), dentry, NULL);
-> +		ret = vfs_unlink(&nop_mnt_idmap, d_inode(dir), dentry, NULL);
->  		if (ret == -EIO)
->  			cachefiles_io_error(cache, "Unlink failed");
->  	}
->  	if (ret != 0)
-> -		trace_cachefiles_vfs_error(object, d_backing_inode(dir), ret,
-> +		trace_cachefiles_vfs_error(object, d_inode(dir), ret,
->  					   cachefiles_trace_unlink_error);
->  	return ret;
->  }
-> @@ -424,9 +424,9 @@ int cachefiles_delete_object(struct cachefiles_object *object,
->  	/* Stop the dentry being negated if it's only pinned by a file struct. */
->  	dget(dentry);
->  
-> -	inode_lock_nested(d_backing_inode(fan), I_MUTEX_PARENT);
-> +	inode_lock_nested(d_inode(fan), I_MUTEX_PARENT);
->  	ret = cachefiles_unlink(volume->cache, object, fan, dentry, why);
-> -	inode_unlock(d_backing_inode(fan));
-> +	inode_unlock(d_inode(fan));
->  	dput(dentry);
->  	return ret;
->  }
-> @@ -562,9 +562,9 @@ static bool cachefiles_open_file(struct cachefiles_object *object,
->  	path.mnt = cache->mnt;
->  	path.dentry = dentry;
->  	file = kernel_file_open(&path, O_RDWR | O_LARGEFILE | O_DIRECT,
-> -				d_backing_inode(dentry), cache->cache_cred);
-> +				d_inode(dentry), cache->cache_cred);
->  	if (IS_ERR(file)) {
-> -		trace_cachefiles_vfs_error(object, d_backing_inode(dentry),
-> +		trace_cachefiles_vfs_error(object, d_inode(dentry),
->  					   PTR_ERR(file),
->  					   cachefiles_trace_open_error);
->  		goto error;
-> @@ -691,7 +691,7 @@ bool cachefiles_commit_tmpfile(struct cachefiles_cache *cache,
->  	}
->  
->  	if (!d_is_negative(dentry)) {
-> -		if (d_backing_inode(dentry) == file_inode(object->file)) {
-> +		if (d_inode(dentry) == file_inode(object->file)) {
->  			success = true;
->  			goto out_dput;
->  		}
-> diff --git a/fs/cachefiles/security.c b/fs/cachefiles/security.c
-> index fe777164f1d8..f3c1f4900d3e 100644
-> --- a/fs/cachefiles/security.c
-> +++ b/fs/cachefiles/security.c
-> @@ -51,14 +51,14 @@ static int cachefiles_check_cache_dir(struct cachefiles_cache *cache,
->  {
->  	int ret;
->  
-> -	ret = security_inode_mkdir(d_backing_inode(root), root, 0);
-> +	ret = security_inode_mkdir(d_inode(root), root, 0);
->  	if (ret < 0) {
->  		pr_err("Security denies permission to make dirs: error %d",
->  		       ret);
->  		return ret;
->  	}
->  
-> -	ret = security_inode_create(d_backing_inode(root), root, 0);
-> +	ret = security_inode_create(d_inode(root), root, 0);
->  	if (ret < 0)
->  		pr_err("Security denies permission to create files: error %d",
->  		       ret);
-> @@ -91,7 +91,7 @@ int cachefiles_determine_cache_security(struct cachefiles_cache *cache,
->  
->  	/* use the cache root dir's security context as the basis with
->  	 * which create files */
-> -	ret = set_create_files_as(new, d_backing_inode(root));
-> +	ret = set_create_files_as(new, d_inode(root));
->  	if (ret < 0) {
->  		abort_creds(new);
->  		cachefiles_begin_secure(cache, _saved_cred);
-> diff --git a/fs/cachefiles/xattr.c b/fs/cachefiles/xattr.c
-> index bcb6173943ee..05b9ccbc2e85 100644
-> --- a/fs/cachefiles/xattr.c
-> +++ b/fs/cachefiles/xattr.c
-> @@ -160,7 +160,7 @@ int cachefiles_remove_object_xattr(struct cachefiles_cache *cache,
->  			cachefiles_io_error(cache,
->  					    "Can't remove xattr from %lu"
->  					    " (error %d)",
-> -					    d_backing_inode(dentry)->i_ino, -ret);
-> +					    d_inode(dentry)->i_ino, -ret);
->  	}
->  
->  	_leave(" = %d", ret);
-> diff --git a/fs/exfat/file.c b/fs/exfat/file.c
-> index 32395ef686a2..9a3794ba783a 100644
-> --- a/fs/exfat/file.c
-> +++ b/fs/exfat/file.c
-> @@ -229,7 +229,7 @@ int exfat_getattr(struct mnt_idmap *idmap, const struct path *path,
->  		  struct kstat *stat, unsigned int request_mask,
->  		  unsigned int query_flags)
->  {
-> -	struct inode *inode = d_backing_inode(path->dentry);
-> +	struct inode *inode = d_inode(path->dentry);
->  	struct exfat_inode_info *ei = EXFAT_I(inode);
->  
->  	generic_fillattr(&nop_mnt_idmap, request_mask, inode, stat);
-> diff --git a/fs/fs_parser.c b/fs/fs_parser.c
-> index edb3712dcfa5..62ab7d06de46 100644
-> --- a/fs/fs_parser.c
-> +++ b/fs/fs_parser.c
-> @@ -173,7 +173,7 @@ int fs_lookup_param(struct fs_context *fc,
->  	}
->  
->  	if (want_bdev &&
-> -	    !S_ISBLK(d_backing_inode(_path->dentry)->i_mode)) {
-> +	    !S_ISBLK(d_inode(_path->dentry)->i_mode)) {
->  		path_put(_path);
->  		_path->dentry = NULL;
->  		_path->mnt = NULL;
-> diff --git a/fs/namei.c b/fs/namei.c
-> index 567ee547492b..e7859d4f5274 100644
-> --- a/fs/namei.c
-> +++ b/fs/namei.c
-> @@ -2950,7 +2950,7 @@ EXPORT_SYMBOL(__check_sticky);
->  static int may_delete(struct mnt_idmap *idmap, struct inode *dir,
->  		      struct dentry *victim, bool isdir)
->  {
-> -	struct inode *inode = d_backing_inode(victim);
-> +	struct inode *inode = d_inode(victim);
->  	int error;
->  
->  	if (d_is_negative(victim))
-> @@ -3615,7 +3615,7 @@ static int do_open(struct nameidata *nd,
->  		if (d_is_dir(nd->path.dentry))
->  			return -EISDIR;
->  		error = may_create_in_sticky(idmap, nd,
-> -					     d_backing_inode(nd->path.dentry));
-> +					     d_inode(nd->path.dentry));
->  		if (unlikely(error))
->  			return error;
->  	}
-> diff --git a/fs/open.c b/fs/open.c
-> index 98f6601fbac6..7bf3bdaec0bd 100644
-> --- a/fs/open.c
-> +++ b/fs/open.c
-> @@ -484,7 +484,7 @@ static long do_faccessat(int dfd, const char __user *filename, int mode, int fla
->  	if (res)
->  		goto out;
->  
-> -	inode = d_backing_inode(path.dentry);
-> +	inode = d_inode(path.dentry);
->  
->  	if ((mode & MAY_EXEC) && S_ISREG(inode->i_mode)) {
->  		/*
-> @@ -1021,7 +1021,7 @@ int finish_open(struct file *file, struct dentry *dentry,
->  	BUG_ON(file->f_mode & FMODE_OPENED); /* once it's opened, it's opened */
->  
->  	file->f_path.dentry = dentry;
-> -	return do_dentry_open(file, d_backing_inode(dentry), open);
-> +	return do_dentry_open(file, d_inode(dentry), open);
->  }
->  EXPORT_SYMBOL(finish_open);
->  
-> @@ -1060,7 +1060,7 @@ EXPORT_SYMBOL(file_path);
->  int vfs_open(const struct path *path, struct file *file)
->  {
->  	file->f_path = *path;
-> -	return do_dentry_open(file, d_backing_inode(path->dentry), NULL);
-> +	return do_dentry_open(file, d_inode(path->dentry), NULL);
->  }
->  
->  struct file *dentry_open(const struct path *path, int flags,
-> diff --git a/fs/posix_acl.c b/fs/posix_acl.c
-> index a05fe94970ce..1e7a01c529f1 100644
-> --- a/fs/posix_acl.c
-> +++ b/fs/posix_acl.c
-> @@ -985,7 +985,7 @@ int posix_acl_listxattr(struct inode *inode, char **buffer,
->  static bool
->  posix_acl_xattr_list(struct dentry *dentry)
->  {
-> -	return IS_POSIXACL(d_backing_inode(dentry));
-> +	return IS_POSIXACL(d_inode(dentry));
->  }
->  
->  /*
-> diff --git a/fs/reiserfs/xattr.c b/fs/reiserfs/xattr.c
-> index 6000964c2b80..1664a9334a50 100644
-> --- a/fs/reiserfs/xattr.c
-> +++ b/fs/reiserfs/xattr.c
-> @@ -776,7 +776,7 @@ static inline bool reiserfs_posix_acl_list(const char *name,
->  					   struct dentry *dentry)
->  {
->  	return (posix_acl_type(name) >= 0) &&
-> -	       IS_POSIXACL(d_backing_inode(dentry));
-> +	       IS_POSIXACL(d_inode(dentry));
->  }
->  
->  /* This is the implementation for the xattr plugin infrastructure */
-> diff --git a/fs/stat.c b/fs/stat.c
-> index d43a5cc1bfa4..83f6a51f496b 100644
-> --- a/fs/stat.c
-> +++ b/fs/stat.c
-> @@ -106,7 +106,7 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
->  		      u32 request_mask, unsigned int query_flags)
->  {
->  	struct mnt_idmap *idmap;
-> -	struct inode *inode = d_backing_inode(path->dentry);
-> +	struct inode *inode = d_inode(path->dentry);
->  
->  	memset(stat, 0, sizeof(*stat));
->  	stat->result_mask |= STATX_BASIC_STATS;
-> @@ -252,7 +252,7 @@ static int vfs_statx(int dfd, struct filename *filename, int flags,
->  
->  	/* Handle STATX_DIOALIGN for block devices. */
->  	if (request_mask & STATX_DIOALIGN) {
-> -		struct inode *inode = d_backing_inode(path.dentry);
-> +		struct inode *inode = d_inode(path.dentry);
->  
->  		if (S_ISBLK(inode->i_mode))
->  			bdev_statx_dioalign(inode, stat);
-> @@ -489,7 +489,7 @@ static int do_readlinkat(int dfd, const char __user *pathname,
->  retry:
->  	error = user_path_at_empty(dfd, pathname, lookup_flags, &path, &empty);
->  	if (!error) {
-> -		struct inode *inode = d_backing_inode(path.dentry);
-> +		struct inode *inode = d_inode(path.dentry);
->  
->  		error = empty ? -ENOENT : -EINVAL;
->  		/*
-> diff --git a/fs/udf/symlink.c b/fs/udf/symlink.c
-> index f7eaf7b14594..a35d8db741c7 100644
-> --- a/fs/udf/symlink.c
-> +++ b/fs/udf/symlink.c
-> @@ -146,7 +146,7 @@ static int udf_symlink_getattr(struct mnt_idmap *idmap,
->  			       u32 request_mask, unsigned int flags)
->  {
->  	struct dentry *dentry = path->dentry;
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	struct page *page;
->  
->  	generic_fillattr(&nop_mnt_idmap, request_mask, inode, stat);
-> diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-> index 13023c7211d6..f09c04a5bcef 100644
-> --- a/include/linux/dcache.h
-> +++ b/include/linux/dcache.h
-> @@ -528,22 +528,6 @@ static inline struct inode *d_inode_rcu(const struct dentry *dentry)
->  	return READ_ONCE(dentry->d_inode);
->  }
->  
-> -/**
-> - * d_backing_inode - Get upper or lower inode we should be using
-> - * @upper: The upper layer
-> - *
-> - * This is the helper that should be used to get at the inode that will be used
-> - * if this dentry were to be opened as a file.  The inode may be on the upper
-> - * dentry or it may be on a lower dentry pinned by the upper.
-> - *
-> - * Normal filesystems should not use this to access their own inodes.
-> - */
-> -static inline struct inode *d_backing_inode(const struct dentry *upper)
-> -{
-> -	struct inode *inode = upper->d_inode;
+>
+>  Makefile                               |  9 ++++++
+>  arch/arm/Makefile                      |  7 +---
+>  arch/arm/vdso/Makefile                 | 25 --------------
+>  arch/arm64/Makefile                    |  9 ++----
+>  arch/arm64/kernel/vdso/Makefile        | 10 ------
+>  arch/arm64/kernel/vdso32/Makefile      | 10 ------
+>  arch/loongarch/Makefile                |  4 +--
+>  arch/loongarch/vdso/Makefile           | 10 ------
+>  arch/riscv/Makefile                    |  9 ++----
+>  arch/riscv/kernel/compat_vdso/Makefile | 10 ------
+>  arch/riscv/kernel/vdso/Makefile        | 10 ------
+>  arch/s390/Makefile                     |  6 ++--
+>  arch/s390/kernel/vdso32/Makefile       | 10 ------
+>  arch/s390/kernel/vdso64/Makefile       | 10 ------
+>  arch/sparc/Makefile                    |  5 ++-
+>  arch/sparc/vdso/Makefile               | 27 ----------------
+>  arch/x86/Makefile                      |  7 ++--
+>  arch/x86/entry/vdso/Makefile           | 27 ----------------
+>  scripts/Makefile.vdsoinst              | 45 ++++++++++++++++++++++++++
+>  19 files changed, 71 insertions(+), 179 deletions(-)
+>  create mode 100644 scripts/Makefile.vdsoinst
+>
+> diff --git a/Makefile b/Makefile
+> index 373649c7374e..2170d56630e8 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1317,6 +1317,14 @@ scripts_unifdef: scripts_basic
+>  quiet_cmd_install =3D INSTALL $(INSTALL_PATH)
+>        cmd_install =3D unset sub_make_done; $(srctree)/scripts/install.sh
+>
+> +# ----------------------------------------------------------------------=
+-----
+> +# vDSO install
+> +
+> +PHONY +=3D vdso_install
+> +vdso_install: export INSTALL_FILES =3D $(vdso-install-y)
+> +vdso_install:
+> +       $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.vdsoinst
+> +
+>  # ----------------------------------------------------------------------=
+-----
+>  # Tools
+>
+> @@ -1560,6 +1568,7 @@ help:
+>         @echo  '* vmlinux         - Build the bare kernel'
+>         @echo  '* modules         - Build all modules'
+>         @echo  '  modules_install - Install all modules to INSTALL_MOD_PA=
+TH (default: /)'
+> +       @echo  '  vdso_install    - Install unstripped vdso to INSTALL_MO=
+D_PATH (default: /)'
+>         @echo  '  dir/            - Build all files in dir and below'
+>         @echo  '  dir/file.[ois]  - Build specified target only'
+>         @echo  '  dir/file.ll     - Build the LLVM assembly file'
+> diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+> index 547e5856eaa0..5ba42f69f8ce 100644
+> --- a/arch/arm/Makefile
+> +++ b/arch/arm/Makefile
+> @@ -304,11 +304,7 @@ $(INSTALL_TARGETS): KBUILD_IMAGE =3D $(boot)/$(patsu=
+bst %install,%Image,$@)
+>  $(INSTALL_TARGETS):
+>         $(call cmd,install)
+>
+> -PHONY +=3D vdso_install
+> -vdso_install:
+> -ifeq ($(CONFIG_VDSO),y)
+> -       $(Q)$(MAKE) $(build)=3Darch/arm/vdso $@
+> -endif
+> +vdso-install-$(CONFIG_VDSO) +=3D arch/arm/vdso/vdso.so.dbg
+>
+>  # My testing targets (bypasses dependencies)
+>  bp:;   $(Q)$(MAKE) $(build)=3D$(boot) $(boot)/bootpImage
+> @@ -331,7 +327,6 @@ define archhelp
+>    echo  '                  Install using (your) ~/bin/$(INSTALLKERNEL) o=
+r'
+>    echo  '                  (distribution) /sbin/$(INSTALLKERNEL) or'
+>    echo  '                  install to $$(INSTALL_PATH) and run lilo'
+> -  echo  '  vdso_install  - Install unstripped vdso.so to $$(INSTALL_MOD_=
+PATH)/vdso'
+>    echo
+>    echo  '  multi_v7_lpae_defconfig     - multi_v7_defconfig with CONFIG_=
+ARM_LPAE enabled'
+>  endef
+> diff --git a/arch/arm/vdso/Makefile b/arch/arm/vdso/Makefile
+> index 515ca33b854c..d761bd2e2f40 100644
+> --- a/arch/arm/vdso/Makefile
+> +++ b/arch/arm/vdso/Makefile
+> @@ -63,28 +63,3 @@ quiet_cmd_vdsold_and_vdso_check =3D LD      $@
+>
+>  quiet_cmd_vdsomunge =3D MUNGE   $@
+>        cmd_vdsomunge =3D $(objtree)/$(obj)/vdsomunge $< $@
 > -
-> -	return inode;
-> -}
->  
->  /**
->   * d_real - Return the real dentry
-> @@ -574,7 +558,7 @@ static inline struct dentry *d_real(struct dentry *dentry,
->  static inline struct inode *d_real_inode(const struct dentry *dentry)
->  {
->  	/* This usage of d_real() results in const dentry */
-> -	return d_backing_inode(d_real((struct dentry *) dentry, NULL));
-> +	return d_inode(d_real((struct dentry *) dentry, NULL));
->  }
->  
->  struct name_snapshot {
-> diff --git a/include/trace/events/cachefiles.h b/include/trace/events/cachefiles.h
-> index cf4b98b9a9ed..e866d6ee1092 100644
-> --- a/include/trace/events/cachefiles.h
-> +++ b/include/trace/events/cachefiles.h
-> @@ -251,9 +251,9 @@ TRACE_EVENT(cachefiles_lookup,
->  
->  	    TP_fast_assign(
->  		    __entry->obj	= obj ? obj->debug_id : 0;
-> -		    __entry->dino	= d_backing_inode(dir)->i_ino;
-> -		    __entry->ino	= (!IS_ERR(de) && d_backing_inode(de) ?
-> -					   d_backing_inode(de)->i_ino : 0);
-> +		    __entry->dino	= d_inode(dir)->i_ino;
-> +		    __entry->ino	= (!IS_ERR(de) && d_inode(de) ?
-> +					   d_inode(de)->i_ino : 0);
->  		    __entry->error	= IS_ERR(de) ? PTR_ERR(de) : 0;
->  			   ),
->  
-> @@ -272,8 +272,8 @@ TRACE_EVENT(cachefiles_mkdir,
->  			     ),
->  
->  	    TP_fast_assign(
-> -		    __entry->dir	= d_backing_inode(dir)->i_ino;
-> -		    __entry->subdir	= d_backing_inode(subdir)->i_ino;
-> +		    __entry->dir	= d_inode(dir)->i_ino;
-> +		    __entry->subdir	= d_inode(subdir)->i_ino;
->  			   ),
->  
->  	    TP_printk("dB=%x sB=%x",
-> diff --git a/kernel/audit_tree.c b/kernel/audit_tree.c
-> index e867c17d3f84..67451ab3f3da 100644
-> --- a/kernel/audit_tree.c
-> +++ b/kernel/audit_tree.c
-> @@ -670,7 +670,7 @@ int audit_remove_tree_rule(struct audit_krule *rule)
->  
->  static int compare_root(struct vfsmount *mnt, void *arg)
->  {
-> -	return inode_to_key(d_backing_inode(mnt->mnt_root)) ==
-> +	return inode_to_key(d_inode(mnt->mnt_root)) ==
->  	       (unsigned long)arg;
->  }
->  
-> @@ -744,7 +744,7 @@ void audit_put_tree(struct audit_tree *tree)
->  
->  static int tag_mount(struct vfsmount *mnt, void *arg)
->  {
-> -	return tag_chunk(d_backing_inode(mnt->mnt_root), arg);
-> +	return tag_chunk(d_inode(mnt->mnt_root), arg);
->  }
->  
->  /*
-> diff --git a/kernel/audit_watch.c b/kernel/audit_watch.c
-> index 65075f1e4ac8..68c581662067 100644
-> --- a/kernel/audit_watch.c
-> +++ b/kernel/audit_watch.c
-> @@ -135,7 +135,7 @@ int audit_watch_compare(struct audit_watch *watch, unsigned long ino, dev_t dev)
->  /* Initialize a parent watch entry. */
->  static struct audit_parent *audit_init_parent(const struct path *path)
->  {
-> -	struct inode *inode = d_backing_inode(path->dentry);
-> +	struct inode *inode = d_inode(path->dentry);
->  	struct audit_parent *parent;
->  	int ret;
->  
-> @@ -353,9 +353,9 @@ static int audit_get_nd(struct audit_watch *watch, struct path *parent)
->  	if (d_is_positive(d)) {
->  		/* update watch filter fields */
->  		watch->dev = d->d_sb->s_dev;
-> -		watch->ino = d_backing_inode(d)->i_ino;
-> +		watch->ino = d_inode(d)->i_ino;
->  	}
-> -	inode_unlock(d_backing_inode(parent->dentry));
-> +	inode_unlock(d_inode(parent->dentry));
->  	dput(d);
->  	return 0;
->  }
-> @@ -425,7 +425,7 @@ int audit_add_watch(struct audit_krule *krule, struct list_head **list)
->  	}
->  
->  	/* either find an old parent or attach a new one */
-> -	parent = audit_find_parent(d_backing_inode(parent_path.dentry));
-> +	parent = audit_find_parent(d_inode(parent_path.dentry));
->  	if (!parent) {
->  		parent = audit_init_parent(&parent_path);
->  		if (IS_ERR(parent)) {
-> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> index 21d2fa815e78..efaee820ea60 100644
-> --- a/kernel/auditsc.c
-> +++ b/kernel/auditsc.c
-> @@ -2129,7 +2129,7 @@ static void handle_path(const struct dentry *dentry)
->  	rcu_read_lock();
->  	seq = read_seqbegin(&rename_lock);
->  	for (;;) {
-> -		struct inode *inode = d_backing_inode(d);
-> +		struct inode *inode = d_inode(d);
->  
->  		if (inode && unlikely(inode->i_fsnotify_marks)) {
->  			struct audit_chunk *chunk;
-> @@ -2296,7 +2296,7 @@ void __audit_inode(struct filename *name, const struct dentry *dentry,
->  		   unsigned int flags)
->  {
->  	struct audit_context *context = audit_context();
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	struct audit_names *n;
->  	bool parent = flags & AUDIT_INODE_PARENT;
->  	struct audit_entry *e;
-> @@ -2414,7 +2414,7 @@ void __audit_inode_child(struct inode *parent,
->  			 const unsigned char type)
->  {
->  	struct audit_context *context = audit_context();
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	const struct qstr *dname = &dentry->d_name;
->  	struct audit_names *n, *found_parent = NULL, *found_child = NULL;
->  	struct audit_entry *e;
-> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-> index 99d0625b6c82..88e35686127e 100644
-> --- a/kernel/bpf/inode.c
-> +++ b/kernel/bpf/inode.c
-> @@ -504,7 +504,7 @@ static void *bpf_obj_do_get(int path_fd, const char __user *pathname,
->  	if (ret)
->  		return ERR_PTR(ret);
->  
-> -	inode = d_backing_inode(path.dentry);
-> +	inode = d_inode(path.dentry);
->  	ret = path_permission(&path, ACC_MODE(flags));
->  	if (ret)
->  		goto out;
-> @@ -587,7 +587,7 @@ struct bpf_prog *bpf_prog_get_type_path(const char *name, enum bpf_prog_type typ
->  	int ret = kern_path(name, LOOKUP_FOLLOW, &path);
->  	if (ret)
->  		return ERR_PTR(ret);
-> -	prog = __get_prog_inode(d_backing_inode(path.dentry), type);
-> +	prog = __get_prog_inode(d_inode(path.dentry), type);
->  	if (!IS_ERR(prog))
->  		touch_atime(&path);
->  	path_put(&path);
-> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-> index 3e8a04a13668..3a62bd99f561 100644
-> --- a/net/unix/af_unix.c
-> +++ b/net/unix/af_unix.c
-> @@ -406,7 +406,7 @@ static struct sock *unix_find_socket_byinode(struct inode *i)
->  	sk_for_each_bound(s, &bsd_socket_buckets[hash]) {
->  		struct dentry *dentry = unix_sk(s)->path.dentry;
->  
-> -		if (dentry && d_backing_inode(dentry) == i) {
-> +		if (dentry && d_inode(dentry) == i) {
->  			sock_hold(s);
->  			spin_unlock(&bsd_socket_locks[hash]);
->  			return s;
-> @@ -1086,7 +1086,7 @@ static struct sock *unix_find_bsd(struct sockaddr_un *sunaddr, int addr_len,
->  		goto path_put;
->  
->  	err = -ECONNREFUSED;
-> -	inode = d_backing_inode(path.dentry);
-> +	inode = d_inode(path.dentry);
->  	if (!S_ISSOCK(inode->i_mode))
->  		goto path_put;
->  
-> @@ -1250,7 +1250,7 @@ static int unix_bind_bsd(struct sock *sk, struct sockaddr_un *sunaddr,
->  	if (u->addr)
->  		goto out_unlock;
->  
-> -	new_hash = unix_bsd_hash(d_backing_inode(dentry));
-> +	new_hash = unix_bsd_hash(d_inode(dentry));
->  	unix_table_double_lock(net, old_hash, new_hash);
->  	u->path.mnt = mntget(parent.mnt);
->  	u->path.dentry = dget(dentry);
-> diff --git a/net/unix/diag.c b/net/unix/diag.c
-> index 616b55c5b890..88e2e64a6829 100644
-> --- a/net/unix/diag.c
-> +++ b/net/unix/diag.c
-> @@ -30,7 +30,7 @@ static int sk_diag_dump_vfs(struct sock *sk, struct sk_buff *nlskb)
->  
->  	if (dentry) {
->  		struct unix_diag_vfs uv = {
-> -			.udiag_vfs_ino = d_backing_inode(dentry)->i_ino,
-> +			.udiag_vfs_ino = d_inode(dentry)->i_ino,
->  			.udiag_vfs_dev = dentry->d_sb->s_dev,
->  		};
->  
-> diff --git a/security/apparmor/file.c b/security/apparmor/file.c
-> index 698b124e649f..c05f06fe9a64 100644
-> --- a/security/apparmor/file.c
-> +++ b/security/apparmor/file.c
-> @@ -409,8 +409,8 @@ int aa_path_link(struct aa_label *label, struct dentry *old_dentry,
->  	struct path link = { .mnt = new_dir->mnt, .dentry = new_dentry };
->  	struct path target = { .mnt = new_dir->mnt, .dentry = old_dentry };
->  	struct path_cond cond = {
-> -		d_backing_inode(old_dentry)->i_uid,
-> -		d_backing_inode(old_dentry)->i_mode
-> +		d_inode(old_dentry)->i_uid,
-> +		d_inode(old_dentry)->i_mode
->  	};
->  	char *buffer = NULL, *buffer2 = NULL;
->  	struct aa_profile *profile;
-> diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
-> index 108eccc5ada5..4f0a593c2c5b 100644
-> --- a/security/apparmor/lsm.c
-> +++ b/security/apparmor/lsm.c
-> @@ -228,10 +228,10 @@ static int common_perm(const char *op, const struct path *path, u32 mask,
->  static int common_perm_cond(const char *op, const struct path *path, u32 mask)
->  {
->  	vfsuid_t vfsuid = i_uid_into_vfsuid(mnt_idmap(path->mnt),
-> -					    d_backing_inode(path->dentry));
-> +					    d_inode(path->dentry));
->  	struct path_cond cond = {
->  		vfsuid_into_kuid(vfsuid),
-> -		d_backing_inode(path->dentry)->i_mode
-> +		d_inode(path->dentry)->i_mode
->  	};
->  
->  	if (!path_mediated_fs(path->dentry))
-> @@ -271,7 +271,7 @@ static int common_perm_dir_dentry(const char *op, const struct path *dir,
->  static int common_perm_rm(const char *op, const struct path *dir,
->  			  struct dentry *dentry, u32 mask)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	struct path_cond cond = { };
->  	vfsuid_t vfsuid;
->  
-> @@ -384,16 +384,16 @@ static int apparmor_path_rename(const struct path *old_dir, struct dentry *old_d
->  		struct path new_path = { .mnt = new_dir->mnt,
->  					 .dentry = new_dentry };
->  		struct path_cond cond = {
-> -			.mode = d_backing_inode(old_dentry)->i_mode
-> +			.mode = d_inode(old_dentry)->i_mode
->  		};
-> -		vfsuid = i_uid_into_vfsuid(idmap, d_backing_inode(old_dentry));
-> +		vfsuid = i_uid_into_vfsuid(idmap, d_inode(old_dentry));
->  		cond.uid = vfsuid_into_kuid(vfsuid);
->  
->  		if (flags & RENAME_EXCHANGE) {
->  			struct path_cond cond_exchange = {
-> -				.mode = d_backing_inode(new_dentry)->i_mode,
-> +				.mode = d_inode(new_dentry)->i_mode,
->  			};
-> -			vfsuid = i_uid_into_vfsuid(idmap, d_backing_inode(old_dentry));
-> +			vfsuid = i_uid_into_vfsuid(idmap, d_inode(old_dentry));
->  			cond_exchange.uid = vfsuid_into_kuid(vfsuid);
->  
->  			error = aa_path_perm(OP_RENAME_SRC, label, &new_path, 0,
-> diff --git a/security/commoncap.c b/security/commoncap.c
-> index bc0521104197..8361226be59b 100644
-> --- a/security/commoncap.c
-> +++ b/security/commoncap.c
-> @@ -295,7 +295,7 @@ int cap_capset(struct cred *new,
->   */
->  int cap_inode_need_killpriv(struct dentry *dentry)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	int error;
->  
->  	error = __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS, NULL, 0);
-> @@ -533,7 +533,7 @@ int cap_convert_nscap(struct mnt_idmap *idmap, struct dentry *dentry,
->  	uid_t nsrootid;
->  	const struct vfs_cap_data *cap = *ivalue;
->  	__u32 magic, nsmagic;
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	struct user_namespace *task_ns = current_user_ns(),
->  		*fs_ns = inode->i_sb->s_user_ns;
->  	kuid_t rootid;
-> @@ -636,7 +636,7 @@ int get_vfs_caps_from_disk(struct mnt_idmap *idmap,
->  			   const struct dentry *dentry,
->  			   struct cpu_vfs_cap_data *cpu_caps)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	__u32 magic_etc;
->  	int size;
->  	struct vfs_ns_cap_data data, *nscaps = &data;
-> @@ -1039,7 +1039,7 @@ int cap_inode_removexattr(struct mnt_idmap *idmap,
->  
->  	if (strcmp(name, XATTR_NAME_CAPS) == 0) {
->  		/* security.capability gets namespaced */
-> -		struct inode *inode = d_backing_inode(dentry);
-> +		struct inode *inode = d_inode(dentry);
->  		if (!inode)
->  			return -EINVAL;
->  		if (!capable_wrt_inode_uidgid(idmap, inode, CAP_SETFCAP))
-> diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
-> index b1ffd4cc0b44..9bed5ff0a246 100644
-> --- a/security/integrity/evm/evm_crypto.c
-> +++ b/security/integrity/evm/evm_crypto.c
-> @@ -223,7 +223,7 @@ static int evm_calc_hmac_or_hash(struct dentry *dentry,
->  				 size_t req_xattr_value_len,
->  				 uint8_t type, struct evm_digest *data)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	struct xattr_list *xattr;
->  	struct shash_desc *desc;
->  	size_t xattr_size = 0;
-> @@ -356,7 +356,7 @@ static int evm_is_immutable(struct dentry *dentry, struct inode *inode)
->  int evm_update_evmxattr(struct dentry *dentry, const char *xattr_name,
->  			const char *xattr_value, size_t xattr_value_len)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	struct evm_digest data;
->  	int rc = 0;
->  
-> diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
-> index ff9a939dad8e..0413999d0aa6 100644
-> --- a/security/integrity/evm/evm_main.c
-> +++ b/security/integrity/evm/evm_main.c
-> @@ -131,7 +131,7 @@ static bool evm_hmac_disabled(void)
->  
->  static int evm_find_protected_xattrs(struct dentry *dentry)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	struct xattr_list *xattr;
->  	int error;
->  	int count = 0;
-> @@ -241,7 +241,7 @@ static enum integrity_status evm_verify_hmac(struct dentry *dentry,
->  					(const char *)xattr_data, xattr_len,
->  					digest.digest, digest.hdr.length);
->  		if (!rc) {
-> -			inode = d_backing_inode(dentry);
-> +			inode = d_inode(dentry);
->  
->  			if (xattr_data->type == EVM_XATTR_PORTABLE_DIGSIG) {
->  				if (iint)
-> @@ -337,7 +337,7 @@ int evm_read_protected_xattrs(struct dentry *dentry, u8 *buffer,
->  	int rc, size, total_size = 0;
->  
->  	list_for_each_entry_lockless(xattr, &evm_config_xattrnames, list) {
-> -		rc = __vfs_getxattr(dentry, d_backing_inode(dentry),
-> +		rc = __vfs_getxattr(dentry, d_inode(dentry),
->  				    xattr->name, NULL, 0);
->  		if (rc < 0 && rc == -ENODATA)
->  			continue;
-> @@ -367,7 +367,7 @@ int evm_read_protected_xattrs(struct dentry *dentry, u8 *buffer,
->  			size = rc;
->  			if (buffer) {
->  				rc = __vfs_getxattr(dentry,
-> -					d_backing_inode(dentry), xattr->name,
-> +					d_inode(dentry), xattr->name,
->  					buffer + total_size,
->  					buffer_size - total_size);
->  				if (rc < 0)
-> @@ -410,7 +410,7 @@ enum integrity_status evm_verifyxattr(struct dentry *dentry,
->  		return INTEGRITY_UNKNOWN;
->  
->  	if (!iint) {
-> -		iint = integrity_iint_find(d_backing_inode(dentry));
-> +		iint = integrity_iint_find(d_inode(dentry));
->  		if (!iint)
->  			return INTEGRITY_UNKNOWN;
->  	}
-> @@ -428,7 +428,7 @@ EXPORT_SYMBOL_GPL(evm_verifyxattr);
->   */
->  static enum integrity_status evm_verify_current_integrity(struct dentry *dentry)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  
->  	if (!evm_key_loaded() || !S_ISREG(inode->i_mode) || evm_fixmode)
->  		return INTEGRITY_PASS;
-> @@ -510,7 +510,7 @@ static int evm_protect_xattr(struct mnt_idmap *idmap,
->  		if (evm_hmac_disabled())
->  			return 0;
->  
-> -		iint = integrity_iint_find(d_backing_inode(dentry));
-> +		iint = integrity_iint_find(d_inode(dentry));
->  		if (iint && (iint->flags & IMA_NEW_FILE))
->  			return 0;
->  
-> @@ -545,7 +545,7 @@ static int evm_protect_xattr(struct mnt_idmap *idmap,
->  
->  	if (evm_status != INTEGRITY_PASS &&
->  	    evm_status != INTEGRITY_PASS_IMMUTABLE)
-> -		integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_backing_inode(dentry),
-> +		integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_inode(dentry),
->  				    dentry->d_name.name, "appraise_metadata",
->  				    integrity_status_msg[evm_status],
->  				    -EPERM, 0);
-> @@ -618,7 +618,7 @@ static int evm_inode_set_acl_change(struct mnt_idmap *idmap,
->  	int rc;
->  
->  	umode_t mode;
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  
->  	if (!kacl)
->  		return 1;
-> @@ -683,7 +683,7 @@ int evm_inode_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
->  		return 0;
->  
->  	if (evm_status != INTEGRITY_PASS_IMMUTABLE)
-> -		integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_backing_inode(dentry),
-> +		integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_inode(dentry),
->  				    dentry->d_name.name, "appraise_metadata",
->  				    integrity_status_msg[evm_status],
->  				    -EPERM, 0);
-> @@ -783,7 +783,7 @@ void evm_inode_post_removexattr(struct dentry *dentry, const char *xattr_name)
->  static int evm_attr_change(struct mnt_idmap *idmap,
->  			   struct dentry *dentry, struct iattr *attr)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	unsigned int ia_valid = attr->ia_valid;
->  
->  	if (!i_uid_needs_update(idmap, attr, inode) &&
-> @@ -833,7 +833,7 @@ int evm_inode_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
->  	    !evm_attr_change(idmap, dentry, attr))
->  		return 0;
->  
-> -	integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_backing_inode(dentry),
-> +	integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_inode(dentry),
->  			    dentry->d_name.name, "appraise_metadata",
->  			    integrity_status_msg[evm_status], -EPERM, 0);
->  	return -EPERM;
-> diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-> index 870dde67707b..491a7429df75 100644
-> --- a/security/integrity/ima/ima_appraise.c
-> +++ b/security/integrity/ima/ima_appraise.c
-> @@ -486,7 +486,7 @@ int ima_appraise_measurement(enum ima_hooks func,
->  	static const char op[] = "appraise_data";
->  	const char *cause = "unknown";
->  	struct dentry *dentry = file_dentry(file);
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	enum integrity_status status = INTEGRITY_UNKNOWN;
->  	int rc = xattr_len;
->  	bool try_modsig = iint->flags & IMA_MODSIG_ALLOWED && modsig;
-> @@ -638,7 +638,7 @@ void ima_update_xattr(struct integrity_iint_cache *iint, struct file *file)
->  void ima_inode_post_setattr(struct mnt_idmap *idmap,
->  			    struct dentry *dentry)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	struct integrity_iint_cache *iint;
->  	int action;
->  
-> @@ -772,7 +772,7 @@ int ima_inode_setxattr(struct dentry *dentry, const char *xattr_name,
->  		digsig = (xvalue->type == EVM_XATTR_PORTABLE_DIGSIG);
->  	}
->  	if (result == 1 || evm_revalidate_status(xattr_name)) {
-> -		ima_reset_appraise_flags(d_backing_inode(dentry), digsig);
-> +		ima_reset_appraise_flags(d_inode(dentry), digsig);
->  		if (result == 1)
->  			result = 0;
->  	}
-> @@ -783,7 +783,7 @@ int ima_inode_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
->  		      const char *acl_name, struct posix_acl *kacl)
->  {
->  	if (evm_revalidate_status(acl_name))
-> -		ima_reset_appraise_flags(d_backing_inode(dentry), 0);
-> +		ima_reset_appraise_flags(d_inode(dentry), 0);
->  
->  	return 0;
->  }
-> @@ -794,7 +794,7 @@ int ima_inode_removexattr(struct dentry *dentry, const char *xattr_name)
->  
->  	result = ima_protect_xattr(dentry, xattr_name, NULL, 0);
->  	if (result == 1 || evm_revalidate_status(xattr_name)) {
-> -		ima_reset_appraise_flags(d_backing_inode(dentry), 0);
-> +		ima_reset_appraise_flags(d_inode(dentry), 0);
->  		if (result == 1)
->  			result = 0;
->  	}
-> diff --git a/security/landlock/fs.c b/security/landlock/fs.c
-> index 1c0c198f6fdb..3bc7977c9ff5 100644
-> --- a/security/landlock/fs.c
-> +++ b/security/landlock/fs.c
-> @@ -181,7 +181,7 @@ int landlock_append_fs_rule(struct landlock_ruleset *const ruleset,
->  	access_rights |=
->  		LANDLOCK_MASK_ACCESS_FS &
->  		~(ruleset->fs_access_masks[0] | ACCESS_INITIALLY_DENIED);
-> -	object = get_inode_object(d_backing_inode(path->dentry));
-> +	object = get_inode_object(d_inode(path->dentry));
->  	if (IS_ERR(object))
->  		return PTR_ERR(object);
->  	mutex_lock(&ruleset->lock);
-> @@ -213,7 +213,7 @@ find_rule(const struct landlock_ruleset *const domain,
->  	if (d_is_negative(dentry))
->  		return NULL;
->  
-> -	inode = d_backing_inode(dentry);
-> +	inode = d_inode(dentry);
->  	rcu_read_lock();
->  	rule = landlock_find_rule(
->  		domain, rcu_dereference(landlock_inode(inode)->object));
-> @@ -284,7 +284,7 @@ static inline bool is_nouser_or_private(const struct dentry *dentry)
->  {
->  	return (dentry->d_sb->s_flags & SB_NOUSER) ||
->  	       (d_is_positive(dentry) &&
-> -		unlikely(IS_PRIVATE(d_backing_inode(dentry))));
-> +		unlikely(IS_PRIVATE(d_inode(dentry))));
->  }
->  
->  static inline access_mask_t
-> @@ -833,12 +833,12 @@ static int current_check_refer_path(struct dentry *const old_dentry,
->  		if (unlikely(d_is_negative(new_dentry)))
->  			return -ENOENT;
->  		access_request_parent1 =
-> -			get_mode_access(d_backing_inode(new_dentry)->i_mode);
-> +			get_mode_access(d_inode(new_dentry)->i_mode);
->  	} else {
->  		access_request_parent1 = 0;
->  	}
->  	access_request_parent2 =
-> -		get_mode_access(d_backing_inode(old_dentry)->i_mode);
-> +		get_mode_access(d_inode(old_dentry)->i_mode);
->  	if (removable) {
->  		access_request_parent1 |= maybe_remove(old_dentry);
->  		access_request_parent2 |= maybe_remove(new_dentry);
-> diff --git a/security/landlock/syscalls.c b/security/landlock/syscalls.c
-> index 245cc650a4dc..3fd22ee41e31 100644
-> --- a/security/landlock/syscalls.c
-> +++ b/security/landlock/syscalls.c
-> @@ -262,7 +262,7 @@ static int get_path_from_fd(const s32 fd, struct path *const path)
->  	    (f.file->f_path.mnt->mnt_flags & MNT_INTERNAL) ||
->  	    (f.file->f_path.dentry->d_sb->s_flags & SB_NOUSER) ||
->  	    d_is_negative(f.file->f_path.dentry) ||
-> -	    IS_PRIVATE(d_backing_inode(f.file->f_path.dentry))) {
-> +	    IS_PRIVATE(d_inode(f.file->f_path.dentry))) {
->  		err = -EBADFD;
->  		goto out_fdput;
->  	}
-> diff --git a/security/lsm_audit.c b/security/lsm_audit.c
-> index 849e832719e2..422a7066c698 100644
-> --- a/security/lsm_audit.c
-> +++ b/security/lsm_audit.c
-> @@ -223,7 +223,7 @@ static void dump_common_audit_data(struct audit_buffer *ab,
->  
->  		audit_log_d_path(ab, " path=", &a->u.path);
->  
-> -		inode = d_backing_inode(a->u.path.dentry);
-> +		inode = d_inode(a->u.path.dentry);
->  		if (inode) {
->  			audit_log_format(ab, " dev=");
->  			audit_log_untrustedstring(ab, inode->i_sb->s_id);
-> @@ -267,7 +267,7 @@ static void dump_common_audit_data(struct audit_buffer *ab,
->  		audit_log_untrustedstring(ab, a->u.dentry->d_name.name);
->  		spin_unlock(&a->u.dentry->d_lock);
->  
-> -		inode = d_backing_inode(a->u.dentry);
-> +		inode = d_inode(a->u.dentry);
->  		if (inode) {
->  			audit_log_format(ab, " dev=");
->  			audit_log_untrustedstring(ab, inode->i_sb->s_id);
-> diff --git a/security/security.c b/security/security.c
-> index 23b129d482a7..f25b2a7414d7 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -1710,7 +1710,7 @@ int security_inode_init_security_anon(struct inode *inode,
->  int security_path_mknod(const struct path *dir, struct dentry *dentry,
->  			umode_t mode, unsigned int dev)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dir->dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dir->dentry))))
->  		return 0;
->  	return call_int_hook(path_mknod, 0, dir, dentry, mode, dev);
->  }
-> @@ -1729,7 +1729,7 @@ EXPORT_SYMBOL(security_path_mknod);
->  int security_path_mkdir(const struct path *dir, struct dentry *dentry,
->  			umode_t mode)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dir->dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dir->dentry))))
->  		return 0;
->  	return call_int_hook(path_mkdir, 0, dir, dentry, mode);
->  }
-> @@ -1746,7 +1746,7 @@ EXPORT_SYMBOL(security_path_mkdir);
->   */
->  int security_path_rmdir(const struct path *dir, struct dentry *dentry)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dir->dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dir->dentry))))
->  		return 0;
->  	return call_int_hook(path_rmdir, 0, dir, dentry);
->  }
-> @@ -1762,7 +1762,7 @@ int security_path_rmdir(const struct path *dir, struct dentry *dentry)
->   */
->  int security_path_unlink(const struct path *dir, struct dentry *dentry)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dir->dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dir->dentry))))
->  		return 0;
->  	return call_int_hook(path_unlink, 0, dir, dentry);
->  }
-> @@ -1781,7 +1781,7 @@ EXPORT_SYMBOL(security_path_unlink);
->  int security_path_symlink(const struct path *dir, struct dentry *dentry,
->  			  const char *old_name)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dir->dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dir->dentry))))
->  		return 0;
->  	return call_int_hook(path_symlink, 0, dir, dentry, old_name);
->  }
-> @@ -1799,7 +1799,7 @@ int security_path_symlink(const struct path *dir, struct dentry *dentry,
->  int security_path_link(struct dentry *old_dentry, const struct path *new_dir,
->  		       struct dentry *new_dentry)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(old_dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(old_dentry))))
->  		return 0;
->  	return call_int_hook(path_link, 0, old_dentry, new_dir, new_dentry);
->  }
-> @@ -1820,9 +1820,9 @@ int security_path_rename(const struct path *old_dir, struct dentry *old_dentry,
->  			 const struct path *new_dir, struct dentry *new_dentry,
->  			 unsigned int flags)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(old_dentry)) ||
-> +	if (unlikely(IS_PRIVATE(d_inode(old_dentry)) ||
->  		     (d_is_positive(new_dentry) &&
-> -		      IS_PRIVATE(d_backing_inode(new_dentry)))))
-> +		      IS_PRIVATE(d_inode(new_dentry)))))
->  		return 0;
->  
->  	return call_int_hook(path_rename, 0, old_dir, old_dentry, new_dir,
-> @@ -1842,7 +1842,7 @@ EXPORT_SYMBOL(security_path_rename);
->   */
->  int security_path_truncate(const struct path *path)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(path->dentry))))
->  		return 0;
->  	return call_int_hook(path_truncate, 0, path);
->  }
-> @@ -1860,7 +1860,7 @@ int security_path_truncate(const struct path *path)
->   */
->  int security_path_chmod(const struct path *path, umode_t mode)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(path->dentry))))
->  		return 0;
->  	return call_int_hook(path_chmod, 0, path, mode);
->  }
-> @@ -1877,7 +1877,7 @@ int security_path_chmod(const struct path *path, umode_t mode)
->   */
->  int security_path_chown(const struct path *path, kuid_t uid, kgid_t gid)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(path->dentry))))
->  		return 0;
->  	return call_int_hook(path_chown, 0, path, uid, gid);
->  }
-> @@ -1928,7 +1928,7 @@ EXPORT_SYMBOL_GPL(security_inode_create);
->  int security_inode_link(struct dentry *old_dentry, struct inode *dir,
->  			struct dentry *new_dentry)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(old_dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(old_dentry))))
->  		return 0;
->  	return call_int_hook(inode_link, 0, old_dentry, dir, new_dentry);
->  }
-> @@ -1944,7 +1944,7 @@ int security_inode_link(struct dentry *old_dentry, struct inode *dir,
->   */
->  int security_inode_unlink(struct inode *dir, struct dentry *dentry)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dentry))))
->  		return 0;
->  	return call_int_hook(inode_unlink, 0, dir, dentry);
->  }
-> @@ -1997,7 +1997,7 @@ EXPORT_SYMBOL_GPL(security_inode_mkdir);
->   */
->  int security_inode_rmdir(struct inode *dir, struct dentry *dentry)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dentry))))
->  		return 0;
->  	return call_int_hook(inode_rmdir, 0, dir, dentry);
->  }
-> @@ -2040,9 +2040,9 @@ int security_inode_rename(struct inode *old_dir, struct dentry *old_dentry,
->  			  struct inode *new_dir, struct dentry *new_dentry,
->  			  unsigned int flags)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(old_dentry)) ||
-> +	if (unlikely(IS_PRIVATE(d_inode(old_dentry)) ||
->  		     (d_is_positive(new_dentry) &&
-> -		      IS_PRIVATE(d_backing_inode(new_dentry)))))
-> +		      IS_PRIVATE(d_inode(new_dentry)))))
->  		return 0;
->  
->  	if (flags & RENAME_EXCHANGE) {
-> @@ -2066,7 +2066,7 @@ int security_inode_rename(struct inode *old_dir, struct dentry *old_dentry,
->   */
->  int security_inode_readlink(struct dentry *dentry)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dentry))))
->  		return 0;
->  	return call_int_hook(inode_readlink, 0, dentry);
->  }
-> @@ -2129,7 +2129,7 @@ int security_inode_setattr(struct mnt_idmap *idmap,
->  {
->  	int ret;
->  
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dentry))))
->  		return 0;
->  	ret = call_int_hook(inode_setattr, 0, dentry, attr);
->  	if (ret)
-> @@ -2148,7 +2148,7 @@ EXPORT_SYMBOL_GPL(security_inode_setattr);
->   */
->  int security_inode_getattr(const struct path *path)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(path->dentry))))
->  		return 0;
->  	return call_int_hook(inode_getattr, 0, path);
->  }
-> @@ -2172,7 +2172,7 @@ int security_inode_setxattr(struct mnt_idmap *idmap,
->  {
->  	int ret;
->  
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dentry))))
->  		return 0;
->  	/*
->  	 * SELinux and Smack integrate the cap call,
-> @@ -2209,7 +2209,7 @@ int security_inode_set_acl(struct mnt_idmap *idmap,
->  {
->  	int ret;
->  
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dentry))))
->  		return 0;
->  	ret = call_int_hook(inode_set_acl, 0, idmap, dentry, acl_name,
->  			    kacl);
-> @@ -2235,7 +2235,7 @@ int security_inode_set_acl(struct mnt_idmap *idmap,
->  int security_inode_get_acl(struct mnt_idmap *idmap,
->  			   struct dentry *dentry, const char *acl_name)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dentry))))
->  		return 0;
->  	return call_int_hook(inode_get_acl, 0, idmap, dentry, acl_name);
->  }
-> @@ -2256,7 +2256,7 @@ int security_inode_remove_acl(struct mnt_idmap *idmap,
->  {
->  	int ret;
->  
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dentry))))
->  		return 0;
->  	ret = call_int_hook(inode_remove_acl, 0, idmap, dentry, acl_name);
->  	if (ret)
-> @@ -2280,7 +2280,7 @@ int security_inode_remove_acl(struct mnt_idmap *idmap,
->  void security_inode_post_setxattr(struct dentry *dentry, const char *name,
->  				  const void *value, size_t size, int flags)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dentry))))
->  		return;
->  	call_void_hook(inode_post_setxattr, dentry, name, value, size, flags);
->  	evm_inode_post_setxattr(dentry, name, value, size);
-> @@ -2298,7 +2298,7 @@ void security_inode_post_setxattr(struct dentry *dentry, const char *name,
->   */
->  int security_inode_getxattr(struct dentry *dentry, const char *name)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dentry))))
->  		return 0;
->  	return call_int_hook(inode_getxattr, 0, dentry, name);
->  }
-> @@ -2314,7 +2314,7 @@ int security_inode_getxattr(struct dentry *dentry, const char *name)
->   */
->  int security_inode_listxattr(struct dentry *dentry)
->  {
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dentry))))
->  		return 0;
->  	return call_int_hook(inode_listxattr, 0, dentry);
->  }
-> @@ -2335,7 +2335,7 @@ int security_inode_removexattr(struct mnt_idmap *idmap,
->  {
->  	int ret;
->  
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dentry))))
->  		return 0;
->  	/*
->  	 * SELinux and Smack integrate the cap call,
-> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> index 2aa0e219d721..320d8d5ddcbe 100644
-> --- a/security/selinux/hooks.c
-> +++ b/security/selinux/hooks.c
-> @@ -321,7 +321,7 @@ static struct inode_security_struct *inode_security(struct inode *inode)
->  
->  static struct inode_security_struct *backing_inode_security_novalidate(struct dentry *dentry)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  
->  	return selinux_inode(inode);
->  }
-> @@ -331,7 +331,7 @@ static struct inode_security_struct *backing_inode_security_novalidate(struct de
->   */
->  static struct inode_security_struct *backing_inode_security(struct dentry *dentry)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  
->  	__inode_security_revalidate(inode, dentry, true);
->  	return selinux_inode(inode);
-> @@ -497,7 +497,7 @@ static int sb_check_xattr_support(struct super_block *sb)
->  {
->  	struct superblock_security_struct *sbsec = selinux_superblock(sb);
->  	struct dentry *root = sb->s_root;
-> -	struct inode *root_inode = d_backing_inode(root);
-> +	struct inode *root_inode = d_inode(root);
->  	u32 sid;
->  	int rc;
->  
-> @@ -546,7 +546,7 @@ static int sb_finish_set_opts(struct super_block *sb)
->  {
->  	struct superblock_security_struct *sbsec = selinux_superblock(sb);
->  	struct dentry *root = sb->s_root;
-> -	struct inode *root_inode = d_backing_inode(root);
-> +	struct inode *root_inode = d_inode(root);
->  	int rc = 0;
->  
->  	if (sbsec->behavior == SECURITY_FS_USE_XATTR) {
-> @@ -1678,7 +1678,7 @@ static inline int dentry_has_perm(const struct cred *cred,
->  				  struct dentry *dentry,
->  				  u32 av)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	struct common_audit_data ad;
->  
->  	ad.type = LSM_AUDIT_DATA_DENTRY;
-> @@ -1694,7 +1694,7 @@ static inline int path_has_perm(const struct cred *cred,
->  				const struct path *path,
->  				u32 av)
->  {
-> -	struct inode *inode = d_backing_inode(path->dentry);
-> +	struct inode *inode = d_inode(path->dentry);
->  	struct common_audit_data ad;
->  
->  	ad.type = LSM_AUDIT_DATA_PATH;
-> @@ -2079,7 +2079,7 @@ static int selinux_binder_transfer_file(const struct cred *from,
->  		return rc;
->  #endif
->  
-> -	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +	if (unlikely(IS_PRIVATE(d_inode(dentry))))
->  		return 0;
->  
->  	isec = backing_inode_security(dentry);
-> @@ -3130,7 +3130,7 @@ static int selinux_inode_permission(struct inode *inode, int mask)
->  static int selinux_inode_setattr(struct dentry *dentry, struct iattr *iattr)
->  {
->  	const struct cred *cred = current_cred();
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	unsigned int ia_valid = iattr->ia_valid;
->  	__u32 av = FILE__WRITE;
->  
-> @@ -3176,7 +3176,7 @@ static int selinux_inode_setxattr(struct mnt_idmap *idmap,
->  				  struct dentry *dentry, const char *name,
->  				  const void *value, size_t size, int flags)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	struct inode_security_struct *isec;
->  	struct superblock_security_struct *sbsec;
->  	struct common_audit_data ad;
-> @@ -3287,7 +3287,7 @@ static void selinux_inode_post_setxattr(struct dentry *dentry, const char *name,
->  					const void *value, size_t size,
->  					int flags)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
-> +	struct inode *inode = d_inode(dentry);
->  	struct inode_security_struct *isec;
->  	u32 newsid;
->  	int rc;
-> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-> index 65130a791f57..207a9f74162f 100644
-> --- a/security/smack/smack_lsm.c
-> +++ b/security/smack/smack_lsm.c
-> @@ -798,7 +798,7 @@ static int smack_set_mnt_opts(struct super_block *sb,
->  		unsigned long *set_kern_flags)
->  {
->  	struct dentry *root = sb->s_root;
-> -	struct inode *inode = d_backing_inode(root);
-> +	struct inode *inode = d_inode(root);
->  	struct superblock_smack *sp = smack_superblock(sb);
->  	struct inode_smack *isp;
->  	struct smack_known *skp;
-> @@ -1072,15 +1072,15 @@ static int smack_inode_link(struct dentry *old_dentry, struct inode *dir,
->  	smk_ad_init(&ad, __func__, LSM_AUDIT_DATA_DENTRY);
->  	smk_ad_setfield_u_fs_path_dentry(&ad, old_dentry);
->  
-> -	isp = smk_of_inode(d_backing_inode(old_dentry));
-> +	isp = smk_of_inode(d_inode(old_dentry));
->  	rc = smk_curacc(isp, MAY_WRITE, &ad);
-> -	rc = smk_bu_inode(d_backing_inode(old_dentry), MAY_WRITE, rc);
-> +	rc = smk_bu_inode(d_inode(old_dentry), MAY_WRITE, rc);
->  
->  	if (rc == 0 && d_is_positive(new_dentry)) {
-> -		isp = smk_of_inode(d_backing_inode(new_dentry));
-> +		isp = smk_of_inode(d_inode(new_dentry));
->  		smk_ad_setfield_u_fs_path_dentry(&ad, new_dentry);
->  		rc = smk_curacc(isp, MAY_WRITE, &ad);
-> -		rc = smk_bu_inode(d_backing_inode(new_dentry), MAY_WRITE, rc);
-> +		rc = smk_bu_inode(d_inode(new_dentry), MAY_WRITE, rc);
->  	}
->  
->  	return rc;
-> @@ -1096,7 +1096,7 @@ static int smack_inode_link(struct dentry *old_dentry, struct inode *dir,
->   */
->  static int smack_inode_unlink(struct inode *dir, struct dentry *dentry)
->  {
-> -	struct inode *ip = d_backing_inode(dentry);
-> +	struct inode *ip = d_inode(dentry);
->  	struct smk_audit_info ad;
->  	int rc;
->  
-> @@ -1139,8 +1139,8 @@ static int smack_inode_rmdir(struct inode *dir, struct dentry *dentry)
->  	/*
->  	 * You need write access to the thing you're removing
->  	 */
-> -	rc = smk_curacc(smk_of_inode(d_backing_inode(dentry)), MAY_WRITE, &ad);
-> -	rc = smk_bu_inode(d_backing_inode(dentry), MAY_WRITE, rc);
-> +	rc = smk_curacc(smk_of_inode(d_inode(dentry)), MAY_WRITE, &ad);
-> +	rc = smk_bu_inode(d_inode(dentry), MAY_WRITE, rc);
->  	if (rc == 0) {
->  		/*
->  		 * You also need write access to the containing directory
-> @@ -1178,15 +1178,15 @@ static int smack_inode_rename(struct inode *old_inode,
->  	smk_ad_init(&ad, __func__, LSM_AUDIT_DATA_DENTRY);
->  	smk_ad_setfield_u_fs_path_dentry(&ad, old_dentry);
->  
-> -	isp = smk_of_inode(d_backing_inode(old_dentry));
-> +	isp = smk_of_inode(d_inode(old_dentry));
->  	rc = smk_curacc(isp, MAY_READWRITE, &ad);
-> -	rc = smk_bu_inode(d_backing_inode(old_dentry), MAY_READWRITE, rc);
-> +	rc = smk_bu_inode(d_inode(old_dentry), MAY_READWRITE, rc);
->  
->  	if (rc == 0 && d_is_positive(new_dentry)) {
-> -		isp = smk_of_inode(d_backing_inode(new_dentry));
-> +		isp = smk_of_inode(d_inode(new_dentry));
->  		smk_ad_setfield_u_fs_path_dentry(&ad, new_dentry);
->  		rc = smk_curacc(isp, MAY_READWRITE, &ad);
-> -		rc = smk_bu_inode(d_backing_inode(new_dentry), MAY_READWRITE, rc);
-> +		rc = smk_bu_inode(d_inode(new_dentry), MAY_READWRITE, rc);
->  	}
->  	return rc;
->  }
-> @@ -1249,8 +1249,8 @@ static int smack_inode_setattr(struct dentry *dentry, struct iattr *iattr)
->  	smk_ad_init(&ad, __func__, LSM_AUDIT_DATA_DENTRY);
->  	smk_ad_setfield_u_fs_path_dentry(&ad, dentry);
->  
-> -	rc = smk_curacc(smk_of_inode(d_backing_inode(dentry)), MAY_WRITE, &ad);
-> -	rc = smk_bu_inode(d_backing_inode(dentry), MAY_WRITE, rc);
-> +	rc = smk_curacc(smk_of_inode(d_inode(dentry)), MAY_WRITE, &ad);
-> +	rc = smk_bu_inode(d_inode(dentry), MAY_WRITE, rc);
->  	return rc;
->  }
->  
-> @@ -1263,7 +1263,7 @@ static int smack_inode_setattr(struct dentry *dentry, struct iattr *iattr)
->  static int smack_inode_getattr(const struct path *path)
->  {
->  	struct smk_audit_info ad;
-> -	struct inode *inode = d_backing_inode(path->dentry);
-> +	struct inode *inode = d_inode(path->dentry);
->  	int rc;
->  
->  	smk_ad_init(&ad, __func__, LSM_AUDIT_DATA_PATH);
-> @@ -1334,8 +1334,8 @@ static int smack_inode_setxattr(struct mnt_idmap *idmap,
->  	smk_ad_setfield_u_fs_path_dentry(&ad, dentry);
->  
->  	if (rc == 0) {
-> -		rc = smk_curacc(smk_of_inode(d_backing_inode(dentry)), MAY_WRITE, &ad);
-> -		rc = smk_bu_inode(d_backing_inode(dentry), MAY_WRITE, rc);
-> +		rc = smk_curacc(smk_of_inode(d_inode(dentry)), MAY_WRITE, &ad);
-> +		rc = smk_bu_inode(d_inode(dentry), MAY_WRITE, rc);
->  	}
->  
->  	return rc;
-> @@ -1356,7 +1356,7 @@ static void smack_inode_post_setxattr(struct dentry *dentry, const char *name,
->  				      const void *value, size_t size, int flags)
->  {
->  	struct smack_known *skp;
-> -	struct inode_smack *isp = smack_inode(d_backing_inode(dentry));
-> +	struct inode_smack *isp = smack_inode(d_inode(dentry));
->  
->  	if (strcmp(name, XATTR_NAME_SMACKTRANSMUTE) == 0) {
->  		isp->smk_flags |= SMK_INODE_TRANSMUTE;
-> @@ -1395,8 +1395,8 @@ static int smack_inode_getxattr(struct dentry *dentry, const char *name)
->  	smk_ad_init(&ad, __func__, LSM_AUDIT_DATA_DENTRY);
->  	smk_ad_setfield_u_fs_path_dentry(&ad, dentry);
->  
-> -	rc = smk_curacc(smk_of_inode(d_backing_inode(dentry)), MAY_READ, &ad);
-> -	rc = smk_bu_inode(d_backing_inode(dentry), MAY_READ, rc);
-> +	rc = smk_curacc(smk_of_inode(d_inode(dentry)), MAY_READ, &ad);
-> +	rc = smk_bu_inode(d_inode(dentry), MAY_READ, rc);
->  	return rc;
->  }
->  
-> @@ -1434,12 +1434,12 @@ static int smack_inode_removexattr(struct mnt_idmap *idmap,
->  	smk_ad_init(&ad, __func__, LSM_AUDIT_DATA_DENTRY);
->  	smk_ad_setfield_u_fs_path_dentry(&ad, dentry);
->  
-> -	rc = smk_curacc(smk_of_inode(d_backing_inode(dentry)), MAY_WRITE, &ad);
-> -	rc = smk_bu_inode(d_backing_inode(dentry), MAY_WRITE, rc);
-> +	rc = smk_curacc(smk_of_inode(d_inode(dentry)), MAY_WRITE, &ad);
-> +	rc = smk_bu_inode(d_inode(dentry), MAY_WRITE, rc);
->  	if (rc != 0)
->  		return rc;
->  
-> -	isp = smack_inode(d_backing_inode(dentry));
-> +	isp = smack_inode(d_inode(dentry));
->  	/*
->  	 * Don't do anything special for these.
->  	 *	XATTR_NAME_SMACKIPIN
-> @@ -1479,8 +1479,8 @@ static int smack_inode_set_acl(struct mnt_idmap *idmap,
->  	smk_ad_init(&ad, __func__, LSM_AUDIT_DATA_DENTRY);
->  	smk_ad_setfield_u_fs_path_dentry(&ad, dentry);
->  
-> -	rc = smk_curacc(smk_of_inode(d_backing_inode(dentry)), MAY_WRITE, &ad);
-> -	rc = smk_bu_inode(d_backing_inode(dentry), MAY_WRITE, rc);
-> +	rc = smk_curacc(smk_of_inode(d_inode(dentry)), MAY_WRITE, &ad);
-> +	rc = smk_bu_inode(d_inode(dentry), MAY_WRITE, rc);
->  	return rc;
->  }
->  
-> @@ -1501,8 +1501,8 @@ static int smack_inode_get_acl(struct mnt_idmap *idmap,
->  	smk_ad_init(&ad, __func__, LSM_AUDIT_DATA_DENTRY);
->  	smk_ad_setfield_u_fs_path_dentry(&ad, dentry);
->  
-> -	rc = smk_curacc(smk_of_inode(d_backing_inode(dentry)), MAY_READ, &ad);
-> -	rc = smk_bu_inode(d_backing_inode(dentry), MAY_READ, rc);
-> +	rc = smk_curacc(smk_of_inode(d_inode(dentry)), MAY_READ, &ad);
-> +	rc = smk_bu_inode(d_inode(dentry), MAY_READ, rc);
->  	return rc;
->  }
->  
-> @@ -1523,8 +1523,8 @@ static int smack_inode_remove_acl(struct mnt_idmap *idmap,
->  	smk_ad_init(&ad, __func__, LSM_AUDIT_DATA_DENTRY);
->  	smk_ad_setfield_u_fs_path_dentry(&ad, dentry);
->  
-> -	rc = smk_curacc(smk_of_inode(d_backing_inode(dentry)), MAY_WRITE, &ad);
-> -	rc = smk_bu_inode(d_backing_inode(dentry), MAY_WRITE, rc);
-> +	rc = smk_curacc(smk_of_inode(d_inode(dentry)), MAY_WRITE, &ad);
-> +	rc = smk_bu_inode(d_inode(dentry), MAY_WRITE, rc);
->  	return rc;
->  }
->  
-> diff --git a/security/tomoyo/condition.c b/security/tomoyo/condition.c
-> index f8bcc083bb0d..c7e1bfd3ef72 100644
-> --- a/security/tomoyo/condition.c
-> +++ b/security/tomoyo/condition.c
-> @@ -735,7 +735,7 @@ void tomoyo_get_attributes(struct tomoyo_obj_info *obj)
->  			dentry = dget_parent(dentry);
->  			break;
->  		}
-> -		inode = d_backing_inode(dentry);
-> +		inode = d_inode(dentry);
->  		if (inode) {
->  			struct tomoyo_mini_stat *stat = &obj->stat[i];
->  
-> diff --git a/security/tomoyo/realpath.c b/security/tomoyo/realpath.c
-> index 1c483ee7f93d..e4eda5a4df4f 100644
-> --- a/security/tomoyo/realpath.c
-> +++ b/security/tomoyo/realpath.c
-> @@ -100,7 +100,7 @@ static char *tomoyo_get_absolute_path(const struct path *path, char * const buff
->  		/* go to whatever namespace root we are under */
->  		pos = d_absolute_path(path, buffer, buflen - 1);
->  		if (!IS_ERR(pos) && *pos == '/' && pos[1]) {
-> -			struct inode *inode = d_backing_inode(path->dentry);
-> +			struct inode *inode = d_inode(path->dentry);
->  
->  			if (inode && S_ISDIR(inode->i_mode)) {
->  				buffer[buflen - 2] = '/';
-> @@ -130,7 +130,7 @@ static char *tomoyo_get_dentry_path(struct dentry *dentry, char * const buffer,
->  	if (buflen >= 256) {
->  		pos = dentry_path_raw(dentry, buffer, buflen - 1);
->  		if (!IS_ERR(pos) && *pos == '/' && pos[1]) {
-> -			struct inode *inode = d_backing_inode(dentry);
-> +			struct inode *inode = d_inode(dentry);
->  
->  			if (inode && S_ISDIR(inode->i_mode)) {
->  				buffer[buflen - 2] = '/';
-> @@ -177,7 +177,7 @@ static char *tomoyo_get_local_path(struct dentry *dentry, char * const buffer,
->  	if (!MAJOR(sb->s_dev))
->  		goto prepend_filesystem_name;
->  	{
-> -		struct inode *inode = d_backing_inode(sb->s_root);
-> +		struct inode *inode = d_inode(sb->s_root);
->  
->  		/*
->  		 * Use filesystem name if filesystem does not support rename()
-> @@ -258,7 +258,7 @@ char *tomoyo_realpath_from_path(const struct path *path)
->  			pos = dentry->d_op->d_dname(dentry, buf, buf_len - 1);
->  			goto encode;
->  		}
-> -		inode = d_backing_inode(sb->s_root);
-> +		inode = d_inode(sb->s_root);
->  		/*
->  		 * Get local name for filesystems without rename() operation
->  		 */
+> -#
+> -# Install the unstripped copy of vdso.so.dbg.  If our toolchain
+> -# supports build-id, install .build-id links as well.
+> -#
+> -# Cribbed from arch/x86/vdso/Makefile.
+> -#
+> -quiet_cmd_vdso_install =3D INSTALL $<
+> -define cmd_vdso_install
+> -       cp $< "$(MODLIB)/vdso/vdso.so"; \
+> -       if readelf -n $< | grep -q 'Build ID'; then \
+> -         buildid=3D`readelf -n $< |grep 'Build ID' |sed -e 's/^.*Build I=
+D: \(.*\)$$/\1/'`; \
+> -         first=3D`echo $$buildid | cut -b-2`; \
+> -         last=3D`echo $$buildid | cut -b3-`; \
+> -         mkdir -p "$(MODLIB)/vdso/.build-id/$$first"; \
+> -         ln -sf "../../vdso.so" "$(MODLIB)/vdso/.build-id/$$first/$$last=
+.debug"; \
+> -       fi
+> -endef
+> -
+> -$(MODLIB)/vdso: FORCE
+> -       @mkdir -p $(MODLIB)/vdso
+> -
+> -PHONY +=3D vdso_install
+> -vdso_install: $(obj)/vdso.so.dbg $(MODLIB)/vdso
+> -       $(call cmd,vdso_install)
+> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+> index 2d49aea0ff67..4bd85cc0d32b 100644
+> --- a/arch/arm64/Makefile
+> +++ b/arch/arm64/Makefile
+> @@ -169,12 +169,6 @@ install: KBUILD_IMAGE :=3D $(boot)/Image
+>  install zinstall:
+>         $(call cmd,install)
+>
+> -PHONY +=3D vdso_install
+> -vdso_install:
+> -       $(Q)$(MAKE) $(build)=3Darch/arm64/kernel/vdso $@
+> -       $(if $(CONFIG_COMPAT_VDSO), \
+> -               $(Q)$(MAKE) $(build)=3Darch/arm64/kernel/vdso32 $@)
+> -
+>  archprepare:
+>         $(Q)$(MAKE) $(build)=3Darch/arm64/tools kapi
+>  ifeq ($(CONFIG_ARM64_ERRATUM_843419),y)
+> @@ -205,6 +199,9 @@ ifdef CONFIG_COMPAT_VDSO
+>  endif
+>  endif
+>
+> +vdso-install-y                         +=3D arch/arm64/kernel/vdso/vdso.=
+so.dbg
+> +vdso-install-$(CONFIG_COMPAT_VDSO)     +=3D arch/arm64/kernel/vdso32/vds=
+o.so.dbg:vdso32.so
+> +
+>  include $(srctree)/scripts/Makefile.defconf
+>
+>  PHONY +=3D virtconfig
+> diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Mak=
+efile
+> index fe7a53c6781f..8818287f1095 100644
+> --- a/arch/arm64/kernel/vdso/Makefile
+> +++ b/arch/arm64/kernel/vdso/Makefile
+> @@ -78,13 +78,3 @@ include/generated/vdso-offsets.h: $(obj)/vdso.so.dbg F=
+ORCE
+>  # Actual build commands
+>  quiet_cmd_vdsold_and_vdso_check =3D LD      $@
+>        cmd_vdsold_and_vdso_check =3D $(cmd_ld); $(cmd_vdso_check)
+> -
+> -# Install commands for the unstripped file
+> -quiet_cmd_vdso_install =3D INSTALL $@
+> -      cmd_vdso_install =3D cp $(obj)/$@.dbg $(MODLIB)/vdso/$@
+> -
+> -vdso.so: $(obj)/vdso.so.dbg
+> -       @mkdir -p $(MODLIB)/vdso
+> -       $(call cmd,vdso_install)
+> -
+> -vdso_install: vdso.so
+> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32=
+/Makefile
+> index 2f73e5bca213..1f911a76c5af 100644
+> --- a/arch/arm64/kernel/vdso32/Makefile
+> +++ b/arch/arm64/kernel/vdso32/Makefile
+> @@ -172,13 +172,3 @@ gen-vdsosym :=3D $(srctree)/$(src)/../vdso/gen_vdso_=
+offsets.sh
+>  quiet_cmd_vdsosym =3D VDSOSYM $@
+>  # The AArch64 nm should be able to read an AArch32 binary
+>        cmd_vdsosym =3D $(NM) $< | $(gen-vdsosym) | LC_ALL=3DC sort > $@
+> -
+> -# Install commands for the unstripped file
+> -quiet_cmd_vdso_install =3D INSTALL32 $@
+> -      cmd_vdso_install =3D cp $(obj)/$@.dbg $(MODLIB)/vdso/vdso32.so
+> -
+> -vdso.so: $(obj)/vdso.so.dbg
+> -       @mkdir -p $(MODLIB)/vdso
+> -       $(call cmd,vdso_install)
+> -
+> -vdso_install: vdso.so
+> diff --git a/arch/loongarch/Makefile b/arch/loongarch/Makefile
+> index fb0fada43197..b86f2ff31659 100644
+> --- a/arch/loongarch/Makefile
+> +++ b/arch/loongarch/Makefile
+> @@ -136,9 +136,7 @@ vdso_prepare: prepare0
+>         $(Q)$(MAKE) $(build)=3Darch/loongarch/vdso include/generated/vdso=
+-offsets.h
+>  endif
+>
+> -PHONY +=3D vdso_install
+> -vdso_install:
+> -       $(Q)$(MAKE) $(build)=3Darch/loongarch/vdso $@
+> +vdso-install-y +=3D arch/loongarch/vdso/vdso.so.dbg
+>
+>  all:   $(notdir $(KBUILD_IMAGE))
+>
+> diff --git a/arch/loongarch/vdso/Makefile b/arch/loongarch/vdso/Makefile
+> index 5c97d1463328..c74c9921304f 100644
+> --- a/arch/loongarch/vdso/Makefile
+> +++ b/arch/loongarch/vdso/Makefile
+> @@ -83,13 +83,3 @@ $(obj)/vdso.so: $(obj)/vdso.so.dbg FORCE
+>  obj-y +=3D vdso.o
+>
+>  $(obj)/vdso.o : $(obj)/vdso.so
+> -
+> -# install commands for the unstripped file
+> -quiet_cmd_vdso_install =3D INSTALL $@
+> -      cmd_vdso_install =3D cp $(obj)/$@.dbg $(MODLIB)/vdso/$@
+> -
+> -vdso.so: $(obj)/vdso.so.dbg
+> -       @mkdir -p $(MODLIB)/vdso
+> -       $(call cmd,vdso_install)
+> -
+> -vdso_install: vdso.so
+> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+> index 1329e060c548..18a47b4d6795 100644
+> --- a/arch/riscv/Makefile
+> +++ b/arch/riscv/Makefile
+> @@ -131,12 +131,6 @@ endif
+>  libs-y +=3D arch/riscv/lib/
+>  libs-$(CONFIG_EFI_STUB) +=3D $(objtree)/drivers/firmware/efi/libstub/lib=
+.a
+>
+> -PHONY +=3D vdso_install
+> -vdso_install:
+> -       $(Q)$(MAKE) $(build)=3Darch/riscv/kernel/vdso $@
+> -       $(if $(CONFIG_COMPAT),$(Q)$(MAKE) \
+> -               $(build)=3Darch/riscv/kernel/compat_vdso compat_$@)
+> -
+>  ifeq ($(KBUILD_EXTMOD),)
+>  ifeq ($(CONFIG_MMU),y)
+>  prepare: vdso_prepare
+> @@ -148,6 +142,9 @@ vdso_prepare: prepare0
+>  endif
+>  endif
+>
+> +vdso-install-y                 +=3D arch/riscv/kernel/vdso/vdso.so.dbg
+> +vdso-install-$(CONFIG_COMPAT)  +=3D arch/riscv/kernel/compat_vdso/compat=
+_vdso.so.dbg:../compat_vdso/compat_vdso.so
+Why do we need ":../compat_vdso/compat_vdso.so" here?
+
+> +
+>  ifneq ($(CONFIG_XIP_KERNEL),y)
+>  ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_ARCH_CANAAN),yy)
+>  KBUILD_IMAGE :=3D $(boot)/loader.bin
+> diff --git a/arch/riscv/kernel/compat_vdso/Makefile b/arch/riscv/kernel/c=
+ompat_vdso/Makefile
+> index b86e5e2c3aea..62fa393b2eb2 100644
+> --- a/arch/riscv/kernel/compat_vdso/Makefile
+> +++ b/arch/riscv/kernel/compat_vdso/Makefile
+> @@ -76,13 +76,3 @@ quiet_cmd_compat_vdsold =3D VDSOLD  $@
+>  # actual build commands
+>  quiet_cmd_compat_vdsoas =3D VDSOAS $@
+>        cmd_compat_vdsoas =3D $(COMPAT_CC) $(a_flags) $(COMPAT_CC_FLAGS) -=
+c -o $@ $<
+> -
+> -# install commands for the unstripped file
+> -quiet_cmd_compat_vdso_install =3D INSTALL $@
+> -      cmd_compat_vdso_install =3D cp $(obj)/$@.dbg $(MODLIB)/compat_vdso=
+/$@
+> -
+> -compat_vdso.so: $(obj)/compat_vdso.so.dbg
+> -       @mkdir -p $(MODLIB)/compat_vdso
+> -       $(call cmd,compat_vdso_install)
+> -
+> -compat_vdso_install: compat_vdso.so
+> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Mak=
+efile
+> index 6b1dba11bf6d..e8aa7c380007 100644
+> --- a/arch/riscv/kernel/vdso/Makefile
+> +++ b/arch/riscv/kernel/vdso/Makefile
+> @@ -73,13 +73,3 @@ quiet_cmd_vdsold =3D VDSOLD  $@
+>        cmd_vdsold =3D $(LD) $(ld_flags) -T $(filter-out FORCE,$^) -o $@.t=
+mp && \
+>                     $(OBJCOPY) $(patsubst %, -G __vdso_%, $(vdso-syms)) $=
+@.tmp $@ && \
+>                     rm $@.tmp
+> -
+> -# install commands for the unstripped file
+> -quiet_cmd_vdso_install =3D INSTALL $@
+> -      cmd_vdso_install =3D cp $(obj)/$@.dbg $(MODLIB)/vdso/$@
+> -
+> -vdso.so: $(obj)/vdso.so.dbg
+> -       @mkdir -p $(MODLIB)/vdso
+> -       $(call cmd,vdso_install)
+> -
+> -vdso_install: vdso.so
+> diff --git a/arch/s390/Makefile b/arch/s390/Makefile
+> index a53a36ee0731..73873e451686 100644
+> --- a/arch/s390/Makefile
+> +++ b/arch/s390/Makefile
+> @@ -138,9 +138,6 @@ bzImage: vmlinux
+>  zfcpdump:
+>         $(Q)$(MAKE) $(build)=3D$(boot) $(boot)/$@
+>
+> -vdso_install:
+> -       $(Q)$(MAKE) $(build)=3Darch/$(ARCH)/kernel/vdso64 $@
+> -
+>  archheaders:
+>         $(Q)$(MAKE) $(build)=3D$(syscalls) uapi
+>
+> @@ -160,6 +157,9 @@ vdso_prepare: prepare0
+>         $(if $(CONFIG_COMPAT),$(Q)$(MAKE) \
+>                 $(build)=3Darch/s390/kernel/vdso32 include/generated/vdso=
+32-offsets.h)
+>
+> +vdso-install-y                 +=3D arch/s390/kernel/vdso64/vdso64.so.db=
+g
+> +vdso-install-$(CONFIG_COMPAT)  +=3D arch/s390/kernel/vdso32/vdso32.so.db=
+g
+> +
+>  ifdef CONFIG_EXPOLINE_EXTERN
+>  modules_prepare: expoline_prepare
+>  expoline_prepare: scripts
+> diff --git a/arch/s390/kernel/vdso32/Makefile b/arch/s390/kernel/vdso32/M=
+akefile
+> index 23e868b79a6c..caec7db6f966 100644
+> --- a/arch/s390/kernel/vdso32/Makefile
+> +++ b/arch/s390/kernel/vdso32/Makefile
+> @@ -61,16 +61,6 @@ quiet_cmd_vdso32as =3D VDSO32A $@
+>  quiet_cmd_vdso32cc =3D VDSO32C $@
+>        cmd_vdso32cc =3D $(CC) $(c_flags) -c -o $@ $<
+>
+> -# install commands for the unstripped file
+> -quiet_cmd_vdso_install =3D INSTALL $@
+> -      cmd_vdso_install =3D cp $(obj)/$@.dbg $(MODLIB)/vdso/$@
+> -
+> -vdso32.so: $(obj)/vdso32.so.dbg
+> -       @mkdir -p $(MODLIB)/vdso
+> -       $(call cmd,vdso_install)
+> -
+> -vdso_install: vdso32.so
+> -
+>  # Generate VDSO offsets using helper script
+>  gen-vdsosym :=3D $(srctree)/$(src)/gen_vdso_offsets.sh
+>  quiet_cmd_vdsosym =3D VDSOSYM $@
+> diff --git a/arch/s390/kernel/vdso64/Makefile b/arch/s390/kernel/vdso64/M=
+akefile
+> index fc1c6ff8178f..e3c9085f8fa7 100644
+> --- a/arch/s390/kernel/vdso64/Makefile
+> +++ b/arch/s390/kernel/vdso64/Makefile
+> @@ -70,16 +70,6 @@ quiet_cmd_vdso64as =3D VDSO64A $@
+>  quiet_cmd_vdso64cc =3D VDSO64C $@
+>        cmd_vdso64cc =3D $(CC) $(c_flags) -c -o $@ $<
+>
+> -# install commands for the unstripped file
+> -quiet_cmd_vdso_install =3D INSTALL $@
+> -      cmd_vdso_install =3D cp $(obj)/$@.dbg $(MODLIB)/vdso/$@
+> -
+> -vdso64.so: $(obj)/vdso64.so.dbg
+> -       @mkdir -p $(MODLIB)/vdso
+> -       $(call cmd,vdso_install)
+> -
+> -vdso_install: vdso64.so
+> -
+>  # Generate VDSO offsets using helper script
+>  gen-vdsosym :=3D $(srctree)/$(src)/gen_vdso_offsets.sh
+>  quiet_cmd_vdsosym =3D VDSOSYM $@
+> diff --git a/arch/sparc/Makefile b/arch/sparc/Makefile
+> index 7417345c6639..5f6035936131 100644
+> --- a/arch/sparc/Makefile
+> +++ b/arch/sparc/Makefile
+> @@ -76,9 +76,8 @@ install:
+>  archheaders:
+>         $(Q)$(MAKE) $(build)=3Darch/sparc/kernel/syscalls all
+>
+> -PHONY +=3D vdso_install
+> -vdso_install:
+> -       $(Q)$(MAKE) $(build)=3Darch/sparc/vdso $@
+> +vdso-install-$(CONFIG_SPARC64) +=3D arch/sparc/vdso/vdso64.so.dbg
+> +vdso-install-$(CONFIG_COMPAT)  +=3D arch/sparc/vdso/vdso32.so.dbg
+>
+>  # This is the image used for packaging
+>  KBUILD_IMAGE :=3D $(boot)/zImage
+> diff --git a/arch/sparc/vdso/Makefile b/arch/sparc/vdso/Makefile
+> index 77d7b9032158..d08c3a0443f3 100644
+> --- a/arch/sparc/vdso/Makefile
+> +++ b/arch/sparc/vdso/Makefile
+> @@ -116,30 +116,3 @@ quiet_cmd_vdso =3D VDSO    $@
+>
+>  VDSO_LDFLAGS =3D -shared --hash-style=3Dboth --build-id=3Dsha1 -Bsymboli=
+c
+>  GCOV_PROFILE :=3D n
+> -
+> -#
+> -# Install the unstripped copies of vdso*.so.  If our toolchain supports
+> -# build-id, install .build-id links as well.
+> -#
+> -quiet_cmd_vdso_install =3D INSTALL $(@:install_%=3D%)
+> -define cmd_vdso_install
+> -       cp $< "$(MODLIB)/vdso/$(@:install_%=3D%)"; \
+> -       if readelf -n $< |grep -q 'Build ID'; then \
+> -         buildid=3D`readelf -n $< |grep 'Build ID' |sed -e 's/^.*Build I=
+D: \(.*\)$$/\1/'`; \
+> -         first=3D`echo $$buildid | cut -b-2`; \
+> -         last=3D`echo $$buildid | cut -b3-`; \
+> -         mkdir -p "$(MODLIB)/vdso/.build-id/$$first"; \
+> -         ln -sf "../../$(@:install_%=3D%)" "$(MODLIB)/vdso/.build-id/$$f=
+irst/$$last.debug"; \
+> -       fi
+> -endef
+> -
+> -vdso_img_insttargets :=3D $(vdso_img_sodbg:%.dbg=3Dinstall_%)
+> -
+> -$(MODLIB)/vdso: FORCE
+> -       @mkdir -p $(MODLIB)/vdso
+> -
+> -$(vdso_img_insttargets): install_%: $(obj)/%.dbg $(MODLIB)/vdso FORCE
+> -       $(call cmd,vdso_install)
+> -
+> -PHONY +=3D vdso_install $(vdso_img_insttargets)
+> -vdso_install: $(vdso_img_insttargets) FORCE
+> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+> index 5bfe5caaa444..3ff53a2d4ff0 100644
+> --- a/arch/x86/Makefile
+> +++ b/arch/x86/Makefile
+> @@ -291,9 +291,10 @@ PHONY +=3D install
+>  install:
+>         $(call cmd,install)
+>
+> -PHONY +=3D vdso_install
+> -vdso_install:
+> -       $(Q)$(MAKE) $(build)=3Darch/x86/entry/vdso $@
+> +vdso-install-$(CONFIG_X86_64)          +=3D arch/x86/entry/vdso/vdso64.s=
+o.dbg
+> +vdso-install-$(CONFIG_X86_X32_ABI)     +=3D arch/x86/entry/vdso/vdsox32.=
+so.dbg
+> +vdso-install-$(CONFIG_X86_32)          +=3D arch/x86/entry/vdso/vdso32.s=
+o.dbg
+> +vdso-install-$(CONFIG_IA32_EMULATION)  +=3D arch/x86/entry/vdso/vdso32.s=
+o.dbg
+>
+>  archprepare: checkbin
+>  checkbin:
+> diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
+> index 6a1821bd7d5e..c197efd82922 100644
+> --- a/arch/x86/entry/vdso/Makefile
+> +++ b/arch/x86/entry/vdso/Makefile
+> @@ -190,31 +190,4 @@ GCOV_PROFILE :=3D n
+>  quiet_cmd_vdso_and_check =3D VDSO    $@
+>        cmd_vdso_and_check =3D $(cmd_vdso); $(cmd_vdso_check)
+>
+> -#
+> -# Install the unstripped copies of vdso*.so.  If our toolchain supports
+> -# build-id, install .build-id links as well.
+> -#
+> -quiet_cmd_vdso_install =3D INSTALL $(@:install_%=3D%)
+> -define cmd_vdso_install
+> -       cp $< "$(MODLIB)/vdso/$(@:install_%=3D%)"; \
+> -       if readelf -n $< |grep -q 'Build ID'; then \
+> -         buildid=3D`readelf -n $< |grep 'Build ID' |sed -e 's/^.*Build I=
+D: \(.*\)$$/\1/'`; \
+> -         first=3D`echo $$buildid | cut -b-2`; \
+> -         last=3D`echo $$buildid | cut -b3-`; \
+> -         mkdir -p "$(MODLIB)/vdso/.build-id/$$first"; \
+> -         ln -sf "../../$(@:install_%=3D%)" "$(MODLIB)/vdso/.build-id/$$f=
+irst/$$last.debug"; \
+> -       fi
+> -endef
+> -
+> -vdso_img_insttargets :=3D $(vdso_img_sodbg:%.dbg=3Dinstall_%)
+> -
+> -$(MODLIB)/vdso: FORCE
+> -       @mkdir -p $(MODLIB)/vdso
+> -
+> -$(vdso_img_insttargets): install_%: $(obj)/%.dbg $(MODLIB)/vdso
+> -       $(call cmd,vdso_install)
+> -
+> -PHONY +=3D vdso_install $(vdso_img_insttargets)
+> -vdso_install: $(vdso_img_insttargets)
+> -
+>  clean-files :=3D vdso32.so vdso32.so.dbg vdso64* vdso-image-*.c vdsox32.=
+so*
+> diff --git a/scripts/Makefile.vdsoinst b/scripts/Makefile.vdsoinst
+> new file mode 100644
+> index 000000000000..1022d9fdd976
+> --- /dev/null
+> +++ b/scripts/Makefile.vdsoinst
+> @@ -0,0 +1,45 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +# =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> +# Install unstripped copies of vDSO
+> +# =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> +
+> +PHONY :=3D __default
+> +__default:
+> +       @:
+> +
+> +include $(srctree)/scripts/Kbuild.include
+> +
+> +install-dir :=3D $(MODLIB)/vdso
+> +
+> +define gen_install_rules
+> +
+> +src :=3D $$(firstword $$(subst :,$(space),$(1)))
+> +dest :=3D $(install-dir)/$$(or $$(word 2,$$(subst :,$(space),$(1))),$$(p=
+atsubst %.dbg,%,$$(notdir $(1))))
+> +
+> +__default: $$(dest)
+> +$$(dest): $$(src) FORCE
+> +       $$(call cmd,install)
+> +
+> +# Some architectures create .build-id symlinks
+> +ifneq ($(filter arm sparc x86, $(SRCARCH)),)
+> +link :=3D $(install-dir)/.build-id/$$(shell $(READELF) -n $$(src) | sed =
+-n 's@^.*Build ID: \(..\)\(.*\)@\1/\2@p')
+> +
+> +__default: $$(link)
+> +$$(link): $$(dest) FORCE
+> +       $$(call cmd,symlink)
+> +endif
+> +
+> +endef
+> +
+> +$(foreach x, $(sort $(INSTALL_FILES)), $(eval $(call gen_install_rules,$=
+(x))))
+> +
+> +quiet_cmd_install =3D INSTALL $@
+> +      cmd_install =3D mkdir -p $(dir $@); cp $< $@
+> +
+> +quiet_cmd_symlink =3D SYMLINK $@
+> +      cmd_symlink =3D mkdir -p $(dir $@); ln -sf --relative $< $@
+> +
+> +PHONY +=3D FORCE
+> +FORCE:
+> +
+> +.PHONY: $(PHONY)
+> --
+> 2.39.2
+>
+
+
+--=20
+Best Regards
+ Guo Ren
