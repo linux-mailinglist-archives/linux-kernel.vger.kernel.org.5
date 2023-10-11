@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 450667C541D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 468AC7C541F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234850AbjJKMhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 08:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33720 "EHLO
+        id S234838AbjJKMiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 08:38:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234852AbjJKMhJ (ORCPT
+        with ESMTP id S231327AbjJKMiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 08:37:09 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E013493;
-        Wed, 11 Oct 2023 05:37:05 -0700 (PDT)
-Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S5Bxv69jdzLpZw;
-        Wed, 11 Oct 2023 20:33:07 +0800 (CST)
-Received: from [10.174.178.220] (10.174.178.220) by
- kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 11 Oct 2023 20:37:03 +0800
-Message-ID: <5ea16795-08c6-ef6b-b8cb-f1de2f5a0021@huawei.com>
-Date:   Wed, 11 Oct 2023 20:37:02 +0800
+        Wed, 11 Oct 2023 08:38:50 -0400
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14A68F;
+        Wed, 11 Oct 2023 05:38:48 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-98377c5d53eso1160745166b.0;
+        Wed, 11 Oct 2023 05:38:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697027927; x=1697632727;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nNEKLUxE7+s53Ed73V9ijKCxoVE9YUCgxrMPyIdVmVY=;
+        b=vSEKXRXu89lfp9YaW+PlutSs1qa4b+EcRze/UxcjN6YH5cJDEYIQfcjLESnyqfEJ0I
+         JrAK53Jv74O+GXqFCNY8uZUVfHVAJc08AkfGF5wt1XKDMr5yk8Mj5CmGWmM9C0PGrRcz
+         INVk75mO4EwZuAIUFr+hJvR+TjhyxTCsnp2pKX4NQI4e1j5mGsKBwje4A+RREqIqC6I2
+         sGSOPnNGCuH0KQzYppQ69ml4dGdAlkjl7pSV/lwD2S2lAhT0QNT87ISmXjI3dfWkaMtd
+         0wrlP4rVhPvwodeUUjBFl4o4dZxxfqvCiilsIu4PzAzE+VzztA8S3eipOrheeBXlE37x
+         tjTA==
+X-Gm-Message-State: AOJu0YwNcAJktpy3LoN0p+d9Qzffs1F/K/yBODYyLZ95oT0ByFn651/W
+        zcEtQ3ljvDIpAWIjnCZOrIw=
+X-Google-Smtp-Source: AGHT+IHk1nQIV/DZbLr8WMGhX4/13tSNLRbBd2yZvKyeaOQiw51MRld6YgCa3yNVVT5wNYKIdmUemA==
+X-Received: by 2002:a17:906:301a:b0:9a5:b814:8254 with SMTP id 26-20020a170906301a00b009a5b8148254mr18668874ejz.24.1697027927317;
+        Wed, 11 Oct 2023 05:38:47 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-010.fbsv.net. [2a03:2880:31ff:a::face:b00c])
+        by smtp.gmail.com with ESMTPSA id ec22-20020a0564020d5600b0053defc8c15asm276713edb.51.2023.10.11.05.38.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 05:38:46 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 05:38:45 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+        Eric Dumazet <edumazet@google.com>, hch@lst.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        horms@kernel.org
+Subject: Re: [PATCH net-next v3 2/4] netconsole: Initialize configfs_item for
+ default targets
+Message-ID: <ZSaXVQ+g5KkT23L/@gmail.com>
+References: <20231010093751.3878229-1-leitao@debian.org>
+ <20231010093751.3878229-3-leitao@debian.org>
+ <ZSWlppHwravDLyZN@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 1/2] scsi: core: cleanup scsi_dev_queue_ready()
-Content-Language: en-US
-From:   Wenchao Hao <haowenchao2@huawei.com>
-To:     Damien Le Moal <dlemoal@kernel.org>
-CC:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <louhongxiang@huawei.com>
-References: <20230922093842.2646157-1-haowenchao2@huawei.com>
- <20230922093842.2646157-2-haowenchao2@huawei.com>
- <ea28de69-8b9d-8ff8-b7fc-eb780123f055@kernel.org>
- <7a11374c-4e8e-b7f9-aca4-55686a6ec501@huawei.com>
-In-Reply-To: <7a11374c-4e8e-b7f9-aca4-55686a6ec501@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.220]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm000012.china.huawei.com (7.193.23.142)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSWlppHwravDLyZN@google.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/24 14:27, Wenchao Hao wrote:
-> On 2023/9/22 20:50, Damien Le Moal wrote:
->> On 2023/09/22 2:38, Wenchao Hao wrote:
->>> This is just a cleanup for scsi_dev_queue_ready() to avoid
->>> redundant goto and if statement, it did not change the origin
->>> logic.
->>>
->>> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
->>> ---
->>>   drivers/scsi/scsi_lib.c | 35 ++++++++++++++++++-----------------
->>>   1 file changed, 18 insertions(+), 17 deletions(-)
->>>
->>> diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
->>> index ca5eb058d5c7..f3e388127dbd 100644
->>> --- a/drivers/scsi/scsi_lib.c
->>> +++ b/drivers/scsi/scsi_lib.c
->>> @@ -1254,28 +1254,29 @@ static inline int scsi_dev_queue_ready(struct request_queue *q,
->>>       int token;
->>>       token = sbitmap_get(&sdev->budget_map);
->>> -    if (atomic_read(&sdev->device_blocked)) {
->>> -        if (token < 0)
->>> -            goto out;
->>> +    if (token < 0)
->>> +        return -1;
->>
->> This is changing how this function works...
->>
+On Tue, Oct 10, 2023 at 12:27:34PM -0700, Joel Becker wrote:
+> On Tue, Oct 10, 2023 at 02:37:49AM -0700, Breno Leitao wrote:
+> > For netconsole targets allocated during the boot time (passing
+> > netconsole=... argument), netconsole_target->item is not initialized.
+> > That is not a problem because it is not used inside configfs.
+> > 
+> > An upcoming patch will be using it, thus, initialize the targets with
+> > the name 'cmdline' plus a counter starting from 0.  This name will match
+> > entries in the configfs later.
+> > 
+> > Suggested-by: Joel Becker <jlbec@evilplan.org>
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> > ---
+> >  drivers/net/netconsole.c | 25 +++++++++++++++++++++++--
+> >  1 file changed, 23 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
+> > index d609fb59cf99..3d7002af505d 100644
+> > --- a/drivers/net/netconsole.c
+> > +++ b/drivers/net/netconsole.c
+> > @@ -53,6 +53,8 @@ static bool oops_only = false;
+> >  module_param(oops_only, bool, 0600);
+> >  MODULE_PARM_DESC(oops_only, "Only log oops messages");
+> >  
+> > +#define NETCONSOLE_PARAM_TARGET_NAME "cmdline"
 > 
-> I don't think so...
-> The origin function flow:
-> 
-> static inline int scsi_dev_queue_ready(struct request_queue *q,
->                    struct scsi_device *sdev)
-> {
->      ...
->      token = sbitmap_get(&sdev->budget_map);
->      if (atomic_read(&sdev->device_blocked)) {
->          if (token < 0)
->              goto out;
->      }
->      return token;
-> out:
->      return -1
-> }
-> 
-> If the token is less than 0, it would always return -1. So we can found
-> it's not necessary to check token after atomic_read().
-> 
->>> -        if (scsi_device_busy(sdev) > 1)
->>> -            goto out_dec;
->>> +    /*
->>> +     * device_blocked is not set at mostly time, so check it first
->>> +     * and return token when it is not set.
->>> +     */
->>> +    if (!atomic_read(&sdev->device_blocked))
->>> +        return token;
->>
->> ...because you reversed the tests order.
-> 
-> As explained in comment, the device_blocked is not set at mostly time,
-> so when it's not set, just return the token.
-> 
+> Perhaps `NETCONSOLE_PARAM_TARGET_PREFIX` is better.  Makes it clear this
+> is not the whole name.
 
-Friendly ping...
+Sure, I can replace it by NETCONSOLE_PARAM_TARGET_PREFIX. I used
+`NETCONSOLE_PARAM_TARGET_NAME` because you had suggested it in the past:
 
+https://lore.kernel.org/all/ZR3EKnepIOKlVGgZ@google.com/
+
+Let me update and send a new version.
