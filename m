@@ -2,88 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C8B7C5AF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B96D07C5AFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232891AbjJKSKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 14:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35596 "EHLO
+        id S233052AbjJKSNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 14:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232554AbjJKSKd (ORCPT
+        with ESMTP id S230234AbjJKSNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 14:10:33 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27099E
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:10:31 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-405459d9a96so10265e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:10:31 -0700 (PDT)
+        Wed, 11 Oct 2023 14:13:31 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6019893;
+        Wed, 11 Oct 2023 11:13:28 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-405e48d8e72so463235e9.0;
+        Wed, 11 Oct 2023 11:13:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697047830; x=1697652630; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ll2dO80dKdNtktHpD8Nup75jkjUJEZ6P5R1J+WyNECY=;
-        b=YkKwz31F5HP8JUaJw1v+viSHW2+XXpHLRke3TRM/2azgDWa0OOAn6n/dtblz1eu+Be
-         h/v6AfOD6VcpccnJJ4mH/XZWRN125507eLaCvYFVyGG6sIua7RU7eoVMcXjH1hBzI5jk
-         Pq08rjSZYSYdsf3pFIy5iZuS5LZQ06DDzwPBQqR8cTG7XVoRDh2+LgR0buuihvVYx78s
-         JQjW1iijNjw7qB3+DMQJvX7mBaSdEDzUDblB2iG4jdme28F94fUAJIC9a2lsoIXhMa+r
-         U1ko1dQG8Wyx5/ePX4mMeoXq+7PH0n4q2kMEIzg5tMZeknSKOfzOpEUezB50HrK6rBm7
-         UX9g==
+        d=gmail.com; s=20230601; t=1697048007; x=1697652807; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QjCK+8QWq0gyUTkOiemvLVBkLYH9fn7QPYSepTTFeHY=;
+        b=mBWPjFlzGVneCMylpLUE/Wq5/dn/bjU7EFFSpzc+g+dxiMG8Pt6XtOTNbxJBVhemZB
+         txsWa86cdfxgFc8liOipEdgQhDPTwgki3DjCh8WUMtTNmhHusJfwUZEbY+GlrqZJQ1Oi
+         epk0Uuaa5oVx7eVnAKb0+2HAR96WusqziPpgQTrTNMVXrQQnheKc58Gr/a7e/27LCZo+
+         x4B3wtKr3PblhEgnzofTr26x0PexrodvKYrN8jLPFQGuooHK+tZh8bd1U26I69rgeXfn
+         +XKHbcnfw1rjs90HUsOofW6yADqRMFnaK3KZi2YQweyl7PIRgPd/dLN8eXOzv+SRVQrX
+         A3uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697047830; x=1697652630;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ll2dO80dKdNtktHpD8Nup75jkjUJEZ6P5R1J+WyNECY=;
-        b=u9bi+hEsI/TON5IC3sfg1EyzT8bgGi2/oXzqW/DcBMSuGT00hfXMJBzD1j3tUjpyJl
-         WLCSMiU+mxEOSHPfqgs7kc7yf1BmB2w7Uq3BOawhVbSjrLEkMnocbLRj+L28ITNnETqX
-         yAr4TSZPETu372fQAfvlJqdnTwf+ZmoIVOud1FCAINu7Q13mvoQuMmGD5DQuC8DeKb5/
-         Dp45lLc+HbySHv/dx8WVr8k+fNoY59xFu7WnG9vWlDuKVsNFO5WSxqcYaR3HmHZNofFS
-         U38yBW4JC+y30v1KcbKWvuyiilGqwv+0yTZOSAtmb3CbIItvxIj38i95n8ykF8YSZr8X
-         mogg==
-X-Gm-Message-State: AOJu0YxtSvhShqunLcrtXHIWQZHJaeblChEkypKhVVT1pI2Wzu16ffrH
-        l3xrHd+egGcjdav3qiL1BpRrhIhjHmNc128BVGr/Ow==
-X-Google-Smtp-Source: AGHT+IFNcNJNI8p4w8N17R8rGdiSVF/UkTipnQdlUZgaXk0kTR/bUKb2YXdrQKszl5vchkfRD8n+6CMPbZSnorHqKzM=
-X-Received: by 2002:a05:600c:1ca6:b0:400:c6de:6a20 with SMTP id
- k38-20020a05600c1ca600b00400c6de6a20mr125146wms.3.1697047830169; Wed, 11 Oct
- 2023 11:10:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697048007; x=1697652807;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QjCK+8QWq0gyUTkOiemvLVBkLYH9fn7QPYSepTTFeHY=;
+        b=OL0db3kSOdeFeywWSYXB6ZeS2fFwYkPNF3RYpp0lhLbal887P3+sYGnbyZfUQbFmZE
+         S9oK6rtI4icIzY2wOWezekxrCIrPe/PGk02nkyhRHqT3+KPt8LQuRThiyxz2YjONRWIP
+         bhPLUQJ75hoy4Mv9Qmp0M9dXlf/zBWp4J8DHnms9bH4qTG2s/AIehh65xn4CyqfGdx3h
+         fzzGDvucXPdjYhNIx9GHQS7lDhKeV2dDGlWCT4WW9TfJfMlg3bVcP0OV8TVbVS6WQQsQ
+         fUnrveWQsHpEzLux47jBPz3PQX5oeMbP697vm+Lpf9RE3ooJSafM/61JC5srZbb55HcK
+         axlQ==
+X-Gm-Message-State: AOJu0Ywhif4sYFNd6ObpG1Fp1QD1ii0kotKNOrz9tbSJF83iSqnGj66V
+        DsCrSx8mvoz6St5qGzhgFWyK4oJvawE=
+X-Google-Smtp-Source: AGHT+IFK4ka32EySjBz/6awgdfZmmdt1F6crkvar+uu1FGIncSQscSUhhQ50bPLYw87kYR5wveh+5g==
+X-Received: by 2002:a05:600c:5117:b0:407:52f0:b01a with SMTP id o23-20020a05600c511700b0040752f0b01amr5639522wms.2.1697048006483;
+        Wed, 11 Oct 2023 11:13:26 -0700 (PDT)
+Received: from [192.168.0.104] (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
+        by smtp.gmail.com with ESMTPSA id az17-20020a05600c601100b003fef5e76f2csm1366706wmb.0.2023.10.11.11.13.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 11:13:26 -0700 (PDT)
+Message-ID: <da777a72-55d1-4ee3-91c8-30afe7659f54@gmail.com>
+Date:   Wed, 11 Oct 2023 20:13:24 +0200
 MIME-Version: 1.0
-References: <20231009230722.76268-1-dima@arista.com> <20231009230722.76268-10-dima@arista.com>
-In-Reply-To: <20231009230722.76268-10-dima@arista.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 11 Oct 2023 20:10:19 +0200
-Message-ID: <CANn89iLD=ySFfPYkrb+oN2fuMhimxXfHrhs4Pv9_60f912rzmQ@mail.gmail.com>
-Subject: Re: [PATCH v14 net-next 09/23] net/tcp: Add TCP-AO sign to twsk
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] [RFC] wireless: move obsolete drivers to staging
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Jakub Kicinski <kuba@kernel.org>, Pavel Machek <pavel@ucw.cz>,
         "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Bob Gilligan <gilligan@arista.com>,
-        Dan Carpenter <error27@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Donald Cassidy <dcassidy@redhat.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        "Gaillardetz, Dominik" <dgaillar@ciena.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Ivan Delalande <colona@arista.com>,
-        Leonard Crestez <cdleonard@gmail.com>,
-        "Nassiri, Mohammad" <mnassiri@ciena.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        "Tetreault, Francois" <ftetreau@ciena.com>, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
+References: <20231010155444.858483-1-arnd@kernel.org>
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <20231010155444.858483-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,54 +82,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 1:07=E2=80=AFAM Dmitry Safonov <dima@arista.com> wr=
-ote:
->
-> Add support for sockets in time-wait state.
-> ao_info as well as all keys are inherited on transition to time-wait
-> socket. The lifetime of ao_info is now protected by ref counter, so
-> that tcp_ao_destroy_sock() will destruct it only when the last user is
-> gone.
->
-> Co-developed-by: Francesco Ruggeri <fruggeri@arista.com>
-> Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
-> Co-developed-by: Salam Noureddine <noureddine@arista.com>
-> Signed-off-by: Salam Noureddine <noureddine@arista.com>
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
-> Acked-by: David Ahern <dsahern@kernel.org>
-> ---
->  include/linux/tcp.h      |  3 ++
->  include/net/tcp_ao.h     | 11 ++++-
->  net/ipv4/tcp_ao.c        | 46 +++++++++++++++++---
->  net/ipv4/tcp_ipv4.c      | 92 +++++++++++++++++++++++++++++++---------
->  net/ipv4/tcp_minisocks.c |  4 +-
->  net/ipv4/tcp_output.c    |  2 +-
->  net/ipv6/tcp_ipv6.c      | 72 ++++++++++++++++++++++---------
->  7 files changed, 181 insertions(+), 49 deletions(-)
->
-> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-> index c38778b0baa0..51458219be4e 100644
-> --- a/include/linux/tcp.h
-> +++ b/include/linux/tcp.h
-> @@ -512,6 +512,9 @@ struct tcp_timewait_sock {
->  #ifdef CONFIG_TCP_MD5SIG
->         struct tcp_md5sig_key     *tw_md5_key;
->  #endif
-> +#ifdef CONFIG_TCP_AO
-> +       struct tcp_ao_info      __rcu *ao_info;
-> +#endif
->  };
->
->  static inline struct tcp_timewait_sock *tcp_twsk(const struct sock *sk)
-> diff --git a/include/net/tcp_ao.h b/include/net/tcp_ao.h
-> index 629ab0365b83..af2caf7e76fc 100644
-> --- a/include/net/tcp_ao.h
-> +++ b/include/net/tcp_ao.h
-> @@ -85,6 +85,7 @@ struct tcp_ao_info {
->                                 __unused        :31;
->         __be32                  lisn;
->         __be32                  risn;
-> +       atomic_t                refcnt;         /* Protects twsk destruct=
-ion */
+On 10/10/23 17:27, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de> While looking at the old drivers 
+> using the obsolete .ndo_do_ioctl() callback, I found a number of network 
+> drivers that are especially obsolete, in particular for 802.11b 
+> (11Mbit/s) or even older wireless networks, using non-busmaster 
+> ISA/PCMCIA style bus interfaces, and using the legacy wireless extension 
+> ioctls rather than the netlink interfaces that were meant to replace 
+> them in 2007. All of these drivers are obsolete or orphaned. We had 
+> previously discussed this topic, but nobody ever moved the files, so I 
+> now went through the list to my best knowledge. These are the drivers 
+> that I would classify as "probably unused" by now:
 
-This needs to be a refcount_t
+I found a USB WLAN Stick with a rtl8192u. I got it last Saturday and 
+found out that the firmware is missing in my ubuntu 20.04. I found it on 
+the web and fixed it. When I started the driver my computer crashed. The 
+missing part was: priv->priv_wq = alloc_workqueue("priv_wq", 0, 0); 
+Fixing this the next error was a network = kzalloc(sizeof(*network), 
+GFP_KERNEL); in wrong context with leads to a crash of my computer. 
+Fixing this leads to another issue which lets my computer crash.
+
+For me the firmware of rtl8192u was intentionally missing because of the 
+issues with the driver.
+
+What this has to do with your question?
+Can we check for missing firmware in main distributions to know which 
+drivers are considered to be old and unused?
+
+Bye Philipp
