@@ -2,48 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 664927C54C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640F87C54C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbjJKNFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52966 "EHLO
+        id S232333AbjJKNGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231317AbjJKNFL (ORCPT
+        with ESMTP id S232046AbjJKNGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:05:11 -0400
-Received: from outbound-smtp01.blacknight.com (outbound-smtp01.blacknight.com [81.17.249.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FCB8F
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:05:09 -0700 (PDT)
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp01.blacknight.com (Postfix) with ESMTPS id D71CDC6048
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:05:07 +0100 (IST)
-Received: (qmail 2271 invoked from network); 11 Oct 2023 13:05:07 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.197.19])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Oct 2023 13:05:07 -0000
-Date:   Wed, 11 Oct 2023 14:05:05 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Huang Ying <ying.huang@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Arjan Van De Ven <arjan@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Johannes Weiner <jweiner@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Lameter <cl@linux.com>
-Subject: Re: [PATCH 00/10] mm: PCP high auto-tuning
-Message-ID: <20231011130505.356soszayes3vy2n@techsingularity.net>
-References: <20230920061856.257597-1-ying.huang@intel.com>
- <20230920094118.8b8f739125c6aede17c627e0@linux-foundation.org>
+        Wed, 11 Oct 2023 09:06:18 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC9398;
+        Wed, 11 Oct 2023 06:06:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 560D1C433C8;
+        Wed, 11 Oct 2023 13:06:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697029576;
+        bh=irRlaobayDFHvBMe6436wxcWGv5UXq1lo940WyNFpmA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=AD71iZaw1cqqgOw9XAgIwbImY3lwhPoCRQ9pPW9+HXjRe1/gWraCLivcDjSNqBePZ
+         8gXfNob2Qti1Qy1wnqAcDIj+8A2Jt/GXS5JSLX0jZ13LzfUrE6NAjK/qNv5lnmlCaB
+         ZANWr20YmX/7k8qRzf9C6MQq813gUea1aXenIlv45qVG7KijufeXU/tndmQrg5GmYt
+         CDMWvzKuXD1mwhYXubwxvt3YjwsogUbTzhnYr5YvbBqXYrZDLzrEWIapzdJxm9peVS
+         5PlU0nanngafVnQUaQRUekP/bwYwQs/0dVdL/NOH1JbWujpp5Ps8O/baJBNx76RMdR
+         nxZrpbqnBI47A==
+Message-ID: <b70d6be5980185a4fb4205e71c56111183e1f160.camel@kernel.org>
+Subject: Re: [PATCH] KEYS: trusted: Rollback init_trusted() consistently
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     keyrings@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "open list:KEYS-TRUSTED" <linux-integrity@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 11 Oct 2023 16:06:10 +0300
+In-Reply-To: <CAFA6WYMrg3VBYvdV8Or==YK_qATk22bL+_ryDC-oO4jVf7DCWg@mail.gmail.com>
+References: <20231010231616.3122392-1-jarkko@kernel.org>
+         <CAFA6WYMdrCfqMVExYBbhCK7vUSQffyUfSWpQO0=HeQc6Edz9OA@mail.gmail.com>
+         <186a4b62517ead88df8c3c0e9e9585e88f9a6fd8.camel@kernel.org>
+         <0aeb4d88952aff53c5c1a40b547a9819ebd1947e.camel@kernel.org>
+         <CAFA6WYObvJvQv=-JJ5gnmFqJKbT=4JnT+ErC=iB1KfnYfVn7Ag@mail.gmail.com>
+         <79fe0b97e2f5d1f02d08c9f633b7c0da13dc9127.camel@kernel.org>
+         <CAFA6WYMrg3VBYvdV8Or==YK_qATk22bL+_ryDC-oO4jVf7DCWg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20230920094118.8b8f739125c6aede17c627e0@linux-foundation.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -52,115 +66,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 09:41:18AM -0700, Andrew Morton wrote:
-> On Wed, 20 Sep 2023 14:18:46 +0800 Huang Ying <ying.huang@intel.com> wrote:
-> 
-> > The page allocation performance requirements of different workloads
-> > are often different.  So, we need to tune the PCP (Per-CPU Pageset)
-> > high on each CPU automatically to optimize the page allocation
-> > performance.
-> 
-> Some of the performance changes here are downright scary.
-> 
-> I've never been very sure that percpu pages was very beneficial (and
-> hey, I invented the thing back in the Mesozoic era).  But these numbers
-> make me think it's very important and we should have been paying more
-> attention.
-> 
+On Wed, 2023-10-11 at 18:25 +0530, Sumit Garg wrote:
+> On Wed, 11 Oct 2023 at 18:07, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> >=20
+> > On Wed, 2023-10-11 at 17:47 +0530, Sumit Garg wrote:
+> > > On Wed, 11 Oct 2023 at 16:04, Jarkko Sakkinen <jarkko@kernel.org> wro=
+te:
+> > > >=20
+> > > > On Wed, 2023-10-11 at 13:12 +0300, Jarkko Sakkinen wrote:
+> > > > > On Wed, 2023-10-11 at 11:27 +0530, Sumit Garg wrote:
+> > > > > > On Wed, 11 Oct 2023 at 04:46, Jarkko Sakkinen <jarkko@kernel.or=
+g> wrote:
+> > > > > > >=20
+> > > > > > > Do bind neither static calls nor trusted_key_exit() before a =
+successful
+> > > > > > > init, in order to maintain a consistent state. In addition, d=
+epart the
+> > > > > > > init_trusted() in the case of a real error (i.e. getting back=
+ something
+> > > > > > > else than -ENODEV).
+> > > > > > >=20
+> > > > > > > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > > > > > Closes: https://lore.kernel.org/linux-integrity/CAHk-=3DwhOPo=
+LaWM8S8GgoOPT7a2+nMH5h3TLKtn=3DR_3w4R1_Uvg@mail.gmail.com/
+> > > > > > > Cc: stable@vger.kernel.org=C2=A0# v5.13+
+> > > > > > > Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys=
+ framework")
+> > > > > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > > > > > ---
+> > > > > > > =C2=A0security/keys/trusted-keys/trusted_core.c | 20 ++++++++=
+++----------
+> > > > > > > =C2=A01 file changed, 10 insertions(+), 10 deletions(-)
+> > > > > > >=20
+> > > > > > > diff --git a/security/keys/trusted-keys/trusted_core.c b/secu=
+rity/keys/trusted-keys/trusted_core.c
+> > > > > > > index 85fb5c22529a..fee1ab2c734d 100644
+> > > > > > > --- a/security/keys/trusted-keys/trusted_core.c
+> > > > > > > +++ b/security/keys/trusted-keys/trusted_core.c
+> > > > > > > @@ -358,17 +358,17 @@ static int __init init_trusted(void)
+> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!get_random)
+> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 get_random =3D kernel_get_random;
+> > > > > > >=20
+> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 static_call_update(trusted_key_seal,
+> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 trusted_key=
+_sources[i].ops->seal);
+> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 static_call_update(trusted_key_unseal,
+> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 trusted_key=
+_sources[i].ops->unseal);
+> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 static_call_update(trusted_key_get_random,
+> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 get_random)=
+;
+> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 trusted_key_exit =3D trusted_key_sources[i].ops->e=
+xit;
+> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 migratable =3D trusted_key_sources[i].ops->migrata=
+ble;
+> > > > > > > -
+> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D trusted_key_sources[i].ops->init();
+> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 if (!ret)
+> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 if (!ret) {
+> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+atic_call_update(trusted_key_seal, trusted_key_sources[i].ops->seal);
+> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+atic_call_update(trusted_key_unseal, trusted_key_sources[i].ops->unseal);
+> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+atic_call_update(trusted_key_get_random, get_random);
+> > > > > > > +
+> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tr=
+usted_key_exit =3D trusted_key_sources[i].ops->exit;
+> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mi=
+gratable =3D trusted_key_sources[i].ops->migratable;
+> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > > > > > > +
+> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 if (!ret || ret !=3D -ENODEV)
+> > > > > >=20
+> > > > > > As mentioned in the other thread, we should allow other trust s=
+ources
+> > > > > > to be initialized if the primary one fails.
+> > > > >=20
+> > > > > I sent the patch before I received that response but here's what =
+you
+> > > > > wrote:
+> > > > >=20
+> > > > > "We should give other trust sources a chance to register for trus=
+ted
+> > > > > keys if the primary one fails."
+> > > > >=20
+> > > > > 1. This condition is lacking an inline comment.
+> > > > > 2. Neither this response or the one that you pointed out has any
+> > > > > =C2=A0=C2=A0 explanation why for any system failure the process s=
+hould
+> > > > > =C2=A0=C2=A0 continue.
+> > > > >=20
+> > > > > You should really know the situations (e.g. list of posix error
+> > > > > code) when the process can continue and "allow list" those. This
+> > > > > way way too abstract. It cannot be let all possible system failur=
+es
+> > > > > pass.
+> > > >=20
+> > > > And it would nice if it printed out something for legit cases. Like
+> > > > "no device found" etc. And for rest it must really withdraw the who=
+le
+> > > > process.
+> > >=20
+> > > IMO, it would be quite tricky to come up with an allow list. Can we
+> > > keep "EACCES", "EPERM", "ENOTSUPP" etc in that allow list? I think
+> > > these are all debatable.
+> >=20
+> > Yes, that does sounds reasonable.
+> >=20
+> > About the debate. Well, it is better eagerly block and tree falls down
+> > somewhere we can consider extending the list through a fix.
+> >=20
+> > This all wide open is worse than a few glitches somewhere, which are
+> > trivial to fix.
+> >=20
+>=20
+> Fair enough, I would suggest we document it appropriately such that it
+> is clear to the users or somebody looking at the code.
 
-FWIW, it is because not only does it avoid lock contention issues, it
-avoids excessive splitting/merging of buddies as well as the slower
-paths of the allocator. It is not very satisfactory and frankly, the
-whole page allocator needs a revisit to account for very large zones but
-it is far from a trivial project. PCP just masks the worst of the issues
-and replacing it is far harder than tweaking it.
+I went throught the backends on how they implement init:
 
-> > The list of patches in series is as follows,
-> > 
-> >  1 mm, pcp: avoid to drain PCP when process exit
-> >  2 cacheinfo: calculate per-CPU data cache size
-> >  3 mm, pcp: reduce lock contention for draining high-order pages
-> >  4 mm: restrict the pcp batch scale factor to avoid too long latency
-> >  5 mm, page_alloc: scale the number of pages that are batch allocated
-> >  6 mm: add framework for PCP high auto-tuning
-> >  7 mm: tune PCP high automatically
-> >  8 mm, pcp: decrease PCP high if free pages < high watermark
-> >  9 mm, pcp: avoid to reduce PCP high unnecessarily
-> > 10 mm, pcp: reduce detecting time of consecutive high order page freeing
-> > 
-> > Patch 1/2/3 optimize the PCP draining for consecutive high-order pages
-> > freeing.
-> > 
-> > Patch 4/5 optimize batch freeing and allocating.
-> > 
-> > Patch 6/7/8/9 implement and optimize a PCP high auto-tuning method.
-> > 
-> > Patch 10 optimize the PCP draining for consecutive high order page
-> > freeing based on PCP high auto-tuning.
-> > 
-> > The test results for patches with performance impact are as follows,
-> > 
-> > kbuild
-> > ======
-> > 
-> > On a 2-socket Intel server with 224 logical CPU, we tested kbuild on
-> > one socket with `make -j 112`.
-> > 
-> > 	build time	zone lock%	free_high	alloc_zone
-> > 	----------	----------	---------	----------
-> > base	     100.0	      43.6          100.0            100.0
-> > patch1	      96.6	      40.3	     49.2	      95.2
-> > patch3	      96.4	      40.5	     11.3	      95.1
-> > patch5	      96.1	      37.9	     13.3	      96.8
-> > patch7	      86.4	       9.8	      6.2	      22.0
-> > patch9	      85.9	       9.4	      4.8	      16.3
-> > patch10	      87.7	      12.6	     29.0	      32.3
-> 
-> You're seriously saying that kbuild got 12% faster?
-> 
-> I see that [07/10] (autotuning) alone sped up kbuild by 10%?
-> 
-> Other thoughts:
-> 
-> - What if any facilities are provided to permit users/developers to
->   monitor the operation of the autotuning algorithm?
-> 
+1. Returns -ENODEV when it does not exist.
+2. Calls driver_register(). Something is wrong enough if that
+   fails to rollback the whole procedure.
+3. TPM: -ENODEV
 
-Not that I've seen yet but I'm still in part of the series. It could be
-monitored with tracepoints but it can also be inferred from lock
-contention issue. I think it would only be meaningful to developers to
-monitor this closely, at least that's what I think now. Honestly, I'm
-more worried about potential changes in behaviour depending on the exact
-CPU and cache implementation than I am about being able to actively
-monitor it.
+Therefore, I would keep in the existing patch since there is no weird
+uapi visible legacy behavior to support in the first place. And for
+that reason there is no good reason to have all those four POSIX rc's
+in the list.
 
-> - I'm not seeing any Documentation/ updates.  Surely there are things
->   we can tell users?
-> 
-> - This:
-> 
->   : It's possible that PCP high auto-tuning doesn't work well for some
->   : workloads.  So, when PCP high is tuned by hand via the sysctl knob,
->   : the auto-tuning will be disabled.  The PCP high set by hand will be
->   : used instead.
-> 
->   Is it a bit hacky to disable autotuning when the user alters
->   pcp-high?  Would it be cleaner to have a separate on/off knob for
->   autotuning?
-> 
+BR, Jarkko
 
-It might be but tuning the allocator is very specific and once we
-introduce that tunable, we're probably stuck with it. I would prefer to
-see it introduced if and only if we have to.
 
->   And how is the user to determine that "PCP high auto-tuning doesn't work
->   well" for their workload?
-
-Not easily. It may manifest as variable lock contention issues when the
-workload is at a steady state but that would increase the pressure to
-split the allocator away from being zone-based entirely instead of tweaking
-PCP further.
-
--- 
-Mel Gorman
-SUSE Labs
