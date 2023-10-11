@@ -2,48 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC5D7C512A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F9D7C5130
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234754AbjJKLK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49942 "EHLO
+        id S234778AbjJKLLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234809AbjJKLKH (ORCPT
+        with ESMTP id S234831AbjJKLLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:10:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2498115;
-        Wed, 11 Oct 2023 04:09:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10E4DC433C9;
-        Wed, 11 Oct 2023 11:09:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697022576;
-        bh=3kH+pQQjIkIDI8ifN14G+a5TCPOKhClhNMLfZIwqfOE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=kIljUxRiUIiiOVuTlucAyG9/v2Ua8NWK58vO/XKKWqu/tg5hvowuiyqFHMrxxmCNc
-         aYaatK3Zvn3HpNKOM5fN7TTeJ0AL4TtoZKtZBWKpHbqVdDYTpPS6Iruov0w0005L64
-         7WHkBnQPRK8XLpGo/xydt7Ev9lDSY/Mtpq7kY/rzD5QYqpiSYj8hiJKYE9erzccIN2
-         JnmGMwt4aL6ONjBzXPf2lcN6XIBisQ4HIips3os17nib2tv/BOR7mjIgItDDW6ER+b
-         WjXyPNt09GpypWTmr3vitG5r6gulvr963IfmRf5r9or4uxzAntJZAs3xYW8MQqAZPM
-         ZFt+ZW1PmR7Zw==
-Message-ID: <79b0f043-2dcf-49cc-b52a-e1ab21554610@kernel.org>
-Date:   Wed, 11 Oct 2023 20:09:34 +0900
+        Wed, 11 Oct 2023 07:11:01 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4B31A8;
+        Wed, 11 Oct 2023 04:10:46 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S593K0B7Pz67cXm;
+        Wed, 11 Oct 2023 19:07:41 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
+ 2023 12:10:43 +0100
+Date:   Wed, 11 Oct 2023 12:10:42 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     <linux-pci@vger.kernel.org>,
+        Ilpo =?UTF-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH 07/10] PCI/PME: Use FIELD_GET()
+Message-ID: <20231011121042.00003d13@Huawei.com>
+In-Reply-To: <20231010204436.1000644-8-helgaas@kernel.org>
+References: <20231010204436.1000644-1-helgaas@kernel.org>
+        <20231010204436.1000644-8-helgaas@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] ata: sata_mv: aspeed: fix value check in
- mv_platform_probe()
-Content-Language: en-US
-To:     Ma Ke <make_ruc2021@163.com>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231010122916.4080132-1-make_ruc2021@163.com>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20231010122916.4080132-1-make_ruc2021@163.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,16 +53,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/23 21:29, Ma Ke wrote:
-> In mv_platform_probe(), check the return value of clk_prepare_enable()
-> and return the error code if clk_prepare_enable() returns an
-> unexpected value.
+On Tue, 10 Oct 2023 15:44:33 -0500
+Bjorn Helgaas <helgaas@kernel.org> wrote:
+
+> From: Bjorn Helgaas <bhelgaas@google.com>
 > 
-> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+> Use FIELD_GET() to remove dependences on the field position, i.e., the
+> shift value.  No functional change intended.
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 
-Applied to for-6.7. Thanks !
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
--- 
-Damien Le Moal
-Western Digital Research
+> ---
+>  drivers/pci/pcie/pme.c        | 4 +++-
+>  include/uapi/linux/pci_regs.h | 1 +
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/pcie/pme.c b/drivers/pci/pcie/pme.c
+> index ef8ce436ead9..a2daebd9806c 100644
+> --- a/drivers/pci/pcie/pme.c
+> +++ b/drivers/pci/pcie/pme.c
+> @@ -9,6 +9,7 @@
+>  
+>  #define dev_fmt(fmt) "PME: " fmt
+>  
+> +#include <linux/bitfield.h>
+>  #include <linux/pci.h>
+>  #include <linux/kernel.h>
+>  #include <linux/errno.h>
+> @@ -235,7 +236,8 @@ static void pcie_pme_work_fn(struct work_struct *work)
+>  			pcie_clear_root_pme_status(port);
+>  
+>  			spin_unlock_irq(&data->lock);
+> -			pcie_pme_handle_request(port, rtsta & 0xffff);
+> +			pcie_pme_handle_request(port,
+> +				    FIELD_GET(PCI_EXP_RTSTA_PME_RQ_ID, rtsta));
+>  			spin_lock_irq(&data->lock);
+>  
+>  			continue;
+> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+> index e97a06b50f95..9fb8a69241f4 100644
+> --- a/include/uapi/linux/pci_regs.h
+> +++ b/include/uapi/linux/pci_regs.h
+> @@ -637,6 +637,7 @@
+>  #define PCI_EXP_RTCAP		0x1e	/* Root Capabilities */
+>  #define  PCI_EXP_RTCAP_CRSVIS	0x0001	/* CRS Software Visibility capability */
+>  #define PCI_EXP_RTSTA		0x20	/* Root Status */
+> +#define  PCI_EXP_RTSTA_PME_RQ_ID 0x0000ffff /* PME Requester ID */
+>  #define  PCI_EXP_RTSTA_PME	0x00010000 /* PME status */
+>  #define  PCI_EXP_RTSTA_PENDING	0x00020000 /* PME pending */
+>  /*
 
