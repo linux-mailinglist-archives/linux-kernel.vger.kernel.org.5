@@ -2,170 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 187AF7C4A4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C497C4A64
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345478AbjJKGSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 02:18:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
+        id S1344424AbjJKGUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 02:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345769AbjJKGRx (ORCPT
+        with ESMTP id S1344777AbjJKGUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 02:17:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36549B;
-        Tue, 10 Oct 2023 23:16:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1452C433C8;
-        Wed, 11 Oct 2023 06:16:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697005002;
-        bh=E5NfJJHISESrJOidHJaCCEuCjd/mfgHX0tAAMAkwnlo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B+5Wd0riZSgJy713r/B4TSQelD9R/oqakxEiUOFmQNgzam1sQmwzf0i8eD6RkQx27
-         9AjZ55RF/5v9VCoGSYW+KTNqTUL42+A3qcAlpuCGmzZJhwT/DWQfkrEMl99sVLduNp
-         q7baFJeKBtjsOSyHU+XLsK/GvZTq6y7LzjG1OF58=
-Date:   Wed, 11 Oct 2023 08:16:38 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Jakub Kicinski <kuba@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        "David S. Miller" <davem@davemloft.net>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] [RFC] wireless: move obsolete drivers to staging
-Message-ID: <2023101139-pyromania-game-2237@gregkh>
-References: <20231010155444.858483-1-arnd@kernel.org>
- <2023101051-unmasked-cleaver-79b3@gregkh>
- <87y1g94szz.fsf@kernel.org>
+        Wed, 11 Oct 2023 02:20:41 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44114D6B
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:19:29 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-692779f583fso4599751b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:19:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1697005164; x=1697609964; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zcqMB30naFRgYdHZVjh4rWtjXZPaceEDVeZe+D6ZGQM=;
+        b=oYPInmB2+tfsY5VSLQcX+ksIVpEbszEojCThY8Thzo7e/kJT1tjvQmQuGKX6bkfQxc
+         YzdllyGRSAA1pX5Xcw5qtIOC/UwlooyuihXTul6XnDIrJlT+HHeSHqyGP66XxK8OH0Ne
+         6RKkpFZgnsTX5PVaOBIbEz2LY02fkDWv5omF3P5UUtacxgRAuev/+wb8lQXKA3I3riHz
+         3E8wNsopkvnVyH6sxuDkrPbQlGgiJJM1qk2fpyLFWPohvYlFSknl55CJPEGaxWc7Gx2t
+         ETUTh3zTDWvJA7ifiCpKdDBenNIMi2RH8cNtCmLn3biDF9xFyd22D3/AisXDNeMwxSj4
+         OEnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697005164; x=1697609964;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zcqMB30naFRgYdHZVjh4rWtjXZPaceEDVeZe+D6ZGQM=;
+        b=OURYyeUMdTWvh9rH19f7EwCSIuZYmYKJ9OQ2XT2HCdrloLIy5WXGCArq9m0r3DZ3ut
+         8NDIo/R7KahcxO1RJ9ptO5H4Aw5VOu0ovvp7cg7MbGtF9cG1yJOp9lK5K5Xfaj0UWGQR
+         1p/fegCtMOvQ6RINOem272dOiTsWK51ib27OFnPNRTfI2+pXXfAJpv06x3tZ9DvnMjCT
+         AKiucDUxv9PTonU41rSULixDnW7CdzCR1JPuYYOsWYNXdHy8ClikSgbONHUYUQktA4sQ
+         jOuIDJOzJOIdcBlfNqDZxCwFwNznNZ8GLHzfllAp5fmYaRBqT1C4sBJ1hIvKCGYscObV
+         y3xA==
+X-Gm-Message-State: AOJu0YzI6NPeuUVWXC24p3MXd02T4c4BNld7NpesKf/TrzqIwzx3TR2d
+        V433zBreLCKpQ5yOCy0riHunQ+RxHcyozah2xN6HvQ==
+X-Google-Smtp-Source: AGHT+IH0dVQdsDAFTukx58Mm4npJdNbm0bLcgPLvVKj0AVOxI4yYVZT6FxUGUblbjBF7BjO/DvhKeANQ/axsKvXGtw8=
+X-Received: by 2002:a05:6a20:4305:b0:15e:2d9f:cae0 with SMTP id
+ h5-20020a056a20430500b0015e2d9fcae0mr20933619pzk.10.1697005164547; Tue, 10
+ Oct 2023 23:19:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y1g94szz.fsf@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231010170503.657189-1-apatel@ventanamicro.com>
+ <20231010170503.657189-3-apatel@ventanamicro.com> <2023101013-overfeed-online-7f69@gregkh>
+In-Reply-To: <2023101013-overfeed-online-7f69@gregkh>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Wed, 11 Oct 2023 11:49:14 +0530
+Message-ID: <CAK9=C2WbW_WvoU59Ba9VrKf5GbbXmMOhB2jsiAp0a=SJYh3d7w@mail.gmail.com>
+Subject: Re: [PATCH 2/6] RISC-V: KVM: Change the SBI specification version to v2.0
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Conor Dooley <conor@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 08:40:00AM +0300, Kalle Valo wrote:
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> 
-> > On Tue, Oct 10, 2023 at 05:27:29PM +0200, Arnd Bergmann wrote:
+On Tue, Oct 10, 2023 at 10:43=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Oct 10, 2023 at 10:34:59PM +0530, Anup Patel wrote:
+> > We will be implementing SBI DBCN extension for KVM RISC-V so let
+> > us change the KVM RISC-V SBI specification version to v2.0.
 > >
-> >> From: Arnd Bergmann <arnd@arndb.de>
-> >> 
-> >> While looking at the old drivers using the obsolete .ndo_do_ioctl()
-> >> callback, I found a number of network drivers that are especially
-> >> obsolete, in particular for 802.11b (11Mbit/s) or even older wireless
-> >> networks, using non-busmaster ISA/PCMCIA style bus interfaces, and using
-> >> the legacy wireless extension ioctls rather than the netlink interfaces
-> >> that were meant to replace them in 2007. All of these drivers are
-> >> obsolete or orphaned.
-> >> 
-> >> We had previously discussed this topic, but nobody ever moved the
-> >> files, so I now went through the list to my best knowledge. These
-> >> are the drivers that I would classify as "probably unused" by now:
-> >> 
-> >>  - Atmel at76c502/at76c504/at76c506 is a PIO-only (PCMCIA, mini-PCI
-> >>    and Cardbus) 802.11b driver with incomplete CFG80211 support.
-> >>    The related at76c50x USB driver uses MAC80211 and remains.
-> >> 
-> >>  - Cisco Aironet is an 802.11b PCMCIA and mini-PCI with limited support
-> >>    for Cardbus DMA and for CFG80211.
-> >> 
-> >>  - HostAP is an ISA/PCMCIA style 802.11b driver supporting only
-> >>    wireless extensions, and some custom ioctls (already removed).
-> >>    Some devices include a legacy PCI bridge but no DMA.
-> >> 
-> >>  - Aviator/Raytheon is an early PCMCIA driver, apparently predating
-> >>    802.11b and only supporting wireless extensions.
-> >> 
-> >>  - Planet WL3501 is another PCMCIA driver for pre-802.11b interfaces
-> >>    (2Mbit/s) with incomplete CFG80211 support
-> >> 
-> >>  - Zydas zd1201 is a USB 802.11b driver with limited support for
-> >>    CFG80211.
-> >> 
-> >>  - Orinoco is a PIO-only ISA/PCMCIA 802.11b device with extra bus
-> >>    interface connections for PCI/Cardbus/mini-PCI and a few
-> >>    pre-2002 Apple PowerMac variants. It supports both
-> >>    wireless extensions and CFG80211, but I could not tell if
-> >>    it requires using both.
-> >> 
-> >>  - Wireless RNDIS USB is a new-style CFG80211 driver for 802.11b
-> >>    and 802.11g USB hardware from around 2004 to 2006. This makes it
-> >>    more modern than any of the others, but Kalle already classified
-> >>    it as "legacy" in commit 298e50ad8eb8f ("wifi: move raycs, wl3501
-> >>    and rndis_wlan to legacy directory"), so it stays with ray_cs and
-> >>    wl3501_cs.
-> >> 
-> >> There are a few other drivers that are similar to these but that are
-> >> more likely to still be needed, and are not moved here:
-> >> 
-> >>  - Intel ipw2x00 is a PCI bus-master device for 802.11a/b/g that was
-> >>    popular in "Centrino" branded laptops from 2003 to 2005, but it
-> >>    still requires wireless extensions.
-> >> 
-> >>  - Marvell Libertas is an 802.11a/b/g device with a number of bus
-> >>    interfaces (USB, SDIO, SPI, PCMCIA) and incomplete CFG80211
-> >>    support. This one was used in the OLPC XO laptop and some other
-> >>    embedded devices that are still supported.
-> >> 
-> >>  - Some broadcom b43xx devices use the SSB bus that can be abstracted
-> >>    through PCMCIA. All of them use CFG80211.
-> >> 
-> >>  - The Sony Playstation 3 "gelic" ethernet driver contains a bridge
-> >>    and an 802.11b/g client chip that is controlled through a hypervisor
-> >>    interface from the OS, and it uses wireless extensions in the kernel
-> >>    driver.
-> >> 
-> >> Link: https://lore.kernel.org/all/87imaeg4ar.fsf@codeaurora.org/
-> >> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > ---
+> >  arch/riscv/include/asm/kvm_vcpu_sbi.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > >
-> > Stuff in drivers/staging/ is to get code _into_ the main portion of the
-> > kernel tree, not out.  If these aren't being used, let's just drop them
-> > entirely.
+> > diff --git a/arch/riscv/include/asm/kvm_vcpu_sbi.h b/arch/riscv/include=
+/asm/kvm_vcpu_sbi.h
+> > index cdcf0ff07be7..8d6d4dce8a5e 100644
+> > --- a/arch/riscv/include/asm/kvm_vcpu_sbi.h
+> > +++ b/arch/riscv/include/asm/kvm_vcpu_sbi.h
+> > @@ -11,7 +11,7 @@
 > >
-> > What is the need to have them move to staging, only to have me delete
-> > them in the next release after that (or after that?)  Why delay and why
-> > not just remove them now?
-> 
-> We (the wireless folks) have been talking about dropping legacy drivers
-> on and off for several years now. The problem is that we don't know
-> which of them work and which not, for example IIRC someone reported
-> recently that wl3501 still works.
-> 
-> Personally I would be extremly happy to remove all the ancient drivers
-> as that reduces the amount of code for us to maintain but is that the
-> right thing to do for the users? I don't have an answer to that,
-> comments very welcome.
-> 
-> I have been also wondering if I should add warnings like this to every
-> ancient driver to see if there are any users left:
-> 
-> "wl3501 wireless driver will be removed in 2024. If the driver still
-> works and you are using it send a report NOW to
-> linux-wireless@vger.kernel.org to avoid the removal."
-> 
-> But with the long release cycles the kernel and distros have I doubt
-> waiting for a year is enough, it should be more like three years.
+> >  #define KVM_SBI_IMPID 3
+> >
+> > -#define KVM_SBI_VERSION_MAJOR 1
+> > +#define KVM_SBI_VERSION_MAJOR 2
+>
+> What does this number mean?  Who checks it?  Why do you have to keep
+> incrementing it?
 
-No matter what the time frame is, it's never going to line up with all
-distros, or catch everyone properly.
+This number is the SBI specification version implemented by KVM RISC-V
+for the Guest kernel.
 
-I recommend, just delete all the ones you feel are not being used, in a
-patch that removes them one-by-one, so that it is trivial to revert if
-someone shows up and says "hey, my device stopped working!" a few years
-in the future.
+The original sbi_console_putchar() and sbi_console_getchar() are legacy
+functions (aka SBI v0.1) which were introduced a few years back along
+with the Linux RISC-V port.
 
-thanks,
+The latest SBI v2.0 specification (which is now frozen) introduces a new
+SBI debug console extension which replaces legacy sbi_console_putchar()
+and sbi_console_getchar() functions with better alternatives.
+(Refer, https://github.com/riscv-non-isa/riscv-sbi-doc/releases/download/co=
+mmit-fe4562532a9cc57e5743b6466946c5e5c98c73ca/riscv-sbi.pdf)
 
-greg k-h
+This series adds SBI debug console implementation in KVM RISC-V
+so the SBI specification version advertised by KVM RISC-V must also be
+upgraded to v2.0.
+
+Regarding who checks its, the SBI client drivers in the Linux kernel
+will check SBI specification version implemented by higher privilege
+mode (M-mode firmware or HS-mode hypervisor) before probing
+the SBI extension. For example, the HVC SBI driver (PATCH5)
+will ensure SBI spec version to be at least v2.0 before probing
+SBI debug console extension.
+
+>
+> thanks,
+>
+> greg k-h
+
+Regards,
+Anup
