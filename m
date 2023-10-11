@@ -2,398 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C377C611A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 01:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B867C611C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 01:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376546AbjJKXbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 19:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58170 "EHLO
+        id S1376564AbjJKXcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 19:32:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233397AbjJKXbl (ORCPT
+        with ESMTP id S233397AbjJKXcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 19:31:41 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66CCA9;
-        Wed, 11 Oct 2023 16:31:38 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 66363F0C;
-        Thu, 12 Oct 2023 01:31:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1697067093;
-        bh=veZu4nip6XJTOC2Cjjm0FeHRqsbH4ZSamFt2SVxn1/k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OxODQ9ixtia+33hvE04Ke239gnbxGcjPmShfBu5SLFPfDcmN1VwerZ4pNmq2ug3P1
-         lom9oF5czzPK0t0mcWsN2Y7pkdttFgunvai8bBtiSfEFoxbmo2DwGrkQ6I22EqIY87
-         SDhPax5Q5dg/K6OqbrN0eYtCmGJfbyQZMC3zSPG0=
-Date:   Thu, 12 Oct 2023 02:31:43 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Julien Stephan <jstephan@baylibre.com>
-Cc:     Phi-bang Nguyen <pnguyen@baylibre.com>,
-        Florian Sylvestre <fsylvestre@baylibre.com>,
-        Andy Hsieh <andy.hsieh@mediatek.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Wed, 11 Oct 2023 19:32:13 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2044.outbound.protection.outlook.com [40.107.22.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFBFA9;
+        Wed, 11 Oct 2023 16:32:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f/hY9b2oVjQka07cw626Hyy5sdsGDvTmDrWUwzbNOS1+4c4SHuvUBzKgQrPy6O84SKTRWmOAmvL0httsmB2ZpVnOSoVRRL+zCxVoYiuqyFPdEgQjRdWKoHMY0Fkt/wvW6j8jsBhU/CmOLUW8j/QN+DK8MiwllWXFoHJ+gBGVQ3ao6v298HPMU05k2lgd1Hu+nlIG3OHcH4TjcyPz4zXcAO1OqSBvjpz6TSazCVlLJYArHEZl2GpX8Nkh9jxl90clrNygTab1/jmGZD2rm8xCy0AP/q6/KgxPgrl6+JtvYo60zH7O3qT0Cy/moxnERQQ7ZWq9PA0fVYiYZW+Jn1chUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2O56fEjaFxQvCFMIoTUTKqZ5/zWT4uTQIhACz3AykrE=;
+ b=N9TA52GPVuLR5b5tXjyCp2tRtujsSkWwdpor4MDgUAa+iZxfU9v+gxtP1rrGnAJ9JRLCtqKWaKuqYeQb3ZyXFmhckfjRzfvi+kPaQzDHJ6dFj9TUdzsIW2TDVO7kpuhEzypBONCGF30z4qleuenSgfc8OheMGiGQR/h17TMjVWEhBohVVsfDJ82sDrL00Onk07S9N6xQ1nNYGb22EdyXXTfADvhAJsXD/6kUdvc0xAPghLIRRUurLT3bofcX++/1Ubk2fABPvEljArVSrBBf9LNu0ZtWgunDD7YHQfDCJchieqeuhiee31ucIP5Ypno32/1upAkUtiISBVDuYYtgEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2O56fEjaFxQvCFMIoTUTKqZ5/zWT4uTQIhACz3AykrE=;
+ b=tDQFVblVGueQAkpd2anGzAdrHQF8lmBOoawrWy87aDLg9DFsQQi9Yh+MR0sWsGhg8v8CK6wc/6TIyziE4aaG29oulRBkGCUGH/hHyYVxafWbZqvPtgX8mwGwWvLNzeGjv0EVonhZ3qavua3dBWkxrvyHVQ7/xBgZRGrqt0rbL2E=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by DU0PR04MB9588.eurprd04.prod.outlook.com (2603:10a6:10:31d::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.37; Wed, 11 Oct
+ 2023 23:32:07 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::2b3:d8de:95c8:b28b]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::2b3:d8de:95c8:b28b%3]) with mapi id 15.20.6838.040; Wed, 11 Oct 2023
+ 23:32:07 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        Louis Kuo <louis.kuo@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Moudy Ho <moudy.ho@mediatek.com>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v3 4/4] media: platform: mediatek: isp_30: add mediatek
- ISP3.0 camsv
-Message-ID: <20231011233143.GA2257@pendragon.ideasonboard.com>
-References: <20230807094940.329165-1-jstephan@baylibre.com>
- <20230807094940.329165-5-jstephan@baylibre.com>
+        Conor Dooley <conor+dt@kernel.org>,
+        Aisheng Dong <aisheng.dong@nxp.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: RE: [PATCH 0/2] mailbox: imx: support new tx doorbell
+Thread-Topic: [PATCH 0/2] mailbox: imx: support new tx doorbell
+Thread-Index: AQHZ6WP1nuoyHESAQkuJUjIiPFvpW7BFY0hA
+Date:   Wed, 11 Oct 2023 23:32:07 +0000
+Message-ID: <DU0PR04MB94173364EA135E0B09176E6A88CCA@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20230917-imx95-mbox-v1-0-440245287356@nxp.com>
+In-Reply-To: <20230917-imx95-mbox-v1-0-440245287356@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|DU0PR04MB9588:EE_
+x-ms-office365-filtering-correlation-id: 89a367ef-f4b4-4f42-c703-08dbcab24895
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: K0G5ZGLsnUla3H0wAfQ8tx4NKCNm5Ifj3O8w/nVJSSYaRY+VSgqYZio7oH2f2v4f+M1RbQqy32UXOBqSEAplvAyl2waFKZtx0LROXZs/Gy7UUGejYgOLYcA4XRSCDIUjfR8/gddHPKc2+ha8dsFyHe8zi31cXfhvlwe1jIblmknbn/g97A6EbJbV0HaYcntybM6rYAVaei4o1RABD+7VYkFiTHFlMz5nKI7TPO+NQDPz8kHzrvKiLMsA1FJU2YkQpAYdZLv10h7AeFeC6HTzSjkVoy82e7Kcrbunx56V7VTFyD4JVzr/lZnkiNW5wZJPZY6u3Nwj17AWVKvzOZMCqHFG1xjAIDfF3J8ENGSCZFqMdxFVP0ME8ZUPtaXIDD2OUkO40B1VIyno8SrV7TopuXo7pumk5QfxfpI49wGewwM1q4wDr6Qs+zuVPnjGxObm8rUqRTyg+FBpKfcCIjmUXZvEkrHqApzN8USCjKUGeIPwdiP9HajX5LYxDE4zbIdVvKV4/HsUAEUAGhCfMs+KniunjdthAsyRqmq7JPuxEDp6qiQahD6E8ugM1h3PHJKqhRvBGG25XNPQ+hHAcOqvEwJp73FcgkpA45bI1ks5fgOoVsWc8v+ARDBicnlbWiF1
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(230922051799003)(186009)(1800799009)(451199024)(71200400001)(6506007)(9686003)(33656002)(55016003)(38070700005)(86362001)(38100700002)(122000001)(2906002)(83380400001)(15650500001)(7416002)(44832011)(921005)(7696005)(508600001)(26005)(8676002)(8936002)(4326008)(6636002)(110136005)(52536014)(316002)(54906003)(66556008)(66946007)(66476007)(5660300002)(76116006)(66446008)(64756008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?K1IxU2pwd21UU2VaMTRRa0szR3A2czFpS0VYQURRN3I0dnhpL1prRXRpYmtL?=
+ =?utf-8?B?d0NmWXEzQjh2dmZ5ZkU2bVI3SERiaTlUaWVRY0RXQ3ZieTJCeXZBbWE3c3Fp?=
+ =?utf-8?B?OTJTajVrdUZ3eHc0b1RvZ0tzSVcxZGhKa3ZZWEJTN2gvenJkUm1mNWF3emsz?=
+ =?utf-8?B?TjR0cXpPdDFZU0l3QlBWTlIvVmkxUEJZT2p3cWNKc2J4ZHMxZFlKamVoVEpB?=
+ =?utf-8?B?ZGZFMlYzM1dRSGs3bXBvU2p5RGNJRlplaWd5eTFVa3NlZ1R3QTJLT1ZxOUlR?=
+ =?utf-8?B?T29vOTJWbFVYZlZKQm9DeFFXOWRYcXRzNFZBaUFadlhOZnFNNnpGdFg0aE1q?=
+ =?utf-8?B?dVBYbUgwQllqZUJCL0pkVFYxV3MxZHZMRy9uVFBPNFlQeE9PWURZS2FKbjVR?=
+ =?utf-8?B?UDZZQ2hQdDRNbWhlZENtelg5ekxxd3NtZGs1dmtlWVUrV3ZVazZIaTR3Qkpw?=
+ =?utf-8?B?MXR5azNlYy9aN0djOGtRc21JME5GWmg3NkRlc3FQUFNBSG5FYk9NbWpTTnd1?=
+ =?utf-8?B?c09reDR6M0VTMXI0VUgzWHZPY0JlVTljd0EzazJFRlpVMlRCNkI3aXhFalc3?=
+ =?utf-8?B?WkZXSHhZVjJQbDdrNHQwRklUN0dnWGZ3alRHdU1SaEs2VHJZTGQwbU14WjZN?=
+ =?utf-8?B?dlljVjBjK3l2Wmdhd1BZNG9McXRkWDVrNlhLSHRjQ2NRbEVJMnU1TFh6S1VC?=
+ =?utf-8?B?ZzMrelE0eUphdHpuQzltYXdpZ0hEMXdhbFdiRGx1R3FtNDJiRVlnL2ZpNkQy?=
+ =?utf-8?B?OHpYRnpMc1M3cm5BZ1VodGcrVVNXRlhycmFCSzUwcEhrdmFiSW40aVlhS3U1?=
+ =?utf-8?B?ZmlVemFvOW80T2poRjluUnNOVjlqU0FtYnZTcTc4S0pRMCtjeHExQVJPcGVi?=
+ =?utf-8?B?Q25WN3BRa2tTYXJlY3MyTklwWXdHN1dObHM0T1Q1V051cG5aZTZPV1VJSGpJ?=
+ =?utf-8?B?UTBZVGhueFMwL1hwUTNsWVhQd3B1L043UUpjMy91Ky9RWnVCa254bGhERlpS?=
+ =?utf-8?B?c3RjenNZTGVJSlhwZ3FsbWM3OGM0YjN6bEtucEVaWXNVa0VqTm0zOU9xU1Vj?=
+ =?utf-8?B?S3R2UU0wcnBkbE12Njk2Zm9RTzJ3Y004b1VtNHdLL0gxTmtxOExmZjFSRHpu?=
+ =?utf-8?B?N2pNZGl0NHhPdHhtd2VJTmFVUE5MMDZHSWk5a29XQmRMMFh6cElzRW0wSU1X?=
+ =?utf-8?B?K3dJK1RhR2lraGxPUTVhQTcxRk5yTzlKRzhiaDVzbXdubHU5QTF6S3hUczV3?=
+ =?utf-8?B?WDh0MlBsQzhNTlRaVCtPUFV3WDVLR2doOUZ3MXRLVDRsdFJiWWZTRXdkL0d1?=
+ =?utf-8?B?ZWtuNk5rYzNqeEU2cHJnWlRURlVPdFBxY01HcjQyRGF0Y3YrSFoxWThnNGlh?=
+ =?utf-8?B?ZjU5K1plWkEzNnBwZ094bDR1WG5Gb3JWL2JzQlNENGZtNGRRMWlWRjZZZHpp?=
+ =?utf-8?B?N2JDQzNobnJ4cHJFcENqd05GQjNXdHJOWUVTT2RMK3Jmelk4ajJudHJCNXla?=
+ =?utf-8?B?UzByQ0k1VlhuY1RFMnVNZkJaZEVYcDRZdEtYSDc4Rk5BMXBKeDB1dHNnNVVN?=
+ =?utf-8?B?MnlPLzFHOTREZkdFanJWU0M1L3g4U3hNVGRDc1lRY0tOeWtsOEJBL1RvekNl?=
+ =?utf-8?B?WTZtYjlNd1hMb3ZGSFBzZlpteS96ZXBNcGZJUlJZWFo3RHAveEh3M1NYamNO?=
+ =?utf-8?B?Tk5QS205L3Nma09QRnFSRStLeWVXVHp1aDFGYmZvMCtTaVJUb2MyQjJidW9r?=
+ =?utf-8?B?VGFaY3oyanh4Wk9VWTN4OGJ4TWIza0RXSktmWElUVjlqVm1zWHNXVWpKT3Iy?=
+ =?utf-8?B?T1lzUHRXNWNHNXRIWnBBWEl6K0xXaTF0UUg5cTl4TmxQdHY5MmQ0amFiamlw?=
+ =?utf-8?B?cVpZSWNWbVBwK0RzVlI5ODd2eUo5bFNzRkMzOUFiZnMrOTYvZ21LZ2pJUjUx?=
+ =?utf-8?B?Qi8yZlp1VVhRSC93S3JRN1Y2bndkTDdWRFhZMGZKdGZPYUtDalR0c0hLSlM0?=
+ =?utf-8?B?czJ5ZFp4S25uZCs4RVB0OHJnQXoyY0xhMWNJOEw0TkNyeU9Sb0ZvSEFqTWVP?=
+ =?utf-8?B?VitYWDNSUGFQcVhqWm5rV04wa1lZOXMrNnluaUZaN3VRUWM5UWU2VXErTmdU?=
+ =?utf-8?Q?2hc4=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230807094940.329165-5-jstephan@baylibre.com>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 89a367ef-f4b4-4f42-c703-08dbcab24895
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Oct 2023 23:32:07.3202
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7gV99TWv3hvlWksIW+x4+ewlshM/hJ32s7euFZCiO7m+bTuYClVkXJE82DcgNEMEah1d7xKb3oOWqLOedjHvgA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9588
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Julien,
-
-Thank you for the patch.
-
-A first review comment, for an issue I've noticed while testing.
-
-On Mon, Aug 07, 2023 at 11:48:13AM +0200, Julien Stephan wrote:
-> From: Phi-bang Nguyen <pnguyen@baylibre.com>
-> 
-> This driver provides a path to bypass the SoC ISP so that image data
-> coming from the SENINF can go directly into memory without any image
-> processing. This allows the use of an external ISP.
-> 
-> Signed-off-by: Phi-bang Nguyen <pnguyen@baylibre.com>
-> Signed-off-by: Florian Sylvestre <fsylvestre@baylibre.com>
-> Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Signed-off-by: Julien Stephan <jstephan@baylibre.com>
-> ---
->  MAINTAINERS                                   |   1 +
->  .../platform/mediatek/isp/isp_30/Kconfig      |  19 +
->  .../platform/mediatek/isp/isp_30/Makefile     |   1 +
->  .../mediatek/isp/isp_30/camsv/Makefile        |   7 +
->  .../mediatek/isp/isp_30/camsv/mtk_camsv.c     | 328 ++++++++
->  .../mediatek/isp/isp_30/camsv/mtk_camsv.h     | 196 +++++
->  .../isp/isp_30/camsv/mtk_camsv30_hw.c         | 432 ++++++++++
->  .../isp/isp_30/camsv/mtk_camsv30_regs.h       |  60 ++
->  .../isp/isp_30/camsv/mtk_camsv_video.c        | 781 ++++++++++++++++++
->  9 files changed, 1825 insertions(+)
->  create mode 100644 drivers/media/platform/mediatek/isp/isp_30/camsv/Makefile
->  create mode 100644 drivers/media/platform/mediatek/isp/isp_30/camsv/mtk_camsv.c
->  create mode 100644 drivers/media/platform/mediatek/isp/isp_30/camsv/mtk_camsv.h
->  create mode 100644 drivers/media/platform/mediatek/isp/isp_30/camsv/mtk_camsv30_hw.c
->  create mode 100644 drivers/media/platform/mediatek/isp/isp_30/camsv/mtk_camsv30_regs.h
->  create mode 100644 drivers/media/platform/mediatek/isp/isp_30/camsv/mtk_camsv_video.c
-
-[snip]
-
-> diff --git a/drivers/media/platform/mediatek/isp/isp_30/camsv/mtk_camsv30_hw.c b/drivers/media/platform/mediatek/isp/isp_30/camsv/mtk_camsv30_hw.c
-> new file mode 100644
-> index 000000000000..bdf878460354
-> --- /dev/null
-> +++ b/drivers/media/platform/mediatek/isp/isp_30/camsv/mtk_camsv30_hw.c
-> @@ -0,0 +1,432 @@
-
-[snip]
-
-> +static void mtk_camsv30_setup(struct mtk_cam_dev *cam_dev, u32 w, u32 h,
-> +			      u32 bpl, u32 mbus_fmt)
-> +{
-> +	const struct mtk_cam_conf *conf = cam_dev->conf;
-> +	u32 int_en = INT_ST_MASK_CAMSV;
-> +	u32 tmp;
-> +	struct mtk_cam_sparams sparams;
-> +
-> +	fmt_to_sparams(mbus_fmt, &sparams);
-> +
-> +	spin_lock(&cam_dev->irqlock);
-
-This isn't right, for multiple reasons.
-
-First, the lock is taken in IRQ context, so you need to disable IRQs
-here, or you'll risk deadlocking. spin_lock_irqsave() is the safe
-wildcard solution, but if this function is guaranteed to be called with
-interrupts enabled, you can also use spin_lock_irq(). This problem is
-caught by lockdep, didn't you test the driver with lockdep enabled ? If
-not, please enable it for v4.
-
-Then, pm_runtime_get_sync() may sleep, so you should take the lock
-after.
-
-Next, mtk_camsv30_setup() is called by mtk_camsv30_runtime_resume()
-below, right after calling spin_lock_irqsave() on the same lock. This
-has quite clearly not been tested. Please make sure to test system
-suspend/resume while streaming for v4.
-
-Finally, does this function really require taking the irqlock ? It looks
-like locking should be revisited in this driver.
-
-> +
-> +	if (pm_runtime_get_sync(cam_dev->dev) < 0) {
-
-When pm_runtime_get_sync() fails you need to call pm_runtime_put(). A
-better option is to use pm_runtime_resume_and_get().
-
-> +		dev_err(cam_dev->dev, "failed to get pm_runtime\n");
-> +		spin_unlock(&cam_dev->irqlock);
-> +		return;
-> +	}
-> +
-> +	writel(conf->tg_sen_mode, cam_dev->regs_tg + CAMSV_TG_SEN_MODE);
-> +
-> +	writel((w * sparams.w_factor) << 16U, cam_dev->regs_tg + CAMSV_TG_SEN_GRAB_PXL);
-> +
-> +	writel(h << 16U, cam_dev->regs_tg + CAMSV_TG_SEN_GRAB_LIN);
-> +
-> +	/* YUV_U2S_DIS: disable YUV sensor unsigned to signed */
-> +	writel(0x1000U, cam_dev->regs_tg + CAMSV_TG_PATH_CFG);
-> +
-> +	/* Reset cam */
-> +	writel(CAMSV_SW_RST, cam_dev->regs + CAMSV_SW_CTL);
-> +	writel(0x0U, cam_dev->regs + CAMSV_SW_CTL);
-> +	writel(CAMSV_IMGO_RST_TRIG, cam_dev->regs + CAMSV_SW_CTL);
-> +
-> +	readl_poll_timeout(cam_dev->regs + CAMSV_SW_CTL, tmp,
-> +			(tmp == (CAMSV_IMGO_RST_TRIG | CAMSV_IMGO_RST_ST)), 10, 200);
-> +
-> +	writel(0x0U, cam_dev->regs + CAMSV_SW_CTL);
-> +
-> +	writel(int_en, cam_dev->regs + CAMSV_INT_EN);
-> +
-> +	writel(conf->module_en | sparams.module_en_pak,
-> +	      cam_dev->regs + CAMSV_MODULE_EN);
-> +	writel(sparams.fmt_sel, cam_dev->regs + CAMSV_FMT_SEL);
-> +	writel(sparams.pak, cam_dev->regs + CAMSV_PAK);
-> +
-> +	writel(bpl - 1U, cam_dev->regs_img0 + CAMSV_IMGO_SV_XSIZE);
-> +	writel(h - 1U, cam_dev->regs_img0 + CAMSV_IMGO_SV_YSIZE);
-> +
-> +	writel(sparams.imgo_stride | bpl, cam_dev->regs_img0 + CAMSV_IMGO_SV_STRIDE);
-> +
-> +	writel(conf->imgo_con, cam_dev->regs_img0 + CAMSV_IMGO_SV_CON);
-> +	writel(conf->imgo_con2, cam_dev->regs_img0 + CAMSV_IMGO_SV_CON2);
-> +
-> +	/* CMOS_EN first */
-> +	writel(readl(cam_dev->regs_tg + CAMSV_TG_SEN_MODE) | CAMSV_TG_SEN_MODE_CMOS_EN,
-> +			cam_dev->regs_tg + CAMSV_TG_SEN_MODE);
-> +
-> +	/* finally, CAMSV_MODULE_EN : IMGO_EN */
-> +	writel(readl(cam_dev->regs + CAMSV_MODULE_EN) | CAMSV_MODULE_EN_IMGO_EN,
-> +		    cam_dev->regs + CAMSV_MODULE_EN);
-> +
-> +	pm_runtime_put_autosuspend(cam_dev->dev);
-
-This will cut the power off after a delay, possibly loosing state. If
-userspace requests buffers and then starts streaming only later, you
-risk issues.
-
-> +	spin_unlock(&cam_dev->irqlock);
-> +}
-> +
-> +static irqreturn_t isp_irq_camsv30(int irq, void *data)
-> +{
-> +	struct mtk_cam_dev *cam_dev = (struct mtk_cam_dev *)data;
-> +	struct mtk_cam_dev_buffer *buf;
-> +	unsigned long flags = 0;
-> +	unsigned int irq_status;
-> +
-> +	spin_lock_irqsave(&cam_dev->irqlock, flags);
-> +
-> +	irq_status = readl(cam_dev->regs + CAMSV_INT_STATUS);
-> +
-> +	if (irq_status & INT_ST_MASK_CAMSV_ERR) {
-> +		dev_err(cam_dev->dev, "irq error 0x%x\n",
-> +			(unsigned int)(irq_status & INT_ST_MASK_CAMSV_ERR));
-> +	}
-> +
-> +	/* De-queue frame */
-> +	if (irq_status & CAMSV_IRQ_PASS1_DON) {
-> +		cam_dev->sequence++;
-> +
-> +		if (!cam_dev->is_dummy_used) {
-> +			buf = list_first_entry_or_null(&cam_dev->buf_list,
-> +						       struct mtk_cam_dev_buffer,
-> +						       list);
-> +			if (buf) {
-> +				buf->v4l2_buf.sequence = cam_dev->sequence;
-> +				buf->v4l2_buf.vb2_buf.timestamp = ktime_get_ns();
-> +				vb2_buffer_done(&buf->v4l2_buf.vb2_buf,
-> +						VB2_BUF_STATE_DONE);
-> +				list_del(&buf->list);
-> +			}
-> +		}
-> +
-> +		if (list_empty(&cam_dev->buf_list)) {
-> +			mtk_camsv30_update_buffers_add(cam_dev, &cam_dev->dummy);
-> +			cam_dev->is_dummy_used = true;
-> +		} else {
-> +			buf = list_first_entry_or_null(&cam_dev->buf_list,
-> +						       struct mtk_cam_dev_buffer,
-> +						       list);
-> +			mtk_camsv30_update_buffers_add(cam_dev, buf);
-> +			cam_dev->is_dummy_used = false;
-> +		}
-> +	}
-> +
-> +	spin_unlock_irqrestore(&cam_dev->irqlock, flags);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int mtk_camsv30_runtime_suspend(struct device *dev)
-> +{
-> +	struct mtk_cam_dev *cam_dev = dev_get_drvdata(dev);
-> +	struct vb2_queue *vbq = &cam_dev->vdev.vbq;
-> +
-> +	if (vb2_is_streaming(vbq)) {
-> +		mutex_lock(&cam_dev->op_lock);
-> +		v4l2_subdev_call(&cam_dev->subdev, video, s_stream, 0);
-> +		mutex_unlock(&cam_dev->op_lock);
-> +	}
-> +
-> +	clk_bulk_disable_unprepare(cam_dev->num_clks, cam_dev->clks);
-> +
-> +	return 0;
-> +}
-> +
-> +static int mtk_camsv30_runtime_resume(struct device *dev)
-> +{
-> +	struct mtk_cam_dev *cam_dev = dev_get_drvdata(dev);
-> +	struct mtk_cam_video_device *vdev = &cam_dev->vdev;
-> +	const struct v4l2_pix_format_mplane *fmt = &vdev->format;
-> +	struct vb2_queue *vbq = &vdev->vbq;
-> +	struct mtk_cam_dev_buffer *buf, *buf_prev;
-> +	int ret;
-> +	unsigned long flags = 0;
-> +
-> +	ret = clk_bulk_prepare_enable(cam_dev->num_clks, cam_dev->clks);
-> +	if (ret) {
-> +		dev_err(dev, "failed to enable clock:%d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	if (vb2_is_streaming(vbq)) {
-> +		spin_lock_irqsave(&cam_dev->irqlock, flags);
-> +
-> +		mtk_camsv30_setup(cam_dev, fmt->width, fmt->height,
-> +				  fmt->plane_fmt[0].bytesperline, vdev->fmtinfo->code);
-> +
-> +		buf = list_first_entry_or_null(&cam_dev->buf_list,
-> +					       struct mtk_cam_dev_buffer,
-> +					       list);
-> +		if (buf) {
-> +			mtk_camsv30_update_buffers_add(cam_dev, buf);
-> +			cam_dev->is_dummy_used = false;
-> +		} else {
-> +			mtk_camsv30_update_buffers_add(cam_dev, &cam_dev->dummy);
-> +			cam_dev->is_dummy_used = true;
-> +		}
-> +
-> +		mtk_camsv30_cmos_vf_hw_enable(cam_dev, vdev->fmtinfo->packed);
-> +
-> +		spin_unlock_irqrestore(&cam_dev->irqlock, flags);
-> +
-> +		/* Stream on the sub-device */
-> +		mutex_lock(&cam_dev->op_lock);
-> +		ret = v4l2_subdev_call(&cam_dev->subdev, video, s_stream, 1);
-> +
-> +		if (ret) {
-> +			cam_dev->stream_count--;
-> +			if (cam_dev->stream_count == 0)
-> +				media_pipeline_stop(vdev->vdev.entity.pads);
-> +		}
-> +		mutex_unlock(&cam_dev->op_lock);
-> +
-> +		if (ret)
-> +			goto fail_no_stream;
-> +	}
-> +
-> +	return 0;
-> +
-> +fail_no_stream:
-> +	spin_lock_irqsave(&cam_dev->irqlock, flags);
-> +	list_for_each_entry_safe(buf, buf_prev, &cam_dev->buf_list, list) {
-> +		buf->daddr = 0ULL;
-> +		list_del(&buf->list);
-> +		vb2_buffer_done(&buf->v4l2_buf.vb2_buf, VB2_BUF_STATE_ERROR);
-> +	}
-> +	spin_unlock_irqrestore(&cam_dev->irqlock, flags);
-> +	return ret;
-> +}
-
-[snip]
-
-> diff --git a/drivers/media/platform/mediatek/isp/isp_30/camsv/mtk_camsv_video.c b/drivers/media/platform/mediatek/isp/isp_30/camsv/mtk_camsv_video.c
-> new file mode 100644
-> index 000000000000..f879726eacd8
-> --- /dev/null
-> +++ b/drivers/media/platform/mediatek/isp/isp_30/camsv/mtk_camsv_video.c
-> @@ -0,0 +1,781 @@
-
-[snip]
-
-> +/* -----------------------------------------------------------------------------
-> + * VB2 Queue Operations
-> + */
-> +
-> +static int mtk_cam_vb2_queue_setup(struct vb2_queue *vq,
-> +				   unsigned int *num_buffers,
-> +				   unsigned int *num_planes,
-> +				   unsigned int sizes[],
-> +				   struct device *alloc_devs[])
-> +{
-> +	struct mtk_cam_video_device *vdev =
-> +		vb2_queue_to_mtk_cam_video_device(vq);
-> +	unsigned int max_buffer_count = vdev->desc->max_buf_count;
-> +	const struct v4l2_pix_format_mplane *fmt = &vdev->format;
-> +	struct mtk_cam_dev *cam = vb2_get_drv_priv(vq);
-> +	unsigned int size;
-> +	unsigned int np_conf;
-> +	unsigned int i;
-> +
-> +	/* Check the limitation of buffer size */
-> +	if (max_buffer_count)
-> +		*num_buffers = clamp_val(*num_buffers, 1, max_buffer_count);
-> +
-> +	size = fmt->plane_fmt[0].sizeimage;
-> +	/* Add for q.create_bufs with fmt.g_sizeimage(p) / 2 test */
-> +
-> +	np_conf = cam->conf->frm_hdr_en ? 2 : 1;
-> +
-> +	if (*num_planes == 0) {
-> +		*num_planes = np_conf;
-> +		for (i = 0; i < *num_planes; ++i)
-> +			sizes[i] = size;
-> +	} else if (*num_planes != np_conf || sizes[0] < size) {
-> +		return -EINVAL;
-> +	}
-> +
-> +	(*cam->hw_functions->mtk_cam_setup)(cam, fmt->width, fmt->height,
-> +			fmt->plane_fmt[0].bytesperline, vdev->fmtinfo->code);
-
-This isn't the right time to call this. The hardware should be
-programmed when starting streaming, not when allocating buffers.
-
-> +
-> +	return 0;
-> +}
-
-[snip]
-
--- 
-Regards,
-
-Laurent Pinchart
+SGkgSmFzc2ksDQoNCj4gU3ViamVjdDogW1BBVENIIDAvMl0gbWFpbGJveDogaW14OiBzdXBwb3J0
+IG5ldyB0eCBkb29yYmVsbA0KDQpXb3VsZCB5b3UgcGljayB1cCB0aGlzIHBhdGNoc2V0PyBPciBh
+bnkgY29tbWVudHM/DQoNClRoYW5rcywNClBlbmcuDQoNCj4gDQo+IFRoZSBuZXcgYWRkZWQgY2hh
+bm5lbCB0eXBlIGlzIGZvciBpLk1YOTUgU0NNSSBtYWlsYm94IHVzYWdlLg0KPiANCj4gaS5NWDk1
+IHVzaW5nIFRYIGRvb3JiZWxsIGFuZCBSWCBkb29yYmVsbCBmb3IgdGhlIFNDTUkgbWFpbGJveCB0
+cmFuc3BvcnQuDQo+IEZvciBUWCBkb29yYmVsbCwgd2UgcmVsaWVzIG9uIHNvZnR3YXJlIHJlcGx5
+IGZyb20gdGhlIG90aGVyIHNpZGUgaW4gU0NNSSBkcml2ZXINCj4gc2lkZSB1c2luZyBtYm94X2Ns
+aWVudF90eGRvbmUgdG8gZHJpdmUgdGhlIHR4IHRpY2suDQo+IA0KPiBCdXQgdGhlIGN1cnJlbnQg
+TVUgdHggZG9vcmJlbGwgdXNpbmcgdGFza2xldCB0byBlbXVsYXRlIGhhcmR3YXJlIEFDSyBmcm9t
+DQo+IG1haWxib3ggZHJpdmVyIHNpZGUsIHNvIGFkZCBhIG5ldyBkb29yYmVsbCB0eXBlIHRvIHN1
+cHBvcnQgaS5NWDk1IFNDTUkNCj4gbWFpbGJveCB0cmFuc3BvcnQuDQo+IA0KPiBTaWduZWQtb2Zm
+LWJ5OiBQZW5nIEZhbiA8cGVuZy5mYW5AbnhwLmNvbT4NCj4gLS0tDQo+IFBlbmcgRmFuICgyKToN
+Cj4gICAgICAgZHQtYmluZGluZ3M6IG1haWxib3g6IGZzbCxtdTogYWRkIG5ldyB0eCBkb29yYmVs
+bCBjaGFubmVsDQo+ICAgICAgIG1haWxib3g6IGlteDogc3VwcG9ydCBjaGFubmVsIHR5cGUgdHgg
+ZG9vcmJlbGwgdjINCj4gDQo+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9tYWlsYm94L2ZzbCxt
+dS55YW1sICAgICAgICB8ICA1ICsrLS0NCj4gIGRyaXZlcnMvbWFpbGJveC9pbXgtbWFpbGJveC5j
+ICAgICAgICAgICAgICAgICAgICAgIHwgMzIgKysrKysrKysrKysrKysrKysrKystLQ0KPiAgMiBm
+aWxlcyBjaGFuZ2VkLCAzMiBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQ0KPiAtLS0NCj4g
+YmFzZS1jb21taXQ6IGUxNDMwMTZiNTZlY2IwZmNkYTViYjYwMjZiMGEyNWZlNTUyNzRmNTYNCj4g
+Y2hhbmdlLWlkOiAyMDIzMDkxNi1pbXg5NS1tYm94LTg4NDM3YzUxY2U1NA0KPiANCj4gQmVzdCBy
+ZWdhcmRzLA0KPiAtLQ0KPiBQZW5nIEZhbiA8cGVuZy5mYW5AbnhwLmNvbT4NCg0K
