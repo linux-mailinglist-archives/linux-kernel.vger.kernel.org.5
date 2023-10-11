@@ -2,63 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1FB7C4AC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A1E7C4ACC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345453AbjJKGjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 02:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37612 "EHLO
+        id S1345500AbjJKGkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 02:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344555AbjJKGjN (ORCPT
+        with ESMTP id S1345447AbjJKGkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 02:39:13 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333FC93;
-        Tue, 10 Oct 2023 23:39:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8g0oB6PqYhngbYuG23JzqWL+yNnX6VYd4fp4Ba0ALOs=; b=2YJhSVXBo8Hk70GbN+zRFplRIN
-        zGM21InwXmWArCXhd6WswAcoReAVxVvlwJ7NXF30XHrAB5aCuveXrDfLq+O2AGQFjTQ60EI1QfkfE
-        CPpx0B01ZeFlN8KrRpdwEQwYij4VBUBqTbIMUYdeecVOzsjhwh/BtZoFEWVYtKP06IrysbHoGl7H+
-        UBvMIdGfh9rBuoCMmlkBeUsyyb1aLycio61slxZ955ihO1btEUu3H2ptWM6vKEUk5/KAHS1oV+CX6
-        +24loTi0LvEsEdfbylvD6JbacvJVOwS4k7X7HXUqgaUCzPhy7E+hy/asm2/k0HC0cXefZKQ368Iqc
-        kKqpk4qg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qqSsC-00F07T-06;
-        Wed, 11 Oct 2023 06:39:12 +0000
-Date:   Tue, 10 Oct 2023 23:39:12 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Joey Jiao <quic_jiangenj@quicinc.com>
-Cc:     linux-modules@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] module: Add CONFIG_MODULE_LOAD_IN_SEQUENCE option
-Message-ID: <ZSZDEEBDUW5shAtY@infradead.org>
-References: <20231009045636.4143-1-quic_jiangenj@quicinc.com>
+        Wed, 11 Oct 2023 02:40:22 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EC6B6;
+        Tue, 10 Oct 2023 23:40:21 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a7b91faf40so23808997b3.1;
+        Tue, 10 Oct 2023 23:40:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697006421; x=1697611221; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ia+oudd1GuNYiqxwtg9epIyMsLn5EHS/WlxsAYLBkt0=;
+        b=TzfdFwa27OPrDO2o5JDaXASqh6yBj6+VplOW1O/clL4PvkQGYj1IalVR6FpjIyc3aX
+         wGuFj7nPg5moGM/YvQLeKle9EzepIQ5WwJBA41c2V8rrgM/p7+BCVWme0NDlPc/U/1WU
+         wFz6AoU86y2ciZgF05osF9L2KtAzhMXnAnhxDjhps+VQDP+E/6CnzhEGHODy8doetx/K
+         ugW26/VVSGSmaxQmn20E5iq1s6cUCalywbH4a432s3Elzf/532M0JHsBBd1wPR+m3VmX
+         3LcOP7gel54A+XFEJPXka41bSAJ6nDP0p90Re9SnIAHcd34vsY0t+1Ayxs+p7ClAlUH4
+         VKBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697006421; x=1697611221;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ia+oudd1GuNYiqxwtg9epIyMsLn5EHS/WlxsAYLBkt0=;
+        b=O75mYtAzLOHbrXR3HCKh7J/qc3sI42gP4hxWCLwEO1qc1Czq+A74wUB1ehmOaRi+Qd
+         0Ao5UvvtxHxal5wL5zpc0eJrmcjQpt0pXbbsxVg6fnvPTpx00WRGQq34ozBbvP8O9ECH
+         p7m3z79PM/zDZho6hm2hx95rM/xuZH3ZsJm76dP3ybxJrD2hawpOmFUNpVM94o3ObWTL
+         wHeajlN5y6dZ+itdgoUpncTZrcOXuw5oqq3MXUyC6p13UNbB58D316QWgRk8nErveuPq
+         7T+CjG36OoNsDchKK9Q/g9/A5O6Q6HdlRIilQvhQNUc2u0td9cfjC5S3VITQkI3guNDT
+         OD6A==
+X-Gm-Message-State: AOJu0Yw20nMrn0TGcCmokGG1+ILcxrgfGf44ccdlw4ot4hAR656t4FSs
+        Ctp0w3lsVN6IDagb+MCChc8BPBNT9m3trvcEYVTvYppqq5I=
+X-Google-Smtp-Source: AGHT+IEcWgJK4BD8x+6sy1uoPrlD79VqzqAKEY1iTOZ/yd2cEzYaPtBhc5QYk5e78ezt6rTZEQ/pQMHqRiCFG1B/UT8=
+X-Received: by 2002:a5b:708:0:b0:d84:ce15:8335 with SMTP id
+ g8-20020a5b0708000000b00d84ce158335mr18768805ybq.10.1697006420892; Tue, 10
+ Oct 2023 23:40:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009045636.4143-1-quic_jiangenj@quicinc.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <CA+fyA4RABYNPZZSk9+9U51u53kbSzqgwdi1KDDGRxXi8q5TtxQ@mail.gmail.com>
+In-Reply-To: <CA+fyA4RABYNPZZSk9+9U51u53kbSzqgwdi1KDDGRxXi8q5TtxQ@mail.gmail.com>
+From:   John Salamon <salamonj9@gmail.com>
+Date:   Wed, 11 Oct 2023 17:10:09 +1030
+Message-ID: <CA+fyA4Qsm6ydyxNQL4cLak+1eNYBvOJzJwonts84YTavBKB8vg@mail.gmail.com>
+Subject: Re: uinput: waiting for UI_FF_UPLOAD events will not inform user when
+ allocation is required
+To:     dmitry.torokhov@gmail.com, rydberg@bitmath.org
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 10:26:35AM +0530, Joey Jiao wrote:
-> When modprobe cmds are executed one by one, the final loaded modules
-> are not in fixed sequence as expected.
+Correction, "old" is a pointer to struct ff_effect, which after being
+set to NULL looks like it gets pushed out by uinput on a struct
+uinput_request.
 
-And why does this matter?
 
-If this is important enough to matter it should just be the default,
-and have really good reason for that.  Doing something like this as
-a config option does not make any sense.
-
+On Tue, Oct 10, 2023 at 5:38=E2=80=AFPM John Salamon <salamonj9@gmail.com> =
+wrote:
+>
+> Currently the "fake" input events generated by uinput in response to
+> effect uploads will return an effect with an id that has already been
+> handled by input_ff_upload in ff-core.c, which can modify the effect
+> id. This causes a problem specifically when the effect originally
+> uploaded via the EVIOCSFF ioctl contained an effect with -1, as the
+> userspace code handling UI_FF_UPLOAD receives an effect with an id
+> other than -1, and therefore will not know an allocation was
+> requested.
+>
+> I notice that the "old" field on the ff_effect struct is set to NULL
+> when the -1 id is changed (in input_ff_upload), which can serve as a
+> flag that an allocation was requested. If it is the intention is that
+> uinput users check if old =3D=3D NULL to know when allocations are needed
+> I think uinput documentation should describe this.
+>
+> I first noticed this using python-evdev, see my issue report here:
+> https://github.com/gvalkov/python-evdev/issues/199
