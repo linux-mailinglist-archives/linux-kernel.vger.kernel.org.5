@@ -2,182 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B6B7C6065
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B63FE7C6066
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235207AbjJKWhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 18:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47216 "EHLO
+        id S1376533AbjJKWhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 18:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235192AbjJKWhU (ORCPT
+        with ESMTP id S235205AbjJKWhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 18:37:20 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2560C6;
-        Wed, 11 Oct 2023 15:37:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-        :Date:subject:date:message-id:reply-to;
-        bh=AYz1EPrm1Fqih3X2Rnu7bOSa8uMT4hUtRWPajXMNV2A=; b=W83zvwiucyvyA08VAiLSuRRMWG
-        kMcp8kjSKqz/q615DYRkbMrE3FAJCN8n1L1t/HyM1pn5dxjbZryzY7oe+aygqciPnYqmh9IYbEu5M
-        KAMZDMkiG5WhVd0d5kOfC4665c0Ph9Dt40H7KYJSPu4trtquXfVlEe0Gp+yhkaTe3D0w=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:37416 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qqhp3-0007ag-1r; Wed, 11 Oct 2023 18:36:57 -0400
-Date:   Wed, 11 Oct 2023 18:36:56 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        ilpo.jarvinen@linux.intel.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        LinoSanfilippo@gmx.de, lukas@wunner.de, p.rosenberger@kunbus.com,
-        stable@vger.kernel.org
-Message-Id: <20231011183656.5111ba32ec0c9d43171662a1@hugovil.com>
-In-Reply-To: <20231011181544.7893-2-l.sanfilippo@kunbus.com>
-References: <20231011181544.7893-1-l.sanfilippo@kunbus.com>
-        <20231011181544.7893-2-l.sanfilippo@kunbus.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Wed, 11 Oct 2023 18:37:32 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B55CA
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:37:31 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso51594666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:37:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697063849; x=1697668649; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HLpT5o7Cvx9fo5trMXpfCzqTo5OLTt4P6i5IBd2WXFo=;
+        b=RlPw/dlrBBS3Fhviaa4MmaT4hF9dWdeKdpXoZ2lpJEXNt7z1bmfUgRo7F6sL9U6aGG
+         AFBZbr6bIomV6hSOZI2MI5bgscC5+HDRIcZGBVyHexMoLgx/2GT4olX9O4c6D3t0IxHQ
+         gzg0yTn7/k4ApkvuAk8XvyBWniO4uktxRTD+74MIz4gJ+6r5mPMhRFLUEfvL/qmQj7gm
+         ECSzAL4EvyZ94ZxC1s5dZFI4RdtL1kNsKa7Jz8/Y8++bUBjpKPHw9mJJTpd9Zm2ZX2zW
+         LSmi0yMRs0EJ0DSfc+8HZxXEGFj7ebEbJOw936VCTKxtTLPCHLf9LITXBECl8r0W2dJw
+         yTRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697063849; x=1697668649;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HLpT5o7Cvx9fo5trMXpfCzqTo5OLTt4P6i5IBd2WXFo=;
+        b=Ia2N9tqzJKHmKGvRsOhhp4bIzZK4cnXK1Qc4RhW3ZRoAKFfSP3cuggNs2fNFsiwwNQ
+         NL0gKUTEXQXoUqplBn0Ogr8Aw8b1576PlNUNU34is1/pYj1mXMkY1LX6pMnS0X6LNHvz
+         RESTaHsjHzrVS5/OcS/e6l58KycN8B4g0v9KwMOkhKnmvDakiIMXc22kySHW+Q2C+rFM
+         9B0wU6wTUhM9SwmL1tDD6ySBrWPUmxVmVpnOrhMfGcUDFH0ZXcQmnzutP6LXGXzl8Blm
+         WM1su8eR/Je91SxZurz0FdZU98IOl9yhX7fR/9oGpv60soSkf5xCUHii8IArjrejthf5
+         gZnQ==
+X-Gm-Message-State: AOJu0Yz4dcGfFOeTqS6Ncr15ZN+/j3hNdGPBxEqC7sLdJwRKPQBqtTmU
+        BcrPFlsaS7+0gkpOgYvgfvs=
+X-Google-Smtp-Source: AGHT+IGaXGFBRLUeG8/EETq4utoBiIGb3bTJkZ48YDoiHxUTPf8MrbZkt4zn5r9X/SnODv2VOxLCpw==
+X-Received: by 2002:a17:906:221c:b0:9a5:b876:b1e3 with SMTP id s28-20020a170906221c00b009a5b876b1e3mr18483488ejs.20.1697063849591;
+        Wed, 11 Oct 2023 15:37:29 -0700 (PDT)
+Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
+        by smtp.gmail.com with ESMTPSA id j24-20020a170906051800b00993470682e5sm10250709eja.32.2023.10.11.15.37.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 15:37:28 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 12 Oct 2023 00:37:26 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+Message-ID: <ZScjptMn3fDmMFdg@gmail.com>
+References: <20231010164234.140750-1-ubizjak@gmail.com>
+ <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <CAFULd4Y8NSArDqH=VMy8F97eNosUUGxrBMEyHH=MytjUBSCmjg@mail.gmail.com>
+ <CAHk-=whMr8V_q3dq4iS0dpx4Nssu+aYWz+mA36p2ykA+OXTjXA@mail.gmail.com>
+ <CAFULd4afyYK0-wAOo3oJDapX0iyu86m5+vVn9c35gk8fd6iwRQ@mail.gmail.com>
+ <CAHk-=wiLyA0g3BvQ_nsF2PWi-FDtcNS5+4-ai1FX-xFzTBeTzg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiLyA0g3BvQ_nsF2PWi-FDtcNS5+4-ai1FX-xFzTBeTzg@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH v3 1/6] serial: Do not hold the port lock when setting
- rx-during-tx GPIO
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Oct 2023 20:15:39 +0200
-Lino Sanfilippo <l.sanfilippo@kunbus.com> wrote:
 
-> Both the imx and stm32 driver set the rx-during-tx GPIO in the
-> rs485_config() function by means of gpiod_set_value(). Since rs485_config()
-> is called with the port lock held, this can be an problem in case that
-> setting the GPIO line can sleep (e.g. if a GPIO expander is used which is
-> connected via SPI or I2C).
+* Linus Torvalds <torvalds@linux-foundation.org> wrote:
+
+> > The only drawback is a larger binary size:
+> >
+> >   text    data     bss     dec     hex filename
+> > 25546594        4387686  808452 30742732        1d518cc vmlinux-new.o
+> > 25515256        4387814  808452 30711522        1d49ee2 vmlinux-old.o
+> >
+> > that increases by 31k (0.123%), probably due to 1578 rdgsbase alternatives.
 > 
-> Avoid this issue by setting the GPIO outside of the port lock in the serial
-> core and by using gpiod_set_value_cansleep() instead of gpiod_set_value().
-
-Hi Lino,
-it seems to me that both drivers were already using
-gpiod_set_value_cansleep()? Maybe update your commit
-message if this is the case.
-
+> I'm actually surprised that it increases the text size. The 'rdgsbase'
+> instruction should be smaller than a 'mov %gs', so I would have
+> expected the *data* size to increase due to the alternatives tables,
+> but not the text size.
 > 
-> Since now both the term and the rx-during-tx GPIO are set within the serial
-> core use a common function uart_set_rs485_gpios() to set both.
+> [ Looks around ]
 > 
-> With moving it into the serial core setting the rx-during-tx GPIO is now
-> automatically done for all drivers that support such a GPIO.
-> 
-> Fixes: c54d48543689 ("serial: stm32: Add support for rs485 RX_DURING_TX output GPIO")
-> Fixes: ca530cfa968c ("serial: imx: Add support for RS485 RX_DURING_TX output GPIO")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-> ---
->  drivers/tty/serial/imx.c         |  4 ----
->  drivers/tty/serial/serial_core.c | 10 ++++++----
->  drivers/tty/serial/stm32-usart.c |  5 +----
->  3 files changed, 7 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-> index 13cb78340709..edb2ec6a5567 100644
-> --- a/drivers/tty/serial/imx.c
-> +++ b/drivers/tty/serial/imx.c
-> @@ -1947,10 +1947,6 @@ static int imx_uart_rs485_config(struct uart_port *port, struct ktermios *termio
->  	    rs485conf->flags & SER_RS485_RX_DURING_TX)
->  		imx_uart_start_rx(port);
->  
-> -	if (port->rs485_rx_during_tx_gpio)
-> -		gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
-> -					 !!(rs485conf->flags & SER_RS485_RX_DURING_TX));
-> -
->  	return 0;
->  }
->  
-> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-> index 7bdc21d5e13b..ef0500be3553 100644
-> --- a/drivers/tty/serial/serial_core.c
-> +++ b/drivers/tty/serial/serial_core.c
-> @@ -1391,14 +1391,16 @@ static void uart_sanitize_serial_rs485(struct uart_port *port, struct serial_rs4
->  	memset(rs485->padding1, 0, sizeof(rs485->padding1));
->  }
->  
-> -static void uart_set_rs485_termination(struct uart_port *port,
-> -				       const struct serial_rs485 *rs485)
-> +static void uart_set_rs485_gpios(struct uart_port *port,
-> +				 const struct serial_rs485 *rs485)
->  {
->  	if (!(rs485->flags & SER_RS485_ENABLED))
->  		return;
->  
->  	gpiod_set_value_cansleep(port->rs485_term_gpio,
->  				 !!(rs485->flags & SER_RS485_TERMINATE_BUS));
-> +	gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
-> +				 !!(rs485->flags & SER_RS485_RX_DURING_TX));
->  }
->  
->  static int uart_rs485_config(struct uart_port *port)
-> @@ -1407,7 +1409,7 @@ static int uart_rs485_config(struct uart_port *port)
->  	int ret;
->  
->  	uart_sanitize_serial_rs485(port, rs485);
-> -	uart_set_rs485_termination(port, rs485);
-> +	uart_set_rs485_gpios(port, rs485);
+> Oh. It's because we put the altinstructions into the text section.
+> That's kind of silly, but whatever.
 
-Suggestion: define a new function to handle rx_during_tx, to keep
-uart_set_rs485_termination(), which is more self-documenting than
-uart_set_rs485_gpios().
+Yeah, we should probably move .altinstructions from init-text to .init.data 
+or so? Contains a bunch of other sections too that don't get executed 
+directly ... and in fact has some non-code data structures too, such as ... 
+".apicdrivers". :-/
 
-ex: 
- 	uart_set_rs485_termination(port, rs485);
- +	uart_set_rs485_rx_during_tx(port, rs485);
+I suspect people put all that into .text because it was the easiest place 
+to modify in the x86 linker script, and linker scripts are arguably scary. 
 
-Hugo.
+Will check all this.
 
+Thanks,
 
->  
->  	ret = port->rs485_config(port, NULL, rs485);
->  	if (ret)
-> @@ -1449,7 +1451,7 @@ static int uart_set_rs485_config(struct tty_struct *tty, struct uart_port *port,
->  	if (ret)
->  		return ret;
->  	uart_sanitize_serial_rs485(port, &rs485);
-> -	uart_set_rs485_termination(port, &rs485);
-> +	uart_set_rs485_gpios(port, &rs485);
->  
->  	spin_lock_irqsave(&port->lock, flags);
->  	ret = port->rs485_config(port, &tty->termios, &rs485);
-> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-> index 5e9cf0c48813..8eb13bf055f2 100644
-> --- a/drivers/tty/serial/stm32-usart.c
-> +++ b/drivers/tty/serial/stm32-usart.c
-> @@ -226,10 +226,7 @@ static int stm32_usart_config_rs485(struct uart_port *port, struct ktermios *ter
->  
->  	stm32_usart_clr_bits(port, ofs->cr1, BIT(cfg->uart_enable_bit));
->  
-> -	if (port->rs485_rx_during_tx_gpio)
-> -		gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
-> -					 !!(rs485conf->flags & SER_RS485_RX_DURING_TX));
-> -	else
-> +	if (!port->rs485_rx_during_tx_gpio)
->  		rs485conf->flags |= SER_RS485_RX_DURING_TX;
->  
->  	if (rs485conf->flags & SER_RS485_ENABLED) {
-> -- 
-> 2.40.1
-> 
+	Ingo
