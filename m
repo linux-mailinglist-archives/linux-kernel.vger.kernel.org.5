@@ -2,119 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1C47C50C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B697C50C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346745AbjJKLCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43010 "EHLO
+        id S1346734AbjJKLDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346690AbjJKLCX (ORCPT
+        with ESMTP id S234909AbjJKLCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:02:23 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24E3B6;
-        Wed, 11 Oct 2023 04:02:20 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S58tn6d4Rz6K6FZ;
-        Wed, 11 Oct 2023 19:00:17 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
- 2023 12:02:17 +0100
-Date:   Wed, 11 Oct 2023 12:02:17 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <linux-pci@vger.kernel.org>,
-        Ilpo =?UTF-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 05/10] PCI/ATS: Use FIELD_GET()
-Message-ID: <20231011120217.0000770b@Huawei.com>
-In-Reply-To: <20231010204436.1000644-6-helgaas@kernel.org>
-References: <20231010204436.1000644-1-helgaas@kernel.org>
-        <20231010204436.1000644-6-helgaas@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Wed, 11 Oct 2023 07:02:55 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC94128
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:02:35 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-452c0d60616so542687137.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:02:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1697022154; x=1697626954; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xm0CdxGnQbe0GlEx3+GHVomKZQHiVEeERNIEs1qllzo=;
+        b=VZvMO6mfkwhG4ZN258/KVtS10RK9KNdvy2Tr1pqJIawr8ZgchnndzYkT7iPrYlCDfy
+         Oejz89MSEUcwBzsWyDDanwyyOj7XGMkjSecwi1EQ3piUgar2tceW/XSQqgh/3agSwSO1
+         M7T10caA1HtiP+YQw8JuBpVO5eQgsZ/VfGX0p+NXKPiLzE/UZ+YCX8tcmZQ4jDZS+ybU
+         7a8J/a6Sk4gPRgiTYZGSaBXX0cwnqjCvjqUtmdpMOyTPGIPCFFDlHE0h2UCoJOp1Rlcl
+         bOfOe4UdTBAqPcI/FhXhmxGhFy6oMiPZ8VMemYYGomIonWivw7LGlxJ3TjH4KlbSHnA/
+         DjNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697022154; x=1697626954;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xm0CdxGnQbe0GlEx3+GHVomKZQHiVEeERNIEs1qllzo=;
+        b=YfQYp7aRxu1F/nYNacTMhU0ocqUped52WqfB9xXVxZEATLZ+W5O7ryFhQXadAvIYfp
+         412nR8jYcu+aRZNyBJJetchfNU/rFeNTVUoCoajwgxDhay2JRGuIIhoVwCqEtgIMis1M
+         lOHGf8c7TNN6DJHBVJtD1BUNuxbc2omg5miM6FyssDg7iYvTrYjn6j+9oMbh8pW4idgp
+         xQBhhO2BWfoG2l3NC1Ne3RvYCqnIrRHg0v79G2LErQJI2RBTC8BkiPAbWJbZrNFTyNjG
+         1bVaB9SjlEzSGHKm0LLA4Zb6Cw2GBYSUsa9Ueb9OXeh326/2P9k8OYoTgTW5VMUrTDRj
+         g/1A==
+X-Gm-Message-State: AOJu0YxFlODdK9OIx1tCmWrRAxSSCWUISqZojXNDhstLfpOYcC7pkRXI
+        DL2GPjogX1bAhYFTJhVNwlB/RGUVd4yF4btNrvK/kw==
+X-Google-Smtp-Source: AGHT+IFIHtzjwJekUc0/aKAwYGhSo8Q1f+C4Kna6UDSuc6EpwK7D5p52+dKgEnHoF5qIkm5zUTFf99ptwfMujMMVIFQ=
+X-Received: by 2002:a05:6102:27c8:b0:452:79da:94a with SMTP id
+ t8-20020a05610227c800b0045279da094amr8993764vsu.4.1697022154194; Wed, 11 Oct
+ 2023 04:02:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010170503.657189-1-apatel@ventanamicro.com>
+ <20231010170503.657189-3-apatel@ventanamicro.com> <2023101013-overfeed-online-7f69@gregkh>
+ <CAK9=C2WbW_WvoU59Ba9VrKf5GbbXmMOhB2jsiAp0a=SJYh3d7w@mail.gmail.com> <2023101107-endorse-large-ef50@gregkh>
+In-Reply-To: <2023101107-endorse-large-ef50@gregkh>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Wed, 11 Oct 2023 16:32:22 +0530
+Message-ID: <CAK9=C2XYQ0U9CbuCg6cTf79sSsy+0BxF5mBE0R+E3s9iZFzEWw@mail.gmail.com>
+Subject: Re: [PATCH 2/6] RISC-V: KVM: Change the SBI specification version to v2.0
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Conor Dooley <conor@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 15:44:31 -0500
-Bjorn Helgaas <helgaas@kernel.org> wrote:
+On Wed, Oct 11, 2023 at 12:57=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Oct 11, 2023 at 11:49:14AM +0530, Anup Patel wrote:
+> > On Tue, Oct 10, 2023 at 10:43=E2=80=AFPM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Tue, Oct 10, 2023 at 10:34:59PM +0530, Anup Patel wrote:
+> > > > We will be implementing SBI DBCN extension for KVM RISC-V so let
+> > > > us change the KVM RISC-V SBI specification version to v2.0.
+> > > >
+> > > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > > > ---
+> > > >  arch/riscv/include/asm/kvm_vcpu_sbi.h | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/arch/riscv/include/asm/kvm_vcpu_sbi.h b/arch/riscv/inc=
+lude/asm/kvm_vcpu_sbi.h
+> > > > index cdcf0ff07be7..8d6d4dce8a5e 100644
+> > > > --- a/arch/riscv/include/asm/kvm_vcpu_sbi.h
+> > > > +++ b/arch/riscv/include/asm/kvm_vcpu_sbi.h
+> > > > @@ -11,7 +11,7 @@
+> > > >
+> > > >  #define KVM_SBI_IMPID 3
+> > > >
+> > > > -#define KVM_SBI_VERSION_MAJOR 1
+> > > > +#define KVM_SBI_VERSION_MAJOR 2
+> > >
+> > > What does this number mean?  Who checks it?  Why do you have to keep
+> > > incrementing it?
+> >
+> > This number is the SBI specification version implemented by KVM RISC-V
+> > for the Guest kernel.
+> >
+> > The original sbi_console_putchar() and sbi_console_getchar() are legacy
+> > functions (aka SBI v0.1) which were introduced a few years back along
+> > with the Linux RISC-V port.
+> >
+> > The latest SBI v2.0 specification (which is now frozen) introduces a ne=
+w
+> > SBI debug console extension which replaces legacy sbi_console_putchar()
+> > and sbi_console_getchar() functions with better alternatives.
+> > (Refer, https://github.com/riscv-non-isa/riscv-sbi-doc/releases/downloa=
+d/commit-fe4562532a9cc57e5743b6466946c5e5c98c73ca/riscv-sbi.pdf)
+> >
+> > This series adds SBI debug console implementation in KVM RISC-V
+> > so the SBI specification version advertised by KVM RISC-V must also be
+> > upgraded to v2.0.
+> >
+> > Regarding who checks its, the SBI client drivers in the Linux kernel
+> > will check SBI specification version implemented by higher privilege
+> > mode (M-mode firmware or HS-mode hypervisor) before probing
+> > the SBI extension. For example, the HVC SBI driver (PATCH5)
+> > will ensure SBI spec version to be at least v2.0 before probing
+> > SBI debug console extension.
+>
+> Is this api backwards compatible, or did you just break existing
+> userspace that only expects version 1.0?
 
-> From: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> Use FIELD_GET() to remove dependences on the field position, i.e., the
-> shift value.  No functional change intended.
-> 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-One trivial comment inline. Either way.
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+The legacy sbi_console_putchar() and sbi_console_getchar()
+functions have not changed so it does not break existing
+user-space.
 
-> ---
->  drivers/pci/ats.c             | 7 ++-----
->  include/uapi/linux/pci_regs.h | 1 +
->  2 files changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/pci/ats.c b/drivers/pci/ats.c
-> index f9cc2e10b676..c570892b2090 100644
-> --- a/drivers/pci/ats.c
-> +++ b/drivers/pci/ats.c
-> @@ -9,6 +9,7 @@
->   * Copyright (C) 2011 Advanced Micro Devices,
->   */
->  
-> +#include <linux/bitfield.h>
->  #include <linux/export.h>
->  #include <linux/pci-ats.h>
->  #include <linux/pci.h>
-> @@ -480,8 +481,6 @@ int pci_pasid_features(struct pci_dev *pdev)
->  }
->  EXPORT_SYMBOL_GPL(pci_pasid_features);
->  
-> -#define PASID_NUMBER_SHIFT	8
-> -#define PASID_NUMBER_MASK	(0x1f << PASID_NUMBER_SHIFT)
->  /**
->   * pci_max_pasids - Get maximum number of PASIDs supported by device
->   * @pdev: PCI device structure
-> @@ -503,9 +502,7 @@ int pci_max_pasids(struct pci_dev *pdev)
->  
->  	pci_read_config_word(pdev, pasid + PCI_PASID_CAP, &supported);
->  
-> -	supported = (supported & PASID_NUMBER_MASK) >> PASID_NUMBER_SHIFT;
-> -
-> -	return (1 << supported);
-> +	return (1 << FIELD_GET(PCI_PASID_CAP_WIDTH, supported));
+The new SBI DBCN functions to be implemented by KVM
+user space are:
+sbi_debug_console_write()
+sbi_debug_console_read()
+sbi_debug_console_write_byte()
 
-Could drop the bonus set of brackets..
+>
+> thanks,
+>
+> greg k-h
 
->  }
->  EXPORT_SYMBOL_GPL(pci_max_pasids);
->  #endif /* CONFIG_PCI_PASID */
-> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-> index 6af1f8d53e97..833e5fb40ea5 100644
-> --- a/include/uapi/linux/pci_regs.h
-> +++ b/include/uapi/linux/pci_regs.h
-> @@ -932,6 +932,7 @@
->  #define PCI_PASID_CAP		0x04    /* PASID feature register */
->  #define  PCI_PASID_CAP_EXEC	0x0002	/* Exec permissions Supported */
->  #define  PCI_PASID_CAP_PRIV	0x0004	/* Privilege Mode Supported */
-> +#define  PCI_PASID_CAP_WIDTH	0x1f00
->  #define PCI_PASID_CTRL		0x06    /* PASID control register */
->  #define  PCI_PASID_CTRL_ENABLE	0x0001	/* Enable bit */
->  #define  PCI_PASID_CTRL_EXEC	0x0002	/* Exec permissions Enable */
-
+Regards,
+Anup
