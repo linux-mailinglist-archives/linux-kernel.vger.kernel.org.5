@@ -2,110 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C52A7C4D29
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6B97C4D39
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbjJKIap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 04:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
+        id S1345457AbjJKIdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 04:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbjJKIan (ORCPT
+        with ESMTP id S230090AbjJKIdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 04:30:43 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B606BAF
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:30:41 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-406618d0992so63217535e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:30:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697013040; x=1697617840; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Q89QYEKjqqOkXqmFwAemha7CMh3b6/u3A5jv/kKqyco=;
-        b=xAyM2udP+76S0R2tHE2+PDrLlP0UdXRhNb2Sm4OrmAYWds9uTRRKyN2lhuZ21ZMj+a
-         ZNqp5Zewle7LKAERhEhdtd73Njx+hJlnElbiIs9NIfXiLAOv/oldlahTvlwqnluoT39q
-         cTvS2aUK5/0GlYmsiPlKCCRd0Z+OYS04xbacgNCYfTBz7H4WX10iK6ZrMBAKX/CoNwyh
-         9LSOSMwDWANrR8szzHZq5bjM/dum4MKJ+k9kkOboTgTw4rxg+Q/qQ/pz58oOP0XLJd8Q
-         S92UpF63KgEZ6eN5QDACIvpqwYm2dyJxuvadkD2zwcbUGSAhh+hwuwTZjxs+irEOqtE/
-         Mntg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697013040; x=1697617840;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q89QYEKjqqOkXqmFwAemha7CMh3b6/u3A5jv/kKqyco=;
-        b=YZtJZTeMDEaHZ9o2SZdVfHNgF2GYb4xffBHLgFhBEONeZ/cZVz2SL7PPEe5qjlC8+o
-         iRqi07MJLS66ROMogqQ4EQhY0BRPg8Ra4WAeuoJgz+QoLS5xqy1BLN/INjmbqcGIniPa
-         zJTFgeCidGniJjMS5TtYZ/D0+T5FqpjcDj4Th0HLhu1jdRxoSiTsichi1f0lMS3CHY2M
-         j6wF4u7E9+kyjQOuEKjkRna3+zW2NYxV1Z87PGTp5BJiMbrQbjo6YxEDjSOZPcudwhj2
-         YzP51jDf9Rv9NQ5JzIXQJABIpmb3QX5qoirV45tTY7A1zOg/L3O9NyvtoXjQNcjEnA8g
-         QwXQ==
-X-Gm-Message-State: AOJu0Ywcrh/39T6XYvgrAzulTgcNAOVpX1YbOR3HiFnBbdhIchmue8Wa
-        j7K7Jg7ajuypjYyBRX5e15IQgg==
-X-Google-Smtp-Source: AGHT+IEJmj7FAG63W5BOcG9j3NXU2+CNVoNONMNIj83jrlLyDxWA9M4uPvwB67jJNTTTdbOoGmdHUA==
-X-Received: by 2002:a7b:c5c9:0:b0:403:272:4414 with SMTP id n9-20020a7bc5c9000000b0040302724414mr17978269wmk.0.1697013040063;
-        Wed, 11 Oct 2023 01:30:40 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:de95:eca9:6b1e:b330? ([2a05:6e02:1041:c10:de95:eca9:6b1e:b330])
-        by smtp.googlemail.com with ESMTPSA id 11-20020a05600c230b00b004053a6b8c41sm16036062wmo.12.2023.10.11.01.30.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 01:30:39 -0700 (PDT)
-Message-ID: <a56ea45c-f1cb-4f9a-bfc9-d6af3282b13a@linaro.org>
-Date:   Wed, 11 Oct 2023 10:30:39 +0200
+        Wed, 11 Oct 2023 04:33:18 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4EB694
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:33:15 -0700 (PDT)
+X-QQ-mid: bizesmtp79t1697013121tlm25yi8
+Received: from localhost.localdomain ( [58.240.82.166])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 11 Oct 2023 16:31:58 +0800 (CST)
+X-QQ-SSF: 01200000000000B0B000000A0000000
+X-QQ-FEAT: C46Rb8GPIEdRSjq04tLpVIm4rBqIg5ZDlkNPqFv6Y1o3yJcnC8ZRmxn2xUPbG
+        5aqHDTFlNXyfj9EkRqGPEVLCeEME8D4N5AzoJUCDAT3UjzV5Z0ci7+03OQwZkTZLsqT64MD
+        T3ppIzbnyfGx1e8sgzAkoZrig0RpTYyQD70vxYnOf7jHBi+18d9R9W2t1SXwMwkehA42LUA
+        epsjv/QxJYlIW/iExD63iNaVCDclscyD3+WHo4bG0As7W+VaJPI7hyDtJ8Oa8EPnaD3XSoS
+        KixdppXwX0rrquohicpmRPgk0rYlV8M8UJVN2n6X81C8Q48pgjLEM90fTs3637yXkF2X+5w
+        rwxmvRrV2vPyRNqALNrym8K18haX46uW0fzwoZlSB7pU00ib60YvCmV0srlyg==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 15077306528228941013
+From:   Song Shuai <songshuaishuai@tinylab.org>
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, conor.dooley@microchip.com,
+        lihuafei1@huawei.com, songshuaishuai@tinylab.org,
+        petr.tesarik.ext@huawei.com, duwe@suse.de, ribalda@chromium.org,
+        akpm@linux-foundation.org, keescook@chromium.org, hi@alyssa.is,
+        heiko@sntech.de, alexghiti@rivosinc.com, schwab@suse.de
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org
+Subject: [PATCH V2 0/2] riscv: kexec: cleanup and fixups
+Date:   Wed, 11 Oct 2023 16:31:30 +0800
+Message-Id: <20231011083132.2428720-1-songshuaishuai@tinylab.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clocksource/drivers/arm_arch_timer: Initialize evtstrm
- after finalizing cpucaps
-Content-Language: en-US
-To:     Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, maz@kernel.org, tglx@linutronix.de
-References: <20230907133410.3817800-1-mark.rutland@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20230907133410.3817800-1-mark.rutland@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrsz:qybglogicsvrsz4a-0
+X-Spam-Status: Yes, score=6.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_PBL,RCVD_IN_SBL_CSS,
+        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [43.155.65.254 listed in list.dnswl.org]
+        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
+        *      [43.155.65.254 listed in zen.spamhaus.org]
+        *  3.3 RCVD_IN_PBL RBL: Received via a relay in Spamhaus PBL
+        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
+        *      https://senderscore.org/blocklistlookup/
+        *      [43.155.65.254 listed in bl.score.senderscore.com]
+        * -0.0 RCVD_IN_MSPIKE_H2 RBL: Average reputation (+2)
+        *      [43.155.65.254 listed in wl.mailspike.net]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09/2023 15:34, Mark Rutland wrote:
-> We attempt to initialize each CPU's arch_timer event stream in
-> arch_timer_evtstrm_enable(), which we call from the
-> arch_timer_starting_cpu() cpu hotplug callback which is registered early
-> in boot. As this is registered before we initialize the system cpucaps,
-> the test for ARM64_HAS_ECV will always be false for CPUs present at boot
-> time, and will only be taken into account for CPUs onlined late
-> (including those which are hotplugged out and in again).
-> 
-> Due to this, CPUs present and boot time may not use the intended divider
-> and scale factor to generate the event stream, and may differ from other
-> CPUs.
-> 
-> Correct this by only initializing the event stream after cpucaps have been
-> finalized, registering a separate CPU hotplug callback for the event stream
-> configuration. Since the caps must be finalized by this point, use
-> spus_have_final_cap() to verify this.
-> 
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> ---
+Changes since V1:
+https://lore.kernel.org/linux-riscv/20230907103304.590739-1-songshuaishuai@tinylab.org/
 
-Applied thanks
+- the old Patch2 in V1 had been merged to riscv/fixes, so take it out of this series  
+- Patch1 : replace `.align 2` with `.balign 4` as Andreas suggested
+- Patch2 : fix the conflict caused by commit a72ab0361110 ("riscv/purgatory: Disable CFI")
 
+
+riscv: kexec: Cleanup riscv_kexec_relocate (Patch1)
+==================================================
+
+For readability and simplicity, cleanup the riscv_kexec_relocate code:
+
+ - Re-sort the first 4 `mv` instructions against `riscv_kexec_method()`
+ - Eliminate registers for debugging (s9,s10,s11) and storing const-value (s5,s6)
+ - Replace `jalr` with `jr` for no-link jump
+
+riscv: kexec: Remove -fPIE for PURGATORY_CFLAGS (Patch2 : the Patch3 in V1)
+==========================================================================
+
+With CONFIG_RELOCATABLE enabled, KBUILD_CFLAGS had a -fPIE option
+and then the purgatory/string.o was built to reference _ctype symbol
+via R_RISCV_GOT_HI20 relocations which can't be handled by purgatory.
+
+As a consequence, the kernel failed kexec_load_file() with:
+
+[  880.386562] kexec_image: The entry point of kernel at 0x80200000
+[  880.388650] kexec_image: Unknown rela relocation: 20
+[  880.389173] kexec_image: Error loading purgatory ret=-8
+
+So remove the -fPIE option for PURGATORY_CFLAGS to generate
+R_RISCV_PCREL_HI20 relocations type making puragtory work as it was.
+
+Song Shuai (2):
+  riscv: kexec: Cleanup riscv_kexec_relocate
+  riscv: kexec: Remove -fPIE for PURGATORY_CFLAGS
+
+ arch/riscv/kernel/kexec_relocate.S | 54 +++++++++++++-----------------
+ arch/riscv/purgatory/Makefile      |  4 +++
+ 2 files changed, 28 insertions(+), 30 deletions(-)
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+2.20.1
 
