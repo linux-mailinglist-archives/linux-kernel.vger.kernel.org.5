@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B797C5B06
+	by mail.lfdr.de (Postfix) with ESMTP id BD1397C5B07
 	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235114AbjJKSPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 14:15:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
+        id S234700AbjJKSPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 14:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233335AbjJKSPH (ORCPT
+        with ESMTP id S233342AbjJKSPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 14:15:07 -0400
+        Wed, 11 Oct 2023 14:15:08 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BCB489D
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:15:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C69BC9E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:15:06 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 43AB01516;
-        Wed, 11 Oct 2023 11:15:46 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 545E8150C;
+        Wed, 11 Oct 2023 11:15:47 -0700 (PDT)
 Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A50F23F5A1;
-        Wed, 11 Oct 2023 11:15:04 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B5E143F5A1;
+        Wed, 11 Oct 2023 11:15:05 -0700 (PDT)
 From:   Robin Murphy <robin.murphy@arm.com>
 To:     joro@8bytes.org, will@kernel.org
 Cc:     iommu@lists.linux.dev, jgg@nvidia.com, baolu.lu@linux.intel.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 3/7] iommu: Validate that devices match domains
-Date:   Wed, 11 Oct 2023 19:14:50 +0100
-Message-Id: <4e8bda33aac4021b444e40389648deccf61c1f37.1697047261.git.robin.murphy@arm.com>
+Subject: [PATCH v5 4/7] iommu: Decouple iommu_domain_alloc() from bus ops
+Date:   Wed, 11 Oct 2023 19:14:51 +0100
+Message-Id: <81a0a66d76b3826f1a0b55d7fbaf0986034c7abc.1697047261.git.robin.murphy@arm.com>
 X-Mailer: git-send-email 2.39.2.101.g768bb238c484.dirty
 In-Reply-To: <cover.1697047261.git.robin.murphy@arm.com>
 References: <cover.1697047261.git.robin.murphy@arm.com>
@@ -41,78 +41,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before we can allow drivers to coexist, we need to make sure that one
-driver's domain ops can't misinterpret another driver's dev_iommu_priv
-data. To that end, add a token to the domain so we can remember how it
-was allocated - for now this may as well be the device ops, since they
-still correlate 1:1 with drivers. We can trust ourselves for internal
-default domain attachment, so add checks to cover all the public attach
-interfaces.
+As the final remaining piece of bus-dependent API, iommu_domain_alloc()
+can now take responsibility for the "one iommu_ops per bus" rule for
+itself. It turns out we can't safely make the internal allocation call
+any more group-based or device-based yet - that will have to wait until
+the external callers can pass the right thing - but we can at least get
+as far as deriving "bus ops" based on which driver is actually managing
+devices on the given bus, rather than whichever driver won the race to
+register first.
 
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+This will then leave us able to convert the last of the core internals
+over to the IOMMU-instance model, allow multiple drivers to register and
+actually coexist (modulo the above limitation for unmanaged domain users
+in the short term), and start trying to solve the long-standing
+iommu_probe_device() mess.
+
 Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 
 ---
 
-v4: Cover iommu_attach_device_pasid() as well, and improve robustness
-    against theoretical attempts to attach a noiommu group.
+v5: Rewrite, de-scoping to just retrieve ops under the same assumptions
+    as the existing code.
 ---
- drivers/iommu/iommu.c | 10 ++++++++++
- include/linux/iommu.h |  1 +
- 2 files changed, 11 insertions(+)
+ drivers/iommu/iommu.c | 25 ++++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 7bb92e8b7a49..578292d3b152 100644
+index 578292d3b152..18667dc2ff86 100644
 --- a/drivers/iommu/iommu.c
 +++ b/drivers/iommu/iommu.c
-@@ -2114,6 +2114,7 @@ static struct iommu_domain *__iommu_domain_alloc(const struct iommu_ops *ops,
- 		return NULL;
- 
- 	domain->type = type;
-+	domain->owner = ops;
- 	/*
- 	 * If not already set, assume all sizes by default; the driver
- 	 * may override this later
-@@ -2279,10 +2280,16 @@ struct iommu_domain *iommu_get_dma_domain(struct device *dev)
- static int __iommu_attach_group(struct iommu_domain *domain,
- 				struct iommu_group *group)
- {
-+	struct device *dev;
-+
- 	if (group->domain && group->domain != group->default_domain &&
- 	    group->domain != group->blocking_domain)
- 		return -EBUSY;
- 
-+	dev = iommu_group_first_dev(group);
-+	if (!dev_has_iommu(dev) || dev_iommu_ops(dev) != domain->owner)
-+		return -EINVAL;
-+
- 	return __iommu_group_set_domain(group, domain);
+@@ -2140,12 +2140,31 @@ __iommu_group_domain_alloc(struct iommu_group *group, unsigned int type)
+ 	return __iommu_domain_alloc(dev_iommu_ops(dev), dev, type);
  }
  
-@@ -3480,6 +3487,9 @@ int iommu_attach_device_pasid(struct iommu_domain *domain,
- 	if (!group)
- 		return -ENODEV;
- 
-+	if (!dev_has_iommu(dev) || dev_iommu_ops(dev) != domain->owner)
-+		return -EINVAL;
++static int __iommu_domain_alloc_dev(struct device *dev, void *data)
++{
++	const struct iommu_ops **ops = data;
 +
- 	mutex_lock(&group->mutex);
- 	curr = xa_cmpxchg(&group->pasid_array, pasid, NULL, domain, GFP_KERNEL);
- 	if (curr) {
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 2d2802fb2c74..5c9560813d05 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -99,6 +99,7 @@ struct iommu_domain_geometry {
- struct iommu_domain {
- 	unsigned type;
- 	const struct iommu_domain_ops *ops;
-+	const struct iommu_ops *owner; /* Whose domain_alloc we came from */
- 	unsigned long pgsize_bitmap;	/* Bitmap of page sizes in use */
- 	struct iommu_domain_geometry geometry;
- 	struct iommu_dma_cookie *iova_cookie;
++	if (!dev_has_iommu(dev))
++		return 0;
++
++	if (WARN_ONCE(*ops && *ops != dev_iommu_ops(dev),
++		      "Multiple IOMMU drivers present for bus %s, which the public IOMMU API can't fully support yet. You will still need to disable one or more for this to work, sorry!\n",
++		      dev_bus_name(dev)))
++		return -EBUSY;
++
++	*ops = dev_iommu_ops(dev);
++	return 0;
++}
++
+ struct iommu_domain *iommu_domain_alloc(const struct bus_type *bus)
+ {
+-	if (bus == NULL || bus->iommu_ops == NULL)
++	const struct iommu_ops *ops = NULL;
++	int err = bus_for_each_dev(bus, NULL, &ops, __iommu_domain_alloc_dev);
++
++	if (err || !ops)
+ 		return NULL;
+-	return __iommu_domain_alloc(bus->iommu_ops, NULL,
+-				    IOMMU_DOMAIN_UNMANAGED);
++
++	return __iommu_domain_alloc(ops, NULL, IOMMU_DOMAIN_UNMANAGED);
+ }
+ EXPORT_SYMBOL_GPL(iommu_domain_alloc);
+ 
 -- 
 2.39.2.101.g768bb238c484.dirty
 
