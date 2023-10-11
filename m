@@ -2,144 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 921C57C5871
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 17:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 760F87C587C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 17:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234723AbjJKPtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 11:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52470 "EHLO
+        id S1346913AbjJKPtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 11:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232152AbjJKPtB (ORCPT
+        with ESMTP id S235070AbjJKPtk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 11:49:01 -0400
+        Wed, 11 Oct 2023 11:49:40 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C217B8F;
-        Wed, 11 Oct 2023 08:48:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01487C433C8;
-        Wed, 11 Oct 2023 15:48:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DF0B6;
+        Wed, 11 Oct 2023 08:49:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D78F6C433CA;
+        Wed, 11 Oct 2023 15:49:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697039339;
-        bh=W/be6p+a+sytExHshYPl6x4UDwpZ/OVOY3r0BYpxXeE=;
+        s=k20201202; t=1697039378;
+        bh=XXRDRwSUqwJbcwzOjXaGJFweowuIRcYTDxSXcJxyu2s=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J3JdgNchw9Y0E5naLf3AAVcBChZL9d80rV3amSRbgGxQs0EP8lc7x+UIxs1LwLEX2
-         xD1draTzK6hdFIaX0G/hAwcqTnG7j79LE+TJnr46MPzBnGOnOFL8wh6QLMT9liPi64
-         4GbQtERbJxy844eQeeRb909vmfPDDtI+gNibF4Uh+55KcC9gsB25uTF1noZjpC4fFB
-         /D2T4K/6YaQkBnkd/KPVwERIztcMU8PAtB5sjkxi6GkgbV/2v7VhMwM2j44kIyE97q
-         c8loHIrCjRHTy0MeRP8oaMwvlfz8kNI11/4ZtQIBiYhLGsgeTTtD2bE9xia5rHNytR
-         GsCZJrB+PbTLw==
-Date:   Wed, 11 Oct 2023 17:48:55 +0200
-From:   Alejandro Colomar <alx@kernel.org>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     linux-man@vger.kernel.org, kernel-team@meta.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Matthew House <mattlloydhouse@gmail.com>
-Subject: Re: [PATCH v2] execve.2: execve also returns E2BIG if a string is
- too long
-Message-ID: <ZSbD59Y5y3zNGC1h@debian>
-References: <20231011101134.709b8089@imladris.surriel.com>
+        b=SVa9pwNpg3W88IKEA33vm2tCyp5HYpsSDXbTjVhSkJxK2vbi9AVdHeNX0pLjuTgxb
+         QpNTq2xKWcCIUW0/qQJrM9EWL/CHusnnHa5Zf2g0S6WkTFJJFnTL8PYP5gGgmD+3l5
+         NXIpInmQMnrRif6G8IpDdytanjGNxY+Hgt+4Jx4QBOokSex1hN9Ny8qRGq5uRPyh13
+         UTr7/jeQm6zbPgDdkHxrqVzWMpvZXm/echKXkNpHzp34X6vQ0BJT++SWK9hA6NYtAw
+         OQ4SpKbGRGd5Hvk5G2tPC2xBDkp4Hq5dknA5vnk5SRZ5PbHnBVUbF5zHzUkGsgCFhW
+         MSsAMkvazLsaw==
+Date:   Wed, 11 Oct 2023 08:49:38 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Chandan Babu R <chandan.babu@oracle.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brauner@kernel.org
+Subject: Re: [PATCH] xfs: reinstate the old i_version counter as
+ STATX_CHANGE_COOKIE
+Message-ID: <20231011154938.GL21298@frogsfrogsfrogs>
+References: <20230929-xfs-iversion-v1-1-38587d7b5a52@kernel.org>
+ <b4136500fe6c49ee689dba139ce25824684719f2.camel@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="g/fBSq8QREL4SK6R"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231011101134.709b8089@imladris.surriel.com>
+In-Reply-To: <b4136500fe6c49ee689dba139ce25824684719f2.camel@kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 11, 2023 at 09:09:38AM -0400, Jeff Layton wrote:
+> On Fri, 2023-09-29 at 14:43 -0400, Jeff Layton wrote:
+> > The handling of STATX_CHANGE_COOKIE was moved into generic_fillattr in
+> > commit 0d72b92883c6 (fs: pass the request_mask to generic_fillattr), but
+> > we didn't account for the fact that xfs doesn't call generic_fillattr at
+> > all.
+> > 
+> > Make XFS report its i_version as the STATX_CHANGE_COOKIE.
+> > 
+> > Fixes: 0d72b92883c6 (fs: pass the request_mask to generic_fillattr)
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> > I had hoped to fix this in a better way with the multigrain patches, but
+> > it's taking longer than expected (if it even pans out at this point).
+> > 
+> > Until then, make sure we use XFS's i_version as the STATX_CHANGE_COOKIE,
+> > even if it's bumped due to atime updates. Too many invalidations is
+> > preferable to not enough.
+> > ---
+> >  fs/xfs/xfs_iops.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> > index 1c1e6171209d..2b3b05c28e9e 100644
+> > --- a/fs/xfs/xfs_iops.c
+> > +++ b/fs/xfs/xfs_iops.c
+> > @@ -584,6 +584,11 @@ xfs_vn_getattr(
+> >  		}
+> >  	}
+> >  
+> > +	if ((request_mask & STATX_CHANGE_COOKIE) && IS_I_VERSION(inode)) {
+> > +		stat->change_cookie = inode_query_iversion(inode);
+> > +		stat->result_mask |= STATX_CHANGE_COOKIE;
+> > +	}
+> > +
+> >  	/*
+> >  	 * Note: If you add another clause to set an attribute flag, please
+> >  	 * update attributes_mask below.
+> > 
+> > ---
+> > base-commit: df964ce9ef9fea10cf131bf6bad8658fde7956f6
+> > change-id: 20230929-xfs-iversion-819fa2c18591
+> > 
+> > Best regards,
+> 
+> Ping?
+> 
+> This patch is needed in v6.6 to prevent a regression when serving XFS
+> via NFSD. I'd prefer this go in via the xfs tree, but let me know if
+> you need me to get this merged this via a different one.
 
---g/fBSq8QREL4SK6R
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 11 Oct 2023 17:48:55 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Rik van Riel <riel@surriel.com>
-Cc: linux-man@vger.kernel.org, kernel-team@meta.com,
-	LKML <linux-kernel@vger.kernel.org>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Matthew House <mattlloydhouse@gmail.com>
-Subject: Re: [PATCH v2] execve.2: execve also returns E2BIG if a string is
- too long
+Oh!   Right, this is needed because the "hide a state in the high bit of
+tv_nsec" stuff got reverted in -rc3, correct?  So now nfsd needs some
+way to know that something changed in the file, and better to have too
+many client invalidations than not enough?  And I guess bumping
+i_version will keep nfsd sane for now?
 
-Hi Rik,
+If the answers are [yes, yes, yes] then:
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-On Wed, Oct 11, 2023 at 10:11:34AM -0400, Rik van Riel wrote:
-> The execve syscall returns -E2BIG in 3 cases:
-> - The total length of the command line arguments and environment is too l=
-arge.
-> - An argument or environment string is longer than MAX_ARG_STRLEN.
+--D
 
-Please mention that this includes the terminating NUL, as Matthew
-confirmed.  Otherwise, to user-space programmers, this would usually be
-interpreted as `strlen(p) > MAX_ARG_STRLEN`.
-
-An example program that demonstrates the limit would be very interesting
-here.
-
-Thanks,
-Alex
-
-> - The full path to the executable exceeds MAX_ARG_STRLEN.
->=20
-> Spell out all 3 cases in the -E2BIG section.
->=20
-> Discovered by moving a too large commandline parameter to an environment
-> variable, and finding that things still did not work. Examined the code
-> in fs/exec.c to get the details.
->=20
-> Signed-off-by: Rik van Riel <riel@surriel.com>
-> Suggested-by: Matthew House <mattlloydhouse@gmail.com>
-> ---
->  man2/execve.2 | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/man2/execve.2 b/man2/execve.2
-> index 0d9582492ad1..85c6ec15df3c 100644
-> --- a/man2/execve.2
-> +++ b/man2/execve.2
-> @@ -449,7 +449,8 @@ The total number of bytes in the environment
->  .RI ( envp )
->  and argument list
->  .RI ( argv )
-> -is too large.
-> +is too large, an argument or environment string is too long, or
-> +the full path name to the executable is too long.
->  .TP
->  .B EACCES
->  Search permission is denied on a component of the path prefix of
-> --=20
-> 2.41.0
->=20
->=20
-
---=20
-<https://www.alejandro-colomar.es/>
-
---g/fBSq8QREL4SK6R
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUmw+cACgkQnowa+77/
-2zLwNA//Sk90eRw0DvGnOnqxsPcwUAXNf+nl1y5Cqg+BH2MReSAnm+yawR6Wqxil
-O522iQkFZp9+8xFADkzvvf/769p3YG/DyAtO8/5J4YOoIopbMRm8T/FyoD84eBeW
-cLhJBcd47uAFQueDCzh2veTw8+ZDefkDY9TTulpvj9GVFA8F4xFxLiYKfFkRm4JF
-4v060aAAE5DaSjrD7K4kmXTzLAnJim53FzNjK2y6VKd4stkyle4Ma8rZPcV3QTd/
-2XaFNOayz/ER/R1aGvjECrCgACNvjJR2Fm3KvbKKKG5I+luxbuHqMkcpZq5dsi8m
-R2E3n3KsTiBxxHsOOh0X1CbbxwOI74+v35wCW4Jssk5WPaxQWNfYjB86rQOY3RWY
-uG0E+YZg9tRfLevBaX6mFP5Sag96qHCd5eOzaZXkweBXgm7FYOAjpEdANeikxQ/O
-mwMcUVVvMUOjundI+kJBSGUIlWbpN8OT6f8V8b+7oDjEjvI7x03LEdy3JcQC/x/U
-cgiIFDRfSs8UUQW3svYqzILALe49Ym+zcsjZ3ckfzHJQabJ9YEPHwdelp0FkwZ3L
-TtJW9Ur7W27iGj6EwNtDhiMNz4CUNImuffzn3YcWftMdyUBZph1kbj9hsEfDBVgH
-wpxdtfJ/GdcgkMc8l3n6y+aPHkbbCsHn5wnc6jD6wf0Vxzrpdd0=
-=bumQ
------END PGP SIGNATURE-----
-
---g/fBSq8QREL4SK6R--
+> Thanks,
+> -- 
+> Jeff Layton <jlayton@kernel.org>
