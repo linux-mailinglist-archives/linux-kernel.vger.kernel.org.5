@@ -2,74 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FE47C4759
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 03:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17CA7C4762
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 03:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344619AbjJKBgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 21:36:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
+        id S1344541AbjJKBkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 21:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344233AbjJKBgO (ORCPT
+        with ESMTP id S1344487AbjJKBkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 21:36:14 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E4E9E
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 18:36:12 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so3636a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 18:36:12 -0700 (PDT)
+        Tue, 10 Oct 2023 21:40:22 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C9992
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 18:40:21 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-4526b9078b2so1901490137.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 18:40:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696988170; x=1697592970; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696988420; x=1697593220; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=r+sBQDLcPV7LRqiHSrWLqzfwU0UGHpGELoludilNh5I=;
-        b=Jf2mLqqU72O1vvvClGVjxMHawpdpaZwSRoOw496k8k/cy6eDfK1chsWJFAtmg0/GcF
-         mSsZQewS5nlna3MCskt5DV02ScrwtOBE0Hf4wmRp+Z6wfwq0wohRufg+ulIYYybtSlrI
-         XyzbrxggwaOQqZOdSa87zKihi5ZmU+NQU6zeeeen4VKvlviepIX47+mAWIS8c9zOI8Ti
-         eyFNrq74lKttt58BWHhqJ1tg/RMIZw9OcW4bnHYOYKnAfeCWUfZs0asPNQsoWKmdD56k
-         Yi3sRcIdSkn1GhmRXBKI2wF0W4SA7u2b7Ww8u+64w1dh0GIV7b/p1wS/ww4/7OKnCSOd
-         ENhw==
+        bh=nZUcgeMqW4j0qmYpGncXU307vj/5x4QTOabyiFdBv5Q=;
+        b=FR5JcfRvGpNjE66Fm+yB4tVZJXQMYtfb6GFCkcqckc93lma09vXtEujfrqEBziFyu9
+         3Q3ebFhsdCDoDwznh8DvgPH2PFx9Kxa53AbfEV99etV+TAxBObjp9I4WXjdKSZZY8GwM
+         H8bRurGbPC5vbkaSU7RTWr5Ef7SZ0gNCO4Eb913nNcd/yw6KarQ0C4ZAitbN2bYFVEyv
+         Ud9MmnuS3rAkHRSJsRwnkohOFbvWI1sL5kzL/UbK6mUKNHI/WOOozs7IidimtJn91vaH
+         R8tzZgqPYPDq4A4mHowEnk58qqe5IlfhCmFZDdG/IpJEP1kJ901qO0BaDmootZM3HKVC
+         EVSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696988170; x=1697592970;
+        d=1e100.net; s=20230601; t=1696988420; x=1697593220;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=r+sBQDLcPV7LRqiHSrWLqzfwU0UGHpGELoludilNh5I=;
-        b=FBNpgTwLN/B74hWwlbV7el694oktiScOBuuSOio1ssfmeIsCZlX8IG/ZkA1x3A4qny
-         jcxSsnAp/Oj54K5ydV0SwMIUMzaGMXJgqzfRIcS66xrZoiZgt5b1k9I/D2wkOUHyx0t3
-         981Ms3pmaE8X5ate1U1CuLDWKAmuF1csCfQ5FOlOhCzSHHKfsyjnHQaXbz5HJkSJf3TG
-         WPaina7qL7FnBeDKkR6A42KOqNYQEx4zxS+Inh9LenAqEVYohpY8m4oBI4cffE2B8vLa
-         x8EiTlbdfqFuOyoQVyI7C5shCau7fUvclDibl3L/kEnSSa0zXMW+RcLXTIPa9MyHk0uR
-         /qLQ==
-X-Gm-Message-State: AOJu0YyQwD2ywcvbkriznqeYY/4JhxSYs4kNL5IHpNgWxxUtg85M6n5r
-        oJKlI9vFWIsoGa5cDbyZmw0LIeDyEgDslRZPlLkyyw==
-X-Google-Smtp-Source: AGHT+IGhrcHFTQwfrnQ+bzSFjLtyebXmHAy60HH5YGHyNv84o1BbsJb5OqxH0HX2LRtHoVupJ6g3TkOJx6G0TbGiScQ=
-X-Received: by 2002:a50:d481:0:b0:53d:b53c:946b with SMTP id
- s1-20020a50d481000000b0053db53c946bmr52345edi.2.1696988170406; Tue, 10 Oct
- 2023 18:36:10 -0700 (PDT)
+        bh=nZUcgeMqW4j0qmYpGncXU307vj/5x4QTOabyiFdBv5Q=;
+        b=NnppXKkF320XHs/mHveUS8NwsCBMDKV7ZYTshi+OSjb2tDMdPg1B8IM9fc6YH6kElD
+         2k158JBT69bLyUXII6w3p0r6uQIuPvdSJQDF2JAFrgMqXKyzLpnTIfEJ4B4Rdgi9q0o+
+         xJmnQLPRrcwtGo+G+ufcsUXo59mhBC3dcigRa3+1dxCC1C6TzWdbh9vhJoWplNlxjVgB
+         fDimzxcug3Ne4mnNuuZLjQsR1ANTG0pgCZvzHpyrqVII7aJFiWh5/8PHz//9Sz0XNW+w
+         BZMEJ86PNQfed4j9A2nDec1e69e4KHUrzbXQ2zYmPWElM6LafLCOi66Qcz33GQ6sku0U
+         PMmg==
+X-Gm-Message-State: AOJu0YwEZzSDMGiHOcuLU5VTN1CWAUcH8sHPSnCjliJy9CKPW+dVPmI/
+        5qAEAcVbiqIKgJ/A/1rUw48HQHX+sM0zlsiJvwPNTw==
+X-Google-Smtp-Source: AGHT+IF+HQ9gLlPAlSdTrM1vC6Ktp8o6WJGTzvACfha7LWwpG5A1F2kT3IPJCCDyf0XGjJnGSJ6+wR77xh91rnkIKmQ=
+X-Received: by 2002:a05:6102:3175:b0:44e:9351:e4f0 with SMTP id
+ l21-20020a056102317500b0044e9351e4f0mr14155105vsm.22.1696988419994; Tue, 10
+ Oct 2023 18:40:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <202310110451.rvdUZJEY-lkp@intel.com> <20231010234247.71604-1-namhyung@kernel.org>
-In-Reply-To: <20231010234247.71604-1-namhyung@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 10 Oct 2023 18:35:59 -0700
-Message-ID: <CAP-5=fVpgYJMTgRjQc6zoMYjNkm7T0TSBPXLgz_VWuzwRo_ktg@mail.gmail.com>
-Subject: Re: [PATCH] perf tools: Do not ignore the default vmlinux.h
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        oe-kbuild-all@lists.linux.dev
+References: <20231009130126.697995596@linuxfoundation.org>
+In-Reply-To: <20231009130126.697995596@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 11 Oct 2023 07:10:08 +0530
+Message-ID: <CA+G9fYsQAMM9yntr1EQpJMGWvLWfegUrN0fZH2bpcVdGiOepVA@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/226] 5.10.198-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,38 +74,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 4:42=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
+On Mon, 9 Oct 2023 at 19:06, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> The recent change made it possible to generate vmlinux.h from BTF and
-> to ignore the file.  But we also have a minimal vmlinux.h that will be
-> used by default.  It should not be ignored by GIT.
+> This is the start of the stable review cycle for the 5.10.198 release.
+> There are 226 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Fixes: b7a2d774c9c5 ("perf build: Add ability to build with a generated v=
-mlinux.h")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202310110451.rvdUZJEY-lkp@i=
-ntel.com/
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.198-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Reviewed-by: Ian Rogers <irogers@google.com>
 
-Thanks!
-Ian
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> ---
->  tools/perf/util/bpf_skel/vmlinux/.gitignore | 1 +
->  1 file changed, 1 insertion(+)
->  create mode 100644 tools/perf/util/bpf_skel/vmlinux/.gitignore
->
-> diff --git a/tools/perf/util/bpf_skel/vmlinux/.gitignore b/tools/perf/uti=
-l/bpf_skel/vmlinux/.gitignore
-> new file mode 100644
-> index 000000000000..49502c04183a
-> --- /dev/null
-> +++ b/tools/perf/util/bpf_skel/vmlinux/.gitignore
-> @@ -0,0 +1 @@
-> +!vmlinux.h
-> --
-> 2.42.0.609.gbb76f46606-goog
->
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.10.198-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.10.y
+* git commit: 18c65c1b4996e3f6f8986a05eceaf427355a7a4f
+* git describe: v5.10.197-227-g18c65c1b4996
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.197-227-g18c65c1b4996
+
+## Test Regressions (compared to v5.10.197)
+
+## Metric Regressions (compared to v5.10.197)
+
+## Test Fixes (compared to v5.10.197)
+
+## Metric Fixes (compared to v5.10.197)
+
+## Test result summary
+total: 92938, pass: 73992, fail: 2587, skip: 16291, xfail: 68
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 115 total, 115 passed, 0 failed
+* arm64: 42 total, 42 passed, 0 failed
+* i386: 34 total, 34 passed, 0 failed
+* mips: 27 total, 26 passed, 1 failed
+* parisc: 4 total, 0 passed, 4 failed
+* powerpc: 26 total, 25 passed, 1 failed
+* riscv: 12 total, 11 passed, 1 failed
+* s390: 12 total, 12 passed, 0 failed
+* sh: 14 total, 12 passed, 2 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 38 total, 38 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
