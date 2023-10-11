@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB657C5539
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A6B7C5541
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346756AbjJKNYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57266 "EHLO
+        id S1346831AbjJKNYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231524AbjJKNYI (ORCPT
+        with ESMTP id S232078AbjJKNYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 11 Oct 2023 09:24:08 -0400
-Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027389E;
-        Wed, 11 Oct 2023 06:24:05 -0700 (PDT)
-Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id 27B6E83D9B;
-        Wed, 11 Oct 2023 15:24:04 +0200 (CEST)
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98996A4;
+        Wed, 11 Oct 2023 06:24:06 -0700 (PDT)
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 2658885146;
+        Wed, 11 Oct 2023 15:24:05 +0200 (CEST)
 From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date:   Wed, 11 Oct 2023 15:23:46 +0200
-Subject: [PATCH RFT v8 2/6] ARM: pxa: Convert Spitz LEDs to GPIO
- descriptors
+Date:   Wed, 11 Oct 2023 15:23:47 +0200
+Subject: [PATCH RFT v8 3/6] ARM: pxa: Convert Spitz CF power control to
+ GPIO descriptors
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20231011-pxa-gpio-v8-2-eed08a0fcac8@skole.hr>
+Message-Id: <20231011-pxa-gpio-v8-3-eed08a0fcac8@skole.hr>
 References: <20231011-pxa-gpio-v8-0-eed08a0fcac8@skole.hr>
 In-Reply-To: <20231011-pxa-gpio-v8-0-eed08a0fcac8@skole.hr>
 To:     Daniel Mack <daniel@zonque.org>,
@@ -42,23 +42,24 @@ To:     Daniel Mack <daniel@zonque.org>,
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
         linux-input@vger.kernel.org, linux-spi@vger.kernel.org,
-        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1628;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2281;
  i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=2i2mzqzeK5dKls1oQllrI2VaEq4mqrMjUDr4Yj1khYo=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlJqHoeXC5/SuJUFyiywTo7tDbkBQsYucN+zAMe
- ts4o/BsUE6JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZSah6AAKCRCaEZ6wQi2W
- 4UYHD/49wIrHmeNOmaf6udOGaV3KZpISkBwOENe5AldQXqVIw5VAGUWTUGSvzElbHdFFoXvX5u2
- vPNhfGKDzjEkzNoJ24IxCAF4J8Q5TtgISR1s+/pYB3EQ1+jUJswQy7bDv9oQlQT+ZvL8RgPV2Jc
- 56GQ7LFh4or+WvAVp4RLgs085tF35aR0g75QT6Ovq1+RaUKzbUUyhbcL4WwFPpB5GYXsKl3lVr4
- xhVsnFtSicfeieZTFr6jAe8Jr1O2jZnVU1u6WCSO8rnHLG3FZXVDBnrNtqAQyONwXvQtqaTikW6
- aqfaQxJ5PM0eAZFfsGhCg1GIBzccUrjwzt7doP9F4YhFaE7cRUgsqTU6a22/s/RQtjFRaAgSm0d
- +hFe9aaQutooNStUV3WriC/LXSmddJq7y8IybNfZnyHHhiHkgR9K+pJyQqzYyVcQLjk+tThMx3e
- tGEl2hzV3/V1nkihQWTGFoUrE0HoYyJockIehjpv1IkS2K9CxN7up8UEEtUaPVYCVcwdt5WQL8o
- r2UNgVMJDHfPumDZNjiEu5Wnjehga0jJH+sN/oob1cPK2DfSpkE1k+PiU3txzGUyR1qELKTqEAs
- II5/plNTxcCtsbBi79QsaqjJ7bCFfeo54Q3bUJONdo5pXoJR6lMXLJyOnQnhCW2nqlC4vvjAA5S
- iCno2CxAKmDTxdA==
+ bh=QkQSsJ3TQ9II/e/Z5DOmYaA3FrtfclofZ2z7+nUbYbI=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlJqHoTXopvysPGlJcQLoFxSRfmSwVbMUydhtn/
+ LcfAUKXhiaJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZSah6AAKCRCaEZ6wQi2W
+ 4aSQD/9SqnOQKvrhvxn9UtSJ9kIRdMBpf3IHXJGT7ZCC9YIJ3OFZiNdmI9O0mLfZj6ReHi7I1gq
+ zpwPuh+YeV50cJrDh+/qAEumNVV3ngsDXPuxwEp5s8r3vYpCwDkzfjzxC/288zpoyaI6CaGnLlV
+ bueospfCU36hguvtPCwJFjRQ4Yp3fIEwMvKCAfWA00cZbHCDtc7ovnJhaYc7iKbp1XP+bCh+dJw
+ pnl8h+tfT4+a9AdkPaB9iT3W6nZ2OoZxQninyVFln6TW1IKq15wID0iqRxt+7RfD7/UcAgwNUYv
+ Wp0O7eMzxrS+2gNUItvoBwFpIemnjBcs5dbUX42+pDLg4sRm/cOlqm1LM9ZgoKOGfby6v5Z7Ng4
+ e91+Qz5IwnfOkxlABdiYDgeR9EW5lEAz0cdgUGVEuQmMNTZ68EcDkXHjeHe1auGf0Nm0Sjnqx2Z
+ r3t2PTWM3D/AQsqBafoxWXt9RwalXb9sMT/BTfV2OvZmZvoK4sd/T2K/RmqyKrhoROXpKtYVWCg
+ 2xBVNXGH8vWI80TU/1vDelOiqV4rpl98Cj2XMybGiKD6HcvEuS+PnwuadchgPalWj56pMYJI8qj
+ vrTzz5drFeiOoNgF9WVYPRHudrr19lD8/YKAPO1/cZYXqiqNGUjjtpSAUOWThLpp9hSQ6wnVCLZ
+ RrXl2+on9ckUqJA==
 X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
  fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -70,56 +71,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sharp's Spitz board still uses the legacy GPIO interface for configuring
-its two onboard LEDs.
+Sharp's Spitz board still uses the legacy GPIO interface for controlling
+the power supply to its CF and SD card slots.
 
-Convert them to use the GPIO descriptor interface.
+Convert it to use the GPIO descriptor interface.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
- arch/arm/mach-pxa/spitz.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ arch/arm/mach-pxa/spitz.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
-index 535e2b2e997b..9efd603c715a 100644
+index 9efd603c715a..b72c2916426a 100644
 --- a/arch/arm/mach-pxa/spitz.c
 +++ b/arch/arm/mach-pxa/spitz.c
-@@ -452,16 +452,25 @@ static inline void spitz_keys_init(void) {}
-  * LEDs
+@@ -133,6 +133,10 @@ static unsigned long spitz_pin_config[] __initdata = {
+  * Scoop GPIO expander
   ******************************************************************************/
- #if defined(CONFIG_LEDS_GPIO) || defined(CONFIG_LEDS_GPIO_MODULE)
-+static struct gpiod_lookup_table spitz_led_gpio_table = {
-+	.dev_id = "leds-gpio",
-+	.table = {
-+		GPIO_LOOKUP_IDX("pxa-gpio", SPITZ_GPIO_LED_ORANGE, NULL, 0,
-+				GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP_IDX("pxa-gpio", SPITZ_GPIO_LED_GREEN, NULL, 1,
-+				GPIO_ACTIVE_HIGH),
-+		{ }
-+	}
-+};
+ #if defined(CONFIG_SHARP_SCOOP) || defined(CONFIG_SHARP_SCOOP_MODULE)
++GPIO_LOOKUP_SINGLE(spitz_card_pwr_ctrl_gpio_table, "pxa2xx-mci.0",
++		"sharp-scoop", SPITZ_GPIO_CF_POWER, "cf_power",
++		GPIO_ACTIVE_HIGH);
 +
- static struct gpio_led spitz_gpio_leds[] = {
- 	{
- 		.name			= "spitz:amber:charge",
- 		.default_trigger	= "sharpsl-charge",
--		.gpio			= SPITZ_GPIO_LED_ORANGE,
- 	},
- 	{
- 		.name			= "spitz:green:hddactivity",
- 		.default_trigger	= "disk-activity",
--		.gpio			= SPITZ_GPIO_LED_GREEN,
- 	},
- };
- 
-@@ -480,6 +489,7 @@ static struct platform_device spitz_led_device = {
- 
- static void __init spitz_leds_init(void)
+ /* SCOOP Device #1 */
+ static struct resource spitz_scoop_1_resources[] = {
+ 	[0] = {
+@@ -190,6 +194,7 @@ struct platform_device spitz_scoop_2_device = {
+ static void __init spitz_scoop_init(void)
  {
-+	gpiod_add_lookup_table(&spitz_led_gpio_table);
- 	platform_device_register(&spitz_led_device);
+ 	platform_device_register(&spitz_scoop_1_device);
++	gpiod_add_lookup_table(&spitz_card_pwr_ctrl_gpio_table);
+ 
+ 	/* Akita doesn't have the second SCOOP chip */
+ 	if (!machine_is_akita())
+@@ -201,9 +206,18 @@ static void __maybe_unused spitz_card_pwr_ctrl(uint8_t enable, uint8_t new_cpr)
+ {
+ 	unsigned short cpr;
+ 	unsigned long flags;
++	struct gpio_desc *cf_power;
++
++	cf_power = gpiod_get(&pxa_device_mci.dev, "cf_power", GPIOD_ASIS);
++	if (IS_ERR(cf_power)) {
++		dev_err(&pxa_device_mci.dev,
++				"failed to get power control GPIO with %ld\n",
++				PTR_ERR(cf_power));
++		return;
++	}
+ 
+ 	if (new_cpr & 0x7) {
+-		gpio_set_value(SPITZ_GPIO_CF_POWER, 1);
++		gpiod_direction_output(cf_power, 1);
+ 		mdelay(5);
+ 	}
+ 
+@@ -222,8 +236,10 @@ static void __maybe_unused spitz_card_pwr_ctrl(uint8_t enable, uint8_t new_cpr)
+ 
+ 	if (!(cpr & 0x7)) {
+ 		mdelay(1);
+-		gpio_set_value(SPITZ_GPIO_CF_POWER, 0);
++		gpiod_direction_output(cf_power, 0);
+ 	}
++
++	gpiod_put(cf_power);
  }
+ 
  #else
 
 -- 
