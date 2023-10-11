@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C15F7C4F9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A1B7C4F9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345939AbjJKKH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:07:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53076 "EHLO
+        id S1346020AbjJKKHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234659AbjJKKGv (ORCPT
+        with ESMTP id S234735AbjJKKGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:06:51 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A743F10B
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:06:36 -0700 (PDT)
+        Wed, 11 Oct 2023 06:06:53 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC697115
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:06:37 -0700 (PDT)
 Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S57dq6sYpzrSfP;
-        Wed, 11 Oct 2023 18:03:59 +0800 (CST)
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4S57cF3Jq7zkY4j;
+        Wed, 11 Oct 2023 18:02:37 +0800 (CST)
 Received: from huawei.com (10.67.174.55) by kwepemi500008.china.huawei.com
  (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
- 2023 18:06:33 +0800
+ 2023 18:06:34 +0800
 From:   Jinjie Ruan <ruanjinjie@huawei.com>
 To:     <catalin.marinas@arm.com>, <will@kernel.org>,
         <yuzenghui@huawei.com>, <anshuman.khandual@arm.com>,
@@ -33,9 +33,9 @@ To:     <catalin.marinas@arm.com>, <will@kernel.org>,
         <hewenliang4@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <stable@kernel.org>
 CC:     <ruanjinjie@huawei.com>
-Subject: [PATCH v5.10 RESEND 08/15] arm64: factor out EL1 SSBS emulation hook
-Date:   Wed, 11 Oct 2023 10:05:38 +0000
-Message-ID: <20231011100545.979577-9-ruanjinjie@huawei.com>
+Subject: [PATCH v5.10 RESEND 09/15] arm64: factor insn read out of call_undef_hook()
+Date:   Wed, 11 Oct 2023 10:05:39 +0000
+Message-ID: <20231011100545.979577-10-ruanjinjie@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231011100545.979577-1-ruanjinjie@huawei.com>
 References: <20231011100545.979577-1-ruanjinjie@huawei.com>
@@ -57,42 +57,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mark Rutland <mark.rutland@arm.com>
 
-commit bff8f413c71ffc3cb679dbd9a5632b33af563f9f upstream.
+commit dbfbd87efa79575491af0ba1a87bf567eaea6cae upstream.
 
-Currently call_undef_hook() is used to handle UNDEFINED exceptions from
-EL0 and EL1. As support for deprecated instructions may be enabled
-independently, the handlers for individual instructions are organised as
-a linked list of struct undef_hook which can be manipulated dynamically.
-As this can be manipulated dynamically, the list is protected with a
-raw_spinlock which must be acquired when handling UNDEFINED exceptions
-or when manipulating the list of handlers.
+Subsequent patches will rework EL0 UNDEF handling, removing the need for
+struct undef_hook and call_undef_hook. In preparation for those changes,
+this patch factors the logic for reading user instructions out of
+call_undef_hook() and into a new user_insn_read() helper, matching the
+style of the existing aarch64_insn_read() helper used for reading kernel
+instructions.
 
-This locking is unfortunate as it serialises handling of UNDEFINED
-exceptions, and requires RCU to be enabled for lockdep, requiring the
-use of RCU_NONIDLE() in resume path of cpu_suspend() since commit:
-
-  a2c42bbabbe260b7 ("arm64: spectre: Prevent lockdep splat on v4 mitigation enable path")
-
-The list of UNDEFINED handlers largely consist of handlers for
-exceptions taken from EL0, and the only handler for exceptions taken
-from EL1 handles `MSR SSBS, #imm` on CPUs which feature PSTATE.SSBS but
-lack the corresponding MSR (Immediate) instruction. Other than this we
-never expect to take an UNDEFINED exception from EL1 in normal
-operation.
-
-This patch reworks do_el0_undef() to invoke the EL1 SSBS handler
-directly, relegating call_undef_hook() to only handle EL0 UNDEFs. This
-removes redundant work to iterate the list for EL1 UNDEFs, and removes
-the need for locking, permitting EL1 UNDEFs to be handled in parallel
-without contention.
-
-The RCU_NONIDLE() call in cpu_suspend() will be removed in a subsequent
-patch, as there are other potential issues with the use of
-instrumentable code and RCU in the CPU suspend code.
-
-I've tested this by forcing the detection of SSBS on a CPU that doesn't
-have it, and verifying that the try_emulate_el1_ssbs() callback is
-invoked.
+There should be no functional change as a result of this patch.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
@@ -100,122 +74,96 @@ Cc: James Morse <james.morse@arm.com>
 Cc: Joey Gouly <joey.gouly@arm.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/r/20221019144123.612388-4-mark.rutland@arm.com
+Link: https://lore.kernel.org/r/20221019144123.612388-5-mark.rutland@arm.com
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
 ---
- arch/arm64/include/asm/spectre.h |  2 ++
- arch/arm64/kernel/proton-pack.c  | 26 +++++++-------------------
- arch/arm64/kernel/traps.c        | 15 ++++++++-------
- 3 files changed, 17 insertions(+), 26 deletions(-)
+ arch/arm64/kernel/traps.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm64/include/asm/spectre.h b/arch/arm64/include/asm/spectre.h
-index 4b3a5f050f71..e48afcb69392 100644
---- a/arch/arm64/include/asm/spectre.h
-+++ b/arch/arm64/include/asm/spectre.h
-@@ -18,6 +18,7 @@ enum mitigation_state {
- 	SPECTRE_VULNERABLE,
- };
- 
-+struct pt_regs;
- struct task_struct;
- 
- enum mitigation_state arm64_get_spectre_v2_state(void);
-@@ -33,4 +34,5 @@ enum mitigation_state arm64_get_spectre_bhb_state(void);
- bool is_spectre_bhb_affected(const struct arm64_cpu_capabilities *entry, int scope);
- u8 spectre_bhb_loop_affected(int scope);
- void spectre_bhb_enable_mitigation(const struct arm64_cpu_capabilities *__unused);
-+bool try_emulate_el1_ssbs(struct pt_regs *regs, u32 instr);
- #endif	/* __ASM_SPECTRE_H */
-diff --git a/arch/arm64/kernel/proton-pack.c b/arch/arm64/kernel/proton-pack.c
-index faa8a6bf2376..9c0e9d9eed6e 100644
---- a/arch/arm64/kernel/proton-pack.c
-+++ b/arch/arm64/kernel/proton-pack.c
-@@ -537,10 +537,13 @@ bool has_spectre_v4(const struct arm64_cpu_capabilities *cap, int scope)
- 	return state != SPECTRE_UNAFFECTED;
- }
- 
--static int ssbs_emulation_handler(struct pt_regs *regs, u32 instr)
-+bool try_emulate_el1_ssbs(struct pt_regs *regs, u32 instr)
- {
--	if (user_mode(regs))
--		return 1;
-+	const u32 instr_mask = ~(1U << PSTATE_Imm_shift);
-+	const u32 instr_val = 0xd500401f | PSTATE_SSBS;
-+
-+	if ((instr & instr_mask) != instr_val)
-+		return false;
- 
- 	if (instr & BIT(PSTATE_Imm_shift))
- 		regs->pstate |= PSR_SSBS_BIT;
-@@ -548,19 +551,11 @@ static int ssbs_emulation_handler(struct pt_regs *regs, u32 instr)
- 		regs->pstate &= ~PSR_SSBS_BIT;
- 
- 	arm64_skip_faulting_instruction(regs, 4);
--	return 0;
-+	return true;
- }
- 
--static struct undef_hook ssbs_emulation_hook = {
--	.instr_mask	= ~(1U << PSTATE_Imm_shift),
--	.instr_val	= 0xd500401f | PSTATE_SSBS,
--	.fn		= ssbs_emulation_handler,
--};
--
- static enum mitigation_state spectre_v4_enable_hw_mitigation(void)
- {
--	static bool undef_hook_registered = false;
--	static DEFINE_RAW_SPINLOCK(hook_lock);
- 	enum mitigation_state state;
- 
- 	/*
-@@ -571,13 +566,6 @@ static enum mitigation_state spectre_v4_enable_hw_mitigation(void)
- 	if (state != SPECTRE_MITIGATED || !this_cpu_has_cap(ARM64_SSBS))
- 		return state;
- 
--	raw_spin_lock(&hook_lock);
--	if (!undef_hook_registered) {
--		register_undef_hook(&ssbs_emulation_hook);
--		undef_hook_registered = true;
--	}
--	raw_spin_unlock(&hook_lock);
--
- 	if (spectre_v4_mitigations_off()) {
- 		sysreg_clear_set(sctlr_el1, 0, SCTLR_ELx_DSSBS);
- 		asm volatile(SET_PSTATE_SSBS(1));
 diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index a2dfce6493d2..15d490ef7462 100644
+index 15d490ef7462..be9c7bb89e98 100644
 --- a/arch/arm64/kernel/traps.c
 +++ b/arch/arm64/kernel/traps.c
-@@ -311,12 +311,7 @@ static int call_undef_hook(struct pt_regs *regs)
- 	int (*fn)(struct pt_regs *regs, u32 instr) = NULL;
+@@ -303,25 +303,22 @@ void unregister_undef_hook(struct undef_hook *hook)
+ 	raw_spin_unlock_irqrestore(&undef_lock, flags);
+ }
+ 
+-static int call_undef_hook(struct pt_regs *regs)
++static int user_insn_read(struct pt_regs *regs, u32 *insnp)
+ {
+-	struct undef_hook *hook;
+-	unsigned long flags;
+ 	u32 instr;
+-	int (*fn)(struct pt_regs *regs, u32 instr) = NULL;
  	void __user *pc = (void __user *)instruction_pointer(regs);
  
--	if (!user_mode(regs)) {
--		__le32 instr_le;
--		if (get_kernel_nofault(instr_le, (__force __le32 *)pc))
--			goto exit;
--		instr = le32_to_cpu(instr_le);
--	} else if (compat_thumb_mode(regs)) {
-+	if (compat_thumb_mode(regs)) {
+ 	if (compat_thumb_mode(regs)) {
  		/* 16-bit Thumb instruction */
  		__le16 instr_le;
  		if (get_user(instr_le, (__le16 __user *)pc))
-@@ -409,9 +404,15 @@ void do_el0_undef(struct pt_regs *regs, unsigned long esr)
+-			goto exit;
++			return -EFAULT;
+ 		instr = le16_to_cpu(instr_le);
+ 		if (aarch32_insn_is_wide(instr)) {
+ 			u32 instr2;
  
- void do_el1_undef(struct pt_regs *regs, unsigned long esr)
+ 			if (get_user(instr_le, (__le16 __user *)(pc + 2)))
+-				goto exit;
++				return -EFAULT;
+ 			instr2 = le16_to_cpu(instr_le);
+ 			instr = (instr << 16) | instr2;
+ 		}
+@@ -329,10 +326,20 @@ static int call_undef_hook(struct pt_regs *regs)
+ 		/* 32-bit ARM instruction */
+ 		__le32 instr_le;
+ 		if (get_user(instr_le, (__le32 __user *)pc))
+-			goto exit;
++			return -EFAULT;
+ 		instr = le32_to_cpu(instr_le);
+ 	}
+ 
++	*insnp = instr;
++	return 0;
++}
++
++static int call_undef_hook(struct pt_regs *regs, u32 instr)
++{
++	struct undef_hook *hook;
++	unsigned long flags;
++	int (*fn)(struct pt_regs *regs, u32 instr) = NULL;
++
+ 	raw_spin_lock_irqsave(&undef_lock, flags);
+ 	list_for_each_entry(hook, &undef_hook, node)
+ 		if ((instr & hook->instr_mask) == hook->instr_val &&
+@@ -340,7 +347,7 @@ static int call_undef_hook(struct pt_regs *regs)
+ 			fn = hook->fn;
+ 
+ 	raw_spin_unlock_irqrestore(&undef_lock, flags);
+-exit:
++
+ 	return fn ? fn(regs, instr) : 1;
+ }
+ 
+@@ -392,13 +399,19 @@ void arm64_notify_segfault(unsigned long addr)
+ 
+ void do_el0_undef(struct pt_regs *regs, unsigned long esr)
  {
--	if (call_undef_hook(regs) == 0)
 +	u32 insn;
 +
-+	if (aarch64_insn_read((void *)regs->pc, &insn))
+ 	/* check for AArch32 breakpoint instructions */
+ 	if (!aarch32_break_handler(regs))
+ 		return;
+ 
+-	if (call_undef_hook(regs) == 0)
++	if (user_insn_read(regs, &insn))
 +		goto out_err;
 +
-+	if (try_emulate_el1_ssbs(regs, insn))
++	if (call_undef_hook(regs, insn) == 0)
  		return;
  
 +out_err:
- 	die("Oops - Undefined instruction", regs, esr);
+ 	force_signal_inject(SIGILL, ILL_ILLOPC, regs->pc, 0);
  }
  
 -- 
