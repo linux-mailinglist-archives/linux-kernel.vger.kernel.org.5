@@ -2,156 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA61F7C4984
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B497D7C498C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344249AbjJKF6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 01:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        id S1344293AbjJKGAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 02:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbjJKF6P (ORCPT
+        with ESMTP id S1343606AbjJKGAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 01:58:15 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725568E
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:58:09 -0700 (PDT)
-X-UUID: f9ac824e9f20462685694ea3c5f6a613-20231011
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:d99964bf-05f0-4c51-9c6d-3ec5b34a12e5,IP:5,U
-        RL:0,TC:0,Content:-25,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
-        TION:release,TS:-10
-X-CID-INFO: VERSION:1.1.32,REQID:d99964bf-05f0-4c51-9c6d-3ec5b34a12e5,IP:5,URL
-        :0,TC:0,Content:-25,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:-10
-X-CID-META: VersionHash:5f78ec9,CLOUDID:0252e514-4929-4845-9571-38c601e9c3c9,B
-        ulkID:231011104149YJMBUFJ5,BulkQuantity:2,Recheck:0,SF:66|38|24|17|19|44|1
-        02,TC:nil,Content:0,EDM:5,IP:-2,URL:1,File:nil,Bulk:40,QS:nil,BEC:nil,COL:
-        0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,
-        TF_CID_SPAM_FAS
-X-UUID: f9ac824e9f20462685694ea3c5f6a613-20231011
-X-User: yaolu@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.169)] by mailgw
-        (envelope-from <yaolu@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1008634985; Wed, 11 Oct 2023 13:57:51 +0800
-From:   Lu Yao <yaolu@kylinos.cn>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, rdunlap@infradead.org
-Cc:     hpa@zytor.com, linux-kernel@vger.kernel.org,
-        Lu Yao <yaolu@kylinos.cn>
-Subject: [PATCH v2] x86/msi: Fix compile error caused by GENERIC_MSI_IRQ and X86_LOCAL_APIC
-Date:   Wed, 11 Oct 2023 13:57:49 +0800
-Message-Id: <20231011055749.98840-1-yaolu@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231008082827.279154-1-yaolu@kylinos.cn>
-References: <20231008082827.279154-1-yaolu@kylinos.cn>
+        Wed, 11 Oct 2023 02:00:00 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB108E;
+        Tue, 10 Oct 2023 22:59:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GET8ZhrTYl5TQ5W/uohHOuZFq1oFNF3XGk5OnQ/7puI=; b=mnrb6hzVzIp/WZZib0NAq5mVGe
+        6XVenHEA6rDOCyd+n5PmWNyyio69CHDyfQ19t3ZM6n/lEZBjyOACBbrl8strboMQoVicWpTvZNBnm
+        s3/G2RLn6HIDhAbGCXqLKfL1ueboJOTjZw+d4aiDTjwgH1DLb6PFmf5TxinChgP/up5hEa6VrK7R/
+        aAFAxgHIrzhvSmAiqXBl0eKPQJkLtkmsgftKrKWMtId5iYdHF+XEgY5Qvnpl15CZ2JlPmXsdQD+Ye
+        T6pa4vPuR9KpsqqiQ2cxoIm9c5NbmCZ5Ey5sl1olCTyzCyuEI/FGZvZF9KvVgQ+GgaLcUj93XYEA9
+        NqgJjjYg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qqSGB-00EsqK-13;
+        Wed, 11 Oct 2023 05:59:55 +0000
+Date:   Tue, 10 Oct 2023 22:59:55 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
+Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>, stable@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v8 1/5] block: Don't invalidate pagecache for invalid
+ falloc modes
+Message-ID: <ZSY526AePuS4jZX8@infradead.org>
+References: <20231007012817.3052558-1-sarthakkukreti@chromium.org>
+ <20231007012817.3052558-2-sarthakkukreti@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231007012817.3052558-2-sarthakkukreti@chromium.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When compiling the x86 kernel, if X86_LOCAL_APIC is not enabled but
-GENERIC_MSI_IRQ is selected in '.config', the following compilation
-error will occur:
-
-  include/linux/gpio/driver.h:38:19: error:
-    field 'msiinfo' has incomplete type
-
-  kernel/irq/msi.c:752:5: error: invalid use of incomplete typedef
-    'msi_alloc_info_t' {aka 'struct irq_alloc_info'}
-
-  kernel/irq/msi.c:740:1: error: control reaches end of non-void function
-
-This is because file such as 'kernel/irq/msi.c' only depends on
-'GENERIC_MSI_IRQ', and uses 'struct msi_alloc_info_t'. However,
-this struct depends on 'X86_LOCAL_APIC'.
-
-When enable 'GENERIC_MSI_IRQ' or 'X86_LOCAL_APIC' will select
-'IRQ_DOMAIN_HIERARCHY', so exposing this struct using
-'IRQ_DOMAIN_HIERARCHY' rather than 'X86_LOCAL_APIC'.
-
-Under the above conditions, if 'HPET_TIMER' is selected, the following
-compilation error will occur:
-
-  arch/x86/kernel/hpet.c:550:13: error: ‘x86_vector_domain’ undeclared
-
-  arch/x86/kernel/hpet.c:600:9: error: implicit declaration of
-    function ‘init_irq_alloc_info’
-
-This is because 'x86_vector_domain' is defined in 'kernel/apic/vector.c'
-which is compiled only when 'X86_LOCAL_APIC' is enabled. So use
-'X86_LOCAL_APIC' to expose these code rather than 'GENERIC_MSI_IRQ'.
-
-Signed-off-by: Lu Yao <yaolu@kylinos.cn>
----
-Change from v1:
- * Fix arch/x86/kernel/hpet.c compiled error
-Thanks to Randy for the feedback.
-v1: https://lore.kernel.org/lkml/20231008082827.279154-1-yaolu@kylinos.cn/
-
----
- arch/x86/include/asm/hw_irq.h | 6 +++---
- arch/x86/kernel/hpet.c        | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
-index 551829884734..b02c3cd3c0f6 100644
---- a/arch/x86/include/asm/hw_irq.h
-+++ b/arch/x86/include/asm/hw_irq.h
-@@ -28,7 +28,7 @@
- #include <asm/irq.h>
- #include <asm/sections.h>
- 
--#ifdef	CONFIG_X86_LOCAL_APIC
-+#ifdef	CONFIG_IRQ_DOMAIN_HIERARCHY
- struct irq_data;
- struct pci_dev;
- struct msi_desc;
-@@ -105,10 +105,10 @@ static inline void irq_complete_move(struct irq_cfg *c) { }
- #endif
- 
- extern void apic_ack_edge(struct irq_data *data);
--#else	/*  CONFIG_X86_LOCAL_APIC */
-+#else	/*  CONFIG_IRQ_DOMAIN_HIERARCHY */
- static inline void lock_vector_lock(void) {}
- static inline void unlock_vector_lock(void) {}
--#endif	/* CONFIG_X86_LOCAL_APIC */
-+#endif	/* CONFIG_IRQ_DOMAIN_HIERARCHY */
- 
- /* Statistics */
- extern atomic_t irq_err_count;
-diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
-index 1648aa0204d9..9904c0d46eba 100644
---- a/arch/x86/kernel/hpet.c
-+++ b/arch/x86/kernel/hpet.c
-@@ -52,7 +52,7 @@ unsigned long				hpet_address;
- u8					hpet_blockid; /* OS timer block num */
- bool					hpet_msi_disable;
- 
--#ifdef CONFIG_GENERIC_MSI_IRQ
-+#ifdef CONFIG_X86_LOCAL_APIC
- static DEFINE_PER_CPU(struct hpet_channel *, cpu_hpet_channel);
- static struct irq_domain		*hpet_domain;
- #endif
-@@ -469,7 +469,7 @@ static void __init hpet_legacy_clockevent_register(struct hpet_channel *hc)
- /*
-  * HPET MSI Support
-  */
--#ifdef CONFIG_GENERIC_MSI_IRQ
-+#ifdef CONFIG_X86_LOCAL_APIC
- static void hpet_msi_unmask(struct irq_data *data)
- {
- 	struct hpet_channel *hc = irq_data_get_irq_handler_data(data);
--- 
-2.25.1
+Can yu please send this as a separate fix?
 
