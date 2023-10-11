@@ -2,147 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D837C561A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE727C5628
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346097AbjJKOBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 10:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58816 "EHLO
+        id S1346913AbjJKOC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 10:02:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232412AbjJKOBm (ORCPT
+        with ESMTP id S232202AbjJKOCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 10:01:42 -0400
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C36E90;
-        Wed, 11 Oct 2023 07:01:37 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Vtx5zOd_1697032891;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0Vtx5zOd_1697032891)
-          by smtp.aliyun-inc.com;
-          Wed, 11 Oct 2023 22:01:32 +0800
-Date:   Wed, 11 Oct 2023 22:01:31 +0800
-From:   Dust Li <dust.li@linux.alibaba.com>
-To:     Albert Huang <huangjie.albert@bytedance.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>
-Cc:     "D. Wythe" <alibuda@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Wed, 11 Oct 2023 10:02:53 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BB790;
+        Wed, 11 Oct 2023 07:02:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6597EC433C8;
+        Wed, 11 Oct 2023 14:02:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697032971;
+        bh=8y++Dow0qT4H4v31iD3eDd6yuRGhJL1WFuL2+EdHCQw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nLhar/mHt1fULKI5WRRcM8uDjCXe+qNEBA0GkquKiSy5+2CP4KuA5j9cG01oO9zrL
+         h5+q0O94MLa44OMcxLO+B0q0YkLkMeUrpO6U3c2H+4nTCLSL5nYT6gy7Rff4ZU5rt2
+         8nQgecvjSMJR7MncavIMjp3WSIxvCxhrn8DUmkeAfuNTtD31OIyOGRiJc+MrDt32qQ
+         O3vnj2591HgL2Zq0GQc3nZDuEX4DXao0Qig6SX7f3sDHWDnbHq0fkQZ6nKKD+LXOGT
+         4rgRzCRTHk38gdQkxd3+zHSiZrgLzK7UlB6PrX3sN6f1VxCaJSDgod9cyfxRJuv0/O
+         6K4wutNYJAsDA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-wireless@vger.kernel.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-wpan@vger.kernel.org,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Paolo Abeni <pabeni@redhat.com>,
         Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 net] net/smc: fix smc clc failed issue when netdevice
- not in init_net
-Message-ID: <20231011140131.GL92403@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20231011074851.95280-1-huangjie.albert@bytedance.com>
+        "David S . Miller" <davem@davemloft.net>,
+        Rodolfo Zitellini <rwz@xhero.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v2 01/10] appletalk: make localtalk and ppp support conditional
+Date:   Wed, 11 Oct 2023 16:02:16 +0200
+Message-Id: <20231011140225.253106-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011074851.95280-1-huangjie.albert@bytedance.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 03:48:51PM +0800, Albert Huang wrote:
->If the netdevice is within a container and communicates externally
->through network technologies such as VxLAN, we won't be able to find
->routing information in the init_net namespace. To address this issue,
->we need to add a struct net parameter to the smc_ib_find_route function.
->This allow us to locate the routing information within the corresponding
->net namespace, ensuring the correct completion of the SMC CLC interaction.
->
->Fixes: e5c4744cfb59 ("net/smc: add SMC-Rv2 connection establishment")
->Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+The last localtalk driver is gone now, and ppp support was never fully
+merged, but the code to support them for phase1 networking still calls
+the deprecated .ndo_do_ioctl() helper.
 
->---
-> net/smc/af_smc.c | 3 ++-
-> net/smc/smc_ib.c | 7 ++++---
-> net/smc/smc_ib.h | 2 +-
-> 3 files changed, 7 insertions(+), 5 deletions(-)
->
->diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->index bacdd971615e..7a874da90c7f 100644
->--- a/net/smc/af_smc.c
->+++ b/net/smc/af_smc.c
->@@ -1201,6 +1201,7 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
-> 		(struct smc_clc_msg_accept_confirm_v2 *)aclc;
-> 	struct smc_clc_first_contact_ext *fce =
-> 		smc_get_clc_first_contact_ext(clc_v2, false);
->+	struct net *net = sock_net(&smc->sk);
-> 	int rc;
-> 
-> 	if (!ini->first_contact_peer || aclc->hdr.version == SMC_V1)
->@@ -1210,7 +1211,7 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
-> 		memcpy(ini->smcrv2.nexthop_mac, &aclc->r0.lcl.mac, ETH_ALEN);
-> 		ini->smcrv2.uses_gateway = false;
-> 	} else {
->-		if (smc_ib_find_route(smc->clcsock->sk->sk_rcv_saddr,
->+		if (smc_ib_find_route(net, smc->clcsock->sk->sk_rcv_saddr,
-> 				      smc_ib_gid_to_ipv4(aclc->r0.lcl.gid),
-> 				      ini->smcrv2.nexthop_mac,
-> 				      &ini->smcrv2.uses_gateway))
->diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
->index 9b66d6aeeb1a..89981dbe46c9 100644
->--- a/net/smc/smc_ib.c
->+++ b/net/smc/smc_ib.c
->@@ -193,7 +193,7 @@ bool smc_ib_port_active(struct smc_ib_device *smcibdev, u8 ibport)
-> 	return smcibdev->pattr[ibport - 1].state == IB_PORT_ACTIVE;
-> }
-> 
->-int smc_ib_find_route(__be32 saddr, __be32 daddr,
->+int smc_ib_find_route(struct net *net, __be32 saddr, __be32 daddr,
-> 		      u8 nexthop_mac[], u8 *uses_gateway)
-> {
-> 	struct neighbour *neigh = NULL;
->@@ -205,7 +205,7 @@ int smc_ib_find_route(__be32 saddr, __be32 daddr,
-> 
-> 	if (daddr == cpu_to_be32(INADDR_NONE))
-> 		goto out;
->-	rt = ip_route_output_flow(&init_net, &fl4, NULL);
->+	rt = ip_route_output_flow(net, &fl4, NULL);
-> 	if (IS_ERR(rt))
-> 		goto out;
-> 	if (rt->rt_uses_gateway && rt->rt_gw_family != AF_INET)
->@@ -235,6 +235,7 @@ static int smc_ib_determine_gid_rcu(const struct net_device *ndev,
-> 	if (smcrv2 && attr->gid_type == IB_GID_TYPE_ROCE_UDP_ENCAP &&
-> 	    smc_ib_gid_to_ipv4((u8 *)&attr->gid) != cpu_to_be32(INADDR_NONE)) {
-> 		struct in_device *in_dev = __in_dev_get_rcu(ndev);
->+		struct net *net = dev_net(ndev);
-> 		const struct in_ifaddr *ifa;
-> 		bool subnet_match = false;
-> 
->@@ -248,7 +249,7 @@ static int smc_ib_determine_gid_rcu(const struct net_device *ndev,
-> 		}
-> 		if (!subnet_match)
-> 			goto out;
->-		if (smcrv2->daddr && smc_ib_find_route(smcrv2->saddr,
->+		if (smcrv2->daddr && smc_ib_find_route(net, smcrv2->saddr,
-> 						       smcrv2->daddr,
-> 						       smcrv2->nexthop_mac,
-> 						       &smcrv2->uses_gateway))
->diff --git a/net/smc/smc_ib.h b/net/smc/smc_ib.h
->index 4df5f8c8a0a1..ef8ac2b7546d 100644
->--- a/net/smc/smc_ib.h
->+++ b/net/smc/smc_ib.h
->@@ -112,7 +112,7 @@ void smc_ib_sync_sg_for_device(struct smc_link *lnk,
-> int smc_ib_determine_gid(struct smc_ib_device *smcibdev, u8 ibport,
-> 			 unsigned short vlan_id, u8 gid[], u8 *sgid_index,
-> 			 struct smc_init_info_smcrv2 *smcrv2);
->-int smc_ib_find_route(__be32 saddr, __be32 daddr,
->+int smc_ib_find_route(struct net *net, __be32 saddr, __be32 daddr,
-> 		      u8 nexthop_mac[], u8 *uses_gateway);
-> bool smc_ib_is_valid_local_systemid(void);
-> int smcr_nl_get_device(struct sk_buff *skb, struct netlink_callback *cb);
->-- 
->2.20.1
+In order to better isolate the localtalk and ppp portions of appletalk,
+guard all of the corresponding code with CONFIG_DEV_APPLETALK checks,
+including a preprocessor conditional that guards the internal ioctl calls.
+
+This is currently all dead code and will now be left out of the
+module since this Kconfig symbol is always undefined, but there are
+plans to add a new driver for localtalk again in the future. When
+that happens, the logic can be cleaned up to work properly without
+the need for the ioctl.
+
+Link: https://lore.kernel.org/lkml/790BA488-B6F6-41ED-96EF-2089EF1C043B@xhero.org/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: only add compile-time consitionals rather than removing localtalk
+support entirely
+---
+ include/linux/atalk.h  |  1 -
+ net/appletalk/Makefile |  3 ++-
+ net/appletalk/aarp.c   | 24 +++++++++++++++---------
+ net/appletalk/ddp.c    | 24 +++++++++++++-----------
+ 4 files changed, 30 insertions(+), 22 deletions(-)
+
+diff --git a/include/linux/atalk.h b/include/linux/atalk.h
+index a55bfc6567d01..2896f2ac9568e 100644
+--- a/include/linux/atalk.h
++++ b/include/linux/atalk.h
+@@ -121,7 +121,6 @@ static inline struct atalk_iface *atalk_find_dev(struct net_device *dev)
+ #endif
+ 
+ extern struct atalk_addr *atalk_find_dev_addr(struct net_device *dev);
+-extern struct net_device *atrtr_get_dev(struct atalk_addr *sa);
+ extern int		 aarp_send_ddp(struct net_device *dev,
+ 				       struct sk_buff *skb,
+ 				       struct atalk_addr *sa, void *hwaddr);
+diff --git a/net/appletalk/Makefile b/net/appletalk/Makefile
+index 33164d972d379..410d52f9113e2 100644
+--- a/net/appletalk/Makefile
++++ b/net/appletalk/Makefile
+@@ -5,6 +5,7 @@
+ 
+ obj-$(CONFIG_ATALK) += appletalk.o
+ 
+-appletalk-y			:= aarp.o ddp.o dev.o
++appletalk-y			:= aarp.o ddp.o
+ appletalk-$(CONFIG_PROC_FS)	+= atalk_proc.o
+ appletalk-$(CONFIG_SYSCTL)	+= sysctl_net_atalk.o
++appletalk-$(CONFIG_DEV_APPLETALK) += dev.o
+diff --git a/net/appletalk/aarp.c b/net/appletalk/aarp.c
+index 9fa0b246902be..b15f67293ac4c 100644
+--- a/net/appletalk/aarp.c
++++ b/net/appletalk/aarp.c
+@@ -438,14 +438,17 @@ static struct atalk_addr *__aarp_proxy_find(struct net_device *dev,
+  */
+ static void aarp_send_probe_phase1(struct atalk_iface *iface)
+ {
++#if IS_ENABLED(CONFIG_DEV_APPLETALK)
+ 	struct ifreq atreq;
+ 	struct sockaddr_at *sa = (struct sockaddr_at *)&atreq.ifr_addr;
+ 	const struct net_device_ops *ops = iface->dev->netdev_ops;
+ 
+ 	sa->sat_addr.s_node = iface->address.s_node;
+ 	sa->sat_addr.s_net = ntohs(iface->address.s_net);
+-
+-	/* We pass the Net:Node to the drivers/cards by a Device ioctl. */
++	/*
++	 * We used to pass the address via device ioctl, this has to
++	 *  be rewritten if we bring back localtalk.
++	 */
+ 	if (!(ops->ndo_do_ioctl(iface->dev, &atreq, SIOCSIFADDR))) {
+ 		ops->ndo_do_ioctl(iface->dev, &atreq, SIOCGIFADDR);
+ 		if (iface->address.s_net != htons(sa->sat_addr.s_net) ||
+@@ -455,13 +458,15 @@ static void aarp_send_probe_phase1(struct atalk_iface *iface)
+ 		iface->address.s_net  = htons(sa->sat_addr.s_net);
+ 		iface->address.s_node = sa->sat_addr.s_node;
+ 	}
++#endif
+ }
+ 
+ 
+ void aarp_probe_network(struct atalk_iface *atif)
+ {
+-	if (atif->dev->type == ARPHRD_LOCALTLK ||
+-	    atif->dev->type == ARPHRD_PPP)
++	if (IS_ENABLED(CONFIG_DEV_APPLETALK) &&
++	    (atif->dev->type == ARPHRD_LOCALTLK ||
++	     atif->dev->type == ARPHRD_PPP))
+ 		aarp_send_probe_phase1(atif);
+ 	else {
+ 		unsigned int count;
+@@ -488,8 +493,9 @@ int aarp_proxy_probe_network(struct atalk_iface *atif, struct atalk_addr *sa)
+ 	 * we don't currently support LocalTalk or PPP for proxy AARP;
+ 	 * if someone wants to try and add it, have fun
+ 	 */
+-	if (atif->dev->type == ARPHRD_LOCALTLK ||
+-	    atif->dev->type == ARPHRD_PPP)
++	if (IS_ENABLED(CONFIG_DEV_APPLETALK) &&
++	    (atif->dev->type == ARPHRD_LOCALTLK ||
++	     atif->dev->type == ARPHRD_PPP))
+ 		goto out;
+ 
+ 	/*
+@@ -550,7 +556,8 @@ int aarp_send_ddp(struct net_device *dev, struct sk_buff *skb,
+ 	skb_reset_network_header(skb);
+ 
+ 	/* Check for LocalTalk first */
+-	if (dev->type == ARPHRD_LOCALTLK) {
++	if (IS_ENABLED(CONFIG_DEV_APPLETALK) &&
++	    dev->type == ARPHRD_LOCALTLK) {
+ 		struct atalk_addr *at = atalk_find_dev_addr(dev);
+ 		struct ddpehdr *ddp = (struct ddpehdr *)skb->data;
+ 		int ft = 2;
+@@ -588,7 +595,7 @@ int aarp_send_ddp(struct net_device *dev, struct sk_buff *skb,
+ 	}
+ 
+ 	/* On a PPP link we neither compress nor aarp.  */
+-	if (dev->type == ARPHRD_PPP) {
++	if (IS_ENABLED(CONFIG_DEV_APPLETALK) && dev->type == ARPHRD_PPP) {
+ 		skb->protocol = htons(ETH_P_PPPTALK);
+ 		skb->dev = dev;
+ 		goto sendit;
+@@ -674,7 +681,6 @@ int aarp_send_ddp(struct net_device *dev, struct sk_buff *skb,
+ drop:
+ 	return NET_XMIT_DROP;
+ }
+-EXPORT_SYMBOL(aarp_send_ddp);
+ 
+ /*
+  *	An entry in the aarp unresolved queue has become resolved. Send
+diff --git a/net/appletalk/ddp.c b/net/appletalk/ddp.c
+index 8978fb6212ffb..d4dc6a9fd3b6b 100644
+--- a/net/appletalk/ddp.c
++++ b/net/appletalk/ddp.c
+@@ -473,7 +473,7 @@ static struct atalk_route *atrtr_find(struct atalk_addr *target)
+  * Given an AppleTalk network, find the device to use. This can be
+  * a simple lookup.
+  */
+-struct net_device *atrtr_get_dev(struct atalk_addr *sa)
++static struct net_device *atrtr_get_dev(struct atalk_addr *sa)
+ {
+ 	struct atalk_route *atr = atrtr_find(sa);
+ 	return atr ? atr->dev : NULL;
+@@ -1947,10 +1947,6 @@ static struct packet_type ppptalk_packet_type __read_mostly = {
+ 
+ static unsigned char ddp_snap_id[] = { 0x08, 0x00, 0x07, 0x80, 0x9B };
+ 
+-/* Export symbols for use by drivers when AppleTalk is a module */
+-EXPORT_SYMBOL(atrtr_get_dev);
+-EXPORT_SYMBOL(atalk_find_dev_addr);
+-
+ /* Called by proto.c on kernel start up */
+ static int __init atalk_init(void)
+ {
+@@ -1971,8 +1967,10 @@ static int __init atalk_init(void)
+ 		goto out_sock;
+ 	}
+ 
+-	dev_add_pack(&ltalk_packet_type);
+-	dev_add_pack(&ppptalk_packet_type);
++	if (IS_ENABLED(CONFIG_DEV_APPLETALK)) {
++		dev_add_pack(&ltalk_packet_type);
++		dev_add_pack(&ppptalk_packet_type);
++	}
+ 
+ 	rc = register_netdevice_notifier(&ddp_notifier);
+ 	if (rc)
+@@ -1998,8 +1996,10 @@ static int __init atalk_init(void)
+ out_dev:
+ 	unregister_netdevice_notifier(&ddp_notifier);
+ out_snap:
+-	dev_remove_pack(&ppptalk_packet_type);
+-	dev_remove_pack(&ltalk_packet_type);
++	if (IS_ENABLED(CONFIG_DEV_APPLETALK)) {
++		dev_remove_pack(&ppptalk_packet_type);
++		dev_remove_pack(&ltalk_packet_type);
++	}
+ 	unregister_snap_client(ddp_dl);
+ out_sock:
+ 	sock_unregister(PF_APPLETALK);
+@@ -2026,8 +2026,10 @@ static void __exit atalk_exit(void)
+ 	atalk_proc_exit();
+ 	aarp_cleanup_module();	/* General aarp clean-up. */
+ 	unregister_netdevice_notifier(&ddp_notifier);
+-	dev_remove_pack(&ltalk_packet_type);
+-	dev_remove_pack(&ppptalk_packet_type);
++	if (IS_ENABLED(CONFIG_DEV_APPLETALK)) {
++		dev_remove_pack(&ltalk_packet_type);
++		dev_remove_pack(&ppptalk_packet_type);
++	}
+ 	unregister_snap_client(ddp_dl);
+ 	sock_unregister(PF_APPLETALK);
+ 	proto_unregister(&ddp_proto);
+-- 
+2.39.2
+
