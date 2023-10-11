@@ -2,203 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6847C4ABA
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2577C4AB9
 	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345441AbjJKGf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 02:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47458 "EHLO
+        id S1345164AbjJKGfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 02:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345391AbjJKGfX (ORCPT
+        with ESMTP id S1344555AbjJKGfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 02:35:23 -0400
+        Wed, 11 Oct 2023 02:35:20 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A209B
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:34:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6EF9E
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:34:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697006073;
+        s=mimecast20190719; t=1697006079;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jCqyGdsD5AcMFlVOcceMRSGgH6K4lj4Nvbst1STzOBA=;
-        b=UBpD4shiv31ghvoIqsYg0G5OiMlKgFVP7zkx7KZcBaP0/2SvzUjdAWJVzczjShhTZz56p7
-        tcb7zaDhzQ9bxDkzmIZlivpVZBgXKmQNdc5b+nbBwG1c9Ex5Mr1p8JG5uO+LzgNp5Dfosr
-        lDJ7yGVnNYRPyBbZqEFdr1WpUeEC1YA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=LIAMyUmlxWrNU8XizAtbyVA/LuGwCus231d845v8K30=;
+        b=fTf9KLGVAd4vTH3WTZkXjXCR87pOMZ6HlmxZ3QfqoF3Iz3G27OlHPRu/UPOhTTOZBtEnyU
+        o9M4tKt5XAtQt/cIgARAAYwOgfibhZL17eEAsCsEo1LWaT25zlG+3aFJrYVlI9i2kDRamK
+        PRMPSpuO9pcd1D/U/Zfm5kGa49I6eOQ=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-21-0AQBa5dZOVqIcYrhh5rgJg-1; Wed, 11 Oct 2023 02:34:31 -0400
-X-MC-Unique: 0AQBa5dZOVqIcYrhh5rgJg-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-32980f21cd4so2164591f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:34:31 -0700 (PDT)
+ us-mta-541-VjfaBTLHO4CZKUqt7C_2EA-1; Wed, 11 Oct 2023 02:34:33 -0400
+X-MC-Unique: VjfaBTLHO4CZKUqt7C_2EA-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9b65c46bca8so490343866b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:34:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697006070; x=1697610870;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jCqyGdsD5AcMFlVOcceMRSGgH6K4lj4Nvbst1STzOBA=;
-        b=IiHGgQ2WUHQGadSTz0F++nGs/2sJ4Kszmas/2VQtJ5lPs3q8Cvk+6VBFBoeR778GFI
-         VchHjs2+MXqZ+eRPWqyv04ACpBxh9vda2nFNhdtkaIXIHTgFJWidcgV0xb60DGIFsXCQ
-         eHUFr+lPMGFp7QoND0U765QJ67vSDy8eAc0MgopfceVoFH+ftTAf3YscqUkoC4Xsvoko
-         LfBKbz28AXh0CVEap3jIJYL1JR8NmFLozuW9WXkf8gLqaHVi8dndEKlyqGgUMmna/Ef8
-         xGd2RSsPDDjlaCaVym2yP1r+FHNO3TD1/0ed8Gy12xOM+iSs/IdYh9+myrmBg5CGRkfC
-         HnIQ==
-X-Gm-Message-State: AOJu0YwFe4udAK4+uDfTYgfNmWqUO0dcz5rIr5uP0n84ogSOMyS8QHZo
-        oadQHn34gRllYUGRycElZ2oEbbcXFgPYXhubqOH/y0wgkOEISBes9Mjo+BS3wHCrKs5E8yrPMcn
-        dQ3a+FRoZvYTwZSRxZEAehTBv
-X-Received: by 2002:adf:8bde:0:b0:32c:e910:b69f with SMTP id w30-20020adf8bde000000b0032ce910b69fmr3104148wra.56.1697006070740;
+        d=1e100.net; s=20230601; t=1697006072; x=1697610872;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LIAMyUmlxWrNU8XizAtbyVA/LuGwCus231d845v8K30=;
+        b=V+QOW4wyycSkkIii3IQrNsEodpzh7CLo/VPoG/IFMbnJ5UBUKeNIRbHX2OuvrF8dbf
+         LPYiXgJ/nDyPEmdaTOxQ/OxkPylufMfO1HO1d00e3CLi+4j9rk+U1FRt/ZvEZm7J4cwn
+         3U6Np811d3Y4kJGBp6IrhDXoEKFl0GI/ygjU4ikqedj8s1rWe/tgzcaYJMTBC3iYw9Ix
+         V5gcKtfo9QHQYkyBWg/0jisQWo/XUgbI1v5KFc8NrA3RYMdB0lw3khxAeq3bqtMa/gix
+         gYq/zve1stM+fpj26n+IEExqh95zUo/4yWG+vCgHn4s2ctenr4+y1hT7hM8ttL130d9c
+         9T7Q==
+X-Gm-Message-State: AOJu0Yy4KQ06wkja58Znf5VTV3vQtHCZP9oggFInd4r+s7uVxuVXpOrz
+        0o7dUt5tQCVjR7KJp3HOlWuNzh7F1VExzB8LQ1G/HVco+PHc0BkOJqxxYo067MOolFoyl39XpdP
+        ue5YqlJHTs9531FmW5tmvMNAR/TFkO2wr
+X-Received: by 2002:a17:907:762f:b0:9ae:5898:e278 with SMTP id jy15-20020a170907762f00b009ae5898e278mr18082589ejc.59.1697006071786;
+        Tue, 10 Oct 2023 23:34:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH/Me0EZixeTyeE4zeSZNFscGp8BuKKX9KKpuFaxePk+Ru3aD5eiRwHnkiENimnGBUZNAB1ow==
+X-Received: by 2002:a17:907:762f:b0:9ae:5898:e278 with SMTP id jy15-20020a170907762f00b009ae5898e278mr18082581ejc.59.1697006071530;
+        Tue, 10 Oct 2023 23:34:31 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id pw23-20020a17090720b700b009ae05f9eab3sm9339295ejb.65.2023.10.10.23.34.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Tue, 10 Oct 2023 23:34:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHn1mtTeV29rnDa6jf79nXH+N2kbU5qoJT18TCRs5EkAnTEIyRFWTjc0V0TBxpSuSsrLcZUkg==
-X-Received: by 2002:adf:8bde:0:b0:32c:e910:b69f with SMTP id w30-20020adf8bde000000b0032ce910b69fmr3104127wra.56.1697006070424;
-        Tue, 10 Oct 2023 23:34:30 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id x3-20020a5d4903000000b0031fa870d4b3sm14382993wrq.60.2023.10.10.23.34.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 23:34:29 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 8/8] dt-bindings: display: Add SSD132x OLED controllers
-In-Reply-To: <20231010-headache-hazard-834a3338c473@spud>
-References: <20231009183522.543918-1-javierm@redhat.com>
- <20231009183522.543918-9-javierm@redhat.com>
- <20231010-headache-hazard-834a3338c473@spud>
+Message-ID: <b56b6333-bbea-e451-0ddf-c14622e5a80e@redhat.com>
 Date:   Wed, 11 Oct 2023 08:34:29 +0200
-Message-ID: <87y1g9sm4q.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] vboxsf: Remove the unused variable out_len
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abaci Robot <abaci@linux.alibaba.com>
+References: <20231011025302.84651-1-jiapeng.chong@linux.alibaba.com>
+Content-Language: en-US, nl
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20231011025302.84651-1-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Conor Dooley <conor@kernel.org> writes:
+Hi,
 
-Hello Conor,
+On 10/11/23 04:53, Jiapeng Chong wrote:
+> Variable out_len is not effectively used, so delete it.
+> 
+> fs/vboxsf/utils.c:443:9: warning: variable 'out_len' set but not used
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6776
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-Thanks a lot for your feedback.
+Thanks, patch looks good to me:
 
-> Hey,
->
-> On Mon, Oct 09, 2023 at 08:34:22PM +0200, Javier Martinez Canillas wrote:
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-[...]
+Regards,
 
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +      - enum:
->> +          - solomon,ssd1322
->> +          - solomon,ssd1325
->> +          - solomon,ssd1327
->
-> You don't need the oneOf here here as there is only the enum as a
-> possible item.
+Hans
 
-Indeed. I'll fix that in v2.
-
-> I didn't get anything else in the series, I have to ask - are these
-> controllers not compatible with eachother?
->
-
-They are not, basically the difference is in the default width and height
-for each controller. That's why the width and height fields are optional.
-
-But other than the default resolution, yes the controllers are very much
-the same.
-
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  reset-gpios:
->> +    maxItems: 1
->> +
->> +  # Only required for SPI
->> +  dc-gpios:
->> +    description:
->> +      GPIO connected to the controller's D/C# (Data/Command) pin,
->> +      that is needed for 4-wire SPI to tell the controller if the
->> +      data sent is for a command register or the display data RAM
->> +    maxItems: 1
->> +
->> +  solomon,height:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      Height in pixel of the screen driven by the controller.
->> +      The default value is controller-dependent.
->
-> You probably know better than me, operating in drm stuff, but are there
-> really no generic properties for the weidth/height of a display?
->
-
-There are some common properties, such as the width-mm and height-mm for
-the panel-common:
-
-Documentation/devicetree/bindings/display/panel/panel-common.yaml
-
-But those are to describe the physical area expressed in millimeters and
-the Solomon drivers (the old ssd1307fb fbdev driver and the new ssd130x
-DRM driver for backward compatibility with existing DTB) express the width
-and height in pixels.
-
-That's why are Solomon controller specific properties "solomon,width" and
-"solomon,height".
-
-[...]
-
->> +    then:
->> +      properties:
->> +        width:
->> +          default: 128
->> +        height:
->> +          default: 128
->
-> Unless you did it like this for clarity, 2 of these have the same
-> default width and 2 have the same default height. You could cut this
-> down to a pair of if/then/else on that basis AFAICT.
-> :wq
->
-
-Yes, this was done like that for clarity. Because is easier for someone
-reading the DT binding schema to reason about resolution (width,height)
-for a given SSD132x controller, rather than following the if/else logic.
-
->> +
->> +unevaluatedProperties: false
->> +
->> +examples:
->> +  - |
->> +    i2c {
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +
->> +            ssd1327_i2c: oled@3c {
->
-> This label is unused as far as I can tell. Ditto below.
->
-
-Right, I'll drop those too.
-
-> Cheers,
-> Conor.
->
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+> ---
+>  fs/vboxsf/utils.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/fs/vboxsf/utils.c b/fs/vboxsf/utils.c
+> index 72ac9320e6a3..9515bbf0b54c 100644
+> --- a/fs/vboxsf/utils.c
+> +++ b/fs/vboxsf/utils.c
+> @@ -440,7 +440,6 @@ int vboxsf_nlscpy(struct vboxsf_sbi *sbi, char *name, size_t name_bound_len,
+>  {
+>  	const char *in;
+>  	char *out;
+> -	size_t out_len;
+>  	size_t out_bound_len;
+>  	size_t in_bound_len;
+>  
+> @@ -448,7 +447,6 @@ int vboxsf_nlscpy(struct vboxsf_sbi *sbi, char *name, size_t name_bound_len,
+>  	in_bound_len = utf8_len;
+>  
+>  	out = name;
+> -	out_len = 0;
+>  	/* Reserve space for terminating 0 */
+>  	out_bound_len = name_bound_len - 1;
+>  
+> @@ -469,7 +467,6 @@ int vboxsf_nlscpy(struct vboxsf_sbi *sbi, char *name, size_t name_bound_len,
+>  
+>  		out += nb;
+>  		out_bound_len -= nb;
+> -		out_len += nb;
+>  	}
+>  
+>  	*out = 0;
 
