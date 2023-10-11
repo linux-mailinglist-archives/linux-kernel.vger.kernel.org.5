@@ -2,108 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 264737C6076
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 001387C607C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376516AbjJKWmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 18:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35322 "EHLO
+        id S1376551AbjJKWoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 18:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235211AbjJKWms (ORCPT
+        with ESMTP id S1376394AbjJKWn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 18:42:48 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92389D
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:42:46 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5333fb34be3so695862a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:42:46 -0700 (PDT)
+        Wed, 11 Oct 2023 18:43:57 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3BDA9
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:43:55 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3af609c3e74so185678b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:43:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697064165; x=1697668965; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/yrWMHnU++xrRqYHbtcx/jI9yDnw9HSAqWIYV1wwM4s=;
-        b=fvGP5m6I5GUDE+yqS0XZnaI6tq4FdXF/rNbu6F5SPfatZPGZ8KUlzEaSv94bs0LAoR
-         EyfOeWDB8RVQj4OfdlLJMqJtzoe+/VWiMwS5/gEixZi8ne0yoRiaphpRooDbfqwljxuq
-         euObnl7lxJeZxU2eZptWieE9zLv24wmyzx2qOyqrSZyAsWGyyD3TPsIK5tFkJ/C/JBtr
-         mRpCa7oLh4KQKXdvMd8sTfeoLD7asDzG9NUD/fK8zh31rsmo9g3NRl1JHry29Y+IzfzP
-         xJ42YCRrIK9ksGoUSK++hu8pFrQVA6ZYaoBRS/a5fGVeGSuLV2VVmPgWHjUmuTG4LJIC
-         Gt2Q==
+        d=gmail.com; s=20230601; t=1697064235; x=1697669035; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4nQtgf87q9wy+lFMtA87OIvwbhZSyFLG2WJPnwm1IO8=;
+        b=XoHmDtQWVAEW9BY/ZjYI0bm/Gv7qZnGU1ykIv/gJ6xMCqJTUikEC8R/SEBWgLFfYqU
+         yxKORaCn+2/I7TqgVE5nLun9BGQtWn1/fDkb6tkuJpyB7ZquaSoB/h5Z1DJokeXOGfk2
+         Tbg4qm30JURnAqvQSY3FIv9R6EhikTcxZ5jBJSbWCa9eynB1PQpgRUJnvstpWOJhMvCP
+         YdI12L3RUQNuJQ9QJXh1fr31ZqNa+aSd9cVxPcdxqE4ypf53Zje+T1IOYVSeKOLpZAgO
+         bnowMNNHNdCO25dsS2VuioRGubUcDfDsM+rjjldoYWoqPULGjIkRTOGRQlzjy7q7UdtO
+         VdyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697064165; x=1697668965;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/yrWMHnU++xrRqYHbtcx/jI9yDnw9HSAqWIYV1wwM4s=;
-        b=FDb9rJgztv+SR8aOdKGylBi/F+tDLMaNQyz9OM+TsVcBSWWn7HGRxdNe8NtD7Q1/Lm
-         qLhV6xhYJrinZiyYjQ93/8ezKIz6sNx3ipW+kczEfiDMRECpywU3YnAlPDlwY7DAmhSr
-         oAzhxuPtRJ9mZf7B3XUb/Mpoja8OBTWho9bZuTNoTPX7oSWS0w8wenQ8PFywNKsDk1XA
-         SeZuy3BTlr0K2sgj2S9cc2AWSpFJKtbq8zDumiztsVGJCf9Y82abPCovVWUkvsfo9WXn
-         Q2HerJcN+8aIbcsUksR2CeVw/mAsZ8GtSm5V7jLcniyb9LQlQ8zYVaGib0yKWzblHrVk
-         Akhw==
-X-Gm-Message-State: AOJu0YyGZMZUvyMC1Zif2qsEtapS7tV9/oXyebZCN5BP6Uu2vpZGOt1j
-        QvqsLjuUNYWzvLk8gCKUz38=
-X-Google-Smtp-Source: AGHT+IE+wKu7paim2Fer5C0M2i7Oxkg46ZEcFshD9/tGoguQTUrempImFlqZeALERKQproe4B5Zw/A==
-X-Received: by 2002:aa7:c549:0:b0:525:6e47:10f6 with SMTP id s9-20020aa7c549000000b005256e4710f6mr20151639edr.22.1697064165123;
-        Wed, 11 Oct 2023 15:42:45 -0700 (PDT)
-Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
-        by smtp.gmail.com with ESMTPSA id ba10-20020a0564021aca00b005346bebc2a5sm9336498edb.86.2023.10.11.15.42.44
+        d=1e100.net; s=20230601; t=1697064235; x=1697669035;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4nQtgf87q9wy+lFMtA87OIvwbhZSyFLG2WJPnwm1IO8=;
+        b=NGshTD5C9QICSon58p7lTuRgdtnQfPPcbuAuoMscA0KafRRM3k5uMSXj4lTlfYblZw
+         XYPmciLa51XFPw/l6jBSbTMXMQYsFVRbbK7e2ZwbOpY7yKr0CYLToEoq2HPjjM0atfZj
+         7lR+bWNWTOBeOWzYRLmpvQj7JFYTBnXcdPMwPslVgoebfpWAOw7MpqAJYCK/ZZywUqgb
+         7a1hHmve6dapSiTK9QSrRzMMnuGNGvn1Lkt3RG/+/k0yxP5Q430uZ/nWPU0vdjI7WteZ
+         qXbGTVkOE2vNcgfu/jeZkBn96gSy1tcCBn305Qw3L8kmunToiG7F0otQQ1m9O9uoqVSw
+         h7/A==
+X-Gm-Message-State: AOJu0YxzRzQDtwctGd3cVq+A0wN4eQCqGLl8jpPNn32hcN5kgfiSQjr4
+        /r1DDFhvLVo0HO5QKGrgLqRR36bBBA==
+X-Google-Smtp-Source: AGHT+IGy3DyeB+1WWq1CFNxCzUZHDw8UM/Rrnv/df20qW1FX4POgx4Cv748FNEk7FrlGmhaR2hDnEQ==
+X-Received: by 2002:a05:6808:23c4:b0:3a7:5611:a53b with SMTP id bq4-20020a05680823c400b003a75611a53bmr31917381oib.0.1697064234667;
+        Wed, 11 Oct 2023 15:43:54 -0700 (PDT)
+Received: from citadel.lan ([2600:6c4a:4d3f:6d5c::1019])
+        by smtp.gmail.com with ESMTPSA id o10-20020a0cf4ca000000b0065b129ec0e8sm6132871qvm.57.2023.10.11.15.43.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 15:42:44 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 12 Oct 2023 00:42:42 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Wed, 11 Oct 2023 15:43:54 -0700 (PDT)
+From:   Brian Gerst <brgerst@gmail.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Borislav Petkov <bp@alien8.de>,
-        David Kaplan <david.kaplan@amd.com>, x86@kernel.org,
-        luto@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] Revert "x86/retpoline: Remove
- .text..__x86.return_thunk section"
-Message-ID: <ZSck4mcr6sKS/ob7@gmail.com>
-References: <20231010171020.462211-1-david.kaplan@amd.com>
- <20231010171020.462211-2-david.kaplan@amd.com>
- <20231010174833.GG14330@noisy.programming.kicks-ass.net>
- <20231010195721.p5pb273kevg7ydxz@treble>
- <20231010200429.GIZSWuTWSUM9aId7a6@fat_crate.local>
- <20231010201912.7pjksbparssqu34k@treble>
- <20231010212254.ypk2wdogno55shit@treble>
- <20231011074142.GK14330@noisy.programming.kicks-ass.net>
- <20231011162843.grv6kixw4ides6uw@treble>
- <20231011223513.GH6307@noisy.programming.kicks-ass.net>
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>
+Subject: [PATCH v3 0/3] x86: Clean up fast syscall return validation
+Date:   Wed, 11 Oct 2023 18:43:48 -0400
+Message-ID: <20231011224351.130935-1-brgerst@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011223513.GH6307@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch set cleans up the tests done to determine if a fast syscall
+return instruction can be used to return to userspace.  It converts the
+code to C, and refactors existing code to be more readable.
 
-* Peter Zijlstra <peterz@infradead.org> wrote:
+v3:
+ - Remove patches already applied to -tip.
+ - Keep Xen alternatives on the asm side to skip testing the return
+   value.
+ - Add patch to simplify canonical-RIP test.
 
-> I don't care too deeply, I can't make up my mind either way. But perhaps 
-> keeping the section is easier on all the backports, it's easy to forget a 
-> tiny objtool patch like this.
+v2:
+ - Fix shift value for canonical RIP test and use
+   __is_canonical_address()
 
-If the objtool fix has a Fixes tag that points to one of the major 
-mitigation commits, then it won't be forgotten.
+Brian Gerst (3):
+  x86/entry/64: Convert SYSRET validation tests to C
+  x86/entry/64: Use TASK_SIZE_MAX for canonical RIP test
+  x86/entry/32: Clean up syscall fast exit tests
 
-Arguably the new objtool is more robust against what could happen, so that 
-patch is not going away - and with that patch mainline doesn't have to keep 
-the (now ...) pointless section.
+ arch/x86/entry/common.c        | 91 ++++++++++++++++++++++++----------
+ arch/x86/entry/entry_64.S      | 53 +-------------------
+ arch/x86/include/asm/syscall.h |  2 +-
+ 3 files changed, 67 insertions(+), 79 deletions(-)
 
-Maybe change the commit order around: first add the objtool fix, then 
-remove the section, pointing back to the objtool SHA1 in the very next 
-commit, explaining that the objtool fix enables this change. That makes it 
-all backporting-proof as well.
+-- 
+2.41.0
 
-Thanks,
-
-	Ingo
