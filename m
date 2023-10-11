@@ -2,143 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB357C58EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB297C58ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232701AbjJKQOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 12:14:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58522 "EHLO
+        id S230158AbjJKQO5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Oct 2023 12:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232467AbjJKQOb (ORCPT
+        with ESMTP id S231495AbjJKQOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 12:14:31 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2085.outbound.protection.outlook.com [40.107.244.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C5CB0;
-        Wed, 11 Oct 2023 09:14:27 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fHE2HzGWq4IKZAp9wpMoE+PH6V39kqAvcSqEkwUoix1qbyS4IfSEOTec7Urf7bHtBbg3ivRSspbp0jdmICQiUEYJFLqyxJ3pZplvzl5UTiO2JjqzHvTTyBN1No3YuvRuKFefpimVU5d50ZkIz02gGzx7Z03vGA0zs+m540siHQeVmmPpz00r44NiStWxLhwUp3YFna+lQmn29QOY7BLMJwzctnL8ufKh6o8H37XnhmzeoKVvSbNtuslNqF1IcuzOk5WWOQFB1DD6Gj8uzwwbfCpEOrvRafVFWDWUSszsv56nvv++PncWOUhHELSugxGK/vCrrun0uaPBeNomjL4Zvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DxAr48jZWSkVW5eya7hY1V7YgwubjvBsjmNdEpK6cL8=;
- b=nx0JSRlEQRJ0qgMJFw/D7KulhhaV/K7eh2e9XP1INWlecIiZBQTUgmD0TB9EC3np3KWWtjfFnHaTjUoHfGjAal/5hL3k5d54wgSUOMp0FOHz1GPt6+hinKw6dQYUoAo4ngQ6t6kI8nSiiwh1kpZlJtpJlTMvbRdbuRc2g7SviLEVFmIyB2bQr+FF0W26hmowBdrALD3YuIJcXt2Ic/28wTK3mUyL9VHWu9hJC/5yxGViAtnirqQkBsYWpi8ucQNoOMWvxW0U9VBp69/X8rsR55qn0fMDrmVisq3VnJve4UCQvsE7hDQhvVnKgKm5N3fgmB2ZZxrW4S7X/ujOj9Bp8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DxAr48jZWSkVW5eya7hY1V7YgwubjvBsjmNdEpK6cL8=;
- b=kSqrEGZ9KjFWRnA6Y9Ei5qUBgUteRwNEkm2VZ8oc2aI78QE2fI780QsMLJeDv+e5qPd+JuzqK57+KDA5+XGhLvswzUHOP43pGp1R4aUBUJxbWJoMdyZsl8icHiUrLeAMqUaG8EewA3Bz7z2kAmv2Il6wqo97P4lBom/SCByhjKVQJ/CeI9HtzeE1SSWrve4SMj9s3Q3hS78gaog5qhunJDGGoTRh067M5jPGlZGHNNwCr3M6G8hfPRQn16k14LRKrRZRRxEkWNm5Q4Dm8X4N/BolrJc4xjAzfvzO+VfjwTST90DxmOvZHFFPHeTxTqC4rCWCWclCsYvkbgil2dt4Cg==
-Received: from BL0PR03CA0030.namprd03.prod.outlook.com (2603:10b6:208:2d::43)
- by DM6PR12MB4299.namprd12.prod.outlook.com (2603:10b6:5:223::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.37; Wed, 11 Oct
- 2023 16:14:25 +0000
-Received: from BL6PEPF0001AB56.namprd02.prod.outlook.com
- (2603:10b6:208:2d:cafe::6f) by BL0PR03CA0030.outlook.office365.com
- (2603:10b6:208:2d::43) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.28 via Frontend
- Transport; Wed, 11 Oct 2023 16:14:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BL6PEPF0001AB56.mail.protection.outlook.com (10.167.241.8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.22 via Frontend Transport; Wed, 11 Oct 2023 16:14:25 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 11 Oct
- 2023 09:14:10 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 11 Oct
- 2023 09:14:09 -0700
-Received: from localhost.localdomain (10.127.8.9) by mail.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Wed, 11 Oct 2023 09:14:03 -0700
-From:   Kartik <kkartik@nvidia.com>
-To:     <andy.shevchenko@gmail.com>
-CC:     <akpm@linux-foundation.org>, <andy@kernel.org>, <arnd@arndb.de>,
-        <frank.li@vivo.com>, <jonathanh@nvidia.com>,
-        <keescook@chromium.org>, <kkartik@nvidia.com>,
-        <linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-tegra@vger.kernel.org>,
-        <pdeschrijver@nvidia.com>, <petlozup@nvidia.com>,
-        <pshete@nvidia.com>, <robh@kernel.org>, <stefank@nvidia.com>,
-        <thierry.reding@gmail.com>, <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v4 1/8] mm/util: Introduce kmemdup_array() to duplicate an array
-Date:   Wed, 11 Oct 2023 21:43:59 +0530
-Message-ID: <20231011161359.1368-1-kkartik@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CAHp75VdBh0k_XU3GG99EvgLOztOFWn87QXknpokcDy=29yu=Aw@mail.gmail.com>
-References: <CAHp75VdBh0k_XU3GG99EvgLOztOFWn87QXknpokcDy=29yu=Aw@mail.gmail.com>
+        Wed, 11 Oct 2023 12:14:55 -0400
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF63B0;
+        Wed, 11 Oct 2023 09:14:54 -0700 (PDT)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2777a5e22b5so5642600a91.1;
+        Wed, 11 Oct 2023 09:14:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697040894; x=1697645694;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h6Rqn3iDNwBIeSwR0FMBrCcNoeILKrR52Gk76BQ01wg=;
+        b=WXC0vHJyO+VSup/29i9CdcFvYLb+JRELOswFj/ppx3r6poImLnA9zgK4i9Hxolao3u
+         ty0r9UP/1MBtbpJQSbNfVa8rUBny95nDTBBZJlRWtS3iigYHzQ6OE7G1Y7v5p+7wEIo6
+         9c7myybAlGx7YWZx+WquCOgaCwma6BZlzKl3r7oLoQWJOhGxykM8AZkCJpQaB18IrPBd
+         I7qwzn9vEHIBkbQ1SXnYxJ748xYgAFOLqfhUh/AykyB8vHyfqM29XZZBPMQ8MAEqOy2H
+         qS2zAe1Q/694DvZwyudshz0QLiZju5hmGYF1VuW7aGZaCQLMAn3ibR2EIHE+K0PTrJ1N
+         BGuA==
+X-Gm-Message-State: AOJu0Yyngg/OzAvIAr8NCBOHtfmGOcx+hWATs7Vb7dfwvlE2fzCnFu42
+        CF0sEXeLXppV/1+1emWc7LxQTHlU8ARk9A7txf4=
+X-Google-Smtp-Source: AGHT+IGfQs48C/AEj++/bEHKnuG9iGQnpGYIfydmJxnJBE2zO40oA/uEGx9dJJsNe2wFj0ybJJPszVC4kbOOuZH/Ras=
+X-Received: by 2002:a17:90a:f317:b0:27c:f8f4:fedb with SMTP id
+ ca23-20020a17090af31700b0027cf8f4fedbmr3993191pjb.21.1697040893737; Wed, 11
+ Oct 2023 09:14:53 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230916040915.1075620-1-irogers@google.com> <CAL715WJxmMbXkZSE3p_+ODGxabgrXREsBo9aFu9G9=qkYZeH9A@mail.gmail.com>
+ <CAP-5=fUjNiDv=KQ7t8jqfOfOt5i8HGvt8Vv1hn2-hLxX_Kqucg@mail.gmail.com>
+ <CAL715W+GQuCJm-1SEsNN2qnHghNL1SrzwH9Km5K8UxubEFfYVw@mail.gmail.com>
+ <CAM9d7cgKWi0fafwTxSrKLrVZxcwnhwMGz=oNkAsNdOjDwF6pEA@mail.gmail.com>
+ <CAP-5=fWXXi7Y=6Q0k8oLOZmYon+vvg-k4dNUSex_ijcL8ti9sQ@mail.gmail.com> <CAM9d7cjJxR5bvx5UvywEkwazkzpRZiKo8s7GLWutNiBKYa1J7g@mail.gmail.com>
+In-Reply-To: <CAM9d7cjJxR5bvx5UvywEkwazkzpRZiKo8s7GLWutNiBKYa1J7g@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 11 Oct 2023 09:14:42 -0700
+Message-ID: <CAM9d7ch9cFpe3YzDhKhK0sRMn9pZ3RL+_ONCVB52s+EJgcRdqw@mail.gmail.com>
+Subject: Re: [PATCH v1] perf evlist: Avoid frequency mode for the dummy event
+To:     Ian Rogers <irogers@google.com>
+Cc:     Mingwei Zhang <mizhang@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB56:EE_|DM6PR12MB4299:EE_
-X-MS-Office365-Filtering-Correlation-Id: 15bf3596-9416-450e-7a91-08dbca752328
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WSGWuG7PN5iPck+UH+SeUUhs1vsv4Tm7LECToTuhFu46e5E8aJZjmaVIPF4v+q3OzldgJFxl9ErEQdlWIEOU8y6Ka6VPL4GmCEzVrCQSJqCNe0oS/9fQGHi51aVKnlZfHlD/RtY0w5PBUQbidz6/jzDmMrqxAVg2ZKJqib30VnlLxpmQXuTqGon/+QAHftlMUDXnOmzw+F7DYX6+R1CPl9BqjAAyfVptLZKkv1XQ1cDNToJsgkmgG41iO4r4VYlK+TkwGr20sH/hoiSLXlkCmobw5lghJlMjLR/bZ6vUnjzUmjJQ8fcmsNM87PZ13e90FLQ5WPoDKTnMwepXOXuGuUYIpzytZLwJ/rs03kEKV+Zf5YsQAdUNfhxywgZ2aNCWlNcuZOodSCQM5Mqp60qxRNBGPRzAoN7l7/9cpLuJsc73KgdMmPlLBccp6+jYdNsJWCG2havEgs8BP/Qt/MTIvwx1Bod0Z80MEpj7k+6p9pK3VqpUY/AptEr4cr8K8rK4uFkjeqhW1JjAkFOV0ib6gpgWDuosBTN6LJag0Io2Vxs0f9+nYOiVP/DfgdHUANxsyhZJw3qhk334jvGnivQoSgYZCBgVfjvSFv1f89nrjUXD7vbp8WNiydWQ1Vdgvb6eTA4cLmUzIsqIiPF7yHOTNeTzot21hR2+wjcOOVdYz0kFvwYOWzbkjIr/FWOsVK9BZreoKajMr3DF9y+hkBaYGdINjRzi9wSZ6AbqC+2YrJo+HchaBYfn42r1NlZcq7lO
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(396003)(136003)(39860400002)(230922051799003)(64100799003)(186009)(1800799009)(82310400011)(451199024)(46966006)(36840700001)(40470700004)(40480700001)(4001150100001)(478600001)(40460700003)(426003)(336012)(2616005)(83380400001)(36860700001)(47076005)(1076003)(26005)(70586007)(54906003)(316002)(6916009)(70206006)(7416002)(4326008)(8676002)(5660300002)(41300700001)(53546011)(2906002)(4744005)(8936002)(6666004)(36756003)(356005)(7636003)(86362001)(82740400003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2023 16:14:25.0709
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15bf3596-9416-450e-7a91-08dbca752328
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB56.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4299
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-10-11 at 18:36:11 +0300, Andy Shevchenko wrote:
-> On Wed, Oct 11, 2023 at 2:17 PM Kartik <kkartik@nvidia.com> wrote:
-> >
-> > Introduce function kmemdup_array(), that will copy `n` number of
-> > elements from a given array `src` to `dst`.
-> >
-> > On success, kmemdup_array() returns 0 and copy the elements from `src`
-> > to newly allocated array `dst`, it also stores number of elements
-> > copied from `src` array to `dst_count` parameter. On failure, this
-> > returns a negative integer value containing the error value.
-> 
-> Hmm... Why is it so complicated?
-> 
-> Can it be as simple as
-> 
->   return kmemdup(size_mul());
-> 
-> ?
-> 
-> --
-> With Best Regards,
-> Andy Shevchenko
+On Tue, Oct 3, 2023 at 4:02 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> On Tue, Oct 3, 2023 at 3:36 PM Ian Rogers <irogers@google.com> wrote:
+> > With the PMU disabled, isn't there still a risk of an interrupt still
+> > being in flight? In other words the disable doesn't prevent a race and
+> > we'll catch this on the next timer call to
+> > perf_adjust_freq_unthr_context. I think we can also improve the code
+> > by just disabling a PMU once, we can take advantage of the
+> > perf_event_pmu_context and disable that PMU, iterate its events and
+> > then re-enable the PMU - i.e. no need for an enable and disable per
+> > event. I'll put a patch together.
+>
+> Thanks, I was thinking about that too.  It's also a side effect of
+> the context rewrite.  Maybe we could iterate pmu_ctx's active lists
+> and skip pmus with PERF_PMU_CAP_NO_INTERRUPT and
+> individual non-sampling events.
 
-The idea was to validate the arguments that are passed to kmemdup_array().
-But I agree doing so complicates things here.
+Or we can add pmu_ctx->nr_freq and check it before accessing
+pmu MSRs.
 
-I will update this in the next patchset.
-
-Thanks & Regards,
-Kartik
+Thanks,
+Namhyung
