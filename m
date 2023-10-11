@@ -2,120 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 461897C5EEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EDB7C5EF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233451AbjJKVMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33878 "EHLO
+        id S231912AbjJKVPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 17:15:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231912AbjJKVMC (ORCPT
+        with ESMTP id S233475AbjJKVPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:12:02 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1516F90;
-        Wed, 11 Oct 2023 14:12:01 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id ada2fe7eead31-4547428694dso139115137.3;
-        Wed, 11 Oct 2023 14:12:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697058720; x=1697663520; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YTJgUBsEDgw3EwITvedxgQnZju+WIdhLKpc2sUgYqNQ=;
-        b=cVV9h7EEGGCAYywa/DmknV04wUu6h1ooEyoN5zozoM960obFmvg7bye6Pq5am/GHaU
-         b2RCXyvsoP/i9zCqcamZThoy85n1T6DbQdAgcjzNR8zTr72JgFfqVcuLfYft4errsDOy
-         ELQrIgKevxdl7tMkR3ROWjhivmqe93Q6BAilQL4eq9kSpl9Ec5q+DU4C6n4V5hRmntAQ
-         094Pwlb0prvZW0ViOcet2Et3hEawQfiw9qKupJzPl8GnpXwAhKwwpYg/bIG6y5CUJDHv
-         UlZG/hMEvz3nPslt7FiBanpe2NwAZB6xGfmb+HJbPLYWd6VsPhd7LJhU1ne/GojMASFh
-         ISpQ==
+        Wed, 11 Oct 2023 17:15:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882339E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:14:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697058876;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=q1KVk9ogiduHSj1YLdU62EA0hMWIK2Rnbi2BDgC0/6c=;
+        b=NcjGGnDvC7BUQS5AXSCqdJaMcPwCko4SwYfu8xCp+o2eB2NwhhZD3tigcXvTRpQ+UmNOOW
+        uVpx81pgczms5OKFxSbHBVeBxmsh6mFlFC1Vj/+ChyL1I9hm/df5OFaNkcJtbn6Y2VbtJe
+        U29IZiBNiQ49J47/biljS7+2MHSgMBg=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-64-S0RojSQ0N7Klly0Vdfdvmg-1; Wed, 11 Oct 2023 17:14:35 -0400
+X-MC-Unique: S0RojSQ0N7Klly0Vdfdvmg-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-66cf38c6d97so2616226d6.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:14:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697058720; x=1697663520;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YTJgUBsEDgw3EwITvedxgQnZju+WIdhLKpc2sUgYqNQ=;
-        b=v1Ap2wVZHKGJ6bQkv1cF0UC6iRh+IH7eY303rKeiTTLm6Bb4grRoE6e5jppP7W5IVD
-         tiUvRRZACtOl6LiW52EqSiN7nU9u9Iq8i5mW50WJ2yVgSHXW5oNW5i1A/ZmTXmC3vrLE
-         fJUuG0pQ/eR42jKVqP6cQ0t167Q/eEDjYUDQdjGz0OKqQLBgM1gBjAH7Hw1BHLGzPjsQ
-         2iyeKNPpo0ixMJFJaqhnKDFEBqQ5BhuY8p/9l9xVn14iTvLUwDmFrn1KDsujtPT2c+2N
-         8G9MxHNpCzC+1YoZKgU1X/bANGhoV50Ji+mm4yAver5BSkSbblyhkVQmf6Eg2sHevuK/
-         LA1g==
-X-Gm-Message-State: AOJu0YzcU8QphLaqRx/MGG1jfShZ929b/5QD/dbQC2CR5FMlSryx49Ia
-        4IlYyYdTCRyatM0ez5kkvFA=
-X-Google-Smtp-Source: AGHT+IEhzL9pYbprvKsWEvifTi+UPyiYXdxsRjmaYhVJCJqENioxoFav5oMfnynC3Vjvy6gewz0dFQ==
-X-Received: by 2002:a67:f78b:0:b0:44e:89bd:9a5c with SMTP id j11-20020a67f78b000000b0044e89bd9a5cmr21664572vso.10.1697058720124;
-        Wed, 11 Oct 2023 14:12:00 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i7-20020a67c207000000b004546cebc078sm137359vsj.12.2023.10.11.14.11.58
+        d=1e100.net; s=20230601; t=1697058875; x=1697663675;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q1KVk9ogiduHSj1YLdU62EA0hMWIK2Rnbi2BDgC0/6c=;
+        b=vQW59dnaDTl6XhhWLqC2jdzkFr1vkZT/I1osa1JlrYrU1qUZjELSOc4k5SG7Oh1Ps7
+         ItYVgmL6a30oBBDso1gOFp6IaYnLkaWfQnJ2JwXtpDFJcCDpUKBpZ75scn6Y81qoDNPZ
+         KGwjhF4fQI1v1PEZCLB3RJIdXle+vefCdCaoIvRmPTfvrrybG7ItEKgsjSswoaEPQNyU
+         xo+fz/3ILUBF/RIIUPQZGnRTS2gd76Y+x51uxBChrDitbu/j62KOl0PkyKC0sf4LpFAg
+         zact57sMHtbhQnx68ozORJFJ/L9/BAUIdQEPZ7ZUvHPGpB1cFh/f1xJtSkr8PTSzkOFm
+         1zbg==
+X-Gm-Message-State: AOJu0YxNiJI0RY8TEWpiHZwvH+h6v8tMbNxk/Bs4YQ1yUL1iKU2RIef2
+        lx5qn7CLypvdA0ZfN1dQvQ1GYB9dextFsVMgqx67C1969hVM/J/dSR+kgiYs5H2rxfVWKILEVV0
+        iRrEblA0iZfBQ2FLaGI3IMh+R
+X-Received: by 2002:a05:6214:29e5:b0:66d:132b:1c96 with SMTP id jv5-20020a05621429e500b0066d132b1c96mr259832qvb.28.1697058874929;
+        Wed, 11 Oct 2023 14:14:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGsnLbiaKP7Wfp/etk2peqwvyRGGC13O75tTXWZ2+u8ZqBEXIg/SzoYmUfjGWR7gq5YrQUrWQ==
+X-Received: by 2002:a05:6214:29e5:b0:66d:132b:1c96 with SMTP id jv5-20020a05621429e500b0066d132b1c96mr259818qvb.28.1697058874644;
+        Wed, 11 Oct 2023 14:14:34 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id z14-20020a0cf24e000000b0064f4e0b2089sm5958669qvl.33.2023.10.11.14.14.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 14:11:59 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 11 Oct 2023 14:11:57 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Luca Weiss <luca@z3ntu.xyz>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
+        Wed, 11 Oct 2023 14:14:34 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 16:14:32 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matti =?iso-8859-1?Q?Lehtim=E4ki?= <matti.lehtimaki@gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: watchdog: qcom-wdt: Add MSM8226 and
- MSM8974 compatibles
-Message-ID: <8f6c897d-d835-46eb-b2b6-dc4561c62749@roeck-us.net>
-References: <20231011-msm8226-msm8974-watchdog-v1-0-2c472818fbce@z3ntu.xyz>
- <20231011-msm8226-msm8974-watchdog-v1-1-2c472818fbce@z3ntu.xyz>
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v3 13/15] firmware: qcom: tzmem: enable SHM Bridge support
+Message-ID: <fr4jwbacvcheqtxy6php2u6wr72mqm5hgat6xwmxhijee7j6sk@azlu42eod6b4>
+References: <20231009153427.20951-1-brgl@bgdev.pl>
+ <20231009153427.20951-14-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231011-msm8226-msm8974-watchdog-v1-1-2c472818fbce@z3ntu.xyz>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231009153427.20951-14-brgl@bgdev.pl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 06:33:13PM +0200, Luca Weiss wrote:
-> From: Matti Lehtimäki <matti.lehtimaki@gmail.com>
+On Mon, Oct 09, 2023 at 05:34:25PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> Add compatibles for the MSM8226 and MSM8974 platforms to the Qualcomm
-> watchdog binding.
+> Add a new Kconfig option for selecting the SHM Bridge mode of operation
+> for the TrustZone memory allocator.
 > 
-> Signed-off-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
+> If enabled at build-time, it will still be checked for availability at
+> run-time. If the architecture doesn't support SHM Bridge, the allocator
+> will work just like in the default mode.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > ---
->  Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+>  drivers/firmware/qcom/Kconfig      | 10 +++++
+>  drivers/firmware/qcom/qcom_tzmem.c | 67 +++++++++++++++++++++++++++++-
+>  2 files changed, 76 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml b/Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml
-> index 5046dfa55f13..c12bc852aedc 100644
-> --- a/Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml
-> @@ -21,6 +21,8 @@ properties:
->                - qcom,apss-wdt-ipq5018
->                - qcom,apss-wdt-ipq5332
->                - qcom,apss-wdt-ipq9574
-> +              - qcom,apss-wdt-msm8226
-> +              - qcom,apss-wdt-msm8974
->                - qcom,apss-wdt-msm8994
->                - qcom,apss-wdt-qcm2290
->                - qcom,apss-wdt-qcs404
-> 
+> diff --git a/drivers/firmware/qcom/Kconfig b/drivers/firmware/qcom/Kconfig
+> index 237da40de832..e01407e31ae4 100644
+> --- a/drivers/firmware/qcom/Kconfig
+> +++ b/drivers/firmware/qcom/Kconfig
+> @@ -27,6 +27,16 @@ config QCOM_TZMEM_MODE_DEFAULT
+>  	  Use the default allocator mode. The memory is page-aligned, non-cachable
+>  	  and contiguous.
+>  
+> +config QCOM_TZMEM_MODE_SHMBRIDGE
+> +	bool "SHM Bridge"
+> +	help
+> +	  Use Qualcomm Shared Memory Bridge. The memory has the same alignment as
+> +	  in the 'Default' allocator but is also explicitly marked as an SHM Bridge
+> +	  buffer.
+> +
+> +	  With this selected, all buffers passed to the TrustZone must be allocated
+> +	  using the TZMem allocator or else the TrustZone will refuse to use them.
+> +
+>  endchoice
+>  
+>  config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
+> diff --git a/drivers/firmware/qcom/qcom_tzmem.c b/drivers/firmware/qcom/qcom_tzmem.c
+> index eee51fed756e..b3137844fe43 100644
+> --- a/drivers/firmware/qcom/qcom_tzmem.c
+> +++ b/drivers/firmware/qcom/qcom_tzmem.c
+> @@ -55,7 +55,72 @@ static void qcom_tzmem_cleanup_pool(struct qcom_tzmem_pool *pool)
+>  
+>  }
+>  
+> -#endif /* CONFIG_QCOM_TZMEM_MODE_DEFAULT */
+> +#elif IS_ENABLED(CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE)
+> +
+> +#include <linux/firmware/qcom/qcom_scm.h>
+> +
+> +#define QCOM_SHM_BRIDGE_NUM_VM_SHIFT 9
+> +
+> +static bool qcom_tzmem_using_shm_bridge;
+> +
+> +static int qcom_tzmem_init(void)
+> +{
+> +	int ret;
+> +
+> +	ret = qcom_scm_shm_bridge_enable();
+> +	if (ret == -EOPNOTSUPP) {
+> +		dev_info(qcom_tzmem_dev, "SHM Bridge not supported\n");
+> +		ret = 0;
+> +	}
+> +
+> +	if (!ret)
+> +		qcom_tzmem_using_shm_bridge = true;
+
+Does the qcom_scm_shm_bridge_enable() returning -EOPNOTSUPP case make
+sense? Setting ret to 0 and then claiming we're using shm_bridge seems
+wrong to me.
+
+> +
+> +	return ret;
+> +}
+> +
+> +static int qcom_tzmem_init_pool(struct qcom_tzmem_pool *pool)
+> +{
+> +	u64 pfn_and_ns_perm, ipfn_and_s_perm, size_and_flags, ns_perms, *handle;
+> +	int ret;
+> +
+> +	if (!qcom_tzmem_using_shm_bridge)
+> +		return 0;
+> +
+> +	ns_perms = (QCOM_SCM_PERM_WRITE | QCOM_SCM_PERM_READ);
+> +	pfn_and_ns_perm = (u64)pool->pbase | ns_perms;
+> +	ipfn_and_s_perm = (u64)pool->pbase | ns_perms;
+> +	size_and_flags = pool->size | (1 << QCOM_SHM_BRIDGE_NUM_VM_SHIFT);
+
+Is there any sanity checking that can be done here? I assume bits 0-11 are all
+flag fields (or at least unrelated to size which I assume at a minimum
+must be 4k aka bit 12).
+
+> +
+> +	handle = kzalloc(sizeof(*handle), GFP_KERNEL);
+
+Consider __free(kfree) + return_ptr() usage?
+
+> +	if (!handle)
+> +		return -ENOMEM;
+> +
+> +	ret = qcom_scm_shm_bridge_create(qcom_tzmem_dev, pfn_and_ns_perm,
+> +					 ipfn_and_s_perm, size_and_flags,
+> +					 QCOM_SCM_VMID_HLOS, handle);
+> +	if (ret) {
+> +		kfree(handle);
+> +		return ret;
+> +	}
+> +
+> +	pool->priv = handle;
+> +
+> +	return 0;
+> +}
+> +
+> +static void qcom_tzmem_cleanup_pool(struct qcom_tzmem_pool *pool)
+> +{
+> +	u64 *handle = pool->priv;
+> +
+> +	if (!qcom_tzmem_using_shm_bridge)
+> +		return;
+> +
+> +	qcom_scm_shm_bridge_delete(qcom_tzmem_dev, *handle);
+> +	kfree(handle);
+> +}
+> +
+> +#endif /* CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE */
+>  
+>  /**
+>   * qcom_tzmem_pool_new() - Create a new TZ memory pool.
 > -- 
-> 2.42.0
+> 2.39.2
 > 
+
