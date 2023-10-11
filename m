@@ -2,69 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5887C59F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 267817C5A06
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346967AbjJKRE2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Oct 2023 13:04:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
+        id S235142AbjJKREl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 13:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347002AbjJKRE1 (ORCPT
+        with ESMTP id S235151AbjJKREj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 13:04:27 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9BEC9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:04:25 -0700 (PDT)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[IPv6:::1])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1qqcdA-0006Ez-NP; Wed, 11 Oct 2023 19:04:20 +0200
-Message-ID: <8201caf4102cbb81ea15e87713a165590b11a684.camel@pengutronix.de>
-Subject: Re: [PATCH v2 0/5] drm/etnaviv: Various cleanup
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Sui Jingfeng <suijingfeng@loongson.cn>
-Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
-        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 11 Oct 2023 19:04:19 +0200
-In-Reply-To: <20231002111207.513297-1-suijingfeng@loongson.cn>
-References: <20231002111207.513297-1-suijingfeng@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 11 Oct 2023 13:04:39 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6468CDD;
+        Wed, 11 Oct 2023 10:04:36 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-405524e6768so1196885e9.2;
+        Wed, 11 Oct 2023 10:04:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697043875; x=1697648675; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/MEM2vJvwV4uJcosJuPLdVvwtT2Ba54U+cdzG9D8R5Q=;
+        b=b75XYnCNCMUZOJIeo4EWbPKdh7Fvh6kOAUFB/PrkpvbelQLN3p5nm8cpnsf6g4fdvz
+         12nl94j1xx+yV5hSU17iBCqJj71C9blWcl6DIJ1VN9Edm3JEYprcPfjQ0bNCg86Fq/6E
+         6NFjGVSlEF9Td30oComOS2yHC/k2WV1Z521yh5OQWae4DBBCQUCU5rea627SKkoln7Q0
+         c4A22atnX2J9Wo/V/xadZb/JJTpKM3feiWJrmr/KVm5g6Hisd8QaO5FK8eCjqOUUTkDD
+         WYCRCoTNfF1EWIYjnBAxmcqopcdYN4YcAFmcy8tlpPUBbYdOPV8L7aziZmnB3H0MX51Y
+         fj4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697043875; x=1697648675;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/MEM2vJvwV4uJcosJuPLdVvwtT2Ba54U+cdzG9D8R5Q=;
+        b=prUAMSTdNsTIbt6pgsTSHohXKGBp3cOmdsLUobeB83p9MURh8nMxUrCt0KfGdXLCo6
+         h76DrqRUGjG7FJ+3NaLaD56gNhHvABp9KJQl6YNcEtS7g/SYNY3e+40cY61Ux5C9KL1k
+         aiEQe4O7D0ca+mCQSf2X3j0xEeipumalSmrV/un0zIYxvyzWJvJbhK38PCCHAIolvXNI
+         ZHDACLJX1kunUAZnBYgYyyiK7k4L6Z/YredWCnbjZeAK3T3K+TIwEXPO6BQXJ4N/9vBu
+         Gugez1Vw6UWXo2q/030dXO5csPoE2L3YfkLGJB5cylsdb18P2x7OJZQh6tQv92yHofm3
+         vAmw==
+X-Gm-Message-State: AOJu0YyFtp85RRnSnvN6t9rB1wIKWP9a4sivijwl3S3c5p9+2hhAxK80
+        wYQ54bXoJb/ZqAWDAg82Wrw=
+X-Google-Smtp-Source: AGHT+IGbXjrJzkJ87J02ncABOsWtecsmidXq2EtYOCOUy2qPIw2XclV4pUxW9L3MXWYJIXDVAtXYwA==
+X-Received: by 2002:a05:600c:2946:b0:405:4daa:6e3d with SMTP id n6-20020a05600c294600b004054daa6e3dmr18874865wmd.39.1697043874487;
+        Wed, 11 Oct 2023 10:04:34 -0700 (PDT)
+Received: from lucifer.home ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.googlemail.com with ESMTPSA id y19-20020a05600c20d300b004075b3ce03asm3834495wmm.6.2023.10.11.10.04.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 10:04:33 -0700 (PDT)
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     "=Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        linux-fsdevel@vger.kernel.org, Lorenzo Stoakes <lstoakes@gmail.com>
+Subject: [PATCH v4 0/5] Abstract vma_merge() and split_vma()
+Date:   Wed, 11 Oct 2023 18:04:26 +0100
+Message-ID: <cover.1697043508.git.lstoakes@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, dem 02.10.2023 um 19:12 +0800 schrieb Sui Jingfeng:
-> v2:
-> 	* refine on v1 and update
-> 
-Thanks, series applied to my etnaviv/next branch.
+The vma_merge() interface is very confusing and its implementation has led
+to numerous bugs as a result of that confusion.
 
-Regards,
-Lucas
+In addition there is duplication both in invocation of vma_merge(), but
+also in the common mprotect()-style pattern of attempting a merge, then if
+this fails, splitting the portion of a VMA about to have its attributes
+changed.
 
-> Sui Jingfeng (5):
->   drm/etnaviv: Drop the second argument of the etnaviv_gem_new_impl()
->   drm/etnaviv: Fix coding style
->   drm/etnaviv: Add helper functions to create and destroy platform
->     device
->   drm/etnaviv: Add a helper to get the first available GPU device node
->   drm/etnaviv: Using 'dev' instead of 'etnaviv_obj->base.dev'
-> 
->  drivers/gpu/drm/etnaviv/etnaviv_drv.c | 93 ++++++++++++++++++---------
->  drivers/gpu/drm/etnaviv/etnaviv_gem.c | 12 ++--
->  2 files changed, 67 insertions(+), 38 deletions(-)
-> 
+This pattern has been copy/pasted around the kernel in each instance where
+such an operation has been required, each very slightly modified from the
+last to make it even harder to decipher what is going on.
 
+Simplify the whole thing by dividing the actual uses of vma_merge() and
+split_vma() into specific and abstracted functions and de-duplicate the
+vma_merge()/split_vma() pattern altogether.
+
+Doing so also opens the door to changing how vma_merge() is implemented -
+by knowing precisely what cases a caller is invoking rather than having a
+central interface where anything might happen we can untangle the brittle
+and confusing vma_merge() implementation into something more workable.
+
+For mprotect()-like cases we introduce vma_modify() which performs the
+vma_merge()/split_vma() pattern, returning a pointer to either the merged
+or split VMA or an ERR_PTR(err) if the splits fail.
+
+We provide a number of inline helper functions to make things even clearer:-
+
+* vma_modify_flags()      - Prepare to modify the VMA's flags.
+* vma_modify_flags_name() - Prepare to modify the VMA's flags/anon_vma_name
+* vma_modify_policy()     - Prepare to modify the VMA's mempolicy.
+* vma_modify_flags_uffd() - Prepare to modify the VMA's flags/uffd context.
+
+For cases where a new VMA is attempted to be merged with adjacent VMAs we
+add:-
+
+* vma_merge_new_vma() - Prepare to merge a new VMA.
+* vma_merge_extend()  - Prepare to extend the end of a new VMA.
+
+v4:
+* Correct bug where PTR_ERR() was accidentally pased prev rather than VMA,
+  as suggested by Vlastimil.
+* Updated comment and styling, and moved from using pgoff in
+  vma_merge_new_vma() to vma->vm_pgoff in case driver changes it, as
+  suggested by Liam.
+
+v3:
+* Drop unnecessary VM_WARN_ON().
+* Implement excellent suggestion from Vlastimil to simply have vma_modify()
+  return the vma if merge fails (and no error occurs on split), as all
+  callers really only need to deal with either the merged VMA or the
+  original one if split. This simplifies things even further.
+https://lore.kernel.org/all/cover.1696929425.git.lstoakes@gmail.com/
+
+v2:
+* Correct mistake where error cases would have been treated as success as
+  pointed out by Vlastimil.
+* Move vma_policy() define to mm_types.h.
+* Move anon_vma_name(), anon_vma_name_alloc() and anon_vma_name_free() to
+  mm_types.h from mm_inline.h.
+* These moves make it possible to implement the vma_modify_*() helpers as
+  static inline declarations, so do so.
+* Spelling corrections and clarifications.
+https://lore.kernel.org/all/cover.1696884493.git.lstoakes@gmail.com/
+
+v1:
+https://lore.kernel.org/all/cover.1696795837.git.lstoakes@gmail.com/
+
+Lorenzo Stoakes (5):
+  mm: move vma_policy() and anon_vma_name() decls to mm_types.h
+  mm: abstract the vma_merge()/split_vma() pattern for mprotect() et al.
+  mm: make vma_merge() and split_vma() internal
+  mm: abstract merge for new VMAs into vma_merge_new_vma()
+  mm: abstract VMA merge and extend into vma_merge_extend() helper
+
+ fs/userfaultfd.c          |  70 ++++++------------------
+ include/linux/mempolicy.h |   4 --
+ include/linux/mm.h        |  69 ++++++++++++++++++++---
+ include/linux/mm_inline.h |  20 +------
+ include/linux/mm_types.h  |  27 +++++++++
+ mm/internal.h             |   7 +++
+ mm/madvise.c              |  26 ++-------
+ mm/mempolicy.c            |  26 +--------
+ mm/mlock.c                |  25 ++-------
+ mm/mmap.c                 | 112 ++++++++++++++++++++++++++++++++------
+ mm/mprotect.c             |  29 ++--------
+ mm/mremap.c               |  30 +++++-----
+ mm/nommu.c                |   4 +-
+ 13 files changed, 237 insertions(+), 212 deletions(-)
+
+--
+2.42.0
