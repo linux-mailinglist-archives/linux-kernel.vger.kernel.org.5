@@ -2,234 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5447C5217
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A397C521A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346357AbjJKLba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43690 "EHLO
+        id S1346396AbjJKLbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345736AbjJKLb3 (ORCPT
+        with ESMTP id S234796AbjJKLbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:31:29 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534189E;
-        Wed, 11 Oct 2023 04:31:27 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S59ZJ0pD6z6K5Wx;
-        Wed, 11 Oct 2023 19:31:04 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
- 2023 12:31:24 +0100
-Date:   Wed, 11 Oct 2023 12:31:23 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Konstantin Aladyshev <aladyshev22@gmail.com>
-CC:     <minyard@acm.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <avifishman70@gmail.com>, <tmaimon77@gmail.com>,
-        <tali.perry1@gmail.com>, <venture@google.com>, <yuenn@google.com>,
-        <benjaminfair@google.com>, <jk@codeconstruct.com.au>,
-        <matt@codeconstruct.com.au>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <openipmi-developer@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH v5 1/3] ipmi: Move KCS headers to common include folder
-Message-ID: <20231011123123.00000394@Huawei.com>
-In-Reply-To: <20231010122321.823-2-aladyshev22@gmail.com>
-References: <20231010122321.823-1-aladyshev22@gmail.com>
-        <20231010122321.823-2-aladyshev22@gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Wed, 11 Oct 2023 07:31:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 394FA9E;
+        Wed, 11 Oct 2023 04:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697023892; x=1728559892;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=tc2GTbB6TPVOtjQtQGLDwNIU7QxEvFYwzp/6Wj8WpUY=;
+  b=NpGw/FcWM1czY7i2uyxtAPO+vYI3Q9G+WAf0VQLBwvfiZvTR/lm91h4R
+   cDyaM4a4XJwUpSiT1JXuy4b/IaE0ZsciIHMWo+D5fOu5RXUpQVqVg5Jrx
+   DQcVZRgnMJ/m/gu+tFk+Uhb1z7eQInzisUxonAeHMC2snFTdN6zg8OOsL
+   VtCoPOB6wojvLr60RPxnwsISLhmMvNIZ23mcew1Ip4Dkpu2j2lWRPFhtH
+   jHkWdf4n7+n3c46RygYXyzBm1/h0q9rB7FV6OQBpVwNXKYS9qz0FhUDY5
+   d/5S7Ev0xtIg04X2AXhzNeqd4LMuhHFJsQviR+XHm4fdLPcrfkd/dpGam
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="374977739"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="374977739"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 04:31:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="747415504"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="747415504"
+Received: from opipikin-mobl2.ger.corp.intel.com ([10.252.57.154])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 04:31:30 -0700
+Date:   Wed, 11 Oct 2023 14:31:27 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+cc:     linux-pci@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nirmoy Das <nirmoy.das@amd.com>
+Subject: Re: [PATCH 02/10] PCI: Use FIELD_GET() in Sapphire RX 5600 XT Pulse
+ quirk
+In-Reply-To: <20231010204436.1000644-3-helgaas@kernel.org>
+Message-ID: <778c462-8d72-6b48-fcb0-8939bde292d@linux.intel.com>
+References: <20231010204436.1000644-1-helgaas@kernel.org> <20231010204436.1000644-3-helgaas@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-679470042-1697023892=:1977"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 15:23:19 +0300
-Konstantin Aladyshev <aladyshev22@gmail.com> wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> The current KCS header files can be utilized by both IPMI drivers
-> (drivers/char/ipmi) and MCTP driver (drivers/net/mctp). To be able to
-> use them in both cases move the headers to 'include/linux' folder.
+--8323329-679470042-1697023892=:1977
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+
+On Tue, 10 Oct 2023, Bjorn Helgaas wrote:
+
+> From: Bjorn Helgaas <bhelgaas@google.com>
 > 
-> Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
-Not particularly important but I wonder if
-include/linux/kcs/bmc.h
-include/linux/kcs/bmc_client.h
-include/linux/kcs/bmc_device.h
-
-might be a cleaner choice given that you are moving them.
-
-I don't care that much though so up to you :)
-
-Jonathan
-
+> Use FIELD_GET() to remove dependences on the field position, i.e., the
+> shift value.  No functional change intended.
+> 
+> Separate because this isn't as trivial as the other FIELD_GET() changes.
+> 
+> See 907830b0fc9e ("PCI: Add a REBAR size quirk for Sapphire RX 5600 XT
+> Pulse")
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Nirmoy Das <nirmoy.das@amd.com>
 > ---
->  drivers/char/ipmi/kcs_bmc.c                           | 8 +++-----
->  drivers/char/ipmi/kcs_bmc_aspeed.c                    | 3 +--
->  drivers/char/ipmi/kcs_bmc_cdev_ipmi.c                 | 2 +-
->  drivers/char/ipmi/kcs_bmc_npcm7xx.c                   | 2 +-
->  drivers/char/ipmi/kcs_bmc_serio.c                     | 2 +-
->  {drivers/char/ipmi => include/linux}/kcs_bmc.h        | 0
->  {drivers/char/ipmi => include/linux}/kcs_bmc_client.h | 3 +--
->  {drivers/char/ipmi => include/linux}/kcs_bmc_device.h | 3 +--
->  8 files changed, 9 insertions(+), 14 deletions(-)
->  rename {drivers/char/ipmi => include/linux}/kcs_bmc.h (100%)
->  rename {drivers/char/ipmi => include/linux}/kcs_bmc_client.h (97%)
->  rename {drivers/char/ipmi => include/linux}/kcs_bmc_device.h (96%)
+>  drivers/pci/pci.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/char/ipmi/kcs_bmc.c b/drivers/char/ipmi/kcs_bmc.c
-> index 8b1161d5194a..d29a8505d6ed 100644
-> --- a/drivers/char/ipmi/kcs_bmc.c
-> +++ b/drivers/char/ipmi/kcs_bmc.c
-> @@ -5,15 +5,13 @@
->   */
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 848c9ee65d7f..5dc6e7cdfb71 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -3751,14 +3751,14 @@ u32 pci_rebar_get_possible_sizes(struct pci_dev *pdev, int bar)
+>  		return 0;
 >  
->  #include <linux/device.h>
-> +#include <linux/kcs_bmc.h>
-> +#include <linux/kcs_bmc_client.h>
-> +#include <linux/kcs_bmc_device.h>
->  #include <linux/list.h>
->  #include <linux/module.h>
->  #include <linux/mutex.h>
+>  	pci_read_config_dword(pdev, pos + PCI_REBAR_CAP, &cap);
+> -	cap &= PCI_REBAR_CAP_SIZES;
+> +	cap = FIELD_GET(PCI_REBAR_CAP_SIZES, cap);
 >  
-> -#include "kcs_bmc.h"
-> -
-> -/* Implement both the device and client interfaces here */
-> -#include "kcs_bmc_device.h"
-> -#include "kcs_bmc_client.h"
+>  	/* Sapphire RX 5600 XT Pulse has an invalid cap dword for BAR 0 */
+>  	if (pdev->vendor == PCI_VENDOR_ID_ATI && pdev->device == 0x731f &&
+> -	    bar == 0 && cap == 0x7000)
+> -		cap = 0x3f000;
+> +	    bar == 0 && cap == 0x700)
+> +		return 0x3f00;
 >  
->  /* Record registered devices and drivers */
->  static DEFINE_MUTEX(kcs_bmc_lock);
-> diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c b/drivers/char/ipmi/kcs_bmc_aspeed.c
-> index 72640da55380..3dc0dfb448f5 100644
-> --- a/drivers/char/ipmi/kcs_bmc_aspeed.c
-> +++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
-> @@ -10,6 +10,7 @@
->  #include <linux/interrupt.h>
->  #include <linux/io.h>
->  #include <linux/irq.h>
-> +#include <linux/kcs_bmc_device.h>
->  #include <linux/mfd/syscon.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> @@ -21,8 +22,6 @@
->  #include <linux/slab.h>
->  #include <linux/timer.h>
+> -	return cap >> 4;
+> +	return cap;
+>  }
+>  EXPORT_SYMBOL(pci_rebar_get_possible_sizes);
 >  
-> -#include "kcs_bmc_device.h"
-> -
->  
->  #define DEVICE_NAME     "ast-kcs-bmc"
->  
-> diff --git a/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c b/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
-> index cf670e891966..bf1001130a6c 100644
-> --- a/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
-> +++ b/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
-> @@ -8,6 +8,7 @@
->  #include <linux/errno.h>
->  #include <linux/io.h>
->  #include <linux/ipmi_bmc.h>
-> +#include <linux/kcs_bmc_client.h>
->  #include <linux/list.h>
->  #include <linux/miscdevice.h>
->  #include <linux/module.h>
-> @@ -17,7 +18,6 @@
->  #include <linux/sched.h>
->  #include <linux/slab.h>
->  
-> -#include "kcs_bmc_client.h"
->  
->  /* Different phases of the KCS BMC module.
->   *  KCS_PHASE_IDLE:
-> diff --git a/drivers/char/ipmi/kcs_bmc_npcm7xx.c b/drivers/char/ipmi/kcs_bmc_npcm7xx.c
-> index 7961fec56476..160553248a93 100644
-> --- a/drivers/char/ipmi/kcs_bmc_npcm7xx.c
-> +++ b/drivers/char/ipmi/kcs_bmc_npcm7xx.c
-> @@ -10,6 +10,7 @@
->  #include <linux/errno.h>
->  #include <linux/interrupt.h>
->  #include <linux/io.h>
-> +#include <linux/kcs_bmc_device.h>
->  #include <linux/mfd/syscon.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> @@ -17,7 +18,6 @@
->  #include <linux/regmap.h>
->  #include <linux/slab.h>
->  
-> -#include "kcs_bmc_device.h"
->  
->  #define DEVICE_NAME	"npcm-kcs-bmc"
->  #define KCS_CHANNEL_MAX	3
-> diff --git a/drivers/char/ipmi/kcs_bmc_serio.c b/drivers/char/ipmi/kcs_bmc_serio.c
-> index 1793358be782..24df7144a189 100644
-> --- a/drivers/char/ipmi/kcs_bmc_serio.c
-> +++ b/drivers/char/ipmi/kcs_bmc_serio.c
-> @@ -5,12 +5,12 @@
->  #include <linux/device.h>
->  #include <linux/errno.h>
->  #include <linux/list.h>
-> +#include <linux/kcs_bmc_client.h>
->  #include <linux/module.h>
->  #include <linux/sched/signal.h>
->  #include <linux/serio.h>
->  #include <linux/slab.h>
->  
-> -#include "kcs_bmc_client.h"
->  
->  struct kcs_bmc_serio {
->  	struct list_head entry;
-> diff --git a/drivers/char/ipmi/kcs_bmc.h b/include/linux/kcs_bmc.h
-> similarity index 100%
-> rename from drivers/char/ipmi/kcs_bmc.h
-> rename to include/linux/kcs_bmc.h
-> diff --git a/drivers/char/ipmi/kcs_bmc_client.h b/include/linux/kcs_bmc_client.h
-> similarity index 97%
-> rename from drivers/char/ipmi/kcs_bmc_client.h
-> rename to include/linux/kcs_bmc_client.h
-> index 6fdcde0a7169..f6350c9366dd 100644
-> --- a/drivers/char/ipmi/kcs_bmc_client.h
-> +++ b/include/linux/kcs_bmc_client.h
-> @@ -5,8 +5,7 @@
->  #define __KCS_BMC_CONSUMER_H__
->  
->  #include <linux/irqreturn.h>
-> -
-> -#include "kcs_bmc.h"
-> +#include <linux/kcs_bmc.h>
->  
->  struct kcs_bmc_driver_ops {
->  	int (*add_device)(struct kcs_bmc_device *kcs_bmc);
-> diff --git a/drivers/char/ipmi/kcs_bmc_device.h b/include/linux/kcs_bmc_device.h
-> similarity index 96%
-> rename from drivers/char/ipmi/kcs_bmc_device.h
-> rename to include/linux/kcs_bmc_device.h
-> index 17c572f25c54..65333b68c0af 100644
-> --- a/drivers/char/ipmi/kcs_bmc_device.h
-> +++ b/include/linux/kcs_bmc_device.h
-> @@ -5,8 +5,7 @@
->  #define __KCS_BMC_DEVICE_H__
->  
->  #include <linux/irqreturn.h>
-> -
-> -#include "kcs_bmc.h"
-> +#include <linux/kcs_bmc.h>
->  
->  struct kcs_bmc_device_ops {
->  	void (*irq_mask_update)(struct kcs_bmc_device *kcs_bmc, u8 mask, u8 enable);
+> 
 
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
+-- 
+ i.
+
+--8323329-679470042-1697023892=:1977--
