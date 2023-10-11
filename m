@@ -2,115 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8BF77C46A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41BEC7C46A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344335AbjJKA2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 20:28:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57204 "EHLO
+        id S1344454AbjJKA2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 20:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344353AbjJKA2d (ORCPT
+        with ESMTP id S1344418AbjJKA2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 20:28:33 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048B2D48
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:26:20 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-692b2bdfce9so5603544b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:26:20 -0700 (PDT)
+        Tue, 10 Oct 2023 20:28:51 -0400
+Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DDA184;
+        Tue, 10 Oct 2023 17:28:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696983979; x=1697588779; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8mdeBYmV3Iz7hBYw8oNEhI6gNWC/shNZ9/fkqlI8Fj8=;
-        b=bnV0DCKRefmUflgQkyrxnItazRMUPu2M/q4DavlYFLSJpv4A6TY0xfGRZILJL4cEp0
-         hW+5uRIMxBve2WrifzvRT1uu7Pcx+B/GrgCK6ZuavfXuUvrHNYViwgJ3TeH0pM/+ZmJL
-         DZ8NFVAidbb3qtjdNiviQbwvY8hRBg/5jzeRg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696983979; x=1697588779;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8mdeBYmV3Iz7hBYw8oNEhI6gNWC/shNZ9/fkqlI8Fj8=;
-        b=DX5x67So7NHAKbfXEW8lj5LjFyCVU0VmLryjdA76vP7tcZ0VT72T2MAdpSoplKpPok
-         R8Ymcg+HSe8Keo4oBrC8RLjdbBa7NvNiThW7spSU3erl21vSCxmOKYpyRfZlYH/vnHU7
-         fG1E6IBl3NzwETjvmku4Cu+LB1ZybMcx+Iv/bmIgnEDwEyIWEB7bCvSlwXu+NzOHeqYJ
-         cejPxiaOqJ60/He+YaVvKTr2/l9IsIOjYZqxgOci/YieCJvznd3ZLGegCWMsQqPsEzrN
-         vHR9kJijcezWFZJrgPvFORvhIQi4Xvfx5lWLmJynmlEoslnN8uKaY0QQt7nZPHW7JqsH
-         LFtg==
-X-Gm-Message-State: AOJu0YwyLuOPqmFIOEOSsnVNWAcd853lTYIcJnaYpcgbnb257dVFnvSI
-        AxDrhR56AupWvhdHCV7dPm6UnQ==
-X-Google-Smtp-Source: AGHT+IGbQurWzUeSrvjJAXJayp/LYxys+6GCRaoM5udwyGZn8Yl6aR5Ironz9eErZ12xTuOTAdhVog==
-X-Received: by 2002:a05:6a00:b52:b0:690:15c7:60d8 with SMTP id p18-20020a056a000b5200b0069015c760d8mr25141187pfo.22.1696983979003;
-        Tue, 10 Oct 2023 17:26:19 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a9-20020a63bd09000000b005891f3af36asm10776300pgf.87.2023.10.10.17.26.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 17:26:18 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 17:26:16 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, luto@amacapital.net,
-        wad@chromium.org, alexyonghe@tencent.com
-Subject: Re: [PATCH 4/4] selftests/seccomp: Test SECCOMP_LOAD_FILTER and
- SECCOMP_ATTACH_FILTER
-Message-ID: <202310101725.0BCB9CBA9@keescook>
-References: <20231009124046.74710-1-hengqi.chen@gmail.com>
- <20231009124046.74710-5-hengqi.chen@gmail.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1696984109; x=1728520109;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=xuZcVqG1Y38jX5g59zUv7HtsOiRZ/8gim6olwT/sCKY=;
+  b=ZSBua0anw1DmE5gSi/cZwOywlNHud/6p+0of1xlFIHDzkoGIzh2TWgM6
+   JcYye8+VIpsNXEBDsoG89P1WAw+a/MfAV8dzUi8zd/dPyrTYz/j23pOQg
+   5lVHHb20i11KQayPmS+BR+fbEg09Cowuk3VkrbT+ayP2MwWsrBuolB01S
+   Q=;
+X-IronPort-AV: E=Sophos;i="6.03,214,1694736000"; 
+   d="scan'208";a="34964492"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-edda28d4.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 00:28:26 +0000
+Received: from EX19MTAUWC002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-iad-1a-m6i4x-edda28d4.us-east-1.amazon.com (Postfix) with ESMTPS id 7A7708047B;
+        Wed, 11 Oct 2023 00:28:25 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Wed, 11 Oct 2023 00:28:25 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.187.171.21) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Wed, 11 Oct 2023 00:28:22 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <f.fainelli@gmail.com>
+CC:     <davem@davemloft.net>, <dsahern@kernel.org>, <edumazet@google.com>,
+        <kuba@kernel.org>,
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>, <singhabhinav9051571833@gmail.com>,
+        <kuniyu@amazon.com>
+Subject: Re: [PATCH] Remove extra unlock for the mutex
+Date:   Tue, 10 Oct 2023 17:28:14 -0700
+Message-ID: <20231011002814.77527-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <ab48efc3-9f40-4eed-bdb1-4ce04d3c55cf@gmail.com>
+References: <ab48efc3-9f40-4eed-bdb1-4ce04d3c55cf@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009124046.74710-5-hengqi.chen@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.187.171.21]
+X-ClientProxiedBy: EX19D039UWB001.ant.amazon.com (10.13.138.119) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 12:40:46PM +0000, Hengqi Chen wrote:
-> Add a testcase to exercise the newly added SECCOMP_LOAD_FILTER
-> and SECCOMP_ATTACH_FILTER operations.
+From: Florian Fainelli <f.fainelli@gmail.com>
+Date: Tue, 10 Oct 2023 15:51:13 -0700
+> On 10/10/23 15:46, Abhinav Singh wrote:
+> > There is a double unlock on mutex. This can cause undefined behaviour.
 > 
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> ---
->  tools/testing/selftests/seccomp/seccomp_bpf.c | 20 +++++++++++++++++++
->  1 file changed, 20 insertions(+)
+> Where is the double unlock of head->lock (which is a spinlock and not a 
+> mutex, btw)?
+
+Maybe head is just confused with the preceding head2 as the two are
+the same type of struct.  They are pointers of different hash tables
+though.
+
+bind()ing two sockets to the same 2-tuple will easily trigger hung task.
+
+
 > 
-> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> index 38f651469968..8f7010482194 100644
-> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> @@ -4735,6 +4735,26 @@ TEST(user_notification_wait_killable_fatal)
->  	EXPECT_EQ(SIGTERM, WTERMSIG(status));
->  }
->  
-> +TEST(seccomp_filter_load_and_attach)
-> +{
-> +	struct sock_filter filter[] = {
-> +		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
-> +	};
-> +	struct sock_fprog prog = {
-> +		.len = (unsigned short)ARRAY_SIZE(filter),
-> +		.filter = filter,
-> +	};
-> +	int fd, ret;
-> +
-> +	fd = seccomp(SECCOMP_LOAD_FILTER, 0, &prog);
-> +	ASSERT_GT(fd, -1);
-> +
-> +	ret = seccomp(SECCOMP_ATTACH_FILTER, 0, &fd);
-> +	ASSERT_EQ(ret, 0);
-> +
-> +	close(fd);
-> +}
-
-This is a good start -- please check all the error paths as well.
-
-Thanks for continuing to work on this!
-
--- 
-Kees Cook
+> > 
+> > Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+> > ---
+> >   net/ipv4/inet_connection_sock.c | 1 -
+> >   1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+> > index aeebe8816689..f11fe8c727a4 100644
+> > --- a/net/ipv4/inet_connection_sock.c
+> > +++ b/net/ipv4/inet_connection_sock.c
+> > @@ -597,7 +597,6 @@ int inet_csk_get_port(struct sock *sk, unsigned short snum)
+> >   	}
+> >   	if (head2_lock_acquired)
+> >   		spin_unlock(&head2->lock);
+> > -	spin_unlock_bh(&head->lock);
+> >   	return ret;
+> >   }
+> >   EXPORT_SYMBOL_GPL(inet_csk_get_port);
