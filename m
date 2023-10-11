@@ -2,160 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8717C5D85
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4503E7C5D8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbjJKTSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 15:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40970 "EHLO
+        id S235161AbjJKTUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 15:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233159AbjJKTSm (ORCPT
+        with ESMTP id S233287AbjJKTUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 15:18:42 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB628F
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:18:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=dHVTyoH1m4OyurqBJf+ec2tvT0YYC2aXTW0LctZa08c=; b=4wWMl1j2vLJsFYoTshFkX7i2az
-        fBfYySzA9xjf5O8JlzPkpVnAZ/8Bg8l7UPlfZXwRRdOxHaguOKCUQ/V8apfkNGQc6o3ggjF8TARi2
-        JPBwPUbtgrkVJLraX8UF2B7ZiF69VAEv+6koteS5a5cJcXUcNBZFwelLRCFBZxKzZG9965DKv3Caq
-        1kewTYXLo0lSTaCO+hH0hHNZ1hfPnacN6hzrbxBdDqWTfhc3LNNDnLPBuWtI0KjaF/dQ9CMX71sI6
-        SuXU25RlpXIB7bIG5apm2YfN5qD05vdFYw2rc41gPJ3YQkQp37GcDpW0TsToUtENFG+Zh/SdW94mr
-        h1BzvMMw==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qqeiq-00GXQ0-0x;
-        Wed, 11 Oct 2023 19:18:20 +0000
-Message-ID: <d7ba2ed2-88b6-417a-a9ea-f0238980a2d6@infradead.org>
-Date:   Wed, 11 Oct 2023 12:18:19 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] x86/msi: Fix compile error caused by GENERIC_MSI_IRQ
- and X86_LOCAL_APIC
-Content-Language: en-US
-To:     Lu Yao <yaolu@kylinos.cn>, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org
-Cc:     hpa@zytor.com, linux-kernel@vger.kernel.org
-References: <20231008082827.279154-1-yaolu@kylinos.cn>
- <20231011055749.98840-1-yaolu@kylinos.cn>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231011055749.98840-1-yaolu@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 11 Oct 2023 15:20:40 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0311A9;
+        Wed, 11 Oct 2023 12:20:37 -0700 (PDT)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BJHT1u022731;
+        Wed, 11 Oct 2023 19:20:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=IT9eNJQJZpjFOcXF1EOUp4Ajer8NdV8tK6VOXY2s+fE=;
+ b=i/lMhLt/smqL6J3J4A/ebfr61RMJS9YYztGSxNxUjuVmUBQNQ5LHNfqEB/Eg4dYmFsHf
+ sDuPh++CUMY1yQxd8P+isz7gGlY0xD8p3+HacC+lqnGivwJT6rFxXRqWfdIHEGmfaujx
+ RCTNiVbTluOnqjS9SNP2Ig3PjJ4YR3ykglCo1JfrURq2ELVulXAT0vllhhowDzzwj+Ft
+ /8oIrmNKsXLZP8NHIV+Vat0q0Tfvs3ghgx3nS3+Mpz0GOiqnhEz3okHnBnsBIMHd0lMd
+ llPGr67zZ7bfTwAgsRRG3GIObeRNXScSc0YbYxsVKQ2WHJ+DsWZ4mfuETFCu25CRY/WX FQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tp1qx0466-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 19:20:07 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39BJHfXQ023537;
+        Wed, 11 Oct 2023 19:20:06 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tp1qx044w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 19:20:05 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39BIsWtk025883;
+        Wed, 11 Oct 2023 19:20:04 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkjnnjcs3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 19:20:04 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39BJK39q23659046
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Oct 2023 19:20:03 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 814AB58060;
+        Wed, 11 Oct 2023 19:20:03 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 964AC5803F;
+        Wed, 11 Oct 2023 19:20:01 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.watson.ibm.com (unknown [9.31.99.90])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Oct 2023 19:20:01 +0000 (GMT)
+Message-ID: <ead34f3ead8bf7cc92f3435d4553b2a9de667612.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 05/25] ima: Align ima_inode_setxattr() definition
+ with LSM infrastructure
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Date:   Wed, 11 Oct 2023 15:20:01 -0400
+In-Reply-To: <20230904133415.1799503-6-roberto.sassu@huaweicloud.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904133415.1799503-6-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: W0tz4MmDVsbeElJ-fn7iA50LyRBLe9wI
+X-Proofpoint-GUID: 3ZgHVIG3qS3qcWfbvTGJNmNKKVTDx0VC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_14,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 mlxscore=0 suspectscore=0 impostorscore=0 adultscore=0
+ spamscore=0 mlxlogscore=750 malwarescore=0 bulkscore=0 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310110171
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2023-09-04 at 15:33 +0200, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> Change ima_inode_setxattr() definition, so that it can be registered as
+> implementation of the inode_setxattr hook.
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
+Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
 
-On 10/10/23 22:57, Lu Yao wrote:
-> When compiling the x86 kernel, if X86_LOCAL_APIC is not enabled but
-> GENERIC_MSI_IRQ is selected in '.config', the following compilation
-> error will occur:
-> 
->   include/linux/gpio/driver.h:38:19: error:
->     field 'msiinfo' has incomplete type
-> 
->   kernel/irq/msi.c:752:5: error: invalid use of incomplete typedef
->     'msi_alloc_info_t' {aka 'struct irq_alloc_info'}
-> 
->   kernel/irq/msi.c:740:1: error: control reaches end of non-void function
-> 
-> This is because file such as 'kernel/irq/msi.c' only depends on
-> 'GENERIC_MSI_IRQ', and uses 'struct msi_alloc_info_t'. However,
-> this struct depends on 'X86_LOCAL_APIC'.
-> 
-> When enable 'GENERIC_MSI_IRQ' or 'X86_LOCAL_APIC' will select
-> 'IRQ_DOMAIN_HIERARCHY', so exposing this struct using
-> 'IRQ_DOMAIN_HIERARCHY' rather than 'X86_LOCAL_APIC'.
-> 
-> Under the above conditions, if 'HPET_TIMER' is selected, the following
-> compilation error will occur:
-> 
->   arch/x86/kernel/hpet.c:550:13: error: ‘x86_vector_domain’ undeclared
-> 
->   arch/x86/kernel/hpet.c:600:9: error: implicit declaration of
->     function ‘init_irq_alloc_info’
-> 
-> This is because 'x86_vector_domain' is defined in 'kernel/apic/vector.c'
-> which is compiled only when 'X86_LOCAL_APIC' is enabled. So use
-> 'X86_LOCAL_APIC' to expose these code rather than 'GENERIC_MSI_IRQ'.
-> 
-> Signed-off-by: Lu Yao <yaolu@kylinos.cn>
-
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-Thanks.
-
-> ---
-> Change from v1:
->  * Fix arch/x86/kernel/hpet.c compiled error
-> Thanks to Randy for the feedback.
-> v1: https://lore.kernel.org/lkml/20231008082827.279154-1-yaolu@kylinos.cn/
-> 
-> ---
->  arch/x86/include/asm/hw_irq.h | 6 +++---
->  arch/x86/kernel/hpet.c        | 4 ++--
->  2 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
-> index 551829884734..b02c3cd3c0f6 100644
-> --- a/arch/x86/include/asm/hw_irq.h
-> +++ b/arch/x86/include/asm/hw_irq.h
-> @@ -28,7 +28,7 @@
->  #include <asm/irq.h>
->  #include <asm/sections.h>
->  
-> -#ifdef	CONFIG_X86_LOCAL_APIC
-> +#ifdef	CONFIG_IRQ_DOMAIN_HIERARCHY
->  struct irq_data;
->  struct pci_dev;
->  struct msi_desc;
-> @@ -105,10 +105,10 @@ static inline void irq_complete_move(struct irq_cfg *c) { }
->  #endif
->  
->  extern void apic_ack_edge(struct irq_data *data);
-> -#else	/*  CONFIG_X86_LOCAL_APIC */
-> +#else	/*  CONFIG_IRQ_DOMAIN_HIERARCHY */
->  static inline void lock_vector_lock(void) {}
->  static inline void unlock_vector_lock(void) {}
-> -#endif	/* CONFIG_X86_LOCAL_APIC */
-> +#endif	/* CONFIG_IRQ_DOMAIN_HIERARCHY */
->  
->  /* Statistics */
->  extern atomic_t irq_err_count;
-> diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
-> index 1648aa0204d9..9904c0d46eba 100644
-> --- a/arch/x86/kernel/hpet.c
-> +++ b/arch/x86/kernel/hpet.c
-> @@ -52,7 +52,7 @@ unsigned long				hpet_address;
->  u8					hpet_blockid; /* OS timer block num */
->  bool					hpet_msi_disable;
->  
-> -#ifdef CONFIG_GENERIC_MSI_IRQ
-> +#ifdef CONFIG_X86_LOCAL_APIC
->  static DEFINE_PER_CPU(struct hpet_channel *, cpu_hpet_channel);
->  static struct irq_domain		*hpet_domain;
->  #endif
-> @@ -469,7 +469,7 @@ static void __init hpet_legacy_clockevent_register(struct hpet_channel *hc)
->  /*
->   * HPET MSI Support
->   */
-> -#ifdef CONFIG_GENERIC_MSI_IRQ
-> +#ifdef CONFIG_X86_LOCAL_APIC
->  static void hpet_msi_unmask(struct irq_data *data)
->  {
->  	struct hpet_channel *hc = irq_data_get_irq_handler_data(data);
-
--- 
-~Randy
