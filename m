@@ -2,171 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B40B77C4C1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 151C97C4C1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345404AbjJKHi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 03:38:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57466 "EHLO
+        id S1345033AbjJKHi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 03:38:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345379AbjJKHiz (ORCPT
+        with ESMTP id S1344888AbjJKHiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 03:38:55 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B372792;
-        Wed, 11 Oct 2023 00:38:53 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 291A332013E6;
-        Wed, 11 Oct 2023 03:38:52 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 11 Oct 2023 03:38:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alyssa.is; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1697009931; x=1697096331; bh=tg
-        uG2aXRGfx+BtSSdosiAuKFgDBmx4SGy972Szw14Xw=; b=K+QEtTpUgF75OMaZQu
-        awOhoNWZjzQIEpgcPHus85fajdr6TqnfsBJsZ5w7/Hyhd5QxiVx3HCDAAo37Z3wp
-        uo0ynzf3trRDe6iP5zwOfJB7CC7V1eJgWfm2Ojv3DEy0a+TOQYnL+JNXH7l1D9zP
-        t3JDyNXQ7XjIcnHqFTBoFspVyeCbBmyZrre+s8SKaKV+xt4oyrefhoUOPFVkbycq
-        knhid9ikyWWQ1XD5mmQrvvH3lf9Fm/xrBIkYTiA4aisF04SeC1P/Ir7Wnh70XRlj
-        eg4iI+L6gbpK/gmv4HafNsS373CQHPBuKtwHX8Wm++/bMqf9hHQbZFOTsJcc7DYa
-        dJIA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1697009931; x=1697096331; bh=tguG2aXRGfx+B
-        tSSdosiAuKFgDBmx4SGy972Szw14Xw=; b=c+u2vqe0zrP/tiv8UGK023yIbdcxV
-        arlU0jbHPpMOjz+/tXj/1IuUt2tZ6NV3OfkE8Un59DtrdF+QXfU7J7Kfh+9jEmUv
-        TeexUfps7fVBRWR8JnAezLtRb6eSRjlQk2wIYEx2KTG2dcyL+sZRCeMpASUCDLPm
-        hdRsd0PGOE0Qkhz+RnhfvJvnmtHWVBJ8fSxsGQ9tvK7vKYLlK+jfeLHl5rGK04cV
-        8y0S87gCyHQ4QhFx7mEF6RBDqxV8La9i8+yPeuK1tKkrPQInD9Peden9D1akrm/p
-        YkBfAE/0A11vsdNpKV+AuwR9H8bdy0mpdUed0GnScvlFhDmjsy8+gBxRg==
-X-ME-Sender: <xms:ClEmZXlqxfwXLwPjvCAoIkRRMUhwJgSu9jYnCKspgngy2V_ib5edKw>
-    <xme:ClEmZa0nOVvBZEQ0ia4tzTQ3-UYocRs6cBAfLWPm3lPcD18Z_txA2gClRWMNsKOQ6
-    mVoTziY344CnuztQQ>
-X-ME-Received: <xmr:ClEmZdqq18H23WE1uen6kuzhbSXh24MfPS7hwrh8WlCmPR1lc3fpHPCSuKL6FvAcr7pZs--dG8aHxdvB0w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrheejgdektdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvfevufgjfhffkfggtgesghdtreertddtjeenucfhrhhomheptehlhihsshgr
-    ucftohhsshcuoehhihesrghlhihsshgrrdhisheqnecuggftrfgrthhtvghrnhepteehve
-    dugfejgfehhfeijeduleekleejgedvkeeuuefhhfegvdevfeetveegteeinecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhephhhisegrlhihshhsrg
-    drihhs
-X-ME-Proxy: <xmx:ClEmZfkGLx6NcTiLggUcv7l9SWZN98xd42VtbXscB1cvSxwYRrRynw>
-    <xmx:ClEmZV1yGbIHL1Lw5W-Q9bfSPoHea-nAui-kY60LI7tfVpFQyEvPXg>
-    <xmx:ClEmZevbN0YNSBAIGI9qQWHPrqhWjSgT_nTpvp7nWfUmTOrWPyV8ig>
-    <xmx:C1EmZfpfNgOGiqfvxFacjhUpaPru0LBsOc7fI00Ri_ebpwf1VXX8AA>
-Feedback-ID: i12284293:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 11 Oct 2023 03:38:50 -0400 (EDT)
-Received: by mbp.qyliss.net (Postfix, from userid 1000)
-        id 461BBF0E; Wed, 11 Oct 2023 07:38:48 +0000 (UTC)
-From:   Alyssa Ross <hi@alyssa.is>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Eric Biederman <ebiederm@xmission.com>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] exec: allow executing block devices
-In-Reply-To: <202310101535.CEDA4DB84@keescook>
-References: <20231010092133.4093612-1-hi@alyssa.is>
- <202310101535.CEDA4DB84@keescook>
-Date:   Wed, 11 Oct 2023 07:38:39 +0000
-Message-ID: <87o7h5vcao.fsf@alyssa.is>
+        Wed, 11 Oct 2023 03:38:52 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147EB9D;
+        Wed, 11 Oct 2023 00:38:49 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3BF9E1BF20B;
+        Wed, 11 Oct 2023 07:38:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697009928;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=80AN/ewLY3sOG4mBkN0xkLR7Lqdajsc/Pog++sJfJ24=;
+        b=nRKHGoiukw1U7hMyInMzLPB4Ppzu5iQMeeCG8G96Igdm1kRuk91r7d4REEJ4EdL1e1aVwc
+        itmKn7Ka52HSQGTnRzpj+xJPyuc0xwLn/rs5/3To6DwuNPTpmiWNuX7crVp3rNQZSRsjmZ
+        PqX0B61wSIbuc5+XlC+AI6dT5hS6WHEvehgsDXnwBCcI8BOK6+Cs4bKINHD3PyBwEiFNrt
+        rdy71o66PKi933CBOM5Vy9SCEiFkqmnseK6iB+g54pEzcJqIfK94E4m3e/wZIluzIWv1Ua
+        XUDGrbC2WiBOrA5SylFXIy/wPpLym5cuU4U1s6K6l2X0Akr6UOxLg1J33YY2Hg==
+Date:   Wed, 11 Oct 2023 09:38:43 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Walle <michael@walle.cc>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Robert Marko <robert.marko@sartura.hr>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Daniel Golle <daniel@makrotopia.org>
+Subject: Re: [PATCH v12 5/7] nvmem: core: Rework layouts to become regular
+ devices
+Message-ID: <20231011093843.49831a75@xps-13>
+In-Reply-To: <dc96ddb1-502c-e643-7749-d057d1fc6490@linaro.org>
+References: <20231005155907.2701706-1-miquel.raynal@bootlin.com>
+        <20231005155907.2701706-6-miquel.raynal@bootlin.com>
+        <dc96ddb1-502c-e643-7749-d057d1fc6490@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi Srinivas,
 
-Kees Cook <keescook@chromium.org> writes:
+srinivas.kandagatla@linaro.org wrote on Mon, 9 Oct 2023 10:44:45 +0100:
 
-> On Tue, Oct 10, 2023 at 09:21:33AM +0000, Alyssa Ross wrote:
->> As far as I can tell, the S_ISREG() check is there to prevent
->> executing files where that would be nonsensical, like directories,
->> fifos, or sockets.  But the semantics for executing a block device are
->> quite obvious =E2=80=94 the block device acts just like a regular file.
->>=20
->> My use case is having a common VM image that takes a configurable
->> payload to run.  The payload will always be a single ELF file.
->>=20
->> I could share the file with virtio-fs, or I could create a disk image
->> containing a filesystem containing the payload, but both of those add
->> unnecessary layers of indirection when all I need to do is share a
->> single executable blob with the VM.  Sharing it as a block device is
->> the most natural thing to do, aside from the (arbitrary, as far as I
->> can tell) restriction on executing block devices.  (The only slight
->> complexity is that I need to ensure that my payload size is rounded up
->> to a whole number of sectors, but that's trivial and fast in
->> comparison to e.g. generating a filesystem image.)
->>=20
->> Signed-off-by: Alyssa Ross <hi@alyssa.is>
->
-> Hi,
->
-> Thanks for the suggestion! I would prefer to not change this rather core
-> behavior in the kernel for a few reasons, but it mostly revolves around
-> both user and developer expectations and the resulting fragility.
->
-> For users, this hasn't been possible in the past, so if we make it
-> possible, what situations are suddenly exposed on systems that are trying
-> to very carefully control their execution environments?
+> On 05/10/2023 16:59, Miquel Raynal wrote:
+> > Current layout support was initially written without modules support in
+> > mind. When the requirement for module support rose, the existing base
+> > was improved to adopt modularization support, but kind of a design flaw
+> > was introduced. With the existing implementation, when a storage device
+> > registers into NVMEM, the core tries to hook a layout (if any) and
+> > populates its cells immediately. This means, if the hardware description
+> > expects a layout to be hooked up, but no driver was provided for that,
+> > the storage medium will fail to probe and try later from
+> > scratch. Technically, the layouts are more like a "plus" and, even we =
+=20
+>=20
+> This is not true, As layouts are kind of resources for nvmem providers, I=
+deally the provider driver should defer if there is no matching layout avai=
+lable.
 
-I expect very few, considering it's still necessary to have root chmod
-the block device to make it executable.
+That is not possible as layouts are now devices, the device will be
+populated but you cannot know when it will be actually probed?
 
-> For developers, this ends up exercising code areas that have never been
-> tested, and could lead to unexpected conditions. For example,
-> deny_write_access() is explicitly documented as "for regular files".
-> Perhaps it accidentally works with block devices, but this would need
-> much more careful examination, etc.
->
-> And while looking at this from a design perspective, it looks like a
-> layering violation: roughly speaking, the kernel execute files, from
-> filesystems, from block devices. Bypassing layers tends to lead to
-> troublesome bugs and other weird problems.
->
-> I wonder, though, if you can already get what you need through other
-> existing mechanisms that aren't too much more hassle? For example,
-> what about having a tool that creates a memfd from a block device and
-> executes that? The memfd code has been used in a lot of odd exec corner
-> cases in the past...
+> Expressing this as a weak dependency is going to be an issue,
+>=20
+> 1. With creating the sysfs entries and user notifications
 
-Is it possible to have a file-backed memfd?  Strange name if so!=20
+For me, this is not an issue. Greg?
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+> 2. nvmem consumers will be in a confused state with provider registered b=
+ut without cells added yet.
 
------BEGIN PGP SIGNATURE-----
+Wow, I feel like we are moving backwards.
 
-iQIzBAEBCAAdFiEEH9wgcxqlHM/ARR3h+dvtSFmyccAFAmUmUP8ACgkQ+dvtSFmy
-ccC7DhAAgtwwDA4fn/aXYdqL7F7R68MtABW7LyXGNCjuGEmP1kZbkg0lEyEc7UCr
-+dn5F8EXSzRGK5huEn2RzhPNnzU28KWBxmXN6bFED/YaCDKYBC9MM3cGUaXEbTPG
-fQyQAGo36qlB5m/hS5j8XMuM/uIcYlsEk8qkgpAkfebNAMEKTxxSTshUSFRyq5wa
-KTT76URCwrxPooy25Znv4JqjsR2taMPOvXnVV6bf8DXcCNuI+eVeu7J/nZ44LyEe
-0GykVN2hBeUwuSQEkyR11iKbaoxlTgYRyMMYOw+ylgaBUgfsJn88tGk1qCDlfRW+
-/B1QUJephRtk0LsBLGcjeEqATCJ4ITZaDoIe1CI1pUjluR8tJrMxhmhX9dlyWvjb
-b4CRpFck2sjXbDaP36sW9s7F7qgp9NspPLzSrcgVmKNPY90c/sTVvrkd8CXca2px
-0z1Yxa5P1OFPSSEwBbwqNUpTjsRwQMfsq8TUbcbzJ1h++9F6HEce79WkMz6AHGPD
-c/rpzHS7MqbHCj/nxHP9IuCU1XyR8rIXRynD9NFdDtp8bJMGwvGselrRHfHVz9+X
-tzX4PUuz9k+3PEoHSOVrIaHItIY5Ml7i5md1wpeARpi0lz7CeUvTWMLxXPb/Xc4Y
-BMlmXuKi7CZmjYS/zkw6d1KGddkMhyeZ2I76hkbyGTbfbKDNsU0=
-=S7sC
------END PGP SIGNATURE-----
---=-=-=--
+Consumers don't know about the nvmem devices, they just care about a
+cell. If the cell isn't there, the consumer decides what it wants
+to do with that.
+
+We initially discussed that we would not EPROBE_DEFER if the layouts
+were not yet available because the NVMEM device may be created from a
+device that is the main storage and while you don't have your rootfs,
+you don't have access to your modules. And anyway it's probably a bad
+idea to allow endless probe deferrals on your main storage device.
+
+If the cells are not available at that time, it's not a huge deal? The
+consumers will have to wait a bit more (or take any other action, this
+is device dependent).
+
+> --srini
+> > consider that the hardware description shall be correct, we could still
+> > probe the storage device (especially if it contains the rootfs).
+> >=20
+> > One way to overcome this situation is to consider the layouts as
+> > devices, and leverage the existing notifier mechanism. When a new NVMEM
+> > device is registered, we can:
+> > - populate its nvmem-layout child, if any
+> > - try to modprobe the relevant driver, if relevant
+> > - try to hook the NVMEM device with a layout in the notifier
+> > And when a new layout is registered:
+> > - try to hook all the existing NVMEM devices which are not yet hooked to
+> >    a layout with the new layout
+> > This way, there is no strong order to enforce, any NVMEM device creation
+> > or NVMEM layout driver insertion will be observed as a new event which
+> > may lead to the creation of additional cells, without disturbing the
+> > probes with costly (and sometimes endless) deferrals.
+> >=20
+> > In order to achieve that goal we need:
+> > * To keep track of all nvmem devices
+> > * To create a new bus for the nvmem-layouts with minimal logic to match
+> >    nvmem-layout devices with nvmem-layout drivers.
+> > All this infrastructure code is created in the layouts.c file.
+> >=20
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > Tested-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> > ---
+
+Thanks,
+Miqu=C3=A8l
