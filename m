@@ -2,250 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1967C490B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB4F7C490D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbjJKFLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 01:11:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37536 "EHLO
+        id S229708AbjJKFMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 01:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbjJKFLb (ORCPT
+        with ESMTP id S229534AbjJKFMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 01:11:31 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7C0AF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:11:28 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c735473d1aso44798885ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:11:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697001088; x=1697605888; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8YdumXqFECiIqGWe/cPAmhangKs7E2fmFDNCzZi3I4I=;
-        b=eHWUXmxMG4/Wm5zcO4E1HjEqCrjjz/zqIHtIpSRoxdwlg7v93LbJ40iTc5zJq4NU5u
-         3e1j62t9nO4/Nvj/x6xVBfXPW1kQidjngxVvzDAApAuVa1skO/l2EadOHqdGaMRmp0Hl
-         SYTnPwCX+wvBk9vkVdeK/Uhn4i/FUJW0XFb1LJbjK8na5CxYsIMB7X9DArxpmd4POt9F
-         pS1UGvnY/LtCEPWX1N/drZ7v5t/F4QYvxNoFpMWgi0/+OkkuuNgiGrNt+KXWRqmmiVme
-         THwCxKsaYsiESQu4wgSFs4beXQ8R3GouMhV7kT3MPyhsZD47oaEAapnj01Wa8QwXaOkS
-         k5FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697001088; x=1697605888;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8YdumXqFECiIqGWe/cPAmhangKs7E2fmFDNCzZi3I4I=;
-        b=u9fMu2+6aOw+J8stZwZET7e6hK3N4CvPzd5tyRNQ2AsWjcWvOlX6SSDepXhxEnsLHH
-         KZ5UllTuju8QkFqX4JecFPNUcKpz/X3PUNRxM2z2ziUEaey7qvibA54yoFiBPKD6649f
-         bZMfU0ZZ0IHIGD7Tte6xXe4CRDsL16aWGyjSqypk1gBQgltu9AoyIzHe2K6FksQrQMPS
-         X95j7lba/fuf/mUo03McZG8mMOlzWKUDxfhniXkzPJNFlcWuyh7UlpYUc6o8KlJA3d6e
-         spfuPKtVMY8y0iDE5+pYMA1o2KWFSsu6evLLKeC8NcOGIRDfc7iKFUiXErnDz3YTdly9
-         zg9Q==
-X-Gm-Message-State: AOJu0Ywj2iZG2gyOVTuOadZetGNd9Qodat2k3jPErCOG5Zwiy7BVlxcP
-        WcQ9tDQ1HgZMvtpv9VY6EhcSBQ==
-X-Google-Smtp-Source: AGHT+IH87J+fW2lRM0pJ0z3HScGPs556gHd0Vo58M/p4eeCdCb2C67udLQZaOW+Qet93ce4nOhvFxA==
-X-Received: by 2002:a17:903:11c8:b0:1c7:23c9:a7e1 with SMTP id q8-20020a17090311c800b001c723c9a7e1mr20211376plh.26.1697001087763;
-        Tue, 10 Oct 2023 22:11:27 -0700 (PDT)
-Received: from Tower.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id b14-20020a170902d50e00b001bc6e6069a6sm12745399plg.122.2023.10.10.22.11.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 22:11:27 -0700 (PDT)
-From:   Zhongkun He <hezhongkun.hzk@bytedance.com>
-To:     akpm@linux-foundation.org
-Cc:     hannes@cmpxchg.org, yosryahmed@google.com, nphamcs@gmail.com,
-        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Zhongkun He <hezhongkun.hzk@bytedance.com>
-Subject: [RFC PATCH] zswap: add writeback_time_threshold interface to shrink zswap pool
-Date:   Wed, 11 Oct 2023 13:11:17 +0800
-Message-Id: <20231011051117.2289518-1-hezhongkun.hzk@bytedance.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 11 Oct 2023 01:12:09 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A915F94;
+        Tue, 10 Oct 2023 22:12:07 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39B4L7Qv018484;
+        Wed, 11 Oct 2023 05:11:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Shlvryev70po6+y16cgY2lwIBQ2lfoFlgDPaJLuAWWQ=;
+ b=n95wl1DvgAlwFmru9lVDHn21r/bIQ0UAiwl4K9JFWOGLTuwTjt9+i4prjkCqY7Uw/jVv
+ g7yi5w2SAyjlWlREBFoAn2LTOkPL7YEP7HNeEt3PJKBBPbJXs4hgHzhKUopXt2iPJRl4
+ o0WmcyyscwjjDTfeR73rZITEoO4fiTVaAycebqhVQxaKzEkMOQrFwq+Z1g6NNFlj2a+H
+ 2NY6mrowYQ9CUld+0i9hVz9uMYUD+rJBT7gYABNfwdAmddp1FsO85ZM9egjLhSxFcOQ/
+ uZpJbf0OjiKRMM7bUw4CcUKKQjDWHqDl1GYKCKrdw0PgLkB4K2qmxQfz36+L/lrmGXyB Uw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tn4he232m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 05:11:55 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39B5BsDS020211
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 05:11:54 GMT
+Received: from [10.216.3.75] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 10 Oct
+ 2023 22:11:47 -0700
+Message-ID: <2c325941-0fcc-4092-9581-dd6ebb067163@quicinc.com>
+Date:   Wed, 11 Oct 2023 10:41:44 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 00/10] Add multiport support for DWC3 controllers
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Johan Hovold <johan@kernel.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
+        <quic_shazhuss@quicinc.com>
+References: <20231007154806.605-1-quic_kriskura@quicinc.com>
+ <537d59b3-0e40-4d4d-80ab-b99028af6ec2@linaro.org>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <537d59b3-0e40-4d4d-80ab-b99028af6ec2@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: qBwvHOhGTLevD_mKHfjY_UTaE_ONyd2f
+X-Proofpoint-ORIG-GUID: qBwvHOhGTLevD_mKHfjY_UTaE_ONyd2f
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_01,2023-10-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=643
+ suspectscore=0 mlxscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
+ impostorscore=0 phishscore=0 clxscore=1015 bulkscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310110046
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-zswap does not have a suitable method to select objects that have not
-been accessed for a long time, and just shrink the pool when the limit
-is hit. There is a high probability of wasting memory in zswap if the
-limit is too high.
 
-This patch add a new interface writeback_time_threshold to shrink zswap
-pool proactively based on the time threshold in second, e.g.::
 
-echo 600 > /sys/module/zswap/parameters/writeback_time_threshold
+On 10/11/2023 2:21 AM, Konrad Dybcio wrote:
+> 
+> 
+> On 10/7/23 17:47, Krishna Kurapati wrote:
+>> Currently the DWC3 driver supports only single port controller which
+>> requires at most two PHYs ie HS and SS PHYs. There are SoCs that has
+>> DWC3 controller with multiple ports that can operate in host mode.
+>> Some of the port supports both SS+HS and other port supports only HS
+>> mode.
+>>
+>> This change primarily refactors the Phy logic in core driver to allow
+>> multiport support with Generic Phy's.
+>>
+>> Changes have been tested on  QCOM SoC SA8295P which has 4 ports (2
+>> are HS+SS capable and 2 are HS only capable).
+>>
+>> Changes in v13:
+>> This series is a subset of patches in v11 as the first 3 patches in v11
+>> have been mereged into usb-next.
+>> Moved dr_mode property from platform specific files to common sc8280xp 
+>> DT.
+>> Fixed function call wrapping, added comments and replaced #defines with
+>> enum in dwc3-qcom for identifying IRQ index appropriately.
+>> Fixed nitpicks pointed out in v11 for suspend-resume handling.
+>> Added reported-by tag for phy refactoring patch as a compile error was
+>> found by kernel test bot [1].
+> "If you fix the issue in a separate patch/commit (i.e. not just a new 
+> version of
+> the same patch/commit), kindly add following tags"
+> 
+> the issue your patch resolves is not one that was reported by the kernel 
+> testing robot, it just pointed out that you need to fix up the next 
+> revision
+> 
 
-If zswap_entrys have not been accessed for more than 600 seconds, they
-will be swapout to swap. if set to 0, all of them will be swapout.
+I Agree. It sounds wrong to add a reproted-by tag making it seem like a 
+bug instead of a feature we have written. But if we fix the compile 
+error mentioned and not add the "reported-by", its like not giving 
+credit for the reporter. So I put in the reproted by and closes tag to 
+give a view of what was reported and the feature implemented.
 
-Signed-off-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
----
- Documentation/admin-guide/mm/zswap.rst |  9 +++
- mm/zswap.c                             | 76 ++++++++++++++++++++++++++
- 2 files changed, 85 insertions(+)
-
-diff --git a/Documentation/admin-guide/mm/zswap.rst b/Documentation/admin-guide/mm/zswap.rst
-index 45b98390e938..9ffaed26c3c0 100644
---- a/Documentation/admin-guide/mm/zswap.rst
-+++ b/Documentation/admin-guide/mm/zswap.rst
-@@ -153,6 +153,15 @@ attribute, e. g.::
- 
- Setting this parameter to 100 will disable the hysteresis.
- 
-+When there is a lot of cold memory according to the store time in the zswap,
-+it can be swapout and save memory in userspace proactively. User can write
-+writeback time threshold in second to enable it, e.g.::
-+
-+  echo 600 > /sys/module/zswap/parameters/writeback_time_threshold
-+
-+If zswap_entrys have not been accessed for more than 600 seconds, they will be
-+swapout. if set to 0, all of them will be swapout.
-+
- A debugfs interface is provided for various statistic about pool size, number
- of pages stored, same-value filled pages and various counters for the reasons
- pages are rejected.
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 083c693602b8..c3a19b56a29b 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -141,6 +141,16 @@ static bool zswap_exclusive_loads_enabled = IS_ENABLED(
- 		CONFIG_ZSWAP_EXCLUSIVE_LOADS_DEFAULT_ON);
- module_param_named(exclusive_loads, zswap_exclusive_loads_enabled, bool, 0644);
- 
-+/* zswap writeback time threshold in second */
-+static unsigned int  zswap_writeback_time_thr;
-+static int zswap_writeback_time_thr_param_set(const char *, const struct kernel_param *);
-+static const struct kernel_param_ops zswap_writeback_param_ops = {
-+	.set =		zswap_writeback_time_thr_param_set,
-+	.get =          param_get_uint,
-+};
-+module_param_cb(writeback_time_threshold, &zswap_writeback_param_ops,
-+			&zswap_writeback_time_thr, 0644);
-+
- /* Number of zpools in zswap_pool (empirically determined for scalability) */
- #define ZSWAP_NR_ZPOOLS 32
- 
-@@ -197,6 +207,7 @@ struct zswap_pool {
-  * value - value of the same-value filled pages which have same content
-  * objcg - the obj_cgroup that the compressed memory is charged to
-  * lru - handle to the pool's lru used to evict pages.
-+ * sto_time - the store time of zswap_entry.
-  */
- struct zswap_entry {
- 	struct rb_node rbnode;
-@@ -210,6 +221,7 @@ struct zswap_entry {
- 	};
- 	struct obj_cgroup *objcg;
- 	struct list_head lru;
-+	ktime_t sto_time;
- };
- 
- /*
-@@ -288,6 +300,31 @@ static void zswap_update_total_size(void)
- 	zswap_pool_total_size = total;
- }
- 
-+static void zswap_reclaim_entry_by_timethr(void);
-+
-+static bool zswap_reach_timethr(struct zswap_pool *pool)
-+{
-+	struct zswap_entry *entry;
-+	ktime_t expire_time = 0;
-+	bool ret = false;
-+
-+	spin_lock(&pool->lru_lock);
-+
-+	if (list_empty(&pool->lru))
-+		goto out;
-+
-+	entry = list_last_entry(&pool->lru, struct zswap_entry, lru);
-+	expire_time = ktime_add(entry->sto_time,
-+			ns_to_ktime(zswap_writeback_time_thr * NSEC_PER_SEC));
-+
-+	if (ktime_after(ktime_get_boottime(), expire_time))
-+		ret = true;
-+out:
-+	spin_unlock(&pool->lru_lock);
-+	return ret;
-+}
-+
-+
- /*********************************
- * zswap entry functions
- **********************************/
-@@ -395,6 +432,7 @@ static void zswap_free_entry(struct zswap_entry *entry)
- 	else {
- 		spin_lock(&entry->pool->lru_lock);
- 		list_del(&entry->lru);
-+		entry->sto_time = 0;
- 		spin_unlock(&entry->pool->lru_lock);
- 		zpool_free(zswap_find_zpool(entry), entry->handle);
- 		zswap_pool_put(entry->pool);
-@@ -709,6 +747,28 @@ static void shrink_worker(struct work_struct *w)
- 	zswap_pool_put(pool);
- }
- 
-+static void zswap_reclaim_entry_by_timethr(void)
-+{
-+	struct zswap_pool *pool = zswap_pool_current_get();
-+	int ret, failures = 0;
-+
-+	if (!pool)
-+		return;
-+
-+	while (zswap_reach_timethr(pool)) {
-+		ret = zswap_reclaim_entry(pool);
-+		if (ret) {
-+			zswap_reject_reclaim_fail++;
-+			if (ret != -EAGAIN)
-+				break;
-+			if (++failures == MAX_RECLAIM_RETRIES)
-+				break;
-+		}
-+		cond_resched();
-+	}
-+	zswap_pool_put(pool);
-+}
-+
- static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
- {
- 	int i;
-@@ -1037,6 +1097,21 @@ static int zswap_enabled_param_set(const char *val,
- 	return ret;
- }
- 
-+static int zswap_writeback_time_thr_param_set(const char *val,
-+				const struct kernel_param *kp)
-+{
-+	int ret = -ENODEV;
-+
-+	/* if this is load-time (pre-init) param setting, just return. */
-+	if (system_state != SYSTEM_RUNNING)
-+		return ret;
-+
-+	ret = param_set_uint(val, kp);
-+	if (!ret)
-+		zswap_reclaim_entry_by_timethr();
-+	return ret;
-+}
-+
- /*********************************
- * writeback code
- **********************************/
-@@ -1360,6 +1435,7 @@ bool zswap_store(struct folio *folio)
- 	if (entry->length) {
- 		spin_lock(&entry->pool->lru_lock);
- 		list_add(&entry->lru, &entry->pool->lru);
-+		entry->sto_time = ktime_get_boottime();
- 		spin_unlock(&entry->pool->lru_lock);
- 	}
- 	spin_unlock(&tree->lock);
--- 
-2.25.1
-
+Regards,
+Krishna,
