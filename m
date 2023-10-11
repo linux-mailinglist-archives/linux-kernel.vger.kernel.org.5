@@ -2,106 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0945A7C54E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FE07C54F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234838AbjJKNIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36610 "EHLO
+        id S234995AbjJKNJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:09:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232375AbjJKNIt (ORCPT
+        with ESMTP id S1346062AbjJKNJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:08:49 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A82AA9;
-        Wed, 11 Oct 2023 06:08:47 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-504a7f9204eso8363703e87.3;
-        Wed, 11 Oct 2023 06:08:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697029726; x=1697634526; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MYM9UN1cQM24eN/cx1yRvLKv4WydXJJTwKdXLA9EWM8=;
-        b=fdfGOIn6tWJIfLGDqKmVroC1PK/c37r2YuQcFBAanciQg7QFn8r+eDD7Quc6euRCGs
-         d9tT5RV33GZHiXceKzTN+4wYqMQ/PL/YwwHA80w8xSODcngfp2G2JCyyjv9RW3BLyAWk
-         VbxsiixST+GEHoTpjLYh3tEQb2pJsxHv+zPhhELKY2V7W+8Z1NixX/yQRiu6kgndT9Uc
-         Aado8LHwgb0N8v2SxYpFOXMTFxQQHFOnmK1zmYHdOAZVauRYoUuLrqvVHRovcc0zi8oN
-         AqgOzpEeqKtJpFhkuhxtHVsnXaLtsm7VhwXx+6b8pFUgTrrIeDorcicvAZ4oW+138OWI
-         B0aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697029726; x=1697634526;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MYM9UN1cQM24eN/cx1yRvLKv4WydXJJTwKdXLA9EWM8=;
-        b=tzuB/xeWiIKVq18iXuAoC0VfNKqFyfkrfcDESImXO1UeqVnGL3GJk88xY0hai5aoEz
-         q3Iqo3/TpmVtr2+mA8Q9VIIz2F1071po5MHQpLlExuRGGPrKe/CihXut/0y73QFWgxtp
-         5Rf1i10YPECUipPe0hbIBE4LKMITv+Y2mc+uio0tQrIJVJm7CB82yAz1dcZfgLrxhGmB
-         z1lZPnJGEG6e2y+Nxz6M1VVtf2sTU9xHBuS5ZY2sH97Yb4QOa025Uo7rlqR8NJHqvrMI
-         I6l+NbmoIBzfTpcs6vfutHqCX8tZfYjE2xvTLSlrXKEGQ2YW7BsEiMcjV7v2NnqJJ4JY
-         XgoA==
-X-Gm-Message-State: AOJu0YzIZrIZxvD/0yMhw/fC3LFT7dxcYGRfgLcinZEfJ8B0frevtYw3
-        3mKUIWP/ZBrfnutsZ28mj6NPrBPWmJP/VbRe/jQ=
-X-Google-Smtp-Source: AGHT+IEjN10vumMrnkaVLm49rRcsyi0oHpP0pF8gEAjsR7W/99v8G6qx2BYXKqogcr2nJ1Z3MXtFLamAEVvS47wud0A=
-X-Received: by 2002:ac2:4431:0:b0:503:258d:643c with SMTP id
- w17-20020ac24431000000b00503258d643cmr16419640lfl.21.1697029725500; Wed, 11
- Oct 2023 06:08:45 -0700 (PDT)
+        Wed, 11 Oct 2023 09:09:46 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7CA92
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:09:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sEhqy0TQjUTKPfqjjab4EcmG1KGuaOike/qRtcSt+kw=; b=mBTDAkVDZXX5dRBDyZo5R4bfix
+        w8z6rh0I6kZRDBgXNKpz/jMZamWi6/5IV3Bec1OT6WHs7BZabIxYh3m7pG3iE3JnOnxR6S30D6GaN
+        oY2qGx7mZha1jWNjnyFCP966wO8cRNOrfwWrfAyHcL3ubrqGgOUpnHbtjWtxK5UuJnAfYZEgBO7Er
+        vyvWOPSCbjc561MFpapD5cKmUJcjX5Rf+srqltUZFVmhhmzKSdoIVlYE5ibKu7BZ/Ta3tUnzyChzh
+        h0sUZu3+6xnVXYI1jb/DlhUmUE2JNCC4akPvSIXPrh0jewp5kmohVsGxij4hgugxp2hn3oHQPIvZ3
+        erPqxtpg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qqYxG-000ETA-1X;
+        Wed, 11 Oct 2023 13:08:52 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 917BD30036C; Wed, 11 Oct 2023 15:08:51 +0200 (CEST)
+Date:   Wed, 11 Oct 2023 15:08:51 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Abel Wu <wuyun.abel@bytedance.com>
+Cc:     mingo@kernel.org, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, corbet@lwn.net,
+        qyousef@layalina.io, chris.hyser@oracle.com,
+        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
+        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
+        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
+        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
+        tglx@linutronix.de
+Subject: Re: [PATCH 01/15] sched/fair: Add avg_vruntime
+Message-ID: <20231011130851.GF6337@noisy.programming.kicks-ass.net>
+References: <20230531115839.089944915@infradead.org>
+ <20230531124603.654144274@infradead.org>
+ <75adcb1a-c02f-4d7c-bd9c-ab4f403af3e8@bytedance.com>
+ <20231011073001.GI14330@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <E1qkoRr-0088Q8-Da@rmk-PC.armlinux.org.uk> <ZSV6i4pnjQqvWuKp@shell.armlinux.org.uk>
- <87o7h5l5xr.ffs@tglx>
-In-Reply-To: <87o7h5l5xr.ffs@tglx>
-From:   =?UTF-8?B?VG9tw6HFoSBHbG96YXI=?= <tglozar@gmail.com>
-Date:   Wed, 11 Oct 2023 15:08:34 +0200
-Message-ID: <CAHtyXDdr_R_Moypb3ieFs54RRGu+zqHS46WrjEvWCFtT0KZRaQ@mail.gmail.com>
-Subject: Re: [PATCH] cpu-hotplug: provide prototypes for arch CPU registration
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-acpi@vger.kernel.org, James Morse <james.morse@arm.com>,
-        loongarch@lists.linux.dev, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-ia64@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011073001.GI14330@noisy.programming.kicks-ass.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Thomas,
+On Wed, Oct 11, 2023 at 09:30:01AM +0200, Peter Zijlstra wrote:
+> On Wed, Oct 11, 2023 at 12:15:28PM +0800, Abel Wu wrote:
+> > On 5/31/23 7:58 PM, Peter Zijlstra wrote:
+> > > +/*
+> > > + * Compute virtual time from the per-task service numbers:
+> > > + *
+> > > + * Fair schedulers conserve lag:
+> > > + *
+> > > + *   \Sum lag_i = 0
+> > > + *
+> > > + * Where lag_i is given by:
+> > > + *
+> > > + *   lag_i = S - s_i = w_i * (V - v_i)
+> > 
+> > Since the ideal service time S is task-specific, should this be:
+> > 
+> > 	lag_i = S_i - s_i = w_i * (V - v_i)
+> 
 
-st 11. 10. 2023 v 14:06 odes=C3=ADlatel Thomas Gleixner <tglx@linutronix.de=
-> napsal:
->
-> Sorry for the wrong information about ia64. The removal did not happen
-> because someone stepped up as a possible maintainer.
->
-
-Does that mean that the removal patch will be reverted soon in
-asm-generic and linux-next? Both have no ia64 as of now, and there are
-already a few patches without ia64 part (e,g,
-https://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git/commit=
-/?id=3D2fd0ebad27bcd4c8fc61c61a98d4283c47054bcf).
-Without the revert, patches affecting ia64 will conflict.
-
-I am the person who volunteered to maintain the architecture. If the
-removal was indeed cancelled, me and Frank Scheiner can start testing
-and reviewing patches affecting ia64.
-
-Thanks,
-
-Tomas
+Yes, it should be. Clearly I was delusional this morning.
