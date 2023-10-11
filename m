@@ -2,161 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8867C561F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910817C5699
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbjJKOCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 10:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40436 "EHLO
+        id S1346714AbjJKOSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 10:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232202AbjJKOCu (ORCPT
+        with ESMTP id S234900AbjJKOSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 10:02:50 -0400
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FE393;
-        Wed, 11 Oct 2023 07:02:47 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 01B7140004;
-        Wed, 11 Oct 2023 14:02:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697032966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AmDid+2p5omqPQxMszlLHuNt/K12o40KfGGotdHRA4A=;
-        b=fxkhROQypXEGEU25tCB1qFGhCBWiY7ChPSURIW48jG2TDWzf1Hs2f+d5jYfOdwyALI9Ven
-        Az9tOMNZ49Sb+/fcBjwht/+vyXww0yARVBlafJsON1TIajAPJiOzWZrcgmWthQyJuyGSpy
-        DadE20n8nsGPhXWuaM0d/t9UqwA2txhlMNlPoHxWsWeGv/G5Dr95OUNhC2rzWisyrPZ+jl
-        pw3CL+XMwf6rqf5SvKn7Pf8V4Q6FudA6Fjjx8NwpdO6GCKrLMwABEaAM44NPbxytlnWvPE
-        3qrO5CQ6hUZtHPAkOJWflWy/vcwWVKxZYa9vtxc3K6svT24dz36CqWTclQbjeA==
-Date:   Wed, 11 Oct 2023 16:02:43 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Walle <michael@walle.cc>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Marko <robert.marko@sartura.hr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>
-Subject: Re: [PATCH v12 7/7] nvmem: core: Expose cells through sysfs
-Message-ID: <20231011160243.4893729d@xps-13>
-In-Reply-To: <a67f5fd1-6b5c-662d-5ab3-b528c2080efc@linaro.org>
-References: <20231005155907.2701706-1-miquel.raynal@bootlin.com>
-        <20231005155907.2701706-8-miquel.raynal@bootlin.com>
-        <318fe799-f53e-64ed-b631-d099bb5202f4@linaro.org>
-        <20231011091524.0c9ecc55@xps-13>
-        <548849a8-9f11-5274-778e-f291267603bb@linaro.org>
-        <20231011103306.08f1fbd4@xps-13>
-        <fe4a2688-079c-a36d-0ea4-c244c6e1a0ad@linaro.org>
-        <20231011105829.778bed58@xps-13>
-        <490c6740-06cb-9ee6-ca8c-3ab404109344@linaro.org>
-        <20231011114419.21821f4d@xps-13>
-        <8b8403ee-b610-312b-aa98-3e4fa65a3800@linaro.org>
-        <20231011130931.3b6216aa@xps-13>
-        <a67f5fd1-6b5c-662d-5ab3-b528c2080efc@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Wed, 11 Oct 2023 10:18:48 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA89D94
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 07:18:42 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BEHNHj009903;
+        Wed, 11 Oct 2023 14:18:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=v7Aq4LPAg2ISwEDezJSaooRSCiCQEygdjIfCI1MLCLY=;
+ b=qcC5KosSisjohb81Z5fXGZI3cMJkmnjV+51M65wtrli3lnQhixgXGoB1Jndro7xWpMK/
+ 9yen5UKarwcOm09lRCoSXpeAL0u6UEQNs8nGJPOUyQ593Vl27f5FhpIXOLeeLos0aqmm
+ rcsZwnivBlX7WfoGqw1nn4S9ONHIxyxtwNLiHmYZKvjYLyHjN4imSJguOY308gxAC8iY
+ J7XOjQre8x5Dw7HV6aBRusAFe467eJ2eSoF8JCFqukKeHNnl7h0qy6CbAtZQCzD1xi9S
+ UG3VTSXpw9rUWErh9EH3WFb84uXSzvzdbmhaudJuYCg7SdFencET9e/1r35OyFHSE617 Ww== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnwb982j1-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 14:18:34 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39BD3SHB023032;
+        Wed, 11 Oct 2023 13:36:21 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkmc1qrq1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 13:36:21 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39BDaKf623659124
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Oct 2023 13:36:20 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 999AD58043;
+        Wed, 11 Oct 2023 13:36:20 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7150D58055;
+        Wed, 11 Oct 2023 13:36:20 +0000 (GMT)
+Received: from [9.61.37.205] (unknown [9.61.37.205])
+        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Oct 2023 13:36:20 +0000 (GMT)
+Message-ID: <dc63d7ca-aa62-1f51-1e1f-8569fdf841fc@linux.ibm.com>
+Date:   Wed, 11 Oct 2023 08:36:20 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3 1/2] fsi: sbefifo: Bump up user write cmd length
+To:     Ninad Palsule <ninad@linux.ibm.com>, jk@ozlabs.org, joel@jms.id.au,
+        alistair@popple.id.au, linux-fsi@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <20231010204348.2600242-1-ninad@linux.ibm.com>
+ <20231010204348.2600242-2-ninad@linux.ibm.com>
+Content-Language: en-US
+From:   Eddie James <eajames@linux.ibm.com>
+In-Reply-To: <20231010204348.2600242-2-ninad@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: uOLUJ5ggglagcsyIlFYYrQbwhZ6HILYA
+X-Proofpoint-ORIG-GUID: uOLUJ5ggglagcsyIlFYYrQbwhZ6HILYA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_09,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 phishscore=0 impostorscore=0 bulkscore=0
+ suspectscore=0 clxscore=1011 priorityscore=1501 lowpriorityscore=0
+ spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310110126
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas,
 
-srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 14:56:02 +0100:
+On 10/10/23 15:43, Ninad Palsule wrote:
+> This commit increases user write limit for command length from 1MB to
+> 4MB. This is required to support images larger than 1MB.
+>
+> As per 'commit 15e2a7218c27 ("fsi: sbefifo: Bump max command length")'
+> the alternate solution is to break image into 1MB pieces by cronous
+> server that means kernel driver needs to provide way to send end of
+> message command once all pieces are transferred. This requires
+> restructuring of both kernel driver and cronus server (application).
+> Hence this commit chose to bump up cmd length to reduce code impact.
+>
+> Testing:
+>    Loaded 3 MB image through cronus server.
 
-> On 11/10/2023 12:09, Miquel Raynal wrote:
-> > Hi Srinivas,
-> >=20
-> > srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 11:02:16 +0100:
-> >  =20
-> >> Hi Miquel,
-> >>
-> >> On 11/10/2023 10:44, Miquel Raynal wrote: =20
-> >>> Hi Srinivas,
-> >>>
-> >>> srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 10:26:43 +01=
-00: =20
-> >>>    >>>> On 11/10/2023 09:58, Miquel Raynal wrote: =20
-> >>>>> Hi Srinivas,
-> >>>>>
-> >>>>> srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 09:45:11 +=
-0100: =20
-> >>>>>     >>>> On 11/10/2023 09:33, Miquel Raynal wrote: =20
-> >>>>>>> Hi Srinivas,
-> >>>>>>>
-> >>>>>>> srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 09:27:20=
- +0100: =20
-> >>>>>>>      >>>> On 11/10/2023 08:15, Miquel Raynal wrote:
-> >>>>>>>>>>> +
-> >>>>>>>>>>> +	nvmem_cells_group.bin_attrs =3D cells_attrs;
-> >>>>>>>>>>> +
-> >>>>>>>>>>> +	ret =3D devm_device_add_groups(&nvmem->dev, nvmem_cells_gro=
-ups);
-> >>>>>>>>>>> +	if (ret)
-> >>>>>>>>>>> +		goto unlock_mutex; =20
-> >>>>>>>>>> This is going to create groups after the nvmem device is added=
-, isn't this going to be problem with user space notifications? =20
-> >>>>>>>>> Greg said it was not. I hope I understood correctly =F0=9F=98=84
-> >>>>>>>>>
-> >>>>>>>>> And anyway, cells have never been available to userspace, so th=
-ere is
-> >>>>>>>>> nothing userspace might expect yet? =20
-> >>>>>>>> I agree, but once we add sysfs uapi then this is going to change=
-. =20
-> >>>>>>>
-> >>>>>>> Can you elaborate? I'm not sure I follow you here. Is there still=
- a
-> >>>>>>> problem you fear or you think it's okay? =20
-> >>>>>>>      >> Now that we add cells to sysfs. =20
-> >>>>>> AFAIU, By the time the userspace sees the udev event from this dev=
-ice we might not have cells populated. =20
-> >>>>>
-> >>>>> Yes, but why would this be a problem? =20
-> >>>>>     >> It will be problem if the userspace is using things like lib=
-udev to act on these events. There seems to be some caching of attributes i=
-n udev during event more info http://www.kroah.com/log/blog/2013/06/26/how-=
-to-create-a-sysfs-file-correctly/ =20
-> >>>
-> >>> I am already using these attributes, right? The problem here is that =
-we
-> >>> always attach cells sysfs attributes to the nvmem device, but in some
-> >>> cases (when using layout devices/drivers) the probe of these devices
-> >>> will happen after the main nvmem device has been announced to userspa=
-ce
-> >>> and thus these attributes might not be populated yet (but Greg said it
-> >>> was "supported" and I assumed it was fine). =20
-> >>>   > So what is your idea here to overcome this? =20
-> >>
-> >> Ideally we should have all the cells definitions ready by the time nvm=
-em is registered. =20
-> >=20
-> > I no longer think what you describe can happen because even though the
-> > rootfs might be mounted, the daemons will only be 'started' once the
-> > kernel is done starting and starts the init process, which means all
-> > the devices have probed and all the cells have been registered as well.=
- =20
-> I think you forgot about modules in the above flow.
 
-We request module insertion when the layout gets populated. By the time
-userspace starts the kernel is done initializing, meaning that any
-available nvmem layout module has already been loaded and the devices
-probed -> the cells are there already.
+Reviewed-by: Eddie James <eajames@linux.ibm.com>
 
-Thanks,
-Miqu=C3=A8l
+
+>
+> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+> ---
+> v2:
+>    - Add the cmd length check back and changed it to 4MB
+> ---
+>   drivers/fsi/fsi-sbefifo.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
+> index 9912b7a6a4b9a..a95b32461f8f3 100644
+> --- a/drivers/fsi/fsi-sbefifo.c
+> +++ b/drivers/fsi/fsi-sbefifo.c
+> @@ -113,7 +113,7 @@ enum sbe_state
+>   #define SBEFIFO_TIMEOUT_IN_RSP		1000
+>   
+>   /* Other constants */
+> -#define SBEFIFO_MAX_USER_CMD_LEN	(0x100000 + PAGE_SIZE)
+> +#define SBEFIFO_MAX_USER_CMD_LEN       (0x400000 + PAGE_SIZE)
+>   #define SBEFIFO_RESET_MAGIC		0x52534554 /* "RSET" */
+>   
+>   struct sbefifo {
