@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEAE7C5F0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757777C5F0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233644AbjJKVVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:21:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35214 "EHLO
+        id S233573AbjJKVWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 17:22:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233573AbjJKVVm (ORCPT
+        with ESMTP id S233390AbjJKVWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:21:42 -0400
+        Wed, 11 Oct 2023 17:22:10 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084769E
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:21:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A91DAC433C7;
-        Wed, 11 Oct 2023 21:21:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007C490;
+        Wed, 11 Oct 2023 14:22:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FCE2C433C8;
+        Wed, 11 Oct 2023 21:22:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697059300;
-        bh=AVRwgDQBx8JR4FI59OdGoNJiJ8cIUcgjj4IXSMlvioQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FeuXDh0Pe588U/HI3BCDaX6/Siicbxz/VlUUPwNzcB1plpChg61yRxaACWVX/bjSC
-         nE+bO3Enh9zLr1XTmn8fs3TB86TrpmoJitanCKs7mKDUtfwu4NVWMpZKg4UYSjJ6PR
-         iKOXjQH5t3NmEXPQk0drsmr9nEvgsXE0u3AOh9r0kNXveyTarxxueqkiNNLq7JU3jk
-         3HiJONE5kHoL17J76por3LVwuqyLpztPecYx2kZCVzeOMZbpN7FQ43vmu9rHskAXu2
-         Dxkib8VXSvqRiYme9D+JO6GhZ8TLtx/LGd0RqSFvGjXzJGVF9yMOFPGD5QH4uAweK9
-         1VfwaI6sLQqWw==
-Date:   Wed, 11 Oct 2023 22:21:33 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Chancel Liu <chancel.liu@nxp.com>
-Cc:     lgirdwood@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/2] ASoC: dt-bindings: sound-card-common: List DAPM
- endpoints ignoring system suspend
-Message-ID: <f639c88d-371a-4c72-a906-47d643b24ca8@sirena.org.uk>
-References: <20231011114759.1073757-1-chancel.liu@nxp.com>
+        s=k20201202; t=1697059328;
+        bh=qpNUqw05PLc7b1md/614fr1Zk6arYszd1WK9gMvl0Os=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=ghyoFWHuCUoYAQQVImwLJec5By6IY8ldZU+IpgLhM86gHWNMMGsDK4I3bZN3O9HN6
+         DZ662abX5LzoV0AuEi9+5Ki6vZZQBQwOyiKdPRI4rA2aI7uLPzLKnygGYsAASzsGrz
+         QKdQ9RXXuApQ6HirgahUGTdW+uLPDMBSzhJdQjS18i+uHHpiCtlwWFOhjYSCOugggW
+         Duv0TMGaORQs/RXdvsCl/MbpQ76sczbG4Y1+Ext0ZSAafYpDZUgO9tYsFTZwJorZnI
+         X29tvX4dE26f0/NdjlsksaHY7OVFRWeD2ft2MA6pgB+n+l9lv7LOpuKtJ8H4lcIsBg
+         tvwjDEZAHbqog==
+Date:   Wed, 11 Oct 2023 16:22:06 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc:     linux-pci@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+        ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-bluetooth@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 03/13] PCI/ASPM: Disable ASPM when driver requests it
+Message-ID: <20231011212206.GA1043224@bhelgaas>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="BGyLCGLG2m53YbE3"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231011114759.1073757-1-chancel.liu@nxp.com>
-X-Cookie: What an artist dies with me!
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230918131103.24119-4-ilpo.jarvinen@linux.intel.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -57,46 +61,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 18, 2023 at 04:10:53PM +0300, Ilpo Järvinen wrote:
+> PCI core/ASPM service driver allows controlling ASPM state through
+> pci_disable_link_state() and pci_enable_link_state() API. It was
+> decided earlier (see the Link below), to not allow ASPM changes when OS
+> does not have control over it but only log a warning about the problem
+> (commit 2add0ec14c25 ("PCI/ASPM: Warn when driver asks to disable ASPM,
+> but we can't do it")). Similarly, if ASPM is not enabled through
+> config, ASPM cannot be disabled.
+> ...
 
---BGyLCGLG2m53YbE3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> +#ifndef CONFIG_PCIEASPM
+> +/*
+> + * Always disable ASPM when requested, even when CONFIG_PCIEASPM is
+> + * not build to avoid drivers adding code to do it on their own
+> + * which caused issues when core does not know about the out-of-band
+> + * ASPM state changes.
+> + */
+> +int pci_disable_link_state_locked(struct pci_dev *pdev, int state)
+> +{
+> +	struct pci_dev *parent = pdev->bus->self;
+> +	struct pci_bus *linkbus = pdev->bus;
+> +	struct pci_dev *child;
+> +	u16 aspm_enabled, linkctl;
+> +	int ret;
+> +
+> +	if (!parent)
+> +		return -ENODEV;
 
-On Wed, Oct 11, 2023 at 07:47:58PM +0800, Chancel Liu wrote:
+P.S. I think this should look the same to the user (same dmesg log and
+same taint, if we do that) as the CONFIG_PCIEASPM=y case.
 
-> +  lpa-widgets:
-> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-> +    description: |
-> +      A list of DAPM endpoints which mark paths between these endpoints should
-> +      not be disabled when system enters in suspend state. LPA means low power
-> +      audio case. For example on asymmetric multiprocessor, there are Cortex-A
+> +	ret = pcie_capability_read_word(parent, PCI_EXP_LNKCTL, &linkctl);
+> +	if (ret != PCIBIOS_SUCCESSFUL)
+> +		return pcibios_err_to_errno(ret);
+> +	aspm_enabled = linkctl & PCI_EXP_LNKCTL_ASPMC;
+> +
+> +	ret = pcie_capability_read_word(pdev, PCI_EXP_LNKCTL, &linkctl);
+> +	if (ret != PCIBIOS_SUCCESSFUL)
+> +		return pcibios_err_to_errno(ret);
+> +	aspm_enabled |= linkctl & PCI_EXP_LNKCTL_ASPMC;
+> +
+> +	/* If no states need to be disabled, don't touch LNKCTL */
+> +	if (state & aspm_enabled)
+> +		return 0;
+> +
+> +	ret = pcie_capability_clear_word(parent, PCI_EXP_LNKCTL, PCI_EXP_LNKCTL_ASPMC);
+> +	if (ret != PCIBIOS_SUCCESSFUL)
+> +		return pcibios_err_to_errno(ret);
+> +	list_for_each_entry(child, &linkbus->devices, bus_list)
+> +		pcie_capability_clear_word(child, PCI_EXP_LNKCTL, PCI_EXP_LNKCTL_ASPMC);
 
-I suspect that the DT maintainers would prefer that this description be
-workshopped a bit to remove the Linux specifics.  I think the key thing
-here is that these are endpoints that can be active over suspend of the
-main application processor that the current operating system is running
-(system DT stuff is an interesting corner case here...), and the example
-is probably a bit specific.  Other bindings use "audio sound widgets"
-rather than "DAPM widgets".
+This disables *all* ASPM states, unlike the version when
+CONFIG_PCIEASPM is enabled.  I suppose there's a reason, and maybe a
+comment could elaborate on it?
 
-We also shouldn't see that these endpoints "should not be disabled"
-since that implies that they should be left on even if they aren't
-active which isn't quite the case, instead it's that we can continue
-playing an audio stream through them in suspend.
+When CONFIG_PCIEASPM is not enabled, I don't think we actively
+*disable* ASPM in the hardware; we just leave it as-is, so firmware
+might have left it enabled.
 
---BGyLCGLG2m53YbE3
-Content-Type: application/pgp-signature; name="signature.asc"
+> +
+> +	return 0;
+> +}
 
------BEGIN PGP SIGNATURE-----
+Conceptually it seems like the LNKCTL updates here should be the same
+whether CONFIG_PCIEASPM is enabled or not (subject to the question
+above).
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUnEdwACgkQJNaLcl1U
-h9D14gf+M9bhmpfCPDRUmqCUaPutP6E3jikRfcnDJMN9NCqZQlZqmvNPDkZwflpC
-0ANUsCcytMbUuzBoQIYoSCtfFDer2msQyvVQxVsM9P1zwX7Qfbal8vTlZGk4ysr7
-p81AT1+S+qs9386uzQSK+WFqMoEEZYzgOY8GDvdEZFl2I1JlfB6+f47nyxYwYylv
-GD1iiiRKguqj0FMRWINIxBRehf+/SSZ2dLu6lYVAl2ZlGkKZgtJAylmDGVVHWAiG
-YWYHw1UUmuTqUtdcsHd0h5Yz1fv5QWhhOSaGSLrrzg58vMBhsC/JfP+ntn7pF5eD
-Wi4I4SBZmZibAjPsU4MD29pkvvjasQ==
-=c0uT
------END PGP SIGNATURE-----
+When CONFIG_PCIEASPM is enabled, we might need to do more stuff, but
+it seems like the core should be the same.
 
---BGyLCGLG2m53YbE3--
+Bjorn
