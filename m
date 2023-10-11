@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E78E7C5AC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B987A7C5AC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234778AbjJKSCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 14:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
+        id S1345948AbjJKSCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 14:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232218AbjJKSCV (ORCPT
+        with ESMTP id S232218AbjJKSCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 14:02:21 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E792793
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:02:19 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BHE2Ku020157;
-        Wed, 11 Oct 2023 18:01:42 GMT
+        Wed, 11 Oct 2023 14:02:34 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6031A4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:02:33 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BHEXxs008938;
+        Wed, 11 Oct 2023 18:02:00 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-03-30; bh=LANmNJdueyvQi7c+RbU1YOnVyO963av3fCML/59OnNg=;
- b=O3lSyLLCbj4f96Jv4+r7OqeiTyynS/aleT1b1LCzjeLQ+9NT6NjqkqvWj8KEDNr/oLCK
- yPfokbmH2DDEOHbkeaN2okWNlpNKDs2J/eti1VBwkAQyaCJvxHPlVLlKBVQ9xaNrWWDm
- ujXo52LdSew/4MCE0EoAz5nZvLP77gYhO1I3vqQnEzpjD7+XMWaWHeHiiTGoaEI27wEV
- 1EydeADLcnvmW3VW6iE8faOBf9NGMUr+W6VBamQCDWVV5vJETnGTKya+E8/7bHiIadnN
- a8PONg/o5ZBWsEsdx4UUOkHle1+6SKvd0E3Xm4XQ8az/VCUe2hP3crEZLj+M8DlGW8+1 Dw== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2023-03-30;
+ bh=LQD2EetfkBTJWECVsOuu7oX2KWF9Y6xgxdXIpIDsyrQ=;
+ b=Si+QIgc9Sah/2/w516iQw9HCbMMoWiJ4iWh5PeL2a5Ai1m6gkLWRRvYf10zeVypp870G
+ SbG2bVQg4QUTtbFZ1sj13GKeqrqCXYH/Yv9/BMKKp0WtjvIfWIpxP5OiFjUTTj7COzol
+ 2zQvjv0T9KhtVwlKb5eRHuB+uRshctoXLXXlcGAzQIna3ksdJ1xupA6uf6Lhzeiu9Bg5
+ 9vhoqgFsAyzPpGKaKD0/+U/7KLboNWd1Pbc/bvgq99mZpJj0v2z+UoPDBAvTxcHl7o6p
+ oKFgH5Lrrwk2F43gsLPJTW4r1DE9GjBcw8/wR+F8J4fbcQ/tTfzH9VrI2H7xtOvuOe6k zA== 
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tjx43rypq-1
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tjyvurymh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Oct 2023 18:01:41 +0000
+        Wed, 11 Oct 2023 18:01:58 +0000
 Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39BGjwdH002618;
-        Wed, 11 Oct 2023 18:01:41 GMT
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39BGjvHx002574;
+        Wed, 11 Oct 2023 18:01:57 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tjwsedrkh-1
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tjwseds2b-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Oct 2023 18:01:40 +0000
+        Wed, 11 Oct 2023 18:01:57 +0000
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39BI1eE0029797;
-        Wed, 11 Oct 2023 18:01:40 GMT
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39BI1eE2029797;
+        Wed, 11 Oct 2023 18:01:56 GMT
 Received: from mlluis-mac.uk.oracle.com (dhcp-10-175-192-63.vpn.oracle.com [10.175.192.63])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3tjwsedrg7-1;
-        Wed, 11 Oct 2023 18:01:39 +0000
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3tjwsedrg7-2;
+        Wed, 11 Oct 2023 18:01:56 +0000
 From:   Miguel Luis <miguel.luis@oracle.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
@@ -50,15 +51,17 @@ To:     Catalin Marinas <catalin.marinas@arm.com>,
         James Morse <james.morse@arm.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         Zenghui Yu <yuzenghui@huawei.com>,
-        Jing Zhang <jingzhangos@google.com>,
         Eric Auger <eric.auger@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         kvmarm@lists.linux.dev
 Cc:     miguel.luis@oracle.com
-Subject: [PATCH v3 0/3] Fine grain sysregs allowed to trap for nested virtualization
-Date:   Wed, 11 Oct 2023 18:00:59 +0000
-Message-Id: <20231011180103.91774-1-miguel.luis@oracle.com>
+Subject: [PATCH v3 1/3] arm64: Add missing _EL12 encodings
+Date:   Wed, 11 Oct 2023 18:01:00 +0000
+Message-Id: <20231011180103.91774-2-miguel.luis@oracle.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231011180103.91774-1-miguel.luis@oracle.com>
+References: <20231011180103.91774-1-miguel.luis@oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=baseguard
@@ -68,59 +71,61 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamsc
  suspectscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
  definitions=main-2310110159
-X-Proofpoint-ORIG-GUID: xzf-n6Ewm7oFwSQkaKcFwZ04a9JY1xaN
-X-Proofpoint-GUID: xzf-n6Ewm7oFwSQkaKcFwZ04a9JY1xaN
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-ORIG-GUID: GGwcpKQLkF_i5uim00fukHQcXoIeRCx7
+X-Proofpoint-GUID: GGwcpKQLkF_i5uim00fukHQcXoIeRCx7
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current HCR_EL2 description defines ranges of system register encodings in
-which accesses should trap for NV. These ranges include encodings which aren't
-defined in the reference manual. In order avoid this, let's rather implement a
-more fine grained approach excluding those undefined.
+Some _EL12 encodings are missing. Add them.
 
-Changes v2 -> v3
- patch 1:
-	Fix BRBCR_EL12. (Eric)
-	Add Eric's R-b. Thanks!
- patch 2:
-	New patch to add missing _EL2 encodings for patch 3.
- patch 3:
-	Previously patch 2 in v2.
-	Add Fixes tag. (Eric)
-	Merge contiguous ranges and exclude undefined encodings. (Eric)
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Signed-off-by: Miguel Luis <miguel.luis@oracle.com>
+---
+ arch/arm64/include/asm/sysreg.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-v1 -> v2
- patch 1:
-	fix indentation
- patch 2:
-	improve commit message (Marc)
-	fix indentation (Marc)
-	follow kernel comment format (Marc)
-	describe LRs in ranges (Marc)
-	include AMEVCNTVOFF0<n>_EL2 and AMEVCNTVOFF1<n>_EL2
- patch 3:
-	drop. Excluded IMPDEF range is trapped by HCR_EL2.TIDCP
-
-v2: https://lore.kernel.org/kvmarm/20230925162057.27548-1-miguel.luis@oracle.com/
-v1: https://lore.kernel.org/kvmarm/20230913185209.32282-1-miguel.luis@oracle.com/
-
-Miguel Luis (3):
-  arm64: Add missing _EL12 encodings
-  arm64: Add missing _EL2 encodings
-  arm64/kvm: Fine grain _EL2 system registers list that affect nested
-    virtualization
-
- arch/arm64/include/asm/sysreg.h | 48 ++++++++++++++++++
- arch/arm64/kvm/emulate-nested.c | 88 ++++++++++++++++++++++++++++++---
- 2 files changed, 130 insertions(+), 6 deletions(-)
-
---
+diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+index 38296579a4fd..ba5db50effec 100644
+--- a/arch/arm64/include/asm/sysreg.h
++++ b/arch/arm64/include/asm/sysreg.h
+@@ -567,19 +567,30 @@
+ #define SYS_CNTHCTL_EL2			sys_reg(3, 4, 14, 1, 0)
+ 
+ /* VHE encodings for architectural EL0/1 system registers */
++#define SYS_BRBCR_EL12			sys_reg(2, 5, 9, 0, 0)
+ #define SYS_SCTLR_EL12			sys_reg(3, 5, 1, 0, 0)
++#define SYS_CPACR_EL12			sys_reg(3, 5, 1, 0, 2)
++#define SYS_SCTLR2_EL12			sys_reg(3, 5, 1, 0, 3)
++#define SYS_ZCR_EL12			sys_reg(3, 5, 1, 2, 0)
++#define SYS_TRFCR_EL12			sys_reg(3, 5, 1, 2, 1)
++#define SYS_SMCR_EL12			sys_reg(3, 5, 1, 2, 6)
+ #define SYS_TTBR0_EL12			sys_reg(3, 5, 2, 0, 0)
+ #define SYS_TTBR1_EL12			sys_reg(3, 5, 2, 0, 1)
+ #define SYS_TCR_EL12			sys_reg(3, 5, 2, 0, 2)
++#define SYS_TCR2_EL12			sys_reg(3, 5, 2, 0, 3)
+ #define SYS_SPSR_EL12			sys_reg(3, 5, 4, 0, 0)
+ #define SYS_ELR_EL12			sys_reg(3, 5, 4, 0, 1)
+ #define SYS_AFSR0_EL12			sys_reg(3, 5, 5, 1, 0)
+ #define SYS_AFSR1_EL12			sys_reg(3, 5, 5, 1, 1)
+ #define SYS_ESR_EL12			sys_reg(3, 5, 5, 2, 0)
+ #define SYS_TFSR_EL12			sys_reg(3, 5, 5, 6, 0)
++#define SYS_FAR_EL12			sys_reg(3, 5, 6, 0, 0)
++#define SYS_PMSCR_EL12			sys_reg(3, 5, 9, 9, 0)
+ #define SYS_MAIR_EL12			sys_reg(3, 5, 10, 2, 0)
+ #define SYS_AMAIR_EL12			sys_reg(3, 5, 10, 3, 0)
+ #define SYS_VBAR_EL12			sys_reg(3, 5, 12, 0, 0)
++#define SYS_CONTEXTIDR_EL12		sys_reg(3, 5, 13, 0, 1)
++#define SYS_SCXTNUM_EL12		sys_reg(3, 5, 13, 0, 7)
+ #define SYS_CNTKCTL_EL12		sys_reg(3, 5, 14, 1, 0)
+ #define SYS_CNTP_TVAL_EL02		sys_reg(3, 5, 14, 2, 0)
+ #define SYS_CNTP_CTL_EL02		sys_reg(3, 5, 14, 2, 1)
+-- 
 2.39.2
 
