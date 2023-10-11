@@ -2,170 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 719637C505D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9CE7C5060
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345992AbjJKKjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
+        id S1346329AbjJKKkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:40:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjJKKjW (ORCPT
+        with ESMTP id S231426AbjJKKkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:39:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF87C0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:39:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697020761; x=1728556761;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=gXkJ9Rz4wh3rd3Sz4VQwFqIASu0MtsnAvP+47lbpfF8=;
-  b=Q7fKpUdVVrFlNq/KXY2A1byxTeFvthpw12Wckr2txiLoYo1N/LZPr0VT
-   RqZsAJmBvDg3bCAwctQKELuWYRCq2TOxbeMaEqebhmtSZM8gxHEs2Prac
-   2Dg/t+dZyDv5EyGwycJU1jnIf4lbkcmLjwrp3ours44rYeJZQcKXqXlfv
-   8J2fuMspX//VZPRTrTKfcjQ1dirFd6dvjGnHnFEyE+U/hSIhscYvXIJq3
-   Ppa2r27pyMaI/fOlm5AtIitDIwZq3HY7GRgt5+aSai4AOZ6vguab8pwmy
-   aO3hkrDCYb54x8HtwyIIwNQLjx0nwseG20z8EmT8qRbROSjZD5EBu9U3A
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="451121937"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="451121937"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 03:39:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="1001058836"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="1001058836"
-Received: from unknown (HELO smile.fi.intel.com) ([10.237.72.54])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 03:39:16 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qqWcT-00000004b1I-0Ivx;
-        Wed, 11 Oct 2023 13:39:13 +0300
-Date:   Wed, 11 Oct 2023 13:39:12 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Ankit Jain <ankitja@vmware.com>
-Cc:     peterz@infradead.org, yury.norov@gmail.com,
-        linux@rasmusvillemoes.dk, qyousef@layalina.io, pjt@google.com,
-        joshdon@google.com, bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, namit@vmware.com,
-        amakhalov@vmware.com, srinidhir@vmware.com, vsirnapalli@vmware.com,
-        vbrahmajosyula@vmware.com, akaher@vmware.com,
-        srivatsa@csail.mit.edu
-Subject: Re: [PATCH RFC] cpumask: Randomly distribute the tasks within
- affinity mask
-Message-ID: <ZSZ7UOBupdHHB24h@smile.fi.intel.com>
-References: <20231011071925.761590-1-ankitja@vmware.com>
+        Wed, 11 Oct 2023 06:40:09 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7E494;
+        Wed, 11 Oct 2023 03:40:07 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39B7kEow020666;
+        Wed, 11 Oct 2023 10:39:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=dbVR0f08zGU0LFTiDSP4fMsRyjEfLOVaROii0XQJqS4=;
+ b=e5Z9P6OUmumkDhTHscAyOOmBe01pXPv8g4vfB6WXtU3x1tp4RK5iNASb/KvlLqBuPaHx
+ KbJ5bp96Grg3vTQPiBmeifT046fmQXMFSSnkx/itrLhWvW+DnmcNdoHV42pSjFUM/41n
+ jRi5w0AZCTBoKWnhCYUWWGhiMKl0NOhhpGNzvvXWG/autjQxdh4eAROkhvcw3u4pvOHI
+ 2+DHhWf1h3Vmz94IBTzVDCeG5OcdxsMOHujChKvgmukIj2sGFlteMb5ZrnGiQS6Z3HgL
+ y6mvcJfYxEPKPYR+YCPieAWkmv/CVkKA2hQPPwtq7zoGPms/Z8nIgXrd9zMlRWeGZTaj aQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnqh1gd47-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 10:39:41 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39BAdeS6001148
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 10:39:40 GMT
+Received: from [10.216.52.55] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 11 Oct
+ 2023 03:39:33 -0700
+Message-ID: <01230ca8-505b-74c2-7872-24b5411c6b2e@quicinc.com>
+Date:   Wed, 11 Oct 2023 16:09:29 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231011071925.761590-1-ankitja@vmware.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v1 4/5] PCI: epf-mhi: Add support for SA8775P
+Content-Language: en-US
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <quic_shazhuss@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_ramkri@quicinc.com>,
+        <quic_nayiluri@quicinc.com>, <quic_krichai@quicinc.com>,
+        <quic_vbadigan@quicinc.com>, <quic_parass@quicinc.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
+        <linux-phy@lists.infradead.org>
+References: <1695218113-31198-1-git-send-email-quic_msarkar@quicinc.com>
+ <1695218113-31198-5-git-send-email-quic_msarkar@quicinc.com>
+ <20230921084055.GD2891@thinkpad>
+From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
+In-Reply-To: <20230921084055.GD2891@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Z6E6trT_zM5dT-pVAFs54BsmvzUih5xn
+X-Proofpoint-ORIG-GUID: Z6E6trT_zM5dT-pVAFs54BsmvzUih5xn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_08,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ spamscore=0 bulkscore=0 clxscore=1011 lowpriorityscore=0 mlxlogscore=789
+ mlxscore=0 priorityscore=1501 adultscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310110093
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 12:49:25PM +0530, Ankit Jain wrote:
-> commit 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
-> and commit 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
-> introduced the logic to distribute the tasks at initial wakeup on cpus
-> where load balancing works poorly or disabled at all (isolated cpus).
-> 
-> There are cases in which the distribution of tasks
-> that are spawned on isolcpus does not happen properly.
-> In production deployment, initial wakeup of tasks spawn from
-> housekeeping cpus to isolcpus[nohz_full cpu] happens on first cpu
-> within isolcpus range instead of distributed across isolcpus.
-> 
-> Usage of distribute_cpu_mask_prev from one processes group,
-> will clobber previous value of another or other groups and vice-versa.
-> 
-> When housekeeping cpus spawn multiple child tasks to wakeup on
-> isolcpus[nohz_full cpu], using cpusets.cpus/sched_setaffinity(),
-> distribution is currently performed based on per-cpu
-> distribute_cpu_mask_prev counter.
-> At the same time, on housekeeping cpus there are percpu
-> bounded timers interrupt/rcu threads and other system/user tasks
-> would be running with affinity as housekeeping cpus. In a real-life
-> environment, housekeeping cpus are much fewer and are too much loaded.
-> So, distribute_cpu_mask_prev value from these tasks impacts
-> the offset value for the tasks spawning to wakeup on isolcpus and
-> thus most of the tasks end up waking up on first cpu within the
-> isolcpus set.
-> 
-> Steps to reproduce:
-> Kernel cmdline parameters:
-> isolcpus=2-5 skew_tick=1 nohz=on nohz_full=2-5
-> rcu_nocbs=2-5 rcu_nocb_poll idle=poll irqaffinity=0-1
-> 
-> * pid=$(echo $$)
-> * taskset -pc 0 $pid
-> * cat loop-normal.c
-> int main(void)
-> {
->         while (1)
->                 ;
->         return 0;
-> }
-> * gcc -o loop-normal loop-normal.c
-> * for i in {1..50}; do ./loop-normal & done
-> * pids=$(ps -a | grep loop-normal | cut -d' ' -f5)
-> * for i in $pids; do taskset -pc 2-5 $i ; done
-> 
-> Expected output:
-> * All 50 “loop-normal” tasks should wake up on cpu2-5
-> equally distributed.
-> * ps -eLo cpuid,pid,tid,ppid,cls,psr,cls,cmd | grep "^    [2345]"
-> 
-> Actual output:
-> * All 50 “loop-normal” tasks got woken up on cpu2 only
-> 
-> Analysis:
-> There are percpu bounded timer interrupt/rcu threads activities
-> going on every few microseconds on housekeeping cpus, exercising
-> find_lowest_rq() -> cpumask_any_and_distribute()/cpumask_any_distribute()
-> So, per cpu variable distribute_cpu_mask_prev for housekeeping cpus
-> keep on getting set to housekeeping cpus. Bash/docker processes
-> are sharing same per cpu variable as they run on housekeeping cpus.
-> Thus intersection of clobbered distribute_cpu_mask_prev and
-> new mask(isolcpus) return always first cpu within the new mask(isolcpus)
-> in accordance to the logic mentioned in commits above.
-> 
-> Fix the issue by using random cores out of the applicable CPU set
-> instead of relying on distribute_cpu_mask_prev.
 
-> Fixes: 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
-> Fixes: 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
+On 9/21/2023 2:10 PM, Manivannan Sadhasivam wrote:
+> On Wed, Sep 20, 2023 at 07:25:11PM +0530, Mrinmay Sarkar wrote:
+>> Add support for Qualcomm Snapdragon SA8775P SoC to the EPF driver.
+>> SA8775P has the PID (0x0306) and supports HDMA. Currently, it has
+>> no fixed PCI class, so it is being advertised as "PCI_CLASS_OTHERS".
+>>
+>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+>> ---
+>>   drivers/pci/endpoint/functions/pci-epf-mhi.c | 18 ++++++++++++++++++
+>>   1 file changed, 18 insertions(+)
+>>
+>> diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+>> index b7b9d3e..4b349fd 100644
+>> --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
+>> +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+>> @@ -114,6 +114,23 @@ static const struct pci_epf_mhi_ep_info sm8450_info = {
+>>   	.flags = MHI_EPF_USE_DMA,
+>>   };
+>>   
+>> +static struct pci_epf_header sa8775p_header = {
+> static const struct...
+>
+>> +	.vendorid = PCI_VENDOR_ID_QCOM,
+>> +	.deviceid = 0x0306,
+> Why are you not using a distinct device id?
+>
+> - Mani
+distinct device id for EP is not created yet as of now we are reusing this.
+Will update once device id is decided.
 
-> 
-
-Blank lines are not allowed in the tag block.
-
-> Signed-off-by: Ankit Jain <ankitja@vmware.com>
-
-...
-
-> +/**
-> + * Returns an arbitrary cpu within srcp.
-> + *
-> + * Iterated calls using the same srcp will be randomly distributed
-> + */
-
-This is invalid. Always run
-
-	scripts/kernel-doc -v -none -Wall ...
-
-against the file of interest and fix all warnings and errors reported.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Mrinmay
+>> +	.baseclass_code = PCI_CLASS_OTHERS,
+>> +	.interrupt_pin = PCI_INTERRUPT_INTA,
+>> +};
+>> +
+>> +static const struct pci_epf_mhi_ep_info sa8775p_info = {
+>> +	.config = &mhi_v1_config,
+>> +	.epf_header = &sa8775p_header,
+>> +	.bar_num = BAR_0,
+>> +	.epf_flags = PCI_BASE_ADDRESS_MEM_TYPE_32,
+>> +	.msi_count = 32,
+>> +	.mru = 0x8000,
+>> +	.flags = MHI_EPF_USE_DMA,
+>> +};
+>> +
+>>   struct pci_epf_mhi {
+>>   	const struct pci_epc_features *epc_features;
+>>   	const struct pci_epf_mhi_ep_info *info;
+>> @@ -677,6 +694,7 @@ static int pci_epf_mhi_probe(struct pci_epf *epf,
+>>   }
+>>   
+>>   static const struct pci_epf_device_id pci_epf_mhi_ids[] = {
+>> +	{ .name = "sa8775p", .driver_data = (kernel_ulong_t)&sa8775p_info },
+>>   	{ .name = "sdx55", .driver_data = (kernel_ulong_t)&sdx55_info },
+>>   	{ .name = "sm8450", .driver_data = (kernel_ulong_t)&sm8450_info },
+>>   	{},
+>> -- 
+>> 2.7.4
+>>
