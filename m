@@ -2,137 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E92F57C4E93
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70167C4EE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345772AbjJKJ07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 05:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43930 "EHLO
+        id S231375AbjJKJ3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 05:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbjJKJ0t (ORCPT
+        with ESMTP id S231144AbjJKJ3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 05:26:49 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D516794
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:26:46 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-406609df1a6so63420165e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:26:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697016405; x=1697621205; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3BUBCHAP73g+38QvM7dHiUG8I9QRyAUU3cBnzO6ITqY=;
-        b=vecbr0WiqQjT5m1He5rozYK78PzNPPeH9wweaN/0aueVRFLQt8jQ7tYgiePtw18XT2
-         UUFDDMTXdaOooReXkklZMF7NGpIn0mPJARYvX/bdwKXi+yD+1qdHpJ30kkE7DJpTfdKi
-         qwMDXjy9yf03fbpiR7jNP89fqsqzt0nstEWhYoJPE48Y66RfqJ46Y0m4aT+rBD87Wp0n
-         ECtO182xxMRDD/O8WSjzuL/aUdrQGCggToRQSccSNiGrgOwrDMX/C+Wy8RomyWptRNnM
-         rg0ZRhhxIDkcXqcVxPQqKPLWWRsWDWYrtTcYoiVe2K1bY8a1a2ExU+TiGWKPuX9WVnR3
-         BGdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697016405; x=1697621205;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3BUBCHAP73g+38QvM7dHiUG8I9QRyAUU3cBnzO6ITqY=;
-        b=PBmkHkH3GMk5Tl/aIYIMdoGbVpzWDe3itV4h48f9QW9mHwiu1bPZz5CWHZYlfXny+D
-         kOxoahezuLwYWQgZ/yc2vxJId1MxyHWajiTNnVbuN8CTT6minhbzxIsolQilD4SY//Ll
-         814KKDRtOGUDeirJNVqwDYkk9zan8Da1o8erfSUDGFXte7omc86mCMIm5E/DkmVX4ir7
-         TwuG/BagOduvWkSPRQTzKDoAVcgdW2WPVKMpkZEyXfack9V3FfL5/eIrnSy4sLZpxY0M
-         vkCsSb/7oKxbx9+oW/i7Q4jQKZ1cToUGI+5Dp9iTkiTxYhRSHzUhk/bbMBoXX0Nnn764
-         vrDw==
-X-Gm-Message-State: AOJu0Yy9HBK9L3gqVdJ0hC5j0On/oT2HrEIKQy5HrEmegAHWLn8V+Okb
-        0MeHKz68K0gt1uzAW7wA1b1fDA==
-X-Google-Smtp-Source: AGHT+IEmstm4YZMcFtZGfJcKYWGQ0iTcj4Ct9t9kUcPLrpuam0kNIWDwV4+jgBsuR8kgZEkR/FNqfQ==
-X-Received: by 2002:a1c:4c01:0:b0:407:5185:1923 with SMTP id z1-20020a1c4c01000000b0040751851923mr5235189wmf.4.1697016405127;
-        Wed, 11 Oct 2023 02:26:45 -0700 (PDT)
-Received: from [192.168.86.24] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id bd5-20020a05600c1f0500b004030e8ff964sm18753144wmb.34.2023.10.11.02.26.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 02:26:43 -0700 (PDT)
-Message-ID: <490c6740-06cb-9ee6-ca8c-3ab404109344@linaro.org>
-Date:   Wed, 11 Oct 2023 10:26:43 +0100
+        Wed, 11 Oct 2023 05:29:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CD391;
+        Wed, 11 Oct 2023 02:28:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697016538; x=1728552538;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZpC0uCRDOByLh94gi2iX/h5gJtZPBcvba+Hl6b4tHOk=;
+  b=LWVdQJYofk4Z0UI4JkWRiZbhT7p5bifxD57zSuAqyBDltgUyAT/HCRB/
+   tNgLoeZb8V7UEU6E2Pk9JxZhmkSiLvoUyhPVWSyAtJ5/g6acZHRBrPm8p
+   rQFMY0wjVw5YdwDyOsT2GU5xbCYeyyiZAdTeXjayjtxAfMYUEtGDY0e8M
+   V/jWuOUDmE6chgX+75+hm1i0fjp2yLqibtjAEOvWnzGfpiPX082RRkrd5
+   qDqbCABa6/B0ZYhPJYhHq77Uym+LVVk+NCdDB/It76SNNQ9jcRHBAnrlf
+   ZHufT028/GB9HtlYBlDfH9tBD5muUKrdJGiUR8ybcpKCK7ZBm5wFXkkzr
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="387463709"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="387463709"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 02:28:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="788936139"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="788936139"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 11 Oct 2023 02:28:52 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qqVVv-00024D-1z;
+        Wed, 11 Oct 2023 09:28:25 +0000
+Date:   Wed, 11 Oct 2023 17:27:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>, Jakub Kicinski <kuba@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-wireless@vger.kernel.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-wpan@vger.kernel.org,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, Doug Brown <doug@schmorgal.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 01/10] appletalk: remove localtalk and ppp support
+Message-ID: <202310111736.4mh6Cf5C-lkp@intel.com>
+References: <20231009141908.1767241-1-arnd@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v12 7/7] nvmem: core: Expose cells through sysfs
-Content-Language: en-US
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Walle <michael@walle.cc>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Marko <robert.marko@sartura.hr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>
-References: <20231005155907.2701706-1-miquel.raynal@bootlin.com>
- <20231005155907.2701706-8-miquel.raynal@bootlin.com>
- <318fe799-f53e-64ed-b631-d099bb5202f4@linaro.org>
- <20231011091524.0c9ecc55@xps-13>
- <548849a8-9f11-5274-778e-f291267603bb@linaro.org>
- <20231011103306.08f1fbd4@xps-13>
- <fe4a2688-079c-a36d-0ea4-c244c6e1a0ad@linaro.org>
- <20231011105829.778bed58@xps-13>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20231011105829.778bed58@xps-13>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009141908.1767241-1-arnd@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arnd,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on next-20231009]
+[cannot apply to linus/master v6.6-rc5 v6.6-rc4 v6.6-rc3 v6.6-rc5]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Arnd-Bergmann/ieee802154-avoid-deprecated-ndo_do_ioctl-callback/20231009-222305
+base:   next-20231009
+patch link:    https://lore.kernel.org/r/20231009141908.1767241-1-arnd%40kernel.org
+patch subject: [PATCH 01/10] appletalk: remove localtalk and ppp support
+config: x86_64-randconfig-002-20231011 (https://download.01.org/0day-ci/archive/20231011/202310111736.4mh6Cf5C-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231011/202310111736.4mh6Cf5C-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310111736.4mh6Cf5C-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/net/appletalk/ipddp.c: In function 'ipddp_create':
+   drivers/net/appletalk/ipddp.c:207:24: error: implicit declaration of function 'atrtr_get_dev'; did you mean 'to_net_dev'? [-Werror=implicit-function-declaration]
+            if ((rt->dev = atrtr_get_dev(&rt->at)) == NULL) {
+                           ^~~~~~~~~~~~~
+                           to_net_dev
+>> drivers/net/appletalk/ipddp.c:207:22: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+            if ((rt->dev = atrtr_get_dev(&rt->at)) == NULL) {
+                         ^
+   cc1: some warnings being treated as errors
 
 
-On 11/10/2023 09:58, Miquel Raynal wrote:
-> Hi Srinivas,
-> 
-> srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 09:45:11 +0100:
-> 
->> On 11/10/2023 09:33, Miquel Raynal wrote:
->>> Hi Srinivas,
->>>
->>> srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 09:27:20 +0100:
->>>    
->>>> On 11/10/2023 08:15, Miquel Raynal wrote:
->>>>>>> +
->>>>>>> +	nvmem_cells_group.bin_attrs = cells_attrs;
->>>>>>> +
->>>>>>> +	ret = devm_device_add_groups(&nvmem->dev, nvmem_cells_groups);
->>>>>>> +	if (ret)
->>>>>>> +		goto unlock_mutex;
->>>>>> This is going to create groups after the nvmem device is added, isn't this going to be problem with user space notifications?
->>>>> Greg said it was not. I hope I understood correctly 😄
->>>>>
->>>>> And anyway, cells have never been available to userspace, so there is
->>>>> nothing userspace might expect yet?
->>>> I agree, but once we add sysfs uapi then this is going to change.
->>>
->>> Can you elaborate? I'm not sure I follow you here. Is there still a
->>> problem you fear or you think it's okay?
->>>    
->> Now that we add cells to sysfs.
->> AFAIU, By the time the userspace sees the udev event from this device we might not have cells populated.
-> 
-> Yes, but why would this be a problem?
-> 
-It will be problem if the userspace is using things like libudev to act 
-on these events. There seems to be some caching of attributes in udev 
-during event more info 
-http://www.kroah.com/log/blog/2013/06/26/how-to-create-a-sysfs-file-correctly/
+vim +207 drivers/net/appletalk/ipddp.c
 
+^1da177e4c3f41 Linus Torvalds   2005-04-16  192  
+^1da177e4c3f41 Linus Torvalds   2005-04-16  193  /*
+^1da177e4c3f41 Linus Torvalds   2005-04-16  194   * Create a routing entry. We first verify that the
+^1da177e4c3f41 Linus Torvalds   2005-04-16  195   * record does not already exist. If it does we return -EEXIST
+^1da177e4c3f41 Linus Torvalds   2005-04-16  196   */
+^1da177e4c3f41 Linus Torvalds   2005-04-16  197  static int ipddp_create(struct ipddp_route *new_rt)
+^1da177e4c3f41 Linus Torvalds   2005-04-16  198  {
+ce7e40c432ba84 Vlad Tsyrklevich 2017-01-09  199          struct ipddp_route *rt = kzalloc(sizeof(*rt), GFP_KERNEL);
+^1da177e4c3f41 Linus Torvalds   2005-04-16  200  
+^1da177e4c3f41 Linus Torvalds   2005-04-16  201          if (rt == NULL)
+^1da177e4c3f41 Linus Torvalds   2005-04-16  202                  return -ENOMEM;
+^1da177e4c3f41 Linus Torvalds   2005-04-16  203  
+^1da177e4c3f41 Linus Torvalds   2005-04-16  204          rt->ip = new_rt->ip;
+^1da177e4c3f41 Linus Torvalds   2005-04-16  205          rt->at = new_rt->at;
+^1da177e4c3f41 Linus Torvalds   2005-04-16  206          rt->next = NULL;
+^1da177e4c3f41 Linus Torvalds   2005-04-16 @207          if ((rt->dev = atrtr_get_dev(&rt->at)) == NULL) {
+^1da177e4c3f41 Linus Torvalds   2005-04-16  208  		kfree(rt);
+^1da177e4c3f41 Linus Torvalds   2005-04-16  209                  return -ENETUNREACH;
+^1da177e4c3f41 Linus Torvalds   2005-04-16  210          }
+^1da177e4c3f41 Linus Torvalds   2005-04-16  211  
+5615968a708451 David S. Miller  2009-05-27  212  	spin_lock_bh(&ipddp_route_lock);
+5615968a708451 David S. Miller  2009-05-27  213  	if (__ipddp_find_route(rt)) {
+5615968a708451 David S. Miller  2009-05-27  214  		spin_unlock_bh(&ipddp_route_lock);
+^1da177e4c3f41 Linus Torvalds   2005-04-16  215  		kfree(rt);
+^1da177e4c3f41 Linus Torvalds   2005-04-16  216  		return -EEXIST;
+^1da177e4c3f41 Linus Torvalds   2005-04-16  217  	}
+^1da177e4c3f41 Linus Torvalds   2005-04-16  218  
+^1da177e4c3f41 Linus Torvalds   2005-04-16  219          rt->next = ipddp_route_list;
+^1da177e4c3f41 Linus Torvalds   2005-04-16  220          ipddp_route_list = rt;
+^1da177e4c3f41 Linus Torvalds   2005-04-16  221  
+5615968a708451 David S. Miller  2009-05-27  222  	spin_unlock_bh(&ipddp_route_lock);
+5615968a708451 David S. Miller  2009-05-27  223  
+^1da177e4c3f41 Linus Torvalds   2005-04-16  224          return 0;
+^1da177e4c3f41 Linus Torvalds   2005-04-16  225  }
+^1da177e4c3f41 Linus Torvalds   2005-04-16  226  
 
---srini
-
-> Thanks,
-> Miquèl
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
