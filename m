@@ -2,100 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 867A97C610B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 01:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B7A7C610C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 01:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235225AbjJKXVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 19:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38328 "EHLO
+        id S1376524AbjJKXXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 19:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233737AbjJKXU6 (ORCPT
+        with ESMTP id S233737AbjJKXW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 19:20:58 -0400
-Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CDAA4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 16:20:56 -0700 (PDT)
-Received: from [IPV6:2601:646:9a00:1821:7c45:267e:5aad:82e7] ([IPv6:2601:646:9a00:1821:7c45:267e:5aad:82e7])
-        (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 39BNKBnV1461541
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Wed, 11 Oct 2023 16:20:12 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 39BNKBnV1461541
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023091101; t=1697066415;
-        bh=A+3phZYqNXM4miRlbtMsbx7u98cTT8X7Jf9CLISzVzM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=XeQjykw/+h9Es/QbI/1xphsZ0JBa+PKYr0spgfLTCDJIxFQzaBrWoMpvMWmDYX1fg
-         FA/9IJypiexXo9wPeeNIosNU1QoGcvxS3ne1AaI5FujaBLJMX2VqMMxkgYEBL/5jVp
-         ZdynKuLm2U0Qj3DNro6yBcaT2jqruhugaeOTRSi1RXGgRfm7Gc+T2ShhNXBmRe/Wt/
-         4zkG4yMbgp5QdRzgBMRmyBZaEatruHUPhZZxgPXbU+TksTEClWrDXd0Zg1cCgOtNcW
-         byOaWwtWwL4Qbzmk6w8iSrRCmOQR/1A2tY4EtfHdk2g/M3CdwestzW4UtnspFCDht6
-         ake1+JpJ2Ijlw==
-Message-ID: <eec6b477-67b5-49d6-b6f4-dd2c242b9bdb@zytor.com>
-Date:   Wed, 11 Oct 2023 16:20:06 -0700
+        Wed, 11 Oct 2023 19:22:59 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D8DB7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 16:22:57 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c871a095ceso3206495ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 16:22:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1697066577; x=1697671377; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DeVNiGwxsvJF+wlAgF5WVj+lSxGM+0XrruYrnnJJkOU=;
+        b=fTRaLDAeLANnR+vKmkYyrRo5xJ/uhI9DU1Yaw330T90gH6RusP7YjdSg8Q3IPpewf9
+         HZK6eBdLr8eSbElRs/pyoQNmwCyUR7ioz8+mF0nbfslW39Vkv9BcN+saMAK/E8Nk/72a
+         bRF1bKA9Fi/n0KxjvfYL34yLkz2sgzmyxjq1XVE9i5WU64mzBSEPhawkVK44teapXfNB
+         Qgi2MM68hNKF5f6Er3irrTd/QpOSuLOVHSMBcACQKi8ilcK4AUeVBAT6NbFXZDk0cP10
+         2EIB74RiYR8BauPca+y/3ctPauG6KwKbk9mi5QxsNv8J1S5DM8X06QvXF42vkV7SkYi8
+         4I2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697066577; x=1697671377;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DeVNiGwxsvJF+wlAgF5WVj+lSxGM+0XrruYrnnJJkOU=;
+        b=an0Ho1j3l5hFmtxwi0DkoYfZoxVv9Zxv5JZHgETB7s20TWYv5AIcaczPastke0OKk7
+         h1AmWryE5qjhReY8voILRiUY9y3qBwPE8vVmaAmDx+YX6CGlV89KzKqIANp5K+jBUSNf
+         JcUzElRU/pM/0SAPMPjtoA8V0aLSKc0KYJpXCocTN6MdHQTuNx66rQXO7FTqWIMjZuNm
+         6TS1ymTK+vrTPpQHBiU8kFDzgXPpGt3BjlhqNa79v8p4NZyncfl4aoKyT/S0Q+c+P+Gt
+         7wU02ENNzMbY2YVF2FM7laOIarsPimSHTSU0t+1/CdrVqXLpAfJ92VWuDxhCa/s8VZa8
+         yLbw==
+X-Gm-Message-State: AOJu0YwYiVHqZ+UpATm0AqgXNVzmJ/dXIQu5CaUYKDUGaUmFMxCUHhqu
+        aXisPSdE9Oo4NNzKMBh7o3ff2Q==
+X-Google-Smtp-Source: AGHT+IHuTxbgGR06/zGKzrw6PZahK5qMxccB9wlJMHwXl/wYWvrFE4DFpkAkP12v/5XzmFWgb40JpA==
+X-Received: by 2002:a17:902:9885:b0:1c6:16d3:1783 with SMTP id s5-20020a170902988500b001c616d31783mr18560284plp.58.1697066577246;
+        Wed, 11 Oct 2023 16:22:57 -0700 (PDT)
+Received: from hermes.local (204-195-126-68.wavecable.com. [204.195.126.68])
+        by smtp.gmail.com with ESMTPSA id je6-20020a170903264600b001bbb8d5166bsm407618plb.123.2023.10.11.16.22.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 16:22:57 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 16:22:55 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Florian Fainelli <florian.fainelli@broadcom.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        linux-kernel@vger.kernel.org (open list:ARM/Mediatek SoC support),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: Re: [PATCH net-next v2 0/2] Switch DSA to inclusive terminology
+Message-ID: <20231011162255.6c00bd6d@hermes.local>
+In-Reply-To: <20231011222026.4181654-1-florian.fainelli@broadcom.com>
+References: <20231011222026.4181654-1-florian.fainelli@broadcom.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/23] Add generic vdso_base tracking
-Content-Language: en-US
-To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org
-References: <20210611180242.711399-1-dima@arista.com>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <20210611180242.711399-1-dima@arista.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/11/21 11:02, Dmitry Safonov wrote:
-> 
-> Patches set is based on linux-next (next-20201123) and it depends on
-> changes in x86/cleanups (those reclaim TIF_IA32/TIF_X32) and also
-> on my changes in akpm (fixing several mremap() issues).
-> 
-> Logically, the patches set divides on:
-> - patch       1: a cleanup for patches in x86/cleanups
-> - patches  2-13: cleanups for arch_setup_additional_pages()
-> - patches 13-14: x86 signal changes for unmapped vdso
-> - patches 15-22: provide generic vdso_base in mm_struct
-> - patch      23: selftest for unmapped vDSO & fast syscalls
-> 
-> In the end, besides cleanups, it's now more predictable what happens for
-> applications with unmapped vdso on architectures those support .mremap()
-> for vdso/sigpage.
-> 
-> I'm aware of only one user that unmaps vdso - Valgrind [2].
-> (there possibly are more, but this one is "special", it unmaps vdso, but
->   not vvar, which confuses CRIU [Checkpoint Restore In Userspace], that's
->   why I'm aware of it)
-> 
+On Wed, 11 Oct 2023 15:20:24 -0700
+Florian Fainelli <florian.fainelli@broadcom.com> wrote:
 
-There was another discussion that might be relevant: actually 
-associating the vdso with an actual file, and allowing a program to map 
-said file normally if it want access to one that it normally wouldn't 
-have (say, /proc/vdso/x86_64.so versus /proc/vdso/i386.so on the same 
-system.)
+> One of the action items following Netconf'23 is to switch subsystems to
+> use inclusive terminology. DSA has been making extensive use of the
+> "master" and "slave" words which are now replaced by "conduit" and
+> "user" respectively.
 
-The "catch", of course, is that this file will need to be mapped as 
-MAP_SHARED because of vdso data.
 
-	-hpa
+Good to see this.
+I started on doing this in iproute2 CLI terms for bridge and bonding,
+still a work in progress.
+
