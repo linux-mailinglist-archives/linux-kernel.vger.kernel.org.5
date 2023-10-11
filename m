@@ -2,164 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E21E97C4948
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19B37C494C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjJKFkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 01:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
+        id S229923AbjJKFkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 01:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjJKFkH (ORCPT
+        with ESMTP id S229471AbjJKFkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 01:40:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323C294;
-        Tue, 10 Oct 2023 22:40:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0FB1C433C7;
-        Wed, 11 Oct 2023 05:40:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697002805;
-        bh=DE1MlIKU2Xk7lH0G8Xq5HukEEdK1V6Gk4yGPDoDVpQE=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=p1pIod+n4h+gn9IOziKd9fPHR/Hz6LvC0MkgdBsmUIOa0DgpxNrW2hlhSEouwl7LD
-         90NSLFQL9kWo0xvaHke9RtnXtAY5mgt6r/tIfrtlOU9UVrdBxxecGkRDnbws6DGAdx
-         Bg9lw9wgvVPQ13YMxpZU4iF9Jw31bT1XTGkwESQRIykT44BN0uPamL+wIQZAqxdHMT
-         e0N3qkT1uVVjSN9FeKfHdAe3ja11vBK89iOdRvNPHcInG27zRi64Fz+ohxALkdXPJu
-         yxPiU4pVIBt9NJL73jg+ULTkL18XfmsS6SV0Yz5BJ+IX0NjDK+aggvRo2OeuXRA9uZ
-         d5l9nEK7P3hNQ==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Jakub Kicinski <kuba@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        "David S. Miller" <davem@davemloft.net>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] [RFC] wireless: move obsolete drivers to staging
-References: <20231010155444.858483-1-arnd@kernel.org>
-        <2023101051-unmasked-cleaver-79b3@gregkh>
-Date:   Wed, 11 Oct 2023 08:40:00 +0300
-In-Reply-To: <2023101051-unmasked-cleaver-79b3@gregkh> (Greg Kroah-Hartman's
-        message of "Tue, 10 Oct 2023 18:08:03 +0200")
-Message-ID: <87y1g94szz.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 11 Oct 2023 01:40:43 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276B698;
+        Tue, 10 Oct 2023 22:40:42 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39B3BXqj003446;
+        Wed, 11 Oct 2023 05:40:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=nss9gpufClIrS/DhhbQnnEbqgQIYyDsSOz6GGJ8lyRw=;
+ b=NaDDWMc3IhzDGmr2H7/eK4I0VqXYWkdAW5wYFV0ILcodUE466tvsKrSH25InIFVBB6Fp
+ /kvGNKpKnw1uKgzEqdyQrnPoTB+mZ/vmvj7YzFicjuNKBLtlDX+lRqxg/KeqRvVMXtXV
+ rb5kCvwyboPJrLf9IQdlxiBkxIhd2YJEF4xxJuT0eaaukcvzsYaevJv3X8cAzDtRsAd2
+ nESyFqan4iD6eG5drGq9t0bkYKf12MNck9kJECKPcBQ8e9D2YvcykurHTHvE1LXxdAb+
+ AkNBuKN46vyJoS1phtwJP4K/HCwAffYMelhqaua5GFYd4HKBLrltvrx9goxjAC4ztOq8 yQ== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tne0q0qxp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 05:40:33 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39B5eWYG005207
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 05:40:32 GMT
+Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 10 Oct
+ 2023 22:40:28 -0700
+Message-ID: <3fd31aaa-f6bf-8440-6b08-fca2803171d9@quicinc.com>
+Date:   Wed, 11 Oct 2023 11:10:25 +0530
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: qcm6490: Add qcm6490 dts file
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <luca.weiss@fairphone.com>
+References: <20231003175456.14774-1-quic_kbajaj@quicinc.com>
+ <20231003175456.14774-3-quic_kbajaj@quicinc.com>
+ <5da2ba4f-5bf7-46ff-8204-0c169042dbfa@linaro.org>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <5da2ba4f-5bf7-46ff-8204-0c169042dbfa@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: J-ZS4t0giwB-D8qk47t-PQ2LDwTMfN_4
+X-Proofpoint-ORIG-GUID: J-ZS4t0giwB-D8qk47t-PQ2LDwTMfN_4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_03,2023-10-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ spamscore=0 mlxscore=0 clxscore=1011 priorityscore=1501 phishscore=0
+ adultscore=0 impostorscore=0 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310110050
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
 
-> On Tue, Oct 10, 2023 at 05:27:29PM +0200, Arnd Bergmann wrote:
->
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> While looking at the old drivers using the obsolete .ndo_do_ioctl()
->> callback, I found a number of network drivers that are especially
->> obsolete, in particular for 802.11b (11Mbit/s) or even older wireless
->> networks, using non-busmaster ISA/PCMCIA style bus interfaces, and using
->> the legacy wireless extension ioctls rather than the netlink interfaces
->> that were meant to replace them in 2007. All of these drivers are
->> obsolete or orphaned.
->> 
->> We had previously discussed this topic, but nobody ever moved the
->> files, so I now went through the list to my best knowledge. These
->> are the drivers that I would classify as "probably unused" by now:
->> 
->>  - Atmel at76c502/at76c504/at76c506 is a PIO-only (PCMCIA, mini-PCI
->>    and Cardbus) 802.11b driver with incomplete CFG80211 support.
->>    The related at76c50x USB driver uses MAC80211 and remains.
->> 
->>  - Cisco Aironet is an 802.11b PCMCIA and mini-PCI with limited support
->>    for Cardbus DMA and for CFG80211.
->> 
->>  - HostAP is an ISA/PCMCIA style 802.11b driver supporting only
->>    wireless extensions, and some custom ioctls (already removed).
->>    Some devices include a legacy PCI bridge but no DMA.
->> 
->>  - Aviator/Raytheon is an early PCMCIA driver, apparently predating
->>    802.11b and only supporting wireless extensions.
->> 
->>  - Planet WL3501 is another PCMCIA driver for pre-802.11b interfaces
->>    (2Mbit/s) with incomplete CFG80211 support
->> 
->>  - Zydas zd1201 is a USB 802.11b driver with limited support for
->>    CFG80211.
->> 
->>  - Orinoco is a PIO-only ISA/PCMCIA 802.11b device with extra bus
->>    interface connections for PCI/Cardbus/mini-PCI and a few
->>    pre-2002 Apple PowerMac variants. It supports both
->>    wireless extensions and CFG80211, but I could not tell if
->>    it requires using both.
->> 
->>  - Wireless RNDIS USB is a new-style CFG80211 driver for 802.11b
->>    and 802.11g USB hardware from around 2004 to 2006. This makes it
->>    more modern than any of the others, but Kalle already classified
->>    it as "legacy" in commit 298e50ad8eb8f ("wifi: move raycs, wl3501
->>    and rndis_wlan to legacy directory"), so it stays with ray_cs and
->>    wl3501_cs.
->> 
->> There are a few other drivers that are similar to these but that are
->> more likely to still be needed, and are not moved here:
->> 
->>  - Intel ipw2x00 is a PCI bus-master device for 802.11a/b/g that was
->>    popular in "Centrino" branded laptops from 2003 to 2005, but it
->>    still requires wireless extensions.
->> 
->>  - Marvell Libertas is an 802.11a/b/g device with a number of bus
->>    interfaces (USB, SDIO, SPI, PCMCIA) and incomplete CFG80211
->>    support. This one was used in the OLPC XO laptop and some other
->>    embedded devices that are still supported.
->> 
->>  - Some broadcom b43xx devices use the SSB bus that can be abstracted
->>    through PCMCIA. All of them use CFG80211.
->> 
->>  - The Sony Playstation 3 "gelic" ethernet driver contains a bridge
->>    and an 802.11b/g client chip that is controlled through a hypervisor
->>    interface from the OS, and it uses wireless extensions in the kernel
->>    driver.
->> 
->> Link: https://lore.kernel.org/all/87imaeg4ar.fsf@codeaurora.org/
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> Stuff in drivers/staging/ is to get code _into_ the main portion of the
-> kernel tree, not out.  If these aren't being used, let's just drop them
-> entirely.
->
-> What is the need to have them move to staging, only to have me delete
-> them in the next release after that (or after that?)  Why delay and why
-> not just remove them now?
 
-We (the wireless folks) have been talking about dropping legacy drivers
-on and off for several years now. The problem is that we don't know
-which of them work and which not, for example IIRC someone reported
-recently that wl3501 still works.
+On 10/7/2023 5:02 AM, Konrad Dybcio wrote:
+> On 3.10.2023 19:54, Komal Bajaj wrote:
+>> Add qcm6490 devicetree file for QCM6490 SoC and QCM6490 IDP
+>> platform. QCM6490 is derived from SC7280 meant for various
+>> form factor including IoT.
+>>
+>> Supported features are, as of now:
+>> * Debug UART
+>> * eMMC
+>> * USB
+>>
+>> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+>> ---
+> [...]
+> 
+>> diff --git a/arch/arm64/boot/dts/qcom/qcm6490.dtsi b/arch/arm64/boot/dts/qcom/qcm6490.dtsi
+>> new file mode 100644
+>> index 000000000000..b93270cae9ae
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/qcom/qcm6490.dtsi
+>> @@ -0,0 +1,94 @@
+>> +// SPDX-License-Identifier: BSD-3-Clause
+>> +/*
+>> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+>> + */
+>> +
+>> +#include "sc7280.dtsi"
+>> +
+>> +/*
+>> + * Delete unused sc7280 memory nodes and define the memory regions
+>> + * required by qcm6490
+>> + */
+>> +/delete-node/ &rmtfs_mem;
+>> +/delete-node/ &wlan_ce_mem;
+>> +
+>> +/{
+>> +	reserved-memory {
+>> +		cdsp_secure_heap_mem: cdsp-secure-heap@81800000 {
+>> +			reg = <0x0 0x81800000 0x0 0x1e00000>;
+>> +			no-map;
+>> +		};
+>> +
+>> +		camera_mem: camera@84300000 {
+> Uhh.. this is totally not the same memory map that I have on a
+> random msm-5.4 source+devicetree drop (which does in turn align
+> with the one on QCM6490 Fairphone 5, as it should because it's
+> a rebadged reference device for the most part)..
+> 
+> Did you guys *really* redo it between software releases?
 
-Personally I would be extremly happy to remove all the ancient drivers
-as that reduces the amount of code for us to maintain but is that the
-right thing to do for the users? I don't have an answer to that,
-comments very welcome.
+QCM6490 fairphone is special case where same SOC is used for mobile
+product and it uses sc7280 memory map.
 
-I have been also wondering if I should add warnings like this to every
-ancient driver to see if there are any users left:
+Current patch adds support for the same SOC marketed for IOT segment
+[1] and very active in the development and soon going to freeze its
+memory map, so we are deriving memory map from sc7280 and creating
+a new memory map for all IOT product with qcm6490.dtsi .
 
-"wl3501 wireless driver will be removed in 2024. If the driver still
-works and you are using it send a report NOW to
-linux-wireless@vger.kernel.org to avoid the removal."
+[1]
+https://www.qualcomm.com/products/internet-of-things/industrial/building-enterprise/qcm6490
 
-But with the long release cycles the kernel and distros have I doubt
-waiting for a year is enough, it should be more like three years.
+> 
+> This SoC family has been on the market for quite some time,
+> breaking software expectations like that is not cool, especially
+> on a product with a promised lifespan of 10 years or whatever!
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+I agree, but we are not changing anything for product which are there
+in the market instead defining a new memory map what is going to come
+with qcm6490.dtsi for IOT. Sorry, the other qcm6490 soc with
+fairphone(for mobile) can get confuse with qcm6490.dtsi but that
+is special case and i hope, that should be fine but, let me know if
+there is concern.
+> 
+> With that, this really seems more of a change that would belong
+> in the IDP dts than the 6490-common one..
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+We wanted to keep it in qcm6490.dtsi as there are some more product
+going to share this in future.
+
+-Mukesh
+
+> 
+> Konrad
