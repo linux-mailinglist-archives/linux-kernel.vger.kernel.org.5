@@ -2,79 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 495297C55C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53C87C55C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346890AbjJKNnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
+        id S232262AbjJKNop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:44:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235042AbjJKNm5 (ORCPT
+        with ESMTP id S231849AbjJKNoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:42:57 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247B4A7
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:42:54 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-457819ae142so1260904137.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:42:54 -0700 (PDT)
+        Wed, 11 Oct 2023 09:44:44 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0191192;
+        Wed, 11 Oct 2023 06:44:43 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5a7be88e9ccso23932697b3.2;
+        Wed, 11 Oct 2023 06:44:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697031773; x=1697636573; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qTDjoIZ03CBcH7tMxcjA6MiVaUkDiBuhxsHI1DayPds=;
-        b=YOA+1xFFutX/RIyhN+/R8fGTBEmjYDlqZas2kbAZtJycIYxadkjqrOBjkey27n/AFy
-         q2ouVB+Cf3puvXQ6VujxCT4Hf+xR1x0Bxq/4P/jSgA0x99rc3bp/nJE9+5DmfvG/GWUj
-         Di96SRjEyAp65ncUuSpkjgQjLHkCOhaF7m3O66JslKdMP4YvFJ6Bi8TS2Uvx0cSEHVne
-         YU/LzIxqrxvauV7BgGfGWjer70qlJs/9uAVW1vynOJThzfVxGwy1tUGlFBWjvbXYEzBr
-         VXdMHKn1xP6/a7mKg/Rysy56Hn1TltbHM44eEpH2ZoeMfK8jGMsCYAC43DuJxV4LoheG
-         nUVQ==
+        d=gmail.com; s=20230601; t=1697031882; x=1697636682; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hR/FbMS8TMles3U5xEMi68o+zZcZ1wpyRRSEoX4U4XU=;
+        b=XKFYkejvrOtG7rt5ukew2//XuWxuC4OfSqT3ZFqINM5DQQfDoelJi9dKWNZ/bvJMX8
+         Hh3ScoaDOhwvNCONZmOxucUbzHhshLJPmXiez3n4dCf8o/CAwrU2xdEdOR4CZtdIXz52
+         Yk+5mHv8GvEkdoN/YPKotWEZVdcqfAsPddE2xmGHjVoCWFIp3w4JiV5Sqhby2HM+YTK5
+         poeNqPZHi9C5aO/gvefoOXhcGe2EnOzM7hhGasTiDC5IYqvVe58cZuFqdiLEg3m6842w
+         YX/N4PfUjYyZ8JriyyHXSTgLEDUxM8TouRrU8rWS672f1fPlis6x+dmQvqIi1LpOALsa
+         sn0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697031773; x=1697636573;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qTDjoIZ03CBcH7tMxcjA6MiVaUkDiBuhxsHI1DayPds=;
-        b=ZzaPg81mHZlkoiPNlBL1Rov79COdMtYDDicOPQ+C5oDfgfUIKyQD8NxoVDQuFSusH5
-         IEHOd4ADbTNCcaWOep712T1G9jxhkG0TAenumRQW19pPQ3+KQXz2EPPQmlISLk4Xjl/0
-         mX+GdM6A7OvYHjN1pxwrnf8oywRpwks/cQKUmlpsc/PhGMJGCATdRMoLwBBimA+O7E54
-         QoxW/C7VteZtSmBsEc2SypfPQZs0O5gXyHWfapQ06Ils5ODNMRu2rh7qj7ZUsFf7OoN5
-         Jrt4VtQS4PYHacTGgVlbIPCdZh+e9hTqRPfFSlQMQMiCiV/h97Ec/Vgo8LnleDyOgfXC
-         8J4w==
-X-Gm-Message-State: AOJu0YyaZ9Sao5x8qId3Gm9LgfBx6Dpo2THrewvCiUfGZYKh7YMtZagp
-        SaW/B0qolBZnANlccgQBmGQLNyEH5/YSKItG8ullkQ==
-X-Google-Smtp-Source: AGHT+IF7fTsemx7KHasTe2i//MLXTne8Z40i/7x29q6/QnKrqOxnvNSIl039g1zxpsf4ZeNOC/vPbTSj6zNdmqzFRuw=
-X-Received: by 2002:a05:6102:4a5:b0:44d:5a92:ec40 with SMTP id
- r5-20020a05610204a500b0044d5a92ec40mr20501986vsa.24.1697031773138; Wed, 11
- Oct 2023 06:42:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697031882; x=1697636682;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hR/FbMS8TMles3U5xEMi68o+zZcZ1wpyRRSEoX4U4XU=;
+        b=s/Uboj+sDB07ORhRxM/MurynfO42nSjue2jh6ONY4SqDne1CxaR5CdBMtKH4ml2lub
+         eWYA+TjjrWzhKulh7iqmTCk/Gq8OP+NxN0GUe+ACULEbIXYYTP9UJi8UkNgUSDt9jSGs
+         QsapGH3SGESiRrR2NXzkBqiP4O8qSrekbmJf0n66xTF0A+AghO0S+Xcyk4iV99JsFNMP
+         ecgZx0VZHggBer4oBfTjScYR28ZtMoa2FPe0neE7TZlIru2EEXFEDWTBLOfWteZTGkH1
+         GNx7LEqIIkv47WcESAZ/ZzWUop+UE7FUB+vYyor9Z2ZOUxpShVJnhXGzxkZX4Qa0FixQ
+         o0LQ==
+X-Gm-Message-State: AOJu0Yz4xfMS/PMb7xa0tCuj1HPop+sWHB18sDnXQCsPpqhrlcvnUzSn
+        he/DY1xMBYQCRSmNsylQR5oFpopHZCD3Mg==
+X-Google-Smtp-Source: AGHT+IH7Y2JZVOEsKcdTyH4EMbqHt+3BIfDI3b/FKFkbG8c9w9KnQDOVJhLaeJEH1z7NrQDXe3vzLA==
+X-Received: by 2002:a81:5cd5:0:b0:595:2094:f87 with SMTP id q204-20020a815cd5000000b0059520940f87mr22432005ywb.47.1697031882067;
+        Wed, 11 Oct 2023 06:44:42 -0700 (PDT)
+Received: from firmament.. ([89.187.171.244])
+        by smtp.gmail.com with ESMTPSA id x189-20020a0dd5c6000000b005a7dd6b7eefsm574691ywd.66.2023.10.11.06.44.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 06:44:41 -0700 (PDT)
+From:   Matthew House <mattlloydhouse@gmail.com>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Alejandro Colomar <alx@kernel.org>, linux-man@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, kernel-team@meta.com,
+        Eric Biederman <ebiederm@xmission.com>
+Subject: Re: [PATCH] execve.2: execve also returns E2BIG if a string is too long
+Date:   Wed, 11 Oct 2023 09:44:29 -0400
+Message-ID: <20231011134437.750422-1-mattlloydhouse@gmail.com>
+In-Reply-To: <60b4d916663ea31ae05a958b6dea8aa5bf740d0a.camel@surriel.com>
+References: <20231010234153.021826b1@imladris.surriel.com> <ZSZ7yXwYAg-xPC7P@debian> <60b4d916663ea31ae05a958b6dea8aa5bf740d0a.camel@surriel.com>
 MIME-Version: 1.0
-References: <20231010231616.3122392-1-jarkko@kernel.org> <CAFA6WYMdrCfqMVExYBbhCK7vUSQffyUfSWpQO0=HeQc6Edz9OA@mail.gmail.com>
- <186a4b62517ead88df8c3c0e9e9585e88f9a6fd8.camel@kernel.org>
- <0aeb4d88952aff53c5c1a40b547a9819ebd1947e.camel@kernel.org>
- <CAFA6WYObvJvQv=-JJ5gnmFqJKbT=4JnT+ErC=iB1KfnYfVn7Ag@mail.gmail.com>
- <79fe0b97e2f5d1f02d08c9f633b7c0da13dc9127.camel@kernel.org>
- <CAFA6WYMrg3VBYvdV8Or==YK_qATk22bL+_ryDC-oO4jVf7DCWg@mail.gmail.com> <b70d6be5980185a4fb4205e71c56111183e1f160.camel@kernel.org>
-In-Reply-To: <b70d6be5980185a4fb4205e71c56111183e1f160.camel@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Wed, 11 Oct 2023 19:12:41 +0530
-Message-ID: <CAFA6WYN0vXWZveAkzOfV_6Kki77SxgX7C=Xqe9brZMX1Dj2iLg@mail.gmail.com>
-Subject: Re: [PATCH] KEYS: trusted: Rollback init_trusted() consistently
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     keyrings@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        stable@vger.kernel.org, James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        "open list:KEYS-TRUSTED" <linux-integrity@vger.kernel.org>,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,119 +72,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Oct 2023 at 18:36, Jarkko Sakkinen <jarkko@kernel.org> wrote:
->
-> On Wed, 2023-10-11 at 18:25 +0530, Sumit Garg wrote:
-> > On Wed, 11 Oct 2023 at 18:07, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> > >
-> > > On Wed, 2023-10-11 at 17:47 +0530, Sumit Garg wrote:
-> > > > On Wed, 11 Oct 2023 at 16:04, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> > > > >
-> > > > > On Wed, 2023-10-11 at 13:12 +0300, Jarkko Sakkinen wrote:
-> > > > > > On Wed, 2023-10-11 at 11:27 +0530, Sumit Garg wrote:
-> > > > > > > On Wed, 11 Oct 2023 at 04:46, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> > > > > > > >
-> > > > > > > > Do bind neither static calls nor trusted_key_exit() before a successful
-> > > > > > > > init, in order to maintain a consistent state. In addition, depart the
-> > > > > > > > init_trusted() in the case of a real error (i.e. getting back something
-> > > > > > > > else than -ENODEV).
-> > > > > > > >
-> > > > > > > > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > > > > > > > Closes: https://lore.kernel.org/linux-integrity/CAHk-=whOPoLaWM8S8GgoOPT7a2+nMH5h3TLKtn=R_3w4R1_Uvg@mail.gmail.com/
-> > > > > > > > Cc: stable@vger.kernel.org # v5.13+
-> > > > > > > > Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
-> > > > > > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > > > > > ---
-> > > > > > > >  security/keys/trusted-keys/trusted_core.c | 20 ++++++++++----------
-> > > > > > > >  1 file changed, 10 insertions(+), 10 deletions(-)
-> > > > > > > >
-> > > > > > > > diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
-> > > > > > > > index 85fb5c22529a..fee1ab2c734d 100644
-> > > > > > > > --- a/security/keys/trusted-keys/trusted_core.c
-> > > > > > > > +++ b/security/keys/trusted-keys/trusted_core.c
-> > > > > > > > @@ -358,17 +358,17 @@ static int __init init_trusted(void)
-> > > > > > > >                 if (!get_random)
-> > > > > > > >                         get_random = kernel_get_random;
-> > > > > > > >
-> > > > > > > > -               static_call_update(trusted_key_seal,
-> > > > > > > > -                                  trusted_key_sources[i].ops->seal);
-> > > > > > > > -               static_call_update(trusted_key_unseal,
-> > > > > > > > -                                  trusted_key_sources[i].ops->unseal);
-> > > > > > > > -               static_call_update(trusted_key_get_random,
-> > > > > > > > -                                  get_random);
-> > > > > > > > -               trusted_key_exit = trusted_key_sources[i].ops->exit;
-> > > > > > > > -               migratable = trusted_key_sources[i].ops->migratable;
-> > > > > > > > -
-> > > > > > > >                 ret = trusted_key_sources[i].ops->init();
-> > > > > > > > -               if (!ret)
-> > > > > > > > +               if (!ret) {
-> > > > > > > > +                       static_call_update(trusted_key_seal, trusted_key_sources[i].ops->seal);
-> > > > > > > > +                       static_call_update(trusted_key_unseal, trusted_key_sources[i].ops->unseal);
-> > > > > > > > +                       static_call_update(trusted_key_get_random, get_random);
-> > > > > > > > +
-> > > > > > > > +                       trusted_key_exit = trusted_key_sources[i].ops->exit;
-> > > > > > > > +                       migratable = trusted_key_sources[i].ops->migratable;
-> > > > > > > > +               }
-> > > > > > > > +
-> > > > > > > > +               if (!ret || ret != -ENODEV)
-> > > > > > >
-> > > > > > > As mentioned in the other thread, we should allow other trust sources
-> > > > > > > to be initialized if the primary one fails.
-> > > > > >
-> > > > > > I sent the patch before I received that response but here's what you
-> > > > > > wrote:
-> > > > > >
-> > > > > > "We should give other trust sources a chance to register for trusted
-> > > > > > keys if the primary one fails."
-> > > > > >
-> > > > > > 1. This condition is lacking an inline comment.
-> > > > > > 2. Neither this response or the one that you pointed out has any
-> > > > > >    explanation why for any system failure the process should
-> > > > > >    continue.
-> > > > > >
-> > > > > > You should really know the situations (e.g. list of posix error
-> > > > > > code) when the process can continue and "allow list" those. This
-> > > > > > way way too abstract. It cannot be let all possible system failures
-> > > > > > pass.
-> > > > >
-> > > > > And it would nice if it printed out something for legit cases. Like
-> > > > > "no device found" etc. And for rest it must really withdraw the whole
-> > > > > process.
-> > > >
-> > > > IMO, it would be quite tricky to come up with an allow list. Can we
-> > > > keep "EACCES", "EPERM", "ENOTSUPP" etc in that allow list? I think
-> > > > these are all debatable.
-> > >
-> > > Yes, that does sounds reasonable.
-> > >
-> > > About the debate. Well, it is better eagerly block and tree falls down
-> > > somewhere we can consider extending the list through a fix.
-> > >
-> > > This all wide open is worse than a few glitches somewhere, which are
-> > > trivial to fix.
-> > >
+On Wed, Oct 11, 2023 at 9:21 AM Rik van Riel <riel@surriel.com> wrote:
+> On Wed, 2023-10-11 at 12:41 +0200, Alejandro Colomar wrote:
+> > Hi Rik,
 > >
-> > Fair enough, I would suggest we document it appropriately such that it
-> > is clear to the users or somebody looking at the code.
+> > On Tue, Oct 10, 2023 at 11:41:53PM -0400, Rik van Riel wrote:
+> > > Document that if a command line or environment string is too long
+> > > (> MAX_ARG_STRLEN), execve will also return E2BIG.
+> >
+> > That's already implied by the current text:
+> >
+> >        E2BIG  The total number of bytes in the environment (envp) and
+> > argument
+> >               list (argv) is too large.
+> >
+> > That means that
+> >
+> > size_t  bytes;
+> >
+> > bytes =3D 0;
+> > for (char *e =3D envp; e !=3D NULL; e++)
+> >         bytes +=3D strlen(e) + 1;  // I have doubts about the +1
+> > for (char *a =3D argv; a !=3D NULL; a++)
+> >         bytes +=3D strlen(a) + 1;  // Same doubts
+> >
+> > if (bytes > MAX_ARG_STRLEN)  // Maybe >=3D ?
+> >         return -E2BIG;
 >
-> I went throught the backends on how they implement init:
+> The code in fs/exec.c enforces MAX_ARG_STRLEN against
+> each individual string, not against the total.
 >
-> 1. Returns -ENODEV when it does not exist.
-> 2. Calls driver_register(). Something is wrong enough if that
->    fails to rollback the whole procedure.
-> 3. TPM: -ENODEV
+> If any string, either argument or environment, is larger
+> than 32 * PAGE_SIZE, the kernel will return -E2BIG.
 >
-> Therefore, I would keep in the existing patch since there is no weird
-> uapi visible legacy behavior to support in the first place. And for
-> that reason there is no good reason to have all those four POSIX rc's
-> in the list.
+> do_execveat_common() has this code, which uses copy_strings
+> to copy both the strings from the environment, and from
+> the command line arguments:
+>
+>         retval =3D copy_strings(bprm->envc, envp, bprm);
+>         if (retval < 0)
+>                 goto out_free;
+>
+>         retval =3D copy_strings(bprm->argc, argv, bprm);
+>         if (retval < 0)
+>                 goto out_free;
+>
+> Inside copy_strings() we have this code:
+>
+>
+>         while (argc-- > 0) {
+> ...
+>                 len =3D strnlen_user(str, MAX_ARG_STRLEN);
+>                 if (!len)
+>                         goto out;
+>
+>                 ret =3D -E2BIG;
+>                 if (!valid_arg_len(bprm, len))
+>                         goto out;
+>
+> The valid_arg_len() function does not need explanation:
+>
+> static bool valid_arg_len(struct linux_binprm *bprm, long len)
+> {
+>         return len <=3D MAX_ARG_STRLEN;
+> }
+>
+>
+> The current man page wording is very clear about the total
+> length being enforced, but IMHO not as clear about the limit
+> that gets enforced on each individual string.
+>
+> The total length limit of environment & commandline arguments
+> is enforced by bprm_stack_limits(), and is checked against
+> either 1/4 of the maximum stack size, or 3/4 of _STK_LIM, whichever
+> is smaller. The MAX_ARG_STRLEN value does not come into play when
+> enforcing the total.
 
-Okay I can live with this patch as long as it doesn't break the
-intended use-case.
+To expand on this, there are basically two separate byte limits in
+fs/exec.c, one for each individual argv/envp string, and another for all
+strings and all pointers to them as a whole. To put the whole thing in
+pseudocode, the checks work effectively like this, assuming I haven't made
+any errors:
 
--Sumit
+int argc, envc;
+unsigned long bytes, limit;
 
->
-> BR, Jarkko
->
->
+/* assume that argv has already been adjusted to add an empty argv[0] */
+argc =3D 0, envc =3D 0, bytes =3D 0;
+for (char **a =3D argv; *a !=3D NULL; a++, argc++) {
+    if (strlen(*a) >=3D MAX_ARG_STRLEN)
+        return -E2BIG;
+    bytes +=3D strlen(*a) + 1;
+}
+for (char **e =3D envp; *e !=3D NULL; e++, envc++) {
+    if (strlen(*e) >=3D MAX_ARG_STRLEN)
+        return -E2BIG;
+    bytes +=3D strlen(*e) + 1;
+}
+
+if (argc > MAX_ARG_STRINGS || envc > MAX_ARG_STRINGS)
+    return -E2BIG;
+bytes +=3D (argc + envc) * sizeof(void *);
+
+limit =3D max(min(_STK_LIM / 4 * 3, rlim_stack.rlim_cur / 4), ARG_MAX);
+if (bytes > limit)
+    return -E2BIG;
+
+Thank you,
+Matthew House
