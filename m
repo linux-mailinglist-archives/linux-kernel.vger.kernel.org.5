@@ -2,66 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D927E7C5068
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC327C5070
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346323AbjJKKmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:42:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45434 "EHLO
+        id S234808AbjJKKoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjJKKmI (ORCPT
+        with ESMTP id S1346537AbjJKKoC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:42:08 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B63B692
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:42:06 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3D3211480;
-        Wed, 11 Oct 2023 03:42:47 -0700 (PDT)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.38.165])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9DA823F762;
-        Wed, 11 Oct 2023 03:42:05 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 11:42:03 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        maz@kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH] clocksource/drivers/arm_arch_timer: Initialize evtstrm
- after finalizing cpucaps
-Message-ID: <ZSZ7-zjSq4hl66Ix@FVFF77S0Q05N.cambridge.arm.com>
-References: <20230907133410.3817800-1-mark.rutland@arm.com>
- <a56ea45c-f1cb-4f9a-bfc9-d6af3282b13a@linaro.org>
- <ZSZsogqIgG863ucA@FVFF77S0Q05N>
- <500f7f18-65cf-4182-a174-5f0081456b3b@linaro.org>
+        Wed, 11 Oct 2023 06:44:02 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74B4D7;
+        Wed, 11 Oct 2023 03:44:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697021041; x=1728557041;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ipz21Xlmw/ON1nT/ixvE46/fPEfN4IYwwn+6e3cr5Ps=;
+  b=XqW0yOyyNirvqT3nVk6d0jYwMIe8vJErPdVW7kAkzr0pgoF2unQ4VImT
+   UvQGL0JrO7xUWX5Ro+iTJQJa4dCgMDLp6o3743NFyiaGLZ1p9rvS6sGbj
+   0kgZ7o1iBkfRDGB4HpoouQGHnudO5oHTGl180QqeeJ1b5MglImUPV5Tqw
+   Izzeig8Nbmwb1aN/QPtig92ir20UEEKOQp2Alb47drhLPlnG4V0OVb0LK
+   FROmI9Fbeciik/0DFYs7fxmpXk0aYFUQimosTsr3ptz4StKcKPk6kCPTX
+   3B51h1ZbOGpduVQGaocu5RLc9p+o0K1hio5uH++iBnBEXjaUZuxXTfHSG
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="387476637"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="387476637"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 03:44:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="703686099"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="703686099"
+Received: from unknown (HELO smile.fi.intel.com) ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 03:43:56 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qqWgy-00000004b4y-3tkE;
+        Wed, 11 Oct 2023 13:43:52 +0300
+Date:   Wed, 11 Oct 2023 13:43:52 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Wentong Wu <wentong.wu@intel.com>, gregkh@linuxfoundation.org,
+        oneukum@suse.com, wsa@kernel.org, andi.shyti@linux.intel.com,
+        broonie@kernel.org, bartosz.golaszewski@linaro.org,
+        linus.walleij@linaro.org, linux-usb@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-spi@vger.kernel.org,
+        sakari.ailus@linux.intel.com, zhifeng.wang@intel.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v20 1/4] usb: Add support for Intel LJCA device
+Message-ID: <ZSZ8aMAyncKvmLga@smile.fi.intel.com>
+References: <1696833205-16716-1-git-send-email-wentong.wu@intel.com>
+ <1696833205-16716-2-git-send-email-wentong.wu@intel.com>
+ <ZSZ3IPgLk7uC5UGI@smile.fi.intel.com>
+ <6a87b43a-0648-28d4-6c69-e0f684e44eb6@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <500f7f18-65cf-4182-a174-5f0081456b3b@linaro.org>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <6a87b43a-0648-28d4-6c69-e0f684e44eb6@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 12:06:20PM +0200, Daniel Lezcano wrote:
-> On 11/10/2023 11:36, Mark Rutland wrote:
-> > On Wed, Oct 11, 2023 at 10:30:39AM +0200, Daniel Lezcano wrote:
-> > > Applied thanks
-> > 
-> > This got folded into a larger series that we were hoping to take through the arm64 tree:
-> > 
-> >    https://lore.kernel.org/linux-arm-kernel/20231010103139.3113421-1-mark.rutland@arm.com/
-> >    https://lore.kernel.org/linux-arm-kernel/20231010103139.3113421-2-mark.rutland@arm.com/
-> > 
-> > I think that won't conflict, since all that's changed is the commit text, but
-> > it might be worth dropping this patch for now to avoid the risk of a conflict.
-> 
-> Sure, thanks for letting me know. I was suspecting that was the case :)
-> 
-> I've dropped it
+On Wed, Oct 11, 2023 at 12:37:51PM +0200, Hans de Goede wrote:
+> On 10/11/23 12:21, Andy Shevchenko wrote:
+> > On Mon, Oct 09, 2023 at 02:33:22PM +0800, Wentong Wu wrote:
 
-Thanks, and sorry for the hassle!
+...
 
-Mark.
+> TL;DR: there is nothing to worry about here, but the commit message
+> should be updated to reflect reality.
+
+I have just sent the similar worry, but thanks that you have checked
+the code and we don't need to worry too much.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
