@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8CE7C5DE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F15E7C5DE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376296AbjJKTxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 15:53:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56976 "EHLO
+        id S233354AbjJKTyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 15:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233419AbjJKTxQ (ORCPT
+        with ESMTP id S233170AbjJKTyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 15:53:16 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DA590
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:53:14 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9b2f73e3af3so28075866b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:53:14 -0700 (PDT)
+        Wed, 11 Oct 2023 15:54:17 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8BD94;
+        Wed, 11 Oct 2023 12:54:15 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40572aeb673so3037465e9.0;
+        Wed, 11 Oct 2023 12:54:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697053993; x=1697658793; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tUfa4vIuWpsi0vE4J7cy1MWGRzD7YIrcZ6ulH75qxJo=;
-        b=TaR6IKvzan+Wc5ItPslv37LPaKdEZdk9rhAVT2TmntQwKP1GqrpNprltqBcmzfCR5I
-         z0LDrNgK9cz8kt34hhocPOaimPuhPI7hwyHkQrnxQJRBGhn8keelm+X+Pyf5/t9M4RH1
-         4IXi+wWWNe3m/scsNE/g2X2qeQ+Fja+Uj1Ve8=
+        d=gmail.com; s=20230601; t=1697054054; x=1697658854; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=y3YFPZew2Bj95EqowwXla7dhplIamhthsOPPYN+nyMU=;
+        b=Res5H5ChYGxkqwMulH2BX8MY5fB2aRIfETQuDW2YCiuh/1GR1kBLGtfR8upvxO765U
+         aSuo1t4de22XHEnh16MCXwH1lrCUQkEX3Yt6PadR5s0b0QSzA+7TubIyPyo9gqY3nT3t
+         b9MQuiExKwzx/84+0kLRSDtbPedrdAgA6igLW0ocM/0pTyN8PcUTlFbHk1rg3PO+1d7+
+         uw+lJ+9yuoqhLvF/pJN82YGNKXBBN5W//7g+WHlu71mlS2NaoosxHluUOzUAsdxC6EPn
+         nZ26Ldb/s0z+U2m/NPcxpIYu6J5XGZ44QqI+KV0lsv+UXp+xwsSji3lDVoiywK3DQ2iP
+         WVMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697053993; x=1697658793;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1697054054; x=1697658854;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tUfa4vIuWpsi0vE4J7cy1MWGRzD7YIrcZ6ulH75qxJo=;
-        b=uK6HWBy1yPeY71qTX5S5v4JbmYw5lUxjChz34L8fOWAL//1Oj//Laokg+RQzMBKymr
-         SQ+OS3vPi7B39wZpSlajVlyQO6ERE4hx2AyhKw5JKtq3mVHJvstGlA8LM9XaOjd2HhaR
-         DOHOyk1wNkXln/faBHn80TNefgrXFBzNRQx+FjdwOAaOWgoRzVcXZmY9UAzcn0IHbTjP
-         I0ZAdFUkbSpYfffSd00Crodxhap7tkUYsWffEmcp95m0/efAkp8IqPN6TN2najkeC3XQ
-         ggYFGyVl8/mLNJlhTzyP6sSmViuIBbeZ/iErUEV50vHioTNLrgAOiL8A6otdL74BhXD3
-         US1A==
-X-Gm-Message-State: AOJu0Yxc25TUyWiMaEBRAV+wgFGI14I4irWOZU6gsMhhhuanC/9VEHuT
-        4oHAkoCTnyc0Hr1KlWIH+jOhwRptPbTkFv1yWRxMegRG
-X-Google-Smtp-Source: AGHT+IGBhnAFAxg+3cvE/D51OMcsfeTD/+avUKtfebn2RHZ9pIA5qZzf7qDabL+24DlbvC6OSFNvPQ==
-X-Received: by 2002:a17:907:78d9:b0:9bb:a243:e6f1 with SMTP id kv25-20020a17090778d900b009bba243e6f1mr4070771ejc.0.1697053993222;
-        Wed, 11 Oct 2023 12:53:13 -0700 (PDT)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id lz11-20020a170906fb0b00b009b97521b58bsm10199726ejb.39.2023.10.11.12.53.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 12:53:12 -0700 (PDT)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-53dd752685fso425885a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:53:12 -0700 (PDT)
-X-Received: by 2002:a05:6402:2214:b0:53d:fe06:3bb2 with SMTP id
- cq20-20020a056402221400b0053dfe063bb2mr460278edb.8.1697053991908; Wed, 11 Oct
- 2023 12:53:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <CAFULd4Y8NSArDqH=VMy8F97eNosUUGxrBMEyHH=MytjUBSCmjg@mail.gmail.com>
- <CAHk-=whMr8V_q3dq4iS0dpx4Nssu+aYWz+mA36p2ykA+OXTjXA@mail.gmail.com>
- <CAFULd4afyYK0-wAOo3oJDapX0iyu86m5+vVn9c35gk8fd6iwRQ@mail.gmail.com> <CAHk-=wiLyA0g3BvQ_nsF2PWi-FDtcNS5+4-ai1FX-xFzTBeTzg@mail.gmail.com>
-In-Reply-To: <CAHk-=wiLyA0g3BvQ_nsF2PWi-FDtcNS5+4-ai1FX-xFzTBeTzg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 11 Oct 2023 12:52:54 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg+zCZNRW-N6SFn8w_xYLzG6Y_NsW9doxcD32hb-jWd8w@mail.gmail.com>
-Message-ID: <CAHk-=wg+zCZNRW-N6SFn8w_xYLzG6Y_NsW9doxcD32hb-jWd8w@mail.gmail.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Nadav Amit <namit@vmware.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        bh=y3YFPZew2Bj95EqowwXla7dhplIamhthsOPPYN+nyMU=;
+        b=uydkhPUfksxFIU0vFc40GZbpUK2AiuDWBGodsSup6zSXyDvGASklvylnzzhYUmdX7q
+         2YQbWADQXwrH1OiAsHrQwaIhbjixHFrGW1Fm7BNca0GUxYAV02Q/BzkuO/YcsB3a1nQd
+         UzNe8xgPVHTZeXcPK9H0+XOptaArAkyDBKdOIFkm++aY06WqR/Wz0tjL9HmGW+JmdEJS
+         pw31W6DHB4t3BnDrEk8v5kiQc4TxEaVi2+m2WnbztFRMjs4vzC7bksuBMG+VjBiiB+u+
+         p3oaFH560l8SvJi12Y635fyF/k0z2tXhwCi6y0wccADKNpwluZCs9I5U1gL3EJUZVeJz
+         Z01A==
+X-Gm-Message-State: AOJu0Yx6ySwtA2ASH2HZsDEC7cxsL2CA2UQs36JTpviXwhkCKjuXTTdw
+        mBiDJly/zNcKP5W15AceOyk=
+X-Google-Smtp-Source: AGHT+IH0ZWnon6aBmF5pJAjBaQ3ZU+0IT2e/bvCnKFGgpAa/lhDn8x+0H84J9gcNuYUTO6zBHMsOCw==
+X-Received: by 2002:a05:600c:21d0:b0:405:3a3b:2aa2 with SMTP id x16-20020a05600c21d000b004053a3b2aa2mr18993979wmj.37.1697054053875;
+        Wed, 11 Oct 2023 12:54:13 -0700 (PDT)
+Received: from prasmi.home ([2a00:23c8:2501:c701:b8af:68b0:4272:ed0d])
+        by smtp.gmail.com with ESMTPSA id y19-20020a05600c20d300b004075b3ce03asm4136872wmm.6.2023.10.11.12.54.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 12:54:13 -0700 (PDT)
+From:   Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH] irqchip: renesas-rzg2l: Enhance driver to support interrupt affinity setting
+Date:   Wed, 11 Oct 2023 20:53:24 +0100
+Message-Id: <20231011195324.66807-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Oct 2023 at 12:51, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Dio y ou have any actka performance numbers?
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-And before anybody worries - no, I didn't have a stroke in the middle
-of writing that. I'm just not a great typist ;)
+Add support to set the affinity of the IRQC interrupt by implementing
+the irq_set_affinity callback.
 
-                  Linus
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+---
+ drivers/irqchip/irq-renesas-rzg2l.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/irqchip/irq-renesas-rzg2l.c b/drivers/irqchip/irq-renesas-rzg2l.c
+index 2cee5477be6b..6390d1d78f2e 100644
+--- a/drivers/irqchip/irq-renesas-rzg2l.c
++++ b/drivers/irqchip/irq-renesas-rzg2l.c
+@@ -247,6 +247,7 @@ static const struct irq_chip irqc_chip = {
+ 	.irq_set_irqchip_state	= irq_chip_set_parent_state,
+ 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
+ 	.irq_set_type		= rzg2l_irqc_set_type,
++	.irq_set_affinity	= irq_chip_set_affinity_parent,
+ 	.flags			= IRQCHIP_MASK_ON_SUSPEND |
+ 				  IRQCHIP_SET_TYPE_MASKED |
+ 				  IRQCHIP_SKIP_SET_WAKE,
+-- 
+2.34.1
+
