@@ -2,76 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4117C5FC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C307C601C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376421AbjJKV7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58776 "EHLO
+        id S1376431AbjJKWBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 18:01:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233339AbjJKV7x (ORCPT
+        with ESMTP id S233582AbjJKWBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:59:53 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472109E
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:59:52 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9ba1eb73c27so48240566b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:59:52 -0700 (PDT)
+        Wed, 11 Oct 2023 18:01:20 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 716E2BA;
+        Wed, 11 Oct 2023 15:01:17 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53d8320f0easo616298a12.3;
+        Wed, 11 Oct 2023 15:01:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697061591; x=1697666391; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697061676; x=1697666476; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=P4ZKjGCx4nApKCYikS19QgH43+qwtiZ1ddNEcQjQDUQ=;
-        b=P9+Pa+DX1AocSbG207uq9xIOvrkemHafQT+jIeWs7XtTgQZzSI17l0CpAbD4XX492q
-         5YsWdH02YxWPJYeum2EmAWX5xECaabmms8UOcgfVEAVoIS0zko/WC+SNtJGs+b1jzcTo
-         oLrAf64k0x5fxs3aEU263i1l9Y1yYr2ed2wb6qpCQevMBL6IxHeSFB3AwgXyHEyr0H+U
-         YDHH8kFZG90/OwQ5IElY/kFzaBPDOmN83ZlqTuiEEGROEDY2FXBTQEKHWKFtMOqMDCGO
-         yRvut1jRApuOEm6e3DqDMVGrVYpfCmhUgqbuxetfClsJ3p53zAhArR39Knjj/RuhTcmC
-         fejQ==
+        bh=aU8zTHkK4NxAcOXX++G5NAy250/pC8Kb9DQsWsU8U40=;
+        b=bfmF/5bC/jj06bALqbAG1W6+Vo3cQ0bvh3D0rSvV4JsRCmu1nxaEVjPc2fXtWv0iI0
+         D5cTM/Ns5Sq/1JPA6kdgndVPqOSbns9XkB3wbfrrkld/i9ACbDRmxbJvI4R5oUCH+XYl
+         sR/Aj+Uhxd6lkM4Xw/PunmYOuEmRN7JgH1jrhauI90wabG3YDHhQzx/qM7SmKom8BY9Y
+         dS7YFp3zBuRmOf630HMf31nQo3oVKASpvhYZrgMuIkNcvhKqiDfeD4pCWAF8ZXofPiGA
+         ideQI/Tr+GXeBhsijnHVtFBCYtDb9w0bM6fQiK/H2dnMKT3SQtKmEOB6g5TxtIlRrlcD
+         sLEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697061591; x=1697666391;
+        d=1e100.net; s=20230601; t=1697061676; x=1697666476;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=P4ZKjGCx4nApKCYikS19QgH43+qwtiZ1ddNEcQjQDUQ=;
-        b=oUZHQ/YyEsAlmo1hQelq9SQVsuXCtr95GZX+vTT1m0x9m7yFBd8vdxGyjgLJGBWvJ+
-         jvft6HS6ELuTJ2h25eG7XpjAbBPU1DhwZ0Qa/KkGxuYJ+mngR5G1zeHafws8+pbWxh3Q
-         EiTfVV5gSI4iITstX0LJItSK36CxC1lFIagDj9jXZe4zcIW6WJV6LDOXwoHVLI7916yx
-         B0dgkK8FbLNA8uKP/+u9Jmjde30qpZQag00xkKZGPxQzHc7zBfh3zEkOetAABbaxGfSI
-         mjKsN/CazGyJf6mwWgwuauqLcigsnLlXhhKwabkAsiDAXc9DBtYtetLgk2HGGSloBzEc
-         I0CA==
-X-Gm-Message-State: AOJu0Yw+zBg1GJhcO+3wSGurz0hjeWX5M8V17NzeUaaLkGNBw28tUw9s
-        y3wEh654/wdz0TmBS+3Su9s=
-X-Google-Smtp-Source: AGHT+IFFQEX/2zN2S57PAqVp9/9LmuvQHcMM5rTusTvYCsiu+ds+OJ8190vUDhz+8xprA3/gJYbGIw==
-X-Received: by 2002:a17:906:2929:b0:9b8:df8e:cbde with SMTP id v9-20020a170906292900b009b8df8ecbdemr17627616ejd.51.1697061590579;
-        Wed, 11 Oct 2023 14:59:50 -0700 (PDT)
+        bh=aU8zTHkK4NxAcOXX++G5NAy250/pC8Kb9DQsWsU8U40=;
+        b=LfluOxH/QU9P+CaEInTkhXEDesvenhpUGd5Bg1lY0r4DTW6WEo9C8QfB15/+l2FSgm
+         9vGDUoZ3PtEX36BAJFKKXt70ArdSziRcUD5FrLO6ILIrDBeBbGAX41/hgNCv90cXpJvk
+         FEuP2+zl4qDI9u8k5fmhkBKD2R6DktXPCyLwHjLxZSIfB6sIjg34Lz2kwGKu1x7JPKQA
+         CVA8l+q2Xp28Ev8loOy7zrnLmtsO4PUhomgqzv28FJ6FVSFIrPLQbxuaM9xXgU3hw7+x
+         yz5UWO2wjyuVozaKMHunh05L+xpY8+XOEQfznD8IbqmxqYYeILkWfLk5RcQFR37T8TpW
+         IYUg==
+X-Gm-Message-State: AOJu0Ywz0DlmusSK1jOqmSJ1CAvs8SAr0oFo1xi/JDYf3lB53nxbKxJ7
+        fQSUhhA4LUTzHKDaEra27Cg=
+X-Google-Smtp-Source: AGHT+IFaePyh0Rs/o6lwENjIO5ItRfbHskJy31RDjSUG/NssW7pcb8kI7XHPcWbV0kWtFwvx7YLaxg==
+X-Received: by 2002:a05:6402:3c1:b0:533:2449:7a59 with SMTP id t1-20020a05640203c100b0053324497a59mr20378065edw.11.1697061675822;
+        Wed, 11 Oct 2023 15:01:15 -0700 (PDT)
 Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
-        by smtp.gmail.com with ESMTPSA id l12-20020a170906078c00b009b94fe3fc47sm10228660ejc.159.2023.10.11.14.59.49
+        by smtp.gmail.com with ESMTPSA id eg42-20020a05640228aa00b0053daf92f0easm1805319edb.97.2023.10.11.15.01.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 14:59:49 -0700 (PDT)
+        Wed, 11 Oct 2023 15:01:14 -0700 (PDT)
 Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 11 Oct 2023 23:59:47 +0200
+Date:   Thu, 12 Oct 2023 00:01:13 +0200
 From:   Ingo Molnar <mingo@kernel.org>
-To:     Breno Leitao <leitao@debian.org>
-Cc:     tglx@linutronix.de, bp@alien8.de, Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] x86/bugs: Add a separate config for each mitigation
-Message-ID: <ZSca08rnmZfkONEH@gmail.com>
-References: <20231010103028.4192223-1-leitao@debian.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-next <linux-next@vger.kernel.org>,
+        Sohil Mehta <sohil.mehta@intel.com>
+Subject: Re: linux-next: manual merge of the block tree with the asm-generic
+ tree
+Message-ID: <ZScbKPQur2qao5Gf@gmail.com>
+References: <20231009123118.4487a0e1@canb.auug.org.au>
+ <20231009084812.GB14330@noisy.programming.kicks-ass.net>
+ <cb4bb8e2-7dfe-4ca4-aa70-060f7b2f8f95@app.fastmail.com>
+ <20231009141351.GD14330@noisy.programming.kicks-ass.net>
+ <b7c57f03-4606-4190-98c5-344c49656f9c@kernel.dk>
+ <66e09ad5-2dcf-4159-9c98-f37ac739a445@kernel.dk>
+ <20231011175407.GG6307@noisy.programming.kicks-ass.net>
+ <ZScUhud9eqKIQJjC@gmail.com>
+ <bf5ecd2d-06a7-4c51-a762-6fe3753044b6@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231010103028.4192223-1-leitao@debian.org>
+In-Reply-To: <bf5ecd2d-06a7-4c51-a762-6fe3753044b6@kernel.dk>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
         SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,90 +87,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-* Breno Leitao <leitao@debian.org> wrote:
+* Jens Axboe <axboe@kernel.dk> wrote:
 
-> +config MITIGATE_MDS
-> +	bool "Mitigate Microarchitectural Data Sampling (MDS) hardware bug"
+> >>> Peter, what's the verdict - do you want to rebase it, or leave it 
+> >>> as-is?
+> >>
+> >> Ah, I looked into doing this, but tip/locking/core has since grown a 
+> >> bunch of patches and has a merge commit -- I talked to Ingo yesterday 
+> >> and he proposed just queueing a fix on top instead of doing a full 
+> >> rebase.
+> >>
+> >> Ingo, that still your preferred solution?
+> > 
+> > Yeah, that would be the best solution IMO - it's not like there's any 
+> > real prospect of someone bisecting futex2 patch-enablement commits on 
+> > Alpha ... and the bisection distance isn't particularly large either in 
+> > any case.
+> 
+> OK, works for me. I'll keep my branch as-is, and just ensure it gets sent 
+> out after locking/core has been pulled by Linus.
 
-> +config MITIGATE_TAA
-> +	bool "Mitigate TSX Asynchronous Abort (TAA) hardware bug"
-
-> +config MITIGATE_MMIO_STALE_DATA
-> +	bool "Mitigate MMIO Stale Data hardware bug"
-
-> +config MITIGATE_L1TF
-> +	bool "Mitigate L1 Terminal Fault (L1TF) hardware bug"
-
-> +config MITIGATE_RETBLEED
-> +	bool "Mitigate RETBleed hardware bug"
-
-> +config MITIGATE_SPECTRE_V1
-> +	bool "Mitigate SPECTRE V1 hardware bug"
-
-> +config MITIGATE_SPECTRE_V2
-> +	bool "Mitigate SPECTRE V2 hardware bug"
-
-> +config MITIGATE_SRBDS
-> +	bool "Mitigate Special Register Buffer Data Sampling (SRBDS) hardware bug"
-
-> +config MITIGATE_SSB
-> +	bool "Mitigate Speculative Store Bypass (SSB) hardware bug"
-
-> +#if IS_ENABLED(CONFIG_MITIGATE_RETBLEED)
->  static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init =
->  	RETBLEED_CMD_AUTO;
-> +#else
-> +static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init =
-> +	RETBLEED_CMD_OFF;
-> +#endif
-
-1)
-
-Yeah, so this #ifdeffery is unnecessarily ugly - we can actually assign 
-integer values in the Kconfig language and use that for initialization.
-
-Is there a reason why we wouldn't want to do something like:
-
-	static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init = CONFIG_BOOT_DEFAULT_X86_MITIGATE_RETBLEED;
-
-... or so?
-
-2)
-
-The new Kconfig namespace should probably be X86_MITIGATE_*, so that we 
-don't crowd the generic kernel's Kconfig namespace.
-
-3)
-
-And yes, now that the rush of CPU vulnerabilities seems to be ebbing, we 
-should probably consider unifying the existing hodgepodge of mitigation 
-Kconfig options as well, to not build up even more technical debt.
-
-The churn factor seems moderate:
-
-  kepler:~/tip> git grep CONFIG_RETPOLINE | wc -l
-  52
-
-  kepler:~/tip> git grep RETHUNK | wc -l
-  42
-
-  kepler:~/tip> git grep CALL_DEPTH_TRACKING | wc -l
-  24
-
-... and since most of this code is maintained in the same tree, the usual 
-arguments against churn (interfering with other Git trees) does not apply 
-nearly as much.
-
-4)
-
-Fourth, I think we should inform users (in the boot log) when a kernel 
-.config changes a mitigation default value compared from what the upstream 
-kernel thinks is a suitable default.
-
-Sometimes it can be a simple configuration mistake, or a user might have 
-different opinion about the importance of a particular mitigation. Nothing 
-heavy-handed, just a simple pr_info() table of changes?
-
-Thanks,
+Thank you!
 
 	Ingo
