@@ -2,70 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C437C57AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 17:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D62B7C57B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 17:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346812AbjJKPDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 11:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35872 "EHLO
+        id S1346919AbjJKPEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 11:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232628AbjJKPDY (ORCPT
+        with ESMTP id S232415AbjJKPEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 11:03:24 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3898A94
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 08:03:22 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3ae1916ba69so4743678b6e.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 08:03:22 -0700 (PDT)
+        Wed, 11 Oct 2023 11:04:21 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A0394
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 08:04:16 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3226b8de467so6492019f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 08:04:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697036601; x=1697641401; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iZGr0MjOwhvBq00ZZaLYaw8OqVHhMeRw+nvEkoYm3dw=;
-        b=jT1Uqvjn4Y0+Y9TJ5OXUQ86dMhzra/ZhrwE9bZ3mVTej1bsm4N5C6F82UQHkU5AOkn
-         Z1FGjohOPpKIYfiBPBVO+nhRUHVbCNe4JW44cyBy6+sG3ab+FYRv8ECkOr0fI66Ge+mN
-         axCimuBD2KMYqtTC5gqImgEGK388dBvsgJ1PiYG/y3gHdIg7ngbG1K0NyPbNIY5WV//O
-         V/Krs7rRnmvZayO648invweprpcuDVZk/Hx7R6Yspx9wt0auaF697sCiL5ByegfXDFoo
-         cbN5h6aYqjgq3HiLF9N/T7J7cXO85nAcJowGagREmMrzgZ9O9+oeGjzwyitxYEPfc+ec
-         9SYw==
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1697036655; x=1697641455; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hRkqB8/peQlqSu9v9E/Jxgpb5iu6r7QHy0PIjTwaP3U=;
+        b=Wa/rr+qYC8sSKEtftymBPnBFWOwtAUwirmBF/93mEazjvXl182v0aK/83guW5UIg+3
+         LvIf0WO9xMZYUcWGqndZvFQyNv3fquN1seN1VZvwOeirw4vPCD7MDh12zjxaLqd9ffQv
+         hN1748m3vSN+fdR/RdIdpJuTpkvGYFb9zcEzQ5yh1s3quTAsF0YbklAEQZED/94QYLTb
+         0m6DI96wUlDwZ3MAWvcoUhHkTMbZKej9YJLJIma7++uCinn0aA865VUb8loQQtr96Ots
+         AcZBjmyijGPOuiqDGYB6aF/oV5RpLoPrOd+J8FCLK/Bwwq6otnAV9CeslfrBz0WZAJ9C
+         DpnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697036601; x=1697641401;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iZGr0MjOwhvBq00ZZaLYaw8OqVHhMeRw+nvEkoYm3dw=;
-        b=IH3fkQgPWHbSQXneqd2o1ItFMOHQKPpRuWSQ6wfdq07aPPZq7+/HW2AymuVaHL4iVi
-         Ld2Lp6Fk5sv1aQjuvCEQ0O9rT3s+wagA2uWyrvGdKpeZkAqDg8hcahzCuI9NMmTvyM5E
-         RUW9Fgdh2tBAZSTtulzPLldSrDvhEjGwr+D1U0fvsDT3gn3HzTBPT/byWKiPKB88nalm
-         tJPKAItojvELDOnwLjIJuxgTYbMSt1+Wu/LKP1Nwud/igq5O6oKqozlFB1IprvRrGpM5
-         aNIpTAE5wIcwD3i4Ra1l8Hs/6n7dXCrgXUsyGxQ70YEwXNuFEGzqBGdbcZiFLh8kQq/t
-         k8+g==
-X-Gm-Message-State: AOJu0Yz58ogNhlVL7h5qKQtEXOziovVoseJBFNmepMnurmnnJPOx0yfK
-        yliPKZGimUkMUhMlIAb+atsPMUX/N950dNOIpnWEeg==
-X-Google-Smtp-Source: AGHT+IFUb2D6iAvQaaH7P0W5dSlc7xZ4XUpRgYrdDip+lWqRdEzUC59fw8FHoZb4k1KhpSCve8sVkm3epzleoO2Og1k=
-X-Received: by 2002:a05:6808:144d:b0:3a4:35bb:edae with SMTP id
- x13-20020a056808144d00b003a435bbedaemr27888321oiv.29.1697036601486; Wed, 11
- Oct 2023 08:03:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697036655; x=1697641455;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hRkqB8/peQlqSu9v9E/Jxgpb5iu6r7QHy0PIjTwaP3U=;
+        b=s3MCbr2E/MFD+5njShNMmmWzkrSgPVEHIv/9g85/KDNFe4dmA5hVK7of5bR0r6ddXx
+         lkBvfI1M9iPg1hItUOHnaxKwqXZWHWrHm5/hR00ZtLT9FhMSI7O4HwE9iMqHc7ThlnpG
+         3DlIFbaM21n2kpuFZcBWLqA83FYbXIj017qgGMxuE82adBca1J4P8uEH4vsFjW0HyIvN
+         9tOHzUdmrlBsDmM+X2CCDJxwvYUoUpznzE/EInQOjy0ejnvLacBwetRSromDrQM/AfC5
+         57lLYQb6yXi80AzH96k2Fn4WLg/mmiyePEosH4rMLrsZBUeRa2S3DrXkYb66y1sC1qtw
+         NDEA==
+X-Gm-Message-State: AOJu0YxG2OKFYhKsyeYyWBm93yjp05zEDKSUx6sUN6BN4zNuNg6BPqPU
+        e2D6R1Aw6QgCFZ5jytCWPLyJJA==
+X-Google-Smtp-Source: AGHT+IFfZQ1SiRV7geQ0Uqaa1luLtMmhs2/HZDlMTol8OQRTChK4x+uxynd3PWFf8uF8nkr/44Pylg==
+X-Received: by 2002:a5d:548f:0:b0:31d:d48f:12a3 with SMTP id h15-20020a5d548f000000b0031dd48f12a3mr16620164wrv.43.1697036655189;
+        Wed, 11 Oct 2023 08:04:15 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id f11-20020a5d50cb000000b00325c7295450sm15782616wrt.3.2023.10.11.08.04.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 08:04:14 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 17:04:12 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-wireless@vger.kernel.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-wpan@vger.kernel.org,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Rodolfo Zitellini <rwz@xhero.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 01/10] appletalk: make localtalk and ppp support
+ conditional
+Message-ID: <ZSa5bIcISlvW3zo5@nanopsycho>
+References: <20231011140225.253106-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20231011130204.52265-1-brgl@bgdev.pl> <20231011130204.52265-4-brgl@bgdev.pl>
- <b660e39e-24ad-c755-7962-aa56e8cdf4f7@axentia.se>
-In-Reply-To: <b660e39e-24ad-c755-7962-aa56e8cdf4f7@axentia.se>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 11 Oct 2023 17:03:10 +0200
-Message-ID: <CAMRc=Mep2_u_JdGo_W1VsOR9ajscw49KA2gK7GN3K9j_rUEn_Q@mail.gmail.com>
-Subject: Re: [PATCH 3/3] i2c: mux: gpio: don't fiddle with GPIOLIB internals
-To:     Peter Rosin <peda@axentia.se>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Peter Korsgaard <peter.korsgaard@barco.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011140225.253106-1-arnd@kernel.org>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,80 +80,5 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 4:59=E2=80=AFPM Peter Rosin <peda@axentia.se> wrote=
-:
->
-> Hi!
->
-> 2023-10-11 at 15:02, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Use the relevant API functions to retrieve the address of the
-> > underlying struct device instead of accessing GPIOLIB private structure=
-s
-> > manually.
-> >
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > ---
-> >  drivers/i2c/muxes/i2c-mux-gpio.c | 12 ++++++------
-> >  1 file changed, 6 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/i2c/muxes/i2c-mux-gpio.c b/drivers/i2c/muxes/i2c-m=
-ux-gpio.c
-> > index 5d5cbe0130cd..48a872a8196b 100644
-> > --- a/drivers/i2c/muxes/i2c-mux-gpio.c
-> > +++ b/drivers/i2c/muxes/i2c-mux-gpio.c
-> > @@ -14,8 +14,7 @@
-> >  #include <linux/slab.h>
-> >  #include <linux/bits.h>
-> >  #include <linux/gpio/consumer.h>
-> > -/* FIXME: stop poking around inside gpiolib */
-> > -#include "../../gpio/gpiolib.h"
-> > +#include <linux/gpio/driver.h>
-> >
-> >  struct gpiomux {
-> >       struct i2c_mux_gpio_platform_data data;
-> > @@ -176,7 +175,8 @@ static int i2c_mux_gpio_probe(struct platform_devic=
-e *pdev)
-> >       }
-> >
-> >       for (i =3D 0; i < ngpios; i++) {
-> > -             struct device *gpio_dev;
-> > +             struct gpio_device *gdev;
-> > +             struct device *dev;
-> >               struct gpio_desc *gpiod;
-> >               enum gpiod_flags flag;
-> >
-> > @@ -195,9 +195,9 @@ static int i2c_mux_gpio_probe(struct platform_devic=
-e *pdev)
-> >               if (!muxc->mux_locked)
-> >                       continue;
-> >
-> > -             /* FIXME: find a proper way to access the GPIO device */
-> > -             gpio_dev =3D &gpiod->gdev->dev;
-> > -             muxc->mux_locked =3D i2c_root_adapter(gpio_dev) =3D=3D ro=
-ot;
-> > +             gdev =3D gpiod_to_gpio_device(gpiod);
-> > +             dev =3D gpio_device_to_device(gdev);
-> > +             muxc->mux_locked =3D i2c_root_adapter(dev) =3D=3D root;
-> >       }
-> >
-> >       if (muxc->mux_locked)
->
-> Very nice to see that wart gone! The only small question I have
-> is if these helpers are needed elsewhere, or if a more "direct"
-> gpiod_to_device() would have been sufficient? That said, I have
-> zero problem with this new code as-is, and that detail is of
-> course squarely in gpio-land.
->
-> Acked-by: Peter Rosin <peda@axentia.se>
 
-gpiod_to_gpio_device() will be used in at least 10 other places. I
-haven't identified any other potential user for
-gpio_device_to_device() yet but I haven't looked hard yet either.
-
-Bart
-
->
-> Cheers,
-> Peter
+Could you provide a cover letter for the set please?
