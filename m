@@ -2,120 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F58E7C4D1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0957C4D20
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345033AbjJKI2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 04:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47410 "EHLO
+        id S1345054AbjJKI2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 04:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbjJKI16 (ORCPT
+        with ESMTP id S230341AbjJKI2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 04:27:58 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176129D;
-        Wed, 11 Oct 2023 01:27:56 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1169360002;
-        Wed, 11 Oct 2023 08:27:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697012875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tAl6wI267mdYSd5CG5718M4Naq5umv5wPjrfbzBjjTk=;
-        b=IbJagmVNv9BmJV/Bk5syT4UgbLmG1Ihv1V1/9IA1g+O/kgec2Yzou3NA4q82G6/O0bPfqL
-        xVQztLWHj8nR4DWyH5VNhPjzE2cU8IcXfgiOmsXDBuGCbaGWU7anPlCosMDsZ8Uxr5O8Kz
-        H6Ni4o4uLsD7ufzPQPz0tCHET50qIAIvvCpP8J775sZw2K+cWpKcfiRq6ube9+1EGtYPy3
-        gw69qKXhzHaYi8VdYp/0wlmtgnVeRDUPwSJeqSykjTdEgXXrYF25A4Tdc5gqPxUd2xuavv
-        3l3qbN2cniCHyPCGa3CwzldrfbPV3MMAEDWC33vPl0BzqimYKM0nl8XCTPTwtA==
-Date:   Wed, 11 Oct 2023 10:27:49 +0200
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Simon Horman <horms@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Michael Walle <michael@walle.cc>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v5 01/16] net: Convert PHYs hwtstamp callback
- to use kernel_hwtstamp_config
-Message-ID: <20231011102749.6fb29adb@kmaincent-XPS-13-7390>
-In-Reply-To: <ZSVvywM8OLG12OhR@kernel.org>
-References: <20231009155138.86458-1-kory.maincent@bootlin.com>
-        <20231009155138.86458-2-kory.maincent@bootlin.com>
-        <ZSVvywM8OLG12OhR@kernel.org>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 11 Oct 2023 04:28:08 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DD398
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:28:07 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3ae65e8eb45so4543306b6e.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:28:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697012886; x=1697617686; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wzwy8dVzFkqBpnclcii55xn3E3Sc8bsV1BMoAlSfZ1w=;
+        b=OGSDDFr9Su1LsRcBNglx47LCri9qfjvIoTltpmcJ7wYFl2GcdYp0baT8iQlb7Qn2AC
+         PPxKyUv/j+9v23w19jJztopO0Tiwy5ZUTTQ4HriNyTzX7x2UMuRTq4uSqfOGJsD8zzFj
+         4jnoQPVmZsaxF8ZjQxN6ORYBVCyA3f6ENgTpsF097Nq54KFtpvwaaZejsqoa/WQTXoo/
+         cntM3R/HCJ1am2nP/SjJs5qxFNj7OnLZEP43uBmMHLE0LWCYecul3A4CUE/U0KOZk7L0
+         FLXZR5znY+56KivEuVYefaC4xCQ1WPkdMTDjzWmivXC5pZe3XUG5k+Mom4QWxB227C6z
+         JUwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697012886; x=1697617686;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wzwy8dVzFkqBpnclcii55xn3E3Sc8bsV1BMoAlSfZ1w=;
+        b=uVgSfm36p/JNS+oxCwgUoKGtam1nT2dlY3IChQ+mGIAnc/9syTGZu1Pc2xdJpQMbSa
+         VgKfPgIZ2MaO4ikQG6QFomzgLizqcW6pgrqK4ZnI7COtkR1tiwkE2D6WAmOndnOAPOda
+         htV/eli6xLydBtywnKmhJNnaRgd+DxThDolzE5h4Vu7ZwMkA/GZ6XQ2gqBCCJH0kuWWY
+         A9KJGC/TPMiCGR5PPYAi9czqOYR4pAL1NxeoZgO9QtxIQRbZ5juYe832pB/oB8TReeU/
+         34RsDDLbwRpKJ+Rw5Q6d88souh6ema/4nggyBrpRmrd0qtrrheJui6anNh+puLcpZfLW
+         je1g==
+X-Gm-Message-State: AOJu0YxCNYzbSxFQWAfxDh89CVS+y34LzyAoRFECdt+NhNt/zJpSMzAo
+        5JvProO+dTg+M5kknpVrZBo=
+X-Google-Smtp-Source: AGHT+IGpRm1Kztit0KLsvMRyjNSBxupAdNhYfo8BW0PR5C86g9tMdIhxP4hkjgF77FFnccx64GSeJw==
+X-Received: by 2002:a05:6358:70c:b0:142:d71b:59ce with SMTP id e12-20020a056358070c00b00142d71b59cemr23075111rwj.26.1697012886601;
+        Wed, 11 Oct 2023 01:28:06 -0700 (PDT)
+Received: from MSCND1355B05.fareast.nevint.com ([183.242.39.186])
+        by smtp.gmail.com with ESMTPSA id z22-20020aa791d6000000b006862b2a6b0dsm9866888pfa.15.2023.10.11.01.28.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 01:28:06 -0700 (PDT)
+From:   Zqiang <qiang.zhang1211@gmail.com>
+To:     tj@kernel.org, jiangshanlai@gmail.com
+Cc:     linux-kernel@vger.kernel.org, qiang.zhang1211@gmail.com
+Subject: [PATCH v2] workqueue: Use the kmem_cache_free() instead of kfree() to release pwq
+Date:   Wed, 11 Oct 2023 16:27:59 +0800
+Message-Id: <20231011082759.8570-1-qiang.zhang1211@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 17:37:47 +0200
-Simon Horman <horms@kernel.org> wrote:
+Currently, the kfree() be used for pwq objects allocated with
+kmem_cache_alloc() in alloc_and_link_pwqs(), this isn't wrong.
+but usually, use "trace_kmem_cache_alloc/trace_kmem_cache_free"
+to track memory allocation and free. this commit therefore use
+kmem_cache_free() instead of kfree() in alloc_and_link_pwqs()
+and also consistent with release of the pwq in rcu_free_pwq().
 
-> ...
->=20
-> > diff --git a/drivers/net/phy/nxp-c45-tja11xx.c
-> > b/drivers/net/phy/nxp-c45-tja11xx.c index 7ab080ff02df..416484ea6eb3 10=
-0644
-> > --- a/drivers/net/phy/nxp-c45-tja11xx.c
-> > +++ b/drivers/net/phy/nxp-c45-tja11xx.c
-> > @@ -1022,24 +1022,21 @@ static bool nxp_c45_rxtstamp(struct mii_timesta=
-mper
-> > *mii_ts, }
-> > =20
-> >  static int nxp_c45_hwtstamp(struct mii_timestamper *mii_ts,
-> > -			    struct ifreq *ifreq)
-> > +			    struct kernel_hwtstamp_config *config,
-> > +			    struct netlink_ext_ack *extack)
-> >  {
-> >  	struct nxp_c45_phy *priv =3D container_of(mii_ts, struct nxp_c45_phy,
-> >  						mii_ts);
-> >  	struct phy_device *phydev =3D priv->phydev;
-> >  	const struct nxp_c45_phy_data *data;
-> > -	struct hwtstamp_config cfg;
-> > =20
-> > -	if (copy_from_user(&cfg, ifreq->ifr_data, sizeof(cfg)))
-> > -		return -EFAULT;
-> > -
-> > -	if (cfg.tx_type < 0 || cfg.tx_type > HWTSTAMP_TX_ON)
-> > +	if (cfg->tx_type < 0 || cfg->tx_type > HWTSTAMP_TX_ON) =20
->=20
-> Hi K=C3=B6ry,
->=20
-> cfg is removed from this function by this patch, but is used here.
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+---
+ kernel/workqueue.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Thanks for your review.
-Indeed there is a mistake here. It will be fixed it next version.
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index ebe24a5e1435..6f74cab2bd5a 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -4610,8 +4610,12 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
+ 
+ enomem:
+ 	if (wq->cpu_pwq) {
+-		for_each_possible_cpu(cpu)
+-			kfree(*per_cpu_ptr(wq->cpu_pwq, cpu));
++		for_each_possible_cpu(cpu) {
++			struct pool_workqueue *pwq = *per_cpu_ptr(wq->cpu_pwq, cpu);
++
++			if (pwq)
++				kmem_cache_free(pwq_cache, pwq);
++		}
+ 		free_percpu(wq->cpu_pwq);
+ 		wq->cpu_pwq = NULL;
+ 	}
+-- 
+2.17.1
+
