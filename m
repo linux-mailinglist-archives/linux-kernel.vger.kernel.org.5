@@ -2,113 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C16D47C5726
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0107C572D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344784AbjJKOj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 10:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
+        id S1346435AbjJKOmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 10:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232260AbjJKOjz (ORCPT
+        with ESMTP id S232262AbjJKOmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 10:39:55 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC53892
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 07:39:53 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id d2e1a72fcca58-690bc3f82a7so5364611b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 07:39:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697035193; x=1697639993; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fQNK4cZppGs8Y8rM4h3XQeL/bSmNLB40k5aLUnjJJ7g=;
-        b=BrZwl5gY3xDf4qkKwNQIeXvGGQlK9YJBFZnLKOF0ARHJkmJdEpzo5EtWwkpgyjs3nN
-         79dwEkHZ9AyhtalfZvoxM/NlWVLzagoDZPPpU/YZ/IRVuE62hbSsmpqoILenYUVMIuu+
-         osEYeQo+Iaxy4RNqmS1Cc3Z/PiV9s/trKzSa3RHSFEjh23eH/Jq02Qdd8N+xmvPiC5D8
-         4tEHEDz1xahF+7uEesgO0te6F7aEMo1cMdW8NA89X65+7EGFz7BcFi9wFIdrsV6ns/LT
-         xXRcD8JtCT79uz6c0bn2oy2/gIACMwWlPfXNRr0/+wXDMjCuBjW6egaeMDFipAFGxq4A
-         jrRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697035193; x=1697639993;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fQNK4cZppGs8Y8rM4h3XQeL/bSmNLB40k5aLUnjJJ7g=;
-        b=KSc7uh43iEpfrFIIAqv4AussIs2OqQcjptpzopO1QL61gXv6gHIQteZIHbygRg+/XT
-         hq4AtTu/WZ3LeYOaMR3kDmHGC6VMf7UrcT+e6D4EUfKBI6nLI8t20uC9O4Zt0gmJwafp
-         cOViYxTwrOJHu54aUakyW0Q9nv29UklxB05bwpI4ir/VnvfcKXISoI5c7pVu56uXr7wr
-         aiRbliHnuhUhxye1ZPf1idNiyZxO4bx1QO9tQWl/1SqyLxAN8U+kBKgLqI1bIkKyvymg
-         2p24fxgGZ+b7cjTuOYwPJ1l008zCbCSef0TjoU5qX1SoWnBxj3dQIXuAmWg+tOpvdyLg
-         G+0w==
-X-Gm-Message-State: AOJu0YxDP5SJiVQu9mrS0HvWcdXWp+GtaqfgK7MIBz/IkZXtZrxThaic
-        WZtSAvouz7FPBXHKp6CKhq8=
-X-Google-Smtp-Source: AGHT+IE6Ikt3sjADpcL2G+goBGqBF7/yE9bydDfjiJ4t5gPY9YMYFFqsRsWWbZrdhK57fjiyveTMXA==
-X-Received: by 2002:a05:6a21:788a:b0:125:517c:4f18 with SMTP id bf10-20020a056a21788a00b00125517c4f18mr22055418pzc.8.1697035193173;
-        Wed, 11 Oct 2023 07:39:53 -0700 (PDT)
-Received: from manas-VirtualBox.iitr.ac.in ([103.37.201.179])
-        by smtp.gmail.com with ESMTPSA id x16-20020a170902ec9000b001c61901ed2esm13874266plg.219.2023.10.11.07.39.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 07:39:52 -0700 (PDT)
-From:   Manas Ghandat <ghandatmanas@gmail.com>
-To:     dave.kleikamp@oracle.com, shaggy@kernel.org
-Cc:     Manas Ghandat <ghandatmanas@gmail.com>,
-        Linux-kernel-mentees@lists.linuxfoundation.org,
-        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        syzbot+411debe54d318eaed386@syzkaller.appspotmail.com
-Subject: [PATCH] jfs: fix shift-out-of-bounds in dbJoin
-Date:   Wed, 11 Oct 2023 20:09:37 +0530
-Message-Id: <20231011143937.31996-1-ghandatmanas@gmail.com>
-X-Mailer: git-send-email 2.37.2
+        Wed, 11 Oct 2023 10:42:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9931792;
+        Wed, 11 Oct 2023 07:42:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1233DC433C8;
+        Wed, 11 Oct 2023 14:42:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697035370;
+        bh=+yor+QJevRkMNm3azh0UEdgKbf5j81wLK/um8WHiX2g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UIyRfRTpHYPlXkGh0wzxIUy6L6TQZfDHHUaP2t+5yqF4PnuRgw86VUoZpndfOKQ4F
+         8Xf7PwElmK9s7VRHoDIPr2uHlcT3dXOIYK5B8L45bvCVUr25KXCfVoQX3U0Vys93s9
+         f1Q4tXEVLisShQZSbDoTr13bPxH7dGCepMcJC+MwEJwwLmQpjzca1Py0L9JX3avoAW
+         8zQKCovOM4o0ivIlXOEf9A0HGFf8COX1ji9+YF0q8FKmJtPmZHDkxDKuGTMbYXzwdV
+         R5MW0w+k/i1cGz06Cb5A8/Z5s5dhNcXw+EFd83hqUI0NZob6MIwKeyWAh8Yolz8ukV
+         d2IZXVu8LzhkQ==
+Date:   Wed, 11 Oct 2023 16:42:46 +0200
+From:   Alejandro Colomar <alx@kernel.org>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     linux-man@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        kernel-team@meta.com, Eric Biederman <ebiederm@xmission.com>
+Subject: Re: [PATCH] execve.2: execve also returns E2BIG if a string is too
+ long
+Message-ID: <ZSa0ZotvTRCe88OQ@debian>
+References: <20231010234153.021826b1@imladris.surriel.com>
+ <ZSZ7yXwYAg-xPC7P@debian>
+ <60b4d916663ea31ae05a958b6dea8aa5bf740d0a.camel@surriel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Z5NGJvTGoO5ndKl9"
+Content-Disposition: inline
+In-Reply-To: <60b4d916663ea31ae05a958b6dea8aa5bf740d0a.camel@surriel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently while joining the leaf in a buddy system there is shift out
-of bound error in calculation of BUDSIZE. Added the required check 
-to the BUDSIZE and fixed the documentation as well.
 
-Reported-by: syzbot+411debe54d318eaed386@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=411debe54d318eaed386
-Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
----
- fs/jfs/jfs_dmap.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+--Z5NGJvTGoO5ndKl9
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 11 Oct 2023 16:42:46 +0200
+From: Alejandro Colomar <alx@kernel.org>
+To: Rik van Riel <riel@surriel.com>
+Cc: linux-man@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+	kernel-team@meta.com, Eric Biederman <ebiederm@xmission.com>
+Subject: Re: [PATCH] execve.2: execve also returns E2BIG if a string is too
+ long
 
-diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index 6b838d3ae7c2..baa97bda1c7a 100644
---- a/fs/jfs/jfs_dmap.c
-+++ b/fs/jfs/jfs_dmap.c
-@@ -2730,7 +2730,9 @@ static int dbBackSplit(dmtree_t * tp, int leafno)
-  *	leafno	- the number of the leaf to be updated.
-  *	newval	- the new value for the leaf.
-  *
-- * RETURN VALUES: none
-+ * RETURN VALUES:
-+ *  0		- success
-+ *	-EIO	- i/o error
-  */
- static int dbJoin(dmtree_t * tp, int leafno, int newval)
- {
-@@ -2757,6 +2759,10 @@ static int dbJoin(dmtree_t * tp, int leafno, int newval)
- 		 * get the buddy size (number of words covered) of
- 		 * the new value.
- 		 */
-+
-+		if ((newval - tp->dmt_budmin) > BUDMIN)
-+			return -EIO;
-+
- 		budsz = BUDSIZE(newval, tp->dmt_budmin);
- 
- 		/* try to join.
--- 
-2.37.2
+Hi Rik,
 
+On Wed, Oct 11, 2023 at 09:21:28AM -0400, Rik van Riel wrote:
+> On Wed, 2023-10-11 at 12:41 +0200, Alejandro Colomar wrote:
+> > Hi Rik,
+> >=20
+> > On Tue, Oct 10, 2023 at 11:41:53PM -0400, Rik van Riel wrote:
+> > > Document that if a command line or environment string is too long
+> > > (> MAX_ARG_STRLEN), execve will also return E2BIG.
+> >=20
+> > That's already implied by the current text:
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 E2BIG=C2=A0 The total number of by=
+tes in the environment (envp) and
+> > argument
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 list (argv) is too large.
+> >=20
+> > That means that
+> >=20
+> > size_t=C2=A0 bytes;
+> >=20
+> > bytes =3D 0;
+> > for (char *e =3D envp; e !=3D NULL; e++)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0bytes +=3D strlen(e) + =
+1;=C2=A0 // I have doubts about the +1
+> > for (char *a =3D argv; a !=3D NULL; a++)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0bytes +=3D strlen(a) + =
+1;=C2=A0 // Same doubts
+> >=20
+> > if (bytes > MAX_ARG_STRLEN)=C2=A0 // Maybe >=3D ?
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -E2BIG;
+>=20
+> The code in fs/exec.c enforces MAX_ARG_STRLEN against
+> each individual string, not against the total.
+>=20
+> If any string, either argument or environment, is larger
+> than 32 * PAGE_SIZE, the kernel will return -E2BIG.
+>=20
+> do_execveat_common() has this code, which uses copy_strings
+> to copy both the strings from the environment, and from
+> the command line arguments:
+>=20
+>         retval =3D copy_strings(bprm->envc, envp, bprm);
+>         if (retval < 0)
+>                 goto out_free;
+>=20
+>         retval =3D copy_strings(bprm->argc, argv, bprm);
+>         if (retval < 0)
+>                 goto out_free;
+>=20
+> Inside copy_strings() we have this code:
+>=20
+>=20
+>         while (argc-- > 0) {
+> ...
+>                 len =3D strnlen_user(str, MAX_ARG_STRLEN);
+>                 if (!len)
+>                         goto out;
+>=20
+>                 ret =3D -E2BIG;
+>                 if (!valid_arg_len(bprm, len))
+>                         goto out;
+>=20
+> The valid_arg_len() function does not need explanation:
+>=20
+> static bool valid_arg_len(struct linux_binprm *bprm, long len)
+> {
+>         return len <=3D MAX_ARG_STRLEN;
+> }
+>=20
+>=20
+> The current man page wording is very clear about the total
+> length being enforced, but IMHO not as clear about the limit
+> that gets enforced on each individual string.
+>=20
+> The total length limit of environment & commandline arguments
+> is enforced by bprm_stack_limits(), and is checked against
+> either 1/4 of the maximum stack size, or 3/4 of _STK_LIM, whichever
+> is smaller. The MAX_ARG_STRLEN value does not come into play when
+> enforcing the total.
+
+Ahh, so the limit for each string is different than the limit for the
+total.  That makes sense.  Sorry for the noise.
+
+Cheers,
+Alex
+
+>=20
+> --=20
+> All Rights Reversed.
+
+--=20
+<https://www.alejandro-colomar.es/>
+
+--Z5NGJvTGoO5ndKl9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUmtGYACgkQnowa+77/
+2zJpGg//U4u7Sgy2OYVFdn5egq3wW7UwGoFwj4X+PKezVKAJYMHf6HhfycWLIpUI
+lcq72qibpT3Snl8XuWWUdACRXTOHt4pU/oLBQYVQn/5ScMEny6dpBpyCcUhseOUs
+YWnMLpKEhEeSWY+LJ3qxmtl+aACPsZ4d8ANSpXz6ktlkJpfL5M2YGDutOfcVzMgq
+ISePl9aNCm+JpdjE6L2ud8Z5sT0r6x5Foklq9CzxFrnCY3t0jCv9X5/ARt4otQJ/
+kYMfQlI1Q20kdhcyjZD1j+9KloRE5TxC+dZL9r61v4Esdwseo0hGBiznLaSxBhy2
+GcIJF6QJCex6bUZZS3F1i7vujLT145W4+I9lCfv9JPlN+D1LK7V4Uk03p/CfEPPF
+9dieB74znFDhzYfldWsl6uf0627vOT5LCLCZbfkot6aV+vgAIrdL8fEpNRimqUqO
+5bNCZugbOExnrQErgcTwvgam78GeApKvU/+CF6k0i7u+2eODOn03fexB5JlR73Ot
+jo/dhnh3pWXSWmyFHfXz+Ltj7bSB8O93+AaWv1B/sdYefR/PbyuEOxIFUKasCBKI
+Dn73DdxqiyBxlVowZOHlNpPM1mS63R8GpXHN8FIv5UNvYyl5Wa76M6JNgUZKQOzU
+WzDrfD58vITfHaUiRBKew70B2az19y03hTxwx7JKuere0u8KrOc=
+=0/Uk
+-----END PGP SIGNATURE-----
+
+--Z5NGJvTGoO5ndKl9--
