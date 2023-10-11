@@ -2,129 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 146F27C598C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713F57C5995
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346715AbjJKQuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 12:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47516 "EHLO
+        id S232949AbjJKQxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 12:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232387AbjJKQt6 (ORCPT
+        with ESMTP id S230113AbjJKQxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 12:49:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD2E8F
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:49:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AC2DC433C7;
-        Wed, 11 Oct 2023 16:49:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697042997;
-        bh=Ikfx5L6Si4W21+HXhUSpPD2tmrZxnnj0/OglFvXXRgY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OMAZwFePMsNpP9FoedKdy8cHPLkS5INAt4XzUU7unBLqY2hTMrY4GWwu6do8ZgqP3
-         jOEyg58L9ClApIF7mPsAyLyGC/XqXqguLCZQnPbTbpkGX7SuFssyg1/u28sdxbHVLd
-         FAYbXKypOrDemTS28i92ULGqeTPqCsJz77lStbP3osINIO/LmWbPijVBnT670mlGKF
-         eq8eTQcr5nNXyQM0MsQzzc04Znmu6sdQ0V6j5pvAEF6j0u9LlKAVHtL/+9VLlnfceG
-         ZQ0JehyzWxsagjrMQzeI/o6eGqjhhBD+kppEW83ivBhNtEKBbjkl2dHczYTo4HQ0rg
-         QHWywNFjV9AiA==
-Date:   Wed, 11 Oct 2023 09:49:55 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Breno Leitao <leitao@debian.org>
-Cc:     tglx@linutronix.de, bp@alien8.de, Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] x86/bugs: Add a separate config for each mitigation
-Message-ID: <20231011164955.mm5ipmuyf4rje5u3@treble>
-References: <20231010103028.4192223-1-leitao@debian.org>
- <20231011044252.42bplzjsam3qsasz@treble>
- <ZSaTK5HOuCabHoEb@gmail.com>
+        Wed, 11 Oct 2023 12:53:38 -0400
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D00998;
+        Wed, 11 Oct 2023 09:53:37 -0700 (PDT)
+Received: from [2601:18c:9101:a8b6:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96.1)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1qqcSg-0004XY-37;
+        Wed, 11 Oct 2023 12:53:30 -0400
+Date:   Wed, 11 Oct 2023 12:53:30 -0400
+From:   Rik van Riel <riel@surriel.com>
+To:     Alejandro Colomar <alx@kernel.org>
+Cc:     linux-man@vger.kernel.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org,
+        Matthew House <mattlloydhouse@gmail.com>,
+        Eric Biederman <ebiederm@xmission.com>
+Subject: [PATCH v4] execve.2: execve also returns E2BIG if a string is too
+ long
+Message-ID: <20231011125330.13dfe148@imladris.surriel.com>
+In-Reply-To: <20231011124301.4d93ea72@imladris.surriel.com>
+References: <20231011124301.4d93ea72@imladris.surriel.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZSaTK5HOuCabHoEb@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Sender: riel@surriel.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 05:20:59AM -0700, Breno Leitao wrote:
-> On Tue, Oct 10, 2023 at 09:42:52PM -0700, Josh Poimboeuf wrote:
-> > On Tue, Oct 10, 2023 at 03:30:27AM -0700, Breno Leitao wrote:
-> > > +config MITIGATE_MDS
-> > > +	bool "Mitigate Microarchitectural Data Sampling (MDS) hardware bug"
-> > > +	depends on CPU_SUP_INTEL
-> > > +	default y
-> > > +	help
-> > > +	  Enable mitigation for Microarchitectural Data Sampling (MDS). MDS is
-> > > +	  a hardware vulnerability which allows unprivileged speculative access
-> > > +	  to data which is available in various CPU internal buffer. Deeper
-> > > +	  technical information is available in the MDS specific x86 architecture
-> > > +	  section: Documentation/arch/x86/mds.rst.
-> > 
-> > MITIGATE_GDS seems to be missing?
-> 
-> GDS is named `GDS_FORCE_MITIGATION` instead of  MITIGATE_GDS. See
-> 11cf22869ea ("x86/speculation: Add Kconfig option for GDS")
+Sigh, once again I did a git commit --amend without the latest file change being
+included. The change below should be good. Working with both git and hg gets me sometimes :/
+---8<---
 
-Enabling/disabling GDS_FORCE_MITIGATION doesn't enable/disable the
-mitigation, it just changes the default.
+The execve syscall returns -E2BIG in 3 cases:
+- The total length of the command line arguments and environment is too large.
+- An argument or environment string is longer than MAX_ARG_STRLEN.
+- The full path to the executable exceeds MAX_ARG_STRLEN.
 
-For consistency that option should probably be renamed to
-MITIGATION_GDS_FORCE.  It should depend on MITIGATION_GDS.  If
-MITIGATION_GDS is disabled, gds_mitigation should default to
-GDS_MITIGATION_OFF.
+Spell out all 3 cases in the -E2BIG section.
 
-e.g., something like
+Discovered by moving a too large commandline parameter to an environment
+variable, and finding that things still did not work. Examined the code
+in fs/exec.c to get the details.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 66bfabae8814..c8c879302b37 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2549,9 +2549,16 @@ config SLS
- 	  against straight line speculation. The kernel image might be slightly
- 	  larger.
- 
--config GDS_FORCE_MITIGATION
--	bool "Force GDS Mitigation"
-+config MITIGATION_GDS
-+	bool" Mitigate Gather Data Sampling"
- 	depends on CPU_SUP_INTEL
-+	default y
-+	help
-+	  (Insert actual description here)
-+
-+config MITIGATION_GDS_FORCE
-+	bool "Force GDS Mitigation"
-+	depends on MITIGATION_GDS
- 	default n
- 	help
- 	  Gather Data Sampling (GDS) is a hardware vulnerability which allows
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index f081d26616ac..43ad3eee3d4c 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -671,11 +671,15 @@ enum gds_mitigations {
- 	GDS_MITIGATION_HYPERVISOR,
- };
- 
--#if IS_ENABLED(CONFIG_GDS_FORCE_MITIGATION)
-+#if IS_ENABLED(CONFIG_MITIGATION_GDS)
-+#if IS_ENABLED(CONFIG_MITIGATION_GDS_FORCE)
- static enum gds_mitigations gds_mitigation __ro_after_init = GDS_MITIGATION_FORCE;
- #else
- static enum gds_mitigations gds_mitigation __ro_after_init = GDS_MITIGATION_FULL;
- #endif
-+#else
-+static enum gds_mitigations gds_mitigation __ro_after_init = GDS_MITIGATION_OFF;
-+#endif
- 
- static const char * const gds_strings[] = {
- 	[GDS_MITIGATION_OFF]		= "Vulnerable",
+This simple shell script starts failing at 2^17 on a system with 4kB
+page size:
+./exec2big.sh: line 10: /bin/true: Argument list too long
+fork failed at loop 17
+
+STRING="a"
+
+for loop in `seq 20`; do
+	STRING="$STRING$STRING"
+	export STRING
+	if /bin/true ; then
+		: # still under the limit
+	else
+		echo "fork failed at loop $loop"
+	fi
+done
+
+Signed-off-by: Rik van Riel <riel@surriel.com>
+Suggested-by: Matthew House <mattlloydhouse@gmail.com>
+---
+ man2/execve.2 | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/man2/execve.2 b/man2/execve.2
+index 0d9582492ad1..b689101771e5 100644
+--- a/man2/execve.2
++++ b/man2/execve.2
+@@ -449,7 +449,12 @@ The total number of bytes in the environment
+ .RI ( envp )
+ and argument list
+ .RI ( argv )
+-is too large.
++is too large,
++an argument or environment string is too long,
++or the full
++.I pathname
++of the executable is too long.
++The terminating NUL is counted as part of the string length.
+ .TP
+ .B EACCES
+ Search permission is denied on a component of the path prefix of
+-- 
+2.41.0
+
+
