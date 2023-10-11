@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 731787C4767
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 03:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A7C7C476A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 03:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344673AbjJKBrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 21:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
+        id S1344689AbjJKBsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 21:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344636AbjJKBrH (ORCPT
+        with ESMTP id S1344618AbjJKBsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 21:47:07 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9702F9E
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 18:47:05 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32003aae100so260917f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 18:47:05 -0700 (PDT)
+        Tue, 10 Oct 2023 21:48:16 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404AC92;
+        Tue, 10 Oct 2023 18:48:14 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso1143677366b.1;
+        Tue, 10 Oct 2023 18:48:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1696988824; x=1697593624; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tzAxAbhfO5fDQKli+KSnHfx+fk0ksCyLQoQRxAIETUQ=;
-        b=RFtqYqcFeSZ81G37/YQ9N/3UM9DAozgvknBA+RoBnXESi1GdIc7V/92eUSLSwnffUb
-         75H2l1IEhUq49gbUrf2woWCfBsOnJIoUzfV4COigDROTv1/971Cxkrz9y+Q8t5gC3/as
-         L/CnnBT9EYxHTAH7c56p3Szo8QuucHpEWzETBgu+Qo0Z5twm0DnbzSYnM1wzyjS+UFMh
-         U+KlWSbH5I2D/WLSoJnpqQ2ZWF1GZHVoi+xFgjlB5f4W2zIZqAmDWc8ZGT4/mX7HeYpz
-         3h67ITihdKQGSe3FAnbwxiAs6E7MPua/svYXKgW956+73WC7VhIjZjgaUF2/fo5wENUf
-         NLkQ==
+        d=jms.id.au; s=google; t=1696988893; x=1697593693; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=igjlN4dO3JjcdB2G4ww8hAUFD7DZ0Fw5neZs9pJmc38=;
+        b=QBUutq5Vpvc3gbVYnxPj3J9ZtWQTiMQ4/ZPQpJLbxjF0OZfy06F1Pl3XkXZw0e6DFB
+         Ubi0YKI9VP0JLNLxqQFRFVuNSmcreJFSxGi5Ka8zdCx3W6mBkLkK1Wfg4VjGFpK6pT8i
+         1zLWKYZlrJHggYzEeX8L5hJXYgpnHvnPjeC8I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696988824; x=1697593624;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tzAxAbhfO5fDQKli+KSnHfx+fk0ksCyLQoQRxAIETUQ=;
-        b=KCv5FJHVs3WRZpdjvovqD09T9vRpy5q2lJ9RHRb7au0Mm4J5q/J1E4bXsoWutWTzmH
-         0R/JMAzp9h9ElVM4B9sqKeFIprlC1HgO9/d8shvoeMz77aOiKCRkNqrPP6E4l/BlV/wu
-         k6hf5iNKSLPuO/Dmm3viyoB02MevmTRqYNeC3PZjSjuM4nJjeLpjzIA4bWFC1Gd3YzxU
-         j7vtuBVNiVENo+ezy456SH1PqdifpA9nqenNp4Ws+B7YjJ27ABg/KxLpHBRjhO/qz6Pd
-         fvWhkquXong97WdFdHm24lMhzps0i+q0IMTMeMkrxIIa55yeVXCT98+gZBen9mxTM52i
-         nKMg==
-X-Gm-Message-State: AOJu0YzF3R5uoW7v7/+YVHsaK86Uo7Gfl8FX4C9LHMBincmqLq6Kg+fv
-        Jj50S6W5DbEWZhQI9wAVmJW0d/Hfdj11Ig8J87WOCg==
-X-Google-Smtp-Source: AGHT+IEUVGGgeYbJ114nPBxfHjS4sE3dP8/OO36c/IOC7Goh6EjU83CUE0Z9puhjfc7OnvtUy9Dw6oPHvOXMTESgUEw=
-X-Received: by 2002:adf:e641:0:b0:320:a4e:acf5 with SMTP id
- b1-20020adfe641000000b003200a4eacf5mr13733659wrn.34.1696988823901; Tue, 10
- Oct 2023 18:47:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696988893; x=1697593693;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=igjlN4dO3JjcdB2G4ww8hAUFD7DZ0Fw5neZs9pJmc38=;
+        b=T2IJCRMcJyuCHovFTPIgUQRXjWuKdIx3ZXfq8FB2104P97b/TdR01Zv082s0Bb1hDE
+         qheal/xG/2LQFkcNNFdHgl0rN7EFq3k8w0J9PTip3OOIXRc9yzbjNgzHqT+JOvaALr6G
+         pC3aKxXLPA4Ba1PpBDjgvEdUQGyUhwIezZH4BjTbH61cpN+LbNDhpGmJ4acswp2K5AQt
+         Sxb1naARnspLSlxy8e7NqM1r4BWnZgq5/yImy2zhrQPkAS7MNMwCdcBgkK9TI09CYHsK
+         bMPBBDbqaFiakgYMY4N+0H/hBOgVtZr78unA3p8HSVxYuE0e/IcnJ9lpq0xjsordSddo
+         85dA==
+X-Gm-Message-State: AOJu0Yxm2AUBAEySHp8eYCvl2+n8APk8k97cIrzdzSpaUA7z8sdYLfKN
+        widU5NpSR0qYWo+EQp2IFzEQ7N4Lcyv1Zt6/Bx4=
+X-Google-Smtp-Source: AGHT+IEuuMqEy3USpJDXR0kSSSQMnE9Vm8JFze2cJqxGftCWpvdSX0K+UCUFBZu0kfb7wHhQh1dEjjpMVzNhVPs+EdA=
+X-Received: by 2002:a17:907:7890:b0:9ae:711d:7e03 with SMTP id
+ ku16-20020a170907789000b009ae711d7e03mr17862404ejc.15.1696988892477; Tue, 10
+ Oct 2023 18:48:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEEQ3wnfOOpKAKGt07cFv1Du-NaFOzX_=yeQZfD6VNojpPFTqA@mail.gmail.com>
- <202310091307.CB416B950@keescook> <CAEEQ3wnA=_TjE-nD2UzSSEsbjBmeE23V0KdA3MkqkOCxtwv=Vw@mail.gmail.com>
-In-Reply-To: <CAEEQ3wnA=_TjE-nD2UzSSEsbjBmeE23V0KdA3MkqkOCxtwv=Vw@mail.gmail.com>
-From:   yunhui cui <cuiyunhui@bytedance.com>
-Date:   Wed, 11 Oct 2023 09:46:52 +0800
-Message-ID: <CAEEQ3wmH0u1p4gWX454Hx09m5=LQ_+3VPWiEHogn_QiS-po4BQ@mail.gmail.com>
-Subject: Re: [External] Re: Discuss the implementation of pidns_install()
-To:     Kees Cook <keescook@chromium.org>
-Cc:     brauner@kernel.org, jeffxu@google.com, akpm@linux-foundation.org,
-        cyphar@cyphar.come, mcgrof@kernel.org, frederic@kernel.org,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20231005035525.19036-1-chanh@os.amperecomputing.com> <20231005035525.19036-2-chanh@os.amperecomputing.com>
+In-Reply-To: <20231005035525.19036-2-chanh@os.amperecomputing.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 11 Oct 2023 12:18:01 +1030
+Message-ID: <CACPK8XdpUpg0vDG7UwO-o=dYD-88evizSUb-yKm9qdUP2rjzdg@mail.gmail.com>
+Subject: Re: [PATCH 1/7] ARM: dts: aspeed: mtjade, mtmitchell: Update gpio-line-names
+To:     Chanh Nguyen <chanh@os.amperecomputing.com>
+Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED,WEIRD_QUOTING autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,72 +70,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
+On Thu, 5 Oct 2023 at 14:26, Chanh Nguyen <chanh@os.amperecomputing.com> wrote:
+>
+> Update GPIO line-name to follow naming convention specified at
+> github.com/openbmc/docs/blob/master/designs/device-tree-gpio-naming.md
+>
+> Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
 
-On Tue, Oct 10, 2023 at 11:29=E2=80=AFAM yunhui cui <cuiyunhui@bytedance.co=
-m> wrote:
->
-> Hi Kees Cook=EF=BC=8C
->
-> On Tue, Oct 10, 2023 at 4:08=E2=80=AFAM Kees Cook <keescook@chromium.org>=
- wrote:
-> >
-> > On Wed, Sep 20, 2023 at 05:37:20PM +0800, yunhui cui wrote:
-> > > Hi Kees, jeff, Andrew, Christian,
-> > >
-> > > We hope that containers at the same level can also switch pid namespa=
-ce.
-> > > To fork() the entire pstree of a container, we need to switch from th=
-e pid
-> > > namespace of the template container to the  target container's pid
-> > > namespace. But it is blocked by the following code:
-> > >
-> > > ...
-> > >         while (ancestor->level > active->level)
-> > >                 ancestor =3D ancestor->parent;
-> > >         if (ancestor !=3D active)
-> > >                 return -EINVAL;
-> > > ...
-> > >
-> > > Can we give this code permission, such as CAP_SYS_ADMIN ..., so that =
-those
-> > > with this permission can switch to sibling pid namespace. Rather than=
- just
-> > > parent, parent ...
-> > >
-> > > Do you think this plan is okay?  Or can you give me some suggestions?
-> >
-> > I'll defer to Christian on this, but it seems like moving processes
-> > sideways is kind of unexpected. I agree it'd need privilege if we did
-> > it, though.
-> >
-> >
->
-> I'll defer to Christian on this, but it seems like moving processes
-> sideways is kind of unexpected. I agree it'd need privilege if we did
-> it, though.
->
-> Thanks for your suggestion, my plan is to give this code SYS_ADMIN permis=
-sions.
->
-> CAP_SYS_ADMIN has been checked in pidns_install(), as follows:
-> static int pidns_install(struct nsproxy *nsproxy, struct ns_common *ns)
-> {
-> ...
-> if (!ns_capable(new->user_ns, CAP_SYS_ADMIN) ||
-> !ns_capable(current_user_ns(), CAP_SYS_ADMIN))
-> return -EPERM;
-> ...
-> }
->
-> So can I delete this code:
-> ancestor =3D new;
-> while (ancestor->level > active->level)
-> ancestor =3D ancestor->parent;
-> if (ancestor !=3D active)
-> return -EINVAL=EF=BC=9B
->
-> Thanks=EF=BC=8C
-> Yunhui
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-Could you help me look into this issue?
+> ---
+>  .../dts/aspeed/aspeed-bmc-ampere-mtjade.dts   | 42 +++++++++----------
+>  .../aspeed/aspeed-bmc-ampere-mtmitchell.dts   |  6 +--
+>  2 files changed, 24 insertions(+), 24 deletions(-)
+>
+> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts
+> index 0a51d2e32fab..e57efcc8522a 100644
+> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts
+> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts
+> @@ -760,30 +760,30 @@
+>
+>  &gpio {
+>         gpio-line-names =
+> -       /*A0-A7*/       "","","","S0_BMC_SPECIAL_BOOT","","","","",
+> -       /*B0-B7*/       "BMC_SELECT_EEPROM","","","",
+> -                       "POWER_BUTTON","","","",
+> +       /*A0-A7*/       "","","","host0-special-boot","","","","",
+> +       /*B0-B7*/       "i2c-backup-sel","","","",
+> +                       "power-button","","","",
+>         /*C0-C7*/       "","","","","","","","",
+>         /*D0-D7*/       "","","","","","","","",
+>         /*E0-E7*/       "","","","","","","","",
+> -       /*F0-F7*/       "","","BMC_SYS_PSON_L","S0_DDR_SAVE","PGOOD",
+> -                       "S1_DDR_SAVE","","",
+> -       /*G0-G7*/       "host0-ready","SHD_REQ_L","","S0_OVERTEMP_L","","",
+> +       /*F0-F7*/       "","","power-chassis-control","s0-ddr-save","power-chassis-good",
+> +                       "s1-ddr-save","","",
+> +       /*G0-G7*/       "host0-ready","host0-shd-req-n","","s0-overtemp-n","","",
+>                         "","",
+> -       /*H0-H7*/       "","","","","PSU1_VIN_GOOD","PSU2_VIN_GOOD","","",
+> -       /*I0-I7*/       "PSU1_PRESENT","PSU2_PRESENT","S1_BMC_SPECIAL_BOOT",
+> -                       "","","","","",
+> -       /*J0-J7*/       "S0_HIGHTEMP_L","S0_FAULT_L","S0_SCP_AUTH_FAIL_L","",
+> +       /*H0-H7*/       "","","","","ps0-vin-good","ps1-vin-good","","",
+> +       /*I0-I7*/       "presence-ps0","presence-ps1","s1-special-boot",
+> +                               "","","","","",
+> +       /*J0-J7*/       "s0-hightemp-n","s0-fault-alert","s0-sys-auth-failure-n","",
+>                         "","","","",
+>         /*K0-K7*/       "","","","","","","","",
+> -       /*L0-L7*/       "","","","BMC_SYSRESET_L","SPI_AUTH_FAIL_L","","","",
+> +       /*L0-L7*/       "","","","host0-sysreset-n","s0-spi-auth-fail-n","","","",
+>         /*M0-M7*/       "","","","","","","","",
+>         /*N0-N7*/       "","","","","","","","",
+>         /*O0-O7*/       "","","","","","","","",
+>         /*P0-P7*/       "","","","","","","","",
+> -       /*Q0-Q7*/       "","","","","","UID_BUTTON","","",
+> -       /*R0-R7*/       "","","BMC_EXT_HIGHTEMP_L","OCP_AUX_PWREN",
+> -                       "OCP_MAIN_PWREN","RESET_BUTTON","","",
+> +       /*Q0-Q7*/       "","","","","","identify-button","","",
+> +       /*R0-R7*/       "","","ext-hightemp-n","",
+> +                       "ocp-main-pwren","reset-button","","",
+>         /*S0-S7*/       "","","","","rtc-battery-voltage-read-enable","","","",
+>         /*T0-T7*/       "","","","","","","","",
+>         /*U0-U7*/       "","","","","","","","",
+> @@ -791,18 +791,18 @@
+>         /*W0-W7*/       "","","","","","","","",
+>         /*X0-X7*/       "","","","","","","","",
+>         /*Y0-Y7*/       "","","","","","","","",
+> -       /*Z0-Z7*/       "S0_BMC_PLIMIT","S1_FAULT_L","S1_FW_BOOT_OK","","",
+> -                       "S1_SCP_AUTH_FAIL_L","S1_OVERTEMP_L","",
+> +       /*Z0-Z7*/       "s0-plimit","s1-fault-alert","s1-fw-boot-ok","","",
+> +                       "s1-sys-auth-failure-n","s1-overtemp-n","",
+>         /*AA0-AA7*/     "","","","","","","","",
+> -       /*AB0-AB7*/     "S1_HIGHTEMP_L","S1_BMC_PLIMIT","S0_BMC_DDR_ADDR",
+> -                       "S1_BMC_DDR_ADR","","","","",
+> -       /*AC0-AC7*/     "SYS_PWR_GD","","","","","BMC_READY","SLAVE_PRESENT_L",
+> -                       "BMC_OCP_PG";
+> +       /*AB0-AB7*/     "s1-hightemp-n","s1-plimit","s0-ddr-addr",
+> +                       "s1-ddr-addr","","","","",
+> +       /*AC0-AC7*/     "sys-pwr-gd","","","","","","presence-cpu1",
+> +                       "ocp-pgood";
+>
+>         i2c4-o-en-hog {
+>                 gpio-hog;
+>                 gpios = <ASPEED_GPIO(Y, 2) GPIO_ACTIVE_HIGH>;
+>                 output-high;
+> -               line-name = "BMC_I2C4_O_EN";
+> +               line-name = "i2c4-o-en";
+>         };
+>  };
+> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
+> index 0715cb9ab30c..2f571b43106d 100644
+> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
+> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
+> @@ -599,17 +599,17 @@
+>         /*Q0-Q7*/       "","","","","","","","",
+>         /*R0-R7*/       "","","","","","","","",
+>         /*S0-S7*/       "","","identify-button","led-identify",
+> -                       "s1-ddr-save","spi-nor-access","sys-pgood","presence-cpu1",
+> +                       "s1-ddr-save","spi-nor-access","host0-ready","presence-cpu1",
+>         /*T0-T7*/       "","","","","","","","",
+>         /*U0-U7*/       "","","","","","","","",
+>         /*V0-V7*/       "s0-hightemp-n","s0-fault-alert","s0-sys-auth-failure-n",
+> -                       "host0-reboot-ack-n","host0-ready","host0-shd-req-n",
+> +                       "host0-reboot-ack-n","s0-fw-boot-ok","host0-shd-req-n",
+>                         "host0-shd-ack-n","s0-overtemp-n",
+>         /*W0-W7*/       "","ocp-main-pwren","ocp-pgood","",
+>                         "bmc-ok","bmc-ready","spi0-program-sel","spi0-backup-sel",
+>         /*X0-X7*/       "i2c-backup-sel","s1-fault-alert","s1-fw-boot-ok",
+>                         "s1-hightemp-n","s0-spi-auth-fail-n","s1-sys-auth-failure-n",
+> -                       "s1-overtemp-n","s1-spi-auth-fail-n",
+> +                       "s1-overtemp-n","cpld-s1-spi-auth-fail-n",
+>         /*Y0-Y7*/       "","","","","","","","host0-special-boot",
+>         /*Z0-Z7*/       "reset-button","ps0-pgood","ps1-pgood","","","","","";
+>
+> --
+> 2.17.1
+>
