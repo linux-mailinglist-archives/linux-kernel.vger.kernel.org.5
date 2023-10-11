@@ -2,141 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B90927C45CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374F67C45CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344249AbjJKAB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 20:01:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41186 "EHLO
+        id S1344288AbjJKABf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 20:01:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344204AbjJKABZ (ORCPT
+        with ESMTP id S1344266AbjJKAB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 20:01:25 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADFE8F
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:01:24 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-578b407045bso5027941a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:01:24 -0700 (PDT)
+        Tue, 10 Oct 2023 20:01:29 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92299D
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:01:27 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f61a639b9so96101517b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:01:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696982483; x=1697587283; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zXwHFTTSHqHksZHyWZ3bFkL07EMOlYzNsZg2rCsLLcM=;
-        b=C7d/yRC5Raip0nMfFJljMYPZuVOwrxYCRUe4z9sSsoYFSsYqcS2kS0sUXwh5r8TxEU
-         LQnikAzpaJOvdDZDRbVIeUFUS8fZSlviJTGP/SJnQKoAkLUysfm/xq9HTYN1Inai9hNA
-         9oHroh9cjqDL0M3UEJNqIxP+fOMIkbxuH1kcM=
+        d=google.com; s=20230601; t=1696982487; x=1697587287; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zx6blw3s97QmWxGpjq4G1Ep7AiFARQsfwR/ogZE8NGk=;
+        b=cYxIPgft69sX9irmLtF0U6HBpxczMc/SfecP0u31r3wQL1jpZy51X2LfuGlmvkdg8X
+         QAP5NEAC18akGQHyT7LThqI160sgPyslaSr6zqbC5+znjgtk33z+f2bt+4Tp/bejRJkj
+         KfKzdhcg8q64gUR7aY4CDIFWk/XQ1m1PbqwlsXW0jOZDoTM72Dno0ByIrXhX5WG5/QLi
+         IRsYElQ6aGhAsUuV5U4pBBBDDdjlmcfnSn39b+Y3FA5yfyew1VSfqXkvUULIEeIIr6b6
+         jNhysV1DfFHQenxyRnVwUsp+WZAf0Heqim2KshNGIQGGI9yEzkBU5y8FtM8Tmhb/dL9u
+         sNMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696982483; x=1697587283;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zXwHFTTSHqHksZHyWZ3bFkL07EMOlYzNsZg2rCsLLcM=;
-        b=JVNSTqQ6PvTim9MD7dmzJ4WsZ+ST0CnjXrTgBQCnKvv7dectj9VyRfSXVmSPbC3l9X
-         DtswaDcEAGWhAgvHBKjGHegbTjgMvmnpUyXhVGIkqnP/EgXnkAGvhnWjrKlZhQN4K5/k
-         M6HlBw2TaqboIZHreNyteLHNxEEzwug6Uia/Vs8og9UwiDa/ARrjX5xQuI/0L0bjMAlc
-         JWEQ3MPd0MChdElJAOVBwmUqLrH1IM5mO0lgbCATgqVWZ8p7dPgwLrNqF+CaSznIFUDS
-         nDgMZMsyl4NkwMG8VDXbRsjS0DKnmeJj+uIQ9DKFVsYZ097MT/j4dQYWucF94ZFnIjW2
-         OgnQ==
-X-Gm-Message-State: AOJu0Yz32lYkOHaXFfZD3h5VwY9Cfg389jja09wlKvOEpc9xVbfFT1MX
-        D75soVZeqORcWhJTisRqK48Dpg==
-X-Google-Smtp-Source: AGHT+IHvnF1NY14+x1atCUXgwzdFEk0ZaADVkWvm44vtZyO7tNcwIEv+y9XR2Sh6iJ6MxunGIbRJhw==
-X-Received: by 2002:a05:6a20:2590:b0:151:577:32d1 with SMTP id k16-20020a056a20259000b00151057732d1mr23567638pzd.22.1696982483550;
-        Tue, 10 Oct 2023 17:01:23 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g12-20020a170902868c00b001c625acfed0sm12371984plo.44.2023.10.10.17.01.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 17:01:23 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 17:01:19 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] octeontx2-af: replace deprecated strncpy with strscpy
-Message-ID: <202310101700.1BE3455BE6@keescook>
-References: <20231010-strncpy-drivers-net-ethernet-marvell-octeontx2-af-cgx-c-v1-1-a443e18f9de8@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010-strncpy-drivers-net-ethernet-marvell-octeontx2-af-cgx-c-v1-1-a443e18f9de8@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696982487; x=1697587287;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zx6blw3s97QmWxGpjq4G1Ep7AiFARQsfwR/ogZE8NGk=;
+        b=SNFaUhVJrHY1lzE6rJj8Eh0rytEII/VJfv0e2J4PJOOt3yS/XzZHXmw4KtNjUiUn19
+         HuqluYy9HRnTdd3X46DZ7J5TwgkGURXEsjmiWqtGhjFQ+ujU/sl/nwIEgU3+XUvM/Pi1
+         nZtir7xZn03CTd7S5otQlEvIQnIhQZHYb1tASgXADUflnz0OdjOCRY0hso90c9km8Qc+
+         CsIUHjQc170vQDRimj8SSuOixcoGDGXYnNFma/VMHHTPHr9vAsJMcCz4r18VnwOxC7hf
+         8PaZr8WjLhkSquglevaMp1PDhnKrSjBtkbGUr7K1VTaPAgMHGqnTwAfbV1nwQJYEnqll
+         xnsA==
+X-Gm-Message-State: AOJu0YxM/4pKxIbAHeygmAQ4H0EClUm7tHivY0uHgLms/0K44F6darG0
+        7kVcZnF8OYWpj2aXgi/yngQcwXe+83U=
+X-Google-Smtp-Source: AGHT+IEKuW2OKzqEEWYv+2fZtWZtfiPj3BAGUj929Zhf8Qm2555JJ1KwmHC9AyWLdElRmEBP1Fx5a9qarns=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:ca4d:0:b0:59b:e81f:62ab with SMTP id
+ y13-20020a81ca4d000000b0059be81f62abmr403963ywk.7.1696982486958; Tue, 10 Oct
+ 2023 17:01:26 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 17:01:25 -0700
+In-Reply-To: <op.2clox2zewjvjmi@hhuan26-mobl.amr.corp.intel.com>
+Mime-Version: 1.0
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-13-haitao.huang@linux.intel.com> <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
+ <ZSSZaFrxvCvR1SOy@google.com> <op.2cksdjamwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <548d2ab828307f7d1c6d7f707e587cd27b0e7fe4.camel@intel.com> <op.2clox2zewjvjmi@hhuan26-mobl.amr.corp.intel.com>
+Message-ID: <ZSXl1VXTM0c8qpZj@google.com>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim EPC
+From:   Sean Christopherson <seanjc@google.com>
+To:     Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     Kai Huang <kai.huang@intel.com>, Bo Zhang <zhanb@microsoft.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        Zhiquan1 Li <zhiquan1.li@intel.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 09:38:11PM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
+On Tue, Oct 10, 2023, Haitao Huang wrote:
+> On Mon, 09 Oct 2023 21:23:12 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 > 
-> We can see that linfo->lmac_type is expected to be NUL-terminated based
-> on the `... - 1`'s present in the current code. Presumably making room
-> for a NUL-byte at the end of the buffer.
+> > On Mon, 2023-10-09 at 20:42 -0500, Haitao Huang wrote:
+> > > Hi Sean
+> > > 
+> > > On Mon, 09 Oct 2023 19:23:04 -0500, Sean Christopherson
+> > > <seanjc@google.com> wrote:
+> > > > I can see userspace wanting to explicitly terminate the VM instead of
+> > > > "silently"
+> > > > the VM's enclaves, but that seems like it should be a knob in the
+> > > > virtual EPC
+> > > > code.
+> > > 
+> > > If my understanding above is correct and understanding your statement
+> > > above correctly, then don't see we really need separate knob for vEPC
+> > > code. Reaching a cgroup limit by a running guest (assuming dynamic
+> > > allocation implemented) should not translate automatically killing
+> > > the VM.
+> > > Instead, it's user space job to work with guest to handle allocation
+> > > failure. Guest could page and kill enclaves.
+> > > 
+> > 
+> > IIUC Sean was talking about changing misc.max _after_ you launch SGX VMs:
+> > 
+> > 1) misc.max = 100M
+> > 2) Launch VMs with total virtual EPC size = 100M	<- success
+> > 3) misc.max = 50M
+> > 
+> > 3) will also succeed, but nothing will happen, the VMs will be still
+> > holding 100M EPC.
+> > 
+> > You need to somehow track virtual EPC and kill VM instead.
+> > 
+> > (or somehow fail to do 3) if it is also an acceptable option.)
+> > 
+> Thanks for explaining it.
 > 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Let's also prefer the more idiomatic strscpy usage of (dest, src,
-> sizeof(dest)) rather than (dest, src, SOME_LEN).
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only.
-> ---
->  drivers/net/ethernet/marvell/octeontx2/af/cgx.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-> index e06f77ad6106..6c70c8498690 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-> @@ -1218,8 +1218,6 @@ static inline void link_status_user_format(u64 lstat,
->  					   struct cgx_link_user_info *linfo,
->  					   struct cgx *cgx, u8 lmac_id)
->  {
-> -	const char *lmac_string;
-> -
->  	linfo->link_up = FIELD_GET(RESP_LINKSTAT_UP, lstat);
->  	linfo->full_duplex = FIELD_GET(RESP_LINKSTAT_FDUPLEX, lstat);
->  	linfo->speed = cgx_speed_mbps[FIELD_GET(RESP_LINKSTAT_SPEED, lstat)];
-> @@ -1230,12 +1228,12 @@ static inline void link_status_user_format(u64 lstat,
->  	if (linfo->lmac_type_id >= LMAC_MODE_MAX) {
->  		dev_err(&cgx->pdev->dev, "Unknown lmac_type_id %d reported by firmware on cgx port%d:%d",
->  			linfo->lmac_type_id, cgx->cgx_id, lmac_id);
-> -		strncpy(linfo->lmac_type, "Unknown", LMACTYPE_STR_LEN - 1);
-> +		strscpy(linfo->lmac_type, "Unknown", sizeof(linfo->lmac_type));
->  		return;
->  	}
->  
-> -	lmac_string = cgx_lmactype_string[linfo->lmac_type_id];
-> -	strncpy(linfo->lmac_type, lmac_string, LMACTYPE_STR_LEN - 1);
-> +	strscpy(linfo->lmac_type, cgx_lmactype_string[linfo->lmac_type_id],
-> +		sizeof(linfo->lmac_type));
+> There is an error code to return from max_write. I can add that too to the
+> callback definition and fail it when it can't be enforced for any reason.
+> Would like some community feedback if this is acceptable though.
 
-Yup, sizes match. Good replacement and simplification.
+That likely isn't acceptable.  E.g. create a cgroup with both a host enclave and
+virtual EPC, set the hard limit to 100MiB.  Virtual EPC consumes 50MiB, and the
+host enclave consumes 50MiB.  Userspace lowers the limit to 49MiB.  The cgroup
+code would reclaim all of the enclave's reclaimable EPC, and then kill the enclave
+because it's still over the limit.  And then fail the max_write because the cgroup
+is *still* over the limit.  So in addition to burning a lot of cycles, from
+userspace's perspective its enclave was killed for no reason, as the new limit
+wasn't actually set.
 
-drivers/net/ethernet/marvell/octeontx2/af/mbox.h:565:#define LMACTYPE_STR_LEN 16
-drivers/net/ethernet/marvell/octeontx2/af/mbox.h:566:   char lmac_type[LMACTYPE_STR_LEN];
+> I think to solve it ultimately, we need be able to adjust 'capacity' of VMs
+> not to just kill them, which is basically the same as dynamic allocation
+> support for VMs (being able to increase/decrease epc size when it is
+> running). For now, we only have static allocation so max can't be enforced
+> once it is launched.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+No, reclaiming virtual EPC is not a requirement.  VMM EPC oversubscription is
+insanely complex, and I highly doubt any users actually want to oversubcribe VMs.
 
--- 
-Kees Cook
+There are use cases for cgroups beyond oversubscribing/swapping, e.g. privileged
+userspace may set limits on a container to ensure the container doesn't *accidentally*
+consume more EPC than it was allotted, e.g. due to a configuration bug that created
+a VM with more EPC than it was supposed to have.  
+
+My comments on virtual EPC vs. cgroups is much more about having sane, well-defined
+behavior, not about saying the kernel actually needs to support oversubscribing EPC
+for KVM guests.
