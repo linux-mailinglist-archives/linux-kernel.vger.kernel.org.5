@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B107C4F22
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45EFF7C4F30
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345729AbjJKJg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 05:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37508 "EHLO
+        id S231305AbjJKJh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 05:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234314AbjJKJgx (ORCPT
+        with ESMTP id S231186AbjJKJh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 05:36:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D0CA4;
-        Wed, 11 Oct 2023 02:36:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21E86C433CD;
-        Wed, 11 Oct 2023 09:36:47 +0000 (UTC)
-Message-ID: <07237b8b-ecd2-4717-8eda-101e52edf60c@xs4all.nl>
-Date:   Wed, 11 Oct 2023 11:36:46 +0200
+        Wed, 11 Oct 2023 05:37:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2627691;
+        Wed, 11 Oct 2023 02:37:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZZWhJTb7VIJxHwosENExWUwMq4pQEqYalf1VKDcUJSY=; b=ovTUowYuIK2ByyWFlTHOCnr0rm
+        cE5yqDViCSCD9LAakFwhFU1M3KNs/7juMDchNdlKCpR5yUOGlvjrrFwLS+R+LBDb55puwdjNpekvu
+        JdNI6Fkqsme8l+NILntinSWdheJdzZoZQBxetTsN5Z8LE011Z/1t+5zmkfIkCDsA1liLDR3hovX0t
+        XAi4kSEXY8J2+k8y2MMC7/OTzHLztc8h5zFvb9j974LNY1eI+LHGDJV9zryurLxp7ndlpduff4H0J
+        AqVWZAVGPQcidk7BBScBwsH2skpYnGr+DUcRM8T1HdLaEH4w/qKuF41/bmnrvjEY5moT5Gog78K5P
+        Moad9gqQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qqVeg-00A0N0-9Z; Wed, 11 Oct 2023 09:37:26 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EF83F30026F; Wed, 11 Oct 2023 11:37:25 +0200 (CEST)
+Date:   Wed, 11 Oct 2023 11:37:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Fei Yang <fei.yang@intel.com>, stable@vger.kernel.org
+Subject: Re: [PATCHv2] x86/alternatives: Disable KASAN in apply_alternatives()
+Message-ID: <20231011093725.GD6307@noisy.programming.kicks-ass.net>
+References: <20231011065849.19075-1-kirill.shutemov@linux.intel.com>
+ <20231011074616.GL14330@noisy.programming.kicks-ass.net>
+ <ZSZYwvHTSapAaJQv@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 11/54] media: videobuf2: Access vb2_queue bufs array
- through helper functions
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20231003080704.43911-1-benjamin.gaignard@collabora.com>
- <20231003080704.43911-12-benjamin.gaignard@collabora.com>
- <bd0ba3d3-444a-4288-910f-4b8a84b90750@xs4all.nl>
- <954315b8-3e5c-4583-a904-d20fbd21aa3f@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <954315b8-3e5c-4583-a904-d20fbd21aa3f@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSZYwvHTSapAaJQv@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2023 11:32, Benjamin Gaignard wrote:
+On Wed, Oct 11, 2023 at 10:11:46AM +0200, Ingo Molnar wrote:
 > 
-> Le 11/10/2023 à 10:44, Hans Verkuil a écrit :
->> On 03/10/2023 10:06, Benjamin Gaignard wrote:
->>> This patch adds 2 helpers functions to add and remove vb2 buffers
->>> from a queue. With these 2 and vb2_get_buffer(), bufs field of
->>> struct vb2_queue becomes like a private member of the structure.
->>>
->>> After each call to vb2_get_buffer() we need to be sure that we get
->>> a valid pointer so check the return value of all of them.
->> This needs to be extended: checking the returned pointer is a preparation
->> for when buffers can be deleted. As it is right now, checking for a
->> NULL pointer isn't needed.
->>
->> I wonder if it isn't better to drop those checks and instead apply them
->> at the tail end of this series when the actual work on deleting buffers
->> starts (before patch 49, I think).
+> * Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> I think that checking vb2_get_buffer() return value while removing direct
-> call to queue buffers array doesn't hurt here.
-> It is also needed to do that before "media: videobuf2: Add helper to get queue number of buffers" patch.
-
-If we convert the drivers first, then there is (I think) no need to
-split this patch in two parts, since then this patch is part of a much
-shorter series and it is sufficient to just mention in the commit log
-that the pointer checks prepare for deleting buffers.
-
-Regards,
-
-	Hans
-
+> > >  	DPRINTK(ALT, "alt table %px, -> %px", start, end);
+> > > +
+> > > +	/*
+> > > +	 * In the case CONFIG_X86_5LEVEL=y, KASAN_SHADOW_START is defined using
+> > > +	 * cpu_feature_enabled(X86_FEATURE_LA57) and is therefore patched here.
+> > > +	 * During the process, KASAN becomes confused and triggers
+> > 
+> > 	because of partial LA57 convertion ..
 > 
-> Regards,
-> Benjamin
+> Not all LA57 related sites are patched yet at this point, and KASAN sees
+> a weird & broken mixture of LA48 and LA57 runtime semantics, right?
 > 
->>
->> Regards,
->>
->>     Hans
->>
->>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->>> ---
->>>   .../media/common/videobuf2/videobuf2-core.c   | 151 +++++++++++++-----
->>>   .../media/common/videobuf2/videobuf2-v4l2.c   |  51 ++++--
->>>   2 files changed, 146 insertions(+), 56 deletions(-)
->>
+> Ie. as far as KASAN is concerned, the LA48 -> LA57 behavioral switchover
+> must be atomic, but during the kernel code patching process it isn't.
 
+Yep, half-way through the patching it observes inconsistencies and goes
+WTF :-)
