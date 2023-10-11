@@ -2,262 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 341677C5711
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F987C5720
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343919AbjJKOiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 10:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
+        id S1346782AbjJKOjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 10:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234992AbjJKOiB (ORCPT
+        with ESMTP id S232260AbjJKOjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 10:38:01 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD3392
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 07:37:59 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-4577c1ae94fso1481756137.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 07:37:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697035079; x=1697639879; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5+IB6Cv/SDZ64TC4w7G5T3n0RF/VD2rvTHF4Rn8cbn4=;
-        b=bU0TXDrMJ/l5I+m7fRZ+f9YA+XxWBcxD/wgzJbaRbBAVZki6oVtxrkfs2TumHXnX5v
-         C8Fda0QiNDpRb5ppg7+O8gl0OT6rxzjwHfY5k3wGADib73Zahq1hVXGh8UDUmHPCTN8V
-         jrGzhtRmvUcnv8xnV6pq8dI0uMepD1kLz4IZL5ncp3x0qx/mp/SWkqnRZzdAZvj9wUBD
-         AKNHzwpKfemq2ic6mNBJY2f9OVgSugEHfsqh0hpZTyD5IcPk4o+PRju0GGEj3G71ZRco
-         qgFPora5O0sHUTFwvriR9kNSfPg40pxQm0b67iV6XwzVq0DYGTS6wkMcIuHyw7mnHK5o
-         lqhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697035079; x=1697639879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5+IB6Cv/SDZ64TC4w7G5T3n0RF/VD2rvTHF4Rn8cbn4=;
-        b=P3I6T5bV1WpS8QxI4tvCMMk+KcSb+rYLVNWd2CV2vTEzNh3Z85E4P4glVSZjmpJ4vL
-         o6DYJAtiqTNKSKspyYStPItOYVr1JTq2lxTKo0xkvt24XaWqW+mTtkydiV3576N27Sy4
-         8VWa8U7tHUcjUaqGZTWdANcY6LAw/GI4X5CTv5NpYSpyMSRvnDYXFer465XXSioUXm9x
-         1N7ilVXWH/Y9d4HI+LH1XzPwY7UYtjTEDg2rUqg0q2/mTVA7TTg5Ln/8Ii7RmP2V+bnv
-         DWTnTlpo2IRLiWmF2D8muJgne3hXi0suCYPGvqi/R293PPFGFqvhqcGdnp3cCKgbQbVC
-         0RLg==
-X-Gm-Message-State: AOJu0Yw3QfGDS5L+KyAU9ebYzET1GPZPRNp84TpP05aS/hpzqV/8gYdO
-        1pjVlar5N7B1St5FlPrn6M51hodAS0dNpztheGIdFg==
-X-Google-Smtp-Source: AGHT+IFLjLp8MkIsl9sgVKXROYanB6IQcdYh6XOgUF9CrY5EncbbMf1IZt0DnruisavDYZuPdK+5jM96AgQ6b0x/aHs=
-X-Received: by 2002:a05:6102:3b11:b0:457:a8fa:cf2b with SMTP id
- x17-20020a0561023b1100b00457a8facf2bmr1011856vsu.14.1697035078927; Wed, 11
- Oct 2023 07:37:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231009153427.20951-1-brgl@bgdev.pl> <20231009153427.20951-12-brgl@bgdev.pl>
- <y5otsuzhc27xeay6js4nkqss2bo5bsmygwdjuhqpdzce4yffxk@gkkh522s5e3b>
- <CAMRc=MdfZzG-C7=OVhR7x_vEmCexS39GEJ3F-CHM7cfya+A-VA@mail.gmail.com> <ebihxhbl2hyhuke3l2nm56yhvmj4qcja6fbihrc4bhrf2czoix@wjnnyic7wvi7>
-In-Reply-To: <ebihxhbl2hyhuke3l2nm56yhvmj4qcja6fbihrc4bhrf2czoix@wjnnyic7wvi7>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 11 Oct 2023 16:37:48 +0200
-Message-ID: <CAMRc=McBUKZR+esuyXzPdpM=DVK3EQqQXa=eH8hn_RvhO-JZSA@mail.gmail.com>
-Subject: Re: [PATCH v3 11/15] firmware: qcom: qseecom: convert to using the TZ allocator
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Wed, 11 Oct 2023 10:39:02 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AF9C9;
+        Wed, 11 Oct 2023 07:39:01 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BEZQdJ018357;
+        Wed, 11 Oct 2023 14:38:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=Rsrya8F9k3FKu3oAi/1f/gRrlIvhxy+n+lE/10Bl0gU=;
+ b=Wf0I7KA2CrPdmdAzdzbRGZQufcYWvcmVBUgSuIsoeXheVlzPJv8Oeyz5UYnPB06tURzz
+ Ue7kJ/mSvtwdccZIZ93kJblEmMRDQg9ctDNLpGFJEW26UwPUHr1gEX0FXbVozmpNDyvs
+ rxvzu7melyq2XI0yfAVHyrd3IzmQYg68lVPIsWwyGnjIvvWblfsg23h2WTzGk+1x4PDN
+ kcbc72R18OOT+zDbFI0LgdhHqOXo82DHe75cEmfx64+dFUiIzQSkI+Rqe8eWC9JjWOpV
+ uJXK5nnzU8bTMFXERPnP1L0ZxpTw0ScPLWEHFvXZmBgBbjf7IfVk9Onez90XlTT9Cv5X Ew== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnwkm056m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 14:38:13 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39BEb0x2025752;
+        Wed, 11 Oct 2023 14:38:13 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnwkm054p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 14:38:12 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39BDGYnQ001270;
+        Wed, 11 Oct 2023 14:38:11 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkkvk09fg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 14:38:11 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39BEcAFT27853388
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Oct 2023 14:38:10 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 103685803F;
+        Wed, 11 Oct 2023 14:38:10 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6455958063;
+        Wed, 11 Oct 2023 14:38:08 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.67.198])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Oct 2023 14:38:08 +0000 (GMT)
+Message-ID: <a733fe780a3197150067ad35ed280bf85e11fa97.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 02/25] ima: Align ima_post_path_mknod() definition
+ with LSM infrastructure
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Wed, 11 Oct 2023 10:38:08 -0400
+In-Reply-To: <20230904133415.1799503-3-roberto.sassu@huaweicloud.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904133415.1799503-3-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: QVsVQlDn-wAz8Uyi9OSmRgCBMpneIJFI
+X-Proofpoint-ORIG-GUID: 56WOXHa1T-ZiyjPUwv0xHI5wq_xiNMpW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_09,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 clxscore=1015 malwarescore=0
+ priorityscore=1501 mlxscore=0 phishscore=0 mlxlogscore=982 adultscore=0
+ spamscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2310110129
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 3:56=E2=80=AFPM Andrew Halaney <ahalaney@redhat.com=
-> wrote:
->
-> On Wed, Oct 11, 2023 at 09:44:54AM +0200, Bartosz Golaszewski wrote:
-> > On Wed, Oct 11, 2023 at 12:49=E2=80=AFAM Andrew Halaney <ahalaney@redha=
-t.com> wrote:
-> > >
-> > > On Mon, Oct 09, 2023 at 05:34:23PM +0200, Bartosz Golaszewski wrote:
-> > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > >
-> > > > Drop the DMA mapping operations from qcom_scm_qseecom_app_send() an=
-d
-> > > > convert all users of it in the qseecom module to using the TZ alloc=
-ator
-> > > > for creating SCM call buffers. Together with using the cleanup macr=
-os,
-> > > > it has the added benefit of a significant code shrink. As this is
-> > > > largely a module separate from the SCM driver, let's use a separate
-> > > > memory pool.
-> > > >
-> > > > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > >
-> > > <snip>
-> > >
-> > > > @@ -567,20 +529,14 @@ static efi_status_t qsee_uefi_get_next_variab=
-le(struct qcuefi_client *qcuefi,
-> > > >               return EFI_INVALID_PARAMETER;
-> > > >
-> > > >       status =3D qcom_qseecom_app_send(qcuefi->client, req_data, re=
-q_size, rsp_data, rsp_size);
-> > > > -     if (status) {
-> > > > -             efi_status =3D EFI_DEVICE_ERROR;
-> > > > -             goto out_free;
-> > > > -     }
-> > > > +     if (status)
-> > > > +             return EFI_DEVICE_ERROR;
-> > > >
-> > > > -     if (rsp_data->command_id !=3D QSEE_CMD_UEFI_GET_NEXT_VARIABLE=
-) {
-> > > > -             efi_status =3D EFI_DEVICE_ERROR;
-> > > > -             goto out_free;
-> > > > -     }
-> > > > +     if (rsp_data->command_id !=3D QSEE_CMD_UEFI_GET_NEXT_VARIABLE=
-)
-> > > > +             return EFI_DEVICE_ERROR;
-> > > >
-> > > > -     if (rsp_data->length < sizeof(*rsp_data)) {
-> > > > -             efi_status =3D EFI_DEVICE_ERROR;
-> > > > -             goto out_free;
-> > > > -     }
-> > > > +     if (rsp_data->length < sizeof(*rsp_data))
-> > > > +             return EFI_DEVICE_ERROR;
-> > > >
-> > > >       if (rsp_data->status) {
-> > > >               dev_dbg(qcuefi_dev(qcuefi), "%s: uefisecapp error: 0x=
-%x\n",
-> > > > @@ -595,77 +551,59 @@ static efi_status_t qsee_uefi_get_next_variab=
-le(struct qcuefi_client *qcuefi,
-> > > >               if (efi_status =3D=3D EFI_BUFFER_TOO_SMALL)
-> > > >                       *name_size =3D rsp_data->name_size;
-> > > >
-> > > > -             goto out_free;
-> > > > +             return efi_status;
-> > > >       }
-> > > >
-> > > > -     if (rsp_data->length > rsp_size) {
-> > > > -             efi_status =3D EFI_DEVICE_ERROR;
-> > > > -             goto out_free;
-> > > > -     }
-> > > > +     if (rsp_data->length > rsp_size)
-> > > > +             return EFI_DEVICE_ERROR;
-> > > >
-> > > > -     if (rsp_data->name_offset + rsp_data->name_size > rsp_data->l=
-ength) {
-> > > > -             efi_status =3D EFI_DEVICE_ERROR;
-> > > > -             goto out_free;
-> > > > -     }
-> > > > +     if (rsp_data->name_offset + rsp_data->name_size > rsp_data->l=
-ength)
-> > > > +             return EFI_DEVICE_ERROR;
-> > > >
-> > > > -     if (rsp_data->guid_offset + rsp_data->guid_size > rsp_data->l=
-ength) {
-> > > > -             efi_status =3D EFI_DEVICE_ERROR;
-> > > > -             goto out_free;
-> > > > -     }
-> > > > +     if (rsp_data->guid_offset + rsp_data->guid_size > rsp_data->l=
-ength)
-> > > > +             return EFI_DEVICE_ERROR;
-> > > >
-> > > >       if (rsp_data->name_size > *name_size) {
-> > > >               *name_size =3D rsp_data->name_size;
-> > > > -             efi_status =3D EFI_BUFFER_TOO_SMALL;
-> > > > -             goto out_free;
-> > > > +             return EFI_BUFFER_TOO_SMALL;
-> > > >       }
-> > > >
-> > > > -     if (rsp_data->guid_size !=3D sizeof(*guid)) {
-> > > > -             efi_status =3D EFI_DEVICE_ERROR;
-> > > > -             goto out_free;
-> > > > -     }
-> > > > +     if (rsp_data->guid_size !=3D sizeof(*guid))
-> > > > +             return EFI_DEVICE_ERROR;
-> > > >
-> > > >       memcpy(guid, ((void *)rsp_data) + rsp_data->guid_offset, rsp_=
-data->guid_size);
-> > > >       status =3D ucs2_strscpy(name, ((void *)rsp_data) + rsp_data->=
-name_offset,
-> > > >                             rsp_data->name_size / sizeof(*name));
-> > > >       *name_size =3D rsp_data->name_size;
-> > > >
-> > > > -     if (status < 0) {
-> > > > +     if (status < 0)
-> > > >               /*
-> > > >                * Return EFI_DEVICE_ERROR here because the buffer si=
-ze should
-> > > >                * have already been validated above, causing this fu=
-nction to
-> > > >                * bail with EFI_BUFFER_TOO_SMALL.
-> > > >                */
-> > > >               return EFI_DEVICE_ERROR;
-> > > > -     }
-> > >
-> > > Personally (no idea what the actual style guide says) leaving braces
-> > > around the multiline if statement would be nice.... that being said,
-> > > that's my opinion :)
-> > >
-> > > <snip>
-> > > > @@ -704,12 +635,7 @@ static efi_status_t qsee_uefi_query_variable_i=
-nfo(struct qcuefi_client *qcuefi,
-> > > >       if (max_variable_size)
-> > > >               *max_variable_size =3D rsp_data->max_variable_size;
-> > > >
-> > > > -out_free:
-> > > > -     kfree(rsp_data);
-> > > > -out_free_req:
-> > > > -     kfree(req_data);
-> > > > -out:
-> > > > -     return efi_status;
-> > > > +     return EFI_SUCCESS;
-> > > >  }
-> > > >
-> > > >  /* -- Global efivar interface. -----------------------------------=
------------ */
-> > > > @@ -838,6 +764,10 @@ static int qcom_uefisecapp_probe(struct auxili=
-ary_device *aux_dev,
-> > > >       if (status)
-> > > >               qcuefi_set_reference(NULL);
-> > > >
-> > > > +     qcuefi->mempool =3D devm_qcom_tzmem_pool_new(&aux_dev->dev, S=
-Z_256K);
-> > >
-> > > Any particular reason for this size? Just curious, it was (one) of th=
-e
-> > > reasons I had not marked patch 4 yet (it looks good, but I wanted to =
-get
-> > > through the series to digest the Kconfig as well).
-> > >
-> >
-> > I cannot test this. Do you know what the minimum correct size would be?
->
-> I've got no insight into these firmware interfaces unfortunately. Was
-> mostly curious if Qualcomm had provided a suggestion behind the scenes
-> or if this was picked as a "sufficiently large" pool size.
->
+On Mon, 2023-09-04 at 15:33 +0200, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> Change ima_post_path_mknod() definition, so that it can be registered as
+> implementation of the path_post_mknod hook. Since LSMs see a umask-stripped
+> mode from security_path_mknod(), pass the same to ima_post_path_mknod() as
+> well.
+> Also, make sure that ima_post_path_mknod() is executed only if
+> (mode & S_IFMT) is equal to zero or S_IFREG.
+> 
+> Add this check to take into account the different placement of the
+> path_post_mknod hook (to be introduced) in do_mknodat().
 
-No, I chose a small but reasonable value and intend to see if it
-breaks anything. :)
+Move "(to be introduced)" to when it is first mentioned.
 
-But if anyone from QCom reading knows a better value - be it smaller
-or larger, please let me know.
+> Since the new hook
+> will be placed after the switch(), the check ensures that
+> ima_post_path_mknod() is invoked as originally intended when it is
+> registered as implementation of path_post_mknod.
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  fs/namei.c                        |  9 ++++++---
+>  include/linux/ima.h               |  7 +++++--
+>  security/integrity/ima/ima_main.c | 10 +++++++++-
+>  3 files changed, 20 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/namei.c b/fs/namei.c
+> index e56ff39a79bc..c5e96f716f98 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -4024,6 +4024,7 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+>  	struct path path;
+>  	int error;
+>  	unsigned int lookup_flags = 0;
+> +	umode_t mode_stripped;
+>  
+>  	error = may_mknod(mode);
+>  	if (error)
+> @@ -4034,8 +4035,9 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+>  	if (IS_ERR(dentry))
+>  		goto out1;
+>  
+> -	error = security_path_mknod(&path, dentry,
+> -			mode_strip_umask(path.dentry->d_inode, mode), dev);
+> +	mode_stripped = mode_strip_umask(path.dentry->d_inode, mode);
+> +
+> +	error = security_path_mknod(&path, dentry, mode_stripped, dev);
+>  	if (error)
+>  		goto out2;
+>  
+> @@ -4045,7 +4047,8 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+>  			error = vfs_create(idmap, path.dentry->d_inode,
+>  					   dentry, mode, true);
+>  			if (!error)
+> -				ima_post_path_mknod(idmap, dentry);
+> +				ima_post_path_mknod(idmap, &path, dentry,
+> +						    mode_stripped, dev);
+>  			break;
+>  		case S_IFCHR: case S_IFBLK:
+>  			error = vfs_mknod(idmap, path.dentry->d_inode,
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index 910a2f11a906..179ce52013b2 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -32,7 +32,8 @@ extern int ima_read_file(struct file *file, enum kernel_read_file_id id,
+>  extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
+>  			      enum kernel_read_file_id id);
+>  extern void ima_post_path_mknod(struct mnt_idmap *idmap,
+> -				struct dentry *dentry);
+> +				const struct path *dir, struct dentry *dentry,
+> +				umode_t mode, unsigned int dev);
+>  extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
+>  extern int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size);
+>  extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
+> @@ -114,7 +115,9 @@ static inline int ima_post_read_file(struct file *file, void *buf, loff_t size,
+>  }
+>  
+>  static inline void ima_post_path_mknod(struct mnt_idmap *idmap,
+> -				       struct dentry *dentry)
+> +				       const struct path *dir,
+> +				       struct dentry *dentry,
+> +				       umode_t mode, unsigned int dev)
+>  {
+>  	return;
+>  }
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index 365db0e43d7c..76eba92d7f10 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -696,18 +696,26 @@ void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+>  /**
+>   * ima_post_path_mknod - mark as a new inode
+>   * @idmap: idmap of the mount the inode was found from
+> + * @dir: path structure of parent of the new file
+>   * @dentry: newly created dentry
+> + * @mode: mode of the new file
+> + * @dev: undecoded device number
+>   *
+>   * Mark files created via the mknodat syscall as new, so that the
+>   * file data can be written later.
+>   */
+>  void ima_post_path_mknod(struct mnt_idmap *idmap,
+> -			 struct dentry *dentry)
+> +			 const struct path *dir, struct dentry *dentry,
+> +			 umode_t mode, unsigned int dev)
+>  {
+>  	struct integrity_iint_cache *iint;
+>  	struct inode *inode = dentry->d_inode;
+>  	int must_appraise;
+>  
+> +	/* See do_mknodat(), IMA is executed for case 0: and case S_IFREG: */
+> +	if ((mode & S_IFMT) != 0 && (mode & S_IFMT) != S_IFREG)
+> +		return;
+> +
 
-Bartosz
+There's already a check below to make sure that this is a regular file.
+Are both needed?
 
-> >
-> > Bart
-> >
-> > > Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-> > >
-> >
->
+>  	if (!ima_policy_flag || !S_ISREG(inode->i_mode))
+>  		return;
+>  
+
