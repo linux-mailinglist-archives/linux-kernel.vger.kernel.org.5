@@ -2,158 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B72BC7C5EF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793097C5EF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbjJKVQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:16:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
+        id S233475AbjJKVUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 17:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233441AbjJKVQk (ORCPT
+        with ESMTP id S231912AbjJKVUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:16:40 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304369E
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:16:39 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a3e5f1742so386501276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:16:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697058998; x=1697663798; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=AkMbkjU0vEq64RoxC9mx2kutRLIWzBPilt+kMErOBXk=;
-        b=viwZ6khh+pCy12HXp+3i4C2faf8ibwIfdTcWmQp9SYSsN1/Og84W5amWj/g/L+6Xxp
-         Jhz/bvk+NqhIHvb13OiY+MCvx/yLnAUdvWVe1oKQQdnPITCmJcCGrnQuQNOcXkxTJd0x
-         mpOg2HZjEuz9xUsh/PwD1IIKzEm54xgZDzXfa4uEuUzmTNLf8e7ApnEA72oJVJVieU63
-         GHdyFgPk+J87teZ4yIBUQjNdkXVsFMwbb+tMgBbWWg7aWTEcveut7KLxqnb8sdA84OgL
-         +Mvz7rOnFau1cjNwdeW8VEioeObD0cwri3E/vs1c8Q6ICaM/uvoz9JuJs6JMzXD3xPHY
-         O7lQ==
+        Wed, 11 Oct 2023 17:20:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0FBA9
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:19:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697059163;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9ARFU5ehJ77LMWQGx5SDRsMXLUYL9Q8sCSHPYnJI9hQ=;
+        b=eGWT7cA1oX41XyND6xTX+DnGSccEauXa8j+lgxIMhGSR0fm9MDQqc10O/CBYJS+rk3ykUF
+        jmZuIgvsjT/rhEYUuIhC9QtTn13eRZ/AIQVklgvHILnbFkwHdi1sr6E04vRzXmhQIPKIVl
+        d22RKwOfT20YaPY7J+KGUbwm9SecIYM=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-78-NxDZTYGPMReF_eU-2-VvxQ-1; Wed, 11 Oct 2023 17:19:11 -0400
+X-MC-Unique: NxDZTYGPMReF_eU-2-VvxQ-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-774105e8c7fso33936085a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:19:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697058998; x=1697663798;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AkMbkjU0vEq64RoxC9mx2kutRLIWzBPilt+kMErOBXk=;
-        b=uaV2ZHSzMrbkYSD4zXbblDryZSkjo0E9DWdoOM/QpgnMChM4RxRxnLL700yO7R2Hq3
-         CqmM1gHDyRmjXU0xhvjDM+G3XEiQ+/XwZc4fZ2zK9ExyYnGNzprpH2b591uGTZ59e2s5
-         Hmb546189TvrqP59xegL3hiWAoMmljYgAEQ1mpbX4EbvFBnTDaTYOs9ZcNj3Gs5HH8Kx
-         uUfVjdEnIqC5n/ZfrnAWZ8RRo+kxDx63Jx4HM1er5NHGlmeJfsZ9a3NeNFqPFQEITjd/
-         yj1DlzsItfHHz0lcOjJeAmfYlFTxb6jfHy4LiMh7Lxz6nz0qMjiTG8ZwDXIcI5kuMSyf
-         M4JA==
-X-Gm-Message-State: AOJu0YxF9CeKckXGyrMzflS0qQppwb/G6QBFZGVzLzo0g4zIWWvHn+Vz
-        aT27OUsnyqaEcjrjylPExOBUCVkY/ax5
-X-Google-Smtp-Source: AGHT+IGAzhuTPA8xuaGd0/MIYrNSNCXikipR4gkbaclFwt1ULUI/01TDo30ZPmFJEvB4ZjHJwjhJuCAIPgXw
-X-Received: from jiangzp-glinux-dev.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:38e4])
- (user=jiangzp job=sendgmr) by 2002:a25:828c:0:b0:d9a:bc5a:737c with SMTP id
- r12-20020a25828c000000b00d9abc5a737cmr10169ybk.4.1697058998406; Wed, 11 Oct
- 2023 14:16:38 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 14:16:31 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Message-ID: <20231011141631.kernel.v1.1.I6dbfc1fedddf0633b55ce7e7a10ef7f3929a9bdc@changeid>
-Subject: [kernel PATCH v1] btmtksdio: enable bluetooth wakeup in system suspend
-From:   Zhengping Jiang <jiangzp@google.com>
-To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
-        luiz.dentz@gmail.com
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        Zhengping Jiang <jiangzp@google.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1697059151; x=1697663951;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9ARFU5ehJ77LMWQGx5SDRsMXLUYL9Q8sCSHPYnJI9hQ=;
+        b=pJtnsHwhiL1D0IG6TLgFRfgkKKUopu8SOnTKJnE/CCzruxuiwOmOdwOrQSks2naFBZ
+         XI/63GEasfvoseTNsAaxspDQFs1opbz4EpPAfaa71R7S/RFC261E/YYkV+gYXBZDK1Vf
+         tJLpjiJiyYibrTcN3rznxPIR8MWJUvEBaRbHf8YzD3YffqgYgJqu0S8q8JUFNUrj6/Rp
+         Re1F83SQn/W2YViWyZtkTjzWHdWQJbupXiicO5BtbV3rXZEcHlHnUCw+Sal/PZyK1e2M
+         taDBIh+oMwctz00BWf7AA5utMvokWiMUPcckumIv9N1i4rSt28WgPN7vhL3eoxvwLN6f
+         gcJg==
+X-Gm-Message-State: AOJu0YzPuYCVLhVPBBuc7NoJ6AfUV9i+DLC8YuDhiKCV7l6sRhhcvgoF
+        WizuoXooMunv5SKD9MzAJ/rYdsn1RCSXtyGqTEcd1NEpTQobGvRmhc88yfwNHp+rADPFLdMlGLI
+        hg+hgG2213x1a48NvMX2rjRZm
+X-Received: by 2002:a05:620a:24c8:b0:775:9025:c18a with SMTP id m8-20020a05620a24c800b007759025c18amr25845154qkn.35.1697059151238;
+        Wed, 11 Oct 2023 14:19:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFYryp37Si/mOVFiRWp6KQ4xbl+Cq9cO+Og0eIcqwKiNzWhUHZVCxvChfEaZVnlkhQdnFD5mQ==
+X-Received: by 2002:a05:620a:24c8:b0:775:9025:c18a with SMTP id m8-20020a05620a24c800b007759025c18amr25845136qkn.35.1697059150956;
+        Wed, 11 Oct 2023 14:19:10 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id y23-20020a37e317000000b00767da9b6ae9sm5493487qki.11.2023.10.11.14.19.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 14:19:10 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 16:19:08 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v3 14/15] firmware: qcom: scm: clarify the comment in
+ qcom_scm_pas_init_image()
+Message-ID: <gnwwzwtxwsvetldugl4h6muoki7gleqbyfrx7jve7lx52p7xde@5kfhsgrbnynn>
+References: <20231009153427.20951-1-brgl@bgdev.pl>
+ <20231009153427.20951-15-brgl@bgdev.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009153427.20951-15-brgl@bgdev.pl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BTMTKSDIO_BT_WAKE_ENABLED flag is set for bluetooth interrupt
-during system suspend and increases wakeup count for bluetooth event.
+On Mon, Oct 09, 2023 at 05:34:26PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> The "memory protection" mechanism mentioned in the comment is the SHM
+> Bridge. This is also the reason why we do not convert this call to using
+> the TM mem allocator.
 
-Signed-off-by: Zhengping Jiang <jiangzp@google.com>
----
+s/TM/TZ/ ?
 
-Changes in v1:
-- Add BTMTKSDIO_BT_WAKE_ENABLED flag
-- Call pm_wakeup_event in btmtksdio_interrupt
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  drivers/firmware/qcom/qcom_scm.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+> index 839773270a21..8a2475ced10a 100644
+> --- a/drivers/firmware/qcom/qcom_scm.c
+> +++ b/drivers/firmware/qcom/qcom_scm.c
+> @@ -563,9 +563,13 @@ int qcom_scm_pas_init_image(u32 peripheral, const void *metadata, size_t size,
+>  	struct qcom_scm_res res;
+>  
+>  	/*
+> -	 * During the scm call memory protection will be enabled for the meta
+> -	 * data blob, so make sure it's physically contiguous, 4K aligned and
+> -	 * non-cachable to avoid XPU violations.
+> +	 * During the SCM call the TrustZone will make the buffer containing
+> +	 * the program data into an SHM Bridge. This is why we exceptionally
+> +	 * must not use the TrustZone memory allocator here as - depending on
+> +	 * Kconfig - it may already use the SHM Bridge mechanism internally.
+> +	 *
+> +	 * If we pass a buffer that is already part of an SHM Bridge to this
+> +	 * call, it will fail.
 
- drivers/bluetooth/btmtksdio.c | 36 +++++++++++++++++++++++++++++++++--
- 1 file changed, 34 insertions(+), 2 deletions(-)
+I can at least confirm this matches my testing results in v2, fwiw.
 
-diff --git a/drivers/bluetooth/btmtksdio.c b/drivers/bluetooth/btmtksdio.c
-index f9a3444753c2..ddc04ce5c6d4 100644
---- a/drivers/bluetooth/btmtksdio.c
-+++ b/drivers/bluetooth/btmtksdio.c
-@@ -118,6 +118,7 @@ MODULE_DEVICE_TABLE(sdio, btmtksdio_table);
- #define BTMTKSDIO_FUNC_ENABLED		3
- #define BTMTKSDIO_PATCH_ENABLED		4
- #define BTMTKSDIO_HW_RESET_ACTIVE	5
-+#define BTMTKSDIO_BT_WAKE_ENABLED	6
- 
- struct mtkbtsdio_hdr {
- 	__le16	len;
-@@ -620,6 +621,12 @@ static void btmtksdio_interrupt(struct sdio_func *func)
- {
- 	struct btmtksdio_dev *bdev = sdio_get_drvdata(func);
- 
-+	if (test_bit(BTMTKSDIO_BT_WAKE_ENABLED, &bdev->tx_state)) {
-+		if (bdev->hdev->suspended)
-+			pm_wakeup_event(bdev->dev, 0);
-+		clear_bit(BTMTKSDIO_BT_WAKE_ENABLED, &bdev->tx_state);
-+	}
-+
- 	/* Disable interrupt */
- 	sdio_writel(bdev->func, C_INT_EN_CLR, MTK_REG_CHLPCR, 0);
- 
-@@ -1454,6 +1461,23 @@ static int btmtksdio_runtime_suspend(struct device *dev)
- 	return err;
- }
- 
-+static int btmtksdio_system_suspend(struct device *dev)
-+{
-+	struct sdio_func *func = dev_to_sdio_func(dev);
-+	struct btmtksdio_dev *bdev;
-+
-+	bdev = sdio_get_drvdata(func);
-+	if (!bdev)
-+		return 0;
-+
-+	if (!test_bit(BTMTKSDIO_FUNC_ENABLED, &bdev->tx_state))
-+		return 0;
-+
-+	set_bit(BTMTKSDIO_BT_WAKE_ENABLED, &bdev->tx_state);
-+
-+	return btmtksdio_runtime_suspend(dev);
-+}
-+
- static int btmtksdio_runtime_resume(struct device *dev)
- {
- 	struct sdio_func *func = dev_to_sdio_func(dev);
-@@ -1474,8 +1498,16 @@ static int btmtksdio_runtime_resume(struct device *dev)
- 	return err;
- }
- 
--static UNIVERSAL_DEV_PM_OPS(btmtksdio_pm_ops, btmtksdio_runtime_suspend,
--			    btmtksdio_runtime_resume, NULL);
-+static int btmtksdio_system_resume(struct device *dev)
-+{
-+	return btmtksdio_runtime_resume(dev);
-+}
-+
-+const struct dev_pm_ops __maybe_unused btmtksdio_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(btmtksdio_system_suspend, btmtksdio_system_resume)
-+	SET_RUNTIME_PM_OPS(btmtksdio_runtime_suspend, btmtksdio_runtime_resume, NULL)
-+};
-+
- #define BTMTKSDIO_PM_OPS (&btmtksdio_pm_ops)
- #else	/* CONFIG_PM */
- #define BTMTKSDIO_PM_OPS NULL
--- 
-2.42.0.609.gbb76f46606-goog
+I guess you could use the Kconfig and conditionally use the TZ mem
+allocator if !SHMBridge, but I don't know if its worth the if statements
+or not.
+
+Bummer, I can't think of a beautiful way to unify this outside of a
+dedicated non SHM bridge pool for this...
+
+>  	 */
+>  	mdata_buf = dma_alloc_coherent(__scm->dev, size, &mdata_phys,
+>  				       GFP_KERNEL);
+> -- 
+> 2.39.2
+> 
 
