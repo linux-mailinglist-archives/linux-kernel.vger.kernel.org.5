@@ -2,183 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D837C5F8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FBA07C5F90
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233727AbjJKVxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35190 "EHLO
+        id S233787AbjJKVxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 17:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233451AbjJKVxb (ORCPT
+        with ESMTP id S233451AbjJKVxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:53:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E179E;
+        Wed, 11 Oct 2023 17:53:34 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CD5A9;
+        Wed, 11 Oct 2023 14:53:32 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99de884ad25so44563866b.3;
+        Wed, 11 Oct 2023 14:53:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697061211; x=1697666011; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wk61Oui34cYd2D497FSomUJuk6Ez3oD0g+MbS48c0OI=;
+        b=FFAvW+Agz6iXrjmajmZ9N5OHh8wiqGQOkhbdkbrpSPd8jKBFSLjKZcHcKsNEZ8snc2
+         MmmPuUbJDsXGLpT5982UyU+L7T+f4OG/LzXbS0apf6WEfPBZ+WSqTV1Z+uRT+3iYFj4F
+         3kVgb/3exz0YUP/2e/pePY5EalOxBf1r/aT8wPsytQVp63Ey5EAhR8pESGpts/HIGyB9
+         Vc5NSqOB1bIx6BwyIZCJfg6a1c+lGhGm8fDvU9pnM+o13+kJfZT+d1HZnfI2t4JtCmIM
+         1I1JKyEMN3CLa5kV2JNzltpYjVZHMmomBbNCVfZv6cUAvp8DHZHHShFitHHFzpcgbS3d
+         2iyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697061211; x=1697666011;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wk61Oui34cYd2D497FSomUJuk6Ez3oD0g+MbS48c0OI=;
+        b=icRN00sgWneHMFR2LY5T70Jfepu5EF9vKE7LBrBN3OL92Md2i7l6R7p9Rc4Co6OiDe
+         GBdUiy7wwJs6rqvliy/xR9q6oubSU7ZfymOPDnB092ys6HUAFx1JxO3S1Szr0WiyiIQh
+         UDl4ptTWw7C6d9YJEdOhgmbnnLWAnJwTmXwv1p6L3gPrjwrCd0sa1KTCxxghoasc6pRr
+         Okv8jJIw6A0tvbfPlRk3y0gpnA8hSKpHAUgzGF/BGpxE9mGMpnlpf38ijELpi3Ex6q3B
+         q376gdy7K2uz/NIz0GxOuxZI+uBD1+19Jpl67Q0UDFrgiOH75hcS9mR/hKwseb5fK+hr
+         29yA==
+X-Gm-Message-State: AOJu0YzFiCGnj/XWKfUjkJlFnCdFSSFdqDjRjnneuya5MPmrI9pDWyPv
+        BnwC3lDIf5mnf+kkLnXAQCQ=
+X-Google-Smtp-Source: AGHT+IGVnAq29JMbxyfSmfj4SDVv6KVOlkj+3dLI16KTIn3E3zl7iFe7YS/QTndQsKuTvjp+QDrNwQ==
+X-Received: by 2002:a17:906:209a:b0:9ae:3f69:9b89 with SMTP id 26-20020a170906209a00b009ae3f699b89mr21354779ejq.7.1697061210928;
         Wed, 11 Oct 2023 14:53:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87540C433C9;
-        Wed, 11 Oct 2023 21:53:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697061209;
-        bh=qY9Rp5zkRIt2DsQivgERNNESbVTGEul4kS5s7/dIoho=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=EAwNFrclnTWEuXdB+Z8mt3u3kuEAAoUwY82PbS8J18XDNC6E3OiHHHxAFbbd17IOO
-         T6KemaFOH4w9WVID23kFc5vCnMeXYebhs7yahyg9gnbxexaaSqR+KOEgoCrxijFWyG
-         dnCiAysL1ttbyJnzXZGaT8aqz/DwQbEhhDfWR38iscslUEL9bLiDHhVjMYSwKPoaYH
-         vE7EY6dncxhXQ4FluROOjHz7swY5mrWHaRm0x+YRj0w+mEnls2n/6+o4Mg69zLynhg
-         wf5HljSZ4OwbmmK2VZKj4KXyrtee/VgZ11v8Vna96PUYyaJ2T6vmKgYUE3ho/7KBKo
-         bDWaoqyCH5pFQ==
-Date:   Wed, 11 Oct 2023 16:53:27 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Cc:     linux-pci@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        ath10k@lists.infradead.org, ath11k@lists.infradead.org,
-        ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-bluetooth@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 05/13] PCI/ASPM: Add pci_enable_link_state()
-Message-ID: <20231011215327.GA1043654@bhelgaas>
+Received: from orome.fritz.box (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id lc16-20020a170906dff000b0099c53c44083sm10185272ejc.79.2023.10.11.14.53.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 14:53:30 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 23:53:28 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Peter Geis <pgwipeout@gmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Thierry Reding <treding@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] usb: chipidea: Simplify Tegra DMA alignment code
+Message-ID: <ZScZWFJCCMr7oWwX@orome.fritz.box>
+References: <cover.1695934946.git.mirq-linux@rere.qmqm.pl>
+ <a0d917d492b1f91ee0019e68b8e8bca9c585393f.1695934946.git.mirq-linux@rere.qmqm.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/ARsLMUmfva5Ak1M"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230918131103.24119-6-ilpo.jarvinen@linux.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <a0d917d492b1f91ee0019e68b8e8bca9c585393f.1695934946.git.mirq-linux@rere.qmqm.pl>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 04:10:55PM +0300, Ilpo Järvinen wrote:
-> pci_disable_link_state() lacks a symmetric pair. Some drivers want to
-> disable ASPM during certain phases of their operation but then
-> re-enable it later on. If pci_disable_link_state() is made for the
-> device, there is currently no way to re-enable the states that were
-> disabled.
 
-pci_disable_link_state() gives drivers a way to disable specified ASPM
-states using a bitmask (PCIE_LINK_STATE_L0S, PCIE_LINK_STATE_L1,
-PCIE_LINK_STATE_L1_1, etc), but IIUC the driver can't tell exactly
-what changed and can't directly restore the original state, e.g.,
+--/ARsLMUmfva5Ak1M
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  - PCIE_LINK_STATE_L1 enabled initially
-  - driver calls pci_disable_link_state(PCIE_LINK_STATE_L0S)
-  - driver calls pci_enable_link_state(PCIE_LINK_STATE_L0S)
-  - PCIE_LINK_STATE_L0S and PCIE_LINK_STATE_L1 are enabled now
-
-Now PCIE_LINK_STATE_L0S is enabled even though it was not initially
-enabled.  Maybe that's what we want; I dunno.
-
-pci_disable_link_state() currently returns success/failure, but only
-r8169 and mt76 even check, and only rtl_init_one() (r8169) has a
-non-trivial reason, so it's conceivable that it could return a bitmask
-instead.
-
-> Add pci_enable_link_state() to remove ASPM states from the state
-> disable mask.
-> 
-> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+On Thu, Sep 28, 2023 at 11:06:03PM +0200, Micha=C5=82 Miros=C5=82aw wrote:
+> The USB host on Tegra3 works with 32-bit alignment. Previous code tried
+> to align the buffer, but it did align the wrapper struct instead, so
+> the buffer was at a constant offset of 8 bytes (two pointers) from
+> expected alignment.  Since kmalloc() guarantees at least 8-byte
+> alignment already, the alignment-extending is removed.
+>=20
+> Fixes: fc53d5279094 ("usb: chipidea: tegra: Support host mode")
+> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
 > ---
->  drivers/pci/pcie/aspm.c | 42 +++++++++++++++++++++++++++++++++++++++++
->  include/linux/pci.h     |  2 ++
->  2 files changed, 44 insertions(+)
-> 
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index 91dc95aca90f..f45d18d47c20 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -1117,6 +1117,48 @@ int pci_disable_link_state(struct pci_dev *pdev, int state)
+>  drivers/usb/chipidea/host.c | 45 +++++++++++++++----------------------
+>  1 file changed, 18 insertions(+), 27 deletions(-)
+>=20
+> diff --git a/drivers/usb/chipidea/host.c b/drivers/usb/chipidea/host.c
+> index abddd39d1ff1..0cce19208370 100644
+> --- a/drivers/usb/chipidea/host.c
+> +++ b/drivers/usb/chipidea/host.c
+> @@ -30,8 +30,7 @@ struct ehci_ci_priv {
+>  };
+> =20
+>  struct ci_hdrc_dma_aligned_buffer {
+> -	void *kmalloc_ptr;
+> -	void *old_xfer_buffer;
+> +	void *original_buffer;
+>  	u8 data[];
+>  };
+> =20
+> @@ -380,60 +379,52 @@ static int ci_ehci_bus_suspend(struct usb_hcd *hcd)
+>  	return 0;
 >  }
->  EXPORT_SYMBOL(pci_disable_link_state);
->  
-> +/**
-> + * pci_enable_link_state - Re-enable device's link state
-> + * @pdev: PCI device
-> + * @state: ASPM link states to re-enable
-> + *
-> + * Enable device's link state that were previously disable so the link is
+> =20
+> -static void ci_hdrc_free_dma_aligned_buffer(struct urb *urb)
+> +static void ci_hdrc_free_dma_aligned_buffer(struct urb *urb, bool copy_b=
+ack)
+>  {
+>  	struct ci_hdrc_dma_aligned_buffer *temp;
+> -	size_t length;
+> =20
+>  	if (!(urb->transfer_flags & URB_ALIGNED_TEMP_BUFFER))
+>  		return;
+> +	urb->transfer_flags &=3D ~URB_ALIGNED_TEMP_BUFFER;
 
-"state[s] that were previously disable[d]" alludes to the use case you
-have in mind, but I don't think it describes how this function
-actually works.  This function just makes it possible to enable the
-specified states.  The @state parameter may have nothing to do with
-any previously disabled states.
+This threw me off a bit until I realized it was already there
+previously, just in a different place. Is there a particular reason why
+this is moved?
 
-> + * allowed to enter the specific states. Note that if the BIOS didn't grant
-> + * ASPM control to the OS, this does nothing because we can't touch the
-> + * LNKCTL register.
-> + *
-> + * Return: 0 or a negative errno.
-> + */
-> +int pci_enable_link_state(struct pci_dev *pdev, int state)
-> +{
-> +	struct pcie_link_state *link = pcie_aspm_get_link(pdev);
+Regardless, this looks fine, so:
+
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+> =20
+>  	temp =3D container_of(urb->transfer_buffer,
+>  			    struct ci_hdrc_dma_aligned_buffer, data);
+> +	urb->transfer_buffer =3D temp->original_buffer;
 > +
-> +	if (!link)
-> +		return -EINVAL;
-> +	/*
-> +	 * A driver requested that ASPM be enabled on this device, but
-> +	 * if we don't have permission to manage ASPM (e.g., on ACPI
-> +	 * systems we have to observe the FADT ACPI_FADT_NO_ASPM bit and
-> +	 * the _OSC method), we can't honor that request.
-> +	 */
-> +	if (aspm_disabled) {
-> +		pci_warn(pdev, "can't enable ASPM; OS doesn't have ASPM control\n");
-> +		return -EPERM;
-> +	}
+> +	if (copy_back && usb_urb_dir_in(urb)) {
+> +		size_t length;
+> =20
+> -	if (usb_urb_dir_in(urb)) {
+>  		if (usb_pipeisoc(urb->pipe))
+>  			length =3D urb->transfer_buffer_length;
+>  		else
+>  			length =3D urb->actual_length;
+> =20
+> -		memcpy(temp->old_xfer_buffer, temp->data, length);
+> +		memcpy(temp->original_buffer, temp->data, length);
+>  	}
+> -	urb->transfer_buffer =3D temp->old_xfer_buffer;
+> -	kfree(temp->kmalloc_ptr);
+> =20
+> -	urb->transfer_flags &=3D ~URB_ALIGNED_TEMP_BUFFER;
+> +	kfree(temp);
+>  }
+> =20
+>  static int ci_hdrc_alloc_dma_aligned_buffer(struct urb *urb, gfp_t mem_f=
+lags)
+>  {
+> -	struct ci_hdrc_dma_aligned_buffer *temp, *kmalloc_ptr;
+> -	const unsigned int ci_hdrc_usb_dma_align =3D 32;
+> -	size_t kmalloc_size;
+> +	struct ci_hdrc_dma_aligned_buffer *temp;
+> =20
+>  	if (urb->num_sgs || urb->sg || urb->transfer_buffer_length =3D=3D 0)
+>  		return 0;
+> -	if (!((uintptr_t)urb->transfer_buffer & (ci_hdrc_usb_dma_align - 1)) &&=
+ !(urb->transfer_buffer_length & 3))
+> +	if (IS_ALIGNED((uintptr_t)urb->transfer_buffer, 4)
+> +	    && IS_ALIGNED(urb->transfer_buffer_length, 4))
+>  		return 0;
+> =20
+> -	/* Allocate a buffer with enough padding for alignment */
+> -	kmalloc_size =3D ALIGN(urb->transfer_buffer_length, 4) +
+> -		       sizeof(struct ci_hdrc_dma_aligned_buffer) +
+> -		       ci_hdrc_usb_dma_align - 1;
+> -
+> -	kmalloc_ptr =3D kmalloc(kmalloc_size, mem_flags);
+> -	if (!kmalloc_ptr)
+> +	temp =3D kmalloc(sizeof(*temp) + ALIGN(urb->transfer_buffer_length, 4),=
+ mem_flags);
+> +	if (!temp)
+>  		return -ENOMEM;
+> =20
+> -	/* Position our struct dma_aligned_buffer such that data is aligned */
+> -	temp =3D PTR_ALIGN(kmalloc_ptr + 1, ci_hdrc_usb_dma_align) - 1;
+> -	temp->kmalloc_ptr =3D kmalloc_ptr;
+> -	temp->old_xfer_buffer =3D urb->transfer_buffer;
+>  	if (usb_urb_dir_out(urb))
+>  		memcpy(temp->data, urb->transfer_buffer,
+>  		       urb->transfer_buffer_length);
 > +
-> +	mutex_lock(&aspm_lock);
-> +	link->aspm_disable &= ~pci_link_state_mask(state);
-> +	pcie_config_aspm_link(link, policy_to_aspm_state(link));
-> +
-> +	if (state & PCIE_LINK_STATE_CLKPM)
-> +		link->clkpm_disable = 0;
-> +	pcie_set_clkpm(link, policy_to_clkpm_state(link));
-> +	mutex_unlock(&aspm_lock);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(pci_enable_link_state);
-> +
->  /**
->   * pci_set_default_link_state - Set the default device link state
->   * @pdev: PCI device
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 3c24ca164104..844d09230264 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -1776,11 +1776,13 @@ extern bool pcie_ports_native;
->  int pci_disable_link_state(struct pci_dev *pdev, int state);
->  int pci_disable_link_state_locked(struct pci_dev *pdev, int state);
->  #ifdef CONFIG_PCIEASPM
-> +int pci_enable_link_state(struct pci_dev *pdev, int state);
->  int pci_set_default_link_state(struct pci_dev *pdev, int state);
->  void pcie_no_aspm(void);
->  bool pcie_aspm_support_enabled(void);
->  bool pcie_aspm_enabled(struct pci_dev *pdev);
->  #else
-> +static inline int pci_enable_link_state(struct pci_dev *pdev, int state) { return -EOPNOTSUPP; }
->  static inline int pci_set_default_link_state(struct pci_dev *pdev, int state)
->  { return 0; }
->  static inline void pcie_no_aspm(void) { }
-> -- 
-> 2.30.2
-> 
-> 
-> -- 
-> ath12k mailing list
-> ath12k@lists.infradead.org
-> https://lists.infradead.org/mailman/listinfo/ath12k
+> +	temp->original_buffer =3D urb->transfer_buffer;
+>  	urb->transfer_buffer =3D temp->data;
+> -
+>  	urb->transfer_flags |=3D URB_ALIGNED_TEMP_BUFFER;
+> =20
+>  	return 0;
+> @@ -450,7 +441,7 @@ static int ci_hdrc_map_urb_for_dma(struct usb_hcd *hc=
+d, struct urb *urb,
+> =20
+>  	ret =3D usb_hcd_map_urb_for_dma(hcd, urb, mem_flags);
+>  	if (ret)
+> -		ci_hdrc_free_dma_aligned_buffer(urb);
+> +		ci_hdrc_free_dma_aligned_buffer(urb, false);
+> =20
+>  	return ret;
+>  }
+> @@ -458,7 +449,7 @@ static int ci_hdrc_map_urb_for_dma(struct usb_hcd *hc=
+d, struct urb *urb,
+>  static void ci_hdrc_unmap_urb_for_dma(struct usb_hcd *hcd, struct urb *u=
+rb)
+>  {
+>  	usb_hcd_unmap_urb_for_dma(hcd, urb);
+> -	ci_hdrc_free_dma_aligned_buffer(urb);
+> +	ci_hdrc_free_dma_aligned_buffer(urb, true);
+>  }
+> =20
+>  #ifdef CONFIG_PM_SLEEP
+> --=20
+> 2.39.2
+>=20
+
+--/ARsLMUmfva5Ak1M
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmUnGVgACgkQ3SOs138+
+s6GlQxAAs20l59FM+iP1WLLvyZghQ+/JR+8K027PE1dn0I5fXFgEopON1ZJeAPgO
+SaCW6ZWeCUYSaGwrBhmaKrs6cgRIVu4UuIdpAnErTsztL7eZIz5+uEP0/gFAJHrn
+8VNQG4Pe22rvRZkaKlGgN5G5sD8E+amQdVWJH/8gLGefjybKP7xwOYKGB0itjx78
+wnaKT/2Av3Kjqdm2JIA1WzmSYPvDGl5OSmImtw6Plpi7OYrjfElX0ena+ONR75YR
+utcL/LJmDvQ54vUiYqjW4E16nInpeMEYfTyS5ohP7HucLZMPIJEbSAPeFIDf2ONV
+LQfA7Fo3QDcrc1H5q3Q1Hecv/LRE3DJMQ2e7JCNFfmvs1qcZ8uj63xf/2aiPqeaO
+Hpw4AV/StGUjbuz/swkA3bodcJkxfGdja8DNKGZOGTwu6kRW2g/donM8cclgEYpz
+Y6Dw62w7exHf+1n/fGnBYomLJW8LviX7kKzeXQCFl6iWRDjHrElmhK/5x4k/HeeL
+FGIpyO29RU7FvvNYKT6rCnPHEXDlyvv/qPIgW1/JMvTcOFZHlhRy1FTB5b919Oc+
+lfo9Elh4YwELcUrlT+Dz3P0GsNwmegbTw+SpsayEXVdtpCXF0Nfl3F716ws0j9wg
+a2ZVTwrpnUC9q/fA8OYLW4+8lIxXI6u8LLjsQfAOm8spclhaXYY=
+=go0n
+-----END PGP SIGNATURE-----
+
+--/ARsLMUmfva5Ak1M--
