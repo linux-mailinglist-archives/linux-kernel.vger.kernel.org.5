@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1627C5274
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218067C5279
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234746AbjJKLu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:50:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50360 "EHLO
+        id S1346207AbjJKLvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231935AbjJKLu1 (ORCPT
+        with ESMTP id S231758AbjJKLvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:50:27 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84348F
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:50:04 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c62d61dc96so43281375ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:50:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697025004; x=1697629804; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6jXMPoHtqd/Hx6fmqzikg66SSiek1hyl8J8uZ94eBkM=;
-        b=MlMVuK9l7ZchBCdcVeYq02hScRLv77WoJSIsU6f5kw0TpCul/0wKQGN6VTV82eZUXU
-         QHHaq6ExGub6eUD0OXZK1ZI9Ced5do382vChI0CwvL0u9ajCKyqm17weKASdAQhmwE1u
-         ksH9S9nxFiUp54yfpm/y49LrdpSz/HGdXq5RN0AImu/NLB3RbVlfixgeK3IO0cAjr7lC
-         0EShU8CGjR2HWTXlLQ4+FzsMZpEZ3uAFde59ImSR4Gc8bruMySsDjNw1a323GVkmzKDP
-         v2v+EwUw++hSr6KHqHUPh9K1V/gOpqQ/nMJSYF5lLugU57tFi+Krs+sdAUggQ9UjU/QR
-         GJpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697025004; x=1697629804;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6jXMPoHtqd/Hx6fmqzikg66SSiek1hyl8J8uZ94eBkM=;
-        b=lTjVkh6XmYG6TGvIvZGDoW8CkziPPkNSODUDN/OlGgIZDVjOssCWBV1Vtzzg1JDB6g
-         Bo5OGEhDDfjjd/xpHRTssUTGcUOjTJ6LEEsvPISW1Qbfnvpsbhxj0iuZCSbi2RirMTrn
-         6wVGJl4yepvvVXLT6slHbP+jeoO1vepbmGNZB/akRoBwav04aueKq3zVXTuQddohPZPf
-         9Ckkl7ctBBJ59drbfAloDn6zrqSIRRobk02HAcW9GAECe6hzD9lMblQuC6PtGuvQNuQJ
-         Dw5b1pXc7H+JWKxJIZVipCnqEl8BYHhEP/0s4+gxPwJ+zVN6kXnSIcLfaUAcSzZyyYvr
-         aRwA==
-X-Gm-Message-State: AOJu0YwyfcgilhpI1zAwEgKRvYu1cPu0iouN/hlCigtd9cisVWb0/T/s
-        +7xWBVMWNx8bmYb2enj2U/t+cQ==
-X-Google-Smtp-Source: AGHT+IEDCqXJj3YOhgBFw9VpCN1j9W+/kcrhhPe3h0VKXOEk8qhAXQDlXRw7da3dwnXFhyKLZaiHdQ==
-X-Received: by 2002:a17:903:32cf:b0:1c9:c3eb:6557 with SMTP id i15-20020a17090332cf00b001c9c3eb6557mr3824638plr.0.1697025004127;
-        Wed, 11 Oct 2023 04:50:04 -0700 (PDT)
-Received: from [10.84.153.115] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d3-20020a170902c18300b001a5fccab02dsm13752060pld.177.2023.10.11.04.49.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 04:50:02 -0700 (PDT)
-Message-ID: <bdddc6f5-5e17-445b-bd86-dc14a8d17866@bytedance.com>
-Date:   Wed, 11 Oct 2023 19:49:52 +0800
+        Wed, 11 Oct 2023 07:51:38 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D978F;
+        Wed, 11 Oct 2023 04:51:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1697025096; x=1728561096;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ENlus2EeTQNt1s8MBQ6wB9jKJrlt1afKoZ52u5TMDbU=;
+  b=0JnUnNHrBKYjHvBARYl8fsEmbwVld1/8tJ6gB4yGf5nHh6tMqfhykdFS
+   1/eMCXW6Pk4ic+DYHEC1XVdCmUDpEO+beJNqPuM1A+nR1qGTFShbPCNCd
+   Hth5AnqoyW8Ef/q5O4zUdh+9pMq6roKS8a4Aq+uWZZdf9R1tkFrG1BcZH
+   jVoISrxA68SJk6pcYQOPOWdVNEeInfDV/aGQGgWxb9GilXNpyirLr1MWo
+   yQdrDO2AHB1zJBPD43FTENVnOe7YiTTb7Iq2kb1CA+klt/Muzv2vXCArt
+   YOGcRtIxqKrlDjv1ype+sQQ7Ekg0OhoHhsX4VV74/Sq6psUxcUbgYMaZW
+   g==;
+X-CSE-ConnectionGUID: y8hsGB0uS6iulb37QH09vw==
+X-CSE-MsgGUID: U54n4S/AQx+1Z+UmFL2HYQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="asc'?scan'208";a="9992908"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Oct 2023 04:51:35 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 11 Oct 2023 04:51:07 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 11 Oct 2023 04:51:04 -0700
+Date:   Wed, 11 Oct 2023 12:50:43 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+CC:     Conor Dooley <conor@kernel.org>, <mchehab@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <matthias.bgg@gmail.com>,
+        <moudy.ho@mediatek.com>, <hverkuil-cisco@xs4all.nl>,
+        <sakari.ailus@linux.intel.com>, <u.kleine-koenig@pengutronix.de>,
+        <linqiheng@huawei.com>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <kernel@collabora.com>,
+        <wenst@chromium.org>
+Subject: Re: [PATCH v2 1/2] media: dt-bindings: mediatek: Add phandle to
+ mediatek,scp on MDP3 RDMA
+Message-ID: <20231011-perky-squiggle-fca1d9a208e2@wendy>
+References: <20231005104905.120544-1-angelogioacchino.delregno@collabora.com>
+ <20231005104905.120544-2-angelogioacchino.delregno@collabora.com>
+ <20231006-jinx-playing-261e5f41ff7f@spud>
+ <d6386e5e-be7a-a68c-e592-1587380480d0@collabora.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Re: [PATCH 05/15] sched/fair: Implement an EEVDF like policy
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Benjamin Segall <bsegall@google.com>, mingo@kernel.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, mgorman@suse.de, bristot@redhat.com,
-        corbet@lwn.net, qyousef@layalina.io, chris.hyser@oracle.com,
-        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
-        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
-        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
-        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
-        tglx@linutronix.de
-References: <20230531115839.089944915@infradead.org>
- <20230531124603.931005524@infradead.org> <xm265y3sodyo.fsf@google.com>
- <a54a4ccb-9d56-4686-93b6-e9bbbe01f625@bytedance.com>
- <20231011073317.GJ14330@noisy.programming.kicks-ass.net>
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <20231011073317.GJ14330@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Rc+NsySQp8zSJPiL"
+Content-Disposition: inline
+In-Reply-To: <d6386e5e-be7a-a68c-e592-1587380480d0@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,26 +82,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/23 3:33 PM, Peter Zijlstra Wrote:
-> On Wed, Oct 11, 2023 at 12:14:30PM +0800, Abel Wu wrote:
-> 
->> there are cases worthy of breaking the 'eligible' rule.
-> 
-> See the discussion with Youssef, if we weaken the eligible rule you get
-> horrific interference because you end up placing new tasks around the
-> 0-lag point.
+--Rc+NsySQp8zSJPiL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have just begun studying the EEVDF scheduler, and obviously there
-are lots of things to catch up with :)
+On Wed, Oct 11, 2023 at 01:44:24PM +0200, AngeloGioacchino Del Regno wrote:
+> Il 06/10/23 01:36, Conor Dooley ha scritto:
+> > On Thu, Oct 05, 2023 at 12:49:04PM +0200, AngeloGioacchino Del Regno wr=
+ote:
+> > > The MDP3 RDMA needs to communicate with the SCP remote processor: all=
+ow
+> > > specifying a phandle to a SCP core.
+> > >=20
+> > > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@=
+collabora.com>
+> > > ---
+> > >=20
+> > > v2: I've dropped Conor and Chen-Yu's Reviewed-by tags because I have =
+changed
+> > >      the description (so, the patch actually changed a bit).
+> >=20
+> > I dunno, you made it more informative so you could probably have kept
+> > mine at least.
+> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> >=20
+>=20
+> I just wanted to be cautious with keeping Reviewed-by tags.
+>=20
+> Sometimes it's better to drop than unfairly keeping, I'm sure that you
+> understand my point here.
 
-At a quick glance at Youssef's first reply, I'm sure that's exactly
-the same as I thought about, the EVDF. The intention behind is w/o
-eligibility the task_timeline can be organized by deadline rather
-than vruntime, hence task selection can be done in O(1) while the
-min_vruntime can be updated through augmented rbtree.
+Oh aye, I do... And you did call out having dropped the tag, so I
+appreciate that too.
 
-Anyway, I will learn from your discussion with Youssef first, thanks
-for providing the info!
+> Btw, thank you!
 
-Best,
-	Abel
+nw chief
+
+--Rc+NsySQp8zSJPiL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSaMEwAKCRB4tDGHoIJi
+0iZCAQC9J0G4ycoWSMYOY5WgTUDjvr4DSd9fL2rijK7twuzoHAEA+WhktU1Srb1M
+dzXT1fXO1WpV2o/XUvwwDv6mWx8xZgI=
+=79cX
+-----END PGP SIGNATURE-----
+
+--Rc+NsySQp8zSJPiL--
