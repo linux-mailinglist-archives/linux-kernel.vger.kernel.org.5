@@ -2,106 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C80B67C4E4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857607C4E4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345663AbjJKJPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 05:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51154 "EHLO
+        id S1345676AbjJKJQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 05:16:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbjJKJO7 (ORCPT
+        with ESMTP id S230392AbjJKJQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 05:14:59 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61E794
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:14:57 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-405361bba99so60835475e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:14:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697015696; x=1697620496; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8dcsbzf8E/7eeyM/pc2wr1VcgxpBh3MPzSnBM0me6VQ=;
-        b=wgUdK2hGmpNfeGpf4cOHi88ZedLhd1HBmJ1wjnV0kPJOCZsyDJ6QIHvtb3Tw0VNswy
-         6JZ4tD2/vXfsDD2JIAhH4/F9TQtWaj7TF24vq8ZCPjC6ivi72XohpvYyTEt4G7HAEXCT
-         GNJ6UpkTlk6lq8Bc1gWn9sZh4p3Wl0Q4/+Jw0SGYhFFKysLMyQTvYAKBrRtt8nD1BgaE
-         bQw5Q1S7NMK8+BpuvUMzsrz9dQW0NCizhEAbYpNEnMu3aD10LUGbXMARzSmJwaocdts3
-         o8ow2hsLIXAJgB5ycvIBjMfpHWD7+XvtYTdzxg06UH18jNwdGgC8jUMfFT+fo7s+MVgK
-         Je7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697015696; x=1697620496;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8dcsbzf8E/7eeyM/pc2wr1VcgxpBh3MPzSnBM0me6VQ=;
-        b=mUOTOiaJd1SK8PAkrlkw7VFYGrHMvSiPxsTlq6RJff6fgvujoBQfyLcugaEYGAdKtL
-         3WZ1UbZRkhobMAb0ffh0sSP+w+1wMG6ks6lOJZfXtMFI+onj/eoNLpDb6LRigGYweBL0
-         p64C3y5cs2uLP8E0UbLYWNmI9uEclJp4oiXwUS9+U31gFNO6E8uV3C4wwKM6idWyViyJ
-         TMShfVHKYo0Qj1Qd7Zkw/1583VNeVEU8BVkXebjDgIIEUJkY1dUapd/NkLQ8m4KisHWz
-         V7Z7RIM8az4nmMvAdS14maL+PTeyb5vx0aZzu+9cTN2he2AxVjEKI7KwfL5AB1Tml5c1
-         PWbQ==
-X-Gm-Message-State: AOJu0Yx/eRqWEn61UF+I6rLvORr0e06nEAdO/q/tujTn/WgD124jecDx
-        /eVmepgXB3Ph1Z3sepwv5ZJ36w==
-X-Google-Smtp-Source: AGHT+IFiH+YSs/NYge2HLcC7hKWSTqv0Z71LvtzWkhS94lL06dO+Ooh7J+MIlnk7hzzqpwtUN5jE7Q==
-X-Received: by 2002:a7b:cbd4:0:b0:401:b76d:3b8b with SMTP id n20-20020a7bcbd4000000b00401b76d3b8bmr18890887wmi.16.1697015696048;
-        Wed, 11 Oct 2023 02:14:56 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:de95:eca9:6b1e:b330? ([2a05:6e02:1041:c10:de95:eca9:6b1e:b330])
-        by smtp.googlemail.com with ESMTPSA id bg24-20020a05600c3c9800b004063c9f68f2sm13391034wmb.26.2023.10.11.02.14.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 02:14:55 -0700 (PDT)
-Message-ID: <367c01e7-1096-47f2-a0da-920b0ea4b915@linaro.org>
-Date:   Wed, 11 Oct 2023 11:14:54 +0200
+        Wed, 11 Oct 2023 05:16:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC3394;
+        Wed, 11 Oct 2023 02:16:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697015779; x=1728551779;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Fx9J1E7J0SrvGRrspDVsB7omAjGwEoUiDQ5lyU/ZNnA=;
+  b=fJVqa82AxySGlnfAIHViJA/+BQuWfvwPzsetCK4LWbgi/f/iw+2SXfe4
+   bMcBzodifWHHxh2sYwtrtcthXmmOXIaXvhYNaC/1RA91xzCjUMLvlxwAc
+   Bhr5Dp1YanuQWoW+F+kt4vcTbLfz/mfEU2K9cBTbD8Ee1rFb2Yl+xvibS
+   nQE4SZHV7p/xf0CquZL5GoEU1eRkFRm3QB28NAaDVgTi01Sidg+TMEZfQ
+   yu2BI1BNeRgc7eSaJ2wLypMzSJcNVdlcu33sflBwCepLkJdKtc4hm3Z3c
+   ZvQ6ODPkpyZZp/6HWEbEHrTOVs0zJFrikrh38RDOxSbZIr7YDzPZzd5Tc
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="384470289"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="384470289"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 02:16:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="824089261"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="824089261"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 11 Oct 2023 02:16:16 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qqVK9-00023b-3D;
+        Wed, 11 Oct 2023 09:16:13 +0000
+Date:   Wed, 11 Oct 2023 17:15:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Hengqi Chen <hengqi.chen@gmail.com>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        keescook@chromium.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, luto@amacapital.net, wad@chromium.org,
+        alexyonghe@tencent.com, hengqi.chen@gmail.com
+Subject: Re: [PATCH 2/4] seccomp, bpf: Introduce SECCOMP_LOAD_FILTER operation
+Message-ID: <202310111723.tp3m8LGq-lkp@intel.com>
+References: <20231009124046.74710-3-hengqi.chen@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 -next 4/4] clocksource/timer-riscv: ACPI: Add
- timer_cannot_wakeup_cpu
-Content-Language: en-US
-To:     Sunil V L <sunilvl@ventanamicro.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Atish Kumar Patra <atishp@rivosinc.com>
-References: <20230927170015.295232-1-sunilvl@ventanamicro.com>
- <20230927170015.295232-5-sunilvl@ventanamicro.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20230927170015.295232-5-sunilvl@ventanamicro.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009124046.74710-3-hengqi.chen@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/09/2023 19:00, Sunil V L wrote:
-> The timer capability to wakeup the cpu irrespective of its idle state is
-> provided by the flag in RHCT. Update the timer code to set this flag.
-> 
-> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-> ---
+Hi Hengqi,
 
-Applied, thanks
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on kees/for-next/seccomp]
+[also build test ERROR on bpf-next/master bpf/master kees/for-next/pstore kees/for-next/kspp linus/master v6.6-rc5 next-20231010]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Hengqi-Chen/seccomp-Refactor-filter-copy-create-for-reuse/20231010-100354
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/seccomp
+patch link:    https://lore.kernel.org/r/20231009124046.74710-3-hengqi.chen%40gmail.com
+patch subject: [PATCH 2/4] seccomp, bpf: Introduce SECCOMP_LOAD_FILTER operation
+config: um-allnoconfig (https://download.01.org/0day-ci/archive/20231011/202310111723.tp3m8LGq-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231011/202310111723.tp3m8LGq-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310111723.tp3m8LGq-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from kernel/seccomp.c:29:
+   In file included from include/linux/syscalls.h:90:
+   In file included from include/trace/syscall.h:7:
+   In file included from include/linux/trace_events.h:9:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     547 |         val = __raw_readb(PCI_IOBASE + addr);
+         |                           ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+         |                                                   ^
+   In file included from kernel/seccomp.c:29:
+   In file included from include/linux/syscalls.h:90:
+   In file included from include/trace/syscall.h:7:
+   In file included from include/linux/trace_events.h:9:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+         |                                                   ^
+   In file included from kernel/seccomp.c:29:
+   In file included from include/linux/syscalls.h:90:
+   In file included from include/trace/syscall.h:7:
+   In file included from include/linux/trace_events.h:9:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     584 |         __raw_writeb(value, PCI_IOBASE + addr);
+         |                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     692 |         readsb(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     700 |         readsw(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     708 |         readsl(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     717 |         writesb(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     726 |         writesw(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     735 |         writesl(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+>> kernel/seccomp.c:2046:8: error: call to undeclared function 'security_bpf_prog_alloc'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    2046 |         ret = security_bpf_prog_alloc(prog->aux);
+         |               ^
+   kernel/seccomp.c:2046:8: note: did you mean 'security_msg_msg_alloc'?
+   include/linux/security.h:1245:19: note: 'security_msg_msg_alloc' declared here
+    1245 | static inline int security_msg_msg_alloc(struct msg_msg *msg)
+         |                   ^
+>> kernel/seccomp.c:2056:8: error: call to undeclared function 'bpf_prog_new_fd'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    2056 |         ret = bpf_prog_new_fd(prog);
+         |               ^
+   12 warnings and 2 errors generated.
+
+
+vim +/security_bpf_prog_alloc +2046 kernel/seccomp.c
+
+  2031	
+  2032	static long seccomp_load_filter(const char __user *filter)
+  2033	{
+  2034		struct sock_fprog fprog;
+  2035		struct bpf_prog *prog;
+  2036		int ret;
+  2037	
+  2038		ret = seccomp_copy_user_filter(filter, &fprog);
+  2039		if (ret)
+  2040			return ret;
+  2041	
+  2042		ret = seccomp_prepare_prog(&prog, &fprog);
+  2043		if (ret)
+  2044			return ret;
+  2045	
+> 2046		ret = security_bpf_prog_alloc(prog->aux);
+  2047		if (ret) {
+  2048			bpf_prog_free(prog);
+  2049			return ret;
+  2050		}
+  2051	
+  2052		prog->aux->user = get_current_user();
+  2053		atomic64_set(&prog->aux->refcnt, 1);
+  2054		prog->type = BPF_PROG_TYPE_SECCOMP;
+  2055	
+> 2056		ret = bpf_prog_new_fd(prog);
+  2057		if (ret < 0)
+  2058			bpf_prog_put(prog);
+  2059		return ret;
+  2060	}
+  2061	#else
+  2062	static inline long seccomp_set_mode_filter(unsigned int flags,
+  2063						   const char __user *filter)
+  2064	{
+  2065		return -EINVAL;
+  2066	}
+  2067	
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
