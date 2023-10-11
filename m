@@ -2,171 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 737A67C4D2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA987C4D5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345033AbjJKIbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 04:31:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32846 "EHLO
+        id S230440AbjJKIiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 04:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344232AbjJKIbK (ORCPT
+        with ESMTP id S229957AbjJKIiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 04:31:10 -0400
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED259E;
-        Wed, 11 Oct 2023 01:31:04 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231011083103euoutp0292639907a430301ee2dbb76d84394fde~NAGPCv5033124531245euoutp02R;
-        Wed, 11 Oct 2023 08:31:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231011083103euoutp0292639907a430301ee2dbb76d84394fde~NAGPCv5033124531245euoutp02R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1697013063;
-        bh=c23HKEnm07lR0JjSW2N2NuGqLttQ0iruGe5RY3MyjYA=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=bIHFQv4DHDaMLEOTaYS6xqyAflmHaFX1SURfZ5ayiibBPqWEZbdS8B2l1O7+p/MM0
-         SE2kzGHxfUY5SQhVp2BCLwe6XPdPy5XKTKSZZpwsmRZULB8rX7mP05f0bED8Yn9sPW
-         yXYfetu9SQ3NcqKerr1nHC/MyjZlx4pwBxCS7p0c=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20231011083102eucas1p16b45762026096a11812a6211e77905b2~NAGO0iLSX2913829138eucas1p1R;
-        Wed, 11 Oct 2023 08:31:02 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 78.1E.37758.64D56256; Wed, 11
-        Oct 2023 09:31:02 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231011083102eucas1p23f187c8ac330799038a55b62c0e07686~NAGOYrXya1371313713eucas1p2q;
-        Wed, 11 Oct 2023 08:31:02 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231011083102eusmtrp2229867fd04eddaae5839485b8674a82d~NAGOYAKyz1417414174eusmtrp2l;
-        Wed, 11 Oct 2023 08:31:02 +0000 (GMT)
-X-AuditID: cbfec7f5-7ffff7000002937e-fc-65265d460b94
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 59.B2.25043.64D56256; Wed, 11
-        Oct 2023 09:31:02 +0100 (BST)
-Received: from CAMSVWEXC01.scsc.local (unknown [106.1.227.71]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20231011083102eusmtip238644f210741fa49f3c4e348aa6c8dfe~NAGOHZK1S0276502765eusmtip2J;
-        Wed, 11 Oct 2023 08:31:02 +0000 (GMT)
-Received: from localhost (106.210.248.232) by CAMSVWEXC01.scsc.local
-        (2002:6a01:e347::6a01:e347) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Wed, 11 Oct 2023 09:31:01 +0100
-Date:   Wed, 11 Oct 2023 10:36:12 +0200
-From:   Joel Granados <j.granados@samsung.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Luis Chamberlain <mcgrof@kernel.org>
-CC:     Jens Axboe <axboe@kernel.dk>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Linux Next Mailing List" <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patch in the sysctl tree
-Message-ID: <20231011083612.4hymwsvc43hrwm6h@localhost>
+        Wed, 11 Oct 2023 04:38:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F32193
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:37:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697013439;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E7J164Jv856pwHwwnBhSJ7e6PzthL3kRqEqL41tQ+DM=;
+        b=KxZiU2QW8Vpc4StTiYYPtcspNTQhJeW+XnRg9iZqt3VqQ+uqap6QpzLwUQNoYIb3GTgRt2
+        gXjN3spsyIE71K9W1hMbyqsW0TywjPhW//XSYPWLESvC7+7Hos4VzRhX+nfLfbiL2QQd1Q
+        K1FC76OK2Q7yP4vYMPwQyIP+RjuMC2A=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-1-llKCFs0TPlebHCUyFElKyw-1; Wed, 11 Oct 2023 04:37:03 -0400
+X-MC-Unique: llKCFs0TPlebHCUyFElKyw-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4074f9d17a5so18173665e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:37:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697013422; x=1697618222;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E7J164Jv856pwHwwnBhSJ7e6PzthL3kRqEqL41tQ+DM=;
+        b=XOJcIH5b4QLR9FXQ3Dsh8DMD/qP6NpnBrFU59tWAxor78XF/khEbhf/DeaG7aUa+ej
+         7l1Z9tDGK2MV39m+NTSA3TExUwJDg8r2MD6Pdzhuo7EVuKVe2iWoJRTbPg7Sncq8oZE4
+         JmtVIzWbD2bmnSIPHYvLKEH7s/v2ojtERlmdHbfBjf5tBo8FcE9IHQfL9lO+hwwE9j02
+         Hk7fPFY5V/COqokHS5qqou1zIzBXbvMZEK1COYUaWMWaWg946kc8wkVOLzkzMTh6V4g/
+         7zvHEpQhIKyhRcBB4dtkmKNJaD3IREgXiV5JyGlE3vhc78ORUQT2GtcduV3Yy/v/UO5z
+         D+tw==
+X-Gm-Message-State: AOJu0YySZt0GkGqUR/nDpn3dXQSHBZwRq/mOFT+Qz48lpgw1fyjBAcf1
+        49oF4OIib8XpAIjQIeja3EfJwzWm2f7yCYRIMHJ4MBKlIY/hHZdRwJX0erhVpNuiY8cUUmt56OM
+        1xFvvavl5NCHY4GgRDJ8rGrk5
+X-Received: by 2002:a5d:6549:0:b0:319:6caa:ada2 with SMTP id z9-20020a5d6549000000b003196caaada2mr17296327wrv.47.1697013422249;
+        Wed, 11 Oct 2023 01:37:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGLdbdkbYyfLcflQYmxxFwpoj7vs8zsEEpQXxYh+0xujwPn0ZUzvlgXcWRbym9VmYKIK7f2lA==
+X-Received: by 2002:a5d:6549:0:b0:319:6caa:ada2 with SMTP id z9-20020a5d6549000000b003196caaada2mr17296309wrv.47.1697013421899;
+        Wed, 11 Oct 2023 01:37:01 -0700 (PDT)
+Received: from localhost ([185.124.31.160])
+        by smtp.gmail.com with ESMTPSA id j13-20020adfe50d000000b003196b1bb528sm14727110wrm.64.2023.10.11.01.37.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 01:37:01 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 4/8] drm/ssd13xx: Use drm_format_info_min_pitch() to
+ calculate the dest_pitch
+In-Reply-To: <CAMuHMdWmzUx6iOhSSfNz4NyMZ0vY6Md6cn86S0BjOjhzzPuO=g@mail.gmail.com>
+References: <20231009183522.543918-1-javierm@redhat.com>
+ <20231009183522.543918-5-javierm@redhat.com>
+ <CAMuHMdWmzUx6iOhSSfNz4NyMZ0vY6Md6cn86S0BjOjhzzPuO=g@mail.gmail.com>
+Date:   Wed, 11 Oct 2023 10:37:00 +0200
+Message-ID: <87mswpsggj.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="stxij4fxwoknaead"
-Content-Disposition: inline
-In-Reply-To: <20231011162050.773ebb15@canb.auug.org.au>
-X-Originating-IP: [106.210.248.232]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCKsWRmVeSWpSXmKPExsWy7djPc7pusWqpBhc/6FmsvtvPZnF51xw2
-        i4ML2xgtbkx4ymgxdZmexda9V9kd2Dwab9xg87h8ttRj06pONo8HuzeweHzeJBfAGsVlk5Ka
-        k1mWWqRvl8CVcePnDqaCLzwVC//mNTDO5O5i5OSQEDCRmL+im72LkYtDSGAFo8TmCx+gnC+M
-        Ems6P7BCOJ8ZJQ7NXs4M03Lwyk4miMRyRoneZ9PZQBJgVbe7VSESWxklji47xgiSYBFQlbiw
-        +DITiM0moCNx/s0dsEkiAsESJxZeBdvHLLCPUWLqzblgk4QFrCWWX+hjAbF5BcwlNs1+zAxh
-        C0qcnPkEKM4B1FAh0fXRCMKUllj+jwOkghOouv/hbRaIQ5Ulrs98wQRh10qsPXYGbJWEQD+n
-        xIedn8HGSAi4SGx8DlUvLPHq+BZ2CFtG4v/O+UwQ9ZMZJfb/+wDVvJpRYlnjV6ip1hItV55A
-        dThKbF4OYoMM5ZO48VYQJMwMZE7aNp0ZIswr0dEmBFGtJrH63huWCYzKs5A8NgvhsVkIj80C
-        m6MjsWD3JzYMYW2JZQtfM0PYthLr1r1nWcDIvopRPLW0ODc9tdg4L7Vcrzgxt7g0L10vOT93
-        EyMwcZ3+d/zrDsYVrz7qHWJk4mA8xKgC1Pxow+oLjFIsefl5qUoivI8yVVKFeFMSK6tSi/Lj
-        i0pzUosPMUpzsCiJ86qmyKcKCaQnlqRmp6YWpBbBZJk4OKUamLwrwx9tsPRaP9HUY87B95v+
-        9L/fveWeifS7hD960q/rrbIU67Z5yzxpXcVSX2G0I+jjzaK1S2fP9455v0dRY+lcr635fB7F
-        v4vWf+2e+XQu41HxH1Gz7FYIiCpH2CmV8l8MWPj6FVsM29aW564lBg7z5Fjv3DuQMEFOhG9d
-        ScXHf7G9Ox6bqNw/unCb1Bnev880846cavT+ou77eZ9/o8FccweuJlGp836NB8rqNTPFelte
-        zA3kUeJSEv3hNPHpiURvBf+Us8xrSp9dZbwxT/Tb8e/CXx9/Z7oglvBryhpfhuy8oLjH8338
-        nXL0G7wnX5weuDggz0/a7/XLiAcczp8Vlxz7f/G62i+Tf0KyKUosxRmJhlrMRcWJAB/wPGfX
-        AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKIsWRmVeSWpSXmKPExsVy+t/xe7pusWqpBis381usvtvPZnF51xw2
-        i4ML2xgtbkx4ymgxdZmexda9V9kd2Dwab9xg87h8ttRj06pONo8HuzeweHzeJBfAGqVnU5Rf
-        WpKqkJFfXGKrFG1oYaRnaGmhZ2RiqWdobB5rZWSqpG9nk5Kak1mWWqRvl6CX8XLVP+aCTzwV
-        u679ZGxgnM7dxcjJISFgInHwyk6mLkYuDiGBpYwSfzcdYYNIyEhs/HKVFcIWlvhzrYsNougj
-        o8SzS8/YIZytjBKvb88Aq2IRUJW4sPgyE4jNJqAjcf7NHWYQW0QgWOLEwqtgDcwC+xglzszf
-        C9YgLGAtsfxCHwuIzStgLrFp9mNmiKldjBI3nj1ghkgISpyc+QSsiFmgTGL96m1AkziAbGmJ
-        5f84QMKcQL39D2+zQJyqLHF95gsmCLtW4tX93YwTGIVnIZk0C8mkWQiTIMJaEjf+vWTCENaW
-        WLbwNTOEbSuxbt17lgWM7KsYRVJLi3PTc4uN9IoTc4tL89L1kvNzNzEC43jbsZ9bdjCufPVR
-        7xAjEwfjIUYVoM5HG1ZfYJRiycvPS1US4X2UqZIqxJuSWFmVWpQfX1Sak1p8iNEUGIwTmaVE
-        k/OBCSavJN7QzMDU0MTM0sDU0sxYSZzXs6AjUUggPbEkNTs1tSC1CKaPiYNTqoFpQ2SQtsK1
-        XekbNy/oOTht8QdhS03riKVP1U+8l/9tuGVd/sy0rLj3b3cmsnlvMZ4aFvKX78hF6wVXX01Z
-        tDNtvY2f/+Llp9NYPjha83Ye4r27IERAc91qL72EeamfdHSF2c+o8+bJdzCv+bf3hfpzdqWl
-        djJ5ccY7+gvnzf3QnaHy8nZwm09umPWUvJOn9dn3zf2jU7Mm5YKblOnN3AtbP/jGudxwrlD7
-        VlPL9cRkJYPdjv3SC3b1dV9c/4Jp+S0zi71T9W5GrkuauuuSyZ5ToY+d/s72vZhkVDo3yrux
-        e+fCIy+z7VvTTaWqZH0XtHN12B0pYUq+4b5LsejK7UuNsQwOfkcOmXyrCNvlqcSoxFKckWio
-        xVxUnAgAw6H6P3gDAAA=
-X-CMS-MailID: 20231011083102eucas1p23f187c8ac330799038a55b62c0e07686
-X-Msg-Generator: CA
-X-RootMTR: 20231011052057eucas1p2876288636c2eaaf61a36985cffb29f8e
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231011052057eucas1p2876288636c2eaaf61a36985cffb29f8e
-References: <CGME20231011052057eucas1p2876288636c2eaaf61a36985cffb29f8e@eucas1p2.samsung.com>
-        <20231011162050.773ebb15@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---stxij4fxwoknaead
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-On Wed, Oct 11, 2023 at 04:20:50PM +1100, Stephen Rothwell wrote:
-> Hi all,
->=20
-> The following commit is also in the block tree as a different commit
-> (but the same patch):
->=20
->   80f3c6cfab37 ("cdrom: Remove now superfluous sentinel element from ctl_=
-table array")
->=20
-> This is commit
->=20
->   114b0ff62a65 ("cdrom: Remove now superfluous sentinel element from ctl_=
-table array")
->=20
-> in the block tree.
-Is this a warning on the merge? or did it actually error out? if it is a
-wraning and one of the two was skipped, it can be safely ignored as they
-are the same. I can also remove that commit from my set and send another
-version. @luis: How do you want to handle it?
+> Hi Javier,
+>
+> On Mon, Oct 9, 2023 at 8:36=E2=80=AFPM Javier Martinez Canillas
+> <javierm@redhat.com> wrote:
+>> Don't assume bpp of 1 and instead compute the destination pitch using the
+>> intermediate buffer pixel format info when doing a format conversion.
+>>
+>> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+>
+> Thanks for your patch!
+>
+>> --- a/drivers/gpu/drm/solomon/ssd13xx.c
+>> +++ b/drivers/gpu/drm/solomon/ssd13xx.c
+>> @@ -148,6 +148,8 @@ struct ssd13xx_plane_state {
+>>         struct drm_shadow_plane_state base;
+>>         /* Intermediate buffer to convert pixels from XRGB8888 to HW for=
+mat */
+>>         u8 *buffer;
+>> +       /* Pixel format info for the intermediate buffer */
+>> +       const struct drm_format_info *fi;
+>
+> This is really intermediate, as it is removed again in the next patch :-)
+>
+> In fact 60% of this patch is changed again in the next patch.
+> So perhaps combine this with the next patch?
+>
+
+I actually had it like that but then thought that maybe someone would say
+that should be a separate patch :) I will squash it then.
+
+> Gr{oetje,eeting}s,
+>
 
 --=20
+Best regards,
 
-Joel Granados
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
---stxij4fxwoknaead
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmUmXnoACgkQupfNUreW
-QU/i5Qv+NCv8awTRSurob6g5QJqggAPPU2CdAbRRUaJ4/LyN7MsgwhJGQC+ro7UV
-Fyit7H+QWrUyjKpFORjQVn3DzXfImnLUd0DtALJRRJsDgddWJ86dfW16gQMw+BG1
-CqD+R5fkruEe+fl6AwQe8JDKSb3tV8AMm7RcpY3z5L5Cbogd38yX1CkUqUCze7fM
-l416yH1h3Wqd7KYpKWJ/Wn59jdzIiPgQvy461Z9sfbmq5cTAM7sxdK5hK19+ZDz+
-Ya0tDRDADPVevKOKdpu+l1kUQ6eGgTUnGLDWLefuLuPLr1L2+hT9clLCALqtp8CO
-4jgHhgevrA0npvn1VcEiJCEZcrDUgZsMgdRUE5cr8bYjNP1h7iT/MRawKtlHd0WC
-xfhpz5EPtnDqhsUWRIfUt17BlxIgbZE4bZBxxtU+l8qfa83I0X3SeZDlDLBK8LX3
-Gkk4zQ7YSpc8JdOgnEMhKIVLo8zffHX3RGkPkrhpI87HW0D1J7les7VjNgYQN/ed
-fuwjxIoa
-=B94G
------END PGP SIGNATURE-----
-
---stxij4fxwoknaead--
