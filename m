@@ -2,279 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 546A17C4D6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EE27C4D65
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345054AbjJKInC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 04:43:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
+        id S1345300AbjJKImf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 04:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbjJKIm7 (ORCPT
+        with ESMTP id S229957AbjJKImd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 04:42:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C809C
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:42:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697013778; x=1728549778;
-  h=date:from:to:cc:subject:message-id;
-  bh=LsMIovqEUaR27HOOAetejFZcw/zB0oWv5jgCGPs0Gr0=;
-  b=locwar145yOvuifH9bG52hGu8UiZiDHHwsrj3Lc90cx1GeA+JhXKy2A0
-   2hUMkUy1tYQabVJ23idZjnxQJJmTNo4if+98A4XW7qZoI7HIH11+Mp3eO
-   JIFX+WKCNYzCn1H/YvVjTkCvVBFF+BeMZqaqzahlYsC7YXU/4ta2FjLh2
-   T1DtBGFRFVwpM/mjzftPk5PUQkvV5cqW5SH+hG2ny5cgX5Zdm3ewJCcLb
-   314LC47eGSQwLaNDrjuQqGQBbJRe5VJ4CVkWwJ/cxJZ1cpa+1cGs70jQI
-   0zsnBvYS6CAVP7ZAGdQvnpJiv4grzc9jGb+Rd4TdQ6ULSNeIvEaUlZhw5
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="3203810"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="3203810"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 01:42:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="730417930"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="730417930"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 11 Oct 2023 01:42:56 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qqUnt-00021L-3A;
-        Wed, 11 Oct 2023 08:42:53 +0000
-Date:   Wed, 11 Oct 2023 16:41:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/core] BUILD SUCCESS
- 4fbf8b136ded943f8661cf48270482ad1f5ce7bd
-Message-ID: <202310111653.B5CaEPUf-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Wed, 11 Oct 2023 04:42:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D124B93;
+        Wed, 11 Oct 2023 01:42:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61AE1C433C9;
+        Wed, 11 Oct 2023 08:42:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697013751;
+        bh=/qnCsWhvwJGmydL5cFopunMWv+54w3gBRXtRDqkm3Mo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Db5h7oG7HRhT0j2ZKdp8Krg7SPnXjuNjx2Sjo1zzsZZVC6a4g2b0i7l7W1Rtee219
+         QHEqRS0aSTOl/B93iRJcePiEzxMD9X9QaXPtoTUJJIbpdfYGg1WZkGL/upySXZOOmi
+         Bb4/LgU0qiUuaEsdpkaB02sCp9KGfk2nLsCpPJwYhyrqkXIZnUcQJX2lOMFz9p/fCP
+         apVub3lK2vbP6MNxKheZCxdXRYPrRJWYdlK8BuSCWSwg9qlP1VGTmaqOUstwp8s6aq
+         QjWC99i4o0m+7Du3ofOKBi0Llc0Ih9ek7oq8e05Y4JFZZEUN2R5/AIA6qbSMwx0m6b
+         1c6x2zZESjT/g==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50567477b29so8563817e87.3;
+        Wed, 11 Oct 2023 01:42:31 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzqW+XAxku8vsXyPbaPu+RogsW/LxiaDHSLWS61EfqIrnoQEuPT
+        GMCoK1Vnm3zid+R00PPZl5JbYOOdj1394nyXb5w=
+X-Google-Smtp-Source: AGHT+IEQ8N+hxnKlsY3kdHlMUmD2dB5AsGDgukW+xZ9lNPz+9WLrpyVRancG44N14b/uhYsTkc7NkZszxEOW8nSO8M4=
+X-Received: by 2002:a05:6512:2527:b0:4fe:279b:7603 with SMTP id
+ be39-20020a056512252700b004fe279b7603mr18296412lfb.14.1697013749583; Wed, 11
+ Oct 2023 01:42:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231010212530.63470-1-dimitri.ledkov@canonical.com>
+In-Reply-To: <20231010212530.63470-1-dimitri.ledkov@canonical.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 11 Oct 2023 10:42:18 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFVPnowdREEjVREy=KKY12nZUp58qL2b_u97=bOTz0wgA@mail.gmail.com>
+Message-ID: <CAMj1kXFVPnowdREEjVREy=KKY12nZUp58qL2b_u97=bOTz0wgA@mail.gmail.com>
+Subject: Re: [PATCH] crypto: mscode_parser: remove sha224 authenticode support
+To:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
-branch HEAD: 4fbf8b136ded943f8661cf48270482ad1f5ce7bd  locking/atomics: Use atomic_try_cmpxchg_release() to micro-optimize rcuref_put_slowpath()
+On Tue, 10 Oct 2023 at 23:25, Dimitri John Ledkov
+<dimitri.ledkov@canonical.com> wrote:
+>
+> It is possible to stand up own certificates and sign PE-COFF binaries
+> using SHA-224. However it never became popular or needed since it has
+> similar costs as SHA-256. Windows Authenticode infrastructure never
+> had support for SHA-224, and all secureboot keys used fro linux
 
-elapsed time: 1453m
+fro
 
-configs tested: 201
-configs skipped: 2
+> vmlinuz have always been using at least SHA-256.
+>
+> Given the point of mscode_parser is to support interoperatiblity with
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+interoperatibility
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231010   gcc  
-arc                   randconfig-001-20231011   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                           h3600_defconfig   gcc  
-arm                   randconfig-001-20231010   gcc  
-arm                   randconfig-001-20231011   gcc  
-arm                        vexpress_defconfig   clang
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231010   gcc  
-i386         buildonly-randconfig-001-20231011   gcc  
-i386         buildonly-randconfig-002-20231010   gcc  
-i386         buildonly-randconfig-002-20231011   gcc  
-i386         buildonly-randconfig-003-20231010   gcc  
-i386         buildonly-randconfig-003-20231011   gcc  
-i386         buildonly-randconfig-004-20231010   gcc  
-i386         buildonly-randconfig-004-20231011   gcc  
-i386         buildonly-randconfig-005-20231010   gcc  
-i386         buildonly-randconfig-005-20231011   gcc  
-i386         buildonly-randconfig-006-20231010   gcc  
-i386         buildonly-randconfig-006-20231011   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231010   gcc  
-i386                  randconfig-001-20231011   gcc  
-i386                  randconfig-002-20231010   gcc  
-i386                  randconfig-002-20231011   gcc  
-i386                  randconfig-003-20231010   gcc  
-i386                  randconfig-003-20231011   gcc  
-i386                  randconfig-004-20231010   gcc  
-i386                  randconfig-004-20231011   gcc  
-i386                  randconfig-005-20231010   gcc  
-i386                  randconfig-005-20231011   gcc  
-i386                  randconfig-006-20231010   gcc  
-i386                  randconfig-006-20231011   gcc  
-i386                  randconfig-011-20231010   gcc  
-i386                  randconfig-011-20231011   gcc  
-i386                  randconfig-012-20231010   gcc  
-i386                  randconfig-012-20231011   gcc  
-i386                  randconfig-013-20231010   gcc  
-i386                  randconfig-013-20231011   gcc  
-i386                  randconfig-014-20231010   gcc  
-i386                  randconfig-014-20231011   gcc  
-i386                  randconfig-015-20231010   gcc  
-i386                  randconfig-015-20231011   gcc  
-i386                  randconfig-016-20231010   gcc  
-i386                  randconfig-016-20231011   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231010   gcc  
-loongarch             randconfig-001-20231011   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   clang
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                  cavium_octeon_defconfig   clang
-mips                          malta_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                   lite5200b_defconfig   clang
-powerpc                 mpc832x_rdb_defconfig   clang
-powerpc                 mpc834x_itx_defconfig   gcc  
-powerpc                      pcm030_defconfig   gcc  
-powerpc                    socrates_defconfig   clang
-powerpc                     tqm8555_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231010   gcc  
-riscv                 randconfig-001-20231011   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231010   gcc  
-s390                  randconfig-001-20231011   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                         microdev_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231010   gcc  
-sparc                 randconfig-001-20231011   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231010   gcc  
-x86_64       buildonly-randconfig-001-20231011   gcc  
-x86_64       buildonly-randconfig-002-20231010   gcc  
-x86_64       buildonly-randconfig-002-20231011   gcc  
-x86_64       buildonly-randconfig-003-20231010   gcc  
-x86_64       buildonly-randconfig-003-20231011   gcc  
-x86_64       buildonly-randconfig-004-20231010   gcc  
-x86_64       buildonly-randconfig-004-20231011   gcc  
-x86_64       buildonly-randconfig-005-20231010   gcc  
-x86_64       buildonly-randconfig-005-20231011   gcc  
-x86_64       buildonly-randconfig-006-20231010   gcc  
-x86_64       buildonly-randconfig-006-20231011   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20231010   gcc  
-x86_64                randconfig-001-20231011   gcc  
-x86_64                randconfig-002-20231010   gcc  
-x86_64                randconfig-002-20231011   gcc  
-x86_64                randconfig-003-20231010   gcc  
-x86_64                randconfig-003-20231011   gcc  
-x86_64                randconfig-004-20231010   gcc  
-x86_64                randconfig-004-20231011   gcc  
-x86_64                randconfig-005-20231010   gcc  
-x86_64                randconfig-005-20231011   gcc  
-x86_64                randconfig-006-20231010   gcc  
-x86_64                randconfig-006-20231011   gcc  
-x86_64                randconfig-011-20231010   gcc  
-x86_64                randconfig-011-20231011   gcc  
-x86_64                randconfig-012-20231010   gcc  
-x86_64                randconfig-012-20231011   gcc  
-x86_64                randconfig-013-20231010   gcc  
-x86_64                randconfig-013-20231011   gcc  
-x86_64                randconfig-014-20231010   gcc  
-x86_64                randconfig-014-20231011   gcc  
-x86_64                randconfig-015-20231010   gcc  
-x86_64                randconfig-015-20231011   gcc  
-x86_64                randconfig-016-20231010   gcc  
-x86_64                randconfig-016-20231011   gcc  
-x86_64                randconfig-071-20231010   gcc  
-x86_64                randconfig-071-20231011   gcc  
-x86_64                randconfig-072-20231010   gcc  
-x86_64                randconfig-072-20231011   gcc  
-x86_64                randconfig-073-20231010   gcc  
-x86_64                randconfig-073-20231011   gcc  
-x86_64                randconfig-074-20231010   gcc  
-x86_64                randconfig-074-20231011   gcc  
-x86_64                randconfig-075-20231010   gcc  
-x86_64                randconfig-075-20231011   gcc  
-x86_64                randconfig-076-20231010   gcc  
-x86_64                randconfig-076-20231011   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
+> typical de-facto hashes, remove support for SHA-224 to avoid
+> posibility
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+the possibility
+
+> of creating interoperatibility
+
+interoperability
+
+> issues with rhboot/shim,
+> grub, and non-linux systems trying to sign or verify vmlinux.
+>
+> SHA-224 itself is not removed from the kernel, as it is truncated
+> SHA-256. If requested I can write patches to remove SHA-224 support
+> across all of the drivers.
+>
+
+We can stop using it but we cannot remove it.
+
+As you say, it is just SHA-256 with a different initial state and a
+truncated hash, so removing support entirely achieves very little. And
+there are plenty of other algorithms we'd be happy to remove first if
+we were only sure that nobody was relying on them. (Note that AF_ALG
+supports AEAD so someone somewhere could be using the kernel's sha224
+from user space)
+
+> Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+
+> ---
+>  crypto/asymmetric_keys/mscode_parser.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/crypto/asymmetric_keys/mscode_parser.c b/crypto/asymmetric_keys/mscode_parser.c
+> index 6416bded0e..855cbc46a9 100644
+> --- a/crypto/asymmetric_keys/mscode_parser.c
+> +++ b/crypto/asymmetric_keys/mscode_parser.c
+> @@ -84,9 +84,6 @@ int mscode_note_digest_algo(void *context, size_t hdrlen,
+>         case OID_sha512:
+>                 ctx->digest_algo = "sha512";
+>                 break;
+> -       case OID_sha224:
+> -               ctx->digest_algo = "sha224";
+> -               break;
+>
+>         case OID__NR:
+>                 sprint_oid(value, vlen, buffer, sizeof(buffer));
+> --
+> 2.34.1
+>
