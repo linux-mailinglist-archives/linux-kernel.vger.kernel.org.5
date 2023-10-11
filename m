@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BBB7C4929
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FF17C492C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbjJKFXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 01:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57614 "EHLO
+        id S229846AbjJKFZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 01:25:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjJKFXD (ORCPT
+        with ESMTP id S229607AbjJKFZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 01:23:03 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4C98E
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:23:00 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c9bca1d96cso10175205ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:23:00 -0700 (PDT)
+        Wed, 11 Oct 2023 01:25:19 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DF798
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:25:18 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-692a885f129so4999332b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:25:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697001780; x=1697606580; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697001918; x=1697606718; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yd6bY2jeOYPiGoBLqHgpAOXMIaT9UW6PlUc9Ge/NMwY=;
-        b=QK537KTWAZDpVxT8hVhq/ldQse2qAiHTDZr9cCWmZpC6DHg6ShHFvO/3AdGAXvHglH
-         pF+4qK0mIjElQv5aCYseWRglogJw6bP8f9ZKfNUgd6P6emwoRzuneks1hpOFXwNJt5G2
-         +ASdCoF5qIcZBVpaJRNLO8qRbDLNxmyUTHkm5yXdbOMa1wT7RbQTISwIvuUSHyyVHRH9
-         hk6Gx1M254Ikh0bNTpDpMEQjltf3brVj+K7TfyOVpW4p+k/r1X2a7oLzqxiABImsc2jS
-         fUEyhSwkykyaCNfCSS7TFpArR7my1TDGaHIPPXWTAW72udkkmmooiPBiM/h6rkac9U/p
-         7osg==
+        bh=2X9IQoOZGMUd+FMDOO6oLZGueNPvW1McZHYWaIOMgqo=;
+        b=ruevlGS30ahfo4JPE/T4VeeQbLNEc3tUIcmXWmEI+r/FnyAyobKIhfzR66O0B3e73o
+         /Ne1qBFphy2hZIOnGFNk9N0QyDHfyORgJCy2kHGFNDDyjiOPVwnkpuIzOyshpqXhBhQ2
+         QHo9ahV0QdWGqAbSf60p8nqd2WFHNebTo3B1BYF23h5V4RZO2TY3nTuxeqhDgrtqSN8T
+         C4T6bdj7OYbfm1xYFva+9t5JZinECgNEq3ZHq8FCegzezzDSxgLYupx94LAnlQfsB7Me
+         rd/44bBNthKCGkLGxVQCGGmQxy1iY8ITfw2ue6YfL85QEhYw30RvF7PBIwZcimoEERwW
+         6MFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697001780; x=1697606580;
+        d=1e100.net; s=20230601; t=1697001918; x=1697606718;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Yd6bY2jeOYPiGoBLqHgpAOXMIaT9UW6PlUc9Ge/NMwY=;
-        b=ps//wuuKhdOyZ+ZTn6UT9+RMAK2FaISfFRiq+QPsNFSZBi5zy1z7DEQxWvYAw3F+bW
-         la04Foec016K1wFCyfQR94zV4AYAmY1QutNxHnHC6EpMPtD/HWI1hHHuNo7d+nzhK1iB
-         fz4Esca1bEyLPV7OerXOyqPTMMBKinHHYXqAk4YjJ7o6rPKUAuMdMntfkpHZsaeGUi7m
-         F6g6uGnmO8tH7cHajVRkzdn05ALJmes/rz99fVFn7zi1ENJDCOO53T4tplQo0luwxpli
-         0pGgLTfyFjqQeMWDk+MdWKi9lDGbrb82RDetJQ9RyaSkCmafm2PxsLQf6L2jJ1ToB5F5
-         ODmg==
-X-Gm-Message-State: AOJu0YwIUZdqbisBwOQkQZYabeJ6vqo1+jizMztQit9eJ282yHMM5Rg9
-        HO1p5dWLY8EebmnXhk6adHea4CcDNRgPaSsx3Xg=
-X-Google-Smtp-Source: AGHT+IFFch8XhhW5FVKRD1ftq3ydV2OUtAQX2dMkC9Xm4ZBmUHqzpv2pnzUIv8pgy4KFsYI7apOtag==
-X-Received: by 2002:a17:90b:1e02:b0:27d:775:56d9 with SMTP id pg2-20020a17090b1e0200b0027d077556d9mr327774pjb.15.1697001780213;
-        Tue, 10 Oct 2023 22:23:00 -0700 (PDT)
+        bh=2X9IQoOZGMUd+FMDOO6oLZGueNPvW1McZHYWaIOMgqo=;
+        b=UKi9sj9mxiQakX88sizgiITDUd1sy3P7Uv0/w5NPZzBnrXtPF/831wh5uHK19upWsB
+         6boYLhxPufkV1vXmmWh+W5/030d2SY2L/OTMRvRgIXrIFQTTTEg3G1tjbSJroOuEAqkv
+         2f5Sv2Sbxb3Qra/6xTNj4B4aBZSSBMO7cT4YDuzTeIQrQxr5wYl4Ya4C8GX5EdYwIPAL
+         /QboLdFUDdstF1WodyihZmp49Oy9aEAvc0JH48/SQEz1vTuSziM6gg5mnlk/4jr7cqgl
+         7d72zEXkNw31jAvPxtXYqL7IykkoRKwh9k5c2D4fx5AiMlrigO/bPLBy+Wt+JckaWhg0
+         4iog==
+X-Gm-Message-State: AOJu0YzJkJUzdPp/cr+PX/znNbfMECIvaqaNvu10LchKcg9wrrpfwflS
+        ZVYPPZw3fmY58TSE710NQeov0Q==
+X-Google-Smtp-Source: AGHT+IETB8Eka84sqAUHw9wYrQ3ztLrc9Q9WpG0L8eY+46cGLJIN+R1z8EF4UGAzwTJfFL4jsCIhyQ==
+X-Received: by 2002:a05:6a00:1388:b0:68c:a81:4368 with SMTP id t8-20020a056a00138800b0068c0a814368mr21030998pfg.6.1697001917883;
+        Tue, 10 Oct 2023 22:25:17 -0700 (PDT)
 Received: from localhost ([122.172.81.92])
-        by smtp.gmail.com with ESMTPSA id cf11-20020a17090aebcb00b00276bde3b8cesm12975235pjb.15.2023.10.10.22.22.58
+        by smtp.gmail.com with ESMTPSA id g2-20020a62e302000000b0069370f32687sm9427861pfh.174.2023.10.10.22.25.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 22:22:59 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 10:52:57 +0530
+        Tue, 10 Oct 2023 22:25:17 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 10:55:15 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Florian Fainelli <florian.fainelli@broadcom.com>
-Cc:     linux-kernel@vger.kernel.org, mmayer@broadcom.com,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "open list:CPU FREQUENCY SCALING FRAMEWORK" 
-        <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH] cpufreq: ARM_BRCMSTB_AVS_CPUFREQ cannot be used with
- ARM_SCMI_CPUFREQ
-Message-ID: <20231011052257.ly5g5zm5quqpcgfb@vireshk-i7>
-References: <20231010181626.3449090-1-florian.fainelli@broadcom.com>
+To:     Robert Marko <robimarko@gmail.com>
+Cc:     ilia.lin@kernel.org, vireshk@kernel.org, nm@ti.com,
+        sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        rafael@kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v5 1/4] cpufreq: qcom-nvmem: add support for IPQ8074
+Message-ID: <20231011052515.htggd4jlbwyizp26@vireshk-i7>
+References: <20230930102218.229613-1-robimarko@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231010181626.3449090-1-florian.fainelli@broadcom.com>
+In-Reply-To: <20230930102218.229613-1-robimarko@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-10-23, 11:16, Florian Fainelli wrote:
-> The brcmstb-avs-cpufreq driver is considered a legacy driver and since
-> 2018, ARCH_BRCMSTB systems have been using scmi-cpufreq. As a matter of
-> fact, when SCMI is in use, brcmstb-avs-cpufreq is unusable since the
-> SCMI firmware takes over, this can result in various problems, including
-> external synchronous aborts.
+On 30-09-23, 12:21, Robert Marko wrote:
+> IPQ8074 comes in 2 families:
+> * IPQ8070A/IPQ8071A (Acorn) up to 1.4GHz
+> * IPQ8072A/IPQ8074A/IPQ8076A/IPQ8078A (Hawkeye) up to 2.2GHz
 > 
-> Express those constraints such that the driver is not enabled by default
-> when SCMI CPU frequency scaling is in use.
+> So, in order to be able to share one OPP table lets add support for IPQ8074
+> family based of SMEM SoC ID-s as speedbin fuse is always 0 on IPQ8074.
 > 
-> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> IPQ8074 compatible is blacklisted from DT platdev as the cpufreq device
+> will get created by NVMEM CPUFreq driver.
+> 
+> Signed-off-by: Robert Marko <robimarko@gmail.com>
 > ---
->  drivers/cpufreq/Kconfig.arm | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
-> index 123b4bbfcfee..c287305820b7 100644
-> --- a/drivers/cpufreq/Kconfig.arm
-> +++ b/drivers/cpufreq/Kconfig.arm
-> @@ -90,7 +90,7 @@ config ARM_VEXPRESS_SPC_CPUFREQ
->  
->  config ARM_BRCMSTB_AVS_CPUFREQ
->  	tristate "Broadcom STB AVS CPUfreq driver"
-> -	depends on ARCH_BRCMSTB || COMPILE_TEST
-> +	depends on ARCH_BRCMSTB && !(ARM_SCMI_PROTOCOL && ARM_SCMI_CPUFREQ) || COMPILE_TEST
+> Changes in v4:
+> * Add support for IPQ8174 (Oak) family
 
-ARM_SCMI_CPUFREQ already implies ARM_SCMI_PROTOCOL, you don't need to
-add both here.
+Doesn't apply cleanly over my branch anymore, please resend. Thanks.
 
 -- 
 viresh
