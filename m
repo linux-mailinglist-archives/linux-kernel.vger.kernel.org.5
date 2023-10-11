@@ -2,113 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8607C57CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 17:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0057C57D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 17:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232714AbjJKPKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 11:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33136 "EHLO
+        id S232616AbjJKPLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 11:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232023AbjJKPKj (ORCPT
+        with ESMTP id S232659AbjJKPLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 11:10:39 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C0E92;
-        Wed, 11 Oct 2023 08:10:38 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5a7c08b7744so24486647b3.3;
-        Wed, 11 Oct 2023 08:10:38 -0700 (PDT)
+        Wed, 11 Oct 2023 11:11:21 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00C2B0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 08:11:18 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c9d4f08d7cso60195ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 08:11:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697037037; x=1697641837; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697037078; x=1697641878; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SZ+0EuF5YJZ4tWXxllxg0D8l6wWXIGY7EtMWeHX4c7w=;
-        b=KP5qF2OeNpMn93ow74BONaXtJRNUid8+Zudhqm7uiYmRjv9gclPgcRxHdodnzPXKsZ
-         hIioP8p4LlEJUJx8cjFG+E6ZYwIlhgUw1rN4UNHp+8Nw5ej7O34YHwmJXjClcG5AN0IC
-         EGVap9g6zCYbIHn0Mqf13S5fYml7tfzjbNeu9vaA1kkw/7B/sWVJUjtoYxjCQWzaIKdJ
-         W2EzbPgxJL26LGnI4F/5msmGBnXC/k9RDT+npSwd/swpjot6v4GUibpszXvJHijGux6J
-         nbpoYK8B78tuG1yM6416JKuDplBrjWWRsn0BOB7zZjyQI9FWM0nhzHzghQcujFNRby85
-         VkPw==
+        bh=Ysq39f+RxeDX0QxC2g4cZxAZIgMWhz132Glg6XcD8zQ=;
+        b=1+XlyBtvlLoKGwmtBONU4oGiB3nbY3ZkaSIc6DrJsXlozmjgauAuKB9/VfZmP279Lf
+         NmAjve4A+YsfP9P3x6Z6zeayx0TRWAMEiaItASA9rStC442xFjhlEFSlcXibhZDgTY7T
+         FUEiml5OhDE8rX2RWqCE45O5FWG3eOaSkyOm5f7Giay9w+DbxxmE+1vXOBvUzBHFIEnd
+         s3c0Xm7LqupOXFobMF8SKpdwEmSdVavv80w1LSncTxuvq7kzNvI+HzEg9eINhGIm7Ncp
+         6oUJhPvc2JfvOc0jKPLovblnh88XWRVQFsAnVov4ip9ZDoiZtU7TGrKR9qfitlGaGeaD
+         FEkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697037037; x=1697641837;
+        d=1e100.net; s=20230601; t=1697037078; x=1697641878;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SZ+0EuF5YJZ4tWXxllxg0D8l6wWXIGY7EtMWeHX4c7w=;
-        b=ma/mAeQCRfY0ozHuHM+dOKvoEM/EXYVkZJjxAoCl54TQ7GvTN0qhlZkR4/mCiQOIl6
-         aINetnQJkRdTwL1WybgrEXM46QwLZeKxm3CdpjqM4pm6/vrtzAYOE7ppER/tGqnpXiUl
-         DXdsnj/cuZI971ldDj0NoHaFyI1xSRbm8tQXhkkB6DmYqC3TlFwzKQ9tIT0fqh30qYGb
-         XRIMB2W10Hze7My8fS5lh0w5z+EAwU4N2X3SUvfLF9PRhiSAx7bMSrjFfNL27axXxEeh
-         /Wcqn9C07jyXaUczK+gJAtmpHRqsW7PhS+AeR9OHbSmzCl21o2jYiHe51KZ8pHhf9xzB
-         oAcg==
-X-Gm-Message-State: AOJu0YzLsTJepzrw+J1zkvN+pDiNMfeJ0ipQNfDDuCgLjgcZavn75n/A
-        P1sF2kCOjAftGVTn4E3TLI3DIjNT5NbEwhk712kQspuj
-X-Google-Smtp-Source: AGHT+IGdSl2Whfuh8VaSaCZZjAv8aeW1G1qfz4PqmqtReXfeNe8t6+LxRbeH2GPJZ0VIaIOU4QL1EIZNdb1IVBPiFSg=
-X-Received: by 2002:a05:690c:d87:b0:5a5:7ed:cf80 with SMTP id
- da7-20020a05690c0d8700b005a507edcf80mr25137034ywb.23.1697037037500; Wed, 11
- Oct 2023 08:10:37 -0700 (PDT)
+        bh=Ysq39f+RxeDX0QxC2g4cZxAZIgMWhz132Glg6XcD8zQ=;
+        b=F/Vb9ujUclX6ubW4z22Pl07R5ebSrE9ZJpQvrz/ZBqUFaiMDkwPqkuT1G3YccHqcOx
+         zFiWXgmjy1LnyjJr7BbV0giU15lWOzATiTPJyvDxm0/d2RDNTNMpwZf4r0yKTmsOAubO
+         IMa954UXpU0eb6r3SJn1Ov6SxLvnMuNNV3rpUFjtrt5XeWVPH00y2d2pp0McEmRkNMtG
+         3frktiJ/I/uOlxXgcWv5On324th6Bs8dRud1mx9zTmEy+ZiRImCbgT6ou5EiCEorTVh/
+         qwSspMIvThV8yb9do2/Q4OQzJykU0Zos1JICwz/jGRITyUGH3/vZHBmzqoEcWf34Ko1w
+         M8bQ==
+X-Gm-Message-State: AOJu0Ywvh9/CMkYBAsxioejDMVq9lhMFh/oCkpIqcxPoiF8w8ZSR7u/G
+        Hem+RT0vQF3sJ3TJpzPC4t6nclQPdbRVPwVQbIdRcQ==
+X-Google-Smtp-Source: AGHT+IE+7M622fVnoDLgJHtsFi0t4ael64syMh6Fu5jaC4A4ui2zUGTpZ++FeUNQsKe7If7WQC+EoGIipP1ya8Ox4w0=
+X-Received: by 2002:a17:902:c641:b0:1c7:47ca:f075 with SMTP id
+ s1-20020a170902c64100b001c747caf075mr197756pls.15.1697037078136; Wed, 11 Oct
+ 2023 08:11:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230906095143.99806-1-aford173@gmail.com> <8cf5b8d1-5f03-438a-94bb-5691dee8cc86@lunn.ch>
- <CAHCN7xJ_2HjQ8iCYimPG+CiMQuDy7YpG2sf6Vq30VsddaSs8CQ@mail.gmail.com> <14224244-836e-4151-86e9-03414aabfe56@lunn.ch>
-In-Reply-To: <14224244-836e-4151-86e9-03414aabfe56@lunn.ch>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Wed, 11 Oct 2023 10:10:24 -0500
-Message-ID: <CAHCN7x+Dzy9+VgJGwHtm3PpW2p3GtQCsm0cdr8imm5KivuB-FQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] net: ethernet: davinci_emac: Use MAC Address from
- Device Tree
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     linux-omap@vger.kernel.org, aford@beaconembedded.com,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <0000000000001db97f06075bf98b@google.com> <20231010142050.GA128254@cmpxchg.org>
+In-Reply-To: <20231010142050.GA128254@cmpxchg.org>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Wed, 11 Oct 2023 17:11:06 +0200
+Message-ID: <CANp29Y75YE2Z6HDJ=OJ0RhPjniEzja6jx9QQ0PGrtqLkpjoUww@mail.gmail.com>
+Subject: Re: [syzbot] [cgroups?] [mm?] WARNING in mem_cgroup_migrate
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     syzbot <syzbot+831ba898b5db8d5617ea@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 10:00=E2=80=AFAM Andrew Lunn <andrew@lunn.ch> wrote=
-:
+On Tue, Oct 10, 2023 at 4:20=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
 >
-> > I don't know who the right person is to ask, but is there any chance
-> > this can be accepted?
+> This is the earlier version of the hugetlb cgroup accounting patches
+> that trigger on an uncharged hugetlbfs:
 >
-> It did not help you did not make it clear who you want to merge the
-> patches. It is a good idea to use To: with the Maintainer you would
-> like to do the merge and Cc: for the others.
-
-I use ./scripts/get_maintainer to generate a list of maintainers for
-the respective patches, and they should have all been CC'd.
+>   7547          /*
+>   7548           * Note that it is normal to see !memcg for a hugetlb fol=
+io.
+>   7549           * It could have been allocated when memory_hugetlb_accou=
+nting was not
+>   7550           * selected, for e.g.
+>   7551           */
+>   7552          VM_WARN_ON_ONCE_FOLIO(!memcg, old);
 >
-> What is the state of patches? Has the other patch been merged?  If
-> just the driver change is left, please repost is on its own, and
-> follow:
-
-The device tree part has been accepted by Tony into the OMAP tree.
-I'll split the driver off, do a V2, and just fetch the maintainer of
-the driver itself and CC netdev.
-
+> It's been fixed in the revision that's in the latest next release:
 >
-> https://www.kernel.org/doc/html/latest/process/maintainer-netdev.html#net=
-dev-faq
+>   7539          /*
+>   7540           * Note that it is normal to see !memcg for a hugetlb fol=
+io.
+>   7541           * For e.g, itt could have been allocated when memory_hug=
+etlb_accounting
+>   7542           * was not selected.
+>   7543           */
+>   7544          VM_WARN_ON_ONCE_FOLIO(!folio_test_hugetlb(old) && !memcg,=
+ old);
+>   7545          if (!memcg)
+>   7546                  return;
+>
+> > Modules linked in:
+> > CPU: 1 PID: 5208 Comm: syz-executor.1 Not tainted 6.6.0-rc4-next-202310=
+05-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
+ Google 09/06/2023
+> > RIP: 0010:mem_cgroup_migrate+0x2fa/0x390 mm/memcontrol.c:7552
+> > Code: f7 ff e9 36 ff ff ff 80 3d 84 b2 d1 0c 00 0f 85 54 ff ff ff 48 c7=
+ c6 a0 9e 9b 8a 48 89 ef e8 0d 5c df ff c6 05 68 b2 d1 0c 01 <0f> 0b e9 37 =
+ff ff ff 48 c7 c6 e0 9a 9b 8a 48 89 df e8 f0 5b df ff
+> > RSP: 0018:ffffc90004b2fa38 EFLAGS: 00010246
+> > RAX: 0000000000040000 RBX: ffffea0005338000 RCX: ffffc90005439000
+> > RDX: 0000000000040000 RSI: ffffffff81e76463 RDI: ffffffff8ae96da0
+> > RBP: ffffea0001d98000 R08: 0000000000000000 R09: fffffbfff1d9db9a
+> > R10: ffffffff8ecedcd7 R11: 0000000000000000 R12: 0000000000000000
+> > R13: 0000000000000200 R14: 0000000000000000 R15: ffffea0001d98018
+> > FS:  00007fc15e89d6c0(0000) GS:ffff8880b9900000(0000) knlGS:00000000000=
+00000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000001b31820000 CR3: 000000007f5e1000 CR4: 00000000003506f0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  <TASK>
+> >  hugetlbfs_migrate_folio fs/hugetlbfs/inode.c:1066 [inline]
+> >  hugetlbfs_migrate_folio+0xd0/0x120 fs/hugetlbfs/inode.c:1049
+> >  move_to_new_folio+0x183/0x690 mm/migrate.c:966
+> >  unmap_and_move_huge_page mm/migrate.c:1428 [inline]
+> >  migrate_hugetlbs mm/migrate.c:1546 [inline]
+> >  migrate_pages+0x16ac/0x27c0 mm/migrate.c:1900
+> >  migrate_to_node mm/mempolicy.c:1072 [inline]
+> >  do_migrate_pages+0x43e/0x690 mm/mempolicy.c:1171
+> >  kernel_migrate_pages+0x59b/0x780 mm/mempolicy.c:1682
+> >  __do_sys_migrate_pages mm/mempolicy.c:1700 [inline]
+> >  __se_sys_migrate_pages mm/mempolicy.c:1696 [inline]
+> >  __x64_sys_migrate_pages+0x96/0x100 mm/mempolicy.c:1696
+> >  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+> >  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > RIP: 0033:0x7fc15da7cae9
+> > Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89=
+ f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 =
+ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+> > RSP: 002b:00007fc15e89d0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000100
+> > RAX: ffffffffffffffda RBX: 00007fc15db9bf80 RCX: 00007fc15da7cae9
+> > RDX: 0000000020000340 RSI: 0000000000000080 RDI: 0000000000000000
+> > RBP: 00007fc15dac847a R08: 0000000000000000 R09: 0000000000000000
+> > R10: 00000000200003c0 R11: 0000000000000246 R12: 0000000000000000
+> > R13: 000000000000000b R14: 00007fc15db9bf80 R15: 00007ffd87d7c058
+> >  </TASK>
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> >
+> > If the bug is already fixed, let syzbot know by replying with:
+> > #syz fix: exact-commit-title
+>
+> #syz fix: next-20231010
 >
 
-Thanks!
+Thanks for sharing the info and updating the issue!
 
-adam
+If there's no fixing commit (the faulty series is dropped or
+replaced), it's better to just invalidate the report:
 
->         Andrew
+#syz invalid
+
+Otherwise, as in this case, syzbot would start looking for the
+"next-20231010" commit (and won't find it because it's a tag) and,
+after some time, start complaining that no such commit is reachable
+from any of the master branches of the tested trees.
+
+--=20
+Aleksandr
