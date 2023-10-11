@@ -2,71 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB707C5AB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F1A7C5AC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345928AbjJKSBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 14:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36828 "EHLO
+        id S234906AbjJKSCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 14:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232952AbjJKSBI (ORCPT
+        with ESMTP id S234931AbjJKSCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 14:01:08 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB5194
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:01:04 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-58530660c1bso54093a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:01:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697047264; x=1697652064; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=C+DWGMBxP+X45X3NzNtwuI8J+qvPFiJhuYh3mGuN+4Y=;
-        b=NtXkhzo6LO2lFL/WcUETASNsHUREqn0/g5VAmIBc3Th67by7Aqwow9qnRpP12DMhck
-         Lgo7PQhBMShJLySxuUI0Q+QnYt5hLCup2bPP/1krjLbWeVS1GP5pV/8LZrsFFVr8aHl6
-         M6bv1pEac7nI5wL5myKe6lVHFHa/qABoe1kyGnc6aXkxwG4/v/4uDd82yzBEBAQ0H32d
-         xjw2aq79HerVBvpMgjU+o/h4qdQD8+lUCP7clsn95QVavxtE9PmjCXRZ/6mkD0n976uM
-         ne3PZniVdhjo0nFlLcYUfjiqxAT+vGtr9gvBbVTS5O3DU8+vIhJdutDXdkVS1Pgh7oml
-         +R1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697047264; x=1697652064;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C+DWGMBxP+X45X3NzNtwuI8J+qvPFiJhuYh3mGuN+4Y=;
-        b=VAhqO3SKFgY2NBS2ykZBkFMp/dEM7CIZT3Jir9iPqpIgUGmiKTcDV+thPcT/RTTItK
-         nfmYI1nNu4ZjnlqrrTTA7gZPoBehaQwjxgtI6fW89Ooot2hngIfqC4TVjTlmv5fXzeBy
-         l/m2gIp6DmVzTcXsGKuOMZtdsVz6XTJUEZl6oYj4eE+cT8OIEAkX85m14Ndj0WkSo7TJ
-         EC8zPuKyXy71v1xTSvpNfUuFsGCHW3kfyDpyOip08B/LoCvK1tQwFsjS0vVA8mH1vzKw
-         0ledZ/E36nherhHAY+Rf1/SoIa8pQYmojneGA1pNDdjro+xDxGeeTyjFMYP8qDxDPoW2
-         gAow==
-X-Gm-Message-State: AOJu0Yyj5eKJlIIHlSzgjPW6tC9rQsSem/1QCy3HcbVTgqR/SksIQSiq
-        ZHpY9Fd4e2pTfHLwS02geIzHOLjSkw4Ysw==
-X-Google-Smtp-Source: AGHT+IGkqLhyk3oyzH+Hu7kZ7pieBGNQ3+eycDmqdFOkXR4RRfzAJ7dTAFgFlQdHrc6gbVBzcW98hymL+VJROQ==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a63:704d:0:b0:581:8024:fe01 with SMTP id
- a13-20020a63704d000000b005818024fe01mr330395pgn.3.1697047264093; Wed, 11 Oct
- 2023 11:01:04 -0700 (PDT)
+        Wed, 11 Oct 2023 14:02:40 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110FAC9
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:02:38 -0700 (PDT)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BHEYmG030258;
+        Wed, 11 Oct 2023 18:02:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2023-03-30;
+ bh=2mZcSGe3FzfHE/vlEIGzQ9dh0t3lEx4SdkFt3rsMtnA=;
+ b=yqNFdm5kz1bG5w28LHy082VBxDjHC0PuG20YKGHfcfZasAIP9JnuKD8l7vC+MJEdpsW2
+ YFtgKxBD6hCNATTQK4nE7EVinUPQozLa+MI3lacW3FctXD2pkuPdovjHd82d+IQdnhNY
+ kU5/a4lwUTeRaqgKt9nwrwOhTZVSiT6/fMwLH1zBOJST4Y6aX1Ab7pFsk0Xgi8pL7E+n
+ li/lqko7I2OxpGCqABxsFc0uVHVAjmCve/UlkrHRlWLxnbyLcAxngzPVNm9qapsGtam3
+ 0yDg1xUY7c8jJpZvB3MPMXfqfXZi9mevUatzSCLcpyFu7BgnDK8Zwy7EzcrDrpEnIwht CQ== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tmh90xce9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Oct 2023 18:02:11 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39BGjvv1002533;
+        Wed, 11 Oct 2023 18:02:10 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tjwsedscr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Oct 2023 18:02:10 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39BI1eE4029797;
+        Wed, 11 Oct 2023 18:02:09 GMT
+Received: from mlluis-mac.uk.oracle.com (dhcp-10-175-192-63.vpn.oracle.com [10.175.192.63])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3tjwsedrg7-3;
+        Wed, 11 Oct 2023 18:02:09 +0000
+From:   Miguel Luis <miguel.luis@oracle.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev
+Cc:     miguel.luis@oracle.com
+Subject: [PATCH v3 2/3] arm64: Add missing _EL2 encodings
 Date:   Wed, 11 Oct 2023 18:01:01 +0000
-In-Reply-To: <20231010000929.450702-3-roman.gushchin@linux.dev>
-Mime-Version: 1.0
-References: <20231010000929.450702-1-roman.gushchin@linux.dev> <20231010000929.450702-3-roman.gushchin@linux.dev>
-Message-ID: <20231011180101.o2ha6awrupojcu6h@google.com>
-Subject: Re: [PATCH v2 2/5] mm: kmem: add direct objcg pointer to task_struct
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+Message-Id: <20231011180103.91774-3-miguel.luis@oracle.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231011180103.91774-1-miguel.luis@oracle.com>
+References: <20231011180103.91774-1-miguel.luis@oracle.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_12,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
+ suspectscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310110159
+X-Proofpoint-GUID: 4mRDZMXkyKRdbzeZ77U61UijCAnSsfbs
+X-Proofpoint-ORIG-GUID: 4mRDZMXkyKRdbzeZ77U61UijCAnSsfbs
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,18 +83,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 05:09:26PM -0700, Roman Gushchin wrote:
-[...]
-> +static void mem_cgroup_kmem_attach(struct cgroup_taskset *tset)
-> +{
-> +	struct task_struct *task;
-> +	struct cgroup_subsys_state *css;
-> +
-> +	cgroup_taskset_for_each(task, css, tset) {
-> +		/* atomically set the update bit */
-> +		set_bit(0, (unsigned long *)&current->objcg);
+Some _EL2 encodings are missing. Add them.
 
-task instead of current ??
+Signed-off-by: Miguel Luis <miguel.luis@oracle.com>
+---
+ arch/arm64/include/asm/sysreg.h | 37 +++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-> +	}
-> +}
+diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+index ba5db50effec..d8e8607c9de8 100644
+--- a/arch/arm64/include/asm/sysreg.h
++++ b/arch/arm64/include/asm/sysreg.h
+@@ -484,6 +484,7 @@
+ 
+ #define SYS_SCTLR_EL2			sys_reg(3, 4, 1, 0, 0)
+ #define SYS_ACTLR_EL2			sys_reg(3, 4, 1, 0, 1)
++#define SYS_SCTLR2_EL2			sys_reg(3, 4, 1, 0, 3)
+ #define SYS_HCR_EL2			sys_reg(3, 4, 1, 1, 0)
+ #define SYS_MDCR_EL2			sys_reg(3, 4, 1, 1, 1)
+ #define SYS_CPTR_EL2			sys_reg(3, 4, 1, 1, 2)
+@@ -497,6 +498,10 @@
+ #define SYS_VTCR_EL2			sys_reg(3, 4, 2, 1, 2)
+ 
+ #define SYS_TRFCR_EL2			sys_reg(3, 4, 1, 2, 1)
++#define SYS_SDER32_EL2			sys_reg(3, 4, 1, 3, 1)
++#define SYS_VNCR_EL2			sys_reg(3, 4, 2, 2, 0)
++#define SYS_VSTTBR_EL2			sys_reg(3, 4, 2, 6, 0)
++#define SYS_VSTCR_EL2			sys_reg(3, 4, 2, 6, 2)
+ #define SYS_HAFGRTR_EL2			sys_reg(3, 4, 3, 1, 6)
+ #define SYS_SPSR_EL2			sys_reg(3, 4, 4, 0, 0)
+ #define SYS_ELR_EL2			sys_reg(3, 4, 4, 0, 1)
+@@ -514,6 +519,18 @@
+ 
+ #define SYS_MAIR_EL2			sys_reg(3, 4, 10, 2, 0)
+ #define SYS_AMAIR_EL2			sys_reg(3, 4, 10, 3, 0)
++#define SYS_MPAMHCR_EL2			sys_reg(3, 4, 10, 4, 0)
++#define SYS_MPAMVPMV_EL2		sys_reg(3, 4, 10, 4, 1)
++#define SYS_MPAM2_EL2			sys_reg(3, 4, 10, 5, 0)
++#define __SYS__MPAMVPMx_EL2(x)		sys_reg(3, 4, 10, 6, x)
++#define SYS_MPAMVPM0_EL2		__SYS__MPAMVPMx_EL2(0)
++#define SYS_MPAMVPM1_EL2		__SYS__MPAMVPMx_EL2(1)
++#define SYS_MPAMVPM2_EL2		__SYS__MPAMVPMx_EL2(2)
++#define SYS_MPAMVPM3_EL2		__SYS__MPAMVPMx_EL2(3)
++#define SYS_MPAMVPM4_EL2		__SYS__MPAMVPMx_EL2(4)
++#define SYS_MPAMVPM5_EL2		__SYS__MPAMVPMx_EL2(5)
++#define SYS_MPAMVPM6_EL2		__SYS__MPAMVPMx_EL2(6)
++#define SYS_MPAMVPM7_EL2		__SYS__MPAMVPMx_EL2(7)
+ 
+ #define SYS_VBAR_EL2			sys_reg(3, 4, 12, 0, 0)
+ #define SYS_RVBAR_EL2			sys_reg(3, 4, 12, 0, 1)
+@@ -562,9 +579,29 @@
+ 
+ #define SYS_CONTEXTIDR_EL2		sys_reg(3, 4, 13, 0, 1)
+ #define SYS_TPIDR_EL2			sys_reg(3, 4, 13, 0, 2)
++#define SYS_SCXTNUM_EL2			sys_reg(3, 4, 13, 0, 7)
++
++#define __AMEV_op2(m)			(m & 0x7)
++#define __AMEV_CRm(n, m)		(n | ((m & 0x8) >> 3))
++#define __SYS__AMEVCNTVOFF0n_EL2(m)	sys_reg(3, 4, 13, __AMEV_CRm(0x8, m), __AMEV_op2(m))
++#define SYS_AMEVCNTVOFF0n_EL2(m)	__SYS__AMEVCNTVOFF0n_EL2(m)
++#define __SYS__AMEVCNTVOFF1n_EL2(m)	sys_reg(3, 4, 13, __AMEV_CRm(0xA, m), __AMEV_op2(m))
++#define SYS_AMEVCNTVOFF1n_EL2(m)	__SYS__AMEVCNTVOFF1n_EL2(m)
+ 
+ #define SYS_CNTVOFF_EL2			sys_reg(3, 4, 14, 0, 3)
+ #define SYS_CNTHCTL_EL2			sys_reg(3, 4, 14, 1, 0)
++#define SYS_CNTHP_TVAL_EL2		sys_reg(3, 4, 14, 2, 0)
++#define SYS_CNTHP_CTL_EL2		sys_reg(3, 4, 14, 2, 1)
++#define SYS_CNTHP_CVAL_EL2		sys_reg(3, 4, 14, 2, 2)
++#define SYS_CNTHV_TVAL_EL2		sys_reg(3, 4, 14, 3, 0)
++#define SYS_CNTHV_CTL_EL2		sys_reg(3, 4, 14, 3, 1)
++#define SYS_CNTHV_CVAL_EL2		sys_reg(3, 4, 14, 3, 2)
++#define SYS_CNTHVS_TVAL_EL2		sys_reg(3, 4, 14, 4, 0)
++#define SYS_CNTHVS_CTL_EL2		sys_reg(3, 4, 14, 4, 1)
++#define SYS_CNTHVS_CVAL_EL2		sys_reg(3, 4, 14, 4, 2)
++#define SYS_CNTHPS_TVAL_EL2		sys_reg(3, 4, 14, 5, 0)
++#define SYS_CNTHPS_CTL_EL2		sys_reg(3, 4, 14, 5, 1)
++#define SYS_CNTHPS_CVAL_EL2		sys_reg(3, 4, 14, 5, 2)
+ 
+ /* VHE encodings for architectural EL0/1 system registers */
+ #define SYS_BRBCR_EL12			sys_reg(2, 5, 9, 0, 0)
+-- 
+2.39.2
+
