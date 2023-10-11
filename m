@@ -2,134 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3117C5662
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 724997C566A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346890AbjJKOGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 10:06:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37530 "EHLO
+        id S1346062AbjJKOKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 10:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232383AbjJKOGy (ORCPT
+        with ESMTP id S232125AbjJKOKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 10:06:54 -0400
-Received: from vern.gendns.com (vern.gendns.com [98.142.107.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4684492;
-        Wed, 11 Oct 2023 07:06:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/bJiTueIAbbKpdwIPpLyvg5aALL4EOMmnVHnnsNrWng=; b=ypCI9LfTdcoxmRTmb3pj1LWANP
-        bmgVLy6TVOjkkgdMtL3hD6PRnVFL0kx5miiaf2yQS67kvg7afrD4zApW6CubyN65nb1aSZrYEFLQ2
-        cceD0I3kuxSRlNyC/qhWxxz+I9I2MX7UU/OgcOuv/b1j55a/mK9Su8myK4j9p3fRmccZJ1i7yydsu
-        q9Z9Jf5J6prcaRxEJB7kcCGOqkmRmp4qVwKTrlWIa+H9stZwo1dHIxifzWoGQLsmLfyFJdL7wviGx
-        rSDO4Qwt8ImeyRAd/gr6EK/yNVQ1Uxl7UvUb4dALjyxCidmOp8GqxfPJcO0Y2PmQ5fw4Mp7wUi9sZ
-        4Z2GDKpQ==;
-Received: from ip98-183-112-25.ok.ok.cox.net ([98.183.112.25]:38782 helo=[192.168.0.142])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.1)
-        (envelope-from <david@lechnology.com>)
-        id 1qqZrE-0006mb-2D;
-        Wed, 11 Oct 2023 10:06:49 -0400
-Message-ID: <57a2fd7b-77d6-4970-9bac-2f4d8c22f2cf@lechnology.com>
-Date:   Wed, 11 Oct 2023 09:06:45 -0500
+        Wed, 11 Oct 2023 10:10:00 -0400
+Received: from outbound-smtp44.blacknight.com (outbound-smtp44.blacknight.com [46.22.136.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B5990
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 07:09:57 -0700 (PDT)
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp44.blacknight.com (Postfix) with ESMTPS id 2B48CF867E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:09:53 +0100 (IST)
+Received: (qmail 27907 invoked from network); 11 Oct 2023 14:09:51 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.197.19])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Oct 2023 14:09:51 -0000
+Date:   Wed, 11 Oct 2023 15:09:49 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Arjan Van De Ven <arjan@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <jweiner@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Lameter <cl@linux.com>
+Subject: Re: [PATCH 09/10] mm, pcp: avoid to reduce PCP high unnecessarily
+Message-ID: <20231011140949.rwsqfb57vyuub6va@techsingularity.net>
+References: <20230920061856.257597-1-ying.huang@intel.com>
+ <20230920061856.257597-10-ying.huang@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: display: remove backlight node from panel
- examples
-Content-Language: en-US
-To:     Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        Kamlesh Gurudasani <kamlesh.gurudasani@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Mack <daniel@zonque.org>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-References: <20231011-dt-panel-example-no-backlight-v1-1-b81618d32752@bootlin.com>
-From:   David Lechner <david@lechnology.com>
-Autocrypt: addr=david@lechnology.com; keydata=
- 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
-In-Reply-To: <20231011-dt-panel-example-no-backlight-v1-1-b81618d32752@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20230920061856.257597-10-ying.huang@intel.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/23 5:47 AM, Luca Ceresoli wrote:
-> The examples for these panel drivers have a backlight node in addition to
-> the actual panel node. However the exact backlight is outside the scope of
-> this binding and should be dropped from the example.
+On Wed, Sep 20, 2023 at 02:18:55PM +0800, Huang Ying wrote:
+> In PCP high auto-tuning algorithm, to minimize idle pages in PCP, in
+> periodic vmstat updating kworker (via refresh_cpu_vm_stats()), we will
+> decrease PCP high to try to free possible idle PCP pages.  One issue
+> is that even if the page allocating/freeing depth is larger than
+> maximal PCP high, we may reduce PCP high unnecessarily.
 > 
-> Link: https://lore.kernel.org/linux-devicetree/20230724143152.GA3430423-robh@kernel.org/
-> Suggested-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> To avoid the above issue, in this patch, we will track the minimal PCP
+> page count.  And, the periodic PCP high decrement will not more than
+> the recent minimal PCP page count.  So, only detected idle pages will
+> be freed.
+> 
+> On a 2-socket Intel server with 224 logical CPU, we tested kbuild on
+> one socket with `make -j 112`.  With the patch, The number of pages
+> allocated from zone (instead of from PCP) decreases 25.8%.
+> 
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Johannes Weiner <jweiner@redhat.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Christoph Lameter <cl@linux.com>
 > ---
+>  include/linux/mmzone.h |  1 +
+>  mm/page_alloc.c        | 15 ++++++++++-----
+>  2 files changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 8a19e2af89df..35b78c7522a7 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -682,6 +682,7 @@ enum zone_watermarks {
+>  struct per_cpu_pages {
+>  	spinlock_t lock;	/* Protects lists field */
+>  	int count;		/* number of pages in the list */
+> +	int count_min;		/* minimal number of pages in the list recently */
+>  	int high;		/* high watermark, emptying needed */
+>  	int high_min;		/* min high watermark */
+>  	int high_max;		/* max high watermark */
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 3f8c7dfeed23..77e9b7b51688 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -2166,19 +2166,20 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
+>   */
+>  int decay_pcp_high(struct zone *zone, struct per_cpu_pages *pcp)
+>  {
+> -	int high_min, to_drain, batch;
+> +	int high_min, decrease, to_drain, batch;
+>  	int todo = 0;
+>  
+>  	high_min = READ_ONCE(pcp->high_min);
+>  	batch = READ_ONCE(pcp->batch);
+>  	/*
+> -	 * Decrease pcp->high periodically to try to free possible
+> -	 * idle PCP pages.  And, avoid to free too many pages to
+> -	 * control latency.
+> +	 * Decrease pcp->high periodically to free idle PCP pages counted
+> +	 * via pcp->count_min.  And, avoid to free too many pages to
+> +	 * control latency.  This caps pcp->high decrement too.
+>  	 */
+>  	if (pcp->high > high_min) {
+> +		decrease = min(pcp->count_min, pcp->high / 5);
 
-Acked-by: David Lechner <david@lechnology.com>
+Not directly related to this patch but why 20%, it seems a bit
+arbitrary. While this is not an fast path, using a divide rather than a
+shift seems unnecessarily expensive.
 
+>  		pcp->high = max3(pcp->count - (batch << PCP_BATCH_SCALE_MAX),
+> -				 pcp->high * 4 / 5, high_min);
+> +				 pcp->high - decrease, high_min);
+>  		if (pcp->high > high_min)
+>  			todo++;
+>  	}
+> @@ -2191,6 +2192,8 @@ int decay_pcp_high(struct zone *zone, struct per_cpu_pages *pcp)
+>  		todo++;
+>  	}
+>  
+> +	pcp->count_min = pcp->count;
+> +
+>  	return todo;
+>  }
+>  
+> @@ -2828,6 +2831,8 @@ struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
+>  		page = list_first_entry(list, struct page, pcp_list);
+>  		list_del(&page->pcp_list);
+>  		pcp->count -= 1 << order;
+> +		if (pcp->count < pcp->count_min)
+> +			pcp->count_min = pcp->count;
 
+While the accounting for this is in a relatively fast path.
+
+At the moment I don't have a better suggestion but I'm not as keen on
+this patch. It seems like it would have been more appropriate to decay if
+there was no recent allocation activity tracked via pcp->flags.  The major
+caveat there is tracking a bit and clearing it may very well be in a fast
+path unless it was tried to refills but that is subject to timing issues
+and the allocation request stream :(
+
+While you noted the difference in buddy allocations which may tie into
+lock contention issues, how much difference to it make to the actual
+performance of the workload?
+
+-- 
+Mel Gorman
+SUSE Labs
