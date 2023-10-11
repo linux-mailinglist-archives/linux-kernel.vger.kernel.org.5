@@ -2,203 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 083487C4CD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E057C4CF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbjJKIQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 04:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
+        id S230217AbjJKIW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 04:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbjJKIQY (ORCPT
+        with ESMTP id S229846AbjJKIW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 04:16:24 -0400
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF31693;
-        Wed, 11 Oct 2023 01:16:21 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231011081618euoutp018f4a286938d66e9bc0f27d521d5d9b2f~M-5XlPlBR3139631396euoutp01e;
-        Wed, 11 Oct 2023 08:16:18 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231011081618euoutp018f4a286938d66e9bc0f27d521d5d9b2f~M-5XlPlBR3139631396euoutp01e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1697012178;
-        bh=DxDMyG1horuwm9RBQlUMXmckWPKc1aEJHyMa2YGTX5I=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=IWfpkg5GVwsnMiOs4wVqGZkRiJBI9vYxyym4pAtZ467PCFfVBJqUTaQ5Yg2yh++fH
-         AVK3CcjHwDeEd4FcA+W5hkHGp6K+I194JmhqpR9BJpyNaB/VrZv/DkBLomsZR3Q18q
-         ZEeTH0+hlPCGudN2W6Jcs/cAb5f1SDS3Di/pf01c=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20231011081618eucas1p17ea1825ccfd7a0c3a4313b223b6d3952~M-5XTmGcT3249032490eucas1p1P;
-        Wed, 11 Oct 2023 08:16:18 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 6B.11.11320.2D956256; Wed, 11
-        Oct 2023 09:16:18 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231011081617eucas1p2c0d8886ed232c4c8889f2c95e8e23686~M-5WqgMmQ0588305883eucas1p2a;
-        Wed, 11 Oct 2023 08:16:17 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231011081617eusmtrp27d6ed0765d3cc0875383c83c1c32c5b7~M-5WpPqft0509005090eusmtrp2P;
-        Wed, 11 Oct 2023 08:16:17 +0000 (GMT)
-X-AuditID: cbfec7f4-97dff70000022c38-db-652659d216b3
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 2E.42.10549.1D956256; Wed, 11
-        Oct 2023 09:16:17 +0100 (BST)
-Received: from CAMSVWEXC01.scsc.local (unknown [106.1.227.71]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20231011081617eusmtip20c2b6a33e72f57128f512390b86a43bd~M-5WavoG72347623476eusmtip2h;
-        Wed, 11 Oct 2023 08:16:17 +0000 (GMT)
-Received: from localhost (106.210.248.232) by CAMSVWEXC01.scsc.local
-        (2002:6a01:e347::6a01:e347) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Wed, 11 Oct 2023 09:16:17 +0100
-Date:   Wed, 11 Oct 2023 10:21:27 +0200
-From:   Joel Granados <j.granados@samsung.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-CC:     <willy@infradead.org>, <josh@joshtriplett.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Guo Ren <guoren@kernel.org>,
-        Alexey Gladkov <legion@kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-ia64@vger.kernel.org>, <linux-csky@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v3 0/7] sysctl: Remove sentinel elements from arch
-Message-ID: <20231011082127.tg4mnqfhjdp3i3se@localhost>
+        Wed, 11 Oct 2023 04:22:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3818092
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:22:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697012547; x=1728548547;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=rop2SO3ybzEk4DVuIiU1MtKYn2SMe0Tm8G/1drFuF44=;
+  b=RjwKArkKyoJataX/EgLYTvxKNkeUV1+J/hMRIYPKflfIEtVokXqLfPix
+   eAfaD/SIxUE6z6xk1jfH9RgKaFEQQkMFu/IRsVjwY52PM31H9R8Ms5M9W
+   AwGBeo626AOSUHd1hS18FuBNH4mXNuUPo069nK96OIN4APf6DPayKrkzT
+   9stAlks8olT47OE3LYn7jQmcUInO2mgfeoTCbpRRsrh4+1gYkRVKnw9EA
+   Yf5L9Iy+NmlDHc0T2AKSw1P4EMldSLEN4c2JBT03qqhwAHjoTAhYPbjtD
+   SsLjxN0YQs6sAleHE4X/slBw02JLXRKEv6/s18WdlUB1nuk2L2U+Ti4mX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="448810097"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="448810097"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 01:22:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="877580799"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="877580799"
+Received: from clanggaa-mobl.ger.corp.intel.com (HELO [10.249.254.169]) ([10.249.254.169])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 01:22:22 -0700
+Message-ID: <925e4c2d15161ce8115409b6af97dab9a2996bf7.camel@linux.intel.com>
+Subject: Re: [PATCH drm-misc-next 2/3] drm/gpuva_mgr: generalize
+ dma_resv/extobj handling and GEM validation
+From:   Thomas =?ISO-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>
+To:     Dave Airlie <airlied@gmail.com>,
+        Thomas =?ISO-8859-1?Q?Hellstr=F6m?= "(Intel)" 
+        <thomas_os@shipmail.org>
+Cc:     Danilo Krummrich <dakr@redhat.com>, daniel@ffwll.ch,
+        matthew.brost@intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, faith.ekstrand@collabora.com,
+        bskeggs@redhat.com, Liam.Howlett@oracle.com,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Date:   Wed, 11 Oct 2023 10:22:20 +0200
+In-Reply-To: <CAPM=9tz3o-m+8VJJ6hxWhykat0kpp1UE7dBJE3X91aHHo1Y2VA@mail.gmail.com>
+References: <20230820215320.4187-1-dakr@redhat.com>
+         <20230820215320.4187-3-dakr@redhat.com>
+         <0c50ff22-0f11-1e27-c32e-694ce2b1e6c5@shipmail.org>
+         <ZO864yp3UyVEfEjz@pollux>
+         <88c45fe6-0942-707c-9ea7-8486c177fcd7@shipmail.org>
+         <ZO9Zq2RhbX8EeHrn@pollux>
+         <736b6b6d-9e04-a27d-7d60-0c45d696b304@shipmail.org>
+         <ZPB26A0/oLHTmyqk@cassiopeiae>
+         <a8f28d62-daec-927a-a33d-5be3eec6a1ed@shipmail.org>
+         <ZPDk/lao1JlBNGoJ@cassiopeiae>
+         <8a8253ae-0b85-df90-b480-64eeebfafc6d@shipmail.org>
+         <CAPM=9tz3o-m+8VJJ6hxWhykat0kpp1UE7dBJE3X91aHHo1Y2VA@mail.gmail.com>
+Organization: Intel Sweden AB, Registration Number: 556189-6027
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="n5pr63cyarb4dzxb"
-Content-Disposition: inline
-In-Reply-To: <ZSXOqoCRH0PiBiIG@bombadil.infradead.org>
-X-Originating-IP: [106.210.248.232]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTbVSTZRjHz73n2fOM4eRxYtyhUgESB4xejtadSceOLz1+MTunk0AlLngE
-        AsbahMhzOmfEwGXoWZYaU8awGMTrNnCACe4sBQc0wMWbQS8yi/EiKCDCcLSxmZ3Tt991Xf//
-        dV//DzcH4yvJQE6K8AgjFgrSggkubmhd6HruRmwY84J+6Umk67AT6KJDSaKRhyYCzWidBJrS
-        FAA0dOpvEo1qjwE0lXsQdSvvs9Focw6OxlUVAJ3RBaBldQbq/DIdjZTsRfqRPjYylMpY6HKz
-        GUfT8jtsZL10nkCGGRmBFCW5GDKdbgbIMe9ko65L1WxU2t/DQgOK2wBVOtsBumFUs1C91HXB
-        wugAjuzWAgzlK/2QpraaRHX60xiSDW1FjgeulQ+0I2ykadq341l6Pu8kTlepqgBt7evB6HPS
-        HpyeG7Sw6Am7Had/ks+S9AW7FKeblMMkrdZn0nXlEfTN8WhaX/EFQd+xWEhaccEIaJX57f1P
-        xHG3JzJpKVmM+PnXD3GTVdollkixKnuwpYqUgl7uceDDgdQW2HS2mTwOuBw+VQ7gtX4N4Slm
-        Aay1FbA8xQyAuaZy8pGl4888tmdQBuDN5R+If1X2ZQvuKS4CWNjRibktOLUJlrafZLuZoDbD
-        romhlb4/FQ5bFCdW3sCoSS4syJtcEa2l9sDCew7gZh71Ciwd1np5DTQX2lwvcFyGbPjz8DYP
-        rodlTo5b4UO9DK32qyzPpSGwv3DUy5/B6tbOlaCQavCFasMi4Rnsgnal1ctr4VhbvTfmBrjc
-        VMzyGL4G8Ipz2uuuBFCTM+dd+xqU/WLzOt6AermZcF8EqdVwYHKNu4258JThLOZp86A8n+9R
-        h8HK3yZwBQhR/ieZ8nEy5eNkypU9m6H6x3vE/9qRUFMyjnk4GtbUTOFqQFaAACZTkp7ESF4S
-        Mp9ESQTpkkxhUlRCRroeuL5Mh7NtthGUjd2NMgEWB5hAqMt8S1vZDQJxYYaQCfbn3UoJZfi8
-        RMGnRxlxRrw4M42RmMB6Dh4cwNuU+BTDp5IER5hUhhEx4kdTFscnUMpqbNhmxw6zbMmpiaqE
-        IiYltrj2fk78YpkI2F99N3khzHa3YW+FH/nx1fN++bvxtrTUrNtLvHDNLtGBSIN+q/Ncen2Q
-        rtv4NHH0malGu7/cvFv1TW+03KdwLDTUqOfVvunU7QwTmaPiLA261RPGfsiv/uC7eZz6SBc5
-        9JdVcSCmsU7+luV9fsIcvTOieKPP2JztGH/oYFH7V0UNJz78dUdj+ELZBrUs94+4LYFBjs9z
-        90G5SFZ3qNO3c931SKamGL8e070/vpod5Et+eyLm+zMxmRGr4qbWvXctXn1ZtzytDok01qt7
-        HUSLZmbPorT3YWtc1sbf39kem12UcvhKHz5oDcYlyYIXIzCxRPAPrQCyH60EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTe0yTVxjGc/p9vVDX7BugnMFMpOJUnIUihQMBYsKmn7swXZQFlsEqfgEm
-        tKSlzrlbN8pkIE2FyEJnatussCEwKLYTNxyrhI07la2AgAsUIuUiKqhAWVlrWWay/548z/t7
-        8ubNOSzM18wIZGWL8imJSJjDZbDxLtdvt/daU16kwlsaeaixy8FAJqeaiex/WxhoscHFQAtV
-        5wAaLbvDRNMNZwFaKEhD/epHdDTd8jmOZjU1AFU0BqB1rRh1l+Qiu+4QMtptdGQ2KGjo55YO
-        HN0ruktHA9cuMpB5UcFAKl0BhiwXWgByPnbRUd+1OjoyDFppaEg1BdBlVydAN1u1NHRF7t5g
-        ZXoIR46Bcxj6Uv0sqvqhjomajBcwpBgVIOeyu3K5wU5HVc1J+3eSjwuVOFmrqQXkgM2Kkd/I
-        rTj5cLiXRs45HDh5o2iJSeodcpxsVo8xSa1RRjZ9F0remo0njTVfMci7vb1MUqVvBaSm48jh
-        Lam8OIlYlk9tyxJL8+O57/BRBI8fg3gRkTE8/r7od2MjBNywhLgTVE72KUoSlvAeL2vSmp2n
-        fOb0H1MCORhgFwMfFiQiYdd4Ib0YsFm+hAHA+cJv6d7gBdi49OeG9oNrtmKGd+g+gBO/KDYI
-        E4CT9jWmZwondkBDp/IJwSBegn1zo5hH+xO74HVVKc0DYMQ8G7rso7gn8CMOwMoHTuDRHCIa
-        GsYagLfVBuDY3CDdGzwHOyonnwAYcQpeqr3qbmK5dRCsdrE8tg8RBQccbTTvqtvhYOX0hv4E
-        zvz1E1ABP/VTTeqnmtT/NXntUDjkcvzf3gOrdLOYV8fD+voFXAuYNcCfkklzM3OlfJ5UmCuV
-        iTJ5GeJcI3A/WnP7StNVoJm5z7MAGgtYQIibnGi43A8CcZFYRHH9ORPZIZQv54TwwzOURJwu
-        keVQUgsQuM94HgvcnCF2/wBRfjo/KlzAj4yKCRfERO3jBnAO5RUJfYlMYT51kqLyKMm/HI3l
-        Eyin6dNS1stv53CMssS4zIJNB6LLzfWvBOvDEt6KWE61aUZWozeXMVa/V8TPtDlH5odXfty7
-        fnx3bPvqazvKy1KyrnxhXjOtVvBMacn6o69/cJKmeACVR+XVMHa7tXnnuCnNxfu6Z08Le3hK
-        EVugt4StELTQoM4EbGKJe7zHeCzJeCSg7pHj7eDCAzdUp1fPPByRXdzU3UvX+tm2oOva1pKt
-        H3FSS3a3vVp/2HRMuTVsV1rpTHDqeIjhUuLkwaV+4uP9zYEvFzhlyVPqoMR7yt8TInuSS58f
-        YUf/yrqzeEuZMbbNVP/GWc37kuq1JFf7mwcdfXbdp926tXjdzc9c6XkVNmM3F5dmCfmhmEQq
-        /AfmNpywSQQAAA==
-X-CMS-MailID: 20231011081617eucas1p2c0d8886ed232c4c8889f2c95e8e23686
-X-Msg-Generator: CA
-X-RootMTR: 20231010222243eucas1p2f1db3c6852c319ba33fcb54be42a8d54
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231010222243eucas1p2f1db3c6852c319ba33fcb54be42a8d54
-References: <20231002-jag-sysctl_remove_empty_elem_arch-v3-0-606da2840a7a@samsung.com>
-        <CGME20231010222243eucas1p2f1db3c6852c319ba33fcb54be42a8d54@eucas1p2.samsung.com>
-        <ZSXOqoCRH0PiBiIG@bombadil.infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---n5pr63cyarb4dzxb
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Oct 10, 2023 at 03:22:34PM -0700, Luis Chamberlain wrote:
-> On Mon, Oct 02, 2023 at 01:30:35PM +0200, Joel Granados via B4 Relay wrot=
-e:
-> > V3:
-> > * Removed the ia64 patch to avoid conflicts with the ia64 removal
-> > * Rebased onto v6.6-rc4
-> > * Kept/added the trailing comma for the ctl_table arrays. This was a co=
-mment
-> >   that we received "drivers/*" patch set.
-> > * Link to v2: https://lore.kernel.org/r/20230913-jag-sysctl_remove_empt=
-y_elem_arch-v2-0-d1bd13a29bae@samsung.com
+On Wed, 2023-10-11 at 06:23 +1000, Dave Airlie wrote:
+> > I think we're then optimizing for different scenarios. Our compute
+> > driver will use mostly external objects only, and if shared, I
+> > don't
+> > forsee them bound to many VMs. What saves us currently here is that
+> > in
+> > compute mode we only really traverse the extobj list after a
+> > preempt
+> > fence wait, or when a vm is using a new context for the first time.
+> > So
+> > vm's extobj list is pretty large. Each bo's vma list will typically
+> > be
+> > pretty small.
 >=20
-> Thanks! I replaced the v2 with this v3 on sysctl-next.
-perfect
+> Can I ask why we are optimising for this userspace, this seems
+> incredibly broken.
+
+First Judging from the discussion with Christian this is not really
+uncommon. There *are* ways that we can play tricks in KMD of assorted
+cleverness to reduce the extobj list size, but doing that in KMD that
+wouldn't be much different than accepting a large extobj list size and
+do what we can to reduce overhead of iterating over it.
+
+Second the discussion here really was about whether we should be using
+a lower level lock to allow for async state updates, with a rather
+complex mechanism with weak reference counting and a requirement to
+drop the locks within the loop to avoid locking inversion. If that were
+a simplification with little or no overhead all fine, but IMO it's not
+a simplification?
+
 >=20
->   Luis
+> We've has this sort of problem in the past with Intel letting the
+> tail
+> wag the horse, does anyone remember optimising relocations for a
+> userspace that didn't actually need to use relocations?
 
---=20
+>=20
+> We need to ask why this userspace is doing this, can we get some
+> pointers to it? compute driver should have no reason to use mostly
+> external objects, the OpenCL and level0 APIs should be good enough to
+> figure this out.
 
-Joel Granados
+TBH for the compute UMD case, I'd be prepared to drop the *performance*
+argument of fine-grained locking the extobj list since it's really only
+traversed on new contexts and preemption. But as Christian mentions
+there might be other cases. We should perhaps figure those out and
+document?
 
---n5pr63cyarb4dzxb
-Content-Type: application/pgp-signature; name="signature.asc"
+/Thoams
 
------BEGIN PGP SIGNATURE-----
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmUmWwcACgkQupfNUreW
-QU8lHwv7B5Hjds6I5fVxjarsS/ccELeK3aR93x/dMpCR2F5plybiUT+caXjDJ4T3
-+aNLIMSOr0VeJEehNxnFm0jZcDiWoWfoDLcQfbuLKgaC5suDueRb7xnOkFY4rfxU
-5hCCjCK0UaAbMtGHpdAAhixVQa0ZOjPR/NBBCuP55ksVwHgLQ54nyd6B10HJ0M0J
-LvammJhmMj1uL1qz8/CVKbuygICp4GXl0/kLr4BdZpihvhHODa+oo4I13v+Sd8WL
-SE0ERE7iC/Y+eY3qZTZyzLhifHdS+7kf/z6tdpGPJLq6qrQJHz8PgCVVqXXqg9h/
-sB52jxikWcZ6bI99PwTAETwkfbibQ4ILo13bfM/HETIeLVM2+v0GvVNe32TIULlK
-SuH4+hWLwEV67kH1eoK+YHLe//g0E6mhrqUqXzA6g8O2N4o+WYEGu8SRhpEIxpOD
-b8Ba8zSKvVGpQPZtm66HnGi/qdPsR3Ep72b4uVozEfLVdU5w10Kfbl/8RZYbAQxy
-mXOOeX2E
-=4WV6
------END PGP SIGNATURE-----
+>=20
+> Dave.
 
---n5pr63cyarb4dzxb--
