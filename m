@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0887C4963
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A78537C496A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343944AbjJKFql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 01:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
+        id S229973AbjJKFtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 01:49:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbjJKFqi (ORCPT
+        with ESMTP id S229897AbjJKFtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 01:46:38 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498B88E;
-        Tue, 10 Oct 2023 22:46:35 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39B4K2Yc016645;
-        Wed, 11 Oct 2023 05:46:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=SWeQep/DffQOk2u0MlJYTQgqm5T1/Izn8jXn4Psf6eQ=;
- b=hY3M71cZkqk+tBAcZWJp2kNx2+rUy6YWvBfZGyIEx7ToKzD7M5vbYBdw2kE+s//OEiMP
- //f6VKmpFy/In0JXAGeaYnEQfFAr3i0mWJDILwi5MkxcJaaFEYIxf0msTQijdMZhwWrr
- QrMU036j7/51WxJKRmigeGT1Msn1f3vr3o/lLo+VkmB+SmL6Bwh0100wMVZIXnNfxMOH
- 2AJP+WU3r33r1OkOlFkA1mPX4HuZwpXdbotyzX5gigjpXTnEXE8EV8p0vhJmTFHhbZhk
- Ui8odK/Czo6q51JhwAbHU6IzaFAtf1thH8+L6vGWpSsYXJLeumb+IbGCv1DPi5CylGhe Rg== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tn4he24ye-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 05:46:31 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39B5k3nF014284
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 05:46:03 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 10 Oct
- 2023 22:46:00 -0700
-Message-ID: <c23be999-e7fb-5a31-2b99-013626067e79@quicinc.com>
-Date:   Wed, 11 Oct 2023 11:15:57 +0530
+        Wed, 11 Oct 2023 01:49:04 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A2E8E
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:49:02 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-694ed84c981so4972851b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:49:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697003342; x=1697608142; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=i3/xooCfzn+HEb84CSy8n1NiyDH9US0NidBeh+kHVYE=;
+        b=DENHURHFEXIX2Casi1G4byCfgdWPbRWZ3fdZYmZbR/8y7e7K60CN4HF7DxokoU7PGz
+         IQVwrSqYcd88epKDNfBsi0VP8dH8a7bbWOWuqCQqkU+woXUDNak5J1hEsePjzZNpk9iD
+         TbNzpmdlRUqrwZC2BlhSiVOBPWMP0gexI4rnIIE+VIjRExMCHBH/C8LCzvSXvLrOBdXe
+         1uE3Xg55EfqlMmMktQRFhx+wp3Fd+QDNRKyovrf40gh04QLaZdnuiELfVQnZ5mgFsZa9
+         8tnc/nUfsrXf+ft+MgOheEmBzINuVDKju5Ql5cx9eEYxoBKBXCFHcQJFXiQVjpghcrCq
+         +g2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697003342; x=1697608142;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i3/xooCfzn+HEb84CSy8n1NiyDH9US0NidBeh+kHVYE=;
+        b=tQvaa/rEA1aKX2xfa8lpFyGflkLOPRQNeBYfmJFNJp7nbNbPMzZ3RGcyD6z0m7O+Lt
+         5Qga9knljmhTAbU34BQo7oHUPBCZ0HSutXoyAwzVEL6mLPbfoRH0b1/gAKf1kwVDsRLf
+         9Nh/n2B1yZjzZbLd6nZmH/bZTQELjVvwNNPYj8+5817f5t1JGLE8OZaFunme5BzfQuKz
+         xiCIQSVvk/OFF92sDfBREuS8Nv0UcVwJnXjaTY5g5xwH2VA+nZVvb9BRvo7ZggxQOQ8t
+         +x2Uv7O5dQnEivlrWpLG7pelOW7uxMAfAemOIL/oFF/jyQealhUoB6ohu70fvnZgeMdJ
+         ppHQ==
+X-Gm-Message-State: AOJu0Yys0Slc7055ta/tASHLqhJXS4aFw+PZQb9I8eiWSm0zXbB8TtwV
+        cRcpRd5T6JWu+2sl4HSK7qTvNw==
+X-Google-Smtp-Source: AGHT+IELb9UJT6sC7GTilNP+4QfWdcX9+gyN7cf4Rlq0B7kFgPDad3Hdi4I21cnODq4uhQcLWot/+w==
+X-Received: by 2002:a05:6a00:885:b0:68f:e810:e86f with SMTP id q5-20020a056a00088500b0068fe810e86fmr21643745pfj.28.1697003341973;
+        Tue, 10 Oct 2023 22:49:01 -0700 (PDT)
+Received: from localhost ([122.172.81.92])
+        by smtp.gmail.com with ESMTPSA id p6-20020a62ab06000000b0069302c3c050sm9172133pff.218.2023.10.10.22.49.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 22:49:00 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 11:18:58 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Johan Hovold <johan@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, andersson@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        robdclark@gmail.com
+Subject: Re: [PATCH 2/2] OPP: Disallow "opp-hz" property without a
+ corresponding clk
+Message-ID: <20231011054858.3vvnr76u5enu5lf6@vireshk-i7>
+References: <cover.1669012140.git.viresh.kumar@linaro.org>
+ <c03c4f2b9d4dcc3264d1902606c6c5c464b4b043.1669012140.git.viresh.kumar@linaro.org>
+ <Y3snGQet8yc7HnJK@hovoldconsulting.com>
+ <20221121073946.GE11945@thinkpad>
+ <20230125042145.hrjpnskywwqn7b6v@vireshk-i7>
+ <20230216064727.GA2420@thinkpad>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] dt-bindings: mfd: qcom,tcsr: Add compatible for
- sm8{2|3|5}50
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1696954157-16327-1-git-send-email-quic_mojha@quicinc.com>
- <f189b1e9-e1cb-4bbb-a138-b10322684b09@linaro.org>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <f189b1e9-e1cb-4bbb-a138-b10322684b09@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: -WZwJl7_CQ9Q4YFc-zS9neztlA5TOXef
-X-Proofpoint-ORIG-GUID: -WZwJl7_CQ9Q4YFc-zS9neztlA5TOXef
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_03,2023-10-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=527
- suspectscore=0 mlxscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
- impostorscore=0 phishscore=0 clxscore=1015 bulkscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310110051
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230216064727.GA2420@thinkpad>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/10/2023 10:07 PM, Konrad Dybcio wrote:
+On 16-02-23, 12:17, Manivannan Sadhasivam wrote:
+> Sorry for the delay. I've submitted the dts changes [1] to handle the CPU clocks
+> for the rest of the Qcom SoCs.
 > 
+> For the Qcom GPUs, I've CCed Rob Clark who is the maintainer.
 > 
-> On 10/10/23 18:09, Mukesh Ojha wrote:
->> Document the compatible for sm8{2|3|5}50 SoCs.
-> sm8[235]0 would work as well ;)
-
-Sure, Thanks.
-
--Mukesh
+> Rob, here is the background on the issue that is being discussed in this
+> thread:
 > 
-> Konrad
+> Viresh submitted a series [2] back in July to improve the OPP framework, but
+> that ended up breaking cpufreq on multiple Qcom SoCs. After investigation, it
+> was found that the series was expecting the clocks supplied to the OPP end
+> devices like CPUs/GPUs to be modeled in DT. But on Qcom platforms even though
+> the clocks for these nodes are supplied by a separate entity, like CPUFreq
+> (EPSS/OSM) for CPUs and GMU for GPUs, there was no clock property present in
+> the respective nodes. And these nodes are using OPP table to switch frequencies
+> dynamically.
+> 
+> While the series was merged with a hack that still allows the OPP nodes without
+> clock property in DT, we came to an agreement that the clock hierarchy should
+> be modeled properly.
+> 
+> So I submitted a series [3] that added clock provider support to cpufreq driver
+> and sourced the clock from cpufreq node to CPU nodes in DT.
+> 
+> Likewise, it should be handled for the adreno GPUs whose clock is managed by
+> GMU on newer SoCs. Can you take a look at this?
+
+Any update on this ?
+
+-- 
+viresh
