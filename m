@@ -2,153 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E04F7C5F26
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D78AA7C5F28
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234715AbjJKVdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33950 "EHLO
+        id S233472AbjJKVeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 17:34:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233582AbjJKVdA (ORCPT
+        with ESMTP id S233321AbjJKVeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:33:00 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973289E;
-        Wed, 11 Oct 2023 14:32:58 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53dd752685fso570197a12.3;
-        Wed, 11 Oct 2023 14:32:58 -0700 (PDT)
+        Wed, 11 Oct 2023 17:34:04 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12DAB6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:34:02 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1dd71c0a41fso148069fac.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:34:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697059977; x=1697664777; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1697060042; x=1697664842; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mgILceheKqLDcrQ8Md1C0WGKCCTkWPoSxOmfrQfUe7M=;
-        b=LZ3MCA38Y/QGbl2VDUxvgDf5evagrT6J2sfnxeAmHkY19sfQ3QFeB8I2L2zUFSuOhc
-         8IDZFxbspRruXk/M6YHcW0bUcFEuncGGUtytZVo6Tl9ygqfWy2PrCYUv3UnqF5qsMa4O
-         b1pVlxK8wuIiIGWpgNhtCqY8Rs3dMSHoncRL7Bxo7R6mgEHg6so5SGm+TsXZWFKeI7xk
-         4HglL6JGQqb4XyL49ODuoHad8UJB3LcyhcL6pV3tuCTD+O7aQG7htkehnsYwkZe0QdOf
-         LQPAQsJTItNE8Rn/NYSMIK9PNQp8svcibvDF+mT+Y+zel695LSU2f4Pf4YXUzl6VcJw9
-         G5+A==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eQIwabRI/uNovp4wm52uUbIH+HnR4FRH6bY2+vy0apE=;
+        b=J6+RQtGumTMkfg8tgi7jcQS+eWbAO24O99KVnh9jaKR99+ZJZY6JAio7wsqBvUe15e
+         1NjEniI4g/pQjCqBFo9Ge5bmiAISbilAmNwVssdZGvGbsGbk3hQLCTnstwRhkaiwuMIm
+         XgxrDvYSvt7senZaIjSD9IqGyPhBYgOkLCWuc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697059977; x=1697664777;
+        d=1e100.net; s=20230601; t=1697060042; x=1697664842;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mgILceheKqLDcrQ8Md1C0WGKCCTkWPoSxOmfrQfUe7M=;
-        b=fUqXC97fDQR4buJItRiN+hMFVXUMcBg9WBaq1IUsfTuwDO5Tgd9LC+QiVQEuD492dy
-         gcHHdwHPKWX5pfskRcOqdtSij1yQsaH3K9Py47uV+L/OUMEtmiZndvfueWY36QXMXvPh
-         C/of+6qWrh5OUNdPI7RWoV+alGYVkT26b/LlFqiQPKbx0d3tb08yCg8AaKwXNkoJLxl/
-         yLQavtpXr49xgEe9VfgKDxPItgHMR7kbf2axo/GwCF/IWlcBNipCnvjGnT1QFUuZ+jDL
-         GsJQ/XlgfbrofkRr/zE/ZsyxahrIiQ1IsYIOZBv8MMfSfrhs+OudOo3doC/UdfkYanuo
-         0Jdw==
-X-Gm-Message-State: AOJu0YwFuXIGeVGaoGUE7A72UpH8ANKlMKDA7EBwhwhoPfMML/gHRcFb
-        rBfo3p5us7v2ZNBBgyVF09Ys6Ertp2Y=
-X-Google-Smtp-Source: AGHT+IHROiD9c1fQoFylzcx03/lxRGRjXOJ+h9nk5PoQ4SwSh2kzd4ruyHRzB7xSFhP//1f+Xr/gog==
-X-Received: by 2002:aa7:d70b:0:b0:523:387d:f5f1 with SMTP id t11-20020aa7d70b000000b00523387df5f1mr20919807edq.24.1697059976998;
-        Wed, 11 Oct 2023 14:32:56 -0700 (PDT)
-Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
-        by smtp.gmail.com with ESMTPSA id eg42-20020a05640228aa00b0053daf92f0easm1783507edb.97.2023.10.11.14.32.55
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eQIwabRI/uNovp4wm52uUbIH+HnR4FRH6bY2+vy0apE=;
+        b=JyMw7U15+hy8GcyTCyoRsemhWXBTOthHCsvM33jgi+4TxDuZw27AEaeFjsI8Oy3+FF
+         ndZwfmEIdP/Hq91lc6taztAu+9jAphad/AkDX7BtWqT161H/jEN9zGtcHdkLG/UajrWG
+         NA884XSFGbqbgGjLOhy/DF16sZdok2YmUpx4hh79VfWvcV1VNqomTzszti5S8XEG6sju
+         jFs2935Nl5yj3FOpN1lm0vmxcKguejZ1EabDnLBCzLUdncIVdM139L+2HPY2w145QGdF
+         M1tTJwRsYeHmapUglB1mTLmhCh53GmXC5BrkyEVYJR+gySilPONq7CiNep+YKOYVXMd1
+         cs5Q==
+X-Gm-Message-State: AOJu0Yy7tfrPJEl/WsFED6AVZYSjZK/N9zxustEJYM84yOZ+QSGGaInN
+        dHghvvELq5yEfk0zLDb5xFbUHA==
+X-Google-Smtp-Source: AGHT+IEY6hpryGK3ZRZpCZ/wGDkglUCLj6tPg6/csEmrRfqziDqNEb+8M1nyBYqN2l4rpesyafwOOA==
+X-Received: by 2002:a05:6870:7ec2:b0:1e9:7037:6445 with SMTP id wz2-20020a0568707ec200b001e970376445mr5055718oab.20.1697060042036;
+        Wed, 11 Oct 2023 14:34:02 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id r27-20020a638f5b000000b0056b27af8715sm320743pgn.43.2023.10.11.14.34.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 14:32:56 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 11 Oct 2023 23:32:54 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-next <linux-next@vger.kernel.org>,
-        Sohil Mehta <sohil.mehta@intel.com>
-Subject: Re: linux-next: manual merge of the block tree with the asm-generic
- tree
-Message-ID: <ZScUhud9eqKIQJjC@gmail.com>
-References: <20231009123118.4487a0e1@canb.auug.org.au>
- <20231009084812.GB14330@noisy.programming.kicks-ass.net>
- <cb4bb8e2-7dfe-4ca4-aa70-060f7b2f8f95@app.fastmail.com>
- <20231009141351.GD14330@noisy.programming.kicks-ass.net>
- <b7c57f03-4606-4190-98c5-344c49656f9c@kernel.dk>
- <66e09ad5-2dcf-4159-9c98-f37ac739a445@kernel.dk>
- <20231011175407.GG6307@noisy.programming.kicks-ass.net>
+        Wed, 11 Oct 2023 14:34:01 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 14:34:00 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5: simplify mlx5_set_driver_version string
+ assignments
+Message-ID: <202310111433.9BCCADED@keescook>
+References: <20231011-strncpy-drivers-net-ethernet-mellanox-mlx5-core-main-c-v1-1-90fa39998bb2@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231011175407.GG6307@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231011-strncpy-drivers-net-ethernet-mellanox-mlx5-core-main-c-v1-1-90fa39998bb2@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Peter Zijlstra <peterz@infradead.org> wrote:
-
-> On Wed, Oct 11, 2023 at 10:21:06AM -0600, Jens Axboe wrote:
-> > On 10/9/23 8:16 AM, Jens Axboe wrote:
-> > > On 10/9/23 8:13 AM, Peter Zijlstra wrote:
-> > >> On Mon, Oct 09, 2023 at 11:00:19AM +0200, Arnd Bergmann wrote:
-> > >>> On Mon, Oct 9, 2023, at 10:48, Peter Zijlstra wrote:
-> > >>>> On Mon, Oct 09, 2023 at 12:31:18PM +1100, Stephen Rothwell wrote:
-> > >>>>> diff --cc arch/alpha/kernel/syscalls/syscall.tbl
-> > >>>>> index 5d05ab716a74,b1865f9bb31e..000000000000
-> > >>>>> --- a/arch/alpha/kernel/syscalls/syscall.tbl
-> > >>>>> +++ b/arch/alpha/kernel/syscalls/syscall.tbl
-> > >>>>> @@@ -492,4 -492,6 +492,7 @@@
-> > >>>>>   560	common	set_mempolicy_home_node		sys_ni_syscall
-> > >>>>>   561	common	cachestat			sys_cachestat
-> > >>>>>   562	common	fchmodat2			sys_fchmodat2
-> > >>>>>  -563	common	futex_wake			sys_futex_wake
-> > >>>>>  -564	common	futex_wait			sys_futex_wait
-> > >>>>>  -565	common	futex_requeue			sys_futex_requeue
-> > >>>>>  +563	common	map_shadow_stack		sys_map_shadow_stack
-> > >>>>> ++564	common	futex_wake			sys_futex_wake
-> > >>>>> ++565	common	futex_wait			sys_futex_wait
-> > >>>>> ++566	common	futex_requeue			sys_futex_requeue
-> > >>>>
-> > >>>> So this renumbers the (futex) stuff on Alpha, does anybody care? AFAICT
-> > >>>> Alpha does not follow the unistd order and meh.
-> > >>>
-> > >>> Let's not make it worse for now. All the numbers since the
-> > >>> introduction of the time64 syscalls are offset by exactly 120
-> > >>> on alpha, and I'd prefer to keep it that way for the moment.
-> > >>>
-> > >>> I still hope to eventually finish the conversion of all architectures
-> > >>> to a single syscall.tbl for numbers >400, and if that happens before
-> > >>> the end of alpha, a different ordering would just be extra pain.
-> > >>
-> > >> Fair enough; should we look at rebase those futex patches for this? (bit
-> > >> of a pain as that would also mean rebasing block)
-> > > 
-> > > From my point of view, this isn't a huge problem if we do it now. The
-> > > io_uring-futex branch is a separate branch and I have nothing on top of
-> > > it, so I could easily just re-pull your updated branch and rebase my
-> > > changes on top.
-> > > 
-> > >> Or do we want to keep this fixup in the merge resolution and make sure
-> > >> Linus is aware?
-> > > 
-> > > If you're OK with it, I'd say let's rebase and save ourselves the
-> > > trouble at merge time.
-> > 
-> > Peter, what's the verdict - do you want to rebase it, or leave it as-is?
+On Wed, Oct 11, 2023 at 09:29:57PM +0000, Justin Stitt wrote:
+> In total, just assigning this version string takes:
+> (1) strncpy()'s
+> (5) strlen()'s
+> (3) strncat()'s
+> (1) snprintf()'s
+> (4) max_t()'s
 > 
-> Ah, I looked into doing this, but tip/locking/core has since grown a
-> bunch of patches and has a merge commit -- I talked to Ingo yesterday
-> and he proposed just queueing a fix on top instead of doing a full
-> rebase.
+> Moreover, `strncpy` is deprecated [1] and `strncat` really shouldn't be
+> used either [2]. With this in mind, let's simply use a single
+> `snprintf`.
+
+Yes, please! readability++
+
 > 
-> Ingo, that still your preferred solution?
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://elixir.bootlin.com/linux/v6.6-rc5/source/include/linux/fortify-string.h#L448 [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Cc: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Yeah, that would be the best solution IMO - it's not like there's any real 
-prospect of someone bisecting futex2 patch-enablement commits on Alpha ... 
-and the bisection distance isn't particularly large either in any case.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-[ This would also document the very real historic conflict between these 
-  numbers, as it happened. ]
-
-Thanks,
-
-	Ingo
+-- 
+Kees Cook
