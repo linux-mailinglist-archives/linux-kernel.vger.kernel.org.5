@@ -2,185 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C931E7C5D94
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CA07C5D96
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376305AbjJKTVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 15:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
+        id S1346876AbjJKTVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 15:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235155AbjJKTVQ (ORCPT
+        with ESMTP id S235171AbjJKTVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 15:21:16 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B544690
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:21:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=esaMI3DfxyUr+uOWQaByS2QpbSkEsN0pCUovNdYJwII=; b=lpcUonOoRAKpTj+YYpaBDUrSRg
-        Eh48JF+U9dz/XM8BGXDlCE0SKZZ74idRtToajQ0MQ2Gux+nQhACuwnxF83EPHA7SqHJdwXUqT4eEd
-        7B0zd7EiMHU7f2Z+666wKWz3GFtcyBZAfe9Efdid6tQT0hQxfRpLN5xM/ZDLeJ0AcwgR/pB5OpMp1
-        7o166G7VPCyaCdx3tJNf9T+q9pOST0sjq/7g8/3QyDRQOvQgFKLFKcamEJAgImmaJSP7jsunAS2hz
-        sQfUfBMym7HmbGVr3WzIstGlBYqqHWdJA1zprYCnlivNnwA3Qqoz4Y2OrvtetFUeU1p8WET6/IrOv
-        HXEhNBQw==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qqele-00GXai-1C;
-        Wed, 11 Oct 2023 19:21:14 +0000
-Message-ID: <cad53122-c50f-4f24-ac62-eea192669f2b@infradead.org>
-Date:   Wed, 11 Oct 2023 12:21:14 -0700
+        Wed, 11 Oct 2023 15:21:46 -0400
+Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B885B7;
+        Wed, 11 Oct 2023 12:21:43 -0700 (PDT)
+Received: from [192.168.42.20] (p5b164245.dip0.t-ipconnect.de [91.22.66.69])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 372672FC004D;
+        Wed, 11 Oct 2023 21:21:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
+        s=default; t=1697052102;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+HzLD8pPukh5eiY+IQZbApyMi2NuuYDOnW3cApZb8tE=;
+        b=ZeQmIBq+hZAxfSMcsP+0c6IcXR0mRX2Gg3XeSS5uZTJpH6S8OH1Qqm/HhkWklpsUlT19JP
+        MASxjW5obIvxXo0cfphln6Laa7wiDmVBCPoPsYWm7H71l4EY7trYaLwDhhDkaKx6CZz6qp
+        HpThsZHqqHf0xQbWJs+C0QYXKS3617g=
+Authentication-Results: mail.tuxedocomputers.com;
+        auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
+Message-ID: <79c27c71-a86b-4b30-aa1a-96b2f7bf26b4@tuxedocomputers.com>
+Date:   Wed, 11 Oct 2023 21:21:41 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [char-misc-next 3/3] mei: docs: fix spelling errors
+Subject: Re: [PATCH] leds: rgb: Implement per-key keyboard backlight for
+ several TUXEDO devices
 Content-Language: en-US
-To:     Tomas Winkler <tomas.winkler@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
-        Vitaly Lubart <vitaly.lubart@intel.com>,
-        linux-kernel@vger.kernel.org
-References: <20231011074301.223879-1-tomas.winkler@intel.com>
- <20231011074301.223879-4-tomas.winkler@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231011074301.223879-4-tomas.winkler@intel.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
+References: <20231011190017.1230898-1-wse@tuxedocomputers.com>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+In-Reply-To: <20231011190017.1230898-1-wse@tuxedocomputers.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+Am 11.10.23 um 21:00 schrieb Werner Sembach:
+> From: Christoffer Sandberg <cs@tuxedo.de>
+>
+> Implement per-key keyboard backlight in the leds sysfs interface for
+> several TUXEDO devices using the ite8291 controller.
+>
+> There are however some known short comings:
+> - The sysfs leds interface does only allow to write one key at a time. The
+> controller however can only update row wise or the whole keyboard at once
+> (whole keyboard update is currently not implemented). This means that even
+> when you want to updated a whole row, the whole row is actually updated
+> once for each key. So you actually write up to 18x as much as would be
+> required.
+> - When you want to update the brightness of the whole keyboard you have to
+> write 126 sysfs entries, which inherently is somewhat slow, especially when
+> using a slider that is live updating the brightness.
+> - While the controller manages up to 126 leds, not all are actually
+> populated. However the unused are not grouped at the end but also in
+> between. To not have dead sysfs entries, this would require manual testing
+> for each implemented device to see which leds are used and some kind of
+> bitmap in the driver to sort out the unconnected ones.
+> - It is not communicated to userspace which led entry controls which key
+> exactly
+>
+> Co-developed-by: Werner Sembach <wse@tuxedocomputers.com>
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> Signed-off-by: Christoffer Sandberg <cs@tuxedo.de>
 
-On 10/11/23 00:43, Tomas Winkler wrote:
-> Fix spelling errors in the mei code base.
-> 
-> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-> ---
->  drivers/misc/mei/bus.c       | 4 ++--
->  drivers/misc/mei/dma-ring.c  | 2 +-
->  drivers/misc/mei/hbm.c       | 4 ++--
->  drivers/misc/mei/interrupt.c | 2 +-
->  drivers/misc/mei/mei_dev.h   | 4 ++--
->  include/linux/mei_cl_bus.h   | 4 ++--
->  6 files changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c
-> index 2e65ce6bdec7d9c561ccd2c8..67557c67bd214415b8dc6747 100644
-> --- a/drivers/misc/mei/bus.c
-> +++ b/drivers/misc/mei/bus.c
-> @@ -1301,7 +1301,7 @@ static inline void mei_cl_bus_set_name(struct mei_cl_device *cldev)
->   * @bus: mei device
->   * @me_cl: me client
->   *
-> - * Return: allocated device structur or NULL on allocation failure
-> + * Return: allocated device structure or NULL on allocation failure
->   */
->  static struct mei_cl_device *mei_cl_bus_dev_alloc(struct mei_device *bus,
->  						  struct mei_me_client *me_cl)
-> @@ -1361,7 +1361,7 @@ static bool mei_cl_bus_dev_setup(struct mei_device *bus,
->   *
->   * @cldev: me client device
->   *
-> - * Return: 0 on success; < 0 on failre
-> + * Return: 0 on success; < 0 on failure
->   */
->  static int mei_cl_bus_dev_add(struct mei_cl_device *cldev)
->  {
-> diff --git a/drivers/misc/mei/dma-ring.c b/drivers/misc/mei/dma-ring.c
-> index ef56f849b251d77b87767d48..e5d800e68cb186ce82d715b6 100644
-> --- a/drivers/misc/mei/dma-ring.c
-> +++ b/drivers/misc/mei/dma-ring.c
-> @@ -161,7 +161,7 @@ static size_t mei_dma_copy_to(struct mei_device *dev, unsigned char *buf,
->  /**
->   * mei_dma_ring_read() - read data from the ring
->   * @dev: mei device
-> - * @buf: buffer to read into: may be NULL in case of droping the data.
-> + * @buf: buffer to read into: may be NULL in case of dropping the data.
->   * @len: length to read.
->   */
->  void mei_dma_ring_read(struct mei_device *dev, unsigned char *buf, u32 len)
-> diff --git a/drivers/misc/mei/hbm.c b/drivers/misc/mei/hbm.c
-> index 12a62a911e4237aad8bc381b..15737655c896c8b5835288ea 100644
-> --- a/drivers/misc/mei/hbm.c
-> +++ b/drivers/misc/mei/hbm.c
-> @@ -111,7 +111,7 @@ void mei_hbm_idle(struct mei_device *dev)
->  }
->  
->  /**
-> - * mei_hbm_reset - reset hbm counters and book keeping data structurs
-> + * mei_hbm_reset - reset hbm counters and book keeping data structures
+The first time I submit a whole module, so please let me know if it made any 
+mistakes e.g. I'm unsure if I need add myself explicitly as a maintainer, if 
+MODULE_AUTHOR has to be a human, or if i have to split this up into smaller junks.
 
-s/book keeping/bookkeeping/
+Also please let me know if i somehow misinterpreted the current API and the 
+shortcomings can actually be avoided.
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+I have not yet looked deeply into triggers, but one idea i had is to only have 
+one kbd_backlight by default that just makes the whole keyboard the same color 
+and brightness. In addition to that a trigger per_key_control, that, when set, 
+adds 125*3 subleds to write the whole keyboard in rainbow colors with a single 
+echo to multi_intensity.
 
-Thanks.
+The keyboard also supports hardware color effects like color cycle, which 
+continuously and smoothly cycles through up to 7 colors. Could this also be 
+implemented with a trigger? That trigger would need to add a new entry nr_colors 
+and also respectively additional subleds or additional multi_intensity_* entries.
 
->   *
->   * @dev: the device structure
->   */
-> @@ -907,7 +907,7 @@ int mei_hbm_cl_disconnect_req(struct mei_device *dev, struct mei_cl *cl)
->  }
->  
->  /**
-> - * mei_hbm_cl_disconnect_rsp - sends disconnect respose to the FW
-> + * mei_hbm_cl_disconnect_rsp - sends disconnect response to the FW
->   *
->   * @dev: the device structure
->   * @cl: a client to disconnect from
-> diff --git a/drivers/misc/mei/interrupt.c b/drivers/misc/mei/interrupt.c
-> index 0a0e984e56736cd0ece88f41..5a050f50f33e3a6a64e7c7c2 100644
-> --- a/drivers/misc/mei/interrupt.c
-> +++ b/drivers/misc/mei/interrupt.c
-> @@ -72,7 +72,7 @@ static void mei_irq_discard_msg(struct mei_device *dev, struct mei_msg_hdr *hdr,
->  		discard_len = 0;
->  	}
->  	/*
-> -	 * no need to check for size as it is guarantied
-> +	 * no need to check for size as it is guaranteed
->  	 * that length fits into rd_msg_buf
->  	 */
->  	mei_read_slots(dev, dev->rd_msg_buf, discard_len);
-> diff --git a/drivers/misc/mei/mei_dev.h b/drivers/misc/mei/mei_dev.h
-> index cdf8a2edf0b32b7dd6a0af53..fca0094a2310e4a2710883ac 100644
-> --- a/drivers/misc/mei/mei_dev.h
-> +++ b/drivers/misc/mei/mei_dev.h
-> @@ -70,9 +70,9 @@ enum mei_dev_state {
->  /**
->   * enum mei_dev_pxp_mode - MEI PXP mode state
->   *
-> - * @MEI_DEV_PXP_DEFAULT: PCH based device, no initailization required
-> + * @MEI_DEV_PXP_DEFAULT: PCH based device, no initialization required
->   * @MEI_DEV_PXP_INIT:    device requires initialization, send setup message to firmware
-> - * @MEI_DEV_PXP_SETUP:   device is in setup stage, waiting for firmware repsonse
-> + * @MEI_DEV_PXP_SETUP:   device is in setup stage, waiting for firmware response
->   * @MEI_DEV_PXP_READY:   device initialized
->   */
->  enum mei_dev_pxp_mode {
-> diff --git a/include/linux/mei_cl_bus.h b/include/linux/mei_cl_bus.h
-> index fd6e0620658d6515b3e234ce..c9af62e54577033bf9bae0e4 100644
-> --- a/include/linux/mei_cl_bus.h
-> +++ b/include/linux/mei_cl_bus.h
-> @@ -31,11 +31,11 @@ typedef void (*mei_cldev_cb_t)(struct mei_cl_device *cldev);
->   * @rx_work: async work to execute Rx event callback
->   * @rx_cb: Drivers register this callback to get asynchronous ME
->   *	Rx buffer pending notifications.
-> - * @notif_work: async work to execute FW notif event callback
-> + * @notif_work: async work to execute FW notify event callback
->   * @notif_cb: Drivers register this callback to get asynchronous ME
->   *	FW notification pending notifications.
->   *
-> - * @do_match: wheather device can be matched with a driver
-> + * @do_match: whether the device can be matched with a driver
->   * @is_added: device is already scanned
->   * @priv_data: client private data
->   */
+An additional though I had was that it would be nice if the driver could somehow 
+communicate the physical location of the key to the userspace for UIs to 
+automatically generate a keyboard view to graphically set individual colors.
 
--- 
-~Randy
+Kind regards,
+
+Werner Sembach
+
