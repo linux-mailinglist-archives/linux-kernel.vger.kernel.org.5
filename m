@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9E37C45C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 01:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90927C45CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344258AbjJJX7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 19:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45388 "EHLO
+        id S1344249AbjJKAB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 20:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjJJX7u (ORCPT
+        with ESMTP id S1344204AbjJKABZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 19:59:50 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D96B99
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 16:59:48 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-690bccb0d8aso4899983b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 16:59:48 -0700 (PDT)
+        Tue, 10 Oct 2023 20:01:25 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADFE8F
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:01:24 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-578b407045bso5027941a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:01:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696982387; x=1697587187; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=vuBhbcRCY14Ehqi0PTSDL9AEIBFyvO42CHNfxwJX88M=;
-        b=BruM3DZNS7ZwvtNBAEFkyeZZhxE3DpEpWC5sgAyG2IPC5wbLxGs2LMI8xfToh0inuj
-         LzKU/5lszTGZoXyMWTDlymXPDdUmQOnXxxGNFbt9xRgbxCqxI7LN3jLENsi5GoV/rsCb
-         knyUT+6SkLaBFAJxAgAxTaBqZSU2DxDhszgWA1nfmR+/clUa+YVxjuxCxd94S1KdzrPq
-         lf7aylN+jV97Wn9H2SDQDV25gsKkSJzVJezZLXBZ51634uKrGy82kv+az37blcFpit9l
-         SL6P0to3t1/QAoiwbEj9QLqa0L6u65QIrHjZp4CsZO5CNjBLZZ6tI79slGLKpX6Nwrmz
-         CDLQ==
+        d=chromium.org; s=google; t=1696982483; x=1697587283; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zXwHFTTSHqHksZHyWZ3bFkL07EMOlYzNsZg2rCsLLcM=;
+        b=C7d/yRC5Raip0nMfFJljMYPZuVOwrxYCRUe4z9sSsoYFSsYqcS2kS0sUXwh5r8TxEU
+         LQnikAzpaJOvdDZDRbVIeUFUS8fZSlviJTGP/SJnQKoAkLUysfm/xq9HTYN1Inai9hNA
+         9oHroh9cjqDL0M3UEJNqIxP+fOMIkbxuH1kcM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696982387; x=1697587187;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vuBhbcRCY14Ehqi0PTSDL9AEIBFyvO42CHNfxwJX88M=;
-        b=nPm6ZQ2nxZH2ADiKBmjcEKWRT/noQ1BzIL60FF9GzSUg1X/vp/oUG+HMZ6UleQyet/
-         zY04DrCuibCorLPjEAN708IGLbiQMkvkjX0qsbh8OnmoASNtO6szO3CnbDH8B6rkhxfH
-         uY30EXAr6IKjV+iyZblGB+XbfMziC4bEYecrVSPSXQlk8TwdZCV3ac4ByNsOZBm2vu+P
-         zbTr2dMfjc229cbo52hWKQ5eA+TgDQ2ckaB1lYP6hN4rboczOS5C1wDhKWo/YPl6j9rB
-         yI4iCdvAkM1K/bVOFRnecdq2Qv7dL9S0WN843JSxM6oPO7p9cGJASGdvRC8KoqkUfqH/
-         3z+w==
-X-Gm-Message-State: AOJu0YzbTYqNyfZUgBECX0TxxByRMBsUbsVG2G38dNLRQiL4buUyAkPE
-        tR+8+qdqjzCWB44T5WkTcX5RRg==
-X-Google-Smtp-Source: AGHT+IFpjvyQUUCRBkdDh5nJwuhEhTd0rb4+c3As4mtWp5MPb97dXj/O7IfeEAEjzA3aYXTJpB6kTA==
-X-Received: by 2002:a05:6a21:329c:b0:15c:b7b9:fc21 with SMTP id yt28-20020a056a21329c00b0015cb7b9fc21mr19831702pzb.14.1696982387504;
-        Tue, 10 Oct 2023 16:59:47 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
-        by smtp.gmail.com with ESMTPSA id y17-20020a056a001c9100b0068fcc7f6b00sm2559718pfw.74.2023.10.10.16.59.46
+        d=1e100.net; s=20230601; t=1696982483; x=1697587283;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zXwHFTTSHqHksZHyWZ3bFkL07EMOlYzNsZg2rCsLLcM=;
+        b=JVNSTqQ6PvTim9MD7dmzJ4WsZ+ST0CnjXrTgBQCnKvv7dectj9VyRfSXVmSPbC3l9X
+         DtswaDcEAGWhAgvHBKjGHegbTjgMvmnpUyXhVGIkqnP/EgXnkAGvhnWjrKlZhQN4K5/k
+         M6HlBw2TaqboIZHreNyteLHNxEEzwug6Uia/Vs8og9UwiDa/ARrjX5xQuI/0L0bjMAlc
+         JWEQ3MPd0MChdElJAOVBwmUqLrH1IM5mO0lgbCATgqVWZ8p7dPgwLrNqF+CaSznIFUDS
+         nDgMZMsyl4NkwMG8VDXbRsjS0DKnmeJj+uIQ9DKFVsYZ097MT/j4dQYWucF94ZFnIjW2
+         OgnQ==
+X-Gm-Message-State: AOJu0Yz32lYkOHaXFfZD3h5VwY9Cfg389jja09wlKvOEpc9xVbfFT1MX
+        D75soVZeqORcWhJTisRqK48Dpg==
+X-Google-Smtp-Source: AGHT+IHvnF1NY14+x1atCUXgwzdFEk0ZaADVkWvm44vtZyO7tNcwIEv+y9XR2Sh6iJ6MxunGIbRJhw==
+X-Received: by 2002:a05:6a20:2590:b0:151:577:32d1 with SMTP id k16-20020a056a20259000b00151057732d1mr23567638pzd.22.1696982483550;
+        Tue, 10 Oct 2023 17:01:23 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id g12-20020a170902868c00b001c625acfed0sm12371984plo.44.2023.10.10.17.01.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 16:59:46 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qqMdc-00CAvp-1A;
-        Wed, 11 Oct 2023 10:59:44 +1100
-Date:   Wed, 11 Oct 2023 10:59:44 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
-Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Brian Foster <bfoster@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH v8 3/5] loop: Add support for provision requests
-Message-ID: <ZSXlcM2sUeFkHOnb@dread.disaster.area>
-References: <20231007012817.3052558-1-sarthakkukreti@chromium.org>
- <20231007012817.3052558-4-sarthakkukreti@chromium.org>
- <ZSM9UDMFNs0050pr@dread.disaster.area>
- <CAG9=OMNPK2s4vsun4B=xQ9nt3qR_fevNP1zSkYq9YG5QPPTsfQ@mail.gmail.com>
+        Tue, 10 Oct 2023 17:01:23 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 17:01:19 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Sunil Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] octeontx2-af: replace deprecated strncpy with strscpy
+Message-ID: <202310101700.1BE3455BE6@keescook>
+References: <20231010-strncpy-drivers-net-ethernet-marvell-octeontx2-af-cgx-c-v1-1-a443e18f9de8@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG9=OMNPK2s4vsun4B=xQ9nt3qR_fevNP1zSkYq9YG5QPPTsfQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+In-Reply-To: <20231010-strncpy-drivers-net-ethernet-marvell-octeontx2-af-cgx-c-v1-1-a443e18f9de8@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,86 +77,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 03:43:10PM -0700, Sarthak Kukreti wrote:
-> On Sun, Oct 8, 2023 at 4:37 PM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Fri, Oct 06, 2023 at 06:28:15PM -0700, Sarthak Kukreti wrote:
-> > > Add support for provision requests to loopback devices.
-> > > Loop devices will configure provision support based on
-> > > whether the underlying block device/file can support
-> > > the provision request and upon receiving a provision bio,
-> > > will map it to the backing device/storage. For loop devices
-> > > over files, a REQ_OP_PROVISION request will translate to
-> > > an fallocate mode 0 call on the backing file.
-> > >
-> > > Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> > > Signed-off-by: Mike Snitzer <snitzer@kernel.org>
-> >
-> >
-> > Hmmmm.
-> >
-> > This doesn't actually implement the required semantics of
-> > REQ_PROVISION. Yes, it passes the command to the filesystem
-> > fallocate() implementation, but fallocate() at the filesystem level
-> > does not have the same semantics as REQ_PROVISION.
-> >
-> > i.e. at the filesystem level, fallocate() only guarantees the next
-> > write to the provisioned range will succeed without ENOSPC, it does
-> > not guarantee *every* write to the range will succeed without
-> > ENOSPC. If someone clones the loop file while it is in use (i.e.
-> > snapshots it via cp --reflink) then all guarantees that the next
-> > write to a provisioned LBA range will succeed without ENOSPC are
-> > voided.
-> >
-> > So while this will work for basic testing that the filesystem is
-> > issuing REQ_PROVISION based IO correctly, it can't actually be used
-> > for hosting production filesystems that need full REQ_PROVISION
-> > guarantees when the loop device backing file is independently
-> > shapshotted via FICLONE....
-> >
-> > At minimuim, this set of implementation constraints needs tobe
-> > documented somewhere...
-> >
-> Fair point. I wanted to have a separate fallocate() mode
-> (FALLOC_FL_PROVISION) in the earlier series of the patchset so that we
-> can distinguish between a provision request and a regular fallocate()
-> call; I dropped it from the series after feedback that the default
-> case should suffice. But this might be one of the cases where we need
-> an explicit intent that we want to provision space.
+On Tue, Oct 10, 2023 at 09:38:11PM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> We can see that linfo->lmac_type is expected to be NUL-terminated based
+> on the `... - 1`'s present in the current code. Presumably making room
+> for a NUL-byte at the end of the buffer.
+> 
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding.
+> 
+> Let's also prefer the more idiomatic strscpy usage of (dest, src,
+> sizeof(dest)) rather than (dest, src, SOME_LEN).
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Note: build-tested only.
+> ---
+>  drivers/net/ethernet/marvell/octeontx2/af/cgx.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+> index e06f77ad6106..6c70c8498690 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+> @@ -1218,8 +1218,6 @@ static inline void link_status_user_format(u64 lstat,
+>  					   struct cgx_link_user_info *linfo,
+>  					   struct cgx *cgx, u8 lmac_id)
+>  {
+> -	const char *lmac_string;
+> -
+>  	linfo->link_up = FIELD_GET(RESP_LINKSTAT_UP, lstat);
+>  	linfo->full_duplex = FIELD_GET(RESP_LINKSTAT_FDUPLEX, lstat);
+>  	linfo->speed = cgx_speed_mbps[FIELD_GET(RESP_LINKSTAT_SPEED, lstat)];
+> @@ -1230,12 +1228,12 @@ static inline void link_status_user_format(u64 lstat,
+>  	if (linfo->lmac_type_id >= LMAC_MODE_MAX) {
+>  		dev_err(&cgx->pdev->dev, "Unknown lmac_type_id %d reported by firmware on cgx port%d:%d",
+>  			linfo->lmac_type_id, cgx->cgx_id, lmac_id);
+> -		strncpy(linfo->lmac_type, "Unknown", LMACTYPE_STR_LEN - 1);
+> +		strscpy(linfo->lmac_type, "Unknown", sizeof(linfo->lmac_type));
+>  		return;
+>  	}
+>  
+> -	lmac_string = cgx_lmactype_string[linfo->lmac_type_id];
+> -	strncpy(linfo->lmac_type, lmac_string, LMACTYPE_STR_LEN - 1);
+> +	strscpy(linfo->lmac_type, cgx_lmactype_string[linfo->lmac_type_id],
+> +		sizeof(linfo->lmac_type));
 
-ISTR that I commented that filesystems like XFS can't implement
-REQ_PROVISION semantics for extents without on-disk format
-changes. Hence that needs to happen before we expose a new API to
-userspace....
+Yup, sizes match. Good replacement and simplification.
 
-> Given a separate FALLOC_FL_PROVISION mode in the scenario you
-> mentioned, the filesystem could copy previously 'provisioned' blocks
-> to new blocks (which implicitly provisions them) or reserve blocks for
-> use (and passing through REQ_OP_PROVISION below). That also means that
-> the filesystem should track 'provisioned' blocks and take appropriate
-> actions to ensure the provisioning guarantees.
+drivers/net/ethernet/marvell/octeontx2/af/mbox.h:565:#define LMACTYPE_STR_LEN 16
+drivers/net/ethernet/marvell/octeontx2/af/mbox.h:566:   char lmac_type[LMACTYPE_STR_LEN];
 
-Yes, tracking provisioned ranges persistently and the reservations
-they require needs on-disk filesytem format changes compared to just
-preallocating space.  None of this functionality currently exists in
-any filesystem that supports shared extents, and it's a fairly
-significant chunk of development work to support it.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Nobody has planned to do this sort of complex surgery to XFS at
-this point in time. I doubt that anyone on the btrfs side of
-things is really even following this discussion because this is
-largely for block device thinp and snapshot support
-and btrfs just doesn't care about that.
-
-> For filesystems without copy-on-write semantics (eg. ext4),
-> REQ_OP_PROVISION should still be equivalent to mode == 0.
-
-Well, yes. This is the same situation as "for non-sparse block
-devices, REQ_PROVISION can just be ignored." This is not an
-interesting use case, nor a use case that the functionality or APIs
-should be designed around.
-
--Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+Kees Cook
