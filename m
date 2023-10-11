@@ -2,84 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5AD7C5B25
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FBC7C5B2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbjJKSUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 14:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
+        id S234990AbjJKSVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 14:21:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232983AbjJKSUF (ORCPT
+        with ESMTP id S233213AbjJKSVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 14:20:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ACF193;
-        Wed, 11 Oct 2023 11:20:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5CA8C433C9;
-        Wed, 11 Oct 2023 18:20:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697048403;
-        bh=YIm0FW45BPKvF+X1OFYkrHMeewnDQo6DSIeSnbcXoY4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gz/caJMS9XpLYzznkn7hbGtO6iBp5YQBwlWeXaVO2aeovc1X8OVQhZQ7jlcUIW7o+
-         ghCN+1bWAdy0HcDAyLR8SRpK7fumfmCZfanA/BiLwPgDo7ZH/LuzcYFGzxWET9HfLv
-         i0+LbdnW8MGuGS/1sxtaXjNoZIRsAMHfSdJICxy7HM4cd5pM3HLStAi+sujH1YzqTm
-         DgFgNbm57sUo9HuWgnWs8WhQsA59oXfgINZeLmcvjc2D4IeCxLI2Cd6tu8gHppiFbm
-         08tttYidJWmRwXBdRo+KbhJFrtevCU7wleE/0NkNQkL9cGp87SZOiOFA4vzEXrImMm
-         +YnnjvkNJ4r4w==
-Date:   Wed, 11 Oct 2023 11:20:02 -0700
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shay Drory <shayd@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jacob Keller <jacob.e.keller@intel.com>
-Subject: Re: [PATCH net v3] net/mlx5: fix calling mlx5_cmd_init() before DMA
- mask is set
-Message-ID: <ZSbnUlJT1u3xUIqY@x130>
-References: <20231011-mlx5_init_fix-v3-1-787ffb9183c6@linux.ibm.com>
+        Wed, 11 Oct 2023 14:21:21 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2166293;
+        Wed, 11 Oct 2023 11:21:20 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9b96c3b4be4so16814166b.1;
+        Wed, 11 Oct 2023 11:21:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697048478; x=1697653278; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HFAlnaB24n8Vccy/pdsjKZDoqB44FpUE4W7kqqRtmzU=;
+        b=a6EXS732yZFGZvDVv4+G+aj4vxziXjJFdqY4Jt9IveD7LkPuAiXuQF7LMXg7/cGAWP
+         LUO+hyJy/cwxaHI+rR5Du4So18AoGW6bIQXQcCrVeDjAbONM1/IwAqqoXKi9LMbAJz2S
+         2mm3OGcF4oYPcgwZoaeV7+2OH0oLEp5VJgi1ltm4u7p3CyfDSy6dlHcbI3h9uzsMp5wm
+         Ej9JttSIcGykCCUEhkwp7xnrg75Vt0eDToZjUkNgHYhTuZ+77qumTddyClcoCS4pWTo+
+         gRAWLUfrRrybX5rafrSJ9CFcM8jPNVZvE/pIM6B+UXLOHBSMxn63uJ9FAOmaoiHIu1CB
+         iKBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697048478; x=1697653278;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HFAlnaB24n8Vccy/pdsjKZDoqB44FpUE4W7kqqRtmzU=;
+        b=ObKmMmCW619I4XRf2ct+DwRwAqRA6H1/sjihpXJZqRW4RyNucOQwpcWy13yzqPjPPH
+         H+AUW7PAhU03snnzMlhLX+VF6bTwUUDqw16yB2sFweh23F2WfAD0Mj7S4zfwayvg+WUr
+         SYF6Pkv5F9xyV7nstVzjJ4CxJOP8vYYAkAYPIERLNJDaifXOAcC/yqZw9BHlETKmKHFs
+         KJDogtB1nFiAehCywgYbH+P58soPN1FtOQcOH7IU23mpsk1EanuD4+E1Mu2h1FZsRDCV
+         WFBhL0gTaUAualz25oppvU5wK9MKrRl8vSgpRVnmSXL1dUZf9g2DoAqW/2Iw3x5QLeqU
+         RxkQ==
+X-Gm-Message-State: AOJu0Yw05rAw4CPcNXeZ+PHM8PYI1g4tneiunXhg++G0GuPrMgfKjtWo
+        6jklao+vwTb6vjO3f1R/yw==
+X-Google-Smtp-Source: AGHT+IFBUZ1FgTT/NjM3xlkh/VwwIDFRKcTZ+/cndVuG4iArdU/d8JTUJKgNAxqaaPpeuR5BuTIGtQ==
+X-Received: by 2002:a17:906:1db2:b0:9ba:2b14:44fb with SMTP id u18-20020a1709061db200b009ba2b1444fbmr6862093ejh.47.1697048478367;
+        Wed, 11 Oct 2023 11:21:18 -0700 (PDT)
+Received: from p183 ([46.53.254.83])
+        by smtp.gmail.com with ESMTPSA id v19-20020a1709064e9300b00988e953a586sm10044924eju.61.2023.10.11.11.21.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 11:21:17 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 21:21:16 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] *: mark stuff as __ro_after_init
+Message-ID: <530824e8-3ee1-4919-ad59-1ff4c4ad9089@p183>
+References: <4f6bb9c0-abba-4ee4-a7aa-89265e886817@p183>
+ <20231011105211.3135013317249184bcc81982@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231011-mlx5_init_fix-v3-1-787ffb9183c6@linux.ibm.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231011105211.3135013317249184bcc81982@linux-foundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11 Oct 09:57, Niklas Schnelle wrote:
->Since commit 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and
->reload routines") mlx5_cmd_init() is called in mlx5_mdev_init() which is
->called in probe_one() before mlx5_pci_init(). This is a problem because
->mlx5_pci_init() is where the DMA and coherent mask is set but
->mlx5_cmd_init() already does a dma_alloc_coherent(). Thus a DMA
->allocation is done during probe before the correct mask is set. This
->causes probe to fail initialization of the cmdif SW structs on s390x
->after that is converted to the common dma-iommu code. This is because on
->s390x DMA addresses below 4 GiB are reserved on current machines and
->unlike the old s390x specific DMA API implementation common code
->enforces DMA masks.
->
->Fix this by moving set_dma_caps() out of mlx5_pci_init() and into
->probe_one() before mlx5_mdev_init(). To match the overall naming scheme
->rename it to mlx5_dma_init().
+On Wed, Oct 11, 2023 at 10:52:11AM -0700, Andrew Morton wrote:
+> On Wed, 11 Oct 2023 19:55:00 +0300 Alexey Dobriyan <adobriyan@gmail.com> wrote:
+> 
+> > __read_mostly predates __ro_after_init. Many variables which are marked
+> > __read_mostly should have been __ro_after_init from day 1.
+> > 
+> > Also, mark some stuff as "const" and "__init" while I'm at it.
+> 
+> I did this:
+> 
+> From: Andrew Morton <akpm@linux-foundation.org>
+> Subject: mark-stuff-as-__ro_after_init-fix
+> Date: Wed Oct 11 10:46:42 AM PDT 2023
+> 
+> revert sysctl_nr_open_min, sysctl_nr_open_max changes due to arm warning
 
-How about we just call mlx5_pci_init() before mlx5_mdev_init(), instead of
-breaking it apart ? 
->
+Oops, last minute changes as usual.
+
+But it is for the best, I have better patch.
