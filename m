@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8D97C60F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 01:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867A97C610B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 01:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235196AbjJKXP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 19:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53438 "EHLO
+        id S235225AbjJKXVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 19:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233835AbjJKXPx (ORCPT
+        with ESMTP id S233737AbjJKXU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 19:15:53 -0400
+        Wed, 11 Oct 2023 19:20:58 -0400
 Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964CEA9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 16:15:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CDAA4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 16:20:56 -0700 (PDT)
 Received: from [IPV6:2601:646:9a00:1821:7c45:267e:5aad:82e7] ([IPv6:2601:646:9a00:1821:7c45:267e:5aad:82e7])
         (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 39BNFKAT1460737
+        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 39BNKBnV1461541
         (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Wed, 11 Oct 2023 16:15:20 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 39BNFKAT1460737
+        Wed, 11 Oct 2023 16:20:12 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 39BNKBnV1461541
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023091101; t=1697066121;
-        bh=A0jQQXBOckvWMvwyYSs8xAHjvJIHmdT/ZUvtoLWPlIw=;
+        s=2023091101; t=1697066415;
+        bh=A+3phZYqNXM4miRlbtMsbx7u98cTT8X7Jf9CLISzVzM=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=HQelFdNGOmQvUkC7FqkZg4tibROwOGCiEcbxjkVmNZ0UoybOfmMDeq30cB4KUnygu
-         9CzoNDBAANZ3ZZHMSRQ2Cx0CjPwcVkbiE8j6CdJZeVPxBkTB0eaz9SDpZoz8ik/VnJ
-         BozxHWzadRqgtYKdUJklR0yN6s5LvQwZx3Po0Fxy5lH9FCw0LFcIhQAlrCWq0Cpovw
-         4zPAm8dBOq1zJwzI7Q3HGOZkEINFgkKZRtKktJWv64Po0ZVP/iUtw5sXxjS9fltrHA
-         GF0Hp1oaAGqg6xqx4n6fWveXTddci6Un0W/tCBI7m1pyT3q5iOCY0UvsfZ3KgQBn91
-         SlIU50HHoJCrg==
-Message-ID: <9b71932a-d410-4b92-b605-d6acc5d35069@zytor.com>
-Date:   Wed, 11 Oct 2023 16:15:15 -0700
+        b=XeQjykw/+h9Es/QbI/1xphsZ0JBa+PKYr0spgfLTCDJIxFQzaBrWoMpvMWmDYX1fg
+         FA/9IJypiexXo9wPeeNIosNU1QoGcvxS3ne1AaI5FujaBLJMX2VqMMxkgYEBL/5jVp
+         ZdynKuLm2U0Qj3DNro6yBcaT2jqruhugaeOTRSi1RXGgRfm7Gc+T2ShhNXBmRe/Wt/
+         4zkG4yMbgp5QdRzgBMRmyBZaEatruHUPhZZxgPXbU+TksTEClWrDXd0Zg1cCgOtNcW
+         byOaWwtWwL4Qbzmk6w8iSrRCmOQR/1A2tY4EtfHdk2g/M3CdwestzW4UtnspFCDht6
+         ake1+JpJ2Ijlw==
+Message-ID: <eec6b477-67b5-49d6-b6f4-dd2c242b9bdb@zytor.com>
+Date:   Wed, 11 Oct 2023 16:20:06 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+Subject: Re: [PATCH v3 00/23] Add generic vdso_base tracking
 Content-Language: en-US
-To:     Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-References: <20231010164234.140750-1-ubizjak@gmail.com>
- <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <CAFULd4Y8NSArDqH=VMy8F97eNosUUGxrBMEyHH=MytjUBSCmjg@mail.gmail.com>
- <CAHk-=whMr8V_q3dq4iS0dpx4Nssu+aYWz+mA36p2ykA+OXTjXA@mail.gmail.com>
- <CAFULd4afyYK0-wAOo3oJDapX0iyu86m5+vVn9c35gk8fd6iwRQ@mail.gmail.com>
- <CAHk-=wiLyA0g3BvQ_nsF2PWi-FDtcNS5+4-ai1FX-xFzTBeTzg@mail.gmail.com>
- <ZScjptMn3fDmMFdg@gmail.com>
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will@kernel.org>, x86@kernel.org
+References: <20210611180242.711399-1-dima@arista.com>
 From:   "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <ZScjptMn3fDmMFdg@gmail.com>
+In-Reply-To: <20210611180242.711399-1-dima@arista.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -69,39 +66,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/23 15:37, Ingo Molnar wrote:
+On 6/11/21 11:02, Dmitry Safonov wrote:
 > 
-> * Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> Patches set is based on linux-next (next-20201123) and it depends on
+> changes in x86/cleanups (those reclaim TIF_IA32/TIF_X32) and also
+> on my changes in akpm (fixing several mremap() issues).
 > 
->>> The only drawback is a larger binary size:
->>>
->>>    text    data     bss     dec     hex filename
->>> 25546594        4387686  808452 30742732        1d518cc vmlinux-new.o
->>> 25515256        4387814  808452 30711522        1d49ee2 vmlinux-old.o
->>>
->>> that increases by 31k (0.123%), probably due to 1578 rdgsbase alternatives.
->>
->> I'm actually surprised that it increases the text size. The 'rdgsbase'
->> instruction should be smaller than a 'mov %gs', so I would have
->> expected the *data* size to increase due to the alternatives tables,
->> but not the text size.
->>
->> [ Looks around ]
->>
->> Oh. It's because we put the altinstructions into the text section.
->> That's kind of silly, but whatever.
+> Logically, the patches set divides on:
+> - patch       1: a cleanup for patches in x86/cleanups
+> - patches  2-13: cleanups for arch_setup_additional_pages()
+> - patches 13-14: x86 signal changes for unmapped vdso
+> - patches 15-22: provide generic vdso_base in mm_struct
+> - patch      23: selftest for unmapped vDSO & fast syscalls
 > 
-> Yeah, we should probably move .altinstructions from init-text to .init.data
-> or so? Contains a bunch of other sections too that don't get executed
-> directly ... and in fact has some non-code data structures too, such as ...
-> ".apicdrivers". :-/
+> In the end, besides cleanups, it's now more predictable what happens for
+> applications with unmapped vdso on architectures those support .mremap()
+> for vdso/sigpage.
 > 
-> I suspect people put all that into .text because it was the easiest place
-> to modify in the x86 linker script, and linker scripts are arguably scary.
+> I'm aware of only one user that unmaps vdso - Valgrind [2].
+> (there possibly are more, but this one is "special", it unmaps vdso, but
+>   not vvar, which confuses CRIU [Checkpoint Restore In Userspace], that's
+>   why I'm aware of it)
 > 
 
-Well, it's more than that; "size" considers all non-writable sections to 
-be "text".
+There was another discussion that might be relevant: actually 
+associating the vdso with an actual file, and allowing a program to map 
+said file normally if it want access to one that it normally wouldn't 
+have (say, /proc/vdso/x86_64.so versus /proc/vdso/i386.so on the same 
+system.)
+
+The "catch", of course, is that this file will need to be mapped as 
+MAP_SHARED because of vdso data.
 
 	-hpa
-
