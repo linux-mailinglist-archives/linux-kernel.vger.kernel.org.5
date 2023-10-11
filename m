@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFA37C4A02
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278817C4A0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345147AbjJKGQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 02:16:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35732 "EHLO
+        id S1345457AbjJKGQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 02:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345357AbjJKGPp (ORCPT
+        with ESMTP id S1345150AbjJKGPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 02:15:45 -0400
+        Wed, 11 Oct 2023 02:15:47 -0400
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9A9EB;
-        Tue, 10 Oct 2023 23:15:33 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPA id 6B79AE000D;
-        Wed, 11 Oct 2023 06:15:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC34124;
+        Tue, 10 Oct 2023 23:15:36 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id E5911E0007;
+        Wed, 11 Oct 2023 06:15:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697004931;
+        t=1697004935;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=H6LM5oBsAhqZ2AuRWwGids6eXtTepJ+ChJ2w8L/EWt8=;
-        b=DC9wZFhapS4z4fkYFylKnyEpnBJTDgi8lJPoHmii4PZA+LHzjhfM5UzFHgWJXjLt5umrT2
-        O6+plBjZFdhFPAUHkahdGUjMKiGixmVUvwHKnNYHn0nU6XEmoJCwtPAd5xBk6eXYX7gsIO
-        u+Ms1Y5xP5erYIunlNpFOzu9N1p2e8ZUdv6DtpH8BzOUFmkRUy4YLw/bQsP8IvcvbsJSIv
-        Dil4KRHSnlBndSUs6ETBXirk/xDI1MChLrz7rJQ/YWkU2Jhqh6ii6awcZhGb6LqbJqc12C
-        T03Dol5ygNf1JpwKeZ0AjBGwRp/cbkMU942+aIAF1NPXJejOoM3DMyBBfPjSkw==
+        bh=rzUuWhRDgVHjZPWx1zQHs1eer0WBNpuWBkiimoMaxFw=;
+        b=elLQChkcPoTIoft8Zd5qjbXQ3UKcWCfHeINhuiwwwk5X9nICYkC0QapHBU+vysgIonLlWg
+        ULGXPZxrckCecUYUlJvu7PZn/pXGkCMvr5hoS1q9HJvkFVm9XeUBzBf94/XN9KGp4Xj8gi
+        KVnEts0BCvLKAiOK7HpuV4rnKKxbVY24Ig5k+p1tedw4oCBEzqRUDVKm/BqoUxWDrpAFmD
+        HT5miy6ZCzoNF1GB553ZcdKq63srK7mm63EglwgbYM4ZaSiyvMGn9sUCnM7KSHCh+pOQuq
+        VF5PsMgxtUEM+1ZeACeRTtHN7NekXZJ+uLB72WgxFSQpqBmgfJW3Wb3Wm4y1jw==
 From:   Herve Codina <herve.codina@bootlin.com>
 To:     Herve Codina <herve.codina@bootlin.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -56,9 +56,9 @@ Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         alsa-devel@alsa-project.org, Simon Horman <horms@kernel.org>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v8 12/30] soc: fsl: cpm1: qmc: Introduce available timeslots masks
-Date:   Wed, 11 Oct 2023 08:14:16 +0200
-Message-ID: <20231011061437.64213-13-herve.codina@bootlin.com>
+Subject: [PATCH v8 13/30] soc: fsl: cpm1: qmc: Rename qmc_setup_tsa* to qmc_init_tsa*
+Date:   Wed, 11 Oct 2023 08:14:17 +0200
+Message-ID: <20231011061437.64213-14-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231011061437.64213-1-herve.codina@bootlin.com>
 References: <20231011061437.64213-1-herve.codina@bootlin.com>
@@ -75,54 +75,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Available timeslots masks define timeslots available for the related
-channel. These timeslots are defined by the QMC binding.
-
-Timeslots used are initialized to available timeslots but can be a
-subset of available timeslots.
-This prepares the dynamic timeslots management (ie. changing timeslots
-at runtime).
+qmc_setup_tsa* are called once at initialisation.
+They initialize the QMC TSA table.
+In order to introduce setup function later on for dynamic timeslots
+management, rename the function to avoid later confusion.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/soc/fsl/qe/qmc.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/soc/fsl/qe/qmc.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index 5da15a25600e..653d458b84b6 100644
+index 653d458b84b6..28acf4c8a141 100644
 --- a/drivers/soc/fsl/qe/qmc.c
 +++ b/drivers/soc/fsl/qe/qmc.c
-@@ -177,7 +177,9 @@ struct qmc_chan {
- 	struct qmc *qmc;
- 	void __iomem *s_param;
- 	enum qmc_mode mode;
-+	u64	tx_ts_mask_avail;
- 	u64	tx_ts_mask;
-+	u64	rx_ts_mask_avail;
- 	u64	rx_ts_mask;
- 	bool is_reverse_data;
+@@ -919,7 +919,7 @@ static int qmc_of_parse_chans(struct qmc *qmc, struct device_node *np)
+ 	return qmc_check_chans(qmc);
+ }
  
-@@ -875,7 +877,8 @@ static int qmc_of_parse_chans(struct qmc *qmc, struct device_node *np)
- 			of_node_put(chan_np);
- 			return ret;
- 		}
--		chan->tx_ts_mask = ts_mask;
-+		chan->tx_ts_mask_avail = ts_mask;
-+		chan->tx_ts_mask = chan->tx_ts_mask_avail;
+-static int qmc_setup_tsa_64rxtx(struct qmc *qmc, const struct tsa_serial_info *info)
++static int qmc_init_tsa_64rxtx(struct qmc *qmc, const struct tsa_serial_info *info)
+ {
+ 	struct qmc_chan *chan;
+ 	unsigned int i;
+@@ -961,7 +961,7 @@ static int qmc_setup_tsa_64rxtx(struct qmc *qmc, const struct tsa_serial_info *i
+ 	return 0;
+ }
  
- 		ret = of_property_read_u64(chan_np, "fsl,rx-ts-mask", &ts_mask);
- 		if (ret) {
-@@ -884,7 +887,8 @@ static int qmc_of_parse_chans(struct qmc *qmc, struct device_node *np)
- 			of_node_put(chan_np);
- 			return ret;
- 		}
--		chan->rx_ts_mask = ts_mask;
-+		chan->rx_ts_mask_avail = ts_mask;
-+		chan->rx_ts_mask = chan->rx_ts_mask_avail;
+-static int qmc_setup_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_serial_info *info)
++static int qmc_init_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_serial_info *info)
+ {
+ 	struct qmc_chan *chan;
+ 	unsigned int i;
+@@ -1019,7 +1019,7 @@ static int qmc_setup_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_serial_info
+ 	return 0;
+ }
  
- 		mode = "transparent";
- 		ret = of_property_read_string(chan_np, "fsl,operational-mode", &mode);
+-static int qmc_setup_tsa(struct qmc *qmc)
++static int qmc_init_tsa(struct qmc *qmc)
+ {
+ 	struct tsa_serial_info info;
+ 	int ret;
+@@ -1030,12 +1030,12 @@ static int qmc_setup_tsa(struct qmc *qmc)
+ 		return ret;
+ 
+ 	/*
+-	 * Setup one common 64 entries table or two 32 entries (one for Tx and
+-	 * one for Tx) according to assigned TS numbers.
++	 * Initialize one common 64 entries table or two 32 entries (one for Tx
++	 * and one for Tx) according to assigned TS numbers.
+ 	 */
+ 	return ((info.nb_tx_ts > 32) || (info.nb_rx_ts > 32)) ?
+-		qmc_setup_tsa_64rxtx(qmc, &info) :
+-		qmc_setup_tsa_32rx_32tx(qmc, &info);
++		qmc_init_tsa_64rxtx(qmc, &info) :
++		qmc_init_tsa_32rx_32tx(qmc, &info);
+ }
+ 
+ static int qmc_setup_chan_trnsync(struct qmc *qmc, struct qmc_chan *chan)
+@@ -1391,7 +1391,7 @@ static int qmc_probe(struct platform_device *pdev)
+ 	qmc_write32(qmc->scc_pram + QMC_GBL_C_MASK32, 0xDEBB20E3);
+ 	qmc_write16(qmc->scc_pram + QMC_GBL_C_MASK16, 0xF0B8);
+ 
+-	ret = qmc_setup_tsa(qmc);
++	ret = qmc_init_tsa(qmc);
+ 	if (ret)
+ 		goto err_tsa_serial_disconnect;
+ 
 -- 
 2.41.0
 
