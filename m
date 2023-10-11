@@ -2,109 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D82B7C605C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CED7C6060
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233651AbjJKWfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 18:35:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39174 "EHLO
+        id S1376524AbjJKWhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 18:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230108AbjJKWff (ORCPT
+        with ESMTP id S230108AbjJKWhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 18:35:35 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324B9A4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:35:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/rH5k2R7fy3EeoPgRJEoHWfNJ/FGZ9dJZ3C37UjXiug=; b=Z6IWx8ByB3DoEZ2EIT+qjX8EQa
-        ZxbWN/kHMTDoa81yCjS+9XYW39v1HJtZvs8H8OfAnYGTr9BWf7eRHBk8k1B7BxtuwlU4w5F9FjWWh
-        4KDJvxkeS4nFPl/xOSR0ipDBBiDQ9WdIQEfBDT+Z1ylgBBuFge/EzwnV7IsZa6ea789lnBk9jDFwF
-        uFRj4qf/vm2MlLY+5d2ZnO0LY2x+Cay4YbhnOfmyOWPLbPyp/txQDW5/ADsw9YQb0aCCI4G0nubYN
-        Cdgakk0iJYklupjo9DKOdh30WQUQdMUVuEx3H3ouEwmA4ZMijq69m/aZMF45NmJEENFZNHoILhcfk
-        GeTLzaPA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qqhnM-000ZjG-23;
-        Wed, 11 Oct 2023 22:35:14 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BB88D30036C; Thu, 12 Oct 2023 00:35:13 +0200 (CEST)
-Date:   Thu, 12 Oct 2023 00:35:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        David Kaplan <david.kaplan@amd.com>, x86@kernel.org,
-        luto@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] Revert "x86/retpoline: Remove
- .text..__x86.return_thunk section"
-Message-ID: <20231011223513.GH6307@noisy.programming.kicks-ass.net>
-References: <20231010171020.462211-1-david.kaplan@amd.com>
- <20231010171020.462211-2-david.kaplan@amd.com>
- <20231010174833.GG14330@noisy.programming.kicks-ass.net>
- <20231010195721.p5pb273kevg7ydxz@treble>
- <20231010200429.GIZSWuTWSUM9aId7a6@fat_crate.local>
- <20231010201912.7pjksbparssqu34k@treble>
- <20231010212254.ypk2wdogno55shit@treble>
- <20231011074142.GK14330@noisy.programming.kicks-ass.net>
- <20231011162843.grv6kixw4ides6uw@treble>
+        Wed, 11 Oct 2023 18:37:05 -0400
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6D6A4;
+        Wed, 11 Oct 2023 15:37:03 -0700 (PDT)
+Received: from i53875b94.versanet.de ([83.135.91.148] helo=phil.lan)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1qqhou-0005Ma-RZ; Thu, 12 Oct 2023 00:36:48 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        linux-arm-kernel@lists.infradead.org,
+        Kever Yang <kever.yang@rock-chips.com>,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v2 0/2] Add support for Pine64 QuartzPro64
+Date:   Thu, 12 Oct 2023 00:36:45 +0200
+Message-Id: <169706370544.498990.15767954270891425478.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231011215856.2082241-1-megi@xff.cz>
+References: <20231011215856.2082241-1-megi@xff.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011162843.grv6kixw4ides6uw@treble>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SPF_HELO_TEMPERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 09:28:43AM -0700, Josh Poimboeuf wrote:
-> On Wed, Oct 11, 2023 at 09:41:42AM +0200, Peter Zijlstra wrote:
-> > > +++ b/tools/objtool/check.c
-> > > @@ -1610,6 +1610,15 @@ static int add_jump_destinations(struct objtool_file *file)
-> > >  			return -1;
-> > >  		}
-> > >  
-> > > +		/*
-> > > +		 * Since retpolines are in the same section as the return
-> > > +		 * thunk, they might not use a relocation when branching to it.
-> > > +		 */
-> > > +		if (jump_dest->sym && jump_dest->sym->return_thunk) {
-> > > +			add_return_call(file, insn, true);
-> > > +			continue;
-> > > +		}
-> > 
-> > *urgh*... I mean, yes, that obviously works, but should we not also have
-> > the retpoline thingy for consistency? That case makes less sense though
-> > :/
+On Wed, 11 Oct 2023 23:58:43 +0200, Ondřej Jirman wrote:
+> From: Ondrej Jirman <megi@xff.cz>
 > 
-> Consistency with what? 
+> This series adds an initial support for Pine64 QuartzPro64 SBC.
+> 
+> The series was tested against Linux 6.6-rc4.
+> 
+> Please take a look.
+> 
+> [...]
 
-the reloc case; specifically, I was thinking something along these
-lines:
+Applied, thanks!
 
-		if (jump-dest->sym && jump_dest->sym->retpoline_thunk) {
-			add_retpoline_call(file, insn);
-			continue;
-		}
+[1/2] dt-bindings: arm: rockchip: Add Pine64 QuarzPro64
+      commit: a6fa0d4a704d7af51a5d02f76c73046cf957c1b5
+[2/2] arm64: dts: rk3588-quartzpro64: Add QuartzPro64 SBC device tree
+      commit: 8152d3d070a9ca4f48020d11925718f1707db4f1
 
-Then both reloc and immediate versions are more or less the same.
+Thanks a lot for following along my changes.
 
-> The extra section seems pointless but maybe I'm missing something.
+While I did plan on doing the same for the original QuartzPro64
+series, I hadn't found the time yet and this makes everything
+so much easier :-) .
 
-By having the section things are better delineated I suppose, be it
-retpolines or rethunks, all references should be to inside the section
-(and thus have a reloc) while within the section there should never be a
-reference to itself.
 
-I'm not sure it's worth much, but then we can have the above two cases
-issue a WARN instead of fixing it up.
-
-I don't care too deeply, I can't make up my mind either way. But perhaps
-keeping the section is easier on all the backports, it's easy to forget
-a tiny objtool patch like this.
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
