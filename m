@@ -2,122 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5293F7C5A72
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529177C5A76
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232870AbjJKRol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 13:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33914 "EHLO
+        id S232925AbjJKRp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 13:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232896AbjJKRoi (ORCPT
+        with ESMTP id S231906AbjJKRpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 13:44:38 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF32DA4;
-        Wed, 11 Oct 2023 10:44:35 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d9a50ac5eabso82345276.1;
-        Wed, 11 Oct 2023 10:44:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697046275; x=1697651075; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iyy+ysmQl4Bp1AUl2QIMnm0hQgXYP2CG0aAsMLq8u9A=;
-        b=HPOU8PbEM/jdbLNVMg6GILqV3cuWHkwSoAy8oHcKmTeAhiB8zTTISkgdLlJ53mPMJJ
-         qXIN9nvxI9YBuwvLREBTV1+W5XJgEUcfY2UvazkCf+9zM6UNZm6zBxQdVFJ9R+/4Jdej
-         z+BddXkV+90HP3hjtPHZvefwGLpyYfjRI6WukjvvApL6u6N/Ua8lGGV6aHjftjbQbf5u
-         RS8S/5SW3dFr/S9Y0RZipUlmTctngsy+RgerVnZn5ZxCC7j7Rsr7J8SvqTlkseTofQsa
-         f1L9jAG9z75KzcB/PfRauHe/wD+Q0T+C9xiZAzHtZ99QdnE0PcaaI1cSlcVLBqTjJxeb
-         wEQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697046275; x=1697651075;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iyy+ysmQl4Bp1AUl2QIMnm0hQgXYP2CG0aAsMLq8u9A=;
-        b=lFSC1g9I3asg6HuSJ/u9V3uLEvV+usisnomHd46K1h8jI2RyvRZhnCBvoUAyokNGtf
-         RR7Wm/Mj8Gn/O0/pDwHCQ/CVS128p2vtlr2xaA46ClB1uZ3tDmsPHPRTiCbH+QLRhyeU
-         dpZ4llAi7mIto782hLUfIOcepZNKURy5PiQT9S2aqdeS0bwS49JZxV4sP2Dr5OSp8DgQ
-         wH2d433t259b/OCFuc87oQ9UTXEbHOC/D6/du6FSr9S7yzsjGX5LL0rt0NW6ZTWWQ5Ym
-         vg8oV4lKdPmOUTf3AuOeg8DvjxCUmq5TAXaD6chUT1U8mtEKxt2Joy0hp30GnPtRaelK
-         TRoA==
-X-Gm-Message-State: AOJu0Yxq/CfQHw3Ts+GxWsGmfRjA8jGvWyTGyGVndqY/vcapDC3sScxL
-        jKpT04NFQfyV6i29KevLNkQipi5ipzKNMyPymuc=
-X-Google-Smtp-Source: AGHT+IEqzvlLevFjLbBV7j7WTIsB6wSm7NN0VAlnFhMEHL1DP2s//b6gojMeg98oG+nm4gSiDDerRbAbnT46xkodUnU=
-X-Received: by 2002:a05:6902:152:b0:d9a:38b0:a0c8 with SMTP id
- p18-20020a056902015200b00d9a38b0a0c8mr7068973ybh.61.1697046275143; Wed, 11
- Oct 2023 10:44:35 -0700 (PDT)
+        Wed, 11 Oct 2023 13:45:24 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F16593;
+        Wed, 11 Oct 2023 10:45:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+ t=1697046298; x=1697651098; i=linosanfilippo@gmx.de;
+ bh=UVwy6rGjkkRmwuK46ZAz8hsnVp71vE+KNQWIQjAfHBQ=;
+ h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+ b=BGNTrv9k/GzG77rpEzJEdxVTIN3NdGER1o2ZZ9OSM3llah5UWLAK7XmpTDW2XZq1xEpTf6GcRUH
+ AK+mP4jDss3ZibbvQzGdZjYi9+qylHwSnxkmxgjql4S1ie6ts4NWbRA/T0hVpxu/jGS3kNziAErjU
+ FVsGJ6E0hKtMKjoOAyLrav9yhN05tPuIWnL3fBjVXUl2796g6vtFTVkVtRTFW9SRBcaKbGzplRBHn
+ 9QpzGFoBYiGlcjqUKaHzHJq8auk5qJyQh7efoo+tztwSrD4cyZeqvO+6iVwqPvACTEWSpla/LN+ZN
+ MdCWo1TqUmD4TcBJpLMgzrgNM1823A9HdC7Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.2.37] ([84.162.21.41]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mv31W-1rhDv019m4-00r0rC; Wed, 11
+ Oct 2023 19:44:58 +0200
+Subject: Re: [PATCH v2 2/7] serial: amba-pl011: get rid of useless wrapper
+ pl011_get_rs485_mode()
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Cc:     jirislaby@kernel.org, ilpo.jarvinen@linux.intel.com,
+        shawnguo@kernel.org, s.hauer@pengutronix.de,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+        cniedermaier@dh-electronics.com, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, lukas@wunner.de,
+        p.rosenberger@kunbus.com
+References: <20231011173829.10508-1-l.sanfilippo@kunbus.com>
+ <20231011173829.10508-3-l.sanfilippo@kunbus.com>
+ <2023101134-theater-oversleep-a58b@gregkh>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <20d22e11-b9be-b547-ec4e-9964a57924a4@gmx.de>
+Date:   Wed, 11 Oct 2023 19:44:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20231009224347.2076221-1-mmaurer@google.com>
-In-Reply-To: <20231009224347.2076221-1-mmaurer@google.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 11 Oct 2023 19:44:23 +0200
-Message-ID: <CANiq72=wAOryvUW3whsGRvribm2eYT+Z-KsJKCkZ0g8b3P+jQg@mail.gmail.com>
-Subject: Re: [PATCH] x86: Enable IBT in Rust if enabled in C
-To:     Matthew Maurer <mmaurer@google.com>
-Cc:     peterz@infradead.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2023101134-theater-oversleep-a58b@gregkh>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Provags-ID: V03:K1:u8B74tV49e9+gaS44twA10TgbsUMqVsAaC1TznkmpYCf9jnOjej
+ cN3th8iNGHBuH444Wtr8ts/0hKAAPBHafXfoM7jloxOKomKbOTolVuXHj5emdP85DSNgmyx
+ EvekJ2vEHFd0a1bxlJSlqun7O/fxy9zC9jhd9FPh9a7KKub1xrJPKyfqmVcYQ8AlYM6mXu8
+ G4fiALXCsf2EBaqRp7L4g==
+UI-OutboundReport: notjunk:1;M01:P0:Hjmy0vdrhM4=;lCtslM8a4Xh0e5FLhh4FRudlg9E
+ 2zL5H5QMHijoG5dK8WLTjDyQSoUeJpH58O+7bB3e2zGZ1myHc9AIJKYAZ8p+5fNdw/R2PzZid
+ ael+5bhm3jShdm/YUGh5jaSii9FayOjBUfSxFLe6SkiVeK6MlCq94NRs3cKdq+mQaG6zZC2o7
+ El/soumIB33UexP0SMkUygZHGiv/KIwsWfV3pjb7++uHL5RiUu07lwCbIX48t9FiIA8JW7hhe
+ 6uyqKkNYQTJhk3tuZrDsufytNjaJQYY5JetBGAJu0oa4HrxdQIYtgS0F3aW7Ee/luc95MYCMX
+ mL4kD7bv7zgD+/1cov6ZxeS+Hqlia08zaq66CTZ3+38dnSvOI7WrN5Rh0gSpCw9MVID8dDmAM
+ ih9cKR470sgjLshr3PASsofc15yywYg9W1Pwfql1Plz8HV64/Bb249mC7CGSjLcj3uJdhIZP+
+ yvHS7LTnZDvXGyYlq4aLVDS2O0jfUTuJoTYfE2pxQi5oF+zeBy/bciXD8UlHUHt+O714tnYnq
+ UT+B35wFIaOTm10PVDRtb8yiC621Xf1H22YzEkSvy0Al2zcBCz2HtbYldBlwZjYQwoN/x/zQh
+ eQDCGGMS3F29MBAx6gYkqJ+AaRm1ClsvgN6I5DXbuAWk/X78SiIGVVIGH4nWzOLdLNgDfxI8C
+ crKoPDD4GGsamxJiRK+L4kq/pQ+7gNtq77/CCrvNcQRcrw6/pgVLRzfKG1wSxDzHJna9gzTDS
+ k5RUi/cfWTw5sPID9qm5zmbeLXYkJccIa7FBFfsxDmryJn4PPDOgCl5mK3gKIyRFz0RUf/Zi6
+ y64HXGKWOOUlcNMtpExFLW2KwznXnX1rjRDn0H+6qnwT3feL9UIGydGwbAt9SC/VCEYOdAJds
+ EKYt7Om7/54um9zAfz7q7ryEbmHr1PlMk2rGgJDVmxPmWEVmfJqgivbol1C/E5vvZ9W41I0it
+ rCYDfA==
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 12:43=E2=80=AFAM Matthew Maurer <mmaurer@google.com=
-> wrote:
+
+Hi,
+
+On 11.10.23 at 19:42, Greg KH wrote:
+> On Wed, Oct 11, 2023 at 07:38:24PM +0200, Lino Sanfilippo wrote:
+>> Due to earlier code changes function pl011_get_rs485_mode() is now mere=
+ly
+>> a wrapper for uart_get_rs485_mode() which does not add any further
+>> functionality. So remove it and instead call uart_get_rs485_mode()
+>> directly.
+>>
+>> Reviewed-by: Lukas Wunner <lukas@wunner.de>
+>> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+>> ---
+>>  drivers/tty/serial/amba-pl011.c | 14 +-------------
+>>  1 file changed, 1 insertion(+), 13 deletions(-)
 >
-> These flags are not made conditional on compiler support because at the
-> moment exactly one version of rustc supported, and that one supports
-> these flags.
+> Why is patch 2/7 not cc: stable, when patches 3-7 are?  Either this
+> patch isn't needed in this series, and can go later (or to a different
+> branch), or it also needs to be marked for stable as the later patches
+> depend on it?
 >
-> Building without these additional flags will manifest as objtool
-> printing a large number of errors about missing ENDBR and if CFI is
-> enabled (not currently possible) will result in incorrectly structured
-> function prefixes.
->
-> Signed-off-by: Matthew Maurer <mmaurer@google.com>
-> ---
->
-> Split out the IBT additions as per
-> https://lkml.kernel.org/linux-fsdevel/CANiq72kK6ppBE7j=3Dz7uua1cJMKaLoR5U=
-3NUAZXT5MrNEs9ZhfQ@mail.gmail.com/
 
-Thanks a lot Matthew for this! It is great to see those warnings
-finally go away.
+2/7 is really only a cleanup patch that does not provide a bugfix.
+Should I remove it from this series?
 
-I have added the `objtool` pass to the intermediate Rust object files
-and, with that + this patch applied + IBT enabled (but not
-rethunk/retpoline), the only thing I see is:
+Regards,
+Lino
 
-    samples/rust/rust_print.o: warning: objtool: init_module(): not an
-indirect call target
-    samples/rust/rust_print.o: warning: objtool: cleanup_module(): not
-an indirect call target
 
-But we can fix those independently of this (ideally we want to reuse
-the C macros, rather than putting more complexity in `module!`), so:
 
-Acked-by: Miguel Ojeda <ojeda@kernel.org>
-
-I will send the patch for adding `objtool`.
-
-Cheers,
-Miguel
