@@ -2,100 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F987C5720
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D4D7C5729
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346782AbjJKOjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 10:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
+        id S235003AbjJKOkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 10:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232260AbjJKOjC (ORCPT
+        with ESMTP id S232323AbjJKOkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 10:39:02 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AF9C9;
-        Wed, 11 Oct 2023 07:39:01 -0700 (PDT)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BEZQdJ018357;
-        Wed, 11 Oct 2023 14:38:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Rsrya8F9k3FKu3oAi/1f/gRrlIvhxy+n+lE/10Bl0gU=;
- b=Wf0I7KA2CrPdmdAzdzbRGZQufcYWvcmVBUgSuIsoeXheVlzPJv8Oeyz5UYnPB06tURzz
- Ue7kJ/mSvtwdccZIZ93kJblEmMRDQg9ctDNLpGFJEW26UwPUHr1gEX0FXbVozmpNDyvs
- rxvzu7melyq2XI0yfAVHyrd3IzmQYg68lVPIsWwyGnjIvvWblfsg23h2WTzGk+1x4PDN
- kcbc72R18OOT+zDbFI0LgdhHqOXo82DHe75cEmfx64+dFUiIzQSkI+Rqe8eWC9JjWOpV
- uJXK5nnzU8bTMFXERPnP1L0ZxpTw0ScPLWEHFvXZmBgBbjf7IfVk9Onez90XlTT9Cv5X Ew== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnwkm056m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 14:38:13 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39BEb0x2025752;
-        Wed, 11 Oct 2023 14:38:13 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnwkm054p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 14:38:12 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39BDGYnQ001270;
-        Wed, 11 Oct 2023 14:38:11 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkkvk09fg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 14:38:11 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39BEcAFT27853388
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Oct 2023 14:38:10 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 103685803F;
-        Wed, 11 Oct 2023 14:38:10 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6455958063;
-        Wed, 11 Oct 2023 14:38:08 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.67.198])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 11 Oct 2023 14:38:08 +0000 (GMT)
-Message-ID: <a733fe780a3197150067ad35ed280bf85e11fa97.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 02/25] ima: Align ima_post_path_mknod() definition
- with LSM infrastructure
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Wed, 11 Oct 2023 10:38:08 -0400
-In-Reply-To: <20230904133415.1799503-3-roberto.sassu@huaweicloud.com>
-References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
-         <20230904133415.1799503-3-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: QVsVQlDn-wAz8Uyi9OSmRgCBMpneIJFI
-X-Proofpoint-ORIG-GUID: 56WOXHa1T-ZiyjPUwv0xHI5wq_xiNMpW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_09,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 suspectscore=0 clxscore=1015 malwarescore=0
- priorityscore=1501 mlxscore=0 phishscore=0 mlxlogscore=982 adultscore=0
- spamscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2310110129
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Wed, 11 Oct 2023 10:40:12 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 29436B6;
+        Wed, 11 Oct 2023 07:40:10 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0AF4106F;
+        Wed, 11 Oct 2023 07:40:50 -0700 (PDT)
+Received: from bogus (unknown [10.57.93.106])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EDF843F7A6;
+        Wed, 11 Oct 2023 07:40:07 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 15:38:36 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yang Yang <yang.yang29@zte.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sebastian Reichel <sre@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] of: rexport of_find_next_cache_node()
+Message-ID: <20231011143836.q4c5rf6eqb2i6p53@bogus>
+References: <20231011131431.2559029-1-arnd@kernel.org>
+ <20231011135905.hveat7viflqluccw@bogus>
+ <dccc0487-f254-4429-a6ab-fed037daae50@app.fastmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dccc0487-f254-4429-a6ab-fed037daae50@app.fastmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -103,126 +54,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-09-04 at 15:33 +0200, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
-> 
-> Change ima_post_path_mknod() definition, so that it can be registered as
-> implementation of the path_post_mknod hook. Since LSMs see a umask-stripped
-> mode from security_path_mknod(), pass the same to ima_post_path_mknod() as
-> well.
-> Also, make sure that ima_post_path_mknod() is executed only if
-> (mode & S_IFMT) is equal to zero or S_IFREG.
-> 
-> Add this check to take into account the different placement of the
-> path_post_mknod hook (to be introduced) in do_mknodat().
+On Wed, Oct 11, 2023 at 04:05:47PM +0200, Arnd Bergmann wrote:
+> On Wed, Oct 11, 2023, at 15:59, Sudeep Holla wrote:
+> > On Wed, Oct 11, 2023 at 03:14:08PM +0200, Arnd Bergmann wrote:
+> >> From: Arnd Bergmann <arnd@arndb.de>
+> >> 
+> >> This function is now called from a cpufreq driver, but that breaks the
+> >> build when the caller is in a loadable module, because of a missing
+> >> export:
+> >> 
+> >> ERROR: modpost: "of_find_next_cache_node" [drivers/cpufreq/qcom-cpufreq-nvmem.ko] undefined!
+> >> 
+> >> Export this as a GPL-only symbol, like the other related functions in
+> >> this file.
+> >> 
+> >> Fixes: 7683a63c08ff5 ("cpufreq: qcom-nvmem: create L2 cache device")
+> >> Fixes: a3e31b4588443 ("of: Move definition of of_find_next_cache_node into common code.")
+> >
+> > I am bit confused as I see commit a3e31b4588443 didn't drop the export.
+> > So how is this change fixing that commit ?
+>
+> My mistake, I was looking for the commit that initially introduced
+> the function, but didn't notice that this just moved it from powerpc.
+>
+> I could have used "Fixes: e523f723d69cd ("powerpc: Add
+> of_find_next_cache_node()")", but it's probably best to just
+> leave that line out entirely.
+>
 
-Move "(to be introduced)" to when it is first mentioned.
+Yes I was thinking to drop it as it is quite old commit(both a3e31b4588443 and
+e523f723d69cd) and I don't see any point in merging this to all the concerned
+stable trees as they must not have this new user.
 
-> Since the new hook
-> will be placed after the switch(), the check ensures that
-> ima_post_path_mknod() is invoked as originally intended when it is
-> registered as implementation of path_post_mknod.
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  fs/namei.c                        |  9 ++++++---
->  include/linux/ima.h               |  7 +++++--
->  security/integrity/ima/ima_main.c | 10 +++++++++-
->  3 files changed, 20 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/namei.c b/fs/namei.c
-> index e56ff39a79bc..c5e96f716f98 100644
-> --- a/fs/namei.c
-> +++ b/fs/namei.c
-> @@ -4024,6 +4024,7 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
->  	struct path path;
->  	int error;
->  	unsigned int lookup_flags = 0;
-> +	umode_t mode_stripped;
->  
->  	error = may_mknod(mode);
->  	if (error)
-> @@ -4034,8 +4035,9 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
->  	if (IS_ERR(dentry))
->  		goto out1;
->  
-> -	error = security_path_mknod(&path, dentry,
-> -			mode_strip_umask(path.dentry->d_inode, mode), dev);
-> +	mode_stripped = mode_strip_umask(path.dentry->d_inode, mode);
-> +
-> +	error = security_path_mknod(&path, dentry, mode_stripped, dev);
->  	if (error)
->  		goto out2;
->  
-> @@ -4045,7 +4047,8 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
->  			error = vfs_create(idmap, path.dentry->d_inode,
->  					   dentry, mode, true);
->  			if (!error)
-> -				ima_post_path_mknod(idmap, dentry);
-> +				ima_post_path_mknod(idmap, &path, dentry,
-> +						    mode_stripped, dev);
->  			break;
->  		case S_IFCHR: case S_IFBLK:
->  			error = vfs_mknod(idmap, path.dentry->d_inode,
-> diff --git a/include/linux/ima.h b/include/linux/ima.h
-> index 910a2f11a906..179ce52013b2 100644
-> --- a/include/linux/ima.h
-> +++ b/include/linux/ima.h
-> @@ -32,7 +32,8 @@ extern int ima_read_file(struct file *file, enum kernel_read_file_id id,
->  extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
->  			      enum kernel_read_file_id id);
->  extern void ima_post_path_mknod(struct mnt_idmap *idmap,
-> -				struct dentry *dentry);
-> +				const struct path *dir, struct dentry *dentry,
-> +				umode_t mode, unsigned int dev);
->  extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
->  extern int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size);
->  extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
-> @@ -114,7 +115,9 @@ static inline int ima_post_read_file(struct file *file, void *buf, loff_t size,
->  }
->  
->  static inline void ima_post_path_mknod(struct mnt_idmap *idmap,
-> -				       struct dentry *dentry)
-> +				       const struct path *dir,
-> +				       struct dentry *dentry,
-> +				       umode_t mode, unsigned int dev)
->  {
->  	return;
->  }
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> index 365db0e43d7c..76eba92d7f10 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -696,18 +696,26 @@ void ima_post_create_tmpfile(struct mnt_idmap *idmap,
->  /**
->   * ima_post_path_mknod - mark as a new inode
->   * @idmap: idmap of the mount the inode was found from
-> + * @dir: path structure of parent of the new file
->   * @dentry: newly created dentry
-> + * @mode: mode of the new file
-> + * @dev: undecoded device number
->   *
->   * Mark files created via the mknodat syscall as new, so that the
->   * file data can be written later.
->   */
->  void ima_post_path_mknod(struct mnt_idmap *idmap,
-> -			 struct dentry *dentry)
-> +			 const struct path *dir, struct dentry *dentry,
-> +			 umode_t mode, unsigned int dev)
->  {
->  	struct integrity_iint_cache *iint;
->  	struct inode *inode = dentry->d_inode;
->  	int must_appraise;
->  
-> +	/* See do_mknodat(), IMA is executed for case 0: and case S_IFREG: */
-> +	if ((mode & S_IFMT) != 0 && (mode & S_IFMT) != S_IFREG)
-> +		return;
-> +
+That said it is not a complex change, so I am fine either way, just thought
+of raising it in case it was not intentional.
 
-There's already a check below to make sure that this is a regular file.
-Are both needed?
-
->  	if (!ima_policy_flag || !S_ISREG(inode->i_mode))
->  		return;
->  
-
+--
+Regards,
+Sudeep
