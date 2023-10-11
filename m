@@ -2,163 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 076737C5F19
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093927C5F17
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233578AbjJKV2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60938 "EHLO
+        id S233572AbjJKV2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 17:28:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233483AbjJKV2n (ORCPT
+        with ESMTP id S233339AbjJKV2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:28:43 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13E4A9;
-        Wed, 11 Oct 2023 14:28:39 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BLLorF026505;
-        Wed, 11 Oct 2023 21:28:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=YV+V1QT7WH4TWPolqZP1tvIu4h5bgrG/c8p+KKr0FoQ=;
- b=Nol6CFDoHUzR4MONkVTbjPlDGX8jVqu+DqjvbqlByQojNsd+P5PUQji3uQkMkNyEx/2S
- 5L8blqit0HWXQxoVAeP1EZs/iVACZdp8Ta+QIe4RPdY1umbSFP4kGotR6AFmcncynZnk
- oahwPh5qBb7S4BzteERSwdbC/8Soe6MKEqc2CmEUyU6jDd1k8Mdxoo8bWCuklBuUdBKI
- MKvabTmCS2Bar6e2adlK6oMnL8Nu2Q5voYPAzqGKGnn1TDISOEWh4O5m1zsSzp63XONF
- xJj0JAeOIR0GtT+EEmgyj8qGZxecN8tjDe4nkXpSULibMPnY9zLne8cR6F9A6iGBgU/y Ig== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnsmq1nmr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 21:28:14 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39BLSC9L011144
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 21:28:13 GMT
-Received: from [10.71.115.198] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 11 Oct
- 2023 14:28:12 -0700
-Message-ID: <a9b172cd-1840-2949-2244-9a75d2bb7990@quicinc.com>
-Date:   Wed, 11 Oct 2023 14:28:07 -0700
+        Wed, 11 Oct 2023 17:28:34 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF739E;
+        Wed, 11 Oct 2023 14:28:33 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9ae75ece209so45193566b.3;
+        Wed, 11 Oct 2023 14:28:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697059711; x=1697664511; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xi4hRupYAPdxlVps7j6FmsE6VUo3wpqHYU7pBZ7s4FY=;
+        b=D0lUgLaEkPd/jkyrZZmb9i+AgShrUinX2P6HRBoYzkXIzFjpuja6471IetqIH4U5Uu
+         cbcP+lFq82tXGVP1P0yrxGCcdJwCSC2LXM5suvS56lx+I41/E3E3XCb4DZ5gTcCtEzpT
+         u0zfiGSdofiNunlZ8VoSEMgkYqsou6fOmq6ApMy6cCfIcEVOrE8IN1Abeqlwxf9dEeRd
+         1QwoKOMprD/hU7r2rU7yzoPMP63O4HBwLzcfGJFwfuCdOC7ZVwhlfPxtcCrPoipzeTUC
+         bkZyXs96n4GpGcay9cY3eIwbiyFm531AhOREF3GL2+hxh62zPKai/eGQo6EQ/Ym4gVMR
+         86BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697059711; x=1697664511;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xi4hRupYAPdxlVps7j6FmsE6VUo3wpqHYU7pBZ7s4FY=;
+        b=idSl33bHc5aw8PBrawJUcfG3mGloYGZfgFSTmLa9FoF0TENBT+SdonC//s7G85aKuX
+         C5KtaIkQxjg7iaJdUWE9OLImWZX660Z9MDzNxsrLHtaSJcThgLr+2upB2fh2SQzx8E1j
+         PtTnMawEhTkxoPqB3xWEGsrw4j/etYd9O8T5AqC3hB5ePhkRCPcBOtOuRrMloGnHbn0d
+         D/qsrq9VUIFOKcv6RbnAxxVVyKrhwsxfZfuuw1CbfId8htLMwrHhDSOfa4250ZSsWrLG
+         Li5uvdhkeo/IyLKYUzgfdgsfF7TKT64hkezPaMKpGUhglexCmAZQ8t5DIsEDhvz6Sx/C
+         Y8gw==
+X-Gm-Message-State: AOJu0Yza/H+yLRcD4VVHLo9LJDtmY3WiFNyAj3c3JwLocNm+ofvAwM3I
+        2+uERL8dGwv7qeZQbqpMg0Is/iyHGa4=
+X-Google-Smtp-Source: AGHT+IGirQ45rifXF7Dl5gS6nTPB+N42nlq3bwmEJ9/mSZMAxKhMJ6M7VSarm1Kr6NLuGDlU6fF8fg==
+X-Received: by 2002:a17:907:6c14:b0:9ae:588e:142 with SMTP id rl20-20020a1709076c1400b009ae588e0142mr19669529ejc.67.1697059711038;
+        Wed, 11 Oct 2023 14:28:31 -0700 (PDT)
+Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
+        by smtp.gmail.com with ESMTPSA id o6-20020a17090611c600b009ad875d12d7sm10157553eja.210.2023.10.11.14.28.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 14:28:28 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 11 Oct 2023 23:28:26 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org, rene@exactcode.de,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [tip: x86/urgent] x86/cpu: Fix AMD erratum #1485 on Zen4-based
+ CPUs
+Message-ID: <ZScTem8iF8CUZqf6@gmail.com>
+References: <D99589F4-BC5D-430B-87B2-72C20370CF57@exactcode.com>
+ <169701622768.3135.17489375930381616520.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v8 25/34] ASoC: dt-bindings: Update example for enabling
- USB offload on SM8250
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-CC:     <bgoswami@quicinc.com>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <gregkh@linuxfoundation.org>,
-        <robh+dt@kernel.org>, <konrad.dybcio@linaro.org>,
-        <conor+dt@kernel.org>, <linux-usb@vger.kernel.org>,
-        <andersson@kernel.org>, <Thinh.Nguyen@synopsys.com>,
-        <srinivas.kandagatla@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <agross@kernel.org>, <mathias.nyman@intel.com>,
-        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <perex@perex.cz>, <tiwai@suse.com>,
-        <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20231011002146.1821-1-quic_wcheng@quicinc.com>
- <20231011002146.1821-26-quic_wcheng@quicinc.com>
- <169699146438.2560961.3220166947763848754.robh@kernel.org>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <169699146438.2560961.3220166947763848754.robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Mx5Ycg9ohRBABrFQFgGJzpQmgg0YzsHa
-X-Proofpoint-ORIG-GUID: Mx5Ycg9ohRBABrFQFgGJzpQmgg0YzsHa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_16,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- mlxlogscore=999 lowpriorityscore=0 adultscore=0 priorityscore=1501
- impostorscore=0 spamscore=0 bulkscore=0 clxscore=1015 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310110189
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <169701622768.3135.17489375930381616520.tip-bot2@tip-bot2>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
 
-On 10/10/2023 7:31 PM, Rob Herring wrote:
-> 
-> On Tue, 10 Oct 2023 17:21:37 -0700, Wesley Cheng wrote:
->> Add an example on enabling of USB offload for the Q6DSP.  The routing can
->> be done by the mixer, which can pass the multimedia stream to the USB
->> backend.
->>
->> Acked-by: Rob Herring <robh@kernel.org>
->> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
->> ---
->>   .../devicetree/bindings/sound/qcom,sm8250.yaml    | 15 +++++++++++++++
->>   1 file changed, 15 insertions(+)
->>
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Error: Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:97.44-45 syntax error
-> FATAL ERROR: Unable to parse input tree
-> make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/sound/qcom,sm8250.example.dtb] Error 1
-> make[2]: *** Waiting for unfinished jobs....
-> make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
-> make: *** [Makefile:234: __sub-make] Error 2
-> 
-> doc reference errors (make refcheckdocs):
-> 
-> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231011002146.1821-26-quic_wcheng@quicinc.com
-> 
-> The base for the series is generally the latest rc1. A different dependency
-> should be noted in *this* patch.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit after running the above command yourself. Note
-> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-> your schema. However, it must be unset to test all examples with your schema.
-> 
+* tip-bot2 for Borislav Petkov (AMD) <tip-bot2@linutronix.de> wrote:
 
-Would you happen to know what the error is in this case?  I made sure I 
-was running the latest dtschema (v2023.9) and had yamllint installed as 
-well.  When I took a look at the DTB and DTS output it looked ok...
+>  /* AMD Last Branch Record MSRs */
+>  #define MSR_AMD64_LBR_SELECT			0xc000010e
+>  
+> +/* Zen4 */
+> +#define MSR_ZEN4_BP_CFG			0xc001102e
+> +#define MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT 5
+>  
+> +/* Zen 2 */
+>  #define MSR_ZEN2_SPECTRAL_CHICKEN	0xc00110e3
+>  #define MSR_ZEN2_SPECTRAL_CHICKEN_BIT	BIT_ULL(1)
+>  
+> +/* Fam 17h MSRs */
+> +#define MSR_F17H_IRPERF			0xc00000e9
 
-             usb-dai-link {
-                 link-name = "USB Playback";
-                 cpu {
-                     sound-dai = <&q6afedai USB_RX>;//--->syntax error?
-                 };
+Yeah, so these latest AMD MSR definitions in <asm/msr-index.h> are pretty 
+confused, they list MSRs in the following order:
 
-                 codec {
-                     sound-dai = <&usbdai USB_RX>;
-                 };
+   Zen 4
+   Zen 2
+   Fam 19h         // resolution in tip:master
+   Fam 17h
 
-                 platform {
-                     sound-dai = <&q6routing>;
-                 };
-             };
+where perf/core added a Fam 19h section a couple of days ago ...
 
-I didn't make any changes to this in between v7 and v8, but v7 passed:
-https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230921214843.18450-25-quic_wcheng@quicinc.com/
+While in reality:
 
-Thanks
-Wesley Cheng
+   Zen 2 == Fam 17h
+   Zen 4 == Fam 19h
+
+So it's confusing to list these separately and out of order.
+
+So in resolving the conflict in perf/core I updated this section to read:
+
+  /* Fam 19h (Zen 4) MSRs */
+  #define MSR_F19H_UMC_PERF_CTL		0xc0010800
+  #define MSR_F19H_UMC_PERF_CTR		0xc0010801
+
+  #define MSR_ZEN4_BP_CFG		0xc001102e
+  #define MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT 5
+
+  /* Fam 17h (Zen 2) MSRs */
+  #define MSR_F17H_IRPERF		0xc00000e9
+
+  #define MSR_ZEN2_SPECTRAL_CHICKEN	0xc00110e3
+  #define MSR_ZEN2_SPECTRAL_CHICKEN_BIT	BIT_ULL(1)
+
+This doesn't change the definitions themselves, only merges the comments 
+and the sections, (to keep the Git conflict resolution non-evil), but 
+arguably once perf/core goes upstream, we should probably unify the naming 
+to follow the existing nomenclature, which is, starting at around F15H, the 
+following:
+
+   MSR_F15H_
+   MSR_F16H_
+   MSR_F17H_
+   MSR_F19H_
+
+Or are the MSRs named ZEN2 and ZEN4 in AMD SDMs, which we should follow?
+
+Anyway, something to keep in mind.
+
+Thanks,
+
+	Ingo
