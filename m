@@ -2,142 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B117C45E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD097C45E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344293AbjJKANY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 20:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52784 "EHLO
+        id S1344305AbjJKANh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 20:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344230AbjJKANX (ORCPT
+        with ESMTP id S1344314AbjJKANd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 20:13:23 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4649B
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:13:21 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-690f7d73a3aso5585201b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:13:21 -0700 (PDT)
+        Tue, 10 Oct 2023 20:13:33 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2122.outbound.protection.outlook.com [40.107.223.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C66A69B;
+        Tue, 10 Oct 2023 17:13:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ca6HLp7UXeoEA6LIiQ2cJivD+dp1AIyZfFo1viE6HZKXHxCsJtuTiQqRq5MyGHglePRbej8O7E+/Cor8AIntv6v8/fvmOWlpv+3XAR+w9RoDvGbxJSqDSUV4RO5wOM3dguNsIWbmiDNawmeO/Jte3Co+7uJDoev7ndKxjx+H0ZYRo9sYxjL4+0v1C2g1DJIIvXyAi0EhAE4BcjCY3PwMqdjtFFVbEY25+Hoqjikq6z5dxQIZVGqeCkKCeYVauUw+hNM1wWpUwXByeVzgYi9KdQiowAZvvATex44yV6Kib+L2CikXv3ovzH3l4+4nEIjdqUjDAh9mnVkel1lR15D0ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fIGL3ACGT0Bbq1MqdpHVFnn6EfhY+0iztlBqC14lqso=;
+ b=E1Q+w7y49SQCwl4ubZ/KInVETi1enisUO/gTmiH2nF8SZvFyBcECDT62o+uVWKbwdnrb/bslDqxYnqGt/26fRXbfzNttC9f3/FU+TTJNHPCba+Oqf/Gwi8RDsU+CaVauIJmLCqZmfjPxmiQm5oBNG/0j8VIY6vYfOxcKve/3LIuFgLicoZn1RlDBq9SgGMMQg4M9w8mc5Fd/A2h4jsd6Q/YFz0tckuDvlby+qUH9tTwWUVqml1D8cOrU23hefQbXZ6L3+KzTrB/0vatdeDH02UfdUOuJ9GzQUmyxhXtkrutkcwcdo7Q9vZ0dOsxz6rQw9A3zvmoUqjEvmIE7Tc1X0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696983201; x=1697588001; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=bXYSMoj+4mDjgRP2mTt2Aa1GtDE1UTVBqHkHte3xwzo=;
-        b=THVAZbLHDOGUMC2GecjPMvtCxzk3eiP3aTrvbwVAmZidEWVOrPAXo2r+UHpS7wvTnx
-         PtNgVjzST+8AvmbSJzItwpVaMU9pgKBbr3474Gz19CJ+hfC+bKHy9niI6V90QIGw76ue
-         0UfiHkTWDez1BRdMrRMN9Fm9KrpVtjGHQyYZRN/x0sUX1Wi75EaJ43K7DffpMCHU7ygz
-         dGSg+tvidNXUEc3tcXW/gWJnMtGmyrYyRPsBM6y3eSrlOyRPbe+42vNSDGr8krIWLVt2
-         vURLIec4QX8A+NQL4+r/J7pPvH6TaiqPH4fFOmRGyoOG2gx0+RV1NcaUZlqUyGPFD6eH
-         giew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696983201; x=1697588001;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bXYSMoj+4mDjgRP2mTt2Aa1GtDE1UTVBqHkHte3xwzo=;
-        b=gbPz7Wg2npZkIqRvN6WAq6ysYGlLG2EYGxtU/9ORRX8zEMeMff7q/7FNr5EHq7rVH6
-         5eO5Ggr7iSx9N50tF0wIAYyAtGBW4H2m9UiZOZQY2tUM3X1yjHUx+EzRG2Y2IgIGihJY
-         vlQ+wvzeYnShgN2yIdjexln+ywlQqtooQuxSRDkYtR86ixY0Z62LWvKA2qHnACOvHpVs
-         R8sUcK7zzFVIMYsQ8qRsb28Hjmqmtf02fgA184cuS2E6p8lZnHsdTSl7ED2FIK5TvHBS
-         xfoYn26fhgSGnas5mrKhZpug+VRT5UdwHDqv5oT9XeSrnoxcFAMnC/DRyY0JmyxDNqfJ
-         zV+g==
-X-Gm-Message-State: AOJu0YzM9w6lKCeYlW4LaFveM4W0K70gZB0q52gKC5oV6fogxptQqQsU
-        OLv/1jF+j6Jn/6D3a2FGXRYs5w==
-X-Google-Smtp-Source: AGHT+IEhIWc+rwqEXOm79XKP02Vs6tvtegdLCI6fFlAq/EvagoUmMI4WFKDIe3c26N4RyxgWNDKTzA==
-X-Received: by 2002:a05:6a20:9385:b0:161:3120:e840 with SMTP id x5-20020a056a20938500b001613120e840mr24937687pzh.2.1696983200909;
-        Tue, 10 Oct 2023 17:13:20 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
-        by smtp.gmail.com with ESMTPSA id p10-20020a170902eaca00b001b8a85489a3sm12443132pld.262.2023.10.10.17.13.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 17:13:20 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qqMqk-00CB5y-0c;
-        Wed, 11 Oct 2023 11:13:18 +1100
-Date:   Wed, 11 Oct 2023 11:13:18 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
-Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Brian Foster <bfoster@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH v8 0/5] Introduce provisioning primitives
-Message-ID: <ZSXono3GkXhgrZ1T@dread.disaster.area>
-References: <20231007012817.3052558-1-sarthakkukreti@chromium.org>
- <ZSNANlreccIVXuo+@dread.disaster.area>
- <CAG9=OMMM3S373Y6UEeXxnOyvMvA9wmAVd4Jrdjt3gzkz9d2yUg@mail.gmail.com>
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fIGL3ACGT0Bbq1MqdpHVFnn6EfhY+0iztlBqC14lqso=;
+ b=O16VK04lLVwlEJbuEYjs19KfAkYnfhc+gRsINeldflVIy7xipO0Uhzuc+tPaqyZ8stRYJdHK1EFIVNrUTHAgo3yqP9tOdquKrxgdZ+vXNzJTb6LoA86e2LnQUQpHQHjeNzLDiNTc9lnDB8YAstu4ddIBhRrNKme275YWA6Ysi+k=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from MWHPR0101MB2893.prod.exchangelabs.com (2603:10b6:301:33::25) by
+ LV2PR01MB7766.prod.exchangelabs.com (2603:10b6:408:171::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6863.38; Wed, 11 Oct 2023 00:13:27 +0000
+Received: from MWHPR0101MB2893.prod.exchangelabs.com
+ ([fe80::b04:8319:9c23:c3]) by MWHPR0101MB2893.prod.exchangelabs.com
+ ([fe80::b04:8319:9c23:c3%6]) with mapi id 15.20.6863.032; Wed, 11 Oct 2023
+ 00:13:27 +0000
+From:   D Scott Phillips <scott@os.amperecomputing.com>
+To:     linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>,
+        Darren Hart <darren@os.amperecomputing.com>,
+        patches@amperecomputing.com
+Subject: Re: [PATCH v2 1/2] PCI: acpiphp: Allow built-in attention drivers
+In-Reply-To: <20230930002036.6491-1-scott@os.amperecomputing.com>
+References: <20230930002036.6491-1-scott@os.amperecomputing.com>
+Date:   Tue, 10 Oct 2023 17:13:22 -0700
+Message-ID: <861qe2qan1.fsf@scott-ph-mail.amperecomputing.com>
+Content-Type: text/plain
+X-ClientProxiedBy: CH5P223CA0016.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:610:1f3::21) To MWHPR0101MB2893.prod.exchangelabs.com
+ (2603:10b6:301:33::25)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG9=OMMM3S373Y6UEeXxnOyvMvA9wmAVd4Jrdjt3gzkz9d2yUg@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWHPR0101MB2893:EE_|LV2PR01MB7766:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2808d902-1887-49a7-592d-08dbc9eee43e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7wyYm2N4UMXBqabBcYsJ3a/StMCbqb9gC4lSYixtYZCOSceuhqoXM3aGfwFfHUH/BaHv9kmxLWONgIDgv1O4u2uZ/fU69R38vg1fhO50FqS8TjRkkL/JKbTGtugMjVyVoqfmLfcq8pLyJ8plErX5KXshyENmwM9HYMRMe313SToy2tHacfX9muTah1xBiv+ymTzwl9xmQ5MM56lYke6s9sI/dhTA48hg7gobu6vOYasDYYjvpLbghSYDvDqW14Dswcl/HZHgFWjhZPQc1Rh7sXPdEWh2tHObZOEplmbv+ohe9EO5BkKeo+F9iA5+clXkponyFkkF3abf/rPw6RIQoLqkOP5n9s9ogF13lChVe3ERcswYq/f90Pis1jIGkUPoR9roRSon7j4QCSfazen3wlx1mVMUJLoswJLgkbC1L8uk4Mu/Bxm2GHpLlxRN0nlQcUP4PzSWNQT8H3klcmcFiIs2qwcLwsplxhmk6oRKwx69GXcDTaQYfigdvFd6Ot2TicdIz3CjRSw5x2aFv4hMIimdzMGtIeXpbjh3qqihWRgXPLTBRSS6jHcuTFyBTypBYgoakUh+02vPMz/M6ubh1Mrj709r+tZ6v4DZSARRwDL7gswv1bVgfj/ZHjAU7nlF
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR0101MB2893.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39850400004)(346002)(366004)(396003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(86362001)(2906002)(4326008)(8676002)(5660300002)(41300700001)(8936002)(110136005)(38350700002)(66946007)(66556008)(54906003)(52116002)(6506007)(38100700002)(316002)(66476007)(83380400001)(6666004)(478600001)(26005)(107886003)(6512007)(9686003)(6486002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6DfKBEXf1kPl6TiHBWCGWuCYNhpI83sBcPQ9OUGQ1LE796HJoq9Fv8V607vT?=
+ =?us-ascii?Q?8RVOlEq66pprS9PjmUjxMqOk+Dqd91bnggcYoGmahT8lsyJ+u3pYOZ202isH?=
+ =?us-ascii?Q?MRBNPizqnIFtELTWYTlmGMrN3BSTu6UTG4zymsnFVIBk5U9OmMblx3I/GGqq?=
+ =?us-ascii?Q?95fruyMmeis0E90e1Hzhw0chj3to9IwnfE+i/BnvVmeJ4Tex921SsS1IlYQD?=
+ =?us-ascii?Q?XrlSBVaZwukQ48UklY+gHinPWuQCy5K+WN7RyPi5EQmWIK57pK82d+td/K57?=
+ =?us-ascii?Q?FDCdU7E5n3vTSJ2uaT4mUyXYeQcF3xnaW0+EpzUtZou/RGIT3Hy6DUc2s6ar?=
+ =?us-ascii?Q?TNK5wXeOFa1KasHqQc319/PCbsfggkj/mR4loRjGO5w/BmuFDgalbA/upDar?=
+ =?us-ascii?Q?5XOcb44IfmgYIwhBa1c1vP7DTTprmixPeVadtGpJa3K7EikENURddr5dMouw?=
+ =?us-ascii?Q?ANpltQDbmJ4wgrmK7q/YAjCzfTGzZ+bKV0GWwo7ZQyJL0MtnHVcRlLGKNzCk?=
+ =?us-ascii?Q?BuuCD4p+kOhLIWLL1aFfL6aIBLZQJYHujdN0w/LaPj9H6TUreBl0sp28UbIt?=
+ =?us-ascii?Q?yCn5IhNxCnsXAzYGRKm/YP3oV1qmXMumvn9tJ9kkSzLDErSYSIRvTeW1o4Lw?=
+ =?us-ascii?Q?FHMlg/MBrHQzM0vliDSISgTFrBrQT94peTIr4CUzEUai+ClXMlyZjvmAhAz4?=
+ =?us-ascii?Q?s3v3BqpAsvAnloCGSoDXhiVKbXdZOOV2COAHABT47sAp9GIpiE5g1n4l91jQ?=
+ =?us-ascii?Q?kZtbDz6PBSsHa7kQ0lvbaJjU9QvvaDNVnRzAMpf3jCKKtvftpxT/6BB29Ur1?=
+ =?us-ascii?Q?YfvZ97UGSmL+YwVeSMytEcRmlPVX1SI1JTqzzrw7VcSHLqNI0szeGDicBBkq?=
+ =?us-ascii?Q?A5V/pZLFz789uarqnMKbO3Qv9ucrF+/xyNw3hlNTOxHeTdfNy9Bce7pdq104?=
+ =?us-ascii?Q?z2ae8esZcdzNndQ6SCyyrgnrwG5Ui3Fk+E92g/1qb5aMw4ThoQG4AJT0It35?=
+ =?us-ascii?Q?Nv2DRDGzWXO4XshaYNLlsFiY5xQAudB9jQ5Ya8jrhiVBPtGcpaqWh/nTuhdd?=
+ =?us-ascii?Q?EhF8whNQ6AwKGxZ4MYWdCHYOc77rHuXrZ/d+acpt6cdzqOdrLl2bhlQfskb5?=
+ =?us-ascii?Q?t02Vf3B5oN8kdf8TlfiAZNoVVICk9yU4TtPwZsqp6i4/brexzGVXqu0l/2nK?=
+ =?us-ascii?Q?MRHHIRb6hoka19GojRC31vFI5kXS8EYtcpvchfl2INGP9COTYGlxKr8UoaCR?=
+ =?us-ascii?Q?tobwOBWOd4z9B1H98kKazG8y8I73UayruAfcveqzITAdgdpZ7bAXQNOCavQ5?=
+ =?us-ascii?Q?H5UgqmN/2VUib3zowDMPOgxGRn81s/r10YnLgkUm7g89Q3BRg+bdvWa+Pitn?=
+ =?us-ascii?Q?d1wOhQK3RzED0xIKnKResinsiPYIlGk1IWOoMo5aSg4ZiqLV4K0VeWmAN2uE?=
+ =?us-ascii?Q?0BOifyCkNrAI+4yUXzcrmnz2Pu+icr2SLbc2gnhjJhVnkBfTRahBuhK/yzPK?=
+ =?us-ascii?Q?/IPoYoLu5d1UeoAsmwRrvjqtuvPvs+NTGhT2DlCxIvqJqW4pQFrG3wEhtZI+?=
+ =?us-ascii?Q?xs1LXrhU8tIls2O05qh9qkOVaoS7r8zNECKZd2iT9lu+Jr8NvVL5tYsGx4OV?=
+ =?us-ascii?Q?vcWVpZa0Fc4w0A5KioMfpME=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2808d902-1887-49a7-592d-08dbc9eee43e
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR0101MB2893.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2023 00:13:27.4732
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iXmIkJPpoy7ntzWn4AlXDC1L11enFkXQyG1RgQ8Lf2UL3eBufouOxplSTUPYoupSbv8aRYMTmhh8RwTX8NZvMe7m6DAJV5rb6QltduB/h5pTD5+4DOgBybEUz7ZKR19V
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR01MB7766
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 03:42:53PM -0700, Sarthak Kukreti wrote:
-> On Sun, Oct 8, 2023 at 4:50 PM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Fri, Oct 06, 2023 at 06:28:12PM -0700, Sarthak Kukreti wrote:
-> > > Hi,
-> > >
-> > > This patch series is version 8 of the patch series to introduce
-> > > block-level provisioning mechanism (original [1]), which is useful for provisioning
-> > > space across thinly provisioned storage architectures (loop devices
-> > > backed by sparse files, dm-thin devices, virtio-blk). This series has
-> > > minimal changes over v7[2].
-> > >
-> > > This patch series is rebased from the linux-dm/dm-6.5-provision-support [1] on to
-> > > (cac405a3bfa2 Merge tag 'for-6.6-rc3-tag'). In addition, there's an
-> > > additional patch to allow passing through an unshare intent via REQ_OP_PROVISION
-> > > (suggested by Darrick in [4]).
-> >
-> > The XFS patches I just posted were smoke tested a while back against
-> > loop devices and then forward ported to this patchset. Good for
-> > testing that userspace driven file preallocation gets propagated by
-> > the filesystem down to the backing device correctly and that
-> > subsequent IO to the file then does the right thing (e.g. fio
-> > testing using fallocate() to set up the files being written to)....
-> >
-> 
-> Thanks! I've been testing with a WIP patch for ext4, I'll give your
-> patches a try. Once we are closer to submitting the filesystem
-> support, we can formalize the test into an xfstest (sparse file + loop
-> + filesystem, fallocate() file, check the size of the underlying
-> sparse file).
+D Scott Phillips <scott@os.amperecomputing.com> writes:
 
-That's not really a valid test - there are so many optional filesystem
-behaviours that can change the layout of the backing file for the
-same upper filesystem operations.
+> Starting from the introduction of the attention callback in acpiphp, a
+> non-zero struct module *owner field has been required in
+> acpiphp_register_attention(). Then intent seemed to be that the core code
+> could then hold a refcount on the module while invoking a callback.
+>
+> This check accidentally precludes the possiblity of attention callbacks to
+> drivers which are built-in.
+>
+> Remove the check on `struct module *owner` in acpiphp_register_attention()
+> so that attention callbacks can also be registered from built-in drivers.
 
-What we actually need to test is the ENOSPC guarantees, not that
-fallocate has been called by the loop device. i.e. that ENOSPC is
-propagated from the underlying filesystem though the loop device to
-the application running on the upper filesystem appropriately.  e.g.
-when the lower filesystem is at ENOSPC, the writes into provisioned
-space in the loop device backing file continue to succeed without
-ENOSPC being reported to the upper filesystem.
+Hi Bjorn, ping on these, thanks
 
-i.e. this needs to be tested from the perspective of the API
-presented to the upper filesystem, not by running an upper fs
-operation and then trying to infer correct behaviour by peering at
-the state of the lower filesystem...
+Scott
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>
+> Signed-off-by: D Scott Phillips <scott@os.amperecomputing.com>
+> ---
+> Changes since v1:
+> - new patch in the series
+>
+>  drivers/pci/hotplug/acpiphp_core.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/pci/hotplug/acpiphp_core.c b/drivers/pci/hotplug/acpiphp_core.c
+> index c02257f4b61c4..9dad14e80bcf2 100644
+> --- a/drivers/pci/hotplug/acpiphp_core.c
+> +++ b/drivers/pci/hotplug/acpiphp_core.c
+> @@ -78,8 +78,7 @@ int acpiphp_register_attention(struct acpiphp_attention_info *info)
+>  {
+>  	int retval = -EINVAL;
+>  
+> -	if (info && info->owner && info->set_attn &&
+> -			info->get_attn && !attention_info) {
+> +	if (info && info->set_attn && info->get_attn && !attention_info) {
+>  		retval = 0;
+>  		attention_info = info;
+>  	}
+> -- 
+> 2.41.0
