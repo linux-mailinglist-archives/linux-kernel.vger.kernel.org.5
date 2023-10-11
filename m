@@ -2,164 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 234D67C4F56
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36BC7C4F5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbjJKJqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 05:46:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
+        id S1345663AbjJKJrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 05:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbjJKJqc (ORCPT
+        with ESMTP id S231341AbjJKJrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 05:46:32 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C2E92;
-        Wed, 11 Oct 2023 02:46:29 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4CBEE21846;
-        Wed, 11 Oct 2023 09:46:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697017588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=soXVte2VbxPbbCiLRCQN5td7yB/rAeQqYWLQLBxTIFU=;
-        b=MINSzmiMBqPcCbrrb5vPVjQ4FAleRRJnE1hYr+yINv0F92u7+T9emi+0wjSB8uUZUd69D0
-        zh4gFBG77P84Bzd6iajzSLr+gqwv8cUjeCNuBJedY1ICnaMghUIWuVEjc4F1Obrx6fG7bM
-        fXwXQ2CAmNnHT3yKSi8LykyvJd3qaN0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697017588;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=soXVte2VbxPbbCiLRCQN5td7yB/rAeQqYWLQLBxTIFU=;
-        b=PuflIjs6dBQNsSmZ34SZrkDPJN2uCfXBS9AiB4CipN0nI/vA5+5fZYmJ2XDxUn5d3P7yKC
-        9X6t0U2qgkZGmDCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3EDD6134F5;
-        Wed, 11 Oct 2023 09:46:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5E5TD/RuJmWnSwAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 11 Oct 2023 09:46:28 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id C200BA05BC; Wed, 11 Oct 2023 11:46:27 +0200 (CEST)
-Date:   Wed, 11 Oct 2023 11:46:27 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andy Lutomirski <luto@kernel.org>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] mm: enforce the mapping_map_writable() check
- after call_mmap()
-Message-ID: <20231011094627.3xohlpe4gm2idszm@quack3>
-References: <cover.1696709413.git.lstoakes@gmail.com>
- <d2748bc4077b53c60bcb06fccaf976cb2afee345.1696709413.git.lstoakes@gmail.com>
+        Wed, 11 Oct 2023 05:47:05 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884B994;
+        Wed, 11 Oct 2023 02:47:03 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39B9ktkt118342;
+        Wed, 11 Oct 2023 04:46:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1697017615;
+        bh=pWbbzUvKEecylMAuLdNPqtTHRx8uDl4JWSOnleipvD0=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=lOPMLHp1U1v8QVRsQ35ngeD1/CpJLOquJHLpuuIWeA8v7MFuOEEfx3sSDmc+npSaz
+         li65NJ61uTXHUVCyQV9YnUl6RZQ+VdIag3oU0X/PV6vXLBWKeogsaAZKrLVJwPu6F5
+         xu2/2cS1DIqzM+dfBLHTnAmeYSEK3pEmszaq3CHQ=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39B9ktHk022845
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 11 Oct 2023 04:46:55 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 11
+ Oct 2023 04:46:55 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 11 Oct 2023 04:46:55 -0500
+Received: from [172.24.227.83] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39B9kppQ031933;
+        Wed, 11 Oct 2023 04:46:52 -0500
+Message-ID: <3bc32261-fdcf-2cea-cae2-f4dddc147d96@ti.com>
+Date:   Wed, 11 Oct 2023 15:16:50 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d2748bc4077b53c60bcb06fccaf976cb2afee345.1696709413.git.lstoakes@gmail.com>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] net: ti: icssg-prueth: Fix tx_total_bytes count
+Content-Language: en-US
+To:     MD Danish Anwar <danishanwar@ti.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <srk@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Roger Quadros <rogerq@kernel.org>
+References: <20231011063700.1824093-1-danishanwar@ti.com>
+From:   Ravi Gunasekaran <r-gunasekaran@ti.com>
+In-Reply-To: <20231011063700.1824093-1-danishanwar@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 07-10-23 21:51:01, Lorenzo Stoakes wrote:
-> In order for an F_SEAL_WRITE sealed memfd mapping to have an opportunity to
-> clear VM_MAYWRITE in seal_check_write() we must be able to invoke either
-> the shmem_mmap() or hugetlbfs_file_mmap() f_ops->mmap() handler to do so.
-> 
-> We would otherwise fail the mapping_map_writable() check before we had
-> the opportunity to clear VM_MAYWRITE.
-> 
-> However, the existing logic in mmap_region() performs this check BEFORE
-> calling call_mmap() (which invokes file->f_ops->mmap()). We must enforce
-> this check AFTER the function call.
-> 
-> In order to avoid any risk of breaking call_mmap() handlers which assume
-> this will have been done first, we continue to mark the file writable
-> first, simply deferring enforcement of it failing until afterwards.
-> 
-> This enables mmap(..., PROT_READ, MAP_SHARED, fd, 0) mappings for memfd's
-> sealed via F_SEAL_WRITE to succeed, whereas previously they were not
-> permitted.
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217238
-> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
 
-...
 
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index 6f6856b3267a..9fbee92aaaee 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -2767,17 +2767,25 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
->  	vma->vm_pgoff = pgoff;
+On 10/11/23 12:07 PM, MD Danish Anwar wrote:
+> ICSSG HW stats on TX side considers 8 preamble bytes as data bytes. Due
+> to this the tx_total_bytes of one interface doesn't match the
+> rx_total_bytes of other interface when two ICSSG interfaces are
+
+The errata is on the ICSSG Tx side regardless of which interface it is
+connected to. Please rephrase this part of the message to something like,
+"rx_total_bytes of the link partner".
+
+> connected with each other. There is no public errata available yet.
+> 
+> As a workaround to fix this, decrease tx_total_bytes by 8 bytes for every
+> tx frame.
+> 
+> Fixes: c1e10d5dc7a1 ("net: ti: icssg-prueth: Add ICSSG Stats")
+> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+> ---
+>  drivers/net/ethernet/ti/icssg/icssg_stats.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/ti/icssg/icssg_stats.c b/drivers/net/ethernet/ti/icssg/icssg_stats.c
+> index bb0b33927e3b..dc12edcbac02 100644
+> --- a/drivers/net/ethernet/ti/icssg/icssg_stats.c
+> +++ b/drivers/net/ethernet/ti/icssg/icssg_stats.c
+> @@ -18,6 +18,7 @@ void emac_update_hardware_stats(struct prueth_emac *emac)
+>  	struct prueth *prueth = emac->prueth;
+>  	int slice = prueth_emac_slice(emac);
+>  	u32 base = stats_base[slice];
+> +	u32 tx_pkt_cnt = 0;
+>  	u32 val;
+>  	int i;
 >  
->  	if (file) {
-> -		if (is_shared_maywrite(vm_flags)) {
-> -			error = mapping_map_writable(file->f_mapping);
-> -			if (error)
-> -				goto free_vma;
-> -		}
-> +		int writable_error = 0;
+> @@ -29,7 +30,12 @@ void emac_update_hardware_stats(struct prueth_emac *emac)
+>  			     base + icssg_all_stats[i].offset,
+>  			     val);
+>  
+> +		if (!strncmp(icssg_ethtool_stats[i].name, "tx_good_frames", ETH_GSTRING_LEN))
+> +			tx_pkt_cnt = val;
 > +
-> +		if (vma_is_shared_maywrite(vma))
-> +			writable_error = mapping_map_writable(file->f_mapping);
+>  		emac->stats[i] += val;
+> +		if (!strncmp(icssg_ethtool_stats[i].name, "tx_total_bytes", ETH_GSTRING_LEN))
+> +			emac->stats[i] -= tx_pkt_cnt * 8;
+>  	}
+>  }
 >  
->  		vma->vm_file = get_file(file);
->  		error = call_mmap(file, vma);
->  		if (error)
->  			goto unmap_and_free_vma;
->  
-> +		/*
-> +		 * call_mmap() may have changed VMA flags, so retry this check
-> +		 * if it failed before.
-> +		 */
-> +		if (writable_error && vma_is_shared_maywrite(vma)) {
-> +			error = writable_error;
-> +			goto close_and_free_vma;
-> +		}
 
-Hum, this doesn't quite give me a peace of mind ;). One bug I can see is
-that if call_mmap() drops the VM_MAYWRITE flag, we seem to forget to drop
-i_mmap_writeable counter here?
-
-I've checked why your v2 version broke i915 and I think the reason maybe
-has nothing to do with i915. Just in case call_mmap() failed, it ended up
-jumping to unmap_and_free_vma which calls mapping_unmap_writable() but we
-didn't call mapping_map_writable() yet so the counter became imbalanced.
-
-So I'd be for returning to v2 version, just fix up the error handling
-paths...
-
-								Honza
-
-
-> +
->  		/*
->  		 * Expansion is handled above, merging is handled below.
->  		 * Drivers should not alter the address of the VMA.
-> -- 
-> 2.42.0
-> 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Regards,
+Ravi
