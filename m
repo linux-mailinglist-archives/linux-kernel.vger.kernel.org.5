@@ -2,285 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3BF7C4B95
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB717C4B9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344687AbjJKHSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 03:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42752 "EHLO
+        id S1344641AbjJKHUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 03:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344329AbjJKHSp (ORCPT
+        with ESMTP id S229504AbjJKHUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 03:18:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31AA98;
-        Wed, 11 Oct 2023 00:18:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Jb96kOOnmAKvFj39kW3+trlHqqNWYFlqoR61Qv2V4YY=; b=pxz17CZ5GlZ3OqHwn+VvkU76Oc
-        Zt3+NJXMfvIJkm7FtRfgIPi0xc5YNHHUj3dXTakXXlDcWdAwYwzElVm+ZtMTE7/2niUlkoMidFams
-        fWiiIBZsZqoz550FLPF+Xvo4LqY4VJwnlMVbDBncNF5no0HwFZ+3y8XLf+46zJM9UoQpufgjsj/VP
-        Gf8s3ZJr6XDSlp0xIlFXoCEt5+RuVaAn8qTdyrb06j1Z/XWuzGfL6Op+XuKSSzJb++ahKWMw+bczg
-        2eOa49rZD0cKkSk47d+UndMq8KB1jgcGlIyY3JHXHeJpwRn1/Ap3PFhZw7uTCdOlifrvrg0jA9aD3
-        YrC1B/gw==;
-Received: from [2001:8b0:10b:5:2db5:a8b2:de2d:f60d] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qqTUK-009PNA-Mb; Wed, 11 Oct 2023 07:18:36 +0000
-Message-ID: <8f3493ca4c0e726d5c3876bb7dd2cfc432d9deaa.camel@infradead.org>
-Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock
- periodically
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>,
-        Dongli Zhang <dongli.zhang@oracle.com>
-Cc:     Joe Jin <joe.jin@oracle.com>, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com
-Date:   Wed, 11 Oct 2023 08:18:36 +0100
-In-Reply-To: <ZSXqZOgLYkwLRWLO@google.com>
-References: <a461bf3f-c17e-9c3f-56aa-726225e8391d@oracle.com>
-         <884aa233ef46d5209b2d1c92ce992f50a76bd656.camel@infradead.org>
-         <ZRrxtagy7vJO5tgU@google.com>
-         <52a3cea2084482fc67e35a0bf37453f84dcd6297.camel@infradead.org>
-         <ZRtl94_rIif3GRpu@google.com>
-         <9975969725a64c2ba2b398244dba3437bff5154e.camel@infradead.org>
-         <ZRysGAgk6W1bpXdl@google.com>
-         <d6dc1242ff731cf0f2826760816081674ade9ff9.camel@infradead.org>
-         <ZR2pwdZtO3WLCwjj@google.com>
-         <34057852-f6c0-d6d5-261f-bbb5fa056425@oracle.com>
-         <ZSXqZOgLYkwLRWLO@google.com>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-qBoVllMyyk5wNzA7I8uZ"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Wed, 11 Oct 2023 03:20:39 -0400
+Received: from CO1PR02CU002.outbound.protection.outlook.com (mail-westus2azon11010002.outbound.protection.outlook.com [52.101.46.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7276190
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 00:20:37 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HUM9XsDj0/61Grz83Nl/3JMmk634gMakt1A3uP52awJ9QnoEZIEyDfyrP9N1Jy+wks2zV0MH5V3YiaZRp4tlfX+xEY/cJl2PM51AubWRd5S+RKuSYY5UDdWydxNvVX7ZAN4OfL8iRk4j4y9BpPmlGWa7RE88qUQzi41j5YZG+AZphqRA2nk1S9hrUXukXkY15MKo+vxaaNfBLUeLGzYs4o8l5X2jav+OWR670PD84DKsz83/czaMFqUQuKto2UHL6WtlObkqrVJzCUUMbxTTYsE9PplQP9OU1MkrLtO9xNpMPdrPjZenP7359WrPAbHQrKTtMYACigpVrFYM6PRkdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+I74F3AweP5n8SZCyvE2BmA+8HPJn2AL/+N5sFHMNZ8=;
+ b=fndCQ3dpysTrTU0coKSOnh5kuk3f66L/1i/iIUbgx4+CbZm5UBOP9hb7Qpc+UnITyoV6ZzbWHRMlz8M9QtmQr7YB5ytXfDPFkl7KTwJbqPoKU6ki2YFm7aQL0R4HLj6myMG5niz+2LQUE28+xFWdVGPVCVRw4GMmBfnnWRQjPjqOsVrk9rGinMZEPYRGvABHB1Ow5k0lIG2GJnMT/yvYUYaFxkxkVh4HtDM52P0eGzxFVXAUGuTer/JOcDoVF6zfAoYAOCsFYuFUCPGM5YzLL/+JoDnl5WUCZlxztMNA1Y7X61nIJvxjQVPbF3nJPawm9wPWOVIeMu2770iyChQrVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+I74F3AweP5n8SZCyvE2BmA+8HPJn2AL/+N5sFHMNZ8=;
+ b=HwT50CYhNcRaaBVwk/XlInZ0zAWBObD8u/kptV5Te90Coqp0kXwdCakc1hGiAFF6v3EFn7mD31YcShk+cgJT711IN926y6u0SciJEpkTE7vjPYnxPQHpR2cq9X/Vmt+S0ntUlsiTkjqVyZp7rXSkFo8/rHZGS0FZEdN+cvPZ45o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vmware.com;
+Received: from SA1PR05MB8311.namprd05.prod.outlook.com (2603:10b6:806:1e2::19)
+ by CH3PR05MB10028.namprd05.prod.outlook.com (2603:10b6:610:12a::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.41; Wed, 11 Oct
+ 2023 07:20:34 +0000
+Received: from SA1PR05MB8311.namprd05.prod.outlook.com
+ ([fe80::cbd2:31a1:4175:2d]) by SA1PR05MB8311.namprd05.prod.outlook.com
+ ([fe80::cbd2:31a1:4175:2d%7]) with mapi id 15.20.6863.043; Wed, 11 Oct 2023
+ 07:20:34 +0000
+From:   Ankit Jain <ankitja@vmware.com>
+To:     peterz@infradead.org, yury.norov@gmail.com,
+        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        qyousef@layalina.io, pjt@google.com, joshdon@google.com,
+        bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     namit@vmware.com, amakhalov@vmware.com, srinidhir@vmware.com,
+        vsirnapalli@vmware.com, vbrahmajosyula@vmware.com,
+        akaher@vmware.com, srivatsa@csail.mit.edu,
+        Ankit Jain <ankitja@vmware.com>
+Subject: [PATCH RFC] cpumask: Randomly distribute the tasks within affinity mask
+Date:   Wed, 11 Oct 2023 12:49:25 +0530
+Message-Id: <20231011071925.761590-1-ankitja@vmware.com>
+X-Mailer: git-send-email 2.34.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SJ0PR05CA0007.namprd05.prod.outlook.com
+ (2603:10b6:a03:33b::12) To SA1PR05MB8311.namprd05.prod.outlook.com
+ (2603:10b6:806:1e2::19)
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR05MB8311:EE_|CH3PR05MB10028:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6a781826-8451-46e4-d56d-08dbca2a8e0a
+X-LD-Processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: j77nDYdiWPMudco2ukCAHs8yqW+ugwPcsCWX0TaPhpinXQNjqYVZ7K0NNB9ulGISLAIAYMTgKk/t0vFtniUfa+efJAYwBIvMy3/mmjizVzhV06Zz0gu7Xq17Pu3emTOuIeyXWolasRicwNKFtriexSTQqlCEHTD5UvfpiyWWu+fxQbG+R1u2P9fD7SpPWqXZw5SKVGdnbznGNvr4kNFwIbovfVnKVALypz/h0jbQqyPTxIQq9fz7dZEclxqIqZL0bj/CxpFPS4rCvhbFNmjH2llhRCL91Bp1vxWh2hi+WhpS0/c/2IA1TEuxWnOdIIX3V2gMtWw+4cHp+OIMw+eK9j4M43eN66c7iAYSwxNSrKkcYag79LebEjZfhWoVcXItOVvqEqAcNIGRP6Jaimwsh0by8vKG0ltwPS1ZJoYNVkJg73Ey0NWzVmbl0YH7i3Z43fdCLcs5224D/iewg8jC4mLolfVDG5x7CGVn6EU3DGbEuffkwuQ0UIu9HVKG6FP9b+fefAzc45vLa/MigxE83I8KsX+WfXUlPe2sQc4KRCgqDBJKUWRB65vmF7TVOXp0zQ87dd8g+USQNP4U/UIFQwA41ACZ6084Vm9V+wgwVZdkYd2G7Bmpzh8CDh5e4fjnrXAGMILmILx4VReiR5/l5T6bX/IaJhN6r7uTHUqJtr8bx1UlOC3YS4Zz+RMfIWme0Jy87udEqK3m2emNlNN+5w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR05MB8311.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(366004)(396003)(136003)(39860400002)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(83380400001)(6506007)(38350700002)(478600001)(52116002)(6486002)(6666004)(6512007)(1076003)(38100700002)(36756003)(921005)(86362001)(7416002)(316002)(2906002)(107886003)(26005)(2616005)(4326008)(66476007)(41300700001)(8936002)(66946007)(5660300002)(8676002)(66556008)(357404004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d0E3eTlia1dPVXc2SmNJd08rd21NNVZFQ2lNNVRCYWdhZkdUcmFGK252alNC?=
+ =?utf-8?B?UVZtaTZzQWhQNjlNZFVsR25IdmhjdEFteVdVMnkxSGVabisrRDFINzJCajBS?=
+ =?utf-8?B?YS9VWTRuN3ZnRS9KdnlqVHlySjFxTjJpYnpROEQ2Ym8vUmNhN2ZOZThvUHg4?=
+ =?utf-8?B?L2xsMnVGdnNGMzBzU1liMHZRcFdFMHhqUWprRThLZ2sxQ2dZcFNrS055MzhV?=
+ =?utf-8?B?ODEyeW5nOUZBNU5NVU8vWnZYZmZDenlNRFZleWFBU2tUdjcxZFlCNG15eHcy?=
+ =?utf-8?B?MmI3dGdsUHM2Z3VyL2FRWk1UZVpwcGNEUWJna1M4VjdQaW5TVWFtWnlHTTFO?=
+ =?utf-8?B?bllXKzdGcnpWblgwV1JPU3J1eml0M2tyMVRmVlRydTFzaDVEbmttL0twbmh4?=
+ =?utf-8?B?TjVXMGUyeko3WE1GN2ZHR1F2R1A0TkVNeHpFNXlkazdWbjVIcnh0T3J1RDRO?=
+ =?utf-8?B?YTFvVVdMRUVVWTlpYlNMK3Q0azQ3ZllxemNDU2krSnl0VkNtcU9mWWJyT1Za?=
+ =?utf-8?B?Mm01cHhnVzBwYWd4bHZkVWI0K2M0SHlSc3VOTklCd0owZ0htU3drbWpRbHU3?=
+ =?utf-8?B?MTlmYi9sZXM1aVdaWDFFYXFJZlJFNFUrK0hvNW85NTc2aytJUjJxUG5WdkNs?=
+ =?utf-8?B?RnA1c1lXZU0yNk1WbHg0RjZkYlBDcXM4NGtwSzN2NFRZVDNLUXNNWUZ5YVJs?=
+ =?utf-8?B?ZGVKV1lVMWFkMCtGeEN2WXBmN3lTY3FsMlBSaE9RTlhORVBjL05PcmlYVWpF?=
+ =?utf-8?B?MXp5VWVkNlBmZC81MndVcU5FWFN2YjhDb2MxM2ExNUlQLzdnck9TMUx1MkVE?=
+ =?utf-8?B?T0YzZG1VZUgydThmd2ZWeFVKalVsOTBQUEZEN1l1bngzZnFLNjVteWwzTDVH?=
+ =?utf-8?B?aktKaWhXUTFkRW1HcjdYRTBldE8wWnJUbWc4Q1FCcUNpdEx5Y3B1YkdoRjBr?=
+ =?utf-8?B?SE92L3F0Q0JjeVh3eDRmOXM0S3NCZkJ4SHJlbFhtRzBFVWFNRXBLVXEycEgz?=
+ =?utf-8?B?UFA1b2V2dEpQRzdJSzFHY2R6c0tvZDFnRU0yMUh6RXI2dDJXTEJzY2RYOENJ?=
+ =?utf-8?B?TGxCTE1KdHhDOS9LU3BkdWxZekdqVnhXeC9XUWlyOEpnTEE0RGczbDNBNm5F?=
+ =?utf-8?B?blFvb3hsUkNSaTQxU1FGRVJJK1BxYUZTOWIrdnZTdXdRbklkeVJTa3RMYy9w?=
+ =?utf-8?B?QzJxeTJySS9JYko0clVFd0ZMZ1VzdFNCanlFRzNNb05LOVBNbjh0VERaZDRU?=
+ =?utf-8?B?cEZoYlFQT1pjb0M3bGhrdklobUI1am1VZHh4aXMzZiszTUpURGJXTTNsQnJ2?=
+ =?utf-8?B?ZlJaNFEyU2o3TGN0eUtTQ3ZvSTJaeXZodlV1aDlaZXlKNVlxR2ZVUEJUVVI2?=
+ =?utf-8?B?L1AyUCs1bFdEYUhRRXZoYzdSUHR4d3Z6akNRaCtmWDBrM2E5YjNwbmVJSDJB?=
+ =?utf-8?B?M2JuVzYybXpTN3ZaczdwSjNneHNXWGpINjQzUWVaTFAxdkJiTU1YZEJzaEhn?=
+ =?utf-8?B?bndxVm1rNXBjcktyL2ZQanBGd2Q1dGlBcDAwZjFweFFxZ2ZldExoWGlDZHlR?=
+ =?utf-8?B?K3hUQXBUR25kUDMya0tyMm1peXhpQm9MNjlwU0VmY2pQenhxV0d2NytLelBO?=
+ =?utf-8?B?NXFKQkJzQ3hBZ01UMHMzNHhCV2tJOUNnUUJuQjd2WjlTQmVKZFhibCtUL0ls?=
+ =?utf-8?B?dnZVanZEVlN0cjlGSTBVNWJLMUYxL3dNbDF1Tjl5dEMvL1o4QUpCSEJDY3VB?=
+ =?utf-8?B?ZHR1QnEvNVRIUytpRjkxVVUxT1lVMTgrbXNZRk5tazhoNDZvN2xMM3ltYU94?=
+ =?utf-8?B?bko0a1hxb3VuVVBrWG9OTUV2ZFdkVVh2WlRFZFAxZ0tYY0dHN3hvZ2luK0Fz?=
+ =?utf-8?B?WHBrd2xPUU9pRGg0OWt2K2NMVHNWMnh2SzZ0V3E2SW9EekVjYU1Cb0M4Ty9Y?=
+ =?utf-8?B?bU9iZ1Q3L0p5b0JCc3RaNkNpblhYTGkxUFVkTGRIelo4WWVYd1B1TWNNUGxW?=
+ =?utf-8?B?RFYwTlFRZWMyV3lUb3A0elhQVmZWYnRnUSt3Q2Npa0EwUjByMTFORTBDdVQv?=
+ =?utf-8?B?ODZxOThkUG9UZWdUa1N6cGx5dGE3S2JZSnJTMFByMTVUbGxXeThQMURVVkRZ?=
+ =?utf-8?Q?0elf7SSw8GUBW96HhO5cFjE20?=
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a781826-8451-46e4-d56d-08dbca2a8e0a
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR05MB8311.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2023 07:20:33.7049
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZQffPHAdAEWtFRFLiO3ERauTxjZh/c01ObhB8wx5PtcSMaDJm9loMOKuMfMEeEuw8PtK9xiS7w6k2n3ebCUlKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR05MB10028
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+commit 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
+and commit 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
+introduced the logic to distribute the tasks at initial wakeup on cpus
+where load balancing works poorly or disabled at all (isolated cpus).
 
---=-qBoVllMyyk5wNzA7I8uZ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+There are cases in which the distribution of tasks
+that are spawned on isolcpus does not happen properly.
+In production deployment, initial wakeup of tasks spawn from
+housekeeping cpus to isolcpus[nohz_full cpu] happens on first cpu
+within isolcpus range instead of distributed across isolcpus.
 
-On Tue, 2023-10-10 at 17:20 -0700, Sean Christopherson wrote:
-> On Wed, Oct 04, 2023, Dongli Zhang wrote:
-> > > And because that's not enough, on pCPU migration or if the TSC is uns=
-table,
-> > > kvm_arch_vcpu_load() requests KVM_REQ_GLOBAL_CLOCK_UPDATE, which sche=
-dules
-> > > kvmclock_update_fn() with a delay of 100ms.=C2=A0 The large delay is =
-to play nice with
-> > > unstable TSCs.=C2=A0 But if KVM is periodically doing clock updates o=
-n all vCPU,
-> > > scheduling another update with a *longer* delay is silly.
-> >=20
-> > We may need to add above message to the places, where
-> > KVM_REQ_GLOBAL_CLOCK_UPDATE is replaced with KVM_REQ_CLOCK_UPDATE in th=
-e patch?
->=20
-> Yeah, comments are most definitely needed, this was just intended to be a=
- quick
-> sketch to get the ball rolling.
->=20
-> > > -static void kvm_gen_kvmclock_update(struct kvm_vcpu *v)
-> > > -{
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct kvm *kvm =3D v->kvm=
-;
-> > > -
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0kvm_make_request(KVM_REQ_C=
-LOCK_UPDATE, v);
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0schedule_delayed_work(&kvm=
-->arch.kvmclock_update_work,
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0KVMCLOCK_UPDATE_DELAY);
-> > > -}
-> > > -
-> > > =C2=A0#define KVMCLOCK_SYNC_PERIOD (300 * HZ)
-> >=20
-> > While David mentioned "maximum delta", how about to turn above into a m=
-odule
-> > param with the default 300HZ.
-> >=20
-> > BTW, 300HZ should be enough for vCPU hotplug case, unless people prefer=
- 1-hour
-> > or 1-day.
->=20
-> Hmm, I think I agree with David that it would be better if KVM can take c=
-are of
-> the gory details and promise a certain level of accuracy.=C2=A0 I'm usual=
-ly a fan of
-> punting complexity to userspace, but requiring every userspace to figure =
-out the
-> ideal sync frequency on every platform is more than a bit unfriendly.=C2=
-=A0 And it
-> might not even be realistic unless userspace makes assumptions about how =
-the kernel
-> computes CLOCK_MONOTONIC_RAW from TSC cycles.
->=20
+Usage of distribute_cpu_mask_prev from one processes group,
+will clobber previous value of another or other groups and vice-versa.
 
-I think perhaps I would rather save up my persuasiveness on the topic
-of "let's not make things too awful for userspace to cope with" for the
-live update/migration mess. I think I need to dust off that attempt at
-fixing our 'how to migrate with clocks intact' documentation from
-https://lore.kernel.org/kvm/13f256ad95de186e3b6bcfcc1f88da5d0ad0cb71.camel@=
-infradead.org/
-The changes we're discussing here obviously have an effect on migration
-too.
+When housekeeping cpus spawn multiple child tasks to wakeup on
+isolcpus[nohz_full cpu], using cpusets.cpus/sched_setaffinity(),
+distribution is currently performed based on per-cpu
+distribute_cpu_mask_prev counter.
+At the same time, on housekeeping cpus there are percpu
+bounded timers interrupt/rcu threads and other system/user tasks
+would be running with affinity as housekeeping cpus. In a real-life
+environment, housekeeping cpus are much fewer and are too much loaded.
+So, distribute_cpu_mask_prev value from these tasks impacts
+the offset value for the tasks spawning to wakeup on isolcpus and
+thus most of the tasks end up waking up on first cpu within the
+isolcpus set.
 
-Where the host TSC is actually reliable, I would really prefer for the
-kvmclock to just be a fixed function of the guest TSC and *not* to be
-arbitrarily yanked back[1] to the host's CLOCK_MONOTONIC periodically.
+Steps to reproduce:
+Kernel cmdline parameters:
+isolcpus=2-5 skew_tick=1 nohz=on nohz_full=2-5
+rcu_nocbs=2-5 rcu_nocb_poll idle=poll irqaffinity=0-1
 
-That makes the process of migrating to another machine (potentially
-with a different host TSC frequency) a whole lot simpler. Userspace
-just needs to know two things from the kernel:
+* pid=$(echo $$)
+* taskset -pc 0 $pid
+* cat loop-normal.c
+int main(void)
+{
+        while (1)
+                ;
+        return 0;
+}
+* gcc -o loop-normal loop-normal.c
+* for i in {1..50}; do ./loop-normal & done
+* pids=$(ps -a | grep loop-normal | cut -d' ' -f5)
+* for i in $pids; do taskset -pc 2-5 $i ; done
 
- =E2=80=A2 the relationship between the guest's TSC and its kvmclock (which=
- we
-   helpfully advertise to the *guest* in a pvclock structure, and can
-   give that to userspace too).=20
+Expected output:
+* All 50 “loop-normal” tasks should wake up on cpu2-5
+equally distributed.
+* ps -eLo cpuid,pid,tid,ppid,cls,psr,cls,cmd | grep "^    [2345]"
 
- =E2=80=A2 The value of *either* the guest's TSC or its kvmclock, at a give=
-n
-   value of CLOCK_TAI (not CLOCK_WALLTIME). Theoretically, this can be
-   either TSC or kvmclock. But I think for best precision it would need
-   to be TSC?
+Actual output:
+* All 50 “loop-normal” tasks got woken up on cpu2 only
 
+Analysis:
+There are percpu bounded timer interrupt/rcu threads activities
+going on every few microseconds on housekeeping cpus, exercising
+find_lowest_rq() -> cpumask_any_and_distribute()/cpumask_any_distribute()
+So, per cpu variable distribute_cpu_mask_prev for housekeeping cpus
+keep on getting set to housekeeping cpus. Bash/docker processes
+are sharing same per cpu variable as they run on housekeeping cpus.
+Thus intersection of clobbered distribute_cpu_mask_prev and
+new mask(isolcpus) return always first cpu within the new mask(isolcpus)
+in accordance to the logic mentioned in commits above.
 
-I am aware that I glibly said "guest TSC" as if there's only one, or
-they're in sync. I think we can substitute "the TSC of guest vCPU0" in
-the case of migration. We don't want a guest to be able to change its
-kvmclock by writing to vCPU0's TSC though, so we may need to keep (and
-migrate) an additional offset value for tracking that?
+Fix the issue by using random cores out of the applicable CPU set
+instead of relying on distribute_cpu_mask_prev.
 
+Fixes: 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
+Fixes: 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
 
+Signed-off-by: Ankit Jain <ankitja@vmware.com>
+---
+ lib/cpumask.c | 40 +++++++++++++++++++++-------------------
+ 1 file changed, 21 insertions(+), 19 deletions(-)
 
+diff --git a/lib/cpumask.c b/lib/cpumask.c
+index a7fd02b5ae26..95a7c1b40e95 100644
+--- a/lib/cpumask.c
++++ b/lib/cpumask.c
+@@ -155,45 +155,47 @@ unsigned int cpumask_local_spread(unsigned int i, int node)
+ }
+ EXPORT_SYMBOL(cpumask_local_spread);
+ 
+-static DEFINE_PER_CPU(int, distribute_cpu_mask_prev);
+-
+ /**
+  * cpumask_any_and_distribute - Return an arbitrary cpu within src1p & src2p.
+  * @src1p: first &cpumask for intersection
+  * @src2p: second &cpumask for intersection
+  *
+- * Iterated calls using the same srcp1 and srcp2 will be distributed within
+- * their intersection.
++ * Iterated calls using the same srcp1 and srcp2 will be randomly distributed
++ * within their intersection.
+  *
+  * Returns >= nr_cpu_ids if the intersection is empty.
+  */
+ unsigned int cpumask_any_and_distribute(const struct cpumask *src1p,
+ 			       const struct cpumask *src2p)
+ {
+-	unsigned int next, prev;
++	unsigned int n_cpus, nth_cpu;
+ 
+-	/* NOTE: our first selection will skip 0. */
+-	prev = __this_cpu_read(distribute_cpu_mask_prev);
++	n_cpus = cpumask_weight_and(src1p, src2p);
++	if (n_cpus == 0)
++		return nr_cpu_ids;
+ 
+-	next = find_next_and_bit_wrap(cpumask_bits(src1p), cpumask_bits(src2p),
+-					nr_cpumask_bits, prev + 1);
+-	if (next < nr_cpu_ids)
+-		__this_cpu_write(distribute_cpu_mask_prev, next);
++	nth_cpu = get_random_u32_below(n_cpus);
+ 
+-	return next;
++	return find_nth_and_bit(cpumask_bits(src1p), cpumask_bits(src2p),
++					nr_cpumask_bits, nth_cpu);
+ }
+ EXPORT_SYMBOL(cpumask_any_and_distribute);
+ 
++/**
++ * Returns an arbitrary cpu within srcp.
++ *
++ * Iterated calls using the same srcp will be randomly distributed
++ */
+ unsigned int cpumask_any_distribute(const struct cpumask *srcp)
+ {
+-	unsigned int next, prev;
++	unsigned int n_cpus, nth_cpu;
+ 
+-	/* NOTE: our first selection will skip 0. */
+-	prev = __this_cpu_read(distribute_cpu_mask_prev);
+-	next = find_next_bit_wrap(cpumask_bits(srcp), nr_cpumask_bits, prev + 1);
+-	if (next < nr_cpu_ids)
+-		__this_cpu_write(distribute_cpu_mask_prev, next);
++	n_cpus = cpumask_weight(srcp);
++	if (n_cpus == 0)
++		return nr_cpu_ids;
+ 
+-	return next;
++	nth_cpu = get_random_u32_below(n_cpus);
++
++	return find_nth_bit(cpumask_bits(srcp), nr_cpumask_bits, nth_cpu);
+ }
+ EXPORT_SYMBOL(cpumask_any_distribute);
+-- 
+2.23.1
 
-[1] Yes, I believe "back" does happen. I have test failures in my queue
-to look at, where guests see the "Xen" clock going backwards.
-
-
---=-qBoVllMyyk5wNzA7I8uZ
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDExMDcxODM2WjAvBgkqhkiG9w0BCQQxIgQg0DOies1d
-+REFpQSKwJFd4UStGSp24Gw8hJlb9v7akDAwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBe7M4E//5+xtXZM99pJqw/WLJ8onQ2FMXd
-99i87cLQtexsxOPcRvWtT0HZ38jjau4nC29ikuuvyVJHTX+jWzm4ZWgq/mmBjfhGWJIRk2NQLbhk
-rMH6yihAr+EHa/4j/JRYrtU6cF4BynlTT0BW2hI/ig87fBIe6y+G5jY4gjJMKvZn2SMETGrS18Yb
-2RCKZD9tsD4ITRakrl/0c77JEk060oWg4nZzl/GvQQ88VEn+JGRHMwXTU+lmUNaaUyAiffMf7pZF
-NiWgKi7haKU8HSM8tEttpJSgllz2kOn03geBDM9yVigqY2Ra2RoDNRbSz3YpGXX2wDxbigy0HW+L
-uJRKbRPWc6DSf6jrFM0klovs9BWMKp/zUvEs+z2/61vIpeW3OcPx0hDrRFRB8950PXdBDXmGyziQ
-wQEuB2wb4GjXyOAkkoieFpAJw2qAFZiyTMmL5WQ6UdfOyz7uHkyM6gsbXKjJcztDia8LpNq3n3FB
-S25LbKJEHMOCEiyNb5L/WY9z2pJvpR3v6dHDaJUZ1ZZhXiMZkwWARwr3t36QC0R6GjXCWBhvoVY1
-GeeJ8noocxqE0n54OsFCmy5W2aZM9pVg00x5669rtuO+WXeVWyVjpEH9JGPjMPbhofFYLTpEYFFl
-CTlQ7eRuzWOLqCi+Wv9HUmtloX+FrXGNx1EEjQyYbgAAAAAAAA==
-
-
---=-qBoVllMyyk5wNzA7I8uZ--
