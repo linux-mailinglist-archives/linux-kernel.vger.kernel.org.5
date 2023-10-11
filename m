@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F15E7C5DE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE747C5DE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233354AbjJKTyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 15:54:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
+        id S1346995AbjJKTxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 15:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233170AbjJKTyR (ORCPT
+        with ESMTP id S233103AbjJKTxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 15:54:17 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8BD94;
-        Wed, 11 Oct 2023 12:54:15 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40572aeb673so3037465e9.0;
-        Wed, 11 Oct 2023 12:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697054054; x=1697658854; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=y3YFPZew2Bj95EqowwXla7dhplIamhthsOPPYN+nyMU=;
-        b=Res5H5ChYGxkqwMulH2BX8MY5fB2aRIfETQuDW2YCiuh/1GR1kBLGtfR8upvxO765U
-         aSuo1t4de22XHEnh16MCXwH1lrCUQkEX3Yt6PadR5s0b0QSzA+7TubIyPyo9gqY3nT3t
-         b9MQuiExKwzx/84+0kLRSDtbPedrdAgA6igLW0ocM/0pTyN8PcUTlFbHk1rg3PO+1d7+
-         uw+lJ+9yuoqhLvF/pJN82YGNKXBBN5W//7g+WHlu71mlS2NaoosxHluUOzUAsdxC6EPn
-         nZ26Ldb/s0z+U2m/NPcxpIYu6J5XGZ44QqI+KV0lsv+UXp+xwsSji3lDVoiywK3DQ2iP
-         WVMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697054054; x=1697658854;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=y3YFPZew2Bj95EqowwXla7dhplIamhthsOPPYN+nyMU=;
-        b=uydkhPUfksxFIU0vFc40GZbpUK2AiuDWBGodsSup6zSXyDvGASklvylnzzhYUmdX7q
-         2YQbWADQXwrH1OiAsHrQwaIhbjixHFrGW1Fm7BNca0GUxYAV02Q/BzkuO/YcsB3a1nQd
-         UzNe8xgPVHTZeXcPK9H0+XOptaArAkyDBKdOIFkm++aY06WqR/Wz0tjL9HmGW+JmdEJS
-         pw31W6DHB4t3BnDrEk8v5kiQc4TxEaVi2+m2WnbztFRMjs4vzC7bksuBMG+VjBiiB+u+
-         p3oaFH560l8SvJi12Y635fyF/k0z2tXhwCi6y0wccADKNpwluZCs9I5U1gL3EJUZVeJz
-         Z01A==
-X-Gm-Message-State: AOJu0Yx6ySwtA2ASH2HZsDEC7cxsL2CA2UQs36JTpviXwhkCKjuXTTdw
-        mBiDJly/zNcKP5W15AceOyk=
-X-Google-Smtp-Source: AGHT+IH0ZWnon6aBmF5pJAjBaQ3ZU+0IT2e/bvCnKFGgpAa/lhDn8x+0H84J9gcNuYUTO6zBHMsOCw==
-X-Received: by 2002:a05:600c:21d0:b0:405:3a3b:2aa2 with SMTP id x16-20020a05600c21d000b004053a3b2aa2mr18993979wmj.37.1697054053875;
-        Wed, 11 Oct 2023 12:54:13 -0700 (PDT)
-Received: from prasmi.home ([2a00:23c8:2501:c701:b8af:68b0:4272:ed0d])
-        by smtp.gmail.com with ESMTPSA id y19-20020a05600c20d300b004075b3ce03asm4136872wmm.6.2023.10.11.12.54.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 12:54:13 -0700 (PDT)
-From:   Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH] irqchip: renesas-rzg2l: Enhance driver to support interrupt affinity setting
-Date:   Wed, 11 Oct 2023 20:53:24 +0100
-Message-Id: <20231011195324.66807-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 11 Oct 2023 15:53:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F9490
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:53:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70D95C433C7;
+        Wed, 11 Oct 2023 19:53:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697054020;
+        bh=49brBIxir2A/eI0wSsvoiOpX9CqLvfF5NO+bYDf2LHQ=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=qQHnOKP8Yog1aP6Q0ugc+XLAq/6nbwFNaqWNS4OTx9gAquHhqPkoXEcpHjwqiYrWy
+         psCTd3Wbe1j4Y4yJXtEzz8oXNYRa+7aC3SkPOgiE0kR/RfJj23rzMedsOb2j2vn3tz
+         7mq0qdCUUvoH4m8qcp0h1Kb5Svy6RoGYrPtQDjinrVvOBfy6ExLn6szu+3nHbn0oT3
+         JmRY3HXQL1iWeBVDKMogLREnEmQ534XjLqxki2RAD7D52Q77oZXtvxgpMdTTMmDlcx
+         dRQbgUOEZj1dNqvaWEmv70JIyBaK6kx1H1QHpCNMsyUJCu8mWDyTnYdkYL/fXuhFd4
+         tKWuAwtolZkBQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20231011134853.20059-1-rf@opensource.cirrus.com>
+References: <20231011134853.20059-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs42l42: Fix missing include of gpio/consumer.h
+Message-Id: <169705401914.99325.7680075672500717976.b4-ty@kernel.org>
+Date:   Wed, 11 Oct 2023 20:53:39 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mailer: b4 0.13-dev-0438c
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Wed, 11 Oct 2023 14:48:53 +0100, Richard Fitzgerald wrote:
+> The call to gpiod_set_value_cansleep() in cs42l42_sdw_update_status()
+> needs the header file gpio/consumer.h to be included.
+> 
+> This was introduced by commit 2d066c6a7865 ("ASoC: cs42l42: Avoid stale
+> SoundWire ATTACH after hard reset")
+> 
+> and caused error:
+>     sound/soc/codecs/cs42l42-sdw.c:374:4: error: implicit declaration of
+>     function ‘gpiod_set_value_cansleep’;
+>     did you mean gpio_set_value_cansleep’?
+> 
+> [...]
 
-Add support to set the affinity of the IRQC interrupt by implementing
-the irq_set_affinity callback.
+Applied to
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- drivers/irqchip/irq-renesas-rzg2l.c | 1 +
- 1 file changed, 1 insertion(+)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/drivers/irqchip/irq-renesas-rzg2l.c b/drivers/irqchip/irq-renesas-rzg2l.c
-index 2cee5477be6b..6390d1d78f2e 100644
---- a/drivers/irqchip/irq-renesas-rzg2l.c
-+++ b/drivers/irqchip/irq-renesas-rzg2l.c
-@@ -247,6 +247,7 @@ static const struct irq_chip irqc_chip = {
- 	.irq_set_irqchip_state	= irq_chip_set_parent_state,
- 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
- 	.irq_set_type		= rzg2l_irqc_set_type,
-+	.irq_set_affinity	= irq_chip_set_affinity_parent,
- 	.flags			= IRQCHIP_MASK_ON_SUSPEND |
- 				  IRQCHIP_SET_TYPE_MASKED |
- 				  IRQCHIP_SKIP_SET_WAKE,
--- 
-2.34.1
+Thanks!
+
+[1/1] ASoC: cs42l42: Fix missing include of gpio/consumer.h
+      commit: d6cbc6a3a856a7d8047316d81e2e039e44432acb
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
