@@ -2,135 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54ED67C5210
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E167C51C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346313AbjJKL2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:28:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54344 "EHLO
+        id S234966AbjJKLWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:22:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346311AbjJKL2r (ORCPT
+        with ESMTP id S234905AbjJKLW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:28:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17807198E;
-        Wed, 11 Oct 2023 04:20:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697023218; x=1728559218;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=wQggwqpGoqsQbtZ47vm6zVFK/IO32aEH3Qz/VufZSs8=;
-  b=YghAG74hvV6PVe6+FqFoxWGW08KczzP0Yj/PhHri0eCN3ZGxSyxSs7oc
-   6WS0zwNIdoiOIb2DCsKtMV2vNSe1RViBaLNaTly55SxtQPenYI5H1kz7q
-   wmoOkrpaSAjcG6bzZTQ0qJxqr1mIgBJdrEfdMJkO9B0+vrKIjsV/Ipsvd
-   HRA662Qmap/DVmD/4BgTMQVMdqKlRAqmJeORB7MlkTJtyl/fOvUxkYoLf
-   YTVxWcfGn3xaFhpzXvD1ILMFevs8mXxHl+VpK5LlTKfquKTNRZO5TnYBG
-   rs+Z+lvBjjdI77nyeqB0kolxmQkrvn5woV9VqPMgmL6iQENjRB7ZDBD27
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="448835573"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="448835573"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 04:20:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="730462088"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="730462088"
-Received: from opipikin-mobl2.ger.corp.intel.com ([10.252.57.154])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 04:20:14 -0700
-Date:   Wed, 11 Oct 2023 14:20:12 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-cc:     linux-pci@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 05/10] PCI/ATS: Use FIELD_GET()
-In-Reply-To: <20231010204436.1000644-6-helgaas@kernel.org>
-Message-ID: <85b2c818-1c43-e633-8179-ec694214ce77@linux.intel.com>
-References: <20231010204436.1000644-1-helgaas@kernel.org> <20231010204436.1000644-6-helgaas@kernel.org>
+        Wed, 11 Oct 2023 07:22:27 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F5010D8
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:21:43 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qqXHP-0003tr-62; Wed, 11 Oct 2023 13:21:31 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qqXHO-000tKA-Hp; Wed, 11 Oct 2023 13:21:30 +0200
+Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qqXHO-00DuHH-FB; Wed, 11 Oct 2023 13:21:30 +0200
+Date:   Wed, 11 Oct 2023 13:21:30 +0200
+From:   Sascha Hauer <sha@pengutronix.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Boris Pismenny <borisp@nvidia.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: Re: Problem with io_uring splice and KTLS
+Message-ID: <20231011112130.GH3114228@pengutronix.de>
+References: <20231010141932.GD3114228@pengutronix.de>
+ <d729781a-3d12-423b-973e-c16fdbcbb60b@kernel.dk>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-951230455-1697023216=:1977"
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d729781a-3d12-423b-973e-c16fdbcbb60b@kernel.dk>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-951230455-1697023216=:1977
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-
-On Tue, 10 Oct 2023, Bjorn Helgaas wrote:
-
-> From: Bjorn Helgaas <bhelgaas@google.com>
+On Tue, Oct 10, 2023 at 08:28:13AM -0600, Jens Axboe wrote:
+> On 10/10/23 8:19 AM, Sascha Hauer wrote:
+> > Hi,
+> > 
+> > I am working with a webserver using io_uring in conjunction with KTLS. The
+> > webserver basically splices static file data from a pipe to a socket which uses
+> > KTLS for encryption. When splice is done the socket is closed. This works fine
+> > when using software encryption in KTLS. Things go awry though when the software
+> > encryption is replaced with the CAAM driver which replaces the synchronous
+> > encryption with a asynchronous queue/interrupt/completion flow.
+> > 
+> > So far I have traced it down to tls_push_sg() calling tcp_sendmsg_locked() to
+> > send the completed encrypted messages. tcp_sendmsg_locked() sometimes waits for
+> > more memory on the socket by calling sk_stream_wait_memory(). This in turn
+> > returns -ERESTARTSYS due to:
+> > 
+> >         if (signal_pending(current))
+> >                 goto do_interrupted;
+> > 
+> > The current task has the TIF_NOTIFY_SIGNAL set due to:
+> > 
+> > io_req_normal_work_add()
+> > {
+> >         ...
+> >         /* This interrupts sk_stream_wait_memory() (notify_method == TWA_SIGNAL) */
+> >         task_work_add(req->task, &tctx->task_work, ctx->notify_method)))
+> > }
+> > 
+> > The call stack when sk_stream_wait_memory() fails is as follows:
+> > 
+> > [ 1385.428816]  dump_backtrace+0xa0/0x128
+> > [ 1385.432568]  show_stack+0x20/0x38
+> > [ 1385.435878]  dump_stack_lvl+0x48/0x60
+> > [ 1385.439539]  dump_stack+0x18/0x28
+> > [ 1385.442850]  tls_push_sg+0x100/0x238
+> > [ 1385.446424]  tls_tx_records+0x118/0x1d8
+> > [ 1385.450257]  tls_sw_release_resources_tx+0x74/0x1a0
+> > [ 1385.455135]  tls_sk_proto_close+0x2f8/0x3f0
+> > [ 1385.459315]  inet_release+0x58/0xb8
+> > [ 1385.462802]  inet6_release+0x3c/0x60
+> > [ 1385.466374]  __sock_release+0x48/0xc8
+> > [ 1385.470035]  sock_close+0x20/0x38
+> > [ 1385.473347]  __fput+0xbc/0x280
+> > [ 1385.476399]  ____fput+0x18/0x30
+> > [ 1385.479537]  task_work_run+0x80/0xe0
+> > [ 1385.483108]  io_run_task_work+0x40/0x108
+> > [ 1385.487029]  __arm64_sys_io_uring_enter+0x164/0xad8
+> > [ 1385.491907]  invoke_syscall+0x50/0x128
+> > [ 1385.495655]  el0_svc_common.constprop.0+0x48/0xf0
+> > [ 1385.500359]  do_el0_svc_compat+0x24/0x40
+> > [ 1385.504279]  el0_svc_compat+0x38/0x108
+> > [ 1385.508026]  el0t_32_sync_handler+0x98/0x140
+> > [ 1385.512294]  el0t_32_sync+0x194/0x198
+> > 
+> > So the socket is being closed and KTLS tries to send out the remaining
+> > completed messages.  From a splice point of view everything has been sent
+> > successfully, but not everything made it through KTLS to the socket and the
+> > remaining data is sent while closing the socket.
+> > 
+> > I vaguely understand what's going on here, but I haven't got the
+> > slightest idea what to do about this. Any ideas?
 > 
-> Use FIELD_GET() to remove dependences on the field position, i.e., the
-> shift value.  No functional change intended.
+> Two things to try:
 > 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
->  drivers/pci/ats.c             | 7 ++-----
->  include/uapi/linux/pci_regs.h | 1 +
->  2 files changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/pci/ats.c b/drivers/pci/ats.c
-> index f9cc2e10b676..c570892b2090 100644
-> --- a/drivers/pci/ats.c
-> +++ b/drivers/pci/ats.c
-> @@ -9,6 +9,7 @@
->   * Copyright (C) 2011 Advanced Micro Devices,
->   */
->  
-> +#include <linux/bitfield.h>
->  #include <linux/export.h>
->  #include <linux/pci-ats.h>
->  #include <linux/pci.h>
-> @@ -480,8 +481,6 @@ int pci_pasid_features(struct pci_dev *pdev)
->  }
->  EXPORT_SYMBOL_GPL(pci_pasid_features);
->  
-> -#define PASID_NUMBER_SHIFT	8
-> -#define PASID_NUMBER_MASK	(0x1f << PASID_NUMBER_SHIFT)
->  /**
->   * pci_max_pasids - Get maximum number of PASIDs supported by device
->   * @pdev: PCI device structure
-> @@ -503,9 +502,7 @@ int pci_max_pasids(struct pci_dev *pdev)
->  
->  	pci_read_config_word(pdev, pasid + PCI_PASID_CAP, &supported);
->  
-> -	supported = (supported & PASID_NUMBER_MASK) >> PASID_NUMBER_SHIFT;
-> -
-> -	return (1 << supported);
-> +	return (1 << FIELD_GET(PCI_PASID_CAP_WIDTH, supported));
->  }
->  EXPORT_SYMBOL_GPL(pci_max_pasids);
->  #endif /* CONFIG_PCI_PASID */
-> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-> index 6af1f8d53e97..833e5fb40ea5 100644
-> --- a/include/uapi/linux/pci_regs.h
-> +++ b/include/uapi/linux/pci_regs.h
-> @@ -932,6 +932,7 @@
->  #define PCI_PASID_CAP		0x04    /* PASID feature register */
->  #define  PCI_PASID_CAP_EXEC	0x0002	/* Exec permissions Supported */
->  #define  PCI_PASID_CAP_PRIV	0x0004	/* Privilege Mode Supported */
-> +#define  PCI_PASID_CAP_WIDTH	0x1f00
->  #define PCI_PASID_CTRL		0x06    /* PASID control register */
->  #define  PCI_PASID_CTRL_ENABLE	0x0001	/* Enable bit */
->  #define  PCI_PASID_CTRL_EXEC	0x0002	/* Exec permissions Enable */
+> 1) Depending on how you use the ring, set it up with
+> IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN. The latter will
+> avoid using signal based task_work notifications, which may be messing
+> you up here.
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+These flags do not make a difference unfortunately.
+
+> 
+> 2) io_uring will hold a reference to the file/socket. I'm unsure if this
+> is a problem in the above case, but sometimes it'll prevent the final
+> flush.
+
+Not sure what you want me to test here.
+
+FWIW I tried to do the close() outside of io_uring and just did a
+regular close() in userspace. That didn't make a difference either.
+
+> 
+> Do you have a reproducer that could be run to test? Sometimes easier to
+> see what's going on when you can experiment, it'll save some time.
+
+I would love to provide a reproducer, but you'll need a device with an
+asynchronous encryption engine providing gcm(aes). I am using the CAAM
+engine on a Layerscape board, but some i.MX6/8 based board should do
+as well. I don't know what other hardware you might have which supports
+that.
+
+Sascha
 
 -- 
- i.
-
---8323329-951230455-1697023216=:1977--
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
