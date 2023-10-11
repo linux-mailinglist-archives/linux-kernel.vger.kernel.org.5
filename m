@@ -2,94 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA647C4F10
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 273387C4F19
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345913AbjJKJel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 05:34:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48232 "EHLO
+        id S231372AbjJKJfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 05:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231388AbjJKJej (ORCPT
+        with ESMTP id S231352AbjJKJfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 05:34:39 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED26A91
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:34:37 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 43FB440E01A5;
-        Wed, 11 Oct 2023 09:34:36 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id zYrS_lfx2XWo; Wed, 11 Oct 2023 09:34:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1697016874; bh=wlVHCRniVFaiJL/44jNYT0InX+M6DG5c0AFa+WZS7gI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WqpVIkUuVh0xCDZpqdC/D3R/PtHYWiIAp0bf5eVOhgbcOrJFi8mGvNm/K4NASnCRM
-         jv+rGflBCEiYnXMAof+o9Hu6RqeoV2oToQttHreQQ3aTMFVx8QojkZ72CVNgUbHpid
-         pdj7QdOoziklmkY2ekXoYh48+jrveQA366PEHze3isygNLyxIuf/GohKWFfGeWh/IX
-         GfCSOV54BmNBJgc92coM1aTvBZBGm5H/OcOm91TzdQTFyYajVdCP5FvaRdSKnH9XQ1
-         m/cRQTd8PSKecytsaM8zN1x8A62UFQYz8nBvr4S9u3LUgyxTiC0J1BSCLLMyOQdLq1
-         fsj7IctbD57l5tFJCAxLASt66wWVcxR5H8pn5RUtTt8X0llTwMPfJB6uUSjss3sZj6
-         FTL6uU695WLPDQ0DsQjuRW5MRXG6ZaI+7Fus6b6UQTEhCWcQAJ4n6f+Pa9ZORdi69S
-         ZEUbOmV0apkXW8gAW/yRY9/o3AUMDjncnlGcAbMxbM7PmACyn2VXBaoWt8liT7xO3B
-         xzvRjqEkeQjmEtYE4Y/jK0b/fjxVUInfeSGt9lL8I7bFhqvOkZehXZiebA2eEyQgxe
-         9g+nCfLD6acoDFN+n4lv+osUUT2PboTvKCrESrXTSEZNoo7waXtHI+QoAjevEh/Rnx
-         6dBPmTW1sHj3OKjgn+a7R1ME=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8D2FE40E01AA;
-        Wed, 11 Oct 2023 09:34:28 +0000 (UTC)
-Date:   Wed, 11 Oct 2023 11:34:22 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        David Kaplan <david.kaplan@amd.com>, x86@kernel.org,
-        luto@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] Revert "x86/retpoline: Remove
- .text..__x86.return_thunk section"
-Message-ID: <20231011093422.GBZSZsHumBjU6c68Zb@fat_crate.local>
-References: <20231010171020.462211-1-david.kaplan@amd.com>
- <20231010171020.462211-2-david.kaplan@amd.com>
- <20231010174833.GG14330@noisy.programming.kicks-ass.net>
- <20231010195721.p5pb273kevg7ydxz@treble>
- <20231010200429.GIZSWuTWSUM9aId7a6@fat_crate.local>
- <20231010201912.7pjksbparssqu34k@treble>
- <20231010212254.ypk2wdogno55shit@treble>
- <20231011074142.GK14330@noisy.programming.kicks-ass.net>
+        Wed, 11 Oct 2023 05:35:05 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18ADF94
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:35:01 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50336768615so8665776e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:35:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697016899; x=1697621699; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GTb+BC97Rmfw2v9f1zxZNHOqcWwQx2NwvNoBl72WQbk=;
+        b=IHSQsp+X+DVapGHCfyAPWG4945+hUcPvDiigKzOScHq1M2VRkoeSn48qS4gsdaw/ZY
+         iVBKkpyctb02u7SN5cEiLsN38PMV/H5pw/NHvnK6xpKgWABxA2bM9xpimmTHcq4TuRrx
+         52w4If3jGJ+3haYqfzOk0RhWIY6bspQszEYjXY0LlatYYCowCbCs3gdLtkeOOMkwFc7y
+         Kfn/FdLuXo2eBqJ1b6qAnrAV4zc4QOnvLhfXKPcv3jNTHX4NptQyFRq7BRC2N5A4jbX1
+         qCPHwyt9KTbWlCQT2v9PwNu5zyG19qK2wj8z7juEPDBkxrfkCTA+cZxDqPqncn45xR1O
+         o81w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697016899; x=1697621699;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GTb+BC97Rmfw2v9f1zxZNHOqcWwQx2NwvNoBl72WQbk=;
+        b=vf5h2KjLra1IVMrqir2N2v8yGbZqRYXTi3E7HSabGgS1AIJY+aShG97NuIz7F5wsyS
+         nmRoFQp6Ynb6RDi4gY5TXdY7+Gd5cENBgITnhD4CTAbNZAcC1sOtIVjt4iEJLxo/GY2k
+         6LUeQ6h9WZP553RaIeusFZ+VqtIjyiZumbpLXTkSyVz2EmyNQYZutOGJxWoRItvxMRDn
+         Y+gQOQ0sQ7IQBXC0CCR7lfwkAM14y+MydyHGKQTDiBs+H+YW9uQcpSAu6C8wUzad3GPX
+         bvSG5M2y9/mK1z6F5sx3guDvSPuWCBfMu5LchrnSkqs5Zh0p6K1McTEcZfq/p0xtzqY8
+         oEQw==
+X-Gm-Message-State: AOJu0YyG43dXufr1I/jD3RzCQV+9kzEM0QDtfiP57toIPKsVNKs0bAv2
+        YEg7EsaiX0y+d2E/2VuJUcmPnoG7lhrDZ1lHzkA=
+X-Google-Smtp-Source: AGHT+IFJlLI9YnlJYD1w9CjE4Ygsx3wdxgdFBI2HqW3ROvAa5SheRB6Z7Int2nygQUmbnYk7UMB+uQ==
+X-Received: by 2002:a19:385c:0:b0:503:6e8:1008 with SMTP id d28-20020a19385c000000b0050306e81008mr16146349lfj.36.1697016899282;
+        Wed, 11 Oct 2023 02:34:59 -0700 (PDT)
+Received: from [172.30.204.44] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id v5-20020a05600c214500b003fbe791a0e8sm16376359wml.0.2023.10.11.02.34.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 02:34:58 -0700 (PDT)
+Message-ID: <a8493160-6417-4366-957b-ea4ac68f8926@linaro.org>
+Date:   Wed, 11 Oct 2023 11:34:55 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231011074142.GK14330@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 00/10] Add multiport support for DWC3 controllers
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
+        quic_jackp@quicinc.com, ahalaney@redhat.com,
+        quic_shazhuss@quicinc.com
+References: <20231007154806.605-1-quic_kriskura@quicinc.com>
+ <537d59b3-0e40-4d4d-80ab-b99028af6ec2@linaro.org>
+ <2c325941-0fcc-4092-9581-dd6ebb067163@quicinc.com>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <2c325941-0fcc-4092-9581-dd6ebb067163@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 09:41:42AM +0200, Peter Zijlstra wrote:
-> *urgh*... I mean, yes, that obviously works, but should we not also have
-> the retpoline thingy for consistency? That case makes less sense though
-> :/
+
+
+On 10/11/23 07:11, Krishna Kurapati PSSNV wrote:
 > 
-> Perhaps warn about this instead of fixing it? Forcing people to play the
-> section game?
+> 
+> On 10/11/2023 2:21 AM, Konrad Dybcio wrote:
+>>
+>>
+>> On 10/7/23 17:47, Krishna Kurapati wrote:
+>>> Currently the DWC3 driver supports only single port controller which
+>>> requires at most two PHYs ie HS and SS PHYs. There are SoCs that has
+>>> DWC3 controller with multiple ports that can operate in host mode.
+>>> Some of the port supports both SS+HS and other port supports only HS
+>>> mode.
+>>>
+>>> This change primarily refactors the Phy logic in core driver to allow
+>>> multiport support with Generic Phy's.
+>>>
+>>> Changes have been tested on  QCOM SoC SA8295P which has 4 ports (2
+>>> are HS+SS capable and 2 are HS only capable).
+>>>
+>>> Changes in v13:
+>>> This series is a subset of patches in v11 as the first 3 patches in v11
+>>> have been mereged into usb-next.
+>>> Moved dr_mode property from platform specific files to common 
+>>> sc8280xp DT.
+>>> Fixed function call wrapping, added comments and replaced #defines with
+>>> enum in dwc3-qcom for identifying IRQ index appropriately.
+>>> Fixed nitpicks pointed out in v11 for suspend-resume handling.
+>>> Added reported-by tag for phy refactoring patch as a compile error was
+>>> found by kernel test bot [1].
+>> "If you fix the issue in a separate patch/commit (i.e. not just a new 
+>> version of
+>> the same patch/commit), kindly add following tags"
+>>
+>> the issue your patch resolves is not one that was reported by the 
+>> kernel testing robot, it just pointed out that you need to fix up the 
+>> next revision
+>>
+> 
+> I Agree. It sounds wrong to add a reproted-by tag making it seem like a 
+> bug instead of a feature we have written. But if we fix the compile 
+> error mentioned and not add the "reported-by", its like not giving 
+> credit for the reporter. So I put in the reproted by and closes tag to 
+> give a view of what was reported and the feature implemented.
+This is a normal thing in review, people spot mistakes, null ptrs, etc..
 
-I like the conservative aspect of that: keep the separate sections and
-warn if the return thunk is in the same section.
+If I had a reported-by for each review where I pointed out e.g. device 
+tree changes that don't compile i'd be topping lwn charts
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Konrad
