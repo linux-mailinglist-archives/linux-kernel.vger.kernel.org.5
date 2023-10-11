@@ -2,198 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F2A7C56ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A247C56F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232342AbjJKOeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 10:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33328 "EHLO
+        id S232473AbjJKOgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 10:36:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231506AbjJKOeH (ORCPT
+        with ESMTP id S229492AbjJKOgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 10:34:07 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E7390
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 07:34:05 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-49d8fbd307fso2603152e0c.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 07:34:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697034844; x=1697639644; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h9dlHMKHWL4oxHCbk6cTeoLTqzzESyQ3LZPT6zZgxVY=;
-        b=LVa4jdtIOk3uzOzcI+RwwmcQyFs3BY77zMBb2Zodk31dj02ZGjvshdu1zj/PnGFL2r
-         4duQpT6YAL26wKxxmrwE4s1Ijx5Ebu03ElvO6loaQXougudJt9IxhfV9on5cxglPeKan
-         mXnf7hSjq5VpXLmXi1YAAfSeqIOqax7lli6j6KU4xKThPTuqLNfoEfdv3Cz5JYFE7a4W
-         6/5Z679DQEIeF11BZ0z20AOyl+9z2ODi7A7DSHFmjIjBaqSzm9WT3nWdcpIyOi04aK21
-         YI5Zzp1OtkKGOXvql/5Ejv5IS6of/zDY3LRtCVANikdLh/ok1IbGLJw92AiUirVWCTfc
-         Zh6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697034844; x=1697639644;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h9dlHMKHWL4oxHCbk6cTeoLTqzzESyQ3LZPT6zZgxVY=;
-        b=QI4zYF+EPZV98Eh4Qh/cEw3uRP0h7QB4dJy8+21yf16g5Ouxoc9OJkoGQZSFCKTgMs
-         DabVHC8CR/wTrR3qjRIxc5WGj1UezcD94V1++c18k/1u/Yxo6ZfAOAE0t572pLZtwpLI
-         G7Kr7vQoRVdyXTsJHiAtCQMSGMhaX00zaoutZcQ7n4hiOvJ/tiyEzMi7aYl3QR0SnJMv
-         2dC1d5SM5NyCMsnk8t6iIvFRCfk413h72g3wgH3bad2Yktf4FXzq4IEsqfNZyvGk2JCO
-         714y/ziddkgQZV9WhtWxnjCN+vLAtwVjDmqNrfUM9m1auqsZEqDoHfpUDDxwme0XEk2w
-         067Q==
-X-Gm-Message-State: AOJu0YwCts6EfKZNcTf3TCXrSrMk/8QGeTYxVunsKN+MVghwStRCD6pQ
-        daU8C577Y2wxFUHlDpfOn9giHEJIwcKAPXhCP55KmQ==
-X-Google-Smtp-Source: AGHT+IEUbqktC4PpTtZ06GVQtHc4WrK6oRv5c4SbnVBHjACZzvvpIpaLxZa1p1qSGn6py3G8qorRiDcFxdkmOhzdNT0=
-X-Received: by 2002:a05:6122:1d47:b0:49d:eeed:3ed5 with SMTP id
- gd7-20020a0561221d4700b0049deeed3ed5mr16800967vkb.14.1697034844510; Wed, 11
- Oct 2023 07:34:04 -0700 (PDT)
+        Wed, 11 Oct 2023 10:36:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA6579D;
+        Wed, 11 Oct 2023 07:36:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697034963; x=1728570963;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=iMysvAu4HmtiroPGPpdiHPdQSFqPeu7h59Zw9qgde50=;
+  b=FqqUeYLoPVYlq3kHHSRA9rZIxGP5TcHBw58t61HD8izTUMgeycfi0wCE
+   waQXrOXCrzziXnpqGgtN7O06nGgpebgCSEA8bfkOdj9xiUuJ/ueCHMa3c
+   MEO8+OhPy+lnp2cFXyQDOaXvLn6VPzqDWvL5e8a7GhwrtitZm5t+4pR9x
+   +u0NyoS/REvbPUdi6jSmg9SdJQ3MCiSs5HQbEFnfZzcx6sbcJ1odAZYpu
+   xkXtw6hmykOY6ExA98e8PIHNrjuBAqRg2yfwQ+AUcooxHHU7Kx6XVrTuD
+   jZKc7VHAWwM/1pGFfe29jl4Ym4tKf0jFYsIH2m5pie6R3xdnqiyLKB6uH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="383543388"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
+   d="scan'208";a="383543388"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 07:36:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="757586628"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
+   d="scan'208";a="757586628"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 11 Oct 2023 07:35:52 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qqaJQ-0002K3-21;
+        Wed, 11 Oct 2023 14:35:48 +0000
+Date:   Wed, 11 Oct 2023 22:35:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH net-next v1 2/3] net: dsa: microchip: ksz8: Enable MIIM
+ PHY Control reg access
+Message-ID: <202310112224.iYgvjBUy-lkp@intel.com>
+References: <20231011123856.1443308-2-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-References: <20231009153427.20951-1-brgl@bgdev.pl> <20231009153427.20951-8-brgl@bgdev.pl>
- <v5ty4xeshodjlpyatqlrjipqejazamuhqhauorujveyqzpikoq@rftlvk6354yx>
- <CAMRc=MdGABGa_bc3_ug+iSKtMg9pcKe40F7zv9Ff2C0ed8i2=Q@mail.gmail.com> <nq6m3v2wflhv5qgxtllympnzqtbtcn7d7ihgw5rdpvqjugv2xs@4vpuzoopkeic>
-In-Reply-To: <nq6m3v2wflhv5qgxtllympnzqtbtcn7d7ihgw5rdpvqjugv2xs@4vpuzoopkeic>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 11 Oct 2023 16:33:53 +0200
-Message-ID: <CAMRc=MdO3ctA-g=VVhXp9QKPdUT1XX0iEKTzEKzHjNzh_=-jPQ@mail.gmail.com>
-Subject: Re: [PATCH v3 07/15] firmware: qcom: scm: make qcom_scm_assign_mem()
- use the TZ allocator
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011123856.1443308-2-o.rempel@pengutronix.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 3:54=E2=80=AFPM Andrew Halaney <ahalaney@redhat.com=
-> wrote:
->
-> On Wed, Oct 11, 2023 at 09:41:49AM +0200, Bartosz Golaszewski wrote:
-> > On Wed, Oct 11, 2023 at 12:19=E2=80=AFAM Andrew Halaney <ahalaney@redha=
-t.com> wrote:
-> > >
-> > > On Mon, Oct 09, 2023 at 05:34:19PM +0200, Bartosz Golaszewski wrote:
-> > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > >
-> > > > Let's use the new TZ memory allocator to obtain a buffer for this c=
-all
-> > > > instead of using dma_alloc_coherent().
-> > > >
-> > > > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > > ---
-> > > >  drivers/firmware/qcom/qcom_scm.c | 10 ++++++----
-> > > >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qc=
-om/qcom_scm.c
-> > > > index 71e98b666391..754f6056b99f 100644
-> > > > --- a/drivers/firmware/qcom/qcom_scm.c
-> > > > +++ b/drivers/firmware/qcom/qcom_scm.c
-> > > > @@ -4,6 +4,7 @@
-> > > >   */
-> > > >
-> > > >  #include <linux/arm-smccc.h>
-> > > > +#include <linux/cleanup.h>
-> > > >  #include <linux/clk.h>
-> > > >  #include <linux/completion.h>
-> > > >  #include <linux/cpumask.h>
-> > > > @@ -998,14 +999,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr,=
- size_t mem_sz,
-> > > >       struct qcom_scm_mem_map_info *mem_to_map;
-> > > >       phys_addr_t mem_to_map_phys;
-> > > >       phys_addr_t dest_phys;
-> > > > -     dma_addr_t ptr_phys;
-> > > > +     phys_addr_t ptr_phys;
-> > > >       size_t mem_to_map_sz;
-> > > >       size_t dest_sz;
-> > > >       size_t src_sz;
-> > > >       size_t ptr_sz;
-> > > >       int next_vm;
-> > > >       __le32 *src;
-> > > > -     void *ptr;
-> > >
-> > > nit: couldn't you keep this up here?
-> > >
-> >
-> > This still needs to make its way into the coding style guide but I got
-> > yelled at by Linus Torvalds personally for not declaring the managed
-> > variables where they are initialized. So this is the correct approach.
->
-> I'm being a stick in the mud, but couldn't you initialize to NULL and
-> keep them all up top? That seems more in line with the current "declare
-> all variables at the start of function" guideline the kernel follows.
->
-> Not a big deal... yours call! but /me shrugs
->
+Hi Oleksij,
 
-I agree with you but it's not my call to make. Please see[1].
+kernel test robot noticed the following build warnings:
 
-Bartosz
+[auto build test WARNING on net-next/main]
 
-[1] https://lore.kernel.org/lkml/20230919193516.GA20937@noisy.programming.k=
-icks-ass.net/T/#m7f97e10dbfde777f58493398a77933e6a2f3c15d
+url:    https://github.com/intel-lab-lkp/linux/commits/Oleksij-Rempel/net-dsa-microchip-ksz8-Enable-MIIM-PHY-Control-reg-access/20231011-204502
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20231011123856.1443308-2-o.rempel%40pengutronix.de
+patch subject: [PATCH net-next v1 2/3] net: dsa: microchip: ksz8: Enable MIIM PHY Control reg access
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231011/202310112224.iYgvjBUy-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231011/202310112224.iYgvjBUy-lkp@intel.com/reproduce)
 
-> >
-> > Bart
-> >
-> > > Otherwise,
-> > >
-> > > Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-> > >
-> > > >       int ret, i, b;
-> > > >       u64 srcvm_bits =3D *srcvm;
-> > > >
-> > > > @@ -1015,10 +1015,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_add=
-r, size_t mem_sz,
-> > > >       ptr_sz =3D ALIGN(src_sz, SZ_64) + ALIGN(mem_to_map_sz, SZ_64)=
- +
-> > > >                       ALIGN(dest_sz, SZ_64);
-> > > >
-> > > > -     ptr =3D dma_alloc_coherent(__scm->dev, ptr_sz, &ptr_phys, GFP=
-_KERNEL);
-> > > > +     void *ptr __free(qcom_tzmem) =3D qcom_tzmem_alloc(__scm->memp=
-ool,
-> > > > +                                                     ptr_sz, GFP_K=
-ERNEL);
-> > > >       if (!ptr)
-> > > >               return -ENOMEM;
-> > > >
-> > > > +     ptr_phys =3D qcom_tzmem_to_phys(ptr);
-> > > > +
-> > > >       /* Fill source vmid detail */
-> > > >       src =3D ptr;
-> > > >       i =3D 0;
-> > > > @@ -1047,7 +1050,6 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr,=
- size_t mem_sz,
-> > > >
-> > > >       ret =3D __qcom_scm_assign_mem(__scm->dev, mem_to_map_phys, me=
-m_to_map_sz,
-> > > >                                   ptr_phys, src_sz, dest_phys, dest=
-_sz);
-> > > > -     dma_free_coherent(__scm->dev, ptr_sz, ptr, ptr_phys);
-> > > >       if (ret) {
-> > > >               dev_err(__scm->dev,
-> > > >                       "Assign memory protection call failed %d\n", =
-ret);
-> > > > --
-> > > > 2.39.2
-> > > >
-> > >
-> >
->
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310112224.iYgvjBUy-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/net/dsa/microchip/ksz8795.c:646: warning: Function parameter or member 'val' not described in 'ksz8_r_phy_ctrl'
+
+
+vim +646 drivers/net/dsa/microchip/ksz8795.c
+
+   634	
+   635	/**
+   636	 * ksz8_r_phy_ctrl - Translates and reads from the SMI interface to a MIIM PHY
+   637	 *		     Control register (Reg. 31).
+   638	 * @dev: The KSZ device instance.
+   639	 * @port: The port number to be read.
+   640	 *
+   641	 * This function reads the SMI interface and translates the hardware register
+   642	 * bit values into their corresponding control settings for a MIIM PHY Control
+   643	 * register.
+   644	 */
+   645	static int ksz8_r_phy_ctrl(struct ksz_device *dev, int port, u16 *val)
+ > 646	{
+   647		const u16 *regs = dev->info->regs;
+   648		u8 reg_val;
+   649		int ret;
+   650	
+   651		*val = 0;
+   652	
+   653		ret = ksz_pread8(dev, port, regs[P_LINK_STATUS], &reg_val);
+   654		if (ret < 0)
+   655			return ret;
+   656	
+   657		if (reg_val & PORT_MDIX_STATUS)
+   658			*val |= KSZ886X_CTRL_MDIX_STAT;
+   659	
+   660		ret = ksz_pread8(dev, port, REG_PORT_LINK_MD_CTRL, &reg_val);
+   661		if (ret < 0)
+   662			return ret;
+   663	
+   664		if (reg_val & PORT_FORCE_LINK)
+   665			*val |= KSZ886X_CTRL_FORCE_LINK;
+   666	
+   667		if (reg_val & PORT_POWER_SAVING)
+   668			*val |= KSZ886X_CTRL_PWRSAVE;
+   669	
+   670		if (reg_val & PORT_PHY_REMOTE_LOOPBACK)
+   671			*val |= KSZ886X_CTRL_REMOTE_LOOPBACK;
+   672	
+   673		return 0;
+   674	}
+   675	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
