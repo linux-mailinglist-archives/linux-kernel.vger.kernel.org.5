@@ -2,134 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF49A7C5561
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92127C556C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235016AbjJKN0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:26:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40342 "EHLO
+        id S1346731AbjJKN1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234772AbjJKN0m (ORCPT
+        with ESMTP id S235025AbjJKN12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:26:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A515A7
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:26:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=4YrjkmK5upRYwbkDcj+pSMAUrTHwaFr1/OzjFdDvbY8=; b=aAQZAN+flZxWL8H0Ca9UqhgfV4
-        W9SfV9Zn5blzAAWfrdp15Js+iKQgYPSrisaRei+aNk+qb4AJCIO3Rq5CGmV0JXbIiPU2Th9EJmu4T
-        iixjwSloJZnVUquxcZuVYNJ9Upto+l4Q6xMJLTGL36lt19m+ACqAb9n1e4lyCNtgFw5FVGfp/p7CC
-        tk/HJ7XOAZs6uKo54rdKZ9PmfG1G7wg6H78NJvCRnTROsQ7NtVAv1moa8w8ljlg3ocAw9qL0y1S0H
-        x9LnP40TxO6q/6TdJJX4yYQF7uRyA+tMOOIbtl03cVzV/h/4FXh6ke4+gi8pEo3VznwxjIZyKpYuB
-        a4hoboFg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qqZEJ-00AzIj-BZ; Wed, 11 Oct 2023 13:26:27 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0BB0C30026F; Wed, 11 Oct 2023 15:26:27 +0200 (CEST)
-Date:   Wed, 11 Oct 2023 15:26:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kuyo Chang =?utf-8?B?KOW8teW7uuaWhyk=?= <Kuyo.Chang@mediatek.com>
-Cc:     "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        "vschneid@redhat.com" <vschneid@redhat.com>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH] sched: Fix stop_one_cpu_nowait() vs hotplug
-Message-ID: <20231011132626.GP14330@noisy.programming.kicks-ass.net>
-References: <20230927033431.12406-1-kuyo.chang@mediatek.com>
- <20230927080850.GB21824@noisy.programming.kicks-ass.net>
- <b9def8f3d9426bc158b302f4474b6e643b46d206.camel@mediatek.com>
- <20230929102135.GD6282@noisy.programming.kicks-ass.net>
- <8ad1b617a1040ce4cc56a5d04e8219b5313a9a6e.camel@mediatek.com>
- <20231010145747.GQ377@noisy.programming.kicks-ass.net>
- <20231010200442.GA16515@noisy.programming.kicks-ass.net>
- <172a3c89d7937725b61721e869eab3e5ae582643.camel@mediatek.com>
+        Wed, 11 Oct 2023 09:27:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8554FA7;
+        Wed, 11 Oct 2023 06:27:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697030846; x=1728566846;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZHyLjPxJ1mR4uC3cntVpwvMSEvJUP/rV/lx58B5OooE=;
+  b=XQ2th9DpXbsK+KjyDerDrSAN2kKNrPDhrrsEU8Sp4uSM+LTjgteHTsW/
+   coY+pthL7Uay2QqFbkLHdY4DnEFxlG0zMGG+ioEMEqN5mWlXhfVYjNT6f
+   w4ikhqiylJ5bxirq8JVEuEdBiOoYlMVXBnSkSh6byQMK00dY63qTwnYqU
+   HzBmnymX4TxTTWeF9CzPMiiunxMLCH/ByOurFwl5L1Fr2J2Oi4TtHG5Lo
+   +W12r7O3QxBnflZKzjt9KphEKgXxFSeQ4WbRD6zrfAb2L7cOdYUAPZWZw
+   aA7Wfw57zN3TMMAMRJT+tuArzOPAYfNJU0AqEcWzSHJQi5CIk/BpO6gK3
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="3249908"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
+   d="scan'208";a="3249908"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 06:27:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="897624429"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
+   d="scan'208";a="897624429"
+Received: from laptop-dan-intel.ccr.corp.intel.com (HELO box.shutemov.name) ([10.252.56.166])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 06:25:21 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 29011109FB5; Wed, 11 Oct 2023 16:27:03 +0300 (+03)
+Date:   Wed, 11 Oct 2023 16:27:03 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Fei Yang <fei.yang@intel.com>, stable@vger.kernel.org
+Subject: Re: [PATCHv2] x86/alternatives: Disable KASAN in apply_alternatives()
+Message-ID: <20231011132703.3evo4ieradgyvgc2@box.shutemov.name>
+References: <20231011065849.19075-1-kirill.shutemov@linux.intel.com>
+ <20231011074616.GL14330@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <172a3c89d7937725b61721e869eab3e5ae582643.camel@mediatek.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231011074616.GL14330@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 03:24:19AM +0000, Kuyo Chang (張建文) wrote:
-> On Tue, 2023-10-10 at 22:04 +0200, Peter Zijlstra wrote:
-> >  	 
-> > External email : Please do not click links or open attachments until
-> > you have verified the sender or the content.
-> >  On Tue, Oct 10, 2023 at 04:57:47PM +0200, Peter Zijlstra wrote:
-> > > On Tue, Oct 10, 2023 at 02:40:22PM +0000, Kuyo Chang (張建文) wrote:
+On Wed, Oct 11, 2023 at 09:46:16AM +0200, Peter Zijlstra wrote:
+> On Wed, Oct 11, 2023 at 09:58:49AM +0300, Kirill A. Shutemov wrote:
+> > Fei has reported that KASAN triggers during apply_alternatives() on
+> > 5-level paging machine:
 > > 
-> > > > It is running good so far(more than a week)on hotplug/set
-> > affinity
-> > > > stress test. I will keep it testing and report back if it happens
-> > > > again.
-> > > 
-> > > OK, I suppose I should look at writing a coherent Changelog for
-> > this
-> > > then...
-> > 
-> > Something like the below... ?
-> > 
-> Thanks for illustrate the race scenario. It looks good to me.
-> But how about RT? Does RT also need this invocations as below?
 > 
-> ---
->  kernel/sched/rt.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-> index e93b69ef919b..6aaf0a3d6081 100644
-> --- a/kernel/sched/rt.c
-> +++ b/kernel/sched/rt.c
-> @@ -2063,9 +2063,11 @@ static int push_rt_task(struct rq *rq, bool
-> pull)
->                  */
->                 push_task = get_push_task(rq);
->                 if (push_task) {
-> +                       preempt_disable();
->                         raw_spin_rq_unlock(rq);
->                         stop_one_cpu_nowait(rq->cpu, push_cpu_stop,
->                                             push_task, &rq->push_work);
-> +                       preempt_enable();
->                         raw_spin_rq_lock(rq);
->                 }
-> 
-> @@ -2402,9 +2404,11 @@ static void pull_rt_task(struct rq *this_rq)
->                 double_unlock_balance(this_rq, src_rq);
-> 
->                 if (push_task) {
-> +                       preempt_disable();
->                         raw_spin_rq_unlock(this_rq);
->                         stop_one_cpu_nowait(src_rq->cpu, push_cpu_stop,
->                                             push_task, &src_rq-
-> >push_work);
-> +                       preempt_enable();
->                         raw_spin_rq_lock(this_rq);
->                 }
->         }
+> Urgh @ KASAN splat, can't we summarize that?
 
-bah, clearly git-grep didn't work for me last night, I'll go fix up.
+What about this?
+
+	BUG: KASAN: out-of-bounds in rcu_is_watching
+	Read of size 4 at addr ff110003ee6419a0 by task swapper/0/0
+	...
+	__asan_load4
+	rcu_is_watching
+	? text_poke_early
+	trace_hardirqs_on
+	? __asan_load4
+	text_poke_early
+	apply_alternatives
+	...
+
+Is it enough details or I overdid summarization?
+
+> > diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+> > index 517ee01503be..b4cc4d7c0825 100644
+> > --- a/arch/x86/kernel/alternative.c
+> > +++ b/arch/x86/kernel/alternative.c
+> > @@ -403,6 +403,17 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+> >  	u8 insn_buff[MAX_PATCH_LEN];
+> >  
+> >  	DPRINTK(ALT, "alt table %px, -> %px", start, end);
+> > +
+> > +	/*
+> > +	 * In the case CONFIG_X86_5LEVEL=y, KASAN_SHADOW_START is defined using
+> > +	 * cpu_feature_enabled(X86_FEATURE_LA57) and is therefore patched here.
+> > +	 * During the process, KASAN becomes confused and triggers
+> 
+> 	because of partial LA57 convertion ..
+> 
+> > +	 * a false-positive out-of-bound report.
+> > +	 *
+> > +	 * Disable KASAN until the patching is complete.
+> > +	 */
+> > +	kasan_disable_current();
+> > +
+> >  	/*
+
+	/*
+	 * In the case CONFIG_X86_5LEVEL=y, KASAN_SHADOW_START is defined using
+	 * cpu_feature_enabled(X86_FEATURE_LA57) and is therefore patched here.
+	 * During the process, KASAN becomes confused seeing partial LA57
+	 * conversion and triggers a false-positive out-of-bound report.
+	 *
+	 * Disable KASAN until the patching is complete.
+	 */
+
+Looks good?
+
+If yes, I will submit v3 with your Ack.
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
