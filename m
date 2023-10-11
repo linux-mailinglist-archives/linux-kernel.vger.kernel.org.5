@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BB07C4D13
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D375B7C4D0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345613AbjJKIZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 04:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
+        id S1345529AbjJKIZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 04:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbjJKIZ2 (ORCPT
+        with ESMTP id S1345551AbjJKIZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 04:25:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54747D7;
-        Wed, 11 Oct 2023 01:25:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697012723; x=1728548723;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=e6BI+6LqlyJDuHOdbdL+OddfPbz+bxG5n4BSrS0nh0Y=;
-  b=HCu9A5cEbHI2NotBRp++j31VXVzuYfwQrcC2wcBhzenrXXbpZeX9v05P
-   cKhCwIc/rvQZt+VzOCp3aN34USjNGIHVh8pChtV1qeiImBeJAZhLiuNKb
-   fSjnseWLk1I6Cn+djw6JtVNNiQ39mKrZMdpmQIB51d8O8Ps5B0qZcUXIh
-   MfZGNqJWL6dbAZBZh3jVJxCUE4FXRkUBE0QqP3bXNZz2huWokvrK+sBLH
-   NazvAT/moqIEtQnS3xmFi4dBjbBVh5a8sEdYRMmgIMjbLuv3Pzebfa8uh
-   oEtiURstJ4KEtJvHJbxkuysJa4/oU7fPBtPA0ATGvUKl+IMrwFudU7is6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="3200937"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="3200937"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 01:25:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="730411878"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="730411878"
-Received: from bmatwiej-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.17.119])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 01:25:13 -0700
-From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v5 8/8] selftests/resctrl: Fix wrong format specifier
-Date:   Wed, 11 Oct 2023 10:24:04 +0200
-Message-ID: <e2c11ae4a3138cf362a65d7450ea3e117b25ec49.1697012398.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1697012398.git.maciej.wieczor-retman@intel.com>
-References: <cover.1697012398.git.maciej.wieczor-retman@intel.com>
+        Wed, 11 Oct 2023 04:25:11 -0400
+Received: from out-191.mta0.migadu.com (out-191.mta0.migadu.com [IPv6:2001:41d0:1004:224b::bf])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 946B3DC;
+        Wed, 11 Oct 2023 01:25:04 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 08:24:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1697012702;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/S0JgFqg4H1IYpuqJTqVbgL24y5HPTPBE2KO5N0Er7Y=;
+        b=rifPWBRtD8D2d+dvqwjSDF/T7fYlgNVBaxxBWCzIc7b8xZZeknRWnFujZMp7ojIzLlyad1
+        +PynOxmlCk/KIRAmcn30AFb4ug9YsYDBl2LWoRMeOALhY20J+GwckhXDhAFxu5oQDg86WU
+        0/oU2Ft0wW4+dNOwW/VSd/RxfMpGo6A=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Oliver Upton <oliver.upton@linux.dev>
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Zaid Al-Bassam <zalbassam@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev
+Subject: Re: [PATCH v3 1/3] arm: perf: Include threshold control fields valid
+ in PMEVTYPER mask
+Message-ID: <ZSZb2H8O5fuU3UrA@linux.dev>
+References: <20231010141551.2262059-1-james.clark@arm.com>
+ <20231010141551.2262059-2-james.clark@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231010141551.2262059-2-james.clark@arm.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A long unsigned int variable is passed to the ksft_print_msg() and the
-format specifier used expects a variable of type int.
+Hi James,
 
-Change the format specifier to match the passed variable.
+On Tue, Oct 10, 2023 at 03:15:41PM +0100, James Clark wrote:
+> FEAT_PMUv3_TH (Armv8.8) adds two new fields to PMEVTYPER, so include
+> them in the mask. These aren't writable on 32 bit kernels as they are in
+> the high part of the register, so split the mask definition to the asm
+> files for each platform.
+> 
+> Now where the value is used in some parts of KVM, include the asm file.
+> There is no impact on guest PMUs emulated with KVM because the new
+> fields are ignored when constructing the attributes for opening the
+> event. But if threshold support is added to KVM at a later time no
+> change to the mask will be needed.
 
-Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
----
-Changelog v4:
-- Added Reinette's reviewed-by tag.
+KVM should treat TH and TC as RES0 if the feature isn't virtualized. I'd
+rather move KVM away from using ARMV8_PMU_EVTYPE_MASK in the first
+place. Looks like we already have an issue with the NSH bit, so I've
+sent the below patch to fix it.
 
-Changelog v3:
-- Added Ilpo's reviewed-by tag.
+https://lore.kernel.org/kvmarm/20231011081649.3226792-3-oliver.upton@linux.dev/
 
-Changelog v2:
-- Added this patch to the series.
-
- tools/testing/selftests/resctrl/cache.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/resctrl/cache.c b/tools/testing/selftests/resctrl/cache.c
-index d3cbb829ff6a..a5d082cd2d53 100644
---- a/tools/testing/selftests/resctrl/cache.c
-+++ b/tools/testing/selftests/resctrl/cache.c
-@@ -294,7 +294,7 @@ int show_cache_info(unsigned long sum_llc_val, int no_of_bits,
- 	ret = platform && abs((int)diff_percent) > max_diff_percent &&
- 	      (cmt ? (abs(avg_diff) > max_diff) : true);
- 
--	ksft_print_msg("%s Check cache miss rate within %d%%\n",
-+	ksft_print_msg("%s Check cache miss rate within %lu%%\n",
- 		       ret ? "Fail:" : "Pass:", max_diff_percent);
- 
- 	ksft_print_msg("Percent diff=%d\n", abs((int)diff_percent));
 -- 
-2.42.0
-
+Thanks,
+Oliver
