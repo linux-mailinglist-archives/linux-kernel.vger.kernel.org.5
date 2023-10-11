@@ -2,152 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90FAE7C4931
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B29F7C4933
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbjJKF0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 01:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
+        id S229879AbjJKF04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 01:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjJKF0L (ORCPT
+        with ESMTP id S229569AbjJKF0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 01:26:11 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD7E8E;
-        Tue, 10 Oct 2023 22:26:07 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d9a3d737d66so2399558276.2;
-        Tue, 10 Oct 2023 22:26:07 -0700 (PDT)
+        Wed, 11 Oct 2023 01:26:55 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A92694
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:26:53 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c434c33ec0so40981115ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:26:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697001967; x=1697606767; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wBvwRr+UYeiNIgyMN0xgl61IRq+wFgkmFE+ImROj8bE=;
-        b=HnQ+GssB8GJIy4D535iGnWgD9CzdOXJuTmK/bBx1HvFHEvLLZGL2rTkQwvrUVJ6cso
-         IBNQBBO/0AW00YVBbuwl2qb+uNeZ8/3Ed5IVi5Med6ktAGgl6F/ZD1Cyjv9jhXrIjjuw
-         WAQcww4fsHGVAI0SYWcIYIheDUjAW6VJ3qZHAbBb5sF7+675MBdUqsqIAwi4uiTFao+Z
-         rPK+DEnKha55IHkdEhWp/4PKE67G1ToG1Qh29djQkGBDzp5+TqZDkjo4GxtbpxAHhfeV
-         7AO/2tI/aUhEnGIfbDR7ono2kyL8KeUhG9hUnBhAL9M1UG6bR1TZtrdCYO7nHNc7oXJu
-         d+dQ==
+        d=linaro.org; s=google; t=1697002013; x=1697606813; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=P7LIxd8tmkXQNk22je5bQbirCOvsUYcJoh2rUfnuEyM=;
+        b=jNJBraD/XYtkm9Ozb86b48O2UywarRaU0NxCaBrWjFtz5KZ6pnTX997jQPJept84ox
+         gQzRjybTUxQse9DnqPQUYuNrvsItZvjBmenJfs85aJ8nP+45X0lv3iNfx6+vuHgkVjil
+         UWrFVInJzC3s2xMOqM0OFLITpvAODZC0TH/r4/c8zwFWC2gmkL+0GW0JyR+dt8mM3jxi
+         IaVT+Zt5mg6ZxsYkuvjbkgW+JCoVymsK8f2uXwwG1yMp58ENMePIgR/iF+KId2CpZ1Vm
+         dPsDFB9MukV9irTsoY+G37zJ7GYfQrm+azN0jIYCKe+TRCSYBmaUpmwXtVQ4ZKv1BtgH
+         KboQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697001967; x=1697606767;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wBvwRr+UYeiNIgyMN0xgl61IRq+wFgkmFE+ImROj8bE=;
-        b=jhrRLUlSE5yAHgQirYQ3Br8WSSiN1pAlgXNNIIk/+4p+A/fFXqH+omHlFUc4Ioq9yo
-         4wl8vCCra5sHKvZ2u9jkC2kQ5KpM1fWVEYrWf5a2wGDnrd6Ufr0QGpAtcDUgtBcSVa1h
-         tqTcFEoeNhuhE300kr3dsSHGj88BlxKQO2T6hiUH7e4SpTC830Krk/3uFxgQTagfajE0
-         EKPWhDOHBld8Ax1q8X5O7XgVPYufOaiU+dhL02ktjjZx2VUpSwhPEYyQcoNPVrzqAvdC
-         ftQSguNEXb9+dtSfw8MztVAfbqMedpH4kdXJoGyl7vMgzZM3cxaLZIT7vgqiwVGSpXkO
-         r8VQ==
-X-Gm-Message-State: AOJu0YyZcH72Am2Wm3B54N3yvZO0In0e2cQiaAr5GkQsJhXwOZ9kzcDR
-        e1jsmfq1wXy5VeWCf8w+bDW4+UmYeiH2aqlCG0c=
-X-Google-Smtp-Source: AGHT+IEaY2Yf4jvH8XVVUz0xhr3RUVnk5NEk7IF1fZvHezTCJfsFmn71Qp6kAytD9i89wqEAY5X70wkXV3Hikk9VCcg=
-X-Received: by 2002:a5b:1c8:0:b0:d9a:54c2:1b92 with SMTP id
- f8-20020a5b01c8000000b00d9a54c21b92mr3827731ybp.14.1697001966675; Tue, 10 Oct
- 2023 22:26:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697002013; x=1697606813;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P7LIxd8tmkXQNk22je5bQbirCOvsUYcJoh2rUfnuEyM=;
+        b=EpXRl/TwhbRDqa9TvtAIspGDdl92zIERrspAAhdofC4h4oDXWiBomqpUdR+aNiH5fL
+         b/RFZ0tqowEXj/ZbXchWCWsbVkS49B5Y5AxZ6fDxMw9KElANC79eEoKO/f42pzdbaX1U
+         Tmx9lV2e+9N5lFOdpp4rvunbfS9XDR9lJOUJnrTyzta2ad1IXq7eVEytoDTrmAKAdF1U
+         OsrXdsK667TF0+Uq0JhK3g2gtlqW524briOaInwDiexWrny+J42tzWyGE066jfjPzBJQ
+         2kxsjID43SFpwW9Lqrq2N4SCiTfTSTTIfbQ/WG9JeJ17TBn1nwgazz2xsCVqpXCXsPqK
+         3SbQ==
+X-Gm-Message-State: AOJu0YxKjmyQeoOBx05UzXwXYFIjFZx7UopQdPf9vX4xHJN8E/OWKetq
+        5v3i5RDkr33bI7/aTNZv4I2zUg==
+X-Google-Smtp-Source: AGHT+IGXl0KjS9+SAfUKmvWeye1q9gQWzqsLucPuTz9SB8LNxhW1XcdCkb0em1aBE5w3kqKPDNgKbA==
+X-Received: by 2002:a17:902:db06:b0:1c4:2ca5:8b7c with SMTP id m6-20020a170902db0600b001c42ca58b7cmr19815364plx.61.1697002012779;
+        Tue, 10 Oct 2023 22:26:52 -0700 (PDT)
+Received: from localhost ([122.172.81.92])
+        by smtp.gmail.com with ESMTPSA id f12-20020a170902ab8c00b001c444106bcasm12840463plr.46.2023.10.10.22.26.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 22:26:52 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 10:56:50 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Bryan Brattlof <bb@ti.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Vibhore Vardhan <vibhore@ti.com>, Dhruva Gole <d-gole@ti.com>,
+        ARM Power Management <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] cpufreq: ti-cpufreq: Enable AM62P5 CPUFreq
+Message-ID: <20231011052650.vxxfeqeozrwleuim@vireshk-i7>
+References: <20231010175524.558577-4-bb@ti.com>
 MIME-Version: 1.0
-References: <20231008075221.61863-1-hayatake396@gmail.com> <20231010123235.4a6498da@kernel.org>
- <CADFiAcKF08osdvd4EiXSR1YJ22TXrMu3b7ujkMTwAsEE8jzgOw@mail.gmail.com> <20231010191019.12fb7071@kernel.org>
-In-Reply-To: <20231010191019.12fb7071@kernel.org>
-From:   takeru hayasaka <hayatake396@gmail.com>
-Date:   Wed, 11 Oct 2023 14:25:55 +0900
-Message-ID: <CADFiAcL-kAzpJJ+KAkvw2tH8H0-21kyOusPSPybcmkf3CM7w9g@mail.gmail.com>
-Subject: Re: [PATCH net-next] ethtool: ice: Support for RSS settings to GTP
- from ethtool
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231010175524.558577-4-bb@ti.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for teaching me so much!
+On 10-10-23, 12:55, Bryan Brattlof wrote:
+> Hello everyone!
+> 
+> This short series adds the am62p5 compatible to ti-cpufreq and
+> cpufreq-dt-platdev for the new am62p family of TI SoCs. It uses the same
+> A53s and efuse configuration as the rest of the am62xxx extended family
+> so we're just using the same am625 data structure for the am62p5.
+> 
+> Thanks for reviewing
+> ~Bryan
+> 
+> Bryan Brattlof (2):
+>   cpufreq: dt-platdev: add am62p5 to blocklist
+>   cpufreq: ti-cpufreq: Add opp support for am62p5 SoCs
+> 
+>  drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
+>  drivers/cpufreq/ti-cpufreq.c         | 1 +
+>  2 files changed, 2 insertions(+)
 
-> > Sorry! My email was blocked because it wasn't sent in plain text mode.
-> > I've made the necessary changes and will resend it.
-I got it. I'll do it like that :)
-Please let me know if I'm using it incorrectly.
+Applied. Thanks.
 
-> Makes sense, thanks for the extra information. I think it would be
-> worth adding all of this to the commit message!
-
-of course:)
-I got it. I will add this background information when I issue a patch
-for the next version.
-
-> Regarding the patch - you are only adding flow types, not a new field
-> (which are defined as RXH_*). If we want to hash on an extra field,
-> I think we need to specify that field as well?
-
-I've been really struggling with this...
-When I read the Intel ICE documentation, it suggests that in RSS, TEID
-can be an additional input.
-However, I couldn't think of a reason not to include TEID when
-enabling RSS for GTP cases.
-
-https://www.intel.com/content/www/us/en/content-details/617015/intel-ethern=
-et-controller-e810-dynamic-device-personalization-ddp-technology-guide.html
-(cf. Table 8. Patterns and Input Sets for iavf RSS)
-
-However, for Flow Director, it's clear that you'd want to include the
-TEID field. But since I found that someone from Intel has already
-configured it to use TEID with Flow Director, I thought maybe we don't
-need to add the TEID parameter for now.
-
-https://patchwork.ozlabs.org/project/intel-wired-lan/cover/20210126065206.1=
-37422-1-haiyue.wang@intel.com/
-
-If we want to include something other than TEID (e.g., QFI) in Flow
-Director, I think it would be better to prepare a new field.
-
-2023=E5=B9=B410=E6=9C=8811=E6=97=A5(=E6=B0=B4) 11:10 Jakub Kicinski <kuba@k=
-ernel.org>:
->
-> On Wed, 11 Oct 2023 10:56:17 +0900 takeru hayasaka wrote:
-> > GTP generates a flow that includes an ID called TEID to identify the
-> > tunnel. This tunnel is created for each UE (User Equipment).
-> > By performing RSS based on this flow, it is possible to apply RSS for
-> > each communication unit from the UE.
-> > Without this, RSS would only be effective within the range of IP addres=
-ses.
-> > For instance, the PGW can only perform RSS within the IP range of the S=
-GW.
-> > What I'm trying to say is that RSS based solely on IP addresses can be
-> > problematic from a load distribution perspective, especially if
-> > there's a bias in the terminals connected to a particular base
-> > station.
-> > As a reference that discusses a similar topic, please see the link
-> > below(is not RSS, is TEID Flow):
-> > https://docs.nvidia.com/networking-ethernet-software/cumulus-linux-56/L=
-ayer-3/Routing/Equal-Cost-Multipath-Load-Sharing/#gtp-hashing
->
-> Makes sense, thanks for the extra information. I think it would be
-> worth adding all of this to the commit message!
->
-> Regarding the patch - you are only adding flow types, not a new field
-> (which are defined as RXH_*). If we want to hash on an extra field,
-> I think we need to specify that field as well?
->
-> > Thank you for your understanding.
-> > ---
-> > Sorry! My email was blocked because it wasn't sent in plain text mode.
-> > I've made the necessary changes and will resend it.
->
-> No worries! Additional request - in the future please prefer the
-> bottom-posting or interleaved style of replies:
-> https://en.wikipedia.org/wiki/Posting_style#Interleaved_style
+-- 
+viresh
