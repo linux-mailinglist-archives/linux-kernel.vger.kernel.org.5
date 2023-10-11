@@ -2,115 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8EE7C50AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EF97C50B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346404AbjJKK7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58968 "EHLO
+        id S1346544AbjJKK7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:59:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346641AbjJKK7G (ORCPT
+        with ESMTP id S1346550AbjJKK7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:59:06 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE3A92;
-        Wed, 11 Oct 2023 03:59:04 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 66B07FF80A;
-        Wed, 11 Oct 2023 10:59:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697021943;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NgoGY8ul0lSIdXFoxr+/I0RYC9e4Hx1h3Y0uNGEGlrU=;
-        b=OeIQh85t+T0KKgIbElD8x57btZYA7ztF4sNusvphfF19MQzs9moZpFj6lNBVF29Ext5FmO
-        3No3s6AwC51TU9yeP6Svoi3KgE5qeZ/pvajCRyHUns3cHo+Erol7iGkKiCWau/pRBYPI7o
-        NpVql/WHDm3Q5UK7guhJwdghkC3k+4QisqDz+6nBO9i3k8ljYoryE2G5q/XivrNBZ3qOFF
-        +6skM/G2BtnhtOsmtngqovmp4PsdvWASrMD9SiWx0UUkHTopVneVnMq/4jqYct9mCoqOza
-        96vgxGMre3hQeMhmQcEIeuEs1abh3xAznpI0xs/Va0OeezAIkSUuXNNwAUumUA==
-Date:   Wed, 11 Oct 2023 12:58:59 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Walle <michael@walle.cc>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Marko <robert.marko@sartura.hr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>
-Subject: Re: [PATCH v12 5/7] nvmem: core: Rework layouts to become regular
- devices
-Message-ID: <20231011125859.1647c08c@xps-13>
-In-Reply-To: <04112100-026c-b010-6e8c-730049d43e47@linaro.org>
-References: <20231005155907.2701706-1-miquel.raynal@bootlin.com>
-        <20231005155907.2701706-6-miquel.raynal@bootlin.com>
-        <dc96ddb1-502c-e643-7749-d057d1fc6490@linaro.org>
-        <20231011093843.49831a75@xps-13>
-        <04112100-026c-b010-6e8c-730049d43e47@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Wed, 11 Oct 2023 06:59:22 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D8792;
+        Wed, 11 Oct 2023 03:59:20 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S58p76fjtz67f4J;
+        Wed, 11 Oct 2023 18:56:15 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
+ 2023 11:59:18 +0100
+Date:   Wed, 11 Oct 2023 11:59:17 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     <linux-pci@vger.kernel.org>,
+        Ilpo =?UTF-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Nirmoy Das" <nirmoy.das@amd.com>
+Subject: Re: [PATCH 02/10] PCI: Use FIELD_GET() in Sapphire RX 5600 XT Pulse
+ quirk
+Message-ID: <20231011115917.00001811@Huawei.com>
+In-Reply-To: <20231010204436.1000644-3-helgaas@kernel.org>
+References: <20231010204436.1000644-1-helgaas@kernel.org>
+        <20231010204436.1000644-3-helgaas@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas,
+On Tue, 10 Oct 2023 15:44:28 -0500
+Bjorn Helgaas <helgaas@kernel.org> wrote:
 
-> > you don't have access to your modules. And anyway it's probably a bad
-> > idea to allow endless probe deferrals on your main storage device.
-> >=20
-> > If the cells are not available at that time, it's not a huge deal? The
-> > consumers will have to wait a bit more (or take any other action, this
-> > is device dependent). =20
->=20
-> In this case the nvmem consumers will get an -ENOENT error, which is very=
- confusing TBH.
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> Use FIELD_GET() to remove dependences on the field position, i.e., the
+> shift value.  No functional change intended.
+> 
+> Separate because this isn't as trivial as the other FIELD_GET() changes.
+> 
+> See 907830b0fc9e ("PCI: Add a REBAR size quirk for Sapphire RX 5600 XT
+> Pulse")
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Nirmoy Das <nirmoy.das@amd.com>
 
-Maybe we can solve that situation like that (based on my current
-series):
+Change would be a tiny bit more obvious without the early return, but I can see
+why you think that is an improvement over relying on the return just below.
 
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -1448,7 +1448,10 @@ struct nvmem_cell *of_nvmem_cell_get(struct device_n=
-ode *np, const char *id)
-        of_node_put(cell_np);
-        if (!cell_entry) {
-                __nvmem_device_put(nvmem);
--               return ERR_PTR(-ENOENT);
-+               if (nvmem->layout)
-+                       return ERR_PTR(-EAGAIN);
-+               else
-+                       return ERR_PTR(-ENOENT);
-        }
-=20
-        cell =3D nvmem_create_cell(cell_entry, id, cell_index);
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
+> ---
+>  drivers/pci/pci.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 848c9ee65d7f..5dc6e7cdfb71 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -3751,14 +3751,14 @@ u32 pci_rebar_get_possible_sizes(struct pci_dev *pdev, int bar)
+>  		return 0;
+>  
+>  	pci_read_config_dword(pdev, pos + PCI_REBAR_CAP, &cap);
+> -	cap &= PCI_REBAR_CAP_SIZES;
+> +	cap = FIELD_GET(PCI_REBAR_CAP_SIZES, cap);
+>  
+>  	/* Sapphire RX 5600 XT Pulse has an invalid cap dword for BAR 0 */
+>  	if (pdev->vendor == PCI_VENDOR_ID_ATI && pdev->device == 0x731f &&
+> -	    bar == 0 && cap == 0x7000)
+> -		cap = 0x3f000;
+> +	    bar == 0 && cap == 0x700)
+> +		return 0x3f00;
+>  
+> -	return cap >> 4;
+> +	return cap;
+>  }
+>  EXPORT_SYMBOL(pci_rebar_get_possible_sizes);
+>  
 
-So this way when a (DT) consumer requests a cell:
-- the cell is ready and it gets it
-- the cell is not ready and...
-   - the cell comes from a layout -> we return EAGAIN, which
-     means the cell is not yet ready and this must be retried later
-     (the caller may return EPROBE_DEFER in this case).
-   - the cell is simply missing/not existing/not available, this is a
-     real error.
-
-What do you think?
-
-Thanks,
-Miqu=C3=A8l
