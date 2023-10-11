@@ -2,205 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7567C529F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C723A7C52A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232023AbjJKL4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:56:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
+        id S1345956AbjJKL6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbjJKL4m (ORCPT
+        with ESMTP id S230138AbjJKL6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:56:42 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B9EF93;
-        Wed, 11 Oct 2023 04:56:39 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39B8XXaR025256;
-        Wed, 11 Oct 2023 11:56:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=yWDYgFmR3DLE3mMSw9m4g0WmA/jghMlKyUvasAzQv5Y=;
- b=DlaG+xwpNJQFvmVHQvRcB642pvbeJtCyliiGr+V4JJuEHq5cEk6UaLM2j8OLCxw7l+yF
- cocAif6EIJKV2XVlfUchYUXYcGpSNR9ibtQo02MbR5Ap0vViFQryHD3uSfqJ0buQzEBq
- +hC0RApBnvfJzAYHvmYNxkaYl1l3dj2ajUWhaHFYonssAXmUhfozz6YXs/746Ve6Opi3
- V6oZlVSXsEhfJ6oOCIKdQ0VRdM//pv9fX1SUopFYkWBfn7dUGi02MpIekhCKKbJCUINS
- r+5O2gl4SAhf8CAnw2oNisQDqn4nkJMt9rPPpp40eB3bw+FM8neyZO+rYrFqkBd+wg7q qA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnnvw8rrb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 11:56:24 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39BBu4IR032535
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 11:56:04 GMT
-Received: from [10.216.52.55] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 11 Oct
- 2023 04:55:56 -0700
-Message-ID: <6531b333-b978-6b97-5cb4-59562d775ac3@quicinc.com>
-Date:   Wed, 11 Oct 2023 17:25:53 +0530
+        Wed, 11 Oct 2023 07:58:14 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B88938F;
+        Wed, 11 Oct 2023 04:58:11 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S5B7D4JYxz6K5xf;
+        Wed, 11 Oct 2023 19:56:08 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
+ 2023 12:58:08 +0100
+Date:   Wed, 11 Oct 2023 12:58:07 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Konstantin Aladyshev <aladyshev22@gmail.com>
+CC:     <minyard@acm.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <avifishman70@gmail.com>, <tmaimon77@gmail.com>,
+        <tali.perry1@gmail.com>, <venture@google.com>, <yuenn@google.com>,
+        <benjaminfair@google.com>, <jk@codeconstruct.com.au>,
+        <matt@codeconstruct.com.au>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <openipmi-developer@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>,
+        <netdev@vger.kernel.org>
+Subject: Re: [PATCH v5 3/3] mctp: Add MCTP-over-KCS transport binding
+Message-ID: <20231011125807.00004db0@Huawei.com>
+In-Reply-To: <20231010122321.823-4-aladyshev22@gmail.com>
+References: <20231010122321.823-1-aladyshev22@gmail.com>
+        <20231010122321.823-4-aladyshev22@gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 2/4] phy: qcom-qmp-pcie: add endpoint support for
- sa8775p
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mani@kernel.org>,
-        <quic_shazhuss@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_nayiluri@quicinc.com>,
-        <robh@kernel.org>, <quic_krichai@quicinc.com>,
-        <quic_vbadigan@quicinc.com>, <quic_parass@quicinc.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
-        <linux-phy@lists.infradead.org>
-References: <1697023109-23671-1-git-send-email-quic_msarkar@quicinc.com>
- <1697023109-23671-3-git-send-email-quic_msarkar@quicinc.com>
- <CAA8EJpoLxeSvxjcyq1BMR9XuAffrxLmO-eaBYJ+Fhnb4zYmxUQ@mail.gmail.com>
-From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
-In-Reply-To: <CAA8EJpoLxeSvxjcyq1BMR9XuAffrxLmO-eaBYJ+Fhnb4zYmxUQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ZEzDn50P4KEQEOAKHA4Ysiu6xzJT-5a3
-X-Proofpoint-GUID: ZEzDn50P4KEQEOAKHA4Ysiu6xzJT-5a3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_09,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- impostorscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 phishscore=0
- clxscore=1015 spamscore=0 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310110105
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 10 Oct 2023 15:23:21 +0300
+Konstantin Aladyshev <aladyshev22@gmail.com> wrote:
 
-On 10/11/2023 5:06 PM, Dmitry Baryshkov wrote:
-> On Wed, 11 Oct 2023 at 14:19, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
->> Add support for dual lane end point mode PHY found on sa8755p platform.
->>
->> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
->> ---
->>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c   | 41 ++++++++++++++++++++++++++++++
->>   drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h |  2 ++
->>   2 files changed, 43 insertions(+)
-> Two minor questions.
->
->> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> index a63ca74..962b4a1 100644
->> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> @@ -2147,6 +2147,38 @@ static const struct qmp_phy_init_tbl sa8775p_qmp_gen4x4_pcie_rc_serdes_alt_tbl[]
->>          QMP_PHY_INIT_CFG(QSERDES_V5_COM_CLK_SELECT, 0x34),
->>   };
->>
->> +static const struct qmp_phy_init_tbl sa8775p_qmp_gen4x2_pcie_ep_serdes_alt_tbl[] = {
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_BG_TIMER, 0x02),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_SYS_CLK_CTRL, 0x07),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_CP_CTRL_MODE0, 0x27),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_CP_CTRL_MODE1, 0x0a),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_PLL_RCTRL_MODE0, 0x17),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_PLL_RCTRL_MODE1, 0x19),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_PLL_CCTRL_MODE0, 0x00),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_PLL_CCTRL_MODE1, 0x03),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_SYSCLK_EN_SEL, 0x00),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_INTEGLOOP_GAIN0_MODE0, 0xfb),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_INTEGLOOP_GAIN1_MODE0, 0x01),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_INTEGLOOP_GAIN0_MODE1, 0xfb),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_INTEGLOOP_GAIN1_MODE1, 0x01),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_CMN_MODE, 0x14),
-> I should check whether we miss QSERDES_V5_COM_CMN_MODE in
-> sm8450_qmp_gen4x2_pcie_ep_serdes_tbl, which is otherwise nearly
-> identical.
-> Also do you need to set QSERDES_V5_COM_CORE_CLK_EN here?
-QSERDES_V5_COM_CORE_CLK_EN is common for both RC and EP
-so we are using it in sa8775p_qmp_gen4x2_pcie_serdes_alt_tbl
+> This change adds a MCTP KCS transport binding, as defined by the DMTF
+> specification DSP0254 - "MCTP KCS Transport Binding".
+> A MCTP protocol network device is created for each KCS channel found in
+> the system.
+> The interrupt code for the KCS state machine is based on the current
+> IPMI KCS driver.
+> 
+> Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
 
--Mrinmay
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_LOCK_CMP1_MODE0, 0xff),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_LOCK_CMP2_MODE0, 0x04),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_LOCK_CMP1_MODE1, 0xff),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_LOCK_CMP2_MODE1, 0x09),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_DEC_START_MODE0, 0x19),
->> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_DEC_START_MODE1, 0x28),
->> +};
->> +
->> +static const struct qmp_phy_init_tbl sa8775p_qmp_gen4_pcie_ep_pcs_misc_tbl[] = {
->> +       QMP_PHY_INIT_CFG(QPHY_V5_20_PCS_PCIE_OSC_DTCT_MODE2_CONFIG5, 0x08),
->> +};
-> This is the same as sm8450_qmp_gen4x2_pcie_ep_pcs_misc_tbl
+Hi Konstantin.
 
-so you want me to use sm8450_qmp_gen4x2_pcie_ep_pcs_misc_tbl
-instead of creating new one for sa8775?
+Many of the comments I have inline will be more about general KCS issues
+that need sorting out.  Whether this can move forwards before that
+(or whether to take any noticed of this) is a question for relevant
+maintainers.
 
--Mrinmay
+BTW it's fine to propose fixes /cleanup to a subsystem alongside a new driver
+if you do fancy taking on some of the issues with managed allocations etc called out.
 
->> +
->> +static const struct qmp_phy_init_tbl sa8775p_qmp_gen4x2_pcie_ep_pcs_alt_tbl[] = {
->> +       QMP_PHY_INIT_CFG(QPHY_V5_PCS_INSIG_MX_CTRL7, 0x00),
->> +       QMP_PHY_INIT_CFG(QPHY_V5_PCS_INSIG_SW_CTRL7, 0x00),
->> +};
-> Could you please confirm that these registers belong to the V5
-> namespace rather than V5_20 one?
-may I know difference between V5 and V5_20 namespace
-can't we use V5 namespace here?
+Jonathan
 
--Mrinmay
->> +
->>   struct qmp_pcie_offsets {
->>          u16 serdes;
->>          u16 pcs;
->> @@ -3043,6 +3075,15 @@ static const struct qmp_phy_cfg sa8775p_qmp_gen4x2_pciephy_cfg = {
->>                  .pcs_misc_num   = ARRAY_SIZE(sa8775p_qmp_gen4_pcie_rc_pcs_misc_tbl),
->>          },
->>
->> +       .tbls_ep = &(const struct qmp_phy_cfg_tbls) {
->> +               .serdes         = sa8775p_qmp_gen4x2_pcie_ep_serdes_alt_tbl,
->> +               .serdes_num     = ARRAY_SIZE(sa8775p_qmp_gen4x2_pcie_ep_serdes_alt_tbl),
->> +               .pcs_misc       = sa8775p_qmp_gen4_pcie_ep_pcs_misc_tbl,
->> +               .pcs_misc_num   = ARRAY_SIZE(sa8775p_qmp_gen4_pcie_ep_pcs_misc_tbl),
->> +               .pcs            = sa8775p_qmp_gen4x2_pcie_ep_pcs_alt_tbl,
->> +               .pcs_num        = ARRAY_SIZE(sa8775p_qmp_gen4x2_pcie_ep_pcs_alt_tbl),
->> +       },
->> +
->>          .reset_list             = sdm845_pciephy_reset_l,
->>          .num_resets             = ARRAY_SIZE(sdm845_pciephy_reset_l),
->>          .vreg_list              = qmp_phy_vreg_l,
->> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h
->> index 36cc80b..6ee1c33 100644
->> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h
->> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h
->> @@ -11,6 +11,8 @@
->>   #define QPHY_V5_PCS_PCS_STATUS1                                0x014
->>   #define QPHY_V5_PCS_POWER_DOWN_CONTROL                 0x040
->>   #define QPHY_V5_PCS_START_CONTROL                      0x044
->> +#define QPHY_V5_PCS_INSIG_SW_CTRL7                     0x060
->> +#define QPHY_V5_PCS_INSIG_MX_CTRL7                     0x07c
->>   #define QPHY_V5_PCS_LOCK_DETECT_CONFIG1                        0x0c4
->>   #define QPHY_V5_PCS_LOCK_DETECT_CONFIG2                        0x0c8
->>   #define QPHY_V5_PCS_LOCK_DETECT_CONFIG3                        0x0cc
->> --
->> 2.7.4
->>
->
+
+> diff --git a/drivers/net/mctp/mctp-kcs.c b/drivers/net/mctp/mctp-kcs.c
+> new file mode 100644
+> index 000000000000..b0d903609c64
+> --- /dev/null
+> +++ b/drivers/net/mctp/mctp-kcs.c
+> @@ -0,0 +1,600 @@
+
+
+...
+
+> +
+> +static DEFINE_SPINLOCK(kcs_bmc_mctp_instances_lock);
+> +static LIST_HEAD(kcs_bmc_mctp_instances);
+> +
+> +static int kcs_bmc_mctp_add_device(struct kcs_bmc_device *kcs_bmc)
+> +{
+> +	struct net_device *ndev;
+> +	struct mctp_kcs *mkcs;
+> +	char name[32];
+> +	int rc;
+> +
+> +	snprintf(name, sizeof(name), "mctpkcs%d", kcs_bmc->channel);
+> +
+> +	ndev = alloc_netdev(sizeof(*mkcs), name, NET_NAME_ENUM, mctp_kcs_setup);
+> +	if (!ndev) {
+> +		dev_err_probe(kcs_bmc->dev, -ENOMEM,
+> +			      "alloc_netdev failed for KCS channel %d\n",
+> +			      kcs_bmc->channel);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	mkcs = netdev_priv(ndev);
+> +	mkcs->netdev = ndev;
+> +	mkcs->client.dev = kcs_bmc;
+> +	mkcs->client.ops = &kcs_bmc_mctp_client_ops;
+> +	mkcs->data_in = devm_kmalloc(kcs_bmc->dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
+> +	if (!mkcs->data_in) {
+> +		dev_err_probe(
+> +			kcs_bmc->dev, -ENOMEM,
+> +			"failed to allocate data_in buffer for KCS channel %d\n",
+> +			kcs_bmc->channel);
+> +		rc = -ENOMEM;
+> +		goto free_netdev;
+> +	}
+> +	mkcs->data_out = devm_kmalloc(kcs_bmc->dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
+> +	if (!mkcs->data_out) {
+> +		dev_err_probe(
+> +			kcs_bmc->dev, -ENOMEM,
+> +			"failed to allocate data_out buffer for KCS channel %d\n",
+> +			kcs_bmc->channel);
+> +		rc = -ENOMEM;
+> +		goto free_netdev;
+> +	}
+> +
+> +	INIT_WORK(&mkcs->rx_work, mctp_kcs_rx_work);
+> +
+> +	rc = register_netdev(ndev);
+> +	if (rc)
+> +		goto free_netdev;
+> +
+> +	spin_lock_irq(&kcs_bmc_mctp_instances_lock);
+> +	list_add(&mkcs->entry, &kcs_bmc_mctp_instances);
+> +	spin_unlock_irq(&kcs_bmc_mctp_instances_lock);
+> +
+> +	dev_info(kcs_bmc->dev, "Add MCTP client for the KCS channel %d",
+> +		 kcs_bmc->channel);
+> +	return 0;
+> +
+> +free_netdev:
+> +	free_netdev(ndev);
+
+Mixing devm and non devm is something you should not do. 
+Very simple rule that must be kept to is that you stop using devm for
+any calls in an add_device / probe() function at the first line that needs
+manual cleanup.
+
+Use devm_add_action_or_reset() for this case as you can add a custom
+callback to the devm managed queue.
+
+The reason this all matters is that devm cleanup happens after error paths
+/ remove_device() callbacks and as such it makes a reviewer have to reason
+about whether there are any dependencies that are a result of the reordering.
+Tearing down in exact reverse order of setup is a lot easier to do!
+
+
+> +
+> +	return rc;
+> +}
+> +
+> +static int kcs_bmc_mctp_remove_device(struct kcs_bmc_device *kcs_bmc)
+> +{
+> +	struct mctp_kcs *mkcs = NULL, *pos;
+> +
+> +	dev_info(kcs_bmc->dev, "Remove MCTP client for the KCS channel %d",
+> +		 kcs_bmc->channel);
+> +	spin_lock_irq(&kcs_bmc_mctp_instances_lock);
+> +	list_for_each_entry(pos, &kcs_bmc_mctp_instances, entry) {
+
+I've commented on this before, but this lookup should not be necessary.
+It should be possible to go directly from kcs_bmc entry as registered
+to the mctp_kcs structure.  Typical approach being to embed the structure
+or using some drvdata type field that add has filled in with appropriate
+pointer.
+
+There is a need for the kcs subsystem to manage which devices it
+calls this on.  Currently this also serves the purpose of filtering
+for that.  If not going to do management at subsystem layer (some smaller
+subsystems don't) then use an enum to add a type to kcs_bmc
+and have each driver add a new one.  You can check that in driver
+or in core code. Doesn't matter which as check will be trivial.
+
+
+> +		if (pos->client.dev == kcs_bmc) {
+> +			mkcs = pos;
+> +			list_del(&pos->entry);
+> +			break;
+> +		}
+> +	}
+> +	spin_unlock_irq(&kcs_bmc_mctp_instances_lock);
+> +
+> +	if (!mkcs)
+> +		return -ENODEV;
+> +
+> +	unregister_netdev(mkcs->netdev);
+> +	free_netdev(mkcs->netdev);
+> +	kcs_bmc_disable_device(kcs_bmc, &mkcs->client);
+> +	devm_kfree(kcs_bmc->dev, mkcs->data_out);
+> +	devm_kfree(kcs_bmc->dev, mkcs->data_in);
+
+I don't like mixture of letting devm delete these on remove and
+it being done manually here.
+
+Note that if you just didn't have these two calls, they'd be deleted soon
+after this exit anyway.
+
+If devm is any use when combined with kcs, these will be freed shortly after
+this anyway. If it isn't of use with this subsystem then then they won't
+do the right thing in the add_device callback error cases.
+
+I'd test if it does anything at all via each path where we'd expect it to
+(driver unbind, device removal, error in add_device callback)
+
+In all those cases the devm unwinding callbacks should be called. 
+(add a bonus one for testing with devm_add_action_or_reset() and
+see if that one is called in each path).
+
+I'm very suspicious of this working as not setting the normal calls
+to make it happen.
+e.g. for I2c, it happens here:
+https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-core-base.c#L597
+for the error path with a call to devres_release_group()
+in other subsystems it's handled by the bus_type logic which ultimately
+calls device_unbind_cleanup() in probe() failure.  That calls
+devres_release_all() triggering the tear down paths.
+
+However I might be missing a route by which the cleanup happens.
+
+Anyhow, if that is fixed, these devm cleanup calls in remove_device()
+should not be here.  The whole point of devm is to simplify this - if
+you manually have to unwind it the advantages go away and you should
+manage things explicitly.
+
+
+
+> +	return 0;
+> +}
+> +
+> +static const struct kcs_bmc_driver_ops kcs_bmc_mctp_driver_ops = {
+> +	.add_device = kcs_bmc_mctp_add_device,
+> +	.remove_device = kcs_bmc_mctp_remove_device,
+> +};
+> +
+> +static struct kcs_bmc_driver kcs_bmc_mctp_driver = {
+> +	.ops = &kcs_bmc_mctp_driver_ops,
+> +};
+> +
+> +static int __init mctp_kcs_init(void)
+> +{
+> +	kcs_bmc_register_driver(&kcs_bmc_mctp_driver);
+> +	return 0;
+> +}
+> +
+> +static void __exit mctp_kcs_exit(void)
+> +{
+> +	kcs_bmc_unregister_driver(&kcs_bmc_mctp_driver);
+> +}
+> +
+> +module_init(mctp_kcs_init);
+> +module_exit(mctp_kcs_exit);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Konstantin Aladyshev <aladyshev22@gmail.com>");
+> +MODULE_DESCRIPTION("MCTP KCS transport");
+
