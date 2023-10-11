@@ -2,159 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D187C4AF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7857C4AF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345869AbjJKGtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 02:49:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34780 "EHLO
+        id S1345573AbjJKGsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 02:48:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345613AbjJKGtG (ORCPT
+        with ESMTP id S1345289AbjJKGsu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 02:49:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 142F99B
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697006945; x=1728542945;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=hlyGqO4XGzUN88csFWRMFotKs6jChLeK0gfu/Wwm6PI=;
-  b=czXgptSSbGrVONnVmImEoG7X55S0vz/KskBtEFaBkAwBXvzU2zh1cB4w
-   p7JC+LUWDUm4+/NjwRpJRjzCs+L+e4EmsaXv0tX4yF2n4x0ayIWC08EoY
-   2E9kCdsHOYwe7AhpTkA0ZcGHJ68z9PCQ1JMNOU8POqE+28vNNALp733zL
-   6Z9AwluCbOUp8RxolWHaaP1P6CYLv/DiqxCHxIVPptOJ0iTqiB3Tn1XsR
-   KkuYQYBnbE1iEmyj/mYgVfYrnKyGCpZ+kiEGtEgCFGrh6cQG6c3CQkHMX
-   WNjK84i/0XE0UMdemqs9zcojJUE2XcqpqbBXapVgV3X+8fONcIPXdYWIe
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="470856929"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="470856929"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 23:49:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="877553708"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="877553708"
-Received: from bmatwiej-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.17.119])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 23:48:59 -0700
-From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <jamie@nuviainc.com>
-Cc:     kernel test robot <lkp@intel.com>, Borislav Petkov <bp@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/resctrl: Fix remaining kernel-doc warnings
-Date:   Wed, 11 Oct 2023 08:48:42 +0200
-Message-ID: <20231011064843.246592-1-maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 11 Oct 2023 02:48:50 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE33E9B;
+        Tue, 10 Oct 2023 23:48:48 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40684f53ef3so63672445e9.3;
+        Tue, 10 Oct 2023 23:48:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697006927; x=1697611727; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cqFmO2+2FrIdfi4i9ENoBkFxqNjBz5nx6bXommNjl7M=;
+        b=WTIY1QcAru8MNHbnGWU0hxC8cp3yPJuL8Ofb4qg5g42ot6nvQYpumJFII/yNxNHmYS
+         G/RNLIyGd/8yTTP0gJOMWOZer8IQAwFiAWzB8QXm/hZE7bYGOs5r2XZYLDvtXEKCUQ+u
+         20m0xZIiXNB/LxwMIoxOVU9sJ4aalzq+2adXXVDLUXL1mM2gA3erZPAguOfrC/bAnD6d
+         akLzlkK/mj/ETt/RZCYnKnhsZihELxz09WH+f2y3aKx7DyaFb6MdpLJEezmR8drCgw/R
+         BvLy8TNz3NEQq299wX3gdtMiQIbeh3xaLxQpL/L4I/jb7hNSMj7t764WrH5M2Se+7N/l
+         6Kyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697006927; x=1697611727;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cqFmO2+2FrIdfi4i9ENoBkFxqNjBz5nx6bXommNjl7M=;
+        b=IhC3cRkVYtHK6vbHrtNb5TGldQeupB2QmpFOw1QhFaXWYfLBWIGRqta000zj/JuZdJ
+         IS6lNBwZd0T3acndJ95MND/7qVdihWinrWHPuob0EUbdXiKS3eMeSswU5OpOiW7Lm/hB
+         wCqmQQlGs+xnBSQ0fprCYqjliClEGKgHAx4kFvuexkWN9OxO/7iSGx3OEVm/3qECL7hD
+         Zmg/0fJg6TWmTLD2QToIOou9KP0Bw6I86LJHpTeixA0kCvsMtsmgRfxNfPN8szvZeARD
+         NB2ekRq411GS09xHHj3q4OVbGjgsNGCOqDaFjn6DGXm1LJJPn5Dsj6BO0KNx/WxQJLvW
+         0ssw==
+X-Gm-Message-State: AOJu0Ywfjncrb06+g+FdiPHB2AdrPM6BqH3skrOnD19eW3m2/DCZ9iqH
+        3jQjpCNQgvaGem2m3TSQSdU=
+X-Google-Smtp-Source: AGHT+IEG2ekD3+biT2AFwRrgndK5hGQ4Qsm39lkF0PjkgCFwVoSTvwH+6Oky4EqVlW4W9Ij9Zdc8YQ==
+X-Received: by 2002:a05:600c:2189:b0:405:7400:1e4c with SMTP id e9-20020a05600c218900b0040574001e4cmr17992312wme.35.1697006926909;
+        Tue, 10 Oct 2023 23:48:46 -0700 (PDT)
+Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.gmail.com with ESMTPSA id f12-20020a7bcd0c000000b003fefb94ccc9sm15755217wmj.11.2023.10.10.23.48.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 23:48:45 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 07:48:44 +0100
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] mm: abstract merge for new VMAs into
+ vma_merge_new_vma()
+Message-ID: <211daa6d-220a-4477-a357-bfe9e0678fc8@lucifer.local>
+References: <cover.1696884493.git.lstoakes@gmail.com>
+ <8525290591267805ffabf8a31b53f0290a6a4276.1696884493.git.lstoakes@gmail.com>
+ <20231011015140.arngzv47bdyyzfie@revolver>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231011015140.arngzv47bdyyzfie@revolver>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel test robot reported kernel-doc warnings here:
+On Tue, Oct 10, 2023 at 09:51:40PM -0400, Liam R. Howlett wrote:
+> * Lorenzo Stoakes <lstoakes@gmail.com> [231009 16:53]:
+> > Only in mmap_region() and copy_vma() do we attempt to merge VMAs which
+> > occupy entirely new regions of virtual memory.
+> >
+> > We can abstract this logic and make the intent of this invocations of it
+> > completely explicit, rather than invoking vma_merge() with an inscrutable
+> > wall of parameters.
+> >
+> > This also paves the way for a simplification of the core vma_merge()
+> > implementation, as we seek to make it entirely an implementation detail.
+> >
+> > Note that on mmap_region(), VMA fields are initialised to zero, so we can
+> > simply reference these rather than explicitly specifying NULL.
+>
+> I don't think that's accurate.. mmap_region() sets the start, end,
+> offset, flags.  It also passes this vma into a driver, so I'm not sure
+> we can rely on them being anything after that?  The whole reason
+> vma_merge() is attempted in this case is because the driver may have
+> changed vma->vm_flags on us.  Your way may actually be better since the
+> driver may set something we assume is NULL today.
 
-arch/x86/kernel/cpu/resctrl/rdtgroup.c:915: warning: Function parameter or member 'of' not described in 'rdt_bit_usage_show'
-arch/x86/kernel/cpu/resctrl/rdtgroup.c:915: warning: Function parameter or member 'seq' not described in 'rdt_bit_usage_show'
-arch/x86/kernel/cpu/resctrl/rdtgroup.c:915: warning: Function parameter or member 'v' not described in 'rdt_bit_usage_show'
-arch/x86/kernel/cpu/resctrl/rdtgroup.c:1144: warning: Function parameter or member 'type' not described in '__rdtgroup_cbm_overlaps'
-arch/x86/kernel/cpu/resctrl/rdtgroup.c:1224: warning: Function parameter or member 'rdtgrp' not described in 'rdtgroup_mode_test_exclusive'
-arch/x86/kernel/cpu/resctrl/rdtgroup.c:1261: warning: Function parameter or member 'of' not described in 'rdtgroup_mode_write'
-arch/x86/kernel/cpu/resctrl/rdtgroup.c:1261: warning: Function parameter or member 'buf' not described in 'rdtgroup_mode_write'
-arch/x86/kernel/cpu/resctrl/rdtgroup.c:1261: warning: Function parameter or member 'nbytes' not described in 'rdtgroup_mode_write'
-arch/x86/kernel/cpu/resctrl/rdtgroup.c:1261: warning: Function parameter or member 'off' not described in 'rdtgroup_mode_write'
-arch/x86/kernel/cpu/resctrl/rdtgroup.c:1370: warning: Function parameter or member 'of' not described in 'rdtgroup_size_show'
-arch/x86/kernel/cpu/resctrl/rdtgroup.c:1370: warning: Function parameter or member 's' not described in 'rdtgroup_size_show'
-arch/x86/kernel/cpu/resctrl/rdtgroup.c:1370: warning: Function parameter or member 'v' not described in 'rdtgroup_size_show'
+Yeah I think I wasn't clear here - I meant to say that we memset -> 0 so
+all fields that are not specified (e.g. not start, end, offset, flags).
 
-The first two functions are missing an argument description while the
-other three are file callbacks and don't require a kernel-doc comment.
+However you make a very good point re: the driver, which I hadn't thought
+of, also it's worth saying here that we specifically only do this for a
+file-backed mapping just for complete clarity.
 
-Fixes: e651901187ab ("x86/intel_rdt: Introduce "bit_usage" to display cache allocations details")
-Fixes: fa8f711d2f14 ("x86/resctrl: Pass configuration type to resctrl_arch_get_config()")
-Fixes: 49f7b4efa110 ("x86/intel_rdt: Enable setting of exclusive mode")
-Fixes: d9b48c86eb38 ("x86/intel_rdt: Display resource groups' allocations' size in bytes")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310070434.mD8eRNAz-lkp@intel.com/
-Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
----
-First three warnings originally reported by kernel test robot are not
-fixed here since they have already been addressed in [1] and merged
-into x86/urgent.
+I will add a note to this part of the v3 series asking Andrew to update the
+comment.
 
-[1] https://lore.kernel.org/all/20231006235132.16227-1-rdunlap@infradead.org/
+>
+> >
+> > Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> > Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> > ---
+> >  mm/mmap.c | 27 ++++++++++++++++++++-------
+> >  1 file changed, 20 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/mm/mmap.c b/mm/mmap.c
+> > index 17c0dcfb1527..33aafd23823b 100644
+> > --- a/mm/mmap.c
+> > +++ b/mm/mmap.c
+> > @@ -2482,6 +2482,22 @@ struct vm_area_struct *vma_modify(struct vma_iterator *vmi,
+> >  	return NULL;
+> >  }
+> >
+> > +/*
+> > + * Attempt to merge a newly mapped VMA with those adjacent to it. The caller
+> > + * must ensure that [start, end) does not overlap any existing VMA.
+> > + */
+> > +static struct vm_area_struct *vma_merge_new_vma(struct vma_iterator *vmi,
+> > +						struct vm_area_struct *prev,
+> > +						struct vm_area_struct *vma,
+> > +						unsigned long start,
+> > +						unsigned long end,
+> > +						pgoff_t pgoff)
+>
+> It's not a coding style, but if you used two tabs here, it may make this
+> more condensed.
 
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Checkpatch shouts at me about aligning to the paren, I obviously could just
+put "static struct vm_area_struct *" on the line before to make this a bit
+better though. If we go to a v4 will fix, otherwise I think probably ok to
+leave even if a bit squished for now?
 
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 725344048f85..a52cdf97c21c 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -895,7 +895,7 @@ static int rdt_shareable_bits_show(struct kernfs_open_file *of,
- 	return 0;
- }
- 
--/**
-+/*
-  * rdt_bit_usage_show - Display current usage of resources
-  *
-  * A domain is a shared resource that can now be allocated differently. Here
-@@ -1123,6 +1123,7 @@ static enum resctrl_conf_type resctrl_peer_type(enum resctrl_conf_type my_type)
-  * @d: The domain instance for which @closid is being tested.
-  * @cbm: Capacity bitmask being tested.
-  * @closid: Intended closid for @cbm.
-+ * @type: CDP type of @r.
-  * @exclusive: Only check if overlaps with exclusive resource groups
-  *
-  * Checks if provided @cbm intended to be used for @closid on domain
-@@ -1209,6 +1210,7 @@ bool rdtgroup_cbm_overlaps(struct resctrl_schema *s, struct rdt_domain *d,
- 
- /**
-  * rdtgroup_mode_test_exclusive - Test if this resource group can be exclusive
-+ * @rdtgrp: Resource group identified through its closid.
-  *
-  * An exclusive resource group implies that there should be no sharing of
-  * its allocated resources. At the time this group is considered to be
-@@ -1251,9 +1253,8 @@ static bool rdtgroup_mode_test_exclusive(struct rdtgroup *rdtgrp)
- 	return true;
- }
- 
--/**
-+/*
-  * rdtgroup_mode_write - Modify the resource group's mode
-- *
-  */
- static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
- 				   char *buf, size_t nbytes, loff_t off)
-@@ -1357,12 +1358,11 @@ unsigned int rdtgroup_cbm_to_size(struct rdt_resource *r,
- 	return size;
- }
- 
--/**
-+/*
-  * rdtgroup_size_show - Display size in bytes of allocated regions
-  *
-  * The "size" file mirrors the layout of the "schemata" file, printing the
-  * size in bytes of each region instead of the capacity bitmask.
-- *
-  */
- static int rdtgroup_size_show(struct kernfs_open_file *of,
- 			      struct seq_file *s, void *v)
--- 
-2.42.0
-
+>
+> > +{
+> > +	return vma_merge(vmi, vma->vm_mm, prev, start, end, vma->vm_flags,
+> > +			 vma->anon_vma, vma->vm_file, pgoff, vma_policy(vma),
+> > +			 vma->vm_userfaultfd_ctx, anon_vma_name(vma));
+> > +}
+> > +
+> >  /*
+> >   * do_vmi_align_munmap() - munmap the aligned region from @start to @end.
+> >   * @vmi: The vma iterator
+> > @@ -2837,10 +2853,9 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+> >  		 * vma again as we may succeed this time.
+> >  		 */
+> >  		if (unlikely(vm_flags != vma->vm_flags && prev)) {
+> > -			merge = vma_merge(&vmi, mm, prev, vma->vm_start,
+> > -				    vma->vm_end, vma->vm_flags, NULL,
+> > -				    vma->vm_file, vma->vm_pgoff, NULL,
+> > -				    NULL_VM_UFFD_CTX, NULL);
+> > +			merge = vma_merge_new_vma(&vmi, prev, vma,
+> > +						  vma->vm_start, vma->vm_end,
+> > +						  pgoff);
+>                                                    └ vma->vm_pgoff
+> >  			if (merge) {
+> >  				/*
+> >  				 * ->mmap() can change vma->vm_file and fput
+> > @@ -3382,9 +3397,7 @@ struct vm_area_struct *copy_vma(struct vm_area_struct **vmap,
+> >  	if (new_vma && new_vma->vm_start < addr + len)
+> >  		return NULL;	/* should never get here */
+> >
+> > -	new_vma = vma_merge(&vmi, mm, prev, addr, addr + len, vma->vm_flags,
+> > -			    vma->anon_vma, vma->vm_file, pgoff, vma_policy(vma),
+> > -			    vma->vm_userfaultfd_ctx, anon_vma_name(vma));
+> > +	new_vma = vma_merge_new_vma(&vmi, prev, vma, addr, addr + len, pgoff);
+> >  	if (new_vma) {
+> >  		/*
+> >  		 * Source vma may have been merged into new_vma
+> > --
+> > 2.42.0
+> >
