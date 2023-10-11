@@ -2,322 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 554227C55D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A7A7C55DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346931AbjJKNsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44424 "EHLO
+        id S1346727AbjJKNsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234885AbjJKNsF (ORCPT
+        with ESMTP id S231849AbjJKNsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:48:05 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE6393
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:48:03 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-532c81b9adbso11920301a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:48:03 -0700 (PDT)
+        Wed, 11 Oct 2023 09:48:39 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4022298
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:48:36 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c888b3a25aso45340975ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:48:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1697032082; x=1697636882; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LqbWCFMQM1sd5S/h6JDyxaKWAY7r73x3RtWoFSTeKQw=;
-        b=DtHbSLu/4AsBb/Ge+qFj4XDbK4sn4obpadSKkU7P55ypajIVYNmfwEs2xAOnoJDerE
-         DSseCuAO4+ieSDoJhqpTojgY+jNpsRPzBP6eEdecSMyuhHvHlsEGoZMuu+HTpaBxmkpb
-         feCKmAaCaNl+UMtYavQVT19PDUsFuNehj/K7S23d86PZESOXRIvwEHp92Hy9fgDR8/u+
-         0Up2Z98kDaGmV5ZQknVil9ZuD9oJqKbYK4CWfUSUzjCzWnuZSjV9FPjQb5p45JhGKBjP
-         ko3TFizrNP5Us6E51Sx9b1CzXsQkOtONKVNS+EQZxcnKiFVhskkk0bCgu66/zQUpyGsm
-         dYcQ==
+        d=linaro.org; s=google; t=1697032116; x=1697636916; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ixCt6NnW81dfiXj0LHHWg4GT6PXYyiPLSK5qgds3Ofo=;
+        b=dZO2WYm3KfcjiXxqwYH3FkuqVz+KzRvV9718WOy2SaVwGEmk2WbZY+pwtL4wu86uzk
+         2diiIwo/2qBboTjC0kjD3YNqHpdYcc604MmL747AO/uRaoufYw8XC0rb5C20mi/WZxt0
+         CZrghkWPP+FHa+M83I3ymGCnl1kBnsAapEYAahP1a94u0hFzUVvIbfyhFAdRrODyWSUu
+         wqcd7rp+01lNYvq4w2roCJUymiUqbBwiNObDSQoeHcUc5s7ixSI1DyYLcn0M1gBMkxHE
+         5NuDASWFV5xdQ8DFa5HOeXYGjhw8SWtQpwAEJ7iVRIUrtgSVoBT/nYYwBMW51e+GevqS
+         yglQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697032082; x=1697636882;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LqbWCFMQM1sd5S/h6JDyxaKWAY7r73x3RtWoFSTeKQw=;
-        b=OS+AqcjEsT7pZtRuY61JfZ+hitqgE+kNOrttjekb5k5THNCgaYVc+pN/K2iqxc4LaC
-         +YW/+hIZv2hLHu9m3kp8wF8EeW2kSDm4LLsVrio/7nRPSWW3anKVZoszxv5iciUlP2yw
-         uQIRKm7TTNtPusyMSVW/03bQ2jy9oCfkRk+/Qu/9G/QarKXHUQnVOO1l2qyDOEnMIPK7
-         rnqIi5Km2mA25C8LKOD95bHcQivr3TQUpYHDqv3rWCJ1/k5xAqVve93AxYl7hBME3yZp
-         ob9Q+gGbTm408AbnrY+F3fw8OHbsrsY5obFanFQup0eWWg4LhZxrXYncaoeF4Vogu5Y2
-         Rqpw==
-X-Gm-Message-State: AOJu0YzFyGIJFjTnJqsLQc2HucLcwLqYhdSulTXwW7R0WCh2pIGb+Xhd
-        I9RutJPdvp/pPVCss6JG+2aQkdEUGTd7nGw+FUe/
-X-Google-Smtp-Source: AGHT+IHgNbHEOcpAurjKaSZSMx1mMOE4z+0oe+eCAe1sieumbxs8ZeClfi5UXhL+lvQcimRHod92q3Ly3qPCFqSvjnM=
-X-Received: by 2002:a05:6402:d53:b0:53d:aa7b:527 with SMTP id
- ec19-20020a0564020d5300b0053daa7b0527mr3092605edb.32.1697032081886; Wed, 11
- Oct 2023 06:48:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697032116; x=1697636916;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ixCt6NnW81dfiXj0LHHWg4GT6PXYyiPLSK5qgds3Ofo=;
+        b=It7vVbaRiwQ6o/gBF7I/D3EuxAds5RW6RTgR2xwpOgewk4d5luxYdBECR2TDo8F7tj
+         KVMeJfpMiudUZYKD6YDhesNtEY9FyNDwvfo9X70GYR+JVsO+Ow9dLzy59offg+jGdhZR
+         AR3ZvMhgwQ9p2bzyl1qQk/YK105qFR8I/JltiV4d4y9eI5oph28CWBltmxgtT/i8K57r
+         1H9lF0pfKoTt6YVfNm3vl5+WD0uuFg1ib4smjPrHIJXRPOS+pBkKFVa46ROMjM+u2yYQ
+         nbCiYWHP4+NXOKY7ElIoWOyzCjbiyJRsydf3m1hi8+WZR+yFVT78O6ppAnmf60K1xUS5
+         kOoA==
+X-Gm-Message-State: AOJu0YwLrxDcFi2XTz+uiqAlVKInET4/G5+d4zahPkGUxioq9agQe+y9
+        IkHYm5ZxngDaRVJ1nmkujC5hb3ameLG3QskmqTE8AQ==
+X-Google-Smtp-Source: AGHT+IHxQ3oFdJ+Ocx7MX6JfQcL5dTT86dTikgG6eNFhgqpK4zW0ipOVNjpTP9AOB5ebinWoGU/Ru3iOx0CmOUY9ctE=
+X-Received: by 2002:a17:903:246:b0:1c0:b84d:3f73 with SMTP id
+ j6-20020a170903024600b001c0b84d3f73mr21436735plh.53.1697032115568; Wed, 11
+ Oct 2023 06:48:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230915154856.1896062-1-lb@semihalf.com> <CAJfuBxyFYyGCtr5i=P7N=1oX3J=jmdp1VLGLt+z1fAnuvGK2aA@mail.gmail.com>
- <CAK8ByeJBrPEQSgUc91LQO9Krzjh2pauhMTjEC82M8ozayE76Yg@mail.gmail.com>
- <CAJfuBxxmL-GtBgt=033F9UNeLCreFbJh3HrQQN2nYKwR_0uTbg@mail.gmail.com>
- <20231003155810.6df9de16@gandalf.local.home> <CAJfuBxyJyFbFEhRxrtxJ_RazaTODV6Gg64b1aiNEzt6_iE4=Og@mail.gmail.com>
- <CAK8ByeLNc9UbTNG4x=40AxYqjjRCsvBNtNFai0PMveM2X4XCow@mail.gmail.com>
- <CAJfuBxyRF4q_T8LmHwR=-PKKDDpiFg2nO03uLnL8aGpRyBByKw@mail.gmail.com>
- <CAK8ByeLpkSV6o6gPw8eJVqq5+ynQrSDjemY7mXkO1ZmA0rYKfQ@mail.gmail.com> <CAJfuBxw+ANLwssAGWpkn5PeJb8ZKn4LXQkk2Gfv3aGsSN=S55Q@mail.gmail.com>
-In-Reply-To: <CAJfuBxw+ANLwssAGWpkn5PeJb8ZKn4LXQkk2Gfv3aGsSN=S55Q@mail.gmail.com>
-From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Date:   Wed, 11 Oct 2023 15:47:50 +0200
-Message-ID: <CAK8ByeJLeoi3DfP5v6x7whcmuz22nuirS5iGf44wHDiORNbpFA@mail.gmail.com>
-Subject: Re: [PATCH v1] dynamic_debug: add support for logs destination
-To:     jim.cromie@gmail.com
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@google.com>,
-        Yaniv Tzoreff <yanivt@google.com>,
-        Benson Leung <bleung@google.com>, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>
+References: <20231009103621.374412-1-vincent.guittot@linaro.org>
+ <20231009103621.374412-3-vincent.guittot@linaro.org> <142277eb-766e-4524-b507-c75bbc143ade@arm.com>
+In-Reply-To: <142277eb-766e-4524-b507-c75bbc143ade@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 11 Oct 2023 15:48:24 +0200
+Message-ID: <CAKfTPtBnj=b9siWQmu9ddJeQrV0KsWtyMj3LQkrCmJ1w2ZyShg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/6] topology: add a new arch_scale_freq_reference
+To:     Pierre Gondois <pierre.gondois@arm.com>
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, lukasz.luba@arm.com,
+        ionela.voinescu@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-pm@vger.kernel.org, conor.dooley@microchip.com,
+        suagrfillet@gmail.com, ajones@ventanamicro.com, lftan@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-wt., 10 pa=C5=BA 2023 o 18:02 <jim.cromie@gmail.com> napisa=C5=82(a):
+On Wed, 11 Oct 2023 at 12:27, Pierre Gondois <pierre.gondois@arm.com> wrote:
 >
-> On Mon, Oct 9, 2023 at 4:47=E2=80=AFPM =C5=81ukasz Bartosik <lb@semihalf.=
-com> wrote:
+> Hello Vincent,
+>
+> On 10/9/23 12:36, Vincent Guittot wrote:
+> > Create a new method to get a unique and fixed max frequency. Currently
+> > cpuinfo.max_freq or the highest (or last) state of performance domain are
+> > used as the max frequency when computing the frequency for a level of
+> > utilization but:
+> > - cpuinfo_max_freq can change at runtime. boost is one example of
+> >    such change.
+> > - cpuinfo.max_freq and last item of the PD can be different leading to
+> >    different results between cpufreq and energy model.
 > >
-> > pt., 6 pa=C5=BA 2023 o 22:49 <jim.cromie@gmail.com> napisa=C5=82(a):
-> > >
-> > > On Wed, Oct 4, 2023 at 4:55=E2=80=AFAM =C5=81ukasz Bartosik <lb@semih=
-alf.com> wrote:
-> > > >
-> > > > wt., 3 pa=C5=BA 2023 o 22:54 <jim.cromie@gmail.com> napisa=C5=82(a)=
-:
-> > > > >
-> > > > > On Tue, Oct 3, 2023 at 1:57=E2=80=AFPM Steven Rostedt <rostedt@go=
-odmis.org> wrote:
-> > > > > >
-> > > > > > On Mon, 2 Oct 2023 14:49:20 -0600
-> > > > > > jim.cromie@gmail.com wrote:
-> > > > > >
-> > > > > > > hi Lukasz,
-> > > > > > >
-> > > > > > > sorry my kernel-time has been in my own trees.
-> > > > > > >
-> > > > > > > What I dont understand is why +T is insufficient.
-> > > > > > >
-> > > >
-> > > > We would like to be able to separate debug logs from different
-> > > > subsystem (e.g. thunderbolt and usbcore).
-> > > > With +T it is not possible because all debug logs will land in the =
-same bucket.
-> > > >
-> > > > > > > IIUC, tracefs is intended for production use.
-> > > > > > > thats why each event can be enabled / disabled
-> > > > > > > - to select and minimize whats traced, and not impact the sys=
-tem
-> > > > > > >
-> > > > > > > and +T  can forward all pr_debugs to trace,
-> > > > > > > (by 1-few trace events defined similarly to others)
-> > > > > > > or very few, giving yet another selection mechanism
-> > > > > > > to choose or eliminate specific pr-debugs and reduce traffic =
-to
-> > > > > > > interesting stuff.
-> > > > > > >
-> > > > > > > Once your debug is in the trace-buf,
-> > > > > > > shouldnt user-space be deciding what to do with it ?
-> > > > > > > a smart daemon could leverage tracefs to good effect.
-> > > > > > >
-> > > >
-> > > > Yes, a daemon could separate the debug logs but IMHO it is much
-> > > > easier to separate logs by sending them directly from a given subsy=
-stem
-> > > > to a separate trace instance. My proposal allows to configure diffe=
-rent
-> > > > trace instance as destination for each callsite.
-> > > >
-> > > > > > > IMO the main value of +T is that it allows feeding existing p=
-r_debugs
-> > > > > > > into the place where other trace-data is already integrated a=
-nd managed.
-> > > > > > >
-> > > > > > > At this point, I dont see any extra destination handling as p=
-rudent.
-> > > > > > >
-> > > > > >
-> > > > > >
-> > > > > > I'm fine with either approach. I kind of like the creation of t=
-he instance,
-> > > > > > as that allows the user to keep this debug separate from other =
-tracing
-> > > > > > going on. We are starting to have multiple applications using t=
-he tracing
-> > > > > > buffer (although most are using instances, which is why I'm try=
-ing to make
-> > > > > > them lighter weight with the eventfs code).
-> > > > > >
-> > > > > > -- Steve
-> > > > > >
-> > > >
-> > > > Steve, thanks for commenting from the trace perspective.
-> > > >
-> > > > >
-> > > > >
-> > > > > Ok Im starting to grasp that multiple instances are good
-> > > > > (and wondering how I didnt notice)
-> > > > >
-> > > > > What doesnt thrill me is the new _ddebug field, it enlarges the f=
-ootprint.
-> > > > >
-> > > >
-> > > > Yes it increases _ddebug structure by a pointer size.
-> > > >
-> > > > > can you make it go away ?
-> > > >
-> > > > I implemented my proposal with flexibility in mind so that if someo=
-ne
-> > > > would like to add
-> > > > another destination in the future it should be easy to do. I
-> > > > understand that adding a pointer
-> > > > to the _ddebug structure increases footprint size that's why I also
-> > > > added CONFIG_DYNAMIC_DEBUG_DST
-> > > > kernel configuration option in order to enable/disable this functio=
-nality.
-> > > >
-> > > > > I have some thoughts ..
-> > > >
-> > > > Please share your thoughts. I'm sure we can come to an agreement ho=
-w
-> > > > to incorporate both +T and my proposal.
-> > >
-> > >
-> > > So heres what Im thinking:
-> > >
-> > > shrink lineno, get 2-3 bits back.
-> > > last I checked largest C file is <32kloc
-> > > largest header is ~120kloc, but its a data only,
-> > > no pr_debugs will suddenly appear there.
-> > >
-> > > define a dst_id field with 3 bits
+> > We need to save the reference frequency that has been used when computing
+> > the CPUs capacity and use this fixed and coherent value to convert between
+> > frequency and CPU's capacity.
 > >
-> > The dst_id field would be taken into account only when a callsite has
-> > T flag set, is that your assumption ?
->
-> Im ambivalent about the +T bit itself,
-> it could as easily be another "special" value in the 0-2^N range of dst_i=
-d
->
-> its a use-case tradeoff:
-> +T  goes to main tracebuf.
-> dst_id>0  goes to separate, pre-registered "flight-recorder"  tracebufs
->
-> I'm not sure whether doing both independently is better than having
-> 2^(n-1)-1 extra bufs.
->
-
-Even though having +T seems more consistent I would prefer to combine
-it with dst_id
-because it will give us wider range.
-
-> Actually, demoting +T to just another dest makes sense -
-> theres a large population of pr-debugs, and events like vblank-*
-> Nobody will send vblank to syslog on purpose either.
->
->
-> either way, dyndbg will need both:
-> new trace-events, so that prdbgs can get enabled as a single/few event-ty=
-pes
-> trace_array_buf writes to flight recorders
->
-
-Then depending on the value of dst_id (assuming dst_id consumed +T and
-one more bit from class_id)  we would have:
-dst_id =3D 0 - trace disabled
-dst_id =3D 1 - trace events for pr_debug and dev_dbg
-dst_id =3D [2..31] - predefined trace instances
-
-The trace instance destinations will be global but this number seems
-pretty reasonable and is sufficient from our use case perspective.
-
->
->
->
->
->
->
-> > Can one bit be taken from class_id to increase dst_id to 4 bits ?
-> > Decreasing class_id length to 5 bits would still leave its range at
-> > [0..31]
->
-> 31 classes / categories should be enough.
-> 64 was convenient, BIT* supported.
->
-> > > 0 is for main tracebuf
-> > > 1-7 is for other instances
-> > >
+> > In fact, we already save the frequency that has been used when computing
+> > the capacity of each CPU. We extend the precision to save khZ instead of
+> > Mhz currently and we modify the type to be aligned with other variables
+> > used when converting frequency to capacity and the other way.
 > >
-> > Do you want to leave trace events as originally implemented with +T fla=
-g ?
-> > If yes then I would like to propose:
-> > dst_id =3D 0 - for trace events for pr_debug and dbg_dev logs (default)
-> > dst_id =3D 1 - for default trace instance
-> > dst_id > 1 - other trace instances
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > ---
+> >   arch/arm/include/asm/topology.h   |  1 +
+> >   arch/arm64/include/asm/topology.h |  1 +
+> >   arch/riscv/include/asm/topology.h |  1 +
+> >   drivers/base/arch_topology.c      | 29 ++++++++++++++---------------
+> >   include/linux/arch_topology.h     |  7 +++++++
+> >   5 files changed, 24 insertions(+), 15 deletions(-)
 > >
-> > > then the alt-dest lookup is avoided except when the dst_id field is >=
-0
-> > >
-> > > It might work to put the alt-dst-pointer into the classmaps,
-> > > so the destination is used for the entire group of debugs
-> > > forex DRM_UT_CORE etc.
-> > >
+> > diff --git a/arch/arm/include/asm/topology.h b/arch/arm/include/asm/topology.h
+> > index c7d2510e5a78..853c4f81ba4a 100644
+> > --- a/arch/arm/include/asm/topology.h
+> > +++ b/arch/arm/include/asm/topology.h
+> > @@ -13,6 +13,7 @@
+> >   #define arch_set_freq_scale topology_set_freq_scale
+> >   #define arch_scale_freq_capacity topology_get_freq_scale
+> >   #define arch_scale_freq_invariant topology_scale_freq_invariant
+> > +#define arch_scale_freq_ref topology_get_freq_ref
+> >   #endif
 > >
-> > If we store dst pointers for dst_id > 1 in classmaps then is there a fa=
-st way
-> > to get from callsite (_ddebug) to its corresponding classmap
-> > (ddebug_class_map) in order to
-> > lookup trace instance destination ?  I ask because I don't see it being=
- possible
-> > without adding a new field to the _ddebug structure.
+> >   /* Replace task scheduler's default cpu-invariant accounting */
+> > diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
+> > index 9fab663dd2de..a323b109b9c4 100644
+> > --- a/arch/arm64/include/asm/topology.h
+> > +++ b/arch/arm64/include/asm/topology.h
+> > @@ -23,6 +23,7 @@ void update_freq_counters_refs(void);
+> >   #define arch_set_freq_scale topology_set_freq_scale
+> >   #define arch_scale_freq_capacity topology_get_freq_scale
+> >   #define arch_scale_freq_invariant topology_scale_freq_invariant
+> > +#define arch_scale_freq_ref topology_get_freq_ref
+> >
+> >   #ifdef CONFIG_ACPI_CPPC_LIB
+> >   #define arch_init_invariance_cppc topology_init_cpu_capacity_cppc
+> > diff --git a/arch/riscv/include/asm/topology.h b/arch/riscv/include/asm/topology.h
+> > index e316ab3b77f3..61183688bdd5 100644
+> > --- a/arch/riscv/include/asm/topology.h
+> > +++ b/arch/riscv/include/asm/topology.h
+> > @@ -9,6 +9,7 @@
+> >   #define arch_set_freq_scale         topology_set_freq_scale
+> >   #define arch_scale_freq_capacity    topology_get_freq_scale
+> >   #define arch_scale_freq_invariant   topology_scale_freq_invariant
+> > +#define arch_scale_freq_ref          topology_get_freq_ref
+> >
+> >   /* Replace task scheduler's default cpu-invariant accounting */
+> >   #define arch_scale_cpu_capacity     topology_get_cpu_scale
+> > diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> > index b741b5ba82bd..9a073c2d2086 100644
+> > --- a/drivers/base/arch_topology.c
+> > +++ b/drivers/base/arch_topology.c
+> > @@ -19,6 +19,7 @@
+> >   #include <linux/init.h>
+> >   #include <linux/rcupdate.h>
+> >   #include <linux/sched.h>
+> > +#include <linux/units.h>
+> >
+> >   #define CREATE_TRACE_POINTS
+> >   #include <trace/events/thermal_pressure.h>
+> > @@ -26,7 +27,8 @@
+> >   static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
+> >   static struct cpumask scale_freq_counters_mask;
+> >   static bool scale_freq_invariant;
+> > -static DEFINE_PER_CPU(u32, freq_factor) = 1;
+> > +DEFINE_PER_CPU(unsigned long, capacity_ref_freq) = 1;
+> > +EXPORT_PER_CPU_SYMBOL_GPL(capacity_ref_freq);
+> >
+> >   static bool supports_scale_freq_counters(const struct cpumask *cpus)
+> >   {
+> > @@ -170,9 +172,9 @@ DEFINE_PER_CPU(unsigned long, thermal_pressure);
+> >    * operating on stale data when hot-plug is used for some CPUs. The
+> >    * @capped_freq reflects the currently allowed max CPUs frequency due to
+> >    * thermal capping. It might be also a boost frequency value, which is bigger
+> > - * than the internal 'freq_factor' max frequency. In such case the pressure
+> > - * value should simply be removed, since this is an indication that there is
+> > - * no thermal throttling. The @capped_freq must be provided in kHz.
+> > + * than the internal 'capacity_ref_freq' max frequency. In such case the
+> > + * pressure value should simply be removed, since this is an indication that
+> > + * there is no thermal throttling. The @capped_freq must be provided in kHz.
+> >    */
+> >   void topology_update_thermal_pressure(const struct cpumask *cpus,
+> >                                     unsigned long capped_freq)
+> > @@ -183,10 +185,7 @@ void topology_update_thermal_pressure(const struct cpumask *cpus,
+> >
+> >       cpu = cpumask_first(cpus);
+> >       max_capacity = arch_scale_cpu_capacity(cpu);
+> > -     max_freq = per_cpu(freq_factor, cpu);
+> > -
+> > -     /* Convert to MHz scale which is used in 'freq_factor' */
+> > -     capped_freq /= 1000;
+> > +     max_freq = arch_scale_freq_ref(cpu);
+> >
+> >       /*
+> >        * Handle properly the boost frequencies, which should simply clean
+> > @@ -279,13 +278,13 @@ void topology_normalize_cpu_scale(void)
+> >
+> >       capacity_scale = 1;
+> >       for_each_possible_cpu(cpu) {
+> > -             capacity = raw_capacity[cpu] * per_cpu(freq_factor, cpu);
+> > +             capacity = raw_capacity[cpu] * per_cpu(capacity_ref_freq, cpu);
+> >               capacity_scale = max(capacity, capacity_scale);
+> >       }
+> >
+> >       pr_debug("cpu_capacity: capacity_scale=%llu\n", capacity_scale);
+> >       for_each_possible_cpu(cpu) {
+> > -             capacity = raw_capacity[cpu] * per_cpu(freq_factor, cpu);
+> > +             capacity = raw_capacity[cpu] * per_cpu(capacity_ref_freq, cpu);
+> >               capacity = div64_u64(capacity << SCHED_CAPACITY_SHIFT,
+> >                       capacity_scale);
+> >               topology_set_cpu_scale(cpu, capacity);
+> > @@ -321,15 +320,15 @@ bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
+> >                       cpu_node, raw_capacity[cpu]);
+> >
+> >               /*
+> > -              * Update freq_factor for calculating early boot cpu capacities.
+> > +              * Update capacity_ref_freq for calculating early boot cpu capacities.
+> >                * For non-clk CPU DVFS mechanism, there's no way to get the
+> >                * frequency value now, assuming they are running at the same
+> > -              * frequency (by keeping the initial freq_factor value).
+> > +              * frequency (by keeping the initial capacity_ref_freq value).
+> >                */
+> >               cpu_clk = of_clk_get(cpu_node, 0);
+> >               if (!PTR_ERR_OR_ZERO(cpu_clk)) {
+> > -                     per_cpu(freq_factor, cpu) =
+> > -                             clk_get_rate(cpu_clk) / 1000;
+> > +                     per_cpu(capacity_ref_freq, cpu) =
+> > +                             clk_get_rate(cpu_clk) / HZ_PER_KHZ;
+> >                       clk_put(cpu_clk);
+> >               }
+> >       } else {
+> > @@ -411,7 +410,7 @@ init_cpu_capacity_callback(struct notifier_block *nb,
+> >       cpumask_andnot(cpus_to_visit, cpus_to_visit, policy->related_cpus);
+> >
+> >       for_each_cpu(cpu, policy->related_cpus)
+> > -             per_cpu(freq_factor, cpu) = policy->cpuinfo.max_freq / 1000;
+> > +             per_cpu(capacity_ref_freq, cpu) = policy->cpuinfo.max_freq;
 >
-> I agree, theres no good enough way, compared to a small dst-id.
-> The "muse" was on the grouping aspect it might bring.
->
-> > > But its no better than the dst_id field, which is per-callsite,
-> > > and entirely independent of classes.
-> > >
-> this was me agreeing with your point above :-)
->
+> It seems init_cpu_capacity_callback() is only called when a policy is created
+> (cf. CPUFREQ_CREATE_POLICY). This means that CPU capacities are only updated
+> in this specific case, eluding the cases where:
+> - boost is enabled. 'policy->cpuinfo.max_freq' is updated in the cpufreq driver,
+>    but it seems it doesn't have any consequence regarding CPU capacities.
 
-I see :)
+Yes, that's why we have to rely on something else than max_freq. And
+one might not want to take boost into account in the compute capacity
+because it's not sustainable. Nothing as change on this side
 
+> - a cpufreq driver is unplugged (e.g. rmmod cpufreq_driver.ko). In this case
+>    the CPU capacities are only updated when plugging in the driver (e.g. insmod
+>    cpufreq_driver.ko).
+
+same here
+
+>
+> Regards,
+> Pierre
+>
 >
 > >
-> > I don't have a real life use case to configure different trace
-> > instance for each callsite.
-> > I just tried to be as much flexible as possible.
+> >       if (cpumask_empty(cpus_to_visit)) {
+> >               topology_normalize_cpu_scale();
+> > diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
+> > index a07b510e7dc5..38ca6c76af56 100644
+> > --- a/include/linux/arch_topology.h
+> > +++ b/include/linux/arch_topology.h
+> > @@ -27,6 +27,13 @@ static inline unsigned long topology_get_cpu_scale(int cpu)
 > >
->
-> Ive come around to agree - I looked back at some old threads
-> (that I was a part of, and barely remembered :-}
->
-> At least Sean Paul, Lyude, Simon Ser, Pekka Paalanen
-> have expressed a desire for a "flight-recorder"
-> it'd be hard to say now that 2-3 such buffers would always be enough,
-> esp as theres a performance reason for having your own.
->
-
-What would you recommend to base continuation of development of this featur=
-e on,
-I mean whether to use one of your private branches you mentioned (in
-one of the previous replies)
-or latest upstream ?
-
->
-> > Thanks,
-> > Lukasz
+> >   void topology_set_cpu_scale(unsigned int cpu, unsigned long capacity);
 > >
-> > >
-> > > > Thanks,
-> > > > Lukasz
+> > +DECLARE_PER_CPU(unsigned long, capacity_ref_freq);
+> > +
+> > +static inline unsigned long topology_get_freq_ref(int cpu)
+> > +{
+> > +     return per_cpu(capacity_ref_freq, cpu);
+> > +}
+> > +
+> >   DECLARE_PER_CPU(unsigned long, arch_freq_scale);
+> >
+> >   static inline unsigned long topology_get_freq_scale(int cpu)
