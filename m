@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B18767C5906
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5F47C5909
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbjJKQUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 12:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46026 "EHLO
+        id S232761AbjJKQVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 12:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232159AbjJKQUp (ORCPT
+        with ESMTP id S230353AbjJKQVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 12:20:45 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D764BAF
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:20:43 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5855333fbadso4628019a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:20:43 -0700 (PDT)
+        Wed, 11 Oct 2023 12:21:11 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB46B6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:21:08 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-3528b1c4977so1561275ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:21:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697041243; x=1697646043; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=j9lJljhG7J0NRk5jXquLEzmz4kKiNkfUkpiLpvv0v7g=;
-        b=H98WJaL5RfVoiaalQKFNSgD07kq9V2RvVV0fx+6MFZ2fwuvqP7ctj4r8HYXc0swock
-         ruSVU0YrcEJdryMYf4joPZ8F078hcQz7vF8R2cVwCeyaHRGLEOK4290BQb3cfu5WXOYB
-         WkZCM+kPzD0yeMQOYBs/J7NrAT8J+2kfGfaVU=
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697041268; x=1697646068; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FrKXtW+aPi7brg8nk5i96Avsz2oZOzgad82HhvhxQxU=;
+        b=BIdP/AKEG63c5VNgDmN9HRR5KTx4hq9mLJcJZzvap0IMdku2CdU2Zl3JOT6tF2v1TK
+         SzUpUHr6deafaH5CsHBpHlnw1dGBZAd2q40jiGInjd7ZOEygGTcTgUAD24aHfmbxclf2
+         YACtO0wEGTzMKWOmC43ZmYcvGy7QBwZ7PodO2yRlRR3jFycSLQFPv0xRttiv4Rpiqs2w
+         FVaR8Yi3bWk6oxIe4fnA1q87a4aB2c/nIf3ryK+6w90Z/x5OVxbcrf9GBTdtddMWySJF
+         ylXz27rRINPdbqmz+VDYHiwkEoGWYUZafx+yVhycAIqwWh6GnvNK7W61Td6bAmCvs463
+         PYSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697041243; x=1697646043;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j9lJljhG7J0NRk5jXquLEzmz4kKiNkfUkpiLpvv0v7g=;
-        b=DvHOEEYDEcZ+mu0Jam7n3nfKkXn+bmZ6XV8cuXfccx3qHWSrd7vqUlnOZe/M2ZHK0/
-         l9BiRgzS8crn1arQFpxmDwrV7zhWt2fylwuDDCYi8WXKyAzETNVhjWEFm/4yrwr0t9nm
-         0cIG8ZWgxUHuJ1YeLskQSNxx5sY3hM04UOIkoCeqBMSwRL5vb226DH/3vj98iaTtCMs+
-         lsN6+XTOEW/Qo7Ysx97U7jl4Sgmk23oZSJsdSopgZH4R6S12UpVutXOIHBu7VdljCWG9
-         pSe0V79idNPeK4p+HVt7X9Xptrf2BX46ws3ZILaKQXm9R9XTyp0f+cNk/Qa/qygFtmpd
-         zxDw==
-X-Gm-Message-State: AOJu0YweZ5d0EPdkvJyKtO7uK/bJGtAwnJy1NAqHz2BVz7dezd8ICzdp
-        aEUWLo3lSqW7wmKLtRh/jYfjZA==
-X-Google-Smtp-Source: AGHT+IFBkkzjfqUFPw2LHU/WJiBG51hkvc97uk8G4hhO5uBiGO2zJPFVWSMOQulsb16+hJ+LUaknmw==
-X-Received: by 2002:a17:90a:7541:b0:27c:eb7f:cd00 with SMTP id q59-20020a17090a754100b0027ceb7fcd00mr4432651pjk.22.1697041243325;
-        Wed, 11 Oct 2023 09:20:43 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id q7-20020a17090a178700b0027cf4c554dasm125627pja.11.2023.10.11.09.20.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 09:20:42 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 09:20:39 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Edward AD <twuufnxlz@gmail.com>
-Cc:     syzbot+c90849c50ed209d77689@syzkaller.appspotmail.com,
-        davem@davemloft.net, edumazet@google.com, johan.hedberg@gmail.com,
-        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        luiz.von.dentz@intel.com, marcel@holtmann.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] Bluetooth: hci_sock: fix slab oob read in
- create_monitor_event
-Message-ID: <202310110908.F2639D3276@keescook>
-References: <000000000000ae9ff70607461186@google.com>
- <20231010053656.2034368-2-twuufnxlz@gmail.com>
+        d=1e100.net; s=20230601; t=1697041268; x=1697646068;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FrKXtW+aPi7brg8nk5i96Avsz2oZOzgad82HhvhxQxU=;
+        b=AwPLpC2Gtvg1uy7f9zlLNFFClxh69qVcuQHl1+gR4CKcW241Jc5fMEhWeYcVqLZ9sv
+         vvfXj/+vOEa1Ejz4E0ubVHFXxI5HEkRKvqT2dh/FfvYxAKN2hTxlda1WnKQmLlJ4EEY+
+         MVQctzfvHTlg0GY4eDm3IpBdb0hjKEJlMgNDuG6imEgUf5kkdX1eYSIWbTiyO/7O4DPn
+         D6MJnrqAJxl/W2DVMYZeG9MeYCVcb3dO160VtmrvajoMLEuTaTrLee9mHvOfOPGH64J6
+         xb3eKskTQBcWA3qf2ErREFeeBarnzVryMPqHA+Yl7gZuvZOIifzud4oIsHmc8ectDyMg
+         fTCA==
+X-Gm-Message-State: AOJu0YwIyErvldXIWwE+5EYL7d/ZscBScm+4dlisaKbXZW+mVY0gHXWt
+        MEtqvtAYC8ERgEkNn25+HOfEiQ==
+X-Google-Smtp-Source: AGHT+IFYJgF1rRgEO6eqjzycDdrg81lvNGSKjHu/S3GpJAPriFjN41m2MBQL2/9+xRf/V9Lc89i47g==
+X-Received: by 2002:a92:db4f:0:b0:34e:2a69:883c with SMTP id w15-20020a92db4f000000b0034e2a69883cmr21564981ilq.1.1697041268015;
+        Wed, 11 Oct 2023 09:21:08 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id h7-20020a0566380f8700b00430209d0efesm3406997jal.59.2023.10.11.09.21.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 09:21:07 -0700 (PDT)
+Message-ID: <66e09ad5-2dcf-4159-9c98-f37ac739a445@kernel.dk>
+Date:   Wed, 11 Oct 2023 10:21:06 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010053656.2034368-2-twuufnxlz@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: manual merge of the block tree with the asm-generic
+ tree
+Content-Language: en-US
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-next <linux-next@vger.kernel.org>,
+        Sohil Mehta <sohil.mehta@intel.com>
+References: <20231009123118.4487a0e1@canb.auug.org.au>
+ <20231009084812.GB14330@noisy.programming.kicks-ass.net>
+ <cb4bb8e2-7dfe-4ca4-aa70-060f7b2f8f95@app.fastmail.com>
+ <20231009141351.GD14330@noisy.programming.kicks-ass.net>
+ <b7c57f03-4606-4190-98c5-344c49656f9c@kernel.dk>
+In-Reply-To: <b7c57f03-4606-4190-98c5-344c49656f9c@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,62 +81,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 01:36:57PM +0800, Edward AD wrote:
-> When accessing hdev->name, the actual string length should prevail
+On 10/9/23 8:16 AM, Jens Axboe wrote:
+> On 10/9/23 8:13 AM, Peter Zijlstra wrote:
+>> On Mon, Oct 09, 2023 at 11:00:19AM +0200, Arnd Bergmann wrote:
+>>> On Mon, Oct 9, 2023, at 10:48, Peter Zijlstra wrote:
+>>>> On Mon, Oct 09, 2023 at 12:31:18PM +1100, Stephen Rothwell wrote:
+>>>>> diff --cc arch/alpha/kernel/syscalls/syscall.tbl
+>>>>> index 5d05ab716a74,b1865f9bb31e..000000000000
+>>>>> --- a/arch/alpha/kernel/syscalls/syscall.tbl
+>>>>> +++ b/arch/alpha/kernel/syscalls/syscall.tbl
+>>>>> @@@ -492,4 -492,6 +492,7 @@@
+>>>>>   560	common	set_mempolicy_home_node		sys_ni_syscall
+>>>>>   561	common	cachestat			sys_cachestat
+>>>>>   562	common	fchmodat2			sys_fchmodat2
+>>>>>  -563	common	futex_wake			sys_futex_wake
+>>>>>  -564	common	futex_wait			sys_futex_wait
+>>>>>  -565	common	futex_requeue			sys_futex_requeue
+>>>>>  +563	common	map_shadow_stack		sys_map_shadow_stack
+>>>>> ++564	common	futex_wake			sys_futex_wake
+>>>>> ++565	common	futex_wait			sys_futex_wait
+>>>>> ++566	common	futex_requeue			sys_futex_requeue
+>>>>
+>>>> So this renumbers the (futex) stuff on Alpha, does anybody care? AFAICT
+>>>> Alpha does not follow the unistd order and meh.
+>>>
+>>> Let's not make it worse for now. All the numbers since the
+>>> introduction of the time64 syscalls are offset by exactly 120
+>>> on alpha, and I'd prefer to keep it that way for the moment.
+>>>
+>>> I still hope to eventually finish the conversion of all architectures
+>>> to a single syscall.tbl for numbers >400, and if that happens before
+>>> the end of alpha, a different ordering would just be extra pain.
+>>
+>> Fair enough; should we look at rebase those futex patches for this? (bit
+>> of a pain as that would also mean rebasing block)
 > 
-> Reported-by: syzbot+c90849c50ed209d77689@syzkaller.appspotmail.com
-> Fixes: dcda165706b9 ("Bluetooth: hci_core: Fix build warnings")
-> Signed-off-by: Edward AD <twuufnxlz@gmail.com>
-> ---
->  net/bluetooth/hci_sock.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> From my point of view, this isn't a huge problem if we do it now. The
+> io_uring-futex branch is a separate branch and I have nothing on top of
+> it, so I could easily just re-pull your updated branch and rebase my
+> changes on top.
 > 
-> diff --git a/net/bluetooth/hci_sock.c b/net/bluetooth/hci_sock.c
-> index 5e4f718073b7..72abe54c45dd 100644
-> --- a/net/bluetooth/hci_sock.c
-> +++ b/net/bluetooth/hci_sock.c
-> @@ -488,7 +488,7 @@ static struct sk_buff *create_monitor_event(struct hci_dev *hdev, int event)
->  		ni->type = hdev->dev_type;
->  		ni->bus = hdev->bus;
->  		bacpy(&ni->bdaddr, &hdev->bdaddr);
-> -		memcpy(ni->name, hdev->name, 8);
-> +		memcpy(ni->name, hdev->name, strlen(hdev->name));
-
-Uh, what's going on here?
-
-hdev is:
-
-struct hci_dev {
-	...
-        const char      *name;
-
-ni is:
-
-struct hci_mon_new_index {
-        char            name[8];
-
-You can't use "strlen" here in the case that "hdev->name" is larger than
-8 bytes.
-
-Also, why memcpy() and not strscpy()? Is this supposed to be padded out
-with %NUL bytes? It appears to be sent over the network, so "yes" seems
-to be the safe answer.
-
-Should ni->name be always %NUL terminated? That I can't tell for sure,
-but I assume "no", because the solution was to explicitly copy all the
-bytes _except_ the %NUL byte (using strlen).
-
-struct hci_mon_new_index's "name" should be marked __nonstring, and
-instead strtomem_pad() should be used instead of memcpy.
-
--Kees
-
->  
->  		opcode = cpu_to_le16(HCI_MON_NEW_INDEX);
->  		break;
-> -- 
-> 2.25.1
+>> Or do we want to keep this fixup in the merge resolution and make sure
+>> Linus is aware?
 > 
+> If you're OK with it, I'd say let's rebase and save ourselves the
+> trouble at merge time.
+
+Peter, what's the verdict - do you want to rebase it, or leave it as-is?
 
 -- 
-Kees Cook
+Jens Axboe
+
