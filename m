@@ -2,115 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B647C4CBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E007C4CAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbjJKIMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 04:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54906 "EHLO
+        id S230115AbjJKILz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 04:11:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230255AbjJKIMn (ORCPT
+        with ESMTP id S229957AbjJKILx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 04:12:43 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A131DA;
-        Wed, 11 Oct 2023 01:12:39 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 475771BF20C;
-        Wed, 11 Oct 2023 08:12:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697011957;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=raWpLxdnCsHiI6FQxGeq5/CW+Sjk7JXPZqqzsnU681g=;
-        b=PdEzs+iwrBvoWBhPl97FjcpSGd90nBOEQ8xvaPJqFZ7EOnP3oVIei7hBWoOahPXkZiKoSx
-        /eo7W0Bmiqth0V+eQESnoaYF7oZto0U9u57kkZUbon7wRGWnWbTk0pHou76+4tyfhmNHrj
-        slmPP7CUxxKEsbcOPACjFRkqSdF4UPyK8sTNxvzqA9bz3z4olqOPb8rjmHMOj6vy5OE2WJ
-        yRBPuUOe/3ahekYliDRdH3flj9EfuntbpXPyz+p2Prp4Mw/G3rf+BxjmZ8Zz+9GWcRjV+a
-        RZBtCgCrdw7F14jdH3Eb9UmafuX+pLFOCM2lqm9xfacqRB7iwI0k/27CYO/ClA==
-From:   Kory Maincent <kory.maincent@bootlin.com>
-Date:   Wed, 11 Oct 2023 10:11:45 +0200
-Subject: [PATCH v3 6/6] dmaengine: dw-edma: eDMA: Add sync read before
- starting the DMA transfer in remote setup
+        Wed, 11 Oct 2023 04:11:53 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0453092;
+        Wed, 11 Oct 2023 01:11:52 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9b64b98656bso1106031966b.0;
+        Wed, 11 Oct 2023 01:11:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697011910; x=1697616710; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SGMCBTNusP70u42LHRRik7B8Z00QtRCIGDUylj6XYAw=;
+        b=LFYbXMJdLFFKofPQfcjP5sKBAQDQwxOWuYH0r2LYwIXKj4xCvBTzqnFekiKAz7hoDD
+         W50CxgIR7YJZYucTb0tuADchb7pnfJ+LCuBWNuWWZWcvjU/becloK6Dr2U3jzh7uTt1K
+         AQfflP+b+tPORpyuEGeYR/nSObmb0wUIgKvzjC62dqNHnj6fQ4AamTYsf+i73WcXeBQD
+         Blq0QA1XYDonToqG8VkbLhIxzM6YWXTQd5sPIPzUxR17F6+3E1MTpz+2/uaimL8mZbvZ
+         yvpruf1qLIjH5pMuDa8ZM5fqP3OMkeTacWpyK+93kybAViFLbk9WQVVIUJjZVQE7W6V8
+         I0/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697011910; x=1697616710;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SGMCBTNusP70u42LHRRik7B8Z00QtRCIGDUylj6XYAw=;
+        b=b8FbygDjUfvOvnOyCVmlY6MDL9xM1+yeaVjnBcnwKTrT8BnVwhpgFy+3qYehrOq66T
+         07NK3CLcsRcrYgdwSleWEdctHL1DKhOMLchD5/dLlVYNzBI26QDuVZ68QaH2ngC2/dNQ
+         4v9t5KgUQD+TGmEQKH9DKFGeog/DH3yhhCKp4rCBDZ4DWtknVlT054b6GlKxmI6Uut1t
+         y7bAk7dcildidZyNZGQ80biqT3Pi9NqsNXLo3fDrJqYh7bIsY3NITDCM/Yjzd3yErK70
+         TWNMjbcawYlEnDQYq9LqaPYUTl1cGeeDiGu1cWB9o3JnasF0niBbY5aCGxCqMB8VX47o
+         ya7w==
+X-Gm-Message-State: AOJu0YymqR3Y1g6+Hm7ZxG3agec/R+f+Kd58sun9QgBEWi/kFp3C/IJs
+        vIwmOjL16iR7jAMI+7yDs8g9hzjPsaQ=
+X-Google-Smtp-Source: AGHT+IFS+xbyocKw0Ozogs/0xDvDxQz/wVDmhkbPI4KM123komulCh92pmTaWVBwf0yt3SKYqf8ORw==
+X-Received: by 2002:a17:906:3050:b0:9ad:df85:97ae with SMTP id d16-20020a170906305000b009addf8597aemr16960697ejd.66.1697011910095;
+        Wed, 11 Oct 2023 01:11:50 -0700 (PDT)
+Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
+        by smtp.gmail.com with ESMTPSA id la18-20020a170906ad9200b0099cd008c1a4sm9501500ejb.136.2023.10.11.01.11.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 01:11:48 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 11 Oct 2023 10:11:46 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Fei Yang <fei.yang@intel.com>, stable@vger.kernel.org
+Subject: Re: [PATCHv2] x86/alternatives: Disable KASAN in apply_alternatives()
+Message-ID: <ZSZYwvHTSapAaJQv@gmail.com>
+References: <20231011065849.19075-1-kirill.shutemov@linux.intel.com>
+ <20231011074616.GL14330@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231011-b4-feature_hdma_mainline-v3-6-24ee0c979c6f@bootlin.com>
-References: <20231011-b4-feature_hdma_mainline-v3-0-24ee0c979c6f@bootlin.com>
-In-Reply-To: <20231011-b4-feature_hdma_mainline-v3-0-24ee0c979c6f@bootlin.com>
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Cai Huoqing <cai.huoqing@linux.dev>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Herve Codina <herve.codina@bootlin.com>,
-        Kory Maincent <kory.maincent@bootlin.com>
-X-Mailer: b4 0.12.3
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011074616.GL14330@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Linked list element and pointer are not stored in the same memory as
-the eDMA controller register. If the doorbell register is toggled before
-the full write of the linked list a race condition error can appears.
-In remote setup we can only use a readl to the memory to assured the full
-write has occurred.
 
-Fixes: 7e4b8a4fbe2c ("dmaengine: Add Synopsys eDMA IP version 0 support")
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
----
+* Peter Zijlstra <peterz@infradead.org> wrote:
 
-Changes in v2:
-- New patch
----
- drivers/dma/dw-edma/dw-edma-v0-core.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+> >  	DPRINTK(ALT, "alt table %px, -> %px", start, end);
+> > +
+> > +	/*
+> > +	 * In the case CONFIG_X86_5LEVEL=y, KASAN_SHADOW_START is defined using
+> > +	 * cpu_feature_enabled(X86_FEATURE_LA57) and is therefore patched here.
+> > +	 * During the process, KASAN becomes confused and triggers
+> 
+> 	because of partial LA57 convertion ..
 
-diff --git a/drivers/dma/dw-edma/dw-edma-v0-core.c b/drivers/dma/dw-edma/dw-edma-v0-core.c
-index b38786f0ad79..6245b720fbfe 100644
---- a/drivers/dma/dw-edma/dw-edma-v0-core.c
-+++ b/drivers/dma/dw-edma/dw-edma-v0-core.c
-@@ -346,6 +346,20 @@ static void dw_edma_v0_core_write_chunk(struct dw_edma_chunk *chunk)
- 	dw_edma_v0_write_ll_link(chunk, i, control, chunk->ll_region.paddr);
- }
- 
-+static void dw_edma_v0_sync_ll_data(struct dw_edma_chunk *chunk)
-+{
-+	/*
-+	 * In case of remote eDMA engine setup, the DW PCIe RP/EP internals
-+	 * configuration registers and Application memory are normally accessed
-+	 * over different buses. Ensure LL-data reaches the memory before the
-+	 * doorbell register is toggled by issuing the dummy-read from the remote
-+	 * LL memory in a hope that the posted MRd TLP will return only after the
-+	 * last MWr TLP is completed
-+	 */
-+	if (!(chunk->chan->dw->chip->flags & DW_EDMA_CHIP_LOCAL))
-+		readl(chunk->ll_region.vaddr.io);
-+}
-+
- static void dw_edma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
- {
- 	struct dw_edma_chan *chan = chunk->chan;
-@@ -412,6 +426,9 @@ static void dw_edma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
- 		SET_CH_32(dw, chan->dir, chan->id, llp.msb,
- 			  upper_32_bits(chunk->ll_region.paddr));
- 	}
-+
-+	dw_edma_v0_sync_ll_data(chunk);
-+
- 	/* Doorbell */
- 	SET_RW_32(dw, chan->dir, doorbell,
- 		  FIELD_PREP(EDMA_V0_DOORBELL_CH_MASK, chan->id));
+Not all LA57 related sites are patched yet at this point, and KASAN sees
+a weird & broken mixture of LA48 and LA57 runtime semantics, right?
 
--- 
-2.25.1
+Ie. as far as KASAN is concerned, the LA48 -> LA57 behavioral switchover
+must be atomic, but during the kernel code patching process it isn't.
 
+Thanks,
+
+	Ingo
