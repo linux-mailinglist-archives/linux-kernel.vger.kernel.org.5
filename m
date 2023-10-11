@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3ABD7C51AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEC77C51B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234838AbjJKLTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:19:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
+        id S1346383AbjJKLTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234658AbjJKLTS (ORCPT
+        with ESMTP id S1345736AbjJKLTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:19:18 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37474B0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:19:16 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4053e6e8ca7so19944285e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:19:16 -0700 (PDT)
+        Wed, 11 Oct 2023 07:19:19 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D64B8
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:19:17 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-405d70d19bcso10032685e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:19:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697023154; x=1697627954; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697023156; x=1697627956; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Y5dECHie5t7w/LFj+hSn2EZYYIuSxKSWdwgSHs3GrYQ=;
-        b=paOaubDpSR+Z2YXae5A3aOp7dykvVsDwwtVI3IXsqZ3yl+3b5Lejk7TeZKU9Bk7oRq
-         6mReQYe1T2S5mibvGYrut7fLqf9DhNtczvYVWS5OIVhxnSllWe4ogBwjHYvLsk8/V31a
-         OrjKh3utE//AJQlQgDYtuT7l/GKkV78RTtmpMpCNTfmFMdGEGhuRZQwORPNJBv8RIZdR
-         rsWGJhxBsQD5V+Kmi/WoI4CFMSeBDnAa28tBRxiVTnaCVwmY92nK4PDcUdcxLrHhlYOP
-         7q44ySqZs5hnRKxgt/bWrGdCUsT6y2+CDuSFGWO3UugQuRDj4DLWMIYrns6XKoDMZu5K
-         niqQ==
+        bh=0IIANjo80zFqhbyLhR/zqKY0ZEpCfYarjbj4J5oFHCU=;
+        b=EyJoq/pX4QSeF/AhVnio1RBlLrkrSHENsqPTJCwKYFgEgJiLkEonaeVnFQBAGFmDrD
+         BYZaxIJAj1mVIiRNoHrA8bFdkUQ5JIo3ZTk0GKVt3UIf3TvkgYp/n9IIe2qo5giK5KbC
+         jEzJlfxJvrF+rO560o0cwmJ223Iloqckc/6Kq+43ryrv3NBl+LmLBk+D/fFo7DtCO2g+
+         sbfO3huHpBtmbaGPjokeEgwm/dsGK7ZRNy3XXVwy18AEdSQ4lqAyqp4sBwpQwo+/xdAP
+         mbNqoFTvBzd9zcFs+Zy/eWyNPkNY8wAFSz6baOa+1gu1htFZ5cpNfiRI4m7MqNcVlBnZ
+         6p8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697023154; x=1697627954;
+        d=1e100.net; s=20230601; t=1697023156; x=1697627956;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Y5dECHie5t7w/LFj+hSn2EZYYIuSxKSWdwgSHs3GrYQ=;
-        b=gNPiiWnkMOkE6xgX7LGM3eqf/S62QSPEfwLVSK6GAM0i3TRFD2NTFqlkT0x9pnMAnK
-         189RWAUd7V+PtenDDN127/ktx7m+KiXYJRFCISoEISf851vzz1Vq8HRBsQYNe3Z7EY92
-         AHpIR4/8QYlkPUqIoALF3zJ5upHEWgvyRsNkAGQbbkYgewr6pCS7QmuX+1B5K6YOB231
-         b3/GZNheV8/20ht4rYvSAkjzXGRSs174wM0NvZIWZeJ4q4XQRNFz4+gUE2ut0QDjRFHA
-         Ykgl50U7A49434BJpJnHJbWewtqNWof8k0/AU6XVSFgXeUAcLqd99Mz7vUTAnLmAuSnm
-         igxQ==
-X-Gm-Message-State: AOJu0YwO1olfOwcQ+x/rZiQ+wxeW7kUK+uK2vrq64DGlfmhbGOhWx5H0
-        U4cDdIe+hSS4siE5pXx6oQidbMYx6aaFho52uqz9Kg==
-X-Google-Smtp-Source: AGHT+IGqaMr2lbwiCk/m+ySyisBsIBIICm+Ha1304s+KwZsHP3G7Q7GtnKq3prSiP3Z7bET+xFCu8A==
-X-Received: by 2002:a05:600c:214f:b0:406:513d:738f with SMTP id v15-20020a05600c214f00b00406513d738fmr18787352wml.2.1697023154659;
-        Wed, 11 Oct 2023 04:19:14 -0700 (PDT)
+        bh=0IIANjo80zFqhbyLhR/zqKY0ZEpCfYarjbj4J5oFHCU=;
+        b=umeitMuCV0X0N58GoHpO+L9zChYdOzk4K/Nrd0UeBqe88xTm4LRDnOrnCikrZ/3Rgp
+         DHO2w3K8sMnaxnMPH55WvsXYQDdMfdhBd+eVeT8qPUF7o1yooyNvzoyxlEmohPAnF3bg
+         HqXI4SNS6/HPOwYzFvjtjjsDwLrIkkXUmLTOhwwAoQry2m2weiZtz6ok8CmjZ5JPJY80
+         Qgtuw3kkGsZIcmEHM8yK+lv9KfybOqJBUutCajXAC1s6guMoLS4Xtr9LiQVLvpgMUfhK
+         IS4yrVaBGvrQFJqdlcn2HWQmAM9fDDQajIkzqoOjofhkBEi3bjY0E8elTQBtq0KWTDK9
+         DxmA==
+X-Gm-Message-State: AOJu0YwG6LkMFUQPLLEZQSZoDqdUpS9u5YUhPFnhNuTPHKkNstobJpys
+        gAVaJeFw6RQnds7F9v+4Hill9w==
+X-Google-Smtp-Source: AGHT+IG/DnLus+yEPlI6bYFmkh9ll2Q+J+N/2Mo1GvXrndFzK7mO/7rr0oVK3NtPpfUMi8b7II3bfA==
+X-Received: by 2002:a7b:cc99:0:b0:401:7d3b:cc84 with SMTP id p25-20020a7bcc99000000b004017d3bcc84mr18354424wma.0.1697023155672;
+        Wed, 11 Oct 2023 04:19:15 -0700 (PDT)
 Received: from carbon-x1.. ([2a01:e0a:999:a3a0:9134:b302:d8b:a200])
-        by smtp.gmail.com with ESMTPSA id a4-20020a05600c224400b003fe2b081661sm18945715wmm.30.2023.10.11.04.19.13
+        by smtp.gmail.com with ESMTPSA id a4-20020a05600c224400b003fe2b081661sm18945715wmm.30.2023.10.11.04.19.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 04:19:14 -0700 (PDT)
+        Wed, 11 Oct 2023 04:19:15 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
 To:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
@@ -62,9 +62,9 @@ Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
         Jonathan Corbet <corbet@lwn.net>,
         Andrew Jones <ajones@ventanamicro.com>,
         Evan Green <evan@rivosinc.com>, Conor Dooley <conor@kernel.org>
-Subject: [PATCH v1 01/13] riscv: fatorize hwprobe ISA extension reporting
-Date:   Wed, 11 Oct 2023 13:14:26 +0200
-Message-ID: <20231011111438.909552-2-cleger@rivosinc.com>
+Subject: [PATCH v1 02/13] riscv: add ISA extension probing for Zv* extensions
+Date:   Wed, 11 Oct 2023 13:14:27 +0200
+Message-ID: <20231011111438.909552-3-cleger@rivosinc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231011111438.909552-1-cleger@rivosinc.com>
 References: <20231011111438.909552-1-cleger@rivosinc.com>
@@ -72,7 +72,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,52 +80,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Factorize ISA extension reporting by using a macro rather than
-copy/pasting extension names. This will allow adding new extensions more
-easily.
+Add probing of some Zv* ISA extensions that are mentioned in "RISC-V
+Cryptography Extensions Volume II" [1]. These ISA extensions are the
+following:
+
+- Zvbb: Vector Basic Bit-manipulation
+- Zvbc: Vector Carryless Multiplication
+- Zvkb: Vector Cryptography Bit-manipulation
+- Zvkg: Vector GCM/GMAC.
+- Zvkned: NIST Suite: Vector AES Block Cipher
+- Zvknh[ab]: NIST Suite: Vector SHA-2 Secure Hash
+- Zvksed: ShangMi Suite: SM4 Block Cipher
+- Zvksh: ShangMi Suite: SM3 Secure Hash
+- Zvkn: NIST Algorithm Suite
+- Zvknc: NIST Algorithm Suite with carryless multiply
+- Zvkng: NIST Algorithm Suite with GCM.
+- Zvks: ShangMi Algorithm Suite
+- Zvksc: ShangMi Algorithm Suite with carryless multiplication
+- Zvksg: ShangMi Algorithm Suite with GCM.
+- Zvkt: Vector Data-Independent Execution Latency.
+
+[1] https://drive.google.com/file/d/1gb9OLH-DhbCgWp7VwpPOVrrY6f3oSJLL/view
 
 Signed-off-by: Clément Léger <cleger@rivosinc.com>
 ---
- arch/riscv/kernel/sys_riscv.c | 26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
+ arch/riscv/include/asm/hwcap.h | 16 ++++++++++++++++
+ arch/riscv/kernel/cpufeature.c | 16 ++++++++++++++++
+ 2 files changed, 32 insertions(+)
 
-diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_riscv.c
-index 473159b5f303..5ce593ce07a4 100644
---- a/arch/riscv/kernel/sys_riscv.c
-+++ b/arch/riscv/kernel/sys_riscv.c
-@@ -145,20 +145,18 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair,
- 	for_each_cpu(cpu, cpus) {
- 		struct riscv_isainfo *isainfo = &hart_isa[cpu];
+diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+index b7b58258f6c7..4e46981ac6c8 100644
+--- a/arch/riscv/include/asm/hwcap.h
++++ b/arch/riscv/include/asm/hwcap.h
+@@ -58,6 +58,22 @@
+ #define RISCV_ISA_EXT_ZICSR		40
+ #define RISCV_ISA_EXT_ZIFENCEI		41
+ #define RISCV_ISA_EXT_ZIHPM		42
++#define RISCV_ISA_EXT_ZVBB		43
++#define RISCV_ISA_EXT_ZVBC		44
++#define RISCV_ISA_EXT_ZVKB		45
++#define RISCV_ISA_EXT_ZVKG		46
++#define RISCV_ISA_EXT_ZVKN		47
++#define RISCV_ISA_EXT_ZVKNC		48
++#define RISCV_ISA_EXT_ZVKNED		49
++#define RISCV_ISA_EXT_ZVKNG		50
++#define RISCV_ISA_EXT_ZVKNHA		51
++#define RISCV_ISA_EXT_ZVKNHB		52
++#define RISCV_ISA_EXT_ZVKS		53
++#define RISCV_ISA_EXT_ZVKSC		54
++#define RISCV_ISA_EXT_ZVKSED		55
++#define RISCV_ISA_EXT_ZVKSH		56
++#define RISCV_ISA_EXT_ZVKSG		57
++#define RISCV_ISA_EXT_ZVKT		58
  
--		if (riscv_isa_extension_available(isainfo->isa, ZBA))
--			pair->value |= RISCV_HWPROBE_EXT_ZBA;
--		else
--			missing |= RISCV_HWPROBE_EXT_ZBA;
--
--		if (riscv_isa_extension_available(isainfo->isa, ZBB))
--			pair->value |= RISCV_HWPROBE_EXT_ZBB;
--		else
--			missing |= RISCV_HWPROBE_EXT_ZBB;
--
--		if (riscv_isa_extension_available(isainfo->isa, ZBS))
--			pair->value |= RISCV_HWPROBE_EXT_ZBS;
--		else
--			missing |= RISCV_HWPROBE_EXT_ZBS;
-+#define CHECK_ISA_EXT(__ext)							\
-+		do {								\
-+			if (riscv_isa_extension_available(isainfo->isa, __ext))	\
-+				pair->value |= RISCV_HWPROBE_EXT_##__ext;	\
-+			else							\
-+				missing |= RISCV_HWPROBE_EXT_##__ext;		\
-+		} while (false)							\
-+
-+		CHECK_ISA_EXT(ZBA);
-+		CHECK_ISA_EXT(ZBB);
-+		CHECK_ISA_EXT(ZBS);
-+#undef CHECK_ISA_EXT
- 	}
+ #define RISCV_ISA_EXT_MAX		64
  
- 	/* Now turn off reporting features if any CPU is missing it. */
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index 1cfbba65d11a..859d647f3ced 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -174,6 +174,22 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(zba, RISCV_ISA_EXT_ZBA),
+ 	__RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
+ 	__RISCV_ISA_EXT_DATA(zbs, RISCV_ISA_EXT_ZBS),
++	__RISCV_ISA_EXT_DATA(zvbb, RISCV_ISA_EXT_ZVBB),
++	__RISCV_ISA_EXT_DATA(zvbc, RISCV_ISA_EXT_ZVBC),
++	__RISCV_ISA_EXT_DATA(zvkb, RISCV_ISA_EXT_ZVKB),
++	__RISCV_ISA_EXT_DATA(zvkg, RISCV_ISA_EXT_ZVKG),
++	__RISCV_ISA_EXT_DATA(zvkn, RISCV_ISA_EXT_ZVKN),
++	__RISCV_ISA_EXT_DATA(zvknc, RISCV_ISA_EXT_ZVKNC),
++	__RISCV_ISA_EXT_DATA(zvkned, RISCV_ISA_EXT_ZVKNED),
++	__RISCV_ISA_EXT_DATA(zvkng, RISCV_ISA_EXT_ZVKNG),
++	__RISCV_ISA_EXT_DATA(zvknha, RISCV_ISA_EXT_ZVKNHA),
++	__RISCV_ISA_EXT_DATA(zvknhb, RISCV_ISA_EXT_ZVKNHB),
++	__RISCV_ISA_EXT_DATA(zvks, RISCV_ISA_EXT_ZVKS),
++	__RISCV_ISA_EXT_DATA(zvksc, RISCV_ISA_EXT_ZVKSC),
++	__RISCV_ISA_EXT_DATA(zvksed, RISCV_ISA_EXT_ZVKSED),
++	__RISCV_ISA_EXT_DATA(zvksh, RISCV_ISA_EXT_ZVKSH),
++	__RISCV_ISA_EXT_DATA(zvksg, RISCV_ISA_EXT_ZVKSG),
++	__RISCV_ISA_EXT_DATA(zvkt, RISCV_ISA_EXT_ZVKT),
+ 	__RISCV_ISA_EXT_DATA(smaia, RISCV_ISA_EXT_SMAIA),
+ 	__RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
+ 	__RISCV_ISA_EXT_DATA(sscofpmf, RISCV_ISA_EXT_SSCOFPMF),
 -- 
 2.42.0
 
