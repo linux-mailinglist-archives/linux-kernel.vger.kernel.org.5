@@ -2,74 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F40D7C576C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8417C577C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235097AbjJKOvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 10:51:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47804 "EHLO
+        id S1346929AbjJKOwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 10:52:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235053AbjJKOvg (ORCPT
+        with ESMTP id S232323AbjJKOww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 10:51:36 -0400
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FD4A4;
-        Wed, 11 Oct 2023 07:51:34 -0700 (PDT)
-Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-49b289adca9so2836873e0c.3;
-        Wed, 11 Oct 2023 07:51:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697035894; x=1697640694; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tdMCYsnm0eBDCU0m6bekJGqM2rj9J3VQsaI4tQwRDOc=;
-        b=edu/cdznfFM1hy5xpJcPzaOJAouaPK/SO1tnMuK7DwKBoXTFy0BtjZjCBWZGApwxnr
-         zrPmci5y+EKdS3VIdPYabvHZpBaWD79EchdwBxUuHNnncn3Gv8uSWcnEYcDlccLcNyS6
-         F+5PH0ZrUj3M9g2R1+GZoOS51MNWT5X2RWkph5ABRGI6y6yoQbhWOMB7xuO+Ev8vkGsq
-         g/jy4UOcqvu6NX1kZOCbq/7cfv+ot9GbL+MfMlO+bLwmUVZkEQSV1dfJ4s8mmofVZive
-         d8rHNg7EQNgAa+ik74sXD6rhVcWn+Be3J6JxRYRJzCmp8TW5B9CghZhUyIgTLvNIAsiO
-         PdJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697035894; x=1697640694;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tdMCYsnm0eBDCU0m6bekJGqM2rj9J3VQsaI4tQwRDOc=;
-        b=ZuisqSE8tNe+RmAUHd7v4Qn5SWytW/SDn11NkWFyHlLk4CA+csfp+MSOkv48BwkSSo
-         IvLMsW7NtP0jx0qDSE7c41UV/TFMMIXNl27ps3bL6muzNz8nqSsdfxG32kXB3WCV34Uo
-         xTK1lxOqMoDj46876lINxr7EkCiSqBQd6S+HK/iEtrh+UP0MKCwHNC71jtzvt/gewLZn
-         ZoQAFTuFK1q5XzycmN70zu6lSNx1TFhvvvFLpviZZxbldtH8bvZ61bUjO/AjAftB+M5T
-         /AWhqdiwtyh+GTSdmvW8W9Rp/3tDS1QcP7BEZcU+wiJBgGtWCaG0U9jDQQPnOtQMA8G/
-         W5GQ==
-X-Gm-Message-State: AOJu0YwAr1LoaHnftCn9cxZy8Drt5BesHOrP+6CVpvPcP/+c5g2bQ3Jx
-        +H2gwD0tCNIuYR7qqBQhYLE=
-X-Google-Smtp-Source: AGHT+IGqirDGgHiwrRgzh60qr0fN64HGJtZdtf2Im7Q6UclJncqti4lvs967evnbmLDifcd6D/7cLA==
-X-Received: by 2002:a1f:e203:0:b0:495:ec90:997e with SMTP id z3-20020a1fe203000000b00495ec90997emr16267895vkg.7.1697035893879;
-        Wed, 11 Oct 2023 07:51:33 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l21-20020ac5cc55000000b0049d705614d1sm2530498vkm.17.2023.10.11.07.51.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 07:51:33 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 11 Oct 2023 07:51:32 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Bharat Bhushan <bbhushan2@marvell.com>
-Cc:     wim@linux-watchdog.org, inux@roeck-us.net,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        George Cherian <george.cherian@marvell.com>
-Subject: Re: [PATCH 2/2] drivers: watchdog: marvell_gti: Program the
- max_hw_heartbeat_ms
-Message-ID: <aa76d1fd-dfd5-438b-9a77-9d1d74d65a25@roeck-us.net>
-References: <20231009044037.514570-1-bbhushan2@marvell.com>
- <20231009044037.514570-2-bbhushan2@marvell.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009044037.514570-2-bbhushan2@marvell.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        Wed, 11 Oct 2023 10:52:52 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E85290;
+        Wed, 11 Oct 2023 07:52:51 -0700 (PDT)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BEjU1S026452;
+        Wed, 11 Oct 2023 14:52:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=blZIXf/q+c58Li9oxSoCW7D5FlG32Z/tjOwLZgshI+w=;
+ b=RbYpBDT3kScP27fNIuz3Ym84LZVaHqoGgV55DgT3iGCO7lsULcV3E2VhgQSxCMgr7cY2
+ GU5lJE7bFZ78Zxytc5L65WDwXHHQrtISjXgcQgclIuurhuAAv7sQlI6G4aE+0RfZcWvV
+ q6+Efthta+L9tq4N2XH0nHGubGAP55Wyttg6Cn44z2kgr5wo0+VC+xyiZIEqEjdS3Dy0
+ fqna5w/qhaXqqLHjNzuvI+4UTFqzoqv4OwUeVWCNSlFQPiJR4up3dYIEkIlm9EJraUgR
+ etfLJTGtvkDPl5Az2iEvQa0a0xudzDMJJ0sLU7rEoJd9uGL5kLkVgZ3sdwqi78nDJbxn Zg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnwrhgb03-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 14:52:10 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39BElp7a001343;
+        Wed, 11 Oct 2023 14:52:04 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnwrhg9ux-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 14:52:04 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39BDCZS8023094;
+        Wed, 11 Oct 2023 14:51:38 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkmc1r96p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 14:51:38 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39BEpbhV9110044
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Oct 2023 14:51:38 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E539B5805C;
+        Wed, 11 Oct 2023 14:51:37 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4BBDA58054;
+        Wed, 11 Oct 2023 14:51:35 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.67.198])
+        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Oct 2023 14:51:35 +0000 (GMT)
+Message-ID: <443fb4da33eb0ac51a580e8fd51fa271a59172ef.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 04/25] ima: Align ima_file_mprotect() definition with
+ LSM infrastructure
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Date:   Wed, 11 Oct 2023 10:51:34 -0400
+In-Reply-To: <20230904133415.1799503-5-roberto.sassu@huaweicloud.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904133415.1799503-5-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: l4C-9nHSHM0F3YkPBpc_8Yl32DzZISE1
+X-Proofpoint-GUID: x9r6_64VsuLv9CyGeWjhzhatKx7jdmXy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_09,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ mlxlogscore=720 clxscore=1015 priorityscore=1501 phishscore=0 adultscore=0
+ impostorscore=0 spamscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310110130
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,36 +104,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 10:10:37AM +0530, Bharat Bhushan wrote:
-> From: George Cherian <george.cherian@marvell.com>
+On Mon, 2023-09-04 at 15:33 +0200, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
 > 
-> Program the max_hw_heartbeat_ms value so that the watchdog_pretimeout
-> worker is activated. This kernel worker thread makes sure to ping the
-> watchdog in case the userspace is unable to do so. This kernel worker
-> ping will be done only till the full watchdog timeout there by
-> maintaining the watchdog functionality in case of a real hang.
+> Change ima_file_mprotect() definition, so that it can be registered
+> as implementation of the file_mprotect hook.
 > 
-> Signed-off-by: George Cherian <george.cherian@marvell.com>
-> Signed-off-by: Bharat Bhushan <bbhushan2@marvell.com>
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 > ---
->  drivers/watchdog/marvell_gti_wdt.c | 1 +
->  1 file changed, 1 insertion(+)
+>  include/linux/ima.h               | 5 +++--
+>  security/integrity/ima/ima_main.c | 6 ++++--
+>  security/security.c               | 2 +-
+>  3 files changed, 8 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/watchdog/marvell_gti_wdt.c b/drivers/watchdog/marvell_gti_wdt.c
-> index 25b7ce0f0738..bfe0c819248c 100644
-> --- a/drivers/watchdog/marvell_gti_wdt.c
-> +++ b/drivers/watchdog/marvell_gti_wdt.c
-> @@ -299,6 +299,7 @@ static int gti_wdt_probe(struct platform_device *pdev)
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index 893c3b98b4d0..56e72c0beb96 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -24,7 +24,8 @@ extern void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+>  extern void ima_file_free(struct file *file);
+>  extern int ima_file_mmap(struct file *file, unsigned long reqprot,
+>  			 unsigned long prot, unsigned long flags);
+> -extern int ima_file_mprotect(struct vm_area_struct *vma, unsigned long prot);
+> +int ima_file_mprotect(struct vm_area_struct *vma, unsigned long reqprot,
+> +		      unsigned long prot);
+
+"extern" is needed here and similarly in 5/25.
+
+Mimi
+
+>  extern int ima_load_data(enum kernel_load_data_id id, bool contents);
+>  extern int ima_post_load_data(char *buf, loff_t size,
+>  			      enum kernel_load_data_id id, char *description);
+> @@ -88,7 +89,7 @@ static inline int ima_file_mmap(struct file *file, unsigned long reqprot,
+>  }
 >  
->  	/* Maximum timeout is 3 times the pretimeout */
->  	wdog_dev->max_timeout = max_pretimeout * 3;
-> +	wdog_dev->max_hw_heartbeat_ms = max_pretimeout * 1000;
->  	/* Minimum first timeout (pretimeout) is 1, so min_timeout as 3 */
->  	wdog_dev->min_timeout = 3;
->  	wdog_dev->timeout = wdog_dev->pretimeout;
-> -- 
-> 2.34.1
-> 
+>  static inline int ima_file_mprotect(struct vm_area_struct *vma,
+> -				    unsigned long prot)
+> +				    unsigned long reqprot, unsigned long prot)
+>  {
+>  	return 0;
+>  }
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index 52e742d32f4b..e9e2a3ad25a1 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -441,7 +441,8 @@ int ima_file_mmap(struct file *file, unsigned long reqprot,
+>  /**
+>   * ima_file_mprotect - based on policy, limit mprotect change
+>   * @vma: vm_area_struct protection is set to
+> - * @prot: contains the protection that will be applied by the kernel.
+> + * @reqprot: protection requested by the application
+> + * @prot: protection that will be applied by the kernel
+>   *
+>   * Files can be mmap'ed read/write and later changed to execute to circumvent
+>   * IMA's mmap appraisal policy rules.  Due to locking issues (mmap semaphore
+> @@ -451,7 +452,8 @@ int ima_file_mmap(struct file *file, unsigned long reqprot,
+>   *
+>   * On mprotect change success, return 0.  On failure, return -EACESS.
+>   */
+> -int ima_file_mprotect(struct vm_area_struct *vma, unsigned long prot)
+> +int ima_file_mprotect(struct vm_area_struct *vma, unsigned long reqprot,
+> +		      unsigned long prot)
+>  {
+>  	struct ima_template_desc *template = NULL;
+>  	struct file *file;
+> diff --git a/security/security.c b/security/security.c
+> index 96f2c68a1571..dffb67e6e119 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -2721,7 +2721,7 @@ int security_file_mprotect(struct vm_area_struct *vma, unsigned long reqprot,
+>  	ret = call_int_hook(file_mprotect, 0, vma, reqprot, prot);
+>  	if (ret)
+>  		return ret;
+> -	return ima_file_mprotect(vma, prot);
+> +	return ima_file_mprotect(vma, reqprot, prot);
+>  }
+>  
+>  /**
+
+
