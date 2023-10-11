@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DA67C4F9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721C37C4F99
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbjJKKHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:07:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
+        id S234365AbjJKKHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234001AbjJKKGr (ORCPT
+        with ESMTP id S234533AbjJKKGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:06:47 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61FDF4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:06:34 -0700 (PDT)
+        Wed, 11 Oct 2023 06:06:48 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 215B5F7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:06:35 -0700 (PDT)
 Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S57cC5KmDzLqY0;
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4S57cC1pkdzkY9d;
         Wed, 11 Oct 2023 18:02:35 +0800 (CST)
 Received: from huawei.com (10.67.174.55) by kwepemi500008.china.huawei.com
  (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
- 2023 18:06:31 +0800
+ 2023 18:06:32 +0800
 From:   Jinjie Ruan <ruanjinjie@huawei.com>
 To:     <catalin.marinas@arm.com>, <will@kernel.org>,
         <yuzenghui@huawei.com>, <anshuman.khandual@arm.com>,
@@ -33,9 +33,9 @@ To:     <catalin.marinas@arm.com>, <will@kernel.org>,
         <hewenliang4@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <stable@kernel.org>
 CC:     <ruanjinjie@huawei.com>
-Subject: [PATCH v5.10 RESEND 06/15] arm64: allow kprobes on EL0 handlers
-Date:   Wed, 11 Oct 2023 10:05:36 +0000
-Message-ID: <20231011100545.979577-7-ruanjinjie@huawei.com>
+Subject: [PATCH v5.10 RESEND 07/15] arm64: split EL0/EL1 UNDEF handlers
+Date:   Wed, 11 Oct 2023 10:05:37 +0000
+Message-ID: <20231011100545.979577-8-ruanjinjie@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231011100545.979577-1-ruanjinjie@huawei.com>
 References: <20231011100545.979577-1-ruanjinjie@huawei.com>
@@ -57,17 +57,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mark Rutland <mark.rutland@arm.com>
 
-commit b3a0c010e900a9f89dcd99f10bd8f7538d21b0a9 upstream.
+commit 61d64a376ea80f9097e7ea599bcd68671b836dc6 upstream.
 
-Currently do_sysinstr() and do_cp15instr() are marked with
-NOKPROBE_SYMBOL(). However, these are only called for exceptions taken
-from EL0, and there is no risk of recursion in kprobes, so this is not
-necessary.
+In general, exceptions taken from EL1 need to be handled separately from
+exceptions taken from EL0, as the logic to handle the two cases can be
+significantly divergent, and exceptions taken from EL1 typically have
+more stringent requirements on locking and instrumentation.
 
-Remove the NOKPROBE_SYMBOL() annotation, and rename the two functions to
-more clearly indicate that these are solely for exceptions taken from
-EL0, better matching the names used by the lower level entry points in
-entry-common.c.
+Subsequent patches will rework the way EL1 UNDEFs are handled in order
+to address longstanding soundness issues with instrumentation and RCU.
+In preparation for that rework, this patch splits the existing
+do_undefinstr() handler into separate do_el0_undef() and do_el1_undef()
+handlers.
+
+Prior to this patch, do_undefinstr() was marked with NOKPROBE_SYMBOL(),
+preventing instrumentation via kprobes. However, do_undefinstr() invokes
+other code which can be instrumented, and:
+
+* For UNDEFINED exceptions taken from EL0, there is no risk of recursion
+  within kprobes. Therefore it is safe for do_el0_undef to be
+  instrumented with kprobes, and it does not need to be marked with
+  NOKPROBE_SYMBOL().
+
+* For UNDEFINED exceptions taken from EL1, either:
+
+  (a) The exception is has been taken when manipulating SSBS; these cases
+      are limited and do not occur within code that can be invoked
+      recursively via kprobes. Hence, in these cases instrumentation
+      with kprobes is benign.
+
+  (b) The exception has been taken for an unknown reason, as other than
+      manipulating SSBS we do not expect to take UNDEFINED exceptions
+      from EL1. Any handling of these exception is best-effort.
+
+  ... and in either case, marking do_el1_undef() with NOKPROBE_SYMBOL()
+  isn't sufficient to prevent recursion via kprobes as functions it
+  calls (including die()) are instrumentable via kprobes.
+
+  Hence, it's not worthwhile to mark do_el1_undef() with
+  NOKPROBE_SYMBOL(). The same applies to do_el1_bti() and do_el1_fpac(),
+  so their NOKPROBE_SYMBOL() annotations are also removed.
+
+Aside from the new instrumentability, there should be no functional
+change as a result of this patch.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
@@ -75,87 +107,128 @@ Cc: James Morse <james.morse@arm.com>
 Cc: Joey Gouly <joey.gouly@arm.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/r/20221019144123.612388-2-mark.rutland@arm.com
+Link: https://lore.kernel.org/r/20221019144123.612388-3-mark.rutland@arm.com
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
 ---
- arch/arm64/include/asm/exception.h | 4 ++--
- arch/arm64/kernel/entry-common.c   | 4 ++--
- arch/arm64/kernel/traps.c          | 6 ++----
- 3 files changed, 6 insertions(+), 8 deletions(-)
+ arch/arm64/include/asm/exception.h |  3 ++-
+ arch/arm64/kernel/entry-common.c   |  4 ++--
+ arch/arm64/kernel/traps.c          | 22 ++++++++++++----------
+ 3 files changed, 16 insertions(+), 13 deletions(-)
 
 diff --git a/arch/arm64/include/asm/exception.h b/arch/arm64/include/asm/exception.h
-index 3ed01b913f81..a31584c63a6c 100644
+index a31584c63a6c..cc5b2203d876 100644
 --- a/arch/arm64/include/asm/exception.h
 +++ b/arch/arm64/include/asm/exception.h
-@@ -42,10 +42,10 @@ void do_debug_exception(unsigned long addr_if_watchpoint, unsigned int esr,
- void do_fpsimd_acc(unsigned int esr, struct pt_regs *regs);
- void do_sve_acc(unsigned int esr, struct pt_regs *regs);
- void do_fpsimd_exc(unsigned int esr, struct pt_regs *regs);
--void do_sysinstr(unsigned int esr, struct pt_regs *regs);
-+void do_el0_sys(unsigned long esr, struct pt_regs *regs);
- void do_sp_pc_abort(unsigned long addr, unsigned int esr, struct pt_regs *regs);
- void bad_el0_sync(struct pt_regs *regs, int reason, unsigned int esr);
--void do_cp15instr(unsigned int esr, struct pt_regs *regs);
-+void do_el0_cp15(unsigned long esr, struct pt_regs *regs);
- void do_el0_svc(struct pt_regs *regs);
- void do_el0_svc_compat(struct pt_regs *regs);
- void do_el0_fpac(struct pt_regs *regs, unsigned long esr);
+@@ -33,7 +33,8 @@ asmlinkage void exit_to_user_mode(void);
+ void arm64_enter_nmi(struct pt_regs *regs);
+ void arm64_exit_nmi(struct pt_regs *regs);
+ void do_mem_abort(unsigned long addr, unsigned int esr, struct pt_regs *regs);
+-void do_undefinstr(struct pt_regs *regs, unsigned long esr);
++void do_el0_undef(struct pt_regs *regs, unsigned long esr);
++void do_el1_undef(struct pt_regs *regs, unsigned long esr);
+ void do_el0_bti(struct pt_regs *regs);
+ void do_el1_bti(struct pt_regs *regs, unsigned long esr);
+ asmlinkage void bad_mode(struct pt_regs *regs, int reason, unsigned int esr);
 diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index 53e596aae4e8..397c55468ed8 100644
+index 397c55468ed8..7a8cd856ee85 100644
 --- a/arch/arm64/kernel/entry-common.c
 +++ b/arch/arm64/kernel/entry-common.c
-@@ -306,7 +306,7 @@ static void noinstr el0_sys(struct pt_regs *regs, unsigned long esr)
+@@ -136,7 +136,7 @@ static void noinstr el1_undef(struct pt_regs *regs, unsigned long esr)
+ {
+ 	enter_from_kernel_mode(regs);
+ 	local_daif_inherit(regs);
+-	do_undefinstr(regs, esr);
++	do_el1_undef(regs, esr);
+ 	local_daif_mask();
+ 	exit_to_kernel_mode(regs);
+ }
+@@ -332,7 +332,7 @@ static void noinstr el0_undef(struct pt_regs *regs, unsigned long esr)
  {
  	enter_from_user_mode();
  	local_daif_restore(DAIF_PROCCTX);
--	do_sysinstr(esr, regs);
-+	do_el0_sys(esr, regs);
+-	do_undefinstr(regs, esr);
++	do_el0_undef(regs, esr);
  }
  
- static void noinstr el0_pc(struct pt_regs *regs, unsigned long esr)
-@@ -430,7 +430,7 @@ static void noinstr el0_cp15(struct pt_regs *regs, unsigned long esr)
- {
- 	enter_from_user_mode();
- 	local_daif_restore(DAIF_PROCCTX);
--	do_cp15instr(esr, regs);
-+	do_el0_cp15(esr, regs);
- }
- 
- static void noinstr el0_svc_compat(struct pt_regs *regs)
+ static void noinstr el0_bti(struct pt_regs *regs)
 diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index da13cfeee706..cc57ffe0503a 100644
+index cc57ffe0503a..a2dfce6493d2 100644
 --- a/arch/arm64/kernel/traps.c
 +++ b/arch/arm64/kernel/traps.c
-@@ -650,7 +650,7 @@ static const struct sys64_hook cp15_64_hooks[] = {
- 	{},
- };
- 
--void do_cp15instr(unsigned int esr, struct pt_regs *regs)
-+void do_el0_cp15(unsigned long esr, struct pt_regs *regs)
- {
- 	const struct sys64_hook *hook, *hook_base;
- 
-@@ -688,10 +688,9 @@ void do_cp15instr(unsigned int esr, struct pt_regs *regs)
- 	 */
- 	do_undefinstr(regs, esr);
+@@ -395,7 +395,7 @@ void arm64_notify_segfault(unsigned long addr)
+ 	force_signal_inject(SIGSEGV, code, addr, 0);
  }
--NOKPROBE_SYMBOL(do_cp15instr);
+ 
+-void do_undefinstr(struct pt_regs *regs, unsigned long esr)
++void do_el0_undef(struct pt_regs *regs, unsigned long esr)
+ {
+ 	/* check for AArch32 breakpoint instructions */
+ 	if (!aarch32_break_handler(regs))
+@@ -404,12 +404,16 @@ void do_undefinstr(struct pt_regs *regs, unsigned long esr)
+ 	if (call_undef_hook(regs) == 0)
+ 		return;
+ 
+-	if (!user_mode(regs))
+-		die("Oops - Undefined instruction", regs, esr);
+-
+ 	force_signal_inject(SIGILL, ILL_ILLOPC, regs->pc, 0);
+ }
+-NOKPROBE_SYMBOL(do_undefinstr);
++
++void do_el1_undef(struct pt_regs *regs, unsigned long esr)
++{
++	if (call_undef_hook(regs) == 0)
++		return;
++
++	die("Oops - Undefined instruction", regs, esr);
++}
+ 
+ void do_el0_bti(struct pt_regs *regs)
+ {
+@@ -420,7 +424,6 @@ void do_el1_bti(struct pt_regs *regs, unsigned long esr)
+ {
+ 	die("Oops - BTI", regs, esr);
+ }
+-NOKPROBE_SYMBOL(do_el1_bti);
+ 
+ void do_el0_fpac(struct pt_regs *regs, unsigned long esr)
+ {
+@@ -435,7 +438,6 @@ void do_el1_fpac(struct pt_regs *regs, unsigned long esr)
+ 	 */
+ 	die("Oops - FPAC", regs, esr);
+ }
+-NOKPROBE_SYMBOL(do_el1_fpac);
+ 
+ #define __user_cache_maint(insn, address, res)			\
+ 	if (address >= user_addr_max()) {			\
+@@ -671,7 +673,7 @@ void do_el0_cp15(unsigned long esr, struct pt_regs *regs)
+ 		hook_base = cp15_64_hooks;
+ 		break;
+ 	default:
+-		do_undefinstr(regs, esr);
++		do_el0_undef(regs, esr);
+ 		return;
+ 	}
+ 
+@@ -686,7 +688,7 @@ void do_el0_cp15(unsigned long esr, struct pt_regs *regs)
+ 	 * EL0. Fall back to our usual undefined instruction handler
+ 	 * so that we handle these consistently.
+ 	 */
+-	do_undefinstr(regs, esr);
++	do_el0_undef(regs, esr);
+ }
  #endif
  
--void do_sysinstr(unsigned int esr, struct pt_regs *regs)
-+void do_el0_sys(unsigned long esr, struct pt_regs *regs)
- {
- 	const struct sys64_hook *hook;
- 
-@@ -708,7 +707,6 @@ void do_sysinstr(unsigned int esr, struct pt_regs *regs)
+@@ -705,7 +707,7 @@ void do_el0_sys(unsigned long esr, struct pt_regs *regs)
+ 	 * back to our usual undefined instruction handler so that we handle
+ 	 * these consistently.
  	 */
- 	do_undefinstr(regs, esr);
+-	do_undefinstr(regs, esr);
++	do_el0_undef(regs, esr);
  }
--NOKPROBE_SYMBOL(do_sysinstr);
  
  static const char *esr_class_str[] = {
- 	[0 ... ESR_ELx_EC_MAX]		= "UNRECOGNIZED EC",
 -- 
 2.34.1
 
