@@ -2,151 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A362B7C5D56
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AA67C5D62
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233066AbjJKTB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 15:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
+        id S1345779AbjJKTDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 15:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233215AbjJKTBZ (ORCPT
+        with ESMTP id S232906AbjJKTDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 15:01:25 -0400
-Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2A0BA;
-        Wed, 11 Oct 2023 12:01:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1697050885; x=1728586885;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=u48bYjMyqhmWB7KVO6HThc3XzrTpvovThwJ6D2RFLps=;
-  b=vzBN2m4IEkKIso3yiacZ/YQWmHTRhBvbZdYaF3LPWi1+WBFaCmJjgaOO
-   rmYcgsrkL2SEHb045VvAGbLONKIUmIBd92dk3BS8HjRl96/6lJyQrmw1Q
-   By/QKPs0J7LYx46d0aOvRmyUOwzFU5agb9rq/ETLkLiDZmZVfLNWLl0cA
-   c=;
-X-IronPort-AV: E=Sophos;i="6.03,216,1694736000"; 
-   d="scan'208";a="612918955"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-8c5b1df3.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 19:01:22 +0000
-Received: from EX19MTAUWC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2c-m6i4x-8c5b1df3.us-west-2.amazon.com (Postfix) with ESMTPS id 338D640D4A;
-        Wed, 11 Oct 2023 19:01:20 +0000 (UTC)
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Wed, 11 Oct 2023 19:01:19 +0000
-Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
- (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 11 Oct
- 2023 19:01:17 +0000
-Message-ID: <1bd37676-a1ce-4184-a7f7-ba490b24a6fb@amazon.com>
-Date:   Wed, 11 Oct 2023 21:01:15 +0200
+        Wed, 11 Oct 2023 15:03:35 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810479E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:03:33 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6CB8540E01AA;
+        Wed, 11 Oct 2023 19:03:31 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id QrrpHl-Cn7QB; Wed, 11 Oct 2023 19:03:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1697051009; bh=vPOgBNJTPbQOhMbYg87tDw12X8IrNzhCwtHDGFXYC2U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k0sFaOjFWmokCL5bvo2rV7FctBrNnS18FFJ2Kvb9vOLE4bTyzro6wzk2hCGV7t4od
+         bn2mgaYOu/jlO+ME0N3Gm1vhs29a2t+OHKuAhpX9bDXiqJHR0aeRihHIj5MnsjxSll
+         uQkns+LJWs9PbeDB/EmGB9KYuXjx9057uqgjgZdOz9ajzmX3gkR5XiTGiIhSgj+DkE
+         8my5w9BkT7MFcf3VyYcc350A5QaUfhH4lG72rWLu+VC7sgHdwPxEqvY5JS68hf0zjE
+         3zxL9zKFAX+XSYH7ONaCHSMYIjDhlh+OyQRlaUWZS4FSPORRuHsBh/xorF0x85VX8b
+         H1ZHuXyB3QCVhZm7lETEL9TcCUXwuflBm5dv3FbcG5rVSwqMvOQe29mAOUmjXjtMTN
+         lD2iT/WqX/cMbIrKl5ylYhvoABOorX9YVVn0msIlkVz8aTJsGEk2o6jbgZW9AkPajr
+         Q6cGJ64fM47dWD2NdcNiz2JFQ27cxf4y2Y/YnxM2SfKOH0s1bMa5iydZEsW5JBV8lF
+         4Rf51s700GxHZTSQyo2p576Zy4PZscMlGEsgl5A4JlW2wiRqlykmpPBAdl/AUOR5Z8
+         JSMCWJ+N7UOa7V6oYqUeB5H+xmOL6sCsBsrp+h722pMKs6vmxRZc+Kd3uMvd8gKcXf
+         jt6iuLHyOxsCo2oJ2Y8+6Kbk=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 952CE40E00B3;
+        Wed, 11 Oct 2023 19:03:18 +0000 (UTC)
+Date:   Wed, 11 Oct 2023 21:03:17 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     Breno Leitao <leitao@debian.org>, tglx@linutronix.de,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] x86/bugs: Add a separate config for each mitigation
+Message-ID: <20231011190317.GDZSbxdd5TuCIp5+JN@fat_crate.local>
+References: <20231010103028.4192223-1-leitao@debian.org>
+ <20231011044252.42bplzjsam3qsasz@treble>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] Import CBOR library
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Olivia Mackall <olivia@selenic.com>,
-        "Petre Eftime" <petre.eftime@gmail.com>,
-        Erdem Meydanlli <meydanli@amazon.nl>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Kyunghwan Kwon <k@mononn.com>
-References: <20231009212053.2007-1-graf@amazon.com>
- <20231009212053.2007-2-graf@amazon.com>
- <2023101010-overwrite-parakeet-91d5@gregkh>
- <0ee221bc-ea99-4724-9ebd-436e91417e4b@amazon.com>
- <2023101009-accustom-manifesto-8bdb@gregkh>
- <b3a8c722-c0e2-4c8c-aef0-29af0a93572d@amazon.com>
- <2023101001-ocelot-veteran-10db@gregkh>
- <2339287b-8b17-413b-aa86-f618ea7fc3fa@app.fastmail.com>
- <2023101156-helper-waving-09df@gregkh>
-From:   Alexander Graf <graf@amazon.com>
-In-Reply-To: <2023101156-helper-waving-09df@gregkh>
-X-Originating-IP: [10.253.83.51]
-X-ClientProxiedBy: EX19D042UWA003.ant.amazon.com (10.13.139.44) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231011044252.42bplzjsam3qsasz@treble>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ck9uIDExLjEwLjIzIDE5OjQ2LCBHcmVnIEtyb2FoLUhhcnRtYW4gd3JvdGU6Cj4KPiBPbiBXZWQs
-IE9jdCAxMSwgMjAyMyBhdCAwMjoyNDo0OFBNICswMjAwLCBBcm5kIEJlcmdtYW5uIHdyb3RlOgo+
-PiBPbiBUdWUsIE9jdCAxMCwgMjAyMywgYXQgMTA6MjcsIEdyZWcgS3JvYWgtSGFydG1hbiB3cm90
-ZToKPj4+IE9uIFR1ZSwgT2N0IDEwLCAyMDIzIGF0IDEwOjA4OjQzQU0gKzAyMDAsIEFsZXhhbmRl
-ciBHcmFmIHdyb3RlOgo+Pj4+IE9uIDEwLjEwLjIzIDEwOjAzLCBHcmVnIEtyb2FoLUhhcnRtYW4g
-d3JvdGU6Cj4+Pj4KPj4+Pj4+IE91dCBvZiB0aGVzZSwgdGhlIE5TTSBjb21tdW5pY2F0aW9uIHBy
-b3RvY29sIHVzZXMgYWxsIGV4Y2VwdCBTZW1hbnRpYyB0YWdzCj4+Pj4+PiBhbmQgRmxvYXRzLiBU
-aGUgQ0JPUiBsaWJyYXJ5IHRoYXQgdGhpcyBwYXRjaCBpbXBvcnRzIGRvZXMgbm90IGhhdmUgc3Bl
-Y2lhbAo+Pj4+Pj4gaGFuZGxpbmcgZm9yIFNlbWFudGljIHRhZ3MsIHdoaWNoIGxlYXZlcyBvbmx5
-IGZsb2F0cyB3aGljaCBhcmUgYWxyZWFkeQo+Pj4+Pj4gI2lmZGVmJ2VkIG91dC4gVGhhdCBtZWFu
-cyB0aGVyZSBpcyBub3QgbXVjaCB0byB0cmltLgo+Pj4+Pj4KPj4+Pj4+IFdoYXQgeW91IHNlZSBo
-ZXJlIGlzIHdoYXQncyBuZWVkZWQgdG8gcGFyc2UgQ0JPUiBpbiBrZXJuZWwgLSBpZiB0aGF0J3Mg
-d2hhdAo+Pj4+Pj4gd2Ugd2FudCB0byBkby4gSSdtIGhhcHB5IHRvIHJpcCBpdCBvdXQgYWdhaW4g
-YW5kIG1ha2UgaXQgYSBwdXJlIHVzZXIgc3BhY2UKPj4+Pj4+IHByb2JsZW0gdG8gZG8gQ0JPUiA6
-KS4KPj4+Pj4gWWVzLCB3aHkgYXJlIHdlIHBhcnNpbmcgdGhpcyBpbiB0aGUga2VybmVsPyAgV2hh
-dCBjb3VsZCBnbyB3cm9uZyB3aXRoCj4+Pj4+IGFkZGluZyB5ZXQtYW5vdGhlci1wYXJzZXIgaW4g
-cHJpdmlsZWdlZCBjb250ZXh0PyAgOikKPj4+Pj4KPj4+Pj4gV2h5IGRvZXMgdGhpcyBoYXZlIHRv
-IGJlIGluIHRoZSBrZXJuZWwsIHRoZSBkYXRhIHNlbnQvcmVjaWV2ZWQgaXMgb3Zlcgo+Pj4+PiB2
-aXJ0aW8sIHNvIHdoeSBkb2VzIHRoZSBrZXJuZWwgaGF2ZSB0byBwYXJzZSBpdD8gIEkgY291bGRu
-J3QgZmlndXJlIHRoYXQKPj4+Pj4gb3V0IGZyb20gdGhlIGRyaXZlciwgeWV0IHRoZSBkcml2ZXIg
-c2VlbXMgdG8gaGF2ZSBhIGxvdCBvZiBoYXJkLWNvZGVkCj4+Pj4+IHBhcnNpbmcgbG9naWMgaW4g
-aXQgdG8gYXNzdW1lIHNwZWNpZmljIG1lc3NhZ2UgZm9ybWF0cz8KPj4+Pgo+Pj4+IFRoZSBwYXJz
-aW5nIGRvZXNuJ3QgaGF2ZSB0byBiZSBpbiBrZXJuZWwgYW5kIGl0IHByb2JhYmx5IHNob3VsZG4n
-dCBiZQo+Pj4+IGVpdGhlci4gVjMgb2YgdGhlIHBhdGNoIHdhcyBwdW50aW5nIGFsbCB0aGUgcGFy
-c2luZyB0byB1c2VyIHNwYWNlLCBhdCB3aGljaAo+Pj4+IHBvaW50IHlvdSBhbmQgQXJuZCBzYWlk
-IEkgc2hvdWxkIGdpdmUgaXQgYSB0cnkgdG8gZG8gdGhlIHByb3RvY29sIHBhcnNpbmcgaW4KPj4+
-PiBrZXJuZWwgc3BhY2UgaW5zdGVhZC4gVGhhdCdzIHdoeSB0aGUgcGFyc2VyIGlzIGhlcmUuCj4+
-PiBBcm5kIHNhaWQgdGhhdCwgbm90IG1lIDopCj4+Pgo+Pj4+IElmIHdlIGNvbmNsdWRlIHRoYXQg
-YWxsIHRoaXMgaW4ta2VybmVsIHBhcnNpbmcgaXMgbm90IHdvcnRoIGl0LCBJJ20gdmVyeQo+Pj4+
-IGhhcHB5IHRvIGp1c3QgZ28gYmFjayB0byB0aGUgdGhlIHYzIGlvY3RsIGludGVyZmFjZSBhbmQg
-cG9zdCB2NSB3aXRoIGh3cm5nCj4+Pj4gbWVyZ2VkIGludG8gbWlzYywgYnV0IHJlbW92ZSBhbGwg
-Q0JPUiBsb2dpYyBhZ2FpbiA6KQo+Pj4gSSB0aGluayB0aGUgbGVzcyBwYXJzZXJzIHdlIGhhdmUg
-aW4gdGhlIGtlcm5lbCwgdGhlIHNhZmVyIHdlIGFyZSBmb3IKPj4+IG9idmlvdXMgcmVhc29ucy4g
-IFVubGVzcyB5b3UgaGF2ZSBhIHBhcnNlciBmb3IgdGhpcyBpbiBydXN0PyAgOikKPj4+Cj4+PiBJ
-IGRvbid0IHJlYWxseSBrbm93LCBoYXZpbmcgYSBnZW5lcmljIGludGVyZmFjZSBpcyBnb29kLCBi
-dXQgYXQgdGhlCj4+PiBleHBlbnNlIG9mIHRoaXMgYXBpIGlzIHByb2JhYmx5IG5vdCBnb29kLiAg
-aW5kaXZpZHVhbCBpb2N0bHMgbWlnaHQgYmUKPj4+IGJldHRlciBpZiB0aGVyZSBhcmUgbm90IGdv
-aW5nIHRvIGJlIGFueSBvdGhlciBkcml2ZXJzIGZvciB0aGlzIHR5cGUgb2YKPj4+IHRoaW5nPwo+
-PiBJIHdhcyBkZWZpbml0ZWx5IGV4cGVjdGluZyBzb21ldGhpbmcgc2ltcGxlciB0aGFuIHdoYXQg
-d2FzIHBvc3NpYmxlCj4+IGluIHRoZSB2NCBwYXRjaC4gSSBoYWQgYW5vdGhlciBsb29rIG5vdywg
-YW5kIGl0J3MgY2xlYXIgdGhhdCB0aGUKPj4gaW9jdGwgaW50ZXJmYWNlIGlzIHN0aWxsIG5vdCBn
-cmVhdCBiZWNhdXNlIHRoZSB2YXJpYWJsZSBkYXRhIHN0cnVjdHVyZXMKPj4gc2hpbmUgdGhyb3Vn
-aCBmb3Igc29tZSBvZiB0aGUgY2FsbHMsIGFuZCBldmVuIHRvIGdldCB0byB0aGlzIHBvaW50LAo+
-PiBhIHdob2xlIGxvdCBvZiBjb21wbGV4aXR5IGlzIHJlcXVpcmVkIHVuZGVybmVhdGguCj4+Cj4+
-IFRvIGdldCBhbnl0aGluZyBiZXR0ZXIsIG9uZSB3b3VsZCBwcm9iYWJseSBoYXZlIHRvIHJlZGVz
-aWduIHRoZSBlbnRpcmUKPj4gaW50ZXJmYWNlIHN0YWNrIChoeXBlcnZpc29yLCBrZXJuZWwgYW5k
-IHVzZXJsYW5kKSB0byB1c2UgcmVndWxhcgo+PiBmaXhlZCBkYXRhIHN0cnVjdHVyZXMsIGFuZCB0
-aGlzIHNlZW1zIHVubGlrZWx5IHRvIGhhcHBlbi4KPiBXaHkgbm90IGZpeCB0aGlzIGFuZCBkbyBp
-dCBwcm9wZXJseT8gIFdoYXQncyBwcmV2ZW50aW5nIHRoYXQgZnJvbQo+IGhhcHBlbmluZz8gIFdl
-IGRvbid0IHdhbnQgdG8gY3JlYXRlIGFuIGludGVyZmFjZSBoZXJlIHRoYXQgaXMgYnJva2VuLCBv
-cgo+IGluc2VjdXJlLCBvciBhIHBhaW4gdG8gbWFpbnRhaW4sIHJpZ2h0PwoKClRoZSBpbnRlcmZh
-Y2UgaXMgbmVpdGhlciBicm9rZW4sIGluc2VjdXJlIG5vciBhIHBhaW4gdG8gbWFpbnRhaW4uIEl0
-J3MgCm1lcmVseSBub3QgYXMgcHJldHR5IGFzIGNvdWxkIGJlLiBCdXQgaXQncyB0aGVyZSB0byBz
-dGF5IGJlY2F1c2UgaXQncyAKd2hhdCB0aGUgaHlwZXJ2aXNvciBoYXMgYmVlbiBleHBvc2luZyBm
-b3IgdGhlIGxhc3QgMiB5ZWFycy4KCkkgYWxzbyBmcmFua2x5IGRvbid0IHRoaW5rIHRoYXQgZG9p
-bmcgc3RhdGljIHN0cnVjdHVyZXMgaXMgYW55IG1vcmUgCiJwcm9wZXIiIHRoYW4gd2hhdCB0aGlz
-IGludGVyZmFjZSBpcyBkb2luZyB0b2RheS4gSXQncyBzZXJpYWxpemVkIGRhdGEgCm9mIHZhcmlh
-YmxlIGxlbmd0aC4gVGhhdCdzIGp1c3QgdGhlIG5hdHVyZSBvZiB0aGUgYmVhc3QgLSB0aGUgYmFj
-a2luZyAKZGF0YSBmb3Igc29tZSBvZiB0aGVzZSBvcGVyYXRpb25zICppcyogZHluYW1pYy4KCgpB
-bGV4CgoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdlcm1hbnkgR21iSApLcmF1c2Vuc3Ry
-LiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5nOiBDaHJpc3RpYW4gU2NobGFlZ2Vy
-LCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRzZ2VyaWNodCBDaGFybG90dGVuYnVy
-ZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVzdC1JRDogREUgMjg5IDIzNyA4NzkK
-Cgo=
+On Tue, Oct 10, 2023 at 09:42:52PM -0700, Josh Poimboeuf wrote:
+>   MITIGATION_PAGE_TABLE_ISOLATION
+>   MITIGATION_RETPOLINE
+>   MITIGATION_UNRET_ENTRY
+>   MITIGATION_CALL_DEPTH_TRACKING
+>   MITIGATION_IBPB_ENTRY
+>   MITIGATION_IBRS_ENTRY
+>   MITIGATION_SRSO
+>   MITIGATION_SLS
 
+The train has already left the station on those. The other mitigations
+don't have "MITIGAT*" at all in front of the name. I.e.:
+
+config RETHUNK
+config CALL_DEPTH_TRACKING
+...
+
+and prepending them all with MITIGATION_ is going to cause too much
+senseless churn for a reason which I don't think is worth the effort.
+
+So let's stick with the current naming scheme and do
+
+config MDS
+config TAA
+...
+
+and so on.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
