@@ -2,126 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA9F7C5557
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A697C555B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234987AbjJKNZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40674 "EHLO
+        id S232195AbjJKN0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232085AbjJKNZk (ORCPT
+        with ESMTP id S230489AbjJKN0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:25:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B51A92
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:25:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fjWlCAr02qhHiPzFN+j8xSGNeytzdn+jfQfHwKa+nhM=; b=PNQrCO1qldo1XHBEfFbOw2F3K+
-        pJ2Mn3AGYevAa6PJALfrvv2J4i2qL6wV7mRRLq7pjNH4+BrPl18Kkj7t6EV4NFn0Wnngs3fBFqCHf
-        y6BiozmkpXAp6qwd68NwBHV4cUm0ScJQV499k0wjyrF8dqLyCb2/Uaq9vIoEb5YzkBi7l05s8Plpo
-        1dqCrXhklg4Me5o9neFzilft17ezyJrd52P0BTUf9usM8Ybm4Rdm0Z1Etla5j9dYfOjvZTnyRJkEh
-        sSMKe5Wts7fnBb3Sw+nt5G/vtY9sJJd1JCQDpNo+Rqg6hajXAl8VZUvej8UgGrQ/X8ineVODPvML8
-        U5oJ5Kcw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qqZCq-00AzE3-GF; Wed, 11 Oct 2023 13:24:56 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2C6FA30036C; Wed, 11 Oct 2023 15:24:56 +0200 (CEST)
-Date:   Wed, 11 Oct 2023 15:24:56 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     mingo@kernel.org, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, corbet@lwn.net,
-        qyousef@layalina.io, chris.hyser@oracle.com,
-        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
-        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
-        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
-        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
-        tglx@linutronix.de
-Subject: Re: [PATCH 03/15] sched/fair: Add lag based placement
-Message-ID: <20231011132456.GO14330@noisy.programming.kicks-ass.net>
-References: <20230531115839.089944915@infradead.org>
- <20230531124603.794929315@infradead.org>
- <87f1feec-1be5-4d24-a206-e30238072ae1@bytedance.com>
+        Wed, 11 Oct 2023 09:26:16 -0400
+Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EF098
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:26:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
+        ; s=dkim1; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date
+        :Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=dA6iqc7NwacsVn2nL/GeV/zrTBiJpTxcisfIb9/f3gE=; b=gyaE1x/h74kkBuGzOxmzcVo6NY
+        Hw9Q+7bIlke/zCrR9Va8tnvzGmZ758PArH/saNPOM49nt42VYoca1gTkUNbmN2vEjwVmNRkVVDp3q
+        bl4FU5LWyb4WVlsSm5WHDmCBTCXL3bPfqw7WeVOl9CJZC+bmiquNvxnwKc1siRsib+mu1cxJUmgcy
+        cajqaMAqV1PONan3xeSXJVGMj+/jPYg1ko9wMkQSunn6ZM+uGThK6xebAZfqOHEueqzSiAOlVlwyT
+        BrkNXu2EpkRG54aU4WzzcfiKjjH+LOkSXguSkJjMueuZr0jsMZX1UTNm4/Nqa1GuZXCr1j8CWfDqh
+        Y0VfYukQ==;
+Received: from [192.168.1.4] (port=11306 helo=SH-EX2013.helmholz.local)
+        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+        (Exim 4.96)
+        (envelope-from <Ante.Knezic@helmholz.de>)
+        id 1qqZDy-000326-1l;
+        Wed, 11 Oct 2023 15:26:06 +0200
+Received: from linuxdev.helmholz.local (192.168.6.7) by
+ SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.48; Wed, 11 Oct 2023 15:26:06 +0200
+From:   Ante Knezic <ante.knezic@helmholz.de>
+To:     <conor@kernel.org>
+CC:     <UNGLinuxDriver@microchip.com>, <andrew@lunn.ch>,
+        <ante.knezic@helmholz.de>, <conor+dt@kernel.org>,
+        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+        <edumazet@google.com>, <f.fainelli@gmail.com>,
+        <krzysztof.kozlowski+dt@linaro.org>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marex@denx.de>,
+        <netdev@vger.kernel.org>, <olteanv@gmail.com>, <pabeni@redhat.com>,
+        <robh+dt@kernel.org>, <woojung.huh@microchip.com>
+Subject: [PATCH net-next 2/2] dt-bindings: net: microchip,ksz: document microchip,rmii-clk-internal
+Date:   Wed, 11 Oct 2023 15:26:00 +0200
+Message-ID: <20231011132600.26297-1-ante.knezic@helmholz.de>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20231010-unwired-trench-c7a467118879@spud>
+References: <20231010-unwired-trench-c7a467118879@spud>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87f1feec-1be5-4d24-a206-e30238072ae1@bytedance.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [192.168.6.7]
+X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
+ SH-EX2013.helmholz.local (192.168.1.4)
+X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 08:00:22PM +0800, Abel Wu wrote:
-> On 5/31/23 7:58 PM, Peter Zijlstra Wrote:
-> >   		/*
-> > +		 * If we want to place a task and preserve lag, we have to
-> > +		 * consider the effect of the new entity on the weighted
-> > +		 * average and compensate for this, otherwise lag can quickly
-> > +		 * evaporate.
-> > +		 *
-> > +		 * Lag is defined as:
-> > +		 *
-> > +		 *   lag_i = S - s_i = w_i * (V - v_i)
-> > +		 *
-> > +		 * To avoid the 'w_i' term all over the place, we only track
-> > +		 * the virtual lag:
-> > +		 *
-> > +		 *   vl_i = V - v_i <=> v_i = V - vl_i
-> > +		 *
-> > +		 * And we take V to be the weighted average of all v:
-> > +		 *
-> > +		 *   V = (\Sum w_j*v_j) / W
-> > +		 *
-> > +		 * Where W is: \Sum w_j
-> > +		 *
-> > +		 * Then, the weighted average after adding an entity with lag
-> > +		 * vl_i is given by:
-> > +		 *
-> > +		 *   V' = (\Sum w_j*v_j + w_i*v_i) / (W + w_i)
-> > +		 *      = (W*V + w_i*(V - vl_i)) / (W + w_i)
-> > +		 *      = (W*V + w_i*V - w_i*vl_i) / (W + w_i)
-> > +		 *      = (V*(W + w_i) - w_i*l) / (W + w_i)
-> > +		 *      = V - w_i*vl_i / (W + w_i)
-> > +		 *
-> > +		 * And the actual lag after adding an entity with vl_i is:
-> > +		 *
-> > +		 *   vl'_i = V' - v_i
-> > +		 *         = V - w_i*vl_i / (W + w_i) - (V - vl_i)
-> > +		 *         = vl_i - w_i*vl_i / (W + w_i)
-> > +		 *
-> > +		 * Which is strictly less than vl_i. So in order to preserve lag
+On Tue, 10 Oct 2023 16:25:55 +0100, Conor Dooley wrote:
+> On Tue, Oct 10, 2023 at 03:18:54PM +0200, Ante Knezic wrote:
+> > Add documentation for selecting reference rmii clock on KSZ88X3 devices
+> > 
+> > Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
+> > ---
+> >  Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> > index e51be1ac0362..3df5d2e72dba 100644
+> > --- a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> > +++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> > @@ -49,6 +49,12 @@ properties:
+> >        Set if the output SYNCLKO clock should be disabled. Do not mix with
+> >        microchip,synclko-125.
+> >  
+> > +  microchip,rmii-clk-internal:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description:
+> > +      Set if the RMII reference clock should be provided internally.
 > 
-> Maybe a stupid question, but why vl'_i < vl_i? Since vl_i can be negative.
+> > Applies only
+> > +      to KSZ88X3 devices.
+> 
+> This should be enforced by the schema, the example schema in the docs
+> should show you how to do this.
 
-So the below doesn't care about the sign, it simply inverts this
-relation to express vl_i in vl'_i:
+I am guessing you are refering to limiting the property to ksz88x3 devices?
+Something like:
 
-> > +		 * we should inflate the lag before placement such that the
-> > +		 * effective lag after placement comes out right.
-> > +		 *
-> > +		 * As such, invert the above relation for vl'_i to get the vl_i
-> > +		 * we need to use such that the lag after placement is the lag
-> > +		 * we computed before dequeue.
-> > +		 *
-> > +		 *   vl'_i = vl_i - w_i*vl_i / (W + w_i)
-> > +		 *         = ((W + w_i)*vl_i - w_i*vl_i) / (W + w_i)
-> > +		 *
-> > +		 *   (W + w_i)*vl'_i = (W + w_i)*vl_i - w_i*vl_i
-> > +		 *                   = W*vl_i
-> > +		 *
-> > +		 *   vl_i = (W + w_i)*vl'_i / W
+if:
+  properties:
+    compatible:
+      enum:
+        - microchip,ksz8863
+        - microchip,ksz8873
+then:
+  properties:
+    microchip,rmii-clk-internal:
+      $ref: /schemas/types.yaml#/definitions/flag
+      description:
+        Set if the RMII reference clock is provided internally. Otherwise
+        reference clock should be provided externally.
 
-And then we obtain the scale factor: (W + w_i)/W, which is >1, right?
-
-As such, that means that vl'_i must be smaller than vl_i in the absolute
-sense, irrespective of sign.
+Thanks,
+Ante
