@@ -2,113 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8997C4ABF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819817C4ACA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345391AbjJKGh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 02:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
+        id S1345529AbjJKGkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 02:40:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344555AbjJKGh1 (ORCPT
+        with ESMTP id S1345499AbjJKGkI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 02:37:27 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6092C9B;
-        Tue, 10 Oct 2023 23:37:24 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39B6bA1p113973;
-        Wed, 11 Oct 2023 01:37:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697006230;
-        bh=ibJxl3VqApgkwXcPcBAZdilAPVeZ+ZobbrYoKmgyyBU=;
-        h=From:To:CC:Subject:Date;
-        b=s8naaFuYdAU+pPhK26H3cr/k2QuGyMYXKafJA97M2iSkBzh/Lj368qfPhBRDFv/4V
-         JJVp2RQy2OoBBDdOcTVLgRUtP7CiWGw7XLpeAJhcUXJCSYeGH7dTmq5BzSModAnc0d
-         /W+PAT4Fsbm1FlCq9uhyvDa8cUDSgiW9YAgKYf/k=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39B6bAnf121517
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 11 Oct 2023 01:37:10 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 11
- Oct 2023 01:37:10 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 11 Oct 2023 01:37:10 -0500
-Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39B6bAUS003485;
-        Wed, 11 Oct 2023 01:37:10 -0500
-Received: from localhost (dhcp-10-24-69-31.dhcp.ti.com [10.24.69.31])
-        by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 39B6b9tg008250;
-        Wed, 11 Oct 2023 01:37:09 -0500
-From:   MD Danish Anwar <danishanwar@ti.com>
-To:     MD Danish Anwar <danishanwar@ti.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <srk@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        <r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH] net: ti: icssg-prueth: Fix tx_total_bytes count
-Date:   Wed, 11 Oct 2023 12:07:00 +0530
-Message-ID: <20231011063700.1824093-1-danishanwar@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 11 Oct 2023 02:40:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB38BA4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:40:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697006405; x=1728542405;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=09Ah/xh872aHOGZOGpIWrTMNbCb6X9gQD8G1LjWG4/Q=;
+  b=ghHmIURxOTgfKVzPPUSq0L4wt6vL9h91zMCsLL4BPzM3iLeDuEzzlZf0
+   VvM+WjIcx+61EAh5lejLwMGQFTIwH6zwmfDrRDmkDOTCWIdWAh/Xzl7L/
+   1lLhaQwsVrUC8o5eMPhL4417CXLpfCD28zpV6ofAleM/3EKqudzXrFexo
+   T4Dhofwzoau7VJtu9TsDrspDtRWUjLyaus5IqVnvssLkp6SdLBtbL40dC
+   7F8tSKiGQXaFb2Q7hAQMgLRqwwa1kvd1fMc+asi3kt0tVUqqZX0StYgBQ
+   KUgGsH886yCuQDGFehRuqnzdyet8bxFHZ6XlBiTCPeDXUpd1ozdxmEn/9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="387435634"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="387435634"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 23:40:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="824047061"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="824047061"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 23:40:02 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [RFC PATCH v1 0/2] Swap-out small-sized THP without splitting
+References: <20231010142111.3997780-1-ryan.roberts@arm.com>
+Date:   Wed, 11 Oct 2023 14:37:58 +0800
+In-Reply-To: <20231010142111.3997780-1-ryan.roberts@arm.com> (Ryan Roberts's
+        message of "Tue, 10 Oct 2023 15:21:09 +0100")
+Message-ID: <87zg0pfyux.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ICSSG HW stats on TX side considers 8 preamble bytes as data bytes. Due
-to this the tx_total_bytes of one interface doesn't match the
-rx_total_bytes of other interface when two ICSSG interfaces are
-connected with each other. There is no public errata available yet.
+Ryan Roberts <ryan.roberts@arm.com> writes:
 
-As a workaround to fix this, decrease tx_total_bytes by 8 bytes for every
-tx frame.
+> Hi All,
+>
+> This is an RFC for a small series to add support for swapping out small-sized
+> THP without needing to first split the large folio via __split_huge_page(). It
+> closely follows the approach already used by PMD-sized THP.
+>
+> "Small-sized THP" is an upcoming feature that enables performance improvements
+> by allocating large folios for anonymous memory, where the large folio size is
+> smaller than the traditional PMD-size. See [1].
+>
+> In some circumstances I've observed a performance regression (see patch 2 for
+> details), and this series is an attempt to fix the regression in advance of
+> merging small-sized THP support.
+>
+> I've done what I thought was the smallest change possible, and as a result, this
+> approach is only employed when the swap is backed by a non-rotating block device
+> (just as PMD-sized THP is supported today). However, I have a few questions on
+> whether we should consider relaxing those requirements in certain circumstances:
+>
+>
+> 1) block-backed vs file-backed
+> ==============================
+>
+> The code only attempts to allocate a contiguous set of entries if swap is backed
+> by a block device (i.e. not file-backed). The original commit, f0eea189e8e9
+> ("mm, THP, swap: don't allocate huge cluster for file backed swap device"),
+> stated "It's hard to write a whole transparent huge page (THP) to a file backed
+> swap device". But didn't state why. Does this imply there is a size limit at
+> which it becomes hard? And does that therefore imply that for "small enough"
+> sizes we should now allow use with file-back swap?
+>
+> This original commit was subsequently fixed with commit 41663430588c ("mm, THP,
+> swap: fix allocating cluster for swapfile by mistake"), which said the original
+> commit was using the wrong flag to determine if it was a block device and
+> therefore in some cases was actually doing large allocations for a file-backed
+> swap device, and this was causing file-system corruption. But that implies some
+> sort of correctness issue to me, rather than the performance issue I inferred
+> from the original commit.
+>
+> If anyone can offer an explanation, that would be helpful in determining if we
+> should allow some large sizes for file-backed swap.
 
-Fixes: c1e10d5dc7a1 ("net: ti: icssg-prueth: Add ICSSG Stats")
-Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
----
- drivers/net/ethernet/ti/icssg/icssg_stats.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+swap use 'swap extent' (swap_info_struct.swap_extent_root) to map from
+swap offset to storage block number.  For block-backed swap, the mapping
+is pure linear.  So, you can use arbitrary large page size.  But for
+file-backed swap, only PAGE_SIZE alignment is guaranteed.
 
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_stats.c b/drivers/net/ethernet/ti/icssg/icssg_stats.c
-index bb0b33927e3b..dc12edcbac02 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_stats.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_stats.c
-@@ -18,6 +18,7 @@ void emac_update_hardware_stats(struct prueth_emac *emac)
- 	struct prueth *prueth = emac->prueth;
- 	int slice = prueth_emac_slice(emac);
- 	u32 base = stats_base[slice];
-+	u32 tx_pkt_cnt = 0;
- 	u32 val;
- 	int i;
- 
-@@ -29,7 +30,12 @@ void emac_update_hardware_stats(struct prueth_emac *emac)
- 			     base + icssg_all_stats[i].offset,
- 			     val);
- 
-+		if (!strncmp(icssg_ethtool_stats[i].name, "tx_good_frames", ETH_GSTRING_LEN))
-+			tx_pkt_cnt = val;
-+
- 		emac->stats[i] += val;
-+		if (!strncmp(icssg_ethtool_stats[i].name, "tx_total_bytes", ETH_GSTRING_LEN))
-+			emac->stats[i] -= tx_pkt_cnt * 8;
- 	}
- }
- 
--- 
-2.34.1
+> 2) rotating vs non-rotating
+> ===========================
+>
+> I notice that the clustered approach is only used for non-rotating swap. That
+> implies that for rotating media, we will always fail a large allocation, and
+> fall back to splitting THPs to single pages. Which implies that the regression
+> I'm fixing here may still be present on rotating media? Or perhaps rotating disk
+> is so slow that the cost of writing the data out dominates the cost of
+> splitting?
+>
+> I considered that potentially the free swap entry search algorithm that is used
+> in this case could be modified to look for (small) contiguous runs of entries;
+> Up to ~16 pages (order-4) could be done by doing 2x 64bit reads from map instead
+> of single byte.
+>
+> I haven't looked into this idea in detail, but wonder if anybody thinks it is
+> worth the effort? Or perhaps it would end up causing bad fragmentation.
 
+I doubt anybody will use rotating storage to back swap now.
+
+> Finally on testing, I've run the mm selftests and see no regressions, but I
+> don't think there is anything in there specifically aimed towards swap? Are
+> there any functional or performance tests that I should run? It would certainly
+> be good to confirm I haven't regressed PMD-size THP swap performance.
+
+I have used swap sub test case of vm-scalbility to test.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/
+
+--
+Best Regards,
+Huang, Ying
