@@ -2,137 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC387C5AEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C8B7C5AF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346774AbjJKSGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 14:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38628 "EHLO
+        id S232891AbjJKSKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 14:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346876AbjJKSGN (ORCPT
+        with ESMTP id S232554AbjJKSKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 14:06:13 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DEBB8
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:06:11 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so300206a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:06:11 -0700 (PDT)
+        Wed, 11 Oct 2023 14:10:33 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27099E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:10:31 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-405459d9a96so10265e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:10:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697047570; x=1697652370; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=2ZNnzyR21JVL7BYf4wHu5NKVifJONTFYUdfNZUBAcWs=;
-        b=zqkE7aQjT5pxPL8HBPRbWNiL7rdtTs3IyOI1NuSHfB5DwadTuyny5RwqsoQLTFC9Kj
-         iZnEZyIvTpD4Ewsh0EsFcQ/+kRwkNKwyFRwa0XVqndTyu9RR9sSGnRhRanYuzqwRwbQv
-         cU2AaJOJ+FoV8wfXfjufRGinnjx2XwVFfciMssFFvaSf45FKZbheIWyAeFWhbpUXe0n1
-         vxFNkrWUhVIIDycjly9BcFdMb6xb8TyAqt79da234wU9ZdMufkJOrpS4kRMnOpuHPe7S
-         czgsDLrT8YWedQCYMOQUlVOEeW9MaFBxzH4BGWNdZ7kKZIPmwWxG8GyoUr26W1TOWGRR
-         KzJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697047570; x=1697652370;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1697047830; x=1697652630; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2ZNnzyR21JVL7BYf4wHu5NKVifJONTFYUdfNZUBAcWs=;
-        b=sYAj2gz3cPqQ4DHa0kZ4FC99Y8q3G0QGEn/g6UoNblOG1FlhRVtw/l1g3Z+sD1RUW4
-         zciogPXZUaoZjiD+JARtMPUqxxcX3tYlnM30S8tsXz+MIybwjzNEaT9Ot+YUy2nha0gr
-         4x7xFjarM3RS+KQC69shF65xIT4z/OAxrhqAfI+Is5mFljCmegpcFxbsyf0c2UkgO2tv
-         Yw27o9Yimwbs21JgWYtfOV5Von3ynhMeritwbsgssY+l8lVDjjfF04G0lEJQU3me+k2F
-         jX3rglvwidwZ0LjLqYIVXM9r2UGsGTvVCcK0fjSp1bsD56V0avEAaUnsRghJvqQGbewZ
-         syJg==
-X-Gm-Message-State: AOJu0Ywdj5YQRMUQtBIBWF4psnAUmrsg2dRst9NQdBvBrQp21GDeSnNr
-        Q6zfYJa4Xn5TNH4nyHduXd9ezw==
-X-Google-Smtp-Source: AGHT+IG8NmmJJ1qNofuboaQMV4SOEnsD4wsehC47o5j78XtWn2ZQoWBJN2SP6cky8oMuAdc+5xDKkQ==
-X-Received: by 2002:a17:907:2ccc:b0:9bd:8536:7564 with SMTP id hg12-20020a1709072ccc00b009bd85367564mr1220099ejc.30.1697047569655;
-        Wed, 11 Oct 2023 11:06:09 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id m22-20020a1709066d1600b009adc77fe165sm10031807ejr.118.2023.10.11.11.06.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 11:06:09 -0700 (PDT)
-Message-ID: <2faceceb-56de-44b3-a12f-9896294ae134@linaro.org>
-Date:   Wed, 11 Oct 2023 20:06:07 +0200
+        bh=ll2dO80dKdNtktHpD8Nup75jkjUJEZ6P5R1J+WyNECY=;
+        b=YkKwz31F5HP8JUaJw1v+viSHW2+XXpHLRke3TRM/2azgDWa0OOAn6n/dtblz1eu+Be
+         h/v6AfOD6VcpccnJJ4mH/XZWRN125507eLaCvYFVyGG6sIua7RU7eoVMcXjH1hBzI5jk
+         Pq08rjSZYSYdsf3pFIy5iZuS5LZQ06DDzwPBQqR8cTG7XVoRDh2+LgR0buuihvVYx78s
+         JQjW1iijNjw7qB3+DMQJvX7mBaSdEDzUDblB2iG4jdme28F94fUAJIC9a2lsoIXhMa+r
+         U1ko1dQG8Wyx5/ePX4mMeoXq+7PH0n4q2kMEIzg5tMZeknSKOfzOpEUezB50HrK6rBm7
+         UX9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697047830; x=1697652630;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ll2dO80dKdNtktHpD8Nup75jkjUJEZ6P5R1J+WyNECY=;
+        b=u9bi+hEsI/TON5IC3sfg1EyzT8bgGi2/oXzqW/DcBMSuGT00hfXMJBzD1j3tUjpyJl
+         WLCSMiU+mxEOSHPfqgs7kc7yf1BmB2w7Uq3BOawhVbSjrLEkMnocbLRj+L28ITNnETqX
+         yAr4TSZPETu372fQAfvlJqdnTwf+ZmoIVOud1FCAINu7Q13mvoQuMmGD5DQuC8DeKb5/
+         Dp45lLc+HbySHv/dx8WVr8k+fNoY59xFu7WnG9vWlDuKVsNFO5WSxqcYaR3HmHZNofFS
+         U38yBW4JC+y30v1KcbKWvuyiilGqwv+0yTZOSAtmb3CbIItvxIj38i95n8ykF8YSZr8X
+         mogg==
+X-Gm-Message-State: AOJu0YxtSvhShqunLcrtXHIWQZHJaeblChEkypKhVVT1pI2Wzu16ffrH
+        l3xrHd+egGcjdav3qiL1BpRrhIhjHmNc128BVGr/Ow==
+X-Google-Smtp-Source: AGHT+IFNcNJNI8p4w8N17R8rGdiSVF/UkTipnQdlUZgaXk0kTR/bUKb2YXdrQKszl5vchkfRD8n+6CMPbZSnorHqKzM=
+X-Received: by 2002:a05:600c:1ca6:b0:400:c6de:6a20 with SMTP id
+ k38-20020a05600c1ca600b00400c6de6a20mr125146wms.3.1697047830169; Wed, 11 Oct
+ 2023 11:10:30 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: arm: qcom: Add HTC One Mini 2
-To:     Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <20231011-htc-memul-v1-0-76e57873190c@z3ntu.xyz>
- <20231011-htc-memul-v1-2-76e57873190c@z3ntu.xyz>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231011-htc-memul-v1-2-76e57873190c@z3ntu.xyz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231009230722.76268-1-dima@arista.com> <20231009230722.76268-10-dima@arista.com>
+In-Reply-To: <20231009230722.76268-10-dima@arista.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 11 Oct 2023 20:10:19 +0200
+Message-ID: <CANn89iLD=ySFfPYkrb+oN2fuMhimxXfHrhs4Pv9_60f912rzmQ@mail.gmail.com>
+Subject: Re: [PATCH v14 net-next 09/23] net/tcp: Add TCP-AO sign to twsk
+To:     Dmitry Safonov <dima@arista.com>
+Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Bob Gilligan <gilligan@arista.com>,
+        Dan Carpenter <error27@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Donald Cassidy <dcassidy@redhat.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        "Gaillardetz, Dominik" <dgaillar@ciena.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Ivan Delalande <colona@arista.com>,
+        Leonard Crestez <cdleonard@gmail.com>,
+        "Nassiri, Mohammad" <mnassiri@ciena.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        "Tetreault, Francois" <ftetreau@ciena.com>, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2023 19:02, Luca Weiss wrote:
-> Document the compatible for the MSM8926-based HTC One Mini 2 smartphone.
-> 
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+On Tue, Oct 10, 2023 at 1:07=E2=80=AFAM Dmitry Safonov <dima@arista.com> wr=
+ote:
+>
+> Add support for sockets in time-wait state.
+> ao_info as well as all keys are inherited on transition to time-wait
+> socket. The lifetime of ao_info is now protected by ref counter, so
+> that tcp_ao_destroy_sock() will destruct it only when the last user is
+> gone.
+>
+> Co-developed-by: Francesco Ruggeri <fruggeri@arista.com>
+> Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
+> Co-developed-by: Salam Noureddine <noureddine@arista.com>
+> Signed-off-by: Salam Noureddine <noureddine@arista.com>
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
+> Acked-by: David Ahern <dsahern@kernel.org>
+> ---
+>  include/linux/tcp.h      |  3 ++
+>  include/net/tcp_ao.h     | 11 ++++-
+>  net/ipv4/tcp_ao.c        | 46 +++++++++++++++++---
+>  net/ipv4/tcp_ipv4.c      | 92 +++++++++++++++++++++++++++++++---------
+>  net/ipv4/tcp_minisocks.c |  4 +-
+>  net/ipv4/tcp_output.c    |  2 +-
+>  net/ipv6/tcp_ipv6.c      | 72 ++++++++++++++++++++++---------
+>  7 files changed, 181 insertions(+), 49 deletions(-)
+>
+> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+> index c38778b0baa0..51458219be4e 100644
+> --- a/include/linux/tcp.h
+> +++ b/include/linux/tcp.h
+> @@ -512,6 +512,9 @@ struct tcp_timewait_sock {
+>  #ifdef CONFIG_TCP_MD5SIG
+>         struct tcp_md5sig_key     *tw_md5_key;
+>  #endif
+> +#ifdef CONFIG_TCP_AO
+> +       struct tcp_ao_info      __rcu *ao_info;
+> +#endif
+>  };
+>
+>  static inline struct tcp_timewait_sock *tcp_twsk(const struct sock *sk)
+> diff --git a/include/net/tcp_ao.h b/include/net/tcp_ao.h
+> index 629ab0365b83..af2caf7e76fc 100644
+> --- a/include/net/tcp_ao.h
+> +++ b/include/net/tcp_ao.h
+> @@ -85,6 +85,7 @@ struct tcp_ao_info {
+>                                 __unused        :31;
+>         __be32                  lisn;
+>         __be32                  risn;
+> +       atomic_t                refcnt;         /* Protects twsk destruct=
+ion */
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+This needs to be a refcount_t
