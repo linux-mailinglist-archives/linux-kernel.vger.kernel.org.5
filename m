@@ -2,124 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B6F7C4903
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDA07C4905
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbjJKFHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 01:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34798 "EHLO
+        id S229662AbjJKFH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 01:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjJKFHL (ORCPT
+        with ESMTP id S229534AbjJKFH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 01:07:11 -0400
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2049.outbound.protection.outlook.com [40.107.104.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673B598
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:07:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=htt/hxkPVhLAiBsgWVduIi0hBsaWgqRlOUEEAPaYXJn9KRoan/mrhzLFh7K6uzTEdIjjib/I8LVOTE5/4wduOfgg0BUm12FTkFc5EDSA/34E+7+9rnzkJIqCt9VnHGE5ujCqojbBMT7hCT1QA8eWgDNvpJWJejP2i5Pzi1TBLa7XaLPe2Xb5ynuXzvh7wvLgKKrBngJsfwxc2rXMkxwO/lZi0ctpPQhh1gTL71kMdTJPjgFF46mcQFJ6Bo0CnalKJRHvFtTRf1LYLS44ZUppIsfBNZEa+PfCyka/6gavaUARSISMwVoo9I3Fcu+V8vSg2w3CudYoCYYRCtwQo92ruA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vjtauk6sJu+63kYF7rj5wkrRtSuvUVToS7hkVy/yn4Q=;
- b=VVasoDtjEhIviSHua3bgQsiMQgfFUV5RUzSVZXqDTgw3sCXntdGKGI5IFsOnH/K0TyQQ4Rw0gZRsz0zgnmZTrEtuFjEA9YBSSAhQHOZUtW7VjOaynu0GsfAbBeqvsGyssNn42KnglA8eg6VFGUWX5ZxiqXjcM/XxpBJEgq0pGwW7NR0qXf2ckwY7qsPRLhFowGlE+qrw53OYGE6I02i7LMpv5BQjAYFJFVGQ+pIrEQ8P6G1zCD2tQmzD455QNu9WlPqAIoO0+0Ma0iJJb1LGnWY2mf0FO9WEU54z8pBON2nyJCyyRc/YF0fSWcyQp1dh2h9xwLvH5agRDRfvfDiK/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=piap.lukasiewicz.gov.pl; dmarc=pass action=none
- header.from=piap.pl; dkim=pass header.d=piap.pl; arc=none
+        Wed, 11 Oct 2023 01:07:57 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC64B94;
+        Tue, 10 Oct 2023 22:07:55 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c17de836fbso82196601fa.1;
+        Tue, 10 Oct 2023 22:07:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=lukasiewiczgov.onmicrosoft.com; s=selector1-lukasiewiczgov-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vjtauk6sJu+63kYF7rj5wkrRtSuvUVToS7hkVy/yn4Q=;
- b=lizAasKDVhZMRSYn9oJvSBsutXEpJZsFJSnSY8nE8HPedGUknYFcnrqbxWS7xJ31/K1SKbDZUKjZba+q9XYSvGpKr09VKdwo6+2t+oCgw7HdjB+LqelTkmDfdHoDu92t0DYKMaTnk1PL/wO1NdC4O2MdTtMXtCoQ5P89JEHKtc4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=piap.pl;
-Received: from VI1P193MB0685.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:155::18)
- by PR3P193MB1039.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:ae::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Wed, 11 Oct
- 2023 05:07:06 +0000
-Received: from VI1P193MB0685.EURP193.PROD.OUTLOOK.COM
- ([fe80::1bd8:1a5d:e69:d1a7]) by VI1P193MB0685.EURP193.PROD.OUTLOOK.COM
- ([fe80::1bd8:1a5d:e69:d1a7%3]) with mapi id 15.20.6863.041; Wed, 11 Oct 2023
- 05:07:06 +0000
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Imre Kaloz <kaloz@openwrt.org>,
-        Deepak Saxena <dsaxena@plexity.net>
-Subject: Re: [RFC] IXP4XX MAINTAINERS entries
-References: <m334yivh1f.fsf@t19.piap.pl>
-        <CACRpkdZ+7YFYNPXuiFU=JRZYOia5V+145dpRrLN+LTuHE5RuUA@mail.gmail.com>
-Date:   Wed, 11 Oct 2023 07:07:05 +0200
-In-Reply-To: <CACRpkdZ+7YFYNPXuiFU=JRZYOia5V+145dpRrLN+LTuHE5RuUA@mail.gmail.com>
-        (Linus Walleij's message of "Tue, 10 Oct 2023 16:02:35 +0200")
-Message-ID: <m3sf6hu4qu.fsf@t19.piap.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: WA0P291CA0022.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:1::22) To VI1P193MB0685.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:800:155::18)
+        d=gmail.com; s=20230601; t=1697000874; x=1697605674; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/x9+ee3pyyUik6kdeLxpDUVgAJbLivuS3wpi5deOsCA=;
+        b=AHF0XyBrgOedRHcZppof9PG03549gnP7TVcSP3NUOoAjcLI6mWlYO/AecUaW0e6179
+         vOaaZD6BvT9Uw1XyWKlXDJH9IHXaq4CwatAybrxL7NnTci8qJM+KaU0cHeJcw6zL5rzX
+         pqf9q3cHfuxa9TjnX7WogtN9c1iEuCjJsqmTJ4OxiTLVgmOxDoOgf1vj38iV0pm0xw9U
+         BCKBRbhgh0B8hoT2MajoYS3zqf+CLoWpMOvUlri+98N87dEGSXQ9ahitwFAqlVIZOzvO
+         ZBR3RDZXq96fp4JTQuN7WAdPzJTzX5lH+nySEjnImT1FY6gsnNgsU4g5qg0PWuB0YLB/
+         2jcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697000874; x=1697605674;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/x9+ee3pyyUik6kdeLxpDUVgAJbLivuS3wpi5deOsCA=;
+        b=txB50K/nqopsobXn46fbc4Khn6WxYDyIDAcMwGNTrqAvpt4nSNMYAtOs3keYyEJYyY
+         IYqougLArJVdE9dBqQXRPGUaVv5QM5E70gQahP9CKgJetgZotQVOdwFtFeNHbHWNk2in
+         Qo+crL+63xMR4DLiOKWPh75UdANfYfjGh9fJdG8Mg/RubcfyNBfyM8AfrC2Oaqi2P+jX
+         MMcQvTSbZbb7xKDrrLuk59QDL8EUjapa3dcDGkKKRURejqSI5/UTxtOxD416O2Fdi0rg
+         kwjR9EtL4qgW9B+3aV6P8pCixH9py3LECcNr+LSHANlWojF9MgXD/juXFDpsXI+of14X
+         SVzA==
+X-Gm-Message-State: AOJu0YznmEJONLWOnCSkCUlVFr2KtNzJ9H8TboEnaWnDcJh63vDVgetl
+        TBwWuEmbfnagXC5zRN54G64QjqIezqg=
+X-Google-Smtp-Source: AGHT+IFBrzpiL9nIrnN6c6Zj+ZVO+UtZhFfQnMPFz5LlCHdWptM7X+5O3blgWO1Il4VN7lAzEYkBLw==
+X-Received: by 2002:a2e:6e18:0:b0:2c0:a99:68dd with SMTP id j24-20020a2e6e18000000b002c00a9968ddmr17734696ljc.4.1697000873637;
+        Tue, 10 Oct 2023 22:07:53 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:16f8:1500::7? (dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::7])
+        by smtp.gmail.com with ESMTPSA id y8-20020a2e7d08000000b002bf6852d135sm2714737ljc.94.2023.10.10.22.07.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Oct 2023 22:07:52 -0700 (PDT)
+Message-ID: <be915044-f34e-8266-4bff-51364fde90a3@gmail.com>
+Date:   Wed, 11 Oct 2023 08:07:52 +0300
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1P193MB0685:EE_|PR3P193MB1039:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8c94e2f9-b6a2-4b34-9695-08dbca17e9d8
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5XUs+KDeAIsvL+b+0/NWuNnDudHFp3rUEu25kqOcajx1uYYGiMUqiCTjkP6HumVHcT1mpBccI9QwlrFpzD2gdfivDQY44/ga5OECmf4JucyWqTS0Vy7EI4UXtOFQJid3fiRp2TQQddVRSRQKqdienR6NAJKR7Q15fEuUsrq2noLvJ/McIjdjKTCNWtPfaO/+duxe3qxW7qzgGWrII623rwD+2TCordVGVWcO5ZhQDr3D/36b7oDgpUIQ9qcBbrs800q27ckZs+jJUKlvtVJjXSpbg++Ha+++KtoOd70LFKKedt0ADpYB9MkpZ+NAuvo2C37hDfl4fcE78KIGQgIga4YqLY10suWkGGScfVp2C9b0hePW2++oAgqg46A0OvFKo01p2mhX7sd8eZRY1jjXpJvRlmrwqjI3pwUa9OX8pWs0vqW0T6Nq2Ev3zAx5MTgrJJnoIOsrgGxqVdi7eiKAvRwYyAPlISI/GT4bIAY3Am4Vs4VQy4MY+CpyQRHlGQbTE7P2FvfTbPmMb70VKRStPoQBgdSSaBIHW1oFb06Y0k3y7mRlKPBq/G/Uraa87ZfGkBLZixJsQDu3tQeX5ZWq4/vnygQF+jPjAZ4uFvw2cOCXp1IzGdtYLy/b5AztKe1rR8Y+jEOGi1BL5/97bzfjcA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P193MB0685.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(346002)(366004)(39860400002)(1800799009)(451199024)(64100799003)(186009)(2906002)(83170400001)(38350700002)(38100700002)(6916009)(66476007)(54906003)(41300700001)(66556008)(66946007)(316002)(786003)(52116002)(4744005)(6512007)(26005)(478600001)(6486002)(6506007)(66574015)(8676002)(5660300002)(42882007)(8936002)(83380400001)(4326008)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T3FyQUdNdE5ycFNWTWF6SUxwa0JGZWI4VnUwMEcwUWI4MnIzWVZIRVVSNDBt?=
- =?utf-8?B?bmpMcFFMMUlwRllCaG02cVFXa05TNW9JbWRsNkx2YkozajBocGo3K3ZVR1NX?=
- =?utf-8?B?QndFamU0YVRPOFBEUDhDaUI4dVUzU1lxWTloMmhyeHhoZDAzMVdkSFZLdXdQ?=
- =?utf-8?B?bXEwQXQ4bEJMV244Uk55eE9EUndRQWhlWk0zUmZIcE8vZWl1UGNoMk93TVBh?=
- =?utf-8?B?T3NONk5KRU9LVldTMDlqQlFuT2R3VFRBcThaQ1AwMStzaG5tOG5EQ0FUVnc0?=
- =?utf-8?B?SWxGaWo1UUhlVUR0eHVReUFLOWVYcFh3ZFJWenpiOElBeTdWNVg4YkVLMGdW?=
- =?utf-8?B?RG1pbmVjUGJQQzlCNDV0K3dVM3QzOWJYK1Q5WGVHNXU5bWtxeTBSTmdQYjV3?=
- =?utf-8?B?TmkwQlpSZ2hHK3YvU2JYUE5CZDRUL0N1TjlCcEJ5Q09IaTJDRkpjekpiQ0gr?=
- =?utf-8?B?U2d5Zy92TG9VUjFyNU5xLzUvNCtpRlVHdXR4WlJ4ZlRxQkRyemh6dTR6bGdh?=
- =?utf-8?B?ODg1QlRvbVRocjZZMlhvSUhIVURnR3I1aERWTmg5ZGQ3cGVwWW83ckFodzdY?=
- =?utf-8?B?c0luWVppSy9mdThrMUlmM2pEeWJrdEw0TmZ5TE9LY0orekx1THNWOUVESER0?=
- =?utf-8?B?Qmh6WDBoNTlTN29hck11Y1ZMbFVkc3c1ajlEdUhjblhWazE5RTFpZW92UlBx?=
- =?utf-8?B?U1NCWXptMW5nUVNSQ25ibGFjeTNvQTFnTW5ZVkVHNUY0RUZqOGNodFFFWlk1?=
- =?utf-8?B?UmpUZGN3OHFRWXF2cFYzQWtiSmhlK2Q3aTNvRzhaTVlIU0k5Lyt1RFYwNm9C?=
- =?utf-8?B?TE1XQzNKYk9XMGcrNENEd1kzQkswbm8xZmFrcHUvU1IweDJoc3AyRGIwNDA5?=
- =?utf-8?B?ZUJDdEQxaGNnWUpEdmdpVkUzeURwdTd6aDZhQmZMMlFNbFF0elJJYzJDUDRW?=
- =?utf-8?B?MVoyd2tmdytOY2M3bVdHNzhrYUpXVmJVM3A3Q25SSWNlckNzZzlKV2pNbjc4?=
- =?utf-8?B?SXd2dGhCejJyckdjY0RQazUvZFlMaTBYZzVpSHdUVGtpSDRnTjdURWMxWnRy?=
- =?utf-8?B?akIvTkdscWFYeG43czJWUFk0N25VQkVtVkpwMUs0Qnp1aUc3KzRkQ1E1cFB6?=
- =?utf-8?B?SkpqZnJQVERua21wY3FGeml4aElnTzVmaThVeG1BYytvbDR0VFM3VTQySFc0?=
- =?utf-8?B?YWZnbGc3djBBODhOSDZWd1RTS2tKdys0NmlxS0JWd05KL3Uza1M3SGUzT05P?=
- =?utf-8?B?aDlGeE1rMXR6VWZlWEpZdHF0M2s2bFArdG10MVhLMHg4WHhjT2JqaWJIK05B?=
- =?utf-8?B?ZEdreU9VQjY4emhwNUllL0MxM3F3cGdPMVVPQUJEa3g3Wk9DalgrZk9YR0RN?=
- =?utf-8?B?VlA3d25FS3NTNUFvbGJlelA2WXlVWC92ZEJGUXNhQUpTcFFzWlBjRVBQaWJx?=
- =?utf-8?B?WHFqdFZBaHIyeEJ3OEdXeG9IME5ZdWdndlladUIrSUdvVjlHbFY0TlgyeGlG?=
- =?utf-8?B?cVo2bTV6Y3U4Uk4wMnFWSlpJdmhNSm1ocmNMditQYkgwaS9RNGVVQzIrTlBy?=
- =?utf-8?B?QkpHOU5sVVdUZFZjeUVDWmNpZXJ1Q2dTTVZ4SjA0K2NBSGpHemRQNStiREdZ?=
- =?utf-8?B?aU9iaVZtNVFJVVdHckRFc2FqSlhkanpjdkNtVUxlU3ZEN3kzb1d4WEE1TEFt?=
- =?utf-8?B?WWMvMVZTSTJFMVh3cWFHRXNoTnE4SGJGZkZDSkR6SUcxMXBiNmY0a2Zub2Uz?=
- =?utf-8?B?WjUyTXJPRXl2K25MWTlxMENhZENwYzN4WC9CaWVuUksvT1U1OW5ZVmdaeER6?=
- =?utf-8?B?ZmxDcXRFRElRNjkrKzJ4cDdoQ0IyNk5DdGFGWWpmWDB0REF6KzN4b2U0UnpO?=
- =?utf-8?B?clRZaWFqWGlLWnJ0L3BhR3pVVXg3emtjYis3WHNmbG92Wk9wMHErZUk3MVlW?=
- =?utf-8?B?K2F5U1BKeWtHbExyMmxHM1RsUGNPMjE4MnRPV0ZINGY3ZkswbUZyV1N4TWVZ?=
- =?utf-8?B?V2FmUzVJR1FrbHQxZVpJSzJQTUt1aWd6YmNoSm9sZU9pK0txZUxSaXc1ZlI4?=
- =?utf-8?B?Rk5ZdEdheTNZTVVKQWg2SXpVRkFQc001VTVFVDB0WDhEczVka1BSdUVOdUta?=
- =?utf-8?B?MWdFQnlTS08yRjlpQnlMNGdFaHdadjJrWVNnWmwxVGJmRm5oaE11UUN1dmZV?=
- =?utf-8?Q?FWkjqCldBLfNVFBZ5HayBvFHkjPYixrQtgbBOtKlRPCs?=
-X-OriginatorOrg: piap.pl
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c94e2f9-b6a2-4b34-9695-08dbca17e9d8
-X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0685.EURP193.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2023 05:07:06.0772
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3e05b101-c6fe-47e5-82e1-c6a410bb95c0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y1xTGL/1v6W65hv/D5sS0LclUAkEOR9tdOrceny7/RwcjlIdmBTG6qan/OFtAoIGHM5st8GPQ/pPnw1bH9ld4X24KueAAkOB0WMFoUUz5SMNwTcT0gLdxc26srdwB/ddlzvcHMkfpTGfPT9kB4nrZw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3P193MB1039
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] iio: bu27008: Add processed illuminance channel
+Content-Language: en-US, en-GB
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <ZRq4pdDn6N73n7BO@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
+ <20231005161455.22d68c22@jic23-huawei>
+ <07d2740d-d251-842c-ad9f-788fd2546110@gmail.com>
+ <20231010104037.4c23ba1d@jic23-huawei>
+ <4b3d2013-841f-55d1-64ff-54e13b8b52d8@gmail.com>
+In-Reply-To: <4b3d2013-841f-55d1-64ff-54e13b8b52d8@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -127,24 +80,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 10/10/23 13:01, Matti Vaittinen wrote:
+> On 10/10/23 12:40, Jonathan Cameron wrote:
+>> On Fri, 6 Oct 2023 08:01:15 +0300
+>> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+>>
+>>> On 10/5/23 18:14, Jonathan Cameron wrote:
+>>>> On Mon, 2 Oct 2023 15:33:41 +0300
+>>>> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+> //snip
+> 
+>>>>> +static int bu27008_get_rgb_ir(struct bu27008_data *data, unsigned 
+>>>>> int *red,
+>>>>> +            unsigned int *green, unsigned int *blue, unsigned int 
+>>>>> *ir)
+>>>>> +{
+>>>>> +    int ret, chan_sel, int_time, tmpret, valid;
+>>>>> +    __le16 chans[BU27008_NUM_HW_CHANS];
+>>>>> +
+>>>>> +    chan_sel = BU27008_BLUE2_IR3 << (ffs(data->cd->chan_sel_mask) 
+>>>>> - 1);
+>>>>> +
+>>>>> +    ret = regmap_update_bits(data->regmap, data->cd->chan_sel_reg,
+>>>>> +                 data->cd->chan_sel_mask, chan_sel);
+>>>>> +    if (ret)
+>>>>> +        return ret;
+>>>>> +
+>>>>> +    ret = bu27008_meas_set(data, true);
+>>>>> +    if (ret)
+>>>>> +        return ret;
+>>>>> +
+>>>>> +    ret = bu27008_get_int_time_us(data);
+>>>>> +    if (ret < 0)
+>>>>> +        int_time = BU27008_MEAS_TIME_MAX_MS;
+>>>>> +    else
+>>>>> +        int_time = ret / USEC_PER_MSEC;
+>>>>> +
+>>>>> +    msleep(int_time);
+>>>>> +
+>>>>> +    ret = regmap_read_poll_timeout(data->regmap, data->cd->valid_reg,
+>>>>> +                       valid, (valid & BU27008_MASK_VALID),
+>>>>> +                       BU27008_VALID_RESULT_WAIT_QUANTA_US,
+>>>>> +                       BU27008_MAX_VALID_RESULT_WAIT_US);
+>>>>> +    if (ret)
+>>>>> +        goto out;
+>>>>> +
+>>>>> +    ret = regmap_bulk_read(data->regmap, BU27008_REG_DATA0_LO, chans,
+>>>>> +                   sizeof(chans));
+>>>>> +    if (ret)
+>>>>> +        goto out;
+>>>>> +
+>>>>> +    *red = le16_to_cpu(chans[0]);
+>>>>> +    *green = le16_to_cpu(chans[1]);
+>>>>> +    *blue = le16_to_cpu(chans[2]);
+>>>>> +    *ir = le16_to_cpu(chans[3]);
+>>>>
+>>>> I'd be tempted to use an array + definitely pass them as u16 rather
+>>>> than unsigned int.
+>>>
+>>> I'm not really convinced the u16 is better here. We need the 32 bits
+>>> later for the calculations - and (afaics) using natural size int for
+>>> arguments shouldn't harm. We read the channel data to correct type array
+>>> so code should be pretty clear as to what we have in HW.
+>>
+>> ok.  I don't like lack of range clamping - so at the point of the caller
+>> I can't immediately see that these will be sub 16bit value.  Not htat
+>> important I guess.
+>>
+>>>
+>>> Also, I think that having an array obfuscates what element is which
+>>> channel because these ICs didn't have the 1 to 1 mapping from channel
+>>> index to colour. I was thinking of adding a struct for this but decided
+>>> to just keep it simple and clear.
+>> A struct or array + enum would work.
+>> I just don't much like lots of very similar parameters.
+> 
+> Right. A struct is not a problem. I am less fond with an enum because 
+> the HW channel which carries a specific color may change. I think adding 
+> an enum which indicates a place where a color is in array may be 
+> misleading one to think that HW has a fixed channel (data register 
+> address) for a colour. (I think that is quite usual while ICs where one 
+> color may be in different channels depending on the config are likely to 
+> be rare... I haven't read too many light sensor specs/drivers to know 
+> for sure though).
+  I should've re-read the whole driver code before replying. I see we 
+already have an enum for colours (with comments telling that some of the 
+colours do not have fixed channel). So, my point objecting the enum is 
+kind of moot. Unfortunately I chose the clear to be before IR, which 
+means that if we used existing enum we would have a gap in the array 
+(because clear is not used for lux computation). Not sure it matters 
+though :)
 
-Linus Walleij <linus.walleij@linaro.org> writes:
+Yours,
+	-- Matti
 
-> I'm sad about you stepping down, IXP4xx has a mean time before failure
-> of 60 years and we've only done 20 years yet! ;)
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
 
-Well, ARM64, greener pastures, follow the white rabbit, no, rabbits
-don't fit here at all. It was maybe practical when I was using IXP425
-and 43x, but then I went to ARM11MP, Cortex A9, Cortex Axx.
+~~ When things go utterly wrong vim users can always type :help! ~~
 
-> I sent a pull request for IXP4xx today already, so just send
-> this to soc@kernel.org for direct application.
-
-Wilco... Done.
---=20
-Krzysztof "Chris" Ha=C5=82asa
-
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
