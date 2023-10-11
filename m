@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE7B7C4985
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5E27C497D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344272AbjJKF6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 01:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
+        id S1344178AbjJKF4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 01:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbjJKF6P (ORCPT
+        with ESMTP id S229952AbjJKFz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 01:58:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF45094
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:58:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697003890; x=1728539890;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=YahCY+6RxGW3/ZhuVqv5IVUbfCdBvQEtjngAOeCRTzU=;
-  b=PppmZkFL5haLNf41N7y8XzQNaHlaByPs8PK2i+DKIssFnIO2pTRcIshR
-   mgFjFy2WmsFCehT0V5tW0DcwSTqY+MQYd2EOpAkTCHIsevQF5dBrmgClm
-   vw+th7kXVUsr5PYpeuRsazJ7W/XjtifT9u9WDqW01wQNxWeVj9PfmiQWF
-   eTK9UcJFmmWqnplA1nDRvcNZquwS3fsr4USmgElxU8TefvcB4jrsf4Hmz
-   d5ByqV3xXXZ0OaoEkB0WzVw30E08vVRgyFfIzqG7tlBy278wZgWnCI7LS
-   zqf/tfaHsIP4i4bHBx/MZkVtDpASH7CEn34DzVXi+xcyjpq3IJ3kKwjiv
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="451079943"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="451079943"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 22:57:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="1000977399"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="1000977399"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 22:57:12 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <david@redhat.com>,
-        Zi Yan <ziy@nvidia.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [PATCH -next 1/7] mm_types: add _last_cpupid into folio
-References: <20231010064544.4162286-1-wangkefeng.wang@huawei.com>
-        <20231010064544.4162286-2-wangkefeng.wang@huawei.com>
-        <ZSVEmhPCjZKyp97a@casper.infradead.org>
-        <3b56b26b-a550-4e06-b355-55564b40cfb5@huawei.com>
-Date:   Wed, 11 Oct 2023 13:55:05 +0800
-In-Reply-To: <3b56b26b-a550-4e06-b355-55564b40cfb5@huawei.com> (Kefeng Wang's
-        message of "Wed, 11 Oct 2023 11:02:13 +0800")
-Message-ID: <874jixhfeu.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 11 Oct 2023 01:55:59 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD638E;
+        Tue, 10 Oct 2023 22:55:58 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-66ceef95b89so10170236d6.3;
+        Tue, 10 Oct 2023 22:55:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697003757; x=1697608557; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mTjpQvyMHkbUpLu3ihyopH9dpMDT8ryAdeqR+3nM3c0=;
+        b=OLPtboIWHO20M6k/i2vUhscVgWm+Ft3DbTQ8YVmpUCPrddwgoGU6tPM0AzxNjU89Tc
+         hIMXF61k/RvC4O0LaggYNkBPMP1nJHT0Uy+KFJp06ifjLZ8MTzaKjOKpM3v5Xk8wqcIZ
+         TxwcnMxRT4GBxMDRZ1sRqGb+bzoaRFo20l96TTX6t08xZEdVXVFO9mwaNm/wdq8rnIYl
+         kFFl37ki+eog1q5X99UdPJoeuRdGOFI/tnnDFyuJe9XH+hKhupkwtOzqO7euSHcvovP4
+         mldgWmEtXywS06AX+g7PgbCObDBVK8F8K2QGBVQ+RDxAmfCRcLLri2nb18Yf/mzdFlMx
+         bn5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697003757; x=1697608557;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mTjpQvyMHkbUpLu3ihyopH9dpMDT8ryAdeqR+3nM3c0=;
+        b=a7Fe6EfC0Qevo6Eaxg3nGTl9P4E4zTuKvpQ9Rs6LSJieV57DdywaQF5zL6Z8ksNCMo
+         CnnGR23tvo5FFrsCByrKgwsZXHQ3hQjKveUNhK7TW6Gtd10uBuU4pFeysgoAYo1F7gXo
+         0tlB56D8/+kmIwaOOEuZ8tUr0MfQR9RdaxI3IRYzaL2TEpY+eyNrcsZMPNP7NJ5dDTFE
+         3VTp0PPmM3AUZb5j/qIfoP0i4yU/g+JIgq5ZBD3zvq8XWYFloQbLN6/IoOTBCB88fv3R
+         CXrzvyNcjTwXfrjOBCiTu05J59G0KmaPeAKlBEp37dOOdY5mmgUYLf2GN8OVzEAIeRlF
+         da4A==
+X-Gm-Message-State: AOJu0YzQOoVMrUz14mh85LgUErODsta1dYqHARZtyG5bKXMneVHoxqjV
+        R60TUoD4rAANBS2ZgrTGhVFm2qctSdNfLD4YxF0hLAMqS9Y=
+X-Google-Smtp-Source: AGHT+IFIeFo8MDm4RDbVOvfQd2TQwRCkzHVhlunlbXpiCiir1RpoyTNxTr2ClGYp+hsDBzw9ZQx44MeKbyGLy1S7+ew=
+X-Received: by 2002:a0c:f194:0:b0:66c:ff4f:a35f with SMTP id
+ m20-20020a0cf194000000b0066cff4fa35fmr3144687qvl.51.1697003757216; Tue, 10
+ Oct 2023 22:55:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231010151709.4104747-1-andriy.shevchenko@linux.intel.com>
+ <20231010151709.4104747-5-andriy.shevchenko@linux.intel.com> <0db37cd0-9cb9-41bc-c2aa-0a01c0295ed0@nvidia.com>
+In-Reply-To: <0db37cd0-9cb9-41bc-c2aa-0a01c0295ed0@nvidia.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 11 Oct 2023 08:55:21 +0300
+Message-ID: <CAHp75VcRKnWRNxTafsG2f+tWrF-6yQjECLpyn_S-VK78SfL8VQ@mail.gmail.com>
+Subject: Re: [PATCH v1 4/4] hte: tegra194: Switch to LATE_SIMPLE_DEV_PM_OPS()
+To:     Dipen Patel <dipenp@nvidia.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        timestamp@lists.linux.dev, linux-tegra@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kefeng Wang <wangkefeng.wang@huawei.com> writes:
+On Tue, Oct 10, 2023 at 10:36=E2=80=AFPM Dipen Patel <dipenp@nvidia.com> wr=
+ote:
+> On 10/10/23 8:17 AM, Andy Shevchenko wrote:
 
-> On 2023/10/10 20:33, Matthew Wilcox wrote:
->> On Tue, Oct 10, 2023 at 02:45:38PM +0800, Kefeng Wang wrote:
->>> At present, only arc/sparc/m68k define WANT_PAGE_VIRTUAL, both of
->>> them don't support numa balancing, and the page struct is aligned
->>> to _struct_page_alignment, it is safe to move _last_cpupid before
->>> 'virtual' in page, meanwhile, add it into folio, which make us to
->>> use folio->_last_cpupid directly.
->> What do you mean by "safe"?  I think you mean "Does not increase the
->> size of struct page", but if that is what you mean, why not just say so?
->> If there's something else you mean, please explain.
+> > +             .pm =3D pm_slee_ptr(&tegra_hte_pm),
 >
-> Don't increase size of struct page and don't impact the real order of
-> struct page as the above three archs without numa balancing support.
->
->> In any event, I'd like to see some reasoning that _last_cpupid is
->> actually
->> information which is logically maintained on a per-allocation basis,
->> not a per-page basis (I think this is true, but I honestly don't know)
->
-> The _last_cpupid is updated in should_numa_migrate_memory() from numa
-> fault(do_numa_page, and do_huge_pmd_numa_page), it is per-page(normal
-> page and PMD-mapped page). Maybe I misunderstand your mean, please
-> correct me.
+> typo, pm_sleep_ptr instead?
 
-Because PTE mapped THP will not be migrated according to comments and
-folio_test_large() test in do_numa_page().  Only _last_cpuid of the head
-page will be used (that is, on per-allocation basis).  Although in
-change_pte_range() in mprotect.c, _last_cpuid of tail pages may be
-changed, they are not used actually.  All in all, _last_cpuid is on
-per-allocation basis for now.
+Indeed. On my x86_64 this code slipped from compilation. I will try
+harder to compile-test it next time.
 
-In the future, it's hard to say.  PTE-mapped THPs or large folios give
-us an opportunity to check whether the different parts of a folio are
-accessed by multiple sockets, so that we should split the folio.  But
-this is just some possibility in the future.
-
---
-Best Regards,
-Huang, Ying
+--=20
+With Best Regards,
+Andy Shevchenko
