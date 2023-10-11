@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB9D7C58C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF317C58C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346981AbjJKQDK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Oct 2023 12:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
+        id S1346960AbjJKQDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 12:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346959AbjJKQDF (ORCPT
+        with ESMTP id S235111AbjJKQDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 12:03:05 -0400
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D00D9;
-        Wed, 11 Oct 2023 09:03:04 -0700 (PDT)
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5789ffc8ae0so4701588a12.0;
-        Wed, 11 Oct 2023 09:03:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697040183; x=1697644983;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4iWpEjqXSGgVGGjwEGjS564d40stRH2TrVc0ZOoChC0=;
-        b=Og3dJcMq4FeKSlG+kbe5ZfxCTM6XyumC5wTclpg69Vrdz9zGMa8ZOC6YddcVEoeqYa
-         WkyA/H3ous0hU71u2Nv3tSDR6ku9JGGkjn2fJWxw9aMpAajgPPTqhc7gZMH58a7rinwT
-         AdA8sbRPA6AGBXXXH6YADCmUq7HmWIj3GEFgy0bggd+EpQZc2RIw/iuwSZBezUHrh/B1
-         IzGPOs7oEDAOCZbJUC8jX3CBmlNmpMc63pAS52/4UeKFWipI8p6RfFo5IejErCWsjt9C
-         sWPqyztXjLmYAelLq9d5LKDzVlUh4g3MZJNLlAGqhHzDvv1SZ0IOM6g9YQgZl1TgEIwl
-         3bYg==
-X-Gm-Message-State: AOJu0YxS7GU87LdRFI02tV+cbfETIbmZEmE5nVrLFUHGDW8KvOl8HfQ+
-        CPoLj3kXTC4Neg6mXR6Cyl1Wj/kvVFu2+qBerYU=
-X-Google-Smtp-Source: AGHT+IFhXpVfK13xXF14nVLHcGscMHIBos0Pvg+4mfgk9pC3Cc0MCs29njbs8cFj2heJlBcnNAvupC06PbwNBFa2ky4=
-X-Received: by 2002:a17:90a:e7c3:b0:279:57d:f6fc with SMTP id
- kb3-20020a17090ae7c300b00279057df6fcmr17976089pjb.44.1697040183152; Wed, 11
- Oct 2023 09:03:03 -0700 (PDT)
+        Wed, 11 Oct 2023 12:03:17 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3D648C4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:03:14 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0DDA214BF;
+        Wed, 11 Oct 2023 09:03:54 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B514B3F7A6;
+        Wed, 11 Oct 2023 09:03:11 -0700 (PDT)
+Message-ID: <8fe4484c-57ed-477a-8ac1-e73b4a9cb3da@arm.com>
+Date:   Wed, 11 Oct 2023 17:03:09 +0100
 MIME-Version: 1.0
-References: <20231004040844.797044-1-namhyung@kernel.org> <20231004160224.GB6307@noisy.programming.kicks-ass.net>
- <CAM9d7cizC0J85ByuF5fBmc_Bqi=wpNJpiVsw+3F1Avusn2aQog@mail.gmail.com>
- <20231009210425.GC6307@noisy.programming.kicks-ass.net> <CAM9d7cigs9mWuYiE=MYNg-xVhXzDu5FF6GdMGJi=D_zP1zJoCQ@mail.gmail.com>
- <CAM9d7cjxSd9QJzTs1_s6Nh7c38FZ7_2FGPoCunvnmjX_y-+Dyg@mail.gmail.com>
- <20231011075136.GM14330@noisy.programming.kicks-ass.net> <20231011095004.GD6337@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231011095004.GD6337@noisy.programming.kicks-ass.net>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 11 Oct 2023 09:02:51 -0700
-Message-ID: <CAM9d7cghWx+ds8rxFq7xrtoAc4wDrY=yyk=38v+xoY2SODUmtA@mail.gmail.com>
-Subject: Re: [PATCH] perf/core: Introduce cpuctx->cgrp_ctx_list
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH drivers/perf: hisi:] drivers/perf: hisi: fix NULL pointer
+ issue when uninstall hns3 pmu driver
+Content-Language: en-GB
+To:     Jijie Shao <shaojijie@huawei.com>,
+        Yicong Yang <yangyicong@huawei.com>, will@kernel.org,
+        jonathan.cameron@huawei.com, mark.rutland@arm.com,
+        yangyicong@hisilicon.com
+Cc:     chenhao418@huawei.com, shenjian15@huawei.com,
+        wangjie125@huawei.com, liuyonglong@huawei.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20231009105038.126040-1-shaojijie@huawei.com>
+ <504cc838-d587-8bd0-601e-85f11b69c72b@huawei.com>
+ <9579f762-24ce-0826-dc7b-2c79c969f192@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <9579f762-24ce-0826-dc7b-2c79c969f192@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 2:50 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Oct 11, 2023 at 09:51:36AM +0200, Peter Zijlstra wrote:
->
-> > I'll go write me a Changelog and apply the thing, then we can forget
-> > about things.
->
-> I pushed out:
->
->   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?h=perf/core&id=52ecef05348dc97e3a5121f7cc0dd08e340b870c
->
-> for the robots to chew on, will push out to tip if nobody complains.
+On 11/10/2023 9:37 am, Jijie Shao wrote:
+> 
+> on 2023/10/10 17:32, Yicong Yang wrote:
+>> Hi Jijie,
+>>
+>> On 2023/10/9 18:50, Jijie Shao wrote:
+>>> From: Hao Chen <chenhao418@huawei.com>
+>>>
+>>> When uninstall hns3 pmu driver, it will call 
+>>> cpuhp_state_remove_instance()
+>>> and then callback function hns3_pmu_offline_cpu() is called, it may 
+>>> cause
+>>> NULL pointer call trace when other driver is installing or uninstalling
+>>> concurrently.
+>>>
+>> More information about the calltrace you've met and how to reproduce 
+>> this?
+>> I'm not sure why other drivers are involved.
+>>
+>>> As John Garry's opinion, cpuhp_state_remove_instance() is used for 
+>>> shared
+>>> interrupt, and using cpuhp_state_remove_instance_nocalls() is fine 
+>>> for PCIe
+>>> or HNS3 pmu.
+>>>
+>> I'm a bit confused here. We need to update the using CPU and migrate 
+>> the perf
+>> context as well as the interrupt affinity in cpuhp::teardown() 
+>> callback, so
+>> it make sense to not call this on driver detachment. But I cannot figure
+>> out why this is related to the shared interrupt, more details?
+>>
+> ok，I will send v2 to add more details.
 
-Thanks a lot!
-Namhyung
+This shouldn't have anything to do with concurrency or shared interrupts 
+or anything else. It's simply that we should clearly not attempt to 
+migrate a PMU context (via invoking the hotplug callbacks) *after* the 
+relevant PMU has already been unregistered, since that's liable to lead 
+to some kind of use-after-free, and at best it's just a pointless waste 
+of time anyway - if we've got to the point of unbinding the driver (or 
+failing to probe at all), there should definitely not be any active 
+events or other PMU state that needs updating.
+
+Thanks,
+Robin.
