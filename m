@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9467C4A00
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7897C4A07
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344477AbjJKGPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 02:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
+        id S1345362AbjJKGQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 02:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345278AbjJKGP3 (ORCPT
+        with ESMTP id S1344656AbjJKGPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 02:15:29 -0400
+        Wed, 11 Oct 2023 02:15:31 -0400
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F179B;
-        Tue, 10 Oct 2023 23:15:15 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPA id 8AE57E0009;
-        Wed, 11 Oct 2023 06:15:10 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33726181;
+        Tue, 10 Oct 2023 23:15:19 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 627BFE0007;
+        Wed, 11 Oct 2023 06:15:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697004914;
+        t=1697004917;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lf9JV9F39ozNh88R+m/f9VKoeA/LX0lqm95WkOR9T2E=;
-        b=Cft2wBYz+0Qno+e3sN80gMawckTcDVb/1He5G/qb7VaKnhqvqeUVzxXKHaL9dfuYvJGG+l
-        8L/D3kXjGyDbPkbuBuIcUYqmswREg9Cy4Sk3NT1+kHEf8T5o/eRyTjBicpB9oFVBZbsYA+
-        wjYpcKCw4M7c5+4De+w2DBAsP9PTITYilYxX/JGwD9FiEBXY9kEl48XECirbV8xKbFfvx8
-        by6pmJqIwzGLetuy5bkby3JmXTRm2XJ+wzN20H782ArbVb4ssHEFhPR4gmJPr/HJ76dgyf
-        MRU/g9JlEahBSDXXeMOmhZrH0gP5B9LJXQT9e6oUdjuve16SuxRzY7C8KnwKzg==
+        bh=exqU44vp0OQhVVoPYW7chAWLNAw8ghblo4zFam/LWAs=;
+        b=f7/2qCp1mhBlrLQ4l+8UzRH/WMbDRVk2s6szpLassj6vhw0vYTWFo01Ipv8eavUsGzjdty
+        L1L5/wvRmvkT5R1OB6wLsLS1sx+V5U6lnjS0agj8JAD4wkGF6WcE7hATLQ8mgPCHeBm/64
+        jnP+5wXVFc3Uojq1HCBi8RFkwfMIdCWcWeDCpx4pzqSGPiac0I+d12Qzhq468kS1gkebb2
+        CS068cPoaXJeH59rNhnDII0j6sSrvd3I3jnrO0QwOYYpBxrM9UdygnLVKBpccGbvkMYLmA
+        t7jvjuPpMPlaPLhmIeoYtZ8lvpMSFHz/Mj8Wx3BAG2Ch5QIg6cKF6EwweQFFAA==
 From:   Herve Codina <herve.codina@bootlin.com>
 To:     Herve Codina <herve.codina@bootlin.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -56,11 +56,10 @@ Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         alsa-devel@alsa-project.org, Simon Horman <horms@kernel.org>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
         Rob Herring <robh@kernel.org>
-Subject: [PATCH v8 07/30] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc: Add 'additionalProperties: false' in child nodes
-Date:   Wed, 11 Oct 2023 08:14:11 +0200
-Message-ID: <20231011061437.64213-8-herve.codina@bootlin.com>
+Subject: [PATCH v8 08/30] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc: Add support for QMC HDLC
+Date:   Wed, 11 Oct 2023 08:14:12 +0200
+Message-ID: <20231011061437.64213-9-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231011061437.64213-1-herve.codina@bootlin.com>
 References: <20231011061437.64213-1-herve.codina@bootlin.com>
@@ -77,29 +76,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Additional properties in child node should not be allowed.
+The QMC (QUICC mutichannel controller) is a controller present in some
+PowerQUICC SoC such as MPC885.
+The QMC HDLC uses the QMC controller to transfer HDLC data.
 
-Prevent them adding 'additionalProperties: false'
+Additionally, a framer can be connected to the QMC HDLC.
+If present, this framer is the interface between the TDM bus used by the
+QMC HDLC and the E1/T1 line.
+The QMC HDLC can use this framer to get information about the E1/T1 line
+and configure the E1/T1 line.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml     | 1 +
- 1 file changed, 1 insertion(+)
+ .../soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml      | 30 +++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-index 450a0354cb1d..82d9beb48e00 100644
+index 82d9beb48e00..e802e25923aa 100644
 --- a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
 +++ b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-@@ -64,6 +64,7 @@ patternProperties:
-     description:
-       A channel managed by this controller
-     type: object
-+    additionalProperties: false
+@@ -101,6 +101,32 @@ patternProperties:
+           Channel assigned Rx time-slots within the Rx time-slots routed by the
+           TSA to this cell.
  
-     properties:
-       reg:
++      compatible:
++        items:
++          - enum:
++              - fsl,mpc885-scc-qmc-hdlc
++              - fsl,mpc866-scc-qmc-hdlc
++          - const: fsl,cpm1-scc-qmc-hdlc
++          - const: fsl,qmc-hdlc
++
++      fsl,framer:
++        $ref: /schemas/types.yaml#/definitions/phandle
++        description:
++          phandle to the framer node. The framer is in charge of an E1/T1 line
++          interface connected to the TDM bus. It can be used to get the E1/T1 line
++          status such as link up/down.
++
++    allOf:
++      - if:
++          properties:
++            compatible:
++              not:
++                contains:
++                  const: fsl,qmc-hdlc
++        then:
++          properties:
++            fsl,framer: false
++
+     required:
+       - reg
+       - fsl,tx-ts-mask
+@@ -155,9 +181,13 @@ examples:
+ 
+         channel@19 {
+             /* Ch19 : 8 TS (TS 8..15) from all routed from TSA */
++            compatible = "fsl,mpc885-scc-qmc-hdlc",
++                         "fsl,cpm1-scc-qmc-hdlc",
++                         "fsl,qmc-hdlc";
+             reg = <19>;
+             fsl,operational-mode = "hdlc";
+             fsl,tx-ts-mask = <0x00000000 0x0000ff00>;
+             fsl,rx-ts-mask = <0x00000000 0x0000ff00>;
++            fsl,framer = <&framer>;
+         };
+     };
 -- 
 2.41.0
 
