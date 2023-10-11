@@ -2,222 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9317C55A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3507C55AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232358AbjJKNkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:40:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
+        id S1346240AbjJKNlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:41:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232067AbjJKNkq (ORCPT
+        with ESMTP id S232314AbjJKNlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:40:46 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9A490;
-        Wed, 11 Oct 2023 06:40:44 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39B8VICM020844;
-        Wed, 11 Oct 2023 13:40:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=LFYz6xrKERqElDXusvARQZlN2k+C8ngHQ7mOc5rnUcs=;
- b=bgw2YLHAnygsRmPqqd/33LpZcPj2vP40i8xT1Bh71WWwdAkn59Z4LkZgmaKVn9UlmTGT
- pfhXso3/2onuvaiRU4drm3lsG9AKa5bK3/zOEctPm7A/h9r/Lo/Qr0Cm8JkusOPbm2tc
- /0tIC2XawAQ7Hng7Ib84Vusnbmy+eN+IFuWNP5OF1kUCuLZBVPHQSIhRs+NJGbLNBYHC
- mfNBlfzYAT4Q5gwaRfg2fFuyFiHqiEG4ImfUMu3UtEX9Nvl7QE3JFZy0eUcOdXTr2vy7
- jSxg/EP956V50WVusuNkx47f+5rU48OmyMSWLcrrXosCC3ZY6dhRJ/GTEA0/KM1hx1Gc aw== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnnvw92qx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 13:40:39 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39BDecTi029877
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 13:40:38 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 11 Oct
- 2023 06:40:34 -0700
-Message-ID: <442ac3d6-adcd-dbb7-96bb-de46023ec18e@quicinc.com>
-Date:   Wed, 11 Oct 2023 19:10:30 +0530
+        Wed, 11 Oct 2023 09:41:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BABA9B0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:40:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697031650;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kBo1Q9ZZGOScf2Q/foJ7s3ES0s1m6pzlmqueXFx8NSo=;
+        b=YFiqavXBRpur84R1pdMdCFAte46+NIUTD1s8hovgY2tLXcRGL+kOVbWjdq9a9wONqd21oK
+        M4lAluWlY7iRv/+t4SdCsOUmY6JQK2+xRSYTqyotREop/cb8wa8H6QvP42b7XkLiama+lh
+        chXK/p4MvS1eiXEORL1Bs3RRAytUgQc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-410-6ZWT2-lpM6qY3wHIZZ79Tg-1; Wed, 11 Oct 2023 09:40:42 -0400
+X-MC-Unique: 6ZWT2-lpM6qY3wHIZZ79Tg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 668B7946900;
+        Wed, 11 Oct 2023 13:40:42 +0000 (UTC)
+Received: from RHTPC1VM0NT (unknown [10.22.34.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CEA111C060AE;
+        Wed, 11 Oct 2023 13:40:41 +0000 (UTC)
+From:   Aaron Conole <aconole@redhat.com>
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, dev@openvswitch.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pravin B Shelar <pshelar@ovn.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Adrian Moreno <amorenoz@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>
+Subject: Re: [PATCH net 1/4] selftests: openvswitch: Add version check for
+ pyroute2
+References: <20231006151258.983906-1-aconole@redhat.com>
+        <20231006151258.983906-2-aconole@redhat.com>
+        <96bdb031129cdebfa6e0bdd4342439d9d864518b.camel@redhat.com>
+Date:   Wed, 11 Oct 2023 09:40:41 -0400
+In-Reply-To: <96bdb031129cdebfa6e0bdd4342439d9d864518b.camel@redhat.com>
+        (Paolo Abeni's message of "Tue, 10 Oct 2023 12:25:51 +0200")
+Message-ID: <f7tedi1cm5i.fsf@redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.3 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: qcm6490: Add qcm6490 dts file
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Komal Bajaj <quic_kbajaj@quicinc.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <luca.weiss@fairphone.com>
-References: <20231003175456.14774-1-quic_kbajaj@quicinc.com>
- <20231003175456.14774-3-quic_kbajaj@quicinc.com>
- <5da2ba4f-5bf7-46ff-8204-0c169042dbfa@linaro.org>
- <3fd31aaa-f6bf-8440-6b08-fca2803171d9@quicinc.com>
- <dba83334-3971-46e9-9342-1344c5858be8@linaro.org>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <dba83334-3971-46e9-9342-1344c5858be8@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: o8jlPon2RgY8RHo6AB-XrKo9954iFvIL
-X-Proofpoint-GUID: o8jlPon2RgY8RHo6AB-XrKo9954iFvIL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_09,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- impostorscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 phishscore=0
- clxscore=1015 spamscore=0 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310110120
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Paolo Abeni <pabeni@redhat.com> writes:
 
+> On Fri, 2023-10-06 at 11:12 -0400, Aaron Conole wrote:
+>> Paolo Abeni reports that on some systems the pyroute2 version isn't
+>> new enough to run the test suite.  Ensure that we support a minimum
+>> version of 0.6 for all cases (which does include the existing ones).
+>> The 0.6.1 version was released in May of 2021, so should be
+>> propagated to most installations at this point.
+>> 
+>> The alternative that Paolo proposed was to only skip when the
+>> add-flow is being run.  This would be okay for most cases, except
+>> if a future test case is added that needs to do flow dump without
+>> an associated add (just guessing).  In that case, it could also be
+>> broken and we would need additional skip logic anyway.  Just draw
+>> a line in the sand now.
+>> 
+>> Fixes: 25f16c873fb1 ("selftests: add openvswitch selftest suite")
+>> Reported-by: Paolo Abeni <pabeni@redhat.com>
+>> Closes: https://lore.kernel.org/lkml/8470c431e0930d2ea204a9363a60937289b7fdbe.camel@redhat.com/
+>> Signed-off-by: Aaron Conole <aconole@redhat.com>
+>> ---
+>>  tools/testing/selftests/net/openvswitch/openvswitch.sh | 2 +-
+>>  tools/testing/selftests/net/openvswitch/ovs-dpctl.py   | 8 ++++++++
+>>  2 files changed, 9 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/tools/testing/selftests/net/openvswitch/openvswitch.sh b/tools/testing/selftests/net/openvswitch/openvswitch.sh
+>> index 9c2012d70b08e..220c3356901ef 100755
+>> --- a/tools/testing/selftests/net/openvswitch/openvswitch.sh
+>> +++ b/tools/testing/selftests/net/openvswitch/openvswitch.sh
+>> @@ -525,7 +525,7 @@ run_test() {
+>>  	fi
+>>  
+>>  	if python3 ovs-dpctl.py -h 2>&1 | \
+>> -	     grep "Need to install the python" >/dev/null 2>&1; then
+>> +	     grep -E "Need to (install|upgrade) the python" >/dev/null 2>&1; then
+>>  		stdbuf -o0 printf "TEST: %-60s  [PYLIB]\n" "${tdesc}"
+>>  		return $ksft_skip
+>>  	fi
+>> diff --git a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+>> index 912dc8c490858..9686ca30d516d 100644
+>> --- a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+>> +++ b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+>> @@ -28,6 +28,8 @@ try:
+>>      from pyroute2.netlink import nlmsg_atoms
+>>      from pyroute2.netlink.exceptions import NetlinkError
+>>      from pyroute2.netlink.generic import GenericNetlinkSocket
+>> +    import pyroute2
+>> +
+>>  except ModuleNotFoundError:
+>>      print("Need to install the python pyroute2 package.")
+>>      sys.exit(0)
+>> @@ -1998,6 +2000,12 @@ def main(argv):
+>>      nlmsg_atoms.ovskey = ovskey
+>>      nlmsg_atoms.ovsactions = ovsactions
+>>  
+>> +    # version check for pyroute2
+>> +    prverscheck = pyroute2.__version__.split(".")
+>> +    if int(prverscheck[0]) == 0 and int(prverscheck[1]) < 6:
+>> +        print("Need to upgrade the python pyroute2 package.")
+>
+> I think it would be better to propagate/print also the minimum version
+> required, so that the user should not have to resort looking at the
+> self-test sources to learn the required minimum version.
 
-On 10/11/2023 3:17 PM, Konrad Dybcio wrote:
-> 
-> 
-> On 10/11/23 07:40, Mukesh Ojha wrote:
->>
->>
->> On 10/7/2023 5:02 AM, Konrad Dybcio wrote:
->>> On 3.10.2023 19:54, Komal Bajaj wrote:
->>>> Add qcm6490 devicetree file for QCM6490 SoC and QCM6490 IDP
->>>> platform. QCM6490 is derived from SC7280 meant for various
->>>> form factor including IoT.
->>>>
->>>> Supported features are, as of now:
->>>> * Debug UART
->>>> * eMMC
->>>> * USB
->>>>
->>>> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
->>>> ---
->>> [...]
->>>
->>>> diff --git a/arch/arm64/boot/dts/qcom/qcm6490.dtsi 
->>>> b/arch/arm64/boot/dts/qcom/qcm6490.dtsi
->>>> new file mode 100644
->>>> index 000000000000..b93270cae9ae
->>>> --- /dev/null
->>>> +++ b/arch/arm64/boot/dts/qcom/qcm6490.dtsi
->>>> @@ -0,0 +1,94 @@
->>>> +// SPDX-License-Identifier: BSD-3-Clause
->>>> +/*
->>>> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights 
->>>> reserved.
->>>> + */
->>>> +
->>>> +#include "sc7280.dtsi"
->>>> +
->>>> +/*
->>>> + * Delete unused sc7280 memory nodes and define the memory regions
->>>> + * required by qcm6490
->>>> + */
->>>> +/delete-node/ &rmtfs_mem;
->>>> +/delete-node/ &wlan_ce_mem;
->>>> +
->>>> +/{
->>>> +    reserved-memory {
->>>> +        cdsp_secure_heap_mem: cdsp-secure-heap@81800000 {
->>>> +            reg = <0x0 0x81800000 0x0 0x1e00000>;
->>>> +            no-map;
->>>> +        };
->>>> +
->>>> +        camera_mem: camera@84300000 {
->>> Uhh.. this is totally not the same memory map that I have on a
->>> random msm-5.4 source+devicetree drop (which does in turn align
->>> with the one on QCM6490 Fairphone 5, as it should because it's
->>> a rebadged reference device for the most part)..
->>>
->>> Did you guys *really* redo it between software releases?
->>
->> QCM6490 fairphone is special case where same SOC is used for mobile
->> product and it uses sc7280 memory map.
->>
->> Current patch adds support for the same SOC marketed for IOT segment
->> [1] and very active in the development and soon going to freeze its
->> memory map, so we are deriving memory map from sc7280 and creating
->> a new memory map for all IOT product with qcm6490.dtsi .
-> Stop reinventing the wheel. I'm not going to accept patches that are 
-> supposed to define ABI for products that are still in development.
-> Not unless Qualcomm changes their attitude towards unilaterally breaking 
-> things for no good reason.
-> 
->>
->> [1]
->> https://www.qualcomm.com/products/internet-of-things/industrial/building-enterprise/qcm6490
->>
->>>
->>> This SoC family has been on the market for quite some time,
->>> breaking software expectations like that is not cool, especially
->>> on a product with a promised lifespan of 10 years or whatever!
->>
->> I agree, but we are not changing anything for product which are there
->> in the market instead defining a new memory map what is going to come
->> with qcm6490.dtsi for IOT.
-> Why would the OS care about the market segment you're targeting?
-> Why would the firmware you're building care about the market segment 
-> you're targeting? The LE vs LA vs LU vs WP vs whatever split is so 
-> unnecessary and arbitrary on the firmware/kernel side..
+ACK - makes sense to me.
 
-Forgive me, if i ask some very basic question, just trying to put my
-thought,
+> Cheers,
+>
+> Paolo
 
-I agree, OS should not worry about the market segment, but through the
-DT firmware, we can better optimize memory to either give more memory to
-user or give more memory to certain DSP's to enable certain feature 
-through the firmware like some logging infra etc., and due to which
-certain gaps can get created where certain memory region need to be
-move up or down due to increase in the carve-out.
-
-Let's say X Soc released with some memory map, any derivative SoC Y
-should follow X's memory map if it is including X dtsi ? and the reason 
-why Y want to include X is solely the work done for X and most of 
-peripheral memory addresses is matching.
-
-But 'Y' could be different product, right? and it could have different
-firmware and it is not like 'X' firmware will run on 'Y' ?
-
-Now a days, most of our firmware are relocatable.
-
--Mukesh
-> 
-> The firmware should either be fully relocatable (so that dynamic memory 
-> reservation can be used), unified so that there's no changes or better 
-> yet stored in separate memory so that q6 cores don't steal the RAM that 
-> the user paid for and you can do whatever ugly magic you please in there.
-> 
-> This arbitrary segmentation makes it impossible to have a common base, 
-> or to explain what device should go where to a newcomer.
-> 
-> Sorry, the other qcm6490 soc with
->> fairphone(for mobile) can get confuse with qcm6490.dtsi but that
->> is special case and i hope, that should be fine but, let me know if
->> there is concern.
->>>
->>> With that, this really seems more of a change that would belong
->>> in the IDP dts than the 6490-common one..
->>
->>
->> We wanted to keep it in qcm6490.dtsi as there are some more product
->> going to share this in future.
-> And then what if you decide that you need to re-release SC7280 for 
-> automotive and make changes again? Do we define qcm6490au.dtsi which 
-> will redefine everything again-again?
-> 
-> Konrad
