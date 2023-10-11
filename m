@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A257C4FA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C72967C4F90
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346166AbjJKKH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:07:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53084 "EHLO
+        id S233175AbjJKKGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234710AbjJKKG7 (ORCPT
+        with ESMTP id S231577AbjJKKGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:06:59 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2928181
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:06:43 -0700 (PDT)
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4S57cN1QCpzkYB3;
-        Wed, 11 Oct 2023 18:02:44 +0800 (CST)
-Received: from huawei.com (10.67.174.55) by kwepemi500008.china.huawei.com
- (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
- 2023 18:06:41 +0800
-From:   Jinjie Ruan <ruanjinjie@huawei.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <yuzenghui@huawei.com>, <anshuman.khandual@arm.com>,
-        <gregkh@linuxfoundation.org>, <mark.rutland@arm.com>,
-        <broonie@kernel.org>, <youngmin.nam@samsung.com>,
-        <ardb@kernel.org>, <f.fainelli@gmail.com>, <james.morse@arm.com>,
-        <sashal@kernel.org>, <scott@os.amperecomputing.com>,
-        <ebiederm@xmission.com>, <haibinzhang@tencent.com>,
-        <hewenliang4@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <stable@kernel.org>
-CC:     <ruanjinjie@huawei.com>
-Subject: [PATCH v5.10 RESEND 15/15] arm64: armv8_deprecated: fix unused-function error
-Date:   Wed, 11 Oct 2023 10:05:45 +0000
-Message-ID: <20231011100545.979577-16-ruanjinjie@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231011100545.979577-1-ruanjinjie@huawei.com>
-References: <20231011100545.979577-1-ruanjinjie@huawei.com>
+        Wed, 11 Oct 2023 06:06:17 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47BEAF
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:06:14 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-307d58b3efbso5854221f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:06:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697018773; x=1697623573; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language:subject
+         :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fub0OLah+ZMrfmMWsVbsLKTM47lsXgX5eYB01m9XKeg=;
+        b=lNcMUYxSa29cIYJBrzq/qq9ttz3a931rjwd1IbHtGxgKOfE1jzieGw8fRmQU3jImwN
+         uh9yHYhOhrgHkd87r8bzxPeWKXdys5+w592YKb+ZEAZMUvix3szbkrntlv6LKkhRgh5j
+         0BKCcwi9BQKEFAtTy7LxduhVBjNtHs/AeKM+HLK0jQUsI/tTzj+ZXRaxsx+7xNmafhCi
+         SBcmABTzi8qb3hxQj9j9YSRzd3ssRwVuL8IbZ+FJWrer6Ia4QDCfgybNvGqeDF6Bee3g
+         RE/nM0+kWU1EqgKwaUG2G1tEs+4nG1uTQ6lL7683k2ONPKxJQvMMJb6oIqzpNhKz74MV
+         yCdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697018773; x=1697623573;
+        h=content-transfer-encoding:in-reply-to:from:content-language:subject
+         :references:cc:to:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fub0OLah+ZMrfmMWsVbsLKTM47lsXgX5eYB01m9XKeg=;
+        b=F/QVOA0Zoy93vlfI2dcmWYtwiiq1am+TFAauMUBaojPy5APdQBEKKOff08+g6YkL/U
+         /J5wCxXWYC1m0FRLcmxjb82CLsbjveZhwGGK4rgQVRV8ndYX6QqooXYnjVlCsYA7g4MG
+         ceAdiJrYJ3lSLpATFU3KDLt5La3J6Ry7w+eLJQ3Q6UackSuh8uhQA8lFvNLx56+RnKle
+         op6gAsVENsohLsrykGCO5G0NTumlKK7we2LM5eU0phNUG6RIvlEXD3v7p3HRdD1Aub7i
+         Xk4YqYq/cdtEC4pA18j0ly7jwDBClo0tIxo4xcvpLU1D54+eFq8d76OqKxT0kyMn/+rQ
+         XhXw==
+X-Gm-Message-State: AOJu0YxDhOaIpKnZTasmvGjP1x9lgnwAfoWyfimpzqrJZoK1cLk2X+yy
+        4qq/Na6pW5QXvcFF/GTdVGN0XQ==
+X-Google-Smtp-Source: AGHT+IGt3zAFGhPUYx7XidslsZDz+pqj1w2FqJtNDcptwK+tW2l0dBINQjidP+IuFvFen9VS1DII3Q==
+X-Received: by 2002:a5d:67c9:0:b0:321:5211:8e20 with SMTP id n9-20020a5d67c9000000b0032152118e20mr17369654wrw.59.1697018773010;
+        Wed, 11 Oct 2023 03:06:13 -0700 (PDT)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id x11-20020adff0cb000000b00323293bd023sm15155625wro.6.2023.10.11.03.06.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 03:06:12 -0700 (PDT)
+Message-ID: <abf17440-bddf-4289-a951-bb3fd3951be1@linaro.org>
+Date:   Wed, 11 Oct 2023 11:06:11 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.174.55]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500008.china.huawei.com (7.221.188.139)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+To:     quic_luoj@quicinc.com
+Cc:     agross@kernel.org, andersson@kernel.org, catalin.marinas@arm.com,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
+        p.zabel@pengutronix.de, quic_srichara@quicinc.com,
+        robh+dt@kernel.org, sboyd@kernel.org, will@kernel.org
+References: <20230923112105.18102-4-quic_luoj@quicinc.com>
+Subject: Re: [PATCH v9 3/4] clk: qcom: common: commonize qcom_cc_really_probe
+Content-Language: en-US
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20230923112105.18102-4-quic_luoj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ren Zhijie <renzhijie2@huawei.com>
-
-commit 223d3a0d30b6e9f979f5642e430e1753d3e29f89 upstream.
-
-If CONFIG_SWP_EMULATION is not set and
-CONFIG_CP15_BARRIER_EMULATION is not set,
-aarch64-linux-gnu complained about unused-function :
-
-arch/arm64/kernel/armv8_deprecated.c:67:21: error: ‘aarch32_check_condition’ defined but not used [-Werror=unused-function]
- static unsigned int aarch32_check_condition(u32 opcode, u32 psr)
-                     ^~~~~~~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
-
-To fix this warning, modify aarch32_check_condition() with __maybe_unused.
-
-Fixes: 0c5f416219da ("arm64: armv8_deprecated: move aarch32 helper earlier")
-Signed-off-by: Ren Zhijie <renzhijie2@huawei.com>
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-Link: https://lore.kernel.org/r/20221124022429.19024-1-renzhijie2@huawei.com
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
----
- arch/arm64/kernel/armv8_deprecated.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/kernel/armv8_deprecated.c b/arch/arm64/kernel/armv8_deprecated.c
-index fd529c6c108b..f0ba854f0045 100644
---- a/arch/arm64/kernel/armv8_deprecated.c
-+++ b/arch/arm64/kernel/armv8_deprecated.c
-@@ -64,7 +64,7 @@ struct insn_emulation {
- 
- #define	ARM_OPCODE_CONDITION_UNCOND	0xf
- 
--static unsigned int aarch32_check_condition(u32 opcode, u32 psr)
-+static unsigned int __maybe_unused aarch32_check_condition(u32 opcode, u32 psr)
- {
- 	u32 cc_bits  = opcode >> 28;
- 
--- 
-2.34.1
-
+Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org> # Lenovo x13s
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
