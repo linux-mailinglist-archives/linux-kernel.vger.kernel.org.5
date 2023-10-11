@@ -2,240 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA887C55F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 180CA7C55F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbjJKN4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
+        id S232415AbjJKN4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232213AbjJKN4n (ORCPT
+        with ESMTP id S231858AbjJKN4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:56:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D5590
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:55:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697032554;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CCQEtnJtqrl4ZQlzrkW0UsHRVRuDX1lNSfSKzLC2Fyw=;
-        b=hfKkioAPJAFuEUWeIHuCkyhmSEoX81gxy8HV/MDRIcrJIC7Ichn+OlGsDTcmqs4WvNWMjh
-        CTm6RN9N4kD/peQCeSCEsZ9lzvMRM31UdpSp+GUHP8Jz8AbPydYE/3HSpaXAS5MZkUdLkt
-        xGYRkq67ZYyS9T1x2loV+3Ndp4mCXeI=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-523-mL34rKmhNnC6INHukD-YbQ-1; Wed, 11 Oct 2023 09:55:53 -0400
-X-MC-Unique: mL34rKmhNnC6INHukD-YbQ-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-775751c3437so915808485a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:55:53 -0700 (PDT)
+        Wed, 11 Oct 2023 09:56:08 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A92C192
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:56:06 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-32329d935d4so6231831f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:56:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697032565; x=1697637365; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=phV1Eh8dyDwq/UtzOXVkVl989phIpfhIdWj1kthmPMU=;
+        b=M196KiNrwuEmlu89slyU5qVl5wqR6OWAEErIeOdYZbXarhi9Qej9QkVaDgxTK4W78f
+         33UEu8XxIH9mUSgJV4CmEHXXnSPrSrnOYu+iKxAQfExoVJGyKEtHxNFL0af5KKD+roHJ
+         9NkduxXBbz1d94BLBK2GNFXwVauSkJUS6fXv/2qRkmox6kbpIu+X3IpEe/T7KPSZFPpn
+         K2F8ZkSJrDO/dofxLOrdvMGNxKZSk9fQR6YEuzaeCEXsq/vWYGhFEdslhIyIPQm3nxW6
+         4jbgScqiCiw6yYQQm12Z+4DePnraCBh6ann4Jmua3Fji5JFbQ7VYQjvI8ZadluAb2a/t
+         ujkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697032552; x=1697637352;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1697032565; x=1697637365;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CCQEtnJtqrl4ZQlzrkW0UsHRVRuDX1lNSfSKzLC2Fyw=;
-        b=Z2/fsbWkvSV1xrgn8+6MzOII/oanlht3/uIDBf8AYjh7n4k9f9uPEctkS56zoVuO+e
-         CsX/8pR9Dbm5qI98XwmETyPVm0DVe+7UuSYXeYVnnc6Q12ynFd5m87nfcmv5y4qlgCYT
-         meNSjS6X204kYa1vFh4BNbGBM3+2s3hkUAS+2QloEglahcCj05AKiOJj7mgAW64kVGYH
-         rpcxD2slHujZcbtu4u5mvq6Os6QPWUIwWWDoDc5WRPYYi2KO0l8khiA22VmJUQJQElqW
-         928fRYtzBkoMMN2mo4IpwwlhAVI8K1XEJLNIqDxI49xqvGRYXLNCKG74E+0J933fuRw8
-         F6YQ==
-X-Gm-Message-State: AOJu0YxjseZAeRdAjb/Uw3dZ5ufU1Zq405JGdfCFbhLgDKfIoUvAGE7/
-        94cQhipTmjzNqXnn356rFNKixNMz1rz2/LgtlYP422imoIOqmcvX8AaRRpDSu3t2mgJ+A0b6nZA
-        A/J87FBy46dzanDCNoUMRmWtwxJ7RYrXR
-X-Received: by 2002:a05:620a:2493:b0:773:dce0:b2b8 with SMTP id i19-20020a05620a249300b00773dce0b2b8mr25704056qkn.17.1697032552590;
-        Wed, 11 Oct 2023 06:55:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHi3OK6NLbzJY91SNGXtfrl8Fa+QyLwnsW/XwbEjDqucInTsI9Z/AMMlIz8fq5NCAnl+iFobA==
-X-Received: by 2002:a05:620a:2493:b0:773:dce0:b2b8 with SMTP id i19-20020a05620a249300b00773dce0b2b8mr25704032qkn.17.1697032552283;
-        Wed, 11 Oct 2023 06:55:52 -0700 (PDT)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id j30-20020a05620a001e00b00767d2870e39sm5243919qki.41.2023.10.11.06.55.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 06:55:51 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 08:55:49 -0500
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v3 11/15] firmware: qcom: qseecom: convert to using the
- TZ allocator
-Message-ID: <ebihxhbl2hyhuke3l2nm56yhvmj4qcja6fbihrc4bhrf2czoix@wjnnyic7wvi7>
-References: <20231009153427.20951-1-brgl@bgdev.pl>
- <20231009153427.20951-12-brgl@bgdev.pl>
- <y5otsuzhc27xeay6js4nkqss2bo5bsmygwdjuhqpdzce4yffxk@gkkh522s5e3b>
- <CAMRc=MdfZzG-C7=OVhR7x_vEmCexS39GEJ3F-CHM7cfya+A-VA@mail.gmail.com>
+        bh=phV1Eh8dyDwq/UtzOXVkVl989phIpfhIdWj1kthmPMU=;
+        b=Mq88BlBauoQgsLQL43CbDdKGVCJ71cMlGtcSPxJ2/Tz9YMD/qMu8gqwNN9bEp1Ckhr
+         0HDobR3yyUjx2gPyjHRkmsuCWUt6ALVvIZZUoDy/J6CeioheFSzNIRruX6flWmZkrdbv
+         UT/tIFauFw0Ioo22872YUD7x4I0xAy2oezgQz+xhQEM1UlF3YY75xd9tfhMusN1MTDWl
+         rJS4yU5Pn3hhemJ6Qr60FoXP2gSPiXm0cCGwAwKb+/LNsT0mY4+a2+HCmPW645PIIR20
+         pqCqqH1RrPf2Re800vCcHzEtSX1cLyYsZyvEQ7X0K7RfdcH2LMM+SiEe45hI7JV+QUMw
+         la4w==
+X-Gm-Message-State: AOJu0YzfXwimezLyB7R+pjoFqAEMOMPHIK1F5PS3L5x73UeKLBD44eMw
+        aSSrK5b/EPH+bVIa1WRTYzND7w==
+X-Google-Smtp-Source: AGHT+IHykpxyTqgSJ1JQDn0+8x8DG1N64O/bL8mtwyARRWrhDwMk4wMMZeoYL0N8OiimYgCipr/1Mw==
+X-Received: by 2002:adf:e689:0:b0:319:8bb3:ab83 with SMTP id r9-20020adfe689000000b003198bb3ab83mr17524839wrm.66.1697032565036;
+        Wed, 11 Oct 2023 06:56:05 -0700 (PDT)
+Received: from [192.168.86.24] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id n16-20020a1c7210000000b00406725f27e1sm16826507wmc.42.2023.10.11.06.56.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 06:56:04 -0700 (PDT)
+Message-ID: <a67f5fd1-6b5c-662d-5ab3-b528c2080efc@linaro.org>
+Date:   Wed, 11 Oct 2023 14:56:02 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v12 7/7] nvmem: core: Expose cells through sysfs
+Content-Language: en-US
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Walle <michael@walle.cc>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Robert Marko <robert.marko@sartura.hr>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Daniel Golle <daniel@makrotopia.org>
+References: <20231005155907.2701706-1-miquel.raynal@bootlin.com>
+ <20231005155907.2701706-8-miquel.raynal@bootlin.com>
+ <318fe799-f53e-64ed-b631-d099bb5202f4@linaro.org>
+ <20231011091524.0c9ecc55@xps-13>
+ <548849a8-9f11-5274-778e-f291267603bb@linaro.org>
+ <20231011103306.08f1fbd4@xps-13>
+ <fe4a2688-079c-a36d-0ea4-c244c6e1a0ad@linaro.org>
+ <20231011105829.778bed58@xps-13>
+ <490c6740-06cb-9ee6-ca8c-3ab404109344@linaro.org>
+ <20231011114419.21821f4d@xps-13>
+ <8b8403ee-b610-312b-aa98-3e4fa65a3800@linaro.org>
+ <20231011130931.3b6216aa@xps-13>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20231011130931.3b6216aa@xps-13>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MdfZzG-C7=OVhR7x_vEmCexS39GEJ3F-CHM7cfya+A-VA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 09:44:54AM +0200, Bartosz Golaszewski wrote:
-> On Wed, Oct 11, 2023 at 12:49 AM Andrew Halaney <ahalaney@redhat.com> wrote:
-> >
-> > On Mon, Oct 09, 2023 at 05:34:23PM +0200, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > >
-> > > Drop the DMA mapping operations from qcom_scm_qseecom_app_send() and
-> > > convert all users of it in the qseecom module to using the TZ allocator
-> > > for creating SCM call buffers. Together with using the cleanup macros,
-> > > it has the added benefit of a significant code shrink. As this is
-> > > largely a module separate from the SCM driver, let's use a separate
-> > > memory pool.
-> > >
-> > > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > <snip>
-> >
-> > > @@ -567,20 +529,14 @@ static efi_status_t qsee_uefi_get_next_variable(struct qcuefi_client *qcuefi,
-> > >               return EFI_INVALID_PARAMETER;
-> > >
-> > >       status = qcom_qseecom_app_send(qcuefi->client, req_data, req_size, rsp_data, rsp_size);
-> > > -     if (status) {
-> > > -             efi_status = EFI_DEVICE_ERROR;
-> > > -             goto out_free;
-> > > -     }
-> > > +     if (status)
-> > > +             return EFI_DEVICE_ERROR;
-> > >
-> > > -     if (rsp_data->command_id != QSEE_CMD_UEFI_GET_NEXT_VARIABLE) {
-> > > -             efi_status = EFI_DEVICE_ERROR;
-> > > -             goto out_free;
-> > > -     }
-> > > +     if (rsp_data->command_id != QSEE_CMD_UEFI_GET_NEXT_VARIABLE)
-> > > +             return EFI_DEVICE_ERROR;
-> > >
-> > > -     if (rsp_data->length < sizeof(*rsp_data)) {
-> > > -             efi_status = EFI_DEVICE_ERROR;
-> > > -             goto out_free;
-> > > -     }
-> > > +     if (rsp_data->length < sizeof(*rsp_data))
-> > > +             return EFI_DEVICE_ERROR;
-> > >
-> > >       if (rsp_data->status) {
-> > >               dev_dbg(qcuefi_dev(qcuefi), "%s: uefisecapp error: 0x%x\n",
-> > > @@ -595,77 +551,59 @@ static efi_status_t qsee_uefi_get_next_variable(struct qcuefi_client *qcuefi,
-> > >               if (efi_status == EFI_BUFFER_TOO_SMALL)
-> > >                       *name_size = rsp_data->name_size;
-> > >
-> > > -             goto out_free;
-> > > +             return efi_status;
-> > >       }
-> > >
-> > > -     if (rsp_data->length > rsp_size) {
-> > > -             efi_status = EFI_DEVICE_ERROR;
-> > > -             goto out_free;
-> > > -     }
-> > > +     if (rsp_data->length > rsp_size)
-> > > +             return EFI_DEVICE_ERROR;
-> > >
-> > > -     if (rsp_data->name_offset + rsp_data->name_size > rsp_data->length) {
-> > > -             efi_status = EFI_DEVICE_ERROR;
-> > > -             goto out_free;
-> > > -     }
-> > > +     if (rsp_data->name_offset + rsp_data->name_size > rsp_data->length)
-> > > +             return EFI_DEVICE_ERROR;
-> > >
-> > > -     if (rsp_data->guid_offset + rsp_data->guid_size > rsp_data->length) {
-> > > -             efi_status = EFI_DEVICE_ERROR;
-> > > -             goto out_free;
-> > > -     }
-> > > +     if (rsp_data->guid_offset + rsp_data->guid_size > rsp_data->length)
-> > > +             return EFI_DEVICE_ERROR;
-> > >
-> > >       if (rsp_data->name_size > *name_size) {
-> > >               *name_size = rsp_data->name_size;
-> > > -             efi_status = EFI_BUFFER_TOO_SMALL;
-> > > -             goto out_free;
-> > > +             return EFI_BUFFER_TOO_SMALL;
-> > >       }
-> > >
-> > > -     if (rsp_data->guid_size != sizeof(*guid)) {
-> > > -             efi_status = EFI_DEVICE_ERROR;
-> > > -             goto out_free;
-> > > -     }
-> > > +     if (rsp_data->guid_size != sizeof(*guid))
-> > > +             return EFI_DEVICE_ERROR;
-> > >
-> > >       memcpy(guid, ((void *)rsp_data) + rsp_data->guid_offset, rsp_data->guid_size);
-> > >       status = ucs2_strscpy(name, ((void *)rsp_data) + rsp_data->name_offset,
-> > >                             rsp_data->name_size / sizeof(*name));
-> > >       *name_size = rsp_data->name_size;
-> > >
-> > > -     if (status < 0) {
-> > > +     if (status < 0)
-> > >               /*
-> > >                * Return EFI_DEVICE_ERROR here because the buffer size should
-> > >                * have already been validated above, causing this function to
-> > >                * bail with EFI_BUFFER_TOO_SMALL.
-> > >                */
-> > >               return EFI_DEVICE_ERROR;
-> > > -     }
-> >
-> > Personally (no idea what the actual style guide says) leaving braces
-> > around the multiline if statement would be nice.... that being said,
-> > that's my opinion :)
-> >
-> > <snip>
-> > > @@ -704,12 +635,7 @@ static efi_status_t qsee_uefi_query_variable_info(struct qcuefi_client *qcuefi,
-> > >       if (max_variable_size)
-> > >               *max_variable_size = rsp_data->max_variable_size;
-> > >
-> > > -out_free:
-> > > -     kfree(rsp_data);
-> > > -out_free_req:
-> > > -     kfree(req_data);
-> > > -out:
-> > > -     return efi_status;
-> > > +     return EFI_SUCCESS;
-> > >  }
-> > >
-> > >  /* -- Global efivar interface. ---------------------------------------------- */
-> > > @@ -838,6 +764,10 @@ static int qcom_uefisecapp_probe(struct auxiliary_device *aux_dev,
-> > >       if (status)
-> > >               qcuefi_set_reference(NULL);
-> > >
-> > > +     qcuefi->mempool = devm_qcom_tzmem_pool_new(&aux_dev->dev, SZ_256K);
-> >
-> > Any particular reason for this size? Just curious, it was (one) of the
-> > reasons I had not marked patch 4 yet (it looks good, but I wanted to get
-> > through the series to digest the Kconfig as well).
-> >
-> 
-> I cannot test this. Do you know what the minimum correct size would be?
 
-I've got no insight into these firmware interfaces unfortunately. Was
-mostly curious if Qualcomm had provided a suggestion behind the scenes
-or if this was picked as a "sufficiently large" pool size.
+
+On 11/10/2023 12:09, Miquel Raynal wrote:
+> Hi Srinivas,
+> 
+> srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 11:02:16 +0100:
+> 
+>> Hi Miquel,
+>>
+>> On 11/10/2023 10:44, Miquel Raynal wrote:
+>>> Hi Srinivas,
+>>>
+>>> srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 10:26:43 +0100:
+>>>    
+>>>> On 11/10/2023 09:58, Miquel Raynal wrote:
+>>>>> Hi Srinivas,
+>>>>>
+>>>>> srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 09:45:11 +0100:
+>>>>>     >>>> On 11/10/2023 09:33, Miquel Raynal wrote:
+>>>>>>> Hi Srinivas,
+>>>>>>>
+>>>>>>> srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 09:27:20 +0100:
+>>>>>>>      >>>> On 11/10/2023 08:15, Miquel Raynal wrote:
+>>>>>>>>>>> +
+>>>>>>>>>>> +	nvmem_cells_group.bin_attrs = cells_attrs;
+>>>>>>>>>>> +
+>>>>>>>>>>> +	ret = devm_device_add_groups(&nvmem->dev, nvmem_cells_groups);
+>>>>>>>>>>> +	if (ret)
+>>>>>>>>>>> +		goto unlock_mutex;
+>>>>>>>>>> This is going to create groups after the nvmem device is added, isn't this going to be problem with user space notifications?
+>>>>>>>>> Greg said it was not. I hope I understood correctly 😄
+>>>>>>>>>
+>>>>>>>>> And anyway, cells have never been available to userspace, so there is
+>>>>>>>>> nothing userspace might expect yet?
+>>>>>>>> I agree, but once we add sysfs uapi then this is going to change.
+>>>>>>>
+>>>>>>> Can you elaborate? I'm not sure I follow you here. Is there still a
+>>>>>>> problem you fear or you think it's okay?
+>>>>>>>      >> Now that we add cells to sysfs.
+>>>>>> AFAIU, By the time the userspace sees the udev event from this device we might not have cells populated.
+>>>>>
+>>>>> Yes, but why would this be a problem?
+>>>>>     >> It will be problem if the userspace is using things like libudev to act on these events. There seems to be some caching of attributes in udev during event more info http://www.kroah.com/log/blog/2013/06/26/how-to-create-a-sysfs-file-correctly/
+>>>
+>>> I am already using these attributes, right? The problem here is that we
+>>> always attach cells sysfs attributes to the nvmem device, but in some
+>>> cases (when using layout devices/drivers) the probe of these devices
+>>> will happen after the main nvmem device has been announced to userspace
+>>> and thus these attributes might not be populated yet (but Greg said it
+>>> was "supported" and I assumed it was fine).
+>>>   > So what is your idea here to overcome this?
+>>
+>> Ideally we should have all the cells definitions ready by the time nvmem is registered.
+> 
+> I no longer think what you describe can happen because even though the
+> rootfs might be mounted, the daemons will only be 'started' once the
+> kernel is done starting and starts the init process, which means all
+> the devices have probed and all the cells have been registered as well.
+I think you forgot about modules in the above flow.
+
+--srini
+
 
 > 
-> Bart
-> 
-> > Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-> >
-> 
-
+> Thanks,
+> Miquèl
