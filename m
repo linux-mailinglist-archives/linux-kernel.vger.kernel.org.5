@@ -2,112 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B277C4C67
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3813D7C4C6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbjJKHxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 03:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44636 "EHLO
+        id S1344899AbjJKH6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 03:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbjJKHxS (ORCPT
+        with ESMTP id S229743AbjJKH6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 03:53:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F65CA
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 00:53:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0E99C433C7;
-        Wed, 11 Oct 2023 07:53:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697010794;
-        bh=GgwVDJvvCqbsJ90WXFWRK1qi4oMBE8/9c9WObZa6mTI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ufsbm2XEeGZiZuQF7Rx85fJ0Dr79urIechCSfD3UoU9/1pr6rejnp6a0cpQ4dZ29l
-         2hs+omIR49qqY5B2EXpsGUl6a0VgRK/EzeHUk4HJ8c0zG5YRvHeANwWWUxZPGFQ4+2
-         bCOeg4HshlZa3isAz9F0sj02lUKBMYoCxiPAk8Ps=
-Date:   Wed, 11 Oct 2023 09:53:11 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] printk: Check valid console index for preferred
- console
-Message-ID: <2023101131-maroon-stubborn-1364@gregkh>
-References: <20231011074330.14487-1-tony@atomide.com>
+        Wed, 11 Oct 2023 03:58:02 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2873F91;
+        Wed, 11 Oct 2023 00:58:01 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39B7vZnq027168;
+        Wed, 11 Oct 2023 07:57:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : date : subject :
+ content-type : message-id : to : cc : content-transfer-encoding :
+ mime-version; s=pp1; bh=+Nh+ttaIlUVnlNuQdKZMcQ5FWauLUpkU6fMAGytoJds=;
+ b=j7DqAfo0xor59I2htFF3DcLs60Qnewu5gu7tytRoBYhTWRlbJ5Of0iA2mkgefCBMbVGj
+ /qaO/NJUZZ4gDiTNq8TwnP4GeN87hQSScOPNUKxzkha5drEMUKL3MkTb01mM/84S5ygp
+ Dat9fgdHsK0OWfESORHYxa2t6V0w4nPTyed+IFhWhtmGPlr3JPWOQPK5Kpc794Qohn5M
+ kEx9uLjoz5Bf6D46RiVFIun4Q2h6+PufaW/PoST5MTfL7J4o6OE5Gh6kQdFLoXj+HdMC
+ uqQhG1L2DrPCjGfc7SgibEOPtfISz26FwlgFYV07Ud1WYbvd9tYQcZ0V01AJAk5FBryt 3w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnqs40077-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 07:57:50 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39B7vZYj027159;
+        Wed, 11 Oct 2023 07:57:50 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnqs4006v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 07:57:49 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39B7XOis024458;
+        Wed, 11 Oct 2023 07:57:48 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkhnspwqj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 07:57:48 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39B7vkYl44565194
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Oct 2023 07:57:46 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EE93E20043;
+        Wed, 11 Oct 2023 07:57:45 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8F5AB20040;
+        Wed, 11 Oct 2023 07:57:45 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Oct 2023 07:57:45 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Date:   Wed, 11 Oct 2023 09:57:38 +0200
+Subject: [PATCH net v3] net/mlx5: fix calling mlx5_cmd_init() before DMA
+ mask is set
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <20231011-mlx5_init_fix-v3-1-787ffb9183c6@linux.ibm.com>
+X-B4-Tracking: v=1; b=H4sIAHFVJmUC/3XN0QqDIBQG4FcJr2eoaeWu9h5jROnZOrBsaJNG9
+ O4Tr0awy/8//N/ZSACPEMi52IiHiAFnl0J1KogZe/cAijZlIpiomBYtnZ6r6tDh0t1xpUbWalD
+ G9pVoSNq8PKQ6e1fiYCG3VI4Yltl/8o/I8+kPFznltNGN1FYqAzW7PNG91xKHqTTzlLUofgV9F
+ EQSFAcrmJZG2/Yo7Pv+BbgqfYf1AAAA
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shay Drory <shayd@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Leon Romanovsky <leon@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3636;
+ i=schnelle@linux.ibm.com; h=from:subject:message-id;
+ bh=s4vuRbe1ctTn2sX8uQsBeRCDfvcgXhkrwsTDFdyTJEc=;
+ b=owGbwMvMwCH2Wz534YHOJ2GMp9WSGFLVQotOqvYpbb5vnW8vZjv72Mb9Et7BRWwRXyY/fp/Zz
+ iT999W8jlIWBjEOBlkxRZZFXc5+6wqmmO4J6u+AmcPKBDKEgYtTACby0Izhr0DtVN2L530+rM/a
+ MPeRy23GvMZHH+S8v+v6Ca98vXvP+hkMfyWmPtDIyNzdznbn11vlzVr/jGTlTQUufJFJ+73wxL7
+ 0szwA
+X-Developer-Key: i=schnelle@linux.ibm.com; a=openpgp;
+ fpr=9DB000B2D2752030A5F72DDCAFE43F15E8C26090
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 3JCCzQyui7zKBQUbndel4jsSrX-48M9N
+X-Proofpoint-GUID: uvKxe_HwHqSYX_Vf6ALqULCM6UY1N_Bh
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011074330.14487-1-tony@atomide.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_05,2023-10-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
+ clxscore=1011 mlxscore=0 suspectscore=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310110069
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 10:43:25AM +0300, Tony Lindgren wrote:
-> Let's check for valid console index values to avoid bogus console index
-> numbers from kernel command line. While struct console uses short for
-> index, and negative index values are used by some device drivers, we do
-> not want to allow negative values for preferred console.
+Since commit 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and
+reload routines") mlx5_cmd_init() is called in mlx5_mdev_init() which is
+called in probe_one() before mlx5_pci_init(). This is a problem because
+mlx5_pci_init() is where the DMA and coherent mask is set but
+mlx5_cmd_init() already does a dma_alloc_coherent(). Thus a DMA
+allocation is done during probe before the correct mask is set. This
+causes probe to fail initialization of the cmdif SW structs on s390x
+after that is converted to the common dma-iommu code. This is because on
+s390x DMA addresses below 4 GiB are reserved on current machines and
+unlike the old s390x specific DMA API implementation common code
+enforces DMA masks.
 
-What drivers use a negative index for the console?
+Fix this by moving set_dma_caps() out of mlx5_pci_init() and into
+probe_one() before mlx5_mdev_init(). To match the overall naming scheme
+rename it to mlx5_dma_init().
 
-> Let's change the idx to short to match struct console, and return an error
-> on negative values. And let's also constify idx while at it.
-> 
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
-> 
-> Changes since v1:
-> 
-> - Use const short idx and return an error on negative values
-> 
-> ---
->  include/linux/console.h |  2 +-
->  kernel/printk/printk.c  | 11 +++++++++--
->  2 files changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/console.h b/include/linux/console.h
-> --- a/include/linux/console.h
-> +++ b/include/linux/console.h
-> @@ -340,7 +340,7 @@ enum con_flush_mode {
->  	CONSOLE_REPLAY_ALL,
->  };
->  
-> -extern int add_preferred_console(char *name, int idx, char *options);
-> +extern int add_preferred_console(char *name, const short idx, char *options);
->  extern void console_force_preferred_locked(struct console *con);
->  extern void register_console(struct console *);
->  extern int unregister_console(struct console *);
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -2404,12 +2404,19 @@ static void set_user_specified(struct console_cmdline *c, bool user_specified)
->  	console_set_on_cmdline = 1;
->  }
->  
-> -static int __add_preferred_console(char *name, int idx, char *options,
-> +static int __add_preferred_console(const char *name, const short idx, char *options,
->  				   char *brl_options, bool user_specified)
->  {
->  	struct console_cmdline *c;
->  	int i;
->  
-> +	/*
-> +	 * Negative struct console index may be valid for drivers in some cases,
-> +	 * but negative index is not valid for a preferred console.
-> +	 */
-> +	if (idx < 0)
-> +		return -EINVAL;
+Link: https://lore.kernel.org/linux-iommu/cfc9e9128ed5571d2e36421e347301057662a09e.camel@linux.ibm.com/
+Fixes: 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and reload routines")
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+---
+Note: I ran into this while testing the linked series for converting
+s390x to use dma-iommu. The existing s390x specific DMA API
+implementation doesn't respect DMA masks and is thus not affected.
+---
+Changes in v3:
+- Added R-b's from Leon R and Jacob K
+- Link to v2: https://lore.kernel.org/r/20230929-mlx5_init_fix-v2-1-51ed2094c9d8@linux.ibm.com
+---
+ drivers/net/ethernet/mellanox/mlx5/core/main.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-Looks good to me, I'll take this through my tty tree if no one objects.
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index 15561965d2af..f251d233a16c 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -250,7 +250,7 @@ static void mlx5_set_driver_version(struct mlx5_core_dev *dev)
+ 	mlx5_cmd_exec_in(dev, set_driver_version, in);
+ }
+ 
+-static int set_dma_caps(struct pci_dev *pdev)
++static int mlx5_dma_init(struct pci_dev *pdev)
+ {
+ 	int err;
+ 
+@@ -905,12 +905,6 @@ static int mlx5_pci_init(struct mlx5_core_dev *dev, struct pci_dev *pdev,
+ 
+ 	pci_set_master(pdev);
+ 
+-	err = set_dma_caps(pdev);
+-	if (err) {
+-		mlx5_core_err(dev, "Failed setting DMA capabilities mask, aborting\n");
+-		goto err_clr_master;
+-	}
+-
+ 	if (pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP32) &&
+ 	    pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP64) &&
+ 	    pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP128))
+@@ -1908,9 +1902,15 @@ static int probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		goto adev_init_err;
+ 	}
+ 
++	err = mlx5_dma_init(pdev);
++	if (err) {
++		mlx5_core_err(dev, "Failed setting DMA capabilities mask, aborting\n");
++		goto dma_init_err;
++	}
++
+ 	err = mlx5_mdev_init(dev, prof_sel);
+ 	if (err)
+-		goto mdev_init_err;
++		goto dma_init_err;
+ 
+ 	err = mlx5_pci_init(dev, pdev, id);
+ 	if (err) {
+@@ -1942,7 +1942,7 @@ static int probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	mlx5_pci_close(dev);
+ pci_init_err:
+ 	mlx5_mdev_uninit(dev);
+-mdev_init_err:
++dma_init_err:
+ 	mlx5_adev_idx_free(dev->priv.adev_idx);
+ adev_init_err:
+ 	mlx5_devlink_free(devlink);
 
-thanks,
+---
+base-commit: 94f6f0550c625fab1f373bb86a6669b45e9748b3
+change-id: 20230928-mlx5_init_fix-c465b5cda327
 
-greg k-h
+Best regards,
+-- 
+Niklas Schnelle
+
