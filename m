@@ -2,82 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E527C5017
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CB27C501C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345729AbjJKK2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53706 "EHLO
+        id S229750AbjJKK3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjJKK2o (ORCPT
+        with ESMTP id S1346256AbjJKK2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:28:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DBE492;
-        Wed, 11 Oct 2023 03:28:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697020122; x=1728556122;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rsTD5XJFyXduljJwviN1Mv4D20Kk22vilOkuQcsazDg=;
-  b=GYjYJBmdfrMXBXmbBP0cFzF0EHcsKN7Bt2xpMsCzWvl73gg6TadL4X1c
-   NMsVPHOycyJHXvgKCFw1RpAQCsl7f2pMjWOwE0pdZmQyw7uxTzS5U1p/9
-   Q1hlIZZm6d2XS5JTwOqrwI89uCPVGo7lZMBfMG635n1o8kMRei9gJIP4e
-   9hhNQAE9avmZLC5lSJLrQHpXjGUd8J7YNKxhXqBlvJG+j3w9fn81Uzioj
-   CaylT+pOFTp6xayUcWiaNa63RKotp4LMSrANpL4sdM2dDwedpbwzfyx2M
-   vre7cvpp5Mb75m4oU/s5DxgmSqgImH3zGs7/U1YxkUPnrb6m/P/yKqJ1J
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="387474357"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="387474357"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 03:28:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="877619313"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="877619313"
-Received: from unknown (HELO smile.fi.intel.com) ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 03:28:40 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qqWSD-00000004atZ-1xqL;
-        Wed, 11 Oct 2023 13:28:37 +0300
-Date:   Wed, 11 Oct 2023 13:28:37 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Raag Jadav <raag.jadav@intel.com>
-Cc:     linus.walleij@linaro.org, mika.westerberg@linux.intel.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, pandith.n@intel.com
-Subject: Re: [PATCH v1] pinctrl: cherryview: reduce scope of
- PIN_CONFIG_BIAS_HIGH_IMPEDANCE case
-Message-ID: <ZSZ41Xwg3Z6H/Bhm@smile.fi.intel.com>
-References: <20231011064533.20549-1-raag.jadav@intel.com>
+        Wed, 11 Oct 2023 06:28:54 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE53CA
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:28:51 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-505748580ceso8422271e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:28:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697020130; x=1697624930; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ht5utTuG5wW1wq2rrU2pauj363H+uTmJt1GixQr1DSM=;
+        b=EVRtXE67gk+LC0mXBwljVYzi7ZwnklKR9lIwbViIMLS3LuACZ2Ry91HKub8sBBvcuJ
+         RkRbXaFKh5xJZypm8mBJf53ajuE+YprOBiwkDheoECB3fBFAxDffEIgfC/svXUpyBfPj
+         qfBGh6SeTRH42VEABkdZrlk5pud2VkPC9Z3wbbGwqWg5VJyjGrLq8HWkXltiiObQ83Pm
+         0XA3JuhDADijpZMLFoEQaN7adtiB9nl8nENDKH1k35upik1KfHMPW5Y5kD9uPyk8w0S6
+         mWAxFA6jriXiW3sFn+uYXhdc/QiYGadLly1xxn3kMJsHV1+R3N4AE8Ww0QOVVu8cEurV
+         LPAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697020130; x=1697624930;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ht5utTuG5wW1wq2rrU2pauj363H+uTmJt1GixQr1DSM=;
+        b=CE2W8Tgb1Xn1tn4lIbEQjikqsOWU1dpP2qiOrJVgwrT8QrC3aQiqkGxe5tfLSsXgnH
+         Im9xgUGpPzKHGODtJ0ErUw+ata5ecUALsuIiguqqCLEl9s0zR3KK1CcOinthyPObVoU8
+         kPIY4Hy7D2CXLhRcAFAgoxBOGt+xFazfFfUrkJa5ac19axg7dh1lw4XI5GGEL97wJ62V
+         f1G3EOgOF6qPdzXnF21U2A8PCfNfogWJ2zI5o5RGw052NWJyZa7K3EyfyJvCG7rI/fGP
+         5ouGIGRJulBZKDK7c4Ova3fsseRB1dpBxJabLCuuuuAZtxSAAc1a7HJrQUgIQpUFrw1P
+         6Ycg==
+X-Gm-Message-State: AOJu0YxDJujENBfHkvDcA9Ohh9SfO1gNTTauWu01c340Lc3LpZapAt9I
+        ewH+pxstaWK1vkpsHXafiOw2ZQ==
+X-Google-Smtp-Source: AGHT+IF/+tcyWJy167xh1iz46cHV+3zXA/HdYlUn1jZqjis4ijk83UImTqPXKpAuX5ROU8uJiy4E0w==
+X-Received: by 2002:a05:6512:34c8:b0:503:200f:47a9 with SMTP id w8-20020a05651234c800b00503200f47a9mr14500380lfr.15.1697020129912;
+        Wed, 11 Oct 2023 03:28:49 -0700 (PDT)
+Received: from [87.246.221.93] (netpanel-87-246-221-93.pol.akademiki.lublin.pl. [87.246.221.93])
+        by smtp.gmail.com with ESMTPSA id v1-20020a056512096100b0050480e8a676sm2213434lft.268.2023.10.11.03.28.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 03:28:49 -0700 (PDT)
+Message-ID: <427980eb-3235-4d63-bb8f-3af06978a3eb@linaro.org>
+Date:   Wed, 11 Oct 2023 12:28:48 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011064533.20549-1-raag.jadav@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 0/4] Add support for Qualcomm ECPRI clock controller
+Content-Language: en-US
+To:     Imran Shaik <quic_imrashai@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Taniya Das <quic_tdas@quicinc.com>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ajit Pandey <quic_ajipan@quicinc.com>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>
+References: <20231011090028.1706653-1-quic_imrashai@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231011090028.1706653-1-quic_imrashai@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 12:15:33PM +0530, Raag Jadav wrote:
-> We have a couple of pinconfig cases inside the braces which are meant for
-> PIN_CONFIG_BIAS_HIGH_IMPEDANCE case. Although it is valid C, it makes the
-> code less readable and prone to misinterpretation. Limit the braces to
-> PIN_CONFIG_BIAS_HIGH_IMPEDANCE case to avoid this.
-
-Pushed to my review and testing queue, thanks!
-
--- 
-With Best Regards,
-Andy Shevchenko
 
 
+On 10/11/23 11:00, Imran Shaik wrote:
+> The ECPRI clock controller support for QDU1000 and QRU1000. The clock
+> controller has a special branch which requires an additional memory to
+> be enabled/disabled before the branch ops.
+> 
+> Changes since v1:
+>   - Updated the dt-bindings
+>   - Modified mem ops logic as per the review comments
+>   - Update all the hex values to lowercase
+>   - Aligned the clock entries in DT as per the review comment
+> 
+> Previous series:
+> v1 - https://patchwork.kernel.org/project/linux-arm-msm/list/?series=774092
+That link is gone by now, as patchwork is periodically purged.
+
+Please use lore links instead.
+
+https://lore.kernel.org/linux-arm-msm/20230808051407.647395-1-quic_imrashai@quicinc.com/
+
+Konrad
