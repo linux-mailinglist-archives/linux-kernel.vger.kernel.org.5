@@ -2,128 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1C17C4FC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38ED37C4FCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345846AbjJKKMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53174 "EHLO
+        id S1345729AbjJKKOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233592AbjJKKMJ (ORCPT
+        with ESMTP id S230238AbjJKKOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:12:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B33A4;
-        Wed, 11 Oct 2023 03:12:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED25EC433C8;
-        Wed, 11 Oct 2023 10:12:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697019127;
-        bh=0ArQgzQ4dKVLY9l4ESHcxBl/89hy5GRkTw8PcjI+eQk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=YVcO2DJPQ9FTgBiId6sWJhnpSYL3fO9MPn+hFyaRMESm+qo/ahgZglNFumE8XK/fW
-         Wh99gFk5q6vG4BA/7/YE0YoTLsQUCoqks8u/xatRA4PtvLwoc3YDR4tY/oCu02FIES
-         bK2TpLMCVfdrQQ2MCrAg/Uo6Q6gpoHoUTTDbMClABDIoA2MokI775YsQzrKV2Ys0m3
-         SCRZ75iTQJe4UGG+fU70j/ypbc0WP3MEwFNELjJiKR78do+IsatvoqIZa8msLZa+eO
-         t+h0kzh+9NRXCfaLEYoD9JRusXorC1+/AM/vLGYC8pvor9ocdbWHhiX3bHvxXCeZ+2
-         FHyYnsFDfJt2A==
-Message-ID: <186a4b62517ead88df8c3c0e9e9585e88f9a6fd8.camel@kernel.org>
-Subject: Re: [PATCH] KEYS: trusted: Rollback init_trusted() consistently
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     keyrings@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        stable@vger.kernel.org, James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        "open list:KEYS-TRUSTED" <linux-integrity@vger.kernel.org>,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Wed, 11 Oct 2023 13:12:02 +0300
-In-Reply-To: <CAFA6WYMdrCfqMVExYBbhCK7vUSQffyUfSWpQO0=HeQc6Edz9OA@mail.gmail.com>
-References: <20231010231616.3122392-1-jarkko@kernel.org>
-         <CAFA6WYMdrCfqMVExYBbhCK7vUSQffyUfSWpQO0=HeQc6Edz9OA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.46.4-2 
+        Wed, 11 Oct 2023 06:14:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B67A9D
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:13:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697019210;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RLI+gNG/Ik5TmE6Ss6b86D5IYiR1FClxUP9y17ZJqCA=;
+        b=V1F8h9+9Q6CPPxjyE7J+5ve2zno6g8TNyl8YleUxGNcSh8TKxrKWuAT+UViBYBPjEzGPy4
+        Gd1xjnQqUWXY5EnzKp9j8qHHEN/Y8vwFl0la4juFrwgKkdkxMmEKsSPbcIf5ClCk64DeWQ
+        x9N2pV2WaHrXQncyVnCk5DnezvOT5/I=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-120-9MxLMbTXNsCjfrvh1CugUw-1; Wed, 11 Oct 2023 06:13:19 -0400
+X-MC-Unique: 9MxLMbTXNsCjfrvh1CugUw-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2b6ff15946fso58391651fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:13:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697019197; x=1697623997;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RLI+gNG/Ik5TmE6Ss6b86D5IYiR1FClxUP9y17ZJqCA=;
+        b=rJawSERIUDCbw/rObcCFyBCbWdRjbSE3Ktw2zUufn8vXGUot7qjK1rA0I/pDbFOJxj
+         OnXhTpX5tm3MXW+Fh+BBocbhP8bV/VIG4EClH1dvx94hpG2H7wR9FoujWTWbh+dujtDq
+         JpRowC2JnIiVrdCyIvnouhhaMgKlJENAvHURnSMaEk+BOSrGi+rZiI4ZZj4Mz6EV8VBC
+         bm0uHqG5aCuM/cYKpYB0i9oGMAiOwc4+Z27P2QzKLcxsnJ3rEF7RCwE+Ifchn1BRqlSC
+         38C2aJp+Ux67SuVJxi/akGz7WQhSmj/umff58gP62SKv0zjF7udDDaBqACjWQSiK5REm
+         snzA==
+X-Gm-Message-State: AOJu0YyK6RCT4b8ENud69oSQywGe+UvQElr+ptwMmBV1QCZGn4GANxPl
+        aNzVix+IofFDKqbYJHS0Es1F2YL5r3nQQiSHmxL/3geiA/3OjgY0/hXM9HAmempcfN1rAPv21b/
+        eG4t+f4dG492WoVp9GJUgjPnRNMDDNtNsGLduQ2cTAeybQovx
+X-Received: by 2002:a2e:9001:0:b0:2c1:7df1:14a6 with SMTP id h1-20020a2e9001000000b002c17df114a6mr18885594ljg.9.1697019197157;
+        Wed, 11 Oct 2023 03:13:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGzgFBh7dpGZLMqhPmRhYZgbEoyXO+JEnPZeVd6y4j9UPTWyTctRlSWKtNno+D+4ydHwjWMyyV7Txz55onCUho=
+X-Received: by 2002:a2e:9001:0:b0:2c1:7df1:14a6 with SMTP id
+ h1-20020a2e9001000000b002c17df114a6mr18885577ljg.9.1697019196839; Wed, 11 Oct
+ 2023 03:13:16 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010-upstream-net-next-20231006-mptcp-ynl-v1-0-18dd117e8f50@kernel.org>
+ <20231010-upstream-net-next-20231006-mptcp-ynl-v1-3-18dd117e8f50@kernel.org> <20231010180839.0617d61d@kernel.org>
+In-Reply-To: <20231010180839.0617d61d@kernel.org>
+From:   Davide Caratti <dcaratti@redhat.com>
+Date:   Wed, 11 Oct 2023 12:13:04 +0200
+Message-ID: <CAKa-r6sT=WaTFqumYOEzOKWZoUi0KQ8EYpQ753+C5JjjsUb3wA@mail.gmail.com>
+Subject: Re: [PATCH net-next 3/6] Documentation: netlink: add a YAML spec for mptcp
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Matthieu Baerts <matttbe@kernel.org>, mptcp@lists.linux.dev,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mat Martineau <martineau@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIzLTEwLTExIGF0IDExOjI3ICswNTMwLCBTdW1pdCBHYXJnIHdyb3RlOgo+IE9u
-IFdlZCwgMTEgT2N0IDIwMjMgYXQgMDQ6NDYsIEphcmtrbyBTYWtraW5lbiA8amFya2tvQGtlcm5l
-bC5vcmc+IHdyb3RlOgo+ID4gCj4gPiBEbyBiaW5kIG5laXRoZXIgc3RhdGljIGNhbGxzIG5vciB0
-cnVzdGVkX2tleV9leGl0KCkgYmVmb3JlIGEgc3VjY2Vzc2Z1bAo+ID4gaW5pdCwgaW4gb3JkZXIg
-dG8gbWFpbnRhaW4gYSBjb25zaXN0ZW50IHN0YXRlLiBJbiBhZGRpdGlvbiwgZGVwYXJ0IHRoZQo+
-ID4gaW5pdF90cnVzdGVkKCkgaW4gdGhlIGNhc2Ugb2YgYSByZWFsIGVycm9yIChpLmUuIGdldHRp
-bmcgYmFjayBzb21ldGhpbmcKPiA+IGVsc2UgdGhhbiAtRU5PREVWKS4KPiA+IAo+ID4gUmVwb3J0
-ZWQtYnk6IExpbnVzIFRvcnZhbGRzIDx0b3J2YWxkc0BsaW51eC1mb3VuZGF0aW9uLm9yZz4KPiA+
-IENsb3NlczogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtaW50ZWdyaXR5L0NBSGstPXdo
-T1BvTGFXTThTOEdnb09QVDdhMituTUg1aDNUTEt0bj1SXzN3NFIxX1V2Z0BtYWlsLmdtYWlsLmNv
-bS8KPiA+IENjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnwqAjIHY1LjEzKwo+ID4gRml4ZXM6IDVk
-MDY4MmJlMzE4OSAoIktFWVM6IHRydXN0ZWQ6IEFkZCBnZW5lcmljIHRydXN0ZWQga2V5cyBmcmFt
-ZXdvcmsiKQo+ID4gU2lnbmVkLW9mZi1ieTogSmFya2tvIFNha2tpbmVuIDxqYXJra29Aa2VybmVs
-Lm9yZz4KPiA+IC0tLQo+ID4gwqBzZWN1cml0eS9rZXlzL3RydXN0ZWQta2V5cy90cnVzdGVkX2Nv
-cmUuYyB8IDIwICsrKysrKysrKystLS0tLS0tLS0tCj4gPiDCoDEgZmlsZSBjaGFuZ2VkLCAxMCBp
-bnNlcnRpb25zKCspLCAxMCBkZWxldGlvbnMoLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL3NlY3Vy
-aXR5L2tleXMvdHJ1c3RlZC1rZXlzL3RydXN0ZWRfY29yZS5jIGIvc2VjdXJpdHkva2V5cy90cnVz
-dGVkLWtleXMvdHJ1c3RlZF9jb3JlLmMKPiA+IGluZGV4IDg1ZmI1YzIyNTI5YS4uZmVlMWFiMmM3
-MzRkIDEwMDY0NAo+ID4gLS0tIGEvc2VjdXJpdHkva2V5cy90cnVzdGVkLWtleXMvdHJ1c3RlZF9j
-b3JlLmMKPiA+ICsrKyBiL3NlY3VyaXR5L2tleXMvdHJ1c3RlZC1rZXlzL3RydXN0ZWRfY29yZS5j
-Cj4gPiBAQCAtMzU4LDE3ICszNTgsMTcgQEAgc3RhdGljIGludCBfX2luaXQgaW5pdF90cnVzdGVk
-KHZvaWQpCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKCFnZXRfcmFuZG9t
-KQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBnZXRf
-cmFuZG9tID0ga2VybmVsX2dldF9yYW5kb207Cj4gPiAKPiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIHN0YXRpY19jYWxsX3VwZGF0ZSh0cnVzdGVkX2tleV9zZWFsLAo+ID4gLcKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCB0cnVzdGVkX2tleV9zb3VyY2VzW2ldLm9wcy0+c2VhbCk7Cj4gPiAtwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBzdGF0aWNfY2FsbF91cGRhdGUodHJ1c3RlZF9rZXlfdW5zZWFsLAo+
-ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCB0cnVzdGVkX2tleV9zb3VyY2VzW2ldLm9wcy0+dW5zZWFsKTsKPiA+IC3C
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0YXRpY19jYWxsX3VwZGF0ZSh0cnVzdGVkX2tl
-eV9nZXRfcmFuZG9tLAo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBnZXRfcmFuZG9tKTsKPiA+IC3CoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIHRydXN0ZWRfa2V5X2V4aXQgPSB0cnVzdGVkX2tleV9zb3VyY2Vz
-W2ldLm9wcy0+ZXhpdDsKPiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG1pZ3JhdGFi
-bGUgPSB0cnVzdGVkX2tleV9zb3VyY2VzW2ldLm9wcy0+bWlncmF0YWJsZTsKPiA+IC0KPiA+IMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXQgPSB0cnVzdGVkX2tleV9zb3VyY2VzW2ld
-Lm9wcy0+aW5pdCgpOwo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKCFyZXQp
-Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoIXJldCkgewo+ID4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0YXRpY19jYWxsX3VwZGF0
-ZSh0cnVzdGVkX2tleV9zZWFsLCB0cnVzdGVkX2tleV9zb3VyY2VzW2ldLm9wcy0+c2VhbCk7Cj4g
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RhdGljX2Nh
-bGxfdXBkYXRlKHRydXN0ZWRfa2V5X3Vuc2VhbCwgdHJ1c3RlZF9rZXlfc291cmNlc1tpXS5vcHMt
-PnVuc2VhbCk7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgc3RhdGljX2NhbGxfdXBkYXRlKHRydXN0ZWRfa2V5X2dldF9yYW5kb20sIGdldF9yYW5kb20p
-Owo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHRydXN0ZWRfa2V5X2V4aXQgPSB0cnVzdGVkX2tleV9zb3VyY2VzW2ldLm9wcy0+ZXhpdDsKPiA+
-ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBtaWdyYXRhYmxl
-ID0gdHJ1c3RlZF9rZXlfc291cmNlc1tpXS5vcHMtPm1pZ3JhdGFibGU7Cj4gPiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCB9Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBpZiAoIXJldCB8fCByZXQgIT0gLUVOT0RFVikKPiAKPiBBcyBtZW50aW9uZWQgaW4gdGhl
-IG90aGVyIHRocmVhZCwgd2Ugc2hvdWxkIGFsbG93IG90aGVyIHRydXN0IHNvdXJjZXMKPiB0byBi
-ZSBpbml0aWFsaXplZCBpZiB0aGUgcHJpbWFyeSBvbmUgZmFpbHMuCgpJIHNlbnQgdGhlIHBhdGNo
-IGJlZm9yZSBJIHJlY2VpdmVkIHRoYXQgcmVzcG9uc2UgYnV0IGhlcmUncyB3aGF0IHlvdQp3cm90
-ZToKCiJXZSBzaG91bGQgZ2l2ZSBvdGhlciB0cnVzdCBzb3VyY2VzIGEgY2hhbmNlIHRvIHJlZ2lz
-dGVyIGZvciB0cnVzdGVkCmtleXMgaWYgdGhlIHByaW1hcnkgb25lIGZhaWxzLiIKCjEuIFRoaXMg
-Y29uZGl0aW9uIGlzIGxhY2tpbmcgYW4gaW5saW5lIGNvbW1lbnQuCjIuIE5laXRoZXIgdGhpcyBy
-ZXNwb25zZSBvciB0aGUgb25lIHRoYXQgeW91IHBvaW50ZWQgb3V0IGhhcyBhbnkKICAgZXhwbGFu
-YXRpb24gd2h5IGZvciBhbnkgc3lzdGVtIGZhaWx1cmUgdGhlIHByb2Nlc3Mgc2hvdWxkCiAgIGNv
-bnRpbnVlLgoKWW91IHNob3VsZCByZWFsbHkga25vdyB0aGUgc2l0dWF0aW9ucyAoZS5nLiBsaXN0
-IG9mIHBvc2l4IGVycm9yCmNvZGUpIHdoZW4gdGhlIHByb2Nlc3MgY2FuIGNvbnRpbnVlIGFuZCAi
-YWxsb3cgbGlzdCIgdGhvc2UuIFRoaXMKd2F5IHdheSB0b28gYWJzdHJhY3QuIEl0IGNhbm5vdCBi
-ZSBsZXQgYWxsIHBvc3NpYmxlIHN5c3RlbSBmYWlsdXJlcwpwYXNzLgoKQ2FuIHlvdSBlLmcuIGV4
-cGxhaW4gYSBsZWdpdCB1c2UgY2FzZSB3aGVuIHNvbWV0aGluZyBlbHNlIGlzCnJldHVybmVkIHRo
-YW4gLUVOT0RFViBidXQgaXQgaXMgY29vbCBhbmQgd2UgY2FuIGNvbnRpbnVlIGluIApzb21lIHJl
-YWwgd29ybGQgdXNlIGNhc2U/CgpCUiwgSmFya2tvCg==
+hello, Jakub, thanks for looking at this!
+
+On Wed, Oct 11, 2023 at 3:08=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> On Tue, 10 Oct 2023 21:21:44 +0200 Matthieu Baerts wrote:
+> > +definitions:
+> > +  -
+> > +    type: enum
+> > +    name: event-type
+> > +    enum-name: mptcp_event_type
+> > +    name-prefix: mptcp_event_
+>
+> I think you can use - instead of _ here.
+> For consistency with other families?
+
+right, I will convert the whole spec.
+
+>
+> > +    entries:
+> > +     -
+> > +      name: unspec
+> > +      value: 0
+>
+> 90% sure enums still start at 0, only attrs and msgs now default to 1.
+
+Just checked, value:0 is not needed for enums: I will remove it
+
+> > +     -
+> > +      name: announced
+> > +      value: 6
+> > +      doc:
+> > +        token, rem_id, family, daddr4 | daddr6 [, dport]
+> > +        A new address has been announced by the peer.
+> > +     -
+> > +      name: removed
+> > +      value: 7
+>
+> Follows 6 so no need for value?
+
+correct, will fix this too
+
+> > +      -
+> > +        name: addr6
+> > +        type: binary
+> > +        checks:
+> > +          min-len: 16
+>
+> Do you not want the exact length for this?
+> If YNL doesn't support something just LMK, we add stuff as needed..
+
+ohh yes, we had NLA_POLICY_EXACT_LEN before but ynl doesn't seem to
+support it. I can try to add the support and include another patch at
+the beginning of the series, is that ok?
+
+--=20
+davide
 
