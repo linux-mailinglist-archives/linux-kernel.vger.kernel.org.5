@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A1E7C4ACC
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E593B7C4ADB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345500AbjJKGkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 02:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49304 "EHLO
+        id S1345580AbjJKGnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 02:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345447AbjJKGkW (ORCPT
+        with ESMTP id S1345642AbjJKGnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 02:40:22 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EC6B6;
-        Tue, 10 Oct 2023 23:40:21 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a7b91faf40so23808997b3.1;
-        Tue, 10 Oct 2023 23:40:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697006421; x=1697611221; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ia+oudd1GuNYiqxwtg9epIyMsLn5EHS/WlxsAYLBkt0=;
-        b=TzfdFwa27OPrDO2o5JDaXASqh6yBj6+VplOW1O/clL4PvkQGYj1IalVR6FpjIyc3aX
-         wGuFj7nPg5moGM/YvQLeKle9EzepIQ5WwJBA41c2V8rrgM/p7+BCVWme0NDlPc/U/1WU
-         wFz6AoU86y2ciZgF05osF9L2KtAzhMXnAnhxDjhps+VQDP+E/6CnzhEGHODy8doetx/K
-         ugW26/VVSGSmaxQmn20E5iq1s6cUCalywbH4a432s3Elzf/532M0JHsBBd1wPR+m3VmX
-         3LcOP7gel54A+XFEJPXka41bSAJ6nDP0p90Re9SnIAHcd34vsY0t+1Ayxs+p7ClAlUH4
-         VKBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697006421; x=1697611221;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ia+oudd1GuNYiqxwtg9epIyMsLn5EHS/WlxsAYLBkt0=;
-        b=O75mYtAzLOHbrXR3HCKh7J/qc3sI42gP4hxWCLwEO1qc1Czq+A74wUB1ehmOaRi+Qd
-         0Ao5UvvtxHxal5wL5zpc0eJrmcjQpt0pXbbsxVg6fnvPTpx00WRGQq34ozBbvP8O9ECH
-         p7m3z79PM/zDZho6hm2hx95rM/xuZH3ZsJm76dP3ybxJrD2hawpOmFUNpVM94o3ObWTL
-         wHeajlN5y6dZ+itdgoUpncTZrcOXuw5oqq3MXUyC6p13UNbB58D316QWgRk8nErveuPq
-         7T+CjG36OoNsDchKK9Q/g9/A5O6Q6HdlRIilQvhQNUc2u0td9cfjC5S3VITQkI3guNDT
-         OD6A==
-X-Gm-Message-State: AOJu0Yw20nMrn0TGcCmokGG1+ILcxrgfGf44ccdlw4ot4hAR656t4FSs
-        Ctp0w3lsVN6IDagb+MCChc8BPBNT9m3trvcEYVTvYppqq5I=
-X-Google-Smtp-Source: AGHT+IEcWgJK4BD8x+6sy1uoPrlD79VqzqAKEY1iTOZ/yd2cEzYaPtBhc5QYk5e78ezt6rTZEQ/pQMHqRiCFG1B/UT8=
-X-Received: by 2002:a5b:708:0:b0:d84:ce15:8335 with SMTP id
- g8-20020a5b0708000000b00d84ce158335mr18768805ybq.10.1697006420892; Tue, 10
- Oct 2023 23:40:20 -0700 (PDT)
+        Wed, 11 Oct 2023 02:43:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB81193
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:42:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697006544;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Laj+I6CXEar+PfgjGUIkAgDVmXM2Vc2OugtXPoguS2U=;
+        b=gw1ucMD/pnXGwhSgyrf5EYAb2UdrAzSXfQAhB+fAbiStdzObTS/KMpf5S5F5wi7w9EdU74
+        S7tDOC0I5CsS7Vamt2xekKG9GkvkhA7QSZ/d1hH5iI8dpXvJBk32O9EYb+UwHftPFjd8wl
+        RIcxH5qpceqq52wCmXlrkwa4I2+YSiM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-626-DZDbT5Y6MEq5Ze6LWwX2TQ-1; Wed, 11 Oct 2023 02:42:21 -0400
+X-MC-Unique: DZDbT5Y6MEq5Ze6LWwX2TQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 563FB185A78E;
+        Wed, 11 Oct 2023 06:42:21 +0000 (UTC)
+Received: from server.redhat.com (unknown [10.72.112.145])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9A4CC170E9;
+        Wed, 11 Oct 2023 06:42:18 +0000 (UTC)
+From:   Cindy Lu <lulu@redhat.com>
+To:     lulu@redhat.com, jasowang@redhat.com, mst@redhat.com,
+        xieyongji@bytedance.com, linux-kernel@vger.kernel.org,
+        maxime.coquelin@redhat.com
+Subject: [PATCH v1 0/4] vduse: Reconnection support in vduse
+Date:   Wed, 11 Oct 2023 14:42:04 +0800
+Message-Id: <20231011064208.2143245-1-lulu@redhat.com>
 MIME-Version: 1.0
-References: <CA+fyA4RABYNPZZSk9+9U51u53kbSzqgwdi1KDDGRxXi8q5TtxQ@mail.gmail.com>
-In-Reply-To: <CA+fyA4RABYNPZZSk9+9U51u53kbSzqgwdi1KDDGRxXi8q5TtxQ@mail.gmail.com>
-From:   John Salamon <salamonj9@gmail.com>
-Date:   Wed, 11 Oct 2023 17:10:09 +1030
-Message-ID: <CA+fyA4Qsm6ydyxNQL4cLak+1eNYBvOJzJwonts84YTavBKB8vg@mail.gmail.com>
-Subject: Re: uinput: waiting for UI_FF_UPLOAD events will not inform user when
- allocation is required
-To:     dmitry.torokhov@gmail.com, rydberg@bitmath.org
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correction, "old" is a pointer to struct ff_effect, which after being
-set to NULL looks like it gets pushed out by uinput on a struct
-uinput_request.
+Here is the reconnect support in vduse, 
 
+The kernel will allocate pages for reconnection
+userspace needs to use ioctl VDUSE_GET_RECONNECT_INFO to 
+get the mmap related infomation and then map these pages
+to userspace. 
+The kernel and userspace will use these pages to sync
+the reconnect information
 
-On Tue, Oct 10, 2023 at 5:38=E2=80=AFPM John Salamon <salamonj9@gmail.com> =
-wrote:
->
-> Currently the "fake" input events generated by uinput in response to
-> effect uploads will return an effect with an id that has already been
-> handled by input_ff_upload in ff-core.c, which can modify the effect
-> id. This causes a problem specifically when the effect originally
-> uploaded via the EVIOCSFF ioctl contained an effect with -1, as the
-> userspace code handling UI_FF_UPLOAD receives an effect with an id
-> other than -1, and therefore will not know an allocation was
-> requested.
->
-> I notice that the "old" field on the ff_effect struct is set to NULL
-> when the -1 id is changed (in input_ff_upload), which can serve as a
-> flag that an allocation was requested. If it is the intention is that
-> uinput users check if old =3D=3D NULL to know when allocations are needed
-> I think uinput documentation should describe this.
->
-> I first noticed this using python-evdev, see my issue report here:
-> https://github.com/gvalkov/python-evdev/issues/199
+Tested in vduse + dpdk test-pmd
+
+Cindy Lu (4):
+  vduse: Add function to get/free the pages for reconnection
+  vduse: Add file operation for mmap
+  vduse: Add new ioctl VDUSE_GET_RECONNECT_INFO
+  vduse: update the vq_info in ioctl
+
+ drivers/vdpa/vdpa_user/vduse_dev.c | 175 +++++++++++++++++++++++++++++
+ include/uapi/linux/vduse.h         |  43 +++++++
+ 2 files changed, 218 insertions(+)
+
+-- 
+2.34.3
+
