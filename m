@@ -2,188 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E71C7C5AFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C417C5B01
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233077AbjJKSOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 14:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33812 "EHLO
+        id S233178AbjJKSPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 14:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbjJKSOO (ORCPT
+        with ESMTP id S232919AbjJKSPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 14:14:14 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915AA9D;
-        Wed, 11 Oct 2023 11:14:13 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3296b49c546so104431f8f.3;
-        Wed, 11 Oct 2023 11:14:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697048052; x=1697652852; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F7TS+RaEJbB7+7d5gDLjd+koKDndSt/GnmuFIJ1o+Jg=;
-        b=aCCBJ7fSghTUKZeXhpjd/B8GbOrj5/5EV+Vlioyyx9rFchV5rZ4Q3LKsw07ZB5c1YT
-         gRE4XF0XIUDd+6ZbuaKkVj7UurnvOciPhYBy78LfM8B7qBmY3nyON9u4lhMOEfShIxna
-         Mtt0yGHu6UI3C8yyaPrEW2sdCRPlN2v6f5kEO8uwm9I8FdTikPKTmO9sWFAEI00gjK0V
-         n1c3j3KaoEDWkaB0QraxqCuX/dQJqJZ90M06aofX9vWZXtx2FDO545Q98Q22/UfawpRd
-         1H5Ee+2yXE1k6v4v4edA9bm9UHbQtp05wOauEqczaj38aA/uvUJhIq+hCI7VF4C2I/vf
-         kT4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697048052; x=1697652852;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F7TS+RaEJbB7+7d5gDLjd+koKDndSt/GnmuFIJ1o+Jg=;
-        b=JZfxmxMbv0EyBucUB6eadAbj9PUBLXHRq0wuf42Cg2Ci2X/4R1YPOfVDP/G5llveVG
-         ZBusDk3/JOON6IzboG52NSGVyYFVa5K5VL2C8RcgoBwdZGxsyArSTXsVFcHXIGScERfQ
-         9U5Sade5A1WA/voKZPuIs339UXiu4N6V3FfqXp0zSNinqDTyT9WYL9k70EM6/IBjaVZP
-         rh5UxzlzIJ582uMSC59d/Qqhj68ATvWbczQtnxe5V7vedhZGSQ24u2In7LXLSI0eUnF5
-         06Im/janDdDRViGQrp2mGijyXHuN0xO9SEiJ4pyeile+ix5+9rChdj1DfENx5wszW+qA
-         ZudA==
-X-Gm-Message-State: AOJu0YyEL+utDFNER+qvdd/OUQTuXEexivitoHpRDVheZeea5mvwYiJn
-        hA4pUMhQQz93myUF6Vd6kN4=
-X-Google-Smtp-Source: AGHT+IFv4S4WUlVw96jvYX9WVjLTJEQQiPuTwG+QUFDRmpY26gHHcgPdhYQ+AOKeY4se6H/9yrLzZw==
-X-Received: by 2002:a5d:6c69:0:b0:32c:eeee:d438 with SMTP id r9-20020a5d6c69000000b0032ceeeed438mr5956021wrz.54.1697048051663;
-        Wed, 11 Oct 2023 11:14:11 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id 9-20020a05600c020900b003feea62440bsm17359617wmi.43.2023.10.11.11.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 11:14:10 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 19:14:10 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] mm: enforce the mapping_map_writable() check
- after call_mmap()
-Message-ID: <512d8089-759c-47b7-864d-f4a38a9eacf3@lucifer.local>
-References: <cover.1696709413.git.lstoakes@gmail.com>
- <d2748bc4077b53c60bcb06fccaf976cb2afee345.1696709413.git.lstoakes@gmail.com>
- <20231011094627.3xohlpe4gm2idszm@quack3>
+        Wed, 11 Oct 2023 14:15:01 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0D2BA93
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:14:59 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 48EBF14BF;
+        Wed, 11 Oct 2023 11:15:39 -0700 (PDT)
+Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A87B23F5A1;
+        Wed, 11 Oct 2023 11:14:57 -0700 (PDT)
+From:   Robin Murphy <robin.murphy@arm.com>
+To:     joro@8bytes.org, will@kernel.org
+Cc:     iommu@lists.linux.dev, jgg@nvidia.com, baolu.lu@linux.intel.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/7] iommu: Retire bus ops
+Date:   Wed, 11 Oct 2023 19:14:47 +0100
+Message-Id: <cover.1697047261.git.robin.murphy@arm.com>
+X-Mailer: git-send-email 2.39.2.101.g768bb238c484.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011094627.3xohlpe4gm2idszm@quack3>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 11:46:27AM +0200, Jan Kara wrote:
-> On Sat 07-10-23 21:51:01, Lorenzo Stoakes wrote:
-> > In order for an F_SEAL_WRITE sealed memfd mapping to have an opportunity to
-> > clear VM_MAYWRITE in seal_check_write() we must be able to invoke either
-> > the shmem_mmap() or hugetlbfs_file_mmap() f_ops->mmap() handler to do so.
-> >
-> > We would otherwise fail the mapping_map_writable() check before we had
-> > the opportunity to clear VM_MAYWRITE.
-> >
-> > However, the existing logic in mmap_region() performs this check BEFORE
-> > calling call_mmap() (which invokes file->f_ops->mmap()). We must enforce
-> > this check AFTER the function call.
-> >
-> > In order to avoid any risk of breaking call_mmap() handlers which assume
-> > this will have been done first, we continue to mark the file writable
-> > first, simply deferring enforcement of it failing until afterwards.
-> >
-> > This enables mmap(..., PROT_READ, MAP_SHARED, fd, 0) mappings for memfd's
-> > sealed via F_SEAL_WRITE to succeed, whereas previously they were not
-> > permitted.
-> >
-> > Link: https://bugzilla.kernel.org/show_bug.cgi?id=217238
-> > Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
->
-> ...
->
-> > diff --git a/mm/mmap.c b/mm/mmap.c
-> > index 6f6856b3267a..9fbee92aaaee 100644
-> > --- a/mm/mmap.c
-> > +++ b/mm/mmap.c
-> > @@ -2767,17 +2767,25 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
-> >  	vma->vm_pgoff = pgoff;
-> >
-> >  	if (file) {
-> > -		if (is_shared_maywrite(vm_flags)) {
-> > -			error = mapping_map_writable(file->f_mapping);
-> > -			if (error)
-> > -				goto free_vma;
-> > -		}
-> > +		int writable_error = 0;
-> > +
-> > +		if (vma_is_shared_maywrite(vma))
-> > +			writable_error = mapping_map_writable(file->f_mapping);
-> >
-> >  		vma->vm_file = get_file(file);
-> >  		error = call_mmap(file, vma);
-> >  		if (error)
-> >  			goto unmap_and_free_vma;
-> >
-> > +		/*
-> > +		 * call_mmap() may have changed VMA flags, so retry this check
-> > +		 * if it failed before.
-> > +		 */
-> > +		if (writable_error && vma_is_shared_maywrite(vma)) {
-> > +			error = writable_error;
-> > +			goto close_and_free_vma;
-> > +		}
->
-> Hum, this doesn't quite give me a peace of mind ;). One bug I can see is
-> that if call_mmap() drops the VM_MAYWRITE flag, we seem to forget to drop
-> i_mmap_writeable counter here?
+v4: https://lore.kernel.org/linux-iommu/cover.1696253096.git.robin.murphy@arm.com/
 
-This wouldn't be applicable in the F_SEAL_WRITE case, as the
-i_mmap_writable counter would already have been decremented, and thus an
-error would arise causing no further decrement, and everything would work
-fine.
+Hi all,
 
-It'd be very odd for something to be writable here but the driver to make
-it not writable. But we do need to account for this.
+Really really hoping this is done now... same as v4 except I've
+rewritten patch #4 to be a lot less ambitious and not require any
+troublesome new reasoning.
 
->
-> I've checked why your v2 version broke i915 and I think the reason maybe
-> has nothing to do with i915. Just in case call_mmap() failed, it ended up
-> jumping to unmap_and_free_vma which calls mapping_unmap_writable() but we
-> didn't call mapping_map_writable() yet so the counter became imbalanced.
+Cheers,
+Robin.
 
-yeah that must be the cause, I thought perhaps somehow
-__remove_shared_vm_struct() got invoked by i915_gem_mmap() but I didn't
-trace it through to see if it was possible.
 
-Looking at it again, i don't think that is possible, as we hold a mmap/vma
-write lock, and the only operations that can cause
-__remove_shared_vm_struct() to run are things that would not be able to do
-so with this lock held.
+Robin Murphy (7):
+  iommu: Factor out some helpers
+  iommu: Decouple iommu_present() from bus ops
+  iommu: Validate that devices match domains
+  iommu: Decouple iommu_domain_alloc() from bus ops
+  iommu/arm-smmu: Don't register fwnode for legacy binding
+  iommu: Retire bus ops
+  iommu: Clean up open-coded ownership checks
 
->
-> So I'd be for returning to v2 version, just fix up the error handling
-> paths...
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |   3 -
+ drivers/iommu/arm/arm-smmu/arm-smmu.c       |  12 +-
+ drivers/iommu/arm/arm-smmu/qcom_iommu.c     |  16 +--
+ drivers/iommu/iommu.c                       | 143 +++++++++++++-------
+ drivers/iommu/mtk_iommu.c                   |   7 +-
+ drivers/iommu/mtk_iommu_v1.c                |   3 -
+ drivers/iommu/sprd-iommu.c                  |   8 +-
+ drivers/iommu/virtio-iommu.c                |   3 -
+ include/acpi/acpi_bus.h                     |   2 +
+ include/linux/device.h                      |   1 -
+ include/linux/device/bus.h                  |   5 -
+ include/linux/dma-map-ops.h                 |   1 +
+ include/linux/iommu.h                       |   1 +
+ 13 files changed, 108 insertions(+), 97 deletions(-)
 
-So in conclusion, I agree, this is the better approach. Will respin in v4.
+-- 
+2.39.2.101.g768bb238c484.dirty
 
->
-> 								Honza
->
->
-> > +
-> >  		/*
-> >  		 * Expansion is handled above, merging is handled below.
-> >  		 * Drivers should not alter the address of the VMA.
-> > --
-> > 2.42.0
-> >
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
