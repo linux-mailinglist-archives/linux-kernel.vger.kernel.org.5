@@ -2,115 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10DC57C4F73
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 796F27C4F81
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbjJKJ5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 05:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
+        id S232397AbjJKKCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:02:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjJKJ5G (ORCPT
+        with ESMTP id S231407AbjJKKCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 05:57:06 -0400
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B2192
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:57:04 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231011095702euoutp0192e9b1392af0d3bb0daa789a80a64437~NBRUhXX6Z1427614276euoutp01w
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:57:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231011095702euoutp0192e9b1392af0d3bb0daa789a80a64437~NBRUhXX6Z1427614276euoutp01w
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1697018222;
-        bh=zb0dZYf/rhp1Apb/JKJ2R2CtIKSkKDPwQbFwS+fJQ/w=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=mup5MOpWAVL4JQehk/97RkSq1RDdpsZGdN13+XFla3X/A7W9mi22K+b0Xu6AKYN2I
-         RiovNGvSkpk3nRrbIiUrEQTm3cdfzJkazvMlonYIesJhzqg9fimxoh92dfdm1WHtUG
-         wbrUEoraf2kCFpwEutHBKzmEe/+aKOv67zJOav20=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20231011095702eucas1p1fbfa61e7264aea4d67bccd93ec1e08d6~NBRUB3dpv1401914019eucas1p1s;
-        Wed, 11 Oct 2023 09:57:02 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 1A.2B.11320.E6176256; Wed, 11
-        Oct 2023 10:57:02 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20231011095701eucas1p1afb457ed499787c127ee798adc87a0fd~NBRTgUQJ41404114041eucas1p14;
-        Wed, 11 Oct 2023 09:57:01 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231011095701eusmtrp1a7c094b037c3638eab3937b77e2717bd~NBRTfZp9f0433404334eusmtrp1Y;
-        Wed, 11 Oct 2023 09:57:01 +0000 (GMT)
-X-AuditID: cbfec7f4-97dff70000022c38-ba-6526716e4532
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 41.74.25043.D6176256; Wed, 11
-        Oct 2023 10:57:01 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20231011095701eusmtip2b1aa6f9da8170841b9ef2d07cbd2c2ea~NBRS1uSTK1735217352eusmtip2K;
-        Wed, 11 Oct 2023 09:57:01 +0000 (GMT)
-Message-ID: <c7d8b05a-f5cb-49aa-95c0-48754fab1b7f@samsung.com>
-Date:   Wed, 11 Oct 2023 11:57:00 +0200
+        Wed, 11 Oct 2023 06:02:34 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FE094;
+        Wed, 11 Oct 2023 03:02:31 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39B8Ywux022121;
+        Wed, 11 Oct 2023 10:02:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=NYowNHTwmDAHuf9dzttySouzD52J2jwFA4tlHYb/pvk=;
+ b=YKsep26H5d0ONKdIkbievnFrWmnYRXwJS2pdEaOOg4zMuGLWxPSqnALhQlNIEoIbtMIi
+ l9EhpwbJsIlW8J/vwrKF4V4DKFhG17N9oJDKBtU9ZN4eURC9PcBc9UfnVEA5zvLxCcca
+ uLOiE4UFB9hBtgs0T/J//A7YvC04OaoqcC7u12LsNyaKKOL2AmT/ADCoQPacN7R8KMMV
+ KaQ9gJn2Hm/5TfrECa2pTGy2iyUcZ/E8uv/J01uYcdUK/8odo4M1qMJ93Kfja5fpXJ3j
+ 8a+Q6EDVbWPSpQOcJWu4HbVefh1PcUC+UpJwgjDAR2M2okEWbXqPS9+CbK9u4WIFjxa3 hw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tna9c9r20-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 10:02:28 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39BA2RwQ012503
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 10:02:27 GMT
+Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Wed, 11 Oct 2023 03:02:24 -0700
+From:   Krishna Kurapati <quic_kriskura@quicinc.com>
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
+        <quic_jackp@quicinc.com>, <quic_ugoswami@quicinc.com>,
+        Krishna Kurapati <quic_kriskura@quicinc.com>
+Subject: [RFC] usb: dwc3: core: Fix RAM interface getting stuck during enumeration
+Date:   Wed, 11 Oct 2023 15:32:14 +0530
+Message-ID: <20231011100214.25720-1-quic_kriskura@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] i2c: brcmstb: Add support for atomic transfers
-Content-Language: en-US
-To:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Kamal Dasu <kamal.dasu@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <bec3b967-f287-4a99-9c79-3b949a31c296@broadcom.com>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNKsWRmVeSWpSXmKPExsWy7djP87p5hWqpBm9f81nc/9rBaLG29yiL
-        xbpt95gtdm84zGSx6fE1VouOv18YLS7vmsNmcXf/XEYHDo9Z98+yeWxa1cnmsXlJvcfnTXIB
-        LFFcNimpOZllqUX6dglcGeseeBbcYqu4u+8vSwPjdtYuRg4OCQETiY6HqV2MXBxCAisYJfY+
-        3sUC4XxhlHh5awNTFyMnkPOZUeLIKiEQG6Rh7vGFbBBFyxkl7v24A9XxkVHi3+kL7CBVvAJ2
-        EkuezQBbwSKgKnFhpgJEWFDi5MwnLCC2qIC8xP1bM8DKhQWcJT43X2AEsZkFxCVuPZnPBDJT
-        RGA6o8T395fYQRxmgb2MEnOurmYFqWITMJToetvFBrKAU8BB4t16D4hmeYntb+cwg9RLCDzg
-        kJjce4MR4mwXiUfHzrJD2MISr45vgbJlJE5P7mGBaGhnlFjw+z4ThDOBUaLh+S2obmuJO+d+
-        gW1jFtCUWL9LHyLsKPHn/iU2SEDySdx4KwhxBJ/EpG3TmSHCvBIdbdCQU5OYdXwd3NqDFy4x
-        T2BUmoUULrOQ/D8LyTuzEPYuYGRZxSieWlqcm55abJSXWq5XnJhbXJqXrpecn7uJEZh+Tv87
-        /mUH4/JXH/UOMTJxMB5ilOBgVhLhfZSpkirEm5JYWZValB9fVJqTWnyIUZqDRUmcVzVFPlVI
-        ID2xJDU7NbUgtQgmy8TBKdXANPPFRWObQD7WU/0ShWV9zNL+SSHLDct6ZzDklVlWHIiqLCot
-        s1Pnfn1Qgm/habFN19Sm5PmmWuzIY29vjnXtuT9RQ/ZC0NOq6QzsUTfOWm6TzCy4b/qmSfx8
-        2n63hyy2NgY134vPC/HIfl+pHnbxlbm/oB3zzqBQVrtL67brTrd4uCb/559j8x0+HLvh5hUe
-        7lfk/HfNVoYQq1Paq25yLd/Gn/b+8aSOKf+/zVPlXSwQ0tEfkZz48vyLusW+/amMLMKHYqIt
-        bxrV7PbgnnLwRYA1Q9uU47/4xZpNJJXmHI3TWdTdJyG0b6K1wwHv8JeRk/e4C1tY9wdyzQ9Q
-        Ppht25Ge//3AoxV2t9anr1FiKc5INNRiLipOBAB6guIWrgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPIsWRmVeSWpSXmKPExsVy+t/xe7q5hWqpBi+O6Vrc/9rBaLG29yiL
-        xbpt95gtdm84zGSx6fE1VouOv18YLS7vmsNmcXf/XEYHDo9Z98+yeWxa1cnmsXlJvcfnTXIB
-        LFF6NkX5pSWpChn5xSW2StGGFkZ6hpYWekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6Gese
-        eBbcYqu4u+8vSwPjdtYuRk4OCQETibnHF7J1MXJxCAksZZT4uO0MO0RCRuLktAaoImGJP9e6
-        oIreM0o8bOpkAknwCthJLHk2A6iIg4NFQFXiwkwFiLCgxMmZT1hAbFEBeYn7t2aAzRQWcJb4
-        3HyBEcRmFhCXuPVkPhPITBGB6YwSTx/vZQFxmAX2M0q8eXyKCWLbSUaJz4degJ3BJmAo0fUW
-        5AwODk4BB4l36z0gJplJdG3tgpoqL7H97RzmCYxCs5AcMgvJwllIWmYhaVnAyLKKUSS1tDg3
-        PbfYSK84Mbe4NC9dLzk/dxMjMOa2Hfu5ZQfjylcf9Q4xMnEwHmKU4GBWEuF9lKmSKsSbklhZ
-        lVqUH19UmpNafIjRFBgYE5mlRJPzgVGfVxJvaGZgamhiZmlgamlmrCTO61nQkSgkkJ5Ykpqd
-        mlqQWgTTx8TBKdXAVKuf/arybPIV+YPF09SvP/GS79BNXhY3l1k5Wloj6Gzkm8m+HRGXt9Zv
-        +hTno2U8+4HY4/tb+b+xrLi1WyLQ5VTrg99mqdMqP524keL7VkX87ExpW/t59mXnbp9atPba
-        l/TZbyyOxrwP/7bKeeVn39NKD+N+NykcercgZmnWlP2iU5ucZWqZvv7RvfeJt4Vv2YvP08Kn
-        7Hw47X/ghbWcUsWt9Uc1nWbssjuS/y1BQcq3Vv77bznfFTGts1mdL1oGb5s46ZsaX3hg8sKc
-        Y5N3yHiEXFjbIdH/zeH6NKdrXGpLudgjvDZlz3eZLN/Lfbsy+svLhcfXHhLwPzBVvG5h3dew
-        V5+VCpWj7k0TZJwtaabEUpyRaKjFXFScCAAH9hf5QgMAAA==
-X-CMS-MailID: 20231011095701eucas1p1afb457ed499787c127ee798adc87a0fd
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20231006144123eucas1p111cbbdbd70927ffbd697f7edf6b7ae1c
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231006144123eucas1p111cbbdbd70927ffbd697f7edf6b7ae1c
-References: <CGME20231006144123eucas1p111cbbdbd70927ffbd697f7edf6b7ae1c@eucas1p1.samsung.com>
-        <20231006144117.4079796-1-m.szyprowski@samsung.com>
-        <bec3b967-f287-4a99-9c79-3b949a31c296@broadcom.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: -bX855sQEA0_eSzIaRYdnR52y6dvH66B
+X-Proofpoint-ORIG-GUID: -bX855sQEA0_eSzIaRYdnR52y6dvH66B
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_07,2023-10-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 spamscore=0 malwarescore=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 impostorscore=0 clxscore=1015 mlxlogscore=999
+ suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2310110088
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -118,25 +78,221 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.10.2023 22:41, Florian Fainelli wrote:
-> On 10/6/23 07:41, Marek Szyprowski wrote:
->> Add support for atomic transfers using polling mode with interrupts
->> intentionally disabled to get rid of the warning introduced by commit
->> 63b96983a5dd ("i2c: core: introduce callbacks for atomic transfers")
->> during system reboot and power-off.
->
-> Is there an existing system that you have access to which needs atomic 
-> transfer support, or is this a forward looking change?
+This implementation is to fix RAM interface getting stuck during
+enumeration and controller not responding to any command.
 
-Frankly speaking I've observed the mentioned warning during system 
-reboot on RaspberryPi4 with linux-next kernel compiled from 
-multi_v7_defconfig. It looks that this driver is used by VC4 DRM for 
-DDC. This issue doesn't look critical, but the fix seems to be trivial, 
-thus my patch.
+During plug-out test cases, it is sometimes seen that no events
+are generated by the controller and all CSR register reads give "0"
+and CSR_Timeout bit gets set indicating that CSR reads/writes are
+timing out or timed out.
 
+The issue comes up on different instnaces of enumeration on different
+platforms. On one platform, the debug log is as follows:
 
-Best regards
+Prepared a TRB on ep0out and did start transfer to get set
+address request from host:
+
+<...>-7191    [000] D..1.    66.421006: dwc3_gadget_ep_cmd: ep0out:
+cmd 'Start Transfer' [406] params 00000000 efffa000 00000000 -->
+status: Successful
+
+<...>-7191    [000] D..1.    66.421196: dwc3_event: event (0000c040):
+ep0out: Transfer Complete (sIL) [Setup Phase]
+
+<...>-7191    [000] D..1.    66.421197: dwc3_ctrl_req: Set
+Address(Addr = 01)
+
+Then XFER NRDY received on ep0in for zero length status phase and
+a Start Transfer was done on ep0in with 0-length packet in 2 Stage
+status phase:
+
+<...>-7191    [000] D..1.    66.421249: dwc3_event: event (000020c2):
+ep0in: Transfer Not Ready [00000000] (Not Active) [Status Phase]
+
+<...>-7191    [000] D..1.    66.421266: dwc3_prepare_trb: ep0in: trb
+ffffffc00fcfd000 (E0:D0) buf 00000000efffa000 size 0 ctrl 00000c33
+sofn 00000000 (HLcs:SC:status2)
+
+<...>-7191    [000] D..1.    66.421387: dwc3_gadget_ep_cmd: ep0in: cmd
+'Start Transfer' [406] params 00000000 efffa000 00000000 -->status:
+Successful
+
+Then a bus reset was received directly after 500 msec. Software never
+got the cmd complete for the start transfer done in status phase. Here
+the RAM interface is stuck. So host issues a bus reset as link is
+idle for 500 msec:
+
+<...>-7191    [000] D..1.    66.935603: dwc3_event: event (00000101):
+Reset [U0]
+
+Then software sees that it is in status phase and we issue an ENDXFER
+on ep0in and it gets timedout waiting for the CMDACT to go '0':
+
+<...>-7191    [000] D..1.    66.958249: dwc3_gadget_ep_cmd: ep0in: cmd
+'End Transfer' [10508] params 00000000 00000000 00000000 --> status:
+Timed Out
+
+Upon debug with Synopsys, it turns out that the root cause is as
+follows:
+
+During any transfer, if the data is not successfully transmitted,
+then a Done (with failure) handshake is returned, so that the BMU
+can re-attempt the same data again by rewinding its data pointers.
+
+But, if the USB IN is a 0-length payload (which is what is happening
+in this case - 2 stage status phase of set_address), then there is no
+need to rewind the pointers and the Done (with failure) handshake is
+not returned for failure case. This keeps the Request-Done interface
+busy till the next Done handshake. The MAC sends the 0-length payload
+again when the host requests. If the transmission is successful this
+time, the Done (with success) handshake is provided back. Otherwise,
+it repeats the same steps again.
+
+If the cable is disconnected or if the Host aborts the transfer on 3
+consecutive failed attempts, the Request-Done handshake is not
+complete. This keeps the interface busy.
+
+The subsequent RAM access cannot proceed until the above pending
+transfer is complete. This results in failure of any access to RAM
+address locations. Many of the EndPoint commands need to access the
+RAM and they would fail to complete successfully.
+
+Furthermore when cable removal happens, this would not generate a
+disconnect event and the "connected" flag remains true always blockin
+suspend.
+
+Synopsys confirmed that the issue is present on all USB3 devices and
+as a workaround, suggested to re-initialize device mode.
+
+Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+---
+ drivers/usb/dwc3/core.c   | 20 ++++++++++++++++++++
+ drivers/usb/dwc3/core.h   |  4 ++++
+ drivers/usb/dwc3/drd.c    |  5 +++++
+ drivers/usb/dwc3/gadget.c |  6 ++++--
+ 4 files changed, 33 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index 44ee8526dc28..d18b81cccdc5 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -122,6 +122,7 @@ static void __dwc3_set_mode(struct work_struct *work)
+ 	unsigned long flags;
+ 	int ret;
+ 	u32 reg;
++	u8 timeout = 100;
+ 	u32 desired_dr_role;
+ 
+ 	mutex_lock(&dwc->mutex);
+@@ -137,6 +138,25 @@ static void __dwc3_set_mode(struct work_struct *work)
+ 	if (!desired_dr_role)
+ 		goto out;
+ 
++	/*
++	 * STAR 5001544 - If cable disconnect doesn't generate
++	 * disconnect event in device mode, then re-initialize the
++	 * controller.
++	 */
++	if ((dwc->cable_disconnected == true) &&
++		(dwc->current_dr_role == DWC3_GCTL_PRTCAP_DEVICE)) {
++		while (dwc->connected == true && timeout != 0) {
++			mdelay(10);
++			timeout--;
++		}
++
++		if (timeout == 0) {
++			dwc3_gadget_soft_disconnect(dwc);
++			udelay(100);
++			dwc3_gadget_soft_connect(dwc);
++		}
++	}
++
+ 	if (desired_dr_role == dwc->current_dr_role)
+ 		goto out;
+ 
+diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+index c6c87acbd376..7642330cf608 100644
+--- a/drivers/usb/dwc3/core.h
++++ b/drivers/usb/dwc3/core.h
+@@ -1355,6 +1355,7 @@ struct dwc3 {
+ 	int			last_fifo_depth;
+ 	int			num_ep_resized;
+ 	struct dentry		*debug_root;
++	bool			cable_disconnected;
+ };
+ 
+ #define INCRX_BURST_MODE 0
+@@ -1568,6 +1569,9 @@ void dwc3_event_buffers_cleanup(struct dwc3 *dwc);
+ 
+ int dwc3_core_soft_reset(struct dwc3 *dwc);
+ 
++int dwc3_gadget_soft_disconnect(struct dwc3 *dwc);
++int dwc3_gadget_soft_connect(struct dwc3 *dwc);
++
+ #if IS_ENABLED(CONFIG_USB_DWC3_HOST) || IS_ENABLED(CONFIG_USB_DWC3_DUAL_ROLE)
+ int dwc3_host_init(struct dwc3 *dwc);
+ void dwc3_host_exit(struct dwc3 *dwc);
+diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
+index 039bf241769a..593c023fc39a 100644
+--- a/drivers/usb/dwc3/drd.c
++++ b/drivers/usb/dwc3/drd.c
+@@ -446,6 +446,8 @@ static int dwc3_usb_role_switch_set(struct usb_role_switch *sw,
+ 	struct dwc3 *dwc = usb_role_switch_get_drvdata(sw);
+ 	u32 mode;
+ 
++	dwc->cable_disconnected = false;
++
+ 	switch (role) {
+ 	case USB_ROLE_HOST:
+ 		mode = DWC3_GCTL_PRTCAP_HOST;
+@@ -454,6 +456,9 @@ static int dwc3_usb_role_switch_set(struct usb_role_switch *sw,
+ 		mode = DWC3_GCTL_PRTCAP_DEVICE;
+ 		break;
+ 	default:
++		if (role == USB_ROLE_NONE)
++			dwc->cable_disconnected = true;
++
+ 		if (dwc->role_switch_default_mode == USB_DR_MODE_HOST)
+ 			mode = DWC3_GCTL_PRTCAP_HOST;
+ 		else
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 858fe4c299b7..a92df2e04cce 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -2634,7 +2634,7 @@ static void dwc3_gadget_disable_irq(struct dwc3 *dwc);
+ static void __dwc3_gadget_stop(struct dwc3 *dwc);
+ static int __dwc3_gadget_start(struct dwc3 *dwc);
+ 
+-static int dwc3_gadget_soft_disconnect(struct dwc3 *dwc)
++int dwc3_gadget_soft_disconnect(struct dwc3 *dwc)
+ {
+ 	unsigned long flags;
+ 	int ret;
+@@ -2701,7 +2701,7 @@ static int dwc3_gadget_soft_disconnect(struct dwc3 *dwc)
+ 	return ret;
+ }
+ 
+-static int dwc3_gadget_soft_connect(struct dwc3 *dwc)
++int dwc3_gadget_soft_connect(struct dwc3 *dwc)
+ {
+ 	int ret;
+ 
+@@ -3963,6 +3963,7 @@ static void dwc3_gadget_disconnect_interrupt(struct dwc3 *dwc)
+ 	dwc3_gadget_dctl_write_safe(dwc, reg);
+ 
+ 	dwc->connected = false;
++	dwc->cable_disconnected = true;
+ 
+ 	dwc3_disconnect_gadget(dwc);
+ 
+@@ -4038,6 +4039,7 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
+ 	 */
+ 	dwc3_stop_active_transfers(dwc);
+ 	dwc->connected = true;
++	dwc->cable_disconnected = false;
+ 
+ 	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
+ 	reg &= ~DWC3_DCTL_TSTCTRL_MASK;
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.42.0
 
