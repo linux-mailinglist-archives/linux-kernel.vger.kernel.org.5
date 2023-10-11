@@ -2,82 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1997C5EA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 22:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC397C5ECF
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 22:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376421AbjJKUr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 16:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53172 "EHLO
+        id S233475AbjJKU5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 16:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231226AbjJKUry (ORCPT
+        with ESMTP id S233494AbjJKUs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 16:47:54 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637E590;
-        Wed, 11 Oct 2023 13:47:51 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31fa15f4cc6so244059f8f.2;
-        Wed, 11 Oct 2023 13:47:51 -0700 (PDT)
+        Wed, 11 Oct 2023 16:48:57 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A8A91;
+        Wed, 11 Oct 2023 13:48:55 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d77ad095f13so243781276.2;
+        Wed, 11 Oct 2023 13:48:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697057270; x=1697662070; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=U1SLoYxRNR/CDgTJKsFAri0SaYwm+irDzPMgfmqqQZY=;
-        b=Lnbbe03killa8j3BZMWuHM5TnDUK4dIZfozrbhA0SSSmOD5gD+PozOtTYEN8QKI/Av
-         007Qosd1Jv3SiHuL/u7yNp3LwurW580C2Af6sLIrEawK/Cz2DDxivlt7MxELl8DH0SyX
-         p/gCZ+5rgXOh1jKOFNXbTO6w67JH4XyZ2NnAaWgPMCfMFwkBGFfeCRuk+nVTEprOkqw/
-         X3LsngJY2BOBJVRUt5kzu60TxmHAp0DCyAJrF6+IvbnLJdzqhimwiF+FzGxpzC1A/SnW
-         By9iR3bxdWdVzlnP28suIcqus1BCifB0UTi3FslBTLlc6vE9OxIDilGfltuiVlPEe5SY
-         lPWw==
+        d=gmail.com; s=20230601; t=1697057335; x=1697662135; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X1dQU6FIoYZJ0/aPurc/poVNBiC0XLIUrsGQZ3Xn7ZE=;
+        b=fEF6qA9PehkbZBQ2DGZcRRjtmnipedoAcUPEJEIJnNpncWqeZsGi2/YSxPUGokYSGf
+         fHQwRQZ5PSB2HXX2jM/ZmP8zbND/w6k7AmOCfDcmvg0pTSqyI/rCKO5nAsMdWGmQ7RBc
+         JDyt/jlkf98uxPY8M6rQltWAuRTxXhL5Be7bDKIvhHeGLX+wsMQR69SjSUDdw3+6ryPj
+         aHdiOMmZaEwmZUVRoF3C934zPZMai3QJgYaN7SmPVBinz3gpUYS9spxsC5JtczCMDUhV
+         ErvHviigDQu9yvBnkcL2ggvI/3p7kWqYi+DGcdJXAtxAbA1ngstRU6DLiDRHtDLlFksB
+         pzvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697057270; x=1697662070;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=U1SLoYxRNR/CDgTJKsFAri0SaYwm+irDzPMgfmqqQZY=;
-        b=DyiWqxLrs3fMjqv1w1sKXE+jOTHJBCZjKNijdeQNzxUHDNcIZwPz8TcWf3PWeURwQk
-         67467CSP1SHiLjHMPls/PYyqc3bAMvLsmbHTfWsMxNoRFbKSfHE/HAzBouMsayY7uNSA
-         LmFMK3lQJtJetLdYXdo7g3tj9BAorjO297KEH3ygQoOro+CZeAnYPjBRVQmFQeDb3/Lz
-         7adjssVi4kYpu7tEHMjPE6RVnnNRygBQoB6fFFXI+RFCI1LP/KoaHYMZPGN/ShT0GUtz
-         RisCe7Q73e406GbNflF+by/dyTimKXB2uxm1HgVK97H7KEgroBCcho9IfxveUKUzDVZJ
-         TQsw==
-X-Gm-Message-State: AOJu0Yy+0rQBv8U4WRa6s4CPIBnhj0NkB4Mc9q81+iLgzj+vmywmfJx7
-        7BDptGpO8uc9H7/JsBWOGOI=
-X-Google-Smtp-Source: AGHT+IGLe2mAAsz55iDIerapn/68+pXnHp3WqiNQwhR1c/ip2wEjIzkS23So9Alef2RMCSpL0Wqreg==
-X-Received: by 2002:adf:ec03:0:b0:319:7b66:7803 with SMTP id x3-20020adfec03000000b003197b667803mr19519828wrn.55.1697057269446;
-        Wed, 11 Oct 2023 13:47:49 -0700 (PDT)
-Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
-        by smtp.gmail.com with ESMTPSA id q8-20020a05600000c800b0032415213a6fsm16337923wrx.87.2023.10.11.13.47.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 13:47:49 -0700 (PDT)
-Message-ID: <b09b6ee4-717c-44fa-abbe-cf9cef7b7d8b@gmail.com>
-Date:   Wed, 11 Oct 2023 22:47:47 +0200
+        d=1e100.net; s=20230601; t=1697057335; x=1697662135;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X1dQU6FIoYZJ0/aPurc/poVNBiC0XLIUrsGQZ3Xn7ZE=;
+        b=HTaeMB+LgZcK0x4mUj8SulM7BAFyK1qAV4mWxxkaD9npv7uJ2jQCz6WYtAu7z7SucJ
+         UhXMEw/f/wEX9e0sOxSnubhlIvurUH0w/FK+qPzEEgGEMO60Y0Ox4pGtPhNWFwhwB5hD
+         u2ngFG88f22RpY+fqSVlWDUnbRMtlUhabu4zCSnJCvL2WmtfIt5RfELWWF8jJGuAqydX
+         YgXSkGjHQiQuC5J2WuWfLYashpnEqV9S1UxTWiParfHGzNeSMAnZzvKMwRJjvdLrANLz
+         HaSqZ5pz1NS/M+MYLrMa2pwZLUxwcri9ALywJp2SA/xK0utXWCScZxgvWPcZRIxCGhNX
+         1QaQ==
+X-Gm-Message-State: AOJu0Yyl0hDmE1lzAIg46SXWuNfcLzbr2+pyIVvPaEVH2Tpvlqvqbwn5
+        6AnNm9AWnb+bJzuMMDe0lvNmpaksh0/ld+Z2Lfw=
+X-Google-Smtp-Source: AGHT+IFetHiXoVCCLI7ObePcZKTz4hG20W/mdVhuVmwTTswGtFDaeK4KOW6PelodU9NYgNylwRZYam9ReQOMNMrC7Zo=
+X-Received: by 2002:a25:86c7:0:b0:d9a:576c:4a6b with SMTP id
+ y7-20020a2586c7000000b00d9a576c4a6bmr5922920ybm.12.1697057334895; Wed, 11 Oct
+ 2023 13:48:54 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 11/15] firmware: qcom: qseecom: convert to using the TZ
- allocator
-Content-Language: en-US
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andrew Halaney <ahalaney@redhat.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20231009153427.20951-1-brgl@bgdev.pl>
- <20231009153427.20951-12-brgl@bgdev.pl>
- <y5otsuzhc27xeay6js4nkqss2bo5bsmygwdjuhqpdzce4yffxk@gkkh522s5e3b>
- <CAMRc=MdfZzG-C7=OVhR7x_vEmCexS39GEJ3F-CHM7cfya+A-VA@mail.gmail.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-In-Reply-To: <CAMRc=MdfZzG-C7=OVhR7x_vEmCexS39GEJ3F-CHM7cfya+A-VA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20231009212053.2007-1-graf@amazon.com> <20231009212053.2007-2-graf@amazon.com>
+ <2023101010-overwrite-parakeet-91d5@gregkh> <0ee221bc-ea99-4724-9ebd-436e91417e4b@amazon.com>
+ <2023101009-accustom-manifesto-8bdb@gregkh> <b3a8c722-c0e2-4c8c-aef0-29af0a93572d@amazon.com>
+ <2023101001-ocelot-veteran-10db@gregkh> <2339287b-8b17-413b-aa86-f618ea7fc3fa@app.fastmail.com>
+ <2023101156-helper-waving-09df@gregkh>
+In-Reply-To: <2023101156-helper-waving-09df@gregkh>
+From:   Petre Eftime <petre.eftime@gmail.com>
+Date:   Wed, 11 Oct 2023 23:48:43 +0300
+Message-ID: <CAHO81f5m3Lgus-YBbmmHDHoNsrHQ1GYkddtyv3_rJ_g0NT5Nzw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] Import CBOR library
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Alexander Graf <graf@amazon.com>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Olivia Mackall <olivia@selenic.com>,
+        Erdem Meydanlli <meydanli@amazon.nl>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Kyunghwan Kwon <k@mononn.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -88,73 +82,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/23 09:44, Bartosz Golaszewski wrote:
-> On Wed, Oct 11, 2023 at 12:49 AM Andrew Halaney <ahalaney@redhat.com> wrote:
->>
->> On Mon, Oct 09, 2023 at 05:34:23PM +0200, Bartosz Golaszewski wrote:
->>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>>
->>> Drop the DMA mapping operations from qcom_scm_qseecom_app_send() and
->>> convert all users of it in the qseecom module to using the TZ allocator
->>> for creating SCM call buffers. Together with using the cleanup macros,
->>> it has the added benefit of a significant code shrink. As this is
->>> largely a module separate from the SCM driver, let's use a separate
->>> memory pool.
->>>
->>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Wed, Oct 11, 2023 at 8:46=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Oct 11, 2023 at 02:24:48PM +0200, Arnd Bergmann wrote:
+> > On Tue, Oct 10, 2023, at 10:27, Greg Kroah-Hartman wrote:
+> > > On Tue, Oct 10, 2023 at 10:08:43AM +0200, Alexander Graf wrote:
+> > >> On 10.10.23 10:03, Greg Kroah-Hartman wrote:
+> > >>
+> > >> > > Out of these, the NSM communication protocol uses all except Sem=
+antic tags
+> > >> > > and Floats. The CBOR library that this patch imports does not ha=
+ve special
+> > >> > > handling for Semantic tags, which leaves only floats which are a=
+lready
+> > >> > > #ifdef'ed out. That means there is not much to trim.
+> > >> > >
+> > >> > > What you see here is what's needed to parse CBOR in kernel - if =
+that's what
+> > >> > > we want to do. I'm happy to rip it out again and make it a pure =
+user space
+> > >> > > problem to do CBOR :).
+> > >> > Yes, why are we parsing this in the kernel?  What could go wrong w=
+ith
+> > >> > adding yet-another-parser in privileged context?  :)
+> > >> >
+> > >> > Why does this have to be in the kernel, the data sent/recieved is =
+over
+> > >> > virtio, so why does the kernel have to parse it?  I couldn't figur=
+e that
+> > >> > out from the driver, yet the driver seems to have a lot of hard-co=
+ded
+> > >> > parsing logic in it to assume specific message formats?
+> > >>
+> > >>
+> > >> The parsing doesn't have to be in kernel and it probably shouldn't b=
+e
+> > >> either. V3 of the patch was punting all the parsing to user space, a=
+t which
+> > >> point you and Arnd said I should give it a try to do the protocol pa=
+rsing in
+> > >> kernel space instead. That's why the parser is here.
+> > >
+> > > Arnd said that, not me :)
+> > >
+> > >> If we conclude that all this in-kernel parsing is not worth it, I'm =
+very
+> > >> happy to just go back to the the v3 ioctl interface and post v5 with=
+ hwrng
+> > >> merged into misc, but remove all CBOR logic again :)
+> > >
+> > > I think the less parsers we have in the kernel, the safer we are for
+> > > obvious reasons.  Unless you have a parser for this in rust?  :)
+> > >
+> > > I don't really know, having a generic interface is good, but at the
+> > > expense of this api is probably not good.  individual ioctls might be
+> > > better if there are not going to be any other drivers for this type o=
+f
+> > > thing?
+> >
+> > I was definitely expecting something simpler than what was possible
+> > in the v4 patch. I had another look now, and it's clear that the
+> > ioctl interface is still not great because the variable data structures
+> > shine through for some of the calls, and even to get to this point,
+> > a whole lot of complexity is required underneath.
+> >
+> > To get anything better, one would probably have to redesign the entire
+> > interface stack (hypervisor, kernel and userland) to use regular
+> > fixed data structures, and this seems unlikely to happen.
+>
+> Why not fix this and do it properly?  What's preventing that from
+> happening?  We don't want to create an interface here that is broken, or
+> insecure, or a pain to maintain, right?
+>
+> thanks,
+>
+> greg k-h
 
-[...]
+I would think the proposal to have fixed structures would be a
+downgrade in terms of maintainability, usability and security, not an
+improvement.
 
->>> @@ -704,12 +635,7 @@ static efi_status_t qsee_uefi_query_variable_info(struct qcuefi_client *qcuefi,
->>>        if (max_variable_size)
->>>                *max_variable_size = rsp_data->max_variable_size;
->>>
->>> -out_free:
->>> -     kfree(rsp_data);
->>> -out_free_req:
->>> -     kfree(req_data);
->>> -out:
->>> -     return efi_status;
->>> +     return EFI_SUCCESS;
->>>   }
->>>
->>>   /* -- Global efivar interface. ---------------------------------------------- */
->>> @@ -838,6 +764,10 @@ static int qcom_uefisecapp_probe(struct auxiliary_device *aux_dev,
->>>        if (status)
->>>                qcuefi_set_reference(NULL);
->>>
->>> +     qcuefi->mempool = devm_qcom_tzmem_pool_new(&aux_dev->dev, SZ_256K);
->>
->> Any particular reason for this size? Just curious, it was (one) of the
->> reasons I had not marked patch 4 yet (it looks good, but I wanted to get
->> through the series to digest the Kconfig as well).
->>
-> 
-> I cannot test this. Do you know what the minimum correct size would be?
+This current interface allows the hypervisor to extend the existing
+functionality at any time, and the Linux kernel does not have to
+change anything for that to work, the application does not have to be
+recompiled to use the new kernel headers at any point. Adding new
+APIs, adding new fields to API responses, or adding optional
+parameters to the API is fully backwards compatible, would also not
+require changes in userspace, as the CBOR data structures that are not
+recognized can simply be skipped. This allows easy backwards
+compatibility in most cases, and the userspace would be able to opt in
+to new features only if it requires them, without forcing the upgrade
+if it's not required.
 
-Unfortunately, I don't know a specific size either.
+With fixed structures, then the driver would need to be more
+explicitly versioned and would need to be able to handle multiple
+versions of the API at the same time, which is both more complex, less
+flexible and more prone to errors.
 
-We can try to roughly estimate that though: At most, we have some rather
-negligible overhead for the argument struct and GUID, the name buffer,
-and the data buffer (get/set variable). The name is limited to 1024
-utf-16 characters (although that's a limit that we set in our driver,
-not necessarily of the firmware). The thing that's more difficult to
-gauge is the maximum data size. Also I think we can reach the alloc code
-with multiple threads (unless the EFI subsystem is doing some locking).
-Only the actual SCM call is locked on the qseecom side.
-
-The efivar_query_variable_info() call could help with the data size part
-(it can return the maximum valid size of a single variable).
-Unfortunately it's not directly exposed, but I could code something up
-to read it out. The next best thing is `df -h` (which uses the same call
-under the hood) to get the total storage space available for EFI
-variables. On my Surface Pro X, that's 60K. So I guess overall, 64K
-should be enough for a single call. That being said, the biggest variable
-stored right now is about 4K in size.
-
-Given that that's a sample-size of one device though and that we might
-want to future-proof things, I think 256K is a good choice. But we could
-probably go with less if we really want to save some memory.
-
-Regards,
-Max
+-- epetre
