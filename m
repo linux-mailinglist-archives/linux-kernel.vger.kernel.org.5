@@ -2,127 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3347D7C4F92
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330A67C4FB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbjJKKGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
+        id S231367AbjJKKJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234253AbjJKKG1 (ORCPT
+        with ESMTP id S234737AbjJKKIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:06:27 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E2FDB
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:06:23 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32c9f2ce71aso1473716f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:06:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697018781; x=1697623581; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Bcu8SH2nyw79dGr/lHHTOch/RopwLLp/av5OXKcyU8g=;
-        b=i3iy7kfubYPSObP3K78GPcM2whq/r6YPezjDkKtPlfjWxlEzJYfDql47mhY9EF1DvR
-         KqQQLjVvNOco2oaEmt5z/Af+Ef/w4Km/ur5vfaG2vluWTjlnIP/f/Q8gPZPE2Y4ZLozv
-         JHf9ukrT7r8oCE0kxQVWPx4xohoRvSJ1tL65F5k5tkORy7tMNzn+a84QFxGLszFopt1Q
-         BzWkjMYyel8QNHagH05ByIIkcU+s45XfW7umnj9enMbAtCyTj8OdX6G3KFuTl/QrSqeC
-         i1LUII07ay0Fgq9cMw4rwZuEcoE0GG4BOXg92oFutjTcJcBDof4VuvjgAaZSLtEUeuqh
-         w9Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697018781; x=1697623581;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bcu8SH2nyw79dGr/lHHTOch/RopwLLp/av5OXKcyU8g=;
-        b=QgZSGee4e/i4XEjH4DRwT+fekzL6FJhDY2c/o9tajJCmR6j46laRbgcAsPO7rV3+Lm
-         mvdkYrVDT+VrZVLxByStvNQdrIb1fK2KgrD1t8QrBjSbSoF9EGVOvIe8uMMYF6nHVLeD
-         +gCd5qET5/aMUiLYRVnyPydjWcgGbuNqKQfWLcXf1zeMuAHQgXM1P5gfIHUWdX6s4Gs+
-         PtNN8B+Gaxr1XCx0mZrIBq9h3rzixHyHASGWidnnoeMF4Sdxhdd40iWbHRM7A8usEgCu
-         fmTAvyKm/ALsdA0KDloi0n7rG5R1PRZYRRr3bpEInw9ITLX8vzd5sDbR4cIT6pfFEK9F
-         8hcQ==
-X-Gm-Message-State: AOJu0YzWIP7K9nRgIKTtn9QMxTYVoki++aqWE2f1qpB+sU4JPTCmDkkk
-        no+Rw7A/fpQiwiwNFhNumYI0zw==
-X-Google-Smtp-Source: AGHT+IEwV85pXWAtkZXgOk4jNUrmdXKW76O9Yh5qCRRQS1Jt+0DPvBycNIUwx0Ij6HMSyhg42mFyyA==
-X-Received: by 2002:a05:6000:109:b0:320:1c6:628c with SMTP id o9-20020a056000010900b0032001c6628cmr18980219wrx.65.1697018781585;
-        Wed, 11 Oct 2023 03:06:21 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:de95:eca9:6b1e:b330? ([2a05:6e02:1041:c10:de95:eca9:6b1e:b330])
-        by smtp.googlemail.com with ESMTPSA id e14-20020adffd0e000000b00315af025098sm15162004wrr.46.2023.10.11.03.06.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 03:06:21 -0700 (PDT)
-Message-ID: <500f7f18-65cf-4182-a174-5f0081456b3b@linaro.org>
-Date:   Wed, 11 Oct 2023 12:06:20 +0200
+        Wed, 11 Oct 2023 06:08:39 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123D61989
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:07:34 -0700 (PDT)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4S57dL5l77zkY9p;
+        Wed, 11 Oct 2023 18:03:34 +0800 (CST)
+Received: from huawei.com (10.67.174.55) by kwepemi500008.china.huawei.com
+ (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
+ 2023 18:07:32 +0800
+From:   Jinjie Ruan <ruanjinjie@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <mark.rutland@arm.com>, <broonie@kernel.org>,
+        <anshuman.khandual@arm.com>, <alexandru.elisei@arm.com>,
+        <sashal@kernel.org>, <maz@kernel.org>,
+        <gregkh@linuxfoundation.org>, <james.morse@arm.com>,
+        <pcc@google.com>, <scott@os.amperecomputing.com>,
+        <ebiederm@xmission.com>, <haibinzhang@tencent.com>,
+        <hewenliang4@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <stable@kernel.org>
+CC:     <ruanjinjie@huawei.com>
+Subject: [PATCH v5.15 00/15] arm64: Fix a concurrency issue in emulation_proc_handler()
+Date:   Wed, 11 Oct 2023 10:06:40 +0000
+Message-ID: <20231011100655.979626-1-ruanjinjie@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clocksource/drivers/arm_arch_timer: Initialize evtstrm
- after finalizing cpucaps
-Content-Language: en-US
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        maz@kernel.org, tglx@linutronix.de
-References: <20230907133410.3817800-1-mark.rutland@arm.com>
- <a56ea45c-f1cb-4f9a-bfc9-d6af3282b13a@linaro.org>
- <ZSZsogqIgG863ucA@FVFF77S0Q05N>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <ZSZsogqIgG863ucA@FVFF77S0Q05N>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.55]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemi500008.china.huawei.com (7.221.188.139)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2023 11:36, Mark Rutland wrote:
-> Hi Daniel,
-> 
-> On Wed, Oct 11, 2023 at 10:30:39AM +0200, Daniel Lezcano wrote:
->> On 07/09/2023 15:34, Mark Rutland wrote:
->>> We attempt to initialize each CPU's arch_timer event stream in
->>> arch_timer_evtstrm_enable(), which we call from the
->>> arch_timer_starting_cpu() cpu hotplug callback which is registered early
->>> in boot. As this is registered before we initialize the system cpucaps,
->>> the test for ARM64_HAS_ECV will always be false for CPUs present at boot
->>> time, and will only be taken into account for CPUs onlined late
->>> (including those which are hotplugged out and in again).
->>>
->>> Due to this, CPUs present and boot time may not use the intended divider
->>> and scale factor to generate the event stream, and may differ from other
->>> CPUs.
->>>
->>> Correct this by only initializing the event stream after cpucaps have been
->>> finalized, registering a separate CPU hotplug callback for the event stream
->>> configuration. Since the caps must be finalized by this point, use
->>> spus_have_final_cap() to verify this.
->>>
->>> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
->>> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
->>> Cc: Marc Zyngier <maz@kernel.org>
->>> Cc: Thomas Gleixner <tglx@linutronix.de>
->>> ---
->>
->> Applied thanks
-> 
-> This got folded into a larger series that we were hoping to take through the arm64 tree:
-> 
->    https://lore.kernel.org/linux-arm-kernel/20231010103139.3113421-1-mark.rutland@arm.com/
->    https://lore.kernel.org/linux-arm-kernel/20231010103139.3113421-2-mark.rutland@arm.com/
-> 
-> I think that won't conflict, since all that's changed is the commit text, but
-> it might be worth dropping this patch for now to avoid the risk of a conflict.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Sure, thanks for letting me know. I was suspecting that was the case :)
+In linux-6.1, the related code is refactored in commit 124c49b1b5d9
+("arm64: armv8_deprecated: rework deprected instruction handling") and this
+issue was incidentally fixed. This patch set try to adapt the refactoring
+patches to stable 5.15 to solve the problem of repeated addition of linked
+lists described below.
 
-I've dropped it
+How to reproduce:
+CONFIG_ARMV8_DEPRECATED=y, CONFIG_SWP_EMULATION=y, and CONFIG_DEBUG_LIST=y,
+then launch two shell executions:
+       #!/bin/bash
+       while [ 1 ];
+       do
+           echo 1 > /proc/sys/abi/swp
+       done
+
+or "echo 1 > /proc/sys/abi/swp" and then launch two shell executions:
+       #!/bin/bash
+       while [ 1 ];
+       do
+           echo 0 > /proc/sys/abi/swp
+       done
+
+In emulation_proc_handler(), read and write operations are performed on
+insn->current_mode. In the concurrency scenario, mutex only protects
+writing insn->current_mode, and not protects the read. Suppose there are
+two concurrent tasks, task1 updates insn->current_mode to INSN_EMULATE
+in the critical section, the prev_mode of task2 is still the old data
+INSN_UNDEF of insn->current_mode. As a result, two tasks call
+update_insn_emulation_mode twice with prev_mode = INSN_UNDEF and
+current_mode = INSN_EMULATE, then call register_emulation_hooks twice,
+resulting in a list_add double problem.
+
+commit 124c49b1b5d9 ("arm64: armv8_deprecated: rework deprected instruction
+handling") remove the dynamic registration and unregistration so remove the
+register_undef_hook() function, so the below problem was incidentally
+fixed.
+
+Call trace:
+ __list_add_valid+0xd8/0xe4
+ register_undef_hook+0x94/0x13c
+ update_insn_emulation_mode+0xd0/0x12c
+ emulation_proc_handler+0xd8/0xf4
+ proc_sys_call_handler+0x140/0x250
+ proc_sys_write+0x1c/0x2c
+ new_sync_write+0xec/0x18c
+ vfs_write+0x214/0x2ac
+ ksys_write+0x70/0xfc
+ __arm64_sys_write+0x24/0x30
+ el0_svc_common.constprop.0+0x7c/0x1bc
+ do_el0_svc+0x2c/0x94
+ el0_svc+0x20/0x30
+ el0_sync_handler+0xb0/0xb4
+ el0_sync+0x160/0x180
+
+Call trace:
+ __list_del_entry_valid+0xac/0x110
+ unregister_undef_hook+0x34/0x80
+ update_insn_emulation_mode+0xf0/0x180
+ emulation_proc_handler+0x8c/0xd8
+ proc_sys_call_handler+0x1d8/0x208
+ proc_sys_write+0x14/0x20
+ new_sync_write+0xf0/0x190
+ vfs_write+0x304/0x388
+ ksys_write+0x6c/0x100
+ __arm64_sys_write+0x1c/0x28
+ el0_svc_common.constprop.4+0x68/0x188
+ do_el0_svc+0x24/0xa0
+ el0_svc+0x14/0x20
+ el0_sync_handler+0x90/0xb8
+ el0_sync+0x160/0x180
+
+The first 5 patches is a patch set which provides context for subsequent
+refactoring 9 patches, especially commit 0f2cb928a154 ("arm64:
+consistently pass ESR_ELx to die()") which modify do_undefinstr() to add a
+ESR_ELx value arg, and then commit 61d64a376ea8 ("arm64: split EL0/EL1
+UNDEF handlers") splits do_undefinstr() handler into separate
+do_el0_undef() and do_el1_undef() handlers.
+
+The 9 patches after that is another refactoring patch set, which is in
+preparation for the main rework commit 124c49b1b5d9 ("arm64:
+armv8_deprecated: rework deprected instruction handling"). To remove struct
+undef_hook, commit bff8f413c71f ("arm64: factor out EL1 SSBS emulation
+hook") factor out EL1 SSBS emulation hook, which also avoid call
+call_undef_hook() in do_el1_undef(), commit f5962add74b6 ("arm64: rework
+EL0 MRS emulation") factor out EL0 MRS emulation hook, which also prepare
+for replacing call_undef_hook() in do_el0_undef(). To replace
+call_undef_hook() function, commit 61d64a376ea8 ("arm64: split EL0/EL1
+UNDEF handlers") split the do_undefinstr() into do_el0_undef() and
+do_el1_undef() functions, and commit dbfbd87efa79 ("arm64: factor insn
+read out of call_undef_hook()") factor user_insn_read() from
+call_undef_hook() so the main rework patch can replace the
+call_undef_hook() in do_el0_undef().
+
+The last patch is a bugfix for the main rework patch.
+
+I've tested this with userspace programs which use each of the
+deprecated instructions on Raspberry Pi 4B KVM/Qemu, and I've concurrently
+modified the support level for each of the features back-and-forth between
+HW and emulated to check that there are no oops or above repeated addition
+or deletion call trace.
+
+Fixes: af483947d472 ("arm64: fix oops in concurrently setting insn_emulation sysctls")
+Cc: stable@vger.kernel.org#5.15.x
+Cc: gregkh@linuxfoundation.org
+Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+
+Mark Rutland (14):
+  arm64: report EL1 UNDEFs better
+  arm64: die(): pass 'err' as long
+  arm64: consistently pass ESR_ELx to die()
+  arm64: rework FPAC exception handling
+  arm64: rework BTI exception handling
+  arm64: allow kprobes on EL0 handlers
+  arm64: split EL0/EL1 UNDEF handlers
+  arm64: factor out EL1 SSBS emulation hook
+  arm64: factor insn read out of call_undef_hook()
+  arm64: rework EL0 MRS emulation
+  arm64: armv8_deprecated: fold ops into insn_emulation
+  arm64: armv8_deprecated move emulation functions
+  arm64: armv8_deprecated: move aarch32 helper earlier
+  arm64: armv8_deprecated: rework deprected instruction handling
+
+Ren Zhijie (1):
+  arm64: armv8_deprecated: fix unused-function error
+
+ arch/arm64/include/asm/cpufeature.h  |   3 +-
+ arch/arm64/include/asm/exception.h   |  13 +-
+ arch/arm64/include/asm/spectre.h     |   2 +
+ arch/arm64/include/asm/system_misc.h |   2 +-
+ arch/arm64/include/asm/traps.h       |  19 +-
+ arch/arm64/kernel/armv8_deprecated.c | 572 +++++++++++++--------------
+ arch/arm64/kernel/cpufeature.c       |  23 +-
+ arch/arm64/kernel/entry-common.c     |  36 +-
+ arch/arm64/kernel/proton-pack.c      |  26 +-
+ arch/arm64/kernel/traps.c            | 125 +++---
+ 10 files changed, 396 insertions(+), 425 deletions(-)
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+2.34.1
 
