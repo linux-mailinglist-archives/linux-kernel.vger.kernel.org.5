@@ -2,78 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1117C6111
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 01:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80587C6115
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 01:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376550AbjJKXYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 19:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34056 "EHLO
+        id S233875AbjJKXaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 19:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233737AbjJKXYn (ORCPT
+        with ESMTP id S233568AbjJKXaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 19:24:43 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225BAA4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 16:24:42 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c9c145bb5bso37355ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 16:24:42 -0700 (PDT)
+        Wed, 11 Oct 2023 19:30:07 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671DBA4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 16:30:06 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c735473d1aso3150355ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 16:30:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697066681; x=1697671481; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dAAKGVB+lelljepY7l9tUkyTVnRdooCMLwVeaoxxMw4=;
-        b=1sw6xuoNwtrLEXhK+UmI8v+u3bBQxlk5VyAQqGwznvwTgQOsM9dkH3DtP6lEDZpCFR
-         Jl15Tmee9ZzC0e2t9IHVWzdh8t/So8dKV5jvhZqfVMniXsKgzHxoey3NB8O36OkwPnmy
-         BSJu7MxGz1EIVW9JIXKaLUz+OXAf4kiZeP13UQ4PigzcwrBhlvLIF87Znh4dIHSeRDZI
-         OP7msvDjzSeGTaKirwf9/R+ywZ2/bA0k0vu7o/2FN/0b04DeFV6itdOLzosWOmHt7h+U
-         atmm3WUn+Qfh3YPbRa3Od1kVZtBQVe6PmsSRbWjbizb5EFH6zHPWRK3dbyEd/2i3ATiT
-         VX+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697066681; x=1697671481;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1697067006; x=1697671806; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dAAKGVB+lelljepY7l9tUkyTVnRdooCMLwVeaoxxMw4=;
-        b=AHsedt/gpfTFWoFDVE5RrpBf4EKFjKbnEIxhJDGXfvjzivgZlJv4NrHbADxYcwsLn4
-         H0DdDP4+96uBevIodHssmDsSoFWhhMveN7bnzATFoIhnU+v6rlCZAUNA+4IDVuFvNfDf
-         Sck9LPg/6VmHmQ0t3AS5hOo2AukDP+975OsBnwkokM2s4mvaVBkIqFqxZRErwLR/1CP6
-         BCXW6Iow6MZKuPyLOvkbHcYWVx5i1IRPfvDhil3p/3AR9Mku4xaGlx7eugitD7j5qAqq
-         mwDc0PhxAVxxLhf1zXzHaZK08zo0lfLl965GY5LNXuzhIM26Lsr2c0b/wpYVZWLqI/VC
-         adnA==
-X-Gm-Message-State: AOJu0YyjprOIEaTl+zfuW7U2Qo/T6ObvLUKvMoykzUqwufCNdrahq091
-        01celDnBlc/Uy7euALsTZuL3kw==
-X-Google-Smtp-Source: AGHT+IH9q4ltRTBEFYeoK6271feOM+SC/ECJaVYC7fj5pQItoScKzYH38AYflx06meM9EvXSMn2GoA==
-X-Received: by 2002:a17:902:d2c6:b0:1c9:bfdb:aae4 with SMTP id n6-20020a170902d2c600b001c9bfdbaae4mr379571plc.18.1697066681416;
-        Wed, 11 Oct 2023 16:24:41 -0700 (PDT)
-Received: from bsegall-linux.svl.corp.google.com.localhost ([2620:15c:2a3:200:5aa:bf1b:3872:9fec])
-        by smtp.gmail.com with ESMTPSA id q134-20020a632a8c000000b005a2eed54421sm242567pgq.24.2023.10.11.16.24.39
+        bh=1JtGjh26Eni4OZxnKSlnsIiPe2l0EQ4vE2Am58DZ21c=;
+        b=CauAA/ejXBWZG2MIAjZtObMjsRoq+C7c849zbwIGEbbH0eFA/4/8TmRmkG8K6dqH94
+         ZZlsqHFxXaCmKihb2vtlgWN5wAAJICwazDHJItEhPitV1o6KAsKx/ZPSY1KI6YYxMCJz
+         XFP7iUKFnPUp3ZSSUDtN5lIfRKy+O/kLrLYJVPS7ZhNgl7qSoo/c/lFw1Ia4YHSeeVbx
+         bUcTpO2XDyA4fou3HYLrYL0zG1oKMAWyNYgbG82AAQ2uWcKpbm+Ypw10DycQug9872cj
+         fSYn3dX+SqD//Ta0vXezeiPZkmowhTb+7DuPlE+zIkdjUr7CLNxjUsPmy5Z8GRvztakH
+         tU5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697067006; x=1697671806;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1JtGjh26Eni4OZxnKSlnsIiPe2l0EQ4vE2Am58DZ21c=;
+        b=C/3BGQkgd/KxzgAD7ayp9qH+JbxZLUVZk/zZnz9StzETvNuFE0+NeHV2PnPuQe4Wck
+         5T2zizzvFDRKf6lWO+7MdoVxX5PoksaKgE8CUaluC8viJ2ppTs+GaGPFQb3svgHQ9atu
+         dr7NPWDm7laPJ6QCLep2njr6xK3uTCQPGtzmMqAnDwizdMGSY7Lqt7wGcO2OBI8/qSGX
+         lFtkJm45QbCIrj7LDt0uCkGn5F9Cnorry0pPe6cl54aoA3/8eXFcGkPKFmXPmnexZ6rk
+         bv4bL3o7D4q8M6b2kkGZWJHdvwmoZapUkOW7jQg0IRiDnQn8neaukXWlhdN0FCF7lqjJ
+         L0fw==
+X-Gm-Message-State: AOJu0Yw5Ozy9x6vhg+5GD/Q4YliZj7a47YIvZnb0xdW+wkV6Pkfv3da2
+        NaAe6GXrSKw2WxTOS/9aXX8x+Q==
+X-Google-Smtp-Source: AGHT+IEV8H5TPcuvOmSF7vUA4QdCpSp7vHMQFvfV9/tCGGpqvYhz4EcKkmpBt6ew0dUnQElfDl19sw==
+X-Received: by 2002:a17:902:c1c4:b0:1c9:c3a7:f96d with SMTP id c4-20020a170902c1c400b001c9c3a7f96dmr5257434plc.62.1697067005872;
+        Wed, 11 Oct 2023 16:30:05 -0700 (PDT)
+Received: from hermes.local (204-195-126-68.wavecable.com. [204.195.126.68])
+        by smtp.gmail.com with ESMTPSA id jg5-20020a17090326c500b001c9cb2fb8d8sm427832plb.49.2023.10.11.16.30.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 16:24:40 -0700 (PDT)
-From:   Benjamin Segall <bsegall@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
-        bristot@redhat.com, corbet@lwn.net, qyousef@layalina.io,
-        chris.hyser@oracle.com, patrick.bellasi@matbug.net, pjt@google.com,
-        pavel@ucw.cz, qperret@google.com, tim.c.chen@linux.intel.com,
-        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
-        yu.c.chen@intel.com, youssefesmat@chromium.org,
-        joel@joelfernandes.org, efault@gmx.de, tglx@linutronix.de
-Subject: Re: [RFC][PATCH 13/15] sched/fair: Implement latency-nice
-In-Reply-To: <20230531124604.477939524@infradead.org> (Peter Zijlstra's
-        message of "Wed, 31 May 2023 13:58:52 +0200")
-References: <20230531115839.089944915@infradead.org>
-        <20230531124604.477939524@infradead.org>
-Date:   Wed, 11 Oct 2023 16:24:39 -0700
-Message-ID: <xm26ttqwhhe0.fsf@bsegall-linux.svl.corp.google.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Wed, 11 Oct 2023 16:30:05 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 16:30:03 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Florian Fainelli <florian.fainelli@broadcom.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        linux-kernel@vger.kernel.org (open list:ARM/Mediatek SoC support),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: Re: [PATCH net-next v2 2/2] net: dsa: Rename IFLA_DSA_MASTER to
+ IFLA_DSA_CONDUIT
+Message-ID: <20231011163003.32036b28@hermes.local>
+In-Reply-To: <20231011222026.4181654-3-florian.fainelli@broadcom.com>
+References: <20231011222026.4181654-1-florian.fainelli@broadcom.com>
+        <20231011222026.4181654-3-florian.fainelli@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,77 +83,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> writes:
+On Wed, 11 Oct 2023 15:20:26 -0700
+Florian Fainelli <florian.fainelli@broadcom.com> wrote:
 
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -952,6 +952,21 @@ int sched_update_scaling(void)
->  }
->  #endif
->  
-> +void set_latency_fair(struct sched_entity *se, int prio)
-> +{
-> +	u32 weight = sched_prio_to_weight[prio];
-> +	u64 base = sysctl_sched_base_slice;
-> +
-> +	/*
-> +	 * For EEVDF the virtual time slope is determined by w_i (iow.
-> +	 * nice) while the request time r_i is determined by
-> +	 * latency-nice.
-> +	 *
-> +	 * Smaller request gets better latency.
-> +	 */
-> +	se->slice = div_u64(base << SCHED_FIXEDPOINT_SHIFT, weight);
-> +}
-> +
->  static void clear_buddies(struct cfs_rq *cfs_rq, struct sched_entity *se);
->  
->  /*
+>  enum {
+>  	IFLA_DSA_UNSPEC,
+> -	IFLA_DSA_MASTER,
+> +	IFLA_DSA_CONDUIT,
+> +	/* Deprecated, use IFLA_DSA_CONDUIT insted */
+> +	IFLA_DSA_MASTER = IFLA_DSA_CONDUIT,
+>  	__IFLA_DSA_MAX,
+>  };
+
+minor nit s/insted/instead/
+
+I don't know if it would be acceptable in the kernel UAPI but what
+we did in DPDK for similar situation to cause warning on use of deprecated value.
 
 
-This seems questionable in combination with the earlier changes that
-make things use se->slice by itself as the expected time slice:
 
+/**
+ *  Macro to mark macros and defines scheduled for removal
+ */
+#if defined(RTE_CC_GCC) || defined(RTE_CC_CLANG)
+#define RTE_PRAGMA(x)  _Pragma(#x)
+#define RTE_PRAGMA_WARNING(w) RTE_PRAGMA(GCC warning #w)
+#define RTE_DEPRECATED(x)  RTE_PRAGMA_WARNING(#x is deprecated)
+#else
+#define RTE_DEPRECATED(x)
+#endif
 
-> @@ -6396,13 +6629,12 @@ static inline void unthrottle_offline_cf
->  static void hrtick_start_fair(struct rq *rq, struct task_struct *p)
->  {
->  	struct sched_entity *se = &p->se;
-> -	struct cfs_rq *cfs_rq = cfs_rq_of(se);
->  
->  	SCHED_WARN_ON(task_rq(p) != rq);
->  
->  	if (rq->cfs.h_nr_running > 1) {
-> -		u64 slice = sched_slice(cfs_rq, se);
->  		u64 ran = se->sum_exec_runtime - se->prev_sum_exec_runtime;
-> +		u64 slice = se->slice;
->  		s64 delta = slice - ran;
->  
->  		if (delta < 0) {
-> @@ -12136,8 +12382,8 @@ static void rq_offline_fair(struct rq *r
->  static inline bool
->  __entity_slice_used(struct sched_entity *se, int min_nr_tasks)
->  {
-> -	u64 slice = sched_slice(cfs_rq_of(se), se);
->  	u64 rtime = se->sum_exec_runtime - se->prev_sum_exec_runtime;
-> +	u64 slice = se->slice;
->  
->  	return (rtime * min_nr_tasks > slice);
->  }
-> @@ -12832,7 +13078,7 @@ static unsigned int get_rr_interval_fair
->  	 * idle runqueue:
->  	 */
->  	if (rq->cfs.load.weight)
-> -		rr_interval = NS_TO_JIFFIES(sched_slice(cfs_rq_of(se), se));
-> +		rr_interval = NS_TO_JIFFIES(se->slice);
->  
->  	return rr_interval;
->  }
-
-We probably do not want a task with normal weight and low latency-weight
-(aka high latency / latency-nice value) to be expected to have a very
-very high slice value for some of these. get_rr_interval_fair is
-whatever, it's not really a number that exists, and CONFIG_SCHED_CORE
-isn't updated for EEVDF at all, but HRTICK at least probably should be
-updated. Having such a task run for 68 times normal seems likely to have
-far worse latency effects than any gains from other parts.
+...
+#define RTE_DEV_WHITELISTED \
+	RTE_DEPRECATED(RTE_DEV_WHITELISTED) RTE_DEV_ALLOWED
+#define RTE_DEV_BLACKLISTED \
+	RTE_DEPRECATED(RTE_DEV_BLACKLISTED) RTE_DEV_BLOCKED
