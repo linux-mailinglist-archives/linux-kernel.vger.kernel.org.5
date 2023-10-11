@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E902B7C46C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F097C46CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344451AbjJKAgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 20:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
+        id S1344466AbjJKAgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 20:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344414AbjJKAgL (ORCPT
+        with ESMTP id S1344327AbjJKAgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 20:36:11 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AACF8F
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:36:10 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6969b391791so4418639b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:36:10 -0700 (PDT)
+        Tue, 10 Oct 2023 20:36:52 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8B992
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:36:49 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d84acda47aeso8396793276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:36:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696984569; x=1697589369; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=xq+AEqzmHiQrj4BnporbT5EC448/0KDAPw5SaA543wQ=;
-        b=nB1eJAcYFJ0WLMPTTNQOXv2BCX7Ec5DJFEKhjnvMV9Vld0Zp32P1axIpbHBLQ5Lq4v
-         FQodCej3Z/SjpXgBuDwPh2e0kyGFaWsrmL++BKMFs1K78r1i/vgEk5Oww39LhAoU61Ja
-         PZ3U28c+2dfi0CE/gXBQ7OdORBHZFdy9XztaA=
+        d=google.com; s=20230601; t=1696984609; x=1697589409; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZhPeCxvioG75cIV47i0mJdVPOUMQNjsIUo5SWKluyZ8=;
+        b=htvGbVmCNoVXyQXFJi0lqAvfyeeCe44SwqFB02tic1KUk+8Vm0/RvL/3hTBRtuJX0J
+         F5G7CuqTHVuJhFB4KQEf9KAdQEaDu3ztl9PCqbRn1QmmGmnmuhoEOSBJUeoucsgMlqtW
+         AbIHcJiv/Axyo3KNLTgXGO9muA2MbCsl/VZtnV5dGmguKFWzVrwamoctUp/EDH98MHs2
+         qPzVWiYlomNOPyoqDtfgfiiUBokIKDB1KC7usfIQK4Z5F19Rnslc5OZnK3KCFZzggmI2
+         KbGVOSjL9Z0CXd5savtRW6Nyr3eOUsGytUxJzPvvhrffghQVIaxRlWBOBYbJoVHxkBg+
+         k6Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696984569; x=1697589369;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xq+AEqzmHiQrj4BnporbT5EC448/0KDAPw5SaA543wQ=;
-        b=MTgGzfC+0gwQU6pFCk2PIGPBnpM5bsWTBKGddt5m0gQq86hPNh/udnq4ugTNApIOAM
-         0HKOICZ34qJDgfNkTmxJrc82JZIdIoMiaUn0ORrvaySJuCjgIZ9o6LYnXYTsZI4VU1MZ
-         9FQVcLzJIN7TTWLxp2BQPH81ccPIuVjFk6gCx+F+e3732am7cMs/LpLV8ov6JL0cVLLV
-         wBSxDtpTkDrgCY2z1LjlAw6bBvrjpxjL/28IXCPu+88BGpmN+OwUmVDTKMt2lv93PdRh
-         skA3QiTbLCfMy8eFgoVBGCt18T7OmE4zcJkFj88NKoOgMKH8ga7Cc3v60FxsUgqmAhHb
-         /5Aw==
-X-Gm-Message-State: AOJu0Yy/FqVR30AWJ2pd/Ofkql3vw994jXZeKud6e2OFcv47qKw+oLBI
-        0gXiDHH4S9oE52G+4qcU49PWOQ==
-X-Google-Smtp-Source: AGHT+IFMfsjVmKnXm10wsvKLck/lh98ypo1T0gT+eWGMkht127PX3Zx9fbqq+35mlCoTyk2gMLVQoA==
-X-Received: by 2002:a05:6a20:12d6:b0:13d:a903:88e6 with SMTP id v22-20020a056a2012d600b0013da90388e6mr21244798pzg.48.1696984569634;
-        Tue, 10 Oct 2023 17:36:09 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g25-20020aa78759000000b006934704bf56sm8887859pfo.64.2023.10.10.17.36.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 17:36:08 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 17:36:07 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Norbert Lange <nolange79@gmail.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Laurent Vivier <laurent@vivier.eu>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        containers@lists.linux-foundation.org, jan.kiszka@siemens.com,
-        jannh@google.com, avagin@gmail.com, dima@arista.com,
-        James.Bottomley@hansenpartnership.com
-Subject: Re: [PATCH v8 1/1] ns: add binfmt_misc to the user namespace
-Message-ID: <202310101735.94C17F0@keescook>
-References: <8eb5498d-89f6-e39e-d757-404cc3cfaa5c@vivier.eu>
- <20230630083852.3988-1-norbert.lange@andritz.com>
- <e8161622-beb0-d8d5-6501-f0bee76a372d@vivier.eu>
- <20230630-hufen-herzallerliebst-fde8e7aecba0@brauner>
- <202307121239.1EB4D324@keescook>
- <CADYdroNw5ZPPUqXQ5Psb8ffzi47SzvJAixQgxm+vsmV9eX_kYg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADYdroNw5ZPPUqXQ5Psb8ffzi47SzvJAixQgxm+vsmV9eX_kYg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20230601; t=1696984609; x=1697589409;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZhPeCxvioG75cIV47i0mJdVPOUMQNjsIUo5SWKluyZ8=;
+        b=rohaa4i8VZ1HoI31JIpS6c4TRyecZWxin6RwOSzzgmRzOMVO9WWq7eKz2Rt4V3RgYo
+         NPQHV8AVRAhnLeFZazIpmbegFyqNPmMR2i3YBeG+kXY7DjwCKJRGfpCIpJbjYoKrSeYI
+         3cqWBG+1a3T5mnpxNpghKaoVuyga9XLhtTs806ISDyR8gSKVxiyU4GD6zHxFQgnYnTNp
+         QmgrBrCs9f3x50onbxK5gMo0RTLz3aakhl/qyeCHf9yXeXA7uokZDCP/tqRwQWLinTqU
+         XM2sHdllSaLCv8tPfqoWX6g3wcVU+rPm3jwVsTDFSEvihoUruvTKt7PRz+WOzaWXKc0o
+         LBHQ==
+X-Gm-Message-State: AOJu0YxuIYkMRadLtwM3gAZ3Ry0uUbxEEE9WOMdJgInn92NMPjStzCCs
+        QE+jI4iQuq1QMbh9RcKpb1rv21GY+m9EZw==
+X-Google-Smtp-Source: AGHT+IGHnwzxg50++ozxwLsaeRm/ESc9Pd3ZVKaSIuIqMREmxKrAvVLKLElsvPC1UxWyaPjg4RWGiHT2xG2jVA==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a25:5f01:0:b0:d77:f7c3:37db with SMTP id
+ t1-20020a255f01000000b00d77f7c337dbmr356863ybb.8.1696984609065; Tue, 10 Oct
+ 2023 17:36:49 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 00:36:46 +0000
+In-Reply-To: <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
+Mime-Version: 1.0
+References: <20231010032117.1577496-1-yosryahmed@google.com>
+ <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
+ <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com> <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
+Message-ID: <20231011003646.dt5rlqmnq6ybrlnd@google.com>
+Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,46 +78,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 12:28:27PM +0200, Norbert Lange wrote:
-> Am Mi., 12. Juli 2023 um 21:40 Uhr schrieb Kees Cook <keescook@chromium.org>:
-> >
-> > On Fri, Jun 30, 2023 at 11:06:59AM +0200, Christian Brauner wrote:
-> > > On Fri, Jun 30, 2023 at 10:52:22AM +0200, Laurent Vivier wrote:
-> > > > Hi Norbert,
-> > > >
-> > > > Le 30/06/2023 à 10:38, Norbert Lange a écrit :
-> > > > > Any news on this? What remains to be done, who needs to be harrassed?
-> > > > >
-> > > > > Regards, Norbert
-> > > >
-> > > > Christian was working on a new version but there is no update for 1 year.
-> > > >
-> > > > [PATCH v2 1/2] binfmt_misc: cleanup on filesystem umount
-> > > > https://lkml.org/lkml/2021/12/16/406
-> > > > [PATCH v2 2/2] binfmt_misc: enable sandboxed mounts
-> > > > https://lkml.org/lkml/2021/12/16/407
-> > > >
-> > > > And personally I don't have the time to work on this.
-> > >
-> > > I've actually rebased this a few weeks ago:
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/log/?h=vfs.binfmt_misc
-> > > It has Acks, it's done. The only thing back then was Kees had wanted to
-> > > take this but never did. I'll ping him.
-> >
-> > Hi! Can you resend this now that the merge window is closed? I looked at
-> > it in your tree and it seems okay. I remain a bit nervous about exposing
-> > it to unpriv access, but I'd like to give it a try. It'd be very useful!
-> >
-> > -Kees
-> >
-> > --
-> > Kees Cook
+On Tue, Oct 10, 2023 at 03:21:47PM -0700, Yosry Ahmed wrote:
+[...]
 > 
-> Hate to be that guy, but did anything move closer towards upstream
-> since that post?
+> I tried this on a machine with 72 cpus (also ixion), running both
+> netserver and netperf in /sys/fs/cgroup/a/b/c/d as follows:
+> # echo "+memory" > /sys/fs/cgroup/cgroup.subtree_control
+> # mkdir /sys/fs/cgroup/a
+> # echo "+memory" > /sys/fs/cgroup/a/cgroup.subtree_control
+> # mkdir /sys/fs/cgroup/a/b
+> # echo "+memory" > /sys/fs/cgroup/a/b/cgroup.subtree_control
+> # mkdir /sys/fs/cgroup/a/b/c
+> # echo "+memory" > /sys/fs/cgroup/a/b/c/cgroup.subtree_control
+> # mkdir /sys/fs/cgroup/a/b/c/d
+> # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
+> # ./netserver -6
+> 
+> # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
+> # for i in $(seq 10); do ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE --
+> -m 10K; done
 
-No rebase was needed -- I've dropped this in -next now. Let's see how it
-goes!
+You are missing '&' at the end. Use something like below:
 
--- 
-Kees Cook
+#!/bin/bash
+for i in {1..22}
+do
+   /data/tmp/netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K &
+done
+wait
+
