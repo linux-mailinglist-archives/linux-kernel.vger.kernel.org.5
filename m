@@ -2,582 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9567C59A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DEA7C59AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbjJKQzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 12:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
+        id S232917AbjJKQ5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 12:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbjJKQzH (ORCPT
+        with ESMTP id S230158AbjJKQ5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 12:55:07 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5978F;
-        Wed, 11 Oct 2023 09:55:04 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9b275afb6abso254026966b.1;
-        Wed, 11 Oct 2023 09:55:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697043303; x=1697648103; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9DTJRcwAQv8n05UmhUrsPHrvrxtaB2I162mMKSQTGWY=;
-        b=arzcOlDVE57mCKHFkXtGMNFclut0qp7dz3mv5TkTunwMKpoDCf6EoQ1QSyHYpWPhCH
-         lq0DnUhpaUd+kBSRh1qcZCHWZaST1jyf6cMYy1xsYTVzLozczWc4WrupfFKNAWkYeM2D
-         ZFQfL37/KyEzZqKpibflalYaDK1a74OvEVhikkCY1EdFRd3g+EAW/G5d4WLRlRkAMm0f
-         018l6HdFlnRypeeu61Or3QSvmc1lSRXFG88PnzdPGLcTWqPbqhzfyQy71OxDk3l5cAQ7
-         ZA5VsLVrWNM3Y/Ud6nEBCKqqIxdUtNdzSAddhXRNbz+2fg9DEwUdtRWLjaqRoD4Np850
-         NjXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697043303; x=1697648103;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9DTJRcwAQv8n05UmhUrsPHrvrxtaB2I162mMKSQTGWY=;
-        b=PSsEbM/7VWZmJ9dfqAHdgRePGrY2ymVEXKx9+4beQ5FrV4jtS+CiRcmocUQ3waDUJY
-         58hcsVli3+094o3EO0gagIfL2HSpFAcS2B8AdGJO2Dknr6Q1JTaJNGMVuxFEw7btM/Pn
-         IRV5cNrgbG3DQCgPRNqF6YmQZHoZwq9LGfZRWp2gUIGR17HsbPmrCysBUo17lh2FhtLy
-         wHB3JAX7SDjnM8Xo8oEdaLwgRobBqTuf6buOTAjcLj5INWzJ20Hpklw59n790HCxJFD0
-         ehshUw9guGx8C7htEtBgHPiZaehtF0emJGlzhpUNKDjtjAbd8ijbmEDwOQM8E4L7H+QX
-         tVkg==
-X-Gm-Message-State: AOJu0YxurcO0xPE7nM05RBpkQq+ziQowW/CzBTockFOVrGy2/fWzDK/0
-        ikneaejTbBK5fPSSbttGqioGZicshw==
-X-Google-Smtp-Source: AGHT+IHk37Y7nK/2NE88A5zYqaLykUfR7mcf6spGT+07MJYbo0mqabxIvaPTF/LFZq7F6y07BzMeiw==
-X-Received: by 2002:a17:907:96ab:b0:9aa:1dc9:1474 with SMTP id hd43-20020a17090796ab00b009aa1dc91474mr16957331ejc.33.1697043302926;
-        Wed, 11 Oct 2023 09:55:02 -0700 (PDT)
-Received: from p183 ([46.53.254.83])
-        by smtp.gmail.com with ESMTPSA id by8-20020a170906a2c800b009b913aa7cdasm10006292ejb.92.2023.10.11.09.55.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 09:55:02 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 19:55:00 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH] *: mark stuff as __ro_after_init
-Message-ID: <4f6bb9c0-abba-4ee4-a7aa-89265e886817@p183>
+        Wed, 11 Oct 2023 12:57:11 -0400
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2063.outbound.protection.outlook.com [40.107.100.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BA78F;
+        Wed, 11 Oct 2023 09:57:10 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hopeBAyBb3PVS8A0DpqflJ7xlNLUm9UylZCgfOM//Mazf+d7BZF6R6OzURSkkAwXU95UP6ghKdM7AMCMvR1kw83NaFyoBkKCCmSKcMS8HwepylrOZ/z3ycGz+DdBn16l+eBoUPy92w+H+y0Mx/1F9xI+gus4XhKzgZHu9EjS7JXZdLjcwsqFzjw/YlK4wFBMrVe5uf6apSlyPoeJiZmkxC/lBW7qkWOB6i5SXR9mYuRl7zvbIJJoDHCINj5EcLfHuVLAGnMpFIUZnVz2VCTd7FL007XX2+d1c3LAhhA9i7T9zRl/3q/k0VMfLQf8ijs5hD2ASeziKh5eiqGTXRaUPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6nuGilboOe5KfHSrajVvM3VRfw/kRTrzvHcJHWvSCYI=;
+ b=ik82Z4SMApFSnadvzLQZoV8c52TYQGnL61TXABGioBKG5hPxXv+LWKZ/nvG4VrKPQUxQlzRY97O4pctqoH04jez0ND6kVaxIPaX5Q6PmvsfgtJdLMf7mDk2TxSHUikfSaBiwsiccfpmUaEbUD8qLg7x+WPcME0yatQkaJvlzyDFx8RNFZBjSmiW1N7C/XcpncoKtVxeD7+Nq5ua05MwgHubCP5+dAPMN0XDwgIwxDEUVdHHYEUXXpW25moMJc7pczsNS3YqgBwuFEbo6zrm/0JVq5kP9cAXSH2jMHc9d8t2dH4NLMsrRIQOUz/cMU5+HaMWhyUU4Hw7NHJlqX0wlfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6nuGilboOe5KfHSrajVvM3VRfw/kRTrzvHcJHWvSCYI=;
+ b=nANs9grhUFwd/cqc20LvEsqTCJMbm56XOHNtG0pHIBzkKclrYqifMHe06S6wenHC4iaN6X0FZv4n8z2+24rVEtHT/ecfrRcanRR11yUu3mmfyex/zbtOvO1ngChnRlqSQoq/CI3xVCdYmxRD4VVG/L6i/5HctnbT8gz3vFBfg+g=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by PH0PR12MB7078.namprd12.prod.outlook.com (2603:10b6:510:21d::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.43; Wed, 11 Oct
+ 2023 16:57:07 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::b5d1:8b74:fe73:bd39]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::b5d1:8b74:fe73:bd39%6]) with mapi id 15.20.6863.040; Wed, 11 Oct 2023
+ 16:57:06 +0000
+Message-ID: <fa03a5ca-fb16-47bb-a2c8-5cc4d96e54a9@amd.com>
+Date:   Wed, 11 Oct 2023 11:57:02 -0500
+User-Agent: Mozilla Thunderbird
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH v12 04/10] x86/resctrl: Add comments on RFTYPE flags
+ hierarchy
+Content-Language: en-US
+To:     Reinette Chatre <reinette.chatre@intel.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
+Cc:     fenghua.yu@intel.com, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, paulmck@kernel.org, akpm@linux-foundation.org,
+        quic_neeraju@quicinc.com, rdunlap@infradead.org,
+        damien.lemoal@opensource.wdc.com, songmuchun@bytedance.com,
+        peterz@infradead.org, jpoimboe@kernel.org, pbonzini@redhat.com,
+        chang.seok.bae@intel.com, pawan.kumar.gupta@linux.intel.com,
+        jmattson@google.com, daniel.sneddon@linux.intel.com,
+        sandipan.das@amd.com, tony.luck@intel.com, james.morse@arm.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bagasdotme@gmail.com, eranian@google.com,
+        christophe.leroy@csgroup.eu, jarkko@kernel.org,
+        adrian.hunter@intel.com, quic_jiles@quicinc.com,
+        peternewman@google.com
+References: <20231010233335.998475-1-babu.moger@amd.com>
+ <20231010233335.998475-5-babu.moger@amd.com>
+ <71539687-13cf-405d-bf7c-27480e49e872@intel.com>
+From:   "Moger, Babu" <babu.moger@amd.com>
+In-Reply-To: <71539687-13cf-405d-bf7c-27480e49e872@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: DM5PR07CA0050.namprd07.prod.outlook.com
+ (2603:10b6:4:ad::15) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|PH0PR12MB7078:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6b72016a-8aff-48a9-e12a-08dbca7b19c5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fGZ/ldv/XOvjGIXTVyOuGSbSjzgYCtLbTVG9nlq/2QdnGYok1TzFxnIw633yh/pMCCCDWVw3sCycDNmPCnEAt13y33cSKxP3eAnW4Kvmcj1VoiqFQfCmff0Zx2zclSChdAR5le+ROilw3hRn0vqm8sD9Y7Z9nYZS0dEg0ZHgfl4h3ulHi+BOKwxnAvZNAEQyediAqU7+zTT83FCCJS1opKxzCYt7Tb61zzIjE857AD5xduY1rOtm/4gAutRlj7jdvjq0ksFZBffgwa7PwZ0puY0XZ+avxue9+vGpRlZBZ4C6Fzu/qi9Y3ieSS7RM4YvhiQyXpSKb2Z3iNDqZ/RxwkbUwI05qCgn470DVjMUf4QSxMEopUMmIMWPwjKLA2knRKuq6R0xAZyhUIs+fo8+lXXbTmcLnNJE6Zv1ablLppWaeHItjh67i15H1JNbTLpw07B80LKTTxFAquXlMS+iiGoPoD53AMemRPP4aLKYs2YRPFj1oqJ9iAxTapJBIcVisRpXLRrVCMfrNhswWWeIWWWmI7bHcw6Vm7ggF7nf6OoSr8P6aiXTCGqpLAUfL+rmw/dAjqw8HRx8oKqyYsZBBfvfQT9++Fup+UIi4HOf8JLX8l4Vj4HDhPbGpkMy/nxTYrHGFMkhAbk83B9CuL/Tc7w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(346002)(39860400002)(136003)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(2616005)(66574015)(478600001)(86362001)(31696002)(6486002)(316002)(66556008)(66476007)(26005)(66946007)(36756003)(83380400001)(41300700001)(31686004)(4326008)(8936002)(8676002)(5660300002)(6666004)(6512007)(7406005)(7416002)(3450700001)(6506007)(38100700002)(53546011)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bUV6SGgrZXJ6V3lZaGFwZUlKT0VHK1RGY1RYc3dUZ1RjaTdwa3N0d3hYcm1r?=
+ =?utf-8?B?TittajdyT3R1ejZCTStwUFh2Z3doaVMrWVJvQkkvQWk4bVZsN09mQVZQRHMw?=
+ =?utf-8?B?MkdnRWdmOUpXM1pyMzVaTnlCOUZUK2lQMDlZbFFDbXU4dndHQWhCWnFIcldH?=
+ =?utf-8?B?NlFIc1prTVRGWUNkYW8vd0g4dWVQRnV0RmxPT2MyQXE0ODQ4S0Z0MXgzakRS?=
+ =?utf-8?B?bDVYQTZwajdKZDRlNHpuZ281Q2ZoNnVLejlxRWJ0eGUwRUdQdWRUL1JESnoz?=
+ =?utf-8?B?VnRWMUkyQitQQ0Q2aE1WdWpHL0N5a1RjbFJ5bThuRmJlVzJVMFdnUVBGODFi?=
+ =?utf-8?B?SjZ1R05PZ0I1NUxOUTZsTWZPTWVVc2ZvMjkwbFJSNlVheUtwRnVNNFVvSFM2?=
+ =?utf-8?B?a1pNUU5Ia3lrNGhoVHBISzFrdEFzVERMZVNxWkNXSjJYTkUrRmduL1VzbmZl?=
+ =?utf-8?B?cTQ3VWZWdG1WVWZlR2pPUXloTUY0Y0d5cVZ1ejRGT3dydDM1ZHpud09nWEtx?=
+ =?utf-8?B?b2tEcXptd1JGMU05dDNnazlLSGd0ckRZbDFCTEE4WEFnS2lxcFhhZDgvUDJr?=
+ =?utf-8?B?VmhKdStYZXNZdU5qZkJFdkM1akdReGlHclJHeGh4cjZma3JTZVJUbnJLUjBQ?=
+ =?utf-8?B?V25OSmFiakVVQUtvTURLSXJTOTRhaUptdlNHNDA5cVpXMU9PT0tnR3hyNlNs?=
+ =?utf-8?B?Rlh2SXNWaXFsSnByQmwyem5la0MzWmo2R2VLdG1QcU9TK3NPR3NsY3pyK1NG?=
+ =?utf-8?B?WStvbTVlT1Z4MXFhOTgyelhLYkdEbGc1SzEwcE80Vm5EN0xraFFna3YzUURk?=
+ =?utf-8?B?QVVIMFZaUTVveStWbmd3cnpQU0lhd0Mzd3dpNnBxS2Q1cGhKOS92UXFkQ2s4?=
+ =?utf-8?B?a2sxU1VxL1hDSElpNmw4Q1FYMFVIaFZ4WVNJUG1DanVRZktTMGQwQlU5VmxM?=
+ =?utf-8?B?RUN5c3I5Zys3cDY3NVQ5N3JiMlF0aUllcnlXSmxjZFJabUM0Ujl1T3NHZ1Zs?=
+ =?utf-8?B?eUZSeEtZS2dNU1RXNWR6Ty8rM3VkdmczYkwxR2pTd0trb0dPUUhabHU0TW90?=
+ =?utf-8?B?NXhaUlJsKzVRaEY4VlB4L1lVdEZqQndUaVpsc3lwdTRUeHRjZ2IwN09nc0JE?=
+ =?utf-8?B?V0lIcVhsNEREVHR3a3RXeDkzb2Q2WXVMSDM1Z0lTY040ZmFiTTR1c25laGVG?=
+ =?utf-8?B?ajNnTzZiRE5VT0lqRkZpZXpseHhFSmI5WVRZcDBWU0g5UHRNMExvQ25VSStp?=
+ =?utf-8?B?dVdqODdFUzZSQm84Q0NpMFV5UExBbFZSSUt6bmNkN3FnYWExNmh3dS90M0o4?=
+ =?utf-8?B?YmNLOVpSTnlnQlV2ZnptbEg2TWFWa1dEMjhEV1VZTVU0UVBLbW9NQXRmKzNJ?=
+ =?utf-8?B?cXkyUlBXWGJkSmQ1bGdWV0o2WjRoS3J2SDVHdU11ZG40ak5UOXJoV1RFSC9i?=
+ =?utf-8?B?Qm0vQlE4TjBQdmhlL1lUL0U2Q283Y1VoN0IzR2pSTUllcHVVQ1lJTWJDOWdK?=
+ =?utf-8?B?a3lqdHhkZHhNTHJDL2RqVEpqZDRESllCVDg3U3ZnUHpvMzhqMEtBbW15OU9h?=
+ =?utf-8?B?ZkF5eHpRMlVKWExQZUVXVU11OUlzSm4zVm12aUFHT1Z3Y0ZXbXVRc3JreFVl?=
+ =?utf-8?B?UUErR1FtakkzSlNGZkx1QmJmZUhIVHlCRSs1OUtRMEd0djhPbFRuMno5V04y?=
+ =?utf-8?B?VW5XWFFxd3RiSmRpUjBMSlo1OW1kQXk5WjNCaVVFNStrNFpadUpmcSthNWdM?=
+ =?utf-8?B?aWs5WTk4di9sVGFjNklRcm5uWklDQUtKN0dScnhDVHp0MEttZmc3Zi9DWFIx?=
+ =?utf-8?B?b041T2F3a2UxdW1kWDUwcmxrQUJpaVduTW9yZm1EQW1kbFB3UEF6MFNhbnoy?=
+ =?utf-8?B?Z3d1elpmM3cyZm52QUhOZHdra1JKWGkzU1ZxVkhuVCtVdm5JS3hNSE1IQStW?=
+ =?utf-8?B?Mk1BK1Zwb2pUOXluWkU1emZERitzV2cvSSs4RXpEV1l3aVk5VGo4KzI1cFcv?=
+ =?utf-8?B?Z0VxRzhPQ3FIY0FMWGJINnNUTUFhd09Vdlp1eEppalNQV0ZWbHc1WU51dHcx?=
+ =?utf-8?B?T2tGRkVvRWFMcmdvQTVrb3FWUnYwOXJCVGlJMlFEV1FiZ0hJdk03WGliZndv?=
+ =?utf-8?Q?udJw=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b72016a-8aff-48a9-e12a-08dbca7b19c5
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2023 16:57:06.6779
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5dYSdTq6TtCSp17bs9B2yNywVs117lDRQe+sqi54yJCqr2mD9X7iDNHvhhlsbPPl
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7078
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__read_mostly predates __ro_after_init. Many variables which are marked
-__read_mostly should have been __ro_after_init from day 1.
+Hi Reinette,
 
-Also, mark some stuff as "const" and "__init" while I'm at it.
+On 10/10/23 19:56, Reinette Chatre wrote:
+> Hi Babu,
+> 
+> On 10/10/2023 4:33 PM, Babu Moger wrote:
+>> resctrl uses RFTYPE flags for creating resctrl directory structure.
+>>
+>> Definitions and directory structures are not documented. Add
+>> comments to improve the readability and help future additions.
+>>
+>> Signed-off-by: Babu Moger <babu.moger@amd.com>
+>> Tested-by: Peter Newman <peternewman@google.com>
+>> Reviewed-by: Peter Newman <peternewman@google.com>
+>> Tested-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
+>> Reviewed-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
+>> Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
+>> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+>> Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+>> ---
+>> v12: Moved the comments from arch/x86/kernel/cpu/resctrl/internal.h
+>>      to Documentation/arch/x86/resctrl.rst. (Boris)
+>> ---
+> 
+> It seems like you just copied the text to the documentation without
+> taking into account the destination's use of reST syntax.
+> 
+> I tried a "make htmldocs" to see how this looks but encountered:
+> docutils.utils.SystemMessage: [snip]/linux/Documentation/arch/x86/resctrl.rst:398: (SEVERE/4) Unexpected section title.
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+My bad. Just tested the format by opening using the browser. Forgot about
+make htmldocs. Will fix it now.
+> 
+> Please remove my Reviewed-by.
 
- block/bdev.c                       |    6 +++---
- fs/anon_inodes.c                   |    4 ++--
- fs/buffer.c                        |    4 ++--
- fs/char_dev.c                      |    2 +-
- fs/dcache.c                        |    8 ++++----
- fs/direct-io.c                     |    2 +-
- fs/eventpoll.c                     |    6 +++---
- fs/fcntl.c                         |    2 +-
- fs/file.c                          |    4 ++--
- fs/file_table.c                    |    2 +-
- fs/inode.c                         |    8 ++++----
- fs/kernfs/mount.c                  |    5 +++--
- fs/locks.c                         |    4 ++--
- fs/namespace.c                     |   16 ++++++++--------
- fs/notify/dnotify/dnotify.c        |    6 +++---
- fs/notify/fanotify/fanotify_user.c |    8 ++++----
- fs/notify/inotify/inotify_user.c   |    2 +-
- fs/pipe.c                          |    2 +-
- fs/userfaultfd.c                   |    2 +-
- include/linux/file.h               |    3 ++-
- kernel/audit_tree.c                |    4 ++--
- kernel/sched/core.c                |    2 +-
- kernel/user_namespace.c            |    2 +-
- kernel/workqueue.c                 |   16 ++++++++--------
- lib/debugobjects.c                 |    2 +-
- mm/khugepaged.c                    |    2 +-
- mm/shmem.c                         |    8 ++++----
- security/integrity/iint.c          |    2 +-
- 28 files changed, 68 insertions(+), 66 deletions(-)
-
---- a/block/bdev.c
-+++ b/block/bdev.c
-@@ -292,7 +292,7 @@ EXPORT_SYMBOL(thaw_bdev);
-  */
- 
- static  __cacheline_aligned_in_smp DEFINE_MUTEX(bdev_lock);
--static struct kmem_cache * bdev_cachep __read_mostly;
-+static struct kmem_cache * bdev_cachep __ro_after_init;
- 
- static struct inode *bdev_alloc_inode(struct super_block *sb)
- {
-@@ -361,13 +361,13 @@ static struct file_system_type bd_type = {
- 	.kill_sb	= kill_anon_super,
- };
- 
--struct super_block *blockdev_superblock __read_mostly;
-+struct super_block *blockdev_superblock __ro_after_init;
- EXPORT_SYMBOL_GPL(blockdev_superblock);
- 
- void __init bdev_cache_init(void)
- {
- 	int err;
--	static struct vfsmount *bd_mnt;
-+	static struct vfsmount *bd_mnt __ro_after_init;
- 
- 	bdev_cachep = kmem_cache_create("bdev_cache", sizeof(struct bdev_inode),
- 			0, (SLAB_HWCACHE_ALIGN|SLAB_RECLAIM_ACCOUNT|
---- a/fs/anon_inodes.c
-+++ b/fs/anon_inodes.c
-@@ -24,8 +24,8 @@
- 
- #include <linux/uaccess.h>
- 
--static struct vfsmount *anon_inode_mnt __read_mostly;
--static struct inode *anon_inode_inode;
-+static struct vfsmount *anon_inode_mnt __ro_after_init;
-+static struct inode *anon_inode_inode __ro_after_init;
- 
- /*
-  * anon_inodefs_dname() is called from d_path().
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -2988,13 +2988,13 @@ EXPORT_SYMBOL(try_to_free_buffers);
- /*
-  * Buffer-head allocation
-  */
--static struct kmem_cache *bh_cachep __read_mostly;
-+static struct kmem_cache *bh_cachep __ro_after_init;
- 
- /*
-  * Once the number of bh's in the machine exceeds this level, we start
-  * stripping them in writeback.
-  */
--static unsigned long max_buffer_heads;
-+static unsigned long max_buffer_heads __ro_after_init;
- 
- int buffer_heads_over_limit;
- 
---- a/fs/char_dev.c
-+++ b/fs/char_dev.c
-@@ -25,7 +25,7 @@
- 
- #include "internal.h"
- 
--static struct kobj_map *cdev_map;
-+static struct kobj_map *cdev_map __ro_after_init;
- 
- static DEFINE_MUTEX(chrdevs_lock);
- 
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -78,7 +78,7 @@ __cacheline_aligned_in_smp DEFINE_SEQLOCK(rename_lock);
- 
- EXPORT_SYMBOL(rename_lock);
- 
--static struct kmem_cache *dentry_cache __read_mostly;
-+static struct kmem_cache *dentry_cache __ro_after_init;
- 
- const struct qstr empty_name = QSTR_INIT("", 0);
- EXPORT_SYMBOL(empty_name);
-@@ -96,9 +96,9 @@ EXPORT_SYMBOL(dotdot_name);
-  * information, yet avoid using a prime hash-size or similar.
-  */
- 
--static unsigned int d_hash_shift __read_mostly;
-+static unsigned int d_hash_shift __ro_after_init;
- 
--static struct hlist_bl_head *dentry_hashtable __read_mostly;
-+static struct hlist_bl_head *dentry_hashtable __ro_after_init;
- 
- static inline struct hlist_bl_head *d_hash(unsigned int hash)
- {
-@@ -3324,7 +3324,7 @@ static void __init dcache_init(void)
- }
- 
- /* SLAB cache for __getname() consumers */
--struct kmem_cache *names_cachep __read_mostly;
-+struct kmem_cache *names_cachep __ro_after_init;
- EXPORT_SYMBOL(names_cachep);
- 
- void __init vfs_caches_init_early(void)
---- a/fs/direct-io.c
-+++ b/fs/direct-io.c
-@@ -151,7 +151,7 @@ struct dio {
- 	};
- } ____cacheline_aligned_in_smp;
- 
--static struct kmem_cache *dio_cache __read_mostly;
-+static struct kmem_cache *dio_cache __ro_after_init;
- 
- /*
-  * How many pages are in the queue?
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -256,10 +256,10 @@ static u64 loop_check_gen = 0;
- static struct eventpoll *inserting_into;
- 
- /* Slab cache used to allocate "struct epitem" */
--static struct kmem_cache *epi_cache __read_mostly;
-+static struct kmem_cache *epi_cache __ro_after_init;
- 
- /* Slab cache used to allocate "struct eppoll_entry" */
--static struct kmem_cache *pwq_cache __read_mostly;
-+static struct kmem_cache *pwq_cache __ro_after_init;
- 
- /*
-  * List of files with newly added links, where we may need to limit the number
-@@ -271,7 +271,7 @@ struct epitems_head {
- };
- static struct epitems_head *tfile_check_list = EP_UNACTIVE_PTR;
- 
--static struct kmem_cache *ephead_cache __read_mostly;
-+static struct kmem_cache *ephead_cache __ro_after_init;
- 
- static inline void free_ephead(struct epitems_head *head)
- {
---- a/fs/fcntl.c
-+++ b/fs/fcntl.c
-@@ -844,7 +844,7 @@ int send_sigurg(struct fown_struct *fown)
- }
- 
- static DEFINE_SPINLOCK(fasync_lock);
--static struct kmem_cache *fasync_cache __read_mostly;
-+static struct kmem_cache *fasync_cache __ro_after_init;
- 
- static void fasync_free_rcu(struct rcu_head *head)
- {
---- a/fs/file.c
-+++ b/fs/file.c
-@@ -25,10 +25,10 @@
- #include "internal.h"
- 
- unsigned int sysctl_nr_open __read_mostly = 1024*1024;
--unsigned int sysctl_nr_open_min = BITS_PER_LONG;
-+const unsigned int sysctl_nr_open_min = BITS_PER_LONG;
- /* our min() is unusable in constant expressions ;-/ */
- #define __const_min(x, y) ((x) < (y) ? (x) : (y))
--unsigned int sysctl_nr_open_max =
-+const unsigned int sysctl_nr_open_max =
- 	__const_min(INT_MAX, ~(size_t)0/sizeof(void *)) & -BITS_PER_LONG;
- 
- static void __free_fdtable(struct fdtable *fdt)
---- a/fs/file_table.c
-+++ b/fs/file_table.c
-@@ -40,7 +40,7 @@ static struct files_stat_struct files_stat = {
- };
- 
- /* SLAB cache for file structures */
--static struct kmem_cache *filp_cachep __read_mostly;
-+static struct kmem_cache *filp_cachep __ro_after_init;
- 
- static struct percpu_counter nr_files __cacheline_aligned_in_smp;
- 
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -54,9 +54,9 @@
-  *   inode_hash_lock
-  */
- 
--static unsigned int i_hash_mask __read_mostly;
--static unsigned int i_hash_shift __read_mostly;
--static struct hlist_head *inode_hashtable __read_mostly;
-+static unsigned int i_hash_mask __ro_after_init;
-+static unsigned int i_hash_shift __ro_after_init;
-+static struct hlist_head *inode_hashtable __ro_after_init;
- static __cacheline_aligned_in_smp DEFINE_SPINLOCK(inode_hash_lock);
- 
- /*
-@@ -70,7 +70,7 @@ EXPORT_SYMBOL(empty_aops);
- static DEFINE_PER_CPU(unsigned long, nr_inodes);
- static DEFINE_PER_CPU(unsigned long, nr_unused);
- 
--static struct kmem_cache *inode_cachep __read_mostly;
-+static struct kmem_cache *inode_cachep __ro_after_init;
- 
- static long get_nr_inodes(void)
- {
---- a/fs/kernfs/mount.c
-+++ b/fs/kernfs/mount.c
-@@ -21,8 +21,9 @@
- 
- #include "kernfs-internal.h"
- 
--struct kmem_cache *kernfs_node_cache, *kernfs_iattrs_cache;
--struct kernfs_global_locks *kernfs_locks;
-+struct kmem_cache *kernfs_node_cache __ro_after_init;
-+struct kmem_cache *kernfs_iattrs_cache __ro_after_init;
-+struct kernfs_global_locks *kernfs_locks __ro_after_init;
- 
- static int kernfs_sop_show_options(struct seq_file *sf, struct dentry *dentry)
- {
---- a/fs/locks.c
-+++ b/fs/locks.c
-@@ -167,8 +167,8 @@ static DEFINE_HASHTABLE(blocked_hash, BLOCKED_HASH_BITS);
-  */
- static DEFINE_SPINLOCK(blocked_lock_lock);
- 
--static struct kmem_cache *flctx_cache __read_mostly;
--static struct kmem_cache *filelock_cache __read_mostly;
-+static struct kmem_cache *flctx_cache __ro_after_init;
-+static struct kmem_cache *filelock_cache __ro_after_init;
- 
- static struct file_lock_context *
- locks_get_lock_context(struct inode *inode, int type)
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -39,10 +39,10 @@
- /* Maximum number of mounts in a mount namespace */
- static unsigned int sysctl_mount_max __read_mostly = 100000;
- 
--static unsigned int m_hash_mask __read_mostly;
--static unsigned int m_hash_shift __read_mostly;
--static unsigned int mp_hash_mask __read_mostly;
--static unsigned int mp_hash_shift __read_mostly;
-+static unsigned int m_hash_mask __ro_after_init;
-+static unsigned int m_hash_shift __ro_after_init;
-+static unsigned int mp_hash_mask __ro_after_init;
-+static unsigned int mp_hash_shift __ro_after_init;
- 
- static __initdata unsigned long mhash_entries;
- static int __init set_mhash_entries(char *str)
-@@ -68,9 +68,9 @@ static u64 event;
- static DEFINE_IDA(mnt_id_ida);
- static DEFINE_IDA(mnt_group_ida);
- 
--static struct hlist_head *mount_hashtable __read_mostly;
--static struct hlist_head *mountpoint_hashtable __read_mostly;
--static struct kmem_cache *mnt_cache __read_mostly;
-+static struct hlist_head *mount_hashtable __ro_after_init;
-+static struct hlist_head *mountpoint_hashtable __ro_after_init;
-+static struct kmem_cache *mnt_cache __ro_after_init;
- static DECLARE_RWSEM(namespace_sem);
- static HLIST_HEAD(unmounted);	/* protected by namespace_sem */
- static LIST_HEAD(ex_mountpoints); /* protected by namespace_sem */
-@@ -86,7 +86,7 @@ struct mount_kattr {
- };
- 
- /* /sys/fs */
--struct kobject *fs_kobj;
-+struct kobject *fs_kobj __ro_after_init;
- EXPORT_SYMBOL_GPL(fs_kobj);
- 
- /*
---- a/fs/notify/dnotify/dnotify.c
-+++ b/fs/notify/dnotify/dnotify.c
-@@ -39,9 +39,9 @@ static void __init dnotify_sysctl_init(void)
- #define dnotify_sysctl_init() do { } while (0)
- #endif
- 
--static struct kmem_cache *dnotify_struct_cache __read_mostly;
--static struct kmem_cache *dnotify_mark_cache __read_mostly;
--static struct fsnotify_group *dnotify_group __read_mostly;
-+static struct kmem_cache *dnotify_struct_cache __ro_after_init;
-+static struct kmem_cache *dnotify_mark_cache __ro_after_init;
-+static struct fsnotify_group *dnotify_group __ro_after_init;
- 
- /*
-  * dnotify will attach one of these to each inode (i_fsnotify_marks) which
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -112,10 +112,10 @@ static void __init fanotify_sysctls_init(void)
- 
- extern const struct fsnotify_ops fanotify_fsnotify_ops;
- 
--struct kmem_cache *fanotify_mark_cache __read_mostly;
--struct kmem_cache *fanotify_fid_event_cachep __read_mostly;
--struct kmem_cache *fanotify_path_event_cachep __read_mostly;
--struct kmem_cache *fanotify_perm_event_cachep __read_mostly;
-+struct kmem_cache *fanotify_mark_cache __ro_after_init;
-+struct kmem_cache *fanotify_fid_event_cachep __ro_after_init;
-+struct kmem_cache *fanotify_path_event_cachep __ro_after_init;
-+struct kmem_cache *fanotify_perm_event_cachep __ro_after_init;
- 
- #define FANOTIFY_EVENT_ALIGN 4
- #define FANOTIFY_FID_INFO_HDR_LEN \
---- a/fs/notify/inotify/inotify_user.c
-+++ b/fs/notify/inotify/inotify_user.c
-@@ -49,7 +49,7 @@
- /* configurable via /proc/sys/fs/inotify/ */
- static int inotify_max_queued_events __read_mostly;
- 
--struct kmem_cache *inotify_inode_mark_cachep __read_mostly;
-+struct kmem_cache *inotify_inode_mark_cachep __ro_after_init;
- 
- #ifdef CONFIG_SYSCTL
- 
---- a/fs/pipe.c
-+++ b/fs/pipe.c
-@@ -854,7 +854,7 @@ void free_pipe_info(struct pipe_inode_info *pipe)
- 	kfree(pipe);
- }
- 
--static struct vfsmount *pipe_mnt __read_mostly;
-+static struct vfsmount *pipe_mnt __ro_after_init;
- 
- /*
-  * pipefs_dname() is called from d_path().
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -49,7 +49,7 @@ static struct ctl_table vm_userfaultfd_table[] = {
- };
- #endif
- 
--static struct kmem_cache *userfaultfd_ctx_cachep __read_mostly;
-+static struct kmem_cache *userfaultfd_ctx_cachep __ro_after_init;
- 
- /*
-  * Start with fault_pending_wqh and fault_wqh so they're more likely
---- a/include/linux/file.h
-+++ b/include/linux/file.h
-@@ -113,6 +113,7 @@ int receive_fd_replace(int new_fd, struct file *file, unsigned int o_flags);
- extern void flush_delayed_fput(void);
- extern void __fput_sync(struct file *);
- 
--extern unsigned int sysctl_nr_open_min, sysctl_nr_open_max;
-+extern const unsigned int sysctl_nr_open_min;
-+extern const unsigned int sysctl_nr_open_max;
- 
- #endif /* __LINUX_FILE_H */
---- a/kernel/audit_tree.c
-+++ b/kernel/audit_tree.c
-@@ -87,8 +87,8 @@ static struct task_struct *prune_thread;
-  * that makes a difference.  Some.
-  */
- 
--static struct fsnotify_group *audit_tree_group;
--static struct kmem_cache *audit_tree_mark_cachep __read_mostly;
-+static struct fsnotify_group *audit_tree_group __ro_after_init;
-+static struct kmem_cache *audit_tree_mark_cachep __ro_after_init;
- 
- static struct audit_tree *alloc_tree(const char *s)
- {
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9903,7 +9903,7 @@ struct task_group root_task_group;
- LIST_HEAD(task_groups);
- 
- /* Cacheline aligned slab cache for task_group */
--static struct kmem_cache *task_group_cache __read_mostly;
-+static struct kmem_cache *task_group_cache __ro_after_init;
- #endif
- 
- void __init sched_init(void)
---- a/kernel/user_namespace.c
-+++ b/kernel/user_namespace.c
-@@ -22,7 +22,7 @@
- #include <linux/bsearch.h>
- #include <linux/sort.h>
- 
--static struct kmem_cache *user_ns_cachep __read_mostly;
-+static struct kmem_cache *user_ns_cachep __ro_after_init;
- static DEFINE_MUTEX(userns_state_mutex);
- 
- static bool new_idmap_permitted(const struct file *file,
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -418,21 +418,21 @@ static struct workqueue_attrs *ordered_wq_attrs[NR_STD_WORKER_POOLS];
-  * process context while holding a pool lock. Bounce to a dedicated kthread
-  * worker to avoid A-A deadlocks.
-  */
--static struct kthread_worker *pwq_release_worker;
-+static struct kthread_worker *pwq_release_worker __ro_after_init;
- 
--struct workqueue_struct *system_wq __read_mostly;
-+struct workqueue_struct *system_wq __ro_after_init;
- EXPORT_SYMBOL(system_wq);
--struct workqueue_struct *system_highpri_wq __read_mostly;
-+struct workqueue_struct *system_highpri_wq __ro_after_init;
- EXPORT_SYMBOL_GPL(system_highpri_wq);
--struct workqueue_struct *system_long_wq __read_mostly;
-+struct workqueue_struct *system_long_wq __ro_after_init;
- EXPORT_SYMBOL_GPL(system_long_wq);
--struct workqueue_struct *system_unbound_wq __read_mostly;
-+struct workqueue_struct *system_unbound_wq __ro_after_init;
- EXPORT_SYMBOL_GPL(system_unbound_wq);
--struct workqueue_struct *system_freezable_wq __read_mostly;
-+struct workqueue_struct *system_freezable_wq __ro_after_init;
- EXPORT_SYMBOL_GPL(system_freezable_wq);
--struct workqueue_struct *system_power_efficient_wq __read_mostly;
-+struct workqueue_struct *system_power_efficient_wq __ro_after_init;
- EXPORT_SYMBOL_GPL(system_power_efficient_wq);
--struct workqueue_struct *system_freezable_power_efficient_wq __read_mostly;
-+struct workqueue_struct *system_freezable_power_efficient_wq __ro_after_init;
- EXPORT_SYMBOL_GPL(system_freezable_power_efficient_wq);
- 
- static int worker_thread(void *__worker);
---- a/lib/debugobjects.c
-+++ b/lib/debugobjects.c
-@@ -89,7 +89,7 @@ static int			debug_objects_pool_size __read_mostly
- static int			debug_objects_pool_min_level __read_mostly
- 				= ODEBUG_POOL_MIN_LEVEL;
- static const struct debug_obj_descr *descr_test  __read_mostly;
--static struct kmem_cache	*obj_cache __read_mostly;
-+static struct kmem_cache	*obj_cache __ro_after_init;
- 
- /*
-  * Track numbers of kmem_cache_alloc()/free() calls done.
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -91,7 +91,7 @@ static unsigned int khugepaged_max_ptes_shared __read_mostly;
- #define MM_SLOTS_HASH_BITS 10
- static DEFINE_READ_MOSTLY_HASHTABLE(mm_slots_hash, MM_SLOTS_HASH_BITS);
- 
--static struct kmem_cache *mm_slot_cache __read_mostly;
-+static struct kmem_cache *mm_slot_cache __ro_after_init;
- 
- struct collapse_control {
- 	bool is_khugepaged;
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -42,7 +42,7 @@
- #include <linux/iversion.h>
- #include "swap.h"
- 
--static struct vfsmount *shm_mnt;
-+static struct vfsmount *shm_mnt __ro_after_init;
- 
- #ifdef CONFIG_SHMEM
- /*
-@@ -4394,7 +4394,7 @@ static const struct fs_context_operations shmem_fs_context_ops = {
- #endif
- };
- 
--static struct kmem_cache *shmem_inode_cachep;
-+static struct kmem_cache *shmem_inode_cachep __ro_after_init;
- 
- static struct inode *shmem_alloc_inode(struct super_block *sb)
- {
-@@ -4426,14 +4426,14 @@ static void shmem_init_inode(void *foo)
- 	inode_init_once(&info->vfs_inode);
- }
- 
--static void shmem_init_inodecache(void)
-+static void __init shmem_init_inodecache(void)
- {
- 	shmem_inode_cachep = kmem_cache_create("shmem_inode_cache",
- 				sizeof(struct shmem_inode_info),
- 				0, SLAB_PANIC|SLAB_ACCOUNT, shmem_init_inode);
- }
- 
--static void shmem_destroy_inodecache(void)
-+static void __init shmem_destroy_inodecache(void)
- {
- 	kmem_cache_destroy(shmem_inode_cachep);
- }
---- a/security/integrity/iint.c
-+++ b/security/integrity/iint.c
-@@ -23,7 +23,7 @@
- 
- static struct rb_root integrity_iint_tree = RB_ROOT;
- static DEFINE_RWLOCK(integrity_iint_lock);
--static struct kmem_cache *iint_cache __read_mostly;
-+static struct kmem_cache *iint_cache __ro_after_init;
- 
- struct dentry *integrity_dir;
- 
+Sure. Will remove Reviewed-by on this patch. Please let me know about
+other patches when you get a chance.
+-- 
+Thanks
+Babu Moger
