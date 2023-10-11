@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 615867C4BBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 534A47C4BC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344909AbjJKH2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 03:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52332 "EHLO
+        id S1345285AbjJKH2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 03:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344709AbjJKH16 (ORCPT
+        with ESMTP id S1344898AbjJKH2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 03:27:58 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCCAEBA
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 00:27:56 -0700 (PDT)
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4S546n2hJ1z1M9RB;
-        Wed, 11 Oct 2023 15:25:21 +0800 (CST)
+        Wed, 11 Oct 2023 03:28:00 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A839C
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 00:27:58 -0700 (PDT)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S544Q6tpBzvPsY;
+        Wed, 11 Oct 2023 15:23:18 +0800 (CST)
 Received: from huawei.com (10.67.174.55) by kwepemi500008.china.huawei.com
  (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
- 2023 15:27:54 +0800
+ 2023 15:27:55 +0800
 From:   Jinjie Ruan <ruanjinjie@huawei.com>
 To:     <catalin.marinas@arm.com>, <will@kernel.org>,
         <yuzenghui@huawei.com>, <anshuman.khandual@arm.com>,
@@ -34,9 +34,9 @@ To:     <catalin.marinas@arm.com>, <will@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <ruanjinjie@huawei.com>
-Subject: [PATCH v5.10 02/15] arm64: die(): pass 'err' as long
-Date:   Wed, 11 Oct 2023 07:26:48 +0000
-Message-ID: <20231011072701.876772-3-ruanjinjie@huawei.com>
+Subject: [PATCH v5.10 03/15] arm64: consistently pass ESR_ELx to die()
+Date:   Wed, 11 Oct 2023 07:26:49 +0000
+Message-ID: <20231011072701.876772-4-ruanjinjie@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231011072701.876772-1-ruanjinjie@huawei.com>
 References: <20231011072701.876772-1-ruanjinjie@huawei.com>
@@ -58,76 +58,172 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mark Rutland <mark.rutland@arm.com>
 
-Recently, we reworked a lot of code to consistentlt pass ESR_ELx as a
-64-bit quantity. However, we missed that this can be passed into die()
-and __die() as the 'err' parameter where it is truncated to a 32-bit
-int.
+Currently, bug_handler() and kasan_handler() call die() with '0' as the
+'err' value, whereas die_kernel_fault() passes the ESR_ELx value.
 
-As notify_die() already takes 'err' as a long, this patch changes die()
-and __die() to also take 'err' as a long, ensuring that the full value
-of ESR_ELx is retained.
+For consistency, this patch ensures we always pass the ESR_ELx value to
+die(). As this is only called for exceptions taken from kernel mode,
+there should be no user-visible change as a result of this patch.
 
-At the same time, die() is updated to consistently log 'err' as a
-zero-padded 64-bit quantity.
-
-Subsequent patches will pass the ESR_ELx value to die() for a number of
-exceptions.
+For UNDEFINED exceptions, I've had to modify do_undefinstr() and its
+callers to pass the ESR_ELx value. In all cases the ESR_ELx value had
+already been read and was available.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Reviewed-by: Mark Brown <broonie@kernel.org>
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Mark Brown <broonie@kernel.org>
 Cc: Alexandru Elisei <alexandru.elisei@arm.com>
 Cc: Amit Daniel Kachhap <amit.kachhap@arm.com>
 Cc: James Morse <james.morse@arm.com>
 Cc: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/r/20220913101732.3925290-3-mark.rutland@arm.com
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Reviewed-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20220913101732.3925290-4-mark.rutland@arm.com
 Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 ---
- arch/arm64/include/asm/system_misc.h | 2 +-
- arch/arm64/kernel/traps.c            | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ arch/arm64/include/asm/exception.h |  2 +-
+ arch/arm64/kernel/entry-common.c   | 14 +++++++-------
+ arch/arm64/kernel/traps.c          | 14 +++++++-------
+ 3 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm64/include/asm/system_misc.h b/arch/arm64/include/asm/system_misc.h
-index 1ab63cfbbaf1..624a608933f1 100644
---- a/arch/arm64/include/asm/system_misc.h
-+++ b/arch/arm64/include/asm/system_misc.h
-@@ -18,7 +18,7 @@
+diff --git a/arch/arm64/include/asm/exception.h b/arch/arm64/include/asm/exception.h
+index 59c3facb8a56..18f7a095b91e 100644
+--- a/arch/arm64/include/asm/exception.h
++++ b/arch/arm64/include/asm/exception.h
+@@ -33,7 +33,7 @@ asmlinkage void exit_to_user_mode(void);
+ void arm64_enter_nmi(struct pt_regs *regs);
+ void arm64_exit_nmi(struct pt_regs *regs);
+ void do_mem_abort(unsigned long addr, unsigned int esr, struct pt_regs *regs);
+-void do_undefinstr(struct pt_regs *regs);
++void do_undefinstr(struct pt_regs *regs, unsigned long esr);
+ void do_bti(struct pt_regs *regs);
+ asmlinkage void bad_mode(struct pt_regs *regs, int reason, unsigned int esr);
+ void do_debug_exception(unsigned long addr_if_watchpoint, unsigned int esr,
+diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+index ec120ed18faf..c1d6720ae397 100644
+--- a/arch/arm64/kernel/entry-common.c
++++ b/arch/arm64/kernel/entry-common.c
+@@ -132,11 +132,11 @@ static void noinstr el1_pc(struct pt_regs *regs, unsigned long esr)
+ 	exit_to_kernel_mode(regs);
+ }
  
- struct pt_regs;
+-static void noinstr el1_undef(struct pt_regs *regs)
++static void noinstr el1_undef(struct pt_regs *regs, unsigned long esr)
+ {
+ 	enter_from_kernel_mode(regs);
+ 	local_daif_inherit(regs);
+-	do_undefinstr(regs);
++	do_undefinstr(regs, esr);
+ 	local_daif_mask();
+ 	exit_to_kernel_mode(regs);
+ }
+@@ -210,7 +210,7 @@ asmlinkage void noinstr el1_sync_handler(struct pt_regs *regs)
+ 		break;
+ 	case ESR_ELx_EC_SYS64:
+ 	case ESR_ELx_EC_UNKNOWN:
+-		el1_undef(regs);
++		el1_undef(regs, esr);
+ 		break;
+ 	case ESR_ELx_EC_BREAKPT_CUR:
+ 	case ESR_ELx_EC_SOFTSTP_CUR:
+@@ -316,11 +316,11 @@ static void noinstr el0_sp(struct pt_regs *regs, unsigned long esr)
+ 	do_sp_pc_abort(regs->sp, esr, regs);
+ }
  
--void die(const char *msg, struct pt_regs *regs, int err);
-+void die(const char *msg, struct pt_regs *regs, long err);
+-static void noinstr el0_undef(struct pt_regs *regs)
++static void noinstr el0_undef(struct pt_regs *regs, unsigned long esr)
+ {
+ 	enter_from_user_mode();
+ 	local_daif_restore(DAIF_PROCCTX);
+-	do_undefinstr(regs);
++	do_undefinstr(regs, esr);
+ }
  
- struct siginfo;
- void arm64_notify_die(const char *str, struct pt_regs *regs,
+ static void noinstr el0_bti(struct pt_regs *regs)
+@@ -394,7 +394,7 @@ asmlinkage void noinstr el0_sync_handler(struct pt_regs *regs)
+ 		el0_pc(regs, esr);
+ 		break;
+ 	case ESR_ELx_EC_UNKNOWN:
+-		el0_undef(regs);
++		el0_undef(regs, esr);
+ 		break;
+ 	case ESR_ELx_EC_BTI:
+ 		el0_bti(regs);
+@@ -454,7 +454,7 @@ asmlinkage void noinstr el0_sync_compat_handler(struct pt_regs *regs)
+ 	case ESR_ELx_EC_CP14_MR:
+ 	case ESR_ELx_EC_CP14_LS:
+ 	case ESR_ELx_EC_CP14_64:
+-		el0_undef(regs);
++		el0_undef(regs, esr);
+ 		break;
+ 	case ESR_ELx_EC_CP15_32:
+ 	case ESR_ELx_EC_CP15_64:
 diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index fcc490699c22..3a88bb1202ad 100644
+index 3a88bb1202ad..2060ba0ee6b4 100644
 --- a/arch/arm64/kernel/traps.c
 +++ b/arch/arm64/kernel/traps.c
-@@ -90,12 +90,12 @@ static void dump_kernel_instr(const char *lvl, struct pt_regs *regs)
+@@ -395,7 +395,7 @@ void arm64_notify_segfault(unsigned long addr)
+ 	force_signal_inject(SIGSEGV, code, addr, 0);
+ }
  
- #define S_SMP " SMP"
- 
--static int __die(const char *str, int err, struct pt_regs *regs)
-+static int __die(const char *str, long err, struct pt_regs *regs)
+-void do_undefinstr(struct pt_regs *regs)
++void do_undefinstr(struct pt_regs *regs, unsigned long esr)
  {
- 	static int die_counter;
- 	int ret;
+ 	/* check for AArch32 breakpoint instructions */
+ 	if (!aarch32_break_handler(regs))
+@@ -405,7 +405,7 @@ void do_undefinstr(struct pt_regs *regs)
+ 		return;
  
--	pr_emerg("Internal error: %s: %x [#%d]" S_PREEMPT S_SMP "\n",
-+	pr_emerg("Internal error: %s: %016lx [#%d]" S_PREEMPT S_SMP "\n",
- 		 str, err, ++die_counter);
+ 	if (!user_mode(regs))
+-		die("Oops - Undefined instruction", regs, 0);
++		die("Oops - Undefined instruction", regs, esr);
  
- 	/* trap and error numbers are mostly meaningless on ARM */
-@@ -116,7 +116,7 @@ static DEFINE_RAW_SPINLOCK(die_lock);
- /*
-  * This function is protected against re-entrancy.
-  */
--void die(const char *str, struct pt_regs *regs, int err)
-+void die(const char *str, struct pt_regs *regs, long err)
+ 	force_signal_inject(SIGILL, ILL_ILLOPC, regs->pc, 0);
+ }
+@@ -663,7 +663,7 @@ void do_cp15instr(unsigned int esr, struct pt_regs *regs)
+ 		hook_base = cp15_64_hooks;
+ 		break;
+ 	default:
+-		do_undefinstr(regs);
++		do_undefinstr(regs, esr);
+ 		return;
+ 	}
+ 
+@@ -678,7 +678,7 @@ void do_cp15instr(unsigned int esr, struct pt_regs *regs)
+ 	 * EL0. Fall back to our usual undefined instruction handler
+ 	 * so that we handle these consistently.
+ 	 */
+-	do_undefinstr(regs);
++	do_undefinstr(regs, esr);
+ }
+ NOKPROBE_SYMBOL(do_cp15instr);
+ #endif
+@@ -698,7 +698,7 @@ void do_sysinstr(unsigned int esr, struct pt_regs *regs)
+ 	 * back to our usual undefined instruction handler so that we handle
+ 	 * these consistently.
+ 	 */
+-	do_undefinstr(regs);
++	do_undefinstr(regs, esr);
+ }
+ NOKPROBE_SYMBOL(do_sysinstr);
+ 
+@@ -901,7 +901,7 @@ static int bug_handler(struct pt_regs *regs, unsigned int esr)
  {
- 	int ret;
- 	unsigned long flags;
+ 	switch (report_bug(regs->pc, regs)) {
+ 	case BUG_TRAP_TYPE_BUG:
+-		die("Oops - BUG", regs, 0);
++		die("Oops - BUG", regs, esr);
+ 		break;
+ 
+ 	case BUG_TRAP_TYPE_WARN:
+@@ -969,7 +969,7 @@ static int kasan_handler(struct pt_regs *regs, unsigned int esr)
+ 	 * This is something that might be fixed at some point in the future.
+ 	 */
+ 	if (!recover)
+-		die("Oops - KASAN", regs, 0);
++		die("Oops - KASAN", regs, esr);
+ 
+ 	/* If thread survives, skip over the brk instruction and continue: */
+ 	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
 -- 
 2.34.1
 
