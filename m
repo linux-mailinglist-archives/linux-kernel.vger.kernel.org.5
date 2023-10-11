@@ -2,137 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F27947C504C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 955377C5050
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234684AbjJKKgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:36:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39196 "EHLO
+        id S234804AbjJKKhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231583AbjJKKgh (ORCPT
+        with ESMTP id S231657AbjJKKg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:36:37 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A79FB92
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:36:35 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1BF881480;
-        Wed, 11 Oct 2023 03:37:16 -0700 (PDT)
-Received: from [10.57.68.120] (unknown [10.57.68.120])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE1E93F762;
-        Wed, 11 Oct 2023 03:36:33 -0700 (PDT)
-Message-ID: <f1446ef6-3e29-4ce0-866e-c522931ae364@arm.com>
-Date:   Wed, 11 Oct 2023 11:36:32 +0100
+        Wed, 11 Oct 2023 06:36:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912BFB7;
+        Wed, 11 Oct 2023 03:36:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697020615; x=1728556615;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=52YiH9Rm64BW8CkQzXjUhpKwgm4oo9z7eHhxwksiAv4=;
+  b=UglVFxDZiGCyI1bnaBQ4VxS4tOIW5Hp8CO60QnsG+tYHH8Isk3iRwnpc
+   NwHL4gdZeEj5MNzNdofCvtp/3WXbSYK+6NBIhVGQq655fVZr4rKczu0dz
+   PKe/Lfh7nZ9QtX4sKr0b4rhInphagaLr12aJnzAhT14L6hUDwW6wutghx
+   P5hV7jTi3B+AP6/noFqd3FfV3XXcaA8GefjLOl6LEH2DeuHXJq3OVMDWx
+   htVxoB9Vz5eZUR0aXEun8HTzXFe4oVemN84RPocqsrEgBhjU6nszso4MC
+   hhlSjIJiiqo3pzlwW1WMEkiRYdlbtrN5JiNTmk+YAse927WA9nPM/lBbO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="415675482"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="415675482"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 03:36:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="824114342"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="824114342"
+Received: from unknown (HELO smile.fi.intel.com) ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 03:36:50 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qqWa7-00000004azc-2aLH;
+        Wed, 11 Oct 2023 13:36:47 +0300
+Date:   Wed, 11 Oct 2023 13:36:47 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Alexander Potapenko <glider@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@kernel.org>,
+        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        dm-devel@redhat.com, ntfs3@lists.linux.dev,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/14] bitmap: extend bitmap_{get,set}_value8() to
+ bitmap_{get,set}_bits()
+Message-ID: <ZSZ6v1qgZbqKgKXa@smile.fi.intel.com>
+References: <20231009151026.66145-1-aleksander.lobakin@intel.com>
+ <20231009151026.66145-10-aleksander.lobakin@intel.com>
+ <ZSQq02A9mTireK71@yury-ThinkPad>
+ <a28542e2-4a5b-4c29-9d4a-12a0d2ab5527@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 2/2] mm: swap: Swap-out small-sized THP without
- splitting
-Content-Language: en-GB
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231010142111.3997780-1-ryan.roberts@arm.com>
- <20231010142111.3997780-3-ryan.roberts@arm.com>
- <87r0m1ftvu.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <87r0m1ftvu.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a28542e2-4a5b-4c29-9d4a-12a0d2ab5527@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2023 09:25, Huang, Ying wrote:
-> Ryan Roberts <ryan.roberts@arm.com> writes:
+On Wed, Oct 11, 2023 at 11:33:25AM +0200, Alexander Lobakin wrote:
+> From: Yury Norov <yury.norov@gmail.com>
+> Date: Mon, 9 Oct 2023 09:31:15 -0700
 > 
->> The upcoming anonymous small-sized THP feature enables performance
->> improvements by allocating large folios for anonymous memory. However
->> I've observed that on an arm64 system running a parallel workload (e.g.
->> kernel compilation) across many cores, under high memory pressure, the
->> speed regresses. This is due to bottlenecking on the increased number of
->> TLBIs added due to all the extra folio splitting.
->>
->> Therefore, solve this regression by adding support for swapping out
->> small-sized THP without needing to split the folio, just like is already
->> done for PMD-sized THP. This change only applies when CONFIG_THP_SWAP is
->> enabled, and when the swap backing store is a non-rotating block device
->> - these are the same constraints as for the existing PMD-sized THP
->> swap-out support.
->>
->> Note that no attempt is made to swap-in THP here - this is still done
->> page-by-page, like for PMD-sized THP.
->>
->> The main change here is to improve the swap entry allocator so that it
->> can allocate any power-of-2 number of contiguous entries between [4, (1
->> << PMD_ORDER)]. This is done by allocating a cluster for each distinct
->> order and allocating sequentially from it until the cluster is full.
->> This ensures that we don't need to search the map and we get no
->> fragmentation due to alignment padding for different orders in the
->> cluster. If there is no current cluster for a given order, we attempt to
->> allocate a free cluster from the list. If there are no free clusters, we
->> fail the allocation and the caller falls back to splitting the folio and
->> allocates individual entries (as per existing PMD-sized THP fallback).
->>
->> As far as I can tell, this should not cause any extra fragmentation
->> concerns, given how similar it is to the existing PMD-sized THP
->> allocation mechanism. There will be up to (PMD_ORDER-1) clusters in
->> concurrent use though. In practice, the number of orders in use will be
->> small though.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>  include/linux/swap.h |  7 ++++++
->>  mm/swapfile.c        | 60 +++++++++++++++++++++++++++++++++-----------
->>  mm/vmscan.c          | 10 +++++---
->>  3 files changed, 59 insertions(+), 18 deletions(-)
->>
->> diff --git a/include/linux/swap.h b/include/linux/swap.h
->> index a073366a227c..fc55b760aeff 100644
->> --- a/include/linux/swap.h
->> +++ b/include/linux/swap.h
->> @@ -320,6 +320,13 @@ struct swap_info_struct {
->>  					 */
->>  	struct work_struct discard_work; /* discard worker */
->>  	struct swap_cluster_list discard_clusters; /* discard clusters list */
->> +	unsigned int large_next[PMD_ORDER]; /*
->> +					     * next free offset within current
->> +					     * allocation cluster for large
->> +					     * folios, or UINT_MAX if no current
->> +					     * cluster. Index is (order - 1).
->> +					     * Only when cluster_info is used.
->> +					     */
+> > + Alexander Potapenko <glider@google.com>
+> > 
+> > On Mon, Oct 09, 2023 at 05:10:21PM +0200, Alexander Lobakin wrote:
+> >> Sometimes there's need to get a 8/16/...-bit piece of a bitmap at a
+> >> particular offset. Currently, there are only bitmap_{get,set}_value8()
+> >> to do that for 8 bits and that's it.
+> > 
+> > And also a series from Alexander Potapenko, which I really hope will
+> > get into the -next really soon. It introduces bitmap_read/write which
+> > can set up to BITS_PER_LONG at once, with no limitations on alignment
+> > of position and length:
+> > 
+> > https://lore.kernel.org/linux-arm-kernel/ZRXbOoKHHafCWQCW@yury-ThinkPad/T/#mc311037494229647088b3a84b9f0d9b50bf227cb
+> > 
+> > Can you consider building your series on top of it?
 > 
-> I think that it is better to make this per-CPU.  That is, extend the
-> percpu_cluster mechanism.  Otherwise, we may have scalability issue.
+> Yeah, I mentioned in the cover letter that I'm aware of it and in fact
+> it doesn't conflict much, as the functions I'm adding here get optimized
+> as much as the original bitmap_{get,set}_value8(), while Alexander's
+> generic helpers are heavier.
+> I realize lots of calls will be optimized as well due to the offset and
+> the width being compile-time constants, but not all of them. The idea of
+> keeping two pairs of helpers initially came from Andy if I understood
+> him correctly.
 
-Is your concern that the swap_info spinlock will get too contended as its
-currently written? From briefly looking at percpu_cluster, it looks like that
-spinlock is always held when accessing the per-cpu structures - presumably
-that's what's disabling preemption and making sure the thread is not migrated?
-So I'm not sure what the benefit is currently? Surely you want to just disable
-preemption but not hold the lock? I'm sure I've missed something crucial...
+Just a disclaimer: The idea came before I saw the series by Alexander Potapenko.
 
-> 
-> And this should be enclosed in CONFIG_THP_SWAP.
+> What do you think? I can provide some bloat-o-meter stats after
+> rebasing. And either way, I see no issue in basing this series on top of
+> Alex' one.
 
-Yes, I'll fix this in the next version.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks for the review!
-
-> 
->>  	struct plist_node avail_lists[]; /*
->>  					   * entries in swap_avail_heads, one
->>  					   * entry per node.
-> 
-> --
-> Best Regards,
-> Huang, Ying
 
