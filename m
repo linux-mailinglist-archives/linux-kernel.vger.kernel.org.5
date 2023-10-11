@@ -2,97 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3FCC7C5F02
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173ED7C5F06
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233582AbjJKVUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:20:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40608 "EHLO
+        id S233639AbjJKVU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 17:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233567AbjJKVU2 (ORCPT
+        with ESMTP id S233598AbjJKVUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:20:28 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D61BA
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:20:23 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-7a24c86aae3so5332739f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:20:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697059223; x=1697664023; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ou8Z46f8D4HFatkbCIXSPvYGp0xJZP5BFrXKyDUAkb8=;
-        b=UF0kV8pV6PLXJQZTfcAz8fMCCu95vvysIrVgLfw7KXN6b+rj1fvrGma2s95TnW+b4o
-         dTo/1+BaNzpFZQQfebrQlIVn7wv8cTzUa0Lq2kGNOmHMinMMhpTThQG2TQW++IuRBDQr
-         syji2/W3mWJgdaPef0BtqZhZuxyGfjDKlHAo+DbDFXRYhS+mMGswm64OTTnx7ZLk45gi
-         HYC5Gm/vpdwTLHyhZvbLFQTjHmf5a/ckf9F1fcoRJH/0mM8C0UlyveM0BkAThZaZVdmM
-         LU4H19B3lae3+MmmgCmTI4PeQsrxfkzqZenH43aFTuPii9wuPQ0GRmxjg5gVqnSlqezc
-         ttuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697059223; x=1697664023;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ou8Z46f8D4HFatkbCIXSPvYGp0xJZP5BFrXKyDUAkb8=;
-        b=uR8q8xH9EhxBJy1Di11pUZYXyJxGPxX87VW99fZzhj0Th+A5EOTz1QeYOIa+ZIWnWR
-         rWmzXnN1nh39RgJXGP7tc0CHyu8P10GFrtCrVT/GwNgKt3H647aavhWmnbHbuCgLpHy5
-         n/4BsBy+x0y+JXh5RcKbmAQVIpvWxUFdmwYmNkSh2UQ1T8NhfoArU3CHexnm8eOptexm
-         F5ukhXSe+goHup51Nd7jDe1W0TNd4Z5uQsIpwSBq9he70/LxbstfdypdZ+JK8Tx8iXR9
-         ZzSlCegz8gFxgnJ4P7z2CBHRdGoNsWdZ+P2nSX9mN5CxEc2dpfNZIOWr1LL8EO9xdx13
-         jBfA==
-X-Gm-Message-State: AOJu0YxiOBFtFJj3qRSd6aSUELMwJMyO1qhN8i7BV3fgIUmcx8UzwR9Z
-        Xmy+aTfwqg9bCtwh33XM8aobxg==
-X-Google-Smtp-Source: AGHT+IFDYfOpCNUhep+7IgWh6NGfsroxNM+d8ImbLUEV1kcWszBBlrRw4fvIGqhVskXuEnZ7Ig6CRQ==
-X-Received: by 2002:a05:6602:3a11:b0:79f:922b:3809 with SMTP id by17-20020a0566023a1100b0079f922b3809mr23781388iob.1.1697059223057;
-        Wed, 11 Oct 2023 14:20:23 -0700 (PDT)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id c18-20020a02c9d2000000b0041fb2506011sm3547225jap.172.2023.10.11.14.20.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 14:20:22 -0700 (PDT)
-Message-ID: <c337dd4f-e363-48d1-8ac0-a62da3e1a741@kernel.dk>
-Date:   Wed, 11 Oct 2023 15:20:21 -0600
+        Wed, 11 Oct 2023 17:20:51 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5F8B8;
+        Wed, 11 Oct 2023 14:20:49 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 21:20:45 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697059246;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7hZa+WRFW/1sYqrsgg573q1WxZRUNCB2WoM19IwAfgk=;
+        b=o2KXbuduAxg5P/Ob7zKeL7L6HU26Kq0tkcryAPImRGqXpp7hBKo+HbDFcgMsiIkKZu7YMd
+        gXsGSewopQZPrOylA1q8npRvjkduZCKSBsy6aQENCvmyVtHCY9lk1ERG7QQHlkfqwHgB4L
+        MUtihM4gpjI1A53uAnTf4JdUJc+kddjhv1HvYA7q+ECAPDoPmHsX1gw/C6oDjsXZdSHmcq
+        4HtlA/TMc1Yt1tCF1CY/2XDcad24ErvY7EZT6oteUUbkegoGudFVcMZYqxT93mp4LNUV/H
+        Q4+UyVdauV8hnfUv5e51XZHkFYmF4nXGA0XfoG2UEdIIJTALFcPrIxGmBuTydQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697059246;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7hZa+WRFW/1sYqrsgg573q1WxZRUNCB2WoM19IwAfgk=;
+        b=3UhmaJt7rEek/hkMAIakYDYXlhySPlsY4xbVrQWO4VRMQdxClmiJF2Jw6c0EjQNAMaUxpm
+        fsvwg2rI8JaANJAg==
+From:   "tip-bot2 for Yang Yang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/psi: Delete the 'update_total' function
+ parameter from update_triggers()
+Cc:     Yang Yang <yang.yang29@zte.com.cn>, Ingo Molnar <mingo@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Peter Ziljstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <202310101645437859599@zte.com.cn>
+References: <202310101645437859599@zte.com.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: block: Don't invalidate pagecache for invalid falloc modes
-Content-Language: en-US
-To:     Mike Snitzer <snitzer@kernel.org>
-Cc:     Sarthak Kukreti <sarthakkukreti@chromium.org>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        stable@vger.kernel.org, "Darrick J . Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20231011201230.750105-1-sarthakkukreti@chromium.org>
- <b068c2ef-5de3-44fb-a55d-2cbe5a7f1158@kernel.dk>
- <ZScKlejOlxIXYmWI@redhat.com>
- <d5e95ca1-aa20-43da-92f8-3860e744337e@kernel.dk>
- <ZScOxR5p0Bhzy2Uk@redhat.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <ZScOxR5p0Bhzy2Uk@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+Message-ID: <169705924586.3135.13461721051414681406.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/23 3:08 PM, Mike Snitzer wrote:
->>>> Also, please wrap commit messages at 72-74 chars.
->>>
->>> Not seeing where the header should be wrapped.  You referring to the
->>> Fixes: line?  I've never seen those wrapped.
->>
->> I'm referring to the commit message itself.
-> 
-> Ah, you'd like lines extended because they are too short.
+The following commit has been merged into the sched/core branch of tip:
 
-Exactly, it's way too short.
+Commit-ID:     3657680f38cd7df413d665f2b2f38e9a78130d8b
+Gitweb:        https://git.kernel.org/tip/3657680f38cd7df413d665f2b2f38e9a78130d8b
+Author:        Yang Yang <yang.yang29@zte.com.cn>
+AuthorDate:    Tue, 10 Oct 2023 16:45:43 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 11 Oct 2023 23:08:09 +02:00
 
--- 
-Jens Axboe
+sched/psi: Delete the 'update_total' function parameter from update_triggers()
 
+The 'update_total' parameter of update_triggers() is always true after the
+previous commit:
+
+  80cc1d1d5ee3 ("sched/psi: Avoid updating PSI triggers and ->rtpoll_total when there are no state changes")
+
+If the 'changed_states & group->rtpoll_states' condition is true,
+'new_stall' in update_triggers() will be true, and then 'update_total'
+should also be true.
+
+So update_total is redundant - remove it.
+
+[ mingo: Changelog updates ]
+
+Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Peter Ziljstra <peterz@infradead.org>
+Link: https://lore.kernel.org/r/202310101645437859599@zte.com.cn
+---
+ kernel/sched/psi.c | 17 +++--------------
+ 1 file changed, 3 insertions(+), 14 deletions(-)
+
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 79f8db0..44a7877 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -434,14 +434,13 @@ static u64 window_update(struct psi_window *win, u64 now, u64 value)
+ 	return growth;
+ }
+ 
+-static void update_triggers(struct psi_group *group, u64 now, bool *update_total,
++static void update_triggers(struct psi_group *group, u64 now,
+ 						   enum psi_aggregators aggregator)
+ {
+ 	struct psi_trigger *t;
+ 	u64 *total = group->total[aggregator];
+ 	struct list_head *triggers;
+ 	u64 *aggregator_total;
+-	*update_total = false;
+ 
+ 	if (aggregator == PSI_AVGS) {
+ 		triggers = &group->avg_triggers;
+@@ -471,14 +470,6 @@ static void update_triggers(struct psi_group *group, u64 now, bool *update_total
+ 		 * events without dropping any).
+ 		 */
+ 		if (new_stall) {
+-			/*
+-			 * Multiple triggers might be looking at the same state,
+-			 * remember to update group->polling_total[] once we've
+-			 * been through all of them. Also remember to extend the
+-			 * polling time if we see new stall activity.
+-			 */
+-			*update_total = true;
+-
+ 			/* Calculate growth since last update */
+ 			growth = window_update(&t->win, now, total[t->state]);
+ 			if (!t->pending_event) {
+@@ -563,7 +554,6 @@ static void psi_avgs_work(struct work_struct *work)
+ 	struct delayed_work *dwork;
+ 	struct psi_group *group;
+ 	u32 changed_states;
+-	bool update_total;
+ 	u64 now;
+ 
+ 	dwork = to_delayed_work(work);
+@@ -582,7 +572,7 @@ static void psi_avgs_work(struct work_struct *work)
+ 	 * go - see calc_avgs() and missed_periods.
+ 	 */
+ 	if (now >= group->avg_next_update) {
+-		update_triggers(group, now, &update_total, PSI_AVGS);
++		update_triggers(group, now, PSI_AVGS);
+ 		group->avg_next_update = update_averages(group, now);
+ 	}
+ 
+@@ -638,7 +628,6 @@ static void psi_rtpoll_work(struct psi_group *group)
+ {
+ 	bool force_reschedule = false;
+ 	u32 changed_states;
+-	bool update_total;
+ 	u64 now;
+ 
+ 	mutex_lock(&group->rtpoll_trigger_lock);
+@@ -705,7 +694,7 @@ static void psi_rtpoll_work(struct psi_group *group)
+ 
+ 	if (now >= group->rtpoll_next_update) {
+ 		if (changed_states & group->rtpoll_states) {
+-			update_triggers(group, now, &update_total, PSI_POLL);
++			update_triggers(group, now, PSI_POLL);
+ 			memcpy(group->rtpoll_total, group->total[PSI_POLL],
+ 				   sizeof(group->rtpoll_total));
+ 		}
