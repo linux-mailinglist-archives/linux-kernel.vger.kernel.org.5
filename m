@@ -2,211 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9847C47B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 04:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 046EF7C47B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 04:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344784AbjJKCTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 22:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
+        id S1344796AbjJKCTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 22:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344739AbjJKCS7 (ORCPT
+        with ESMTP id S1344769AbjJKCTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 22:18:59 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68AC8E
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 19:18:57 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50308217223so7943163e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 19:18:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696990736; x=1697595536; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IjhCQdR9FSIb4mXchtT0S67Pn10MnE0igEvhgyIFe/Q=;
-        b=Xgc/leIG+L2q4m2Fz4Dns4RnqkgTh2M5Quk7KQ4V2pkUv/u+0AN+xWQN/9cMt5dCci
-         LN2zRkb09vwQpZwqunRoY1nlVbjei0pn+33PVFc1bxq0D7Ee4VfPj2ZUJs6C9m14G6GI
-         khBexiNOUb8yl9KdVjieUIaMmRCjPxXlGqmkkLaJXM/xUNdO3JnVAQmlzLMuY+Ze+prb
-         wk24b/WkkC2AHsetnxQkkKxaLg4YRwLWfljO+H4Fwcebyg7gD0UH9MKFL9DLq9JiSaX9
-         PER/8UINxUl08OimpkSw8DTM4D+41p7TUF1mkMSdjumN1RHonac2IpqUANkKWo5aRqxA
-         R3gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696990736; x=1697595536;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IjhCQdR9FSIb4mXchtT0S67Pn10MnE0igEvhgyIFe/Q=;
-        b=I9X1DFmSwbXt1wPWaJCgiGDZ6sh2us7bmm+z53zFgKyRmSyxTHmA/Ubrf92cpL7KXD
-         BWtNA6fAIpYvdu02Re+6O/U/JxH7k0mofUVR4dLAgr9EMvRYScOFI0ffb4pjKM4Rf9wV
-         +vOkB1CDuB8/TwBVHrvYsBbw7rEiAg/PxsmCKi+M6O5vcPmc5C7fedQD131TRBKEwLJZ
-         LKDCBjcJNr1R/wQFwRjSJdctlmfKYlWhwR0/Y9iujllOhaTzt0p868zckCGer35e38cs
-         HPPBo7eSJRjnO9Gaa5EiL+wn13RjX2U+acnm8OzIfnYCpUBeHMWu3o3B+WRiKreXmBop
-         AVfw==
-X-Gm-Message-State: AOJu0YxepsyB7wKgImpHAlpnZY3IrDfklNCwzlHNbTJEBnAEPpmZJT+3
-        iTbLHgCrltM5FWpTS+QW6Fw3WlUlvfygAddXXSe7PSvIixEYjw==
-X-Google-Smtp-Source: AGHT+IG455eJiJRDOe/hop6m/utv20TiZn18bkPOboRVVmi0yObSKu9mZc8I/dQ5g7g9loxS9h9Dk7pogKaU30lJLmQ=
-X-Received: by 2002:a19:7119:0:b0:503:2e6:6862 with SMTP id
- m25-20020a197119000000b0050302e66862mr14460379lfc.32.1696990735472; Tue, 10
- Oct 2023 19:18:55 -0700 (PDT)
+        Tue, 10 Oct 2023 22:19:21 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2054.outbound.protection.outlook.com [40.107.102.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E8894;
+        Tue, 10 Oct 2023 19:19:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U3SauPiKYDeiowuFil25TsWxbgZNnHl6EBoeNP+/f5ntNB4eARMFFk9iuN+jcslwOn8MxIRJkaiwC/NNPsrbOL49L8V51hQIzd/0eY9L2bWtcH16F/Agiendn43nhhdA2PmK3xwtY/Rtl+l/Y0hAf3KUwyk5puwxebcybPqT1qL9KDvEF4XUcznrw6PUUdGNYYTR0K2n6jGJwiYyINqH6y7x444ebLpacI2momU4aju1mr5aiYYzMtFOhPVId4he46hkg/iwSpz7fx7ZB6DB6XocBOrsyNJYidIhpDxaG9Rsipzb8NEEv5urXl/YoRSiZ7gmSxNHh7Tc93bPM1HYPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cU1NcBH9MazxTsy3LzuO/bGFhdZmBTc+h+rHARJ8wQo=;
+ b=fznxvCqqMTj+yzxDEcNbB6c5GQ1t5Q2vO0uIksKBuR1Hz/Tb0u00KbQLdeZJXvgPT+g7tNRBOfLSUcX+35pocZukQMYjYb5EHbf3WH8Pwp8v8Jf50jwTxU9zcgRo/bs6sBW4gPGupcoYJ6dHe+5QHttEoP2d/xugGEIq4rsWG6ULq91rRBiIUZcI4Y+pAtIUlG1yTphPSAEGVuVh/eequGWy8peeoMCgW0TQCC3La6lRBOzUXh8gmL7kFdh8SRG1X6Nvls7ZvwhbzrPlQWvSTLbNk04sJDYMS5JoN1qjb4+2wujtzi8P6aH1TRaCupzF2W79rwTSUwcz0dNEVROQ4w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cU1NcBH9MazxTsy3LzuO/bGFhdZmBTc+h+rHARJ8wQo=;
+ b=S8D4svpb3Qbt2tp1O+auymOF+baL5Z7AxYMEe+XxIzni97FDEuWvGo64MjkbSCaVk71rf242oup3JlkP97JoSsOZv96iRK87/eGlNC+U9ZoTUbt9Q8Wq2PxKcwreYKzar5APc5qjAtZAyIUtbgVge80ktCQw5VDPwwN+lbs+4gPXN4++iNNMJro8pW6FqU6WFnMUqAIlgD0bkFG5/EpHh98upGoyWVsHnskVk6orS3/X8lFQlhmhQD/qR92BLulroa4SLGK+9YBgP1mLF9Lk6guVCCB3caiWUXPTRPDatYB3y9QdqY+58TqpuCMeY3vAkXiCNwu6gezQOPCLEUtO4A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from IA1PR12MB6604.namprd12.prod.outlook.com (2603:10b6:208:3a0::7)
+ by LV2PR12MB5773.namprd12.prod.outlook.com (2603:10b6:408:17b::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Wed, 11 Oct
+ 2023 02:19:18 +0000
+Received: from IA1PR12MB6604.namprd12.prod.outlook.com
+ ([fe80::8814:146:e28e:6eea]) by IA1PR12MB6604.namprd12.prod.outlook.com
+ ([fe80::8814:146:e28e:6eea%4]) with mapi id 15.20.6863.032; Wed, 11 Oct 2023
+ 02:19:18 +0000
+Message-ID: <d378d545-e14e-7e7a-8085-1e4dae87d66a@nvidia.com>
+Date:   Tue, 10 Oct 2023 19:19:14 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v1 3/4] hte: tegra194: Remove redundant dev_err()
+Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        timestamp@lists.linux.dev, linux-tegra@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+References: <20231010151709.4104747-1-andriy.shevchenko@linux.intel.com>
+ <20231010151709.4104747-4-andriy.shevchenko@linux.intel.com>
+X-Nvconfidentiality: public
+From:   Dipen Patel <dipenp@nvidia.com>
+In-Reply-To: <20231010151709.4104747-4-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR06CA0054.namprd06.prod.outlook.com
+ (2603:10b6:a03:14b::31) To IA1PR12MB6604.namprd12.prod.outlook.com
+ (2603:10b6:208:3a0::7)
 MIME-Version: 1.0
-From:   Yikebaer Aizezi <yikebaer61@gmail.com>
-Date:   Wed, 11 Oct 2023 10:18:44 +0800
-Message-ID: <CALcu4rYmqcMReMWCDx60=-WeTgNMZGxNGc3GMUXhdS6kNBDw_w@mail.gmail.com>
-Subject: KASAN: slab-out-of-bounds Read in ntfs_readdir
-To:     anton@tuxera.com, linux-ntfs-dev@lists.sourceforge.net
-Cc:     linkinjeon@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR12MB6604:EE_|LV2PR12MB5773:EE_
+X-MS-Office365-Filtering-Correlation-Id: 54128e1a-e30c-4da1-af86-08dbca0078ce
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5lerNfGbuc+NcChFovicFhOZ6yT2/A25IMCBWMVxQ93z097dGuiNpy4XYiJC0ZCiUO4AxXE1lxpfLgOe6emAqPrpbCC6EAUDjUtZ4ih/eGwbPij86Fz+M/ToEZ7GF/JKy6v/3hM2yVRlOSp5SgwujwjueyVdZ9XgTT8yWnVtN/thpIIYux0XaoI3r0psUxYGVriNfrc+ge04DVaBahKNBtkHYgJIc6oEAlruKvaUCpMR+8SfEzMNYcaSC8WKpHKaoGbagFN7mXQtPshohV2QuD6eAjkShOTdVAbPT4sAhWF92HUKlJ+ZXkXTiDKUB4LOGUWZXluRzF2Bhjcs2qQeJ90UZZtaVdJ4DDxO5L2hBZU6mLVw+atBNokf+Ts9idfrfzQDznoSmQplBHmtsGJKgkTPWv+CvGsgtkHry7rBT1hASYZF89bqXEV9e99BLmM9SQQU38An7Fs5ghWuHQMyrzF6M5OI3FhB3HGdFGOXXNjo4dfnr5kWttnEnFGEUO5Df69b9pKBD/HW3LgwRLb4CMZ26v4AAzer1Iv5CYiO22+MWdGdRCt93UopGH5d/0Z+Wz6B6/eE7snb6mC4ZZDxr5/uK3EKOkx9LTAWY2023hJhWsWrhCztrHKOD2JhGS8LVWMdH1qwfl0NiXSQ6w7jKQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6604.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(136003)(346002)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(2906002)(26005)(86362001)(53546011)(31696002)(6512007)(107886003)(2616005)(478600001)(6666004)(6506007)(36756003)(38100700002)(83380400001)(6486002)(5660300002)(41300700001)(66556008)(66946007)(110136005)(66476007)(316002)(54906003)(31686004)(8936002)(4326008)(8676002)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T0lGQ0VZaWR3RVVEbkYxQ29YelZIZ01QU3dmOG1RZWFId1I2V1pJZnFaaDUy?=
+ =?utf-8?B?Y0w5UTZ3Y2llbm03aUNCR0l3eTlFK2ZBSFdCcWZyeE0vbmVCMmJiK01tUHhu?=
+ =?utf-8?B?c0ZSS0xnUFpBeWs4ekxLSHY5WFVTMmNWRjVTWlo3eXJVQ3NOR2ZzUEpKbzRy?=
+ =?utf-8?B?Tm85bHQxMHU3RVNwYVRJbVE2eVJramlabXBsZFE4cllOWmgyUlBUQkxaTDg1?=
+ =?utf-8?B?cGJ5emxSRkwzN0x0bVFmakpBNlVJTFQ0NUVKOXhWcUt4L0l4bVRwbUhVTlgv?=
+ =?utf-8?B?Z2Q1Z3o2ZVJ0WFRicUltcjdmUklkb1FseUplWFhFd1dTZ21PdktBVWkyRUFD?=
+ =?utf-8?B?VS9vWU9YMkt2QWt2WUxsRnI5aldKbk82aDdxTHg5NDhRa0pGcktlREdtUUhY?=
+ =?utf-8?B?aGkwd3M5MmxUWHdxRjZqK0o0NFVhTXR1bHdRZG5aZ3p0TE53VXlOaTA0Qm5G?=
+ =?utf-8?B?aXJIYUdSMHFMSlYrL1YzZCs3RlJhZHhGcnpTWXNqVVUyVVJGL0lnS1VhN2tI?=
+ =?utf-8?B?djQrcnl0NS8vWEx4UkFzL1doTjgyazVKQkdZbldXMnIxcXJYekJ4ZXN0UTdj?=
+ =?utf-8?B?cXJzZEtvVndPU2R1Q2NNRXJDaGo0NVVGbUVJeWUxaFVsUm4xMGJPRFN1WGV5?=
+ =?utf-8?B?Vkk1MjNRMUdlUVY0cGd0bUhmb2VBWktmK0VMTXF6azVSSEZobmVYRmpoMXc0?=
+ =?utf-8?B?THRXdUt0SkdqWW5lZ0tIOWJpc0UvaUE1MDI5L1lFZW9sNVczV1Z0RHB5TmxT?=
+ =?utf-8?B?MU5DbjlROWdqamZrSENXT1dWL29tN0N0WG5NMWI4RzlzeVZMSFV3U25LM20x?=
+ =?utf-8?B?ZXBmYWVWUS9ud21tK1pqVVl3c05iUmhhRytzdWhaZWovTE5vUDd6ekVxRkFu?=
+ =?utf-8?B?R1BFTEZMVTZMYm5qY05qbEJYS2tWa2pyQzdOWlMwZmhGNE5ud1hnNDZWQTh0?=
+ =?utf-8?B?ZW1FaWVoK2IxZkJTQzVtRFBBOVpUTllNd2pBdWJXeDdKbkVMU3FRTWFxa0JQ?=
+ =?utf-8?B?U3Z3N0U4NW0zVnpUTENzR1c1NExUUlVleitJaWk4dUk4aUxlYkM5Nnh1REI4?=
+ =?utf-8?B?MXpTYVFSR05lVEVOZzVDQmhLTjNyUmMxY2pXSlBkTi9BUUt4eXZKZUVhT0I4?=
+ =?utf-8?B?bk5SYmVXVjJLMXpDaVlTeUNXbnQrRGQ2TWVIemJaTHREU2xsL25qai9GUndY?=
+ =?utf-8?B?bmRMVmpzRjlwbHFOUFdza3V5Z0I1aFhqblJkUEpxeWY5bnZ1Mm00TUQvb0Vk?=
+ =?utf-8?B?Mll1c0FFV2lqZVpXcGVrb3l1ZXpDT0xmMEhTT2RKYStuT2l2S0tCTzFDcEVo?=
+ =?utf-8?B?M1dzVnlUdGxLODFoMk14WTJlTzBpdXpyZllGcU85YWFUdkNuQjA2WmlOdnk4?=
+ =?utf-8?B?ZnVIdU9JMmNIblJORW9URmRVbjZoVzJEei9QeTJMdHRRVDBoOXdVU3FJejZ3?=
+ =?utf-8?B?WndReERPb2hHdm1BV3R3dk5xMzJDeU9SbHJ1RERwS3FqekVrK1MzMkJSeG9l?=
+ =?utf-8?B?dWhSbTZkSXBsczFLSzZTRmxSNE03NWx1V3R2WmJQM3hJbkhUYlQ2T09EMm8y?=
+ =?utf-8?B?aGZXOTg1aThTTzA4eVNMQ2NNS0hSa1VURXd2cXdkQWxObGhsV25NYzc3RWNz?=
+ =?utf-8?B?ZW85NVBmblY1V2FWNkU4TDhjVGlSMk9wTmRCWHVVYXozYjYzS2tHK0h6T21K?=
+ =?utf-8?B?SkNTT21Ga2I1bndZVjI5eGIvVG8xZDcveEpSM2hkZmp2Sm1OSHJzRlMwVFFD?=
+ =?utf-8?B?VFRvWUlWQSt2ckFOV3JyMmNmejNEYjJ6QVRJUi9JaVJSYzdiajVMTjJPaW5L?=
+ =?utf-8?B?S1NZYk1XKzhiMW81ZVRlSGhoNSt3cm5YZEprVmE1S2hibUNsWlRBUkYyc1F6?=
+ =?utf-8?B?d005NWNaRGpvR08raFdtVWdOc3pxc3V2aXZwWjE0d1R4aksxOEl5R1ArU0FS?=
+ =?utf-8?B?N2gzcDQvcnJ1M3J3WEhVcDVKMS9idnMxeERqaElmZDhXN1NLTGRNWmRKZVEr?=
+ =?utf-8?B?c0M1b1JZM2o2NXpZZGJENW01VzFJSTFYNmJDNDdGQ2RkQXlzeDR0OHRvaElu?=
+ =?utf-8?B?T1lyS3poS3FuR1pwR1hob2swaVdRZzA0WjY5YWdBQmdsdkh0NzF2M3ljSjB2?=
+ =?utf-8?Q?26EFUK81d5HAB+2ddJpQF9stm?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54128e1a-e30c-4da1-af86-08dbca0078ce
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6604.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2023 02:19:18.0706
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6Cih4hfMxuAT+O9ePajcrK3dW/dlVDQvni6uihLODTxxKRxZ46an0O6NjW5+xxHJtL6uAxI5DlC6kRwA+bF8tQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5773
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 10/10/23 8:17 AM, Andy Shevchenko wrote:
+> There is no need to call the dev_err() function directly to print a custom
+> message when handling an error from platform_get_irq() function as it is
+> going to display an appropriate error message in case of a failure.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/hte/hte-tegra194.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hte/hte-tegra194.c b/drivers/hte/hte-tegra194.c
+> index 339ff5921ec8..30ef1750a9fa 100644
+> --- a/drivers/hte/hte-tegra194.c
+> +++ b/drivers/hte/hte-tegra194.c
+> @@ -731,10 +731,8 @@ static int tegra_hte_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
+>  
+>  	ret = platform_get_irq(pdev, 0);
+> -	if (ret < 0) {
+> -		dev_err_probe(dev, ret, "failed to get irq\n");
+> +	if (ret < 0)
+>  		return ret;
+> -	}
+>  	hte_dev->hte_irq = ret;
+>  	ret = devm_request_irq(dev, hte_dev->hte_irq, tegra_hte_isr, 0,
+>  			       dev_name(dev), hte_dev);
 
-When using Healer to fuzz the latest Linux kernel,  the following crash
-was triggered.
-
-HEAD commit: f291209eca5eba0b4704fa0832af57b12dbc1a02 (  Merge tag
-'net-6.6-rc5' of
-git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net=EF=BC=89
-git tree: upstream
-
-My local Linux repository is a few commits behind the main branch, so
-I pulled the latest branch and validated the crash on it. The issue
-still persists.
-
-console output:
-https://drive.google.com/file/d/1NdDXed0sG9aBNPZ9mriMt89l6X5Gg5ZN/view?usp=
-=3Ddrive_link
-kernel config:https://drive.google.com/file/d/11ueBuZ-2vOvQRAH7qlGib6JACvk1=
-WmJq/view?usp=3Ddrive_link
-C reproducer:https://drive.google.com/file/d/1SdzoHnEAy_BRCRiGsIyxmck56SrKD=
-n9H/view?usp=3Ddrive_link
-Syzlang reproducer:
-https://drive.google.com/file/d/1cFnKjf2E9mko-8NKgeT7YBoMIpu3ahKv/view?usp=
-=3Ddrive_link
-
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-BUG: KASAN: slab-out-of-bounds in ntfs_filldir fs/ntfs/dir.c:1021 [inline]
-BUG: KASAN: slab-out-of-bounds in ntfs_readdir+0x1457/0x29a0 fs/ntfs/dir.c:=
-1200
-Read of size 1 at addr ffff88806099dff1 by task syz-executor.2/19012
-
-CPU: 2 PID: 19012 Comm: syz-executor.2 Not tainted 6.6.0-rc4-gf291209eca5e =
-#4
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd5/0x150 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc1/0x5e0 mm/kasan/report.c:475
- kasan_report+0xba/0xf0 mm/kasan/report.c:588
- ntfs_filldir fs/ntfs/dir.c:1021 [inline]
- ntfs_readdir+0x1457/0x29a0 fs/ntfs/dir.c:1200
- wrap_directory_iterator+0xa1/0xe0 fs/readdir.c:67
- iterate_dir+0x1ea/0x600 fs/readdir.c:106
- __do_sys_getdents fs/readdir.c:322 [inline]
- __se_sys_getdents fs/readdir.c:307 [inline]
- __x64_sys_getdents+0x14a/0x2d0 fs/readdir.c:307
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f541788eced
-Code: c3 e8 97 2b 00 00 0f 1f 80 00 00 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f541858d028 EFLAGS: 00000246 ORIG_RAX: 000000000000004e
-RAX: ffffffffffffffda RBX: 00007f54179cbf80 RCX: 00007f541788eced
-RDX: 0000000000000040 RSI: 0000000020001640 RDI: 0000000000000003
-RBP: 00007f54178f04a6 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f54179cbf80 R15: 00007f541856d000
- </TASK>
-
-Allocated by task 19012:
- kasan_save_stack+0x1e/0x40 mm/kasan/common.c:45
- kasan_set_track+0x21/0x30 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- ____kasan_kmalloc mm/kasan/common.c:333 [inline]
- __kasan_kmalloc+0x9e/0xa0 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slab_common.c:1023 [inline]
- __kmalloc+0x5d/0x190 mm/slab_common.c:1036
- kmalloc include/linux/slab.h:603 [inline]
- ntfs_readdir+0x1180/0x29a0 fs/ntfs/dir.c:1162
- wrap_directory_iterator+0xa1/0xe0 fs/readdir.c:67
- iterate_dir+0x1ea/0x600 fs/readdir.c:106
- __do_sys_getdents fs/readdir.c:322 [inline]
- __se_sys_getdents fs/readdir.c:307 [inline]
- __x64_sys_getdents+0x14a/0x2d0 fs/readdir.c:307
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-The buggy address belongs to the object at ffff88806099df80
- which belongs to the cache kmalloc-64 of size 64
-The buggy address is located 57 bytes to the right of
- allocated 56-byte region [ffff88806099df80, ffff88806099dfb8)
-
-The buggy address belongs to the physical page:
-page:ffffea0001826740 refcount:1 mapcount:0 mapping:0000000000000000
-index:0x0 pfn:0x6099d
-flags: 0xfff00000000800(slab|node=3D0|zone=3D1|lastcpupid=3D0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000800 ffff888011442640 ffffea0000576900 dead000000000004
-raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask
-0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 8090, tgid 8090
-(syz-executor.2), ts 240981630987, free_ts 0
- prep_new_page mm/page_alloc.c:1543 [inline]
- get_page_from_freelist+0xf09/0x2c50 mm/page_alloc.c:3170
- __alloc_pages+0x1c7/0x490 mm/page_alloc.c:4426
- alloc_pages+0x1a6/0x270 mm/mempolicy.c:2297
- alloc_slab_page mm/slub.c:1870 [inline]
- allocate_slab+0x261/0x390 mm/slub.c:2017
- new_slab mm/slub.c:2070 [inline]
- ___slab_alloc+0xbda/0x15e0 mm/slub.c:3223
- __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x136/0x340 mm/slub.c:3517
- kmalloc_trace+0x22/0xd0 mm/slab_common.c:1114
- kmalloc include/linux/slab.h:599 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- snmp6_alloc_dev net/ipv6/addrconf.c:350 [inline]
- ipv6_add_dev+0x533/0x13b0 net/ipv6/addrconf.c:404
- addrconf_notify+0x753/0x1960 net/ipv6/addrconf.c:3589
- notifier_call_chain+0xb6/0x3c0 kernel/notifier.c:93
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1970
- call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
- call_netdevice_notifiers net/core/dev.c:2022 [inline]
- register_netdevice+0xf23/0x14c0 net/core/dev.c:10169
- veth_newlink+0x31c/0x980 drivers/net/veth.c:1908
- rtnl_newlink_create net/core/rtnetlink.c:3485 [inline]
- __rtnl_newlink+0x110a/0x18e0 net/core/rtnetlink.c:3705
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3718
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff88806099de80: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
- ffff88806099df00: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
->ffff88806099df80: 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc
-                                                             ^
- ffff88806099e000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88806099e080: 00 00 00 00 00 fc fc fc fc fc fc fc fc 00 00 00
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reviewed-by: Dipen Patel <dipenp@nvidia.com>
