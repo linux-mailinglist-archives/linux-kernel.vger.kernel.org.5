@@ -2,120 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D71897C5B38
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB40C7C5B3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376273AbjJKSYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 14:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40060 "EHLO
+        id S235057AbjJKSYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 14:24:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376298AbjJKSX7 (ORCPT
+        with ESMTP id S233077AbjJKSY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 14:23:59 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DCE9E
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:23:56 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32d8c2c6dfdso135123f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:23:56 -0700 (PDT)
+        Wed, 11 Oct 2023 14:24:27 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6A09E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:24:25 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so331664a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:24:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697048635; x=1697653435; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1697048664; x=1697653464; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=2I3M0AseJOVwbz7qPxfXOr0/qxWVi2JNLlDWGyELfhM=;
-        b=FWYwnqpHgdnnWGL2up4W6Wi0GmrvE+islQGOzcTtZUTjL9uc0uRWCysNbgwTtkeWlj
-         aZBme8u9EuQrNDrKyQX3aLi54F127ltL58it6KeTfRhDrywqRNYViXqQ2X02QV1lVEFW
-         S2f9CBBPnwkvCcqqSCvg2e2i6asEx8fRc5BLBpa12A/ZkRB5C/IcFlyOSwIaduIFoROx
-         NOvnKmNkhQ9An2Gnz/Y5ll1v2XQZjJDOc5hOIw3w9RWoyc8HuQSY0nUojuun/w0/nDOS
-         HOVf8wyNDhtecmh8ZSxYMqyBrlUZNYoz0u+uXItqnOQPiTQ2Smp1wG/20Fwb5K14PYBO
-         gLyQ==
+        bh=dhigiG7r2vYGCxl5bErW87uWnRuAFN/RI/oKaHTvtWo=;
+        b=Z2atiAmxDdFFn0tHYBnyNwVv9ppdGm3cDltOTI2JurVWQGyGUso/sRWCtA9N51Vg2m
+         gkleRHdZ/BH7YoPAPMKPguK2NC3iny7ugCUgQAdX6tcH2vt+iUz3b/zY/iZNyK17k7Z1
+         cDzeo979dd65pE450Jqw5Mymmf/nlpBL8XI7Phz9rnOFQ+I7cg+sh0KTNma+/ippTooq
+         b+HsX1xKTxy58EzFnTUCx6cQWAWFBli928YxEdOzU/eIb4/K17c0tjE13cg10QTkMKPs
+         7bfqBLye7iB2w0IfpDYgsPzI5lMgA4io1NYnvKYS5TVHsSLrfahuW8Q2S8kWEf5mmRhQ
+         PMfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697048635; x=1697653435;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1697048664; x=1697653464;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2I3M0AseJOVwbz7qPxfXOr0/qxWVi2JNLlDWGyELfhM=;
-        b=TNOmbpudoKGd8YFEijvqzGUWrGX5BMwU4VSwGtp6l1mChYdFWyF1dGCiqaWG7W2kJ0
-         L3B1HS2XjdZzbegYQqVQwOSrxJWKwTnBSxc+F+tyGie4UK5xnRjOK/Y9rwtjJ5Jbko4H
-         Mz4Ru/hrOV0yNhk9d5yVIwBiuMpIxxRdXMDOykZqAzI2qlNMRe5s+x94uiYtiryMFQpC
-         Dxi+bMDaGbqExLMaBz4Q7xTUqwj15JuSxPPhABK6nbdFM7NBs1iu2M+hHyp2d5m7TIof
-         ushdfhYzLfGodB2FBcb7xOXkHxQCVrw57M08j74KRdBLqObGX02prfxtMkw3Qvk2/ve+
-         Ja7g==
-X-Gm-Message-State: AOJu0YxLdupeselN3rh85Mz1fwyLGrCtR519y/bi8bdo6NCzjSlvsVGi
-        lzW7UwekIbq191WHHvA5KLCYWw==
-X-Google-Smtp-Source: AGHT+IF7mNyaD81paY1de2OPbdYHq5nZzaXaKMB4IyScfdc7eQQK1Y0lIo/NVp7J+W52JosoRnH4aQ==
-X-Received: by 2002:adf:f34f:0:b0:323:2d01:f043 with SMTP id e15-20020adff34f000000b003232d01f043mr19981762wrp.3.1697048635013;
-        Wed, 11 Oct 2023 11:23:55 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id e15-20020adff34f000000b0031c6e1ea4c7sm16191985wrp.90.2023.10.11.11.23.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 11:23:54 -0700 (PDT)
-Message-ID: <db597f8d-1293-4b51-b182-bad499b7d1b4@linaro.org>
-Date:   Wed, 11 Oct 2023 20:23:52 +0200
+        bh=dhigiG7r2vYGCxl5bErW87uWnRuAFN/RI/oKaHTvtWo=;
+        b=rdOckAMvpPovBf7iUEwv+3is8fr2VzDF5PiISAjdcChF0lm3ygk7t8ShwH78tgNZ/+
+         botPD9/QuCOkayz+N2ji6KWFzB9FJ28s7x4VYuWvo+dvsWGY6J8CtKkMFV29L46gyTOU
+         CFOlP+Zv5QUgZ9MPYk5oAiliw325mCpC58rjVnkZfIZYeEVQ6T8Yrs4TAkhWwphpIqCX
+         3ZE3MfkNLr+TN+eaaYoYTSeJcoPFKRJS07EZZIgrcxzc6sPSFUBZk1n8dAXpVtDsh3o4
+         oF8eNcc8tHaxUFm2JYZTel+VTnw80t2vTfv+wUYSc7Ym9r3iKlINfC9FfSZAoHFEbl4e
+         b2ow==
+X-Gm-Message-State: AOJu0YzCBQp9o63JB3i4J3DoUXkiQtw39QU6267+H6M6aOzr3i3EUzzs
+        oi6DVCF2ROM6HORd9kkUgA==
+X-Google-Smtp-Source: AGHT+IGVo7Egnhd5Nr4kMfzbttLLZADZ+HSnAz3rEKyIoBnRbHifXOOhwajpvvjl6ON2s4M0D+VSDw==
+X-Received: by 2002:a05:6402:b89:b0:53d:eca8:8775 with SMTP id cf9-20020a0564020b8900b0053deca88775mr1359175edb.26.1697048663739;
+        Wed, 11 Oct 2023 11:24:23 -0700 (PDT)
+Received: from p183 ([46.53.254.83])
+        by smtp.gmail.com with ESMTPSA id j18-20020a508a92000000b0053deb97e8e6sm733724edj.28.2023.10.11.11.24.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 11:24:23 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 21:24:21 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH] fs: move and constify sysctl_nr_open_min, sysctl_nr_open_max
+Message-ID: <02591c1e-936b-46bf-ad2b-402b33338eee@p183>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/4] regulator: dt-bindings: Add mps,mpq2286
- power-management IC
-Content-Language: en-US
-To:     Saravanan Sekar <saravanan@linumiz.com>, sravanhome@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux@roeck-us.net, jdelvare@suse.com
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-References: <20231011164754.449399-1-saravanan@linumiz.com>
- <20231011164754.449399-3-saravanan@linumiz.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231011164754.449399-3-saravanan@linumiz.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -123,14 +67,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2023 18:47, Saravanan Sekar wrote:
-> Document mpq2286 power-management IC.
-> 
-> Signed-off-by: Saravanan Sekar <saravanan@linumiz.com>
-> ---
+sysctl_nr_open_min, sysctl_nr_open_max variables are really hard limits
+on fs.nr_open sysctl, they aren't interesting to the rest of the code
+and are constants (sysctl_nr_open is not constant obviously).
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
-Best regards,
-Krzysztof
+ fs/file.c            |    5 -----
+ fs/file_table.c      |   10 ++++++++--
+ include/linux/file.h |    2 --
+ 3 files changed, 8 insertions(+), 9 deletions(-)
 
+--- a/fs/file.c
++++ b/fs/file.c
+@@ -25,11 +25,6 @@
+ #include "internal.h"
+ 
+ unsigned int sysctl_nr_open __read_mostly = 1024*1024;
+-unsigned int sysctl_nr_open_min = BITS_PER_LONG;
+-/* our min() is unusable in constant expressions ;-/ */
+-#define __const_min(x, y) ((x) < (y) ? (x) : (y))
+-unsigned int sysctl_nr_open_max =
+-	__const_min(INT_MAX, ~(size_t)0/sizeof(void *)) & -BITS_PER_LONG;
+ 
+ static void __free_fdtable(struct fdtable *fdt)
+ {
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -111,6 +111,12 @@ static int proc_nr_files(struct ctl_table *table, int write, void *buffer,
+ 	return proc_doulongvec_minmax(table, write, buffer, lenp, ppos);
+ }
+ 
++static const unsigned int sysctl_nr_open_min = BITS_PER_LONG;
++/* our min() is unusable in constant expressions ;-/ */
++#define __const_min(x, y) ((x) < (y) ? (x) : (y))
++static const unsigned int sysctl_nr_open_max =
++	__const_min(INT_MAX, ~(size_t)0/sizeof(void *)) & -BITS_PER_LONG;
++
+ static struct ctl_table fs_stat_sysctls[] = {
+ 	{
+ 		.procname	= "file-nr",
+@@ -134,8 +140,8 @@ static struct ctl_table fs_stat_sysctls[] = {
+ 		.maxlen		= sizeof(unsigned int),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= &sysctl_nr_open_min,
+-		.extra2		= &sysctl_nr_open_max,
++		.extra1		= (void *)&sysctl_nr_open_min,
++		.extra2		= (void *)&sysctl_nr_open_max,
+ 	},
+ 	{ }
+ };
+--- a/include/linux/file.h
++++ b/include/linux/file.h
+@@ -113,6 +113,4 @@ int receive_fd_replace(int new_fd, struct file *file, unsigned int o_flags);
+ extern void flush_delayed_fput(void);
+ extern void __fput_sync(struct file *);
+ 
+-extern unsigned int sysctl_nr_open_min, sysctl_nr_open_max;
+-
+ #endif /* __LINUX_FILE_H */
