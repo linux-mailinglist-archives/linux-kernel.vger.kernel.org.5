@@ -2,166 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CF67C50B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3867C50BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234803AbjJKLBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49694 "EHLO
+        id S1346626AbjJKLCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231946AbjJKLBe (ORCPT
+        with ESMTP id S234857AbjJKLCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:01:34 -0400
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [185.185.170.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B19B94;
-        Wed, 11 Oct 2023 04:01:32 -0700 (PDT)
-Received: from hillosipuli.retiisi.eu (185-9-11-240.cust.suomicom.net [185.9.11.240])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sailus)
-        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4S58w70C2dz49Pwn;
-        Wed, 11 Oct 2023 14:01:24 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-        t=1697022089;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=//xw1oKncXx8ruRws2n7MrScj5Aevzl+XjGbNm2925Q=;
-        b=NtAEihIKHoUL8qFZa7TrWhLIUZzrkAYMwOdCri29SqMZWQvl+X8pua6n6HyvBR8n6aHlRY
-        PvLa8KpOSfNKuGGmnc9Dlbbj2Z3UqdkcY72kWciyXBtGZWY3Jlv9xsJAjVdDyxJlCEBPTt
-        62LxgkZ176NFt+P6NzgQVY8+IzpuuU3xmpte/yBa+O/Bng0jXxfdWtqj5+orgjOSyPPL31
-        513xZzXo+qEs6wyri3I0TJPvueu1+s+2kZxC9NmO/lAGlsjCvwHxFh+ZvGjTXSJIZQihcD
-        3sCnZU3QMiWX0azHBlDI0scAZfoU4en/7wuwBFvektF2hG1p1L6XMeklUiugGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=lahtoruutu; t=1697022089;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=//xw1oKncXx8ruRws2n7MrScj5Aevzl+XjGbNm2925Q=;
-        b=MxTG+Jjbt+pMFRlblr4TyXXbi0zleo6fmwJuwzFW/QlKbwG98fcpwdc26U5D4yP1y0FdlW
-        vZpEjuKnGjEd2ZQXlIhU/Qp8aDZeAvRFqwjHs/se4FRdk0cpfJwCOqT1aR/RFBLy5gsPkl
-        WQ2Fx1nbbKcz49yjcvXGaudHIHMrtG3ngQen2zcUB/mxfVhbllyYzEu74lttpsze87Qeiy
-        T3Fi2Yz4aTiAXS6AsRX9mH0LeSNDzyjscC+rkjueKjYS8xij94fumaTP1FGB2+V+S0sVoE
-        WT0uLqEU5yl7ZghdD7hPVfuLRUHNidN4wmt6J0HZ7s8TsQBmkYs0bKDMx/JFWg==
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1697022089; a=rsa-sha256;
-        cv=none;
-        b=hDtJ3DvjeklP1GRFzEcKO0SuH35K/RuRR4iBGryQ22RjsIevgVdAXrpTLIlHCNg1My2l/d
-        r16zEGuCme1HLpL6vAWO6OLRE+JkfZ61cJkUfjmegw3xA7EdJdOfDMhZN9jWIIZZ7ehBPh
-        tDWIYe+Oxa1FImGL7ti/htYEi5C/fd7h9s746v33WkXJDitCLn3BrT5LHR9FE+s8dqVFcf
-        NhSwuL0i8YRbRw6dy/J0O2UMWlZ/Ys9fSiRNF59B12zKgnZ/PbzOrhWIEEcoyZ+rCyniWD
-        OZuyzoJ+4w/wnkH81OVRdofxO05TERiJDL16lfdiOEj23JRg2sWyAQ0OaCb/uA==
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 013E3634CA9;
-        Wed, 11 Oct 2023 14:01:23 +0300 (EEST)
-Date:   Wed, 11 Oct 2023 11:01:23 +0000
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        "Paul J. Murphy" <paul.j.murphy@intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>, moderated list:
-        ARM/FREESCALE IMX / MXC ARM ARCHITECTURE 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>, ;
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     ;
-                        ^-missing semicolon to end mail group, extraneous tokens in mailbox, missing end of mailbox
-Subject: Re: [PATCH 1/5] media: dt-bindings: media: imx335: Add supply
- bindings
-Message-ID: <ZSaAg8aSZAfxEDpM@valkosipuli.retiisi.eu>
-References: <20231010005126.3425444-1-kieran.bingham@ideasonboard.com>
- <20231010005126.3425444-2-kieran.bingham@ideasonboard.com>
- <ZSTp4jXKPVrbo5oU@valkosipuli.retiisi.eu>
- <169694430967.3973464.6599459439831458834@ping.linuxembedded.co.uk>
+        Wed, 11 Oct 2023 07:02:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814BBB7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:02:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697022130; x=1728558130;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Y5PY+/hV6/wrlFIbAS/3+SC0p6p4icSVgrCNrHkomwo=;
+  b=hC5O7877ZkaMCO9oL8NS07oBYROb/2JH+vFsGGBHjV8GnMCVIr4yqr+r
+   2e8TORLz195ULggnJi58nYE9EEXjvhyCWvsL+3q+0josPVkd86Z6/IJ9V
+   OnHr/0SFzIH2BW9ImCTo5pQYM+jyHgG6slcZx2KhzG273Y4AysLNjv49Q
+   7Dv1esY/dLgIucGGPc5D9dWcbrLK4DoT571eYzUdapFIXLc4zUnLlGcxO
+   6BYabow6c5j+z9SaguhqDcOsir1bhxNrbcXphgfD+opmFIh6+LAsPv2hC
+   xAwU+jz9WVljxCFDNh6URFUofMmzeDis6DbgaldX0Z3EXG9yDcbMOh9Tz
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="369696899"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="369696899"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 04:02:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="788960256"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="788960256"
+Received: from twinkler-lnx.jer.intel.com ([10.12.231.216])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 04:02:07 -0700
+From:   Tomas Winkler <tomas.winkler@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
+        Vitaly Lubart <vitaly.lubart@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Tomas Winkler <tomas.winkler@intel.com>
+Subject: [char-misc-next 0/4] mei: enhance mei pxp recoverability
+Date:   Wed, 11 Oct 2023 14:01:53 +0300
+Message-ID: <20231011110157.247552-1-tomas.winkler@intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <169694430967.3973464.6599459439831458834@ping.linuxembedded.co.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
+- Add timeouts to send/receive API on mei bus to avoid
+  infinite waits and consequent deadlock.
+- Re-enable the mei pxp client upon loss.
+- Retry receive operation in case of memory pressure related failure.
 
-On Tue, Oct 10, 2023 at 02:25:09PM +0100, Kieran Bingham wrote:
-> Hi Sakari,
-> 
-> Quoting Sakari Ailus (2023-10-10 07:06:26)
-> > Hi Kieran,
-> > 
-> > On Tue, Oct 10, 2023 at 01:51:22AM +0100, Kieran Bingham wrote:
-> > > Add the bindings for the supply references used on the IMX335.
-> > > 
-> > > Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> > > ---
-> > >  .../bindings/media/i2c/sony,imx335.yaml          | 16 ++++++++++++++++
-> > >  1 file changed, 16 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
-> > > index a167dcdb3a32..1863b5608a5c 100644
-> > > --- a/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
-> > > +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
-> > > @@ -32,6 +32,15 @@ properties:
-> > >      description: Clock frequency from 6 to 27 MHz, 37.125MHz, 74.25MHz
-> > >      maxItems: 1
-> > >  
-> > > +  avdd-supply:
-> > > +    description: Analog power supply (2.9V)
-> > > +
-> > > +  ovdd-supply:
-> > > +    description: Interface power supply (1.8V)
-> > > +
-> > > +  dvdd-supply:
-> > > +    description: Digital power supply (1.2V)
-> > 
-> > I wonder what's the policy in this case --- some of the regulators are
-> > often hard-wired and the bindings didn't have them previously either (I
-> > wonder why, maybe they were all hard wired in the board??).
-> > 
-> > Could they be optional? The driver will need to be able to do without these
-> > in any case.
-> 
-> Indeed - many devices do not need to define how they are powered up.
-> 
-> But Krzysztof stated that supplies should be required by the bindings on
-> my recent posting for a VCM driver:
-> 
->  - https://lore.kernel.org/all/6e163f4d-061d-3c20-4c2e-44c74d529f10@linaro.org/
-> 
-> So based on that I have made these 'required'.
+Alan Previn (1):
+  mei: update mei-pxp's component interface with timeouts
 
-I guess it's good to align bindings regarding this, in practice the driver
-will need to work without regulators (or with dummies), too.
+Alexander Usyskin (3):
+  mei: bus: add send and recv api with timeout
+  mei: pxp: recover from recv fail under memory pressure
+  mei: pxp: re-enable client on errors
 
-> 
-> Even in my case here, with a camera module that is compatible with the
-> Raspberry Pi camera connector - there isn't really 3 supplies. It's just
-> a single gpio enable pin to bring this device up for me. Of course
-> that's specific to the module not the sensor.
-
-How do you declare that in DT? One of the regulators will be a GPIO one?
+ drivers/gpu/drm/i915/pxp/intel_pxp_tee.c |  8 ++-
+ drivers/misc/mei/bus.c                   | 88 +++++++++++++++++++++++-
+ drivers/misc/mei/pxp/mei_pxp.c           | 88 +++++++++++++++++++++---
+ include/drm/i915_pxp_tee_interface.h     |  6 +-
+ include/linux/mei_cl_bus.h               |  8 +++
+ 5 files changed, 183 insertions(+), 15 deletions(-)
 
 -- 
-Regards,
+2.41.0
 
-Sakari Ailus
