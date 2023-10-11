@@ -2,143 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 384217C6055
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C427C605A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347010AbjJKWZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 18:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47188 "EHLO
+        id S1376394AbjJKWdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 18:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231927AbjJKWZo (ORCPT
+        with ESMTP id S233582AbjJKWc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 18:25:44 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B462AF
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:25:42 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53da72739c3so602178a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:25:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697063141; x=1697667941; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0zNZbeMMG66zQaffulwZBSRVTQq7xegGVzsE2aBNQYM=;
-        b=Vk/CYjVRmA34OY+cWbPCRDyipcQMzmvE274FhS1JKNS7qXEDNQCfkR6gNwl/dE5tDp
-         8MEkMZUYsKWt5LARKCwqd7jGWhaSVohomXmAWgjXc2TjBsvZHLy45m3IW1jAbPQNmXe9
-         KrxqDKnv+5hedt45/0i1elPvPUD82nDWJwOn9mheHyXBowaOfT0McQqHUcBmRXoBqlD1
-         Ih0evblLZSAJNkvwxxRqkm7CE89EeVc6euI21eVVQ/yuFO9+/NltplYmM1wsejtlMA2a
-         gm1kuU0JDdUVxSSxPsU9L+M65R93YQTlqSeGeKf8dO5ByvmTyW4g2VcuTbx3j72Hs+5X
-         QI3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697063141; x=1697667941;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0zNZbeMMG66zQaffulwZBSRVTQq7xegGVzsE2aBNQYM=;
-        b=bP1nxEhChd6gZsrWLUs8SFUiv+7QLwOqoOdlcTDUshoJPgpbPnYCNZEwf67jE6PiQo
-         iOC2XBrUFo+bVt8ekbO2NNf6RnSkzbQnoEWCv1Wt04NnuHTS1B2zIPJi91tBv78vF+H5
-         oM5YcYPX+EeYVpFxicqkgkz6GTRHxnipH1nj+WLaR1yuDqWS1L+eKrY8HlfNKMTgyNxa
-         xzBvizicN1+zNBlld3ktRrRlU++7BVZfEc5sAg7jIjMhV2pEQYY8MKaLco7D/hhR8ENT
-         ZMMyRxfTIvGo2t+J2YWtGdx0tSt+DGa6DxtoMdNx0yDQDV9/yxxREaunJ6oCEeIE8Xhi
-         AsiQ==
-X-Gm-Message-State: AOJu0YxCVs6tbeocMg/Jg1cn4oAm/1ZQHrgV499WC6QF/VLtMrApQ09k
-        gJ42NloNXhC/UmYGCdkJsnQ7lCT7fG1wYezJZMi7Zw==
-X-Google-Smtp-Source: AGHT+IH82POX7rEVI8+B5B5Y6q0ivHvbcCUnUMV5joor+RIQWbQw8OHBFlxjr3E9HWXtTSFfxwUwfy6oVuwv/HSjUd4=
-X-Received: by 2002:aa7:d297:0:b0:533:1acb:7134 with SMTP id
- w23-20020aa7d297000000b005331acb7134mr21589053edq.23.1697063141000; Wed, 11
- Oct 2023 15:25:41 -0700 (PDT)
+        Wed, 11 Oct 2023 18:32:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E57FA4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:32:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A44AC433C8;
+        Wed, 11 Oct 2023 22:32:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697063577;
+        bh=rpGzTzUpWKI2zCDFka+c0ioQo+a/DBJfsLAIdNdjuUI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RgwE80uZx2VHum1n+jjrNufkljdEkPAzsOYFFi+djv3OMoGLKpDxSBPfAW8Iz+66t
+         JgNRtiZkstmB9no/WSGc+A8UwwXixljCo/LJWVK8NCebMQNO6+wGE7g3yb/Zidwa1y
+         1IjkVODjChMSlJ4msCiB6+durrgMsOIa+9mTc38l1pwWR76cHiCf5v+6CAwdBgMDmW
+         n6KhjJdiVlC1/lf9YGqNK6/7h7s81gnwjggY6twtMfKzs/74qa/uZH1MSHvo1duNk6
+         SAp+6mMP4irqnVrUeG5i0ClRLctYrcBOTpGT4xd7MPub4/O8hGlHPVA2gH/dCxNRON
+         F5c0It7UtqBCA==
+Date:   Wed, 11 Oct 2023 23:32:52 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc:     Nam Cao <namcao@linuxtronix.de>, kernel@esmil.dk,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, william.qiu@starfivetech.com,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: dts: starfive: visionfive 2: correct spi's ss pin
+Message-ID: <20231011-bush-much-2b2b47a96c30@spud>
+References: <20231011161414.L6wXZVDb@linutronix.de>
+ <CAJM55Z-YoJnZi4CrwD66v1TaJoYz1jbX+QOFXUDjhm5C9tST0w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231011-strncpy-drivers-net-ethernet-pensando-ionic-ionic_main-c-v1-1-23c62a16ff58@google.com>
- <cadf72fc-2c0b-428a-b445-0f6a34c18d9b@amd.com>
-In-Reply-To: <cadf72fc-2c0b-428a-b445-0f6a34c18d9b@amd.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Wed, 11 Oct 2023 15:25:29 -0700
-Message-ID: <CAFhGd8q-q+DfQz_a_NKLmP_CG_fgYz29jZdoqT3qDMBm46VWHw@mail.gmail.com>
-Subject: Re: [PATCH] ionic: replace deprecated strncpy with strscpy
-To:     "Nelson, Shannon" <shannon.nelson@amd.com>
-Cc:     Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="+sLEwCn/NiZhi8Lq"
+Content-Disposition: inline
+In-Reply-To: <CAJM55Z-YoJnZi4CrwD66v1TaJoYz1jbX+QOFXUDjhm5C9tST0w@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 3:17=E2=80=AFPM Nelson, Shannon <shannon.nelson@amd=
-.com> wrote:
->
-> On 10/11/2023 2:53 PM, 'Justin Stitt' via Pensando Drivers wrote:
-> >
-> > strncpy() is deprecated for use on NUL-terminated destination strings
-> > [1] and as such we should prefer more robust and less ambiguous string
-> > interfaces.
-> >
-> > NUL-padding is not needed due to `ident` being memset'd to 0 just befor=
-e
-> > the copy.
-> >
-> > Considering the above, a suitable replacement is `strscpy` [2] due to
-> > the fact that it guarantees NUL-termination on the destination buffer
-> > without unnecessarily NUL-padding.
-> >
-> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#st=
-rncpy-on-nul-terminated-strings [1]
-> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en=
-.html [2]
-> > Link: https://github.com/KSPP/linux/issues/90
-> > Cc: linux-hardening@vger.kernel.org
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
->
-> Thanks, I suspected this was coming soon :-)
->
-> Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
 
-Thanks Shannon!
+--+sLEwCn/NiZhi8Lq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
->
+Hey,
+
+On Wed, Oct 11, 2023 at 12:29:44PM -0700, Emil Renner Berthing wrote:
+> Nam Cao wrote:
+> > The ss pin of spi0 is the same as sck pin. According to the
+> > visionfive 2 documentation, it should be pin 49 instead of 48.
+>=20
+> Thanks! As far as I can tell this should make the 40pin header match the
+> Raspberry Pi layout, so
+>=20
+> Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+
+The lists (linux-riscv at least) never got this patch & I cannot find it
+in my inbox either. Can you send it "properly" please?
+
+Thanks,
+Conor.
+
+>=20
+> >
+> > Fixes: 74fb20c8f05d ("riscv: dts: starfive: Add spi node and pins confi=
+guration")
+> > Signed-off-by: Nam Cao <namcao@linuxtronix.de>
 > > ---
-> > Note: build-tested only.
+> >  arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > >
-> > Found with: $ rg "strncpy\("
-> > ---
-> >   drivers/net/ethernet/pensando/ionic/ionic_main.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.=
+dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+> > index 12ebe9792356..2c02358abd71 100644
+> > --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+> > +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+> > @@ -431,7 +431,7 @@ GPOEN_ENABLE,
+> >  		};
 > >
-> > diff --git a/drivers/net/ethernet/pensando/ionic/ionic_main.c b/drivers=
-/net/ethernet/pensando/ionic/ionic_main.c
-> > index 1dc79cecc5cc..835577392178 100644
-> > --- a/drivers/net/ethernet/pensando/ionic/ionic_main.c
-> > +++ b/drivers/net/ethernet/pensando/ionic/ionic_main.c
-> > @@ -554,8 +554,8 @@ int ionic_identify(struct ionic *ionic)
-> >          memset(ident, 0, sizeof(*ident));
-> >
-> >          ident->drv.os_type =3D cpu_to_le32(IONIC_OS_TYPE_LINUX);
-> > -       strncpy(ident->drv.driver_ver_str, UTS_RELEASE,
-> > -               sizeof(ident->drv.driver_ver_str) - 1);
-> > +       strscpy(ident->drv.driver_ver_str, UTS_RELEASE,
-> > +               sizeof(ident->drv.driver_ver_str));
-> >
-> >          mutex_lock(&ionic->dev_cmd_lock);
-> >
-> >
-> > ---
-> > base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-> > change-id: 20231011-strncpy-drivers-net-ethernet-pensando-ionic-ionic_m=
-ain-c-709f8f1ea312
-> >
-> > Best regards,
+> >  		ss-pins {
+> > -			pinmux =3D <GPIOMUX(48, GPOUT_SYS_SPI0_FSS,
+> > +			pinmux =3D <GPIOMUX(49, GPOUT_SYS_SPI0_FSS,
+> >  					      GPOEN_ENABLE,
+> >  					      GPI_SYS_SPI0_FSS)>;
+> >  			bias-disable;
 > > --
-> > Justin Stitt <justinstitt@google.com>
+> > 2.39.2
 > >
+>=20
+
+--+sLEwCn/NiZhi8Lq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZScilAAKCRB4tDGHoIJi
+0sywAP9Nrr1MHNLliPKjgEMuuMbqOMxreV5oWYOWnFVGNv2mygD/ZJYhrrFSnILM
+0G4VObLptqfC2y/vAVmYzmxrdDK7+wc=
+=zhxe
+-----END PGP SIGNATURE-----
+
+--+sLEwCn/NiZhi8Lq--
