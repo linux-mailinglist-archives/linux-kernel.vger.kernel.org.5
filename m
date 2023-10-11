@@ -2,135 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 789ED7C5A13
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA917C5A17
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbjJKRLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 13:11:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48582 "EHLO
+        id S231590AbjJKROp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 13:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231610AbjJKRLj (ORCPT
+        with ESMTP id S230158AbjJKROn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 13:11:39 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABEF9D;
-        Wed, 11 Oct 2023 10:11:35 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-313e742a787so817542f8f.1;
-        Wed, 11 Oct 2023 10:11:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697044294; x=1697649094; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XdU1sxUKXP4rUHRFvRk5CELcXqwS3tj9yq3pjmD+y5k=;
-        b=fpFr9fQs6OfnRtap6Ku896VeuRunewMGftqL5sWlefD8FQqVafnvELtydTmsG8to6Q
-         b6M1s0fRaUcoG8BT1ChU8wCd1awbiA1oaXDflOyIIhpSISr2by6WS//pPDK9QYM5R2WY
-         KiBl5Z/+tmkRo1No6bjpFhZYhbxk8IpdxjnU8DmQb7duHdbBSSIfsQ+cI96XvOjM4N6i
-         L4a06KlklPGHwd0vaM3N/KyGYZfJDK/28J/KJAmxf8dzRzGbe6KkhETWBr2Hq/lw71j6
-         NDaORnLeEhfD/CrpWaCMeQHr/XS04J8eGEtjl+Td+/s5sLhU2JErJzvrB4u4zBBW7g2r
-         rVmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697044294; x=1697649094;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XdU1sxUKXP4rUHRFvRk5CELcXqwS3tj9yq3pjmD+y5k=;
-        b=sa08ru/koRNt3wbPSKklKAmUA5xF2VPnrLc0lpYgIo0zG7549H7IZOWCmVN0BoN79x
-         WUIGusbVlm+iakPlyypdxx9qv9nNd/GS+EaHip0FdZ0pZoKJtqoVBoKUAOCf2h73q/Y7
-         4oCgLS+iz3q+ryE64NUbU90xmM95mhQmQ+xpZU/SPPo8ugtoWELBrhcFn51i9JmupbRG
-         mMv9z8uZezv88tIB7pKZ+K+VHfq7ncjdH/scZzlYv/4YjUmGmvj1pD7NY8IAJ55qU1Jh
-         9JtoktpEtLme2LjeF3ZPZHsNf8FK9wEZ7gzjk6Qj3CD6KNLanO9QTYYxhLGgetod37dm
-         ERSA==
-X-Gm-Message-State: AOJu0YzrVA3c/9fibn88LFJKGYkmx06ZrbMwV0TByvuUIPdp4rX50uhP
-        HWSlRUM6u941OlR43rFmKZI=
-X-Google-Smtp-Source: AGHT+IGluFMXWIuU+L7KpgOtIUlN1kOwy9yluhxuNELxcw0aF7GeI/cleXfamQbCsuMD6cg+sqm4Ow==
-X-Received: by 2002:adf:e80d:0:b0:31d:db2d:27c6 with SMTP id o13-20020adfe80d000000b0031ddb2d27c6mr15542299wrm.30.1697044294056;
-        Wed, 11 Oct 2023 10:11:34 -0700 (PDT)
-Received: from [192.168.10.86] (54-240-197-226.amazon.com. [54.240.197.226])
-        by smtp.gmail.com with ESMTPSA id k10-20020a7bc40a000000b003fc06169ab3sm19567861wmi.20.2023.10.11.10.11.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 10:11:33 -0700 (PDT)
-From:   Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <2bcef089-3268-4eb5-bcad-6f901dc73437@xen.org>
-Date:   Wed, 11 Oct 2023 18:11:25 +0100
+        Wed, 11 Oct 2023 13:14:43 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0421C98
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:14:40 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E05FC14BF;
+        Wed, 11 Oct 2023 10:15:20 -0700 (PDT)
+Received: from [10.57.68.120] (unknown [10.57.68.120])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B77033F5A1;
+        Wed, 11 Oct 2023 10:14:38 -0700 (PDT)
+Message-ID: <1ccde143-18a7-483b-a9a4-fff07b0edc72@arm.com>
+Date:   Wed, 11 Oct 2023 18:14:37 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH] KVM x86/xen: add an override for PVCLOCK_TSC_STABLE_BIT
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Joao Martins <joao.m.martins@oracle.com>
-References: <20231010094047.3850928-1-paul@xen.org>
- <1facc6e797ec42dcf6a027a4343c695a61e251f5.camel@infradead.org>
-Organization: Xen Project
-In-Reply-To: <1facc6e797ec42dcf6a027a4343c695a61e251f5.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [RFC PATCH v1 2/2] mm: swap: Swap-out small-sized THP without
+ splitting
+Content-Language: en-GB
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231010142111.3997780-1-ryan.roberts@arm.com>
+ <20231010142111.3997780-3-ryan.roberts@arm.com>
+ <87r0m1ftvu.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <f1446ef6-3e29-4ce0-866e-c522931ae364@arm.com>
+In-Reply-To: <f1446ef6-3e29-4ce0-866e-c522931ae364@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/2023 18:32, David Woodhouse wrote:
-> On Tue, 2023-10-10 at 09:40 +0000, Paul Durrant wrote:
->> From: Paul Durrant <pdurrant@amazon.com>
+On 11/10/2023 11:36, Ryan Roberts wrote:
+> On 11/10/2023 09:25, Huang, Ying wrote:
+>> Ryan Roberts <ryan.roberts@arm.com> writes:
 >>
->> Unless explicitly told to do so (by passing 'clocksource=tsc' and
->> 'tsc=stable:socket', and then jumping through some hoops concerning
->> potential CPU hotplug) Xen will never use TSC as its clocksource.
->> Hence, by default, a Xen guest will not see PVCLOCK_TSC_STABLE_BIT set
->> in either the primary or secondary pvclock memory areas. This has
->> led to bugs in some guest kernels which only become evident if
->> PVCLOCK_TSC_STABLE_BIT *is* set in the pvclock.
+>>> The upcoming anonymous small-sized THP feature enables performance
+>>> improvements by allocating large folios for anonymous memory. However
+>>> I've observed that on an arm64 system running a parallel workload (e.g.
+>>> kernel compilation) across many cores, under high memory pressure, the
+>>> speed regresses. This is due to bottlenecking on the increased number of
+>>> TLBIs added due to all the extra folio splitting.
+>>>
+>>> Therefore, solve this regression by adding support for swapping out
+>>> small-sized THP without needing to split the folio, just like is already
+>>> done for PMD-sized THP. This change only applies when CONFIG_THP_SWAP is
+>>> enabled, and when the swap backing store is a non-rotating block device
+>>> - these are the same constraints as for the existing PMD-sized THP
+>>> swap-out support.
+>>>
+>>> Note that no attempt is made to swap-in THP here - this is still done
+>>> page-by-page, like for PMD-sized THP.
+>>>
+>>> The main change here is to improve the swap entry allocator so that it
+>>> can allocate any power-of-2 number of contiguous entries between [4, (1
+>>> << PMD_ORDER)]. This is done by allocating a cluster for each distinct
+>>> order and allocating sequentially from it until the cluster is full.
+>>> This ensures that we don't need to search the map and we get no
+>>> fragmentation due to alignment padding for different orders in the
+>>> cluster. If there is no current cluster for a given order, we attempt to
+>>> allocate a free cluster from the list. If there are no free clusters, we
+>>> fail the allocation and the caller falls back to splitting the folio and
+>>> allocates individual entries (as per existing PMD-sized THP fallback).
+>>>
+>>> As far as I can tell, this should not cause any extra fragmentation
+>>> concerns, given how similar it is to the existing PMD-sized THP
+>>> allocation mechanism. There will be up to (PMD_ORDER-1) clusters in
+>>> concurrent use though. In practice, the number of orders in use will be
+>>> small though.
+>>>
+>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>> ---
+>>>  include/linux/swap.h |  7 ++++++
+>>>  mm/swapfile.c        | 60 +++++++++++++++++++++++++++++++++-----------
+>>>  mm/vmscan.c          | 10 +++++---
+>>>  3 files changed, 59 insertions(+), 18 deletions(-)
+>>>
+>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>>> index a073366a227c..fc55b760aeff 100644
+>>> --- a/include/linux/swap.h
+>>> +++ b/include/linux/swap.h
+>>> @@ -320,6 +320,13 @@ struct swap_info_struct {
+>>>  					 */
+>>>  	struct work_struct discard_work; /* discard worker */
+>>>  	struct swap_cluster_list discard_clusters; /* discard clusters list */
+>>> +	unsigned int large_next[PMD_ORDER]; /*
+>>> +					     * next free offset within current
+>>> +					     * allocation cluster for large
+>>> +					     * folios, or UINT_MAX if no current
+>>> +					     * cluster. Index is (order - 1).
+>>> +					     * Only when cluster_info is used.
+>>> +					     */
+>>
+>> I think that it is better to make this per-CPU.  That is, extend the
+>> percpu_cluster mechanism.  Otherwise, we may have scalability issue.
 > 
-> Specifically, some OL7 kernels backported the whole pvclock vDSO thing
-> but *forgot* https://git.kernel.org/torvalds/c/9f08890ab and thus kill
-> init with a SIGBUS the first time it tries to read a clock, because
-> they don't actually map the pvclock pages to userspace :)
-> 
-> They apparently never noticed because evidently *their* Xen fleet
-> doesn't actually jump through all those hoops to use the TSC as its
-> clocksource either.
-> 
-> It's a fairly safe bet that there are more broken guest kernels out
-> there too, hence needing to work around it.
-> 
->>   Hence, to support
->> such guests, give the VMM a new attribute to tell KVM to forcibly
->> clear the bit in the Xen pvclocks.
-> 
-> I frowned at the "PVCLOCK" part of the new attribute for a while,
-> thinking that perhaps if we're going to have a set of flags to tweak
-> behaviour, we shouldn't be so specific. Call it 'XEN_FEATURES' or
-> something... but then I realised we'd want to *advertise* the set of
-> bits which is available for userspace to set...
-> 
-> ... and then I realised we already do. That's exactly what the set of
-> bits returned, and *set*, with KVM_CAP_XEN_HVM is for.
-> 
-> So let's ditch the new *attribute*, and just add your new (renamed)
-> KVM_XEN_HVM_CONFIG_PVCLOCK_NO_STABLE_TSC cap to the set of
-> permitted_flags in kvm_xen_hvm_config() so that userspace can enable it
-> that way like it does the INTERCEPT_HYPERCALL and EVTCHN_SEND
-> behaviours.
-> 
+> Is your concern that the swap_info spinlock will get too contended as its
+> currently written? From briefly looking at percpu_cluster, it looks like that
+> spinlock is always held when accessing the per-cpu structures - presumably
+> that's what's disabling preemption and making sure the thread is not migrated?
+> So I'm not sure what the benefit is currently? Surely you want to just disable
+> preemption but not hold the lock? I'm sure I've missed something crucial...
 
-Ok, sounds like a plan. I'll look at configuring it that way instead.
+I looked a bit further at how to implement what you are suggesting.
+get_swap_pages() is currently taking the swap_info lock which it needs to check
+and update some other parts of the swap_info - I'm not sure that part can be
+removed. swap_alloc_large() (my new function) is not doing an awful lot of work,
+so I'm not convinced that you would save too much by releasing the lock for that
+part. In contrast there is a lot more going on in scan_swap_map_slots() so there
+is more benefit to releasing the lock and using the percpu stuff - correct me if
+I've missunderstood.
 
-   Paul
+As an alternative approach, perhaps it makes more sense to beef up the caching
+layer in swap_slots.c to handle large folios too? Then you avoid taking the
+swap_info lock at all most of the time, like you currently do for single entry
+allocations.
+
+What do you think?
+
+> 
+>>
+>> And this should be enclosed in CONFIG_THP_SWAP.
+> 
+> Yes, I'll fix this in the next version.
+> 
+> Thanks for the review!
+> 
+>>
+>>>  	struct plist_node avail_lists[]; /*
+>>>  					   * entries in swap_avail_heads, one
+>>>  					   * entry per node.
+>>
+>> --
+>> Best Regards,
+>> Huang, Ying
+> 
 
