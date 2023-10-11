@@ -2,99 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE387C526A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F58C7C526C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344784AbjJKLrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42432 "EHLO
+        id S1346062AbjJKLsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234760AbjJKLr3 (ORCPT
+        with ESMTP id S231968AbjJKLsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:47:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74F398
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:47:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 073EAC433C9;
-        Wed, 11 Oct 2023 11:47:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697024848;
-        bh=5eol+w9isDPPTceO0nec+Q5JC7nAOskqOPXHsIAf75Q=;
-        h=From:To:Cc:Subject:Date:From;
-        b=rn63VAU0/bWUAp3lCxWWpkSw9gd9a42ATMVADGPkaClKeM6rE5K2L3RtE0+uAMYeS
-         8tu7jbJSDzs+gLhP+5LZK8j8Gg4F8Zr4jd2pf1PuhaPXprA9XeS6lu5f/Kd20pxWTg
-         qc5D1dnzOnztti8h0IlLDHg52+bahm8Edro1oexxTO5TnwfqWAbL8wMybH7HVghNXB
-         2v/XkKWu1P9WLthhCx5fxuV55ZKZZUflHJypPLIg/WT/62a/6c2Tume2Yc8hcl00S6
-         ptFuxGkq6EEdNl3n7SW7ygbHETur+TiHQXsOpzFXjkkqLpfLjKJmHDms62y6rfV3ts
-         7BAeo8HCGH/5A==
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
-To:     Gabriel Somlo <somlo@cmu.edu>,
-        "Michael S. Tsirkin" <mst@redhat.com>, qemu-devel@nongnu.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [PATCH] riscv, qemu_fw_cfg: Add support for RISC-V architecture
-Date:   Wed, 11 Oct 2023 13:47:21 +0200
-Message-Id: <20231011114721.193732-1-bjorn@kernel.org>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Wed, 11 Oct 2023 07:48:35 -0400
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2062.outbound.protection.outlook.com [40.107.105.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788A093;
+        Wed, 11 Oct 2023 04:48:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Uc/ZM1LZ+L0kNoWL8gt9a1IIvkuGz58re6GNqeMbajwupGe0Zuy8yseMsfl/gA1eL0yHh+Ov+5FKES0U71JyRCUpZMBo9/HmnDnZGjKuqTJ92fOUWpUbOgBhh+Nv1Jq5T1IB8G3Whzlu1fZhNN6LRlmH9mGPwHIh9Aodh5J/SIf71AiKkoGtEnENbe4yi6UC1swp+cPKw41L4qElZYO1/sKhZdD+1uvtCEUrrC2Eeyi3uJpbqiTh8sgJ1PFnXXSxo0Xv21WhV8nJuji64opaUiNrvvxakqBWW2XS4/H6+3nRXleFSIFtS1UR9U9wEIvsZiuvM3AOtKEbH+ZjNfR8vA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lZ6K9XQpKYme/J4N/MNWVaFAPGeXREktm84uM0KX4yk=;
+ b=d4J++M7S9l0e/2bdqeUThuQP50cPJf/0N+3nKftBsNLdjH/9HEFfMAQ7ApoYBam2cvacqeqxokw3DouTe6P4anL9zAHnvacOnhe0AefRykMZKD8Eky2w4zlXEyD3n7IosHIlY/v3uqh8e2AIMCsZ4u0Q/mF2SHCH6UE4yAlW/n3VuGq1LC1Jb9CH0oBW5LEpGJaLOuoISIIno1D2EXUxa3A2TarrUz6FKQlOCDmVRldCxS84YG0prshyNggeBHDGFToCkkA8SCdRuwKozaLGMaExaPaLr07oaURPraEFn8v8Cak6rzmvSGrXJN5ajrHZ/RjjyLDc7NiO95OumI21ag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lZ6K9XQpKYme/J4N/MNWVaFAPGeXREktm84uM0KX4yk=;
+ b=eTsC+k3NvYo5wh3edGqFWzjix+HxJKUSY7cO9lau9KRlf7ZwWsSf5CymCDLY1kN5CSTbh0pwgIBTXH9CEUg2KPReOfzzu9BAbhlIr8TLI5AfTwdxJqBN8M+Ijqm64vgsiVsOC5BTTfwgBM5gNM/cx4RVSReNyCcURAyMSZfVRO4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
+ by DB9PR04MB8300.eurprd04.prod.outlook.com (2603:10a6:10:243::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Wed, 11 Oct
+ 2023 11:48:30 +0000
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::51f9:b8d2:7ddd:c74f]) by DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::51f9:b8d2:7ddd:c74f%6]) with mapi id 15.20.6863.032; Wed, 11 Oct 2023
+ 11:48:29 +0000
+From:   Chancel Liu <chancel.liu@nxp.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Chancel Liu <chancel.liu@nxp.com>
+Subject: [PATCH v3 1/2] ASoC: dt-bindings: sound-card-common: List DAPM endpoints ignoring system suspend
+Date:   Wed, 11 Oct 2023 19:47:58 +0800
+Message-Id: <20231011114759.1073757-1-chancel.liu@nxp.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR02CA0025.apcprd02.prod.outlook.com
+ (2603:1096:4:195::21) To DB9PR04MB9498.eurprd04.prod.outlook.com
+ (2603:10a6:10:360::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|DB9PR04MB8300:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2ffddb9b-51b6-41e3-5655-08dbca4ffcdf
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TGi6RzXPOZw9VEdzJk+SWTjRBBck2zK8PGBN1NDlkoHXEddj8/NTgdjYPGGtn65hW6CvyC94NtTOA/C5Y8IkQVfP6fdBjTwWQPu4B8o47t+ibV8vdgMoYbrhQ7zOiZ8xC4qeYuDMYqd0M1S/gAfbxkhU6zuWYdnGFAkRMj9OR57+Cory31p9EMO7pUnZH5rlF/Y/Glcz+G1sVlrbrUrYsLjKaYippzo2hBPt/6//HEHwJ8k9CKt/K6V1fjM9n2pocRE0eKjDDX390yiBsTwxLnIQVLcHlLEbWLc6lYoTrUj2VgLCnY/KTIW35LWvU9H80YLq+pH+T+iWkr9nm5aCRqd+rSbzgZoU+41rW1xsYVnDj7td9z8YpJv9tpN9Lbg0ID3yGKLmC+26ndBh3FDnKeAuGN7XMBfCk30N9OxSxYNhZsvzSXO2ROSB+K2Rc5Rd7NdEwXJS6EbUjm1rWWIg7gwllXWc4HC0SbhIVIFGMZg7qms/nkWd28EIg91jLeLTrWjr1F3xpMUoZTkpJsCHxdLL2SJJqr1n1LhHHDUvL0ND77YpCwQXo09f4qtGNfQSF01U6xvcbUyiB5haKUOCNsM7N7x+3dfsM6fS8FIiqjvqHFIQ4c8VeV5oYjlf0GUMYAmDJPHM+3b5BIPSSqIJ6w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(376002)(346002)(366004)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(6506007)(6512007)(52116002)(1076003)(478600001)(921005)(44832011)(6486002)(6666004)(2616005)(26005)(15650500001)(83380400001)(7416002)(2906002)(5660300002)(66556008)(66946007)(66476007)(8936002)(8676002)(4326008)(316002)(41300700001)(36756003)(86362001)(38100700002)(38350700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DtLkls71WtuLmKETLOiFqazqYpyK97YHzAcvKFLUluTXbZsiW9lvgn9M7ItZ?=
+ =?us-ascii?Q?JqWJNjWA+aMAhjthmZwFD0j3ucpNATvkPSivjiW8v/Dw3xHAU6tsdD6ovf1q?=
+ =?us-ascii?Q?8U+qkkLRanOuHydtU2u19G++Y02ZW9Ae+qj/wnTxtpK2g5bVK0vZKqf0KJS9?=
+ =?us-ascii?Q?gh+NpFeLI76ATBO6bHEVsyX8tbu6HUkwU4I5f8haBEDRnF+JVPfWagYffhiV?=
+ =?us-ascii?Q?E3GqgDYpISgzWx6WY9f2dBzLgJsaZ0d4tKjnd8BXxgIAOeUEsm76sNtoYNSc?=
+ =?us-ascii?Q?of/2MceJIEjZV7nyo7VlT4DdT6mGVSEmk/2KeTbjISIV/NIAsmeqrI8Pbkvl?=
+ =?us-ascii?Q?8d31GYj4xSHDKCTL1EvQR+f9bBWqZTsjArgg7j2Bu5c2/9awbGlayNQvplhK?=
+ =?us-ascii?Q?zwmLPvEOGOcsiegLpUXDGhSnXLg2B/O2zZ8HTMAkQxIPrwhGk1CqHwJ70psW?=
+ =?us-ascii?Q?caC3sa/aeuBDTqHG+XJ21mTSAexEg5yvOsLicUJXmkn/iUZxBMBeZb/hxOyE?=
+ =?us-ascii?Q?9KzLibwM228D0DnqEhNU1tWggWUlncDUKlGgRrFqBguzerTswoLrGEeosgev?=
+ =?us-ascii?Q?AH96ADakltVhA5nBAUFiK0Vt5VJ4gdwugZmFYN21yPM+msJUd1bhG3Wd4jwE?=
+ =?us-ascii?Q?X015nIoAeHo+Hwvrewv5olT930WrhyPPQQNht0ozaFaaGUUMsnVpUQebJTLR?=
+ =?us-ascii?Q?v3FTavG+qdKfna/HYeWO2mFEs2YXWcoSBzXmcEIkc4l7TFpY1ArQKj8zpMvu?=
+ =?us-ascii?Q?vKBTb4F3qBHKyDg+kmZN5n1N229HvZ7nMw0mRhK07uDhN48wLzWC3tqL5OOk?=
+ =?us-ascii?Q?HYANSczy/PthtdkpWW1T32k8Z1SvRxUWlGBSzdnV5WcHZszjzJ8rLgj4weX2?=
+ =?us-ascii?Q?zzvcDtu5+7/WUY9w0ui3Fw5Lqrc8RKFF4tJ3IyrHlLWinoz4IQSK3cpoAZAT?=
+ =?us-ascii?Q?aX2eyDmj6kHFIHIUhYT0v4UID8zfwLeU4FdkhutSUcWhtrjThKT74s0FbPnF?=
+ =?us-ascii?Q?CbrutA4C71BV2HoyV17gbIZwsvNSn6QqpScAooR5ux0J4R4dX9NgZwXe9u8h?=
+ =?us-ascii?Q?qzAfULaHbOnIUVRWs05MO0cPeUEe01Hu5jwKV29O9QFE5Wkr18iGXt3ku+Jf?=
+ =?us-ascii?Q?e+uk4FS9YO7Kch2WKkIlF8yyYqZcbB9UY1JEdZP/4K5uqGN0LiV4cd0j9ta7?=
+ =?us-ascii?Q?n6xuXGyDPoofh/YusiywJWrjIFmdFEZl1G4ZjIA2ksJErc8sEInqwkx+5WoM?=
+ =?us-ascii?Q?qa++FMZZX77dNz+ARFXgPnlRwMe6JU5PQvaenpeJTyjN1GjbclwxUh6ACa4d?=
+ =?us-ascii?Q?PVl5yYppHUc4MoKUpoo2cM7pVNGt7zm92zqdy/fr+pCr3cucgpy+VwWoHLoo?=
+ =?us-ascii?Q?c8yJUqSd/w+ERQxVx+S+BBUxe/AbgqPkt1KhR61eiie7BCS+U8p5CIli8N4I?=
+ =?us-ascii?Q?lPULRDMEdYx12eh5OBbojQREJ+vW1YraxSJbNYNLz1ewl+z+KeSEI+wBALjL?=
+ =?us-ascii?Q?sEeX++TlfiNsUoyOVbJaZuuYlSCA9e4DD1/tpA1iMQHE029iCjbSRpFBbOnb?=
+ =?us-ascii?Q?T4HdiIGKGuomji1cYJbiwko/zZmSyCU0nryItOFS?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ffddb9b-51b6-41e3-5655-08dbca4ffcdf
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2023 11:48:29.9277
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XbDuxK2PEd1skTdJpWKOMP9VKlZfuTH7YjXDIeD0CmbI9C1eiswAWOyg8LY/Pkt/gV8eBBJ3VLuwaTUvIK/2yg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8300
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Björn Töpel <bjorn@rivosinc.com>
+Add a property to list DAPM endpoints which mark paths between these
+endpoints should not be disabled when system enters in suspend state.
 
-Qemu fw_cfg support was missing for RISC-V, which made it hard to do
-proper vmcore dumps from qemu.
+LPA means low power audio case. For example on asymmetric
+multiprocessor, there are Cortex-A core and Cortex-M core, Linux is
+running on Cortex-A core, RTOS or other OS is running on Cortex-M core.
+The audio hardware devices can be controlled by Cortex-M. LPA can be
+explained as a mechanism that Cortex-A allocates a large buffer and
+fill audio data, then Cortex-A can enter into suspend for the purpose
+of power saving. Cortex-M continues to play the sound during suspend
+phase of Cortex-A. LPA requires some audio paths still enabled when
+Cortex-A enters into suspend.
 
-Add the missing RISC-V arch-defines.
-
-You can now do vmcore dumps from qemu. Add "-device vmcoreinfo" to the
-qemu command-line. From the qemu montior:
-  (qemu) dump-guest-memory vmcore
-
-The vmcore can now be used, e.g., with the "crash" utility.
-
-Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
 ---
- drivers/firmware/Kconfig       | 2 +-
- drivers/firmware/qemu_fw_cfg.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ .../bindings/sound/sound-card-common.yaml          | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index b59e3041fd62..f05ff56629b3 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -155,7 +155,7 @@ config RASPBERRYPI_FIRMWARE
+diff --git a/Documentation/devicetree/bindings/sound/sound-card-common.yaml b/Documentation/devicetree/bindings/sound/sound-card-common.yaml
+index 3a941177f684..f43147c78651 100644
+--- a/Documentation/devicetree/bindings/sound/sound-card-common.yaml
++++ b/Documentation/devicetree/bindings/sound/sound-card-common.yaml
+@@ -17,6 +17,20 @@ properties:
+       pair of strings, the first being the connection's sink, the second
+       being the connection's source.
  
- config FW_CFG_SYSFS
- 	tristate "QEMU fw_cfg device support in sysfs"
--	depends on SYSFS && (ARM || ARM64 || PARISC || PPC_PMAC || SPARC || X86)
-+	depends on SYSFS && (ARM || ARM64 || PARISC || PPC_PMAC || RISCV || SPARC || X86)
- 	depends on HAS_IOPORT_MAP
- 	default n
- 	help
-diff --git a/drivers/firmware/qemu_fw_cfg.c b/drivers/firmware/qemu_fw_cfg.c
-index a69399a6b7c0..1448f61173b3 100644
---- a/drivers/firmware/qemu_fw_cfg.c
-+++ b/drivers/firmware/qemu_fw_cfg.c
-@@ -211,7 +211,7 @@ static void fw_cfg_io_cleanup(void)
- 
- /* arch-specific ctrl & data register offsets are not available in ACPI, DT */
- #if !(defined(FW_CFG_CTRL_OFF) && defined(FW_CFG_DATA_OFF))
--# if (defined(CONFIG_ARM) || defined(CONFIG_ARM64))
-+# if (defined(CONFIG_ARM) || defined(CONFIG_ARM64) || defined(CONFIG_RISCV))
- #  define FW_CFG_CTRL_OFF 0x08
- #  define FW_CFG_DATA_OFF 0x00
- #  define FW_CFG_DMA_OFF 0x10
-
-base-commit: 1c8b86a3799f7e5be903c3f49fcdaee29fd385b5
++  lpa-widgets:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description: |
++      A list of DAPM endpoints which mark paths between these endpoints should
++      not be disabled when system enters in suspend state. LPA means low power
++      audio case. For example on asymmetric multiprocessor, there are Cortex-A
++      core and Cortex-M core, Linux is running on Cortex-A core, RTOS or other
++      OS is running on Cortex-M core. The audio hardware devices can be
++      controlled by Cortex-M. LPA can be explained as a mechanism that Cortex-A
++      allocates a large buffer and fill audio data, then Cortex-A can enter
++      into suspend for the purpose of power saving. Cortex-M continues to play
++      the sound during suspend phase of Cortex-A. LPA requires some audio paths
++      still enabled when Cortex-A enters into suspend.
++
+   model:
+     $ref: /schemas/types.yaml#/definitions/string
+     description: User specified audio sound card name
 -- 
-2.39.2
+2.25.1
 
