@@ -2,203 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC797C56EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F2A7C56ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234723AbjJKOeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 10:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
+        id S232342AbjJKOeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 10:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232480AbjJKOeP (ORCPT
+        with ESMTP id S231506AbjJKOeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 10:34:15 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA2890;
-        Wed, 11 Oct 2023 07:34:13 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BEVNAa012906;
-        Wed, 11 Oct 2023 14:33:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=IiaYUCjyK9kZwQr3Mcj2XTB6CIc79PEtX61tyNIY+6I=;
- b=RW8a3bAjfHeVMeB4ZapKDM6nW1nFqyR/HiQYXPoSBqfUNi9zPS04g/cCl9Ry985DXhNb
- AhWaaMWqKSIqSbZiLZy3mQDyLitvDi1Zkp4zX42a7bkrrypv9i/wHQy0odIrAbUtpeKH
- VJ3617TLOtByL3K6W7rY3JcQWKU9UncHsBUnOsLKnUNh0pmXH8zngqdRJFK9Jfhf2G0+
- dxGnoOJsTwwLm0YCiYBv9TOhn+BzDk9XRikEjLFOUDTRDvwvcaWptFhw6HBB2iwA8Uem
- gqZeon1KmdScc7ahUHqTGK130r2IPl10NAA5f+p/HK39M3M+7LGW/2EbMKUZRthrVpf3 ww== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnwba0nhe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 14:33:45 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39BEVNgs012903;
-        Wed, 11 Oct 2023 14:33:44 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnwba0nd8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 14:33:44 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39BCx52l001150;
-        Wed, 11 Oct 2023 14:33:42 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkkvk08p8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 14:33:42 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39BEXf3L26018486
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Oct 2023 14:33:41 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 52D155805B;
-        Wed, 11 Oct 2023 14:33:41 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D8B605804B;
-        Wed, 11 Oct 2023 14:33:38 +0000 (GMT)
-Received: from [9.171.29.13] (unknown [9.171.29.13])
-        by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 11 Oct 2023 14:33:38 +0000 (GMT)
-Message-ID: <8403e613-e51e-4c76-a542-3bdd3050cfa9@linux.ibm.com>
-Date:   Wed, 11 Oct 2023 16:33:37 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 net] net/smc: fix smc clc failed issue when netdevice
- not in init_net
-Content-Language: en-GB
-To:     Albert Huang <huangjie.albert@bytedance.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>
-Cc:     "D. Wythe" <alibuda@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231011074851.95280-1-huangjie.albert@bytedance.com>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <20231011074851.95280-1-huangjie.albert@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: XoxWrBBea8b99XYLqJVss4AyPrBPm4Ml
-X-Proofpoint-ORIG-GUID: dylW30NxWSrBwOnlahl3jJp_MgSbvedN
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 11 Oct 2023 10:34:07 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E7390
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 07:34:05 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-49d8fbd307fso2603152e0c.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 07:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697034844; x=1697639644; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h9dlHMKHWL4oxHCbk6cTeoLTqzzESyQ3LZPT6zZgxVY=;
+        b=LVa4jdtIOk3uzOzcI+RwwmcQyFs3BY77zMBb2Zodk31dj02ZGjvshdu1zj/PnGFL2r
+         4duQpT6YAL26wKxxmrwE4s1Ijx5Ebu03ElvO6loaQXougudJt9IxhfV9on5cxglPeKan
+         mXnf7hSjq5VpXLmXi1YAAfSeqIOqax7lli6j6KU4xKThPTuqLNfoEfdv3Cz5JYFE7a4W
+         6/5Z679DQEIeF11BZ0z20AOyl+9z2ODi7A7DSHFmjIjBaqSzm9WT3nWdcpIyOi04aK21
+         YI5Zzp1OtkKGOXvql/5Ejv5IS6of/zDY3LRtCVANikdLh/ok1IbGLJw92AiUirVWCTfc
+         Zh6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697034844; x=1697639644;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h9dlHMKHWL4oxHCbk6cTeoLTqzzESyQ3LZPT6zZgxVY=;
+        b=QI4zYF+EPZV98Eh4Qh/cEw3uRP0h7QB4dJy8+21yf16g5Ouxoc9OJkoGQZSFCKTgMs
+         DabVHC8CR/wTrR3qjRIxc5WGj1UezcD94V1++c18k/1u/Yxo6ZfAOAE0t572pLZtwpLI
+         G7Kr7vQoRVdyXTsJHiAtCQMSGMhaX00zaoutZcQ7n4hiOvJ/tiyEzMi7aYl3QR0SnJMv
+         2dC1d5SM5NyCMsnk8t6iIvFRCfk413h72g3wgH3bad2Yktf4FXzq4IEsqfNZyvGk2JCO
+         714y/ziddkgQZV9WhtWxnjCN+vLAtwVjDmqNrfUM9m1auqsZEqDoHfpUDDxwme0XEk2w
+         067Q==
+X-Gm-Message-State: AOJu0YwCts6EfKZNcTf3TCXrSrMk/8QGeTYxVunsKN+MVghwStRCD6pQ
+        daU8C577Y2wxFUHlDpfOn9giHEJIwcKAPXhCP55KmQ==
+X-Google-Smtp-Source: AGHT+IEUbqktC4PpTtZ06GVQtHc4WrK6oRv5c4SbnVBHjACZzvvpIpaLxZa1p1qSGn6py3G8qorRiDcFxdkmOhzdNT0=
+X-Received: by 2002:a05:6122:1d47:b0:49d:eeed:3ed5 with SMTP id
+ gd7-20020a0561221d4700b0049deeed3ed5mr16800967vkb.14.1697034844510; Wed, 11
+ Oct 2023 07:34:04 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_09,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 clxscore=1011 spamscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 suspectscore=0 lowpriorityscore=0 impostorscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310110128
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231009153427.20951-1-brgl@bgdev.pl> <20231009153427.20951-8-brgl@bgdev.pl>
+ <v5ty4xeshodjlpyatqlrjipqejazamuhqhauorujveyqzpikoq@rftlvk6354yx>
+ <CAMRc=MdGABGa_bc3_ug+iSKtMg9pcKe40F7zv9Ff2C0ed8i2=Q@mail.gmail.com> <nq6m3v2wflhv5qgxtllympnzqtbtcn7d7ihgw5rdpvqjugv2xs@4vpuzoopkeic>
+In-Reply-To: <nq6m3v2wflhv5qgxtllympnzqtbtcn7d7ihgw5rdpvqjugv2xs@4vpuzoopkeic>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 11 Oct 2023 16:33:53 +0200
+Message-ID: <CAMRc=MdO3ctA-g=VVhXp9QKPdUT1XX0iEKTzEKzHjNzh_=-jPQ@mail.gmail.com>
+Subject: Re: [PATCH v3 07/15] firmware: qcom: scm: make qcom_scm_assign_mem()
+ use the TZ allocator
+To:     Andrew Halaney <ahalaney@redhat.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 11, 2023 at 3:54=E2=80=AFPM Andrew Halaney <ahalaney@redhat.com=
+> wrote:
+>
+> On Wed, Oct 11, 2023 at 09:41:49AM +0200, Bartosz Golaszewski wrote:
+> > On Wed, Oct 11, 2023 at 12:19=E2=80=AFAM Andrew Halaney <ahalaney@redha=
+t.com> wrote:
+> > >
+> > > On Mon, Oct 09, 2023 at 05:34:19PM +0200, Bartosz Golaszewski wrote:
+> > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > > >
+> > > > Let's use the new TZ memory allocator to obtain a buffer for this c=
+all
+> > > > instead of using dma_alloc_coherent().
+> > > >
+> > > > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > > > ---
+> > > >  drivers/firmware/qcom/qcom_scm.c | 10 ++++++----
+> > > >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qc=
+om/qcom_scm.c
+> > > > index 71e98b666391..754f6056b99f 100644
+> > > > --- a/drivers/firmware/qcom/qcom_scm.c
+> > > > +++ b/drivers/firmware/qcom/qcom_scm.c
+> > > > @@ -4,6 +4,7 @@
+> > > >   */
+> > > >
+> > > >  #include <linux/arm-smccc.h>
+> > > > +#include <linux/cleanup.h>
+> > > >  #include <linux/clk.h>
+> > > >  #include <linux/completion.h>
+> > > >  #include <linux/cpumask.h>
+> > > > @@ -998,14 +999,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr,=
+ size_t mem_sz,
+> > > >       struct qcom_scm_mem_map_info *mem_to_map;
+> > > >       phys_addr_t mem_to_map_phys;
+> > > >       phys_addr_t dest_phys;
+> > > > -     dma_addr_t ptr_phys;
+> > > > +     phys_addr_t ptr_phys;
+> > > >       size_t mem_to_map_sz;
+> > > >       size_t dest_sz;
+> > > >       size_t src_sz;
+> > > >       size_t ptr_sz;
+> > > >       int next_vm;
+> > > >       __le32 *src;
+> > > > -     void *ptr;
+> > >
+> > > nit: couldn't you keep this up here?
+> > >
+> >
+> > This still needs to make its way into the coding style guide but I got
+> > yelled at by Linus Torvalds personally for not declaring the managed
+> > variables where they are initialized. So this is the correct approach.
+>
+> I'm being a stick in the mud, but couldn't you initialize to NULL and
+> keep them all up top? That seems more in line with the current "declare
+> all variables at the start of function" guideline the kernel follows.
+>
+> Not a big deal... yours call! but /me shrugs
+>
 
+I agree with you but it's not my call to make. Please see[1].
 
-On 11.10.23 09:48, Albert Huang wrote:
-> If the netdevice is within a container and communicates externally
-> through network technologies such as VxLAN, we won't be able to find
-> routing information in the init_net namespace. To address this issue,
-> we need to add a struct net parameter to the smc_ib_find_route function.
-> This allow us to locate the routing information within the corresponding
-> net namespace, ensuring the correct completion of the SMC CLC interaction.
-> 
-> Fixes: e5c4744cfb59 ("net/smc: add SMC-Rv2 connection establishment")
-> Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
-> ---
->   net/smc/af_smc.c | 3 ++-
->   net/smc/smc_ib.c | 7 ++++---
->   net/smc/smc_ib.h | 2 +-
->   3 files changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-> index bacdd971615e..7a874da90c7f 100644
-> --- a/net/smc/af_smc.c
-> +++ b/net/smc/af_smc.c
-> @@ -1201,6 +1201,7 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
->   		(struct smc_clc_msg_accept_confirm_v2 *)aclc;
->   	struct smc_clc_first_contact_ext *fce =
->   		smc_get_clc_first_contact_ext(clc_v2, false);
-> +	struct net *net = sock_net(&smc->sk);
->   	int rc;
->   
->   	if (!ini->first_contact_peer || aclc->hdr.version == SMC_V1)
-> @@ -1210,7 +1211,7 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
->   		memcpy(ini->smcrv2.nexthop_mac, &aclc->r0.lcl.mac, ETH_ALEN);
->   		ini->smcrv2.uses_gateway = false;
->   	} else {
-> -		if (smc_ib_find_route(smc->clcsock->sk->sk_rcv_saddr,
-> +		if (smc_ib_find_route(net, smc->clcsock->sk->sk_rcv_saddr,
->   				      smc_ib_gid_to_ipv4(aclc->r0.lcl.gid),
->   				      ini->smcrv2.nexthop_mac,
->   				      &ini->smcrv2.uses_gateway))
-> diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
-> index 9b66d6aeeb1a..89981dbe46c9 100644
-> --- a/net/smc/smc_ib.c
-> +++ b/net/smc/smc_ib.c
-> @@ -193,7 +193,7 @@ bool smc_ib_port_active(struct smc_ib_device *smcibdev, u8 ibport)
->   	return smcibdev->pattr[ibport - 1].state == IB_PORT_ACTIVE;
->   }
->   
-> -int smc_ib_find_route(__be32 saddr, __be32 daddr,
-> +int smc_ib_find_route(struct net *net, __be32 saddr, __be32 daddr,
->   		      u8 nexthop_mac[], u8 *uses_gateway)
->   {
->   	struct neighbour *neigh = NULL;
-> @@ -205,7 +205,7 @@ int smc_ib_find_route(__be32 saddr, __be32 daddr,
->   
->   	if (daddr == cpu_to_be32(INADDR_NONE))
->   		goto out;
-> -	rt = ip_route_output_flow(&init_net, &fl4, NULL);
-> +	rt = ip_route_output_flow(net, &fl4, NULL);
->   	if (IS_ERR(rt))
->   		goto out;
->   	if (rt->rt_uses_gateway && rt->rt_gw_family != AF_INET)
-> @@ -235,6 +235,7 @@ static int smc_ib_determine_gid_rcu(const struct net_device *ndev,
->   	if (smcrv2 && attr->gid_type == IB_GID_TYPE_ROCE_UDP_ENCAP &&
->   	    smc_ib_gid_to_ipv4((u8 *)&attr->gid) != cpu_to_be32(INADDR_NONE)) {
->   		struct in_device *in_dev = __in_dev_get_rcu(ndev);
-> +		struct net *net = dev_net(ndev);
->   		const struct in_ifaddr *ifa;
->   		bool subnet_match = false;
->   
-> @@ -248,7 +249,7 @@ static int smc_ib_determine_gid_rcu(const struct net_device *ndev,
->   		}
->   		if (!subnet_match)
->   			goto out;
-> -		if (smcrv2->daddr && smc_ib_find_route(smcrv2->saddr,
-> +		if (smcrv2->daddr && smc_ib_find_route(net, smcrv2->saddr,
->   						       smcrv2->daddr,
->   						       smcrv2->nexthop_mac,
->   						       &smcrv2->uses_gateway))
-> diff --git a/net/smc/smc_ib.h b/net/smc/smc_ib.h
-> index 4df5f8c8a0a1..ef8ac2b7546d 100644
-> --- a/net/smc/smc_ib.h
-> +++ b/net/smc/smc_ib.h
-> @@ -112,7 +112,7 @@ void smc_ib_sync_sg_for_device(struct smc_link *lnk,
->   int smc_ib_determine_gid(struct smc_ib_device *smcibdev, u8 ibport,
->   			 unsigned short vlan_id, u8 gid[], u8 *sgid_index,
->   			 struct smc_init_info_smcrv2 *smcrv2);
-> -int smc_ib_find_route(__be32 saddr, __be32 daddr,
-> +int smc_ib_find_route(struct net *net, __be32 saddr, __be32 daddr,
->   		      u8 nexthop_mac[], u8 *uses_gateway);
->   bool smc_ib_is_valid_local_systemid(void);
->   int smcr_nl_get_device(struct sk_buff *skb, struct netlink_callback *cb);
+Bartosz
 
-If it works for VXLAN, I'm still wondering why this case doesn't work, 
-could you please answer it?
-https://lore.kernel.org/netdev/00bbbf48440c1889ecd16a590ebb746b820a4f48.camel@linux.ibm.com/
+[1] https://lore.kernel.org/lkml/20230919193516.GA20937@noisy.programming.k=
+icks-ass.net/T/#m7f97e10dbfde777f58493398a77933e6a2f3c15d
 
-
-Thanks,
-Wenjia
+> >
+> > Bart
+> >
+> > > Otherwise,
+> > >
+> > > Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+> > >
+> > > >       int ret, i, b;
+> > > >       u64 srcvm_bits =3D *srcvm;
+> > > >
+> > > > @@ -1015,10 +1015,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_add=
+r, size_t mem_sz,
+> > > >       ptr_sz =3D ALIGN(src_sz, SZ_64) + ALIGN(mem_to_map_sz, SZ_64)=
+ +
+> > > >                       ALIGN(dest_sz, SZ_64);
+> > > >
+> > > > -     ptr =3D dma_alloc_coherent(__scm->dev, ptr_sz, &ptr_phys, GFP=
+_KERNEL);
+> > > > +     void *ptr __free(qcom_tzmem) =3D qcom_tzmem_alloc(__scm->memp=
+ool,
+> > > > +                                                     ptr_sz, GFP_K=
+ERNEL);
+> > > >       if (!ptr)
+> > > >               return -ENOMEM;
+> > > >
+> > > > +     ptr_phys =3D qcom_tzmem_to_phys(ptr);
+> > > > +
+> > > >       /* Fill source vmid detail */
+> > > >       src =3D ptr;
+> > > >       i =3D 0;
+> > > > @@ -1047,7 +1050,6 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr,=
+ size_t mem_sz,
+> > > >
+> > > >       ret =3D __qcom_scm_assign_mem(__scm->dev, mem_to_map_phys, me=
+m_to_map_sz,
+> > > >                                   ptr_phys, src_sz, dest_phys, dest=
+_sz);
+> > > > -     dma_free_coherent(__scm->dev, ptr_sz, ptr, ptr_phys);
+> > > >       if (ret) {
+> > > >               dev_err(__scm->dev,
+> > > >                       "Assign memory protection call failed %d\n", =
+ret);
+> > > > --
+> > > > 2.39.2
+> > > >
+> > >
+> >
+>
