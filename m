@@ -2,99 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9F07C5E92
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 22:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC457C5E98
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 22:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233520AbjJKUlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 16:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37392 "EHLO
+        id S235239AbjJKUoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 16:44:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233360AbjJKUlM (ORCPT
+        with ESMTP id S233501AbjJKUoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 16:41:12 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7375C91;
-        Wed, 11 Oct 2023 13:41:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85651C433C7;
-        Wed, 11 Oct 2023 20:41:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697056871;
-        bh=9EVT3HUYovZmBqwUKcOJz38R9MR6qb+rx5ZSOFAJ9lk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=02RpwIjpbOoci5puKNroyjLJgHAt6seKNkDwAusu4bGam+wq8f3YGxS7G+wBVqnuz
-         Dw6oloGvQbw5TiygDfl1zByi+COf7BdLfGw3ZHTcjhe1N7VreagjPP/2eauIulOGWo
-         lloPIOMBnqJARmSAQ6kpqzxtMuDzevzJz+PUK9Ow=
-Date:   Wed, 11 Oct 2023 22:41:08 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dan Raymond <raymod2@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-serial <linux-serial@vger.kernel.org>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, peterz@infradead.org,
-        andriy.shevchenko@linux.intel.com, quic_saipraka@quicinc.com,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v5] arch/x86: port I/O tracing on x86
-Message-ID: <2023101129-dragonish-chaplain-ab30@gregkh>
-References: <b8eae358-a3b3-fd68-82f1-b2c53534b922@gmail.com>
- <2023100344-dart-jailbreak-c371@gregkh>
- <94e2b77c-9cc4-534f-e650-06d7e0697f9f@gmail.com>
- <20231004195001.76a57417@gandalf.local.home>
- <80b84be0-a0ad-d1a9-607a-a87c6cf509e0@gmail.com>
- <cc7fba3b-9da2-b9eb-95c8-7336e1cd4449@gmail.com>
- <e92f5091-4e50-9241-5b60-39be101e70d6@gmail.com>
+        Wed, 11 Oct 2023 16:44:07 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B40291;
+        Wed, 11 Oct 2023 13:44:06 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bffa8578feso3065531fa.2;
+        Wed, 11 Oct 2023 13:44:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697057044; x=1697661844; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P31EaSRln5Y8qXIhPg5k92XnAsV91qhf1ea5PLnQlac=;
+        b=XIvtI/nq89ozpt/HKMWYaLpsyb/orPMH5VPrsE22xSWlZ+wxUvZ6gpgw8ZqilNwXgT
+         IqND8bevZjnzxD1RWu5XuDkbxQMD45YOUSNbhrRgrdys5vBFCA3ULJlrK4QV56B5faUZ
+         oJoAAuOZxdz5Q/ZQQQ2VmVnl6VvwEI4SdTY+jMKR+Pvv8B1i9ZTUM6/ISwyjp2Tu7pf0
+         dyEJ0GZtVZXulhVyvJ3gypMwCZT9z8ENYRZy/jYFHNoMYajibznrkvjNmd6MC0pV7ExK
+         XMJmvZwOnu+zhnO2DbZo/TSGXx5qx98haNiqKAerctPbY8WCYshPcU1V/r7Qww1MvemJ
+         OVWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697057044; x=1697661844;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P31EaSRln5Y8qXIhPg5k92XnAsV91qhf1ea5PLnQlac=;
+        b=k9w+7ThAYLGFmtohJlJXMs0o0A37w11xIoJyL8JCJOzGAi1WlQ3ddy83FcYH9oTBVC
+         p1Wht/VxO/JAHOU/PnVancxzFKDPQ0c9qmCVI7Y1JGyx/zL7qGoN+G/twI0K9ZEhHdwe
+         GjWGcpvpAQj69eGLy0W5fVG5CzTRseykMTE08eO1TBgNNYoPZbUWBVQpG1VaXzE1YHWZ
+         zY1ZCO0jmpY+bbKkVTuPV/yXtgp5cAE4mLDsGi0iCpxUIn8n7WBiUyyJSYhZrR/056SZ
+         9m4MTZYFBf6ez6BfIEDk2zfoXykKz9KZK93puOIu6Xc9CIOMj8L14gxe9qhvFa7vFtLH
+         nh5A==
+X-Gm-Message-State: AOJu0YwsBgW2E0goV6l50DHeSFhihh2XgzmfApbS8oVvCwWgK2NCAti2
+        YQJQ5uAIznwwiLGImAEybyA=
+X-Google-Smtp-Source: AGHT+IFQxx5VCl8KKjK9TQ9WjcRa0ePH4vtXFloK3iDhSbfTnnC5mV9npmHSp/URant9nZFf6rq5pQ==
+X-Received: by 2002:a19:2d14:0:b0:505:84c8:c640 with SMTP id k20-20020a192d14000000b0050584c8c640mr19445254lfj.48.1697057044063;
+        Wed, 11 Oct 2023 13:44:04 -0700 (PDT)
+Received: from orome.fritz.box (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id i16-20020a1709064ed000b0099bd0b5a2bcsm10267065ejv.101.2023.10.11.13.44.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 13:44:03 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 22:44:01 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Mikko Perttunen <cyndis@kapsi.fi>
+Cc:     Mikko Perttunen <mperttunen@nvidia.com>,
+        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] gpu: host1x: Add locking in channel allocation
+Message-ID: <ZScJEcoHQvi22Tg4@orome.fritz.box>
+References: <20230901111510.663401-1-cyndis@kapsi.fi>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="EHUtb8eUTGdPEKmK"
 Content-Disposition: inline
-In-Reply-To: <e92f5091-4e50-9241-5b60-39be101e70d6@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230901111510.663401-1-cyndis@kapsi.fi>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 02:22:14PM -0600, Dan Raymond wrote:
-> On 10/7/2023 11:56 AM, Dan Raymond wrote:
-> > Add support for port I/O tracing on x86.  Memory mapped I/O tracing is
-> > available on x86 via CONFIG_MMIOTRACE but that relies on page faults
-> > so it doesn't work with port I/O.  This feature uses tracepoints in a
-> > similar manner as CONFIG_TRACE_MMIO_ACCESS.
-> > 
-> > Signed-off-by: Dan Raymond <raymod2@gmail.com>
-> > Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> > V1 -> V2:
-> >   - create header file for prototypes to silence new compiler warning
-> >   - reduce CPU overhead to 2 instructions (no branching) when tracing disabled
-> >   - fix imprecise IP logging by retrieving the IP off the stack instead of using
-> >     compile time labels
-> > 
-> > V2 -> V3:
-> >   - restore missing semicolon
-> > 
-> > V3 -> V4:
-> >   - make GPL licenses consistent
-> >   - change pointer arguments from (long) to (void *)
-> >   - eliminate include guard checks and use -DDISABLE_TRACEPOINTS instead to
-> >     disable tracepoints in arch/x86/boot/*
-> >   - fix compiler warnings due to signed/unsigned mismatch in arch_cmpxchg64()
-> > 
-> > V4 -> V5:
-> >   - add -DDISABLE_TRACEPOINTS to arch/x86/realmode/rm/Makefile
-> 
-> Can I get reviews on this please?
 
-You sent it 3 days ago, please be patient, there is no need to demand
-work from others so quickly, most of us are totally swamped.  If after 2
-weeks or so with no review, then you can ask again.
+--EHUtb8eUTGdPEKmK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In the meantime, to help us out, please do some patch review yourself on
-the various mailing lists (the tty list can always use help.)  To ask
-for work from others without helping out is not always good...
+On Fri, Sep 01, 2023 at 02:15:07PM +0300, Mikko Perttunen wrote:
+> From: Mikko Perttunen <mperttunen@nvidia.com>
+>=20
+> Add locking around channel allocation to avoid race conditions.
+>=20
+> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+> ---
+>  drivers/gpu/host1x/channel.c | 7 +++++++
+>  drivers/gpu/host1x/channel.h | 3 +++
+>  2 files changed, 10 insertions(+)
 
-thanks,
+All three patches applied, thanks.
 
-greg k-h
+Thierry
+
+--EHUtb8eUTGdPEKmK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmUnCREACgkQ3SOs138+
+s6GH+A//QmJ4c3RRvMjnASjZz/n6FJB1QRhFqjrBtygOt+15mW6zqGaL1XUoTR/c
+q9PV84sXYyooWoVAp3IKa/hXrNhRxjsEwkxDTEetnvIi+ANSMe0I5gjIJDq40rdg
+RClG6XT1sh9zD6ez8Uy++Ge5qOd2Kx8zMKZ56gsZ97pG15bXLjSMfbtGrT0Iq0R6
+CdpKkDAQcKB1z+rikxt0pd+J36ibF+usXOM0HRz5Xfcz5Ssfy1c5Thp98MLYgaKu
+i9akppvkAmWU7CPv/DzFDXdewtRfKA6FjGvWUMjY8oHJ8xHgiFpY/5DG+eD7DftT
+lI4ngk4U4Vt+BfBgAooD5BfDEDgGAU0LSz7yK6WTAI3UZyPCw9moYw5LD3n2WtfO
+LUI7I5IOiQKfvRGVxMY2t2EYNbRSb9Ti8gNUMobmoEmd2ZEPDOQh5Vv4O5yEs7El
+R32rNJlaz+AoL3ojbNwu570XvDJL1H5sgzHG4Oo+DSP8Id4zEx4KIDcu8MevFhXh
+UETZvCd4DkQaLRxuw65IgRwr+PdO3IpQWP4LbVzEFlLHmEeZaUqU0E9C5aA3E90t
+fykEqYDr9BA79V2lox+KamGcq2ZeCrGZ62JCM3boB7y2zmFFulHTgIuA7rmZo0Iu
+dHrlYhTNsHMg4059Ty7qQwSr4Ez5I3Fwa2BC2W5Db5sb1LbnHqg=
+=8Scw
+-----END PGP SIGNATURE-----
+
+--EHUtb8eUTGdPEKmK--
