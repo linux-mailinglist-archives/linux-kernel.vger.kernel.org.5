@@ -2,143 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7397C48FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19ED37C48FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbjJKFEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 01:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40374 "EHLO
+        id S229643AbjJKFFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 01:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345290AbjJKFEF (ORCPT
+        with ESMTP id S229563AbjJKFFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 01:04:05 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB30A98;
-        Tue, 10 Oct 2023 22:04:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1697000639;
-        bh=K3u8hkJcQqtO+YQvZ3kZU5fcYnwrYeu1GVkzg+7Fdgg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=PKm7Vnl0FYcA/3EuADgVuW2upi0LvJD4xUR5NVJL6hL3R4ci5S6G2oD1JRjm5vSNd
-         1og8cTPiAOdm00Gwdv2bm7oh01YLmyTtQV2W3c5fbstjNKCxvORJWtr+56SGkUJeQ3
-         mcw81fHPzr59vx38SLnwMMsw1wXN7QYeOzPALP7oW57N72YSRWltXtCxMe+9I5G3pE
-         TM/iiW3evty7xrp7noxBne6jFgUJ5CZ12SPLbkP+5F66wCqPeYyGXPRBoGTcRwnSCD
-         Q0JuTz0csEmjBsBbLyTtWzru6JQP7gw9/dLLlT49h+KGLS7Aj5TOzALoQOGOeBDeUm
-         217F8yB9qvbFw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S50zd6kPbz4xVW;
-        Wed, 11 Oct 2023 16:03:57 +1100 (AEDT)
-Date:   Wed, 11 Oct 2023 16:03:57 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>, Joerg Roedel <joro@8bytes.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <jroedel@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>
-Subject: linux-next: manual merge of the iommufd tree with the iommu tree
-Message-ID: <20231011160357.292c84e3@canb.auug.org.au>
+        Wed, 11 Oct 2023 01:05:08 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615789E
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:05:06 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7a2a9e5451bso250160939f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:05:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1697000705; x=1697605505; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WxTb+tzaW80rCd53UmA2HdlmPdirZzFTdr3/d2GhRv0=;
+        b=NIvEbTzeRoUZGJ+s5QD52YqMFlgDbLKjEAv8AVBD6UHZNY9HeFXHuuSHKaYpCt91tq
+         g5K7asLLhH90l1V8aebrpjxZNyFXmCM4+FpcDTyrTnUtUwlouJwKakKakQjiADUDBVwE
+         6VfWPlivqeUv/xe3ddYE/qpbNxHeJhVpjpcdo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697000705; x=1697605505;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WxTb+tzaW80rCd53UmA2HdlmPdirZzFTdr3/d2GhRv0=;
+        b=uwxwzeNRWBCq+n+fGbnOXAd2VrDV8v5f9jcASJl02A5vp81vy1hNcTmUBU85DIlBwN
+         yM7GbW7g0drYVXN17GpQqT68n9eCvagJ1FkKG2ualHtz+d6tfOwasWA6vSFn3JXjfhLV
+         lFKpF3nJ+OEVhJnOe8A1FlP5Yq7kiiyF2Q62OT0m4EGf9UOIG6SjHYXSybsjnGL2dAts
+         4aM2iEq2Y3ZWi91N1b0RsN/t2ZKd6mDsEbk2dSUfKbryHkD3I4Npeoy6NwEnzf//UYgY
+         k6+Ww5UymJQGkL0zm6MAkGc4SnRWyYVhZfBoXZd4wJ133Kh/SvZUBZ3naUo3K8QSqOOs
+         nA5g==
+X-Gm-Message-State: AOJu0Yx1mz9uySM8/MdxYpCBx6T7/0UY7vwMB4x9vj7wsu2hqc50lbMr
+        v3LuMWMM+FpfSRTJT/2RT3XbGg==
+X-Google-Smtp-Source: AGHT+IFy03G2cJuFBIp6FGEixKXoqXrVTKJalXLWgyRWJ4CG+YpsKoYUI6z524T5aX5M2yqvkC+r0w==
+X-Received: by 2002:a5d:9954:0:b0:786:f4a0:d37e with SMTP id v20-20020a5d9954000000b00786f4a0d37emr19775042ios.4.1697000705583;
+        Tue, 10 Oct 2023 22:05:05 -0700 (PDT)
+Received: from localhost (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
+        by smtp.gmail.com with ESMTPSA id m11-20020a02c88b000000b0042b35e163besm3195221jao.88.2023.10.10.22.05.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 22:05:05 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 05:05:04 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, Chengming Zhou <zhouchengming@bytedance.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ovidiu Panait <ovidiu.panait@windriver.com>,
+        Ingo Molnar <mingo@kernel.org>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 5.15 000/183] 5.15.134-rc1 review
+Message-ID: <20231011050504.GA201855@google.com>
+References: <20231004175203.943277832@linuxfoundation.org>
+ <CA+G9fYunnEUT2evdabX1KOTiryP1heNHWDH4LWZCt2SVRmnKOA@mail.gmail.com>
+ <20231006162038.d3q7sl34b4ouvjxf@revolver>
+ <57c1ff4d-f138-4f89-8add-c96fb3ba6701@paulmck-laptop>
+ <20231006175714.begtgj6wrs46ukmo@revolver>
+ <7652477c-a37c-4509-9dc9-7f9d1dc08291@paulmck-laptop>
+ <CAEXW_YS16NxPxg52T=3FcyZ2qocj36zKyhPnEQL3nBTbD-qJ-A@mail.gmail.com>
+ <9470dab6-dee5-4505-95a2-f6782b648726@paulmck-laptop>
+ <433f5823-059c-4b51-8d18-8b356a5a507f@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/XUsIJ_1_dGcvgRQyzzcdzIk";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <433f5823-059c-4b51-8d18-8b356a5a507f@paulmck-laptop>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/XUsIJ_1_dGcvgRQyzzcdzIk
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Oct 10, 2023 at 06:34:35PM -0700, Paul E. McKenney wrote:
+[...]
+> > > > > > > It's also worth noting that the bug this fixes wasn't exposed until the
+> > > > > > > maple tree (added in v6.1) was used for the IRQ descriptors (added in
+> > > > > > > v6.5).
+> > > > > >
+> > > > > > Lots of latent bugs, to be sure, even with rcutorture.  :-/
+> > > > >
+> > > > > The Right Thing is to fix the bug all the way back to the introduction,
+> > > > > but what fallout makes the backport less desirable than living with the
+> > > > > unexposed bug?
+> > > >
+> > > > You are quite right that it is possible for the risk of a backport to
+> > > > exceed the risk of the original bug.
+> > > >
+> > > > I defer to Joel (CCed) on how best to resolve this in -stable.
+> > > 
+> > > Maybe I am missing something but this issue should also be happening
+> > > in mainline right?
+> > > 
+> > > Even though mainline has 897ba84dc5aa ("rcu-tasks: Handle idle tasks
+> > > for recently offlined CPUs") , the warning should still be happening
+> > > due to Liam's "kernel/sched: Modify initial boot task idle setup"
+> > > because the warning is just rearranged a bit but essentially the same.
+> > > 
+> > > IMHO, the right thing to do then is to drop Liam's patch from 5.15 and
+> > > fix it in mainline (using the ideas described in this thread), then
+> > > backport both that new fix and Liam's patch to 5.15.
+> > > 
+> > > Or is there a reason this warning does not show up on the mainline?
+> 
+> There is not a whole lot of commonality between the v5.15.134 version of
+> RCU Tasks Trace and that of mainline.  In theory, in mainline, CPU hotplug
+> is supposed to be disabled across all calls to trc_inspect_reader(),
+> which means that there would not be any CPU coming or going.
+> 
+> But there could potentially be some time between when a CPU was
+> marked as online and its idle task was marked PF_IDLE.  And in
+> fact x86 start_secondary() invokes set_cpu_online() before it calls
+> cpu_startup_entry(), and it is the latter than sets PF_IDLE.
+> 
+> The same is true of alpha, arc, arm, arm64, csky, ia64, loongarch, mips,
+> openrisc, parisc, powerpc, riscv, s390, sh, sparc32, sparc64, x86 xen,
+> and xtensa, which is everybody.
+> 
+> One reason why my testing did not reproduce this is because I was running
+> against v6.6-rc1, and cff9b2332ab7 ("kernel/sched: Modify initial boot
+> task idle setup") went into v6.6-rc3.  An initial run merging in current
+> mainline also failed to reproduce this, but I am running overnight.
+> If that doesn't reproduce, I will try inserting delays between the
+> set_cpu_online() and the cpu_startup_entry().
 
-Hi all,
+I thought the warning happens before set_cpu_online() is even called, because
+under such situation, ofl == true and the task is not set to PF_IDLE yet:
 
-Today's linux-next merge of the iommufd tree got a conflict in:
+                  WARN_ON_ONCE(ofl && task_curr(t) && !is_idle_task(t));
 
-  include/linux/iommu.h
+> If this problem is real, fixes include:
+> 
+> o	Revert Liam's patch and make Tiny RCU's call_rcu() deal with
+> 	the problem.  This is overhead and non-tinyness, but to Joel's
+> 	point, it might be best.
+> 
+> o	Go back to something more like Liam's original patch, which
+> 	cleared PF_IDLE only for the boot CPU.
+> 
+> o	Set PF_IDLE before calling set_cpu_online().  This would work,
+> 	but it would also be rather ugly, reaching into each and every
+> 	architecture.
+> 
+> o	Move the call to set_cpu_online() into cpu_startup_entry().
+> 	This would require some serious inspection to prove that it is
+> 	safe, assuming that it is in fact safe.
+> 
+> o	Drop the WARN_ON_ONCE() from trc_inspect_reader().  Not all
+> 	that excited by losing this diagnostic, but then again it
+> 	has been awhile since it has caught anything.
+> 
+> o	Make the WARN_ON_ONCE() condition in trc_inspect_reader() instead
+> 	to a "return false" to retry later.  Ditto, also not liking the
+> 	possibility of indefinite deferral with no warning.
 
-between commit:
+Just for completeness, 
 
-  4601cd2d7c4c ("iommu: Add ops->domain_alloc_paging()")
+ o      Since it just a warning, checking for task_struct::pid == 0 instead of is_idle_task()?
+        Though PF_IDLE is also set in play_idle_precise().
 
-from the iommu tree and commit:
+ o	Change warning to:
+                  WARN_ON_ONCE(ofl && task_curr(t) && (!is_idle_task(t) && t->pid != 0));
 
-  909f4abd1097 ("iommu: Add new iommu op to create domains owned by userspa=
-ce")
+thanks,
 
-from the iommufd tree.
+ - Joel
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/iommu.h
-index 0c4d8ae985ac,3861d66b65c1..000000000000
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@@ -238,9 -234,15 +238,17 @@@ struct iommu_iotlb_gather=20
-   *           op is allocated in the iommu driver and freed by the caller =
-after
-   *           use. The information type is one of enum iommu_hw_info_type =
-defined
-   *           in include/uapi/linux/iommufd.h.
--  * @domain_alloc: allocate iommu domain
-+  * @domain_alloc: allocate and return an iommu domain if success. Otherwi=
-se
-+  *                NULL is returned. The domain is not fully initialized u=
-ntil
-+  *                the caller iommu_domain_alloc() returns.
- + * @domain_alloc_paging: Allocate an iommu_domain that can be used for
- + *                       UNMANAGED, DMA, and DMA_FQ domain types.
-+  * @domain_alloc_user: Allocate an iommu domain corresponding to the input
-+  *                     parameters as defined in include/uapi/linux/iommuf=
-d.h.
-+  *                     Unlike @domain_alloc, it is called only by IOMMUFD=
- and
-+  *                     must fully initialize the new domain before return.
-+  *                     Upon success, a domain is returned. Upon failure,
-+  *                     ERR_PTR must be returned.
-   * @probe_device: Add device to iommu driver handling
-   * @release_device: Remove device from iommu driver handling
-   * @probe_finalize: Do final setup work after the device is added to an I=
-OMMU
-@@@ -275,7 -275,7 +283,8 @@@ struct iommu_ops=20
- =20
-  	/* Domain allocation and freeing by the iommu driver */
-  	struct iommu_domain *(*domain_alloc)(unsigned iommu_domain_type);
- +	struct iommu_domain *(*domain_alloc_paging)(struct device *dev);
-+ 	struct iommu_domain *(*domain_alloc_user)(struct device *dev, u32 flags);
- =20
-  	struct iommu_device *(*probe_device)(struct device *dev);
-  	void (*release_device)(struct device *dev);
-
---Sig_/XUsIJ_1_dGcvgRQyzzcdzIk
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUmLL0ACgkQAVBC80lX
-0Gy9Lwf+KQDkhevSfSMpEi1dI/A1o817/ucreReGCLafDqz4Tnsxs6BBDnu3wQND
-cTaUGqTMsJt2Qdd9aa4ZudHhRKqZ4UZbwS3w1yla/6BBsTJl66yO+H5AamfFtGpY
-NU8HLZ3JYb5FTaTOYo+IjyUaCB4wzPeI93D1AnHxGENtuO/CkdOerG+rIDw2jAkG
-XMKXfXSK/5yF+zhYqCnjC9WaXk6HjKmd5LaUHdHA9DC4+Ay34cAy9hwULWDdB9fL
-A6C6TlBCkySAXiQktMPL9Wf4g3+mb9F6lwi06XctW0nO3HA8l/YUYe0SlEGIa9ly
-5etszg6I5k5ykd/vl8TI2kpdmUXaIQ==
-=T8Qq
------END PGP SIGNATURE-----
-
---Sig_/XUsIJ_1_dGcvgRQyzzcdzIk--
