@@ -2,211 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E7B7C4BD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DFE7C4BF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344828AbjJKHaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 03:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34274 "EHLO
+        id S1345010AbjJKHeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 03:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344731AbjJKHab (ORCPT
+        with ESMTP id S1345499AbjJKHeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 03:30:31 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4636FB9;
-        Wed, 11 Oct 2023 00:30:29 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c9d407bb15so390895ad.0;
-        Wed, 11 Oct 2023 00:30:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697009429; x=1697614229; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=481kwyoPSHDX+4JF1QVKBTbkhSw4SWArgmqeSO/N9bg=;
-        b=UHYHENiL+xJf7bciSOA3dL/eRpnZS4WwMhYKst9b+acW69GS4DVz8Mhrrfi73zArGe
-         yspclcIwO3HNtFaF+/PfgFFV5lTIDPDkl9uG8T2DsKU/dPUeqXOw+JZ22FzgTVzERW9y
-         avd/SQuheFvxYD0bAH/+OJQAHerjsYV8P70+XEWwDAB4EspbV8xWu2miuR/A5zwp1EDL
-         6UsMuDDV7YQTWl0fESJOuBJSFoSYvBKj4zwo32yvY+glrXhbeStNU2Z6AsRwHnNjLRJI
-         5GEi9ahiP8YMaOIMLbiGuEMoJDLKKYJSo83B3iMmuKIiO4cpF0SHKajhMCIkQO7PDXKv
-         Rh4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697009429; x=1697614229;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=481kwyoPSHDX+4JF1QVKBTbkhSw4SWArgmqeSO/N9bg=;
-        b=hda+55eFdITvlaG6hTO5c15sbJlHV/y+lRIgFKzY088Fhujdaq/lwtPbcWOK0w0tPC
-         a3wAzn5NAVguVl7KxaOcXU994EBVRDJ4MTA8S6ot96ZtZqJs7m8foI0ON2vq41PaOvU0
-         ZgCdUwS41m0nRQMBeVRU8Kv7ulliRVwqofsIEIYxKNBmXG6BPBBz7Qk1xrBhw1EsQvji
-         gHmpaApctx/TiOJdpHAIpm2XIDd3HIYnFm+6psm5EN/z96dMh2HH0TJPOUa98cQ3q50m
-         MfrGFCpcxA2IV5WSPuRyh3adgqBC8OErCoCVLnfUU3zshOqcjbc5Vd/n/Icgh3iOhpJR
-         22YA==
-X-Gm-Message-State: AOJu0Yxp5siA5tCz/znW1m971tEBWtjxae6vGpl1XUQLKgvKmgov+YNj
-        yzfssbIq0xtSl5HnTFW9tfE=
-X-Google-Smtp-Source: AGHT+IEmMVessNgXQdctBaoEjzu3v9Hkz36qlqr9ZgEJpfbYpmyP0b6kG6ar/DJxrRBysDOssMM0ww==
-X-Received: by 2002:a17:902:82c4:b0:1c6:694:1dda with SMTP id u4-20020a17090282c400b001c606941ddamr19079607plz.63.1697009428492;
-        Wed, 11 Oct 2023 00:30:28 -0700 (PDT)
-Received: from hcdev-d520mt2.. (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
-        by smtp.gmail.com with ESMTPSA id j6-20020a170902758600b001c61e628e9dsm1011352pll.77.2023.10.11.00.30.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 00:30:27 -0700 (PDT)
-From:   Marvin Lin <milkfafa@gmail.com>
-To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl
-Cc:     dan.carpenter@linaro.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
-        avifishman70@gmail.com, tmaimon77@gmail.com, kwliu@nuvoton.com,
-        kflin@nuvoton.com, Marvin Lin <milkfafa@gmail.com>
-Subject: [PATCH v2] media: nuvoton: npcm-video: Fix sleeping in atomic context
-Date:   Wed, 11 Oct 2023 15:30:03 +0800
-Message-Id: <20231011073003.1637086-1-milkfafa@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 11 Oct 2023 03:34:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE95992
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 00:33:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bb4TaTpxv5J8iSs+A5abhWEGldd9r3gdni3LZgLtLDA=; b=mZ6PbUSdKl1FJmB0ShPmISe2v0
+        GM8FD2rBcJrbVNTNzv0qN3qmBFiaproN8z6lsS+DoUfIN88tSKuHVZvFWwfg5QHvMGmpDce1bL9hR
+        Sdwn+ETvYM69aXB1uB9Ueb99gKF7qWnab+WTyitImNoAnzg0Knc8KLBmYjlyJSGUEUkyMCsxJseg/
+        WCWjozLWwmT9zVJ9WCX4fTB3AoVuQ89WgfOof0XJGiuH2TBwPlTcJzYCzSGTmjaJv4CTfAPUiLpJ5
+        7xyS4TZIfwHb1dKYEEyrWvAHsbx047Vh7GgqUwKUlhpmp2+mC4g/rHk9WlcrqenPOZz1ZzHBqRZEV
+        g1RQrvdA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qqTiX-009UTG-NS; Wed, 11 Oct 2023 07:33:17 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 62D8D30026F; Wed, 11 Oct 2023 09:33:17 +0200 (CEST)
+Date:   Wed, 11 Oct 2023 09:33:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Abel Wu <wuyun.abel@bytedance.com>
+Cc:     Benjamin Segall <bsegall@google.com>, mingo@kernel.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, mgorman@suse.de, bristot@redhat.com,
+        corbet@lwn.net, qyousef@layalina.io, chris.hyser@oracle.com,
+        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
+        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
+        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
+        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
+        tglx@linutronix.de
+Subject: Re: Re: [PATCH 05/15] sched/fair: Implement an EEVDF like policy
+Message-ID: <20231011073317.GJ14330@noisy.programming.kicks-ass.net>
+References: <20230531115839.089944915@infradead.org>
+ <20230531124603.931005524@infradead.org>
+ <xm265y3sodyo.fsf@google.com>
+ <a54a4ccb-9d56-4686-93b6-e9bbbe01f625@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a54a4ccb-9d56-4686-93b6-e9bbbe01f625@bytedance.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change to use mutex instead of spinlock for buffer list lock to fix
-sleeping in atomic context warnings reported by the Smatch tool.
+On Wed, Oct 11, 2023 at 12:14:30PM +0800, Abel Wu wrote:
 
-Fixes: 70721089985c ("media: nuvoton: Add driver for NPCM video capture and encoding engine")
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Marvin Lin <milkfafa@gmail.com>
----
- drivers/media/platform/nuvoton/npcm-video.c | 30 +++++++++------------
- 1 file changed, 13 insertions(+), 17 deletions(-)
+> With Benjamin's fix, the semantics of 'Earliest Eligible' preserved.
 
-diff --git a/drivers/media/platform/nuvoton/npcm-video.c b/drivers/media/platform/nuvoton/npcm-video.c
-index b9e6782f59b4..ea32d9588bb5 100644
---- a/drivers/media/platform/nuvoton/npcm-video.c
-+++ b/drivers/media/platform/nuvoton/npcm-video.c
-@@ -26,7 +26,6 @@
- #include <linux/regmap.h>
- #include <linux/reset.h>
- #include <linux/sched.h>
--#include <linux/spinlock.h>
- #include <linux/string.h>
- #include <linux/v4l2-controls.h>
- #include <linux/videodev2.h>
-@@ -120,7 +119,7 @@ struct npcm_video {
- 	struct mutex video_lock; /* v4l2 and videobuf2 lock */
- 
- 	struct list_head buffers;
--	spinlock_t lock; /* buffer list lock */
-+	struct mutex buffer_lock; /* buffer list lock */
- 	unsigned long flags;
- 	unsigned int sequence;
- 
-@@ -782,7 +781,6 @@ static int npcm_video_start_frame(struct npcm_video *video)
- {
- 	struct npcm_video_buffer *buf;
- 	struct regmap *vcd = video->vcd_regmap;
--	unsigned long flags;
- 	unsigned int val;
- 	int ret;
- 
-@@ -798,17 +796,17 @@ static int npcm_video_start_frame(struct npcm_video *video)
- 		return -EBUSY;
- 	}
- 
--	spin_lock_irqsave(&video->lock, flags);
-+	mutex_lock(&video->buffer_lock);
- 	buf = list_first_entry_or_null(&video->buffers,
- 				       struct npcm_video_buffer, link);
- 	if (!buf) {
--		spin_unlock_irqrestore(&video->lock, flags);
-+		mutex_unlock(&video->buffer_lock);
- 		dev_dbg(video->dev, "No empty buffers; skip capture frame\n");
- 		return 0;
- 	}
- 
- 	set_bit(VIDEO_CAPTURING, &video->flags);
--	spin_unlock_irqrestore(&video->lock, flags);
-+	mutex_unlock(&video->buffer_lock);
- 
- 	npcm_video_vcd_state_machine_reset(video);
- 
-@@ -834,14 +832,13 @@ static void npcm_video_bufs_done(struct npcm_video *video,
- 				 enum vb2_buffer_state state)
- {
- 	struct npcm_video_buffer *buf;
--	unsigned long flags;
- 
--	spin_lock_irqsave(&video->lock, flags);
-+	mutex_lock(&video->buffer_lock);
- 	list_for_each_entry(buf, &video->buffers, link)
- 		vb2_buffer_done(&buf->vb.vb2_buf, state);
- 
- 	INIT_LIST_HEAD(&video->buffers);
--	spin_unlock_irqrestore(&video->lock, flags);
-+	mutex_unlock(&video->buffer_lock);
- }
- 
- static void npcm_video_get_diff_rect(struct npcm_video *video, unsigned int index)
-@@ -1071,12 +1068,12 @@ static irqreturn_t npcm_video_irq(int irq, void *arg)
- 
- 	if (status & VCD_STAT_DONE) {
- 		regmap_write(vcd, VCD_INTE, 0);
--		spin_lock(&video->lock);
-+		mutex_lock(&video->buffer_lock);
- 		clear_bit(VIDEO_CAPTURING, &video->flags);
- 		buf = list_first_entry_or_null(&video->buffers,
- 					       struct npcm_video_buffer, link);
- 		if (!buf) {
--			spin_unlock(&video->lock);
-+			mutex_unlock(&video->buffer_lock);
- 			return IRQ_NONE;
- 		}
- 
-@@ -1093,7 +1090,7 @@ static irqreturn_t npcm_video_irq(int irq, void *arg)
- 			size = npcm_video_hextile(video, index, dma_addr, addr);
- 			break;
- 		default:
--			spin_unlock(&video->lock);
-+			mutex_unlock(&video->buffer_lock);
- 			return IRQ_NONE;
- 		}
- 
-@@ -1104,7 +1101,7 @@ static irqreturn_t npcm_video_irq(int irq, void *arg)
- 
- 		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
- 		list_del(&buf->link);
--		spin_unlock(&video->lock);
-+		mutex_unlock(&video->buffer_lock);
- 
- 		if (npcm_video_start_frame(video))
- 			dev_err(video->dev, "Failed to capture next frame\n");
-@@ -1508,13 +1505,12 @@ static void npcm_video_buf_queue(struct vb2_buffer *vb)
- 	struct npcm_video *video = vb2_get_drv_priv(vb->vb2_queue);
- 	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
- 	struct npcm_video_buffer *nvb = to_npcm_video_buffer(vbuf);
--	unsigned long flags;
- 	bool empty;
- 
--	spin_lock_irqsave(&video->lock, flags);
-+	mutex_lock(&video->buffer_lock);
- 	empty = list_empty(&video->buffers);
- 	list_add_tail(&nvb->link, &video->buffers);
--	spin_unlock_irqrestore(&video->lock, flags);
-+	mutex_unlock(&video->buffer_lock);
- 
- 	if (test_bit(VIDEO_STREAMING, &video->flags) &&
- 	    !test_bit(VIDEO_CAPTURING, &video->flags) && empty) {
-@@ -1744,8 +1740,8 @@ static int npcm_video_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	video->dev = &pdev->dev;
--	spin_lock_init(&video->lock);
- 	mutex_init(&video->video_lock);
-+	mutex_init(&video->buffer_lock);
- 	INIT_LIST_HEAD(&video->buffers);
- 
- 	regs = devm_platform_ioremap_resource(pdev, 0);
--- 
-2.34.1
+Yeah, my bad.
 
+> But since all this is about latency rather than fairness, I wonder if
+
+It is about both, fairness is absolutely important.
+
+> there are cases worthy of breaking the 'eligible' rule.
+
+See the discussion with Youssef, if we weaken the eligible rule you get
+horrific interference because you end up placing new tasks around the
+0-lag point.
