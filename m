@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FF27C527C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1627C5274
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbjJKLvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
+        id S234746AbjJKLu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234829AbjJKLsz (ORCPT
+        with ESMTP id S231935AbjJKLu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:48:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F257CA9;
-        Wed, 11 Oct 2023 04:48:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DE7EC433C8;
-        Wed, 11 Oct 2023 11:48:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697024933;
-        bh=u9Bib1G26xubCLXuoKQJbbgiqRSPlByRzAQB8SaHLx8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qgEbu6Bq9z3UKeqhLy0QAKw1dKpXyvqi+9uOAtjmlqemipeYtjlEItfPEOMrzvuT3
-         OZZLazIYlcv5TbWWw9783GNQ9q9wAE6p+IBpzwXzpPeYNbuL7SiWkMvZesL9ajtmv2
-         DSA13c+KAkJ4OzrSGP3PStTDv1jAAg/VP7UupPmJUsr6Zmut+AzNyU/H24KHp+OEmz
-         /aoXU7viEam2Fmft5M/qEVLlUtpW49CGK+h33lBfBZ9qh5afKui/QK1+Fiui+MQIC+
-         R4d5sn5dk+CAU/oBsKPdGklyZXeZsv2qt2vH4B4BaIUTE4IXX9Tl79xdWdplCJYDE3
-         FP5NJR4xepdEA==
-Date:   Wed, 11 Oct 2023 17:18:49 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Kelvin.Cao@microchip.com
-Cc:     dmaengine@vger.kernel.org, George.Ge@microchip.com,
-        linux-kernel@vger.kernel.org, logang@deltatee.com,
-        christophe.jaillet@wanadoo.fr, hch@infradead.org
-Subject: Re: [PATCH v6 1/1] dmaengine: switchtec-dma: Introduce Switchtec DMA
- engine PCI driver
-Message-ID: <ZSaLoaenhsEG4/IP@matsya>
-References: <20230728200327.96496-1-kelvin.cao@microchip.com>
- <20230728200327.96496-2-kelvin.cao@microchip.com>
- <ZMlSLXaYaMry7ioA@matsya>
- <fd597a2a71f1c5146c804bb9fce3495864212d69.camel@microchip.com>
- <b0dc3da623dee479386e7cb75841b8b7913c9890.camel@microchip.com>
- <ZR/htuZSKGJP1wgU@matsya>
- <f72b924b8c51a7768b0748848555e395ecbb32eb.camel@microchip.com>
- <ZSORx0SwTerzlasY@matsya>
- <1c677fbf37ac2783f864b523482d4e06d9188861.camel@microchip.com>
+        Wed, 11 Oct 2023 07:50:27 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84348F
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:50:04 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c62d61dc96so43281375ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:50:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697025004; x=1697629804; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6jXMPoHtqd/Hx6fmqzikg66SSiek1hyl8J8uZ94eBkM=;
+        b=MlMVuK9l7ZchBCdcVeYq02hScRLv77WoJSIsU6f5kw0TpCul/0wKQGN6VTV82eZUXU
+         QHHaq6ExGub6eUD0OXZK1ZI9Ced5do382vChI0CwvL0u9ajCKyqm17weKASdAQhmwE1u
+         ksH9S9nxFiUp54yfpm/y49LrdpSz/HGdXq5RN0AImu/NLB3RbVlfixgeK3IO0cAjr7lC
+         0EShU8CGjR2HWTXlLQ4+FzsMZpEZ3uAFde59ImSR4Gc8bruMySsDjNw1a323GVkmzKDP
+         v2v+EwUw++hSr6KHqHUPh9K1V/gOpqQ/nMJSYF5lLugU57tFi+Krs+sdAUggQ9UjU/QR
+         GJpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697025004; x=1697629804;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6jXMPoHtqd/Hx6fmqzikg66SSiek1hyl8J8uZ94eBkM=;
+        b=lTjVkh6XmYG6TGvIvZGDoW8CkziPPkNSODUDN/OlGgIZDVjOssCWBV1Vtzzg1JDB6g
+         Bo5OGEhDDfjjd/xpHRTssUTGcUOjTJ6LEEsvPISW1Qbfnvpsbhxj0iuZCSbi2RirMTrn
+         6wVGJl4yepvvVXLT6slHbP+jeoO1vepbmGNZB/akRoBwav04aueKq3zVXTuQddohPZPf
+         9Ckkl7ctBBJ59drbfAloDn6zrqSIRRobk02HAcW9GAECe6hzD9lMblQuC6PtGuvQNuQJ
+         Dw5b1pXc7H+JWKxJIZVipCnqEl8BYHhEP/0s4+gxPwJ+zVN6kXnSIcLfaUAcSzZyyYvr
+         aRwA==
+X-Gm-Message-State: AOJu0YwyfcgilhpI1zAwEgKRvYu1cPu0iouN/hlCigtd9cisVWb0/T/s
+        +7xWBVMWNx8bmYb2enj2U/t+cQ==
+X-Google-Smtp-Source: AGHT+IEDCqXJj3YOhgBFw9VpCN1j9W+/kcrhhPe3h0VKXOEk8qhAXQDlXRw7da3dwnXFhyKLZaiHdQ==
+X-Received: by 2002:a17:903:32cf:b0:1c9:c3eb:6557 with SMTP id i15-20020a17090332cf00b001c9c3eb6557mr3824638plr.0.1697025004127;
+        Wed, 11 Oct 2023 04:50:04 -0700 (PDT)
+Received: from [10.84.153.115] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id d3-20020a170902c18300b001a5fccab02dsm13752060pld.177.2023.10.11.04.49.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 04:50:02 -0700 (PDT)
+Message-ID: <bdddc6f5-5e17-445b-bd86-dc14a8d17866@bytedance.com>
+Date:   Wed, 11 Oct 2023 19:49:52 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1c677fbf37ac2783f864b523482d4e06d9188861.camel@microchip.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Re: [PATCH 05/15] sched/fair: Implement an EEVDF like policy
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Benjamin Segall <bsegall@google.com>, mingo@kernel.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, mgorman@suse.de, bristot@redhat.com,
+        corbet@lwn.net, qyousef@layalina.io, chris.hyser@oracle.com,
+        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
+        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
+        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
+        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
+        tglx@linutronix.de
+References: <20230531115839.089944915@infradead.org>
+ <20230531124603.931005524@infradead.org> <xm265y3sodyo.fsf@google.com>
+ <a54a4ccb-9d56-4686-93b6-e9bbbe01f625@bytedance.com>
+ <20231011073317.GJ14330@noisy.programming.kicks-ass.net>
+From:   Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <20231011073317.GJ14330@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-10-23, 21:23, Kelvin.Cao@microchip.com wrote:
-> On Mon, 2023-10-09 at 11:08 +0530, Vinod Koul wrote:
-
-> > > u64 size_to_transfer;
-> > 
-> > Why cant the client driver write to doorbell, is there anything which
-> > prevents us from doing so?
+On 10/11/23 3:33 PM, Peter Zijlstra Wrote:
+> On Wed, Oct 11, 2023 at 12:14:30PM +0800, Abel Wu wrote:
 > 
-> I think the potential challenge here for the client driver to ring db
-> is that the client driver (host RC) is a different requester in the
-> PCIe hierarchy compared to DMA EP, in which case PCIe ordering need to
-> be considered. 
+>> there are cases worthy of breaking the 'eligible' rule.
 > 
-> As PCIe ensures that reads don't pass writes, we can insert a read DMA
-> operation with DMA_PREP_FENSE flag in between the two DMA writes (one
-> for data transfer and one for notification) to ensure the ordering for
-> the same requester DMA EP. I'm not sure if the RC could ensure the same
-> ordering if the client driver issue MMIO write to db after the data DMA
-> and read DMA completion, so that the consumer is guaranteed the
-> transferred data is ready in memory when the db is triggered by the
-> client MMIO write. I guess it's still doable with MMIO write but just
-> some special consideration needed. 
+> See the discussion with Youssef, if we weaken the eligible rule you get
+> horrific interference because you end up placing new tasks around the
+> 0-lag point.
 
-Given that it is a single value, overhead of doing a new txn would be
-higher than a mmio write! I think that should be preferred
+I have just begun studying the EEVDF scheduler, and obviously there
+are lots of things to catch up with :)
 
--- 
-~Vinod
+At a quick glance at Youssef's first reply, I'm sure that's exactly
+the same as I thought about, the EVDF. The intention behind is w/o
+eligibility the task_timeline can be organized by deadline rather
+than vruntime, hence task selection can be done in O(1) while the
+min_vruntime can be updated through augmented rbtree.
+
+Anyway, I will learn from your discussion with Youssef first, thanks
+for providing the info!
+
+Best,
+	Abel
