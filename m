@@ -2,144 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 093927C5F17
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5EB97C5F1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233572AbjJKV2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:28:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
+        id S233561AbjJKVaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 17:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233339AbjJKV2e (ORCPT
+        with ESMTP id S233390AbjJKVaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:28:34 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF739E;
-        Wed, 11 Oct 2023 14:28:33 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9ae75ece209so45193566b.3;
-        Wed, 11 Oct 2023 14:28:32 -0700 (PDT)
+        Wed, 11 Oct 2023 17:30:00 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABF8B7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:29:58 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7af53bde4so4846727b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:29:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697059711; x=1697664511; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Xi4hRupYAPdxlVps7j6FmsE6VUo3wpqHYU7pBZ7s4FY=;
-        b=D0lUgLaEkPd/jkyrZZmb9i+AgShrUinX2P6HRBoYzkXIzFjpuja6471IetqIH4U5Uu
-         cbcP+lFq82tXGVP1P0yrxGCcdJwCSC2LXM5suvS56lx+I41/E3E3XCb4DZ5gTcCtEzpT
-         u0zfiGSdofiNunlZ8VoSEMgkYqsou6fOmq6ApMy6cCfIcEVOrE8IN1Abeqlwxf9dEeRd
-         1QwoKOMprD/hU7r2rU7yzoPMP63O4HBwLzcfGJFwfuCdOC7ZVwhlfPxtcCrPoipzeTUC
-         bkZyXs96n4GpGcay9cY3eIwbiyFm531AhOREF3GL2+hxh62zPKai/eGQo6EQ/Ym4gVMR
-         86BQ==
+        d=google.com; s=20230601; t=1697059797; x=1697664597; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=m3pTpYqn2463yxqFt3mIFAjuaB6ZhS9Rkhs7QnUkljw=;
+        b=Nq7uSgZg0s1stmYMn6ZzSakIy/plW3bDKlrSQIprCvdcoMowghQ3C2GG+pqav8ZMij
+         iFxE+b+c/pqU1LSOSMeDbVzbrJxBcQNqkxSN5+8NvmofmQ3RNTNXoFteHlXQeissIHjZ
+         RcSPcJ02aCYEw3a7pK7a2j7NgAupJZTV/m1kBXDfPX0+Xy9HTUwjFEdkETepOyfiSsCg
+         n3n9PsQNbZR1vm98HHuV2XJmTpFRffMDry6+L3x+M+9mLjdRB+ElplXUEGrdfMGj67Ka
+         oOhJe2zmogwnSU4qfy8BA9ZCiYl0ayjpPt4ET2fTQIcqaF5vRf4KHb/zvgotMugxa9is
+         qSiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697059711; x=1697664511;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xi4hRupYAPdxlVps7j6FmsE6VUo3wpqHYU7pBZ7s4FY=;
-        b=idSl33bHc5aw8PBrawJUcfG3mGloYGZfgFSTmLa9FoF0TENBT+SdonC//s7G85aKuX
-         C5KtaIkQxjg7iaJdUWE9OLImWZX660Z9MDzNxsrLHtaSJcThgLr+2upB2fh2SQzx8E1j
-         PtTnMawEhTkxoPqB3xWEGsrw4j/etYd9O8T5AqC3hB5ePhkRCPcBOtOuRrMloGnHbn0d
-         D/qsrq9VUIFOKcv6RbnAxxVVyKrhwsxfZfuuw1CbfId8htLMwrHhDSOfa4250ZSsWrLG
-         Li5uvdhkeo/IyLKYUzgfdgsfF7TKT64hkezPaMKpGUhglexCmAZQ8t5DIsEDhvz6Sx/C
-         Y8gw==
-X-Gm-Message-State: AOJu0Yza/H+yLRcD4VVHLo9LJDtmY3WiFNyAj3c3JwLocNm+ofvAwM3I
-        2+uERL8dGwv7qeZQbqpMg0Is/iyHGa4=
-X-Google-Smtp-Source: AGHT+IGirQ45rifXF7Dl5gS6nTPB+N42nlq3bwmEJ9/mSZMAxKhMJ6M7VSarm1Kr6NLuGDlU6fF8fg==
-X-Received: by 2002:a17:907:6c14:b0:9ae:588e:142 with SMTP id rl20-20020a1709076c1400b009ae588e0142mr19669529ejc.67.1697059711038;
-        Wed, 11 Oct 2023 14:28:31 -0700 (PDT)
-Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
-        by smtp.gmail.com with ESMTPSA id o6-20020a17090611c600b009ad875d12d7sm10157553eja.210.2023.10.11.14.28.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 14:28:28 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 11 Oct 2023 23:28:26 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-tip-commits@vger.kernel.org, rene@exactcode.de,
-        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [tip: x86/urgent] x86/cpu: Fix AMD erratum #1485 on Zen4-based
- CPUs
-Message-ID: <ZScTem8iF8CUZqf6@gmail.com>
-References: <D99589F4-BC5D-430B-87B2-72C20370CF57@exactcode.com>
- <169701622768.3135.17489375930381616520.tip-bot2@tip-bot2>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <169701622768.3135.17489375930381616520.tip-bot2@tip-bot2>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697059797; x=1697664597;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=m3pTpYqn2463yxqFt3mIFAjuaB6ZhS9Rkhs7QnUkljw=;
+        b=nNzDkYAvItoxkHgKiOMSN3h02RHZg/7SDKMsErIFPkyNmm0GdNWfeeZN/GZO7h/ZSO
+         27CW8paIwGsfvBlx6Z15WGhRrGXeg87DZz8TXNm2fw6i2/N/Ip5Sjq9g6kheStcN3mDa
+         kfFCj5eykUT3Cah1piDmIRYHXjjG+LiCaqd5anVGLJNKcCuwvDuLVYOJ3A1oJ7eX7eML
+         0UWAKjDp228OZCTOCmlpBdF/AOYfeA3PLC6gfqHY6JuNgxDJg1zGpRmnHA1VY7IfFHDm
+         2nmTvy8rUrs09UhJccbMSelHMYhaSJOram6b6PschO/ov1p9OIhN4UJABlHAk3kue1fq
+         56cQ==
+X-Gm-Message-State: AOJu0Ywz6UEYiBjBZJvFkmXgyNVPBSu//Hx0dWn0aoH2ZRPc6KPqpabz
+        UEgNRQhsjPPLtTiwQLUVt5vBRKkf2+QXSZyxgw==
+X-Google-Smtp-Source: AGHT+IFzh11O2xXhTMZejnqEuXav2mfhp3aDFwJLnzB7+Nt/FhAkhc5xn+9+x59VZRntczfgh2jwR2IMVZ3LVuZyww==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:52d:b0:d13:856b:c10a with
+ SMTP id y13-20020a056902052d00b00d13856bc10amr387725ybs.3.1697059797461; Wed,
+ 11 Oct 2023 14:29:57 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 21:29:57 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIANQTJ2UC/x2NQQrDIBAAvxL23AU19NB+pfQgumkWdA2rBEPI3
+ 2t7m7nMnFBJmSo8pxOUdq5cZIi9TRBWLx9CjsPBGTdbYy3WphK2A6PyTlpRqCG1lfQHmVLyUjr m1O8YihJmz4IBXYwPPy/eOTIw4pvSwv0/fr2v6wtZvHP6iAAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697059796; l=2667;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=usepiRchsBWre9GwPIWtzyZBsxT9tg3v/Wn5P+lFJXo=; b=mFh0xX/ALc4XkRYsUlu0sqE+8WUIH0DgX2syBIUwocnImlvC26efKkQIraF5PVPGcpvC0ArXs
+ uOKWtTvR0P8CTm/inIvAVzS2Y/WzNweabRpteNbBdiyh+QIkfzd5LLl
+X-Mailer: b4 0.12.3
+Message-ID: <20231011-strncpy-drivers-net-ethernet-mellanox-mlx5-core-main-c-v1-1-90fa39998bb2@google.com>
+Subject: [PATCH] net/mlx5: simplify mlx5_set_driver_version string assignments
+From:   Justin Stitt <justinstitt@google.com>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In total, just assigning this version string takes:
+(1) strncpy()'s
+(5) strlen()'s
+(3) strncat()'s
+(1) snprintf()'s
+(4) max_t()'s
 
-* tip-bot2 for Borislav Petkov (AMD) <tip-bot2@linutronix.de> wrote:
+Moreover, `strncpy` is deprecated [1] and `strncat` really shouldn't be
+used either [2]. With this in mind, let's simply use a single
+`snprintf`.
 
->  /* AMD Last Branch Record MSRs */
->  #define MSR_AMD64_LBR_SELECT			0xc000010e
->  
-> +/* Zen4 */
-> +#define MSR_ZEN4_BP_CFG			0xc001102e
-> +#define MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT 5
->  
-> +/* Zen 2 */
->  #define MSR_ZEN2_SPECTRAL_CHICKEN	0xc00110e3
->  #define MSR_ZEN2_SPECTRAL_CHICKEN_BIT	BIT_ULL(1)
->  
-> +/* Fam 17h MSRs */
-> +#define MSR_F17H_IRPERF			0xc00000e9
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://elixir.bootlin.com/linux/v6.6-rc5/source/include/linux/fortify-string.h#L448 [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
 
-Yeah, so these latest AMD MSR definitions in <asm/msr-index.h> are pretty 
-confused, they list MSRs in the following order:
+Found with: $ rg "strncpy\("
+---
+ drivers/net/ethernet/mellanox/mlx5/core/main.c | 20 +++-----------------
+ 1 file changed, 3 insertions(+), 17 deletions(-)
 
-   Zen 4
-   Zen 2
-   Fam 19h         // resolution in tip:master
-   Fam 17h
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index 15561965d2af..0c829b6d2b49 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -218,7 +218,6 @@ static void mlx5_set_driver_version(struct mlx5_core_dev *dev)
+ 	int driver_ver_sz = MLX5_FLD_SZ_BYTES(set_driver_version_in,
+ 					      driver_version);
+ 	u8 in[MLX5_ST_SZ_BYTES(set_driver_version_in)] = {};
+-	int remaining_size = driver_ver_sz;
+ 	char *string;
+ 
+ 	if (!MLX5_CAP_GEN(dev, driver_version))
+@@ -226,22 +225,9 @@ static void mlx5_set_driver_version(struct mlx5_core_dev *dev)
+ 
+ 	string = MLX5_ADDR_OF(set_driver_version_in, in, driver_version);
+ 
+-	strncpy(string, "Linux", remaining_size);
+-
+-	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
+-	strncat(string, ",", remaining_size);
+-
+-	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
+-	strncat(string, KBUILD_MODNAME, remaining_size);
+-
+-	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
+-	strncat(string, ",", remaining_size);
+-
+-	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
+-
+-	snprintf(string + strlen(string), remaining_size, "%u.%u.%u",
+-		LINUX_VERSION_MAJOR, LINUX_VERSION_PATCHLEVEL,
+-		LINUX_VERSION_SUBLEVEL);
++	snprintf(string, driver_ver_sz, "Linux,%s,%u.%u.%u",
++		 KBUILD_MODNAME, LINUX_VERSION_MAJOR,
++		 LINUX_VERSION_PATCHLEVEL, LINUX_VERSION_SUBLEVEL);
+ 
+ 	/*Send the command*/
+ 	MLX5_SET(set_driver_version_in, in, opcode,
 
-where perf/core added a Fam 19h section a couple of days ago ...
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231011-strncpy-drivers-net-ethernet-mellanox-mlx5-core-main-c-2dd9a3fa22e0
 
-While in reality:
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
-   Zen 2 == Fam 17h
-   Zen 4 == Fam 19h
-
-So it's confusing to list these separately and out of order.
-
-So in resolving the conflict in perf/core I updated this section to read:
-
-  /* Fam 19h (Zen 4) MSRs */
-  #define MSR_F19H_UMC_PERF_CTL		0xc0010800
-  #define MSR_F19H_UMC_PERF_CTR		0xc0010801
-
-  #define MSR_ZEN4_BP_CFG		0xc001102e
-  #define MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT 5
-
-  /* Fam 17h (Zen 2) MSRs */
-  #define MSR_F17H_IRPERF		0xc00000e9
-
-  #define MSR_ZEN2_SPECTRAL_CHICKEN	0xc00110e3
-  #define MSR_ZEN2_SPECTRAL_CHICKEN_BIT	BIT_ULL(1)
-
-This doesn't change the definitions themselves, only merges the comments 
-and the sections, (to keep the Git conflict resolution non-evil), but 
-arguably once perf/core goes upstream, we should probably unify the naming 
-to follow the existing nomenclature, which is, starting at around F15H, the 
-following:
-
-   MSR_F15H_
-   MSR_F16H_
-   MSR_F17H_
-   MSR_F19H_
-
-Or are the MSRs named ZEN2 and ZEN4 in AMD SDMs, which we should follow?
-
-Anyway, something to keep in mind.
-
-Thanks,
-
-	Ingo
