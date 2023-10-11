@@ -2,117 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 847167C508E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26617C5090
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbjJKKvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:51:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43788 "EHLO
+        id S234870AbjJKKvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:51:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231934AbjJKKv2 (ORCPT
+        with ESMTP id S229938AbjJKKve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:51:28 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41D294
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:51:25 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bffc55af02so79555041fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:51:25 -0700 (PDT)
+        Wed, 11 Oct 2023 06:51:34 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5FD98;
+        Wed, 11 Oct 2023 03:51:33 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50435a9f800so8723245e87.2;
+        Wed, 11 Oct 2023 03:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1697021484; x=1697626284; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OA4VMlVoeOMyOhtKxhGjb50TdmzbdywYsQIBV+11vPc=;
-        b=CNQBmY7qVXfQiwZDv4Qq3U01WJ5aeRtlPLzVGnPyLd/BiVFabbJ+TeX7uyzE7frO3Y
-         jFjcZTBKKHZhAJfisWg9DqRRYkVYtT0xnAXOQqd4H/pULwY93fxAfrHFG0IYjlg7lfXd
-         M6fpqAFJlDI05LovRXR28B7uqsyW0IN+JIspl+RUDl4c2vxgw+BbQCyaXxrvaXhfCjkK
-         tOgYT7KgKVUd7DcKqCoSAvhKfxoMe/TN2VfvS6/h2aQjp//kGDBX+EucLdnQJz0/yI5l
-         xJEQVJN4zbYfC9b1c32lFEjAPIe3DtE56kQkq/G0KOMsKyDQFziZ1iLsuCLDK8tmo4DO
-         WTUg==
+        d=gmail.com; s=20230601; t=1697021491; x=1697626291; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ShGf3xWZxL7u0sSfNkL2qhOkBWoTr/U461AtsQmQLsI=;
+        b=IkYbRwfpNrAqKjMikTYW8hik6loecCpGmdFCxlhEN4gKH0D/NhCF35XDwynRoSma9o
+         4Vr+q0lhT5+qvZGOSxxKmYEOjBk3lWYEXyYXL7KJZPwwyrhIkayIVg7HP/At2izsLsmU
+         rBJ9h57VYoeXYidqgMz0GgujfIHei4aHzSsBwpshA43NdC6+1okP55w1v/h833Jn3JZe
+         KGzdE3BDFZXMk7NrU/ziCRQ6jYZ6t4kV24hKbLLPGHrY//LK9TwlzfJMC9fCAefOaZL7
+         9e8JBb96PHBACcLbUb4G2j2RwRWlnOyGRkzUY02Pww53scarM3pqAuK5DYkoLRiwGn+D
+         O6zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697021484; x=1697626284;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OA4VMlVoeOMyOhtKxhGjb50TdmzbdywYsQIBV+11vPc=;
-        b=Og9bfk5j1u7VqROfrjMjRiOlHl4rBf66Te72XdgnlRs5J5Ki3WYGfwh/CvrgTkZl7j
-         99RVuJSf4byTH4fDzPRrwxa9D9621yzt10nNNls/A5x93Tey7kr+DFPaFM+SGjo/wuuj
-         H/JUPg2NSbhq76qBtxASo6oFHXnIpnVorE7qdj+u0PWKt82Y1fycIlR5daVXQW/vBmpq
-         YjbyzfyQa++2CKZulfR2l3wsuqzstLfiEoL00YOTBkyS1b7xMMRlysxynBLanzBissFI
-         t1hWYnweNBTEFIB7UGlRSApvXxskI9EzQywINaYh9kKDCK3ToSMMO45pfjDVQe4WzQDQ
-         6RIQ==
-X-Gm-Message-State: AOJu0YzU4tR/HLXMPNMwCZPJI4mTSX6x0ilvCTuuT9QVbYrSr9CLaE73
-        cpX9CfBRSb3AZjspReoGxaw9te2aXzNgsPCdsuPxyw==
-X-Google-Smtp-Source: AGHT+IGyLfs+WkrEIobRRB6LgrkT6il+FVpPUfzkIGExXLDR7euxzATM6T+qlV7Ejvi7bqqDUXFwlj14PNASEvLGAW0=
-X-Received: by 2002:a2e:3309:0:b0:2bf:fb49:6619 with SMTP id
- d9-20020a2e3309000000b002bffb496619mr16986300ljc.23.1697021484028; Wed, 11
- Oct 2023 03:51:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697021491; x=1697626291;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ShGf3xWZxL7u0sSfNkL2qhOkBWoTr/U461AtsQmQLsI=;
+        b=JMRjg4ZpAu2CDWnU1Z1TQsK/xRC1klTtLWEFZTNbrQmIVtrPUObkFoHt+bme84+qqm
+         R5wIQ92lzAGpSyO60Ta+fbAj1H1kUxwvXzAWs+jYlNB0ed6iykZKz6TtgaCpF+MDuJTF
+         8QBX58RXZHVe+jlhLTmCHZsE6KZKQrYzHdbcEGLZ5h55LlWjsy7RL4hvLWJ9Gnm9u66q
+         vP9fJof482j/HUOpwMzSC7faUpFhimqIqaL3psv5i4577xLUrrUkpNa0PKYnZniX2NRj
+         Q4k4ZFbS++P04ADyRazJ8cm1JogIbtn6LIzdKsBuP6lEjz75Huo3xL7B+6cbvg5tnCEZ
+         W3BQ==
+X-Gm-Message-State: AOJu0YwOxResqTwbxNqX3H4GB0StIzUpQP4Un1mj3LRK7InX+OriALgg
+        9nj3ov8c2b9rKqLC52ydw4c=
+X-Google-Smtp-Source: AGHT+IH2nfOeFbPn9InT7+ExjXjVAIkXx7SMWRZK2sgYZeeCXsnyc6hx/W6r2oITFhenTPbCXiaX5w==
+X-Received: by 2002:a05:6512:3da8:b0:4ff:7f7f:22e7 with SMTP id k40-20020a0565123da800b004ff7f7f22e7mr20316256lfv.17.1697021491108;
+        Wed, 11 Oct 2023 03:51:31 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id l21-20020ac24315000000b00500a4679148sm2215812lfh.20.2023.10.11.03.51.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 03:51:30 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 13:51:28 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Kory Maincent <kory.maincent@bootlin.com>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Cai Huoqing <cai.huoqing@linux.dev>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Herve Codina <herve.codina@bootlin.com>
+Subject: Re: [PATCH v3 6/6] dmaengine: dw-edma: eDMA: Add sync read before
+ starting the DMA transfer in remote setup
+Message-ID: <ikc5snu4zgrfvo7ecelgu3mlqknvxoahmisqwqmmzph6bx4tos@e6yzx7kxmpk5>
+References: <20231011-b4-feature_hdma_mainline-v3-0-24ee0c979c6f@bootlin.com>
+ <20231011-b4-feature_hdma_mainline-v3-6-24ee0c979c6f@bootlin.com>
 MIME-Version: 1.0
-References: <69dda7be-d7c8-401f-89f3-7a5ca5550e2f@oracle.com>
- <20231009144340.418904-1-max.kellermann@ionos.com> <20231010131125.3uyfkqbcetfcqsve@quack3>
- <CAKPOu+-nC2bQTZYL0XTzJL6Tx4Pi1gLfNWCjU2Qz1f_5CbJc1w@mail.gmail.com> <20231011100541.sfn3prgtmp7hk2oj@quack3>
-In-Reply-To: <20231011100541.sfn3prgtmp7hk2oj@quack3>
-From:   Max Kellermann <max.kellermann@ionos.com>
-Date:   Wed, 11 Oct 2023 12:51:12 +0200
-Message-ID: <CAKPOu+_xdFALt9sgdd5w66Ab6KTqiy8+Z0Yd3Ss4+92jh8nCwg@mail.gmail.com>
-Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
- support is disabled
-To:     Jan Kara <jack@suse.cz>
-Cc:     Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
-        Dave Kleikamp <shaggy@kernel.org>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net,
-        Christian Brauner <brauner@kernel.org>,
-        Yang Xu <xuyang2018.jy@fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011-b4-feature_hdma_mainline-v3-6-24ee0c979c6f@bootlin.com>
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 12:05=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
-> So I've checked some more and the kernel doc comments before
-> mode_strip_umask() and vfs_prepare_mode() make it pretty obvious - all
-> paths creating new inodes must be calling vfs_prepare_mode(). As a result
-> mode_strip_umask() which handles umask stripping for filesystems not
-> supporting posix ACLs. For filesystems that do support ACLs,
-> posix_acl_create() must be call and that handles umask stripping. So your
-> fix should not be needed. CCed some relevant people for confirmation.
+On Wed, Oct 11, 2023 at 10:11:45AM +0200, Kory Maincent wrote:
+> The Linked list element and pointer are not stored in the same memory as
+> the eDMA controller register. If the doorbell register is toggled before
+> the full write of the linked list a race condition error can appears.
 
-Thanks, Jan. Do you think the documentation is obvious enough, or
-shall I look around and try to improve the documentation? I'm not a FS
-expert, so it may be just my fault that it confused me.... I just
-analyzed the O_TMPFILE vulnerability four years ago (because it was
-reported to me as the maintainer of a userspace software).
+s/can appears/will occur
 
-Apart from my doubts that this API contract is too error prone, I'm
-not quite sure if all filesystems really implement it properly.
+> In remote setup we can only use a readl to the memory to assured the full
 
-For example, overlayfs unconditionally sets SB_POSIXACL, even if the
-kernel has no ACL support. Would this ignore the umask? I'm not sure,
-overlayfs is a special beast.
-Then there's orangefs which allows setting the "acl" mount option (and
-thus SB_POSIXACL) even if the kernel has no ACL support. Same for gfs2
-and maybe cifs, maybe more, I didn't check them all.
+s/assured/assure
 
-The "mainstream" filesystems like ext4 seem to be implemented
-properly, though this is still too fragile for my taste... ext4 has
-the SB_POSIXACL code even if there's no kernel ACL support, but it is
-not reachable because EXT4_MOUNT_POSIX_ACL cannot be set from
-userspace in that case. The code looks suspicious, but is okay in the
-end - still not my taste.
+> write has occurred.
+> 
+> Fixes: 7e4b8a4fbe2c ("dmaengine: Add Synopsys eDMA IP version 0 support")
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 
-I see so much redundant code regarding the "acl" mount option in all
-filesystems. I believe the API should be designed in a way that it is
-safe-by-default, and shouldn't need very careful considerations in
-each and every filesystem, or else all filesystems repeat the same
-mistakes until the last one gets fixed.
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
-Max
+-Serge(y)
+
+> ---
+> 
+> Changes in v2:
+> - New patch
+> ---
+>  drivers/dma/dw-edma/dw-edma-v0-core.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/drivers/dma/dw-edma/dw-edma-v0-core.c b/drivers/dma/dw-edma/dw-edma-v0-core.c
+> index b38786f0ad79..6245b720fbfe 100644
+> --- a/drivers/dma/dw-edma/dw-edma-v0-core.c
+> +++ b/drivers/dma/dw-edma/dw-edma-v0-core.c
+> @@ -346,6 +346,20 @@ static void dw_edma_v0_core_write_chunk(struct dw_edma_chunk *chunk)
+>  	dw_edma_v0_write_ll_link(chunk, i, control, chunk->ll_region.paddr);
+>  }
+>  
+> +static void dw_edma_v0_sync_ll_data(struct dw_edma_chunk *chunk)
+> +{
+> +	/*
+> +	 * In case of remote eDMA engine setup, the DW PCIe RP/EP internals
+> +	 * configuration registers and Application memory are normally accessed
+> +	 * over different buses. Ensure LL-data reaches the memory before the
+> +	 * doorbell register is toggled by issuing the dummy-read from the remote
+> +	 * LL memory in a hope that the posted MRd TLP will return only after the
+> +	 * last MWr TLP is completed
+> +	 */
+> +	if (!(chunk->chan->dw->chip->flags & DW_EDMA_CHIP_LOCAL))
+> +		readl(chunk->ll_region.vaddr.io);
+> +}
+> +
+>  static void dw_edma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
+>  {
+>  	struct dw_edma_chan *chan = chunk->chan;
+> @@ -412,6 +426,9 @@ static void dw_edma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
+>  		SET_CH_32(dw, chan->dir, chan->id, llp.msb,
+>  			  upper_32_bits(chunk->ll_region.paddr));
+>  	}
+> +
+> +	dw_edma_v0_sync_ll_data(chunk);
+> +
+>  	/* Doorbell */
+>  	SET_RW_32(dw, chan->dir, doorbell,
+>  		  FIELD_PREP(EDMA_V0_DOORBELL_CH_MASK, chan->id));
+> 
+> -- 
+> 2.25.1
+> 
