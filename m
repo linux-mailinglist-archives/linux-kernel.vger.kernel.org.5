@@ -2,173 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B19B77C5267
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612CA7C5269
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346153AbjJKLrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:47:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
+        id S234772AbjJKLr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234723AbjJKLrO (ORCPT
+        with ESMTP id S234748AbjJKLrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:47:14 -0400
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D4A94
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:47:11 -0700 (PDT)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231011114707euoutp02cf41786e543c08b39a90d6aef9f10c41~NCxb-fv9X2233722337euoutp028
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:47:07 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231011114707euoutp02cf41786e543c08b39a90d6aef9f10c41~NCxb-fv9X2233722337euoutp028
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1697024828;
-        bh=XGuOkaqyAecoK0JJacf8f1olgpmSUik25eSknsMpW+I=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=TQdKa5NAgRFeVOEj/prepUazxBY7i95K1WujW7gJl0T+777ZEMfnpUMMAYMxy1exj
-         PXQlt3lT3q8bvqk3qx+tSMyb9yOIFJRaVOF+8T1DeEtYvimY+fYp/rtXp392sOCBUm
-         jZXGKMBB1m8ibwf++gamwdRXmcVB6uyPO9cyxlVg=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20231011114707eucas1p28ac4c13408ce7d01727b2d2c3b48817b~NCxbrv-JR0503505035eucas1p2C;
-        Wed, 11 Oct 2023 11:47:07 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 2F.FB.37758.B3B86256; Wed, 11
-        Oct 2023 12:47:07 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231011114706eucas1p256d0ce177e0c1f73ab3a052294518341~NCxbB1HbP3267632676eucas1p2W;
-        Wed, 11 Oct 2023 11:47:06 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231011114706eusmtrp1f68c013e058293ea46288de941dd8338~NCxbBSXpC0630706307eusmtrp1X;
-        Wed, 11 Oct 2023 11:47:06 +0000 (GMT)
-X-AuditID: cbfec7f5-815ff7000002937e-4c-65268b3b9e8b
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 98.5A.10549.A3B86256; Wed, 11
-        Oct 2023 12:47:06 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20231011114705eusmtip26e62b69454e4db95963929ad7466f8df~NCxZxqzN71468314683eusmtip2T;
-        Wed, 11 Oct 2023 11:47:05 +0000 (GMT)
-Message-ID: <b4b91fb3-07b0-41c2-a97c-d1a045924fdc@samsung.com>
-Date:   Wed, 11 Oct 2023 13:47:04 +0200
+        Wed, 11 Oct 2023 07:47:24 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B5CCC
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:47:22 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a7c7262d5eso18813487b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:47:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google; t=1697024841; x=1697629641; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=F2CO58cNkDLoM5uuHoWEqHDI+8aDNQ1qA3on6BCuTZk=;
+        b=WXq0GO8q10iIiyT4pZkVOcdRFXFlVaEBvnF0h7Eajk8D/jtWXFsWbUV3LJY/ZyCVlf
+         m2r0dgx0x4lDNLIwJFLuBMHXkyBahTWe1DPu+Ixc6hOXq/vcA+/kNIJDSLaEWZeb92xu
+         7bvLL4oW9lZu/OEx3stniOPkfIeBm0jfyB7/TAnR0bLjJv4VchK5WAAj73VzLwB+1MBn
+         hCrEQi0Gldiz4klw7ATqq/EjjVFgeWz2HI9riKUJrpKW9Ftl50EB09zMMpI8UH3byaTf
+         FGgmvYkudJcTfsUlg4AmDzTJwbcOav25gqTNfVMvUVhU/sp7BvOHHr1Pr4ao3AmTzFLA
+         52gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697024841; x=1697629641;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=F2CO58cNkDLoM5uuHoWEqHDI+8aDNQ1qA3on6BCuTZk=;
+        b=ZIf6VxwgGSToOPOb2xnJ45+dNp1qStm5V3RvuKQwLlvNViIMN789w0tClDzHaLc6sO
+         VrGyBrry0zuv4+dxd9hFun4kW3+rDQLkZA5drW2AW2qF19avfEZ+/eZP3/aSLQ/LWZDt
+         KAGc/4pAE7XsMbMZl/uCBXpi47GmSmJY8UtKx9tgwBmBS7csK+NhZlesnOLPGvcfkK7T
+         vicotblLwsGcFWxksxtFF8/KLSP70CSsLqDdKiBT0hrvJfaZd3QT2L2Nb5RjADmCq/og
+         NDGjl1YRF360SclHyWRtImvZYawM1j7G8JMC4oiQoSnQgBREDBLcBsHgso0LPTAftK3S
+         88hA==
+X-Gm-Message-State: AOJu0Yx3tQSdZ9JyPS9ZFCQ5sV7+3JibYZlZr3JYSTKFc7yCKsSkiI5J
+        Wz59827oz5t/ItqmsT5i6WozEaaK8w0VxfllvOO/MA==
+X-Google-Smtp-Source: AGHT+IEXrl726KTwCoMXxA1mBIhJL2iH49mJ0WxzlwoEn3AUEKiO+Ze6qdfiQ8RSDTE2/HhIsAjgsjAIUKzuCUvwvPY=
+X-Received: by 2002:a25:ac09:0:b0:d9a:63f5:10d6 with SMTP id
+ w9-20020a25ac09000000b00d9a63f510d6mr4060901ybi.26.1697024841277; Wed, 11 Oct
+ 2023 04:47:21 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] i2c: brcmstb: Add support for atomic transfers
-Content-Language: en-US
-To:     Gregor Riepl <onitake@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Kamal Dasu <kamal.dasu@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Wolfram Sang <wsa@kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <ba3c0972-2ba2-4df7-826e-a7634027b967@gmail.com>
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrGKsWRmVeSWpSXmKPExsWy7djP87rW3WqpBkumqlrc/9rBaLG29yiL
-        xbpt95gtdm84zGSx6fE1VouOv18YLS7vmsNm0du9n83i7v65jA6cHrPun2Xz2DnrLrvHplWd
-        bB6bl9R7fN4kF8AaxWWTkpqTWZZapG+XwJVx520bc0GfQMXv2edYGxhbeLsYOTkkBEwkVv+6
-        wtTFyMUhJLCCUWLCwW9sIAkhgS+MEhcWqUEkPjNKtN5fzNrFyAHWMXV9FER8OaPE1APXGCGc
-        j4wSi6fPZwbp5hWwk5j9dwMbSAOLgKrEpMVGEGFBiZMzn7CA2KIC8hL3b81gB7GFBZwlPjdf
-        YASxmQXEJW49mQ92kYhAK6PE9833WUEcZpAFM7aeB6tiEzCU6HrbBXYqp4CtxK3T7awQ3fIS
-        zVtnM0P89oFDYs+ZXAjbReJR6z9GCFtY4tXxLewQtozE6ck9LCALJATaGSUW/L7PBOFMYJRo
-        eH4LqsNa4s65X2DvMAtoSqzfpQ8RdpT4c/8SGyRY+CRuvBWEuIFPYtK26cwQYV6JjjYhiGo1
-        iVnH18GtPXjhEvMERqVZSOEyC8n/s5B8Mwth7wJGllWM4qmlxbnpqcXGeanlesWJucWleel6
-        yfm5mxiBSen0v+NfdzCuePVR7xAjEwfjIUYJDmYlEd5HmSqpQrwpiZVVqUX58UWlOanFhxil
-        OViUxHlVU+RThQTSE0tSs1NTC1KLYLJMHJxSDUyVCZZHVTI/qS6Xq1BO9D9TyXVuzfQ4yX1c
-        LmunByW8TxMRjuFYk3drivV18cXq837duXXnk9WkvC9rROaE7H517Z9hd6L0o6LlyxINdr0x
-        4+ALPXj+muq6z6xfyxZ8SZ72u2Ka5fSgp3VSR7/WHz0zxenLpM3sRlvC+CbOLbDIClw5M0H6
-        zX0t8bKesoIDEV5ygjsMzY7eaD39f7KHT3S7oIL1baktj+PletYJT63tn/RcLuvQp3ivI69X
-        L59+f+cszrdFlo5Hyxdr+Z2fouZj2Rz08JrC6+yzpUlPmVPOn/yyiFO9ptuWv6dZd2PJPM/K
-        5z/dlpw7sfFNTF2MTNFzxSXSE+fWKHPc+aWxXuO9EktxRqKhFnNRcSIAdIpzZLkDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFIsWRmVeSWpSXmKPExsVy+t/xe7pW3WqpBkffGFrc/9rBaLG29yiL
-        xbpt95gtdm84zGSx6fE1VouOv18YLS7vmsNm0du9n83i7v65jA6cHrPun2Xz2DnrLrvHplWd
-        bB6bl9R7fN4kF8AapWdTlF9akqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eTkpqT
-        WZZapG+XoJdx520bc0GfQMXv2edYGxhbeLsYOTgkBEwkpq6P6mLk4hASWMooMf3VTeYuRk6g
-        uIzEyWkNrBC2sMSfa11sEEXvGSX+be4BS/AK2EnM/ruBDWQQi4CqxKTFRhBhQYmTM5+wgNii
-        AvIS92/NYAexhQWcJT43X2AEsZkFxCVuPZnPBDJTRKCVUeJIy2ywBcwCnxklHvacZ4TYdoxR
-        4v3Hu2Cj2AQMJbregpzBycEpYCtx63Q7K8QoM4murV1QY+UlmrfOZp7AKDQLySWzkGychaRl
-        FpKWBYwsqxhFUkuLc9Nziw31ihNzi0vz0vWS83M3MQIjcduxn5t3MM579VHvECMTB+MhRgkO
-        ZiUR3keZKqlCvCmJlVWpRfnxRaU5qcWHGE2BoTGRWUo0OR+YCvJK4g3NDEwNTcwsDUwtzYyV
-        xHk9CzoShQTSE0tSs1NTC1KLYPqYODilGpgEP902MqudGFPL+6xieusMubV78/eG3NlUvOOT
-        S/1ytWv+n7p5qg39HNIrru0V3u38NTiIXYdx/crnJ8vkZ56K8J3AscE6ecXEeWXzqtNyOIUT
-        2Gof8f4v7uB28EveZl98YvubhLz8tFtsdZnXXzYwlpQ0iD1sKt+QlvB5+uMElijOZsmCJcfn
-        N998waX/Nn+T+c9uTu1jzX2P9XldxCrmZEq4pP1InL7hstZWD8/giXenLb6y4lcKRwl3I0OK
-        yNvby+evK5WQ2XmpRlR16v6QOQFvW2t0jqXEp/9fYBh6ZWbhi81xay3seVJmq4Ts0e6ZPVmt
-        qXZ3m8qMixMnvsz8GGegKmll9vfVpWNnDyixFGckGmoxFxUnAgAes9omTQMAAA==
-X-CMS-MailID: 20231011114706eucas1p256d0ce177e0c1f73ab3a052294518341
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20231006144123eucas1p111cbbdbd70927ffbd697f7edf6b7ae1c
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231006144123eucas1p111cbbdbd70927ffbd697f7edf6b7ae1c
-References: <CGME20231006144123eucas1p111cbbdbd70927ffbd697f7edf6b7ae1c@eucas1p1.samsung.com>
-        <20231006144117.4079796-1-m.szyprowski@samsung.com>
-        <ba3c0972-2ba2-4df7-826e-a7634027b967@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <6f78e624-62ee-3ae5-1db4-a0411566def8@yandex.ru>
+ <CAGRGNgU7aySyUny9aG_+wXiKJ7j1weosa-rZDY4_WAXbq-3ABg@mail.gmail.com>
+ <87ttr454bh.fsf@kernel.org> <3c5a3e7a-b332-4a77-51ba-bed3cad1e79f@marcan.st>
+ <e1ee4d76-f717-a67c-8099-7b91192ba1ca@yandex.ru> <e470902a-35eb-9bb4-7a9e-167f985c98bb@marcan.st>
+ <CAEg-Je-mpcrEoM_nD3_8A=gZhdWpn3hxfGZNEfGRNupGwRdetw@mail.gmail.com>
+ <87edi14fvp.fsf@kernel.org> <cce5765d-342f-4811-ab7f-fb41ede0b3a1@marcan.st>
+In-Reply-To: <cce5765d-342f-4811-ab7f-fb41ede0b3a1@marcan.st>
+From:   Phil Elwell <phil@raspberrypi.com>
+Date:   Wed, 11 Oct 2023 12:47:10 +0100
+Message-ID: <CAMEGJJ0=qM85F64ox5LLug5PWnBa4W9zDOqNay6ScU-aweSzHw@mail.gmail.com>
+Subject: Re: On brcm80211 maintenance and support
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Kalle Valo <kvalo@kernel.org>, Neal Gompa <neal@gompa.dev>,
+        Dmitry Antipov <dmantipov@yandex.ru>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        SHA-cyfmac-dev-list@infineon.com,
+        brcm80211-dev-list.pdl@broadcom.com,
+        Asahi Linux <asahi@lists.linux.dev>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Julian Calaby <julian.calaby@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Phil Elwell <phil@raspberrypi.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.10.2023 12:23, Gregor Riepl wrote:
-> I admit that I don't understand the I²C subsystem very well, but 
-> doesn't this introduce a potential race condition?
+On Wed, 11 Oct 2023 at 12:28, Hector Martin <marcan@marcan.st> wrote:
+> I think we need to qualify this "no regressions" "rule". People regress
+> our machines in mainline all the time. We catch it and get it fixed,
+> sometimes in RCs, sometimes it goes all the way to stable and needs to
+> get fixed there. We've had patches break everything from Bluetooth LE
+> pairing to core memory management to the point we needed earlycon to
+> diagnose it. That last one was a blatantly wrong patch to core Linux MM,
+> it wasn't even something specific to our platform, but even that got
+> past review (it just happened to break us specifically due to a
+> coincidence).
 >
-> > ...
-> > @@ -240,7 +241,7 @@ static int 
-> brcmstb_i2c_wait_for_completion(struct brcmstb_i2c_dev *dev)
-> > ...
->> -    if (dev->irq >= 0) {
->> +    if (dev->irq >= 0 && !dev->atomic) {
-> > ...
-> > @@ -287,7 +288,7 @@ static int brcmstb_send_i2c_cmd(struct 
-> brcmstb_i2c_dev *dev,
-> > ...
->> -    if (dev->irq >= 0)
->> +    if (dev->irq >= 0 && !dev->atomic)
-> > ...
-> > +static int brcmstb_i2c_xfer_atomic(struct i2c_adapter *adapter,
-> > +                   struct i2c_msg msgs[], int num)
-> > ...
->> +    dev->atomic = true;
->> +    ret = brcmstb_i2c_xfer(adapter, msgs, num);
->> +    dev->atomic = false;
->> ...
+> The review process doesn't magically avoid regressing things. "No
+> regressions" is impossible without someone actually testing things.
+> Claiming otherwise is dishonest. So if I end up as maintainer here I
+> certainly am not going to promise "no regressions" for chips I can't
+> test, without someone interested in those chips testing them. Of course
+> I'll take regression fixes when they do happen and someone notices, but
+> I can't know in advance until someone does.
 >
-> What happens when one of the if() branches is taken in one thread 
-> while another thread is just executing the assignment of the atomic 
-> flag? My expectation would be that the first tread still sees the old 
-> flag value and happily executes the branch, while 
-> brcmstb_i2c_xfer_atomic() sets the flag just after and initiates a 
-> transfer.
+> Consider a patch that changes some codepath in the driver. I can't know
+> whether the original logic was always broken, or whether it worked on
+> some chips, and whether the new logic works on those chips or will
+> regress them, without testing. This is a regular occurrence with
+> brcmfmac, due to the complexity and variability of the firmware
+> interface. Often multiple versions of stuff are supported, or some
+> structures can be extended, but sometimes they can't. It's a mess, and
+> without firmware source code nor any official specs, there is no way to
+> know exactly what is intended and what the backwards compatibility
+> requirements are.
 >
-> I'd expect that access to the flag must be atomic as well, so maybe 
-> something like 
-> https://www.kernel.org/doc/html/latest/core-api/wrappers/atomic_t.html 
-> is needed, or some other synchronization mechanism.
+> The only way to avoid that is to gratuitously introduce version/chip
+> gates for *every single change affecting behavior from the firmware
+> POV*, which is a complete non-starter and would quickly yield a giant
+> mess of spaghetti code. It's bad enough having to support explicit
+> ABI-breaking changes in firmware, and having to deal with multiple
+> versions of huge structures and convert between them. Trying to outright
+> keep existing logic identical for "other chips" is just not going to
+> happen, not without first having confirmation of what the requirements
+> are from someone who has the required docs/source.
 >
-> Or is it guaranteed that brcmstb_i2c_wait_for_completion() and 
-> brcmstb_send_i2c_cmd() can only be called from the same thread as 
-> brcmstb_i2c_xfer_atomic() ?
+> I have a patch to enable WPA3 in Broadcom chipsets (yes, the driver is
+> in such a sorry state it doesn't even support that yet). The current
+> support attempt was added by a Cypress engineer and uses a completely
+> different firmware mechanism. Is that supposed to actually work? Does it
+> work currently? Is that the case for all Cypress firmwares? Or only
+> some? Does the alternate mechanism we have for Broadcom chips work too?
+> Only Cypress can answer those questions ahead of time, and they aren't
+> (they ignored me last time I brought this up). So my current patch just
+> replaces the mechanism with the known-working one for Broadcom chips.
+>
+> Next time I send a bunch of our downstream patches, I'm going to resend
+> that WPA3 patch. And if it regresses Cypress WPA3 support, tough luck.
+> If someone catches it (Phil?) and it turns out the existing support is
+> the only way to do things on Cypress, I'll rework the patch to
+> conditionally support both styles. But if nobody does, and nobody cares,
+> then I'm sorry if I regress things, but there is no way to avoid it. We
+> can't be gratuitously gating every single change just to hope to avoid
+> regressions, without any confirmation of what is required. That just
+> doesn't scale.
+>
+> Phil: Given Cypress' complete apathy towards this driver, if you want
+> the Cypress chips in Raspberry Pi systems to continue working and catch
+> potential problems ahead of time, it would be helpful if you can test
+> the patches in this branch. This is our downstream brcmfmac patchset.
+> Regardless of what ends up happening with the maintainer situation,
+> giving this a whirl will be very helpful in catching problems with
+> systems people actually use. It should be easy to bisect regressions too
+> (we keep this rebased directly on recent kernels so you can apply it on
+> top of your tree or whatever).
+>
+> https://github.com/asahilinux/linux/tree/bits/080-wifi
 
-Atomic i2c transfers are some kind of a special case.
+That sounds like a reasonable starting point - I'll take a look.
 
-I guess that i2c core takes care of NOT multiplexing atomic and standard 
-i2c transfers. No special locking/protection is needed in the bus 
-drivers. This is at least what I see from commits like 08960b022fb6 
-("i2c: tegra-bpmp: convert to use new atomic callbacks") or 3d11a12ece85 
-("i2c: ocores: enable atomic xfers").
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+Phil
