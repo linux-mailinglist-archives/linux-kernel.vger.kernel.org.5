@@ -2,132 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD357C5265
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19B77C5267
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345936AbjJKLrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49592 "EHLO
+        id S1346153AbjJKLrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231601AbjJKLrI (ORCPT
+        with ESMTP id S234723AbjJKLrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:47:08 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59C18F
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:47:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=RSsV3tzE81yhMrJ2OAEkPBSGqOhOdmB831LXDp5PvM8=; b=D6O30peoybOa+iTaf2UQhdZU0s
-        kpT3cNMQkH2f5dT8iFXvz7/4WP4IAfW+lJe8X38+4NOkKSz9wXr7WTSa+fxGQzUslfvJAhtpwYhOU
-        +yhWzE6xPEPeFQieevpx8CZ6ndWYWvw54QGbp52lKRFbp5izL/h1m0mTFrM9UkAFtlIlA7ha9MoMS
-        vBMkaBbHH8QUrVWJHye6n5nvlSp2N0P/RhjK6aWuu9pXEa6oAVKOaUVHIQUjLL8S+agrVT1guRgW3
-        naz9KZ7wsUwiBDz9XhegVDDSTgenVsITNszY7p59JdrswuJaiAsf9d0W8jHocBu1dSnUmlb6g/Upn
-        S9eK0L5A==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qqXfl-000BmS-0e;
-        Wed, 11 Oct 2023 11:46:42 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2273130036C; Wed, 11 Oct 2023 13:46:42 +0200 (CEST)
-Date:   Wed, 11 Oct 2023 13:46:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ankit Jain <ankitja@vmware.com>
-Cc:     yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, qyousef@layalina.io, pjt@google.com,
-        joshdon@google.com, bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, namit@vmware.com,
-        amakhalov@vmware.com, srinidhir@vmware.com, vsirnapalli@vmware.com,
-        vbrahmajosyula@vmware.com, akaher@vmware.com,
-        srivatsa@csail.mit.edu
-Subject: Re: [PATCH RFC] cpumask: Randomly distribute the tasks within
- affinity mask
-Message-ID: <20231011114642.GA36521@noisy.programming.kicks-ass.net>
-References: <20231011071925.761590-1-ankitja@vmware.com>
- <20231011105329.GA17066@noisy.programming.kicks-ass.net>
+        Wed, 11 Oct 2023 07:47:14 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D4A94
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:47:11 -0700 (PDT)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231011114707euoutp02cf41786e543c08b39a90d6aef9f10c41~NCxb-fv9X2233722337euoutp028
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:47:07 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231011114707euoutp02cf41786e543c08b39a90d6aef9f10c41~NCxb-fv9X2233722337euoutp028
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1697024828;
+        bh=XGuOkaqyAecoK0JJacf8f1olgpmSUik25eSknsMpW+I=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=TQdKa5NAgRFeVOEj/prepUazxBY7i95K1WujW7gJl0T+777ZEMfnpUMMAYMxy1exj
+         PXQlt3lT3q8bvqk3qx+tSMyb9yOIFJRaVOF+8T1DeEtYvimY+fYp/rtXp392sOCBUm
+         jZXGKMBB1m8ibwf++gamwdRXmcVB6uyPO9cyxlVg=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20231011114707eucas1p28ac4c13408ce7d01727b2d2c3b48817b~NCxbrv-JR0503505035eucas1p2C;
+        Wed, 11 Oct 2023 11:47:07 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 2F.FB.37758.B3B86256; Wed, 11
+        Oct 2023 12:47:07 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231011114706eucas1p256d0ce177e0c1f73ab3a052294518341~NCxbB1HbP3267632676eucas1p2W;
+        Wed, 11 Oct 2023 11:47:06 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231011114706eusmtrp1f68c013e058293ea46288de941dd8338~NCxbBSXpC0630706307eusmtrp1X;
+        Wed, 11 Oct 2023 11:47:06 +0000 (GMT)
+X-AuditID: cbfec7f5-815ff7000002937e-4c-65268b3b9e8b
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 98.5A.10549.A3B86256; Wed, 11
+        Oct 2023 12:47:06 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231011114705eusmtip26e62b69454e4db95963929ad7466f8df~NCxZxqzN71468314683eusmtip2T;
+        Wed, 11 Oct 2023 11:47:05 +0000 (GMT)
+Message-ID: <b4b91fb3-07b0-41c2-a97c-d1a045924fdc@samsung.com>
+Date:   Wed, 11 Oct 2023 13:47:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] i2c: brcmstb: Add support for atomic transfers
+Content-Language: en-US
+To:     Gregor Riepl <onitake@gmail.com>, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Kamal Dasu <kamal.dasu@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Wolfram Sang <wsa@kernel.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <ba3c0972-2ba2-4df7-826e-a7634027b967@gmail.com>
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231011105329.GA17066@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrGKsWRmVeSWpSXmKPExsWy7djP87rW3WqpBkumqlrc/9rBaLG29yiL
+        xbpt95gtdm84zGSx6fE1VouOv18YLS7vmsNm0du9n83i7v65jA6cHrPun2Xz2DnrLrvHplWd
+        bB6bl9R7fN4kF8AaxWWTkpqTWZZapG+XwJVx520bc0GfQMXv2edYGxhbeLsYOTkkBEwkVv+6
+        wtTFyMUhJLCCUWLCwW9sIAkhgS+MEhcWqUEkPjNKtN5fzNrFyAHWMXV9FER8OaPE1APXGCGc
+        j4wSi6fPZwbp5hWwk5j9dwMbSAOLgKrEpMVGEGFBiZMzn7CA2KIC8hL3b81gB7GFBZwlPjdf
+        YASxmQXEJW49mQ92kYhAK6PE9833WUEcZpAFM7aeB6tiEzCU6HrbBXYqp4CtxK3T7awQ3fIS
+        zVtnM0P89oFDYs+ZXAjbReJR6z9GCFtY4tXxLewQtozE6ck9LCALJATaGSUW/L7PBOFMYJRo
+        eH4LqsNa4s65X2DvMAtoSqzfpQ8RdpT4c/8SGyRY+CRuvBWEuIFPYtK26cwQYV6JjjYhiGo1
+        iVnH18GtPXjhEvMERqVZSOEyC8n/s5B8Mwth7wJGllWM4qmlxbnpqcXGeanlesWJucWleel6
+        yfm5mxiBSen0v+NfdzCuePVR7xAjEwfjIUYJDmYlEd5HmSqpQrwpiZVVqUX58UWlOanFhxil
+        OViUxHlVU+RThQTSE0tSs1NTC1KLYLJMHJxSDUyVCZZHVTI/qS6Xq1BO9D9TyXVuzfQ4yX1c
+        LmunByW8TxMRjuFYk3drivV18cXq837duXXnk9WkvC9rROaE7H517Z9hd6L0o6LlyxINdr0x
+        4+ALPXj+muq6z6xfyxZ8SZ72u2Ka5fSgp3VSR7/WHz0zxenLpM3sRlvC+CbOLbDIClw5M0H6
+        zX0t8bKesoIDEV5ygjsMzY7eaD39f7KHT3S7oIL1baktj+PletYJT63tn/RcLuvQp3ivI69X
+        L59+f+cszrdFlo5Hyxdr+Z2fouZj2Rz08JrC6+yzpUlPmVPOn/yyiFO9ptuWv6dZd2PJPM/K
+        5z/dlpw7sfFNTF2MTNFzxSXSE+fWKHPc+aWxXuO9EktxRqKhFnNRcSIAdIpzZLkDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFIsWRmVeSWpSXmKPExsVy+t/xe7pW3WqpBkffGFrc/9rBaLG29yiL
+        xbpt95gtdm84zGSx6fE1VouOv18YLS7vmsNm0du9n83i7v65jA6cHrPun2Xz2DnrLrvHplWd
+        bB6bl9R7fN4kF8AapWdTlF9akqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eTkpqT
+        WZZapG+XoJdx520bc0GfQMXv2edYGxhbeLsYOTgkBEwkpq6P6mLk4hASWMooMf3VTeYuRk6g
+        uIzEyWkNrBC2sMSfa11sEEXvGSX+be4BS/AK2EnM/ruBDWQQi4CqxKTFRhBhQYmTM5+wgNii
+        AvIS92/NYAexhQWcJT43X2AEsZkFxCVuPZnPBDJTRKCVUeJIy2ywBcwCnxklHvacZ4TYdoxR
+        4v3Hu2Cj2AQMJbregpzBycEpYCtx63Q7K8QoM4murV1QY+UlmrfOZp7AKDQLySWzkGychaRl
+        FpKWBYwsqxhFUkuLc9Nziw31ihNzi0vz0vWS83M3MQIjcduxn5t3MM579VHvECMTB+MhRgkO
+        ZiUR3keZKqlCvCmJlVWpRfnxRaU5qcWHGE2BoTGRWUo0OR+YCvJK4g3NDEwNTcwsDUwtzYyV
+        xHk9CzoShQTSE0tSs1NTC1KLYPqYODilGpgEP902MqudGFPL+6xieusMubV78/eG3NlUvOOT
+        S/1ytWv+n7p5qg39HNIrru0V3u38NTiIXYdx/crnJ8vkZ56K8J3AscE6ecXEeWXzqtNyOIUT
+        2Gof8f4v7uB28EveZl98YvubhLz8tFtsdZnXXzYwlpQ0iD1sKt+QlvB5+uMElijOZsmCJcfn
+        N998waX/Nn+T+c9uTu1jzX2P9XldxCrmZEq4pP1InL7hstZWD8/giXenLb6y4lcKRwl3I0OK
+        yNvby+evK5WQ2XmpRlR16v6QOQFvW2t0jqXEp/9fYBh6ZWbhi81xay3seVJmq4Ts0e6ZPVmt
+        qXZ3m8qMixMnvsz8GGegKmll9vfVpWNnDyixFGckGmoxFxUnAgAes9omTQMAAA==
+X-CMS-MailID: 20231011114706eucas1p256d0ce177e0c1f73ab3a052294518341
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20231006144123eucas1p111cbbdbd70927ffbd697f7edf6b7ae1c
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231006144123eucas1p111cbbdbd70927ffbd697f7edf6b7ae1c
+References: <CGME20231006144123eucas1p111cbbdbd70927ffbd697f7edf6b7ae1c@eucas1p1.samsung.com>
+        <20231006144117.4079796-1-m.szyprowski@samsung.com>
+        <ba3c0972-2ba2-4df7-826e-a7634027b967@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 12:53:29PM +0200, Peter Zijlstra wrote:
-> On Wed, Oct 11, 2023 at 12:49:25PM +0530, Ankit Jain wrote:
-> > commit 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
-> > and commit 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
-> > introduced the logic to distribute the tasks at initial wakeup on cpus
-> > where load balancing works poorly or disabled at all (isolated cpus).
-> > 
-> > There are cases in which the distribution of tasks
-> > that are spawned on isolcpus does not happen properly.
-> > In production deployment, initial wakeup of tasks spawn from
-> > housekeeping cpus to isolcpus[nohz_full cpu] happens on first cpu
-> > within isolcpus range instead of distributed across isolcpus.
-> > 
-> > Usage of distribute_cpu_mask_prev from one processes group,
-> > will clobber previous value of another or other groups and vice-versa.
-> > 
-> > When housekeeping cpus spawn multiple child tasks to wakeup on
-> > isolcpus[nohz_full cpu], using cpusets.cpus/sched_setaffinity(),
-> > distribution is currently performed based on per-cpu
-> > distribute_cpu_mask_prev counter.
-> > At the same time, on housekeeping cpus there are percpu
-> > bounded timers interrupt/rcu threads and other system/user tasks
-> > would be running with affinity as housekeeping cpus. In a real-life
-> > environment, housekeeping cpus are much fewer and are too much loaded.
-> > So, distribute_cpu_mask_prev value from these tasks impacts
-> > the offset value for the tasks spawning to wakeup on isolcpus and
-> > thus most of the tasks end up waking up on first cpu within the
-> > isolcpus set.
-> > 
-> > Steps to reproduce:
-> > Kernel cmdline parameters:
-> > isolcpus=2-5 skew_tick=1 nohz=on nohz_full=2-5
-> > rcu_nocbs=2-5 rcu_nocb_poll idle=poll irqaffinity=0-1
-> > 
-> > * pid=$(echo $$)
-> > * taskset -pc 0 $pid
-> > * cat loop-normal.c
-> > int main(void)
-> > {
-> >         while (1)
-> >                 ;
-> >         return 0;
-> > }
-> > * gcc -o loop-normal loop-normal.c
-> > * for i in {1..50}; do ./loop-normal & done
-> > * pids=$(ps -a | grep loop-normal | cut -d' ' -f5)
-> > * for i in $pids; do taskset -pc 2-5 $i ; done
-> > 
-> > Expected output:
-> > * All 50 “loop-normal” tasks should wake up on cpu2-5
-> > equally distributed.
-> > * ps -eLo cpuid,pid,tid,ppid,cls,psr,cls,cmd | grep "^    [2345]"
-> > 
-> > Actual output:
-> > * All 50 “loop-normal” tasks got woken up on cpu2 only
-> 
-> Your expectation is wrong. Things work as advertised.
+On 11.10.2023 12:23, Gregor Riepl wrote:
+> I admit that I don't understand the I²C subsystem very well, but 
+> doesn't this introduce a potential race condition?
+>
+> > ...
+> > @@ -240,7 +241,7 @@ static int 
+> brcmstb_i2c_wait_for_completion(struct brcmstb_i2c_dev *dev)
+> > ...
+>> -    if (dev->irq >= 0) {
+>> +    if (dev->irq >= 0 && !dev->atomic) {
+> > ...
+> > @@ -287,7 +288,7 @@ static int brcmstb_send_i2c_cmd(struct 
+> brcmstb_i2c_dev *dev,
+> > ...
+>> -    if (dev->irq >= 0)
+>> +    if (dev->irq >= 0 && !dev->atomic)
+> > ...
+> > +static int brcmstb_i2c_xfer_atomic(struct i2c_adapter *adapter,
+> > +                   struct i2c_msg msgs[], int num)
+> > ...
+>> +    dev->atomic = true;
+>> +    ret = brcmstb_i2c_xfer(adapter, msgs, num);
+>> +    dev->atomic = false;
+>> ...
+>
+> What happens when one of the if() branches is taken in one thread 
+> while another thread is just executing the assignment of the atomic 
+> flag? My expectation would be that the first tread still sees the old 
+> flag value and happily executes the branch, while 
+> brcmstb_i2c_xfer_atomic() sets the flag just after and initiates a 
+> transfer.
+>
+> I'd expect that access to the flag must be atomic as well, so maybe 
+> something like 
+> https://www.kernel.org/doc/html/latest/core-api/wrappers/atomic_t.html 
+> is needed, or some other synchronization mechanism.
+>
+> Or is it guaranteed that brcmstb_i2c_wait_for_completion() and 
+> brcmstb_send_i2c_cmd() can only be called from the same thread as 
+> brcmstb_i2c_xfer_atomic() ?
 
-That is, isolcpus results in single CPU balance domains and as such we
-must not distribute -- there is no load balancing.
+Atomic i2c transfers are some kind of a special case.
 
-Ideally we'd reject setting cpumasks with multi bits set on domains like
-that, but alas, that would break historical behaviour :/
+I guess that i2c core takes care of NOT multiplexing atomic and standard 
+i2c transfers. No special locking/protection is needed in the bus 
+drivers. This is at least what I see from commits like 08960b022fb6 
+("i2c: tegra-bpmp: convert to use new atomic callbacks") or 3d11a12ece85 
+("i2c: ocores: enable atomic xfers").
 
-Now, looking at the code, I don't think the current code actually
-behaves correct in this case :-(, somewhere along the line we should
-truncate cpu_valid_mask to a single bit. Let me see where the sane place
-is to do that.
-
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
