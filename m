@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D4D7C5729
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA2E7C5719
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235003AbjJKOkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 10:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
+        id S1346240AbjJKOiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 10:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232323AbjJKOkM (ORCPT
+        with ESMTP id S235003AbjJKOiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 10:40:12 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 29436B6;
-        Wed, 11 Oct 2023 07:40:10 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0AF4106F;
-        Wed, 11 Oct 2023 07:40:50 -0700 (PDT)
-Received: from bogus (unknown [10.57.93.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EDF843F7A6;
-        Wed, 11 Oct 2023 07:40:07 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 15:38:36 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yang Yang <yang.yang29@zte.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sebastian Reichel <sre@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] of: rexport of_find_next_cache_node()
-Message-ID: <20231011143836.q4c5rf6eqb2i6p53@bogus>
-References: <20231011131431.2559029-1-arnd@kernel.org>
- <20231011135905.hveat7viflqluccw@bogus>
- <dccc0487-f254-4429-a6ab-fed037daae50@app.fastmail.com>
+        Wed, 11 Oct 2023 10:38:51 -0400
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B6E9D
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 07:38:49 -0700 (PDT)
+Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-57b74fbbd6eso1243509eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 07:38:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697035129; x=1697639929;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wUy7vO3kXkdPt1NjyYtI2f/jSAzioIQZvSG03dQoFIU=;
+        b=tCWPtJQvQJ9o6mAVbti/g9fPN0fhuhywrHd/MYTSRAn1/Gb2tKZ2RgiKLuXFhmI4o8
+         mXtkUO4F6eLMEKJJ5/STMJtoL5C1+TKzkKOwnRZZKBSneJXXtEQIPfuOkBLZqKVce98p
+         dQku81jcUgGxDamPAK7NSq1u7oOGXJXbuh8lw8HOZXUTjNsOMeS77SQEi1WBLl0Ck93V
+         XvMTFLSZ5tktoUcCknaOKYEm3fL9wcfRRpn/63HeG2DLpNT8og1pzbfO+injKzZROGgx
+         Lis4vGruri+QaSaZds0+mXBREIgokmuq4Vusi9ZVCbXstUesvI6tG3KCNiRN6VDEnd9H
+         gPQw==
+X-Gm-Message-State: AOJu0YyXcO8pkaaVw1V0MMwVYGsn0FTq4hQjAFm3nU9u7Q1vu0572YMs
+        FPBz52u4WDy+o3Xoyx/m/jWL5xVGLg+bkDX5uZQqbwPDQzGy
+X-Google-Smtp-Source: AGHT+IHlWTNYXiX2u7Uoy1nd1mj4rz+6NIPADipYD+3CNQlFtiYxyZpw3o2+92RaS7SAffQX9GjzCkLGvUCvEpYTcSDrLvkZtk5f
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dccc0487-f254-4429-a6ab-fed037daae50@app.fastmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a4a:e1a4:0:b0:571:9ccb:f90a with SMTP id
+ 4-20020a4ae1a4000000b005719ccbf90amr7338124ooy.1.1697035128930; Wed, 11 Oct
+ 2023 07:38:48 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 07:38:48 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000008081e060771c83d@google.com>
+Subject: [syzbot] Monthly v9fs report (Oct 2023)
+From:   syzbot <syzbot+list79315fa270805906878e@syzkaller.appspotmail.com>
+To:     asmadeus@codewreck.org, ericvh@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lucho@ionkov.net, syzkaller-bugs@googlegroups.com,
+        v9fs@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 04:05:47PM +0200, Arnd Bergmann wrote:
-> On Wed, Oct 11, 2023, at 15:59, Sudeep Holla wrote:
-> > On Wed, Oct 11, 2023 at 03:14:08PM +0200, Arnd Bergmann wrote:
-> >> From: Arnd Bergmann <arnd@arndb.de>
-> >> 
-> >> This function is now called from a cpufreq driver, but that breaks the
-> >> build when the caller is in a loadable module, because of a missing
-> >> export:
-> >> 
-> >> ERROR: modpost: "of_find_next_cache_node" [drivers/cpufreq/qcom-cpufreq-nvmem.ko] undefined!
-> >> 
-> >> Export this as a GPL-only symbol, like the other related functions in
-> >> this file.
-> >> 
-> >> Fixes: 7683a63c08ff5 ("cpufreq: qcom-nvmem: create L2 cache device")
-> >> Fixes: a3e31b4588443 ("of: Move definition of of_find_next_cache_node into common code.")
-> >
-> > I am bit confused as I see commit a3e31b4588443 didn't drop the export.
-> > So how is this change fixing that commit ?
->
-> My mistake, I was looking for the commit that initially introduced
-> the function, but didn't notice that this just moved it from powerpc.
->
-> I could have used "Fixes: e523f723d69cd ("powerpc: Add
-> of_find_next_cache_node()")", but it's probably best to just
-> leave that line out entirely.
->
+Hello v9fs maintainers/developers,
 
-Yes I was thinking to drop it as it is quite old commit(both a3e31b4588443 and
-e523f723d69cd) and I don't see any point in merging this to all the concerned
-stable trees as they must not have this new user.
+This is a 31-day syzbot report for the v9fs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/v9fs
 
-That said it is not a complex change, so I am fine either way, just thought
-of raising it in case it was not intentional.
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 6 issues are still open and 27 have been fixed so far.
 
---
-Regards,
-Sudeep
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 961     Yes   WARNING in v9fs_fid_get_acl
+                  https://syzkaller.appspot.com/bug?extid=a83dc51a78f0f4cf20da
+<2> 562     Yes   WARNING in inc_nlink (3)
+                  https://syzkaller.appspot.com/bug?extid=2b3af42c0644df1e4da9
+<3> 221     Yes   BUG: corrupted list in p9_fd_cancelled (2)
+                  https://syzkaller.appspot.com/bug?extid=1d26c4ed77bc6c5ed5e6
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
