@@ -2,88 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F6F7C5927
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735B27C592B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235052AbjJKQbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 12:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
+        id S232919AbjJKQcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 12:32:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235064AbjJKQbu (ORCPT
+        with ESMTP id S232602AbjJKQcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 12:31:50 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A3EC9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:31:48 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6969b391791so5071817b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:31:48 -0700 (PDT)
+        Wed, 11 Oct 2023 12:32:31 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8E8A4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:32:30 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5859d13f73dso4065715a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:32:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697041908; x=1697646708; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697041950; x=1697646750; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=H+MMx8yPQF+8HcCzQjqdZnLD/WD4YyZebT9qiOBQ8gg=;
-        b=DCUCJVOdtsgwD+XFhC5rjJ/2yawUhJ8I5aWSZ6N3+cycUsL4ZQ1aepWAD2auyjLJtc
-         qKsk5so7IzN4YKc60U4rymWANux/juBb6BaXT48VrREVDF48kBE96UtkwQYbMK8CL5jl
-         Fn4fRposp6Baiw5I8+nkphoqXKV36pR551Izk=
+        bh=6TTvG9RsDz513s2F23HaEBE2HWxh0jvH/4VBJj8ZPLk=;
+        b=aZBv53Hh9FvsdHpC7JgvzITjHIwsn3Yu7m7NWIp5GWVdd6dLCbXEAVeOtr+27Agqj9
+         NNOSN3v/kx3g5X1SVkayi4X+AOqkvt7eCr5cqXeGAFcw/qEHjxwZYbG0gcOWHaITMIWJ
+         2JwFi+1CEdnt28tyIcSMXvjzpHhEO9BwkuGQB4qa/4dw4V7PPo/OALKgJ5ZTr55ek/wx
+         k3lMWWiZNyOtCKlYoREDy6wSjVooegtRBnclW/kJQkokYdsYKRnmrN8wcG7FTU8XzRKf
+         P/sttiMV28jEByYXAOTwfJJKKgf84+LrxcQ7k7LHmzj2xIrpGW45DONEjrLSOJKGyr79
+         G39g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697041908; x=1697646708;
+        d=1e100.net; s=20230601; t=1697041950; x=1697646750;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=H+MMx8yPQF+8HcCzQjqdZnLD/WD4YyZebT9qiOBQ8gg=;
-        b=q7eAPvPAClhYSG6gLg72P2HFPH7JiuMMBAcZkH+pFyL9DWtHfpuNyvUjh5XauSLakF
-         bAfaLjWBKtjXBFO28O8SdE99JgORhlP0AU2znmchkB+WYDPBSh67kNpSkOoEhyQhK/n/
-         JwIqL1s/U+11rNPzK7LUzfJCKrr94kQjWXS9DXduNdF37GjIoEcyAS+tTaAOiaYNVjEK
-         688kIYlb2rqxFsoFZKslvT68LFqW7J2+7apu8s+CCMrrg81rR5HHJzX1xQ9skowM7FB+
-         Yp4ftI9uQZdnJg+4uNLKyyWha3vsGRYgOpNYYAhOTsDwAiY+h140Um0PpamyskymgNw+
-         rC1g==
-X-Gm-Message-State: AOJu0YxSOapb/41lyhLNGBwWmcvEmQ7VFriL1n7KiB2+2rhvX8K+b18R
-        0z6WpTMoexqGMlOzUUpr9cALHw==
-X-Google-Smtp-Source: AGHT+IES01ZbXdY6aRhuBKS26Q5mlzP46k5cW0I7syaN7Gn4A+8DmL/xUNf667TCEWUfCACCDgb8xQ==
-X-Received: by 2002:a05:6a20:dd9a:b0:167:af7d:9e8c with SMTP id kw26-20020a056a20dd9a00b00167af7d9e8cmr14523020pzb.56.1697041908446;
-        Wed, 11 Oct 2023 09:31:48 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id q4-20020a656a84000000b00563df2ba23bsm66090pgu.50.2023.10.11.09.31.47
+        bh=6TTvG9RsDz513s2F23HaEBE2HWxh0jvH/4VBJj8ZPLk=;
+        b=JmpZ8sWhof99y2gt9NTZKedRi3/086bvhNmfqpUOIIY7WHX37e/B3yPN2txmvUye/1
+         6sJ8FgZJGp7KW05dAgvqcWqdCiP/xvTf2RW8UE4YWIzD/D3EEGc6tFjSDPzlRqD0J90U
+         o0r75l1LCTqrfupKVVA2lOdH3tpWEz6/y/sluDqriSbXFzEGuM9eKhYsdSCjwrDdJ5Na
+         tKIrR1EFzJL5yzv3EWBUfG3SLxzTuw+2nV0sPQnLHCZquMaAUo+TBHt7jDLZBXoUAk8P
+         T51n40sKr/1HMAQQwCuq6V2mHJoXXbVLV2SKq6D8QPycR572ElHQ31ETnWYSmNXfPfPi
+         zlhg==
+X-Gm-Message-State: AOJu0Yw5iKRjw24o/Hsqgwjz99ow/3N99ZRehVT0r4qYaDyslX4ksNKV
+        p/LYfP0dB1qLUPLwO5gWf7g=
+X-Google-Smtp-Source: AGHT+IE6gWwlpkkkq0U3s9MJSP7t8t3BKkfZpXp1GtQIDHyRgnCdCpGHP8sMs+lo9xh+IAW6Ajldhw==
+X-Received: by 2002:a17:90b:3143:b0:268:b682:23da with SMTP id ip3-20020a17090b314300b00268b68223damr18583581pjb.34.1697041949845;
+        Wed, 11 Oct 2023 09:32:29 -0700 (PDT)
+Received: from vm.. (ip141.ip-148-113-3.net. [148.113.3.141])
+        by smtp.gmail.com with ESMTPSA id z9-20020a17090acb0900b00274262bcf8dsm117869pjt.41.2023.10.11.09.32.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 09:31:47 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Cc:     Kees Cook <keescook@chromium.org>, Edward AD <twuufnxlz@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        syzbot+c90849c50ed209d77689@syzkaller.appspotmail.com,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] Bluetooth: hci_sock: Correctly bounds check and pad HCI_MON_NEW_INDEX name
-Date:   Wed, 11 Oct 2023 09:31:44 -0700
-Message-Id: <20231011163140.work.317-kees@kernel.org>
+        Wed, 11 Oct 2023 09:32:29 -0700 (PDT)
+From:   Yuanheng Zhang <yuanhengzhang1214@gmail.com>
+To:     mark@fasheh.com
+Cc:     jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        ocfs2-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Yuanheng Zhang <yuanhengzhang1214@gmail.com>
+Subject: [PATCH] ocfs2: fix a typo in a comment
+Date:   Thu, 12 Oct 2023 00:32:16 +0800
+Message-Id: <20231011163216.29446-1-yuanhengzhang1214@gmail.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2385; i=keescook@chromium.org;
- h=from:subject:message-id; bh=on0TcWQI6be5JbFS4MvZB6HiilmbXCZNq0hVdsTZcTA=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlJs3wuHKC8tFUYtd66UFMEWlaF6VGRB0wyy4r4
- v0kXJ9+LcuJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZSbN8AAKCRCJcvTf3G3A
- JuqXD/9HcIT6Ydof+BGGggd18PoUB8YhhWaiA8oKdvxkbk3Iumw5829rLzHYLeXZFlNYjAGHJ4w
- YGdSNyjF2lzjbJFZ6wLTuVN7zy0aK9MeyNiT1ch8f3EewDWqA9+P19sq4aSINnJ6L4IIysOPL1J
- Tp7pmoKzWngdKXAXARarmZ0G05FOIyyhnkmJXRuEyiv58jcsvLZTfcpuwJ1gUcJsiK+LFwLgRih
- 1JpDT7C2MQTzrLf9gzsEeFabAQwczaq5l6Kf2BTerw5trq03upcF6Vme6OAlyTCjwUxnxzpS1c1
- ofPNtp18esK1fHIrptpkuEyx2jngkEHn/MQwZ9WlhNC2UtiDgPgDlTLuCW65uA38lNzJHW16fcp
- tISkBl6vPUkmux1FOIDab1LKa149zIZRVPjYg6oDpKSQP3e5rdBTHyEU40aNRJe90uEaOUOOqZQ
- m50d99pztGFeDJ7Pfdz1jKBI76dDKJXjg7wzHNYe8vlmFyjDnV5oMWaIa2Or2ZU3qGQfeQkQhI+
- Cj6oI87eX2uaqqzAb1UO/Cb55BVerNIIbDTHnNGljfQ2rihIKChwA3SIfrwkrukcwGcVtVo7JF2
- mWProGQLXUAVvM/+G0FSQlt99cKkJryGbF5/5KbqNpaORdEcOuQIqt//SPEQFLcVRbuJSAY5dJ5
- d25ys4e FE7RuudQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,64 +70,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code pattern of memcpy(dst, src, strlen(src)) is almost always
-wrong. In this case it is wrong because it leaves memory uninitialized
-if it is less than sizeof(ni->name), and overflows ni->name when longer.
+Fix spelling typo in comment.
 
-Normally strtomem_pad() could be used here, but since ni->name is a
-trailing array in struct hci_mon_new_index, compilers that don't support
--fstrict-flex-arrays=3 can't tell how large this array is via
-__builtin_object_size(). Instead, open-code the helper and use sizeof()
-since it will work correctly.
-
-Additionally mark ni->name as __nonstring since it appears to not be a
-%NUL terminated C string.
-
-Cc: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Cc: Edward AD <twuufnxlz@gmail.com>
-Cc: Marcel Holtmann <marcel@holtmann.org>
-Cc: Johan Hedberg <johan.hedberg@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: linux-bluetooth@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Fixes: 78480de55a96 ("Bluetooth: hci_sock: fix slab oob read in create_monitor_event")
-Link: https://lore.kernel.org/lkml/202310110908.F2639D3276@keescook/
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Yuanheng Zhang <yuanhengzhang1214@gmail.com>
 ---
- include/net/bluetooth/hci_mon.h | 2 +-
- net/bluetooth/hci_sock.c        | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ fs/ocfs2/buffer_head_io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/net/bluetooth/hci_mon.h b/include/net/bluetooth/hci_mon.h
-index 2d5fcda1bcd0..082f89531b88 100644
---- a/include/net/bluetooth/hci_mon.h
-+++ b/include/net/bluetooth/hci_mon.h
-@@ -56,7 +56,7 @@ struct hci_mon_new_index {
- 	__u8		type;
- 	__u8		bus;
- 	bdaddr_t	bdaddr;
--	char		name[8];
-+	char		name[8] __nonstring;
- } __packed;
- #define HCI_MON_NEW_INDEX_SIZE 16
- 
-diff --git a/net/bluetooth/hci_sock.c b/net/bluetooth/hci_sock.c
-index 72abe54c45dd..3e7cd330d731 100644
---- a/net/bluetooth/hci_sock.c
-+++ b/net/bluetooth/hci_sock.c
-@@ -488,7 +488,8 @@ static struct sk_buff *create_monitor_event(struct hci_dev *hdev, int event)
- 		ni->type = hdev->dev_type;
- 		ni->bus = hdev->bus;
- 		bacpy(&ni->bdaddr, &hdev->bdaddr);
--		memcpy(ni->name, hdev->name, strlen(hdev->name));
-+		memcpy_and_pad(ni->name, sizeof(ni->name), hdev->name,
-+			       strnlen(hdev->name, sizeof(ni->name)), '\0');
- 
- 		opcode = cpu_to_le16(HCI_MON_NEW_INDEX);
- 		break;
+diff --git a/fs/ocfs2/buffer_head_io.c b/fs/ocfs2/buffer_head_io.c
+index 196638a22b48..6cb919f60011 100644
+--- a/fs/ocfs2/buffer_head_io.c
++++ b/fs/ocfs2/buffer_head_io.c
+@@ -158,7 +158,7 @@ int ocfs2_read_blocks_sync(struct ocfs2_super *osb, u64 block,
+ 			if (new_bh && bh) {
+ 				/* If middle bh fails, let previous bh
+ 				 * finish its read and then put it to
+-				 * aovoid bh leak
++				 * avoid bh leak
+ 				 */
+ 				if (!buffer_jbd(bh))
+ 					wait_on_buffer(bh);
 -- 
 2.34.1
 
