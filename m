@@ -2,42 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 422217C4A94
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CFC7C4A99
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbjJKGa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 02:30:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59702 "EHLO
+        id S1344526AbjJKGbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 02:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbjJKGaZ (ORCPT
+        with ESMTP id S229957AbjJKGbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 02:30:25 -0400
+        Wed, 11 Oct 2023 02:31:36 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5715F93
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:30:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43E06C433C7;
-        Wed, 11 Oct 2023 06:30:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697005823;
-        bh=cOfTkY43H2nW587bRbrhIWOL7GLGr7wMPsVn9tjAmW0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wT4buVgUFRsybw4xiRLI0LgTqeVc7oFuas3/Y5EtgAlXJfXTG2Bn/LrQ4zN5W+gyo
-         93GacY0ieRvY5wmyPmzX0Lf4ly56RkkjmEm5q0aOccBGmvYUIdIV7cg/rdiww5exmR
-         tqMdWp9VVKmvolYBfYeWBF2CWiKZ/I1GP1vp07c0=
-Date:   Wed, 11 Oct 2023 08:30:19 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Abhinav Singh <singhabhinav9051571833@gmail.com>
-Cc:     davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Remove extra unlock for the mutex
-Message-ID: <2023101136-irritate-shrine-cde6@gregkh>
-References: <20231010224630.238254-1-singhabhinav9051571833@gmail.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F157C93
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:31:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDFF4C433C7;
+        Wed, 11 Oct 2023 06:31:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697005894;
+        bh=zvpSv8bmJ90ROuqL9qzQWu4rBI3ZmjnN0yYWmOHl4i8=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=h0+TZTiZ5yN+tsWxZmFQ7Vdu+xS8Tgcbro3PWnOTfyMxELldEukn/XHur31AHGMLX
+         dZc7JAqHCdvlH7aPHQCGWTAbAWVQa6Di/i5RG5C7Gqs7nkTndPGSkrK/CeoZTpHxOx
+         7JjA3Mixo3ED2YBbmCLi/V8C1UE2qaNZmuz6jEAjxUIXQ31h6ZTQZPWni0tM2sswsK
+         FlRvua1ZSF62GIfDZUsGFR3JTJdZepcqtyIcaC/17F9LuR9WE3UiR7dTWo8eEbXPdy
+         N8geQNXbrH+qhhgVlTjnDznm8M/Qrmow/kfxkJVUNNuYlYDn9EYYYTHgAwo7kezKge
+         N5jEx1OZX3UHg==
+Received: (nullmailer pid 2911056 invoked by uid 1000);
+        Wed, 11 Oct 2023 06:31:32 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010224630.238254-1-singhabhinav9051571833@gmail.com>
+From:   Rob Herring <robh@kernel.org>
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     Icenowy Zheng <uwu@icenowy.me>, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-usb@vger.kernel.org
+In-Reply-To: <20231011051152.133257-1-linux.amoon@gmail.com>
+References: <20231011051152.133257-1-linux.amoon@gmail.com>
+Message-Id: <169700589265.2911018.855796610271678067.robh@kernel.org>
+Subject: Re: [PATCH v2 1/2] dt-bindings: usb: Add the binding example for
+ the Genesys Logic GL3523 hub
+Date:   Wed, 11 Oct 2023 01:31:32 -0500
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -48,32 +55,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 04:16:30AM +0530, Abhinav Singh wrote:
-> There is a double unlock on mutex. This can cause undefined behaviour.
+
+On Wed, 11 Oct 2023 10:41:48 +0530, Anand Moon wrote:
+> Add the binding example for the USB3.1 Genesys Logic GL3523
+> integrates with USB 3.1 Gen 1 Super Speed and USB 2.0 High-Speed
+> hub.
 > 
-> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
 > ---
->  net/ipv4/inet_connection_sock.c | 1 -
->  1 file changed, 1 deletion(-)
+> New patch.
+> ---
+>  .../bindings/usb/genesys,gl850g.yaml          | 28 +++++++++++++++++--
+>  1 file changed, 25 insertions(+), 3 deletions(-)
 > 
-> diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-> index aeebe8816689..f11fe8c727a4 100644
-> --- a/net/ipv4/inet_connection_sock.c
-> +++ b/net/ipv4/inet_connection_sock.c
-> @@ -597,7 +597,6 @@ int inet_csk_get_port(struct sock *sk, unsigned short snum)
->  	}
->  	if (head2_lock_acquired)
->  		spin_unlock(&head2->lock);
-> -	spin_unlock_bh(&head->lock);
 
-How was this tested?
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-And where is the now-needed unlock of the head->lock?
+yamllint warnings/errors:
 
-How was this change found?
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/usb/usb-hcd.example.dtb: hub@1: 'reset-gpios' is a required property
+	from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/usb/usb-hcd.example.dtb: hub@1: 'vdd-supply' is a required property
+	from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/usb/usb-hcd.example.dtb: hub@1: 'peer-hub' is a required property
+	from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/usb/usb-device.example.dtb: hub@1: 'reset-gpios' is a required property
+	from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/usb/usb-device.example.dtb: hub@1: 'vdd-supply' is a required property
+	from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/usb/usb-device.example.dtb: hub@1: 'peer-hub' is a required property
+	from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
 
-And your subject line needs a lot of work...
+doc reference errors (make refcheckdocs):
 
-thanks,
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231011051152.133257-1-linux.amoon@gmail.com
 
-greg k-h
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
