@@ -2,187 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E7D7C55EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829AB7C55F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbjJKNz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:55:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
+        id S232466AbjJKNzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232075AbjJKNzZ (ORCPT
+        with ESMTP id S232213AbjJKNz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:55:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0A493
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:54:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697032477;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xrlMJK0HKaF7VGhnGhdLQ/tjhSDJ2FSBz3+97dLCK6s=;
-        b=NzdY454wySF6Ds4PSUSqJCD54NGiZVtRw5iEYiaX/js1rQsi75sT15ECKhtstBwmqrWZig
-        oOYplMS0o0MWVgKPx2l2r7SKCkpLhhlKj7p44ahkODlxDSPEQp0SY/ShOFAKX7TD/0mCI0
-        25pd9D3UQSeXTegwhSHp6JIwGXg2FnQ=
-Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
- [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-665--vkb6D5oPkuQZF0Wa2YkAw-1; Wed, 11 Oct 2023 09:54:36 -0400
-X-MC-Unique: -vkb6D5oPkuQZF0Wa2YkAw-1
-Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-5a7ed6903a6so5013827b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:54:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697032475; x=1697637275;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xrlMJK0HKaF7VGhnGhdLQ/tjhSDJ2FSBz3+97dLCK6s=;
-        b=DM2CFOWURPyFz221zFRKwewTrhEtFFmPbIU460wYraf8xE+qqjuFYGRHrHdihvh7RS
-         EFz/doO7/uwAUqYQd8YiB7P0gU7CeR41BDTRK2wj06BzmVP8GNMKlFbF/KeJOdAFDPUG
-         n+Ul49cm4y71ipDPXqXDM0bs4G0oWyNU1rvY7LysWN/eQ99vIvToaC993gsB6UFZFtKA
-         hlTmzha2Q535DA9u2+f9qC4/JK6vtuflw2qzAIbUn3dmagWvS1IleYqP1A1poNTXvoEo
-         Hk4LUfZ12W9vK6visZ3JiPJV0o+Zfa5PPZVEsSfElP/6s9CmrKxV62gvdQXxW0iFHREL
-         AqeQ==
-X-Gm-Message-State: AOJu0YzlxaMAaISo1ZSXGG9giDaRRNQ4dQ9y++nBjgL0g9mx0/PZWWkt
-        uMXXMknQhRbmwNQ6bf6O6ZTuS2ka0pF/Vx/4Ute7G/U8BnnbAOdtp7CON3Mr/Ly8CFbOwYtzJKk
-        WK7ofd5nQ9qAqL+iRHx1siQZk
-X-Received: by 2002:a25:8d82:0:b0:d06:4f8a:53d5 with SMTP id o2-20020a258d82000000b00d064f8a53d5mr19381127ybl.1.1697032475255;
-        Wed, 11 Oct 2023 06:54:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEO44bCWKWio9yPI2XTbX7B/vxj+w0gjchXofCDSYpbleULrpuMqiXhrHxbDgDlWiqm5rLIKw==
-X-Received: by 2002:a25:8d82:0:b0:d06:4f8a:53d5 with SMTP id o2-20020a258d82000000b00d064f8a53d5mr19381105ybl.1.1697032474945;
-        Wed, 11 Oct 2023 06:54:34 -0700 (PDT)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id bu15-20020ad455ef000000b0066d04196c39sm735289qvb.81.2023.10.11.06.54.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 06:54:34 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 08:54:32 -0500
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v3 07/15] firmware: qcom: scm: make qcom_scm_assign_mem()
- use the TZ allocator
-Message-ID: <nq6m3v2wflhv5qgxtllympnzqtbtcn7d7ihgw5rdpvqjugv2xs@4vpuzoopkeic>
-References: <20231009153427.20951-1-brgl@bgdev.pl>
- <20231009153427.20951-8-brgl@bgdev.pl>
- <v5ty4xeshodjlpyatqlrjipqejazamuhqhauorujveyqzpikoq@rftlvk6354yx>
- <CAMRc=MdGABGa_bc3_ug+iSKtMg9pcKe40F7zv9Ff2C0ed8i2=Q@mail.gmail.com>
+        Wed, 11 Oct 2023 09:55:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3649090;
+        Wed, 11 Oct 2023 06:55:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04FF4C433C8;
+        Wed, 11 Oct 2023 13:55:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697032524;
+        bh=bu5eBhwhfULEbVLtjkQ7jS6kUjdaiRIyYPhtQbetQXo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=FS7tOU0u1A8rdy6h19ItvoCmfY6Wqef/Pk0gdNru63VmCgZQEXWL00+sKwWOp2CiX
+         MdrE/LlN8WWS8ZE6pR3KvATGnY9Uaf0OjTQX1ltljTkkdOkKRrKoXSFS7LoJdfRWMt
+         K6+mzVFt+WD8Wxl8B9PQjHU2IP4b3slxic6OYH43NYiVdkslCfqMLFdGQ+pp/BaC8W
+         c+Ht7+pQ6gq8BwLy6LLsAglepPR395DWLKmSb2L81MpkkUJgt70Gs11Sv0udGWxYdP
+         5OYSTwr0ClnjlAbg/PZ7msx45LHeBdDo4LnMmiYANohtflIQDoUXgxmR0eDgGu0/lK
+         o20Cl8blsqjuA==
+Message-ID: <bdf8dbb2e1aeeb6396d7a03b8c00d0db729c602d.camel@kernel.org>
+Subject: Re: [PATCH] KEYS: trusted: Rollback init_trusted() consistently
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     keyrings@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "open list:KEYS-TRUSTED" <linux-integrity@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 11 Oct 2023 16:55:20 +0300
+In-Reply-To: <CAFA6WYN0vXWZveAkzOfV_6Kki77SxgX7C=Xqe9brZMX1Dj2iLg@mail.gmail.com>
+References: <20231010231616.3122392-1-jarkko@kernel.org>
+         <CAFA6WYMdrCfqMVExYBbhCK7vUSQffyUfSWpQO0=HeQc6Edz9OA@mail.gmail.com>
+         <186a4b62517ead88df8c3c0e9e9585e88f9a6fd8.camel@kernel.org>
+         <0aeb4d88952aff53c5c1a40b547a9819ebd1947e.camel@kernel.org>
+         <CAFA6WYObvJvQv=-JJ5gnmFqJKbT=4JnT+ErC=iB1KfnYfVn7Ag@mail.gmail.com>
+         <79fe0b97e2f5d1f02d08c9f633b7c0da13dc9127.camel@kernel.org>
+         <CAFA6WYMrg3VBYvdV8Or==YK_qATk22bL+_ryDC-oO4jVf7DCWg@mail.gmail.com>
+         <b70d6be5980185a4fb4205e71c56111183e1f160.camel@kernel.org>
+         <CAFA6WYN0vXWZveAkzOfV_6Kki77SxgX7C=Xqe9brZMX1Dj2iLg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MdGABGa_bc3_ug+iSKtMg9pcKe40F7zv9Ff2C0ed8i2=Q@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 09:41:49AM +0200, Bartosz Golaszewski wrote:
-> On Wed, Oct 11, 2023 at 12:19 AM Andrew Halaney <ahalaney@redhat.com> wrote:
-> >
-> > On Mon, Oct 09, 2023 at 05:34:19PM +0200, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > >
-> > > Let's use the new TZ memory allocator to obtain a buffer for this call
-> > > instead of using dma_alloc_coherent().
-> > >
-> > > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > ---
-> > >  drivers/firmware/qcom/qcom_scm.c | 10 ++++++----
-> > >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-> > > index 71e98b666391..754f6056b99f 100644
-> > > --- a/drivers/firmware/qcom/qcom_scm.c
-> > > +++ b/drivers/firmware/qcom/qcom_scm.c
-> > > @@ -4,6 +4,7 @@
-> > >   */
-> > >
-> > >  #include <linux/arm-smccc.h>
-> > > +#include <linux/cleanup.h>
-> > >  #include <linux/clk.h>
-> > >  #include <linux/completion.h>
-> > >  #include <linux/cpumask.h>
-> > > @@ -998,14 +999,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
-> > >       struct qcom_scm_mem_map_info *mem_to_map;
-> > >       phys_addr_t mem_to_map_phys;
-> > >       phys_addr_t dest_phys;
-> > > -     dma_addr_t ptr_phys;
-> > > +     phys_addr_t ptr_phys;
-> > >       size_t mem_to_map_sz;
-> > >       size_t dest_sz;
-> > >       size_t src_sz;
-> > >       size_t ptr_sz;
-> > >       int next_vm;
-> > >       __le32 *src;
-> > > -     void *ptr;
-> >
-> > nit: couldn't you keep this up here?
-> >
-> 
-> This still needs to make its way into the coding style guide but I got
-> yelled at by Linus Torvalds personally for not declaring the managed
-> variables where they are initialized. So this is the correct approach.
+On Wed, 2023-10-11 at 19:12 +0530, Sumit Garg wrote:
+> On Wed, 11 Oct 2023 at 18:36, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> >=20
+> > On Wed, 2023-10-11 at 18:25 +0530, Sumit Garg wrote:
+> > > On Wed, 11 Oct 2023 at 18:07, Jarkko Sakkinen <jarkko@kernel.org> wro=
+te:
+> > > >=20
+> > > > On Wed, 2023-10-11 at 17:47 +0530, Sumit Garg wrote:
+> > > > > On Wed, 11 Oct 2023 at 16:04, Jarkko Sakkinen <jarkko@kernel.org>=
+ wrote:
+> > > > > >=20
+> > > > > > On Wed, 2023-10-11 at 13:12 +0300, Jarkko Sakkinen wrote:
+> > > > > > > On Wed, 2023-10-11 at 11:27 +0530, Sumit Garg wrote:
+> > > > > > > > On Wed, 11 Oct 2023 at 04:46, Jarkko Sakkinen <jarkko@kerne=
+l.org> wrote:
+> > > > > > > > >=20
+> > > > > > > > > Do bind neither static calls nor trusted_key_exit() befor=
+e a successful
+> > > > > > > > > init, in order to maintain a consistent state. In additio=
+n, depart the
+> > > > > > > > > init_trusted() in the case of a real error (i.e. getting =
+back something
+> > > > > > > > > else than -ENODEV).
+> > > > > > > > >=20
+> > > > > > > > > Reported-by: Linus Torvalds <torvalds@linux-foundation.or=
+g>
+> > > > > > > > > Closes: https://lore.kernel.org/linux-integrity/CAHk-=3Dw=
+hOPoLaWM8S8GgoOPT7a2+nMH5h3TLKtn=3DR_3w4R1_Uvg@mail.gmail.com/
+> > > > > > > > > Cc: stable@vger.kernel.org=C2=A0# v5.13+
+> > > > > > > > > Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted =
+keys framework")
+> > > > > > > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > > > > > > > ---
+> > > > > > > > > =C2=A0security/keys/trusted-keys/trusted_core.c | 20 ++++=
+++++++----------
+> > > > > > > > > =C2=A01 file changed, 10 insertions(+), 10 deletions(-)
+> > > > > > > > >=20
+> > > > > > > > > diff --git a/security/keys/trusted-keys/trusted_core.c b/=
+security/keys/trusted-keys/trusted_core.c
+> > > > > > > > > index 85fb5c22529a..fee1ab2c734d 100644
+> > > > > > > > > --- a/security/keys/trusted-keys/trusted_core.c
+> > > > > > > > > +++ b/security/keys/trusted-keys/trusted_core.c
+> > > > > > > > > @@ -358,17 +358,17 @@ static int __init init_trusted(void=
+)
+> > > > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!get_random)
+> > > > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 get_random =3D kernel_get_random;
+> > > > > > > > >=20
+> > > > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 static_call_update(trusted_key_seal,
+> > > > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 trust=
+ed_key_sources[i].ops->seal);
+> > > > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 static_call_update(trusted_key_unseal,
+> > > > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 trust=
+ed_key_sources[i].ops->unseal);
+> > > > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 static_call_update(trusted_key_get_random,
+> > > > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 get_r=
+andom);
+> > > > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 trusted_key_exit =3D trusted_key_sources[i].=
+ops->exit;
+> > > > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 migratable =3D trusted_key_sources[i].ops->m=
+igratable;
+> > > > > > > > > -
+> > > > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D trusted_key_sources[i].ops->init(=
+);
+> > > > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!ret)
+> > > > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!ret) {
+> > > > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 static_call_update(trusted_key_seal, trusted_key_sources[i].ops->seal);
+> > > > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 static_call_update(trusted_key_unseal, trusted_key_sources[i].ops->unse=
+al);
+> > > > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 static_call_update(trusted_key_get_random, get_random);
+> > > > > > > > > +
+> > > > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 trusted_key_exit =3D trusted_key_sources[i].ops->exit;
+> > > > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 migratable =3D trusted_key_sources[i].ops->migratable;
+> > > > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > > > > > > > > +
+> > > > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!ret || ret !=3D -ENODEV)
+> > > > > > > >=20
+> > > > > > > > As mentioned in the other thread, we should allow other tru=
+st sources
+> > > > > > > > to be initialized if the primary one fails.
+> > > > > > >=20
+> > > > > > > I sent the patch before I received that response but here's w=
+hat you
+> > > > > > > wrote:
+> > > > > > >=20
+> > > > > > > "We should give other trust sources a chance to register for =
+trusted
+> > > > > > > keys if the primary one fails."
+> > > > > > >=20
+> > > > > > > 1. This condition is lacking an inline comment.
+> > > > > > > 2. Neither this response or the one that you pointed out has =
+any
+> > > > > > > =C2=A0=C2=A0 explanation why for any system failure the proce=
+ss should
+> > > > > > > =C2=A0=C2=A0 continue.
+> > > > > > >=20
+> > > > > > > You should really know the situations (e.g. list of posix err=
+or
+> > > > > > > code) when the process can continue and "allow list" those. T=
+his
+> > > > > > > way way too abstract. It cannot be let all possible system fa=
+ilures
+> > > > > > > pass.
+> > > > > >=20
+> > > > > > And it would nice if it printed out something for legit cases. =
+Like
+> > > > > > "no device found" etc. And for rest it must really withdraw the=
+ whole
+> > > > > > process.
+> > > > >=20
+> > > > > IMO, it would be quite tricky to come up with an allow list. Can =
+we
+> > > > > keep "EACCES", "EPERM", "ENOTSUPP" etc in that allow list? I thin=
+k
+> > > > > these are all debatable.
+> > > >=20
+> > > > Yes, that does sounds reasonable.
+> > > >=20
+> > > > About the debate. Well, it is better eagerly block and tree falls d=
+own
+> > > > somewhere we can consider extending the list through a fix.
+> > > >=20
+> > > > This all wide open is worse than a few glitches somewhere, which ar=
+e
+> > > > trivial to fix.
+> > > >=20
+> > >=20
+> > > Fair enough, I would suggest we document it appropriately such that i=
+t
+> > > is clear to the users or somebody looking at the code.
+> >=20
+> > I went throught the backends on how they implement init:
+> >=20
+> > 1. Returns -ENODEV when it does not exist.
+> > 2. Calls driver_register(). Something is wrong enough if that
+> > =C2=A0=C2=A0 fails to rollback the whole procedure.
+> > 3. TPM: -ENODEV
+> >=20
+> > Therefore, I would keep in the existing patch since there is no weird
+> > uapi visible legacy behavior to support in the first place. And for
+> > that reason there is no good reason to have all those four POSIX rc's
+> > in the list.
+>=20
+> Okay I can live with this patch as long as it doesn't break the
+> intended use-case.
 
-I'm being a stick in the mud, but couldn't you initialize to NULL and
-keep them all up top? That seems more in line with the current "declare
-all variables at the start of function" guideline the kernel follows.
+Well this sort of policy has been already existing for some time:
 
-Not a big deal... yours call! but /me shrugs
+	/*
+	 * encrypted_keys.ko depends on successful load of this module even if
+	 * trusted key implementation is not found.
+	 */
+	if (ret =3D=3D -ENODEV)
+		return 0;
 
-> 
-> Bart
-> 
-> > Otherwise,
-> >
-> > Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-> >
-> > >       int ret, i, b;
-> > >       u64 srcvm_bits = *srcvm;
-> > >
-> > > @@ -1015,10 +1015,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
-> > >       ptr_sz = ALIGN(src_sz, SZ_64) + ALIGN(mem_to_map_sz, SZ_64) +
-> > >                       ALIGN(dest_sz, SZ_64);
-> > >
-> > > -     ptr = dma_alloc_coherent(__scm->dev, ptr_sz, &ptr_phys, GFP_KERNEL);
-> > > +     void *ptr __free(qcom_tzmem) = qcom_tzmem_alloc(__scm->mempool,
-> > > +                                                     ptr_sz, GFP_KERNEL);
-> > >       if (!ptr)
-> > >               return -ENOMEM;
-> > >
-> > > +     ptr_phys = qcom_tzmem_to_phys(ptr);
-> > > +
-> > >       /* Fill source vmid detail */
-> > >       src = ptr;
-> > >       i = 0;
-> > > @@ -1047,7 +1050,6 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
-> > >
-> > >       ret = __qcom_scm_assign_mem(__scm->dev, mem_to_map_phys, mem_to_map_sz,
-> > >                                   ptr_phys, src_sz, dest_phys, dest_sz);
-> > > -     dma_free_coherent(__scm->dev, ptr_sz, ptr, ptr_phys);
-> > >       if (ret) {
-> > >               dev_err(__scm->dev,
-> > >                       "Assign memory protection call failed %d\n", ret);
-> > > --
-> > > 2.39.2
-> > >
-> >
-> 
+If we would need a list of error codes, then this is also incorrect
+implementation because the error codes that you listed should be
+also success cases.
 
+BR, Jarkko
