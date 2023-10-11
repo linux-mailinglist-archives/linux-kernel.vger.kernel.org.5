@@ -2,332 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E9C7C552E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD507C5550
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346062AbjJKNXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:23:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
+        id S1346957AbjJKNYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231524AbjJKNXd (ORCPT
+        with ESMTP id S232058AbjJKNYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:23:33 -0400
-Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B87A90
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:23:30 -0700 (PDT)
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1dd2e4f744dso968125fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:23:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1697030609; x=1697635409; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=aPMFXAItQQgSeDMu106EsctnKTGFX+nLv6VS+2VQ9ec=;
-        b=WH0kF8xhjYJcbkgydHhlchThr9wz3l+mO5YjSGATOGd9OcrK7UHPihj7x2Nz6Llbsh
-         byHkMW3wPvyGwuLUCXeH5YyIOV4LCvlV/StpECbiMwvfxo9VpVB+/MBNOKJ29OGG/TD6
-         YlrMXZhSGwhc8GaFSaUiUVhB1ffv95A5BmSiI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697030609; x=1697635409;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aPMFXAItQQgSeDMu106EsctnKTGFX+nLv6VS+2VQ9ec=;
-        b=ms5g6TccJRMBgfMd9mEkIGhFLRuyJDsIen1UawAgQnC5OQ7UOG+5EXLAmN2MwQ3Ft7
-         aNEPVT4VQ7WR1fDQmYdRHHrxwxukgymSP6BPV0Sa6NdK9Aidqeo0u1j6ULXWydeUB4Ja
-         Q0qR5WmVwlalX7S/e3DOXTYJ9lo/cQZk/zIZm+3R8pdbui/Xp7XieOKWy6BtvJhlSBlX
-         UADj9h5l1RzXRXMMSXpfMlmolt2HIc9gYt/tIx7Lt30kYkm3Z2nDM58ES2Uz3l2T/TW6
-         SBLZ8XM8LX7kfDj/6wsj8LMIQmyW4JEvCsOa1ySbaXmUJuk9Fy6ojELLWwx2+q+ObYaN
-         Cb2Q==
-X-Gm-Message-State: AOJu0Yxg4rxUQTm36PAfSpxHX9tjFV1SHBFAf07yBGjmAjZQhUrZu0VY
-        lOe1JfUf2FEQ9T4knIAZ+KA4KMxuNbGA+HEFF8TY/g==
-X-Google-Smtp-Source: AGHT+IGVhxusHGjoJmoPuM9cn7HjoSWRP/Xoy6wQeSEGov+GTITI1G1n3+rHZH7wMU4MS9XvJaCi7ILcvXNbsMYMGuk=
-X-Received: by 2002:a05:6870:c689:b0:1e1:e6ee:94b6 with SMTP id
- cv9-20020a056870c68900b001e1e6ee94b6mr23108366oab.4.1697030609252; Wed, 11
- Oct 2023 06:23:29 -0700 (PDT)
+        Wed, 11 Oct 2023 09:24:08 -0400
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E833293;
+        Wed, 11 Oct 2023 06:24:04 -0700 (PDT)
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 93FD0830D0;
+        Wed, 11 Oct 2023 15:24:02 +0200 (CEST)
+From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Subject: [PATCH RFT v8 0/6] ARM: pxa: GPIO descriptor conversions
+Date:   Wed, 11 Oct 2023 15:23:44 +0200
+Message-Id: <20231011-pxa-gpio-v8-0-eed08a0fcac8@skole.hr>
 MIME-Version: 1.0
-References: <20221207-rpi-hdmi-improvements-v3-0-bdd54f66884e@cerno.tech> <20221207-rpi-hdmi-improvements-v3-3-bdd54f66884e@cerno.tech>
-In-Reply-To: <20221207-rpi-hdmi-improvements-v3-3-bdd54f66884e@cerno.tech>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 11 Oct 2023 15:23:18 +0200
-Message-ID: <CAKMK7uFQ8yJLKgTrQdmhwmq9uL-hbUsfUeU6cxWdB2AW3i4vOg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/9] drm/vc4: hdmi: Add Broadcast RGB property to allow
- override of RGB range
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Emma Anholt <emma@anholt.net>, Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAOChJmUC/13PPW7DMAwF4KsEmqtCf5SoTp16gCBb0cG2qFhoE
+ Rt2YaQIfPcKGlrCI0V9j3gPsdJSaBUvp4dYaCtrmW51wKeTGMbudiVZUp2FUcYqVEHO905e5zJ
+ JO5CBBMGhdqJ+nxfK5d6i3sX57SI+6uNY1u9p+Wnxm26rlhSN+0/atFTSoIIeQ0KM7nX9nL7oe
+ Vxaxma488yZ6iI6513SHlI6OMtdZM5W12VMQJB0tsd77s9ppTRzrjqVbR8DkKcEBwfc8X5QXYq
+ xI58Hog4PznPH+/nWT/cuapUgxoML3PF+oboBM2SnLCF45vZ9/wWTRi5a9AEAAA==
+To:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-spi@vger.kernel.org,
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3583;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=W45N0rDKR8ciCpFn22YDvuWadd4TwRIEzdyajQZc0vY=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlJqHoOv8y4PmRkwDxzRi92AU5LtYntuzh9qbAn
+ MVw/2XG+5aJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZSah6AAKCRCaEZ6wQi2W
+ 4feiD/9V3AUDIT2hwlL293f363ISY7WmwRKzd4I/t04+4gaB13YzmLOR4Q94oZjfpJh00NgJgbU
+ iuKsH7NC+cFF4v16zyRM7kpxhS2qgt1ghPnK+qabwKvpA5Srgscw6nele8Qkf99wWoKUSQxKnXJ
+ mVpJa6uPEDoR9IY+IpNXk1Qz1yJ5Nop/PCv5DjJG/rgy/pjBlRNJdEmUCRHuNPMkOoZXFBFQlmo
+ GLjZWrpNgibfTItoRHMFBwSbDYXnlWHsOO+uP5zICJ5JSi4Rx4CYUnwejmi5AqWEL5iJWT2eniC
+ SURf/j/vwkhySix1e+ZSmx4U8mHTw+tYwAlsdsWviMEyntYab93ioQ5r8GqzbriCf+FmVBKX5NZ
+ yQE47gpBk01dQwsKYQctgq5ycfu8kE1iXsLPVC+TglvLpMSlX2fJj3SDPtxIvkkFwgoXsiC24i2
+ SoLa79Z55FtPd2aAjVfb+lUKaQ4Vo1mx9JbLqWTBpeu4CAtVkVH4vbAABsrNjgLISR0ZJwA9NF4
+ iO1VFjast4VvmkO/Jx9nQyioaj0CjySq9B8wDWCF1gWVRF6d3l1S7X2tUJm51fDeHZKtVJUS+Pk
+ p9ZONcTQnjyk++g1h4y6YubmW3tzAE6GC88y1We6YS6iHkP4wRD2ZR1rDrcrNIcbQZvCfrw0wnz
+ pLq9JSVuzqhNl4w==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Mar 2023 at 11:49, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> From: Dave Stevenson <dave.stevenson@raspberrypi.com>
->
-> Copy Intel's "Broadcast RGB" property semantics to add manual override
-> of the HDMI pixel range for monitors that don't abide by the content
-> of the AVI Infoframe.
->
-> Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Hello,
 
-Stumbled over this grepping around, but would have been nice to lift
-this into drm code and document the property. It's one of the legacy
-ones from the table of horrors after all ...
+Small series to convert some of the board files in the mach-pxa directory
+to use the new GPIO descriptor interface.
 
-Shouldn't be an uapi problem because it's copypasted to much, just not great.
--Sima
-> ---
->  drivers/gpu/drm/vc4/vc4_hdmi.c | 97 ++++++++++++++++++++++++++++++++++++++++--
->  drivers/gpu/drm/vc4/vc4_hdmi.h |  9 ++++
->  2 files changed, 102 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> index 522cfbc83fe4..d23c0c3df2ee 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> @@ -154,10 +154,16 @@ static bool vc4_hdmi_mode_needs_scrambling(const struct drm_display_mode *mode,
->  }
->
->  static bool vc4_hdmi_is_full_range_rgb(struct vc4_hdmi *vc4_hdmi,
-> -                                      const struct drm_display_mode *mode)
-> +                                      struct vc4_hdmi_connector_state *vc4_state)
->  {
-> +       const struct drm_display_mode *mode = &vc4_hdmi->saved_adjusted_mode;
->         struct drm_display_info *display = &vc4_hdmi->connector.display_info;
->
-> +       if (vc4_state->broadcast_rgb == VC4_HDMI_BROADCAST_RGB_LIMITED)
-> +               return false;
-> +       else if (vc4_state->broadcast_rgb == VC4_HDMI_BROADCAST_RGB_FULL)
-> +               return true;
-> +
->         return !display->is_hdmi ||
->                 drm_default_rgb_quant_range(mode) == HDMI_QUANTIZATION_RANGE_FULL;
->  }
-> @@ -528,8 +534,12 @@ static int vc4_hdmi_connector_atomic_check(struct drm_connector *connector,
->  {
->         struct drm_connector_state *old_state =
->                 drm_atomic_get_old_connector_state(state, connector);
-> +       struct vc4_hdmi_connector_state *old_vc4_state =
-> +               conn_state_to_vc4_hdmi_conn_state(old_state);
->         struct drm_connector_state *new_state =
->                 drm_atomic_get_new_connector_state(state, connector);
-> +       struct vc4_hdmi_connector_state *new_vc4_state =
-> +               conn_state_to_vc4_hdmi_conn_state(new_state);
->         struct drm_crtc *crtc = new_state->crtc;
->
->         if (!crtc)
-> @@ -562,6 +572,7 @@ static int vc4_hdmi_connector_atomic_check(struct drm_connector *connector,
->         }
->
->         if (old_state->colorspace != new_state->colorspace ||
-> +           old_vc4_state->broadcast_rgb != new_vc4_state->broadcast_rgb ||
->             !drm_connector_atomic_hdr_metadata_equal(old_state, new_state)) {
->                 struct drm_crtc_state *crtc_state;
->
-> @@ -575,6 +586,49 @@ static int vc4_hdmi_connector_atomic_check(struct drm_connector *connector,
->         return 0;
->  }
->
-> +static int vc4_hdmi_connector_get_property(struct drm_connector *connector,
-> +                                          const struct drm_connector_state *state,
-> +                                          struct drm_property *property,
-> +                                          uint64_t *val)
-> +{
-> +       struct drm_device *drm = connector->dev;
-> +       struct vc4_hdmi *vc4_hdmi =
-> +               connector_to_vc4_hdmi(connector);
-> +       const struct vc4_hdmi_connector_state *vc4_conn_state =
-> +               conn_state_to_vc4_hdmi_conn_state(state);
-> +
-> +       if (property == vc4_hdmi->broadcast_rgb_property) {
-> +               *val = vc4_conn_state->broadcast_rgb;
-> +       } else {
-> +               drm_dbg(drm, "Unknown property [PROP:%d:%s]\n",
-> +                       property->base.id, property->name);
-> +               return -EINVAL;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int vc4_hdmi_connector_set_property(struct drm_connector *connector,
-> +                                          struct drm_connector_state *state,
-> +                                          struct drm_property *property,
-> +                                          uint64_t val)
-> +{
-> +       struct drm_device *drm = connector->dev;
-> +       struct vc4_hdmi *vc4_hdmi =
-> +               connector_to_vc4_hdmi(connector);
-> +       struct vc4_hdmi_connector_state *vc4_conn_state =
-> +               conn_state_to_vc4_hdmi_conn_state(state);
-> +
-> +       if (property == vc4_hdmi->broadcast_rgb_property) {
-> +               vc4_conn_state->broadcast_rgb = val;
-> +               return 0;
-> +       }
-> +
-> +       drm_dbg(drm, "Unknown property [PROP:%d:%s]\n",
-> +               property->base.id, property->name);
-> +       return -EINVAL;
-> +}
-> +
->  static void vc4_hdmi_connector_reset(struct drm_connector *connector)
->  {
->         struct vc4_hdmi_connector_state *old_state =
-> @@ -594,6 +648,7 @@ static void vc4_hdmi_connector_reset(struct drm_connector *connector)
->         new_state->base.max_bpc = 8;
->         new_state->base.max_requested_bpc = 8;
->         new_state->output_format = VC4_HDMI_OUTPUT_RGB;
-> +       new_state->broadcast_rgb = VC4_HDMI_BROADCAST_RGB_AUTO;
->         drm_atomic_helper_connector_tv_margins_reset(connector);
->  }
->
-> @@ -611,6 +666,7 @@ vc4_hdmi_connector_duplicate_state(struct drm_connector *connector)
->         new_state->tmds_char_rate = vc4_state->tmds_char_rate;
->         new_state->output_bpc = vc4_state->output_bpc;
->         new_state->output_format = vc4_state->output_format;
-> +       new_state->broadcast_rgb = vc4_state->broadcast_rgb;
->         __drm_atomic_helper_connector_duplicate_state(connector, &new_state->base);
->
->         return &new_state->base;
-> @@ -621,6 +677,8 @@ static const struct drm_connector_funcs vc4_hdmi_connector_funcs = {
->         .reset = vc4_hdmi_connector_reset,
->         .atomic_duplicate_state = vc4_hdmi_connector_duplicate_state,
->         .atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
-> +       .atomic_get_property = vc4_hdmi_connector_get_property,
-> +       .atomic_set_property = vc4_hdmi_connector_set_property,
->  };
->
->  static const struct drm_connector_helper_funcs vc4_hdmi_connector_helper_funcs = {
-> @@ -629,6 +687,33 @@ static const struct drm_connector_helper_funcs vc4_hdmi_connector_helper_funcs =
->         .atomic_check = vc4_hdmi_connector_atomic_check,
->  };
->
-> +static const struct drm_prop_enum_list broadcast_rgb_names[] = {
-> +       { VC4_HDMI_BROADCAST_RGB_AUTO, "Automatic" },
-> +       { VC4_HDMI_BROADCAST_RGB_FULL, "Full" },
-> +       { VC4_HDMI_BROADCAST_RGB_LIMITED, "Limited 16:235" },
-> +};
-> +
-> +static void
-> +vc4_hdmi_attach_broadcast_rgb_property(struct drm_device *dev,
-> +                                      struct vc4_hdmi *vc4_hdmi)
-> +{
-> +       struct drm_property *prop = vc4_hdmi->broadcast_rgb_property;
-> +
-> +       if (!prop) {
-> +               prop = drm_property_create_enum(dev, DRM_MODE_PROP_ENUM,
-> +                                               "Broadcast RGB",
-> +                                               broadcast_rgb_names,
-> +                                               ARRAY_SIZE(broadcast_rgb_names));
-> +               if (!prop)
-> +                       return;
-> +
-> +               vc4_hdmi->broadcast_rgb_property = prop;
-> +       }
-> +
-> +       drm_object_attach_property(&vc4_hdmi->connector.base, prop,
-> +                                  VC4_HDMI_BROADCAST_RGB_AUTO);
-> +}
-> +
->  static int vc4_hdmi_connector_init(struct drm_device *dev,
->                                    struct vc4_hdmi *vc4_hdmi)
->  {
-> @@ -675,6 +760,8 @@ static int vc4_hdmi_connector_init(struct drm_device *dev,
->         if (vc4_hdmi->variant->supports_hdr)
->                 drm_connector_attach_hdr_output_metadata_property(connector);
->
-> +       vc4_hdmi_attach_broadcast_rgb_property(dev, vc4_hdmi);
-> +
->         drm_connector_attach_encoder(connector, encoder);
->
->         return 0;
-> @@ -829,7 +916,7 @@ static void vc4_hdmi_set_avi_infoframe(struct drm_encoder *encoder)
->
->         drm_hdmi_avi_infoframe_quant_range(&frame.avi,
->                                            connector, mode,
-> -                                          vc4_hdmi_is_full_range_rgb(vc4_hdmi, mode) ?
-> +                                          vc4_hdmi_is_full_range_rgb(vc4_hdmi, vc4_state) ?
->                                            HDMI_QUANTIZATION_RANGE_FULL :
->                                            HDMI_QUANTIZATION_RANGE_LIMITED);
->         drm_hdmi_avi_infoframe_colorimetry(&frame.avi, cstate);
-> @@ -1069,6 +1156,8 @@ static void vc4_hdmi_csc_setup(struct vc4_hdmi *vc4_hdmi,
->                                struct drm_connector_state *state,
->                                const struct drm_display_mode *mode)
->  {
-> +       struct vc4_hdmi_connector_state *vc4_state =
-> +               conn_state_to_vc4_hdmi_conn_state(state);
->         struct drm_device *drm = vc4_hdmi->connector.dev;
->         unsigned long flags;
->         u32 csc_ctl;
-> @@ -1082,7 +1171,7 @@ static void vc4_hdmi_csc_setup(struct vc4_hdmi *vc4_hdmi,
->         csc_ctl = VC4_SET_FIELD(VC4_HD_CSC_CTL_ORDER_BGR,
->                                 VC4_HD_CSC_CTL_ORDER);
->
-> -       if (!vc4_hdmi_is_full_range_rgb(vc4_hdmi, mode)) {
-> +       if (!vc4_hdmi_is_full_range_rgb(vc4_hdmi, vc4_state)) {
->                 /* CEA VICs other than #1 requre limited range RGB
->                  * output unless overridden by an AVI infoframe.
->                  * Apply a colorspace conversion to squash 0-255 down
-> @@ -1235,7 +1324,7 @@ static void vc5_hdmi_csc_setup(struct vc4_hdmi *vc4_hdmi,
->         case VC4_HDMI_OUTPUT_RGB:
->                 if_xbar = 0x354021;
->
-> -               if (!vc4_hdmi_is_full_range_rgb(vc4_hdmi, mode))
-> +               if (!vc4_hdmi_is_full_range_rgb(vc4_hdmi, vc4_state))
->                         vc5_hdmi_set_csc_coeffs(vc4_hdmi, vc5_hdmi_csc_full_rgb_to_limited_rgb);
->                 else
->                         vc5_hdmi_set_csc_coeffs(vc4_hdmi, vc5_hdmi_csc_full_rgb_unity);
-> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
-> index 5d249ac54cd1..89800c48aa24 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hdmi.h
-> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
-> @@ -117,6 +117,12 @@ enum vc4_hdmi_output_format {
->         VC4_HDMI_OUTPUT_YUV420,
->  };
->
-> +enum vc4_hdmi_broadcast_rgb {
-> +       VC4_HDMI_BROADCAST_RGB_AUTO,
-> +       VC4_HDMI_BROADCAST_RGB_FULL,
-> +       VC4_HDMI_BROADCAST_RGB_LIMITED,
-> +};
-> +
->  /* General HDMI hardware state. */
->  struct vc4_hdmi {
->         struct vc4_hdmi_audio audio;
-> @@ -129,6 +135,8 @@ struct vc4_hdmi {
->
->         struct delayed_work scrambling_work;
->
-> +       struct drm_property *broadcast_rgb_property;
-> +
->         struct i2c_adapter *ddc;
->         void __iomem *hdmicore_regs;
->         void __iomem *hd_regs;
-> @@ -238,6 +246,7 @@ struct vc4_hdmi_connector_state {
->         unsigned long long              tmds_char_rate;
->         unsigned int                    output_bpc;
->         enum vc4_hdmi_output_format     output_format;
-> +       enum vc4_hdmi_broadcast_rgb     broadcast_rgb;
->  };
->
->  #define conn_state_to_vc4_hdmi_conn_state(_state)                      \
->
-> --
-> 2.39.2
->
+Most notably, the am200epd, am300epd and Spitz matrix keypad among
+others are not converted in this series.
 
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+Changes in v8:
+- Address maintainer comments:
+  - Do not pointlessly gpiod_get() LED gpios
+- Update trailers
+- Rebase on v6.6-rc5
+- Link to v7: https://lore.kernel.org/r/20231009-pxa-gpio-v7-0-c8f5f403e856@skole.hr
 
+Changes in v7:
+- Address maintainer comments:
+  - Drop gpiod_put in OHCI
+  - Make "struct gpio_descs *leds" in Spitz LEDs global
+- Link to v6: https://lore.kernel.org/r/20231006-pxa-gpio-v6-0-981b4910d599@skole.hr
+
+Changes in v6:
+- Address maintainer comments:
+  - Use devm_gpiod_get_optional() in OHCI
+  - Use gpiod_get_array() in Spitz LEDs
+- Update trailers
+- Link to v5: https://lore.kernel.org/r/20231004-pxa-gpio-v5-0-d99ae6fceea8@skole.hr
+
+Changes in v5:
+- Address maintainer comments:
+  - Rename "reset generator" GPIO to "reset"
+  - Rename ads7846_wait_for_sync() to ads7846_wait_for_sync_gpio()
+  - Properly bail out when requesting USB host GPIO fails
+  - Use dev_err_probe() when requesting touchscreen sync GPIO fails
+  - Use static gpio_desc for gumstix bluetooth reset
+- Pulse gumstix bluetooth reset line correctly (assert, then deassert)
+- Fix style issue in ads7846_wait_for_sync_gpio()
+- Update trailers
+- Link to v4: https://lore.kernel.org/r/20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr
+
+Changes in v4:
+- Address maintainer comments:
+  - Move wait_for_sync() from spitz.c to driver
+  - Register LED platform device before getting its gpiod-s
+- Add Linus' Reviewed-by
+- Link to v3: https://lore.kernel.org/r/20230929-pxa-gpio-v3-0-af8d5e5d1f34@skole.hr
+
+Changes in v3:
+- Address maintainer comments:
+  - Use GPIO_LOOKUP_IDX for LEDs
+  - Drop unnecessary NULL assignments
+  - Don't give up on *all* SPI devices if hsync cannot be set up
+- Add Linus' Acked-by
+- Link to v2: https://lore.kernel.org/r/20230926-pxa-gpio-v2-0-984464d165dd@skole.hr
+
+Changes in v2:
+- Address maintainer comments:
+  - Change mentions of function to function()
+  - Drop cast in OHCI driver dev_warn() call
+  - Use %pe in OHCI and reset drivers
+  - Use GPIO _optional() API in OHCI driver
+  - Drop unnecessary not-null check in OHCI driver
+  - Use pr_err() instead of printk() in reset driver
+- Rebase on v6.6-rc3
+- Link to v1: https://lore.kernel.org/r/20230924-pxa-gpio-v1-0-2805b87d8894@skole.hr
+
+---
+Duje Mihanović (6):
+      ARM: pxa: Convert Spitz OHCI to GPIO descriptors
+      ARM: pxa: Convert Spitz LEDs to GPIO descriptors
+      ARM: pxa: Convert Spitz CF power control to GPIO descriptors
+      ARM: pxa: Convert reset driver to GPIO descriptors
+      ARM: pxa: Convert gumstix Bluetooth to GPIO descriptors
+      input: ads7846: Move wait_for_sync() logic to driver
+
+ arch/arm/mach-pxa/gumstix.c         | 22 ++++++-------
+ arch/arm/mach-pxa/reset.c           | 39 ++++++++--------------
+ arch/arm/mach-pxa/reset.h           |  3 +-
+ arch/arm/mach-pxa/spitz.c           | 65 ++++++++++++++++++++++++-------------
+ drivers/input/touchscreen/ads7846.c | 22 +++++++++----
+ drivers/usb/host/ohci-pxa27x.c      |  5 +++
+ include/linux/spi/ads7846.h         |  1 -
+ 7 files changed, 88 insertions(+), 69 deletions(-)
+---
+base-commit: 94f6f0550c625fab1f373bb86a6669b45e9748b3
+change-id: 20230807-pxa-gpio-3ce25d574814
+
+Best regards,
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Duje Mihanović <duje.mihanovic@skole.hr>
+
+
