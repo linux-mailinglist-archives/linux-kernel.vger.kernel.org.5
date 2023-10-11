@@ -2,70 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 053097C4765
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 03:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 731787C4767
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 03:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344641AbjJKBnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 21:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
+        id S1344673AbjJKBrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 21:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344412AbjJKBnt (ORCPT
+        with ESMTP id S1344636AbjJKBrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 21:43:49 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C217194
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 18:43:47 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7b5fe8ab5f9so560241241.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 18:43:47 -0700 (PDT)
+        Tue, 10 Oct 2023 21:47:07 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9702F9E
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 18:47:05 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32003aae100so260917f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 18:47:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696988627; x=1697593427; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1696988824; x=1697593624; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YSiDNY1At9S23ErLXYjIIHPvj55pOXoepaXSEOsk/yk=;
-        b=HzHH0Z+HJ1ne5SnJu/1Ut9WvEe0lRy/Il2qkqUGoxUoo8KldpP9+xOKy1wwbPLVxRk
-         KWkSZEu3QaMacQv/0AB4AeQWOLKypDIV0748xWO50xgoccyRi5wel+oO8b301CQUjsrz
-         kegVE2vVhLZD/q1niQR0VleGWpwze2FC4chVPBXpSOOg51358E0CYaglvl5UXKff68wh
-         Pa1WKSG1fxJlf6whfDCIasA50YuRuJGE7Plkp5pYyH+L8dCHkvKmWcFwyWM4oAzAVIjX
-         SMSz6P5xSfc0yk8WZFe2QwMBAuMMnw0/fNILQJ6AGIh6BOVDjWXk/UREQhNtKvPCHjSO
-         a5PA==
+        bh=tzAxAbhfO5fDQKli+KSnHfx+fk0ksCyLQoQRxAIETUQ=;
+        b=RFtqYqcFeSZ81G37/YQ9N/3UM9DAozgvknBA+RoBnXESi1GdIc7V/92eUSLSwnffUb
+         75H2l1IEhUq49gbUrf2woWCfBsOnJIoUzfV4COigDROTv1/971Cxkrz9y+Q8t5gC3/as
+         L/CnnBT9EYxHTAH7c56p3Szo8QuucHpEWzETBgu+Qo0Z5twm0DnbzSYnM1wzyjS+UFMh
+         U+KlWSbH5I2D/WLSoJnpqQ2ZWF1GZHVoi+xFgjlB5f4W2zIZqAmDWc8ZGT4/mX7HeYpz
+         3h67ITihdKQGSe3FAnbwxiAs6E7MPua/svYXKgW956+73WC7VhIjZjgaUF2/fo5wENUf
+         NLkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696988627; x=1697593427;
+        d=1e100.net; s=20230601; t=1696988824; x=1697593624;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YSiDNY1At9S23ErLXYjIIHPvj55pOXoepaXSEOsk/yk=;
-        b=F+9dm+oJgC+7W9RNYbdzyYsUdnP6Vq40eHIAF77Es0xldFeP/TJxZ6KlBV4J9ZpUNb
-         C3dFYnk+3Lk84XgoRQfVJrE4fZxPyLF5oNxT8DKnaSpaQ0yLAkCAWKfDipZN5yGeiJ0H
-         pnRgfkE0ppR2+OULbZhk8ZnS0K64E2m6eyqQHfiSDbWCwpBgm3UMvUTVHIZoaHnOesxL
-         pqKUe/GlNyraXmmmFEY2agUbpgJTXzXC8w/dfnCxQkyghPusHDoaRtZc6oU1JKSuz8Ps
-         V/GSX8v9bCXLXD3xVo1llQ46Q4VW3qmJxeLi0DeIS0UrjEC54TGXTVLuUGEZeG9IDV3A
-         Of1g==
-X-Gm-Message-State: AOJu0Yw+ilo/vZmCVGemowoPil1cH408LWw08rsIhxQvp4NWkRbDrxRp
-        1Do2S40N77VhIi1Qhopxe4hd8OOYokEtdP6URet9zg==
-X-Google-Smtp-Source: AGHT+IGQuqX/VPx/KsIYHsiqXWsHllqMS9gkv4RcG0kqs5xw80WAtRklZow5+p7P/W71aIWwcCnXC7ibfgqfTnGCNNw=
-X-Received: by 2002:a05:6102:534:b0:452:b96c:313b with SMTP id
- m20-20020a056102053400b00452b96c313bmr17791514vsa.13.1696988626704; Tue, 10
- Oct 2023 18:43:46 -0700 (PDT)
+        bh=tzAxAbhfO5fDQKli+KSnHfx+fk0ksCyLQoQRxAIETUQ=;
+        b=KCv5FJHVs3WRZpdjvovqD09T9vRpy5q2lJ9RHRb7au0Mm4J5q/J1E4bXsoWutWTzmH
+         0R/JMAzp9h9ElVM4B9sqKeFIprlC1HgO9/d8shvoeMz77aOiKCRkNqrPP6E4l/BlV/wu
+         k6hf5iNKSLPuO/Dmm3viyoB02MevmTRqYNeC3PZjSjuM4nJjeLpjzIA4bWFC1Gd3YzxU
+         j7vtuBVNiVENo+ezy456SH1PqdifpA9nqenNp4Ws+B7YjJ27ABg/KxLpHBRjhO/qz6Pd
+         fvWhkquXong97WdFdHm24lMhzps0i+q0IMTMeMkrxIIa55yeVXCT98+gZBen9mxTM52i
+         nKMg==
+X-Gm-Message-State: AOJu0YzF3R5uoW7v7/+YVHsaK86Uo7Gfl8FX4C9LHMBincmqLq6Kg+fv
+        Jj50S6W5DbEWZhQI9wAVmJW0d/Hfdj11Ig8J87WOCg==
+X-Google-Smtp-Source: AGHT+IEUVGGgeYbJ114nPBxfHjS4sE3dP8/OO36c/IOC7Goh6EjU83CUE0Z9puhjfc7OnvtUy9Dw6oPHvOXMTESgUEw=
+X-Received: by 2002:adf:e641:0:b0:320:a4e:acf5 with SMTP id
+ b1-20020adfe641000000b003200a4eacf5mr13733659wrn.34.1696988823901; Tue, 10
+ Oct 2023 18:47:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231009130116.329529591@linuxfoundation.org>
-In-Reply-To: <20231009130116.329529591@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 11 Oct 2023 07:13:35 +0530
-Message-ID: <CA+G9fYu-h0kUGyQG4XTc6J7NZMvUeMSUuiY8KU0giNcPfzuU7A@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/131] 5.4.258-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
+References: <CAEEQ3wnfOOpKAKGt07cFv1Du-NaFOzX_=yeQZfD6VNojpPFTqA@mail.gmail.com>
+ <202310091307.CB416B950@keescook> <CAEEQ3wnA=_TjE-nD2UzSSEsbjBmeE23V0KdA3MkqkOCxtwv=Vw@mail.gmail.com>
+In-Reply-To: <CAEEQ3wnA=_TjE-nD2UzSSEsbjBmeE23V0KdA3MkqkOCxtwv=Vw@mail.gmail.com>
+From:   yunhui cui <cuiyunhui@bytedance.com>
+Date:   Wed, 11 Oct 2023 09:46:52 +0800
+Message-ID: <CAEEQ3wmH0u1p4gWX454Hx09m5=LQ_+3VPWiEHogn_QiS-po4BQ@mail.gmail.com>
+Subject: Re: [External] Re: Discuss the implementation of pidns_install()
+To:     Kees Cook <keescook@chromium.org>
+Cc:     brauner@kernel.org, jeffxu@google.com, akpm@linux-foundation.org,
+        cyphar@cyphar.come, mcgrof@kernel.org, frederic@kernel.org,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,162 +71,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Oct 2023 at 18:58, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Hi Christian,
+
+On Tue, Oct 10, 2023 at 11:29=E2=80=AFAM yunhui cui <cuiyunhui@bytedance.co=
+m> wrote:
 >
-> This is the start of the stable review cycle for the 5.4.258 release.
-> There are 131 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Hi Kees Cook=EF=BC=8C
 >
-> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
-> Anything received after that time might be too late.
+> On Tue, Oct 10, 2023 at 4:08=E2=80=AFAM Kees Cook <keescook@chromium.org>=
+ wrote:
+> >
+> > On Wed, Sep 20, 2023 at 05:37:20PM +0800, yunhui cui wrote:
+> > > Hi Kees, jeff, Andrew, Christian,
+> > >
+> > > We hope that containers at the same level can also switch pid namespa=
+ce.
+> > > To fork() the entire pstree of a container, we need to switch from th=
+e pid
+> > > namespace of the template container to the  target container's pid
+> > > namespace. But it is blocked by the following code:
+> > >
+> > > ...
+> > >         while (ancestor->level > active->level)
+> > >                 ancestor =3D ancestor->parent;
+> > >         if (ancestor !=3D active)
+> > >                 return -EINVAL;
+> > > ...
+> > >
+> > > Can we give this code permission, such as CAP_SYS_ADMIN ..., so that =
+those
+> > > with this permission can switch to sibling pid namespace. Rather than=
+ just
+> > > parent, parent ...
+> > >
+> > > Do you think this plan is okay?  Or can you give me some suggestions?
+> >
+> > I'll defer to Christian on this, but it seems like moving processes
+> > sideways is kind of unexpected. I agree it'd need privilege if we did
+> > it, though.
+> >
+> >
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.258-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
+> I'll defer to Christian on this, but it seems like moving processes
+> sideways is kind of unexpected. I agree it'd need privilege if we did
+> it, though.
 >
-> thanks,
+> Thanks for your suggestion, my plan is to give this code SYS_ADMIN permis=
+sions.
 >
-> greg k-h
+> CAP_SYS_ADMIN has been checked in pidns_install(), as follows:
+> static int pidns_install(struct nsproxy *nsproxy, struct ns_common *ns)
+> {
+> ...
+> if (!ns_capable(new->user_ns, CAP_SYS_ADMIN) ||
+> !ns_capable(current_user_ns(), CAP_SYS_ADMIN))
+> return -EPERM;
+> ...
+> }
+>
+> So can I delete this code:
+> ancestor =3D new;
+> while (ancestor->level > active->level)
+> ancestor =3D ancestor->parent;
+> if (ancestor !=3D active)
+> return -EINVAL=EF=BC=9B
+>
+> Thanks=EF=BC=8C
+> Yunhui
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.4.258-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.4.y
-* git commit: 9209af362e00e07217be717fc07b25118037adc6
-* git describe: v5.4.257-132-g9209af362e00
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.2=
-57-132-g9209af362e00
-
-## Test Regressions (compared to v5.4.257)
-
-## Metric Regressions (compared to v5.4.257)
-
-## Test Fixes (compared to v5.4.257)
-
-## Metric Fixes (compared to v5.4.257)
-
-## Test result summary
-total: 88941, pass: 70613, fail: 2365, skip: 15914, xfail: 49
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 148 total, 148 passed, 0 failed
-* arm64: 47 total, 45 passed, 2 failed
-* i386: 30 total, 24 passed, 6 failed
-* mips: 30 total, 29 passed, 1 failed
-* parisc: 4 total, 0 passed, 4 failed
-* powerpc: 32 total, 31 passed, 1 failed
-* riscv: 15 total, 15 passed, 0 failed
-* s390: 8 total, 8 passed, 0 failed
-* sh: 14 total, 12 passed, 2 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 39 total, 39 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Could you help me look into this issue?
