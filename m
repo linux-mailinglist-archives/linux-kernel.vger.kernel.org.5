@@ -2,91 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DE27C550B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B2A7C5510
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346724AbjJKNOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59574 "EHLO
+        id S1346153AbjJKNPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232273AbjJKNOm (ORCPT
+        with ESMTP id S234871AbjJKNPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:14:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F348F
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:14:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 898F2C433C8;
-        Wed, 11 Oct 2023 13:14:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697030078;
-        bh=m+J9DmKi3n5quBZyx0x3cvUP5ckHR1xIj1RRXPRYTE8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KF2a7+Uq4w19aHKrFHCd3Ql1I8MzBUEtTHR/2tv74lgaV5FP3yJBr2a/hoSldL0sD
-         RG8i6nr+OzNBBepCkEQzo6FtjkD1UbnTVREOPDCuyly0d0VzwO7tdOW9MVTL4tgM62
-         pQGdVs4kRU7pgFUyCc6oQk6mwf2KLQTUEbXmYOOFVEtggzR4+h0Snogcp2wuzqMA7z
-         dPVsVKNktPiiAV1jxasczvr+oIUcBAcW2WY8YpCyPVuh9gw5JT/Kai4QjpKT9XOc5U
-         ixJQWgpKVaKWZeevXf9EfBtsCs0CzInGLRfwymTXJKY/N2f9RS+rDS4pj0yeX2GRKK
-         qrsDY9yzWfn9g==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yang Yang <yang.yang29@zte.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sebastian Reichel <sre@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] of: rexport of_find_next_cache_node()
-Date:   Wed, 11 Oct 2023 15:14:08 +0200
-Message-Id: <20231011131431.2559029-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Wed, 11 Oct 2023 09:15:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CA293
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:15:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697030103; x=1728566103;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DVj1IAQaMNXzKm35tzE0vtrTuSeRAxpGGOqdY2NfLZ8=;
+  b=QUFKq1q3r+IlEvuEz8y83el89ToG0wCjwagfgjYn5Hm5DjB65G2NZWSL
+   MoHat+lD+RObJZrhieA4JYNjPkoFcxsHXXeWSj9+/ui3n43bhbDAkZvlq
+   H9Pxq+Nw9jsRFzbh7nmh4uo9XmGzEBphH6E8FH02ldJZE30THqkUv6Vn9
+   WLDYO4JIftca31keim86iuaA+21dif3oS1hVHk3HiESD+7OZRQq09mGzp
+   VS9JWNmE1Gt1JHoFJowBraalY3cdmmH0o/D86wlrE6JQBwYJQnXIVdEuv
+   /U3/ZlUPgdugPKw58pkpB94ebZlcOIQ2r9kHzfGVK3vRtpXol6Wf8h6Ko
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="388525164"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
+   d="scan'208";a="388525164"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 06:15:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="870138127"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
+   d="scan'208";a="870138127"
+Received: from laptop-dan-intel.ccr.corp.intel.com (HELO box.shutemov.name) ([10.252.56.166])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 06:14:56 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id D5B19109FB5; Wed, 11 Oct 2023 16:14:52 +0300 (+03)
+Date:   Wed, 11 Oct 2023 16:14:52 +0300
+From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>
+Subject: Re: [PATCH 09/13] x86/tdx: Account shared memory
+Message-ID: <20231011131452.r42nemcajjcj77hq@box.shutemov.name>
+References: <20231005131402.14611-1-kirill.shutemov@linux.intel.com>
+ <20231005131402.14611-10-kirill.shutemov@linux.intel.com>
+ <f3776d2b6d45e74b4d0e62eb4e788c578132c21c.camel@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f3776d2b6d45e74b4d0e62eb4e788c578132c21c.camel@intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Oct 10, 2023 at 10:05:21AM +0000, Huang, Kai wrote:
+> 
+> > +#ifdef CONFIG_DEBUG_FS
+> > +static int tdx_shared_memory_show(struct seq_file *m, void *p)
+> > +{
+> > +	unsigned long addr, end;
+> > +	unsigned long found = 0;
+> > +
+> > +	addr = PAGE_OFFSET;
+> > +	end  = PAGE_OFFSET + get_max_mapped();
+> > +
+> > +	while (addr < end) {
+> > +		unsigned long size;
+> > +		unsigned int level;
+> > +		pte_t *pte;
+> > +
+> > +		pte = lookup_address(addr, &level);
+> > +		size = page_level_size(level);
+> > +
+> > +		if (pte && pte_decrypted(*pte))
+> > +			found += size / PAGE_SIZE;
+> > +
+> > +		addr += size;
+> 
+> This could be a long loop, perhaps add cond_resched() here?
 
-This function is now called from a cpufreq driver, but that breaks the
-build when the caller is in a loadable module, because of a missing
-export:
+Sure.
 
-ERROR: modpost: "of_find_next_cache_node" [drivers/cpufreq/qcom-cpufreq-nvmem.ko] undefined!
-
-Export this as a GPL-only symbol, like the other related functions in
-this file.
-
-Fixes: 7683a63c08ff5 ("cpufreq: qcom-nvmem: create L2 cache device")
-Fixes: a3e31b4588443 ("of: Move definition of of_find_next_cache_node into common code.")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/of/base.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/of/base.c b/drivers/of/base.c
-index 8d93cb6ea9cde..c4cf558e60d92 100644
---- a/drivers/of/base.c
-+++ b/drivers/of/base.c
-@@ -1905,6 +1905,7 @@ struct device_node *of_find_next_cache_node(const struct device_node *np)
- 
- 	return NULL;
- }
-+EXPORT_SYMBOL_GPL(of_find_next_cache_node);
- 
- /**
-  * of_find_last_cache_level - Find the level at which the last cache is
 -- 
-2.39.2
-
+  Kiryl Shutsemau / Kirill A. Shutemov
