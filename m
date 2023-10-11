@@ -2,128 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C267C57FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 17:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A19377C5802
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 17:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232697AbjJKPXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 11:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
+        id S232852AbjJKPZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 11:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbjJKPXb (ORCPT
+        with ESMTP id S232802AbjJKPZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 11:23:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB5698
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 08:23:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6320FC433C8;
-        Wed, 11 Oct 2023 15:23:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697037809;
-        bh=BQxbIoojRe7a+bdZcSee42aOrgRqHMWTJxldHf0gZ+k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PPAaP+HrInoey5eLi2YaVM/Cx66vS9WlfjCQ3GUcBWE1G0YFCn6U9AHa6eSpoDduf
-         wcmkV+Q4HTNuuqvv/ACv3QETWng9l3PdR1MCCIClkiPHEVL8ZMX945mJ2sL48gqyR4
-         nu+Bn7YlFOqP1vK2or5gBbKvPuc1+qdPIjOBGZJU=
-Date:   Wed, 11 Oct 2023 17:23:26 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hardik Gajjar <hgajjar@de.adit-jv.com>
-Cc:     mathias.nyman@intel.com, stern@rowland.harvard.edu,
-        yangyingliang@huawei.com, jinpu.wang@ionos.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        erosca@de.adit-jv.com
-Subject: Re: [PATCH v3] usb: core: hub: Add quirks for reducing device
- address timeout
-Message-ID: <2023101155-unframed-satirical-f7ec@gregkh>
-References: <6b26db15-89a0-d455-5740-9abb1befa3a8@intel.com>
- <20231011085011.89198-1-hgajjar@de.adit-jv.com>
- <2023101117-colonize-jovial-893f@gregkh>
- <20231011120535.GA89684@vmlxhi-118.adit-jv.com>
+        Wed, 11 Oct 2023 11:25:30 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0668F9D
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 08:25:28 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-65b0557ec77so40622956d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 08:25:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1697037927; x=1697642727; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XsMbz3DgW/xqFIUZu44mEh3KqlFcPH8UERBD82Y0mcs=;
+        b=yISpp6h7OQ8K4n6j4HzeHWsOelH1sAOJuUZXb7x1fXddUqUrymWrLMif3PIDXMJNoY
+         0Xl0sPdjvvhfCrt0JxgqR+lp3M4qWEiADlWXtxX1qnkfEVLFcBJkftFl5Iwa6NFmTE4L
+         Ha/KX531hteBTZ1TOwshB0mC3j5x5xZlInK4+72HeQU5A2ulU27rd4FWqcV8jw//0CvO
+         pu2AN0aWYZb4Qu4KdNkSqQ3XnrNt/wJzppZQ5RDtLtCPxuR6vEJ8EIbvHMOx121+Ko+y
+         ayrZ83Oucwdj92mrtf9/ppVJMdxrr8mjGpX5t73p6gxdVGm0ZO9b5kduV8Ru25p82rH0
+         osYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697037927; x=1697642727;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XsMbz3DgW/xqFIUZu44mEh3KqlFcPH8UERBD82Y0mcs=;
+        b=i2fIqyrL02fGDeoUFghf9myTII5V92qtIS6NGA3AvEftJAGW3mGGW0su6NI0OjP+J4
+         c8HZbbO88k7KiykzMUwH1yvnRQ2x8vvXCKOZXbJttiCT9ATDpiYcUArto+OG+szhWfaP
+         K8HRUxoy1JpRwhP3IEKyGcWwusIrnC7ZrCUJWp7f+Qs8dlV0yoRsVTNOO5S2vb6ANQ4T
+         wuzemoefLuj76TIuwd1VQ7iMbPbC4+JZ86tn8FCERA+GAZqBdRkckkFecndcfXl2Nloe
+         JqHxp3+ptNB4kw+gMnNLKL/6EbvmUiwwTL8Nk3++TMvPjmfgmmEalMtabC93WtblGH9c
+         deNw==
+X-Gm-Message-State: AOJu0YwTgYb90XvApdSx3zZ2hSX/8Fq2ojf5SYPacN0Ad1hkrKuTCwX8
+        00UddKIxIys/bs/V+egED8Mpfg==
+X-Google-Smtp-Source: AGHT+IGlLDv3+7x9FfABCsGgOa1is2cQYueStg/wwkdrU9pygWs8+xm3pd5+3iuNFglehPX6pSX/Vg==
+X-Received: by 2002:a0c:f58c:0:b0:66c:fa81:3f25 with SMTP id k12-20020a0cf58c000000b0066cfa813f25mr4310240qvm.62.1697037927088;
+        Wed, 11 Oct 2023 08:25:27 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:66a6])
+        by smtp.gmail.com with ESMTPSA id a12-20020a0ce38c000000b0064723b94a23sm5677557qvl.27.2023.10.11.08.25.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 08:25:26 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 11:25:25 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 0/6] mm: page_alloc: freelist migratetype hygiene
+Message-ID: <20231011152525.GA461170@cmpxchg.org>
+References: <20230920160400.GC124289@cmpxchg.org>
+ <762CA634-053A-41DD-8ED7-895374640858@nvidia.com>
+ <D4F59724-61EB-4DA5-94DF-59E79F0F1FB3@nvidia.com>
+ <505e7f55-f63a-b33d-aa10-44de16d2d3cc@redhat.com>
+ <4466F447-43D3-43CD-8930-FBE9A49028BA@nvidia.com>
+ <92AE29D4-E715-447C-AF99-ECF42383C74D@nvidia.com>
+ <20230926173939.GA348484@cmpxchg.org>
+ <0D2BD71D-5E65-4175-8872-5E70278C57DA@nvidia.com>
+ <329AB331-DDC1-4074-A85E-AB5CF866CE84@nvidia.com>
+ <20231010211200.GA129823@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231011120535.GA89684@vmlxhi-118.adit-jv.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231010211200.GA129823@cmpxchg.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 02:05:35PM +0200, Hardik Gajjar wrote:
-> On Wed, Oct 11, 2023 at 11:02:27AM +0200, Greg KH wrote:
-> > On Wed, Oct 11, 2023 at 10:50:11AM +0200, Hardik Gajjar wrote:
-> > > Currently, the timeout for the set address command is fixed at
-> > > 5 seconds in the xhci driver. This means the host waits up to 5
-> > > seconds to receive a response for the set_address command from
-> > > the device.
-> > > 
-> > > In the automotive context, most smartphone enumerations, including
-> > > screen projection, should ideally complete within 3 seconds.
-> > > Achieving this is impossible in scenarios where the set_address is
-> > > not successful and waits for a timeout.
-> > > 
-> > > The shortened address device timeout quirks provide the flexibility
-> > > to align with a 3-second time limit in the event of errors.
-> > > By swiftly triggering a failure response and swiftly initiating
-> > > retry procedures, these quirks ensure efficient and rapid recovery,
-> > > particularly in automotive contexts where rapid smartphone enumeration
-> > > and screen projection are vital.
-> > > 
-> > > The quirk will set the timeout to 500 ms from 5 seconds.
-> > > 
-> > > To use the quirk, please write "vendor_id:product_id:p" to
-> > > /sys/bus/usb/drivers/hub/module/parameter/quirks
-> > > 
-> > > For example,
-> > > echo "0x2c48:0x0132:p" > /sys/bus/usb/drivers/hub/module/parameter/quirks"
-> > > 
-> > > Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
-> > > ---
-> > > changes since version 1:
-> > > 	- implement quirk instead of new API in xhci driver
-> > > 
-> > > changes since version 2:
-> > > 	- Add documentation for the new quirk.
-> > > 	- Define the timeout unit in milliseconds in variable names and function arguments.
-> > > 	- Change the xHCI command timeout from HZ (jiffies) to milliseconds.
-> > > 	- Add APTIV usb hub vendor and product ID in device quirk list
-> > > 	- Adding some other comments for clarity
-> > > ---
-> > >  .../admin-guide/kernel-parameters.txt         |  3 +++
-> > >  drivers/usb/core/hub.c                        | 13 ++++++++--
-> > >  drivers/usb/core/quirks.c                     |  6 +++++
-> > >  drivers/usb/host/xhci-mem.c                   |  2 ++
-> > >  drivers/usb/host/xhci-ring.c                  | 11 ++++----
-> > >  drivers/usb/host/xhci.c                       | 25 +++++++++++++------
-> > >  drivers/usb/host/xhci.h                       |  6 +++--
-> > >  include/linux/usb/hcd.h                       |  5 ++--
-> > >  include/linux/usb/quirks.h                    |  3 +++
-> > >  9 files changed, 56 insertions(+), 18 deletions(-)
-> > > 
-> > > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > > index 0a1731a0f0ef..44732d179bce 100644
-> > > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > > @@ -6817,6 +6817,9 @@
-> > >  					pause after every control message);
-> > >  				o = USB_QUIRK_HUB_SLOW_RESET (Hub needs extra
-> > >  					delay after resetting its port);
-> > > +				p = USB_QUIRK_SHORT_DEVICE_ADDR_TIMEOUT ( Timeout
-> > > +					of set_address command reduce from 5000 ms
-> > > +					to 500 ms
-> > 
-> > No trailing ")" character?  And no need for the extra space after the
-> > new "(" one, right?
-> >
+On Tue, Oct 10, 2023 at 05:12:01PM -0400, Johannes Weiner wrote:
+> On Mon, Oct 02, 2023 at 10:26:44PM -0400, Zi Yan wrote:
+> > @@ -1614,10 +1652,43 @@ static int move_freepages(struct zone *zone, unsigned long start_pfn,
+> >  
+> >  		order = buddy_order(page);
+> >  		move_to_free_list(page, zone, order, old_mt, new_mt);
+> > +		/*
+> > +		 * set page migratetype 1) only after we move all free pages in
+> > +		 * one pageblock and 2) for all pageblocks within the page.
+> > +		 *
+> > +		 * for 1), since move_to_free_list() checks page migratetype with
+> > +		 * old_mt and changing one page migratetype affects all pages
+> > +		 * within the same pageblock, if we are moving more than
+> > +		 * one free pages in the same pageblock, setting migratetype
+> > +		 * right after first move_to_free_list() triggers the warning
+> > +		 * in the following move_to_free_list().
+> > +		 *
+> > +		 * for 2), when a free page order is greater than pageblock_order,
+> > +		 * all pageblocks within the free page need to be changed after
+> > +		 * move_to_free_list().
 > 
-> Okay, update it. Interestingly, the 'scripts/checkpatch.pl' is not reporting such warnings
+> I think this can be somewhat simplified.
+> 
+> There are two assumptions we can make. Buddies always consist of 2^n
+> pages. And buddies and pageblocks are naturally aligned. This means
+> that if this pageblock has the start of a buddy that straddles into
+> the next pageblock(s), it must be the first page in the block. That in
+> turn means we can move the handling before the loop.
 
-checkpatch doesn't parse documentation like this, so don't expect it to
-catch stuff here.
+Eh, scratch that. Obviously, a sub-block buddy can straddle blocks :(
 
-thanks,
+So forget about my version of move_free_pages(). Only consider the
+changes to find_straddling_buddy() and my question about multiple
+blocks inside the requested range.
 
-greg k-h
+But I do have another question about your patch then. Say you have an
+order-1 buddy that straddles into the block:
+
++       /* split at start_pfn if it is in the middle of a free page */
++       if (new_start_pfn != start_pfn && PageBuddy(pfn_to_page(new_start_pfn))) {
++               struct page *new_page = pfn_to_page(new_start_pfn);
++               int new_page_order = buddy_order(new_page);
++
++               if (new_start_pfn + (1 << new_page_order) > start_pfn) {
++                       /* change migratetype so that split_free_page can work */
++                       set_pageblock_migratetype(pfn_to_page(start_pfn), new_mt);
++                       split_free_page(new_page, buddy_order(new_page),
++                                       start_pfn - new_start_pfn);
++
++                       mt_changed_pfn = start_pfn;
++                       /* move to next page */
++                       start_pfn = new_start_pfn + (1 << new_page_order);
++               }
++       }
+
+this will have changed the type of the block to new_mt.
+
+But then the buddy scan will do this:
+
+                move_to_free_list(page, zone, order, old_mt, new_mt);
++               /*
++                * set page migratetype 1) only after we move all free pages in
++                * one pageblock and 2) for all pageblocks within the page.
++                *
++                * for 1), since move_to_free_list() checks page migratetype with
++                * old_mt and changing one page migratetype affects all pages
++                * within the same pageblock, if we are moving more than
++                * one free pages in the same pageblock, setting migratetype
++                * right after first move_to_free_list() triggers the warning
++                * in the following move_to_free_list().
++                *
++                * for 2), when a free page order is greater than pageblock_order,
++                * all pageblocks within the free page need to be changed after
++                * move_to_free_list().
+
+That move_to_free_list() will complain that the pages no longer match
+old_mt, no?
