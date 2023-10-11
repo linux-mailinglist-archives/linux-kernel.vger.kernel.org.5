@@ -2,75 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B697C50C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CE37C5115
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346734AbjJKLDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:03:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51018 "EHLO
+        id S231611AbjJKLHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234909AbjJKLCz (ORCPT
+        with ESMTP id S234861AbjJKLD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:02:55 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC94128
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:02:35 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-452c0d60616so542687137.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:02:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697022154; x=1697626954; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xm0CdxGnQbe0GlEx3+GHVomKZQHiVEeERNIEs1qllzo=;
-        b=VZvMO6mfkwhG4ZN258/KVtS10RK9KNdvy2Tr1pqJIawr8ZgchnndzYkT7iPrYlCDfy
-         Oejz89MSEUcwBzsWyDDanwyyOj7XGMkjSecwi1EQ3piUgar2tceW/XSQqgh/3agSwSO1
-         M7T10caA1HtiP+YQw8JuBpVO5eQgsZ/VfGX0p+NXKPiLzE/UZ+YCX8tcmZQ4jDZS+ybU
-         7a8J/a6Sk4gPRgiTYZGSaBXX0cwnqjCvjqUtmdpMOyTPGIPCFFDlHE0h2UCoJOp1Rlcl
-         bOfOe4UdTBAqPcI/FhXhmxGhFy6oMiPZ8VMemYYGomIonWivw7LGlxJ3TjH4KlbSHnA/
-         DjNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697022154; x=1697626954;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xm0CdxGnQbe0GlEx3+GHVomKZQHiVEeERNIEs1qllzo=;
-        b=YfQYp7aRxu1F/nYNacTMhU0ocqUped52WqfB9xXVxZEATLZ+W5O7ryFhQXadAvIYfp
-         412nR8jYcu+aRZNyBJJetchfNU/rFeNTVUoCoajwgxDhay2JRGuIIhoVwCqEtgIMis1M
-         lOHGf8c7TNN6DJHBVJtD1BUNuxbc2omg5miM6FyssDg7iYvTrYjn6j+9oMbh8pW4idgp
-         xQBhhO2BWfoG2l3NC1Ne3RvYCqnIrRHg0v79G2LErQJI2RBTC8BkiPAbWJbZrNFTyNjG
-         1bVaB9SjlEzSGHKm0LLA4Zb6Cw2GBYSUsa9Ueb9OXeh326/2P9k8OYoTgTW5VMUrTDRj
-         g/1A==
-X-Gm-Message-State: AOJu0YxFlODdK9OIx1tCmWrRAxSSCWUISqZojXNDhstLfpOYcC7pkRXI
-        DL2GPjogX1bAhYFTJhVNwlB/RGUVd4yF4btNrvK/kw==
-X-Google-Smtp-Source: AGHT+IFIHtzjwJekUc0/aKAwYGhSo8Q1f+C4Kna6UDSuc6EpwK7D5p52+dKgEnHoF5qIkm5zUTFf99ptwfMujMMVIFQ=
-X-Received: by 2002:a05:6102:27c8:b0:452:79da:94a with SMTP id
- t8-20020a05610227c800b0045279da094amr8993764vsu.4.1697022154194; Wed, 11 Oct
- 2023 04:02:34 -0700 (PDT)
+        Wed, 11 Oct 2023 07:03:56 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FA198
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:03:54 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id EE63666072F1;
+        Wed, 11 Oct 2023 12:03:51 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697022232;
+        bh=pd3akVqI8dkkMzhP5JhWVVOmj85PgCcSmSnRfDQT6n0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jOD7sTj5bstFuQi3fGxysynPaKavon9shpP3bHHXCMk04xXrPB4Gn3HmINRWzsNkC
+         BOF0T6+eunk//BSJ+HUyFRF+W5rwqhb+HAv66E2xc4Wk7HyO1SVYThhvkpXGvBrl1T
+         pAqxttIDGK4Yy4RKgrIDliX2pYRZ0+EYHd9UKCTvBTr/z2IGfRzQwNZz07AhHtjlD9
+         tTGQIYCqWuHK0SfBZnH7RTQ08qrvjsPN17qf1U/WSFksEW2NUH2VfKTcWDSAkUyutN
+         Dskwm1UbYWOor9nBcJ3IPqXuxgnIY5SiQGSm/Q5TFVQ/qQ3HjdJus8AvzJho25DwZI
+         jLIom/AWlCyOg==
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     jassisinghbrar@gmail.com
+Cc:     matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux@roeck-us.net,
+        wenst@chromium.org, kernel@collabora.com,
+        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>
+Subject: [PATCH] mailbox: mtk-cmdq-mailbox: Implement Runtime PM with autosuspend
+Date:   Wed, 11 Oct 2023 13:03:09 +0200
+Message-ID: <20231011110309.164657-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20231010170503.657189-1-apatel@ventanamicro.com>
- <20231010170503.657189-3-apatel@ventanamicro.com> <2023101013-overfeed-online-7f69@gregkh>
- <CAK9=C2WbW_WvoU59Ba9VrKf5GbbXmMOhB2jsiAp0a=SJYh3d7w@mail.gmail.com> <2023101107-endorse-large-ef50@gregkh>
-In-Reply-To: <2023101107-endorse-large-ef50@gregkh>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Wed, 11 Oct 2023 16:32:22 +0530
-Message-ID: <CAK9=C2XYQ0U9CbuCg6cTf79sSsy+0BxF5mBE0R+E3s9iZFzEWw@mail.gmail.com>
-Subject: Re: [PATCH 2/6] RISC-V: KVM: Change the SBI specification version to v2.0
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Conor Dooley <conor@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,79 +56,274 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 12:57=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Oct 11, 2023 at 11:49:14AM +0530, Anup Patel wrote:
-> > On Tue, Oct 10, 2023 at 10:43=E2=80=AFPM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Tue, Oct 10, 2023 at 10:34:59PM +0530, Anup Patel wrote:
-> > > > We will be implementing SBI DBCN extension for KVM RISC-V so let
-> > > > us change the KVM RISC-V SBI specification version to v2.0.
-> > > >
-> > > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > > > ---
-> > > >  arch/riscv/include/asm/kvm_vcpu_sbi.h | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/arch/riscv/include/asm/kvm_vcpu_sbi.h b/arch/riscv/inc=
-lude/asm/kvm_vcpu_sbi.h
-> > > > index cdcf0ff07be7..8d6d4dce8a5e 100644
-> > > > --- a/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> > > > +++ b/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> > > > @@ -11,7 +11,7 @@
-> > > >
-> > > >  #define KVM_SBI_IMPID 3
-> > > >
-> > > > -#define KVM_SBI_VERSION_MAJOR 1
-> > > > +#define KVM_SBI_VERSION_MAJOR 2
-> > >
-> > > What does this number mean?  Who checks it?  Why do you have to keep
-> > > incrementing it?
-> >
-> > This number is the SBI specification version implemented by KVM RISC-V
-> > for the Guest kernel.
-> >
-> > The original sbi_console_putchar() and sbi_console_getchar() are legacy
-> > functions (aka SBI v0.1) which were introduced a few years back along
-> > with the Linux RISC-V port.
-> >
-> > The latest SBI v2.0 specification (which is now frozen) introduces a ne=
-w
-> > SBI debug console extension which replaces legacy sbi_console_putchar()
-> > and sbi_console_getchar() functions with better alternatives.
-> > (Refer, https://github.com/riscv-non-isa/riscv-sbi-doc/releases/downloa=
-d/commit-fe4562532a9cc57e5743b6466946c5e5c98c73ca/riscv-sbi.pdf)
-> >
-> > This series adds SBI debug console implementation in KVM RISC-V
-> > so the SBI specification version advertised by KVM RISC-V must also be
-> > upgraded to v2.0.
-> >
-> > Regarding who checks its, the SBI client drivers in the Linux kernel
-> > will check SBI specification version implemented by higher privilege
-> > mode (M-mode firmware or HS-mode hypervisor) before probing
-> > the SBI extension. For example, the HVC SBI driver (PATCH5)
-> > will ensure SBI spec version to be at least v2.0 before probing
-> > SBI debug console extension.
->
-> Is this api backwards compatible, or did you just break existing
-> userspace that only expects version 1.0?
+MediaTek found an issue with display HW registers configuration, and
+located the reason in the CMDQ Mailbox driver; reporting the original
+comment with the analysis of this problem by Jason-JH Lin:
 
-The legacy sbi_console_putchar() and sbi_console_getchar()
-functions have not changed so it does not break existing
-user-space.
+  GCE should config HW in every vblanking duration.
+  The stream done event is the start signal of vblanking.
 
-The new SBI DBCN functions to be implemented by KVM
-user space are:
-sbi_debug_console_write()
-sbi_debug_console_read()
-sbi_debug_console_write_byte()
+  If stream done event is sent between GCE clk_disable
+  and clk_enable. After GCE clk_enable the stream done event
+  may not appear immediately and have about 3us delay.
 
->
-> thanks,
->
-> greg k-h
+  Normal case:
+  clk_disable -> get EventA -> clk_enable -> clear EventA
+  -> wait EventB -> get EventB -> config HW
 
-Regards,
-Anup
+  Abnormal case:
+  clk_disable -> get EventA -> clk_enable -> EventA delay appear
+  -> clear EventA fail -> wait EventB but get EventA -> config HW
+
+From his analysis we get that the GCE may finish its event processing
+after some amount of time (and not immediately after sending commands
+to it); since the GCE is used for more than just display, and it gets
+used frequently, solve this issue by implementing Runtime PM handlers
+with autosuspend: this allows us to overcome to the remote processor
+delay issues and reduce the clock enable()/disable() calls, while also
+still managing to save some power, which is something that we wouldn't
+be able to do if we just enable the GCE clocks at probe.
+
+Speaking of which: if Runtime PM is not available there will obviously
+be no way to get this power saving action so, in this case, the clocks
+will be enabled at probe() time, kept enabled for the entire driver's
+life and disabled at remove().
+
+Reported-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+
+The 100ms autosuspend delay was estimated in a worst-case scenario and
+was tested on MT8192 and MT8195 Chromebooks, with internal display and
+external display running to maximize the number of CMDQ messages being
+sent through.
+That value can probably be decreased to half of what I've set, but on
+that I prefer being cautious and keep it at 100ms.
+
+P.S.: This also solves microstuttering issues that I've randomly seen
+on all MediaTek Chromebooks.
+
+ drivers/mailbox/mtk-cmdq-mailbox.c | 80 +++++++++++++++++++++++++-----
+ 1 file changed, 68 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
+index 4d62b07c1411..de862e9137d5 100644
+--- a/drivers/mailbox/mtk-cmdq-mailbox.c
++++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+@@ -13,10 +13,13 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/mailbox_controller.h>
+ #include <linux/mailbox/mtk-cmdq-mailbox.h>
+ #include <linux/of.h>
+ 
++#define CMDQ_MBOX_AUTOSUSPEND_DELAY_MS	100
++
+ #define CMDQ_OP_CODE_MASK		(0xff << CMDQ_OP_CODE_SHIFT)
+ #define CMDQ_NUM_CMD(t)			(t->cmd_buf_size / CMDQ_INST_SIZE)
+ #define CMDQ_GCE_NUM_MAX		(2)
+@@ -283,10 +286,8 @@ static void cmdq_thread_irq_handler(struct cmdq *cmdq,
+ 			break;
+ 	}
+ 
+-	if (list_empty(&thread->task_busy_list)) {
++	if (list_empty(&thread->task_busy_list))
+ 		cmdq_thread_disable(cmdq, thread);
+-		clk_bulk_disable(cmdq->pdata->gce_num, cmdq->clocks);
+-	}
+ }
+ 
+ static irqreturn_t cmdq_irq_handler(int irq, void *dev)
+@@ -307,9 +308,26 @@ static irqreturn_t cmdq_irq_handler(int irq, void *dev)
+ 		spin_unlock_irqrestore(&thread->chan->lock, flags);
+ 	}
+ 
++	pm_runtime_mark_last_busy(cmdq->mbox.dev);
++
+ 	return IRQ_HANDLED;
+ }
+ 
++static int cmdq_runtime_resume(struct device *dev)
++{
++	struct cmdq *cmdq = dev_get_drvdata(dev);
++
++	return clk_bulk_enable(cmdq->pdata->gce_num, cmdq->clocks);
++}
++
++static int cmdq_runtime_suspend(struct device *dev)
++{
++	struct cmdq *cmdq = dev_get_drvdata(dev);
++
++	clk_bulk_disable(cmdq->pdata->gce_num, cmdq->clocks);
++	return 0;
++}
++
+ static int cmdq_suspend(struct device *dev)
+ {
+ 	struct cmdq *cmdq = dev_get_drvdata(dev);
+@@ -333,16 +351,14 @@ static int cmdq_suspend(struct device *dev)
+ 	if (cmdq->pdata->sw_ddr_en)
+ 		cmdq_sw_ddr_enable(cmdq, false);
+ 
+-	clk_bulk_unprepare(cmdq->pdata->gce_num, cmdq->clocks);
+-
+-	return 0;
++	return pm_runtime_force_suspend(dev);
+ }
+ 
+ static int cmdq_resume(struct device *dev)
+ {
+ 	struct cmdq *cmdq = dev_get_drvdata(dev);
+ 
+-	WARN_ON(clk_bulk_prepare(cmdq->pdata->gce_num, cmdq->clocks));
++	WARN_ON(pm_runtime_force_resume(dev));
+ 	cmdq->suspended = false;
+ 
+ 	if (cmdq->pdata->sw_ddr_en)
+@@ -358,6 +374,9 @@ static int cmdq_remove(struct platform_device *pdev)
+ 	if (cmdq->pdata->sw_ddr_en)
+ 		cmdq_sw_ddr_enable(cmdq, false);
+ 
++	if (!IS_ENABLED(CONFIG_PM))
++		cmdq_runtime_suspend(&pdev->dev);
++
+ 	clk_bulk_unprepare(cmdq->pdata->gce_num, cmdq->clocks);
+ 	return 0;
+ }
+@@ -369,13 +388,20 @@ static int cmdq_mbox_send_data(struct mbox_chan *chan, void *data)
+ 	struct cmdq *cmdq = dev_get_drvdata(chan->mbox->dev);
+ 	struct cmdq_task *task;
+ 	unsigned long curr_pa, end_pa;
++	int ret;
+ 
+ 	/* Client should not flush new tasks if suspended. */
+ 	WARN_ON(cmdq->suspended);
+ 
++	ret = pm_runtime_get_sync(cmdq->mbox.dev);
++	if (ret < 0)
++		return ret;
++
+ 	task = kzalloc(sizeof(*task), GFP_ATOMIC);
+-	if (!task)
++	if (!task) {
++		pm_runtime_put_autosuspend(cmdq->mbox.dev);
+ 		return -ENOMEM;
++	}
+ 
+ 	task->cmdq = cmdq;
+ 	INIT_LIST_HEAD(&task->list_entry);
+@@ -384,8 +410,6 @@ static int cmdq_mbox_send_data(struct mbox_chan *chan, void *data)
+ 	task->pkt = pkt;
+ 
+ 	if (list_empty(&thread->task_busy_list)) {
+-		WARN_ON(clk_bulk_enable(cmdq->pdata->gce_num, cmdq->clocks));
+-
+ 		/*
+ 		 * The thread reset will clear thread related register to 0,
+ 		 * including pc, end, priority, irq, suspend and enable. Thus
+@@ -424,6 +448,9 @@ static int cmdq_mbox_send_data(struct mbox_chan *chan, void *data)
+ 	}
+ 	list_move_tail(&task->list_entry, &thread->task_busy_list);
+ 
++	pm_runtime_mark_last_busy(cmdq->mbox.dev);
++	pm_runtime_put_autosuspend(cmdq->mbox.dev);
++
+ 	return 0;
+ }
+ 
+@@ -439,6 +466,8 @@ static void cmdq_mbox_shutdown(struct mbox_chan *chan)
+ 	struct cmdq_task *task, *tmp;
+ 	unsigned long flags;
+ 
++	WARN_ON(pm_runtime_get_sync(cmdq->mbox.dev));
++
+ 	spin_lock_irqsave(&thread->chan->lock, flags);
+ 	if (list_empty(&thread->task_busy_list))
+ 		goto done;
+@@ -457,7 +486,6 @@ static void cmdq_mbox_shutdown(struct mbox_chan *chan)
+ 	}
+ 
+ 	cmdq_thread_disable(cmdq, thread);
+-	clk_bulk_disable(cmdq->pdata->gce_num, cmdq->clocks);
+ 
+ done:
+ 	/*
+@@ -467,6 +495,9 @@ static void cmdq_mbox_shutdown(struct mbox_chan *chan)
+ 	 * to do any operation here, only unlock and leave.
+ 	 */
+ 	spin_unlock_irqrestore(&thread->chan->lock, flags);
++
++	pm_runtime_mark_last_busy(cmdq->mbox.dev);
++	pm_runtime_put_autosuspend(cmdq->mbox.dev);
+ }
+ 
+ static int cmdq_mbox_flush(struct mbox_chan *chan, unsigned long timeout)
+@@ -477,6 +508,11 @@ static int cmdq_mbox_flush(struct mbox_chan *chan, unsigned long timeout)
+ 	struct cmdq_task *task, *tmp;
+ 	unsigned long flags;
+ 	u32 enable;
++	int ret;
++
++	ret = pm_runtime_get_sync(cmdq->mbox.dev);
++	if (ret < 0)
++		return ret;
+ 
+ 	spin_lock_irqsave(&thread->chan->lock, flags);
+ 	if (list_empty(&thread->task_busy_list))
+@@ -497,10 +533,12 @@ static int cmdq_mbox_flush(struct mbox_chan *chan, unsigned long timeout)
+ 
+ 	cmdq_thread_resume(thread);
+ 	cmdq_thread_disable(cmdq, thread);
+-	clk_bulk_disable(cmdq->pdata->gce_num, cmdq->clocks);
+ 
+ out:
+ 	spin_unlock_irqrestore(&thread->chan->lock, flags);
++	pm_runtime_mark_last_busy(cmdq->mbox.dev);
++	pm_runtime_put_autosuspend(cmdq->mbox.dev);
++
+ 	return 0;
+ 
+ wait:
+@@ -513,6 +551,8 @@ static int cmdq_mbox_flush(struct mbox_chan *chan, unsigned long timeout)
+ 
+ 		return -EFAULT;
+ 	}
++	pm_runtime_mark_last_busy(cmdq->mbox.dev);
++	pm_runtime_put_autosuspend(cmdq->mbox.dev);
+ 	return 0;
+ }
+ 
+@@ -642,12 +682,28 @@ static int cmdq_probe(struct platform_device *pdev)
+ 		return err;
+ 	}
+ 
++	/* If Runtime PM is not available enable the clocks now. */
++	if (!IS_ENABLED(CONFIG_PM)) {
++		err = cmdq_runtime_resume(dev);
++		if (err)
++			return err;
++	}
++
++	err = devm_pm_runtime_enable(dev);
++	if (err)
++		return err;
++
++	pm_runtime_set_autosuspend_delay(dev, CMDQ_MBOX_AUTOSUSPEND_DELAY_MS);
++	pm_runtime_use_autosuspend(dev);
++
+ 	return 0;
+ }
+ 
+ static const struct dev_pm_ops cmdq_pm_ops = {
+ 	.suspend = cmdq_suspend,
+ 	.resume = cmdq_resume,
++	SET_RUNTIME_PM_OPS(cmdq_runtime_suspend,
++			   cmdq_runtime_resume, NULL)
+ };
+ 
+ static const struct gce_plat gce_plat_v2 = {
+-- 
+2.42.0
+
