@@ -2,109 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C29F57C4FEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59D97C5112
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234654AbjJKKSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38304 "EHLO
+        id S234700AbjJKKIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345939AbjJKKSK (ORCPT
+        with ESMTP id S234001AbjJKKIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:18:10 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2834129
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:07:25 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:b72e:818:7fe2:593d])
-        by xavier.telenet-ops.be with bizsmtp
-        id wa7L2A00W56sUls01a7LSi; Wed, 11 Oct 2023 12:07:22 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qqW7a-00648i-RP;
-        Wed, 11 Oct 2023 12:07:20 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qqW7c-00HQrM-DG;
-        Wed, 11 Oct 2023 12:07:20 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] sunrpc: Use no_printk() in dfprintk*() dummies
-Date:   Wed, 11 Oct 2023 12:07:19 +0200
-Message-Id: <707e5e6dd0db9a663cf443564d1f8ee1c10a0086.1697018818.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+        Wed, 11 Oct 2023 06:08:36 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F009F1732;
+        Wed, 11 Oct 2023 03:07:28 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 606E680E1;
+        Wed, 11 Oct 2023 10:07:28 +0000 (UTC)
+Date:   Wed, 11 Oct 2023 13:07:26 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     dmitry.torokhov@gmail.com, Jonathan.Cameron@huawei.com,
+        robh@kernel.org, frank.li@vivo.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: Re: [RFC PATCH] Input: omap4-keypad: react on keypresses if device
+ is runtime-suspended
+Message-ID: <20231011100726.GD34982@atomide.com>
+References: <20230929200046.2300333-1-andreas@kemnade.info>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230929200046.2300333-1-andreas@kemnade.info>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building NFS with W=1 and CONFIG_WERROR=y, but
-CONFIG_SUNRPC_DEBUG=n:
+Hi,
 
-    fs/nfs/nfs4proc.c: In function ‘nfs4_proc_create_session’:
-    fs/nfs/nfs4proc.c:9276:19: error: variable ‘ptr’ set but not used [-Werror=unused-but-set-variable]
-     9276 |         unsigned *ptr;
-	  |                   ^~~
-      CC      fs/nfs/callback.o
-    fs/nfs/callback.c: In function ‘nfs41_callback_svc’:
-    fs/nfs/callback.c:98:13: error: variable ‘error’ set but not used [-Werror=unused-but-set-variable]
-       98 |         int error;
-	  |             ^~~~~
-      CC      fs/nfs/flexfilelayout/flexfilelayout.o
-    fs/nfs/flexfilelayout/flexfilelayout.c: In function ‘ff_layout_io_track_ds_error’:
-    fs/nfs/flexfilelayout/flexfilelayout.c:1230:13: error: variable ‘err’ set but not used [-Werror=unused-but-set-variable]
-     1230 |         int err;
-	  |             ^~~
-      CC      fs/nfs/flexfilelayout/flexfilelayoutdev.o
-    fs/nfs/flexfilelayout/flexfilelayoutdev.c: In function ‘nfs4_ff_alloc_deviceid_node’:
-    fs/nfs/flexfilelayout/flexfilelayoutdev.c:55:16: error: variable ‘ret’ set but not used [-Werror=unused-but-set-variable]
-       55 |         int i, ret = -ENOMEM;
-	  |                ^~~
+* Andreas Kemnade <andreas@kemnade.info> [230929 23:01]:
+> According to SWPU235AB, table 26-6, fclk is required to generate events
+> at least on OMAP4460, so keep fclk enabled all the time the device
+> is opened.
 
-All these are due to variables that are set uncontionally, but are used
-only when debugging is enabled.
+Sorry for the delay, the patch looks good to me:
 
-Fix this by changing the dfprintk*() dummy macros from empty loops to
-calls to the no_printk() helper.  This informs the compiler that the
-passed debug parameters are actually used, and enables format specifier
-checking as a bonus.
+Reviewed-by: Tony Lindgren <tony@atomide.com>
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- include/linux/sunrpc/debug.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> Open questions:
+> - Should we rather (or also use) padconf irqs?
 
-diff --git a/include/linux/sunrpc/debug.h b/include/linux/sunrpc/debug.h
-index f6aeed07fe04e3d5..76539c6673f2fb15 100644
---- a/include/linux/sunrpc/debug.h
-+++ b/include/linux/sunrpc/debug.h
-@@ -67,9 +67,9 @@ do {									\
- # define RPC_IFDEBUG(x)		x
- #else
- # define ifdebug(fac)		if (0)
--# define dfprintk(fac, fmt, ...)	do {} while (0)
--# define dfprintk_cont(fac, fmt, ...)	do {} while (0)
--# define dfprintk_rcu(fac, fmt, ...)	do {} while (0)
-+# define dfprintk(fac, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
-+# define dfprintk_cont(fac, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
-+# define dfprintk_rcu(fac, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
- # define RPC_IFDEBUG(x)
- #endif
- 
--- 
-2.34.1
+The keypad is in the wakeup domain and has SYSC_OMAP2_ENAWAKEUP set in
+the dts, so padconf irqs should not be needed as long as the device is
+clocked. As the source clock is sys_32k_ck, not sure if gating it would
+save any power, so padconf interrupts are probably not needed.
 
+> - It seems not to be required everywhere. Does it harm somewhere?
+
+Sounds like on 4430 the gate bit does not do anything while on 4460 it
+does. The source clock seems to be sys_32k_ck so it's enabled anyways
+and should not affect power management.
+
+Regards,
+
+Tony
