@@ -2,170 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B26887C4C45
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5612D7C4C58
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbjJKHtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 03:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49444 "EHLO
+        id S230045AbjJKHux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 03:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbjJKHtN (ORCPT
+        with ESMTP id S229808AbjJKHup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 03:49:13 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0A692
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 00:49:10 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c61bde0b4bso56112575ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 00:49:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697010550; x=1697615350; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YFdj5CLJdNz+//giZZucR/OWu0lsyTJv2DBHSoR3lfg=;
-        b=J8YyDLbL3F3wWm7UL5vmnth/P2d0Md3x+dd5DCd2cnM4laYk92Rm85a9IsNZ5fl38H
-         /hBzE6LP6LNxK2OcJOr+QOVJOhsAkVIRnfoStBCauBL9XZObHcG6OE/7hZYTXj8HLv2p
-         mpzk0+TH9UXPfMZ7nsSkNUhItqwsEXH6230zm6Y1IpH0yvtr5d/gNR9pWhRGXGTLsqeK
-         /E6kuNYXYKLzjHUdsq+TBuxYWJPRXw9zWY5HawfLB6AXcOhg12vzIQi8lEOatGDGz1O7
-         WHZDKh9KTA+5ihIAoKWQVKoIupr7A726wp0z2Sse4BZ9hSPKMbaBQKbOmE2OLgCxXmjc
-         sinw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697010550; x=1697615350;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YFdj5CLJdNz+//giZZucR/OWu0lsyTJv2DBHSoR3lfg=;
-        b=hxHp9fBMjDU5QmiTzCo4gIQOD2R94kJZoa7qAyjBoGpIN/dDHoE2UJtRcCnN9UzrBZ
-         FPbY70iXG6asHO8rwbkU+EKFr5MF1yk8nCndmO0zvvDyJsic9bLUOJ91/18IAEm6AitA
-         2qkM2CrGe7ugWZUrucwrscSj7JZtu4pl9Mj0eYN+9dnsC75inTCZj52q3JRSc6zZpzbv
-         aQNXNjgUOaiHcjSlNQ0BmngWTIU2MDO+s8WEPPAFZT3hAqzHAMZipolXV9Z/Ub1JxFDM
-         E8DF8nmg6xS5hDx6aHUARe7/8G5Cv8Yn5jBn488sZdq+0i+vShAkW/IEz2pN7Gq8qO1p
-         m/lA==
-X-Gm-Message-State: AOJu0Yyb/9LSGB+95K/Apq7Rkz4+IBTrNS9dPcjysfwRQCzajoz6WhPz
-        QZ2GgzLcfb/qJkWELf4E15SHNQ==
-X-Google-Smtp-Source: AGHT+IF1M4EyHVTTetj9ME03k8xm8dQG9IBYcNIdDps13o0xrA9uZNxWJca1jYT2wUVJ5VtEy0wEoQ==
-X-Received: by 2002:a17:902:c40c:b0:1c8:90bf:4234 with SMTP id k12-20020a170902c40c00b001c890bf4234mr18546713plk.61.1697010550331;
-        Wed, 11 Oct 2023 00:49:10 -0700 (PDT)
-Received: from C02FG34NMD6R.bytedance.net ([203.208.189.8])
-        by smtp.gmail.com with ESMTPSA id n3-20020a170902e54300b001a98f844e60sm13193921plf.263.2023.10.11.00.49.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 00:49:09 -0700 (PDT)
-From:   Albert Huang <huangjie.albert@bytedance.com>
-To:     Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>
-Cc:     Albert Huang <huangjie.albert@bytedance.com>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 net] net/smc: fix smc clc failed issue when netdevice not in init_net
-Date:   Wed, 11 Oct 2023 15:48:51 +0800
-Message-Id: <20231011074851.95280-1-huangjie.albert@bytedance.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+        Wed, 11 Oct 2023 03:50:45 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 458BF98;
+        Wed, 11 Oct 2023 00:50:40 -0700 (PDT)
+X-UUID: db64691c680a11ee8051498923ad61e6-20231011
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=6Jmn2+TqqAj7GyLC6XtWeq57DOeUUrtxC3mMWVQqvFk=;
+        b=GaILCL14P3yHtI+z/HFeLI/al+pZ4hH/vVq9cZa0Kptx9Od1kIVkc7JQhGXT3YD0vjZ+T1EhtxVDHevVEv7kxEihImCzaWuLsWDSYIYRCmMRF1I93AoLee2R2iM24fWez/RuRQ2GY2TkA6SMYDQDsMslZ3ZIJ0sym5JWsg3TZqE=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:652a4731-62bd-4616-81ab-7cda6510a642,IP:0,U
+        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:-5
+X-CID-META: VersionHash:5f78ec9,CLOUDID:f79ffdc3-1e57-4345-9d31-31ad9818b39f,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
+X-UUID: db64691c680a11ee8051498923ad61e6-20231011
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
+        (envelope-from <moudy.ho@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1815393748; Wed, 11 Oct 2023 15:50:33 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 11 Oct 2023 15:50:32 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 11 Oct 2023 15:50:32 +0800
+From:   Moudy Ho <moudy.ho@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+CC:     "Nancy . Lin" <nancy.lin@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Moudy Ho <moudy.ho@mediatek.com>
+Subject: [PATCH v7 0/3] Add support for MT8195 MDP3
+Date:   Wed, 11 Oct 2023 15:50:28 +0800
+Message-ID: <20231011075031.30660-1-moudy.ho@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the netdevice is within a container and communicates externally
-through network technologies such as VxLAN, we won't be able to find
-routing information in the init_net namespace. To address this issue,
-we need to add a struct net parameter to the smc_ib_find_route function.
-This allow us to locate the routing information within the corresponding
-net namespace, ensuring the correct completion of the SMC CLC interaction.
+Changes since v6:
+- Rebase on v6.6-rc5.
+- Add SoC-specific compatible string to the nodes inherited from
+  MT8183, such as RSZ and WROT.
+- Add required property to PAD (padding) for its integration into
+  the existing binding under display folder.
+- Add patch to standardiized DMA related node names, such as VDOSYS RDMA.
 
-Fixes: e5c4744cfb59 ("net/smc: add SMC-Rv2 connection establishment")
-Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
----
- net/smc/af_smc.c | 3 ++-
- net/smc/smc_ib.c | 7 ++++---
- net/smc/smc_ib.h | 2 +-
- 3 files changed, 7 insertions(+), 5 deletions(-)
+Changes since v5:
+- Rebase on v6.6-rc2
+- Add the required property - interrupts in components
+  AAL, COLOR and OVL.
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index bacdd971615e..7a874da90c7f 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -1201,6 +1201,7 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
- 		(struct smc_clc_msg_accept_confirm_v2 *)aclc;
- 	struct smc_clc_first_contact_ext *fce =
- 		smc_get_clc_first_contact_ext(clc_v2, false);
-+	struct net *net = sock_net(&smc->sk);
- 	int rc;
- 
- 	if (!ini->first_contact_peer || aclc->hdr.version == SMC_V1)
-@@ -1210,7 +1211,7 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
- 		memcpy(ini->smcrv2.nexthop_mac, &aclc->r0.lcl.mac, ETH_ALEN);
- 		ini->smcrv2.uses_gateway = false;
- 	} else {
--		if (smc_ib_find_route(smc->clcsock->sk->sk_rcv_saddr,
-+		if (smc_ib_find_route(net, smc->clcsock->sk->sk_rcv_saddr,
- 				      smc_ib_gid_to_ipv4(aclc->r0.lcl.gid),
- 				      ini->smcrv2.nexthop_mac,
- 				      &ini->smcrv2.uses_gateway))
-diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
-index 9b66d6aeeb1a..89981dbe46c9 100644
---- a/net/smc/smc_ib.c
-+++ b/net/smc/smc_ib.c
-@@ -193,7 +193,7 @@ bool smc_ib_port_active(struct smc_ib_device *smcibdev, u8 ibport)
- 	return smcibdev->pattr[ibport - 1].state == IB_PORT_ACTIVE;
- }
- 
--int smc_ib_find_route(__be32 saddr, __be32 daddr,
-+int smc_ib_find_route(struct net *net, __be32 saddr, __be32 daddr,
- 		      u8 nexthop_mac[], u8 *uses_gateway)
- {
- 	struct neighbour *neigh = NULL;
-@@ -205,7 +205,7 @@ int smc_ib_find_route(__be32 saddr, __be32 daddr,
- 
- 	if (daddr == cpu_to_be32(INADDR_NONE))
- 		goto out;
--	rt = ip_route_output_flow(&init_net, &fl4, NULL);
-+	rt = ip_route_output_flow(net, &fl4, NULL);
- 	if (IS_ERR(rt))
- 		goto out;
- 	if (rt->rt_uses_gateway && rt->rt_gw_family != AF_INET)
-@@ -235,6 +235,7 @@ static int smc_ib_determine_gid_rcu(const struct net_device *ndev,
- 	if (smcrv2 && attr->gid_type == IB_GID_TYPE_ROCE_UDP_ENCAP &&
- 	    smc_ib_gid_to_ipv4((u8 *)&attr->gid) != cpu_to_be32(INADDR_NONE)) {
- 		struct in_device *in_dev = __in_dev_get_rcu(ndev);
-+		struct net *net = dev_net(ndev);
- 		const struct in_ifaddr *ifa;
- 		bool subnet_match = false;
- 
-@@ -248,7 +249,7 @@ static int smc_ib_determine_gid_rcu(const struct net_device *ndev,
- 		}
- 		if (!subnet_match)
- 			goto out;
--		if (smcrv2->daddr && smc_ib_find_route(smcrv2->saddr,
-+		if (smcrv2->daddr && smc_ib_find_route(net, smcrv2->saddr,
- 						       smcrv2->daddr,
- 						       smcrv2->nexthop_mac,
- 						       &smcrv2->uses_gateway))
-diff --git a/net/smc/smc_ib.h b/net/smc/smc_ib.h
-index 4df5f8c8a0a1..ef8ac2b7546d 100644
---- a/net/smc/smc_ib.h
-+++ b/net/smc/smc_ib.h
-@@ -112,7 +112,7 @@ void smc_ib_sync_sg_for_device(struct smc_link *lnk,
- int smc_ib_determine_gid(struct smc_ib_device *smcibdev, u8 ibport,
- 			 unsigned short vlan_id, u8 gid[], u8 *sgid_index,
- 			 struct smc_init_info_smcrv2 *smcrv2);
--int smc_ib_find_route(__be32 saddr, __be32 daddr,
-+int smc_ib_find_route(struct net *net, __be32 saddr, __be32 daddr,
- 		      u8 nexthop_mac[], u8 *uses_gateway);
- bool smc_ib_is_valid_local_systemid(void);
- int smcr_nl_get_device(struct sk_buff *skb, struct netlink_callback *cb);
+Hi,
+
+The purpose of this patch is to separate the MDP3-related dtsi from
+the original mailing list mentioned below:
+https://lore.kernel.org/all/20230912075805.11432-2-moudy.ho@mediatek.com/
+Introducing more components for MDP3 in MT8195.
+
+Moudy Ho (3):
+  arm64: dts: mediatek: mt8183: correct MDP3 DMA-related nodes
+  arm64: dts: mediatek: mt8195: revise VDOSYS RDMA node name
+  arm64: dts: mediatek: mt8195: add MDP3 nodes
+
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi |   6 +-
+ arch/arm64/boot/dts/mediatek/mt8195.dtsi | 416 ++++++++++++++++++++++-
+ 2 files changed, 412 insertions(+), 10 deletions(-)
+
 -- 
-2.20.1
+2.18.0
 
