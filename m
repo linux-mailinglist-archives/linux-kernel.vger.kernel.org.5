@@ -2,90 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 286EF7C5ED7
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30F87C5EDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233392AbjJKVER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51138 "EHLO
+        id S233441AbjJKVEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 17:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233133AbjJKVEQ (ORCPT
+        with ESMTP id S233278AbjJKVEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:04:16 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C93B7;
-        Wed, 11 Oct 2023 14:04:14 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9b2cee40de8so46259766b.1;
-        Wed, 11 Oct 2023 14:04:14 -0700 (PDT)
+        Wed, 11 Oct 2023 17:04:40 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED4E9E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:04:39 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7ac9c1522so4467247b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:04:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697058253; x=1697663053; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=85+BYQFRFSvmZdXHyKa4CY/JoC3Hipg8cZZ4vbffeSE=;
-        b=FVLQFioCf5NYWP30pIUB4JRGNo1Me5z1rYfrnytKrxMI/N5AbgOkewtl7ZwEX9bMF5
-         w89KGG+paw7rIX9CKOJXSQACY6A9nbsVbcfQPkxuF5BfoujiMd4Sx//OzPcMxuPq+aEB
-         LmMdyVli9WqSATcFama0dmUdKxTuxfG9JzJWXCGwEgzF6+HsgOTcDDDASoq7EzAzjYHN
-         4hYt13MjZH3jHycpbTvFaAXbXBWPGoq5fhoV92hJL/nDDoUBmgFtDcMWwDFtSXk+Ncqk
-         SpHPELLipaQsanj6okofczqaKQRn4xqATpkia55nq3Qv8PHCU0hQ+NW+KjOEfTTgEQEM
-         KQDA==
+        d=google.com; s=20230601; t=1697058278; x=1697663078; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=BxaWGDSeY2dIkY2twK1W0ApQNsW9w47t9mTViMZ06zU=;
+        b=pTRnspRKfDoJ3DiY2sGbABeR0vRBs5KytRvmTbcy4qcz8mCnaD0IYssPeKUbiiHpet
+         3OKQFgagX6LnyqJvGsspp6CmB1ev/hyu70aR9Bg7E4iy76wnfgiQMTyR+zr3M68bdgaB
+         OZLQGZYPp9LgUn7FlK5ZhhXyso8TtDFDi8JE077S1FM1ZpBvhQHIcUOReZ7swkbcrw/F
+         f+vM/4grWm0UNcGJ8BGaIOtuJ2daMqvGjm4pnFCYc5/76L54TyiLe0uw1i/Rq0ygVWah
+         35FfXP2T51hzFniuT/KAJbhXuFwXVhp5QNhQMmkDELd1TLjqPQV4VB4dbyJHD2E4Xrm2
+         /qXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697058253; x=1697663053;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=85+BYQFRFSvmZdXHyKa4CY/JoC3Hipg8cZZ4vbffeSE=;
-        b=Mbk4b5ApQAcXoifZcnWMpQX8gFG4sPdrl2UbLlbWm/VsO8ITEmeMHqtprZTYw+HswJ
-         iBzIC7/d58/OweR0zY3E1kEI7LYBYTBnui5lXz3UoPdEuVe03Z/P957ml7tSQv9SaCqA
-         UJ5bXT4kA1yZnb+L5GlPNozD555xOONCeHcJv+O5OcFGvn3zCf5I5ITqymoTfyxUQJTe
-         XqT+6WyXSYc9xSiLD/AhZGId6x4JbRaFE9eSxRFn8M0C8pUkOzJeF4lFYayCYzIp/sWe
-         7C64rvKh0/0wXjbua7T0S0tu6I4aaB/LvuHkCik836VFBHi3/PHYnbYJ5CswF8n3N3qt
-         B+TA==
-X-Gm-Message-State: AOJu0Yzre9kCjBjmlny4k45e1GFXiStXGjqtkuPziN1U35Vl+UM8ax7h
-        04eY8y6OfMMWq2HMlWsDXqY=
-X-Google-Smtp-Source: AGHT+IGYaWlBmZ4iitWU8HxMcch2DlFXQK5FbRl5zPCnhC6n5R7/if7Ci2j0Cffbx+l9VuXPfCVrhA==
-X-Received: by 2002:a17:907:9491:b0:9a5:962c:cb6c with SMTP id dm17-20020a170907949100b009a5962ccb6cmr18457404ejc.31.1697058252720;
-        Wed, 11 Oct 2023 14:04:12 -0700 (PDT)
-Received: from localhost (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id 17-20020a170906059100b009929ab17be0sm10169412ejn.162.2023.10.11.14.04.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 14:04:11 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     thierry.reding@gmail.com, jonathanh@nvidia.com,
-        Deming Wang <wangdeming@inspur.com>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] firmware: tegra: Fix a typo
-Date:   Wed, 11 Oct 2023 23:04:08 +0200
-Message-ID: <169705815168.1498101.14814421385743433176.b4-ty@nvidia.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230912121030.1759-1-wangdeming@inspur.com>
-References: <20230912121030.1759-1-wangdeming@inspur.com>
-MIME-Version: 1.0
+        d=1e100.net; s=20230601; t=1697058278; x=1697663078;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BxaWGDSeY2dIkY2twK1W0ApQNsW9w47t9mTViMZ06zU=;
+        b=CnqOuhDVt2eYkhyLlKk+vMlBJS5JXYYPN13l2oMlhXd+dVYTbLPn9jmkd3GyJGE2jb
+         eM5/QXZ9S/XdDhbjaM2T39wEO6lVcENohki3hspKqPGdRpT5JciOEdhmkJWaxzp8cxKV
+         Aq+HZgKL+YtfDi1iq3qBHE0CwfXoYIadaZn4g5cOXlZocuYgSCMqrcOTJtN6Sx0MmFee
+         trNr1yUcnk2ZnXYYPyPb9z2KyHMVwUOTdqetj2AS+n7yiZhB6eTjsj9EWaniCsWjfTNe
+         uThL8wi+9QozhXQrf3aw8j2fW5kobRFZq/9jUDjOnCQtzpvoe/YJwfrViotw73ZfPs8R
+         xJDQ==
+X-Gm-Message-State: AOJu0Yy2Xa1OP/FkzTZIp/p1ZwkeSnGKftgVlyKl41/fpXQ+Ppr3zzN0
+        gRTyehm99nxJ5vluFUoIMjk9PqRu9BJZ1Z7FEQ==
+X-Google-Smtp-Source: AGHT+IEwQ2LwAmN3p2AyQxhcz2QzPlunl9q2EyaOioXCheByednY9g118PcUomxF897RqpVZ2rL7NqiTzxx+BrIMzg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:a909:0:b0:59b:e97e:f7e3 with SMTP
+ id g9-20020a81a909000000b0059be97ef7e3mr403659ywh.2.1697058278584; Wed, 11
+ Oct 2023 14:04:38 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 21:04:37 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAOUNJ2UC/x2NQQ6CMBAAv0L27CYtiopfIR6adpFNykK2DdYQ/
+ m71NnOZ2SGRMiV4NDsobZx4kSr21ICfnLwIOVSH1rRna6zFlFX8+sGgvJEmFMpIeSL9wUwxOlk KzrFccHyjx+vtbvqu60OwDmp1VRq5/I/D8zi+U+4EDIEAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697058277; l=1896;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=iM4RgTWWhWZP4eA/MAnbDxA0QWNmel85KFAk0bSECCw=; b=Mi1kOWdyu5N3mq/FWAZBWweOspZuCsbEWolDFFAMzhwq3MN2xlS5N+hX0SBc+sEuxPp+FXaxs
+ S1P44k6m1RVCBibuSe6W6nXbwXsKcpeyoPtF3ALMhXIAUT5jMNiVGKY
+X-Mailer: b4 0.12.3
+Message-ID: <20231011-strncpy-drivers-net-ethernet-mellanox-mlx4-fw-c-v1-1-4d7b5d34c933@google.com>
+Subject: [PATCH] net/mlx4_core: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+`strncpy` is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
+We expect `dst` to be NUL-terminated based on its use with format
+strings:
+|       mlx4_dbg(dev, "Reporting Driver Version to FW: %s\n", dst);
 
-On Tue, 12 Sep 2023 08:10:30 -0400, Deming Wang wrote:
-> successfully, not 'succesfully'
-> 
-> 
+Moreover, NUL-padding is not required.
 
-Applied, thanks!
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
 
-[1/1] firmware: tegra: Fix a typo
-      commit: bde3ce7257ca68120f0d8db96b3df5bc14f8245d
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+
+Found with: $ rg "strncpy\("
+---
+ drivers/net/ethernet/mellanox/mlx4/fw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx4/fw.c b/drivers/net/ethernet/mellanox/mlx4/fw.c
+index fe48d20d6118..0005d9e2c2d6 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/fw.c
++++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
+@@ -1967,7 +1967,7 @@ int mlx4_INIT_HCA(struct mlx4_dev *dev, struct mlx4_init_hca_param *param)
+ 	if (dev->caps.flags2 & MLX4_DEV_CAP_FLAG2_DRIVER_VERSION_TO_FW) {
+ 		u8 *dst = (u8 *)(inbox + INIT_HCA_DRIVER_VERSION_OFFSET / 4);
+ 
+-		strncpy(dst, DRV_NAME_FOR_FW, INIT_HCA_DRIVER_VERSION_SZ - 1);
++		strscpy(dst, DRV_NAME_FOR_FW, INIT_HCA_DRIVER_VERSION_SZ);
+ 		mlx4_dbg(dev, "Reporting Driver Version to FW: %s\n", dst);
+ 	}
+ 
+
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231011-strncpy-drivers-net-ethernet-mellanox-mlx4-fw-c-67809559dd1a
 
 Best regards,
--- 
-Thierry Reding <treding@nvidia.com>
+--
+Justin Stitt <justinstitt@google.com>
+
