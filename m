@@ -2,503 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 030487C5492
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9397C5470
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347047AbjJKM4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 08:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55094 "EHLO
+        id S1346915AbjJKMz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 08:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346776AbjJKMz7 (ORCPT
+        with ESMTP id S231758AbjJKMz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 08:55:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7464C91
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:55:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697028910;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GJd+F+1J07wBQgE2LpwHaS1V2fAItQIC6yyvUcClvl0=;
-        b=Q59yaltt3AbR1b4Z7rdc+UMSluslb3YFCZJ7Q25mVJGxq5F8FqlXiEoXGQezpvMU8kMbfk
-        lje2sQzAW+Zb3h8VhfEDAFeR2D5QTE7t5y074YU7Rdq2h2McWzbj42rAemDFmMDIGZ1oK8
-        2w7UbSGyGVeya4FaTCfNEPiqP6Ag5F8=
-Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
- [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-198-dFq9ZHTgPIOAK3RT8BUEug-1; Wed, 11 Oct 2023 08:55:09 -0400
-X-MC-Unique: dFq9ZHTgPIOAK3RT8BUEug-1
-Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-5a7a6fd18abso39806597b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:55:09 -0700 (PDT)
+        Wed, 11 Oct 2023 08:55:27 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D309D
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:55:25 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-4547428694dso2673837137.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:55:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697028925; x=1697633725; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TJHkKAgZfrxS1O8Tslb2tMsF0PPp/zqOL3rMiik7kWc=;
+        b=Lz2M2d/r4s97ZOBTxD6wi/FYiH09kYAdVnpLQnfaZGz/9u2CHVruRBFSmhYfoPponp
+         jsj+8dUOpXBoEg9L0CgBGvgg46GmXB34BcWp8CJSqQbgGCdsAsYxvhUBNsyi5Ly/FJoe
+         nMQH2sg6UtMW42RC3oR9A0PDLP4YQr7BWtgWZRnJ8ExqPd/Z06vvpcRJOwRi9ycRxOKs
+         Pbxl7N7BaKuqXYHE9OpsBtpIyj8HvHRzocy9t6adwMg8Rbpo7QZTja5UFcKstam0tqtL
+         IMkebO5QLmaMPJ+2q9YkLX98jCXD9BJo82k63Gm1AfpT9sgzOufCjwSM/U5fLqpZdhBZ
+         nc0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697028909; x=1697633709;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GJd+F+1J07wBQgE2LpwHaS1V2fAItQIC6yyvUcClvl0=;
-        b=LnDvP+9QhHsVHWejGcWVYl7O0xS2f13FJMgzjt1vJP3VF5fRlLg2uo+cfUYhtGHUvA
-         C6UJ59/TVWZ/++4nys5bRtHQbqq3RRokLGJhaZLKIk6P/nyAl+l3ZZRvNDuAoFoSVZc+
-         1hhFp5zNkYcQW++g1eJzmwHYv0FjAN6eZape3d62nZXpnL0o1Qbn//AKo8lJwWKd1Rnn
-         XWW3sStYPxtwp2Dr7t7i977cq9dpuu/a264pjk25cqyufldjydRPpyKAi+wc632cWu/b
-         2akJzw/KjkeoGDSLfLXQcWRUG0dfXBcZBFIxHaIpMpeGt2drNKj1sSLoOi+g0u/D96R5
-         aZMQ==
-X-Gm-Message-State: AOJu0YyiRCfuaU6BCp8Ubj7qVYbjxIDzT9J88UAktZx1eQMZ6EfoewQT
-        Ym/VNxqAhWEiOWiEcx1VyjCkNPbrOCZgr7oxL4PNxe8Kh//7jNejXsRLSjqJJXb/PPw4mU3u8F+
-        kgf/9+GLxBjEayU+kau21yVRk
-X-Received: by 2002:a0d:f387:0:b0:589:c065:b419 with SMTP id c129-20020a0df387000000b00589c065b419mr25260684ywf.34.1697028908820;
-        Wed, 11 Oct 2023 05:55:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGUvmy1rg5/NhlNofu08qiGaNFJjHtBDi2LInJsYATuvWP8qGFA63br25JSlZAuICkrN/s5fQ==
-X-Received: by 2002:a0d:f387:0:b0:589:c065:b419 with SMTP id c129-20020a0df387000000b00589c065b419mr25260671ywf.34.1697028908504;
-        Wed, 11 Oct 2023 05:55:08 -0700 (PDT)
-Received: from sgarzare-redhat (host-79-46-200-251.retail.telecomitalia.it. [79.46.200.251])
-        by smtp.gmail.com with ESMTPSA id r6-20020a0c8d06000000b0065655bb349csm5685356qvb.141.2023.10.11.05.55.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 05:55:07 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 14:55:03 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v4 12/12] test/vsock: io_uring rx/tx tests
-Message-ID: <5oqx2vxfzgp4sryyvsjdnkex3wihiova43rubxyrzusrgrc75i@f3ayebkdbrtz>
-References: <20231010191524.1694217-1-avkrasnov@salutedevices.com>
- <20231010191524.1694217-13-avkrasnov@salutedevices.com>
+        d=1e100.net; s=20230601; t=1697028925; x=1697633725;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TJHkKAgZfrxS1O8Tslb2tMsF0PPp/zqOL3rMiik7kWc=;
+        b=grf8WXofLr+D9qbqrZvE+pjLt8ki/N1f53M8FRoKPqpLzbiAYVX6SHorWAijo3D0K/
+         MQwR5D5Vo2pLWyS0zxPziAn5FsliBf13BGeJtq3GTdlG6ruECENcqGLt9o/yYtRutug3
+         U2fLSXCR5yhN/u9gZW4oHYfEiTRXlzICo0cYGsWKf0Nsr7cWmwxr0DijTMWyCioRCzGc
+         KzouBUwjoOxewrAnGL9SDkB1NcOZodmPfuHIZdMtewoCscHm1SWst8ShSCF6C9DYxbSI
+         01b+QC/YfPGInrO7lIrG48BliAsA85pH6C7T0Sf9Khs4K57ZA3ZjP0J6ThxN/WF8v2Po
+         ZzWA==
+X-Gm-Message-State: AOJu0Yz/YN7pBD8C9BlAyE1iNBtSWhVdTDQys/1YJq59Lz/L6vTAQb6Q
+        Yh4MQr7PEVx7Y186SssyYA6g3XS0LqiQH2X/zdqOaA==
+X-Google-Smtp-Source: AGHT+IE/GS3ZefqbCTRAxvzj5P2FzW1ao64b6+xoVl1jPWppctYlhVhjbQJTPsbdrbj5cpefjtgO744OBsx/DINQjDg=
+X-Received: by 2002:a67:f489:0:b0:44e:d415:76a3 with SMTP id
+ o9-20020a67f489000000b0044ed41576a3mr20147184vsn.11.1697028923184; Wed, 11
+ Oct 2023 05:55:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20231010191524.1694217-13-avkrasnov@salutedevices.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010231616.3122392-1-jarkko@kernel.org> <CAFA6WYMdrCfqMVExYBbhCK7vUSQffyUfSWpQO0=HeQc6Edz9OA@mail.gmail.com>
+ <186a4b62517ead88df8c3c0e9e9585e88f9a6fd8.camel@kernel.org>
+ <0aeb4d88952aff53c5c1a40b547a9819ebd1947e.camel@kernel.org>
+ <CAFA6WYObvJvQv=-JJ5gnmFqJKbT=4JnT+ErC=iB1KfnYfVn7Ag@mail.gmail.com> <79fe0b97e2f5d1f02d08c9f633b7c0da13dc9127.camel@kernel.org>
+In-Reply-To: <79fe0b97e2f5d1f02d08c9f633b7c0da13dc9127.camel@kernel.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 11 Oct 2023 18:25:11 +0530
+Message-ID: <CAFA6WYMrg3VBYvdV8Or==YK_qATk22bL+_ryDC-oO4jVf7DCWg@mail.gmail.com>
+Subject: Re: [PATCH] KEYS: trusted: Rollback init_trusted() consistently
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     keyrings@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "open list:KEYS-TRUSTED" <linux-integrity@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 10:15:24PM +0300, Arseniy Krasnov wrote:
->This adds set of tests which use io_uring for rx/tx. This test suite is
->implemented as separated util like 'vsock_test' and has the same set of
->input arguments as 'vsock_test'. These tests only cover cases of data
->transmission (no connect/bind/accept etc).
+On Wed, 11 Oct 2023 at 18:07, Jarkko Sakkinen <jarkko@kernel.org> wrote:
 >
->Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->---
-> Changelog:
-> v1 -> v2:
->  * Add 'LDLIBS = -luring' to the target 'vsock_uring_test'.
->  * Add 'vsock_uring_test' to the target 'test'.
-> v2 -> v3:
->  * Make 'struct vsock_test_data' private by placing it to the .c file.
->    Rename it and add comments to this struct to clarify sense of its
->    fields.
->  * Add 'vsock_uring_test' to the '.gitignore'.
->  * Add receive loop to the server side - this is needed to read entire
->    data sent by client.
-> v3 -> v4:
->  * Link with 'msg_zerocopy_common.o'.
->  * Use '#ifndef' around '#define PAGE_SIZE 4096'.
+> On Wed, 2023-10-11 at 17:47 +0530, Sumit Garg wrote:
+> > On Wed, 11 Oct 2023 at 16:04, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > >
+> > > On Wed, 2023-10-11 at 13:12 +0300, Jarkko Sakkinen wrote:
+> > > > On Wed, 2023-10-11 at 11:27 +0530, Sumit Garg wrote:
+> > > > > On Wed, 11 Oct 2023 at 04:46, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > > > > >
+> > > > > > Do bind neither static calls nor trusted_key_exit() before a successful
+> > > > > > init, in order to maintain a consistent state. In addition, depart the
+> > > > > > init_trusted() in the case of a real error (i.e. getting back something
+> > > > > > else than -ENODEV).
+> > > > > >
+> > > > > > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > > > > Closes: https://lore.kernel.org/linux-integrity/CAHk-=whOPoLaWM8S8GgoOPT7a2+nMH5h3TLKtn=R_3w4R1_Uvg@mail.gmail.com/
+> > > > > > Cc: stable@vger.kernel.org # v5.13+
+> > > > > > Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
+> > > > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > > > > ---
+> > > > > >  security/keys/trusted-keys/trusted_core.c | 20 ++++++++++----------
+> > > > > >  1 file changed, 10 insertions(+), 10 deletions(-)
+> > > > > >
+> > > > > > diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
+> > > > > > index 85fb5c22529a..fee1ab2c734d 100644
+> > > > > > --- a/security/keys/trusted-keys/trusted_core.c
+> > > > > > +++ b/security/keys/trusted-keys/trusted_core.c
+> > > > > > @@ -358,17 +358,17 @@ static int __init init_trusted(void)
+> > > > > >                 if (!get_random)
+> > > > > >                         get_random = kernel_get_random;
+> > > > > >
+> > > > > > -               static_call_update(trusted_key_seal,
+> > > > > > -                                  trusted_key_sources[i].ops->seal);
+> > > > > > -               static_call_update(trusted_key_unseal,
+> > > > > > -                                  trusted_key_sources[i].ops->unseal);
+> > > > > > -               static_call_update(trusted_key_get_random,
+> > > > > > -                                  get_random);
+> > > > > > -               trusted_key_exit = trusted_key_sources[i].ops->exit;
+> > > > > > -               migratable = trusted_key_sources[i].ops->migratable;
+> > > > > > -
+> > > > > >                 ret = trusted_key_sources[i].ops->init();
+> > > > > > -               if (!ret)
+> > > > > > +               if (!ret) {
+> > > > > > +                       static_call_update(trusted_key_seal, trusted_key_sources[i].ops->seal);
+> > > > > > +                       static_call_update(trusted_key_unseal, trusted_key_sources[i].ops->unseal);
+> > > > > > +                       static_call_update(trusted_key_get_random, get_random);
+> > > > > > +
+> > > > > > +                       trusted_key_exit = trusted_key_sources[i].ops->exit;
+> > > > > > +                       migratable = trusted_key_sources[i].ops->migratable;
+> > > > > > +               }
+> > > > > > +
+> > > > > > +               if (!ret || ret != -ENODEV)
+> > > > >
+> > > > > As mentioned in the other thread, we should allow other trust sources
+> > > > > to be initialized if the primary one fails.
+> > > >
+> > > > I sent the patch before I received that response but here's what you
+> > > > wrote:
+> > > >
+> > > > "We should give other trust sources a chance to register for trusted
+> > > > keys if the primary one fails."
+> > > >
+> > > > 1. This condition is lacking an inline comment.
+> > > > 2. Neither this response or the one that you pointed out has any
+> > > >    explanation why for any system failure the process should
+> > > >    continue.
+> > > >
+> > > > You should really know the situations (e.g. list of posix error
+> > > > code) when the process can continue and "allow list" those. This
+> > > > way way too abstract. It cannot be let all possible system failures
+> > > > pass.
+> > >
+> > > And it would nice if it printed out something for legit cases. Like
+> > > "no device found" etc. And for rest it must really withdraw the whole
+> > > process.
+> >
+> > IMO, it would be quite tricky to come up with an allow list. Can we
+> > keep "EACCES", "EPERM", "ENOTSUPP" etc in that allow list? I think
+> > these are all debatable.
 >
-> tools/testing/vsock/.gitignore         |   1 +
-> tools/testing/vsock/Makefile           |   7 +-
-> tools/testing/vsock/vsock_uring_test.c | 342 +++++++++++++++++++++++++
-> 3 files changed, 348 insertions(+), 2 deletions(-)
-> create mode 100644 tools/testing/vsock/vsock_uring_test.c
-
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-
+> Yes, that does sounds reasonable.
 >
->diff --git a/tools/testing/vsock/.gitignore b/tools/testing/vsock/.gitignore
->index a8adcfdc292b..d9f798713cd7 100644
->--- a/tools/testing/vsock/.gitignore
->+++ b/tools/testing/vsock/.gitignore
->@@ -3,3 +3,4 @@
-> vsock_test
-> vsock_diag_test
-> vsock_perf
->+vsock_uring_test
->diff --git a/tools/testing/vsock/Makefile b/tools/testing/vsock/Makefile
->index 228470ae33c2..a7f56a09ca9f 100644
->--- a/tools/testing/vsock/Makefile
->+++ b/tools/testing/vsock/Makefile
->@@ -1,12 +1,15 @@
-> # SPDX-License-Identifier: GPL-2.0-only
-> all: test vsock_perf
->-test: vsock_test vsock_diag_test
->+test: vsock_test vsock_diag_test vsock_uring_test
-> vsock_test: vsock_test.o vsock_test_zerocopy.o timeout.o control.o util.o msg_zerocopy_common.o
-> vsock_diag_test: vsock_diag_test.o timeout.o control.o util.o
-> vsock_perf: vsock_perf.o msg_zerocopy_common.o
+> About the debate. Well, it is better eagerly block and tree falls down
+> somewhere we can consider extending the list through a fix.
 >
->+vsock_uring_test: LDLIBS = -luring
->+vsock_uring_test: control.o util.o vsock_uring_test.o timeout.o msg_zerocopy_common.o
->+
-> CFLAGS += -g -O2 -Werror -Wall -I. -I../../include -I../../../usr/include -Wno-pointer-sign -fno-strict-overflow -fno-strict-aliasing -fno-common -MMD -U_FORTIFY_SOURCE -D_GNU_SOURCE
-> .PHONY: all test clean
-> clean:
->-	${RM} *.o *.d vsock_test vsock_diag_test vsock_perf
->+	${RM} *.o *.d vsock_test vsock_diag_test vsock_perf vsock_uring_test
-> -include *.d
->diff --git a/tools/testing/vsock/vsock_uring_test.c b/tools/testing/vsock/vsock_uring_test.c
->new file mode 100644
->index 000000000000..d976d35f0ba9
->--- /dev/null
->+++ b/tools/testing/vsock/vsock_uring_test.c
->@@ -0,0 +1,342 @@
->+// SPDX-License-Identifier: GPL-2.0-only
->+/* io_uring tests for vsock
->+ *
->+ * Copyright (C) 2023 SberDevices.
->+ *
->+ * Author: Arseniy Krasnov <avkrasnov@salutedevices.com>
->+ */
->+
->+#include <getopt.h>
->+#include <stdio.h>
->+#include <stdlib.h>
->+#include <string.h>
->+#include <liburing.h>
->+#include <unistd.h>
->+#include <sys/mman.h>
->+#include <linux/kernel.h>
->+#include <error.h>
->+
->+#include "util.h"
->+#include "control.h"
->+#include "msg_zerocopy_common.h"
->+
->+#ifndef PAGE_SIZE
->+#define PAGE_SIZE		4096
->+#endif
->+
->+#define RING_ENTRIES_NUM	4
->+
->+#define VSOCK_TEST_DATA_MAX_IOV 3
->+
->+struct vsock_io_uring_test {
->+	/* Number of valid elements in 'vecs'. */
->+	int vecs_cnt;
->+	struct iovec vecs[VSOCK_TEST_DATA_MAX_IOV];
->+};
->+
->+static struct vsock_io_uring_test test_data_array[] = {
->+	/* All elements have page aligned base and size. */
->+	{
->+		.vecs_cnt = 3,
->+		{
->+			{ NULL, PAGE_SIZE },
->+			{ NULL, 2 * PAGE_SIZE },
->+			{ NULL, 3 * PAGE_SIZE },
->+		}
->+	},
->+	/* Middle element has both non-page aligned base and size. */
->+	{
->+		.vecs_cnt = 3,
->+		{
->+			{ NULL, PAGE_SIZE },
->+			{ (void *)1, 200  },
->+			{ NULL, 3 * PAGE_SIZE },
->+		}
->+	}
->+};
->+
->+static void vsock_io_uring_client(const struct test_opts *opts,
->+				  const struct vsock_io_uring_test *test_data,
->+				  bool msg_zerocopy)
->+{
->+	struct io_uring_sqe *sqe;
->+	struct io_uring_cqe *cqe;
->+	struct io_uring ring;
->+	struct iovec *iovec;
->+	struct msghdr msg;
->+	int fd;
->+
->+	fd = vsock_stream_connect(opts->peer_cid, 1234);
->+	if (fd < 0) {
->+		perror("connect");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (msg_zerocopy)
->+		enable_so_zerocopy(fd);
->+
->+	iovec = alloc_test_iovec(test_data->vecs, test_data->vecs_cnt);
->+
->+	if (io_uring_queue_init(RING_ENTRIES_NUM, &ring, 0))
->+		error(1, errno, "io_uring_queue_init");
->+
->+	if (io_uring_register_buffers(&ring, iovec, test_data->vecs_cnt))
->+		error(1, errno, "io_uring_register_buffers");
->+
->+	memset(&msg, 0, sizeof(msg));
->+	msg.msg_iov = iovec;
->+	msg.msg_iovlen = test_data->vecs_cnt;
->+	sqe = io_uring_get_sqe(&ring);
->+
->+	if (msg_zerocopy)
->+		io_uring_prep_sendmsg_zc(sqe, fd, &msg, 0);
->+	else
->+		io_uring_prep_sendmsg(sqe, fd, &msg, 0);
->+
->+	if (io_uring_submit(&ring) != 1)
->+		error(1, errno, "io_uring_submit");
->+
->+	if (io_uring_wait_cqe(&ring, &cqe))
->+		error(1, errno, "io_uring_wait_cqe");
->+
->+	io_uring_cqe_seen(&ring, cqe);
->+
->+	control_writeulong(iovec_hash_djb2(iovec, test_data->vecs_cnt));
->+
->+	control_writeln("DONE");
->+	io_uring_queue_exit(&ring);
->+	free_test_iovec(test_data->vecs, iovec, test_data->vecs_cnt);
->+	close(fd);
->+}
->+
->+static void vsock_io_uring_server(const struct test_opts *opts,
->+				  const struct vsock_io_uring_test *test_data)
->+{
->+	unsigned long remote_hash;
->+	unsigned long local_hash;
->+	struct io_uring ring;
->+	size_t data_len;
->+	size_t recv_len;
->+	void *data;
->+	int fd;
->+
->+	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->+	if (fd < 0) {
->+		perror("accept");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	data_len = iovec_bytes(test_data->vecs, test_data->vecs_cnt);
->+
->+	data = malloc(data_len);
->+	if (!data) {
->+		perror("malloc");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (io_uring_queue_init(RING_ENTRIES_NUM, &ring, 0))
->+		error(1, errno, "io_uring_queue_init");
->+
->+	recv_len = 0;
->+
->+	while (recv_len < data_len) {
->+		struct io_uring_sqe *sqe;
->+		struct io_uring_cqe *cqe;
->+		struct iovec iovec;
->+
->+		sqe = io_uring_get_sqe(&ring);
->+		iovec.iov_base = data + recv_len;
->+		iovec.iov_len = data_len;
->+
->+		io_uring_prep_readv(sqe, fd, &iovec, 1, 0);
->+
->+		if (io_uring_submit(&ring) != 1)
->+			error(1, errno, "io_uring_submit");
->+
->+		if (io_uring_wait_cqe(&ring, &cqe))
->+			error(1, errno, "io_uring_wait_cqe");
->+
->+		recv_len += cqe->res;
->+		io_uring_cqe_seen(&ring, cqe);
->+	}
->+
->+	if (recv_len != data_len) {
->+		fprintf(stderr, "expected %zu, got %zu\n", data_len,
->+			recv_len);
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	local_hash = hash_djb2(data, data_len);
->+
->+	remote_hash = control_readulong();
->+	if (remote_hash != local_hash) {
->+		fprintf(stderr, "hash mismatch\n");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	control_expectln("DONE");
->+	io_uring_queue_exit(&ring);
->+	free(data);
->+}
->+
->+void test_stream_uring_server(const struct test_opts *opts)
->+{
->+	int i;
->+
->+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
->+		vsock_io_uring_server(opts, &test_data_array[i]);
->+}
->+
->+void test_stream_uring_client(const struct test_opts *opts)
->+{
->+	int i;
->+
->+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
->+		vsock_io_uring_client(opts, &test_data_array[i], false);
->+}
->+
->+void test_stream_uring_msg_zc_server(const struct test_opts *opts)
->+{
->+	int i;
->+
->+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
->+		vsock_io_uring_server(opts, &test_data_array[i]);
->+}
->+
->+void test_stream_uring_msg_zc_client(const struct test_opts *opts)
->+{
->+	int i;
->+
->+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
->+		vsock_io_uring_client(opts, &test_data_array[i], true);
->+}
->+
->+static struct test_case test_cases[] = {
->+	{
->+		.name = "SOCK_STREAM io_uring test",
->+		.run_server = test_stream_uring_server,
->+		.run_client = test_stream_uring_client,
->+	},
->+	{
->+		.name = "SOCK_STREAM io_uring MSG_ZEROCOPY test",
->+		.run_server = test_stream_uring_msg_zc_server,
->+		.run_client = test_stream_uring_msg_zc_client,
->+	},
->+	{},
->+};
->+
->+static const char optstring[] = "";
->+static const struct option longopts[] = {
->+	{
->+		.name = "control-host",
->+		.has_arg = required_argument,
->+		.val = 'H',
->+	},
->+	{
->+		.name = "control-port",
->+		.has_arg = required_argument,
->+		.val = 'P',
->+	},
->+	{
->+		.name = "mode",
->+		.has_arg = required_argument,
->+		.val = 'm',
->+	},
->+	{
->+		.name = "peer-cid",
->+		.has_arg = required_argument,
->+		.val = 'p',
->+	},
->+	{
->+		.name = "help",
->+		.has_arg = no_argument,
->+		.val = '?',
->+	},
->+	{},
->+};
->+
->+static void usage(void)
->+{
->+	fprintf(stderr, "Usage: vsock_uring_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid>\n"
->+		"\n"
->+		"  Server: vsock_uring_test --control-port=1234 --mode=server --peer-cid=3\n"
->+		"  Client: vsock_uring_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
->+		"\n"
->+		"Run transmission tests using io_uring. Usage is the same as\n"
->+		"in ./vsock_test\n"
->+		"\n"
->+		"Options:\n"
->+		"  --help                 This help message\n"
->+		"  --control-host <host>  Server IP address to connect to\n"
->+		"  --control-port <port>  Server port to listen on/connect to\n"
->+		"  --mode client|server   Server or client mode\n"
->+		"  --peer-cid <cid>       CID of the other side\n"
->+		);
->+	exit(EXIT_FAILURE);
->+}
->+
->+int main(int argc, char **argv)
->+{
->+	const char *control_host = NULL;
->+	const char *control_port = NULL;
->+	struct test_opts opts = {
->+		.mode = TEST_MODE_UNSET,
->+		.peer_cid = VMADDR_CID_ANY,
->+	};
->+
->+	init_signals();
->+
->+	for (;;) {
->+		int opt = getopt_long(argc, argv, optstring, longopts, NULL);
->+
->+		if (opt == -1)
->+			break;
->+
->+		switch (opt) {
->+		case 'H':
->+			control_host = optarg;
->+			break;
->+		case 'm':
->+			if (strcmp(optarg, "client") == 0) {
->+				opts.mode = TEST_MODE_CLIENT;
->+			} else if (strcmp(optarg, "server") == 0) {
->+				opts.mode = TEST_MODE_SERVER;
->+			} else {
->+				fprintf(stderr, "--mode must be \"client\" or \"server\"\n");
->+				return EXIT_FAILURE;
->+			}
->+			break;
->+		case 'p':
->+			opts.peer_cid = parse_cid(optarg);
->+			break;
->+		case 'P':
->+			control_port = optarg;
->+			break;
->+		case '?':
->+		default:
->+			usage();
->+		}
->+	}
->+
->+	if (!control_port)
->+		usage();
->+	if (opts.mode == TEST_MODE_UNSET)
->+		usage();
->+	if (opts.peer_cid == VMADDR_CID_ANY)
->+		usage();
->+
->+	if (!control_host) {
->+		if (opts.mode != TEST_MODE_SERVER)
->+			usage();
->+		control_host = "0.0.0.0";
->+	}
->+
->+	control_init(control_host, control_port,
->+		     opts.mode == TEST_MODE_SERVER);
->+
->+	run_tests(test_cases, &opts);
->+
->+	control_cleanup();
->+
->+	return 0;
->+}
->-- 
->2.25.1
+> This all wide open is worse than a few glitches somewhere, which are
+> trivial to fix.
 >
 
+Fair enough, I would suggest we document it appropriately such that it
+is clear to the users or somebody looking at the code.
+
+-Sumit
+
+> BR, Jarkko
