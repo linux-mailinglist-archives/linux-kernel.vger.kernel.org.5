@@ -2,101 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4503E7C5D8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25AF7C5D86
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235161AbjJKTUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 15:20:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34360 "EHLO
+        id S233366AbjJKTUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 15:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233287AbjJKTUk (ORCPT
+        with ESMTP id S233159AbjJKTUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 15:20:40 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0311A9;
-        Wed, 11 Oct 2023 12:20:37 -0700 (PDT)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BJHT1u022731;
-        Wed, 11 Oct 2023 19:20:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=IT9eNJQJZpjFOcXF1EOUp4Ajer8NdV8tK6VOXY2s+fE=;
- b=i/lMhLt/smqL6J3J4A/ebfr61RMJS9YYztGSxNxUjuVmUBQNQ5LHNfqEB/Eg4dYmFsHf
- sDuPh++CUMY1yQxd8P+isz7gGlY0xD8p3+HacC+lqnGivwJT6rFxXRqWfdIHEGmfaujx
- RCTNiVbTluOnqjS9SNP2Ig3PjJ4YR3ykglCo1JfrURq2ELVulXAT0vllhhowDzzwj+Ft
- /8oIrmNKsXLZP8NHIV+Vat0q0Tfvs3ghgx3nS3+Mpz0GOiqnhEz3okHnBnsBIMHd0lMd
- llPGr67zZ7bfTwAgsRRG3GIObeRNXScSc0YbYxsVKQ2WHJ+DsWZ4mfuETFCu25CRY/WX FQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tp1qx0466-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 15:20:09 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3053B8F;
+        Wed, 11 Oct 2023 12:20:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lgjkqHX2tUg8J3lXvm+VQWd9+smBMxN3ogHXgE1zA9U=; b=tk93etI1BLYzTY2MpHDz3iLPJ9
+        5j6SbX9aun+EvVMGxaRioZG4uogoJ2Ar5WLiTMHQyFGLWR2XWHElExKqQ1tWp7IJJT9r19zzZmqGQ
+        zu/dpFriZG0kI48Gf+gfRwZU6HU4iRBlxnUON9hvLZ1sCa7PtY+yyYgv0aWBxxtbTeZGRX5BdUrj0
+        DVsStSBDRlSP/BiB0SdzX2tZ8wwfPniX/5un6X1zS5vFhhR2LPe3xEa1VLZGJ9+nXrdq3bH0aa7fN
+        kkYmJC6dVzvB2Cc6Z/cbZIbW9VVAsaeGJig4XEpxu80EclXpkVRTtmBixPg4EAGHcETbzlS9sp3gC
+        YRJP5SLw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qqekZ-00GXV9-31;
         Wed, 11 Oct 2023 19:20:07 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39BJHfXQ023537;
-        Wed, 11 Oct 2023 19:20:06 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tp1qx044w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 19:20:05 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39BIsWtk025883;
-        Wed, 11 Oct 2023 19:20:04 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkjnnjcs3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 19:20:04 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39BJK39q23659046
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Oct 2023 19:20:03 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 814AB58060;
-        Wed, 11 Oct 2023 19:20:03 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 964AC5803F;
-        Wed, 11 Oct 2023 19:20:01 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.watson.ibm.com (unknown [9.31.99.90])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 11 Oct 2023 19:20:01 +0000 (GMT)
-Message-ID: <ead34f3ead8bf7cc92f3435d4553b2a9de667612.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 05/25] ima: Align ima_inode_setxattr() definition
- with LSM infrastructure
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Stefan Berger <stefanb@linux.ibm.com>
-Date:   Wed, 11 Oct 2023 15:20:01 -0400
-In-Reply-To: <20230904133415.1799503-6-roberto.sassu@huaweicloud.com>
-References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
-         <20230904133415.1799503-6-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: W0tz4MmDVsbeElJ-fn7iA50LyRBLe9wI
-X-Proofpoint-GUID: 3ZgHVIG3qS3qcWfbvTGJNmNKKVTDx0VC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_14,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 mlxscore=0 suspectscore=0 impostorscore=0 adultscore=0
- spamscore=0 mlxlogscore=750 malwarescore=0 bulkscore=0 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310110171
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Date:   Wed, 11 Oct 2023 12:20:07 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Joey Jiao <quic_jiangenj@quicinc.com>
+Cc:     linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] module: Add CONFIG_MODULE_LOAD_IN_SEQUENCE option
+Message-ID: <ZSb1Z6EcogoUYcOR@bombadil.infradead.org>
+References: <20231011074438.6098-1-quic_jiangenj@quicinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011074438.6098-1-quic_jiangenj@quicinc.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -104,14 +50,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-09-04 at 15:33 +0200, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
+On Wed, Oct 11, 2023 at 01:14:38PM +0530, Joey Jiao wrote:
+> When modprobe cmds are executed one by one, the final loaded modules
+> are not in fixed sequence as expected.
 > 
-> Change ima_inode_setxattr() definition, so that it can be registered as
-> implementation of the inode_setxattr hook.
+> Add the option to make sure modules are in fixed sequence across reboot.
 > 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+> Signed-off-by: Joey Jiao <quic_jiangenj@quicinc.com>
+> ---
+>  kernel/module/Kconfig | 11 +++++++++++
+>  kernel/module/main.c  |  3 ++-
+>  2 files changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/module/Kconfig b/kernel/module/Kconfig
+> index 33a2e991f608..b45a45f31d6d 100644
+> --- a/kernel/module/Kconfig
+> +++ b/kernel/module/Kconfig
+> @@ -389,4 +389,15 @@ config MODULES_TREE_LOOKUP
+>  	def_bool y
+>  	depends on PERF_EVENTS || TRACING || CFI_CLANG
+>  
+> +config MODULE_LOAD_IN_SEQUENCE
+> +	bool "Load module in sequence"
+> +	default n
+> +	help
+> +	  By default, modules are loaded in random sequence depending on when modprobe
+> +	  is executed.
+> +
+> +	  This option allows modules to be loaded in sequence if modprobe cmds are
+> +	  executed one by one in sequence. This option is helpful during syzkaller fuzzing
+> +	  to make sure module is loaded into fixed address across device reboot.
+> +
+>  endif # MODULES
+> diff --git a/kernel/module/main.c b/kernel/module/main.c
+> index 98fedfdb8db5..e238a31d09eb 100644
+> --- a/kernel/module/main.c
+> +++ b/kernel/module/main.c
+> @@ -2594,7 +2594,8 @@ static noinline int do_init_module(struct module *mod)
+>  	 * rcu_barrier()
+>  	 */
+>  	if (llist_add(&freeinit->node, &init_free_list))
+> -		schedule_work(&init_free_wq);
+> +		if (!IS_ENABLED(CONFIG_MODULE_LOAD_IN_SEQUENCE)) {
+> +			schedule_work(&init_free_wq);
+>  
 
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+As Christoph suggested the rationale for something like this needs to be
+clearly spelled out in the commit log and if so valuable it should be
+a default. The commit log and even the Kconfig description do little
+to justify any rationale for this.
 
+  Luis
