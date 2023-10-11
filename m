@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2517C5A3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA8D7C5A3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbjJKR2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 13:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60548 "EHLO
+        id S232082AbjJKR2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 13:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbjJKR2o (ORCPT
+        with ESMTP id S231956AbjJKR2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 13:28:44 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5258698
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:28:42 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7be940fe1so1099547b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:28:42 -0700 (PDT)
+        Wed, 11 Oct 2023 13:28:46 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0508F
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:28:44 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9ab79816a9so41190276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:28:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697045321; x=1697650121; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LwuwjmnVQtXjn+X5MfT/OJgDNhPxUAgxvbWJ6WO5//o=;
-        b=IXT8uKclxUzwcWT+thJ/UvkoT1GFIWMNl7FNEJIHHUH7bOrDotgNyOcEg9/dt5duHN
-         JVh4l18b32Su5y71VGUwP2lN1G1949xhHN7FxCqSiC6Kh4h1FqTQP1vx063qdv/uc16k
-         XUIJmDYmBPXEkwRH0F90h8Pi96Nc5UYPYMpcNR/4eVSKRm/w2SrBh0kkb9keNcW8L4Zh
-         DI5NnH8MQZxa95v9c3G+pBKbZA8AYUR8p8/KY/yEmor9uz71NkZ+nJo7W1uAzhLQypNH
-         3dHRIM0ZNzGEVGAYBChpV9QIVrhWeSOcnRl5PcpYpZ0rXaHPFJU+4AdI22P+OFqVBHsT
-         ooag==
+        d=google.com; s=20230601; t=1697045324; x=1697650124; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=d+nI0HTgriMF6qPeJyUiAWZNrj0o9oAYviJ9iKh7dKc=;
+        b=w/FTKiKE52Fmb5nq6QK/xg6CIiTd073XN3fokce6XFoGykBJH2p2hrLgCdfByvpbz7
+         I4sevIdL3vTnA518qMKdtxeBt2PucsxtY7j9IExvN83ew6q2kNkbbCJ++L0b8W5HLvKU
+         HBtB1zBHLdZfsUS24sAJYhl+ETPIP4Vp32FMnBZkAcv5TXHNIiKidDkw4l/GkCrr84F7
+         hyKeQ09YYmPExKw79SnUvMdvPeuvVGCWBu08jG6sFcusDbn6+PyZmawQpcwcJhewwUw/
+         qxsGqOCpv5R2Rg+YMhWu6h2oKxX3dnMw1EqAvqhSgcy9YN6yNCG9DYu6gpIJNys4zVOT
+         0bFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697045321; x=1697650121;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LwuwjmnVQtXjn+X5MfT/OJgDNhPxUAgxvbWJ6WO5//o=;
-        b=vczjecMVi5GxjSnQQIX4xlw1XS2wenvesquxGadh/I8CsfJ9nv774FijXkpqTMk5lb
-         JtPMT7/oWIJBwr/bFBaz3GgDqPrPnVsKLoZcC2TSXyIZHpsmcwEWBKlOPtFtvRcEJukh
-         ZxCKLDkKIgkYQEdbmLDgGo/IUYEjvB8s0slpfEMNjJbNYmJ1qyQnPb+gM0ZKxr1wNEmY
-         FdUCxpKULvlaIbtgCfdlf9Kbhax4820DgjfVnTbNxT7S5Y/8MmA0BPbpj1I9xMB+0caj
-         bvVkKMONmPVR8LY7CWVbY7hMsc0ALyFS/J90LRe5BOUNUlGGnq0zAbGBJsSEWAO4kyg5
-         sjpg==
-X-Gm-Message-State: AOJu0Yztf8G+NEIMlGycjKi/tLj23wGnd9yQHqgI5uczhvEzu/uozcpA
-        0fjCKSVnrr73jUj0v+sMvFfZ/VaN2l8=
-X-Google-Smtp-Source: AGHT+IFvIDL4pU0iR3JbDQTfyYNeAbR+jnr/Y9Dj6FlrLQu03dzX/AaLuKzGaLQWxlfGgKbV7k2zpTomtb0=
+        d=1e100.net; s=20230601; t=1697045324; x=1697650124;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d+nI0HTgriMF6qPeJyUiAWZNrj0o9oAYviJ9iKh7dKc=;
+        b=c9YNN+3H15ZiPXkW8WBS60/7brpBbLCaChI+JpCyDf0pbKhmYqwIsKfs7vF3V0TRzS
+         X1rdXdFsjOF7nF6HjuXDrGdHSLpXiv7Xv7Vp62LVg9zeUoF5SEVdzI8LCDHV1zdHYkCH
+         dsVx76mT0KK615sKA6xXe3e6hPzHDO0SknVjY6elths5KDy64NFDnONju3na89Kgt/PW
+         vZEPZa5TYrZogiskWaAZuoQtx7lZGALul6FR9Tt5z9pjTcB0CHY7ZhKsq4P9AOvW+Eq8
+         mFfSIv+Y1ciVQ1ijkImwOuCRaE0KjlF9DfFNTws78AO6bQUPUk4J5wFu9nOGihsEbMpQ
+         3aAA==
+X-Gm-Message-State: AOJu0Yz7lhq1xgETr0ErQ+emm9up2C6iHUu4IqjJano/6rOgZs9dYvfg
+        RwVdaPS8bcrr/BIaYEeGdzGxeiu5keA=
+X-Google-Smtp-Source: AGHT+IHy1hZu+BqPEBfEz2UPILp141PTPuGZ0odR5sOF+8g1dBGxjIYuTkjZH2SQKV8QdVpkGIpYiq7xhO4=
 X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:fe58:8292:66f9:d221])
- (user=glider job=sendgmr) by 2002:a25:d4d2:0:b0:d9a:38e4:78b5 with SMTP id
- m201-20020a25d4d2000000b00d9a38e478b5mr140459ybf.5.1697045321463; Wed, 11 Oct
- 2023 10:28:41 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 19:28:30 +0200
+ (user=glider job=sendgmr) by 2002:a05:6902:52d:b0:d13:856b:c10a with SMTP id
+ y13-20020a056902052d00b00d13856bc10amr374491ybs.3.1697045324159; Wed, 11 Oct
+ 2023 10:28:44 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 19:28:31 +0200
+In-Reply-To: <20231011172836.2579017-1-glider@google.com>
 Mime-Version: 1.0
+References: <20231011172836.2579017-1-glider@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Message-ID: <20231011172836.2579017-1-glider@google.com>
-Subject: [PATCH v7 0/5] Implement MTE tag compression for swapped pages
+Message-ID: <20231011172836.2579017-2-glider@google.com>
+Subject: [PATCH v7 1/5] lib/bitmap: add bitmap_{read,write}()
 From:   Alexander Potapenko <glider@google.com>
 To:     glider@google.com, catalin.marinas@arm.com, will@kernel.org,
         pcc@google.com, andreyknvl@gmail.com,
@@ -58,7 +60,8 @@ To:     glider@google.com, catalin.marinas@arm.com, will@kernel.org,
         linux@rasmusvillemoes.dk, yury.norov@gmail.com,
         alexandru.elisei@arm.com
 Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org
+        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -70,95 +73,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, when MTE pages are swapped out, the tags are kept in the
-memory, occupying PAGE_SIZE/32 bytes per page. This is especially
-problematic for devices that use zram-backed in-memory swap, because
-tags stored uncompressed in the heap effectively reduce the available
-amount of swap memory.
+From: Syed Nayyar Waris <syednwaris@gmail.com>
 
-The RLE-based algorithm suggested by Evgenii Stepanov and implemented in
-this patch series is able to efficiently compress fixed-size tag buffers,
-resulting in practical compression ratio between 2.5x and 4x. In most
-cases it is possible to store the compressed data in 63-bit Xarray values,
-resulting in no extra memory allocations.
+The two new functions allow reading/writing values of length up to
+BITS_PER_LONG bits at arbitrary position in the bitmap.
 
-Our measurements show that the proposed algorithm provides better
-compression than existing kernel compression algorithms (LZ4, LZO,
-LZ4HC, ZSTD) can offer.
+The code was taken from "bitops: Introduce the for_each_set_clump macro"
+by Syed Nayyar Waris with a number of changes and simplifications:
+ - instead of using roundup(), which adds an unnecessary dependency
+   on <linux/math.h>, we calculate space as BITS_PER_LONG-offset;
+ - indentation is reduced by not using else-clauses (suggested by
+   checkpatch for bitmap_get_value());
+ - bitmap_get_value()/bitmap_set_value() are renamed to bitmap_read()
+   and bitmap_write();
+ - some redundant computations are omitted.
 
-To implement compression/decompression, we also extend <linux/bitmap.h>
-with methods to read/write bit values at arbitrary places in the map.
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
+Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
+Link: https://lore.kernel.org/lkml/fe12eedf3666f4af5138de0e70b67a07c7f40338.1592224129.git.syednwaris@gmail.com/
+Suggested-by: Yury Norov <yury.norov@gmail.com>
+Co-developed-by: Alexander Potapenko <glider@google.com>
+Signed-off-by: Alexander Potapenko <glider@google.com>
 
-We refactor arch/arm64/mm/mteswap.c to support both the compressed
-(CONFIG_ARM64_MTE_COMP) and non-compressed case. For the former, in
-addition to tag compression, we move tag allocation from kmalloc() to
-separate kmem caches, providing greater locality and relaxing the
-alignment requirements.
+---
+This patch was previously called "lib/bitmap: add
+bitmap_{set,get}_value()"
+(https://lore.kernel.org/lkml/20230720173956.3674987-2-glider@google.com/)
 
 v7:
- - fixed comments by Yury Norov, Andy Shevchenko, Rasmus Villemoes
- - added perf tests for bitmap_read()/bitmap_write()
- - more efficient bitmap_write() implementation (meant to be sent in v5)
+ - Address comments by Yury Norov, Andy Shevchenko, Rasmus Villemoes:
+   - update code comments;
+   - get rid of GENMASK();
+   - s/assign_bit/__assign_bit;
+   - more vertical whitespace for better readability;
+ - more compact code for bitmap_write() (now for real)
 
 v6:
- - fixed comments by Yury Norov
- - fixed handling of sizes divisible by MTE_GRANULES_PER_PAGE / 2
-   (caught while testing on a real device)
+ - As suggested by Yury Norov, do not require bitmap_read(..., 0) to
+   return 0.
 
 v5:
- - fixed comments by Andy Shevchenko, Catalin Marinas, and Yury Norov
- - added support for 16K- and 64K pages
- - more efficient bitmap_write() implementation
+ - Address comments by Yury Norov:
+   - updated code comments and patch title/description
+   - replace GENMASK(nbits - 1, 0) with BITMAP_LAST_WORD_MASK(nbits)
+   - more compact bitmap_write() implementation
 
 v4:
- - fixed a bunch of comments by Andy Shevchenko and Yury Norov
- - added Documentation/arch/arm64/mte-tag-compression.rst
+ - Address comments by Andy Shevchenko and Yury Norov:
+   - prevent passing values >= 64 to GENMASK()
+   - fix commit authorship
+   - change comments
+   - check for unlikely(nbits==0)
+   - drop unnecessary const declarations
+   - fix kernel-doc comments
+   - rename bitmap_{get,set}_value() to bitmap_{read,write}()
+---
+ include/linux/bitmap.h | 75 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 75 insertions(+)
 
-v3:
- - as suggested by Andy Shevchenko, use
-   bitmap_get_value()/bitmap_set_value() written by Syed Nayyar Waris
- - switched to unsigned long to reduce typecasts
- - simplified the compression code
-
-v2:
- - as suggested by Yuri Norov, replace the poorly implemented struct
-   bitq with <linux/bitmap.h>
-
-
-
-Alexander Potapenko (4):
-  lib/test_bitmap: add tests for bitmap_{read,write}()
-  arm64: mte: implement CONFIG_ARM64_MTE_COMP
-  arm64: mte: add a test for MTE tags compression
-  arm64: mte: add compression support to mteswap.c
-
-Syed Nayyar Waris (1):
-  lib/bitmap: add bitmap_{read,write}()
-
- Documentation/arch/arm64/index.rst            |   1 +
- .../arch/arm64/mte-tag-compression.rst        | 266 +++++++++
- arch/arm64/Kconfig                            |  21 +
- arch/arm64/include/asm/mtecomp.h              |  13 +
- arch/arm64/mm/Makefile                        |   7 +
- arch/arm64/mm/mtecomp.c                       | 524 ++++++++++++++++++
- arch/arm64/mm/mtecomp.h                       |  12 +
- arch/arm64/mm/mteswap.c                       |  20 +-
- arch/arm64/mm/mteswap.h                       |  12 +
- arch/arm64/mm/mteswap_comp.c                  |  60 ++
- arch/arm64/mm/mteswap_nocomp.c                |  38 ++
- arch/arm64/mm/test_mtecomp.c                  | 377 +++++++++++++
- include/linux/bitmap.h                        |  75 +++
- lib/test_bitmap.c                             | 166 ++++++
- 14 files changed, 1581 insertions(+), 11 deletions(-)
- create mode 100644 Documentation/arch/arm64/mte-tag-compression.rst
- create mode 100644 arch/arm64/include/asm/mtecomp.h
- create mode 100644 arch/arm64/mm/mtecomp.c
- create mode 100644 arch/arm64/mm/mtecomp.h
- create mode 100644 arch/arm64/mm/mteswap.h
- create mode 100644 arch/arm64/mm/mteswap_comp.c
- create mode 100644 arch/arm64/mm/mteswap_nocomp.c
- create mode 100644 arch/arm64/mm/test_mtecomp.c
-
+diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+index 03644237e1efb..c413e2ecb6286 100644
+--- a/include/linux/bitmap.h
++++ b/include/linux/bitmap.h
+@@ -77,6 +77,10 @@ struct device;
+  *  bitmap_to_arr64(buf, src, nbits)            Copy nbits from buf to u64[] dst
+  *  bitmap_get_value8(map, start)               Get 8bit value from map at start
+  *  bitmap_set_value8(map, value, start)        Set 8bit value to map at start
++ *  bitmap_read(map, start, nbits)              Read an nbits-sized value from
++ *                                              map at start
++ *  bitmap_write(map, value, start, nbits)      Write an nbits-sized value to
++ *                                              map at start
+  *
+  * Note, bitmap_zero() and bitmap_fill() operate over the region of
+  * unsigned longs, that is, bits behind bitmap till the unsigned long
+@@ -599,6 +603,77 @@ static inline void bitmap_set_value8(unsigned long *map, unsigned long value,
+ 	map[index] |= value << offset;
+ }
+ 
++/**
++ * bitmap_read - read a value of n-bits from the memory region
++ * @map: address to the bitmap memory region
++ * @start: bit offset of the n-bit value
++ * @nbits: size of value in bits, nonzero, up to BITS_PER_LONG
++ *
++ * Returns: value of nbits located at the @start bit offset within the @map
++ * memory region.
++ */
++static inline unsigned long bitmap_read(const unsigned long *map,
++					unsigned long start,
++					unsigned long nbits)
++{
++	size_t index = BIT_WORD(start);
++	unsigned long offset = start % BITS_PER_LONG;
++	unsigned long space = BITS_PER_LONG - offset;
++	unsigned long value_low, value_high;
++
++	if (unlikely(!nbits))
++		return 0;
++
++	if (space >= nbits)
++		return (map[index] >> offset) & BITMAP_LAST_WORD_MASK(nbits);
++
++	value_low = map[index] & BITMAP_FIRST_WORD_MASK(start);
++	value_high = map[index + 1] & BITMAP_LAST_WORD_MASK(start + nbits);
++	return (value_low >> offset) | (value_high << space);
++}
++
++/**
++ * bitmap_write - write n-bit value within a memory region
++ * @map: address to the bitmap memory region
++ * @value: value to write, clamped to nbits
++ * @start: bit offset of the n-bit value
++ * @nbits: size of value in bits, nonzero, up to BITS_PER_LONG.
++ *
++ * bitmap_write() behaves as-if implemented as @nbits calls of __assign_bit(),
++ * i.e. bits beyond @nbits are ignored:
++ *
++ *   for (bit = 0; bit < nbits; bit++)
++ *           __assign_bit(start + bit, bitmap, val & BIT(bit));
++ */
++static inline void bitmap_write(unsigned long *map,
++				unsigned long value,
++				unsigned long start, unsigned long nbits)
++{
++	size_t index;
++	unsigned long offset;
++	unsigned long space;
++	unsigned long mask;
++	bool fit;
++
++	if (unlikely(!nbits))
++		return;
++
++	mask = BITMAP_LAST_WORD_MASK(nbits);
++	value &= mask;
++	offset = start % BITS_PER_LONG;
++	space = BITS_PER_LONG - offset;
++	fit = space >= nbits;
++	index = BIT_WORD(start);
++
++	map[index] &= (fit ? (~(mask << offset)) : ~BITMAP_FIRST_WORD_MASK(start));
++	map[index] |= value << offset;
++	if (fit)
++		return;
++
++	map[index + 1] &= BITMAP_FIRST_WORD_MASK(start + nbits);
++	map[index + 1] |= (value >> space);
++}
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* __LINUX_BITMAP_H */
 -- 
 2.42.0.609.gbb76f46606-goog
 
