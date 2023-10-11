@@ -2,78 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 262A17C52D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4714F7C52D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234768AbjJKMBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 08:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35010 "EHLO
+        id S1346206AbjJKMDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 08:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234926AbjJKMBH (ORCPT
+        with ESMTP id S230138AbjJKMDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 08:01:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8FDC9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:01:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D816C433C8;
-        Wed, 11 Oct 2023 12:01:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697025663;
-        bh=h6LidJ0i1sCBvJ8nX/Vk8Dh7A1FFZLBmHx/ZyXwM204=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uNv/Prf/cv3h/vzWCXO0wAwwk4hk8WnZI95XhDhjLXjz875PAD878Zx/Z7HI612Sa
-         SfaBsy6swHAY26fmC6+AfBw6FuVFHWAPMGVglH9qiTM145GivQLbHMAtBjQLvBD3Vq
-         opZYrHUWMlemgXsaJooqrgGySfu0i3g0MkYy1E4C6vjgmJHpJIVGRFuNIypwJ+O/En
-         EnWFPkR4/5aTI/wdIqmCoTBgSoFblWRJWaQvMwgi7uJ7f0W0wF9NaHMd55caLgi07q
-         186d8XgvB5+zRQHbz6/hzNi4vvelnyM0IDihghx0sTR3Yp/n6Qhz1uydMLVFX+6X9Q
-         7+P5NRGNjXeCw==
-Date:   Wed, 11 Oct 2023 14:00:59 +0200
-From:   Benjamin Tissoires <bentiss@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jiri Kosina <jikos@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] HID fixes
-Message-ID: <4wjxfhlg6z5kjfmazfkjfgnsdwrsrzg4muxv7pzts4kojopsfu@wwfmx6547462>
+        Wed, 11 Oct 2023 08:03:36 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09AA93
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:03:33 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 15D2D660730F;
+        Wed, 11 Oct 2023 13:03:32 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697025812;
+        bh=pBnsDRCTvondK1vQ/ZQwAvzSnrXdcCfZfKFlE3k1o/w=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Y9Whm5n3U6OBiceljZ5rlLubLH+q0EThM8/jsyTl/DKhjRqjqj9+eGuhTX14ALTWt
+         PB3B6c2E5sbqAeRSlBBwuDbGeIj4RmaA8IoHVU03ecqjiEbg9vmhWpt6lPtASqUuuy
+         p17toA02t4Fk7eakdZKaR1EHn7zUvMfpvCiyLAjY0DMELuDPgNXRcZCK8yxF8Ejdd1
+         KMjRTgZU6DiuBDGX9cwJ81foti/L4NyspdZgiNHSEofTJpfw0rRiYeIE6kpOjicvL5
+         0oNtZwctxaCMF2B+mlHQ0Fl78dhEAaRXbud73VYdYNpB2vMlf01yiiSmNzyja30r53
+         FgGlSf2xbQUsg==
+Message-ID: <c0f1fc11-8550-13fb-1457-408c87f57e4f@collabora.com>
+Date:   Wed, 11 Oct 2023 14:03:29 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v10 00/16] MediaTek DDP GAMMA - 12-bit LUT support
+Content-Language: en-US
+To:     chunkuang.hu@kernel.org
+Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
+        matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, wenst@chromium.org,
+        kernel@collabora.com, ehristev@collabora.com
+References: <20230804072850.89365-1-angelogioacchino.delregno@collabora.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230804072850.89365-1-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Il 04/08/23 09:28, AngeloGioacchino Del Regno ha scritto:
+> Changes in v10:
+>   - Moved snippet from patch [7/15] to patch [6/15] as that was
+>     intended to be there instead; fixes build issue for patch [6/15]
+>     as pointed out by the kernel text robot (oops, sorry!)
+> 
 
-please pull from
+Hello CK,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git tags/for-linus-2023101101
+is there anything wrong about this series?
 
-to get HID subsystem fixes for 6.6.
+All commits do work on their own, there are no regressions as we tested this
+on multiple Chromebooks (MT8173, MT8183, MT8192, MT8195) and a MT6795 Helio
+X10 smartphone, and kept testing for months now.
 
-=====
-- regression fix for i2c-hid when used on DT platforms (Johan Hovold)
-- kernel crash fix on removal of the Logitech USB receiver (Hans de Goede)
+Can you please pick it?
 
-=====
+Thanks,
+Angelo
 
-Hopefully this time my English is better :/
+> Changes in v9:
+>   - As per previous conversation with CK Hu, added a commit that
+>     de-commonizes the gamma setting function that was used in
+>     both DISP_AAL and DISP_GAMMA, now each of them have their
+>     own .gamma_set() callback (mtk_disp_gamma_set_common() has
+>     been removed).
+>   - Added a change to use bitfield macros in mtk_disp_aal.c
+>   - Added a change to compress of_device_id entries in mtk_disp_aal.c
+>   - Tested again on MT6795, MT8173, MT8186, MT8192, MT8195
+> 
+> Changes in v8:
+>   - Changed lut_size to be a mtk_disp_gamma_set_common() function
+>     parameter to pass lut size from AAL
+> 
+> Changes in v7:
+>   - Added check for NULL dev for AAL-gamma case
+>   - Added get_lut_size callback for AAL-gamma
+>   - Added comment to clarify SoC 10/12 bits support and old vs new
+>     register layout as suggested by Alexandre M.
+> 
+> Changes in v6:
+>   - Fixed smatch warning in patch 11/11, ref.:
+>     https://lore.kernel.org/all/202306101458.lRXHEE0Z-lkp@intel.com/
+> 
+> Changes in v5:
+>   - Removed incorrect comment on default LUT size and bits
+>   - Removed useless check for num_lut_banks
+>   - Added comment about CMDQ implementation on patch 5
+>   - Evaluated passing lut size/bits from AAL, idea discarded as
+>     the implementation would be rather tricky while bringing no
+>     benefits.
+> 
+> Changes in v4:
+>   - Fixed assignment typo appeared in v3
+> 
+> Changes in v3:
+>   - Fixed issues due to variables renaming during cleanup (oops)
+>   - This is actually the right series, since v2 was taken from the
+>     wrong kernel tree.... :-)
+> 
+> Changes in v2:
+>   - Added explicit inclusion of linux/bitfield.h in patch [06/11]
+> 
+> This series adds support for GAMMA IP requiring and/or supporting
+> a 12-bits LUT using a slightly different register layout and programming
+> sequence for multiple LUT banks: this IP version is currently found
+> on a number of SoCs, not only including the Chromebook/IoT oriented
+> Kompanio 1200/1380 MT8195/MT8195T, but also Smartphone chips such as
+> the Dimensity 9200 (MT6985) and others.
+> 
+> This series was tested on MT8195, MT8192, MT8173, MT6795:
+>   * MT6795, MT8192, MT8173: No regression, works fine.
+>   * MT8195: Color correction is finally working!
+> 
+> AngeloGioacchino Del Regno (15):
+>    drm/mediatek: gamma: Reduce indentation in mtk_gamma_set_common()
+>    drm/mediatek: gamma: Support SoC specific LUT size
+>    drm/mediatek: gamma: Improve and simplify HW LUT calculation
+>    drm/mediatek: gamma: Enable the Gamma LUT table only after programming
+>    drm/mediatek: gamma: Use bitfield macros
+>    drm/mediatek: aal: Use bitfield macros
+>    drm/mediatek: De-commonize disp_aal/disp_gamma gamma_set functions
+>    drm/mediatek: gamma: Support specifying number of bits per LUT
+>      component
+>    drm/mediatek: gamma: Support multi-bank gamma LUT
+>    drm/mediatek: gamma: Add support for 12-bit LUT and MT8195
+>    drm/mediatek: gamma: Make sure relay mode is disabled
+>    drm/mediatek: gamma: Program gamma LUT type for descending or rising
+>    drm/mediatek: aal: Rewrite kerneldoc for struct mtk_disp_aal
+>    drm/mediatek: gamma: Add kerneldoc for struct mtk_disp_gamma
+>    drm/mediatek: aal: Compress of_device_id entries and add sentinel
+> 
+> Jason-JH.Lin (1):
+>    drm/mediatek: gamma: Adjust mtk_drm_gamma_set_common parameters
+> 
+>   drivers/gpu/drm/mediatek/mtk_disp_aal.c     |  84 ++++++--
+>   drivers/gpu/drm/mediatek/mtk_disp_drv.h     |   3 +-
+>   drivers/gpu/drm/mediatek/mtk_disp_gamma.c   | 203 ++++++++++++++++----
+>   drivers/gpu/drm/mediatek/mtk_drm_crtc.c     |   8 +-
+>   drivers/gpu/drm/mediatek/mtk_drm_crtc.h     |   1 -
+>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c |   2 +
+>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |   9 +
+>   7 files changed, 256 insertions(+), 54 deletions(-)
+> 
 
-Thanks.
-
-----------------------------------------------------------------
-Hans de Goede (1):
-      HID: logitech-hidpp: Fix kernel crash on receiver USB disconnect
-
-Johan Hovold (1):
-      HID: i2c-hid: fix handling of unpopulated devices
-
- drivers/hid/hid-logitech-hidpp.c   |   3 ++-
- drivers/hid/i2c-hid/i2c-hid-core.c | 144 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------------------------------------------
- 2 files changed, 83 insertions(+), 64 deletions(-)
-
---
-Cheers,
-Benjamin
