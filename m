@@ -2,70 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1547C5ACA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9547C5AD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234931AbjJKSDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 14:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
+        id S233058AbjJKSEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 14:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234775AbjJKSDD (ORCPT
+        with ESMTP id S230234AbjJKSET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 14:03:03 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C24CD7;
-        Wed, 11 Oct 2023 11:02:58 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-690bf8fdd1aso28110b3a.2;
-        Wed, 11 Oct 2023 11:02:58 -0700 (PDT)
+        Wed, 11 Oct 2023 14:04:19 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652D89E;
+        Wed, 11 Oct 2023 11:04:16 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-692b2bdfce9so30982b3a.3;
+        Wed, 11 Oct 2023 11:04:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697047376; x=1697652176; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697047456; x=1697652256; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IhrDqt6wT+HBPU0WXsWFtClOPq+53ObuSHJOrsqvDGI=;
-        b=ZQbJRgdcT89Bb+s9X5BpbjBavcUFmGXmyuXJVClUEgfVroecfhFiT3Tco8JvOpA0B3
-         N7kVpn2nOVkSpYhoxZDgDYKFpyrqXHsFZP9+rZ6/hw/DP1RDsmKbf8geHcJYBkDrJVAS
-         5gqI6rAr8hIQ7PTHjakPJJdx8jHBfvgax9Q5IIRHpF7NWK6/YQc6lr4vtAj2uoXTH63Y
-         29tyeVi1ET9lK/7dh40nzXr0SdNcalWpLoma90Jtc052Y4cAqqK3JMh0iiSny8yX69tW
-         3JzDVfYnfyVNDxZpVZvKkhZB8Q6ktgKbKXMuh64KIWX4GoyvKVrHQ3K/kRCFBJwsJED2
-         Pkpw==
+        bh=TVdVmZg52hW6WekTndMoeoclUBi/41WcYYuklZzQFhU=;
+        b=IGplU5h5YxQxAOXU0s60oaAnZRPRJYc5Lh6gmDg1WeDUxdu4WFQHi0FvzWW2thbeC4
+         EmwLRYSwZgV1EUU3Nlbers2wScgJ4nwZk3e0lEPGDixpz4FSQWMYDizIveR2J0u2idWB
+         UZiRZYuIYn3yn14MkZlox5q3mm9F2vU6ou8FAsRqgq5dHTY4pm3xu8NeloEuxzb1E405
+         HBvmWIMKU3CS2r01njmoaJ62epSVk/NkAYEE1guYU6XV1FPHxGOWyRuenLDQjZu4/G/X
+         tyw1z7sNeij1bdxdrE0qj88DI2v2PrU6HpG2k6W+KntIqH1Ui5/QOPTbzWJLjTSsztgJ
+         8Yyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697047376; x=1697652176;
+        d=1e100.net; s=20230601; t=1697047456; x=1697652256;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IhrDqt6wT+HBPU0WXsWFtClOPq+53ObuSHJOrsqvDGI=;
-        b=S7ak6RuHpFhAxmHeMTkN6PpBs1CGFbqxY/kHlb+X/IDgjVXNATTf4PV8BRdyVzJDvs
-         5zyKmQY2TLQcwCpwHWlkj3YIYtdC4KyUny9XADnWHl7992VMp9LPWe6sJ2p+5lOBNkIE
-         1sB/4tfWmKLZxWpmAxL3QflU/30DehgfkjaPHo52Yttz0oMEMAGZ3lm47wRn0YUrBH4V
-         +SiRkVs2poGcJRaoJaEKQtYUJOuvhOuSJ07IA+EZthuFicn+rsxGwoS5Rz21eBCkTkSu
-         v6h9GbUDomooiUbtojRCOhZrT+dHDZC0HxO0irxBEs+eYkxtwVycbEz2JdRJ9w2RmaTU
-         COzg==
-X-Gm-Message-State: AOJu0YwSiNW1aGwp6JKAy6bNL2wkHqIgMQDcfBUa6W8r9Z2YyqdqiXce
-        YUR0AqlPJtOa9eOZlxDvpB4=
-X-Google-Smtp-Source: AGHT+IG/ziOao/lKdC5T4mQ05hUhMzyts3NQzjrRBzke7glqqWrfDqejAnL3KiRfOQg5siWisUwPoA==
-X-Received: by 2002:a17:90a:fd8e:b0:27c:fc09:401d with SMTP id cx14-20020a17090afd8e00b0027cfc09401dmr3995106pjb.38.1697047376352;
-        Wed, 11 Oct 2023 11:02:56 -0700 (PDT)
+        bh=TVdVmZg52hW6WekTndMoeoclUBi/41WcYYuklZzQFhU=;
+        b=C7SoTBKV3U6h1Nq9UEm4Cf8tHBiXSzWDoo5zhFsKp3f1l61qAs6YBI0Ezj9XlhTHpE
+         AiEBHzwAJxA/i3mCqKvA08zRVZFfeuc9jAr8Gi5q/TXCWhwzvHYPfGC7BW0zbxPpo9gg
+         44FLIM1szZdu9mboiMURKuThvYPqLmEgkQdN0Svxz2T4zbOInZnCUtUarwWypZr5ZwQc
+         XVzxqJBYjU+0VPhHRZS7/fzVoioUZb+BMMszndbk4y+ihxn5TqBGtZiiZ3Q7dpN1HX3A
+         1DWo/A+vgzgEdh5B350nJiccAoJHmM6E/00llz7bEe32xWNXXk8D8A4tpZ+JDoLhUfk9
+         fw1Q==
+X-Gm-Message-State: AOJu0Ywe2/7z2bYQ1p0Q/NR/5qdxIz5D7gxe2xpw6h0zkhGggVuOmvvJ
+        kz/KraD4+UN/Id8820BkX/VSoDQ650Q=
+X-Google-Smtp-Source: AGHT+IFUwEJe+Lhn2xWyXnoyYJKi719/fpRhZ9eH5zF0QMBjBz4v72A47BUPEWkh1IFzw/EbsH2BlA==
+X-Received: by 2002:a05:6a00:22ca:b0:690:454a:dc7b with SMTP id f10-20020a056a0022ca00b00690454adc7bmr24652307pfj.28.1697047455896;
+        Wed, 11 Oct 2023 11:04:15 -0700 (PDT)
 Received: from atom0118 ([2405:201:c009:52e1:23ff:45f1:c6fe:e28c])
-        by smtp.gmail.com with ESMTPSA id f64-20020a17090a704600b0027ce7ee8859sm239240pjk.13.2023.10.11.11.02.52
+        by smtp.gmail.com with ESMTPSA id q15-20020a62ae0f000000b00690c4577101sm10726910pff.140.2023.10.11.11.04.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 11:02:55 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 23:32:48 +0530
+        Wed, 11 Oct 2023 11:04:15 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 23:34:08 +0530
 From:   Atul Kumar Pant <atulpant.linux@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        davem@davemloft.net, mhiramat@kernel.org,
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
         linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         linux-kernel-mentees@lists.linuxfoundation.org, shuah@kernel.org
 Subject: Re: [PATCH v1] samples: kprobes: Fixes a typo
-Message-ID: <20231011180248.GA51067@atom0118>
+Message-ID: <20231011180408.GB51067@atom0118>
 References: <20230817170819.77857-1-atulpant.linux@gmail.com>
  <20230923173040.GA159038@atom0118>
  <20231007153900.GA20160@atom0118>
  <20231009095103.6d08e72a@gandalf.local.home>
+ <20231010000356.1805c6e0f517245161ebdf03@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231009095103.6d08e72a@gandalf.local.home>
+In-Reply-To: <20231010000356.1805c6e0f517245161ebdf03@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -76,45 +77,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 09:51:03AM -0400, Steven Rostedt wrote:
-> On Sat, 7 Oct 2023 21:09:00 +0530
-> Atul Kumar Pant <atulpant.linux@gmail.com> wrote:
+On Tue, Oct 10, 2023 at 12:03:56AM +0900, Masami Hiramatsu wrote:
+> On Mon, 9 Oct 2023 09:51:03 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> > On Sat, Sep 23, 2023 at 11:00:46PM +0530, Atul Kumar Pant wrote:
-> > > On Thu, Aug 17, 2023 at 10:38:19PM +0530, Atul Kumar Pant wrote:  
-> > > > Fixes typo in a function name.
-> > > > 
-> > > > Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
-> > > > ---
-> > > >  samples/kprobes/kretprobe_example.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/samples/kprobes/kretprobe_example.c b/samples/kprobes/kretprobe_example.c
-> > > > index cbf16542d84e..ed79fd3d48fb 100644
-> > > > --- a/samples/kprobes/kretprobe_example.c
-> > > > +++ b/samples/kprobes/kretprobe_example.c
-> > > > @@ -35,7 +35,7 @@ struct my_data {
-> > > >  	ktime_t entry_stamp;
-> > > >  };
-> > > >  
-> > > > -/* Here we use the entry_hanlder to timestamp function entry */
-> > > > +/* Here we use the entry_handler to timestamp function entry */
-> > > >  static int entry_handler(struct kretprobe_instance *ri, struct pt_regs *regs)
-> > > >  {
-> > > >  	struct my_data *data;
-> > > > -- 
-> > > > 2.25.1
-> > > >   
-> > > 
-> > > 	Hi all, can someone provide comments on this change.  
+> > On Sat, 7 Oct 2023 21:09:00 +0530
+> > Atul Kumar Pant <atulpant.linux@gmail.com> wrote:
 > > 
-> > 			Hi all, can someone please review this change. It has been not
-> > 			reviewed for quite some time.
+> > > On Sat, Sep 23, 2023 at 11:00:46PM +0530, Atul Kumar Pant wrote:
+> > > > On Thu, Aug 17, 2023 at 10:38:19PM +0530, Atul Kumar Pant wrote:  
+> > > > > Fixes typo in a function name.
+> > > > > 
+> > > > > Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
+> > > > > ---
+> > > > >  samples/kprobes/kretprobe_example.c | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/samples/kprobes/kretprobe_example.c b/samples/kprobes/kretprobe_example.c
+> > > > > index cbf16542d84e..ed79fd3d48fb 100644
+> > > > > --- a/samples/kprobes/kretprobe_example.c
+> > > > > +++ b/samples/kprobes/kretprobe_example.c
+> > > > > @@ -35,7 +35,7 @@ struct my_data {
+> > > > >  	ktime_t entry_stamp;
+> > > > >  };
+> > > > >  
+> > > > > -/* Here we use the entry_hanlder to timestamp function entry */
+> > > > > +/* Here we use the entry_handler to timestamp function entry */
+> > > > >  static int entry_handler(struct kretprobe_instance *ri, struct pt_regs *regs)
+> > > > >  {
+> > > > >  	struct my_data *data;
+> > > > > -- 
+> > > > > 2.25.1
+> > > > >   
+> > > > 
+> > > > 	Hi all, can someone provide comments on this change.  
+> > > 
+> > > 			Hi all, can someone please review this change. It has been not
+> > > 			reviewed for quite some time.
+> > 
+> > That's because trivial typos in comments are considered very low priority,
+> > and are usually only added (if they are ever added) if the maintainer has
+> > extra time, which may not be for a while.
 > 
-> That's because trivial typos in comments are considered very low priority,
-> and are usually only added (if they are ever added) if the maintainer has
-> extra time, which may not be for a while.
-> 
-> -- Steve
+> Anyway, let me pick this. I found this in my inbox now. :)
 
-	Thank you Steve for the response. I wasn't aware of this.
+	Thank you. Sorry for the redundant emails for reviewing the change :)
+> 
+> Thank you,
+> 
+> > 
+> > -- Steve
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
