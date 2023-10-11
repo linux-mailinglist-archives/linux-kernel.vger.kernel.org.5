@@ -2,121 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D031D7C4F0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA647C4F10
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345895AbjJKJeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 05:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
+        id S1345913AbjJKJel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 05:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231442AbjJKJeG (ORCPT
+        with ESMTP id S231388AbjJKJej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 05:34:06 -0400
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45D991
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:34:03 -0700 (PDT)
-Received: by mail-vk1-xa36.google.com with SMTP id 71dfb90a1353d-4a13374a1e8so1119160e0c.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:34:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697016843; x=1697621643; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=amS2AGWHC9KublVJ1Jpa3dwEwkd9FC/Qfrwz2qjG5V0=;
-        b=kjBtbwVs95jngRTsBx3EDfl2v1blRZs/skqsni/6Tj7o0M4Q3IveeFlRqJ3htpT+gV
-         DO6AicUvTlh+p4RfyNjGTnsfAojdVslFcwx6+x50ehIi/WB2x2vOb5//SClkhYl8uTkg
-         6BTvapCEv19PbQ8hdZE+mz4b7fKL1nqCOG5z5dDZHLOTjVsgv/33Mt1c98k2goDQGGp+
-         ueqDex5GQTR3qzU5+wgC9CJFURg4z5q8kN7tgetXhuGBTGmwCsXvfSBcximqlFuHky/x
-         Jv/5OGQCv/nSnmRvivuUFwpijSNhPvDARUcjDlJyynTO7Xo6lu7T6zWlZ4N1KgBGoAwX
-         satQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697016843; x=1697621643;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=amS2AGWHC9KublVJ1Jpa3dwEwkd9FC/Qfrwz2qjG5V0=;
-        b=iICYccu0iIVux++MH5P1/0x2JhffmuZG2SfjFhVdldwubAR5f1nfgmT8+H95X7ESH7
-         R/riQtzPgSRRVzUTUDxv4tcbUkDxHbtVg5uon/sBs3Cd+b6qUTXlH5JJ3YrKfoXn8gFD
-         9ue5SzyxFCHho0oe0YVTxo9Yu3dGC6FBVrZ0nzgqif6FrxcKJMsyNM8/ZsiUIEWOvPsw
-         rpK5lUfsQ3o4UgdSSgfc0vrRZ70FzyjTZEv09XjLfp1QJgSvvFUijDz4vnLgQTNIAIyJ
-         fsjhYiYQ+BZG+TiUf9vpwE7qDPa4SrhxJ3TQ89lS3rgSgoqPKud1jPz1WKTzspLsgxoX
-         qu+w==
-X-Gm-Message-State: AOJu0Yxlujl35ZXcNL75yis+kORF9HXHOpUfI785hysseK895XLw7F4X
-        6zc4B+dWwz8Awxf64XmziizXZ/llWSxXeCuTqh548Q==
-X-Google-Smtp-Source: AGHT+IGkIVkgSmG4dkgU+VBkUH+FMIsXlPaccGP9vqrk6hShP3Gs1TPG08W3iXU77qMOioF8utaz21CClfuklwaJ4wo=
-X-Received: by 2002:ac5:ca1a:0:b0:49d:efe:520c with SMTP id
- c26-20020ac5ca1a000000b0049d0efe520cmr17438575vkm.12.1697016842719; Wed, 11
- Oct 2023 02:34:02 -0700 (PDT)
+        Wed, 11 Oct 2023 05:34:39 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED26A91
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:34:37 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 43FB440E01A5;
+        Wed, 11 Oct 2023 09:34:36 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id zYrS_lfx2XWo; Wed, 11 Oct 2023 09:34:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1697016874; bh=wlVHCRniVFaiJL/44jNYT0InX+M6DG5c0AFa+WZS7gI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WqpVIkUuVh0xCDZpqdC/D3R/PtHYWiIAp0bf5eVOhgbcOrJFi8mGvNm/K4NASnCRM
+         jv+rGflBCEiYnXMAof+o9Hu6RqeoV2oToQttHreQQ3aTMFVx8QojkZ72CVNgUbHpid
+         pdj7QdOoziklmkY2ekXoYh48+jrveQA366PEHze3isygNLyxIuf/GohKWFfGeWh/IX
+         GfCSOV54BmNBJgc92coM1aTvBZBGm5H/OcOm91TzdQTFyYajVdCP5FvaRdSKnH9XQ1
+         m/cRQTd8PSKecytsaM8zN1x8A62UFQYz8nBvr4S9u3LUgyxTiC0J1BSCLLMyOQdLq1
+         fsj7IctbD57l5tFJCAxLASt66wWVcxR5H8pn5RUtTt8X0llTwMPfJB6uUSjss3sZj6
+         FTL6uU695WLPDQ0DsQjuRW5MRXG6ZaI+7Fus6b6UQTEhCWcQAJ4n6f+Pa9ZORdi69S
+         ZEUbOmV0apkXW8gAW/yRY9/o3AUMDjncnlGcAbMxbM7PmACyn2VXBaoWt8liT7xO3B
+         xzvRjqEkeQjmEtYE4Y/jK0b/fjxVUInfeSGt9lL8I7bFhqvOkZehXZiebA2eEyQgxe
+         9g+nCfLD6acoDFN+n4lv+osUUT2PboTvKCrESrXTSEZNoo7waXtHI+QoAjevEh/Rnx
+         6dBPmTW1sHj3OKjgn+a7R1ME=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8D2FE40E01AA;
+        Wed, 11 Oct 2023 09:34:28 +0000 (UTC)
+Date:   Wed, 11 Oct 2023 11:34:22 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        David Kaplan <david.kaplan@amd.com>, x86@kernel.org,
+        luto@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] Revert "x86/retpoline: Remove
+ .text..__x86.return_thunk section"
+Message-ID: <20231011093422.GBZSZsHumBjU6c68Zb@fat_crate.local>
+References: <20231010171020.462211-1-david.kaplan@amd.com>
+ <20231010171020.462211-2-david.kaplan@amd.com>
+ <20231010174833.GG14330@noisy.programming.kicks-ass.net>
+ <20231010195721.p5pb273kevg7ydxz@treble>
+ <20231010200429.GIZSWuTWSUM9aId7a6@fat_crate.local>
+ <20231010201912.7pjksbparssqu34k@treble>
+ <20231010212254.ypk2wdogno55shit@treble>
+ <20231011074142.GK14330@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20231010151709.4104747-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231010151709.4104747-1-andriy.shevchenko@linux.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 11 Oct 2023 11:33:51 +0200
-Message-ID: <CAMRc=Mdiuth0=XPBsoStXN81ydfpUfqm1BMc2TZOT4Kmx6jNkA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/4] hte: Improve GPIO handling and other cleanups
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Dipen Patel <dipenp@nvidia.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, timestamp@lists.linux.dev,
-        linux-tegra@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231011074142.GK14330@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 5:18=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> This is a series provides a new API to GPIO library (so far only
-> available in the GPIO tree), and respective update to the Tegra
-> HTE driver. On top a couple of other cleaups (patches 3 & 4, they
-> can be applied separately).
->
-> Patch 2 inherited tags from its respective discussion thread [1],
-> but I believe the Tested-by needs to be confirmed again.
->
-> Due to dependencies this either should be applied to the GPIO tree,
-> or to the HTE when GPIO updates land the upstream (optionally with
-> the first patch be applied even now to the GPIO tree independently).
->
-> Another option is to have an immutable branch or tag, but I assume
-> that was discussed and rejected (?) in [1].
+On Wed, Oct 11, 2023 at 09:41:42AM +0200, Peter Zijlstra wrote:
+> *urgh*... I mean, yes, that obviously works, but should we not also have
+> the retpoline thingy for consistency? That case makes less sense though
+> :/
+> 
+> Perhaps warn about this instead of fixing it? Forcing people to play the
+> section game?
 
-The series looks good to me. I'd like to take patches 1 and 2 through
-the GPIO tree once v2 is out. This way we could potentially remove
-gpiochip_find() for v6.7 already.
+I like the conservative aspect of that: keep the separate sections and
+warn if the return thunk is in the same section.
 
-Bart
+Thx.
 
->
-> Link: https://lore.kernel.org/linux-gpio/20230905185309.131295-15-brgl@bg=
-dev.pl/ [1]
-> Cc: Dipen Patel <dipenp@nvidia.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
->
-> Andy Shevchenko (3):
->   gpiolib: provide gpio_device_find_by_fwnode()
->   hte: tegra194: Remove redundant dev_err()
->   hte: tegra194: Switch to LATE_SIMPLE_DEV_PM_OPS()
->
-> Bartosz Golaszewski (1):
->   hte: tegra194: don't access struct gpio_chip
->
->  drivers/gpio/gpiolib.c      | 20 ++++++++++++++++
->  drivers/hte/hte-tegra194.c  | 46 +++++++++++++++++++------------------
->  include/linux/gpio/driver.h |  1 +
->  3 files changed, 45 insertions(+), 22 deletions(-)
->
-> --
-> 2.40.0.1.gaa8946217a0b
->
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
