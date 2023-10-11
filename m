@@ -2,69 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6224F7C5A41
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFE57C5A44
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbjJKRab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 13:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33990 "EHLO
+        id S232144AbjJKRcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 13:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232206AbjJKRaa (ORCPT
+        with ESMTP id S230386AbjJKRcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 13:30:30 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C06FB0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:30:26 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40566f8a093so1364185e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:30:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697045424; x=1697650224; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=me7Hf3Bi0S2OqFfc7MfvwerAXxLHdIkSHVDAhrcUZMQ=;
-        b=UlI/soEC7ZcP9RwGPfskw36ZU8nYNe92JyiUKMGMRj/7ZRaULnDeUZgW+/q761XI0d
-         qR6peUEW2eqB5o83hxIpZCg/wO4USwkdQapsgQUz6qDPWum5I2ZnB4hWn0Mq1QGDuAA7
-         EpcVXa925WQIxi4iM+mgRbuslg0QPUl26ua1Zte+v9ly8NseSGah5GOCS5IL+c5UBcUD
-         Azb1dgwwZ5LiTNyHR3//uZcT5tTE84UJH+lTZmCIPTCWUvJH8xq3Hyv/b+iZAXf+G7YS
-         CUGBbHnymu6TSMqw/03F54ZJ61dMMO5BmUbMpcb9t+SnWya+gyPuibUGfHkorKhQf09N
-         oTLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697045424; x=1697650224;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=me7Hf3Bi0S2OqFfc7MfvwerAXxLHdIkSHVDAhrcUZMQ=;
-        b=hSDYjAuj3lFcPO7ByUCB5CdUmdMkpK6q0z79QNfmnq+u5fjvg1DY8q96KF/W+nNR51
-         OjtrTtBsIje968sPRDiX79Qe90YrXj2BgWdUJH/1IiC0zVoX2BKHhmGSIfgxQuzFAQOB
-         YY196Hd1T09XoYF7nujvcCykUq6zoDxDbzNgrg0PTd8gE+oX3j/y8Uqc8LVQlmtMvry4
-         cWtWIwz5Va0Q3VkaVvGDw6yjZK9A1U3iF/eso+rtqI3ZTHQc7HyleikUzlog9NYWF8OZ
-         1qAAu8wD9exYS+TIdJDyQTqRTtC3kZBC2GKHGAFvSuEPBgbicTJmO273IOxbmw3CZB0N
-         25Dw==
-X-Gm-Message-State: AOJu0Yyr4fPcuoIcLU6qqPyEjgVfAYrbFzMDLy7/5wgZq9dg6mXtECqB
-        6dE6Z35S79UAn4AWZu/jv43RDQ==
-X-Google-Smtp-Source: AGHT+IH25Gk9gu7bi2ki+3ZgFXad+L/iUZXUkkYb4XCbhICFDVqbOpLWWS83+XQeZrlIDcbGWx0KYg==
-X-Received: by 2002:a7b:c40a:0:b0:401:23fc:1f92 with SMTP id k10-20020a7bc40a000000b0040123fc1f92mr19865951wmi.25.1697045424518;
-        Wed, 11 Oct 2023 10:30:24 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id n22-20020a7bcbd6000000b004060f0a0fdbsm19775974wmi.41.2023.10.11.10.30.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 10:30:24 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 20:30:21 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     drosdeck <edson.drosdeck@gmail.com>
-Cc:     gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs:Fix coding style errors and warning
-Message-ID: <03446a07-ef54-49c3-a7a2-644715603891@kadam.mountain>
-References: <20231011164232.28866-1-edson.drosdeck@gmail.com>
+        Wed, 11 Oct 2023 13:32:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B4098;
+        Wed, 11 Oct 2023 10:32:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697045569; x=1728581569;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=x3sQm7M9J3RlOJdmLbTd2L6sMpG+CaS+3exQhZIBrB8=;
+  b=BuQSyy4F4DRsZKyDFflAXGHzyyiIvG9wYdNr6xVdIp8ne5svz3LqYMjj
+   149UAWL7vttxXQK7W2W3DBDsavrJtQvKG0YhzNcU3kR9dXBjvno9CaD9K
+   s2ONU7CL/F0rQnJOKAM1Fn36y9IxLi9cvWFPWgiAgXNK7GdJXhpFa68cZ
+   FoN//6bm6P3uhA6lZtgYfYN/b4DSeJK7ZvSTJT6gwDGTXMd4siludDnnG
+   VH4/uv8i09Wwj8bDQGNui0newoIeqWgEz/eer1WqZG7kTI/cQlMxg31Ic
+   vA3sGbiMvav5ZeggQj6Tv5RK3kjo7RsGCoWIceCOyfRVqFCdq3hozjO4S
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="451212939"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
+   d="scan'208";a="451212939"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 10:32:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="703823906"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
+   d="scan'208";a="703823906"
+Received: from kevinsu1-mobl.amr.corp.intel.com (HELO [10.209.77.44]) ([10.209.77.44])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 10:32:44 -0700
+Message-ID: <afaef377-25e0-49f6-a99f-3e5bd4b44f87@intel.com>
+Date:   Wed, 11 Oct 2023 10:32:44 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011164232.28866-1-edson.drosdeck@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/mce: Increase the size of the MCE pool from 2 to 8
+ pages
+Content-Language: en-US
+To:     Filippo Sironi <sironi@amazon.de>, linux-kernel@vger.kernel.org
+Cc:     tony.luck@intel.com, bp@alien8.de, tglx@linutronix.de,
+        mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, linux-edac@vger.kernel.org
+References: <20231011163320.79732-1-sironi@amazon.de>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
+ LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
+ lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
+ MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
+ IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
+ aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
+ I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
+ E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
+ F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
+ CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
+ P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
+ 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
+ GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
+ MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
+ Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
+ lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
+ 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
+ qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
+ BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
+ 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
+ vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
+ FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
+ l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
+ yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
+ +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
+ asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
+ WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
+ sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
+ KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
+ MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
+ hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
+ vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
+In-Reply-To: <20231011163320.79732-1-sironi@amazon.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,41 +108,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You need to fix your From: header.
+On 10/11/23 09:33, Filippo Sironi wrote:
+> On some of our large servers and some of our most sorry servers ( 🙂 ),
+> we're seeing the kernel reporting the warning in mce_gen_pool_add: "MCE
+> records pool full!". Let's increase the amount of memory that we use to
+> store the MCE records from 2 to 8 pages to prevent this from happening
+> and be able to collect useful information.
 
-On Wed, Oct 11, 2023 at 01:42:32PM -0300, drosdeck wrote:
-> Warning found by checkpatch.pl script. Fixes warning replacing printk to
-> pr_crit and fixes conding style.
+MCE_POOLSZ is used to size gen_pool_buf[] which was a line out of your
+diff context:
+
+> #define MCE_POOLSZ      (2 * PAGE_SIZE)
 > 
-> Signed-off-by: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
-> ---
->  drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 21 +++++++++-----------
->  1 file changed, 9 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> index 490431484524..e178a6881e0c 100644
-> --- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> +++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> @@ -48,7 +48,6 @@ static void sd_sync_int_hdl(struct sdio_func *func)
->  {
->  	struct dvobj_priv *psdpriv;
->  
-> -
->  	psdpriv = sdio_get_drvdata(func);
->  
->  	if (!psdpriv->if1)
-> @@ -73,7 +72,7 @@ static int sdio_alloc_irq(struct dvobj_priv *dvobj)
->  	err = sdio_claim_irq(func, &sd_sync_int_hdl);
->  	if (err) {
->  		dvobj->drv_dbg.dbg_sdio_alloc_irq_error_cnt++;
-> -		printk(KERN_CRIT "%s: sdio_claim_irq FAIL(%d)!\n", __func__, err);
-> +		pr_crit("%s: sdio_claim_irq FAIL(%d)!\n", __func__, err);
+> static struct gen_pool *mce_evt_pool;
+> static LLIST_HEAD(mce_event_llist);
+> static char gen_pool_buf[MCE_POOLSZ];
 
-Use dev_crit() instead.
+That's in .bss which means it eats up memory for *everyone*.  It seems a
+little silly to eat up an extra 6 pages of memory for *everyone* in
+order to get rid of a message on what I assume is a relatively small set
+of "sorry servers".
 
-Otherwise the rest of the changes are fine, but you'll need to break
-the patch up into multiple patches.
+Is there any way that the size of the pool can be more automatically
+determined?  Is the likelihood of a bunch errors proportional to the
+number of CPUs or amount of RAM or some other aspect of the hardware?
 
-regards,
-dan carpenter
+Could the pool be emptied more aggressively so that it does not fill up?
 
+Last, what is the _actual_ harm caused by missing this "useful
+information"?  Is collecting that information collectively really worth
+24kb*NR_X86_SYSTEMS_ON_EARTH?  Is it really that valuable to know that
+the system got 4,000 ECC errors on a DIMM versus 1,000?
+
+If there's no other choice and this extra information is *CRITICAL*,
+then by all means let's enlarge the buffer.  But, let's please do it for
+a known, tangible benefit.
