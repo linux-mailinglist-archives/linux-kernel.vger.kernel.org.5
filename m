@@ -2,140 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38ED37C4FCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308837C4FDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345729AbjJKKOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34926 "EHLO
+        id S1345805AbjJKKPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:15:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbjJKKOR (ORCPT
+        with ESMTP id S230238AbjJKKPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:14:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B67A9D
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:13:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697019210;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RLI+gNG/Ik5TmE6Ss6b86D5IYiR1FClxUP9y17ZJqCA=;
-        b=V1F8h9+9Q6CPPxjyE7J+5ve2zno6g8TNyl8YleUxGNcSh8TKxrKWuAT+UViBYBPjEzGPy4
-        Gd1xjnQqUWXY5EnzKp9j8qHHEN/Y8vwFl0la4juFrwgKkdkxMmEKsSPbcIf5ClCk64DeWQ
-        x9N2pV2WaHrXQncyVnCk5DnezvOT5/I=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-120-9MxLMbTXNsCjfrvh1CugUw-1; Wed, 11 Oct 2023 06:13:19 -0400
-X-MC-Unique: 9MxLMbTXNsCjfrvh1CugUw-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2b6ff15946fso58391651fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:13:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697019197; x=1697623997;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RLI+gNG/Ik5TmE6Ss6b86D5IYiR1FClxUP9y17ZJqCA=;
-        b=rJawSERIUDCbw/rObcCFyBCbWdRjbSE3Ktw2zUufn8vXGUot7qjK1rA0I/pDbFOJxj
-         OnXhTpX5tm3MXW+Fh+BBocbhP8bV/VIG4EClH1dvx94hpG2H7wR9FoujWTWbh+dujtDq
-         JpRowC2JnIiVrdCyIvnouhhaMgKlJENAvHURnSMaEk+BOSrGi+rZiI4ZZj4Mz6EV8VBC
-         bm0uHqG5aCuM/cYKpYB0i9oGMAiOwc4+Z27P2QzKLcxsnJ3rEF7RCwE+Ifchn1BRqlSC
-         38C2aJp+Ux67SuVJxi/akGz7WQhSmj/umff58gP62SKv0zjF7udDDaBqACjWQSiK5REm
-         snzA==
-X-Gm-Message-State: AOJu0YyK6RCT4b8ENud69oSQywGe+UvQElr+ptwMmBV1QCZGn4GANxPl
-        aNzVix+IofFDKqbYJHS0Es1F2YL5r3nQQiSHmxL/3geiA/3OjgY0/hXM9HAmempcfN1rAPv21b/
-        eG4t+f4dG492WoVp9GJUgjPnRNMDDNtNsGLduQ2cTAeybQovx
-X-Received: by 2002:a2e:9001:0:b0:2c1:7df1:14a6 with SMTP id h1-20020a2e9001000000b002c17df114a6mr18885594ljg.9.1697019197157;
-        Wed, 11 Oct 2023 03:13:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGzgFBh7dpGZLMqhPmRhYZgbEoyXO+JEnPZeVd6y4j9UPTWyTctRlSWKtNno+D+4ydHwjWMyyV7Txz55onCUho=
-X-Received: by 2002:a2e:9001:0:b0:2c1:7df1:14a6 with SMTP id
- h1-20020a2e9001000000b002c17df114a6mr18885577ljg.9.1697019196839; Wed, 11 Oct
- 2023 03:13:16 -0700 (PDT)
+        Wed, 11 Oct 2023 06:15:47 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 54EC9A7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:15:45 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BBDD0106F;
+        Wed, 11 Oct 2023 03:16:25 -0700 (PDT)
+Received: from [10.57.68.120] (unknown [10.57.68.120])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D43D3F762;
+        Wed, 11 Oct 2023 03:15:43 -0700 (PDT)
+Message-ID: <18890179-7529-4c11-9049-dbb9885bac54@arm.com>
+Date:   Wed, 11 Oct 2023 11:15:41 +0100
 MIME-Version: 1.0
-References: <20231010-upstream-net-next-20231006-mptcp-ynl-v1-0-18dd117e8f50@kernel.org>
- <20231010-upstream-net-next-20231006-mptcp-ynl-v1-3-18dd117e8f50@kernel.org> <20231010180839.0617d61d@kernel.org>
-In-Reply-To: <20231010180839.0617d61d@kernel.org>
-From:   Davide Caratti <dcaratti@redhat.com>
-Date:   Wed, 11 Oct 2023 12:13:04 +0200
-Message-ID: <CAKa-r6sT=WaTFqumYOEzOKWZoUi0KQ8EYpQ753+C5JjjsUb3wA@mail.gmail.com>
-Subject: Re: [PATCH net-next 3/6] Documentation: netlink: add a YAML spec for mptcp
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Matthieu Baerts <matttbe@kernel.org>, mptcp@lists.linux.dev,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mat Martineau <martineau@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 1/2] mm: swap: Remove CLUSTER_FLAG_HUGE from
+ swap_cluster_info:flags
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231010142111.3997780-1-ryan.roberts@arm.com>
+ <20231010142111.3997780-2-ryan.roberts@arm.com>
+ <75b3f607-856c-4210-9a7f-1a9535275698@huawei.com>
+Content-Language: en-GB
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <75b3f607-856c-4210-9a7f-1a9535275698@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hello, Jakub, thanks for looking at this!
+On 11/10/2023 09:17, Kefeng Wang wrote:
+> 
+> 
+> On 2023/10/10 22:21, Ryan Roberts wrote:
+>> As preparation for supporting small-sized THP in the swap-out path,
+>> without first needing to split to order-0, Remove the CLUSTER_FLAG_HUGE,
+>> which, when present, always implies PMD-sized THP, which is the same as
+>> the cluster size.
+>>
+>> The only use of the flag was to determine whether a swap entry refers to
+>> a single page or a PMD-sized THP in swap_page_trans_huge_swapped().
+>> Instead of relying on the flag, we now pass in nr_pages, which
+>> originates from the folio's number of pages. This allows the logic to
+>> work for folios of any order.
+>>
+>> The one snag is that one of the swap_page_trans_huge_swapped() call
+>> sites does not have the folio. But it was only being called there to
+>> avoid bothering to call __try_to_reclaim_swap() in some cases.
+>> __try_to_reclaim_swap() gets the folio and (via some other functions)
+>> calls swap_page_trans_huge_swapped(). So I've removed the problematic
+>> call site and believe the new logic should be equivalent.
+>>
+>> Removing CLUSTER_FLAG_HUGE also means we can remove split_swap_cluster()
+>> which used to be called during folio splitting, since
+>> split_swap_cluster()'s only job was to remove the flag.
+>>
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>> ---
+>>   include/linux/swap.h | 10 ----------
+>>   mm/huge_memory.c     |  3 ---
+>>   mm/swapfile.c        | 47 ++++++++------------------------------------
+>>   3 files changed, 8 insertions(+), 52 deletions(-)
+>>
+>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> index 19f30a29e1f1..a073366a227c 100644
+>> --- a/include/linux/swap.h
+>> +++ b/include/linux/swap.h
+>> @@ -259,7 +259,6 @@ struct swap_cluster_info {
+>>   };
+>>   #define CLUSTER_FLAG_FREE 1 /* This cluster is free */
+>>   #define CLUSTER_FLAG_NEXT_NULL 2 /* This cluster has no next cluster */
+>> -#define CLUSTER_FLAG_HUGE 4 /* This cluster is backing a transparent huge
+>> page */
+>>
+>>   /*
+>>    * We assign a cluster to each CPU, so each CPU can allocate swap entry from
+>> @@ -595,15 +594,6 @@ static inline int add_swap_extent(struct swap_info_struct
+>> *sis,
+>>   }
+>>   #endif /* CONFIG_SWAP */
+>>
+>> -#ifdef CONFIG_THP_SWAP
+>> -extern int split_swap_cluster(swp_entry_t entry);
+>> -#else
+>> -static inline int split_swap_cluster(swp_entry_t entry)
+>> -{
+>> -    return 0;
+>> -}
+>> -#endif
+>> -
+>>   #ifdef CONFIG_MEMCG
+>>   static inline int mem_cgroup_swappiness(struct mem_cgroup *memcg)
+>>   {
+>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>> index c9cbcbf6697e..46b3fb943207 100644
+>> --- a/mm/huge_memory.c
+>> +++ b/mm/huge_memory.c
+>> @@ -2597,9 +2597,6 @@ static void __split_huge_page(struct page *page, struct
+>> list_head *list,
+>>           shmem_uncharge(head->mapping->host, nr_dropped);
+>>       remap_page(folio, nr);
+>>
+>> -    if (folio_test_swapcache(folio))
+>> -        split_swap_cluster(folio->swap);
+>> -
+>>       for (i = 0; i < nr; i++) {
+>>           struct page *subpage = head + i;
+>>           if (subpage == page)
+>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> index e52f486834eb..c668838fa660 100644
+>> --- a/mm/swapfile.c
+>> +++ b/mm/swapfile.c
+>> @@ -342,18 +342,6 @@ static inline void cluster_set_null(struct
+>> swap_cluster_info *info)
+>>       info->data = 0;
+>>   }
+>>
+>> -static inline bool cluster_is_huge(struct swap_cluster_info *info)
+>> -{
+>> -    if (IS_ENABLED(CONFIG_THP_SWAP))
+>> -        return info->flags & CLUSTER_FLAG_HUGE;
+>> -    return false;
+>> -}
+>> -
+>> -static inline void cluster_clear_huge(struct swap_cluster_info *info)
+>> -{
+>> -    info->flags &= ~CLUSTER_FLAG_HUGE;
+>> -}
+>> -
+>>   static inline struct swap_cluster_info *lock_cluster(struct swap_info_struct
+>> *si,
+>>                                unsigned long offset)
+>>   {
+>> @@ -1021,7 +1009,7 @@ static int swap_alloc_cluster(struct swap_info_struct
+>> *si, swp_entry_t *slot)
+>>       offset = idx * SWAPFILE_CLUSTER;
+>>       ci = lock_cluster(si, offset);
+>>       alloc_cluster(si, idx);
+>> -    cluster_set_count_flag(ci, SWAPFILE_CLUSTER, CLUSTER_FLAG_HUGE);
+>> +    cluster_set_count_flag(ci, SWAPFILE_CLUSTER, 0);
+> 
+> Maybe just use cluster_set_count() and kill cluster_set_count_flag().
 
-On Wed, Oct 11, 2023 at 3:08=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Tue, 10 Oct 2023 21:21:44 +0200 Matthieu Baerts wrote:
-> > +definitions:
-> > +  -
-> > +    type: enum
-> > +    name: event-type
-> > +    enum-name: mptcp_event_type
-> > +    name-prefix: mptcp_event_
->
-> I think you can use - instead of _ here.
-> For consistency with other families?
+Yep good point. I'll do this in the next version - thanks!
 
-right, I will convert the whole spec.
-
->
-> > +    entries:
-> > +     -
-> > +      name: unspec
-> > +      value: 0
->
-> 90% sure enums still start at 0, only attrs and msgs now default to 1.
-
-Just checked, value:0 is not needed for enums: I will remove it
-
-> > +     -
-> > +      name: announced
-> > +      value: 6
-> > +      doc:
-> > +        token, rem_id, family, daddr4 | daddr6 [, dport]
-> > +        A new address has been announced by the peer.
-> > +     -
-> > +      name: removed
-> > +      value: 7
->
-> Follows 6 so no need for value?
-
-correct, will fix this too
-
-> > +      -
-> > +        name: addr6
-> > +        type: binary
-> > +        checks:
-> > +          min-len: 16
->
-> Do you not want the exact length for this?
-> If YNL doesn't support something just LMK, we add stuff as needed..
-
-ohh yes, we had NLA_POLICY_EXACT_LEN before but ynl doesn't seem to
-support it. I can try to add the support and include another patch at
-the beginning of the series, is that ok?
-
---=20
-davide
 
