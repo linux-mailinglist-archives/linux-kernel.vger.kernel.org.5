@@ -2,87 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7DE47C601F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE44F7C6103
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 01:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376452AbjJKWDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 18:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
+        id S1376533AbjJKXTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 19:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233339AbjJKWD3 (ORCPT
+        with ESMTP id S235224AbjJKXT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 18:03:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FFC9E
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:03:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FEF4C433C8;
-        Wed, 11 Oct 2023 22:03:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697061807;
-        bh=/hznBHvaUailZGyU5wtIgOtLweBQ29rbC2f5ZoiDKTY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FqampMHbpQ33BAMOzYpBW51gp/PIUf5Gcc7ngYMkIs52rwn5Rc0PKpDzoMqa8QOlt
-         dfkJ8HdBB34eItFhMC49ZoRmOSQg4OzNNyFjFpes1AF6VqDS9Nr0KsQ21Ub47YRjIA
-         Uvtd/j+DybifZp8YnJ/eLO2lHX0PhqPtjJnz3R5Zj5zBCUrWQi2stzz5og+yBXPrkx
-         AZfkUElJyt59z4NTj6+ZRTsLwCZdWefiBhOtJJK7JdpljTMj0PrAwiuQr4R9RytKQX
-         xW06ok/tg3uJcCsTziucB1/cPwAOzvKG2IBkPuHWVcp+wFCJo/i4S8NBVjwQV+779a
-         11mmgCOmEfHDQ==
-Date:   Wed, 11 Oct 2023 15:03:25 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Breno Leitao <leitao@debian.org>, tglx@linutronix.de,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        Wed, 11 Oct 2023 19:19:29 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FA7B7;
+        Wed, 11 Oct 2023 16:19:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1697066365; x=1728602365;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=vvo7LKxDtn+dhGniV+Jep3LTLgLsqxD4oMrYFynpoGU=;
+  b=QKQv7Tpm5ilHI4L42q/lJPed9nYYYdKZII31N38nsx7mXIYeG7iyctKv
+   MwXq0oYfdrnHwj0PI8YKKzCTLv6tsmkNDAOo+6s9/Br2siaiuK+ShrYL9
+   SaaPnzzyJ7kBSCDnGhA9VoyMnfOXsxtSFvVjm8mgTyUMglkIZqzOdR0vA
+   gFBaD9SGoyXKd+olHLtAyOj+lk+s65gaE5jIszf6jlsgSqr4GyXxGL0tx
+   +vRKI9e22gU4/vIQCXktaRIZu2d1QIaLe87SDilfkf6xW2wGOmK//1Mve
+   aI5R8HXfmVMv7h2cUpT0Ixf1lvrhfHxqTGAWBRL7Ck+InlwnLxez3qvoY
+   A==;
+X-CSE-ConnectionGUID: twOhyNXNSDyRHsnv4e4Mig==
+X-CSE-MsgGUID: kxYypUiIQoac9KnJlxVTJQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
+   d="scan'208";a="10056651"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Oct 2023 16:19:24 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 11 Oct 2023 16:18:43 -0700
+Received: from localhost (10.10.85.11) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Wed, 11 Oct 2023 16:18:43 -0700
+From:   Kelvin Cao <kelvin.cao@microchip.com>
+To:     <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] x86/bugs: Add a separate config for each mitigation
-Message-ID: <20231011220325.5uje4xnfxuccumm7@treble>
-References: <20231010103028.4192223-1-leitao@debian.org>
- <20231011044252.42bplzjsam3qsasz@treble>
- <20231011190317.GDZSbxdd5TuCIp5+JN@fat_crate.local>
+CC:     <logang@deltatee.com>, <George.Ge@microchip.com>,
+        <christophe.jaillet@wanadoo.fr>, <hch@infradead.org>
+Subject: [PATCH v7 0/1] Switchtec Switch DMA Engine Driver
+Date:   Wed, 11 Oct 2023 15:00:08 -0700
+Message-ID: <20231011220009.206201-1-kelvin.cao@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231011190317.GDZSbxdd5TuCIp5+JN@fat_crate.local>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 09:03:17PM +0200, Borislav Petkov wrote:
-> On Tue, Oct 10, 2023 at 09:42:52PM -0700, Josh Poimboeuf wrote:
-> >   MITIGATION_PAGE_TABLE_ISOLATION
-> >   MITIGATION_RETPOLINE
-> >   MITIGATION_UNRET_ENTRY
-> >   MITIGATION_CALL_DEPTH_TRACKING
-> >   MITIGATION_IBPB_ENTRY
-> >   MITIGATION_IBRS_ENTRY
-> >   MITIGATION_SRSO
-> >   MITIGATION_SLS
-> 
-> The train has already left the station on those. The other mitigations
-> don't have "MITIGAT*" at all in front of the name. I.e.:
-> 
-> config RETHUNK
-> config CALL_DEPTH_TRACKING
-> ...
-> 
-> and prepending them all with MITIGATION_ is going to cause too much
-> senseless churn for a reason which I don't think is worth the effort.
+Hi,
+ 
+This is v7 of the Switchtec Switch DMA Engine Driver, incorporating
+changes for the v2/v3/v4/v5/v6 review comments.
+ 
+v7 changes:
+  - Remove implementation of device_prep_dma_imm_data
 
-I wouldn't call it senseless churn.  There are concrete benefits -- for
-both users and developers -- of having all the mitigation config options
-living in the same config namespace.
+v6 changes:
+  - Fix './scripts/checkpatch.pl --strict' warnings
+  - Use readl_poll_timeout_atomic for status checking with timeout
+  - Wrap enable_channel/disable_channel over channel_op
+  - Use flag GFP_NOWAIT for mem allocation in switchtec_dma_alloc_desc
+  - Use proper comment for macro SWITCHTEC_DMA_DEVICE
 
-Sure, the change might cause pain for users who disable these options,
-but do those users actually exist?
+v5 changes:
+  - Remove unnecessary structure modifier '__packed'
+  - Remove the use of union of identical data types in a structure
+  - Remove unnecessary call sites of synchronize_irq
+  - Remove unnecessary rcu lock for pdev during device initialization
+  - Use pci_request_irq/pci_free_irq to replace request_irq/free_irq
+  - Add mailing list info in file MAINTAINERS
+  - Miscellaneous cleanups
+
+v4 changes:
+  - Sort driver entry in drivers/dma/Kconfig and drivers/dma/Makefile
+    alphabetically 
+  - Fix miscellaneous style issues
+  - Correct year in copyright
+  - Add function and call sites to flush PCIe MMIO Write
+  - Add a helper to wait for status register update
+  - Move synchronize_irq out of RCU critical section
+  - Remove unnecessary endianness conversion for register access
+  - Remove some unused code
+  - Use pci_enable_device/pci_request_mem_regions instead of
+    pcim_enable_device/pcim_iomap_regions to make the resource lifetime
+    management more understandable
+  - Use offset macros instead of memory mapped structures when accessing
+    some registers
+  - Remove the attempt to set DMA mask with smaller number as it would 
+    never succeed if the first attempt with bigger number fails
+  - Use PCI_VENDOR_ID_MICROSEMI in include/linux/pci_ids.h as device ID
+
+v3 changes:
+  - Remove some unnecessary memory/variable zeroing
+ 
+v2 changes:
+  - Move put_device(dma_dev->dev) before kfree(swdma_dev) as dma_dev is
+    part of swdma_dev.
+  - Convert dev_ print calls to pci_ print calls to make the use of
+    print functions consistent within switchtec_dma_create().
+  - Remove some dev_ print calls, which use device pointer as handles,
+    to ensure there's no reference issue when the device is unbound.
+  - Remove unused .driver_data from pci_device_id structure.
+ 
+v1:
+The following patch implements a DMAEngine driver to use the DMA
+controller in Switchtec PSX/PFX switchtes. The DMA controller appears as
+a PCI function on the switch upstream port. The DMA function can include
+one or more DMA channels.
+ 
+This patchset is based off of 6.6.0-rc5.
+
+Kelvin Cao (1):
+  dmaengine: switchtec-dma: Introduce Switchtec DMA engine PCI driver
+
+ MAINTAINERS                 |    6 +
+ drivers/dma/Kconfig         |    9 +
+ drivers/dma/Makefile        |    1 +
+ drivers/dma/switchtec_dma.c | 1522 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 1538 insertions(+)
+ create mode 100644 drivers/dma/switchtec_dma.c
 
 -- 
-Josh
+2.25.1
+
