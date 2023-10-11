@@ -2,252 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E8B7C4C32
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9537C4C34
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345232AbjJKHoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 03:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
+        id S1345300AbjJKHpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 03:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbjJKHoc (ORCPT
+        with ESMTP id S1344927AbjJKHpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 03:44:32 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DB408B8
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 00:44:28 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 63A8E106F;
-        Wed, 11 Oct 2023 00:45:09 -0700 (PDT)
-Received: from [10.57.69.15] (unknown [10.57.69.15])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4834E3F5A1;
-        Wed, 11 Oct 2023 00:44:27 -0700 (PDT)
-Message-ID: <44dcd73b-0e5d-408b-8640-ca1203f62525@arm.com>
-Date:   Wed, 11 Oct 2023 08:44:27 +0100
+        Wed, 11 Oct 2023 03:45:05 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1AB998;
+        Wed, 11 Oct 2023 00:45:03 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39B5xVe2010958;
+        Wed, 11 Oct 2023 07:45:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=AsDUI7Bosj7IHICzk8UtqRuKfn35TPs/rLOqBIEadLE=;
+ b=mGp6HGF0mlTLA1uH5p75BVsByXq0w0t619Wn/VSI9cxx7Hrgh92K4Kd/v2g9VeY7nKmY
+ fu7yj5BP3wAzpXl3uulYF44LBGeWpziqwcipcNZ4bbMXh42Xs9NX3u6Zv0h/GhgH3Jcv
+ DXfviNz+co4Qr5lyMA4Ba3TpPREjOTrTF5oxEeu+JwyJk/ThR19tPBqjV67CzVsdOqcV
+ v70oMcOcKOORksIMN+bkQXYcyOFMERq1OEbqJtw6BBjPqJ+u6ZCtsi6sfZoeHny8Gu/U
+ Nbxb9T+d9tqTlb27Bp8TWBKAbZ51tzJWUSa6IeC76MX0hIZtSbdFiXatXcUwd/JgSw+l kQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnfu90tbp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 07:45:01 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39B7j0iw025907
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 07:45:00 GMT
+Received: from hu-jiangenj-sha.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 11 Oct 2023 00:44:59 -0700
+From:   Joey Jiao <quic_jiangenj@quicinc.com>
+To:     <linux-modules@vger.kernel.org>
+CC:     <quic_jiangenj@quicinc.com>, Luis Chamberlain <mcgrof@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] module: Add CONFIG_MODULE_LOAD_IN_SEQUENCE option
+Date:   Wed, 11 Oct 2023 13:14:38 +0530
+Message-ID: <20231011074438.6098-1-quic_jiangenj@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 2/2] mm: swap: Swap-out small-sized THP without
- splitting
-Content-Language: en-GB
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231010142111.3997780-1-ryan.roberts@arm.com>
- <20231010142111.3997780-3-ryan.roberts@arm.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20231010142111.3997780-3-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Wy42EghxkYSCKgtjdRu2IDtUh1vQyoA5
+X-Proofpoint-GUID: Wy42EghxkYSCKgtjdRu2IDtUh1vQyoA5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_04,2023-10-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ bulkscore=0 adultscore=0 malwarescore=0 suspectscore=0 clxscore=1015
+ lowpriorityscore=0 impostorscore=0 priorityscore=1501 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310110066
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/2023 15:21, Ryan Roberts wrote:
-> The upcoming anonymous small-sized THP feature enables performance
-> improvements by allocating large folios for anonymous memory. However
-> I've observed that on an arm64 system running a parallel workload (e.g.
-> kernel compilation) across many cores, under high memory pressure, the
-> speed regresses. This is due to bottlenecking on the increased number of
-> TLBIs added due to all the extra folio splitting.
-> 
-> Therefore, solve this regression by adding support for swapping out
-> small-sized THP without needing to split the folio, just like is already
-> done for PMD-sized THP. This change only applies when CONFIG_THP_SWAP is
-> enabled, and when the swap backing store is a non-rotating block device
-> - these are the same constraints as for the existing PMD-sized THP
-> swap-out support.
-> 
-> Note that no attempt is made to swap-in THP here - this is still done
-> page-by-page, like for PMD-sized THP.
-> 
-> The main change here is to improve the swap entry allocator so that it
-> can allocate any power-of-2 number of contiguous entries between [4, (1
-> << PMD_ORDER)]. This is done by allocating a cluster for each distinct
-> order and allocating sequentially from it until the cluster is full.
-> This ensures that we don't need to search the map and we get no
-> fragmentation due to alignment padding for different orders in the
-> cluster. If there is no current cluster for a given order, we attempt to
-> allocate a free cluster from the list. If there are no free clusters, we
-> fail the allocation and the caller falls back to splitting the folio and
-> allocates individual entries (as per existing PMD-sized THP fallback).
-> 
-> As far as I can tell, this should not cause any extra fragmentation
-> concerns, given how similar it is to the existing PMD-sized THP
-> allocation mechanism. There will be up to (PMD_ORDER-1) clusters in
-> concurrent use though. In practice, the number of orders in use will be
-> small though.
-> 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->  include/linux/swap.h |  7 ++++++
->  mm/swapfile.c        | 60 +++++++++++++++++++++++++++++++++-----------
->  mm/vmscan.c          | 10 +++++---
->  3 files changed, 59 insertions(+), 18 deletions(-)
-> 
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index a073366a227c..fc55b760aeff 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -320,6 +320,13 @@ struct swap_info_struct {
->  					 */
->  	struct work_struct discard_work; /* discard worker */
->  	struct swap_cluster_list discard_clusters; /* discard clusters list */
-> +	unsigned int large_next[PMD_ORDER]; /*
+When modprobe cmds are executed one by one, the final loaded modules
+are not in fixed sequence as expected.
 
-Oh dear, I've tripped over this twice in a week now... PMD_ORDER is not a
-compile-time const on powerpc, so results in build fail. This would have to be
-allocated at init time, I guess.
+Add the option to make sure modules are in fixed sequence across reboot.
 
+Signed-off-by: Joey Jiao <quic_jiangenj@quicinc.com>
+---
+ kernel/module/Kconfig | 11 +++++++++++
+ kernel/module/main.c  |  3 ++-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-> +					     * next free offset within current
-> +					     * allocation cluster for large
-> +					     * folios, or UINT_MAX if no current
-> +					     * cluster. Index is (order - 1).
-> +					     * Only when cluster_info is used.
-> +					     */
->  	struct plist_node avail_lists[]; /*
->  					   * entries in swap_avail_heads, one
->  					   * entry per node.
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index c668838fa660..f8093dedc866 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -987,8 +987,10 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
->  	return n_ret;
->  }
-> 
-> -static int swap_alloc_cluster(struct swap_info_struct *si, swp_entry_t *slot)
-> +static int swap_alloc_large(struct swap_info_struct *si, swp_entry_t *slot,
-> +			    unsigned int nr_pages)
->  {
-> +	int order;
->  	unsigned long idx;
->  	struct swap_cluster_info *ci;
->  	unsigned long offset;
-> @@ -1002,20 +1004,47 @@ static int swap_alloc_cluster(struct swap_info_struct *si, swp_entry_t *slot)
->  		return 0;
->  	}
-> 
-> -	if (cluster_list_empty(&si->free_clusters))
-> -		return 0;
-> +	VM_WARN_ON(nr_pages < 2);
-> +	VM_WARN_ON(nr_pages > SWAPFILE_CLUSTER);
-> +	VM_WARN_ON(!is_power_of_2(nr_pages));
-> 
-> -	idx = cluster_list_first(&si->free_clusters);
-> -	offset = idx * SWAPFILE_CLUSTER;
-> -	ci = lock_cluster(si, offset);
-> -	alloc_cluster(si, idx);
-> -	cluster_set_count_flag(ci, SWAPFILE_CLUSTER, 0);
-> +	order = ilog2(nr_pages);
-> +	offset = si->large_next[order - 1];
-> +
-> +	if (offset == UINT_MAX) {
-> +		if (cluster_list_empty(&si->free_clusters))
-> +			return 0;
-> 
-> -	memset(si->swap_map + offset, SWAP_HAS_CACHE, SWAPFILE_CLUSTER);
-> +		idx = cluster_list_first(&si->free_clusters);
-> +		offset = idx * SWAPFILE_CLUSTER;
-> +
-> +		ci = lock_cluster(si, offset);
-> +		alloc_cluster(si, idx);
-> +		cluster_set_count_flag(ci, SWAPFILE_CLUSTER, 0);
-> +
-> +		/*
-> +		 * If scan_swap_map_slots() can't find a free cluster, it will
-> +		 * check si->swap_map directly. To make sure this standby
-> +		 * cluster isn't taken by scan_swap_map_slots(), mark the swap
-> +		 * entries bad (occupied). (same approach as discard).
-> +		 */
-> +		memset(si->swap_map + offset + nr_pages, SWAP_MAP_BAD,
-> +			SWAPFILE_CLUSTER - nr_pages);
-> +	} else {
-> +		idx = offset / SWAPFILE_CLUSTER;
-> +		ci = lock_cluster(si, offset);
-> +	}
-> +
-> +	memset(si->swap_map + offset, SWAP_HAS_CACHE, nr_pages);
->  	unlock_cluster(ci);
-> -	swap_range_alloc(si, offset, SWAPFILE_CLUSTER);
-> +	swap_range_alloc(si, offset, nr_pages);
->  	*slot = swp_entry(si->type, offset);
-> 
-> +	offset += nr_pages;
-> +	if (idx != offset / SWAPFILE_CLUSTER)
-> +		offset = UINT_MAX;
-> +	si->large_next[order - 1] = offset;
-> +
->  	return 1;
->  }
-> 
-> @@ -1041,7 +1070,7 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
->  	int node;
-> 
->  	/* Only single cluster request supported */
-> -	WARN_ON_ONCE(n_goal > 1 && size == SWAPFILE_CLUSTER);
-> +	WARN_ON_ONCE(n_goal > 1 && size > 1);
-> 
->  	spin_lock(&swap_avail_lock);
-> 
-> @@ -1078,14 +1107,14 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
->  			spin_unlock(&si->lock);
->  			goto nextsi;
->  		}
-> -		if (size == SWAPFILE_CLUSTER) {
-> +		if (size > 1) {
->  			if (si->flags & SWP_BLKDEV)
-> -				n_ret = swap_alloc_cluster(si, swp_entries);
-> +				n_ret = swap_alloc_large(si, swp_entries, size);
->  		} else
->  			n_ret = scan_swap_map_slots(si, SWAP_HAS_CACHE,
->  						    n_goal, swp_entries);
->  		spin_unlock(&si->lock);
-> -		if (n_ret || size == SWAPFILE_CLUSTER)
-> +		if (n_ret || size > 1)
->  			goto check_out;
->  		cond_resched();
-> 
-> @@ -2725,6 +2754,9 @@ static struct swap_info_struct *alloc_swap_info(void)
->  	spin_lock_init(&p->cont_lock);
->  	init_completion(&p->comp);
-> 
-> +	for (i = 0; i < ARRAY_SIZE(p->large_next); i++)
-> +		p->large_next[i] = UINT_MAX;
-> +
->  	return p;
->  }
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index c16e2b1ea8ae..5984d2ae4547 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1212,11 +1212,13 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
->  					if (!can_split_folio(folio, NULL))
->  						goto activate_locked;
->  					/*
-> -					 * Split folios without a PMD map right
-> -					 * away. Chances are some or all of the
-> -					 * tail pages can be freed without IO.
-> +					 * Split PMD-mappable folios without a
-> +					 * PMD map right away. Chances are some
-> +					 * or all of the tail pages can be freed
-> +					 * without IO.
->  					 */
-> -					if (!folio_entire_mapcount(folio) &&
-> +					if (folio_test_pmd_mappable(folio) &&
-> +					    !folio_entire_mapcount(folio) &&
->  					    split_folio_to_list(folio,
->  								folio_list))
->  						goto activate_locked;
-> --
-> 2.25.1
-> 
+diff --git a/kernel/module/Kconfig b/kernel/module/Kconfig
+index 33a2e991f608..b45a45f31d6d 100644
+--- a/kernel/module/Kconfig
++++ b/kernel/module/Kconfig
+@@ -389,4 +389,15 @@ config MODULES_TREE_LOOKUP
+ 	def_bool y
+ 	depends on PERF_EVENTS || TRACING || CFI_CLANG
+ 
++config MODULE_LOAD_IN_SEQUENCE
++	bool "Load module in sequence"
++	default n
++	help
++	  By default, modules are loaded in random sequence depending on when modprobe
++	  is executed.
++
++	  This option allows modules to be loaded in sequence if modprobe cmds are
++	  executed one by one in sequence. This option is helpful during syzkaller fuzzing
++	  to make sure module is loaded into fixed address across device reboot.
++
+ endif # MODULES
+diff --git a/kernel/module/main.c b/kernel/module/main.c
+index 98fedfdb8db5..e238a31d09eb 100644
+--- a/kernel/module/main.c
++++ b/kernel/module/main.c
+@@ -2594,7 +2594,8 @@ static noinline int do_init_module(struct module *mod)
+ 	 * rcu_barrier()
+ 	 */
+ 	if (llist_add(&freeinit->node, &init_free_list))
+-		schedule_work(&init_free_wq);
++		if (!IS_ENABLED(CONFIG_MODULE_LOAD_IN_SEQUENCE)) {
++			schedule_work(&init_free_wq);
+ 
+ 	mutex_unlock(&module_mutex);
+ 	wake_up_all(&module_wq);
+-- 
+2.42.0
 
