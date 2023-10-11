@@ -2,39 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA82C7C4C12
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC977C4BDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345542AbjJKHiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 03:38:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
+        id S1344747AbjJKHbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 03:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345197AbjJKHiF (ORCPT
+        with ESMTP id S1344920AbjJKHbF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 03:38:05 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0B30C198E;
-        Wed, 11 Oct 2023 00:29:05 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 0F95D80E1;
-        Wed, 11 Oct 2023 07:29:05 +0000 (UTC)
-Date:   Wed, 11 Oct 2023 10:29:03 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Douglas Anderson <dianders@chromium.org>,
-        Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] ARM: OMAP1: ams-delta: Fix MODEM initialization failure
-Message-ID: <20231011072903.GA34982@atomide.com>
-References: <20231007214640.376709-1-jmkrzyszt@gmail.com>
+        Wed, 11 Oct 2023 03:31:05 -0400
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.214])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BC4488F
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 00:30:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=oKT7F
+        qr44z78BErwG1vOizQzA/RhFHh09oOs0OyNp08=; b=aXnQVSsaw93utufBkzr1M
+        Hyn0NnwefoZ3+8T9guNbobt5Kgddq1o08BJnN/I2EuqUqzR/uIc7QEsodz6I5rtU
+        eMyhhMiH0kpOg922+BHNb1DUEbiNeh08t/XPaxp8k1yDLG9mhLwtes1njY3x+WBw
+        lVLgSaSh1IPm6RVKO+A0JI=
+Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
+        by zwqz-smtp-mta-g5-4 (Coremail) with SMTP id _____wDnbyTwTiZlYUr8AA--.36070S4;
+        Wed, 11 Oct 2023 15:30:00 +0800 (CST)
+From:   Ma Ke <make_ruc2021@163.com>
+To:     kvalo@kernel.org, quic_jjohnson@quicinc.com
+Cc:     ath12k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ma Ke <make_ruc2021@163.com>
+Subject: [PATCH] wifi: ath12k: call ath12k_mac_fils_discovery() without condition
+Date:   Wed, 11 Oct 2023 15:29:50 +0800
+Message-Id: <20231011072950.4097927-1-make_ruc2021@163.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231007214640.376709-1-jmkrzyszt@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wDnbyTwTiZlYUr8AA--.36070S4
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Xr17tFykGFyUWrW5ur4UArb_yoW8JrW3pF
+        47uF1DtF18CFn3JayUtF4xJF4rJ3Z8JrWxKF17Ja4rXFZ0yF1fKFy5Kay2kry8JFnFyF1Y
+        9w48tr43uFn8uFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0p_MKZDUUUUU=
+X-Originating-IP: [183.174.60.14]
+X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/xtbBFQIGC2B9od1edgAAsT
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
+        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -42,32 +52,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Mac80211 does not set flags BSS_CHANGED_FILS_DISCOVERY and
+BSS_CHANGED_UNSOL_BCAST_PROBE_RESP if there are no updates to
+FILS discovery and unsolicited broadcast probe response transmission
+configurations respectively. This results in the transmissions getting
+stopped during BSS change operations which do not include these
+attributes. Remove the checks for the flags and always send the existing
+configuration to firmware.
 
-* Janusz Krzysztofik <jmkrzyszt@gmail.com> [231008 00:47]:
-> [    6.823917][    T1] serial8250 serial8250.1: incomplete constraints, dummy supplies not allowed
-> [    6.874117][    T1] ------------[ cut here ]------------
-> [    6.893918][    T1] WARNING: CPU: 0 PID: 1 at drivers/base/core.c:2486 device_release+0x98/0xa8
-> [    6.930626][    T1] Device 'serial8250.1' does not have a release() function, it is broken and must be fixed. See Documentation/core-api/kobject.rst.
+Signed-off-by: Ma Ke <make_ruc2021@163.com>
+---
+ drivers/net/wireless/ath/ath12k/mac.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-The patch looks OK to me, but can you please trim down the warning for
-prettier git log output? At least the timestamps can go, and since
-you fixed it, you could trim the message down to something like this:
+diff --git a/drivers/net/wireless/ath/ath12k/mac.c b/drivers/net/wireless/ath/ath12k/mac.c
+index 88346e66bb75..94967f810093 100644
+--- a/drivers/net/wireless/ath/ath12k/mac.c
++++ b/drivers/net/wireless/ath/ath12k/mac.c
+@@ -2761,9 +2761,7 @@ static void ath12k_mac_op_bss_info_changed(struct ieee80211_hw *hw,
+ 		}
+ 	}
+ 
+-	if (changed & BSS_CHANGED_FILS_DISCOVERY ||
+-	    changed & BSS_CHANGED_UNSOL_BCAST_PROBE_RESP)
+-		ath12k_mac_fils_discovery(arvif, info);
++	ath12k_mac_fils_discovery(arvif, info);
+ 
+ 	if (changed & BSS_CHANGED_EHT_PUNCTURING)
+ 		arvif->punct_bitmap = info->eht_puncturing;
+-- 
+2.37.2
 
-serial8250 serial8250.1: incomplete constraints, dummy supplies not allowed
-WARNING: CPU: 0 PID: 1 at drivers/base/core.c:2486 device_release+0x98/0xa8
-Device 'serial8250.1' does not have a release() function, it is broken and
-must be fixed. See Documentation/core-api/kobject.rst.
-...
-put_device from platform_device_put+0x1c/0x24
-platform_device_put from ams_delta_init_late+0x4c/0x68
-ams_delta_init_late from init_machine_late+0x1c/0x94
-init_machine_late from do_one_initcall+0x60/0x1d4
-
-This still allows folks seeing similar errors to find them when searching.
-Also the ASoC warnings can be trimmed down a bit, formatting up to you
-how you prefer them naturally :)
-
-Thanks,
-
-Tony
