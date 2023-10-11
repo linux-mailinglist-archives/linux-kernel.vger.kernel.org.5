@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC507C5576
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F58C7C5580
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346859AbjJKNbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:31:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
+        id S1346913AbjJKNcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232185AbjJKNbx (ORCPT
+        with ESMTP id S234962AbjJKNcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:31:53 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7203690
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:31:52 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2817E1FEAE;
-        Wed, 11 Oct 2023 13:31:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697031111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HljStu/Mi1i6SudIv7bnTBAyqUy/d41TujLNpYF5gMY=;
-        b=aY11rfjxTE1FoeWh6i9Jql5jaIjxUPytLcWtK2OULeNH9XeIosVjcl49lSJGDZyiiQ7cHy
-        M20he2RtrKjbkcjoo+3rja5ilfQxv4CHAHbRvKwWmX636VF65mmtSHPyVmRaeg2YNoqcWr
-        Mj3A4BflLN/Rh6kui5F4I8rNOIujNBs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697031111;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HljStu/Mi1i6SudIv7bnTBAyqUy/d41TujLNpYF5gMY=;
-        b=PAmlM41fP4rh/VdU5dAsjrnxjAWX6nOLZNJeAgeEnJBWqG69vJKdY5DTG2uB0LffBORKle
-        8PfVse5bOIiYZHAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A6E1134F5;
-        Wed, 11 Oct 2023 13:31:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id oB+/AcejJmVZTgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 11 Oct 2023 13:31:51 +0000
-Message-ID: <e20542ca-3150-e281-b677-f6f6532d8181@suse.cz>
-Date:   Wed, 11 Oct 2023 15:31:50 +0200
+        Wed, 11 Oct 2023 09:32:50 -0400
+Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5862E92
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:32:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
+        ; s=dkim1; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date
+        :Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=K8IhnPI5raIUV9hC/d6lDvsl5QLHRFjU6dDeluRm1ZA=; b=jaL57E9Pn8vK3lef7INuctcakJ
+        2lIoiBK0tJujXp/3pbrmqMAfA3sh7O3vCmME2Y+tCbAstx6R98o3sEWAveXqpmCAC01yh03OtOja5
+        keoH/NBwzvntOCAJ+06GQnA36CRec44orjkRtxL93I/bWvkmjG766FH61HWDXOkxFDI9Tl6DWasWf
+        NEspwUGVzbhUS0cMyU4WhQW9LVFx5AfBnnVcxsjzF9c+qBQpw+v322GtstJ4gAtJAnpD9lUzHA7Im
+        cD+tptvWnk1zxfLPmCr1Rax/tdbxcKJGW8yQBdUg8nE9YviqLXQhAadKPrDsg8K1y1XEcAPtSODOi
+        G/xFW8ug==;
+Received: from [192.168.1.4] (port=11583 helo=SH-EX2013.helmholz.local)
+        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+        (Exim 4.96)
+        (envelope-from <Ante.Knezic@helmholz.de>)
+        id 1qqZK3-0004Rn-2n;
+        Wed, 11 Oct 2023 15:32:23 +0200
+Received: from linuxdev.helmholz.local (192.168.6.7) by
+ SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.48; Wed, 11 Oct 2023 15:32:23 +0200
+From:   Ante Knezic <ante.knezic@helmholz.de>
+To:     <andrew@lunn.ch>
+CC:     <UNGLinuxDriver@microchip.com>, <ante.knezic@helmholz.de>,
+        <conor+dt@kernel.org>, <davem@davemloft.net>,
+        <devicetree@vger.kernel.org>, <edumazet@google.com>,
+        <f.fainelli@gmail.com>, <krzysztof.kozlowski+dt@linaro.org>,
+        <kuba@kernel.org>, <linux-kernel@vger.kernel.org>, <marex@denx.de>,
+        <netdev@vger.kernel.org>, <olteanv@gmail.com>, <pabeni@redhat.com>,
+        <robh+dt@kernel.org>, <woojung.huh@microchip.com>
+Subject: [PATCH net-next 2/2] dt-bindings: net: microchip,ksz: document microchip,rmii-clk-internal
+Date:   Wed, 11 Oct 2023 15:32:23 +0200
+Message-ID: <20231011133223.29174-1-ante.knezic@helmholz.de>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <5348ffc3-a514-4d61-85f9-56910aa94d44@lunn.ch>
+References: <5348ffc3-a514-4d61-85f9-56910aa94d44@lunn.ch>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RESEND PATCH] mm: slab: Do not create kmalloc caches smaller
- than arch_slab_minalign()
-Content-Language: en-US
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>
-References: <20231006163934.3273940-1-catalin.marinas@arm.com>
- <a09a6fe5-2352-8922-e575-54bf74ae64e5@suse.cz> <ZSPiAE6c4rzhilRy@arm.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <ZSPiAE6c4rzhilRy@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [192.168.6.7]
+X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
+ SH-EX2013.helmholz.local (192.168.1.4)
+X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/23 13:20, Catalin Marinas wrote:
->> >  mm/slab_common.c | 7 +++++--
->> >  1 file changed, 5 insertions(+), 2 deletions(-)
->> > 
->> > diff --git a/mm/slab_common.c b/mm/slab_common.c
->> > index cd71f9581e67..8b45922ed295 100644
->> > --- a/mm/slab_common.c
->> > +++ b/mm/slab_common.c
->> > @@ -895,10 +895,13 @@ void __init setup_kmalloc_cache_index_table(void)
->> >  
->> >  static unsigned int __kmalloc_minalign(void)
->> >  {
->> > +	unsigned int minalign = dma_get_cache_alignment();
->> > +
->> >  	if (IS_ENABLED(CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC) &&
->> >  	    is_swiotlb_allocated())
->> > -		return ARCH_KMALLOC_MINALIGN;
->> > -	return dma_get_cache_alignment();
->> > +		minalign = ARCH_KMALLOC_MINALIGN;
->> > +
->> > +	return ALIGN(minalign, arch_slab_minalign());
+On Tue, 10 Oct 2023 15:57:34 +0200 Anrew Lunn wrote:
+>On Tue, Oct 10, 2023 at 03:41:39PM +0200, Ante Knezic wrote:
+>> On Tue, 10 Oct 2023 15:25:44 +0200, Andrew Lunn wrote:
+>> >> +  microchip,rmii-clk-internal:
+>> >> +    $ref: /schemas/types.yaml#/definitions/flag
+>> >> +    description:
+>> >> +      Set if the RMII reference clock should be provided internally. Applies only
+>> >> +      to KSZ88X3 devices.
+>> >
+>> >It would be good to define what happens when
+>> >microchip,rmii-clk-internal is not present. Looking at the code, you
+>> >leave it unchanged. Is that what we want, or do we want to force it to
+>> >external?
+>> >
+>> >	Andrew
 >> 
->> Could it be max() instead of ALIGN()? It would be more obvious, at least to
->> me :)
-> 
-> Yeah, max() would do since they are all a power of two. Do you want me
-> to repost?
+>> Default register setting is to use external RMII clock (which is btw only 
+>> available option for other KSZ devices - as far as I am aware) so I guess 
+>> theres no need to force it to external clock?
+>
+>We just need to watch out for a bootloader setting it. Or is it really
+>guaranteed to be false, because the DSA driver always does a device reset,
+>removing all existing configuration?
+>
+>I prefer it is unambiguously documented what not having the property
+>means.
+>
+>	Andrew
 
-No need, picked up and changed locally. Thanks!
+The bootloader case might be a issue if the reset-gpio property is not defined
+for the switch. In this case we should probably enforce the value either way.
+I will do the changes and repost.
 
-
+Thanks for feedback,
+Ante
