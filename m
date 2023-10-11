@@ -2,184 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0817C603B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604237C603E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233771AbjJKWRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 18:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57012 "EHLO
+        id S1344605AbjJKWS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 18:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231927AbjJKWRN (ORCPT
+        with ESMTP id S231927AbjJKWSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 18:17:13 -0400
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2073.outbound.protection.outlook.com [40.107.95.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93FA91;
-        Wed, 11 Oct 2023 15:17:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JAe1Pi3KRsm83jZZlX7cXn1pxi4TaUy+eDWvSFfONQSX/LdT2gS/U2UqCgWn5b8qXiXeF3gMzLDWCZv6maYJwz6U9lboEvzFnSTPj6BKVwBw9+znL3Lo0P5dKSqL5u2PxjOp/pxeaJlHLTpvvv+7AW0zyCYd/+k4nTMTmPB3FBH3yNllsIykxfZzvGIZI/C1QItgueFCV9S+U3DQYa1yrAYgKvTfqSF8YxiL40g7N1GX5VRmCXb+8yW3f0yXuxmTHIo+D6T2Tam38mmF1Dwk2C9AkM7g8kriRvL6FUyHzDSTWF7uEGgfIl4fIaU7NFqXXMy16UTU0q7JnYYVcUl3Uw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KYz03LnvIU8O44jtQpAHEdb2+oSXbdgks8YK03sGt4A=;
- b=CU23BxDwFQPcwwtP3UV5m7EC0fFgMs7afZvmcw2oAmWyKfjBJl3TJ2f6gtanRh2VgCQnIuDEZ11DQT3Dv9a8I+TXcZSUN/p8df2AX+UkwfSH3TuW1uN6SlW8aw/BKHxLolKvHtCmY2WJLEPWHaRka9dOV9rnO31/ZjzNCuQTZ9/I8JHLedU3rfs3BrA0A2IM/WEEbIZX26q8CN8AQStFog9rXPqjB3COQdn9IpdTPI5rfeNFTXWrZT3hBI+Rb8BffcSZO4HWa/7F9SaI0FVKMCOTSC8H2maX4pKHMwRXweMDNN8Kn86iDwKfFtBxP98D2G7s4ncbYQLGCicPBOoAVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KYz03LnvIU8O44jtQpAHEdb2+oSXbdgks8YK03sGt4A=;
- b=V6d33GKVb+nZJD/2wSUBWdIzKlk01iGKesl9z4A3ntvFS0zGe6sWvxSYuKxxyeUE2NQjvwvobxA7Xv7oFHwZbttMfP0oxL+7hLgMZ8s7K/qghC5tZoH4o02CpEiT5hSOY0+Tm5XRAf5LX8mNTR0kl5lnO/C3EZc+ZbfSbbn1EUU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS0PR12MB6583.namprd12.prod.outlook.com (2603:10b6:8:d1::12) by
- SA1PR12MB8886.namprd12.prod.outlook.com (2603:10b6:806:375::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6863.38; Wed, 11 Oct 2023 22:17:09 +0000
-Received: from DS0PR12MB6583.namprd12.prod.outlook.com
- ([fe80::e31c:de3c:af9d:cd2c]) by DS0PR12MB6583.namprd12.prod.outlook.com
- ([fe80::e31c:de3c:af9d:cd2c%5]) with mapi id 15.20.6863.032; Wed, 11 Oct 2023
- 22:17:09 +0000
-Message-ID: <cadf72fc-2c0b-428a-b445-0f6a34c18d9b@amd.com>
-Date:   Wed, 11 Oct 2023 15:17:06 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ionic: replace deprecated strncpy with strscpy
-To:     Justin Stitt <justinstitt@google.com>,
-        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20231011-strncpy-drivers-net-ethernet-pensando-ionic-ionic_main-c-v1-1-23c62a16ff58@google.com>
-Content-Language: en-US
-From:   "Nelson, Shannon" <shannon.nelson@amd.com>
-In-Reply-To: <20231011-strncpy-drivers-net-ethernet-pensando-ionic-ionic_main-c-v1-1-23c62a16ff58@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR13CA0025.namprd13.prod.outlook.com
- (2603:10b6:a03:180::38) To DS0PR12MB6583.namprd12.prod.outlook.com
- (2603:10b6:8:d1::12)
+        Wed, 11 Oct 2023 18:18:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30B79E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:17:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697062664;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HOBDG3xKzKr8T8oX4JN9DRdb/jGhMmbUwbMpuegARt0=;
+        b=SFT9YY1PzI7T1R4oMIGQBIhAm4wPgSieLuEorlADa0jnT2bnDT73Euxs7RQlpD3H5gQnPw
+        rsNVsFtwRei3AAvEbVogku2KMimnJ+b4OqKcLkfvFXpj7GWuIZOdFyuPQZ5/LpR6C92SC5
+        Ormi3p7JNSCYIwj3uvDetYMg2JdVa04=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-441-vlGBz8bBP3yYVRmoAhLDhA-1; Wed, 11 Oct 2023 18:17:42 -0400
+X-MC-Unique: vlGBz8bBP3yYVRmoAhLDhA-1
+Received: by mail-yb1-f199.google.com with SMTP id 3f1490d57ef6-d9a3a98b34dso411116276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:17:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697062662; x=1697667462;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HOBDG3xKzKr8T8oX4JN9DRdb/jGhMmbUwbMpuegARt0=;
+        b=beXUxCLEWqyr6E3JVEBH4EdmRrOV4TRit1Ecowrbb0IxqPJVNRRuT0bWBgcjUjnYBf
+         93DmsP34aeiLMQRzAsqNiYI6zgtfeHn7rsU9JAsU4mubHgpbHm4PcC9vl46uitgriiXr
+         ChLMr/pLcBkpEDaJodIS7E+mvt2G41EJ9CDIDixTlj4ACw00TK7XOEhN8IyiSxfgd26S
+         TQ6sBdc6ZyRWNG3wxKS1gtuzN47L0+y3AbFOgWn5ClOglI0N2+M9xgu8+9S4v/oHvbN4
+         EToT/6GZgs6ZcQ9TMabFlWCO5MEhafjK1YfGWG7AehzRwnTqwwvmOeiEfXn4Fi59oVef
+         N7wA==
+X-Gm-Message-State: AOJu0Yw/JHkAou9fMobIflPOxk/OqADQCHcGc14cjvowePAgeM2kW03M
+        cLTIEykE2n/+dQBpl6ClUyNWgNfnVqr73mra4JL+bCJhRCieyO5BPguYMnFKBmkbNqewuW9nSWK
+        44xyeikPB+yHVsbB0DrnUttCd
+X-Received: by 2002:a25:a346:0:b0:d62:d6c5:f5ee with SMTP id d64-20020a25a346000000b00d62d6c5f5eemr21254607ybi.58.1697062661941;
+        Wed, 11 Oct 2023 15:17:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHB/WjZnlk4wnVo1njse5BQo14v078PToJ3YVKAolzEvbngE/7Trey8T7IuLzo8Styd6XAAmA==
+X-Received: by 2002:a25:a346:0:b0:d62:d6c5:f5ee with SMTP id d64-20020a25a346000000b00d62d6c5f5eemr21254593ybi.58.1697062661608;
+        Wed, 11 Oct 2023 15:17:41 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id w9-20020a0cb549000000b0065b14fcfca6sm6060095qvd.118.2023.10.11.15.17.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 15:17:40 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 17:17:38 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v3 13/15] firmware: qcom: tzmem: enable SHM Bridge support
+Message-ID: <j543teo2apaugbq25to3un7f7iyh45tfxenmhj7vb3vwqd52i3@434do3lfdzq4>
+References: <20231009153427.20951-1-brgl@bgdev.pl>
+ <20231009153427.20951-14-brgl@bgdev.pl>
+ <fr4jwbacvcheqtxy6php2u6wr72mqm5hgat6xwmxhijee7j6sk@azlu42eod6b4>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6583:EE_|SA1PR12MB8886:EE_
-X-MS-Office365-Filtering-Correlation-Id: c2b047a1-9380-4531-6cc3-08dbcaa7cf60
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7cq3DKr7ttAtQwJktn7NMNU+R6H3wCK/vER2qDmfj1atGvRxb9P/TcGSPk8YAFpGyb3VmHuhMLfvRSmHx/71v8WhF40nE+f4vfuNZWvR7W8IrnEJfubYO4vqDgAyqpsJK11QiHMnlS6Yivls2gX/2YiKiq0en5omzaoPHXU/SH1KnUQOy51yZq3MlSEGXQ7fQincf+M2vlyY2WvUuWlrkAVqb1gp96tW4rhFukplkKaML3mOnk8iJ7UlFuCJrMn7oWf9tgo5iCEqFKXL0433JLukX86aoYORMpQivYL698oClCddmrmGrapaRmslBaMqZ7w25Iq7yJUAj8Rj6RZbAShVcK3lCSd/nmTzwxkp3ha6pQ7blA/YEUu97pPtC0qJG/BA6Aawj12YxhSi1FF52M+80h5HSJXef5AycT1wxLH/cxiFGG8DUa5vF2TRjFmz95YYhOWMKrUNkBDcKk9e8MdpksmZtsuTF21O/EygQu3ayVgtWIUzG4E7zb7hGefoU0wb2zYsPYdfICVp5kMHkZVskweSqQfKkmyLdolyrRmTjlix6GTqKv43cr7xfjwijhWxjMWWiSYzlmk8J6CHnYH8HqPk7d2juW9kOq5y42tGDrhH9vBqH2/45e3YB/7CWXVE5TjtMsu+x4xtkNUVLhbIzz9zJBguPjipa4wpoFDpIC1n/7fg+H6NeiG1saloTmWc0Mf5NsP9iWQANv9gnQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(366004)(396003)(39860400002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(6512007)(53546011)(478600001)(6486002)(966005)(6666004)(2616005)(2906002)(26005)(83380400001)(110136005)(66946007)(5660300002)(66476007)(316002)(4326008)(8676002)(8936002)(41300700001)(31696002)(6506007)(36756003)(38100700002)(86362001)(66556008)(31686004)(156123004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MVd0QjhSbTdieExGLzdYeXM3VFd3alQzVHEvM2tjRFBvMkNJcWtKNVkyL0lY?=
- =?utf-8?B?N3NYSUVpcHZwNkxGcmcrOUNUSHdLb1RubC9JYm56czN3NHFPUHN6ZFkvVElS?=
- =?utf-8?B?NkMxOUJiZTdBZ09XN3N6MC91NkZJeDBVNGkvRkNLNk4rUXZSWDRUbE8vYm1W?=
- =?utf-8?B?UDlycUhHV1hmb1VrWFF1RHZhQUdpVFRsK29rbEd2Vk5RUzVBRDJ5c1ZZbHNy?=
- =?utf-8?B?RUk0SVV6aHJ6UloyS0U3a3c3QXVYSDNrTU4vMkVFanlBNHZncGZoZzBweC9j?=
- =?utf-8?B?alVLd3EvcFZGYVAzdEpyRVFxaHcyMlc0b0ZZMVBUL3dEM3F5SHhCL0p2UmxY?=
- =?utf-8?B?YjNTNXRHODIyU29HTi9jNFVhbkZDdFdQMGNQRUxwV0RuTVVvbTJpQUg3bjRi?=
- =?utf-8?B?QW4vTlp1QkM2MWN1ZkpsR1U1R2J2SkM1aGZTQk1YR2NsVGp0VHlJcFlkeXpw?=
- =?utf-8?B?aUozUEhHNExFN2RBWmk1U3BtaG9OaS8yV0RrZHl3MlFxc2J4c2NWd3FpMDhw?=
- =?utf-8?B?SXZML0R4VElGUHhiaFI4RER6TlpPRE1JdDFwenVucWVldkRFdXQvcXVsZC9o?=
- =?utf-8?B?Y0FyTjdzcEdQZmpQejdERGhRL0hWYXJ2NTdGQUN6OE1nYUxIaVFzUnQwNFlL?=
- =?utf-8?B?SG8yK0wrTnZ2YTVtQTVhNXlzSHJZOUJYOUdlSDFZandXdEpzbEFQRDNPYWQ4?=
- =?utf-8?B?MEdFMzBOTCt3MUhFU1hIQnh1UFMranhJK3VUTExNdll6Rk5ReGJncVNsZ0Ru?=
- =?utf-8?B?WFdQbjhrWWpMdU1rbmNtMzNLT3UvU216UkM0UDQyN1JrY0JmL1ZNdlBRRE43?=
- =?utf-8?B?cWcxKzVLYnNsQi9zdW9lbXJDcnYxN3hRQkxrc1BQR0NWL1pGWGlXUml6MUxi?=
- =?utf-8?B?eFdTMjJTeEx0Qm1qVVRSQ2JReUFJdkxCSVpHOXV2RUgxNXBQRHhtQVByVzNq?=
- =?utf-8?B?WSttaHUvK21zcjAzelVsRTRBRzlCOXM0Q0tPLzY5U0VFSk9EdzBHN3R5RmtM?=
- =?utf-8?B?dG14L1VUWUg2dkR5ZHlIc2Iwb3NpakNrZ25oSFQ2alFxZ1BXaGdwWkpHSU9t?=
- =?utf-8?B?VHFDeVlHTnFETGpjeGxCcWthQ2FraC9MSGRRZnpFTytXM3VUUnhiTTYrYlE2?=
- =?utf-8?B?YXpLQ294ZXBoUmRNWW9iR1VYT3J2Y0xEQTE1Y3laME1IN015RWVKT3haaThj?=
- =?utf-8?B?UytYNXhEMkJ4R2VXVGFWanU4bU5wOWlBM3E1dTUyaGhNSmNpQzU0bGFKbVlB?=
- =?utf-8?B?UklycHFMY05mOHB4TDNFOGJUTlk5Q3E5RzZHQ084dXlMNkZQcGFPNithT29h?=
- =?utf-8?B?MXNhcWV6TlVGMVdMbmRiRHNMOHVXa0psOG43czBqQ1czV1BZQlZEaGJ6Tkhw?=
- =?utf-8?B?NnBvME9WY1hiejNLUHBxZnNlWXF1YmFKelI3cFQzbmp4M0lxZnJKZDRmTWc1?=
- =?utf-8?B?ZVhaYlRQdG9aS0hRRlU2M0d1NUFrMHVOdTVyeXZXMnFnL20wcXd3d2xIcXA3?=
- =?utf-8?B?K1hKaGRQL1JESkJVbUd2MEFQaSsvN214YytrZ0xjcXhwRlpKVm5uV2VLU3Vm?=
- =?utf-8?B?L2NjZXQxajJSb3I4S2tqbC80QjJ6MkZENU9xa2RyTDY2LzR3WXRNalNjY3VQ?=
- =?utf-8?B?WlliMzRjaWJSMVcxWTZKS0IvMnVyVXVIM2dWcGRBR3BISktSS0Y1Y244RzZF?=
- =?utf-8?B?Y3c5em0xMHUvNDQvZ1o0S0EyNVUrekgyckM2VHBVeWU2NEZiYXJQY1UrWjFR?=
- =?utf-8?B?ck5qbGVVVThpUXdRanNtT3lJZUl6N0JXck1GaThVVm1CRkJibDBWdXhrVHIv?=
- =?utf-8?B?Q2FHZTQvQWZmZVBOL3Y3STV3dlkwaEx6em5BRFY0NHBwcTFESVBNYkhCbmIz?=
- =?utf-8?B?NG9CVWRBVnFSOC90SHVzZnkzV2hwQzFnakNGQnpnNzZxY3kzNjR1S1ZTWG1R?=
- =?utf-8?B?NStmYzcwTmUrOTR0RlNHQ0lwNytFcXFwUmY2T2xuZlRkd0NtcjhUdUcydzVa?=
- =?utf-8?B?UjlNVEhMY0MyQzNxV2FqMWwwTDlOVXRJaDEvTmo4cFpkZStJZDJVK2hMbXZQ?=
- =?utf-8?B?dnNLRE9nem9aTUVpUnFNbi80MXRvOWVyKzkvRGZhYm9nbEVLaVB4MWFlMStG?=
- =?utf-8?Q?nJ/v5lQYIyN0TKSsr/QClL+Wu?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2b047a1-9380-4531-6cc3-08dbcaa7cf60
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6583.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2023 22:17:09.1856
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Xxiod5hcEYVRPA/r92GrlEjlpqKBglHu6taWYOYAkdDs9huIsxXf6Vr1K2KIx/cUc2XUSmbi0zVfGu/IYKwrlg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8886
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fr4jwbacvcheqtxy6php2u6wr72mqm5hgat6xwmxhijee7j6sk@azlu42eod6b4>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/2023 2:53 PM, 'Justin Stitt' via Pensando Drivers wrote:
+On Wed, Oct 11, 2023 at 04:14:32PM -0500, Andrew Halaney wrote:
+> On Mon, Oct 09, 2023 at 05:34:25PM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > 
+> > Add a new Kconfig option for selecting the SHM Bridge mode of operation
+> > for the TrustZone memory allocator.
+> > 
+> > If enabled at build-time, it will still be checked for availability at
+> > run-time. If the architecture doesn't support SHM Bridge, the allocator
+> > will work just like in the default mode.
+> > 
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > ---
+> >  drivers/firmware/qcom/Kconfig      | 10 +++++
+> >  drivers/firmware/qcom/qcom_tzmem.c | 67 +++++++++++++++++++++++++++++-
+> >  2 files changed, 76 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/firmware/qcom/Kconfig b/drivers/firmware/qcom/Kconfig
+> > index 237da40de832..e01407e31ae4 100644
+> > --- a/drivers/firmware/qcom/Kconfig
+> > +++ b/drivers/firmware/qcom/Kconfig
+> > @@ -27,6 +27,16 @@ config QCOM_TZMEM_MODE_DEFAULT
+> >  	  Use the default allocator mode. The memory is page-aligned, non-cachable
+> >  	  and contiguous.
+> >  
+> > +config QCOM_TZMEM_MODE_SHMBRIDGE
+> > +	bool "SHM Bridge"
+> > +	help
+> > +	  Use Qualcomm Shared Memory Bridge. The memory has the same alignment as
+> > +	  in the 'Default' allocator but is also explicitly marked as an SHM Bridge
+> > +	  buffer.
+> > +
+> > +	  With this selected, all buffers passed to the TrustZone must be allocated
+> > +	  using the TZMem allocator or else the TrustZone will refuse to use them.
+> > +
+> >  endchoice
+> >  
+> >  config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
+> > diff --git a/drivers/firmware/qcom/qcom_tzmem.c b/drivers/firmware/qcom/qcom_tzmem.c
+> > index eee51fed756e..b3137844fe43 100644
+> > --- a/drivers/firmware/qcom/qcom_tzmem.c
+> > +++ b/drivers/firmware/qcom/qcom_tzmem.c
+> > @@ -55,7 +55,72 @@ static void qcom_tzmem_cleanup_pool(struct qcom_tzmem_pool *pool)
+> >  
+> >  }
+> >  
+> > -#endif /* CONFIG_QCOM_TZMEM_MODE_DEFAULT */
+> > +#elif IS_ENABLED(CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE)
+> > +
+> > +#include <linux/firmware/qcom/qcom_scm.h>
+> > +
+> > +#define QCOM_SHM_BRIDGE_NUM_VM_SHIFT 9
+> > +
+> > +static bool qcom_tzmem_using_shm_bridge;
+> > +
+> > +static int qcom_tzmem_init(void)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = qcom_scm_shm_bridge_enable();
+> > +	if (ret == -EOPNOTSUPP) {
+> > +		dev_info(qcom_tzmem_dev, "SHM Bridge not supported\n");
+> > +		ret = 0;
+> > +	}
+> > +
+> > +	if (!ret)
+> > +		qcom_tzmem_using_shm_bridge = true;
 > 
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
+> Does the qcom_scm_shm_bridge_enable() returning -EOPNOTSUPP case make
+> sense? Setting ret to 0 and then claiming we're using shm_bridge seems
+> wrong to me.
 > 
-> NUL-padding is not needed due to `ident` being memset'd to 0 just before
-> the copy.
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int qcom_tzmem_init_pool(struct qcom_tzmem_pool *pool)
+> > +{
+> > +	u64 pfn_and_ns_perm, ipfn_and_s_perm, size_and_flags, ns_perms, *handle;
+> > +	int ret;
+> > +
+> > +	if (!qcom_tzmem_using_shm_bridge)
+> > +		return 0;
+> > +
+> > +	ns_perms = (QCOM_SCM_PERM_WRITE | QCOM_SCM_PERM_READ);
+> > +	pfn_and_ns_perm = (u64)pool->pbase | ns_perms;
+> > +	ipfn_and_s_perm = (u64)pool->pbase | ns_perms;
+> > +	size_and_flags = pool->size | (1 << QCOM_SHM_BRIDGE_NUM_VM_SHIFT);
 > 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> Is there any sanity checking that can be done here? I assume bits 0-11 are all
+> flag fields (or at least unrelated to size which I assume at a minimum
+> must be 4k aka bit 12).
 
-Thanks, I suspected this was coming soon :-)
+I guess qcom_tzmem_pool_new's PAGE_ALIGN would make sure this is
+probably ok for all future users, but I do think some sanity would be
+nice to indicate the size's allowed for SHM bridge.
 
-Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
+> 
+> > +
+> > +	handle = kzalloc(sizeof(*handle), GFP_KERNEL);
+> 
+> Consider __free(kfree) + return_ptr() usage?
+> 
+> > +	if (!handle)
+> > +		return -ENOMEM;
+> > +
+> > +	ret = qcom_scm_shm_bridge_create(qcom_tzmem_dev, pfn_and_ns_perm,
+> > +					 ipfn_and_s_perm, size_and_flags,
+> > +					 QCOM_SCM_VMID_HLOS, handle);
+> > +	if (ret) {
+> > +		kfree(handle);
+> > +		return ret;
+> > +	}
+> > +
+> > +	pool->priv = handle;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void qcom_tzmem_cleanup_pool(struct qcom_tzmem_pool *pool)
+> > +{
+> > +	u64 *handle = pool->priv;
+> > +
+> > +	if (!qcom_tzmem_using_shm_bridge)
+> > +		return;
+> > +
+> > +	qcom_scm_shm_bridge_delete(qcom_tzmem_dev, *handle);
+> > +	kfree(handle);
+> > +}
+> > +
+> > +#endif /* CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE */
+> >  
+> >  /**
+> >   * qcom_tzmem_pool_new() - Create a new TZ memory pool.
+> > -- 
+> > 2.39.2
+> > 
 
-
-> ---
-> Note: build-tested only.
-> 
-> Found with: $ rg "strncpy\("
-> ---
->   drivers/net/ethernet/pensando/ionic/ionic_main.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/pensando/ionic/ionic_main.c b/drivers/net/ethernet/pensando/ionic/ionic_main.c
-> index 1dc79cecc5cc..835577392178 100644
-> --- a/drivers/net/ethernet/pensando/ionic/ionic_main.c
-> +++ b/drivers/net/ethernet/pensando/ionic/ionic_main.c
-> @@ -554,8 +554,8 @@ int ionic_identify(struct ionic *ionic)
->          memset(ident, 0, sizeof(*ident));
-> 
->          ident->drv.os_type = cpu_to_le32(IONIC_OS_TYPE_LINUX);
-> -       strncpy(ident->drv.driver_ver_str, UTS_RELEASE,
-> -               sizeof(ident->drv.driver_ver_str) - 1);
-> +       strscpy(ident->drv.driver_ver_str, UTS_RELEASE,
-> +               sizeof(ident->drv.driver_ver_str));
-> 
->          mutex_lock(&ionic->dev_cmd_lock);
-> 
-> 
-> ---
-> base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-> change-id: 20231011-strncpy-drivers-net-ethernet-pensando-ionic-ionic_main-c-709f8f1ea312
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
