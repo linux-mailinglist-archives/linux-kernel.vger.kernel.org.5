@@ -2,77 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 426257C5D69
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632FE7C5D74
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233233AbjJKTIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 15:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47140 "EHLO
+        id S233342AbjJKTME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 15:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232224AbjJKTIx (ORCPT
+        with ESMTP id S232224AbjJKTMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 15:08:53 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA1490;
-        Wed, 11 Oct 2023 12:08:50 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-7a2874d2820so3195739f.1;
-        Wed, 11 Oct 2023 12:08:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697051330; x=1697656130; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UOAHf3xPVNAj31p9ZuVv8f99VDpjedw2IWf54wQ2koM=;
-        b=R2jhRyBDCYWcs+M0RzfihZ7KPwzHAVwLQ73iF/LdNZcnpyNzujkSLdfpvXXlpEdjwB
-         PkUtczMQ95YKWio/huWt0GETC4zRtuwA9wK1MbmtRGq5lX9ej/o+BHcz2XhTT31N2ey/
-         JQ5LtCmf4DfGmnh74d8vaxMi0foQ6cLIdH16rzG2no7KnvK5oSMt25m3OzJOAW9NQXEa
-         QAh5Is0jsanS9d/RUZwZsooDlUl6zmfzqbEZqdtH8ySqmgHMzPMLxcIxnObRsjRin5XQ
-         zsowaqO/vj2Pyh4otYjeyLZdTCGpzOuTQqycOHYOWObsBy9gmpVuyZVhmMw2ruYvStdA
-         qcvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697051330; x=1697656130;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UOAHf3xPVNAj31p9ZuVv8f99VDpjedw2IWf54wQ2koM=;
-        b=U6IWOi7kB0NthWNqlKQVlJpLJh7UEx8/QFbv4NTX+CwnLhvhJecG6Wi+yLMyLfCf4M
-         ms2lI5grpqtP7rq99hBdwdRMqzyysgFXQ08LERnxbCd4sCgs5HapwDJTcdviMfq8N357
-         zq2libauY1fDEKwAgJNJ2Fvqgr6/dQh3qn2iQuh9SRkMas9KiqaBprpwmvA1OYZF52Oj
-         jgYCG5B4tvafXEn7vGxX3i1TBXIE67CT9yEmU2/UFMVGJiMTG8SuZNygJ9YDNfWyZsdf
-         gCixXwL4c9o4s5oiJ2BbYUwSOPTCK6JcRNHvA8tXjnmthpO9PV4o+PyoYVZ7AqcyNmax
-         fapg==
-X-Gm-Message-State: AOJu0Yz9TvhAxQG3F52bZdL8A1LRUADpZqOnc+erPIkkN6nd33Ax43hp
-        29IVpX5zn94WBRVK3XqiuRA=
-X-Google-Smtp-Source: AGHT+IEvyVcmyoResAsmvkfmIStWlRecPzJs24Pekw51sgdB1+vZgz26xmObGIfV15Y7nuH+4KXd1Q==
-X-Received: by 2002:a6b:5a0a:0:b0:790:958e:a667 with SMTP id o10-20020a6b5a0a000000b00790958ea667mr21122819iob.2.1697051329738;
-        Wed, 11 Oct 2023 12:08:49 -0700 (PDT)
-Received: from [192.168.0.152] ([103.75.161.211])
-        by smtp.gmail.com with ESMTPSA id n3-20020a5e8c03000000b0079ab2787139sm3852955ioj.7.2023.10.11.12.07.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 12:08:10 -0700 (PDT)
-Message-ID: <b34b4e95-2d0c-4cb0-97b0-2613857d2c35@gmail.com>
-Date:   Thu, 12 Oct 2023 00:37:37 +0530
+        Wed, 11 Oct 2023 15:12:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34598F;
+        Wed, 11 Oct 2023 12:12:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42383C433C7;
+        Wed, 11 Oct 2023 19:12:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697051521;
+        bh=It2LkzgcfBOst3Wh1aN+gatu/fkADJhMweGlc+NHALo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Jl0E2PjdjeYZKN2MtbJugaZFPdz1gVb9M8/mUf7FTUOljrlilqjgJ3290JLNNH+HM
+         ngKoDfORErP1av+MAmOHOUgTQzOkbvxWnCcmQEs2m/gDCBpu5hSHYlwOA6YHTIjbVm
+         o0xxEsJVYt3JOYOYNxVqWHIo67BkwQ6F+pfLYnbgAb1Q51oWUAfUi9voF6kjVIeeYU
+         ldlfvPiIimOfIDq4ug9Yh19SXYlqzBk7AjAF+TwvnDMk2dQ6ih8O4s/EInSXbuw3mv
+         4IyiMMXEIXYzE9Hie20sHLDp3NNuwil1/26+OJRA+O3jaaMkF53MA1bk/gpeZ3VTOi
+         p1fHUdFXDvxTg==
+Date:   Wed, 11 Oct 2023 12:12:00 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Chandan Babu R <chandan.babu@oracle.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brauner@kernel.org
+Subject: Re: [PATCH] xfs: reinstate the old i_version counter as
+ STATX_CHANGE_COOKIE
+Message-ID: <20231011191200.GA21277@frogsfrogsfrogs>
+References: <20230929-xfs-iversion-v1-1-38587d7b5a52@kernel.org>
+ <b4136500fe6c49ee689dba139ce25824684719f2.camel@kernel.org>
+ <20231011154938.GL21298@frogsfrogsfrogs>
+ <e0599593fcff0eca5c8287b8d09631b5fcb3a7e4.camel@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Remove extra unlock for the mutex
-Content-Language: en-US
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, davem@davemloft.net,
-        dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-References: <20231010224630.238254-1-singhabhinav9051571833@gmail.com>
- <2023101136-irritate-shrine-cde6@gregkh>
- <3073e9a6-9f10-4326-9734-7e203d509888@gmail.com>
- <CANn89i+hMbhLqXKCF2P=HVeeRSCxvgH_xY1b=T=udLFJjG3ZwA@mail.gmail.com>
-From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
-In-Reply-To: <CANn89i+hMbhLqXKCF2P=HVeeRSCxvgH_xY1b=T=udLFJjG3ZwA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e0599593fcff0eca5c8287b8d09631b5fcb3a7e4.camel@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,34 +56,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/23 23:13, Eric Dumazet wrote:
+On Wed, Oct 11, 2023 at 11:51:08AM -0400, Jeff Layton wrote:
+> On Wed, 2023-10-11 at 08:49 -0700, Darrick J. Wong wrote:
+> > On Wed, Oct 11, 2023 at 09:09:38AM -0400, Jeff Layton wrote:
+> > > On Fri, 2023-09-29 at 14:43 -0400, Jeff Layton wrote:
+> > > > The handling of STATX_CHANGE_COOKIE was moved into generic_fillattr in
+> > > > commit 0d72b92883c6 (fs: pass the request_mask to generic_fillattr), but
+> > > > we didn't account for the fact that xfs doesn't call generic_fillattr at
+> > > > all.
+> > > > 
+> > > > Make XFS report its i_version as the STATX_CHANGE_COOKIE.
+> > > > 
+> > > > Fixes: 0d72b92883c6 (fs: pass the request_mask to generic_fillattr)
+> > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > > ---
+> > > > I had hoped to fix this in a better way with the multigrain patches, but
+> > > > it's taking longer than expected (if it even pans out at this point).
+> > > > 
+> > > > Until then, make sure we use XFS's i_version as the STATX_CHANGE_COOKIE,
+> > > > even if it's bumped due to atime updates. Too many invalidations is
+> > > > preferable to not enough.
+> > > > ---
+> > > >  fs/xfs/xfs_iops.c | 5 +++++
+> > > >  1 file changed, 5 insertions(+)
+> > > > 
+> > > > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> > > > index 1c1e6171209d..2b3b05c28e9e 100644
+> > > > --- a/fs/xfs/xfs_iops.c
+> > > > +++ b/fs/xfs/xfs_iops.c
+> > > > @@ -584,6 +584,11 @@ xfs_vn_getattr(
+> > > >  		}
+> > > >  	}
+> > > >  
+> > > > +	if ((request_mask & STATX_CHANGE_COOKIE) && IS_I_VERSION(inode)) {
+> > > > +		stat->change_cookie = inode_query_iversion(inode);
+> > > > +		stat->result_mask |= STATX_CHANGE_COOKIE;
+> > > > +	}
+> > > > +
+> > > >  	/*
+> > > >  	 * Note: If you add another clause to set an attribute flag, please
+> > > >  	 * update attributes_mask below.
+> > > > 
+> > > > ---
+> > > > base-commit: df964ce9ef9fea10cf131bf6bad8658fde7956f6
+> > > > change-id: 20230929-xfs-iversion-819fa2c18591
+> > > > 
+> > > > Best regards,
+> > > 
+> > > Ping?
+> > > 
+> > > This patch is needed in v6.6 to prevent a regression when serving XFS
+> > > via NFSD. I'd prefer this go in via the xfs tree, but let me know if
+> > > you need me to get this merged this via a different one.
+> > 
+> > Oh!   Right, this is needed because the "hide a state in the high bit of
+> > tv_nsec" stuff got reverted in -rc3, correct?  So now nfsd needs some
+> > way to know that something changed in the file, and better to have too
+> > many client invalidations than not enough?  And I guess bumping
+> > i_version will keep nfsd sane for now?
+> > 
+> > If the answers are [yes, yes, yes] then:
+> > Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 > 
-> There is no undefined behavior, only sparse that might be confused a little.
-> 
-> I do not think we can express in sparse the fact that
-> inet_csk_find_open_port() acquires head->lock
-> 
-> (head being the return value of this function...)
-> 
-> The following does not help.
-> 
-> diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-> index aeebe881668996057d1495c84eee0f0b644b7ad0..ed7b3993316cd1ba0b2859b0bd3f447e066bd3b5
-> 100644
-> --- a/net/ipv4/inet_connection_sock.c
-> +++ b/net/ipv4/inet_connection_sock.c
-> @@ -323,6 +323,7 @@ static struct inet_bind_hashbucket *
->   inet_csk_find_open_port(const struct sock *sk, struct
-> inet_bind_bucket **tb_ret,
->                          struct inet_bind2_bucket **tb2_ret,
->                          struct inet_bind_hashbucket **head2_ret, int *port_ret)
-> +       __acquires(head->lock)
->   {
->          struct inet_hashinfo *hinfo = tcp_or_dccp_get_hashinfo(sk);
->          int i, low, high, attempt_half, port, l3mdev;
+> Yes, yes, and yes. Can you guys shepherd this into mainline?
 
-Okay got it. Thank you for your time maintainers.And apologizes for not 
-thoroughly checking before sending the patch. I have a question, there 
-were some type checking warning as well from sparse tool. Can a create 
-patch for fixing those type checking warning?
+Chandan, can you queue this (and the other xfs fixes I sent) for -rc6?
 
+--D
+
+> Thanks for the R-b!
+> -- 
+> Jeff Layton <jlayton@kernel.org>
+> 
