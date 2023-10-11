@@ -2,134 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D60E7C5805
+	by mail.lfdr.de (Postfix) with ESMTP id C5D797C5806
 	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 17:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235010AbjJKP0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 11:26:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232868AbjJKP0O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S234906AbjJKP0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 11 Oct 2023 11:26:14 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044B392;
-        Wed, 11 Oct 2023 08:26:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06141C433C9;
-        Wed, 11 Oct 2023 15:26:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697037969;
-        bh=ffZCdV6S3mfAswlL4iRHUl65ZXH/97XVC+UgVd+j71w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QuMHdz03n1BfB2yvbi90uIfPDcGaOQm/4sxL26h4J46dlTFjur9pQdPbgXE1MWXh/
-         awQXJQGRuGbvfsBzZS320T2CSWWhpRB35hO0o/kXRPEG0CRnZtbNqsphpUgaRgCFe3
-         86EcgS2jYsbId1dSXsdUlYVace+g2HNvcvCBqnWY=
-Date:   Wed, 11 Oct 2023 17:26:06 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Conor Dooley <conor@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232673AbjJKP0M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Oct 2023 11:26:12 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5355798
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 08:26:10 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id B0E2D21870;
+        Wed, 11 Oct 2023 15:26:08 +0000 (UTC)
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 2D7A92C710;
+        Wed, 11 Oct 2023 15:26:07 +0000 (UTC)
+Date:   Wed, 11 Oct 2023 17:26:07 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/6] RISC-V: KVM: Change the SBI specification version to
- v2.0
-Message-ID: <2023101148-anatomy-mantis-a0f5@gregkh>
-References: <20231010170503.657189-1-apatel@ventanamicro.com>
- <20231010170503.657189-3-apatel@ventanamicro.com>
- <2023101013-overfeed-online-7f69@gregkh>
- <CAK9=C2WbW_WvoU59Ba9VrKf5GbbXmMOhB2jsiAp0a=SJYh3d7w@mail.gmail.com>
- <2023101107-endorse-large-ef50@gregkh>
- <CAK9=C2XYQ0U9CbuCg6cTf79sSsy+0BxF5mBE0R+E3s9iZFzEWw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] printk: Check valid console index for preferred
+ console
+Message-ID: <ZSa-j7p-icBvOANN@alley>
+References: <20231011074330.14487-1-tony@atomide.com>
+ <2023101131-maroon-stubborn-1364@gregkh>
+ <20231011091803.GC34982@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK9=C2XYQ0U9CbuCg6cTf79sSsy+0BxF5mBE0R+E3s9iZFzEWw@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231011091803.GC34982@atomide.com>
+X-Spamd-Bar: +++++++++++++++++++++++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+        spf=fail (smtp-out1.suse.de: domain of pmladek@suse.com does not designate 149.44.160.134 as permitted sender) smtp.mailfrom=pmladek@suse.com
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [23.60 / 50.00];
+         ARC_NA(0.00)[];
+         R_SPF_FAIL(1.00)[-all];
+         BAYES_SPAM(5.10)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
+         RCPT_COUNT_FIVE(0.00)[6];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+         VIOLATED_DIRECT_SPF(3.50)[];
+         MX_GOOD(-0.01)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MID_RHS_NOT_FQDN(0.50)[];
+         R_DKIM_NA(0.20)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         MIME_TRACE(0.00)[0:+]
+X-Spam-Score: 23.60
+X-Rspamd-Queue-Id: B0E2D21870
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 04:32:22PM +0530, Anup Patel wrote:
-> On Wed, Oct 11, 2023 at 12:57 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Oct 11, 2023 at 11:49:14AM +0530, Anup Patel wrote:
-> > > On Tue, Oct 10, 2023 at 10:43 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Tue, Oct 10, 2023 at 10:34:59PM +0530, Anup Patel wrote:
-> > > > > We will be implementing SBI DBCN extension for KVM RISC-V so let
-> > > > > us change the KVM RISC-V SBI specification version to v2.0.
-> > > > >
-> > > > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > > > > ---
-> > > > >  arch/riscv/include/asm/kvm_vcpu_sbi.h | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/arch/riscv/include/asm/kvm_vcpu_sbi.h b/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> > > > > index cdcf0ff07be7..8d6d4dce8a5e 100644
-> > > > > --- a/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> > > > > +++ b/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> > > > > @@ -11,7 +11,7 @@
-> > > > >
-> > > > >  #define KVM_SBI_IMPID 3
-> > > > >
-> > > > > -#define KVM_SBI_VERSION_MAJOR 1
-> > > > > +#define KVM_SBI_VERSION_MAJOR 2
-> > > >
-> > > > What does this number mean?  Who checks it?  Why do you have to keep
-> > > > incrementing it?
-> > >
-> > > This number is the SBI specification version implemented by KVM RISC-V
-> > > for the Guest kernel.
-> > >
-> > > The original sbi_console_putchar() and sbi_console_getchar() are legacy
-> > > functions (aka SBI v0.1) which were introduced a few years back along
-> > > with the Linux RISC-V port.
-> > >
-> > > The latest SBI v2.0 specification (which is now frozen) introduces a new
-> > > SBI debug console extension which replaces legacy sbi_console_putchar()
-> > > and sbi_console_getchar() functions with better alternatives.
-> > > (Refer, https://github.com/riscv-non-isa/riscv-sbi-doc/releases/download/commit-fe4562532a9cc57e5743b6466946c5e5c98c73ca/riscv-sbi.pdf)
-> > >
-> > > This series adds SBI debug console implementation in KVM RISC-V
-> > > so the SBI specification version advertised by KVM RISC-V must also be
-> > > upgraded to v2.0.
-> > >
-> > > Regarding who checks its, the SBI client drivers in the Linux kernel
-> > > will check SBI specification version implemented by higher privilege
-> > > mode (M-mode firmware or HS-mode hypervisor) before probing
-> > > the SBI extension. For example, the HVC SBI driver (PATCH5)
-> > > will ensure SBI spec version to be at least v2.0 before probing
-> > > SBI debug console extension.
-> >
-> > Is this api backwards compatible, or did you just break existing
-> > userspace that only expects version 1.0?
+On Wed 2023-10-11 12:18:03, Tony Lindgren wrote:
+> * Greg Kroah-Hartman <gregkh@linuxfoundation.org> [231011 07:53]:
+> > On Wed, Oct 11, 2023 at 10:43:25AM +0300, Tony Lindgren wrote:
+> > > Let's check for valid console index values to avoid bogus console index
+> > > numbers from kernel command line. While struct console uses short for
+> > > index, and negative index values are used by some device drivers, we do
+> > > not want to allow negative values for preferred console.
+> > 
+> > What drivers use a negative index for the console?
 > 
-> The legacy sbi_console_putchar() and sbi_console_getchar()
-> functions have not changed so it does not break existing
-> user-space.
+> This is based on grepping with $ git grep "co->index =" drivers/tty/
 > 
-> The new SBI DBCN functions to be implemented by KVM
-> user space are:
-> sbi_debug_console_write()
-> sbi_debug_console_read()
-> sbi_debug_console_write_byte()
+> Not sure what all might be stopping making struct console index unsigned.
 
-And where exactly is that code for us to review that this is tested?
+The value -1 is used for initializing struct console, see:
 
-thanks,
+$> git grep -A10 "struct console.*=" | \
+   grep -e "struct console" -e index | \
+   grep -B1 index
+[...]
+drivers/tty/serial/8250/8250_core.c:static struct console univ8250_console = {
+drivers/tty/serial/8250/8250_core.c-    .index          = -1,
+[...]
+drivers/tty/serial/imx.c:static struct console imx_uart_console = {
+drivers/tty/serial/imx.c-       .index          = -1,
+drivers/tty/serial/ip22zilog.c:static struct console ip22zilog_console = {
+drivers/tty/serial/ip22zilog.c- .index  =       -1,
+drivers/tty/serial/kgdb_nmi.c:static struct console kgdb_nmi_console = {
+drivers/tty/serial/kgdb_nmi.c-  .index  = -1,
+drivers/tty/serial/lantiq.c:static struct console lqasc_console = {
+drivers/tty/serial/lantiq.c-    .index =        -1,
+drivers/tty/serial/liteuart.c:static struct console liteuart_console = {
+drivers/tty/serial/liteuart.c-  .index = -1,
+drivers/tty/serial/lpc32xx_hs.c:static struct console lpc32xx_hsuart_console = {
+drivers/tty/serial/lpc32xx_hs.c-        .index          = -1,
+drivers/tty/serial/ma35d1_serial.c:static struct console ma35d1serial_console = {
+drivers/tty/serial/ma35d1_serial.c-     .index   = -1,
+drivers/tty/serial/mcf.c:static struct console mcf_console = {
+drivers/tty/serial/mcf.c-       .index          = -1,
+[...]
 
-greg k-h
+It means that the index still has be get assigned. For example, it is
+used here:
+
+static int try_enable_preferred_console(struct console *newcon,
+					bool user_specified)
+{
+[...]
+			if (newcon->index < 0)
+				newcon->index = c->index;
+[...]
+
+
+Resume:
+
+1. We must either keep signed short in struct console or
+   use another check for non-yet assigned index.
+
+2. We should fix the commit message and the comment. We should
+   explain that negative value is used in struct console
+   to distinguish a non-yet-registered/assigned index/port.
+
+Best Regards,
+Petr
