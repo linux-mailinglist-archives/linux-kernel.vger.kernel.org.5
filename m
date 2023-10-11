@@ -2,129 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C2E7C4C76
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAD27C4C79
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345097AbjJKH7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 03:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
+        id S1345054AbjJKH7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 03:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344927AbjJKH73 (ORCPT
+        with ESMTP id S230031AbjJKH7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 03:59:29 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE7492
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 00:59:26 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-4527ba546d2so2365548137.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 00:59:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697011165; x=1697615965; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4T+G3IiEpAugHoIlaD3hRukPzEGsZANvnqJPVq5ffG8=;
-        b=jtSdGqV2QaB1dOZo3W8RC2BtHpnoWBXPFoZBsrbiBrX+lRAozmlcb3QzUwCgAUIVk6
-         ELN119v7dd4ks9xxLOu9cTvqgzOt9DWwTEzjsgCGtvHRKY6c2t3UQvmKBLb24ty4q0vh
-         NTPbPVe8ciCe+LA2FlYgSTIW6BFZLA9wTUl+//dDA14PSdxc9S24vx9qrovAHpwZD5/y
-         GLEwzIdjZqOdk7Ukz51ZHO41UVP7CcxfPQhbefK9ViUlO5eLaUNFkKIvcNMsOgECxKsh
-         w8EeLSLrq+zytqqyPzsrqU4c99R4uku5BwHZLtiWcYCzuFHsOSFI6MqfsPicfUdROCSr
-         GfLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697011165; x=1697615965;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4T+G3IiEpAugHoIlaD3hRukPzEGsZANvnqJPVq5ffG8=;
-        b=fJa9BCNG4kwio+gA9jh44J7DheP+nKSp3rtII6h3BgZd0qf+cC1VBZlveEe1siFGNk
-         m9+8txO9jNMaRg7txLo+WdRSqyaQj9e8/ramigZyx+puOMKle6np7/ivIdNJ8xSb0Vli
-         6m6c6Kn1D3hshF4ewQJNFEIDRJTwAmpqCVBT1UPFWUJ62sK8QtlGWoZk1ZSLoI6VqEei
-         UW91CJP7AiJzQxj2OVdgRlvQGqtL5v5/cbRG/J7zG2MNZPSxvUwai5IDtQ0j+XKNEK2w
-         3ONiQAMk6OWmRMVkEa6gGS8uS+qhSVynd84KS3VoqnKdY9+x4UKcaMNtSOl4BYgVm4mF
-         T7mg==
-X-Gm-Message-State: AOJu0YzZ87itghe5Tf+gJ9jo5uF4NMx9x4gE95T2El8tZsRwRyimOZM6
-        HcXp1VuGe8c95mfeVGB/b3/4k+EkzPclkdXc+HoNDQ==
-X-Google-Smtp-Source: AGHT+IEUbJzy5iOn2Ns9Aln42pFrnXXQ7IdE1abA3Z4713vj8tR+ayKZo6qJyvwJCRhJxXfDbVJASyLhzCqOOBRnH/o=
-X-Received: by 2002:a67:f950:0:b0:44e:8c20:a92d with SMTP id
- u16-20020a67f950000000b0044e8c20a92dmr14800228vsq.7.1697011165108; Wed, 11
- Oct 2023 00:59:25 -0700 (PDT)
+        Wed, 11 Oct 2023 03:59:47 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF19591
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 00:59:44 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qqU7w-0006Ab-CQ; Wed, 11 Oct 2023 09:59:32 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qqU7v-000qiI-HM; Wed, 11 Oct 2023 09:59:31 +0200
+Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qqU7v-00Ds9z-EG; Wed, 11 Oct 2023 09:59:31 +0200
+Date:   Wed, 11 Oct 2023 09:59:31 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Naresh Solanki <naresh.solanki@9elements.com>,
+        zev@bewilderbeest.net, Sebastian Reichel <sre@kernel.org>,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v1 3/3] regulator: fixed: forward under-voltage events
+Message-ID: <20231011075931.GA3305420@pengutronix.de>
+References: <20231010085906.3440452-1-o.rempel@pengutronix.de>
+ <20231010085906.3440452-3-o.rempel@pengutronix.de>
+ <5e51792a-cc93-4364-a51b-c2b116d89369@sirena.org.uk>
+ <20231010125531.GA3268051@pengutronix.de>
+ <c2ee404d-d07f-42c6-b5ba-41659773e8eb@sirena.org.uk>
 MIME-Version: 1.0
-References: <20231009-pxa-gpio-v7-0-c8f5f403e856@skole.hr> <20231009-pxa-gpio-v7-2-c8f5f403e856@skole.hr>
- <CAMRc=Mc7=E9bMQgiUM8qqk7UD4+exhJZqw2DucTcsnqHcttR3Q@mail.gmail.com>
- <12313687.O9o76ZdvQC@radijator> <CAMRc=MdWYNmBkJ6Nw6V_FzJKQw--g02tjLSztMYW_atNhisVpw@mail.gmail.com>
- <CACRpkda4ZeQ8eYKqXBR7XmWj9jJF58C+PLeRWqx2m7aSf2FWQw@mail.gmail.com>
-In-Reply-To: <CACRpkda4ZeQ8eYKqXBR7XmWj9jJF58C+PLeRWqx2m7aSf2FWQw@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 11 Oct 2023 09:59:14 +0200
-Message-ID: <CAMRc=Mc6ww7Te+JvzW_=+X9Tj_jjKnQaVRJMKgU4zTuXViPxcg@mail.gmail.com>
-Subject: Re: [PATCH RFT v7 2/6] ARM: pxa: Convert Spitz LEDs to GPIO descriptors
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-spi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c2ee404d-d07f-42c6-b5ba-41659773e8eb@sirena.org.uk>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 10:04=E2=80=AFPM Linus Walleij <linus.walleij@linar=
-o.org> wrote:
->
-> On Tue, Oct 10, 2023 at 7:39=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
-l> wrote:
->
-> > It doesn't seem like anyone is using these GPIOs once they're
-> > requested? Wouldn't the above definitios be analogous to:
-> >
-> > GPIO_HOG("pxa-gpio", SPITZ_GPIO_LED_ORANGE, NULL, GPIO_ACTIVE_HIGH, GPI=
-OD_ASIS)
-> > GPIO_HOG("pxa-gpio", SPITZ_GPIO_LED_GREEN, NULL, GPIO_ACTIVE_HIGH, GPIO=
-D_ASIS)
->
-> They are used:
-> +       spitz_gpio_leds[0].gpiod =3D leds->desc[0];
-> +       spitz_gpio_leds[1].gpiod =3D leds->desc[1];
->
-> The descriptors are passed to the leds-gpio driver.
->
-> But wait: no.
->
-> This whole thing:
->
-> +static struct gpio_descs *leds;
-> +
-> (...)
-> +       leds =3D gpiod_get_array_optional(&spitz_led_device.dev,
-> +                       NULL, GPIOD_ASIS);
-> +       spitz_gpio_leds[0].gpiod =3D leds->desc[0];
-> +       spitz_gpio_leds[1].gpiod =3D leds->desc[1];
->
-> Just delete all that.
->
-> The leds-gpio driver will request and use the lines.
->
-> It was just so unorthodox that I missed it. Adding the descriptor
-> table is enough.
+On Tue, Oct 10, 2023 at 06:19:59PM +0100, Mark Brown wrote:
+> On Tue, Oct 10, 2023 at 02:55:31PM +0200, Oleksij Rempel wrote:
+> 
+> > The hardware I am working with has an under-voltage sensor on the 24V
+> > supply regulator and some backup capacitors to run SoC for 100ms. I want
+> > to forward under-voltage events across a chain of different regulators
+> > to a designated consumer. For instance, to the mmc driver, enabling it
+> > to initiate shutdown before power loss occurs.  Additionally, a bit can
+> > be set in the volatile memory of a scratch pad in an RTC clock to record
+> > sudden power loss, which can be checked on the next system start.
+> 
+> So it sounds like the underlying need is to flag the notifications from
+> one of the regulators as being system wide and then take action based on
+> those notifications somewhere basically disconnected?  That does seem
+> like a good use case.
+> 
+> The MMC doesn't specifically care that it is handling a regulator
+> notification, it more wants to know that the system is dying and doesn't
+> really care how we figured that out so if we can hook it into a system
+> level notificaiton it'd be happy and would also be able to handle other
+> critical faults.  I would have thought that we should have some
+> mechanisms for this already for RAS type stuff but I'm drawing a blank
+> on what it actually is if there is an existing abstraction.  It could
+> potentially go through userspace though there's latency concerns there
+> which might not be ideal, there should at least be some policy for
+> userspace.
 
-Ah, good catch. Your suggestion is of course the correct one.
+The project I'm working prefers reducing user space daemons to configure and
+enforce RAS policies due to time and financial budget constraints. The customer
+is inclined to invest only in essential infrastructure.
 
-Bart
+Configuration through the device tree and kernel defaults is preferable.
+For instance, having a default kernel governor that doesn’t require user
+space configuration aligns with the project’s objectives.
 
->
-> Yours,
-> Linus Walleij
+While a proper UAPI might not be implemented in the first run, the
+design will allow for it to be added and extended by other projects in
+the future.
+
+> For the regulator itself we probably want a way to identify regulators
+> as being system critical so they start notifying.  It would be tempting
+> to just do that by default but that would likely cause some issues for
+> example with regulators for things like SD cards which are more likely
+> to get hardware problems that don't comprimise the entire system.  We
+> could do that with DT, either a property or some sort of runtime
+> consumer, but it might be better to have a control in sysfs that
+> userspace can turn on?  OTOH the ability do something about this depends
+> on specific hardware design...
+> 
+> I've copied in Sebastian since this sounds like the sort of thing that
+> power supplies might have some kind of handling for, or at least if we
+> need to add something we should make it so that the power supplies can
+> be joined up to it.  I do see temperature and capacity alerts in the
+> sysfs ABI for power supplies, but nothing for voltage.
+
+Thank you for pointing towards the power supply framework. Given the hardware
+design of my project, I can envision mapping the following states and
+properties within this framework:
+
+1. States:
+   - POWER_SUPPLY_STATUS_FULL: When the capacitor is fully charged.
+   - POWER_SUPPLY_STATUS_DISCHARGING: Triggered when an under-voltage event is
+                                      detected.
+
+2. Technology:
+   - POWER_SUPPLY_TECHNOLOGY_CAPACITOR
+
+3. Capacity Level:
+   - Post under-voltage detection, the system would immediately transition to
+     POWER_SUPPLY_CAPACITY_LEVEL_CRITICAL state.
+
+4. Properties:
+   - POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW: 100ms, representing the time until
+                                          complete power loss.
+   - POWER_SUPPLY_TYPE_MAINS: Under normal operation.
+   - POWER_SUPPLY_TYPE_BATTERY: Triggered when under-voltage is detected.
+
+Considering the above mapping, my initial step would be to create a simple
+regulator coupled (if regulator is still needed in this casr) with a Device
+Tree (DT) based power supply driver.  This setup would align with the existing
+power supply framework, with a notable extension being the system-wide
+notification for emergency shutdown upon under-voltage detection.
+
+> I've also coped in Naresh and Zev who've been discussing something
+> vaugely similar with userspace notifications for the userspace consumer
+> - it's not the same thing given that you don't specifically need
+> userspace to be involved here but it feels like it might have something
+> of a similar shape, or at least there might be some shared interest.
+
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
