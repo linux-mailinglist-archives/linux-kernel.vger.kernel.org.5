@@ -2,63 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D29CA7C5B84
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91E17C5B92
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233127AbjJKSpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 14:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48056 "EHLO
+        id S233137AbjJKSrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 14:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232496AbjJKSpH (ORCPT
+        with ESMTP id S233081AbjJKSre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 14:45:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A7C93;
-        Wed, 11 Oct 2023 11:45:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 665B9C433C8;
-        Wed, 11 Oct 2023 18:45:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697049905;
-        bh=XmDRLNzf5ytup1OHHRhzK/7qdpPUABDvfVb5lSUbBvY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a/QrI7GZn6oHHjq6PL22tcl8Sx1ZdlgCkfUrjIb19TSlbDsnEBtDNJ3smo7as5tYU
-         emulSWHR3dGL6nR6JaBFNncgAmky8cuQtu46LY9GU07tCurXHHyDXtmMMWKZPoXPVq
-         l06QWtV2RfNEfzCOv5KkFzGXKjhj3mig6ZLBXHLZcqZOZ7oyw3O8umfDZI7IxIhNEN
-         BVbfWWFsE38jzhOnFkbP/xUqHVRsxBdlUMWdBWf+URHMsS1NyCOe8MlCVA3YihKR1H
-         qC/K189+DjY3Rl6QGSzdRoutEXypQICXa+0LNIVtKlJE56kyy7Ms4lNIcXRIbl1ckH
-         WpV3mw1PFQMqA==
-Date:   Wed, 11 Oct 2023 11:45:04 -0700
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shay Drory <shayd@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net/mlx5: fix calling mlx5_cmd_init() before DMA
- mask is set
-Message-ID: <ZSbtMO8AWLx29RBS@x130>
-References: <20230928-mlx5_init_fix-v1-1-79749d45ce60@linux.ibm.com>
- <20230928175959.GU1642130@unreal>
- <a1f8b9f8c2f9aecde8ac17831b66f72319bf425a.camel@linux.ibm.com>
- <20230929103117.GB1296942@unreal>
+        Wed, 11 Oct 2023 14:47:34 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62A194
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:47:32 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 46e09a7af769-6c4bf619b57so109849a34.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:47:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697050052; x=1697654852; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uddVzm1ujX2AcdtbMSJ/3piIdX6QtZRUzkSKVd/RcdI=;
+        b=dzpgHGgJnfyrHzvAhwe9//GoWvhkmSEq3fQXSpqtTGicZ3zjB/yYje4UUmX4/sbl/k
+         75PlN6wS/ru0sRN+pYaM2o56VpQmqaa/Tv3gNJnhGwneQ/krIdBBeJS8gwU9MJY0o+sK
+         flyafVjSkXkiGGL4FswCIXkhoUeCp97YXbPk/xMHQFjYoYDeBs3X/gpfTxF7ifJt5kEq
+         nrnn+kAEBrIQPtIWPuy72gGOZPUm9cXqeBwKHM0pGalhg5fVqsQ86Uk+bxg/SGMzQDs1
+         N4xN8q0iU4znSvyqBZJAX2VBTU1i6PXbSvqjnmGDPIYGaDdxcSVInbUZ0xzlyympLvRr
+         5nVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697050052; x=1697654852;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uddVzm1ujX2AcdtbMSJ/3piIdX6QtZRUzkSKVd/RcdI=;
+        b=c1frayUThT6iBDrMfV5atFhlpN2A0H4yxR0NTFSEfwWTz10XYnQFpfTaDyHTRZaaCq
+         Vvgh0sEtEp5BBn03o2ePMAflbE/kokXTdVH23vuXxfRD9Cv2+hT5cXgVBINt2zjmPPts
+         fEiAuT1kiFbns93c4sGxvRy7w9GzVRyd2EizezUqeRF85Xqgzt0fnXFSwoNqTrLagMjk
+         ayCLsNqlyQBfYHYPPViq5Zxb7pp/PBlSyNwyuOxfQTHm3OVEOw/WPhqI4CAxW8pKYmzC
+         ti9amqW5SxQowJ2eS9Kabm33RIh3kgqC5/rxjs/B3J2tgMTY0mriUPfwolrXelIIyYdn
+         bhLA==
+X-Gm-Message-State: AOJu0YxBzbJv0GIVp70bSHMioLXJ/74+rWJs7zdnSlo+/mABuMlgxSca
+        Mm2S4c9uuK/390h4V3nBKEU=
+X-Google-Smtp-Source: AGHT+IGedEIn5LqQ/lJhP/MbmS7A+KtQf7mY1T5hMEaAvNqidbngkhcIvBwLCTKFkO3XTLovh1x+bA==
+X-Received: by 2002:a9d:7490:0:b0:6be:fd1c:c228 with SMTP id t16-20020a9d7490000000b006befd1cc228mr20834448otk.1.1697050051950;
+        Wed, 11 Oct 2023 11:47:31 -0700 (PDT)
+Received: from Osmten.. ([103.84.150.77])
+        by smtp.gmail.com with ESMTPSA id d7-20020aa78147000000b0068c1ac1784csm10366171pfn.59.2023.10.11.11.47.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 11:47:31 -0700 (PDT)
+From:   Osama Muhammad <osmtendev@gmail.com>
+To:     shaggy@kernel.org
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Osama Muhammad <osmtendev@gmail.com>,
+        syzbot+39ba34a099ac2e9bd3cb@syzkaller.appspotmail.com
+Subject: [PATCH] FS:JFS:UBSAN:array-index-out-of-bounds in dbAdjTree
+Date:   Wed, 11 Oct 2023 23:46:37 +0500
+Message-Id: <20231011184637.20587-1-osmtendev@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230929103117.GB1296942@unreal>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,138 +70,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29 Sep 13:31, Leon Romanovsky wrote:
->On Fri, Sep 29, 2023 at 11:40:49AM +0200, Niklas Schnelle wrote:
->> On Thu, 2023-09-28 at 20:59 +0300, Leon Romanovsky wrote:
->> > On Thu, Sep 28, 2023 at 03:55:47PM +0200, Niklas Schnelle wrote:
->> > > Since commit 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and
->> > > reload routines") mlx5_cmd_init() is called in mlx5_mdev_init() which is
->> > > called in probe_one() before mlx5_pci_init(). This is a problem because
->> > > mlx5_pci_init() is where the DMA and coherent mask is set but
->> > > mlx5_cmd_init() already does a dma_alloc_coherent(). Thus a DMA
->> > > allocation is done during probe before the correct mask is set. This
->> > > causes probe to fail initialization of the cmdif SW structs on s390x
->> > > after that is converted to the common dma-iommu code. This is because on
->> > > s390x DMA addresses below 4 GiB are reserved on current machines and
->> > > unlike the old s390x specific DMA API implementation common code
->> > > enforces DMA masks. Fix this by switching the order of the
->> > > mlx5_mdev_init() and mlx5_pci_init() in probe_one().
->> > >
->> > > Link: https://lore.kernel.org/linux-iommu/cfc9e9128ed5571d2e36421e347301057662a09e.camel@linux.ibm.com/
->> > > Fixes: 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and reload routines")
->> > > Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
->> > > ---
->> > > Note: I ran into this while testing the linked series for converting
->> > > s390x to use dma-iommu. The existing s390x specific DMA API
->> > > implementation doesn't respect DMA masks and is thus not affected
->> > > despite of course also only supporting DMA addresses above 4 GiB.
->> > > That said ConnectX VFs are the primary users of native PCI on s390x and
->> > > we'd really like to get the DMA API conversion into v6.7 so this has
->> > > high priority for us.
->> > > ---
->> > >  drivers/net/ethernet/mellanox/mlx5/core/main.c | 12 ++++++------
->> > >  1 file changed, 6 insertions(+), 6 deletions(-)
->> > >
->> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
->> > > index 15561965d2af..06744dedd928 100644
->> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
->> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
->> > > @@ -1908,10 +1908,6 @@ static int probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
->> > >  		goto adev_init_err;
->> > >  	}
->> > >
->> > > -	err = mlx5_mdev_init(dev, prof_sel);
->> > > -	if (err)
->> > > -		goto mdev_init_err;
->> > > -
->> > >  	err = mlx5_pci_init(dev, pdev, id);
->> > >  	if (err) {
->> > >  		mlx5_core_err(dev, "mlx5_pci_init failed with error code %d\n",
->> > > @@ -1919,6 +1915,10 @@ static int probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
->> > >  		goto pci_init_err;
->> > >  	}
->> > >
->> > > +	err = mlx5_mdev_init(dev, prof_sel);
->> > > +	if (err)
->> > > +		goto mdev_init_err;
->> > > +
->> >
->> > I had something different in mind as I'm worry that call to pci_enable_device()
->> > in mlx5_pci_init() before we finished FW command interface initialization is a bit
->> > premature.
->> >
->> > What about the following patch?
->> >
->> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
->> > index 15561965d2af..31f1d701116a 100644
->> > --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
->> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
->> > @@ -905,12 +905,6 @@ static int mlx5_pci_init(struct mlx5_core_dev *dev, struct pci_dev *pdev,
->> >
->> >         pci_set_master(pdev);
->> >
->> > -       err = set_dma_caps(pdev);
->> > -       if (err) {
->> > -               mlx5_core_err(dev, "Failed setting DMA capabilities mask, aborting\n");
->> > -               goto err_clr_master;
->> > -       }
->> > -
->> >         if (pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP32) &&
->> >             pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP64) &&
->> >             pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP128))
->> > @@ -1908,9 +1902,15 @@ static int probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
->> >                 goto adev_init_err;
->> >         }
->> >
->> > +       err = set_dma_caps(pdev);
->> > +       if (err) {
->> > +               mlx5_core_err(dev, "Failed setting DMA capabilities mask, aborting\n");
->> > +               goto dma_cap_err;
->> > +       }
->> > +
->> >         err = mlx5_mdev_init(dev, prof_sel);
->> >         if (err)
->> > -               goto mdev_init_err;
->> > +               goto dma_cap_err;
->> >
->> >         err = mlx5_pci_init(dev, pdev, id);
->> >         if (err) {
->> > @@ -1942,7 +1942,7 @@ static int probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
->> >         mlx5_pci_close(dev);
->> >  pci_init_err:
->> >         mlx5_mdev_uninit(dev);
->> > -mdev_init_err:
->> > +dma_cap_err:
->> >         mlx5_adev_idx_free(dev->priv.adev_idx);
->> >  adev_init_err:
->> >         mlx5_devlink_free(devlink);
->> >
->> > Thanks
->>
->> The above works too. Maybe for consistency within probe_one() it would
->> then make sense to also rename set_dma_caps() to mlx5_dma_init()?
->
->Sounds great, thanks
->
->BTW, I was informed offlist that Saeed also has fix to this issue,
->but I don't know if he wants to progress with that fix as it has wrong
->RCA in commit message and as an outcome of that much complex solution,
->which is not necessary.
->
->So I would be happy to see your patch with mlx5_dma_init().
->
->Thanks
->
+Syzkaller reported the following issue:
 
-Actually I prefer the internal patch, it moves the dma parts out of
-mlx5_cmd_init() into mlx5_cmd_enable() which happens after dma caps are
-set. since it is using the current mlx5 function structure and breakdown, 
-I prefer it over adding new function to the driver.
+UBSAN: array-index-out-of-bounds in fs/jfs/jfs_dmap.c:2867:6
+index 196694 is out of range for type 's8[1365]' (aka 'signed char[1365]')
+CPU: 1 PID: 109 Comm: jfsCommit Not tainted 6.6.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:217 [inline]
+ __ubsan_handle_out_of_bounds+0x11c/0x150 lib/ubsan.c:348
+ dbAdjTree+0x474/0x4f0 fs/jfs/jfs_dmap.c:2867
+ dbJoin+0x210/0x2d0 fs/jfs/jfs_dmap.c:2834
+ dbFreeBits+0x4eb/0xda0 fs/jfs/jfs_dmap.c:2331
+ dbFreeDmap fs/jfs/jfs_dmap.c:2080 [inline]
+ dbFree+0x343/0x650 fs/jfs/jfs_dmap.c:402
+ txFreeMap+0x798/0xd50 fs/jfs/jfs_txnmgr.c:2534
+ txUpdateMap+0x342/0x9e0
+ txLazyCommit fs/jfs/jfs_txnmgr.c:2664 [inline]
+ jfs_lazycommit+0x47a/0xb70 fs/jfs/jfs_txnmgr.c:2732
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+================================================================================
+Kernel panic - not syncing: UBSAN: panic_on_warn set ...
+CPU: 1 PID: 109 Comm: jfsCommit Not tainted 6.6.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ panic+0x30f/0x770 kernel/panic.c:340
+ check_panic_on_warn+0x82/0xa0 kernel/panic.c:236
+ ubsan_epilogue lib/ubsan.c:223 [inline]
+ __ubsan_handle_out_of_bounds+0x13c/0x150 lib/ubsan.c:348
+ dbAdjTree+0x474/0x4f0 fs/jfs/jfs_dmap.c:2867
+ dbJoin+0x210/0x2d0 fs/jfs/jfs_dmap.c:2834
+ dbFreeBits+0x4eb/0xda0 fs/jfs/jfs_dmap.c:2331
+ dbFreeDmap fs/jfs/jfs_dmap.c:2080 [inline]
+ dbFree+0x343/0x650 fs/jfs/jfs_dmap.c:402
+ txFreeMap+0x798/0xd50 fs/jfs/jfs_txnmgr.c:2534
+ txUpdateMap+0x342/0x9e0
+ txLazyCommit fs/jfs/jfs_txnmgr.c:2664 [inline]
+ jfs_lazycommit+0x47a/0xb70 fs/jfs/jfs_txnmgr.c:2732
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-I will share the patch, I will let Niklas test it and approve it before
-submission.
+The issue is caused when the value of lp becomes greater than
+CTLTREESIZE which is the max size of stree. Adding a simple check
+solves this issue. I was not sure about error return as a function
+does not return. If there is something needed in that regard please
+do point out.
 
-Thanks,
-Saeed.
+The patch is tested via syzbot.
 
->
+Reported-by: syzbot+39ba34a099ac2e9bd3cb@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=39ba34a099ac2e9bd3cb
+Signed-off-by: Osama Muhammad <osmtendev@gmail.com>
+---
+ fs/jfs/jfs_dmap.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index a3eb1e826947..decb3be66a86 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -2854,6 +2854,9 @@ static void dbAdjTree(dmtree_t * tp, int leafno, int newval)
+ 	/* is the current value the same as the old value ?  if so,
+ 	 * there is nothing to do.
+ 	 */
++	if (lp >= CTLTREESIZE)
++		return;
++
+ 	if (tp->dmt_stree[lp] == newval)
+ 		return;
+ 
+-- 
+2.34.1
+
