@@ -2,166 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC5D7C603F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D22C7C6041
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235180AbjJKWUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 18:20:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40966 "EHLO
+        id S1376431AbjJKWUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 18:20:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233643AbjJKWUQ (ORCPT
+        with ESMTP id S233643AbjJKWUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 18:20:16 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2CEF9E
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:20:13 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9ab79816a9so386496276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:20:13 -0700 (PDT)
+        Wed, 11 Oct 2023 18:20:32 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 421B0DA
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:20:30 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-27d104fa285so231081a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:20:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697062813; x=1697667613; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+        d=broadcom.com; s=google; t=1697062830; x=1697667630; darn=vger.kernel.org;
+        h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=+Z96mQSNwBQxmdfHTfVSOBB7yU8CSx8L0b3jKxEJcSo=;
-        b=t/xRp+KTkHXq8Zld68JmaIzatv4ge2hi3hStZct8v/vgd5cKy+VFYjtbiq32MFWdQr
-         xT+YGEQvzbhLbQPgd/xjR10kHAnLFNnPSXND3Oc6RR2ChgZrvNjYay3ABUQWubbYrnkU
-         WFX9M7ybiEY1cmr3U29xAk9dR9EpQ0AjtWOHv3e2tts4/VSjOTILeifRdAJwI6hsBrK9
-         hXPvfy7sclOVx4Zm/yYoCtbfvuheL7UaRJCUWGED/PFEpgxeSkPXl/h1Pi1fcY89oZY9
-         tjNfSiunez2m5mur/NMFXbIw9Bs0QTD8piG1hJNZmtrKWkqEEmp4/fr5Lc6w+kXnuJPH
-         7P+w==
+        bh=VsecbrcN33b7iJbr1AfsL6vNZQUIoya4PWxPjdvdioE=;
+        b=ZWpTiljjhDdh2G+2fH3G145GOFJ7Ax9sN+D3xbLppn3nuJbSWf1OWeIpOdiKEDuY8O
+         fro20SePhvGgrOvtvIJ6+698THbOTiln1G8vDRwnif32XApn3dBySPjv3job+VBBPpUb
+         jIK/5Z8FxRp95IdDZK+Wc5aUBfGoQetUSEB+o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697062813; x=1697667613;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+        d=1e100.net; s=20230601; t=1697062830; x=1697667630;
+        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+Z96mQSNwBQxmdfHTfVSOBB7yU8CSx8L0b3jKxEJcSo=;
-        b=X51K50TlucIKcNnkW/2Cs6t4jbm+YucUmwMwK5zlR6errJJPNs7SxpiySrApRIC8aF
-         maUdiF+hzK/LNHRjll7iTxIvV5PSNntbx3pxPUlOEVBdqgbicZQ1Kol6Y57+FNU1lHQq
-         j/e3ErBlQAqhdNkGAidYLL9mppaWd/lNMYkYypr9REvEi8MdbAbf6Zxco3jA1jT4vcRD
-         kPfQbS0Jduwv8mi8T9phpqIkiisFphq+8uLXsK/FEtq5nlHFioOTdU2WoGLMzOeMpgWl
-         ErAnUAC7AwKKR7Ky3TsJayOGRR7f6874kbodB5UdSkZBCEcSOd9SHKzoBYoLd+fF3AZt
-         hKiw==
-X-Gm-Message-State: AOJu0YzAcZAbFqIvnBl4JLQTBeNyXhMC4JZa19N4YwRN0tocjFFHRHbS
-        rS3YmuldwpdW8ca+RU+M1wpH2AtDquaiwNe0QA==
-X-Google-Smtp-Source: AGHT+IGd5Zu1czxmjeL92aynbzUWAyCyWUMLzy4yM/u30YUbNTfHqpMJqGR4vyeCgOUkYHcW+xZmuu5thXi55bh27Q==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:a89:b0:d9a:5e10:c34d with
- SMTP id cd9-20020a0569020a8900b00d9a5e10c34dmr122450ybb.11.1697062813111;
- Wed, 11 Oct 2023 15:20:13 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 22:20:10 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAJkfJ2UC/x2NQQrCMBBFr1Jm7UAm1oVeRUQ0+aYDkraTtCild
- 7d18eC/zX8LFZii0KVZyDBr0T5vIoeGQvfICaxxc/LOH8WJcKmWw/DlaDrDCmdURu1g+xjffdL AI+LOPeI5JQ7sReLp3HonaGl7Hgwv/fyr19u6/gDruxsxhQAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697062812; l=3458;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=fcCFEgzIEgjdRagOjBJiBiruUTRZY6XKVFUfoSVmwHk=; b=aYtaA7N793tac2LBAe3z26VJ83HnPC3XYeXKcuGTOdnHD3nZAM+z+JKRjHuFt+Elo3vhm+wOG
- /yIou6N7Ph6BRinJjrPjxnxkxoggxVG9baAO0ZIlWMuNMFUZlG1R4cS
-X-Mailer: b4 0.12.3
-Message-ID: <20231011-strncpy-drivers-net-ethernet-qlogic-qed-qed_debug-c-v1-1-60c9ca2d54a2@google.com>
-Subject: [PATCH] qed: replace uses of strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
+        bh=VsecbrcN33b7iJbr1AfsL6vNZQUIoya4PWxPjdvdioE=;
+        b=CsxJAH1nF6qA10wQ/fQT1SjCPUGwP2117CTEBhG9WHaXeepNk/gXTJeKFER89lCgTR
+         1uwpZvc7MwlFcB996gJ6QdaAKG5vLQoq2F9Z24qCbcHl8IUeBwZfm+Oo2LB9MQUtpOE/
+         qvnahydb3aU8Y9jhbS0aAMZUQytemjKLz0vNg1F8cbEBf3wx7r03CsgvnNM70bzlwkOD
+         l6Mj1DnzoFDzVYWR/6mlXWWU1g0YH3JlLi4XyTj2jeTRcWPHHRkqbtP3TJ0v3VXy6hYf
+         sIyo+jv6wyQiXOJzrMzx7nyEDm+BzJ0b4VY5EQ1vcbF9GBmtS6oqkY/HiHyGnLxtQ0+h
+         8wWQ==
+X-Gm-Message-State: AOJu0Yxqdfbg/7bQUSoYkfpcFfrKRsUM5yuxTywv5GwPqpACmKHmK/fP
+        VBsU9FAAcRzZkvDBRb2J625G5Q==
+X-Google-Smtp-Source: AGHT+IGMORhJTTLB2n+laqiujUEh+7aQrV5LroY9q8mwSQdW7ryE6P2S/vC9iqXPuKMHnMJnsGQX9Q==
+X-Received: by 2002:a17:90a:db12:b0:27c:f1f9:43c1 with SMTP id g18-20020a17090adb1200b0027cf1f943c1mr6088698pjv.28.1697062829715;
+        Wed, 11 Oct 2023 15:20:29 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 13-20020a170902c10d00b001c75d7f2597sm348256pli.141.2023.10.11.15.20.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 15:20:29 -0700 (PDT)
+From:   Florian Fainelli <florian.fainelli@broadcom.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Paolo Abeni <pabeni@redhat.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        linux-kernel@vger.kernel.org (open list:ARM/Mediatek SoC support),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: [PATCH net-next v2 0/2] Switch DSA to inclusive terminology
+Date:   Wed, 11 Oct 2023 15:20:24 -0700
+Message-Id: <20231011222026.4181654-1-florian.fainelli@broadcom.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000002525610607783b03"
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_NO_TEXT,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+--0000000000002525610607783b03
+Content-Transfer-Encoding: 8bit
 
-This patch eliminates three uses of strncpy():
+One of the action items following Netconf'23 is to switch subsystems to
+use inclusive terminology. DSA has been making extensive use of the
+"master" and "slave" words which are now replaced by "conduit" and
+"user" respectively.
 
-Firstly, `dest` is expected to be NUL-terminated which is evident by the
-manual setting of a NUL-byte at size - 1. For this use specifically,
-strscpy() is a viable replacement due to the fact that it guarantees
-NUL-termination on the destination buffer.
+Changes in v2:
 
-The next two changes utilizes snprintf() to make the copying behavior
-more obvious. Previously, strncpy() was used to overwrite the first 3
-characters of mem_name and type_name by setting a length argument less
-than the size of the buffers themselves. This enables, in a roundabout
-way, creating a string like "ASD_BIG_RAM" or "ASD_RAM". Let's just use
-snprintf() with a precision specifier to hold the name prefix to exactly
-3 characters long.
+- addressed kbuild test robots reports
+- preserve capitalization where relevant
+- fixed build error in mtk_ppe_offload.c
 
-To be clear, there are no buffer overread bugs in the current code as
-the sizes and offsets are carefully managed such that buffers are
-NUL-terminated. However, with these changes, the code is now more robust
-and less ambiguous (and hopefully easier to read).
+Florian Fainelli (2):
+  net: dsa: Use conduit and user terms
+  net: dsa: Rename IFLA_DSA_MASTER to IFLA_DSA_CONDUIT
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
+ .../bindings/net/dsa/mediatek,mt7530.yaml     |    2 +-
+ Documentation/networking/dsa/b53.rst          |   14 +-
+ Documentation/networking/dsa/bcm_sf2.rst      |    2 +-
+ .../networking/dsa/configuration.rst          |  106 +-
+ Documentation/networking/dsa/dsa.rst          |  152 +-
+ Documentation/networking/dsa/lan9303.rst      |    2 +-
+ Documentation/networking/dsa/sja1105.rst      |    8 +-
+ .../dts/marvell/armada-3720-espressobin.dtsi  |    2 +-
+ drivers/net/dsa/b53/b53_common.c              |    4 +-
+ drivers/net/dsa/b53/b53_mdio.c                |    2 +-
+ drivers/net/dsa/bcm_sf2.c                     |   36 +-
+ drivers/net/dsa/bcm_sf2.h                     |    2 +-
+ drivers/net/dsa/bcm_sf2_cfp.c                 |    4 +-
+ drivers/net/dsa/lan9303-core.c                |    4 +-
+ drivers/net/dsa/lantiq_gswip.c                |   34 +-
+ drivers/net/dsa/microchip/ksz9477.c           |    6 +-
+ drivers/net/dsa/microchip/ksz_common.c        |   20 +-
+ drivers/net/dsa/microchip/ksz_ptp.c           |    2 +-
+ drivers/net/dsa/mt7530.c                      |   16 +-
+ drivers/net/dsa/mv88e6xxx/chip.c              |    2 +-
+ drivers/net/dsa/ocelot/felix.c                |   62 +-
+ drivers/net/dsa/ocelot/felix.h                |    4 +-
+ drivers/net/dsa/qca/qca8k-8xxx.c              |   48 +-
+ drivers/net/dsa/qca/qca8k-common.c            |    2 +-
+ drivers/net/dsa/qca/qca8k-leds.c              |    6 +-
+ drivers/net/dsa/qca/qca8k.h                   |    2 +-
+ drivers/net/dsa/realtek/realtek-smi.c         |   28 +-
+ drivers/net/dsa/realtek/realtek.h             |    2 +-
+ drivers/net/dsa/sja1105/sja1105_main.c        |    4 +-
+ drivers/net/dsa/xrs700x/xrs700x.c             |   12 +-
+ drivers/net/ethernet/broadcom/bcmsysport.c    |    2 +-
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c   |    2 +-
+ .../net/ethernet/mediatek/mtk_ppe_offload.c   |    2 +-
+ include/linux/dsa/sja1105.h                   |    2 +-
+ include/net/dsa.h                             |   54 +-
+ include/net/dsa_stubs.h                       |   10 +-
+ include/uapi/linux/if_link.h                  |    4 +-
+ net/core/dev_ioctl.c                          |    2 +-
+ net/dsa/Makefile                              |    4 +-
+ net/dsa/{master.c => conduit.c}               |   96 +-
+ net/dsa/conduit.h                             |   22 +
+ net/dsa/dsa.c                                 |  218 +--
+ net/dsa/dsa.h                                 |   10 +-
+ net/dsa/master.h                              |   22 -
+ net/dsa/netlink.c                             |   22 +-
+ net/dsa/port.c                                |  114 +-
+ net/dsa/port.h                                |    2 +-
+ net/dsa/slave.h                               |   69 -
+ net/dsa/switch.c                              |   18 +-
+ net/dsa/switch.h                              |    4 +-
+ net/dsa/tag.c                                 |   10 +-
+ net/dsa/tag.h                                 |   26 +-
+ net/dsa/tag_8021q.c                           |   22 +-
+ net/dsa/tag_8021q.h                           |    2 +-
+ net/dsa/tag_ar9331.c                          |    4 +-
+ net/dsa/tag_brcm.c                            |   14 +-
+ net/dsa/tag_dsa.c                             |    6 +-
+ net/dsa/tag_gswip.c                           |    4 +-
+ net/dsa/tag_hellcreek.c                       |    4 +-
+ net/dsa/tag_ksz.c                             |   12 +-
+ net/dsa/tag_lan9303.c                         |    4 +-
+ net/dsa/tag_mtk.c                             |    4 +-
+ net/dsa/tag_none.c                            |    4 +-
+ net/dsa/tag_ocelot.c                          |   22 +-
+ net/dsa/tag_ocelot_8021q.c                    |   12 +-
+ net/dsa/tag_qca.c                             |    6 +-
+ net/dsa/tag_rtl4_a.c                          |    6 +-
+ net/dsa/tag_rtl8_4.c                          |    6 +-
+ net/dsa/tag_rzn1_a5psw.c                      |    4 +-
+ net/dsa/tag_sja1105.c                         |   30 +-
+ net/dsa/tag_trailer.c                         |    4 +-
+ net/dsa/tag_xrs700x.c                         |    4 +-
+ net/dsa/{slave.c => user.c}                   | 1240 ++++++++---------
+ net/dsa/user.h                                |   69 +
+ 74 files changed, 1395 insertions(+), 1393 deletions(-)
+ rename net/dsa/{master.c => conduit.c} (79%)
+ create mode 100644 net/dsa/conduit.h
+ delete mode 100644 net/dsa/master.h
+ delete mode 100644 net/dsa/slave.h
+ rename net/dsa/{slave.c => user.c} (67%)
+ create mode 100644 net/dsa/user.h
 
-Found with: $ rg "strncpy\("
----
- drivers/net/ethernet/qlogic/qed/qed_debug.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+-- 
+2.34.1
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_debug.c b/drivers/net/ethernet/qlogic/qed/qed_debug.c
-index cdcead614e9f..0a4fd1b04353 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_debug.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_debug.c
-@@ -3192,8 +3192,8 @@ static u32 qed_grc_dump_big_ram(struct qed_hwfn *p_hwfn,
- {
- 	struct dbg_tools_data *dev_data = &p_hwfn->dbg_info;
- 	u32 block_size, ram_size, offset = 0, reg_val, i;
--	char mem_name[12] = "???_BIG_RAM";
--	char type_name[8] = "???_RAM";
-+	char mem_name[12];
-+	char type_name[8];
- 	struct big_ram_defs *big_ram;
- 
- 	big_ram = &s_big_ram_defs[big_ram_id];
-@@ -3204,8 +3204,11 @@ static u32 qed_grc_dump_big_ram(struct qed_hwfn *p_hwfn,
- 		     BIT(big_ram->is_256b_bit_offset[dev_data->chip_id]) ? 256
- 									 : 128;
- 
--	strncpy(type_name, big_ram->instance_name, BIG_RAM_NAME_LEN);
--	strncpy(mem_name, big_ram->instance_name, BIG_RAM_NAME_LEN);
-+	snprintf(mem_name, sizeof(mem_name), "%.*s_BIG_RAM",
-+		 BIG_RAM_NAME_LEN, big_ram->instance_name);
-+
-+	snprintf(type_name, sizeof(type_name), "%.*s_RAM",
-+		 BIG_RAM_NAME_LEN, big_ram->instance_name);
- 
- 	/* Dump memory header */
- 	offset += qed_grc_dump_mem_hdr(p_hwfn,
-@@ -6359,8 +6362,7 @@ static void qed_read_str_from_buf(void *buf, u32 *offset, u32 size, char *dest)
- {
- 	const char *source_str = &((const char *)buf)[*offset];
- 
--	strncpy(dest, source_str, size);
--	dest[size - 1] = '\0';
-+	strscpy(dest, source_str, size);
- 	*offset += size;
- }
- 
 
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20231011-strncpy-drivers-net-ethernet-qlogic-qed-qed_debug-c-211d594201e4
+--0000000000002525610607783b03
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+MIIQeQYJKoZIhvcNAQcCoIIQajCCEGYCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg3QMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
+MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
+rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
+aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
+e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
+cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
+MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
+KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
+/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
+TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
+YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
+b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
+c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
+CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
+BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
+jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
+9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
+/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
+jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
+AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
+dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
+MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
+IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
+XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
+J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
+nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPjfA29goHbqdLHB
+Xm6YwWpvGRankSYz/UuKOW9sxvmpMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMTAxMTIyMjAzMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCqj0oLoYERNt2ASjHdsrZnkmqxa69lHSJs
+dpRirtpvkhjSPFMVXC+t7khulzAUw0h/Hf7vQD8fCpxheqHrbpzBT4snS7/PCoZ9/dYKEu07I3yl
+Tc5co9zOugqW5QHiDgBR5bo93dlFpPE9H8VAMBQUX50QNA3aWN4fd4MbIUSNvP9Vgb5uKK6TMDgu
+yPTymVQ0OTfajPxaK9TDWjTIplKt/v8oT+1HYklJ2n6cu7C3T8Kc/OgRvi7+fruewQz2usIdsLOW
+sW4S7j9cFa0NsPsW7X9FFgjr4yW9LpigNTEwgf8lxiFB0/2oOcRWNtl3VQ2jiP3pz7neRisvCsEB
+oUhw
+--0000000000002525610607783b03--
