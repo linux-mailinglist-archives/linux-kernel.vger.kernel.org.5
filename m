@@ -2,230 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FA37C78A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6947C78A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442934AbjJLVdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 17:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60964 "EHLO
+        id S1442954AbjJLVdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 17:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442861AbjJLVdW (ORCPT
+        with ESMTP id S1442946AbjJLVdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 17:33:22 -0400
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F539B7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:33:21 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-57d086365f7so733941eaf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:33:21 -0700 (PDT)
+        Thu, 12 Oct 2023 17:33:36 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410E4DC
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:33:34 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7ed6903a6so21450027b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:33:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697146400; x=1697751200; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2BYkIIVgUSUDIvsA7oyJJgebrxVB8pqETFUsWWaA5is=;
-        b=IOWpv2JCe9JC4JjCyabZyXBCuX684ya0ywTyUwwZcrqk8O3vvY30+ETVxm7RfTCKWc
-         aoCoZ98ZWzIhX6kHV/YJaeBRV2QJYKsk0ZM+HrgnPM7YG7xO3WMalImRFmBzJtydwEkn
-         Fftj3S8mA4Chbc2ziDJvZEn0jWTyZjoeLrefo=
+        d=google.com; s=20230601; t=1697146413; x=1697751213; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hYSTVrCouVWE319gwaD4mDagDCplKYTMAl9k6NN6p0U=;
+        b=j3CIIv3gCVmU9R0l2dslE+oPVXaVD1Wa12FQFQirrDPseN8A6dyuCjQkG4CehA7t1K
+         zIKzQ/jnbO72wkULosOjGE3p2+FlOAojLHQt6Yhpgen1kY01ui21t7uupxt9dbDP7NBW
+         Xsl7U0Ceuwcax1UQPZSnQ4gZzAz5K+Q20nqi2u7o2OnxBs0I4R91gOBp4hg0G4OTFwzC
+         M/yTkOKiVBVDy/udMkd/tg9/nBLXJZ8WYkmYMYiW3RKBbYU40THgrA0nEhjEpn4veDd7
+         SL55rM0LcZY4zrw+T2zRKByaW6gfhT1IBAhRWlYd7QkxJM1KA4s40A2t6S0cvivV35Gg
+         IlRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697146400; x=1697751200;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2BYkIIVgUSUDIvsA7oyJJgebrxVB8pqETFUsWWaA5is=;
-        b=ksnl4i1LFaqyMm8si3h5Fhzk/nQJGwWb74lJzk7nvC8IfIxeyVywQVHFzFXJk5GlGn
-         JGHwEKL73pJe7IZSxmLNOC88CFYg4DIWj9yvrcSU69lELWjDtUvnZSYJapmYT7ueC6OF
-         LEOwyZVJJmEou3ByDDgw2uzC3yPRGoMu7U9nEYzCoqzw+M54DPza0lz7JkdAf546qQ8I
-         ZWM9oM+KBTkk6GZDY9tC9VykyovyiCtHyytRuNqX/KK2E3xrZT40VR776L5jLnH/bA3P
-         B+1R8RUo3fO6NE7tNzme+j6mWrWcMBFBhdi+54CInDFZPYQMkTjDwzmpRbCfaJKRO7rx
-         uKuA==
-X-Gm-Message-State: AOJu0YxE9JzUhi7YNA4T7Q1BWgJ87AZh+unPIbflSFgIZvemeHM7Kzum
-        npl/SLJTVQreNEQUe9IejdsvzA==
-X-Google-Smtp-Source: AGHT+IEWHo3wYMQMcz7GsN7HjGYb7tuVwk/HPXskUKjfbq7nnE1N5b1naGdES5Ku76oGH6B7c1F9zA==
-X-Received: by 2002:a05:6358:988d:b0:135:b4c:a490 with SMTP id q13-20020a056358988d00b001350b4ca490mr26095712rwa.10.1697146400420;
-        Thu, 12 Oct 2023 14:33:20 -0700 (PDT)
-Received: from google.com ([2401:fa00:1:10:7397:2561:ed13:bac8])
-        by smtp.gmail.com with ESMTPSA id n14-20020a62e50e000000b0069319bfed42sm12141026pff.79.2023.10.12.14.33.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 14:33:19 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 05:33:16 +0800
-From:   Chen-Yu Tsai <wenst@chromium.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Alexandre Mergnat <amergnat@baylibre.com>, matthias.bgg@gmail.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH v2 1/4] arm64: dts: mediatek: cherry: Add platform
- thermal configuration
-Message-ID: <20231012213316.GA2659196@google.com>
-References: <20230424112523.1436926-1-angelogioacchino.delregno@collabora.com>
- <20230424112523.1436926-2-angelogioacchino.delregno@collabora.com>
- <31d1d1e4-2f75-bbbd-3e4b-6c796f2d39d1@baylibre.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <31d1d1e4-2f75-bbbd-3e4b-6c796f2d39d1@baylibre.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20230601; t=1697146413; x=1697751213;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hYSTVrCouVWE319gwaD4mDagDCplKYTMAl9k6NN6p0U=;
+        b=V6Jmmp6FtBe0JPv294pDgMzfjmkhal1T6pcOLE3bzeNXB3wXFI6bYdhJiTJrEMoFP2
+         mzPggEoaExdSlUJuTBzJENKZFR7YPGz2gH+iKSQfVokFVCSQqj3L9J393wCTwA8GKtfG
+         M79UfH6MBH07Mh3KF54XWP8IBxQ3BCqreDH/mwlNCW3PVudSU5mlIPl2CgJD/bdnFFGM
+         Z0i7CBtoOXK4qsWc+txD31okFiFafqlaBhW7FNMeCMwgQs/7VGY12x7MZP3ZXxI6QnMp
+         8KX8yFMqgEvrXDxg2oBgX4cnwf7rBxHZdokmO0SaUIVcJRPBd2c11LWIfF8MdLI3TN20
+         jZhA==
+X-Gm-Message-State: AOJu0Ywg9d5cPb8Q/KWBcx/bRL6mBg7O3o3roSf/yRJgcJXiCE0U86jT
+        apS0KNt3CljkaW02OZq6PnJ2dh5RHMhAQPcX6w==
+X-Google-Smtp-Source: AGHT+IHLXU+q2owngkTbSiNtMR5BADqKtueGDHMDZYEex8Po8KdOypDGg++9ce6J7+BSWDwmTy9Wy7uJXqIZ+5F3rA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:361e:0:b0:d9a:6b49:433d with SMTP
+ id d30-20020a25361e000000b00d9a6b49433dmr164492yba.6.1697146413504; Thu, 12
+ Oct 2023 14:33:33 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 21:33:32 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIACxmKGUC/x3NwQqDMAyA4VeRnBcwVcbcq4wxahpnDrYlFZmI7
+ 27Z8bv8/wFFTKXAsznAZNOiKVbQrQGeffwKaqgG17qOWnJYVoucdwymm1jBKCvOfjEfNOHod07 LR3JGxrsQ8dA/unGYoPayyaS//+v1Ps8LZduKZXsAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697146412; l=2666;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=GEipWyiXVMyF4NttCT1RNho91xfYNJdcMAw0nEmg9aU=; b=x7E6v7q0m/O/QprpRqxWPblE89KJH/8AAzMt116g3gzow9M2f7BwcEy/LlgWAsSKhgaWC4jk0
+ 9TdRQ3QWP87CvCdaWXAAGHMw7Gj12xOELpNOijQRm8halo5ZaaCR6zx
+X-Mailer: b4 0.12.3
+Message-ID: <20231012-strncpy-drivers-net-hamradio-baycom_epp-c-v1-1-8f4097538ee4@google.com>
+Subject: [PATCH] hamradio: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Thomas Sailer <t.sailer@alumni.ethz.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-hams@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Angelo
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-On Tue, Apr 25, 2023 at 01:46:42PM +0200, Alexandre Mergnat wrote:
-> On 24/04/2023 13:25, AngeloGioacchino Del Regno wrote:
-> > This platform has three auxiliary NTC thermistors, connected to the
-> > SoC's ADC pins. Enable the auxadc in order to be able to read the
-> > ADC values, add a generic-adc-thermal LUT for each and finally assign
-> > them to the SoC's thermal zones.
-> > 
-> > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> > Tested-by: Chen-Yu Tsai <wenst@chromium.org>
-> > Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
-> > ---
-> >   .../boot/dts/mediatek/mt8195-cherry.dtsi      | 105 ++++++++++++++++++
-> >   1 file changed, 105 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-> > index 8ac80a136c37..4229f4f7dc2f 100644
-> > --- a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-> > +++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-> > @@ -114,6 +114,77 @@ ppvar_sys: regulator-ppvar-sys {
-> >   		regulator-boot-on;
-> >   	};
-> > +	/* Murata NCP03WF104F05RL */
-> > +	tboard_thermistor1: thermal-sensor-t1 {
-> > +		compatible = "generic-adc-thermal";
-> > +		#thermal-sensor-cells = <0>;
-> > +		io-channels = <&auxadc 0>;
-> > +		io-channel-names = "sensor-channel";
-> > +		temperature-lookup-table = <	(-10000) 1553
-> > +						(-5000) 1485
-> > +						0 1406
-> > +						5000 1317
-> > +						10000 1219
-> > +						15000 1115
-> > +						20000 1007
-> > +						25000 900
-> > +						30000 796
-> > +						35000 697
-> > +						40000 605
-> > +						45000 523
-> > +						50000 449
-> > +						55000 384
-> > +						60000 327
-> > +						65000 279
-> > +						70000 237
-> > +						75000 202
-> > +						80000 172
-> > +						85000 147
-> > +						90000 125
-> > +						95000 107
-> > +						100000 92
-> > +						105000 79
-> > +						110000 68
-> > +						115000 59
-> > +						120000 51
-> > +						125000 44>;
-> > +	};
-> > +
-> > +	tboard_thermistor2: thermal-sensor-t2 {
-> > +		compatible = "generic-adc-thermal";
-> > +		#thermal-sensor-cells = <0>;
-> > +		io-channels = <&auxadc 1>;
-> > +		io-channel-names = "sensor-channel";
-> > +		temperature-lookup-table = <	(-10000) 1553
-> > +						(-5000) 1485
-> > +						0 1406
-> > +						5000 1317
-> > +						10000 1219
-> > +						15000 1115
-> > +						20000 1007
-> > +						25000 900
-> > +						30000 796
-> > +						35000 697
-> > +						40000 605
-> > +						45000 523
-> > +						50000 449
-> > +						55000 384
-> > +						60000 327
-> > +						65000 279
-> > +						70000 237
-> > +						75000 202
-> > +						80000 172
-> > +						85000 147
-> > +						90000 125
-> > +						95000 107
-> > +						100000 92
-> > +						105000 79
-> > +						110000 68
-> > +						115000 59
-> > +						120000 51
-> > +						125000 44>;
-> > +	};
-> > +
-> >   	usb_vbus: regulator-5v0-usb-vbus {
-> >   		compatible = "regulator-fixed";
-> >   		regulator-name = "usb-vbus";
-> > @@ -260,6 +331,10 @@ &gpu {
-> >   	mali-supply = <&mt6315_7_vbuck1>;
-> >   };
-> > +&auxadc {
-> 
-> Can you put it in alphabetical order please. ?
+We expect both hi.data.modename and hi.data.drivername to be
+NUL-terminated but not necessarily NUL-padded which is evident by its
+usage with sprintf:
+|       sprintf(hi.data.modename, "%sclk,%smodem,fclk=%d,bps=%d%s",
+|               bc->cfg.intclk ? "int" : "ext",
+|               bc->cfg.extmodem ? "ext" : "int", bc->cfg.fclk, bc->cfg.bps,
+|               bc->cfg.loopback ? ",loopback" : "");
 
-I believe this patch needs to be respun?
+Note that this data is copied out to userspace with:
+|       if (copy_to_user(data, &hi, sizeof(hi)))
+... however, the data was also copied FROM the user here:
+|       if (copy_from_user(&hi, data, sizeof(hi)))
 
-> > +	status = "okay";
-> > +};
-> > +
-> >   &i2c0 {
-> >   	status = "okay";
-> > @@ -1098,6 +1173,36 @@ mt6315_7_vbuck1: vbuck1 {
-> >   	};
-> >   };
-> > +&thermal_zones {
-> > +	soc-area-thermal {
-> > +		polling-delay = <1000>;
-> > +		polling-delay-passive = <250>;
-> > +		thermal-sensors = <&tboard_thermistor1>;
-> > +
-> > +		trips {
-> > +			trip-crit {
-> > +				temperature = <84000>;
-> > +				hysteresis = <1000>;
-> > +				type = "critical";
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	pmic-area-thermal {
-> > +		polling-delay = <1000>;
-> > +		polling-delay-passive = <0>;
-> > +		thermal-sensors = <&tboard_thermistor2>;
-> > +
-> > +		trips {
-> > +			trip-crit {
-> > +				temperature = <84000>;
-> > +				hysteresis = <1000>;
-> > +				type = "critical";
-> > +			};
-> > +		};
-> > +	};
-> > +};
-> > +
-> >   &u3phy0 {
-> >   	status = "okay";
-> >   };
-> 
-> After that:
-> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
-> 
-> Regards,
-> Alexandre
-> 
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+
+Also, there are 33 instances of trailing whitespace in this file alone.
+I've opted to not remove them in this patch.
+---
+ drivers/net/hamradio/baycom_epp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/hamradio/baycom_epp.c b/drivers/net/hamradio/baycom_epp.c
+index 83ff882f5d97..30a0fbb12b9c 100644
+--- a/drivers/net/hamradio/baycom_epp.c
++++ b/drivers/net/hamradio/baycom_epp.c
+@@ -1074,7 +1074,7 @@ static int baycom_siocdevprivate(struct net_device *dev, struct ifreq *ifr,
+ 		return 0;
+ 
+ 	case HDLCDRVCTL_DRIVERNAME:
+-		strncpy(hi.data.drivername, "baycom_epp", sizeof(hi.data.drivername));
++		strscpy(hi.data.drivername, "baycom_epp", sizeof(hi.data.drivername));
+ 		break;
+ 		
+ 	case HDLCDRVCTL_GETMODE:
+@@ -1091,7 +1091,7 @@ static int baycom_siocdevprivate(struct net_device *dev, struct ifreq *ifr,
+ 		return baycom_setmode(bc, hi.data.modename);
+ 
+ 	case HDLCDRVCTL_MODELIST:
+-		strncpy(hi.data.modename, "intclk,extclk,intmodem,extmodem,divider=x",
++		strscpy(hi.data.modename, "intclk,extclk,intmodem,extmodem,divider=x",
+ 			sizeof(hi.data.modename));
+ 		break;
+ 
+
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231012-strncpy-drivers-net-hamradio-baycom_epp-c-6e11c9483b9f
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
