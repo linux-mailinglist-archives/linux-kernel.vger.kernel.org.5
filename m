@@ -2,148 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E547C7608
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3FC7C760A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441868AbjJLSg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 14:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50800 "EHLO
+        id S1441994AbjJLSjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 14:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379714AbjJLSgu (ORCPT
+        with ESMTP id S1379690AbjJLSj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 14:36:50 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A53E8;
-        Thu, 12 Oct 2023 11:36:48 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 18:36:46 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697135807;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pw7es2hh7qvHHY9PDbdAV77XkoPYW54NCoEKygSaPGA=;
-        b=obEgyN14FSYqYZ4k/o0BZYWyv892Xc8mH1ru52uWXOufIYANZm4Khh9yQ/PAwXKg1LW99v
-        JQHhxR74Um9OVmAzGQ7/S9ejMMjKb9/OTotrMYynzQs+DRx6jqwQGJoWmh3S3/klWAKbBI
-        usf9u2ZS7sAqr1+phY0ngH1HcE4kllUd8lFybyXcnnIwztvhEbvFOKg/68oGc1p5X9ByJR
-        InHWHJv7WS+w5tZuqj5e4BK+LZM8XDrgch1oiWIvYGJZGemMZklNQwr3sp6klKSVZB6Uhy
-        nPBd0h0QfLfMyxLU59Jn4dILqZlnpw1dnUoWsaEKMWxtoeIexGPcxjm6UmgI3g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697135807;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pw7es2hh7qvHHY9PDbdAV77XkoPYW54NCoEKygSaPGA=;
-        b=BK9Fm3pbkZP3Z70AdYJks9gghRogBj730FV1St1XIfoS3wM5MmF9E0CxWFujwqnltexNdV
-        CVxUzeY+odCHAyAA==
-From:   "tip-bot2 for Kirill A. Shutemov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/alternatives: Disable KASAN in apply_alternatives()
-Cc:     Fei Yang <fei.yang@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        stable@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231012100424.1456-1-kirill.shutemov@linux.intel.com>
-References: <20231012100424.1456-1-kirill.shutemov@linux.intel.com>
+        Thu, 12 Oct 2023 14:39:28 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3206EBE;
+        Thu, 12 Oct 2023 11:39:26 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CDTPVQ013404;
+        Thu, 12 Oct 2023 18:39:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=NsV0kpoOR7sCQ7NjSt84rdLl5aq1qP8KMvA+Lq6Vzew=;
+ b=HFJj1V8TPQJ8Q1zPNYt0ECMeuDvf+EhClLxLLro+1VPCryyd7a/nmJJCQ4fahD0pSbfL
+ AzeI+IcwrcxdRZ6beNweq8mMWXroocfIBqVv3lH09mBwu0NP2BmanEctYc7TSL9WrisW
+ btr5DAsyrZPgm4UMNtCQ8U3TVaHHTyDbYAdnLu2RZTFWonPfF7CFXjekX4zAsdBTLJHa
+ f5tqJoCRkslkq3UlaO9lNYAdus3AuaE90xQKmTBYRfAX4Ih99+a3+orHEBMGTbn6OOwO
+ 4yR2aU1eeS2yfj+0bHJhXd8UVJF7y3WB2EhbO+GR+4EB/Nvv7EhyR0jt1UzmdSI09kaQ wg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tpfa6149m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 18:39:20 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39CIdCh2019442
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 18:39:12 GMT
+Received: from [10.216.46.114] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 12 Oct
+ 2023 11:39:08 -0700
+Message-ID: <bac414a7-aa2a-4b93-82e0-998002c455e0@quicinc.com>
+Date:   Fri, 13 Oct 2023 00:09:04 +0530
 MIME-Version: 1.0
-Message-ID: <169713580687.3135.7724105544670888547.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] usb: dwc3: core: Fix RAM interface getting stuck during
+ enumeration
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "quic_ppratap@quicinc.com" <quic_ppratap@quicinc.com>,
+        "quic_wcheng@quicinc.com" <quic_wcheng@quicinc.com>,
+        "quic_jackp@quicinc.com" <quic_jackp@quicinc.com>,
+        "quic_ugoswami@quicinc.com" <quic_ugoswami@quicinc.com>
+References: <20231011100214.25720-1-quic_kriskura@quicinc.com>
+ <20231012175912.umc3ugzk4iqwtcp3@synopsys.com>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <20231012175912.umc3ugzk4iqwtcp3@synopsys.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: POs1EbSOCYM0bZDIORmB48KYVnEyhtT0
+X-Proofpoint-GUID: POs1EbSOCYM0bZDIORmB48KYVnEyhtT0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_11,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ mlxlogscore=848 impostorscore=0 bulkscore=0 mlxscore=0 priorityscore=1501
+ spamscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310120155
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     d35652a5fc9944784f6f50a5c979518ff8dacf61
-Gitweb:        https://git.kernel.org/tip/d35652a5fc9944784f6f50a5c979518ff8dacf61
-Author:        Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-AuthorDate:    Thu, 12 Oct 2023 13:04:24 +03:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 12 Oct 2023 20:27:16 +02:00
 
-x86/alternatives: Disable KASAN in apply_alternatives()
+On 10/12/2023 11:29 PM, Thinh Nguyen wrote:
 
-Fei has reported that KASAN triggers during apply_alternatives() on
-a 5-level paging machine:
+>> -static int dwc3_gadget_soft_disconnect(struct dwc3 *dwc)
+>> +int dwc3_gadget_soft_disconnect(struct dwc3 *dwc)
+>>   {
+>>   	unsigned long flags;
+>>   	int ret;
+>> @@ -2701,7 +2701,7 @@ static int dwc3_gadget_soft_disconnect(struct dwc3 *dwc)
+>>   	return ret;
+>>   }
+>>   
+>> -static int dwc3_gadget_soft_connect(struct dwc3 *dwc)
+>> +int dwc3_gadget_soft_connect(struct dwc3 *dwc)
+>>   {
+>>   	int ret;
+>>   
+>> @@ -3963,6 +3963,7 @@ static void dwc3_gadget_disconnect_interrupt(struct dwc3 *dwc)
+>>   	dwc3_gadget_dctl_write_safe(dwc, reg);
+>>   
+>>   	dwc->connected = false;
+>> +	dwc->cable_disconnected = true;
+>>   
+>>   	dwc3_disconnect_gadget(dwc);
+>>   
+>> @@ -4038,6 +4039,7 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
+>>   	 */
+>>   	dwc3_stop_active_transfers(dwc);
+>>   	dwc->connected = true;
+>> +	dwc->cable_disconnected = false;
+>>   
+>>   	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
+>>   	reg &= ~DWC3_DCTL_TSTCTRL_MASK;
+>> -- 
+>> 2.42.0
+>>
+> 
+> We can just reset the controller when there's End Transfer command
+> timeout as a failure recovery. No need to do what you're doing here.
+> 
+Hi Thinh,
 
-	BUG: KASAN: out-of-bounds in rcu_is_watching()
-	Read of size 4 at addr ff110003ee6419a0 by task swapper/0/0
-	...
-	__asan_load4()
-	rcu_is_watching()
-	trace_hardirqs_on()
-	text_poke_early()
-	apply_alternatives()
-	...
+  That was what I initially wanted to do, but there were couple of 
+reasons I wanted to take this approach:
 
-On machines with 5-level paging, cpu_feature_enabled(X86_FEATURE_LA57)
-gets patched. It includes KASAN code, where KASAN_SHADOW_START depends on
-__VIRTUAL_MASK_SHIFT, which is defined with cpu_feature_enabled().
+1. We can't just reset the controller in midst of gadget_interrupt. We 
+need to process it completely and then take action.
 
-KASAN gets confused when apply_alternatives() patches the
-KASAN_SHADOW_START users. A test patch that makes KASAN_SHADOW_START
-static, by replacing __VIRTUAL_MASK_SHIFT with 56, works around the issue.
+2. The above log was seen on QRD variant of SM8550/SM8650 easily. But on
+other platforms of same targets, the issue comes up at some other 
+instances of code, at a point where no IRQ is running. In such cases its 
+not possible to accurately find out code portions and reset the 
+controller. The way I confirmed that both platforms are having the same 
+issue is:
 
-Fix it for real by disabling KASAN while the kernel is patching alternatives.
+a. During cable disconnect, I am not receiving disconnect interrupt
+b. The reg dump is exactly same in both cases (BMU as well)
 
-[ mingo: updated the changelog ]
+So I felt it was better to fix it during cable disconnect because even 
+if we remove cable, we are still in device mode only and in this case we 
+can unblock suspend and also bring back controller to a known state.
 
-Fixes: 6657fca06e3f ("x86/mm: Allow to boot without LA57 if CONFIG_X86_5LEVEL=y")
-Reported-by: Fei Yang <fei.yang@intel.com>
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20231012100424.1456-1-kirill.shutemov@linux.intel.com
----
- arch/x86/kernel/alternative.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Let me know your thoughts on the above.
 
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 517ee01..73be393 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -403,6 +403,17 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
- 	u8 insn_buff[MAX_PATCH_LEN];
- 
- 	DPRINTK(ALT, "alt table %px, -> %px", start, end);
-+
-+	/*
-+	 * In the case CONFIG_X86_5LEVEL=y, KASAN_SHADOW_START is defined using
-+	 * cpu_feature_enabled(X86_FEATURE_LA57) and is therefore patched here.
-+	 * During the process, KASAN becomes confused seeing partial LA57
-+	 * conversion and triggers a false-positive out-of-bound report.
-+	 *
-+	 * Disable KASAN until the patching is complete.
-+	 */
-+	kasan_disable_current();
-+
- 	/*
- 	 * The scan order should be from start to end. A later scanned
- 	 * alternative code can overwrite previously scanned alternative code.
-@@ -452,6 +463,8 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
- 
- 		text_poke_early(instr, insn_buff, insn_buff_sz);
- 	}
-+
-+	kasan_enable_current();
- }
- 
- static inline bool is_jcc32(struct insn *insn)
+Regards,
+Krishna,
