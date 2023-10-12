@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A88077C6581
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CAAE7C6582
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377831AbjJLGYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60054 "EHLO
+        id S1377551AbjJLGYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377511AbjJLGYo (ORCPT
+        with ESMTP id S1377742AbjJLGYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:24:44 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19C5121
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:25 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7dac80595so10309457b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:25 -0700 (PDT)
+        Thu, 12 Oct 2023 02:24:46 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7C913D
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:29 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a3a98b34dso877980276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697091865; x=1697696665; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697091868; x=1697696668; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=lyUH9hPvlymkRvCiwSN/eO1tveUn9WvUsIn+qftqtUI=;
-        b=Alk7tEDPHfTdgiMo+0PFgEDjLvWBrSK3IfWkl31fYSWOCG4akAVMrqufcIFG4/HVDN
-         wgQmyElp5SPpQ6vjaT5WBoTe58dPdBPPeY7gJpyiiSYRXRJapxkf3PrL24MuP8zfL/nH
-         SuRwrJmZuZzLNreab+8kXOhSLwRDdHW/z/wlRMJV+qNCMrLrf/OALRwOvtpXRSKbN2u/
-         vxVwSWDeuP477+YQKoH87k/lZfRx9PhCV9ZW6+26k4WOQ50vG0pqVVZZtlCCDzIGhSHR
-         5Evl2uuNii0wVWBlgieQ0sp7AZCF0/3PKDRdRDdCkKuPKU5o0nVtVDZfX1hghdzmz0XZ
-         LiBA==
+        bh=la0kth5B8NAHJ/7CJQBnk0UfsTSlln3eEBL7Ofw1InE=;
+        b=3KuoHDwI9ZKC4f52zPq/dwdG1hbh/cR5fj1PeoFeKz4+XwN82Fbt/nMwA0gCS/qptp
+         XuN1MVxbjX4hjM4mbN/AC9KsqtnRiXqWo6Ac/OsiOWiYYhBVgjzAhPc/YDTzREE0w4oT
+         6/0ea9mt0+2UowtLjk23ARu8B5Q44uQYD5rWZ9GzpMaEIJvOnzhzoPJO3q6nqmBnarcK
+         0m3VDdDhrQp5AxQrYCnrqkua7foOmHLY0Z8HJyWaKmjdsrz9J+d5d9cAa9ISHlTcCEwK
+         K9I14AxHOMJHI5M2kJ5gQUEmRBxW+pJwS3QvDBdrq5noajpPzxffw2fS30qqdpFWberO
+         4QDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697091865; x=1697696665;
+        d=1e100.net; s=20230601; t=1697091868; x=1697696668;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lyUH9hPvlymkRvCiwSN/eO1tveUn9WvUsIn+qftqtUI=;
-        b=f7VxbUmBcjhA8uS+JCHpFbC0slLjuBmloTd3Q+56/+i3TzSRQ2G/1phCa/tl1jcrqo
-         IvpycnParuIObGcZ2HB70u5sdWcCh1EipLCZbVnreg9dsnc785kaTx820ax4uxNw4x3e
-         OfBlZokjin1gM2i0ED/pbHfH4K20A02w32R2yEj6yLbe5DFXIF80/1V/SOpL1sd4Wg0/
-         9XvB1wW89hnIe/jxrl+cXasUfVhtJneWTnUEKXxnap0MH3C1rvQTVsr1ygNuWTQhyhky
-         rOpwI8lV/6KrCRHsT7Aop3iDR0Oq93YDUJjRZy8eUwQ6RdfF3XteE8uYW5zPKXMb85Oi
-         FttQ==
-X-Gm-Message-State: AOJu0Yz0RmcEomlU7FTBpaevk4GoFXoCQXgd/FivxEL4O69wnmJNxdkX
-        RoxBwId5dJdBADIP4VkJtgMCudGVKT25
-X-Google-Smtp-Source: AGHT+IEH07HDyKE3C92uXlhnmTt2oGTYwu5Ra01CUAR3cqmzqaFcrTMzzdIvO3clx52whdoAvv4Md0oSmVlO
+        bh=la0kth5B8NAHJ/7CJQBnk0UfsTSlln3eEBL7Ofw1InE=;
+        b=V+oNZc9feNcXbOlWI670sH4f20fI2E1ExpVbMmA85JV8scSLUkabn7NXuYW4PlTMbC
+         TLU4NbPsMrFv5sRfphx7KUhJipgdDaK81CBtWwuMPMVmS13OyPUFmmdI9d2sDWj8W/dR
+         zfxZ3EW//vlOLNfeAya/hEIv+0I37JwCmXPgmj5Jxg5Tr068MwVUjdFsNnW+1dQo15av
+         eEYPM7zV9jTQL87ac6AzVDEGJeJKg+mmxV3EJFD1TEGw3lPeayYPckO34cqNqwQG2U/T
+         1SUhZKOpLG72IcEPymMZuncnJgyP3mI25J2PC4i/ICdWErsCn2rP7C4BLtRgbad+TSjh
+         pLbQ==
+X-Gm-Message-State: AOJu0YwBXujnqi9PCkIw7k9NzXeT4FDfFrEwc5/iYjDzsZ5unuVKBiFq
+        O0ygIYfyablj8ftxyEBI9Y69n3KU+9oO
+X-Google-Smtp-Source: AGHT+IEb5QCBrWCeAuptIs138Qw6ImZJcMdt+KABfOynkd4duT5ZLjm6TicU9k5h79l3BQQyxZZZa02wvlZ0
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7be5:14d2:880b:c5c9])
- (user=irogers job=sendgmr) by 2002:a81:b3c5:0:b0:59b:db15:498c with SMTP id
- r188-20020a81b3c5000000b0059bdb15498cmr505881ywh.10.1697091864943; Wed, 11
- Oct 2023 23:24:24 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 23:23:54 -0700
+ (user=irogers job=sendgmr) by 2002:a25:cfd0:0:b0:d9a:50d2:a8ba with SMTP id
+ f199-20020a25cfd0000000b00d9a50d2a8bamr141489ybg.2.1697091867872; Wed, 11 Oct
+ 2023 23:24:27 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 23:23:55 -0700
 In-Reply-To: <20231012062359.1616786-1-irogers@google.com>
-Message-Id: <20231012062359.1616786-9-irogers@google.com>
+Message-Id: <20231012062359.1616786-10-irogers@google.com>
 Mime-Version: 1.0
 References: <20231012062359.1616786-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v2 08/13] perf callchain: Minor layout changes to callchain_list
+Subject: [PATCH v2 09/13] perf mem_info: Add and use map_symbol__exit and addr_map_symbol__exit
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -80,7 +80,7 @@ To:     Peter Zijlstra <peterz@infradead.org>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,104 +88,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid 6 byte hole for padding. Place more frequently used fields
-first in an attempt to use just 1 cacheline in the common case.
-
-Before:
-```
-struct callchain_list {
-        u64                        ip;                   /*     0     8 */
-        struct map_symbol          ms;                   /*     8    24 */
-        struct {
-                _Bool              unfolded;             /*    32     1 */
-                _Bool              has_children;         /*    33     1 */
-        };                                               /*    32     2 */
-
-        /* XXX 6 bytes hole, try to pack */
-
-        u64                        branch_count;         /*    40     8 */
-        u64                        from_count;           /*    48     8 */
-        u64                        predicted_count;      /*    56     8 */
-        /* --- cacheline 1 boundary (64 bytes) --- */
-        u64                        abort_count;          /*    64     8 */
-        u64                        cycles_count;         /*    72     8 */
-        u64                        iter_count;           /*    80     8 */
-        u64                        iter_cycles;          /*    88     8 */
-        struct branch_type_stat *  brtype_stat;          /*    96     8 */
-        const char  *              srcline;              /*   104     8 */
-        struct list_head           list;                 /*   112    16 */
-
-        /* size: 128, cachelines: 2, members: 13 */
-        /* sum members: 122, holes: 1, sum holes: 6 */
-};
-```
-
-After:
-```
-struct callchain_list {
-        struct list_head           list;                 /*     0    16 */
-        u64                        ip;                   /*    16     8 */
-        struct map_symbol          ms;                   /*    24    24 */
-        const char  *              srcline;              /*    48     8 */
-        u64                        branch_count;         /*    56     8 */
-        /* --- cacheline 1 boundary (64 bytes) --- */
-        u64                        from_count;           /*    64     8 */
-        u64                        cycles_count;         /*    72     8 */
-        u64                        iter_count;           /*    80     8 */
-        u64                        iter_cycles;          /*    88     8 */
-        struct branch_type_stat *  brtype_stat;          /*    96     8 */
-        u64                        predicted_count;      /*   104     8 */
-        u64                        abort_count;          /*   112     8 */
-        struct {
-                _Bool              unfolded;             /*   120     1 */
-                _Bool              has_children;         /*   121     1 */
-        };                                               /*   120     2 */
-
-        /* size: 128, cachelines: 2, members: 13 */
-        /* padding: 6 */
-};
-```
+Fix leak where mem_info__put wouldn't release the maps/map as used by
+perf mem. Add exit functions and use elsewhere that the maps and map
+are released.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/callchain.h | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ tools/perf/util/Build        |  1 +
+ tools/perf/util/callchain.c  | 15 +++++----------
+ tools/perf/util/hist.c       |  6 ++----
+ tools/perf/util/machine.c    |  6 ++----
+ tools/perf/util/map_symbol.c | 15 +++++++++++++++
+ tools/perf/util/map_symbol.h |  4 ++++
+ tools/perf/util/symbol.c     |  5 ++++-
+ 7 files changed, 33 insertions(+), 19 deletions(-)
+ create mode 100644 tools/perf/util/map_symbol.c
 
-diff --git a/tools/perf/util/callchain.h b/tools/perf/util/callchain.h
-index 86e8a9e81456..d5c66345ae31 100644
---- a/tools/perf/util/callchain.h
-+++ b/tools/perf/util/callchain.h
-@@ -116,22 +116,22 @@ extern struct callchain_param callchain_param;
- extern struct callchain_param callchain_param_default;
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index 0ea5a9d368d4..96058f949ec9 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -49,6 +49,7 @@ perf-y += dso.o
+ perf-y += dsos.o
+ perf-y += symbol.o
+ perf-y += symbol_fprintf.o
++perf-y += map_symbol.o
+ perf-y += color.o
+ perf-y += color_config.o
+ perf-y += metricgroup.o
+diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
+index 0a7919c2af91..02881d5b822c 100644
+--- a/tools/perf/util/callchain.c
++++ b/tools/perf/util/callchain.c
+@@ -1496,16 +1496,14 @@ static void free_callchain_node(struct callchain_node *node)
  
- struct callchain_list {
-+	struct list_head	list;
- 	u64			ip;
- 	struct map_symbol	ms;
--	struct /* for TUI */ {
--		bool		unfolded;
--		bool		has_children;
--	};
-+	const char		*srcline;
- 	u64			branch_count;
- 	u64			from_count;
--	u64			predicted_count;
--	u64			abort_count;
- 	u64			cycles_count;
- 	u64			iter_count;
- 	u64			iter_cycles;
- 	struct branch_type_stat *brtype_stat;
--	const char		*srcline;
--	struct list_head	list;
-+	u64			predicted_count;
-+	u64			abort_count;
-+	struct /* for TUI */ {
-+		bool		unfolded;
-+		bool		has_children;
-+	};
+ 	list_for_each_entry_safe(list, tmp, &node->parent_val, list) {
+ 		list_del_init(&list->list);
+-		map__zput(list->ms.map);
+-		maps__zput(list->ms.maps);
++		map_symbol__exit(&list->ms);
+ 		zfree(&list->brtype_stat);
+ 		free(list);
+ 	}
+ 
+ 	list_for_each_entry_safe(list, tmp, &node->val, list) {
+ 		list_del_init(&list->list);
+-		map__zput(list->ms.map);
+-		maps__zput(list->ms.maps);
++		map_symbol__exit(&list->ms);
+ 		zfree(&list->brtype_stat);
+ 		free(list);
+ 	}
+@@ -1591,8 +1589,7 @@ int callchain_node__make_parent_list(struct callchain_node *node)
+ out:
+ 	list_for_each_entry_safe(chain, new, &head, list) {
+ 		list_del_init(&chain->list);
+-		map__zput(chain->ms.map);
+-		maps__zput(chain->ms.maps);
++		map_symbol__exit(&chain->ms);
+ 		zfree(&chain->brtype_stat);
+ 		free(chain);
+ 	}
+@@ -1676,10 +1673,8 @@ void callchain_cursor_reset(struct callchain_cursor *cursor)
+ 	cursor->nr = 0;
+ 	cursor->last = &cursor->first;
+ 
+-	for (node = cursor->first; node != NULL; node = node->next) {
+-		map__zput(node->ms.map);
+-		maps__zput(node->ms.maps);
+-	}
++	for (node = cursor->first; node != NULL; node = node->next)
++		map_symbol__exit(&node->ms);
+ }
+ 
+ void callchain_param_setup(u64 sample_type, const char *arch)
+diff --git a/tools/perf/util/hist.c b/tools/perf/util/hist.c
+index ac8c0ef48a7f..d62693b8fad8 100644
+--- a/tools/perf/util/hist.c
++++ b/tools/perf/util/hist.c
+@@ -524,8 +524,7 @@ static int hist_entry__init(struct hist_entry *he,
+ 		map__put(he->mem_info->daddr.ms.map);
+ 	}
+ err:
+-	maps__zput(he->ms.maps);
+-	map__zput(he->ms.map);
++	map_symbol__exit(&he->ms);
+ 	zfree(&he->stat_acc);
+ 	return -ENOMEM;
+ }
+@@ -1317,8 +1316,7 @@ void hist_entry__delete(struct hist_entry *he)
+ 	struct hist_entry_ops *ops = he->ops;
+ 
+ 	thread__zput(he->thread);
+-	maps__zput(he->ms.maps);
+-	map__zput(he->ms.map);
++	map_symbol__exit(&he->ms);
+ 
+ 	if (he->branch_info) {
+ 		map__zput(he->branch_info->from.ms.map);
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index 8e5085b77c7b..6ca7500e2cf4 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -2389,8 +2389,7 @@ static int add_callchain_ip(struct thread *thread,
+ 				      iter_cycles, branch_from, srcline);
+ out:
+ 	addr_location__exit(&al);
+-	maps__put(ms.maps);
+-	map__put(ms.map);
++	map_symbol__exit(&ms);
+ 	return err;
+ }
+ 
+@@ -3116,8 +3115,7 @@ static int append_inlines(struct callchain_cursor *cursor, struct map_symbol *ms
+ 		if (ret != 0)
+ 			return ret;
+ 	}
+-	map__put(ilist_ms.map);
+-	maps__put(ilist_ms.maps);
++	map_symbol__exit(&ilist_ms);
+ 
+ 	return ret;
+ }
+diff --git a/tools/perf/util/map_symbol.c b/tools/perf/util/map_symbol.c
+new file mode 100644
+index 000000000000..bef5079f2403
+--- /dev/null
++++ b/tools/perf/util/map_symbol.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "map_symbol.h"
++#include "maps.h"
++#include "map.h"
++
++void map_symbol__exit(struct map_symbol *ms)
++{
++	maps__zput(ms->maps);
++	map__zput(ms->map);
++}
++
++void addr_map_symbol__exit(struct addr_map_symbol *ams)
++{
++	map_symbol__exit(&ams->ms);
++}
+diff --git a/tools/perf/util/map_symbol.h b/tools/perf/util/map_symbol.h
+index e08817b0c30f..72d5ed938ed6 100644
+--- a/tools/perf/util/map_symbol.h
++++ b/tools/perf/util/map_symbol.h
+@@ -22,4 +22,8 @@ struct addr_map_symbol {
+ 	u64	      phys_addr;
+ 	u64	      data_page_size;
  };
++
++void map_symbol__exit(struct map_symbol *ms);
++void addr_map_symbol__exit(struct addr_map_symbol *ams);
++
+ #endif // __PERF_MAP_SYMBOL
+diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+index 2740d4457c13..d67a87072eec 100644
+--- a/tools/perf/util/symbol.c
++++ b/tools/perf/util/symbol.c
+@@ -2790,8 +2790,11 @@ struct mem_info *mem_info__get(struct mem_info *mi)
  
- /*
+ void mem_info__put(struct mem_info *mi)
+ {
+-	if (mi && refcount_dec_and_test(&mi->refcnt))
++	if (mi && refcount_dec_and_test(&mi->refcnt)) {
++		addr_map_symbol__exit(&mi->iaddr);
++		addr_map_symbol__exit(&mi->daddr);
+ 		free(mi);
++	}
+ }
+ 
+ struct mem_info *mem_info__new(void)
 -- 
 2.42.0.609.gbb76f46606-goog
 
