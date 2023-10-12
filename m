@@ -2,155 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7091B7C7308
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29467C730C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379586AbjJLQcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58618 "EHLO
+        id S1379525AbjJLQc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379171AbjJLQcI (ORCPT
+        with ESMTP id S1347324AbjJLQc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:32:08 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E67C0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:32:06 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4054496bde3so12155915e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:32:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697128325; x=1697733125; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zEFAq/CRrluRRtx0eqGeEhiSqDINW9W8p+WysscBUH0=;
-        b=Hb52MtOWZjxxfZ7pzN8qo7bv0tgN4syqARBW16Iv0kg/BriTVxqdQMiRQCSViZyqpe
-         qLTMiaSrTluO3EJkQbbiAx/3sRTgQwIFHvuHsft6KkeIWpIvPM0mq/MOSM4wKRTBbCvw
-         va1toOvOK+uQDpzSXub8bdK7EIxPz7/Qx3Qkm7+DiNku7j+yRAW3SIgWiin1Lc7eoOhs
-         Pjq/d8Yfz69YSClZjRMDC955zc6EKVSAPPsJORKg29Hy+KfW2P8P7mk6KWPfNUtHu4b6
-         cHJ1gZh89VwwSbzC4cG2H5lq7sLg8s+QOpI9F8N4mmSp7LF1MYxwRfClwHBZv6rrmmdm
-         nR0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697128325; x=1697733125;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zEFAq/CRrluRRtx0eqGeEhiSqDINW9W8p+WysscBUH0=;
-        b=L4pnA5zDqbgJvfRPaz4fun8ZOWtqqu/jAGeFlHPKKV6VXy1LxgA87moj99d49eXVaG
-         6CrlJDA0bYzRtMTGUtNA1E+N/+l+DrGcMvOP73BLxRA9Ualuv/hk1V588O98B7hYDGMi
-         1f9v9y/+TZxvCSgtU1erZC3OMEJGAgUTpuHF6FkJ4vmrHxd1LFPDAQAeBXfm+IJSpQSU
-         VZTLzTSQ+3GJbsrF/Zv7FMmjFjV5/1Z0GwGsHY2Nnce9voDDc7HUwPdEPXyMWeCTkgdQ
-         SkaeOnX4RzfeS2nNNe3hySebMvnXMFu74qQXiTGQM9efm0MnedrOI/isfgdF5ZLE4oBD
-         MbCQ==
-X-Gm-Message-State: AOJu0Yy3r7UJtQEHuGLEyjs7hAZP4Jl893Or68rYCNJ98j9fkMgtte7C
-        hDv1ZmlPcesVsWPI0Ts0i+oIhQ==
-X-Google-Smtp-Source: AGHT+IEMnXKlbQXLsUFxh8NA3bzTb4Kdxrf5jq7K3WHmfryz76lj4mVKcCIgczcHf9l0kFfkjrarVg==
-X-Received: by 2002:a05:600c:3781:b0:405:1bfb:ff14 with SMTP id o1-20020a05600c378100b004051bfbff14mr20483223wmr.9.1697128325100;
-        Thu, 12 Oct 2023 09:32:05 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id l40-20020a05600c1d2800b0040770ec2c19sm30176wms.10.2023.10.12.09.32.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 09:32:04 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 18:32:03 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     =?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Evan Green <evan@rivosinc.com>
-Subject: Re: [PATCH v1 01/13] riscv: fatorize hwprobe ISA extension reporting
-Message-ID: <20231012-8d049a0366f3333ff4a3223b@orel>
-References: <20231011111438.909552-1-cleger@rivosinc.com>
- <20231011111438.909552-2-cleger@rivosinc.com>
- <20231012-matriarch-lunar-819c1d2d7996@spud>
+        Thu, 12 Oct 2023 12:32:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00ECBC0;
+        Thu, 12 Oct 2023 09:32:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697128344; x=1728664344;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=jKhmhLoZMtAQbPlIEKKqj8u2OJYSYB1CSvXNiZknyjQ=;
+  b=XnZp7KbuRX3HcZms7vqNvYsdzRyXLBsp7cqpqjFevLPQq3K7Rdyd9eUz
+   OcWWN0+8olbW/qkPcdEuhNLA2s7J9OJgmHeV8SsY2fRjKkiwrd0bIr5qB
+   sdivQTUB5B15pxSbuOP8JTIGtW5WQjgzcDlRTI7iqzdwXNNgLkWSU9/2h
+   3zXw73Us7iswxA63eAvKBWFRb0g0e3bbGgEUz8NjYkqXb93/HFIvTmHSZ
+   u3xn9RiQ05etkWHsjk/HOQ5S0q+lhLbXUBYJaeZa70ogcz8fc1BK1FdRW
+   WqX/NCk2Q8Qf1tyUK2FZSLZnFSvWI6g0zA3GwwsUyr5+dwtvxCbY+hilE
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="375324576"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="375324576"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 09:32:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="898181366"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="898181366"
+Received: from asroczyn-mobl.ger.corp.intel.com ([10.249.36.107])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 09:30:34 -0700
+Date:   Thu, 12 Oct 2023 19:32:20 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Armin Wolf <W_Armin@gmx.de>, Hans de Goede <hdegoede@redhat.com>
+cc:     markgross@kernel.org, platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/6] platform/x86: wmi: Fix probe failure when failing
+ to register WMI devices
+In-Reply-To: <20231007233933.72121-5-W_Armin@gmx.de>
+Message-ID: <6fc5eacc-15e7-8de4-a031-d57ae27568bd@linux.intel.com>
+References: <20231007233933.72121-1-W_Armin@gmx.de> <20231007233933.72121-5-W_Armin@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231012-matriarch-lunar-819c1d2d7996@spud>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 02:53:43PM +0100, Conor Dooley wrote:
-> Drew,
+On Sun, 8 Oct 2023, Armin Wolf wrote:
+
+> When a WMI device besides the first one somehow fails to register, retval
+> is returned while still containing a negative error code. This causes the
+> ACPI device failing to probe, leaving behind zombie WMI devices leading
+> to various errors later.
+> Fix this by handling the single error path separately and return 0 after
+> trying to register all WMI devices. Also continue to register WMI devices
+> even if some fail to allocate.
+
+I think the usual approach would be to unroll all registerations done so 
+far when an error occurs while registering n devices.
+
+Do you Hans have something to add what would be the best course of action 
+here?
+
+-- 
+ i.
+
+> Fixes: 6ee50aaa9a20 ("platform/x86: wmi: Instantiate all devices before adding them")
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> ---
+>  drivers/platform/x86/wmi.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 > 
-> On Wed, Oct 11, 2023 at 01:14:26PM +0200, Clément Léger wrote:
-> > Factorize ISA extension reporting by using a macro rather than
-> > copy/pasting extension names. This will allow adding new extensions more
-> > easily.
-> > 
-> > Signed-off-by: Clément Léger <cleger@rivosinc.com>
-> > ---
-> >  arch/riscv/kernel/sys_riscv.c | 26 ++++++++++++--------------
-> >  1 file changed, 12 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_riscv.c
-> > index 473159b5f303..5ce593ce07a4 100644
-> > --- a/arch/riscv/kernel/sys_riscv.c
-> > +++ b/arch/riscv/kernel/sys_riscv.c
-> > @@ -145,20 +145,18 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair,
-> >  	for_each_cpu(cpu, cpus) {
+> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+> index e3984801883a..ab24ea9ffc9a 100644
+> --- a/drivers/platform/x86/wmi.c
+> +++ b/drivers/platform/x86/wmi.c
+> @@ -1338,8 +1338,8 @@ static int parse_wdg(struct device *wmi_bus_dev, struct platform_device *pdev)
+>  	struct wmi_block *wblock;
+>  	union acpi_object *obj;
+>  	acpi_status status;
+> -	int retval = 0;
+>  	u32 i, total;
+> +	int retval;
 > 
-> We were gonna add a comment here about when it is and is not safe to use
-> riscv_isa_extension_available() IIRC. Did that ever end up in a patch?
-
-Yup, it's in [1]. But that series may be hung up on spec stuff, so maybe
-it'd be better for Clément to integrate it. And, it appears we definitely
-need this macro, because it has now been suggested by three different
-people :-) (I later saw Samuel was first[2], but I hadn't seen his before
-submitting mine, otherwise I would have given him the credit.)
-
-[1] https://lore.kernel.org/all/20230918131518.56803-11-ajones@ventanamicro.com/
-[2] https://lore.kernel.org/all/20230712084134.1648008-4-sameo@rivosinc.com/
-
-Thanks,
-drew
-
+>  	status = acpi_evaluate_object(device->handle, "_WDG", NULL, &out);
+>  	if (ACPI_FAILURE(status))
+> @@ -1350,8 +1350,8 @@ static int parse_wdg(struct device *wmi_bus_dev, struct platform_device *pdev)
+>  		return -ENXIO;
 > 
-> >  		struct riscv_isainfo *isainfo = &hart_isa[cpu];
-> >  
-> > -		if (riscv_isa_extension_available(isainfo->isa, ZBA))
-> > -			pair->value |= RISCV_HWPROBE_EXT_ZBA;
-> > -		else
-> > -			missing |= RISCV_HWPROBE_EXT_ZBA;
-> > -
-> > -		if (riscv_isa_extension_available(isainfo->isa, ZBB))
-> > -			pair->value |= RISCV_HWPROBE_EXT_ZBB;
-> > -		else
-> > -			missing |= RISCV_HWPROBE_EXT_ZBB;
-> > -
-> > -		if (riscv_isa_extension_available(isainfo->isa, ZBS))
-> > -			pair->value |= RISCV_HWPROBE_EXT_ZBS;
-> > -		else
-> > -			missing |= RISCV_HWPROBE_EXT_ZBS;
-> > +#define CHECK_ISA_EXT(__ext)							\
-> > +		do {								\
-> > +			if (riscv_isa_extension_available(isainfo->isa, __ext))	\
-> > +				pair->value |= RISCV_HWPROBE_EXT_##__ext;	\
-> > +			else							\
-> > +				missing |= RISCV_HWPROBE_EXT_##__ext;		\
-> > +		} while (false)							\
-> > +
-> > +		CHECK_ISA_EXT(ZBA);
-> > +		CHECK_ISA_EXT(ZBB);
-> > +		CHECK_ISA_EXT(ZBS);
-> > +#undef CHECK_ISA_EXT
-> >  	}
-> >  
-> >  	/* Now turn off reporting features if any CPU is missing it. */
-> > -- 
-> > 2.42.0
-> > 
-
+>  	if (obj->type != ACPI_TYPE_BUFFER) {
+> -		retval = -ENXIO;
+> -		goto out_free_pointer;
+> +		kfree(obj);
+> +		return -ENXIO;
+>  	}
+> 
+>  	gblock = (const struct guid_block *)obj->buffer.pointer;
+> @@ -1366,8 +1366,8 @@ static int parse_wdg(struct device *wmi_bus_dev, struct platform_device *pdev)
+> 
+>  		wblock = kzalloc(sizeof(*wblock), GFP_KERNEL);
+>  		if (!wblock) {
+> -			retval = -ENOMEM;
+> -			break;
+> +			dev_err(wmi_bus_dev, "Failed to allocate %pUL\n", &gblock[i].guid);
+> +			continue;
+>  		}
+> 
+>  		wblock->acpi_device = device;
+> @@ -1398,9 +1398,9 @@ static int parse_wdg(struct device *wmi_bus_dev, struct platform_device *pdev)
+>  		}
+>  	}
+> 
+> -out_free_pointer:
+> -	kfree(out.pointer);
+> -	return retval;
+> +	kfree(obj);
+> +
+> +	return 0;
+>  }
+> 
+>  /*
+> --
+> 2.39.2
+> 
 
