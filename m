@@ -2,179 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1552D7C6B75
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBAA7C6B78
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343845AbjJLKtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
+        id S1377933AbjJLKtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:49:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbjJLKtO (ORCPT
+        with ESMTP id S1377702AbjJLKt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:49:14 -0400
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2103.outbound.protection.outlook.com [40.107.22.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7389090;
-        Thu, 12 Oct 2023 03:49:12 -0700 (PDT)
+        Thu, 12 Oct 2023 06:49:28 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2080.outbound.protection.outlook.com [40.107.244.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBABC4;
+        Thu, 12 Oct 2023 03:49:27 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HkFaDHFdriwVkims9WrI9xKUC2KI+uUSM2KECVpsDTNqjbMhbr384hZjasSavnfNCP6KmdJIKO59Y+VVLk/UcQAJ3h9+SXhSXuie9jU7ZrfQ69UjeY9Xq14tXpcztExI0JSOQpAnT/yLKFlv09OUSUAN7PqQjW/vayuY48+rtgxm1jb5XbIxPvUYaDqlCEGcmhYCzwzsDhvGLvElAeUmWX8DRItpA+cqhjTPpcE8unohpkSl6/vIpox0c9rXwGxV0vBN1grsPvxjTxdBAArq9wjei7mlZauaBzen/crovqCRaMr3DUOH3z+ji71HAdql3B3ehc59DUoObCT0/OYEVw==
+ b=Db7TL8TF779bSr1XucJgdkq+GduQbAZcKSPNauxeSb7hgEOU7LieTnyUbrDLsDuBsfGAc07k5LfyMWQ5ES8dFOFiOMYKo7qNovrQKmbg88AV5t9D5xIv4q3hQhQWIIjf7SjLhPfYJc3BD27Q3KuRVe+f6zTQKIhS9dHt/GpEGSY/SmQNm0F8z8qc41kyG1oWPppTH+UFzihqtngqXETgeuBDkgncSuJW8MfiSp0tGZWYzkGMTyJwg6AGvcmRJASL7jjSSerdS/ScGYueORLoNN/tjlhugoVcsmthc08fh0TOYLZUWTc7EWjpfGTztVMnJtxTPI6ttI5YrgYUbWohWw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a/wyIA0JenScA1RTENeYZs9coz7r4tAvVJ7RmRTMG4w=;
- b=ALXJJCB0J895iSUYiXI2iDQpMqI1p4qdoJWSBsCgTCNiKciMzQj1Gw0gJayAUZnbFwYSTrW1hj5RBueKzY5vSXsE3qRaVSfPDRO2nCvlwgA2rUtEWFLBWn5U1qH62mrVu4wgPcvduFX5oG/22GwAUDGnj+ENxpDkTQPyBoJpjTDjusLW0lJUtrS0OA26kgI7k/6aFy8kggevOAUXlNI06ep1njFS0HrQ5o92UwN9pAIkKEqp9x/30FoUAmjEGIjmDLWj4aQoXdNTNrbPTW6Jy9ZTXBLnQ5IG7y5Ul8Bi3orY/h5z7xoVna5oEFxBYA1KprPsdgtvhi1DoFFcutsDJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ bh=JCXyCAN+Z9iaXkCKs07MgaSMxgqw/GNeOGLQ5RSx8Lk=;
+ b=K7V3eACpk0sPQvszs6jldXPJjQ/XhZBbj9xOCT9OoPzY3nDNeRljvOkyNx7+E1ridAbhvI/y751murSB/e5lkS+ZPHIrrY3DwgBN6WRPeuR4ElfsUiAmDgIAOvA3/ZCa9wLFDydUtRMoyx7+UIk0tqgq8IE+cVCsj2b1+XHOSzS+Baz+aK60rWnQfSNNka6WHL+t9fys3OrwIQOu5hWZ3A+IEqgmFh8emmOiWOCdfX8mCBOl0QiRJgddiZcE5xSPL27tjMjkWwU+ExXZRkgObEzu7Krntug1K44HvhiaKxEoSeAVffTPF3rUQyz9B8cO9MdyBheKl95vh4v1Wfj2iw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a/wyIA0JenScA1RTENeYZs9coz7r4tAvVJ7RmRTMG4w=;
- b=VzOt+lArYTnw4PLZ2AatIG3DvrLdcbuOmenYqVsQL88VLoJ7MxUMdOxaI5WK3dWDODbE5K13uYMkD5lbCvoTR4aJ20lPIgT1KUP2nbjOiWvOrmfUdeSiFvbUwQkTc+Od0GEVu4NfqJCgoBS/yvDcySymiAEZikk+b6A/kzM2CY4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=axentia.se;
-Received: from AM0PR02MB4436.eurprd02.prod.outlook.com (2603:10a6:208:ed::15)
- by PRAPR02MB7906.eurprd02.prod.outlook.com (2603:10a6:102:29e::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Thu, 12 Oct
- 2023 10:49:09 +0000
-Received: from AM0PR02MB4436.eurprd02.prod.outlook.com
- ([fe80::4ba4:83a5:e60c:3a5d]) by AM0PR02MB4436.eurprd02.prod.outlook.com
- ([fe80::4ba4:83a5:e60c:3a5d%7]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
- 10:49:09 +0000
-Message-ID: <63403365-2d23-b4a0-d869-070686d62ab5@axentia.se>
-Date:   Thu, 12 Oct 2023 12:49:07 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH 2/2] i2c: mv64xxx: add an optional reset-gpios property
-Content-Language: sv-SE, en-US
-To:     Andi Shyti <andi.shyti@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     gregory.clement@bootlin.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231012035838.2804064-1-chris.packham@alliedtelesis.co.nz>
- <20231012035838.2804064-3-chris.packham@alliedtelesis.co.nz>
- <20231012102140.kydfi2tppvhd7bdn@zenone.zhora.eu>
-From:   Peter Rosin <peda@axentia.se>
-In-Reply-To: <20231012102140.kydfi2tppvhd7bdn@zenone.zhora.eu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MM0P280CA0118.SWEP280.PROD.OUTLOOK.COM (2603:10a6:190:9::8)
- To AM0PR02MB4436.eurprd02.prod.outlook.com (2603:10a6:208:ed::15)
+ bh=JCXyCAN+Z9iaXkCKs07MgaSMxgqw/GNeOGLQ5RSx8Lk=;
+ b=PXkj5eIIDQpULIHHjnkOEV9Wdkxb9hE5jbtV4/kVo0EJzK9f/KW6xMoYRnajmd3PCFuGiux2Q/3PGpNjzXZsMv6JJuKkgSK2egFZPhXSruW9TDIEZNXjPP3h0ybOwLY3J4eNpJLIGbJtaRpsiE5xqzuXUIY7hCBjjVmUEZ0S5jCyDdVcpwp51RvIcxOnMoFsdVQBo/4EVbmqRyJwuaEHuLwfXt5xI4wZgNERM4P1vPff8diIaCX10/1w+nJxst9b/g21nsRiZxuMOp2uVbDgAuwW01zZpUXjSx21sLMgl4/j1hcAc1dvIz+rBY4bGWx37ebm10klRdNCgzaWZjbxjw==
+Received: from CY5PR19CA0052.namprd19.prod.outlook.com (2603:10b6:930:1a::17)
+ by DS0PR12MB8069.namprd12.prod.outlook.com (2603:10b6:8:f0::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6863.45; Thu, 12 Oct 2023 10:49:25 +0000
+Received: from CY4PEPF0000E9CF.namprd03.prod.outlook.com
+ (2603:10b6:930:1a:cafe::a6) by CY5PR19CA0052.outlook.office365.com
+ (2603:10b6:930:1a::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.27 via Frontend
+ Transport; Thu, 12 Oct 2023 10:49:25 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CY4PEPF0000E9CF.mail.protection.outlook.com (10.167.241.142) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.22 via Frontend Transport; Thu, 12 Oct 2023 10:49:24 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 12 Oct
+ 2023 03:49:14 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 12 Oct
+ 2023 03:49:14 -0700
+Received: from moonraker.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server id 15.2.986.41 via Frontend
+ Transport; Thu, 12 Oct 2023 03:49:12 -0700
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        Johnny Liu <johnliu@nvidia.com>,
+        Ankur Pawar <ankurp@nvidia.com>
+Subject: [PATCH] memory: tegra: Add Tegra234 clients for RCE and VI
+Date:   Thu, 12 Oct 2023 11:49:09 +0100
+Message-ID: <20231012104909.48518-1-jonathanh@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR02MB4436:EE_|PRAPR02MB7906:EE_
-X-MS-Office365-Filtering-Correlation-Id: 76c6d968-fce1-4e74-b3ba-08dbcb10dd39
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9CF:EE_|DS0PR12MB8069:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2599ab24-bd66-4ff5-b53d-08dbcb10e676
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1yk/eRedcR7TTELGAj+zWJ/OuR4ecGi2IjrF206GXIEYrV2XJyE7czShv41Bf7xgna3qNaXs5Ez1Kqjr8F/l90RglgASSOv9uoAvnqVvUVWzk2F6Om0BGCASCsePwwOQkSNWcTFb2/3TcqxQNYL2x60Z8AHe0eEFeOte2V5UYbYjLMee3FFg62hPvhkJIG113QHRw7mdKG8rZKdhfkRZJrg5gwNhQaMwvWDONOZYVNFbI43Oq5wi3GYGkx468dxcmdyWi+TxBLMCNNIsixOPfwrGXmUmDGqvKqPJx8kPJjDpTBhIodiucEhycelqDa7o9c4B1fWVva4RyTZZLqVtxEuM/A/U/ZQyoURuQECLwjaUTMGAd8oJ1Jf6tu+qs58IxR6ar4UPi1jv/MyWsTyOOXy61tg/nYH0KgDpPutnn/XQV+zCgtOrOEUfjNIHf6CCd1nxqI572KRr7sQPaWTpyl5SxjGiTdqh5ilIQcOYYLnVsiAfBikkDtgBb0YUCsfSCwyr5hgpJBHqjKKm2I9AotNEzAT/dtX95wlVPrV9cMZmcJ49E8k5p/6PeRU79bCTIe8iJamu9iO6S4j5P9/Pt4qjycaoaKdLq0qu8R88kx+xjTjfd063A9STeUnXQ1tav3VXFlvpeAv77BF1cABRvw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB4436.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(39840400004)(346002)(396003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(6506007)(31686004)(26005)(2616005)(6512007)(38100700002)(6486002)(31696002)(2906002)(8936002)(5660300002)(8676002)(86362001)(4001150100001)(316002)(66476007)(66946007)(41300700001)(110136005)(36756003)(66556008)(4326008)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WE9HL0d5NnFhR3hyYSt4MHpXWThsYU0yMkdSV1dtS3haWXIzeW9xV3JlZHpZ?=
- =?utf-8?B?R3VqbkJDWXNVRzVTWlVINTA0SHVrR1AxZmN1ZndieXlIUDJMOWsxNHJDd2tJ?=
- =?utf-8?B?dElhUWN4RWJxR2RYekJVMHlFMVE4bEJoVXNZQTI3aHhyRWtFOXFueEw4bmJj?=
- =?utf-8?B?TllYOGhFUysyNTBuOUlOTExiK1NmQmp3angzZEI4ekRQNitYd1FqSDNHZUxa?=
- =?utf-8?B?MjNWWVowcnFCWXJQUFh2THNseUNFYUxzdWlGNE1qWWU5MDl6UVk2N2ZtdG15?=
- =?utf-8?B?RVNQM3N0YkVxRGw1ZVBLSUhEZTE0d3Z1b1Q5VXcxQ1h4TGRJRkFpRk1GS3p0?=
- =?utf-8?B?QkQ1dDVkNWZqNmFKeWZEamRWKzZoeGtBK0xwcElpd2dPVzg0d25lL21iS29q?=
- =?utf-8?B?RFp1cUVSOWp0M0NPRUVuNGd3NjYrbWhtMWRSMHZYdmhFSVdmczdBcmVOS1VO?=
- =?utf-8?B?NVFWVm9HMEtaMkM2UXREMEwrTUFVTm1FWEhITGpPdjhRV0NtZVJ1QlJCUHMx?=
- =?utf-8?B?UkhWWjJVOEtOY01PRUJidXYxL0VnSVpEeDFva1U5cGd1ZEZ0Zk90dDROakxv?=
- =?utf-8?B?MTF6bjhSSVdvckZDKzR0WGRLWUZ1RHJZRkdKcUxBMFB3eitLSDVLOHJJaGoz?=
- =?utf-8?B?M1lhNjFLdUtsSWw3NkRCbzFJNUNxR2xWb2RQZEpMVHQrSWFzaExKS21HYVF0?=
- =?utf-8?B?dXFUMmZNVWJobnFtam1CVStMY1JuNUh0VDY3UVFzb0lOTXcwOEpuWjl5SElO?=
- =?utf-8?B?azFsUmpGcitWM3JITHRydHBBbWVYeTRyY0wrQ0orUHUySVRvM2NJem1wOUN2?=
- =?utf-8?B?ZlVTY1ViM0xEdGZLYU9jd2hpdkRvWHBEeis0cHFtcUhsa29RTHdkemlYY3M1?=
- =?utf-8?B?VFRlcFNpZmY5RHZ4Q2hkMmFvS0ZWc0ZNendLN0RtazU4MkRzcUM4emlQRmEz?=
- =?utf-8?B?OW56ek9nQVhySS9WZ21WSlhTVDdqWmIyV3JRVUZBU3RwRm1FY3FIZWtmc3li?=
- =?utf-8?B?TmQ0WU5aT0M1NUVNU29TMC9ac2JMVkY3LytWdUo2KzhCSExFNUVrbHV3T211?=
- =?utf-8?B?WXhIN1I5ZlExb1IxV2kyWlhRM3ZnUUZFSW1Ja25ZMFRBNHpWQXA4dnNxWHlq?=
- =?utf-8?B?WmExdW1HQnR2aFdCL0VDR2hxODZwcHAzS0o4U1kzSXI3dDlFa2p6VG1BWWlF?=
- =?utf-8?B?NllJVERuUFh0UWZPZ2w0SDNlOFpvcWRseit6dG0rbkQzUEdPd3JCbmpUNXBz?=
- =?utf-8?B?YnI5ZTlaTFNNTGdxMmZwYTlDSzZ0ZXY2NWlhOStCWklELzVHZzYrckthYVF1?=
- =?utf-8?B?YS9TQ0Y2R09udXREcld5RHIxZTZvNm9qRVlvQTdaU2VIaFZGUmltcHc5M2JN?=
- =?utf-8?B?YzRMQkR2M1BDTlJ5bjRpQ1k5NG9KSDlCTXpqMmM5K1BON3ovVERqQmFqVjRX?=
- =?utf-8?B?TnVLMzd1UHFiZ21ZbU1qLytjOEdHYTBkaVhYbTdRNGtseGo4clBSdmdlVThn?=
- =?utf-8?B?dmlNb3hod2oybXp5NDBSMml5Qnk3UnhHVno1eUNpSm9LWUw0ZWwzMFZHNmN1?=
- =?utf-8?B?dmNyNTk4MmR3Vk1nZEJza0VHMXI5Q2NpQU55UVVheW9ZTkV4bDBmWE1TWVVO?=
- =?utf-8?B?bFNYN1FFSmJVZmhtTEJXVFQzM1VBUm1wUTh6QWR1RFo1MG5kS3dCNzBZSThl?=
- =?utf-8?B?clNtb1IrS0c2dXRzaXBBdURqYllpZURCKytwYmRHUWxWeGlNMU9mUFJxQXN6?=
- =?utf-8?B?bnZCeWxvd0VaUFU5NzJLanNHVUhHNU1ldGJ5TDVKV3U2WTB6ay9PaWNZdmZp?=
- =?utf-8?B?NU5Eb0VVay9tUE9hS3d6b0pJOTF1Snk0WVVMTnNmTTU2MWlwS1ZIM2Foekpx?=
- =?utf-8?B?NkJTck9RbVFMT0JjUVlCR3ZrZ2IzUHBBVzZOUzB0d1d4MDdSTjRzZEhJcmhu?=
- =?utf-8?B?aWwxRVZHOE5EUGJOM3hZbjhmUys2b0hZeFRPc2hVTXl1aFBqOW5PU2xIS3BE?=
- =?utf-8?B?YVRzYVhOenFvZ1JLcjVQRjdrVkpKTEh0c05nSG1SNVczYVBYTHFSR25OK3pi?=
- =?utf-8?B?aUZicG90Q29mZnNiZHBOSFFRbFdCbHNqQW04UzBkaWZsS2tPcTJCMFR3ZWF2?=
- =?utf-8?Q?oN0kTkfNVTdGCLrlt5nf4aPeK?=
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: 76c6d968-fce1-4e74-b3ba-08dbcb10dd39
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR02MB4436.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 10:49:09.6156
+X-Microsoft-Antispam-Message-Info: mdJb9xs3S5CEmBMtOVMW/4xshvXLVeBIvKx4HMqEjHwodtk8yLg4qGJiB0AKujqwY5rW0GYozHtJIsZfBPPhpkZXu2P5hrQ2wSjVNav22p+4He6kufiSvButBEf+0f3c2iwd87UelIkvizzClrCYsbyXyjaB8xu06scegfW+YcTsp7q12gRZHTzeTuuSI0RpqWMSJJPrYZCWYCMcfPRMpsczH8FhaX0IzLa68HX3Tc0qBghuZzoJUexn27JWQnTyN0elz3kg2IzD7KDYxKLcRQ4u2Fqg4iIKw0SWmW6BGD42l5BlsHWyPBCE6ICrLipPvjnB8MhxwYD73lntZetwcc7Pcmcoq4NtOTRzyeAm7rWuALUHBYddh9ZLeqS9k8PnQMAijbpYpd2RHtrfNndBhkO6GQ5c6UGvwSaVQbG23FHdh+zUJGhDCqpsT4tKRxU/tVCEcgOX99DIg7p9fV/5BZJGUceeuzIr72M4cYMF9qjn4PsG2KJdiyFRyq74ieSrOORnpJzj6XeSwSe54csHhXcZRGsaAv4sLaC34/Xn/G2WH/Gi98UjcWlEvntEpS9thmvIUKqPQcoTmc5gOrnZoWpBWOf20UkvKUxEDDpH4yBvuK6skQGTwbj/FztulL1FlhdrX2lckrxnmew9MEv+GQirHfG4y7WmDiBPLz2qkkjR15uFU1Pet5jUW6Rex45n8eqkl1IR5KjqOi0Hymgco9K4fWJ128ScMP4Iro5Lb2t61OlCMyAz6AY08c+lsBWE
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(451199024)(186009)(1800799009)(82310400011)(64100799003)(46966006)(40470700004)(36840700001)(8676002)(8936002)(4326008)(41300700001)(5660300002)(40460700003)(83380400001)(2906002)(36756003)(47076005)(86362001)(7636003)(356005)(36860700001)(426003)(26005)(2616005)(1076003)(336012)(40480700001)(107886003)(82740400003)(316002)(478600001)(70206006)(70586007)(54906003)(110136005)(7049001)(7696005)(6666004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 10:49:24.8261
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HU4/Hx6Y1sdEj4ULhA1+tyyeT2OZTiIaJqZdrkDP7DAZNwV4y7Nghi+/ZB/fe/sG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PRAPR02MB7906
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2599ab24-bd66-4ff5-b53d-08dbcb10e676
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9CF.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8069
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Add the Tegra234 memory client entries for the Real-time Camera Engine
+(RCE) and Video Input (VI) devices.
 
-2023-10-12 at 12:21, Andi Shyti wrote:
-> Hi Chris,
-> 
-> ...
-> 
->>  static struct mv64xxx_i2c_regs mv64xxx_i2c_regs_mv64xxx = {
->> @@ -1083,6 +1084,10 @@ mv64xxx_i2c_probe(struct platform_device *pd)
->>  	if (drv_data->irq < 0)
->>  		return drv_data->irq;
->>  
->> +	drv_data->reset_gpio = devm_gpiod_get_optional(&pd->dev, "reset", GPIOD_OUT_HIGH);
->> +	if (IS_ERR(drv_data->reset_gpio))
->> +		return PTR_ERR(drv_data->reset_gpio);
-> 
-> if this optional why are we returning in case of error?
-> 
->> +
->>  	if (pdata) {
->>  		drv_data->freq_m = pdata->freq_m;
->>  		drv_data->freq_n = pdata->freq_n;
->> @@ -1121,6 +1126,12 @@ mv64xxx_i2c_probe(struct platform_device *pd)
->>  			goto exit_disable_pm;
->>  	}
->>  
->> +	if (drv_data->reset_gpio) {
->> +		udelay(1);
->> +		gpiod_set_value_cansleep(drv_data->reset_gpio, 0);
->> +		udelay(1);
-> 
-> you like busy waiting :-)
-> 
-> What is the reason behind these waits? Is there anything
-> specified by the datasheet?
-> 
-> If not I would do a more relaxed sleeping like an usleep_range...
-> what do you think?
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+---
+ drivers/memory/tegra/tegra234.c | 60 +++++++++++++++++++++++++++++++++
+ 1 file changed, 60 insertions(+)
 
-Since this is apparently not intended to reset the bus driver itself,
-but instead various clients connected to the bus, there is not telling
-which datasheet to examine. It is simply impossible to hard-code a
-correct reset pulse here, when the targets of the pulse are unspecified
-and unknown.
+diff --git a/drivers/memory/tegra/tegra234.c b/drivers/memory/tegra/tegra234.c
+index 9e5b5dbd9c8d..42c79f9a70af 100644
+--- a/drivers/memory/tegra/tegra234.c
++++ b/drivers/memory/tegra/tegra234.c
+@@ -449,6 +449,18 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
+ 				.security = 0x38c,
+ 			},
+ 		},
++	}, {
++		.id = TEGRA234_MEMORY_CLIENT_VIW,
++		.name = "viw",
++		.bpmp_id = TEGRA_ICC_BPMP_VI,
++		.type = TEGRA_ICC_ISO_VI,
++		.sid = TEGRA234_SID_ISO_VI,
++		.regs = {
++			.sid = {
++				.override = 0x390,
++				.security = 0x394,
++			},
++		},
+ 	}, {
+ 		.id = TEGRA234_MEMORY_CLIENT_NVDECSRD,
+ 		.name = "nvdecsrd",
+@@ -621,6 +633,30 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
+ 				.security = 0x50c,
+ 			},
+ 		},
++	}, {
++		.id = TEGRA234_MEMORY_CLIENT_VIFALR,
++		.name = "vifalr",
++		.bpmp_id = TEGRA_ICC_BPMP_VIFAL,
++		.type = TEGRA_ICC_ISO_VIFAL,
++		.sid = TEGRA234_SID_ISO_VIFALC,
++		.regs = {
++			.sid = {
++				.override = 0x5e0,
++				.security = 0x5e4,
++			},
++		},
++	}, {
++		.id = TEGRA234_MEMORY_CLIENT_VIFALW,
++		.name = "vifalw",
++		.bpmp_id = TEGRA_ICC_BPMP_VIFAL,
++		.type = TEGRA_ICC_ISO_VIFAL,
++		.sid = TEGRA234_SID_ISO_VIFALC,
++		.regs = {
++			.sid = {
++				.override = 0x5e8,
++				.security = 0x5ec,
++			},
++		},
+ 	}, {
+ 		.id = TEGRA234_MEMORY_CLIENT_DLA0RDA,
+ 		.name = "dla0rda",
+@@ -701,6 +737,30 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
+ 				.security = 0x62c,
+ 			},
+ 		},
++	}, {
++		.id = TEGRA234_MEMORY_CLIENT_RCER,
++		.name = "rcer",
++		.bpmp_id = TEGRA_ICC_BPMP_RCE,
++		.type = TEGRA_ICC_NISO,
++		.sid = TEGRA234_SID_RCE,
++		.regs = {
++			.sid = {
++				.override = 0x690,
++				.security = 0x694,
++			},
++		},
++	}, {
++		.id = TEGRA234_MEMORY_CLIENT_RCEW,
++		.name = "rcew",
++		.bpmp_id = TEGRA_ICC_BPMP_RCE,
++		.type = TEGRA_ICC_NISO,
++		.sid = TEGRA234_SID_RCE,
++		.regs = {
++			.sid = {
++				.override = 0x698,
++				.security = 0x69c,
++			},
++		},
+ 	}, {
+ 		.id = TEGRA234_MEMORY_CLIENT_PCIE0R,
+ 		.name = "pcie0r",
+-- 
+2.34.1
 
-I find the reset-gpios naming extremely misleading.
-
-Cheers,
-Peter
