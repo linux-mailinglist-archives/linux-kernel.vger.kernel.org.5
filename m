@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCB37C6D75
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A667C6D77
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379242AbjJLL4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49172 "EHLO
+        id S1378610AbjJLL40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379254AbjJLLzs (ORCPT
+        with ESMTP id S1378605AbjJLLzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:55:48 -0400
+        Thu, 12 Oct 2023 07:55:53 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44055468D;
-        Thu, 12 Oct 2023 04:53:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7B146B2;
+        Thu, 12 Oct 2023 04:53:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697111630; x=1728647630;
+  t=1697111632; x=1728647632;
   h=message-id:date:mime-version:subject:to:references:from:
    in-reply-to:content-transfer-encoding;
-  bh=u0eUJHiuTfxnEuvCucLEAgO20pruS/LMBzHzjX0mWE0=;
-  b=MT+tfkykbqOjhGkUywZ0OYi/4m8M1c0XtzSuMyOqWoRXUbedOcIpOop/
-   2mJkvzh+bmLZBYVgb+8+NrSHaGDf02JoYNoNvBFGGmAgW3+nJkiHjKpSY
-   btInmaCUv4J5JJ6b5GN+FiXFi9WhEpxxXgZoyDikxjFEP8NAWDj13Ng+B
-   8mZQZgOOZu2Vk9vxmjaLKgL/j5p4tPPWitB6SVBtfqIg02MRzvK5UQ7Tu
-   eOJQMUORZDHC/YW+BpEaQFZ+MEi9wtjt7GfsWBVvwv50gU9ahR0BI+hyl
-   bv2YzJOxNyABTENWMrgyxwIplALvZdYmb6Op7dJMnBzHA1H8Onizdmy7Q
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="415949549"
+  bh=QA1p18R7UDwNmgDTB/KVX0W8rktazNm38PC98o9ymH4=;
+  b=dA4CtIKTonuRwIjaaDsWYzJjw/yxBiFN3CdtQmriAHwxm0eIy44erwIV
+   aPvlLN06+qUVJoVIs8YqggXmBofDO/SGwlUXjCHmZmJu8bJBJQYBx/peP
+   b+eLAGx34hzwM+sazuPkFSW31bpj3is2mvC3w/qaw5pWMH984YRLMl6IV
+   KgGlsMjR0LPi4wAyIb91/ODa2orW5wOTK2ykbNO8opOgXHODmrxC8J8un
+   Q3qTLkaeq3Qabq3PwEouDT+jEFJB0VIJq6K3QDoxcHiPUIqGVuZmyJ2WR
+   4cCZ/BGHRzCc4oU6Xa7vehFBCE16TBP6ZxBs4xgKAmQoymZodIoY71haz
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="415949597"
 X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="415949549"
+   d="scan'208";a="415949597"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 04:53:13 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 04:53:26 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="870545735"
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="870545759"
 X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="870545735"
+   d="scan'208";a="870545759"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.41.84])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 04:53:06 -0700
-Message-ID: <5887df01-1263-44ec-a625-e550cea78289@intel.com>
-Date:   Thu, 12 Oct 2023 14:53:05 +0300
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 04:53:20 -0700
+Message-ID: <ebdd9eac-410e-4b66-84ff-d5756f5c9b55@intel.com>
+Date:   Thu, 12 Oct 2023 14:53:18 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 5/7] perf pmu: Const-ify perf_pmu__config_terms
+Subject: Re: [PATCH v1 6/7] perf pmu-events: Remember the events and metrics
+ table
 Content-Language: en-US
 To:     Ian Rogers <irogers@google.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
@@ -68,11 +69,11 @@ To:     Ian Rogers <irogers@google.com>,
         coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20231007021326.4156714-1-irogers@google.com>
- <20231007021326.4156714-6-irogers@google.com>
+ <20231007021326.4156714-7-irogers@google.com>
 From:   Adrian Hunter <adrian.hunter@intel.com>
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
  Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20231007021326.4156714-6-irogers@google.com>
+In-Reply-To: <20231007021326.4156714-7-irogers@google.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -86,78 +87,95 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 7/10/23 05:13, Ian Rogers wrote:
-> Add const to related APIs, this is so they can be used to default
-> initialize a perf_event_attr from a const pmu.
+> strcmp_cpuid_str performs regular expression comparisons. Avoid
+> repeated computation of the table by remembering the table in a
+> static.
 > 
 > Signed-off-by: Ian Rogers <irogers@google.com>
-
-Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
-
 > ---
->  tools/perf/util/pmu.c | 10 +++++-----
->  tools/perf/util/pmu.h |  2 +-
->  2 files changed, 6 insertions(+), 6 deletions(-)
+>  tools/perf/pmu-events/jevents.py | 48 +++++++++++++++++++-------------
+>  1 file changed, 28 insertions(+), 20 deletions(-)
 > 
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index e11901c923d7..eb17f00bd0d2 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -156,7 +156,7 @@ static void __perf_pmu_format__load(struct perf_pmu_format *format, FILE *file)
->  	format->loaded = true;
->  }
+> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+> index fd009752b427..8d8d5088c53c 100755
+> --- a/tools/perf/pmu-events/jevents.py
+> +++ b/tools/perf/pmu-events/jevents.py
+> @@ -978,28 +978,32 @@ int pmu_metrics_table__for_each_metric(const struct pmu_metrics_table *table,
 >  
-> -static void perf_pmu_format__load(struct perf_pmu *pmu, struct perf_pmu_format *format)
-> +static void perf_pmu_format__load(const struct perf_pmu *pmu, struct perf_pmu_format *format)
+>  const struct pmu_events_table *perf_pmu__find_events_table(struct perf_pmu *pmu)
 >  {
->  	char path[PATH_MAX];
->  	FILE *file = NULL;
-> @@ -1132,7 +1132,7 @@ void evsel__set_config_if_unset(struct perf_pmu *pmu, struct evsel *evsel,
->  }
+> -        const struct pmu_events_table *table = NULL;
+> -        char *cpuid = perf_pmu__getcpuid(pmu);
+> +        static const struct pmu_events_table *table;
+>          size_t i;
 >  
->  static struct perf_pmu_format *
-> -pmu_find_format(struct list_head *formats, const char *name)
-> +pmu_find_format(const struct list_head *formats, const char *name)
+> -        /* on some platforms which uses cpus map, cpuid can be NULL for
+> -         * PMUs other than CORE PMUs.
+> -         */
+> -        if (!cpuid)
+> -                return NULL;
+> -
+> -        i = 0;
+> -        for (;;) {
+> -                const struct pmu_events_map *map = &pmu_events_map[i++];
+> -                if (!map->arch)
+> -                        break;
+> -
+> -                if (!strcmp_cpuid_str(map->cpuid, cpuid)) {
+> -                        table = &map->event_table;
+> -                        break;
+> +        if (!table) {
+> +                char *cpuid = perf_pmu__getcpuid(pmu);
+
+Seems to assume the function is never called with a pmu
+that would give a different result for perf_pmu__getcpuid(pmu)
+
+> +
+> +                /*
+> +                 * On some platforms which uses cpus map, cpuid can be NULL for
+> +                 * PMUs other than CORE PMUs.
+> +                 */
+> +                if (!cpuid)
+> +                        return NULL;
+> +
+> +                i = 0;
+> +                for (;;) {
+> +                        const struct pmu_events_map *map = &pmu_events_map[i++];
+> +                        if (!map->arch)
+> +                                break;
+> +
+> +                        if (!strcmp_cpuid_str(map->cpuid, cpuid)) {
+> +                                table = &map->event_table;
+> +                                break;
+> +                        }
+>                  }
+> +                free(cpuid);
+>          }
+> -        free(cpuid);
+>          if (!pmu)
+>                  return table;
+>  
+> @@ -1015,13 +1019,17 @@ const struct pmu_events_table *perf_pmu__find_events_table(struct perf_pmu *pmu)
+>  
+>  const struct pmu_metrics_table *perf_pmu__find_metrics_table(struct perf_pmu *pmu)
 >  {
->  	struct perf_pmu_format *format;
+> -        const struct pmu_metrics_table *table = NULL;
+> -        char *cpuid = perf_pmu__getcpuid(pmu);
+> +        static const struct pmu_metrics_table *table;
+> +        char *cpuid;
+>          int i;
 >  
-> @@ -1230,7 +1230,7 @@ static int pmu_resolve_param_term(struct parse_events_term *term,
->  	return -1;
->  }
+> +        if (table)
+> +                return table;
+
+Ditto
+
+> +
+>          /* on some platforms which uses cpus map, cpuid can be NULL for
+>           * PMUs other than CORE PMUs.
+>           */
+> +        cpuid = perf_pmu__getcpuid(pmu);
+>          if (!cpuid)
+>                  return NULL;
 >  
-> -static char *pmu_formats_string(struct list_head *formats)
-> +static char *pmu_formats_string(const struct list_head *formats)
->  {
->  	struct perf_pmu_format *format;
->  	char *str = NULL;
-> @@ -1256,7 +1256,7 @@ static char *pmu_formats_string(struct list_head *formats)
->   * Setup one of config[12] attr members based on the
->   * user input data - term parameter.
->   */
-> -static int pmu_config_term(struct perf_pmu *pmu,
-> +static int pmu_config_term(const struct perf_pmu *pmu,
->  			   struct perf_event_attr *attr,
->  			   struct parse_events_term *term,
->  			   struct parse_events_terms *head_terms,
-> @@ -1379,7 +1379,7 @@ static int pmu_config_term(struct perf_pmu *pmu,
->  	return 0;
->  }
->  
-> -int perf_pmu__config_terms(struct perf_pmu *pmu,
-> +int perf_pmu__config_terms(const struct perf_pmu *pmu,
->  			   struct perf_event_attr *attr,
->  			   struct parse_events_terms *terms,
->  			   bool zero, struct parse_events_error *err)
-> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-> index 24af7297b522..5a05131aa4ce 100644
-> --- a/tools/perf/util/pmu.h
-> +++ b/tools/perf/util/pmu.h
-> @@ -193,7 +193,7 @@ void pmu_add_sys_aliases(struct perf_pmu *pmu);
->  int perf_pmu__config(struct perf_pmu *pmu, struct perf_event_attr *attr,
->  		     struct parse_events_terms *head_terms,
->  		     struct parse_events_error *error);
-> -int perf_pmu__config_terms(struct perf_pmu *pmu,
-> +int perf_pmu__config_terms(const struct perf_pmu *pmu,
->  			   struct perf_event_attr *attr,
->  			   struct parse_events_terms *terms,
->  			   bool zero, struct parse_events_error *error);
 
