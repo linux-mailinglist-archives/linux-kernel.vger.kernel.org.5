@@ -2,633 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2855C7C692A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DD37C690B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235576AbjJLJMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34024 "EHLO
+        id S235391AbjJLJKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232349AbjJLJMV (ORCPT
+        with ESMTP id S234172AbjJLJKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:12:21 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0281E8;
-        Thu, 12 Oct 2023 02:12:14 -0700 (PDT)
-X-UUID: 6c79f10e68df11eea33bb35ae8d461a2-20231012
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=w9tRkfQdSWQRyfs3AEhCsqVNSpZDGj7A+LtD3Eb0vAM=;
-        b=rcLIxmGGjHJzV3VWA+50dXp+6R8xfdjjFwyz1wR3PoJuFNWaRRgzyYkDq2HvYZ7inp6qoQ5coGbyo0Qjz38aGJw+f7hk0Ztpao3MBITiPV5r0f53sgqedjKGb9CNbc2tv8yYizi6Lvfh1BA4kfOCAun8A7dGYf21VPUAWsN9OAE=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:d6cb44a9-7e9d-4e90-8e96-363c6ce0806f,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5f78ec9,CLOUDID:11afb5f0-9a6e-4c39-b73e-f2bc08ca3dc5,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 6c79f10e68df11eea33bb35ae8d461a2-20231012
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <moudy.ho@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 665436186; Thu, 12 Oct 2023 17:12:10 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+        Thu, 12 Oct 2023 05:10:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8C49D;
+        Thu, 12 Oct 2023 02:10:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697101814; x=1728637814;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=OQoh7MDOynTljKBLbKE/Ubw/uK6lLwFKWJ1gjWjGzGs=;
+  b=EDhaKt8/ncRF9bXPKK81L+gpWNE5dnp2sXc8RbBKND8h2ItfQokqEx5D
+   XjkzYGjL9lkhiYC6IPyvD/dn5D6D8QLmkbx48ZlAgO8MMgwoYi7XoRGtC
+   3J0r68eNr4Qor7Tt+veyrQ2xT4KeDyyhMcZGu/McAYZx4UbChT2wa2tLW
+   BJFJxyYh7EWIc4QNBsIp22YmdQRDAYehsYB50LDAmH0nitQ5BHrA39nvs
+   hOAG5Tm1ayFjjo8/RdK449jyVl0PZh4aER3HmMPpNqczS/YBAuiKYWLOJ
+   0BU1XeUSPY9+hgd0N9HEh8K3anjhoV4Q5UPAiQbEsrtTE3e2NBeIk9Dad
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="369936941"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="369936941"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 02:10:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="898009894"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="898009894"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Oct 2023 02:08:22 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 12 Oct 2023 02:10:09 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 12 Oct 2023 02:10:09 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 12 Oct 2023 17:12:08 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 12 Oct 2023 17:12:08 +0800
-From:   Moudy Ho <moudy.ho@mediatek.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        "Hans Verkuil" <hverkuil-cisco@xs4all.nl>
-CC:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Moudy Ho <moudy.ho@mediatek.com>
-Subject: [PATCH v7 12/12] media: platform: mtk-mdp3: add support for parallel pipe to improve FPS
-Date:   Thu, 12 Oct 2023 17:12:06 +0800
-Message-ID: <20231012091206.20165-13-moudy.ho@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20231012091206.20165-1-moudy.ho@mediatek.com>
-References: <20231012091206.20165-1-moudy.ho@mediatek.com>
+ 15.1.2507.32; Thu, 12 Oct 2023 02:10:08 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RG1lwSTibVm2VmRd4160joN/xxBn0FfFsedV4se0RVpx68OFzI/M8Bq1s7R+nT9hZGZ+YqHHGIn7ltw2yb64atxy2OjJ6FG+bi0n4dhrgn1rhCn4VE2QcsgDIGXWd1pIAPLXSu6cwVACWvXtWU2TzPyFJVCDfrnVQNuCCSOrgxWoSkIBMK/h1dBEDAdY7+t7vWtRkoYCuefxKGIep3bywLPkDGfxOfX/m4wkch5rQgKZkOT4cGf1cXPtoU40B1NBPFHhih10uybybQnJewZ8QQ0La3ZwR/JBDrl+b7NkikZleY2OtdZn/Es28+n0uYaz5OW8SKSJKVkVuU98bdA/hA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yORFdGeEudA9IVU/ZSSxcty2EVowaVi0UL0IhXEgLY8=;
+ b=U6O+lY6e5IAlT88WDsnczzXWJ+aIOKYIe2F2RP7b7dr3npYcpkHTl7+plr4QOGJrf66Pc29CeBZT1dfehbREESpWtxMox/00Iamh9kMcvhnod0O2QuFzhVJ/VnnRWyvUzNa/B7iVDLPTc4Ew+kixrAk3IkMfBLQE0m9nbfgHMSAg65TX2L/nHE7AyIomDY5acBiAmUfxZcQfmzJYG15A4IWzjKZgrLgz/PakzafxAbZqOPTDRcUhZ5RAq4Yno44Tjt7h0UXhyvOm0P7J644z0C1IudRl9VvsW+gDvSe0zeUhimfIArt8lgC8L6iAAaJ8He5zmLByjwrnGmr1yUerfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
+ by PH8PR11MB7992.namprd11.prod.outlook.com (2603:10b6:510:25b::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Thu, 12 Oct
+ 2023 09:10:06 +0000
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::f8f4:bed2:b2f8:cb6b]) by DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::f8f4:bed2:b2f8:cb6b%3]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
+ 09:10:06 +0000
+Message-ID: <43b3d605-fe3b-bcd6-a328-81d1448b7104@intel.com>
+Date:   Thu, 12 Oct 2023 17:12:26 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v4 01/17] iommu: Add hwpt_type with user_data for
+ domain_alloc_user op
+Content-Language: en-US
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
+CC:     "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "Martins, Joao" <joao.m.martins@oracle.com>
+References: <20230921075138.124099-1-yi.l.liu@intel.com>
+ <20230921075138.124099-2-yi.l.liu@intel.com>
+ <BN9PR11MB52767E1B944C0B2F0667D5DE8CC3A@BN9PR11MB5276.namprd11.prod.outlook.com>
+From:   Yi Liu <yi.l.liu@intel.com>
+In-Reply-To: <BN9PR11MB52767E1B944C0B2F0667D5DE8CC3A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: KL1PR01CA0002.apcprd01.prod.exchangelabs.com
+ (2603:1096:820::14) To DS0PR11MB7529.namprd11.prod.outlook.com
+ (2603:10b6:8:141::20)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--14.488000-8.000000
-X-TMASE-MatchedRID: ibSMBxP8s3LyIcjxd3Asd6Ka0xB73sAAmdrHMkUHHq9u4FknyqyshB9p
-        AWDAtttylTJXKqh1ne29cOdjc/43lfQ/PJDK04d94RtSDjG+z7Db4SkGdkTN9dKRHKF6iUAdq3c
-        ttlDobAzLqCJZs0VuwCiZO9XiDvGp4X8HWMSNX7qLCjWjYfPAkFPgO2JKQydY4G/FgWE3B0zJ9w
-        rEaoWarzVUu2mvAlYWo4myk6DSxJFvitkUzhYBjUZakoam9+aeWmr/8mnjMG5Lgo8+IIHbcNGXg
-        QphHQmxj7Wc8+5sjRST5In082VlT641PGYGiH3LaZ3pL+PEUuHGYnoF/CTeZSS30GKAkBxW69fs
-        JVKUTsXQtHf45pvYeQQP+jCy+GUxBWd9rvGh7KysMW2Z7ncq+7q+6SZxXTiCtRXhV8npIHQlRD0
-        a3HoMrxFFtHm1q9x7p0E4MN3Xs+IijAXMyA8nC4a7OiQBC9buSiliXIcwP3EKA2OoGAlTk7LHxo
-        tr0CO44vM1YF6AJbbGXyXDzkRpVAtuKBGekqUpPjKoPgsq7cA=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--14.488000-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: A85B32CDF4552556201345694B8E1E7E6F3D16BAAA390188EBEB9CADEBCBBC122000:8
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|PH8PR11MB7992:EE_
+X-MS-Office365-Filtering-Correlation-Id: 87fe001f-c30f-477f-9598-08dbcb0306a7
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nZUfhqtguUfxyiIQ884e6e18ieo7AiINrl3R6VMwB2yT+r9YcGuo1j7KE4dkyp6eUGz1XGj+H+qrQjF80nrV8b08mD+6ESCa9Bt3dEcs41ggqRaR5/spMNYxASZwOzBaipKrl/hDT12i95YSP//G6cbTf+VT7QJRD7Qa+UkskY9VP4/TWErHk1n5pK9XZsL3cc1eSHDU+1Ln6vS+0PLRMGPQ9EbAc8ex8atsVAhuBAvZ4VlEtdL+MgItl0DPqapEo2bS95PE9+8bM8C+HY24RG1sOftnfFLw/NruSmziJfZjaKsmqkjxGECCn30b+/l6V1M8NHHxl6eTNLUSNQ4rQhJYICaXY4SI9xrQLi99CJbArw9e7j4/RsPEzUZFQ7q1iDEsXv9oXH9og71EQtUZXES6EbDC+RjSshRDeaO2AA7Bnj9xudHB5++fkb1oLzNDwkL+xo6g2VqVOlXqwM02r9NowJrYJkuIYBM2oBoxQkLP2X1lM0GxrduOzBHQ1sHy8tKiU9asG7tJggyyoHkKd++6dWxwvowqLjiTcfgpPfawkGXc/BMWOa6SjXaWe+RePeykRzvuOlI2o5Pne8y6gOQ9Qzi7/ju7oMFfZ7OhxwQCjF3SKPj6bjWSqtCiKjMCtirmdfkocHTfyEO+KN5epg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(396003)(39860400002)(376002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(6506007)(53546011)(31686004)(26005)(38100700002)(6512007)(7416002)(86362001)(2906002)(31696002)(5660300002)(6486002)(4326008)(8676002)(8936002)(6666004)(316002)(110136005)(66556008)(66946007)(54906003)(36756003)(66476007)(41300700001)(2616005)(82960400001)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NWQwcEpyTFFYb0RVUkpCY2pMbmVRWkRCNVE1endLSGhTRWpCZjlxTHdnVVR6?=
+ =?utf-8?B?dU9aT3huWXc1Z2cvWDM2M1VuWFF0OFY1dm0vVjB5Wk9oUUpNakpzNnYrb2dK?=
+ =?utf-8?B?QTlxaXlXaUNyWkRXcWpld25UbGZmY1NKMWloUnRVTzJpKzNjYmxGbCtuOUZW?=
+ =?utf-8?B?eTI1eGdhdm1DQUgzUm5yNkwrZ0VXSHA0MWo4QkEvYW9kL1RHMnhIUlNTU1VC?=
+ =?utf-8?B?R20rOVlJTjI0dmIwZVpwOWxoa2hUMEhZR0xhTWd2N1QvWDFWenBSTlY0Z1FU?=
+ =?utf-8?B?NzkzR0tVLzFZNDdUekw2SlFEL1lpeVhUSVNKSFZ5eWlqT0UveXdaNEh4WVEw?=
+ =?utf-8?B?dy91YVMxYzJFTzgyVjNHMjQxTThEOStiR1A1WXBPSHBLVkxUNHJHR3ozdy9t?=
+ =?utf-8?B?dGZtOGdPVEIyeC9sYW02cnlYYkxJQ3hXQUFCUWJoaytrajZ4MFJ6a25wbzU0?=
+ =?utf-8?B?dDZWeXJ4dTNTSDcybFhGK0JXSytGKzlpaDRhR3M4b01Bdit6RENCWlA1VExQ?=
+ =?utf-8?B?ZEU1TXNhUytlVE1adHAyZHFuUjcyekZsVjlDaHVTODBPMWRNLzY1NGZCWkZa?=
+ =?utf-8?B?SlU0bnR2ajh3RUk3WEtSaTZ2R3ZFZVFiZEJvaFJMcFcxUnJHOTNMRXVORng3?=
+ =?utf-8?B?SnI0Y1ZjT3FPUEJFVGszaWVOZlBVc3gxcVJQemVBbDZ3T0tncXdGVXFzOUEz?=
+ =?utf-8?B?UTZSb2RxVmZXaWRybFRqWmFvai9hVC84ZlYxaWUzUEVyUmRMOU0zWDdtejNi?=
+ =?utf-8?B?SktaTmx4alB5TDNFZGpIbzlSSkxudHhIMjlSd0VucVVBZXdMNEdVSnN4d2wx?=
+ =?utf-8?B?Uk5jZGpXaktYbDJHY0oyb3hvREdFdmVyUVplUVptTDZ0ZkVhcmo4NVNCcmM4?=
+ =?utf-8?B?QVA1TUdxdnpMaVd5NitER0NIckRxcWxQTUxzdWJvWmdpbjhuSVJMNVQ2V0l6?=
+ =?utf-8?B?UjZpRTA5anQ4RGRZOEo2dTNoTUNLS09xQ3lsWm1ENTdGLzRsVTBlYU10dGNn?=
+ =?utf-8?B?ZEJxUXY2bUZadVROYXRaMWVnUVVWODZUeDRnbGovWGoyMUpJWlZ6WllCOXFp?=
+ =?utf-8?B?cDdlbVQxQ0h2L0gwbHk1cFh4QjRCWkNSb2NiM0Q0KzVnMFNxckV2NFd4ZW9h?=
+ =?utf-8?B?YWFraTVKQjhWT05IUzFabVIxWVoya0Fsb3hqNnUyR05tS0hVNXZOdW4rZndm?=
+ =?utf-8?B?ZWljUHBWcnhFN0h3K3AvZEVZazRQVHlJTkZ4WXNJUnNqRjF0c0gzUVpUZnRC?=
+ =?utf-8?B?QUlNOFhXbG5ueEY1OU9CSkVDTDJyRFN5VmJJWTRlZmc1c054bENyRnRyZm80?=
+ =?utf-8?B?UEQyNG9CWnN6SkcyMC9tTXhDZlB5QUR6dkxwMTRHVWkyelFDQk1TcGl6T2dy?=
+ =?utf-8?B?ZUZ1L3cydnhiSXFDMVRzak4rUzhoOXZPMlU4eTA2c1VVMy9hU3RUMDNDdk1J?=
+ =?utf-8?B?dlZRYmN1bWlrOVZ1WmlQN1JVTUs2R1NCUHBWUDJXUnZMZm9GWVdoUGVxZFE2?=
+ =?utf-8?B?WGRNbnQvQmljekFYbHUzTXVTbWdXTUZiR1FkaE42dHd6UE80UWp5TDBML0xK?=
+ =?utf-8?B?clJ5NFJVWllrYllOOTBBOFFncHI1dEhhMmZYUFpVeVRLWVVpaEhHMXNkQVJS?=
+ =?utf-8?B?WEJGTmdTYVJVdzZDRXlVdzBqaU1rQWY3d0RIeDczcWZIOGZSYVdUalJDNjc2?=
+ =?utf-8?B?SHgvcnlZWit0NkNkNkpObmZWUFVSYkVCZklWSG5URXZ3OGNMZVVpWDBmMG43?=
+ =?utf-8?B?VU5DN0J2VzVKN053d3BmN1kzdEVyWGlmRC9FZktwamhVUTMxbzZ3cUwyK0Qx?=
+ =?utf-8?B?Rld5MEZ5VVcvT2l1N1FmdGErTGNlMTgvRnhtYy9ndnRWUVIwUnB0eTkvcUpX?=
+ =?utf-8?B?UStDK1hXSFA0clFkcXI0eG5JdHNZWnVtbTFzWDczODlvaStmU2ZoaXR3ZUlj?=
+ =?utf-8?B?dGFyUHNJMTVTVVM0ZXlOVnY5L0RpbkN5V3VEVWZvUWdoSXlBcVRCVW1Td2Rn?=
+ =?utf-8?B?bUkzVE9xVWROeTBhVFhLYytrUytNYjZNZ3RNS283UjgycW9aRUo0bGVTanlw?=
+ =?utf-8?B?OVNlNStSMDduaUFoSlBKQVJuL3lEbzk0S2FIMFpyRFlrcXVIR3hBNlhYaVpN?=
+ =?utf-8?Q?KkUJ+kEdPjJdZvi61WD4qyAyb?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87fe001f-c30f-477f-9598-08dbcb0306a7
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 09:10:06.3556
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PGLce9vQAbjRVVruW0YlStPIw7g7DK/e00AtjrOWVPHTaxsdlZHhp/5gLMC/bTBy5djQxm32DWEk+s//Efutrg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB7992
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some chips, MDP3 has the ability to utilize two pipelines to
-parallelly process a single frame.
-To enable this feature, multiple CMDQ clients and packets need to
-be configured at the same time.
+On 2023/9/26 14:56, Tian, Kevin wrote:
+>> From: Yi Liu <yi.l.liu@intel.com>
+>> Sent: Thursday, September 21, 2023 3:51 PM
+>> +
+>> +/**
+>> + * iommu_copy_user_data - Copy iommu driver specific user space data
+>> + * @dst_data: Pointer to an iommu driver specific user data that is defined
+>> in
+>> + *            include/uapi/linux/iommufd.h
+>> + * @src_data: Pointer to a struct iommu_user_data for user space data info
+>> + * @data_len: Length of current user data structure, i.e. sizeof(struct _dst)
+>> + * @min_len: Initial length of user data structure for backward compatibility.
+>> + *           This should be offsetofend using the last member in the user data
+>> + *           struct that was initially added to include/uapi/linux/iommufd.h
+>> + */
+>> +static inline int iommu_copy_user_data(void *dst_data,
+>> +				       const struct iommu_user_data *src_data,
+>> +				       size_t data_len, size_t min_len)
+> 
+> iommu_copy_struct_from_user()?
+> 
+> btw given the confusion raised on how this would be used is it clearer
+> to move it to the patch together with the 1st user?
 
-Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
----
- .../platform/mediatek/mdp3/mdp_cfg_data.c     |   8 +
- .../platform/mediatek/mdp3/mtk-mdp3-cmdq.c    | 188 +++++++++++++-----
- .../platform/mediatek/mdp3/mtk-mdp3-cmdq.h    |   1 +
- .../platform/mediatek/mdp3/mtk-mdp3-core.c    |  18 +-
- .../platform/mediatek/mdp3/mtk-mdp3-core.h    |  12 +-
- .../platform/mediatek/mdp3/mtk-mdp3-m2m.c     |  15 ++
- .../platform/mediatek/mdp3/mtk-mdp3-regs.c    |  18 ++
- .../platform/mediatek/mdp3/mtk-mdp3-regs.h    |   1 +
- .../platform/mediatek/mdp3/mtk-mdp3-vpu.c     |   3 +-
- 9 files changed, 208 insertions(+), 56 deletions(-)
+sure. How about your opinion? @Nic.
 
-diff --git a/drivers/media/platform/mediatek/mdp3/mdp_cfg_data.c b/drivers/media/platform/mediatek/mdp3/mdp_cfg_data.c
-index 9ee3931d31e3..ecca52b45307 100644
---- a/drivers/media/platform/mediatek/mdp3/mdp_cfg_data.c
-+++ b/drivers/media/platform/mediatek/mdp3/mdp_cfg_data.c
-@@ -1060,6 +1060,11 @@ static const struct mdp_pipe_info mt8195_pipe_info[] = {
- 	[MDP_PIPE_VPP0_SOUT] = {MDP_PIPE_VPP0_SOUT, MDP_MM_SUBSYS_1, 5},
- };
- 
-+static const struct v4l2_rect mt8195_mdp_pp_criteria = {
-+	.width = 1920,
-+	.height = 1080,
-+};
-+
- const struct mtk_mdp_driver_data mt8183_mdp_driver_data = {
- 	.mdp_plat_id = MT8183,
- 	.mdp_con_res = 0x14001000,
-@@ -1074,6 +1079,7 @@ const struct mtk_mdp_driver_data mt8183_mdp_driver_data = {
- 	.def_limit = &mt8183_mdp_def_limit,
- 	.pipe_info = mt8183_pipe_info,
- 	.pipe_info_len = ARRAY_SIZE(mt8183_pipe_info),
-+	.pp_used = MDP_PP_USED_1,
- };
- 
- const struct mtk_mdp_driver_data mt8195_mdp_driver_data = {
-@@ -1090,6 +1096,8 @@ const struct mtk_mdp_driver_data mt8195_mdp_driver_data = {
- 	.def_limit = &mt8195_mdp_def_limit,
- 	.pipe_info = mt8195_pipe_info,
- 	.pipe_info_len = ARRAY_SIZE(mt8195_pipe_info),
-+	.pp_criteria = &mt8195_mdp_pp_criteria,
-+	.pp_used = MDP_PP_USED_2,
- };
- 
- s32 mdp_cfg_get_id_inner(struct mdp_dev *mdp_dev, enum mtk_mdp_comp_id id)
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
-index 8114c288da9c..1d64bac34b90 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
-@@ -55,6 +55,16 @@ static struct mtk_mutex *__get_mutex(const struct mdp_dev *mdp_dev,
- 	return mdp_dev->mm_subsys[p->sub_id].mdp_mutex[p->mutex_id];
- }
- 
-+static u8 __get_pp_num(enum mdp_stream_type type)
-+{
-+	switch (type) {
-+	case MDP_STREAM_TYPE_DUAL_BITBLT:
-+		return MDP_PP_USED_2;
-+	default:
-+		return MDP_PP_USED_1;
-+	}
-+}
-+
- static enum mdp_pipe_id __get_pipe(const struct mdp_dev *mdp_dev,
- 				   enum mtk_mdp_comp_id id)
- {
-@@ -92,6 +102,44 @@ static enum mdp_pipe_id __get_pipe(const struct mdp_dev *mdp_dev,
- 	return pipe_id;
- }
- 
-+static struct img_config *__get_config_offset(struct mdp_dev *mdp,
-+					      struct mdp_cmdq_param *param,
-+					      u8 pp_idx)
-+{
-+	const int p_id = mdp->mdp_data->mdp_plat_id;
-+	struct device *dev = &mdp->pdev->dev;
-+	void *cfg_c, *cfg_n;
-+	long bound = mdp->vpu.config_size;
-+
-+	if (pp_idx >= mdp->mdp_data->pp_used)
-+		goto err_param;
-+
-+	if (CFG_CHECK(MT8183, p_id))
-+		cfg_c = CFG_OFST(MT8183, param->config, pp_idx);
-+	else if (CFG_CHECK(MT8195, p_id))
-+		cfg_c = CFG_OFST(MT8195, param->config, pp_idx);
-+	else
-+		goto err_param;
-+
-+	if (CFG_CHECK(MT8183, p_id))
-+		cfg_n = CFG_OFST(MT8183, param->config, pp_idx + 1);
-+	else if (CFG_CHECK(MT8195, p_id))
-+		cfg_n = CFG_OFST(MT8195, param->config, pp_idx + 1);
-+	else
-+		goto err_param;
-+
-+	if ((long)cfg_n - (long)mdp->vpu.config > bound) {
-+		dev_err(dev, "config offset %ld OOB %ld\n", (long)cfg_n, bound);
-+		cfg_c = ERR_PTR(-EFAULT);
-+	}
-+
-+	return (struct img_config *)cfg_c;
-+
-+err_param:
-+	cfg_c = ERR_PTR(-EINVAL);
-+	return (struct img_config *)cfg_c;
-+}
-+
- static int mdp_path_subfrm_require(const struct mdp_path *path,
- 				   struct mdp_cmdq_cmd *cmd,
- 				   struct mdp_pipe_info *p, u32 count)
-@@ -476,8 +524,19 @@ static void mdp_auto_release_work(struct work_struct *work)
- 	mdp_comp_clocks_off(&mdp->pdev->dev, cmd->comps,
- 			    cmd->num_comps);
- 
--	atomic_dec(&mdp->job_count);
--	wake_up(&mdp->callback_wq);
-+	if (atomic_dec_and_test(&mdp->job_count)) {
-+		if (cmd->mdp_ctx)
-+			mdp_m2m_job_finish(cmd->mdp_ctx);
-+
-+		if (cmd->user_cmdq_cb) {
-+			struct cmdq_cb_data user_cb_data;
-+
-+			user_cb_data.sta = cmd->data->sta;
-+			user_cb_data.pkt = cmd->data->pkt;
-+			cmd->user_cmdq_cb(user_cb_data);
-+		}
-+		wake_up(&mdp->callback_wq);
-+	}
- 
- 	mdp_cmdq_pkt_destroy(&cmd->pkt);
- 	kfree(cmd->comps);
-@@ -501,20 +560,10 @@ static void mdp_handle_cmdq_callback(struct mbox_client *cl, void *mssg)
- 
- 	data = (struct cmdq_cb_data *)mssg;
- 	cmd = container_of(data->pkt, struct mdp_cmdq_cmd, pkt);
-+	cmd->data = data;
- 	mdp = cmd->mdp;
- 	dev = &mdp->pdev->dev;
- 
--	if (cmd->mdp_ctx)
--		mdp_m2m_job_finish(cmd->mdp_ctx);
--
--	if (cmd->user_cmdq_cb) {
--		struct cmdq_cb_data user_cb_data;
--
--		user_cb_data.sta = data->sta;
--		user_cb_data.pkt = data->pkt;
--		cmd->user_cmdq_cb(user_cb_data);
--	}
--
- 	INIT_WORK(&cmd->auto_release_work, mdp_auto_release_work);
- 	if (!queue_work(mdp->clock_wq, &cmd->auto_release_work)) {
- 		struct mtk_mutex *mutex;
-@@ -526,8 +575,8 @@ static void mdp_handle_cmdq_callback(struct mbox_client *cl, void *mssg)
- 		mdp_comp_clocks_off(&mdp->pdev->dev, cmd->comps,
- 				    cmd->num_comps);
- 
--		atomic_dec(&mdp->job_count);
--		wake_up(&mdp->callback_wq);
-+		if (atomic_dec_and_test(&mdp->job_count))
-+			wake_up(&mdp->callback_wq);
- 
- 		mdp_cmdq_pkt_destroy(&cmd->pkt);
- 		kfree(cmd->comps);
-@@ -537,31 +586,41 @@ static void mdp_handle_cmdq_callback(struct mbox_client *cl, void *mssg)
- 	}
- }
- 
--int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
-+static struct mdp_cmdq_cmd *mdp_cmdq_prepare(struct mdp_dev *mdp,
-+					     struct mdp_cmdq_param *param,
-+					     u8 pp_idx)
- {
- 	struct mdp_path *path = NULL;
- 	struct mdp_cmdq_cmd *cmd = NULL;
- 	struct mdp_comp *comps = NULL;
- 	struct device *dev = &mdp->pdev->dev;
- 	const int p_id = mdp->mdp_data->mdp_plat_id;
-+	struct img_config *config;
- 	struct mtk_mutex *mutex = NULL;
- 	enum mdp_pipe_id pipe_id;
--	int i, ret;
--	u32 num_comp = 0;
-+	int i, ret = -ECANCELED;
-+	u32 num_comp;
- 
--	atomic_inc(&mdp->job_count);
--	if (atomic_read(&mdp->suspended)) {
--		atomic_dec(&mdp->job_count);
--		return -ECANCELED;
-+	config = __get_config_offset(mdp, param, pp_idx);
-+	if (IS_ERR(config)) {
-+		ret = PTR_ERR(config);
-+		goto err_uninit;
- 	}
- 
-+	if (CFG_CHECK(MT8183, p_id))
-+		num_comp = CFG_GET(MT8183, config, num_components);
-+	else if (CFG_CHECK(MT8195, p_id))
-+		num_comp = CFG_GET(MT8195, config, num_components);
-+	else
-+		goto err_uninit;
-+
- 	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
- 	if (!cmd) {
- 		ret = -ENOMEM;
--		goto err_cancel_job;
-+		goto err_uninit;
- 	}
- 
--	ret = mdp_cmdq_pkt_create(mdp->cmdq_clt, &cmd->pkt, SZ_16K);
-+	ret = mdp_cmdq_pkt_create(mdp->cmdq_clt[pp_idx], &cmd->pkt, SZ_16K);
- 	if (ret)
- 		goto err_free_cmd;
- 
-@@ -586,7 +645,7 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
- 	}
- 
- 	path->mdp_dev = mdp;
--	path->config = param->config;
-+	path->config = config;
- 	path->param = param->param;
- 	for (i = 0; i < param->param->num_outputs; i++) {
- 		path->bounds[i].left = 0;
-@@ -600,7 +659,7 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
- 	}
- 	ret = mdp_path_ctx_init(mdp, path);
- 	if (ret) {
--		dev_err(dev, "mdp_path_ctx_init error\n");
-+		dev_err(dev, "mdp_path_ctx_init error %d\n", pp_idx);
- 		goto err_free_path;
- 	}
- 
-@@ -608,13 +667,13 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
- 	mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[pipe_id]);
- 	ret = mtk_mutex_prepare(mutex);
- 	if (ret) {
--		dev_err(dev, "Fail to enable mutex clk\n");
-+		dev_err(dev, "Fail to enable mutex %d clk\n", pp_idx);
- 		goto err_free_path;
- 	}
- 
- 	ret = mdp_path_config(mdp, cmd, path);
- 	if (ret) {
--		dev_err(dev, "mdp_path_config error\n");
-+		dev_err(dev, "mdp_path_config error %d\n", pp_idx);
- 		goto err_free_path;
- 	}
- 	cmdq_pkt_finalize(&cmd->pkt);
-@@ -633,7 +692,7 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
- 		       sizeof(struct mdp_comp));
- 	}
- 
--	mdp->cmdq_clt->client.rx_callback = mdp_handle_cmdq_callback;
-+	mdp->cmdq_clt[pp_idx]->client.rx_callback = mdp_handle_cmdq_callback;
- 	cmd->mdp = mdp;
- 	cmd->user_cmdq_cb = param->cmdq_cb;
- 	cmd->user_cb_data = param->cb_data;
-@@ -641,26 +700,9 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
- 	cmd->num_comps = num_comp;
- 	cmd->mdp_ctx = param->mdp_ctx;
- 
--	ret = mdp_comp_clocks_on(&mdp->pdev->dev, cmd->comps, cmd->num_comps);
--	if (ret)
--		goto err_free_path;
--
--	dma_sync_single_for_device(mdp->cmdq_clt->chan->mbox->dev,
--				   cmd->pkt.pa_base, cmd->pkt.cmd_buf_size,
--				   DMA_TO_DEVICE);
--	ret = mbox_send_message(mdp->cmdq_clt->chan, &cmd->pkt);
--	if (ret < 0) {
--		dev_err(dev, "mbox send message fail %d!\n", ret);
--		goto err_clock_off;
--	}
--	mbox_client_txdone(mdp->cmdq_clt->chan, 0);
--
- 	kfree(path);
--	return 0;
-+	return cmd;
- 
--err_clock_off:
--	mdp_comp_clocks_off(&mdp->pdev->dev, cmd->comps,
--			    cmd->num_comps);
- err_free_path:
- 	if (mutex)
- 		mtk_mutex_unprepare(mutex);
-@@ -671,8 +713,58 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
- 	mdp_cmdq_pkt_destroy(&cmd->pkt);
- err_free_cmd:
- 	kfree(cmd);
-+err_uninit:
-+	return ERR_PTR(ret);
-+}
-+
-+int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
-+{
-+	struct mdp_cmdq_cmd *cmd[MDP_PP_MAX] = {NULL};
-+	struct device *dev = &mdp->pdev->dev;
-+	int i, ret;
-+	u8 pp_used = __get_pp_num(param->param->type);
-+
-+	atomic_set(&mdp->job_count, pp_used);
-+	if (atomic_read(&mdp->suspended)) {
-+		atomic_set(&mdp->job_count, 0);
-+		return -ECANCELED;
-+	}
-+
-+	for (i = 0; i < pp_used; i++) {
-+		cmd[i] = mdp_cmdq_prepare(mdp, param, i);
-+		if (IS_ERR_OR_NULL(cmd[i])) {
-+			ret = PTR_ERR(cmd[i]);
-+			goto err_cancel_job;
-+		}
-+	}
-+
-+	for (i = 0; i < pp_used; i++) {
-+		ret = mdp_comp_clocks_on(&mdp->pdev->dev, cmd[i]->comps, cmd[i]->num_comps);
-+		if (ret)
-+			goto err_clock_off;
-+	}
-+
-+	for (i = 0; i < pp_used; i++) {
-+		dma_sync_single_for_device(mdp->cmdq_clt[i]->chan->mbox->dev,
-+					   cmd[i]->pkt.pa_base, cmd[i]->pkt.cmd_buf_size,
-+					   DMA_TO_DEVICE);
-+
-+		ret = mbox_send_message(mdp->cmdq_clt[i]->chan, &cmd[i]->pkt);
-+		if (ret < 0) {
-+			dev_err(dev, "mbox send message fail %d!\n", ret);
-+			i = pp_used;
-+			goto err_clock_off;
-+		}
-+		mbox_client_txdone(mdp->cmdq_clt[i]->chan, 0);
-+	}
-+	return 0;
-+
-+err_clock_off:
-+	while (--i >= 0)
-+		mdp_comp_clocks_off(&mdp->pdev->dev, cmd[i]->comps,
-+				    cmd[i]->num_comps);
- err_cancel_job:
--	atomic_dec(&mdp->job_count);
-+	atomic_set(&mdp->job_count, 0);
- 
- 	return ret;
- }
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.h b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.h
-index 43475b862ddb..53a30ad7e0b0 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.h
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.h
-@@ -29,6 +29,7 @@ struct mdp_cmdq_cmd {
- 	struct cmdq_pkt pkt;
- 	s32 *event;
- 	struct mdp_dev *mdp;
-+	struct cmdq_cb_data *data;
- 	void (*user_cmdq_cb)(struct cmdq_cb_data data);
- 	void *user_cb_data;
- 	struct mdp_comp *comps;
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
-index 2b4aacbf9241..391ba1cd2672 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
-@@ -139,6 +139,10 @@ void mdp_video_device_release(struct video_device *vdev)
- 	struct mdp_dev *mdp = (struct mdp_dev *)video_get_drvdata(vdev);
- 	int i;
- 
-+	for (i = 0; i < mdp->mdp_data->pp_used; i++)
-+		if (mdp->cmdq_clt[i])
-+			cmdq_mbox_destroy(mdp->cmdq_clt[i]);
-+
- 	scp_put(mdp->scp);
- 
- 	destroy_workqueue(mdp->job_wq);
-@@ -292,10 +296,12 @@ static int mdp_probe(struct platform_device *pdev)
- 	mutex_init(&mdp->vpu_lock);
- 	mutex_init(&mdp->m2m_lock);
- 
--	mdp->cmdq_clt = cmdq_mbox_create(dev, 0);
--	if (IS_ERR(mdp->cmdq_clt)) {
--		ret = PTR_ERR(mdp->cmdq_clt);
--		goto err_put_scp;
-+	for (i = 0; i < mdp->mdp_data->pp_used; i++) {
-+		mdp->cmdq_clt[i] = cmdq_mbox_create(dev, i);
-+		if (IS_ERR(mdp->cmdq_clt[i])) {
-+			ret = PTR_ERR(mdp->cmdq_clt[i]);
-+			goto err_mbox_destroy;
-+		}
- 	}
- 
- 	init_waitqueue_head(&mdp->callback_wq);
-@@ -324,8 +330,8 @@ static int mdp_probe(struct platform_device *pdev)
- err_unregister_device:
- 	v4l2_device_unregister(&mdp->v4l2_dev);
- err_mbox_destroy:
--	cmdq_mbox_destroy(mdp->cmdq_clt);
--err_put_scp:
-+	while (--i >= 0)
-+		cmdq_mbox_destroy(mdp->cmdq_clt[i]);
- 	scp_put(mdp->scp);
- err_destroy_clock_wq:
- 	destroy_workqueue(mdp->clock_wq);
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
-index d6484d17b09f..8c09e984fd01 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
-@@ -77,6 +77,14 @@ enum mdp_pipe_id {
- 	MDP_PIPE_MAX
- };
- 
-+/* MDP parallel pipe control */
-+enum {
-+	MDP_PP_USED_1 = 1,
-+	MDP_PP_USED_2 = 2,
-+};
-+
-+#define MDP_PP_MAX MDP_PP_USED_2
-+
- struct mtk_mdp_driver_data {
- 	const int mdp_plat_id;
- 	const resource_size_t mdp_con_res;
-@@ -91,6 +99,8 @@ struct mtk_mdp_driver_data {
- 	const struct mdp_limit *def_limit;
- 	const struct mdp_pipe_info *pipe_info;
- 	unsigned int pipe_info_len;
-+	const struct v4l2_rect *pp_criteria;
-+	const u8 pp_used;
- };
- 
- struct mdp_mm_subsys {
-@@ -115,7 +125,7 @@ struct mdp_dev {
- 	s32					vpu_count;
- 	u32					id_count;
- 	struct ida				mdp_ida;
--	struct cmdq_client			*cmdq_clt;
-+	struct cmdq_client			*cmdq_clt[MDP_PP_MAX];
- 	wait_queue_head_t			callback_wq;
- 
- 	struct v4l2_device			v4l2_dev;
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-m2m.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-m2m.c
-index a298c1b15b9e..35a8b059bde5 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-m2m.c
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-m2m.c
-@@ -87,6 +87,9 @@ static void mdp_m2m_device_run(void *priv)
- 	dst_vb = v4l2_m2m_next_dst_buf(ctx->m2m_ctx);
- 	mdp_set_dst_config(&param.outputs[0], frame, &dst_vb->vb2_buf);
- 
-+	if (mdp_check_pp_enable(ctx->mdp_dev, frame))
-+		param.type = MDP_STREAM_TYPE_DUAL_BITBLT;
-+
- 	ret = mdp_vpu_process(&ctx->mdp_dev->vpu, &param);
- 	if (ret) {
- 		dev_err(&ctx->mdp_dev->pdev->dev,
-@@ -101,6 +104,18 @@ static void mdp_m2m_device_run(void *priv)
- 	task.cb_data = NULL;
- 	task.mdp_ctx = ctx;
- 
-+	if (atomic_read(&ctx->mdp_dev->job_count)) {
-+		ret = wait_event_timeout(ctx->mdp_dev->callback_wq,
-+					 !atomic_read(&ctx->mdp_dev->job_count),
-+					 2 * HZ);
-+		if (ret == 0) {
-+			dev_err(&ctx->mdp_dev->pdev->dev,
-+				"%d jobs not yet done\n",
-+				atomic_read(&ctx->mdp_dev->job_count));
-+			goto worker_end;
-+		}
-+	}
-+
- 	ret = mdp_cmdq_send(ctx->mdp_dev, &task);
- 	if (ret) {
- 		dev_err(&ctx->mdp_dev->pdev->dev,
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-regs.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-regs.c
-index 9b436b911d92..657356f87743 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-regs.c
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-regs.c
-@@ -304,6 +304,24 @@ int mdp_check_scaling_ratio(const struct v4l2_rect *crop,
- 	return 0;
- }
- 
-+bool mdp_check_pp_enable(struct mdp_dev *mdp, struct mdp_frame *frame)
-+{
-+	u32 s, r1, r2;
-+
-+	if (!mdp || !frame)
-+		return false;
-+
-+	if (!mdp->mdp_data->pp_criteria)
-+		return false;
-+
-+	s = mdp->mdp_data->pp_criteria->width *
-+		mdp->mdp_data->pp_criteria->height;
-+	r1 = frame->crop.c.width * frame->crop.c.height;
-+	r2 = frame->compose.width * frame->compose.height;
-+
-+	return (r1 >= s || r2 >= s);
-+}
-+
- /* Stride that is accepted by MDP HW */
- static u32 mdp_fmt_get_stride(const struct mdp_format *fmt,
- 			      u32 bytesperline, unsigned int plane)
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-regs.h b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-regs.h
-index e9ab8ac2c0e8..b0c8f9f00820 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-regs.h
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-regs.h
-@@ -368,6 +368,7 @@ int mdp_try_crop(struct mdp_m2m_ctx *ctx, struct v4l2_rect *r,
- int mdp_check_scaling_ratio(const struct v4l2_rect *crop,
- 			    const struct v4l2_rect *compose, s32 rotation,
- 	const struct mdp_limit *limit);
-+bool mdp_check_pp_enable(struct mdp_dev *mdp, struct mdp_frame *frame);
- void mdp_set_src_config(struct img_input *in,
- 			struct mdp_frame *frame, struct vb2_buffer *vb);
- void mdp_set_dst_config(struct img_output *out,
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-vpu.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-vpu.c
-index 49fc2e9d45dd..da3a892ad867 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-vpu.c
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-vpu.c
-@@ -198,6 +198,7 @@ int mdp_vpu_dev_init(struct mdp_vpu_dev *vpu, struct mtk_scp *scp,
- 	};
- 	struct mdp_dev *mdp = vpu_to_mdp(vpu);
- 	int err;
-+	u8 pp_num = mdp->mdp_data->pp_used;
- 
- 	init_completion(&vpu->ipi_acked);
- 	vpu->scp = scp;
-@@ -211,7 +212,7 @@ int mdp_vpu_dev_init(struct mdp_vpu_dev *vpu, struct mtk_scp *scp,
- 	mutex_lock(vpu->lock);
- 	vpu->work_size = ALIGN(vpu->work_size, 64);
- 	vpu->param_size = ALIGN(sizeof(struct img_ipi_frameparam), 64);
--	vpu->config_size = ALIGN(sizeof(struct img_config), 64);
-+	vpu->config_size = ALIGN(sizeof(struct img_config) * pp_num, 64);
- 	err = mdp_vpu_shared_mem_alloc(vpu);
- 	mutex_unlock(vpu->lock);
- 	if (err) {
 -- 
-2.18.0
-
+Regards,
+Yi Liu
