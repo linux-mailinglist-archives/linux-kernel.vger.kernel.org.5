@@ -2,134 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAC17C7626
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D767C762B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441975AbjJLStr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 14:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
+        id S1442021AbjJLSvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 14:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379624AbjJLStp (ORCPT
+        with ESMTP id S1379624AbjJLSvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 14:49:45 -0400
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2040.outbound.protection.outlook.com [40.107.95.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A01DB7;
-        Thu, 12 Oct 2023 11:49:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iC1VWMeQL52d1o1nj2xiStOGEn7AKN6g7NBZxdq+TkRP490uehYBFBC7KPVXSJg+uS7xVywFZxT+jzuQ8aGBOGbudL+iRjz7VolbYj7v+u2136b3HpHcfAMG+3QOXt+85Pzm5251nNOLtdKB684bcJrwZfSvK3AP4pxK7FHtPw24zXAU2C0vfkJpBii3hDp9p8YXnQHFE/bTLEtFvsCDtsP+hxxs3TTgfwCX5vDKHDhmuKft24/r3oNwieS/oxLjlGdP+Rkw8lBTZJlXA7SpkY8JOImBalhAB/75+UaVCN/OM76woclP04ZeFwAYzQkUoLU5oHcQSmOgKTJrpk0ZQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UQnmE0MYzyprnHsNdCIPDideFxJT64FWxrekr3tqxf4=;
- b=oLiaiera0mJoVOun1Oe910NbvSRleqshxjIY1lwFGTppV6wUW9JlDBjyz+dg4nxtkfQI6/1gC7zP6/9IkhOD76ei7mxsmgh1IsTmHg+Ki2sLivgU+Q0ZWb5YKLo+eWn+/v5UmetrioeSg9CkK8bWexnBlTVo8FqNeYzs1uU/mNhXW13tX+StHQNwnnfR8Mn7pmlIDefNo+2ZIpqjXUJjpV+2EwrUSjeryCN3Fm1hFFZ+8pWoSH4xbivoEHxlJjQWsnMTbz34XmJi6AGy+4QOWCN8HPYLWp4AWMjghOHNg1DTg0LUYavgRsb9ZjpOP+rRV12HIZ9qtd7MNA1Hiu7mpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UQnmE0MYzyprnHsNdCIPDideFxJT64FWxrekr3tqxf4=;
- b=pILIcb9ZKOzLsSc1V/5PupXFPCV1YvWqRH0WSgpna/Ay6YnwP5F1tEqfYLYk+rvy6JSPljKH1YMQrukVZT5D4G4CIE+faFYKeKyuDhS7ja1tIc8b2ftm+Tku0wSoAseNnhRA7325f3ahsCc2qnv3UlDOiu8AQB2/qlsR0kihaWI=
-Received: from CH2PR17CA0017.namprd17.prod.outlook.com (2603:10b6:610:53::27)
- by SN7PR12MB6887.namprd12.prod.outlook.com (2603:10b6:806:261::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Thu, 12 Oct
- 2023 18:49:41 +0000
-Received: from DS3PEPF000099E2.namprd04.prod.outlook.com
- (2603:10b6:610:53:cafe::73) by CH2PR17CA0017.outlook.office365.com
- (2603:10b6:610:53::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.30 via Frontend
- Transport; Thu, 12 Oct 2023 18:49:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF000099E2.mail.protection.outlook.com (10.167.17.201) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.22 via Frontend Transport; Thu, 12 Oct 2023 18:49:40 +0000
-Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 12 Oct
- 2023 13:49:39 -0500
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-To:     <dri-devel@lists.freedesktop.org>
-CC:     <amd-gfx@lists.freedesktop.org>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        <stable@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/edid: add 8 bpc quirk to the BenQ GW2765
-Date:   Thu, 12 Oct 2023 14:49:27 -0400
-Message-ID: <20231012184927.133137-1-hamza.mahfooz@amd.com>
-X-Mailer: git-send-email 2.42.0
+        Thu, 12 Oct 2023 14:51:31 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5A783
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:51:29 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4066241289bso13933845e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:51:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697136688; x=1697741488; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ahmdd2XFDD/bHfs3mS/qHzV4nCgTn7SsexJm11yVJWM=;
+        b=UWxArW7ZLB5GsvYhkDbFlyiKuZCMo3P3uWng3onWA5Ur1AfU3l9qZecSg03s1X/mTZ
+         O5GP2ZCMdpyFLUUemzzt6pubjsS60juTOqotccalaU8u2Y635hn4mrkcZ9E/9V1Ezws5
+         4K0KYGFHyA0kQIaeIb3ABWMM3Oku4lm7DMQ7g31d3N4aozHIrUxZJRp+caYgmNGOH7VJ
+         hEym4Z8xmpTMysOIRAhSlc2vaDXtYaVGCf5ZWkLPJ+M7zxSXngMhDv019YzyLcwRfgGt
+         k69r0JGj+ciAQyrSO/QtkaKyy2/O4VE7V2HRSkrKzmLOHZ28wWuAkNXBkhzupr201Q7W
+         PkqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697136688; x=1697741488;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ahmdd2XFDD/bHfs3mS/qHzV4nCgTn7SsexJm11yVJWM=;
+        b=q/PJhId2EFPmo7vFuH1YtSq2sBfNQhrjjOKL19hhL+WtvK2hW/5ZBCAaJJ+Cr8psjj
+         kAIFxL1JgV8tHR1r9yIZWg6Vm5SF5L+U7sdUD1zzETEBrjt/t9XBJ+DgBuMbSxJE77cA
+         SEXSfdFoCWNFmF7NY/3C6hss+QOTtcY6GKOeYPLBWf9jw9HNMhi6veZdHlMjdF6fw9Jc
+         QB+180mXvic0A9qYQhMUMZ7FVSQ2cTUQN7Imn7JwAJIjWTt3x7YCkoRtDdKtlArWRo1z
+         T01jhtRSMeQjBuOXId9Vv+UNGUzSYcXlm8Fmbx3e2ZFk0dkAtOdHcOaTh2jg+NwIbYik
+         KAJA==
+X-Gm-Message-State: AOJu0Yx5lP034LOYiylCq8rcieo7SUoAqMrqvbRFPlleWcjKJpTPu40H
+        OX2RVolpZeauriTcigSRbMU=
+X-Google-Smtp-Source: AGHT+IHEq18okvfZCN33N+PVTyaCiUf/LhOcGwLFnve7qz6ofhBGIU6eWWApWeWY4NkDDb4mV81LLw==
+X-Received: by 2002:adf:e187:0:b0:32d:89ca:1761 with SMTP id az7-20020adfe187000000b0032d89ca1761mr4309278wrb.43.1697136687939;
+        Thu, 12 Oct 2023 11:51:27 -0700 (PDT)
+Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
+        by smtp.gmail.com with ESMTPSA id e28-20020adfa45c000000b0032d892e70b4sm4777440wra.37.2023.10.12.11.51.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 11:51:26 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 12 Oct 2023 20:51:24 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     Breno Leitao <leitao@debian.org>, tglx@linutronix.de, bp@alien8.de,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] x86/bugs: Add a separate config for each mitigation
+Message-ID: <ZShALJDaxJ9VJvek@gmail.com>
+References: <20231010103028.4192223-1-leitao@debian.org>
+ <ZSca08rnmZfkONEH@gmail.com>
+ <ZSfucR6docdnLznb@gmail.com>
+ <20231012170548.o5vi4kgpvpjyld7s@treble>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099E2:EE_|SN7PR12MB6887:EE_
-X-MS-Office365-Filtering-Correlation-Id: 37f7bb4c-ce6f-4834-1b4b-08dbcb53fe1e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2HCZLPg++K7Xfm1gfhkoesnDYHpeyC0CcPSIxPcmb9L8QBMd/mzwpPL3D7QdIMkgp0YsNOMngJGWFim1tCrbfVHNsfcwKwcPTFl7KCpHiv2nYftumFA4Vv24IgnTncaeYw1+R4rnvm7w/jOxfDUDPzHbSdoJgl+m2xzgDIEVO9qhAPxL0JxDBLhAuOxv15o1mKImyooZTiaMrLeD5zJuL5cGhHPP2g3VnEIvESkr+V6otRM9N87vyjlKvJ/cBrW7/xuH6gzbYRvw8a6AuuF1UgbFwQgBsJJUr+ACX4tmETx3iP7TiBGoJqxMPwJGGX3bH4fi9hoi4IH8GApqjEbGO8AamquV/mzPcpXf+sBm/Q63UODlqD0oXbd7LsOB3k80qCnu9Dy2Kep02or4r/QI7hhDSjYEoiJlAygSORxD4t9yKRbyuZ8B8izkGJaVVImoU8O2OvqsIfNQxv2QUIt7Hqve0cEoTHXYj4E4qiVgs+luVZ8GUxAyvbyaO3V3WtSJarliohcKR1i4NHOZ9Gdt3+mCl1VuzXR8IwUmlAz/kRvqSe/s6leB0wE2RnoYjk9/eQ6cJPLbh1BsjdaWmbGy1OOK8vqB1fkWOT1tbYu4HTofXBBOwG5CBVj8BabnPxq3B8h9pLx7fqAj5/f0QwTQmcFnq0FgFh0K6pbJfhmNkOi4042ryROJ1jmV7AYhT+oXg4wxQ/Wd3GPiy8pyFNJcbRYSGv/sdOzCz8ldMUZ8S2wjmRosWkBwYhd1BQsk0zfjDj7tFolOWfDEmm9zoKYn1EgSiY1zXp/5/RMaAP7T8Lo=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(346002)(396003)(39860400002)(230922051799003)(82310400011)(64100799003)(451199024)(186009)(1800799009)(36840700001)(40470700004)(46966006)(40460700003)(1076003)(478600001)(6666004)(8936002)(336012)(44832011)(426003)(83380400001)(4744005)(47076005)(2906002)(6916009)(2616005)(70206006)(54906003)(5660300002)(70586007)(4326008)(316002)(8676002)(41300700001)(26005)(356005)(81166007)(16526019)(36860700001)(82740400003)(40480700001)(86362001)(36756003)(966005)(36900700001)(16060500005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 18:49:40.8229
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37f7bb4c-ce6f-4834-1b4b-08dbcb53fe1e
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099E2.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6887
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231012170548.o5vi4kgpvpjyld7s@treble>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BenQ GW2765 reports that it supports higher (> 8) bpc modes, but
-when trying to set them we end up with a black screen. So, limit it to 8
-bpc modes.
 
-Cc: stable@vger.kernel.org # 6.5+
-Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2610
-Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
----
- drivers/gpu/drm/drm_edid.c | 3 +++
- 1 file changed, 3 insertions(+)
+* Josh Poimboeuf <jpoimboe@kernel.org> wrote:
 
-diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-index 0454da505687..bca2af4fe1fc 100644
---- a/drivers/gpu/drm/drm_edid.c
-+++ b/drivers/gpu/drm/drm_edid.c
-@@ -123,6 +123,9 @@ static const struct edid_quirk {
- 	/* AEO model 0 reports 8 bpc, but is a 6 bpc panel */
- 	EDID_QUIRK('A', 'E', 'O', 0, EDID_QUIRK_FORCE_6BPC),
- 
-+	/* BenQ GW2765 */
-+	EDID_QUIRK('B', 'N', 'Q', 0x78d6, EDID_QUIRK_FORCE_8BPC),
-+
- 	/* BOE model on HP Pavilion 15-n233sl reports 8 bpc, but is a 6 bpc panel */
- 	EDID_QUIRK('B', 'O', 'E', 0x78b, EDID_QUIRK_FORCE_6BPC),
- 
--- 
-2.42.0
+> On Thu, Oct 12, 2023 at 06:02:41AM -0700, Breno Leitao wrote:
+> > > Yeah, so this #ifdeffery is unnecessarily ugly - we can actually assign 
+> > > integer values in the Kconfig language and use that for initialization.
+> > > 
+> > > Is there a reason why we wouldn't want to do something like:
+> > > 
+> > > 	static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init = CONFIG_BOOT_DEFAULT_X86_MITIGATE_RETBLEED;
+> > > 
+> > > ... or so?
+> > 
+> > Yes. There are two reasons rigth now:
+> > 
+> > 1) How to avoid the "undefined" behaviour when
+> > CONFIG_BOOT_DEFAULT_X86_MITIGATE_RETBLEED is not defined ? Something as:
+> > 
+> >  error: ‘CONFIG_BOOT_DEFAULT_X86_MITIGATE_RETBLEED’ undeclared (first use in this function)
+> > 
+> > 2) Right now, these _cmd values are all different by default. Here are a few
+> > examples when the kernel is compiled with the mitigations:
+> > 
+> >  retbleed_cmd = RETBLEED_CMD_AUTO (1)
+> >  spectre_v2_mitigation_cmd = SPECTRE_V2_CMD_AUTO (1)
+> >  ssb_mitigation_cmd = SPEC_STORE_BYPASS_CMD_AUTO (1)
+> >  l1tf_mitigation = L1TF_MITIGATION_FLUSH(2)
+> >  mds_mitigation =  MDS_MITIGATION_FULL(1)
+> >  taa_mitigation = TAA_MITIGATION_VERW (2)
+> >  mmio_mitigation = MMIO_MITIGATION_VERW (2)
+> >  gds_mitigation =  GDS_MITIGATION_FULL (3)
+> > 
+> > If there is a solution for 1, then I _think_ we can probably reorder the
+> > enums, so, the "AUTO" value is always 1?!
+> 
+> I'd rather avoid hard-coding enums as that adds fragility into the mix.
+> 
+> Another way to avoid ifdeffery:
+> 
+> static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init =
+> 	IS_ENABLED(CONFIG_MITIGATION_RETBLEED) ? RETBLEED_CMD_AUTO : RETBLEED_CMD_OFF;
 
+I think we could make it a simple:
+
+	static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init = IS_ENABLED(CONFIG_MITIGATION_RETBLEED);
+
+Because RETBLEED_CMD_AUTO && RETBLEED_CMD_OFF maps naturally to 1 and 0. 
+Maybe add a comment to the enum to maintain this property in the future 
+too.
+
+> > > 3)
+> > > 
+> > > And yes, now that the rush of CPU vulnerabilities seems to be ebbing, we 
+> > > should probably consider unifying the existing hodgepodge of mitigation 
+> > > Kconfig options as well, to not build up even more technical debt.
+> > 
+> > What do you mean by unifying the existing hodgepodge of mitigation
+> > Kconfigs? If you are implying to just have fewer config options, I think
+> > that is the opposite of what Linus has suggested previously:
+> > 
+> > https://lore.kernel.org/all/CAHk-=wjTHeQjsqtHcBGvy9TaJQ5uAm5HrCDuOD9v7qA9U1Xr4w@mail.gmail.com/
+> 
+> I read that as Ingo agreeing with me that we should rename all the
+> existing options for consistency.
+
+Yeah, and this is doubly important for security features: inconsistency 
+invites misunderstandings & bugs ...
+
+> > > Sometimes it can be a simple configuration mistake, or a user might have 
+> > > different opinion about the importance of a particular mitigation. Nothing 
+> > > heavy-handed, just a simple pr_info() table of changes?
+> > 
+> > That could be done, but, right now messages are printed in regard to the
+> > mitigations. Aren't these enough?
+> > 
+> > Here are some examples:
+> > 
+> >   pr_info("MDS: %s\n", mds_strings[mds_mitigation]);
+> >   pr_info("TAA: %s\n", taa_strings[taa_mitigation]);
+> >   pr_info("MMIO Stale Data: %s\n", mmio_strings[mmio_mitigation]);
+> >   pr_info("MMIO Stale Data: Unknown: No mitigations\n");
+> >   pr_info("%s\n", srbds_strings[srbds_mitigation]);
+> >   pr_info("%s\n", gds_strings[gds_mitigation]);
+> >   pr_info("%s\n", spectre_v1_strings[spectre_v1_mitigation]);
+> >   pr_info("%s\n", spectre_v2_user_strings[mode]);
+> >   pr_info("%s\n", retbleed_strings[retbleed_mitigation]);
+> >   pr_info("%s\n", ssb_strings[ssb_mode]);
+> 
+> But notice many/most of those functions exit early if the mitigation is
+> turned off, thereby skipping the pr_info().  It might be a matter of
+> just tweaking the print behavior and making it consistent across all the
+> mitigations.
+
+Yeah. A single consistent table would be the most user-friendly outcome, 
+with no silence. 'No output' is what kernels without the fixes do too, so 
+we should always output the chosen bootup status of relevant mitigations.
+
+This would make it a bit easier for users to report bugs too: for example 
+if some uncommon CPU model number is not enumerated by the mitigations code 
+and the kernel mistakenly believes that the CPU is safe. While much of this 
+information can be recovered from the sysfs files too, they are subject to 
+runtime changes and the values are also not reliably logged at bootup.
+
+Thanks,
+
+	Ingo
