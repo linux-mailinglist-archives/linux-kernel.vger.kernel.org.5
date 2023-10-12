@@ -2,146 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB957C7355
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1F87C7361
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379542AbjJLQoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40626 "EHLO
+        id S1379563AbjJLQpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:45:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233988AbjJLQoV (ORCPT
+        with ESMTP id S1379518AbjJLQpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:44:21 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F723C0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:44:18 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9a645e54806so183904366b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:44:18 -0700 (PDT)
+        Thu, 12 Oct 2023 12:45:32 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3320C6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:45:30 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso2225360a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:45:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697129055; x=1697733855; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z24YZGqTCXcSjZw7pVvFeMUQZsyzVXoHF/bkKgAPfjE=;
-        b=SHwx79G3UQqzyVKeli6auhjv9NNPiTFdyyE7DBEMjaTw5VO6E8GtEZysztWDc4lX9c
-         HWVKp7XTYvTXLs17uy2HXZNEOIdpuxYdpbCZWKOxmVq0PNgCkwy/qLvusznTk/qdfyIF
-         2WufDQOfkIFhfpWVsHrrgA5L9pGZB6iQxDZPE=
+        d=linaro.org; s=google; t=1697129129; x=1697733929; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kRh+Vupx0XypJiTrUDbDPsKcsjU0eEhEwWX6GsRTbtw=;
+        b=M3WGMV8HoyeP3/jPDaNPDSuBqQsHKWODClmLyKtJx5di7YL2ABsiR3lArZpDnoumXB
+         8bFjAN3ypyaQqT81WUikEEqAnU98o/GReLZq3ZlWj2c9Q9Q3MC2EdTsdi45HU4B+KL9A
+         5TViomjOKTzo+8cszm5QM1cIqu/U67wiXDwLuXxnajEWKY3dcO4nc+5KwEIDyvAp5847
+         uINnPS8vjP/c9O+a2Em+7OVO6mOhnafH9oC7YOY264/3xg/tBtentb1fTonuEXjR9ThP
+         l4cwoSgJB6+9CdCHbHAkgNiqdmpSxWzYLQgcNtG2YTVoowrJLrQRX6tCPlaNFGVoiRWo
+         8+9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697129055; x=1697733855;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z24YZGqTCXcSjZw7pVvFeMUQZsyzVXoHF/bkKgAPfjE=;
-        b=RRY4VlJHuu7FcPS9AkYbTeMmwcyoEbJK802i0yNKAf2pEJbOTeaN1qKaBmUPQ7AiSY
-         wWkf6RHTSWiWH55OJtDBtNcKcMgHNSkxhKxq5uIC6hrsOqANyBmX+V3PcxvdfmaLXjD8
-         pdP0tHEpzubuW1wGfmsIr6ZbmgSMYXqPNZKMfRuIf9YEQEbJHAu8xKkFval9xjbBJcdQ
-         QUH2jxzNZ8QrZABdtFd2RJzn3hIL4JGcrZ7EsxQQNZOJbjByVU+twBu8aBkd9o8kh2Mo
-         9/IsXg/PWoiyYnQ2c1QKEf+se5U0ewG6qW+QtdQICz56dNN8iblg67pY2wqr/K3nVvQT
-         fhtA==
-X-Gm-Message-State: AOJu0YwldyDINN6XkZXL7DdgLKf6EGB1IRHl41qOT4lw4DC7/3otrYQv
-        bimI9BSSnR5jKptwDmpKGHfxlB7soYzgiT80ZiJ0Sw==
-X-Google-Smtp-Source: AGHT+IFNhUVzZmoTaG2p3tfSXlhtC+Z9xwJeyS7ogJzXsZPBSod1NdgV76OJwD+Ydmz4bPy/kLLzNg==
-X-Received: by 2002:a17:906:1d:b0:9ae:505d:310b with SMTP id 29-20020a170906001d00b009ae505d310bmr22063887eja.39.1697129055061;
-        Thu, 12 Oct 2023 09:44:15 -0700 (PDT)
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com. [209.85.128.54])
-        by smtp.gmail.com with ESMTPSA id a24-20020a170906685800b009828e26e519sm11215406ejs.122.2023.10.12.09.44.14
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1697129129; x=1697733929;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kRh+Vupx0XypJiTrUDbDPsKcsjU0eEhEwWX6GsRTbtw=;
+        b=VP0OFiqMBJyFQvjkBiEIC2Tkr83vP5aPnZ4binIuQJaIPAyWJ+qDz/Lx2bKchELlc1
+         Su9K4+cw7P1uXurh/GvWZVfWp77+FGFb+bua9KRUMlXMyYAZX4PzupW2HcjyeoZ2wsed
+         eNAa4FyMQi+PHTz2t4X1szQv1IEzzvQE1JHylClVE0uq2DZfarHMInCEF6s6vDKoVfcD
+         26wkqfv3sQsGk+UDAGb1XTljqSqtIRt2h9kpHRuF5SGso8iX7YOSZyES4SYeK19u61sh
+         oKMsw50/XbVAef5fJL39LvL/NdlWfbQ5vRPBFvDDn3KtkA49mbf4AqtxE1J8ipB+Lusg
+         eo/Q==
+X-Gm-Message-State: AOJu0YxyixNspKORLbENeDcBZdSSwUKHIJ3lOkXVWgdsrArppxMmGyzR
+        RQQAjwL6AEdKCz4mZT6che3HjQ==
+X-Google-Smtp-Source: AGHT+IEXqEp3kFB6IUpjF8BAzbvasyJj3DSZYDjbuCP/F0tb8JGBX/QQLV+mGV4P8Tus5qj+oyhvlg==
+X-Received: by 2002:a17:906:24e:b0:9a1:e293:9882 with SMTP id 14-20020a170906024e00b009a1e2939882mr21330362ejl.63.1697129129266;
+        Thu, 12 Oct 2023 09:45:29 -0700 (PDT)
+Received: from [172.30.204.175] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id g7-20020a1709067c4700b0099bd1a78ef5sm11250236ejp.74.2023.10.12.09.45.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 09:44:14 -0700 (PDT)
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-405459d9a96so1855e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:44:14 -0700 (PDT)
-X-Received: by 2002:a05:600c:1d10:b0:404:7462:1f87 with SMTP id
- l16-20020a05600c1d1000b0040474621f87mr293864wms.6.1697129053819; Thu, 12 Oct
- 2023 09:44:13 -0700 (PDT)
+        Thu, 12 Oct 2023 09:45:28 -0700 (PDT)
+Message-ID: <fef38d0e-f24b-41ce-9d28-82cd637ce342@linaro.org>
+Date:   Thu, 12 Oct 2023 18:45:08 +0200
 MIME-Version: 1.0
-References: <20231002235407.769399-1-swboyd@chromium.org> <CAD=FV=U2dza-rxV=YtcfJwUY-gZw5FrCyn0NahOxvXJW2J2-vg@mail.gmail.com>
- <CAE-0n51LJDgop-Nh+Aq1CTiu7xJZOqOsdSvHMmXzshkRKM3dgg@mail.gmail.com>
-In-Reply-To: <CAE-0n51LJDgop-Nh+Aq1CTiu7xJZOqOsdSvHMmXzshkRKM3dgg@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 12 Oct 2023 09:43:57 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UGP9L341iDd44rUPKf_jZ5Y6qodPKZ_BLgMq-HnkBmbQ@mail.gmail.com>
-Message-ID: <CAD=FV=UGP9L341iDd44rUPKf_jZ5Y6qodPKZ_BLgMq-HnkBmbQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: Associate DSI device lifetime
- with auxiliary device
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev, dri-devel@lists.freedesktop.org,
-        Maxime Ripard <maxime@cerno.tech>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 4/4] ARM: dts: qcom: ipq8064: Add CPU OPP table
+Content-Language: en-US
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Robert Marko <robimarko@gmail.com>, ilia.lin@kernel.org,
+        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, agross@kernel.org, andersson@kernel.org,
+        rafael@kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20230930102218.229613-1-robimarko@gmail.com>
+ <20230930102218.229613-4-robimarko@gmail.com>
+ <e2d6c9c7-ff59-408f-94cf-81e66d291963@linaro.org>
+ <6525ae86.050a0220.827f2.c59d@mx.google.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <6525ae86.050a0220.827f2.c59d@mx.google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Thu, Oct 5, 2023 at 10:18=E2=80=AFAM Stephen Boyd <swboyd@chromium.org> =
-wrote:
->
-> Quoting Doug Anderson (2023-10-02 17:31:41)
-> > Hi,
-> >
-> > On Mon, Oct 2, 2023 at 4:54=E2=80=AFPM Stephen Boyd <swboyd@chromium.or=
-g> wrote:
-> > >
-> > > The kernel produces a warning splat and the DSI device fails to regis=
-ter
-> > > in this driver if the i2c driver probes, populates child auxiliary
-> > > devices, and then somewhere in ti_sn_bridge_probe() a function call
-> > > returns -EPROBE_DEFER. When the auxiliary driver probe defers, the ds=
-i
-> > > device created by devm_mipi_dsi_device_register_full() is left
-> > > registered because the devm managed device used to manage the lifetim=
-e
-> > > of the DSI device is the parent i2c device, not the auxiliary device
-> > > that is being probed.
-> > >
-> > > Associate the DSI device created and managed by this driver to the
-> > > lifetime of the auxiliary device, not the i2c device, so that the DSI
-> > > device is removed when the auxiliary driver unbinds. Similarly change
-> > > the device pointer used for dev_err_probe() so the deferred probe err=
-ors
-> > > are associated with the auxiliary device instead of the parent i2c
-> > > device so we can narrow down future problems faster.
-> > >
-> > > Cc: Douglas Anderson <dianders@chromium.org>
-> > > Cc: Maxime Ripard <maxime@cerno.tech>
-> > > Fixes: c3b75d4734cb ("drm/bridge: sn65dsi86: Register and attach our =
-DSI device at probe")
-> >
-> > Even before that commit I think it was using the main "dev" instead of
-> > the auxiliary device's "dev" for some "devm" stuff. I guess the
-> > difference is that it wouldn't mess with probe deferral? Searching
-> > back, I think the first instance of a case that was using "devm_" with
-> > the wrong device was commit 4e5763f03e10 ("drm/bridge: ti-sn65dsi86:
-> > Wrap panel with panel-bridge")? Would it make sense to use that as a
-> > Fixes, you think?
->
-> The problem for me is that the dsi device is registered twice. That
-> happens because probe for the auxiliary device happens twice. I was
-> cautious about the fixes tag here because it didn't look like probe
-> deferral was happening before commit c3b75d4734cb.
->
-> >
-> > In any case, this looks reasonable to me:
-> >
-> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> >
-> > I'll give it a week and then apply to "-fixes" if everything is quiet.
->
-> Thanks!
 
-Pushed to drm-misc-fixes leaving your existing "Fixes" line:
+On 10/10/23 22:05, Christian Marangi wrote:
+> On Tue, Oct 10, 2023 at 09:55:26PM +0200, Konrad Dybcio wrote:
+>>
+>>
+>> On 9/30/23 12:21, Robert Marko wrote:
+>>> From: Christian Marangi <ansuelsmth@gmail.com>
+>>>
+>>> Add CPU OPP table for IPQ8062, IPQ8064 and IPQ8065 SoC.
+>>> Use opp-supported-hw binding to correctly enable and disable the
+>>> frequency as IPQ8062 supports up to 1.0Ghz, IPQ8064 supports up to
+>>> 1.4GHz with 1.2GHz as an additional frequency and IPQ8065 supports
+>>> 1.7GHZ but doesn't have 1.2GHZ frequency and has to be disabled.
+>>>
+>>> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+>>> ---
+>>> Changes v4:
+>>> * Add OPP DTS patch for IPQ8064
+>>>
+>>>    arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi | 30 +++++++++++
+>>>    arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi | 67 ++++++++++++++++++++++++
+>>>    arch/arm/boot/dts/qcom/qcom-ipq8065.dtsi | 65 +++++++++++++++++++++++
+>>>    3 files changed, 162 insertions(+)
+>>>
+>>> diff --git a/arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi b/arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi
+>>> index 5d3ebd3e2e51..72d9782c3d6f 100644
+>>> --- a/arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi
+>>> +++ b/arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi
+>>> @@ -6,3 +6,33 @@ / {
+>>>    	model = "Qualcomm Technologies, Inc. IPQ8062";
+>>>    	compatible = "qcom,ipq8062", "qcom,ipq8064";
+>>>    };
+>>> +
+>>> +&opp_table_cpu {
+>>> +	opp-384000000 {
+>>> +		opp-microvolt-speed0-pvs0 = <1000000 950000 1050000>;
+>>> +		opp-microvolt-speed0-pvs1 = <925000 878750 971250>;
+>>> +		opp-microvolt-speed0-pvs2 = <875000 831250 918750>;
+>>> +		opp-microvolt-speed0-pvs3 = <800000 760000 840000>;
+>> We can just make use of opp-supported-hw and define opp-384...-0,
+>> opp-384..-1 etc. with a valid corresponding bitmask in opp-supported-hw
+>>
+>> otherwise it's somewhat confusing to follow, I think..
+>>
+> 
+> Ehh should we really double the nodes for ipq8062 and ipq8065?
+Hm.. I'm not 100% sure, both solutions are kinda meh, but perhaps 
+overwriting it will be less of a hassle for looking at the decompiled dt 
+indeed..
 
-7b821db95140 drm/bridge: ti-sn65dsi86: Associate DSI device lifetime
-with auxiliary device
+> The idea here was to overwrite the one since the pvs always match and at
+> worst(ipq8065) have 7 pvs instead of 4. From the system it would be
+> easier to read since only one table is present in the final dts and not
+> 2 and referring to the opp-supported-hw.
+> 
+> The original idea was to declare one opp table and reuse pvs version (by
+> faking it with hardcoded values) to put additional pvs for ipq8062 and
+> ipq8065, but Dmitry didn't like it and asked to move the opp in
+> different dtsi.
+Yeah this fusing thing is complex enough already
 
--Doug
+KOnrad
