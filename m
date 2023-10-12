@@ -2,151 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2547C6FF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F757C6FFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378991AbjJLOEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 10:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51904 "EHLO
+        id S1379102AbjJLOFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 10:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235570AbjJLOEl (ORCPT
+        with ESMTP id S1379069AbjJLOFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:04:41 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95401B8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:04:39 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-68fb85afef4so846489b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1697119479; x=1697724279; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q3ropCljelAQ4xMLZKutsQltAGHtknBuH4fIH4/voyA=;
-        b=CgvDTUxgRcPBjvvF2097VDXV5sKlAs5zL8jKsivI/j+YQ+cl2UaJdgrkQTAbZpzZcq
-         rLHv7TjDQnMa9mWvk9dqsTTWKYNVYcooAGR9cNYYI38hRIwDM4ABa3ilj0e2G5VIf7rl
-         DK6Zg5ZhuQg696sEBw1s7xgzyWFQKLoY1xqq/lDjl3ZM035WZUDNMPjyTAsiZMViqz9X
-         qcUQQ+p/WcjZW+4LHAPM7XQD2IG9BfMImqHvVMK9bn7rL7OzhAfELd3052v8ue1VghJI
-         jvEzKm4kGaimY4UiQzkZAvlAT4XH5UqCYuefNqOSBM2T4sHiaHYUump6qVnX+tPHcVfL
-         VYQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697119479; x=1697724279;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q3ropCljelAQ4xMLZKutsQltAGHtknBuH4fIH4/voyA=;
-        b=cOSjwxk6XjtDJ4T850iEtV2kJumIb/xnc319k5KDJVrlF/Dul3rkLTO0JIZGGKat17
-         nElMst2GSZPnXBBG2AVp2UuqyUzGSkP9GNkqyzAerA+O2C8p7uqIIRrOQM8wYQkEIWXM
-         1xJKjvZgsz/lVpbDGaT5ozNQwDKFwEmHMsO5hhzydP4i/14EG+c7t0JKYN+MimKF7XzU
-         reMP6p8+ouUj4pacEFQL7kQPvqHGiLv0LSYTplEguRJY2NOe1oCe1TSp3XHtI4sr1DBc
-         o7bPLpT226cc6+QbuaC+p87/TZGi4cBjuuSfaMBfMnJ2EETDqY3MY9pcEqYpcSUQ85oT
-         Q0uw==
-X-Gm-Message-State: AOJu0Yzl7TnIBgZbkOtZIeTrOvXL0IoFx8nhs12AK07SlAXpHbsjO4sk
-        gX92ls/zLh4ulmhpznk3goLM7ur/EZetbv/rMG8NV1D//Mq4bHk0AMI=
-X-Google-Smtp-Source: AGHT+IFYzz1udWcTeV4meGkJeMqGjEeSeMlU+XeqwQooukBcx18KN/ZD2OzwwabFVNJ4dm5BRlOrQ5y5vfkWL1S6KVI=
-X-Received: by 2002:a05:6a20:c518:b0:14b:7d8b:cbaf with SMTP id
- gm24-20020a056a20c51800b0014b7d8bcbafmr18395717pzb.57.1697119478939; Thu, 12
- Oct 2023 07:04:38 -0700 (PDT)
+        Thu, 12 Oct 2023 10:05:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB00EBB;
+        Thu, 12 Oct 2023 07:05:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=ZBo794QmPX3OSdLUZmZOt9sFww07PNz5cEeadQ3oMTs=; b=JnYKQQ0WWPVh7MTBsIeRXAwbLL
+        3Mwulrlk764uN7k72IIbGXPlnVNdxd3DuP4FTtyqiQnYS/iJYcdNTemsLwfEgOqlceI9dvtMMyEHs
+        tfsBcDwsfLzDTytRS+2uDlOzsYKG5vky7nyWiDPxhzrcUkNDlNEsbpRfSRlD91Ay1avH0/H8No0jf
+        H6IApE3ZYsLteuzasQpZf0ILGJ8UT1mtlrE1sUqLngnW6ErDWU11lQn0s0bwMhqjlgdDLhALloRuP
+        FdW1bavmsQroJdnauzfu0g4F4zr+DwIUpGvdzdq6oMChW9V6z73MZ7kHeFDwH58leQykL0PKBuaHJ
+        SyuSi4IQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qqwJA-00HHti-AI; Thu, 12 Oct 2023 14:05:00 +0000
+Date:   Thu, 12 Oct 2023 15:05:00 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>,
+        xen-devel <xen-devel@lists.xenproject.org>
+Subject: Re: [PATCH v6 06/38] mm: Add default definition of set_ptes()
+Message-ID: <ZSf9DNSvgbT9DLmk@casper.infradead.org>
+References: <20230802151406.3735276-1-willy@infradead.org>
+ <20230802151406.3735276-7-willy@infradead.org>
+ <4c63ee3634ccfed7d687fcbdd9db60663bce481f.camel@infradead.org>
 MIME-Version: 1.0
-References: <20231003035226.1945725-1-apatel@ventanamicro.com> <CAAhSdy0P=5WiFfFyMHjkd63JKCcjsTsvhLTNgUB+LOCd8A9iOQ@mail.gmail.com>
-In-Reply-To: <CAAhSdy0P=5WiFfFyMHjkd63JKCcjsTsvhLTNgUB+LOCd8A9iOQ@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 12 Oct 2023 19:34:27 +0530
-Message-ID: <CAAhSdy2XLqB-NPVfqYdO07bPxkc2VXBpethHppiKkBms2ysvZA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] KVM RISC-V Conditional Operations
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Atish Patra <atishp@atishpatra.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Anup Patel <apatel@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4c63ee3634ccfed7d687fcbdd9db60663bce481f.camel@infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Palmer,
+On Thu, Oct 12, 2023 at 02:53:05PM +0100, David Woodhouse wrote:
+> > +       arch_enter_lazy_mmu_mode();
+> > +       for (;;) {
+> > +               set_pte(ptep, pte);
+> > +               if (--nr == 0)
+> > +                       break;
+> > +               ptep++;
+> > +               pte = __pte(pte_val(pte) + (1UL << PFN_PTE_SHIFT));
+> > +       }
+> > +       arch_leave_lazy_mmu_mode();
+> 
+> This breaks the Xen PV guest.
+> 
+> In move_ptes() in mm/mremap.c we arch_enter_lazy_mmu_mode() and then
+> loop calling set_pte_at(). Which now (or at least in a few commits time
+> when you wire it up for x86 in commit a3e1c9372c9b959) ends up in your
+> implementation of set_ptes(), calls arch_enter_lazy_mmu_mode() again,
+> and:
+> 
+> [    0.628700] ------------[ cut here ]------------
+> [    0.628718] kernel BUG at arch/x86/kernel/paravirt.c:144!
 
-On Thu, Oct 5, 2023 at 11:35=E2=80=AFAM Anup Patel <anup@brainfault.org> wr=
-ote:
->
-> On Tue, Oct 3, 2023 at 9:22=E2=80=AFAM Anup Patel <apatel@ventanamicro.co=
-m> wrote:
-> >
-> > This series extends KVM RISC-V to allow Guest/VM discover and use
-> > conditional operations related ISA extensions (namely XVentanaCondOps
-> > and Zicond).
-> >
-> > To try these patches, use KVMTOOL from riscv_zbx_zicntr_smstateen_condo=
-ps_v1
-> > branch at: https://github.com/avpatel/kvmtool.git
-> >
-> > These patches are based upon the latest riscv_kvm_queue and can also be
-> > found in the riscv_kvm_condops_v3 branch at:
-> > https://github.com/avpatel/linux.git
-> >
-> > Changes since v2:
-> >  - Dropped patch1, patch2, and patch5 since these patches don't meet
-> >    the requirements of patch acceptance policy.
-> >
-> > Changes since v1:
-> >  - Rebased the series on riscv_kvm_queue
-> >  - Split PATCH1 and PATCH2 of v1 series into two patches
-> >  - Added separate test configs for XVentanaCondOps and Zicond in PATCH7
-> >    of v1 series.
-> >
-> > Anup Patel (6):
-> >   dt-bindings: riscv: Add Zicond extension entry
-> >   RISC-V: Detect Zicond from ISA string
-> >   RISC-V: KVM: Allow Zicond extension for Guest/VM
-> >   KVM: riscv: selftests: Add senvcfg register to get-reg-list test
-> >   KVM: riscv: selftests: Add smstateen registers to get-reg-list test
-> >   KVM: riscv: selftests: Add condops extensions to get-reg-list test
->
-> Queued this series for Linux-6.7
+Easy fix ... don't do that ;-)
 
-I have created shared tag kvm-riscv-shared-tag-6.7 in the
-KVM RISC-V repo at:
-https://github.com/kvm-riscv/linux.git
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index af7639c3b0a3..f3da8836f689 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -231,9 +231,11 @@ static inline pte_t pte_next_pfn(pte_t pte)
+ static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+ 		pte_t *ptep, pte_t pte, unsigned int nr)
+ {
++	bool multiple = nr > 1;
+ 	page_table_check_ptes_set(mm, ptep, pte, nr);
+ 
+-	arch_enter_lazy_mmu_mode();
++	if (multiple)
++		arch_enter_lazy_mmu_mode();
+ 	for (;;) {
+ 		set_pte(ptep, pte);
+ 		if (--nr == 0)
+@@ -241,7 +243,8 @@ static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+ 		ptep++;
+ 		pte = pte_next_pfn(pte);
+ 	}
+-	arch_leave_lazy_mmu_mode();
++	if (multiple)
++		arch_leave_lazy_mmu_mode();
+ }
+ #endif
+ #define set_pte_at(mm, addr, ptep, pte) set_ptes(mm, addr, ptep, pte, 1)
 
-This shared tag is based on 6.6-rc5 and contains following 4 patches:
-dt-bindings: riscv: Add Zicond extension entry
-RISC-V: Detect Zicond from ISA string
-dt-bindings: riscv: Add smstateen entry
-RISC-V: Detect Smstateen extension
-
-Thanks,
-Anup
-
-
-
->
-> Thanks,
-> Anup
->
-> >
-> >  .../devicetree/bindings/riscv/extensions.yaml |  6 +++
-> >  arch/riscv/include/asm/hwcap.h                |  1 +
-> >  arch/riscv/include/uapi/asm/kvm.h             |  1 +
-> >  arch/riscv/kernel/cpufeature.c                |  1 +
-> >  arch/riscv/kvm/vcpu_onereg.c                  |  2 +
-> >  .../selftests/kvm/riscv/get-reg-list.c        | 54 +++++++++++++++++++
-> >  6 files changed, 65 insertions(+)
-> >
-> > --
-> > 2.34.1
-> >
+I think long-term, we should make lazy_mmu_mode nestable.  But this is
+a reasonable quick fix.
