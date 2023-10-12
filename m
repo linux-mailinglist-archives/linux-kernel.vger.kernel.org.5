@@ -2,51 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BA97C6942
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27AFD7C6944
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235490AbjJLJQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:16:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
+        id S235402AbjJLJRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235460AbjJLJQJ (ORCPT
+        with ESMTP id S234155AbjJLJRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:16:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A247C6;
-        Thu, 12 Oct 2023 02:16:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83B6CC433C8;
-        Thu, 12 Oct 2023 09:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697102167;
-        bh=rDqxFRbS36X3wzsamcQt8JNV0Zh3cEeJ9KK8OwPwL34=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rNjZKIc5WgmZe4aHX0ioCqxU8rNxJtEyXsV/NZV4DN1RQmMfka5uyhlwEN23tcH++
-         DvtKsUTvf7WeFX3gNM1jbai6tEHBjnC5WSe2vcOXwRPCOr/b3FDfIqkksap9giSoRE
-         s8ZzFR5TYZlPEuO1PVfS7muBmugpP9L/kNepxckOC+FZKkDaQYAX7KH91EBMeTI6/s
-         cOt0rlsvEc2dWib0IjTUpxU5qDN83i+LfJoPcELEhqTUqqP8em/P6cOZzwjZysp72F
-         Mt43kC/Rt6W2p/tbfJTbbQItBjW7uSYSQrZQVQgzrbmBZfgEjZfdQY7p/p90selCLE
-         8WvC5QG/YiH4w==
-Date:   Thu, 12 Oct 2023 10:16:02 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RESEND PATCH V2] leds: sc27xx: Move mutex_init() to the end of
- probe
-Message-ID: <20231012091602.GD8314@google.com>
-References: <20231012034735.804157-1-chunyan.zhang@unisoc.com>
- <6110db84-546d-fc5c-f241-7923d673bbd5@linux.alibaba.com>
+        Thu, 12 Oct 2023 05:17:19 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4B791
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:17:18 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a7dd65052aso10671287b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:17:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697102237; x=1697707037; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=v6dAMz+0PBoS2XhVtGEyBlFK0C+DlTpY1GdaToHa8Jc=;
+        b=hYxAFqMBmH3OmoR+nhuDhBMTGTEmnKYxp4TESq+pOlsaIWPXgUmN9EOi17P/FYmBQk
+         ckZCJEI7Y1Vy0PsDee6Ud4AGN795o3oOB0O8OALUm/A0iRuw0YQxyjwwWR3ikanGjpEJ
+         5A8JuTCa6Mn08m+mQkUL0z7kvknr9hbky64SSn7GDlKSVNhD9cjWDcas312URJ1MD4ip
+         J+CWyMCF3V6fqdXDhN0pANPypD49aBwe28eG+XpiNiVvt70Euq4/AaCIJ/kAGd6Aq3Hh
+         rImaD+sbwHjg6DSOcM7A4FEzarImSrdP223fJ7LbJ6LTB1XSppYIy7BlsaT1PMC6Da2f
+         vRVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697102237; x=1697707037;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v6dAMz+0PBoS2XhVtGEyBlFK0C+DlTpY1GdaToHa8Jc=;
+        b=qdFvTkD9H5HIuC+B+TYmGBkDwKyFswSgHU0+RO0SLJcpJkovovqJGleW9T6GlZXFtK
+         VlOjzIsgtmucIoOnnDshDKXDeoGRWLTnZ5Tai9sBbcU4eAf/Z/aCWujQdwa0bWIlSqLP
+         UY7WExcuI7y/SAeyp9Tis9xb90IhbAuXmNTaaBW1vE5PJNe26UvGBiL3dOsPZGjOQAPZ
+         lx+ZPwH/K33zRvWnswL7cbi6r8noTntij/vqggTTkMfCgPN7T48DSYvs2XBYvzTKQ9BC
+         aEHwzKoQM/AO+R7iOzGCNjjFckVfLJkLySF22tWL6WX9Fs6K1jTb92ig/aI/K03zVnGn
+         gGVw==
+X-Gm-Message-State: AOJu0YyAjZw1Jd/zJ9KI+g3L2wODeiipTXfjr4Qok2nljX+CIfVkqlpB
+        DiQcqPzpesENohEj6wHiWTU=
+X-Google-Smtp-Source: AGHT+IFuQMSMzJzJH2GkD7eihBN8OFvYqFcC1HGLtYAHbbnx3UQ7tSCfZ0ufU5iKSpJBX7SkHxuqpg==
+X-Received: by 2002:a81:6ec2:0:b0:5a1:db6a:6459 with SMTP id j185-20020a816ec2000000b005a1db6a6459mr23340529ywc.40.1697102237316;
+        Thu, 12 Oct 2023 02:17:17 -0700 (PDT)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id i1-20020a17090a2a0100b0027669cbc30asm597246pjd.1.2023.10.12.02.17.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 02:17:16 -0700 (PDT)
+Message-ID: <1e2cfefb-c4dd-4611-867a-2b2e9e5f7467@gmail.com>
+Date:   Thu, 12 Oct 2023 16:17:11 +0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6110db84-546d-fc5c-f241-7923d673bbd5@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] staging/wlan-ng: remove strcpy() use in favor of
+ strscpy()
+To:     Calvince Otieno <calvncce@gmail.com>, outreachy@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Carpenter <error27@gmail.com>,
+        Archana <craechal@gmail.com>, Simon Horman <horms@kernel.org>,
+        linux-staging@lists.linux.dev
+References: <ZSeD1UojAgrsOh16@lab-ubuntu>
+Content-Language: en-US
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <ZSeD1UojAgrsOh16@lab-ubuntu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,63 +78,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Oct 2023, Baolin Wang wrote:
+On 12/10/2023 12:27, Calvince Otieno wrote:
+>  		if (j == -1) {	/* plug the filename */
+>  			memset(dest, 0, s3plug[i].len);
+> -			strncpy(dest, PRISM2_USB_FWFILE, s3plug[i].len - 1);
+> +			strscpy(dest, PRISM2_USB_FWFILE, s3plug[i].len - 1);
 
-> 
-> 
-> On 10/12/2023 11:47 AM, Chunyan Zhang wrote:
-> > Move the mutex_init() to avoid redundant mutex_destroy() calls after
-> > that for each time the probe fails.
-> > 
-> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > ---
-> > Rebased onto linux-next.
-> > 
-> > V2:
-> > - Move the mutex_init() to the end of .probe() instead of adding
-> > mutex_destroy() according to Lee's comments.
-> > ---
-> >   drivers/leds/leds-sc27xx-bltc.c | 9 ++++-----
-> >   1 file changed, 4 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/leds/leds-sc27xx-bltc.c b/drivers/leds/leds-sc27xx-bltc.c
-> > index af1f00a2f328..ef57e57ecf07 100644
-> > --- a/drivers/leds/leds-sc27xx-bltc.c
-> > +++ b/drivers/leds/leds-sc27xx-bltc.c
-> > @@ -296,7 +296,6 @@ static int sc27xx_led_probe(struct platform_device *pdev)
-> >   		return -ENOMEM;
-> >   	platform_set_drvdata(pdev, priv);
-> > -	mutex_init(&priv->lock);
-> >   	priv->base = base;
-> >   	priv->regmap = dev_get_regmap(dev->parent, NULL);
-> >   	if (!priv->regmap) {
-> > @@ -309,13 +308,11 @@ static int sc27xx_led_probe(struct platform_device *pdev)
-> >   		err = of_property_read_u32(child, "reg", &reg);
-> >   		if (err) {
-> >   			of_node_put(child);
-> > -			mutex_destroy(&priv->lock);
-> >   			return err;
-> >   		}
-> >   		if (reg >= SC27XX_LEDS_MAX || priv->leds[reg].active) {
-> >   			of_node_put(child);
-> > -			mutex_destroy(&priv->lock);
-> >   			return -EINVAL;
-> >   		}
-> > @@ -325,9 +322,11 @@ static int sc27xx_led_probe(struct platform_device *pdev)
-> >   	err = sc27xx_led_register(dev, priv);
-> >   	if (err)
-> > -		mutex_destroy(&priv->lock);
-> > +		return err;
-> > -	return err;
-> > +	mutex_init(&priv->lock);
-> 
-> I think it is better to prepare all the required resources before
-> registering the led device, what I mean is moving mutex_init() before
-> calling sc27xx_led_register().
-
-Is the mutex used before this point?
-
-If not, I don't see any reason to initialise it sooner.
+Is this strscpy() behavior same as previous strncpy()?
 
 -- 
-Lee Jones [李琼斯]
+An old man doll... just what I always wanted! - Clara
+
