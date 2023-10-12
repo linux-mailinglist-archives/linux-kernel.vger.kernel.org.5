@@ -2,70 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 158D87C774A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3CA77C774D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442786AbjJLTtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 15:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56896 "EHLO
+        id S1442911AbjJLTtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 15:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442582AbjJLTtF (ORCPT
+        with ESMTP id S1442807AbjJLTtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 15:49:05 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7617C9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:48:47 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-7a2a9e5451bso55475239f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:48:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697140127; x=1697744927; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q6n2IA/eHEf6LdvM5ZmMrOftNFYznxmP1Ujq1nl5xlM=;
-        b=ltMEbFLkfKUnvfbMJ0YNOCO3bEbsAjJrVlLkE0NspCBl1IhQ5KSDJt2Mq0GTzkjCaV
-         H2V1TT8bfHHPsq9g9WJxTUwHaMHs0GEs4cNUBAXmm/JVk1JxyAnbNCAQijtm9i6WsZwP
-         lYge+IHeozBI1d7MApuLRXaKVyhLn0WfNn6N3w8AQI3lMa5DHnMQ0Sq0/6plxhZIOvpg
-         TItZjKPdUKhva7gyDC8vX7CqsNIDlypRiJJqkLKVNAUHBOdvHS7P9qYHZFj32sRFujac
-         Y+20Xx7SNVQuYWkN+tJFegLNWvtnQHlglc8Rkyl/dQ0MFr7ADGHl5izN+hqD6rcRl3PQ
-         LOEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697140127; x=1697744927;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q6n2IA/eHEf6LdvM5ZmMrOftNFYznxmP1Ujq1nl5xlM=;
-        b=Imsn6FmFQs689EIIxCYYE2P6PN0OwJb0nbdiuubnGhIHAtGDxWmcjG/A70KgCjH4bN
-         K8tfC81g4bx1nqI3jz/22NL9sG5A07m2qNkD3w13hSAzK4tUE0XMwEvg2D+3UqubOWbh
-         +IlsIz6JT2UjcMQA82wLAcdTflbrcREut1B2+qOIAzwXMup44+LZcJMOGWhrSrBSQc6W
-         JNVPhTDHlB29Yp9AWy0a+vbpua1dSeW47RXoJYZ3Uh/pt25O1yTyXFVSRN4Jce1AFoUv
-         BUk8W2S1X9ljV3+RS0ZOQZITGippZBM9i8fBEl6FVGfAKmOWbTBoKm4oexb2kq1A166p
-         XCTA==
-X-Gm-Message-State: AOJu0YzC+XBNTTRrRlX63jiiMCgr7JsOTmljmHlmHfWFQ2JupjNzikSy
-        tOfuTTS19UF+yPD9w/z7C1XC/sFyWK0kWw==
-X-Google-Smtp-Source: AGHT+IEnq0smZ7G8P5z5vC02OT8MB+EcSRtbm1qklN4D/7Ye4KzZyrfDlCDnug/mqix5MN36Nab6Uw==
-X-Received: by 2002:a05:6602:29a3:b0:785:d4f5:2225 with SMTP id u3-20020a05660229a300b00785d4f52225mr28824779ios.19.1697140127022;
-        Thu, 12 Oct 2023 12:48:47 -0700 (PDT)
-Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id h6-20020a5d9e06000000b007a25540c49bsm4307891ioh.27.2023.10.12.12.48.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 12:48:46 -0700 (PDT)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     linux-kernel@vger.kernel.org, jbaron@akamai.com,
-        gregkh@linuxfoundation.org
-Cc:     david@redhat.com, lb@semihalf.com, linux@rasmusvillemoes.dk,
-        joe@perches.com, mcgrof@kernel.org, Liam.Howlett@Oracle.com,
-        linux-mm@kvack.org, Jim Cromie <jim.cromie@gmail.com>
-Subject: [RFC PATCH 10/10] dyndbg: cache the dynamically generated prefixes per callsite
-Date:   Thu, 12 Oct 2023 13:48:34 -0600
-Message-ID: <20231012194834.3288085-11-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231012194834.3288085-1-jim.cromie@gmail.com>
-References: <20231012194834.3288085-1-jim.cromie@gmail.com>
+        Thu, 12 Oct 2023 15:49:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0FB210A;
+        Thu, 12 Oct 2023 12:48:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DC89C433C9;
+        Thu, 12 Oct 2023 19:48:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697140137;
+        bh=3Byp5b3Zb8b/69+S7rphD/W+vP3c+F3aSXr9d0KNxac=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=j0lc9uQuFkJEnhdhbKskXhXiPdyR7L4wIxV9vfe9+TRveg4bp6wESNrLcPyvu4mkX
+         8ANQHGY459r846QvjlaB6EkFsIIlFeR4LNXqlH0sk5uNkaW2vwzYkgnYZ2GC7Xji6d
+         3NpwNOWXUy/KZ0BpcbGHXpo3GOeZY1aJkSvoD4u26/Lsz9b2uFUHykqYSZ/bk8k2aS
+         W/fr2QUaEQNyInaQoujEAL440+/Tt1EIs2Q0JUroSVnccY9Stdto1lXs9kSfEPU11v
+         d05j/adkx2A05wDPZeyX5mAOHANCrWKg+iJQMhK8vmgRGNYM0hom2YgKxJJhS6X7wt
+         KILrACHM8ELNw==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5056ca2b6d1so1536465e87.1;
+        Thu, 12 Oct 2023 12:48:57 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yy5YoaasPFlM17JvMhV4m9qLTTlZ/oxbJJ/7uxjrUDH3pBtvGrz
+        2pD+JulkbaLAOenudkN5ILP+x9mnnzlMc0dHNg==
+X-Google-Smtp-Source: AGHT+IE6i/97MyLQA7ZbK47ucq4ZJGOCSR0LJAcGu5uMBt2RpnxvxCFfNmQpF9VC84YVsJh1VJBcl9DS5+FXMUOvPiY=
+X-Received: by 2002:a05:6512:a90:b0:500:acae:30c5 with SMTP id
+ m16-20020a0565120a9000b00500acae30c5mr15206735lfu.15.1697140135825; Thu, 12
+ Oct 2023 12:48:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+References: <20231009172923.2457844-22-robh@kernel.org> <20231011084117.jvfl7xmbcgsu7uyl@pengutronix.de>
+In-Reply-To: <20231011084117.jvfl7xmbcgsu7uyl@pengutronix.de>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 12 Oct 2023 14:48:43 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq++418hPW=wSGWipbC6vodYvKiDUQNMAm22g5X6k-to-A@mail.gmail.com>
+Message-ID: <CAL_Jsq++418hPW=wSGWipbC6vodYvKiDUQNMAm22g5X6k-to-A@mail.gmail.com>
+Subject: Re: [PATCH] pwm: pxa: Explicitly include correct DT includes
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,98 +59,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a private maple-tree to cache any prefix strings required (and
-then generated) for any enabled pr_debug callsites.  And delete any
-cache entries if any flags are changed afterwards.
+On Wed, Oct 11, 2023 at 3:41=E2=80=AFAM Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+>
+> On Mon, Oct 09, 2023 at 12:29:17PM -0500, Rob Herring wrote:
+> > The DT of_device.h and of_platform.h date back to the separate
+> > of_platform_bus_type before it as merged into the regular platform bus.
+> > As part of that merge prepping Arm DT support 13 years ago, they
+> > "temporarily" include each other. They also include platform_device.h
+> > and of.h. As a result, there's a pretty much random mix of those includ=
+e
+> > files used throughout the tree. In order to detangle these headers and
+> > replace the implicit includes with struct declarations, users need to
+> > explicitly include the correct includes.
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  drivers/pwm/pwm-pxa.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/pwm/pwm-pxa.c b/drivers/pwm/pwm-pxa.c
+> > index 1e475ed10180..78b04e017c49 100644
+> > --- a/drivers/pwm/pwm-pxa.c
+> > +++ b/drivers/pwm/pwm-pxa.c
+> > @@ -24,7 +24,7 @@
+> >  #include <linux/clk.h>
+> >  #include <linux/io.h>
+> >  #include <linux/pwm.h>
+> > -#include <linux/of_device.h>
+> > +#include <linux/of.h>
+>
+> Even without both headers the driver compiles fine as linux/pwm.h
+> includes of.h.
 
-This cache is strictly per-callsite, so if a function has 20
-pr_debugs, all enabled with the same flags:
+Yes, that's just one of several:
 
-  echo function foo +pmfs > /proc/dynamic_debug/control
+ include/linux/pm_domain.h  | 4 +++-
+ include/linux/remoteproc.h | 3 ++-
+ include/linux/thermal.h    | 4 +++-
+ include/linux/cpu_cooling.h                | 1 -
+ include/linux/fsl/bestcomm/bestcomm_priv.h | 1 -
+ include/linux/mailbox_client.h             | 4 ++--
+ include/linux/mailbox_controller.h         | 2 +-
+ include/linux/phy/phy.h                    | 5 +++--
+ include/linux/pwm.h                        | 4 +++-
+ include/net/dsa.h                          | 2 +-
 
-there will be 20 separate, identical cache items created.
-Maybe this can be trivially improved later.
-Or lineno could be folded in too, so the %d is rendered once.
+>
+> I think we should do:
+>
+> diff --git a/include/linux/pwm.h b/include/linux/pwm.h
+> index d2f9f690a9c1..9e35970ca2ab 100644
+> --- a/include/linux/pwm.h
+> +++ b/include/linux/pwm.h
+> @@ -4,8 +4,8 @@
+>
+>  #include <linux/err.h>
+>  #include <linux/mutex.h>
+> -#include <linux/of.h>
+>
+> +struct of_phandle_args;
 
-NB: +tl flags are added outside the cache; the thread-id doesnt belong
-in the cache, the lineno could be added, esp if the 20:1 sharing isnt
-trivial enough.
+Also used in the header:
 
-NBB: lineno:18 is enormously "sparse".  At this point its not so far
-to pack it into something else.
++struct device;
++struct fwnode_handle;
 
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
----
- lib/dynamic_debug.c | 27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
+>  struct pwm_chip;
+>
+>  /**
+>
+> drivers/pmw/* compiles fine with this change.
 
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 92ffd70a07de..02df61ab6403 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -90,6 +90,8 @@ MODULE_PARM_DESC(verbose, " dynamic_debug/control processing "
- static DEFINE_MTREE(mt_funcs);
- static DEFINE_MTREE(mt_files);
- static DEFINE_MTREE(mt_mods);
-+/* cache of composed prefixes for enabled pr_debugs */
-+static DEFINE_MTREE(pr_prefixes);
- 
- static void dd_mt_scan(struct maple_tree *mt, const char *kind);
- static int param_set_do_scan(const char *instr, const struct kernel_param *kp)
-@@ -112,6 +114,11 @@ static const struct kernel_param_ops param_ops_do_scan = {
- };
- module_param_cb(do_scan, &param_ops_do_scan, NULL, 0600);
- 
-+void ddebug_clear_prefix_cache(const struct _ddebug *dp)
-+{
-+	mtree_erase(&pr_prefixes, (unsigned long)dp);
-+}
-+
- /* Return the path relative to source root */
- static inline const char *trim_prefix(const char *path)
- {
-@@ -350,6 +357,7 @@ static int ddebug_change(const struct ddebug_query *query,
- 			newflags = (dp->flags & modifiers->mask) | modifiers->flags;
- 			if (newflags == dp->flags)
- 				continue;
-+			ddebug_clear_prefix_cache(dp);
- #ifdef CONFIG_JUMP_LABEL
- 			if (dp->flags & _DPRINTK_FLAGS_PRINT) {
- 				if (!(newflags & _DPRINTK_FLAGS_PRINT))
-@@ -855,8 +863,18 @@ static int remaining(int wrote)
- 	return 0;
- }
- 
--static int __dynamic_emit_prefix(const struct _ddebug *desc, char *buf, int pos)
-+static int __dynamic_emit_prefix(struct _ddebug *desc, char *buf, int pos)
- {
-+	char *prefix, *cpy;
-+
-+	if (desc->flags & _DPRINTK_FLAGS_PREFIX_CACHED) {
-+		prefix = (char*) mtree_load(&pr_prefixes, (unsigned long)desc);
-+		if (prefix) {
-+			pos += snprintf(buf + pos, remaining(pos), "%s", prefix);
-+			v4pr_info("using prefix cache:%px %s", buf, buf + pos);
-+			return pos;
-+		}
-+	}
- 	if (desc->flags & _DPRINTK_FLAGS_INCL_MODNAME)
- 		pos += snprintf(buf + pos, remaining(pos), "%s:",
- 				desc_modname(desc));
-@@ -866,6 +884,13 @@ static int __dynamic_emit_prefix(const struct _ddebug *desc, char *buf, int pos)
- 	if (desc->flags & _DPRINTK_FLAGS_INCL_SOURCENAME)
- 		pos += snprintf(buf + pos, remaining(pos), "%s:",
- 				trim_prefix(desc_filename(desc)));
-+
-+	/* save dup of buf to cache */
-+	cpy = kstrdup(buf + pos, GFP_KERNEL);
-+	mtree_store(&pr_prefixes, (unsigned long)desc, (void*)cpy, GFP_KERNEL);
-+	desc->flags |= _DPRINTK_FLAGS_PREFIX_CACHED;
-+	v3pr_info("filling prefix cache:%px %s", desc, cpy);
-+
- 	return pos;
- }
- 
--- 
-2.41.0
+Agreed in what I tested so far.
 
+But I'm running out of gas on doing more of this, so once I get
+of_device.h and of_platform.h detangled, I'm probably done for a while
+at least. IOW, feel free to submit a patch for pwm.h.
+
+>
+> Other than that:
+>
+> Acked-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+
+Thanks!
+
+Rob
