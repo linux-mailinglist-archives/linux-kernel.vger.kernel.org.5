@@ -2,139 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E6A7C620E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 03:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 712017C6214
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 03:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376654AbjJLBI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 21:08:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33220 "EHLO
+        id S235242AbjJLBKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 21:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233980AbjJLBIZ (ORCPT
+        with ESMTP id S233729AbjJLBKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 21:08:25 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8CFC9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 18:08:23 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-692af7b641cso106680b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 18:08:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697072903; x=1697677703; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5Hqg5K5lCDwesjzlytbXw7y9NPHtgi5OC1j95rwRDts=;
-        b=h3Fais/epn5+luxL2Xsm/KMzuWv4DkBMrBixViTzH8w2KKThFVDBaXUT346npXFs3o
-         QaWpAa24DXo3bdhrK+vBbEA4I/TKDDx7gMAcsfvudnWrZC13et+ymVfh8soevm2OOIH/
-         1VfpjPSyKn5YfD62ovq1QWao1Q1h8vHpbmkXIyENParBdCoOkOdcjF3IMQA+d9m/dT8D
-         0BkWH+aw35C0jsFIdFZtHZCYYTf77rtlWZyQJtdf0SM+DQfDHAebOO5m9J7SZB/Fxhd7
-         6srr239OZfwqFvsd1x9lwdN/lZr+flhE9SEorA7xUIUGgGP/4bHeLntbifi0dnA+eiWI
-         ZBMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697072903; x=1697677703;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Hqg5K5lCDwesjzlytbXw7y9NPHtgi5OC1j95rwRDts=;
-        b=w2FviOWJgXgrCPk9bLtxQo4npIfLABUs9cKNXIUxOlYRMf2rVnka/Ks6B2wE26BcXE
-         Jl/AmHIrCk7wSS55DmMSWnFKHTms7H4Qt+QeN1OUKCYU1yEEcXapiAtOcXxz1DzYRXiz
-         /BDim3KH8QamOC+7tkcAk2cJWrjmCIJWLRrC8U8Z+4WnaubNPNtpa3LVUmz9TwT2uGWO
-         /LbXxKlgkQAqhkTEYt7lL/9HNa6acSAt7SAXztHOy9xdgqTe619AGcBv+s6TyI8Nd2sf
-         f8p4WweGSNg0Ns/2/nssYbl5jKhThwkDYdLl6q9SW/ZFGx2diowuDOs19budY/R6naWT
-         h6mQ==
-X-Gm-Message-State: AOJu0YxaX0/g9Wi3q0Q8QErUo721ilGisubLbEy2eK2QANJGHZPm73O7
-        O94f+D9fH+XzsPjhQtrHag1xa7eDmJHF4aghuhPm9g==
-X-Google-Smtp-Source: AGHT+IGpxl6YkWuTo1INXVAtkAIE60MX0AlQ4nrSuCV88LRkBuh+MynPfutMlVzITCYoPfp66FDd1g==
-X-Received: by 2002:a05:6a20:8408:b0:172:55c1:f1d4 with SMTP id c8-20020a056a20840800b0017255c1f1d4mr6361133pzd.4.1697072903036;
-        Wed, 11 Oct 2023 18:08:23 -0700 (PDT)
-Received: from octopus ([2400:4050:c3e1:100:f7a8:3d44:f8cb:28e])
-        by smtp.gmail.com with ESMTPSA id jd22-20020a170903261600b001bc930d4517sm526508plb.42.2023.10.11.18.08.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 18:08:22 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 10:08:17 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Oleksii_Moisieiev@epam.com
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>, sudeep.holla@arm.com,
-        cristian.marussi@arm.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [RFC v2 4/5] gpio: add pinctrl based generic gpio driver
-Message-ID: <ZSdHAYsmh/mzISKC@octopus>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Oleksii_Moisieiev@epam.com, Bartosz Golaszewski <brgl@bgdev.pl>,
-        sudeep.holla@arm.com, cristian.marussi@arm.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-References: <20231005025843.508689-1-takahiro.akashi@linaro.org>
- <20231005025843.508689-5-takahiro.akashi@linaro.org>
- <CACRpkdZ+QkZp7_se7vN7i_Nx_c3woT_OzVnj3YHju3mZS+Ku8A@mail.gmail.com>
+        Wed, 11 Oct 2023 21:10:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369CEA4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 18:10:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82B22C433C7;
+        Thu, 12 Oct 2023 01:10:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697073035;
+        bh=gDcWvd8c83WQi7qJGHm8pS0oFCedA+sEFdt+1He8YaY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=lIlRMdV4Ocyyam4qLfeDwCPtPPdzUdXgtqFQSwMMoEgqAcw6BMdxgC4TujVYPtS48
+         e/k+5OdxKzd243XfclE9qcObso99i+3k0kUzfCXH2XmyKUt/7RUk8scQUjfZKGpBw4
+         p3sIASpbPm8QNgjAftxjMEqz0X8veDr2e4iAm7/qx2sQ5Eq7Bv2pqZALx7huDf6zqE
+         vzN+OJXnLNoJcyVXjbt3RVomwvLf3dMQn2PB9rdzHrq2bUM1IUnmH4fuBfqSsUBjLA
+         u6i695+CrJ3VigSi9E4sdvKuZ/0iTuCQpFCzRgdcBjl6D53WZc6sNoLiMjI/cgryRv
+         KLB6M1ehLULqg==
+Message-ID: <1a4d325b-d3a8-121b-1118-934fafcc8ebe@kernel.org>
+Date:   Thu, 12 Oct 2023 09:10:31 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdZ+QkZp7_se7vN7i_Nx_c3woT_OzVnj3YHju3mZS+Ku8A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] erofs: fix inode metadata space layout description in
+ documentation
+Content-Language: en-US
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        Tiwei Bie <tiwei.btw@antgroup.com>,
+        linux-erofs@lists.ozlabs.org, xiang@kernel.org
+Cc:     linux-doc@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        ayushranjan@google.com, Yue Hu <huyue2@coolpad.com>
+References: <20231010113915.436591-1-tiwei.btw@antgroup.com>
+ <9a6ccef5-3a35-ae0d-2a9c-1703c5038c81@linux.alibaba.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <9a6ccef5-3a35-ae0d-2a9c-1703c5038c81@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus and Oleksii,
-
-On Tue, Oct 10, 2023 at 02:00:40PM +0200, Linus Walleij wrote:
-> On Thu, Oct 5, 2023 at 4:59???AM AKASHI Takahiro
-> <takahiro.akashi@linaro.org> wrote:
+On 2023/10/10 21:06, Gao Xiang wrote:
+>> Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 > 
-> 
-> > Some pin controllers provide not only a method to set up lines but
-> > also gpio function. With this commit, a new generic gpio driver will
-> > be provided. It is implemented purely by using pinctrl interfaces.
-> > One of such pin controllers is Arm's SCMI.
-> >
-> > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> > ---
-> > RFC v2 (Oct 5, 2023)
-> 
-> RFC v2 looks very good to me, definitely something that can be merged
-> as a starting point once the hardware has been tested.
+> Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-Thank you for your support.
-I think the easiest and best way to test the code is that Oleskii will try
-my patch on his platform, r-car, on which I believe that SCMI FW for pin
-controller is already available since he tested his pinctrl driver.
+Looks fine to me for the version in dev-test branch.
 
-@Oleskii, can you please take a time for the test?
-(I will assist you in case of any error.)
-
-> > +static int pin_control_gpio_direction_input(struct gpio_chip *chip,
-> > +                                           unsigned int offset)
-> > +{
-> > +       return pinctrl_gpio_direction_input(chip->gpiodev->base + offset);
-> > +}
-> > +
-> > +static int pin_control_gpio_direction_output(struct gpio_chip *chip,
-> > +                                            unsigned int offset, int val)
-> > +{
-> > +       return pinctrl_gpio_direction_output(chip->gpiodev->base + offset);
-> > +}
-> 
-> IIRC Bartosz is working on a patch set getting rid of this kludge having to
-> call with base + offset in every driver, replacing it with generic calls that
-> you can just assign in the gpio_chip.
-> 
-> When this gets applied these changes will likely be in place so you will
-> get rid of this too.
-
-I will try to keep eyes on Bartosz's patch.
+Reviewed-by: Chao Yu <chao@kernel.org>
 
 Thanks,
--Takahiro Akashi
-
-
-> Yours,
-> Linus Walleij
