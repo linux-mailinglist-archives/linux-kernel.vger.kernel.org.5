@@ -2,130 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 927CC7C6DA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282457C6DB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347190AbjJLMLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 08:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
+        id S1378420AbjJLMNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343918AbjJLMLQ (ORCPT
+        with ESMTP id S1347216AbjJLMN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:11:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119AEC4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:10:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697112628;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e0nmqy59jy/rGMIg2W3+5Ft0g6PXLLlnoefzeVrsrTs=;
-        b=SrCSLvreBIdBuPQM/ha4E3z3Kz37BfdrQ3thw0VpnxSanDR3ndvLBJ71x8TJhN+DJy8VHq
-        yAGxBmUT9ArOJPrCPC4epac2kdYtpBbaCVMExKLLQv2h4+JZPC2dFCd/fgdGOPWIXyPBH9
-        v0ofpKPvkaib8MrgB921PlXT1F/HfzA=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-138-2r8Tkj9bMkKwV1_Rc6gWxw-1; Thu, 12 Oct 2023 08:10:27 -0400
-X-MC-Unique: 2r8Tkj9bMkKwV1_Rc6gWxw-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9a5d86705e4so68684966b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:10:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697112626; x=1697717426;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e0nmqy59jy/rGMIg2W3+5Ft0g6PXLLlnoefzeVrsrTs=;
-        b=xBFir/Zb+mB/TlHW2sqbGnH15PtCnsUL9vmix05PyC5qHqvyIKo8qrMRuHv4koxGAz
-         Y4K7nK1p+xQogIGgy1uaaOvV33kCIdc+3o4Uhetfi/G9CqG9JaaHJEJq1ydM6CBmijAO
-         iDkqVfChOrsZ/d/qam+um0q7y4qDh5uATy5SphCQBEIXyBiwsVeOm8LP4UTGITIt0bRA
-         S2es2/3/VLYgGVXdQRjEJZVinZbJhFha/6OKM11VV6opdHbDJK2cdb13ErdsDn9an2mb
-         u9JVa6unwlxpwzJZs+onsM3CYgWV3p4RFEAHtbWEamfI73TcyM5HrrwK7EW98+s5lCDo
-         SZ2g==
-X-Gm-Message-State: AOJu0YyjcZcHBFwquYEh3BLeR62mUR3Kpq76VWQL/SKD3j3z6s72ksTd
-        9RHU1mEnL5IZwHsCssmd3qEtVLtM9+FQ5AVCC/vM75VtB3ooOJpk+WvmNlPnbY3mv91CDPGbPQf
-        vz1pCQIohHs4H9hcYn55MCS/t
-X-Received: by 2002:a17:906:cc13:b0:9b6:50d3:2a75 with SMTP id ml19-20020a170906cc1300b009b650d32a75mr19703364ejb.48.1697112625899;
-        Thu, 12 Oct 2023 05:10:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEjvJVtD0uQR8XMo2cR7XmHJlpYVc+HmbN4viv4pGPb6gmHPLLfBWOiJNvTCRNd4xhqfQomHg==
-X-Received: by 2002:a17:906:cc13:b0:9b6:50d3:2a75 with SMTP id ml19-20020a170906cc1300b009b650d32a75mr19703329ejb.48.1697112625566;
-        Thu, 12 Oct 2023 05:10:25 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id x26-20020a170906711a00b0099329b3ab67sm11000199ejj.71.2023.10.12.05.10.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 05:10:25 -0700 (PDT)
-Message-ID: <c9e693a2-845f-9ef1-e3cb-724cece84756@redhat.com>
-Date:   Thu, 12 Oct 2023 14:10:24 +0200
+        Thu, 12 Oct 2023 08:13:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F52C9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697112807; x=1728648807;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=w8yQt9oo86/nZjDSgadz2LDv3J3dqgnu9r6s3Un8WxE=;
+  b=XlY83SVYM4hEj0iAialMTH+aijTKggwXLZFEYpiH/3OIuKPRYfbATtr8
+   O+Jlo2mr7hVMYjbiOY8CPGcv5dq4m1e3cD40wpv8+mlQauw/SYhA5nmzR
+   ggiK8oC36fS9yGC8CBKXkkLW5wUkKuUBzP1/57HOQhnhlSHBCfrVgoCvf
+   0p6PWUOR3IBqBROa9OCDYAbcBspnPQzBM9VZJSrKDkPZf4aF7Dwch7Xdc
+   iGaAum7zvCMbOomgOISYDQsJhFr2r+8OssSjodmf1tdHBbQy8iREWNZGh
+   RxX3XAOJpuZFmJAcV8HqVLDnhZUPnyruzJQRxyLI6ppSTPkGUe1d+JrrV
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="471162914"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="471162914"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 05:13:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="789374334"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="789374334"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 05:13:23 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Arjan Van De Ven <arjan@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <jweiner@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Christoph Lameter" <cl@linux.com>
+Subject: Re: [PATCH 03/10] mm, pcp: reduce lock contention for draining
+ high-order pages
+References: <20230920061856.257597-1-ying.huang@intel.com>
+        <20230920061856.257597-4-ying.huang@intel.com>
+        <20231011124900.sp22hoxoitrslbia@techsingularity.net>
+Date:   Thu, 12 Oct 2023 20:11:19 +0800
+In-Reply-To: <20231011124900.sp22hoxoitrslbia@techsingularity.net> (Mel
+        Gorman's message of "Wed, 11 Oct 2023 13:49:00 +0100")
+Message-ID: <87cyxkf3bs.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v11 17/56] media: atomisp: Stop direct calls to queue
- num_buffers field
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com, Sakari Ailus <sakari.ailus@linux.intel.com>
-References: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
- <20231012114642.19040-18-benjamin.gaignard@collabora.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20231012114642.19040-18-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Mel Gorman <mgorman@techsingularity.net> writes:
 
-On 10/12/23 13:46, Benjamin Gaignard wrote:
-> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> CC: Hans de Goede <hdegoede@redhat.com>
-> CC: Sakari Ailus <sakari.ailus@linux.intel.com>
+> On Wed, Sep 20, 2023 at 02:18:49PM +0800, Huang Ying wrote:
+>> In commit f26b3fa04611 ("mm/page_alloc: limit number of high-order
+>> pages on PCP during bulk free"), the PCP (Per-CPU Pageset) will be
+>> drained when PCP is mostly used for high-order pages freeing to
+>> improve the cache-hot pages reusing between page allocating and
+>> freeing CPUs.
+>> 
+>> On system with small per-CPU data cache, pages shouldn't be cached
+>> before draining to guarantee cache-hot.  But on a system with large
+>> per-CPU data cache, more pages can be cached before draining to reduce
+>> zone lock contention.
+>> 
+>> So, in this patch, instead of draining without any caching, "batch"
+>> pages will be cached in PCP before draining if the per-CPU data cache
+>> size is more than "4 * batch".
+>> 
+>> On a 2-socket Intel server with 128 logical CPU, with the patch, the
+>> network bandwidth of the UNIX (AF_UNIX) test case of lmbench test
+>> suite with 16-pair processes increase 72.2%.  The cycles% of the
+>> spinlock contention (mostly for zone lock) decreases from 45.8% to
+>> 21.2%.  The number of PCP draining for high order pages
+>> freeing (free_high) decreases 89.8%.  The cache miss rate keeps 0.3%.
+>> 
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>
+> Acked-by: Mel Gorman <mgorman@techsingularity.net>
+>
+> However, the flag should also have been documented to make it clear that
+> it preserves some pages on the PCP if the cache is large enough.
 
-Thanks, patch looks good to me:
+Sure.  Will do this.
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> Similar
+> to the previous patch, it would have been easier to reason about in the
+> general case if the decision had only been based on the LLC without
+> having to worry if any intermediate layer has a meaningful impact that
+> varies across CPU implementations.
 
-Regards,
+Sure.  Will do this.
 
-Hans
-
-
-
-
-> ---
->  drivers/staging/media/atomisp/pci/atomisp_ioctl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-> index a8a964b2f1a8..09c0091b920f 100644
-> --- a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-> +++ b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-> @@ -1028,7 +1028,7 @@ static int atomisp_qbuf_wrapper(struct file *file, void *fh, struct v4l2_buffer
->  	struct atomisp_device *isp = video_get_drvdata(vdev);
->  	struct atomisp_video_pipe *pipe = atomisp_to_video_pipe(vdev);
->  
-> -	if (buf->index >= vdev->queue->num_buffers)
-> +	if (buf->index >= vb2_get_num_buffers(vdev->queue))
->  		return -EINVAL;
->  
->  	if (buf->reserved2 & ATOMISP_BUFFER_HAS_PER_FRAME_SETTING) {
-
+--
+Best Regards,
+Huang, Ying
