@@ -2,68 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6263C7C62B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 04:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D267C62BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 04:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234107AbjJLC1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 22:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
+        id S1345779AbjJLC2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 22:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232321AbjJLC1D (ORCPT
+        with ESMTP id S232321AbjJLC2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 22:27:03 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5208B6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 19:27:01 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53da72739c3so824623a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 19:27:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1697077620; x=1697682420; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8uAVbdAI/t4kp4F0w7o3XfjGK/x3xwElaYSG4Wap1s0=;
-        b=SGZe1AfUk0omF01bhlOoqzan1SZglYgEK5f0qkT2MBckNIayIYVb1mqNJfgJx1ZeKN
-         0z9nM6GW998cDVX2c3uGqd82ToPSR22Q054CC1Fk0fkTF5KQqBbypONRlT+pWGQCV4kd
-         ZdchkeLjM0DqoD4uxDHpkW3O3+XJy0pS8Lv6dxbSRZfEt3nI5EibJYpYXGukIxt8xRAe
-         SdVOjI44RBSfSeT/Gb8gfhkcg3AsmIi+rd6XgN0L0vvA55ulCJT9PFs5XZdaLMELNK6F
-         uDgIABmIQ63JtXkeXvVNfWOyqqJw+NzwrEcvl1E6gLpDBkNK8ycUfGjRmEiPCXcPRwh+
-         sSBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697077620; x=1697682420;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8uAVbdAI/t4kp4F0w7o3XfjGK/x3xwElaYSG4Wap1s0=;
-        b=NFWz4C7WYCgoWwWVA+k0wrltEw2S4anNwnZ1XDfWbF9rgq2k+1ys7uaSSDzIdBLUuH
-         1jWHJ1MiOtwhR+08aLsCz0xL+EGIjTiikTJ46PWdmNP1OjBrqzFXxKW9dNDd+FvJaPGn
-         R3A//EJrAO1ecINhyFMYOkmt1UVToErHcd9/kCyXVu7c8DTJ5MJNPHRkuGAk5JP3jO+q
-         EQpHVkJ4Ny43pL96eFVq77GmMn/VLRE5rRjLB2GTrZiMtEmyWSEpDnWzk6qiwrlLaQmg
-         5TxtPvX/ozyceqEyD7gnt23hy686csqC6/q7402GeGVKfcQBr/fOWa2i0EUf7bYTzrBT
-         GaUw==
-X-Gm-Message-State: AOJu0YyWBDzDWL8lrMupoQMr2CF2sBbjid+L0Xh6xbWn18shseWvvYQ8
-        boyr9fZ0cD1w85ct46aGqVqWecQzHRy/SUMZLpDmTQ==
-X-Google-Smtp-Source: AGHT+IEBboUS4cwn4e3Ys9mXQ4ZCkgfLdr7atTruR6S+lBb7qdwzHO/3JSrHZfVGLZdiOBdEoTiN3ePEBse1tsA5adw=
-X-Received: by 2002:a05:6402:5194:b0:53e:395:59d with SMTP id
- q20-20020a056402519400b0053e0395059dmr726299edd.8.1697077620310; Wed, 11 Oct
- 2023 19:27:00 -0700 (PDT)
+        Wed, 11 Oct 2023 22:28:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B58EA4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 19:28:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04E7CC433C8;
+        Thu, 12 Oct 2023 02:27:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697077680;
+        bh=DwSnruvDLZm2BACGE5bcI0YnmOUBahsH9xaKnk3vS+s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hnsv7l2WXcL3pG8KFtdXJnoUNOGrD2Ic/YSDaBErHPazFutftPaAZ7lIW7mXTO/U+
+         hBOZufAmlNnapiq5AR2ZWcjabwXHK3k0M/noG+5Vwr/V7R+FvGmnErMatj3UAf4wnc
+         lVykjX1VLhx4SIeARTuUiOXap5RFTi85kAg+5cIFEHNuG/LsUkrFsr55z9fkvXqR/B
+         u5OeCvJl/RblqvSe50ozQIqxjPcxpVUO0H6J6u7Z5QlfJXzM/c4cbX3dfCm4ivDfwu
+         5DY+Ks/Nr854nygn8hziJSxR1ZCXaM0/Un1iq4BlJuaiRKGXmQpXmara8URagIlw3q
+         XpljyyiS8nE5Q==
+Date:   Wed, 11 Oct 2023 19:27:58 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        David Kaplan <david.kaplan@amd.com>, x86@kernel.org,
+        luto@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] Revert "x86/retpoline: Remove
+ .text..__x86.return_thunk section"
+Message-ID: <20231012022758.lf62lgf5jx5xrno7@treble>
+References: <20231010171020.462211-1-david.kaplan@amd.com>
+ <20231010171020.462211-2-david.kaplan@amd.com>
+ <20231010174833.GG14330@noisy.programming.kicks-ass.net>
+ <20231010195721.p5pb273kevg7ydxz@treble>
+ <20231010200429.GIZSWuTWSUM9aId7a6@fat_crate.local>
+ <20231010201912.7pjksbparssqu34k@treble>
+ <20231010212254.ypk2wdogno55shit@treble>
+ <20231011074142.GK14330@noisy.programming.kicks-ass.net>
+ <20231011162843.grv6kixw4ides6uw@treble>
+ <20231011223513.GH6307@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20231009100349.52884-1-yizhou.tang@shopee.com> <cf850508-498b-4748-955c-382906eff676@acm.org>
-In-Reply-To: <cf850508-498b-4748-955c-382906eff676@acm.org>
-From:   Tang Yizhou <yizhou.tang@shopee.com>
-Date:   Thu, 12 Oct 2023 10:26:49 +0800
-Message-ID: <CACuPKxm+YtdierSLCTiqn3qEcgexM6O7AwVQrgSGq5mz8bJDog@mail.gmail.com>
-Subject: Re: [PATCH] doc: blk-ioprio: Standardize a few names
-To:     Bart Van Assche <bvanassche@acm.org>, houtao1@huawei.com,
-        jack@suse.cz, kch@nvidia.com
-Cc:     axboe@kernel.dk, tj@kernel.org, corbet@lwn.net,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yingfu.zhou@shopee.com,
-        chunguang.xu@shopee.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231011223513.GH6307@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,24 +59,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your suggestion, I will fix it in the next version.
+On Thu, Oct 12, 2023 at 12:35:13AM +0200, Peter Zijlstra wrote:
+> On Wed, Oct 11, 2023 at 09:28:43AM -0700, Josh Poimboeuf wrote:
+> > On Wed, Oct 11, 2023 at 09:41:42AM +0200, Peter Zijlstra wrote:
+> > > > +++ b/tools/objtool/check.c
+> > > > @@ -1610,6 +1610,15 @@ static int add_jump_destinations(struct objtool_file *file)
+> > > >  			return -1;
+> > > >  		}
+> > > >  
+> > > > +		/*
+> > > > +		 * Since retpolines are in the same section as the return
+> > > > +		 * thunk, they might not use a relocation when branching to it.
+> > > > +		 */
+> > > > +		if (jump_dest->sym && jump_dest->sym->return_thunk) {
+> > > > +			add_return_call(file, insn, true);
+> > > > +			continue;
+> > > > +		}
+> > > 
+> > > *urgh*... I mean, yes, that obviously works, but should we not also have
+> > > the retpoline thingy for consistency? That case makes less sense though
+> > > :/
+> > 
+> > Consistency with what? 
+> 
+> the reloc case; specifically, I was thinking something along these
+> lines:
+> 
+> 		if (jump-dest->sym && jump_dest->sym->retpoline_thunk) {
+> 			add_retpoline_call(file, insn);
+> 			continue;
+> 		}
+> 
+> Then both reloc and immediate versions are more or less the same.
 
-Thanks,
-Tang
+Ok, I see.  If somebody were to do a {JMP,CALL}_NOSPEC somewhere in
+retpoline.S, it would break similarly.
 
+It doesn't hurt to add that to the patch, that way retpoline/rethunk
+site detection is all handled the same.
 
-On Wed, Oct 11, 2023 at 8:05=E2=80=AFAM Bart Van Assche <bvanassche@acm.org=
-> wrote:
->
-> On 10/9/23 03:03, yizhou.tang@shopee.com wrote:
-> > From: Tang Yizhou <yizhou.tang@shopee.com>
->
-> The title of this patch is misleading. The title suggests that the
-> user interface is changed, which is not the case. What this patch does
-> is to bring the documentation in sync with the implementation.
->
-> Otherwise this patch looks fine to me.
->
-> Thanks,
->
-> Bart.
+> > The extra section seems pointless but maybe I'm missing something.
+> 
+> By having the section things are better delineated I suppose, be it
+> retpolines or rethunks, all references should be to inside the section
+> (and thus have a reloc) while within the section there should never be
+> a reference to itself.
+
+As far as delineating things goes, a good argument could be made to
+instead do that on the source code level.  i.e., put the rethunk code in
+rethunk.S rather than retpoline.S.  Incidentally, that would also fix
+this problem.
+
+From an object code standpoint, objtool is the only one who cares about
+the relocs.  It's a good idea to make objtool more robust against
+non-relocs regardless, as the reloc assumption could always be broken
+later by LTO.
+
+BTW, I wonder if we can also get rid of .text..__x86.indirect_thunk and
+just put most of the retpoline/rethunk code in .text (other than than
+the SRSO aliasing hacks which still need special placement).
+
+-- 
+Josh
