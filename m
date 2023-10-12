@@ -2,90 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E18207C74D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9412B7C74E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379600AbjJLRet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45694 "EHLO
+        id S1347349AbjJLRhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347447AbjJLRej (ORCPT
+        with ESMTP id S1347473AbjJLRhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:34:39 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5C544AC;
-        Thu, 12 Oct 2023 10:24:36 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-27d18475ed4so1035835a91.0;
-        Thu, 12 Oct 2023 10:24:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697131472; x=1697736272; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4yiYicO/CzyPKr38cwMsBZ+CV6emG+Kpc+1Q5AoAvQw=;
-        b=CKZOGNuvaL7NqWMw5yTCbMkRSAEZtk/4kPy4agcjlspMPYc3txi3WpQWlWZGEWNZZR
-         p3h5c/XxTzz59AYsvjfdZgHh2nR6otNgh1j7yNDW0+AyKG+RkKhzs89EE7ngLMVzPXTo
-         dc0ofo0Yf/TM45bzFcfxhimkN9Xv9hkirom1Nu+zMmP3AYJToHa48VOuVJr+fiYtG71e
-         sNSCBQNRwpdmWSLd8wkbSUqb/+3e00v/dT8WXy/l7NBhNfHGSxBih8DTB92gs2Ne6zWm
-         lFeDRu+2NX1HCG0EnY24F8QL208erlyn+llaKHj4I5LlEyT8W4t+f+ODh1NYCuYFkj6z
-         nH7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697131472; x=1697736272;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4yiYicO/CzyPKr38cwMsBZ+CV6emG+Kpc+1Q5AoAvQw=;
-        b=c+5qGVfaHKjaThQKteiL6DJsupbmpHobnkHAs/9pdqLAtpwsbOKzx7bzlllAOktonp
-         SLos2MYvgSF0MHfKvxVlQTjTlPOESJlhh1B/39lvwunEjbUdHh/Z3A7x1EwaR8laSlfF
-         VpxUYO4Gu96H89hWZ1mDLfAbzXiK8WlqjoRrYZw0mNLgnTcTa3ryQWDVf1R+frAgEkLn
-         J5p4C+pLPI2LHfjj+MBAy1E9yOjBMu3KD3+KbZk6ViNa7zrjE4n6qALjlyD0lMW6aIq6
-         YcIIZF9zQEcnsN57kA1zi7K3bm1h633ZN8oG/UhlprHokx4hWMx4iz2tgzDgJzU9v1gN
-         TuqQ==
-X-Gm-Message-State: AOJu0Yw/uRYKAesCkIrLNlgDt62vIhfESN9iQcG0cRtTdztg3WtqfZoZ
-        chfElE2aSEDo3ZbJqtHs2WEQTWx2mre0sNxwnKY=
-X-Google-Smtp-Source: AGHT+IHLoBek2/++6oN9ioIWzSt//LtKh2Q3WBjKasG/NiQ1q6X2HJsyNvWesGIuzWFfQ2a9SqZ6mzF50Wqi3MF4BI0=
-X-Received: by 2002:a17:90a:356:b0:27d:1051:83c4 with SMTP id
- 22-20020a17090a035600b0027d105183c4mr4130501pjf.12.1697131472563; Thu, 12 Oct
- 2023 10:24:32 -0700 (PDT)
+        Thu, 12 Oct 2023 13:37:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD855B98
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:26:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 538F5C433C9;
+        Thu, 12 Oct 2023 17:26:04 +0000 (UTC)
+Date:   Thu, 12 Oct 2023 18:26:01 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>, ankita@nvidia.com,
+        maz@kernel.org, oliver.upton@linux.dev, aniketa@nvidia.com,
+        cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com,
+        vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com,
+        jhubbard@nvidia.com, danw@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <ZSgsKSCv-zWgtWkm@arm.com>
+References: <ZP8q71+YXoU6O9uh@lpieralisi>
+ <ZP9MQdRYmlawNsbC@nvidia.com>
+ <ZQHUifAfJ+lZikAn@lpieralisi>
+ <ZQIFfqgR5zcidRR3@nvidia.com>
+ <ZRKW6uDR/+eXYMzl@lpieralisi>
+ <ZRLiDf204zCpO6Mv@arm.com>
+ <ZR6IZwcFNw55asW0@lpieralisi>
+ <20231012123541.GB11824@willie-the-truck>
+ <ZSf6Ue09IO6QMBs1@arm.com>
+ <20231012144807.GA12374@willie-the-truck>
 MIME-Version: 1.0
-References: <20231010234803.5419-1-bwicaksono@nvidia.com>
-In-Reply-To: <20231010234803.5419-1-bwicaksono@nvidia.com>
-From:   Namhyung Kim <namhyung@gmail.com>
-Date:   Thu, 12 Oct 2023 10:24:21 -0700
-Message-ID: <CAM9d7cgE6vcB0Pi+585JKaddiRGOFkFFEiDP_FS-x6-2itVtfA@mail.gmail.com>
-Subject: Re: [PATCH v3] perf cs-etm: Fix incorrect or missing decoder for raw trace
-To:     Besar Wicaksono <bwicaksono@nvidia.com>
-Cc:     james.clark@arm.com, mike.leach@linaro.org, suzuki.poulose@arm.com,
-        acme@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-tegra@vger.kernel.org,
-        treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
-        rwiley@nvidia.com, ywan@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012144807.GA12374@willie-the-truck>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 4:49=E2=80=AFPM Besar Wicaksono <bwicaksono@nvidia.=
-com> wrote:
->
-> The decoder creation for raw trace uses metadata from the first CPU.
-> On per-cpu mode, this metadata is incorrectly used for every decoder.
-> On per-process/per-thread traces, the first CPU is CPU0. If CPU0 trace
-> is not enabled, its metadata will be marked unused and the decoder is
-> not created. Perf report dump skips the decoding part because the
-> decoder is missing.
->
-> To fix this, use metadata of the CPU associated with sample object.
->
-> Signed-off-by: Besar Wicaksono <bwicaksono@nvidia.com>
-> Reviewed-by: James Clark <james.clark@arm.com>
+On Thu, Oct 12, 2023 at 03:48:08PM +0100, Will Deacon wrote:
+> On Thu, Oct 12, 2023 at 02:53:21PM +0100, Catalin Marinas wrote:
+> > On Thu, Oct 12, 2023 at 01:35:41PM +0100, Will Deacon wrote:
+> > > On Thu, Oct 05, 2023 at 11:56:55AM +0200, Lorenzo Pieralisi wrote:
+> > > > For all these reasons, relax the KVM stage 2 device
+> > > > memory attributes from DEVICE_nGnRE to NormalNC.
+> > > 
+> > > The reasoning above suggests to me that this should probably just be
+> > > Normal cacheable, as that is what actually allows the guest to control
+> > > the attributes. So what is the rationale behind stopping at Normal-NC?
+> > 
+> > It's more like we don't have any clue on what may happen. MTE is
+> > obviously a case where it can go wrong (we can blame the architecture
+> > design here) but I recall years ago where a malicious guest could bring
+> > the platform down by mapping the GIC CPU interface as cacheable.
+> 
+> ... and do we know that isn't the case for non-cacheable? If not, why not?
 
-Applied to perf-tools-next, thanks!
+Trying to get this information from the hw folk and architects is really
+hard. So we only relax it one step at a time ;). But given the MTE
+problems, I'd not go for cacheable Stage 2 unless we have FEAT_MTE_PERM
+implemented (both hw and sw). S2 cacheable allows the guest to map it as
+Normal Tagged.
+
+> Also, are you saying we used to map the GIC CPU interface as cacheable
+> at stage-2? I remember exclusives causing a problem, but I don't remember
+> the guest having a cacheable mapping.
+
+The guest never had a cacheable mapping, IIRC it was more of a
+theoretical problem, plugging a hole. Now, maybe I misremember, it's
+pretty hard to search the git logs given how the code was moved around
+(but I do remember the building we were in when discussing this, it was
+on the ground floor ;)).
+
+> > Not sure how error containment works with cacheable memory. A cacheable
+> > access to a device may stay in the cache a lot longer after the guest
+> > has been scheduled out, only evicted at some random time.
+> 
+> But similarly, non-cacheable stores can be buffered. Why isn't that a
+> problem?
+
+RAS might track this for cacheable mappings as well, I just haven't
+figured out the details.
+
+> > We may no longer be able to associate it with the guest, especially if the
+> > guest exited. Also not sure about claiming back the device after killing
+> > the guest, do we need cache maintenance?
+> 
+> Claiming back the device also seems strange if the guest has been using
+> non-cacheable accesses since I think you could get write merging and
+> reordering with subsequent device accesses trying to reset the device.
+
+True. Not sure we have a good story here (maybe reinvent the DWB barrier ;)).
+
+> > So, for now I'd only relax this if we know there's RAM(-like) on the
+> > other side and won't trigger some potentially uncontainable errors as a
+> > result.
+> 
+> I guess my wider point is that I'm not convinced that non-cacheable is
+> actually much better and I think we're going way off the deep end looking
+> at what particular implementations do and trying to justify to ourselves
+> that non-cacheable is safe, even though it's still a normal memory type
+> at the end of the day.
+
+Is this about Device vs NC or Device/NC vs Normal Cacheable? The
+justification for the former has been summarised in Lorenzo's write-up.
+How the hardware behaves, it depends a lot on the RAS implementation.
+The BSA has some statements but not sure it covers everything.
+
+Things can go wrong but that's not because Device does anything better.
+Given the RAS implementation, external aborts caused on Device memory
+(e.g. wrong size access) is uncontainable. For Normal NC it can be
+contained (I can dig out the reasoning behind this if you want, IIUC
+something to do with not being able to cancel an already issued Device
+access since such accesses don't allow speculation due to side-effects;
+for Normal NC, it's just about the software not getting the data).
+
+> Obviously, it's up to Marc and Oliver if they want to do this, but I'm
+> wary without an official statement from Arm to say that Normal-NC is
+> correct. There's mention of such a statement in the cover letter:
+> 
+>   > We hope ARM will publish information helping platform designers
+>   > follow these guidelines.
+> 
+> but imo we shouldn't merge this without either:
+> 
+>   (a) _Architectural_ guidance (as opposed to some random whitepaper or
+>       half-baked certification scheme).
+
+Well, you know the story, the architects will probably make it a SoC or
+integration issue, PCIe etc., not something that can live in the Arm
+ARM. The best we could get is more recommendations in the RAS spec
+around containment but not for things that might happen outside the CPU,
+e.g. PCIe root complex.
+
+> - or -
+> 
+>   (b) A concrete justification based on the current architecture as to
+>       why Normal-NC is the right thing to do for KVM.
+
+To put it differently, we don't have any strong arguments why Device is
+the right thing to do. We chose Device based on some understanding
+software people had about how the hardware behaves, which apparently
+wasn't entirely correct (and summarised by Lorenzo).
+
+-- 
+Catalin
