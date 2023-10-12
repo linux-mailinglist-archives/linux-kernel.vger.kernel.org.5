@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 568677C637C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 05:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CD07C637D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 05:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347060AbjJLDxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 23:53:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39790 "EHLO
+        id S1376758AbjJLDx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 23:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377305AbjJLDwd (ORCPT
+        with ESMTP id S1377321AbjJLDwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 11 Oct 2023 23:52:33 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CECC1B2;
-        Wed, 11 Oct 2023 20:51:43 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-578e33b6fb7so380474a12.3;
-        Wed, 11 Oct 2023 20:51:43 -0700 (PDT)
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012A31BC;
+        Wed, 11 Oct 2023 20:51:45 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c7373cff01so13468115ad.1;
+        Wed, 11 Oct 2023 20:51:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697082702; x=1697687502; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697082704; x=1697687504; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EzzarU0Z4Z0jmC7pIDakAMpcrgTYGcG0+o/ody08WOk=;
-        b=Yc5nS6vAHahHkopz8L1ivo7XRcLZ/xFlrTUyoHle+gqp+P+QHpc8rtxBygYGZMMwcH
-         6ojzt4qnu+8X/zfI+vP7lvIZixS1qUSAO/E/qessmisrSXBsusKRhiLqcdxf3r5u10ls
-         nM22aevomtTNK5Q6+KvyB17Gcez6qfuGfHnahtwmDNvZ6Xez/2BqgqUg8StLxYuwe1J6
-         Fk2pHmDfRLV4WRRtkcg3Va68hQc/cVT+bsBQNrZkaVfQmVaWVlTlvwDRIfPdM/QUeKI2
-         WbdOMQxTgyDqiwaPsP03Eh/6J3/B3Xn8hbnuGNOVbmadmcMfojNlAI3UZ+FoGHcWYyVG
-         PkEw==
+        bh=N7uHYDAA9VeGr5WawxBTNd1cNrO0i4L2JxTGBE9KuJA=;
+        b=SYBGsavkf2j8fYuXqZ52WfAZmmA6uPPSK5+o0zp/0KdREleQfJjFWcZ0rYXTvkNlrj
+         O6m4i6imbqmqJA1ZecH6LLyYnCZt+yzs4JK2tXNR8RGNcYObo3rUNQiBXeplluKVP1RC
+         A+mNxzOhEu1q1ZNtkUIXlgzWGRvZkSN6qOFbJ32bmHqtGGjDgeY37LGrB7RPaiInNCJ2
+         1BDXOfHm9dnGP90WnQ6MvkAqAq9WCwoPb+tmexZQ0pF7Mr8wc2vEup32QkPl5yD8XWVN
+         /k0O2BpJA/AU5jSvk7zm492dpb3L463B4vG+QI20oQDOD7Cay+cdrvXXYIJdBxqsF4Vz
+         lDDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697082702; x=1697687502;
+        d=1e100.net; s=20230601; t=1697082704; x=1697687504;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=EzzarU0Z4Z0jmC7pIDakAMpcrgTYGcG0+o/ody08WOk=;
-        b=oJc7htKFivg5PHat6jD75jIhN7+7YDO0ulkNT5yq4bRH7/e/dLaSItVFmVdrFYIeYx
-         NTD1EsJHfyqBN5VLBAfwyMD7Tc4jeITPuPTBgb8pmY+ny3qOvC/XabTH4ydkc4ZHE2mV
-         /dyNmlnm7VW2pfqFml57xSbAfrc20a8OJmlbhXCyuTdPS6tG45bs5b3fugJaUxJUm2n8
-         OdpZWmMaX8tZoZIM9pfk0Q19eyRQok6Na2wX/yncVoSeuee0rWB1vw4GEr4w5cHvPqO1
-         1q59UqqVJvS7vps+8eTczobImVo3w3LKMocKIA6+NMznO/VCxZUscA5XVJr4GmPkvdYJ
-         XJkw==
-X-Gm-Message-State: AOJu0Yx9GJJu97EfguRWI26TK9qbKt5ZLOaSTO5FP+kKmseT79FoT32F
-        yG8VsxJa6Nti7vHDDNepFq8=
-X-Google-Smtp-Source: AGHT+IHx6Pj8xx72+mL0339BbM2hpIPuiXUgZ98E+U2RhBq0mFkTnrmoTIzG7//AggUp0LSYqNFnBQ==
-X-Received: by 2002:a17:903:124d:b0:1bf:d92e:c5a7 with SMTP id u13-20020a170903124d00b001bfd92ec5a7mr24609415plh.28.1697082702409;
-        Wed, 11 Oct 2023 20:51:42 -0700 (PDT)
+        bh=N7uHYDAA9VeGr5WawxBTNd1cNrO0i4L2JxTGBE9KuJA=;
+        b=osKpf6jppDBBfhl19j+CufMfl5ll6NRztM18ebjI5VEnJNz9qpf7Bs65XDXr/io/KO
+         uXbapO7XX1SVusDMZ3LtKa5hly5PJiY6y37seIL5l1r1elolM83kJTY8vq7WPmd4PPKE
+         4IdoPnkz0iv7zlGcEn/tdcejdp8ndyNBsjLvbz6O/f7w92gyaAmKs5OPvpSOA58KV5p8
+         Oo/mxLfCrRvs5KEE+587fh6cte4LAUNKOEo0LuExtrPgWmY+5Qazwt5WAuNSVLMXU8rr
+         OaaHikyW26nNcdGwWZLpzHWaleUB6uTOnT/ky6jkaS8pO1xZIdvHbLkfmhpNwtaJBxem
+         /CuQ==
+X-Gm-Message-State: AOJu0YxFbpLy6WhyAqQ0Dc81mNeZfz/L2w1EwGix/S6Fu4xheYIi/+5K
+        rVfBbyh9FB9w/dcEviW7UOl/c5BBx0Q=
+X-Google-Smtp-Source: AGHT+IHeHSnw9TLEbJ0MI7Fq9W8cuetn3/gjN1gWOClQAo8ncAu6ZbymRdNheGi78nbxg0Q9OCX2zA==
+X-Received: by 2002:a17:902:a387:b0:1c9:c32e:c9a0 with SMTP id x7-20020a170902a38700b001c9c32ec9a0mr7750338pla.2.1697082703674;
+        Wed, 11 Oct 2023 20:51:43 -0700 (PDT)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:b1b9:d490:2f5e:be06])
-        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.51.41
+        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.51.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 20:51:42 -0700 (PDT)
+        Wed, 11 Oct 2023 20:51:43 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -64,9 +64,9 @@ Cc:     Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [PATCH 21/48] perf annotate: Add --data-type option
-Date:   Wed, 11 Oct 2023 20:50:44 -0700
-Message-ID: <20231012035111.676789-22-namhyung@kernel.org>
+Subject: [PATCH 22/48] perf annotate: Add --type-stat option for debugging
+Date:   Wed, 11 Oct 2023 20:50:45 -0700
+Message-ID: <20231012035111.676789-23-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
 In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
 References: <20231012035111.676789-1-namhyung@kernel.org>
@@ -82,252 +82,262 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support data type annotation with new --data-type option.  It internally
-uses type sort key to collect sample histogram for the type and display
-every members like below.
+The --type-stat option is to be used with --data-type and to print
+detailed failure reasons for the data type annotation.
 
-  $ perf annotate --data-type
-  ...
-  Annotate type: 'struct cfs_rq' in [kernel.kallsyms] (13 samples):
-  ============================================================================
-      samples     offset       size  field
-           13          0        640  struct cfs_rq         {
-            2          0         16      struct load_weight       load {
-            2          0          8          unsigned long        weight;
-            0          8          4          u32  inv_weight;
-                                         };
-            0         16          8      unsigned long    runnable_weight;
-            0         24          4      unsigned int     nr_running;
-            1         28          4      unsigned int     h_nr_running;
-  ...
-
-For simplicity it prints the number of samples per field for now.
-But it should be easy to show the overhead percentage instead.
-
-The number at the outer struct is a sum of the numbers of the inner
-members.  For example, struct cfs_rq got total 13 samples, and 2 came
-from the load (struct load_weight) and 1 from h_nr_running.  Similarly,
-the struct load_weight got total 2 samples and they all came from the
-weight field.
-
-I've added two new flags in the symbol_conf for this.  The
-annotate_data_member is to get the members of the type.  This is also
-needed for perf report with typeoff sort key.  The annotate_data_sample
-is to update sample stats for each offset and used only in annotate.
-
-Currently it only support stdio output mode, TUI support can be added
-later.
+  $ perf annotate --data-type --type-stat
+  Annotate data type stats:
+  total 294, ok 116 (39.5%), bad 178 (60.5%)
+  -----------------------------------------------------------
+          30 : no_sym
+          40 : no_insn_ops
+          33 : no_mem_ops
+          63 : no_var
+           4 : no_typeinfo
+           8 : bad_offset
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/builtin-annotate.c   | 64 ++++++++++++++++++++++++++++++++-
- tools/perf/util/annotate-data.c |  8 ++---
- tools/perf/util/annotate.c      | 10 +++---
- tools/perf/util/sort.c          |  2 ++
- tools/perf/util/symbol_conf.h   |  4 ++-
- 5 files changed, 77 insertions(+), 11 deletions(-)
+ tools/perf/builtin-annotate.c   | 44 ++++++++++++++++++++++++++++++++-
+ tools/perf/util/annotate-data.c | 13 +++++++++-
+ tools/perf/util/annotate-data.h | 31 +++++++++++++++++++++++
+ tools/perf/util/annotate.c      | 20 ++++++++++++---
+ 4 files changed, 102 insertions(+), 6 deletions(-)
 
 diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-index aeeb801f1ed7..6be15a37d2b7 100644
+index 6be15a37d2b7..645acaba63f1 100644
 --- a/tools/perf/builtin-annotate.c
 +++ b/tools/perf/builtin-annotate.c
-@@ -20,6 +20,7 @@
- #include "util/evlist.h"
- #include "util/evsel.h"
- #include "util/annotate.h"
-+#include "util/annotate-data.h"
- #include "util/event.h"
- #include <subcmd/parse-options.h>
- #include "util/parse-events.h"
-@@ -56,6 +57,7 @@ struct perf_annotate {
- 	bool	   skip_missing;
+@@ -58,6 +58,7 @@ struct perf_annotate {
  	bool	   has_br_stack;
  	bool	   group_set;
-+	bool	   data_type;
+ 	bool	   data_type;
++	bool	   type_stat;
  	float	   min_percent;
  	const char *sym_hist_filter;
  	const char *cpu_list;
-@@ -231,8 +233,12 @@ static int evsel__add_sample(struct evsel *evsel, struct perf_sample *sample,
- {
- 	struct hists *hists = evsel__hists(evsel);
- 	struct hist_entry *he;
-+	struct annotation *notes = al->sym ? symbol__annotation(al->sym) : NULL;
- 	int ret;
- 
-+	if (notes)
-+		notes->options = &ann->opts;
-+
- 	if ((!ann->has_br_stack || !has_annotation(ann)) &&
- 	    ann->sym_hist_filter != NULL &&
- 	    (al->sym == NULL ||
-@@ -320,6 +326,32 @@ static int hist_entry__tty_annotate(struct hist_entry *he,
- 	return symbol__tty_annotate2(&he->ms, evsel, &ann->opts);
+@@ -352,6 +353,43 @@ static void print_annotated_data_type(struct annotated_data_type *mem_type,
+ 	printf(";\n");
  }
  
-+static void print_annotated_data_type(struct annotated_data_type *mem_type,
-+				      struct annotated_member *member,
-+				      struct evsel *evsel, int indent)
++static void print_annotate_data_stat(struct annotated_data_stat *s)
 +{
-+	struct annotated_member *child;
-+	struct type_hist *h = mem_type->histograms[evsel->core.idx];
-+	int i, samples = 0;
++#define PRINT_STAT(fld) if (s->fld) printf("%10d : %s\n", s->fld, #fld)
 +
-+	for (i = 0; i < member->size; i++)
-+		samples += h->addr[member->offset + i].nr_samples;
++	int bad = s->no_sym +
++			s->no_insn +
++			s->no_insn_ops +
++			s->no_mem_ops +
++			s->no_reg +
++			s->no_dbginfo +
++			s->no_cuinfo +
++			s->no_var +
++			s->no_typeinfo +
++			s->invalid_size +
++			s->bad_offset;
++	int ok = s->total - bad;
 +
-+	printf(" %10d %10d %10d  %*s%s\t%s",
-+	       samples, member->offset, member->size, indent, "", member->type_name,
-+	       member->var_name ?: "");
++	printf("Annotate data type stats:\n");
++	printf("total %d, ok %d (%.1f%%), bad %d (%.1f%%)\n",
++		s->total, ok, 100.0 * ok / (s->total ?: 1), bad, 100.0 * bad / (s->total ?: 1));
++	printf("-----------------------------------------------------------\n");
++	PRINT_STAT(no_sym);
++	PRINT_STAT(no_insn);
++	PRINT_STAT(no_insn_ops);
++	PRINT_STAT(no_mem_ops);
++	PRINT_STAT(no_reg);
++	PRINT_STAT(no_dbginfo);
++	PRINT_STAT(no_cuinfo);
++	PRINT_STAT(no_var);
++	PRINT_STAT(no_typeinfo);
++	PRINT_STAT(invalid_size);
++	PRINT_STAT(bad_offset);
++	printf("\n");
 +
-+	if (!list_empty(&member->children))
-+		printf(" {\n");
-+
-+	list_for_each_entry(child, &member->children, node)
-+		print_annotated_data_type(mem_type, child, evsel, indent + 4);
-+
-+	if (!list_empty(&member->children))
-+		printf("%*s}", 35 + indent, "");
-+	printf(";\n");
++#undef PRINT_STAT
 +}
 +
  static void hists__find_annotations(struct hists *hists,
  				    struct evsel *evsel,
  				    struct perf_annotate *ann)
-@@ -359,6 +391,23 @@ static void hists__find_annotations(struct hists *hists,
- 			continue;
- 		}
+@@ -359,6 +397,9 @@ static void hists__find_annotations(struct hists *hists,
+ 	struct rb_node *nd = rb_first_cached(&hists->entries), *next;
+ 	int key = K_RIGHT;
  
-+		if (ann->data_type) {
-+			struct map *map = he->ms.map;
++	if (ann->type_stat)
++		print_annotate_data_stat(&ann_data_stat);
 +
-+			/* skip unknown type */
-+			if (he->mem_type->histograms == NULL)
-+				goto find_next;
-+
-+			printf("Annotate type: '%s' in %s (%d samples):\n",
-+				he->mem_type->self.type_name, map->dso->name, he->stat.nr_events);
-+			printf("============================================================================\n");
-+			printf(" %10s %10s %10s  %s\n", "samples", "offset", "size", "field");
-+
-+			print_annotated_data_type(he->mem_type, &he->mem_type->self, evsel, 0);
-+			printf("\n");
-+			goto find_next;
-+		}
-+
- 		if (use_browser == 2) {
- 			int ret;
- 			int (*annotate)(struct hist_entry *he,
-@@ -606,6 +655,8 @@ int cmd_annotate(int argc, const char **argv)
- 	OPT_CALLBACK_OPTARG(0, "itrace", &itrace_synth_opts, NULL, "opts",
- 			    "Instruction Tracing options\n" ITRACE_HELP,
+ 	while (nd) {
+ 		struct hist_entry *he = rb_entry(nd, struct hist_entry, rb_node);
+ 		struct annotation *notes;
+@@ -657,7 +698,8 @@ int cmd_annotate(int argc, const char **argv)
  			    itrace_parse_synth_opts),
-+	OPT_BOOLEAN(0, "data-type", &annotate.data_type,
-+		    "Show data type annotate for the memory accesses"),
- 
+ 	OPT_BOOLEAN(0, "data-type", &annotate.data_type,
+ 		    "Show data type annotate for the memory accesses"),
+-
++	OPT_BOOLEAN(0, "type-stat", &annotate.type_stat,
++		    "Show stats for the data type annotation"),
  	OPT_END()
  	};
-@@ -702,6 +753,14 @@ int cmd_annotate(int argc, const char **argv)
- 		use_browser = 2;
- #endif
- 
-+	/* FIXME: only support stdio for now */
-+	if (annotate.data_type) {
-+		use_browser = 0;
-+		annotate.opts.annotate_src = false;
-+		symbol_conf.annotate_data_member = true;
-+		symbol_conf.annotate_data_sample = true;
-+	}
-+
- 	setup_browser(true);
- 
- 	/*
-@@ -709,7 +768,10 @@ int cmd_annotate(int argc, const char **argv)
- 	 * symbol, we do not care about the processes in annotate,
- 	 * set sort order to avoid repeated output.
- 	 */
--	sort_order = "dso,symbol";
-+	if (annotate.data_type)
-+		sort_order = "dso,type";
-+	else
-+		sort_order = "dso,symbol";
- 
- 	/*
- 	 * Set SORT_MODE__BRANCH so that annotate display IPC/Cycle
+ 	int ret;
 diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-index adeab45a3c63..ba7d35648b05 100644
+index ba7d35648b05..3e30e6855ba8 100644
 --- a/tools/perf/util/annotate-data.c
 +++ b/tools/perf/util/annotate-data.c
-@@ -18,6 +18,7 @@
- #include "map_symbol.h"
- #include "strbuf.h"
- #include "symbol.h"
-+#include "symbol_conf.h"
+@@ -28,6 +28,9 @@ struct annotated_data_type unknown_type = {
+ 	},
+ };
  
- /* Pseudo data types */
- struct annotated_data_type unknown_type = {
-@@ -165,11 +166,8 @@ static struct annotated_data_type *dso__findnew_data_type(struct dso *dso,
- 	result->self.size = size;
- 	INIT_LIST_HEAD(&result->self.children);
++/* Data type collection debug statistics */
++struct annotated_data_stat ann_data_stat;
++
+ /*
+  * Compare type name and size to maintain them in a tree.
+  * I'm not sure if DWARF would have information of a single type in many
+@@ -206,6 +209,7 @@ static int check_variable(Dwarf_Die *var_die, Dwarf_Die *type_die, int offset)
+ 	/* Get the type of the variable */
+ 	if (die_get_real_type(var_die, type_die) == NULL) {
+ 		pr_debug("variable has no type\n");
++		ann_data_stat.no_typeinfo++;
+ 		return -1;
+ 	}
  
--	/*
--	 * Fill member info unconditionally for now,
--	 * later perf annotate would need it.
--	 */
--	add_member_types(result, type_die);
-+	if (symbol_conf.annotate_data_member)
-+		add_member_types(result, type_die);
+@@ -216,18 +220,21 @@ static int check_variable(Dwarf_Die *var_die, Dwarf_Die *type_die, int offset)
+ 	if (dwarf_tag(type_die) != DW_TAG_pointer_type ||
+ 	    die_get_real_type(type_die, type_die) == NULL) {
+ 		pr_debug("no pointer or no type\n");
++		ann_data_stat.no_typeinfo++;
+ 		return -1;
+ 	}
  
- 	rb_add(&result->node, &dso->data_types, data_type_less);
- 	return result;
+ 	/* Get the size of the actual type */
+ 	if (dwarf_aggregate_size(type_die, &size) < 0) {
+ 		pr_debug("type size is unknown\n");
++		ann_data_stat.invalid_size++;
+ 		return -1;
+ 	}
+ 
+ 	/* Minimal sanity check */
+ 	if ((unsigned)offset >= size) {
+ 		pr_debug("offset: %d is bigger than size: %lu\n", offset, size);
++		ann_data_stat.bad_offset++;
+ 		return -1;
+ 	}
+ 
+@@ -246,6 +253,7 @@ static int find_data_type_die(struct debuginfo *di, u64 pc,
+ 	/* Get a compile_unit for this address */
+ 	if (!find_cu_die(di, pc, &cu_die)) {
+ 		pr_debug("cannot find CU for address %lx\n", pc);
++		ann_data_stat.no_cuinfo++;
+ 		return -1;
+ 	}
+ 
+@@ -260,9 +268,12 @@ static int find_data_type_die(struct debuginfo *di, u64 pc,
+ 
+ 		/* Found a variable, see if it's correct */
+ 		ret = check_variable(&var_die, type_die, offset);
+-		break;
++		goto out;
+ 	}
++	if (ret < 0)
++		ann_data_stat.no_var++;
+ 
++out:
+ 	free(scopes);
+ 	return ret;
+ }
+diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
+index d2dc025b1934..8e73096c01d1 100644
+--- a/tools/perf/util/annotate-data.h
++++ b/tools/perf/util/annotate-data.h
+@@ -70,6 +70,37 @@ struct annotated_data_type {
+ 
+ extern struct annotated_data_type unknown_type;
+ 
++/**
++ * struct annotated_data_stat - Debug statistics
++ * @total: Total number of entry
++ * @no_sym: No symbol or map found
++ * @no_insn: Failed to get disasm line
++ * @no_insn_ops: The instruction has no operands
++ * @no_mem_ops: The instruction has no memory operands
++ * @no_reg: Failed to extract a register from the operand
++ * @no_dbginfo: The binary has no debug information
++ * @no_cuinfo: Failed to find a compile_unit
++ * @no_var: Failed to find a matching variable
++ * @no_typeinfo: Failed to get a type info for the variable
++ * @invalid_size: Failed to get a size info of the type
++ * @bad_offset: The access offset is out of the type
++ */
++struct annotated_data_stat {
++	int total;
++	int no_sym;
++	int no_insn;
++	int no_insn_ops;
++	int no_mem_ops;
++	int no_reg;
++	int no_dbginfo;
++	int no_cuinfo;
++	int no_var;
++	int no_typeinfo;
++	int invalid_size;
++	int bad_offset;
++};
++extern struct annotated_data_stat ann_data_stat;
++
+ #ifdef HAVE_DWARF_SUPPORT
+ 
+ /* Returns data type at the location (ip, reg, offset) */
 diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 49d5b61e19e6..3d9bb6b33e1a 100644
+index 3d9bb6b33e1a..72b867001e22 100644
 --- a/tools/perf/util/annotate.c
 +++ b/tools/perf/util/annotate.c
-@@ -3675,10 +3675,12 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
+@@ -3649,11 +3649,17 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
+ 	u64 ip = he->ip;
+ 	int i;
  
- 		mem_type = find_data_type(ms, ip, op_loc->reg, op_loc->offset);
+-	if (ms->map == NULL || ms->sym == NULL)
++	ann_data_stat.total++;
++
++	if (ms->map == NULL || ms->sym == NULL) {
++		ann_data_stat.no_sym++;
+ 		return NULL;
++	}
  
--		annotated_data_type__update_samples(mem_type, evsel,
--						    op_loc->offset,
--						    he->stat.nr_events,
--						    he->stat.period);
-+		if (symbol_conf.annotate_data_sample) {
-+			annotated_data_type__update_samples(mem_type, evsel,
-+							    op_loc->offset,
-+							    he->stat.nr_events,
-+							    he->stat.period);
-+		}
+-	if (evsel__get_arch(evsel, &arch) < 0)
++	if (evsel__get_arch(evsel, &arch) < 0) {
++		ann_data_stat.no_insn++;
+ 		return NULL;
++	}
+ 
+ 	/* Make sure it runs objdump to get disasm of the function */
+ 	symbol__ensure_annotate(ms, evsel);
+@@ -3663,11 +3669,15 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
+ 	 * This is too slow...
+ 	 */
+ 	dl = find_disasm_line(ms->sym, ip);
+-	if (dl == NULL)
++	if (dl == NULL) {
++		ann_data_stat.no_insn++;
+ 		return NULL;
++	}
+ 
+-	if (annotate_get_insn_location(arch, dl, &loc) < 0)
++	if (annotate_get_insn_location(arch, dl, &loc) < 0) {
++		ann_data_stat.no_insn_ops++;
+ 		return NULL;
++	}
+ 
+ 	for_each_insn_op_loc(&loc, i, op_loc) {
+ 		if (!op_loc->mem_ref)
+@@ -3684,5 +3694,7 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
  		he->mem_type_off = op_loc->offset;
  		return mem_type;
  	}
-diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
-index e21bbd442637..35eb589c03ec 100644
---- a/tools/perf/util/sort.c
-+++ b/tools/perf/util/sort.c
-@@ -3394,6 +3394,8 @@ int sort_dimension__add(struct perf_hpp_list *list, const char *tok,
- 			list->thread = 1;
- 		} else if (sd->entry == &sort_comm) {
- 			list->comm = 1;
-+		} else if (sd->entry == &sort_type_offset) {
-+			symbol_conf.annotate_data_member = true;
- 		}
- 
- 		return __sort_dimension__add(sd, list, level);
-diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_conf.h
-index 0b589570d1d0..e6a1c48ca3bf 100644
---- a/tools/perf/util/symbol_conf.h
-+++ b/tools/perf/util/symbol_conf.h
-@@ -42,7 +42,9 @@ struct symbol_conf {
- 			inline_name,
- 			disable_add2line_warn,
- 			buildid_mmap2,
--			guest_code;
-+			guest_code,
-+			annotate_data_member,
-+			annotate_data_sample;
- 	const char	*vmlinux_name,
- 			*kallsyms_name,
- 			*source_prefix,
++
++	ann_data_stat.no_mem_ops++;
+ 	return NULL;
+ }
 -- 
 2.42.0.655.g421f12c284-goog
 
