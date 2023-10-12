@@ -2,129 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B5D7C74DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5267C74CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347366AbjJLRfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
+        id S1344213AbjJLRbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:31:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347392AbjJLRfL (ORCPT
+        with ESMTP id S1344166AbjJLRbL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:35:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D71572B4;
-        Thu, 12 Oct 2023 10:28:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697131708; x=1728667708;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=4v+H0O0IXD5YGkRVSviC2erq+UMEGDFbWdbWf2xYauc=;
-  b=bZXt6ullIF4qNWO/f6u2KGhu8k9JmyCejMz3LsS+kuy3L62/a4epAPFc
-   xPRmjvBgFJkwNPBcgN4HoS5dFVYOApMemenifatMKo2U47sgZ/hsJoGQU
-   eXQzAB644MoLjshU908hvjpp3h54/pzQgUgpj25shuG3r/8B1qFmD6FDO
-   1C2ybBQB5XMbEdxRaAfST/bbbyV6n01pgdWGEvG3/MDQyJQvPw/JOkvW2
-   WCOqhSl70AAlKnDpUAW5sHSkziCavDbq1pIiBs400xZeah2ZXYqfs5fSG
-   f5jGLrc985r5ewEyaGOUXssEsQwYkjl7Vr2CDODBdx3uWEp/T13J+Jr8O
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="365249842"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="365249842"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 10:28:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="731021869"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="731021869"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 10:28:27 -0700
-Received: from [10.54.75.156] (debox1-desk1.jf.intel.com [10.54.75.156])
-        by linux.intel.com (Postfix) with ESMTP id 77FAE5807A3;
-        Thu, 12 Oct 2023 10:28:27 -0700 (PDT)
-Message-ID: <0bd97aed259d9ec0ff4d8c95f63d5db65550b893.camel@linux.intel.com>
-Subject: Re: [PATCH V3 10/16] platform/x86/intel/pmc: Split
- pmc_core_ssram_get_pmc()
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
-Date:   Thu, 12 Oct 2023 10:28:27 -0700
-In-Reply-To: <c66f2061-a7e6-8df7-928-da2a14a3cb49@linux.intel.com>
-References: <20231012023840.3845703-1-david.e.box@linux.intel.com>
-         <20231012023840.3845703-11-david.e.box@linux.intel.com>
-         <c66f2061-a7e6-8df7-928-da2a14a3cb49@linux.intel.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 12 Oct 2023 13:31:11 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03249182;
+        Thu, 12 Oct 2023 10:31:10 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c9b95943beso10873895ad.1;
+        Thu, 12 Oct 2023 10:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697131869; x=1697736669; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v1DANaDEHOucqubqJ4/b/aNrMNFhI1eFitx/RoQbRb8=;
+        b=F9JvIr2em32HFZF/djAEzFjgX4RuTj6a3ud4BBXRc3DkqduDSW+xW2HtzZ2vlUXNl7
+         nvo86Z2EHWPB5TMzSsPzhkEbDZeOBGP7pynRJZXA3u+A5VFYeuIdJwlCIiQw5d79idiN
+         T9jBPhGnlK0Z2ty4nG6jzv3id4JH5gUkUUUL7hkaz52XiSct542Ctlsfd2/d5WGJ4d1P
+         hPFbyTIIQDlbEK/vMJ9azlSAjfOJxke5krwgBKvVarV9Ty16hCSjYyEYHr2M93w4YCcC
+         hGjIyZpHVBUeu9kvAdnkAMg8O2AiE6XLL4rAnPPMkvuBU/fcT/N/Q5kMEMeo+8Tol1FX
+         3yDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697131869; x=1697736669;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v1DANaDEHOucqubqJ4/b/aNrMNFhI1eFitx/RoQbRb8=;
+        b=aaifymGcJoNPxj7QGFtNH/3Z1Lrx6UeWHl/00FiuIsYo6Bk6LVMQR859iX/qPmJMYL
+         P7fvorykLMd7xDTO+ube/51RExB/Gm7AChBo81+mE8Wo1CQwDDYdNdtFNSIbqqIuv+4+
+         8XmCW96GeUEd6fORcduAFxl7VQjgkc/tDokRcC9G7nmYHfa64IiUQ5tzP0GguHUbhWBb
+         W2T8Wv9uxK3NcjuOeKtomC4GN4kdUquwSQQZxGM8xq3rz/am+Ym3f7JPX6R53CqRJkhH
+         RyhyDFsUE4LP8kNiabyvwYYREHWvGz61v3CgQ01S5TRDIeRU4XgnaMuFgLWaejukkHB9
+         +Xww==
+X-Gm-Message-State: AOJu0YyLU0ZkwrLAOthTsAb2ftAdrfq4iz3ONYGpZ4qMfY1Ex+i4mj1V
+        iYmYH3LpEo/Le0dljwvlOkWv1NZGMSXMFw==
+X-Google-Smtp-Source: AGHT+IGq/d2q/qrQoh3AnyQyCl8AR4fKt3fghwW8Pm7f+T9b/MyONsNEnanxjJMz2+mJxVjMy0m/Cw==
+X-Received: by 2002:a17:902:c115:b0:1c5:e1b7:1c13 with SMTP id 21-20020a170902c11500b001c5e1b71c13mr22664289pli.3.1697131869277;
+        Thu, 12 Oct 2023 10:31:09 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id b11-20020a170902d50b00b001c57aac6e5esm2278311plg.23.2023.10.12.10.31.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 10:31:08 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 12 Oct 2023 07:31:07 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Jingbo Xu <jefflexu@linux.alibaba.com>
+Cc:     guro@fb.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, jack@suse.cz,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, willy@infradead.org,
+        joseph.qi@linux.alibaba.com
+Subject: Re: [PATCH] writeback, cgroup: switch inodes with dirty timestamps
+ to release dying cgwbs
+Message-ID: <ZSgtW0wGZZ3N3oKl@slm.duckdns.org>
+References: <20231011084228.77615-1-jefflexu@linux.alibaba.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011084228.77615-1-jefflexu@linux.alibaba.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-12 at 18:14 +0300, Ilpo J=C3=A4rvinen wrote:
-> On Wed, 11 Oct 2023, David E. Box wrote:
->=20
-> > On supported hardware, each PMC may have an associated SSRAM device for
-> > accessing additional counters.=C2=A0 However, only the SSRAM of the fir=
-st
-> > (primary) PMC is discoverable as a PCI device to the OS. The remaining
-> > (secondary) devices are hidden but their BARs are still accessible and
-> > their addresses are stored in the BAR of the exposed device. Clean up t=
-he
-> > code handling the SSRAM discovery. Create two separate functions for
-> > accessing the primary and secondary SSRAM devices.
-> >=20
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > ---
-> > V3 - New patch split from previous PATCH 2
-> > =C2=A0=C2=A0 - Update changelog
-> > =C2=A0=C2=A0 - Use cleanup.h to cleanup ioremap
-> >=20
-> > V2 - no change
-> >=20
-> > =C2=A0drivers/platform/x86/intel/pmc/core_ssram.c | 93 ++++++++++++++--=
------
-> > =C2=A01 file changed, 61 insertions(+), 32 deletions(-)
-> >=20
-> > diff --git a/drivers/platform/x86/intel/pmc/core_ssram.c
-> > b/drivers/platform/x86/intel/pmc/core_ssram.c
-> > index 815950713e25..af405d11919f 100644
-> > --- a/drivers/platform/x86/intel/pmc/core_ssram.c
-> > +++ b/drivers/platform/x86/intel/pmc/core_ssram.c
-> > @@ -8,6 +8,7 @@
-> > =C2=A0 *
-> > =C2=A0 */
-> > =C2=A0
-> > +#include <linux/cleanup.h>
-> > =C2=A0#include <linux/pci.h>
-> > =C2=A0#include <linux/io-64-nonatomic-lo-hi.h>
-> > =C2=A0
-> > @@ -21,6 +22,8 @@
-> > =C2=A0#define SSRAM_IOE_OFFSET=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A00x68
-> > =C2=A0#define SSRAM_DEVID_OFFSET=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00x70
-> > =C2=A0
-> > +DEFINE_FREE(pmc_core_iounmap, void __iomem *, iounmap(_T));
-> > +
->=20
-> Was it that adding
->=20
-> DEFINE_FREE(iounmap, void __iomem *, iounmap(_T));
->=20
-> into some header did not work for some reason or why this? (Perhaps=20
-> because iounmap is also defined?)
+On Wed, Oct 11, 2023 at 04:42:28PM +0800, Jingbo Xu wrote:
+> The cgwb cleanup routine will try to release the dying cgwb by switching
+> the attached inodes.  It fetches the attached inodes from wb->b_attached
+> list, omitting the fact that inodes only with dirty timestamps reside in
+> wb->b_dirty_time list, which is the case when lazytime is enabled.  This
+> causes enormous zombie memory cgroup when lazytime is enabled, as inodes
+> with dirty timestamps can not be switched to a live cgwb for a long time.
+> 
+> It is reasonable not to switch cgwb for inodes with dirty data, as
+> otherwise it may break the bandwidth restrictions.  However since the
+> writeback of inode metadata is not accounted, let's also switch inodes
+> with dirty timestamps to avoid zombie memory and block cgroups when
+> laztytime is enabled.
+> 
+> Fixs: c22d70a162d3 ("writeback, cgroup: release dying cgwbs by switching attached inodes")
+> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
 
-No, I didn't think to add it. I'll try and send in the next version.
+The patch looks fine to me.
 
-David
+...
+> +	restart = isw_prepare_wbs_switch(isw, &wb->b_attached, &nr);
+> +	if (!restart)
+> +		restart = isw_prepare_wbs_switch(isw, &wb->b_dirty_time, &nr);
 
->=20
+But can you add a comment explaining why we're also migrating b_dirty_time?
 
+Thanks.
+
+-- 
+tejun
