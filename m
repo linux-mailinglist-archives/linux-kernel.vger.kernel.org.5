@@ -2,188 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E21EE7C6F16
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE887C6F19
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378739AbjJLNYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:24:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49764 "EHLO
+        id S1378866AbjJLNYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 09:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347229AbjJLNYT (ORCPT
+        with ESMTP id S1378843AbjJLNYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:24:19 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF79BB
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:24:16 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4075c58ac39so9968495e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:24:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697117055; x=1697721855; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=n2poSp/kjuPJKWDomFLYc2D93YohPdfk/qXfzOwtaKs=;
-        b=xzomjfMv0/VbB76fZmLkmDTC7sYEQ929AR6YnrLRuht+V+0nurWJMV0KGsqUr+gLaL
-         wCIl21cJdPq8Hi2l3Pyp3oQ5Bb1pA4ID4NeZX4eSLKiaZyJaSq70SMg37Qs8LW9DTjXd
-         TL86zjSfJeEVHJ+RmdUyzlv9+uy/S+pe2h7qwnSlC0QME4pVJ3hUkuM6LyxYCCdC3T5U
-         v/73dzyTZyE0LWOAzGb0YSuyaFa0OMIzUA6TVvflb8sEatXvSoidxnftx7EE6HLGceBE
-         gQym+UM9faQZhALN/ADeXA2Oa+T47MkP+0BFxQYzroFDomzwxR9Ut+/XAgCE8WNsAz9G
-         iikg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697117055; x=1697721855;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n2poSp/kjuPJKWDomFLYc2D93YohPdfk/qXfzOwtaKs=;
-        b=A8u2J73mXxLQsqCkai8Q+Lr0h83DFwlD/XUU/LO4X4m8j7xuaQYz1v9UXJ+Q7D4pfN
-         c2GK3mv9VseUL4QZe/3cvkhFu/Fyvb58q+DQCWsj8zkYVng5OWjwm+4AaA4IcYz+0tUD
-         9FEVDVgHaQFzzhruXxDlh66mTzqE75gaiY6iprZ4R0+VR2/yoknggCFD5g/llX4hUEUv
-         n6hM4x5Ts/qgmwuoVbCc2Y4pDxozuXbxmyIRr1HLEWTYS+9FyJ2IK272SVLpsjRkVsZj
-         pui8YcrZa3Mvdff27kwxF6qp67+WMY6E1ffpeoy4W2TztSerbe19ZuyeQfehv+D2Vvle
-         AZjw==
-X-Gm-Message-State: AOJu0Yy8rG20qR7WCoijVDp4cWj7lFiTp7ftG0J1rmoh5t7HbiNIgMyS
-        GrC2la5rWIZneS19ZYCxwnS8PQ==
-X-Google-Smtp-Source: AGHT+IH61/xF/2mfIO4IGYaBspLhBdWNk8frCcdSVLHnqdCC5UUY0eCgmtpFWzz+SMpjnPyRkahkHg==
-X-Received: by 2002:a7b:ce85:0:b0:405:4a78:a890 with SMTP id q5-20020a7bce85000000b004054a78a890mr20870001wmj.8.1697117055043;
-        Thu, 12 Oct 2023 06:24:15 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id m19-20020a7bcb93000000b003fe61c33df5sm21958784wmi.3.2023.10.12.06.24.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 06:24:14 -0700 (PDT)
-Message-ID: <b94e3561-f5ef-443f-98c7-9b79a8bbceec@linaro.org>
-Date:   Thu, 12 Oct 2023 15:24:12 +0200
+        Thu, 12 Oct 2023 09:24:33 -0400
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4361C9;
+        Thu, 12 Oct 2023 06:24:29 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0Vu-veev_1697117058;
+Received: from 30.221.128.246(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Vu-veev_1697117058)
+          by smtp.aliyun-inc.com;
+          Thu, 12 Oct 2023 21:24:26 +0800
+Message-ID: <54d5b5cc-ba87-69df-3eda-4e7d04218b83@linux.alibaba.com>
+Date:   Thu, 12 Oct 2023 21:24:18 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 6/8] media: dt-bindings: wave5: add Chips&Media 521c
- codec IP support
-Content-Language: en-US
-To:     Sebastian Fricke <sebastian.fricke@collabora.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jackson Lee <jackson.lee@chipsnmedia.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Nas Chung <nas.chung@chipsnmedia.com>,
-        Fabio Estevam <festevam@gmail.com>
-Cc:     linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        kernel@collabora.com, Robert Beckett <bob.beckett@collabora.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Darren Etheridge <detheridge@ti.com>
-References: <20230929-wave5_v13_media_master-v13-0-5ac60ccbf2ce@collabora.com>
- <20230929-wave5_v13_media_master-v13-6-5ac60ccbf2ce@collabora.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20230929-wave5_v13_media_master-v13-6-5ac60ccbf2ce@collabora.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+From:   Wen Gu <guwen@linux.alibaba.com>
+Subject: Re: [PATCH net-next v4 06/18] net/smc: extend GID to 128bits only for
+ virtual ISM device
+To:     dust.li@linux.alibaba.com, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     wintera@linux.ibm.com, schnelle@linux.ibm.com,
+        gbayer@linux.ibm.com, pasic@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
+ <1695568613-125057-7-git-send-email-guwen@linux.alibaba.com>
+ <20231012075410.GQ92403@linux.alibaba.com>
+In-Reply-To: <20231012075410.GQ92403@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2023 13:01, Sebastian Fricke wrote:
-> From: Robert Beckett <bob.beckett@collabora.com>
+
+
+On 2023/10/12 15:54, Dust Li wrote:
+
+> On Sun, Sep 24, 2023 at 11:16:41PM +0800, Wen Gu wrote:
+>> Virtual ISM devices are introduced to SMC-Dv2.1 protocal, whose GIDs
+>> are 128-bits UUIDs as defined by RFC4122. And note that the GIDs of
+>> ISM devices still remain 64-bits.
+>>
+>> This patch adapts the relevant codes, such as CLC handshake, to make
+>> it compatible with 128 bits GID.
+>>
+>> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+>> ---
+>> drivers/s390/net/ism_drv.c    | 18 +++++++------
+>> include/net/smc.h             | 15 +++++++----
+>> include/uapi/linux/smc.h      |  3 +++
+>> include/uapi/linux/smc_diag.h |  2 ++
+>> net/smc/af_smc.c              | 60 +++++++++++++++++++++++++++++++++----------
+>> net/smc/smc_clc.c             | 43 +++++++++++++++++++++----------
+>> net/smc/smc_clc.h             |  4 +--
+>> net/smc/smc_core.c            | 41 +++++++++++++++++++++--------
+>> net/smc/smc_core.h            |  7 ++---
+>> net/smc/smc_diag.c            | 11 ++++++--
+>> net/smc/smc_ism.c             | 18 ++++++++-----
+>> net/smc/smc_ism.h             |  3 ++-
+>> net/smc/smc_pnet.c            |  4 +--
+>> 13 files changed, 163 insertions(+), 66 deletions(-)
+>>
+
+<...>
+
+>> diff --git a/include/uapi/linux/smc.h b/include/uapi/linux/smc.h
+>> index 837fcd4..0d2f020 100644
+>> --- a/include/uapi/linux/smc.h
+>> +++ b/include/uapi/linux/smc.h
+>> @@ -99,6 +99,9 @@ enum {
+>> 	SMC_NLA_LGR_V2_OS,		/* u8 */
+>> 	SMC_NLA_LGR_V2_NEG_EID,		/* string */
+>> 	SMC_NLA_LGR_V2_PEER_HOST,	/* string */
+>> +	SMC_NLA_LGR_V2_PAD,		/* flag */
+>> +	SMC_NLA_LGR_V2_GID_EXT,		/* u64 */
+>> +	SMC_NLA_LGR_V2_PEER_GID_EXT,	/* u64 */
 > 
-> Add bindings for the chips&media wave5 codec driver
+> Why those abbributes are add here, which was supposed to add common
+> abbritubtes ?
 > 
-> Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
-> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-> Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
-> ---
->  .../devicetree/bindings/media/cnm,wave5.yaml       | 60 ++++++++++++++++++++++
->  1 file changed, 60 insertions(+)
+
+Thanks! After looking back at this code, I also feel that the extended GID
+attributes should be moved to other places. The nested attributes here are
+shared by both SMC-R and SMC-D.
+
+So similar to the SMC_NLA_LGR_R_V2 nested attributes introduced by SMC-R,
+a new SMC_NLA_LGR_D_V2 nested attributes may be more suitable,
+and processed by a new smc_nl_fill_smcr_lgr_v2() helper in smc_nl_fill_smcd_lgr().
+
+<...>
+
+>> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+>> index d520ee6..6d7c738 100644
+>> --- a/net/smc/smc_core.c
+>> +++ b/net/smc/smc_core.c
+>> @@ -284,6 +284,9 @@ static int smc_nl_fill_lgr_v2_common(struct smc_link_group *lgr,
+>> {
+>> 	char smc_host[SMC_MAX_HOSTNAME_LEN + 1];
+>> 	char smc_eid[SMC_MAX_EID_LEN + 1];
+>> +	struct smcd_dev *smcd = lgr->smcd;
+>> +	struct smcd_gid smcd_gid;
+>> +	bool is_virtdev;
+>>
+>> 	if (nla_put_u8(skb, SMC_NLA_LGR_V2_VER, lgr->smc_version))
+>> 		goto errv2attr;
+>> @@ -299,6 +302,16 @@ static int smc_nl_fill_lgr_v2_common(struct smc_link_group *lgr,
+>> 	smc_eid[SMC_MAX_EID_LEN] = 0;
+>> 	if (nla_put_string(skb, SMC_NLA_LGR_V2_NEG_EID, smc_eid))
+>> 		goto errv2attr;
+>> +	smcd->ops->get_local_gid(smcd, &smcd_gid);
+>> +	is_virtdev = smc_ism_is_virtdev(smcd);
+>> +	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_V2_GID_EXT,
+>> +			      is_virtdev ? smcd_gid.gid_ext : 0,
+>> +			      SMC_NLA_LGR_V2_PAD))
+>> +		goto errv2attr;
+>> +	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_V2_PEER_GID_EXT,
+>> +			      is_virtdev ? lgr->peer_gid.gid_ext : 0,
+>> +			      SMC_NLA_LGR_V2_PAD))
+>> +		goto errv2attr;
 > 
-> diff --git a/Documentation/devicetree/bindings/media/cnm,wave5.yaml b/Documentation/devicetree/bindings/media/cnm,wave5.yaml
-> new file mode 100644
-> index 000000000000..b31d34aec05b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/cnm,wave5.yaml
-> @@ -0,0 +1,60 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/cnm,wave5.yaml#
+> I ran into a kernel panic which pointed to here, and it turns out the
+> smcd here is NULL. See below:
+> 
+> But taking a closer look at the code, I'm wondering why those SMCD
+> related attributes are filled in smc_nl_fill_lgr_v2_common() which
+> should only fill the common attributes ?
+> 
+> 
 
-Filename matching compatible, so: cnm,cm521c-vpu.yaml
+I guess the crash occurs when running in SMC-R. Due to this improper
+code, the invalid lgr->smcd was accessed mistakenly in the common helper.
 
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Chips&Media Wave 5 Series multi-standard codec IP
-> +
-> +maintainers:
-> +  - Nas Chung <nas.chung@chipsnmedia.com>
-> +  - Jackson Lee <jackson.lee@chipsnmedia.com>
-> +
-> +description:
-> +  The Chips&Media WAVE codec IP is a multi format video encoder/decoder
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - cnm,cm521c-vpu
+So as mentioned above, this extended GID related code will be moved out
+of this common helper and fix this issue. Thanks!
 
-Can this device be anything else? Why VPU suffix?
+Regards,
+Wen Gu
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-Best regards,
-Krzysztof
-
+> 
+> [17567.395214] BUG: kernel NULL pointer dereference, address:
+> 0000000000000000
+> [17567.395729] #PF: supervisor read access in kernel mode
+> [17567.396086] #PF: error_code(0x0000) - not-present page
+> [17567.396442] PGD 0 P4D 0
+> [17567.396623] Oops: 0000 [#1] SMP NOPTI
+> [17567.396873] CPU: 7 PID: 34729 Comm: smcr Tainted: G        W   E
+> 6.6.0-rc2-00669-gf4cfa8873d90-dirty #577
+> [17567.397528] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+> [17567.398272] RIP: 0010:smc_nl_fill_lgr_v2_common.isra.0+0x1e0/0x2e0
+> [smc]
+> [17567.398734] Code: 21 0f 87 0e 01 00 00 0f 84 fc 00 00 00 8d 50 01 48
+> 8d 4c 24 3f be 03 00 00 00 48 89 ef e8 28 c4 1a e1 85 c0 0f 85 72 fe ff
+> ff <49> 8b 45 00 4c 89 ef 48 8d 74 24 08 48 8b 40 68 ff d0 0f 1f 00 49
+> [17567.399950] RSP: 0018:ffffc90002adb820 EFLAGS: 00010246
+> [17567.400297] RAX: 0000000000000000 RBX: ffff8881cad2402c RCX:
+> 0000000000000057
+> [17567.400769] RDX: 0000000000000000 RSI: ffffc90002adb85f RDI:
+> ffff8881cad24074
+> [17567.401237] RBP: ffff888107d4cd00 R08: 0020202020202020 R09:
+> 2020202020202020
+> [17567.401709] R10: 2020202020202020 R11: 2020202020415955 R12:
+> ffff8882673e0000
+> [17567.402176] R13: 0000000000000000 R14: ffff8881cad23fe4 R15:
+> ffff88813fbe4b60
+> [17567.402650] FS:  00007f679f655740(0000) GS:ffff88842fdc0000(0000)
+> knlGS:0000000000000000
+> [17567.403179] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [17567.403561] CR2: 0000000000000000 CR3: 00000001680d2005 CR4:
+> 0000000000370ee0
+> [17567.404029] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+> 0000000000000000
+> [17567.404501] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+> 0000000000000400
+> [17567.404968] Call Trace:
+> [17567.405140]  <TASK>
+> [17567.405287]  ? __die_body+0x1f/0x70
+> [17567.405533]  ? page_fault_oops+0x14c/0x440
+> [17567.405813]  ? exc_page_fault+0x69/0x120
+> [17567.406079]  ? asm_exc_page_fault+0x26/0x30
+> [17567.406361]  ? smc_nl_fill_lgr_v2_common.isra.0+0x1e0/0x2e0 [smc]
+> [17567.406778]  smc_nl_fill_lgr_list.constprop.0+0x368/0x4e0 [smc]
+> [17567.407180]  smcr_nl_get_link+0x17/0x20 [smc]
+> [17567.407484]  genl_dumpit+0x32/0x90
+> [17567.407722]  netlink_dump+0x19d/0x3b0
+> [17567.407971]  __netlink_dump_start+0x1d3/0x290
+> [17567.408266]  genl_family_rcv_msg_dumpit.isra.0+0x7d/0xd0
+> [17567.408625]  ? __pfx_genl_start+0x10/0x10
+> [17567.408897]  ? __pfx_genl_dumpit+0x10/0x10
+> [17567.409172]  ? __pfx_genl_done+0x10/0x10
+> [17567.409437]  genl_rcv_msg+0x113/0x2a0
+> [17567.409690]  ? __pfx_smcr_nl_get_link+0x10/0x10 [smc]
+> [17567.410040]  ? __pfx_genl_rcv_msg+0x10/0x10
+> [17567.410312]  netlink_rcv_skb+0x58/0x110
+> [17567.410567]  genl_rcv+0x28/0x40
+> [17567.410777]  netlink_unicast+0x181/0x240
+> [17567.411033]  netlink_sendmsg+0x240/0x4a0
+> [17567.411288]  sock_sendmsg+0xb1/0xc0
+> [17567.411524]  ____sys_sendmsg+0x20f/0x300
+> [17567.411780]  ? copy_msghdr_from_user+0x62/0x80
+> [17567.412067]  ___sys_sendmsg+0x81/0xc0
+> [17567.412306]  ? folio_add_lru+0x2b/0x30
+> [17567.412555]  ? do_anonymous_page+0x18d/0x4e0
+> [17567.412837]  ? __handle_mm_fault+0x47f/0x7c0
+> [17567.413115]  __sys_sendmsg+0x4d/0x80
+> [17567.413349]  ? exit_to_user_mode_prepare+0x3c/0x190
+> [17567.413669]  do_syscall_64+0x3c/0x90
+> [17567.413908]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [17567.414234] RIP: 0033:0x7f679f79c177
+> [17567.414467] Code: 0c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f
+> 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 2e 00 00 00 0f
+> 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 89 54 24 1c 48 89 74 24 10
+> [17567.415640] RSP: 002b:00007ffe6d08c168 EFLAGS: 00000246 ORIG_RAX:
+> 000000000000002e
+> [17567.416119] RAX: ffffffffffffffda RBX: 00005619cb470390 RCX:
+> 00007f679f79c177
+> [17567.416574] RDX: 0000000000000000 RSI: 00007ffe6d08c1a0 RDI:
+> 0000000000000003
+> [17567.417026] RBP: 00005619cb4702a0 R08: 0000000000000004 R09:
+> 0000000000000300
+> [17567.417481] R10: 0000000000000004 R11: 0000000000000246 R12:
+> 00005619cb4704b0
+> [17567.417932] R13: 00007ffe6d08c1a0 R14: 0000000000000000 R15:
+> 0000000000000000
+> [17567.418385]  </TASK>
+> [17567.418535] Modules linked in: smc_diag(E) smc(E) rpcrdma(E)
+> sunrpc(E) ib_srpt(E) ib_isert(E) iscsi_target_mod(E) target_core_mod(E)
+> ib_ipoib(E) ib_iser(E) libiscsi(E) scsi_transport_iscsi(E) mlx5_ib(E)
+> rfkill(E)
+> [17567.419722] CR2: 0000000000000000
+> [17567.419940] ---[ end trace 0000000000000000 ]---
+> [17567.420237] RIP: 0010:smc_nl_fill_lgr_v2_common.isra.0+0x1e0/0x2e0
+> [smc]
+> [17567.420676] Code: 21 0f 87 0e 01 00 00 0f 84 fc 00 00 00 8d 50 01 48
+> 8d 4c 24 3f be 03 00 00 00 48 89 ef e8 28 c4 1a e1 85 c0 0f 85 72 fe ff
+> ff <49> 8b 45 00 4c 89 ef 48 8d 74 24 08 48 8b 40 68 ff d0 0f 1f 00 49
+> [17567.421842] RSP: 0018:ffffc90002adb820 EFLAGS: 00010246
+> [17567.422176] RAX: 0000000000000000 RBX: ffff8881cad2402c RCX:
+> 0000000000000057
+> [17567.422631] RDX: 0000000000000000 RSI: ffffc90002adb85f RDI:
+> ffff8881cad24074
+> [17567.423082] RBP: ffff888107d4cd00 R08: 0020202020202020 R09:
+> 2020202020202020
+> [17567.423536] R10: 2020202020202020 R11: 2020202020415955 R12:
+> ffff8882673e0000
+> [17567.423987] R13: 0000000000000000 R14: ffff8881cad23fe4 R15:
+> ffff88813fbe4b60
+> [17567.424438] FS:  00007f679f655740(0000) GS:ffff88842fdc0000(0000)
+> knlGS:0000000000000000
+> [17567.424950] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [17567.425317] CR2: 0000000000000000 CR3: 00000001680d2005 CR4:
+> 0000000000370ee0
+> [17567.425773] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+> 0000000000000000
+> [17567.426225] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+> 0000000000000400
+> [17567.426677] Kernel panic - not syncing: Fatal exception in interrupt
+> [17567.427583] Kernel Offset: disabled
+> [17567.427817] ---[ end Kernel panic - not syncing: Fatal exception in
+> interrupt ]---
+> 
+> 
+> Best regards,
+> Dust
+> 
+> 
+> 
+>>
+>> 	nla_nest_end(skb, v2_attrs);
+>> 	return 0;
