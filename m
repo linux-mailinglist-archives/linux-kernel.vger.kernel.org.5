@@ -2,139 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2BB7C62ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 04:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B737C62F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 04:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376906AbjJLCj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 22:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59278 "EHLO
+        id S1377005AbjJLCjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 22:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376824AbjJLCiw (ORCPT
+        with ESMTP id S235308AbjJLCjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 22:38:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4629DD3;
-        Wed, 11 Oct 2023 19:38:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697078329; x=1728614329;
-  h=from:to:subject:date:message-id:in-reply-to:references:
-   mime-version:content-transfer-encoding;
-  bh=oAUveAvdtna8f06zEJwix8Mg346cwI/ZjTYXEiCeEBw=;
-  b=brkMSsvfPC7g7UMklXlFC1d+QVTA/1UKguKP2dDGowLq0ApCMDi6eEwO
-   B1L+P3mPRlepIhdZrIrDs38YkurZcsOi2aIkojAYVlWegAUuyTVQFmPwk
-   ABF/RZWNXx8QA/tO2ydIWUwxWhfRMKWKtDhiMVxVbF6dqixz3S1VvyaE0
-   cBoude7xTylyTwB36YDNZW4+dzsIwjvn70PmeFMdQfHC76VvzQWPtV9Jd
-   zQ7etwttgs14lJoYc0UnnJsdoJ7DT7jo+opc9GqNPBdPj3C7r6AhlxLzJ
-   nhJEf4+yaeJqT3JRu75WqUmJCV7Omx8IhCFMv1+GXu8qg5qj4Mby5fQh4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="3402637"
-X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
-   d="scan'208";a="3402637"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 19:38:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="783507875"
-X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
-   d="scan'208";a="783507875"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 19:38:43 -0700
-Received: from debox1-desk4.intel.com (unknown [10.209.105.238])
-        by linux.intel.com (Postfix) with ESMTP id 30186580D79;
-        Wed, 11 Oct 2023 19:38:43 -0700 (PDT)
-From:   "David E. Box" <david.e.box@linux.intel.com>
-To:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        ilpo.jarvinen@linux.intel.com, rajvi.jingar@linux.intel.com
-Subject: [PATCH V3 16/16] platform/x86/intel/pmc: Show Die C6 counter on Meteor Lake
-Date:   Wed, 11 Oct 2023 19:38:40 -0700
-Message-Id: <20231012023840.3845703-17-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231012023840.3845703-1-david.e.box@linux.intel.com>
-References: <20231012023840.3845703-1-david.e.box@linux.intel.com>
+        Wed, 11 Oct 2023 22:39:39 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 417B1126
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 19:39:00 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-690ce3c55f1so403149b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 19:39:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697078338; x=1697683138; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ukFwaVuiX8KOny+uf9UCRgoHcJfgS4eWf2GBAkGs/Cc=;
+        b=QYuUo61wY+J3bKCQiwID8TRYOrcVT85B/WYnEw5rLFKXUceAW0sdskIJ+2vAS6mN4p
+         K6ZVoF8K8r1BOa8rSFR47ovvriLhWzR7ci1joHg6j/7TaYORDBhnwUUJx2RptIFh0/vt
+         DI2ZWev/kDQSqNxnM9lSMfVZAftMoTLOece+4RBjhgNj0VfzC2MFUTxwXUtZbE2Q1tbD
+         JAsia0v/hrfnGg1ILR9Uo/R/kq+HzyuoQqt+A713J5qqVR/Ob+rXbVp4j/STxVe2qvlV
+         TEsQsFyOsCla5uXMSCIbkgtALoRXprbaCFS5fxwxnGSn+vd2kIqIv64gmreaus0yhOIR
+         Y7KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697078338; x=1697683138;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ukFwaVuiX8KOny+uf9UCRgoHcJfgS4eWf2GBAkGs/Cc=;
+        b=EYvbjEoLgqAddrjdwI65vUAZU2QXwhURcKOkYZNG/9/imhGteRKI5RIXdpiFXWmeKA
+         zFJZ+syAp7DyXkrT2RMYNul+Y6lCc6E6bl2YCFNGeqTWMm/Lyg91V4DbB6X+e0q1GPQY
+         oRXQ4RIrT+Jx6/ix1vh+Gy8xt/+GuKp5504h9ngjDoYn2jchtuIcBJOWJ4QlbUOiuLAB
+         /ccxVOn5AscFmcFAJLdXwOuZmwI99G0gLEygkuXF8I7Nw8MdQSzzxiH947XwFF4zHyv/
+         WhM8+OC4r333qC4awMFfZ54/J0xFft0/qNN/jvELQTWRloA0pm71CzXO/Cpplo24BFoh
+         ToaA==
+X-Gm-Message-State: AOJu0YxhuWYh/IBWHA3FRkBuvQ3nEnaRla10AiOa24LB4/TGv++sejwd
+        Me9Ih4IXQSouPhFnnrkmrk4vow==
+X-Google-Smtp-Source: AGHT+IGFQ9TUC8JrWwEY/YNi7A6lVOBgqtfr2eoAfKgMmQrm3WbYXsK8H7bO80zTxpJ1VaSpnerdGA==
+X-Received: by 2002:a05:6a20:8e0c:b0:15a:7d2:7594 with SMTP id y12-20020a056a208e0c00b0015a07d27594mr24042697pzj.11.1697078338431;
+        Wed, 11 Oct 2023 19:38:58 -0700 (PDT)
+Received: from [10.4.197.144] ([139.177.225.252])
+        by smtp.gmail.com with ESMTPSA id 8-20020a17090a034800b00279479e9105sm751272pjf.2.2023.10.11.19.38.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 19:38:57 -0700 (PDT)
+Message-ID: <b3c5fd4b-8fb6-4308-81dd-9355a675e5c7@bytedance.com>
+Date:   Thu, 12 Oct 2023 10:38:51 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v5 8/8] selftests/bpf: Add tests for open-coded
+ task and css iter
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, tj@kernel.org, linux-kernel@vger.kernel.org
+References: <20231011120857.251943-1-zhouchuyi@bytedance.com>
+ <20231011120857.251943-9-zhouchuyi@bytedance.com>
+From:   Chuyi Zhou <zhouchuyi@bytedance.com>
+In-Reply-To: <20231011120857.251943-9-zhouchuyi@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Expose the Die C6 counter on Meteor Lake.
 
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
----
-V3 - Split PATCH V2 13. Separates implementation (previous patch)
-     from platform specific use (this patch)
 
- drivers/platform/x86/intel/pmc/mtl.c | 32 ++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+在 2023/10/11 20:08, Chuyi Zhou 写道:
+> This patch adds three subtests to demonstrate these patterns and validating
+> correctness.
+> 
+> subtest1:
+> 
+> 1) We use task_iter to iterate all process in the system and search for the
+> current process with a given pid.
+> 
+> 2) We create some threads in current process context, and use
+> BPF_TASK_ITER_PROC_THREADS to iterate all threads of current process. As
+> expected, we would find all the threads of current process.
+> 
+> 3) We create some threads and use BPF_TASK_ITER_ALL_THREADS to iterate all
+> threads in the system. As expected, we would find all the threads which was
+> created.
+> 
+> subtest2: We create a cgroup and add the current task to the cgroup. In the
+> BPF program, we would use bpf_for_each(css_task, task, css) to iterate all
+> tasks under the cgroup. As expected, we would find the current process.
+> 
+> subtest3:
+> 
+> 1) We create a cgroup tree. In the BPF program, we use
+> bpf_for_each(css, pos, root, XXX) to iterate all descendant under the root
+> with pre and post order. As expected, we would find all descendant and the
+> last iterating cgroup in post-order is root cgroup, the first iterating
+> cgroup in pre-order is root cgroup.
+> 
+> 2) We wse BPF_CGROUP_ITER_ANCESTORS_UP to traverse the cgroup tree starting
+> from leaf and root separately, and record the height. The diff of the
+> hights would be the total tree-high - 1.
+> 
+> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+> ---
+>   .../testing/selftests/bpf/prog_tests/iters.c  | 161 ++++++++++++++++++
+>   tools/testing/selftests/bpf/progs/iters_css.c |  74 ++++++++
+>   .../selftests/bpf/progs/iters_css_task.c      |  42 +++++
+>   .../testing/selftests/bpf/progs/iters_task.c  |  41 +++++
+>   .../selftests/bpf/progs/iters_task_failure.c  | 105 ++++++++++++
+>   5 files changed, 423 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/progs/iters_css.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/iters_css_task.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/iters_task.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/iters_task_failure.c
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/iters.c b/tools/testing/selftests/bpf/prog_tests/iters.c
+> index 10804ae5ae97..8d7a7bef5c73 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/iters.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/iters.c
+> @@ -1,13 +1,24 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+>   
+> +#include <sys/syscall.h>
+> +#include <sys/mman.h>
+> +#include <sys/wait.h>
+> +#include <unistd.h>
+> +#include <malloc.h>
+> +#include <stdlib.h>
+>   #include <test_progs.h>
+> +#include "cgroup_helpers.h"
+>   
+>   #include "iters.skel.h"
+>   #include "iters_state_safety.skel.h"
+>   #include "iters_looping.skel.h"
+>   #include "iters_num.skel.h"
+>   #include "iters_testmod_seq.skel.h"
+> +#include "iters_task.skel.h"
+> +#include "iters_css_task.skel.h"
+> +#include "iters_css.skel.h"
+> +#include "iters_task_failure.skel.h"
+>   
+>   static void subtest_num_iters(void)
+>   {
+> @@ -90,6 +101,149 @@ static void subtest_testmod_seq_iters(void)
+>   	iters_testmod_seq__destroy(skel);
+>   }
+>   
+> +static pthread_mutex_t do_nothing_mutex;
+> +
+> +static void *do_nothing_wait(void *arg)
+> +{
+> +	pthread_mutex_lock(&do_nothing_mutex);
+> +	pthread_mutex_unlock(&do_nothing_mutex);
+> +
+> +	pthread_exit(arg);
+> +}
+> +
+> +#define thread_num 2
+> +
+> +static void subtest_task_iters(void)
+> +{
+> +	struct iters_task *skel = NULL;
+> +	pthread_t thread_ids[thread_num];
+> +	void *ret;
+> +	int err;
+> +
+> +	skel = iters_task__open();
+> +	if (!ASSERT_OK_PTR(skel, "skel_open"))
+> +		goto cleanup;
+> +	err = iters_task__load(skel);
+> +	if (!ASSERT_OK(err, "skel_load"))
+> +		goto cleanup;
+> +	skel->bss->target_pid = getpid();
+> +	err = iters_task__attach(skel);
+> +	if (!ASSERT_OK(err, "iters_task__attach"))
+> +		goto cleanup;
+> +	pthread_mutex_lock(&do_nothing_mutex);
+> +	for (int i = 0; i < thread_num; i++)
+> +		ASSERT_OK(pthread_create(&thread_ids[i], NULL, &do_nothing_wait, NULL),
+> +			"pthread_create");
+> +
+> +	syscall(SYS_getpgid);
+> +	iters_task__detach(skel);
+> +	ASSERT_EQ(skel->bss->process_cnt, 1, "process_cnt");
+> +	ASSERT_EQ(skel->bss->thread_cnt, thread_num + 1, "thread_cnt");
+> +	ASSERT_EQ(skel->bss->all_thread_cnt, thread_num + 1, "all_thread_cnt");
+> +	pthread_mutex_unlock(&do_nothing_mutex);
+> +	for (int i = 0; i < thread_num; i++)
+> +		pthread_join(thread_ids[i], &ret);
+> +cleanup:
+> +	iters_task__destroy(skel);
+> +}
+> +
+> +extern int stack_mprotect(void);
+> +
+> +static void subtest_css_task_iters(void)
+> +{
+> +	struct iters_css_task *skel = NULL;
+> +	int err, cg_fd, cg_id;
+> +	const char *cgrp_path = "/cg1";
+> +
+> +	err = setup_cgroup_environment();
+> +	if (!ASSERT_OK(err, "setup_cgroup_environment"))
+> +		goto cleanup;
+> +	cg_fd = create_and_get_cgroup(cgrp_path);
+> +	if (!ASSERT_GE(cg_fd, 0, "cg_create"))
+> +		goto cleanup;
+> +	cg_id = get_cgroup_id(cgrp_path);
+> +	err = join_cgroup(cgrp_path);
+> +	if (!ASSERT_OK(err, "setup_cgroup_environment"))
+> +		goto cleanup;
+> +
+> +	skel = iters_css_task__open();
+> +	if (!ASSERT_OK_PTR(skel, "skel_open"))
+> +		goto cleanup;
+> +
+> +	err = iters_css_task__load(skel);
+> +	if (!ASSERT_OK(err, "skel_load"))
+> +		goto cleanup;
+> +
+> +	skel->bss->target_pid = getpid();
+> +	skel->bss->cg_id = cg_id;
+> +	err = iters_css_task__attach(skel);
+> +
+> +	err = stack_mprotect();
+> +	if (!ASSERT_OK(err, "iters_task__attach"))
+> +		goto cleanup;
 
-diff --git a/drivers/platform/x86/intel/pmc/mtl.c b/drivers/platform/x86/intel/pmc/mtl.c
-index 7ceeae507f4c..38c2f946ec23 100644
---- a/drivers/platform/x86/intel/pmc/mtl.c
-+++ b/drivers/platform/x86/intel/pmc/mtl.c
-@@ -10,12 +10,17 @@
- 
- #include <linux/pci.h>
- #include "core.h"
-+#include "../pmt/telemetry.h"
- 
- /* PMC SSRAM PMT Telemetry GUIDS */
- #define SOCP_LPM_REQ_GUID	0x2625030
- #define IOEM_LPM_REQ_GUID	0x4357464
- #define IOEP_LPM_REQ_GUID	0x5077612
- 
-+/* Die C6 from PUNIT telemetry */
-+#define MTL_PMT_DMU_DIE_C6_OFFSET	15
-+#define MTL_PMT_DMU_GUID		0x1A067102
-+
- static const u8 MTL_LPM_REG_INDEX[] = {0, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 20};
- 
- /*
-@@ -968,6 +973,32 @@ static struct pmc_info mtl_pmc_info_list[] = {
- 	{}
- };
- 
-+static void mtl_punit_pmt_init(struct pmc_dev *pmcdev)
-+{
-+	struct telem_endpoint *ep;
-+	struct pci_dev *pcidev;
-+
-+	pcidev = pci_get_domain_bus_and_slot(0, 0, PCI_DEVFN(10, 0));
-+	if (!pcidev) {
-+		dev_err(&pmcdev->pdev->dev, "PUNIT PMT device not found.\n");
-+		return;
-+	}
-+
-+	ep = pmt_telem_find_and_register_endpoint(pcidev, MTL_PMT_DMU_GUID, 0);
-+	if (IS_ERR(ep)) {
-+		dev_err(&pmcdev->pdev->dev,
-+			"pmc_core: couldn't get DMU telem endpoint, %ld\n",
-+			PTR_ERR(ep));
-+		return;
-+	}
-+
-+	pci_dev_put(pcidev);
-+	pmcdev->punit_ep = ep;
-+
-+	pmcdev->has_die_c6 = true;
-+	pmcdev->die_c6_offset = MTL_PMT_DMU_DIE_C6_OFFSET;
-+}
-+
- #define MTL_GNA_PCI_DEV	0x7e4c
- #define MTL_IPU_PCI_DEV	0x7d19
- #define MTL_VPU_PCI_DEV	0x7d1d
-@@ -1032,6 +1063,7 @@ int mtl_core_init(struct pmc_dev *pmcdev)
- 	}
- 
- 	pmc_core_get_low_power_modes(pmcdev);
-+	mtl_punit_pmt_init(pmcdev);
- 
- 	/* Due to a hardware limitation, the GBE LTR blocks PC10
- 	 * when a cable is attached. Tell the PMC to ignore it.
--- 
-2.34.1
+The is incorrect and would fail the lsm_test in prog_test.
+
+Here we should check the stack_mprotect return value is -1 or
+-EPERM. In BPF Prog iter_css_task_for_each, we need to return -EPERM.
+
+The whole logic should keep same with lsm_test.c/bpf_cookie.c
+
+After the following fix, CI would works well.
+
+(https://github.com/kernel-patches/bpf/actions/runs/6484774470/job/17609349165?pr=5808)
+
+@@ -177,11 +177,12 @@ static void subtest_css_task_iters(void)
+         skel->bss->target_pid = getpid();
+         skel->bss->cg_id = cg_id;
+         err = iters_css_task__attach(skel);
+-
+-       err = stack_mprotect();
+         if (!ASSERT_OK(err, "iters_task__attach"))
+                 goto cleanup;
+-
++       err = stack_mprotect();
++       if (!ASSERT_EQ(err, -1, "stack_mprotect") ||
++           !ASSERT_EQ(errno, EPERM, "stack_mprotect"))
++               goto cleanup;
+         iters_css_task__detach(skel);
+         ASSERT_EQ(skel->bss->css_task_cnt, 1, "css_task_cnt");
+
+diff --git a/tools/testing/selftests/bpf/progs/iters_css_task.c 
+b/tools/testing/selftests/bpf/progs/iters_css_task.c
+index 506a2755234e..9f79a57fde8e 100644
+--- a/tools/testing/selftests/bpf/progs/iters_css_task.c
++++ b/tools/testing/selftests/bpf/progs/iters_css_task.c
+@@ -2,6 +2,7 @@
+  /* Copyright (C) 2023 Chuyi Zhou <zhouchuyi@bytedance.com> */
+
+  #include "vmlinux.h"
++#include <errno.h>
+  #include <bpf/bpf_helpers.h>
+  #include <bpf/bpf_tracing.h>
+  #include "bpf_misc.h"
+@@ -17,7 +18,8 @@ int css_task_cnt = 0;
+  u64 cg_id;
+
+  SEC("lsm/file_mprotect")
+-int BPF_PROG(iter_css_task_for_each)
++int BPF_PROG(iter_css_task_for_each, struct vm_area_struct *vma,
++           unsigned long reqprot, unsigned long prot, int ret)
+  {
+         struct task_struct *cur_task = bpf_get_current_task_btf();
+         struct cgroup_subsys_state *css;
+@@ -25,12 +27,12 @@ int BPF_PROG(iter_css_task_for_each)
+         struct cgroup *cgrp;
+
+         if (cur_task->pid != target_pid)
+-               return 0;
++               return ret;
+
+         cgrp = bpf_cgroup_from_id(cg_id);
+
+-       if (cgrp == NULL)
+-               return 0;
++       if (!cgrp)
++               goto out;
+         css = &cgrp->self;
+
+         bpf_for_each(css_task, task, css, CSS_TASK_ITER_PROCS)
+@@ -38,5 +40,6 @@ int BPF_PROG(iter_css_task_for_each)
+                         css_task_cnt += 1;
+
+         bpf_cgroup_release(cgrp);
+-       return 0;
++out:
++       return -EPERM;
+  }
 
