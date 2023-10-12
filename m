@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFAD7C74F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29587C7500
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379603AbjJLRkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36912 "EHLO
+        id S1379609AbjJLRms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344198AbjJLRkf (ORCPT
+        with ESMTP id S1344076AbjJLRmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:40:35 -0400
-Received: from bues.ch (bues.ch [IPv6:2a01:138:9005::1:4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6486FC9;
-        Thu, 12 Oct 2023 10:40:31 -0700 (PDT)
-Received: by bues.ch with esmtpsa (Exim 4.96)
-        (envelope-from <m@bues.ch>)
-        id 1qqzfe-0003qF-1h;
-        Thu, 12 Oct 2023 19:40:25 +0200
-Date:   Thu, 12 Oct 2023 19:39:38 +0200
-From:   Michael =?UTF-8?B?QsO8c2No?= <m@bues.ch>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-Subject: Re: [RFC PATCH] ssb: relax SSB_EMBEDDED dependencies
-Message-ID: <20231012193938.16fb7db6@barney>
-In-Reply-To: <13eeb01a-2f4f-4c8e-b097-6e80d822862b@infradead.org>
-References: <20231007182443.32300-1-rdunlap@infradead.org>
-        <20231008093520.42ead15f@barney>
-        <22bc05d3-86e9-4cf6-aec6-10d11df1acc3@infradead.org>
-        <e551fb4c-1e3d-4e1a-a465-5b88842789c6@infradead.org>
-        <20231010204346.78961fc4@barney>
-        <13eeb01a-2f4f-4c8e-b097-6e80d822862b@infradead.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Thu, 12 Oct 2023 13:42:47 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EC7CA
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:42:46 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CH2IhP007409;
+        Thu, 12 Oct 2023 17:42:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=cEqeJI7HQsfdFlGZKhpTdsBgaJEphttefgQPDQdnvZI=;
+ b=iLUr6LfADJxjaZqnCSY2cGzJbcmJoJ/oe48r4GxTXDF76IqGGDYmdSvv4SZmQPrMLFfj
+ 2PXSXZXbmlzZeXr/4+n7SPWE+PnVYXeqx2q11srLprsHOoKSRnSSsYiGZxXxo7JiXF0Y
+ DhQZgynWQPdkag2Q9drodI0ZusqYjvEDbVyxm89OFGy1gErUKGDQWNlfxdk3cOIVepgA
+ qrEMPisQ6gYBhDxxMjdX5Y+cDstMAy1Pv8tCaopi/U6eQekt+q7ZVSL36AwQq+K/2i87
+ ErMZnEcytVZPPZR52j+gNLL2DSI7iVEDuQ/B+i+gMMoX0ivScAtvo0Fr/vm0tUQsvRlX xQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpmuj1aha-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 17:42:41 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39CH2gOl008977;
+        Thu, 12 Oct 2023 17:42:41 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpmuj1ah1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 17:42:41 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39CG6pxg000640;
+        Thu, 12 Oct 2023 17:42:39 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkk5m13kg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 17:42:39 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CHgcCM23397106
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Oct 2023 17:42:38 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0BDE258055;
+        Thu, 12 Oct 2023 17:42:38 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B925F58043;
+        Thu, 12 Oct 2023 17:42:37 +0000 (GMT)
+Received: from gfwa153.aus.stglabs.ibm.com (unknown [9.3.84.127])
+        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 12 Oct 2023 17:42:37 +0000 (GMT)
+From:   Ninad Palsule <ninad@linux.ibm.com>
+To:     joel@jms.id.au, eajames@linux.ibm.com, lgirdwood@gmail.com,
+        broonie@kernel.org, linux-kernel@vger.kernel.org,
+        lakshmiy@us.ibm.com
+Cc:     Ninad Palsule <ninad@linux.ibm.com>
+Subject: [PATCH v1] regulator: core: Convert warning to debug print
+Date:   Thu, 12 Oct 2023 12:42:35 -0500
+Message-Id: <20231012174235.2424670-1-ninad@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=77zqe27yUYwq.aWi2HATI+";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: iO51A1k9MQ6K7qHX8Xskc2ZxviScW5s5
+X-Proofpoint-GUID: sRbHWc3PZtZ_sHtmQK_tHFlwMHILt8Il
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_09,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ clxscore=1011 malwarescore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ phishscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310120147
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=77zqe27yUYwq.aWi2HATI+
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+There are some boards without the vcc regulators for eeprom or other
+devices. In such cases, we should not see the following warning and
+this confuses the user. We want to see this only when it is compiled
+with CONFIG_REGULATOR_DEBUG option.
 
-On Wed, 11 Oct 2023 20:44:49 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
+[0.747347] at24 6-0055: supply vcc not found, using dummy regulator
+[0.752877] pca953x 6-0074: supply vcc not found, using dummy regulator
 
-> > I thought about something like this:
-> >=20
-> > depends on (SSB_DRIVER_MIPS && PCI=3Dn) || (SSB_DRIVER_MIPS &&
-> > SSB_PCICORE_HOSTMODE)
-> >=20
-> > Would that solve the warning? =20
->=20
-> Yes, that works as well, although I prefer to express it like this:
->=20
->  config SSB_EMBEDDED
->  	bool
-> -	depends on SSB_DRIVER_MIPS && SSB_PCICORE_HOSTMODE
-> +	depends on SSB_DRIVER_MIPS
-> +	depends on PCI=3Dn || SSB_PCICORE_HOSTMODE
->  	default y
+Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+---
+ drivers/regulator/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Michael B=C3=BCsch <m@bues.ch>
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index d8e1caaf207e..7d2e2495234e 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -2204,7 +2204,7 @@ struct regulator *_regulator_get(struct device *dev, const char *id,
+ 			 * enabled, even if it isn't hooked up, and just
+ 			 * provide a dummy.
+ 			 */
+-			dev_warn(dev, "supply %s not found, using dummy regulator\n", id);
++			dev_dbg(dev, "supply %s not found, using dummy regulator\n", id);
+ 			rdev = dummy_regulator_rdev;
+ 			get_device(&rdev->dev);
+ 			break;
+-- 
+2.39.2
 
-
---=20
-Michael B=C3=BCsch
-https://bues.ch/
-
---Sig_/=77zqe27yUYwq.aWi2HATI+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEihRzkKVZOnT2ipsS9TK+HZCNiw4FAmUoL1oACgkQ9TK+HZCN
-iw5r4w/+L3+1CoIsR0Pmu9kFjOYPZuaNPaeTetHQoBEvuHvQNoiwaWUewWn4mzyk
-e0zclN55PHMiY0o28q1/Kp47zZbY4yoiVPRLXTLem3ra4bXDqMmGlK1eL4AvaYj/
-T045qAeK5ghBpyTjhyeq2hEdVvJLHR1f1vFPsHdMISx7he8c496PwB7M8F/rK0SK
-0EygvpakTOCfcrCpvlDmRIoEYbUsmM0iCHCweDno44OMVIvPDgm4s2aQ4nrJP4av
-fObGOdbc1uGuObs2oQWRBF/bvCTFzzCHgNhhr+A8mRdBoWxm6t8ng9SEbLh/54rm
-66bawXjPbik8XvYvVhmHmLMQ2JtBQtUQmWgchcyXGWfaHm0hujcWcPzWAyJtZVXk
-u5F2R2ThjO6eE0U5PnBpNULpQ57iSRW6xBwLehMhTG7cBvSNg9r0fgkedMApNHj2
-lk1zGyhh5GfmQUqEpQ/kKIBG3JJs0cqvV1T7KIXkOWw73Ki09TDj169CAeW6GfdG
-L3cMmOOs2SxoPY/eAaCge7Nc5RzdITEK6CUQe72YyqOLkda1iGXRCkyg6tGyrGb/
-ZvkXZoRPVDzw/ZwbtUd19s1UiPFFRyH65MFnZNokSRih726xiLqSrF789WRvXm9I
-GCyUFta57UzHPUo3rjUUVDfxHQBtRW//s1erO5uw66g/KyjSTYI=
-=yFxf
------END PGP SIGNATURE-----
-
---Sig_/=77zqe27yUYwq.aWi2HATI+--
