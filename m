@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 340B27C6E54
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A7C7C6E55
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378597AbjJLMhn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 08:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44204 "EHLO
+        id S1378383AbjJLMhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:37:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235730AbjJLMhi (ORCPT
+        with ESMTP id S235745AbjJLMhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:37:38 -0400
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9A1E4;
-        Thu, 12 Oct 2023 05:37:35 -0700 (PDT)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-59f6492b415so7565457b3.0;
-        Thu, 12 Oct 2023 05:37:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697114254; x=1697719054;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8VvU3puvotE/99F5YQMan21kUt/9MD2QqcXXWV38kAE=;
-        b=R53+kKnSDdmZpHcGIJvdIPVjbYGNRwJc5MWQ0gtuVs5qhfyHvZTeIy9yZnCQQFo9GW
-         0t2HDFSKHud0KyTBVcmXvdXrLepmXROBe35HzhCG2YflPeWbLgOgGKD7qeRPxX0uplU+
-         L4h0R3ZqbY/oWm4jETc0MzT9EFnPxZwhhJxZcWQIZGqznEveyH5oyoHZn+f0LYZpSkBC
-         Lx0nlTP2CTjv8ESX+k3XrfVigGfGAgaTGs1+TLfAYSFNQ0BSMj/SdzI+Vu6xdI2FX4MQ
-         jmWwXgGDi5vM6tzGd3+8sWpX4plq2jb0wrN4lzHkSnmobVC0THdLxNYsf1CbiXinh9MV
-         VvCA==
-X-Gm-Message-State: AOJu0Yz7HVSyMIm5tKbCSabQLfjID6ZJPPjk35DC5K6IfPf9VpDbvXxB
-        cvPtLmRC+ZBW9n249cTzOfLRRuN9aEFreA==
-X-Google-Smtp-Source: AGHT+IEDeW0U4ZqiltY3Jtm1U8rlmTuQSaZd9uOZZm2tf4ot+MoTbfP6rjKFQ50vUAgVMVjM+NUQIQ==
-X-Received: by 2002:a0d:d797:0:b0:5a7:d4d7:aaa1 with SMTP id z145-20020a0dd797000000b005a7d4d7aaa1mr4693324ywd.16.1697114254108;
+        Thu, 12 Oct 2023 08:37:40 -0400
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D81DC4;
         Thu, 12 Oct 2023 05:37:34 -0700 (PDT)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id o206-20020a8173d7000000b00583e52232f1sm5901880ywc.112.2023.10.12.05.37.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 05:37:33 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-59e88a28b98so7353417b3.1;
-        Thu, 12 Oct 2023 05:37:33 -0700 (PDT)
-X-Received: by 2002:a0d:cad1:0:b0:5a8:11de:a7f1 with SMTP id
- m200-20020a0dcad1000000b005a811dea7f1mr179712ywd.9.1697114253605; Thu, 12 Oct
- 2023 05:37:33 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Vu-nLib_1697114249;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0Vu-nLib_1697114249)
+          by smtp.aliyun-inc.com;
+          Thu, 12 Oct 2023 20:37:30 +0800
+From:   Dust Li <dust.li@linux.alibaba.com>
+To:     Karsten Graul <kgraul@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Dust Li <dust.li@linux.alibaba.com>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net] net/smc: return the right falback reason when prefix checks fail
+Date:   Thu, 12 Oct 2023 20:37:29 +0800
+Message-Id: <20231012123729.29307-1-dust.li@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-References: <20231010132701.1658737-1-claudiu.beznea.uj@bp.renesas.com> <20231010132701.1658737-2-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20231010132701.1658737-2-claudiu.beznea.uj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 12 Oct 2023 14:37:21 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWAz+c5xDS0RXhaMHzPDZ-Co82Wibg6kMZrJ89n6cHccg@mail.gmail.com>
-Message-ID: <CAMuHMdWAz+c5xDS0RXhaMHzPDZ-Co82Wibg6kMZrJ89n6cHccg@mail.gmail.com>
-Subject: Re: [PATCH 1/6] clk: renesas: rzg2l: Use %x format specifier to print CLK_ON_R()
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     magnus.damm@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 3:27 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Use %x format specifier to print CLK_ON_R(). This is easier when
-> debugging as the value printed will be hexadecimal like in the hardware
-> manual. Along with it "0x" has been added in front of the printed value.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+In the smc_listen_work(), if smc_listen_prfx_check() failed,
+the real reason: SMC_CLC_DECL_DIFFPREFIX was dropped, and
+SMC_CLC_DECL_NOSMCDEV was returned.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-clk-for-v6.7.
+Althrough this is also kind of SMC_CLC_DECL_NOSMCDEV, but return
+the real reason is much friendly for debugging.
 
-Gr{oetje,eeting}s,
+Fixes: e49300a6bf62 ("net/smc: add listen processing for SMC-Rv2")
+Signed-off-by: Dust Li <dust.li@linux.alibaba.com>
+---
+ net/smc/af_smc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-                        Geert
-
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index bacdd971615e..21d4476b937b 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -2361,7 +2361,7 @@ static int smc_listen_find_device(struct smc_sock *new_smc,
+ 		smc_find_ism_store_rc(rc, ini);
+ 		return (!rc) ? 0 : ini->rc;
+ 	}
+-	return SMC_CLC_DECL_NOSMCDEV;
++	return prfx_rc;
+ }
+ 
+ /* listen worker: finish RDMA setup */
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.19.1.6.gb485710b
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
