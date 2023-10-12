@@ -2,207 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 587987C6586
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C8E7C6588
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377391AbjJLGZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
+        id S1347082AbjJLGZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377894AbjJLGYw (ORCPT
+        with ESMTP id S1377474AbjJLGZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:24:52 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FD5D67
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:38 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a60a104b6so1502777276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697091878; x=1697696678; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RTK1vjQioOgb7+3VfL3Txgo28p8CKodFJzCpLv4Rtj4=;
-        b=uv6JeNPij7TT4XS0q0/yoo6k2/t4vvrRQzLGGY5rFdmj4u0CQaXGgBbB1/NaeKmhgW
-         UIlozJYzTUXmPNYb86Xubwt/GdWVlm65dwXKiQtwrGxD0Q0elKxj1APbB2E00VMKJ4D8
-         92taAuQSd+mrWsT6vfz/I+osKMd5YBHHLIaxf6qc/FXAR2zuYuF3YXuoVGP2Y3e+4SPA
-         0ivN5hSFC4514goeouq9RPkvblO2VtaBqMOiPs6pnkI62WBMbsHCrWVNWNzcchl7dyCa
-         QpKKWDod1Jkp/GWd9lI9q23HWSRjvYwSj9D+mTlK2AhkzhijkzULcXBMP9YzmioKqaZi
-         a57A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697091878; x=1697696678;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RTK1vjQioOgb7+3VfL3Txgo28p8CKodFJzCpLv4Rtj4=;
-        b=Kib9GX7QcqCKT4gGqfnpUGTS/ht75JNd2zQ50U8rZGmK710ddrvhTBhOiscmDTD0q6
-         03qj4Fjuuqdkax50cdz3Ml/e0SRuEwc0a/GCuw4coQRV72p81qWCsJOAaEFbzI1r5Wvp
-         WYGr2h8RdE2/u7QZw+QrasgBBhZP364Fe6iOb4KPmnQijjv4aW1B1oFmAF6ld/C8gGRh
-         4zs+t7v20TsduzrX3NPGDtJ/JyhGcPkPrpqaLqO8y6JPtJVHe8ITrjoFKEJTFEeVNB8+
-         ArcV9CWmT8m2uEjSJudoHwUly78iOsMblKlTeTDgLQjvtvHQI9KidxhsQlDXeS9XOKaa
-         iefA==
-X-Gm-Message-State: AOJu0YxJKX6vB0svcPZJgSRRH/7cnV/y2DTWqI5IyyoWc/teWt3eYB7n
-        6waATuq7yfqmXVmCufLQo+o9itX9gVW3
-X-Google-Smtp-Source: AGHT+IE4qAyT/UaWN2Oj0ek+8QffAEjlj78Q2y4vJkbHQ2R8T+5aASA1i2KxSJKzRvjMHEsS5tZkFEiOSmvk
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7be5:14d2:880b:c5c9])
- (user=irogers job=sendgmr) by 2002:a25:abc9:0:b0:d9a:6360:485b with SMTP id
- v67-20020a25abc9000000b00d9a6360485bmr169468ybi.2.1697091877832; Wed, 11 Oct
- 2023 23:24:37 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 23:23:59 -0700
-In-Reply-To: <20231012062359.1616786-1-irogers@google.com>
-Message-Id: <20231012062359.1616786-14-irogers@google.com>
-Mime-Version: 1.0
-References: <20231012062359.1616786-1-irogers@google.com>
-X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v2 13/13] perf machine thread: Remove exited threads by default
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <song@kernel.org>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Leo Yan <leo.yan@linaro.org>,
-        German Gomez <german.gomez@arm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Artem Savkov <asavkov@redhat.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 12 Oct 2023 02:25:17 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A6A22121
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:50 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id BE20980E1;
+        Thu, 12 Oct 2023 06:24:49 +0000 (UTC)
+Date:   Thu, 12 Oct 2023 09:24:48 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] printk: Check valid console index for preferred
+ console
+Message-ID: <20231012062448.GF34982@atomide.com>
+References: <20231011074330.14487-1-tony@atomide.com>
+ <18944d40-321a-46b2-b97c-a8c3f98daccd@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <18944d40-321a-46b2-b97c-a8c3f98daccd@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct thread values hold onto references to mmaps, dsos, etc. When a
-thread exits it is necessary to clean all of this memory up by
-removing the thread from the machine's threads. Some tools require
-this doesn't happen, such as perf report if offcpu events exist or if
-a task list is being generated, so add a symbol_conf value to make the
-behavior optional. When an exited thread is left in the machine's
-threads, mark it as exited.
+* Jiri Slaby <jirislaby@kernel.org> [231012 05:54]:
+> On 11. 10. 23, 9:43, Tony Lindgren wrote:
+> > Let's check for valid console index values to avoid bogus console index
+> > numbers from kernel command line. While struct console uses short for
+> > index, and negative index values are used by some device drivers, we do
+> > not want to allow negative values for preferred console.
+> > 
+> > Let's change the idx to short to match struct console, and return an error
+> > on negative values. And let's also constify idx while at it.
+> > 
+> > Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ...
+> > --- a/kernel/printk/printk.c
+> > +++ b/kernel/printk/printk.c
+> > @@ -2404,12 +2404,19 @@ static void set_user_specified(struct console_cmdline *c, bool user_specified)
+> >   	console_set_on_cmdline = 1;
+> >   }
+> > -static int __add_preferred_console(char *name, int idx, char *options,
+> > +static int __add_preferred_console(const char *name, const short idx, char *options,
+> 
+> This "const char *name" change is somehow not related to 1/2, but to 2/2, I
+> suppose.
 
-This change relates to commit 40826c45eb0b ("perf thread: Remove
-notion of dead threads"). Dead threads were removed as they had a
-reference count of 0 and were difficult to reason about with the
-reference count checker. Here a thread is removed from threads when it
-exits, unless via symbol_conf the exited thread isn't remove and is
-marked as exited. Reference counting behaves as it normally does.
+Thanks I just noticed that too, that sneaked in while I was resolving a
+merge conflict while changing the order of the two patches.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/builtin-report.c   |  7 +++++++
- tools/perf/util/machine.c     | 10 +++++++---
- tools/perf/util/symbol_conf.h |  3 ++-
- tools/perf/util/thread.h      | 14 ++++++++++++++
- 4 files changed, 30 insertions(+), 4 deletions(-)
+Regards,
 
-diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index dcedfe00f04d..749246817aed 100644
---- a/tools/perf/builtin-report.c
-+++ b/tools/perf/builtin-report.c
-@@ -1411,6 +1411,13 @@ int cmd_report(int argc, const char **argv)
- 	if (ret < 0)
- 		goto exit;
- 
-+	/*
-+	 * tasks_mode require access to exited threads to list those that are in
-+	 * the data file. Off-cpu events are synthesized after other events and
-+	 * reference exited threads.
-+	 */
-+	symbol_conf.keep_exited_threads = true;
-+
- 	annotation_options__init(&report.annotation_opts);
- 
- 	ret = perf_config(report__config, &report);
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 6ca7500e2cf4..5cda47eb337d 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -2157,9 +2157,13 @@ int machine__process_exit_event(struct machine *machine, union perf_event *event
- 	if (dump_trace)
- 		perf_event__fprintf_task(event, stdout);
- 
--	if (thread != NULL)
--		thread__put(thread);
--
-+	if (thread != NULL) {
-+		if (symbol_conf.keep_exited_threads)
-+			thread__set_exited(thread, /*exited=*/true);
-+		else
-+			machine__remove_thread(machine, thread);
-+	}
-+	thread__put(thread);
- 	return 0;
- }
- 
-diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_conf.h
-index 2b2fb9e224b0..6040286e07a6 100644
---- a/tools/perf/util/symbol_conf.h
-+++ b/tools/perf/util/symbol_conf.h
-@@ -43,7 +43,8 @@ struct symbol_conf {
- 			disable_add2line_warn,
- 			buildid_mmap2,
- 			guest_code,
--			lazy_load_kernel_maps;
-+			lazy_load_kernel_maps,
-+			keep_exited_threads;
- 	const char	*vmlinux_name,
- 			*kallsyms_name,
- 			*source_prefix,
-diff --git a/tools/perf/util/thread.h b/tools/perf/util/thread.h
-index e79225a0ea46..0df775b5c110 100644
---- a/tools/perf/util/thread.h
-+++ b/tools/perf/util/thread.h
-@@ -36,13 +36,22 @@ struct thread_rb_node {
- };
- 
- DECLARE_RC_STRUCT(thread) {
-+	/** @maps: mmaps associated with this thread. */
- 	struct maps		*maps;
- 	pid_t			pid_; /* Not all tools update this */
-+	/** @tid: thread ID number unique to a machine. */
- 	pid_t			tid;
-+	/** @ppid: parent process of the process this thread belongs to. */
- 	pid_t			ppid;
- 	int			cpu;
- 	int			guest_cpu; /* For QEMU thread */
- 	refcount_t		refcnt;
-+	/**
-+	 * @exited: Has the thread had an exit event. Such threads are usually
-+	 * removed from the machine's threads but some events/tools require
-+	 * access to dead threads.
-+	 */
-+	bool			exited;
- 	bool			comm_set;
- 	int			comm_len;
- 	struct list_head	namespaces_list;
-@@ -189,6 +198,11 @@ static inline refcount_t *thread__refcnt(struct thread *thread)
- 	return &RC_CHK_ACCESS(thread)->refcnt;
- }
- 
-+static inline void thread__set_exited(struct thread *thread, bool exited)
-+{
-+	RC_CHK_ACCESS(thread)->exited = exited;
-+}
-+
- static inline bool thread__comm_set(const struct thread *thread)
- {
- 	return RC_CHK_ACCESS(thread)->comm_set;
--- 
-2.42.0.609.gbb76f46606-goog
-
+Tony
