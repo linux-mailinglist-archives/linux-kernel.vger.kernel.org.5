@@ -2,262 +2,484 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CDF7C6F35
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F54D7C6F1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347262AbjJLNag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40936 "EHLO
+        id S1378706AbjJLN0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 09:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347290AbjJLNab (ORCPT
+        with ESMTP id S1347209AbjJLN0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:30:31 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD39BB;
-        Thu, 12 Oct 2023 06:30:28 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CDRmsJ001634;
-        Thu, 12 Oct 2023 13:29:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=bpdH/n3r6+yycJzKF5SsiELzintg9p4tdVCawcD9mM0=;
- b=WNPuzFyqVUo9ErvL9bORrPi+XkUKVPlUszUi/bOG0qfn3LlogMDu/2H/hLTyOpayArIz
- 69d+UE/uFu7sQkFYQjPYmQCUS2cQJl403k7SCyqcSle6QHRiBFvCBvKxwDBg3BX5MbMX
- HTv+GF/y3nMPt4017TMcua7H87GqOtVWyKZYSQ00nQZ4gIiuPN1sVfYjEtSs8fxyUwnh
- xeEaTfQwKCr1+KuRX8Q4aU43KZQiRUTcjisXSLYINhHX3HuKRLDNJ+R60Lngyt+xU9vz
- J80eI4M2bAETGZkn+PMJWlyyyF3vpx8T6UnSe6xaLK9KWUw4Yd0TngNO6JiMeDQ57oIP nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tphpvr256-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 13:29:51 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39CDToZN009080;
-        Thu, 12 Oct 2023 13:29:50 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tphpvr219-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 13:29:50 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39CBpObj024465;
-        Thu, 12 Oct 2023 13:25:05 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkhnt01ba-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 13:25:05 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CDP4AH57672082
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Oct 2023 13:25:04 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 92D2358059;
-        Thu, 12 Oct 2023 13:25:04 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 56D905805D;
-        Thu, 12 Oct 2023 13:25:01 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.11.225])
-        by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Oct 2023 13:25:01 +0000 (GMT)
-Message-ID: <84cfe4d93cb5b02591f4bd921b828eb6f3e95faa.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 02/25] ima: Align ima_post_path_mknod() definition
- with LSM infrastructure
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Thu, 12 Oct 2023 09:25:00 -0400
-In-Reply-To: <2336abd6ae195eda221d54e3c2349a4760afaff2.camel@huaweicloud.com>
-References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
-         <20230904133415.1799503-3-roberto.sassu@huaweicloud.com>
-         <a733fe780a3197150067ad35ed280bf85e11fa97.camel@linux.ibm.com>
-         <b51baf7741de1fdee8b36a87bd2dde71184d47a8.camel@huaweicloud.com>
-         <8646e30b0074a2932076b5a0a792b14be034de98.camel@linux.ibm.com>
-         <16c8c95f2e63ab9a2fba8cba919bf129d0541b61.camel@huaweicloud.com>
-         <c16551704db68c6e0ba89c729c892e9401f05dfc.camel@linux.ibm.com>
-         <2336abd6ae195eda221d54e3c2349a4760afaff2.camel@huaweicloud.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 3O5zaE-jKMy0v3K8bSHmEwYSbhvfpYCS
-X-Proofpoint-GUID: m8ZqZUL2g5V8V5rT8_Mbj_JZVELiLoiS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- spamscore=0 phishscore=0 malwarescore=0 suspectscore=0 adultscore=0
- priorityscore=1501 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310120110
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 12 Oct 2023 09:26:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68B891
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:26:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697117206; x=1728653206;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=FjNgeKKEcML4p120jTUCqmZCaXEbLMYWLcHA85fs++s=;
+  b=TpTPCFYmHS867EjNhmUmDhQ0MutXznz8r5Wa0qj4trR6SqLx0LIA+ka3
+   iVoQAa4gGiN66XE97YlykFkpsF6/MCLh357sRY1OF6fTNScUktTT92G20
+   st1YiE3tlJQ7pgOTk+sFKnjNou4olCmdalyOYgods8NmsetunGsvIgLBv
+   frSUlW2aDEt/t0jrPSQA1B4ZI8fxovOkCslidy0I75u9b8j02ZUJ88OEF
+   ZilHiFRkEbeudNHGsoKsrrrNY5Tw06f48qA7t/tfZWn3JreLNH1zxlUSR
+   0pr3ZziqScAkseZXvZZUEk02i2Nnm70dMJlMn07TCoby+FcfTTOxb6sXN
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="415967334"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="415967334"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 06:26:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="870578033"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="870578033"
+Received: from dstacken-mobl1.ger.corp.intel.com (HELO fedora..) ([10.249.254.172])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 06:26:37 -0700
+From:   =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>
+To:     intel-xe@lists.freedesktop.org
+Cc:     =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Paulo R Zanoni <paulo.r.zanoni@intel.com>,
+        Nirmoy Das <nirmoy.das@intel.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Oak Zeng <oak.zeng@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Francois Dugast <francois.dugast@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v8] Documentation/gpu: Add a VM_BIND async document
+Date:   Thu, 12 Oct 2023 15:25:52 +0200
+Message-ID: <20231012132552.20196-1-thomas.hellstrom@linux.intel.com>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-12 at 14:19 +0200, Roberto Sassu wrote:
-> On Thu, 2023-10-12 at 07:42 -0400, Mimi Zohar wrote:
-> > On Thu, 2023-10-12 at 09:29 +0200, Roberto Sassu wrote:
-> > > On Wed, 2023-10-11 at 15:01 -0400, Mimi Zohar wrote:
-> > > > On Wed, 2023-10-11 at 18:02 +0200, Roberto Sassu wrote:
-> > > > > On Wed, 2023-10-11 at 10:38 -0400, Mimi Zohar wrote:
-> > > > > > On Mon, 2023-09-04 at 15:33 +0200, Roberto Sassu wrote:
-> > > > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > > > > 
-> > > > > > > Change ima_post_path_mknod() definition, so that it can be registered as
-> > > > > > > implementation of the path_post_mknod hook. Since LSMs see a umask-stripped
-> > > > > > > mode from security_path_mknod(), pass the same to ima_post_path_mknod() as
-> > > > > > > well.
-> > > > > > > Also, make sure that ima_post_path_mknod() is executed only if
-> > > > > > > (mode & S_IFMT) is equal to zero or S_IFREG.
-> > > > > > > 
-> > > > > > > Add this check to take into account the different placement of the
-> > > > > > > path_post_mknod hook (to be introduced) in do_mknodat().
-> > > > > > 
-> > > > > > Move "(to be introduced)" to when it is first mentioned.
-> > > > > > 
-> > > > > > > Since the new hook
-> > > > > > > will be placed after the switch(), the check ensures that
-> > > > > > > ima_post_path_mknod() is invoked as originally intended when it is
-> > > > > > > registered as implementation of path_post_mknod.
-> > > > > > > 
-> > > > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > > > > ---
-> > > > > > >  fs/namei.c                        |  9 ++++++---
-> > > > > > >  include/linux/ima.h               |  7 +++++--
-> > > > > > >  security/integrity/ima/ima_main.c | 10 +++++++++-
-> > > > > > >  3 files changed, 20 insertions(+), 6 deletions(-)
-> > > > > > > 
-> > > > > > > diff --git a/fs/namei.c b/fs/namei.c
-> > > > > > > index e56ff39a79bc..c5e96f716f98 100644
-> > > > > > > --- a/fs/namei.c
-> > > > > > > +++ b/fs/namei.c
-> > > > > > > @@ -4024,6 +4024,7 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
-> > > > > > >  	struct path path;
-> > > > > > >  	int error;
-> > > > > > >  	unsigned int lookup_flags = 0;
-> > > > > > > +	umode_t mode_stripped;
-> > > > > > >  
-> > > > > > >  	error = may_mknod(mode);
-> > > > > > >  	if (error)
-> > > > > > > @@ -4034,8 +4035,9 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
-> > > > > > >  	if (IS_ERR(dentry))
-> > > > > > >  		goto out1;
-> > > > > > >  
-> > > > > > > -	error = security_path_mknod(&path, dentry,
-> > > > > > > -			mode_strip_umask(path.dentry->d_inode, mode), dev);
-> > > > > > > +	mode_stripped = mode_strip_umask(path.dentry->d_inode, mode);
-> > > > > > > +
-> > > > > > > +	error = security_path_mknod(&path, dentry, mode_stripped, dev);
-> > > > > > >  	if (error)
-> > > > > > >  		goto out2;
-> > > > > > >  
-> > > > > > > @@ -4045,7 +4047,8 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
-> > > > > > >  			error = vfs_create(idmap, path.dentry->d_inode,
-> > > > > > >  					   dentry, mode, true);
-> > > > > > >  			if (!error)
-> > > > > > > -				ima_post_path_mknod(idmap, dentry);
-> > > > > > > +				ima_post_path_mknod(idmap, &path, dentry,
-> > > > > > > +						    mode_stripped, dev);
-> > > > > > >  			break;
-> > > > > > >  		case S_IFCHR: case S_IFBLK:
-> > > > > > >  			error = vfs_mknod(idmap, path.dentry->d_inode,
-> > > > > > > diff --git a/include/linux/ima.h b/include/linux/ima.h
-> > > > > > > index 910a2f11a906..179ce52013b2 100644
-> > > > > > > --- a/include/linux/ima.h
-> > > > > > > +++ b/include/linux/ima.h
-> > > > > > > @@ -32,7 +32,8 @@ extern int ima_read_file(struct file *file, enum kernel_read_file_id id,
-> > > > > > >  extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
-> > > > > > >  			      enum kernel_read_file_id id);
-> > > > > > >  extern void ima_post_path_mknod(struct mnt_idmap *idmap,
-> > > > > > > -				struct dentry *dentry);
-> > > > > > > +				const struct path *dir, struct dentry *dentry,
-> > > > > > > +				umode_t mode, unsigned int dev);
-> > > > > > >  extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
-> > > > > > >  extern int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size);
-> > > > > > >  extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
-> > > > > > > @@ -114,7 +115,9 @@ static inline int ima_post_read_file(struct file *file, void *buf, loff_t size,
-> > > > > > >  }
-> > > > > > >  
-> > > > > > >  static inline void ima_post_path_mknod(struct mnt_idmap *idmap,
-> > > > > > > -				       struct dentry *dentry)
-> > > > > > > +				       const struct path *dir,
-> > > > > > > +				       struct dentry *dentry,
-> > > > > > > +				       umode_t mode, unsigned int dev)
-> > > > > > >  {
-> > > > > > >  	return;
-> > > > > > >  }
-> > > > > > > diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> > > > > > > index 365db0e43d7c..76eba92d7f10 100644
-> > > > > > > --- a/security/integrity/ima/ima_main.c
-> > > > > > > +++ b/security/integrity/ima/ima_main.c
-> > > > > > > @@ -696,18 +696,26 @@ void ima_post_create_tmpfile(struct mnt_idmap *idmap,
-> > > > > > >  /**
-> > > > > > >   * ima_post_path_mknod - mark as a new inode
-> > > > > > >   * @idmap: idmap of the mount the inode was found from
-> > > > > > > + * @dir: path structure of parent of the new file
-> > > > > > >   * @dentry: newly created dentry
-> > > > > > > + * @mode: mode of the new file
-> > > > > > > + * @dev: undecoded device number
-> > > > > > >   *
-> > > > > > >   * Mark files created via the mknodat syscall as new, so that the
-> > > > > > >   * file data can be written later.
-> > > > > > >   */
-> > > > > > >  void ima_post_path_mknod(struct mnt_idmap *idmap,
-> > > > > > > -			 struct dentry *dentry)
-> > > > > > > +			 const struct path *dir, struct dentry *dentry,
-> > > > > > > +			 umode_t mode, unsigned int dev)
-> > > > > > >  {
-> > > > > > >  	struct integrity_iint_cache *iint;
-> > > > > > >  	struct inode *inode = dentry->d_inode;
-> > > > > > >  	int must_appraise;
-> > > > > > >  
-> > > > > > > +	/* See do_mknodat(), IMA is executed for case 0: and case S_IFREG: */
-> > > > > > > +	if ((mode & S_IFMT) != 0 && (mode & S_IFMT) != S_IFREG)
-> > > > > > > +		return;
-> > > > > > > +
-> > > > > > 
-> > > > > > There's already a check below to make sure that this is a regular file.
-> > > > > > Are both needed?
-> > > > > 
-> > > > > You are right, I can remove the first check.
-> > > > 
-> > > > The question then becomes why modify hook the arguments?   
-> > > 
-> > > We need to make sure that ima_post_path_mknod() has the same parameters
-> > > as the LSM hook at the time we register it to the LSM infrastructure.
-> > 
-> > I'm trying to understand why the pre hook parameters and the missing
-> > IMA parameter are used, as opposed to just defining the new
-> > post_path_mknod hook like IMA.
-> 
-> As an empyrical rule, I pass the same parameters as the corresponding
-> pre hook (plus idmap, in this case). This is similar to the
-> inode_setxattr hook. But I can be wrong, if desired I can reduce.
+Add a motivation for and description of asynchronous VM_BIND operation
 
-The inode_setxattr hook change example is legitimate, as EVM includes
-idmap, while IMA doesn't. 
+v2:
+- Fix typos (Nirmoy Das)
+- Improve the description of a memory fence (Oak Zeng)
+- Add a reference to the document in the Xe RFC.
+- Add pointers to sample uAPI suggestions
+v3:
+- Address review comments (Danilo Krummrich)
+- Formatting fixes
+v4:
+- Address typos (Francois Dugast)
+- Explain why in-fences are not allowed for VM_BIND operations for long-
+  running workloads (Matthew Brost)
+v5:
+- More typo- and style fixing
+- Further clarify the implications of disallowing in-fences for VM_BIND
+  operations for long-running workloads (Matthew Brost)
+v6:
+- Point out that a gpu_vm is a virtual GPU Address space.
+  (Danilo Krummrich)
+- For an explanation of dma-fences point to the dma-fence documentation.
+  (Paulo Zanoni)
+- Clarify that VM_BIND errors are reported synchronously. (Paulo Zanoni)
+- Use an rst doc reference when pointing to the async vm_bind document
+  from the xe merge plan.
+- Add the VM_BIND documentation to the drm documentation table-of-content,
+  using an intermediate "Misc DRM driver uAPI- and feature implementation
+  guidelines"
+v7:
+- Update the error handling documentation to remove the VM error state.
+v8:
+- Clarify error handling and difference in operation support between
+  async VM_BIND and sync VM_BIND. (Paulo Zanoni)
+- Update the sample uAPI with a self-contained example. (Paulo Zanoni)
 
-Unless there is a good reason for the additional parameters, I'm not
-sure that adding them makes sense.  Not modifying the parameter list
-will reduce the size of this patch set.
+Cc: Paulo R Zanoni <paulo.r.zanoni@intel.com>
+Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+Acked-by: Nirmoy Das <nirmoy.das@intel.com>
+Reviewed-by: Danilo Krummrich <dakr@redhat.com>
+Reviewed-by: Matthew Brost <matthew.brost@intel.com>
+Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Reviewed-by: Paulo Zanoni <paulo.r.zanoni@intel.com>
+---
+ Documentation/gpu/drm-vm-bind-async.rst       | 309 ++++++++++++++++++
+ .../gpu/implementation_guidelines.rst         |   9 +
+ Documentation/gpu/index.rst                   |   1 +
+ Documentation/gpu/rfc/xe.rst                  |   4 +-
+ 4 files changed, 321 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/gpu/drm-vm-bind-async.rst
+ create mode 100644 Documentation/gpu/implementation_guidelines.rst
 
+diff --git a/Documentation/gpu/drm-vm-bind-async.rst b/Documentation/gpu/drm-vm-bind-async.rst
+new file mode 100644
+index 000000000000..3d709d02099c
+--- /dev/null
++++ b/Documentation/gpu/drm-vm-bind-async.rst
+@@ -0,0 +1,309 @@
++.. SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++
++====================
++Asynchronous VM_BIND
++====================
++
++Nomenclature:
++=============
++
++* ``VRAM``: On-device memory. Sometimes referred to as device local memory.
++
++* ``gpu_vm``: A virtual GPU address space. Typically per process, but
++  can be shared by multiple processes.
++
++* ``VM_BIND``: An operation or a list of operations to modify a gpu_vm using
++  an IOCTL. The operations include mapping and unmapping system- or
++  VRAM memory.
++
++* ``syncobj``: A container that abstracts synchronization objects. The
++  synchronization objects can be either generic, like dma-fences or
++  driver specific. A syncobj typically indicates the type of the
++  underlying synchronization object.
++
++* ``in-syncobj``: Argument to a VM_BIND IOCTL, the VM_BIND operation waits
++  for these before starting.
++
++* ``out-syncobj``: Argument to a VM_BIND_IOCTL, the VM_BIND operation
++  signals these when the bind operation is complete.
++
++* ``dma-fence``: A cross-driver synchronization object. A basic
++  understanding of dma-fences is required to digest this
++  document. Please refer to the ``DMA Fences`` section of the
++  :doc:`dma-buf doc </driver-api/dma-buf>`.
++
++* ``memory fence``: A synchronization object, different from a dma-fence.
++  A memory fence uses the value of a specified memory location to determine
++  signaled status. A memory fence can be awaited and signaled by both
++  the GPU and CPU. Memory fences are sometimes referred to as
++  user-fences, userspace-fences or gpu futexes and do not necessarily obey
++  the dma-fence rule of signaling within a "reasonable amount of time".
++  The kernel should thus avoid waiting for memory fences with locks held.
++
++* ``long-running workload``: A workload that may take more than the
++  current stipulated dma-fence maximum signal delay to complete and
++  which therefore needs to set the gpu_vm or the GPU execution context in
++  a certain mode that disallows completion dma-fences.
++
++* ``exec function``: An exec function is a function that revalidates all
++  affected gpu_vmas, submits a GPU command batch and registers the
++  dma_fence representing the GPU command's activity with all affected
++  dma_resvs. For completeness, although not covered by this document,
++  it's worth mentioning that an exec function may also be the
++  revalidation worker that is used by some drivers in compute /
++  long-running mode.
++
++* ``bind context``: A context identifier used for the VM_BIND
++  operation. VM_BIND operations that use the same bind context can be
++  assumed, where it matters, to complete in order of submission. No such
++  assumptions can be made for VM_BIND operations using separate bind contexts.
++
++* ``UMD``: User-mode driver.
++
++* ``KMD``: Kernel-mode driver.
++
++
++Synchronous / Asynchronous VM_BIND operation
++============================================
++
++Synchronous VM_BIND
++___________________
++With Synchronous VM_BIND, the VM_BIND operations all complete before the
++IOCTL returns. A synchronous VM_BIND takes neither in-fences nor
++out-fences. Synchronous VM_BIND may block and wait for GPU operations;
++for example swap-in or clearing, or even previous binds.
++
++Asynchronous VM_BIND
++____________________
++Asynchronous VM_BIND accepts both in-syncobjs and out-syncobjs. While the
++IOCTL may return immediately, the VM_BIND operations wait for the in-syncobjs
++before modifying the GPU page-tables, and signal the out-syncobjs when
++the modification is done in the sense that the next exec function that
++awaits for the out-syncobjs will see the change. Errors are reported
++synchronously.
++In low-memory situations the implementation may block, performing the
++VM_BIND synchronously, because there might not be enough memory
++immediately available for preparing the asynchronous operation.
++
++If the VM_BIND IOCTL takes a list or an array of operations as an argument,
++the in-syncobjs needs to signal before the first operation starts to
++execute, and the out-syncobjs signal after the last operation
++completes. Operations in the operation list can be assumed, where it
++matters, to complete in order.
++
++Since asynchronous VM_BIND operations may use dma-fences embedded in
++out-syncobjs and internally in KMD to signal bind completion,  any
++memory fences given as VM_BIND in-fences need to be awaited
++synchronously before the VM_BIND ioctl returns, since dma-fences,
++required to signal in a reasonable amount of time, can never be made
++to depend on memory fences that don't have such a restriction.
++
++The purpose of an Asynchronous VM_BIND operation is for user-mode
++drivers to be able to pipeline interleaved gpu_vm modifications and
++exec functions. For long-running workloads, such pipelining of a bind
++operation is not allowed and any in-fences need to be awaited
++synchronously. The reason for this is twofold. First, any memory
++fences gated by a long-running workload and used as in-syncobjs for the
++VM_BIND operation will need to be awaited synchronously anyway (see
++above). Second, any dma-fences used as in-syncobjs for VM_BIND
++operations for long-running workloads will not allow for pipelining
++anyway since long-running workloads don't allow for dma-fences as
++out-syncobjs, so while theoretically possible the use of them is
++questionable and should be rejected until there is a valuable use-case.
++Note that this is not a limitation imposed by dma-fence rules, but
++rather a limitation imposed to keep KMD implementation simple. It does
++not affect using dma-fences as dependencies for the long-running
++workload itself, which is allowed by dma-fence rules, but rather for
++the VM_BIND operation only.
++
++An asynchronous VM_BIND operation may take substantial time to
++complete and signal the out_fence. In particular if the operation is
++deeply pipelined behind other VM_BIND operations and workloads
++submitted using exec functions. In that case, UMD might want to avoid a
++subsequent VM_BIND operation to be queued behind the first one if
++there are no explicit dependencies. In order to circumvent such a queue-up, a
++VM_BIND implementation may allow for VM_BIND contexts to be
++created. For each context, VM_BIND operations will be guaranteed to
++complete in the order they were submitted, but that is not the case
++for VM_BIND operations executing on separate VM_BIND contexts. Instead
++KMD will attempt to execute such VM_BIND operations in parallel but
++leaving no guarantee that they will actually be executed in
++parallel. There may be internal implicit dependencies that only KMD knows
++about, for example page-table structure changes. A way to attempt
++to avoid such internal dependencies is to have different VM_BIND
++contexts use separate regions of a VM.
++
++Also for VM_BINDS for long-running gpu_vms the user-mode driver should typically
++select memory fences as out-fences since that gives greater flexibility for
++the kernel mode driver to inject other operations into the bind /
++unbind operations. Like for example inserting breakpoints into batch
++buffers. The workload execution can then easily be pipelined behind
++the bind completion using the memory out-fence as the signal condition
++for a GPU semaphore embedded by UMD in the workload.
++
++There is no difference in the operations supported or in
++multi-operation support between asynchronous VM_BIND and synchronous VM_BIND.
++
++Multi-operation VM_BIND IOCTL error handling and interrupts
++===========================================================
++
++The VM_BIND operations of the IOCTL may error for various reasons, for
++example due to lack of resources to complete and due to interrupted
++waits.
++In these situations UMD should preferably restart the IOCTL after
++taking suitable action.
++If UMD has over-committed a memory resource, an -ENOSPC error will be
++returned, and UMD may then unbind resources that are not used at the
++moment and rerun the IOCTL. On -EINTR, UMD should simply rerun the
++IOCTL and on -ENOMEM user-space may either attempt to free known
++system memory resources or fail. In case of UMD deciding to fail a
++bind operation, due to an error return, no additional action is needed
++to clean up the failed operation, and the VM is left in the same state
++as it was before the failing IOCTL.
++Unbind operations are guaranteed not to return any errors due to
++resource constraints, but may return errors due to, for example,
++invalid arguments or the gpu_vm being banned.
++In the case an unexpected error happens during the asynchronous bind
++process, the gpu_vm will be banned, and attempts to use it after banning
++will return -ENOENT.
++
++Example: The Xe VM_BIND uAPI
++============================
++
++Starting with the VM_BIND operation struct, the IOCTL call can take
++zero, one or many such operations. A zero number means only the
++synchronization part of the IOCTL is carried out: an asynchronous
++VM_BIND updates the syncobjects, whereas a sync VM_BIND waits for the
++implicit dependencies to be fulfilled.
++
++.. code-block:: c
++
++   struct drm_xe_vm_bind_op {
++	/**
++	 * @obj: GEM object to operate on, MBZ for MAP_USERPTR, MBZ for UNMAP
++	 */
++	__u32 obj;
++
++	/** @pad: MBZ */
++	__u32 pad;
++
++	union {
++		/**
++		 * @obj_offset: Offset into the object for MAP.
++		 */
++		__u64 obj_offset;
++
++		/** @userptr: user virtual address for MAP_USERPTR */
++		__u64 userptr;
++	};
++
++	/**
++	 * @range: Number of bytes from the object to bind to addr, MBZ for UNMAP_ALL
++	 */
++	__u64 range;
++
++	/** @addr: Address to operate on, MBZ for UNMAP_ALL */
++	__u64 addr;
++
++	/**
++	 * @tile_mask: Mask for which tiles to create binds for, 0 == All tiles,
++	 * only applies to creating new VMAs
++	 */
++	__u64 tile_mask;
++
++       /* Map (parts of) an object into the GPU virtual address range.
++    #define XE_VM_BIND_OP_MAP		0x0
++        /* Unmap a GPU virtual address range */
++    #define XE_VM_BIND_OP_UNMAP		0x1
++        /*
++	 * Map a CPU virtual address range into a GPU virtual
++	 * address range.
++	 */
++    #define XE_VM_BIND_OP_MAP_USERPTR	0x2
++        /* Unmap a gem object from the VM. */
++    #define XE_VM_BIND_OP_UNMAP_ALL	0x3
++        /*
++	 * Make the backing memory of an address range resident if
++	 * possible. Note that this doesn't pin backing memory.
++	 */
++    #define XE_VM_BIND_OP_PREFETCH	0x4
++
++        /* Make the GPU map readonly. */
++    #define XE_VM_BIND_FLAG_READONLY	(0x1 << 16)
++	/*
++	 * Valid on a faulting VM only, do the MAP operation immediately rather
++	 * than deferring the MAP to the page fault handler.
++	 */
++    #define XE_VM_BIND_FLAG_IMMEDIATE	(0x1 << 17)
++	/*
++	 * When the NULL flag is set, the page tables are setup with a special
++	 * bit which indicates writes are dropped and all reads return zero.  In
++	 * the future, the NULL flags will only be valid for XE_VM_BIND_OP_MAP
++	 * operations, the BO handle MBZ, and the BO offset MBZ. This flag is
++	 * intended to implement VK sparse bindings.
++	 */
++    #define XE_VM_BIND_FLAG_NULL	(0x1 << 18)
++	/** @op: Operation to perform (lower 16 bits) and flags (upper 16 bits) */
++	__u32 op;
++
++	/** @mem_region: Memory region to prefetch VMA to, instance not a mask */
++	__u32 region;
++
++	/** @reserved: Reserved */
++	__u64 reserved[2];
++   };
++
++
++The VM_BIND IOCTL argument itself, looks like follows. Note that for
++synchronous VM_BIND, the num_syncs and syncs fields must be zero. Here
++the ``exec_queue_id`` field is the VM_BIND context discussed previously
++that is used to facilitate out-of-order VM_BINDs.
++
++.. code-block:: c
++
++    struct drm_xe_vm_bind {
++	/** @extensions: Pointer to the first extension struct, if any */
++	__u64 extensions;
++
++	/** @vm_id: The ID of the VM to bind to */
++	__u32 vm_id;
++
++	/**
++	 * @exec_queue_id: exec_queue_id, must be of class DRM_XE_ENGINE_CLASS_VM_BIND
++	 * and exec queue must have same vm_id. If zero, the default VM bind engine
++	 * is used.
++	 */
++	__u32 exec_queue_id;
++
++	/** @num_binds: number of binds in this IOCTL */
++	__u32 num_binds;
++
++        /* If set, perform an async VM_BIND, if clear a sync VM_BIND */
++    #define XE_VM_BIND_IOCTL_FLAG_ASYNC	(0x1 << 0)
++
++	/** @flag: Flags controlling all operations in this ioctl. */
++	__u32 flags;
++
++	union {
++		/** @bind: used if num_binds == 1 */
++		struct drm_xe_vm_bind_op bind;
++
++		/**
++		 * @vector_of_binds: userptr to array of struct
++		 * drm_xe_vm_bind_op if num_binds > 1
++		 */
++		__u64 vector_of_binds;
++	};
++
++	/** @num_syncs: amount of syncs to wait for or to signal on completion. */
++	__u32 num_syncs;
++
++	/** @pad2: MBZ */
++	__u32 pad2;
++
++	/** @syncs: pointer to struct drm_xe_sync array */
++	__u64 syncs;
++
++	/** @reserved: Reserved */
++	__u64 reserved[2];
++    };
+diff --git a/Documentation/gpu/implementation_guidelines.rst b/Documentation/gpu/implementation_guidelines.rst
+new file mode 100644
+index 000000000000..138e637dcc6b
+--- /dev/null
++++ b/Documentation/gpu/implementation_guidelines.rst
+@@ -0,0 +1,9 @@
++.. SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++
++===========================================================
++Misc DRM driver uAPI- and feature implementation guidelines
++===========================================================
++
++.. toctree::
++
++   drm-vm-bind-async
+diff --git a/Documentation/gpu/index.rst b/Documentation/gpu/index.rst
+index e45ff0915246..37e383ccf73f 100644
+--- a/Documentation/gpu/index.rst
++++ b/Documentation/gpu/index.rst
+@@ -18,6 +18,7 @@ GPU Driver Developer's Guide
+    vga-switcheroo
+    vgaarbiter
+    automated_testing
++   implementation_guidelines
+    todo
+    rfc/index
+ 
+diff --git a/Documentation/gpu/rfc/xe.rst b/Documentation/gpu/rfc/xe.rst
+index b67f8e6a1825..c29113a0ac30 100644
+--- a/Documentation/gpu/rfc/xe.rst
++++ b/Documentation/gpu/rfc/xe.rst
+@@ -97,8 +97,8 @@ memory fences. Ideally with helper support so people don't get it wrong in all
+ possible ways.
+ 
+ As a key measurable result, the benefits of ASYNC VM_BIND and a discussion of
+-various flavors, error handling and a sample API should be documented here or in
+-a separate document pointed to by this document.
++various flavors, error handling and sample API suggestions are documented in
++:doc:`The ASYNC VM_BIND document </gpu/drm-vm-bind-async>`.
+ 
+ Userptr integration and vm_bind
+ -------------------------------
 -- 
-thanks,
-
-Mimi
+2.41.0
 
