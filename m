@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3607C6D39
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A967C6D06
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377488AbjJLLry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
+        id S1379176AbjJLLrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:47:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378576AbjJLLrM (ORCPT
+        with ESMTP id S1378597AbjJLLrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Oct 2023 07:47:12 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27ECEFB;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05F6103;
         Thu, 12 Oct 2023 04:47:03 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:7ae7:b86d:c19a:877e])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 97DC36607347;
-        Thu, 12 Oct 2023 12:47:01 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2B9EB660737C;
+        Thu, 12 Oct 2023 12:47:02 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
         s=mail; t=1697111222;
-        bh=7OP/lnsbD5MzPZ4L/gceSmxIzda3Ng9eLtu0phjni7k=;
+        bh=tcL10ushjZKOfejORLVlDBPX8x0SngzD2gGkivTGU0g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T8iTKldxdPoVGjc1OZd3nlBPGGAsW6nR9nFmP9nJEqoSJ+Qf7dFZ0UQ5K7+VpJSaF
-         2h8ySGip1qNoUv1VkS5r1/Km0OIEc8DKcy/X8uIzz8PWq1FL22LkgWFAVxZyuREmnP
-         /dxn6VcCuB8mjGuudOfza3UhINJl0zgdDxAgrYj9P0YGCDuy+xRRwZvZ/3l2BpdyZa
-         +qSRaur88qCpLOLmsgoyJv4ahRkjakt+U8bmTpOa2QchCmF9LJ745axVM845FnZrxJ
-         mPvjm3Z/+BfWR5iAAmgo7eISs7596yYS+zvhO6z+wJvBc9/4nMXvud6uytgEcIq2ET
-         YjSD4MWM+BHDQ==
+        b=ldW/Ogjn9kC7gijcctJUy/y/+tFA0G7iAnA/ttNi0MVF+0mW3uyktXU526npAf3Wd
+         B8jXbM6qUhwD4mEpacvh2dWg6MJNrsnW6dpB5ib3/1mvycY4+CBfekkt4EjWGKu5tT
+         LrMbdQ+L9Qviv1A8u8gVDalkbsHMBXdPyTD3EPT/+xxlJxg+Prl3SfhCCQNm7zSf9w
+         NOw3TH2uk3HtGi0/wwAHViVKX8HCyoCNJdUba0qgVOCyqpbCbVO3pdmOz72ATTysmj
+         yb3MqZbn66e2YrfsDGI4rkDivBXmmL8PVFzGf7/LwkbgCG97VWKM9OLI7HX0Y612ho
+         dGi7FgsOFNteg==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -42,10 +42,11 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v11 23/56] media: pci: dt3155: Remove useless check
-Date:   Thu, 12 Oct 2023 13:46:09 +0200
-Message-Id: <20231012114642.19040-24-benjamin.gaignard@collabora.com>
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Sergey Kozlov <serjk@netup.ru>, Abylay Ospan <aospan@netup.ru>
+Subject: [PATCH v11 24/56] media: pci: netup_unidvb: Remove useless number of buffers check
+Date:   Thu, 12 Oct 2023 13:46:10 +0200
+Message-Id: <20231012114642.19040-25-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
 References: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
@@ -60,27 +61,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-min_buffers_needed is already set to 2 so remove this useless
-check.
+vb2 core tests this already so remove it.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+CC: Sergey Kozlov <serjk@netup.ru>
+CC: Abylay Ospan <aospan@netup.ru>
 ---
- drivers/media/pci/dt3155/dt3155.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/media/pci/netup_unidvb/netup_unidvb_core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/media/pci/dt3155/dt3155.c b/drivers/media/pci/dt3155/dt3155.c
-index 548156b199cc..d09cde2f6ee4 100644
---- a/drivers/media/pci/dt3155/dt3155.c
-+++ b/drivers/media/pci/dt3155/dt3155.c
-@@ -128,8 +128,6 @@ dt3155_queue_setup(struct vb2_queue *vq,
- 	struct dt3155_priv *pd = vb2_get_drv_priv(vq);
- 	unsigned size = pd->width * pd->height;
+diff --git a/drivers/media/pci/netup_unidvb/netup_unidvb_core.c b/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
+index d85bfbb77a25..52de9b0af812 100644
+--- a/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
++++ b/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
+@@ -297,11 +297,9 @@ static int netup_unidvb_queue_setup(struct vb2_queue *vq,
+ 	dev_dbg(&dma->ndev->pci_dev->dev, "%s()\n", __func__);
  
--	if (vq->num_buffers + *nbuffers < 2)
--		*nbuffers = 2 - vq->num_buffers;
- 	if (*num_planes)
- 		return sizes[0] < size ? -EINVAL : 0;
- 	*num_planes = 1;
+ 	*nplanes = 1;
+-	if (vq->num_buffers + *nbuffers < VIDEO_MAX_FRAME)
+-		*nbuffers = VIDEO_MAX_FRAME - vq->num_buffers;
+ 	sizes[0] = PAGE_ALIGN(NETUP_DMA_PACKETS_COUNT * 188);
+ 	dev_dbg(&dma->ndev->pci_dev->dev, "%s() nbuffers=%d sizes[0]=%d\n",
+-		__func__, *nbuffers, sizes[0]);
++		__func__, vb2_get_num_buffers(vq), sizes[0]);
+ 	return 0;
+ }
+ 
 -- 
 2.39.2
 
