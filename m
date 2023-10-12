@@ -2,270 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 156737C62F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 04:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2BB7C62ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 04:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376914AbjJLCjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 22:39:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44280 "EHLO
+        id S1376906AbjJLCj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 22:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235291AbjJLCjY (ORCPT
+        with ESMTP id S1376824AbjJLCiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 22:39:24 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1FFFBA
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 19:38:55 -0700 (PDT)
-Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S5Ydk12DXzVl1X;
-        Thu, 12 Oct 2023 10:35:22 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 12 Oct 2023 10:38:52 +0800
-Subject: Re: [PATCH RFC] ubi: gluebi: Fix NULL pointer dereference caused by
- ftl notifier
-To:     ZhaoLong Wang <wangzhaolong1@huawei.com>, <richard@nod.at>,
-        <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>
-References: <20231010142925.545238-1-wangzhaolong1@huawei.com>
- <9f96baf1-962e-d595-0e4f-797315cd0348@huawei.com>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <b972f615-3882-18cf-5b44-7ec021f92e0a@huawei.com>
-Date:   Thu, 12 Oct 2023 10:38:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Wed, 11 Oct 2023 22:38:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4629DD3;
+        Wed, 11 Oct 2023 19:38:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697078329; x=1728614329;
+  h=from:to:subject:date:message-id:in-reply-to:references:
+   mime-version:content-transfer-encoding;
+  bh=oAUveAvdtna8f06zEJwix8Mg346cwI/ZjTYXEiCeEBw=;
+  b=brkMSsvfPC7g7UMklXlFC1d+QVTA/1UKguKP2dDGowLq0ApCMDi6eEwO
+   B1L+P3mPRlepIhdZrIrDs38YkurZcsOi2aIkojAYVlWegAUuyTVQFmPwk
+   ABF/RZWNXx8QA/tO2ydIWUwxWhfRMKWKtDhiMVxVbF6dqixz3S1VvyaE0
+   cBoude7xTylyTwB36YDNZW4+dzsIwjvn70PmeFMdQfHC76VvzQWPtV9Jd
+   zQ7etwttgs14lJoYc0UnnJsdoJ7DT7jo+opc9GqNPBdPj3C7r6AhlxLzJ
+   nhJEf4+yaeJqT3JRu75WqUmJCV7Omx8IhCFMv1+GXu8qg5qj4Mby5fQh4
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="3402637"
+X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
+   d="scan'208";a="3402637"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 19:38:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="783507875"
+X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
+   d="scan'208";a="783507875"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 19:38:43 -0700
+Received: from debox1-desk4.intel.com (unknown [10.209.105.238])
+        by linux.intel.com (Postfix) with ESMTP id 30186580D79;
+        Wed, 11 Oct 2023 19:38:43 -0700 (PDT)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        ilpo.jarvinen@linux.intel.com, rajvi.jingar@linux.intel.com
+Subject: [PATCH V3 16/16] platform/x86/intel/pmc: Show Die C6 counter on Meteor Lake
+Date:   Wed, 11 Oct 2023 19:38:40 -0700
+Message-Id: <20231012023840.3845703-17-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231012023840.3845703-1-david.e.box@linux.intel.com>
+References: <20231012023840.3845703-1-david.e.box@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <9f96baf1-962e-d595-0e4f-797315cd0348@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm000013.china.huawei.com (7.193.23.81)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2023/10/11 10:32, ZhaoLong Wang 写道:
-> 
->> This patch assumes that the gluebi module is not designed to work with
->> the ftl module. In this case, the patch only needs to prevent the ftl
->> notifier operation.
->>
->> Add some correctness check for gluebi->desc in gluebi_read/write/erase(),
->> If the pointer is invalid, the -EINVAL is returned.
->>
->> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217992 [1]
->> Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
->> ---
->>   drivers/mtd/ubi/gluebi.c | 8 ++++++++
->>   1 file changed, 8 insertions(+)
->>
->> diff --git a/drivers/mtd/ubi/gluebi.c b/drivers/mtd/ubi/gluebi.c
->> index 1b980d15d9fb..189ecc0eacd1 100644
->> --- a/drivers/mtd/ubi/gluebi.c
->> +++ b/drivers/mtd/ubi/gluebi.c
->> @@ -157,6 +157,9 @@ static int gluebi_read(struct mtd_info *mtd, 
->> loff_t from, size_t len,
->>       struct gluebi_device *gluebi;
->>       gluebi = container_of(mtd, struct gluebi_device, mtd);
->> +    if (IS_ERR_OR_NULL(gluebi->desc))
->> +        return -EINVAL;
->> +
->>       lnum = div_u64_rem(from, mtd->erasesize, &offs);
->>       bytes_left = len;
->>       while (bytes_left) {
->> @@ -197,6 +200,9 @@ static int gluebi_write(struct mtd_info *mtd, 
->> loff_t to, size_t len,
->>       struct gluebi_device *gluebi;
->>       gluebi = container_of(mtd, struct gluebi_device, mtd);
->> +    if (IS_ERR_OR_NULL(gluebi->desc))
->> +        return -EINVAL;
->> +
->>       lnum = div_u64_rem(to, mtd->erasesize, &offs);
->>       if (len % mtd->writesize || offs % mtd->writesize)
->> @@ -242,6 +248,8 @@ static int gluebi_erase(struct mtd_info *mtd, 
->> struct erase_info *instr)
->>       lnum = mtd_div_by_eb(instr->addr, mtd);
->>       count = mtd_div_by_eb(instr->len, mtd);
->>       gluebi = container_of(mtd, struct gluebi_device, mtd);
->> +    if (IS_ERR_OR_NULL(gluebi->desc))
->> +        return -EINVAL;
->>       for (i = 0; i < count - 1; i++) {
->>           err = ubi_leb_unmap(gluebi->desc, lnum + i);
-> 
-> 
-> This modification attempts another solution. Always check the validity
-> of gluebi->desc. If the gluebi->desc pointer is invalid, try to get MTD
-> device.
-> 
-> 
-> diff --git a/drivers/mtd/ubi/gluebi.c b/drivers/mtd/ubi/gluebi.c
-> index 1b980d15d9fb..f1a74ccf1718 100644
-> --- a/drivers/mtd/ubi/gluebi.c
-> +++ b/drivers/mtd/ubi/gluebi.c
-> @@ -154,9 +154,19 @@ static int gluebi_read(struct mtd_info *mtd, loff_t 
-> from, size_t len,
->                  size_t *retlen, unsigned char *buf)
->   {
->       int err = 0, lnum, offs, bytes_left;
-> -    struct gluebi_device *gluebi;
-> +    struct gluebi_device *gluebi = container_of(mtd, struct gluebi_device,
-> +                            mtd);
-> +    int not_get = IS_ERR_OR_NULL(gluebi->desc);
-> +
-> +    if (not_get) {
-> +        err = __get_mtd_device(mtd);
-> +        if (err) {
-> +            err_msg("cannot get MTD device %d, UBI device %d, volume 
-> %d, error %d",
-> +                mtd->index, gluebi->ubi_num, gluebi->vol_id, err);
-> +            return err;
-> +        }
-> +    }
-> 
-> -    gluebi = container_of(mtd, struct gluebi_device, mtd);
->       lnum = div_u64_rem(from, mtd->erasesize, &offs);
->       bytes_left = len;
->       while (bytes_left) {
-> @@ -176,6 +186,9 @@ static int gluebi_read(struct mtd_info *mtd, loff_t 
-> from, size_t len,
->       }
-> 
->       *retlen = len - bytes_left;
-> +
-> +    if (not_get)
-> +        __put_mtd_device(mtd);
->       return err;
->   }
-> 
+Expose the Die C6 counter on Meteor Lake.
 
-I'm afraid that this patch won't cover following three situations 
-completely:
-1. gluebi_create -> ftl_add_mtd -> mtd_read -> gluebi_read:
-    gluebi->desc is NULL.       (√)
-2. fd = open(/dev/ubi0_0, O_WRONLY)
-     ubi_open_volume  // vol->writers = 1
+Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+---
+V3 - Split PATCH V2 13. Separates implementation (previous patch)
+     from platform specific use (this patch)
 
-          P1                    P2
-    gluebi_create -> mtd_device_register -> add_mtd_device:
-    device_register   // dev/mtd1 is visible
+ drivers/platform/x86/intel/pmc/mtl.c | 32 ++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-                      fd = open(/dev/mtd1, O_WRONLY)
-                       gluebi_get_device
-                        gluebi->desc = ubi_open_volume
-                         gluebi->desc = ERR_PTR(EBUSY)
-
-    ftl_add_mtd
-     mtd_read
-      gluebi_read
-       gluebi->desc is ERR_PTR       (√)
-3.         P1                    P2
-    gluebi_create -> mtd_device_register -> add_mtd_device:
-    device_register   // dev/mtd1 is visible
-
-                      fd = open(/dev/mtd1, O_WRONLY)
-                       gluebi_get_device
-                        gluebi->desc = ubi_open_volume
-
-    ftl_add_mtd
-     mtd_read
-      gluebi_read
-       gluebi->desc is not ERR_PTR/NULL
-
-                     close(fd)
-                      gluebi_put_device
-                       ubi_close_volume
-                        kfree(desc)
-       ubi_read(gluebi->desc)   // UAF  (×)
-
-> @@ -194,9 +207,19 @@ static int gluebi_write(struct mtd_info *mtd, 
-> loff_t to, size_t len,
->               size_t *retlen, const u_char *buf)
->   {
->       int err = 0, lnum, offs, bytes_left;
-> -    struct gluebi_device *gluebi;
-> +    struct gluebi_device *gluebi = container_of(mtd, struct gluebi_device,
-> +                            mtd);
-> +    int not_get = IS_ERR_OR_NULL(gluebi->desc);
-> +
-> +    if (not_get) {
-> +        err = __get_mtd_device(mtd);
-> +        if (err) {
-> +            err_msg("cannot get MTD device %d, UBI device %d, volume 
-> %d, error %d",
-> +                mtd->index, gluebi->ubi_num, gluebi->vol_id, err);
-> +            return err;
-> +        }
-> +    }
-> 
-> -    gluebi = container_of(mtd, struct gluebi_device, mtd);
->       lnum = div_u64_rem(to, mtd->erasesize, &offs);
-> 
->       if (len % mtd->writesize || offs % mtd->writesize)
-> @@ -220,6 +243,9 @@ static int gluebi_write(struct mtd_info *mtd, loff_t 
-> to, size_t len,
->       }
-> 
->       *retlen = len - bytes_left;
-> +
-> +    if (not_get)
-> +        __put_mtd_device(mtd);
->       return err;
->   }
-> 
-> @@ -234,14 +260,24 @@ static int gluebi_write(struct mtd_info *mtd, 
-> loff_t to, size_t len,
->   static int gluebi_erase(struct mtd_info *mtd, struct erase_info *instr)
->   {
->       int err, i, lnum, count;
-> -    struct gluebi_device *gluebi;
-> +    struct gluebi_device *gluebi = container_of(mtd, struct gluebi_device,
-> +                            mtd);
-> +    int not_get = IS_ERR_OR_NULL(gluebi->desc);
-> +
-> +    if (not_get) {
-> +        err = __get_mtd_device(mtd);
-> +        if (err) {
-> +            err_msg("cannot get MTD device %d, UBI device %d, volume 
-> %d, error %d",
-> +                mtd->index, gluebi->ubi_num, gluebi->vol_id, err);
-> +            return err;
-> +        }
-> +    }
-> 
->       if (mtd_mod_by_ws(instr->addr, mtd) || mtd_mod_by_ws(instr->len, 
-> mtd))
->           return -EINVAL;
-> 
->       lnum = mtd_div_by_eb(instr->addr, mtd);
->       count = mtd_div_by_eb(instr->len, mtd);
-> -    gluebi = container_of(mtd, struct gluebi_device, mtd);
-> 
->       for (i = 0; i < count - 1; i++) {
->           err = ubi_leb_unmap(gluebi->desc, lnum + i);
-> @@ -259,10 +295,14 @@ static int gluebi_erase(struct mtd_info *mtd, 
-> struct erase_info *instr)
->       if (err)
->           goto out_err;
-> 
-> +    if (not_get)
-> +        __put_mtd_device(mtd);
->       return 0;
-> 
->   out_err:
->       instr->fail_addr = (long long)lnum * mtd->erasesize;
-> +    if (not_get)
-> +        __put_mtd_device(mtd);
->       return err;
->   }
-> 
-
-No need to modify 'gluebi_write' and 'gluebi_erase'.
+diff --git a/drivers/platform/x86/intel/pmc/mtl.c b/drivers/platform/x86/intel/pmc/mtl.c
+index 7ceeae507f4c..38c2f946ec23 100644
+--- a/drivers/platform/x86/intel/pmc/mtl.c
++++ b/drivers/platform/x86/intel/pmc/mtl.c
+@@ -10,12 +10,17 @@
+ 
+ #include <linux/pci.h>
+ #include "core.h"
++#include "../pmt/telemetry.h"
+ 
+ /* PMC SSRAM PMT Telemetry GUIDS */
+ #define SOCP_LPM_REQ_GUID	0x2625030
+ #define IOEM_LPM_REQ_GUID	0x4357464
+ #define IOEP_LPM_REQ_GUID	0x5077612
+ 
++/* Die C6 from PUNIT telemetry */
++#define MTL_PMT_DMU_DIE_C6_OFFSET	15
++#define MTL_PMT_DMU_GUID		0x1A067102
++
+ static const u8 MTL_LPM_REG_INDEX[] = {0, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 20};
+ 
+ /*
+@@ -968,6 +973,32 @@ static struct pmc_info mtl_pmc_info_list[] = {
+ 	{}
+ };
+ 
++static void mtl_punit_pmt_init(struct pmc_dev *pmcdev)
++{
++	struct telem_endpoint *ep;
++	struct pci_dev *pcidev;
++
++	pcidev = pci_get_domain_bus_and_slot(0, 0, PCI_DEVFN(10, 0));
++	if (!pcidev) {
++		dev_err(&pmcdev->pdev->dev, "PUNIT PMT device not found.\n");
++		return;
++	}
++
++	ep = pmt_telem_find_and_register_endpoint(pcidev, MTL_PMT_DMU_GUID, 0);
++	if (IS_ERR(ep)) {
++		dev_err(&pmcdev->pdev->dev,
++			"pmc_core: couldn't get DMU telem endpoint, %ld\n",
++			PTR_ERR(ep));
++		return;
++	}
++
++	pci_dev_put(pcidev);
++	pmcdev->punit_ep = ep;
++
++	pmcdev->has_die_c6 = true;
++	pmcdev->die_c6_offset = MTL_PMT_DMU_DIE_C6_OFFSET;
++}
++
+ #define MTL_GNA_PCI_DEV	0x7e4c
+ #define MTL_IPU_PCI_DEV	0x7d19
+ #define MTL_VPU_PCI_DEV	0x7d1d
+@@ -1032,6 +1063,7 @@ int mtl_core_init(struct pmc_dev *pmcdev)
+ 	}
+ 
+ 	pmc_core_get_low_power_modes(pmcdev);
++	mtl_punit_pmt_init(pmcdev);
+ 
+ 	/* Due to a hardware limitation, the GBE LTR blocks PC10
+ 	 * when a cable is attached. Tell the PMC to ignore it.
+-- 
+2.34.1
 
