@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C453A7C656E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076277C6572
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377467AbjJLGYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:24:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
+        id S1377428AbjJLGYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:24:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377428AbjJLGYK (ORCPT
+        with ESMTP id S1377499AbjJLGYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:24:10 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC34C9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:09 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9ab7a8b736so808961276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:09 -0700 (PDT)
+        Thu, 12 Oct 2023 02:24:19 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CDAD8
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:12 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7aa161b2fso9747347b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697091848; x=1697696648; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697091852; x=1697696652; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=e5eVmSUwSJxksG4NuITaTSZqNGvqcD7jLZAKoPJCuWU=;
-        b=y5oLkfN06TgWXS3T+DIqI41033RTHqlG50bSK7V7VQbAhwhGGcSjc4qAwqKygliEMw
-         Dzh/xEbTTErZN4BVS3Pbn0pku5E1Apc/bqPd6Ijh7VRRFgk3TbWeg64L30Wc1WorAbDI
-         YG3JeTkPUZUCwugaaFoloZaSE8CctvzKlONXqM6TlgyEdq0KhiT+M4srskMsnAlW5Lt8
-         /KhwYKQQyxkmrKvpGXmEqd1ntx5trZWSpnYKse13WRT+Ojt93O7egD7ZW47xYOAYtqCv
-         28251R+c3r7BXlB9v+5AgoBC9rpcEwCudlwhbgLlNKT8+UqnTLAEyDDeYiOAAEBZuw0Y
-         03CA==
+        bh=Ym33VVd2BajpUroKBZvd3tTL/sMIOEowMFesXhruLGo=;
+        b=dtCItIPdQ3ab8HIPvToAzsIESurEr15VjpWWQ8yaO+Mg1RPqvT1cE14W9NklAd0jK4
+         7yQ2iyo7WfgUQHpDzjw4V0bvJWMP9hGr1MpgnkicSitGIq9Hgx6OBpCyvqIgbhaytO4f
+         wE2oz/3Zdc1UDmfqgeYmLjtPPZijSChFDH3QPEX6xvSQcIWUs6fsZeeHOUlMLjxtuLXh
+         3p4fy/a9+mdQ/ejgOkZKtHwQ4HBkeVjdo6SW9BnVVB/NdYNT2A9GxxV+xXatq9lEOJwJ
+         iQ6OC+badkskyGbxNCbXfyXX8nMbfz3mHiQ/mrp9ETD79Rv+3tw/76vxDOVuOpmZUfK+
+         bGvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697091848; x=1697696648;
+        d=1e100.net; s=20230601; t=1697091852; x=1697696652;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e5eVmSUwSJxksG4NuITaTSZqNGvqcD7jLZAKoPJCuWU=;
-        b=d3uPvUkYcR7EfabbNWR4ViVz+sJDd0REGb8rvAtFE8cadvKZIEVg+uH9vEWeSA5PNn
-         Nri8T+5Q5JKt2KeE1+dHa2InoNTTxnJyaGTHJ7bIyQIWthruZSHmwaQgeIjO//MgEfY3
-         yKeeIFAQQmbwYunJ1B6qO2VoKaCW9sbW8JiuFp5yniO4V0z730s7JnRYjLOfQFvgi/vV
-         GqlyOGSa8RJJ6cdGcrTa5a5HkmpgjcNmzTJW9eYslvKfhrbI4fPpPmXQeytVhUDNmQwm
-         NU1pqBLh+hOUmIVxeDTyZZje2rfcJoTfHOG2mrcfKDQcZrYmvMwk6ZCXIN+VnLZlMhmw
-         IsBg==
-X-Gm-Message-State: AOJu0YzkaMTy5O+PGCQRVad/iTK8QVpuzEIUtqE/R9jw5yEzvfeSpoGo
-        3XO2i+QHQ1FqLgPeciqRRBNnmcLYGj53
-X-Google-Smtp-Source: AGHT+IFmqFq4/wm5EgdUd3x0JEaVUvH+YjHVcBVN3IPYbimtzwGlyFiTzZuU2AziiY+gjwegOfUSdr2DJPxE
+        bh=Ym33VVd2BajpUroKBZvd3tTL/sMIOEowMFesXhruLGo=;
+        b=YO11XmGkLkqjP0o7F658InpDd0d8TjILPwgOACA794ICrTByAxX3VxErsH2MMujrx8
+         rGgi4KVAubtFVqWcYPyulES2ubwbxNMUZOZyNcvgUQYmw/r3N0Lt+I9ULgG+nMnyr0ml
+         fMjfPKGuAzvuv5p/ckOPInu0c+w1hQmwsPZ31nhGHY/MFPopIyC/p5pb1sQdsCn4xIAh
+         DT8DgXw4FeQT38QWKZOXU5ew/RpTBLM96KUICSNQtQuNpXeD4ShjK8yNWrAmghAOtQe1
+         IIpjF5lIG18mz96W5FpCpJgIVa/+pJ1e40Edj12BlzEN1FcwJer10StFRsrO6huOCmNr
+         zNpw==
+X-Gm-Message-State: AOJu0YwcmAuGMAWezPZvSdxisNUL+GKXUNsjc+0kZBa8O7vKCluyVogE
+        mp/l7d4YccNdk2T91yW7Uj1CNZLfM6OH
+X-Google-Smtp-Source: AGHT+IFamm+ol0Ge6e4jpFG/GjQbgher+01yNqOVMfFajP7Qe61Mum0E7T8Iepds/4dvQPRSXfa66oFUzQ9k
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7be5:14d2:880b:c5c9])
- (user=irogers job=sendgmr) by 2002:a25:bccb:0:b0:d9a:61ca:7c7a with SMTP id
- l11-20020a25bccb000000b00d9a61ca7c7amr138294ybm.11.1697091848675; Wed, 11 Oct
- 2023 23:24:08 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 23:23:48 -0700
+ (user=irogers job=sendgmr) by 2002:a25:870c:0:b0:d9a:3a25:36df with SMTP id
+ a12-20020a25870c000000b00d9a3a2536dfmr196216ybl.8.1697091852080; Wed, 11 Oct
+ 2023 23:24:12 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 23:23:49 -0700
 In-Reply-To: <20231012062359.1616786-1-irogers@google.com>
-Message-Id: <20231012062359.1616786-3-irogers@google.com>
+Message-Id: <20231012062359.1616786-4-irogers@google.com>
 Mime-Version: 1.0
 References: <20231012062359.1616786-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v2 02/13] libperf rc_check: Make implicit enabling work for GCC
+Subject: [PATCH v2 03/13] perf hist: Add missing puts to hist__account_cycles
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -88,32 +88,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make the implicit REFCOUNT_CHECKING robust to when building with GCC.
+Caught using reference count checking on perf top with
+"--call-graph=lbr". After this no memory leaks were detected.
 
-Fixes: 9be6ab181b7b ("libperf rc_check: Enable implicitly with sanitizers")
+Fixes: 57849998e2cd ("perf report: Add processing for cycle histograms")
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/lib/perf/include/internal/rc_check.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ tools/perf/util/hist.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/tools/lib/perf/include/internal/rc_check.h b/tools/lib/perf/include/internal/rc_check.h
-index d5d771ccdc7b..e88a6d8a0b0f 100644
---- a/tools/lib/perf/include/internal/rc_check.h
-+++ b/tools/lib/perf/include/internal/rc_check.h
-@@ -9,8 +9,12 @@
-  * Enable reference count checking implicitly with leak checking, which is
-  * integrated into address sanitizer.
-  */
--#if defined(LEAK_SANITIZER) || defined(ADDRESS_SANITIZER)
-+#if defined(__SANITIZE_ADDRESS__) || defined(LEAK_SANITIZER) || defined(ADDRESS_SANITIZER)
- #define REFCNT_CHECKING 1
-+#elif defined(__has_feature)
-+#if __has_feature(address_sanitizer) || __has_feature(leak_sanitizer)
-+#define REFCNT_CHECKING 1
-+#endif
- #endif
+diff --git a/tools/perf/util/hist.c b/tools/perf/util/hist.c
+index 3dc8a4968beb..ac8c0ef48a7f 100644
+--- a/tools/perf/util/hist.c
++++ b/tools/perf/util/hist.c
+@@ -2676,8 +2676,6 @@ void hist__account_cycles(struct branch_stack *bs, struct addr_location *al,
  
- /*
+ 	/* If we have branch cycles always annotate them. */
+ 	if (bs && bs->nr && entries[0].flags.cycles) {
+-		int i;
+-
+ 		bi = sample__resolve_bstack(sample, al);
+ 		if (bi) {
+ 			struct addr_map_symbol *prev = NULL;
+@@ -2692,7 +2690,7 @@ void hist__account_cycles(struct branch_stack *bs, struct addr_location *al,
+ 			 * Note that perf stores branches reversed from
+ 			 * program order!
+ 			 */
+-			for (i = bs->nr - 1; i >= 0; i--) {
++			for (int i = bs->nr - 1; i >= 0; i--) {
+ 				addr_map_symbol__account_cycles(&bi[i].from,
+ 					nonany_branch_mode ? NULL : prev,
+ 					bi[i].flags.cycles);
+@@ -2701,6 +2699,12 @@ void hist__account_cycles(struct branch_stack *bs, struct addr_location *al,
+ 				if (total_cycles)
+ 					*total_cycles += bi[i].flags.cycles;
+ 			}
++			for (unsigned int i = 0; i < bs->nr; i++) {
++				map__put(bi[i].to.ms.map);
++				maps__put(bi[i].to.ms.maps);
++				map__put(bi[i].from.ms.map);
++				maps__put(bi[i].from.ms.maps);
++			}
+ 			free(bi);
+ 		}
+ 	}
 -- 
 2.42.0.609.gbb76f46606-goog
 
