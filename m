@@ -2,107 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 379F37C6C3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E697C6C3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378062AbjJLLZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
+        id S1347167AbjJLLZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343812AbjJLLZ3 (ORCPT
+        with ESMTP id S1343840AbjJLLZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:25:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93F091;
-        Thu, 12 Oct 2023 04:25:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697109927; x=1728645927;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=oJ16RQQC6qiRD4UY3lzsspj/62XsaNODkFID0iZfpso=;
-  b=bh/rByC8qy/JaE+twRevfZRfUkc0WyyVBSRFKMHN01g0bHiyGoe4fR69
-   R7LSDACZCF7xpW6kSu04f8hIHKY/0Tsxs53mat1xiji+tUOZKhKFNz9jP
-   MTZhGB3Vl6uGMQ/XmvxYtQbrbCUvkVO36a6sqwjiqB1Lu648mM3c9Y7+P
-   M764vx/IpcKpho+98YbdZQk/7d4Zj3jQq0i9EzvF47tP+8ds6M4TNiKHV
-   Ou+yz2GGPrMJ7rs1aGyrClTMNIbMlmWiSpcPtLgWdF+BKU7lVnAhddvzX
-   OjVEDYiSRl9rZxfJaql+gqjsGgXojuhOZurPdgk3cN39EInmsqZFWNNcC
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="387734532"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="387734532"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 04:25:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="783665676"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="783665676"
-Received: from nmalinin-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.58.130])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 04:25:26 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 63E6E10A1B1; Thu, 12 Oct 2023 14:25:23 +0300 (+03)
-Date:   Thu, 12 Oct 2023 14:25:23 +0300
-From:   kirill.shutemov@linux.intel.com
-To:     Nikolay Borisov <nik.borisov@suse.com>
-Cc:     ardb@kernel.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/efistub: Don't try to print after ExitBootService()
-Message-ID: <20231012112523.6koxkdrk72srx5og@box.shutemov.name>
-References: <20231011192528.262425-1-nik.borisov@suse.com>
- <20231012101456.goamenepqlte65jv@box.shutemov.name>
- <8e36be57-58a6-404e-8828-6c777b8d2196@suse.com>
+        Thu, 12 Oct 2023 07:25:56 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA07C0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 04:25:54 -0700 (PDT)
+Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S5nKH4Q9Qz9tJ0;
+        Thu, 12 Oct 2023 19:21:55 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 12 Oct 2023 19:25:51 +0800
+Subject: Re: [PATCH RFC] ubi: gluebi: Fix NULL pointer dereference caused by
+ ftl notifier
+To:     ZhaoLong Wang <wangzhaolong1@huawei.com>, <richard@nod.at>,
+        <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>, <yangerkun@huawei.com>
+References: <20231010142925.545238-1-wangzhaolong1@huawei.com>
+ <9f96baf1-962e-d595-0e4f-797315cd0348@huawei.com>
+ <b972f615-3882-18cf-5b44-7ec021f92e0a@huawei.com>
+ <a8a2dc17-7a7a-e725-8ae2-e7e0146150f0@huawei.com>
+ <d089e4ff-26dc-22e4-58b3-8756f8ebaabc@huawei.com>
+ <2d04fa9e-e594-705c-339b-3090cb7d6fbd@huawei.com>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <f1b27408-6eae-4195-4c97-c286c4ad04db@huawei.com>
+Date:   Thu, 12 Oct 2023 19:25:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <2d04fa9e-e594-705c-339b-3090cb7d6fbd@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8e36be57-58a6-404e-8828-6c777b8d2196@suse.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 01:51:13PM +0300, Nikolay Borisov wrote:
+在 2023/10/12 17:31, ZhaoLong Wang 写道:
 > 
+>>>
+>>>> 3.         P1                    P2
+>>>>     gluebi_create -> mtd_device_register -> add_mtd_device:
+>>>>     device_register   // dev/mtd1 is visible
+>>>>
+>>>>                       fd = open(/dev/mtd1, O_WRONLY)
+>>>>                        gluebi_get_device
+>>>>                         gluebi->desc = ubi_open_volume
+>>>>
+>>>>     ftl_add_mtd
+>>>>      mtd_read
+>>>>       gluebi_read
+>>>>        gluebi->desc is not ERR_PTR/NULL
+>>>>
+>>>>                      close(fd)
+>>>>                       gluebi_put_device
+>>>>                        ubi_close_volume
+>>>>                         kfree(desc)
+>>>>        ubi_read(gluebi->desc)   // UAF  (×)
+>>>>
+>>>
+>>> Yes, it's also a problem. Perhaps it should be set to NULL after
+>>> destroying gluebi->desc.
+>>
+>> The key point is that 'gluebi->desc' check & usage is not atomic in 
+>> gluebi_read. So following patch still can't handle situation 3.
+>>
 > 
-> On 12.10.23 г. 13:14 ч., kirill.shutemov@linux.intel.com wrote:
-> > On Wed, Oct 11, 2023 at 10:25:28PM +0300, Nikolay Borisov wrote:
-> > > setup_e820() is executed after UEFI's ExitBootService has been called.
-> > > This causes the firmware to throw an exception because Console IO
-> > > protocol handler is supposed to work only during boot service
-> > > environment. As per UEFI 2.9, section 12.1:
-> > > 
-> > >   "This protocol isused to handle input and output of text-based
-> > >   information intended for the system user during the operation of code
-> > >   in the boot services environment."
-> > > 
-> > > Running a TDX guest with TDVF with unaccepted memory disabled results in
-> > > the following output:
-> > 
-> > Oh. My bad.
-> > 
-> > But there's other codepath that does the same. If setup_e820() fails with
-> > EFI_BUFFER_TOO_SMALL, efi_stub_entry() would try to print "exit_boot()
-> > failed\n".
-> > 
-> > I wouldner if it is feasible to hook up earlyprintk console into
-> > efi_printk() machinery for after ExitBootService() case? Silent boot
-> > failure is not the best UX.
-> > 
+> Setting the desc to NULL works because
+> mutex_lock "mtd_table_mutex" is held on all paths where
+> ftl_add_mtd() is called.
 > 
-> 
-> In my testing I was able to transpose setup_e820 and efi exit_boot_service
-> by calling exit_boot_func before setup_e820 which ensures the various memory
-> variables are populated. Is there any specific reason why ExitBootServices
-> is called before setting up the e820 table? AFAIU this is an arbitrary
-> choice?
 
-Because if you allocate memory with EFI service it can alter EFI memory
-map and we need the last version to convert it to e820.
+Oh, you're right. Just one nit below:
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+
+ > @@ -154,9 +159,26 @@ static int gluebi_read(struct mtd_info *mtd, loff_t
+ > from, size_t len,
+ >                  size_t *retlen, unsigned char *buf)
+ >   {
+ >       int err = 0, lnum, offs, bytes_left;
+ > -    struct gluebi_device *gluebi;
+ > +    struct gluebi_device *gluebi = container_of(mtd, struct 
+gluebi_device,
+ > +                            mtd);
+ > +    int isnt_get = unlikely(gluebi->desc == NULL) ? 1 : 0;
+
+This 'unlikey' can be removed.
+
+Rename 'isnt_get' as 'has_desc' ?
+
+ > +    /**
+ > +     * In normal case, the UBI volume desc has been initialized by
+ > +     * ->_get_device(). However, in the ftl notifier process, the
+ > +     * ->_get_device() is not executed in advance and the MTD device
+ > +     * is directly scanned  which cause null pointe dereference.
+ > +     * Therefore, try to get the MTD device here.
+ > +     */
+ > +    if (unlikely(isnt_get)) {
+ > +        err = __get_mtd_device(mtd);
+ > +        if (err) {
+ > +            err_msg("cannot get MTD device %d, UBI device %d, volume
+ > %d, error %d",
+ > +                mtd->index, gluebi->ubi_num, gluebi->vol_id, err);
+ > +            return err;
+ > +        }
+ > +    }
+
