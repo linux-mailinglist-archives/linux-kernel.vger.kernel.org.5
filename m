@@ -2,163 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E797C6BEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F127C6BF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377894AbjJLLIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48122 "EHLO
+        id S1378020AbjJLLLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343730AbjJLLIh (ORCPT
+        with ESMTP id S1343805AbjJLLLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:08:37 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C750E90;
-        Thu, 12 Oct 2023 04:08:35 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C9rbgv001164;
-        Thu, 12 Oct 2023 11:08:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=bJotzytAWkF9t8Y0naHSXGLqJBuRemHVtr6oKmxO9w4=;
- b=IUPxutQwbx8JIfCghffvGEXD8Qa6yzZeoG1UKz2tNuxPZesDRIh9rzJMHm5r6OqvSsis
- 9rvEPmggHe4grARTQFYQIRS0dWIJTeEaMM8pwYVTex2kZV7eUbSRwbsIVlKfZFg0258U
- p2fNa14F6f7mTU9Lme5Vm9+IRq08+RGpOZ/M3WvCgseusAl7VO8f0dL0rZ5XDs8epnP2
- EK/PIghz3jaSRnAZkb7s/rpMNQ9gRN+GD5RF+nD/DrofNLIwnr3NJTY5gipCTsh7ndHi
- 0A8t5Us16KuLw0YDDS4T+rAqGswGAfFjdr4MW4yFYnGd5l+f61IHT8TCrB4jt4REoTpj 7w== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tp0vw9uwd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 11:08:16 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39CB8FqC006472
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 11:08:15 GMT
-Received: from jinlmao-gv.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Thu, 12 Oct 2023 04:08:12 -0700
-From:   Mao Jinlong <quic_jinlmao@quicinc.com>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-CC:     Mao Jinlong <quic_jinlmao@quicinc.com>,
-        <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Tao Zhang <quic_taozha@quicinc.com>
-Subject: [PATCH] coresight-tmc-etr: Fix busy error when enable multiple sources
-Date:   Thu, 12 Oct 2023 19:07:54 +0800
-Message-ID: <20231012110754.32635-1-quic_jinlmao@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 12 Oct 2023 07:11:30 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 761AF90
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 04:11:28 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 04A9113D5;
+        Thu, 12 Oct 2023 04:12:09 -0700 (PDT)
+Received: from [10.163.62.137] (unknown [10.163.62.137])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1BFF93F762;
+        Thu, 12 Oct 2023 04:11:25 -0700 (PDT)
+Message-ID: <5eabcdf7-f88c-4c79-a5c8-0c000493d72a@arm.com>
+Date:   Thu, 12 Oct 2023 16:41:23 +0530
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: tfBzX98pawDRluVK1aJ1l0wIJdHA3E6Y
-X-Proofpoint-ORIG-GUID: tfBzX98pawDRluVK1aJ1l0wIJdHA3E6Y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- phishscore=0 lowpriorityscore=0 spamscore=0 clxscore=1011 mlxlogscore=485
- suspectscore=0 priorityscore=1501 adultscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310120090
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] driver: perf: arm_pmu: Drop some unused arguments from
+ armv8_pmu_init()
+Content-Language: en-US
+To:     Robin Murphy <robin.murphy@arm.com>,
+        James Clark <james.clark@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <20231009035638.165270-1-anshuman.khandual@arm.com>
+ <896fc51e-2c74-29f7-2c7e-f14f29c401a4@arm.com>
+ <c710e88c-b5d6-402a-95d0-fb6ced726d3a@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <c710e88c-b5d6-402a-95d0-fb6ced726d3a@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In enable sink sysfs function, when etr is enabled, it doesn't need
-to call enable hw function again.
 
-[   91.057233] ------------[ cut here ]------------
-[   91.061983] WARNING: CPU: 6 PID: 145 at drivers/hwtracing/coresight/coresight-tmc-etr.c:1038 tmc_etr_enable_hw+0xc4/0xd0
-[   91.073153] Modules linked in:
-[   91.076302] CPU: 6 PID: 145 Comm: sh Tainted: G S      W          6.5.0-rc3-g66d5eaa9e5a7 #111
-[   91.085149] Hardware name: Qualcomm Technologies, Inc. SM8450 QRD (DT)
-[   91.091847] pstate: 634000c5 (nZCv daIF +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
-[   91.099000] pc : tmc_etr_enable_hw+0xc4/0xd0
-[   91.103389] lr : tmc_enable_etr_sink+0x13c/0x294
-[   91.108130] sp : ffff8000815cbb30
-[   91.111537] x29: ffff8000815cbb30 x28: ffff68ce4352a800 x27: 0000000000000000
-[   91.118868] x26: ffff68ce414cc040 x25: ffff68ce414a82e0 x24: 0000000000000000
-[   91.126199] x23: ffff68ce423a1ee0 x22: ffff68ce423a1e80 x21: ffff68ce4352a800
-[   91.133527] x20: 0000000000000001 x19: ffff68ce414aa500 x18: fffffda31cf9c008
-[   91.140857] x17: 0000000000000040 x16: 0000000000000001 x15: fffffc0000000000
-[   91.148188] x14: 00000000f0000080 x13: 0000000000000000 x12: ffff9739c0000000
-[   91.155516] x11: ffffbe9cdf71e400 x10: 0000000000001000 x9 : ffff68d0b29e3b28
-[   91.162845] x8 : fffffda31cf983c8 x7 : fffffda31cf98388 x6 : 00000000ffffffd0
-[   91.170174] x5 : ffff68ce435d8ec0 x4 : ffff68d0b29e2610 x3 : ffff68ce435d8ec0
-[   91.177502] x2 : ffff68ce414aa500 x1 : ffff68ce414aa500 x0 : ffff68ce423a1e80
-[   91.184833] Call trace:
-[   91.187349]  tmc_etr_enable_hw+0xc4/0xd0
-[   91.191388]  tmc_enable_etr_sink+0x13c/0x294
-[   91.195777]  coresight_enable_path+0x21c/0x24c
-[   91.200347]  coresight_enable+0x9c/0x204
-[   91.204379]  enable_source_store+0x58/0xa0
-[   91.208595]  dev_attr_store+0x18/0x2c
-[   91.212361]  sysfs_kf_write+0x40/0x54
-[   91.216126]  kernfs_fop_write_iter+0x164/0x1dc
-[   91.220692]  vfs_write+0x3a8/0x460
-[   91.224191]  ksys_write+0x6c/0x100
-[   91.227690]  __arm64_sys_write+0x1c/0x28
-[   91.231728]  invoke_syscall+0x44/0x100
-[   91.235586]  el0_svc_common.constprop.1+0x6c/0xe4
-[   91.240418]  do_el0_svc+0x38/0x94
-[   91.243833]  el0_svc+0x28/0x74
-[   91.246981]  el0t_64_sync_handler+0xa0/0xc4
-[   91.251282]  el0t_64_sync+0x174/0x178
-[   91.255045] ---[ end trace 0000000000000000 ]---
-sh: write error: Device or resource busy
 
-Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
----
- drivers/hwtracing/coresight/coresight-tmc-etr.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+On 10/10/23 17:29, Robin Murphy wrote:
+> On 09/10/2023 10:17 am, James Clark wrote:
+>>
+>>
+>> On 09/10/2023 04:56, Anshuman Khandual wrote:
+>>> There is just a single call site remaining for armv8_pmu_init(), passing on
+>>> NULL pointers for all custom 'struct attribute_group'. These arguments are
+>>> not really getting used and hence can just be dropped off, thus simplifying
+>>> the code further.
+>>>
+>>> Cc: Will Deacon <will@kernel.org>
+>>> Cc: Mark Rutland <mark.rutland@arm.com>
+>>> Cc: linux-arm-kernel@lists.infradead.org
+>>> Cc: linux-kernel@vger.kernel.org
+>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> ---
+>>> This applies on v6.6-rc5.
+>>>
+>>>   drivers/perf/arm_pmuv3.c | 17 +++++------------
+>>>   1 file changed, 5 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+>>> index 8fcaa26f0f8a..fe4db1831662 100644
+>>> --- a/drivers/perf/arm_pmuv3.c
+>>> +++ b/drivers/perf/arm_pmuv3.c
+>>> @@ -1187,10 +1187,7 @@ static void armv8_pmu_register_sysctl_table(void)
+>>>   }
+>>>     static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
+>>> -              int (*map_event)(struct perf_event *event),
+>>> -              const struct attribute_group *events,
+>>> -              const struct attribute_group *format,
+>>> -              const struct attribute_group *caps)
+>>> +              int (*map_event)(struct perf_event *event))
+>>>   {
+>>>       int ret = armv8pmu_probe_pmu(cpu_pmu);
+>>>       if (ret)
+>>> @@ -1212,13 +1209,9 @@ static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
+>>>         cpu_pmu->name            = name;
+>>>       cpu_pmu->map_event        = map_event;
+>>> -    cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_EVENTS] = events ?
+>>> -            events : &armv8_pmuv3_events_attr_group;
+>>> -    cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_FORMATS] = format ?
+>>> -            format : &armv8_pmuv3_format_attr_group;
+>>> -    cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_CAPS] = caps ?
+>>> -            caps : &armv8_pmuv3_caps_attr_group;
+>>> -
+>>> +    cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_EVENTS] = &armv8_pmuv3_events_attr_group;
+>>> +    cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_FORMATS] = &armv8_pmuv3_format_attr_group;
+>>> +    cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_CAPS] = &armv8_pmuv3_caps_attr_group;
+>>>       armv8_pmu_register_sysctl_table();
+>>>       return 0;
+>>>   }
+>>> @@ -1226,7 +1219,7 @@ static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
+>>>   static int armv8_pmu_init_nogroups(struct arm_pmu *cpu_pmu, char *name,
+>>>                      int (*map_event)(struct perf_event *event))
+>>>   {
+>>> -    return armv8_pmu_init(cpu_pmu, name, map_event, NULL, NULL, NULL);
+>>> +    return armv8_pmu_init(cpu_pmu, name, map_event);
+>>
+>> I think the whole point of the nogroups wrapper was to add the NULLs. If
+>> you remove them, then you can remove the nogroups function too and just
+>> call armv8_pmu_init() directly instead.
+> 
+> Indeed the "nogroups" wrapper is entirely meaningless if the callee no longer accepts groups anyway.
+> 
+>> And as it wasn't clear why they were there in the first place, I went to
+>> look and found this (e424b17) :
+>>
+>>    Although nobody uses non-default sysfs attributes today, there's
+>>    minimal impact to preserving the notion that maybe, some day, somebody
+>>    might, so we may as well keep up appearances.
+>>
+>> It might be worth mentioning that the decision has now been made in the
+>> other way.
+> 
+> Right, the intent at the time was very much just a cosmetic cleanup to help readability and simplify adding new PMU names, and rather deliberately stepping around the question of making material changes to the interface itself. If we've reached the point where we're happy to agree that consistency with the PMUv2 code is no longer helpful to continuing development of the PMUv3 code, then *that* would be the fundamental point of this change.
 
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-index 66dc5f97a009..e1c7bae9f6ee 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-@@ -1204,7 +1204,7 @@ static struct etr_buf *tmc_etr_get_sysfs_buffer(struct coresight_device *csdev)
- 
- static int tmc_enable_etr_sink_sysfs(struct coresight_device *csdev)
- {
--	int ret;
-+	int ret = 0;
- 	unsigned long flags;
- 	struct tmc_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
- 	struct etr_buf *sysfs_buf = tmc_etr_get_sysfs_buffer(csdev);
-@@ -1213,12 +1213,16 @@ static int tmc_enable_etr_sink_sysfs(struct coresight_device *csdev)
- 		return PTR_ERR(sysfs_buf);
- 
- 	spin_lock_irqsave(&drvdata->spinlock, flags);
-+	if (drvdata->mode == CS_MODE_SYSFS)
-+		goto out;
-+
- 	ret = tmc_etr_enable_hw(drvdata, sysfs_buf);
- 	if (!ret) {
- 		drvdata->mode = CS_MODE_SYSFS;
- 		atomic_inc(&csdev->refcnt);
- 	}
- 
-+out:
- 	spin_unlock_irqrestore(&drvdata->spinlock, flags);
- 
- 	if (!ret)
--- 
-2.17.1
+Does the following commit message sound complete after dropping off the
+armv8_pmu_init_nogroups() helper as well.
 
+    driver: perf: arm_pmuv3: Drop some unused arguments from armv8_pmu_init()
+    
+    There is just a single call site remaining for armv8_pmu_init(), passing on
+    NULL pointers for all custom 'struct attribute_group'. These arguments are
+    not really getting used, and hence can be dropped. Afterwards the function
+    armv8_pmu_init_nogroups() itself becomes redundant and can also be dropped
+    as well.
+    
+    The commit e424b1798526 ("arm64: perf: Refactor PMU init callbacks") wanted
+    to preserve the notion that non-default sysfs attributes could be used some
+    time in the future and hence armv8_pmu_init_nogroups() stayed on but now it
+    can be dropped to remove some redundant indirection, simplifying the code.
