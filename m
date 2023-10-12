@@ -2,128 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6917C78C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074C57C78D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442942AbjJLVnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 17:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36470 "EHLO
+        id S1442942AbjJLVvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 17:51:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344165AbjJLVnH (ORCPT
+        with ESMTP id S1442945AbjJLVvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 17:43:07 -0400
-Received: from mail-ot1-x34a.google.com (mail-ot1-x34a.google.com [IPv6:2607:f8b0:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B26B8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:43:03 -0700 (PDT)
-Received: by mail-ot1-x34a.google.com with SMTP id 46e09a7af769-6c4e17f37acso2053046a34.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:43:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697146983; x=1697751783; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ckODqKWwUmyyZSfS7B6anNT9+4anYQ1z042IchWem40=;
-        b=BqjzRRa3FLGvoIRg6o7G4FNSEtFlsgChV+Y4cW8W+XPqkqSUnyYASRV+YQ+MVF151K
-         D3ZAJp5DXxNOyWt9RcSK9+gyvSMPbjzYeItalcMK1Qgblr/gkYi6XCwkbw/27SmTKvIC
-         lju5Iv1DGwekJ6NgWCqnk3kdmiDnVAqKCMHdzDYwSzc0zSteIINrBSHSuYTTJ5NUvFUc
-         GpsaNpJJQ27Dd+bvOoN1B6syqF/uwjcAdBTRIdbRS46mpYXh07Fxdgb5ZDo+HVu+xwj9
-         QBAtixvaxSPhhtplXhlMOBwFH/00SoHItql791nkozUifW7Tus7RgAqDrzq5ZdMdRGoS
-         N30w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697146983; x=1697751783;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ckODqKWwUmyyZSfS7B6anNT9+4anYQ1z042IchWem40=;
-        b=F+sJHXY4thi6SldIpiddT+mUTsfGaNSs5ry4whlQugTHSKwXhV6lncntF8iHa8q2Wb
-         a1HgBWz8hUChwmnwwMXANFpxlg93WMNNN7BnTgcMiJPLBLAAU7BVxt3UdfdolWXSVi5x
-         bGYHWWIrFnX8yY6IW6R1CYhsURgDQ4u5OXtqRqiyGLmNl8eYZ64flEvUwBCanPrQ9EHq
-         9ZrGFWNseSD02fzlfcZpqyqYKxCBQDj50akEOh8Aa3ElAX+Peo4WKm05yAc22hvd+xEs
-         pAtZY8ps36mu1NHH4ZQOPTDaa0734thdlrMva/+PACRUi7+bK7oamQIv4UKNXxmltKdZ
-         88ng==
-X-Gm-Message-State: AOJu0YwkpmDH6phfyY08TDOXWe49OFWvkK7HP8aey5Z/tpo//XcbJWEi
-        Qr9AjFBiYSHPFXt2lJmcyOvL4knSycbFSFBKmw==
-X-Google-Smtp-Source: AGHT+IFtZwHYGlL93wukpRq7BxaZsrNlBNW/+fS27oiqXTJZW48Rd9AZgGPpX3cV4pAtPXJZ/PoBke3vV5DZKrTN6g==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6830:108c:b0:6bd:b74:2dab with
- SMTP id y12-20020a056830108c00b006bd0b742dabmr7579190oto.2.1697146983205;
- Thu, 12 Oct 2023 14:43:03 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 21:43:02 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAGVoKGUC/yWNQQqDMBAAvxL27EISodB+RTzU7NbuoTHsSqiIf
- zfoZWAuMzsYq7DBy+2gXMVkyU1C5yB933lmFGoO0cc++BDRVs2pbEgqldUw84o/kuXGXBoSTkT 0ZPLp0XtoqaL8kf+1GcbjOAG8TR1PdgAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697146982; l=1715;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=MQMqs+o6dLV3RqgzRciNxc9rt3vo/Ab+9GqIMNjVntc=; b=YWJ6iLREklL66OaSZXMlM8IAnqD7ueQYViHBhLA7JWNoc26BMAl9fiWfKKo0Bmy1yL9ohw3rp
- 9WCcEeFAoj7DAdqxQCDoWMRWxBwP4A2PVPOF+2SCsBP9uOu++JwQ3fm
-X-Mailer: b4 0.12.3
-Message-ID: <20231012-strncpy-drivers-net-mdio-mdio-gpio-c-v1-1-ab9b06cfcdab@google.com>
-Subject: [PATCH] net: mdio: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 12 Oct 2023 17:51:22 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F09CBB;
+        Thu, 12 Oct 2023 14:51:20 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CLbjch027956;
+        Thu, 12 Oct 2023 21:51:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=voUltIrLrhXdVJp9/yCwFFwFBu2KkCyxDDIWBrI4Xog=;
+ b=HjSHOCagbHCB6bOReW+vqK+Dfm07myfSFl8yPtmClixpKCcx4C5UnnqZmJp4EkkrDlGk
+ sDingmngYmPHq+uM3HBBqPVeQGzhUBBMSXXi3SA5X0kNnLJQP6XLfqhUZ1vUA3G+umcu
+ gEnsitEU8Llg9JgShMHxB3a5DvlmHMEYr5M5u84mB7GEvxhxzAQTFiqgJF+aWHmqIvr2
+ 9/U+wcedGEb8KGNxTmqgyc7htL3M+bz8iq1TCdvyJkUU1ehqhGC3hPkWpIqnJq0Xm8vL
+ 1+bDS61NU97RlA6x7NV16IlgORC6blhN3ETupnnFsJrRxkKbilBOeheB+98R4nhkHEJx pQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnsmq4h32-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 21:51:03 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39CLp1Wo011405
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 21:51:01 GMT
+Received: from [10.110.43.201] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 12 Oct
+ 2023 14:50:59 -0700
+Message-ID: <a2781978-2081-f4cb-dfe3-0489860dab8e@quicinc.com>
+Date:   Thu, 12 Oct 2023 14:50:42 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH v5 0/7] Add support for LUT PPG
+Content-Language: en-US
+To:     Luca Weiss <luca.weiss@fairphone.com>, <pavel@ucw.cz>,
+        <lee@kernel.org>, <thierry.reding@gmail.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>
+CC:     <konrad.dybcio@linaro.org>, <u.kleine-koenig@pengutronix.de>,
+        <quic_subbaram@quicinc.com>, <quic_gurus@quicinc.com>,
+        <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-pwm@vger.kernel.org>, <kernel@quicinc.com>
+References: <20230929003901.15086-1-quic_amelende@quicinc.com>
+ <CVX5ZUGU9BVE.2TA819U1AI6BZ@otso>
+From:   Anjelique Melendez <quic_amelende@quicinc.com>
+In-Reply-To: <CVX5ZUGU9BVE.2TA819U1AI6BZ@otso>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: PeOLq1QMggphqx9nLudVIdQ5iZgaUs-J
+X-Proofpoint-ORIG-GUID: PeOLq1QMggphqx9nLudVIdQ5iZgaUs-J
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_14,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 lowpriorityscore=0 adultscore=0 priorityscore=1501
+ impostorscore=0 spamscore=0 bulkscore=0 clxscore=1011 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310120183
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
 
-We expect new_bus->id to be NUL-terminated but not NUL-padded based on
-its prior assignment through snprintf:
-|       snprintf(new_bus->id, MII_BUS_ID_SIZE, "gpio-%x", bus_id);
 
-Due to this, a suitable replacement is `strscpy` [2] due to the fact
-that it guarantees NUL-termination on the destination buffer without
-unnecessarily NUL-padding.
+On 10/1/2023 7:15 AM, Luca Weiss wrote:
+> On Fri Sep 29, 2023 at 2:38 AM CEST, Anjelique Melendez wrote:
+>> In certain PMICs, LUT pattern and LPG configuration is stored in SDAM
+>> modules instead of LUT peripheral. This feature is called PPG.
+>>
+>> This change series adds support for PPG. Thanks!
+[..]
+>>
+>> Tested-by: Luca Weiss <luca.weiss@fairphone.com> # sdm632-fairphone-fp3 (pmi632)
+> 
+> Hi Anjelique,
+> 
+> Actually I've retested this now on PMI632 (and also realized that my
+> previous tests weren't correct and wasn't actually using hw_pattern).
+> 
+> Using the following commands (after boot) I'm expecting to get a
+> 500ms on 500ms off blinking pattern between white (255 255 255) and off
+> (0 0 0).
+> 
+>   echo pattern > /sys/class/leds/rgb:status/trigger
+>   echo -1 > /sys/class/leds/rgb:status/repeat
+> 
+>   echo "255 255 255" > /sys/class/leds/rgb:status/multi_intensity
+>   echo "255 500 255 0 0 500 0 0" > /sys/class/leds/rgb:status/hw_pattern
+> 
+> What I actually see is it blinking between cyan (0 255 255) and red (255
+> 0 0).
+> At some point after playing with many patterns I got it to actually
+> cycle between white and off, but I couldn't reproduce this again (or I
+> didn't try hard enough).
+> 
+> 
+> But with this example it correctly blinks red on-off.
+> 
+>   echo "255 0 0" > /sys/class/leds/rgb:status/multi_intensity
+>   echo "255 500 255 0 0 500 0 0" > /sys/class/leds/rgb:status/hw_pattern
+> 
+> With "0 255 0" and "0 0 255" the other colors also work fine, it's just
+> the combinations that seem somewhat broken.
+> 
+> Regards
+> Luca
+> 
+> 
+Hi Luca,
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
+Thanks for testing again and the feedback!
+Looks like for multicolor devices there is a small concurrency issue with
+enabling pattern at the same time for all the led channels. This could be
+why you observed your device blinking between red (255 0 0) and cyan (0 255 255),
+instead of seeing all channels (255 255 255) blink.
+The fix I'm planing to include in the next series is is to disable the multicolor led
+channels first, then configure all channels, and finally re-enable channels
+so that pattern is triggered at the same time for each all of the channels.
 
-Found with: $ rg "strncpy\("
----
- drivers/net/mdio/mdio-gpio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I am currently testing with pm8350c device so if you are able to test next series
+on pmi632 it would be very appreciated!
 
-diff --git a/drivers/net/mdio/mdio-gpio.c b/drivers/net/mdio/mdio-gpio.c
-index 0fb3c2de0845..a1718d646504 100644
---- a/drivers/net/mdio/mdio-gpio.c
-+++ b/drivers/net/mdio/mdio-gpio.c
-@@ -125,7 +125,7 @@ static struct mii_bus *mdio_gpio_bus_init(struct device *dev,
- 	if (bus_id != -1)
- 		snprintf(new_bus->id, MII_BUS_ID_SIZE, "gpio-%x", bus_id);
- 	else
--		strncpy(new_bus->id, "gpio", MII_BUS_ID_SIZE);
-+		strscpy(new_bus->id, "gpio", sizeof(new_bus->id));
- 
- 	if (pdata) {
- 		new_bus->phy_mask = pdata->phy_mask;
-
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20231012-strncpy-drivers-net-mdio-mdio-gpio-c-bddd9ed0c630
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+Thanks,
+Anjelique
