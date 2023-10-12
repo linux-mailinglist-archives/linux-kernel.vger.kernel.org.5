@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FF97C74AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC5B7C74B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442144AbjJLRX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
+        id S1379646AbjJLRYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:24:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347374AbjJLRWk (ORCPT
+        with ESMTP id S1379633AbjJLRWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:22:40 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E874B1A4;
-        Thu, 12 Oct 2023 10:22:10 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-77acb04309dso48098339f.2;
-        Thu, 12 Oct 2023 10:22:10 -0700 (PDT)
+        Thu, 12 Oct 2023 13:22:43 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9BDD5D;
+        Thu, 12 Oct 2023 10:22:11 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-79fce245bf6so47189639f.1;
+        Thu, 12 Oct 2023 10:22:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697131330; x=1697736130; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697131331; x=1697736131; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ae2mlXqowKD5cqGlXb7uogfjENyHP+dyQJfUAIqJaiw=;
-        b=Pa2GQujzG4xkFz1MuzT7bGXTbxpHxEwYnSn2HZOTK+wAMkeClULEYWDzJbSkTcq75z
-         AUnimEfnsESxRNq0Y1Xcok3+qK9Jwn2FoGPupuZa6h5emSzldMZkSbt9yp8q58SgZuO/
-         FoP0CLvtgHrDM76NfYfaVXL7TVhqdrCwTNZ3bVSzfVyRxnkmRZcweWvZmC3uoaHamH0b
-         nQdY+9Xll4u7ZZSNBEYVcY3SgPfTe4ZYX0KgUB1gHzoMDEgK1NUzMIwl4lQsYY6S3i8c
-         Uw5nFXqwGhToh1ROoGzqvtw7gieLU2enK/UAsE2H4viYHIPfJK2Ep/66mLkgAx27gXyP
-         +B5Q==
+        bh=jwbGLv7+qIU1qCKTfLfixrysNO4bjXZnfSqF5055b/A=;
+        b=GoNpSbciHRpT0Sq97TjI+r9MCuR4IZr82iCqZSbbreH9olOy9r6R7iE+4US7yrcxQr
+         EdkSypA8Mgf9MGq6q1gU5Q7zxGEFmJbZ8H2y1sWIWrE7hr12E7mfo3HEYWPCrHqr0oQU
+         ifPCBpPd2yMJs4+NMAZB/Ugc5ynwp9st1x/9Ab3RHS30QlnxC7LI924CqgFwjM5x46Yj
+         Aa2kDsJKCX5PD46JAyS31DPzQOAEJqUfWlg09pbxH9MwJ1S/Voc05Yw35IXC+rdw+yUr
+         PUZKMqGRDvYef36ogcTXr+j9zkcMW0u3CQNv0XgU3faab8ZLPxE6Q1I2VEdGyn6SMbD5
+         ApCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697131330; x=1697736130;
+        d=1e100.net; s=20230601; t=1697131331; x=1697736131;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ae2mlXqowKD5cqGlXb7uogfjENyHP+dyQJfUAIqJaiw=;
-        b=uZBzrZIxAwPeqy1WC1Ex6gGRy1KaejQyDEbyJuKuznHJ+fyYDgbwSyGZ2A3lELYxXP
-         x5YAyf4dBvOH0Y7GKxrL/1eRM3Mhb5DOYsqMZdUjqnP2WUzKzBhTVID8Sg8wsg/xTKyL
-         quss/g8uug+JCG+UPKZDh186lZ9KdTt6oUz71/C0Ihb1vtf5EctL33qtvpf35YpfcjC2
-         WvbQtDTwdgcn4sxNodwuHpakJTuamoxl+sf88tBj9/cB0+cEKBUZGWbp+Fznbi8vt3pN
-         F5M13cJZrBYIsqvwzKDqi2fC0dcZ3gdEx7kvgf+pA7Jz8q4T7/ud/BIzGBBmxDx5K1t7
-         DSLw==
-X-Gm-Message-State: AOJu0Yy5/CqEKdJmUrnCzDvuNU3Kah5sDO/1mpgki8R8cZ3V1DsOKCmS
-        EHSsg0CODbgwyq1zNq+YxfyWFJwhsgDBLQ==
-X-Google-Smtp-Source: AGHT+IEFuqgv0LKLuAzb7gwKQOS1mz1rZpZC9sUTpzcOz2n4Y5NvZOzIOkx+6OOoSZfI8IPqpfsYRQ==
-X-Received: by 2002:a5e:8f4d:0:b0:791:2db5:c779 with SMTP id x13-20020a5e8f4d000000b007912db5c779mr30620229iop.10.1697131329992;
-        Thu, 12 Oct 2023 10:22:09 -0700 (PDT)
+        bh=jwbGLv7+qIU1qCKTfLfixrysNO4bjXZnfSqF5055b/A=;
+        b=HNYZBIiIzK+yXXco3BCwktUCS97m1aSZ0pM64oC54OTd1rvs4jVqICu7N4O73xBEa/
+         Xdqi5jBExlxhaepOs0/vgU0NJDx3+pLZBLA2HSLD70fEGMoP5uAoqAQG77R7DCNSo6+g
+         bKcAvQo7Z3eh/r8ZNc2UHRmWfdCggFYdW6L1rauxiHOHL++oFVDiMvSGuN0jjwRTGC9j
+         RyZYHaVigO2wmNMfzxNMkkliZ7fj8w4h94pGu6F50YDdT5n7BIKrDtbDyfktaZju58mJ
+         OXu8hzfh/RmZesSSoyflscG5DLlDo9ghDX36WxYN2fBCHo96CQhPkl6+hJkBt6lYf653
+         8jNA==
+X-Gm-Message-State: AOJu0YyaHAJGSGJsTLt1kCsCS1Ra6OIGNqend/6WWZU9VeG4fws2kC/P
+        jTQmZXhEIQDEiO9u+upaLhTvqh94yALd3Q==
+X-Google-Smtp-Source: AGHT+IECtPOLBs2br6sMKT09k7PFb8qWkcW7q5x1QEYhPaTgMqhZEUB2IkNqklsbRaZ6DquL0rs/LQ==
+X-Received: by 2002:a5d:9743:0:b0:79f:96db:f33d with SMTP id c3-20020a5d9743000000b0079f96dbf33dmr27485863ioo.9.1697131330992;
+        Thu, 12 Oct 2023 10:22:10 -0700 (PDT)
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id r25-20020a028819000000b0043cef0711c1sm3992211jai.158.2023.10.12.10.22.08
+        by smtp.googlemail.com with ESMTPSA id r25-20020a028819000000b0043cef0711c1sm3992211jai.158.2023.10.12.10.22.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 10:22:09 -0700 (PDT)
+        Thu, 12 Oct 2023 10:22:10 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     linux-kernel@vger.kernel.org, jbaron@akamai.com,
         gregkh@linuxfoundation.org, dri-devel@lists.freedesktop.org,
@@ -60,9 +60,9 @@ Cc:     daniel.vetter@ffwll.ch, jani.nikula@intel.com,
         robdclark@gmail.com, groeck@google.com, yanivt@google.com,
         bleung@google.com, linux-doc@vger.kernel.org,
         Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v7 21/25] dyndbg: refactor *dynamic_emit_prefix
-Date:   Thu, 12 Oct 2023 11:21:32 -0600
-Message-ID: <20231012172137.3286566-22-jim.cromie@gmail.com>
+Subject: [PATCH v7 22/25] dyndbg: improve err report in attach_user_module_classes
+Date:   Thu, 12 Oct 2023 11:21:33 -0600
+Message-ID: <20231012172137.3286566-23-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231012172137.3286566-1-jim.cromie@gmail.com>
 References: <20231012172137.3286566-1-jim.cromie@gmail.com>
@@ -78,115 +78,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor the split of duties between outer & inner fns.
+convert a WARN on 3 conditions, into BUG_ON 2 of them (which don't
+happen), and an early return on (!cli->user_mod_name), which *was*
+happening, so should be seen going forward.  Maybe this should be a
+WARN.
 
-The outer fn was previously just an inline unlikely forward to inner,
-which did all the work.
-
-Now, outer handles +t and +l flags itself, and calls inner only when
-_DPRINTK_FLAGS_INCL_LOOKUP is needed.
-
-No functional change.
-
-But it does make the results of the inner-fn more cache-friendly
-(fewer entries, reused more often):
-
-1- no spurious [TID] or <intr> noise
-2- no LINE-number to bloat the cache (avg 9 pr_debugs/fn)
-3- only LOOKUP stuff
-
-Currently LOOKUPs are descriptor-field refs but could be replaced by
-accessor functions.  This would allow the __dyndbg_sites section to be
-de-duplicated and reclaimed; currently module, filename fields are
-~90% repeated.  As the accessors get more expensive, the value of
-caching part of the prefix goes up.
-
-Also change inner-fn to return count of extra chars written to the
-buffer, and drop "inline" from outer, let the compiler decide.  Maybe
-also change name accordingly.
+NB: The underlying problem was a missing __align(8) in the
+DYNDBG_CLASSMAP_USE, which manifested as a corrupt record with a map
+pointer which segv'd.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/dynamic_debug.c | 55 ++++++++++++++++++++++++---------------------
- 1 file changed, 30 insertions(+), 25 deletions(-)
+ lib/dynamic_debug.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 17eefb35ac96..974395bf8a83 100644
+index 974395bf8a83..3dc512fb1d66 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -777,19 +777,8 @@ static int remaining(int wrote)
- 	return 0;
- }
+@@ -1284,9 +1284,11 @@ static void ddebug_attach_user_module_classes(struct ddebug_table *dt,
+ 	 */
+ 	for_each_boxed_vector(di, class_users, num_class_users, i, cli) {
  
--static char *__dynamic_emit_prefix(const struct _ddebug *desc, char *buf)
-+static int __dynamic_emit_prefix(const struct _ddebug *desc, char *buf, int pos)
- {
--	int pos_after_tid;
--	int pos = 0;
+-		if (WARN_ON(!cli || !cli->map || !cli->user_mod_name))
+-			continue;
 -
--	if (desc->flags & _DPRINTK_FLAGS_INCL_TID) {
--		if (in_interrupt())
--			pos += snprintf(buf + pos, remaining(pos), "<intr> ");
--		else
--			pos += snprintf(buf + pos, remaining(pos), "[%d] ",
--					task_pid_vnr(current));
--	}
--	pos_after_tid = pos;
- 	if (desc->flags & _DPRINTK_FLAGS_INCL_MODNAME)
- 		pos += snprintf(buf + pos, remaining(pos), "%s:",
- 				desc->modname);
-@@ -799,22 +788,38 @@ static char *__dynamic_emit_prefix(const struct _ddebug *desc, char *buf)
- 	if (desc->flags & _DPRINTK_FLAGS_INCL_SOURCENAME)
- 		pos += snprintf(buf + pos, remaining(pos), "%s:",
- 				trim_prefix(desc->filename));
--	if (desc->flags & _DPRINTK_FLAGS_INCL_LINENO)
--		pos += snprintf(buf + pos, remaining(pos), "%d:",
--				desc->lineno);
--	if (pos - pos_after_tid)
--		pos += snprintf(buf + pos, remaining(pos), " ");
--	if (pos >= PREFIX_SIZE)
--		buf[PREFIX_SIZE - 1] = '\0';
--
--	return buf;
-+	return pos;
- }
++		BUG_ON(!cli || !cli->map);
++		if (!cli->user_mod_name) {
++			pr_warn("class_ref[%d] !user-mod-name looking for %s\n", i, dt->mod_name);
++			return;
++		}
+ 		if (!strcmp(cli->user_mod_name, dt->mod_name)) {
  
--static inline char *dynamic_emit_prefix(struct _ddebug *desc, char *buf)
-+static char *dynamic_emit_prefix(struct _ddebug *desc, char *buf)
- {
--	if (unlikely(desc->flags & _DPRINTK_FLAGS_INCL_ANY))
--		return __dynamic_emit_prefix(desc, buf);
--	return buf;
-+        int pos_after_tid;
-+        int pos = 0;
-+
-+        if (likely(!(desc->flags & _DPRINTK_FLAGS_INCL_ANY)))
-+                return buf;
-+
-+        if (desc->flags & _DPRINTK_FLAGS_INCL_TID) {
-+                if (in_interrupt())
-+                        pos += snprintf(buf + pos, remaining(pos), "<intr> ");
-+                else
-+                        pos += snprintf(buf + pos, remaining(pos), "[%d] ",
-+                                        task_pid_vnr(current));
-+        }
-+        pos_after_tid = pos;
-+
-+        if (unlikely(desc->flags & _DPRINTK_FLAGS_INCL_LOOKUP))
-+                pos += __dynamic_emit_prefix(desc, buf, pos);
-+
-+        if (desc->flags & _DPRINTK_FLAGS_INCL_LINENO)
-+                pos += snprintf(buf + pos, remaining(pos), "%d:",
-+                                desc->lineno);
-+        if (pos - pos_after_tid)
-+                pos += snprintf(buf + pos, remaining(pos), " ");
-+        if (pos >= PREFIX_SIZE)
-+                buf[PREFIX_SIZE - 1] = '\0';
-+
-+        return buf;
- }
- 
- void __dynamic_pr_debug(struct _ddebug *descriptor, const char *fmt, ...)
+ 			vpr_cm_info(cli->map, "class_ref[%d] %s -> %s", i,
 -- 
 2.41.0
 
