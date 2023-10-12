@@ -2,134 +2,780 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A417C6306
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 04:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68DEA7C6311
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 04:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376867AbjJLCtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 22:49:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56868 "EHLO
+        id S1376957AbjJLCtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 22:49:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345779AbjJLCsv (ORCPT
+        with ESMTP id S1376803AbjJLCs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 22:48:51 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D85EB6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 19:48:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=9IY1frtEC2rYJqSMRCt/naGt/cJcR9rRktWt5Wfg+dM=; b=Kr5uISvkejibDfd4bv+oLqUKK6
-        uvWVOYjPFk/OGSGX5Me5KH+Lrk92yFZyirFVQwEw7Ee68oseHr4TveGT+5jrze0QLMlWusR/2ZU5g
-        6DeMHECOMbANJG/P5stZJ/zR4rTxJfeakkaU8GsWHlq7Eas0CBgrgCbgpuiIIXjV1RPi2uQC21MrX
-        FdEcHwc5MAiuiwtVFY9Jq1f1B8I9+6Eq3cc23yMY3NgsCtF2D8jp7tDSUpohkgi9XUC/b42vRrzCh
-        a18NDi3AvqaxmQUFsW7VmXIMi7bnmVS/r1h9raC8IH1PeIlb1xyjbuwY0Gval91TQlK3Flua3ZWzl
-        rG38OASA==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qqlkm-00HDiv-0f;
-        Thu, 12 Oct 2023 02:48:48 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 2/7] misc: mei: client.c: fix kernel-doc warnings
-Date:   Wed, 11 Oct 2023 19:48:40 -0700
-Message-ID: <20231012024845.29169-3-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231012024845.29169-1-rdunlap@infradead.org>
-References: <20231012024845.29169-1-rdunlap@infradead.org>
+        Wed, 11 Oct 2023 22:48:57 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BFCA9
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 19:48:54 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VtykMh0_1697078931;
+Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0VtykMh0_1697078931)
+          by smtp.aliyun-inc.com;
+          Thu, 12 Oct 2023 10:48:52 +0800
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, willy@infradead.org,
+        catalin.marinas@arm.com, dave.hansen@linux.intel.com,
+        tj@kernel.org, mingo@redhat.com
+Subject: [PATCH RFC 4/5] mm/numa: support CONFIG_NUMA_EMU for arm64
+Date:   Thu, 12 Oct 2023 10:48:41 +0800
+Message-Id: <20231012024842.99703-5-rongwei.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20231012024842.99703-1-rongwei.wang@linux.alibaba.com>
+References: <20231012024842.99703-1-rongwei.wang@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel-doc warnings in client.c:
+The CONFIG_NUMA_EMU migrates from x86/Kconfig
+to mm/Kconfig. Now x86 and arm64 support it.
 
-client.c:53: warning: contents before sections
-client.c:68: warning: contents before sections
-client.c:334: warning: contents before sections
-client.c:349: warning: contents before sections
-client.c:364: warning: contents before sections
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Tomas Winkler <tomas.winkler@intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
 ---
- drivers/misc/mei/client.c |   20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ arch/x86/Kconfig             |   8 -
+ arch/x86/mm/Makefile         |   1 -
+ arch/x86/mm/numa_emulation.c | 585 -----------------------------------
+ drivers/base/arch_numa.c     |   3 +
+ include/asm-generic/numa.h   |  12 +
+ mm/Kconfig                   |   8 +
+ mm/numa.c                    |  12 +
+ 7 files changed, 35 insertions(+), 594 deletions(-)
+ delete mode 100644 arch/x86/mm/numa_emulation.c
 
-diff -- a/drivers/misc/mei/client.c b/drivers/misc/mei/client.c
---- a/drivers/misc/mei/client.c
-+++ b/drivers/misc/mei/client.c
-@@ -48,9 +48,9 @@ struct mei_me_client *mei_me_cl_get(stru
- /**
-  * mei_me_cl_release - free me client
-  *
-- * Locking: called under "dev->device_lock" lock
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 66bfabae8814..13438bfe2ec1 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1568,14 +1568,6 @@ config X86_64_ACPI_NUMA
+ 	help
+ 	  Enable ACPI SRAT based node topology detection.
+ 
+-config NUMA_EMU
+-	bool "NUMA emulation"
+-	depends on NUMA
+-	help
+-	  Enable NUMA emulation. A flat machine will be split
+-	  into virtual nodes when booted with "numa=fake=N", where N is the
+-	  number of nodes. This is only useful for debugging.
+-
+ config NODES_SHIFT
+ 	int "Maximum NUMA Nodes (as a power of 2)" if !MAXSMP
+ 	range 1 10
+diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
+index c80febc44cd2..1581f17e5de4 100644
+--- a/arch/x86/mm/Makefile
++++ b/arch/x86/mm/Makefile
+@@ -56,7 +56,6 @@ obj-$(CONFIG_MMIOTRACE_TEST)	+= testmmiotrace.o
+ obj-$(CONFIG_NUMA)		+= numa.o numa_$(BITS).o
+ obj-$(CONFIG_AMD_NUMA)		+= amdtopology.o
+ obj-$(CONFIG_ACPI_NUMA)		+= srat.o
+-obj-$(CONFIG_NUMA_EMU)		+= numa_emulation.o
+ 
+ obj-$(CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS)	+= pkeys.o
+ obj-$(CONFIG_RANDOMIZE_MEMORY)			+= kaslr.o
+diff --git a/arch/x86/mm/numa_emulation.c b/arch/x86/mm/numa_emulation.c
+deleted file mode 100644
+index 9a9305367fdd..000000000000
+--- a/arch/x86/mm/numa_emulation.c
++++ /dev/null
+@@ -1,585 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * NUMA emulation
+- */
+-#include <linux/kernel.h>
+-#include <linux/errno.h>
+-#include <linux/topology.h>
+-#include <linux/memblock.h>
+-#include <asm/dma.h>
+-
+-#include "numa_internal.h"
+-
+-static int emu_nid_to_phys[MAX_NUMNODES];
+-static char *emu_cmdline __initdata;
+-
+-int __init numa_emu_cmdline(char *str)
+-{
+-	emu_cmdline = str;
+-	return 0;
+-}
+-
+-static int __init emu_find_memblk_by_nid(int nid, const struct numa_meminfo *mi)
+-{
+-	int i;
+-
+-	for (i = 0; i < mi->nr_blks; i++)
+-		if (mi->blk[i].nid == nid)
+-			return i;
+-	return -ENOENT;
+-}
+-
+-static u64 __init mem_hole_size(u64 start, u64 end)
+-{
+-	unsigned long start_pfn = PFN_UP(start);
+-	unsigned long end_pfn = PFN_DOWN(end);
+-
+-	if (start_pfn < end_pfn)
+-		return PFN_PHYS(absent_pages_in_range(start_pfn, end_pfn));
+-	return 0;
+-}
+-
+-/*
+- * Sets up nid to range from @start to @end.  The return value is -errno if
+- * something went wrong, 0 otherwise.
+- */
+-static int __init emu_setup_memblk(struct numa_meminfo *ei,
+-				   struct numa_meminfo *pi,
+-				   int nid, int phys_blk, u64 size)
+-{
+-	struct numa_memblk *eb = &ei->blk[ei->nr_blks];
+-	struct numa_memblk *pb = &pi->blk[phys_blk];
+-
+-	if (ei->nr_blks >= NR_NODE_MEMBLKS) {
+-		pr_err("NUMA: Too many emulated memblks, failing emulation\n");
+-		return -EINVAL;
+-	}
+-
+-	ei->nr_blks++;
+-	eb->start = pb->start;
+-	eb->end = pb->start + size;
+-	eb->nid = nid;
+-
+-	if (emu_nid_to_phys[nid] == NUMA_NO_NODE)
+-		emu_nid_to_phys[nid] = pb->nid;
+-
+-	pb->start += size;
+-	if (pb->start >= pb->end) {
+-		WARN_ON_ONCE(pb->start > pb->end);
+-		numa_remove_memblk_from(phys_blk, pi);
+-	}
+-
+-	printk(KERN_INFO "Faking node %d at [mem %#018Lx-%#018Lx] (%LuMB)\n",
+-	       nid, eb->start, eb->end - 1, (eb->end - eb->start) >> 20);
+-	return 0;
+-}
+-
+-/*
+- * Sets up nr_nodes fake nodes interleaved over physical nodes ranging from addr
+- * to max_addr.
 - *
-  * @ref: me_client refcount
-+ *
-+ * Locking: called under "dev->device_lock" lock
-  */
- static void mei_me_cl_release(struct kref *ref)
- {
-@@ -63,9 +63,9 @@ static void mei_me_cl_release(struct kre
- /**
-  * mei_me_cl_put - decrease me client refcount and free client if necessary
-  *
-- * Locking: called under "dev->device_lock" lock
+- * Returns zero on success or negative on error.
+- */
+-static int __init split_nodes_interleave(struct numa_meminfo *ei,
+-					 struct numa_meminfo *pi,
+-					 u64 addr, u64 max_addr, int nr_nodes)
+-{
+-	nodemask_t physnode_mask = numa_nodes_parsed;
+-	u64 size;
+-	int big;
+-	int nid = 0;
+-	int i, ret;
+-
+-	if (nr_nodes <= 0)
+-		return -1;
+-	if (nr_nodes > MAX_NUMNODES) {
+-		pr_info("numa=fake=%d too large, reducing to %d\n",
+-			nr_nodes, MAX_NUMNODES);
+-		nr_nodes = MAX_NUMNODES;
+-	}
+-
+-	/*
+-	 * Calculate target node size.  x86_32 freaks on __udivdi3() so do
+-	 * the division in ulong number of pages and convert back.
+-	 */
+-	size = max_addr - addr - mem_hole_size(addr, max_addr);
+-	size = PFN_PHYS((unsigned long)(size >> PAGE_SHIFT) / nr_nodes);
+-
+-	/*
+-	 * Calculate the number of big nodes that can be allocated as a result
+-	 * of consolidating the remainder.
+-	 */
+-	big = ((size & ~FAKE_NODE_MIN_HASH_MASK) * nr_nodes) /
+-		FAKE_NODE_MIN_SIZE;
+-
+-	size &= FAKE_NODE_MIN_HASH_MASK;
+-	if (!size) {
+-		pr_err("Not enough memory for each node.  "
+-			"NUMA emulation disabled.\n");
+-		return -1;
+-	}
+-
+-	/*
+-	 * Continue to fill physical nodes with fake nodes until there is no
+-	 * memory left on any of them.
+-	 */
+-	while (!nodes_empty(physnode_mask)) {
+-		for_each_node_mask(i, physnode_mask) {
+-			u64 dma32_end = PFN_PHYS(MAX_DMA32_PFN);
+-			u64 start, limit, end;
+-			int phys_blk;
+-
+-			phys_blk = emu_find_memblk_by_nid(i, pi);
+-			if (phys_blk < 0) {
+-				node_clear(i, physnode_mask);
+-				continue;
+-			}
+-			start = pi->blk[phys_blk].start;
+-			limit = pi->blk[phys_blk].end;
+-			end = start + size;
+-
+-			if (nid < big)
+-				end += FAKE_NODE_MIN_SIZE;
+-
+-			/*
+-			 * Continue to add memory to this fake node if its
+-			 * non-reserved memory is less than the per-node size.
+-			 */
+-			while (end - start - mem_hole_size(start, end) < size) {
+-				end += FAKE_NODE_MIN_SIZE;
+-				if (end > limit) {
+-					end = limit;
+-					break;
+-				}
+-			}
+-
+-			/*
+-			 * If there won't be at least FAKE_NODE_MIN_SIZE of
+-			 * non-reserved memory in ZONE_DMA32 for the next node,
+-			 * this one must extend to the boundary.
+-			 */
+-			if (end < dma32_end && dma32_end - end -
+-			    mem_hole_size(end, dma32_end) < FAKE_NODE_MIN_SIZE)
+-				end = dma32_end;
+-
+-			/*
+-			 * If there won't be enough non-reserved memory for the
+-			 * next node, this one must extend to the end of the
+-			 * physical node.
+-			 */
+-			if (limit - end - mem_hole_size(end, limit) < size)
+-				end = limit;
+-
+-			ret = emu_setup_memblk(ei, pi, nid++ % nr_nodes,
+-					       phys_blk,
+-					       min(end, limit) - start);
+-			if (ret < 0)
+-				return ret;
+-		}
+-	}
+-	return 0;
+-}
+-
+-/*
+- * Returns the end address of a node so that there is at least `size' amount of
+- * non-reserved memory or `max_addr' is reached.
+- */
+-static u64 __init find_end_of_node(u64 start, u64 max_addr, u64 size)
+-{
+-	u64 end = start + size;
+-
+-	while (end - start - mem_hole_size(start, end) < size) {
+-		end += FAKE_NODE_MIN_SIZE;
+-		if (end > max_addr) {
+-			end = max_addr;
+-			break;
+-		}
+-	}
+-	return end;
+-}
+-
+-static u64 uniform_size(u64 max_addr, u64 base, u64 hole, int nr_nodes)
+-{
+-	unsigned long max_pfn = PHYS_PFN(max_addr);
+-	unsigned long base_pfn = PHYS_PFN(base);
+-	unsigned long hole_pfns = PHYS_PFN(hole);
+-
+-	return PFN_PHYS((max_pfn - base_pfn - hole_pfns) / nr_nodes);
+-}
+-
+-/*
+- * Sets up fake nodes of `size' interleaved over physical nodes ranging from
+- * `addr' to `max_addr'.
 - *
-  * @me_cl: me client
-+ *
-+ * Locking: called under "dev->device_lock" lock
-  */
- void mei_me_cl_put(struct mei_me_client *me_cl)
- {
-@@ -329,10 +329,10 @@ void mei_io_cb_free(struct mei_cl_cb *cb
- /**
-  * mei_tx_cb_enqueue - queue tx callback
-  *
-- * Locking: called under "dev->device_lock" lock
+- * Returns zero on success or negative on error.
+- */
+-static int __init split_nodes_size_interleave_uniform(struct numa_meminfo *ei,
+-					      struct numa_meminfo *pi,
+-					      u64 addr, u64 max_addr, u64 size,
+-					      int nr_nodes, struct numa_memblk *pblk,
+-					      int nid)
+-{
+-	nodemask_t physnode_mask = numa_nodes_parsed;
+-	int i, ret, uniform = 0;
+-	u64 min_size;
+-
+-	if ((!size && !nr_nodes) || (nr_nodes && !pblk))
+-		return -1;
+-
+-	/*
+-	 * In the 'uniform' case split the passed in physical node by
+-	 * nr_nodes, in the non-uniform case, ignore the passed in
+-	 * physical block and try to create nodes of at least size
+-	 * @size.
+-	 *
+-	 * In the uniform case, split the nodes strictly by physical
+-	 * capacity, i.e. ignore holes. In the non-uniform case account
+-	 * for holes and treat @size as a minimum floor.
+-	 */
+-	if (!nr_nodes)
+-		nr_nodes = MAX_NUMNODES;
+-	else {
+-		nodes_clear(physnode_mask);
+-		node_set(pblk->nid, physnode_mask);
+-		uniform = 1;
+-	}
+-
+-	if (uniform) {
+-		min_size = uniform_size(max_addr, addr, 0, nr_nodes);
+-		size = min_size;
+-	} else {
+-		/*
+-		 * The limit on emulated nodes is MAX_NUMNODES, so the
+-		 * size per node is increased accordingly if the
+-		 * requested size is too small.  This creates a uniform
+-		 * distribution of node sizes across the entire machine
+-		 * (but not necessarily over physical nodes).
+-		 */
+-		min_size = uniform_size(max_addr, addr,
+-				mem_hole_size(addr, max_addr), nr_nodes);
+-	}
+-	min_size = ALIGN(max(min_size, FAKE_NODE_MIN_SIZE), FAKE_NODE_MIN_SIZE);
+-	if (size < min_size) {
+-		pr_err("Fake node size %LuMB too small, increasing to %LuMB\n",
+-			size >> 20, min_size >> 20);
+-		size = min_size;
+-	}
+-	size = ALIGN_DOWN(size, FAKE_NODE_MIN_SIZE);
+-
+-	/*
+-	 * Fill physical nodes with fake nodes of size until there is no memory
+-	 * left on any of them.
+-	 */
+-	while (!nodes_empty(physnode_mask)) {
+-		for_each_node_mask(i, physnode_mask) {
+-			u64 dma32_end = PFN_PHYS(MAX_DMA32_PFN);
+-			u64 start, limit, end;
+-			int phys_blk;
+-
+-			phys_blk = emu_find_memblk_by_nid(i, pi);
+-			if (phys_blk < 0) {
+-				node_clear(i, physnode_mask);
+-				continue;
+-			}
+-
+-			start = pi->blk[phys_blk].start;
+-			limit = pi->blk[phys_blk].end;
+-
+-			if (uniform)
+-				end = start + size;
+-			else
+-				end = find_end_of_node(start, limit, size);
+-			/*
+-			 * If there won't be at least FAKE_NODE_MIN_SIZE of
+-			 * non-reserved memory in ZONE_DMA32 for the next node,
+-			 * this one must extend to the boundary.
+-			 */
+-			if (end < dma32_end && dma32_end - end -
+-			    mem_hole_size(end, dma32_end) < FAKE_NODE_MIN_SIZE)
+-				end = dma32_end;
+-
+-			/*
+-			 * If there won't be enough non-reserved memory for the
+-			 * next node, this one must extend to the end of the
+-			 * physical node.
+-			 */
+-			if ((limit - end - mem_hole_size(end, limit) < size)
+-					&& !uniform)
+-				end = limit;
+-
+-			ret = emu_setup_memblk(ei, pi, nid++ % MAX_NUMNODES,
+-					       phys_blk,
+-					       min(end, limit) - start);
+-			if (ret < 0)
+-				return ret;
+-		}
+-	}
+-	return nid;
+-}
+-
+-static int __init split_nodes_size_interleave(struct numa_meminfo *ei,
+-					      struct numa_meminfo *pi,
+-					      u64 addr, u64 max_addr, u64 size)
+-{
+-	return split_nodes_size_interleave_uniform(ei, pi, addr, max_addr, size,
+-			0, NULL, 0);
+-}
+-
+-static int __init setup_emu2phys_nid(int *dfl_phys_nid)
+-{
+-	int i, max_emu_nid = 0;
+-
+-	*dfl_phys_nid = NUMA_NO_NODE;
+-	for (i = 0; i < ARRAY_SIZE(emu_nid_to_phys); i++) {
+-		if (emu_nid_to_phys[i] != NUMA_NO_NODE) {
+-			max_emu_nid = i;
+-			if (*dfl_phys_nid == NUMA_NO_NODE)
+-				*dfl_phys_nid = emu_nid_to_phys[i];
+-		}
+-	}
+-
+-	return max_emu_nid;
+-}
+-
+-/**
+- * numa_emulation - Emulate NUMA nodes
+- * @numa_meminfo: NUMA configuration to massage
+- * @numa_dist_cnt: The size of the physical NUMA distance table
 - *
-  * @cb: mei callback struct
-  * @head: an instance of list to queue on
-+ *
-+ * Locking: called under "dev->device_lock" lock
-  */
- static inline void mei_tx_cb_enqueue(struct mei_cl_cb *cb,
- 				     struct list_head *head)
-@@ -344,9 +344,9 @@ static inline void mei_tx_cb_enqueue(str
- /**
-  * mei_tx_cb_dequeue - dequeue tx callback
-  *
-- * Locking: called under "dev->device_lock" lock
+- * Emulate NUMA nodes according to the numa=fake kernel parameter.
+- * @numa_meminfo contains the physical memory configuration and is modified
+- * to reflect the emulated configuration on success.  @numa_dist_cnt is
+- * used to determine the size of the physical distance table.
 - *
-  * @cb: mei callback struct to dequeue and free
-+ *
-+ * Locking: called under "dev->device_lock" lock
-  */
- static inline void mei_tx_cb_dequeue(struct mei_cl_cb *cb)
- {
-@@ -359,10 +359,10 @@ static inline void mei_tx_cb_dequeue(str
- /**
-  * mei_cl_set_read_by_fp - set pending_read flag to vtag struct for given fp
-  *
-- * Locking: called under "dev->device_lock" lock
+- * On success, the following modifications are made.
 - *
-  * @cl: mei client
-  * @fp: pointer to file structure
-+ *
-+ * Locking: called under "dev->device_lock" lock
+- * - @numa_meminfo is updated to reflect the emulated nodes.
+- *
+- * - __apicid_to_node[] is updated such that APIC IDs are mapped to the
+- *   emulated nodes.
+- *
+- * - NUMA distance table is rebuilt to represent distances between emulated
+- *   nodes.  The distances are determined considering how emulated nodes
+- *   are mapped to physical nodes and match the actual distances.
+- *
+- * - emu_nid_to_phys[] reflects how emulated nodes are mapped to physical
+- *   nodes.  This is used by numa_add_cpu() and numa_remove_cpu().
+- *
+- * If emulation is not enabled or fails, emu_nid_to_phys[] is filled with
+- * identity mapping and no other modification is made.
+- */
+-void __init numa_emulation(struct numa_meminfo *numa_meminfo, int numa_dist_cnt)
+-{
+-	static struct numa_meminfo ei __initdata;
+-	static struct numa_meminfo pi __initdata;
+-	const u64 max_addr = PFN_PHYS(max_pfn);
+-	u8 *phys_dist = NULL;
+-	size_t phys_size = numa_dist_cnt * numa_dist_cnt * sizeof(phys_dist[0]);
+-	int max_emu_nid, dfl_phys_nid;
+-	int i, j, ret;
+-
+-	if (!emu_cmdline)
+-		goto no_emu;
+-
+-	memset(&ei, 0, sizeof(ei));
+-	pi = *numa_meminfo;
+-
+-	for (i = 0; i < MAX_NUMNODES; i++)
+-		emu_nid_to_phys[i] = NUMA_NO_NODE;
+-
+-	/*
+-	 * If the numa=fake command-line contains a 'M' or 'G', it represents
+-	 * the fixed node size.  Otherwise, if it is just a single number N,
+-	 * split the system RAM into N fake nodes.
+-	 */
+-	if (strchr(emu_cmdline, 'U')) {
+-		nodemask_t physnode_mask = numa_nodes_parsed;
+-		unsigned long n;
+-		int nid = 0;
+-
+-		n = simple_strtoul(emu_cmdline, &emu_cmdline, 0);
+-		ret = -1;
+-		for_each_node_mask(i, physnode_mask) {
+-			/*
+-			 * The reason we pass in blk[0] is due to
+-			 * numa_remove_memblk_from() called by
+-			 * emu_setup_memblk() will delete entry 0
+-			 * and then move everything else up in the pi.blk
+-			 * array. Therefore we should always be looking
+-			 * at blk[0].
+-			 */
+-			ret = split_nodes_size_interleave_uniform(&ei, &pi,
+-					pi.blk[0].start, pi.blk[0].end, 0,
+-					n, &pi.blk[0], nid);
+-			if (ret < 0)
+-				break;
+-			if (ret < n) {
+-				pr_info("%s: phys: %d only got %d of %ld nodes, failing\n",
+-						__func__, i, ret, n);
+-				ret = -1;
+-				break;
+-			}
+-			nid = ret;
+-		}
+-	} else if (strchr(emu_cmdline, 'M') || strchr(emu_cmdline, 'G')) {
+-		u64 size;
+-
+-		size = memparse(emu_cmdline, &emu_cmdline);
+-		ret = split_nodes_size_interleave(&ei, &pi, 0, max_addr, size);
+-	} else {
+-		unsigned long n;
+-
+-		n = simple_strtoul(emu_cmdline, &emu_cmdline, 0);
+-		ret = split_nodes_interleave(&ei, &pi, 0, max_addr, n);
+-	}
+-	if (*emu_cmdline == ':')
+-		emu_cmdline++;
+-
+-	if (ret < 0)
+-		goto no_emu;
+-
+-	if (numa_cleanup_meminfo(&ei) < 0) {
+-		pr_warn("NUMA: Warning: constructed meminfo invalid, disabling emulation\n");
+-		goto no_emu;
+-	}
+-
+-	/* copy the physical distance table */
+-	if (numa_dist_cnt) {
+-		u64 phys;
+-
+-		phys = memblock_phys_alloc_range(phys_size, PAGE_SIZE, 0,
+-						 PFN_PHYS(max_pfn_mapped));
+-		if (!phys) {
+-			pr_warn("NUMA: Warning: can't allocate copy of distance table, disabling emulation\n");
+-			goto no_emu;
+-		}
+-		phys_dist = __va(phys);
+-
+-		for (i = 0; i < numa_dist_cnt; i++)
+-			for (j = 0; j < numa_dist_cnt; j++)
+-				phys_dist[i * numa_dist_cnt + j] =
+-					node_distance(i, j);
+-	}
+-
+-	/*
+-	 * Determine the max emulated nid and the default phys nid to use
+-	 * for unmapped nodes.
+-	 */
+-	max_emu_nid = setup_emu2phys_nid(&dfl_phys_nid);
+-
+-	/* commit */
+-	*numa_meminfo = ei;
+-
+-	/* Make sure numa_nodes_parsed only contains emulated nodes */
+-	nodes_clear(numa_nodes_parsed);
+-	for (i = 0; i < ARRAY_SIZE(ei.blk); i++)
+-		if (ei.blk[i].start != ei.blk[i].end &&
+-		    ei.blk[i].nid != NUMA_NO_NODE)
+-			node_set(ei.blk[i].nid, numa_nodes_parsed);
+-
+-	/*
+-	 * Transform __apicid_to_node table to use emulated nids by
+-	 * reverse-mapping phys_nid.  The maps should always exist but fall
+-	 * back to zero just in case.
+-	 */
+-	for (i = 0; i < ARRAY_SIZE(__apicid_to_node); i++) {
+-		if (__apicid_to_node[i] == NUMA_NO_NODE)
+-			continue;
+-		for (j = 0; j < ARRAY_SIZE(emu_nid_to_phys); j++)
+-			if (__apicid_to_node[i] == emu_nid_to_phys[j])
+-				break;
+-		__apicid_to_node[i] = j < ARRAY_SIZE(emu_nid_to_phys) ? j : 0;
+-	}
+-
+-	/* make sure all emulated nodes are mapped to a physical node */
+-	for (i = 0; i < ARRAY_SIZE(emu_nid_to_phys); i++)
+-		if (emu_nid_to_phys[i] == NUMA_NO_NODE)
+-			emu_nid_to_phys[i] = dfl_phys_nid;
+-
+-	/* transform distance table */
+-	numa_reset_distance();
+-	for (i = 0; i < max_emu_nid + 1; i++) {
+-		for (j = 0; j < max_emu_nid + 1; j++) {
+-			int physi = emu_nid_to_phys[i];
+-			int physj = emu_nid_to_phys[j];
+-			int dist;
+-
+-			if (get_option(&emu_cmdline, &dist) == 2)
+-				;
+-			else if (physi >= numa_dist_cnt || physj >= numa_dist_cnt)
+-				dist = physi == physj ?
+-					LOCAL_DISTANCE : REMOTE_DISTANCE;
+-			else
+-				dist = phys_dist[physi * numa_dist_cnt + physj];
+-
+-			numa_set_distance(i, j, dist);
+-		}
+-	}
+-
+-	/* free the copied physical distance table */
+-	memblock_free(phys_dist, phys_size);
+-	return;
+-
+-no_emu:
+-	/* No emulation.  Build identity emu_nid_to_phys[] for numa_add_cpu() */
+-	for (i = 0; i < ARRAY_SIZE(emu_nid_to_phys); i++)
+-		emu_nid_to_phys[i] = i;
+-}
+-
+-#ifndef CONFIG_DEBUG_PER_CPU_MAPS
+-void numa_add_cpu(int cpu)
+-{
+-	int physnid, nid;
+-
+-	nid = early_cpu_to_node(cpu);
+-	BUG_ON(nid == NUMA_NO_NODE || !node_online(nid));
+-
+-	physnid = emu_nid_to_phys[nid];
+-
+-	/*
+-	 * Map the cpu to each emulated node that is allocated on the physical
+-	 * node of the cpu's apic id.
+-	 */
+-	for_each_online_node(nid)
+-		if (emu_nid_to_phys[nid] == physnid)
+-			cpumask_set_cpu(cpu, node_to_cpumask_map[nid]);
+-}
+-
+-void numa_remove_cpu(int cpu)
+-{
+-	int i;
+-
+-	for_each_online_node(i)
+-		cpumask_clear_cpu(cpu, node_to_cpumask_map[i]);
+-}
+-#else	/* !CONFIG_DEBUG_PER_CPU_MAPS */
+-static void numa_set_cpumask(int cpu, bool enable)
+-{
+-	int nid, physnid;
+-
+-	nid = early_cpu_to_node(cpu);
+-	if (nid == NUMA_NO_NODE) {
+-		/* early_cpu_to_node() already emits a warning and trace */
+-		return;
+-	}
+-
+-	physnid = emu_nid_to_phys[nid];
+-
+-	for_each_online_node(nid) {
+-		if (emu_nid_to_phys[nid] != physnid)
+-			continue;
+-
+-		debug_cpumask_set_cpu(cpu, nid, enable);
+-	}
+-}
+-
+-void numa_add_cpu(int cpu)
+-{
+-	numa_set_cpumask(cpu, true);
+-}
+-
+-void numa_remove_cpu(int cpu)
+-{
+-	numa_set_cpumask(cpu, false);
+-}
+-#endif	/* !CONFIG_DEBUG_PER_CPU_MAPS */
+diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
+index 5df0ad5cb09d..67bdbcd0caf9 100644
+--- a/drivers/base/arch_numa.c
++++ b/drivers/base/arch_numa.c
+@@ -13,6 +13,7 @@
+ #include <linux/module.h>
+ #include <linux/of.h>
+ 
++#include <asm-generic/numa.h>
+ #include <asm/sections.h>
+ 
+ struct pglist_data *node_data[MAX_NUMNODES] __read_mostly;
+@@ -30,6 +31,8 @@ static __init int numa_parse_early_param(char *opt)
+ 		return -EINVAL;
+ 	if (str_has_prefix(opt, "off"))
+ 		numa_off = true;
++	if (!strncmp(opt, "fake=", 5))
++		return numa_emu_cmdline(opt + 5);
+ 
+ 	return 0;
+ }
+diff --git a/include/asm-generic/numa.h b/include/asm-generic/numa.h
+index 929d7c582a73..4658155a070a 100644
+--- a/include/asm-generic/numa.h
++++ b/include/asm-generic/numa.h
+@@ -50,12 +50,24 @@ struct numa_meminfo {
+ 	struct numa_memblk	blk[NR_NODE_MEMBLKS];
+ };
+ 
++#ifdef CONFIG_NUMA_EMU
++#define FAKE_NODE_MIN_SIZE	((u64)32 << 20)
++#define FAKE_NODE_MIN_HASH_MASK	(~(FAKE_NODE_MIN_SIZE - 1UL))
++
+ extern struct numa_meminfo numa_meminfo;
++extern char *emu_cmdline __initdata;
+ 
++int numa_emu_cmdline(char *str);
+ int __init numa_register_memblks(struct numa_meminfo *mi);
+ int __init numa_cleanup_meminfo(struct numa_meminfo *mi);
+ void __init numa_emulation(struct numa_meminfo *numa_meminfo,
+ 			   int numa_dist_cnt);
++#else
++static inline int numa_emu_cmdline(char *str)
++{
++	return -EINVAL;
++}
++#endif
+ 
+ #else	/* CONFIG_NUMA */
+ 
+diff --git a/mm/Kconfig b/mm/Kconfig
+index 264a2df5ecf5..22bead675ee6 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -549,6 +549,14 @@ config ARCH_ENABLE_MEMORY_HOTPLUG
+ config ARCH_ENABLE_MEMORY_HOTREMOVE
+ 	bool
+ 
++config NUMA_EMU
++	bool "NUMA emulation (EXPERIMENTAL)"
++	depends on NUMA && (X86 || ARM64)
++	help
++	  Enable NUMA emulation. A flat machine will be split
++	  into virtual nodes when booted with "numa=fake=N", where N is the
++	  number of nodes. This is only useful for debugging.
++
+ # eventually, we can have this option just 'select SPARSEMEM'
+ menuconfig MEMORY_HOTPLUG
+ 	bool "Memory hotplug"
+diff --git a/mm/numa.c b/mm/numa.c
+index 88277e8404f0..3cc01f06a2a6 100644
+--- a/mm/numa.c
++++ b/mm/numa.c
+@@ -16,6 +16,10 @@
+ struct numa_meminfo numa_meminfo __initdata_or_meminfo;
+ struct numa_meminfo numa_reserved_meminfo __initdata_or_meminfo;
+ 
++#ifdef CONFIG_NUMA_EMU
++char *emu_cmdline __initdata;
++#endif
++
+ /*
+  * Set nodes, which have memory in @mi, in *@nodemask.
   */
- static void mei_cl_set_read_by_fp(const struct mei_cl *cl,
- 				  const struct file *fp)
+@@ -296,3 +300,11 @@ int __weak __init numa_register_memblks(struct numa_meminfo *mi)
+ 
+ 	return 0;
+ }
++
++#ifdef CONFIG_NUMA_EMU
++int __init numa_emu_cmdline(char *str)
++{
++	emu_cmdline = str;
++	return 0;
++}
++#endif
+-- 
+2.32.0.3.gf3a3e56d6
+
