@@ -2,141 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8227C763D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0391E7C7640
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441905AbjJLTGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 15:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47832 "EHLO
+        id S1442087AbjJLTGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 15:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjJLTG2 (ORCPT
+        with ESMTP id S229576AbjJLTGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 15:06:28 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA58D83
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:06:26 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50337b43ee6so1814134e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:06:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697137584; x=1697742384; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GRG/Q+khD2cAKTgkqi3DOUxaLzalQQAE2INM+FeGIZY=;
-        b=H1PyF7F57ErNf8MJVDuxzLGw3sW0x33XEcPaijVq9HD4kMjhT3NtJSgzJzByDfiYdR
-         FJm8c8P+pkvv8XD+j8Vk9+DjgtlnSJuly/OY26VcJ6gB+bHDFTydYW4gDfRRZg1h26jP
-         iLn/7MbnekPhLEVyBfw7BlgB0pAd+OFTewCj4ry/pNrdSVbVem+eafKL/o7EQg0ijvxA
-         tUas2Toxlx5znVCK9ftvwrkS6Vx3Z2yYQNsVYeEzpIPnsHwa+IMWjsQUQogTrA/FTxyp
-         7MTnWZO7dZoeh1EJIESZUG2Jr1XMhON7EjDcV/RGVoJeZImKd+wFFPlFyR4xdWYwpi/N
-         z64Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697137584; x=1697742384;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GRG/Q+khD2cAKTgkqi3DOUxaLzalQQAE2INM+FeGIZY=;
-        b=KnCAoBSraF78KAOuxr8GZD1QeAbCDR+Biz3jPxhRACPT0hIONYgrrNi9971f/g82FQ
-         KWXO+zG6Htregu3T5sA58yBwoH6ikYbm46WftJ57WtxGttfmNFmAWidYQ+kGRw32L7fJ
-         Kg8WnsL2S9gamfIv4re1Fjd5VNzIHyONyHGg+RW3dtusWKTwyH4ekUYbteozhq+7Mha5
-         9swBIY3XWnHptRFkwcSCK2Oh4psKp0wZU6Wtsl3U3IP4Lyu35araQDovCelbOZBzCGv7
-         bvAY0WmK+BiA/WsaY5XImhTWUabPyMC/V3YGza8bl9M74/de/TMvnzUMpmtgOnrT64mF
-         M/5w==
-X-Gm-Message-State: AOJu0YzMFxWl6NPAkVlhnosDqKeqCNtrkYFMX2dsqswj347PqvuaAI/Y
-        P4yY33qljdbdE2sl1mfTRs+vHQvC1Wn6H4Uu
-X-Google-Smtp-Source: AGHT+IHCatDuHoVLOodvZHyWbaPIKuEY1i2ybALWQhnXImPK6VTRXGS0KHVz0W4W3sA03WzDzP18Pg==
-X-Received: by 2002:ac2:560c:0:b0:507:9745:8629 with SMTP id v12-20020ac2560c000000b0050797458629mr873868lfd.55.1697137584259;
-        Thu, 12 Oct 2023 12:06:24 -0700 (PDT)
-Received: from lab-ubuntu ([41.90.69.21])
-        by smtp.gmail.com with ESMTPSA id q15-20020a170906360f00b0099d804da2e9sm11511509ejb.225.2023.10.12.12.06.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 12:06:23 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 22:06:21 +0300
-From:   Calvince Otieno <calvncce@gmail.com>
-To:     outreachy@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Archana <craechal@gmail.com>, Dan Carpenter <error27@gmail.com>,
-        Calvince Otieno <calvncce@gmail.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] staging: wlan-ng: remove strcpy() use in favor of
- strscpy()
-Message-ID: <ZShDrTH1wTmTxqlu@lab-ubuntu>
+        Thu, 12 Oct 2023 15:06:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2285D7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:06:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49C6BC433C8;
+        Thu, 12 Oct 2023 19:06:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697137594;
+        bh=O1aUZWQnphTioOll5YmIeOSyPeoLu6J3fAATaNPXNRw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ppxGPG6OUjNAQmGWO1wX16kLfHkesHRUsUkvZ5iKedy4yDY3kxyNy49p8SU0kRpER
+         Fq3TxI5gmOSwzEagQtK5Al4zyD293AFV+lkb7gIX5Tx4W4IET2QxJek4ZJCmrBjM08
+         OTdZS2wyEXMkmDgpJJ5DHx+hJIiM1hzzHDyLP3JssEzJmfrUL4Ads8FUlxHxflfcCp
+         bvb9xZVmhsCSN1wEjTMV56itb+MN2bRTjU9UFc6BAoDFFtzmeNddtcw0XgAU9ggRnq
+         KhYE/VoIvSN93kNPRvZcvpBpWqxWLuQCG88F20FOry22u7BWL4L5AottzMA/Zu0xrc
+         1gBdi6/MPT1RQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D9787CE0868; Thu, 12 Oct 2023 12:06:33 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 12:06:33 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc:     Willy Tarreau <w@1wt.eu>, Zhangjin Wu <falcon@tinylab.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/nolibc: add tests for multi-object linkage
+Message-ID: <a5f1a910-dbac-44d8-b9f6-5725bea948b2@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231012-nolibc-linkage-test-v1-1-315e682768b4@weissschuh.net>
+ <ZSea+etQwlxbi+Ok@1wt.eu>
+ <bfc17e76-fcbc-4ce6-97a8-c1ed72ed2a67@t-8ch.de>
+ <33e9afcd-a1cd-4f67-829b-85c86500a93e@paulmck-laptop>
+ <b278a643-3761-4699-bafc-df1b7245b8c2@t-8ch.de>
+ <ca67eb2c-3918-4a1f-b3e6-2023fda5d6a3@paulmck-laptop>
+ <6b66305f-8172-463e-a50d-324c0c33a6ea@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6b66305f-8172-463e-a50d-324c0c33a6ea@t-8ch.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In response to the suggestion by Dan Carpenter on the initial patch,
-this patch provides a correct usage of the strscpy() in place of the
-current strcpy() implementation.
+On Thu, Oct 12, 2023 at 08:39:14PM +0200, Thomas Weißschuh wrote:
+> On 2023-10-12 11:25:02-0700, Paul E. McKenney wrote:
+> > [..]
+> 
+> > > Please pull the changes since the v6.6-rc1 tag from
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git/
+> > > 
+> > > The branch 'fixes' up to and including
+> > > 90864f0679fdbb3b2e1c3bdbe4b0a34df785cb0a for the v6.6 cycle.
+> > > 
+> > > The branch 'next' up to and including
+> > > f2c7923763dae51226584494722349fef4df3748 for linux-next.
+> > > 
+> > > The branch 'next', based upon 'fixes', was tested as follows:
+> > > 
+> > > i386:          162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > > x86_64:        162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > > arm64:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > > arm:           162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > > mips:          162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
+> > > ppc:           162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > > ppc64:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > > ppc64le:       162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > > riscv:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > > s390:          162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
+> > > loongarch:     162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
+> > 
+> > I have a signed tag urgent/nolibc.2023.10.12a in the -rcu tree, so
+> > please check the lead-in text for sanity.  (Everything after the digital
+> > signature is automatically generated.)
+> 
+> Looks good. But it's only a listing of the commit subjects, correct?
 
-strscpy() copies characters from the source buffer to the destination
-buffer until one of the following conditions is met:
-	- null-terminator ('\0') is encountered in the source string.
-	- specified maximum length of the destination buffer is reached.
-	- source buffer is exhausted.
-Example:
-	char dest[11];
-	const char *PRISM2_USB_FWFILE = "prism2_ru.fw";
-	strscpy(dest, PRISM2_USB_FWFILE, sizeof(dest));
+Pretty close, just a few added words on the last one.
 
-	In this case, strscpy copies the first 10 characters of src into dest
-	and add a null-terminator. dest will then contain "prism2_ru.f" with
-	proper null-termination.
+So the question is whether there is some larger issue that Linus should
+be made aware of.  If these are just simple fixes for simple bugs,
+we should be good, but yes, I do need to ask.  ;-)
 
-Since the specified length of the dest buffer is not derived from the
-dest buffer itself and rather form plug length (s3plug[i].len),
-replacing strcpy() with strscpy() is a better option because it will
-ensures that the destination string is always properly terminated.
+> > Testing for urgent/nolibc.2023.10.12a:
+> > make run: 160 test(s): 160 passed,   0 skipped,   0 failed => status: success
+> > make run-user: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning
+> > 
+> > Testing for full nolibc stack:
+> > make run: 162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > make run-user: 162 test(s): 160 passed,   2 skipped,   0 failed => status: warning
+> > 
+> > > > But after about Wednesday of next week, getting things into the upcoming
+> > > > merge window is pretty much as fast as sending them quickly to Linus,
+> > > > if that makes sense.  Unless there is to be a -rc8 this time, but I
+> > > > have heard no sign of that.
+> > > > 
+> > > > Make sense?
+> > > 
+> > > Sure, hopefully no more fixes are needed!
+> > 
+> > Ah, and have these been posted to a public mailing list?  If not, then I
+> > need to send them out.
+> 
+> All patches went through the lists as part of the normal developent
+> flow. They were not posted after rebasing.
 
-Signed-off-by: Calvince Otieno <calvncce@gmail.com>
----
+I have been sending the group, so I might as well continue the tradition.
 
-Patch version v2 : 
-	Correct implementation of the strscpy()
+There are a couple of substantive checkpatch complaints:
 
-drivers/staging/wlan-ng/prism2fw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+4b4a30ea14d1 ("tools/nolibc: i386: Fix a stack misalign bug on _start")
+	The Fixes SHA-1 should be limited to 12 hex digits.
+	(I am ignoring this, but be prepared for Linus to gripe.
+	If you decide to fix it, I would be happy to repull.)
 
-diff --git a/drivers/staging/wlan-ng/prism2fw.c b/drivers/staging/wlan-ng/prism2fw.c
-index 5d03b2b9aab4..3ccd11041646 100644
---- a/drivers/staging/wlan-ng/prism2fw.c
-+++ b/drivers/staging/wlan-ng/prism2fw.c
-@@ -725,7 +725,7 @@ static int plugimage(struct imgchunk *fchunk, unsigned int nfchunks,
- 
- 		if (j == -1) {	/* plug the filename */
- 			memset(dest, 0, s3plug[i].len);
--			strncpy(dest, PRISM2_USB_FWFILE, s3plug[i].len - 1);
-+			strscpy(dest, PRISM2_USB_FWFILE, s3plug[i].len);
- 		} else {	/* plug a PDR */
- 			memcpy(dest, &pda->rec[j]->data, s3plug[i].len);
- 		}
+f2c7923763da ("selftests/nolibc: add tests for multi-object linkage")
+	nolibc-test-linkage.c and nolibc-test-linkage.h need
+	"//" comment for the SPDX comment header.  This one needs
+	to be fixed, but this is not in the urgent stack, so there
+	is some time.
 
-Patch version v1: 
-	Replacing strcpy() with strscpy()
+> For transparency I did the following follow-up changes:
+> 
+> * The rebase of "tools/nolibc: mark start_c as weak" required some
+>   minor changes to resolve conflicts.
+> * reword the message of
+>   "tools/nolibc: drop test for getauxval(AT_PAGESZ)" slightly.
+> * simplify the includes intruduced by
+>   "selftests/nolibc: add tests for multi-object linkage".
 
- drivers/staging/wlan-ng/prism2fw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sounds good!
 
-diff --git a/drivers/staging/wlan-ng/prism2fw.c b/drivers/staging/wlan-ng/prism2fw.c
-index 5d03b2b9aab4..57a99dd12143 100644
---- a/drivers/staging/wlan-ng/prism2fw.c
-+++ b/drivers/staging/wlan-ng/prism2fw.c
-@@ -725,7 +725,7 @@ static int plugimage(struct imgchunk *fchunk, unsigned int nfchunks,
+							Thanx, Paul
 
-                if (j == -1) {  /* plug the filename */
-                        memset(dest, 0, s3plug[i].len);
--                       strncpy(dest, PRISM2_USB_FWFILE, s3plug[i].len - 1);
-+                       strscpy(dest, PRISM2_USB_FWFILE, s3plug[i].len - 1);
-                } else {        /* plug a PDR */
-                        memcpy(dest, &pda->rec[j]->data, s3plug[i].len);
-                }
--- 
-Calvince Otieno
-
+> > We reset the -next testing clock, so if all goes well, then I send the
+> > three urgent commits to Linus on Monday.
+> 
+> Sounds good, thanks!
+> 
+> Thomas
