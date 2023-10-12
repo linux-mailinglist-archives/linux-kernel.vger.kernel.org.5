@@ -2,105 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0A17C7A55
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9479B7C7A5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443092AbjJLXU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 19:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51008 "EHLO
+        id S1443101AbjJLXXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 19:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443053AbjJLXU4 (ORCPT
+        with ESMTP id S1443006AbjJLXXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 19:20:56 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81021A9;
-        Thu, 12 Oct 2023 16:20:55 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-694ed84c981so1227176b3a.3;
-        Thu, 12 Oct 2023 16:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697152855; x=1697757655; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GpidU1IUEyr6Ej9BBMyDiz4G7BRIDkpiKmkXFmvBZzE=;
-        b=Uoj90UIbQczVJBsXgyhvo+XZCBbyDhe/rbGwsf7q3a0zmh7/1ULq6LGhq5ovLSo3pK
-         //Bmq4q5XQlzjWGNxfGc9aTHUbvs8DGrvn2H/mHaCMeLVpTXnWYcfxTxsAgtz+XzKqIm
-         i5kMHyjmwYQT9WNcTiCqE9T4lFTlI339jLCgs5T2kvescYLpUBvb1PbWUJYlMBdH84I3
-         mi3sr8VJSyM8FCFvT2vdEwjy1JZP9ZHy3E3cleTltv3R+KegpN/j9sEwlMX0ZTupueGW
-         Z86vmxSvYm0yt7PIwCe03qVUblsBMpdbOKY5gv6JHyKTITljp/c14WKDG2XSKo3z2J9A
-         crTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697152855; x=1697757655;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=GpidU1IUEyr6Ej9BBMyDiz4G7BRIDkpiKmkXFmvBZzE=;
-        b=BFwpTNWlUsqL9MVzAmMxLorDyZXrb9QYxMDsvQZ9EY6HmLvWue7MzhWyi5WMu7MX6m
-         c+aWGq96znn3LCBH9VnL51Vz9QxSX8eeGV5zuWNK526qopljaInJT8cLxRMOIgZBREjQ
-         gEkPfh+i4R4/giuj6emR16P6afaFZKrW0lknNru6SZA6C9Kks8CI7tQwoVw5gu9jIkiC
-         SGlNkW1b/x+m2IuHwO2Op8brSvgHJX/bnu+7HPkWGYjKQwVpmPoGTJWOsGrjVu/sP7ls
-         5Yoy3vJSdLe0SrjZG0udcTUdmHBLPpRq0Z3ApsBsW0VAOwwbsUYCRATZ4Y4vN4yPl6l7
-         Emmw==
-X-Gm-Message-State: AOJu0Yy3GIC4MhvD1ezaGyzmEe4PTV308DX75VaQH6C5Tj/fq1kb8wr9
-        /JMcSMTdExOh/Mn3DBp2EjmcB0Q5H453YQ==
-X-Google-Smtp-Source: AGHT+IHjPrptHGABQfvX00jAkTWKp+VkHe1scqpGwymKTaG/OxJux37xCKfdQP53EhtcczNWnAUOCw==
-X-Received: by 2002:a05:6a20:3942:b0:14b:8023:33c8 with SMTP id r2-20020a056a20394200b0014b802333c8mr27596722pzg.2.1697152854820;
-        Thu, 12 Oct 2023 16:20:54 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id c4-20020a170902724400b001c72c07c9d9sm2496035pll.308.2023.10.12.16.20.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 16:20:54 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 12 Oct 2023 13:20:53 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [GIT PULL] Cgroup fixes for v6.6-rc5
-Message-ID: <ZSh_Vf5whzHV-H1S@slm.duckdns.org>
+        Thu, 12 Oct 2023 19:23:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99503A9;
+        Thu, 12 Oct 2023 16:23:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697152986; x=1728688986;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fYSG4sqWrIC/2C2Ao8u1hyYEpig6sxUSVbww+LIg5f0=;
+  b=evWobl74g29pAC1VcQcaBBjvFpf7+owm8gXoDObp0VzQlLTtBoxb0rCR
+   ynpx3t7DMwTXK9i7qkeN+P3mDsHbYj3y3hYMe4sTwPJ7303JbXB+wuq21
+   AD2Y+oKF4y3b7YjGIjLmlLB9dvfUZp+qfxFy5PeDJG8OBv0KIG7Jf2AUP
+   DEdNmLQBM7idPApnNr7Rp+J8VipBEj7u9Do4/2cJgbdfE/DfkxujURjlN
+   iRfoVzG0CUvkOn7YhF8gyadf3vkcpr1nSJpI0kNGFI/mDik/KhPzySNoo
+   /XVZjq+N0YgNFidC41XtWHphpQzdh+3ZVJ+aogE7V5L9NXNiC+oanRIvx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="471299401"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="471299401"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 16:22:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="928179846"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="928179846"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 12 Oct 2023 16:22:04 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qr50D-00042J-0v;
+        Thu, 12 Oct 2023 23:22:01 +0000
+Date:   Fri, 13 Oct 2023 07:21:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v3 11/15] firmware: qcom: qseecom: convert to using the
+ TZ allocator
+Message-ID: <202310130731.YHBtmaQU-lkp@intel.com>
+References: <20231009153427.20951-12-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231009153427.20951-12-brgl@bgdev.pl>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 94f6f0550c625fab1f373bb86a6669b45e9748b3:
+Hi Bartosz,
 
-  Linux 6.6-rc5 (2023-10-08 13:49:43 -0700)
+kernel test robot noticed the following build errors:
 
-are available in the Git repository at:
+[auto build test ERROR on next-20231009]
+[cannot apply to arm64/for-next/core krzk-dt/for-next linus/master v6.6-rc5 v6.6-rc4 v6.6-rc3 v6.6-rc5]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.6-rc5-fixes
+url:    https://github.com/intel-lab-lkp/linux/commits/Bartosz-Golaszewski/firmware-qcom-move-Qualcomm-code-into-its-own-directory/20231009-233826
+base:   next-20231009
+patch link:    https://lore.kernel.org/r/20231009153427.20951-12-brgl%40bgdev.pl
+patch subject: [PATCH v3 11/15] firmware: qcom: qseecom: convert to using the TZ allocator
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231013/202310130731.YHBtmaQU-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231013/202310130731.YHBtmaQU-lkp@intel.com/reproduce)
 
-for you to fetch changes up to 13cc9ee8f8ed58e563294d87d74a62006be40f21:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310130731.YHBtmaQU-lkp@intel.com/
 
-  cgroup: Fix incorrect css_set_rwsem reference in comment (2023-10-12 07:22:56 -1000)
+All errors (new ones prefixed by >>):
 
-----------------------------------------------------------------
-cgroup: Fixes for v6.6-rc5
+   drivers/firmware/qcom/qcom_qseecom_uefisecapp.c: In function 'qcom_uefisecapp_probe':
+>> drivers/firmware/qcom/qcom_qseecom_uefisecapp.c:767:67: error: 'SZ_256K' undeclared (first use in this function)
+     767 |         qcuefi->mempool = devm_qcom_tzmem_pool_new(&aux_dev->dev, SZ_256K);
+         |                                                                   ^~~~~~~
+   drivers/firmware/qcom/qcom_qseecom_uefisecapp.c:767:67: note: each undeclared identifier is reported only once for each function it appears in
 
-- In cgroup1, the `tasks` file could have duplicate pids which can trigger a
-  warning in seq_file. Fix it by removing duplicate items after sorting.
 
-- Comment update.
+vim +/SZ_256K +767 drivers/firmware/qcom/qcom_qseecom_uefisecapp.c
 
-----------------------------------------------------------------
-Michal Koutný (1):
-      cgroup: Remove duplicates in cgroup v1 tasks file
-
-Waiman Long (1):
-      cgroup: Fix incorrect css_set_rwsem reference in comment
-
- include/linux/cgroup-defs.h | 2 +-
- kernel/cgroup/cgroup-v1.c   | 5 ++---
- 2 files changed, 3 insertions(+), 4 deletions(-)
+   745	
+   746	static int qcom_uefisecapp_probe(struct auxiliary_device *aux_dev,
+   747					 const struct auxiliary_device_id *aux_dev_id)
+   748	{
+   749		struct qcuefi_client *qcuefi;
+   750		int status;
+   751	
+   752		qcuefi = devm_kzalloc(&aux_dev->dev, sizeof(*qcuefi), GFP_KERNEL);
+   753		if (!qcuefi)
+   754			return -ENOMEM;
+   755	
+   756		qcuefi->client = container_of(aux_dev, struct qseecom_client, aux_dev);
+   757	
+   758		auxiliary_set_drvdata(aux_dev, qcuefi);
+   759		status = qcuefi_set_reference(qcuefi);
+   760		if (status)
+   761			return status;
+   762	
+   763		status = efivars_register(&qcuefi->efivars, &qcom_efivar_ops);
+   764		if (status)
+   765			qcuefi_set_reference(NULL);
+   766	
+ > 767		qcuefi->mempool = devm_qcom_tzmem_pool_new(&aux_dev->dev, SZ_256K);
+   768		if (IS_ERR(qcuefi->mempool))
+   769			return PTR_ERR(qcuefi->mempool);
+   770	
+   771		return status;
+   772	}
+   773	
 
 -- 
-tejun
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
