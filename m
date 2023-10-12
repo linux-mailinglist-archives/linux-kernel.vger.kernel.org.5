@@ -2,100 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7710A7C7877
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A047C7878
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442897AbjJLVRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 17:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
+        id S1442861AbjJLVRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 17:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442372AbjJLVRV (ORCPT
+        with ESMTP id S1442824AbjJLVRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 17:17:21 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4FF9D
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:17:19 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40651a72807so15295555e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:17:19 -0700 (PDT)
+        Thu, 12 Oct 2023 17:17:41 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A0EA9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:17:39 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53db1fbee70so2505041a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:17:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697145438; x=1697750238; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IwD1fj8O0qK3NQU4/GGTVbtH/60RxqkX44mSAkHZK4Q=;
-        b=a01a0flZmc7b3TlH1PEwh5aSXoASQCn5d8o8wsbxTCmF8aoOwzpVdca1DwD0F4Oxuu
-         Qi8iaIRukDX3npZj9PKqj5SsdomYOR4tsYAUBnoYHgqO7UGVZ9/YpMZDVFgBIwafoMRT
-         DsnF7m8/guN9+gIDjMd9ykGVOcv5xwuBNp5BH6vAT8XO68CB45wiBe925kG/CzD797jh
-         xGUumu0I/JreVye8mnEvAS79eactBOl5OMZDOV1TJB4HrUbdzMMmhQG77+sXQi8qLyqs
-         ULkMFophWydf5k2Ao/ZM3R9y42p1GF5uKox1u4Wp6FdTjn+lpDa6ZYRLTIlJ/82usqUe
-         dkGw==
+        d=gmail.com; s=20230601; t=1697145458; x=1697750258; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vq2DHHNgN1ay7Fwdp3I5ZMWfUBUlatwsBWWqlLrDB9s=;
+        b=MLRBPaM7BX5Hdbg2iij5zYMlth+9hzHEJM0LoD9nxjKlkE3irwmPu3OPJha6FsDeMx
+         otbrg1J2ZN/mRCU0MYczc0l5NpQK6Oq2LsfMTkBm5L7Z4z4FY+QCpI1MT34CDQGPAJJd
+         zyKETRB3KJlfThXqAl1TZudPFW52pjpAOQ6q+EDVIzSEMsCsM/hiW4wKHoWDLq/6ML4r
+         h/HklOSUk85cw+mEl7sJIOq+ipYOMBxUge9o0xdX+qShNJaSvPQ5pLiCrJUDMFkKosYk
+         Rq2if7V9so+qlyN5+N4/gZ8B0aH/6oYghzkOo52CmY3RDVAve2C3LIGOUMXMPKhZ59jG
+         V35g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697145438; x=1697750238;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IwD1fj8O0qK3NQU4/GGTVbtH/60RxqkX44mSAkHZK4Q=;
-        b=n90r0YTWDRGV+w9XQC4bOIFUR1X0zwdOgdndxHXWR2BSvusT83kjqwZnLwD0a0SfgY
-         pG2Gin73EGt/9pDs0h1+TqE4fBO4LBQw3CxMX2L0UGkVph6+qUivSuel4p+iFmYM4Fjd
-         LPDKZuKt7WWHKaJGn40nRZ12pg6kwK7vOjaPCbgeOlie8yIxRoqW0zQh9xQb26TFyh82
-         O9l77+kPfgXr5ud70KuuyBnsG3zfdGC34jsvB9kpoxQrSEr/I1VcDpvzWEKCppFjRhJK
-         rijBxevmf+DtbBjb9mPdr6UWsndryIQx1Kf7nbNw2NK5cidc9Q5R4MLzy4YcgehSHE/G
-         lkKA==
-X-Gm-Message-State: AOJu0Yzt/qWsawoAynmN1JGrs6SlZVcJ8b4RevaUoeahD+P7sBk2fC23
-        h17LCAUCgf1Was76sOznrZ5QNA==
-X-Google-Smtp-Source: AGHT+IHIdxFXd8IHtJCv/zTrwfAYHaKWXV0EMAXBhlUrBfBA1o9RqCTBZOrIDy3M33QSgkGwGISPqQ==
-X-Received: by 2002:a05:6000:1b07:b0:321:6450:62ea with SMTP id f7-20020a0560001b0700b00321645062eamr21598047wrz.36.1697145438366;
-        Thu, 12 Oct 2023 14:17:18 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id l25-20020a7bc459000000b004054dcbf92asm779383wmi.20.2023.10.12.14.17.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 14:17:18 -0700 (PDT)
-Message-ID: <02143175-a5ed-4cc2-9034-acd34ca913a0@linaro.org>
-Date:   Thu, 12 Oct 2023 23:17:17 +0200
+        d=1e100.net; s=20230601; t=1697145458; x=1697750258;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vq2DHHNgN1ay7Fwdp3I5ZMWfUBUlatwsBWWqlLrDB9s=;
+        b=JEiO0twGTlX+/7QhkxWYOAfBT2fakd6Ihw/ZF13Xunoz1ewfilRhIbF4Pipyql1sUG
+         5qIo5IDRRagQaPmrvJkHfKW3Lnf8mBJzNdUYD24PSARzPm5zlt5ACjEVYugNeZOcxnCX
+         g6O3nBkZve0hkWGq0ojBcnKu6OmDPMyVC6Teml56SEUcr5ik7tGcYvVHoEF14/zwHv4+
+         KvIFeq16ESoj/rNn+C3mBkBaQhk7V08OhC5W7MyXOvEztmuYX8Nh2j7J2YtqvxGwO/ad
+         7LR2JirvZP2jZlKO0D2AHReV/Ac1fFJtXbn0DNFaMI5VIDUkOyyGvLNoIKJkIDwwVGFq
+         hiGQ==
+X-Gm-Message-State: AOJu0YyDPOK8I6BYtZ918iJFy0c74AON+1bt8RFkZWBxeRhvKZwz19AX
+        wu1pmU8OKG3QnmL77WPly768QrIiAMY0HM5N2sU=
+X-Google-Smtp-Source: AGHT+IFkk5bm0z+SbkCdj2ZECqmt8Zf7B2iGxvVYgN8WfLbpYYBKrqqKimZjM9pWxssXaEAMfUi+zM2eBiUJQ12DqNw=
+X-Received: by 2002:aa7:c909:0:b0:530:97b5:49ce with SMTP id
+ b9-20020aa7c909000000b0053097b549cemr23858410edt.10.1697145457834; Thu, 12
+ Oct 2023 14:17:37 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/6] thermal: gov_power_allocator: Use trip pointers
- instead of trip indices
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-References: <5734364.DvuYhMxLoT@kreacher> <2921191.e9J7NaK4W3@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <2921191.e9J7NaK4W3@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20231012201743.292149-1-ubizjak@gmail.com> <3af8dcec-66ec-4bd4-b7bf-4bc6f5f3c70f@intel.com>
+ <CAFULd4byzHyoz4xM1gL_T1wFkNE-ab8K4upXfPirxM9PdX5JWg@mail.gmail.com> <5722e74b-6fc6-4d6e-be25-069ea6385990@zytor.com>
+In-Reply-To: <5722e74b-6fc6-4d6e-be25-069ea6385990@zytor.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Thu, 12 Oct 2023 23:17:26 +0200
+Message-ID: <CAFULd4afhj-kJwneh7wz0sExWqOmPicG4fcfF++_fUMHpoNbXA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Introduce %rip-relative addressing to PER_CPU_VAR macro
+To:     "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2023 20:31, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Modify the power allocator thermal governor to use trip pointers instead
-> of trip indices everywhere except for the power_allocator_throttle()
-> second argument that will be changed subsequently along with the
-> definition of the .throttle() governor callback.
-> 
-> The general functionality is not expected to be changed.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
+On Thu, Oct 12, 2023 at 11:08=E2=80=AFPM H. Peter Anvin <hpa@zytor.com> wro=
+te:
+>
+> On 10/12/23 13:59, Uros Bizjak wrote:
+> > On Thu, Oct 12, 2023 at 10:53=E2=80=AFPM Dave Hansen <dave.hansen@intel=
+.com> wrote:
+> >>
+> >> On 10/12/23 13:12, Uros Bizjak wrote:
+> >>> The last patch introduces (%rip) suffix and uses it for x86_64 target=
+,
+> >>> resulting in a small code size decrease: text data bss dec hex filena=
+me
+> >>> 25510677 4386685 808388 30705750 1d48856 vmlinux-new.o 25510629 43866=
+85
+> >>> 808388 30705702 1d48826 vmlinux-old.o
+> >>
+> >> I feel like I'm missing some of the motivation here.
+> >>
+> >> 50 bytes is great and all, but it isn't without the cost of changing
+> >> some rules and introducing potential PER_CPU_ARG() vs. PER_CPU_VAR()
+> >> confusion.
+> >>
+> >> Are there some other side benefits?  What else does this enable?
+> >
+> > These changes are necessary to build the kernel as Position
+> > Independent Executable (PIE) on x86_64 [1]. And since I was working in
+> > percpu area I thought that it was worth implementing them.
+> >
+> > [1] https://lore.kernel.org/lkml/cover.1682673542.git.houwenlong.hwl@an=
+tgroup.com/
+> >
+>
+> Are you PIC-adjusting the percpu variables as well?
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+After this patch (and after fixing percpu_stable_op to use "a" operand
+modifier on GCC), the only *one* remaining absolute reference to
+percpu variable remain in xen-head.S, where:
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+    movq    $INIT_PER_CPU_VAR(fixed_percpu_data),%rax
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+should be changed to use leaq.
 
+All others should then be (%rip)-relative.
+
+Uros.
