@@ -2,146 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 299557C7194
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B244C7C7162
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379065AbjJLPen convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 11:34:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
+        id S1379104AbjJLP0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232023AbjJLPel (ORCPT
+        with ESMTP id S231680AbjJLP0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:34:41 -0400
-X-Greylist: delayed 540 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 12 Oct 2023 08:34:39 PDT
-Received: from postfix2.imaqliq.com (postfix2.imaqliq.com [93.189.151.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C14BE;
-        Thu, 12 Oct 2023 08:34:38 -0700 (PDT)
-Received: from verse.imaqliq.com (unknown [93.189.151.95])
-        by postfix2.imaqliq.com (Postfix) with ESMTP id A9C9D1C2953;
-        Thu, 12 Oct 2023 18:25:35 +0300 (MSK)
+        Thu, 12 Oct 2023 11:26:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A087ECA
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:25:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697124355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=cs1o+DwAGyODW8d7hRFJi9bCRLXi/YB/dSLR1lX7C9s=;
+        b=bm4xDw15FRiMTc50DFwABDBxRHTkU4mHx+2CRTqLDelo/qukawmnvyshB2cbYuIaxFG8Wv
+        an7NXPwDF2GGwmfCNTuf2RGvDi6172x0DIYnvKuLdgjNPj3yxlkDwrSxfv9aXl/ZG+otdp
+        7JsvPf7xaBKvbw/X2r1IwbbOiTk+hME=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-83-Fwi8M2Y8OcKBL3zTdA-blQ-1; Thu, 12 Oct 2023 11:25:43 -0400
+X-MC-Unique: Fwi8M2Y8OcKBL3zTdA-blQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7ABC328AC1C6;
+        Thu, 12 Oct 2023 15:25:43 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 63B4F400F5B;
+        Thu, 12 Oct 2023 15:25:43 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [PATCH] KVM: MIPS: fix -Wunused-but-set-variable warning
+Date:   Thu, 12 Oct 2023 11:25:42 -0400
+Message-Id: <20231012152542.1355621-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-In-Reply-To: 
-References: 
-Subject: [PATCH v3] tty: serial: meson: hard LOCKUP on crtscts mode
-From:   "Pavel Krasavin" <pkrasavin@imaqliq.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-Date:   Thu, 12 Oct 2023 15:25:29 +0000
-Message-ID: <OF6CF5FFA0.CCFD0E8E-ON00258A46.00549EDF-00258A46.0054BB62@gdc.ru>
-X-Mailer: Lotus Domino Web Server Release 12.0.2 November 03, 2022
-X-MIMETrack: Serialize by http on verse/com(Release 12.0.2|November 03, 2022) at 10/12/2023
- 15:25:29,
-        Serialize complete at 10/12/2023 15:25:29,
-        Serialize by Router on verse/com(Release 12.0.2|November 03, 2022) at 10/12/2023
- 15:25:35
-X-KeepSent: 6CF5FFA0:CCFD0E8E-00258A46:00549EDF;
- type=4; name=$KeepSent
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 180578 [Oct 12 2023]
-X-KLMS-AntiSpam-Version: 6.0.0.2
-X-KLMS-AntiSpam-Envelope-From: pkrasavin@imaqliq.com
-X-KLMS-AntiSpam-Rate: 10
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dmarc=fail header.from=imaqliq.com policy=none;spf=softfail smtp.mailfrom=imaqliq.com;dkim=none
-X-KLMS-AntiSpam-Info: LuaCore: 539 539 807534d9021bfe9ca369c363d15ac993cd93d4d9, {rep_avail}, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, verse.imaqliq.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;lore.kernel.org:7.1.1;imaqliq.com:7.1.1;gdc.ru:7.1.1;93.189.151.95:7.1.2, FromAlignment: s, {Tracking_dmark_f}, ApMailHostAddress: 93.189.151.95
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2023/10/12 13:36:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/10/12 09:47:00 #22170412
-X-KLMS-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Krasavin <pkrasavin@imaqliq.com>
+The variable is completely unused, remove it.
 
-There might be hard lockup if we set crtscts mode on port without RTS/CTS configured:
-
-# stty -F /dev/ttyAML6 crtscts; echo 1 > /dev/ttyAML6; echo 2 > /dev/ttyAML6
-[   95.890386] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-[   95.890857] rcu:     3-...0: (201 ticks this GP) idle=e33c/1/0x4000000000000000 softirq=5844/5846 fqs=4984
-[   95.900212] rcu:     (detected by 2, t=21016 jiffies, g=7753, q=296 ncpus=4)
-[   95.906972] Task dump for CPU 3:
-[   95.910178] task:bash            state:R  running task     stack:0     pid:205   ppid:1      flags:0x00000202
-[   95.920059] Call trace:
-[   95.922485]  __switch_to+0xe4/0x168
-[   95.925951]  0xffffff8003477508
-[   95.974379] watchdog: Watchdog detected hard LOCKUP on cpu 3
-[   95.974424] Modules linked in: 88x2cs(O) rtc_meson_vrtc
-
-Possible solution would be to not allow to setup crtscts on such port.
-
-Tested on S905X3 based board.
-
-Signed-off-by: Pavel Krasavin <pkrasavin@imaqliq.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
-v3: "From:" line added to the mail
-v2: https://lore.kernel.org/lkml/OF950BEF72.7F425944-ON00258A46.00488A76-00258A46.00497D44@gdc.ru/
-braces for single statement removed according to Dmitry's note
-v1: https://lore.kernel.org/lkml/OF28B2B8C9.5BC0CD28-ON00258A46.0037688F-00258A46.0039155B@gdc.ru/
----
+ arch/mips/kvm/mmu.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/tty/serial/meson_uart.c	2023-10-12 15:44:02.410538523 +0300
-+++ b/drivers/tty/serial/meson_uart.c	2023-10-12 15:58:06.242395253 +0300
-@@ -380,10 +380,14 @@ static void meson_uart_set_termios(struc
- 	else
- 		val |= AML_UART_STOP_BIT_1SB;
+diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
+index 7b2ac1319d70..467ee6b95ae1 100644
+--- a/arch/mips/kvm/mmu.c
++++ b/arch/mips/kvm/mmu.c
+@@ -592,7 +592,7 @@ static int kvm_mips_map_page(struct kvm_vcpu *vcpu, unsigned long gpa,
+ 	gfn_t gfn = gpa >> PAGE_SHIFT;
+ 	int srcu_idx, err;
+ 	kvm_pfn_t pfn;
+-	pte_t *ptep, entry, old_pte;
++	pte_t *ptep, entry;
+ 	bool writeable;
+ 	unsigned long prot_bits;
+ 	unsigned long mmu_seq;
+@@ -664,7 +664,6 @@ static int kvm_mips_map_page(struct kvm_vcpu *vcpu, unsigned long gpa,
+ 	entry = pfn_pte(pfn, __pgprot(prot_bits));
  
--	if (cflags & CRTSCTS)
--		val &= ~AML_UART_TWO_WIRE_EN;
--	else
-+	if (cflags & CRTSCTS) {
-+		if (port->flags & UPF_HARD_FLOW)
-+			val &= ~AML_UART_TWO_WIRE_EN;
-+		else
-+			termios->c_cflag &= ~CRTSCTS;
-+	} else {
- 		val |= AML_UART_TWO_WIRE_EN;
-+	}
+ 	/* Write the PTE */
+-	old_pte = *ptep;
+ 	set_pte(ptep, entry);
  
- 	writel(val, port->membase + AML_UART_CONTROL);
- 
-@@ -705,6 +709,7 @@ static int meson_uart_probe(struct platf
- 	u32 fifosize = 64; /* Default is 64, 128 for EE UART_0 */
- 	int ret = 0;
- 	int irq;
-+	bool has_rtscts;
- 
- 	if (pdev->dev.of_node)
- 		pdev->id = of_alias_get_id(pdev->dev.of_node, "serial");
-@@ -732,6 +737,7 @@ static int meson_uart_probe(struct platf
- 		return irq;
- 
- 	of_property_read_u32(pdev->dev.of_node, "fifo-size", &fifosize);
-+	has_rtscts = of_property_read_bool(pdev->dev.of_node, "uart-has-rtscts");
- 
- 	if (meson_ports[pdev->id]) {
- 		return dev_err_probe(&pdev->dev, -EBUSY,
-@@ -762,6 +768,8 @@ static int meson_uart_probe(struct platf
- 	port->mapsize = resource_size(res_mem);
- 	port->irq = irq;
- 	port->flags = UPF_BOOT_AUTOCONF | UPF_LOW_LATENCY;
-+	if (has_rtscts)
-+		port->flags |= UPF_HARD_FLOW;
- 	port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MESON_CONSOLE);
- 	port->dev = &pdev->dev;
- 	port->line = pdev->id;
+ 	err = 0;
+-- 
+2.39.0
+
