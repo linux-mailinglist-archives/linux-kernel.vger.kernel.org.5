@@ -2,42 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA657C769B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E55C07C769C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442009AbjJLTWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 15:22:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
+        id S1441905AbjJLTWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 15:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjJLTV7 (ORCPT
+        with ESMTP id S229576AbjJLTW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 15:21:59 -0400
+        Thu, 12 Oct 2023 15:22:29 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C57AB7;
-        Thu, 12 Oct 2023 12:21:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACF8BC433C8;
-        Thu, 12 Oct 2023 19:21:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4877DB7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:22:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3C38C433C8;
+        Thu, 12 Oct 2023 19:22:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697138517;
-        bh=wmAcJHNXIbXS2mL72Nqv5JNfiEX38pTlqswII+cQDeI=;
+        s=k20201202; t=1697138547;
+        bh=MF8UBOB+RPE0pevjlqdlPzoxbZCXJJU1HHFY/SxZI4k=;
         h=From:To:Cc:Subject:Date:From;
-        b=Iz6QB+RKMbsnELvBdNMZG0SFsuTbIWHMTTnVZDSIalACMaPtvi879bZbZwXYfeMGo
-         /XTjW8VC/5kZW2VoeS6Q+G8OWZza5GZpYBy/YZyQhV+CnclGYbjPuVEqax02ZmbhCh
-         jhXvfznEk8pPvBGPs8FlqueqYX5RCi/ULIAv9qBF0+PP0jFPIkyfCu71xRTB2kipv+
-         8dJNKcOZOTUzlmMiR6S8QWaiXq+iEfv5c/LFFYvqmXUDFQdgH5p85wwu+Ctk4rHcxk
-         GkWrLd749DW7MQrHoLGYJZHLefVMcwvJAhUPBSSEzQxA6onub4ZRqF6G5Vc3SsXPS9
-         FRBGxkiIZuEgA==
-Received: (nullmailer pid 1546513 invoked by uid 1000);
-        Thu, 12 Oct 2023 19:21:55 -0000
+        b=t3WBVe0Kz1NyMj9SaVq+OxmMJKYeJHubR9/Ls9IDo/l4bjOajqO6UNd3Ajp3VfcKj
+         eub6+1W6z9XCCsI4c1sFekcl1FAVPhTOUtEdDEtWDp00WlTJqNO6v3f8NYnQEcekLP
+         PZmutOGGzl2NwdX0CueZQ5ARlcPbv13GySqtL5jSu3EdjI+u0RZR/dTFRyqsU0OWHy
+         spEQl65b7D5CNAkOS1fcaW/8bYvqooEZrh7Alt5z++rjvJ9XdtWfS5DeQAsCD2zJrb
+         pNq8cuBTEgL916C/DDIknT35QkbHgtRwiRTrp7P3Q7pHgiyHmJUtv+jFJXR5Do4Za5
+         ka23mTmfDo6tQ==
+Received: (nullmailer pid 1547085 invoked by uid 1000);
+        Thu, 12 Oct 2023 19:22:25 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-        Michal Simek <michal.simek@amd.com>
-Cc:     kernel test robot <lkp@intel.com>, linux-fpga@vger.kernel.org,
+To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>
+Cc:     kernel test robot <lkp@intel.com>,
+        linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fpga: xilinx-pr-decoupler: Fix unused xlnx_pr_decoupler_of_match warning for !CONFIG_OF
-Date:   Thu, 12 Oct 2023 14:21:48 -0500
-Message-ID: <20231012192149.1546368-1-robh@kernel.org>
+Subject: [PATCH] ASoC: rockchip: Fix unused rockchip_i2s_tdm_match warning for !CONFIG_OF
+Date:   Thu, 12 Oct 2023 14:22:00 -0500
+Message-ID: <20231012192201.1546607-1-robh@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -51,35 +54,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8c966aadcc02 ("fpga: Use device_get_match_data()") dropped the
-unconditional use of xlnx_pr_decoupler_of_match resulting in this
-warning:
+Commit 9958d85968ed ("ASoC: Use device_get_match_data()") dropped the
+unconditional use of rockchip_i2s_tdm_match resulting in this warning:
 
-drivers/fpga/xilinx-pr-decoupler.c:94:34: warning: unused variable 'xlnx_pr_decoupler_of_match' [-Wunused-const-variable]
+sound/soc/rockchip/rockchip_i2s_tdm.c:1315:34: warning: 'rockchip_i2s_tdm_match' defined but not used [-Wunused-const-variable=]
 
 The fix is to drop of_match_ptr() which is not necessary because DT is
 always used for this driver.
 
+Fixes: 9958d85968ed ("ASoC: Use device_get_match_data()")
 Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310100247.Y7BFcalX-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202310121802.CDAGVdF2-lkp@intel.com/
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/fpga/xilinx-pr-decoupler.c | 2 +-
+ sound/soc/rockchip/rockchip_i2s_tdm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/fpga/xilinx-pr-decoupler.c b/drivers/fpga/xilinx-pr-decoupler.c
-index 0c012d0f616d..68835896f180 100644
---- a/drivers/fpga/xilinx-pr-decoupler.c
-+++ b/drivers/fpga/xilinx-pr-decoupler.c
-@@ -167,7 +167,7 @@ static struct platform_driver xlnx_pr_decoupler_driver = {
- 	.remove = xlnx_pr_decoupler_remove,
+diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
+index 7e996550d1df..7e1625ad70c6 100644
+--- a/sound/soc/rockchip/rockchip_i2s_tdm.c
++++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
+@@ -1759,7 +1759,7 @@ static struct platform_driver rockchip_i2s_tdm_driver = {
+ 	.remove = rockchip_i2s_tdm_remove,
  	.driver = {
- 		.name = "xlnx_pr_decoupler",
--		.of_match_table = of_match_ptr(xlnx_pr_decoupler_of_match),
-+		.of_match_table = xlnx_pr_decoupler_of_match,
+ 		.name = DRV_NAME,
+-		.of_match_table = of_match_ptr(rockchip_i2s_tdm_match),
++		.of_match_table = rockchip_i2s_tdm_match,
+ 		.pm = &rockchip_i2s_tdm_pm_ops,
  	},
  };
- 
 -- 
 2.42.0
 
