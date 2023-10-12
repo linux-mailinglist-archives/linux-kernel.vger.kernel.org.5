@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3572F7C7609
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAF27C760C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441919AbjJLSjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 14:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
+        id S1441975AbjJLSkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 14:40:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379612AbjJLSjS (ORCPT
+        with ESMTP id S1379677AbjJLSkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 14:39:18 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4DBB7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:39:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1697135955;
-        bh=a3nvpY6mqBaBUqBy6qoFGqPWfRmz0UC+DXMizhLUBRU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R9BLNfxYR1wohwcx/rNhxbyjh/vdwqbTO57kMyT9ZwXlMNmdtShUUU9ARj/qkR+DU
-         gsfK0d/v5788TkdRcUnQ3poO4OckihQnDwrJbMGwge9ct8ShOb9wMRltVZkefw3pgy
-         rLp/ZwBtrbyn688um6PzXAuclNp1oWC7Qro81OmQ=
-Date:   Thu, 12 Oct 2023 20:39:14 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Willy Tarreau <w@1wt.eu>, Zhangjin Wu <falcon@tinylab.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/nolibc: add tests for multi-object linkage
-Message-ID: <6b66305f-8172-463e-a50d-324c0c33a6ea@t-8ch.de>
-References: <20231012-nolibc-linkage-test-v1-1-315e682768b4@weissschuh.net>
- <ZSea+etQwlxbi+Ok@1wt.eu>
- <bfc17e76-fcbc-4ce6-97a8-c1ed72ed2a67@t-8ch.de>
- <33e9afcd-a1cd-4f67-829b-85c86500a93e@paulmck-laptop>
- <b278a643-3761-4699-bafc-df1b7245b8c2@t-8ch.de>
- <ca67eb2c-3918-4a1f-b3e6-2023fda5d6a3@paulmck-laptop>
+        Thu, 12 Oct 2023 14:40:07 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397C9BE
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:40:05 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso2436330a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:40:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697136003; x=1697740803; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y1aZVXohRge+v3Vv/6fsNhXCZ7AScOuTNQZ+ekrGnkw=;
+        b=J6C9DRsYTiZlBsvb3/9mJVVnALTuEg9Gi4yBmo8R1Av16vSkmj6x0P3KVGxc1QbGv5
+         y6Oy5BHa5arD3b2wSdCsM5LeIlzruFbq0pxd6WNCdAHg82XHDLVeT2Jfw3dwct2TSK1e
+         Fxv/Pp1ycueB8LKnQkPUc8lhT9wwdF8LSySxOeI4hiCm6IhCzfJquUGxXO2SkKY0jHSv
+         NZkM49s0golYvrbwBCDhIRDYxiq22TS1XMWMD/kX77KYIUkylDEk3za1vp+TO+9nrZaK
+         hko+AfTrZW+mZLZ9Pj178S4W2IGmfRRNwzyqlV/E0wzh70NxHDCda6k1Km/1PZCGQe8C
+         TiOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697136003; x=1697740803;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y1aZVXohRge+v3Vv/6fsNhXCZ7AScOuTNQZ+ekrGnkw=;
+        b=bGvIAhFMz8bDkMFm4O3InnhnGx9PfmkA+ghmdsESvwSglpOVqZAGlog3WLEtoS9LBp
+         KZtBWvUUa7gQZOitUaHIbRc8uBESwF2QRE9fC4/yuuikgkoog84+izN6mbO2n5KeOHGf
+         K9Ny7j8VIdbvJHhQ4kgjMrl4jntrnM2jjlMlv+Zghzu+7+fUF2SQOtpkxsnS7tZT1Hko
+         BVPvlfXRpPpLgvPdZ20c8kZvFrgOvB9CTuhW1xgD7O2Lq4zwyJd5f07MdaIAlj5Q+CJg
+         6qEOGpE0StAzzfFR8wkUPicBi6QWqrrbR79MEoRmGvJVFeScZVMFo0qG6BdaJKSEg45S
+         KFBg==
+X-Gm-Message-State: AOJu0YxXPvYOtrAKXJaBD+kFQUMyuSUFRSXqukcaPO7A5SIBkAmOheaL
+        k4bgBkIGT/H6YzlT7zs3ZahNy8nhewa8YNwV6uQ=
+X-Google-Smtp-Source: AGHT+IEHHumjNQpn73kXZqpk0T02To9UzO7onfeg6sqCjti4bWA6fBS/ptoScbdqZYxE54CRPouSH8kbA0BFawhRjIw=
+X-Received: by 2002:a05:6402:510a:b0:53e:3584:d394 with SMTP id
+ m10-20020a056402510a00b0053e3584d394mr169774edd.33.1697136003595; Thu, 12 Oct
+ 2023 11:40:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca67eb2c-3918-4a1f-b3e6-2023fda5d6a3@paulmck-laptop>
+References: <20231012161237.114733-1-ubizjak@gmail.com> <20231012161237.114733-2-ubizjak@gmail.com>
+ <CAMzpN2ii5qMr36PSw8RzNuVB-9KhoQgyfet=FpPtT5F3hOmLmQ@mail.gmail.com> <CAFULd4ZVvRvssyj--un6vrLU5M816ysEkc4xpXnGSN=hyhTTFQ@mail.gmail.com>
+In-Reply-To: <CAFULd4ZVvRvssyj--un6vrLU5M816ysEkc4xpXnGSN=hyhTTFQ@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Thu, 12 Oct 2023 20:39:52 +0200
+Message-ID: <CAFULd4b=S09YvHoJ3UkY=DbJRS+xqhFwrP50YEYomntxy6JtnQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] x86/percpu: Use explicit segment registers in lib/cmpxchg{8,16}b_emu.S
+To:     Brian Gerst <brgerst@gmail.com>
+Cc:     x86@kernel.org, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-12 11:25:02-0700, Paul E. McKenney wrote:
-> [..]
+On Thu, Oct 12, 2023 at 7:54=E2=80=AFPM Uros Bizjak <ubizjak@gmail.com> wro=
+te:
+> > This will break on !SMP builds, where per-cpu variables are just
+> > regular data and not accessed with a segment prefix.
+>
+> Ugh, indeed. Let me rethink this a bit.
 
-> > Please pull the changes since the v6.6-rc1 tag from
-> > https://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git/
-> > 
-> > The branch 'fixes' up to and including
-> > 90864f0679fdbb3b2e1c3bdbe4b0a34df785cb0a for the v6.6 cycle.
-> > 
-> > The branch 'next' up to and including
-> > f2c7923763dae51226584494722349fef4df3748 for linux-next.
-> > 
-> > The branch 'next', based upon 'fixes', was tested as follows:
-> > 
-> > i386:          162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> > x86_64:        162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> > arm64:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> > arm:           162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> > mips:          162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
-> > ppc:           162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> > ppc64:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> > ppc64le:       162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> > riscv:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> > s390:          162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
-> > loongarch:     162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
-> 
-> I have a signed tag urgent/nolibc.2023.10.12a in the -rcu tree, so
-> please check the lead-in text for sanity.  (Everything after the digital
-> signature is automatically generated.)
+Something like this:
 
-Looks good. But it's only a listing of the commit subjects, correct?
+#ifdef CONFIG_SMP
+#define PER_CPU_ARG(arg)    %__percpu_seg:arg
+#define PER_CPU_VAR(var)    %__percpu_seg:(var)##__percpu_rel
+#else /* ! SMP */
+#define PER_CPU_ARG(arg)    arg
+#define PER_CPU_VAR(var)    (var)##__percpu_rel
+#endif    /* SMP */
 
-> Testing for urgent/nolibc.2023.10.12a:
-> make run: 160 test(s): 160 passed,   0 skipped,   0 failed => status: success
-> make run-user: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning
-> 
-> Testing for full nolibc stack:
-> make run: 162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> make run-user: 162 test(s): 160 passed,   2 skipped,   0 failed => status: warning
-> 
-> > > But after about Wednesday of next week, getting things into the upcoming
-> > > merge window is pretty much as fast as sending them quickly to Linus,
-> > > if that makes sense.  Unless there is to be a -rc8 this time, but I
-> > > have heard no sign of that.
-> > > 
-> > > Make sense?
-> > 
-> > Sure, hopefully no more fixes are needed!
-> 
-> Ah, and have these been posted to a public mailing list?  If not, then I
-> need to send them out.
+and using the above PER_CPU_ARG in /lib/cmpxchg{8,16}b_emu.S will
+solve the issue.
 
-All patches went through the lists as part of the normal developent
-flow. They were not posted after rebasing.
+I will prepare a v2.
 
-For transparency I did the following follow-up changes:
-
-* The rebase of "tools/nolibc: mark start_c as weak" required some
-  minor changes to resolve conflicts.
-* reword the message of
-  "tools/nolibc: drop test for getauxval(AT_PAGESZ)" slightly.
-* simplify the includes intruduced by
-  "selftests/nolibc: add tests for multi-object linkage".
-
-> We reset the -next testing clock, so if all goes well, then I send the
-> three urgent commits to Linus on Monday.
-
-Sounds good, thanks!
-
-Thomas
+Thanks,
+Uros.
