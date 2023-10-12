@@ -2,93 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BAE7C6A37
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118AF7C6A30
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343641AbjJLJ7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53948 "EHLO
+        id S1343643AbjJLJ6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235680AbjJLJ6L (ORCPT
+        with ESMTP id S235593AbjJLJ5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:58:11 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F066FC
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:57:59 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 984976607362;
-        Thu, 12 Oct 2023 10:57:57 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697104678;
-        bh=yTuzr7kwQWHUl8HtZXARUiw4vwCiedeVUiWy+PyIDto=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SKGyDy9ocMehP5Q106HwzwZAExymO3OnWVdnh8WmarSyzztnnoin1zD/e8IBFqTy5
-         8TNsvNWL6ADTgCxAd6Kcg9uk0urAqKIQWctJb5iTm8PI/eYlShc3Ga22CMU+g6J+5p
-         aS+8kXeHZg95Bcf5mYMgnUDeYNWIwVm87hm3y3XqQ04sKWvdkSDCEI+2WhPbeGaqet
-         GvGJE2K3oB1jiwBWddeCb3lhscvtcHCp3orcnnEKPKLn0LsS2nrADLeToB0W7F1eGJ
-         dOY8IF2vS4Q7OpKgTGA19vV3coVFVE3tV01AJau9CZ4vRCUb60j2rpEiMfxu+u6m5V
-         rAfGReDSOxKFg==
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     chunkuang.hu@kernel.org
-Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, wenst@chromium.org,
-        kernel@collabora.com, ehristev@collabora.com,
-        nfraprado@collabora.com, CK Hu <ck.hu@mediatek.com>
-Subject: [PATCH v11 16/16] drm/mediatek: aal: Compress of_device_id entries and add sentinel
-Date:   Thu, 12 Oct 2023 11:57:36 +0200
-Message-ID: <20231012095736.100784-17-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231012095736.100784-1-angelogioacchino.delregno@collabora.com>
-References: <20231012095736.100784-1-angelogioacchino.delregno@collabora.com>
+        Thu, 12 Oct 2023 05:57:54 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97148A9;
+        Thu, 12 Oct 2023 02:57:51 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1qqsRu-0007Vp-5J; Thu, 12 Oct 2023 11:57:46 +0200
+Date:   Thu, 12 Oct 2023 11:57:46 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, willemb@google.com, fw@strlen.de,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        abdhalee@linux.vnet.ibm.com, sachinp@linux.vnet.com,
+        mputtash@linux.vnet.com
+Subject: Re: [Bisected] [1b4fa28a8b07] Build failure "net/core/gso_test.c"
+Message-ID: <20231012095746.GA26871@breakpoint.cc>
+References: <79fbe35c-4dd1-4f27-acb2-7a60794bc348@linux.vnet.ibm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <79fbe35c-4dd1-4f27-acb2-7a60794bc348@linux.vnet.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compress the entry for mediatek,mt8173-disp-aal, as it fits in one
-line, and fix the style; while at it, also add the usual sentinel
-comment to the last entry.
+Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com> wrote:
+> Greetings,
+> 
+> [net-next] [6.6-rc4] Build failure "net/core/gso_test.c"
+> 
+> --- Traces ---
+> 
+> make -j 33 -s && make modules_install && make install
+> net/core/gso_test.c:58:48: error: initializer element is not constant
+>    58 |                 .segs = (const unsigned int[]) { gso_size },
+>       |                                                ^
 
-This commit brings no functional changes.
+Ouch, I can reproduce this with: gcc --version
+gcc (Debian 12.2.0-14) 12.2.0
+Copyright (C) 2022 Free Software Foundation, Inc.
 
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/gpu/drm/mediatek/mtk_disp_aal.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+gcc 13.2.1 and clang-16.0.6 are ok.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_aal.c b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
-index 7b3e1c275056..677e7d378e7a 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_aal.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
-@@ -209,10 +209,9 @@ static const struct mtk_disp_aal_data mt8173_aal_driver_data = {
- };
+Whats the preference here?  We could use simple preprocessor constant
+or we could require much more recent compiler version for the net
+kunit tests via kconfig.
+
+gcc-12.2.0 can compile it after this simple s//g "fix":
+
+diff --git a/net/core/gso_test.c b/net/core/gso_test.c
+--- a/net/core/gso_test.c
++++ b/net/core/gso_test.c
+@@ -4,7 +4,7 @@
+ #include <linux/skbuff.h>
  
- static const struct of_device_id mtk_disp_aal_driver_dt_match[] = {
--	{ .compatible = "mediatek,mt8173-disp-aal",
--	  .data = &mt8173_aal_driver_data},
--	{ .compatible = "mediatek,mt8183-disp-aal"},
--	{},
-+	{ .compatible = "mediatek,mt8173-disp-aal", .data = &mt8173_aal_driver_data },
-+	{ .compatible = "mediatek,mt8183-disp-aal" },
-+	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_aal_driver_dt_match);
+ static const char hdr[] = "abcdefgh";
+-static const int gso_size = 1000;
++#define GSO_TEST_SIZE 1000
  
--- 
-2.42.0
-
+ static void __init_skb(struct sk_buff *skb)
+ {
+@@ -18,7 +18,7 @@ static void __init_skb(struct sk_buff *skb)
+ 
+ 	/* proto is arbitrary, as long as not ETH_P_TEB or vlan */
+ 	skb->protocol = htons(ETH_P_ATALK);
+-	skb_shinfo(skb)->gso_size = gso_size;
++	skb_shinfo(skb)->gso_size = GSO_TEST_SIZE;
+ }
+ 
+ enum gso_test_nr {
+@@ -53,70 +53,70 @@ static struct gso_test_case cases[] = {
+ 	{
+ 		.id = GSO_TEST_NO_GSO,
+ 		.name = "no_gso",
+-		.linear_len = gso_size,
++		.linear_len = GSO_TEST_SIZE,
+ 		.nr_segs = 1,
+-		.segs = (const unsigned int[]) { gso_size },
++		.segs = (const unsigned int[]) { GSO_TEST_SIZE },
+ 	},
+ 	{
+ 		.id = GSO_TEST_LINEAR,
+ 		.name = "linear",
+-		.linear_len = gso_size + gso_size + 1,
++		.linear_len = GSO_TEST_SIZE + GSO_TEST_SIZE + 1,
+ 		.nr_segs = 3,
+-		.segs = (const unsigned int[]) { gso_size, gso_size, 1 },
++		.segs = (const unsigned int[]) { GSO_TEST_SIZE, GSO_TEST_SIZE, 1 },
+ 	},
+ 	{
+ 		.id = GSO_TEST_FRAGS,
+ 		.name = "frags",
+-		.linear_len = gso_size,
++		.linear_len = GSO_TEST_SIZE,
+ 		.nr_frags = 2,
+-		.frags = (const unsigned int[]) { gso_size, 1 },
++		.frags = (const unsigned int[]) { GSO_TEST_SIZE, 1 },
+ 		.nr_segs = 3,
+-		.segs = (const unsigned int[]) { gso_size, gso_size, 1 },
++		.segs = (const unsigned int[]) { GSO_TEST_SIZE, GSO_TEST_SIZE, 1 },
+ 	},
+ 	{
+ 		.id = GSO_TEST_FRAGS_PURE,
+ 		.name = "frags_pure",
+ 		.nr_frags = 3,
+-		.frags = (const unsigned int[]) { gso_size, gso_size, 2 },
++		.frags = (const unsigned int[]) { GSO_TEST_SIZE, GSO_TEST_SIZE, 2 },
+ 		.nr_segs = 3,
+-		.segs = (const unsigned int[]) { gso_size, gso_size, 2 },
++		.segs = (const unsigned int[]) { GSO_TEST_SIZE, GSO_TEST_SIZE, 2 },
+ 	},
+ 	{
+ 		.id = GSO_TEST_GSO_PARTIAL,
+ 		.name = "gso_partial",
+-		.linear_len = gso_size,
++		.linear_len = GSO_TEST_SIZE,
+ 		.nr_frags = 2,
+-		.frags = (const unsigned int[]) { gso_size, 3 },
++		.frags = (const unsigned int[]) { GSO_TEST_SIZE, 3 },
+ 		.nr_segs = 2,
+-		.segs = (const unsigned int[]) { 2 * gso_size, 3 },
++		.segs = (const unsigned int[]) { 2 * GSO_TEST_SIZE, 3 },
+ 	},
+ 	{
+ 		/* commit 89319d3801d1: frag_list on mss boundaries */
+ 		.id = GSO_TEST_FRAG_LIST,
+ 		.name = "frag_list",
+-		.linear_len = gso_size,
++		.linear_len = GSO_TEST_SIZE,
+ 		.nr_frag_skbs = 2,
+-		.frag_skbs = (const unsigned int[]) { gso_size, gso_size },
++		.frag_skbs = (const unsigned int[]) { GSO_TEST_SIZE, GSO_TEST_SIZE },
+ 		.nr_segs = 3,
+-		.segs = (const unsigned int[]) { gso_size, gso_size, gso_size },
++		.segs = (const unsigned int[]) { GSO_TEST_SIZE, GSO_TEST_SIZE, GSO_TEST_SIZE },
+ 	},
+ 	{
+ 		.id = GSO_TEST_FRAG_LIST_PURE,
+ 		.name = "frag_list_pure",
+ 		.nr_frag_skbs = 2,
+-		.frag_skbs = (const unsigned int[]) { gso_size, gso_size },
++		.frag_skbs = (const unsigned int[]) { GSO_TEST_SIZE, GSO_TEST_SIZE },
+ 		.nr_segs = 2,
+-		.segs = (const unsigned int[]) { gso_size, gso_size },
++		.segs = (const unsigned int[]) { GSO_TEST_SIZE, GSO_TEST_SIZE },
+ 	},
+ 	{
+ 		/* commit 43170c4e0ba7: GRO of frag_list trains */
+ 		.id = GSO_TEST_FRAG_LIST_NON_UNIFORM,
+ 		.name = "frag_list_non_uniform",
+-		.linear_len = gso_size,
++		.linear_len = GSO_TEST_SIZE,
+ 		.nr_frag_skbs = 4,
+-		.frag_skbs = (const unsigned int[]) { gso_size, 1, gso_size, 2 },
++		.frag_skbs = (const unsigned int[]) { GSO_TEST_SIZE, 1, GSO_TEST_SIZE, 2 },
+ 		.nr_segs = 4,
+-		.segs = (const unsigned int[]) { gso_size, gso_size, gso_size, 3 },
++		.segs = (const unsigned int[]) { GSO_TEST_SIZE, GSO_TEST_SIZE, GSO_TEST_SIZE, 3 },
+ 	},
+ 	{
+ 		/* commit 3953c46c3ac7 ("sk_buff: allow segmenting based on frag sizes") and
