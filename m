@@ -2,119 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 116CD7C6F17
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3D77C6F4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378801AbjJLNYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
+        id S1343952AbjJLNc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 09:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347230AbjJLNYb (ORCPT
+        with ESMTP id S1347275AbjJLNcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:24:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA53ECC
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:24:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697117068; x=1728653068;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=cZ4V9GzEqz4BgoOaXGC/uxjgn6AC9Hl2WV/jrbzKEVY=;
-  b=U5xLo5pMDBHnfLqiwlJvQdJtHQIehW4ePqVD/PEjeAlpK2ez95hIu1n4
-   IyKBP/7iOEfnaUVbZ8E3TapdadQVfkCG4IR3iaARQE5JpABF5ANKBeOAq
-   CijYEEx4jKHfuGqOaYrTYBzj0VdsDkgS8tDrVOyMw2Yo0uJXo8btZAOZO
-   AT3q1/sl/RrmlSG9ZU4npFbG6kZ+36YxYr+anZJXIe2nQwRr72CCQTSrP
-   N5HihRsbAcA+L2RCQZ5fzaPV/cLIcreg7FkSILe69kfrdz7ZOvY+UG7Qm
-   u+45TDtMEc2eZ1WYdg8HSc+wzJOL/SbrgxFK0MGnQryW9b/+5rbc32UiB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="3519284"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="3519284"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 06:21:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="927982873"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="927982873"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 06:21:08 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Arjan Van De Ven <arjan@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Johannes Weiner <jweiner@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Christoph Lameter" <cl@linux.com>
-Subject: Re: [PATCH 09/10] mm, pcp: avoid to reduce PCP high unnecessarily
-References: <20230920061856.257597-1-ying.huang@intel.com>
-        <20230920061856.257597-10-ying.huang@intel.com>
-        <20231011140949.rwsqfb57vyuub6va@techsingularity.net>
-        <87lec8ffij.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <20231012124958.dj5ug5hih3joa542@techsingularity.net>
-Date:   Thu, 12 Oct 2023 21:19:03 +0800
-In-Reply-To: <20231012124958.dj5ug5hih3joa542@techsingularity.net> (Mel
-        Gorman's message of "Thu, 12 Oct 2023 13:49:58 +0100")
-Message-ID: <87r0m0dlmg.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Thu, 12 Oct 2023 09:32:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BFBBE
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:32:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C02BC433C9;
+        Thu, 12 Oct 2023 13:32:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697117572;
+        bh=ZZYhdnpgiENRM1+gW/Pd8plnr1hpMAWBo2o0iSfliZ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GGOqHIgl+91RccrdW0Y93H+f5sYZ8tcCRAPCTsHHW9bgTNrGYg3T1er9zlL2i8IfF
+         6/NARE2th7RDtUnbbhG1ZR2UvXeLiQDg4uN2arw79A5nGZIIiDz2r/3OrQRft2W1oC
+         nU31cfkA0uqF4i1fYi91JPpE/5MA0DfT+nsS2JJf2d6LneifjHdFajva647tg50uyQ
+         csFDl7evGenFjdYh+JlPxXMtxmOgRiiMhPywHi2AGj8RyN5jzz9u493MjkqrjXhJWO
+         Y9iIUCYKF3+DL5hqoBWekq6jFNMiohkPyt2JpzHOwFjxGrLXI8L6e+H8ksuMpUSOk3
+         gqO6IXUjH1NHw==
+Date:   Thu, 12 Oct 2023 21:20:41 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Inochi Amaoto <inochiama@outlook.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Chao Wei <chao.wei@sophgo.com>,
+        Chen Wang <unicorn_wang@outlook.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 0/7] Add Huashan Pi board support
+Message-ID: <ZSfyqaWsNh3mR26I@xhacker>
+References: <IA1PR20MB49531C1C34C3E972DBBA4151BBCEA@IA1PR20MB4953.namprd20.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <IA1PR20MB49531C1C34C3E972DBBA4151BBCEA@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mel Gorman <mgorman@techsingularity.net> writes:
+On Mon, Oct 09, 2023 at 07:25:14PM +0800, Inochi Amaoto wrote:
+> Huashan Pi board is an embedded development platform based on the
+> CV1812H chip. Add minimal device tree files for this board.
+> Currently, it can boot to a basic shell.
+> 
+> NOTE: this series is based on the Jisheng's Milk-V Duo patch.
+> 
+> Link: https://en.sophgo.com/product/introduce/huashan.html
+> Link: https://en.sophgo.com/product/introduce/cv181xH.html
+> 
+> Changed from v1:
+> 1. split the patch into several patch and refactor them.
+> 
+> Inochi Amaoto (7):
+>   dt-bindings: interrupt-controller: Add SOPHGO CV1812H plic
+>   dt-bindings: timer: Add SOPHGO CV1812H clint
+>   dt-bindings: riscv: Add SOPHGO Huashan Pi board compatibles
+>   riscv: dts: sophgo: Separate common devices from cv1800b soc
+>   riscv: dts: sophgo: cv180x: Add gpio devices
+>   riscv: dts: sophgo: add initial CV1812H SoC device tree
+>   riscv: dts: sophgo: add Huashan Pi board device tree
 
-> On Thu, Oct 12, 2023 at 03:48:04PM +0800, Huang, Ying wrote:
->> "
->> On a 2-socket Intel server with 224 logical CPU, we run 8 kbuild
->> instances in parallel (each with `make -j 28`) in 8 cgroup.  This
->> simulates the kbuild server that is used by 0-Day kbuild service.
->> With the patch, The number of pages allocated from zone (instead of
->> from PCP) decreases 21.4%.
->> "
->> 
->> I also showed the performance number for each step of optimization as
->> follows (copied from the above patchset V2 link).
->> 
->> "
->> 	build time   lock contend%	free_high	alloc_zone
->> 	----------	----------	---------	----------
->> base	     100.0	      13.5          100.0            100.0
->> patch1	      99.2	      10.6	     19.2	      95.6
->> patch3	      99.2	      11.7	      7.1	      95.6
->> patch5	      98.4	      10.0	      8.2	      97.1
->> patch7	      94.9	       0.7	      3.0	      19.0
->> patch9	      94.9	       0.6	      2.7	      15.0  <--	this patch
->> patch10	      94.9	       0.9	      8.8	      18.6
->> "
->> 
->> Although I think the patch is helpful via avoiding the unnecessary
->> pcp->high decaying, thus reducing the zone lock contention.  There's no
->> visible benchmark score change for the patch.
->> 
->
-> Thanks!
->
-> Given that it's another PCP field with an update in a relatively hot
-> path, I would suggest dropping this patch entirely if it does not affect
-> performance. It has the risk of being a magical heuristic that we forget
-> later whether it's even worthwhile.
-
-OK.  Hope we can find some workloads that can benefit from the patch in
-the future.
-
---
-Best Regards,
-Huang, Ying
+For the patch series:
+Reviewed-by: Jisheng Zhang <jszhang@kernel.org>
+> 
+>  .../sifive,plic-1.0.0.yaml                    |  1 +
+>  .../devicetree/bindings/riscv/sophgo.yaml     |  4 +
+>  .../bindings/timer/sifive,clint.yaml          |  1 +
+>  arch/riscv/boot/dts/sophgo/Makefile           |  1 +
+>  arch/riscv/boot/dts/sophgo/cv1800b.dtsi       | 95 +------------------
+>  .../dts/sophgo/{cv1800b.dtsi => cv180x.dtsi}  | 91 ++++++++++++++----
+>  .../boot/dts/sophgo/cv1812h-huashan-pi.dts    | 48 ++++++++++
+>  arch/riscv/boot/dts/sophgo/cv1812h.dtsi       | 36 +++++++
+>  8 files changed, 165 insertions(+), 112 deletions(-)
+>  copy arch/riscv/boot/dts/sophgo/{cv1800b.dtsi => cv180x.dtsi} (58%)
+>  create mode 100644 arch/riscv/boot/dts/sophgo/cv1812h-huashan-pi.dts
+>  create mode 100644 arch/riscv/boot/dts/sophgo/cv1812h.dtsi
+> 
+> --
+> 2.42.0
+> 
