@@ -2,71 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 282457C6DB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 338197C6DAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378420AbjJLMNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 08:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34878 "EHLO
+        id S1378368AbjJLMNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347216AbjJLMN2 (ORCPT
+        with ESMTP id S1343987AbjJLMM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:13:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F52C9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:13:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697112807; x=1728648807;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=w8yQt9oo86/nZjDSgadz2LDv3J3dqgnu9r6s3Un8WxE=;
-  b=XlY83SVYM4hEj0iAialMTH+aijTKggwXLZFEYpiH/3OIuKPRYfbATtr8
-   O+Jlo2mr7hVMYjbiOY8CPGcv5dq4m1e3cD40wpv8+mlQauw/SYhA5nmzR
-   ggiK8oC36fS9yGC8CBKXkkLW5wUkKuUBzP1/57HOQhnhlSHBCfrVgoCvf
-   0p6PWUOR3IBqBROa9OCDYAbcBspnPQzBM9VZJSrKDkPZf4aF7Dwch7Xdc
-   iGaAum7zvCMbOomgOISYDQsJhFr2r+8OssSjodmf1tdHBbQy8iREWNZGh
-   RxX3XAOJpuZFmJAcV8HqVLDnhZUPnyruzJQRxyLI6ppSTPkGUe1d+JrrV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="471162914"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="471162914"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 05:13:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="789374334"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="789374334"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 05:13:23 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Arjan Van De Ven <arjan@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Johannes Weiner <jweiner@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Christoph Lameter" <cl@linux.com>
-Subject: Re: [PATCH 03/10] mm, pcp: reduce lock contention for draining
- high-order pages
-References: <20230920061856.257597-1-ying.huang@intel.com>
-        <20230920061856.257597-4-ying.huang@intel.com>
-        <20231011124900.sp22hoxoitrslbia@techsingularity.net>
-Date:   Thu, 12 Oct 2023 20:11:19 +0800
-In-Reply-To: <20231011124900.sp22hoxoitrslbia@techsingularity.net> (Mel
-        Gorman's message of "Wed, 11 Oct 2023 13:49:00 +0100")
-Message-ID: <87cyxkf3bs.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Thu, 12 Oct 2023 08:12:58 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C5CB8;
+        Thu, 12 Oct 2023 05:12:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8540C433C8;
+        Thu, 12 Oct 2023 12:12:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697112776;
+        bh=b8BfMObBykm/amO/S9HTj8NCZ8lSEHJnylp7Iixrelg=;
+        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+        b=HnXyh/1JtDFJPMutjG1drZN79OU8VOwrjRf3QnTje1l52GU4tuS4jltsO5jTr8Ze1
+         WPibteX9NDTm6YDlIDxF5Z1FuXqPhB7mQPf60ikM4U1CWval213mjNN4czWwpfnqMu
+         RA4+3kCNlPCWdP8Y5THHnzZaqABIC7A3qCxi1X8kQ9zeluCWrhvoSOtz/N8L6rtL0d
+         Dt+n8ccH+UHZhvCYXcoSDm/Qq1xsuW4zE78vMz+mi3s4K/y4VaWzQ1y2doI22vtcnB
+         jbegiWzKp6CIDq7Hmi4KgNcWbBQRafLL76BofmwShaCtDcDa1hB7ghRzUE+q8PzfI0
+         CvNSgbpznSxQA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2] wifi: p54: Annotate struct p54_cal_database with
+ __counted_by
+From:   Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20231009161028.it.544-kees@kernel.org>
+References: <20231009161028.it.544-kees@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Christian Lamparter <chunkeey@googlemail.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-wireless@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Jason Andryuk <jandryuk@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <169711277180.2932680.4051421133229549634.kvalo@kernel.org>
+Date:   Thu, 12 Oct 2023 12:12:53 +0000 (UTC)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,48 +58,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mel Gorman <mgorman@techsingularity.net> writes:
+Kees Cook <keescook@chromium.org> wrote:
 
-> On Wed, Sep 20, 2023 at 02:18:49PM +0800, Huang Ying wrote:
->> In commit f26b3fa04611 ("mm/page_alloc: limit number of high-order
->> pages on PCP during bulk free"), the PCP (Per-CPU Pageset) will be
->> drained when PCP is mostly used for high-order pages freeing to
->> improve the cache-hot pages reusing between page allocating and
->> freeing CPUs.
->> 
->> On system with small per-CPU data cache, pages shouldn't be cached
->> before draining to guarantee cache-hot.  But on a system with large
->> per-CPU data cache, more pages can be cached before draining to reduce
->> zone lock contention.
->> 
->> So, in this patch, instead of draining without any caching, "batch"
->> pages will be cached in PCP before draining if the per-CPU data cache
->> size is more than "4 * batch".
->> 
->> On a 2-socket Intel server with 128 logical CPU, with the patch, the
->> network bandwidth of the UNIX (AF_UNIX) test case of lmbench test
->> suite with 16-pair processes increase 72.2%.  The cycles% of the
->> spinlock contention (mostly for zone lock) decreases from 45.8% to
->> 21.2%.  The number of PCP draining for high order pages
->> freeing (free_high) decreases 89.8%.  The cache miss rate keeps 0.3%.
->> 
->> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
->
-> Acked-by: Mel Gorman <mgorman@techsingularity.net>
->
-> However, the flag should also have been documented to make it clear that
-> it preserves some pages on the PCP if the cache is large enough.
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> Add __counted_by for struct p54_cal_database.
+> 
+> Cc: Christian Lamparter <chunkeey@googlemail.com>
+> Cc: Kalle Valo <kvalo@kernel.org>
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: linux-hardening@vger.kernel.org
+> Suggested-by: Jason Andryuk <jandryuk@gmail.com>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Jason Andryuk <jandryuk@gmail.com>
 
-Sure.  Will do this.
+Patch applied to wireless-next.git, thanks.
 
-> Similar
-> to the previous patch, it would have been easier to reason about in the
-> general case if the decision had only been based on the LLC without
-> having to worry if any intermediate layer has a meaningful impact that
-> varies across CPU implementations.
+d9756ce618f3 wifi: p54: Annotate struct p54_cal_database with __counted_by
 
-Sure.  Will do this.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20231009161028.it.544-kees@kernel.org/
 
---
-Best Regards,
-Huang, Ying
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
