@@ -2,69 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA547C6B6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C777C6B6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377883AbjJLKs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39200 "EHLO
+        id S1377746AbjJLKsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235661AbjJLKs0 (ORCPT
+        with ESMTP id S232490AbjJLKsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:48:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB8BD3;
-        Thu, 12 Oct 2023 03:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XBhUlLUXpFNiQjcNWmFNytrRub9YUYcuDDd8SJGbp9M=; b=Lw5xjJoOsrdpqAGlBpja1izi61
-        modJ6b3F4IEVl9yWwMiyNTdVDHS8KTsti7HMPTMM0BTIcdH5Qw1ceOJjlpH6OvOJzA8BWjz9lCO8u
-        0JKk5o5FvEvmIcNxOer2v/BzfJeZtIlYiYXSxYL5680TwVUpEJhu9G41pL5BJc0xFYZ0QO2SIJfO2
-        e50Q/LO4jvU4iHP8ilGx8/E6yAsF0RcFoNbSGTGxmwLUbYpLnPrnRbMUFs+3zXf/lg784hwvDrg2B
-        cvew0YRQLU1UlK1xtJINQcK2tbgSIyAATDxShiiW4YeszBf/Yt081QQg19xEBA5dWRbiMr/nNJkgd
-        D/1Lc22w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qqtEE-00GRER-Cd; Thu, 12 Oct 2023 10:47:42 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 11CE830036C; Thu, 12 Oct 2023 12:47:42 +0200 (CEST)
-Date:   Thu, 12 Oct 2023 12:47:41 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, patches@lists.linux.dev,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        David Gow <davidgow@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v10 25/27] x86: enable initial Rust support
-Message-ID: <20231012104741.GN6307@noisy.programming.kicks-ass.net>
-References: <20220927131518.30000-1-ojeda@kernel.org>
- <20220927131518.30000-26-ojeda@kernel.org>
- <Y0BfN1BdVCWssvEu@hirez.programming.kicks-ass.net>
- <CABCJKuenkHXtbWOLZ0_isGewxd19qkM7OcLeE2NzM6dSkXS4mQ@mail.gmail.com>
- <CANiq72k6s4=0E_AHv7FPsCQhkyxf7c-b+wUtzfjf+Spehe9Fmg@mail.gmail.com>
- <CABCJKuca0fOAs=E6LeHJiT2LOXEoPvLVKztA=u+ARcw=tbT=tw@mail.gmail.com>
+        Thu, 12 Oct 2023 06:48:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6726A90;
+        Thu, 12 Oct 2023 03:48:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697107690; x=1728643690;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=Q4YhpEkRU/cH/nbWZGVWLLUqkzKXNYUzhpe7dZUuDeI=;
+  b=YVpeTK3qhHdBBQSuGsiNxFbbylQN7q89W70aSTsvePSXqbq6wD7dD+cE
+   yCi12ZWpNuQsdFrPRzYy58dHcbQbq983MT36kU2/ReS5GZJtaD1ftt2Pw
+   AgNipz2LFB2lqmeYnn+eesTQK3/DfrtIIiNcTV+wkbvQmQ5KOnHYo6iuV
+   XXb7LNozv8TdWUnUzbXzMI+OTHF7haxL+/LB0Qi3CIlA3XDLx0RKKxBjc
+   pVoOIT1tXvt4tpkk8tT6JwOTWIx2nNC6DJE+UDvNc8CJzsmhs7bzpvjRO
+   TPOfuf1r2arwMh4Rl6vboc1zShqJrNaInKdmifO3ISIqo2P4QLM6YdzH9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="449077623"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="449077623"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:48:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="898050323"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="898050323"
+Received: from asroczyn-mobl.ger.corp.intel.com ([10.249.36.107])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:46:10 -0700
+Date:   Thu, 12 Oct 2023 13:47:55 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+cc:     linux-pci@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+        ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-bluetooth@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
+        linux-wireless@vger.kernel.org, Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH v2 03/13] PCI/ASPM: Disable ASPM when driver requests
+ it
+In-Reply-To: <20231011200442.GA1040348@bhelgaas>
+Message-ID: <9be4c096-5af5-da3b-b1c6-f028865910da@linux.intel.com>
+References: <20231011200442.GA1040348@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABCJKuca0fOAs=E6LeHJiT2LOXEoPvLVKztA=u+ARcw=tbT=tw@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+Content-Type: multipart/mixed; boundary="8323329-225321872-1697107682=:1692"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,43 +74,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 11:34:30AM -0700, Sami Tolvanen wrote:
-> On Fri, Oct 14, 2022 at 11:05 AM Miguel Ojeda
-> <miguel.ojeda.sandonis@gmail.com> wrote:
-> >
-> > On Tue, Oct 11, 2022 at 1:16 AM Sami Tolvanen <samitolvanen@google.com> wrote:
-> > >
-> > > Rust supports IBT with -Z cf-protection=branch, but I don't see this
-> > > option being enabled in the kernel yet. Cross-language CFI is going to
-> > > require a lot more work though because the type systems are not quite
-> > > compatible:
-> > >
-> > > https://github.com/rust-lang/rfcs/pull/3296
-> >
-> > I have pinged Ramon de C Valle as he is the author of the RFC above
-> > and implementation work too; since a month or so ago he also leads the
-> > Exploit Mitigations Project Group in Rust.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-225321872-1697107682=:1692
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+
+On Wed, 11 Oct 2023, Bjorn Helgaas wrote:
+
+> On Mon, Sep 18, 2023 at 04:10:53PM +0300, Ilpo Järvinen wrote:
+> > PCI core/ASPM service driver allows controlling ASPM state through
+> > pci_disable_link_state() and pci_enable_link_state() API. It was
+> > decided earlier (see the Link below), to not allow ASPM changes when OS
+> > does not have control over it but only log a warning about the problem
+> > (commit 2add0ec14c25 ("PCI/ASPM: Warn when driver asks to disable ASPM,
+> > but we can't do it")). Similarly, if ASPM is not enabled through
+> > config, ASPM cannot be disabled.
+> > 
+> > A number of drivers have added workarounds to force ASPM off with own
+> > writes into the Link Control Register (some even with comments
+> > explaining why PCI core does not disable it under some circumstances).
+> > According to the comments, some drivers require ASPM to be off for
+> > reliable operation.
+> > 
+> > Having custom ASPM handling in drivers is problematic because the state
+> > kept in the ASPM service driver is not updated by the changes made
+> > outside the link state management API.
+> > 
+> > As the first step to address this issue, make pci_disable_link_state()
+> > to unconditionally disable ASPM so the motivation for drivers to come
+> > up with custom ASPM handling code is eliminated.
+> > 
+> > Place the minimal ASPM disable handling into own file as it is too
+> > complicated to fit into a header as static inline and it has almost no
+> > overlap with the existing, more complicated ASPM code in
+> > drivers/pci/pce/aspm.c.
+> > 
+> > Make pci_disable_link_state() function comment to comply kerneldoc
+> > formatting while changing the description.
+> > 
+> > Link: https://lore.kernel.org/all/CANUX_P3F5YhbZX3WGU-j1AGpbXb_T9Bis2ErhvKkFMtDvzatVQ@mail.gmail.com/
+> > Link: https://lore.kernel.org/all/20230511131441.45704-1-ilpo.jarvinen@linux.intel.com/
+> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > ---
+> >  drivers/pci/pcie/Makefile       |  1 +
+> >  drivers/pci/pcie/aspm.c         | 33 ++++++++++-------
+> >  drivers/pci/pcie/aspm_minimal.c | 66 +++++++++++++++++++++++++++++++++
+> >  include/linux/pci.h             |  6 +--
+> >  4 files changed, 88 insertions(+), 18 deletions(-)
+> >  create mode 100644 drivers/pci/pcie/aspm_minimal.c
+> > 
+> > diff --git a/drivers/pci/pcie/Makefile b/drivers/pci/pcie/Makefile
+> > index 8de4ed5f98f1..ec7f04037b01 100644
+> > --- a/drivers/pci/pcie/Makefile
+> > +++ b/drivers/pci/pcie/Makefile
+> > @@ -6,6 +6,7 @@ pcieportdrv-y			:= portdrv.o rcec.o
+> >  
+> >  obj-$(CONFIG_PCIEPORTBUS)	+= pcieportdrv.o
+> >  
+> > +obj-y				+= aspm_minimal.o
 > 
-> Thanks, Miguel. I also talked to Ramon about KCFI earlier this week
-> and he expressed interest in helping with rustc support for it. In the
-> meanwhile, I think we can just add a depends on !CFI_CLANG to avoid
-> issues here.
+> Can we put this code in drivers/pci/pci.c instead of creating a new
+> file for it?  pci.c is kind of a dumping ground and isn't ideal
+> either, but we do have a few other things there that we *always* want
+> even though they're related to a separate Kconfig feature, e.g.,
+> pci_bridge_reconfigure_ltr(), pcie_clear_device_status(),
+> pcie_clear_root_pme_status().
+> 
+> >  obj-$(CONFIG_PCIEASPM)		+= aspm.o
+> 
+> Or maybe it would be better to just put it in aspm.c, drop this
+> compilation guard, and wrap the rest of the file in #ifdef
+> CONFIG_PCIEASPM.  Then everything would be in one file, which is a
+> major boon for code readers.
+> 
+> What do you think?
 
-Having just read up on the thing it looks like the KCFI thing is
-resolved.
+I was not sure which was the best place for such "reverse config trickery"  
+so I just picked one of the possible ones (it's easy to tweak it anyway).
 
-I'm not sure I understand most of the objections in that thread through
--- enabling CFI *will* break stuff, so what.
+I think I'll now go with aspm.c but then I'll have to change aspm.o to 
+obj-y which is really CONFIG_PCI because of the dir.
 
-Squashing the integer types seems a workable compromise I suppose. One
-thing that's been floated in the past is adding a 'seed' attribute to
-some functions in order to distinguish functions of otherwise identical
-signature.
+> >  obj-$(CONFIG_PCIEAER)		+= aer.o err.o
+> >  obj-$(CONFIG_PCIEAER_INJECT)	+= aer_inject.o
+> > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> > index 860bc94974ec..ec6d7a092ac1 100644
+> > --- a/drivers/pci/pcie/aspm.c
+> > +++ b/drivers/pci/pcie/aspm.c
+> > @@ -1042,16 +1042,23 @@ static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool sem)
+> >  		return -EINVAL;
+> >  	/*
+> >  	 * A driver requested that ASPM be disabled on this device, but
+> > -	 * if we don't have permission to manage ASPM (e.g., on ACPI
+> > +	 * if we might not have permission to manage ASPM (e.g., on ACPI
+> >  	 * systems we have to observe the FADT ACPI_FADT_NO_ASPM bit and
+> > -	 * the _OSC method), we can't honor that request.  Windows has
+> > -	 * a similar mechanism using "PciASPMOptOut", which is also
+> > -	 * ignored in this situation.
+> > +	 * the _OSC method), previously we chose to not honor disable
+> > +	 * request in that case. Windows has a similar mechanism using
+> > +	 * "PciASPMOptOut", which is also ignored in this situation.
+> > +	 *
+> > +	 * Not honoring the requests to disable ASPM, however, led to
+> > +	 * drivers forcing ASPM off on their own. As such changes of ASPM
+> > +	 * state are not tracked by this service driver, the state kept here
+> > +	 * became out of sync.
+> > +	 *
+> > +	 * Therefore, honor ASPM disable requests even when OS does not have
+> > +	 * ASPM control. Plain disable for ASPM is assumed to be slightly
+> > +	 * safer than fully managing it.
+> >  	 */
+> > -	if (aspm_disabled) {
+> > -		pci_warn(pdev, "can't disable ASPM; OS doesn't have ASPM control\n");
+> > -		return -EPERM;
+> > -	}
+> > +	if (aspm_disabled)
+> > +		pci_warn(pdev, "OS doesn't have ASPM control, disabling ASPM anyway\n");
+> 
+> I think this is better than the previous situation, but I think we
+> should taint the kernel here because it's possible the firmware had a
+> reason for retaining ASPM control, so we might be stepping on
+> something.  Arguably the message is already enough of a signal, but
+> checking for a taint is potentially a little more automatable.
 
-The Rust thing would then also need to support this attribute.
+That's probably a good idea, yes.
 
-Are there any concrete plans for this? It would allow, for example,
-to differentiate address_space_operations::swap_deactivate() from any
-other random function that takes only a file argument, say:
-locks_remove_file().
+> > +int pci_disable_link_state_locked(struct pci_dev *pdev, int state)
+> > +{
+> > +	struct pci_dev *parent = pdev->bus->self;
+> > +	struct pci_bus *linkbus = pdev->bus;
+> > +	struct pci_dev *child;
+> > +	u16 aspm_enabled, linkctl;
+> > +	int ret;
+> > +
+> > +	if (!parent)
+> > +		return -ENODEV;
+> > +
+> > +	ret = pcie_capability_read_word(parent, PCI_EXP_LNKCTL, &linkctl);
+> > +	if (ret != PCIBIOS_SUCCESSFUL)
+> > +		return pcibios_err_to_errno(ret);
+> > +	aspm_enabled = linkctl & PCI_EXP_LNKCTL_ASPMC;
+> 
+> In this case, we don't care about the shift offset of the
+> PCI_EXP_LNKCTL_ASPMC bitfield, but if we use FIELD_GET() in most/all
+> other cases where we look at PCI_EXP_LNKCTL, maybe it would be worth
+> using it here as well?
 
+I can take a look at that.
+
+> Tangent, but I'm always dubious about the idea that e1000e is so
+> special that only there do we need the "_locked" variant of this
+> function.  No suggestion though; no need to do anything about it in
+> this series ;)
+
+There was some case where it was needed based on the history search
+but perhaps e1000e could do something to avoid calling it while still 
+under the lock, it doesn't seem something that would immediately blow up
+if that state adjustment is delayed slightly.
+
+-- 
+ i.
+
+--8323329-225321872-1697107682=:1692--
