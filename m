@@ -2,193 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F117C6F4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6EB57C6F66
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378861AbjJLNeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:34:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42772 "EHLO
+        id S1379007AbjJLNgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 09:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343724AbjJLNeV (ORCPT
+        with ESMTP id S1347248AbjJLNgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:34:21 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E6E91
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:34:17 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qqvpI-0005HV-3X; Thu, 12 Oct 2023 15:34:08 +0200
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qqvpH-001AAm-6a; Thu, 12 Oct 2023 15:34:07 +0200
-Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qqvpH-00E72q-3z; Thu, 12 Oct 2023 15:34:07 +0200
-Date:   Thu, 12 Oct 2023 15:34:07 +0200
-From:   Sascha Hauer <sha@pengutronix.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        Boris Pismenny <borisp@nvidia.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: Re: Problem with io_uring splice and KTLS
-Message-ID: <20231012133407.GA3359458@pengutronix.de>
-References: <20231010141932.GD3114228@pengutronix.de>
- <d729781a-3d12-423b-973e-c16fdbcbb60b@kernel.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d729781a-3d12-423b-973e-c16fdbcbb60b@kernel.dk>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Thu, 12 Oct 2023 09:36:09 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890F7E0;
+        Thu, 12 Oct 2023 06:36:02 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CDRnMh001704;
+        Thu, 12 Oct 2023 13:35:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=3e+sP/4LvWake3Mp2WG5hQgW0F0A4aNnsHpEEfmrHxE=;
+ b=WNbvvIUIojMIV41Cz5CqCdRBwCEBUU/zQM07fHAVgYKTKiTflOrjKjTAbKmzufKzKDmT
+ HfoTbVREAAoW6QQsXqqjuQk7iOEsJvWExXLsMUUimMND2Zo2QcyqvUhkIVYTexlNZKlx
+ XhhqX6YLMCMbjS0MufJHaGP/qdHxBpDqOaGw5HDDVGTGVmNLPgFVyt7m8/svvoOpOG5O
+ Nue0qTXS58JOPJ/KYJQESzC+PKm98d4taszazcNy28R73hFJ1rnVlVwghGJa1ObRx4B4
+ /9uXn592PptaMTn8zHmRmq1ViReVAKi5x866W2a9znt2KnHRUAW0i5T3KXRUb+SfZSd8 lg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tphpvr92e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 13:35:32 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39CDSMhP003478;
+        Thu, 12 Oct 2023 13:35:31 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tphpvr90m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 13:35:31 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39CBDmKX001170;
+        Thu, 12 Oct 2023 13:35:29 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkkvk7bd9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 13:35:29 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CDZSuM23396882
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Oct 2023 13:35:29 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A01A858064;
+        Thu, 12 Oct 2023 13:35:28 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7BB215805F;
+        Thu, 12 Oct 2023 13:35:26 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.11.225])
+        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 12 Oct 2023 13:35:26 +0000 (GMT)
+Message-ID: <4c11613696d2ffd92a652c1a734d4abfc489ff40.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 14/25] security: Introduce file_post_open hook
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Thu, 12 Oct 2023 09:35:24 -0400
+In-Reply-To: <e6f0e7929abda6fa6ae7ef450b6e155b420a5f5b.camel@huaweicloud.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904133415.1799503-15-roberto.sassu@huaweicloud.com>
+         <2026a46459563d8f5d132a099f402ddad8f06fae.camel@linux.ibm.com>
+         <e6f0e7929abda6fa6ae7ef450b6e155b420a5f5b.camel@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: U59meXdpALm_ufaoOhFcEc8lkx0Nv5y8
+X-Proofpoint-GUID: 6V-BGdQlrt4k18kJFgz7alScEp_zj-0E
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ spamscore=0 phishscore=0 malwarescore=0 suspectscore=0 adultscore=0
+ priorityscore=1501 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310120111
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 08:28:13AM -0600, Jens Axboe wrote:
-> On 10/10/23 8:19 AM, Sascha Hauer wrote:
-> > Hi,
+On Thu, 2023-10-12 at 14:45 +0200, Roberto Sassu wrote:
+> On Thu, 2023-10-12 at 08:36 -0400, Mimi Zohar wrote:
+> > On Mon, 2023-09-04 at 15:34 +0200, Roberto Sassu wrote:
+> > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > 
+> > > In preparation to move IMA and EVM to the LSM infrastructure, introduce the
+> > > file_post_open hook. Also, export security_file_post_open() for NFS.
+> > > 
+> > > It is useful for IMA to calculate the dhigest of the file content, and to
+> > > decide based on that digest whether the file should be made accessible to
+> > > the requesting process.
 > > 
-> > I am working with a webserver using io_uring in conjunction with KTLS. The
-> > webserver basically splices static file data from a pipe to a socket which uses
-> > KTLS for encryption. When splice is done the socket is closed. This works fine
-> > when using software encryption in KTLS. Things go awry though when the software
-> > encryption is replaced with the CAAM driver which replaces the synchronous
-> > encryption with a asynchronous queue/interrupt/completion flow.
+> > Please remove "It is usefile for".   Perhaps something along the lines:
 > > 
-> > So far I have traced it down to tls_push_sg() calling tcp_sendmsg_locked() to
-> > send the completed encrypted messages. tcp_sendmsg_locked() sometimes waits for
-> > more memory on the socket by calling sk_stream_wait_memory(). This in turn
-> > returns -ERESTARTSYS due to:
 > > 
-> >         if (signal_pending(current))
-> >                 goto do_interrupted;
-> > 
-> > The current task has the TIF_NOTIFY_SIGNAL set due to:
-> > 
-> > io_req_normal_work_add()
-> > {
-> >         ...
-> >         /* This interrupts sk_stream_wait_memory() (notify_method == TWA_SIGNAL) */
-> >         task_work_add(req->task, &tctx->task_work, ctx->notify_method)))
-> > }
-> > 
-> > The call stack when sk_stream_wait_memory() fails is as follows:
-> > 
-> > [ 1385.428816]  dump_backtrace+0xa0/0x128
-> > [ 1385.432568]  show_stack+0x20/0x38
-> > [ 1385.435878]  dump_stack_lvl+0x48/0x60
-> > [ 1385.439539]  dump_stack+0x18/0x28
-> > [ 1385.442850]  tls_push_sg+0x100/0x238
-> > [ 1385.446424]  tls_tx_records+0x118/0x1d8
-> > [ 1385.450257]  tls_sw_release_resources_tx+0x74/0x1a0
-> > [ 1385.455135]  tls_sk_proto_close+0x2f8/0x3f0
-> > [ 1385.459315]  inet_release+0x58/0xb8
-> > [ 1385.462802]  inet6_release+0x3c/0x60
-> > [ 1385.466374]  __sock_release+0x48/0xc8
-> > [ 1385.470035]  sock_close+0x20/0x38
-> > [ 1385.473347]  __fput+0xbc/0x280
-> > [ 1385.476399]  ____fput+0x18/0x30
-> > [ 1385.479537]  task_work_run+0x80/0xe0
-> > [ 1385.483108]  io_run_task_work+0x40/0x108
-> > [ 1385.487029]  __arm64_sys_io_uring_enter+0x164/0xad8
-> > [ 1385.491907]  invoke_syscall+0x50/0x128
-> > [ 1385.495655]  el0_svc_common.constprop.0+0x48/0xf0
-> > [ 1385.500359]  do_el0_svc_compat+0x24/0x40
-> > [ 1385.504279]  el0_svc_compat+0x38/0x108
-> > [ 1385.508026]  el0t_32_sync_handler+0x98/0x140
-> > [ 1385.512294]  el0t_32_sync+0x194/0x198
-> > 
-> > So the socket is being closed and KTLS tries to send out the remaining
-> > completed messages.  From a splice point of view everything has been sent
-> > successfully, but not everything made it through KTLS to the socket and the
-> > remaining data is sent while closing the socket.
-> > 
-> > I vaguely understand what's going on here, but I haven't got the
-> > slightest idea what to do about this. Any ideas?
+> > Based on policy, IMA calculates the digest of the file content and
+> > decides ...
 > 
-> Two things to try:
+> Ok.
 > 
-> 1) Depending on how you use the ring, set it up with
-> IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN. The latter will
-> avoid using signal based task_work notifications, which may be messing
-> you up here.
+> > > 
+> > > LSMs should use this hook instead of file_open, if they need to make their
+> > > decision based on an opened file (for example by inspecting the file
+> > > content). The file is not open yet in the file_open hook.
+
+Needing to inspect the file contents is a good example.
+
+>  
+> > The security hooks were originally defined for enforcing access
+> > control.  As a result the hooks were placed before the action.  The
+> > usage of the LSM hooks is not limited to just enforcing access control
+> > these days.  For IMA/EVM to become full LSMs additional hooks are
+> > needed post action.  Other LSMs, probably non-access control ones,
+> > could similarly take some action post action, in this case successful
+> > file open.
 > 
-> 2) io_uring will hold a reference to the file/socket. I'm unsure if this
-> is a problem in the above case, but sometimes it'll prevent the final
-> flush.
+> I don't know, I would not exclude LSMs to enforce access control. The
+> post action can be used to update the state, which can be used to check
+> next accesses (exactly what happens for EVM).
 > 
-> Do you have a reproducer that could be run to test? Sometimes easier to
-> see what's going on when you can experiment, it'll save some time.
+> > Having to justify the new LSM post hooks in terms of the existing LSMs,
+> > which enforce access control, is really annoying and makes no sense. 
+> > Please don't.
+> 
+> Well, there is a relationship between the pre and post. But if you
+> prefer, I remove this comparison.
 
-Okay, here is a reproducer:
+My comments, above, were a result of the wording of the hook
+definition, below.
 
-https://github.com/saschahauer/webserver-uring-test.git
-
-Execute ./prepare.sh in that repository, it will compile the webserver,
-generate cert.pem/key.pem and generate some testfile to download. If the
-meson build doesn't work for you then you can compile the program by
-hand with something like:
-
-gcc -O3 -Wall -o webserver webserver_liburing.c -lcrypto -lssl -luring
-
-When the webserver is started you can get a file from it with:
-
-curl -k https://<ipaddr>:8443/foo -o foo
-
-or:
-
-while true; do curl -k https://<ipaddr>:8443/foo -o foo; if [ $? != 0 ]; then break; fi; done
-
-This should run without problems as by default likely the encryption
-requests are running synchronously.
-
-In case you don't have encryption hardware you can create an
-asynchronous encryption module using cryptd. Compile a kernel with
-CONFIG_CRYPTO_USER_API_AEAD and CONFIG_CRYPTO_CRYPTD and start the
-webserver with the '-c' option. /proc/crypto should then contain an
-entry with:
-
- name         : gcm(aes)
- driver       : cryptd(gcm_base(ctr(aes-generic),ghash-generic))
- module       : kernel
- priority     : 150
-
-Make sure there is no other module providing gcm(aes) with a priority higher
-than 150 so that this one is actually used.
-
-With that the while true loop above should break out with a short read
-fairly fast. Passing IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN
-to io_uring_queue_init() makes it harder to reproduce for me. With that
-I need multiple shells in parallel running the above loop.
-
-The repository also contains a kernel patch which will provide you a
-stack dump when KTLS gets an error from tcp_sendmsg_locked().
-
-Now I hope I haven't done anything silly in the webserver ;)
-
-Sascha
+> > > +/**
+> > > + * security_file_post_open() - Recheck access to a file after it has been opened
+> > 
+> > The LSM post hooks aren't needed to enforce access control.   Probably
+> > better to say something along the lines of "take some action after
+> > successful file open".
+> > 
+> > > + * @file: the file
+> > > + * @mask: access mask
+> > > + *
+> > > + * Recheck access with mask after the file has been opened. The hook is useful
+> > > + * for LSMs that require the file content to be available in order to make
+> > > + * decisions.
+> > 
+> > And reword the above accordingly.
+> > 
+> > > + *
+> > > + * Return: Returns 0 if permission is granted.
+> > > + */
+> > > +int security_file_post_open(struct file *file, int mask)
+> > > +{
+> > > +	return call_int_hook(file_post_open, 0, file, mask);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(security_file_post_open);
+> > > +
+> > >  /**
+> > >   * security_file_truncate() - Check if truncating a file is allowed
+> > >   * @file: file
+> > 
+> 
 
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
