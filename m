@@ -2,46 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 953E27C781F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD21F7C7821
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442540AbjJLUvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 16:51:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43348 "EHLO
+        id S1442780AbjJLUvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 16:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347385AbjJLUvm (ORCPT
+        with ESMTP id S1347407AbjJLUvn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 16:51:42 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2098.outbound.protection.outlook.com [40.107.94.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14BDA9;
-        Thu, 12 Oct 2023 13:51:40 -0700 (PDT)
+        Thu, 12 Oct 2023 16:51:43 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2090.outbound.protection.outlook.com [40.107.220.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B61DBB;
+        Thu, 12 Oct 2023 13:51:41 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E+ABi66S7bo3cKhYEWb8zpqdHQlbpIAUVSs3oe1xzU7YSlPecKyV05qJZ/hFt6AwYoqDviZvhYJ+uqrxTTLPf/XBabLTPczPQ0pIMPptP7aQUtlYqjnEYxrMIlipz8sKkAU+ILM2Zt1SjfXjxhW7PUHwHeBDS3ypQzFovv1J/0KJStKc6vOOAVDFimvaiSOty3za1QqtDvreL58yqICmd0qXNXHvK2hor/yv2AdebHNnwT/FUlax8BazZBamyBh8hTLoVsj8qLACkcwgQZHPTOyGPHT9IKgPOJynvyjjS8FU6k/q7YQONK1qjvi5aSlZiRFXue2N1KsKw1fhSXbyhw==
+ b=U+TJxiJnRcwJqumzJtujrWfUrsuxcw9KU1b3KhQmBrPMLSw0oFuoI/UIvCntJIccJ+9+sJmDDpeAk93cInIxvjjM05EBWqchtRYAnGH0CKLTOVfEMHoxZxCNyv8eOiJgagcYQu42McWrC9oNPHOJLmfXgKqY3SmbCgDXAFRIHhA204Gm2OIfNoKumZdtL8+anNY2dZ6gJ7h74cnAhQDb8KJtH1m/4NCoHsTvTrhE7vi45RTdblwwhi7OZKroHRAT4qe/W8uoJ28j2/5qcGPxMhubAGuzCpijvEEQCl1BHXxoXDIAVvZxrCeZRtwtt2ReeTXMFDiJn6FluGOByjOn3A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Iw5FRkuCAddj6aCuQyeliwqJ/eqPugxwATruAfBhJjQ=;
- b=PHUgthfaBIW7Y00NKKhhbYa0VaQ4PKq9O95R2oS1ZfovDAycw4/r0mVPU2pO/Q/yXIH3WCzIXKM1253VnmY/Ngk9bvsBL8x0vAdtpGpUW8MIYlpbSL+s4BQnLN1mtXljN+fBJbkCNFsn6BMReFJ4hm8fyEhIcPDL72G9TutgY2dK/4HpUlutYPDMR+qrnNhkAq3toEOlvi6Mvd0LFCkmaaWF1z6PQVuLURxyQgs8+vpUBvqSHXmUhHCzy1RQ4/AePjRXJ2fUqxfs4FsQ2LARkYqIjr6PqyRX27fZ8TvNuz3VzGNWBXQ6s7X4/xCHP+sPnx6LV1siInY0wqvgpqQ30g==
+ bh=5VxahNJvg1fevmOR8fte5obsPgGZZs2bgPIUgAUdt6I=;
+ b=F+ko3ooxvEIa34pw7qiB7ugkBAHKAPUnjYDyBSUu81Lmlodso+ZGnB4Sly4X96hNXWkmE3PqHWr6kOcXKvhkoOLEoywASlXAXWIlC0+aAOZ5XPa98TKH1WrAHAO+bUGu+jKZoQNR8vv8DqXYrHaIVhtsmEATI4d8sqZ9xKIyM5BTwGCEmvj7kcRSTjoVzcG7zuGMkzBa1of9Y1XtbuXS6xB+Bx7gVZqPrdyk3V0dTPB19iRj93NJV3JcIZ4b0R/3PVuAag3fBKlibK1gba2dLNueGqIK1EqL4PvrxOB0wU/L9X4emraxeV5FZ+Hc/zvauzA7WEYKUmK7vWj+QQQerA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=ni.com; dmarc=pass action=none header.from=ni.com; dkim=pass
  header.d=ni.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ni.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Iw5FRkuCAddj6aCuQyeliwqJ/eqPugxwATruAfBhJjQ=;
- b=biu3DDlqrroakebzKh15KdL88xmeGUDJVXHZAxAtG7X+tQcbzIuEHaWyZUi27++fD8vI6seevQwqDiwCekVBnmK4LDTxWYpNCwQ/5HmeRCKgnr42qU1XkzG9oJKBiKFV05CZTU0onYP01Pndnwvcs8K4GuQxzq4skjwZRn8ld7Q=
+ bh=5VxahNJvg1fevmOR8fte5obsPgGZZs2bgPIUgAUdt6I=;
+ b=JQ4nOJgBtMdqCp8jWf2cBuGwG3tvyqhkfTewJ2wm2KumyjrpuPHDmaghCKFVOrL9OMFQvy919+bB3HigUHp+Lx3T93ewkKjO7QXsWd48mNqijB0HYetUxXwzZ617PG06MZv4+D9FWu27OEzlNXAJxKn5ytZ2ziDOaJie5tXwfhM=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=ni.com;
 Received: from SN6PR04MB4973.namprd04.prod.outlook.com (2603:10b6:805:91::30)
- by BY5PR04MB6376.namprd04.prod.outlook.com (2603:10b6:a03:1e4::15) with
+ by DM6PR04MB6608.namprd04.prod.outlook.com (2603:10b6:5:1b7::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.29; Thu, 12 Oct
- 2023 20:51:36 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.30; Thu, 12 Oct
+ 2023 20:51:39 +0000
 Received: from SN6PR04MB4973.namprd04.prod.outlook.com
  ([fe80::3205:e23b:425e:a57]) by SN6PR04MB4973.namprd04.prod.outlook.com
  ([fe80::3205:e23b:425e:a57%4]) with mapi id 15.20.6863.032; Thu, 12 Oct 2023
- 20:51:36 +0000
+ 20:51:39 +0000
 From:   Brenda Streiff <brenda.streiff@ni.com>
 Cc:     Brenda Streiff <brenda.streiff@ni.com>,
+        Gratian Crisan <gratian.crisan@ni.com>,
+        Jason Smith <jason.smith@ni.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jirislaby@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -49,64 +52,66 @@ Cc:     Brenda Streiff <brenda.streiff@ni.com>,
         Conor Dooley <conor+dt@kernel.org>,
         linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org
-Subject: [PATCH v5 tty-next 0/2] serial: Add driver for National Instruments UARTs
-Date:   Thu, 12 Oct 2023 15:51:09 -0500
-Message-Id: <20231012205112.112261-1-brenda.streiff@ni.com>
+Subject: [PATCH v5 tty-next 1/2] dt-bindings: serial: ni,ni16650: add bindings
+Date:   Thu, 12 Oct 2023 15:51:10 -0500
+Message-Id: <20231012205112.112261-2-brenda.streiff@ni.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20231012205112.112261-1-brenda.streiff@ni.com>
+References: <20231012205112.112261-1-brenda.streiff@ni.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SN7PR04CA0184.namprd04.prod.outlook.com
- (2603:10b6:806:126::9) To SN6PR04MB4973.namprd04.prod.outlook.com
+X-ClientProxiedBy: DS7PR03CA0087.namprd03.prod.outlook.com
+ (2603:10b6:5:3bb::32) To SN6PR04MB4973.namprd04.prod.outlook.com
  (2603:10b6:805:91::30)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR04MB4973:EE_|BY5PR04MB6376:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6080d44f-a130-4752-c5ef-08dbcb650686
+X-MS-TrafficTypeDiagnostic: SN6PR04MB4973:EE_|DM6PR04MB6608:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0901a7c7-313b-45d0-2ae7-08dbcb6507f1
 x-ni-monitor: EOP Exclude NI Domains ETR True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lnxdc1OnKUb5lwjnabjXxUF4irwSQCXkJuzjLrBQSG+5dZo5jkaWtnAjuiKmZhNVLh1vEltFhOMe/ZjEaT7h7fEZc20fvE9D9cztXWNBpTvGp/t0qHQtI6r+y7q/8HbNGglKazr+WYxpkYyzufWmNu3rUBNoAGoL+5r92NxZ5yPSc694zzHY8DKTThKfCGVFWkJt3VEzlqzxVXW0IawHZP85piawsJ423Rqur+7hotYMM2aHBeNYtCzxenyV6NDsGzns3V43pqOpLVhJZkUw8Uc5nS4+9Rm5CBGV6JdEXMef5AuliL9Uykkaz65770sCHIN5fxzC+1eNNyh0XR6PU1Wa0ZK+9VAbR6tafWRauwAGO+oEYYXsFON1+fhg2R91aP3f+FROIZ94CbvsdF3u+SPX5wPcpMtWrvPHJnqwhRCOHjd1kyVcIuvamoBvzltjvb4Jb0d8wAufKSKKxGOXdRvar/ds2BKaaRa/NCJ7ZcVWRakBIVIGVDZwXNoeurZuy1dUfIy87yKhRRnpnwe9vnq+Muo8NSjGWre+rXE8M9i2GuJGEYNhkTUmMV2fjsXM5cWbv3p7Y8vIZJPKWBEV6A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4973.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(39860400002)(396003)(346002)(366004)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(109986022)(6506007)(966005)(6486002)(44832011)(5660300002)(83380400001)(6666004)(478600001)(4326008)(41300700001)(1076003)(26005)(66946007)(8676002)(8936002)(2906002)(54906003)(66476007)(66556008)(316002)(2616005)(6512007)(38100700002)(36756003)(86362001)(266003);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: ZKKE9ErvsQX93ufOa9xeNJ5MZ4K5TBMzgO0FKVqLe36U8I7tLN2ExYGpDAryjWp1aV4jS5+RlVpYSK9r8CFHsI9QwaRHpiCEx5zhKztMxBdPxeGOtDWEKW1Sx4/1FKtd6Fmli6WSqckDGMgaFj0d8xeiZpckZCFZyIBhLVrZk0sHJqvreNtqV4AuDsDrS/FzPHzFf+ZHp1LRWLG9WJqEfzy95TU97f62vY0i2mn0va1tW8IJrRZtdBbc+wOb2L/BtjaSIolJrhM/43gW+N1LhZZSEpM1UGhdtSAw2hEWvGkvChJ1A3lPll9hALEknDmaOpS25mUPFHDhfvEeyc/gjzK4DW8QG1ERiXwvf3PlBs1fqFJ5KabRlnw94KpojCyd08ZqY1CRRok83t+Q1x9l5+uxxupbZddcLkAungUwKGxgL/hsR5DxO8jw1hJZDOGYcLD7qHxldN77I/SJuC/zBAK4PSxwlQsu+c243Jueyw0ydYCRfu+fV0wkg7QxLGrZvLxTOG+Gbl0YE+2tu3GH6nDP8NXpjrZ7mqnyqNpo5J5zmY2UGGUv/VYWsS4GzlAoBP+jHm8PBtLJGDWFR6HZP/6DM7qkMNs/IJzvYn30mds=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4973.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(136003)(39860400002)(346002)(230922051799003)(186009)(64100799003)(109986022)(1800799009)(451199024)(26005)(6506007)(44832011)(36756003)(316002)(83380400001)(66476007)(54906003)(66556008)(66946007)(2616005)(38100700002)(1076003)(86362001)(6486002)(478600001)(2906002)(6666004)(966005)(6512007)(5660300002)(8936002)(8676002)(4326008)(41300700001)(266003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hcpJ7bA31W7FzL5qlEC/NfvRq0pRxXGHYvyiN5hcLV0/+c2arWWSxBBwQ+CZ?=
- =?us-ascii?Q?wRSW0XYJ+ccOzC5X7/0Oat9rl3zhb1eNkbN6hnpYCOxUAPg+iULmwHt8cp5Z?=
- =?us-ascii?Q?c1hEAWOuTFD/j59jf091X/os2t6MZ+qjWiwxmy1/9aRJvgmitw5KV6tA5PyH?=
- =?us-ascii?Q?k+Z35oIYGeE+8xtHd/uCWUJYLfypn51GB6vtqxyMb+2EfAdPetsLVSqoYofY?=
- =?us-ascii?Q?Kqd1Ss4f+zbszWmjz5dFhJSm7wwg3/Z4nMJ+98NDsPsQgzUgvcwKdK+Vx0PL?=
- =?us-ascii?Q?5CGPvhrZL8ro2Y5CXAK8H7/M5GSu0KO8Rh3czWORo1DdYxxcsAr0D5OMQfZG?=
- =?us-ascii?Q?4+bpiekMv0wW3ADWWElQA4hNj7NTf6YsJzXlpvB03gtJOf/ZD3dFN3tCLYyX?=
- =?us-ascii?Q?6TA7clrBodgTlS25FAAedHgipBXs2BsCsAswICMNazXbBwc7tICB6IR2rq/u?=
- =?us-ascii?Q?eY3Q9HEWxs+q0AGsSwyF3w6StE/zn35vLp+ITEe4sfEaWv3vznV5u4d9U9bU?=
- =?us-ascii?Q?YpTT2JI8gGAgHkO5o/H6UhKowtE7LwQ27kp1wUl1UYZVphkTkkaJX7H24PLV?=
- =?us-ascii?Q?rds7xkIyj3JxCeyWF00Y1RsSggu6dT5k0X9cje0ZzRvte7s6xLm3TtHrMjnX?=
- =?us-ascii?Q?Obk4VpC+jIrrHtCiciN2IGEaejFWYvobKuQHSriXos/BRMlTB3chyLsSIegg?=
- =?us-ascii?Q?AC6Zoblxjz/4TqRNVJ6YnboRod8+0gcJeSXPwShU8IleSEsHi9no67f77PK3?=
- =?us-ascii?Q?7x1pzD05lRmUaapVEAlsKPc72mOlavuCGH07Iyl95A3sEcKxZfWc16huI4Zu?=
- =?us-ascii?Q?hGdYTYvkoLNHYWmitKp0HF+jWT5pkaubZfwCorNsv2gBBNq70dd+wFjPNeSi?=
- =?us-ascii?Q?Xhxp5TiNnHHYeTjf8wFFwMsBKOJXFr5/iyhj3rsjRr/uUZI5+MlL5owUJpwZ?=
- =?us-ascii?Q?nOZC6Qj5kCamgQ9sLoucRJUJ9NQV7ut3uPpE4GtescJz7w7UdxkFruIj5hdy?=
- =?us-ascii?Q?yJnXr6gIQFWOFbTay2ooOXHE/pcwiZPj9Hou3QW2+F5bx/DjuZfNbfL8bDPA?=
- =?us-ascii?Q?SJTnZY/kdNAkpr9+EQJ6DL886QsKL2kqx7Uro+UZDbgi4G73YW52wDlTt0KZ?=
- =?us-ascii?Q?AgRl0dgJBDbvIsreEMOsjegcIT9immcJ0f/ojRuShheoFKS/h5IKxLwPBvM6?=
- =?us-ascii?Q?3G+qGuCK29LpOsSN1UbYfWY9S6vzcRdDDVQ+EAd3y0UScSAuGnDaAOu8NaBF?=
- =?us-ascii?Q?v02pDQqoCiz/T8CqyUnNoakujASbxnH08vma0oMlKBullsEY+G8yG2AaWl26?=
- =?us-ascii?Q?8DUB7d2aPEXT6J6H1FDUdtZZ3ii+vVYkttYFj60WDyCjfKI7QRx6+BWwvz7u?=
- =?us-ascii?Q?Dh1yx60OAXMmKkmrSk1W65XiTqeZj/TtzTmz83V4Xj/jc+q6qK0aVERrzJOr?=
- =?us-ascii?Q?4Mk/u8gZA8arAnjZUI9+uzasjAtV/qGQP8aDhokm7utKyMKtPC98BEFSgk6+?=
- =?us-ascii?Q?f7d+zwpAVDu6CEIItonh4JR00D7mmSNuywcKd3hF8SVg/wM9HeEl94e9EDw4?=
- =?us-ascii?Q?Z8MrhCpBB3bWjM4WHu0OzJFtPlSpgu0DPts71Afo?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+ihOg+f4gvWRwDtl6djwkovzhnVev/JZq5hI6lgfLQxBdZhhqqJ7jDRiR/s0?=
+ =?us-ascii?Q?lMI66HE86nTZI2twNvMwlX9Y84Y2g1vDOpHApfrF4a3oX0GNHtthZPV/v6ar?=
+ =?us-ascii?Q?NMPlXtEB1kRxxmC+aqGp+EZYr6eb8HXZY9wjzRT6AvvhPbB5xlw6kXKMDaY+?=
+ =?us-ascii?Q?vLvNy2HhNJkehXQ5GbVrhdF+qHKiUVsiYm8mDl1XfFWshji0e6HQqkjNs4ov?=
+ =?us-ascii?Q?eVh+RoruIRyZNJk424FaS5RG0qHkbGqeKXAguQM+9wXaIpm8NZ6iwYZs/AEf?=
+ =?us-ascii?Q?SuB3+Pu67+IFz/5qWHFAGXK69uNKTsIdY/A7Zt2U0BD3qDFXYuZKMNJfv8g9?=
+ =?us-ascii?Q?2/kqVQdudF9Pud/o/IbunHXTKoLjZC0199I5rzupEcHlDRVnU3WgwyK3bhsW?=
+ =?us-ascii?Q?M3M+a5e5UW4S+2D6Ki4AQqfq/JTswnR3crEg9mKV8Fu1mF39UkmaiJur01Nk?=
+ =?us-ascii?Q?R/2Xoef0rhcTyp6n0Q/m5jyZPJPQdIF3YgEv2yAHjAo9LkhFqZJKDTDtcQ46?=
+ =?us-ascii?Q?eItjhy0n4ZTmRwgTj5jHbLpYmzIxWfkb3bNyvv7FwCBjTC3BagiEd4JfB7jO?=
+ =?us-ascii?Q?nl5QBoF6broiSacIGVlBAAWO3SH4N8Nebr3rNs1BTlg4n7v3hk2ZANfImtca?=
+ =?us-ascii?Q?p7TMSN04HgwNaFY23n2J8W7YeUCUjfVYoGlOJBFKLIzvmRiCCiz42eZU7wGz?=
+ =?us-ascii?Q?W1fzhKW4ViMuRtVIGnCmZfd4t+07xYj6QbkwiSIUQ0HeGTnutPKt0XrEY3h2?=
+ =?us-ascii?Q?muEPkXI//XN+2vPPYO30iVzlF8RLEmicgkCLBlT/EY05n6qXuBmEEfKjsYl0?=
+ =?us-ascii?Q?e2XtWGQdxNRqwiJk9QktjxFG8gfvwJ0KhkvFPogs26+huDduNEgLYnB6h7bF?=
+ =?us-ascii?Q?6TfwW9r09/qPqlEgfC9m9HDgkVIlAemDLSEKmx8KD4bsiQAxZDHWQMjzbJh0?=
+ =?us-ascii?Q?g8PNhbOF1yRdVBWuQcoyoY39yZ6r1GiU7ZR9rrBksdAgX/fYZsKynTPcqrc/?=
+ =?us-ascii?Q?hYoRIkA2R0A4lA9P1uTo+viOe5RxLCCqPzGFZ+M3puE+OvfJhmMSh2y8ob3i?=
+ =?us-ascii?Q?lw1iSaLKWu1ip1F6kaKXLRSUD5VPj5NhXQVePI/MHtlLPNKcqOvVaB0qNIcG?=
+ =?us-ascii?Q?hsb3G+wE8sfcCKEvuhysKUO0jZpJ2VZhgsHkOIZChH+Xwg0ViOQnIWQzbBbK?=
+ =?us-ascii?Q?PkIJpBUd+ja+WUPDP3c5J/qbnPP5LZsvB4lPMp3pf+C/xfjduQbb1NoXE9ut?=
+ =?us-ascii?Q?4FONtVXRhWzXSYBdTV1dVurvy7wsocX9DJtJd/SIZpmANLKYfjhzNbDHrLrO?=
+ =?us-ascii?Q?4U5sSyBjRIJsdrJeBh7kia+8VDrDJJTFV99GT+WWhrF1gcnSjp4+ZjEgv1qU?=
+ =?us-ascii?Q?mdjRAb3YwMPDyp6RzVoO5TDdCAdJXOHdFVwFxcp/n3l6YyKEoAlIMYPak0x3?=
+ =?us-ascii?Q?HpyWBtjuZ/RaVaqPXiPZf1Jj+Ucyz2R02DB75zAy2WiSK1fu2PLuxp+6MTyB?=
+ =?us-ascii?Q?eSR+EtWqvWo1wD5Jv9K6mp36JR/i6nzkvGoQSdO++fdI0s3uZJi8G11xGo64?=
+ =?us-ascii?Q?p1EU5QHJp1XRPZmRBy5uFMr9WI4Pc6eOMZqgLGk/?=
 X-OriginatorOrg: ni.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6080d44f-a130-4752-c5ef-08dbcb650686
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0901a7c7-313b-45d0-2ae7-08dbcb6507f1
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR04MB4973.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 20:51:36.5789
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 20:51:38.9773
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LFDbz3DC8fh4ei+qPG8Hj2zVjJ0Jvh4t7dKsuY388p/wmkaOw8hpHE4nuWCrjKlBzTeRML11shB+eWMJs3sfXw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6376
+X-MS-Exchange-CrossTenant-UserPrincipalName: qx6nxn3qu9VCnD+VtxDImTOkGbt1gl/95CtF017zBlZCgY9balJW6I5JtTpp0/wGMIn5UlMCZ0g8lsuBIMHuBw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6608
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
@@ -118,39 +123,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series adds a driver for the 16550-like UARTs on National
-Instruments (NI) embedded controller hardware.
+Add bindings for the NI 16550 UART.
 
-These UARTs have an interface that is compatible with the TL16C550C (for
-which we build on top of 8250_core) but also has extra registers for
-the embedded RS-232/RS-485 transceiver control circuitry.
+Signed-off-by: Brenda Streiff <brenda.streiff@ni.com>
+Cc: Gratian Crisan <gratian.crisan@ni.com>
+Cc: Jason Smith <jason.smith@ni.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
-Changes from v4 -> v5:
-- set_mctrl callback needs to set CLKSEL in up->mcr, not local mctrl
-- initialize potentially-uninitialized 'prescaler'
-- Style fixes:
-  - comment the effect of the PCR modes
-  - remove extraneous parens
-  - add to Makefile in the post-66ebe67d1b68 sorted order
-
-v4: https://lore.kernel.org/linux-serial/20230505213850.829639-1-brenda.streiff@ni.com/
-v3: https://lore.kernel.org/linux-serial/20230418223800.284601-1-brenda.streiff@ni.com/
-v2: https://lore.kernel.org/linux-serial/20230410211152.94332-1-brenda.streiff@ni.com/
-v1: https://lore.kernel.org/linux-serial/20230329154235.615349-1-brenda.streiff@ni.com/
-
-Brenda Streiff (2):
-  dt-bindings: serial: ni,ni16650: add bindings
-  serial: 8250: add driver for NI UARTs
-
- .../bindings/serial/ni,ni16550.yaml           |  51 ++
- MAINTAINERS                                   |   7 +
- drivers/tty/serial/8250/8250_ni.c             | 478 ++++++++++++++++++
- drivers/tty/serial/8250/Kconfig               |  13 +
- drivers/tty/serial/8250/Makefile              |   1 +
- 5 files changed, 550 insertions(+)
+ .../bindings/serial/ni,ni16550.yaml           | 51 +++++++++++++++++++
+ 1 file changed, 51 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/serial/ni,ni16550.yaml
- create mode 100644 drivers/tty/serial/8250/8250_ni.c
 
+diff --git a/Documentation/devicetree/bindings/serial/ni,ni16550.yaml b/Documentation/devicetree/bindings/serial/ni,ni16550.yaml
+new file mode 100644
+index 000000000000..72ab125dd892
+--- /dev/null
++++ b/Documentation/devicetree/bindings/serial/ni,ni16550.yaml
+@@ -0,0 +1,51 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/serial/ni,ni16550.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NI 16550 asynchronous serial interface (UART)
++
++maintainers:
++  - Brenda Streiff <brenda.streiff@ni.com>
++
++allOf:
++  - $ref: serial.yaml#
++
++properties:
++  compatible:
++    const: ni,ni16550
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  ni,serial-port-mode:
++    description: Indicates whether this is an RS-232 or RS-485 serial port.
++    $ref: /schemas/types.yaml#/definitions/string
++    enum: [ RS-232, RS-485 ]
++    default: RS-485
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    serial@80000000 {
++      compatible = "ni,ni16550";
++      reg = <0x80000000 0x8>;
++      interrupts = <0 30 IRQ_TYPE_LEVEL_HIGH>;
++      clocks = <&clk_uart>;
++      ni,serial-port-mode = "RS-232";
++    };
++...
 -- 
 2.30.2
 
