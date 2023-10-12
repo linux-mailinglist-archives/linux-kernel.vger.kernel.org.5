@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8650F7C79ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 00:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC8E7C79FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 00:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443042AbjJLWot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 18:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35412 "EHLO
+        id S1443046AbjJLWxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 18:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443035AbjJLWos (ORCPT
+        with ESMTP id S1442450AbjJLWxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 18:44:48 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039D79D
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 15:44:47 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53d9b94731aso2802824a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 15:44:46 -0700 (PDT)
+        Thu, 12 Oct 2023 18:53:10 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9F7A9;
+        Thu, 12 Oct 2023 15:53:08 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-690d2441b95so1116408b3a.1;
+        Thu, 12 Oct 2023 15:53:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697150685; x=1697755485; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mUJJKm9lDcsKSbt0Gh9bMyGUZpKtFWFjgv7jiH7IfeI=;
-        b=bB8ShZb8VhRolUs4zsVgo6F6wXq5R6qVHlJ9gMlWhvfV32525T3J77wMdYQCEgpdSf
-         7FDuWb2tfNVeiXMe1IODWcfWmLK3myyIJbJMUxDQqQAgzeG+S85hjCM0yyM07CTxJvef
-         FAVl57+Xv/XpjhUQ3UJ09RCh6bzaGFAGdvYGnVK+OcPrAR6Pz3sGFHvUXZ+YgdQBapsp
-         X5Vg7UDfLOjtAD56VRKIjfIglTS4eMjH67dS6MuW2D2jpq0Dl2RVEPgwpjOiMzLpWRls
-         xEF3RGyOva0lmYbOP2to5YubR1tUf2igu3f9QkhGZ7LmxzOYvm0nZg4w2O+PlTiAuki7
-         TnFw==
+        d=gmail.com; s=20230601; t=1697151188; x=1697755988; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=78dLfHiKtRMa9+mkxUCYKM56t0Kv23O6vbCoyWzPuyY=;
+        b=GwuDzZKW9OKn4fFk72XE3GOsg5imotFXb3+DINzqcMfIh7MHSvd6PbmQrlrO75kHfb
+         EU/d9wIgWXd1NPwk0+Jtzza+pTN+A2YOiFtMAuJGtZKJTB9dDCiF/OISD633Anhfd71x
+         l9QdNIRREbBXcskLxpN7whf0uN9sDxA2ovNNaLn3uevTpwLldB4grRXJtQU6/n/Xdy/J
+         xuB+GrbYgT06AFJxz4giLR9jc+onq7VogitRmv/CQvDIaYOjx/Bu9Aik/oHMixEbnnk7
+         74qv0B4wUH14I8rPQCvFIwP3Pu9l/dcg3hSfMCFEN55dyXmGkSdzM4Yhjv5QeqLCF204
+         kmiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697150685; x=1697755485;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mUJJKm9lDcsKSbt0Gh9bMyGUZpKtFWFjgv7jiH7IfeI=;
-        b=f1je83mThccoNft2GieiYi6bttxQkbAQFU5YAYhdiiX+paYD8jnDyUu0QDJ48rdsqb
-         Evk8kJJswMRrRGQuTKsVuu13mYHc2PdNqcg4Zpj3rQySOl3wjbTIbYhf/hPuB5MINHRR
-         GweWz/Y+PizV7JRh0GhtqGnPS7+jQqTlw/+o24t8W4dUCBl+4GnZqpmpxgL5MZ65zUng
-         NaDnu6GBy1tnwyUCidZXDW0SVYtUUPZzTqkLwnw9NypTRdDmCnsh2HslXClnXjrFMzW7
-         w9EGPjwSy/bJyNdLSdGenhz+Rtz+AdhBsTuy5rBSZtEUowQ0Aod/gVGY7uQCykCb7IRP
-         ZA1w==
-X-Gm-Message-State: AOJu0YyvKYksL9pc5l7w+INfmRIeF14ZuBHqtVi2tbYiLa9gBwfZyYd+
-        QxYXv3TSlBa/qz8JTciXSVi5rNeuIueAIMUUVps=
-X-Google-Smtp-Source: AGHT+IFyYAt1/XqbFKonx4X0m+I/iV1wGqc3tYFtJONQ1BAT6fF9nLfX+r3BSk6hrxlKs3nNElJ86qvizT+DQ06Y4ys=
-X-Received: by 2002:a05:6402:350f:b0:53e:1f6:fa24 with SMTP id
- b15-20020a056402350f00b0053e01f6fa24mr3460608edd.20.1697150683614; Thu, 12
- Oct 2023 15:44:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697151188; x=1697755988;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=78dLfHiKtRMa9+mkxUCYKM56t0Kv23O6vbCoyWzPuyY=;
+        b=JoivqA7ex7VwARj1T5gzy9yBYij+cnkLDTwEeNOsG6WBZBtj1tTSmpdUexlgwkQimX
+         2G4jkbxR/42tdqRd/iJOqpmzlMNdla9tnZsl5KoEu5zUi+DRpRhUXduVVVRAb4RiKKeq
+         lHvZQ+R/8FGQ6UZ98C0n830wV4ofUHvQaf1qL498h5jyYlkTnZC2EufNkSxLj9GTVYr6
+         BM3Rir2TEKHdig8G3+f8MlltlZ0++oZdq+AnUA0dr/TM20KNc7DrkT7PMyEM27FxRYg8
+         d6+c55CujUiAKaa+fwwR53JxBVsJVcmzQ/uFPwZLGgQji8wpcl3y7VDhMpWY6tjMaeTu
+         txgw==
+X-Gm-Message-State: AOJu0YzJmA3hofHKe/qaOU4rYlTkB/hKXajuObtS4MXooha2L4lkJC/Z
+        D0my6XJT6uylISr7x+EU5Gg=
+X-Google-Smtp-Source: AGHT+IG5S/ip7RUwzEiiwV3FfRhxwAfJzPoA0AHgoWOeXhvM1SNfgqC3HnPqI744GDUGdf3PgLP/VQ==
+X-Received: by 2002:a05:6a00:21cc:b0:68e:351b:15b9 with SMTP id t12-20020a056a0021cc00b0068e351b15b9mr35521708pfj.4.1697151187538;
+        Thu, 12 Oct 2023 15:53:07 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:a118:bd3a:f198:d7ed])
+        by smtp.gmail.com with ESMTPSA id a19-20020a637f13000000b00578bb0066b6sm2220692pgd.71.2023.10.12.15.53.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 15:53:06 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 15:53:04 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Jeffery Miller <jefferymiller@google.com>,
+        regressions@lists.linux.dev, benjamin.tissoires@redhat.com,
+        Andrew Duggan <aduggan@synaptics.com>,
+        Andrew Duggan <andrew@duggan.us>, loic.poulain@linaro.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: elantech - fix fast_reconnect callback in ps2 mode
+Message-ID: <ZSh40JethapBAjq1@google.com>
+References: <20231004005729.3943515-1-jefferymiller@google.com>
+ <ZR1yUFJ8a9Zt606N@penguin>
+ <CAAzPG9Pp6mHfEziJiUuhDRmkKMfiiPD6axtfAMaCJcEAcuQPiA@mail.gmail.com>
+ <25ac6b17-e3fa-4e98-95a6-eac12bdbcdd2@leemhuis.info>
 MIME-Version: 1.0
-References: <20231012201743.292149-1-ubizjak@gmail.com> <3af8dcec-66ec-4bd4-b7bf-4bc6f5f3c70f@intel.com>
- <CAFULd4byzHyoz4xM1gL_T1wFkNE-ab8K4upXfPirxM9PdX5JWg@mail.gmail.com>
- <5722e74b-6fc6-4d6e-be25-069ea6385990@zytor.com> <CAFULd4afhj-kJwneh7wz0sExWqOmPicG4fcfF++_fUMHpoNbXA@mail.gmail.com>
- <5694b2bd-de40-45c0-8b38-ac01bc11798a@zytor.com>
-In-Reply-To: <5694b2bd-de40-45c0-8b38-ac01bc11798a@zytor.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Fri, 13 Oct 2023 00:44:32 +0200
-Message-ID: <CAFULd4YUD_7x5=j1MBB9mcS6rRm9zdmZ33SyjaTArScLVMv2KA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Introduce %rip-relative addressing to PER_CPU_VAR macro
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <25ac6b17-e3fa-4e98-95a6-eac12bdbcdd2@leemhuis.info>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -77,30 +80,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 11:22=E2=80=AFPM H. Peter Anvin <hpa@zytor.com> wro=
-te:
->
-> On 10/12/23 14:17, Uros Bizjak wrote:
+Hi Thorsten,
+
+On Tue, Oct 10, 2023 at 09:08:23AM +0200, Thorsten Leemhuis wrote:
+> On 05.10.23 02:13, Jeffery Miller wrote:
+> > 
+> > On Wed, Oct 4, 2023 at 9:11 AM Dmitry Torokhov
+> > <dmitry.torokhov@gmail.com> wrote:
 > >>
-> >> Are you PIC-adjusting the percpu variables as well?
-> >
-> > After this patch (and after fixing percpu_stable_op to use "a" operand
-> > modifier on GCC), the only *one* remaining absolute reference to
-> > percpu variable remain in xen-head.S, where:
-> >
-> >      movq    $INIT_PER_CPU_VAR(fixed_percpu_data),%rax
-> >
-> > should be changed to use leaq.
-> >
-> > All others should then be (%rip)-relative.
-> >
->
-> I mean, the symbols themselves are relative, not absolute?
+> >> In fact, now that I think about it more, we should rework the original
+> >> patch that added the delay, so that we do not wait these 30 msec in the
+> >> "fast" reconnect handler. It turns out your original approach was
+> >> better, but we should not be using retries, but rather the existing
+> >> reset_delay_ms already defined in rmi platform data. I would appreciate
+> >> if you try the draft patch at the end of this email (to be applied after
+> >> reverting your original one adding the delay in psmouse-smbus.c).
+> > I tested the draft patch and it works. I did revert the previous delay
+> > patch while testing it.
+> > 
+> >> I think we need a similar change in synaptics.c as that one also can
+> >> fall back to PS/2 mode.
+> >>
+> > Ah, good point, yes it does appear this needs to be done as well.
+> > I have tested and will post an new version of the patch to include
+> > the fix in synaptics.c as well.
+> 
+> As I'm affected by this problem (and somebody else reported to me in
+> private to be affected as well) and nothing afaics happened in the past
+> few days a quick question:
+> 
+> What's the way forward here now that -rc6 slowly comes into sight? Apply
+> Jeff's patch to fix my problem? Revert the culprit and fix this properly
+> up with Dmitry's and Jeff's patches in the next cycle? Something else?
 
-The reference to the symbol is relative to the segment register, but
-absolute to the location of the instruction. If the executable changes
-location, then instruction moves around  and reference is not valid
-anymore. (%rip)-relative reference compensate for changed location of
-the instruction.
+I will revert the original patch introducing the delay now that we argee
+there is a better way. In the mean time I will merge Jeff's patch to
+reset fast_reconnect handlers, as it is right thing to do anyway, and
+will get into shape the patch setting reset-delay in RMI code.
 
-Uros.
+Thanks.
+
+-- 
+Dmitry
