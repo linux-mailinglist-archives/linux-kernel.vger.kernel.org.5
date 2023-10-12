@@ -2,70 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA207C788D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26307C788F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442894AbjJLVVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 17:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
+        id S1442890AbjJLVW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 17:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442964AbjJLVVR (ORCPT
+        with ESMTP id S1442934AbjJLVWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 17:21:17 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A429DA9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:21:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4AC3BC433C7;
-        Thu, 12 Oct 2023 21:21:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697145674;
-        bh=JDqDcN35jjlG1aV7JE5yfePTlGTwz3k5XoD8NBK4fxQ=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=GH8w6x4R3rJktOJAld+wSvSMgn9T8jaSuj/+5vo3DABmb6KETDZ+N1CR+2uIWv2fo
-         qhZL1FGubV9RzQ0OKEk94bUOkw9wcd4jIj4cHAgNBFAwwb0RCdBb+Gz993KwGXKusq
-         AGfDXQNCHFVSl6L1iQK73/L++tgh409U9evSorxqAQDQVdpNHT89aijLwQpLyzwgQG
-         NLc2fGTcff0MMwIxc2EApkDW8mbA5vdVaEhg9tM4J6OcNum2+X0s9VkCDxv/RFpykk
-         XQSpl38S8D0UT8bpzwhDcKGLEeM83+NncQCYBdbrF/2OxjeQxmD2qbBcya1z8nKMWw
-         RpKWhTb0+IOag==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 39AD7C595C3;
-        Thu, 12 Oct 2023 21:21:14 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for v6.6-rc6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20231012110443.13091-1-pabeni@redhat.com>
-References: <20231012110443.13091-1-pabeni@redhat.com>
-X-PR-Tracked-List-Id: <netdev.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231012110443.13091-1-pabeni@redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.6-rc6
-X-PR-Tracked-Commit-Id: b91e8403373cab79375a65f5cf3495e2cd0bbdfa
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e8c127b0576660da9195504fe8393fe9da3de9ce
-Message-Id: <169714567422.14457.7076633708395048875.pr-tracker-bot@kernel.org>
-Date:   Thu, 12 Oct 2023 21:21:14 +0000
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 12 Oct 2023 17:22:25 -0400
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68133A9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:22:24 -0700 (PDT)
+Received: from [IPV6:2601:646:9a00:1821:7c45:267e:5aad:82e7] ([IPv6:2601:646:9a00:1821:7c45:267e:5aad:82e7])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 39CLLiXS1851702
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Thu, 12 Oct 2023 14:21:45 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 39CLLiXS1851702
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023091101; t=1697145706;
+        bh=DkV9ockDXHygDK8vfHAm86izvNjg/lx4TtVVSQpgW6s=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=i5vz1mkPWunh4gIMlTKwj14PtENV6wuJHkZSEnXbtAYpjeKZpNxplcosRKlCGMD/1
+         aleLTy5iWUddNvYM0c5UcTyMpiYwRTiTFgNJiEfryIo+vbgKyFl+Pm3PimAGjd8gI0
+         WDdQnAqdwzTB+nSTfm0xZzhKuH3nUD3LE9EhXr7rl+vfKOxjzaLZ7x4ZXaBWJaQoZb
+         ovA92Vc2b7iGm9RUoj43nkptJGKn087njRBmArQKptXO3OP/SIJLVe31PWuHzYv0oe
+         e05dyw10uZbbV4/ttog0qetMzMM2jyfr+LYOa/YtbpVoXtGt+e3t7kykvwtiOj2hnz
+         dtKLDMSJQiIww==
+Message-ID: <5694b2bd-de40-45c0-8b38-ac01bc11798a@zytor.com>
+Date:   Thu, 12 Oct 2023 14:21:39 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/4] Introduce %rip-relative addressing to PER_CPU_VAR
+ macro
+Content-Language: en-US
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+References: <20231012201743.292149-1-ubizjak@gmail.com>
+ <3af8dcec-66ec-4bd4-b7bf-4bc6f5f3c70f@intel.com>
+ <CAFULd4byzHyoz4xM1gL_T1wFkNE-ab8K4upXfPirxM9PdX5JWg@mail.gmail.com>
+ <5722e74b-6fc6-4d6e-be25-069ea6385990@zytor.com>
+ <CAFULd4afhj-kJwneh7wz0sExWqOmPicG4fcfF++_fUMHpoNbXA@mail.gmail.com>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+In-Reply-To: <CAFULd4afhj-kJwneh7wz0sExWqOmPicG4fcfF++_fUMHpoNbXA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 12 Oct 2023 13:04:43 +0200:
+On 10/12/23 14:17, Uros Bizjak wrote:
+>>
+>> Are you PIC-adjusting the percpu variables as well?
+> 
+> After this patch (and after fixing percpu_stable_op to use "a" operand
+> modifier on GCC), the only *one* remaining absolute reference to
+> percpu variable remain in xen-head.S, where:
+> 
+>      movq    $INIT_PER_CPU_VAR(fixed_percpu_data),%rax
+> 
+> should be changed to use leaq.
+> 
+> All others should then be (%rip)-relative.
+> 
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.6-rc6
+I mean, the symbols themselves are relative, not absolute?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e8c127b0576660da9195504fe8393fe9da3de9ce
+	-hpa
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
