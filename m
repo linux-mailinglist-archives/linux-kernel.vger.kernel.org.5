@@ -2,297 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 279CD7C6565
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716D57C6567
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377275AbjJLGXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:23:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
+        id S1377344AbjJLGXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343510AbjJLGXQ (ORCPT
+        with ESMTP id S1347067AbjJLGXS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:23:16 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FFBBA;
-        Wed, 11 Oct 2023 23:23:14 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a7ba0828efso7894707b3.3;
-        Wed, 11 Oct 2023 23:23:14 -0700 (PDT)
+        Thu, 12 Oct 2023 02:23:18 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD7CC0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:23:16 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-406402933edso6562415e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:23:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697091794; x=1697696594; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IleMAKg+GPM4xdNPivF/aSxe53FBWLj6oWJi1m12Mt4=;
-        b=SWD77S6rVHQCriIEd//myP1vy2py+GOk7PbLDOQciq9ygCSRLUMXZdALOufE51XyJo
-         ZOYjhMCivnCFxOHf3ou6uv+xZjYUP3OTYcWISCa1PhQOLC4IjtZswt0HRwxFNKu/dxv2
-         6K8M2eQ1olXXw7a/GvoDgY2cEGxyftmt9RCsyosUPNJ7ERVhZLmbhkohV3ksXyLrteDq
-         M7RaH1NXcpgFpHNv6NUIPTRYgBNHINtmXDNBdbfFQDFCecWil/0zpW5/OezrXaxr1p3J
-         AC4OPlZYa9xsv6X0288NtAlkJpDu5q14ysc8VIT9bdMJKsOjJiOT9UXGieV3kY/SmVuW
-         UStA==
+        d=linaro.org; s=google; t=1697091795; x=1697696595; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4HT79hrObqSxBSC97lY+L6cqBvifnDEa24RG2fZwpdY=;
+        b=Ri3IYuQYEVCX387youuvKmcreNWgZU+DHavhs2BJ0Pg+3cffy4pdCO6XMxjDA5E+jY
+         6LznvxlQx8T2yMCft/ZNUTg0/LhPJteCodfNYrvpqwPiS5XQ32gxrCkScg7CR4jhL0Oa
+         Kfv7D8uRtxTJABeZVwvaAvN58ORCqgyOxtuHJcWx5ahFHoPFlpCyZ/KweiwyZpKaUs5W
+         XzqaF8FV0oq+LFZ3w75wG8A0SAMt6jW+Twl5VKot1tkeADJ4iCOGibbHD2PY1z7d+lxO
+         BAR5BBaGIPRp29mXRpudEFrnpVMdH+IN/AQLT4ZlR4p1aAP5gab8vP3SQlizXzPk3reC
+         9AjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697091794; x=1697696594;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IleMAKg+GPM4xdNPivF/aSxe53FBWLj6oWJi1m12Mt4=;
-        b=hk+PuDX9UHrnjMW8DqEoEk3WnDXw+qd8xqsf6mTaBCoeoqyzVx8Ie+J7nwl415mjxS
-         qtH73uY/v/PUU+I5nbahxRdlNFxim0TCSMeZyhtNbZp/dD5RIxDxYaitvZYAfuETT9vb
-         X6kkC6Y6ZyFEmIrODaxNoGK5y1BtSHuUzNOMGU+Mv1+gvAIJlV88uyJ3yTIKm0kOHnYT
-         5s7lyhtAUqSt5YX8qJMUE2rUsSA2SUHY/OvMsiiaNIi4vMKMoxPNvM6ZR0zk4/3YvuSE
-         sjw4GZU1S2kUHek3JlCPTWpJ1Z7YZuA8P+gt5oIMSABc8gZrNbUCIQknVl1wKsEwfhQb
-         DE2w==
-X-Gm-Message-State: AOJu0Ywpu2X9nKM5p2zHeI6pyOHqVgecmBxSutvo0NEJxFkSHy0Yr/Rt
-        FTkKy63NvL7kgLTuI8fYNau3oAIz0/NeBG+XAQ==
-X-Google-Smtp-Source: AGHT+IFQ353yTk3+nKKDmFe0eALFrWtMyQLeRj2n4iGQUeDFwe81I4FXFCULAILRECxIujY+EIYFG9l/NxXvHPVCpEA=
-X-Received: by 2002:a25:800b:0:b0:d9a:39d9:f4fa with SMTP id
- m11-20020a25800b000000b00d9a39d9f4famr8491995ybk.11.1697091793792; Wed, 11
- Oct 2023 23:23:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697091795; x=1697696595;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4HT79hrObqSxBSC97lY+L6cqBvifnDEa24RG2fZwpdY=;
+        b=NxCUG+ub4rXQ8gLsv2WLFhm3duxuCS+298ulwH4BR9EsHKi9SgkqiuPRQY/0dzA4Lc
+         UmvzjWQJ4PRKtFPwHfEfMC8WWJuVT1axZhxw/3Qi1+Ixr1gdRU4gc4Wg8+kY+Sr52hGE
+         cy58m7tu0U5eLQ1c1/wsksHFWQSdry1eXlsTvdE3fEQ1vPliPgCeMRAAFIOzMNjWbDk3
+         ATt8zyafQXK2CJNp3tC9oPAjv5zbyfI53YFuZtTRiQ4zWLxG8tBTEj2cwrESuz3/yZaY
+         f4sITSX2plHSI6k1OLPeOG+t3A/3ugbh5IRH21Rrfq46NDKkfjpUDa945AOZMCAM8x0r
+         4sUg==
+X-Gm-Message-State: AOJu0YwZfXnwFIvSrG1GAzRNc62vHP81lCNZYhTi+m+niz48oL0fGfse
+        CAXVtV9oZxobANRIP9YJIn14TQ==
+X-Google-Smtp-Source: AGHT+IFKoP5B7w8Y42/s61+wzwot43ZZei6mSsx6r/nkWwL/vfiXecTRrJxnumkImRNM8DZcpqepCw==
+X-Received: by 2002:a05:600c:3652:b0:3fe:d1b9:7ea9 with SMTP id y18-20020a05600c365200b003fed1b97ea9mr19652329wmq.36.1697091795060;
+        Wed, 11 Oct 2023 23:23:15 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id y4-20020a05600c364400b0040472ad9a3dsm18638405wmq.14.2023.10.11.23.23.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 23:23:14 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 09:23:12 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Philipp Hortmann <philipp.g.hortmann@gmail.com>,
+        Arnd Bergmann <arnd@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Jakub Kicinski <kuba@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        "David S . Miller" <davem@davemloft.net>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH] [RFC] wireless: move obsolete drivers to staging
+Message-ID: <428ef899-a5c4-4d93-beea-afd7ab6f6634@kadam.mountain>
+References: <20231010155444.858483-1-arnd@kernel.org>
+ <da777a72-55d1-4ee3-91c8-30afe7659f54@gmail.com>
+ <db98d9ac-7650-4a72-8eb9-4def1f17ea0d@app.fastmail.com>
 MIME-Version: 1.0
-References: <20231009-jmp-into-reserved-fields-v1-1-d8006e2ac1f6@gmail.com>
- <6524f6f77b896_66abc2084d@john.notmuch> <92f824ec-9538-501c-e63e-8483ffe14bad@iogearbox.net>
- <CAEf4Bza2s=JwR8b6d_x+bj5Y7iZ+ZDOMOJRNwcXF1ATWzHCxcA@mail.gmail.com>
- <CACkBjsZiaXTANv=c5QE3OvcB=KUgdFuMY8O4ft4Q3h6dDNVarg@mail.gmail.com> <79dd71a5-446d-9b05-7d37-40e49bbf04ae@iogearbox.net>
-In-Reply-To: <79dd71a5-446d-9b05-7d37-40e49bbf04ae@iogearbox.net>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Thu, 12 Oct 2023 08:23:02 +0200
-Message-ID: <CACkBjsadVpmppbFE8Dp5eym3DK3zFF2ojvvSpTW3b9PsC6CdgA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] Detect jumping to reserved code during check_cfg()
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <db98d9ac-7650-4a72-8eb9-4def1f17ea0d@app.fastmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 4:50=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
-et> wrote:
->
-> On 10/11/23 8:46 AM, Hao Sun wrote:
-> > On Wed, Oct 11, 2023 at 4:42=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >> On Tue, Oct 10, 2023 at 1:33=E2=80=AFAM Daniel Borkmann <daniel@iogear=
-box.net> wrote:
-> >>> On 10/10/23 9:02 AM, John Fastabend wrote:
-> >>>> Hao Sun wrote:
-> >>>>> Currently, we don't check if the branch-taken of a jump is reserved=
- code of
-> >>>>> ld_imm64. Instead, such a issue is captured in check_ld_imm(). The =
-verifier
-> >>>>> gives the following log in such case:
-> >>>>>
-> >>>>> func#0 @0
-> >>>>> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-> >>>>> 0: (18) r4 =3D 0xffff888103436000       ; R4_w=3Dmap_ptr(off=3D0,ks=
-=3D4,vs=3D128,imm=3D0)
-> >>>>> 2: (18) r1 =3D 0x1d                     ; R1_w=3D29
-> >>>>> 4: (55) if r4 !=3D 0x0 goto pc+4        ; R4_w=3Dmap_ptr(off=3D0,ks=
-=3D4,vs=3D128,imm=3D0)
-> >>>>> 5: (1c) w1 -=3D w1                      ; R1_w=3D0
-> >>>>> 6: (18) r5 =3D 0x32                     ; R5_w=3D50
-> >>>>> 8: (56) if w5 !=3D 0xfffffff4 goto pc-2
-> >>>>> mark_precise: frame0: last_idx 8 first_idx 0 subseq_idx -1
-> >>>>> mark_precise: frame0: regs=3Dr5 stack=3D before 6: (18) r5 =3D 0x32
-> >>>>> 7: R5_w=3D50
-> >>>>> 7: BUG_ld_00
-> >>>>> invalid BPF_LD_IMM insn
-> >>>>>
-> >>>>> Here the verifier rejects the program because it thinks insn at 7 i=
-s an
-> >>>>> invalid BPF_LD_IMM, but such a error log is not accurate since the =
-issue
-> >>>>> is jumping to reserved code not because the program contains invali=
-d insn.
-> >>>>> Therefore, make the verifier check the jump target during check_cfg=
-(). For
-> >>>>> the same program, the verifier reports the following log:
-> >>>>
-> >>>> I think we at least would want a test case for this. Also how did yo=
-u create
-> >>>> this case? Is it just something you did manually and noticed a stran=
-ge error?
-> >>>
-> >>> Curious as well.
-> >>>
-> >>> We do have test cases which try to jump into the middle of a double i=
-nsn as can
-> >>> be seen that this patch breaks BPF CI with regards to log mismatch be=
-low (which
-> >>> still needs to be adapted, too). Either way, it probably doesn't hurt=
- to also add
-> >>> the above snippet as a test.
-> >>>
-> >>> Hao, as I understand, the patch here is an usability improvement (not=
- a fix per se)
-> >>> where we reject such cases earlier during cfg check rather than at a =
-later point
-> >>> where we validate ld_imm instruction. Or are there cases you found wh=
-ich were not
-> >>> yet captured via current check_ld_imm()?
-> >>>
-> >>> test_verifier failure log :
-> >>>
-> >>>     #458/u test1 ld_imm64 FAIL
-> >>>     Unexpected verifier log!
-> >>>     EXP: R1 pointer comparison
-> >>>     RES:
-> >>>     FAIL
-> >>>     Unexpected error message!
-> >>>          EXP: R1 pointer comparison
-> >>>          RES: jump to reserved code from insn 0 to 2
-> >>>     verification time 22 usec
-> >>>     stack depth 0
-> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
-tes 0 peak_states 0 mark_read 0
-> >>>
-> >>>     jump to reserved code from insn 0 to 2
-> >>>     verification time 22 usec
-> >>>     stack depth 0
-> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
-tes 0 peak_states 0 mark_read 0
-> >>>     #458/p test1 ld_imm64 FAIL
-> >>>     Unexpected verifier log!
-> >>>     EXP: invalid BPF_LD_IMM insn
-> >>>     RES:
-> >>>     FAIL
-> >>>     Unexpected error message!
-> >>>          EXP: invalid BPF_LD_IMM insn
-> >>>          RES: jump to reserved code from insn 0 to 2
-> >>>     verification time 9 usec
-> >>>     stack depth 0
-> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
-tes 0 peak_states 0 mark_read 0
-> >>>
-> >>>     jump to reserved code from insn 0 to 2
-> >>>     verification time 9 usec
-> >>>     stack depth 0
-> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
-tes 0 peak_states 0 mark_read 0
-> >>>     #459/u test2 ld_imm64 FAIL
-> >>>     Unexpected verifier log!
-> >>>     EXP: R1 pointer comparison
-> >>>     RES:
-> >>>     FAIL
-> >>>     Unexpected error message!
-> >>>          EXP: R1 pointer comparison
-> >>>          RES: jump to reserved code from insn 0 to 2
-> >>>     verification time 11 usec
-> >>>     stack depth 0
-> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
-tes 0 peak_states 0 mark_read 0
-> >>>
-> >>>     jump to reserved code from insn 0 to 2
-> >>>     verification time 11 usec
-> >>>     stack depth 0
-> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
-tes 0 peak_states 0 mark_read 0
-> >>>     #459/p test2 ld_imm64 FAIL
-> >>>     Unexpected verifier log!
-> >>>     EXP: invalid BPF_LD_IMM insn
-> >>>     RES:
-> >>>     FAIL
-> >>>     Unexpected error message!
-> >>>          EXP: invalid BPF_LD_IMM insn
-> >>>          RES: jump to reserved code from insn 0 to 2
-> >>>     verification time 8 usec
-> >>>     stack depth 0
-> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
-tes 0 peak_states 0 mark_read 0
-> >>>
-> >>>     jump to reserved code from insn 0 to 2
-> >>>     verification time 8 usec
-> >>>     stack depth 0
-> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
-tes 0 peak_states 0 mark_read 0
-> >>>     #460/u test3 ld_imm64 OK
-> >>>
-> >>>>> func#0 @0
-> >>>>> jump to reserved code from insn 8 to 7
-> >>>>>
-> >>>>> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
-> >>>
-> >>> nit: This needs to be before the "---" line.
-> >>>
-> >>>>> ---
-> >>>>>    kernel/bpf/verifier.c | 7 +++++++
-> >>>>>    1 file changed, 7 insertions(+)
-> >>>>>
-> >>>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> >>>>> index eed7350e15f4..725ac0b464cf 100644
-> >>>>> --- a/kernel/bpf/verifier.c
-> >>>>> +++ b/kernel/bpf/verifier.c
-> >>>>> @@ -14980,6 +14980,7 @@ static int push_insn(int t, int w, int e, s=
-truct bpf_verifier_env *env,
-> >>>>>    {
-> >>>>>       int *insn_stack =3D env->cfg.insn_stack;
-> >>>>>       int *insn_state =3D env->cfg.insn_state;
-> >>>>> +    struct bpf_insn *insns =3D env->prog->insnsi;
-> >>>>>
-> >>>>>       if (e =3D=3D FALLTHROUGH && insn_state[t] >=3D (DISCOVERED | =
-FALLTHROUGH))
-> >>>>>               return DONE_EXPLORING;
-> >>>>> @@ -14993,6 +14994,12 @@ static int push_insn(int t, int w, int e, =
-struct bpf_verifier_env *env,
-> >>>>>               return -EINVAL;
-> >>>>>       }
-> >>>>>
-> >>>>> +    if (e =3D=3D BRANCH && insns[w].code =3D=3D 0) {
-> >>>>> +            verbose_linfo(env, t, "%d", t);
-> >>>>> +            verbose(env, "jump to reserved code from insn %d to %d=
-\n", t, w);
-> >>>>> +            return -EINVAL;
-> >>>>> +    }
-> >>>
-> >>> Other than that, lgtm.
-> >>
-> >> We do rely quite a lot on verifier not complaining eagerly about some
-> >> potentially invalid instructions if it's provable that some portion of
-> >> the code won't ever be reached (think using .rodata variables for
-> >> feature gating, poisoning intructions due to failed CO-RE relocation,
-> >> which libbpf does actively, except it's using a call to non-existing
-> >> helper). As such, check_cfg() is a wrong place to do such validity
-> >> checks because some of the branches might never be run and validated
-> >> in practice.
+On Wed, Oct 11, 2023 at 10:22:32PM +0200, Arnd Bergmann wrote:
+> On Wed, Oct 11, 2023, at 20:13, Philipp Hortmann wrote:
+> > On 10/10/23 17:27, Arnd Bergmann wrote:
+> >> From: Arnd Bergmann <arnd@arndb.de> While looking at the old drivers 
+> >> using the obsolete .ndo_do_ioctl() callback, I found a number of network 
+> >> drivers that are especially obsolete, in particular for 802.11b 
+> >> (11Mbit/s) or even older wireless networks, using non-busmaster 
+> >> ISA/PCMCIA style bus interfaces, and using the legacy wireless extension 
+> >> ioctls rather than the netlink interfaces that were meant to replace 
+> >> them in 2007. All of these drivers are obsolete or orphaned. We had 
+> >> previously discussed this topic, but nobody ever moved the files, so I 
+> >> now went through the list to my best knowledge. These are the drivers 
+> >> that I would classify as "probably unused" by now:
 > >
-> > Don't really agree. Jump to the middle of ld_imm64 is just like jumping
-> > out of bounds, both break the CFG integrity immediately. For those
-> > apparently incorrect  jumps, rejecting early makes everything simple;
-> > otherwise, we probably need some rewrite in the end.
->
-> Could you elaborate on the 'breaking CFG integrity immediately'? This was
-> what I was trying to gather earlier with log improvement vs actual fix.
->
-> Do you mean /potentially/ breaking CFG integrity, if, say, we had a doubl=
-e
-> insn jump in future and there is a back-jump to the 2nd part of the insn?
->
+> > I found a USB WLAN Stick with a rtl8192u. I got it last Saturday and 
+> > found out that the firmware is missing in my ubuntu 20.04. I found it on 
+> > the web and fixed it. When I started the driver my computer crashed. The 
+> > missing part was: priv->priv_wq = alloc_workqueue("priv_wq", 0, 0); 
+> > Fixing this the next error was a network = kzalloc(sizeof(*network), 
+> > GFP_KERNEL); in wrong context with leads to a crash of my computer. 
+> > Fixing this leads to another issue which lets my computer crash.
+> >
+> > For me the firmware of rtl8192u was intentionally missing because of the 
+> > issues with the driver.
+> >
+> > What this has to do with your question?
+> > Can we check for missing firmware in main distributions to know which 
+> > drivers are considered to be old and unused?
+> 
+> Nice, thanks so much for testing.
+> 
+> I see the two bugs were introduced in 2016 by commit 1761a85c3bed3
+> ("staging: rtl8192u: Remove create_workqueue()")
 
-I mean jumping to the middle of ld_imm64 is similar to jumping out-of-bound=
-,
-both are CFG-related issues and can be handled early in one place.
+This one never made it to lore...  I think we wouldn't have merged it
+without a lore review these days.  (There was a lot of moaning and
+complaining at the time).
 
-For the case you mentioned, the current code would handle such an issue in
-check_ld_imm64(), and again gives "BAD_LD_IMM" log, which is strange.
+> and in 2021 by
+> commit 061e390b7c87f ("staging: rtl8192u: ieee80211_softmac: Move a
+> large data struct onto the heap"), so it's been broken for a while.
 
-> > Also, as you mentioned, libbpf relies on non-existing helpers, not jump
-> > to the middle of ld_imm64. It seems better and easier to not leave this
-> > hole.
->
-> Thanks,
-> Daniel
+:/  No way would I have seen this in review.  Smatch is supposed to find
+some of these "sleeping in invalid context" warnings but the sleeping in
+IRQ stuff doesn't work and hasn't been released.
+
+regards,
+dan carpenter
+
