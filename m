@@ -2,108 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D8A7C7A41
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1E17C7A45
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443065AbjJLXNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 19:13:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
+        id S1443075AbjJLXQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 19:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443006AbjJLXNv (ORCPT
+        with ESMTP id S1443006AbjJLXQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 19:13:51 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0713BE;
-        Thu, 12 Oct 2023 16:13:49 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4065dea9a33so15915675e9.3;
-        Thu, 12 Oct 2023 16:13:49 -0700 (PDT)
+        Thu, 12 Oct 2023 19:16:06 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D933BA9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:16:04 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-690b7cb71aeso1140653b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:16:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697152428; x=1697757228; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=48dvFZRTefM8O03FzXiZwqBq4Rp1+Jq3fws313orleY=;
-        b=BRVEpW1IpP/e2XpHZNezKQUBEp5UoIYqAWy15iKGAOSnuJjekS2rvHsyghNcbmTDn0
-         q7S29GW3SCvoxrWfCF6RiEfJkgi3IHoOLaFZ6X2eIRijjQLZkREgGPh8r6EhkUjl4NXk
-         9GkEfn1a4AMLKqX0Re5hoLXlOqgxgXisczfbBxxhlSK5rAwZZm8Z4d9PLharpR4r3V/4
-         3oDffREU257+QQSZMjB18Q/VUXc2tj5o5VYYShTZrBhu90ySZnLpv+vIur+G7EPtETtw
-         IaVbPeYNyvSTFYcQeokb3XjTHXoqr1cOLhaA+Kjy0xQYI2F0NSuUzVNwBjOoISYt5CRY
-         Gd2w==
+        d=gmail.com; s=20230601; t=1697152564; x=1697757364; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=pH+QiaOpiodhML+ziwBZXDsGTkmJ8Um8VRUGUcj7OpE=;
+        b=AzlaMWoR1ee9Nm39y76CDwz6AH+QD8Xt2nuDg5CSu8mAAYAS+fYnJdhKg27SvPP0Lg
+         pda63qU/jOiOSj0RIbluNZBmojRdeY7S/Z5GYupLfGzrQkIKpxujfjV6y923W+J4toKD
+         LADaQSipY0KbusK8xM+FteRh9Srt6ysKRkLMjgb/g+cblz/Hobo/TzLiEfEy9ezstQBk
+         qAtw/nhnTp/Z+x91cFV2dz8RV1xnpP+tOnLGjfkEvGdZVTNIUihx1i91keH3k1e76ETV
+         pCzaPX12WcgxgrH7P0ncgd3lFONRftbrbbj7VeJtYIxloiDUj8Z7gjO6Fv8mxsmMVIJw
+         N37g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697152428; x=1697757228;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=48dvFZRTefM8O03FzXiZwqBq4Rp1+Jq3fws313orleY=;
-        b=VgANYPGxLIXc0h3ch6Ycd/uKoFeAD5K2Z5aTboXqMUTSUy9SpyOE4PSeya24d25DE9
-         W+IpuuKxgV77ZiyoPMVo1+5Q+sUeGOOz1H/QZoz4xaNZzehP0NJJkUVpJF6hBhMMSz0L
-         DOP05wNSCSp0MtUd7tuQIZHpI1aQXmrt91QTNsnredbegOihQu7F0/auPR8yQYNCSh+7
-         B3OOebHhxTZefhZWCf+jwQeN9xEV1QlLthNvMWBPa75i8HFFobKeqlwrUzsjMjdByvuo
-         K00JI3kGhN2m/iAbofaWWSJWLjSV2Tu6AY0kg6ZZZUpTvxRWcJNfV7YnRcap4xcUbcJW
-         QzJg==
-X-Gm-Message-State: AOJu0YxjLi2j/GLQCqfSQ3hahfuSJcAqKyDSYOO8OiXEYNI7Yet7pBt+
-        lQIs8qpWTHweXxywmtpcaPU=
-X-Google-Smtp-Source: AGHT+IGBUMaFK3LiMFWR80pLieooWigl/OTlu2OYaxnwSpHw4sL9/u+s4/Uv23lgFjI/WbrN7eyM3Q==
-X-Received: by 2002:a1c:f709:0:b0:405:3b1f:9691 with SMTP id v9-20020a1cf709000000b004053b1f9691mr23327485wmh.11.1697152427949;
-        Thu, 12 Oct 2023 16:13:47 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id y4-20020a1c4b04000000b004075d5664basm979269wma.8.2023.10.12.16.13.47
+        d=1e100.net; s=20230601; t=1697152564; x=1697757364;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pH+QiaOpiodhML+ziwBZXDsGTkmJ8Um8VRUGUcj7OpE=;
+        b=XzHWkAeUccJzTkBbYhPfVUHoZJCZgTs661quxV9p/hNPECldIy3OTmSs2I/njUnYSB
+         VUzODynkGf/0xIQ07Oi5TNDYYNTb52k5d/ZlB2wQTrIKMX7xff9tVNQpZUcXmDU6PNdO
+         s7vh8czHXufYcaEd2D8SUd14EGX5opWR0nTOYN9YtE9q2l0riSgiYRwZ1n9HTAn1q3Da
+         A1elVZi4txQkYQ1Wml585pq/taWWsy62YnH7/dPaGFlTAPTVR6P42kSTJOtNZU1jb6Hf
+         CeXsBmQg3lHZpvwFoJ+/r5YYLxhUfDziUG8pC9MVulCedOVAmsCV2xZbrqr++eplM8t4
+         MB8A==
+X-Gm-Message-State: AOJu0Yx1QNa4w/B1MqoLJpluPu7koGTNR6Fls1H3C1dXq801HS3Fanoe
+        IGAUd30LaqG+byhAylrjqgg=
+X-Google-Smtp-Source: AGHT+IGWNM9HxyjKjEjKXLUp5t+0TS2LwspKsRp0pAtYtEaj1A0Nh8DQxXN2IsD0JhotBS2YQgTViA==
+X-Received: by 2002:a05:6a00:2d98:b0:68e:3616:604a with SMTP id fb24-20020a056a002d9800b0068e3616604amr34034272pfb.8.1697152564146;
+        Thu, 12 Oct 2023 16:16:04 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id u5-20020aa78385000000b0068620bee456sm12292131pfm.209.2023.10.12.16.16.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 16:13:47 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 02:13:45 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Stephen Hemminger <stephen@networkplumber.org>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "open list:ARM/Mediatek SoC support" <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH net-next v2 2/2] net: dsa: Rename IFLA_DSA_MASTER to
- IFLA_DSA_CONDUIT
-Message-ID: <20231012231345.3thxxxhe7pxs5bib@skbuf>
-References: <20231011222026.4181654-1-florian.fainelli@broadcom.com>
- <20231011222026.4181654-3-florian.fainelli@broadcom.com>
- <20231011163003.32036b28@hermes.local>
+        Thu, 12 Oct 2023 16:16:03 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 12 Oct 2023 13:16:02 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Workqueue fixes for v6.6-rc5
+Message-ID: <ZSh-Mjmquc6wAw9B@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231011163003.32036b28@hermes.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 04:30:03PM -0700, Stephen Hemminger wrote:
-> I don't know if it would be acceptable in the kernel UAPI but what
-> we did in DPDK for similar situation to cause warning on use of deprecated value.
-> 
-> /**
->  *  Macro to mark macros and defines scheduled for removal
->  */
-> #if defined(RTE_CC_GCC) || defined(RTE_CC_CLANG)
-> #define RTE_PRAGMA(x)  _Pragma(#x)
-> #define RTE_PRAGMA_WARNING(w) RTE_PRAGMA(GCC warning #w)
-> #define RTE_DEPRECATED(x)  RTE_PRAGMA_WARNING(#x is deprecated)
-> #else
-> #define RTE_DEPRECATED(x)
-> #endif
-> 
-> ...
-> #define RTE_DEV_WHITELISTED \
-> 	RTE_DEPRECATED(RTE_DEV_WHITELISTED) RTE_DEV_ALLOWED
-> #define RTE_DEV_BLACKLISTED \
-> 	RTE_DEPRECATED(RTE_DEV_BLACKLISTED) RTE_DEV_BLOCKED
+The following changes since commit dd64c873ed11cdae340be06dcd2364870fd3e4fc:
 
-What precedent exists in terms of intentionally breaking kernel headers?
-If none, would this create one?
+  workqueue: Fix missed pwq_release_worker creation in wq_cpu_intensive_thresh_init() (2023-09-18 08:50:31 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git/ tags/wq-for-6.6-rc5-fixes
+
+for you to fetch changes up to 5d9c7a1e3e8e18db8e10c546de648cda2a57be52:
+
+  workqueue: fix -Wformat-truncation in create_worker (2023-10-12 09:53:40 -1000)
+
+----------------------------------------------------------------
+workqueue: Fixes for v6.6-rc5
+
+* Fix access-after-free in pwq allocation error path.
+
+* Implicitly ordered unbound workqueues should lose the implicit ordering if
+  an attribute change which isn't compatible with ordered operation is
+  requested. However, attribute changes requested through the sysfs
+  interface weren't doing that leaving no way to override the implicit
+  ordering through the sysfs interface. Fix it.
+
+* Other doc and misc updates.
+
+----------------------------------------------------------------
+Lucy Mielke (1):
+      workqueue: fix -Wformat-truncation in create_worker
+
+Waiman Long (1):
+      workqueue: Override implicit ordered attribute in workqueue_apply_unbound_cpumask()
+
+WangJinchao (1):
+      workqueue: doc: Fix function and sysfs path errors
+
+Zqiang (2):
+      workqueue: Fix UAF report by KASAN in pwq_release_workfn()
+      workqueue: Use the kmem_cache_free() instead of kfree() to release pwq
+
+ Documentation/core-api/workqueue.rst               |  4 ++--
+ .../translations/zh_CN/core-api/workqueue.rst      |  2 +-
+ kernel/workqueue.c                                 | 24 +++++++++++++++++-----
+ 3 files changed, 22 insertions(+), 8 deletions(-)
+
+-- 
+tejun
