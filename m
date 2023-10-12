@@ -2,143 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 302397C77E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91627C77E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442502AbjJLU2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 16:28:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53712 "EHLO
+        id S1442679AbjJLUca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 16:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344157AbjJLU2h (ORCPT
+        with ESMTP id S1344046AbjJLUc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 16:28:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B17BBB
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:27:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697142469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h7MhDUaGiq9G+tWNP9KfebmzehEOtMMS/KoW8Kay4rM=;
-        b=QNbsvZ8MWUywCkgbVC/z3FIIRIcdufibpNRS4hicmzY91FFgp2Xr5O1TKadN89wiKRltSO
-        xgMX/FkU1659ZJxSv5ByDlq3AIS+nbb9scUKXOilRIQWo7ycPa101pBc4TWc7TdYkSuRyv
-        qKhspXcusTVDgwV3Pc/xnGgRwy4g0Co=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-435-XSZmanjfMlqcjcYxFp8jEA-1; Thu, 12 Oct 2023 16:27:47 -0400
-X-MC-Unique: XSZmanjfMlqcjcYxFp8jEA-1
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-59c09bcf078so21740057b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:27:47 -0700 (PDT)
+        Thu, 12 Oct 2023 16:32:28 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936E9BE;
+        Thu, 12 Oct 2023 13:32:26 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a7c08b7744so17121707b3.3;
+        Thu, 12 Oct 2023 13:32:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697142746; x=1697747546; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Cm/AgXb2pZX2bhYC2JHhdS0bLLkwtZFpfedsIjsGaxo=;
+        b=cL9/sn0t9eOihbG1agUbr/zv1Zjp6ue4q77quXg/X2JJpSwfsrqtm39fA7wIvW6L1V
+         9PBBpBfqcWKR0A92t9ssREy7SsHejx9rKnszq7F5T1uveKi0QIkbrW9/0pJbzgwJlkf9
+         X7qyh2z1UibiESsIu7MXru5bqN/SrG26vnEd44994PeZyH0pBQLUpq7oeynf6pr+/Iob
+         3FhbWeVO2ICcY1y5UdeFXHTa2Vk81zyb31lyZXBQctZRqj5cNlv0l9xa2BKzADGq5fX2
+         2LfZUWiX47SMswiGyAlP2y9RJnCmiB8izYbPRNL+s7cxBOe2ynkl/4AOIqL3DVSRJAEq
+         vkXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697142467; x=1697747267;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h7MhDUaGiq9G+tWNP9KfebmzehEOtMMS/KoW8Kay4rM=;
-        b=HG1o8QyBM/uY/rm1KHarGuCRWa7bU3oe4xDicXkIJzgZfQo8AAStiU24eKoekxFAK0
-         CLmUIWlrjmtnu49TMRAp66Qq/oPszZ+e/n8z+sXrAZclFH9DCrC6cqCX0JvEJHYFHV6S
-         98EnV9BDZ1/J4yeRIZTyTfu1LwwJA7yYAdWbKGrAnOm9X6lqsMz6IHyguVdbb0kJhHwX
-         wJKZcV9pdDQmiA8erfpuvBe7suo5yvr96lkTwaeCJuIL+2lex96WLIW9b17t4WznzGMY
-         cG22sXFXSETagXeewn0ZvUrxYZfGb58qHTZbV8NZ9lT/ych1JmfaEOP+6k2VnMk8M2jF
-         QgZw==
-X-Gm-Message-State: AOJu0YzB8kfpBPHctrFHjFFFN84rmWF5eW4floOl0cF5W5fh1lqBzq3E
-        xeRNVeOVvkPNdwy0XnIuOdhlLCM508/6Xmxezepjv63+tcEDpOjZMsEXbWlc18B83oHr7f/bsNe
-        Iau0SZlqDxle7kzC8Jz6mqWr24bJm04IU
-X-Received: by 2002:a25:2109:0:b0:d90:a7a4:7093 with SMTP id h9-20020a252109000000b00d90a7a47093mr22970357ybh.55.1697142466872;
-        Thu, 12 Oct 2023 13:27:46 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFVZ5AlehRoD4uy/fEcf9fxDTMrdIb0t8hzbkAHLfVUYwOfQMOlVAmfNUNBfHCGsp/kHBKgMA==
-X-Received: by 2002:a25:2109:0:b0:d90:a7a4:7093 with SMTP id h9-20020a252109000000b00d90a7a47093mr22970345ybh.55.1697142466567;
-        Thu, 12 Oct 2023 13:27:46 -0700 (PDT)
-Received: from ?IPv6:2600:4040:5c6c:a300::feb? ([2600:4040:5c6c:a300::feb])
-        by smtp.gmail.com with ESMTPSA id dl15-20020ad44e0f000000b0066d1540f9ecsm69669qvb.77.2023.10.12.13.27.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 13:27:45 -0700 (PDT)
-Message-ID: <bd20306461d67f1c6aaadb3fe6a3d596fc70e13e.camel@redhat.com>
-Subject: Re: [PATCH] drm/nouveau/disp: fix DP capable DSM connectors
-From:   Lyude Paul <lyude@redhat.com>
-To:     Karol Herbst <kherbst@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        stable@vger.kernel.org
-Date:   Thu, 12 Oct 2023 16:27:38 -0400
-In-Reply-To: <20231011114134.861818-1-kherbst@redhat.com>
-References: <20231011114134.861818-1-kherbst@redhat.com>
-Organization: Red Hat Inc.
+        d=1e100.net; s=20230601; t=1697142746; x=1697747546;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Cm/AgXb2pZX2bhYC2JHhdS0bLLkwtZFpfedsIjsGaxo=;
+        b=j41ughAjc2VwPAqfUzxQTaXjiIgU5baVChN9GUH756aPnqFiK/kIlqfh4/paQYVC1A
+         cq7nWLkdNW1ljOOG38+uM6ybi66inu0lwai74AZWW2ZtfxMWcXxNCQyYDDe+E0w15hL2
+         jIaUaAeORJYsVLl6S9opaFm8EcQ1YTI9IEsfTuR8FsK17S4FNZHt2kYG9UjXWczs2TQ1
+         0egkdAk0OCuojrOgGxJA2H1JlWX8aU5I2crouxY58mB9pv9M1tgyqYwmtdxoTZdXOBqy
+         WRlISBghXAHkt6vIX02ZIMZhbi/OvrlamalMcE9PfBC4t5eXwNonavzDCe0ywO0b2bVg
+         HpZg==
+X-Gm-Message-State: AOJu0YyvKbkCHlVyEXf9iLKmlDTMFMYzntmbwMk3cQIRdqjzznfOS6wo
+        TIbkCoabtZncH9qYTQCOrOsn/VZuOLzOjt92vTE=
+X-Google-Smtp-Source: AGHT+IHD0CrLdMGFNY3S67LMzgZgXb1f19I7/6TOigdCU28sHoSDLNP7bYc/AFFnRT0U0CZM/hzViQ0xuFqvTOJrbnk=
+X-Received: by 2002:a0d:e284:0:b0:5a7:baae:329f with SMTP id
+ l126-20020a0de284000000b005a7baae329fmr10012845ywe.15.1697142745697; Thu, 12
+ Oct 2023 13:32:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231009224347.2076221-1-mmaurer@google.com> <CALNs47vtnOfUarrH8qiJAZpp6bs1jjcsMyb3-A2Gy9YiaDFVEw@mail.gmail.com>
+In-Reply-To: <CALNs47vtnOfUarrH8qiJAZpp6bs1jjcsMyb3-A2Gy9YiaDFVEw@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 12 Oct 2023 22:32:14 +0200
+Message-ID: <CANiq72n4bwMn6HCNGm4iNPSsV4W83fh7yH+bKv+a9GKPBWuSsA@mail.gmail.com>
+Subject: Re: [PATCH] x86: Enable IBT in Rust if enabled in C
+To:     Trevor Gross <tmgross@umich.edu>
+Cc:     Matthew Maurer <mmaurer@google.com>, peterz@infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
+        Antoni Boucher <bouanto@zoho.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Lyude Paul <lyude@redhat.com>
+On Thu, Oct 12, 2023 at 10:13=E2=80=AFPM Trevor Gross <tmgross@umich.edu> w=
+rote:
+>
+> I have not tested this, but is it possible to enable these options via
+> `-Cllvm-args=3D...` instead of using the unstable flags?
 
-On Wed, 2023-10-11 at 13:41 +0200, Karol Herbst wrote:
-> Just special case DP DSM connectors until we properly figure out how to
-> deal with this.
->=20
-> This resolves user regressions on GPUs with such connectors without
-> reverting the original fix.
->=20
-> Cc: Lyude Paul <lyude@redhat.com>
-> Cc: stable@vger.kernel.org # 6.4+
-> Closes: https://gitlab.freedesktop.org/drm/nouveau/-/issues/255
-> Fixes: 2b5d1c29f6c4 ("drm/nouveau/disp: PIOR DP uses GPIO for HPD, not PM=
-GR AUX interrupts")
-> Signed-off-by: Karol Herbst <kherbst@redhat.com>
-> ---
->  drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c b/drivers/g=
-pu/drm/nouveau/nvkm/engine/disp/uconn.c
-> index 46b057fe1412e..3249e5c1c8930 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
-> @@ -62,6 +62,18 @@ nvkm_uconn_uevent_gpio(struct nvkm_object *object, u64=
- token, u32 bits)
->  	return object->client->event(token, &args, sizeof(args.v0));
->  }
-> =20
-> +static bool
-> +nvkm_connector_is_dp_dms(u8 type)
-> +{
-> +	switch (type) {
-> +	case DCB_CONNECTOR_DMS59_DP0:
-> +	case DCB_CONNECTOR_DMS59_DP1:
-> +		return true;
-> +	default:
-> +		return false;
-> +	}
-> +}
-> +
->  static int
->  nvkm_uconn_uevent(struct nvkm_object *object, void *argv, u32 argc, stru=
-ct nvkm_uevent *uevent)
->  {
-> @@ -101,7 +113,7 @@ nvkm_uconn_uevent(struct nvkm_object *object, void *a=
-rgv, u32 argc, struct nvkm_
->  	if (args->v0.types & NVIF_CONN_EVENT_V0_UNPLUG) bits |=3D NVKM_GPIO_LO;
->  	if (args->v0.types & NVIF_CONN_EVENT_V0_IRQ) {
->  		/* TODO: support DP IRQ on ANX9805 and remove this hack. */
-> -		if (!outp->info.location)
-> +		if (!outp->info.location && !nvkm_connector_is_dp_dms(conn->info.type)=
-)
->  			return -EINVAL;
->  	}
-> =20
+We probably want to use the "real" flag eventually instead of
+`-Cllvm-args`, right? So we would need to change it anyhow. And using
+the `-Z` one means we test the "real" flag already.
 
---=20
+Well, unless `-Cllvm-args` becomes the "official" way to enable this,
+like you suggest in the Zulip, but should that really happen? e.g.
+should not there be a generic flag for all backends for things like
+these?
+
+> If so, I think this would be preferred in case the exact flags change
+> before they become stable. It sounds like they are likely to change,
+> see [1].
+
+That is fine, they will change anyway from `-Z` to `-C`, so having to
+update those is expected.
+
+> If not, no big deal since it would just need an update at a rust version =
+bump.
+
+Yeah, I don't think it is a big deal, and the version bump looks like
+the best commit to put the change, in fact.
+
+It is true, though, that these ones in particular are conditionally
+enabled, so there is a slightly higher risk of forgetting about them.
+But that is why we should get more `Tested-by`s! :)
+
 Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
-
+Miguel
