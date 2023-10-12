@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E767C779E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64D87C77A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442583AbjJLUHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 16:07:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45020 "EHLO
+        id S1442704AbjJLUHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 16:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442334AbjJLUHN (ORCPT
+        with ESMTP id S1442668AbjJLUHO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 16:07:13 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1C5B7;
-        Thu, 12 Oct 2023 13:07:12 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso1262414f8f.0;
-        Thu, 12 Oct 2023 13:07:12 -0700 (PDT)
+        Thu, 12 Oct 2023 16:07:14 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84990BB;
+        Thu, 12 Oct 2023 13:07:13 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-406609df1a6so14879555e9.3;
+        Thu, 12 Oct 2023 13:07:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697141230; x=1697746030; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1xCOduBz/pz5cH3mJwiI6SospsATx+ZFrNIHPNWJgoE=;
-        b=W2mlha4WruLckDMV3dJi6+fvltWu+NujxWZ/10ilyt1WjsU2KjmIIfq+8k48g5zfP4
-         HOult6+1rTFw098h5u/ZkrpO5WLJqwp4jUn1dOGfqxiYfNX3z1x08nbz6qUaE1fi3ueH
-         RGSKucW3TGn0c+LznfRbU/mwZpZrRMKDzrmnu5obSCF2wt1opSicRMPfXs+2h5a8+psf
-         tdnBwBPWKnP7xjKpHpdfsUmaQ6queedT0ioCj6oRg0yJERHY32xgMZgU1tS7ZmAPseBK
-         EID31HARjWLMJfr5TlUDi5vc6YgEJRLyIFIgV35dD9um1N5/yCXh6YmfePSIqEplqf/d
-         CRUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697141230; x=1697746030;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1697141231; x=1697746031; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=1xCOduBz/pz5cH3mJwiI6SospsATx+ZFrNIHPNWJgoE=;
-        b=LjYjJFmZbi0d6Kl5jeiZIylStdT6lkP8Yr/r0JRyb5iQ97LtherwIa7u/UcfBcQajK
-         0Gg2teRBz2yBRKG0mfFddA8tRGvQadWm6p0a66HFw8F1Z/jy4kKlf+0/qvQClmLw3gSS
-         /un3UU2OXLSSF3Iy2ZxG3hoF+yCqgZWDTtq3JshzH8UkoL7SwAA9urlteQKP50AgBrUl
-         3wc9CRu89QjX5TbE8HEokYy/LIU6v7jRaL3dzAikib7WbIAd0e6CzaaNPsY+zbRKsPhB
-         j3wXkZu5OzEBz+6xpcO0OI9UZGwGJ3AUuz5K+Albo2rPH2RclGwRXu8GZHH2SK2Thirn
-         EjMA==
-X-Gm-Message-State: AOJu0Yzttked5wN3FASQ+jxHmPs+3DiteiCoMZU6F46OmdZ7JsXVBOV/
-        KgM7UPS+IlOlCt3ijINQ4pH6d9C+3AcUSw==
-X-Google-Smtp-Source: AGHT+IEZe96pcnP4a4k4PRw1PWd2Q4OxEqRFn2Ow585JQckWn4radON9CUrU4pjYlxQagFlEudYDhg==
-X-Received: by 2002:a5d:504e:0:b0:320:bbb:5ab1 with SMTP id h14-20020a5d504e000000b003200bbb5ab1mr21901622wrt.14.1697141230316;
-        Thu, 12 Oct 2023 13:07:10 -0700 (PDT)
+        bh=SBn3G0nuwV1PB65M5Moci3sn5s/1LPXofHRirIrGVQ4=;
+        b=QSkhqgUq7i8qbXWEOQCZkMJV+xvZRIZX5SGurRWcrvA7EHxcSpm90TvjlmP88mk9iF
+         WBkTwx0brfwgsbVqeYbnuGd17V5b+NwtlR+QU5ovA1XTmD7RJlyofFAFSaK13MeKYnjv
+         OFxxkDuZeMjv6uGwYOPwSNLUhDzBGbJM5Pf2dMS4EOZqhqSqrMuLc3RgBQNKAPoJwovm
+         J+0u6CfmI3+9FGisMRN8F00M9tWXwWGykomwIvxjU8n4C8Dz3zn+jCMYBTETO8gzDvgz
+         NJtJerKoCm8YAfbSgw0i6fHmzxFMUWKaTd/PkoUYmAyLPpOomJeUjpJSuiNf0liuX/j4
+         Xm6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697141231; x=1697746031;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SBn3G0nuwV1PB65M5Moci3sn5s/1LPXofHRirIrGVQ4=;
+        b=neKuV2PBQU3vfuIGu5CnHjHiejC+NHnZU7FjFQqyFUKc3Gai9mc8r2DY9GK92PbhOF
+         iDFdhOcoiWxjz8ecJRAo30XFDDRufwCMGWZd24kzav3LsTB7iWlMLhgQDRQRjCSQsJ8y
+         21BKiEvyDVOLOUazOQo8+bKIqIT9h2/DQ5wdiIuUmW9IRqfxyfcAhIiAQbn1Dokddq5q
+         CGMZhpugcxDZcAqVuDy83j7qFtZQBourNcVrfzsMLj4excsA7cIh9B41r2umQJ7rZsUw
+         FvjO99E/3U4z/EOB5nxNq1zEAJR9YMtmeN8ZExzEhdEc0jCShz5/KxyDY9KYUtgftEOn
+         kLzA==
+X-Gm-Message-State: AOJu0YybixF6wgR4ROO2daxaZbNzzNiZuRQ4xKD+M9Pt1z5CKdeNn/2G
+        2NhKlYVb4PXhhrLw6h1Xo8gCMwbw+fUHMw==
+X-Google-Smtp-Source: AGHT+IEkhXzryuY0B6dDNUakczzgqaK8IrqHAVO0JxD4mt/UhUN+kiYC9cWnw8FE1njv/Cjjfl8iTg==
+X-Received: by 2002:a05:600c:21d0:b0:405:3a3b:2aa2 with SMTP id x16-20020a05600c21d000b004053a3b2aa2mr21670636wmj.37.1697141231587;
+        Thu, 12 Oct 2023 13:07:11 -0700 (PDT)
 Received: from [127.0.1.1] (2a02-8389-41cf-e200-de42-73c9-6d1f-dd27.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:de42:73c9:6d1f:dd27])
-        by smtp.gmail.com with ESMTPSA id p7-20020a056000018700b003217cbab88bsm182093wrx.16.2023.10.12.13.07.09
+        by smtp.gmail.com with ESMTPSA id p7-20020a056000018700b003217cbab88bsm182093wrx.16.2023.10.12.13.07.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 13:07:09 -0700 (PDT)
+        Thu, 12 Oct 2023 13:07:11 -0700 (PDT)
 From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Subject: [PATCH 0/2] iio: Add device tree support for silabs,si7005
-Date:   Thu, 12 Oct 2023 22:07:06 +0200
-Message-Id: <20231012-topic-si7005_devicetree-v1-0-6c8a6fa7b3ec@gmail.com>
+Date:   Thu, 12 Oct 2023 22:07:07 +0200
+Subject: [PATCH 1/2] iio: si7005: Add device tree support
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAOpRKGUC/x3N0QrCMAyF4VcZuTbQ1NmJryJD2i66XNiNpIgw9
- u52Xv4cPs4GxipscOs2UP6IyVJa0KmDPMfyYpSpNXjnz+TIY11WyWgyOHd5TE1krsqMoe9ToBQ
- 8DVdoOkVjTBpLng//jlZZj2FVfsr3f3kf9/0HUXUh/IIAAAA=
+Message-Id: <20231012-topic-si7005_devicetree-v1-1-6c8a6fa7b3ec@gmail.com>
+References: <20231012-topic-si7005_devicetree-v1-0-6c8a6fa7b3ec@gmail.com>
+In-Reply-To: <20231012-topic-si7005_devicetree-v1-0-6c8a6fa7b3ec@gmail.com>
 To:     Jonathan Cameron <jic23@kernel.org>,
         Lars-Peter Clausen <lars@metafoo.de>,
         Rob Herring <robh+dt@kernel.org>,
@@ -68,11 +68,11 @@ Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
         Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
         Javier Carrasco <javier.carrasco.cruz@gmail.com>
 X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697141229; l=693;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697141229; l=909;
  i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=m6qssN5Y0InXKNIH3UDlmn4+X06e5NK1jM+4JnsYg0I=;
- b=uEIIm5xWxyJt5mqgpLpD1K4LgBG3iC0jNIAaMYaJ8sEAsVBJzDu/jgCkfljV8+QPEoZ1ShG6z
- Gv+DJcBwG/pA/4/kvfRMMQ0eD/0q4aya2Ow/a42+47cBgXFFZVDlnO5
+ bh=aeSCiAYO0RYYWNlf/LcMpE5mp3Kcd3T3YEwutYopSek=;
+ b=tbw7jQAKEHNLisGF9BF1nVxEGCtfiT1Mbh+tw9OAww90loHfBO8jsOhGIdxB6b0BTfamfOHey
+ Ih6SWU4TTP7AX6sONNLVla5fdWCiZ98qTcDCTIHYW3ZZn1JnGWafAyP
 X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
  pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -85,23 +85,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds device tree support for the IIO humidity sensor si7005
-and extends the trivial-devices binding to document the addition.
+This device supports ACPI detection but lacks of the device tree
+counterpart. Add device tree support.
 
 Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
-Javier Carrasco (2):
-      iio: si7005: Add device tree support
-      dt-bindings: trivial-devices: add silabs,si7005
+ drivers/iio/humidity/si7005.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
- Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
- drivers/iio/humidity/si7005.c                          | 7 +++++++
- 2 files changed, 9 insertions(+)
----
-base-commit: 401644852d0b2a278811de38081be23f74b5bb04
-change-id: 20231012-topic-si7005_devicetree-644b61b62178
+diff --git a/drivers/iio/humidity/si7005.c b/drivers/iio/humidity/si7005.c
+index ebfb79bc9edc..9465908cc65e 100644
+--- a/drivers/iio/humidity/si7005.c
++++ b/drivers/iio/humidity/si7005.c
+@@ -169,9 +169,16 @@ static const struct i2c_device_id si7005_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, si7005_id);
+ 
++static const struct of_device_id si7005_dt_ids[] = {
++	{ .compatible = "silabs,si7005" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, si7005_dt_ids);
++
+ static struct i2c_driver si7005_driver = {
+ 	.driver = {
+ 		.name	= "si7005",
++		.of_match_table = si7005_dt_ids,
+ 	},
+ 	.probe = si7005_probe,
+ 	.id_table = si7005_id,
 
-Best regards,
 -- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
+2.39.2
 
