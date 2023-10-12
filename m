@@ -2,100 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 222247C7770
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36A37C7771
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442670AbjJLTyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 15:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
+        id S1344092AbjJLTyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 15:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442867AbjJLTyA (ORCPT
+        with ESMTP id S1344135AbjJLTyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 15:54:00 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18718D7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:53:59 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6b1d1099a84so124707b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:53:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697140438; x=1697745238; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=E3uPZFNiK+r0yTq1LiRsc3J6XZzg5z+dFiOxbyPUDVU=;
-        b=ibHzmHdwkQuul0yXQofDDxCbs/XcpKNcFEgCsXpmxZPOKYhdGJj4zZcU8AgBBdlDZV
-         9lVtOVpQK/9eHT8NcYoUQOoX1M5syMwm2J23319VVZxZA/Aq5/PfCQek0MR0XEVfVck6
-         MjRkuQDddyaU0rWxSpWaZVCNwK+3jUJWvW43e0xv8LYCf2Q6XiyUNsJpEOn2/OyPhMDi
-         5W+BT0xARiLoQxBmm2MDdQUWWnQVq4vtYPcHvs4AZc6nmtAPayJdsK9bAzRYWb/0VIk7
-         3g1mIUY0CEtDHEW7h3MmWpnGiVqACi0IEA7K9MKPyexWIQI7TLCgm7T9ZR8eQ2UyRgPX
-         H21A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697140438; x=1697745238;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=E3uPZFNiK+r0yTq1LiRsc3J6XZzg5z+dFiOxbyPUDVU=;
-        b=j1W3kh6BAilXMDK6Y+oLRDTK9ml1dRRhECpudYO8YStpo8xIvyyM7Q9Von+XE6XbTU
-         8ipQPS7ry59Frmh6QgKhUdGKH3tB2TeqmTU5+bi8uGH7b3RiYkA8qziac5DDrjuxBrpT
-         0X3p8ioxZ2kqRjugS844I+GKG6U82nS9nWBW4CpaHppZ/3ci7KFp192Y42cG+MeSCbW4
-         14i7gOqRxXizyc7g9UiRNWD5Kwy77h9qWRkTQLSTNEHMgo/VlekqjV0b3emzFLvHkSyk
-         KTwUMhp8nImp9BjGYgpdUVkPKDMtYsh9PDcaRDyu9yMkI4QS+arl3coPIzHWPjXvnKOV
-         xxUQ==
-X-Gm-Message-State: AOJu0YyoeoGfv47RKw6WpqxMrjT0mIDB9GVN5KVaq+liQL/n7tai/yWn
-        Oh00aF/cfI4AWSrHFLZZMUA=
-X-Google-Smtp-Source: AGHT+IEJfAPns6NW9huFfz8r2ddPKV/d3O+vGqkXEm4kmrggpMUXGtGdlp873SAXlOI1KHu7dtQWDQ==
-X-Received: by 2002:a05:6a20:7d85:b0:15c:b7bb:2bb5 with SMTP id v5-20020a056a207d8500b0015cb7bb2bb5mr30815302pzj.7.1697140438399;
-        Thu, 12 Oct 2023 12:53:58 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id t2-20020a170902e84200b001b896686c78sm2372464plg.66.2023.10.12.12.53.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 12:53:57 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 12 Oct 2023 09:53:56 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Lucy Mielke <lucymielke@icloud.com>
-Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] workqueue: fix -Wformat-truncation in create_worker
-Message-ID: <ZShO1HOVI8WkxziA@slm.duckdns.org>
-References: <ZSQz2if1dYelUdzE@fedora.fritz.box>
+        Thu, 12 Oct 2023 15:54:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3150D9;
+        Thu, 12 Oct 2023 12:54:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=ctit0g3xmBxqIlEE5heLhfikUMFekXqmU9Lrzt91HNc=; b=FF4MctXiCN19+WdsrcaqnDJjY7
+        q7kfn9N9cNxkAnbt6SSwHCHaaaT814w/gMu0ManCBR6ur6Ow3wnKbodDFWPUMm/DIJOp1v7e7WppC
+        EGbQILu1QwUXE7C9Ddeg6W8EjP5O1CL00M2EWB5Pi4pXyXG4gI/7KIz3mUvCdME6bbfbEhoPobSz/
+        pxNwKSQpdsNE2XoXlyHgaYewbOf2tL6Rj7ZMgwIyMMVwkO7NKWX2xxijpI1eJbLtxuZ9DLm+0Xol4
+        Ju/yceufWyjpBoJ83wKe+vfPoOHVccvEtt8rDBfP4A4pYw1/+Ng2kcZWGqEohJHzhJvmNtWUYgt33
+        /j4PdAKA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qr1lA-001BSV-AV; Thu, 12 Oct 2023 19:54:16 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-sparc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Erhard Furtner <erhard_f@mailbox.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 0/2] Allow nesting of lazy MMU mode
+Date:   Thu, 12 Oct 2023 20:54:13 +0100
+Message-Id: <20231012195415.282357-1-willy@infradead.org>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZSQz2if1dYelUdzE@fedora.fritz.box>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 07:09:46PM +0200, Lucy Mielke wrote:
-> Compiling with W=1 emitted the following warning
-> (Compiler: gcc (x86-64, ver. 13.2.1, .config: result of make allyesconfig,
-> "Treat warnings as errors" turned off):
-> 
-> kernel/workqueue.c:2188:54: warning: ‘%d’ directive output may be
-> 	truncated writing between 1 and 10 bytes into a region of size
-> 	between 5 and 14 [-Wformat-truncation=]
-> kernel/workqueue.c:2188:50: note: directive argument in the range
-> 	[0, 2147483647]
-> kernel/workqueue.c:2188:17: note: ‘snprintf’ output between 4 and 23 bytes
-> 	into a destination of size 16
-> 
-> setting "id_buf" to size 23 will silence the warning, since GCC
-> determines snprintf's output to be max. 23 bytes in line 2188.
-> 
-> Please let me know if there are any mistakes in my patch!
-> 
-> Signed-off-by: Lucy Mielke <lucymielke@icloud.com>
+Dave Woodhouse reported that we now nest calls to
+arch_enter_lazy_mmu_mode().  That was inadvertent, but in principle we
+should allow it.  On further investigation, Juergen already fixed it
+for Xen, but didn't tell anyone.  Fix it for Sparc & PowerPC too.
+This may or may not help fix the problem that Erhard reported.
 
-Applied to wq/for-6.6-fixes.
+Matthew Wilcox (Oracle) (2):
+  powerpc: Allow nesting of lazy MMU mode
+  sparc: Allow nesting of lazy MMU mode
 
-Thanks.
+ arch/powerpc/include/asm/book3s/64/tlbflush-hash.h | 5 ++---
+ arch/sparc/mm/tlb.c                                | 5 ++---
+ 2 files changed, 4 insertions(+), 6 deletions(-)
 
 -- 
-tejun
+2.40.1
+
