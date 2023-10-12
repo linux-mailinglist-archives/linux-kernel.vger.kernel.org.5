@@ -2,81 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7530E7C7362
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893EA7C736B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379572AbjJLQpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
+        id S1379518AbjJLQsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347324AbjJLQph (ORCPT
+        with ESMTP id S1347324AbjJLQsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:45:37 -0400
-Received: from 13.mo561.mail-out.ovh.net (13.mo561.mail-out.ovh.net [188.165.33.202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AB1C6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:45:32 -0700 (PDT)
-Received: from director9.ghost.mail-out.ovh.net (unknown [10.108.1.232])
-        by mo561.mail-out.ovh.net (Postfix) with ESMTP id 2CC9C2651C
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:45:31 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-jv9cr (unknown [10.110.103.4])
-        by director9.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 6E6861FE1E;
-        Thu, 12 Oct 2023 16:45:30 +0000 (UTC)
-Received: from RCM-web5.webmail.mail.ovh.net ([51.255.71.60])
-        by ghost-submission-6684bf9d7b-jv9cr with ESMTPSA
-        id +UL6GaoiKGWgTgEAl0SSeQ
-        (envelope-from <jose.pekkarinen@foxhound.fi>); Thu, 12 Oct 2023 16:45:30 +0000
+        Thu, 12 Oct 2023 12:48:17 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1265CA
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:48:14 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9b9faf05f51so181012966b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:48:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697129293; x=1697734093; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WDP33O28fSxUQaPQQ89xVqkMBV+XsVtrqg84fASb0yE=;
+        b=h2koK4sdUHODRyeoN08ZewTNK3u0qlDIRLRhDFWeqCJzvGESA8BCBZNqKDsM43Vm3E
+         xj/DQsknzEGRGLx2BKPxI773LqiZvdkxSlE3kxe3X1Hq5fBrJsB+o4RScyx5qNcd0mxR
+         SRrZ0ZntkxynIRlBxhbM7hNd+SoJCZJwFpi9rCXWm+YtrAIxpM4TLkV9Lyhi6MY1LbUS
+         tFjGHr3ab4y6NMgZbaJ7Im7wS90EHdznNr1MxP8uULP1pvXr5vBqsSMkV5+Y6KmI2Lkf
+         yJGCyENQIXP5mpnhf+abP0XCqwMWq0vW5vK63puOLNdXSO926KvnLA2cer51R/8fuYA1
+         2dyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697129293; x=1697734093;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WDP33O28fSxUQaPQQ89xVqkMBV+XsVtrqg84fASb0yE=;
+        b=a4LNVqldrjjW6mMx46HVmy/gpRJsqd8SlHYwc/uwa95mrHFxWkQs2yqgSXQLWPaHFD
+         Jq4wh7Kzc5f4mKLH8GZhpBV+plrBTjCjjlfJp7cXw9o8gutAqgDa267oeUqO71c+y3Pc
+         p4MiCOAD7bs7y49jCsmcf/iwf04WcQQ5ow/nMeP0y+KALk+hpmFizep6i0j4zdKVyVqQ
+         h0xJNITH74IUT3Cga1rKHJ5hnx0z8O5Kam9y3NXm6SHN/CKMwol0tFUY4RAdQbags8LA
+         XRsz6CgA7g2N8866B5TMWfJJ+u+FmkOyWp0irG4tHLbSkWaLbcjze/GZtGFULR1WDQhm
+         1PJQ==
+X-Gm-Message-State: AOJu0Ywqt1X8GZ5Su4lJ6vJ6cPZm0ov586mzhCgNmchGWvDSG+asvmNt
+        QrKRYu4kU+kV22gFUtWgNydJXw==
+X-Google-Smtp-Source: AGHT+IFTo9Alst4wP8QB4VSwuxYruKVs4nKLRijjs2LNFCp8NqdKd73m2BB9EDg/WC35A4d8R63JHw==
+X-Received: by 2002:a17:906:3087:b0:9ad:f7e5:67d9 with SMTP id 7-20020a170906308700b009adf7e567d9mr22487210ejv.4.1697129292729;
+        Thu, 12 Oct 2023 09:48:12 -0700 (PDT)
+Received: from [172.30.204.175] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id f17-20020a1709062c5100b009934b1eb577sm11422461ejh.77.2023.10.12.09.48.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 09:48:12 -0700 (PDT)
+Message-ID: <3a042a26-81b4-4ab3-ba03-a38ae876634b@linaro.org>
+Date:   Thu, 12 Oct 2023 18:48:08 +0200
 MIME-Version: 1.0
-Date:   Thu, 12 Oct 2023 16:45:30 +0000
-From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     seanjc@google.com, skhan@linuxfoundation.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] kvm/sev: remove redundant MISC_CG_RES_SEV_ES
-In-Reply-To: <9faf1a1a-af49-5f6f-9f33-6cf57f884c44@redhat.com>
-References: <20231010174932.29769-1-jose.pekkarinen@foxhound.fi>
- <9faf1a1a-af49-5f6f-9f33-6cf57f884c44@redhat.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <6a777c72a6dc15ad80ecbedd4c6c35d9@foxhound.fi>
-X-Sender: jose.pekkarinen@foxhound.fi
-Organization: Foxhound Ltd.
-X-Originating-IP: 109.70.100.71
-X-Webmail-UserID: jose.pekkarinen@foxhound.fi
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 2497808946033305254
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedriedtgdelgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvfevufgjfhgfkfigohhitgfgsehtkehjtddtreejnecuhfhrohhmpeflohhsrocurfgvkhhkrghrihhnvghnuceojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqnecuggftrfgrthhtvghrnhepkefhgeduudefgedvleegtddvffeghedvtdekveekjeevvdegiedtfeelhedtiedtnecukfhppeduvdejrddtrddtrddupddutdelrdejtddruddttddrjedupdehuddrvdehhedrjedurdeitdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheeiuddpmhhouggvpehsmhhtphhouhht
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/3] arm64: dts: qcom: Add interconnect nodes for SDX75
+Content-Language: en-US
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        dmitry.baryshkov@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1696406908-9688-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1696406908-9688-2-git-send-email-quic_rohiagar@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <1696406908-9688-2-git-send-email-quic_rohiagar@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-12 13:43, Paolo Bonzini wrote:
-> On 10/10/23 19:49, José Pekkarinen wrote:
->> SEV-ES is an extra encrypted state that shares common resources
->> with SEV. Using an extra CG for its purpose doesn't seem to
->> provide much value. This patch will clean up the control group
->> along with multiple checks that become redundant with it.
->> 
->> The patch will also remove a redundant logic on sev initialization
->> that produces SEV-ES to be disabled, while supported by the cpu
->> and requested by the user through the sev_es parameter.
+
+
+On 10/4/23 10:08, Rohit Agarwal wrote:
+> Add interconnect nodes to support interconnects on SDX75.
+> Also parallely add the interconnect property for UART required
+> so that the bootup to shell does not break with interconnects
+> in place.
 > 
-> In what sense is it shared?  The SEV ASIDs and the SEV-ES ASIDs are
-> separate (and in both cases limited) resources, and therefore they
-> have separate cgroups.
+> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+> ---
+>   arch/arm64/boot/dts/qcom/sdx75.dtsi | 52 +++++++++++++++++++++++++++++++++++++
+>   1 file changed, 52 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdx75.dtsi b/arch/arm64/boot/dts/qcom/sdx75.dtsi
+> index e180aa4..b4723fa 100644
+> --- a/arch/arm64/boot/dts/qcom/sdx75.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdx75.dtsi
+> @@ -8,6 +8,8 @@
+>   
+>   #include <dt-bindings/clock/qcom,rpmh.h>
+>   #include <dt-bindings/clock/qcom,sdx75-gcc.h>
+> +#include <dt-bindings/interconnect/qcom,icc.h>
+> +#include <dt-bindings/interconnect/qcom,sdx75.h>
+>   #include <dt-bindings/interrupt-controller/arm-gic.h>
+>   #include <dt-bindings/power/qcom,rpmhpd.h>
+>   #include <dt-bindings/power/qcom-rpmpd.h>
+> @@ -203,6 +205,19 @@
+>   		};
+>   	};
+>   
+> +	clk_virt: interconnect-0 {
+> +		compatible = "qcom,sdx75-clk-virt";
+> +		#interconnect-cells = <2>;
+> +		qcom,bcm-voters = <&apps_bcm_voter>;
+> +		clocks = <&rpmhcc RPMH_QPIC_CLK>;
+> +	};
+> +
+> +	mc_virt: interconnect-1 {
+> +		compatible = "qcom,sdx75-mc-virt";
+> +		#interconnect-cells = <2>;
+> +		qcom,bcm-voters = <&apps_bcm_voter>;
+> +	};
+> +
+>   	memory@80000000 {
+>   		device_type = "memory";
+>   		reg = <0x0 0x80000000 0x0 0x0>;
+> @@ -434,6 +449,9 @@
+>   			clock-names = "m-ahb",
+>   				      "s-ahb";
+>   			iommus = <&apps_smmu 0xe3 0x0>;
+> +			interconnects = <&clk_virt MASTER_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS
+> +					 &clk_virt SLAVE_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS>;
+> +			interconnect-names = "qup-core";
+No qup-config?
 
-     Nevermind this patch, after a painful bios upgrade I got sev-es
-available in it, and I was able to launch some test vm on it, so this
-may only be breaking things. Sorry for the noise!
+My brain compiler says this would cause a dt checker warning, at least 
+on next-20231012.
 
-     José.
+Konrad
