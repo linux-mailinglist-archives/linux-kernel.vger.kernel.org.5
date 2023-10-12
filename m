@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F047C708D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A837C7090
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376440AbjJLOoZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 10:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43098 "EHLO
+        id S1377620AbjJLOop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 10:44:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233260AbjJLOoY (ORCPT
+        with ESMTP id S1344026AbjJLOon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:44:24 -0400
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652A4BB;
-        Thu, 12 Oct 2023 07:44:22 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-d9a398f411fso1132377276.3;
-        Thu, 12 Oct 2023 07:44:22 -0700 (PDT)
+        Thu, 12 Oct 2023 10:44:43 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0033D7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:44:40 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3247cefa13aso949169f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697121879; x=1697726679; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=o9asKau6xoapZEljIo4ZrEWtiWouf5mZpRdMQ3x02rc=;
+        b=HIYB8TAidmb+Hm+mDswrp1bJPsZ45MVDdm4bVNUcsPG6yvnahv8ZnMsUszUbQVzVIW
+         x5pFAvVx+/5G3NMYzluFOUSZyp4AyZmv21Bm6vWiBXhaDV/tw9P/ItmUVe3NwjfmWqQm
+         HOPvbSHSEn5oUx6TKXHGQuiuw6lf+eB6z0cxI/zq/bUH77bl0/WDs1jiB5fSU2dixScQ
+         SAqccj5R0dSgSDEsVSlP57MK3kgyzzZAyY3RZXGjRg7FDHIl9tBgXD0CwxGUjeeMQ351
+         VOALxdjLV3zlJsJdlPdWEW/6V5/ggsjpQy1/S/0TXM4RYQOfNBY6EmOZ2lcSoa+Z1aYU
+         vGdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697121860; x=1697726660;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vlohsKaxaDfJsNn0JXsIdvrAgoGkujT/EvyViDc7jh0=;
-        b=iVaApVkpKZ0pZLEK/pwPLTGauu7UeCClkUXAvxljBqIBU1NUZs6cKGofDWJThZovdD
-         R+PdLalbZM71D7ARoXO/MV4ug5UKaBN7EYKhisGUarhoFIB+u2aDKmjvKNryIMT2aIqO
-         7/rZpngyCi+cRcrWj+Ljwabg37SERfQgi8WtaeQYVTNWOPdTwmY3Eiqo5b1d91OgEU+X
-         OwM7HO8hcBH96SMHCWMZBR/flQmynraseXWZKASSLNXhZLvq6nY7oVyQoeYKpb3MecBD
-         rLfQkWBHPsC4Fb2NSAEY87llPNTUsHsTAyzbENvMh2nqQoc9g1o8gON/b/XWCkwsTVFk
-         wCvA==
-X-Gm-Message-State: AOJu0YzhgL2UMdRD2jcmbJXTtWBs89z1oEWz3+mXltBwiC9qNGDczA/L
-        056Ay9qlISdQmNim66B0mJc/KD8J7n4cnQ==
-X-Google-Smtp-Source: AGHT+IHL1VVdNNqwHnZcPkiD9AZddyC3g7gvOS4O13vQR8K7sd/ecIhw/doKpo16fiV6v+feVkzXxQ==
-X-Received: by 2002:a25:ac46:0:b0:d9a:53cc:aaad with SMTP id r6-20020a25ac46000000b00d9a53ccaaadmr8935045ybd.24.1697121860167;
-        Thu, 12 Oct 2023 07:44:20 -0700 (PDT)
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
-        by smtp.gmail.com with ESMTPSA id z96-20020a25a169000000b00d8128f9a46bsm2632ybh.37.2023.10.12.07.44.19
+        d=1e100.net; s=20230601; t=1697121879; x=1697726679;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=o9asKau6xoapZEljIo4ZrEWtiWouf5mZpRdMQ3x02rc=;
+        b=eZElfTe2w5u0fnGcOhNdsBCba0SgAOOQoBri5cwa4I/bdTL9V1/KkuLbhHlF65t7wf
+         nDAMURpmnh32TvSHm4kkTFjd2/XuX8OTScOK/jDp5QRk3A6HiG/oeCXtJvXOFFgsgIiW
+         HkD/8Ei38a9NSEJALgdFCm2yFzAtK2JJ5nqk+aatQdsnE7mBFP46TsWL1793M3zUEpQP
+         +7eYqXDDyWUM1wc8Iezbxs7vE99InXEVV4pE2xbiQvFh0h39vRUpnTI5F6etyEAwRKgl
+         EGPqHvlnq+DMKIdlum9FpRTqrLnA2Q4oOFEgyDexl2Xfn0mJkzmEFbN0nkFhE3j5Hh03
+         eVNg==
+X-Gm-Message-State: AOJu0YyY6XAOj2F4HqZvkXup10fOIfZwWLyHbyLqhV1aAnNoy0Q+J+u8
+        ovD4AO52OUtBB11FCuL/MjHaPQ==
+X-Google-Smtp-Source: AGHT+IEuh559MBDM+zPObkepajl9Y2JP//zUG//qYA51FA6rW1A8nGOy/d5Y7eRMLMZVApBr2veYgw==
+X-Received: by 2002:adf:f34a:0:b0:319:7428:9ca0 with SMTP id e10-20020adff34a000000b0031974289ca0mr19781987wrp.61.1697121879058;
+        Thu, 12 Oct 2023 07:44:39 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
+        by smtp.googlemail.com with ESMTPSA id v11-20020a5d6b0b000000b00324853fc8adsm18465025wrw.104.2023.10.12.07.44.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 07:44:19 -0700 (PDT)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5a7ba0828efso13058287b3.3;
-        Thu, 12 Oct 2023 07:44:19 -0700 (PDT)
-X-Received: by 2002:a0d:e2c4:0:b0:5a7:bc38:fff2 with SMTP id
- l187-20020a0de2c4000000b005a7bc38fff2mr8513742ywe.15.1697121859775; Thu, 12
- Oct 2023 07:44:19 -0700 (PDT)
+        Thu, 12 Oct 2023 07:44:38 -0700 (PDT)
+Message-ID: <54a6a7e4-3720-403d-823b-7f0efe0b4567@linaro.org>
+Date:   Thu, 12 Oct 2023 16:44:38 +0200
 MIME-Version: 1.0
-References: <20231010132701.1658737-1-claudiu.beznea.uj@bp.renesas.com> <20231010132701.1658737-6-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20231010132701.1658737-6-claudiu.beznea.uj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 12 Oct 2023 16:44:08 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdW+5MZXRbDtZtmrMkrCtwqqKUcW_W1_5U_2yO6w6aCa_w@mail.gmail.com>
-Message-ID: <CAMuHMdW+5MZXRbDtZtmrMkrCtwqqKUcW_W1_5U_2yO6w6aCa_w@mail.gmail.com>
-Subject: Re: [PATCH 5/6] arm64: dts: renesas: rzg3s-smarc: Enable SDHI1
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     magnus.damm@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/6] thermal: trip: Define for_each_trip() macro
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+References: <13365827.uLZWGnKmhe@kreacher> <8282829.T7Z3S40VBb@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <8282829.T7Z3S40VBb@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claudiu,
+On 06/10/2023 19:41, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Define a new macro for_each_trip() to be used by the thermal core code
+> and thermal governors for walking trips in a given thermal zone.
+> 
+> Modify for_each_thermal_trip() to use this macro instead of an open-
+> coded loop over trips.
+> 
+> No intentional functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-On Tue, Oct 10, 2023 at 3:27 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Add SDHI1 to RZ/G3S Smarc Carrier-II board. This is connected to a uSD
-> interface. Although Vccq doesn't cross the boundary of SoM it has
-> been added to RZ/G3S Smarc Carrier-II dtsi to have all the bits related to
-> SDHI1 in a single place. At the moment SoM is used only with RZ/G3S Smarc
-> Carrier-II board.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-
-Thanks for your patch!
-
-> --- a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
-> +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
-> @@ -11,6 +11,27 @@
->  / {
->         aliases {
->                 serial0 = &scif0;
-> +               mmc1 = &sdhi1;
-> +       };
-> +
-> +       /* Reserved regulators 0-9 for SoM. */
-> +       vcc_sdhi1: regulator10 {
-
-You can use sensible names for the regulators to avoid conflicts.
-E.g. "regulator-vcc-sdhi1".
-
-The rest LGTM.
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
