@@ -2,145 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0157C76C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5324B7C76E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442135AbjJLT2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 15:28:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
+        id S1442189AbjJLTbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 15:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441868AbjJLT2l (ORCPT
+        with ESMTP id S1442138AbjJLTbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 15:28:41 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2049B7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:28:39 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-5041bb9ce51so1761644e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:28:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697138916; x=1697743716; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S9gOrgWsv2J6btDunJZLLHwFNG8Aa1HIXtQ4lvtTYx8=;
-        b=FayJEcrd8I116WZ+WFFcwwY2DH+8IA2As7yLMYjf7TaQzuYfmtP2jEkFA4Dmgz/sg3
-         ZsYF5jyrfqLvqDH/KRfkUC6PTk1xgZcE1p2tD81+Lu1tzovOShOeQMFS85AhK3HlEdh/
-         VqahK6U2eJWD40Ibixvr77F5wcwXmaLdnxVgJporge5M+Et3GEXX4ggwS1wZI9H4B1ed
-         R34KU/Ul1eSjecADdZ6hnPJXD0s0Bonb5F+QAtBTquD415GhcB0GUBDxy2sYduMqEh3X
-         L4KZ1NA7+z8oivDYDRwgWhzgW5nXgWWn/xes2dqIcuK5GkczHi+R9oVKrR2qbJHsACam
-         6eLw==
+        Thu, 12 Oct 2023 15:31:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11A0D50
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:30:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697139048;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q/o6fFvR6aJCe+ERX9AGeyChFFO9xwdSMnRWAOtIGn0=;
+        b=d1WnjdvNMjW9lSJh5plKfyWSTyzhIYTi8h2atI290t8k+Pm1gmzv6M1QYAjyDRYoc/Zr1I
+        uxVgM5VaD3CBvbxB4cFpKPSJDCUyXVwTgTP0girHi0VDCRI4zDbh2HzeVXa+HZVMpfYnWV
+        LTKFFtYOYRv+XsqOUZm+Y6j4z8hTJi4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-533-wFaJ1ldFOp6yDNQFg7amtw-1; Thu, 12 Oct 2023 15:30:46 -0400
+X-MC-Unique: wFaJ1ldFOp6yDNQFg7amtw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32480c0ad52so870612f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:30:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697138916; x=1697743716;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S9gOrgWsv2J6btDunJZLLHwFNG8Aa1HIXtQ4lvtTYx8=;
-        b=d74AoXvk4sKRwGBx1Oc+x5bqD48fSpZ02NVPn2bX/B9dmZk+8qLcxn3Ddl2kLUBc9T
-         NNpKGBUnCWLmWetX/Cyb3HNIuvOCmCJbPBRVNAnm/KuGkk9rulKiI8v0o5F1BIvSchsK
-         64lunOgoRs/Ar23BIbgAafx9p03q6SpK8U9hGO9/ckJWkkWwL/7e+pxtghZSzVdSX8sn
-         pemlfsy0DrvlRYIEHHj07MZOhezlEbABY9hAGQdJwXaw5gG5sVQfrHFK5IgZnAsmqXKG
-         r49POOHLZvqPjnmuxEKIGDsAy5c4LjOZn+htavGD28hIua/MpsVv/thaqUE2P37GJWW1
-         aNDw==
-X-Gm-Message-State: AOJu0YwJ8dS/S8jD14ylPuQl9mTpHJwZ0yfzwFFYxtDhzUaU1hHWgw5w
-        nAadIrpk/zaHuQhTezR4T3OzDh7etERwXQlD
-X-Google-Smtp-Source: AGHT+IH8kFm6q6/3YL1bP7fre04tBPI6ULTnfUTe9BdmPd7wPxPHpyyYaD6OoWfgPqoqMIRu4L3gkQ==
-X-Received: by 2002:a19:4355:0:b0:505:7014:8c6b with SMTP id m21-20020a194355000000b0050570148c6bmr18569313lfj.50.1697138916275;
-        Thu, 12 Oct 2023 12:28:36 -0700 (PDT)
-Received: from lab-ubuntu ([41.90.69.21])
-        by smtp.gmail.com with ESMTPSA id t27-20020a1709063e5b00b009a168ab6ee2sm11380536eji.164.2023.10.12.12.28.35
+        d=1e100.net; s=20230601; t=1697139046; x=1697743846;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q/o6fFvR6aJCe+ERX9AGeyChFFO9xwdSMnRWAOtIGn0=;
+        b=EDJjIM8rVCaWSlI5itmiJqURcPYnWa8R62Yg/TpvS/5YbBk0sKGSuHiiFtIWqU6cdw
+         dEkQeMDEYW39mBSg6ko9Q79+fR14AmcQoFKxZWMd/4VB/ncEdcLdo7y+GyI9djwn7GF2
+         v1/KT2Nz9y2TqxNNjB+Gxgatl5d0hXLhz0lWWnvmcnhXqMCI+rJW/5ili3U1ytQ1mBEv
+         tT2pBmUBQIhG34+s91zfpE+NdIw7nZYBGBFBwuWC/xEOWlieB349ZmRr4eFGVXhW9g3Q
+         MSar82aCuJddJnlF50LZzKRb/e+Q9ISJTPTQ57Smj7Qi/8E4ZZ/qo1zCiVaXgntnV+aC
+         VdsA==
+X-Gm-Message-State: AOJu0YyRkyCdEpWXVFBJCVr1OMq/MHoXqM3FER39LUgDjaZcM5dGNM6S
+        Ocdsy1K2N4kLLhVnbyBs3yU4uEqcvmqxIQZp8ggyKKYcOshYINKjRARwS0DDL/X1S0QHMCghm6t
+        5a4vcVxWXgNZA4bbqK2tbpvTq
+X-Received: by 2002:a5d:6549:0:b0:319:6caa:ada2 with SMTP id z9-20020a5d6549000000b003196caaada2mr21239022wrv.47.1697139045757;
+        Thu, 12 Oct 2023 12:30:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEqD7pOjEEChf/y/tkmRxDwOYPb4DVFbtfiY0+0Y5uTpWha0h5XrZV4W2aLQC5muYPI+mcOLA==
+X-Received: by 2002:a5d:6549:0:b0:319:6caa:ada2 with SMTP id z9-20020a5d6549000000b003196caaada2mr21239010wrv.47.1697139045438;
+        Thu, 12 Oct 2023 12:30:45 -0700 (PDT)
+Received: from starship ([89.237.100.246])
+        by smtp.gmail.com with ESMTPSA id bv2-20020a0560001f0200b0032d09f7a713sm8387635wrb.18.2023.10.12.12.30.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 12:28:35 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 22:28:33 +0300
-From:   Calvince Otieno <calvncce@gmail.com>
-To:     outreachy@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Archana <craechal@gmail.com>, Dan Carpenter <error27@gmail.com>,
-        Calvince Otieno <calvncce@gmail.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] staging: wlan-ng: remove strncpy() use in favor of
- strscpy()
-Message-ID: <ZShI4amWv7sdqfse@lab-ubuntu>
+        Thu, 12 Oct 2023 12:30:44 -0700 (PDT)
+Message-ID: <f7197f64bbac99860ddfeee540c9e44075a29f43.camel@redhat.com>
+Subject: Re: [PATCH RFC 01/11] KVM: x86: xen: Remove unneeded xen context
+ from struct kvm_arch when !CONFIG_KVM_XEN
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org
+Date:   Thu, 12 Oct 2023 22:30:43 +0300
+In-Reply-To: <20231010160300.1136799-2-vkuznets@redhat.com>
+References: <20231010160300.1136799-1-vkuznets@redhat.com>
+         <20231010160300.1136799-2-vkuznets@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In response to the suggestion by Dan Carpenter on the initial patch,
-this patch provides a correct usage of the strscpy() in place of the
-current strncpy() implementation.
+У вт, 2023-10-10 у 18:02 +0200, Vitaly Kuznetsov пише:
+> Saving a few bytes of memory per KVM VM is certainly great but what's more
+> important is the ability to see where the code accesses Xen emulation
+> context while CONFIG_KVM_XEN is not enabled. Currently, kvm_cpu_get_extint()
+> is the only such place and it is harmless: kvm_xen_has_interrupt() always
+> returns '0' when !CONFIG_KVM_XEN.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h | 5 +++++
+>  arch/x86/kvm/irq.c              | 2 ++
+>  2 files changed, 7 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 17715cb8731d..e5d4b8a44630 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1126,6 +1126,7 @@ struct msr_bitmap_range {
+>  	unsigned long *bitmap;
+>  };
+>  
+> +#ifdef CONFIG_KVM_XEN
+>  /* Xen emulation context */
+>  struct kvm_xen {
+>  	struct mutex xen_lock;
+> @@ -1137,6 +1138,7 @@ struct kvm_xen {
+>  	struct idr evtchn_ports;
+>  	unsigned long poll_mask[BITS_TO_LONGS(KVM_MAX_VCPUS)];
+>  };
+> +#endif
+>  
+>  enum kvm_irqchip_mode {
+>  	KVM_IRQCHIP_NONE,
+> @@ -1338,7 +1340,10 @@ struct kvm_arch {
+>  	struct hlist_head mask_notifier_list;
+>  
+>  	struct kvm_hv hyperv;
+> +
+> +#ifdef CONFIG_KVM_XEN
+>  	struct kvm_xen xen;
+> +#endif
+>  
+>  	bool backwards_tsc_observed;
+>  	bool boot_vcpu_runs_old_kvmclock;
+> diff --git a/arch/x86/kvm/irq.c b/arch/x86/kvm/irq.c
+> index b2c397dd2bc6..ad9ca8a60144 100644
+> --- a/arch/x86/kvm/irq.c
+> +++ b/arch/x86/kvm/irq.c
+> @@ -118,8 +118,10 @@ static int kvm_cpu_get_extint(struct kvm_vcpu *v)
+>  	if (!lapic_in_kernel(v))
+>  		return v->arch.interrupt.nr;
+>  
+> +#ifdef CONFIG_KVM_XEN
+>  	if (kvm_xen_has_interrupt(v))
+>  		return v->kvm->arch.xen.upcall_vector;
+> +#endif
+>  
+>  	if (irqchip_split(v->kvm)) {
+>  		int vector = v->arch.pending_external_vector;
 
-strscpy() copies characters from the source buffer to the destination
-buffer until one of the following conditions is met:
-	- null-terminator ('\0') is encountered in the source string.
-	- specified maximum length of the destination buffer is reached.
-	- source buffer is exhausted.
-Example:
-	char dest[11];
-	const char *PRISM2_USB_FWFILE = "prism2_ru.fw";
-	strscpy(dest, PRISM2_USB_FWFILE, sizeof(dest));
 
-	In this case, strscpy copies the first 10 characters of src into dest
-	and add a null-terminator. dest will then contain "prism2_ru.f" with
-	proper null-termination.
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-Since the specified length of the dest buffer is not derived from the
-dest buffer itself and rather form plug length (s3plug[i].len),
-replacing strcpy() with strscpy() is a better option because it will
-ensures that the destination string is always properly terminated.
-
-Signed-off-by: Calvince Otieno <calvncce@gmail.com>
----
-
-Patch version v3:
-	Correct the patch subject headline.
-	staging: wlan-ng: remove strncpy() use in favor of strscpy()
-
-Patch version v2 :
-        Correct implementation of the strscpy()
-
-drivers/staging/wlan-ng/prism2fw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/wlan-ng/prism2fw.c b/drivers/staging/wlan-ng/prism2fw.c
-index 5d03b2b9aab4..3ccd11041646 100644
---- a/drivers/staging/wlan-ng/prism2fw.c
-+++ b/drivers/staging/wlan-ng/prism2fw.c
-@@ -725,7 +725,7 @@ static int plugimage(struct imgchunk *fchunk, unsigned int nfchunks,
-
-                if (j == -1) {  /* plug the filename */
-                        memset(dest, 0, s3plug[i].len);
--                       strncpy(dest, PRISM2_USB_FWFILE, s3plug[i].len - 1);
-+                       strscpy(dest, PRISM2_USB_FWFILE, s3plug[i].len);
-                } else {        /* plug a PDR */
-                        memcpy(dest, &pda->rec[j]->data, s3plug[i].len);
-                }
-
-Patch version v1:
-        Replacing strncpy() with strscpy()
-
- drivers/staging/wlan-ng/prism2fw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/wlan-ng/prism2fw.c b/drivers/staging/wlan-ng/prism2fw.c
-index 5d03b2b9aab4..57a99dd12143 100644
---- a/drivers/staging/wlan-ng/prism2fw.c
-+++ b/drivers/staging/wlan-ng/prism2fw.c
-@@ -725,7 +725,7 @@ static int plugimage(struct imgchunk *fchunk, unsigned int nfchunks,
-
-                if (j == -1) {  /* plug the filename */
-                        memset(dest, 0, s3plug[i].len);
--                       strncpy(dest, PRISM2_USB_FWFILE, s3plug[i].len - 1);
-+                       strscpy(dest, PRISM2_USB_FWFILE, s3plug[i].len - 1);
-                } else {        /* plug a PDR */
-                        memcpy(dest, &pda->rec[j]->data, s3plug[i].len);
-                }
--- 
-Calvince Otieno
+Best regards,
+	Maxim Levitsky
 
