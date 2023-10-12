@@ -2,155 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 221647C77C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7102F7C77C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442748AbjJLUSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 16:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41470 "EHLO
+        id S1442408AbjJLUSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 16:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347396AbjJLUSZ (ORCPT
+        with ESMTP id S1347403AbjJLUSr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 16:18:25 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1768106
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:18:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46BE7C433C7;
-        Thu, 12 Oct 2023 20:18:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697141899;
-        bh=qBg3AzCpocS368uNrU/3ECKHPKqpKyGfsEnXrND/19I=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HwFbLsOo6GvDC2lZoii3xGwirR6wySTZ9Hl7fAX3a9DFj3QE6vg22YiSHkH2h2MUn
-         Insg+kHpu3X8CgWKE5Er5oOH/DTi/dpnY8LTIH+NuLBCBC946s7WBvQCCtH+h63rO1
-         jFMnPzXA76G+bxC5CbKlLrzH3KG0AYSrQraJUfOZQNPImwnBFJn1coa0T+kdNx1uYK
-         PMa/79oMgE9op95x8757I4+tMMgDhNY6/XOv6DQJtRp+n0Df4Nl2j4b+IFXKstXoVB
-         LLgbWMwKzToqYM5+UYSuoGJ41ANt04+gSTLKKgErbzZB5bNAwYbLAqxzfIJscCoTn7
-         bn0n9zpflnbYQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D78A8CE096F; Thu, 12 Oct 2023 13:18:18 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 13:18:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Willy Tarreau <w@1wt.eu>, Zhangjin Wu <falcon@tinylab.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/nolibc: add tests for multi-object linkage
-Message-ID: <0c8446a7-473d-49bc-9413-d1b9176f13b1@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231012-nolibc-linkage-test-v1-1-315e682768b4@weissschuh.net>
- <ZSea+etQwlxbi+Ok@1wt.eu>
- <bfc17e76-fcbc-4ce6-97a8-c1ed72ed2a67@t-8ch.de>
- <33e9afcd-a1cd-4f67-829b-85c86500a93e@paulmck-laptop>
- <b278a643-3761-4699-bafc-df1b7245b8c2@t-8ch.de>
- <ca67eb2c-3918-4a1f-b3e6-2023fda5d6a3@paulmck-laptop>
- <6b66305f-8172-463e-a50d-324c0c33a6ea@t-8ch.de>
- <a5f1a910-dbac-44d8-b9f6-5725bea948b2@paulmck-laptop>
- <aa77a065-fcc9-4d3a-8531-fd994587c48f@t-8ch.de>
+        Thu, 12 Oct 2023 16:18:47 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF86CDD
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:18:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hc6HCNMBp8IlLh8DN5mOo6xzjEiwvUjh2K14S7K06EQ=; b=UXgboL6T6vWj55vMADPJkX8CSk
+        gvNHxS4VgKU8FrVZzda+94awkU07ZZcPRsaGdhBlL2sW01X3iIeBEHS+NBA3QfgmYJCZ01kbHKCAM
+        zJ2ni/YxaRuJ6vKxvrE6jcmZ1EXo0/XfWVJMWDc6RNf7Gav4qipw0vtwcGLx9St8wToVsY4RIa6gE
+        vmKc72e3sILpfqrMBe4+91KN/qYgvJjqo/UumT38BjjGUD2ioIo53ez5BuRfvzDtyIojYPspUaQHd
+        3IVUG5m0jh2JXRGOQh3V7GVe1ZItZaidt1wC1x6/Z1tQpo+ze7A/Z3vrEX0QbMQkwJaJJH6jne61i
+        l30AfPHw==;
+Received: from jlbec by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qr28n-000gUf-0E;
+        Thu, 12 Oct 2023 20:18:41 +0000
+Date:   Thu, 12 Oct 2023 13:18:32 -0700
+From:   Joel Becker <jlbec@evilplan.org>
+To:     Seamus Connor <sconnor@purestorage.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [WIP] configfs: improve item creation performance
+Message-ID: <ZShUmLU3X5QMiWQH@google.com>
+Mail-Followup-To: Seamus Connor <sconnor@purestorage.com>,
+        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org
+References: <20231011213919.52267-1-sconnor@purestorage.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aa77a065-fcc9-4d3a-8531-fd994587c48f@t-8ch.de>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URG_BIZ autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231011213919.52267-1-sconnor@purestorage.com>
+X-Burt-Line: Trees are cool.
+X-Red-Smith: Ninety feet between bases is perhaps as close as man has ever
+ come to perfection.
+Sender: Joel Becker <jlbec@ftp.linux.org.uk>
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URI_DOTEDU autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 09:34:53PM +0200, Thomas Weißschuh wrote:
-> On 2023-10-12 12:06:33-0700, Paul E. McKenney wrote:
-> > On Thu, Oct 12, 2023 at 08:39:14PM +0200, Thomas Weißschuh wrote:
-> > > On 2023-10-12 11:25:02-0700, Paul E. McKenney wrote:
-> > > > [..]
-> 
-> > > > I have a signed tag urgent/nolibc.2023.10.12a in the -rcu tree, so
-> > > > please check the lead-in text for sanity.  (Everything after the digital
-> > > > signature is automatically generated.)
-> > > 
-> > > Looks good. But it's only a listing of the commit subjects, correct?
-> > 
-> > Pretty close, just a few added words on the last one.
-> > 
-> > So the question is whether there is some larger issue that Linus should
-> > be made aware of.  If these are just simple fixes for simple bugs,
-> > we should be good, but yes, I do need to ask.  ;-)
-> 
-> These are simple fixes for simple bugs.
-> 
-> Do you always have to ask specifically or can I just mention it in the
-> pull request in the future?
+On Wed, Oct 11, 2023 at 02:39:19PM -0700, Seamus Connor wrote:
+> On my machine, creating 40,000 Items in a single directory takes roughly
+> 40 seconds. With this patch applied, that time drops down to around 130
+> ms.
 
-I would be extremely happy to simply copy text from the pull request
-into the signed tags.  ;-)
+Nice.
 
-We would just need to agree on the format.  For example, in this case,
-there will eventually be two signed tags, one for the urgent pull
-request early next week and another for the pull request for the upcoming
-merge window.
+> @@ -207,7 +212,10 @@ static struct configfs_dirent *configfs_new_dirent(struct configfs_dirent *paren
+>  		return ERR_PTR(-ENOENT);
+>  	}
+>  	sd->s_frag = get_fragment(frag);
+> -	list_add(&sd->s_sibling, &parent_sd->s_children);
+> +	if (configfs_dirent_is_pinned(sd))
+> +		list_add_tail(&sd->s_sibling, &parent_sd->s_children);
+> +	else
+> +		list_add(&sd->s_sibling, &parent_sd->s_children);
+>  	spin_unlock(&configfs_dirent_lock);
 
-Proposals for the format?
+This is subtle.  Your patch description of course describes why we are
+partitioning the items and attributes, but that will get lost into the
+memory hole very quickly.  Please add a comment.
 
-> > [..]
-> 
-> > > > Ah, and have these been posted to a public mailing list?  If not, then I
-> > > > need to send them out.
-> > > 
-> > > All patches went through the lists as part of the normal developent
-> > > flow. They were not posted after rebasing.
-> > 
-> > I have been sending the group, so I might as well continue the tradition.
-> 
-> Sounds good. If you want me to do something different, please let me
-> know.
-> 
-> > There are a couple of substantive checkpatch complaints:
-> > 
-> > 4b4a30ea14d1 ("tools/nolibc: i386: Fix a stack misalign bug on _start")
-> > 	The Fixes SHA-1 should be limited to 12 hex digits.
-> > 	(I am ignoring this, but be prepared for Linus to gripe.
-> > 	If you decide to fix it, I would be happy to repull.)
-> 
-> Done.
+> @@ -449,6 +454,10 @@ static struct dentry * configfs_lookup(struct inode *dir,
+>  
+>  	spin_lock(&configfs_dirent_lock);
+>  	list_for_each_entry(sd, &parent_sd->s_children, s_sibling) {
+> +
+> +		if (configfs_dirent_is_pinned(sd))
+> +			break;
+> +
+>  		if ((sd->s_type & CONFIGFS_NOT_PINNED) &&
+>  		    !strcmp(configfs_get_name(sd), dentry->d_name.name)) {
+>  			struct configfs_attribute *attr = sd->s_element;
 
-Very good, thank you!
+There's a lack of symmetry here.  The pinned check is an inline
+function, whereas the `CONFIGFS_NOT_PINNED` check is an open-coded
+bitmask.  Why not just:
 
-> > f2c7923763da ("selftests/nolibc: add tests for multi-object linkage")
-> > 	nolibc-test-linkage.c and nolibc-test-linkage.h need
-> > 	"//" comment for the SPDX comment header.  This one needs
-> > 	to be fixed, but this is not in the urgent stack, so there
-> > 	is some time.
-> 
-> nolibc limits itself intentionally to C89 language level which disallows
-> C++ style headers.
-> 
-> This should be covered by Documentation/process/license-rules.rst:
-> 
->   If a specific tool cannot handle the standard comment style, then the
->   appropriate comment mechanism which the tool accepts shall be used.
+```
+		if (sd->s_type & CONFIGFS_IS_PINNED)
+			break;
+```
 
-I stand corrected, and thank you!
+Plus, aren't the pinned/not-pinned checks redundant?  Can't we avoid the
+extra conditional?
 
-> With that said:
-> 
-> Please pull the changes since the v6.6-rc1 tag from
-> https://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git/
-> 
-> The branch 'fixes' up to and including
-> 921992229b1f06df6b649860e4a5f3def1489866 for the v6.6 cycle.
-> 
-> The branch 'next' up to and including
-> b8c60e8fc6f755c2cdf7164931afdbfa670c6646 for linux-next.
-> 
-> No full test has been performed as only a commit message was changed.
-> 
-> Testing for full nolibc stack:
-> make run:             162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> make run-nolibc-test: 162 test(s): 160 passed,   2 skipped,   0 failed => status: warning
 
-I will pull this in, thank you!
+```
+	spin_lock(&configfs_dirent_lock);
+	list_for_each_entry(sd, &parent_sd->s_children, s_sibling) {
+-		if ((sd->s_type & CONFIGFS_NOT_PINNED) &&
+-		    !strcmp(configfs_get_name(sd), dentry->d_name.name)) {
++		/*
++		 * The dirents for config_items are pinned in the
++		 * dcache, so configfs_lookup() should never be called
++		 * for items.  Thus, we're only looking up attributes.
++		 *
++		 * s_children is ordered so that attributes
++		 * (CONFIGFS_NOT_PINNED) come before items (see
++		 * configfs_new_dirent().  If we have reached a child item,
++		 * we are done looking.
++		 */
++		if (!(sd->s_type & CONFIGFS_NOT_PINNED))
++			break;
++
++		if (!strcmp(configfs_get_name(sd), dentry->d_name.name)) {
+			struct configfs_attribute *attr = sd->s_element;
+			umode_t mode = (attr->ca_mode & S_IALLUGO) | S_IFREG;
+```
 
-							Thanx, Paul
+> -void configfs_hash_and_remove(struct dentry * dir, const char * name)
+> -{
+> -	struct configfs_dirent * sd;
+> -	struct configfs_dirent * parent_sd = dir->d_fsdata;
+
+Man, I thought we removed this years ago:
+https://lkml.indiana.edu/hypermail/linux/kernel/0803.0/0905.html.  No
+idea why that patch didn't land.
+
+Thanks,
+Joel
+
+-- 
+
+Life's Little Instruction Book #222
+
+	"Think twice before burdening a friend with a secret."
+
+			http://www.jlbec.org/
+			jlbec@evilplan.org
