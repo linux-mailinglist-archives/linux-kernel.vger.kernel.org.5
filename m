@@ -2,66 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7BC47C641C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 06:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041097C6421
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 06:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343517AbjJLEfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 00:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
+        id S1376758AbjJLEhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 00:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232681AbjJLEfX (ORCPT
+        with ESMTP id S232842AbjJLEhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 00:35:23 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475E6A9;
-        Wed, 11 Oct 2023 21:35:21 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-406618d080eso6171955e9.2;
-        Wed, 11 Oct 2023 21:35:21 -0700 (PDT)
+        Thu, 12 Oct 2023 00:37:05 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A1ABA
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 21:37:04 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-59b5484fbe6so7454477b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 21:37:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697085320; x=1697690120; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7WosZVTXUOEeXoWrox6z3tSDEIuK6BYXU7VnhYrOQfo=;
-        b=Abz2obaKCcFXHZMdHBGtU7VYc2C8izoDou+q0NFBo+gRLWyNzgY2Q6fbdBCKdVpIaS
-         paYWP3E3x8sSixMKxXLtY3liVmcSMxHSN1h72xqfcEniv3yq94WRU3PNv9eCiAwLYbST
-         u8hY/qSjBp/J8vWKF2xkwGw6wsRpHKDe1V/Xk+fEcY9TcBdIGttO+SmaPnXPdkKdSeRV
-         0PGRBPjcRNyyD5dUyDb1HyL/8BUtWdSyjryh61gfBjr4FmeWKqIX3aRqPGrZBbgOVmFn
-         YKy9QJLVH8GoqxilmsV2kknfKphDXNMraGgZJUttgRxruQcE4BJs3F1milXgf9zqDTUW
-         l63w==
+        d=google.com; s=20230601; t=1697085423; x=1697690223; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=a5OuTYbjlFj2ZnZUysa+ox563mmr19kTFx3cd83SMJA=;
+        b=bR6FB3MdhayRl1/0ey0RupRbvooUZ6o0GOpgayypmdBkz2ZWLNeyEKy9Ikc7S4g90f
+         c/4HA0csVgbaMed+EqrpmKtvIRSaABoLmtwIV3xTpeLwVkOHFH8wORf0hMJAgjBs4INO
+         rVNCjOvxSsD4ucS2boBRfal/2fG2fMh3FVv+T48fb0XeOjzZOhq+dGiw7n4i+MS5FmrK
+         nlf8sQGQTfj0r+1+twNV6DgqduLVNlIVFMLu7iuDJjMAmxljQmroI/wVFJq4ttMV05i1
+         khU9wkDcoAabzEwC0ZI0DwUy4pJx8mqJfGwmzK9RcxiZyyzP+Ce+EXFGvU+GPw6K8vMr
+         lLFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697085320; x=1697690120;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7WosZVTXUOEeXoWrox6z3tSDEIuK6BYXU7VnhYrOQfo=;
-        b=ZsNmGVDlG0j+LvF0ZiwJKHji49FrOCJy09Tw1d1zHVcbVG7ATEvC5AYLGQM9SyJ0pj
-         956N/wyty24Ei8c6av8n3hbrCPfY0bpzgrPOI6Ar8D5pVTZlzBSkoS0U6WAJFIuUzfc/
-         Gw2H8y460nKjvkwO5Zl4EMfFc+TrGc73wEIqHu2xUFkaeNv7wBGImBOAoTzZoMaIEwIf
-         pTz9DQLj1uw3QrIDvV3BYQhxLZeybx8wmmiU/m6PPg4qIK/SaBvrp0fpxvJly1xvhj05
-         f1My3D/aB7+Ga+E/ybkt3cmHdR1J+YW9bMxRNfh/nuu8jMtTVWaFcE1D2IWOoQKz1OAR
-         Oq0Q==
-X-Gm-Message-State: AOJu0YxEYLSvLH0iR/qGIBBGSR7m/0tysVDsyg1sKirbJplN2kjwutra
-        IG02UntNtsZsJhX30GLMq1g=
-X-Google-Smtp-Source: AGHT+IEMdBfINMg5wVoIJUHiN8ohSa4D2agSHU8u5m1PSGZ41FqRWyaFQksruR6jrWfdmas5zgNYbg==
-X-Received: by 2002:a05:600c:220b:b0:406:4242:e7df with SMTP id z11-20020a05600c220b00b004064242e7dfmr20647900wml.35.1697085319322;
-        Wed, 11 Oct 2023 21:35:19 -0700 (PDT)
-Received: from dreambig.dreambig.corp ([58.27.187.115])
-        by smtp.gmail.com with ESMTPSA id f12-20020a7bcd0c000000b003fefb94ccc9sm18246890wmj.11.2023.10.11.21.35.17
+        d=1e100.net; s=20230601; t=1697085423; x=1697690223;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a5OuTYbjlFj2ZnZUysa+ox563mmr19kTFx3cd83SMJA=;
+        b=mdRMLmMFrduDf4hMKRnxYZaAb7ZuDAMtz+UwleV8XWHCWtX3OsF548gwEjZFT3q2l0
+         ydAjlbRaTM57h/CkG54n4WyvpxGe3FbU65KbnitreNLV+QuSLvQnSvf2IrOLBKZyIznq
+         D0P0VClYtC74dHbio4tvAvDgUUtAdGTPWw6/FlDFeKFU5rY42XBnw2NnKtHhMUmiiMaY
+         t0Me6GZcx74yOtdxRfRHi26ivWrg8XjQe9654wUrDZVIAx/NUQpb9l7QV00ZbW4gFxdu
+         lauhxQOzN3mapknJFUEH9IRq6yKGlJU8DTStKZguApgnbMlrkmBTb6IQepJJYhHGVNH1
+         T+NQ==
+X-Gm-Message-State: AOJu0YwLzf97iHj/NkHkilRV2HusNAUr3Ni0qtNtWQmLXQ9vbXygM70B
+        fydftWdg7Nh782K5jALPQ+7ZmQ==
+X-Google-Smtp-Source: AGHT+IETdOSgEufuiDP0695WsR1MnpV5RMnezXFLEWIo7fsk77X2Wmp8S9Nzl8vTK4HM2wSRsqLU9A==
+X-Received: by 2002:a81:c307:0:b0:594:e148:3c42 with SMTP id r7-20020a81c307000000b00594e1483c42mr20822490ywk.52.1697085422882;
+        Wed, 11 Oct 2023 21:37:02 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id w136-20020a0dd48e000000b0059b547b167esm5668442ywd.98.2023.10.11.21.37.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 21:35:19 -0700 (PDT)
-From:   Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-To:     horms@kernel.org, loic.poulain@linaro.org, ryazanov.s.a@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-Subject: [PATCH v2] drivers: net: wwan: wwan_core.c: resolved spelling mistake
-Date:   Thu, 12 Oct 2023 09:35:00 +0500
-Message-Id: <20231012043501.9610-1-m.muzzammilashraf@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 11 Oct 2023 21:37:02 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 21:36:59 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Dave Chinner <david@fromorbit.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Carlos Maiolino <cem@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Dennis Zhou <dennisszhou@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 8/8] shmem,percpu_counter: add _limited_add(fbc, limit,
+ amount)
+In-Reply-To: <ZSNGMvICWWaKAaJL@dread.disaster.area>
+Message-ID: <ddc21eb0-8fe9-c5c3-82c5-f8ac3e4a5a10@google.com>
+References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com> <bb817848-2d19-bcc8-39ca-ea179af0f0b4@google.com> <ZR3wzVJ019gH0DvS@dread.disaster.area> <2451f678-38b3-46c7-82fe-8eaf4d50a3a6@google.com> <ZSNGMvICWWaKAaJL@dread.disaster.area>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,39 +84,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-resolved typing mistake from devce to device
+On Mon, 9 Oct 2023, Dave Chinner wrote:
+> On Thu, Oct 05, 2023 at 10:35:33PM -0700, Hugh Dickins wrote:
+> > On Thu, 5 Oct 2023, Dave Chinner wrote:
+> > > 
+> > > Hmmmm. IIUC, this only works for addition that approaches the limit
+> > > from below?
+> > 
+> > That's certainly how I was thinking about it, and what I need for tmpfs.
+> > Precisely what its limitations (haha) are, I'll have to take care to
+> > spell out.
+> > 
+> > (IIRC - it's a while since I wrote it - it can be used for subtraction,
+> > but goes the very slow way when it could go the fast way - uncompared
+> > percpu_counter_sub() much better for that.  You might be proposing that
+> > a tweak could adjust it to going the fast way when coming down from the
+> > "limit", but going the slow way as it approaches 0 - that would be neat,
+> > but I've not yet looked into whether it's feasily done.)
 
-changes since v1:
-	- resolved another typing mistake from concurent to
-	  concurrent
+Easily done once I'd looked at it from the right angle.
 
-Signed-off-by: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
----
- drivers/net/wwan/wwan_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > > 
+> > > So if we are approaching the limit from above (i.e. add of a
+> > > negative amount, limit is zero) then this code doesn't work the same
+> > > as the open-coded compare+add operation would?
+> > 
+> > To it and to me, a limit of 0 means nothing positive can be added
+> > (and it immediately returns false for that case); and adding anything
+> > negative would be an error since the positive would not have been allowed.
+> > 
+> > Would a negative limit have any use?
 
-diff --git a/drivers/net/wwan/wwan_core.c b/drivers/net/wwan/wwan_core.c
-index 87df60916960..72e01e550a16 100644
---- a/drivers/net/wwan/wwan_core.c
-+++ b/drivers/net/wwan/wwan_core.c
-@@ -302,7 +302,7 @@ static void wwan_remove_dev(struct wwan_device *wwandev)
- 
- static const struct {
- 	const char * const name;	/* Port type name */
--	const char * const devsuf;	/* Port devce name suffix */
-+	const char * const devsuf;	/* Port device name suffix */
- } wwan_port_types[WWAN_PORT_MAX + 1] = {
- 	[WWAN_PORT_AT] = {
- 		.name = "AT",
-@@ -1184,7 +1184,7 @@ void wwan_unregister_ops(struct device *parent)
- 	 */
- 	put_device(&wwandev->dev);
- 
--	rtnl_lock();	/* Prevent concurent netdev(s) creation/destroying */
-+	rtnl_lock();	/* Prevent concurrent netdev(s) creation/destroying */
- 
- 	/* Remove all child netdev(s), using batch removing */
- 	device_for_each_child(&wwandev->dev, &kill_list,
--- 
-2.27.0
+There was no reason to exclude it, once I was thinking clearly
+about the comparisons.
 
+> 
+> I don't have any use for it, but the XFS case is decrementing free
+> space to determine if ENOSPC has been hit. It's the opposite
+> implemention to shmem, which increments used space to determine if
+> ENOSPC is hit.
+
+Right.
+
+> 
+> > It's definitely not allowing all the possibilities that you could arrange
+> > with a separate compare and add; whether it's ruling out some useful
+> > possibilities to which it can easily be generalized, I'm not sure.
+> > 
+> > Well worth a look - but it'll be easier for me to break it than get
+> > it right, so I might just stick to adding some comments.
+> > 
+> > I might find that actually I prefer your way round: getting slower
+> > as approaching 0, without any need for specifying a limit??  That the
+> > tmpfs case pushed it in this direction, when it's better reversed?  Or
+> > that might be an embarrassing delusion which I'll regret having mentioned.
+> 
+> I think there's cases for both approaching and upper limit from
+> before and a lower limit from above. Both are the same "compare and
+> add" algorithm, just with minor logic differences...
+
+Good, thanks, you've saved me: I was getting a bit fundamentalist there,
+thinking to offer one simplest primitive from which anything could be
+built.  But when it came down to it, I had no enthusiam for rewriting
+tmpfs's used_blocks as free_blocks, just to avoid that limit argument.
+
+> 
+> > > Hence I think this looks like a "add if result is less than"
+> > > operation, which is distinct from then "add if result is greater
+> > > than" operation that we use this same pattern for in XFS and ext4.
+> > > Perhaps a better name is in order?
+> > 
+> > The name still seems good to me, but a comment above it on its
+> > assumptions/limitations well worth adding.
+> > 
+> > I didn't find a percpu_counter_compare() in ext4, and haven't got
+> 
+> Go search for EXT4_FREECLUSTERS_WATERMARK....
+
+Ah, not a percpu_counter_compare() user, but doing its own thing.
+
+> 
+> > far yet with understanding the XFS ones: tomorrow...
+> 
+> XFS detects being near ENOSPC to change the batch update size so
+> taht when near ENOSPC the percpu counter always aggregates to the
+> global sum on every modification. i.e. it becomes more accurate (but
+> slower) near the ENOSPC threshold. Then if the result of the
+> subtraction ends up being less than zero, it takes a lock (i.e. goes
+> even slower!), undoes the subtraction that took it below zero, and
+> determines if it can dip into the reserve pool or ENOSPC should be
+> reported.
+> 
+> Some of that could be optimised, but we need that external "lock and
+> undo" mechanism to manage the reserve pool space atomically at
+> ENOSPC...
+
+Thanks for going above and beyond with the description; but I'll be
+honest and admit that I only looked quickly, and did not reach any
+conclusion as to whether such usage could or should be converted
+to percpu_counter_limited_add() - which would never take any XFS
+locks, of course, so might just end up doubling the slow work.
+
+But absolutely I agree with you, and thank you for pointing out,
+how stupidly useless percpu_counter_limited_add() was for decrementing -
+it was nothing more than a slow way of doing percpu_counter_sub().
+
+I'm about to send in a 9/8, extending it to be more useful: thanks.
+
+Hugh
