@@ -2,57 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B287C6343
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 05:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C407C6348
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 05:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376803AbjJLD1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 23:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
+        id S1376830AbjJLD3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 23:29:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234050AbjJLD1S (ORCPT
+        with ESMTP id S234050AbjJLD3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 23:27:18 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA46A4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 20:27:15 -0700 (PDT)
-X-UUID: 8082050961664414ac8c087896282905-20231012
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:10d5f7a9-3d12-473a-8444-bd7c2cb1cc91,IP:5,U
-        RL:25,TC:0,Content:-25,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,A
-        CTION:release,TS:15
-X-CID-INFO: VERSION:1.1.32,REQID:10d5f7a9-3d12-473a-8444-bd7c2cb1cc91,IP:5,URL
-        :25,TC:0,Content:-25,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-        ION:release,TS:15
-X-CID-META: VersionHash:5f78ec9,CLOUDID:f5b6b1f0-9a6e-4c39-b73e-f2bc08ca3dc5,B
-        ulkID:2310121127047JV2J5CC,BulkQuantity:0,Recheck:0,SF:24|17|19|44|66|38|1
-        02,TC:nil,Content:0,EDM:5,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,
-        COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_ULN,
-        TF_CID_SPAM_SNR
-X-UUID: 8082050961664414ac8c087896282905-20231012
-X-User: yaolu@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.169)] by mailgw
-        (envelope-from <yaolu@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1332845596; Thu, 12 Oct 2023 11:27:02 +0800
-From:   Lu Yao <yaolu@kylinos.cn>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org
-Cc:     hpa@zytor.com, linux-kernel@vger.kernel.org, rdunlap@infradead.org,
-        lkp@intel.com, Lu Yao <yaolu@kylinos.cn>
-Subject: [PATCH v3] x86/msi: Fix compile error caused by GENERIC_MSI_IRQ and X86_LOCAL_APIC
-Date:   Thu, 12 Oct 2023 11:26:59 +0800
-Message-Id: <20231012032659.323251-1-yaolu@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231011055749.98840-1-yaolu@kylinos.cn>
-References: <20231011055749.98840-1-yaolu@kylinos.cn>
+        Wed, 11 Oct 2023 23:29:10 -0400
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378B3A9;
+        Wed, 11 Oct 2023 20:29:08 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Vtyvp29_1697081342;
+Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vtyvp29_1697081342)
+          by smtp.aliyun-inc.com;
+          Thu, 12 Oct 2023 11:29:05 +0800
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+To:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
+        helgaas@kernel.org, yangyicong@huawei.com, will@kernel.org,
+        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
+        robin.murphy@arm.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, rdunlap@infradead.org,
+        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
+        xueshuai@linux.alibaba.com, renyu.zj@linux.alibaba.com
+Subject: [PATCH v7 0/4] drivers/perf: add Synopsys DesignWare PCIe PMU driver support
+Date:   Thu, 12 Oct 2023 11:28:52 +0800
+Message-Id: <20231012032856.2640-1-xueshuai@linux.alibaba.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,109 +44,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When compiling the x86 kernel, if X86_LOCAL_APIC is not enabled but
-GENERIC_MSI_IRQ is selected in '.config', the following compilation
-error will occur:
+Change Log
+==========
 
-  include/linux/gpio/driver.h:38:19: error:
-    field 'msiinfo' has incomplete type
+change since v6:
+- improve editorial things in doc (Per Jonathan)
+- change config help to generic text (Per Jonathan)
+- remove macro to_dwc_pcie_pmu by moving pmu as the first member to struct dwc_pcie_pmu (Per Yicong)
+- add event type check in dwc_pcie_event_show() to keep consistent with other function (Per Jonathan)
+- remove intended blank line (Per Yicong)
+- protect against lower 32 bits of counter overflow by try again trick (Per Jonathan)
+- call pci_dev_put on all the return branch to keep the refcnt balance (Per Jonathan and Yicong)
+- use devm_add_action_or_reset() to automatic unwind (Per Jonathan)
+- fix picking numa-aware context cpu up when offline and offline cpu (Per Jonathan)
+- simplify online cpu by init pcie_pmu->on_cpu as -1 (Per Jonathan)
+- add bus_register_notifier() to handle rootport hotplug (Per Yicong)
+- pick up Acked-by from Bjorn for patch 2/4 (Per Bjorn)
+Link: https://lore.kernel.org/lkml/20230606074938.97724-1-xueshuai@linux.alibaba.com/T/
 
-  kernel/irq/msi.c:752:5: error: invalid use of incomplete typedef
-    'msi_alloc_info_t' {aka 'struct irq_alloc_info'}
+changes since v5:
+- Rewrite the commit log to follow policy in pci_ids.h (Bjorn Helgaas)
+- return error code when __dwc_pcie_pmu_probe failed (Baolin Wang)
+- call 'cpuhp_remove_multi_state()' when exiting the driver. (Baolin Wang)
+- pick up Review-by tag from Baolin for Patch 1 and 3
+Link: https://lore.kernel.org/lkml/ZGuSimj1cuQl3W5L@bhelgaas/T/#mba3fa2572dde0deddb40b5b24a31f4df41004bdf
 
-  kernel/irq/msi.c:740:1: error: control reaches end of non-void function
+changes since v4:
 
-This is because file such as 'kernel/irq/msi.c' only depends on
-'GENERIC_MSI_IRQ', and uses 'struct msi_alloc_info_t'. However,
-this struct depends on 'X86_LOCAL_APIC'.
+1. addressing commens from Bjorn Helgaas:
+- reorder the includes by alpha
+- change all macros with upper-case hex
+- change ras_des type into u16
+- remove unnecessary outer "()"
+- minor format changes
 
-When enable 'GENERIC_MSI_IRQ' or 'X86_LOCAL_APIC' will select
-'IRQ_DOMAIN_HIERARCHY', so exposing this struct using
-'IRQ_DOMAIN_HIERARCHY' rather than 'X86_LOCAL_APIC'.
+2. Address commensts from Jonathan Cameron:
+- rewrite doc and add a example to show how to use lane event
 
-Under the above conditions, if 'HPET_TIMER' is selected, the following
-compilation error will occur:
+3. fix compile error reported by: kernel test robot
+- remove COMPILE_TEST and add depend on PCI in kconfig
+- add Reported-by: kernel test robot <lkp@intel.com>
 
-  arch/x86/kernel/hpet.c:550:13: error: ‘x86_vector_domain’ undeclared
+Changes since v3:
 
-  arch/x86/kernel/hpet.c:600:9: error: implicit declaration of
-    function ‘init_irq_alloc_info’
+1. addressing comments from Robin Murphy:
+- add a prepare patch to define pci id in linux/pci_ids.h
+- remove unnecessary 64BIT dependency
+- fix DWC_PCIE_PER_EVENT_OFF/ON macro
+- remove dwc_pcie_pmu struct and move all its fileds into dwc_pcie_rp_info
+- remove unnecessary format field show
+- use sysfs_emit() instead of all the assorted sprintf() and snprintf() calls.
+- remove unnecessary spaces and remove unnecessary cast to follow event show convention
+- remove pcie_pmu_event_attr_is_visible
+- fix a refcout leak on error branch when walk pci device in for_each_pci_dev
+- remove bdf field from dwc_pcie_rp_info and calculate it at runtime
+- finish all the checks before allocating rp_info to avoid hanging wasted memory
+- remove some unused fields
+- warp out control register configuration from sub function to .add()
+- make function return type with a proper signature
+- fix lane event count enable by clear DWC_PCIE_CNT_ENABLE field first
+- pass rp_info directly to the read_*_counter helpers and in start, stop and add callbacks
+- move event type validtion into .event_init()
+- use is_sampling_event() to be consistent with everything else of pmu drivers
+- remove unnecessary dev_err message in .event_init()
+- return EINVAL instead EOPNOTSUPP for not a valid event 
+- finish all the checks before start modifying the event
+- fix sibling event check by comparing event->pmu with sibling->pmu
+- probe PMU for each rootport independently
+- use .update() as .read() directly
+- remove dynamically generating symbolic name of lane event
+- redefine static symbolic name of lane event and leave lane filed to user
+- add CPU hotplug support
 
-This is because 'x86_vector_domain' is defined in 'kernel/apic/vector.c'
-which is compiled only when 'X86_LOCAL_APIC' is enabled. Besides,
-function 'msi_domain_set_affinity' is defined in 'include/linux/msi.h'
-which depends on 'GENERIC_MSI_IRQ'. So use 'X86_LOCAL_APIC' and
-'GENERIC_MSI_IRQ' to expose these code.
+2. addressing comments from Baolin:
+- add a mask to avoid possible overflow
 
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Lu Yao <yaolu@kylinos.cn>
----
-Change from v2:
- * Fix arch/x86/kernel/hpet.c compiled error when enable 'X86_LOCAL_APIC'
-   'HPET_TIMER' but disable 'GENERIC_MSI_IRQ'.
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310120849.zrfrI44Z-lkp@intel.com/
-v2: https://patchew.org/linux/20231011055749.98840-1-yaolu@kylinos.cn/
+Changes since v2 addressing comments from Baolin:
+- remove redundant macro definitions
+- use dev_err to print error message
+- change pmu_is_register to boolean
+- use PLATFORM_DEVID_NONE macro
+- fix module author format
 
-Change from v1:
- * Fix arch/x86/kernel/hpet.c compiled error when enable 'X86_LOCAL_APIC'
-   'GENERIC_MSI_IRQ' 'HPET_TIMER'
-Thanks to Randy for the feedback.
-v1: https://lore.kernel.org/lkml/20231008082827.279154-1-yaolu@kylinos.cn/
+Changes since v1:
 
----
- arch/x86/include/asm/hw_irq.h | 6 +++---
- arch/x86/kernel/hpet.c        | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+1. address comments from Jonathan:
+- drop marco for PMU name and VSEC version
+- simplify code with PCI standard marco
+- simplify code with FIELD_PREP()/FIELD_GET() to replace shift marco
+- name register filed with single _ instead double
+- wrap dwc_pcie_pmu_{write}_dword out and drop meaningless snaity check 
+- check vendor id while matching vesc with pci_find_vsec_capability()
+- remove RP_NUM_MAX and use a list to organize PMU devices for rootports
+- replace DWC_PCIE_CREATE_BDF with standard PCI_DEVID
+- comments on riping register together
 
-diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
-index 551829884734..b02c3cd3c0f6 100644
---- a/arch/x86/include/asm/hw_irq.h
-+++ b/arch/x86/include/asm/hw_irq.h
-@@ -28,7 +28,7 @@
- #include <asm/irq.h>
- #include <asm/sections.h>
- 
--#ifdef	CONFIG_X86_LOCAL_APIC
-+#ifdef	CONFIG_IRQ_DOMAIN_HIERARCHY
- struct irq_data;
- struct pci_dev;
- struct msi_desc;
-@@ -105,10 +105,10 @@ static inline void irq_complete_move(struct irq_cfg *c) { }
- #endif
- 
- extern void apic_ack_edge(struct irq_data *data);
--#else	/*  CONFIG_X86_LOCAL_APIC */
-+#else	/*  CONFIG_IRQ_DOMAIN_HIERARCHY */
- static inline void lock_vector_lock(void) {}
- static inline void unlock_vector_lock(void) {}
--#endif	/* CONFIG_X86_LOCAL_APIC */
-+#endif	/* CONFIG_IRQ_DOMAIN_HIERARCHY */
- 
- /* Statistics */
- extern atomic_t irq_err_count;
-diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
-index 1648aa0204d9..41eecf180b7f 100644
---- a/arch/x86/kernel/hpet.c
-+++ b/arch/x86/kernel/hpet.c
-@@ -52,7 +52,7 @@ unsigned long				hpet_address;
- u8					hpet_blockid; /* OS timer block num */
- bool					hpet_msi_disable;
- 
--#ifdef CONFIG_GENERIC_MSI_IRQ
-+#if defined(CONFIG_X86_LOCAL_APIC) && defined(CONFIG_GENERIC_MSI_IRQ)
- static DEFINE_PER_CPU(struct hpet_channel *, cpu_hpet_channel);
- static struct irq_domain		*hpet_domain;
- #endif
-@@ -469,7 +469,7 @@ static void __init hpet_legacy_clockevent_register(struct hpet_channel *hc)
- /*
-  * HPET MSI Support
-  */
--#ifdef CONFIG_GENERIC_MSI_IRQ
-+#if defined(CONFIG_X86_LOCAL_APIC) && defined(CONFIG_GENERIC_MSI_IRQ)
- static void hpet_msi_unmask(struct irq_data *data)
- {
- 	struct hpet_channel *hc = irq_data_get_irq_handler_data(data);
+2. address comments from Bjorn:
+- rename DWC_PCIE_VSEC_ID to DWC_PCIE_VSEC_RAS_DES_ID
+- rename cap_pos to ras_des
+- simplify declare of device_attribute with DEVICE_ATTR_RO
+- simplify code with PCI standard macro and API like pcie_get_width_cap()
+- fix some code style problem and typo
+- drop meaningless snaity check of container_of
+
+3. address comments from Yicong:
+- use sysfs_emit() to replace sprintf()
+- simplify iteration of pci device with for_each_pci_dev
+- pick preferred CPUs on a near die and add comments
+- unregister PMU drivers only for failed ones
+- log on behalf PMU device and give more hint
+- fix some code style problem
+
+(Thanks for all comments and they are very valuable to me)
+
+Cover Letter
+==========
+
+This patchset adds the PCIe Performance Monitoring Unit (PMU) driver support
+for T-Head Yitian 710 SoC chip. Yitian 710 is based on the Synopsys PCI Express
+Core controller IP which provides statistics feature.
+
+Shuai Xue (4):
+  docs: perf: Add description for Synopsys DesignWare PCIe PMU driver
+  PCI: Add Alibaba Vendor ID to linux/pci_ids.h
+  drivers/perf: add DesignWare PCIe PMU driver
+  MAINTAINERS: add maintainers for DesignWare PCIe PMU driver
+
+ .../admin-guide/perf/dwc_pcie_pmu.rst         |  94 +++
+ Documentation/admin-guide/perf/index.rst      |   1 +
+ MAINTAINERS                                   |   7 +
+ drivers/infiniband/hw/erdma/erdma_hw.h        |   2 -
+ drivers/perf/Kconfig                          |   7 +
+ drivers/perf/Makefile                         |   1 +
+ drivers/perf/dwc_pcie_pmu.c                   | 762 ++++++++++++++++++
+ include/linux/pci_ids.h                       |   2 +
+ 8 files changed, 874 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/admin-guide/perf/dwc_pcie_pmu.rst
+ create mode 100644 drivers/perf/dwc_pcie_pmu.c
+
 -- 
-2.25.1
+2.39.3
 
