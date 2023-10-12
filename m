@@ -2,176 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CA87C6CBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030A97C6D03
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378459AbjJLLrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43962 "EHLO
+        id S1378756AbjJLLrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378209AbjJLLqy (ORCPT
+        with ESMTP id S1378536AbjJLLrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:46:54 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6C3C4;
-        Thu, 12 Oct 2023 04:46:52 -0700 (PDT)
-Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:7ae7:b86d:c19a:877e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 12 Oct 2023 07:47:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47ABDFD
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 04:46:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697111185;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WIegbc1FLrrwIh2JY6As7DXUlzCdo7e3rD7xAJ0V3OI=;
+        b=fEGvh8AWT8Xh+s5on7gGO2X9pYrZ1KlhD4CDKy4RSqFmjIay0LA7ZKyBNCQIZtMmL5QbWF
+        obaL8Y26vL2lbsSHc61drDW/SouA8MhjXKMEOtq5W06m26QubS+d2//D0X8I1/LGVRqEl7
+        /hrAHlH4HIgcv1L7a3Va2T28KgLiOgY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-648-3jWqN8JuMCGfw_MDG6rsJg-1; Thu, 12 Oct 2023 07:46:10 -0400
+X-MC-Unique: 3jWqN8JuMCGfw_MDG6rsJg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D22196607348;
-        Thu, 12 Oct 2023 12:46:50 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697111211;
-        bh=xMJ8tMojfr13gTY+PpecndOGeS4i3P9Tk9kRrGKcBSQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d0Vb5yg800NBnbps2lBfIjdmI+Nk9X7Z+HUG/OhSGGIb/xKUKkaChkfykyV+Z0igH
-         +yat9F7ZLG5f7N992/tn+aNdv8m82HKhXpeV+iTbq79HNk0nTQbwznumDPfXqQk5ni
-         3s++jlxrkL5b+92W/j07LlSI2nTDHAcWwKBcEaMYhXO9rTndxm3uEvNHCCcRcjBXHX
-         Dft0V8mD1KhWU45yBziHsUaKEar+UseGWgsVQSpZO/r9x3Q72APSdm/8nJS+3L9mLm
-         vjK7S0r7JpPPMibS2H5+Y/RIyYqz87CJUnsZELLjnKP0pTNWO+UMgBz0Vxj0r1tD8k
-         yjxLkgoLP6NAg==
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v11 03/56] media: videobuf2: Stop spamming kernel log with all queue counter
-Date:   Thu, 12 Oct 2023 13:45:49 +0200
-Message-Id: <20231012114642.19040-4-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
-References: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B1A3185530F;
+        Thu, 12 Oct 2023 11:46:09 +0000 (UTC)
+Received: from alecto.usersys.redhat.com (unknown [10.43.17.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D6D462157F5A;
+        Thu, 12 Oct 2023 11:46:07 +0000 (UTC)
+From:   Artem Savkov <asavkov@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Artem Savkov <asavkov@redhat.com>
+Subject: [RFC PATCH bpf-next] bpf: change syscall_nr type to int in struct syscall_tp_t
+Date:   Thu, 12 Oct 2023 13:45:50 +0200
+Message-ID: <20231012114550.152846-1-asavkov@redhat.com>
+In-Reply-To: <20231005123413.GA488417@alecto.usersys.redhat.com>
+References: <20231005123413.GA488417@alecto.usersys.redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only report unbalanced queue counters do avoid spamming kernel log
-with useless information.
+linux-rt-devel tree contains a patch (b1773eac3f29c ("sched: Add support
+for lazy preemption")) that adds an extra member to struct trace_entry.
+This causes the offset of args field in struct trace_event_raw_sys_enter
+be different from the one in struct syscall_trace_enter:
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+struct trace_event_raw_sys_enter {
+        struct trace_entry         ent;                  /*     0    12 */
+
+        /* XXX last struct has 3 bytes of padding */
+        /* XXX 4 bytes hole, try to pack */
+
+        long int                   id;                   /*    16     8 */
+        long unsigned int          args[6];              /*    24    48 */
+        /* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
+        char                       __data[];             /*    72     0 */
+
+        /* size: 72, cachelines: 2, members: 4 */
+        /* sum members: 68, holes: 1, sum holes: 4 */
+        /* paddings: 1, sum paddings: 3 */
+        /* last cacheline: 8 bytes */
+};
+
+struct syscall_trace_enter {
+        struct trace_entry         ent;                  /*     0    12 */
+
+        /* XXX last struct has 3 bytes of padding */
+
+        int                        nr;                   /*    12     4 */
+        long unsigned int          args[];               /*    16     0 */
+
+        /* size: 16, cachelines: 1, members: 3 */
+        /* paddings: 1, sum paddings: 3 */
+        /* last cacheline: 16 bytes */
+};
+
+This, in turn, causes perf_event_set_bpf_prog() fail while running bpf
+test_profiler testcase because max_ctx_offset is calculated based on the
+former struct, while off on the latter:
+
+  10488         if (is_tracepoint || is_syscall_tp) {
+  10489                 int off = trace_event_get_offsets(event->tp_event);
+  10490
+  10491                 if (prog->aux->max_ctx_offset > off)
+  10492                         return -EACCES;
+  10493         }
+
+What bpf program is actually getting is a pointer to struct
+syscall_tp_t, defined in kernel/trace/trace_syscalls.c. This patch fixes
+the problem by aligning struct syscall_tp_t with with struct
+syscall_trace_(enter|exit) and changing the tests to use these structs
+to dereference context.
+
+Signed-off-by: Artem Savkov <asavkov@redhat.com>
 ---
- .../media/common/videobuf2/videobuf2-core.c   | 79 +++++++++++--------
- 1 file changed, 44 insertions(+), 35 deletions(-)
+ kernel/trace/trace_syscalls.c                    | 4 ++--
+ tools/testing/selftests/bpf/progs/profiler.inc.h | 2 +-
+ tools/testing/selftests/bpf/progs/test_vmlinux.c | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-index 09be8e026044..47dba2a20d73 100644
---- a/drivers/media/common/videobuf2/videobuf2-core.c
-+++ b/drivers/media/common/videobuf2/videobuf2-core.c
-@@ -533,25 +533,26 @@ static void __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
+diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
+index de753403cdafb..9c581d6da843a 100644
+--- a/kernel/trace/trace_syscalls.c
++++ b/kernel/trace/trace_syscalls.c
+@@ -556,7 +556,7 @@ static int perf_call_bpf_enter(struct trace_event_call *call, struct pt_regs *re
+ {
+ 	struct syscall_tp_t {
+ 		struct trace_entry ent;
+-		unsigned long syscall_nr;
++		int syscall_nr;
+ 		unsigned long args[SYSCALL_DEFINE_MAXARGS];
+ 	} __aligned(8) param;
+ 	int i;
+@@ -661,7 +661,7 @@ static int perf_call_bpf_exit(struct trace_event_call *call, struct pt_regs *reg
+ {
+ 	struct syscall_tp_t {
+ 		struct trace_entry ent;
+-		unsigned long syscall_nr;
++		int syscall_nr;
+ 		unsigned long ret;
+ 	} __aligned(8) param;
  
- #ifdef CONFIG_VIDEO_ADV_DEBUG
- 	/*
--	 * Check that all the calls were balances during the life-time of this
--	 * queue. If not (or if the debug level is 1 or up), then dump the
--	 * counters to the kernel log.
-+	 * Check that all the calls were balanced during the life-time of this
-+	 * queue. If not then dump the counters to the kernel log.
- 	 */
- 	if (q->num_buffers) {
- 		bool unbalanced = q->cnt_start_streaming != q->cnt_stop_streaming ||
- 				  q->cnt_prepare_streaming != q->cnt_unprepare_streaming ||
- 				  q->cnt_wait_prepare != q->cnt_wait_finish;
+diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/testing/selftests/bpf/progs/profiler.inc.h
+index f799d87e87002..897061930cb76 100644
+--- a/tools/testing/selftests/bpf/progs/profiler.inc.h
++++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
+@@ -609,7 +609,7 @@ ssize_t BPF_KPROBE(kprobe__proc_sys_write,
+ }
  
--		if (unbalanced || debug) {
--			pr_info("counters for queue %p:%s\n", q,
--				unbalanced ? " UNBALANCED!" : "");
--			pr_info("     setup: %u start_streaming: %u stop_streaming: %u\n",
--				q->cnt_queue_setup, q->cnt_start_streaming,
--				q->cnt_stop_streaming);
--			pr_info("     prepare_streaming: %u unprepare_streaming: %u\n",
--				q->cnt_prepare_streaming, q->cnt_unprepare_streaming);
--			pr_info("     wait_prepare: %u wait_finish: %u\n",
--				q->cnt_wait_prepare, q->cnt_wait_finish);
-+		if (unbalanced) {
-+			pr_info("unbalanced counters for queue %p:\n", q);
-+			if (q->cnt_start_streaming != q->cnt_stop_streaming)
-+				pr_info("     setup: %u start_streaming: %u stop_streaming: %u\n",
-+					q->cnt_queue_setup, q->cnt_start_streaming,
-+					q->cnt_stop_streaming);
-+			if (q->cnt_prepare_streaming != q->cnt_unprepare_streaming)
-+				pr_info("     prepare_streaming: %u unprepare_streaming: %u\n",
-+					q->cnt_prepare_streaming, q->cnt_unprepare_streaming);
-+			if (q->cnt_wait_prepare != q->cnt_wait_finish)
-+				pr_info("     wait_prepare: %u wait_finish: %u\n",
-+					q->cnt_wait_prepare, q->cnt_wait_finish);
- 		}
- 		q->cnt_queue_setup = 0;
- 		q->cnt_wait_prepare = 0;
-@@ -572,29 +573,37 @@ static void __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
- 				  vb->cnt_buf_prepare != vb->cnt_buf_finish ||
- 				  vb->cnt_buf_init != vb->cnt_buf_cleanup;
+ SEC("tracepoint/syscalls/sys_enter_kill")
+-int tracepoint__syscalls__sys_enter_kill(struct trace_event_raw_sys_enter* ctx)
++int tracepoint__syscalls__sys_enter_kill(struct syscall_trace_enter* ctx)
+ {
+ 	struct bpf_func_stats_ctx stats_ctx;
  
--		if (unbalanced || debug) {
--			pr_info("   counters for queue %p, buffer %d:%s\n",
--				q, buffer, unbalanced ? " UNBALANCED!" : "");
--			pr_info("     buf_init: %u buf_cleanup: %u buf_prepare: %u buf_finish: %u\n",
--				vb->cnt_buf_init, vb->cnt_buf_cleanup,
--				vb->cnt_buf_prepare, vb->cnt_buf_finish);
--			pr_info("     buf_out_validate: %u buf_queue: %u buf_done: %u buf_request_complete: %u\n",
--				vb->cnt_buf_out_validate, vb->cnt_buf_queue,
--				vb->cnt_buf_done, vb->cnt_buf_request_complete);
--			pr_info("     alloc: %u put: %u prepare: %u finish: %u mmap: %u\n",
--				vb->cnt_mem_alloc, vb->cnt_mem_put,
--				vb->cnt_mem_prepare, vb->cnt_mem_finish,
--				vb->cnt_mem_mmap);
--			pr_info("     get_userptr: %u put_userptr: %u\n",
--				vb->cnt_mem_get_userptr, vb->cnt_mem_put_userptr);
--			pr_info("     attach_dmabuf: %u detach_dmabuf: %u map_dmabuf: %u unmap_dmabuf: %u\n",
--				vb->cnt_mem_attach_dmabuf, vb->cnt_mem_detach_dmabuf,
--				vb->cnt_mem_map_dmabuf, vb->cnt_mem_unmap_dmabuf);
--			pr_info("     get_dmabuf: %u num_users: %u vaddr: %u cookie: %u\n",
-+		if (unbalanced) {
-+			pr_info("unbalanced counters for queue %p, buffer %d:\n",
-+				q, buffer);
-+			if (vb->cnt_buf_init != vb->cnt_buf_cleanup)
-+				pr_info("     buf_init: %u buf_cleanup: %u\n",
-+					vb->cnt_buf_init, vb->cnt_buf_cleanup);
-+			if (vb->cnt_buf_prepare != vb->cnt_buf_finish)
-+				pr_info("     buf_prepare: %u buf_finish: %u\n",
-+					vb->cnt_buf_prepare, vb->cnt_buf_finish);
-+			if (vb->cnt_buf_queue != vb->cnt_buf_done)
-+				pr_info("     buf_out_validate: %u buf_queue: %u buf_done: %u buf_request_complete: %u\n",
-+					vb->cnt_buf_out_validate, vb->cnt_buf_queue,
-+					vb->cnt_buf_done, vb->cnt_buf_request_complete);
-+			if (vb->cnt_mem_alloc != vb->cnt_mem_put)
-+				pr_info("     alloc: %u put: %u\n",
-+					vb->cnt_mem_alloc, vb->cnt_mem_put);
-+			if (vb->cnt_mem_prepare != vb->cnt_mem_finish)
-+				pr_info("     prepare: %u finish: %u\n",
-+					vb->cnt_mem_prepare, vb->cnt_mem_finish);
-+			if (vb->cnt_mem_get_userptr != vb->cnt_mem_put_userptr)
-+				pr_info("     get_userptr: %u put_userptr: %u\n",
-+					vb->cnt_mem_get_userptr, vb->cnt_mem_put_userptr);
-+			if (vb->cnt_mem_attach_dmabuf != vb->cnt_mem_detach_dmabuf)
-+				pr_info("     attach_dmabuf: %u detach_dmabuf: %u\n",
-+					vb->cnt_mem_attach_dmabuf, vb->cnt_mem_detach_dmabuf);
-+			if (vb->cnt_mem_map_dmabuf != vb->cnt_mem_unmap_dmabuf)
-+				pr_info("     map_dmabuf: %u unmap_dmabuf: %u\n",
-+					vb->cnt_mem_map_dmabuf, vb->cnt_mem_unmap_dmabuf);
-+			pr_info("     get_dmabuf: %u num_users: %u\n",
- 				vb->cnt_mem_get_dmabuf,
--				vb->cnt_mem_num_users,
--				vb->cnt_mem_vaddr,
--				vb->cnt_mem_cookie);
-+				vb->cnt_mem_num_users);
- 		}
- 	}
- #endif
+diff --git a/tools/testing/selftests/bpf/progs/test_vmlinux.c b/tools/testing/selftests/bpf/progs/test_vmlinux.c
+index 4b8e37f7fd06c..78b23934d9f8f 100644
+--- a/tools/testing/selftests/bpf/progs/test_vmlinux.c
++++ b/tools/testing/selftests/bpf/progs/test_vmlinux.c
+@@ -16,12 +16,12 @@ bool kprobe_called = false;
+ bool fentry_called = false;
+ 
+ SEC("tp/syscalls/sys_enter_nanosleep")
+-int handle__tp(struct trace_event_raw_sys_enter *args)
++int handle__tp(struct syscall_trace_enter *args)
+ {
+ 	struct __kernel_timespec *ts;
+ 	long tv_nsec;
+ 
+-	if (args->id != __NR_nanosleep)
++	if (args->nr != __NR_nanosleep)
+ 		return 0;
+ 
+ 	ts = (void *)args->args[0];
 -- 
-2.39.2
+2.41.0
 
