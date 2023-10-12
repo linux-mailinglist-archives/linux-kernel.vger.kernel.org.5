@@ -2,228 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A197C7A28
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9469D7C7A22
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443201AbjJLXDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 19:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443106AbjJLXDU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1443082AbjJLXDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 12 Oct 2023 19:03:20 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE32513D
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:03:10 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c60778a3bfso13428785ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:03:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697151790; x=1697756590; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EFPxN5h4Yz/Kh95Kwg/dHQdP+2ryagu2J01cqKKyODk=;
-        b=lYm6XMvvuI34p/F7s115FrGfqboNSfFM9IzGFXqKhIWKanwzxXtyZzN179mm/jB4c3
-         AYZHGZC/ljXxOD8CNb5BcNZZhSQdSQ8hU/mkkAfs2sKbIsFoueuMKn9uTKi2f74xmp+Q
-         rEt0jFXFGrjPJHR5mOWgTI4TqfXsg/yPaQ2K8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697151790; x=1697756590;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EFPxN5h4Yz/Kh95Kwg/dHQdP+2ryagu2J01cqKKyODk=;
-        b=n5OTJAQXLE4OErNDMzMrmW0xKNXbLTd1rSQzwgzR7PR8v93Auzhb13UGW94KxLZdwQ
-         MrmTLCbX7k0xD0UpGFloJCdNToHmfx7YUrw1YupdbetU7v5AUrNzK0cg3/W1gg4cm2I/
-         5aQZaoDy+F4fKaJZMPNUcm5Ytxr5wrVC+q8ZEBNdpEdQxDqoDjJwW/Mmwaq3/SSjddHC
-         KyfFwVwmjN0z5k3XeF2gKlU9Qm23TLavPRGgRB8WmE0iXORHIN9SpILZaDtaUzrQenmJ
-         +zCo9BKM4t+V5dtBpfwneWvZzrrIn4T06zZMHJT/uK3rscMz+bhuzzE/AKnXWOZursJy
-         kDzw==
-X-Gm-Message-State: AOJu0YxPmOFFI5pHTwK0NXUuvht7bQ2OQw+J4kRhnK7D6+sYece6TuN4
-        4GiYoG48LQtvXOAImzQmZobgHuRnZqpLaqqsktE+WQ==
-X-Google-Smtp-Source: AGHT+IEwiBTYiXyw0ylqmM0RWi8WMP5G5S+LI3ARjay2AD+Tzo7msM4hIoDmDwH8vRIRJqHScqQhSA==
-X-Received: by 2002:a17:902:d481:b0:1c8:7d21:fc50 with SMTP id c1-20020a170902d48100b001c87d21fc50mr24606295plg.56.1697151789811;
-        Thu, 12 Oct 2023 16:03:09 -0700 (PDT)
-Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:7397:2561:ed13:bac8])
-        by smtp.gmail.com with ESMTPSA id g11-20020a1709026b4b00b001c613091aeasm2494390plt.297.2023.10.12.16.03.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 16:03:09 -0700 (PDT)
-From:   Chen-Yu Tsai <wenst@chromium.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 9/9] arm64: dts: mediatek: Add MT8186 Magneton Chromebooks
-Date:   Fri, 13 Oct 2023 07:02:35 +0800
-Message-ID: <20231012230237.2676469-10-wenst@chromium.org>
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-In-Reply-To: <20231012230237.2676469-1-wenst@chromium.org>
-References: <20231012230237.2676469-1-wenst@chromium.org>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1443114AbjJLXDP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Oct 2023 19:03:15 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2081.outbound.protection.outlook.com [40.107.102.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CEEDD7;
+        Thu, 12 Oct 2023 16:03:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cqYaAj1v34RBKJJ77Pkm9dleoQzBDCFpNmun2gU0968UljZvszR8BP8poizOzzqHcJOy85iZIJEqide4bMkSqfZWe4LGb8uaD6G+tl1Pvusbd0G+88K/q0i9dOTuiZQJwwHLA1nVzqsM95cOhLZyXNcCbT316T7wA5CrhaF+Bs+HwnTSVujekzAZy2R8wBmEVgG0rwpRvNw0Y1GJPDn+pCZN4YX4WWmgwrqyTJoEBz28bP92LeOArnU9nfspcmLJvY3lOUOv8CF0623+n3ORFRxcBizfuY2ol+K3ljWgvv3QV9kALWaTXXwNHyUbJ4W+Hf1jH4zjPY2MCYLU9pnBRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fjkzFype70iW0b9GFHLXH8amblyeWcr+4vuVvmjUEYU=;
+ b=T32uOaQttJg22UbkOP9rVYMIC5dOQsOb/PbXI+eVncEVWCLTktzYKHB6TKEBBxg/p1VflBg6YO6XxsjtzujBlBmpdGKliGITc7fBk8HAn4fxvMP39eOHLDiv1VCxIpGp9vzMNY1RVxeono3j4nsHX6OjEanmFs6s6F8Njp8BTQLagYFSsphrJ54dpRp7LDO6Zlf74qtdRahZW9oDrMEVRn8udytGJkOJkgLTTwim8QjjAiKaqYrY2KUtPeKzEFmHyPNokKwfZIO5/nmmCXkPv7iEGORa/EropFmBknnDvqkRcqXh23a7U8Ei+RPlYtoOJURIEm6FqWMmq4zssQrbDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fjkzFype70iW0b9GFHLXH8amblyeWcr+4vuVvmjUEYU=;
+ b=NVyALjhLLVsllt1lBg7//VFIcFmFOvrpnr9TfWQj+FD1dg3ZJWasyl22xPbxkwbQbZUNhCn2hmddLHDcPf+hoszhjUZ3ss7j3MGpwaP3IcAUnrtv88IHFsoT+CTLIwJhom/gdSHfRLvsRLrXL5tPpmBIy4H6nY8zF5DPb3t3FpNDmO3pDdg0Dy9X2puDWLrUio/KI88PMdkFa1V7IscBLErrRUJ6iQVDbC2TcApZpsd6r0ZYzUQjUSdlOZnT6olH8HX5UaJaSJtQBfQSgBXyNqQC99SlKaIAZWE2ZfYPXA1S+qDfG/PdCxvXdXh7gqq21Y98xdntTF67UyrQTkrz1w==
+Received: from MW4P223CA0030.NAMP223.PROD.OUTLOOK.COM (2603:10b6:303:80::35)
+ by CH3PR12MB8331.namprd12.prod.outlook.com (2603:10b6:610:12f::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.37; Thu, 12 Oct
+ 2023 23:03:02 +0000
+Received: from CO1PEPF000044F1.namprd05.prod.outlook.com
+ (2603:10b6:303:80:cafe::87) by MW4P223CA0030.outlook.office365.com
+ (2603:10b6:303:80::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38 via Frontend
+ Transport; Thu, 12 Oct 2023 23:03:01 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CO1PEPF000044F1.mail.protection.outlook.com (10.167.241.71) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.22 via Frontend Transport; Thu, 12 Oct 2023 23:03:01 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 12 Oct
+ 2023 16:02:39 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 12 Oct
+ 2023 16:02:39 -0700
+Received: from vdi.nvidia.com (10.127.8.12) by mail.nvidia.com (10.129.68.8)
+ with Microsoft SMTP Server id 15.2.986.41 via Frontend Transport; Thu, 12 Oct
+ 2023 16:02:38 -0700
+From:   Liming Sun <limings@nvidia.com>
+To:     Vadim Pasternak <vadimp@nvidia.com>,
+        David Thompson <davthompson@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+CC:     Liming Sun <limings@nvidia.com>,
+        <platform-driver-x86@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] platform/mellanox: mlxbf-tmfifo: Fix a warning message
+Date:   Thu, 12 Oct 2023 19:02:35 -0400
+Message-ID: <20231012230235.219861-1-limings@nvidia.com>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <bb8bc77e6ecc2287fc9110cfa08caa48eb2a0385.1696508228.git.limings@nvidia.com>
+References: <bb8bc77e6ecc2287fc9110cfa08caa48eb2a0385.1696508228.git.limings@nvidia.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044F1:EE_|CH3PR12MB8331:EE_
+X-MS-Office365-Filtering-Correlation-Id: e513000d-718a-4ed9-338f-08dbcb7762a4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5QKujscur9SY2RPsOdDZ4/qUME5/O+qcjPkkOWDgJKqsritg2Ho31B0BfiPN2h6nfewUcu2zWxjsJVfXKh2oMlNHldMQDIxB8va2a+GnFuESGlqhsC3eLh1lQg5gsqbtoDkNfNWB0rLEiqy3bGt0J3qTfUxUU6SKqBxjpXF4ldo8tIVFrKr7J1O/hLz9mortuxhAZzILiwhXKNtf0q1mUYdfCD3uwaTPkfW0Cym8npZS8gANRJiRPbcUwXkeV1evSbyfGo5/O7NT1Z0gR6rxwvYeTuAds5l8zU5TnIXFmmUxxrRnft6pbwDTo2BKhQsuI4tOyV8UpvNtLIBNOIpfYA6NBNqxXm4HxJYroXkNF0k7ONFIjIimQFAGW9qVsDHvRxfhn+BE/el8Uuibco04uMCg3/l6F+w05G9z3r3kIiE8n0MemUG5Lr+vx0C8OOIuzwJfLT2Xkh1zhL7I8Gcquo7D/V7rzMKHa0NHF5+UTX9e4UgB7A5yT67m2w4L7uvkU9Q9sRE5F+Omw1e7symJxjlCXq4t2Va9GWvuW6hhNYNn1gTgyjVo0UYfxbSTbT6MpMGu7DNcNHpt4WxazP66u8lRuV46x76ZrnmmfrDLWRgZAJp58fo8Ih97Zlf+fM4HHddWNQGLXCoN6zX/3E+Ml5ZQSaZICoYQsx1ICWNrhlhSot90Yr2CS+QB3NAC9N+7T94ZJRAoQxhyLitfzSablfsRulVofKjBPvUU1m62sGafJ555SjYQMkTwV6ZCFwLh
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(396003)(136003)(39860400002)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(82310400011)(36840700001)(40470700004)(46966006)(40460700003)(478600001)(36756003)(2616005)(1076003)(26005)(426003)(2906002)(336012)(356005)(7636003)(82740400003)(6666004)(83380400001)(86362001)(40480700001)(47076005)(36860700001)(7696005)(110136005)(8936002)(8676002)(4326008)(70206006)(70586007)(54906003)(41300700001)(5660300002)(316002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 23:03:01.8750
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e513000d-718a-4ed9-338f-08dbcb7762a4
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F1.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8331
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entries for the MT8186 based Chromebooks, also collectively known
-as the Lenovo IdeaPad Slim 3 Chromebook (14M868). It is also based on
-the "Steelix" design. Being a laptop instead of a convertible device,
-there is no touchscreen or stylus, which is similar to Rusty. However
-Magneton does not have ports on the right side of the device.
+This commit fixes the smatch static checker warning in function
+mlxbf_tmfifo_rxtx_word() which complains data not initialized at
+line 634 when IS_VRING_DROP() is TRUE.
 
-Three variants are listed separately. These use different touchscreen
-controllers, or lack a touchscreen altogether.
-
-Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+Signed-off-by: Liming Sun <limings@nvidia.com>
 ---
- arch/arm64/boot/dts/mediatek/Makefile         |  3 ++
- .../mt8186-corsola-magneton-sku393216.dts     | 38 +++++++++++++++++++
- .../mt8186-corsola-magneton-sku393217.dts     | 38 +++++++++++++++++++
- .../mt8186-corsola-magneton-sku393218.dts     | 21 ++++++++++
- 4 files changed, 100 insertions(+)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393216.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393217.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393218.dts
+v1->v2: Logic adjustment for Hans's comment
+  - Adjust the logic to avoid confusion.
+v1: Initial version.
+---
+ drivers/platform/mellanox/mlxbf-tmfifo.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index 6b05f1f2e645..7e365e9516ab 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -43,6 +43,9 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku32.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku0.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-pumpkin.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-magneton-sku393216.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-magneton-sku393217.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-magneton-sku393218.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-rusty-sku196608.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-steelix-sku131072.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-steelix-sku131073.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393216.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393216.dts
-new file mode 100644
-index 000000000000..7406e7a29fcc
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393216.dts
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2022 Google LLC
-+ */
-+
-+/dts-v1/;
-+#include "mt8186-corsola-steelix.dtsi"
-+
-+/ {
-+	model = "Google Magneton board";
-+	compatible = "google,steelix-sku393216", "google,steelix-sku393219",
-+		     "google,steelix", "mediatek,mt8186";
-+	chassis-type = "laptop";
-+};
-+
-+/delete-node/ &gpio_keys;
-+/delete-node/ &touchscreen;
-+
-+&i2c1 {
-+	touchscreen: touchscreen@10 {
-+		compatible = "hid-over-i2c";
-+		reg = <0x10>;
-+		interrupt-parent = <&pio>;
-+		interrupts = <12 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&touchscreen_pins>;
-+		reset-gpios = <&pio 60 GPIO_ACTIVE_LOW>;
-+		vdd-supply = <&pp3300_s3>;
-+		status = "okay";
-+
-+		post-power-on-delay-ms = <350>;
-+		hid-descr-addr = <0x0001>;
-+	};
-+};
-+
-+&usb_c1 {
-+	status = "disabled";
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393217.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393217.dts
-new file mode 100644
-index 000000000000..b1806e0b2782
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393217.dts
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2022 Google LLC
-+ */
-+
-+/dts-v1/;
-+#include "mt8186-corsola-steelix.dtsi"
-+
-+/ {
-+	model = "Google Magneton board";
-+	compatible = "google,steelix-sku393217", "google,steelix-sku393220",
-+		     "google,steelix", "mediatek,mt8186";
-+	chassis-type = "laptop";
-+};
-+
-+/delete-node/ &gpio_keys;
-+/delete-node/ &touchscreen;
-+
-+&i2c1 {
-+	touchscreen: touchscreen@40 {
-+		compatible = "hid-over-i2c";
-+		reg = <0x40>;
-+		interrupt-parent = <&pio>;
-+		interrupts = <12 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&touchscreen_pins>;
-+		reset-gpios = <&pio 60 GPIO_ACTIVE_LOW>;
-+		vdd-supply = <&pp3300_s3>;
-+		status = "okay";
-+
-+		post-power-on-delay-ms = <450>;
-+		hid-descr-addr = <0x0001>;
-+	};
-+};
-+
-+&usb_c1 {
-+	status = "disabled";
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393218.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393218.dts
-new file mode 100644
-index 000000000000..c70f196f115b
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393218.dts
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2022 Google LLC
-+ */
-+
-+/dts-v1/;
-+#include "mt8186-corsola-steelix.dtsi"
-+
-+/ {
-+	model = "Google Magneton board";
-+	compatible = "google,steelix-sku393218", "google,steelix-sku393221",
-+		     "google,steelix", "mediatek,mt8186";
-+	chassis-type = "laptop";
-+};
-+
-+/delete-node/ &gpio_keys;
-+/delete-node/ &touchscreen;
-+
-+&usb_c1 {
-+	status = "disabled";
-+};
+diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+index f3696a54a2bd..d9615ad60012 100644
+--- a/drivers/platform/mellanox/mlxbf-tmfifo.c
++++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+@@ -607,24 +607,25 @@ static void mlxbf_tmfifo_rxtx_word(struct mlxbf_tmfifo_vring *vring,
+ 
+ 	if (vring->cur_len + sizeof(u64) <= len) {
+ 		/* The whole word. */
+-		if (!IS_VRING_DROP(vring)) {
+-			if (is_rx)
++		if (is_rx) {
++			if (!IS_VRING_DROP(vring))
+ 				memcpy(addr + vring->cur_len, &data,
+ 				       sizeof(u64));
+-			else
+-				memcpy(&data, addr + vring->cur_len,
+-				       sizeof(u64));
++		} else {
++			memcpy(&data, addr + vring->cur_len,
++			       sizeof(u64));
+ 		}
+ 		vring->cur_len += sizeof(u64);
+ 	} else {
+ 		/* Leftover bytes. */
+-		if (!IS_VRING_DROP(vring)) {
+-			if (is_rx)
++		if (is_rx) {
++			if (!IS_VRING_DROP(vring))
+ 				memcpy(addr + vring->cur_len, &data,
+ 				       len - vring->cur_len);
+-			else
+-				memcpy(&data, addr + vring->cur_len,
+-				       len - vring->cur_len);
++		} else {
++			data = 0;
++			memcpy(&data, addr + vring->cur_len,
++			       len - vring->cur_len);
+ 		}
+ 		vring->cur_len = len;
+ 	}
 -- 
-2.42.0.655.g421f12c284-goog
+2.30.1
 
