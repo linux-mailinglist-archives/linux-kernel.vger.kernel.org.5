@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F8B7C6D0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EC67C6D2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378892AbjJLLsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:48:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
+        id S1379205AbjJLLsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:48:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378624AbjJLLrN (ORCPT
+        with ESMTP id S1378628AbjJLLrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Oct 2023 07:47:13 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FAA111;
-        Thu, 12 Oct 2023 04:47:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E94118;
+        Thu, 12 Oct 2023 04:47:05 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:7ae7:b86d:c19a:877e])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3FA8A6607382;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id BDD416607350;
         Thu, 12 Oct 2023 12:47:03 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697111223;
-        bh=YCZw7PvG0/vvqRoLk52CD8Z7MDM+1YNzRKdH40h8V+Y=;
+        s=mail; t=1697111224;
+        bh=VxrSf2TjcSSXRnDg1WucVdGn4nlvPFqwpAeCOwuv/a0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R8PddrSwYrJypqDe18vfuYP8TLYDSYw/idYGlsRcstM2f0sRYMh/DPISe+y0ffJuu
-         4kt/lfC2uRsFMfkzckVlAIFWIp2JhQb4rb5icnyD8NU3HdBfP+UUakTQzFCowgDnPi
-         JHHmQ8jHbxn7T91f2FbBAGBPAdi+FmWo6RBneluLVp/CPmxsQl7Pph2msO3HmussbO
-         WuNnVvFhOBDdtJMm8AAAstTlo+tI1U2BP/QgmQ2bkmktV2CfbHVTvuWscER4ftwdMY
-         YcbX3JpKccSevXBp2Z+l8xzLIpyyPPfBQbzosLLm/vYs3STa/MARBTjF0Dw+9UOZUd
-         p3nADtjXcOBzA==
+        b=EzeW+HbJ86unAEmGAC4vwmJ5F7x1j/bC6V+hGCcN+5PwyTHBMfIvdhLsKjsTR6ZbX
+         fzQPZLHybtEUgDa7WYxo0o71ObcPkUH5LzJLacnFer5iGKBIpLqBWJNeysKjFDobrB
+         X7RqRCOAfXa11sAbZyri9l/IiKiV5KSN/bTFfS4qB4aHNQeBlbvv/aUcts+CkrS5tV
+         adUoQc3HeGOD5k8DFDyMzyGsgMG+ObIy+0OIIKbroXzOYavehZpulR1xFNOWu3iMnl
+         wzWotHSL9RGn3Rx45EgailuFTCK+EenWeSiFlZqoXd0HP0/RT/jPvM85wcM/pkWObV
+         o/vagGaCYrGdQ==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v11 26/56] media: pci: tw686x: Set min_buffers_needed to 3
-Date:   Thu, 12 Oct 2023 13:46:12 +0200
-Message-Id: <20231012114642.19040-27-benjamin.gaignard@collabora.com>
+Subject: [PATCH v11 27/56] media: coda: Stop direct calls to queue num_buffers field
+Date:   Thu, 12 Oct 2023 13:46:13 +0200
+Message-Id: <20231012114642.19040-28-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
 References: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
@@ -60,47 +60,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vb2 queue_setup checks for a minimum number of buffers so set
-min_buffers_needed to 3 and remove the useless check in
-tw686x_queue_setup().
+Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-CC: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+CC: Philipp Zabel <p.zabel@pengutronix.de>
 ---
- drivers/media/pci/tw686x/tw686x-video.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ drivers/media/platform/chips-media/coda-common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/pci/tw686x/tw686x-video.c b/drivers/media/pci/tw686x/tw686x-video.c
-index 3ebf7a2c95f0..74cd864365aa 100644
---- a/drivers/media/pci/tw686x/tw686x-video.c
-+++ b/drivers/media/pci/tw686x/tw686x-video.c
-@@ -426,13 +426,6 @@ static int tw686x_queue_setup(struct vb2_queue *vq,
- 	unsigned int szimage =
- 		(vc->width * vc->height * vc->format->depth) >> 3;
+diff --git a/drivers/media/platform/chips-media/coda-common.c b/drivers/media/platform/chips-media/coda-common.c
+index cc4892129aaf..f1d85758f6dd 100644
+--- a/drivers/media/platform/chips-media/coda-common.c
++++ b/drivers/media/platform/chips-media/coda-common.c
+@@ -794,7 +794,7 @@ static int coda_s_fmt(struct coda_ctx *ctx, struct v4l2_format *f,
  
--	/*
--	 * Let's request at least three buffers: two for the
--	 * DMA engine and one for userspace.
--	 */
--	if (vq->num_buffers + *nbuffers < 3)
--		*nbuffers = 3 - vq->num_buffers;
--
- 	if (*nplanes) {
- 		if (*nplanes != 1 || sizes[0] < szimage)
- 			return -EINVAL;
-@@ -1221,7 +1214,11 @@ int tw686x_video_init(struct tw686x_dev *dev)
- 		vc->vidq.ops = &tw686x_video_qops;
- 		vc->vidq.mem_ops = dev->dma_ops->mem_ops;
- 		vc->vidq.timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
--		vc->vidq.min_buffers_needed = 2;
-+		/*
-+		 * Let's request at least three buffers: two for the
-+		 * DMA engine and one for userspace.
-+		 */
-+		vc->vidq.min_buffers_needed = 3;
- 		vc->vidq.lock = &vc->vb_mutex;
- 		vc->vidq.gfp_flags = dev->dma_mode != TW686X_DMA_MODE_MEMCPY ?
- 				     GFP_DMA32 : 0;
+ 	if (vb2_is_busy(vq)) {
+ 		v4l2_err(&ctx->dev->v4l2_dev, "%s: %s queue busy: %d\n",
+-			 __func__, v4l2_type_names[f->type], vq->num_buffers);
++			 __func__, v4l2_type_names[f->type], vb2_get_num_buffers(vq));
+ 		return -EBUSY;
+ 	}
+ 
 -- 
 2.39.2
 
