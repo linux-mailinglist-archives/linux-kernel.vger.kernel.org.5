@@ -2,143 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B367C6896
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B3D7C6846
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235394AbjJLIUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 04:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41228 "EHLO
+        id S235384AbjJLIUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 04:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235369AbjJLIUS (ORCPT
+        with ESMTP id S235397AbjJLIUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 04:20:18 -0400
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2132.outbound.protection.outlook.com [40.107.96.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C58A9;
-        Thu, 12 Oct 2023 01:20:16 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ntgHUcVhdRY7VPd6V+IPJyLgDp4/Mo7gs1tp1n89iLXoDVRPe7Dk+7yl+y63nC2+IrStUfwKAn/rNDKapwVipaPUvdBJZUaTT18fV3fvNv0fE+EcomOxpCjZedMwEhslst9YLLxCM+rwhQ1jnfeBfUcO4FsR22r7YDrcYKPBgSd0httqaEZ1HsHnHzRKrkMOpoiDupYSsYQnq2aC4x2MlhYq3ibAFkwap1WjJ5RzNpYGytZu/7kTQvhfyzwrEhGgayqilSSXI6RjFnbuk4yToqUaoQlCG20+gph8fsku5xyFbP55bVkEi7FNqRkrmfvLCp1JPVMks3QKMyjFcDQHrg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=V4QNzJBn9YsnomYCrAZYehKHh95XDodptEUOu57WJkw=;
- b=Fkbc3dwJxK/LH0dHQl8Ng2nO3Fx+xSrS8dYByjvxpTT4dChyBX4hsFu0gMW9OzmbHCeGTgOowq+1707wFC7TxyE6+EQhwgaxTW+V+wBB41IFDk+d5oq/RzL3LLcLzleThxEVInLKZAi6c994yYMCe6Obh9uCDtmEiG3xiactJCv2lZCqkpXRnvHPQgIAEsdR/3OoL4KlWQtKhxc306yJVdB7EovcPhgrX7aRn/N7rFaIrANnqKGHZa6J+jEsQdj0h84idh57eGzfN/WLyqVQYhDKwIPvVbQTM6i4DrhIqYH9Z4B5ueKufA6TsSmz+37hRFo3lAlcZWgpqCfi2EZWzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+        Thu, 12 Oct 2023 04:20:42 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E89EC0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:20:40 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7ab4c86eeb0so288033241.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:20:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V4QNzJBn9YsnomYCrAZYehKHh95XDodptEUOu57WJkw=;
- b=RHi6xDOmlgVa9r+ic2i1ojIPN+dbPMCIUFd8hJ7ypXSrR7yca1hRo3dHYkFzHsiuuI1iwUE8GlkocFOAWYRWbbdnVwqyxum/yD1TJ3NlJNK1zi+6NrBhpvyR3apWfzxfvjcHfC0xSeyDICTW7AgfRL/sgpkFGhZmjLQrInbV0s4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
- BN0PR01MB6893.prod.exchangelabs.com (2603:10b6:408:166::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6863.45; Thu, 12 Oct 2023 08:20:12 +0000
-Received: from DM5PR0102MB3590.prod.exchangelabs.com
- ([fe80::f7a2:1a96:ba3f:d70f]) by DM5PR0102MB3590.prod.exchangelabs.com
- ([fe80::f7a2:1a96:ba3f:d70f%4]) with mapi id 15.20.6863.040; Thu, 12 Oct 2023
- 08:20:12 +0000
-Date:   Thu, 12 Oct 2023 01:19:41 -0700 (PDT)
-From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Will Deacon <will@kernel.org>
-cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the arm-perf tree
-In-Reply-To: <20231011172250.5a6498e5@canb.auug.org.au>
-Message-ID: <e8ca559b-421e-c326-f33-6edc8bfade@os.amperecomputing.com>
-References: <20231011172250.5a6498e5@canb.auug.org.au>
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-ClientProxiedBy: CH0PR13CA0029.namprd13.prod.outlook.com
- (2603:10b6:610:b1::34) To DM5PR0102MB3590.prod.exchangelabs.com
- (2603:10b6:4:a4::25)
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697098839; x=1697703639; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LBSR0wcYspbRO3qzDDOttNnFk8Qm8m44q1aDPM4j6u0=;
+        b=h3VUpP60lCraEgRIeKC+IYT3/zc4QMe3rLOPOeR+C5Z8BViJaIGlA5n0hC6TjTfr6f
+         XjL//u7RnExc62XGlH3ad/8VAJMSkrBVrYdKB9E5nvDJ2OhOuvZQouT0c07Vjt68Z4A0
+         zqkESMVVM+vFqw815XNAAKnT10KRl4DBDcyWoxhtR9mp9r5QZt4sYOMvta3vSwgJoyIq
+         P9Z8pEjEb97LO7UeKZ+SuhZEDUujFS4iEUkqEwG7LpKkc0jiLB4Ur8PTCD35GkgUqRYf
+         Luzp8BF1qhlaGv1m9Ck7k4pMw41U5VYmDz1naE2IReGX6EghoguOM5vuiJubfYl60fwi
+         3Oyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697098839; x=1697703639;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LBSR0wcYspbRO3qzDDOttNnFk8Qm8m44q1aDPM4j6u0=;
+        b=BSUDfumNlcbuy7Mwhq4OQ/SWqHsOBVcBVpbVLk2ywrRK/i2MOploOeVCkV2McGTs8i
+         0E9wnMSUhqZnO6W2g963fYU3cgmhNaBlNNbIpwmPK8Z9/DTVe0nBFb0i8qj8cI3aGBBm
+         HvO4Bx5/r3cNfGmcUcThkWrESudbGE0vnw1h+xrAyUARs52gWd5aJAKm1vBuZJTe9QPG
+         5BPTVP7GN+M9hGZeXQi/gUGm256C+Gnya4Xa6bLmeM+4aqJj/6sd9bQ+n160zMeglbq8
+         0ZkqyOs1RA1Xfll8CpQLYjtbRQezaKhGIQISbyiWwARUunKT5FSCOoBqekqoYVD0nXRA
+         yjpA==
+X-Gm-Message-State: AOJu0YzJkKRURaVAeltXYc3EtEFLjz1YxKK3WE1V5fQLR+iuvOOw/enZ
+        K+INwLSthsxq3muYc9ii507nbYeo2mFFw0nXHWARKQ==
+X-Google-Smtp-Source: AGHT+IFU2WYRRKW4Qp7Y1F9HNt5ENojY0muko4VO6nlQ050sR3rUD8QC3m4FSm2ajkrFxiVe+ICyPjzlUKQJfuBVBGM=
+X-Received: by 2002:a05:6102:905:b0:457:a912:20c7 with SMTP id
+ x5-20020a056102090500b00457a91220c7mr3053797vsh.5.1697098838451; Thu, 12 Oct
+ 2023 01:20:38 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|BN0PR01MB6893:EE_
-X-MS-Office365-Filtering-Correlation-Id: e9a1455d-59fd-4699-0f6d-08dbcafc0e06
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AIx6r040e06e5xi2Fb3ChQUehT3No6DUPwjfmxE4IozW2dGRMsxE7ne/HlSakuCUPX9evcl+BbgTR5WbpMVKreBaEJ3NaDtrXuFsrX+4seOg6zLzB0TuBRr0MUD2aohNHBdcCbGssSRRYwOTWKz++4NykQHebAykE8aRiIgMIYMgpOUJIiRBCPFBtnyQE+n0qr6nIZ0lrw5xvz6bI5qouzrrhSHqUs9BndwyTu+9AlpJluTFUsuOuAx1/5WodljmWiPYuYswkmxVXyW+gom/NbJn+BG31X1syUiLhFIxSQyWrTY8hcDzMd9K1Tu99y2xg76KzSH5ho21y/O7d4Zig0D5o7p5IfeA3d+4eu6SYEKIuExvkk5xQsQfZyU8QMFPvV6IpuAPBZUcdyPYQEzo0Haz6JPkMBSTrDfefiWPqiByCEPzHogwSAcynSw+nVEfy4UTgHp0fBtjV2G/c2YjZNXZMtNLbT7her900r8qMcWteX+6MCvhqvMCGEHq6zUsb7SRVKp8LXLc36muJ9KnIDMrHaE/dm6nUn3ktzET8kwiHMdGTRn2qIIEfLn+SQXhG+ICDD+Uzf0BKuPCyGbtXZSSvK/z7+PZGsMqVtQs2Aw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(376002)(366004)(396003)(136003)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(2616005)(6666004)(6512007)(52116002)(38350700002)(38100700002)(86362001)(26005)(83380400001)(6506007)(66476007)(110136005)(54906003)(316002)(66556008)(66946007)(2906002)(4744005)(8676002)(8936002)(4326008)(5660300002)(41300700001)(966005)(6486002)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?34rnN9v39QHp/pED5lv1fDTnWcxQaMbKWBWJjMNbBO2+8JLhr3AicjXQs6Qd?=
- =?us-ascii?Q?9MiHQZGgXoMpSHJpD3GX2PAHgBJjQZnw58sFNg48WWU/C1/PwyYaKNHynTZw?=
- =?us-ascii?Q?57mi9gcOXmVYw5/6eA8sbJuynTPZ7S+1LsKV3tjmAw8cslwdW9+dvsBq0YYo?=
- =?us-ascii?Q?ofl3HeGb8aFApz15uKxhWlUjJlDLv97mrYwuCq+IcyH+9mgWwHOX/2wHq6vv?=
- =?us-ascii?Q?DxSmFyHHXJ6QUNP3bwjkACOS6Dipe00WjNp+hpdAsAiH3RK8YZDLTX+gpnvD?=
- =?us-ascii?Q?L2icbNRgg9fDj7mFbqw77raZlIVLtqqzpx7EXzIwNCi3Uw1EhvZvROvJDl1N?=
- =?us-ascii?Q?qC/grAoUpoTgebFfm8pVugzpyGea1zo1bYseuVxiIFszZC+VQ24vMYdp190c?=
- =?us-ascii?Q?3hWJJvDTSdDnJt3Ju7c2s/fyCHoq6ajZH1faglrES7N4o2UtDeE6WQFe2hup?=
- =?us-ascii?Q?axcpasKw5jPxZ27rn+hMIw6RcmvHfH9LM8hsXXWf82238bvjsbfMHL7sC0hu?=
- =?us-ascii?Q?ClOaoFhRGEs/WBPyyZk5GsX8k8ah54Ebo+UqDFnrwfCBgRQJwNvBeQEkLRL3?=
- =?us-ascii?Q?4hcNV4GgctIJByhl4ahw8yVDWfzMuYFvkAxg/yEAU1yy5CNRUPKjcBN5DS9k?=
- =?us-ascii?Q?8St30z1oxPhuLW6bY8WXCNOMgKmKLMLmsubm7pfdtgzKa9CEpayME9Xho8zn?=
- =?us-ascii?Q?HUvN/6sYMu34+mK9jMfbsz2yu91gbbbBZHKJfq33UAJ7ow7FoNUSUBgzSLkd?=
- =?us-ascii?Q?Xu+u6Lnx5lhKi279FK7HbsFZT0Y0sCU5k4l6Nt8xWvdY8stm7eBE6iJwjIce?=
- =?us-ascii?Q?CrfaymDaODr4+RrjqpTojd2OfwTiAULkqtSE+BLLVWCdYz+7YGfizDk3gOO3?=
- =?us-ascii?Q?uLvzNKocYR88dlow6L+FqO8A+mGZv7ZE1GrrOofByKSmrBWpEo3iVGmPfoCv?=
- =?us-ascii?Q?dglkl+oTQsOM6c/5/Tr67kjw5IvrIRYwIPohZBNmo/OJv+GlxIxENo0ba0Lh?=
- =?us-ascii?Q?tbUZl+q4y9LatQ9zGr+w6t35ndlIyFL+VdYhLB7YNoKpAsGQiVv9cmCCX54H?=
- =?us-ascii?Q?kojvkj/iI8YNPHTtbfeToFf17ldydaDZUsk+5ey77dwyjlu/u6G6ZghS3VmV?=
- =?us-ascii?Q?Fy2JulzPyHskMgM/DdbWDxw7hpN6KKLlLtfH017Fi7xclzEA06XJu1m1nM6n?=
- =?us-ascii?Q?locrH9/dJyfJp+8XpmdeaXGpwP+iwlGUEj+Ja9YjxtI+bj8Kh1bSlwARdQhN?=
- =?us-ascii?Q?p2tLYXbePf9SGh2Q+31q2i0A/MoxlM/+eIJpjX5aXYwZncA3Emfuhj7WOglb?=
- =?us-ascii?Q?/uh7DCDnWECNUvDUUMIDjx0eOhKhgmsDxXB24HC6Rfk/c5uE9RcltGEZ7EhN?=
- =?us-ascii?Q?N0YBNVT8ChecmfPViLmNuHjlN+LVb1n9zaPipUqS3dJGLFY7V/PN4G5dVOyz?=
- =?us-ascii?Q?gRamys0aGJQjrIQRFr/sWewFiZJx/r0+Thns4J+q5kRH2frQZyyOKs6pn06j?=
- =?us-ascii?Q?F6Ty32B8kNfM9PSMr9y4AoBdl5lLgCqSCOe+l76i+GB6G5TiupY1DbwS8Gfj?=
- =?us-ascii?Q?r/ZOznL9P3+ELwmWX98HXLCB/BmN8nzqJgWCf1eiSnpzF/5JTuHQ1s/8uQkM?=
- =?us-ascii?Q?VW8M3vWmRclxwXCJEA0uPoo=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9a1455d-59fd-4699-0f6d-08dbcafc0e06
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 08:20:12.0451
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: j5O2vyrXud5B6ywTfFPAeOX5m/KVzRG4UtZ8VLmvgt9l+u2hKSjEx4WAvEfHdDdldks0ymd04QKO+gBww4y8tgoR/QAWIhGVK1jQXEXmiaS6osCkFwDGbywq0U+nEPOf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR01MB6893
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231011202638.372382-1-andriy.shevchenko@linux.intel.com> <75fe5f3f-41d7-76f8-47f9-9178fa030804@nvidia.com>
+In-Reply-To: <75fe5f3f-41d7-76f8-47f9-9178fa030804@nvidia.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 12 Oct 2023 10:20:27 +0200
+Message-ID: <CAMRc=McMzH4Tsr3wASN+cTfr=W-K4OnD4gO4xOxRO=aVffbpKw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] hte: Improve GPIO handling and other cleanups
+To:     Dipen Patel <dipenp@nvidia.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        timestamp@lists.linux.dev, linux-tegra@vger.kernel.org,
+        Andy Shevchenko <andy@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed, 11 Oct 2023, Stephen Rothwell wrote:
-> Hi all,
+On Thu, Oct 12, 2023 at 12:59=E2=80=AFAM Dipen Patel <dipenp@nvidia.com> wr=
+ote:
 >
-> After merging the arm-perf tree, today's linux-next build (htmldocs)
-> produced this warning:
+> On 10/11/23 1:26 PM, Andy Shevchenko wrote:
+> > This is a series that provides a new API to GPIO library (so far only
+> > available in the GPIO tree), and respective update to the Tegra
+> > HTE driver. On top a couple of other cleaups (patches 3 & 4, they
+> > can be applied separately).
+> >
+> > Patch 2 inherited tags from its respective discussion thread [1].
+> >
+> > Due to dependencies this either should be applied to the GPIO tree,
+> > or to the HTE when GPIO updates land the upstream (optionally with
+> > the first patch be applied even now to the GPIO tree independently).
+> >
+> > Another option is to have an immutable branch or tag, but I assume
+> > that was discussed and rejected (?) in [1].
+> >
+> > In v2:
+> > - collected tags (Linus, Dipen)
+> > - fixed couple of typos (Dipen)
+> >
+> > Link: https://lore.kernel.org/linux-gpio/20230905185309.131295-15-brgl@=
+bgdev.pl/ [1]
+> > Cc: Dipen Patel <dipenp@nvidia.com>
+> > Cc: Linus Walleij <linus.walleij@linaro.org>
+> >
+> > Andy Shevchenko (3):
+> >   gpiolib: provide gpio_device_find_by_fwnode()
+> >   hte: tegra194: Remove redundant dev_err()
+> >   hte: tegra194: Switch to LATE_SIMPLE_DEV_PM_OPS()
+> >
+> > Bartosz Golaszewski (1):
+> >   hte: tegra194: don't access struct gpio_chip
+> >
+> >  drivers/gpio/gpiolib.c      | 20 ++++++++++++++++
+> >  drivers/hte/hte-tegra194.c  | 46 +++++++++++++++++++------------------
+> >  include/linux/gpio/driver.h |  1 +
+> >  3 files changed, 45 insertions(+), 22 deletions(-)
+> >
+> Looks great...I am going to assume you are going to push patches 1 and 2 =
+through
+> gpio subsystem and rest through HTE, right?
 >
-> Documentation/admin-guide/perf/ampere_cspmu.rst: WARNING: document isn't included in any toctree
+> Reviewed-by: Dipen Patel <dipenp@nvidia.com>
+> Tested-by: Dipen Patel <dipenp@nvidia.com>
 >
-> Introduced by commit
->
->  53a810ad3c5c ("perf: arm_cspmu: ampere_cspmu: Add support for Ampere SoC PMU")
 
-Thanks Stephen for catching another bug!
+Yes, let me queue them right away.
 
-
-
-Will, it seems that I had made another stupid bug in the same patch. This 
-time I hadn't added the ampere cspmu document to perf toctree. I submitted 
-a fix for it:
-
- 	https://lore.kernel.org/all/20231012074103.3772114-1-ilkka@os.amperecomputing.com/
-
-
-Could you apply the patch or merge it with the ampere cspmu patch, 
-whichever you prefer?
-
-Cheers, Ilkka
+Bart
