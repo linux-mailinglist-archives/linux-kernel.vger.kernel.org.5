@@ -2,102 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8F37C6278
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 03:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 464117C627C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 03:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235266AbjJLBwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 21:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57300 "EHLO
+        id S1347031AbjJLB4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 21:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233989AbjJLBww (ORCPT
+        with ESMTP id S233797AbjJLB4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 21:52:52 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A09A5B6;
-        Wed, 11 Oct 2023 18:52:45 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8BxJvFsUSdl2zoxAA--.29454S3;
-        Thu, 12 Oct 2023 09:52:44 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxzt5pUSdlsjYhAA--.6621S3;
-        Thu, 12 Oct 2023 09:52:41 +0800 (CST)
-Subject: Re: [PATCH v2 0/2] Modify vDSO selftests
-To:     Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <1689069425-17414-1-git-send-email-yangtiezhu@loongson.cn>
- <6aafe4f7-5b20-e791-12c1-413f2db3417b@loongson.cn>
-Cc:     linux-kselftest@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
-        Andrew Morton <akpm@linux-foundation.org>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <379c1f53-3e32-0033-3658-6689f43e7f1f@loongson.cn>
-Date:   Thu, 12 Oct 2023 09:52:41 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        Wed, 11 Oct 2023 21:56:07 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3CCB3A9;
+        Wed, 11 Oct 2023 18:56:06 -0700 (PDT)
+Received: from [10.0.0.178] (c-76-135-56-23.hsd1.wa.comcast.net [76.135.56.23])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 076E220B74C1;
+        Wed, 11 Oct 2023 18:56:05 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 076E220B74C1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1697075765;
+        bh=fkyT/+raROLPFX+mFalCuAsEjnzKBnBZN08qi2EQQx8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=JjpkcJ7c5qt70zQwpK4E0IycHV3l0gNfupU+nYn1cRC728Ifrru4U/q4DOgTGPeYH
+         wlT+PMGaztmYkTN7pyPMX7orM3UjwBX6W+exe2QwuzpcxLOeZfjdQz6DPjnk0n3zt4
+         iHHtkcFRITS6p2zZBCsDuxlqqHOd4Srwo5Ha22QE=
+Message-ID: <f94e3405-20c5-4701-8217-9542affef46f@linux.microsoft.com>
+Date:   Wed, 11 Oct 2023 18:56:04 -0700
 MIME-Version: 1.0
-In-Reply-To: <6aafe4f7-5b20-e791-12c1-413f2db3417b@loongson.cn>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 13/15] uapi: hyperv: Add mshv driver headers hvhdk.h,
+ hvhdk_mini.h, hvgdk.h, hvgdk_mini.h
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        patches@lists.linux.dev, mikelley@microsoft.com, kys@microsoft.com,
+        haiyangz@microsoft.com, decui@microsoft.com,
+        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
+        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
+        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
+        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        will@kernel.org, catalin.marinas@arm.com
+References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1692309711-5573-14-git-send-email-nunodasneves@linux.microsoft.com>
+ <ZN6m2gVmtVStuEfA@liuwe-devbox-debian-v2> <2023081923-crown-cake-79f7@gregkh>
+ <c4482a6a-aed0-4750-aa1b-421f0e541cfa@linux.microsoft.com>
+ <50f1721f-64fb-49ff-9740-0dac7cf832c8@linux.microsoft.com>
+ <2023101133-blade-diary-11e4@gregkh>
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+In-Reply-To: <2023101133-blade-diary-11e4@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8Cxzt5pUSdlsjYhAA--.6621S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrtr1ftw4xKryDXw45KFW5CFX_yoWfurbE9a
-        y8uas3tws7ZF9xAF4Sgw13ZryDJayIyr4UKr17Way7Xry3ZFWUWF4kur48u3WrWa17trZ2
-        yF4UZasavryDXosvyTuYvTs0mTUanT9S1TB71UUUUj7qnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUbDAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
-        twAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-        k0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l
-        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j5o7tUUUUU=
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
+On 10/10/2023 11:42 PM, Greg KH wrote:
+> On Tue, Oct 10, 2023 at 03:49:48PM -0700, Nuno Das Neves wrote:
+>> On 8/25/2023 11:24 AM, Nuno Das Neves wrote:
+>>> On 8/19/2023 3:26 AM, Greg KH wrote:
+>>>>
+>>>> My "strong" opinion is the one kernel development rule that we have,
+>>>> "you can not break userspace".  So, if you change these
+>>>> values/structures/whatever in the future, and userspace tools break,
+>>>> that's not ok and the changes have to be reverted.
+>>>>
+>>>> If you can control both sides of the API here (with open tools that you
+>>>> can guarantee everyone will always update to), then yes, you can change
+>>>> the api in the future.
+>>>>
 
-On 08/17/2023 03:20 PM, Tiezhu Yang wrote:
-> Hi Shuah,
->
-> On 07/11/2023 05:57 PM, Tiezhu Yang wrote:
->> v2: Rebase on 6.5-rc1 and update the commit message
->>
->> Tiezhu Yang (2):
->>   selftests/vDSO: Add support for LoongArch
->>   selftests/vDSO: Get version and name for all archs
->>
->>  tools/testing/selftests/vDSO/vdso_config.h         |  6 ++++-
->>  tools/testing/selftests/vDSO/vdso_test_getcpu.c    | 16 +++++--------
->>  .../selftests/vDSO/vdso_test_gettimeofday.c        | 26
->> ++++++----------------
->>  3 files changed, 18 insertions(+), 30 deletions(-)
->>
->
-> Any comments? I guess this should go through the linux-kselftest tree.
->
-> Thanks,
-> Tiezhu
->
+We control both sides of the API. The code is open. No one else can use it
+today, therefore we can guarantee all the users will stay updated.
 
-What are the status of these patches?
+> Just submit your fixed up patch series based on the previous review
+> comments and it will be reviewed again, just like all kernel patches
+> are.
 
-https://lore.kernel.org/lkml/1689069425-17414-1-git-send-email-yangtiezhu@loongson.cn/
+I will do that.
 
-This is a ping message, maybe you have forgot them?
+> Perhaps you all should take the time to do some kernel patch reviews of
+> other stuff sent to the mailing lists to get an idea of how this whole
+> process works, and to get better integrated into the kernel development
+> community,
+
+That is a good suggestion, I will do that.
+
+> before dumping a huge patchset on us with lots of process
+> questions like this?  Why are you asking the community to do a lot of
+> work and hand-holding when you aren't helping others out as well?
+
+I take your point, sorry my questions came off that way. I will work to
+improve on that :)
 
 Thanks,
-Tiezhu
-
+Nuno
