@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 362CF7C649D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 07:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD18A7C649F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 07:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377029AbjJLF01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 01:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50326 "EHLO
+        id S1377057AbjJLF14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 01:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347049AbjJLF0Z (ORCPT
+        with ESMTP id S233879AbjJLF1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 01:26:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8EDB8;
-        Wed, 11 Oct 2023 22:26:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697088383; x=1728624383;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LeeXmusK+iW6I5sSe0haYdMvQit1ncmN9v4FBs+c+TE=;
-  b=YbN5esfTev0ZskNag8jL3kaBcjGsgsXtjeoWBcX3igO19XEtJ3+gpw2I
-   fMAHn9/9df5PJGtixy7XY2D2GD2RgQjZZ43h96OunDFOcfC9M1mJs6+Vq
-   GiYIFuAHdaoNLRH+obLE72qAo3sAMc8rPoWeqE47W/EDJtrlqCKfOfdJY
-   78iXUNWBCIGsrWaNwmpZKgPh7aId+GYPtAxYl1vjMDzK9IekEELhALuE9
-   f+spymTqQiiG0cfMVJkdOJLPTh+HhD0kPVNzjnC7T1bvDWKiwItynvt7h
-   yFqbt2AcUCaedTE8rbcd0BuohgkiZn4tXUEQWc6Mqc2SUEXJffAMAwfxq
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="383703175"
-X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
-   d="scan'208";a="383703175"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 22:26:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="704022944"
-X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
-   d="scan'208";a="704022944"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 11 Oct 2023 22:26:21 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qqoDC-0003Dl-1h;
-        Thu, 12 Oct 2023 05:26:18 +0000
-Date:   Thu, 12 Oct 2023 13:25:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        ilpo.jarvinen@linux.intel.com, rajvi.jingar@linux.intel.com
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH V3 03/16] platform/x86/intel/vsec: Use cleanup.h
-Message-ID: <202310121314.3Xpqom2w-lkp@intel.com>
-References: <20231012023840.3845703-4-david.e.box@linux.intel.com>
+        Thu, 12 Oct 2023 01:27:55 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C269E90
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 22:27:53 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9b96c3b4be4so83954266b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 22:27:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697088472; x=1697693272; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ozg712u+fkxOtQ1gw/5043+BQ9WtYWW1ZFVe71DFuYA=;
+        b=j2Zs2x6qMC8G7CFej5vKHTfLjko/yi36Jtjz37v5eAZJX2Fa7rk10oS5EWpuhiDYME
+         usquzsXrBR4wRi1jbTmF9wngv7XgMieY2tvRg31+wLIr/bHp9Rui9Cfpkl+2n/C9ICCF
+         rbpYiAI5aOqvmsqu31W8curZZk2iie3OCjw69NBxBUn84uqkndV55gIsBjbCnjd+Xeex
+         wL9UtVsh4r1Xf8Ngh7doxlGZ+at/vrWer/ARPjccTaxl07EuQawhYoRuW+hoWojwza0y
+         fP7LJmcf7vWrdcfHPBOyYVR4LAlGhiLvJSoJws8fwaUfpHwlRiWQZq3lRkx+uYL4MuR2
+         R8qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697088472; x=1697693272;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ozg712u+fkxOtQ1gw/5043+BQ9WtYWW1ZFVe71DFuYA=;
+        b=GGuiI5KJRKWBOZAmqJQacaHrrhHdZ8mJbbvUI3WfIYeAWj9l0bPy/yyUKXvfZhd6t1
+         sGFtKSDTG8c0jUKOjEKRlK1QlMdmtep2j04F8JMqe9MJHHzh84hdU6nzSau2gxF/VPTA
+         d5yWQqcV0/Wqh1lfC+OtHOIqRDEnYGsaHIbxav+S7SsexZ7tIUYn8is5IlpIGQ20vLj1
+         AptvX6FfLiyQPb3JAzkOK5x/prAHVCuYRqXnzvzDqcRyL4fjAQMtdC0SQpX3huf/qXPl
+         S+549zGbVdcXUEhkv4/38HUG44zivhRwcclzWttva8QygTYsJIaS0ZjW82wlidaBiAMv
+         sEDQ==
+X-Gm-Message-State: AOJu0YwSfLNc12rq+Zqf+9WbHygRgLpS+tSpQ5f5JfZ+9PFC7MsjS5MD
+        6YSPUwgUlnKAX4rx7TK5W/Ql4HdEoZmhtt42
+X-Google-Smtp-Source: AGHT+IF5tYUPLGypOey9huLbPekHSPE+pf00HCsiwFtXUpe7IaMbQweFfXQemW7Ol5j6nK+4EEqVqw==
+X-Received: by 2002:a17:906:328c:b0:9ae:4776:5a3a with SMTP id 12-20020a170906328c00b009ae47765a3amr20714283ejw.39.1697088471826;
+        Wed, 11 Oct 2023 22:27:51 -0700 (PDT)
+Received: from lab-ubuntu ([41.90.69.21])
+        by smtp.gmail.com with ESMTPSA id n17-20020a170906379100b009b957d5237asm10516169ejc.80.2023.10.11.22.27.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 22:27:51 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 08:27:49 +0300
+From:   Calvince Otieno <calvncce@gmail.com>
+To:     outreachy@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Carpenter <error27@gmail.com>,
+        Archana <craechal@gmail.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Simon Horman <horms@kernel.org>, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging/wlan-ng: remove strcpy() use in favor of strscpy()
+Message-ID: <ZSeD1UojAgrsOh16@lab-ubuntu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231012023840.3845703-4-david.e.box@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+strncpy() function is actively dangerous to use since it may not
+NUL-terminate the destination string, resulting in potential memory
+content exposures, unbounded reads, or crashes. strcpy() performs
+no bounds checking on the destination buffer. The safe replacement
+is strscpy() which is specific to the Linux kernel.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Calvince Otieno <calvncce@gmail.com>
+---
+ drivers/staging/wlan-ng/prism2fw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[auto build test WARNING on acce85a7dd28eac3858d44230f4c65985d0f271c]
+diff --git a/drivers/staging/wlan-ng/prism2fw.c b/drivers/staging/wlan-ng/prism2fw.c
+index 5d03b2b9aab4..57a99dd12143 100644
+--- a/drivers/staging/wlan-ng/prism2fw.c
++++ b/drivers/staging/wlan-ng/prism2fw.c
+@@ -725,7 +725,7 @@ static int plugimage(struct imgchunk *fchunk, unsigned int nfchunks,
+ 
+ 		if (j == -1) {	/* plug the filename */
+ 			memset(dest, 0, s3plug[i].len);
+-			strncpy(dest, PRISM2_USB_FWFILE, s3plug[i].len - 1);
++			strscpy(dest, PRISM2_USB_FWFILE, s3plug[i].len - 1);
+ 		} else {	/* plug a PDR */
+ 			memcpy(dest, &pda->rec[j]->data, s3plug[i].len);
+ 		}
 
-url:    https://github.com/intel-lab-lkp/linux/commits/David-E-Box/platform-x86-intel-vsec-Move-structures-to-header/20231012-104217
-base:   acce85a7dd28eac3858d44230f4c65985d0f271c
-patch link:    https://lore.kernel.org/r/20231012023840.3845703-4-david.e.box%40linux.intel.com
-patch subject: [PATCH V3 03/16] platform/x86/intel/vsec: Use cleanup.h
-reproduce: (https://download.01.org/0day-ci/archive/20231012/202310121314.3Xpqom2w-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310121314.3Xpqom2w-lkp@intel.com/
-
-# many are suggestions rather than must-fix
-
-ERROR:SPACING: need consistent spacing around '*' (ctx:WxV)
-#31: FILE: drivers/platform/x86/intel/vsec.c:159:
-+	struct intel_vsec_device __free(kfree) *intel_vsec_dev = NULL;
- 	                                       ^
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
