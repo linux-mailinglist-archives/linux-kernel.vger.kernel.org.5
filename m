@@ -2,112 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D33EC7C705E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5913D7C7061
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233785AbjJLOgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 10:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49982 "EHLO
+        id S1343837AbjJLOgx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 10:36:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233260AbjJLOge (ORCPT
+        with ESMTP id S233260AbjJLOgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:36:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D0CB8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:36:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DE7CC433C8;
-        Thu, 12 Oct 2023 14:36:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697121392;
-        bh=T66Yur/UCraUQwTSXUcC9RiZqqV3VvZWqiVESHrtPY8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MJ5DfxWaahvAPHHHHX8MojtEbigSm7v6EfEav0C0orOwLfJvGkfovUPkb3tBVLvER
-         zm+g9r6QTVMjW5xGGYYlu0NIpCokM+fNKVw9BNEzwXu10r0GAAX0xZ/sty+ynEU8dJ
-         oliyneNUpyAFk5zQ5D8TC9X//2xfeODIMy1lRkCydqISyZ2zN8lI/VjVNO0Pe63dfC
-         SFQHAoLqs0K3wUNqrdTVVXT2ArrRSMb1MYbwWGknaIe2lGaWhj1t+HsGjAfs5bfAQl
-         LewTlVrie9IFA9HjWbE44DRVu8U3mFjAxD81uMaYlzPMatHpCUXDtt8Ywj1kLbEzlr
-         zEw0F/UQElxjg==
-Date:   Thu, 12 Oct 2023 15:36:28 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] riscv: errata: thead: use riscv_nonstd_cache_ops
- for CMO
-Message-ID: <20231012-remindful-coke-f9cfe950425f@spud>
-References: <20231012141456.4078-1-jszhang@kernel.org>
- <ZSgA1BtMv/YDHzQX@xhacker>
+        Thu, 12 Oct 2023 10:36:51 -0400
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403B3BE;
+        Thu, 12 Oct 2023 07:36:50 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5a7e5dc8573so13030647b3.0;
+        Thu, 12 Oct 2023 07:36:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697121409; x=1697726209;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7xNUkD+t8nN69dK1Tkr14yK7DyMQjN5EP3Sv+TV2NO4=;
+        b=wJDe08GnxvgDzS0/s2bsFX8+DMGXCq2qkkqbEI7Rxcigyg6xrluojSguNRST8aG4+f
+         JsTr86US/9w6fLBmPzb4WncSgjHRRt+Miw597MSRTF0by4TZ7XPh6pW5tNGgARqUIKnE
+         +5rC4VUwBWBK8Z74xeTN53pLzeo+GcCkYcLsIAivCysQOtwN08XHF4eb1qekKP1XJIa5
+         KwXr0Sxob1LGS4pxUxn9nVDaRFQKQOwVFOWwwJDZ19Zfr8aAtTlJJEZrSOrmsFybWrg5
+         gK4vNRo//2ePZHeEWenRa5wSz9ubHxJcq1d1q1oT3n8QRL1tc8UjTwflf6RUy3bkfwCB
+         CEnQ==
+X-Gm-Message-State: AOJu0YyGWu+iAUdhgH6RlibZHnFRMIpo6OBqyTcdd7YZKhfaaUU5mZtQ
+        ShQxQenY3qvOmnBq4dxlg+YqwN2L8IfpUA==
+X-Google-Smtp-Source: AGHT+IEX9tcaEEox552ONpzn3vErKFV+9ykd5SIaVw8mYX9EXMJzd9IainrzGm1kGv+e+XSSnlCjCQ==
+X-Received: by 2002:a81:4402:0:b0:5a7:b1d9:70cb with SMTP id r2-20020a814402000000b005a7b1d970cbmr10123357ywa.2.1697121409247;
+        Thu, 12 Oct 2023 07:36:49 -0700 (PDT)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id v83-20020a814856000000b005a7d50b7edfsm1503222ywa.142.2023.10.12.07.36.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 07:36:47 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-59f6441215dso12712287b3.2;
+        Thu, 12 Oct 2023 07:36:47 -0700 (PDT)
+X-Received: by 2002:a0d:ce02:0:b0:59b:ec11:7734 with SMTP id
+ q2-20020a0dce02000000b0059bec117734mr25998262ywd.39.1697121407643; Thu, 12
+ Oct 2023 07:36:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="yhohIoGoNmGJsGcL"
-Content-Disposition: inline
-In-Reply-To: <ZSgA1BtMv/YDHzQX@xhacker>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010132701.1658737-1-claudiu.beznea.uj@bp.renesas.com> <20231010132701.1658737-5-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20231010132701.1658737-5-claudiu.beznea.uj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 12 Oct 2023 16:36:34 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW-m+ikzOiCqGaiofd0QG5BVuoMK+z6G7u2JboGTw3xhQ@mail.gmail.com>
+Message-ID: <CAMuHMdW-m+ikzOiCqGaiofd0QG5BVuoMK+z6G7u2JboGTw3xhQ@mail.gmail.com>
+Subject: Re: [PATCH 4/6] arm64: dts: renesas: rzg3s-smarc-som: Enable SDHI2
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     magnus.damm@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Claudiu,
 
---yhohIoGoNmGJsGcL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for your patch!
 
-On Thu, Oct 12, 2023 at 10:21:08PM +0800, Jisheng Zhang wrote:
-> On Thu, Oct 12, 2023 at 10:14:54PM +0800, Jisheng Zhang wrote:
-> > Previously, we use alternative mechanism to dynamically patch
-> > the CMO operations for THEAD C906/C910 during boot for performance
-> > reason. But as pointed out by Arnd, "there is already a significant
-> > cost in accessing the invalidated cache lines afterwards, which is
-> > likely going to be much higher than the cost of an indirect branch".
-> > And indeed, there's no performance difference with GMAC and EMMC per
-> > my test on Sipeed Lichee Pi 4A board.
-> >=20
-> > Use riscv_nonstd_cache_ops for THEAD C906/C910 CMO to simplify
-> > the alternative code, and to acchieve Arnd's goal -- "I think
-> > moving the THEAD ops at the same level as all nonstandard operations
-> > makes sense, but I'd still leave CMO as an explicit fast path that
-> > avoids the indirect branch. This seems like the right thing to do both
-> > for readability and for platforms on which the indirect branch has a
-> > noticeable overhead."
-> >=20
-> > To make bisect easy, I use two patches here: patch1 does the conversion
-> > which just mimics current CMO behavior via. riscv_nonstd_cache_ops, I
-> > assume no functionalities changes. patch2 uses T-HEAD PA based CMO
-> > instructions so that we don't need to covert PA to VA.
-> >=20
-> > Hi Guo,
-> >=20
-> > I didn't use wback_inv for wback as you suggested during v1 reviewing,
-> > this can be left as future optimizations.
-> >=20
-> > Thanks
-> >=20
-> > since v2:
-> >   - collect Reviewed-by tag
->=20
-> Oh, I missed the tag collection, but I know maintainers are using b4 whic=
-h can
-> collect and apply tags automatically ;). let me know if want a new
-> version.
+On Tue, Oct 10, 2023 at 3:27 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Add SDHI2 to RZ/G3S Smarc SoM. SDHI2 pins are multiplexed with SCIF1, SSI3,
 
-It doesn't collect tags (AFAIU) from earlier revisions though.
+SSI0
 
---yhohIoGoNmGJsGcL
-Content-Type: application/pgp-signature; name="signature.asc"
+> IRQ0. The selection b/w SDHI2 and SCIF1, SSI3, IRQ0 is done with a switch
 
------BEGIN PGP SIGNATURE-----
+and IRQ1 (twice). Or just say "The selection is done ...".
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSgEbAAKCRB4tDGHoIJi
-0gDdAQDIEazfsbs4xfx2jNJUKGvwicJmPcJtkhPLURqghLYUgQEAwors/NUj/QyD
-gd4wjd0Dg12NVYmAeaWwZ3XzoNOXYQw=
-=/MRc
------END PGP SIGNATURE-----
+> button. To be able to select b/w these a compilation flag has been added
+> (SW_SD2_EN) at the moment being instantiated to select SDHI2.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
---yhohIoGoNmGJsGcL--
+> --- a/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
+> @@ -13,14 +13,21 @@
+>   * @SW_SD0_DEV_SEL:
+>   *     0 - SD0 is connected to eMMC
+>   *     1 - SD0 is connected to uSD0 card
+> + * @SW_SD2_EN:
+> + *     0 - SCIF1, SSI3, IRQ0, IRQ1 connected to SoC
+
+SSI0
+
+> + *     1 - SD2 is connected to SoC
+>   */
+>  #define SW_SD0_DEV_SEL 1
+> +#define SW_SD2_EN      1
+
+> @@ -100,6 +125,19 @@ &sdhi0 {
+>  };
+>  #endif
+>
+> +#if SW_SD2_EN
+> +&sdhi2 {
+> +       pinctrl-0 = <&sdhi2_pins>;
+> +       pinctrl-1 = <&sdhi2_pins>;
+> +       pinctrl-names = "default", "state_uhs";
+
+Do you need two states if there is only a single voltage?
+AFAIK, UHS needs 1.8V.
+
+> +       vmmc-supply = <&vcc_sdhi2>;
+> +       vqmmc-supply = <&reg_3p3v>;
+> +       bus-width = <4>;
+> +       max-frequency = <50000000>;
+> +       status = "okay";
+> +};
+> +#endif
+> +
+>  &pinctrl {
+>         sdhi0_pins: sd0 {
+>                 data {
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
