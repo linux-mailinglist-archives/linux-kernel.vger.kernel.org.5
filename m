@@ -2,209 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F187C74A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7AB7C74AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441949AbjJLRXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:23:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
+        id S1441868AbjJLRXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379712AbjJLRWg (ORCPT
+        with ESMTP id S1347356AbjJLRWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:22:36 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACAA1BB;
-        Thu, 12 Oct 2023 10:22:04 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-79f95cd15dfso50395839f.0;
-        Thu, 12 Oct 2023 10:22:04 -0700 (PDT)
+        Thu, 12 Oct 2023 13:22:39 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7476DD49
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:22:08 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-692eed30152so976613b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:22:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697131324; x=1697736124; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697131327; x=1697736127; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gKUPZJG7I4VMa4iERW/Xn8lzZwDxy57eOqc/z/Cxr40=;
-        b=PSnBnqcAi/PQqVvHJbmy93mU3X+E8Z/5pGP3B0LlfbbswjY1QGgeM8j7cVgmkz9QwY
-         Whw7UjRJzvFk6+3FuyPHYtZzwcD3J2N34szKF7EcqVswdwpUl94VzjLAv3kpSmONhUPU
-         19lqc68ezvMrayQ8Xp8mas7JF+09kbTKs9IT8/LFAWWJ5iBcD3TB0QvahXDfItIRdhIq
-         S5ZWDGddXDaVMGUUXU03V0NVXK8z1Wf6ILcSA7BclwmCaRjdq/qOoO+9beRsTUC2CKio
-         ZsCWu1Kefl/snfL3h/T//SgSgUNFoF+Xo63ojR3ylFB3yYcw2ztElFJVMRKZnHaU9bjD
-         dmgg==
+        bh=C0nSQCpbHo4WjON0ZvJMnSfaRdeIMC1CvYzaBbZd7Tg=;
+        b=P/ynugekh9pGFo1NTEqzhKrWFAAgSXzWytDBa9eXYQjvvMn0Y6BX7MeSgp1CprqWYr
+         EEqhkTj3vYmTEJwuEJipKUjVpcZXgSJomxLWzNOfSXBzm4uh7KmfXkDUorLbceAXoQwL
+         G8RCAlI+AeFX/sP3vev+Vh85cTrCK7ND7dguNH2OHm3FDI8ZB3NFWIAI1tinnNMCX6Do
+         EyKKQJe+ybzhReurvIWypdrn/R02FSTVHlUjANkcD6XZ8NzEGQ2H0MKVctSX0KRRdrqt
+         OhvUfahd6i4/v+5N/avPehAWW/nx5Ck7VYZ52mLLB64SP1OQNbscCSPpmk1OY+Y6FbuD
+         u6+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697131324; x=1697736124;
+        d=1e100.net; s=20230601; t=1697131327; x=1697736127;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gKUPZJG7I4VMa4iERW/Xn8lzZwDxy57eOqc/z/Cxr40=;
-        b=sW+ZRqhPZmK9DeIU/U89477alsHLDjMVDSIjYoCEdyJ7SjSSjvHDyRe78wZDXiR63t
-         7SLkFJ65BTIRAvACOjC77Z0o12ZNPL2OAR8TRvLxaFb9d6WfizatO0LF4opjLcRWaJwJ
-         J6BpEovM5QBJO8v5fGbimrrUoYxG0c2VEqsyJ5Kw+q9WFf8x9ClS2/lfccZkL4likmlB
-         tW3ekusLmNn/NnxifkBVOjPHYSVodeP8IvRshhg3JJiDibjkv9QKpfrHSXXbP8XLh0aS
-         PJ1aQiDfFN3f3kXM/IzyVsNiYwOgJ3P7mDh8e1IbuL0/zTOCXVtnb5EclWWKbbv/Ofay
-         jOcw==
-X-Gm-Message-State: AOJu0YzgX4LSRvRRLWBaOLY+kUiZL6/VeaoLqENPiUTGS9DzEPsF6vDL
-        vTPFSqpAcn2k19eMywBNoMyXhLhKoxGr+g==
-X-Google-Smtp-Source: AGHT+IHYDPIhtoCH7YcgdpOkaA1wQ5EPaVbHO4XuAb+xnx3rvomq194dWEMTluIEOI+clHZfAWoO2A==
-X-Received: by 2002:a6b:919:0:b0:792:8230:c175 with SMTP id t25-20020a6b0919000000b007928230c175mr25871912ioi.6.1697131323872;
-        Thu, 12 Oct 2023 10:22:03 -0700 (PDT)
-Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id r25-20020a028819000000b0043cef0711c1sm3992211jai.158.2023.10.12.10.22.03
+        bh=C0nSQCpbHo4WjON0ZvJMnSfaRdeIMC1CvYzaBbZd7Tg=;
+        b=RnAUifitkTjxRGuW+3ACCl23sU/umdbpL04XRfRgM/CvYq6rmUNlV289gMem/WY95Z
+         yyAdH+j8lEYKuOIltFYOdnZkDYAIw7+L4ke/e6orNrLb1DZX7Pcx9yKvQpkI9Wkj0G9S
+         Si1jF/o5AXw9YUvzTrs7PRL6kbnb0VeuOT3GHhdHE2HL2HiFWceKt1Gcfz+8qN1pQiL8
+         Rrswj/Yt+u6d4iloW2513FgsmL3OyJ/gZ+Gcb6Sg9IxvrB8GRwE4UoOEMxyNzpP0nCAb
+         /ue90eUfmr+qyssV5HcGggtE1l/Ic1/Ozzd5Mgbf3+ERuXzENZC+xYLsTs97H7/Oep6f
+         X54Q==
+X-Gm-Message-State: AOJu0YySsw4gvWTbNGOhJQIHxhNuEGy4qVuGq5Zenvmmdg6EKmcK6VU4
+        jmAwDDilC/rNt9zCYBnf4GmD
+X-Google-Smtp-Source: AGHT+IGct0kVQN29NuA2jqe81k+DRJB9qgb2ae86cU0gimTKGn3g/GMK/fYPROa2HKbZeQtKKoVkQQ==
+X-Received: by 2002:a05:6a20:430b:b0:138:2fb8:6c48 with SMTP id h11-20020a056a20430b00b001382fb86c48mr26856018pzk.8.1697131327135;
+        Thu, 12 Oct 2023 10:22:07 -0700 (PDT)
+Received: from localhost.localdomain ([120.138.12.180])
+        by smtp.gmail.com with ESMTPSA id f9-20020a170902ce8900b001c75a07f62esm2242359plg.34.2023.10.12.10.21.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 10:22:03 -0700 (PDT)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     linux-kernel@vger.kernel.org, jbaron@akamai.com,
-        gregkh@linuxfoundation.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org
-Cc:     daniel.vetter@ffwll.ch, jani.nikula@intel.com,
-        ville.syrjala@linux.intel.com, seanpaul@chromium.org,
-        robdclark@gmail.com, groeck@google.com, yanivt@google.com,
-        bleung@google.com, linux-doc@vger.kernel.org,
-        Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v7 16/25] dyndbg: refactor ddebug_classparam_clamp_input
-Date:   Thu, 12 Oct 2023 11:21:27 -0600
-Message-ID: <20231012172137.3286566-17-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231012172137.3286566-1-jim.cromie@gmail.com>
-References: <20231012172137.3286566-1-jim.cromie@gmail.com>
+        Thu, 12 Oct 2023 10:22:06 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        cw00.choi@samsung.com, andersson@kernel.org,
+        konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
+        quic_nitirawa@quicinc.com, quic_narepall@quicinc.com,
+        quic_bhaskarv@quicinc.com, quic_richardp@quicinc.com,
+        quic_nguyenb@quicinc.com, quic_ziqichen@quicinc.com,
+        bmasney@redhat.com, krzysztof.kozlowski@linaro.org,
+        linux-kernel@vger.kernel.org, alessandro.carminati@gmail.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v7 3/5] scsi: ufs: host: Add support for parsing OPP
+Date:   Thu, 12 Oct 2023 22:51:27 +0530
+Message-Id: <20231012172129.65172-4-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231012172129.65172-1-manivannan.sadhasivam@linaro.org>
+References: <20231012172129.65172-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extract input validation code, from param_set_dyndbg_module_classes()
-(the sys-node >handler) to new: ddebug_classparam_clamp_input(kp),
-call it from former.  It takes kernel-param arg, so it can complain
-about "foo: bad input".
+OPP framework can be used to scale the clocks along with other entities
+such as regulators, performance state etc... So let's add support for
+parsing OPP from devicetree. OPP support in devicetree is added through
+the "operating-points-v2" property which accepts the OPP table defining
+clock frequency, regulator voltage, power domain performance state etc...
 
-Reuse ddparam_clamp_input(kp) in ddebug_sync_classbits(),
-to validate inputs from parent's params, just like our own.
-To support that reuse, alter ddebug_sync_classbits() and caller to
-pass kp instead of kp->arg.
+Since the UFS controller requires multiple clocks to be controlled for
+proper working, devm_pm_opp_set_config() has been used which supports
+scaling multiple clocks through custom ufshcd_opp_config_clks() callback.
 
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+It should be noted that the OPP support is not compatible with the old
+"freq-table-hz" property. So only one can be used at a time even though
+the UFS core supports both.
+
+Co-developed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- lib/dynamic_debug.c | 70 ++++++++++++++++++++++++++++++---------------
- 1 file changed, 47 insertions(+), 23 deletions(-)
+ drivers/ufs/core/ufshcd.c        | 36 +++++++++++++++
+ drivers/ufs/host/ufshcd-pltfrm.c | 78 ++++++++++++++++++++++++++++++++
+ include/ufs/ufshcd.h             |  3 ++
+ 3 files changed, 117 insertions(+)
 
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index c11feca70d6f..17eefb35ac96 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -656,6 +656,30 @@ static int ddebug_apply_class_bitmap(const struct ddebug_class_param *dcp,
+diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
+index 3f52e05002e4..a729be3e1f1c 100644
+--- a/drivers/ufs/core/ufshcd.c
++++ b/drivers/ufs/core/ufshcd.c
+@@ -1064,6 +1064,42 @@ static int ufshcd_set_clk_freq(struct ufs_hba *hba, bool scale_up)
+ 	return ret;
+ }
  
- #define CLASSMAP_BITMASK(width) ((1UL << (width)) - 1)
- 
-+static void ddebug_class_param_clamp_input(unsigned long *inrep, const struct kernel_param *kp)
++int ufshcd_opp_config_clks(struct device *dev, struct opp_table *opp_table,
++			   struct dev_pm_opp *opp, void *data,
++			   bool scaling_down)
 +{
-+	const struct ddebug_class_param *dcp = kp->arg;
-+	const struct ddebug_class_map *map = dcp->map;
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++	struct list_head *head = &hba->clk_list_head;
++	struct ufs_clk_info *clki;
++	unsigned long freq;
++	u8 idx = 0;
++	int ret;
 +
-+	switch (map->map_type) {
-+	case DD_CLASS_TYPE_DISJOINT_BITS:
-+		/* expect bits. mask and warn if too many */
-+		if (*inrep & ~CLASSMAP_BITMASK(map->length)) {
-+			pr_warn("%s: input: 0x%lx exceeds mask: 0x%lx, masking\n",
-+				KP_NAME(kp), *inrep, CLASSMAP_BITMASK(map->length));
-+			*inrep &= CLASSMAP_BITMASK(map->length);
++	list_for_each_entry(clki, head, list) {
++		if (!IS_ERR_OR_NULL(clki->clk)) {
++			freq = dev_pm_opp_get_freq_indexed(opp, idx++);
++
++			/* Do not set rate for clocks having frequency as 0 */
++			if (!freq)
++				continue;
++
++			ret = clk_set_rate(clki->clk, freq);
++			if (ret) {
++				dev_err(dev, "%s: %s clk set rate(%ldHz) failed, %d\n",
++					__func__, clki->name, freq, ret);
++				return ret;
++			}
++
++			trace_ufshcd_clk_scaling(dev_name(dev),
++				(scaling_down ? "scaled down" : "scaled up"),
++				clki->name, hba->clk_scaling.target_freq, freq);
 +		}
-+		break;
-+	case DD_CLASS_TYPE_LEVEL_NUM:
-+		/* input is bitpos, of highest verbosity to be enabled */
-+		if (*inrep > map->length) {
-+			pr_warn("%s: level:%ld exceeds max:%d, clamping\n",
-+				KP_NAME(kp), *inrep, map->length);
-+			*inrep = map->length;
-+		}
-+		break;
 +	}
++
++	return 0;
 +}
- static int param_set_dyndbg_module_classes(const char *instr,
- 					   const struct kernel_param *kp,
- 					   const char *modnm)
-@@ -674,26 +698,15 @@ static int param_set_dyndbg_module_classes(const char *instr,
- 		pr_err("expecting numeric input, not: %s > %s\n", instr, KP_NAME(kp));
- 		return -EINVAL;
- 	}
-+	ddebug_class_param_clamp_input(&inrep, kp);
- 
- 	switch (map->map_type) {
- 	case DD_CLASS_TYPE_DISJOINT_BITS:
--		/* expect bits. mask and warn if too many */
--		if (inrep & ~CLASSMAP_BITMASK(map->length)) {
--			pr_warn("%s: input: 0x%lx exceeds mask: 0x%lx, masking\n",
--				KP_NAME(kp), inrep, CLASSMAP_BITMASK(map->length));
--			inrep &= CLASSMAP_BITMASK(map->length);
--		}
- 		v2pr_info("bits:0x%lx > %s.%s\n", inrep, modnm ?: "*", KP_NAME(kp));
- 		totct += ddebug_apply_class_bitmap(dcp, &inrep, *dcp->bits, modnm);
- 		*dcp->bits = inrep;
- 		break;
- 	case DD_CLASS_TYPE_LEVEL_NUM:
--		/* input is bitpos, of highest verbosity to be enabled */
--		if (inrep > map->length) {
--			pr_warn("%s: level:%ld exceeds max:%d, clamping\n",
--				KP_NAME(kp), inrep, map->length);
--			inrep = map->length;
--		}
- 		old_bits = CLASSMAP_BITMASK(*dcp->lvl);
- 		new_bits = CLASSMAP_BITMASK(inrep);
- 		v2pr_info("lvl:%ld bits:0x%lx > %s\n", inrep, new_bits, KP_NAME(kp));
-@@ -1160,16 +1173,27 @@ static const char * const ddebug_classmap_typenames[] = {
- 		  ddebug_classmap_typenames[_cm->map_type]);		\
- 	})
- 
--static void ddebug_sync_classbits(const struct ddebug_class_param *dcp, const char *modname)
-+static void ddebug_sync_classbits(const struct kernel_param *kp, const char *modname)
++EXPORT_SYMBOL_GPL(ufshcd_opp_config_clks);
++
+ static int ufshcd_opp_set_rate(struct ufs_hba *hba, unsigned long freq)
  {
--	/* clamp initial bitvec, mask off hi-bits */
--	if (*dcp->bits & ~CLASSMAP_BITMASK(dcp->map->length)) {
--		*dcp->bits &= CLASSMAP_BITMASK(dcp->map->length);
--		v2pr_info("preset classbits: %lx\n", *dcp->bits);
-+	struct ddebug_class_param *dcp = kp->arg;
-+	unsigned long new_bits;
-+
-+	ddebug_class_param_clamp_input(dcp->bits, kp);
-+
-+	switch (dcp->map->map_type) {
-+	case DD_CLASS_TYPE_DISJOINT_BITS:
-+		v2pr_info("  %s: classbits: 0x%lx\n", KP_NAME(kp), *dcp->bits);
-+		ddebug_apply_class_bitmap(dcp, dcp->bits, 0UL, modname);
-+		break;
-+	case DD_CLASS_TYPE_LEVEL_NUM:
-+		new_bits = CLASSMAP_BITMASK(*dcp->lvl);
-+		v2pr_info("  %s: lvl:%ld bits:0x%lx\n", KP_NAME(kp), *dcp->lvl, new_bits);
-+		ddebug_apply_class_bitmap(dcp, &new_bits, 0UL, modname);
-+		break;
-+	default:
-+		pr_err("bad map type %d\n", dcp->map->map_type);
-+		return;
- 	}
--	/* force class'd prdbgs (in USEr module) to match (DEFINEr module) class-param */
--	ddebug_apply_class_bitmap(dcp, dcp->bits, ~0, modname);
--	ddebug_apply_class_bitmap(dcp, dcp->bits, 0, modname);
- }
+ 	struct dev_pm_opp *opp;
+diff --git a/drivers/ufs/host/ufshcd-pltfrm.c b/drivers/ufs/host/ufshcd-pltfrm.c
+index 61cf8b957da4..da2558e274b4 100644
+--- a/drivers/ufs/host/ufshcd-pltfrm.c
++++ b/drivers/ufs/host/ufshcd-pltfrm.c
+@@ -10,6 +10,7 @@
  
- static void ddebug_match_apply_kparam(const struct kernel_param *kp,
-@@ -1184,9 +1208,9 @@ static void ddebug_match_apply_kparam(const struct kernel_param *kp,
- 	dcp = (struct ddebug_class_param *)kp->arg;
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_opp.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/of.h>
  
- 	if (map == dcp->map) {
--		v2pr_info("found kp:%s =0x%lx", kp->name, *dcp->bits);
--		vpr_cm_info(map, "mapped to:");
--		ddebug_sync_classbits(dcp, modnm);
-+		v2pr_info(" found kp:%s =0x%lx", kp->name, *dcp->bits);
-+		vpr_cm_info(map, "  mapped to:");
-+		ddebug_sync_classbits(kp, modnm);
+@@ -212,6 +213,77 @@ static void ufshcd_init_lanes_per_dir(struct ufs_hba *hba)
  	}
  }
  
++static int ufshcd_parse_operating_points(struct ufs_hba *hba)
++{
++	struct device *dev = hba->dev;
++	struct device_node *np = dev->of_node;
++	struct dev_pm_opp_config config = {};
++	struct ufs_clk_info *clki;
++	const char **clk_names;
++	int cnt, i, ret;
++
++	if (!of_find_property(np, "operating-points-v2", NULL))
++		return 0;
++
++	if (of_find_property(np, "freq-table-hz", NULL)) {
++		dev_err(dev, "%s: operating-points and freq-table-hz are incompatible\n",
++			 __func__);
++		return -EINVAL;
++	}
++
++	cnt = of_property_count_strings(np, "clock-names");
++	if (cnt <= 0) {
++		dev_err(dev, "%s: Missing clock-names\n",  __func__);
++		return -ENODEV;
++	}
++
++	/* OPP expects clk_names to be NULL terminated */
++	clk_names = devm_kcalloc(dev, cnt + 1, sizeof(*clk_names), GFP_KERNEL);
++	if (!clk_names)
++		return -ENOMEM;
++
++	/*
++	 * We still need to get reference to all clocks as the UFS core uses
++	 * them separately.
++	 */
++	for (i = 0; i < cnt; i++) {
++		ret = of_property_read_string_index(np, "clock-names", i,
++						    &clk_names[i]);
++		if (ret)
++			return ret;
++
++		clki = devm_kzalloc(dev, sizeof(*clki), GFP_KERNEL);
++		if (!clki)
++			return -ENOMEM;
++
++		clki->name = devm_kstrdup(dev, clk_names[i], GFP_KERNEL);
++		if (!clki->name)
++			return -ENOMEM;
++
++		if (!strcmp(clk_names[i], "ref_clk"))
++			clki->keep_link_active = true;
++
++		list_add_tail(&clki->list, &hba->clk_list_head);
++	}
++
++	config.clk_names = clk_names,
++	config.config_clks = ufshcd_opp_config_clks;
++
++	ret = devm_pm_opp_set_config(dev, &config);
++	if (ret)
++		return ret;
++
++	ret = devm_pm_opp_of_add_table(dev);
++	if (ret) {
++		dev_err(dev, "Failed to add OPP table: %d\n", ret);
++		return ret;
++	}
++
++	hba->use_pm_opp = true;
++
++	return 0;
++}
++
+ /**
+  * ufshcd_get_pwr_dev_param - get finally agreed attributes for
+  *                            power mode change
+@@ -378,6 +450,12 @@ int ufshcd_pltfrm_init(struct platform_device *pdev,
+ 
+ 	ufshcd_init_lanes_per_dir(hba);
+ 
++	err = ufshcd_parse_operating_points(hba);
++	if (err) {
++		dev_err(dev, "%s: OPP parse failed %d\n", __func__, err);
++		goto dealloc_host;
++	}
++
+ 	err = ufshcd_init(hba, mmio_base, irq);
+ 	if (err) {
+ 		dev_err_probe(dev, err, "Initialization failed with error %d\n",
+diff --git a/include/ufs/ufshcd.h b/include/ufs/ufshcd.h
+index fc0d6d37319a..7f0b2c5599cd 100644
+--- a/include/ufs/ufshcd.h
++++ b/include/ufs/ufshcd.h
+@@ -1254,6 +1254,9 @@ void ufshcd_mcq_make_queues_operational(struct ufs_hba *hba);
+ void ufshcd_mcq_enable_esi(struct ufs_hba *hba);
+ void ufshcd_mcq_config_esi(struct ufs_hba *hba, struct msi_msg *msg);
+ 
++int ufshcd_opp_config_clks(struct device *dev, struct opp_table *opp_table,
++			   struct dev_pm_opp *opp, void *data,
++			   bool scaling_down);
+ /**
+  * ufshcd_set_variant - set variant specific data to the hba
+  * @hba: per adapter instance
 -- 
-2.41.0
+2.25.1
 
