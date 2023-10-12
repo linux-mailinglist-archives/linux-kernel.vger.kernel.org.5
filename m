@@ -2,194 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4680A7C6BBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C4B7C6BBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378006AbjJLK7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59346 "EHLO
+        id S1378046AbjJLK7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343801AbjJLK7u (ORCPT
+        with ESMTP id S1347135AbjJLK7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:59:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DFCB7;
-        Thu, 12 Oct 2023 03:59:49 -0700 (PDT)
+        Thu, 12 Oct 2023 06:59:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A45C90
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:59:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1697108389; x=1728644389;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=3YC+4BLVMkkibIln0wa4F1QGAJso+eq+Ty6FTxk84Ig=;
-  b=IphY8ZuFRPaIPhlPOSKE1FsfEiI9CZe7wJD+iLkdyu6DEGIcxjKghCEw
-   5TBefT6Nyt3bntQb/YV+KiMqbkYwSFaym8cCl06DMBtAUiRh2arI9dt0Y
-   uPEbTXDJvcVmEDw+S0kdsTDt08tBqZcan/+eo3nSdm34x9qYZ3L/QNKFy
-   C5Z0lsrs2nOageBT2cxjnlQqKDXptC5sDG+3jynH5g6+MwlEzGYSKUnln
-   ZVF0LSxN0ok2Oirnldd3tHxWrv16dTde58pBqnAt0dxEpiaii1/4MfAq9
-   fODl9Mjtq8bIQizb8e4iuOW2sBk3o4Woz1j98KgOrLqCCgyFYzqSxOxf/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="415941084"
+  bh=16FKabPS+ZCRDgH5ddQe899/17W7sUD7fX4mnvQQVLU=;
+  b=HU4zFW+cbew8TaCkot3EAOHf2aZ4WrT1UC1/PaxGz6Ou+kenxyFXV1fO
+   MXSKZjXwkOHxTtqCuCxVZmRZkoxhJCQl+3lxTZ5VEfsIQnGJe46+oTMQP
+   Td55SDj88yLcfhonhcJ4GLEWtnfcYRcK66RoOnQ75u38pKvw0vzWLrmpQ
+   +3e7p30bW0/spAM2n0pZmvypGkFAj972KIngFhzVfeVFAABiVtnvG/2by
+   XCfosauV46WqYlJHN3KCH/SknTR4D4f3GfYGpVNkvlVdaUihUK89Y8Yj+
+   VkrKBqEhsdVl43geqJSntbntGNG5ScPFPam453QcOtDwt6XaUShDDM3z7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="449079678"
 X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="415941084"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:59:49 -0700
+   d="scan'208";a="449079678"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:59:48 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="820093078"
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="824557476"
 X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="820093078"
+   d="scan'208";a="824557476"
 Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 12 Oct 2023 03:59:46 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 12 Oct 2023 03:59:46 -0700
 Received: from kbuild by f64821696465 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qqtPs-0003O9-04;
+        id 1qqtPs-0003OB-08;
         Thu, 12 Oct 2023 10:59:44 +0000
-Date:   Thu, 12 Oct 2023 18:59:00 +0800
+Date:   Thu, 12 Oct 2023 18:59:01 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH] sunrpc: Use no_printk() in dfprintk*() dummies
-Message-ID: <202310121849.fnsB0A2T-lkp@intel.com>
-References: <707e5e6dd0db9a663cf443564d1f8ee1c10a0086.1697018818.git.geert+renesas@glider.be>
+To:     Lu Yao <yaolu@kylinos.cn>, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        rdunlap@infradead.org
+Cc:     oe-kbuild-all@lists.linux.dev, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, Lu Yao <yaolu@kylinos.cn>
+Subject: Re: [PATCH v2] x86/msi: Fix compile error caused by GENERIC_MSI_IRQ
+ and X86_LOCAL_APIC
+Message-ID: <202310121805.SVZD3j7K-lkp@intel.com>
+References: <20231011055749.98840-1-yaolu@kylinos.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <707e5e6dd0db9a663cf443564d1f8ee1c10a0086.1697018818.git.geert+renesas@glider.be>
+In-Reply-To: <20231011055749.98840-1-yaolu@kylinos.cn>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hi Lu,
 
-kernel test robot noticed the following build warnings:
+kernel test robot noticed the following build errors:
 
-[auto build test WARNING on trondmy-nfs/linux-next]
-[also build test WARNING on linus/master v6.6-rc5 next-20231012]
+[auto build test ERROR on tip/master]
+[also build test ERROR on tip/x86/core tip/auto-latest linus/master v6.6-rc5 next-20231012]
 [If your patch is applied to the wrong git tree, kindly drop us a note.
 And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Geert-Uytterhoeven/sunrpc-Use-no_printk-in-dfprintk-dummies/20231011-181013
-base:   git://git.linux-nfs.org/projects/trondmy/linux-nfs.git linux-next
-patch link:    https://lore.kernel.org/r/707e5e6dd0db9a663cf443564d1f8ee1c10a0086.1697018818.git.geert%2Brenesas%40glider.be
-patch subject: [PATCH] sunrpc: Use no_printk() in dfprintk*() dummies
-config: powerpc-ebony_defconfig (https://download.01.org/0day-ci/archive/20231012/202310121849.fnsB0A2T-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231012/202310121849.fnsB0A2T-lkp@intel.com/reproduce)
+url:    https://github.com/intel-lab-lkp/linux/commits/Lu-Yao/x86-msi-Fix-compile-error-caused-by-GENERIC_MSI_IRQ-and-X86_LOCAL_APIC/20231011-135941
+base:   tip/master
+patch link:    https://lore.kernel.org/r/20231011055749.98840-1-yaolu%40kylinos.cn
+patch subject: [PATCH v2] x86/msi: Fix compile error caused by GENERIC_MSI_IRQ and X86_LOCAL_APIC
+config: x86_64-buildonly-randconfig-006-20231012 (https://download.01.org/0day-ci/archive/20231012/202310121805.SVZD3j7K-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231012/202310121805.SVZD3j7K-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310121849.fnsB0A2T-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310121805.SVZD3j7K-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+All errors (new ones prefixed by >>):
 
-   fs/lockd/svclock.c:164:5: error: call to undeclared function 'nlmdbg_cookie2a'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     164 |                                 nlmdbg_cookie2a(&block->b_call->a_args.cookie));
-         |                                 ^
->> fs/lockd/svclock.c:164:5: warning: format specifies type 'char *' but the argument has type 'int' [-Wformat]
-     164 |                 dprintk("lockd: check f=%p pd=%d %Ld-%Ld ty=%d cookie=%s\n",
-         |                                                                       ~~
-         |                                                                       %d
-     165 |                                 block->b_file, fl->fl_pid,
-     166 |                                 (long long)fl->fl_start,
-     167 |                                 (long long)fl->fl_end, fl->fl_type,
-     168 |                                 nlmdbg_cookie2a(&block->b_call->a_args.cookie));
-         |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/sunrpc/debug.h:25:28: note: expanded from macro 'dprintk'
-      25 |         dfprintk(FACILITY, fmt, ##__VA_ARGS__)
-         |                            ~~~    ^~~~~~~~~~~
-   include/linux/sunrpc/debug.h:70:51: note: expanded from macro 'dfprintk'
-      70 | # define dfprintk(fac, fmt, ...)        no_printk(fmt, ##__VA_ARGS__)
-         |                                                   ~~~    ^~~~~~~~~~~
-   include/linux/printk.h:129:17: note: expanded from macro 'no_printk'
-     129 |                 printk(fmt, ##__VA_ARGS__);             \
-         |                        ~~~    ^~~~~~~~~~~
-   include/linux/printk.h:455:60: note: expanded from macro 'printk'
-     455 | #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
-         |                                                     ~~~    ^~~~~~~~~~~
-   include/linux/printk.h:427:19: note: expanded from macro 'printk_index_wrap'
-     427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
-         |                         ~~~~    ^~~~~~~~~~~
-   fs/lockd/svclock.c:203:47: error: call to undeclared function 'nlmdbg_cookie2a'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     203 |         dprintk("nlmsvc_find_block(%s): block=%p\n", nlmdbg_cookie2a(cookie), block);
-         |                                                      ^
-   fs/lockd/svclock.c:203:47: warning: format specifies type 'char *' but the argument has type 'int' [-Wformat]
-     203 |         dprintk("nlmsvc_find_block(%s): block=%p\n", nlmdbg_cookie2a(cookie), block);
-         |                                    ~~                ^~~~~~~~~~~~~~~~~~~~~~~
-         |                                    %d
-   include/linux/sunrpc/debug.h:25:28: note: expanded from macro 'dprintk'
-      25 |         dfprintk(FACILITY, fmt, ##__VA_ARGS__)
-         |                            ~~~    ^~~~~~~~~~~
-   include/linux/sunrpc/debug.h:70:51: note: expanded from macro 'dfprintk'
-      70 | # define dfprintk(fac, fmt, ...)        no_printk(fmt, ##__VA_ARGS__)
-         |                                                   ~~~    ^~~~~~~~~~~
-   include/linux/printk.h:129:17: note: expanded from macro 'no_printk'
-     129 |                 printk(fmt, ##__VA_ARGS__);             \
-         |                        ~~~    ^~~~~~~~~~~
-   include/linux/printk.h:455:60: note: expanded from macro 'printk'
-     455 | #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
-         |                                                     ~~~    ^~~~~~~~~~~
-   include/linux/printk.h:427:19: note: expanded from macro 'printk_index_wrap'
-     427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
-         |                         ~~~~    ^~~~~~~~~~~
-   fs/lockd/svclock.c:494:5: error: use of undeclared identifier 'inode'
-     494 |                                 inode->i_sb->s_id, inode->i_ino,
-         |                                 ^
-   fs/lockd/svclock.c:494:24: error: use of undeclared identifier 'inode'
-     494 |                                 inode->i_sb->s_id, inode->i_ino,
-         |                                                    ^
-   2 warnings and 4 errors generated.
+   arch/x86/kernel/hpet.c:509:22: error: 'msi_domain_set_affinity' undeclared here (not in a function); did you mean 'irq_can_set_affinity'?
+     509 |  .irq_set_affinity = msi_domain_set_affinity,
+         |                      ^~~~~~~~~~~~~~~~~~~~~~~
+         |                      irq_can_set_affinity
+   arch/x86/kernel/hpet.c:516:12: warning: 'struct msi_domain_info' declared inside parameter list will not be visible outside of this definition or declaration
+     516 |     struct msi_domain_info *info, unsigned int virq,
+         |            ^~~~~~~~~~~~~~~
+   arch/x86/kernel/hpet.c: In function 'hpet_msi_init':
+>> arch/x86/kernel/hpet.c:520:52: error: dereferencing pointer to incomplete type 'struct msi_domain_info'
+     520 |  irq_domain_set_info(domain, virq, arg->hwirq, info->chip, NULL,
+         |                                                    ^~
+   arch/x86/kernel/hpet.c: At top level:
+   arch/x86/kernel/hpet.c:527:13: warning: 'struct msi_domain_info' declared inside parameter list will not be visible outside of this definition or declaration
+     527 |      struct msi_domain_info *info, unsigned int virq)
+         |             ^~~~~~~~~~~~~~~
+   arch/x86/kernel/hpet.c:532:15: error: variable 'hpet_msi_domain_ops' has initializer but incomplete type
+     532 | static struct msi_domain_ops hpet_msi_domain_ops = {
+         |               ^~~~~~~~~~~~~~
+   arch/x86/kernel/hpet.c:533:3: error: 'struct msi_domain_ops' has no member named 'msi_init'
+     533 |  .msi_init = hpet_msi_init,
+         |   ^~~~~~~~
+   arch/x86/kernel/hpet.c:533:14: warning: excess elements in struct initializer
+     533 |  .msi_init = hpet_msi_init,
+         |              ^~~~~~~~~~~~~
+   arch/x86/kernel/hpet.c:533:14: note: (near initialization for 'hpet_msi_domain_ops')
+   arch/x86/kernel/hpet.c:534:3: error: 'struct msi_domain_ops' has no member named 'msi_free'
+     534 |  .msi_free = hpet_msi_free,
+         |   ^~~~~~~~
+   arch/x86/kernel/hpet.c:534:14: warning: excess elements in struct initializer
+     534 |  .msi_free = hpet_msi_free,
+         |              ^~~~~~~~~~~~~
+   arch/x86/kernel/hpet.c:534:14: note: (near initialization for 'hpet_msi_domain_ops')
+   arch/x86/kernel/hpet.c:537:15: error: variable 'hpet_msi_domain_info' has initializer but incomplete type
+     537 | static struct msi_domain_info hpet_msi_domain_info = {
+         |               ^~~~~~~~~~~~~~~
+   arch/x86/kernel/hpet.c:538:3: error: 'struct msi_domain_info' has no member named 'ops'
+     538 |  .ops  = &hpet_msi_domain_ops,
+         |   ^~~
+   arch/x86/kernel/hpet.c:538:10: warning: excess elements in struct initializer
+     538 |  .ops  = &hpet_msi_domain_ops,
+         |          ^
+   arch/x86/kernel/hpet.c:538:10: note: (near initialization for 'hpet_msi_domain_info')
+   arch/x86/kernel/hpet.c:539:3: error: 'struct msi_domain_info' has no member named 'chip'
+     539 |  .chip  = &hpet_msi_controller,
+         |   ^~~~
+   arch/x86/kernel/hpet.c:539:11: warning: excess elements in struct initializer
+     539 |  .chip  = &hpet_msi_controller,
+         |           ^
+   arch/x86/kernel/hpet.c:539:11: note: (near initialization for 'hpet_msi_domain_info')
+   arch/x86/kernel/hpet.c:540:3: error: 'struct msi_domain_info' has no member named 'flags'
+     540 |  .flags  = MSI_FLAG_USE_DEF_DOM_OPS,
+         |   ^~~~~
+   arch/x86/kernel/hpet.c:540:12: error: 'MSI_FLAG_USE_DEF_DOM_OPS' undeclared here (not in a function)
+     540 |  .flags  = MSI_FLAG_USE_DEF_DOM_OPS,
+         |            ^~~~~~~~~~~~~~~~~~~~~~~~
+   arch/x86/kernel/hpet.c:540:12: warning: excess elements in struct initializer
+   arch/x86/kernel/hpet.c:540:12: note: (near initialization for 'hpet_msi_domain_info')
+   arch/x86/kernel/hpet.c: In function 'hpet_create_irq_domain':
+   arch/x86/kernel/hpet.c:553:31: error: dereferencing pointer to incomplete type 'struct msi_domain_info'
+     553 |  domain_info = kzalloc(sizeof(*domain_info), GFP_KERNEL);
+         |                               ^~~~~~~~~~~~
+   arch/x86/kernel/hpet.c:580:6: error: implicit declaration of function 'msi_create_irq_domain'; did you mean 'hpet_create_irq_domain'? [-Werror=implicit-function-declaration]
+     580 |  d = msi_create_irq_domain(fn, domain_info, parent);
+         |      ^~~~~~~~~~~~~~~~~~~~~
+         |      hpet_create_irq_domain
+   arch/x86/kernel/hpet.c:580:4: warning: assignment to 'struct irq_domain *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+     580 |  d = msi_create_irq_domain(fn, domain_info, parent);
+         |    ^
+   arch/x86/kernel/hpet.c: In function 'hpet_dev_id':
+   arch/x86/kernel/hpet.c:590:33: error: implicit declaration of function 'msi_get_domain_info' [-Werror=implicit-function-declaration]
+     590 |  struct msi_domain_info *info = msi_get_domain_info(domain);
+         |                                 ^~~~~~~~~~~~~~~~~~~
+   arch/x86/kernel/hpet.c:590:33: warning: initialization of 'struct msi_domain_info *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+   arch/x86/kernel/hpet.c: At top level:
+   arch/x86/kernel/hpet.c:532:30: error: storage size of 'hpet_msi_domain_ops' isn't known
+     532 | static struct msi_domain_ops hpet_msi_domain_ops = {
+         |                              ^~~~~~~~~~~~~~~~~~~
+   arch/x86/kernel/hpet.c:537:31: error: storage size of 'hpet_msi_domain_info' isn't known
+     537 | static struct msi_domain_info hpet_msi_domain_info = {
+         |                               ^~~~~~~~~~~~~~~~~~~~
+   arch/x86/kernel/hpet.c: In function 'hpet_dev_id':
+   arch/x86/kernel/hpet.c:593:1: error: control reaches end of non-void function [-Werror=return-type]
+     593 | }
+         | ^
+   cc1: some warnings being treated as errors
 
 
-vim +164 fs/lockd/svclock.c
+vim +520 arch/x86/kernel/hpet.c
 
-^1da177e4c3f41 Linus Torvalds  2005-04-16  143  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  144  /*
-d9f6eb75d49007 Trond Myklebust 2006-03-20  145   * Find a block for a given lock
-^1da177e4c3f41 Linus Torvalds  2005-04-16  146   */
-^1da177e4c3f41 Linus Torvalds  2005-04-16  147  static struct nlm_block *
-d9f6eb75d49007 Trond Myklebust 2006-03-20  148  nlmsvc_lookup_block(struct nlm_file *file, struct nlm_lock *lock)
-^1da177e4c3f41 Linus Torvalds  2005-04-16  149  {
-68a2d76cea4234 Olaf Kirch      2006-10-04  150  	struct nlm_block	*block;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  151  	struct file_lock	*fl;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  152  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  153  	dprintk("lockd: nlmsvc_lookup_block f=%p pd=%d %Ld-%Ld ty=%d\n",
-^1da177e4c3f41 Linus Torvalds  2005-04-16  154  				file, lock->fl.fl_pid,
-^1da177e4c3f41 Linus Torvalds  2005-04-16  155  				(long long)lock->fl.fl_start,
-^1da177e4c3f41 Linus Torvalds  2005-04-16  156  				(long long)lock->fl.fl_end, lock->fl.fl_type);
-be2be5f7f44364 Alexander Aring 2023-07-20  157  	spin_lock(&nlm_blocked_lock);
-68a2d76cea4234 Olaf Kirch      2006-10-04  158  	list_for_each_entry(block, &nlm_blocked, b_list) {
-92737230dd3f14 Trond Myklebust 2006-03-20  159  		fl = &block->b_call->a_args.lock.fl;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  160  		dprintk("lockd: check f=%p pd=%d %Ld-%Ld ty=%d cookie=%s\n",
-^1da177e4c3f41 Linus Torvalds  2005-04-16  161  				block->b_file, fl->fl_pid,
-^1da177e4c3f41 Linus Torvalds  2005-04-16  162  				(long long)fl->fl_start,
-^1da177e4c3f41 Linus Torvalds  2005-04-16  163  				(long long)fl->fl_end, fl->fl_type,
-92737230dd3f14 Trond Myklebust 2006-03-20 @164  				nlmdbg_cookie2a(&block->b_call->a_args.cookie));
-^1da177e4c3f41 Linus Torvalds  2005-04-16  165  		if (block->b_file == file && nlm_compare_locks(fl, &lock->fl)) {
-6849c0cab69f5d Trond Myklebust 2006-03-20  166  			kref_get(&block->b_count);
-be2be5f7f44364 Alexander Aring 2023-07-20  167  			spin_unlock(&nlm_blocked_lock);
-^1da177e4c3f41 Linus Torvalds  2005-04-16  168  			return block;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  169  		}
-^1da177e4c3f41 Linus Torvalds  2005-04-16  170  	}
-be2be5f7f44364 Alexander Aring 2023-07-20  171  	spin_unlock(&nlm_blocked_lock);
-^1da177e4c3f41 Linus Torvalds  2005-04-16  172  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  173  	return NULL;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  174  }
-^1da177e4c3f41 Linus Torvalds  2005-04-16  175  
+3d7295eb3003ae David Woodhouse 2020-10-24  503  
+3d7295eb3003ae David Woodhouse 2020-10-24  504  static struct irq_chip hpet_msi_controller __ro_after_init = {
+3d7295eb3003ae David Woodhouse 2020-10-24  505  	.name = "HPET-MSI",
+3d7295eb3003ae David Woodhouse 2020-10-24  506  	.irq_unmask = hpet_msi_unmask,
+3d7295eb3003ae David Woodhouse 2020-10-24  507  	.irq_mask = hpet_msi_mask,
+3d7295eb3003ae David Woodhouse 2020-10-24  508  	.irq_ack = irq_chip_ack_parent,
+3d7295eb3003ae David Woodhouse 2020-10-24 @509  	.irq_set_affinity = msi_domain_set_affinity,
+3d7295eb3003ae David Woodhouse 2020-10-24  510  	.irq_retrigger = irq_chip_retrigger_hierarchy,
+3d7295eb3003ae David Woodhouse 2020-10-24  511  	.irq_write_msi_msg = hpet_msi_write_msg,
+ff363f480e5997 Thomas Gleixner 2021-07-29  512  	.flags = IRQCHIP_SKIP_SET_WAKE | IRQCHIP_AFFINITY_PRE_STARTUP,
+3d7295eb3003ae David Woodhouse 2020-10-24  513  };
+3d7295eb3003ae David Woodhouse 2020-10-24  514  
+3d7295eb3003ae David Woodhouse 2020-10-24  515  static int hpet_msi_init(struct irq_domain *domain,
+3d7295eb3003ae David Woodhouse 2020-10-24  516  			 struct msi_domain_info *info, unsigned int virq,
+3d7295eb3003ae David Woodhouse 2020-10-24  517  			 irq_hw_number_t hwirq, msi_alloc_info_t *arg)
+3d7295eb3003ae David Woodhouse 2020-10-24  518  {
+3d7295eb3003ae David Woodhouse 2020-10-24  519  	irq_set_status_flags(virq, IRQ_MOVE_PCNTXT);
+3d7295eb3003ae David Woodhouse 2020-10-24 @520  	irq_domain_set_info(domain, virq, arg->hwirq, info->chip, NULL,
+3d7295eb3003ae David Woodhouse 2020-10-24  521  			    handle_edge_irq, arg->data, "edge");
+3d7295eb3003ae David Woodhouse 2020-10-24  522  
+3d7295eb3003ae David Woodhouse 2020-10-24  523  	return 0;
+3d7295eb3003ae David Woodhouse 2020-10-24  524  }
+3d7295eb3003ae David Woodhouse 2020-10-24  525  
 
 -- 
 0-DAY CI Kernel Test Service
