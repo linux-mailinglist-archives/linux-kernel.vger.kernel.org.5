@@ -2,115 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F01EC7C6551
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA477C6554
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377371AbjJLGTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48010 "EHLO
+        id S1377361AbjJLGTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377391AbjJLGTV (ORCPT
+        with ESMTP id S1347070AbjJLGTk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:19:21 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0535DCC
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:19:20 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53b8f8c6b1fso1077519a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:19:19 -0700 (PDT)
+        Thu, 12 Oct 2023 02:19:40 -0400
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F19CDD
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:19:38 -0700 (PDT)
+Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7ab68ef45e7so260927241.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:19:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697091558; x=1697696358; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OP6CltxnY4Me7Dc35n6Y2Bjbp3x6k8MvTeVPFVgLbUU=;
-        b=JrpF20nG0NeQS9N2jllu71jtRtwDuY0MYv1Mx8nIuSFFDK1i+QwOwZdVMhFx2KnLKj
-         59fOZY2YutA3x9YcOd6T1G5H1VL+ie6JQ4UZBUnXMwEUK/8SizaXNA4RV+UGevynDWEF
-         nC2stWqp99Rl+kj1lhgsrPf942M4wUHaOCrAzldYuThKhrGTm4X2yFjfUJM8ziQ2CG9L
-         W8agLKMSftkKNatM6wF6ZucACp0WZEVeUIvix7SW77ZVyQjuz0iF/39MJT5yiOGIMa/h
-         msI/guBk/PRJMcsO7TfM0gg+T9zANzD2j5TIw6AXiQCe3ygkHuR1h5WKygLMLOLIMpJL
-         VDIw==
+        d=chromium.org; s=google; t=1697091577; x=1697696377; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PLM4xkY5G5L1mZIDRFqUS5SrNnKzFAKa0pa3/SYT/44=;
+        b=ckujpouajMNNKZmCQ7fTW4KB+6vy74LUt4oWzW0chCUTMQAWQQwtF4D2WFbgZ6v7g5
+         +za6D7ye1H+4xGHDEWxpE1yxgxWkmNsUaNSim/LA86g4BHSq2BC+1NxrI5XbSif/S4dC
+         7IIhluTBEWu1ikQ8+rgpLUrhfv27y4JyibDWg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697091558; x=1697696358;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697091577; x=1697696377;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OP6CltxnY4Me7Dc35n6Y2Bjbp3x6k8MvTeVPFVgLbUU=;
-        b=B/CoPNlAvghDP4dJgkoMgH8nCz92uPk0AcUsjjPR14Rur1Lt3ke/M3h4zd1ut1Hcxb
-         VPAjQawViyhAhsfXse91vTyolZ8URPmkw4w30KHk8kN1dg+Ja0eMvj5R/XSAQuwNU/2p
-         O5nOA0yAI3KiSBEIwqbqLNVNzZip0kOCRKHss2PKYwr2e4+MgKSK77dmkx4Wt/Z2Ar+l
-         36MN/s4zrqb+u57uN/RkjV3zABCWop9WcrtcQiDSJvD9HY8nUWPDZDyE2HAbd+qfVDkX
-         c+zDRhwG/bm34Q2tiyzYuNEBIaRWABWRejqZoKNanQGdSmhgZkOsTBwEV/jZBPQWp+u/
-         dxVQ==
-X-Gm-Message-State: AOJu0YzjIlvpVNTwsgH0UpZ+DVmb9aFcVhM6dMAkRNXNE5qsQbVuSFeo
-        2IeNFgmyYtL3u3RT8JinPFM=
-X-Google-Smtp-Source: AGHT+IFq2FiZlj4uG5+xGmhwb55BL1RglItA0tzU9sTuMidOYUaP2+qnKDe6r7rwkj8VoXLtN8i8kw==
-X-Received: by 2002:a17:906:318e:b0:9b2:d554:da0e with SMTP id 14-20020a170906318e00b009b2d554da0emr18382302ejy.69.1697091558223;
-        Wed, 11 Oct 2023 23:19:18 -0700 (PDT)
-Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
-        by smtp.gmail.com with ESMTPSA id j16-20020a170906051000b0099bcf1c07c6sm10688100eja.138.2023.10.11.23.19.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 23:19:16 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 12 Oct 2023 08:19:14 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-Message-ID: <ZSeP4vwQ9k/v63Cy@gmail.com>
-References: <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <CAFULd4Y8NSArDqH=VMy8F97eNosUUGxrBMEyHH=MytjUBSCmjg@mail.gmail.com>
- <CAHk-=whMr8V_q3dq4iS0dpx4Nssu+aYWz+mA36p2ykA+OXTjXA@mail.gmail.com>
- <CAFULd4afyYK0-wAOo3oJDapX0iyu86m5+vVn9c35gk8fd6iwRQ@mail.gmail.com>
- <CAHk-=wiLyA0g3BvQ_nsF2PWi-FDtcNS5+4-ai1FX-xFzTBeTzg@mail.gmail.com>
- <ZScjptMn3fDmMFdg@gmail.com>
- <9b71932a-d410-4b92-b605-d6acc5d35069@zytor.com>
- <20231012013507.jrqnm35p7az6atov@treble>
+        bh=PLM4xkY5G5L1mZIDRFqUS5SrNnKzFAKa0pa3/SYT/44=;
+        b=c9HoUdI9FxHwwTcNDmJ60v2wa67vyiMeQL4hSdoYAowJHHUVLpM17ob4+hPOr/Ij88
+         N0T6RVKNvTkkROLSBuW4ngYbb+HcYrqOPGM1hNSFBwIZ+Hik9Kxg5ukEwepmB+kZAc5w
+         q0U1gx0eRTelZWNp52U+gMTn3LBPrSgxwEpjE+vl8Olj/udzYrKh7fAal87VBce3Yecw
+         srYjK0GvhndZpchCUaRqe1awaSJ9j0x90gPkij9wwVEbdtxa3rwVkEbHHjGuBte5yiMD
+         V5aLmMPwP54RIYw82mKouH0tS3yjP4gUw6OMC+/uk/V3LIrdsR53As8MM4JJ4okSm6vJ
+         olmw==
+X-Gm-Message-State: AOJu0Yy07D9CcBW4T+LqEI79/36JkHtboawnrzNkGXBScq0ez8ewQTwF
+        fkyXQkOy9ynYY7EJzVdkFz7872hYPDXFuFVFiQYsHw==
+X-Google-Smtp-Source: AGHT+IFB1CtuFsLSbYDuPnbQsj71az8sm43JujSFb5anNnOsOoBUaLY+Oi683Xnlfr5Zs+PJZoIaAw==
+X-Received: by 2002:a67:f6c3:0:b0:452:9356:ab4e with SMTP id v3-20020a67f6c3000000b004529356ab4emr16157074vso.25.1697091576858;
+        Wed, 11 Oct 2023 23:19:36 -0700 (PDT)
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
+        by smtp.gmail.com with ESMTPSA id g18-20020a056102159200b004528fa64473sm290529vsv.31.2023.10.11.23.19.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 23:19:36 -0700 (PDT)
+Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7b5fd0b7522so270392241.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:19:36 -0700 (PDT)
+X-Received: by 2002:a1f:c305:0:b0:49a:b737:4df7 with SMTP id
+ t5-20020a1fc305000000b0049ab7374df7mr17368863vkf.5.1697091575791; Wed, 11 Oct
+ 2023 23:19:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012013507.jrqnm35p7az6atov@treble>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20231003092329.3919828-1-make_ruc2021@163.com>
+In-Reply-To: <20231003092329.3919828-1-make_ruc2021@163.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Thu, 12 Oct 2023 15:19:19 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5AgK0ZmOABxnvtUHLJ7nPzPL7cZp_ezUifpSJWEDVFHWQ@mail.gmail.com>
+Message-ID: <CAAFQd5AgK0ZmOABxnvtUHLJ7nPzPL7cZp_ezUifpSJWEDVFHWQ@mail.gmail.com>
+Subject: Re: [PATCH] media: videobuf2: Fix IS_ERR checking in vb2_dc_put_userptr()
+To:     Ma Ke <make_ruc2021@163.com>
+Cc:     m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 3, 2023 at 6:23=E2=80=AFPM Ma Ke <make_ruc2021@163.com> wrote:
+>
+> In order to avoid error pointers from frame_vector_pages(), we could
+> use IS_ERR() to check the return value to fix this. This checking
+> operation could make sure that vector contains pages.
+>
+> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+> ---
+>  .../media/common/videobuf2/videobuf2-dma-contig.c   | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/driv=
+ers/media/common/videobuf2/videobuf2-dma-contig.c
+> index 2fa455d4a048..5001f2a258dd 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+> @@ -542,13 +542,14 @@ static void vb2_dc_put_userptr(void *buf_priv)
+>                  */
+>                 dma_unmap_sgtable(buf->dev, sgt, buf->dma_dir,
+>                                   DMA_ATTR_SKIP_CPU_SYNC);
+> -               pages =3D frame_vector_pages(buf->vec);
+> -               /* sgt should exist only if vector contains pages... */
+> -               BUG_ON(IS_ERR(pages));
+>                 if (buf->dma_dir =3D=3D DMA_FROM_DEVICE ||
+> -                   buf->dma_dir =3D=3D DMA_BIDIRECTIONAL)
+> -                       for (i =3D 0; i < frame_vector_count(buf->vec); i=
+++)
+> -                               set_page_dirty_lock(pages[i]);
+> +                   buf->dma_dir =3D=3D DMA_BIDIRECTIONAL){
 
-* Josh Poimboeuf <jpoimboe@kernel.org> wrote:
+Missing space between ) and { .
 
-> Though, another problem is that .text has a crazy amount of padding
-> which makes it always the same size, due to the SRSO alias mitigation
-> alignment linker magic.  We should fix that somehow.
+Otherwise:
 
-We could emit a non-aligned end-of-text symbol (we might have it already),
-and have a script or small .c program in scripts/ or tools/ that looks
-at vmlinux and displays a user-friendly and accurate list of text and
-data sizes in the kernel?
+Acked-by: Tomasz Figa <tfiga@chromium.org>
 
-And since objtool is technically an 'object files tool', and it already
-looks at sections & symbols, it could also grow a:
+Best regards,
+Tomasz
 
-	objtool size <objfile>
-
-command that does the sane thing ... I'd definitely start using that, instead of 'size'.
-
-/me runs :-)
-
-Thanks,
-
-	Ingo
+> +                       pages =3D frame_vector_pages(buf->vec);
+> +                       /* sgt should exist only if vector contains pages=
+... */
+> +                       if (!WARN_ON_ONCE(IS_ERR(pages)))
+> +                               for (i =3D 0; i < frame_vector_count(buf-=
+>vec); i++)
+> +                                       set_page_dirty_lock(pages[i]);
+> +               }
+>                 sg_free_table(sgt);
+>                 kfree(sgt);
+>         } else {
+> --
+> 2.37.2
+>
