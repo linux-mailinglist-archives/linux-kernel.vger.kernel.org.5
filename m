@@ -2,170 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 269687C659F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D737C65A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347070AbjJLGcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60792 "EHLO
+        id S1347076AbjJLGdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343541AbjJLGct (ORCPT
+        with ESMTP id S1343541AbjJLGdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:32:49 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57885BA;
-        Wed, 11 Oct 2023 23:32:48 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9abc069c8bso518364276.3;
-        Wed, 11 Oct 2023 23:32:48 -0700 (PDT)
+        Thu, 12 Oct 2023 02:33:14 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE09B8
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:33:12 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40566f89f6eso7522795e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:33:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697092367; x=1697697167; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tLs232MoIvKTceoFGKf83FsYAh/WEEvSsX2TipWGeU4=;
-        b=FQgWY1gRQCI3x8yWmyVVZY1MEkz/WxLWijdF2uaZanr7xLvbUOYTB+FTPqOGL1nIrK
-         ThAVKJspSYKJS726r/FEn0t3CaW2G1BBf6lhKlqtgFT30r91uTo/pFR636jwkcwYOFxv
-         nAFPInV0GRvvaNJtaSAK3hqQzVlP7Bl1+XDmaUsCsliaMfRPCc1FtHBLnOrvelNPO3yc
-         W82vFuNCrCFrZOMg1chKFdirHuPksvI5NZEq5Rvtj+kp6bbI33UpAIMu/s9p5jl3uNGT
-         ZUp1NvqUfnmW1PCRclKbxZLbLfIq9k6Tl/4OKh/1pFmzNkvs6uXux2a2K/CxTsh6VsUq
-         Bjaw==
+        d=linaro.org; s=google; t=1697092390; x=1697697190; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=phl5W3+qj5b5s8Bsed+j+WLh4nK22bVVfYDfsSd3Poo=;
+        b=A/B2JqXMvKNIAv8xIJ+dn+S68VuUCy29k3MbbzHIZeTH4oUwM7jBVNGEGbHSwwv9fO
+         s90DFlN1G0SX7hG7upNLnmPZ7YA3kpx187Agb3fQIogCSTk5tTv8unqScC88lzh018W+
+         RLKIA9wytH/Pu7oR2uUAzVZyGwHJNHMzysGQcOyty8JAGVXZFs8aR7b7fUyUdsUCs/KA
+         vdEPJFWO35BrGGPUcDoP3oFoZr/R+M0ILz2ZN/s1FKFqGJ/jxjJjjPcak0ud7NrFUShm
+         066wURsmmEyrfowOR7acYIoLt/+hKZ6HT0I9FEHyJ6TU4q5ww8FY30uS9iH80J+pg9cU
+         sj+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697092367; x=1697697167;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tLs232MoIvKTceoFGKf83FsYAh/WEEvSsX2TipWGeU4=;
-        b=V/9FpPeuOrFYOoLDn1MsQFKsAeJlk0yjbdoWa2WsHrXBVDZpnEaj4p/xFYzBxhZ/zt
-         HTNOMo9XcVv4oAdDz0O4HW/RZ0V2jUBJhoMMxwr5FL9T6X0ry4pH6SYSve0zPM8cq2nG
-         RXAIrJqvanuY+wFgLM7lYN+s5YvCkLjxbaenAlRdy7V8uSKJ5EIfrYGg/gHGsnHVG9/k
-         tOpE0TjLIk+d68Mbsc2suHIY36igzq/sC6nMmHpjDZAvIxPrsulAMi48tjpvfGe+RYk2
-         cZEV1k+GXDBIYXqH1bDK+do9QtkNBrrJrcthF6uSLgL8hp1FFxo9cixm2bTkuu6A8V7X
-         IEZQ==
-X-Gm-Message-State: AOJu0Yw5B4/jSal32VJVko9gWg4nJXNc5NNryZfmjHyZpIarm1+iLqbb
-        r3ghJ1+2xqK+76tuoHw+bis5lBzxi6pezFIDIQ==
-X-Google-Smtp-Source: AGHT+IHkDv5jKaQ1FgsNyM0VOVCwqFWJXnJyrusacjLePBkFgPyzB5kGHgmIe9tx3q5vW64I8SeFnjGpVfd3+nPwLKA=
-X-Received: by 2002:a25:4d89:0:b0:d99:f29f:371 with SMTP id
- a131-20020a254d89000000b00d99f29f0371mr9694650ybb.4.1697092367335; Wed, 11
- Oct 2023 23:32:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697092390; x=1697697190;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=phl5W3+qj5b5s8Bsed+j+WLh4nK22bVVfYDfsSd3Poo=;
+        b=qCVlxEqEmpUgiUKaplLjdMncX+OZlDjQ5Wsy0npSg2gFhPjhZtNePSvwhoGS25ymXZ
+         w+Ql5QxXFEjKHVs6k4PcGGGd96D0GIx3LCrzkrrRq3zdMUz4XuGdhF3Brh5Jesdx3uSD
+         N4ii0vBurDBkAkQTfhAbUkbEmQQizXJuYXGulPfybkMV/xaSN0asBaRhy/NHzhqfjA7E
+         ldgl1GuM/XZy3eKZzTsOSHcf6rxEknR/ejsCAqv4pjofFrQZWHgH5p7d00ikDd8Fomy7
+         AvL9onoaREUhsaT4kqOa05dJPE/s4OpyC6YfYjXb6j2IvCPiOPPa7FgJ1x9MzACD4S4W
+         Owsg==
+X-Gm-Message-State: AOJu0YzbCG6jJONJpmf21Lff7dPinBpRLaMa3MeKjB7iyhmURe95OOUy
+        532F1SdO4tEZtaRkMRvbYW9sAg==
+X-Google-Smtp-Source: AGHT+IFQ3UuhcbmL5nDmRzL7RHQDZpDGZlVDtI11m8XgEEIoIDkUDGj/sgKidZxvEZtzRGSsgxOK5w==
+X-Received: by 2002:adf:fb0b:0:b0:31f:c1b5:d4c1 with SMTP id c11-20020adffb0b000000b0031fc1b5d4c1mr18781994wrr.35.1697092390464;
+        Wed, 11 Oct 2023 23:33:10 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id q8-20020a05600000c800b0032415213a6fsm17313023wrx.87.2023.10.11.23.33.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 23:33:10 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 09:33:07 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Soumya Negi <soumya.negi97@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Micky Ching <micky_ching@realsil.com.cn>,
+        outreachy@lists.linux.dev, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rts5208: Parenthesize macro arguments
+Message-ID: <81d6e283-fd87-4fd6-964f-22cbf420cdaa@kadam.mountain>
+References: <20231012050240.20378-1-soumya.negi97@gmail.com>
 MIME-Version: 1.0
-References: <20231011-jmp-into-reserved-fields-v3-0-97d2aa979788@gmail.com>
- <20231011-jmp-into-reserved-fields-v3-1-97d2aa979788@gmail.com> <CAADnVQJnhfbALtNkCauS_ZwRfybcb_mryEvZW7Uu1uOSshQ9Ew@mail.gmail.com>
-In-Reply-To: <CAADnVQJnhfbALtNkCauS_ZwRfybcb_mryEvZW7Uu1uOSshQ9Ew@mail.gmail.com>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Thu, 12 Oct 2023 08:32:36 +0200
-Message-ID: <CACkBjsabY6e1Zh1R+gyuqwpuDiXJwLDc9s9wEEqfb=1P11QeOg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] bpf: Detect jumping to reserved code
- during check_cfg()
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012050240.20378-1-soumya.negi97@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 3:39=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Oct 11, 2023 at 2:01=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wro=
-te:
-> >
-> > Currently, we don't check if the branch-taken of a jump is reserved cod=
-e of
-> > ld_imm64. Instead, such a issue is captured in check_ld_imm(). The veri=
-fier
-> > gives the following log in such case:
-> >
-> > func#0 @0
-> > 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-> > 0: (18) r4 =3D 0xffff888103436000       ; R4_w=3Dmap_ptr(off=3D0,ks=3D4=
-,vs=3D128,imm=3D0)
-> > 2: (18) r1 =3D 0x1d                     ; R1_w=3D29
-> > 4: (55) if r4 !=3D 0x0 goto pc+4        ; R4_w=3Dmap_ptr(off=3D0,ks=3D4=
-,vs=3D128,imm=3D0)
-> > 5: (1c) w1 -=3D w1                      ; R1_w=3D0
-> > 6: (18) r5 =3D 0x32                     ; R5_w=3D50
-> > 8: (56) if w5 !=3D 0xfffffff4 goto pc-2
-> > mark_precise: frame0: last_idx 8 first_idx 0 subseq_idx -1
-> > mark_precise: frame0: regs=3Dr5 stack=3D before 6: (18) r5 =3D 0x32
-> > 7: R5_w=3D50
-> > 7: BUG_ld_00
-> > invalid BPF_LD_IMM insn
-> >
-> > Here the verifier rejects the program because it thinks insn at 7 is an
-> > invalid BPF_LD_IMM, but such a error log is not accurate since the issu=
-e
-> > is jumping to reserved code not because the program contains invalid in=
-sn.
-> > Therefore, make the verifier check the jump target during check_cfg(). =
-For
-> > the same program, the verifier reports the following log:
-> >
-> > func#0 @0
-> > jump to reserved code from insn 8 to 7
-> >
-> > Signed-off-by: Hao Sun <sunhao.th@gmail.com>
-> > ---
-> >  kernel/bpf/verifier.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index eed7350e15f4..725ac0b464cf 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -14980,6 +14980,7 @@ static int push_insn(int t, int w, int e, struc=
-t bpf_verifier_env *env,
-> >  {
-> >         int *insn_stack =3D env->cfg.insn_stack;
-> >         int *insn_state =3D env->cfg.insn_state;
-> > +       struct bpf_insn *insns =3D env->prog->insnsi;
-> >
-> >         if (e =3D=3D FALLTHROUGH && insn_state[t] >=3D (DISCOVERED | FA=
-LLTHROUGH))
-> >                 return DONE_EXPLORING;
-> > @@ -14993,6 +14994,12 @@ static int push_insn(int t, int w, int e, stru=
-ct bpf_verifier_env *env,
-> >                 return -EINVAL;
-> >         }
-> >
-> > +       if (e =3D=3D BRANCH && insns[w].code =3D=3D 0) {
-> > +               verbose_linfo(env, t, "%d", t);
-> > +               verbose(env, "jump to reserved code from insn %d to %d\=
-n", t, w);
-> > +               return -EINVAL;
-> > +       }
->
-> I don't think we should be changing the verifier to make
-> fuzzer logs more readable.
->
-> Same with patch 2. The code is fine as-is.
+On Wed, Oct 11, 2023 at 10:02:40PM -0700, Soumya Negi wrote:
+> Use parenthesis with macro arguments to avoid possible precedence
+> issues. Found by checkpatch.pl
+> 
+> Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
+> ---
+>  drivers/staging/rts5208/rtsx.h | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/staging/rts5208/rtsx.h b/drivers/staging/rts5208/rtsx.h
+> index 2e101da83220..1cc05956ab6d 100644
+> --- a/drivers/staging/rts5208/rtsx.h
+> +++ b/drivers/staging/rts5208/rtsx.h
+> @@ -40,17 +40,17 @@
+>   * macros for easy use
+>   */
+>  #define rtsx_writel(chip, reg, value) \
+> -	iowrite32(value, (chip)->rtsx->remap_addr + reg)
+> +	iowrite32(value, (chip)->rtsx->remap_addr + (reg))
 
-Confused, the changes are not for fuzzer logs but to handle jumping to
-the middle of ld_imm64. Like jumping out of bounds, both are similar
-issues and can be handled in one place.
+These would be better as functions instead of defines.
 
-The current code handles such incorrect jumps in check_ld_imm(), which
-is strange, and the error log "BAD_LD_IMM" rather than "bad jump" is
-also strange.
+>  #define rtsx_readl(chip, reg) \
+> -	ioread32((chip)->rtsx->remap_addr + reg)
+> +	ioread32((chip)->rtsx->remap_addr + (reg))
+>  #define rtsx_writew(chip, reg, value) \
+> -	iowrite16(value, (chip)->rtsx->remap_addr + reg)
+> +	iowrite16(value, (chip)->rtsx->remap_addr + (reg))
+>  #define rtsx_readw(chip, reg) \
+> -	ioread16((chip)->rtsx->remap_addr + reg)
+> +	ioread16((chip)->rtsx->remap_addr + (reg))
+>  #define rtsx_writeb(chip, reg, value) \
+> -	iowrite8(value, (chip)->rtsx->remap_addr + reg)
+> +	iowrite8(value, (chip)->rtsx->remap_addr + (reg))
+>  #define rtsx_readb(chip, reg) \
+> -	ioread8((chip)->rtsx->remap_addr + reg)
+> +	ioread8((chip)->rtsx->remap_addr + (reg))
+>  
+>  #define rtsx_read_config_byte(chip, where, val) \
+>  	pci_read_config_byte((chip)->rtsx->pci, where, val)
+> @@ -131,8 +131,8 @@ static inline struct rtsx_dev *host_to_rtsx(struct Scsi_Host *host)
+>   * The scsi_lock() and scsi_unlock() macros protect the sm_state and the
+>   * single queue element srb for write access
+>   */
+> -#define scsi_unlock(host)	spin_unlock_irq(host->host_lock)
+> -#define scsi_lock(host)		spin_lock_irq(host->host_lock)
+> +#define scsi_unlock(host)	spin_unlock_irq((host)->host_lock)
+> +#define scsi_lock(host)		spin_lock_irq((host)->host_lock)
 
-The second one is just for verifier debugging because the only
-caller of check_ld_imm() is do_check(), before which we already
-have resolve_pseudo_ldimm64() which has opcode_in_insntable()
-to check the validity of insn code. The only reason we could see
-an invalid ld_imm64 in check_id_imm() is errors somewhere else.
+For these ones, the name is too generic.  probably the right thing is
+to just get rid of them completely and call spin_lock/unlock_irq()
+directly.
+
+regards,
+dan carpenter
+
