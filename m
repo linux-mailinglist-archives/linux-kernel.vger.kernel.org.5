@@ -2,251 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7179F7C71C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11847C71C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379242AbjJLPoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60796 "EHLO
+        id S1379480AbjJLPo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379457AbjJLPoU (ORCPT
+        with ESMTP id S1379475AbjJLPoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:44:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9B4B8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:44:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697125458; x=1728661458;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=96eBVv3oEzEjVPfnA45obaJyAQVZeKf6dUogz5jkhig=;
-  b=ERoHW3rcSzkOyEfYT0kYfw2IWiSyfBzvwxRpL7R6lnQ662GflQ0DqF8W
-   fxBnIk4SWLS069xoSTFyssi4bADDucnJAUWX8IiwX/Yp/wPTiLWp73gsf
-   uX+jcg1zRlPAPinRD+gyL2/F2YXBLMvZrmygQpEmDDiG0WERmkygAdRVx
-   wrquTLBhtrPcFC3A0KxP6mR+rl4165Eaj83UOIzZBiJq+otXnpxDsjERC
-   0i2qUqLSr4C7jeA3/VsurFNP1PbuVC/taxQ6doOCtNovtH2g124W7padj
-   NW7LTyhB7tpxHF+cdfBSD8IZ/ea/SgXxivI/NsOtdmw22WEt1+ESvXx1E
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="365221866"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="365221866"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 08:44:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="824654027"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="824654027"
-Received: from aarka-mobl.amr.corp.intel.com (HELO [10.209.59.94]) ([10.209.59.94])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 08:44:11 -0700
-Message-ID: <3787eac9-cf18-4210-b11b-a34068887bb3@intel.com>
-Date:   Thu, 12 Oct 2023 08:44:10 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] x86/tdx: Dump TDX version During the TD Bootup
+        Thu, 12 Oct 2023 11:44:22 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A94B8;
+        Thu, 12 Oct 2023 08:44:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Kh9Kj8MUT22HB3ms3RfAP6hkFSnxB+ohUTR286/ST1oCeH3Q+zxlHg4/A4JQ2QL5egXyS9txpuxD2saEFg0V1LbPscjJXo4W4tH/MIQT8hghDo5DDAfmpAeBOn8T0XD7g56X0sq3w9X80WpZsHBl3+5zsTOp1BciNSVujAndNVqQ6lm1sgGre9zqGx6azLMuOlk+PPkbWN60aF1494kiGnlrakz9eYAlttnS1s7Prv9ifytNcipYiZzSfGo1iRBTxYNpVmryl0RqZm1w5sSR+VT7Dk3PLsQKmtFXyLdsypj2Lvh14w+M5ABDZoUxXztt2KzemL4u1bFRKKhK7UC/jw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=t4xensMLyemAYEW8rYkY8ygvBhEIJOa/eLusj9csggQ=;
+ b=fqXV2dRsTtEDERlgjy5K5rxwB1oBpBB/o2yngbwj59uKFqJUg0vLwZqo5GtyygDoghVQut1or16y5UQTXZbDBU1g5xRA5knKTRNzOpKAKmn0UuUscR4nQ08FMlO6Orn+4aLVFaLt/ieCqN/DeygwdejF/ybTrl+Bub2SFvev75xlXggZAJfWtHVKEuOZCzmjKJdMMjYyk6LU+3go52bwAU5ApF76TGz+jztKbEjEh1TC9EK/i5GmcFM1usJpfn2l+ukoqtT1/2ElqKzrpVGbSzMbogjFW3+kK0Dv8Pqnora4zyaKArll1cq2l6sK7IwonVv1v9za1apodibrRoI1/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t4xensMLyemAYEW8rYkY8ygvBhEIJOa/eLusj9csggQ=;
+ b=dL+yIl2itjVAVuVLZkTi+yYyo0IAmnf9iXbo8HNJcwqFZ6RPI56gUyKBSEv7cpVBqdwYYWCc3UElQsO/iru3vqBbSR7f4qPi0rjKHFTYpsx9Vn11okS8HxpkFMuWbo7WFPm+5zMlcfeHqLaJ3W5qlfbEqw56FI5ucXuzSMckiLE=
+Received: from BL0PR12MB4673.namprd12.prod.outlook.com (2603:10b6:207:1d::16)
+ by PH7PR12MB7305.namprd12.prod.outlook.com (2603:10b6:510:209::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.37; Thu, 12 Oct
+ 2023 15:44:18 +0000
+Received: from BL0PR12MB4673.namprd12.prod.outlook.com
+ ([fe80::262d:85ff:ef23:629e]) by BL0PR12MB4673.namprd12.prod.outlook.com
+ ([fe80::262d:85ff:ef23:629e%7]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
+ 15:44:18 +0000
+From:   "Sridharan, Vilas" <Vilas.Sridharan@amd.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+CC:     "Duran, Leo" <leo.duran@amd.com>,
+        "Ghannam, Yazen" <Yazen.Ghannam@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Jiaqi Yan <jiaqiyan@google.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Grimm, Jon" <Jon.Grimm@amd.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>,
+        "shiju.jose@huawei.com" <shiju.jose@huawei.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "jthoughton@google.com" <jthoughton@google.com>,
+        "somasundaram.a@hpe.com" <somasundaram.a@hpe.com>,
+        "erdemaktas@google.com" <erdemaktas@google.com>,
+        "pgonda@google.com" <pgonda@google.com>,
+        "duenwen@google.com" <duenwen@google.com>,
+        "mike.malvestuto@intel.com" <mike.malvestuto@intel.com>,
+        "gthelen@google.com" <gthelen@google.com>,
+        "tanxiaofei@huawei.com" <tanxiaofei@huawei.com>,
+        "prime.zeng@hisilicon.com" <prime.zeng@hisilicon.com>,
+        "kangkang.shen@futurewei.com" <kangkang.shen@futurewei.com>,
+        "wanghuiqiang@huawei.com" <wanghuiqiang@huawei.com>
+Subject: RE: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entries
+ for set of scrub attributes
+Thread-Topic: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entries
+ for set of scrub attributes
+Thread-Index: AQHZ5/onsXhE7XQ22EC/SjWOQvHCtrAmAXoAgACrR4CACRvJAIAK3KYAgAI1jgCAAACIEIAIFsaAgAFfnSCAABiZAIAAC0TQ
+Date:   Thu, 12 Oct 2023 15:44:18 +0000
+Message-ID: <BL0PR12MB4673059A5AC97F648CD00FB1EAD3A@BL0PR12MB4673.namprd12.prod.outlook.com>
+References: <20230915172818.761-1-shiju.jose@huawei.com>
+        <20230915172818.761-3-shiju.jose@huawei.com>
+        <CACw3F50jRzJnr9h7qYyD3t+6h7Uw9QMfkCkgu7a=7Lv0Tpi8Zg@mail.gmail.com>
+        <20230922111740.000046d7@huawei.com>
+        <CACw3F539gZc0FoJLo6VvYSyZmeWZ3Pbec7AzsH+MYUJJNzQbUQ@mail.gmail.com>
+        <92f48c1c-3235-49b2-aabd-7da87ad3febc@google.com>
+        <20231006140224.000018a2@Huawei.com>
+        <BL0PR12MB4673F5E024B62D64B065DBE4EAC9A@BL0PR12MB4673.namprd12.prod.outlook.com>
+        <20231011173553.00001b39@Huawei.com>
+        <BL0PR12MB4673336E2BD4686AFF5EE737EAD3A@BL0PR12MB4673.namprd12.prod.outlook.com>
+ <20231012160224.00003f87@Huawei.com>
+In-Reply-To: <20231012160224.00003f87@Huawei.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Yi Sun <yi.sun@intel.com>, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, peterz@infradead.org,
-        x86@kernel.org
-Cc:     kirill.shutemov@linux.intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, kai.huang@intel.com,
-        nik.borisov@suse.com, linux-kernel@vger.kernel.org,
-        heng.su@intel.com, yi.sun@linux.intel.com,
-        Dongcheng Yan <dongcheng.yan@intel.com>
-References: <20231012134136.1310650-1-yi.sun@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20231012134136.1310650-1-yi.sun@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=90a3db85-b3c3-41b3-ac97-0ecdfcef6d87;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-10-12T15:42:42Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL0PR12MB4673:EE_|PH7PR12MB7305:EE_
+x-ms-office365-filtering-correlation-id: de531250-1dc9-48f5-12ee-08dbcb3a186b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xgLQOAyYF0nbnRK6AWOTOVi9y6y01Kl2pW9wjYoifF/oPq0mRImTT1VygQDgbXEO2mXo9PzAIEBG3LtJwBK7tVu+SU9Kpf+oOpVGoFNTk3TzOYG6EkHGhF8wzxd9qVpiBxJOXsZnrCgWMhj6PkRgCdePzUjqhDoKquscIUTjrgURgPcrx4+O6JsnwCH1DIfUtyXvnqdB82j2CjS/XV8bEOof3nsVAdivIKUvBJYtFmrYJGeUpSdPRGukn7K7d9pVVFQnQbKQsuAwDqEfgd4KqHEZUO4CISYs+ftrkV9L5qBe8igjTnnGO5NrWjLARyoqjiag5c7JBAzHuo59svfRjSa2nFitQnlTpqz9vvUdPGE+4E6XB9W2zIfDg1U58bVcA2SWl0ASHBM4oixKq1rVxX+MBWcNZUGB7ndUc7qjgn1nDTOHTh0ZvH8/TEA8djOl9mAWDRUp+a25Rd8IKTzPvSyiS39pdyNCCOWfB6jFJ6m5PK3+H17rIiRFJ66Dz2aufo0hAIhEA12+2QiD7Ngz2ZmjdBsdH3viOth56ffIH7MnO91WzFF6Kimloui6zyfehiXbvrDjKb2fLgTVFgEwKfKmd9SclIoVzaI9k+Vnrrzk8qG0I8fO/Kc7Ubv1b8FL
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB4673.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(136003)(346002)(366004)(376002)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(7416002)(4326008)(8676002)(5660300002)(8936002)(52536014)(2906002)(66946007)(41300700001)(66446008)(64756008)(66476007)(54906003)(316002)(66556008)(76116006)(66899024)(6916009)(26005)(33656002)(83380400001)(55016003)(6506007)(7696005)(122000001)(86362001)(9686003)(53546011)(38100700002)(478600001)(38070700005)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?g+C7W4QqKu4vWODFJFAb8zcb50QfK1opehX6hqiG9v2RcDWZtNjhe68I6VL5?=
+ =?us-ascii?Q?I6OD1ihe9fASuIjZ9WJHDfO0E/EHlfmHMgTE02eZrbOjGPQGPNzbWJBUiIOp?=
+ =?us-ascii?Q?PqRwBMmnHPJuZDhfHINy20ZUjfELPQG29v+ofCU7sDU3wnBD5J02Yxs8NzEr?=
+ =?us-ascii?Q?+L3em+f/K1L++AMQvo5BI0GI+UweOEQJgm3BupgfwbX/AT7S1141k7dHqh8C?=
+ =?us-ascii?Q?0TK6f87fB9QbDEdJr+QGqtuBjUuLwCq4ov1GKH8kuV9XNDDVdBPWyb554N5z?=
+ =?us-ascii?Q?aapweTkfr6DJnxEa9OadwbCkapPf0+jhJYU1yodHlovq1IsTgaz67C/vfM9B?=
+ =?us-ascii?Q?7JdFAJW4x3vRl5eLrHFvnsj+AN14A9FzuV7GT2u4RH2MGgA4TNW0cXy4/iMX?=
+ =?us-ascii?Q?GNuJbEy6+BL51u+z5vaROA86MAM/58c1NcS1OxWnYncKu8n3Y8NXs8PzStXb?=
+ =?us-ascii?Q?tjZdHjLi1fZqH/jY6YWBQw8xqQeV01XBEqfyuJByoQ/xAaAk5bkmAa52W2Iz?=
+ =?us-ascii?Q?qUkHFP12u5T9hh5xmJNhgoOtFJ6UXbP1odPpwCtmC9BUl653voGh9s//45/G?=
+ =?us-ascii?Q?GwsHoBhcxtJQFeMffI7GPxcBbUGDOpmtikLo1lVoJRTVME6y5lNVkge8jxRB?=
+ =?us-ascii?Q?q3M6wwDIdYNuFM51YgSrMhGkW5wKCxzksGvzwCo94PSAvfknU/EQCQk1NkNb?=
+ =?us-ascii?Q?Hspn3jmlDr93ZNdbyf/ztrzxo5t27WFuTqxZVPTZHygl++ky17/eZx33d6z+?=
+ =?us-ascii?Q?z6eJNg/UGGW4TRTxrfgbGwKcj8GZh7MLrXYsr+kc+3tBrZ53J6D3rzOyzjYu?=
+ =?us-ascii?Q?AaX5KYZ6x3zUJCEGPHXcpeYXFqyvt/iwdJiL9qnJ2yVshJZL7YKgFjH8nSWB?=
+ =?us-ascii?Q?gl3tOKzxEAyW4VX/DmmV3hAeuzgi67wZQ2cYKq2XNQwlrRK8Q8Jsj0j1C6wP?=
+ =?us-ascii?Q?Ugj6bO/O+06HQ0F4pZGEvyj2XSMKbXXpQrMHYMDXd0BKXfuBInYHEMEGTjhU?=
+ =?us-ascii?Q?F6RDYARebNkydxiqDqSU/Hyvg0x6m0zjaCabeBlUEKE04VXEqevow9ehB0m3?=
+ =?us-ascii?Q?BXk6pPsP0KvlehOfngO9y8nXd+4kWgjLE+IULolRrzUJPRfYzcCFsY08aHmb?=
+ =?us-ascii?Q?c918RVLZ6a2r51rdbjx6TjFRKM3dYTx5+7EhKY9vT/bFkOUAT2qkbABeJUKv?=
+ =?us-ascii?Q?CfUb36TwPheLONWkso8LAlEiWa51b9PZAcA4aelutTOrlPS+dyi3Ah+/HFY5?=
+ =?us-ascii?Q?HzTUYJAAsZ9vLvINnDwv4GJ1SRoLUE5oeDqNMnzamNLYQvHwgexoXSwkOOiC?=
+ =?us-ascii?Q?9FlGKIfSOn5ybl/bjbwWOOLfbrqnLIDiAmy0fiikik9aJK8Rgqo8M/fPQ0GK?=
+ =?us-ascii?Q?D0WrNy0JB6/r87vOO4qj+9B+7WWBmdJIycM9IhYcg4X0RtVLIeVKxSCIyZf8?=
+ =?us-ascii?Q?0NKpbMEqR2WXf2rRgpxVimlp8ngD/KMaR7tYdbVx5R/9+fHvveS7fn+uMty4?=
+ =?us-ascii?Q?2ZoYVu9NfzgES7MnR/dQvsqogmk3liBMFtadeFByEHR9DW0Dj889IHHcqn8M?=
+ =?us-ascii?Q?KBzgR55+vHSvy3r5jZQ=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB4673.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: de531250-1dc9-48f5-12ee-08dbcb3a186b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Oct 2023 15:44:18.0670
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: n+iyoNZYofRej8ut1CcEOCeCQIVscofs6bdnmXU0M7SGHskX3okD5v9DnlPDdNwOLzg9EbIDjNdIzyT35JPDqA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7305
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/23 06:41, Yi Sun wrote:
-> It is essential for TD users to be aware of the vendor and version of
-> the current TDX. Additionally, they can reference the TDX version when
-> reporting bugs or issues.
+[AMD Official Use Only - General]
 
-... and they will all have to pull this "essential" information out of
-dmesg?
+> Are you thinking a code first proposal?  If you think doing this through =
+the standards body is a good idea then perhaps message back here so we know=
+ when to look for further proposals in mantis.
 
-If this is essential, why stick it in dmesg where it can be overwritten?
+I am not super familiar with what you mean by 'code first proposal', but we=
+ are thinking about crafting an ECN (or a set of ECNs) for ACPI, that will =
+be made public through ACPI's normal process.
 
-> Furthermore, the applications or device drivers running in TD can achieve
-> enhanced reliability and flexibility by following the TDX Module ABI
-> specification, because there are significant differences between different
-> versions of TDX, as mentioned in the "Intel® TDX Module Incompatibilities
-> between v1.0 and v1.5" reference.
+    -Vilas
 
-This is orthogonal to this patch.  No applications or device drivers can
-do anything with the result of these version queries.
+-----Original Message-----
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Sent: Thursday, October 12, 2023 11:02 AM
+To: Sridharan, Vilas <Vilas.Sridharan@amd.com>
+Cc: Duran, Leo <leo.duran@amd.com>; Ghannam, Yazen <Yazen.Ghannam@amd.com>;=
+ David Rientjes <rientjes@google.com>; Jiaqi Yan <jiaqiyan@google.com>; Luc=
+k, Tony <tony.luck@intel.com>; Grimm, Jon <Jon.Grimm@amd.com>; dave.hansen@=
+linux.intel.com; linuxarm@huawei.com; shiju.jose@huawei.com; linux-acpi@vge=
+r.kernel.org; linux-mm@kvack.org; linux-kernel@vger.kernel.org; rafael@kern=
+el.org; lenb@kernel.org; naoya.horiguchi@nec.com; james.morse@arm.com; davi=
+d@redhat.com; jthoughton@google.com; somasundaram.a@hpe.com; erdemaktas@goo=
+gle.com; pgonda@google.com; duenwen@google.com; mike.malvestuto@intel.com; =
+gthelen@google.com; tanxiaofei@huawei.com; prime.zeng@hisilicon.com; kangka=
+ng.shen@futurewei.com; wanghuiqiang@huawei.com
+Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entrie=
+s for set of scrub attributes
 
-> Add function detect_tdx_version to fetch and dump the version of the
-> TDX, which is called during TD initialization. Obtain the info by calling
-> TDG.SYS.RD, including the major and minor version numbers and vendor ID.
+Caution: This message originated from an External Source. Use proper cautio=
+n when opening attachments, clicking links, or responding.
 
-You don't need to rewrite the code in text form.
 
-> The TDCALL TDG.SYS.RD originates from TDX version 1.5. If the error
-> TDCALL_INVALID_OPERAND occurs, it should be treated as TDX version 1.0.
+On Thu, 12 Oct 2023 13:41:19 +0000
+"Sridharan, Vilas" <Vilas.Sridharan@amd.com> wrote:
 
-I don't understand what this is trying to say.
+> [AMD Official Use Only - General]
+>
+> + Leo and Yazen
 
->  #define TDREPORT_SUBTYPE_0	0
->  
-> +/*
-> + * TDX metadata base field id, used by TDCALL TDG.SYS.RD
-> + * See TDX ABI Spec Global Metadata Fields
-> + */
-> +#define TDX_SYS_VENDOR_ID_FID		0x0800000200000000ULL
-> +#define TDX_SYS_MINOR_FID		0x0800000100000003ULL
-> +#define TDX_SYS_MAJOR_FID		0x0800000100000004ULL
-> +#define TDX_VENDOR_INTEL		0x8086
-> +
->  /* Called from __tdx_hypercall() for unrecoverable failure */
->  noinstr void __noreturn __tdx_hypercall_failed(void)
->  {
-> @@ -800,6 +809,63 @@ static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
->  	return true;
->  }
->  
-> +/*
-> + * Detect TDX Module version info from TDG.SYS.RD TDCALL
-> + */
-> +static void detect_tdx_version(void)
-> +{
-> +	struct tdx_module_args args = {};
-> +	u32 vendor_id = TDX_VENDOR_INTEL;
+Hi All.
 
-What's the purpose of this assignment?
++ Kangkang and Wanghuiqiang (Henson),
 
-> +	u16 major_version = 0;
-> +	u16 minor_version = 0;
-> +	u64 ret;
-> +
-> +	/*
-> +	 * TDCALL leaf TDG_SYS_RD
-> +	 */
-> +	args.rdx = TDX_SYS_VENDOR_ID_FID;
-> +	ret = __tdcall_ret(TDG_SYS_RD, &args);
-> +	/*
-> +	 * The TDCALL TDG.SYS.RD originates from TDX version 1.5.
-> +	 * Treat TDCALL_INVALID_OPERAND error as TDX version 1.0.
-> +	 */
-> +	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
-> +		goto version_1_0;
-> +	if (ret) {
-> +		WARN(1, "TDX detection: TDG.SYS.RD(VENDOR_ID) error, return %llu\n",
-> +		     ret);
-> +		return;
-> +	}
+>
+> We looked at RASF and RAS2 again. We don't think RASF is worth fixing. Ou=
+r preference is to coalesce around RAS2 because we think it can be extended=
+ in interesting ways.
 
-We do not need random warnings at every step of the way.  Worst case,
-make a version of tdcall that will spew an error in common code.
+Absolutely agree. I'm guessing RAS2 was previous go at fixing RASF though I=
+ haven't done the archaeology.
 
-> +	vendor_id = (u32)args.r8;
+>
+> The patrol scrub function probably needs some changes to be more general =
+across different types of hardware (there are some baked-in assumptions tha=
+t don't always hold true).
 
-What's the purpose of the cast?
+Agreed. One aspect I'd love to see improved is expanded discoverability of =
+what the hardware can do.
 
-> +	args.rdx = TDX_SYS_MAJOR_FID;
-> +	ret = __tdcall_ret(TDG_SYS_RD, &args);
+>
+> We will look at some spec changes to fix the patrol scrub function, and w=
+e are going to start thinking about other functions that can be added to RA=
+S2.
 
-Does args need to be re-zeroed between tdcalls?
+Feel free to reach out if you want some early input on this. Are you thinki=
+ng a code first proposal?  If you think doing this through the standards bo=
+dy is a good idea then perhaps message back here so we know when to look fo=
+r further proposals in mantis.
 
-> +	if (ret) {
-> +		WARN(1, "TDX detection: TDG.SYS.RD(MAJOR) error, return %llu\n",
-> +		     ret);
-> +		return;
-> +	}
-> +	major_version = (u16)args.r8;
-> +
-> +	args.rdx = TDX_SYS_MINOR_FID;
-> +	ret = __tdcall_ret(TDG_SYS_RD, &args);
-> +	if (ret) {
-> +		WARN(1, "TDX detection: TDG.SYS.RD(MINOR) error, return %llu\n",
-> +		     ret);
-> +		return;
-> +	}
-> +	minor_version = (u16)args.r8;
-> +
-> +	pr_info("TDX detected. TDX version:%u.%u VendorID:%x\n",
-> +		major_version, minor_version, vendor_id);
-> +
-> +	return;
-> +
-> +	/* TDX 1.0 does not have the TDCALL TDG.SYS.RD */
-> +version_1_0:
-> +	pr_info("TDX detected. TDG.SYS.RD not available, assuming TDX version: 1.x (x<5)\n");
-> +}
-> +
->  void __init tdx_early_init(void)
->  {
->  	struct tdx_module_args args = {
-> @@ -867,5 +933,5 @@ void __init tdx_early_init(void)
->  	 */
->  	x86_cpuinit.parallel_bringup = false;
->  
-> -	pr_info("Guest detected\n");
-> +	detect_tdx_version();
->  }
-> diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-> index f74695dea217..1a0cacad5a0c 100644
-> --- a/arch/x86/include/asm/shared/tdx.h
-> +++ b/arch/x86/include/asm/shared/tdx.h
-> @@ -17,6 +17,7 @@
->  #define TDG_MR_REPORT			4
->  #define TDG_MEM_PAGE_ACCEPT		6
->  #define TDG_VM_WR			8
-> +#define TDG_SYS_RD			11
+Thanks,
 
-*This* is the place to document that TDG_SYS_RD is not available on old
-TDX modules.
+Jonathan
+>
+>     -Vilas
+>
+> -----Original Message-----
+> From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+> Sent: Wednesday, October 11, 2023 12:36 PM
+> To: Sridharan, Vilas <Vilas.Sridharan@amd.com>
+> Cc: David Rientjes <rientjes@google.com>; Jiaqi Yan
+> <jiaqiyan@google.com>; Luck, Tony <tony.luck@intel.com>; Grimm, Jon
+> <Jon.Grimm@amd.com>; dave.hansen@linux.intel.com; linuxarm@huawei.com;
+> shiju.jose@huawei.com; linux-acpi@vger.kernel.org; linux-mm@kvack.org;
+> linux-kernel@vger.kernel.org; rafael@kernel.org; lenb@kernel.org;
+> naoya.horiguchi@nec.com; james.morse@arm.com; david@redhat.com;
+> jthoughton@google.com; somasundaram.a@hpe.com; erdemaktas@google.com;
+> pgonda@google.com; duenwen@google.com; mike.malvestuto@intel.com;
+> gthelen@google.com; tanxiaofei@huawei.com; prime.zeng@hisilicon.com
+> Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation
+> entries for set of scrub attributes
+>
+> Caution: This message originated from an External Source. Use proper caut=
+ion when opening attachments, clicking links, or responding.
+>
+>
+> On Fri, 6 Oct 2023 13:06:53 +0000
+> "Sridharan, Vilas" <Vilas.Sridharan@amd.com> wrote:
+>
+> > [AMD Official Use Only - General]
+> >
+> > I do not believe AMD has implemented RASF/RAS2 at all.
+> >
+> > We are looking at it, but our initial impression is that it is
+> > insufficiently flexible for general use. (Not just for this feature,
+> > but for others in the future.)
+> >
+> >     -Vilas
+>
+> Hi Vilas,
+>
+> So obvious question is - worth fixing?
+>
+> I'm not particularly keen to see 10+ different ways of meeting this requi=
+rement.
+>
+> Probably not too bad if that's 10+ drivers implementing the same userspac=
+e ABI, but definitely don't want 10 drivers and 10 ABIs.
+>
+> Jonathan
+>
+> >
+> > -----Original Message-----
+> > From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+> > Sent: Friday, October 6, 2023 9:02 AM
+> > To: David Rientjes <rientjes@google.com>
+> > Cc: Jiaqi Yan <jiaqiyan@google.com>; Luck, Tony
+> > <tony.luck@intel.com>; Grimm, Jon <Jon.Grimm@amd.com>;
+> > dave.hansen@linux.intel.com; Sridharan, Vilas
+> > <Vilas.Sridharan@amd.com>; linuxarm@huawei.com;
+> > shiju.jose@huawei.com; linux-acpi@vger.kernel.org;
+> > linux-mm@kvack.org; linux-kernel@vger.kernel.org; rafael@kernel.org;
+> > lenb@kernel.org; naoya.horiguchi@nec.com; james.morse@arm.com;
+> > david@redhat.com; jthoughton@google.com; somasundaram.a@hpe.com;
+> > erdemaktas@google.com; pgonda@google.com; duenwen@google.com;
+> > mike.malvestuto@intel.com; gthelen@google.com;
+> > tanxiaofei@huawei.com; prime.zeng@hisilicon.com
+> > Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation
+> > entries for set of scrub attributes
+> >
+> > Caution: This message originated from an External Source. Use proper ca=
+ution when opening attachments, clicking links, or responding.
+> >
+> >
+> > On Wed, 4 Oct 2023 20:18:12 -0700 (PDT) David Rientjes
+> > <rientjes@google.com> wrote:
+> >
+> > > On Wed, 27 Sep 2023, Jiaqi Yan wrote:
+> > >
+> > > > > > 1. I am not aware of any chip/platform hardware that
+> > > > > > implemented the hw ps part defined in ACPI RASF/RAS2 spec.
+> > > > > > So I am curious what the RAS experts from different hardware
+> > > > > > vendors think about this. For example, Tony and Dave from
+> > > > > > Intel, Jon and Vilas from AMD. Is there any hardware
+> > > > > > platform (if allowed to disclose) that implemented ACPI
+> > > > > > RASF/RAS2? If so, will vendors continue to support the
+> > > > > > control of patrol scrubber using the ACPI spec? If not (as Tony=
+ said in [1], will the vendor consider starting some future platform?
+> > > > > >
+> > > > > > If we are unlikely to get the vendor support, creating this
+> > > > > > ACPI specific sysfs API (and the driver implementations) in
+> > > > > > Linux seems to have limited meaning.
+> > > > >
+> > > > > There is a bit of a chicken and egg problem here. Until there
+> > > > > is reasonable support in kernel (or it looks like there will
+> > > > > be), BIOS teams push back on a requirement to add the tables.
+> > > > > I'd encourage no one to bother with RASF - RAS2 is much less
+> > > > > ambiguous.
+> > > >
+> > > > Here mainly to re-ping folks from Intel (Tony and Dave)  and AMD
+> > > > (Jon and Vilas) for your opinion on RAS2.
+> > > >
+> > >
+> > > We'll need to know from vendors, ideally at minimum from both
+> > > Intel and AMD, whether RAS2 is the long-term vision here.  Nothing
+> > > is set in stone, of course, but deciding whether RAS2 is the
+> > > standard that we should be rallying around will help to guide
+> > > future development including in the kernel.
+> > >
+> > > If RAS2 is insufficient for future use cases or we would need to
+> > > support multiple implementations in the kernel for configuring the
+> > > patrol scrubber depending on vendor, that's great feedback to have.
+> > >
+> > > I'd much rather focus on implementing something in the kernel that
+> > > we have some clarity about the vendors supporting, especially when
+> > > it comes with user visible interfaces, as opposed to something
+> > > that may not be used long term.  I think that's a fair ask and
+> > > that vendor feedback is required here?
+> >
+> > Agreed and happy to have feedback from Intel and AMD + all the other CP=
+U vendors who make use of ACPI + all the OEMs who add stuff well beyond wha=
+t Intel and AMD tell them to :)  I'll just note a lot of the ACPI support i=
+n the kernel covers stuff not used on mainstream x86 platforms because they=
+ are doing something custom and we didn't want 2 + X custom implementations=
+...
+> >
+> > Some other interfaces for scrub control (beyond existing embedded ones)=
+ will surface in the next few months where RAS2 is not appropriate.
+> >
+> > Jonathan
+> >
+> >
+>
 
