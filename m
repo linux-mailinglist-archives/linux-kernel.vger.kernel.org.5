@@ -2,160 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80ED47C6BE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822C67C6BE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378206AbjJLLEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
+        id S1378234AbjJLLEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378247AbjJLLDs (ORCPT
+        with ESMTP id S1378351AbjJLLD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:03:48 -0400
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02olkn2078.outbound.protection.outlook.com [40.92.50.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F368F5;
-        Thu, 12 Oct 2023 04:03:38 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d9I7Wsxoi2msSJTECusPF8OQOTWID4SHbJfShngm/DpVh9xIsEaooRKUYNDLc21aBBot7iJEf4iot7GytJI8hcAqHuEPetM3DWIJyAX0Xt+JgdWAj0tHekkuIG3jwR1gqWJiG/4I3I5/IWvBjqPyRy2qoWtAk4091WbsMF2kkkAO+HYJ5Tnvhw/cNW9XO1CENgrgLOWCWvFbvUcPN+06d3XUH2kn1eMpDoNW0uRW3N2FASAJnhljvPB+U+ITix98d2gfdaO7ZVTr0TR0AivaZdWlOeLTPJokKRIMzCqsxK+7dlOnPnyuTaKCKftIBt66jRbxZ0oV/BYS83XZSBQpYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dWAbrkXml6NEsYcTfWFt3VsGaLxIICZYwThYz40k9t0=;
- b=A1fbf7rQFi2LhlAbaCSY0nJ1dOTB4Bq4iPqXvpIw6U0AUC113CdXGYQ9q6NekYCDAUCY83yoLvGxY1tqH3vrjlrK6HAAC+4//MUBZhTpI3EP7fO84fWErEI6Cybqh9zT5+3gyHZPPGa4SI/ouS6cYheXG7u4ZPkFtRqFx+K9WZat25ErJt7hElaXEjncZh/0i8uSCu9pR5BRr9oFVWEeiGStl+mb+BIq1BdiCpuJdVXbbBWSGp6SA3QCz1SbAosjrSzaLkPQq3G7hIdkWwuXzM6LeF4y+XQu1VHvE1tK8xtF7sr+DtpYUHpeBoygclVj80cWRQkBmh1Hgz88TGw4BQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dWAbrkXml6NEsYcTfWFt3VsGaLxIICZYwThYz40k9t0=;
- b=AG4CFqMVUqffihyI1i/Ab1SoDZlvkVZO911mGFqffLis2hQrdVTI1jzNF06Kf2jzwkPxqfgjhmphHvRhA+xnANonBti9bOCHkO4Nbz5ujuw49lyBVqIS36b1O61jYqKPgQoNrxTlxdTrWR3wEuzm6nVhnPHz16/4ui3oGMgeju0RiYPpzkoznH1sK4bw9ArJmbwKqgRYpBRsc5FGfTQatcteOz180os8bt5BX3rnV7q2/KBLzpUIH9f6G/wbg+dfrhQs1wAGYqFakeptBwbhvRGVFh8LiGXAGVAqKPt/dceqXSzXqYMajzNVrm1ovQVPKlySOq6DGq7eF/Q6avo7aA==
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
- by PAXP193MB2252.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:232::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.43; Thu, 12 Oct
- 2023 11:03:36 +0000
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::af68:c2a:73ce:8e99]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::af68:c2a:73ce:8e99%3]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
- 11:03:36 +0000
-From:   Juntong Deng <juntong.deng@outlook.com>
-To:     borisp@nvidia.com, john.fastabend@gmail.com, kuba@kernel.org,
-        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+29c22ea2d6b2c5fd2eae@syzkaller.appspotmail.com
-Subject: [PATCH] net/tls: Fix slab-use-after-free in tls_encrypt_done
-Date:   Thu, 12 Oct 2023 19:02:51 +0800
-Message-ID: <VI1P193MB0752428D259D066379242BD099D3A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [IYw6gEqPreLhsJRR+n9bpDeFOiGYOaZz]
-X-ClientProxiedBy: LNXP265CA0021.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:5e::33) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:800:32::19)
-X-Microsoft-Original-Message-ID: <20231012110251.10696-1-juntong.deng@outlook.com>
+        Thu, 12 Oct 2023 07:03:57 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E28FE7;
+        Thu, 12 Oct 2023 04:03:47 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-53406799540so1542613a12.1;
+        Thu, 12 Oct 2023 04:03:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697108625; x=1697713425; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DmO8gUEeWTIeugQ59PUPtNR1b1/YDjgV/Nl6BnlhrW8=;
+        b=lq02rtKhtYV9WXEhHPIyywL6e0PVe5vDdvHSdIabg4poihEj4Omi4bVFi44wL0FkX2
+         8MiPL1RRpVySaal6sepybMMQbNXuxjGcVERkvuoPs88pa49lGULdjTtwwC+aaw6topuO
+         Uo4ONCjFtCTyp+g2awI0gUAAPFvOD6Ux2v7yqODqtxn3ApEhqoZfg1jsA8V5vlM7ZYOt
+         8hoAt5Zg5Pw36AnLGhCszaPD/bEhEfu+o133EgWJT0YCq1ihGQ+5aB0sI9BJMso4qUKv
+         tn5rZ0NAJc85w1C1HDC3kEzvtuw+MNoau6yWQCSO14bn7t4C/tdhVHaLdu7xLYW0ygZz
+         BXig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697108625; x=1697713425;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DmO8gUEeWTIeugQ59PUPtNR1b1/YDjgV/Nl6BnlhrW8=;
+        b=AOQH5Pffq7wFu72eEiDk44dA6/hKPjKuTrqhJb+tw+Xtr1G2iWPAmEOCDygOliFTLO
+         Mg+guCBmGGJaH00mZXo5ZjmZlHxqryfdWU1rsJm4YKmbu3bzThFQR32EoD3mWtx/UQO2
+         o+q2CjR9z36zayvdbUWeTrJRMb92JhI98QztFACK8v8t8tY8rxijuoQWV+Pa7QKxhFxU
+         7mt3rNtWYtqtDgIgSr/n96xPNPwAHWPdCv+DRay98s5LKdQmjT+SxArIXVWzBcKPzJZZ
+         EGuCH+KyBnGoe+19SJIpyQWHIRl8nFy4sHeQEQorJjjnZPy3wTO7X78aQyZ5SbHU8Kxm
+         g7mw==
+X-Gm-Message-State: AOJu0YxaOfbSlGLFLH3wrTI70f8G29jVKw7nc3vSqhsYVtgDbUJdx1mE
+        jsXIosepMHaFQzIA18oOtidCWvThfro=
+X-Google-Smtp-Source: AGHT+IHJ1KGqHqvgOy/LksbhX3FOc8BhoOJFt/mKXNAMyufYQ+XNXioG0Yvpj8Hc4U8pQ9x80GOZeg==
+X-Received: by 2002:a50:fb82:0:b0:523:3754:a4e1 with SMTP id e2-20020a50fb82000000b005233754a4e1mr20669977edq.22.1697108625169;
+        Thu, 12 Oct 2023 04:03:45 -0700 (PDT)
+Received: from orome.fritz.box (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id dk20-20020a0564021d9400b0053da3a9847csm2928338edb.42.2023.10.12.04.03.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 04:03:44 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 13:03:43 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        Johnny Liu <johnliu@nvidia.com>,
+        Ankur Pawar <ankurp@nvidia.com>
+Subject: Re: [PATCH] memory: tegra: Add Tegra234 clients for RCE and VI
+Message-ID: <ZSfSj42AXcnI895C@orome.fritz.box>
+References: <20231012104909.48518-1-jonathanh@nvidia.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|PAXP193MB2252:EE_
-X-MS-Office365-Filtering-Correlation-Id: c77aa7bc-1b2d-4b0b-1b78-08dbcb12e130
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ncHInV2HNgsx5LhrR4Vg83pPI2No9Tz7Iz3dQOOWozVbhV5kQ9emIdVXhis6dW6TwltjbaYmexushk8rFLLLVP9FndPnUFK1voRTBb9nnUjvFEPtBvztrAb0J3zoLcVkITQQzla+zWhkazZ6CEGasZvtJvtA10WRZ8ZsrbvpWeVHLtQrw0fPEuzPS1mBP9LD0DNGqUKyQtK6nnHJDcXXi+NjeznaqulgHsT5FYjrO4PPr0o5y+fY6ZlblkTh2WCGM6ZWP1cDJnpeuBSPWPOgj2SHgohD4esdnrIJWXZMi65ClKfNWoVQ8T3UoI4+FEwFaQ8B+Tk64WjtyQR2FDyjS3vhvQcDF15KwJeyHKl6zdAFmewy3wP2QA4THH5oQVX/txdMmNQLRTX/wg0qz6lA9lxnr7aDyMrNyxhVIn21nTK5xmwemkHjzZDD0nsA96tOzNdR6ZPP69HGytfNL+es9ChkniUT42LyHKvynJPm9FkZRvUTz7Or0/O1mJ04CJVAhz2rzTRxKFuI/xoCHOvLhkpjsePYCCJ7tw3fPgULNxiBwfgpuqMpBfWYoIWZjgCTTSPjfY0prnaH3ey0GrZnBsmZ+qBCLRhUYjxM/2IWJaM=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YJ3qbzQt1oNaeXazn620RqPIf6L314yOqNlTP4Q7jG4mDxEN5voOmIUnrgwl?=
- =?us-ascii?Q?T2nAh57EZoMo33BPx0ZXb2AB5DoAdkWEpN3U/NYotavXUOZFMdw1sF7kfpl+?=
- =?us-ascii?Q?Zl6dUT1Dew3q3usIJ0sXjVKxNMMSEDg6ib6ixUgxK7AhOGtlHZ3QIYV83cOR?=
- =?us-ascii?Q?qE1sl3RSFGlRvjRWMRCO/EWC205DB2o5l9oyLG+lVVylj5e0eDDD9anU/n8g?=
- =?us-ascii?Q?EmP6Qc4P0wVH0e6fhXl79BafivjHqt9uf3DXf+fmB4thyN0t2Hsf+dFyan7o?=
- =?us-ascii?Q?YGVUeBUt+sIMdqw60nH8yrDYlQ89THYBridolMJV4ekVpFS5k9PJ1yr179FB?=
- =?us-ascii?Q?X9H2hjZOeJ8nXNgdDyaTfaAVRrBRf/7sWGH8EfaiG6nwVwmGc2YWB5IEUCau?=
- =?us-ascii?Q?JO7FShVhmJ/o9vb0hC0qBAEhOIF2x2CDQH7ACjrgaejVCd3vNxW1qi76Vzst?=
- =?us-ascii?Q?TieAhTRJwBXZ2s4bXrjsQnkHtm3XuC7KH6Jdd5OiJPGtH4YnLRdCacAXvgrH?=
- =?us-ascii?Q?UQBWTHf8yRClR/NJHoiK9aur60z9OxYyIOkhQMKgjk9BmXDoj9YFEFG9XV3b?=
- =?us-ascii?Q?huFgkrCLCw/BkkgaTFvNLK1KYn0KW8P3ZGhO17xALTkcwBWAhu4+yDxl4mQu?=
- =?us-ascii?Q?OPTaEmN9xHN0s/z/lNrlYzRr7O4L/Ph3MkyAvyB5cwimWXtHQCbCw/D93XBZ?=
- =?us-ascii?Q?D1j1adNJe67lcoRNAFtexTz7WV4Bo6e47s54VZOsGCngGSZBbsVvZjVh3KyL?=
- =?us-ascii?Q?ZCgLZJtJyf2VHp5KXj3xTHNdkje+rES4lY2wSgxVuwfDTCOHzjeq0pRl5iHY?=
- =?us-ascii?Q?BVSvQ45gHB/nWet+gK8xjEzHTaiPUlyJftcaxNB88tXDj28WuFmkRkFrI/Hs?=
- =?us-ascii?Q?QEjDOVcwwTGz6oFUKMUAlrH1HS/EDTkBth84H3P+GsQp22prKShz4gRcfHK3?=
- =?us-ascii?Q?HXCSnqFxHPkJHOSG7U2X0FEmVE6SvuB4v5vNIq/BPQMt1klh+wH2FtSBy77B?=
- =?us-ascii?Q?uNFzQAopdVS3dJwYFw9XejH/it9/QDAKRU8DlBTgVnQx8PrbaoJehUljNR+b?=
- =?us-ascii?Q?lVujm/Ia0KmLCvDuO8NJ3S9KU6nY6yg8XncCGj878Dnpps5n3lnHD2B8meYp?=
- =?us-ascii?Q?nz7ph2oMArNPgTMrbImBnnkF9xx2//7DYTqUtClmotPlPwE40xJ+ldlDr2E8?=
- =?us-ascii?Q?D/YBfmEUTXBk0Zqx3Ltwws4cG8cpscNxCeZSy2IA7dEX5gUTJAD+AMJIhiw?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c77aa7bc-1b2d-4b0b-1b78-08dbcb12e130
-X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 11:03:36.4259
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXP193MB2252
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="kuGnPKGhjCeiwyg1"
+Content-Disposition: inline
+In-Reply-To: <20231012104909.48518-1-jonathanh@nvidia.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the current implementation, ctx->async_wait.completion is completed
-after spin_lock_bh, which causes tls_sw_release_resources_tx to
-continue executing and return to tls_sk_proto_cleanup, then return
-to tls_sk_proto_close, and after that enter tls_sw_free_ctx_tx to kfree
-the entire struct tls_context (including ctx->encrypt_compl_lock).
 
-Since ctx->encrypt_compl_lock has been freed, subsequent spin_unlock_bh
-will result in slab-use-after-free error. Due to SMP, even using
-spin_lock_bh does not prevent tls_sw_release_resources_tx from continuing
-on other CPUs. After tls_sw_release_resources_tx is woken up, there is no
-attempt to hold ctx->encrypt_compl_lock again, therefore everything
-described above is possible.
+--kuGnPKGhjCeiwyg1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The fix is to put complete(&ctx->async_wait.completion) after
-spin_unlock_bh, making the release after the unlock. Since complete is
-only executed if pending is 0, which means this is the last record, there
-is no need to worry about race condition causing duplicate completes.
+On Thu, Oct 12, 2023 at 11:49:09AM +0100, Jon Hunter wrote:
+> Add the Tegra234 memory client entries for the Real-time Camera Engine
+> (RCE) and Video Input (VI) devices.
+>=20
+> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+>  drivers/memory/tegra/tegra234.c | 60 +++++++++++++++++++++++++++++++++
+>  1 file changed, 60 insertions(+)
 
-Reported-by: syzbot+29c22ea2d6b2c5fd2eae@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=29c22ea2d6b2c5fd2eae
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
----
- net/tls/tls_sw.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Krzysztof,
 
-diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-index 270712b8d391..7abe5a6aa989 100644
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -441,6 +441,7 @@ static void tls_encrypt_done(void *data, int err)
- 	struct sk_msg *msg_en;
- 	bool ready = false;
- 	struct sock *sk;
-+	int async_notify;
- 	int pending;
- 
- 	msg_en = &rec->msg_encrypted;
-@@ -482,10 +483,11 @@ static void tls_encrypt_done(void *data, int err)
- 
- 	spin_lock_bh(&ctx->encrypt_compl_lock);
- 	pending = atomic_dec_return(&ctx->encrypt_pending);
-+	async_notify = ctx->async_notify;
-+	spin_unlock_bh(&ctx->encrypt_compl_lock);
- 
--	if (!pending && ctx->async_notify)
-+	if (!pending && async_notify)
- 		complete(&ctx->async_wait.completion);
--	spin_unlock_bh(&ctx->encrypt_compl_lock);
- 
- 	if (!ready)
- 		return;
--- 
-2.39.2
+again, let me know how you want to handle this. I can pick it up into
+the Tegra tree along with Sumit's 2-patch series, or you can take these
+if you prefer, in which case:
 
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+>=20
+> diff --git a/drivers/memory/tegra/tegra234.c b/drivers/memory/tegra/tegra=
+234.c
+> index 9e5b5dbd9c8d..42c79f9a70af 100644
+> --- a/drivers/memory/tegra/tegra234.c
+> +++ b/drivers/memory/tegra/tegra234.c
+> @@ -449,6 +449,18 @@ static const struct tegra_mc_client tegra234_mc_clie=
+nts[] =3D {
+>  				.security =3D 0x38c,
+>  			},
+>  		},
+> +	}, {
+> +		.id =3D TEGRA234_MEMORY_CLIENT_VIW,
+> +		.name =3D "viw",
+> +		.bpmp_id =3D TEGRA_ICC_BPMP_VI,
+> +		.type =3D TEGRA_ICC_ISO_VI,
+> +		.sid =3D TEGRA234_SID_ISO_VI,
+> +		.regs =3D {
+> +			.sid =3D {
+> +				.override =3D 0x390,
+> +				.security =3D 0x394,
+> +			},
+> +		},
+>  	}, {
+>  		.id =3D TEGRA234_MEMORY_CLIENT_NVDECSRD,
+>  		.name =3D "nvdecsrd",
+> @@ -621,6 +633,30 @@ static const struct tegra_mc_client tegra234_mc_clie=
+nts[] =3D {
+>  				.security =3D 0x50c,
+>  			},
+>  		},
+> +	}, {
+> +		.id =3D TEGRA234_MEMORY_CLIENT_VIFALR,
+> +		.name =3D "vifalr",
+> +		.bpmp_id =3D TEGRA_ICC_BPMP_VIFAL,
+> +		.type =3D TEGRA_ICC_ISO_VIFAL,
+> +		.sid =3D TEGRA234_SID_ISO_VIFALC,
+> +		.regs =3D {
+> +			.sid =3D {
+> +				.override =3D 0x5e0,
+> +				.security =3D 0x5e4,
+> +			},
+> +		},
+> +	}, {
+> +		.id =3D TEGRA234_MEMORY_CLIENT_VIFALW,
+> +		.name =3D "vifalw",
+> +		.bpmp_id =3D TEGRA_ICC_BPMP_VIFAL,
+> +		.type =3D TEGRA_ICC_ISO_VIFAL,
+> +		.sid =3D TEGRA234_SID_ISO_VIFALC,
+> +		.regs =3D {
+> +			.sid =3D {
+> +				.override =3D 0x5e8,
+> +				.security =3D 0x5ec,
+> +			},
+> +		},
+>  	}, {
+>  		.id =3D TEGRA234_MEMORY_CLIENT_DLA0RDA,
+>  		.name =3D "dla0rda",
+> @@ -701,6 +737,30 @@ static const struct tegra_mc_client tegra234_mc_clie=
+nts[] =3D {
+>  				.security =3D 0x62c,
+>  			},
+>  		},
+> +	}, {
+> +		.id =3D TEGRA234_MEMORY_CLIENT_RCER,
+> +		.name =3D "rcer",
+> +		.bpmp_id =3D TEGRA_ICC_BPMP_RCE,
+> +		.type =3D TEGRA_ICC_NISO,
+> +		.sid =3D TEGRA234_SID_RCE,
+> +		.regs =3D {
+> +			.sid =3D {
+> +				.override =3D 0x690,
+> +				.security =3D 0x694,
+> +			},
+> +		},
+> +	}, {
+> +		.id =3D TEGRA234_MEMORY_CLIENT_RCEW,
+> +		.name =3D "rcew",
+> +		.bpmp_id =3D TEGRA_ICC_BPMP_RCE,
+> +		.type =3D TEGRA_ICC_NISO,
+> +		.sid =3D TEGRA234_SID_RCE,
+> +		.regs =3D {
+> +			.sid =3D {
+> +				.override =3D 0x698,
+> +				.security =3D 0x69c,
+> +			},
+> +		},
+>  	}, {
+>  		.id =3D TEGRA234_MEMORY_CLIENT_PCIE0R,
+>  		.name =3D "pcie0r",
+> --=20
+> 2.34.1
+>=20
+
+--kuGnPKGhjCeiwyg1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmUn0o8ACgkQ3SOs138+
+s6GexhAAvLAcvebVMhHUHBK35Y86JIbFkXBpIv5wNbGCC75VR8wJSE8aCSu4xGFy
+UT/WippKF+E/QlKacmnAw72Vl3nu8RxmBLvLlRQbUt00P5NlYLv8cLkRz4PuqzX1
+07+VH6bp95Mjls6Fk+kZUhH2USfLcKm68xz+tJeMYobccqJy32u2bqVJGgaejNpo
+3NM9GOJsLKVfBDBcz6B/XthRDc0glT5/orzxTzrL9ikn3/iaVXu3AqzFqfiFBtxS
+zdnjOL3GZN6mCfiKvGC8GCrmZUvLGixXsWJfTyDhpcBErd5mcObKuyWWiJyaKUru
+CjSfFFN1CrOrFHGjPQBi13OsUxywtUMy6VAc8ztEn4wR+cgLpx2irPbEd7wqv19i
+b3Xr669nv/uAes0SGE6jmVvXxOp6Y7MkFuiR1op8ODOsYNhcTf7dS8iSSamqvkge
+7qY/AcrdSZnlpeVvjrLf1N2oftH73oK6YBntmkbvOqGdwSZCc+2Xdi3y0ghvWYbS
+zxogIGW0M3CCajVxKDcYD9TdJ0nGX+/+TwTkzoIxBxUKxO/b2h1OXhTalxo3HpJa
+DZT5jVw8aXtEGX+d7lBAxs7K6Iubvf3brSkujlGwuhZwEzGkVGdfHHTmWxwm12wL
+g+6R90f2J5K86XtNMnwR1DW8cT2qg1wwDauVyeaAMEs8DLFYkV8=
+=EA/3
+-----END PGP SIGNATURE-----
+
+--kuGnPKGhjCeiwyg1--
