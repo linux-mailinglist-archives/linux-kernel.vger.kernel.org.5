@@ -2,188 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEA37C66D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CCAE7C66E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377919AbjJLHiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 03:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
+        id S1377924AbjJLHkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 03:40:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377465AbjJLHiE (ORCPT
+        with ESMTP id S233631AbjJLHkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 03:38:04 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078DCC9;
-        Thu, 12 Oct 2023 00:38:01 -0700 (PDT)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C7a5nT027495;
-        Thu, 12 Oct 2023 07:37:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : from : subject : to : cc : content-type :
- content-transfer-encoding; s=pp1;
- bh=tPSkQTo/UIqXR9TJ1CiWAXvie/7O/aQcvxPdNMCnRaQ=;
- b=jo7nfrBWGer9nMakApRz3RcoZA2ZN1f4jEeprif2AuN389dxBrqzxtL2efYXamLaR0du
- fw6bN6bGl41UIqdYm2zlahXnnM0Rzb5exHValpP6Dp/Guoo9C4bv7lpYuTVb46n8eLSV
- TYtZUNE8QHTCRPVOm+T+kOe/U2tYbzfVTF2GGZ5Fag3C1DI/iRNvWxGsWY5a0amLxEyj
- jziFDXubpXE83YkuUsaRnwdStQMmdB9304Vm9l1FUJeOZmdJrytf/Y9IBJkVq7nkDT9Q
- EMIWT6bOttjzlsaEml/ovKYPXMm/YPkxmAcOjP1UYdaQBo8I1h/AQuXK3wmR+giEHfvS 6A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpca98hq1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 07:37:47 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39C7at3T001180;
-        Thu, 12 Oct 2023 07:37:47 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpca98hpm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 07:37:47 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39C6hZva026364;
-        Thu, 12 Oct 2023 07:37:46 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkjnnp138-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 07:37:46 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39C7bj7E20906588
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Oct 2023 07:37:46 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E52E85805C;
-        Thu, 12 Oct 2023 07:37:45 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 80E3558058;
-        Thu, 12 Oct 2023 07:37:41 +0000 (GMT)
-Received: from [9.171.14.51] (unknown [9.171.14.51])
-        by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Oct 2023 07:37:41 +0000 (GMT)
-Message-ID: <79fbe35c-4dd1-4f27-acb2-7a60794bc348@linux.vnet.ibm.com>
-Date:   Thu, 12 Oct 2023 13:07:39 +0530
+        Thu, 12 Oct 2023 03:40:00 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0C8C0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 00:39:56 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3D46A2184F;
+        Thu, 12 Oct 2023 07:39:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1697096394; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=uF/oRSFrjCSMfceJHBi4BsTZ2QN8q7wjy9rTsttb/AA=;
+        b=lAJVEPhL5y5wD66lUogGRaX9Q24vAWOBy/yryA/3+DzT47HY5uxi3eL6x+fJux2cqDhApp
+        5PsRpQ8FbAECnD+hUhlc0Lj190bhKrNdwS0OdN5kPl1cK9SJxMyk3pZ/t+eTzYuc+tLzNb
+        UhFjbFvbUbOlIDIdJ9RJQaAvEq6vmoU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1697096394;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=uF/oRSFrjCSMfceJHBi4BsTZ2QN8q7wjy9rTsttb/AA=;
+        b=EyZ3uQR/GE6gEsyo2qLITfHI+1cfUN+KpwpdbJkhEbxSMEvH44UrZgS7Hl1f0luUZR3+PD
+        dijm1y7ZS6LspbDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0EFB2139ED;
+        Thu, 12 Oct 2023 07:39:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id imsfAsqiJ2W8MQAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Thu, 12 Oct 2023 07:39:54 +0000
+Message-ID: <e6593ea5-daa1-466a-9d42-0c1872f41a13@suse.de>
+Date:   Thu, 12 Oct 2023 09:39:53 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/6] drm/ssd130x: Add a per controller family functions
+ table
 Content-Language: en-US
-From:   Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>
-Subject: [Bisected] [1b4fa28a8b07] Build failure "net/core/gso_test.c"
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     willemb@google.com, fw@strlen.de, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, abdhalee@linux.vnet.ibm.com,
-        sachinp@linux.vnet.com, mputtash@linux.vnet.com
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: yLsQ2Nng7jDxAk8U1K_hek_n1amIIVYW
-X-Proofpoint-GUID: eG8iLiYuF54pSKJIIhddBbltn08Nb454
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_03,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- mlxscore=0 priorityscore=1501 suspectscore=0 adultscore=0 mlxlogscore=953
- impostorscore=0 clxscore=1011 lowpriorityscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310120063
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     dri-devel@lists.freedesktop.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Conor Dooley <conor@kernel.org>,
+        Peter Robinson <pbrobinson@gmail.com>
+References: <20231012065822.1007930-1-javierm@redhat.com>
+ <20231012065822.1007930-3-javierm@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <20231012065822.1007930-3-javierm@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------Tq4YXa8904g0zRdoumViHhKR"
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -9.09
+X-Spamd-Result: default: False [-9.09 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         XM_UA_NO_VERSION(0.01)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+         HAS_ATTACHMENT(0.00)[];
+         REPLY(-4.00)[];
+         MIME_BASE64_TEXT_BOGUS(1.00)[];
+         BAYES_HAM(-0.00)[40.68%];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         MIME_BASE64_TEXT(0.10)[];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         SIGNED_PGP(-2.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FREEMAIL_CC(0.00)[lists.freedesktop.org,kernel.org,linux-m68k.org,gmail.com]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------Tq4YXa8904g0zRdoumViHhKR
+Content-Type: multipart/mixed; boundary="------------63JonpT484ZcFFv0z0pIcAQc";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ linux-kernel@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Conor Dooley <conor@kernel.org>,
+ Peter Robinson <pbrobinson@gmail.com>
+Message-ID: <e6593ea5-daa1-466a-9d42-0c1872f41a13@suse.de>
+Subject: Re: [PATCH v2 2/6] drm/ssd130x: Add a per controller family functions
+ table
+References: <20231012065822.1007930-1-javierm@redhat.com>
+ <20231012065822.1007930-3-javierm@redhat.com>
+In-Reply-To: <20231012065822.1007930-3-javierm@redhat.com>
 
-[net-next] [6.6-rc4] Build failure "net/core/gso_test.c"
+--------------63JonpT484ZcFFv0z0pIcAQc
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
---- Traces ---
+SGkgSmF2aWVyDQoNCkFtIDEyLjEwLjIzIHVtIDA4OjU4IHNjaHJpZWIgSmF2aWVyIE1hcnRp
+bmV6IENhbmlsbGFzOg0KWy4uLl0NCj4gICANCj4gK3N0cnVjdCBzc2QxMzB4X2Z1bmNzIHsN
+Cj4gKwlpbnQgKCppbml0KShzdHJ1Y3Qgc3NkMTMweF9kZXZpY2UgKnNzZDEzMHgpOw0KPiAr
+CWludCAoKnNldF9idWZmZXJfc2l6ZXMpKHN0cnVjdCBzc2QxMzB4X2RldmljZSAqc3NkMTMw
+eCk7DQo+ICsJdm9pZCAoKmFsaWduX3JlY3QpKHN0cnVjdCBzc2QxMzB4X2RldmljZSAqc3Nk
+MTMweCwgc3RydWN0IGRybV9yZWN0ICpyZWN0KTsNCj4gKwlpbnQgKCp1cGRhdGVfcmVjdCko
+c3RydWN0IHNzZDEzMHhfZGV2aWNlICpzc2QxMzB4LCBzdHJ1Y3QgZHJtX3JlY3QgKnJlY3Qs
+DQo+ICsJCQkgICB1OCAqYnVmLCB1OCAqZGF0YV9hcnJheSk7DQo+ICsJdm9pZCAoKmNsZWFy
+X3NjcmVlbikoc3RydWN0IHNzZDEzMHhfZGV2aWNlICpzc2QxMzB4LA0KPiArCQkJICAgICB1
+OCAqZGF0YV9hcnJheSk7DQo+ICsJdm9pZCAoKmZtdF9jb252ZXJ0KShzdHJ1Y3QgaW9zeXNf
+bWFwICpkc3QsIGNvbnN0IHVuc2lnbmVkIGludCAqZHN0X3BpdGNoLA0KPiArCQkJICAgIGNv
+bnN0IHN0cnVjdCBpb3N5c19tYXAgKnNyYywgY29uc3Qgc3RydWN0IGRybV9mcmFtZWJ1ZmZl
+ciAqZmIsDQo+ICsJCQkgICAgY29uc3Qgc3RydWN0IGRybV9yZWN0ICpjbGlwKTsNCj4gK307
+DQo+ICsNCg0KWW91IGFyZSByZWludmVudGluZyBEUk0ncyBhdG9taWMgaGVscGVycy4gSSBz
+dHJvbmdseSBhZHZpc2VkIGFnYWluc3QgDQpkb2luZyB0aGF0LCBhcyBpdCBvZnRlbiB0dXJu
+cyBvdXQgYmFkLiBNYXliZSBzZWUgbXkgcmFudCBhdCBbMV0gd3J0IHRvIA0KYW5vdGhlciBk
+cml2ZXIuDQoNCkl0J3MgbXVjaCBiZXR0ZXIgdG8gY3JlYXRlIGEgc2VwYXJhdGUgbW9kZS1z
+ZXR0aW5nIHBpcGVsaW5lIGZvciB0aGUgDQpzc2QxMzJ4IHNlcmllcyBhbmQgc2hhcmUgdGhl
+IGNvbW1vbiBjb2RlIGFtb25nIHBpcGVsaW5lcy4gWW91ciBkcml2ZXIgDQp3aWxsIGhhdmUg
+YSBjbGVhbiBhbmQgcmVhZGFibGUgaW1wbGVtZW50YXRpb24gZm9yIGVhY2ggc3VwcG9ydGVk
+IA0KY2hpcHNldC4gQ29tcGFyZSBhbiBvbGQgdmVyc2lvbiBvZiBtZ2FnMjAwIFsyXSB3aXRo
+IHRoZSBjdXJyZW50IGRyaXZlciANCnRvIHNlZSB0aGUgZGlmZmVyZW5jZS4NCg0KQmVzdCBy
+ZWdhcmRzDQpUaG9tYXMNCg0KWzFdIA0KaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvZHJpLWRl
+dmVsLzA3Y2M4OWE1LTUyMDAtNzJlNi1mMDc4LTY5NGM1ODIwYTk5YUBzdXNlLmRlLw0KWzJd
+IGh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y1LjUvc291cmNlL2RyaXZlcnMv
+Z3B1L2RybS9tZ2FnMjAwDQoNCg0KPiAgIGV4dGVybiBjb25zdCBzdHJ1Y3Qgc3NkMTMweF9k
+ZXZpY2VpbmZvIHNzZDEzMHhfdmFyaWFudHNbXTsNCj4gICANCj4gICBzdHJ1Y3Qgc3NkMTMw
+eF9kZXZpY2UgKnNzZDEzMHhfcHJvYmUoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgcmVn
+bWFwICpyZWdtYXApOw0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2
+ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCkZy
+YW5rZW5zdHJhc3NlIDE0NiwgOTA0NjEgTnVlcm5iZXJnLCBHZXJtYW55DQpHRjogSXZvIFRv
+dGV2LCBBbmRyZXcgTXllcnMsIEFuZHJldyBNY0RvbmFsZCwgQm91ZGllbiBNb2VybWFuDQpI
+UkIgMzY4MDkgKEFHIE51ZXJuYmVyZykNCg==
 
-make -j 33 -s && make modules_install && make install
-net/core/gso_test.c:58:48: error: initializer element is not constant
-    58 |                 .segs = (const unsigned int[]) { gso_size },
-       |                                                ^
-net/core/gso_test.c:58:48: note: (near initialization for ‘cases[0]’)
-net/core/gso_test.c:65:48: error: initializer element is not constant
-    65 |                 .segs = (const unsigned int[]) { gso_size, 
-gso_size, 1 },
-       |                                                ^
-net/core/gso_test.c:65:48: note: (near initialization for ‘cases[1]’)
-net/core/gso_test.c:72:49: error: initializer element is not constant
-    72 |                 .frags = (const unsigned int[]) { gso_size, 1 },
-       |                                                 ^
-net/core/gso_test.c:72:49: note: (near initialization for ‘cases[2]’)
-net/core/gso_test.c:74:48: error: initializer element is not constant
-    74 |                 .segs = (const unsigned int[]) { gso_size, 
-gso_size, 1 },
-       |                                                ^
-net/core/gso_test.c:74:48: note: (near initialization for ‘cases[2]’)
-net/core/gso_test.c:80:49: error: initializer element is not constant
-    80 |                 .frags = (const unsigned int[]) { gso_size, 
-gso_size, 2 },
-       |                                                 ^
-net/core/gso_test.c:80:49: note: (near initialization for ‘cases[3]’)
-net/core/gso_test.c:82:48: error: initializer element is not constant
-    82 |                 .segs = (const unsigned int[]) { gso_size, 
-gso_size, 2 },
-       |                                                ^
-net/core/gso_test.c:82:48: note: (near initialization for ‘cases[3]’)
-net/core/gso_test.c:89:49: error: initializer element is not constant
-    89 |                 .frags = (const unsigned int[]) { gso_size, 3 },
-       |                                                 ^
-net/core/gso_test.c:89:49: note: (near initialization for ‘cases[4]’)
-net/core/gso_test.c:91:48: error: initializer element is not constant
-    91 |                 .segs = (const unsigned int[]) { 2 * gso_size, 3 },
-       |                                                ^
-net/core/gso_test.c:91:48: note: (near initialization for ‘cases[4]’)
-net/core/gso_test.c:99:53: error: initializer element is not constant
-    99 |                 .frag_skbs = (const unsigned int[]) { gso_size, 
-gso_size },
-       |                                                     ^
-net/core/gso_test.c:99:53: note: (near initialization for ‘cases[5]’)
-net/core/gso_test.c:101:48: error: initializer element is not constant
-   101 |                 .segs = (const unsigned int[]) { gso_size, 
-gso_size, gso_size },
-       |                                                ^
-net/core/gso_test.c:101:48: note: (near initialization for ‘cases[5]’)
-net/core/gso_test.c:107:53: error: initializer element is not constant
-   107 |                 .frag_skbs = (const unsigned int[]) { gso_size, 
-gso_size },
-       |                                                     ^
-net/core/gso_test.c:107:53: note: (near initialization for ‘cases[6]’)
-net/core/gso_test.c:109:48: error: initializer element is not constant
-   109 |                 .segs = (const unsigned int[]) { gso_size, 
-gso_size },
-       |                                                ^
-net/core/gso_test.c:109:48: note: (near initialization for ‘cases[6]’)
-net/core/gso_test.c:117:53: error: initializer element is not constant
-   117 |                 .frag_skbs = (const unsigned int[]) { gso_size, 
-1, gso_size, 2 },
-       |                                                     ^
-net/core/gso_test.c:117:53: note: (near initialization for ‘cases[7]’)
-net/core/gso_test.c:119:48: error: initializer element is not constant
-   119 |                 .segs = (const unsigned int[]) { gso_size, 
-gso_size, gso_size, 3 },
-       |                                                ^
-net/core/gso_test.c:119:48: note: (near initialization for ‘cases[7]’)
-make[4]: *** [scripts/Makefile.build:243: net/core/gso_test.o] Error 1
-make[4]: *** Waiting for unfinished jobs....
-make[3]: *** [scripts/Makefile.build:480: net/core] Error 2
-make[3]: *** Waiting for unfinished jobs....
+--------------63JonpT484ZcFFv0z0pIcAQc--
 
-make[2]: *** [scripts/Makefile.build:480: net] Error 2
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/root/net-next/Makefile:1913: .] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
+--------------Tq4YXa8904g0zRdoumViHhKR
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
-gitbisect points to below commit, reverting the below commit resolves 
-the issue
+-----BEGIN PGP SIGNATURE-----
 
-commit 1b4fa28a8b07eb331aeb7fbfc806c0d2e3dc3627
-     net: parametrize skb_segment unit test to expand coverage
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUnoskFAwAAAAAACgkQlh/E3EQov+BI
+BA/+IhgwcjgtdeP7xc4IsyNm0XOFJIp3kYaWNGWXeD/EZlJSCKk9xwwutubdonj50X20yj6NuT7M
+e01EmolrqMu6vaHDSQ42h0KU6K5vT573JADO6/pTb3Zmfeg/Pa+v5+kUTQXplUKc+bnm09H3Lwef
+dI1TF8yNDfhM/JetP6jixWoMeK7wdnEvFkGoaZLj6jKlySuJXcKd2XD/S8GB4napqxRUP35C/Qyu
+5AuYtOSUUHoEPyY9F3B5o2o0KRfmmT9d5MsfNGTy2Kl9UtyVnbNr83+zVdPoZ1B2Q3yzhwXAwMGi
+dEVCKOKg5h0mL5x4v+3clBRX/mZ5OVPAQ28kVSsWJoCQDFIWh45QIzHxQTmeJsJuLz5hMctV1LQu
+vI7LjdzOo1H3OpmiIXhqV55bO9Z+s30BWRpvcVDJy8PaN+4Gy67aEs81Y5PTlBGVNCefMdRCOxoa
+bpGLjANPr5fMEWTTdmyzS5olJu+nEaOWJm23eLr9N5y29OJYDEjtzTVUC88uoVWOzlSw0OXrwFu3
+4HQJ7qbH2fLmCVlTyeQkEz2qDSD0j4Orc0YNJP8Xr8wKtB9YSPKehv/LD0LufCbATtSqOIAaGgbV
+GTyxAEn9kGhSkQuh7ChK5qGCmIdZ6EWoL7lhFZm8bTvt/s69CULG5k4N6XuV7r4Ayh2d4Ta7GNW4
+M5I=
+=S3R1
+-----END PGP SIGNATURE-----
 
--- 
-Regards,
-Tasmiya Nalatwad
-IBM Linux Technology Center
-
+--------------Tq4YXa8904g0zRdoumViHhKR--
