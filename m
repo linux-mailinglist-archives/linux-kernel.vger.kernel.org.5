@@ -2,96 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3B77C6883
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164BB7C6816
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347265AbjJLIHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 04:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60040 "EHLO
+        id S235334AbjJLIJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 04:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347243AbjJLIHA (ORCPT
+        with ESMTP id S235233AbjJLIJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 04:07:00 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65FD90;
-        Thu, 12 Oct 2023 01:06:57 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [59.103.217.136])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C80FB6607334;
-        Thu, 12 Oct 2023 09:06:53 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697098016;
-        bh=yTMOxirkSsfi40134zfm8Df7fb3tsgxzrLHw09uiTt0=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=Yg3t2OfWI6DpDHvhjd/0qpO/Nx+icjlIuiMDPHPGOlFE//iEJd6k75n2eucjGAJby
-         VEUD21UE9nsOdG5/vr1+Cd/AMi/BdAaG3Kn4mn/HLuG3GLW7ZFLO7c6AOSJdPxXfsR
-         CFdavNmyJp+PRonMc5rU4LfQc0DfMn8pgaW6Krzn9cGNC4dNXlrJgFoIERysZhRAlB
-         TnMwXmDe0Kqg0mtzk9mrVCM+c7mvhDrAysrJyr11gJSEMr9Qt4ryNm6R/BwT3wIuNZ
-         EOMIgRHTJ+NnvD1PPmO3zBZPWE01wRBMsvq8vTm/tpe9226k77ERYh0Y+V9xU3BUGv
-         PmYtrBxUZyUEg==
-Message-ID: <3be75492-36e7-4ffe-ab0e-ef583b801af1@collabora.com>
-Date:   Thu, 12 Oct 2023 13:06:48 +0500
+        Thu, 12 Oct 2023 04:09:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7963B90
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:08:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697098112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4sy1niajabmtfJtjCY77OzeeT/0lqMPwPT7C3Wbak1k=;
+        b=JQt2/pjDjmoRyAvUrDJNY5mXNM/dMOgwCMty5np6bAuyJqR2v3g00rkboG/6tHLvE0iXGs
+        awtCLZGVn3someEMeW5hkUT61suTHaNwQyhbHgTt/4rb68s+8eiyOzStP125kBDerNL5Lb
+        apHsQFQEiCYfMtjuoLpEeJVh5xQrjQ8=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-245-r3A7nYl8P9OpytewEa2UFw-1; Thu, 12 Oct 2023 04:08:26 -0400
+X-MC-Unique: r3A7nYl8P9OpytewEa2UFw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4067f186039so5543315e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:08:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697098104; x=1697702904;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4sy1niajabmtfJtjCY77OzeeT/0lqMPwPT7C3Wbak1k=;
+        b=LTHynFP3tmZhq/k+vnXPbQm6ZYDijo2fElEHcmSvZWG/OkQi0O7Mmb37snHP4OHMjw
+         yIiYi8Ji4PMaunOL+MyxANtOESFdRoMQOX6Xknpx8O1YFcYOoDvCMuvi/tHyXcONzJzl
+         h3RomD1i0dz8xwugy83nBGV8w0/CTbU6yCzzDWFzFHujgkYomzO1xFKQ9FG0Fwf+oLjo
+         PwDk5jyfhFfyAQKgG5wt7Wnv1TGXqyK02aYPDQ/VbuXj2tihQmkOg2hAEeKHwEDDH9GB
+         NG6m3V2ivhq9OsDGfXkTuOHIdHoec2TweagEwOVBD0Zs5A51pjyqmG0/tyHIxvPbmMc6
+         YaJg==
+X-Gm-Message-State: AOJu0YwWRlnJeyqTLNC5oHn8a144/Qd6AlVqXQ/X5af8E/25dHVrHIxl
+        Mwp7RZxTrvrP41obLC4DFPKDOf8V8mCqbXEPmGK8XhziVW1BCR5eNyKx0l/hMeqm2zmd6TU8oXZ
+        ncYRWf3HABrTzYNWO8WNXa2Gr
+X-Received: by 2002:a05:600c:4fc4:b0:407:6911:447c with SMTP id o4-20020a05600c4fc400b004076911447cmr789171wmq.4.1697098104762;
+        Thu, 12 Oct 2023 01:08:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGiZTBKUlCnAh+CV/NuP4uEbPNN+Std09KdK+CwQMNFHnOTkVZIvzDNtwZ5zDNL5/aKHpfW/g==
+X-Received: by 2002:a05:600c:4fc4:b0:407:6911:447c with SMTP id o4-20020a05600c4fc400b004076911447cmr789152wmq.4.1697098104439;
+        Thu, 12 Oct 2023 01:08:24 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id 19-20020a05600c025300b00401d8181f8bsm21134403wmj.25.2023.10.12.01.08.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 01:08:24 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Conor Dooley <conor@kernel.org>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2 5/6] dt-bindings: display: Split common Solomon
+ properties in their own schema
+In-Reply-To: <CAMuHMdVR=aM-fr6SLfZMyA-Mdw23Tv+rX-iQQmw5u5U3vW5Ajg@mail.gmail.com>
+References: <20231012065822.1007930-1-javierm@redhat.com>
+ <20231012065822.1007930-6-javierm@redhat.com>
+ <CAMuHMdVR=aM-fr6SLfZMyA-Mdw23Tv+rX-iQQmw5u5U3vW5Ajg@mail.gmail.com>
+Date:   Thu, 12 Oct 2023 10:08:23 +0200
+Message-ID: <874jiw4614.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] selftests/mm: include mman header to access
- MREMAP_DONTUNMAP identifier
-Content-Language: en-US
-To:     Samasth Norway Ananda <samasth.norway.ananda@oracle.com>,
-        akpm@linux-foundation.org, shuah@kernel.org
-References: <20231012064048.433346-1-samasth.norway.ananda@oracle.com>
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20231012064048.433346-1-samasth.norway.ananda@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/23 11:40 AM, Samasth Norway Ananda wrote:
-> Definition for MREMAP_DONTUNMAP not present in the selftest for
-> mremap_dontunmap thus throwing an undeclared error when running make
-> on mm.
-Thanks for sending the patch.
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-You have mentioned in other email that MREMAP_DONTUNMAP isn't present in
-glibc older than 2.32. So including linux/mman.h solves the build error for
-people having older glibc. Please add this to the description of the patch
-to give the exact reason this patch should be accepted.
+> Hi Javier,
+>
+> On Thu, Oct 12, 2023 at 8:58=E2=80=AFAM Javier Martinez Canillas
+> <javierm@redhat.com> wrote:
+>> There are DT properties that can be shared across different Solomon OLED
+>> Display Controller families. Split them into a separate common schema to
+>> avoid these properties to be duplicated in different DT bindings schemas.
+>>
+>> Suggested-by: Rob Herring <robh@kernel.org>
+>> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+>> ---
+>>
+>> (no changes since v1)
+>
+> New patch in v2.
+>
 
-> 
-> Fixes: 0183d777c29a ("selftests: mm: remove duplicate unneeded defines")
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> Closes: https://lore.kernel.org/linux-mm/CA+G9fYvV-71XqpCr_jhdDfEtN701fBdG3q+=bafaZiGwUXy_aA@mail.gmail.com/
-> Signed-off-by: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
-> ---
->  tools/testing/selftests/mm/mremap_dontunmap.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/testing/selftests/mm/mremap_dontunmap.c b/tools/testing/selftests/mm/mremap_dontunmap.c
-> index ca2359835e75..a06e73ec8568 100644
-> --- a/tools/testing/selftests/mm/mremap_dontunmap.c
-> +++ b/tools/testing/selftests/mm/mremap_dontunmap.c
-> @@ -7,6 +7,7 @@
->   */
->  #define _GNU_SOURCE
->  #include <sys/mman.h>
-> +#include <linux/mman.h>
->  #include <errno.h>
->  #include <stdio.h>
->  #include <stdlib.h>
-Tested-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Yeah, I mention that in the cover letter. That "(no changes since...)"
+message is automatically added by the tool I use to post patches (patman)
+for all patches that don't have a change history, even for new patches in
+a series revision. And I don't know of a way to disable it...
 
--- 
-BR,
-Muhammad Usama Anjum
+Maybe what I should do is to add a change history to new patches mentioned
+that is a new patch to prevent this message to appear.
+
+--=20
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
