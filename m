@@ -2,81 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C01E57C6AEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37337C6B1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347104AbjJLKXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45310 "EHLO
+        id S1377933AbjJLK3r convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 06:29:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234179AbjJLKXa (ORCPT
+        with ESMTP id S1343654AbjJLK3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:23:30 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD44ABA;
-        Thu, 12 Oct 2023 03:23:29 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id CC9F4660730F;
-        Thu, 12 Oct 2023 11:23:27 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697106208;
-        bh=LMBUo8PBQBbC71oWAhDP/MrirqdHNCG7pWe9OPLefqU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=k67loyHHPg8mSIVbpLieCDoT0Q58bsqEBSzX1MfMycASZy32cu8nskIcwC4gUfAar
-         JGsGNZq7OYWrFkEtZrrzCsYlDep6GUO1ikwzkN7yGcBWdscMN+nGZy5H8MPrGrOS+w
-         I5XhyaXH09RKhHUZVRM/o16/TiMIsEL9Zlyq5r8sc2KZt6p6fLHGKXIp2OtFedcPjP
-         AOO2oneYzDcV/2Qk5JRwntgntFQ0hRlHvUfx3MdqF9Rw+ADrHE0S60ozrUvIJgPzTW
-         cla8JQ/jS5qn8lJh8FzG/8P3YaEhZDX8gYVnZvonCaU1E58+gfYsN2r+cQq/bS6sL1
-         pD6jCLeS5qPFg==
-Message-ID: <eb7a163d-7730-32b7-966f-fa78ffee77db@collabora.com>
-Date:   Thu, 12 Oct 2023 12:23:25 +0200
+        Thu, 12 Oct 2023 06:29:42 -0400
+X-Greylist: delayed 359 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 12 Oct 2023 03:29:38 PDT
+Received: from postfix2.imaqliq.com (postfix2.imaqliq.com [93.189.151.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F58B8;
+        Thu, 12 Oct 2023 03:29:38 -0700 (PDT)
+Received: from verse.imaqliq.com (verse.imaqliq.com [93.189.151.95])
+        by postfix2.imaqliq.com (Postfix) with ESMTP id 4A93A1C2941;
+        Thu, 12 Oct 2023 13:23:36 +0300 (MSK)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v7 05/16] dt-bindings: media: mediatek: mdp3: add
- compatible for MT8195 WROT
-Content-Language: en-US
-To:     Moudy Ho <moudy.ho@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20231012084037.19376-1-moudy.ho@mediatek.com>
- <20231012084037.19376-6-moudy.ho@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231012084037.19376-6-moudy.ho@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+In-Reply-To: 
+References: 
+Subject: [PATCH] tty: serial: meson: hard LOCKUP on crtscts mode
+From:   pkrasavin@imaqliq.ru
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, pkrasavin@imaqliq.ru
+Date:   Thu, 12 Oct 2023 10:23:30 +0000
+Message-ID: <OF28B2B8C9.5BC0CD28-ON00258A46.0037688F-00258A46.0039155B@gdc.ru>
+X-Mailer: Lotus Domino Web Server Release 12.0.2 November 03, 2022
+X-MIMETrack: Serialize by http on verse/com(Release 12.0.2|November 03, 2022) at 10/12/2023
+ 10:23:30,
+        Serialize complete at 10/12/2023 10:23:30,
+        Serialize by Router on verse/com(Release 12.0.2|November 03, 2022) at 10/12/2023
+ 10:23:35
+X-KeepSent: 28B2B8C9:5BC0CD28-00258A46:0037688F;
+ type=4; name=$KeepSent
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 180559 [Oct 12 2023]
+X-KLMS-AntiSpam-Version: 6.0.0.2
+X-KLMS-AntiSpam-Envelope-From: pkrasavin@imaqliq.ru
+X-KLMS-AntiSpam-Rate: 10
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Auth: dmarc=fail header.from=imaqliq.ru policy=none;spf=softfail smtp.mailfrom=imaqliq.ru;dkim=none
+X-KLMS-AntiSpam-Info: LuaCore: 539 539 807534d9021bfe9ca369c363d15ac993cd93d4d9, {rep_avail}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;gdc.ru:7.1.1;127.0.0.199:7.1.2;imaqliq.ru:7.1.1;verse.imaqliq.com:7.1.1;93.189.151.95:7.1.2, FromAlignment: s, {Tracking_dmark_f}, ApMailHostAddress: 93.189.151.95
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2023/10/12 08:55:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/10/12 01:34:00 #22164647
+X-KLMS-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 12/10/23 10:40, Moudy Ho ha scritto:
-> MT8195 WROT inherited from MT8183, add the corresponding
-> compatible name to it.
-> 
-> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+There might be hard lockup if we set crtscts mode on port without RTS/CTS configured:
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+# stty -F /dev/ttyAML6 crtscts; echo 1 > /dev/ttyAML6; echo 2 > /dev/ttyAML6
+[   95.890386] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+[   95.890857] rcu:     3-...0: (201 ticks this GP) idle=e33c/1/0x4000000000000000 softirq=5844/5846 fqs=4984
+[   95.900212] rcu:     (detected by 2, t=21016 jiffies, g=7753, q=296 ncpus=4)
+[   95.906972] Task dump for CPU 3:
+[   95.910178] task:bash            state:R  running task     stack:0     pid:205   ppid:1      flags:0x00000202
+[   95.920059] Call trace:
+[   95.922485]  __switch_to+0xe4/0x168
+[   95.925951]  0xffffff8003477508
+[   95.974379] watchdog: Watchdog detected hard LOCKUP on cpu 3
+[   95.974424] Modules linked in: 88x2cs(O) rtc_meson_vrtc
 
+Possible solution would be to not allow to setup crtscts on such port.
+
+Tested on S905X3 based board.
+
+Signed-off-by: Pavel Krasavin <pkrasavin@imaqliq.com>
+
+--- a/drivers/tty/serial/meson_uart.c	2023-08-22 12:46:50.933814528 +0300
++++ b/drivers/tty/serial/meson_uart.c	2023-08-22 14:48:15.593169948 +0300
+@@ -380,10 +380,15 @@ static void meson_uart_set_termios(struc
+ 	else
+ 		val |= AML_UART_STOP_BIT_1SB;
+ 
+-	if (cflags & CRTSCTS)
+-		val &= ~AML_UART_TWO_WIRE_EN;
+-	else
++	if (cflags & CRTSCTS) {
++		if (port->flags & UPF_HARD_FLOW) {
++			val &= ~AML_UART_TWO_WIRE_EN;
++		} else {
++			termios->c_cflag &= ~CRTSCTS;
++		}
++	} else {
+ 		val |= AML_UART_TWO_WIRE_EN;
++	}
+ 
+ 	writel(val, port->membase + AML_UART_CONTROL);
+ 
+@@ -705,6 +710,7 @@ static int meson_uart_probe(struct platf
+ 	u32 fifosize = 64; /* Default is 64, 128 for EE UART_0 */
+ 	int ret = 0;
+ 	int irq;
++	bool has_rtscts;
+ 
+ 	if (pdev->dev.of_node)
+ 		pdev->id = of_alias_get_id(pdev->dev.of_node, "serial");
+@@ -732,6 +738,7 @@ static int meson_uart_probe(struct platf
+ 		return irq;
+ 
+ 	of_property_read_u32(pdev->dev.of_node, "fifo-size", &fifosize);
++	has_rtscts = of_property_read_bool(pdev->dev.of_node, "uart-has-rtscts");
+ 
+ 	if (meson_ports[pdev->id]) {
+ 		return dev_err_probe(&pdev->dev, -EBUSY,
+@@ -762,6 +769,8 @@ static int meson_uart_probe(struct platf
+ 	port->mapsize = resource_size(res_mem);
+ 	port->irq = irq;
+ 	port->flags = UPF_BOOT_AUTOCONF | UPF_LOW_LATENCY;
++	if (has_rtscts)
++		port->flags |= UPF_HARD_FLOW;
+ 	port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MESON_CONSOLE);
+ 	port->dev = &pdev->dev;
+ 	port->line = pdev->id;
