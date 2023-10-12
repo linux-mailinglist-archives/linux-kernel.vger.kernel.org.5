@@ -2,138 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6CC7C75C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB747C75C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379683AbjJLSUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 14:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36596 "EHLO
+        id S1441945AbjJLSVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 14:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379624AbjJLSUv (ORCPT
+        with ESMTP id S1379624AbjJLSVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 14:20:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA4FCC;
-        Thu, 12 Oct 2023 11:20:49 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 18:20:47 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697134847;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O3jHAuNIXAPhyFONCLzgwQk08/kHkQsm5jfg/En/LeQ=;
-        b=ddt6I8uhlgwkL+dFz2uOmtgc4Wb1WphOOvcQ8A/ARafGL8mEXE/FQ9aApj1kxCDRoXhiV5
-        jMaPsttWIxxeV5ps6Al9V0Sr+80KWIAWEDQ9kYy3FR25OftrUnpzPFqf+BfT2Ue+OSRrOq
-        oX32YAebbj1J+1mjTMlzdOe5xUCQ52612asBX+wmxCk+KQ0TaEZDpVHNbWWlkgHjc8TvtG
-        6Lk0PtFX9609309+X2sSyJXU5OfBIAMZu4PegWEs3OQ1pmikXgFvLt4aB7GofMnV3q44P0
-        0X/oVAEmX5RJwNdKVmNffUOKkYBLxetNqSewTRMcuDa3eSoU7UiA4BC7o7Zz3A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697134847;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O3jHAuNIXAPhyFONCLzgwQk08/kHkQsm5jfg/En/LeQ=;
-        b=l0i7AyM/UIZjpkCYzY+ELFtk3RCYB9exdlWZq0Rv3DysJrOIoA6WAtcQ8K+iPfy499QMry
-        pwmQumccLYIpiwCw==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] x86/cpu: Fix the AMD Fam 17h, Fam 19h, Zen2 and Zen4
- MSR enumerations
-Cc:     "Borislav Petkov (AMD)" <bp@alien8.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <D99589F4-BC5D-430B-87B2-72C20370CF57@exactcode.com>
-References: <D99589F4-BC5D-430B-87B2-72C20370CF57@exactcode.com>
+        Thu, 12 Oct 2023 14:21:33 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6635ACA
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:21:32 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9a645e54806so199207166b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:21:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697134891; x=1697739691; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JcB95Amibgw0phr7xM38p2RHGuYQp8QNhqrDp7sB1Mc=;
+        b=Jig4igLWh0cJ/gcNOGTdD1TIH9Rqq/xTA1z4zi8nFQ9g9MIR6nHRt6CTaraB+C0NsM
+         LW9mklXOiMTJn+xfwLtgBGXp+LPjEXLQ5+IN9IXamEKjF3uWjCc5BIMtSgiukYeLqxMK
+         Jf7ruHza8IBVHBZb9NrcvefPGZIWCwXiDwhEI4UHrPdE3i9qKvRtUdlEJxE1dLTRIILK
+         UoY6pez8rqPNC9oAhc94ItEeO62C9AWJurlw3mbslLZLiWVWqoDV86ugDwqn43xX+TMA
+         riJSJ57rzUFgS9TMvBQvNuWE8f1wp5X+ykbMaYOi1FbCw+QKuxk62thhvPpfzmIYmN7n
+         AbUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697134891; x=1697739691;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JcB95Amibgw0phr7xM38p2RHGuYQp8QNhqrDp7sB1Mc=;
+        b=BhyT0fLzMiuk2JZxcg9jA9FzbaagudCltlK0ZdHQRZTiw0BQpbzstrQ3+PHfq12Kyw
+         48HwWp7kVPzET2iiG9tenasJI4t/EIekRlkfTXGB5eyjXhZ3gSja+heBURDiSXENqjem
+         m/em1boAvsKhvvqm2/3lG8OJdKt2Ny+1uPPgHz5vddfJHy3+STnfRfRMvXfAR48iqhjJ
+         VF1DZ0qrlDFjIWU3A7F3pIVcrm1pPTKBrn5m2hYbEAXUfwBJvYhj5iPPQiOlzG1GGQaT
+         pIfaRjcdgi1rUQyQPBUcDKotixEY9J7qArmkV96ge4Zr6rDgQBe6K6KQcRwWF03PDSX6
+         nIBQ==
+X-Gm-Message-State: AOJu0Yx7Rk1setpcp35f13XlVi6LbfNoELpGE5PBGW+bqee2+JHYfdVF
+        A8gC2Uu3RK7DAQPOL93Yvlg=
+X-Google-Smtp-Source: AGHT+IFNB1MjV6mY5/xScvMdbZ8ZimtMwpBA/yPbpXIM6+xyPuWifWg6z3oV7Hi1JFejqEqBdm/qww==
+X-Received: by 2002:a17:906:2921:b0:9b9:faee:4228 with SMTP id v1-20020a170906292100b009b9faee4228mr16098461ejd.56.1697134890672;
+        Thu, 12 Oct 2023 11:21:30 -0700 (PDT)
+Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
+        by smtp.gmail.com with ESMTPSA id kf24-20020a17090776d800b009b95787eb6dsm11287391ejc.48.2023.10.12.11.21.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 11:21:30 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 12 Oct 2023 20:21:28 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Alexey Gladkov <legion@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v2 2/2] seqlock: change __seqprop() to return the
+ function pointer
+Message-ID: <ZSg5KAFxVzKoFlhZ@gmail.com>
+References: <20231012143158.GA16133@redhat.com>
+ <20231012143227.GA16143@redhat.com>
 MIME-Version: 1.0
-Message-ID: <169713484702.3135.9739629828157326909.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012143227.GA16143@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     deedec0a152a3d7fa5b04ef9431aeb71802835b5
-Gitweb:        https://git.kernel.org/tip/deedec0a152a3d7fa5b04ef9431aeb71802835b5
-Author:        Borislav Petkov <bp@alien8.de>
-AuthorDate:    Thu, 12 Oct 2023 20:01:59 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 12 Oct 2023 20:10:39 +02:00
+* Oleg Nesterov <oleg@redhat.com> wrote:
 
-x86/cpu: Fix the AMD Fam 17h, Fam 19h, Zen2 and Zen4 MSR enumerations
+> This simplifies the macro and makes it easy to add the new seqprop's
+> with 2 or more args.
+> 
+> Plus this way we do not lose the type info, the (void*) type cast is
+> no longer needed.
+> 
+> And the latter reveals the problem: a lot of seqcount_t helpers pass
+> the "const seqcount_t *s" argument to __seqprop_ptr(seqcount_t *s)
+> but (before this patch) "(void *)(s)" masked the problem.
+> 
+> So this patch changes __seqprop_ptr() and __seqprop_##lockname##_ptr()
+> to accept the "const LOCKNAME *s" argument. This is not nice either,
+> they need to drop the constness on return because these helpers are used
+> by both the readers and writers, but at least it is clear what's going on.
 
-The comments introduced in <asm/msr-index.h> in the merge conflict fixup in:
+> +__seqprop_##lockname##_ptr(const seqcount_##lockname##_t *s)		\
+>  {									\
+> +	return (void *)&s->seqcount; /* drop const */			\
+>  }									\
 
-  8f4156d58713 ("Merge branch 'x86/urgent' into perf/core, to resolve conflict")
+> +static inline seqcount_t *__seqprop_ptr(const seqcount_t *s)
+>  {
+> +	return (void *)s; /* drop const */
+>  }
 
-... aren't right: AMD naming schemes are more complex than implied,
-family 0x17 is Zen1 and 2, family 0x19 is spread around Zen 3 and 4.
+Okay, so dropping 'const' makes sense in terms of staying bug-compatible
+with the  previous API and not build-breaking the world - but could we
+perhaps follow this up with fixups of the type misuse and then a removal
+of the forced type casts from these APIs?
 
-So there's indeed four separate MSR namespaces for:
+Meanwhile I'm applying your patches to tip:locking/core, unless someone objects.
 
-  MSR_F17H_
-  MSR_F19H_
-  MSR_ZEN2_
-  MSR_ZEN4_
+Thanks,
 
-... and the namespaces cannot be merged.
-
-Fix it up. No change in functionality.
-
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: https://lore.kernel.org/r/D99589F4-BC5D-430B-87B2-72C20370CF57@exactcode.com
----
- arch/x86/include/asm/msr-index.h | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
-
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 0ad9ba8..f8b5028 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -637,18 +637,20 @@
- /* AMD Last Branch Record MSRs */
- #define MSR_AMD64_LBR_SELECT			0xc000010e
- 
--/* Fam 19h (Zen 4) MSRs */
--#define MSR_F19H_UMC_PERF_CTL		0xc0010800
--#define MSR_F19H_UMC_PERF_CTR		0xc0010801
--
--#define MSR_ZEN4_BP_CFG			0xc001102e
-+/* Zen4 */
-+#define MSR_ZEN4_BP_CFG                 0xc001102e
- #define MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT 5
- 
--/* Fam 17h (Zen 2) MSRs */
--#define MSR_F17H_IRPERF			0xc00000e9
-+/* Fam 19h MSRs */
-+#define MSR_F19H_UMC_PERF_CTL           0xc0010800
-+#define MSR_F19H_UMC_PERF_CTR           0xc0010801
- 
--#define MSR_ZEN2_SPECTRAL_CHICKEN	0xc00110e3
--#define MSR_ZEN2_SPECTRAL_CHICKEN_BIT	BIT_ULL(1)
-+/* Zen 2 */
-+#define MSR_ZEN2_SPECTRAL_CHICKEN       0xc00110e3
-+#define MSR_ZEN2_SPECTRAL_CHICKEN_BIT   BIT_ULL(1)
-+
-+/* Fam 17h MSRs */
-+#define MSR_F17H_IRPERF			0xc00000e9
- 
- /* Fam 16h MSRs */
- #define MSR_F16H_L2I_PERF_CTL		0xc0010230
+	Ingo
