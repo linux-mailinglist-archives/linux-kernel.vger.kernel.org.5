@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97CCC7C68F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9359F7C68F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235513AbjJLJC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58938 "EHLO
+        id S235518AbjJLJDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:03:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235452AbjJLJCm (ORCPT
+        with ESMTP id S235366AbjJLJCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:02:42 -0400
+        Thu, 12 Oct 2023 05:02:43 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A03B7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:02:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D71C4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:02:41 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <j.zink@pengutronix.de>)
-        id 1qqraM-0000CI-Lt; Thu, 12 Oct 2023 11:02:26 +0200
+        id 1qqraM-0000CK-Lr; Thu, 12 Oct 2023 11:02:26 +0200
 Received: from [2a0a:edc0:0:1101:1d::39] (helo=dude03.red.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <j.zink@pengutronix.de>)
-        id 1qqraK-0016dK-Vp; Thu, 12 Oct 2023 11:02:25 +0200
+        id 1qqraL-0016dL-0V; Thu, 12 Oct 2023 11:02:25 +0200
 Received: from localhost ([::1] helo=dude03.red.stw.pengutronix.de)
         by dude03.red.stw.pengutronix.de with esmtp (Exim 4.96)
         (envelope-from <j.zink@pengutronix.de>)
-        id 1qqral-00FyMl-1K;
+        id 1qqral-00FyMl-1M;
         Thu, 12 Oct 2023 11:02:24 +0200
 From:   Johannes Zink <j.zink@pengutronix.de>
-Date:   Thu, 12 Oct 2023 11:02:13 +0200
-Subject: [PATCH net-next 2/5] net: stmmac: fix PPS capture input index
+Date:   Thu, 12 Oct 2023 11:02:14 +0200
+Subject: [PATCH net-next 3/5] net: stmmac: intel: remove unnecessary field
+ struct plat_stmmacenet_data::ext_snapshot_num
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231010-stmmac_fix_auxiliary_event_capture-v1-2-3eeca9e844fa@pengutronix.de>
+Message-Id: <20231010-stmmac_fix_auxiliary_event_capture-v1-3-3eeca9e844fa@pengutronix.de>
 References: <20231010-stmmac_fix_auxiliary_event_capture-v1-0-3eeca9e844fa@pengutronix.de>
 In-Reply-To: <20231010-stmmac_fix_auxiliary_event_capture-v1-0-3eeca9e844fa@pengutronix.de>
 To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
@@ -66,54 +67,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The stmmac supports up to 4 auxiliary snapshots that can be enabled by
-setting the appropriate bits in the PTP_ACR bitfield.
+Do not store bitmask for enabling AUX_SNAPSHOT0. The previous commit
+("net: stmmac: fix PPS capture input index") takes care of calculating
+the proper bit mask from the request data's extts.index field, which is
+0 if not explicitly specified otherwise.
 
-Previously instead of setting the bits, a fixed value was written to
-this bitfield instead of passing the appropriate bitmask.
-
-Now the correct bit is set according to the ptp_clock_request.extts_index
-passed as a parameter to stmmac_enable().
-
-Fixes: f4da56529da6 ("net: stmmac: Add support for external trigger timestamping")
 Signed-off-by: Johannes Zink <j.zink@pengutronix.de>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c | 5 ++---
- drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h | 2 +-
- 2 files changed, 3 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 1 -
+ include/linux/stmmac.h                            | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-index 29569188b30c..60e3d3ff42f3 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-@@ -201,12 +201,11 @@ static int stmmac_enable(struct ptp_clock_info *ptp,
- 		acr_value &= ~PTP_ACR_MASK;
- 		if (on) {
- 			/* Enable External snapshot trigger */
--			acr_value |= priv->plat->ext_snapshot_num;
-+			acr_value |= PTP_ACR_ATSEN(rq->extts.index);
- 			acr_value |= PTP_ACR_ATSFC;
- 		}
- 		netdev_dbg(priv->dev, "Auxiliary Snapshot %d %s.\n",
--			   priv->plat->ext_snapshot_num >> PTP_ACR_ATSEN_SHIFT,
--			   on ? "enabled" : "disabled");
-+			   rq->extts.index, on ? "enabled" : "disabled");
- 		writel(acr_value, ptpaddr + PTP_ACR);
- 		mutex_unlock(&priv->aux_ts_lock);
- 		/* wait for auxts fifo clear to finish */
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-index d1fe4b46f162..fce3fba2ffd2 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-@@ -79,7 +79,7 @@
- #define	PTP_ACR_ATSEN1		BIT(5)	/* Auxiliary Snapshot 1 Enable */
- #define	PTP_ACR_ATSEN2		BIT(6)	/* Auxiliary Snapshot 2 Enable */
- #define	PTP_ACR_ATSEN3		BIT(7)	/* Auxiliary Snapshot 3 Enable */
--#define	PTP_ACR_ATSEN_SHIFT	5	/* Auxiliary Snapshot shift */
-+#define	PTP_ACR_ATSEN(index)	(PTP_ACR_ATSEN0 << (index))
- #define	PTP_ACR_MASK		GENMASK(7, 4)	/* Aux Snapshot Mask */
- #define	PMC_ART_VALUE0		0x01	/* PMC_ART[15:0] timer value */
- #define	PMC_ART_VALUE1		0x02	/* PMC_ART[31:16] timer value */
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+index a3a249c63598..60283543ffc8 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+@@ -605,7 +605,6 @@ static int intel_mgbe_common_data(struct pci_dev *pdev,
+ 	plat->mdio_bus_data->phy_mask |= 1 << INTEL_MGBE_XPCS_ADDR;
+ 
+ 	plat->int_snapshot_num = AUX_SNAPSHOT1;
+-	plat->ext_snapshot_num = AUX_SNAPSHOT0;
+ 
+ 	plat->crosststamp = intel_crosststamp;
+ 	plat->flags &= ~STMMAC_FLAG_INT_SNAPSHOT_EN;
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index c0079a7574ae..0b4658a7eceb 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -303,7 +303,6 @@ struct plat_stmmacenet_data {
+ 	unsigned int eee_usecs_rate;
+ 	struct pci_dev *pdev;
+ 	int int_snapshot_num;
+-	int ext_snapshot_num;
+ 	int msi_mac_vec;
+ 	int msi_wol_vec;
+ 	int msi_lpi_vec;
 
 -- 
 2.39.2
