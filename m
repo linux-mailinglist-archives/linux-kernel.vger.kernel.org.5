@@ -2,62 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A6C7C7A63
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0F37C7A69
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443104AbjJLX03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 19:26:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
+        id S1443117AbjJLX3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 19:29:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443094AbjJLX01 (ORCPT
+        with ESMTP id S1443129AbjJLX3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 19:26:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE17C9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:26:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 176C8C433CA;
-        Thu, 12 Oct 2023 23:26:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697153185;
-        bh=qNqWoA/ZDLB/uXCHNS8ySDtf00nZP74HHvVGjttkErQ=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=HKWW41YQy8EqNpNGM+UUKpc+RgJDT9JWw0QCWmqprmhVz5h0QulhwY8JfidW38YWT
-         kreoZcDSL4oFttV2dRMx+v2DuddjZI0/yB/HA2uHlh98EADBUMpH726kyIFwKlvg4x
-         8CJJIb4M1nW0ldfOVGb3I4FZGqr8rxTYWeAizA+4jmaUHuz2CR34yKnN216yLYNO9t
-         Q7yNlM3mwpsje2zZ76/9y5RtJ3YPg6h6oU9IImpklyO1+j1SkUf27tsOCg0D3I3V9j
-         N85228TKgf371oxZ1kXdwAYp8u65FWKwZgXKAWOz/sxsLS4WwyMeuCy+hoGBd4fDD1
-         wm7fzxeKRwjbA==
-Received: (nullmailer pid 2140553 invoked by uid 1000);
-        Thu, 12 Oct 2023 23:26:23 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Thu, 12 Oct 2023 19:29:31 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11B1EA
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:29:28 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9b27bc8b65eso245284166b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:29:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697153367; x=1697758167; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1TkuD/z8Ea8WYF7ftnX8CODZoRzj/hmgN33zzZIDYSA=;
+        b=UFmt1M5v/IcLUQCK/67fxs2EUXoYS4NqBzMjn1qm45QtLvAESJD2vJl2ZQV4/FSzxz
+         vxwqR+S3NBCbO6K8nbljZOWpJafC7WnYiG/G/DmCnNPIzM5ke/BKbprAncvWfjM+Hsq8
+         oaA/KAdPYeHbiw9e/pspQc/UrC5dhYwYxYgUU9OwevJqENrOjPOUGyKXYoSUMHPiPyND
+         WO1rBOu3e0nq6Ilbco7ujpCcIrsfW8R1rzs/9L3H9seX8ope8ocIiEi3PtHtrtPcPuq+
+         7ay3fRVQ60+hggYZhP2f/ONW4XMxzTjqge8ykXlU5VKefpP9wqa+oK09rX5aJYmKz5Lt
+         cnVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697153367; x=1697758167;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1TkuD/z8Ea8WYF7ftnX8CODZoRzj/hmgN33zzZIDYSA=;
+        b=ZE2P3PoIjgYr23fKDjreWuSTCKrVl9XSYqpIijF3y+eLDv2OPxZgFU3FJ2nWNpRh6R
+         oRBND/0BUmHKPUDewi5LHtyBDDaB/Edh0TkLsH0fdUV/reCtxPCtfatWTZPJFu8J+mo9
+         4tLGqUSQaFt5gyy4IzXaMfPP4H76MHgUE8oZHrvJzDIF6crcdiWWBRL6gZ75hSoEaYIw
+         QeWujh3SCtLeO0jAT8TQX6E9ilLw+ADprnykISopQZVHF8s33hbc71CqmVJmlbGXEMvn
+         0gEYDKActLNL5DvS3QQIl+pZsoff8ird+DpMSBTMzkCNyvK3iOgO7Zysp8yG4jKWOK4B
+         dNCA==
+X-Gm-Message-State: AOJu0Yxojtefxis/rfgUR9hIpNb+60jKL+8SuLBy6hv4wXOBIct33Kth
+        ESnk8aYvPM3+A6mIx7pHEG5YqSBuxasvS2bgPdjssg==
+X-Google-Smtp-Source: AGHT+IFdXPfo4ovXRKwRkiVmXcpZd2iaEltEYEe0yNpT/QQXXaHOlP6gWF9jdH/t5/DhLfHs4srOZv3wku2b10WydYc=
+X-Received: by 2002:a17:906:31c5:b0:9ae:6a51:87c3 with SMTP id
+ f5-20020a17090631c500b009ae6a5187c3mr23549400ejf.9.1697153366955; Thu, 12 Oct
+ 2023 16:29:26 -0700 (PDT)
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Conor Dooley <conor+dt@kernel.org>
-In-Reply-To: <20231013-marvell-88e6152-wan-led-v1-2-0712ba99857c@linaro.org>
-References: <20231013-marvell-88e6152-wan-led-v1-0-0712ba99857c@linaro.org>
- <20231013-marvell-88e6152-wan-led-v1-2-0712ba99857c@linaro.org>
-Message-Id: <169715318309.2140513.13293051505659071749.robh@kernel.org>
-Subject: Re: [PATCH 2/3] RFC: dt-bindings: marvell: Rewrite in schema
-Date:   Thu, 12 Oct 2023 18:26:23 -0500
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231010032117.1577496-1-yosryahmed@google.com>
+ <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
+ <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
+ <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
+ <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
+ <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
+ <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
+ <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com> <20231012132946.GA470544@cmpxchg.org>
+In-Reply-To: <20231012132946.GA470544@cmpxchg.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 12 Oct 2023 16:28:49 -0700
+Message-ID: <CAJD7tkbrR=6SmVxo4pVKHVu4eGBYN+xXuu5+zFPh6LSqt8vGcw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,56 +84,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[..]
+> > >
+> > > Using next-20231009 and a similar 44 core machine with hyperthreading
+> > > disabled, I ran 22 instances of netperf in parallel and got the
+> > > following numbers from averaging 20 runs:
+> > >
+> > > Base: 33076.5 mbps
+> > > Patched: 31410.1 mbps
+> > >
+> > > That's about 5% diff. I guess the number of iterations helps reduce
+> > > the noise? I am not sure.
+> > >
+> > > Please also keep in mind that in this case all netperf instances are
+> > > in the same cgroup and at a 4-level depth. I imagine in a practical
+> > > setup processes would be a little more spread out, which means less
+> > > common ancestors, so less contended atomic operations.
+> >
+> >
+> > (Resending the reply as I messed up the last one, was not in plain text)
+> >
+> > I was curious, so I ran the same testing in a cgroup 2 levels deep
+> > (i.e /sys/fs/cgroup/a/b), which is a much more common setup in my
+> > experience. Here are the numbers:
+> >
+> > Base: 40198.0 mbps
+> > Patched: 38629.7 mbps
+> >
+> > The regression is reduced to ~3.9%.
+> >
+> > What's more interesting is that going from a level 2 cgroup to a level
+> > 4 cgroup is already a big hit with or without this patch:
+> >
+> > Base: 40198.0 -> 33076.5 mbps (~17.7% regression)
+> > Patched: 38629.7 -> 31410.1 (~18.7% regression)
+> >
+> > So going from level 2 to 4 is already a significant regression for
+> > other reasons (e.g. hierarchical charging). This patch only makes it
+> > marginally worse. This puts the numbers more into perspective imo than
+> > comparing values at level 4. What do you think?
+>
+> I think it's reasonable.
+>
+> Especially comparing to how many cachelines we used to touch on the
+> write side when all flushing happened there. This looks like a good
+> trade-off to me.
 
-On Fri, 13 Oct 2023 00:35:15 +0200, Linus Walleij wrote:
-> This is an attempt to rewrite the Marvell MV88E6xxx switch bindings
-> in YAML schema.
-> 
-> The current text binding says:
->   WARNING: This binding is currently unstable. Do not program it into a
->   FLASH never to be changed again. Once this binding is stable, this
->   warning will be removed.
-> 
-> Well that never happened before we switched to YAML markup,
-> we can't have it like this, what about fixing the mess?
-> 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  .../bindings/net/dsa/marvell,mv88e6xxx.yaml        | 249 +++++++++++++++++++++
->  .../devicetree/bindings/net/dsa/marvell.txt        | 109 ---------
->  MAINTAINERS                                        |   2 +-
->  3 files changed, 250 insertions(+), 110 deletions(-)
-> 
+Thanks.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Still wanting to figure out if this patch is what you suggested in our
+previous discussion [1], to add a
+Suggested-by if appropriate :)
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: switch@0: ports: '#address-cells' is a required property
-	from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: switch@0: ports: '#size-cells' is a required property
-	from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.example.dtb: switch@0: mdio-external: Unevaluated properties are not allowed ('compatible' was unexpected)
-	from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.example.dtb: switch@0: Unevaluated properties are not allowed ('mdio-external' was unexpected)
-	from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231013-marvell-88e6152-wan-led-v1-2-0712ba99857c@linaro.org
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+[1]https://lore.kernel.org/lkml/20230913153758.GB45543@cmpxchg.org/
