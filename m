@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 393F27C69F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E657C69F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235615AbjJLJqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53620 "EHLO
+        id S235626AbjJLJqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234030AbjJLJqf (ORCPT
+        with ESMTP id S232594AbjJLJqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Oct 2023 05:46:35 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED5BA9
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF56B7
         for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:46:32 -0700 (PDT)
-Received: from dggpeml500002.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S5l8C3V6PzrT8v;
-        Thu, 12 Oct 2023 17:43:55 +0800 (CST)
+Received: from dggpeml500002.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4S5l6c23QYz1kv1T;
+        Thu, 12 Oct 2023 17:42:32 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  dggpeml500002.china.huawei.com (7.185.36.158) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 12 Oct 2023 17:46:30 +0800
+ 15.1.2507.31; Thu, 12 Oct 2023 17:46:31 +0800
 From:   Junhao He <hejunhao3@huawei.com>
 To:     <suzuki.poulose@arm.com>, <james.clark@arm.com>
 CC:     <coresight@lists.linaro.org>,
@@ -29,9 +29,9 @@ CC:     <coresight@lists.linaro.org>,
         <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
         <jonathan.cameron@huawei.com>, <yangyicong@huawei.com>,
         <prime.zeng@hisilicon.com>, <hejunhao3@huawei.com>
-Subject: [PATCH 2/3] coresight: ultrasoc-smb: simplify the code for check to_copy valid
-Date:   Thu, 12 Oct 2023 17:47:05 +0800
-Message-ID: <20231012094706.21565-3-hejunhao3@huawei.com>
+Subject: [PATCH 3/3] coresight: ultrasoc-smb: fix uninitialized before use buf_hw_base
+Date:   Thu, 12 Oct 2023 17:47:06 +0800
+Message-ID: <20231012094706.21565-4-hejunhao3@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20231012094706.21565-1-hejunhao3@huawei.com>
 References: <20231012094706.21565-1-hejunhao3@huawei.com>
@@ -51,43 +51,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We only need to check once when before using the to_copy variable
-to simplify the code.
+In smb_reset_buffer, the sdb->buf_hw_base variable is uninitialized
+before use, which initializes it in smb_init_data_buffer. And the SMB
+regiester are set in smb_config_inport.
+So move the call after smb_config_inport.
+
+Fixes: 06f5c2926aaa ("drivers/coresight: Add UltraSoc System Memory Buffer driver")
 
 Signed-off-by: Junhao He <hejunhao3@huawei.com>
 ---
- drivers/hwtracing/coresight/ultrasoc-smb.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ drivers/hwtracing/coresight/ultrasoc-smb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/hwtracing/coresight/ultrasoc-smb.c b/drivers/hwtracing/coresight/ultrasoc-smb.c
-index b08a619d1116..e78edc3480ce 100644
+index e78edc3480ce..21ba473786e5 100644
 --- a/drivers/hwtracing/coresight/ultrasoc-smb.c
 +++ b/drivers/hwtracing/coresight/ultrasoc-smb.c
-@@ -127,20 +127,15 @@ static ssize_t smb_read(struct file *file, char __user *data, size_t len,
- 					struct smb_drv_data, miscdev);
- 	struct smb_data_buffer *sdb = &drvdata->sdb;
- 	struct device *dev = &drvdata->csdev->dev;
--	ssize_t to_copy = 0;
--
--	if (!len)
--		return 0;
--
--	if (!sdb->data_size)
--		return 0;
--
--	to_copy = min(sdb->data_size, len);
-+	ssize_t to_copy = min(sdb->data_size, len);
+@@ -475,7 +475,6 @@ static int smb_init_data_buffer(struct platform_device *pdev,
+ static void smb_init_hw(struct smb_drv_data *drvdata)
+ {
+ 	smb_disable_hw(drvdata);
+-	smb_reset_buffer(drvdata);
  
- 	/* Copy parts of trace data when read pointer wrap around SMB buffer */
- 	if (sdb->buf_rdptr + to_copy > sdb->buf_size)
- 		to_copy = sdb->buf_size - sdb->buf_rdptr;
+ 	writel(SMB_LB_CFG_LO_DEFAULT, drvdata->base + SMB_LB_CFG_LO_REG);
+ 	writel(SMB_LB_CFG_HI_DEFAULT, drvdata->base + SMB_LB_CFG_HI_REG);
+@@ -597,6 +596,7 @@ static int smb_probe(struct platform_device *pdev)
+ 	}
  
-+	if (!to_copy)
-+		return 0;
-+
- 	if (copy_to_user(data, sdb->buf_base + sdb->buf_rdptr, to_copy)) {
- 		dev_dbg(dev, "Failed to copy data to user\n");
- 		return -EFAULT;
+ 	platform_set_drvdata(pdev, drvdata);
++	smb_reset_buffer(drvdata);
+ 
+ 	return 0;
+ }
 -- 
 2.33.0
 
