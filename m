@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AFD7C6944
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6E37C694A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235402AbjJLJRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
+        id S235489AbjJLJRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234155AbjJLJRT (ORCPT
+        with ESMTP id S234155AbjJLJRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:17:19 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4B791
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:17:18 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a7dd65052aso10671287b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:17:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697102237; x=1697707037; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=v6dAMz+0PBoS2XhVtGEyBlFK0C+DlTpY1GdaToHa8Jc=;
-        b=hYxAFqMBmH3OmoR+nhuDhBMTGTEmnKYxp4TESq+pOlsaIWPXgUmN9EOi17P/FYmBQk
-         ckZCJEI7Y1Vy0PsDee6Ud4AGN795o3oOB0O8OALUm/A0iRuw0YQxyjwwWR3ikanGjpEJ
-         5A8JuTCa6Mn08m+mQkUL0z7kvknr9hbky64SSn7GDlKSVNhD9cjWDcas312URJ1MD4ip
-         J+CWyMCF3V6fqdXDhN0pANPypD49aBwe28eG+XpiNiVvt70Euq4/AaCIJ/kAGd6Aq3Hh
-         rImaD+sbwHjg6DSOcM7A4FEzarImSrdP223fJ7LbJ6LTB1XSppYIy7BlsaT1PMC6Da2f
-         vRVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697102237; x=1697707037;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v6dAMz+0PBoS2XhVtGEyBlFK0C+DlTpY1GdaToHa8Jc=;
-        b=qdFvTkD9H5HIuC+B+TYmGBkDwKyFswSgHU0+RO0SLJcpJkovovqJGleW9T6GlZXFtK
-         VlOjzIsgtmucIoOnnDshDKXDeoGRWLTnZ5Tai9sBbcU4eAf/Z/aCWujQdwa0bWIlSqLP
-         UY7WExcuI7y/SAeyp9Tis9xb90IhbAuXmNTaaBW1vE5PJNe26UvGBiL3dOsPZGjOQAPZ
-         lx+ZPwH/K33zRvWnswL7cbi6r8noTntij/vqggTTkMfCgPN7T48DSYvs2XBYvzTKQ9BC
-         aEHwzKoQM/AO+R7iOzGCNjjFckVfLJkLySF22tWL6WX9Fs6K1jTb92ig/aI/K03zVnGn
-         gGVw==
-X-Gm-Message-State: AOJu0YyAjZw1Jd/zJ9KI+g3L2wODeiipTXfjr4Qok2nljX+CIfVkqlpB
-        DiQcqPzpesENohEj6wHiWTU=
-X-Google-Smtp-Source: AGHT+IFuQMSMzJzJH2GkD7eihBN8OFvYqFcC1HGLtYAHbbnx3UQ7tSCfZ0ufU5iKSpJBX7SkHxuqpg==
-X-Received: by 2002:a81:6ec2:0:b0:5a1:db6a:6459 with SMTP id j185-20020a816ec2000000b005a1db6a6459mr23340529ywc.40.1697102237316;
-        Thu, 12 Oct 2023 02:17:17 -0700 (PDT)
-Received: from [192.168.0.106] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id i1-20020a17090a2a0100b0027669cbc30asm597246pjd.1.2023.10.12.02.17.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 02:17:16 -0700 (PDT)
-Message-ID: <1e2cfefb-c4dd-4611-867a-2b2e9e5f7467@gmail.com>
-Date:   Thu, 12 Oct 2023 16:17:11 +0700
+        Thu, 12 Oct 2023 05:17:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFF9C4;
+        Thu, 12 Oct 2023 02:17:38 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 11:17:29 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697102257;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=WrpWweFctaGuqGTjzQmqJPAe/tzvOWQyUllY4p36/sU=;
+        b=N6xO3EvIpHA7v2pMnc1xZ2MwWpT+J1hkZqjiu6u6jDDy4w/ba+h2IOG58SkcgyVHY42ZqF
+        Si/11M+Owjl5DMiUFIoS3VLk5/0uWbcZ/LOD2Qma+8tHll/rtCO6LZ/Lt0bUG0TsXMndh+
+        B+DFNuFI92Ew08DjzQx6YKiTcgZ1jbkLIfYTl+7AhGdWhs1wuk2KWW7uNnlekFQYS0ckC3
+        Y/CCXBdd2CC2kab8s+GjFA794Mj1V/Uf/h/fN0QgssbRnHlknNR7yLxF1Hx3plSVU3/QM9
+        sa8IUXcIM0URaned6yS74g7zcAd7yAUvUFR1ZHh5fDFiVxVl16TFEZdyROzljQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697102257;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=WrpWweFctaGuqGTjzQmqJPAe/tzvOWQyUllY4p36/sU=;
+        b=PeyuHQZhK5rfrboNA5NQ+J47gFzCvP+U5By4znwRCkm7RlCsYM5y9TLYwa4VWUXIfRcKpt
+        p488rxrcanFZt2Aw==
+From:   Nam Cao <namcao@linutronix.de>
+To:     kernel@esmil.dk, conor@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        william.qiu@starfivetech.com, linux-riscv@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] riscv: dts: starfive: visionfive 2: correct spi's ss pin
+Message-ID: <20231012091729.3fzfDD1I@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] staging/wlan-ng: remove strcpy() use in favor of
- strscpy()
-To:     Calvince Otieno <calvncce@gmail.com>, outreachy@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <error27@gmail.com>,
-        Archana <craechal@gmail.com>, Simon Horman <horms@kernel.org>,
-        linux-staging@lists.linux.dev
-References: <ZSeD1UojAgrsOh16@lab-ubuntu>
-Content-Language: en-US
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <ZSeD1UojAgrsOh16@lab-ubuntu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2023 12:27, Calvince Otieno wrote:
->  		if (j == -1) {	/* plug the filename */
->  			memset(dest, 0, s3plug[i].len);
-> -			strncpy(dest, PRISM2_USB_FWFILE, s3plug[i].len - 1);
-> +			strscpy(dest, PRISM2_USB_FWFILE, s3plug[i].len - 1);
+The ss pin of spi0 is the same as sck pin. According to the
+visionfive 2 documentation, it should be pin 49 instead of 48.
 
-Is this strscpy() behavior same as previous strncpy()?
+Fixes: 74fb20c8f05d ("riscv: dts: starfive: Add spi node and pins configuration")
+Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Signed-off-by: Nam Cao <namcao@linutronix.de>
+---
+v2: resend due to email problem
 
+ arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+index 12ebe9792356..2c02358abd71 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+@@ -431,7 +431,7 @@ GPOEN_ENABLE,
+ 		};
+ 
+ 		ss-pins {
+-			pinmux = <GPIOMUX(48, GPOUT_SYS_SPI0_FSS,
++			pinmux = <GPIOMUX(49, GPOUT_SYS_SPI0_FSS,
+ 					      GPOEN_ENABLE,
+ 					      GPI_SYS_SPI0_FSS)>;
+ 			bias-disable;
 -- 
-An old man doll... just what I always wanted! - Clara
+2.39.2
 
