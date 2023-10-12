@@ -2,111 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E37D7C70FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03EC7C7103
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379172AbjJLPIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:08:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        id S1379165AbjJLPJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347050AbjJLPIN (ORCPT
+        with ESMTP id S1347171AbjJLPJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:08:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF0FD7;
-        Thu, 12 Oct 2023 08:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697123291; x=1728659291;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=/1CsdNQjxQo9/5qh0TNOdpn1mckdm/TJkKZvUEyDvlE=;
-  b=LNRovgrIEMHQw4Haix1K5Yd01CMB4GTVPXx25plK4KySO8Wh0iB+Gans
-   jEXx113U5YPUMPfTIu5u5bKsfHIglmUTFTaaeYKNNsv+Ag//sH1LtV6IA
-   5Yyj0e728yYW9A8Zk6dyyjGpzNItB9hPl12srAAyHZIvjF4/lsI7QE82Q
-   5OUR4bVqDTKsmLv6ZjHNhoiVGel0Il31Lutjl5Nv11kzeHjMMI6ysJrlD
-   th2AjtvEvoseoEmawwQqvHwoRNsmrxbyTR2GJUHwQvwYFX9KN/plbJ1bM
-   G3FXB8Tw1KvCnsvDIMPmiNlwItGxMmSfcpa9QpNsIKtmjKO/PsEK/aORh
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="415993228"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="415993228"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 08:08:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="1085696842"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="1085696842"
-Received: from jnikula-mobl4.fi.intel.com (HELO localhost) ([10.237.66.162])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 08:08:05 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        "lakshmiy@us.ibm.com" <lakshmiy@us.ibm.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
-        "ninad@linux.ibm.com" <ninad@linux.ibm.com>,
-        "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
-        "wsa@kernel.org" <wsa@kernel.org>
-Cc:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
-Subject: Re: [PATCH v1 1/2] i2c: smbus: Allow throttling of transfers to
- client devices
-In-Reply-To: <bf0d71383958e7cc88bc84c7e2378f10d3a486f3.camel@suse.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20231009211420.3454026-1-lakshmiy@us.ibm.com>
- <20231009211420.3454026-2-lakshmiy@us.ibm.com>
- <bf0d71383958e7cc88bc84c7e2378f10d3a486f3.camel@suse.com>
-Date:   Thu, 12 Oct 2023 18:08:03 +0300
-Message-ID: <87y1g7zxnw.fsf@intel.com>
+        Thu, 12 Oct 2023 11:09:09 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8BCB8;
+        Thu, 12 Oct 2023 08:09:07 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4065dea9a33so11526955e9.3;
+        Thu, 12 Oct 2023 08:09:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697123346; x=1697728146; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZIVOoI+PIg0Wo1D0v9gT9jKhAogWFUlI5EJKrF5EVvs=;
+        b=JJybegZ75RBVs917p6HlNjofvejUwOBXXJSFEFw2BYcP42n3a3Pq/HjjiVsXyvtgIG
+         yVfBE/w0pMwlx+rqIFZhY3yMpFXrdhiJJDH1878uPpFXzTQrc8ImD6aGZWkZnwA6sbgF
+         N48trAAxP9EOu5AjTXKD8W7d/NKOyAtl+Mv2LUVx+0fRUvmHQGuNndFXD1NMrLIhgm7V
+         lUtVFnvbt/XmRYrr3MwlcQhKVqhNdpRq8Ns4yuJqKiEYwdKGeLSnwMKx8WgkGQTcoMTx
+         U9kU/MHFzv47XVwNh40zjt2yFrHkMxk9xSO3Qm8o//OMz52z/TXTa+S6wu7OOxdSSIHD
+         aZTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697123346; x=1697728146;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ZIVOoI+PIg0Wo1D0v9gT9jKhAogWFUlI5EJKrF5EVvs=;
+        b=pRb7xN6qhU7V54bDuXZJ5+TLlZ7adJK1Pr/6fuTSTuk45tjzlLewDF7XGpdeENoPHN
+         9Pc5GQ5E0mvLPcJEI5e5Q36DiH71Y580uUD9QTtj1vLhpZfrs6kdXDVAh3Ow/vF5Y6A2
+         dmXqnNTvGUKAQwPytWxgcYoDc1A6X8YfpWVmy9UX+DP8BUo4DHm3/sLRnoWENYmOsSkY
+         nVRLI409my9zjcDj0A55/Wy8MeZxHlHk8jEb1LkZS2+p+yxHdps8CHaoNFaJ2oXIUD+W
+         dOabidLGnfwmeFo0bfmErmku1m7ENuY+qHyqQ0oFrSeDL+ogb8dvFR3dwUcUPWHKBYen
+         YgoA==
+X-Gm-Message-State: AOJu0YzkG+waRj6iE/CRpR5r6WBiJGMQtFaDBwVqoYVVpT8rEyTjED3s
+        CUPzkkNhrLZn2KZ16r//GGS1X8a35YAZ9g==
+X-Google-Smtp-Source: AGHT+IFKqljoCBkYiin7g8cJyyfJ/QgkQglVoBWqb4Qw7Mq4PcB3d4iFYPjoXiVcCt4flnJ2CDehGg==
+X-Received: by 2002:a05:600c:230d:b0:401:dc7c:2494 with SMTP id 13-20020a05600c230d00b00401dc7c2494mr23014764wmo.27.1697123345289;
+        Thu, 12 Oct 2023 08:09:05 -0700 (PDT)
+Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
+        by smtp.gmail.com with ESMTPSA id m8-20020a7bcb88000000b0040646a708dasm78843wmi.15.2023.10.12.08.09.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 08:09:04 -0700 (PDT)
+Message-ID: <fa310a081779e92a44756a0b561171e97b7cdbaf.camel@gmail.com>
+Subject: Re: [PATCH 1/1] drivers: imu: adis16475.c: Remove scan index from
+ delta channels
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     Ramona Gradinariu <ramona.gradinariu@analog.com>, jic23@kernel.org,
+        nuno.sa@analog.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 12 Oct 2023 17:09:04 +0200
+In-Reply-To: <20231012122456.765709-2-ramona.gradinariu@analog.com>
+References: <20231012122456.765709-1-ramona.gradinariu@analog.com>
+         <20231012122456.765709-2-ramona.gradinariu@analog.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Oct 2023, Jean Delvare <jdelvare@suse.com> wrote:
-> On Mon, 2023-10-09 at 16:14 -0500, Lakshmi Yadlapati wrote:
->> Signed-off-by: Lakshmi Yadlapati <lakshmiy@us.ibm.com>
->> ---
->> =C2=A0drivers/i2c/i2c-core-base.c=C2=A0 |=C2=A0=C2=A0 8 +-
->> =C2=A0drivers/i2c/i2c-core-smbus.c | 143 ++++++++++++++++++++++++++++---=
-----
->> =C2=A0drivers/i2c/i2c-core.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=
- 23 ++++++
->> =C2=A0include/linux/i2c.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 |=C2=A0=C2=A0 2 +
->> =C2=A04 files changed, 145 insertions(+), 31 deletions(-)
->> (...)
->
-> Non-trivial patch with no description -> not even looking, sorry. You
-> can't possibly propose a change to the core of a subsystem and not
-> bother explaining why this change is needed or what purpose it serves.
+SGkgUmFtb25hLAoKVGhlcmUgYXJlIHNvbWUgb2RkIHN0dWZmLi4uCgpPbiBUaHUsIDIwMjMtMTAt
+MTIgYXQgMTU6MjQgKzAzMDAsIFJhbW9uYSBHcmFkaW5hcml1IHdyb3RlOgo+IFNvbWUgZGV2aWNl
+cyBkbyBub3Qgc3VwcG9ydCBkZWx0YSBhbmdsZSBhbmQgZGVsdGEgdmVsb2NpdHkKPiBidXJzdCBy
+ZWFkaW5ncywgd2hpY2ggbWVhbnMgdGhlcmUgc2hvdWxkIGJlIG5vIGJ1ZmZlciBzdXBwb3J0Cj4g
+Zm9yIHRoZXNlIHR5cGVzIG9mIGNoYW5uZWxzLgo+IEEgbmV3IGxpc3Qgb2YgY2hhbm5lbHMgaXMg
+Y3JlYXRlZCB3aGljaCBjb250YWlucyB0aGUgZGVsdGEKPiBjaGFubmVscyBzdHJ1Y3R1cmVzIHdp
+dGggdGhlIHNjYW4gaW5kZXggZXF1YWwgdG8gLTEgdG8gYWxsb3cKPiBmb3IgcmF3IHJlZ2lzdGVy
+IHJlYWRpbmdzLCB3aXRob3V0IGJ1ZmZlciBzdXBwb3J0Lgo+IFRoaXMgbGlzdCBvZiBjaGFubmVs
+cyBpcyBhc3NpZ25lZCB0byB0aGUgZGV2aWNlcyB3aGljaAo+IGRvIG5vdCBzdXBwb3J0IGRlbHRh
+IGFuZ2xlIGFuZCBkZWx0YSB2ZWxvY2l0eSBidXJzdAo+IHJlYWRpbmdzLgo+IAo+IEZpeGVzOiA4
+ZjZiYzg3ZDY3YzAgKCJpaW86IGltdTogYWRpczE2NDc1LmM6IEFkZCBkZWx0YSBhbmdsZSBhbmQg
+ZGVsdGEgdmVsb2NpdHkKPiBjaGFubmVscyIpCj4gU2lnbmVkLW9mZi1ieTogUmFtb25hIEdyYWRp
+bmFyaXUgPHJhbW9uYS5ncmFkaW5hcml1QGFuYWxvZy5jb20+Cj4gLS0tCj4gwqBkcml2ZXJzL2lp
+by9pbXUvYWRpczE2NDc1LmMgfCA2NyArKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0t
+LS0tCj4gwqAxIGZpbGUgY2hhbmdlZCwgNDYgaW5zZXJ0aW9ucygrKSwgMjEgZGVsZXRpb25zKC0p
+Cj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaWlvL2ltdS9hZGlzMTY0NzUuYyBiL2RyaXZlcnMv
+aWlvL2ltdS9hZGlzMTY0NzUuYwo+IGluZGV4IDlhZjA3ZmVjMGQ4OS4uYjdjYmUxNTY1YWVlIDEw
+MDY0NAo+IC0tLSBhL2RyaXZlcnMvaWlvL2ltdS9hZGlzMTY0NzUuYwo+ICsrKyBiL2RyaXZlcnMv
+aWlvL2ltdS9hZGlzMTY0NzUuYwo+IEBAIC02MDQsNyArNjA0LDE1IEBAIHN0YXRpYyBpbnQgYWRp
+czE2NDc1X3dyaXRlX3JhdyhzdHJ1Y3QgaWlvX2RldiAqaW5kaW9fZGV2LAo+IMKgwqDCoMKgwqDC
+oMKgwqBBRElTMTY0NzVfTU9EX0NIQU5fREVMVEEoSUlPX0RFTFRBX1ZFTE9DSVRZLCBJSU9fTU9E
+XyAjIyBfbW9kLCBcCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBBRElTMTY0NzVfUkVHXyAjIyBfbW9kICMjIF9ERUxUVkVMX0wsCj4gQURJUzE2
+NDc1X1NDQU5fREVMVFZFTF8gIyMgX21vZCwgMzIsIDMyKQo+IMKgCj4gLXN0YXRpYyBjb25zdCBz
+dHJ1Y3QgaWlvX2NoYW5fc3BlYyBhZGlzMTY0NzVfY2hhbm5lbHNbXSA9IHsKPiArI2RlZmluZSBB
+RElTMTY0NzVfREVMVEFOR19DSEFOX05PX1NDQU4oX21vZCkgXAo+ICvCoMKgwqDCoMKgwqDCoEFE
+SVMxNjQ3NV9NT0RfQ0hBTl9ERUxUQShJSU9fREVMVEFfQU5HTCwgSUlPX01PRF8gIyMgX21vZCwg
+XAo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBB
+RElTMTY0NzVfUkVHXyAjIyBfbW9kICMjIF9ERUxUQU5HX0wsIC0xLCAzMiwgMzIpCj4gKwo+ICsj
+ZGVmaW5lIEFESVMxNjQ3NV9ERUxUVkVMX0NIQU5fTk9fU0NBTihfbW9kKSBcCj4gK8KgwqDCoMKg
+wqDCoMKgQURJUzE2NDc1X01PRF9DSEFOX0RFTFRBKElJT19ERUxUQV9WRUxPQ0lUWSwgSUlPX01P
+RF8gIyMgX21vZCwgXAo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBBRElTMTY0NzVfUkVHXyAjIyBfbW9kICMjIF9ERUxUVkVMX0wsIC0xLCAzMiwg
+MzIpCj4gKwo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGlpb19jaGFuX3NwZWMgYWRpczE2NDc3X2No
+YW5uZWxzW10gPSB7Cj4gwqDCoMKgwqDCoMKgwqDCoEFESVMxNjQ3NV9HWVJPX0NIQU5ORUwoWCks
+Cj4gwqDCoMKgwqDCoMKgwqDCoEFESVMxNjQ3NV9HWVJPX0NIQU5ORUwoWSksCj4gwqDCoMKgwqDC
+oMKgwqDCoEFESVMxNjQ3NV9HWVJPX0NIQU5ORUwoWiksCj4gQEAgLTYyMSw2ICs2MjksMjMgQEAg
+c3RhdGljIGNvbnN0IHN0cnVjdCBpaW9fY2hhbl9zcGVjIGFkaXMxNjQ3NV9jaGFubmVsc1tdID0g
+ewo+IMKgwqDCoMKgwqDCoMKgwqBJSU9fQ0hBTl9TT0ZUX1RJTUVTVEFNUCgxMykKPiDCoH07Cj4g
+wqAKPiArc3RhdGljIGNvbnN0IHN0cnVjdCBpaW9fY2hhbl9zcGVjIGFkaXMxNjQ3NV9jaGFubmVs
+c1tdID0gewoKSSBndWVzcyB5b3UgbWVhbiBhZGlzMTY0NzdfY2hhbm5lbHM/Cgo+ICvCoMKgwqDC
+oMKgwqDCoEFESVMxNjQ3NV9HWVJPX0NIQU5ORUwoWCksCj4gK8KgwqDCoMKgwqDCoMKgQURJUzE2
+NDc1X0dZUk9fQ0hBTk5FTChZKSwKPiArwqDCoMKgwqDCoMKgwqBBRElTMTY0NzVfR1lST19DSEFO
+TkVMKFopLAo+ICvCoMKgwqDCoMKgwqDCoEFESVMxNjQ3NV9BQ0NFTF9DSEFOTkVMKFgpLAo+ICvC
+oMKgwqDCoMKgwqDCoEFESVMxNjQ3NV9BQ0NFTF9DSEFOTkVMKFkpLAo+ICvCoMKgwqDCoMKgwqDC
+oEFESVMxNjQ3NV9BQ0NFTF9DSEFOTkVMKFopLAo+ICvCoMKgwqDCoMKgwqDCoEFESVMxNjQ3NV9U
+RU1QX0NIQU5ORUwoKSwKPiArwqDCoMKgwqDCoMKgwqBBRElTMTY0NzVfREVMVEFOR19DSEFOX05P
+X1NDQU4oWCksCj4gK8KgwqDCoMKgwqDCoMKgQURJUzE2NDc1X0RFTFRBTkdfQ0hBTl9OT19TQ0FO
+KFkpLAo+ICvCoMKgwqDCoMKgwqDCoEFESVMxNjQ3NV9ERUxUQU5HX0NIQU5fTk9fU0NBTihaKSwK
+PiArwqDCoMKgwqDCoMKgwqBBRElTMTY0NzVfREVMVFZFTF9DSEFOX05PX1NDQU4oWCksCj4gK8Kg
+wqDCoMKgwqDCoMKgQURJUzE2NDc1X0RFTFRWRUxfQ0hBTl9OT19TQ0FOKFkpLAo+ICvCoMKgwqDC
+oMKgwqDCoEFESVMxNjQ3NV9ERUxUVkVMX0NIQU5fTk9fU0NBTihaKSwKPiArwqDCoMKgwqDCoMKg
+wqBJSU9fQ0hBTl9TT0ZUX1RJTUVTVEFNUCg3KQo+ICt9Owo+ICsKPiDCoGVudW0gYWRpczE2NDc1
+X3ZhcmlhbnQgewo+IMKgwqDCoMKgwqDCoMKgwqBBRElTMTY0NzAsCj4gwqDCoMKgwqDCoMKgwqDC
+oEFESVMxNjQ3NV8xLAo+IEBAIC03ODIsOCArODA3LDggQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBh
+ZGlzMTY0NzVfY2hpcF9pbmZvIGFkaXMxNjQ3NV9jaGlwX2luZm9bXSA9Cj4gewo+IMKgwqDCoMKg
+wqDCoMKgwqB9LAo+IMKgwqDCoMKgwqDCoMKgwqBbQURJUzE2NDc3XzFdID0gewo+IMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLm5hbWUgPSAiYWRpczE2NDc3LTEiLAo+IC3CoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAubnVtX2NoYW5uZWxzID0gQVJSQVlfU0laRShhZGlzMTY0
+NzVfY2hhbm5lbHMpLAo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAuY2hhbm5lbHMg
+PSBhZGlzMTY0NzVfY2hhbm5lbHMsCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5u
+dW1fY2hhbm5lbHMgPSBBUlJBWV9TSVpFKGFkaXMxNjQ3N19jaGFubmVscyksCj4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5jaGFubmVscyA9IGFkaXMxNjQ3N19jaGFubmVscywKPiDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5neXJvX21heF92YWwgPSAxLAo+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLmd5cm9fbWF4X3NjYWxlID0gSUlPX1JBRF9UT19E
+RUdSRUUoMTYwIDw8IDE2KSwKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5hY2Nl
+bF9tYXhfdmFsID0gMSwKPiBAQCAtODAwLDggKzgyNSw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+YWRpczE2NDc1X2NoaXBfaW5mbyBhZGlzMTY0NzVfY2hpcF9pbmZvW10gPQo+IHsKPiDCoMKgwqDC
+oMKgwqDCoMKgfSwKPiDCoMKgwqDCoMKgwqDCoMKgW0FESVMxNjQ3N18yXSA9IHsKPiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5uYW1lID0gImFkaXMxNjQ3Ny0yIiwKPiAtwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLm51bV9jaGFubmVscyA9IEFSUkFZX1NJWkUoYWRpczE2
+NDc1X2NoYW5uZWxzKSwKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLmNoYW5uZWxz
+ID0gYWRpczE2NDc1X2NoYW5uZWxzLAo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAu
+bnVtX2NoYW5uZWxzID0gQVJSQVlfU0laRShhZGlzMTY0NzdfY2hhbm5lbHMpLAo+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAuY2hhbm5lbHMgPSBhZGlzMTY0NzdfY2hhbm5lbHMsCj4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAuZ3lyb19tYXhfdmFsID0gMSwKPiDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5neXJvX21heF9zY2FsZSA9IElJT19SQURfVE9f
+REVHUkVFKDQwIDw8IDE2KSwKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5hY2Nl
+bF9tYXhfdmFsID0gMSwKPiBAQCAtODE4LDggKzg0Myw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+YWRpczE2NDc1X2NoaXBfaW5mbyBhZGlzMTY0NzVfY2hpcF9pbmZvW10gPQo+IHsKPiDCoMKgwqDC
+oMKgwqDCoMKgfSwKPiDCoMKgwqDCoMKgwqDCoMKgW0FESVMxNjQ3N18zXSA9IHsKPiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5uYW1lID0gImFkaXMxNjQ3Ny0zIiwKPiAtwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLm51bV9jaGFubmVscyA9IEFSUkFZX1NJWkUoYWRpczE2
+NDc1X2NoYW5uZWxzKSwKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLmNoYW5uZWxz
+ID0gYWRpczE2NDc1X2NoYW5uZWxzLAo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAu
+bnVtX2NoYW5uZWxzID0gQVJSQVlfU0laRShhZGlzMTY0NzdfY2hhbm5lbHMpLAo+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAuY2hhbm5lbHMgPSBhZGlzMTY0NzdfY2hhbm5lbHMsCj4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAuZ3lyb19tYXhfdmFsID0gMSwKPiDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5neXJvX21heF9zY2FsZSA9IElJT19SQURfVE9f
+REVHUkVFKDEwIDw8IDE2KSwKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5hY2Nl
+bF9tYXhfdmFsID0gMSwKPiBAQCAtOTM4LDggKzk2Myw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+YWRpczE2NDc1X2NoaXBfaW5mbyBhZGlzMTY0NzVfY2hpcF9pbmZvW10gPQo+IHsKPiDCoMKgwqDC
+oMKgwqDCoMKgfSwKPiDCoMKgwqDCoMKgwqDCoMKgW0FESVMxNjUwMF0gPSB7Cj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAubmFtZSA9ICJhZGlzMTY1MDAiLAo+IC3CoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAubnVtX2NoYW5uZWxzID0gQVJSQVlfU0laRShhZGlzMTY0NzVf
+Y2hhbm5lbHMpLAo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAuY2hhbm5lbHMgPSBh
+ZGlzMTY0NzVfY2hhbm5lbHMsCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5udW1f
+Y2hhbm5lbHMgPSBBUlJBWV9TSVpFKGFkaXMxNjQ3N19jaGFubmVscyksCj4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoC5jaGFubmVscyA9IGFkaXMxNjQ3N19jaGFubmVscywKPiDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5neXJvX21heF92YWwgPSAxLAo+IMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLmd5cm9fbWF4X3NjYWxlID0gSUlPX1JBRF9UT19ERUdS
+RUUoMTAgPDwgMTYpLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLmFjY2VsX21h
+eF92YWwgPSAzOTIsCj4gQEAgLTk1Nyw4ICs5ODIsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGFk
+aXMxNjQ3NV9jaGlwX2luZm8gYWRpczE2NDc1X2NoaXBfaW5mb1tdID0KPiB7Cj4gwqDCoMKgwqDC
+oMKgwqDCoH0sCj4gwqDCoMKgwqDCoMKgwqDCoFtBRElTMTY1MDVfMV0gPSB7Cj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAubmFtZSA9ICJhZGlzMTY1MDUtMSIsCj4gLcKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5udW1fY2hhbm5lbHMgPSBBUlJBWV9TSVpFKGFkaXMxNjQ3
+NV9jaGFubmVscyksCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5jaGFubmVscyA9
+IGFkaXMxNjQ3NV9jaGFubmVscywKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLm51
+bV9jaGFubmVscyA9IEFSUkFZX1NJWkUoYWRpczE2NDc3X2NoYW5uZWxzKSwKPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgLmNoYW5uZWxzID0gYWRpczE2NDc3X2NoYW5uZWxzLAoKQUZB
+SUNTLCB0aGlzIHN1cHBvcnRzIGRlbHRhIGNoYW5uZWxzIGluIGJ1cnN0IG1vZGUuLi4gcmlnaHQ/
+IFBsZWFzZSBtYWtlIHN1cmUgdG8gZ28KYWdhaW4gdGhyb3VnaCB0aGUgZGF0YXNoZWV0cyBzbyB3
+ZSBtYWtlIHRoaXMgcmlnaHQuLi4KCi0gTnVubyBTw6EKPiAKCg==
 
-We've even managed to write extensive documentation on this!
-
-https://docs.kernel.org/process/submitting-patches.html#describe-your-chang=
-es
-
->
-> (And yes I know there's some information in patch 0/2, but that's not
-> going to make it into git, so it will be lost. Commits should be self-
-> sufficient, not only the implementation, but also the description.)
->
-> I would also suggest trimming the To and Cc lists. I can't really see
-> how linux-media and dri-devel are relevant here for example.
-
---=20
-Jani Nikula, Intel
