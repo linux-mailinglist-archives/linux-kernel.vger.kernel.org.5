@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 041097C6421
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 06:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7081D7C6428
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 06:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376758AbjJLEhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 00:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51634 "EHLO
+        id S1376758AbjJLEkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 00:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232842AbjJLEhF (ORCPT
+        with ESMTP id S232842AbjJLEkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 00:37:05 -0400
+        Thu, 12 Oct 2023 00:40:15 -0400
 Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A1ABA
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 21:37:04 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-59b5484fbe6so7454477b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 21:37:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9218B7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 21:40:13 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5a7db1f864bso6612257b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 21:40:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697085423; x=1697690223; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697085613; x=1697690413; darn=vger.kernel.org;
         h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=a5OuTYbjlFj2ZnZUysa+ox563mmr19kTFx3cd83SMJA=;
-        b=bR6FB3MdhayRl1/0ey0RupRbvooUZ6o0GOpgayypmdBkz2ZWLNeyEKy9Ikc7S4g90f
-         c/4HA0csVgbaMed+EqrpmKtvIRSaABoLmtwIV3xTpeLwVkOHFH8wORf0hMJAgjBs4INO
-         rVNCjOvxSsD4ucS2boBRfal/2fG2fMh3FVv+T48fb0XeOjzZOhq+dGiw7n4i+MS5FmrK
-         nlf8sQGQTfj0r+1+twNV6DgqduLVNlIVFMLu7iuDJjMAmxljQmroI/wVFJq4ttMV05i1
-         khU9wkDcoAabzEwC0ZI0DwUy4pJx8mqJfGwmzK9RcxiZyyzP+Ce+EXFGvU+GPw6K8vMr
-         lLFg==
+        bh=+l9a+mEwNtEsZNHCdrwSvDlM5U4OjWSgjs4wg5g9aAk=;
+        b=aTIhyDFWtoGp35tCDGdduIuAL0GUDGZXlYewKzVE/tUjVPLWuR96rCUK8wOGg0is9I
+         nqrtXaJIs/EARoXiHEnukbaDHL8IXjMJ75ESnlS2WdcfXvN0O2CJV7jPZN+udbTamnRx
+         6GdcZXKevQNNx/5KMNxIjgP4lxYE7p/vZoYgjdDPFRpEL3UKHYJZ8Hf5ipHOStcE5mT/
+         DVZdN+9ug+L5h0ebgzokbjFzz/CXvA8mMnK4PnrgXVlx52piQuHX97jkdkdCrEfEFovx
+         dt872NETiR2HqZyEsU9fmb9doQcsh7u7F0JxB771bbbAT8cxyyCVxTdLv2VU5I4Tsn1T
+         fBLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697085423; x=1697690223;
+        d=1e100.net; s=20230601; t=1697085613; x=1697690413;
         h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a5OuTYbjlFj2ZnZUysa+ox563mmr19kTFx3cd83SMJA=;
-        b=mdRMLmMFrduDf4hMKRnxYZaAb7ZuDAMtz+UwleV8XWHCWtX3OsF548gwEjZFT3q2l0
-         ydAjlbRaTM57h/CkG54n4WyvpxGe3FbU65KbnitreNLV+QuSLvQnSvf2IrOLBKZyIznq
-         D0P0VClYtC74dHbio4tvAvDgUUtAdGTPWw6/FlDFeKFU5rY42XBnw2NnKtHhMUmiiMaY
-         t0Me6GZcx74yOtdxRfRHi26ivWrg8XjQe9654wUrDZVIAx/NUQpb9l7QV00ZbW4gFxdu
-         lauhxQOzN3mapknJFUEH9IRq6yKGlJU8DTStKZguApgnbMlrkmBTb6IQepJJYhHGVNH1
-         T+NQ==
-X-Gm-Message-State: AOJu0YwLzf97iHj/NkHkilRV2HusNAUr3Ni0qtNtWQmLXQ9vbXygM70B
-        fydftWdg7Nh782K5jALPQ+7ZmQ==
-X-Google-Smtp-Source: AGHT+IETdOSgEufuiDP0695WsR1MnpV5RMnezXFLEWIo7fsk77X2Wmp8S9Nzl8vTK4HM2wSRsqLU9A==
-X-Received: by 2002:a81:c307:0:b0:594:e148:3c42 with SMTP id r7-20020a81c307000000b00594e1483c42mr20822490ywk.52.1697085422882;
-        Wed, 11 Oct 2023 21:37:02 -0700 (PDT)
+        bh=+l9a+mEwNtEsZNHCdrwSvDlM5U4OjWSgjs4wg5g9aAk=;
+        b=LzbbqojfK4PHMaPUtiXpFjOUfBIiR555lQD0yt30NBsxTE7DstV8JQuYrmXdUtBW0p
+         zP+0NM3QK1S0XyOdjjoAAPxpxcIgwZyJjYfAKHVr5yE86yRowqJwoZJxAjvsujsPNyh5
+         Yp+Q6txzbJM6bYk2xGUUZG/vC9HbCOjxGLU20dkoNF8Nyw85ZJfJL8euHMNR4nw4FY4T
+         Oc7QeBU1ejqjNVvtf7GC0cSeiffFyxjfDUkLKHkf0qHUEFpt43kiQgR48rqXSrsteS8t
+         RNy+3riIj03j7F3O4l3Nn4ISeRAm1TOuvej+BAJAf73+3KtBKaPRb1gvePL26Ui+JmTQ
+         nHRg==
+X-Gm-Message-State: AOJu0YxPvJae8wKzM2PjBmX8mBRT6E4R90FoTxeA3UD3XJUdfiIP5IGw
+        qx8d6zCUf3Or2mJU9lHBhyUZyA==
+X-Google-Smtp-Source: AGHT+IEy29AB2gZVMxb+IATr0dLpEGj4Y9wZwZWi4zoiPAFB4Rim0MuDfZV+1buXtmaVCIwWelmNMQ==
+X-Received: by 2002:a5b:285:0:b0:d7b:9d44:7574 with SMTP id x5-20020a5b0285000000b00d7b9d447574mr20855492ybl.64.1697085612762;
+        Wed, 11 Oct 2023 21:40:12 -0700 (PDT)
 Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id w136-20020a0dd48e000000b0059b547b167esm5668442ywd.98.2023.10.11.21.37.00
+        by smtp.gmail.com with ESMTPSA id x142-20020a25ce94000000b00d89679f6d22sm1734993ybe.64.2023.10.11.21.40.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 21:37:02 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 21:36:59 -0700 (PDT)
+        Wed, 11 Oct 2023 21:40:11 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 21:40:09 -0700 (PDT)
 From:   Hugh Dickins <hughd@google.com>
 X-X-Sender: hugh@ripple.attlocal.net
-To:     Dave Chinner <david@fromorbit.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Dave Chinner <david@fromorbit.com>,
         Tim Chen <tim.c.chen@intel.com>,
         Dave Chinner <dchinner@redhat.com>,
         "Darrick J. Wong" <djwong@kernel.org>,
@@ -66,17 +65,18 @@ cc:     Hugh Dickins <hughd@google.com>,
         Dennis Zhou <dennisszhou@gmail.com>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org
-Subject: Re: [PATCH 8/8] shmem,percpu_counter: add _limited_add(fbc, limit,
- amount)
-In-Reply-To: <ZSNGMvICWWaKAaJL@dread.disaster.area>
-Message-ID: <ddc21eb0-8fe9-c5c3-82c5-f8ac3e4a5a10@google.com>
+Subject: [PATCH 9/8] percpu_counter: extend _limited_add() to negative
+ amounts
+In-Reply-To: <ddc21eb0-8fe9-c5c3-82c5-f8ac3e4a5a10@google.com>
+Message-ID: <8f86083b-c452-95d4-365b-f16a2e4ebcd4@google.com>
 References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com> <bb817848-2d19-bcc8-39ca-ea179af0f0b4@google.com> <ZR3wzVJ019gH0DvS@dread.disaster.area> <2451f678-38b3-46c7-82fe-8eaf4d50a3a6@google.com> <ZSNGMvICWWaKAaJL@dread.disaster.area>
+ <ddc21eb0-8fe9-c5c3-82c5-f8ac3e4a5a10@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,112 +84,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Oct 2023, Dave Chinner wrote:
-> On Thu, Oct 05, 2023 at 10:35:33PM -0700, Hugh Dickins wrote:
-> > On Thu, 5 Oct 2023, Dave Chinner wrote:
-> > > 
-> > > Hmmmm. IIUC, this only works for addition that approaches the limit
-> > > from below?
-> > 
-> > That's certainly how I was thinking about it, and what I need for tmpfs.
-> > Precisely what its limitations (haha) are, I'll have to take care to
-> > spell out.
-> > 
-> > (IIRC - it's a while since I wrote it - it can be used for subtraction,
-> > but goes the very slow way when it could go the fast way - uncompared
-> > percpu_counter_sub() much better for that.  You might be proposing that
-> > a tweak could adjust it to going the fast way when coming down from the
-> > "limit", but going the slow way as it approaches 0 - that would be neat,
-> > but I've not yet looked into whether it's feasily done.)
+Though tmpfs does not need it, percpu_counter_limited_add() can be twice
+as useful if it works sensibly with negative amounts (subs) - typically
+decrements towards a limit of 0 or nearby: as suggested by Dave Chinner.
 
-Easily done once I'd looked at it from the right angle.
+And in the course of that reworking, skip the percpu counter sum if it is
+already obvious that the limit would be passed: as suggested by Tim Chen.
 
-> > 
-> > > 
-> > > So if we are approaching the limit from above (i.e. add of a
-> > > negative amount, limit is zero) then this code doesn't work the same
-> > > as the open-coded compare+add operation would?
-> > 
-> > To it and to me, a limit of 0 means nothing positive can be added
-> > (and it immediately returns false for that case); and adding anything
-> > negative would be an error since the positive would not have been allowed.
-> > 
-> > Would a negative limit have any use?
+Extend the comment above __percpu_counter_limited_add(), defining the
+behaviour with positive and negative amounts, allowing negative limits,
+but not bothering about overflow beyond S64_MAX.
 
-There was no reason to exclude it, once I was thinking clearly
-about the comparisons.
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+ include/linux/percpu_counter.h | 11 +++++--
+ lib/percpu_counter.c           | 54 +++++++++++++++++++++++++---------
+ 2 files changed, 49 insertions(+), 16 deletions(-)
 
-> 
-> I don't have any use for it, but the XFS case is decrementing free
-> space to determine if ENOSPC has been hit. It's the opposite
-> implemention to shmem, which increments used space to determine if
-> ENOSPC is hit.
+diff --git a/include/linux/percpu_counter.h b/include/linux/percpu_counter.h
+index 8cb7c071bd5c..3a44dd1e33d2 100644
+--- a/include/linux/percpu_counter.h
++++ b/include/linux/percpu_counter.h
+@@ -198,14 +198,21 @@ static inline bool
+ percpu_counter_limited_add(struct percpu_counter *fbc, s64 limit, s64 amount)
+ {
+ 	unsigned long flags;
++	bool good = false;
+ 	s64 count;
+ 
++	if (amount == 0)
++		return true;
++
+ 	local_irq_save(flags);
+ 	count = fbc->count + amount;
+-	if (count <= limit)
++	if ((amount > 0 && count <= limit) ||
++	    (amount < 0 && count >= limit)) {
+ 		fbc->count = count;
++		good = true;
++	}
+ 	local_irq_restore(flags);
+-	return count <= limit;
++	return good;
+ }
+ 
+ /* non-SMP percpu_counter_add_local is the same with percpu_counter_add */
+diff --git a/lib/percpu_counter.c b/lib/percpu_counter.c
+index 58a3392f471b..44dd133594d4 100644
+--- a/lib/percpu_counter.c
++++ b/lib/percpu_counter.c
+@@ -279,8 +279,16 @@ int __percpu_counter_compare(struct percpu_counter *fbc, s64 rhs, s32 batch)
+ EXPORT_SYMBOL(__percpu_counter_compare);
+ 
+ /*
+- * Compare counter, and add amount if the total is within limit.
+- * Return true if amount was added, false if it would exceed limit.
++ * Compare counter, and add amount if total is: less than or equal to limit if
++ * amount is positive, or greater than or equal to limit if amount is negative.
++ * Return true if amount is added, or false if total would be beyond the limit.
++ *
++ * Negative limit is allowed, but unusual.
++ * When negative amounts (subs) are given to percpu_counter_limited_add(),
++ * the limit would most naturally be 0 - but other limits are also allowed.
++ *
++ * Overflow beyond S64_MAX is not allowed for: counter, limit and amount
++ * are all assumed to be sane (far from S64_MIN and S64_MAX).
+  */
+ bool __percpu_counter_limited_add(struct percpu_counter *fbc,
+ 				  s64 limit, s64 amount, s32 batch)
+@@ -288,10 +296,10 @@ bool __percpu_counter_limited_add(struct percpu_counter *fbc,
+ 	s64 count;
+ 	s64 unknown;
+ 	unsigned long flags;
+-	bool good;
++	bool good = false;
+ 
+-	if (amount > limit)
+-		return false;
++	if (amount == 0)
++		return true;
+ 
+ 	local_irq_save(flags);
+ 	unknown = batch * num_online_cpus();
+@@ -299,7 +307,8 @@ bool __percpu_counter_limited_add(struct percpu_counter *fbc,
+ 
+ 	/* Skip taking the lock when safe */
+ 	if (abs(count + amount) <= batch &&
+-	    fbc->count + unknown <= limit) {
++	    ((amount > 0 && fbc->count + unknown <= limit) ||
++	     (amount < 0 && fbc->count - unknown >= limit))) {
+ 		this_cpu_add(*fbc->counters, amount);
+ 		local_irq_restore(flags);
+ 		return true;
+@@ -309,7 +318,19 @@ bool __percpu_counter_limited_add(struct percpu_counter *fbc,
+ 	count = fbc->count + amount;
+ 
+ 	/* Skip percpu_counter_sum() when safe */
+-	if (count + unknown > limit) {
++	if (amount > 0) {
++		if (count - unknown > limit)
++			goto out;
++		if (count + unknown <= limit)
++			good = true;
++	} else {
++		if (count + unknown < limit)
++			goto out;
++		if (count - unknown >= limit)
++			good = true;
++	}
++
++	if (!good) {
+ 		s32 *pcount;
+ 		int cpu;
+ 
+@@ -317,15 +338,20 @@ bool __percpu_counter_limited_add(struct percpu_counter *fbc,
+ 			pcount = per_cpu_ptr(fbc->counters, cpu);
+ 			count += *pcount;
+ 		}
++		if (amount > 0) {
++			if (count > limit)
++				goto out;
++		} else {
++			if (count < limit)
++				goto out;
++		}
++		good = true;
+ 	}
+ 
+-	good = count <= limit;
+-	if (good) {
+-		count = __this_cpu_read(*fbc->counters);
+-		fbc->count += count + amount;
+-		__this_cpu_sub(*fbc->counters, count);
+-	}
+-
++	count = __this_cpu_read(*fbc->counters);
++	fbc->count += count + amount;
++	__this_cpu_sub(*fbc->counters, count);
++out:
+ 	raw_spin_unlock(&fbc->lock);
+ 	local_irq_restore(flags);
+ 	return good;
+-- 
+2.35.3
 
-Right.
-
-> 
-> > It's definitely not allowing all the possibilities that you could arrange
-> > with a separate compare and add; whether it's ruling out some useful
-> > possibilities to which it can easily be generalized, I'm not sure.
-> > 
-> > Well worth a look - but it'll be easier for me to break it than get
-> > it right, so I might just stick to adding some comments.
-> > 
-> > I might find that actually I prefer your way round: getting slower
-> > as approaching 0, without any need for specifying a limit??  That the
-> > tmpfs case pushed it in this direction, when it's better reversed?  Or
-> > that might be an embarrassing delusion which I'll regret having mentioned.
-> 
-> I think there's cases for both approaching and upper limit from
-> before and a lower limit from above. Both are the same "compare and
-> add" algorithm, just with minor logic differences...
-
-Good, thanks, you've saved me: I was getting a bit fundamentalist there,
-thinking to offer one simplest primitive from which anything could be
-built.  But when it came down to it, I had no enthusiam for rewriting
-tmpfs's used_blocks as free_blocks, just to avoid that limit argument.
-
-> 
-> > > Hence I think this looks like a "add if result is less than"
-> > > operation, which is distinct from then "add if result is greater
-> > > than" operation that we use this same pattern for in XFS and ext4.
-> > > Perhaps a better name is in order?
-> > 
-> > The name still seems good to me, but a comment above it on its
-> > assumptions/limitations well worth adding.
-> > 
-> > I didn't find a percpu_counter_compare() in ext4, and haven't got
-> 
-> Go search for EXT4_FREECLUSTERS_WATERMARK....
-
-Ah, not a percpu_counter_compare() user, but doing its own thing.
-
-> 
-> > far yet with understanding the XFS ones: tomorrow...
-> 
-> XFS detects being near ENOSPC to change the batch update size so
-> taht when near ENOSPC the percpu counter always aggregates to the
-> global sum on every modification. i.e. it becomes more accurate (but
-> slower) near the ENOSPC threshold. Then if the result of the
-> subtraction ends up being less than zero, it takes a lock (i.e. goes
-> even slower!), undoes the subtraction that took it below zero, and
-> determines if it can dip into the reserve pool or ENOSPC should be
-> reported.
-> 
-> Some of that could be optimised, but we need that external "lock and
-> undo" mechanism to manage the reserve pool space atomically at
-> ENOSPC...
-
-Thanks for going above and beyond with the description; but I'll be
-honest and admit that I only looked quickly, and did not reach any
-conclusion as to whether such usage could or should be converted
-to percpu_counter_limited_add() - which would never take any XFS
-locks, of course, so might just end up doubling the slow work.
-
-But absolutely I agree with you, and thank you for pointing out,
-how stupidly useless percpu_counter_limited_add() was for decrementing -
-it was nothing more than a slow way of doing percpu_counter_sub().
-
-I'm about to send in a 9/8, extending it to be more useful: thanks.
-
-Hugh
