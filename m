@@ -2,50 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DED387C75AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7377C75AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441980AbjJLSHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 14:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57058 "EHLO
+        id S1347362AbjJLSHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 14:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441973AbjJLSHM (ORCPT
+        with ESMTP id S1441849AbjJLSHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 14:07:12 -0400
+        Thu, 12 Oct 2023 14:07:15 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEEE4DE
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:07:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD2A2C433C8;
-        Thu, 12 Oct 2023 18:07:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB97DDA
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:07:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04985C43397;
+        Thu, 12 Oct 2023 18:07:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697134029;
-        bh=axeVVnMAKN1esWZVbwxpsfj2uA1BnBo59XNlWHwYp+I=;
+        s=k20201202; t=1697134033;
+        bh=eVbB8xX35Yk0N11tWIGxUMld6J8/6Xc4vSFxzS1n4Ns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VGK+NAKP7Hs+dxFy5KnpClI/nmlc5PAETgqJfH3a/JTvQ6vi6TfiSv7043+wxfYxR
-         cl9wEYQT+p152C96xLjjS2QFlBzp6C02YuHJSkJDmHhsqsoGJ/X8tF4IxzrGnSD1SU
-         oJIp7oB15nfO+A0Iyp23SUN9aZfH27E32sqJqmToaNjs9andT1RXjJRQbB+/BV2QYP
-         aobgj64ERN+DSkiqKyUASTbb1yR6HbFUjNSpOxSWTzm4GIrPORAZjywgtP2JQRmXq3
-         rlENlmcqI7cBdfF9aq14Om8oYrabMRfKh9r7pysqqxY1JNPNvuV5g5vgScKf6DHelb
-         FL7KomIQxNpag==
+        b=CGj0dv/q+NZ1Q50USGtzh4/zIIRdBFRLv0dv2svogvgypbDIzIlkDzAnCrL23bfPW
+         hjGV+S/OVa37uoalmRq9YnJHJfsNA8P/7q9a2PPW3BsimtEgb7F5lPoCr3ITHs2P7r
+         vB0EXOm2P7Tylf2NIjnV+K6vaDCXbWGUxFEf18MtNrz2Q6EL2lFwiHgYiYe7hp81ff
+         nJOEi909BaRxXuhVyHBPAW/PwttqZVh3S3/4MzETr4HxICBLZ+Tv64rm2qOAH+q/nh
+         JG+mvRD6QrTgjpG4j4DnT9Jfgu/O1ZKPaPwuTqpHEEuOd0RhlWmDi2jBA1hrzKwHXa
+         Qzjk7YDvEaWBg==
 From:   Will Deacon <will@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux.dev, Michael Shavit <mshavit@google.com>
+To:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        Michael Shavit <mshavit@google.com>,
+        linux-kernel@vger.kernel.org
 Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        nicolinc@nvidia.com, tina.zhang@intel.com,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Tomas Krcka <krckatom@amazon.de>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, jgg@nvidia.com,
-        Tomas Krcka <krckatom@amazon.de>, jean-philippe@linaro.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>, nicolinc@nvidia.com,
+        jean-philippe@linaro.org, robin.murphy@arm.com,
+        Alistair Popple <apopple@nvidia.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
         Kevin Tian <kevin.tian@intel.com>,
-        Mark Brown <broonie@kernel.org>, robin.murphy@arm.com
-Subject: Re: [PATCH v1 0/3] Clean-up arm-smmu-v3-sva.c: remove arm_smmu_bond
-Date:   Thu, 12 Oct 2023 19:06:47 +0100
-Message-Id: <169713222742.3248815.8112629001762142966.b4-ty@kernel.org>
+        Dawei Li <set_pte_at@outlook.com>, jgg@nvidia.com
+Subject: Re: [PATCH v8 0/9] Refactor the SMMU's CD table ownership
+Date:   Thu, 12 Oct 2023 19:06:48 +0100
+Message-Id: <169712689838.645382.14628592932614139960.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230905115013.1572240-1-mshavit@google.com>
-References: <20230905115013.1572240-1-mshavit@google.com>
+In-Reply-To: <20230915132051.2646055-1-mshavit@google.com>
+References: <20230915132051.2646055-1-mshavit@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -58,29 +61,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Sep 2023 19:49:11 +0800, Michael Shavit wrote:
-> This small series was originally part of a larger effort to support
-> set_dev_pasid in arm-smmu-v3.c and a related SVA refactoring. But it can
-> also stand on its own as an initial and prepatory clean-up.
+On Fri, 15 Sep 2023 21:17:31 +0800, Michael Shavit wrote:
+> This series refactors stage 1 domains so that they describe a single CD
+> entry. These entries are now inserted into a CD table that is owned by
+> the arm_smmu_master instead of the domain.
+> This is conceptually cleaner and unblocks other features, such as
+> attaching domains with PASID (for unmanaged/dma domains).
 > 
-> The crux of this series relies on the observation that SVA won't
-> allocate multiple SVA domains for the same device and mm pair. There's
-> therefore no reason for the driver to try to normalize data allocated
-> for a device/mm pair across set_dev_pasid calls. This simplification
-> then allows set_dev_pasid to use the SVA iommu_domain to hold
-> information instead of allocating a "bond" to represent the attachement.
-> Note that long term, we'll likely want to represent the SVA domain using
-> the same arm_smmu_domain struct used in arm-smmu-v3. This series serves
-> as an interim step to make those later refactors easier to reason about.
+> This patch series was originally part of a larger patch series that
+> implemented the set_dev_pasid callback for non-SVA domains but is now
+> split into a distinct series.
 > 
 > [...]
 
-Applied first two patches to will (for-joerg/arm-smmu/updates), thanks!
+Applied to will (for-joerg/arm-smmu/updates), thanks!
 
-[1/3] iommu/arm-smmu-v3-sva: Remove unused iommu_sva handle
-      https://git.kernel.org/will/c/d912aed14fe4
-[2/3] iommu/arm-smmu-v3-sva: Remove bond refcount
-      https://git.kernel.org/will/c/37ed36448fcd
+[1/9] iommu/arm-smmu-v3: Move ctx_desc out of s1_cfg
+      https://git.kernel.org/will/c/987a878e09c6
+[2/9] iommu/arm-smmu-v3: Replace s1_cfg with cdtab_cfg
+      https://git.kernel.org/will/c/1f8588834016
+[3/9] iommu/arm-smmu-v3: Encapsulate ctx_desc_cfg init in alloc_cd_tables
+      https://git.kernel.org/will/c/e3aad74c51a7
+[4/9] iommu/arm-smmu-v3: move stall_enabled to the cd table
+      https://git.kernel.org/will/c/1228cc509fc6
+[5/9] iommu/arm-smmu-v3: Refactor write_ctx_desc
+      https://git.kernel.org/will/c/24503148c545
+[6/9] iommu/arm-smmu-v3: Move CD table to arm_smmu_master
+      https://git.kernel.org/will/c/10e4968cd511
+[7/9] iommu/arm-smmu-v3: Cleanup arm_smmu_domain_finalise
+      https://git.kernel.org/will/c/5e14313df2c8
+[8/9] iommu/arm-smmu-v3: Update comment about STE liveness
+      https://git.kernel.org/will/c/6032f58498b7
+[9/9] iommu/arm-smmu-v3: Rename cdcfg to cd_table
+      https://git.kernel.org/will/c/475918e9c4eb
 
 Cheers,
 -- 
