@@ -2,186 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EB57C6F66
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32FC7C6F67
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379007AbjJLNgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56154 "EHLO
+        id S1378867AbjJLNhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 09:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347248AbjJLNgJ (ORCPT
+        with ESMTP id S1343605AbjJLNhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:36:09 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890F7E0;
-        Thu, 12 Oct 2023 06:36:02 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CDRnMh001704;
-        Thu, 12 Oct 2023 13:35:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=3e+sP/4LvWake3Mp2WG5hQgW0F0A4aNnsHpEEfmrHxE=;
- b=WNbvvIUIojMIV41Cz5CqCdRBwCEBUU/zQM07fHAVgYKTKiTflOrjKjTAbKmzufKzKDmT
- HfoTbVREAAoW6QQsXqqjuQk7iOEsJvWExXLsMUUimMND2Zo2QcyqvUhkIVYTexlNZKlx
- XhhqX6YLMCMbjS0MufJHaGP/qdHxBpDqOaGw5HDDVGTGVmNLPgFVyt7m8/svvoOpOG5O
- Nue0qTXS58JOPJ/KYJQESzC+PKm98d4taszazcNy28R73hFJ1rnVlVwghGJa1ObRx4B4
- /9uXn592PptaMTn8zHmRmq1ViReVAKi5x866W2a9znt2KnHRUAW0i5T3KXRUb+SfZSd8 lg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tphpvr92e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 13:35:32 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39CDSMhP003478;
-        Thu, 12 Oct 2023 13:35:31 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tphpvr90m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 13:35:31 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39CBDmKX001170;
-        Thu, 12 Oct 2023 13:35:29 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkkvk7bd9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 13:35:29 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CDZSuM23396882
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Oct 2023 13:35:29 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A01A858064;
-        Thu, 12 Oct 2023 13:35:28 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7BB215805F;
-        Thu, 12 Oct 2023 13:35:26 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.11.225])
-        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Oct 2023 13:35:26 +0000 (GMT)
-Message-ID: <4c11613696d2ffd92a652c1a734d4abfc489ff40.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 14/25] security: Introduce file_post_open hook
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Thu, 12 Oct 2023 09:35:24 -0400
-In-Reply-To: <e6f0e7929abda6fa6ae7ef450b6e155b420a5f5b.camel@huaweicloud.com>
-References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
-         <20230904133415.1799503-15-roberto.sassu@huaweicloud.com>
-         <2026a46459563d8f5d132a099f402ddad8f06fae.camel@linux.ibm.com>
-         <e6f0e7929abda6fa6ae7ef450b6e155b420a5f5b.camel@huaweicloud.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: U59meXdpALm_ufaoOhFcEc8lkx0Nv5y8
-X-Proofpoint-GUID: 6V-BGdQlrt4k18kJFgz7alScEp_zj-0E
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- spamscore=0 phishscore=0 malwarescore=0 suspectscore=0 adultscore=0
- priorityscore=1501 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310120111
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 12 Oct 2023 09:37:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E36394
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:37:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697117855; x=1728653855;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=2es9QpCjQe0fxU3AdQYO6Eo7Ee3E5kJdWJAssUgAlGU=;
+  b=fayMnZ5DUtTyYQ30RNmffvMc1OiTV1dOHBeR/emx2L7dRq37DD3j3ntF
+   TqGT0CrsJg+mP6QOj+9s3svOZABGMk1a4vQPzBmBYm6wNVSKaHSvWpc3N
+   /s89afhYpUdkzUBdv7KG8yRVUDIVQQX8nXq1DY1aR84k4/gTNCjcX1um0
+   efKvgcMg+SshFTRClc3aViLO1l+G2yb1TTcCdmGK9AvPrBsmEWOP5gEFB
+   3vux79s7s/VUAoGcyGk0zR2/kWAhK+UeY2nNtj1VLTA2deBJpC2jBR//M
+   M0KFFdDGhEwwTgEayJd5FJNJQ1nEuvtTpN3F/atxqaS4gv+GhdDc+x4g+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="415971372"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="415971372"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 06:37:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="845003581"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="845003581"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 06:37:32 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Arjan Van De Ven <arjan@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <jweiner@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Christoph Lameter" <cl@linux.com>
+Subject: Re: [PATCH 01/10] mm, pcp: avoid to drain PCP when process exit
+References: <20230920061856.257597-1-ying.huang@intel.com>
+        <20230920061856.257597-2-ying.huang@intel.com>
+        <20231011124610.4punxroovolyvmgr@techsingularity.net>
+        <20231011101617.2f814633defaa13e77308d9b@linux-foundation.org>
+        <20231012130921.mkcftgq4njnpl3qy@techsingularity.net>
+Date:   Thu, 12 Oct 2023 21:35:26 +0800
+In-Reply-To: <20231012130921.mkcftgq4njnpl3qy@techsingularity.net> (Mel
+        Gorman's message of "Thu, 12 Oct 2023 14:09:21 +0100")
+Message-ID: <87mswodkv5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-12 at 14:45 +0200, Roberto Sassu wrote:
-> On Thu, 2023-10-12 at 08:36 -0400, Mimi Zohar wrote:
-> > On Mon, 2023-09-04 at 15:34 +0200, Roberto Sassu wrote:
-> > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > 
-> > > In preparation to move IMA and EVM to the LSM infrastructure, introduce the
-> > > file_post_open hook. Also, export security_file_post_open() for NFS.
-> > > 
-> > > It is useful for IMA to calculate the dhigest of the file content, and to
-> > > decide based on that digest whether the file should be made accessible to
-> > > the requesting process.
-> > 
-> > Please remove "It is usefile for".   Perhaps something along the lines:
-> > 
-> > 
-> > Based on policy, IMA calculates the digest of the file content and
-> > decides ...
-> 
-> Ok.
-> 
-> > > 
-> > > LSMs should use this hook instead of file_open, if they need to make their
-> > > decision based on an opened file (for example by inspecting the file
-> > > content). The file is not open yet in the file_open hook.
+Mel Gorman <mgorman@techsingularity.net> writes:
 
-Needing to inspect the file contents is a good example.
+> On Wed, Oct 11, 2023 at 10:16:17AM -0700, Andrew Morton wrote:
+>> On Wed, 11 Oct 2023 13:46:10 +0100 Mel Gorman <mgorman@techsingularity.net> wrote:
+>> 
+>> > > --- a/include/linux/mmzone.h
+>> > > +++ b/include/linux/mmzone.h
+>> > > @@ -676,12 +676,15 @@ enum zone_watermarks {
+>> > >  #define high_wmark_pages(z) (z->_watermark[WMARK_HIGH] + z->watermark_boost)
+>> > >  #define wmark_pages(z, i) (z->_watermark[i] + z->watermark_boost)
+>> > >  
+>> > > +#define	PCPF_PREV_FREE_HIGH_ORDER	0x01
+>> > > +
+>> > 
+>> > The meaning of the flag and its intent should have been documented.
+>> 
+>> I need to rebase mm-stable for other reasons.  So let's please
+>> decide (soon) whether Mel's review comments can be addressed
+>> via add-on patches or whether I should drop this version of this
+>> series altogether, during that rebase.
+>
+> The cache slice calculation is the only change I think may deserve a
+> respin as it may have a material impact on the performance figures if the
+> "size_data" value changes by too much. Huang, what do you think and how
+> long do you think it would take to update the performance figures?  As it
+> may require multiple tests for each patch in the series, I would also be ok
+> with a follow-on patch like "mm: page_alloc: Simply cache size estimation
+> for PCP tuning" that documents the limitation of summing the unified caches
+> and the impact, if any, on performance. It makes for a messy history *but*
+> it would also record the reasons why summing hierarchies is not necessarily
+> the best approach which also has value.
 
->  
-> > The security hooks were originally defined for enforcing access
-> > control.  As a result the hooks were placed before the action.  The
-> > usage of the LSM hooks is not limited to just enforcing access control
-> > these days.  For IMA/EVM to become full LSMs additional hooks are
-> > needed post action.  Other LSMs, probably non-access control ones,
-> > could similarly take some action post action, in this case successful
-> > file open.
-> 
-> I don't know, I would not exclude LSMs to enforce access control. The
-> post action can be used to update the state, which can be used to check
-> next accesses (exactly what happens for EVM).
-> 
-> > Having to justify the new LSM post hooks in terms of the existing LSMs,
-> > which enforce access control, is really annoying and makes no sense. 
-> > Please don't.
-> 
-> Well, there is a relationship between the pre and post. But if you
-> prefer, I remove this comparison.
+I am OK to respin the series.  It will take 3-4 days to update the
+performance figures.
 
-My comments, above, were a result of the wording of the hook
-definition, below.
+> I think patch 9 should be dropped as it has no impact on headline performance
+> while adding a relatively tricky heuristic that updates within a fast
+> path. Again, I'd like to give Huang a chance to respond and to evaluate
+> if it materially impacts patch 10 -- I don't think it does but I didn't
+> think very hard about it. Even if patch 9+10 had to be dropped, it would
+> not take much from the overall value of the series.
 
-> > > +/**
-> > > + * security_file_post_open() - Recheck access to a file after it has been opened
-> > 
-> > The LSM post hooks aren't needed to enforce access control.   Probably
-> > better to say something along the lines of "take some action after
-> > successful file open".
-> > 
-> > > + * @file: the file
-> > > + * @mask: access mask
-> > > + *
-> > > + * Recheck access with mask after the file has been opened. The hook is useful
-> > > + * for LSMs that require the file content to be available in order to make
-> > > + * decisions.
-> > 
-> > And reword the above accordingly.
-> > 
-> > > + *
-> > > + * Return: Returns 0 if permission is granted.
-> > > + */
-> > > +int security_file_post_open(struct file *file, int mask)
-> > > +{
-> > > +	return call_int_hook(file_post_open, 0, file, mask);
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(security_file_post_open);
-> > > +
-> > >  /**
-> > >   * security_file_truncate() - Check if truncating a file is allowed
-> > >   * @file: file
-> > 
-> 
+I am OK to drop patch 9 at least for now.  In the future we may revisit
+it when we found workloads that benefit more from it.  It's not too hard
+to rebase patch 10.
 
+> Comments and documentation alone are not grounds for pulling the series but
+> I hope they do get addressed in follow-on patches. I think requiring them
+> for accepting the series is unfair even if the only reason is I took too
+> long to review.
 
+Never mind, your review are very value!
+
+--
+Best Regards,
+Huang, Ying
