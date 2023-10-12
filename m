@@ -2,174 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C074B7C6D95
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7B77C6DAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347208AbjJLMFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 08:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60650 "EHLO
+        id S1378072AbjJLML2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233804AbjJLMFs (ORCPT
+        with ESMTP id S1347228AbjJLMLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:05:48 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F66B7;
-        Thu, 12 Oct 2023 05:05:46 -0700 (PDT)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C92KQk023342;
-        Thu, 12 Oct 2023 12:05:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=P0SruXYuZ4fEJEsgDPpc2f+UJe8To1pY+wkzUkXt4LI=;
- b=PoZlMThnBPFX+PSYeb6Pt8iFq4xeMtMIfSDI8I0C0+z2wsaSF4hDPq1LEhlAqr/BoMKY
- BswJxbAA54zX03L8HdgxHsc28+KjplepRikh6WFdE5SfCuHN3XOLZzrVg48nQ2EiQSxG
- Neg5aOD7Kyz7KwK5irw+6rSZfVIosJE5EZKBPiAu+cxESlgGlPSjcoU0d2UxT1DkbSOe
- cZbIc7MfpmBjaAGTRWv6q0fA1PbDmolPCnKz790GwUS3MLaTtCLiV+Tca25mMP5y2avn
- /wezupiXDcLZQXcEJo90Gdv6E2ZeoGpojnJL/qsXeetUrRS13HvNjcn1lG+2VjAZUkyf BQ== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tjxxuakax-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Oct 2023 12:05:37 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39CBigEg013637;
-        Thu, 12 Oct 2023 12:05:37 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tmfhtb69j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Oct 2023 12:05:36 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bLcdJtDqyxhV4w0KHAJVHOOgTaChiL2xknadKjzcVJs8mKwJkE/7yQ/ylsPvAKxn5nlU01UiKK8tmZGagEnTumESe86rqz3jNlCGfAzccYV8ZkFlnPkCXRJB3KfZPGKlENb2yafUZwzaUbKL+SaYZMomGWQA0Qi3I68eD0vaA0prHmxkGFLMYLRHm75cTJTJLJAinkWNLAoMz1qo7LJkzP6bwnue4dzObk8GXnpWC02O/0sR64T5ArqRSxTunZbfMEgPIb+mVwhvFPlZhyuqsRFw97ty7xlihibIiukmWgPzHT+oCt5rEZ9moVL50GugQe+d2EjKeyFMIY8sPeU0CQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=P0SruXYuZ4fEJEsgDPpc2f+UJe8To1pY+wkzUkXt4LI=;
- b=BYhLDkjmG+dAylIHePQr6nYcroXpJ3oaJjaMzZJFUuGo0ifOPYJ4YYN4eC4FF/ilKMX7SgV/AiA3tzkT6oQaYZu4Z729HKAKajPUm84Q7tEYxbfMhXpJz+1xQM/e8mnVsE7lNMSElN6jD5STa40y44wU8bzvRoihH1X+CarCcpB8/oJ+nebb6hUcPAJvxGQqb9+VrQB7Tz3enzd6qYriXgjjTWy8vE8COVdvNTC3LVmIfRueXK+CPMqXYYndZh0GFxKwXid9LQRYW3NcKUYkImFHVr4H0K6KjjFkusTVozDy8X/DmUqsE11h3pdxcKSJlGJ+eLBZFVoYtFDuPaovWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P0SruXYuZ4fEJEsgDPpc2f+UJe8To1pY+wkzUkXt4LI=;
- b=Yg9IbypUi0ynDPaMuJVTIIBU8pIbG/cTdv9YIbiqGWIjaO4ayqqn/HLhCRKxUph1szPhnZ3p5ZYixM6o8eKAPcEaeILv6z+nNLlAFjFDX75lO6Swy0itjnHir7v+bwI0WWOwx+/troPPsVnGysHAgKOw3AtFKZcDHiqcw+rdYuc=
-Received: from DM6PR10MB3817.namprd10.prod.outlook.com (2603:10b6:5:1fd::22)
- by SA2PR10MB4730.namprd10.prod.outlook.com (2603:10b6:806:117::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.40; Thu, 12 Oct
- 2023 12:05:34 +0000
-Received: from DM6PR10MB3817.namprd10.prod.outlook.com
- ([fe80::b2ff:9828:4632:f1ff]) by DM6PR10MB3817.namprd10.prod.outlook.com
- ([fe80::b2ff:9828:4632:f1ff%7]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
- 12:05:34 +0000
-Message-ID: <d5913fe5-c94b-2b30-0d30-1866326e61f9@oracle.com>
-Date:   Thu, 12 Oct 2023 05:05:31 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [External] : Re: [PATCH 1/1] selftests/mm: include mman header to
- access MREMAP_DONTUNMAP identifier
-Content-Language: en-US
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        akpm@linux-foundation.org, shuah@kernel.org
-Cc:     linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231012064048.433346-1-samasth.norway.ananda@oracle.com>
- <3be75492-36e7-4ffe-ab0e-ef583b801af1@collabora.com>
-From:   samasth.norway.ananda@oracle.com
-In-Reply-To: <3be75492-36e7-4ffe-ab0e-ef583b801af1@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR07CA0049.namprd07.prod.outlook.com
- (2603:10b6:a03:60::26) To DM6PR10MB3817.namprd10.prod.outlook.com
- (2603:10b6:5:1fd::22)
+        Thu, 12 Oct 2023 08:11:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E31ADE
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:10:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697112645; x=1728648645;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=aGPNyyHZGclj4QMEorBt1ru1JxmaLGUFsATG3irdAdM=;
+  b=KoSppk8UxUr2NW5mSTT+aImNavOxWfVXgiDYMKXVfcSsxM0CFskm9lTR
+   rDQjykf5IBSdnrIF/sCEW04+Sq/OwVg0+1hg/rLRTcwnST0P2cSdKOPk7
+   NGkSea/GiY7UyOBG8ejODxVzP2fqAWBFOBtLznql6g99ByQ5qgJXinqZ2
+   sCQDddGCg2SXJ5i/QQBn8Ms7ldVul3JXOUWCkOaSjwBmjO24mw1D72VoJ
+   BWbL1iQu4U8kVPakbTT83b8OBrjDxsi+jXz8Qavrv3l8DqffpeRI1UlE4
+   L2lzBouC5sfvL2I6ZoV1yUvXLfIikrDXVYcvF0cODFybX0c5EgdAlCNdc
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="3495978"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="3495978"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 05:10:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="730899713"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="730899713"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 05:10:40 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Arjan Van De Ven <arjan@linux.intel.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "David Hildenbrand" <david@redhat.com>,
+        Johannes Weiner <jweiner@redhat.com>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Pavel Tatashin" <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Lameter <cl@linux.com>
+Subject: Re: [PATCH 02/10] cacheinfo: calculate per-CPU data cache size
+References: <20230920061856.257597-1-ying.huang@intel.com>
+        <20230920061856.257597-3-ying.huang@intel.com>
+        <20231011122027.pw3uw32sdxxqjsrq@techsingularity.net>
+Date:   Thu, 12 Oct 2023 20:08:32 +0800
+In-Reply-To: <20231011122027.pw3uw32sdxxqjsrq@techsingularity.net> (Mel
+        Gorman's message of "Wed, 11 Oct 2023 13:20:27 +0100")
+Message-ID: <87h6mwf3gf.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB3817:EE_|SA2PR10MB4730:EE_
-X-MS-Office365-Filtering-Correlation-Id: dd737b87-7540-4933-13b9-08dbcb1b8a14
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: J794Wq7IvhPCdF2Wj3faDEJJ4nFf1s38ZIEnfo0B0iPpR28CBkvuYR2Q9SpFAouboE9oqK5HIplEq2UNHkVGYmwJRiiWgZfN78AqklZRwhC0tciGl4+ZqHguAjJLkEaQlxpr8P7vD5f7K6SxFYgwzdpl2lwfBXp4ec8HV26+QmkkbK7apLLKmm6q2s/mL/277GeNa6g113ziS20KISu1SmHkJisrV5OawZwXGwKtCdyEKwOnG2dOXrgFKO87Q7BSE7joV5aFmYebZZJOC9Xs5dXl7SiQqxWUmOR9pdMs28B6EBmt5IZ5wq34I1KmBCLWy3Pku/92DWeK3HQOrTe8WaHwBdLzSzsO9y2kWqcDzcMX+u/Uq0ZXifDCakH3xYl3ugr/mmKMSNUCnWzoFjmpwxHbCzNk3glj4jCcjWISf4Jux4bPFqyAnc3p+xG7+v/J9qdNbnNlxlzy87fokvwqpsBhvW6ljUlT4GfGremmOjxVWi0R5q3XMKSrlKN5KhwPkKeKtXlWNYySJ77+ZQq1E0ZASnzskBniau8MaSQQkuGzM1FIOdw3y3pn/URgVZZSoMb2Uqpu/oyD4aY3agqGyl04TMPmYdoVL5aq05RmqtsmS/YML/D1Ou7j1ksk3YM/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3817.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(346002)(39860400002)(136003)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(6512007)(9686003)(478600001)(31696002)(6486002)(86362001)(36756003)(6506007)(53546011)(8676002)(6666004)(8936002)(316002)(4744005)(5660300002)(4326008)(66556008)(66476007)(2906002)(41300700001)(66946007)(38100700002)(26005)(31686004)(2616005)(83380400001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZjlXdjFMUzBkbEZsRnBEK0VRTWtKQXNhMXV3dm9pbFRCK1FxeHRwWGtlbmxy?=
- =?utf-8?B?WXVwTGhwRWdEaDdobHpsSDFzVjFpem5uN0VOdEF5MlFPY0JBMS9zUzI2NFVm?=
- =?utf-8?B?UkFWM05icVlaOGxlbitUV3dFd2t5OTdja3JGaGU2dTRneklhWU9sVEQraWNV?=
- =?utf-8?B?bVVPZlU5VEJ5U2tyL0pscGpySkdPWUE3MEZhNzhqQmNFZ3dHcEY1TmlPRTkr?=
- =?utf-8?B?SU14dUdqTWx6YXY3N3k4amJtcFpiSm1XQU1tcmlScHIySEZpN01UNzFJRWpy?=
- =?utf-8?B?QkxxMTJCQk1STGtOWXFYQ1Z5QU42OUR4Vk9oMEdIaUR6N0NyU0VSZ2FydUo4?=
- =?utf-8?B?VWM5NUxPUWVvK3JSN21ZWllZSUlsR1JPY3lYbFRJYjFMNmhJMTFUTTlQRVEw?=
- =?utf-8?B?NHhydnZuRXRQUVJkNzhUNnZoVFpLTG1mb1JzaDNRL0JMdHVOZDAxWm10SG9C?=
- =?utf-8?B?MFFPc0gyOGg0YjlGNlkxa29XNjBla2hjM0kxUC9QalRZcm85Y3lRVXR5cDV0?=
- =?utf-8?B?NWRSWndvc3BNWHVPVzIvbDdMWlFzeG5qM3FpZDQwL1RSdGhRdnQrMGpoTGlI?=
- =?utf-8?B?NEhicGFSdjA4ZVgxeS9oMmcrQ2tNV0toektZM3dPOWd1a005ZnN0VmRiVWJt?=
- =?utf-8?B?b3dQQURTSXZmRVJhZmFBKzNjaUZrMk5CVGZOTUcrVGdrM0lzVGpSYmVRMnNR?=
- =?utf-8?B?RTZHU0ZhWmNEL3krUGc4MFovbTRPN0tsM0E3dzMzY3BzWDhYS0VRNEtSNmtp?=
- =?utf-8?B?dHBlQitDWVI1cGdJRlpRcmh0cldidElmTlk4S0tSbHUrMDRnL21rRGVyZERn?=
- =?utf-8?B?djB3a2J3Q3pnZUVlVzZ2cTdVd0hONnZpL0JGVE1xM2h2S2tLK0tCUm5abStJ?=
- =?utf-8?B?QVpDRGwwbkNoeWZkNVdkNUc2S0xTL09qM1ZtQW55TzFBTnJxUitSVDlXRVox?=
- =?utf-8?B?MkFTMURXWmNndFpkLzFPRnkyTWIyTHg2OFRXbVNmdVZOcUk5dlI3cmRCbDZM?=
- =?utf-8?B?OTMvUmlpL09HaERvN1JUSUVKR0VYS1AvR1Z1d3NuUmJvQmhZbDJ2MitlQ0c0?=
- =?utf-8?B?UWRobGNCOUxvMGsyWTZ4RkxMaUJZbVpOY085bVNMcy9zYVNkb05IQmtvS3NP?=
- =?utf-8?B?N1kxZEtZcW5YeWRxTHdlT3E1R2k4WUxrOFQ5SllZc2FpQ05zMUtwRXNna092?=
- =?utf-8?B?QWxwcHBtWVdGWHdFZGZUNkRPWWxVdFMvcGFKS3Q3MDZqS2VTMk0yWkRuYktT?=
- =?utf-8?B?RU8waUNPQkZkemJJeFU3Wm82VEhjeElVM1lFc0pkb0dEVkJCY2JiLzlTMlo1?=
- =?utf-8?B?THp5Z1dFZ3ZRTG5vODZWdDVEdW9QTWVuV0hubzZXYVZDVGJNaTdZL3Rpemsz?=
- =?utf-8?B?VGVuckxPa2JlMWpUbElyYjdSOVNhaFJZVk1nV3lUNFQ5dkk3eUo4S3hRdTkv?=
- =?utf-8?B?dkg5ZHJoSGY3ZzZVK3ptekFFbVRLOXFNQ093dnViSXZzcnp0SlJJeFhwK256?=
- =?utf-8?B?RlgyaXE2V2hwcUR1Q2ZPaFpOU1R6RDVyRjJXMEhXYVZzUXErRGFvU2tqYk1j?=
- =?utf-8?B?QTRXSDlsREdDMk9oY016NHpGMitrTnp5MHFPRzN1N3hOOStHejg5dVJTajg1?=
- =?utf-8?B?RGhUUlBveHJtQU14aHM2NitMc3lZbXRCTFcwSUIvTFJqVVA5UExHMGlMazhB?=
- =?utf-8?B?VEpmM1VHTkZ0V1lmdzdSRk5zY25Sd2hVeDU4d3pmSit3U3hUMUVhejY2Y1Mx?=
- =?utf-8?B?RFlrMUo4SXJRRDNCZEpyWjB4UHFVUHRiNXMxR3ByLzJwNlhvSEV6ZVIyYWtv?=
- =?utf-8?B?anhyV1FhQ01oOUNvQ1FXYXphbjFMYXdOMGg0RzhGckh5dExISHZNWXZhVGtL?=
- =?utf-8?B?TTZZZGpvQUV5TTNuaVlKUlZUQnBoNVQrQU1VSHlneURUc0tOeW9XZVdya0VZ?=
- =?utf-8?B?ckJwYVBnV1J5UncvNzhXR0xnZGJ3TVlqNlBzUE1lZVRKdmV0dGcrVGhyM1ND?=
- =?utf-8?B?THoxQ09Db0xBbCtVYlJVSnh4UWxGZVQ2WUNuVko0NEVzZUw5OU5kdjJTRXpk?=
- =?utf-8?B?c01zUWp5clBpeHZCdGZiaVdPNUtXUlVMV05rMWFWUityTW1BM1hIVVhHN1A1?=
- =?utf-8?B?UjFsbVlOYlNWN2V0VC9kdldUWTBNaXllUTVIeWxMbDd0OVVSZ21ndmJiTnY1?=
- =?utf-8?Q?YIIicgh8j14NI4h0Lzb41mo=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 4ta0d/nUN8nUxUisABmNyaYd/h3MwkzEQV0NzrRx4i+ZQK+QmhgC9gUi9Oenyuyyj/SQLfk3mOlgzNM3D+qZKvh0uXSM5vjMZbJQG137xWCn+O+nnUvgr2UkW+DTGnZbEovJlOE4YLcdIf81IcEYe9WIVOfeaGlluqQ1Y1dhVWAjXP7Ax3iPLboh7aPR4y9JV4DtXslct60xBpnmizpGHhqsaQMEqPh5xfDnhtc6WsHhLAcdeB9FeUGyR1c8v02bUsG3fMvRvMURXUqTyenCGAZChFFOAWj3mn+w3pnwkEk3HKyIcg28lvsjgZTdSVrBZIWySXN0T0LJqEmb8eHwuBgY7RZQ40wE/MXmXCmYoouE5EamOd/ay+SQ+7CP55YaFFLSluYGa5wx33PmZQxRMZq04b6ymyDQXeOKXcboQ7QgSVTaQnO9UOGbFFvYwnHyoZl9WfDaEr2HXH+5LObrhqdmkZm+TErocBpyV/3Upyv7r5aFcZsGHQe4XfYQ3vvA8rKwP6fC4jUXpblPx1T0jG8gio63zg4MrEUuN8pzYyacy1IQaCACl3cKJdAvK+0hwKXSK85oiSvSRPfGeGJCOkJ8Pjou2P0o81XVKuEpfqUuAaa/+zDClsGScLkTWTSik9HLy1NTtu0yty2QbpdXqdoxYvL/hL9ZwNDaJIHFQMEVEfrp54yGcEsqTQUx7Irt5w8pEQqvyWF6RrTLwegEuK6Wx0dssuuZh/S3f+PFaEWYDsdqT8ubsDpm4qgrHX+2yPekKdXuQI61LzqPC9omrdcItiKA706DZmpHsQKczNFjdsESwWOlYteJjP+QCnxLysJnSake4PvU8W2pyLpAmQ3i0yioMiR+EWxj4MiRaoKi0HxeBtu9hlGszT7mNWjKVJBEFBaUgWYWvPZm/ZWJu6pAoXcl9qfCyhgkanRDBRw=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd737b87-7540-4933-13b9-08dbcb1b8a14
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3817.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 12:05:34.5982
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: trCfxYoB0x+vrWGlv4lXysixEXBL8ZKzzqz6r1Qa99Sk1pOGo4ZrgjDoPdf1lx1rSC5csrPU3QeVK+opL6/YtiZOhZtp2xgYwsvliXqWmZW/Ltmx/xODJcc4wq6JKfFO
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4730
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
- mlxlogscore=988 adultscore=0 phishscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310120099
-X-Proofpoint-GUID: LjomTstHoaGmmyteAsK0KKQlU0QCDudN
-X-Proofpoint-ORIG-GUID: LjomTstHoaGmmyteAsK0KKQlU0QCDudN
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Mel Gorman <mgorman@techsingularity.net> writes:
 
+> On Wed, Sep 20, 2023 at 02:18:48PM +0800, Huang Ying wrote:
+>> Per-CPU data cache size is useful information.  For example, it can be
+>> used to determine per-CPU cache size.  So, in this patch, the data
+>> cache size for each CPU is calculated via data_cache_size /
+>> shared_cpu_weight.
+>> 
+>> A brute-force algorithm to iterate all online CPUs is used to avoid
+>> to allocate an extra cpumask, especially in offline callback.
+>> 
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>
+> It's not necessarily relevant to the patch, but at least the scheduler
+> also stores some per-cpu topology information such as sd_llc_size -- the
+> number of CPUs sharing the same last-level-cache as this CPU. It may be
+> worth unifying this at some point if it's common that per-cpu
+> information is too fine and per-zone or per-node information is too
+> coarse. This would be particularly true when considering locking
+> granularity,
+>
+>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Mel Gorman <mgorman@techsingularity.net>
+>> Cc: Vlastimil Babka <vbabka@suse.cz>
+>> Cc: David Hildenbrand <david@redhat.com>
+>> Cc: Johannes Weiner <jweiner@redhat.com>
+>> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+>> Cc: Michal Hocko <mhocko@suse.com>
+>> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+>> Cc: Matthew Wilcox <willy@infradead.org>
+>> Cc: Christoph Lameter <cl@linux.com>
+>> ---
+>>  drivers/base/cacheinfo.c  | 42 ++++++++++++++++++++++++++++++++++++++-
+>>  include/linux/cacheinfo.h |  1 +
+>>  2 files changed, 42 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/base/cacheinfo.c b/drivers/base/cacheinfo.c
+>> index cbae8be1fe52..3e8951a3fbab 100644
+>> --- a/drivers/base/cacheinfo.c
+>> +++ b/drivers/base/cacheinfo.c
+>> @@ -898,6 +898,41 @@ static int cache_add_dev(unsigned int cpu)
+>>  	return rc;
+>>  }
+>>  
+>> +static void update_data_cache_size_cpu(unsigned int cpu)
+>> +{
+>> +	struct cpu_cacheinfo *ci;
+>> +	struct cacheinfo *leaf;
+>> +	unsigned int i, nr_shared;
+>> +	unsigned int size_data = 0;
+>> +
+>> +	if (!per_cpu_cacheinfo(cpu))
+>> +		return;
+>> +
+>> +	ci = ci_cacheinfo(cpu);
+>> +	for (i = 0; i < cache_leaves(cpu); i++) {
+>> +		leaf = per_cpu_cacheinfo_idx(cpu, i);
+>> +		if (leaf->type != CACHE_TYPE_DATA &&
+>> +		    leaf->type != CACHE_TYPE_UNIFIED)
+>> +			continue;
+>> +		nr_shared = cpumask_weight(&leaf->shared_cpu_map);
+>> +		if (!nr_shared)
+>> +			continue;
+>> +		size_data += leaf->size / nr_shared;
+>> +	}
+>> +	ci->size_data = size_data;
+>> +}
+>
+> This needs comments.
+>
+> It would be nice to add a comment on top describing the limitation of
+> CACHE_TYPE_UNIFIED here in the context of
+> update_data_cache_size_cpu().
 
-On 10/12/23 1:06 AM, Muhammad Usama Anjum wrote:
+Sure.  Will do that.
 
-> You have mentioned in other email that MREMAP_DONTUNMAP isn't present in
-> glibc older than 2.32. So including linux/mman.h solves the build error for
-> people having older glibc. Please add this to the description of the patch
-> to give the exact reason this patch should be accepted.
-> 
+> The L2 cache could be unified but much smaller than a L3 or other
+> last-level-cache. It's not clear from the code what level of cache is being
+> used due to a lack of familiarity of the cpu_cacheinfo code but size_data
+> is not the size of a cache, it appears to be the share of a cache a CPU
+> would have under ideal circumstances.
 
-Thanks Usama. I will send out a v2 patch with updated description as you 
-suggested.
+Yes.  And it isn't for one specific level of cache.  It's sum of per-CPU
+shares of all levels of cache.  But the calculation is inaccurate.  More
+details are in the below reply.
+
+> However, as it appears to also be
+> iterating hierarchy then this may not be accurate. Caches may or may not
+> allow data to be duplicated between levels so the value may be inaccurate.
+
+Thank you very much for pointing this out!  The cache can be inclusive
+or not.  So, we cannot calculate the per-CPU slice of all-level caches
+via adding them together blindly.  I will change this in a follow-on
+patch.
+
+> A respin of the patch is not necessary but a follow-on patch adding
+> clarifing comments would be very welcome covering
+>
+> o What levels of cache are being used
+> o Describe what size_data actually is and preferably rename the field
+>   to be more explicit as "size" could be the total cache capacity, the
+>   cache slice under ideal circumstances or even the number of CPUs sharing
+>   that cache.
+
+Sure.
+
+> The cache details *may* need a follow-on patch if the size_data value is
+> misleading. If it is a hierarchy and the value does not always represent
+> the slice of cache a CPU could have under ideal circumstances then the
+> value should be based on the LLC only so that it is predictable across
+> architectures.
+
+Sure.
+
+--
+Best Regards,
+Huang, Ying
