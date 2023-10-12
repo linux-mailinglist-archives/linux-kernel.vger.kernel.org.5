@@ -2,207 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 874C17C6431
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 06:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ABC97C648A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 07:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347042AbjJLEpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 00:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
+        id S1377141AbjJLFSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 01:18:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343500AbjJLEpm (ORCPT
+        with ESMTP id S1376996AbjJLFSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 00:45:42 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB4FB7;
-        Wed, 11 Oct 2023 21:45:38 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39C4jEiI043311;
-        Wed, 11 Oct 2023 23:45:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697085914;
-        bh=3z3Dl7sdMxUgldZpTazfQulIimDLU2A2/53W0dgTXho=;
-        h=Date:CC:Subject:To:References:From:In-Reply-To;
-        b=Nb5BNrL8OS3NGsYI2tzGux/h/y3/umY2a3ynh2tXhd4QpOBDsKp/pY4Q5NBjWzu3n
-         u+v+A0v3yHbGR869dmzSMzOprsc19YvQ+wnzqbsOUobPHlh5Y5fEMNPTKSNsqzaZtM
-         70eljo1KX/VF+knBYVk5DYX1tUSm3bCGq2rlY/5o=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39C4jE20024355
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 11 Oct 2023 23:45:14 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 11
- Oct 2023 23:45:14 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 11 Oct 2023 23:45:14 -0500
-Received: from [172.24.227.9] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39C4jAHh058287;
-        Wed, 11 Oct 2023 23:45:10 -0500
-Message-ID: <4e1f574c-6b36-c6e1-9153-90d599e2aaa7@ti.com>
-Date:   Thu, 12 Oct 2023 10:15:09 +0530
+        Thu, 12 Oct 2023 01:18:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876E590;
+        Wed, 11 Oct 2023 22:18:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D19BC433C7;
+        Thu, 12 Oct 2023 05:18:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697087892;
+        bh=X2EgHL3bP9Z/d24NMKCsDm1I5GcM24gx9PTUqoTwRcw=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=IM2Miui2wjqBg+35Y0cnpAfmvMhAbJP4euW8uYDawMrUzn52++iNi+x+lyWFr8ru+
+         qKhJfozH87vDqthqM5EPznTuF0x5ajxxknOUbVR673mym/TK9QVN2ClTE4VbuGPyVq
+         YyupIaWfGxZsIkQAl6DNF/VOcU6M4CVfQ4TOAzK78AYqvURCQ8UrWqhL6ryFVPss9O
+         JKh4tB0pKPM5Ac2DkVwtY2vLZil4i9ztWVxy9NJi/iDzdth67EXRLNZHkKIClQEE8d
+         iEw5OKDk2sMtUMvwRrUMVeyeZYrk1Shamj7KGlrZdB1En5IeffyTGWY51LKUst4tvP
+         6OY2xZDPETYoA==
+References: <20230929-xfs-iversion-v1-1-38587d7b5a52@kernel.org>
+ <b4136500fe6c49ee689dba139ce25824684719f2.camel@kernel.org>
+ <20231011154938.GL21298@frogsfrogsfrogs>
+ <e0599593fcff0eca5c8287b8d09631b5fcb3a7e4.camel@kernel.org>
+ <20231011191200.GA21277@frogsfrogsfrogs>
+User-agent: mu4e 1.8.10; emacs 27.1
+From:   Chandan Babu R <chandanbabu@kernel.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brauner@kernel.org
+Subject: Re: [PATCH] xfs: reinstate the old i_version counter as
+ STATX_CHANGE_COOKIE
+Date:   Thu, 12 Oct 2023 10:17:44 +0530
+In-reply-to: <20231011191200.GA21277@frogsfrogsfrogs>
+Message-ID: <874jiwa06p.fsf@debian-BULLSEYE-live-builder-AMD64>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-CC:     <lpieralisi@kernel.org>, <robh@kernel.org>, <kw@linux.com>,
-        <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
-        <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: Re: [PATCH] PCI: keystone: Don't enable BAR0 if link is not detected
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-References: <20231011134629.GA1029324@bhelgaas>
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <20231011134629.GA1029324@bhelgaas>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Bjorn,
+On Wed, Oct 11, 2023 at 12:12:00 PM -0700, Darrick J. Wong wrote:
+> On Wed, Oct 11, 2023 at 11:51:08AM -0400, Jeff Layton wrote:
+>> On Wed, 2023-10-11 at 08:49 -0700, Darrick J. Wong wrote:
+>> > On Wed, Oct 11, 2023 at 09:09:38AM -0400, Jeff Layton wrote:
+>> > > On Fri, 2023-09-29 at 14:43 -0400, Jeff Layton wrote:
+>> > > > The handling of STATX_CHANGE_COOKIE was moved into generic_fillattr in
+>> > > > commit 0d72b92883c6 (fs: pass the request_mask to generic_fillattr), but
+>> > > > we didn't account for the fact that xfs doesn't call generic_fillattr at
+>> > > > all.
+>> > > > 
+>> > > > Make XFS report its i_version as the STATX_CHANGE_COOKIE.
+>> > > > 
+>> > > > Fixes: 0d72b92883c6 (fs: pass the request_mask to generic_fillattr)
+>> > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+>> > > > ---
+>> > > > I had hoped to fix this in a better way with the multigrain patches, but
+>> > > > it's taking longer than expected (if it even pans out at this point).
+>> > > > 
+>> > > > Until then, make sure we use XFS's i_version as the STATX_CHANGE_COOKIE,
+>> > > > even if it's bumped due to atime updates. Too many invalidations is
+>> > > > preferable to not enough.
+>> > > > ---
+>> > > >  fs/xfs/xfs_iops.c | 5 +++++
+>> > > >  1 file changed, 5 insertions(+)
+>> > > > 
+>> > > > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+>> > > > index 1c1e6171209d..2b3b05c28e9e 100644
+>> > > > --- a/fs/xfs/xfs_iops.c
+>> > > > +++ b/fs/xfs/xfs_iops.c
+>> > > > @@ -584,6 +584,11 @@ xfs_vn_getattr(
+>> > > >  		}
+>> > > >  	}
+>> > > >  
+>> > > > +	if ((request_mask & STATX_CHANGE_COOKIE) && IS_I_VERSION(inode)) {
+>> > > > +		stat->change_cookie = inode_query_iversion(inode);
+>> > > > +		stat->result_mask |= STATX_CHANGE_COOKIE;
+>> > > > +	}
+>> > > > +
+>> > > >  	/*
+>> > > >  	 * Note: If you add another clause to set an attribute flag, please
+>> > > >  	 * update attributes_mask below.
+>> > > > 
+>> > > > ---
+>> > > > base-commit: df964ce9ef9fea10cf131bf6bad8658fde7956f6
+>> > > > change-id: 20230929-xfs-iversion-819fa2c18591
+>> > > > 
+>> > > > Best regards,
+>> > > 
+>> > > Ping?
+>> > > 
+>> > > This patch is needed in v6.6 to prevent a regression when serving XFS
+>> > > via NFSD. I'd prefer this go in via the xfs tree, but let me know if
+>> > > you need me to get this merged this via a different one.
+>> > 
+>> > Oh!   Right, this is needed because the "hide a state in the high bit of
+>> > tv_nsec" stuff got reverted in -rc3, correct?  So now nfsd needs some
+>> > way to know that something changed in the file, and better to have too
+>> > many client invalidations than not enough?  And I guess bumping
+>> > i_version will keep nfsd sane for now?
+>> > 
+>> > If the answers are [yes, yes, yes] then:
+>> > Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+>> 
+>> Yes, yes, and yes. Can you guys shepherd this into mainline?
+>
+> Chandan, can you queue this (and the other xfs fixes I sent) for -rc6?
+>
 
-Thank you for reviewing the patch.
-
-On 11/10/23 19:16, Bjorn Helgaas wrote:
-> Hi Siddharth,
-> 
-> On Wed, Oct 11, 2023 at 06:04:51PM +0530, Siddharth Vadapalli wrote:
->> Since the function dw_pcie_host_init() ignores the absence of link under
->> the assumption that link can come up later, it is possible that the
->> pci_host_probe(bridge) function is invoked even when no endpoint device
->> is connected. In such a situation, the ks_pcie_v3_65_add_bus() function
->> configures BAR0 when the link is not up, resulting in Completion Timeouts
->> during the MSI configuration performed later by the PCI Express Port driver
->> to setup AER, PME and other services. Thus, leave BAR0 disabled if link is
->> not yet detected when the ks_pcie_v3_65_add_bus() function is invoked.
-> 
-> I'm trying to make sense of this.  In this path:
-> 
->   pci_host_probe
->     pci_scan_root_bus_bridge
->       pci_register_host_bridge
-> 	bus = pci_alloc_bus(NULL)    # root bus
-> 	bus->ops->add_bus(bus)
-> 	  ks_pcie_v3_65_add_bus
-> 
-> The BAR0 in question must belong to a Root Port.  And it sounds like
-> the issue must be related to MSI-X, since the original MSI doesn't
-> involve any BARs.
-
-Yes, the issue is related to MSI-X. I will list down the exact set of function
-calls below as well as the place where the completion timeout first occurs:
-ks_pcie_probe
-  dw_pcie_host_init
-    pci_host_probe
-      pci_bus_add_devices
-        pci_bus_add_device
-          device_attach
-            __device_attach
-              bus_for_each_drv
-                __device_attach_driver (invoked using fn(drv, data))
-                  driver_probe_device
-                    __driver_probe_device
-                      really_probe
-                        pci_device_probe
-                          pcie_portdrv_probe
-                            pcie_port_device_register
-                              pcie_init_service_irqs
-                                pcie_port_enable_irq_vec
-                                  pci_alloc_irq_vectors
-                                    pci_alloc_irq_vectors_affinity
-                                      __pci_enable_msix_range
-                                        msix_capability_init
-                                          msix_setup_interrupts
-                                            msix_setup_msi_descs
-                                              msix_prepare_msi_desc
-In this function: msix_prepare_msi_desc, the following readl() causes completion
-timeout:
-		desc->pci.msix_ctrl = readl(addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
-The completion timeout with the readl is only observed when the link is down (No
-Endpoint device is actually connected to the PCIe connector slot).
-
-The symptoms of the above completion timeout show up as a 45 second delay during
-boot if no Endpoint device is connected. This 45 second delay is due to the fact
-that each readl() which normally takes 4 milliseconds (in presence of Endpoint
-device) now take around 40 milliseconds due to waiting for completion. Also, if
-I disable Completion Timeout in the PCIe controller, Linux hangs at the readl()
-mentioned above. That is the very first readl() causing the completion timeout.
-
-> 
-> I don't understand why the Root Port's BAR0 is related to the link
-> being up.  MSI-X configuration of the Root Port (presumably using
-> BAR0) shouldn't involve any transactions to devices *below* the Root
-> Port, and I would expect that BAR to be available (readable and
-> writable) regardless of whether the link is up.
-> 
-> If we skip the BAR0 configuration because the link is down at the time
-> of pci_host_probe(), when *do* we do that configuration?  I don't see
-> another path to ks_pcie_v3_65_add_bus() for the root bus later.
-> 
-> Do you know what exactly causes the Completion Timeout?  Is this a
-> read to BAR0, or some attempted access to a downstream device, or
-> something else?
-> 
-> Keystone is the only driver that uses .add_bus() for this, so it seems
-> a little weird, but maybe this is related to some Keystone-specific
-> hardware design.
-
-Yes, I am not fully sure myself why BAR0 being enabled is causing the issue. I
-will debug further within the function ks_pcie_v3_65_add_bus() to see which
-section of it causes issues when the Link is down. What I am certain of however
-is that exiting the ks_pcie_v3_65_add_bus() function if Link is down fixes the
-completion timeouts observed above with the readl(), thereby making the 45
-second delay vanish during boot when no endpoint device is connected.
-
-Please let me know in case of any suggestions to fix this issue.
-
-> 
->> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
->> ---
->>
->> Hello,
->>
->> This patch is based on linux-next tagged next-20231011.
->>
->> Regards,
->> Siddharth.
->>
->>  drivers/pci/controller/dwc/pci-keystone.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
->> index 49aea6ce3e87..ac2ad112d616 100644
->> --- a/drivers/pci/controller/dwc/pci-keystone.c
->> +++ b/drivers/pci/controller/dwc/pci-keystone.c
->> @@ -459,7 +459,8 @@ static int ks_pcie_v3_65_add_bus(struct pci_bus *bus)
->>  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->>  	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
->>  
->> -	if (!pci_is_root_bus(bus))
->> +	/* Don't enable BAR0 if link is not yet up at this point */
->> +	if (!pci_is_root_bus(bus) || !dw_pcie_link_up(pci))
->>  		return 0;
->>  
->>  	/* Configure and set up BAR0 */
->> -- 
->> 2.34.1
->>
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+I have pulled in your fixes and also the current patch. I will have to execute
+fstests for atleast one day before updating xfs-linux's for-next branch.
 
 -- 
-Regards,
-Siddharth.
+Chandan
