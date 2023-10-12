@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1297C65DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B75B7C65DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377412AbjJLGrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39738 "EHLO
+        id S1343563AbjJLGsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343561AbjJLGre (ORCPT
+        with ESMTP id S231828AbjJLGsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:47:34 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523EDB8;
-        Wed, 11 Oct 2023 23:47:32 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39C6lKPU120622;
-        Thu, 12 Oct 2023 01:47:20 -0500
+        Thu, 12 Oct 2023 02:48:22 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC2290;
+        Wed, 11 Oct 2023 23:48:21 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39C6mEL0080383;
+        Thu, 12 Oct 2023 01:48:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697093240;
-        bh=qlDt9W9SRW+VaDucq5BW/ZDa/bC/TgdxhQBR1MX0quI=;
+        s=ti-com-17Q1; t=1697093294;
+        bh=f/GKLbNYiwbaBZ6v2j+Uv0UUXj1gBI43Yx2GQqQ4JpU=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=kDZVssYURiiG9E1VoD/V3SuuzceQZ3Z81i7+2HkUATJSrXYUwSVmopJFzmQZMPkox
-         gwhQc/8Co6YmfUEpREeuYmFSaaHNDHrWlZtrThQYCe4IX/QK99y0/7twDbTNs6a6jH
-         KdDndxJhqfFoNw6ur3LzkjwkepGAK/NE/eIqSr+c=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39C6lKJu007866
+        b=mMttUBWMv297n5kOYagVfreuqZ+EaDbyBsO4lzZAs+DByaSmU4AzkO3EAsoXOIXop
+         UIPcFzsQaPzviL5KGrbAlu6iQi4EpgsUJ8m4qkHkKk5X4n0bkkpjn176Sgoo+q4FbB
+         +0hyEXkxowJG1Hc3zT2k9/Ux1EIKvxAnkQwBqldA=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39C6mEcn124887
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Oct 2023 01:47:20 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 12 Oct 2023 01:48:14 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 12
- Oct 2023 01:47:19 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ Oct 2023 01:48:14 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 12 Oct 2023 01:47:19 -0500
+ Frontend Transport; Thu, 12 Oct 2023 01:48:14 -0500
 Received: from uda0132425.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39C6lFAd040003;
-        Thu, 12 Oct 2023 01:47:16 -0500
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39C6mAX5018007;
+        Thu, 12 Oct 2023 01:48:10 -0500
 From:   Vignesh Raghavendra <vigneshr@ti.com>
 To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux@ew.tq-group.com>
-Subject: Re: [PATCH 1/4] arm64: dts: ti: k3-am64-tqma64xxl: add supply regulator for I2C devices
-Date:   Thu, 12 Oct 2023 12:17:09 +0530
-Message-ID: <169709313767.2957749.10885918329569967999.b4-ty@ti.com>
+        Aradhya Bhatia <a-bhatia1@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>,
+        Devarsh Thakkar <devarsht@ti.com>, Jai Luthra <j-luthra@ti.com>
+Subject: Re: [PATCH v2] arm64: dts: ti: Fix HDMI Audio overlay in Makefile
+Date:   Thu, 12 Oct 2023 12:18:06 +0530
+Message-ID: <169709313769.2957749.15010210583101957923.b4-ty@ti.com>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <d5991041263c96c798b94c0844a1550e28daa3b1.1695901360.git.matthias.schiffer@ew.tq-group.com>
-References: <d5991041263c96c798b94c0844a1550e28daa3b1.1695901360.git.matthias.schiffer@ew.tq-group.com>
+In-Reply-To: <20231003092259.28103-1-a-bhatia1@ti.com>
+References: <20231003092259.28103-1-a-bhatia1@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,29 +71,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias Schiffer,
+Hi Aradhya Bhatia,
 
-On Thu, 28 Sep 2023 13:45:10 +0200, Matthias Schiffer wrote:
-> Describes the hardware better, and avoids a few warnings during boot:
-> 
->     lm75 0-004a: supply vs not found, using dummy regulator
->     at24 0-0050: supply vcc not found, using dummy regulator
->     at24 0-0054: supply vcc not found, using dummy regulator
+On Tue, 03 Oct 2023 14:52:59 +0530, Aradhya Bhatia wrote:
+> Apply HDMI audio overlay to AM625 and AM62-LP SK-EVMs DT binaries,
+> instead of leaving it in a floating state.
 > 
 > 
-> [...]
 
 I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[1/4] arm64: dts: ti: k3-am64-tqma64xxl: add supply regulator for I2C devices
-      commit: 8e4e717be847913517977d9689ab88f1b86d71d8
-[2/4] arm64: dts: ti: k3-am64-tqma64xxl-mbax4xxl: add muxing for GPIOs on pin headers
-      commit: ec30a50c72bdaa6007c999846675241b44b233d0
-[3/4] arm64: dts: ti: k3-am64-tqma64xxl-mbax4xxl: add chassis-type
-      commit: 92039884c9b57d14601c6e0e913b184dd2bff75c
-[4/4] arm64: dts: ti: k3-am64-tqma64xxl-mbax4xxl: update gpio-led configuration
-      commit: 06a0d54202e0de04e62c1991d39d6c7595f0d88a
+[1/1] arm64: dts: ti: Fix HDMI Audio overlay in Makefile
+      commit: 69c570ebc3964534c19dc4438d3b96f55d489fc3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent up the chain during
