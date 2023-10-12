@@ -2,163 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 663447C63AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 06:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702727C63B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 06:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376758AbjJLEFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 00:05:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35136 "EHLO
+        id S1376867AbjJLEJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 00:09:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbjJLEFT (ORCPT
+        with ESMTP id S229480AbjJLEJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 00:05:19 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C216BA
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 21:05:16 -0700 (PDT)
-X-UUID: 8937330468b411ee8051498923ad61e6-20231012
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=uoNfSDvq9WqNuzZotEuWZudXFqrzc9xdxJ5pLOUUK4M=;
-        b=OO13WiYoJ5c87tDvWYd35A6FP2pkXSlicB06DbiufGSoFoQd8fmWw+sAYa7OVY7uIIaO7uws0EY86ZGOH0qBelcP5aV1ZzlFnfB0IUJ5pxo7B56dO3mBdgSXeI8ZprJxa2jSu03IK/vcNTXJRGIIIKALGh6Zkb9Eohm3UZS4k3g=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:119cbeb2-c85f-42c1-a110-b6d8d8e2a82d,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5f78ec9,CLOUDID:2ad606c4-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR
-X-UUID: 8937330468b411ee8051498923ad61e6-20231012
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 208309892; Thu, 12 Oct 2023 12:05:10 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 12 Oct 2023 12:05:09 +0800
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 12 Oct 2023 12:05:09 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZES4tJ3HF5z97E7ZdQxrXRJFuo5+tBRnhnDG55FC11aMdqtulTilz5eiWH5ZoN+38fK3G5nmjsMhNUeCCSwv7yJWuh9/kS2w0jpIvXrI0vQxqtvNKCjnwPkL+MKNhPEogszFk7e9znE/lfg5iYEnQy1jqRI7sckVjG8hmLD81Zx90quWOd1QwXfYemjoAQs3qtQYa0hxKMSMIn1ZU0CmRyQ+F6FcDfGghtVN2RBu6HAFVfRwEvPog7Qrq3mmqUMZ3SlCTkmIiXqEelxu8aY0NEhF6tuOFh7NsnJ4+m5Hu01phcwQZzEyShFg6BllVl0fL3HqTcA9MOepobwaGOraOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uoNfSDvq9WqNuzZotEuWZudXFqrzc9xdxJ5pLOUUK4M=;
- b=NXJzoCt+ghFy3YqPyd7P078U7l84UoSz0agLfk+kBIS+cDOB2zmN+HuqapGQAM4pjYtZfOdmRLqNmvBHfwk+iSPxuln0RcE9W70IvFj3cEKgnEsoOvRo3VZwXROMNQTweYB36chkPLYTkV5cV7bcWhP44G4tQTTVvXNPIOk6n7X5Ae7FEEu93JmddT6rSPLNZrvy6V25JaquwbJUglKptwZycqBfcCfOoKYwKWLQ1cQANYhUKjZB2fR7UOhVwTvWaKtb8fiZ4jDH1RCXAIP+S9arbF8M1eHhUrhRo6O6Hnd+92Eu3IcuQHJrwh6G+CNGQpLTkigx9Ogo3v6qAShUyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
+        Thu, 12 Oct 2023 00:09:23 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE21B7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 21:09:21 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d9ac3b4f42cso199826276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 21:09:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uoNfSDvq9WqNuzZotEuWZudXFqrzc9xdxJ5pLOUUK4M=;
- b=T1pvwY+YUuLLK4FHNMYfRBSBCjfB1V0dOD5cHWkYWsva6mYXuwMibZu1VuCpGTr7vOk4QGaRd1HFNDzqL3aksgt6kMlEred3/mtXOBfix+vCStDp+KdmCTA/jxguwjBFN6crcguA95yKGkEXJNgKMsPhB0qcVsnTaAOxvSq6NV4=
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
- by SEZPR03MB6991.apcprd03.prod.outlook.com (2603:1096:101:9e::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.42; Thu, 12 Oct
- 2023 04:05:07 +0000
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::9c2c:c08a:212f:e984]) by TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::9c2c:c08a:212f:e984%7]) with mapi id 15.20.6863.041; Thu, 12 Oct 2023
- 04:05:07 +0000
-From:   =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
-To:     "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "wenst@chromium.org" <wenst@chromium.org>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "ehristev@collabora.com" <ehristev@collabora.com>
-Subject: Re: [PATCH v10 07/16] drm/mediatek: aal: Use bitfield macros
-Thread-Topic: [PATCH v10 07/16] drm/mediatek: aal: Use bitfield macros
-Thread-Index: AQHZxqWNJjk7dFi/EkyC9eOuDkbI9LBF9UUA
-Date:   Thu, 12 Oct 2023 04:05:07 +0000
-Message-ID: <663daba1611ba84c96dcbf33ed93f151d5e3f160.camel@mediatek.com>
-References: <20230804072850.89365-1-angelogioacchino.delregno@collabora.com>
-         <20230804072850.89365-8-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230804072850.89365-8-angelogioacchino.delregno@collabora.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|SEZPR03MB6991:EE_
-x-ms-office365-filtering-correlation-id: 2246797a-3bc1-4597-f0f7-08dbcad86baf
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: M0sL2sQmSD3MzWBtv1MuKONesReXKu9zvhTuoAQ82CWLVrsRP/GsIUvhevnNfWvxFp87nLsXn4U/hor9ziJxsdZsmgV2Invi5PoFTp/VLIkrpZxbQA9HYshlMbiYa0Ntkk0oT4mTp56SG7zYLIQ9thR2/kcwyPuoKtElL53ES38b1LF7uQcnUbdAg20q7WdbOZs0vAsbi46/J+KWS8PPr3Q5IHSKYvBCOynPyvworxfj7Q0/siOPYejMVIXBjnI8BKgX1D9Kw8jYVX1AZbhL4Lc/JaGoK6gUuX0LCc6pobP34OgcuhgSgUhootfysMVrzDR81sjZy5tcemcGITKOkTjBHm4QSfHCz/WhP2h6KafTuRH0Bk45KcuwX2KxVl2jj+WW52hl5r01yrX7PssFQ8PEv7lpgKv4AxMxmwN8jZNTwJatCdlEmQ2lzfYHhiAPWA11gd0HOVBVzvxnlm1tz/tN4KYCP05SXWSN4SxkhugDlqyNT1FQtSKcT1xFDx3GkK1Wbcky31z8ZVzzU0Fscl/UuJ+CtXoMx1OajhvvFPNOS2FMWwsLwZTY2yPV4AIwmiFvdxCG/obxUiRT7WhuSrJ8UM/R9V/1Z8MvZ21Ap3Mr92BzijJx4dDQzOnTa3+840LlyScFKo+dxTwy7FsQiIjbOkTxFVCekaVbPQUNC9s=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(39860400002)(366004)(346002)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(86362001)(38100700002)(122000001)(38070700005)(36756003)(85182001)(6512007)(478600001)(4326008)(6486002)(6506007)(5660300002)(41300700001)(8936002)(71200400001)(2906002)(2616005)(66556008)(110136005)(8676002)(316002)(54906003)(66476007)(64756008)(7416002)(76116006)(66446008)(66946007)(83380400001)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UkVmWHY1SGVBUXRPaHpub3RyUkpwREVsd3VnL0lpV2llRkRxVDhjU2VtcHBW?=
- =?utf-8?B?ZE1uRnZuQXRSUC9PMHQ3cGNEbk9ROE5BWjF0Q0FsSGp3Z2t5VUtGWlNvRlhv?=
- =?utf-8?B?cEZuRGJrNWpaL0pKckgwQi9WWHZhN2pCaTQxekZDRHpKNWxNRGlSREpieEtU?=
- =?utf-8?B?clRqdE1GbUpadTZuOG9yMzd5ZDgrY3RoNXd2WjhGck91dEpDZzZXdzBoRHA5?=
- =?utf-8?B?QW94anMzbFZ5WGQ1YVVnKzJab3dZMTNTS3VEVStTVXh6MVVGVG5rSkdoTWNB?=
- =?utf-8?B?QXpOTDBJbk9jWXdHdnRKbE5EckNBZ25iSStCVmtxUFAxZmxIcGt0aHBRV014?=
- =?utf-8?B?TEJra1owVFRhcG9xdmtBT091T2JycU5FVHA2a0U1dFovVXRidnExbWY5S2dQ?=
- =?utf-8?B?M09oUGFQUGt5VmFQL1RZbWN3UnRXWTUwbmdQSEZRWFVuNGhWTWJHbG0wTngr?=
- =?utf-8?B?YXZUSGRBTXA3VFlvdlJaRTkrMno0cE5qK1RneWU4bGR5elh3Z3NoclZxaEds?=
- =?utf-8?B?Q1FpMlJ0eUE3SFhaaXRHUXlONS9RcE5WV1lGQTJvc0gzNlRRdXE1bkxkRHFa?=
- =?utf-8?B?SHkxLzN4c2lpcFB4T2JBZFhxQ3VvWk96TzFnNVc4dGgxczBnalI2NWgrSU9s?=
- =?utf-8?B?QUdrNkwvNDlXTFR5LzJONW0waVBRaDFKVjN6RE96akoxaXB0ZlpwWnY0dDJK?=
- =?utf-8?B?RHFUOE9oSmJuVUlJY3k3dEpVTHdrVisyNzdMYjY1UGlUdVdRVENUWkZBY2Zj?=
- =?utf-8?B?eUVMdjNyK0hXK01iUldJMmZVTVJwdkpxM1h6RFZrNEpJd1c0cWVwSElKTk9T?=
- =?utf-8?B?RnJoR0M4SjIwNzQ0MUJmUXRwTnFWeTlaaHJYd1AyaE02S3VFUzI2bS9PUGZ1?=
- =?utf-8?B?d1dPcXZtUjNIcmhraHhmOFNOdit3K1dWSnBib2hUTFhrREhhVkdwc29NREJN?=
- =?utf-8?B?Y2hOa3h3M1RURHhHV05hWkdwUDBCVlBTQ1Z2dVZ2YTN3RE15dUVQamRjMlhu?=
- =?utf-8?B?LzBuSFVOdy9SNFVOSk4zTlJSNFVEaDdNZm9jRSt5cGl4WGRCRHNoajBFNFB1?=
- =?utf-8?B?NVg0R1lJaTlwN0pMNTRhbU9mMWxZTWc2NU9Ldy94UVR1dFErWm5saGdrZkNX?=
- =?utf-8?B?Y1BrK1lKNzN0UWpsNi9Sc0pMeE9WUVlJTm81UitsaGEzc0ViWXVsUnJ1cEV6?=
- =?utf-8?B?S2FvUHJ4cW9ucWtKWkpmVlJBM3crSlhMdVpzcTExWG5ncHY1UkJyWE8vallQ?=
- =?utf-8?B?Yk5oRUxRVTYyOUMwTWlCaE5tMWxESis3Q2xJOWFMSVA3QzNvQjhRaDVkSjFp?=
- =?utf-8?B?ZDVPZWtnc3ZMbEFmZHZoT1RIdFB0cW1wWjk1TGV1VmlnT1BYQXVTRVZjOTVL?=
- =?utf-8?B?ME9wUkdsWkFOb0pSZEpySXd2emNnNFZqMUdnVFB5NmwwRGZDSEVzT2F0VjBQ?=
- =?utf-8?B?eUlkL1p1cWNoSjF2VU93RTduay9IVXJtQXB5c2VEZGxydnpOd2oveDdyQ1Y3?=
- =?utf-8?B?d2VFLytwVkEySVhib2VrTUprcTM2RnJnZUhaOGFhOXdNa0REWWh5RTgzbzkz?=
- =?utf-8?B?aTk4RHlXc3VBKzV2TlU3V1ZpbnRpUlhLZSthcHVwZFBOUDJyTGw1a1VrdEdQ?=
- =?utf-8?B?d1ZKK3BZTjNyanFMcUZnL1pZZVBKbEdkdVpGTitYNHNSei82ZG8rT1NaeSsw?=
- =?utf-8?B?QnRSSWhxMEcyODluc1Qrdnhzd1BKa2RMb2o1NXVhWUFIeFFpVWwwZiszVUhV?=
- =?utf-8?B?Wk91WXBWbS8rMmtwUGViZmk1bWtYMzFLekJiOHFmK2RKZmgreUNhNFA3eEdY?=
- =?utf-8?B?Ync0SkxKc1lob3o0RCtzclV4eStqcEpKRm91Q2J0TjBFamNmRDZTZVUzcmll?=
- =?utf-8?B?WHZVa2Qxb1h1bDcwcjlnNWR5SmYyU0tabW50bUNFR1NWbUdvb3ltdEFWeGIx?=
- =?utf-8?B?SiswTkp4cHNDQUw5dnlxRWRuYmZLS1p4NXlxNFh2WjVXWUxMTU9Ic2tsTG4v?=
- =?utf-8?B?MFNHdHFPU2ltVFA2a0o3RVRncG81c3F1QmlUaEo4RWszaEUyV21MQ2dZMGNw?=
- =?utf-8?B?V2M2ZkpSRUlQWUdWVjU1d1V0eVA5MUJIS2ZBRjRnRk00djk0TWNtWEdxQXpz?=
- =?utf-8?Q?XoZiSsjMnj3jXz+BvcP3KeUz8?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D7494C88D03BEB41BE6E0D4EA7B996DF@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=google.com; s=20230601; t=1697083760; x=1697688560; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=t3eZtbO7sGiUdIhODmQ6vSPYTozABWE/uP0uElHmIZc=;
+        b=bwx9ODPNNDPDbMUnIKhSU/DEB093iDQeKXp27IKtzl43IXu/mAsnQC0dA80jwugVfP
+         KMYifPYmiH/F+tG0zXHqGb1VcpXtChnZyPJaG/DscPQRqtm7l5LVo40iMW+so2fxtkCp
+         OQd34IFFOUYDYAdhDoo+jKgdrrRmk+0hKEoQqCaFmErRxiFg3eCwCyB0XyFal3eEICVX
+         gy/ulDAgJp+T7QF1hpAMuxKtfYk6UhQq7YgqHEMsgfY4cEqJRsq0xz2KbiyN9HVjES17
+         NGlZzR5FR/nh2juQI2Xw/D57yHcy9kirq9UkgP05d4CRi1tT3LFsgpIbZwf+T5B8Wgv7
+         Sbhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697083760; x=1697688560;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=t3eZtbO7sGiUdIhODmQ6vSPYTozABWE/uP0uElHmIZc=;
+        b=E1wkYrPNkAMFRl/EV/IrLv7p1lLEmM+mt28ZGV4+JNecGOXW5hLsJnu04iTfAhvsVK
+         fDZEL7QP4i1w4LLsh/8jvwY2auvdkmQE4zSzDYS7ZJjrODGeN0MLVSNEtIFUA+Jrjc0N
+         cUcqb6AsugvbiKBsIcoh0/UzzvbzuTl0Fcv47HYo3QhDgmkL0ewnj1sdhQqaX8IsZIpI
+         iWiV8pGx6UqB6glIym7oM/v/gVk6pQ4Pr0FZyPuHDLLw5sC/FzaKNJpISP3Cn+FsSD9j
+         oOniG8vwvX1EslksafFYjH8tJs8Zp7LYhH2BTgIUOf0skpYePS+xIP16VlgT9bzwY9Az
+         UJRA==
+X-Gm-Message-State: AOJu0Ywz5Pf+ktqI+zW22imcHunNfuoQXEP1e8lJMB//WMJ8li4uLH9n
+        J+vgv3r6KTRr83M79jGizeTzgw==
+X-Google-Smtp-Source: AGHT+IGBjSt9U3Lcb7U+xPW4tDBHFN+LRgiJXQXfyU6HuAimlavU+lytPlZrRXik3VKiQGg74BAbxA==
+X-Received: by 2002:a25:8906:0:b0:d9a:b844:a16 with SMTP id e6-20020a258906000000b00d9ab8440a16mr859246ybl.16.1697083760445;
+        Wed, 11 Oct 2023 21:09:20 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id r127-20020a254485000000b00d7360e0b240sm4936554yba.31.2023.10.11.21.09.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 21:09:19 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 21:09:06 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Dennis Zhou <dennisszhou@gmail.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        "Chen, Tim C" <tim.c.chen@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Carlos Maiolino <cem@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH 8/8] shmem,percpu_counter: add _limited_add(fbc, limit,
+ amount)
+In-Reply-To: <ZSCRU/e1dwMftYLC@snowbird>
+Message-ID: <f3689af7-ddf6-d4a9-b9d3-cdca15339900@google.com>
+References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com> <bb817848-2d19-bcc8-39ca-ea179af0f0b4@google.com> <DM6PR11MB4107F132CC1203486A91A4DEDCCAA@DM6PR11MB4107.namprd11.prod.outlook.com> <17877ef1-8aac-378b-94-af5afa2793ae@google.com>
+ <ZSCRU/e1dwMftYLC@snowbird>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2246797a-3bc1-4597-f0f7-08dbcad86baf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Oct 2023 04:05:07.1039
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TxeoagkIpa4SQqQySHTjlUMIObUS4FStr0D1f+h99yXKlPCCj2K5TYWfCmjCbzNyg9d0zsvZ7U5JWErPk1k89A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB6991
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -166,33 +85,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEFuZ2VsbzoNCg0KT24gRnJpLCAyMDIzLTA4LTA0IGF0IDA5OjI4ICswMjAwLCBBbmdlbG9H
-aW9hY2NoaW5vIERlbCBSZWdubyB3cm90ZToNCj4gTWFrZSB0aGUgY29kZSBtb3JlIHJvYnVzdCBh
-bmQgaW1wcm92ZSByZWFkYWJpbGl0eSBieSB1c2luZyBiaXRmaWVsZA0KPiBtYWNyb3MgaW5zdGVh
-ZCBvZiBvcGVuIGNvZGluZyBiaXQgb3BlcmF0aW9ucy4NCg0KUmV2aWV3ZWQtYnk6IENLIEh1IDxj
-ay5odUBtZWRpYXRlay5jb20+DQoNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEFuZ2Vsb0dpb2FjY2hp
-bm8gRGVsIFJlZ25vIDwNCj4gYW5nZWxvZ2lvYWNjaGluby5kZWxyZWdub0Bjb2xsYWJvcmEuY29t
-Pg0KPiAtLS0NCj4gIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9hYWwuYyB8IDEw
-ICsrKysrKysrLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDIgZGVsZXRp
-b25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19k
-aXNwX2FhbC5jDQo+IGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2FhbC5jDQo+
-IGluZGV4IGUyZTQxNTVmYWYwMS4uYmVjMDM1NzgwZGIwIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJz
-L2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfYWFsLmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJt
-L21lZGlhdGVrL210a19kaXNwX2FhbC5jDQo+IEBAIC0xOCw2ICsxOCw4IEBADQo+ICAjZGVmaW5l
-IERJU1BfQUFMX0VOCQkJCTB4MDAwMA0KPiAgI2RlZmluZSBBQUxfRU4JCQkJCQlCSVQoMCkNCj4g
-ICNkZWZpbmUgRElTUF9BQUxfU0laRQkJCQkweDAwMzANCj4gKyNkZWZpbmUgRElTUF9BQUxfU0la
-RV9IU0laRQkJCQlHRU5NQVNLKDI4LCAxNikNCj4gKyNkZWZpbmUgRElTUF9BQUxfU0laRV9WU0la
-RQkJCQlHRU5NQVNLKDEyLCAwKQ0KPiAgI2RlZmluZSBESVNQX0FBTF9PVVRQVVRfU0laRQkJCTB4
-MDRkOA0KPiAgI2RlZmluZSBESVNQX0FBTF9MVVRfU0laRQkJCTUxMg0KPiAgDQo+IEBAIC01Niw5
-ICs1OCwxMyBAQCB2b2lkIG10a19hYWxfY29uZmlnKHN0cnVjdCBkZXZpY2UgKmRldiwgdW5zaWdu
-ZWQNCj4gaW50IHcsDQo+ICAJCQkgICB1bnNpZ25lZCBpbnQgYnBjLCBzdHJ1Y3QgY21kcV9wa3Qg
-KmNtZHFfcGt0KQ0KPiAgew0KPiAgCXN0cnVjdCBtdGtfZGlzcF9hYWwgKmFhbCA9IGRldl9nZXRf
-ZHJ2ZGF0YShkZXYpOw0KPiArCXUzMiBzejsNCj4gIA0KPiAtCW10a19kZHBfd3JpdGUoY21kcV9w
-a3QsIHcgPDwgMTYgfCBoLCAmYWFsLT5jbWRxX3JlZywgYWFsLT5yZWdzLCANCj4gRElTUF9BQUxf
-U0laRSk7DQo+IC0JbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgdyA8PCAxNiB8IGgsICZhYWwtPmNt
-ZHFfcmVnLCBhYWwtPnJlZ3MsIA0KPiBESVNQX0FBTF9PVVRQVVRfU0laRSk7DQo+ICsJc3ogPSBG
-SUVMRF9QUkVQKERJU1BfQUFMX1NJWkVfSFNJWkUsIHcpOw0KPiArCXN6IHw9IEZJRUxEX1BSRVAo
-RElTUF9BQUxfU0laRV9WU0laRSwgaCk7DQo+ICsNCj4gKwltdGtfZGRwX3dyaXRlKGNtZHFfcGt0
-LCBzeiwgJmFhbC0+Y21kcV9yZWcsIGFhbC0+cmVncywNCj4gRElTUF9BQUxfU0laRSk7DQo+ICsJ
-bXRrX2RkcF93cml0ZShjbWRxX3BrdCwgc3osICZhYWwtPmNtZHFfcmVnLCBhYWwtPnJlZ3MsDQo+
-IERJU1BfQUFMX09VVFBVVF9TSVpFKTsNCj4gIH0NCj4gIA0KPiAgLyoqDQo=
+On Fri, 6 Oct 2023, Dennis Zhou wrote:
+> 
+> Sorry for the late chime in. I'm traveling right now.
+
+No problem at all, thanks for looking.
+
+> 
+> I haven't been super happy lately with percpu_counter as it has had a
+> few corner cases such as the cpu_dying_mask fiasco which I thought we
+> fixed with a series from tglx [1]. If not I can resurrect it and pull
+> it.
+> 
+> I feel like percpu_counter is deviating from its original intended
+> usecase which, from my perspective, was a thin wrapper around a percpu
+> variable. At this point we seem to be bolting onto percpu_counter
+> instead of giving it a clear focus for what it's supposed to do well.
+> I think I understand the use case, and ultimately it's kind of the
+> duality where I think it was xfs is using percpu_counters where it must
+> be > 0 for the value to make sense and there was a race condition with
+> cpu dying [2].
+> 
+> At this point, I think it's probably better to wholy think about the
+> lower bound and upper bound problem of percpu_counter wrt the # of
+> online cpus.
+> 
+> Thanks,
+> Dennis
+> 
+> [1] https://lore.kernel.org/lkml/20230414162755.281993820@linutronix.de/
+> [2] https://lore.kernel.org/lkml/20230406015629.1804722-1-yebin@huaweicloud.com/
+
+Thanks for the links.  I can see that the current cpu_dying situation
+is not ideal, but don't see any need to get any deeper into that for
+percpu_counter_limited_add(): I did consider an update to remove its
+use of cpu_dying_mask, but that just seemed wrong - it should do the
+same as is currently done in __percpu_counter_sum(), then be updated
+along with that when cpu_dying is sorted, by tglx's series or otherwise.
+
+I don't think I agree with you about percpu_counter deviating from its
+original intended usecase; but I haven't studied the history to see what
+that initial usecase was.  Whatever, we've had percpu_counter_add() and
+percpu_counter_compare() for many years, and percpu_counter_limited_add()
+is just an atomic combination of those: I don't see it as deviating at all.
+
+Hugh
