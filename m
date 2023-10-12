@@ -2,164 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B3B7C6E81
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF797C6E89
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347198AbjJLMxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 08:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51366 "EHLO
+        id S1378548AbjJLMxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343867AbjJLMxA (ORCPT
+        with ESMTP id S1343867AbjJLMxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:53:00 -0400
-Received: from outbound-smtp51.blacknight.com (outbound-smtp51.blacknight.com [46.22.136.235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A890391
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:52:56 -0700 (PDT)
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp51.blacknight.com (Postfix) with ESMTPS id 1AE37FB058
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:52:55 +0100 (IST)
-Received: (qmail 5844 invoked from network); 12 Oct 2023 12:52:54 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.197.19])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Oct 2023 12:52:54 -0000
-Date:   Thu, 12 Oct 2023 13:52:53 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Arjan Van De Ven <arjan@linux.intel.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Johannes Weiner <jweiner@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Lameter <cl@linux.com>
-Subject: Re: [PATCH 02/10] cacheinfo: calculate per-CPU data cache size
-Message-ID: <20231012125253.fpeehd6362c5v2sj@techsingularity.net>
-References: <20230920061856.257597-1-ying.huang@intel.com>
- <20230920061856.257597-3-ying.huang@intel.com>
- <20231011122027.pw3uw32sdxxqjsrq@techsingularity.net>
- <87h6mwf3gf.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        Thu, 12 Oct 2023 08:53:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBA194;
+        Thu, 12 Oct 2023 05:53:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697115227; x=1728651227;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=gNLNaEec64/5yPf43OhzXjxJ+9f0AwPObPN0gw90rTk=;
+  b=XkJ9DZi5gy3NgX1d7rCxq+rNL5s/H7mbScg9qZtZuE0o2ovQ6o1aTPfT
+   RSkn6+wb8jlENZvCR1cjCzBDMsPR4EVEUqfMche/YjYjxViTWu4FfobjZ
+   CUIaoL0Vn88ucROtDhnXUx8cGrpkNZlqzvBTl+tEYjfJXXv5HwINStMMu
+   8zBmNOBuAp3ttOy2oERrV+cd3OPVAUXLpZtxRF48y1iThmGNEYQk/nnxp
+   M5gc4C0aQJrhAithjm3hwCNljAEN+5WvwJjIgaNcaMlWVEUrwTo4vvUHc
+   f6Aea66STp3AIMpiHaWybUqw4Q6mkcqqgbb1kzpYS7Qrk5evW4cL4CAl5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="471169655"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="471169655"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 05:53:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="783688889"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="783688889"
+Received: from asroczyn-mobl.ger.corp.intel.com ([10.249.36.107])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 05:53:41 -0700
+Date:   Thu, 12 Oct 2023 15:53:39 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+cc:     linux-pci@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+        ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-bluetooth@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
+        linux-wireless@vger.kernel.org, Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH v2 05/13] PCI/ASPM: Add pci_enable_link_state()
+In-Reply-To: <20231011215327.GA1043654@bhelgaas>
+Message-ID: <afb4db5-5fe1-9f5d-a910-032adf195c@linux.intel.com>
+References: <20231011215327.GA1043654@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <87h6mwf3gf.fsf@yhuang6-desk2.ccr.corp.intel.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1586418908-1697115226=:1692"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 08:08:32PM +0800, Huang, Ying wrote:
-> Mel Gorman <mgorman@techsingularity.net> writes:
-> 
-> > On Wed, Sep 20, 2023 at 02:18:48PM +0800, Huang Ying wrote:
-> >> Per-CPU data cache size is useful information.  For example, it can be
-> >> used to determine per-CPU cache size.  So, in this patch, the data
-> >> cache size for each CPU is calculated via data_cache_size /
-> >> shared_cpu_weight.
-> >> 
-> >> A brute-force algorithm to iterate all online CPUs is used to avoid
-> >> to allocate an extra cpumask, especially in offline callback.
-> >> 
-> >> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> >
-> > It's not necessarily relevant to the patch, but at least the scheduler
-> > also stores some per-cpu topology information such as sd_llc_size -- the
-> > number of CPUs sharing the same last-level-cache as this CPU. It may be
-> > worth unifying this at some point if it's common that per-cpu
-> > information is too fine and per-zone or per-node information is too
-> > coarse. This would be particularly true when considering locking
-> > granularity,
-> >
-> >> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> >> Cc: Andrew Morton <akpm@linux-foundation.org>
-> >> Cc: Mel Gorman <mgorman@techsingularity.net>
-> >> Cc: Vlastimil Babka <vbabka@suse.cz>
-> >> Cc: David Hildenbrand <david@redhat.com>
-> >> Cc: Johannes Weiner <jweiner@redhat.com>
-> >> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> >> Cc: Michal Hocko <mhocko@suse.com>
-> >> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-> >> Cc: Matthew Wilcox <willy@infradead.org>
-> >> Cc: Christoph Lameter <cl@linux.com>
-> >> ---
-> >>  drivers/base/cacheinfo.c  | 42 ++++++++++++++++++++++++++++++++++++++-
-> >>  include/linux/cacheinfo.h |  1 +
-> >>  2 files changed, 42 insertions(+), 1 deletion(-)
-> >> 
-> >> diff --git a/drivers/base/cacheinfo.c b/drivers/base/cacheinfo.c
-> >> index cbae8be1fe52..3e8951a3fbab 100644
-> >> --- a/drivers/base/cacheinfo.c
-> >> +++ b/drivers/base/cacheinfo.c
-> >> @@ -898,6 +898,41 @@ static int cache_add_dev(unsigned int cpu)
-> >>  	return rc;
-> >>  }
-> >>  
-> >> +static void update_data_cache_size_cpu(unsigned int cpu)
-> >> +{
-> >> +	struct cpu_cacheinfo *ci;
-> >> +	struct cacheinfo *leaf;
-> >> +	unsigned int i, nr_shared;
-> >> +	unsigned int size_data = 0;
-> >> +
-> >> +	if (!per_cpu_cacheinfo(cpu))
-> >> +		return;
-> >> +
-> >> +	ci = ci_cacheinfo(cpu);
-> >> +	for (i = 0; i < cache_leaves(cpu); i++) {
-> >> +		leaf = per_cpu_cacheinfo_idx(cpu, i);
-> >> +		if (leaf->type != CACHE_TYPE_DATA &&
-> >> +		    leaf->type != CACHE_TYPE_UNIFIED)
-> >> +			continue;
-> >> +		nr_shared = cpumask_weight(&leaf->shared_cpu_map);
-> >> +		if (!nr_shared)
-> >> +			continue;
-> >> +		size_data += leaf->size / nr_shared;
-> >> +	}
-> >> +	ci->size_data = size_data;
-> >> +}
-> >
-> > This needs comments.
-> >
-> > It would be nice to add a comment on top describing the limitation of
-> > CACHE_TYPE_UNIFIED here in the context of
-> > update_data_cache_size_cpu().
-> 
-> Sure.  Will do that.
-> 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Thanks.
+--8323329-1586418908-1697115226=:1692
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 
-> > The L2 cache could be unified but much smaller than a L3 or other
-> > last-level-cache. It's not clear from the code what level of cache is being
-> > used due to a lack of familiarity of the cpu_cacheinfo code but size_data
-> > is not the size of a cache, it appears to be the share of a cache a CPU
-> > would have under ideal circumstances.
-> 
-> Yes.  And it isn't for one specific level of cache.  It's sum of per-CPU
-> shares of all levels of cache.  But the calculation is inaccurate.  More
-> details are in the below reply.
-> 
-> > However, as it appears to also be
-> > iterating hierarchy then this may not be accurate. Caches may or may not
-> > allow data to be duplicated between levels so the value may be inaccurate.
-> 
-> Thank you very much for pointing this out!  The cache can be inclusive
-> or not.  So, we cannot calculate the per-CPU slice of all-level caches
-> via adding them together blindly.  I will change this in a follow-on
-> patch.
-> 
+On Wed, 11 Oct 2023, Bjorn Helgaas wrote:
 
-Please do, I would strongly suggest basing this on LLC only because it's
-the only value you can be sure of. This change is the only change that may
-warrant a respin of the series as the history will be somewhat confusing
-otherwise.
+> On Mon, Sep 18, 2023 at 04:10:55PM +0300, Ilpo Järvinen wrote:
+> > pci_disable_link_state() lacks a symmetric pair. Some drivers want to
+> > disable ASPM during certain phases of their operation but then
+> > re-enable it later on. If pci_disable_link_state() is made for the
+> > device, there is currently no way to re-enable the states that were
+> > disabled.
+> 
+> pci_disable_link_state() gives drivers a way to disable specified ASPM
+> states using a bitmask (PCIE_LINK_STATE_L0S, PCIE_LINK_STATE_L1,
+> PCIE_LINK_STATE_L1_1, etc), but IIUC the driver can't tell exactly
+> what changed and can't directly restore the original state, e.g.,
+> 
+>   - PCIE_LINK_STATE_L1 enabled initially
+>   - driver calls pci_disable_link_state(PCIE_LINK_STATE_L0S)
+>   - driver calls pci_enable_link_state(PCIE_LINK_STATE_L0S)
+>   - PCIE_LINK_STATE_L0S and PCIE_LINK_STATE_L1 are enabled now
+> 
+> Now PCIE_LINK_STATE_L0S is enabled even though it was not initially
+> enabled.  Maybe that's what we want; I dunno.
+> 
+> pci_disable_link_state() currently returns success/failure, but only
+> r8169 and mt76 even check, and only rtl_init_one() (r8169) has a
+> non-trivial reason, so it's conceivable that it could return a bitmask
+> instead.
+
+It's great that you suggested this since it's actually what also I've been 
+started to think should be done instead of this straightforward approach
+I used in V2. 
+
+That is, don't have the drivers to get anything directly from LNKCTL
+but they should get everything through the API provided by the 
+disable/enable calls which makes it easy for the driver to pass the same
+value back into the enable call.
+
+> > Add pci_enable_link_state() to remove ASPM states from the state
+> > disable mask.
+> > 
+> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > ---
+> >  drivers/pci/pcie/aspm.c | 42 +++++++++++++++++++++++++++++++++++++++++
+> >  include/linux/pci.h     |  2 ++
+> >  2 files changed, 44 insertions(+)
+> > 
+> > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> > index 91dc95aca90f..f45d18d47c20 100644
+> > --- a/drivers/pci/pcie/aspm.c
+> > +++ b/drivers/pci/pcie/aspm.c
+> > @@ -1117,6 +1117,48 @@ int pci_disable_link_state(struct pci_dev *pdev, int state)
+> >  }
+> >  EXPORT_SYMBOL(pci_disable_link_state);
+> >  
+> > +/**
+> > + * pci_enable_link_state - Re-enable device's link state
+> > + * @pdev: PCI device
+> > + * @state: ASPM link states to re-enable
+> > + *
+> > + * Enable device's link state that were previously disable so the link is
+> 
+> "state[s] that were previously disable[d]" alludes to the use case you
+> have in mind, but I don't think it describes how this function
+> actually works.  This function just makes it possible to enable the
+> specified states.  The @state parameter may have nothing to do with
+> any previously disabled states.
+
+Yes, it's what I've been thinking between the lines. But I see your point 
+that this API didn't make it easy/obvious as is.
+
+Would you want me to enforce it too besides altering the API such that the 
+states are actually returned from disable call? (I don't personally find
+that necessary as long as the API pair itself makes it obvious what the 
+driver is expect to pass there.)
+
 
 -- 
-Mel Gorman
-SUSE Labs
+ i.
+
+--8323329-1586418908-1697115226=:1692--
