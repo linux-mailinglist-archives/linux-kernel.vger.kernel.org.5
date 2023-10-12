@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 607477C6AC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8F17C6ACB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377488AbjJLKRe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 06:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40474 "EHLO
+        id S1377623AbjJLKRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347110AbjJLKRc (ORCPT
+        with ESMTP id S1347110AbjJLKRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:17:32 -0400
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD89C4;
-        Thu, 12 Oct 2023 03:17:30 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-59f6492b415so6523687b3.0;
-        Thu, 12 Oct 2023 03:17:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697105849; x=1697710649;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G7H6hbQOaTA6o7GepYq/s3qB0kUcBwxXV7q1sULTA+o=;
-        b=C8UXiZTYGk9XTMAOCB1TQ4VptPRoNHqt+P/4EDNJRWMgfalk6zI1EAAT6eVYez8cjv
-         tH3j+BFTDnJVEAXUKuq/7ZLqDTfBAioprH0n4lRluOMgDCr2dJfGMfLpKqjhdyqzDJrX
-         35kwaRYzBk7xR1VvpUbRc4CgfD4dQvHHcPEBtcEm9JZNVAm9+lFfxpy2LcS+iBLjKqtm
-         rlMRljJWMlhTzphSiRx+C68tgYkeNy7PBxM3DccHStjy4qdAvw46EoX5H6UcBdL7fnVl
-         TJPAWDtUIoNsQKRoHCLOSX3mKYzSpvw0v7vLEiDQwbjSvjWv6FVSbOzsKuQPFSmBatLo
-         jgtw==
-X-Gm-Message-State: AOJu0YxZSxjuH4Q9Cuht3kpLBfAglLbu/NmdU+kNcIN8FwTdlPRK51lJ
-        eRkxplSrfHCm1RIgHbdRy6lTvlc+AJIsFg==
-X-Google-Smtp-Source: AGHT+IEiYPGfwVO62nLa5B1gm/B03Zcz2OSijEQuB3Sk37FSQ2eYN5CtHY/872NSg+hriPrf9KR0Qg==
-X-Received: by 2002:a05:690c:2846:b0:5a7:b545:dcaa with SMTP id ed6-20020a05690c284600b005a7b545dcaamr5184345ywb.23.1697105849361;
-        Thu, 12 Oct 2023 03:17:29 -0700 (PDT)
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com. [209.85.128.180])
-        by smtp.gmail.com with ESMTPSA id r135-20020a0de88d000000b005a1cc37aff1sm5729089ywe.20.2023.10.12.03.17.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 03:17:29 -0700 (PDT)
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-59f6492b415so6523607b3.0;
-        Thu, 12 Oct 2023 03:17:29 -0700 (PDT)
-X-Received: by 2002:a0d:d78b:0:b0:5a7:be3f:c451 with SMTP id
- z133-20020a0dd78b000000b005a7be3fc451mr5103713ywd.3.1697105848998; Thu, 12
- Oct 2023 03:17:28 -0700 (PDT)
+        Thu, 12 Oct 2023 06:17:43 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434B9B8;
+        Thu, 12 Oct 2023 03:17:42 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5F39E660730F;
+        Thu, 12 Oct 2023 11:17:40 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697105861;
+        bh=g3ns2c4RoQU8nzXEQ8VUyBiWwm9Ooa52x4tpLHq9B+0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=fC555cNGl+Ly1HW1tK2ksVyK0MG/FjTo1j7THokikv5Pi+FlMYaEBcFRQIq/sOJPq
+         gG8CzEadDaVkkrjxrtNyi12WdRGBXqVWmTcsB0emaDAOaTXsv4J1cbYFWlurVuC8Tr
+         6CgODM0m3/HeVgY6dTl+qoBlhstBeHXlbkLdQqX0CxnDpSJzWb/V6VQ0ZTupzKmH7c
+         LVaIRests9W7dMrsDPtZmcD4iplXgD0o2NbQrBB2sDIOxYVMqFd/6Yl9eIQHcTx6OY
+         mwSwZBOOJSCir8hJTx0yTTvX2jIWRnD8CiwjAJTPDpoG5txZRgj+VsbFf36wXe0beU
+         66/Mjz8eo1p+w==
+Message-ID: <bf2cf999-7a1a-df14-7ba9-ac5047c998c0@collabora.com>
+Date:   Thu, 12 Oct 2023 12:17:37 +0200
 MIME-Version: 1.0
-References: <a93de2e8afa826745746b00fc5f64e513df5d52f.1697104757.git.geert+renesas@glider.be>
-In-Reply-To: <a93de2e8afa826745746b00fc5f64e513df5d52f.1697104757.git.geert+renesas@glider.be>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 12 Oct 2023 12:17:17 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXUT54XLT1hGmQM_gxPqSo1H6cyvTOByEi1eNVZEOcCBA@mail.gmail.com>
-Message-ID: <CAMuHMdXUT54XLT1hGmQM_gxPqSo1H6cyvTOByEi1eNVZEOcCBA@mail.gmail.com>
-Subject: Re: [PATCH -next v2] sunrpc: Use no_printk() in dfprintk*() dummies
-To:     Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v7 09/16] dt-bindings: media: mediatek: mdp3: add
+ component TCC for MT8195
+Content-Language: en-US
+To:     Moudy Ho <moudy.ho@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20231012084037.19376-1-moudy.ho@mediatek.com>
+ <20231012084037.19376-10-moudy.ho@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231012084037.19376-10-moudy.ho@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 12:08 PM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
-> When building NFS with W=1 and CONFIG_WERROR=y, but
-> CONFIG_SUNRPC_DEBUG=n:
->
->     fs/nfs/nfs4proc.c: In function ‘nfs4_proc_create_session’:
->     fs/nfs/nfs4proc.c:9276:19: error: variable ‘ptr’ set but not used [-Werror=unused-but-set-variable]
->      9276 |         unsigned *ptr;
->           |                   ^~~
->       CC      fs/nfs/callback.o
->     fs/nfs/callback.c: In function ‘nfs41_callback_svc’:
->     fs/nfs/callback.c:98:13: error: variable ‘error’ set but not used [-Werror=unused-but-set-variable]
->        98 |         int error;
->           |             ^~~~~
->       CC      fs/nfs/flexfilelayout/flexfilelayout.o
->     fs/nfs/flexfilelayout/flexfilelayout.c: In function ‘ff_layout_io_track_ds_error’:
->     fs/nfs/flexfilelayout/flexfilelayout.c:1230:13: error: variable ‘err’ set but not used [-Werror=unused-but-set-variable]
->      1230 |         int err;
->           |             ^~~
->       CC      fs/nfs/flexfilelayout/flexfilelayoutdev.o
->     fs/nfs/flexfilelayout/flexfilelayoutdev.c: In function ‘nfs4_ff_alloc_deviceid_node’:
->     fs/nfs/flexfilelayout/flexfilelayoutdev.c:55:16: error: variable ‘ret’ set but not used [-Werror=unused-but-set-variable]
->        55 |         int i, ret = -ENOMEM;
->           |                ^~~
->
-> All these are due to variables that are set unconditionally, but are
-> used only when debugging is enabled.
->
-> Fix this by changing the dfprintk*() dummy macros from empty loops to
-> calls to the no_printk() helper.  This informs the compiler that the
-> passed debug parameters are actually used, and enables format specifier
-> checking as a bonus.
->
-> This requires removing the protection by CONFIG_SUNRPC_DEBUG of the
-> declaration of nlmdbg_cookie2a(), as its reference is now visible to the
-> compiler, but optimized away.
->
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Il 12/10/23 10:40, Moudy Ho ha scritto:
+> Add the fundamental hardware configuration of component TCC,
+> which is controlled by MDP3 on MT8195.
+> 
+> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
 > ---
-> v2:
->   - s/uncontionally/unconditionally/,
->   - Drop CONFIG_SUNRPC_DEBUG check in fs/lockd/svclock.c to fix build
->     failure.
+>   .../bindings/media/mediatek,mdp3-tcc.yaml     | 62 +++++++++++++++++++
+>   1 file changed, 62 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-tcc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/mediatek,mdp3-tcc.yaml b/Documentation/devicetree/bindings/media/mediatek,mdp3-tcc.yaml
+> new file mode 100644
+> index 000000000000..f134160f85b9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/mediatek,mdp3-tcc.yaml
+> @@ -0,0 +1,62 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/mediatek,mdp3-tcc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek Media Data Path 3 TCC
 
-The robots pointed out a second build failure, which is not fixed by this v2:
-https://lore.kernel.org/all/202310121759.0CF34DcN-lkp@intel.com/
+MediaTek Media Data Path 3 Tone Curve Conversion
 
-Gr{oetje,eeting}s,
 
-                        Geert
+after which:
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
