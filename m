@@ -2,145 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 207BB7C6DD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4316E7C6DCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235706AbjJLMUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 08:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
+        id S1378366AbjJLMRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:17:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234148AbjJLMUD (ORCPT
+        with ESMTP id S1343908AbjJLMRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:20:03 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B33C4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:20:00 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S5pYG5rF4zrTL7;
-        Thu, 12 Oct 2023 20:17:22 +0800 (CST)
-Received: from localhost.localdomain (10.50.163.32) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 12 Oct 2023 20:19:58 +0800
-From:   Yicong Yang <yangyicong@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-        <dietmar.eggemann@arm.com>, <tim.c.chen@linux.intel.com>,
-        <yu.c.chen@intel.com>, <gautham.shenoy@amd.com>, <mgorman@suse.de>,
-        <vschneid@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <rostedt@goodmis.org>, <bsegall@google.com>, <bristot@redhat.com>,
-        <prime.zeng@huawei.com>, <yangyicong@hisilicon.com>,
-        <jonathan.cameron@huawei.com>, <ego@linux.vnet.ibm.com>,
-        <srikar@linux.vnet.ibm.com>, <linuxarm@huawei.com>,
-        <21cnbao@gmail.com>, <kprateek.nayak@amd.com>,
-        <wuyun.abel@bytedance.com>
-Subject: [PATCH v10 3/3] sched/fair: Use candidate prev/recent_used CPU if scanning failed for cluster wakeup
-Date:   Thu, 12 Oct 2023 20:17:07 +0800
-Message-ID: <20231012121707.51368-4-yangyicong@huawei.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20231012121707.51368-1-yangyicong@huawei.com>
-References: <20231012121707.51368-1-yangyicong@huawei.com>
+        Thu, 12 Oct 2023 08:17:46 -0400
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E792B7;
+        Thu, 12 Oct 2023 05:17:44 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vu-eJHp_1697113061;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0Vu-eJHp_1697113061)
+          by smtp.aliyun-inc.com;
+          Thu, 12 Oct 2023 20:17:41 +0800
+Date:   Thu, 12 Oct 2023 20:17:40 +0800
+From:   Dust Li <dust.li@linux.alibaba.com>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Albert Huang <huangjie.albert@bytedance.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>
+Cc:     "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net/smc: add support for netdevice in
+ containers.
+Message-ID: <20231012121740.GR92403@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20230925023546.9964-1-huangjie.albert@bytedance.com>
+ <00bbbf48440c1889ecd16a590ebb746b820a4f48.camel@linux.ibm.com>
+ <20231011144816.GO92403@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.50.163.32]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231011144816.GO92403@linux.alibaba.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yicong Yang <yangyicong@hisilicon.com>
+On Wed, Oct 11, 2023 at 10:48:16PM +0800, Dust Li wrote:
+>On Thu, Sep 28, 2023 at 05:04:21PM +0200, Niklas Schnelle wrote:
+>>On Mon, 2023-09-25 at 10:35 +0800, Albert Huang wrote:
+>>> If the netdevice is within a container and communicates externally
+>>> through network technologies like VXLAN, we won't be able to find
+>>> routing information in the init_net namespace. To address this issue,
+>>> we need to add a struct net parameter to the smc_ib_find_route function.
+>>> This allow us to locate the routing information within the corresponding
+>>> net namespace, ensuring the correct completion of the SMC CLC interaction.
+>>> 
+>>> Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
+>>> ---
+>>>  net/smc/af_smc.c | 3 ++-
+>>>  net/smc/smc_ib.c | 7 ++++---
+>>>  net/smc/smc_ib.h | 2 +-
+>>>  3 files changed, 7 insertions(+), 5 deletions(-)
+>>> 
+>>
+>>I'm trying to test this patch on s390x but I'm running into the same
+>>issue I ran into with the original SMC namespace
+>>support:https://lore.kernel.org/netdev/8701fa4557026983a9ec687cfdd7ac5b3b85fd39.camel@linux.ibm.com/
+>>
+>>Just like back then I'm using a server and a client network namespace
+>>on the same system with two ConnectX-4 VFs from the same card and port.
+>>Both TCP/IP traffic as well as user-space RDMA via "qperf … rc_bw" and
+>>`qperf … rc_lat` work between namespaces and definitely go via the
+>>card.
+>>
+>>I did use "rdma system set netns exclusive" then moved the RDMA devices
+>>into the namespaces with "rdma dev set <rdma_dev> netns <namespace>". I
+>>also verified with "ip netns exec <namespace> rdma dev"
+>>that the RDMA devices are in the network namespace and as seen by the
+>>qperf runs normal RDMA does work.
+>>
+>>For reference the smc_chck tool gives me the following output:
+>>
+>>Server started on port 37373
+>>[DEBUG] Interfaces to check: eno4378
+>>Test with target IP 10.10.93.12 and port 37373
+>>  Live test (SMC-D and SMC-R)
+>>[DEBUG] Running client: smc_run /tmp/echo-clt.x0q8iO 10.10.93.12 -p
+>>37373
+>>[DEBUG] Client result: TCP 0x05000000/0x03030000
+>>     Failed  (TCP fallback), reasons:
+>>          Client:        0x05000000   Peer declined during handshake
+>>          Server:        0x03030000   No SMC devices found (R and D)
+>>
+>>I also checked that SMC is generally working, once I add an ISM device
+>>I do get SMC-D between the namespaces. Any ideas what could break SMC-R
+>>here?
+>
+>I missed the email :(
+>
+>Are you running SMC-Rv2 or v1 ?
 
-Chen Yu reports a hackbench regression of cluster wakeup when
-hackbench threads equal to the CPU number [1]. Analysis shows
-it's because we wake up more on the target CPU even if the
-prev_cpu is a good wakeup candidate and leads to the decrease
-of the CPU utilization.
+Hi Niklas,
 
-Generally if the task's prev_cpu is idle we'll wake up the task
-on it without scanning. On cluster machines we'll try to wake up
-the task in the same cluster of the target for better cache
-affinity, so if the prev_cpu is idle but not sharing the same
-cluster with the target we'll still try to find an idle CPU within
-the cluster. This will improve the performance at low loads on
-cluster machines. But in the issue above, if the prev_cpu is idle
-but not in the cluster with the target CPU, we'll try to scan an
-idle one in the cluster. But since the system is busy, we're
-likely to fail the scanning and use target instead, even if
-the prev_cpu is idle. Then leads to the regression.
+I tried your test today, and I encounter the same issue.
+But I found it's because my 2 VFs are in difference subnets,
+SMC-Rv2 work fine, SMC-Rv1 won't work, which is expected.
+When I set the 2 VFs in the same subnet, SMC-Rv1 also works.
 
-This patch solves this in 2 steps:
-o record the prev_cpu/recent_used_cpu if they're good wakeup
-  candidates but not sharing the cluster with the target.
-o on scanning failure use the prev_cpu/recent_used_cpu if
-  they're still idle
+So I'm not sure it's the same for you. Can you check it out ?
 
-[1] https://lore.kernel.org/all/ZGzDLuVaHR1PAYDt@chenyu5-mobl1/
-Reported-by: Chen Yu <yu.c.chen@intel.com>
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
----
- kernel/sched/fair.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+BTW, the fallback reason(SMC_CLC_DECL_NOSMCDEV) in this case
+is really not friendly, it's better to return SMC_CLC_DECL_DIFFPREFIX.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 4039f9b348ec..f1d94668bd71 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7392,7 +7392,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	bool has_idle_core = false;
- 	struct sched_domain *sd;
- 	unsigned long task_util, util_min, util_max;
--	int i, recent_used_cpu;
-+	int i, recent_used_cpu, prev_aff = -1;
- 
- 	/*
- 	 * On asymmetric system, update task utilization because we will check
-@@ -7425,6 +7425,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 
- 		if (cpus_share_resources(prev, target))
- 			return prev;
-+
-+		prev_aff = prev;
- 	}
- 
- 	/*
-@@ -7457,6 +7459,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 
- 		if (cpus_share_resources(recent_used_cpu, target))
- 			return recent_used_cpu;
-+	} else {
-+		recent_used_cpu = -1;
- 	}
- 
- 	/*
-@@ -7497,6 +7501,19 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
- 
-+	/*
-+	 * For cluster machines which have lower sharing cache like L2 or
-+	 * LLC Tag, we tend to find an idle CPU in the target's cluster
-+	 * first. But prev_cpu or recent_used_cpu may also be a good candidate,
-+	 * use them if possible when no idle CPU found in select_idle_cpu().
-+	 */
-+	if ((unsigned int)prev_aff < nr_cpumask_bits &&
-+	    (available_idle_cpu(prev_aff) || sched_idle_cpu(prev_aff)))
-+		return prev_aff;
-+	if ((unsigned int)recent_used_cpu < nr_cpumask_bits &&
-+	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)))
-+		return recent_used_cpu;
-+
- 	return target;
- }
- 
--- 
-2.24.0
+Best regards,
+Dust
 
+
+>
+>Best regards,
+>Dust
+>
+>
+>>
+>>Thanks,
+>>Niklas
