@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA81D7C6E25
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846387C6DB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379333AbjJLLs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:48:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49802 "EHLO
+        id S1347225AbjJLMNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378706AbjJLLrO (ORCPT
+        with ESMTP id S1347297AbjJLMNK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:47:14 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44FA185;
-        Thu, 12 Oct 2023 04:47:08 -0700 (PDT)
+        Thu, 12 Oct 2023 08:13:10 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24394D7D;
+        Thu, 12 Oct 2023 04:47:20 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:7ae7:b86d:c19a:877e])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id EC0CF660738C;
-        Thu, 12 Oct 2023 12:47:06 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1C23666073BA;
+        Thu, 12 Oct 2023 12:47:19 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697111227;
-        bh=2/0WQage6iY7ZIfSwpoGdnzQlJzC1UZq8fdQbr8LRKw=;
+        s=mail; t=1697111239;
+        bh=WlpSngD7A0Xes3T2AjXSHPISBbEOvphWL+prcr4Zf8E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L8cYZ8LKwxDdQJC/fkFna0Z4loJWQY4rlLc2nv/Iu86jK57Dgo5nLbgWL6uzreecL
-         kXVb7RHCUVlKxJXrPlrZTBFj0wjGyXvpXiK45iRJ3QADd1AjZvZTBkp4lJ47u1w2tz
-         8LSUo+83BEFBQ9rAZKDCL3bHB+qY/PPmhiOLoehJZIQtbLpsWqyyk8XPRxj1K1ZTbY
-         xBeynsjCo2i/JM5xiLNWE8A8rfak1nxqGNM5ADSU/4GokgPl+JIZaITV8jQKANfJXE
-         vR5aneBs49rxfpAOgs6fzUVB2eslLVMTPIGMR8A6GyzQlfki+NJE+lFeWQ+IidYIrS
-         iFucW8Q+HNdxw==
+        b=U0y3rfbaL4QH8KGfD0QLyY1iew+s/RNBKm6GFspghcCrENBXYTXg8xRyIfkir+UF2
+         BKBFLvcqpLoAGTH9nrnD9cRpe9RFUPJ7RxT/pJuD4ZTTom8ck9ThnLkzS9VhqvIAQI
+         haeWlBuz9OM9VpCukP3mpc8LnDJE6WKd9jRl/gF/U6beuuwwaWc7RoRQlQ16bdCxk6
+         nwUedjUjGBuunt274h/m7qex5BLoWLyQ0p133YDSDBI1J6D/cW6Q5xW8G0mQX64rAT
+         OGNo7pUc9Sq4/f//KT1riNexbNxssvif6g+VbhEAO3ZOkFbghKeHDTu+OhopR7xADC
+         0VwRkH4Wse9JA==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -42,11 +42,10 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Antti Palosaari <crope@iki.fi>
-Subject: [PATCH v11 33/56] media: usb: airspy: Set min_buffers_needed to 8
-Date:   Thu, 12 Oct 2023 13:46:19 +0200
-Message-Id: <20231012114642.19040-34-benjamin.gaignard@collabora.com>
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v11 56/56] media: test-drivers: Use helper for DELETE_BUFS ioctl
+Date:   Thu, 12 Oct 2023 13:46:42 +0200
+Message-Id: <20231012114642.19040-57-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
 References: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
@@ -61,46 +60,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vb2 queue_setup checks for a minimum number of buffers so set
-min_buffers_needed to 8 and remove the useless check in
-airspy_queue_setup().
+Allow test drivers to use DELETE_BUFS by adding vb2_ioctl_delete_bufs() helper.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-CC: Antti Palosaari <crope@iki.fi>
 ---
- drivers/media/usb/airspy/airspy.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/media/test-drivers/vicodec/vicodec-core.c |  2 ++
+ drivers/media/test-drivers/vimc/vimc-capture.c    |  2 ++
+ drivers/media/test-drivers/visl/visl-video.c      |  2 ++
+ drivers/media/test-drivers/vivid/vivid-core.c     | 13 ++++++++++---
+ 4 files changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/usb/airspy/airspy.c b/drivers/media/usb/airspy/airspy.c
-index 462eb8423506..56bc1b23d39b 100644
---- a/drivers/media/usb/airspy/airspy.c
-+++ b/drivers/media/usb/airspy/airspy.c
-@@ -483,15 +483,10 @@ static int airspy_queue_setup(struct vb2_queue *vq,
- {
- 	struct airspy *s = vb2_get_drv_priv(vq);
+diff --git a/drivers/media/test-drivers/vicodec/vicodec-core.c b/drivers/media/test-drivers/vicodec/vicodec-core.c
+index 69cbe2c094e1..f14a8fd506d0 100644
+--- a/drivers/media/test-drivers/vicodec/vicodec-core.c
++++ b/drivers/media/test-drivers/vicodec/vicodec-core.c
+@@ -1339,6 +1339,7 @@ static const struct v4l2_ioctl_ops vicodec_ioctl_ops = {
+ 	.vidioc_prepare_buf	= v4l2_m2m_ioctl_prepare_buf,
+ 	.vidioc_create_bufs	= v4l2_m2m_ioctl_create_bufs,
+ 	.vidioc_expbuf		= v4l2_m2m_ioctl_expbuf,
++	.vidioc_delete_bufs	= v4l2_m2m_ioctl_delete_bufs,
  
--	dev_dbg(s->dev, "nbuffers=%d\n", *nbuffers);
--
--	/* Need at least 8 buffers */
--	if (vq->num_buffers + *nbuffers < 8)
--		*nbuffers = 8 - vq->num_buffers;
- 	*nplanes = 1;
- 	sizes[0] = PAGE_ALIGN(s->buffersize);
+ 	.vidioc_streamon	= v4l2_m2m_ioctl_streamon,
+ 	.vidioc_streamoff	= v4l2_m2m_ioctl_streamoff,
+@@ -1725,6 +1726,7 @@ static int queue_init(void *priv, struct vb2_queue *src_vq,
+ 	dst_vq->mem_ops = &vb2_vmalloc_memops;
+ 	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+ 	dst_vq->lock = src_vq->lock;
++	dst_vq->supports_delete_bufs = true;
  
--	dev_dbg(s->dev, "nbuffers=%d sizes[0]=%d\n", *nbuffers, sizes[0]);
-+	dev_dbg(s->dev, "nbuffers=%d sizes[0]=%d\n", vb2_get_num_buffers(vq), sizes[0]);
- 	return 0;
+ 	return vb2_queue_init(dst_vq);
  }
+diff --git a/drivers/media/test-drivers/vimc/vimc-capture.c b/drivers/media/test-drivers/vimc/vimc-capture.c
+index aa944270e716..fda7ea3a6cb6 100644
+--- a/drivers/media/test-drivers/vimc/vimc-capture.c
++++ b/drivers/media/test-drivers/vimc/vimc-capture.c
+@@ -221,6 +221,7 @@ static const struct v4l2_ioctl_ops vimc_capture_ioctl_ops = {
+ 	.vidioc_expbuf = vb2_ioctl_expbuf,
+ 	.vidioc_streamon = vb2_ioctl_streamon,
+ 	.vidioc_streamoff = vb2_ioctl_streamoff,
++	.vidioc_delete_bufs = vb2_ioctl_delete_bufs,
+ };
  
-@@ -1011,6 +1006,8 @@ static int airspy_probe(struct usb_interface *intf,
- 	/* Init videobuf2 queue structure */
- 	s->vb_queue.type = V4L2_BUF_TYPE_SDR_CAPTURE;
- 	s->vb_queue.io_modes = VB2_MMAP | VB2_USERPTR | VB2_READ;
-+	/* Need at least 8 buffers */
-+	s->vb_queue.min_buffers_needed = 8;
- 	s->vb_queue.drv_priv = s;
- 	s->vb_queue.buf_struct_size = sizeof(struct airspy_frame_buf);
- 	s->vb_queue.ops = &airspy_vb2_ops;
+ static void vimc_capture_return_all_buffers(struct vimc_capture_device *vcapture,
+@@ -435,6 +436,7 @@ static struct vimc_ent_device *vimc_capture_add(struct vimc_device *vimc,
+ 	q->min_buffers_needed = 2;
+ 	q->lock = &vcapture->lock;
+ 	q->dev = v4l2_dev->dev;
++	q->supports_delete_bufs = true;
+ 
+ 	ret = vb2_queue_init(q);
+ 	if (ret) {
+diff --git a/drivers/media/test-drivers/visl/visl-video.c b/drivers/media/test-drivers/visl/visl-video.c
+index 7cac6a6456eb..bd6c112f7846 100644
+--- a/drivers/media/test-drivers/visl/visl-video.c
++++ b/drivers/media/test-drivers/visl/visl-video.c
+@@ -521,6 +521,7 @@ const struct v4l2_ioctl_ops visl_ioctl_ops = {
+ 	.vidioc_prepare_buf		= v4l2_m2m_ioctl_prepare_buf,
+ 	.vidioc_create_bufs		= v4l2_m2m_ioctl_create_bufs,
+ 	.vidioc_expbuf			= v4l2_m2m_ioctl_expbuf,
++	.vidioc_delete_bufs		= v4l2_m2m_ioctl_delete_bufs,
+ 
+ 	.vidioc_streamon		= v4l2_m2m_ioctl_streamon,
+ 	.vidioc_streamoff		= v4l2_m2m_ioctl_streamoff,
+@@ -728,6 +729,7 @@ int visl_queue_init(void *priv, struct vb2_queue *src_vq,
+ 	dst_vq->mem_ops = &vb2_vmalloc_memops;
+ 	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+ 	dst_vq->lock = &ctx->vb_mutex;
++	dst_vq->supports_delete_bufs = true;
+ 
+ 	return vb2_queue_init(dst_vq);
+ }
+diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
+index b5656330578d..e139569a0e9c 100644
+--- a/drivers/media/test-drivers/vivid/vivid-core.c
++++ b/drivers/media/test-drivers/vivid/vivid-core.c
+@@ -769,6 +769,7 @@ static const struct v4l2_ioctl_ops vivid_ioctl_ops = {
+ 	.vidioc_expbuf			= vb2_ioctl_expbuf,
+ 	.vidioc_streamon		= vb2_ioctl_streamon,
+ 	.vidioc_streamoff		= vb2_ioctl_streamoff,
++	.vidioc_delete_bufs		= vb2_ioctl_delete_bufs,
+ 
+ 	.vidioc_enum_input		= vivid_enum_input,
+ 	.vidioc_g_input			= vivid_g_input,
+@@ -876,12 +877,18 @@ static int vivid_create_queue(struct vivid_dev *dev,
+ 	q->type = buf_type;
+ 	q->io_modes = VB2_MMAP | VB2_DMABUF;
+ 	q->io_modes |= V4L2_TYPE_IS_OUTPUT(buf_type) ?  VB2_WRITE : VB2_READ;
+-	if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
++	if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
+ 		q->max_num_buffers = 64;
+-	if (buf_type == V4L2_BUF_TYPE_SDR_CAPTURE)
++		q->supports_delete_bufs = true;
++	}
++	if (buf_type == V4L2_BUF_TYPE_SDR_CAPTURE) {
+ 		q->max_num_buffers = 1024;
+-	if (buf_type == V4L2_BUF_TYPE_VBI_CAPTURE)
++		q->supports_delete_bufs = true;
++	}
++	if (buf_type == V4L2_BUF_TYPE_VBI_CAPTURE) {
+ 		q->max_num_buffers = 32768;
++		q->supports_delete_bufs = true;
++	}
+ 
+ 	if (allocators[dev->inst] != 1)
+ 		q->io_modes |= VB2_USERPTR;
 -- 
 2.39.2
 
