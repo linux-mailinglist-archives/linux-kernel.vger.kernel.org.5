@@ -2,121 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 564127C6C0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A93547C6C0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378307AbjJLLOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60986 "EHLO
+        id S1378209AbjJLLPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378224AbjJLLOb (ORCPT
+        with ESMTP id S232490AbjJLLPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:14:31 -0400
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BCBDD;
-        Thu, 12 Oct 2023 04:14:28 -0700 (PDT)
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-9b96c3b4be4so128871566b.1;
-        Thu, 12 Oct 2023 04:14:28 -0700 (PDT)
+        Thu, 12 Oct 2023 07:15:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C86E0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 04:14:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697109268;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DRaC+0mMS0mqrKmBhT+mt/F7wkHtGnlArsECVSA7S7c=;
+        b=hR1OMGRooprtHII45+wgrGi+9TtD06edMnrSIcFallTokFYwT+ro7IrwQqtARldXlp20un
+        tLhPVFlMGiqfB4FwXRsb20Wn4OyTcxmis7mMZg/usMUv9hCoKlX5whHPNSGk0z6kMjia5Z
+        BiGy9d4J35E5qJ3aBRhaZAO3j3TzjAc=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-632-bt7fktxVPcyexyEM-FrQ1w-1; Thu, 12 Oct 2023 07:14:26 -0400
+X-MC-Unique: bt7fktxVPcyexyEM-FrQ1w-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9bd7c682b33so63735166b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 04:14:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697109267; x=1697714067;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g1QRKkBNjznWASHX/P+4TGpYOnsgJ03ZF7D0qhU3Ymk=;
-        b=pP8HlnKKEK/M/MIq+84yYjMlm7nOvq2rhye0tdAqnvsQKsfeu+dbvcVr6XqNFtKUOY
-         HXLNBxxLByqLHbUP8QyZoP78htZ1Y8gKJNpfV6tYlmCpv7OXFmXPbEtbdsLVH+G91nHU
-         rkibZhqFlh1JsxA59mPGzYx/GDEj/wxwu5Qw5AyWclVDL0i9g4as3gYcsgs3dj4+8SMb
-         K2brRJlOfZSv6lKEYOXB4ygtKeRU0FeV+HVnylnF/hGI4JzKTO9gA6F+Tyv2HUOqogvA
-         kokIoWg5Mblqt4pr46LQXVsGg5iWMmOVmwJaTsblM/Zt0bwJGyeXTJ1NpljpsWc9X47B
-         lo/g==
-X-Gm-Message-State: AOJu0YzlUExwGkeUlsdAdJ42ma0R8/ttI2G9fLVsgA9XpBARK6xVga4u
-        FoBtstRCBqS+sDDAlcwuHFMeHpU6L5Q=
-X-Google-Smtp-Source: AGHT+IE6EJzJraUNfN+/pBxQYEj//JSGY9N0njx3Bqynro9CdqWEMRRS5z9eXQ+Y8KogH5ckF0OvRQ==
-X-Received: by 2002:a17:907:2cef:b0:9ae:6355:5ef4 with SMTP id hz15-20020a1709072cef00b009ae63555ef4mr20608927ejc.3.1697109267064;
-        Thu, 12 Oct 2023 04:14:27 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-011.fbsv.net. [2a03:2880:31ff:b::face:b00c])
-        by smtp.gmail.com with ESMTPSA id kf24-20020a17090776d800b009b95787eb6dsm10877644ejc.48.2023.10.12.04.14.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 04:14:26 -0700 (PDT)
-From:   Breno Leitao <leitao@debian.org>
-To:     jlbec@evilplan.org, kuba@kernel.org, davem@davemloft.net,
-        pabeni@redhat.com, Eric Dumazet <edumazet@google.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     hch@lst.de, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        horms@kernel.org,
-        linux-doc@vger.kernel.org (open list:DOCUMENTATION)
-Subject: [PATCH net-next v4 4/4] Documentation: netconsole: add support for cmdline targets
-Date:   Thu, 12 Oct 2023 04:14:01 -0700
-Message-Id: <20231012111401.333798-5-leitao@debian.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231012111401.333798-1-leitao@debian.org>
-References: <20231012111401.333798-1-leitao@debian.org>
+        d=1e100.net; s=20230601; t=1697109265; x=1697714065;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DRaC+0mMS0mqrKmBhT+mt/F7wkHtGnlArsECVSA7S7c=;
+        b=QMWa3aZtZKXdKrhoi6traJtFW8IEadTzRTa04WNKAHZ4CJQP/KYCjcVAuG2fUfpcKg
+         656YgRMTbWVCDFO3YIS6BijotUUxb+4QneonvPgqMimlfMXQ/YvEaRUwmRhDuSqiFEkT
+         3V4pZX55Q6Wu2Z+Pl+4Clbhho3QyF52qYurfvAzGfMmsV1WrnsWrr7+atFa7R+zcTlh4
+         8LUIzoXYnVUNUqULfFaXWECn8GCJKdw2W8yrpXkVcm3jrNOrf+imw7r3dc25QUdwClyd
+         TsRV2YtnvZNuS+5NZzauR1nUpHg5qFttj+pJVEVElHN3ALOmHd3h1Sg4QGBR6rAy54XK
+         HV6Q==
+X-Gm-Message-State: AOJu0YwSv4GWV5LpkR14Sx4aAS1WurKDPNi5uEr5W9bQ05K6DWgZPrn0
+        OKGg8+s1oguIGRUMqLPlZaKulnvexDfmiozXs36ywi/z/2e1ffPkE18iAtiID7DrybPnfApN5md
+        CgKaLC2H9f0gMXCgVPliirOAY
+X-Received: by 2002:a17:907:720b:b0:9a1:f4e8:87b9 with SMTP id dr11-20020a170907720b00b009a1f4e887b9mr25620939ejc.45.1697109265305;
+        Thu, 12 Oct 2023 04:14:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHs8ShNQHDZ6hbq2SG2uMzUpUZfypOCB88v9DfbsSj8Zps3xEVjhs2Lqn/YHWow7aMfu9rhnQ==
+X-Received: by 2002:a17:907:720b:b0:9a1:f4e8:87b9 with SMTP id dr11-20020a170907720b00b009a1f4e887b9mr25620912ejc.45.1697109264928;
+        Thu, 12 Oct 2023 04:14:24 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id ks8-20020a170906f84800b0099b6becb107sm11078691ejb.95.2023.10.12.04.14.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 04:14:24 -0700 (PDT)
+Message-ID: <5d2e9eba-a941-ea9a-161a-5b97d09d5d35@redhat.com>
+Date:   Thu, 12 Oct 2023 13:14:23 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v20 1/4] usb: Add support for Intel LJCA device
+Content-Language: en-US, nl
+To:     "Wu, Wentong" <wentong.wu@intel.com>,
+        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "oneukum@suse.com" <oneukum@suse.com>,
+        "wsa@kernel.org" <wsa@kernel.org>,
+        "andi.shyti@linux.intel.com" <andi.shyti@linux.intel.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "bartosz.golaszewski@linaro.org" <bartosz.golaszewski@linaro.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
+        "Wang, Zhifeng" <zhifeng.wang@intel.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <1696833205-16716-1-git-send-email-wentong.wu@intel.com>
+ <1696833205-16716-2-git-send-email-wentong.wu@intel.com>
+ <ZSZ3IPgLk7uC5UGI@smile.fi.intel.com>
+ <6a87b43a-0648-28d4-6c69-e0f684e44eb6@redhat.com>
+ <DM6PR11MB4316BE44F53E276384FF06C88DCCA@DM6PR11MB4316.namprd11.prod.outlook.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <DM6PR11MB4316BE44F53E276384FF06C88DCCA@DM6PR11MB4316.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the previous patches, there is no more limitation at modifying the
-targets created at boot time (or module load time).
+Hi,
 
-Document the way on how to create the configfs directories to be able to
-modify these netconsole targets.
+On 10/11/23 14:50, Wu, Wentong wrote:
+>> From: Hans de Goede <hdegoede>
+>>
+>> Hi,
+>>
+>> On 10/11/23 12:21, Andy Shevchenko wrote:
+>>> On Mon, Oct 09, 2023 at 02:33:22PM +0800, Wentong Wu wrote:
+>>>> Implements the USB part of Intel USB-I2C/GPIO/SPI adapter device
+>>>> named "La Jolla Cove Adapter" (LJCA).
+>>>>
+>>>> The communication between the various LJCA module drivers and the
+>>>> hardware will be muxed/demuxed by this driver. Three modules ( I2C,
+>>>> GPIO, and SPI) are supported currently.
+>>>>
+>>>> Each sub-module of LJCA device is identified by type field within the
+>>>> LJCA message header.
+>>>>
+>>>> The sub-modules of LJCA can use ljca_transfer() to issue a transfer
+>>>> between host and hardware. And ljca_register_event_cb is exported to
+>>>> LJCA sub-module drivers for hardware event subscription.
+>>>>
+>>>> The minimum code in ASL that covers this board is Scope
+>>>> (\_SB.PCI0.DWC3.RHUB.HS01)
+>>>>     {
+>>>>         Device (GPIO)
+>>>>         {
+>>>>             Name (_ADR, Zero)
+>>>>             Name (_STA, 0x0F)
+>>>>         }
+>>>>
+>>>>         Device (I2C)
+>>>>         {
+>>>>             Name (_ADR, One)
+>>>>             Name (_STA, 0x0F)
+>>>>         }
+>>>>
+>>>>         Device (SPI)
+>>>>         {
+>>>>             Name (_ADR, 0x02)
+>>>>             Name (_STA, 0x0F)
+>>>>         }
+>>>>     }
+>>>
+>>> This commit message is not true anymore, or misleading at bare minimum.
+>>> The ACPI specification is crystal clear about usage _ADR and _HID, i.e.
+>>> they must NOT be used together for the same device node. So, can you
+>>> clarify how the DSDT is organized and update the commit message and it
+>>> may require (quite likely) to redesign the architecture of this
+>>> driver. Sorry I missed this from previous rounds as I was busy by
+>>> something else.
+>>
+>> This part of the commit message unfortunately is not accurate.
+>> _ADR is not used in either DSDTs of shipping hw; nor in the code.
+> 
+> We have covered the _ADR in the code like below, it first try to find the
+> child device based on _ADR, if not found, it will check the _HID, and there
+> is clear comment in the function.
+> 
+> /* bind auxiliary device to acpi device */
+> static void ljca_auxdev_acpi_bind(struct ljca_adapter *adap,
+> 				   struct auxiliary_device *auxdev,
+> 				   u64 adr, u8 id)
+> {
+> 	struct ljca_match_ids_walk_data wd = { 0 };
+> 	struct acpi_device *parent, *adev;
+> 	struct device *dev = adap->dev;
+> 	char uid[4];
+> 
+> 	parent = ACPI_COMPANION(dev);
+> 	if (!parent)
+> 		return;
+> 
+> 	/*
+> 	 * get auxdev ACPI handle from the ACPI device directly
+> 	 * under the parent that matches _ADR.
+> 	 */
+> 	adev = acpi_find_child_device(parent, adr, false);
+> 	if (adev) {
+> 		ACPI_COMPANION_SET(&auxdev->dev, adev);
+> 		return;
+> 	}
+> 
+> 	/*
+> 	 * _ADR is a grey area in the ACPI specification, some
+> 	 * platforms use _HID to distinguish children devices.
+> 	 */
+> 	switch (adr) {
+> 	case LJCA_GPIO_ACPI_ADR:
+> 		wd.ids = ljca_gpio_hids;
+> 		break;
+> 	case LJCA_I2C1_ACPI_ADR:
+> 	case LJCA_I2C2_ACPI_ADR:
+> 		snprintf(uid, sizeof(uid), "%d", id);
+> 		wd.uid = uid;
+> 		wd.ids = ljca_i2c_hids;
+> 		break;
+> 	case LJCA_SPI1_ACPI_ADR:
+> 	case LJCA_SPI2_ACPI_ADR:
+> 		wd.ids = ljca_spi_hids;
+> 		break;
+> 	default:
+> 		dev_warn(dev, "unsupported _ADR\n");
+> 		return;
+> 	}
+> 
+> 	acpi_dev_for_each_child(parent, ljca_match_device_ids, &wd);
 
-The design discussion about this topic could be found at:
-https://lore.kernel.org/all/ZRWRal5bW93px4km@gmail.com/
+Ah ok, I see. So the code:
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- Documentation/networking/netconsole.rst | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+1. First tries to find the matching child acpi_device for the auxdev by ADR
 
-diff --git a/Documentation/networking/netconsole.rst b/Documentation/networking/netconsole.rst
-index 7a9de0568e84..390730a74332 100644
---- a/Documentation/networking/netconsole.rst
-+++ b/Documentation/networking/netconsole.rst
-@@ -99,9 +99,6 @@ Dynamic reconfiguration:
- Dynamic reconfigurability is a useful addition to netconsole that enables
- remote logging targets to be dynamically added, removed, or have their
- parameters reconfigured at runtime from a configfs-based userspace interface.
--[ Note that the parameters of netconsole targets that were specified/created
--from the boot/module option are not exposed via this interface, and hence
--cannot be modified dynamically. ]
- 
- To include this feature, select CONFIG_NETCONSOLE_DYNAMIC when building the
- netconsole module (or kernel, if netconsole is built-in).
-@@ -155,6 +152,25 @@ You can also update the local interface dynamically. This is especially
- useful if you want to use interfaces that have newly come up (and may not
- have existed when netconsole was loaded / initialized).
- 
-+Netconsole targets defined at boot time (or module load time) with the
-+`netconsole=` param are assigned the name `cmdline<index>`.  For example, the
-+first target in the parameter is named `cmdline0`.  You can control and modify
-+these targets by creating configfs directories with the matching name.
-+
-+Let's suppose you have two netconsole targets defined at boot time::
-+
-+ netconsole=4444@10.0.0.1/eth1,9353@10.0.0.2/12:34:56:78:9a:bc;4444@10.0.0.1/eth1,9353@10.0.0.3/12:34:56:78:9a:bc
-+
-+You can modify these targets in runtime by creating the following targets::
-+
-+ mkdir cmdline0
-+ cat cmdline0/remote_ip
-+ 10.0.0.2
-+
-+ mkdir cmdline1
-+ cat cmdline1/remote_ip
-+ 10.0.0.3
-+
- Extended console:
- =================
- 
--- 
-2.34.1
+2. If 1. fails then falls back to HID + UID matching
+
+And there are DSDTs which use either:
+
+1. Only use _ADR to identify which child device is which, like the example
+   DSDT snippet from the commit msg.
+
+2. Only use _HID + _UID like the 2 example DSDT snippets from me email
+
+But there never is a case where both _ADR and _HID are used at
+the same time (which would be an ACPI spec violation as Andy said).
+
+So AFAICT there is no issue here since  _ADR and _HID are never
+user at the same time and the commit message correctly describes
+scenario 1. from above, so the commit message is fine too.
+
+So I believe that we can continue with this patch series in
+its current v20 form, which has already been staged for
+going into -next by Greg.
+
+Andy can you confirm that moving ahead with the current
+version is ok ?
+
+Regards,
+
+Hans
+
+
 
