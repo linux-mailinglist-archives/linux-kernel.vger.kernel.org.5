@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1767C6A80
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED837C6A83
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343788AbjJLKIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50204 "EHLO
+        id S235658AbjJLKIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234179AbjJLKIj (ORCPT
+        with ESMTP id S235641AbjJLKIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:08:39 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665E0C6;
-        Thu, 12 Oct 2023 03:08:37 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-323ef9a8b59so736704f8f.3;
-        Thu, 12 Oct 2023 03:08:37 -0700 (PDT)
+        Thu, 12 Oct 2023 06:08:40 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682A4B7;
+        Thu, 12 Oct 2023 03:08:38 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32d569e73acso748518f8f.1;
+        Thu, 12 Oct 2023 03:08:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697105316; x=1697710116; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=T61YK6EFuEDV5qJWA4z7WzFbSG37tp0bqVIjSbOkXyE=;
-        b=EfJRwDutfZmXSQa9iyd1ZNe0ahj28nmmBC5iAvGupVtHkw1kg5bAo6Bp4V7478Zba0
-         Ev8Gd/WrIchg4m5oPX3YH54nVFyVhGBB6zckwwA9DZMqfeQSfjhO/qwXX0JTACfwV/Ao
-         riAqWVzvjOYGClHxXjebnu3FExAWf1vGnxfxnxzaGJW0IYirSn/IApsFOzY+o9jx/tKf
-         PxG3qE7HcuSiFOSzoS5kFyBV+pYOHkr3FSNsYG+GbDNh3siEhyfw4VfFkTFiHetxF2YW
-         R+kqbMMKruwBoF4EaJ2zKK4k9cMWuZzaxEImdZiCCCHOHJDA0Nz7DufxI8n/l4gyvThh
-         pPyA==
+        d=gmail.com; s=20230601; t=1697105317; x=1697710117; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uMV6knP2vLu/vHdHEBOSBg5/6andL2RYQDxRoSzD5RA=;
+        b=VLVUHkqSDo2GFRaqG6kVdKFtY6jDFiUtYMx4nu7m2L/3L5DqYBMGl9Ak4Bvvbkr5nm
+         kuywIODetaUb+VS5VvVtOYVoSeQaFf8Jtig1AjIbk8p6pwedxe3D8VEw8u7/sHkHzZpN
+         llQYbGz3HKK8dl1Yv+eDyxH3/L33Fw81eMr4vV4orXMnjn4k8nX0o0BdQQYXbnogK7MO
+         AwD3mb5w/n98qqorzXfHnYBgouVHgjROZBAf8boorGprTVBS+vSWJ2t4260opDiRG5Ha
+         h3ld6DDERKkX3EFsDLhxj4JEepDZeLSJjnKoLHbOCHnnHeUHlILKRhfTgMNTxwu/hQQ6
+         l90Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697105316; x=1697710116;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T61YK6EFuEDV5qJWA4z7WzFbSG37tp0bqVIjSbOkXyE=;
-        b=K5gdyqCEMD4zEMUuqa4vA6fBJdOUQ3xvtmC8rnbnXjP2wIpEcinz3FZipiBpoQLmyG
-         UVutZWIiEPmpCrtEISafzirkKGzC5TgFph/HYM6BB8OBIcNuiyKfE9ZfkHc3SDQRJzSg
-         qxHwy4oGXeRuWIjNHfYsKshtekmjTh9Gf9SjoPcfV+15vNgCRrJxWXiil7lr/ceFa5cu
-         HNxthYxcFz/1TSkKGyXLKiJYlBM7cT0ToQNHh/m+3zhXGgYXKwLMznO9W6M4mH2bzAzU
-         ElRFt31X5n4M2HYhTnUiboRoq0hLOpptAJTqZGP0wLdxoDgOFrvHsdVUGDiUCZ9h4Xno
-         IWqA==
-X-Gm-Message-State: AOJu0YxMlcXEoNIF2AYUB+bjK9OxQe3/GJzdyVtv1ftjdFeaq5Fz2k2P
-        qH/gJ0uG7g1Iv7zXKU3N3v0=
-X-Google-Smtp-Source: AGHT+IGY5/V2HmMll0R7ee8D+XKgPX1fVMvqjMxzETQE5YP729txcGhYLYxlO8b4P76nKez6ryZjLw==
-X-Received: by 2002:a5d:6447:0:b0:31f:fb5d:96da with SMTP id d7-20020a5d6447000000b0031ffb5d96damr21560136wrw.64.1697105315533;
-        Thu, 12 Oct 2023 03:08:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697105317; x=1697710117;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uMV6knP2vLu/vHdHEBOSBg5/6andL2RYQDxRoSzD5RA=;
+        b=aXzNYfPEbrkmU+3B+0+f6GQrXj+O3Bphy493qL8S0cm4emHnoyCyKVkfL9m1/vSpHq
+         mrJ6h11Gdlxea56V+Dm0hf9ZCLR3nlnLUpPYVGTpKPD8tnpnskRfme7/WaLroKOMYEKS
+         A+oB5/GfDMYePgadA7fFenNieZg26US7E5CvnM2e3O+FBw5YmP1zhOcZqgto3K089KER
+         ke6OoVQBx8eAK8S1VpfmUlhE1CAXHSsbOxjK544WlbMzwACTPsTLsJO4kSOfIcKGretd
+         5+866jAUXypBW5GMjGBar0hCuMgU1Lh2vXHfMGAT4P055qNjFhufVWJavpovHpDo5CVE
+         6B4A==
+X-Gm-Message-State: AOJu0YwiJwPgsqibep1ippEXvE3Ep+LMsrNt3CB6Yv01y+83tpuYt/yh
+        t8yFC68s8j4Ymf5PvcA1kp0=
+X-Google-Smtp-Source: AGHT+IFjKjcTaHf2NJ6N29120b+8wBoJ+W6K+tl9kn9/Z768BH9cEbvLUKjARc7MjgjfPGjGv95C4A==
+X-Received: by 2002:adf:e8ca:0:b0:324:7a6b:d504 with SMTP id k10-20020adfe8ca000000b003247a6bd504mr23080121wrn.4.1697105316670;
+        Thu, 12 Oct 2023 03:08:36 -0700 (PDT)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id dj16-20020a0560000b1000b003198a9d758dsm922737wrb.78.2023.10.12.03.08.34
+        by smtp.googlemail.com with ESMTPSA id dj16-20020a0560000b1000b003198a9d758dsm922737wrb.78.2023.10.12.03.08.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 03:08:35 -0700 (PDT)
+        Thu, 12 Oct 2023 03:08:36 -0700 (PDT)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     Raju Rangoju <rajur@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -68,10 +69,12 @@ To:     Raju Rangoju <rajur@chelsio.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-wireless@vger.kernel.org
 Cc:     Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH v2 0/4] net: stmmac: improve tx timer logic
-Date:   Thu, 12 Oct 2023 12:04:55 +0200
-Message-Id: <20231012100459.6158-1-ansuelsmth@gmail.com>
+Subject: [net-next PATCH v2 1/4] net: introduce napi_is_scheduled helper
+Date:   Thu, 12 Oct 2023 12:04:56 +0200
+Message-Id: <20231012100459.6158-2-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231012100459.6158-1-ansuelsmth@gmail.com>
+References: <20231012100459.6158-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,57 +87,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series comes with the intention of restoring original performance
-of stmmac on some router/device that used the stmmac driver to handle
-gigabit traffic.
+We currently have napi_if_scheduled_mark_missed that can be used to
+check if napi is scheduled but that does more thing than simply checking
+it and return a bool. Some driver already implement custom function to
+check if napi is scheduled.
 
-More info are present in patch 3. This cover letter is to show results
-and improvements of the following change.
+Drop these custom function and introduce napi_is_scheduled that simply
+check if napi is scheduled atomically.
 
-The move to hr_timer for tx timer and commit 8fce33317023 ("net: stmmac:
-Rework coalesce timer and fix multi-queue races") caused big performance
-regression on these kind of device.
+Update any driver and code that implement a similar check and instead
+use this new helper.
 
-This was observed on ipq806x that after kernel 4.19 couldn't handle
-gigabit speed anymore.
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+ drivers/net/ethernet/chelsio/cxgb3/sge.c  |  8 --------
+ drivers/net/wireless/realtek/rtw89/core.c |  2 +-
+ include/linux/netdevice.h                 | 23 +++++++++++++++++++++++
+ net/core/dev.c                            |  2 +-
+ 4 files changed, 25 insertions(+), 10 deletions(-)
 
-The following series is currently applied and tested in OpenWrt SNAPSHOT
-and have great performance increase. (the scenario is qca8k switch +
-stmmac dwmac1000) Some good comparison can be found here [1].
-
-The difference is from a swconfig scenario (where dsa tagging is not
-used so very low CPU impact in handling traffic) and DSA scenario where
-tagging is used and there is a minimal impact in the CPU. As can be
-notice even with DSA in place we have better perf.
-
-It was observed by other user that also SQM scenario with cake scheduler
-were improved in the order of 100mbps (this scenario is CPU limited and
-any increase of perf is caused by removing load on the CPU)
-
-Been at least 15 days that this is in use without any complain or bug
-reported about queue timeout. (was the case with v1 before the
-additional patch was added, only appear on real world tests and not on
-iperf tests)
-
-[1] https://forum.openwrt.org/t/netgear-r7800-exploration-ipq8065-qca9984/285/3427?u=ansuel
-
-Changes v2:
-- Add patch to move tx timer arm outside tx clean.
-
-Christian Marangi (4):
-  net: introduce napi_is_scheduled helper
-  net: stmmac: improve TX timer arm logic
-  net: stmmac: move TX timer arm after DMA enable
-  net: stmmac: increase TX coalesce timer to 5ms
-
- drivers/net/ethernet/chelsio/cxgb3/sge.c      |  8 ----
- drivers/net/ethernet/stmicro/stmmac/common.h  |  2 +-
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 37 +++++++++++++++----
- drivers/net/wireless/realtek/rtw89/core.c     |  2 +-
- include/linux/netdevice.h                     | 23 ++++++++++++
- net/core/dev.c                                |  2 +-
- 6 files changed, 56 insertions(+), 18 deletions(-)
-
+diff --git a/drivers/net/ethernet/chelsio/cxgb3/sge.c b/drivers/net/ethernet/chelsio/cxgb3/sge.c
+index 2e9a74fe0970..71fa2dc19034 100644
+--- a/drivers/net/ethernet/chelsio/cxgb3/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb3/sge.c
+@@ -2501,14 +2501,6 @@ static int napi_rx_handler(struct napi_struct *napi, int budget)
+ 	return work_done;
+ }
+ 
+-/*
+- * Returns true if the device is already scheduled for polling.
+- */
+-static inline int napi_is_scheduled(struct napi_struct *napi)
+-{
+-	return test_bit(NAPI_STATE_SCHED, &napi->state);
+-}
+-
+ /**
+  *	process_pure_responses - process pure responses from a response queue
+  *	@adap: the adapter
+diff --git a/drivers/net/wireless/realtek/rtw89/core.c b/drivers/net/wireless/realtek/rtw89/core.c
+index cca18d7ea1dd..6faf4dcf007c 100644
+--- a/drivers/net/wireless/realtek/rtw89/core.c
++++ b/drivers/net/wireless/realtek/rtw89/core.c
+@@ -1919,7 +1919,7 @@ static void rtw89_core_rx_to_mac80211(struct rtw89_dev *rtwdev,
+ 	struct napi_struct *napi = &rtwdev->napi;
+ 
+ 	/* In low power mode, napi isn't scheduled. Receive it to netif. */
+-	if (unlikely(!test_bit(NAPI_STATE_SCHED, &napi->state)))
++	if (unlikely(!napi_is_scheduled(napi)))
+ 		napi = NULL;
+ 
+ 	rtw89_core_hw_to_sband_rate(rx_status);
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index ae553f886796..ad75875a854d 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -482,6 +482,29 @@ static inline bool napi_prefer_busy_poll(struct napi_struct *n)
+ 	return test_bit(NAPI_STATE_PREFER_BUSY_POLL, &n->state);
+ }
+ 
++/**
++ * napi_is_scheduled - test if NAPI is scheduled
++ * @n: NAPI context
++ *
++ * This check is "best-effort". With no locking implemented,
++ * a NAPI can be scheduled or terminate right after this check
++ * and produce not precise results.
++ *
++ * NAPI_STATE_SCHED is an internal state, napi_is_scheduled
++ * should not be used normally and napi_schedule should be
++ * used instead.
++ *
++ * Use only if the driver really needs to check if a NAPI
++ * is scheduled for example in the context of delayed timer
++ * that can be skipped if a NAPI is already scheduled.
++ *
++ * Return True if NAPI is scheduled, False otherwise.
++ */
++static inline bool napi_is_scheduled(struct napi_struct *n)
++{
++	return test_bit(NAPI_STATE_SCHED, &n->state);
++}
++
+ bool napi_schedule_prep(struct napi_struct *n);
+ 
+ /**
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 02949a929e7f..c2ec535bc9b4 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -6523,7 +6523,7 @@ static int __napi_poll(struct napi_struct *n, bool *repoll)
+ 	 * accidentally calling ->poll() when NAPI is not scheduled.
+ 	 */
+ 	work = 0;
+-	if (test_bit(NAPI_STATE_SCHED, &n->state)) {
++	if (napi_is_scheduled(n)) {
+ 		work = n->poll(n, weight);
+ 		trace_napi_poll(n, work, weight);
+ 	}
 -- 
 2.40.1
 
