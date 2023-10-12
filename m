@@ -2,138 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0F37C7A69
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A927C7A65
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443117AbjJLX3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 19:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
+        id S1443095AbjJLX3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 19:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443129AbjJLX3b (ORCPT
+        with ESMTP id S1443053AbjJLX3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 19:29:31 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11B1EA
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:29:28 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9b27bc8b65eso245284166b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:29:28 -0700 (PDT)
+        Thu, 12 Oct 2023 19:29:19 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23904A9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:29:18 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3af609c4dfeso904720b6e.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:29:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697153367; x=1697758167; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1TkuD/z8Ea8WYF7ftnX8CODZoRzj/hmgN33zzZIDYSA=;
-        b=UFmt1M5v/IcLUQCK/67fxs2EUXoYS4NqBzMjn1qm45QtLvAESJD2vJl2ZQV4/FSzxz
-         vxwqR+S3NBCbO6K8nbljZOWpJafC7WnYiG/G/DmCnNPIzM5ke/BKbprAncvWfjM+Hsq8
-         oaA/KAdPYeHbiw9e/pspQc/UrC5dhYwYxYgUU9OwevJqENrOjPOUGyKXYoSUMHPiPyND
-         WO1rBOu3e0nq6Ilbco7ujpCcIrsfW8R1rzs/9L3H9seX8ope8ocIiEi3PtHtrtPcPuq+
-         7ay3fRVQ60+hggYZhP2f/ONW4XMxzTjqge8ykXlU5VKefpP9wqa+oK09rX5aJYmKz5Lt
-         cnVQ==
+        d=gmail.com; s=20230601; t=1697153357; x=1697758157; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2PQzVbFzPaK/7j+0uEoI7g4sCbjf7855ArRv9lm1q1A=;
+        b=DqXCU4pMbdxo7Le/T7qQqSOZdNdnG8IUKMVZeLtweJL9+x4OWO2UvvHGC/Wt9BJgqp
+         DSAgTwUpetR6Kt3uaxBaIwDwsQAVkkruGtAK/jsESVeV+JZ7sFtW78JHfYNUTBp6oJQ0
+         gHsIQcmCRfcknrf8DVZpY1dJqJy8yoQM1fIHKuX/1lvZyj6YIdC4hAIPjYygE47r7SEH
+         mNiu5sYhn9d553ua2+21jb+yyRRaYUOi9RNpV9wahrUKF1Sh6+1/DBFFw2Bu31Y0lwii
+         hjcNCeos5it9SQ9jbYjrTia0L1laWgXy/zkDUoXrZtwMv5jdHFnytMJi6F9IoBrfYr2Z
+         sHdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697153367; x=1697758167;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1697153357; x=1697758157;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=1TkuD/z8Ea8WYF7ftnX8CODZoRzj/hmgN33zzZIDYSA=;
-        b=ZE2P3PoIjgYr23fKDjreWuSTCKrVl9XSYqpIijF3y+eLDv2OPxZgFU3FJ2nWNpRh6R
-         oRBND/0BUmHKPUDewi5LHtyBDDaB/Edh0TkLsH0fdUV/reCtxPCtfatWTZPJFu8J+mo9
-         4tLGqUSQaFt5gyy4IzXaMfPP4H76MHgUE8oZHrvJzDIF6crcdiWWBRL6gZ75hSoEaYIw
-         QeWujh3SCtLeO0jAT8TQX6E9ilLw+ADprnykISopQZVHF8s33hbc71CqmVJmlbGXEMvn
-         0gEYDKActLNL5DvS3QQIl+pZsoff8ird+DpMSBTMzkCNyvK3iOgO7Zysp8yG4jKWOK4B
-         dNCA==
-X-Gm-Message-State: AOJu0Yxojtefxis/rfgUR9hIpNb+60jKL+8SuLBy6hv4wXOBIct33Kth
-        ESnk8aYvPM3+A6mIx7pHEG5YqSBuxasvS2bgPdjssg==
-X-Google-Smtp-Source: AGHT+IFdXPfo4ovXRKwRkiVmXcpZd2iaEltEYEe0yNpT/QQXXaHOlP6gWF9jdH/t5/DhLfHs4srOZv3wku2b10WydYc=
-X-Received: by 2002:a17:906:31c5:b0:9ae:6a51:87c3 with SMTP id
- f5-20020a17090631c500b009ae6a5187c3mr23549400ejf.9.1697153366955; Thu, 12 Oct
- 2023 16:29:26 -0700 (PDT)
+        bh=2PQzVbFzPaK/7j+0uEoI7g4sCbjf7855ArRv9lm1q1A=;
+        b=MpPeAzt+XaT6FBs/qHrOgUfM9qIr6F45WN3V6D0tlrNTpQpDBfo3/jSdoz5zXPIqEq
+         ZHt/Jwar++lYMZyBzpsxIaF+DPUmbf4w6Gy1TBqEYzoSM2wWn3yH/Us/BTjlPmyJeEbW
+         6MkLLRbaCqEsTRPOsAHudM4KBB9nJHmZEEN3/9cx9XWPf+i9tzmj0+dOStDH1lSCcHcY
+         Q7kOS+ecpKVzW9IeBs2ntjJv4ieFnOAd5FMOM9xcVLLwtml14xUwslNz2ZtCHYXtvTLS
+         PjkV/oxr/4w8AqNswpOzSljBpUHFX+r44ugPfQCnRhIDclN/RhjFczd/imBaUOAezAFA
+         zS+g==
+X-Gm-Message-State: AOJu0YwDy4fShuvAZlmBljMpQLqEqE+mjS10Ens3dAUZI/syf1c2DPVs
+        wL2w9ywEiHXtmjELkF+0IR+juYXN5lUqMg==
+X-Google-Smtp-Source: AGHT+IH6y78R4gypagB9eKwVM2UDqVio3PcPJNPwqL/9bWcgnOkEZB+C7vXkwYV45RImeq5Kj4hV3A==
+X-Received: by 2002:a05:6808:1313:b0:3af:8050:369f with SMTP id y19-20020a056808131300b003af8050369fmr33008736oiv.6.1697153357378;
+        Thu, 12 Oct 2023 16:29:17 -0700 (PDT)
+Received: from Negi ([68.181.16.134])
+        by smtp.gmail.com with ESMTPSA id z15-20020a056a001d8f00b006abd5f6802fsm3263319pfw.60.2023.10.12.16.29.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 16:29:16 -0700 (PDT)
+From:   Soumya Negi <soumya.negi97@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Micky Ching <micky_ching@realsil.com.cn>
+Cc:     outreachy@lists.linux.dev, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Soumya Negi <soumya.negi97@gmail.com>
+Subject: [PATCH v2 0/2] staging: rts5208: Fix checkpatch macro warnings
+Date:   Thu, 12 Oct 2023 16:29:04 -0700
+Message-ID: <cover.1697152251.git.soumya.negi97@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20231010032117.1577496-1-yosryahmed@google.com>
- <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
- <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
- <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
- <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
- <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
- <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
- <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com> <20231012132946.GA470544@cmpxchg.org>
-In-Reply-To: <20231012132946.GA470544@cmpxchg.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 12 Oct 2023 16:28:49 -0700
-Message-ID: <CAJD7tkbrR=6SmVxo4pVKHVu4eGBYN+xXuu5+zFPh6LSqt8vGcw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[..]
-> > >
-> > > Using next-20231009 and a similar 44 core machine with hyperthreading
-> > > disabled, I ran 22 instances of netperf in parallel and got the
-> > > following numbers from averaging 20 runs:
-> > >
-> > > Base: 33076.5 mbps
-> > > Patched: 31410.1 mbps
-> > >
-> > > That's about 5% diff. I guess the number of iterations helps reduce
-> > > the noise? I am not sure.
-> > >
-> > > Please also keep in mind that in this case all netperf instances are
-> > > in the same cgroup and at a 4-level depth. I imagine in a practical
-> > > setup processes would be a little more spread out, which means less
-> > > common ancestors, so less contended atomic operations.
-> >
-> >
-> > (Resending the reply as I messed up the last one, was not in plain text)
-> >
-> > I was curious, so I ran the same testing in a cgroup 2 levels deep
-> > (i.e /sys/fs/cgroup/a/b), which is a much more common setup in my
-> > experience. Here are the numbers:
-> >
-> > Base: 40198.0 mbps
-> > Patched: 38629.7 mbps
-> >
-> > The regression is reduced to ~3.9%.
-> >
-> > What's more interesting is that going from a level 2 cgroup to a level
-> > 4 cgroup is already a big hit with or without this patch:
-> >
-> > Base: 40198.0 -> 33076.5 mbps (~17.7% regression)
-> > Patched: 38629.7 -> 31410.1 (~18.7% regression)
-> >
-> > So going from level 2 to 4 is already a significant regression for
-> > other reasons (e.g. hierarchical charging). This patch only makes it
-> > marginally worse. This puts the numbers more into perspective imo than
-> > comparing values at level 4. What do you think?
->
-> I think it's reasonable.
->
-> Especially comparing to how many cachelines we used to touch on the
-> write side when all flushing happened there. This looks like a good
-> trade-off to me.
+In the driver staging/rts5208, checkpatch.pl warns of possible precedence 
+issues in the header rtsx.h because macro arguments are not parenthesized.
+This patch set handles the respective macros differently(as needed) in 
+each patch to fix the warnings. Patches can be applied in any order.
 
-Thanks.
+Soumya Negi (2):
+  staging: rts5208: Refactor macros to static inline functions
+  staging: rts5208: Remove macros scsi_lock(), scsi_unlock()
+---
+v2: No change since v1. Resending patch set because the patches were not 
+delivered correctly on first attempt.
 
-Still wanting to figure out if this patch is what you suggested in our
-previous discussion [1], to add a
-Suggested-by if appropriate :)
+ drivers/staging/rts5208/rtsx.c | 24 ++++++-------
+ drivers/staging/rts5208/rtsx.h | 66 ++++++++++++++++++++--------------
+ 2 files changed, 52 insertions(+), 38 deletions(-)
 
-[1]https://lore.kernel.org/lkml/20230913153758.GB45543@cmpxchg.org/
+-- 
+2.42.0
+
