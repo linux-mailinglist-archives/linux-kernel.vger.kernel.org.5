@@ -2,162 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CB57C6B3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E85D7C6B33
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378135AbjJLKeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36726 "EHLO
+        id S1377837AbjJLKdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234170AbjJLKeI (ORCPT
+        with ESMTP id S1377651AbjJLKd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:34:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960AC90;
-        Thu, 12 Oct 2023 03:34:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697106846; x=1728642846;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=ji8x2F8u0U0ggxefEbWPL9IJWQlQGGYyAuJIBploLj8=;
-  b=bN3f4Qk6kxsqtiPEdc7hozzc/lHyjyLmT9hB1THfw7cBEeXlPkp2ydv4
-   A5RWqQuNNWZM4AHxz7lFg/5vYZlLPnq3fbNSRje7q8fucWjt+5h6iHSUq
-   lV2n0tt63s27D4mcreO06tcglJUm++kPYTWNkmUiUTT9Su1BNqB0btepP
-   v2x/eCjoYn4Z/KmXkMXUfrnzCL0uqLlTPy7VYz2lRVcyCOX1YVtOgi8hz
-   PXk3wjIBqd57RZhJI714m3FQ9sIPDHK0wEz4wFbNmHdxX/NDdcpf5ZU/a
-   IrodtZrjUd3H3whvPsp1yjwKL187hu6QXV/0zKS3Pt5cD0Ws99XtR3TbB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="388748393"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="388748393"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:34:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="870527710"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="870527710"
-Received: from asroczyn-mobl.ger.corp.intel.com ([10.249.36.107])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:34:00 -0700
-Date:   Thu, 12 Oct 2023 13:29:49 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-cc:     linux-pci@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        ath10k@lists.infradead.org, ath11k@lists.infradead.org,
-        ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-bluetooth@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
-        linux-wireless@vger.kernel.org, Netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2 04/13] PCI/ASPM: Move L0S/L1/sub states mask calculation
- into a helper
-In-Reply-To: <20231011193206.GA1039708@bhelgaas>
-Message-ID: <bcecb577-bf69-e854-6f59-f4cb26c4b354@linux.intel.com>
-References: <20231011193206.GA1039708@bhelgaas>
+        Thu, 12 Oct 2023 06:33:29 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791E1B7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:33:27 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9ba081173a3so132727366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:33:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697106806; x=1697711606; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+trYhH6pdvjtTzpwC/GNcRs1Ixqq8ebN0gecPy8EoRE=;
+        b=S5WNP29LFGtZvS+T7bFNweVOsMtA4mcF1waPNwO69s7r7oQWvuVA9Jx2Kd2FcqF+XS
+         R9Clxu4rUt9m9YlhIqgYUTEijaFVXC26VK66hQaqfwQsJ/bIDqwYO9il21mt+tSmzJ3X
+         LH1WiUK71p98w7uyZCowDQ1mnYoVmzTVO8xNA3UUclAbFbgLNgzOMmmofRqqhTEnl6c+
+         zQM//QWRMbW82ubCYXEMfaFR2NWfTiZXMzGeMkEdJ7FkSox6Oo+u3G1zGp1g5izf8QRO
+         s4cubwYSBVZwJuCvq3dM1D1Q3Rg+47S9OulN5L4VVkRoiJBXDrzzL/fjuNO1xs7AfSxL
+         YGmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697106806; x=1697711606;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+trYhH6pdvjtTzpwC/GNcRs1Ixqq8ebN0gecPy8EoRE=;
+        b=hfLOVXmlMX1IUxoJDGrz0W7sMYi5MkNFo1wX8I6J5l1tbYurZ7Omqg0qUy9QHfkQN5
+         qjAkFKi8pid+H9094FXFfK3eVdNBVAP76YzGevdwaqmrplIg1nk5AiLkDckUnNv77sjO
+         oGG7OlbDGRL5IVut32/cBl4BLPShvxFbpri9uTQPaGKRYzyeaPaHQcO91HTpJZh2LksU
+         WZpj/zvlnS8fjdLe088/erB91LLTlJqXrTr1ShXHhMcHuKkcFhyUFiL+qABR+jx26rux
+         C0Umj0DS1E8DRmb8VkJaWHP2TPEGkDmsTygQXeF2biFIBBuPw19e9t1/OGiKI2dJOwK2
+         mSvQ==
+X-Gm-Message-State: AOJu0YwppGGURUKP+jOfj0Ek4Ysf7sxlxs97hCqJoSIEYHZXUor/nboY
+        dIq2Heqx/iVaZOebOPNjvph4APUFP2RZ96dyvyM=
+X-Google-Smtp-Source: AGHT+IEoaB7SxZK8hFiCbD0c+W1n4JETZOdvrlo3gJ+KsJAs7mMU2QDRBvipZgMugULsUgkZhMfURFQaMQedjh8/nA0=
+X-Received: by 2002:a17:906:8b:b0:9b2:bb02:a543 with SMTP id
+ 11-20020a170906008b00b009b2bb02a543mr23857083ejc.74.1697106805715; Thu, 12
+ Oct 2023 03:33:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1380828921-1697106845=:1692"
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230820215320.4187-1-dakr@redhat.com> <20230820215320.4187-3-dakr@redhat.com>
+ <0c50ff22-0f11-1e27-c32e-694ce2b1e6c5@shipmail.org> <ZO864yp3UyVEfEjz@pollux>
+ <88c45fe6-0942-707c-9ea7-8486c177fcd7@shipmail.org> <ZO9Zq2RhbX8EeHrn@pollux>
+ <736b6b6d-9e04-a27d-7d60-0c45d696b304@shipmail.org> <ZPB26A0/oLHTmyqk@cassiopeiae>
+ <a8f28d62-daec-927a-a33d-5be3eec6a1ed@shipmail.org> <ZPDk/lao1JlBNGoJ@cassiopeiae>
+ <8a8253ae-0b85-df90-b480-64eeebfafc6d@shipmail.org> <CAPM=9tz3o-m+8VJJ6hxWhykat0kpp1UE7dBJE3X91aHHo1Y2VA@mail.gmail.com>
+ <76963abd-77a1-4bbd-9537-7b230e648a90@amd.com>
+In-Reply-To: <76963abd-77a1-4bbd-9537-7b230e648a90@amd.com>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Thu, 12 Oct 2023 20:33:13 +1000
+Message-ID: <CAPM=9twSHGRoSoXxG+hz1T8iBX2VgPFvFsNCDnK_nHW9WJYBtw@mail.gmail.com>
+Subject: Re: [PATCH drm-misc-next 2/3] drm/gpuva_mgr: generalize
+ dma_resv/extobj handling and GEM validation
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>, Danilo Krummrich <dakr@redhat.com>,
+        daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        faith.ekstrand@collabora.com, bskeggs@redhat.com,
+        Liam.Howlett@oracle.com, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Wed, 11 Oct 2023 at 17:07, Christian K=C3=B6nig <christian.koenig@amd.co=
+m> wrote:
+>
+> Am 10.10.23 um 22:23 schrieb Dave Airlie:
+> >> I think we're then optimizing for different scenarios. Our compute
+> >> driver will use mostly external objects only, and if shared, I don't
+> >> forsee them bound to many VMs. What saves us currently here is that in
+> >> compute mode we only really traverse the extobj list after a preempt
+> >> fence wait, or when a vm is using a new context for the first time. So
+> >> vm's extobj list is pretty large. Each bo's vma list will typically be
+> >> pretty small.
+> > Can I ask why we are optimising for this userspace, this seems
+> > incredibly broken.
+> >
+> > We've has this sort of problem in the past with Intel letting the tail
+> > wag the horse, does anyone remember optimising relocations for a
+> > userspace that didn't actually need to use relocations?
+> >
+> > We need to ask why this userspace is doing this, can we get some
+> > pointers to it? compute driver should have no reason to use mostly
+> > external objects, the OpenCL and level0 APIs should be good enough to
+> > figure this out.
+>
+> Well that is pretty normal use case, AMD works the same way.
+>
+> In a multi GPU compute stack you have mostly all the data shared between
+> different hardware devices.
+>
+> As I said before looking at just the Vulcan use case is not a good idea
+> at all.
+>
 
---8323329-1380828921-1697106845=:1692
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+It's okay, I don't think anyone is doing that, some of the these
+use-cases are buried in server land and you guys don't communicate
+them very well.
 
-On Wed, 11 Oct 2023, Bjorn Helgaas wrote:
+multi-gpu compute would I'd hope be moving towards HMM/SVM type
+solutions though?
 
-> On Mon, Sep 18, 2023 at 04:10:54PM +0300, Ilpo Järvinen wrote:
-> > ASPM service driver does the same L0S / L1S / sub states allowed
-> > calculation in __pci_disable_link_state() and
-> > pci_set_default_link_state().
-> 
-> Is there a typo or something here?  This patch only adds a call to
-> __pci_disable_link_state(), not to pci_set_default_link_state().
+I'm also not into looking at use-cases that used to be important but
+might not as important going forward.
 
-This was because one of the changes that got included in the meantime made 
-the state handling in those two functions to differ so I removed the call 
-from the code but forgot to update the changelog to match the code. I'll 
-fix the changelog.
-
--- 
- i.
-
-
-> > Create a helper to calculate the mask for the allowed states.
-> > 
-> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > ---
-> >  drivers/pci/pcie/aspm.c | 33 +++++++++++++++++++++------------
-> >  1 file changed, 21 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> > index ec6d7a092ac1..91dc95aca90f 100644
-> > --- a/drivers/pci/pcie/aspm.c
-> > +++ b/drivers/pci/pcie/aspm.c
-> > @@ -1034,6 +1034,26 @@ static struct pcie_link_state *pcie_aspm_get_link(struct pci_dev *pdev)
-> >  	return bridge->link_state;
-> >  }
-> >  
-> > +static u8 pci_link_state_mask(int state)
-> > +{
-> > +	u8 result = 0;
-> > +
-> > +	if (state & PCIE_LINK_STATE_L0S)
-> > +		result |= ASPM_STATE_L0S;
-> > +	if (state & PCIE_LINK_STATE_L1)
-> > +		result |= ASPM_STATE_L1;
-> > +	if (state & PCIE_LINK_STATE_L1_1)
-> > +		result |= ASPM_STATE_L1_1;
-> > +	if (state & PCIE_LINK_STATE_L1_2)
-> > +		result |= ASPM_STATE_L1_2;
-> > +	if (state & PCIE_LINK_STATE_L1_1_PCIPM)
-> > +		result |= ASPM_STATE_L1_1_PCIPM;
-> > +	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
-> > +		result |= ASPM_STATE_L1_2_PCIPM;
-> > +
-> > +	return result;
-> > +}
-> > +
-> >  static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool sem)
-> >  {
-> >  	struct pcie_link_state *link = pcie_aspm_get_link(pdev);
-> > @@ -1063,18 +1083,7 @@ static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool sem)
-> >  	if (sem)
-> >  		down_read(&pci_bus_sem);
-> >  	mutex_lock(&aspm_lock);
-> > -	if (state & PCIE_LINK_STATE_L0S)
-> > -		link->aspm_disable |= ASPM_STATE_L0S;
-> > -	if (state & PCIE_LINK_STATE_L1)
-> > -		link->aspm_disable |= ASPM_STATE_L1;
-> > -	if (state & PCIE_LINK_STATE_L1_1)
-> > -		link->aspm_disable |= ASPM_STATE_L1_1;
-> > -	if (state & PCIE_LINK_STATE_L1_2)
-> > -		link->aspm_disable |= ASPM_STATE_L1_2;
-> > -	if (state & PCIE_LINK_STATE_L1_1_PCIPM)
-> > -		link->aspm_disable |= ASPM_STATE_L1_1_PCIPM;
-> > -	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
-> > -		link->aspm_disable |= ASPM_STATE_L1_2_PCIPM;
-> > +	link->aspm_disable |= pci_link_state_mask(state);
-> >  	pcie_config_aspm_link(link, policy_to_aspm_state(link));
-> >  
-> >  	if (state & PCIE_LINK_STATE_CLKPM)
+Dave.
 
 
---8323329-1380828921-1697106845=:1692--
+> Christian.
+>
+> >
+> > Dave.
+>
