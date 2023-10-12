@@ -2,107 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE0D7C70E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F73C7C70E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378304AbjJLPET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51726 "EHLO
+        id S1347196AbjJLPEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:04:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbjJLPES (ORCPT
+        with ESMTP id S1379045AbjJLPE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:04:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2F4B8;
-        Thu, 12 Oct 2023 08:04:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 832D8C433CD;
-        Thu, 12 Oct 2023 15:04:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697123056;
-        bh=Wg+9RqFKlFhtVv8OJE3FcYAhzK8o4Jsak7+oQ9IdYv4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RquMVZnHtNudVG7LgNUC2XAWr5xF9/mkQH7o5pl+5k4hvtJ43KUxF7gsLLtJ9bRFx
-         1qXo0R3XCt251Vt/MYiPzVdW4cwmcbHRAAYbVMf51YQkNP0Dlam5Q7lkAlT7OWOg6Y
-         HvxTbwK7M9GKbYU2NoxawFdypoyYSrqlMcM/xVatmPBnMZRnemPNqDqXHnUswnMFmK
-         VjwpFPhdmsbHtJnW6HoIq3kzbmXj9JsBB+ujequAAJYAD7M65wAgm6qgyeXuTEZMj9
-         k3KV6pv4vfHLhAySscU/JItfJX2hiKrb0681ODh6FHBm2x7zkcZBWdBE8HfKVy7Q3r
-         zwnPffk1Avm5A==
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50305abe5f0so1516194e87.2;
-        Thu, 12 Oct 2023 08:04:16 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzkPDh/eh/7xFUJ9ezdKvoQcOHPuCBgavALTtWeYxpNpewgBMuH
-        fLq7cCDehqRVirVKTX/jiNiFAU17vaH3uQts+A==
-X-Google-Smtp-Source: AGHT+IHIvQVJksv+cxRwuuB70cl4gPO5kN5IBSa3Kgn2Ca6c2r1lJhrSWvp9g3KCs3skbUuscijBaovAs8kQVvAkYKs=
-X-Received: by 2002:a05:6512:10c9:b0:504:3807:22a4 with SMTP id
- k9-20020a05651210c900b00504380722a4mr24937247lfg.23.1697123054598; Thu, 12
- Oct 2023 08:04:14 -0700 (PDT)
+        Thu, 12 Oct 2023 11:04:29 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 114C9CC
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:04:27 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4066241289bso11672195e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:04:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697123065; x=1697727865; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=P6/hE83dFOY8xzxiFaTi6nXaEfmM6cCFOZ7/7sFQHGk=;
+        b=dV5J+rLf/BUMcDfUmM+7rUAfrOD9LChKnQYKT/tsR0d5OR+3J9UC/k3FVOzkX09Euv
+         xO5zRpfRoqAiKH/4yyR39DoqSFVjPmtLy87mSlW/B/IzjY5DOvEcsWiVvKKI1iteMKTX
+         2s4gYj3NvTYwg1RVcXq6bORxjgGCu3kFc68gwSYLjGwJAbRHPV9jHx3UfaPOgA8POgRP
+         MpMfFcNEjiIhBjq1IJMiK6hkY/BLHkJi4/SgcSJI3vzyeGqvIJUAbwjdTzbfHNE7f1Xa
+         CSdorFg/PhZqRFeDBhoOTxoKz8kY0KSe9BDa7jB8jGUdTBMpA/OGmzROxwFPUrsqflyj
+         VIwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697123065; x=1697727865;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=P6/hE83dFOY8xzxiFaTi6nXaEfmM6cCFOZ7/7sFQHGk=;
+        b=D3Z3sgoO06RepCHBBgkj5VZ+/6xOSsmpSdvYJPhXJUzvwaNilKqn9gyWtOigRhxPGr
+         9qcaFOGTHZHDDmfZnwgU8a67sTtcjZHOlC3hvj0bPqdfiFfwZAXMCnNuoLE4a+V+ZI4t
+         Mp4HU/B4PwO4TNog2Es64ry8h78HZ/ssqu+NrdMcc0rPWwI6YLoPHTOEV6u1SS2pTluk
+         lWPiyrMO+9gKGzfykQlW7reReKo/y4LZaQ/73CxEFn1BTUGwzAsYswdOi+FeZFy4Y/4Z
+         t15SkYPNBShsZrilrVVgukKjse2Ru+WWoUoKc06kJr3sZvydF5QpxCuB7Vu/gTz7S52U
+         ca+A==
+X-Gm-Message-State: AOJu0YzsvTjbre8Q0nI3piz3VZse4DMvD4qal5DrRdwdAuRpx2xmZL6R
+        bvzcvYEtykS7v9JdNYtUH/56NA==
+X-Google-Smtp-Source: AGHT+IFJyxI7rdj8mcmCS4wzYOwuGNkd6Yy6Le22kTlKe9nA4+WV6KUocuBsOLidG3+0B/Xr0jhs1w==
+X-Received: by 2002:a05:600c:211:b0:405:3dbc:8823 with SMTP id 17-20020a05600c021100b004053dbc8823mr21915774wmi.12.1697123065350;
+        Thu, 12 Oct 2023 08:04:25 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
+        by smtp.googlemail.com with ESMTPSA id q19-20020a1cf313000000b0040596352951sm71876wmq.5.2023.10.12.08.04.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 08:04:24 -0700 (PDT)
+Message-ID: <a9c42b1d-919d-4c77-991d-be113b9cf2a5@linaro.org>
+Date:   Thu, 12 Oct 2023 17:04:24 +0200
 MIME-Version: 1.0
-References: <20231009211356.3242037-3-robh@kernel.org> <CAGb2v66ZHD8mMMNVwp+sTYT6DAFDUrP8ydeTo7KW+uUtBRM3bQ@mail.gmail.com>
- <20231012092618.GF8314@google.com>
-In-Reply-To: <20231012092618.GF8314@google.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 12 Oct 2023 10:04:01 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqK22vWx1VPnrwEh+N-6vy5a7npFSW-=gp1uabTPSG2PpA@mail.gmail.com>
-Message-ID: <CAL_JsqK22vWx1VPnrwEh+N-6vy5a7npFSW-=gp1uabTPSG2PpA@mail.gmail.com>
-Subject: Re: [PATCH] mfd: Use device_get_match_data()
-To:     Lee Jones <lee@kernel.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-omap@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/6] thermal: gov_fair_share: Rearrange
+ get_trip_level()
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+References: <13365827.uLZWGnKmhe@kreacher> <2244940.iZASKD2KPV@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <2244940.iZASKD2KPV@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 4:26=E2=80=AFAM Lee Jones <lee@kernel.org> wrote:
->
-> On Tue, 10 Oct 2023, Chen-Yu Tsai wrote:
->
-> > On Tue, Oct 10, 2023 at 5:14=E2=80=AFAM Rob Herring <robh@kernel.org> w=
-rote:
-> > >
-> > > Use preferred device_get_match_data() instead of of_match_device() to
-> > > get the driver match data. With this, adjust the includes to explicit=
-ly
-> > > include the correct headers.
-> > >
-> > > Signed-off-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > >  drivers/mfd/axp20x.c           | 22 +++-------------------
-> >
-> > I'd keep the error message, but otherwise for axp20x,
-> >
-> > Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-> >
-> > >  drivers/mfd/hi6421-pmic-core.c |  9 +++------
-> > >  drivers/mfd/mxs-lradc.c        |  9 ++-------
-> > >  drivers/mfd/qcom-spmi-pmic.c   |  6 ++++--
-> > >  drivers/mfd/qcom_rpm.c         |  8 ++++----
-> > >  drivers/mfd/tps65910.c         | 11 ++---------
-> > >  drivers/mfd/twl4030-power.c    |  9 +++------
-> > >  drivers/mfd/twl6030-irq.c      | 10 +++++-----
-> > >  8 files changed, 26 insertions(+), 58 deletions(-)
->
-> FYI, this patch is not in my inbox.
+On 06/10/2023 19:42, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Make get_trip_level() use for_each_trip() to iterate over trip points
+> and make it call thermal_zone_trip_id() to obtain the integer ID of a
+> given trip point so as to avoid relying on the knowledge of struct
+> thermal_zone_device internals.
+> 
+> The general functionality is not expected to be changed.
+> 
+> This change causes the governor to use trip pointers instead of trip
+> indices everywhere except for the fair_share_throttle() second argument
+> that will be modified subsequently along with the definition of the
+> governor .throttle() callback.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>   drivers/thermal/gov_fair_share.c |   30 ++++++++++++++----------------
+>   1 file changed, 14 insertions(+), 16 deletions(-)
+> 
+> Index: linux-pm/drivers/thermal/gov_fair_share.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/gov_fair_share.c
+> +++ linux-pm/drivers/thermal/gov_fair_share.c
+> @@ -15,29 +15,27 @@
+>   
+>   #include "thermal_core.h"
+>   
+> -/**
+> - * get_trip_level: - obtains the current trip level for a zone
+> - * @tz:		thermal zone device
+> - */
+>   static int get_trip_level(struct thermal_zone_device *tz)
+>   {
+> -	struct thermal_trip trip;
+> -	int count;
+> +	const struct thermal_trip *trip, *level_trip = NULL;
+> +	int trip_level;
+>   
+> -	for (count = 0; count < tz->num_trips; count++) {
+> -		__thermal_zone_get_trip(tz, count, &trip);
+> -		if (tz->temperature < trip.temperature)
+> +	for_each_trip(tz, trip) {
+> +		if (level_trip && trip->temperature >= tz->temperature)
+>   			break;
 
-There seems to be some issue with kernel.org delivering my mails. You
-are not the only one. I thought it was just ones with large numbers of
-recipients, but seems to be something else. Konstantin has been
-looking into it. Do you see any pattern of mails you do receive from
-me? Sent via google vs. kernel.org?
+Even if very likely the trip points are ordered by the hardware 
+enumeration, strictly we don't have yet the guarantee the trips are 
+ordered (as that is the final goal to correctly detect thresholds 
+crossing with the generic trip). We should go through all the trip 
+points, no?
 
-Rob
+> +		level_trip = trip;
+>   	}
+>   
+> -	/*
+> -	 * count > 0 only if temperature is greater than first trip
+> -	 * point, in which case, trip_point = count - 1
+> -	 */
+> -	if (count > 0)
+> -		trace_thermal_zone_trip(tz, count - 1, trip.type);
+> +	/*  Bail out if the temperature is not greater than any trips. */
+> +	if (level_trip->temperature >= tz->temperature)
+> +		return 0;
+
+Isn't simpler to remove the test level_trip != NULL in the loop and then 
+check here if it is NULL and then return 0.
+
+> +	trip_level = thermal_zone_trip_id(tz, level_trip);
+> +
+> +	trace_thermal_zone_trip(tz, trip_level, level_trip->type);
+>   
+> -	return count;
+> +	return trip_level;
+>   }
+>   
+>   static long get_target_state(struct thermal_zone_device *tz,
+> 
+> 
+> 
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
