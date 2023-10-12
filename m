@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E547C6A36
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 099217C6A38
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235683AbjJLJ65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
+        id S235644AbjJLJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235635AbjJLJ6F (ORCPT
+        with ESMTP id S235669AbjJLJ6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Oct 2023 05:58:05 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3487E8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:57:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB59ED
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:57:58 -0700 (PDT)
 Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B45C7660735F;
-        Thu, 12 Oct 2023 10:57:55 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A76036607353;
+        Thu, 12 Oct 2023 10:57:56 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697104676;
-        bh=P77/YJTDYSmaGaK0qEws105RIsjmcoEYcEi31r4tRak=;
+        s=mail; t=1697104677;
+        bh=F86yWw2q9jRPtZJ/+Z1yLORSlOTQBx0C3WCmrGPVXMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KsNcUiyYcr5XDShO3jtR6lFvlbnttI8Bj9IT5wRcAVxxNmfrK1oSd5yYjKUcYc/M3
-         yoLfBUpSg2XIxz/PIgAFSLOCVf1/becsUAVE6cKNnlz16brkuRgMGGIw8quEFV9uUY
-         ZUouCH6PbMiOfUVXo0+xdoLWaKb5PeoDBPvJQ/r5HnaQSYdTuOGZp5H9AYoo6mG9Rx
-         OdsjXQAAutSbNy8jZiMSdIW9Hu2dEY9+XGjJaWyG91pwiag6C/rGlXD0c/DPjgvDpz
-         BoJYCsTymG7C9a/xSyUD06ZBmomCwr6yEdu9urIwBnTEF3v4DYdKHtfsqf6lW6C41Q
-         j4BvyIfh8FAcA==
+        b=LDRmH/+XLLQ8NVYfRr/Kni7gONMnyJ9bi/N3lXRnNeDQlmehZoP++yqJIQTXKy/Wo
+         CX7K+DXcbNviXcrRYIF1QktlhT/IbCXaX42ZCy4gTL/imQIPsEDDdeqldWMAD+Kg7M
+         g7pO3XQ0DxbxfKrmLSaDqYZBassxSP5ZKuuiDPxUJVQ0izlvC53rLqmp2/j6AnXeah
+         xyIfcMKbkgUKQqoJCB2Sfv9hZ6+Ocg0a51fDfO1FJXRxKcCyp8XqmmRc4MHHToRAMk
+         oeLt9m0A0sX+5jn8+2NKHwp5VMEFbQobvCkQHQGFTdNCggiTbjGjza/mP4YfcLWeh3
+         vbQ49hOTaQLFw==
 From:   AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
 To:     chunkuang.hu@kernel.org
@@ -42,9 +42,9 @@ Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
         linux-arm-kernel@lists.infradead.org, wenst@chromium.org,
         kernel@collabora.com, ehristev@collabora.com,
         nfraprado@collabora.com, CK Hu <ck.hu@mediatek.com>
-Subject: [PATCH v11 14/16] drm/mediatek: aal: Add kerneldoc for struct mtk_disp_aal
-Date:   Thu, 12 Oct 2023 11:57:34 +0200
-Message-ID: <20231012095736.100784-15-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v11 15/16] drm/mediatek: gamma: Add kerneldoc for struct mtk_disp_gamma
+Date:   Thu, 12 Oct 2023 11:57:35 +0200
+Message-ID: <20231012095736.100784-16-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231012095736.100784-1-angelogioacchino.delregno@collabora.com>
 References: <20231012095736.100784-1-angelogioacchino.delregno@collabora.com>
@@ -59,33 +59,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kerneldoc for struct mtk_disp_aal is missing: write one and
-document this structure.
+The mtk_disp_gamma structure was completely undocumented: add some
+kerneldoc documentation to it.
 
 Reviewed-by: CK Hu <ck.hu@mediatek.com>
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- drivers/gpu/drm/mediatek/mtk_disp_aal.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/gpu/drm/mediatek/mtk_disp_gamma.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_aal.c b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
-index 15f91cea9f20..7b3e1c275056 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_aal.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
-@@ -35,6 +35,13 @@ struct mtk_disp_aal_data {
- 	bool has_gamma;
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+index 0f116c0e51b5..52c752bc5f41 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+@@ -50,8 +50,12 @@ struct mtk_disp_gamma_data {
+ 	u8 lut_bits;
  };
  
-+ /**
-+ * struct mtk_disp_aal - Display Adaptive Ambient Light driver structure
-+ * @clk:      clock for DISP_AAL controller
+-/*
+- * struct mtk_disp_gamma - DISP_GAMMA driver structure
++/**
++ * struct mtk_disp_gamma - Display Gamma driver structure
++ * @clk:      clock for DISP_GAMMA block
 + * @regs:     MMIO registers base
 + * @cmdq_reg: CMDQ Client register
-+ * @data:     platform specific data for DISP_AAL
-+ */
- struct mtk_disp_aal {
++ * @data:     platform data for DISP_GAMMA
+  */
+ struct mtk_disp_gamma {
  	struct clk *clk;
- 	void __iomem *regs;
 -- 
 2.42.0
 
