@@ -2,238 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 362ED7C685C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35EA77C6833
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235449AbjJLIeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 04:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54270 "EHLO
+        id S235458AbjJLIeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 04:34:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235438AbjJLIeT (ORCPT
+        with ESMTP id S235456AbjJLIef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 04:34:19 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C81C0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:34:16 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id CD7236607341;
-        Thu, 12 Oct 2023 09:34:14 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697099655;
-        bh=E88h58mF/ZKcAYzSlJWUetP0X5DEpkrttpRrhxuWALE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=IvCnG2I7NpVPySOXB5XIIE6cRcYZl+a6JXTM48N1i1aOiFBk0xJgUPmrNtVXA+DRB
-         81yfxgCGnRUQgwfKAMhtfxEu20NfjWfaGzhBSmpyze5q/mxMH8PBZiUTHhCb+Z6osP
-         zkha3dUuYJWSYQ/LSVOH7bwgR0AIKdK1S4R1zrrSrLsLqyvYH/H6h0o9sBinK9Pwsx
-         IOC6a5LR9pf//QYEYW3SWB9pdvQ1d3ikeQFHvtjfru76zVxxmFDKJXr8G/DaCs2vTM
-         VlIuPwZItV/PoD9AAmTlHZ6kwl8gDFxdMb0+HfENpKUWuGutnruLo/n6AICouynpbA
-         6W9EU6VZMPl8Q==
-Message-ID: <a656906b-b39f-3647-c0c7-f8d14d2e4385@collabora.com>
-Date:   Thu, 12 Oct 2023 10:34:12 +0200
+        Thu, 12 Oct 2023 04:34:35 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B25FCF
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:34:32 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9b27bc8b65eso112401166b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:34:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697099670; x=1697704470; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZHtM8CIbRRoGbDDla4C+aVTQKTIgXHXqExz3rMv/e2k=;
+        b=q/NR1EtRxU6rOcPfwJg2VBn08GgU3KcW0RTM0ey9L/xlI08VVlYoOvSr6IBpvQjuGC
+         uryxTU3ETe9SDUlwpF6HNXZOx2CKlp4nsmGdboNTyQP8pWtJ+AEm+Y3AxkskcLuQxLYt
+         nexXu+oBHepcISUMnYHDf1Vcngtu+FzUsLO13DJnFVKfthSeQNmFxARRK8i0rjyYEsWr
+         hzGCxOwaaLADjtyF3Fv3FYO2i5ntLozsa99AlHEA3jb4jLSG7kPGvHSzsWytHuxGG0FQ
+         dhQ/50cuNNMNAgjCLharPadmsSPcnEpee4F4g6Gw9sJSs6zhq+Oueu0u0xz5NExApc0r
+         JorQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697099670; x=1697704470;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZHtM8CIbRRoGbDDla4C+aVTQKTIgXHXqExz3rMv/e2k=;
+        b=ArvURlONlRuezZg889JavgeAo4yfQJi5aGQYs3eVdB4LMGTQ8V23c4upblfji3aQao
+         RXcU9t/cuFztr6vmxiCIlpuxdyaB9eEFRsQvT2la4/fUe0hXDdlpP4aHi6+0+k4/ddYo
+         vOaaJyZPRKUNjmVO+8ntr+osBUjbucd7acEq2JF17lVroC8StCvEqDxADwEyfZ0B5jQy
+         HpGJFjKfORrTrwN3r0Qkjyx67qECTCDhYraY3v8N/TGZl6jK3mbflkqTGZgpD0tHDMo+
+         +dw+eA8YFGg8Be4N5U/5THngDPN5ft/0NS0xi4Tk0cA2EydLmZCg/z1zECcnoibrC2x/
+         C/+w==
+X-Gm-Message-State: AOJu0Yw4WXKge1ZYdbl1tek/ppUxyfgpqeK0NPoC/9aUhTIfT7v4RKfU
+        NQYYngcjeD6VOLUtGUrTB33kmg==
+X-Google-Smtp-Source: AGHT+IGCFrNLS+zsaa402txePGSS0IyBlPnLHtbp0Q+1AB9hmWjCgOCxAy/C3lIzmPJ072QW8DJtDA==
+X-Received: by 2002:a17:906:2d2:b0:9b9:ed52:8230 with SMTP id 18-20020a17090602d200b009b9ed528230mr17133067ejk.62.1697099670375;
+        Thu, 12 Oct 2023 01:34:30 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.100])
+        by smtp.gmail.com with ESMTPSA id x26-20020a170906711a00b0099329b3ab67sm10786952ejj.71.2023.10.12.01.34.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 01:34:29 -0700 (PDT)
+Message-ID: <6c8bba6c-2229-4160-a16a-8fd4e7f90c43@linaro.org>
+Date:   Thu, 12 Oct 2023 10:34:28 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] mailbox: mtk-cmdq-mailbox: Implement Runtime PM with
- autosuspend
-To:     =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
-        <Jason-JH.Lin@mediatek.com>,
-        "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "wenst@chromium.org" <wenst@chromium.org>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "kernel@collabora.com" <kernel@collabora.com>
-References: <20231011110309.164657-1-angelogioacchino.delregno@collabora.com>
- <33104b25f0430aba4be9fe1060a02f94e1c9d3d7.camel@mediatek.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/4] media: dt-bindings: media: camss: Add
+ qcom,sc8280xp-camss binding
 Content-Language: en-US
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <33104b25f0430aba4be9fe1060a02f94e1c9d3d7.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        dmitry.baryshkov@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jonathan@marek.ca, quic_tdas@quicinc.com,
+        vladimir.zapolskiy@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231011185540.2282975-1-bryan.odonoghue@linaro.org>
+ <20231011185540.2282975-4-bryan.odonoghue@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231011185540.2282975-4-bryan.odonoghue@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 12/10/23 10:00, Jason-JH Lin (林睿祥) ha scritto:
-> Hi Angelo,
+On 11/10/2023 20:55, Bryan O'Donoghue wrote:
+> Add bindings for qcom,sc8280xp-camss in order to support the camera
+> subsystem for sc8280xp as found in the Lenovo x13s Laptop.
 > 
-> Thanks for your help!
-> 
-> On Wed, 2023-10-11 at 13:03 +0200, AngeloGioacchino Del Regno wrote:
->> MediaTek found an issue with display HW registers configuration, and
->> located the reason in the CMDQ Mailbox driver; reporting the original
->> comment with the analysis of this problem by Jason-JH Lin:
->>
->>    GCE should config HW in every vblanking duration.
->>    The stream done event is the start signal of vblanking.
->>
->>    If stream done event is sent between GCE clk_disable
->>    and clk_enable. After GCE clk_enable the stream done event
->>    may not appear immediately and have about 3us delay.
->>
->>    Normal case:
->>    clk_disable -> get EventA -> clk_enable -> clear EventA
->>    -> wait EventB -> get EventB -> config HW
->>
->>    Abnormal case:
->>    clk_disable -> get EventA -> clk_enable -> EventA delay appear
->>    -> clear EventA fail -> wait EventB but get EventA -> config HW
-> 
-> Please also help to add this comment here:
-> This abnormal case may configure display HW in the vactive or non-vblanking duration.
+> This patch depends-on:
+> https://lore.kernel.org/lkml/20231004161853.86382-2-bryan.odonoghue@linaro.org/T
 
-I can send a v2 to add the proposed line in the commit description...
-
-...otherwise... Jassi, can you perhaps please add that while applying the
-commit, if there's no more feedback on this?
-
-Asking for simplicity; I'm not against sending a v2, anyway.
-
+This goes under ---
 
 > 
->>
->>  From his analysis we get that the GCE may finish its event processing
->> after some amount of time (and not immediately after sending commands
->> to it); since the GCE is used for more than just display, and it gets
->> used frequently, solve this issue by implementing Runtime PM handlers
->> with autosuspend: this allows us to overcome to the remote processor
->> delay issues and reduce the clock enable()/disable() calls, while
->> also
->> still managing to save some power, which is something that we
->> wouldn't
->> be able to do if we just enable the GCE clocks at probe.
->>
->> Speaking of which: if Runtime PM is not available there will
->> obviously
->> be no way to get this power saving action so, in this case, the
->> clocks
->> will be enabled at probe() time, kept enabled for the entire driver's
->> life and disabled at remove().
->>
->> Reported-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
->> Signed-off-by: AngeloGioacchino Del Regno <
->> angelogioacchino.delregno@collabora.com>
->> ---
->>
->> The 100ms autosuspend delay was estimated in a worst-case scenario
->> and
->> was tested on MT8192 and MT8195 Chromebooks, with internal display
->> and
->> external display running to maximize the number of CMDQ messages
->> being
->> sent through.
->> That value can probably be decreased to half of what I've set, but on
->> that I prefer being cautious and keep it at 100ms.
->>
->> P.S.: This also solves microstuttering issues that I've randomly seen
->> on all MediaTek Chromebooks.
->>
->>   drivers/mailbox/mtk-cmdq-mailbox.c | 80 +++++++++++++++++++++++++---
->> --
->>   1 file changed, 68 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c
->> b/drivers/mailbox/mtk-cmdq-mailbox.c
->> index 4d62b07c1411..de862e9137d5 100644
->> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
->> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
->> @@ -13,10 +13,13 @@
->>   #include <linux/kernel.h>
->>   #include <linux/module.h>
->>   #include <linux/platform_device.h>
->> +#include <linux/pm_runtime.h>
->>   #include <linux/mailbox_controller.h>
->>   #include <linux/mailbox/mtk-cmdq-mailbox.h>
->>   #include <linux/of.h>
->>   
->> +#define CMDQ_MBOX_AUTOSUSPEND_DELAY_MS	100
->> +
->>   #define CMDQ_OP_CODE_MASK		(0xff << CMDQ_OP_CODE_SHIFT)
->>   #define CMDQ_NUM_CMD(t)			(t->cmd_buf_size /
->> CMDQ_INST_SIZE)
->>   #define CMDQ_GCE_NUM_MAX		(2)
->> @@ -283,10 +286,8 @@ static void cmdq_thread_irq_handler(struct cmdq
->> *cmdq,
->>   			break;
->>   	}
->>   
->> -	if (list_empty(&thread->task_busy_list)) {
->> +	if (list_empty(&thread->task_busy_list))
->>   		cmdq_thread_disable(cmdq, thread);
->> -		clk_bulk_disable(cmdq->pdata->gce_num, cmdq->clocks);
->> -	}
->>   }
->>   
->>   static irqreturn_t cmdq_irq_handler(int irq, void *dev)
->> @@ -307,9 +308,26 @@ static irqreturn_t cmdq_irq_handler(int irq,
->> void *dev)
->>   		spin_unlock_irqrestore(&thread->chan->lock, flags);
->>   	}
->>   
->> +	pm_runtime_mark_last_busy(cmdq->mbox.dev);
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
+>  .../bindings/media/qcom,sc8280xp-camss.yaml   | 582 ++++++++++++++++++
+>  1 file changed, 582 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
 > 
-> Should we add this pm_runtime_put_autosuspend(cmdq->mbox.dev); here?
-> 
+> diff --git a/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml b/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
+> new file mode 100644
+> index 000000000000..926216d401fe
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
+> @@ -0,0 +1,582 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +
 
-The interrupt handler is guaranteed to execute (hence the interrupt is
-guaranteed to fire) before the suspend timer is estinguished: for this
-reason, it was not necessary to increase the runtime pm refcount in
-this function, hence it is not necessary to call pm_runtime_put_autosuspend()
-here.
+Drop blank line
 
->> +
->>   	return IRQ_HANDLED;
->>   }
->>   
->> +static int cmdq_runtime_resume(struct device *dev)
->> +{
->> +	struct cmdq *cmdq = dev_get_drvdata(dev);
->> +
->> +	return clk_bulk_enable(cmdq->pdata->gce_num, cmdq->clocks);
->> +}
->> +
->> +static int cmdq_runtime_suspend(struct device *dev)
->> +{
->> +	struct cmdq *cmdq = dev_get_drvdata(dev);
->> +
->> +	clk_bulk_disable(cmdq->pdata->gce_num, cmdq->clocks);
->> +	return 0;
->> +}
->> +
-> 
-> We can use them to replace the clk_bulk_enable() and clk_bulk_disable()
-> in cmdq_init().
-> 
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/qcom,sc8280xp-camss.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 
-No, because I expect those handlers to possibly grow in the future to handle
-more suspend/resume actions; besides, those are handlers, not generic helper
-functions, hence those shouldn't be called inside of other functions of this
-file, unless there's a good reason to do so (for example, letting this driver
-to still work without runtime PM support, which I'm doing in the probe() and
-remove() callbacks).
 
-> Thanks for your improvement patch again!
-> 
-> and
-> 
-> Tested-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> 
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Thank you!
-Angelo
+Best regards,
+Krzysztof
 
