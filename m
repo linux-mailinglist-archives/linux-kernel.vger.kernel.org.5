@@ -2,176 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 691577C73B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090FA7C73B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347352AbjJLREw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37434 "EHLO
+        id S1379555AbjJLRFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379577AbjJLREl (ORCPT
+        with ESMTP id S1344085AbjJLRFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:04:41 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7EED6;
-        Thu, 12 Oct 2023 10:04:39 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32157c8e4c7so1158221f8f.1;
-        Thu, 12 Oct 2023 10:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697130278; x=1697735078; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VkUJ0oO3Mp9xCXnylh1JdkHseQH/mUhjkeml5gm5SR8=;
-        b=EKyrHvpe3wR6P8/JJLVVlxu74L7tuvaOtZLYAV60i5Qdk9bLS5Vp4TRpQMPanXcRIG
-         HNfal8veY8MW4jukBlswEr9s8TtYCcm/Cv7MarTEP1tLYoI3OF8xSPmTzi/kTmuM7HlJ
-         c9ouDVCNnFEJ697ucVTGzopnAXIlHxBZk3x9Ji9MeJ34LGt/zWbRICS3wR/S/e8Bk69S
-         a8oGXCn+LD8SME9pxhaTjkIKacFE6D6q9ANZt5xFd2syMgp+kC4UDrSD+ucLMfSrPHsg
-         AZxgDJGmTLhqpITP2CF8ILNJhCIQ1dSHwv2ze9Yl+UoSAaB97VLpf6+lEaeQBxxiPn+w
-         eorg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697130278; x=1697735078;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VkUJ0oO3Mp9xCXnylh1JdkHseQH/mUhjkeml5gm5SR8=;
-        b=w3zobfsJvyT4yvIfjLmWAzo2KESGNkbozblTTk5HptZ/zSRKE5NiJRe8dP31oWgY5k
-         NTH64CeZEgbUrii/lB3TgQbfTXTVVXqYVXYC76N4QuKgT/i/afgYpI5Oh69mv/nTOYqj
-         tur+WwIdo5TJlM7cN65zcB1PRjI80+rZJ+sOdjcdtw7cCCloPD5YjYcL5qtUX6UGEVf+
-         YkqM3GRwTGKCCTlgIkXAzJnPJ5F6AtM/vj9Xo61PwD8zohnRfcJQEyeNWhCvWdPXOb2l
-         aEt4muFugEdgEFqH8t0TarHnBVPp/tmdI9O98O3DKkcRUD22xtO0KcyBt83hqC6O+E1v
-         g8tQ==
-X-Gm-Message-State: AOJu0YwOBYRp4wQdbF4OqJj6WVbM+Zx9BGSuBdXEm3lkQPLJaL9JcGXV
-        chbzpemZqCtXEyeqwKljePM=
-X-Google-Smtp-Source: AGHT+IGEfvOX2oiWBKkh4O/yKmWydOZ76wDsxaQCjAqvjCnNn57Y9QF5SeE6lMfg3rl+IKZUkH80og==
-X-Received: by 2002:a05:6000:b0f:b0:32d:9572:6469 with SMTP id dj15-20020a0560000b0f00b0032d95726469mr1470249wrb.46.1697130277811;
-        Thu, 12 Oct 2023 10:04:37 -0700 (PDT)
-Received: from lucifer.home ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.googlemail.com with ESMTPSA id h16-20020adffd50000000b003197869bcd7sm18875418wrs.13.2023.10.12.10.04.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 10:04:36 -0700 (PDT)
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andy Lutomirski <luto@kernel.org>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        Lorenzo Stoakes <lstoakes@gmail.com>
-Subject: [PATCH v4 3/3] mm: perform the mapping_map_writable() check after call_mmap()
-Date:   Thu, 12 Oct 2023 18:04:30 +0100
-Message-ID: <55e413d20678a1bb4c7cce889062bbb07b0df892.1697116581.git.lstoakes@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1697116581.git.lstoakes@gmail.com>
-References: <cover.1697116581.git.lstoakes@gmail.com>
+        Thu, 12 Oct 2023 13:05:52 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386BFB7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:05:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BF44C433C8;
+        Thu, 12 Oct 2023 17:05:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697130350;
+        bh=qoB/kNnsksIOBWuSeqG2ewxVesEUJ5BMIGU22oh6agA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H6u+XazX43tSdnEm8nhbDaCxcFioSoyj8ZzXQ9rVMX3nLFbAFcFf/q2uTtuTJ0gMT
+         ODMxVo2cGyJ/aUKQwSCbjN/aRRT3/BGfp3EmwXhLSv0QZmgv/aOnTUopmO7ONnY8GB
+         h3tqpP09ySx5dUtApAr0vDj3QKMHFYPlSh2ULw4YoUNBS/dmVPhmF14fnOjS4dany5
+         Yflp7OB87Aa5hFpR9WxPiMnX9wI8Ebqj15n65UW47RrtAs5FWixf25smfpHbLWn8jw
+         0CCaj/8n15jWg+WH6yynDnhLRXgM0gZo8K3BFo3FUJ4kLv7kclB5FDSdWxxKQChpbk
+         EmjvCBVtvgm0Q==
+Date:   Thu, 12 Oct 2023 10:05:48 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Breno Leitao <leitao@debian.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, tglx@linutronix.de, bp@alien8.de,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] x86/bugs: Add a separate config for each mitigation
+Message-ID: <20231012170548.o5vi4kgpvpjyld7s@treble>
+References: <20231010103028.4192223-1-leitao@debian.org>
+ <ZSca08rnmZfkONEH@gmail.com>
+ <ZSfucR6docdnLznb@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZSfucR6docdnLznb@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order for a F_SEAL_WRITE sealed memfd mapping to have an opportunity to
-clear VM_MAYWRITE, we must be able to invoke the appropriate vm_ops->mmap()
-handler to do so. We would otherwise fail the mapping_map_writable() check
-before we had the opportunity to avoid it.
+On Thu, Oct 12, 2023 at 06:02:41AM -0700, Breno Leitao wrote:
+> > Yeah, so this #ifdeffery is unnecessarily ugly - we can actually assign 
+> > integer values in the Kconfig language and use that for initialization.
+> > 
+> > Is there a reason why we wouldn't want to do something like:
+> > 
+> > 	static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init = CONFIG_BOOT_DEFAULT_X86_MITIGATE_RETBLEED;
+> > 
+> > ... or so?
+> 
+> Yes. There are two reasons rigth now:
+> 
+> 1) How to avoid the "undefined" behaviour when
+> CONFIG_BOOT_DEFAULT_X86_MITIGATE_RETBLEED is not defined ? Something as:
+> 
+>  error: ‘CONFIG_BOOT_DEFAULT_X86_MITIGATE_RETBLEED’ undeclared (first use in this function)
+> 
+> 2) Right now, these _cmd values are all different by default. Here are a few
+> examples when the kernel is compiled with the mitigations:
+> 
+>  retbleed_cmd = RETBLEED_CMD_AUTO (1)
+>  spectre_v2_mitigation_cmd = SPECTRE_V2_CMD_AUTO (1)
+>  ssb_mitigation_cmd = SPEC_STORE_BYPASS_CMD_AUTO (1)
+>  l1tf_mitigation = L1TF_MITIGATION_FLUSH(2)
+>  mds_mitigation =  MDS_MITIGATION_FULL(1)
+>  taa_mitigation = TAA_MITIGATION_VERW (2)
+>  mmio_mitigation = MMIO_MITIGATION_VERW (2)
+>  gds_mitigation =  GDS_MITIGATION_FULL (3)
+> 
+> If there is a solution for 1, then I _think_ we can probably reorder the
+> enums, so, the "AUTO" value is always 1?!
 
-This patch moves this check after the call_mmap() invocation. Only memfd
-actively denies write access causing a potential failure here (in
-memfd_add_seals()), so there should be no impact on non-memfd cases.
+I'd rather avoid hard-coding enums as that adds fragility into the mix.
 
-This patch makes the userland-visible change that MAP_SHARED, PROT_READ
-mappings of an F_SEAL_WRITE sealed memfd mapping will now succeed.
+Another way to avoid ifdeffery:
 
-There is a delicate situation with cleanup paths assuming that a writable
-mapping must have occurred in circumstances where it may now not have. In
-order to ensure we do not accidentally mark a writable file unwritable by
-mistake, we explicitly track whether we have a writable mapping and
-unmap only if we do.
+static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init =
+	IS_ENABLED(CONFIG_MITIGATION_RETBLEED) ? RETBLEED_CMD_AUTO : RETBLEED_CMD_OFF;
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=217238
-Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
----
- mm/mmap.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+> > 3)
+> > 
+> > And yes, now that the rush of CPU vulnerabilities seems to be ebbing, we 
+> > should probably consider unifying the existing hodgepodge of mitigation 
+> > Kconfig options as well, to not build up even more technical debt.
+> 
+> What do you mean by unifying the existing hodgepodge of mitigation
+> Kconfigs? If you are implying to just have fewer config options, I think
+> that is the opposite of what Linus has suggested previously:
+> 
+> https://lore.kernel.org/all/CAHk-=wjTHeQjsqtHcBGvy9TaJQ5uAm5HrCDuOD9v7qA9U1Xr4w@mail.gmail.com/
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 0041e3631f6c..7f45a08e7973 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2752,6 +2752,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
- 	unsigned long charged = 0;
- 	unsigned long end = addr + len;
- 	unsigned long merge_start = addr, merge_end = end;
-+	bool writable_file_mapping = false;
- 	pgoff_t vm_pgoff;
- 	int error;
- 	VMA_ITERATOR(vmi, mm, addr);
-@@ -2846,17 +2847,19 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
- 	vma->vm_pgoff = pgoff;
- 
- 	if (file) {
--		if (is_shared_maywrite(vm_flags)) {
--			error = mapping_map_writable(file->f_mapping);
--			if (error)
--				goto free_vma;
--		}
--
- 		vma->vm_file = get_file(file);
- 		error = call_mmap(file, vma);
- 		if (error)
- 			goto unmap_and_free_vma;
- 
-+		if (vma_is_shared_maywrite(vma)) {
-+			error = mapping_map_writable(file->f_mapping);
-+			if (error)
-+				goto close_and_free_vma;
-+
-+			writable_file_mapping = true;
-+		}
-+
- 		/*
- 		 * Expansion is handled above, merging is handled below.
- 		 * Drivers should not alter the address of the VMA.
-@@ -2920,8 +2923,10 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
- 	mm->map_count++;
- 	if (vma->vm_file) {
- 		i_mmap_lock_write(vma->vm_file->f_mapping);
--		if (vma_is_shared_maywrite(vma))
-+		if (vma_is_shared_maywrite(vma)) {
- 			mapping_allow_writable(vma->vm_file->f_mapping);
-+			writable_file_mapping = true;
-+		}
- 
- 		flush_dcache_mmap_lock(vma->vm_file->f_mapping);
- 		vma_interval_tree_insert(vma, &vma->vm_file->f_mapping->i_mmap);
-@@ -2937,7 +2942,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
- 
- 	/* Once vma denies write, undo our temporary denial count */
- unmap_writable:
--	if (file && is_shared_maywrite(vm_flags))
-+	if (writable_file_mapping)
- 		mapping_unmap_writable(file->f_mapping);
- 	file = vma->vm_file;
- 	ksm_add_vma(vma);
-@@ -2985,7 +2990,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
- 		unmap_region(mm, &vmi.mas, vma, prev, next, vma->vm_start,
- 			     vma->vm_end, vma->vm_end, true);
- 	}
--	if (file && is_shared_maywrite(vm_flags))
-+	if (writable_file_mapping)
- 		mapping_unmap_writable(file->f_mapping);
- free_vma:
- 	vm_area_free(vma);
+I read that as Ingo agreeing with me that we should rename all the
+existing options for consistency.
+
+> > 4)
+> > 
+> > Fourth, I think we should inform users (in the boot log) when a kernel 
+> > .config changes a mitigation default value compared from what the upstream 
+> > kernel thinks is a suitable default.
+> > 
+> > Sometimes it can be a simple configuration mistake, or a user might have 
+> > different opinion about the importance of a particular mitigation. Nothing 
+> > heavy-handed, just a simple pr_info() table of changes?
+> 
+> That could be done, but, right now messages are printed in regard to the
+> mitigations. Aren't these enough?
+> 
+> Here are some examples:
+> 
+>   pr_info("MDS: %s\n", mds_strings[mds_mitigation]);
+>   pr_info("TAA: %s\n", taa_strings[taa_mitigation]);
+>   pr_info("MMIO Stale Data: %s\n", mmio_strings[mmio_mitigation]);
+>   pr_info("MMIO Stale Data: Unknown: No mitigations\n");
+>   pr_info("%s\n", srbds_strings[srbds_mitigation]);
+>   pr_info("%s\n", gds_strings[gds_mitigation]);
+>   pr_info("%s\n", spectre_v1_strings[spectre_v1_mitigation]);
+>   pr_info("%s\n", spectre_v2_user_strings[mode]);
+>   pr_info("%s\n", retbleed_strings[retbleed_mitigation]);
+>   pr_info("%s\n", ssb_strings[ssb_mode]);
+
+But notice many/most of those functions exit early if the mitigation is
+turned off, thereby skipping the pr_info().  It might be a matter of
+just tweaking the print behavior and making it consistent across all the
+mitigations.
+
 -- 
-2.42.0
-
+Josh
