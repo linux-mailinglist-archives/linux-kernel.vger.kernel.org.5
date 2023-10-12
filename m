@@ -2,114 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C347C6C32
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAE97C6C31
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377894AbjJLLYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53128 "EHLO
+        id S1378212AbjJLLYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343649AbjJLLYF (ORCPT
+        with ESMTP id S1343789AbjJLLYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:24:05 -0400
-Received: from smtpbgbr1.qq.com (smtpbgbr1.qq.com [54.207.19.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4336D90;
-        Thu, 12 Oct 2023 04:24:00 -0700 (PDT)
-X-QQ-mid: bizesmtp85t1697109739t1lnnidg
-Received: from localhost.localdomain ( [113.57.152.160])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 12 Oct 2023 19:22:18 +0800 (CST)
-X-QQ-SSF: 01400000000000F0F000000A0000000
-X-QQ-FEAT: CR3LFp2JE4ltdTud+4AYKJcdUD+uXs6VvqjLXfu+SzUIUtAKlVb/Hy1fQTboe
-        yEa6+SWXN8euKCoBBuoM0FGQ6NBCTFzkq8ZMMR73I9t+gfwhvrNth6EVU/jSIjdcv4I5p3S
-        Dli5iTHPbmirkl+6cMaofPb/mNxeQc5K6b2tD/uBgux3umFb1Z8LJaMH6PfZYW56/6dBob9
-        I04ni6lNKaSeDlE/6Dojo9ZIzoqMM56NjMCJmRbsRXNNWxeVLO+Z64UrSZtbUQbk/QOnw3R
-        U/i5e4wIx/u269qu8G7iOQpiF6biZdIyVo3e+Meo7Vs1CdFhWpcn+18DTOU/27roKQtgyZn
-        AN2MwLgrixegFsbeCnBYrQxUZdlXtTCXSj5bqAxw4SsMJWP/Fl+lt2jqlo5/57S2sbNP3km
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 14250982440802780419
-From:   Guan Wentao <guanwentao@uniontech.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        guanwentao@uniontech.com, stable@vger.kernel.org
-Subject: [PATCH] Bluetooth: btusb: Add 0bda:b85b for Fn-Link RTL8852BE
-Date:   Thu, 12 Oct 2023 19:21:17 +0800
-Message-Id: <20231012112118.11431-1-guanwentao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 12 Oct 2023 07:24:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8929B91;
+        Thu, 12 Oct 2023 04:24:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B28BCC433C7;
+        Thu, 12 Oct 2023 11:24:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697109844;
+        bh=xcGFBX4K3u3hA6pR8kKm1S21DpL9l6KVTqZCKLMel1Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X93lfslPnVsgcUE9NA9cH6EMBdskLpoVmO7TKXQr7NvC/pQHKkbbFjMhxFtYztnmJ
+         N85hkGoUAXNpZsvWKRV43cGwv6mIcHTKxsbE2FAvShOA6u1+c/pXUnz0fP7IC71T5y
+         4SyfhJt7DHukUPbSD+/DrgC65KSzWMFPA524g7ac=
+Date:   Thu, 12 Oct 2023 13:24:01 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     linux-kernel@vger.kernel.org, Andrew Donnellan <ajd@linux.ibm.com>,
+        Xiaoke Wang <xkernel.wang@foxmail.com>, stable@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH] lib/test_meminit: fix off-by-one error in test_pages()
+Message-ID: <2023101218-whacking-evolution-8f97@gregkh>
+References: <2023101238-greasily-reiterate-aafc@gregkh>
+ <CAG_fn=X-dnc06r0Yik24jBaL-f7ZzrUQiUJmMHeN9CaSa3ZveQ@mail.gmail.com>
+ <2023101201-grasp-smartly-2085@gregkh>
+ <2023101241-old-germinate-7a05@gregkh>
+ <CAG_fn=W0cRThcNzE3G7bu5VqwOddTp_uqup3k7tZSMqM2te0_w@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz5a-2
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAG_fn=W0cRThcNzE3G7bu5VqwOddTp_uqup3k7tZSMqM2te0_w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PID/VID 0bda:b85b for Realtek RTL8852BE USB bluetooth part.
-The PID/VID was reported by the patch last year. [1]
-Some SBCs like rockpi 5B A8 module contains the device.
-And it`s founded in website. [2] [3]
+On Thu, Oct 12, 2023 at 01:14:39PM +0200, Alexander Potapenko wrote:
+> On Thu, Oct 12, 2023 at 12:37 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Oct 12, 2023 at 12:26:58PM +0200, Greg Kroah-Hartman wrote:
+> > > On Thu, Oct 12, 2023 at 10:40:14AM +0200, Alexander Potapenko wrote:
+> > > > On Thu, Oct 12, 2023 at 10:17 AM Greg Kroah-Hartman
+> > > > <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > In commit efb78fa86e95 ("lib/test_meminit: allocate pages up to order
+> > > > > MAX_ORDER"), the loop for testing pages is set to "<= MAX_ORDER" which
+> > > > > causes crashes in systems when run.  Fix this to "< MAX_ORDER" to fix
+> > > > > the test to work properly.
+> > > >
+> > > > What are the crashes you are seeing? Are those OOMs?
+> > >
+> > > They are WARN_ON() triggers.  They are burried in the Android build
+> > > system, let me see if I can uncover them.
+> > >
+> > > > IIUC it should be valid to allocate with MAX_ORDER.
+> > >
+> > > "should", but I no longer get runtime warnings with this patch applied,
+> > > so something is wrong :)
+> 
+> I think I know what's going on. In March 2023 Kirill changed the
+> semantics of MAX_ORDER to be inclusive: now alloc_pages() accepts
+> 0..MAX_ORDER, whereas previously it was 0..MAX_ORDER-1:
+> https://github.com/torvalds/linux/commit/23baf831a32c04f9a968812511540b1b3e648bf5
+> Older kernel versions had an explicit check for order >= MAX_ORDER,
+> which is what you're seeing on Android.
 
-Here is the device tables in /sys/kernel/debug/usb/devices .
+Thanks for digging this up.  I'll just queue this patch up for 6.1 and
+older stable kernels then as the commit above you found is in 6.4 so
+nothing newer than that will need this fix.
 
-T:  Bus=07 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
-D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=0bda ProdID=b85b Rev= 0.00
-S:  Manufacturer=Realtek
-S:  Product=Bluetooth Radio
-S:  SerialNumber=00e04c000001
-C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+Thanks for the quick response!
 
-Link: https://lore.kernel.org/all/20220420052402.19049-1-tangmeng@uniontech.com/ [1]
-Link: https://forum.radxa.com/t/bluetooth-on-ubuntu/13051/4 [2]
-Link: https://ubuntuforums.org/showthread.php?t=2489527 [3]
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Meng Tang <tangmeng@uniontech.com>
-Signed-off-by: Guan Wentao <guanwentao@uniontech.com>
----
- drivers/bluetooth/btusb.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 3fdad35e5..894938d2b 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -544,6 +544,8 @@ static const struct usb_device_id quirks_table[] = {
- 						     BTUSB_WIDEBAND_SPEECH },
- 	{ USB_DEVICE(0x0bda, 0x887b), .driver_info = BTUSB_REALTEK |
- 						     BTUSB_WIDEBAND_SPEECH },
-+	{ USB_DEVICE(0x0bda, 0xb85b), .driver_info = BTUSB_REALTEK |
-+						     BTUSB_WIDEBAND_SPEECH },
- 	{ USB_DEVICE(0x13d3, 0x3570), .driver_info = BTUSB_REALTEK |
- 						     BTUSB_WIDEBAND_SPEECH },
- 	{ USB_DEVICE(0x13d3, 0x3571), .driver_info = BTUSB_REALTEK |
--- 
-2.20.1
-
+greg k-h
