@@ -2,132 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A707C6B7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B9F7C6B81
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343805AbjJLKvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58458 "EHLO
+        id S232490AbjJLKv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235399AbjJLKvR (ORCPT
+        with ESMTP id S235675AbjJLKvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:51:17 -0400
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728E890
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:51:13 -0700 (PDT)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231012105112euoutp016fb3c662d45cb85c504331e2e0dabbb5~NVp41Dn_F1006310063euoutp01X
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:51:12 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231012105112euoutp016fb3c662d45cb85c504331e2e0dabbb5~NVp41Dn_F1006310063euoutp01X
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1697107872;
-        bh=yM6GesTFGNN6wdIAfDvDUqkTsSxaBB0xHy+wg5fuqa8=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=Fs66bgOwXT0iqOrj66gar/Si1oEbFiXewEaPFQJj403u2CM2wpnpAvTmO41zTaWJD
-         UE3oq1rM0YjdKyPDdG5yXWf7e5c4BFJJ4KrWFkfczbktjHY8Pkd5CfmwOuGP9/7IfK
-         y5QeCiwDjLjaGZNFBlPNq1b+CLh64rgRDEOHVCQ8=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20231012105111eucas1p27c6f0c3c5d4a1aee82addf53ea79b070~NVp4e6oz80057000570eucas1p2U;
-        Thu, 12 Oct 2023 10:51:11 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 1A.55.42423.F9FC7256; Thu, 12
-        Oct 2023 11:51:11 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231012105111eucas1p237cf93ecbccf99b5360ca67caad1a59a~NVp4MQvns0074100741eucas1p2C;
-        Thu, 12 Oct 2023 10:51:11 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231012105111eusmtrp1bcf19385802fd10df766d52131dde64f~NVp4Lt-FO3058330583eusmtrp1t;
-        Thu, 12 Oct 2023 10:51:11 +0000 (GMT)
-X-AuditID: cbfec7f2-a3bff7000002a5b7-62-6527cf9fb3e6
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 3E.B4.25043.F9FC7256; Thu, 12
-        Oct 2023 11:51:11 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20231012105111eusmtip16fdf470ddaf0ef66f05476dff31274c1~NVp31gUEA2941729417eusmtip1p;
-        Thu, 12 Oct 2023 10:51:10 +0000 (GMT)
-Message-ID: <14c0a0b4-e752-4e6a-98d9-52f230060103@samsung.com>
-Date:   Thu, 12 Oct 2023 12:51:10 +0200
-MIME-Version: 1.0
+        Thu, 12 Oct 2023 06:51:25 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2050.outbound.protection.outlook.com [40.107.20.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21B6C4;
+        Thu, 12 Oct 2023 03:51:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XW5C38dbrA+BryWHVDG+mQbDz/m6LFn4gsEWxzw582ywcu4AeysKlMoUrEcQRWcdPcNnhx3CLhVcP/AzO42soGRFIPrqekttvCLc9E2Fe8GEHh9HuSNFpQwdAxjgzlUN2qt25WSjxal420mj/zHAEmm/swb0FylYHwkgABSh7FvuijJwAxTua9hLIIMh8LyXvwLwFnr3FWqOHd3ZULXeDdoFR4PCThSeocWL62ldEa7lKo3kEzHtv6jn7qJA1sAiG+feRFto36Buf51TkAvTQdXzFTgXv8xvH+w4u3PtJRf/svHF+f3cTGbX6qQN0LEf9N/9wavMtXcjmVAUBrbjkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=c8peStivPPtj/rmCp1G7yfN3+i67W/C61T4t9+pIcvE=;
+ b=I5Z0t935q+482BAZ++CHrh2NdGbn5HMs7SeOgnnKhGt7pMr5lEcHii8NbI9/1gBbCoWu8aFhkzLMn+7uIZqN42MzA/vqWFWRUMtT7m1TYaRk6oD9I4BZn/OkQFmwjabSveLJ7ZrrUv35ao11lhDVW9tANXUl7EW1U/6/eCEubS4iSHP2w/U7w3qce8bzSGhmrCPzEXQ+rtzhuWNrjmwUgfRWSqjCazyCO+vLIwNEbiK4QKTd0RVyGZ84wNfPA+xm3gBADnwf4UcmTKLNfWNvFHQ35yjei66Io9Xy0pJOmUeEyfHWsrAffaAS8ajXKryIGfzFAtddpZVxrW5DRLwOBA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c8peStivPPtj/rmCp1G7yfN3+i67W/C61T4t9+pIcvE=;
+ b=lLy6FHIuZEG1CYJZsZwktdP0u47SXxYNMt2vCcOCMhKlrQRduti8/oUnb6Ew8g2evW2xG/ULw4ukAi8r2+x+MAQzdbm5OiB1mCrO2NL3H5qSTbduHeWpzMJyRmRGVRIURrCkE4L/F6ZKlxxtAxRKxYcRithxJ0LQwaKMp26Adhsz00TMxHEK3K1KLA/xITzIddw04Dds4MRe/b251woKumxzt84bBP16SkV2QzOIgyN29atCqKzmJo75lpVYjFJ5SyKAGT6X7vK6MXlT5k7ErI6GZ+b96Kfb223q2/xI7JEBE3v+6rxrMqA1T0H91H/k83FSN0Ks4xDn/cNwyqVjZQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
+ by DBBPR04MB7979.eurprd04.prod.outlook.com (2603:10a6:10:1ec::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Thu, 12 Oct
+ 2023 10:51:18 +0000
+Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
+ ([fe80::edd3:f00:3088:6e61]) by PA4PR04MB7790.eurprd04.prod.outlook.com
+ ([fe80::edd3:f00:3088:6e61%4]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
+ 10:51:18 +0000
+Message-ID: <8e36be57-58a6-404e-8828-6c777b8d2196@suse.com>
+Date:   Thu, 12 Oct 2023 13:51:13 +0300
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] media: cec: meson: always include meson sub-directory
- in Makefile
+Subject: Re: [PATCH] x86/efistub: Don't try to print after ExitBootService()
 Content-Language: en-US
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-amlogic@lists.infradead.org, linux-media@vger.kernel.org,
+To:     kirill.shutemov@linux.intel.com
+Cc:     ardb@kernel.org, linux-efi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <788e7ae5-1560-4f6f-b6b8-930ce6a9cedb@xs4all.nl>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphleLIzCtJLcpLzFFi42LZduzned3559VTDZ4fU7e4OPMui8WC2dwW
-        l3fNYbPo2bCV1WLZpj9MDqwem1Z1snlsXlLv8XmTnMepr5/ZA1iiuGxSUnMyy1KL9O0SuDJe
-        35zJVrCXpeL12WbmBsabzF2MnBwSAiYSe7/dYuti5OIQEljBKHHl43Z2kISQwBdGiQM7iiES
-        nxkl/l75yAbTsW/vQWaIxHJGiZmnFkI5HxklNkz8xAhSxStgJ7HrwTSwUSwCqhJf7/5lgYgL
-        Spyc+QTMFhWQl7h/awZQDQeHsECExN6jiSBhZgFxiVtP5jOBzBQR6GWU+LLsGhtEQk/iXdMh
-        JhCbTcBQouttFxtIL6eArcTpU2oQJfIS29/OAbtHQuAAh8Tz1z8ZIa52kfiz7QYThC0s8er4
-        FnYIW0bi9OQeFoiGdkaJBb/vM0E4ExglGp7fguq2lrhz7hfYNmYBTYn1u/Qhwo4Sf9ZeZwUJ
-        SwjwSdx4KwhxBJ/EpG3TmSHCvBIdbUIQ1WoSs46vg1t78MIl5gmMSrOQQmUWkvdnIXlnFsLe
-        BYwsqxjFU0uLc9NTiw3zUsv1ihNzi0vz0vWS83M3MQITzOl/xz/tYJz76qPeIUYmDsZDjBIc
-        zEoivI8yVVKFeFMSK6tSi/Lji0pzUosPMUpzsCiJ86qmyKcKCaQnlqRmp6YWpBbBZJk4OKUa
-        mGY1TYts7Ly+Te1EW8URBdbPufPPLNN/7hJnP/ngFb3j0zPFnc2Mpz3Rso7cPL/lnp5kgtHu
-        qfp1h2uXp5ffebZ+zfQcc+nCtd+S7pSvZV1jd/pt1vq9TRkHO2dXTFfoUXyiPf2hYRVrhJmG
-        56/bymcnVi2TK/vMYpTTMOGA8btfdV9vGE25dGyd1e6LHvfKPgiJeKhdXFkd27JB9/5Pyb7K
-        TRMP1Jq+nblPvUHarYy5+O73iy+YtdZ118ll1bw42RHceqJ9snG/WIhQn/vung6rNj5VBbOk
-        9YI1hqVicw7oub449O8Di/Wv+ffk5qQKRk/y8j+p96zn3cWDizfluAnpMH77HsTzbqNb2976
-        N0osxRmJhlrMRcWJAEl/8AefAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrAIsWRmVeSWpSXmKPExsVy+t/xu7rzz6unGvS/E7a4OPMui8WC2dwW
-        l3fNYbPo2bCV1WLZpj9MDqwem1Z1snlsXlLv8XmTnMepr5/ZA1ii9GyK8ktLUhUy8otLbJWi
-        DS2M9AwtLfSMTCz1DI3NY62MTJX07WxSUnMyy1KL9O0S9DJe35zJVrCXpeL12WbmBsabzF2M
-        nBwSAiYS+/YeBLK5OIQEljJKbDv3jQUiISNxcloDK4QtLPHnWhcbRNF7RonzTZ/BErwCdhK7
-        HkxjB7FZBFQlvt79ywIRF5Q4OfMJmC0qIC9x/9YMsBphgQiJP0u7wHqZBcQlbj2ZzwQyVESg
-        l1GivX05I0RCT+Jd0yEmiG3HGCW2tLwDm8QmYCjR9RbkDA4OTgFbidOn1CDqzSS6tnZB9cpL
-        bH87h3kCo9AsJHfMQrJvFpKWWUhaFjCyrGIUSS0tzk3PLTbSK07MLS7NS9dLzs/dxAiMqm3H
-        fm7Zwbjy1Ue9Q4xMHIyHGCU4mJVEeB9lqqQK8aYkVlalFuXHF5XmpBYfYjQFBsZEZinR5Hxg
-        XOeVxBuaGZgamphZGphamhkrifN6FnQkCgmkJ5akZqemFqQWwfQxcXBKNTAtceL8XhIofyTW
-        6GbpMo+pvw1ntLwx7tgqpmCrq/xTtePl4obvB7wkXgZ1lUmLeOT937mxOt2+ofnTX5+UNk/p
-        wlNZV403b9LL1tkapiSlOmf9jSJ3zq/mNdqzyr9mPLG4VZ+xNLjR9VaozM2j65iddXae0Nkt
-        dbfySteb3rKY37ExWiEaV07yfluqfn6qPnN6WuK3XXdENn59ffWToP8RhttJ92T1kpL0Z8bc
-        FyhO+FtudWbNsurOy2tkRFpMPV93TJQ3De7s2/4+83IVey3HpuUME6ZvVON5ZKaltoHxyyT5
-        /4H3jszfNr/s3rHH52S09vSmNPvKJc9nWn498HLkyZz7OgZ/NhSaKsr0z1NiKc5INNRiLipO
-        BABBGx0QMwMAAA==
-X-CMS-MailID: 20231012105111eucas1p237cf93ecbccf99b5360ca67caad1a59a
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20231012103531eucas1p1f370bddcb690aa421498e961f4081f2b
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231012103531eucas1p1f370bddcb690aa421498e961f4081f2b
-References: <CGME20231012103531eucas1p1f370bddcb690aa421498e961f4081f2b@eucas1p1.samsung.com>
-        <20231012103525.3381314-1-m.szyprowski@samsung.com>
-        <788e7ae5-1560-4f6f-b6b8-930ce6a9cedb@xs4all.nl>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231011192528.262425-1-nik.borisov@suse.com>
+ <20231012101456.goamenepqlte65jv@box.shutemov.name>
+From:   Nikolay Borisov <nik.borisov@suse.com>
+In-Reply-To: <20231012101456.goamenepqlte65jv@box.shutemov.name>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: VI1PR10CA0098.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:803:28::27) To PA4PR04MB7790.eurprd04.prod.outlook.com
+ (2603:10a6:102:cc::8)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|DBBPR04MB7979:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9ffb013a-3a74-47f7-1521-08dbcb1129e7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Gmns7ynK4dlsHohlCqmczZQU1EmH7ABdKMCbU4dtDpGJ3vdNBiSXKUiQYyJ7nZ8E/wSoAFC4i2M9rKMjYf0pIHN6pqa7Aie5bSL7B/TtGDq9AHOR/iPEAg+3SovLaHSiPWIodIJJ0OyuUkFib/vY20xp6AiNI1o+VtCmmB1AIXOwZROo2ZlNgiJct+rJ1GPezj4gSbI/2Fas5/iDj3ZsYd60XJsqN6SPNgUvDVD3Uh16QdPf5DhGnewZ3w89mSyn13u22Yp4xJ7IK7OtJgnF7LRbJTz4ySPBMmJpAUa8OuiEy01xbfJvvFSBCEcNjVTN82qWcPMQ+ntkYyjHoAuUajhwGD+ZQdKmHGnKL1x1eC0h7Pf4ZK+J6tgp0IDpw/SpjoBvwJ2tH7kQXxOCMudopKXDRW/mOcCvhtNcUo673cOET/sdb/zLfJHxR8X7EJyb32hMePSUZ5OXSCTQoH1iieoCanrfP0uS/np15skiDyzLpV7oP0A7X6aONOvTFnmMwXSserb3JAysJAHDQDDYVYHG1uSbC4R55JOgYQWrQaOvLELkOf70kfhpziifyj5QqzKplCzBBYAxfeBOxHY67b3J+S68ntf00cl74LUBhqdOPp/BEggDETZvYNw5O580VCti5ooG6t4s+VI9Ga9sAg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(376002)(346002)(39860400002)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(2906002)(86362001)(36756003)(31696002)(316002)(38100700002)(6916009)(2616005)(66946007)(66476007)(66556008)(41300700001)(6666004)(31686004)(6486002)(6512007)(6506007)(478600001)(83380400001)(5660300002)(8936002)(4326008)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WStFNklqTFV1bk45NTl1V05CMGx6UWpqSG00Z1h2cFFsYVhnZWQxa1ZMZUhE?=
+ =?utf-8?B?YnkzVk9EWjdoV1V6TG1PdjhuQm5CUVJIa1hCNEowN2NhdHh5aHBBNkJoMjJU?=
+ =?utf-8?B?bTk1YXpxNStGSGZnR1Vjc2RVbnEwNE9kTWN4MHFaVUJHdzZnU2M2TzJtZHVu?=
+ =?utf-8?B?ckltQnVUaGF3NXgrU0YvVXlrdFhVa0dTcndpaGZtbVd3M3RHTHQ4cXdhZDFB?=
+ =?utf-8?B?NDhlL3d4ZXBZZDZYcWIrcEZtaFpxNjlibEVzdHpVTlNNS0VrY2h4dnhHRDcr?=
+ =?utf-8?B?emVNMHJYL2F2SThLa0VFU1BnQzltQ082bmdyTkNWRUs1V3lWOG1EVER3WFVO?=
+ =?utf-8?B?V2tmQ2V4UUcydW1aMVZlME9YTk9odnNFanVhUStaSWdlTmRlZm9YeEtmRVAv?=
+ =?utf-8?B?WVVaZ24wM3J6Sm8vWEwxQ2QrbktSVXp5eTRNQy80MEFTak1uUFY2ZlVHRDhx?=
+ =?utf-8?B?Y081QWRIbnRJTW5VMzFINkJEblhiK1hLTW5GdDA0bUpTS2R5R0FiVnd2S3hn?=
+ =?utf-8?B?YkxqOTFFTktmYmRkQXo4YWdabng1YkhmTmQzY2YxTnhhMklPOGdTWFBCRGFD?=
+ =?utf-8?B?WXdOcEpvTWM0YTlZWnR1aWhSNVBtRTc3Q3ZWbnFiU1pqWnFsQWlxV3ZXN0ky?=
+ =?utf-8?B?RGNhQ2JVcWRZMTQwL1hqVFlnQ2ZjMkNsbGhJdWRPNEVubFM5cll1b1VlNi9N?=
+ =?utf-8?B?Y0tGSW9pU3F5MnRvRUdTRGZBVU51Vnl4RURzQ004Uk5iaXoxQjN1Y3lQemNZ?=
+ =?utf-8?B?L254azBvZ0cwRnVycHZncjUvV0s2ZHh5Y0pUTVpMcUtvcllxWDNLZXNwYmpJ?=
+ =?utf-8?B?cDdjb3l2emdSV0tuYVJJRkgySXlrdGdaL3VOVGVPd0UyZGhZbnFPVW83am1r?=
+ =?utf-8?B?aEI2R0I2b1VBZHFqY3d3bGsrMXN4UzQwUnQrUWNGT3k2QUdQckx2VGtkMWsr?=
+ =?utf-8?B?ZUNDMEd3dHV6Y2dHUTZxMS9oOWZ0N3JPNU9tTnE2c0VJRUFLM0ZBZzJDc2pq?=
+ =?utf-8?B?YjlHTFNtVFRyWXB5V2hhVkc1TWxKK0IvTXZqdzhUSWthak44c2Q0Z1d1YUlC?=
+ =?utf-8?B?Y1VVVElrK09FMEpYM1E1cEJXUUZYTVFDbDJ0T3doczUzN29MY1NPUGhMb3Bh?=
+ =?utf-8?B?T3F1Ky9XRElCTTlQS0MvaCtRbTdiV2pQcjEveDcvMXRrK3RFNjlHeWxPaFVV?=
+ =?utf-8?B?eUFYb0NIZS9FTTdIR1dHNGM1K3ltUEhTak5sTmZqaFkwTmcvUnNER28wTDZT?=
+ =?utf-8?B?OW1oTVMzRDBWcTR4cUQ2am5lQjFMVW1DYlNJT0lxYkQzcm1ZdTB0MEZLVXpj?=
+ =?utf-8?B?UE9hdGVSYk5walpuS3ByTlQ3dUt5eHc1VXl2RXdKRWpUT2htUW9hM1hIczA2?=
+ =?utf-8?B?UkV0TnF6ZWN6emNhci9mTEpJZG4wRkNhZjd5TmZwQWtldHZCV2p0NXhKOXFy?=
+ =?utf-8?B?dEpiWGhGQTdDZ3RRV2JsUkRkSjNoOHlOck9HZzM0dnRxVnA1WU1MUHVLR1pu?=
+ =?utf-8?B?Q1dOTDJ3Z1k2aCtRbCt6ZHhTdUx6c1N3bWtXT3RoWlg2K3FqZkMwdmNudXdQ?=
+ =?utf-8?B?VmVvOXcwL1dVU0k1dEcvZ2cxOFJmelRDTklDQTdvTmhITXB6RWMyZ2Y2U3Ez?=
+ =?utf-8?B?cjZXMjN1WHRadFh5N3Z0MHNXOE1vTVJjOWNCbDA1U1EyVHpnVGpaQm96TDRk?=
+ =?utf-8?B?b2RyNXRHZStxbDJaMEM2Yjdnb1JJY2tadHZuYm0veXBocngybUpvNkhqOUwz?=
+ =?utf-8?B?bUppa2o3NGlRem81M1BZcm9HaWhOS0ZST2NPK1dqSjhuR0hFeXA1bHdRYllh?=
+ =?utf-8?B?YkFrZi9DOERuaGJXdmtJcWdoL3c3ZlNpSjl5Y0xvT0V2dkI0amZhUHY2VE15?=
+ =?utf-8?B?c3NaSm5VTGZiZHoyT3pTSTVEdENieFR2azlwZXlXVTFVOEkvTWsrc1hnVWZn?=
+ =?utf-8?B?cTB4QTkyNjlHSjNhM3dVdEZzdkdGVzFyVDZ5YkdtbU1jZ2R6dVJyYk80SURH?=
+ =?utf-8?B?cVd2elpSdGdCMmtnT2orNEE1b3d1Q3JzMktPY0RDdVZnSzNnajRKNFdxV2tX?=
+ =?utf-8?B?bWVFc2FFZHhvSHpYbVRRMFRGbjc5bW5CTzhhVEptV0dLSGp5b3VZRVNVcUhY?=
+ =?utf-8?B?S1QzUlgrd2FIRnpwODU0YzNZektjTHVNYkhLaHR1OGhlQTNUc2xwbUpMOTVY?=
+ =?utf-8?Q?Op3zfgI0eew36ChQeQaUeB/IPb9HY3CZF24s0hEJyZHZ?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ffb013a-3a74-47f7-1521-08dbcb1129e7
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 10:51:18.2605
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UcGX/8muq8IlSkpfHXgxJccaSklaqVyXQ8/MUDhq60melZMtrW+oOp8ufnufWxpx86ahi1W1+IvdbV+wyvzu6w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7979
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.10.2023 12:42, Hans Verkuil wrote:
-> On 10/12/23 12:35, Marek Szyprowski wrote:
->> 'meson' directory contains two separate drivers, so it should be added
->> to Makefile compilation hierarchy unconditionally, because otherwise the
->> meson-ao-cec-g12a won't be compiled if meson-ao-cec is not selected.
+
+
+On 12.10.23 г. 13:14 ч., kirill.shutemov@linux.intel.com wrote:
+> On Wed, Oct 11, 2023 at 10:25:28PM +0300, Nikolay Borisov wrote:
+>> setup_e820() is executed after UEFI's ExitBootService has been called.
+>> This causes the firmware to throw an exception because Console IO
+>> protocol handler is supposed to work only during boot service
+>> environment. As per UEFI 2.9, section 12.1:
 >>
->> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Does this need a Fixes tag?
+>>   "This protocol isused to handle input and output of text-based
+>>   information intended for the system user during the operation of code
+>>   in the boot services environment."
+>>
+>> Running a TDX guest with TDVF with unaccepted memory disabled results in
+>> the following output:
+> 
+> Oh. My bad.
+> 
+> But there's other codepath that does the same. If setup_e820() fails with
+> EFI_BUFFER_TOO_SMALL, efi_stub_entry() would try to print "exit_boot()
+> failed\n".
+> 
+> I wouldner if it is feasible to hook up earlyprintk console into
+> efi_printk() machinery for after ExitBootService() case? Silent boot
+> failure is not the best UX.
+> 
 
-Fixes: 4be5e8648b0c ("media: move CEC platform drivers to a separate 
-directory")
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+In my testing I was able to transpose setup_e820 and efi 
+exit_boot_service by calling exit_boot_func before setup_e820 which 
+ensures the various memory variables are populated. Is there any 
+specific reason why ExitBootServices is called before setting up the 
+e820 table? AFAIU this is an arbitrary choice?
