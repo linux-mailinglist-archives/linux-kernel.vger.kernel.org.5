@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F13AF7C658C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CCEA7C658B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377564AbjJLG00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50852 "EHLO
+        id S1377349AbjJLG0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235349AbjJLG0H (ORCPT
+        with ESMTP id S235354AbjJLG0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Oct 2023 02:26:07 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73623101;
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A780EA;
         Wed, 11 Oct 2023 23:25:37 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 06:25:34 -0000
+Date:   Thu, 12 Oct 2023 06:25:35 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1697091935;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5DIwPHfjDKni4ULexliWOMEADdnbFFYA528qpHWmc1U=;
-        b=0uxylyqQ0pX4K9PljaQwLuBstfxCLZMXfmI9XIYw195vNTFg3SkG8IUV/y5vKP0G+yzqHL
-        1h5OZy5FFI0t1v+xVNrlSzrsRRx7xPlCw9cUXI/dVgoiFJiclh7zGdvTM/NXVqxqZAfAK/
-        wN4PtBNZ+G+7oUZcItyDc2g1O2CBdfu6JFBjjUDoJiIa/fRa4Tk2/eHABVbjUEuXpfVHzJ
-        AY0gUw878ZECRHMLqL1pqTo2ScDio9lc8klSbLqrOC+v3NF+NZyyWTGxbDHGGuhyqNBj5p
-        2f+L5JZ9AW4f7/Ph6O3VHCIK/T2lM3AOQmtTd3Thzn5IgeJiw+mqP9c4fRC0Jw==
+        bh=+1KP8+oYpEZJePS2HiaWvpVh2+B/XGV8vKsjA2aqHYE=;
+        b=j61sW8/sUZXIQ/adfLuYN7iklzU0Jh046d4LL2MpfYwz2PoIXQ1f481mkuXoaZB5yHuSRh
+        P1oTRAnynw0luB9D+KJvMc4jOE3Qy6j1etDxw+gDbh/ys3+jOvTv5tWtH3oK8GLC1O1vxv
+        0hCH4xUN75TbUR4KhfA5+4cZp3RObS02Ola7dPzOYILS9vwnznf+PK8Cpr/ZVXQpvvSDdX
+        2vWLwIJ8Y95gS5V9OGmK1XvVyWhcWp6U0Eht9usxSuW8kxuYnypOgA7ikLtaVDF4y8pSsB
+        fFayguNBq9Hq2JbTst5jMrc8IZYDS35n+N9MNf5OgdRJOrGcYuYmjhcbNxiMxA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1697091935;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,28 +36,26 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5DIwPHfjDKni4ULexliWOMEADdnbFFYA528qpHWmc1U=;
-        b=Rx/39lipNDxxNymOslNgiQCbJEQOem7AeQa7ZNENUAA9OXQ0bSquN5en/9GTuE6VlXcyyY
-        22kHYyNyxfN4jnAQ==
-From:   "tip-bot2 for Lu Yao" <tip-bot2@linutronix.de>
+        bh=+1KP8+oYpEZJePS2HiaWvpVh2+B/XGV8vKsjA2aqHYE=;
+        b=Rxu0bIRJMXUeTT0PCRdIyO5IngsCO67b/txdSinbxfO1AV5nS3hyzc4Pr5A711TKVFhDoG
+        JotGywgiy2Sh19DA==
+From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/msi: Fix compile error caused by
- CONFIG_GENERIC_MSI_IRQ=y && !CONFIG_X86_LOCAL_APIC
-Cc:     kernel test robot <lkp@intel.com>, Lu Yao <yaolu@kylinos.cn>,
-        Ingo Molnar <mingo@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+Subject: [tip: x86/bugs] objtool: Fix return thunk patching in retpolines
+Cc:     David Kaplan <david.kaplan@amd.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231012032659.323251-1-yaolu@kylinos.cn>
-References: <20231012032659.323251-1-yaolu@kylinos.cn>
+In-Reply-To: <20231012024737.eg5phclogp67ik6x@treble>
+References: <20231012024737.eg5phclogp67ik6x@treble>
 MIME-Version: 1.0
-Message-ID: <169709193403.3135.8043258061582152833.tip-bot2@tip-bot2>
+Message-ID: <169709193522.3135.3437936240922691575.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -67,113 +65,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/apic branch of tip:
+The following commit has been merged into the x86/bugs branch of tip:
 
-Commit-ID:     441ccc351256533b6381e86a5648dbfe04b74286
-Gitweb:        https://git.kernel.org/tip/441ccc351256533b6381e86a5648dbfe04b=
-74286
-Author:        Lu Yao <yaolu@kylinos.cn>
-AuthorDate:    Thu, 12 Oct 2023 11:26:59 +08:00
+Commit-ID:     3ab1bb69862d4477e2ffa556075a251bd7328910
+Gitweb:        https://git.kernel.org/tip/3ab1bb69862d4477e2ffa556075a251bd7328910
+Author:        Josh Poimboeuf <jpoimboe@kernel.org>
+AuthorDate:    Wed, 11 Oct 2023 19:47:37 -07:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 12 Oct 2023 08:13:27 +02:00
+CommitterDate: Thu, 12 Oct 2023 08:21:29 +02:00
 
-x86/msi: Fix compile error caused by CONFIG_GENERIC_MSI_IRQ=3Dy && !CONFIG_X8=
-6_LOCAL_APIC
+objtool: Fix return thunk patching in retpolines
 
-When compiling the x86 kernel, if X86_LOCAL_APIC is not enabled but
-GENERIC_MSI_IRQ is selected in '.config', the following compilation
-error will occur:
+With CONFIG_RETHUNK enabled, the compiler replaces every RET with a tail
+call to a return thunk ('JMP __x86_return_thunk').  Objtool annotates
+all such return sites so they can be patched during boot by
+apply_returns().
 
-  include/linux/gpio/driver.h:38:19: error:
-    field 'msiinfo' has incomplete type
+The implementation of __x86_return_thunk() is just a bare RET.  It's
+only meant to be used temporarily until apply_returns() patches all
+return sites with either a JMP to another return thunk or an actual RET.
 
-  kernel/irq/msi.c:752:5: error: invalid use of incomplete typedef
-    'msi_alloc_info_t' {aka 'struct irq_alloc_info'}
+The following commit:
 
-  kernel/irq/msi.c:740:1: error: control reaches end of non-void function
+  e92626af3234 ("x86/retpoline: Remove .text..__x86.return_thunk section")
 
-This is because file such as 'kernel/irq/msi.c' only depends on
-'GENERIC_MSI_IRQ', and uses 'struct msi_alloc_info_t'. However,
-this struct depends on 'X86_LOCAL_APIC'.
+broke objtool's detection of return sites in retpolines.  Since
+retpolines and return thunks are now in the same section, the compiler
+no longer uses relocations for the intra-section jumps between the
+retpolines and the return thunk, causing objtool to overlook them.
 
-When enable 'GENERIC_MSI_IRQ' or 'X86_LOCAL_APIC' will select
-'IRQ_DOMAIN_HIERARCHY', so exposing this struct using
-'IRQ_DOMAIN_HIERARCHY' rather than 'X86_LOCAL_APIC'.
+As a result, none of the retpolines' return sites get patched.  Each one
+stays at 'JMP __x86_return_thunk', effectively a bare RET.
 
-Under the above conditions, if 'HPET_TIMER' is selected, the following
-compilation error will occur:
+Fix it by teaching objtool to detect when a non-relocated jump target is
+a return thunk (or retpoline).
 
-  arch/x86/kernel/hpet.c:550:13: error: =E2=80=98x86_vector_domain=E2=80=99 u=
-ndeclared
-
-  arch/x86/kernel/hpet.c:600:9: error: implicit declaration of
-    function =E2=80=98init_irq_alloc_info=E2=80=99
-
-This is because 'x86_vector_domain' is defined in 'kernel/apic/vector.c'
-which is compiled only when 'X86_LOCAL_APIC' is enabled. Besides,
-function 'msi_domain_set_affinity' is defined in 'include/linux/msi.h'
-which depends on 'GENERIC_MSI_IRQ'. So use 'X86_LOCAL_APIC' and
-'GENERIC_MSI_IRQ' to expose these code.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Lu Yao <yaolu@kylinos.cn>
+Fixes: e92626af3234 ("x86/retpoline: Remove .text..__x86.return_thunk section")
+Reported-by: David Kaplan <david.kaplan@amd.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20231012032659.323251-1-yaolu@kylinos.cn
+Link: https://lore.kernel.org/r/20231012024737.eg5phclogp67ik6x@treble
 ---
- arch/x86/include/asm/hw_irq.h | 6 +++---
- arch/x86/kernel/hpet.c        | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ tools/objtool/check.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
-index 5518298..b02c3cd 100644
---- a/arch/x86/include/asm/hw_irq.h
-+++ b/arch/x86/include/asm/hw_irq.h
-@@ -28,7 +28,7 @@
- #include <asm/irq.h>
- #include <asm/sections.h>
-=20
--#ifdef	CONFIG_X86_LOCAL_APIC
-+#ifdef	CONFIG_IRQ_DOMAIN_HIERARCHY
- struct irq_data;
- struct pci_dev;
- struct msi_desc;
-@@ -105,10 +105,10 @@ static inline void irq_complete_move(struct irq_cfg *c)=
- { }
- #endif
-=20
- extern void apic_ack_edge(struct irq_data *data);
--#else	/*  CONFIG_X86_LOCAL_APIC */
-+#else	/*  CONFIG_IRQ_DOMAIN_HIERARCHY */
- static inline void lock_vector_lock(void) {}
- static inline void unlock_vector_lock(void) {}
--#endif	/* CONFIG_X86_LOCAL_APIC */
-+#endif	/* CONFIG_IRQ_DOMAIN_HIERARCHY */
-=20
- /* Statistics */
- extern atomic_t irq_err_count;
-diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
-index 1648aa0..41eecf1 100644
---- a/arch/x86/kernel/hpet.c
-+++ b/arch/x86/kernel/hpet.c
-@@ -52,7 +52,7 @@ unsigned long				hpet_address;
- u8					hpet_blockid; /* OS timer block num */
- bool					hpet_msi_disable;
-=20
--#ifdef CONFIG_GENERIC_MSI_IRQ
-+#if defined(CONFIG_X86_LOCAL_APIC) && defined(CONFIG_GENERIC_MSI_IRQ)
- static DEFINE_PER_CPU(struct hpet_channel *, cpu_hpet_channel);
- static struct irq_domain		*hpet_domain;
- #endif
-@@ -469,7 +469,7 @@ static void __init hpet_legacy_clockevent_register(struct=
- hpet_channel *hc)
- /*
-  * HPET MSI Support
-  */
--#ifdef CONFIG_GENERIC_MSI_IRQ
-+#if defined(CONFIG_X86_LOCAL_APIC) && defined(CONFIG_GENERIC_MSI_IRQ)
- static void hpet_msi_unmask(struct irq_data *data)
- {
- 	struct hpet_channel *hc =3D irq_data_get_irq_handler_data(data);
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index e308d1b..e94756e 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1611,6 +1611,22 @@ static int add_jump_destinations(struct objtool_file *file)
+ 		}
+ 
+ 		/*
++		 * An intra-TU jump in retpoline.o might not have a relocation
++		 * for its jump dest, in which case the above
++		 * add_{retpoline,return}_call() didn't happen.
++		 */
++		if (jump_dest->sym && jump_dest->offset == jump_dest->sym->offset) {
++			if (jump_dest->sym->retpoline_thunk) {
++				add_retpoline_call(file, insn);
++				continue;
++			}
++			if (jump_dest->sym->return_thunk) {
++				add_return_call(file, insn, true);
++				continue;
++			}
++		}
++
++		/*
+ 		 * Cross-function jump.
+ 		 */
+ 		if (insn_func(insn) && insn_func(jump_dest) &&
