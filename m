@@ -2,52 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2690F7C6153
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 02:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CDA7C615F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 02:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbjJLADd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 20:03:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60446 "EHLO
+        id S1376577AbjJLAIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 20:08:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233648AbjJLADc (ORCPT
+        with ESMTP id S231381AbjJLAIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 20:03:32 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC88390
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 17:03:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91027C433C7;
-        Thu, 12 Oct 2023 00:03:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697069010;
-        bh=NT3MPmQP3Ft6GdyMVBxqACxP/O1fU4jdsdkufjHBiEg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hqYqYBkFhsX6TUC0NEdxv5i1JF06rhgBuWKrC3ryn6AUmvQS0enolBalfzAw9pyTo
-         zb7MVxHQXznqKOntvAN/HhCuibAuCb734kG3xgvPZrF904nc8HqkD3EkfRpE+Nqxel
-         scpGE/oJOZaeF+3lrGyH7dNws4rLYi2Det6YGH4lFv6BBVq0hQ/fVCgxhoE1nxyI1o
-         dJnM0xH6yok5mP8hopqdLFyZvCoWocJ4Yz1P3nEAAZ2TSH0Xi19LsLJCdoq9TXkTML
-         wNCthCivvtAl1dMPykEtbGibUd0X9T8Ci5qKHZrTKSokLWevQ1MEAynYs6FU/uwhbQ
-         flkMomB+XOJmA==
-Date:   Wed, 11 Oct 2023 17:03:27 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Usama Arif <usama.arif@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        muchun.song@linux.dev, songmuchun@bytedance.com,
-        fam.zheng@bytedance.com, liangma@liangbit.com,
-        punit.agrawal@bytedance.com,
-        Konrad Dybcio <konrad.dybcio@linaro.org>, llvm@lists.linux.dev
-Subject: Re: [PATCH] mm: hugetlb: Only prep and add allocated folios for
- non-gigantic pages
-Message-ID: <20231012000327.GA1855399@dev-arch.thelio-3990X>
-References: <20231009145605.2150897-1-usama.arif@bytedance.com>
- <20231010012345.GA108129@monkey>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010012345.GA108129@monkey>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Wed, 11 Oct 2023 20:08:04 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30BD94;
+        Wed, 11 Oct 2023 17:08:03 -0700 (PDT)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BNolws012543;
+        Thu, 12 Oct 2023 00:07:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=uiaSbBpM/Pa4uCwRgwG3S7EBa1GDOotgmEOLvNJZmGw=;
+ b=OVy+CmvyaWOQo9XaYjZUd8HyxhhPY0CUmed/WgVIGq7HkqHnGn03l5Eg1p+8CWjuZA0p
+ pqeXF7paoU30W/vD0RFUHgkCBQK4Nh/tisz5FlCu9SIQ11JY7AXWGNgyWqU2doVX7UQQ
+ eP+1BhBp9x+D0T8jjyr80EeHAbO4WpOs7ULwtkLPzHEBhDR1ikNb48lRsg+U9Vz1hlDa
+ U1hvyghoHaKzvB0CeixJC2yuU1MmY7UFCRMAB1125dAt+/da+l29UcmLyS5zFqJzWtNj
+ regAOZJNmK03a84djtRiLqbHEE+yseMRpie35GYFWgyueIlaZ96hjggPzllrWLM7pjTy Hw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tp5r08ade-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 00:07:31 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39C0680L022307;
+        Thu, 12 Oct 2023 00:07:31 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tp5r08acy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 00:07:31 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39BNAA2B023021;
+        Thu, 12 Oct 2023 00:07:30 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkmc1uc85-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 00:07:30 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39C07Tqm20644476
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Oct 2023 00:07:29 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 67DCF58055;
+        Thu, 12 Oct 2023 00:07:29 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9F0A658059;
+        Thu, 12 Oct 2023 00:07:26 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.14.38])
+        by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 12 Oct 2023 00:07:26 +0000 (GMT)
+Message-ID: <f38831743d8ad127031171016eb2d962d0fe3210.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 07/25] ima: Align ima_post_read_file() definition
+ with LSM infrastructure
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Date:   Wed, 11 Oct 2023 20:07:26 -0400
+In-Reply-To: <20230904133415.1799503-8-roberto.sassu@huaweicloud.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904133415.1799503-8-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: SJldbvHMDQU6DaxPyQXHOSQ2m3C9GIPB
+X-Proofpoint-ORIG-GUID: bdXpaMZzUWfwWN2NTKW83feLuOtpR7qc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_18,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 spamscore=0 mlxscore=0 phishscore=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 malwarescore=0
+ impostorscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2310110212
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,236 +104,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+On Mon, 2023-09-04 at 15:33 +0200, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> Change ima_post_read_file() definition, so that it can be registered as
+> implementation of the post_read_file hook.
 
-On Mon, Oct 09, 2023 at 06:23:45PM -0700, Mike Kravetz wrote:
-> On 10/09/23 15:56, Usama Arif wrote:
-> > Calling prep_and_add_allocated_folios when allocating gigantic pages
-> > at boot time causes the kernel to crash as folio_list is empty
-> > and iterating it causes a NULL pointer dereference. Call this only
-> > for non-gigantic pages when folio_list has entires.
+The only change here is making "void *buf" a "char *buf".
+
+thanks,
+
+Mimi
+
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+> ---
+>  include/linux/ima.h               | 6 +++---
+>  security/integrity/ima/ima_main.c | 2 +-
+>  2 files changed, 4 insertions(+), 4 deletions(-)
 > 
-> Thanks!
-> 
-> However, are you sure the issue is the result of iterating through a
-> NULL list?  For reference, the routine prep_and_add_allocated_folios is:
-> 
-> static void prep_and_add_allocated_folios(struct hstate *h,
-> 					struct list_head *folio_list)
-> {
-> 	struct folio *folio, *tmp_f;
-> 
-> 	/* Add all new pool pages to free lists in one lock cycle */
-> 	spin_lock_irq(&hugetlb_lock);
-> 	list_for_each_entry_safe(folio, tmp_f, folio_list, lru) {
-> 		__prep_account_new_huge_page(h, folio_nid(folio));
-> 		enqueue_hugetlb_folio(h, folio);
-> 	}
-> 	spin_unlock_irq(&hugetlb_lock);
-> }
-> 
-> If folio_list is empty, then the only code that should be executed is
-> acquiring the lock, notice the list is empty, release the lock.
-> 
-> In the case of gigantic pages addressed below, I do see the warning:
-> 
-> [    0.055140] DEBUG_LOCKS_WARN_ON(early_boot_irqs_disabled)
-> [    0.055149] WARNING: CPU: 0 PID: 0 at kernel/locking/lockdep.c:4345 lockdep_hardirqs_on_prepare+0x1a8/0x1b0
-> [    0.055153] Modules linked in:
-> [    0.055155] CPU: 0 PID: 0 Comm: swapper Not tainted 6.6.0-rc4+ #40
-> [    0.055157] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-1.fc37 04/01/2014
-> [    0.055158] RIP: 0010:lockdep_hardirqs_on_prepare+0x1a8/0x1b0
-> [    0.055160] Code: 00 85 c0 0f 84 5e ff ff ff 8b 0d a7 20 74 01 85 c9 0f 85 50 ff ff ff 48 c7 c6 48 25 42 82 48 c7 c7 70 7f 40 82 e8 18 10 f7 ff <0f> 0b 5b e9 e0 d8 af 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90
-> [    0.055162] RSP: 0000:ffffffff82603d40 EFLAGS: 00010086 ORIG_RAX: 0000000000000000
-> [    0.055164] RAX: 0000000000000000 RBX: ffffffff827911e0 RCX: 0000000000000000
-> [    0.055165] RDX: 0000000000000004 RSI: ffffffff8246b3e1 RDI: 00000000ffffffff
-> [    0.055166] RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000000
-> [    0.055166] R10: ffffffffffffffff R11: 284e4f5f4e524157 R12: 0000000000000001
-> [    0.055167] R13: ffffffff82eb6316 R14: ffffffff82603d70 R15: ffffffff82ee5f70
-> [    0.055169] FS:  0000000000000000(0000) GS:ffff888277c00000(0000) knlGS:0000000000000000
-> [    0.055170] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    0.055171] CR2: ffff88847ffff000 CR3: 000000000263a000 CR4: 00000000000200b0
-> [    0.055174] Call Trace:
-> [    0.055174]  <TASK>
-> [    0.055175]  ? lockdep_hardirqs_on_prepare+0x1a8/0x1b0
-> [    0.055177]  ? __warn+0x81/0x170
-> [    0.055181]  ? lockdep_hardirqs_on_prepare+0x1a8/0x1b0
-> [    0.055182]  ? report_bug+0x18d/0x1c0
-> [    0.055186]  ? early_fixup_exception+0x92/0xb0
-> [    0.055189]  ? early_idt_handler_common+0x2f/0x40
-> [    0.055194]  ? lockdep_hardirqs_on_prepare+0x1a8/0x1b0
-> [    0.055196]  trace_hardirqs_on+0x10/0xa0
-> [    0.055198]  _raw_spin_unlock_irq+0x24/0x50
-> [    0.055201]  hugetlb_hstate_alloc_pages+0x311/0x3e0
-> [    0.055206]  hugepages_setup+0x220/0x2c0
-> [    0.055210]  unknown_bootoption+0x98/0x1d0
-> [    0.055213]  parse_args+0x152/0x440
-> [    0.055216]  ? __pfx_unknown_bootoption+0x10/0x10
-> [    0.055220]  start_kernel+0x1af/0x6c0
-> [    0.055222]  ? __pfx_unknown_bootoption+0x10/0x10
-> [    0.055225]  x86_64_start_reservations+0x14/0x30
-> [    0.055227]  x86_64_start_kernel+0x74/0x80
-> [    0.055229]  secondary_startup_64_no_verify+0x166/0x16b
-> [    0.055234]  </TASK>
-> [    0.055235] irq event stamp: 0
-> [    0.055236] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> [    0.055238] hardirqs last disabled at (0): [<0000000000000000>] 0x0
-> [    0.055239] softirqs last  enabled at (0): [<0000000000000000>] 0x0
-> [    0.055240] softirqs last disabled at (0): [<0000000000000000>] 0x0
-> [    0.055240] ---[ end trace 0000000000000000 ]---
-> 
-> This is because interrupts are not enabled this early in boot, and the
-> spin_unlock_irq() would incorrectly enable interrupts too early.  I wonder
-> if this 'warning' could translate to a panic or NULL deref under certain
-> configurations?
-> 
-> Konrad, I am interested to see if this addresses your booting problem.  But,
-> your stack trace is a bit different.  My 'guess' is that this will not address
-> your issue.  If it does not, can you try the following patch?  This
-> applies to next-20231009.
-> -- 
-> Mike Kravetz
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index f3749fc125d4..8346c98e5616 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -2178,18 +2178,19 @@ static struct folio *alloc_fresh_hugetlb_folio(struct hstate *h,
->  static void prep_and_add_allocated_folios(struct hstate *h,
->  					struct list_head *folio_list)
->  {
-> +	unsigned long flags;
->  	struct folio *folio, *tmp_f;
->  
->  	/* Send list for bulk vmemmap optimization processing */
->  	hugetlb_vmemmap_optimize_folios(h, folio_list);
->  
->  	/* Add all new pool pages to free lists in one lock cycle */
-> -	spin_lock_irq(&hugetlb_lock);
-> +	spin_lock_irqsave(&hugetlb_lock, flags);
->  	list_for_each_entry_safe(folio, tmp_f, folio_list, lru) {
->  		__prep_account_new_huge_page(h, folio_nid(folio));
->  		enqueue_hugetlb_folio(h, folio);
->  	}
-> -	spin_unlock_irq(&hugetlb_lock);
-> +	spin_unlock_irqrestore(&hugetlb_lock, flags);
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index 93e3c6cdf1f8..6e4d060ff378 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -31,8 +31,8 @@ extern int ima_post_load_data(char *buf, loff_t size,
+>  			      enum kernel_load_data_id id, char *description);
+>  extern int ima_read_file(struct file *file, enum kernel_read_file_id id,
+>  			 bool contents);
+> -extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
+> -			      enum kernel_read_file_id id);
+> +int ima_post_read_file(struct file *file, char *buf, loff_t size,
+> +		       enum kernel_read_file_id id);
+>  extern void ima_post_path_mknod(struct mnt_idmap *idmap,
+>  				const struct path *dir, struct dentry *dentry,
+>  				umode_t mode, unsigned int dev);
+> @@ -112,7 +112,7 @@ static inline int ima_read_file(struct file *file, enum kernel_read_file_id id,
+>  	return 0;
 >  }
 >  
->  /*
-> @@ -3224,13 +3225,14 @@ static void __init hugetlb_folio_init_vmemmap(struct folio *folio,
->  static void __init prep_and_add_bootmem_folios(struct hstate *h,
->  					struct list_head *folio_list)
+> -static inline int ima_post_read_file(struct file *file, void *buf, loff_t size,
+> +static inline int ima_post_read_file(struct file *file, char *buf, loff_t size,
+>  				     enum kernel_read_file_id id)
 >  {
-> +	unsigned long flags;
->  	struct folio *folio, *tmp_f;
->  
->  	/* Send list for bulk vmemmap optimization processing */
->  	hugetlb_vmemmap_optimize_folios(h, folio_list);
->  
->  	/* Add all new pool pages to free lists in one lock cycle */
-> -	spin_lock_irq(&hugetlb_lock);
-> +	spin_lock_irqsave(&hugetlb_lock, flags);
->  	list_for_each_entry_safe(folio, tmp_f, folio_list, lru) {
->  		if (!folio_test_hugetlb_vmemmap_optimized(folio)) {
->  			/*
-> @@ -3246,7 +3248,7 @@ static void __init prep_and_add_bootmem_folios(struct hstate *h,
->  		__prep_account_new_huge_page(h, folio_nid(folio));
->  		enqueue_hugetlb_folio(h, folio);
->  	}
-> -	spin_unlock_irq(&hugetlb_lock);
-> +	spin_unlock_irqrestore(&hugetlb_lock, flags);
->  }
->  
->  /*
+>  	return 0;
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index e9e2a3ad25a1..f8581032e62c 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -801,7 +801,7 @@ const int read_idmap[READING_MAX_ID] = {
+>   * On success return 0.  On integrity appraisal error, assuming the file
+>   * is in policy and IMA-appraisal is in enforcing mode, return -EACCES.
+>   */
+> -int ima_post_read_file(struct file *file, void *buf, loff_t size,
+> +int ima_post_read_file(struct file *file, char *buf, loff_t size,
+>  		       enum kernel_read_file_id read_id)
+>  {
+>  	enum ima_hooks func;
 
-I suspect the crash that our continuous integration spotted [1] is the
-same issue that Konrad is seeing, as I have bisected that failure to
-bfb41d6b2fe1 in next-20231009. However, neither the first half of your
-diff (since the second half does not apply at bfb41d6b2fe1) nor the
-original patch in this thread resolves the issue though, so maybe it is
-entirely different from Konrad's?
 
-For what it's worth, this issue is only visible for me when building for
-arm64 using LLVM with CONFIG_INIT_STACK_NONE=y, instead of the default
-CONFIG_INIT_STACK_ALL_ZERO=y (which appears to hide the problem?),
-making it seem like it could be something with uninitialized memory... I
-have not been able to reproduce it with GCC, which could also mean
-something.
-
-Using LLVM 17.0.2 from kernel.org [2]:
-
-$ make -skj"$(nproc)" ARCH=arm64 LLVM=1 mrproper defconfig
-
-$ scripts/config -d INIT_STACK_ALL_ZERO -e INIT_STACK_NONE
-
-$ make -skj"$(nproc)" ARCH=arm64 LLVM=1 Image.gz
-
-$ qemu-system-aarch64 \
-    -display none \
-    -nodefaults \
-    -cpu max,pauth-impdef=true \
-    -machine virt,gic-version=max,virtualization=true \
-    -append 'console=ttyAMA0 earlycon' \
-    -kernel arch/arm64/boot/Image.gz \
-    -initrd arm64-rootfs.cpio \
-    -m 512m \
-    -serial mon:stdio
-...
-[    0.000000] Linux version 6.6.0-rc4-00317-gbfb41d6b2fe1 (nathan@dev-arch.thelio-3990X) (ClangBuiltLinux clang version 17.0.2 (https://github.com/llvm/llvm-project b2417f51dbbd7435eb3aaf203de24de6754da50e), ClangBuiltLinux LLD 17.0.2) #1 SMP PREEMPT Wed Oct 11 16:44:41 MST 2023
-...
-[    0.304543] Unable to handle kernel paging request at virtual address ffffff602827f9f4
-[    0.304899] Mem abort info:
-[    0.305022]   ESR = 0x0000000096000004
-[    0.305438]   EC = 0x25: DABT (current EL), IL = 32 bits
-[    0.305668]   SET = 0, FnV = 0
-[    0.305804]   EA = 0, S1PTW = 0
-[    0.305949]   FSC = 0x04: level 0 translation fault
-[    0.306156] Data abort info:
-[    0.306287]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-[    0.306500]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-[    0.306711]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[    0.306976] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000041cc3000
-[    0.307251] [ffffff602827f9f4] pgd=0000000000000000, p4d=0000000000000000
-[    0.308086] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-[    0.308428] Modules linked in:
-[    0.308722] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc4-00317-gbfb41d6b2fe1 #1
-[    0.309159] Hardware name: linux,dummy-virt (DT)
-[    0.309496] pstate: 61400009 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
-[    0.309987] pc : gather_bootmem_prealloc+0x80/0x1a8
-[    0.310673] lr : hugetlb_init+0x1c8/0x2ec
-[    0.310871] sp : ffff80008000ba10
-[    0.311038] x29: ffff80008000ba30 x28: 0000000000000000 x27: ffffd80a09fe7db8
-[    0.311417] x26: 0000000000000001 x25: ffffd80a09fe7db8 x24: 0000000000000100
-[    0.311702] x23: fffffc0000000000 x22: 0001000000000000 x21: ffff80008000ba18
-[    0.311987] x20: ffffff602827f9c0 x19: ffffd80a0a555b60 x18: 00000000fbf7386f
-[    0.312272] x17: 00000000bee83943 x16: 000000002ae32058 x15: 0000000000000000
-[    0.312557] x14: 0000000000000009 x13: ffffd80a0a556d28 x12: ffffffffffffee38
-[    0.312831] x11: ffffd80a0a556d28 x10: 0000000000000004 x9 : ffffd80a09fe7000
-[    0.313141] x8 : 0000000d80a09fe7 x7 : 0000000001e1f7fb x6 : 0000000000000008
-[    0.313425] x5 : ffffd80a09ef1454 x4 : ffff00001fed5630 x3 : 0000000000019e00
-[    0.313703] x2 : ffff000002407b80 x1 : 0000000000019d00 x0 : 0000000000000000
-[    0.314054] Call trace:
-[    0.314259]  gather_bootmem_prealloc+0x80/0x1a8
-[    0.314536]  hugetlb_init+0x1c8/0x2ec
-[    0.314743]  do_one_initcall+0xac/0x220
-[    0.314928]  do_initcall_level+0x8c/0xac
-[    0.315114]  do_initcalls+0x54/0x94
-[    0.315276]  do_basic_setup+0x1c/0x28
-[    0.315450]  kernel_init_freeable+0x104/0x170
-[    0.315648]  kernel_init+0x20/0x1a0
-[    0.315822]  ret_from_fork+0x10/0x20
-[    0.316235] Code: 979e8c0d 8b160328 d34cfd08 8b081af4 (b9403688)
-[    0.316745] ---[ end trace 0000000000000000 ]---
-[    0.317463] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-[    0.318093] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
-
-The rootfs is available at [3] in case it is relevant. I am more than
-happy to provide any additional information or test any patches as
-necessary.
-
-[1]: https://github.com/ClangBuiltLinux/continuous-integration2/actions/runs/6469151768/job/17570882198
-[2]: https://mirrors.edge.kernel.org/pub/tools/llvm/
-[3]: https://github.com/ClangBuiltLinux/boot-utils/releases
-
-Cheers,
-Nathan
