@@ -2,108 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3242C7C6B1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39297C6B27
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377780AbjJLK3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43562 "EHLO
+        id S1377631AbjJLKbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343654AbjJLK3M (ORCPT
+        with ESMTP id S235672AbjJLKbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:29:12 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5B1B7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:29:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C60CC433C8;
-        Thu, 12 Oct 2023 10:29:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697106551;
-        bh=pUW2UZ0iy4cmzd6/+KDXWEa/Dy0ELBQNtzS85l2Lunk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=brE3CEeTWq27Cqw8KEMugSZoqYW30hCkl4n/stfchAv4ITSXMFJSE8EKQRRAjCFrn
-         AdOD0ZDpihTgzC9V36GYQ23NrFGDm186yigFclM080X2lmXPpu73yTJOCX3rAzbmBQ
-         l1dLuvqQjCAGHodCUUS6ezGo9yVtSX1IpTTySYLGav7LZkrRo3q9CJfd9UQzvl02SL
-         z7CJvRM4J0+Mtz6iKKAn0Vkniv80Rgt41ZvAdzMMyb3hubChs9OS7W0od5/E/A6/8R
-         /ejjo5niRARbD4QXsCST7aVe8ZeTeYpy5vs0/OzMeDSBg/iSPe2yQJuaFSDhEwK3Lv
-         SNnXAAoc66RIg==
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
-To:     Gabriel Somlo <somlo@cmu.edu>,
-        "Michael S. Tsirkin" <mst@redhat.com>, qemu-devel@nongnu.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Alistair Francis <alistair.francis@wdc.com>,
-        =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
-Subject: [PATCH v2] riscv, qemu_fw_cfg: Add support for RISC-V architecture
-Date:   Thu, 12 Oct 2023 12:28:52 +0200
-Message-Id: <20231012102852.234442-1-bjorn@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Thu, 12 Oct 2023 06:31:00 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52782D3;
+        Thu, 12 Oct 2023 03:30:58 -0700 (PDT)
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39C8Ftdr007899;
+        Thu, 12 Oct 2023 06:30:35 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3tpd4t0q93-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 06:30:34 -0400 (EDT)
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 39CAUXg2008975
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Oct 2023 06:30:33 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Thu, 12 Oct
+ 2023 06:30:32 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Thu, 12 Oct 2023 06:30:32 -0400
+Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.194])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 39CAUHPV007059;
+        Thu, 12 Oct 2023 06:30:19 -0400
+From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
+CC:     Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v4 1/2] dt-bindings: hwmon: ltc2991: add bindings
+Date:   Thu, 12 Oct 2023 13:29:35 +0300
+Message-ID: <20231012102954.103794-1-antoniu.miclaus@analog.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: pXApy2as7ILBqpRagVgqX3SmtXbJhlA_
+X-Proofpoint-ORIG-GUID: pXApy2as7ILBqpRagVgqX3SmtXbJhlA_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
+ clxscore=1011 malwarescore=0 spamscore=0 phishscore=0 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2309180000 definitions=main-2310120086
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Björn Töpel <bjorn@rivosinc.com>
+Add dt-bindings for ltc2991 octal i2c voltage, current and temperature
+monitor.
 
-Qemu fw_cfg support was missing for RISC-V, which made it hard to do
-proper vmcore dumps from qemu.
-
-Add the missing RISC-V arch-defines.
-
-You can now do vmcore dumps from qemu. Add "-device vmcoreinfo" to the
-qemu command-line. From the qemu monitor:
-  (qemu) dump-guest-memory vmcore
-
-The vmcore can now be used, e.g., with the "crash" utility.
-
-Acked-by: "Michael S. Tsirkin" <mst@redhat.com>
-Acked-by: Alistair Francis <alistair.francis@wdc.com>
-Tested-by: Clément Léger <cleger@rivosinc.com>
-Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 ---
-v2: Fixed typo (Clément)
-    ...and collected A-b/T-bs
----
- drivers/firmware/Kconfig       | 2 +-
- drivers/firmware/qemu_fw_cfg.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ .../bindings/hwmon/adi,ltc2991.yaml           | 128 ++++++++++++++++++
+ 1 file changed, 128 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
 
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index b59e3041fd62..f05ff56629b3 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -155,7 +155,7 @@ config RASPBERRYPI_FIRMWARE
- 
- config FW_CFG_SYSFS
- 	tristate "QEMU fw_cfg device support in sysfs"
--	depends on SYSFS && (ARM || ARM64 || PARISC || PPC_PMAC || SPARC || X86)
-+	depends on SYSFS && (ARM || ARM64 || PARISC || PPC_PMAC || RISCV || SPARC || X86)
- 	depends on HAS_IOPORT_MAP
- 	default n
- 	help
-diff --git a/drivers/firmware/qemu_fw_cfg.c b/drivers/firmware/qemu_fw_cfg.c
-index a69399a6b7c0..1448f61173b3 100644
---- a/drivers/firmware/qemu_fw_cfg.c
-+++ b/drivers/firmware/qemu_fw_cfg.c
-@@ -211,7 +211,7 @@ static void fw_cfg_io_cleanup(void)
- 
- /* arch-specific ctrl & data register offsets are not available in ACPI, DT */
- #if !(defined(FW_CFG_CTRL_OFF) && defined(FW_CFG_DATA_OFF))
--# if (defined(CONFIG_ARM) || defined(CONFIG_ARM64))
-+# if (defined(CONFIG_ARM) || defined(CONFIG_ARM64) || defined(CONFIG_RISCV))
- #  define FW_CFG_CTRL_OFF 0x08
- #  define FW_CFG_DATA_OFF 0x00
- #  define FW_CFG_DMA_OFF 0x10
-
-base-commit: 1c8b86a3799f7e5be903c3f49fcdaee29fd385b5
+diff --git a/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml b/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
+new file mode 100644
+index 000000000000..011e5b65c79c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
+@@ -0,0 +1,128 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++
++$id: http://devicetree.org/schemas/hwmon/adi,ltc2991.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices LTC2991 Octal I2C Voltage, Current and Temperature Monitor
++
++maintainers:
++  - Antoniu Miclaus <antoniu.miclaus@analog.com>
++
++description: |
++  The LTC2991 is used to monitor system temperatures, voltages and currents.
++  Through the I2C serial interface, the eight monitors can individually measure
++  supply voltages and can be paired for differential measurements of current
++  sense resistors or temperature sensing transistors.
++
++  Datasheet:
++    https://www.analog.com/en/products/ltc2991.html
++
++properties:
++  compatible:
++    const: adi,ltc2991
++
++  reg:
++    maxItems: 1
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++  vcc-supply: true
++
++patternProperties:
++  "^channel@[0-3]$":
++    type: object
++    description:
++      Represents the differential/temperature channels.
++
++    properties:
++      reg:
++        description:
++          The channel number. LTC2991 can monitor 4 currents/temperatures.
++        items:
++          minimum: 0
++          maximum: 3
++
++      shunt-resistor-micro-ohms:
++        description:
++          The value of curent sense resistor in micro ohms. Pin configuration is
++          set for differential input pair.
++
++      adi,temperature-enable:
++        description:
++          Enables temperature readings. Pin configuration is set for remote
++          diode temperature measurement.
++        type: boolean
++
++    required:
++      - reg
++
++    allOf:
++      - if:
++          required:
++            - shunt-resistor-micro-ohms
++        then:
++          properties:
++            adi,temperature-enable: false
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - vcc-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        hwmon@48 {
++            compatible = "adi,ltc2991";
++            reg = <0x48>;
++            vcc-supply = <&vcc>;
++        };
++    };
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        hwmon@48 {
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            compatible = "adi,ltc2991";
++            reg = <0x48>;
++            vcc-supply = <&vcc>;
++
++            channel@0 {
++                    reg = <0x0>;
++                    shunt-resistor-micro-ohms = <100000>;
++            };
++
++            channel@1 {
++                    reg = <0x1>;
++                    shunt-resistor-micro-ohms = <100000>;
++            };
++
++            channel@2 {
++                    reg = <0x2>;
++                    adi,temperature-enable;
++            };
++
++            channel@3 {
++                    reg = <0x3>;
++                    adi,temperature-enable;
++            };
++        };
++    };
++...
 -- 
-2.39.2
+2.42.0
 
