@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFB87C7380
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B03C7C7383
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235766AbjJLQxE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 12:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57576 "EHLO
+        id S1379176AbjJLQx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:53:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233290AbjJLQxC (ORCPT
+        with ESMTP id S1344025AbjJLQxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:53:02 -0400
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53AF5BE;
-        Thu, 12 Oct 2023 09:53:01 -0700 (PDT)
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-27d113508bfso947727a91.3;
-        Thu, 12 Oct 2023 09:53:01 -0700 (PDT)
+        Thu, 12 Oct 2023 12:53:54 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30180C6;
+        Thu, 12 Oct 2023 09:53:49 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d81d09d883dso1323841276.0;
+        Thu, 12 Oct 2023 09:53:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697129628; x=1697734428; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4YEO2sX1644pceOCmBcjKjNP7tzfloEulvFa61W15NE=;
+        b=Vrzvn0UOqTDkhs932FErDcZ84wEhSS/5wFfaQnd0Vl1pthX1RmXVDjUqLURoJtgILj
+         lKnz1oCHgkJt7SXNadwAiLctNEu+6YJD/akcNC6KK5tlniOlKMiFMD/jMJoESCDvP0It
+         vX/AKzCV6ADUXNJv+e4pUk1fAHWBQs3rkZAubfehyLxJJb4dDFMPh5KQ9T4YjouflH5c
+         uzP8SO5AfAmBNJXQi4eO9s/uaW70L0N0yMUHPWTmorhPXKFORl4gWY20CZg5FxwNRrlQ
+         pgTUSh+pXs6otssvywKdBCn3VYxFC6acl73AVRjNcGwm5WzjPNaYVZu0WcqnzBiu/IQ0
+         1N/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697129581; x=1697734381;
+        d=1e100.net; s=20230601; t=1697129628; x=1697734428;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wbYdyYCLJzWKhagPtB2fZh6NdUcQYAFm57gjL1qGF48=;
-        b=NDEQvwkQkWubFS0l0atPAWvMdLyJD3omUIvoWkhTmVunGbuJPp980w/XuvrUN2A2pe
-         +ejDIvuti8upy6nF3b5l1YtyWvVFsi2C0Nl55ENLl4k6YOSa0eYMLhyV71IkzLBOSBXB
-         b2SWtiGToYJNvF8G5Xp8YYo4XoiiF+3S2hEbx7zRJjZ6vyCtBc0kB07kcX9ZpglFFsDP
-         1/pyandn6YbTBVy9UkgzcGyBKQA9lovThvkOSUaV3d36VAiop8O+DFQeankxCKn4p7SB
-         jrNU32lp/1Jt0LkUCzW1Ujx34E6zXUTFHBSJnI3JcpzOYhWh4Yk83vmG7SEBfj6zHqB/
-         kaYg==
-X-Gm-Message-State: AOJu0Yw4OAEqA02wq8Xnn8b1AERlmknRdLATmPQsbG+KDE94WMhwVM5Y
-        6SUINky50eTn9ufpvx3Xcq4hjbFH7Vdfpsl4z5M=
-X-Google-Smtp-Source: AGHT+IG9jsSRf7EIm7g+9z1WGXCY0hL8ay7WE0VOiI32HNTtUx5gxJO32EGx3ySvVI7spQ9vBSU3cZfJIJgMJk13zMw=
-X-Received: by 2002:a17:90a:2a8f:b0:27d:6b8:93be with SMTP id
- j15-20020a17090a2a8f00b0027d06b893bemr4680096pjd.42.1697129580644; Thu, 12
- Oct 2023 09:53:00 -0700 (PDT)
+        bh=4YEO2sX1644pceOCmBcjKjNP7tzfloEulvFa61W15NE=;
+        b=Cefu9QLU6DVROdfLP+HngvXVSnt+KcxY/Cp0TzbXe9cZE3ed4c9mgeISYJxPlzWpu9
+         z5asejn7B7D1vpmxfuAg2MD+BBDPDVrfeCoUREntcWmKimGCfEUpvb5lNpGmfTqC/y5j
+         H4q35IcLuAhQHQIacf3VeWMT03EsJKspd8BSo0zaZRtpxnSB8yv9Drg1NvHS6g9nPTrb
+         Son7tf+SkDH6Ra/7NLYcKFjJ1Wgw1Pu8wJ/9EOZn/w9yughznf75r/eLKcaUT76wANoh
+         53auAG8ab0Pa2TXJsULo/Ekss8s9vHvjoZAt8vaSOFGmMQRxFZfr8fYiefmPXZ/0aNOv
+         HZGw==
+X-Gm-Message-State: AOJu0YyErqysz+V+FRM56g4STHa9D0FqVwwtrVFMDyVSnYSdZEoG3nus
+        ET0P73dJ2aYR1jFyk1F2UJ2GSVBgf/mRrpEWzBQrhATQqoPggyoB
+X-Google-Smtp-Source: AGHT+IGslQv6Y0IoJqXSCrmVs66RJC9r/My3WLXN2jblL1vhxvdvCgYI08ytpQwY9A2IPEFzHgyP1C1wkz8RDc1LCCo=
+X-Received: by 2002:a5b:ccc:0:b0:d92:13fc:c940 with SMTP id
+ e12-20020a5b0ccc000000b00d9213fcc940mr18893672ybr.9.1697129628287; Thu, 12
+ Oct 2023 09:53:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231012035111.676789-1-namhyung@kernel.org> <20231012091537.GM6307@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231012091537.GM6307@noisy.programming.kicks-ass.net>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 12 Oct 2023 09:52:49 -0700
-Message-ID: <CAM9d7cgiagnJ3zZ0KvyvYtVVp3ycb3BNwL6x2-eUYJhHbPSohw@mail.gmail.com>
-Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Ben Woodard <woodard@redhat.com>,
-        Joe Mario <jmario@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Blaikie <blaikie@google.com>,
-        Xu Liu <xliuprof@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>
+References: <65271731e25f4_7258329472@dwillia2-xfh.jf.intel.com.notmuch>
+ <20231012115039.1680561-1-ojeda@kernel.org> <e212997cf8b05608718fb6ac1766c390255664ac.camel@perches.com>
+In-Reply-To: <e212997cf8b05608718fb6ac1766c390255664ac.camel@perches.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 12 Oct 2023 18:53:37 +0200
+Message-ID: <CANiq72nr88=r-rackE7+DBAxg8VYy8LYO9D2h0vnxbAoSXFFSQ@mail.gmail.com>
+Subject: Re: [PATCH v3] Documentation/process/coding-style.rst: space around const
+To:     Joe Perches <joe@perches.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, dan.j.williams@intel.com,
+        corbet@lwn.net, gregkh@linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@roeck-us.net, max.kellermann@ionos.com,
+        workflows@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 2:17 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Thu, Oct 12, 2023 at 4:48=E2=80=AFPM Joe Perches <joe@perches.com> wrote=
+:
 >
-> On Wed, Oct 11, 2023 at 08:50:23PM -0700, Namhyung Kim wrote:
->
-> > Actually there's a performance issue about getting disassembly from the
-> > objdump for kernel.  On my system, GNU objdump was really slower than the
-> > one from LLVM for some reason so I had to pass the following option for
-> > each perf report and perf annotate.
-> >
-> >     $ sudo perf report --objdump=llvm-objdump ...
-> >
-> >     # To save it in the config file and drop the command line option
-> >     $ sudo perf config annotate.objdump=llvm-objdump
-> >
-> > Even with this change, still the most processing time was spent on the
-> > objdump to get the disassembly.  It'd be nice if we can get the result
-> > without using objdump at all.
->
-> So the kernel has an instruction decoder, all we need is something that
-> can pretty print the result. IIRC Masami had an early version of that
-> somewhere.
->
-> With those bits, and some basic ELF parsing (find in objtool for
-> instance) you can implement most of objdump yourself.
+> Do older versions of clang-format ignore entries
+> they don't understand?
 
-That would be nice, but I'm a bit afraid of dealing with details
-of instruction decoding especially for unusual ones considering
-extensibility to user space and other architectures.
+Sadly, no, that is the reason we keep it at the minimum.
 
-Thanks,
-Namhyung
+However, I just took a look again at it, and I see that such support
+was added to LLVM 12, the `--Wno-error=3Dunknown` flag in commit
+f64903fd8176 ("Add -Wno-error=3Dunknown flag to clang-format.").
+
+So this means that the minimum is bumped to 12, we could in principle
+use newer options.
+
+I think the downsides are that users will need to pass the flag
+(potentially in e.g. their IDE or similar) and that formatting could
+be potentially chaotic depending on the options ignored. I guess
+particular subsystems could agree on which version to use.
+
+Cheers,
+Miguel
