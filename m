@@ -2,239 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDC77C6398
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 05:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EF87C6394
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 05:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347084AbjJLD6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 23:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55338 "EHLO
+        id S1347116AbjJLD6Q convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Oct 2023 23:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347113AbjJLD6e (ORCPT
+        with ESMTP id S1347131AbjJLD57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 23:58:34 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B66268F
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 20:53:03 -0700 (PDT)
-X-UUID: d161662e68b211ee8051498923ad61e6-20231012
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=cxUQtNLWOQuYtGfydR20dJ7su60TL+lNYW9NcXfqMT4=;
-        b=ghNq2MGTwPZqbV8y4YWMAgH9uLdGezHIQ+L5xycU2vuvgox0ijTIZckucXMhNDbT+hwTz6UHw57dRdKGuRQWj+BDZTLlVTSX/vf/uDaMJ5bqlPw1vJdz5WJstwyOi/9wj6rOq3wINmi/h4XzfpEK9GgwlRp3tAe3MAXr9a7gujU=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:13b6461d-7225-420d-a870-e4cb30c911ec,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5f78ec9,CLOUDID:c8af06c4-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: d161662e68b211ee8051498923ad61e6-20231012
-Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw02.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 124443557; Thu, 12 Oct 2023 11:52:52 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 12 Oct 2023 11:52:50 +0800
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 12 Oct 2023 11:52:50 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nsSfZ4Qp6Epc3Cn1vQDZbEj42bk2+hmRKtLijy/8xyidn8tblHDdds+1gPpeG4p6cxkpjx1/bOv0UktgH2kiFHIDz+CUM7oxAYZ7Uz7Dkh0UyUgBrvG2Te2kZ3AxwKvPNOvGWmKLw2b/dIJAbGF4CljZOaGC1XyVrx2ORRvxzRMrkLevySPuaTGYZtaJaLBfZaiP4+7YaVZQ5KPtzPDqzEzlUlUj3pSALY3K5bCmHqOYuJqQpi4DlouK5ZCvM+AMcDy2sadcbM2TsjU1NpiCjSiz2ULCjHjuUH3WbvQSMJBpV/494/ZXny4c+i3hCJQcroGHg5NQCTfB2wdyG+fAzg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cxUQtNLWOQuYtGfydR20dJ7su60TL+lNYW9NcXfqMT4=;
- b=MyfCqeEelMuK+2M9vOkYYKPrCEI48HiuU7Z8tHbb1RmPyr9/w+3VpPoRahW8CdJigaZBbNabwz6isA76FX8Y3lxSKEbFSt1dDx+UHnzFYgmfo7+qEEMxZ7bJMN8bRIOoKqyxHSaFQHVJhhhEn/Izsr6l7Np/AQzHL4evH5nBe7LsZO47JuE4BqwAAv2txZVUDL3rAhnSA7jjzP+SF0YhnkNI1Fe3R0Ize/Gs7PpUBZe853uTM3plfGCJUVXOWz24hxBOIR/9px+tZfv6kO/H9Cehs8wX3k7/9LdtGtl2ouTP/YneZTDJf9gS4hkiy50uCEWGfDxRodkKi7JKT6mqPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cxUQtNLWOQuYtGfydR20dJ7su60TL+lNYW9NcXfqMT4=;
- b=Pxg04vpSBYxFvuUQFpR4EBBxxSpu1WOOw5ml8yqY40vVs/5DSkCGAzRr/DBLSYR8+Fd6nWl3v9XcBgwRvO0xYrMd8HUnaf8zN0HpeIcz9i0Zjbmptg9Rt51SOXxuBs5r0ZiYluaIXMrsEVS9UkjkYP7teyWy3N6wV+W5l6QBYMU=
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
- by SEZPR03MB7811.apcprd03.prod.outlook.com (2603:1096:101:18b::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Thu, 12 Oct
- 2023 03:52:49 +0000
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::9c2c:c08a:212f:e984]) by TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::9c2c:c08a:212f:e984%7]) with mapi id 15.20.6863.041; Thu, 12 Oct 2023
- 03:52:48 +0000
-From:   =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
-To:     "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
-CC:     "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "wenst@chromium.org" <wenst@chromium.org>,
-        =?utf-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
-        <Jason-JH.Lin@mediatek.com>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amergnat@baylibre.com" <amergnat@baylibre.com>,
-        "ehristev@collabora.com" <ehristev@collabora.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
-Subject: Re: [PATCH v10 09/16] drm/mediatek: gamma: Support specifying number
- of bits per LUT component
-Thread-Topic: [PATCH v10 09/16] drm/mediatek: gamma: Support specifying number
- of bits per LUT component
-Thread-Index: AQHZxqWKQ+R0esZvP0OxE1QfeRKerrBF8dYA
-Date:   Thu, 12 Oct 2023 03:52:48 +0000
-Message-ID: <e0a8ea5406e81bcf06304e6c42efcd54af8bcbbf.camel@mediatek.com>
-References: <20230804072850.89365-1-angelogioacchino.delregno@collabora.com>
-         <20230804072850.89365-10-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230804072850.89365-10-angelogioacchino.delregno@collabora.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|SEZPR03MB7811:EE_
-x-ms-office365-filtering-correlation-id: 54300ad0-5ef8-477f-1228-08dbcad6b3a9
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: O1iR+87PSSQgFgxc2C5H3PiFNDMZq+XQ4I5WeZT1Hh5sx3kABkT/E2gEqAAN78wmLOF9Zvv09qmrBy+I4dYQTCvoVZid1HtX2sW8aOl6RfZ/sqkpIsN/6f40aDTHxfLgLXUCnF87zL10WIDq2q1qZsgG5DLs+Dlv9dyV5ec5CcQwOkA4hohUWQL5t7AGRYzDHB8oNdGZARHHyWme5yroHQtuMAIySnFA2wSUIMeZe6+YsQVxGAiBGk3T1OOyakHVb+luUkGsZoJoMSP3FYDg8cCAva9Wx3Pmmm+885NaGj0eUbyAXyFTZMWrPDl+DBFbj1HvupQJ4M6pusDGhnllGvRZBMlMUre/vij/Xv7hwVj1LJ3ULAF+LzRRrw2ODTafBSeURveHjJosebqJwqnChFOEtvzwDBvLYRPHQ1QFA7Pcko/Is8lR7wMR/d5Tew93JSqGrPbxZnEEGM7qmIKNPW8p9YyTsHN6/T69nXOnv7gh3YHkEZ7fKj5IrqYl92tbWyav01GAMI3sfsZ8WCqKe8GbIiB30nK8z0R+p3IwwTjWipAvrbO9ELEqjylZJDv6elb/mWuBYBmO/ouK0xtXgkgMmPtD13K06APuggvZodNCsH7aaNsUSPGZ/jNm0CBVm8CYZ+Iv/fxQH7yU+jS1/ww0w4nWMptXj3OsXtP0Beg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(366004)(396003)(346002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(6512007)(6486002)(478600001)(71200400001)(7416002)(66556008)(26005)(83380400001)(76116006)(2906002)(66476007)(66446008)(5660300002)(54906003)(66946007)(110136005)(64756008)(6506007)(8936002)(316002)(4326008)(8676002)(41300700001)(86362001)(122000001)(85182001)(36756003)(38100700002)(38070700005)(2616005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UWhWd1lGSXloRmtVRUlFUmlLdjhYUCtXUWZWRnR0RTh3UTFDM3kwUkgzU29y?=
- =?utf-8?B?QVRmMUtQb2xzMVRTNkFXRS9CaXk1SEVCb1d5L0FvVEZOM2puQTlTVW5mZkl2?=
- =?utf-8?B?RU5QTVZNS3ZaL0VWdG5lZG1DYlVyb1RrM0VsbktWVlBvOVVQSmIrek5MQzVJ?=
- =?utf-8?B?OWM3bCttK3dpcXNCbHdCMDJIeG1hNm9yckVNWGZXQkdJRFVHVEJGNlVuRml0?=
- =?utf-8?B?MXU1RHlMOUZQVmRBT2Y4OGhjRWJlY29wWC9oM1lQdGhMdVJmMmt6NEdxT0d6?=
- =?utf-8?B?L1lHdFVhVGNJRDlIR1FqcFpmRlBWelNGR2xZT3FpUmtldGlqSmhqNUZSeGQv?=
- =?utf-8?B?WFZuSHBwQjhCQVFVdUtuOFRwZXcybCtFSnRWeHIrbUNLUGJ6NmZQZWJieVJW?=
- =?utf-8?B?STJWMDc4cGdXVzVIYTBZbUdNc3gzSTVYVnNPZ0s5UVZHbXN6dGZ5bDdjL2Y2?=
- =?utf-8?B?Y2oybzczcDZRb0pQb3YvL24xcmhBbjBQSGR5ZVVyU3FkU0p5WEVOek1Sak5u?=
- =?utf-8?B?TS9FK0psdStlQXJ3akhsQVoyekFJSXp0SDk0NGVOejkzUzNrS2JFd2c2S3dQ?=
- =?utf-8?B?RE4vMWNUTGFpZGdZWGwrUUFWVWNkYXR5ZXJTTnpGRFIrQUxMQ05ySmVJanU3?=
- =?utf-8?B?UU5nMWY4NWlDWmJ5WktPYjY0d0ZuNzJja3Y4UkFQRitkSzFEVERZbUJNQXJh?=
- =?utf-8?B?U2kxdG9sSUZEeEtvOUVNTko2S0lLK0FJQUdKQmlFTGtFczc3YTMrQk9QMGpY?=
- =?utf-8?B?M094ZEM5M2I0MDJOcFcyc2pDNWpPSzVnQ0diSW03L2hYek5TUXgrZjF1bzJ4?=
- =?utf-8?B?dThCcWJodjRsZG1mR0JoNWthcWtLWXZkQm8zQlhISk9qYld0c1BjcWZkSUlE?=
- =?utf-8?B?VUNmVVdVRXZSb3VNQmhJVFVGNmtHTHlKT0R0RWhnTTlBOVlOVFQxVEJpSnR5?=
- =?utf-8?B?R3JWSWwyUWZXNmFKaGh2cTBoS3VOalVDcVdGTTRJRHlCeDN4czlRMCtCUU5B?=
- =?utf-8?B?UHJzYy9yeWExRU1FQUlzTlI4eTMwMFJjUDVvNHczcE5Dd2YxakRhNmd3d0h5?=
- =?utf-8?B?NXlZRW9QNDVveVlxSzc5NlFxUkRWWlR6UHMrNnN0RFRLdU9uWUhzMHZWQ29B?=
- =?utf-8?B?RDVkM0swTjRhR3ZLd0lVc1VqZStaOTdZNW1RRjB5bWxzQk9paHRoYWhhdGhq?=
- =?utf-8?B?K0RYTWZaVzlpRWxYVDlWYU9MUGNpdkRKajdSTThtZVJ5L1N0Ykt1SVFHMnBH?=
- =?utf-8?B?MXF3ZldGekl0ZC9MTUxqb01ITVVRNUtDdldKanUvUmhTY20zdXBHRFBIVXR5?=
- =?utf-8?B?TzBuLzA1ckpNelRSaE9pQXRzM3EzVXEyN2dOODhnSmdUZkZqQWtoaVpnaVVQ?=
- =?utf-8?B?NXJRbWNLaHNzYkt4TjlORFY3cFBpMURqcFIyYmFkcGpGUUtoSlFqczEwTnBH?=
- =?utf-8?B?SDU1MkxpNVk3bnN6R09DcXllV2JWQ0JwT2JEalhHR04vZE9ncTZpWHlXbG1T?=
- =?utf-8?B?NE95QnNvZzQvWGJFSjRkMkZyQWNDajB6aDl6NjFKaG9reUhhcU11Mkc1M2Q4?=
- =?utf-8?B?Y3dHRHBEL3A5ZmJIN1VHMVdRWUNEK0VLcGxZS3B6a2l2Zm9HbGVZTk4rQkM1?=
- =?utf-8?B?M1czMDdHbUVjRCtKT2RoVDVKVVJlTDZ1bzRTRmJqdUVJaFJnWXZaUmJxREdi?=
- =?utf-8?B?MWNwcFZGa3F2aE9uc2oxUVIrRXI2NC9oN3B2ZXBsZ1J6VThCZmN5OVhSYU5X?=
- =?utf-8?B?UVVkeUlhK1JEdU5hQWZMckd3OHhOMHl4eTBEQXE1RiszSjhSRDZ4YTZVbldw?=
- =?utf-8?B?Y2JzbFg2eVIrWGJ5RGNZUE1xVDRDT1ZvTXpkMUV0MXA1QWRPcWIzMHV5UHF4?=
- =?utf-8?B?aytQZDA2emkzT05FK0FMWTIrSWtYT2FFM2ZvcDJHSGVHMm9MT0RqMXc0SmtJ?=
- =?utf-8?B?cXNrVENNcmlRdlJhOEQ5QUpHOThUSE5qczRHM3lyelI2UE1GZFo1MUJGVEIz?=
- =?utf-8?B?R09LcGNxYmk4Nk85MWU2eFMrZEVtTlNzZGFJdU1aSU9qSjk2alI1U0FUNVZZ?=
- =?utf-8?B?SXU0TDhwWkJmU01aUm5CTUdMUjFLdWQ2d2NKTE0xTW5zOUo0OFo4blhyVmdI?=
- =?utf-8?Q?zFm9WZvYJ4/ffq/NUtEVLO/u/?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4FBA466E54686E40B7A5037AB59C36E9@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 11 Oct 2023 23:57:59 -0400
+Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7411C2729
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 20:53:17 -0700 (PDT)
+Received: from in02.mta.xmission.com ([166.70.13.52]:56104)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qqml9-009i31-KW; Wed, 11 Oct 2023 21:53:15 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:38256 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qqml7-00DSbT-RC; Wed, 11 Oct 2023 21:53:15 -0600
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Brian Geffon <bgeffon@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Christian Brauner <brauner@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20230929174442.1635558-1-bgeffon@google.com>
+        <202309291304.9AC4F5CFB@keescook>
+        <CADyq12xRZfafeu1PVxB1G9zTgThB0W5nok2eXPFLC+T28-b-Bg@mail.gmail.com>
+Date:   Wed, 11 Oct 2023 22:53:05 -0500
+In-Reply-To: <CADyq12xRZfafeu1PVxB1G9zTgThB0W5nok2eXPFLC+T28-b-Bg@mail.gmail.com>
+        (Brian Geffon's message of "Fri, 29 Sep 2023 20:25:42 -0400")
+Message-ID: <87pm1kbiou.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54300ad0-5ef8-477f-1228-08dbcad6b3a9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Oct 2023 03:52:48.8968
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: J0ke4lyPFbCaWRb4v8ODIQeroOb4DbcTJq5dcE3GP6fVp9kylaIo/9Hm2D+ico1AZfo7J0LRcB1gd8p/Gj7Y7Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB7811
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--12.803800-8.000000
-X-TMASE-MatchedRID: VPleTT1nwdQNtKv7cnNXnSa1MaKuob8PC/ExpXrHizxnnK6mXN72m/UR
-        5rR1XhwPxiuAqQgxJY9zhxDC2hUrqbM5yFdOCNfRY1bQMCMvmn4RvEpVd3vS1d9RlPzeVuQQQkz
-        RZrI7fzZMmm8bxtFZ3Q9iGlH7LPmcQkfxbJAyTm5jiC4p+/AIFvQ7szeVKdNbVI7KaIl9NheBz9
-        7t1wzOQ+LzNWBegCW2PZex/kxUIHW3sNbcHjySQd0H8LFZNFG7bkV4e2xSge5TVMPn/DACKYZRn
-        Q2aDiPCI50f2hesO9zCfAAIdDTlQ18I4oUq5Vga
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--12.803800-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: F7D90F2E7DE398B0D69C50D013B5BE3795E5D364BA30E06A6BE0B8836FBB99852000:8
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-XM-SPF: eid=1qqml7-00DSbT-RC;;;mid=<87pm1kbiou.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX18FbFxIJLvSei2HA/9FSWuGtNs1D3ZCROs=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Virus: No
+X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Brian Geffon <bgeffon@google.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1100 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 5.0 (0.5%), b_tie_ro: 3.4 (0.3%), parse: 1.26
+        (0.1%), extract_message_metadata: 17 (1.5%), get_uri_detail_list: 3.2
+        (0.3%), tests_pri_-2000: 10 (0.9%), tests_pri_-1000: 1.96 (0.2%),
+        tests_pri_-950: 1.09 (0.1%), tests_pri_-900: 0.82 (0.1%),
+        tests_pri_-200: 0.69 (0.1%), tests_pri_-100: 3.6 (0.3%),
+        tests_pri_-90: 139 (12.7%), check_bayes: 133 (12.1%), b_tokenize: 7
+        (0.6%), b_tok_get_all: 8 (0.7%), b_comp_prob: 2.4 (0.2%),
+        b_tok_touch_all: 112 (10.2%), b_finish: 0.77 (0.1%), tests_pri_0: 302
+        (27.5%), check_dkim_signature: 0.40 (0.0%), check_dkim_adsp: 4.9
+        (0.4%), poll_dns_idle: 597 (54.3%), tests_pri_10: 2.6 (0.2%),
+        tests_pri_500: 611 (55.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] pid: Allow frozen userspace to reboot from non-init pid ns
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEFuZ2VsbzoNCg0KT24gRnJpLCAyMDIzLTA4LTA0IGF0IDA5OjI4ICswMjAwLCBBbmdlbG9H
-aW9hY2NoaW5vIERlbCBSZWdubyB3cm90ZToNCj4gTmV3IFNvQ3MsIGxpa2UgTVQ4MTk1LCBub3Qg
-b25seSBtYXkgc3VwcG9ydCBiaWdnZXIgbG9va3VwIHRhYmxlcywgYnV0DQo+IGhhdmUgZ290IGEg
-ZGlmZmVyZW50IHJlZ2lzdGVyIGxheW91dCB0byBzdXBwb3J0IGJpZ2dlciBwcmVjaXNpb246DQo+
-IHN1cHBvcnQgc3BlY2lmeWluZyB0aGUgbnVtYmVyIG9mIGBsdXRfYml0c2AgZm9yIGVhY2ggU29D
-IGFuZCB1c2UgaXQNCj4gaW4gbXRrX2dhbW1hX3NldF9jb21tb24oKSB0byBwZXJmb3JtIHRoZSBy
-aWdodCBjYWxjdWxhdGlvbi4NCg0KSSB3b3VsZCBsaWtlIHRvIG1lcmdlIHRoaXMgcGF0Y2ggd2l0
-aCB0aGUgMTItYml0IGx1dCBzdXBwb3J0Lg0KDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBBbmdlbG9H
-aW9hY2NoaW5vIERlbCBSZWdubyA8DQo+IGFuZ2Vsb2dpb2FjY2hpbm8uZGVscmVnbm9AY29sbGFi
-b3JhLmNvbT4NCj4gUmV2aWV3ZWQtYnk6IEphc29uLUpILkxpbiA8amFzb24tamgubGluQG1lZGlh
-dGVrLmNvbT4NCj4gUmV2aWV3ZWQtYnk6IEFsZXhhbmRyZSBNZXJnbmF0IDxhbWVyZ25hdEBiYXls
-aWJyZS5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2dh
-bW1hLmMgfCAxNSArKysrKysrKystLS0tLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlv
-bnMoKyksIDYgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJt
-L21lZGlhdGVrL210a19kaXNwX2dhbW1hLmMNCj4gYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsv
-bXRrX2Rpc3BfZ2FtbWEuYw0KPiBpbmRleCAwMDFiOTg2OTQ3NjEuLjE4NDViZDMyNmE2ZCAxMDA2
-NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2dhbW1hLmMNCj4g
-KysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2dhbW1hLmMNCj4gQEAgLTM4
-LDYgKzM4LDcgQEAgc3RydWN0IG10a19kaXNwX2dhbW1hX2RhdGEgew0KPiAgCWJvb2wgaGFzX2Rp
-dGhlcjsNCj4gIAlib29sIGx1dF9kaWZmOw0KPiAgCXUxNiBsdXRfc2l6ZTsNCj4gKwl1OCBsdXRf
-Yml0czsNCj4gIH07DQo+ICANCj4gIC8qDQo+IEBAIC05MSw5ICs5Miw5IEBAIHZvaWQgbXRrX2dh
-bW1hX3NldChzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdA0KPiBkcm1fY3J0Y19zdGF0ZSAqc3Rh
-dGUpDQo+ICAJZm9yIChpID0gMDsgaSA8IGdhbW1hLT5kYXRhLT5sdXRfc2l6ZTsgaSsrKSB7DQo+
-ICAJCXN0cnVjdCBkcm1fY29sb3JfbHV0IGRpZmYsIGh3bHV0Ow0KPiAgDQo+IC0JCWh3bHV0LnJl
-ZCA9IGRybV9jb2xvcl9sdXRfZXh0cmFjdChsdXRbaV0ucmVkLA0KPiBMVVRfQklUU19ERUZBVUxU
-KTsNCj4gLQkJaHdsdXQuZ3JlZW4gPSBkcm1fY29sb3JfbHV0X2V4dHJhY3QobHV0W2ldLmdyZWVu
-LA0KPiBMVVRfQklUU19ERUZBVUxUKTsNCj4gLQkJaHdsdXQuYmx1ZSA9IGRybV9jb2xvcl9sdXRf
-ZXh0cmFjdChsdXRbaV0uYmx1ZSwNCj4gTFVUX0JJVFNfREVGQVVMVCk7DQo+ICsJCWh3bHV0LnJl
-ZCA9IGRybV9jb2xvcl9sdXRfZXh0cmFjdChsdXRbaV0ucmVkLCBnYW1tYS0NCj4gPmRhdGEtPmx1
-dF9iaXRzKTsNCj4gKwkJaHdsdXQuZ3JlZW4gPSBkcm1fY29sb3JfbHV0X2V4dHJhY3QobHV0W2ld
-LmdyZWVuLA0KPiBnYW1tYS0+ZGF0YS0+bHV0X2JpdHMpOw0KPiArCQlod2x1dC5ibHVlID0gZHJt
-X2NvbG9yX2x1dF9leHRyYWN0KGx1dFtpXS5ibHVlLCBnYW1tYS0NCj4gPmRhdGEtPmx1dF9iaXRz
-KTsNCj4gIA0KPiAgCQlpZiAoIWdhbW1hLT5kYXRhLT5sdXRfZGlmZiB8fCAoaSAlIDIgPT0gMCkp
-IHsNCj4gIAkJCXdvcmQgPSBGSUVMRF9QUkVQKERJU1BfR0FNTUFfTFVUXzEwQklUX1IsDQo+IGh3
-bHV0LnJlZCk7DQo+IEBAIC0xMDEsMTMgKzEwMiwxMyBAQCB2b2lkIG10a19nYW1tYV9zZXQoc3Ry
-dWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QNCj4gZHJtX2NydGNfc3RhdGUgKnN0YXRlKQ0KPiAgCQkJ
-d29yZCB8PSBGSUVMRF9QUkVQKERJU1BfR0FNTUFfTFVUXzEwQklUX0IsDQo+IGh3bHV0LmJsdWUp
-Ow0KPiAgCQl9IGVsc2Ugew0KPiAgCQkJZGlmZi5yZWQgPSBsdXRbaV0ucmVkIC0gbHV0W2kgLSAx
-XS5yZWQ7DQo+IC0JCQlkaWZmLnJlZCA9IGRybV9jb2xvcl9sdXRfZXh0cmFjdChkaWZmLnJlZCwN
-Cj4gTFVUX0JJVFNfREVGQVVMVCk7DQo+ICsJCQlkaWZmLnJlZCA9IGRybV9jb2xvcl9sdXRfZXh0
-cmFjdChkaWZmLnJlZCwNCj4gZ2FtbWEtPmRhdGEtPmx1dF9iaXRzKTsNCj4gIA0KPiAgCQkJZGlm
-Zi5ncmVlbiA9IGx1dFtpXS5ncmVlbiAtIGx1dFtpIC0gMV0uZ3JlZW47DQo+IC0JCQlkaWZmLmdy
-ZWVuID0gZHJtX2NvbG9yX2x1dF9leHRyYWN0KGRpZmYuZ3JlZW4sDQo+IExVVF9CSVRTX0RFRkFV
-TFQpOw0KPiArCQkJZGlmZi5ncmVlbiA9IGRybV9jb2xvcl9sdXRfZXh0cmFjdChkaWZmLmdyZWVu
-LA0KPiBnYW1tYS0+ZGF0YS0+bHV0X2JpdHMpOw0KPiAgDQo+ICAJCQlkaWZmLmJsdWUgPSBsdXRb
-aV0uYmx1ZSAtIGx1dFtpIC0gMV0uYmx1ZTsNCj4gLQkJCWRpZmYuYmx1ZSA9IGRybV9jb2xvcl9s
-dXRfZXh0cmFjdChkaWZmLmJsdWUsDQo+IExVVF9CSVRTX0RFRkFVTFQpOw0KPiArCQkJZGlmZi5i
-bHVlID0gZHJtX2NvbG9yX2x1dF9leHRyYWN0KGRpZmYuYmx1ZSwNCj4gZ2FtbWEtPmRhdGEtPmx1
-dF9iaXRzKTsNCj4gIA0KPiAgCQkJd29yZCA9IEZJRUxEX1BSRVAoRElTUF9HQU1NQV9MVVRfMTBC
-SVRfUiwNCj4gZGlmZi5yZWQpOw0KPiAgCQkJd29yZCB8PSBGSUVMRF9QUkVQKERJU1BfR0FNTUFf
-TFVUXzEwQklUX0csDQo+IGRpZmYuZ3JlZW4pOw0KPiBAQCAtMjE3LDEwICsyMTgsMTIgQEAgc3Rh
-dGljIGludCBtdGtfZGlzcF9nYW1tYV9yZW1vdmUoc3RydWN0DQo+IHBsYXRmb3JtX2RldmljZSAq
-cGRldikNCj4gIA0KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfZGlzcF9nYW1tYV9kYXRhIG10
-ODE3M19nYW1tYV9kcml2ZXJfZGF0YSA9IHsNCj4gIAkuaGFzX2RpdGhlciA9IHRydWUsDQo+ICsJ
-Lmx1dF9iaXRzID0gMTAsDQo+ICAJLmx1dF9zaXplID0gNTEyLA0KPiAgfTsNCj4gIA0KPiAgc3Rh
-dGljIGNvbnN0IHN0cnVjdCBtdGtfZGlzcF9nYW1tYV9kYXRhIG10ODE4M19nYW1tYV9kcml2ZXJf
-ZGF0YSA9IHsNCj4gKwkubHV0X2JpdHMgPSAxMCwNCj4gIAkubHV0X2RpZmYgPSB0cnVlLA0KPiAg
-CS5sdXRfc2l6ZSA9IDUxMiwNCj4gIH07DQo=
+Brian Geffon <bgeffon@google.com> writes:
+
+> On Fri, Sep 29, 2023 at 4:09 PM Kees Cook <keescook@chromium.org> wrote:
+>>
+>> On Fri, Sep 29, 2023 at 01:44:42PM -0400, Brian Geffon wrote:
+>> > When the system has a frozen userspace, for example, during hibernation
+>> > the child reaper task will also be frozen. Attmepting to deliver a
+>> > signal to it to handle the reboot(2) will ultimately lead to the system
+>> > hanging unless userspace is thawed.
+>> >
+>> > This change checks if the current task is the suspending task and if so
+>> > it will allow it to proceed with a reboot from the non-init pid ns.
+>>
+>> I don't know the code flow too well here, but shouldn't init_pid_ns
+>> always be doing the reboot regardless of anything else?
+>
+> I think the point of this is, normally the reaper is runnable and so
+> an appropriate signal will be delivered allowing them to also clean up
+> [2]. In our case, they won't be runnable and doing this wouldn't make
+> sense.
+
+The entire reboot_pid_ns thing is just a polite way of keeping
+applications like /sbin/reboot working inside a pid namespace.
+
+Ordinarily the process calling reboot (inside the container) won't
+have the privileges to request an entire system reboot.  So I don't
+see anything making sense to promote that reboot into a system-wide
+reboot.
+
+Which leads me to the question.  What is actually happening with
+hibernation that we want something inside a pid namespace to somehow
+have the permissions to reboot the entire machine?
+
+>> Also how is this syscall running if current is frozen? This feels weird
+>> to me... shouldn't the frozen test be against pid_ns->child_reaper
+>> instead of current?
+>
+> The task which froze the system won't be frozen to make sure this
+> happens it will have the flag PF_SUSPEND_TASK added, so we know if we
+> have this flag we're the only running user space task [1].
+
+Someone has a task inside a container that is successfully suspending
+the entire system?
+
+I don't see how that makes sense.
+
+But on the level that it somehow does I would put a test in
+kernel/reboot.c something like:
+
+/*
+ * If the caller can't perform a normal reboot call
+ * reboot_pid_ns
+ */
+if ((pid_ns != &init_pid_ns) &&
+    !((current->flags & PF_SUSPEND_TASK) && capable(CAP_SYS_BOOT))) {
+	return reboot_pid_ns(pid_ns, cmd);
+}
+
+Making reboot_pid_ns responsible for the logic that should be bypassing
+it is quite confusing.
+
+> I hope my understanding is correct and it makes sense. Thanks for
+> taking the time to review.
+>
+> Brian
+>
+> 1. https://elixir.bootlin.com/linux/latest/source/kernel/power/process.c#L130
+> 2. https://elixir.bootlin.com/linux/latest/source/kernel/pid_namespace.c#L327
+
+
+I really don't know if allowing PF_SUSPEND_TASK so that hibernation and
+the like can work from inside a container makes any sense at all.
+
+But the above is roughly how I would make it work.
+
+Eric
+
