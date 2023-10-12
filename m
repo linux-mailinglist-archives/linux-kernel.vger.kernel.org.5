@@ -2,197 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 717957C6744
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B79D7C6746
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377248AbjJLH4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 03:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58902 "EHLO
+        id S1377922AbjJLH46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 03:56:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235233AbjJLH4r (ORCPT
+        with ESMTP id S1347191AbjJLH45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 03:56:47 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2455190
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 00:56:46 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3DD0C21833;
-        Thu, 12 Oct 2023 07:56:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1697097404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=hrj0obP3S6cAjgl0VbNnEW+KQ9Hbu28sU99NH9hQKSs=;
-        b=Mzf+jAnn3ctoiY6sqRcokbGye8wq22krifI1uB5Qz1anRBaYaPQnT7ggHsHv8KMQu8B4VU
-        vdEzKM6k0bOr1+MXFd5vDbb9+lq/oTr5vto2GdJ+AiLvbPQfkEp+HoBcH0YXlBRfpiPI4G
-        rxlqZBv55XydXe29wme6kW0XDVlLZ4E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1697097404;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=hrj0obP3S6cAjgl0VbNnEW+KQ9Hbu28sU99NH9hQKSs=;
-        b=ou1tQozk4bcpUcNu073sqDWvrPvFNv5SxY/aP5zoxuWs8cp4hjUyfMo1jFUCrDu0Yd20wB
-        Zs4o1duNGbEgO7CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 28331139F9;
-        Thu, 12 Oct 2023 07:56:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mWwBCbymJ2WZOwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 12 Oct 2023 07:56:44 +0000
-Message-ID: <00b60389-90e5-48b9-b8db-f8de0a373859@suse.de>
-Date:   Thu, 12 Oct 2023 09:56:43 +0200
+        Thu, 12 Oct 2023 03:56:57 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 421F5CC;
+        Thu, 12 Oct 2023 00:56:55 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-692a885f129so565352b3a.0;
+        Thu, 12 Oct 2023 00:56:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697097415; x=1697702215; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KY0ypPMouC/gc/fShPGord6YxNIg4wjSjV68xFY4qM8=;
+        b=DchKo9A3e7kaAvWnf8UWc6HXv9rcocQkpjMcXeeg/5iBgfNpTERfE+F+IaOuFO47Y/
+         o6CTV41QrzFLteD5XGelFcAIN+OpsTuBZkRNkoqumkazkgnvGhzaO2zSwEeIpVcX9n3Y
+         RYsewEBt1o27W1PQjeByj58kKmgwvyCWNPFoA5KG8M2/V9N3bxXeUA1J6ViXN375aROS
+         m6sWOTeddSXmzIAY8u+SnuOYQShIaCCYWwjoJzb0UIXPrEt9qnRxM3GTv8+sK4gbtTXi
+         /JWPMIrFgFooVS8OXukpeex8AfoQfhbBSH64sSkICcxSjLt2bJW6MKvS4RbNwrozDPyy
+         Ug+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697097415; x=1697702215;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KY0ypPMouC/gc/fShPGord6YxNIg4wjSjV68xFY4qM8=;
+        b=UU6A4VQRHP4hd+doXqy6SrsPiFZJodNf2R+0IsE3tePe76vQ/rluPkhKPsa3NXsSQN
+         DOZhZ6Lu/8tR6NKVszO5XE5C4OoXRZAQuy5xXg3MWptrS0YMCDikJXUODxrKGRgtszTT
+         LdqjsE1KNUl4lyf+17jBmx1n4CYefQ1rzjvb8tT1Dea6YM6705GPov6+BxIxh6IC3b3w
+         HLJTQ96EcJDlW0t/CGXi4+jOB+8EL6adZatkkr5ZjHDovqR+Fs+qJJMv+6b8phl5qR5S
+         NiR0BaM+ltchKRagXJyq+JmQGm+9qkt8kHXg/D/dFqfvQYCkQil+9dABEheJ5zYnb3qf
+         pqgg==
+X-Gm-Message-State: AOJu0Yw9jxUVnYxBMyWP6VWeiqmUWvXjAwQp+PdRXamfXILaaUAIh33R
+        SJ0PlTMRj5y9WcGjg27WD/k=
+X-Google-Smtp-Source: AGHT+IHV4CR21UOUBHuemm1nSHilgQwolLdmRc5oq1FyDnKdlzYKHLfW/oMQSSCqwFIFMiLNpBzntg==
+X-Received: by 2002:a05:6a21:3289:b0:174:d189:2f93 with SMTP id yt9-20020a056a21328900b00174d1892f93mr1538024pzb.59.1697097414647;
+        Thu, 12 Oct 2023 00:56:54 -0700 (PDT)
+Received: from [172.22.12.30] (118-163-147-182.hinet-ip.hinet.net. [118.163.147.182])
+        by smtp.gmail.com with ESMTPSA id p10-20020a17090a930a00b0026d4100e0e8sm1188408pjo.10.2023.10.12.00.56.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 00:56:54 -0700 (PDT)
+Message-ID: <6348ae7e-21f3-51ef-e60a-b3ceccc38be4@gmail.com>
+Date:   Thu, 12 Oct 2023 15:56:52 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] iosys-map: fix kernel-doc typos
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 0/5] watchdog: eiois200_wdt: Add EIO-IS200 Watchdog Driver
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     wenkai.chung@advantech.com.tw, Susi.Driver@advantech.com,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
+References: <cover.1696495372.git.advantech.susiteam@gmail.com>
+ <d7df3c7b-730a-4d09-8f15-3cc8591c8092@roeck-us.net>
+ <b08d6cf6-cd48-86d7-a959-290fc4de092c@gmail.com>
+ <ce810ce8-f93c-4a9c-9d14-1e8f8f8c3e2b@roeck-us.net>
+ <88ffe7b3-fa62-e879-b9d6-6e229cfdab7d@gmail.com>
+ <655945a4-fc45-4d01-954b-88aa6fb7231f@roeck-us.net>
 Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     dri-devel@lists.freedesktop.org
-References: <20230930221428.18463-1-rdunlap@infradead.org>
- <20230930221428.18463-2-rdunlap@infradead.org>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <20230930221428.18463-2-rdunlap@infradead.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------S80Jn3n04PSKdefh50JtKNM9"
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -5.09
-X-Spamd-Result: default: False [-5.09 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         XM_UA_NO_VERSION(0.01)[];
-         FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[3];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
-         HAS_ATTACHMENT(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_BASE64_TEXT_BOGUS(1.00)[];
-         BAYES_HAM(-0.00)[12.57%];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         MIME_BASE64_TEXT(0.10)[];
-         SIGNED_PGP(-2.00)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   Wenkai <advantech.susiteam@gmail.com>
+In-Reply-To: <655945a4-fc45-4d01-954b-88aa6fb7231f@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------S80Jn3n04PSKdefh50JtKNM9
-Content-Type: multipart/mixed; boundary="------------LZMvJG0ZDocDviLEJzyZ366F";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Message-ID: <00b60389-90e5-48b9-b8db-f8de0a373859@suse.de>
-Subject: Re: [PATCH] iosys-map: fix kernel-doc typos
-References: <20230930221428.18463-1-rdunlap@infradead.org>
- <20230930221428.18463-2-rdunlap@infradead.org>
-In-Reply-To: <20230930221428.18463-2-rdunlap@infradead.org>
+Guenter Roeck 於 10/11/2023 11:05 PM 寫道:
+> On Wed, Oct 11, 2023 at 12:08:57PM +0800, Wenkai wrote:
+>> I understand that the patches don't meet the expected quality standards.
+>> The compile issue is due to my MFD core driver, which is currently under
+>> review and has not been merged yet.
+>>
+>> I would also like to seek your advice on how to best proceed with the
+>> sub-drivers like the watchdog driver. Should I wait for my core MFD
+>> driver to be successfully merged before submitting the sub-drivers, or
+>> let Jones Lee review my core MFD driver and all its sub-drivers, or is
+>> there another approach that you recommend?
+> If the sub-drivers depend on the mfd driver, at least provide a reference
+> to the patch or patch series introducing that driver. Either case, a direct
+> include from "../mfd" is simply unacceptable. include/linux/mfd/ does exist
+> for a reason, after all.
 
---------------LZMvJG0ZDocDviLEJzyZ366F
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+The LKML link is https://lkml.org/lkml/2023/9/6/1245. Is this link to 
+the patch
+sufficient?
 
-SGksDQoNCnNvcnJ5LCBJIG1pc3NlZCB0aGlzIHBhdGNoIGF0IGZpcnN0Lg0KDQpBbSAwMS4x
-MC4yMyB1bSAwMDoxNCBzY2hyaWViIFJhbmR5IER1bmxhcDoNCj4gQ29ycmVjdCBzcGVsbGlu
-ZyBvZiAiYmVnaW5uaW5nIi4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8
-cmR1bmxhcEBpbmZyYWRlYWQub3JnPg0KPiBDYzogVGhvbWFzIFppbW1lcm1hbm4gPHR6aW1t
-ZXJtYW5uQHN1c2UuZGU+DQo+IENjOiBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
-DQoNClJldmlld2VkLWJ5OiBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1hbm5Ac3VzZS5k
-ZT4NCg0KPiAtLS0NCj4gICBpbmNsdWRlL2xpbnV4L2lvc3lzLW1hcC5oIHwgICAgNCArKy0t
-DQo+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkN
-Cj4gDQo+IGRpZmYgLS0gYS9pbmNsdWRlL2xpbnV4L2lvc3lzLW1hcC5oIGIvaW5jbHVkZS9s
-aW51eC9pb3N5cy1tYXAuaA0KPiAtLS0gYS9pbmNsdWRlL2xpbnV4L2lvc3lzLW1hcC5oDQo+
-ICsrKyBiL2luY2x1ZGUvbGludXgvaW9zeXMtbWFwLmgNCj4gQEAgLTQyNiw3ICs0MjYsNyBA
-QCBzdGF0aWMgaW5saW5lIHZvaWQgaW9zeXNfbWFwX21lbXNldChzdHJ1DQo+ICAgICogaW9z
-eXNfbWFwX3JkX2ZpZWxkIC0gUmVhZCBhIG1lbWJlciBmcm9tIGEgc3RydWN0IGluIHRoZSBp
-b3N5c19tYXANCj4gICAgKg0KPiAgICAqIEBtYXBfXzoJCVRoZSBpb3N5c19tYXAgc3RydWN0
-dXJlDQo+IC0gKiBAc3RydWN0X29mZnNldF9fOglPZmZzZXQgZnJvbSB0aGUgYmVnZ2luaW5n
-IG9mIHRoZSBtYXAsIHdoZXJlIHRoZSBzdHJ1Y3QNCj4gKyAqIEBzdHJ1Y3Rfb2Zmc2V0X186
-CU9mZnNldCBmcm9tIHRoZSBiZWdpbm5pbmcgb2YgdGhlIG1hcCwgd2hlcmUgdGhlIHN0cnVj
-dA0KPiAgICAqCQkJaXMgbG9jYXRlZA0KPiAgICAqIEBzdHJ1Y3RfdHlwZV9fOglUaGUgc3Ry
-dWN0IGRlc2NyaWJpbmcgdGhlIGxheW91dCBvZiB0aGUgbWFwcGluZw0KPiAgICAqIEBmaWVs
-ZF9fOgkJTWVtYmVyIG9mIHRoZSBzdHJ1Y3QgdG8gcmVhZA0KPiBAQCAtNDk0LDcgKzQ5NCw3
-IEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBpb3N5c19tYXBfbWVtc2V0KHN0cnUNCj4gICAgKiBp
-b3N5c19tYXBfd3JfZmllbGQgLSBXcml0ZSB0byBhIG1lbWJlciBvZiBhIHN0cnVjdCBpbiB0
-aGUgaW9zeXNfbWFwDQo+ICAgICoNCj4gICAgKiBAbWFwX186CQlUaGUgaW9zeXNfbWFwIHN0
-cnVjdHVyZQ0KPiAtICogQHN0cnVjdF9vZmZzZXRfXzoJT2Zmc2V0IGZyb20gdGhlIGJlZ2dp
-bmluZyBvZiB0aGUgbWFwLCB3aGVyZSB0aGUgc3RydWN0DQo+ICsgKiBAc3RydWN0X29mZnNl
-dF9fOglPZmZzZXQgZnJvbSB0aGUgYmVnaW5uaW5nIG9mIHRoZSBtYXAsIHdoZXJlIHRoZSBz
-dHJ1Y3QNCj4gICAgKgkJCWlzIGxvY2F0ZWQNCj4gICAgKiBAc3RydWN0X3R5cGVfXzoJVGhl
-IHN0cnVjdCBkZXNjcmliaW5nIHRoZSBsYXlvdXQgb2YgdGhlIG1hcHBpbmcNCj4gICAgKiBA
-ZmllbGRfXzoJCU1lbWJlciBvZiB0aGUgc3RydWN0IHRvIHJlYWQNCg0KLS0gDQpUaG9tYXMg
-WmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERldmVsb3Blcg0KU1VTRSBTb2Z0d2FyZSBT
-b2x1dGlvbnMgR2VybWFueSBHbWJIDQpGcmFua2Vuc3RyYXNzZSAxNDYsIDkwNDYxIE51ZXJu
-YmVyZywgR2VybWFueQ0KR0Y6IEl2byBUb3RldiwgQW5kcmV3IE15ZXJzLCBBbmRyZXcgTWNE
-b25hbGQsIEJvdWRpZW4gTW9lcm1hbg0KSFJCIDM2ODA5IChBRyBOdWVybmJlcmcpDQo=
+And, I'll move the "eiois200.h" to "include/linux/mfd/".
 
---------------LZMvJG0ZDocDviLEJzyZ366F--
+> I don't know the best solution for reviewing all the drivers. I didn't
+> (and do not plan to) look into the driver-driver API. If the interface
+> is regmap, reviewing sub-drivers on their own should be straightforward.
+> If the API is with function calls, things get more complicated because
+> the API needs the sub-drivers to be tested and everything needs to be
+> reviewed together.
+>
+> Guenter
 
---------------S80Jn3n04PSKdefh50JtKNM9
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+Unfortunately, all sub-drivers mostly communicate with the EC firmware
+through the MFD core driver's driver-driver API, only a few uses regmap.
+So should the MFD core driver and its sub-drivers be reviewed by the same
+maintainers?
 
------BEGIN PGP SIGNATURE-----
+Best regards,
+Wenkai
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUnprsFAwAAAAAACgkQlh/E3EQov+DR
-kQ//aV72b+OihC1iiwLm0rHg2OG7Io5N1qwGuqJzFJj2yAMByPv3Gv4XmC5McopOWA6iaOK6+U9q
-ZX8d7olvHNyFUN33LXFBafVz/51iZn+4AtFB1aY0lH11g/034h70CswtM1TgRrTHVuC9+goceemU
-yLXwYj3stD8x/YBunsU4N0J+N3AO3XRZIhKqw0Rf2NnPULdTNw/folNFnU9JMwmvHtgyMHpvhdC3
-4ZcoCkWwVD+7oS9qT9qaGGKlW6ah6QRWfvKxxACHGU3lhcCWDaBcwGRRLTKFDD6MqX3lpzHZYNRJ
-FGLim1vAUzJqtRlsSGWR/wtu40CUx/2cdaV0O+MABb5eI/I2YhX6xhmmcJMf+vAJBuv+P2HCeWvg
-z5gzKwlhVwHEVqhk0ovN1cczKQiLlUNFlP9aBgokBQqmZe1bAwT3R4g1kCh8S+M8FXna0bwEV6vo
-1d07wHxuUBCnNMAu/NSf4x+GDmRXqWmh7yPjYYerWEs8nT6uV/IglYPwFqiiCxillSnoQYuWqmhy
-8esQyg4iZcRbqF0LID5LKkaIoSET0o0hOq0tT0dHFlxe9+cycWQOZ8DqVKtvJVODGyC5H74j4NME
-p1UqKepWMtGP38OB6+b6dcHzBTl6bjhxCUcOu9B60Pd9JIUmE6TOn1S6bRrqyocUisv+UBP2SGEl
-NDM=
-=jxKG
------END PGP SIGNATURE-----
 
---------------S80Jn3n04PSKdefh50JtKNM9--
