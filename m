@@ -2,134 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D25B57C70A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0507C70AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343993AbjJLOsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 10:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
+        id S1347050AbjJLOse convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 10:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378354AbjJLOsR (ORCPT
+        with ESMTP id S234913AbjJLOsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:48:17 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D843AB8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:48:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C4EBC433C7;
-        Thu, 12 Oct 2023 14:48:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697122095;
-        bh=iZPYvU5wRljfApCM+MJ581owf29pPt1A+Y/BqRAY+FE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AZNUnXC1YMmjFRqVniBnW419vtLsGYUrow79j6TNfhCrFDGuF9rRWfIhvSl6PXOQQ
-         QlxMhbim0buZILGg9x254gcDzAA8uXbN2gl9sLMQdtZQKHLdqKGRv4vs57zRG4BBj8
-         bXHZTOeNMsrpzuPQKtTExlGtpRtmZawU4lCfhv5iQMDnwe21bUy/k8bWm81aSOOqPe
-         dCpw/6x6ixPvpOCPg8rdcXZNZ/arpenL/pyzZSoyPQb8nuYxonJ0DbpEuIrm3qh/i1
-         YDFsQ71W+evua2BfFNImFU7X+t9CIDoFzcn9ytjtnSyCuCKPt099BMfkeF7DPWKWFD
-         Kn5fFXtEV1djw==
-Date:   Thu, 12 Oct 2023 15:48:08 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>, ankita@nvidia.com,
-        maz@kernel.org, oliver.upton@linux.dev, aniketa@nvidia.com,
-        cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com,
-        vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com,
-        jhubbard@nvidia.com, danw@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] KVM: arm64: allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Message-ID: <20231012144807.GA12374@willie-the-truck>
-References: <20230907181459.18145-3-ankita@nvidia.com>
- <ZP8q71+YXoU6O9uh@lpieralisi>
- <ZP9MQdRYmlawNsbC@nvidia.com>
- <ZQHUifAfJ+lZikAn@lpieralisi>
- <ZQIFfqgR5zcidRR3@nvidia.com>
- <ZRKW6uDR/+eXYMzl@lpieralisi>
- <ZRLiDf204zCpO6Mv@arm.com>
- <ZR6IZwcFNw55asW0@lpieralisi>
- <20231012123541.GB11824@willie-the-truck>
- <ZSf6Ue09IO6QMBs1@arm.com>
+        Thu, 12 Oct 2023 10:48:32 -0400
+Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3B0BB;
+        Thu, 12 Oct 2023 07:48:30 -0700 (PDT)
+Received: from omf15.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay07.hostedemail.com (Postfix) with ESMTP id DD3C7160680;
+        Thu, 12 Oct 2023 14:48:28 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 29DF017;
+        Thu, 12 Oct 2023 14:48:25 +0000 (UTC)
+Message-ID: <e212997cf8b05608718fb6ac1766c390255664ac.camel@perches.com>
+Subject: Re: [PATCH v3] Documentation/process/coding-style.rst: space around
+ const
+From:   Joe Perches <joe@perches.com>
+To:     Miguel Ojeda <ojeda@kernel.org>, dan.j.williams@intel.com
+Cc:     corbet@lwn.net, gregkh@linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@roeck-us.net, max.kellermann@ionos.com,
+        workflows@vger.kernel.org
+Date:   Thu, 12 Oct 2023 07:48:25 -0700
+In-Reply-To: <20231012115039.1680561-1-ojeda@kernel.org>
+References: <65271731e25f4_7258329472@dwillia2-xfh.jf.intel.com.notmuch>
+         <20231012115039.1680561-1-ojeda@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZSf6Ue09IO6QMBs1@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Rspamd-Queue-Id: 29DF017
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+X-Rspamd-Server: rspamout06
+X-Stat-Signature: o4bafx189b39fosaj9tugy1ng4t4hk6t
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18cEtRlNQpeQGZ7fw6pYLI6AhZUUOJ6xzw=
+X-HE-Tag: 1697122105-37381
+X-HE-Meta: U2FsdGVkX18LWY7kGsCiHQheQS4LqScy5dMW4qcBmdEHxO9ovUtXsMDNt3FkAATB6QEVj6OE5VKr4UAFNsAIwCqNYT78sS4IRUUdbpxEdwKbbQiuvZYmLA0q2w62E505D9p82THAebCe0EGd52BqQclvNnrB5jm3bYx30j0SfbAxRC90tUbNKQy0c3xbr70M0yWot2aDEWRaqUOjn3XUH8cUDtBfDujq+ldDZInBI6tHkpR6v5xxZk3rcr+RtUDYYT1F8yAEHIkHPJ0TLX5zI3adAfzmscsrlj8yQVrLZBgZUW4dEFQMHoHH+Hx0aj/d
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 02:53:21PM +0100, Catalin Marinas wrote:
-> On Thu, Oct 12, 2023 at 01:35:41PM +0100, Will Deacon wrote:
-> > On Thu, Oct 05, 2023 at 11:56:55AM +0200, Lorenzo Pieralisi wrote:
-> > > For all these reasons, relax the KVM stage 2 device
-> > > memory attributes from DEVICE_nGnRE to NormalNC.
+On Thu, 2023-10-12 at 13:50 +0200, Miguel Ojeda wrote:
+> On Wed, 11 Oct 2023 14:44:17 -0700, Dan Williams wrote:
 > > 
-> > The reasoning above suggests to me that this should probably just be
-> > Normal cacheable, as that is what actually allows the guest to control
-> > the attributes. So what is the rationale behind stopping at Normal-NC?
+> > I notice that clang-format reflows that example to:
+> > 
+> >     const void *a;
+> >     void *const b;
+> >     void **const c;
+> >     void *const *const d;
+> >     int strcmp(const char *a, const char *b);
+> > 
+> > ...but someone more clang-format savvy than me would need to propose the
+> > changes to the kernel's .clang-format template to match the style
+> > suggestion.
 > 
-> It's more like we don't have any clue on what may happen. MTE is
-> obviously a case where it can go wrong (we can blame the architecture
-> design here) but I recall years ago where a malicious guest could bring
-> the platform down by mapping the GIC CPU interface as cacheable.
+> I think we could use:
+> 
+>     diff --git a/.clang-format b/.clang-format
+>     index 0bbb1991defe..9eeb511c0814 100644
+>     --- a/.clang-format
+>     +++ b/.clang-format
+>     @@ -671,6 +671,7 @@ SortIncludes: false
+>      SortUsingDeclarations: false
+>      SpaceAfterCStyleCast: false
+>      SpaceAfterTemplateKeyword: true
+>     +SpaceAroundPointerQualifiers: Both
+>      SpaceBeforeAssignmentOperators: true
+>      SpaceBeforeCtorInitializerColon: true
+>      SpaceBeforeInheritanceColon: true
+> 
+> At least that makes it match the documentation example -- I got this:
+> 
+>     const void *a;
+>     void * const b;
+>     void ** const c;
+>     void * const * const d;
+>     int strcmp(const char *a, const char *b);
+> 
+> But it is only supported in version >= 12, so we need to wait for the
+> minimum LLVM version bump.
 
-... and do we know that isn't the case for non-cacheable? If not, why not?
+Do older versions of clang-format ignore entries
+they don't understand?
 
-Also, are you saying we used to map the GIC CPU interface as cacheable
-at stage-2? I remember exclusives causing a problem, but I don't remember
-the guest having a cacheable mapping.
-
-> Not sure how error containment works with cacheable memory. A cacheable
-> access to a device may stay in the cache a lot longer after the guest
-> has been scheduled out, only evicted at some random time.
-
-But similarly, non-cacheable stores can be buffered. Why isn't that a
-problem?
-
-> We may no longer be able to associate it with the guest, especially if the
-> guest exited. Also not sure about claiming back the device after killing
-> the guest, do we need cache maintenance?
-
-Claiming back the device also seems strange if the guest has been using
-non-cacheable accesses since I think you could get write merging and
-reordering with subsequent device accesses trying to reset the device.
-
-> So, for now I'd only relax this if we know there's RAM(-like) on the
-> other side and won't trigger some potentially uncontainable errors as a
-> result.
-
-I guess my wider point is that I'm not convinced that non-cacheable is
-actually much better and I think we're going way off the deep end looking
-at what particular implementations do and trying to justify to ourselves
-that non-cacheable is safe, even though it's still a normal memory type
-at the end of the day.
-
-Obviously, it's up to Marc and Oliver if they want to do this, but I'm
-wary without an official statement from Arm to say that Normal-NC is
-correct. There's mention of such a statement in the cover letter:
-
-  > We hope ARM will publish information helping platform designers
-  > follow these guidelines.
-
-but imo we shouldn't merge this without either:
-
-  (a) _Architectural_ guidance (as opposed to some random whitepaper or
-      half-baked certification scheme).
-
-- or -
-
-  (b) A concrete justification based on the current architecture as to
-      why Normal-NC is the right thing to do for KVM.
-
-The current wording talks about use-cases (I get this) and error containment
-(it's a property of the system) but doesn't talk at all about why Normal-NC
-is the right result.
-
-Will
