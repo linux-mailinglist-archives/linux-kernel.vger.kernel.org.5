@@ -2,130 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F5D7C793B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 00:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9EC7C7941
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 00:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442975AbjJLWHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 18:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46806 "EHLO
+        id S1442991AbjJLWHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 18:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234509AbjJLWHa (ORCPT
+        with ESMTP id S1443010AbjJLWHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 18:07:30 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7920DB8;
-        Thu, 12 Oct 2023 15:07:29 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6c620883559so973571a34.0;
-        Thu, 12 Oct 2023 15:07:29 -0700 (PDT)
+        Thu, 12 Oct 2023 18:07:50 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36516D6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 15:07:49 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6bc9353be9bso212139a34.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 15:07:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697148468; x=1697753268; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BX2/UVo10WOnZMCSNHexte/JXK8qu4Upt2chvVFA7x8=;
+        b=Lvn7N9uv69OZ121AzsqYZ2McrKtiTMN2tMUBLVvOksqkKLDH+drXyGVEVaXdxKGXTx
+         Phb21hBcMMvtmC913ArKg86TM83fNUWdt7laSTB8IF6uWHxQDsC81Z5o+GS5GA42AWv8
+         mPXjVN/rkqLLJCTzlddx52AtBxdiwEArOLdZWa1CJhdFKijFmJcAjZcqeHeiUhoDGI/x
+         qnOlMa53ZqH+u6HjpAlgHTBUhKnKOvVYHFOmkHvFDrsn7TnjTn2+1tz6R3C7C1KOTuui
+         KO5Ki88kPktgoJHCceTHiKrtkqZk1F5mT0lg48Jn0EfRFlmvai8eqdVUgHdM2CKRt8VO
+         DZGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697148449; x=1697753249;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wj8bxxmMdfTdWcmOthiPcD4f/E2nZ5CmP0hi2ncm2JY=;
-        b=OUDizIfCWGGTGGK+SkCtg9S4aakkLJKtRkjJy320BMUuBYN42sqpVpwj0BXQrNVRVG
-         vt6oxwLwo5PxI9wUKA9+pAcropa0tfv2nK1TR98XqkM/scvnCAkXm4DZX6quKvfQfpAy
-         MujN1vH4K8DIEV6m7peF5J7S/bI1wsyDF3JmZdhWbhjCpGycIeb73DAafm/9zh4oA5N+
-         tisl5EJYIAdlDiHv470wxUOm3y4Nn8PEg42G4J9op2W+WOExlF9nK/ns0iX3AFLtEWEZ
-         t6e3y3QYtjOCTFAkcH/oa1SsImbdwsGtWw9O2UO5jTEVn+8AlyZLWBHiVz8/ha8oHkAU
-         dxog==
-X-Gm-Message-State: AOJu0YyQwOVjyk10JlCEkBJTHnTev4H6GB5k0SWpCzBpduWdwtMJb3dw
-        PRj0LgiaeHkhMr2uiPc2dbsRv9SyZiTm83tx
-X-Google-Smtp-Source: AGHT+IF3ETYErezb1wVlMe3A6ctvCLcDHQy9K6fJw58TEfcbRXqIVetzumpEtlejMblEpd2RKXJmDw==
-X-Received: by 2002:a05:6830:1087:b0:6c4:a42b:9cd8 with SMTP id y7-20020a056830108700b006c4a42b9cd8mr26584088oto.1.1697148448593;
-        Thu, 12 Oct 2023 15:07:28 -0700 (PDT)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id fe1-20020a056a002f0100b00690c52267easm12225670pfb.40.2023.10.12.15.07.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 15:07:27 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 19:07:34 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-        s=2023; t=1697148446;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wj8bxxmMdfTdWcmOthiPcD4f/E2nZ5CmP0hi2ncm2JY=;
-        b=shsa4lg5x46ZuiVFyR2F5z2If28ls8/ezrObv+/KyRopymSkYgc5T2S4DLHX3MHphMVs6Y
-        XwoC0v4KX5tFuzgzpTvD2c0m8RQEkfm2068zPF4y+nwkT/7ybxB+1KyV0Pve8TlM0slua6
-        VxWBvXSvXn1LwfHriB5sXx6OqTX+HI6EVHCTZ+OKZypr01BJj0LdnCd1NBAogI7ekNia1m
-        55o7NaPqoocNk9xxglYBfjmwdhxcTI8feFqegITpnsOqYzdVH5Zr0LwN3e53E1GJ1ESt4C
-        BBnBSugmC38WE3fhwzolY9kqDuXnwe9FPM5/5LuwFDmF9KoHG/fYWkkgM4bsbA==
-Authentication-Results: ORIGINATING;
-        auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-From:   "Ricardo B. Marliere" <ricardo@marliere.net>
-To:     syzbot <syzbot+621409285c4156a009b3@syzkaller.appspotmail.com>
-Cc:     isely@pobox.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-usb@vger.kernel.org,
-        mchehab@kernel.org, pvrusb2@isely.net,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [pvrusb2?] [usb?] KASAN: slab-use-after-free Read in
- pvr2_context_set_notify
-Message-ID: <cwc32sg4vzz6akduyvze6tu2dkzpljtvpycuhz43t7lmbzbyvb@jgywtsrcvuzw>
-References: <000000000000a02a4205fff8eb92@google.com>
- <gugiuvjgpoogf3k5cm4px4jwevg5torsu3d7afbbhvnrxho4zu@wkcxeb5sr5ez>
+        d=1e100.net; s=20230601; t=1697148468; x=1697753268;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BX2/UVo10WOnZMCSNHexte/JXK8qu4Upt2chvVFA7x8=;
+        b=gnSY95iNXwa/zCa79nkNzspu9V/bhg1viaq/W+gYkiPp1CDS5FE8vDuLjDWGhgqoIP
+         SfTfpLG3XGblSU8JMuA9vB8Mwk2ylRyBnxxXlnpjou3pEI1BcSAmXmkdy7ovKetfCDqn
+         ADsbtdeFS6GTA2VA7c5acLJF562oxEOsE7L/NimXU6ErGdbKwkZbezJXU7knjLBP0Odk
+         hmMfDGU3lZVb48pzdobPCKQq7DwnR+b3QtRGc7jLMclU9F6huBsM/3TCeZ9+fuQWw17r
+         xQpQXvqQjvTA896l8ArpXOFVFndYkDSs5un8nc0y738O5nGrMlCzMw7fmijpqlGTg/Zr
+         DNZw==
+X-Gm-Message-State: AOJu0YwPX9cPrg4JtZTFZeadlu6W16I1zmLZsBKH9Ms3MNd03hht/IQq
+        GrHc6EuQgTbivzelvOylWpq+lQbhGetjxQUjdHBNDQ==
+X-Google-Smtp-Source: AGHT+IE69wm+LfM1P9hVAjNQFO/fTOBepgHbSEMYy1IVhm+plv/9fJIRwOYYZ4z6oxAD4V9Qyp04lg==
+X-Received: by 2002:a9d:51cb:0:b0:6bf:5010:9d35 with SMTP id d11-20020a9d51cb000000b006bf50109d35mr25251752oth.3.1697148468435;
+        Thu, 12 Oct 2023 15:07:48 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id o10-20020a056a001bca00b0068c670afe30sm7442663pfw.124.2023.10.12.15.07.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 15:07:47 -0700 (PDT)
+Message-ID: <eb150179-c328-4058-80e3-f517d45310c4@kernel.dk>
+Date:   Thu, 12 Oct 2023 16:07:46 -0600
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="g4hznxqvzwwzlnny"
-Content-Disposition: inline
-In-Reply-To: <gugiuvjgpoogf3k5cm4px4jwevg5torsu3d7afbbhvnrxho4zu@wkcxeb5sr5ez>
-X-Spam-Status: No, score=1.3 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] audit,io_uring: io_uring openat triggers audit reference
+ count underflow
+Content-Language: en-US
+To:     Dan Clash <daclash@linux.microsoft.com>, audit@vger.kernel.org,
+        io-uring@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, paul@paul-moore.com,
+        linux-fsdevel@vger.kernel.org, brauner@kernel.org,
+        dan.clash@microsoft.com
+References: <20231012215518.GA4048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20231012215518.GA4048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/12/23 3:55 PM, Dan Clash wrote:
+> An io_uring openat operation can update an audit reference count
+> from multiple threads resulting in the call trace below.
+> 
+> A call to io_uring_submit() with a single openat op with a flag of
+> IOSQE_ASYNC results in the following reference count updates.
+> 
+> These first part of the system call performs two increments that do not race.
+> 
+> do_syscall_64()
+>   __do_sys_io_uring_enter()
+>     io_submit_sqes()
+>       io_openat_prep()
+>         __io_openat_prep()
+>           getname()
+>             getname_flags()       /* update 1 (increment) */
+>               __audit_getname()   /* update 2 (increment) */
+> 
+> The openat op is queued to an io_uring worker thread which starts the
+> opportunity for a race.  The system call exit performs one decrement.
+> 
+> do_syscall_64()
+>   syscall_exit_to_user_mode()
+>     syscall_exit_to_user_mode_prepare()
+>       __audit_syscall_exit()
+>         audit_reset_context()
+>            putname()              /* update 3 (decrement) */
+> 
+> The io_uring worker thread performs one increment and two decrements.
+> These updates can race with the system call decrement.
+> 
+> io_wqe_worker()
+>   io_worker_handle_work()
+>     io_wq_submit_work()
+>       io_issue_sqe()
+>         io_openat()
+>           io_openat2()
+>             do_filp_open()
+>               path_openat()
+>                 __audit_inode()   /* update 4 (increment) */
+>             putname()             /* update 5 (decrement) */
+>         __audit_uring_exit()
+>           audit_reset_context()
+>             putname()             /* update 6 (decrement) */
+> 
+> The fix is to change the refcnt member of struct audit_names
+> from int to atomic_t.
+> 
+> kernel BUG at fs/namei.c:262!
+> Call Trace:
+> ...
+>  ? putname+0x68/0x70
+>  audit_reset_context.part.0.constprop.0+0xe1/0x300
+>  __audit_uring_exit+0xda/0x1c0
+>  io_issue_sqe+0x1f3/0x450
+>  ? lock_timer_base+0x3b/0xd0
+>  io_wq_submit_work+0x8d/0x2b0
+>  ? __try_to_del_timer_sync+0x67/0xa0
+>  io_worker_handle_work+0x17c/0x2b0
+>  io_wqe_worker+0x10a/0x350
+> 
+> Cc: <stable@vger.kernel.org>
+> Link: https://lore.kernel.org/lkml/MW2PR2101MB1033FFF044A258F84AEAA584F1C9A@MW2PR2101MB1033.namprd21.prod.outlook.com/
+> Fixes: 5bd2182d58e9 ("audit,io_uring,io-wq: add some basic audit support to io_uring")
+> Signed-off-by: Dan Clash <daclash@linux.microsoft.com>
 
---g4hznxqvzwwzlnny
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
 
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git ce9ecca0238b140b88f43859b211c9fdfd8e5b70
-
---g4hznxqvzwwzlnny
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-media-pvrusb2-fix-use-after-free-on-context-disconne.patch"
-
-From cf7c3b08f80c4cdb7dd08cb977f29d41efebcf79 Mon Sep 17 00:00:00 2001
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-Date: Thu, 12 Oct 2023 18:26:47 -0300
-Subject: [PATCH] media: pvrusb2: fix use after free on context disconnection
-
-Upon module load, a kthread is created targeting the
-pvr2_context_thread_func function, which may call pvr2_context_destroy
-and thus call kfree() on the context object. However, that might happen
-before the usb hub_event handler is able to notify the driver. This
-patch adds a sanity check before the invalid read reported by syzbot,
-within the context disconnection call stack.
-
-Fixes: e5be15c63804 ("V4L/DVB (7711): pvrusb2: Fix race on module unload")
-Reported-by: syzbot+621409285c4156a009b3@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/000000000000a02a4205fff8eb92@google.com/
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/media/usb/pvrusb2/pvrusb2-context.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/usb/pvrusb2/pvrusb2-context.c b/drivers/media/usb/pvrusb2/pvrusb2-context.c
-index 14170a5d72b3..1764674de98b 100644
---- a/drivers/media/usb/pvrusb2/pvrusb2-context.c
-+++ b/drivers/media/usb/pvrusb2/pvrusb2-context.c
-@@ -268,7 +268,8 @@ void pvr2_context_disconnect(struct pvr2_context *mp)
- {
- 	pvr2_hdw_disconnect(mp->hdw);
- 	mp->disconnect_flag = !0;
--	pvr2_context_notify(mp);
-+	if (!pvr2_context_shutok())
-+		pvr2_context_notify(mp);
- }
- 
- 
 -- 
-2.42.0
+Jens Axboe
 
 
---g4hznxqvzwwzlnny--
