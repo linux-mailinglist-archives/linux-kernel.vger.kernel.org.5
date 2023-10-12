@@ -2,243 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0555C7C6E06
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EED57C6E11
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378675AbjJLMZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 08:25:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37516 "EHLO
+        id S1378706AbjJLM0u convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 08:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378591AbjJLMZT (ORCPT
+        with ESMTP id S1347244AbjJLM0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:25:19 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C1BC0;
-        Thu, 12 Oct 2023 05:25:17 -0700 (PDT)
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39CBpnU7007892;
-        Thu, 12 Oct 2023 08:25:15 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3tpd4t19px-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 08:25:15 -0400 (EDT)
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 39CCPExi017576
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Oct 2023 08:25:14 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Thu, 12 Oct
- 2023 08:25:13 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Thu, 12 Oct 2023 08:25:13 -0400
-Received: from rbolboac.ad.analog.com ([10.48.65.174])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 39CCP3l1015110;
-        Thu, 12 Oct 2023 08:25:09 -0400
-From:   Ramona Gradinariu <ramona.gradinariu@analog.com>
-To:     <jic23@kernel.org>, <nuno.sa@analog.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Ramona Gradinariu <ramona.gradinariu@analog.com>
-Subject: [PATCH 1/1] drivers: imu: adis16475.c: Remove scan index from delta channels
-Date:   Thu, 12 Oct 2023 15:24:56 +0300
-Message-ID: <20231012122456.765709-2-ramona.gradinariu@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231012122456.765709-1-ramona.gradinariu@analog.com>
-References: <20231012122456.765709-1-ramona.gradinariu@analog.com>
+        Thu, 12 Oct 2023 08:26:46 -0400
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20669BA;
+        Thu, 12 Oct 2023 05:26:43 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4S5pQ43bBvz9v7JM;
+        Thu, 12 Oct 2023 20:11:08 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwA327bY5SdlSIcLAg--.35546S2;
+        Thu, 12 Oct 2023 13:26:13 +0100 (CET)
+Message-ID: <168dd7a1a1d6e5318b3d68e743ccaced54591ac7.camel@huaweicloud.com>
+Subject: Re: [PATCH v3 12/25] security: Introduce inode_post_setattr hook
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
+        tom@talpey.com, dmitry.kasatkin@gmail.com, paul@paul-moore.com,
+        jmorris@namei.org, serge@hallyn.com, dhowells@redhat.com,
+        jarkko@kernel.org, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Thu, 12 Oct 2023 14:25:58 +0200
+In-Reply-To: <b295d1aae72d8122178dc93c9aac21217bde682a.camel@linux.ibm.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904133415.1799503-13-roberto.sassu@huaweicloud.com>
+         <22761c3d88c2c4dbac747cc7ddca3d743c6d88d9.camel@linux.ibm.com>
+         <80e4a1ea172edb2d4d441b70dcd93bfa1654a5b7.camel@huaweicloud.com>
+         <b295d1aae72d8122178dc93c9aac21217bde682a.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: GB95BsAuSEPEpgDTaJLyBjp4fZAqn8Ee
-X-Proofpoint-ORIG-GUID: GB95BsAuSEPEpgDTaJLyBjp4fZAqn8Ee
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
- clxscore=1015 malwarescore=0 spamscore=0 phishscore=0 mlxscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2309180000 definitions=main-2310120101
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: GxC2BwA327bY5SdlSIcLAg--.35546S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tr1DAF4xuFW8JrWUtF15twb_yoW8XFy5pF
+        W8KayDKFs8tFW7A3s3tF4fZ3yFvFyfKw1UXrsYqryxA3Wq9r13KFs7GayF9FWDGrWUGw1Y
+        vr4ag3srWryDZa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
+        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
+        IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
+        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IUbHa0PUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAIBF1jj5TzGgABsA
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some devices do not support delta angle and delta velocity
-burst readings, which means there should be no buffer support
-for these types of channels.
-A new list of channels is created which contains the delta
-channels structures with the scan index equal to -1 to allow
-for raw register readings, without buffer support.
-This list of channels is assigned to the devices which
-do not support delta angle and delta velocity burst
-readings.
+On Thu, 2023-10-12 at 07:43 -0400, Mimi Zohar wrote:
+> On Thu, 2023-10-12 at 09:42 +0200, Roberto Sassu wrote:
+> > On Wed, 2023-10-11 at 20:08 -0400, Mimi Zohar wrote:
+> > > gOn Mon, 2023-09-04 at 15:34 +0200, Roberto Sassu wrote:
+> > > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > 
+> > > > In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+> > > > the inode_post_setattr hook.
+> > > > 
+> > > > It is useful for EVM to recalculate the HMAC on modified file attributes
+> > > > and other file metadata, after it verified the HMAC of current file
+> > > > metadata with the inode_setattr hook.
+> > > 
+> > > "useful"?  
+> > > 
+> > > At inode_setattr hook, EVM verifies the file's existing HMAC value.  At
+> > > inode_post_setattr, EVM re-calculates the file's HMAC based on the
+> > > modified file attributes and other file metadata.
+> > > 
+> > > > 
+> > > > LSMs should use the new hook instead of inode_setattr, when they need to
+> > > > know that the operation was done successfully (not known in inode_setattr).
+> > > > The new hook cannot return an error and cannot cause the operation to be
+> > > > reverted.
+> > > 
+> > > Other LSMs could similarly update security xattrs or ...
+> > 
+> > I added your sentence. The one above is to satisfy Casey's request to
+> > justify the addition of the new hook, and to explain why inode_setattr
+> > is not sufficient.
+> 
+> I was suggesting simplifying the wording.  Perhaps something like:
+> 
+> Other LSMs could similarly take some action after successful file attri
+> bute change.
 
-Fixes: 8f6bc87d67c0 ("iio: imu: adis16475.c: Add delta angle and delta velocity channels")
-Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
----
- drivers/iio/imu/adis16475.c | 67 +++++++++++++++++++++++++------------
- 1 file changed, 46 insertions(+), 21 deletions(-)
+Ok, will use that.
 
-diff --git a/drivers/iio/imu/adis16475.c b/drivers/iio/imu/adis16475.c
-index 9af07fec0d89..b7cbe1565aee 100644
---- a/drivers/iio/imu/adis16475.c
-+++ b/drivers/iio/imu/adis16475.c
-@@ -604,7 +604,15 @@ static int adis16475_write_raw(struct iio_dev *indio_dev,
- 	ADIS16475_MOD_CHAN_DELTA(IIO_DELTA_VELOCITY, IIO_MOD_ ## _mod, \
- 			   ADIS16475_REG_ ## _mod ## _DELTVEL_L, ADIS16475_SCAN_DELTVEL_ ## _mod, 32, 32)
- 
--static const struct iio_chan_spec adis16475_channels[] = {
-+#define ADIS16475_DELTANG_CHAN_NO_SCAN(_mod) \
-+	ADIS16475_MOD_CHAN_DELTA(IIO_DELTA_ANGL, IIO_MOD_ ## _mod, \
-+			   ADIS16475_REG_ ## _mod ## _DELTANG_L, -1, 32, 32)
-+
-+#define ADIS16475_DELTVEL_CHAN_NO_SCAN(_mod) \
-+	ADIS16475_MOD_CHAN_DELTA(IIO_DELTA_VELOCITY, IIO_MOD_ ## _mod, \
-+			   ADIS16475_REG_ ## _mod ## _DELTVEL_L, -1, 32, 32)
-+
-+static const struct iio_chan_spec adis16477_channels[] = {
- 	ADIS16475_GYRO_CHANNEL(X),
- 	ADIS16475_GYRO_CHANNEL(Y),
- 	ADIS16475_GYRO_CHANNEL(Z),
-@@ -621,6 +629,23 @@ static const struct iio_chan_spec adis16475_channels[] = {
- 	IIO_CHAN_SOFT_TIMESTAMP(13)
- };
- 
-+static const struct iio_chan_spec adis16475_channels[] = {
-+	ADIS16475_GYRO_CHANNEL(X),
-+	ADIS16475_GYRO_CHANNEL(Y),
-+	ADIS16475_GYRO_CHANNEL(Z),
-+	ADIS16475_ACCEL_CHANNEL(X),
-+	ADIS16475_ACCEL_CHANNEL(Y),
-+	ADIS16475_ACCEL_CHANNEL(Z),
-+	ADIS16475_TEMP_CHANNEL(),
-+	ADIS16475_DELTANG_CHAN_NO_SCAN(X),
-+	ADIS16475_DELTANG_CHAN_NO_SCAN(Y),
-+	ADIS16475_DELTANG_CHAN_NO_SCAN(Z),
-+	ADIS16475_DELTVEL_CHAN_NO_SCAN(X),
-+	ADIS16475_DELTVEL_CHAN_NO_SCAN(Y),
-+	ADIS16475_DELTVEL_CHAN_NO_SCAN(Z),
-+	IIO_CHAN_SOFT_TIMESTAMP(7)
-+};
-+
- enum adis16475_variant {
- 	ADIS16470,
- 	ADIS16475_1,
-@@ -782,8 +807,8 @@ static const struct adis16475_chip_info adis16475_chip_info[] = {
- 	},
- 	[ADIS16477_1] = {
- 		.name = "adis16477-1",
--		.num_channels = ARRAY_SIZE(adis16475_channels),
--		.channels = adis16475_channels,
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
- 		.gyro_max_val = 1,
- 		.gyro_max_scale = IIO_RAD_TO_DEGREE(160 << 16),
- 		.accel_max_val = 1,
-@@ -800,8 +825,8 @@ static const struct adis16475_chip_info adis16475_chip_info[] = {
- 	},
- 	[ADIS16477_2] = {
- 		.name = "adis16477-2",
--		.num_channels = ARRAY_SIZE(adis16475_channels),
--		.channels = adis16475_channels,
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
- 		.gyro_max_val = 1,
- 		.gyro_max_scale = IIO_RAD_TO_DEGREE(40 << 16),
- 		.accel_max_val = 1,
-@@ -818,8 +843,8 @@ static const struct adis16475_chip_info adis16475_chip_info[] = {
- 	},
- 	[ADIS16477_3] = {
- 		.name = "adis16477-3",
--		.num_channels = ARRAY_SIZE(adis16475_channels),
--		.channels = adis16475_channels,
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
- 		.gyro_max_val = 1,
- 		.gyro_max_scale = IIO_RAD_TO_DEGREE(10 << 16),
- 		.accel_max_val = 1,
-@@ -938,8 +963,8 @@ static const struct adis16475_chip_info adis16475_chip_info[] = {
- 	},
- 	[ADIS16500] = {
- 		.name = "adis16500",
--		.num_channels = ARRAY_SIZE(adis16475_channels),
--		.channels = adis16475_channels,
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
- 		.gyro_max_val = 1,
- 		.gyro_max_scale = IIO_RAD_TO_DEGREE(10 << 16),
- 		.accel_max_val = 392,
-@@ -957,8 +982,8 @@ static const struct adis16475_chip_info adis16475_chip_info[] = {
- 	},
- 	[ADIS16505_1] = {
- 		.name = "adis16505-1",
--		.num_channels = ARRAY_SIZE(adis16475_channels),
--		.channels = adis16475_channels,
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
- 		.gyro_max_val = 1,
- 		.gyro_max_scale = IIO_RAD_TO_DEGREE(160 << 16),
- 		.accel_max_val = 78,
-@@ -976,8 +1001,8 @@ static const struct adis16475_chip_info adis16475_chip_info[] = {
- 	},
- 	[ADIS16505_2] = {
- 		.name = "adis16505-2",
--		.num_channels = ARRAY_SIZE(adis16475_channels),
--		.channels = adis16475_channels,
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
- 		.gyro_max_val = 1,
- 		.gyro_max_scale = IIO_RAD_TO_DEGREE(40 << 16),
- 		.accel_max_val = 78,
-@@ -995,8 +1020,8 @@ static const struct adis16475_chip_info adis16475_chip_info[] = {
- 	},
- 	[ADIS16505_3] = {
- 		.name = "adis16505-3",
--		.num_channels = ARRAY_SIZE(adis16475_channels),
--		.channels = adis16475_channels,
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
- 		.gyro_max_val = 1,
- 		.gyro_max_scale = IIO_RAD_TO_DEGREE(10 << 16),
- 		.accel_max_val = 78,
-@@ -1014,8 +1039,8 @@ static const struct adis16475_chip_info adis16475_chip_info[] = {
- 	},
- 	[ADIS16507_1] = {
- 		.name = "adis16507-1",
--		.num_channels = ARRAY_SIZE(adis16475_channels),
--		.channels = adis16475_channels,
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
- 		.gyro_max_val = 1,
- 		.gyro_max_scale = IIO_RAD_TO_DEGREE(160 << 16),
- 		.accel_max_val = 392,
-@@ -1033,8 +1058,8 @@ static const struct adis16475_chip_info adis16475_chip_info[] = {
- 	},
- 	[ADIS16507_2] = {
- 		.name = "adis16507-2",
--		.num_channels = ARRAY_SIZE(adis16475_channels),
--		.channels = adis16475_channels,
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
- 		.gyro_max_val = 1,
- 		.gyro_max_scale = IIO_RAD_TO_DEGREE(40 << 16),
- 		.accel_max_val = 392,
-@@ -1052,8 +1077,8 @@ static const struct adis16475_chip_info adis16475_chip_info[] = {
- 	},
- 	[ADIS16507_3] = {
- 		.name = "adis16507-3",
--		.num_channels = ARRAY_SIZE(adis16475_channels),
--		.channels = adis16475_channels,
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
- 		.gyro_max_val = 1,
- 		.gyro_max_scale = IIO_RAD_TO_DEGREE(10 << 16),
- 		.accel_max_val = 392,
--- 
-2.34.1
+Thanks
+
+Roberto
+
 
