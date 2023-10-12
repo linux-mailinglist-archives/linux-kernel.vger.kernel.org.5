@@ -2,366 +2,422 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFC57C71E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512DE7C71E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344059AbjJLP4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:56:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60078 "EHLO
+        id S1344052AbjJLP5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233988AbjJLP43 (ORCPT
+        with ESMTP id S233988AbjJLP5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:56:29 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B68BB8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1697126184;
-        bh=36R7eZKaoJ+WPeFW9+rSFhb5np6/txGdnA+zHc945KA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Fog9+0WNETnnfcIUy9Pid2nXfGm36PNiCLRVZRbX9/ThNQ+qs+6EbBXD/3qGsp4VK
-         F/XGXSTwJTDIqlkQ3hpFTNrgH5A6MLPnZJWOBNJjq2fI1UbuJAH/H1lhrKxSsj0rU+
-         OeLyxTUFmJcTR5VBR/0TAwIXMm9dUlL58YsxtF+vQMPnxHqdPFKt4bdvMrDKU5LuUL
-         Ga9j8Ix3hYm7UNayZ63D5lPux1qtjI3dJDM/3ZJ8tM4VqGPa+O/8QIf5883AEJl8mw
-         +5DQ31S88/iP+Jszdtf2nFbtrRnSw/IlXiQpk1SOu3A5tpABWazkH3iW0v/Ir2uPV5
-         Cskl0eDZZLZfQ==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4S5vQ015Ljz1X3P;
-        Thu, 12 Oct 2023 11:56:24 -0400 (EDT)
-Message-ID: <15be1d39-7901-4ffd-8f70-4be0e0f6339b@efficios.com>
-Date:   Thu, 12 Oct 2023 11:56:28 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] sched/fair: Bias runqueue selection towards almost
- idle prev CPU
+        Thu, 12 Oct 2023 11:57:45 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002F4C0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:57:42 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CEm2VZ024325
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:57:42 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=content-type : from :
+ to : cc : subject : date : message-id : references : in-reply-to :
+ mime-version; s=s2048-2021-q4;
+ bh=1VsuRnc2MjdjA+YeA1ekYDpXR62RYNM1iTng/t65npw=;
+ b=NVZo9+fsDhJ7hGk+YHm6Hqtt/TY9ULCbQL20aF15+JHfDqoZEzaGZ0WklqdKG8O9nn7b
+ RTdNpJjvnwPnRyfkiMkcngiuQ44iw6ooJK88igDiTLQx9bF5lzzyYhCHvW0+II14YCha
+ iKyBrRhuMqeeG3qkEd+vtcmWj2g3PE+wGo0HKvarihI5/OHnFuehcmh7dAcpL4V+0vWc
+ sBdz3ZGHG8CNISjn+jpon16vS/7inxdMEiShnjXG/GT6kw9Gw9dP8ezdLVgu771FjRrE
+ 5BqBa/TLoMYCkL4anBCmif83aLv0eJyVPK1eLxyyfqFJQX6VQAaaaIY7+8gGfegF50MB Yg== 
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3tpd8ps1sv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:57:42 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KZjsvOPJvrAshTv55av6/K1AQuM4kq8we9lmf7jK858W5TLuTHEv9PD3Lmf2wbIsq//D0OSjcSZJsk2f9IxP5OhsAl6+kBxp4gc5krhnX3BXrnthvu3CK48F5vH7A4x5BPfORpIk60vCVD2QboXS91ngjK8U74TL19NAsUKIyZQz9+E3atY690T0+0hpLynNXBQW4CFNUdUDad0blo0hhyFxSQYsaJhew2yg4p1+vn7eh+CIoft2jDT5VyfS7RV/s9jTYk9HYCXGITIVChzjImIK6wUlevSjGlYLyx5yFWbto35qmZzEuKD0GlPKi10ajtnOzTLYOl+vHn0eVpcolw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zUfeXmPYbE1TFkzu+rqJqowkg5SPQCYZVc4B3LIVES0=;
+ b=b3F4Qh8WSJzQWypnGZwe5lT8zQmBzPenhCIjzduXrY/J02weLIywywhs01BIbXdKGVWZXh2ePvTIlvlNJ0wODcAAdeLOZoDIXtff9pBE5y0WbYZgIdgr69/R6KEnDagn5q9t9uYrTQmfviDztjqMTwjP8XAHtpulQPqjzI5YCPV60HMV7mtfz3qGhFCRkc9ShyK3e6RxqMRnlMg5y+GPB2f5oj6cPD+0Zdi28egTAJEHEWdvZCt0auzRrwBXkDozQgWlFvq3OxR2cSUiSVCEDU2zjFiwkU9lLgw2bNfFiX6u6vWR6uZUY15jxRoWCO+Cn5LZRp10DymcOOqbKB/8CA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from BY5PR15MB3667.namprd15.prod.outlook.com (2603:10b6:a03:1f9::18)
+ by LV8PR15MB6413.namprd15.prod.outlook.com (2603:10b6:408:1e4::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Thu, 12 Oct
+ 2023 15:57:40 +0000
+Received: from BY5PR15MB3667.namprd15.prod.outlook.com
+ ([fe80::60e6:62d8:ca42:402f]) by BY5PR15MB3667.namprd15.prod.outlook.com
+ ([fe80::60e6:62d8:ca42:402f%3]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
+ 15:57:40 +0000
+Content-Type: multipart/mixed;
+        boundary="_000_B6F7FAB13A034F7D8957ED93600AD0DEmetacom_"
+From:   Nick Terrell <terrelln@meta.com>
+To:     "baomingtong001@208suo.com" <baomingtong001@208suo.com>
+CC:     Nick Terrell <terrelln@meta.com>, Nick Terrell <terrelln@meta.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] lib: zstd: remove unneeded variable
+Thread-Topic: [PATCH] lib: zstd: remove unneeded variable
+Thread-Index: AQHZno/UJ+gIJzZHtEqnirxvNnjgBrBHDHuA
+Date:   Thu, 12 Oct 2023 15:57:39 +0000
+Message-ID: <B6F7FAB1-3A03-4F7D-8957-ED93600AD0DE@meta.com>
+References: <20230614071235.55955-1-luojianhong@cdjrlc.com>
+ <8c519982c1b73dfb4aa84c8215c8a5ac@208suo.com>
+In-Reply-To: <8c519982c1b73dfb4aa84c8215c8a5ac@208suo.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Chen Yu <yu.c.chen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, Tim Chen <tim.c.chen@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
-References: <20230929183350.239721-1-mathieu.desnoyers@efficios.com>
- <ZRfKKxBzfu+kf0tM@chenyu5-mobl2.ccr.corp.intel.com>
- <0f3cfff3-0df4-3cb7-95cb-ea378517e13b@efficios.com>
- <ZSOMOhhkPIFmvz97@chenyu5-mobl2.ccr.corp.intel.com>
- <ebe4e40f-37df-40a9-9dfc-7f2a458151bd@efficios.com>
- <ZSZ2ERMysY7iEo+x@chenyu5-mobl2.ccr.corp.intel.com>
- <1ae6290c-843f-4e50-9c81-7146d3597ed3@efficios.com>
- <CAKfTPtA2cCy13DqL86PXcRh2P1xtSLWm1ap+uM0S8RnXc-fjRA@mail.gmail.com>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <CAKfTPtA2cCy13DqL86PXcRh2P1xtSLWm1ap+uM0S8RnXc-fjRA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: <B6F7FAB1-3A03-4F7D-8957-ED93600AD0DE@meta.com>
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY5PR15MB3667:EE_|LV8PR15MB6413:EE_
+x-ms-office365-filtering-correlation-id: d5f48d6d-6d59-4a2a-91c5-08dbcb3bf667
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: V2Mw1Hui796szHhE1vUzhy0w8j0oCMteN7IeBj3a0JM6Otv9JU85HbxJ8hpreyL8siqpQLuZsh+F1l6SaVczIClPHAbQZwq5OQo7jdverLLM8DOxellJwdcmOdRP7Ktq7aX4FdGoCPpvB33+VIhkKLh1oGF8BKI2nzwiVlzlM0erxkBa21K1+v8a6t15wpxQoa3KEaPjVGm1sC0P6ekCf2H1MWw/jJhV0SWh31v5lM4ax/5+72oau2FdVVLblLPykVDerxnrC9JFvraU8x2iiptGlyW5Q9Hd/L6SWstTIwf4/hlEDwtzdq+7AK5St1xyiK+9V3Grv1273CZKX/yn9CdRMxymjffBh1CG4RNjmaFZjTQ7Cp+v52rsfD32TElqXu0sCamtQzrQN6i+XUn9PaOIy/vEu+waVeS7jcUJz4gw3hiKLtOUGfrmON/lIVqYgsw3lHNgJlYBUsvaOYpjonJjjmPR3lE6GEaHb2f3NBLCBNnabVa7IiZ3RbTp/F3HZVvG4/5x9hriEGpgm1WJZOp35OFYch7BujO2G1D9+pohXWWY0Dby/2q96NaiilFuNoZdGRx1zFoBafY00mnZvUxm08Dh8SOWK3rGRsy3QGOnh1j+pBieBKPhalAwkNlCBRuljp/NrRx75VHl1eFl/g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3667.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(396003)(366004)(136003)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(122000001)(38100700002)(38070700005)(6512007)(2616005)(8936002)(478600001)(86362001)(966005)(6486002)(5660300002)(8676002)(4326008)(33656002)(2906002)(316002)(91956017)(6916009)(36756003)(54906003)(64756008)(66446008)(66476007)(66556008)(41300700001)(66946007)(76116006)(71200400001)(53546011)(6506007)(83380400001)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ymAvpQLlwUScv8PnUU19yxcowFEi9vkxwZrt+VK9x/sZeFQm4+TgMHrOXaXh?=
+ =?us-ascii?Q?LeCwyYiQjgvzICGGLuy4dGHz4EEye7J2c6mdIjnYObkxiXR2AOazJS7mT/8n?=
+ =?us-ascii?Q?2S0YT/FhOXuPJYrQsYCXtiHRxbHfhqw9eGH1vsFF1BzlwBp3lNSzvkLwedz/?=
+ =?us-ascii?Q?j7rNwCLobciqEYR5p3NgIkdyRs7UeycMV0c93yguqSXmFcNd3cbEXd49TFHV?=
+ =?us-ascii?Q?5fTwB5bnEM8knfoICiqmDyWvkEezBn2ktqsVctp5KnpuV1uId7Sbgr79fBMq?=
+ =?us-ascii?Q?7cLOCYlSYaUpfwb49Yv66c0f4RQdCldITLhhSSb/wiEkkFlnQaXaOXKqASFR?=
+ =?us-ascii?Q?WVXZkgQ7bcEbMjrenSzQtsBQSZrcosSqTlHwDBEegSINIHLuHbuZFi1ruN5J?=
+ =?us-ascii?Q?9eg/qsdrgxXvNNcm2mwo1h/v7tUA24LrguWHogbWQE5TcX9VayCCsrhhvjJ9?=
+ =?us-ascii?Q?LdkZ5tQXG7bgEelu95Iwdj3ppD3reBxTXrGKm07BPbZDh2vrEyxPcmhnr6nE?=
+ =?us-ascii?Q?oLcPT49pDWR8haAvh0K8sFTtUaiLhm1Zti4yU5u9wKhVniRYJ6SsjdPaAxh4?=
+ =?us-ascii?Q?dK2JXCppu1j6D4TSDWPR9R1P7fY3fhQmhAjBI9rSPrWYKzdDVYQcXBKH6DWY?=
+ =?us-ascii?Q?qhrWa4A997TcXPnrXZXkARZZu8cu8ZzaCMaLchP4vKC8S5ePvD+/ewIJncgm?=
+ =?us-ascii?Q?zPNbBGEmAKGRMUSS+/FM+CEq81dmTya/lu3WsvPQLvNuigrGIeqYDCWvlmpg?=
+ =?us-ascii?Q?kKoJVd7cd6J1/OgUVFGje/sxRmQw4Mgie2iX+0sEpJ8P5nDCMJtvtHGV6Rhm?=
+ =?us-ascii?Q?qeQbytQ4kCdz40Qyd7QGQs5DnnYqPIlx/XZSL6KzbWXYKQ7t3xo/RQT30jJM?=
+ =?us-ascii?Q?IhG+6QKHph8rKDsxmtu10e11pC9ZINKy15iSSqcjAfgArVP0oKJOffUIr/Ar?=
+ =?us-ascii?Q?X0XI7f8d+EYPIKJKSDwjpK6qz4fCdvjywNXBpJEKbgNQiiXdKM7ZCzyi6aCq?=
+ =?us-ascii?Q?2GUJwaQhGDw3U5ruRbWJksW7kCqpBxoX1l1F5N1Ti5oCY964M1HShQ5ZeLTC?=
+ =?us-ascii?Q?RF1HsGdA5F8whtZ8u8hYAbKIBZTLB87oaEqc96Gzz/FIIyG6HIYcKKWIhqlg?=
+ =?us-ascii?Q?b1nQj9AMt2avIar6O2aKde21blSh7AXXtydWxt5wedURNu2hIMeTPhhB3jVe?=
+ =?us-ascii?Q?nVII0WBmY5sCgDDLJdF4QBA504s53sA4yRCTQ0lY+pN8a2RBnkWEUSCWUYwt?=
+ =?us-ascii?Q?kuQuz5Ivtv4mUnC5ooyaNFjBdoCHquYhMVU010N87e+FjmMVpUNUnHUbL+EU?=
+ =?us-ascii?Q?SfsVxdhCC9r5qLTqIcKf7Q01Zz0uvzzBPefpvgmGgznfC4dwDwqS7+5EmxXy?=
+ =?us-ascii?Q?v5yVk0HFK5ae74AaM6XZVMmSZXP016DxHjZ3W6RVYgwApU4v4VueqSZyRcxA?=
+ =?us-ascii?Q?r0lRLPAxwUJBYfETgfqH63ckr3ykPlErPpiThkM8QIp8nK908Rzox+gjU6DA?=
+ =?us-ascii?Q?ublbiXKENRR5TYpA+6Db0CeLx5hY6fv+mUZuOEWAHbPOkw2cGpK1vpdWoucF?=
+ =?us-ascii?Q?NkIiuOXjjw1N7Leipid63/v+y5GSEweNqNPqQNx7ZEgWNc8o3YAjnEN7PmnE?=
+ =?us-ascii?Q?Jz2GJDPOVIsAIz1m6jT7zMo=3D?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3667.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d5f48d6d-6d59-4a2a-91c5-08dbcb3bf667
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Oct 2023 15:57:40.0222
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pJBdv6zcns+YyuRtwvE+DV3IwzWvFX4/3fK/lM9uodJJeLELeI4kwWOS1t6UaojxGNjbBTwWVhxgO7nlWgZ/lw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR15MB6413
+X-Proofpoint-GUID: AwKsQ9Igm6368_Y_cbAQow5ciURBJRK6
+X-Proofpoint-ORIG-GUID: AwKsQ9Igm6368_Y_cbAQow5ciURBJRK6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-12 11:01, Vincent Guittot wrote:
-> On Thu, 12 Oct 2023 at 16:33, Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
->>
->> On 2023-10-11 06:16, Chen Yu wrote:
->>> On 2023-10-10 at 09:49:54 -0400, Mathieu Desnoyers wrote:
->>>> On 2023-10-09 01:14, Chen Yu wrote:
->>>>> On 2023-09-30 at 07:45:38 -0400, Mathieu Desnoyers wrote:
->>>>>> On 9/30/23 03:11, Chen Yu wrote:
->>>>>>> Hi Mathieu,
->>>>>>>
->>>>>>> On 2023-09-29 at 14:33:50 -0400, Mathieu Desnoyers wrote:
->>>>>>>> Introduce the WAKEUP_BIAS_PREV_IDLE scheduler feature. It biases
->>>>>>>> select_task_rq towards the previous CPU if it was almost idle
->>>>>>>> (avg_load <= 0.1%).
->>>>>>>
->>>>>>> Yes, this is a promising direction IMO. One question is that,
->>>>>>> can cfs_rq->avg.load_avg be used for percentage comparison?
->>>>>>> If I understand correctly, load_avg reflects that more than
->>>>>>> 1 tasks could have been running this runqueue, and the
->>>>>>> load_avg is the direct proportion to the load_weight of that
->>>>>>> cfs_rq. Besides, LOAD_AVG_MAX seems to not be the max value
->>>>>>> that load_avg can reach, it is the sum of
->>>>>>> 1024 * (y + y^1 + y^2 ... )
->>>>>>>
->>>>>>> For example,
->>>>>>> taskset -c 1 nice -n -20 stress -c 1
->>>>>>> cat /sys/kernel/debug/sched/debug | grep 'cfs_rq\[1\]' -A 12 | grep "\.load_avg"
->>>>>>>       .load_avg                      : 88763
->>>>>>>       .load_avg                      : 1024
->>>>>>>
->>>>>>> 88763 is higher than LOAD_AVG_MAX=47742
->>>>>>
->>>>>> I would have expected the load_avg to be limited to LOAD_AVG_MAX somehow,
->>>>>> but it appears that it does not happen in practice.
->>>>>>
->>>>>> That being said, if the cutoff is really at 0.1% or 0.2% of the real max,
->>>>>> does it really matter ?
->>>>>>
->>>>>>> Maybe the util_avg can be used for precentage comparison I suppose?
->>>>>> [...]
->>>>>>> Or
->>>>>>> return cpu_util_without(cpu_rq(cpu), p) * 1000 <= capacity_orig_of(cpu) ?
->>>>>>
->>>>>> Unfortunately using util_avg does not seem to work based on my testing.
->>>>>> Even at utilization thresholds at 0.1%, 1% and 10%.
->>>>>>
->>>>>> Based on comments in fair.c:
->>>>>>
->>>>>>     * CPU utilization is the sum of running time of runnable tasks plus the
->>>>>>     * recent utilization of currently non-runnable tasks on that CPU.
->>>>>>
->>>>>> I think we don't want to include currently non-runnable tasks in the
->>>>>> statistics we use, because we are trying to figure out if the cpu is a
->>>>>> idle-enough target based on the tasks which are currently running, for the
->>>>>> purpose of runqueue selection when waking up a task which is considered at
->>>>>> that point in time a non-runnable task on that cpu, and which is about to
->>>>>> become runnable again.
->>>>>>
->>>>>
->>>>> Although LOAD_AVG_MAX is not the max possible load_avg, we still want to find
->>>>> a proper threshold to decide if the CPU is almost idle. The LOAD_AVG_MAX
->>>>> based threshold is modified a little bit:
->>>>>
->>>>> The theory is, if there is only 1 task on the CPU, and that task has a nice
->>>>> of 0, the task runs 50 us every 1000 us, then this CPU is regarded as almost
->>>>> idle.
->>>>>
->>>>> The load_sum of the task is:
->>>>> 50 * (1 + y + y^2 + ... + y^n)
->>>>> The corresponding avg_load of the task is approximately
->>>>> NICE_0_WEIGHT * load_sum / LOAD_AVG_MAX = 50.
->>>>> So:
->>>>>
->>>>> /* which is close to LOAD_AVG_MAX/1000 = 47 */
->>>>> #define ALMOST_IDLE_CPU_LOAD   50
->>>>
->>>> Sorry to be slow at understanding this concept, but this whole "load" value
->>>> is still somewhat magic to me.
->>>>
->>>> Should it vary based on CONFIG_HZ_{100,250,300,1000}, or is it independent ?
->>>> Where is it documented that the load is a value in "us" out of a window of
->>>> 1000 us ?
->>>>
->>>
->>> My understanding is that, the load_sum of a single task is a value in "us" out
->>> of a window of 1000 us, while the load_avg of the task will multiply the weight
->>> of the task. In this case a task with nice 0 is NICE_0_WEIGHT = 1024.
->>>
->>> __update_load_avg_se -> ___update_load_sum calculate the load_sum of a task(there
->>> is comments around ___update_load_sum to describe the pelt calculation),
->>> and ___update_load_avg() calculate the load_avg based on the task's weight.
->>
->> Thanks for your thorough explanation, now it makes sense.
->>
->> I understand as well that the cfs_rq->avg.load_sum is the result of summing
->> each task load_sum multiplied by their weight:
+--_000_B6F7FAB13A034F7D8957ED93600AD0DEmetacom_
+Content-ID: <F8205C0C63928D4FB4CCEE6068C90115@namprd15.prod.outlook.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 
+
+
+
+> On Jun 14, 2023, at 3:14 AM, baomingtong001@208suo.com wrote:
 > 
-> Please don't use load_sum but only *_avg.
-> As already said, util_avg or runnable_avg are better metrics for you
-
-I think I found out why using util_avg was not working for me.
-
-Considering this comment from cpu_util():
-
-  * CPU utilization is the sum of running time of runnable tasks plus the
-  * recent utilization of currently non-runnable tasks on that CPU.
-
-I don't want to include the recent utilization of currently non-runnable
-tasks on that CPU in order to choose that CPU to do task placement in a
-context where many tasks were recently running on that cpu (but are
-currently blocked). I do not want those blocked tasks to be part of the
-avg.
-
-So I think the issue here is that I was using the cpu_util() (and
-cpu_util_without()) helpers which are considering max(util, runnable),
-rather than just "util".
-
-Based on your comments, just doing this to match a rq util_avg <= 1% (10us of 1024us)
-seems to work fine:
-
-   return cpu_rq(cpu)->cfs.avg.util_avg <= 10 * capacity_of(cpu);
-
-Is this approach acceptable ?
-
-Thanks!
-
-Mathieu
-
+> !-------------------------------------------------------------------|
+> This Message Is From an Untrusted Sender
+> You have not previously corresponded with this sender.
+> |-------------------------------------------------------------------!
 > 
->>
->> static inline void
->> enqueue_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se)
->> {
->>           cfs_rq->avg.load_avg += se->avg.load_avg;
->>           cfs_rq->avg.load_sum += se_weight(se) * se->avg.load_sum;
->> }
->>
->> Therefore I think we need to multiply the load_sum value we aim for by
->> get_pelt_divider(&cpu_rq(cpu)->cfs.avg) to compare it to a rq load_sum.
->>
->> I plan to compare the rq load sum to "10 * get_pelt_divider(&cpu_rq(cpu)->cfs.avg)"
->> to match runqueues which were previously idle (therefore with prior periods contribution
->> to the rq->load_sum being pretty much zero), and which have a current period rq load_sum
->> below or equal 10us per 1024us (<= 1%):
->>
->> static inline unsigned long cfs_rq_weighted_load_sum(struct cfs_rq *cfs_rq)
->> {
->>           return cfs_rq->avg.load_sum;
->> }
->>
->> static unsigned long cpu_weighted_load_sum(struct rq *rq)
->> {
->>           return cfs_rq_weighted_load_sum(&rq->cfs);
->> }
->>
->> /*
->>    * A runqueue is considered almost idle if:
->>    *
->>    *   cfs_rq->avg.load_sum / get_pelt_divider(&cfs_rq->avg) / 1024 <= 1%
->>    *
->>    * This inequality is transformed as follows to minimize arithmetic:
->>    *
->>    *   cfs_rq->avg.load_sum <= get_pelt_divider(&cfs_rq->avg) * 10
->>    */
->> static bool
->> almost_idle_cpu(int cpu, struct task_struct *p)
->> {
->>           if (!sched_feat(WAKEUP_BIAS_PREV_IDLE))
->>                   return false;
->>           return cpu_weighted_load_sum(cpu_rq(cpu)) <= 10 * get_pelt_divider(&cpu_rq(cpu)->cfs.avg);
->> }
->>
->> Does it make sense ?
->>
->> Thanks,
->>
->> Mathieu
->>
->>
->>>
->>>> And with this value "50", it would cover the case where there is only a
->>>> single task taking less than 50us per 1000us, and cases where the sum for
->>>> the set of tasks on the runqueue is taking less than 50us per 1000us
->>>> overall.
->>>>
->>>>>
->>>>> static bool
->>>>> almost_idle_cpu(int cpu, struct task_struct *p)
->>>>> {
->>>>>           if (!sched_feat(WAKEUP_BIAS_PREV_IDLE))
->>>>>                   return false;
->>>>>           return cpu_load_without(cpu_rq(cpu), p) <= ALMOST_IDLE_CPU_LOAD;
->>>>> }
->>>>>
->>>>> Tested this on Intel Xeon Platinum 8360Y, Ice Lake server, 36 core/package,
->>>>> total 72 core/144 CPUs. Slight improvement is observed in hackbench socket mode:
->>>>>
->>>>> socket mode:
->>>>> hackbench -g 16 -f 20 -l 480000 -s 100
->>>>>
->>>>> Before patch:
->>>>> Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
->>>>> Each sender will pass 480000 messages of 100 bytes
->>>>> Time: 81.084
->>>>>
->>>>> After patch:
->>>>> Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
->>>>> Each sender will pass 480000 messages of 100 bytes
->>>>> Time: 78.083
->>>>>
->>>>>
->>>>> pipe mode:
->>>>> hackbench -g 16 -f 20 --pipe  -l 480000 -s 100
->>>>>
->>>>> Before patch:
->>>>> Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
->>>>> Each sender will pass 480000 messages of 100 bytes
->>>>> Time: 38.219
->>>>>
->>>>> After patch:
->>>>> Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
->>>>> Each sender will pass 480000 messages of 100 bytes
->>>>> Time: 38.348
->>>>>
->>>>> It suggests that, if the workload has larger working-set/cache footprint, waking up
->>>>> the task on its previous CPU could get more benefit.
->>>>
->>>> In those tests, what is the average % of idleness of your cpus ?
->>>>
->>>
->>> For hackbench -g 16 -f 20 --pipe  -l 480000 -s 100, it is around 8~10% idle
->>> For hackbench -g 16 -f 20   -l 480000 -s 100, it is around 2~3% idle
->>>
->>> Then the CPUs in packge 1 are offlined to get stable result when the group number is low.
->>> hackbench -g 1 -f 20 --pipe  -l 480000 -s 100
->>> Some CPUs are busy, others are idle, and some are half-busy.
->>> Core  CPU     Busy%
->>> -     -       49.57
->>> 0     0       1.89
->>> 0     72      75.55
->>> 1     1       100.00
->>> 1     73      0.00
->>> 2     2       100.00
->>> 2     74      0.00
->>> 3     3       100.00
->>> 3     75      0.01
->>> 4     4       78.29
->>> 4     76      17.72
->>> 5     5       100.00
->>> 5     77      0.00
->>>
->>>
->>> hackbench -g 1 -f 20  -l 480000 -s 100
->>> Core  CPU     Busy%
->>> -     -       48.29
->>> 0     0       57.94
->>> 0     72      21.41
->>> 1     1       83.28
->>> 1     73      0.00
->>> 2     2       11.44
->>> 2     74      83.38
->>> 3     3       21.45
->>> 3     75      77.27
->>> 4     4       26.89
->>> 4     76      80.95
->>> 5     5       5.01
->>> 5     77      83.09
->>>
->>>
->>> echo NO_WAKEUP_BIAS_PREV_IDLE > /sys/kernel/debug/sched/features
->>> hackbench -g 1 -f 20 --pipe  -l 480000 -s 100
->>> Running in process mode with 1 groups using 40 file descriptors each (== 40 tasks)
->>> Each sender will pass 480000 messages of 100 bytes
->>> Time: 9.434
->>>
->>> echo WAKEUP_BIAS_PREV_IDLE > /sys/kernel/debug/sched/features
->>> hackbench -g 1 -f 20 --pipe  -l 480000 -s 100
->>> Running in process mode with 1 groups using 40 file descriptors each (== 40 tasks)
->>> Each sender will pass 480000 messages of 100 bytes
->>> Time: 9.373
->>>
->>> thanks,
->>> Chenyu
->>
->> --
->> Mathieu Desnoyers
->> EfficiOS Inc.
->> https://www.efficios.com
->>
+> fix the following coccicheck warning:
+> 
+> lib/zstd/compress/zstd_cwksp.h:220:17-27: Unneeded variable: "slackSpace". Return "ZSTD_CWKSP_ALIGNMENT_BYTES".
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+If you would like to fix this, please fix this upstream at https://github.com/facebook/zstd.
+That will get synced to the kernel on the next update.
 
+Thanks,
+Nick Terrell
+
+> Signed-off-by: Mingtong Bao <baomingtong001@208suo.com>
+> ---
+> lib/zstd/compress/zstd_cwksp.h | 3 +--
+> 1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/lib/zstd/compress/zstd_cwksp.h b/lib/zstd/compress/zstd_cwksp.h
+> index 349fc923c355..36c574cd3d6f 100644
+> --- a/lib/zstd/compress/zstd_cwksp.h
+> +++ b/lib/zstd/compress/zstd_cwksp.h
+> @@ -217,8 +217,7 @@ MEM_STATIC size_t ZSTD_cwksp_slack_space_required(void) {
+>      * n_1 + n_2 == 64 bytes if the cwksp is freshly allocated, due to tables and
+>      * aligneds being sized in multiples of 64 bytes.
+>      */
+> -    size_t const slackSpace = ZSTD_CWKSP_ALIGNMENT_BYTES;
+> -    return slackSpace;
+> +    return ZSTD_CWKSP_ALIGNMENT_BYTES;
+> }
+
+
+--_000_B6F7FAB13A034F7D8957ED93600AD0DEmetacom_
+Content-Disposition: attachment; filename="winmail.dat"
+Content-Transfer-Encoding: base64
+Content-Type: application/ms-tnef; name="winmail.dat"
+
+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
+cgBlAGwAbABuAEAAbQBlAHQAYQAuAGMAbwBtAAAAHwAeDAEAAAAKAAAAUwBNAFQAUAAAAAAAAgEZ
+DAEAAABgAAAAAAAAAIErH6S+oxAZnW4A3QEPVAIAAACATgBpAGMAawAgAFQAZQByAHIAZQBsAGwA
+AABTAE0AVABQAAAAdABlAHIAcgBlAGwAbABuAEAAbQBlAHQAYQAuAGMAbwBtAAAAHwABXQEAAAAk
+AAAAdABlAHIAcgBlAGwAbABuAEAAbQBlAHQAYQAuAGMAbwBtAAAACwBAOgEAAAAfABoAAQAAABIA
+AABJAFAATQAuAE4AbwB0AGUAAAAAAAMA8T8JBAAACwBAOgEAAAADAP0/5AQAAAIBCzABAAAAEAAA
+AIjA/VodlOFOt7VHxwRuhW0DABcAAQAAAEAAOQCAm0/TJP3ZAUAACDB6EebTJP3ZAQsAKQAAAAAA
+HwDZPwEAAAD4AQAAPgAgAE8AbgAgAEoAdQBuACAAMQA0ACwAIAAyADAAMgAzACwAIABhAHQAIAAz
+ADoAMQA0ACAAQQBNACwAIABiAGEAbwBtAGkAbgBnAHQAbwBuAGcAMAAwADEAQAAyADAAOABzAHUA
+bwAuAGMAbwBtACAAdwByAG8AdABlADoADQAKAD4AIAANAAoAPgAgACEALQAtAC0ALQAtAC0ALQAt
+AC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0A
+LQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAt
+AC0ALQB8AA0ACgA+ACAAVABoAGkAcwAgAE0AZQBzAHMAYQBnAGUAIABJAHMAIABGAHIAbwBtACAA
+YQBuACAAVQBuAHQAcgB1AHMAdABlAGQAIABTAGUAbgBkAGUAcgANAAoAPgAgAFkAbwB1ACAAaABh
+AHYAZQAgAG4AbwB0ACAAcAByAGUAdgBpAG8AdQBzAGwAeQAgAGMAbwByAHIAZQBzAHAAbwBuAGQA
+ZQBkACAAdwBpAHQAaAAgAHQAaABpAHMAIABzAGUAbgBkAGUAcgAuAA0ACgA+ACAAfAAtAC0ALQAt
+AAAACwAAgAggBgAAAAAAwAAAAAAAAEYAAAAAFIUAAAAAAAAfAACAhgMCAAAAAADAAAAAAAAARgEA
+AAAeAAAAYQBjAGMAZQBwAHQAbABhAG4AZwB1AGEAZwBlAAAAAAABAAAADAAAAGUAbgAtAFUAUwAA
+AAMAAIAIIAYAAAAAAMAAAAAAAABGAQAAADIAAABFAHgAYwBoAGEAbgBnAGUAQQBwAHAAbABpAGMA
+YQB0AGkAbwBuAEYAbABhAGcAcwAAAAAAIAAAAEgAAIAIIAYAAAAAAMAAAAAAAABGAQAAACIAAABO
+AGUAdAB3AG8AcgBrAE0AZQBzAHMAYQBnAGUASQBkAAAAAABtjfTVWW0qSpHFCNvLO/ZnHwAAgBOP
+8kH0gxRBpYTu21prC/8BAAAAFgAAAEMAbABpAGUAbgB0AEkAbgBmAG8AAAAAAAEAAACMAAAAQwBs
+AGkAZQBuAHQAPQBXAGUAYgBTAGUAcgB2AGkAYwBlAHMAOwBBAHAAcABsAGUARQB4AGMAaABhAG4A
+ZwBlAFcAZQBiAFMAZQByAHYAaQBjAGUAcwAvADgAMgA3AC4AOAAwAC4AMQAgAE0AYQBpAGwALwAz
+ADcAMwAxAC4ANwAwADAALgA2ADsAAAAfAPo/AQAAABoAAABOAGkAYwBrACAAVABlAHIAcgBlAGwA
+bAAAAAAAHwA3AAEAAABgAAAAUgBlADoAIABbAFAAQQBUAEMASABdACAAbABpAGIAOgAgAHoAcwB0
+AGQAOgAgAHIAZQBtAG8AdgBlACAAdQBuAG4AZQBlAGQAZQBkACAAdgBhAHIAaQBhAGIAbABlAAAA
+HwA9AAEAAAAKAAAAUgBlADoAIAAAAAAAAwA2AAAAAAAfAEIQAQAAAFwAAAA8ADgAYwA1ADEAOQA5
+ADgAMgBjADEAYgA3ADMAZABmAGIANABhAGEAOAA0AGMAOAAyADEANQBjADgAYQA1AGEAYwBAADIA
+MAA4AHMAdQBvAC4AYwBvAG0APgAAAAIBcQABAAAAGwAAAAEB2Z6P1CfoCCc2R7RKp4q8bzZ44Aaw
+Rwx7gAAfAHAAAQAAAFgAAABbAFAAQQBUAEMASABdACAAbABpAGIAOgAgAHoAcwB0AGQAOgAgAHIA
+ZQBtAG8AdgBlACAAdQBuAG4AZQBlAGQAZQBkACAAdgBhAHIAaQBhAGIAbABlAAAAHwA1EAEAAABg
+AAAAPABCADYARgA3AEYAQQBCADEALQAzAEEAMAAzAC0ANABGADcARAAtADgAOQA1ADcALQBFAEQA
+OQAzADYAMAAwAEEARAAwAEQARQBAAG0AZQB0AGEALgBjAG8AbQA+AAAAHwA5EAEAAAC8AAAAPAAy
+ADAAMgAzADAANgAxADQAMAA3ADEAMgAzADUALgA1ADUAOQA1ADUALQAxAC0AbAB1AG8AagBpAGEA
+bgBoAG8AbgBnAEAAYwBkAGoAcgBsAGMALgBjAG8AbQA+ACAAPAA4AGMANQAxADkAOQA4ADIAYwAx
+AGIANwAzAGQAZgBiADQAYQBhADgANABjADgAMgAxADUAYwA4AGEANQBhAGMAQAAyADAAOABzAHUA
+bwAuAGMAbwBtAD4AAAADAN4/n04AAAMAkBAAAAAAAwATEgAAAABAAAcwMEXQ0yT92QEDACYAAAAA
+AAsABgwAAAAAHwAVEAEAAAB2AAAARgA4ADIAMAA1AEMAMABDADYAMwA5ADIAOABEADQARgBCADQA
+QwBDAEUARQA2ADAANgA4AEMAOQAwADEAMQA1AEAAbgBhAG0AcAByAGQAMQA1AC4AcAByAG8AZAAu
+AG8AdQB0AGwAbwBvAGsALgBjAG8AbQAAAAAAAgETMAEAAAAQAAAAJ+gIJzZHtEqnirxvNnjgBgMA
+WzMBAAAAAwBaNgAAAAADAGg2DQAAAAsA+jYBAAAAHwD4PwEAAAAaAAAATgBpAGMAawAgAFQAZQBy
+AHIAZQBsAGwAAAAAAB8AIkABAAAABgAAAEUAWAAAAAAAHwAjQAEAAAD8AAAALwBPAD0ARQBYAEMA
+SABBAE4ARwBFAEwAQQBCAFMALwBPAFUAPQBFAFgAQwBIAEEATgBHAEUAIABBAEQATQBJAE4ASQBT
+AFQAUgBBAFQASQBWAEUAIABHAFIATwBVAFAAIAAoAEYAWQBEAEkAQgBPAEgARgAyADMAUwBQAEQA
+TABUACkALwBDAE4APQBSAEUAQwBJAFAASQBFAE4AVABTAC8AQwBOAD0AMgA1AEIAQwA4ADkAQwA5
+ADcANgAzADIANAA4AEUAOQA5ADEAOQBBAEYAQgA3ADUAMwAxADMAQQBFADkAMgAwAC0AVABFAFIA
+UgBFAEwATABOAAAAHwAkQAEAAAAGAAAARQBYAAAAAAAfACVAAQAAAPwAAAAvAE8APQBFAFgAQwBI
+AEEATgBHAEUATABBAEIAUwAvAE8AVQA9AEUAWABDAEgAQQBOAEcARQAgAEEARABNAEkATgBJAFMA
+VABSAEEAVABJAFYARQAgAEcAUgBPAFUAUAAgACgARgBZAEQASQBCAE8ASABGADIAMwBTAFAARABM
+AFQAKQAvAEMATgA9AFIARQBDAEkAUABJAEUATgBUAFMALwBDAE4APQAyADUAQgBDADgAOQBDADkA
+NwA2ADMAMgA0ADgARQA5ADkAMQA5AEEARgBCADcANQAzADEAMwBBAEUAOQAyADAALQBUAEUAUgBS
+AEUATABMAE4AAAAfADBAAQAAABoAAABOAGkAYwBrACAAVABlAHIAcgBlAGwAbAAAAAAAHwAxQAEA
+AAAaAAAATgBpAGMAawAgAFQAZQByAHIAZQBsAGwAAAAAAB8AOEABAAAAGgAAAE4AaQBjAGsAIABU
+AGUAcgByAGUAbABsAAAAAAAfADlAAQAAABoAAABOAGkAYwBrACAAVABlAHIAcgBlAGwAbAAAAAAA
+AwBZQAAAAAADAFpAAAAAAAMAN1ABAAAAHwAKXQEAAAAkAAAAdABlAHIAcgBlAGwAbABuAEAAbQBl
+AHQAYQAuAGMAbwBtAAAAHwALXQEAAAAkAAAAdABlAHIAcgBlAGwAbABuAEAAbQBlAHQAYQAuAGMA
+bwBtAAAAAgEVXQEAAAAQAAAA/ifpilUSp0eir186Bp2qogIBFl0BAAAAEAAAAP4n6YpVEqdHoq9f
+OgadqqIfAACAH6TrM6h6LkK+e3nhqY5UswEAAAA4AAAAQwBvAG4AdgBlAHIAcwBhAHQAaQBvAG4A
+SQBuAGQAZQB4AFQAcgBhAGMAawBpAG4AZwBFAHgAAAABAAAA1gEAAEkASQA9AFsAQwBJAEQAPQBl
+AGEAMwBiADQANABhADkALQA4AGQANwBkAC0ANAA1ADgAYgAtAGEANgA1AGQALQA4AGYAMwBiADgA
+ZgA5ADMAYgA2AGUAYQA7AEkARABYAEgARQBBAEQAPQAwADEARAA5AEYARAAyADQARAAzADsASQBE
+AFgAQwBPAFUATgBUAD0AMQBdADsAUwBCAE0ASQBEAD0AMwA7AFMAMQA9ADwAOABjADUAMQA5ADkA
+OAAyAGMAMQBiADcAMwBkAGYAYgA0AGEAYQA4ADQAYwA4ADIAMQA1AGMAOABhADUAYQBjAEAAMgAw
+ADgAcwB1AG8ALgBjAG8AbQA+ADsAUgBUAFAAPQBEAGkAcgBlAGMAdABDAGgAaQBsAGQAOwBUAEYA
+UgA9AFQAaAByAGUAYQBkAEYAbwByAGsAaQBuAGcASQBzAEQAaQBzAGEAYgBsAGUAZAA7AFYAZQBy
+AHMAaQBvAG4APQBWAGUAcgBzAGkAbwBuACAAMQA1AC4AMgAwACAAKABCAHUAaQBsAGQAIAA2ADgA
+NgAzAC4AMAApACwAIABTAHQAYQBnAGUAPQBIADIAOwBVAFAAPQAxADAAOwBEAFAAPQAxAAAAAAAL
+AACAtSm1p3VLp0eiTyB0PWxVzQEAAAAmAAAATQBlAHMAcwBhAGcAZQBOAG8AdABKAHUAbgBrAEYA
+bABhAGcAAAAAAAEAAAALAACAUONjC8yc0BG82wCAX8zOBAEAAAAmAAAASQBzAFAAZQByAG0AYQBu
+AGUAbgB0AEYAYQBpAGwAdQByAGUAAAAAAAAAAAADAACAUONjC8yc0BG82wCAX8zOBAEAAAAkAAAA
+SQBuAGQAZQB4AGkAbgBnAEUAcgByAG8AcgBDAG8AZABlAAAAGwAAAB8AAIBQ42MLzJzQEbzbAIBf
+zM4EAQAAACoAAABJAG4AZABlAHgAaQBuAGcARQByAHIAbwByAE0AZQBzAHMAYQBnAGUAAAAAAAEA
+AABwAAAASQBuAGQAZQB4AGkAbgBnACAAUABlAG4AZABpAG4AZwAgAHcAaABpAGwAZQAgAEIAaQBn
+AEYAdQBuAG4AZQBsAFAATwBJAEkAcwBVAHAAVABvAEQAYQB0AGUAIABpAHMAIABmAGEAbABzAGUA
+LgAAAAMADTT9PwAAHwAAgIYDAgAAAAAAwAAAAAAAAEYBAAAALgAAAGEAdQB0AGgAZQBuAHQAaQBj
+AGEAdABpAG8AbgAtAHIAZQBzAHUAbAB0AHMAAAAAAAEAAAC0AAAAZABrAGkAbQA9AG4AbwBuAGUA
+IAAoAG0AZQBzAHMAYQBnAGUAIABuAG8AdAAgAHMAaQBnAG4AZQBkACkAIABoAGUAYQBkAGUAcgAu
+AGQAPQBuAG8AbgBlADsAZABtAGEAcgBjAD0AbgBvAG4AZQAgAGEAYwB0AGkAbwBuAD0AbgBvAG4A
+ZQAgAGgAZQBhAGQAZQByAC4AZgByAG8AbQA9AG0AZQB0AGEALgBjAG8AbQA7AAAAHwAAgIYDAgAA
+AAAAwAAAAAAAAEYBAAAAIAAAAHgALQBtAHMALQBoAGEAcwAtAGEAdAB0AGEAYwBoAAAAAQAAAAIA
+AAAAAAAAHwAAgIYDAgAAAAAAwAAAAAAAAEYBAAAALgAAAHgALQBtAHMALQBwAHUAYgBsAGkAYwB0
+AHIAYQBmAGYAaQBjAHQAeQBwAGUAAAAAAAEAAAAMAAAARQBtAGEAaQBsAAAAHwAAgIYDAgAAAAAA
+wAAAAAAAAEYBAAAANgAAAHgALQBtAHMALQB0AHIAYQBmAGYAaQBjAHQAeQBwAGUAZABpAGEAZwBu
+AG8AcwB0AGkAYwAAAAAAAQAAAEgAAABCAFkANQBQAFIAMQA1AE0AQgAzADYANgA3ADoARQBFAF8A
+fABMAFYAOABQAFIAMQA1AE0AQgA2ADQAMQAzADoARQBFAF8AAAAfAACAhgMCAAAAAADAAAAAAAAA
+RgEAAABQAAAAeAAtAG0AcwAtAG8AZgBmAGkAYwBlADMANgA1AC0AZgBpAGwAdABlAHIAaQBuAGcA
+LQBjAG8AcgByAGUAbABhAHQAaQBvAG4ALQBpAGQAAAABAAAASgAAAGQANQBmADQAOABkADYAZAAt
+ADYAZAA1ADkALQA0AGEAMgBhAC0AOQAxAGMANQAtADAAOABkAGIAYwBiADMAYgBmADYANgA3AAAA
+AAAfAACAhgMCAAAAAADAAAAAAAAARgEAAAAYAAAAeAAtAGYAYgAtAHMAbwB1AHIAYwBlAAAAAQAA
+ABIAAABJAG4AdABlAHIAbgBhAGwAAAAAAB8AAICGAwIAAAAAAMAAAAAAAABGAQAAADgAAAB4AC0A
+bQBzAC0AZQB4AGMAaABhAG4AZwBlAC0AcwBlAG4AZABlAHIAYQBkAGMAaABlAGMAawAAAAEAAAAE
+AAAAMQAAAB8AAICGAwIAAAAAAMAAAAAAAABGAQAAADoAAAB4AC0AbQBzAC0AZQB4AGMAaABhAG4A
+ZwBlAC0AYQBuAHQAaQBzAHAAYQBtAC0AcgBlAGwAYQB5AAAAAAABAAAABAAAADAAAAAfAACAhgMC
+AAAAAADAAAAAAAAARgEAAAAqAAAAeAAtAG0AaQBjAHIAbwBzAG8AZgB0AC0AYQBuAHQAaQBzAHAA
+YQBtAAAAAAABAAAADgAAAEIAQwBMADoAMAA7AAAAAAAfAACAhgMCAAAAAADAAAAAAAAARgEAAABE
+AAAAeAAtAG0AaQBjAHIAbwBzAG8AZgB0AC0AYQBuAHQAaQBzAHAAYQBtAC0AbQBlAHMAcwBhAGcA
+ZQAtAGkAbgBmAG8AAAABAAAAMgUAAFYAMgBNAHcAMQBIAHUAaQA3ADkANgBzAHoASABoAEUAMQB2
+AFUAegBoAHkAMAB3ADgAagAwAG8AQwBNAHQAZQBOADcASQBlAEIAagAzAGEAMABKAE0ANgBPAHQA
+dgA5AEoAVQA4ADUASABiAHgASgA4AGgAcAByAGUAeQBMADgAcwBpAHEAcABRAEwAdQBaAHMAaAAr
+AEYAMQBsADYAUwBhAFYAYwB6AEkAQwBsAFAASABBAGIAUQBaAHcAcQA1AE8AUQBvADcAagBkAHYA
+ZQByAEwATABNADgARABPAHgAZQBsAGwASgB3AGQAYwBtAE8AZABSAFAANwBLAHQAcQA3AGEAWAA0
+AEYAZABHAG8AQwBQAHAAdgBCADMAMwArAFYASQBoAGsASwBMAGgAMQBvAEcARgA4AEIASwBJADIA
+bgB6AHcAaQBWAGwAegBsAE0AMABlAHIAeABrAEIAYQAyADEASwAxACsAdgA4AGEANgB0ADEANQB3
+AHAAeABRAG8AYQAzAEsARQBhAFAAagBWAEcAbQAxAHMAQwAwAFAANgBlAGsAQwBmADIASAAxAE0A
+VwB3AC8AagBKAGgAVgAwAFMAVwBoADMAMQB2ADUAbABNADQAYQB4AC8ANQArADcAMgBvAGEAdQAy
+AEYAZABWAFYATABiAGwATABQAHkAawBWAEQAZQByAHgAbgByAEMAOQBKAEYAdgByAGEAVQA4AHgA
+MgBpAGkAcAB0AEcAbAB5AFcANQBRADkASABkAC8ATAA2AFMAVwBzAHQAVABJAHcAZgA0AC8AaABs
+AEUARAB3AHQAegBkAHEAKwA3AEEASwA1AFMAdAAxAHgAeQBpAEsAKwA5AFYAMwBHAHIAdgAxADIA
+NwAzAEMAWgBLAFgALwB5AG4AOQBDAGQAUgBNAHgAeQBtAGoAZgBmAEIAaAAxAEMARwA0AFIATgBq
+AG0AYQBGAFoAagBUAFEANwBDAHAAKwB2ADUAMgByAHMAZgBEADMAMgBUAEUAbABxAFgAdQAwAHMA
+QwBhAG0AdABRAHoAcgBRAE4ANgBpACsAWABVAG4AOQBQAGEATwBJAHkALwB2AEUAdQArAHcAYQBW
+AGUAUwA3AGoAYwBVAEoAegA0AGcAdwAzAGgAaQBLAEwAdABPAFUARwBmAHIAbQBPAE4ALwBsAEkA
+VgBxAFkAZwBzAHcAMwBsAEgATgBnAEoAbABZAEIAVQBzAHYAYQBPAFkAcABqAG8AbgBKAGoAagBt
+AFAAUgAzAGwARQA2AEcARQBhAEgAYgAyAGYAMwBOAEIATABDAEIATgBuAGEAYgBWAGEANwBJAGkA
+WgAzAFIAYgBUAHAALwBGADMASABaAFYAdgBHADQALwA1AHgAOQBoAHIAaQBFAEcAcABnAG0AMQBX
+AEoAWgBPAHAAMwA1AE8ARgBZAGMAaAA3AEIAdQBqAE8AMgBHADEARAA5ACsAcABvAGgAWABXAFcA
+WQAwAEQAYgB5AC8AMgBxADkANgBOAGEAaQBpAGwARgB1AE4AbwBaAGQARwBSAHgAMQB6AEYAbwBC
+AGEAZgBZADAAMABtAG4AWgB2AFUAeABtADAAOABEAGgAOABTAE8AVwBLADMAcgBHAFIAcwB5ADMA
+UQBHAE8AbgBoADEAagArAHAAQgBpAGUAQgBLAFAAaABhAGwAQQB3AGsATgBsAEMAQgBSAHUAbABq
+AHAALwBOAHIAUgB4ADcANQBWAEgAbAAxAGUARgBsAC8AZwA9AD0AAAAAAB8AAICGAwIAAAAAAMAA
+AAAAAABGAQAAADgAAAB4AC0AZgBvAHIAZQBmAHIAbwBuAHQALQBhAG4AdABpAHMAcABhAG0ALQBy
+AGUAcABvAHIAdAAAAAEAAACkBAAAQwBJAFAAOgAyADUANQAuADIANQA1AC4AMgA1ADUALgAyADUA
+NQA7AEMAVABSAFkAOgA7AEwAQQBOAEcAOgBlAG4AOwBTAEMATAA6ADEAOwBTAFIAVgA6ADsASQBQ
+AFYAOgBOAEwASQA7AFMARgBWADoATgBTAFAATQA7AEgAOgBCAFkANQBQAFIAMQA1AE0AQgAzADYA
+NgA3AC4AbgBhAG0AcAByAGQAMQA1AC4AcAByAG8AZAAuAG8AdQB0AGwAbwBvAGsALgBjAG8AbQA7
+AFAAVABSADoAOwBDAEEAVAA6AE4ATwBOAEUAOwBTAEYAUwA6ACgAMQAzADIAMwAwADAAMwAxACkA
+KAAzADQANgAwADAAMgApACgAMwA3ADYAMAAwADIAKQAoADMAOQA4ADYAMAA0ADAAMAAwADAAMgAp
+ACgAMwA5ADYAMAAwADMAKQAoADMANgA2ADAAMAA0ACkAKAAxADMANgAwADAAMwApACgAMgAzADAA
+OQAyADIAMAA1ADEANwA5ADkAMAAwADMAKQAoADEAOAA2ADAAMAA5ACkAKAA2ADQAMQAwADAANwA5
+ADkAMAAwADMAKQAoADEAOAAwADAANwA5ADkAMAAwADkAKQAoADQANQAxADEAOQA5ADAAMgA0ACkA
+KAAxADIAMgAwADAAMAAwADAAMQApACgAMwA4ADEAMAAwADcAMAAwADAAMAAyACkAKAAzADgAMAA3
+ADAANwAwADAAMAAwADUAKQAoADYANQAxADIAMAAwADcAKQAoADIANgAxADYAMAAwADUAKQAoADgA
+OQAzADYAMAAwADIAKQAoADQANwA4ADYAMAAwADAAMAAxACkAKAA4ADYAMwA2ADIAMAAwADEAKQAo
+ADkANgA2ADAAMAA1ACkAKAA2ADQAOAA2ADAAMAAyACkAKAA1ADYANgAwADMAMAAwADAAMAAyACkA
+KAA4ADYANwA2ADAAMAAyACkAKAA0ADMAMgA2ADAAMAA4ACkAKAAzADMANgA1ADYAMAAwADIAKQAo
+ADIAOQAwADYAMAAwADIAKQAoADMAMQA2ADAAMAAyACkAKAA5ADEAOQA1ADYAMAAxADcAKQAoADYA
+OQAxADYAMAAwADkAKQAoADMANgA3ADUANgAwADAAMwApACgANQA0ADkAMAA2ADAAMAAzACkAKAA2
+ADQANwA1ADYAMAAwADgAKQAoADYANgA0ADQANgAwADAAOAApACgANgA2ADQANwA2ADAAMAA3ACkA
+KAA2ADYANQA1ADYAMAAwADgAKQAoADQAMQAzADAAMAA3ADAAMAAwADAAMQApACgANgA2ADkANAA2
+ADAAMAA3ACkAKAA3ADYAMQAxADYAMAAwADYAKQAoADcAMQAyADAAMAA0ADAAMAAwADAAMQApACgA
+NQAzADUANAA2ADAAMQAxACkAKAA2ADUAMAA2ADAAMAA3ACkAKAA4ADMAMwA4ADAANAAwADAAMAAw
+ADEAKQAoADQANQA5ADgAMAA1ADAAMAAwADAAMQApADsARABJAFIAOgBPAFUAVAA7AFMARgBQADoA
+MQAxADAAMgA7AAAAHwAAgIYDAgAAAAAAwAAAAAAAAEYBAAAAXAAAAHgALQBtAHMALQBlAHgAYwBo
+AGEAbgBnAGUALQBhAG4AdABpAHMAcABhAG0ALQBtAGUAcwBzAGEAZwBlAGQAYQB0AGEALQBjAGgA
+dQBuAGsAYwBvAHUAbgB0AAAAAQAAAAQAAAAxAAAAHwAAgIYDAgAAAAAAwAAAAAAAAEYBAAAASgAA
+AHgALQBtAHMALQBlAHgAYwBoAGEAbgBnAGUALQBhAG4AdABpAHMAcABhAG0ALQBtAGUAcwBzAGEA
+ZwBlAGQAYQB0AGEALQAwAAAAAAABAAAA2gwAAHkAbQBBAHYAcABRAEwAbAB3AFUAUwBjAHYAOABQ
+AG4AVQBVADEAOQB5AHgAYwBvAHcARgBFAGkAOQB2AGsAeAB3AFoAcgB0ACsAVgBLADkAeAAvAHMA
+WgBlAEYAUQBtADQAKwBUAGcATQBIAHIATwBYAGEAWABoAEwAZQBDAHcAeQBZAGkAUQBqAGcAdgB6
+AEkAQwBHAEcATAB1AHkANABkAEcASAB6ADQARQBFAHkAZQA3AEoAMgBjADYAbQBkAEkAagBuAFkA
+TwBiAGsAeABpAFgAUgAyAEEATwBhAHoASgBTADcAbQBUAC8AOABuADIAUwAwAFkAVAAvAEYAaABP
+AFgAdQBQAEoAWQByAFEAcwBZAEMAWAB0AGkASABSAHgAYgBIAGYAaABxAHcAOQBlAEcASAAxAHYA
+cwBGAEYAMQBCAHoAbAB3AEIAcAAzAGwATgBTAHoAdgBrAEwAdwBlAGQAegAvAGoANwByAE4AdwBD
+AEwAbwBiAGMAaQBxAEUAWQBSADUAcAAzAE4AZwBJAGsAZAB5AFIAcwA3AFUAZQB5AGMATQBWADAA
+YwA5ADMAeQBnAHUAcQBTAFgAbQBGAGMATgBkADMAYwBiAEUAWABkADQAOQBUAEYASABWADUAZgBU
+AHcAQgA1AGIAbgBFAE0AOABrAG4AZgBvAEkAQwBpAHEAbQBEAHkAVwB2AGsARQBlAHoAQgBuADIA
+awB0AHEAcwBWAGMAdABwADUASwBuAHAAdQBWADEAdQBJAGQANwBTAGIAZwByADcAOQBmAEIATQBx
+ADcAYwBMAE8AQwBZAGwAUwBZAGEAVQBwAGYAdwBiADQAOQBZAHYANgA2AGMAMABmADQAUgBRAGQA
+QwBsAGQASQBUAEwAaABoAFMAUwBiAC8AdwBpAEUAawBrAEYAbABuAFEAYQBYAGEATwBYAEsAcQBB
+AFMARgBSAFcAVgBYAFoAawBnAFEANwBiAGMARQBiAE0AagByAGUAbgBTAHoAUQB0AHMAQgBRAFMA
+WgByAGMAbwBzAFMAcQBUAGwASAB3AEQAQgBFAGUAZwBTAEkATgBJAEgATAB1AEgAYgB1AFoARgBp
+ADEAcgB1AE4ANQBKADkAZQBnAC8AcQBzAGQAcgBnAHgAWAB2AE4ATgBjAG0AMgBtAHcAbwAxAGgA
+LwB2ADcAdABVAEEAMgA0AEwAcgBnAHUAVwBIAG8AZwBiAFcAUQBFADUAVABjAFgAOQBWAGEAeQBD
+AEMAcwByAGgAaAB2AGoASgA5AEwAZABrAFoANQB0AFEAWABHADcAYgBnAEUAZQBsAHUAOQA1AEkA
+dwBkAGoAMwBwAHAARAAzAHIAZQBCAHgAVABYAHIARwBLAG0AMAA3AEIAUABiAFoARABoADIAdgBy
+AEUAeQB4AFAAYwBtAGgAbgByADYAbgBFAG8ATABjAFAAVAA0ADkAcABEAFcAUgA4AGgAYQBBAHYA
+aAAwAEsAOABzAEYAVAB0AFUAYQBpAEwAaABtADEAWgB0AGkANAB5AFUANQB1ADkAdwBLAGgAVgBu
+AGkAUgBZAEoANgBTAHMAagBkAFAAYQBBAHgAaAA0AGQASwAyAEoAWABDAHAAcAB1ADEAagA2AEQA
+NABUAFMARABXAFAAUgA5AFIAMQBQADcAZgBZADMAZgBoAFEAbQBoAEEAagBCAEkAOQByAFMAUABy
+AFcAWQBLAHoAZABEAFYAWQBRAGMAWABCAEsASAA2AEQAVwBZAHEAaAByAFcAYQA0AEEAOQA5ADcA
+VABjAFgAUABuAHIAWABaAFgAawBBAFIAWgBaAHUAOABjAHUAOABaAHoAYQBDAE0AYQBMAGMAaABQ
+ADQAdgBLAEMAOABTADUAZQBQAHYARAArAC8AZQB3AEkASgBuAGMAZwBtAHoAUABOAGIAQgBHAEUA
+bQBBAEsARwBSAE0AVQBTAFMAKwAvAEYATQArAEMARQBxADgAMQBkAG0AVAB5AGEALwBsAHUAMwBX
+AHMAdgBQAFEATAB2AE4AdQBpAGcAcgBHAEkAZQBxAFkARABDAFcAdgBsAG0AcABnAGsASwBvAEoA
+VgBkADcAYwBkADYASgAxAC8ATwBnAFUAVgBGAEcAagBlAC8AcwB4AFIAbQBRAHcANABNAGcAaQBl
+ADIAaQBYACsAMABzAEUAcABKADgAUAA1AG4ARABDAE0ASgB0AHYAdABIAEcAVgA2AFIAaABtAHEA
+ZQBRAGIAeQB0AFEANABrAEMAZAB6ADQAMABRAHkAZAA3AFEARwBRAHMANQBEAG4AbgBZAHEAUABJ
+AGwAeAAvAFgAWgBTAEwANgBLAHoAYgBXAFgAWQBLAFEANwB0ADMAeABvAC8AUgBRAFQAMwAwAGoA
+SgBNAEkAaABHACsANgBRAEsASABwAGgAOAByAEsARABzAHgAbQB0AHUAMQAwAGUAMQAxAHAAQwA5
+AFoASQBOAEsAeQAxADUAaQBTAFMAcQBjAGoAQQBmAGcAQQByAFYAUAAwAG8ASwBKAE8AZgBmAFUA
+SQByAC8AQQByAFgAMABYAEkANwBmADgAZAArAEUAWQBQAEkASwBKAEsAUwBEAHcAagBwAEsANgBx
+AHoANABmAEMAZAB2AGoAeQB3AE4AWABCAHAASgBFAEsAYgBnAE4AUQBpAGkAWABkAEsATQA3AFoA
+QwB6AHkAaQA2AGEAQwBxADIARwBVAEoAdwBhAFEAaABHAEQAdwAzAFUANQByAHUAUgBiAFcASgBr
+AHMAVwA3AGsAQwBxAHAAQgB4AG8AWAAxAGwAMQBGADUATgAxAFQAaQA1AG8AQwBZADkANgA0AE0A
+MQBIAFMAaABRADUAWgBlAEwAVABDAFIARgAxAEgAcwBHAGQAQQA1AEYAOAB3AGgAdABaADgAdQA4
+AGgAWQBBAGIASwBJAEIAWgBUAEwAQgA4ADcAbwBhAEUAcQBjADkANgBHAHoAegAvAEYASQBJAHkA
+RwA2AEgASQBZAGMASwBLAFcASQBoAHEAbABnAGIAMQBuAFEAagA5AEEATQB0ADIAYQB2AEkAYQBy
+ADYATwAyAGEASwBkAGUAMgAxAGIAbABTAGgANwBBAFgAWAB0AHkAZABXAHgAdAA1AHcAZQBkAFUA
+UgBOAHUAMgBoAEkATQBlAFQAUABoAGgAQgAzAGoAVgBlAG4AVgBJAEkAMABXAEIAbQBZADUAcwBD
+AGcARABEAEwASgBkAEYANABRAEIAQQA1ADAANABzADUAMwBzAEEANAB5AFIAQwBUAFEAMABsAFkA
+KwBwAE4AOABhADIAUgBCAG4AawBXAEUAVQBTAEMAVwBVAFkAdwB0AGsAdQBRAHUAegA1AEkAdgB0
+AHYANABtAFUAbgBDADUAbwBvAHkAYQBOAEYAagBCAGQAbwBDAEgAcQB1AFkAaABNAFYAVQAwADEA
+MABOADgANwBlACsARgBqAG0ATQBWAHAAVQBOAFUAbgBIAFUAYgBMACsARQBVAFMAZgBzAFYAeABk
+AGgAQwBDADkAcgA1AHEATABUAHEASQBjAEsAZgA3AFEAMAAxAFoAegAwAHUAdgB6AHoAQgBQAGUA
+ZgBwAHYAZwBtAEcAZwB6AG4AZgBDADQAZAB3AEQAdwBxAFMANwArADUARQBtAHgAWAB5AHYANQB5
+AFYAawAwAEgARgBLADUAYQBlADcANABBAGEATQA2AFgAWgBWAE0AbQBTAFoAWABQADAAMQA2AEQA
+eABIAGoAWgAzAFcANgBSAFYAWQBnAHcAQQBwAFUANAB2ADQAVgB1AGUAcQBTAFoAeQBSAGMAeABB
+AHIAMABsAFIATABQAEEAeAB3AFUASgBCAFkAZgBFAFQAZwBmAHEASAA2ADMAYwBrAHIAMwB5AGsA
+UABsAEUAcgBQAHAAaQBUAGgAawBNADgAUQBJAHAAOABuAEsAOQAwADgAUgB6AG8AeAArAGcAagBV
+ADYARABBAHUAYgBsAGIAaQBYAEsARQBOAFIAUgA1AFQAWQBwAEEAKwA2AEQAYgAwAEMAZQBMAHgA
+NQBoAFkANgBmAHYAKwBtAFUAWgB1AE8ARQBXAEEASABiAFAATwBrAHcAMgBjAEcAcABLADEAdgBw
+AGQAVwBvAHUAYwBGAE4AawBJAGkAdQBPAFgAagBqAHcAMQBOADcATABlAGkAcABpAGQANgAzAC8A
+dgArAHkANQBHAFMARQB3AGUATgBxAE4AUABxAFEATgB4ADcAWgBFAGcAVwBOAGMAOABvADMAWQBB
+AGoAbgBFAE4ANwBQAG0AbgBFAEoAegAyAEcASgBEAFAATwBWAEkAcwBBAEkAegAxAG0ANgBqAFQA
+NwB6AE0AbwA9AAAAAAChqA==
+
+--_000_B6F7FAB13A034F7D8957ED93600AD0DEmetacom_--
