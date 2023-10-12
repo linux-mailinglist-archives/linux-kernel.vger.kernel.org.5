@@ -2,62 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0937C6634
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AF57C662D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343596AbjJLHGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 03:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44436 "EHLO
+        id S1343619AbjJLHGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 03:06:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343567AbjJLHGm (ORCPT
+        with ESMTP id S1343567AbjJLHGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 03:06:42 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8855F90
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 00:06:40 -0700 (PDT)
-Received: (from willy@localhost)
-        by mail.home.local (8.17.1/8.17.1/Submit) id 39C76Xsb005111;
-        Thu, 12 Oct 2023 09:06:33 +0200
-Date:   Thu, 12 Oct 2023 09:06:33 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Zhangjin Wu <falcon@tinylab.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/nolibc: add tests for multi-object linkage
-Message-ID: <ZSea+etQwlxbi+Ok@1wt.eu>
-References: <20231012-nolibc-linkage-test-v1-1-315e682768b4@weissschuh.net>
+        Thu, 12 Oct 2023 03:06:45 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3336090
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 00:06:43 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 371E2C0006;
+        Thu, 12 Oct 2023 07:06:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697094401;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PH/KaqunIddnQRtT02HmdgMfQves6qwGIOzjnE0JjkQ=;
+        b=FY+XPJB0L80Aagv0MN6fhAmApIxZB8hFxLsalUUhwZSX/+eYco92ieOuldtUV5uBd03oSR
+        tL2UOTYRO0TTOCM/KBUoZila36yX4DLoyyzU49IPzaWdJmzlsET1kugCv3bqPM/jV4OHZB
+        f9dMF2zZnzmbLQKefKbOHf2EJ+aOBD+5DOKRFbDW9WVbjvKEWVJ/iKYro6+Y2i8O7CcNI0
+        L+WSyWpKICsf/EC1S1EisvmDGEM5PmI7gT5Mk1FVKl298Dzx+zTbUBqmD9hHVWtcNHuhCg
+        fGPy1fnVBOkFzV88YoHU+ggrvfyVuli+1kkvZdgGqgZglUpxGTD8aHotui5MPA==
+Date:   Thu, 12 Oct 2023 09:06:38 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     dregan@mail.com
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
+        rafal@milecki.pl, joel.peshkin@broadcom.com,
+        computersforpeace@gmail.com, dan.beygelman@broadcom.com,
+        william.zhang@broadcom.com, frieder.schrempf@kontron.de,
+        linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
+        bbrezillon@kernel.org, kdasu.kdev@gmail.com,
+        JaimeLiao <jaimeliao.tw@gmail.com>,
+        Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
+        Adam Borowski <kilobyte@angband.pl>
+Subject: Re: [PATCH v2 1/4] mtd: rawnand: Add destructive operation
+Message-ID: <20231012090638.1e093fe6@xps-13>
+In-Reply-To: <trinity-d4b16b4a-e223-4daf-8a3e-4aaa7fc6c9cb-1697071235519@3c-app-mailcom-lxa05>
+References: <trinity-d4b16b4a-e223-4daf-8a3e-4aaa7fc6c9cb-1697071235519@3c-app-mailcom-lxa05>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231012-nolibc-linkage-test-v1-1-315e682768b4@weissschuh.net>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+Hello,
 
-On Thu, Oct 12, 2023 at 01:13:37AM +0200, Thomas Weiﬂschuh wrote:
-> While uncommon, nolibc executables can be linked together from multiple
-> compilation units.
-> Add some tests to make sure everything works in that case.
-(...)
+dregan@mail.com wrote on Thu, 12 Oct 2023 02:40:35 +0200:
 
-Glad you did these two. Your approach is good and it remains easy to
-use and should catch next breakage in this area.
+The author should be Boris as well (git commit --amend --author=3D...)
 
-> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
+> Erase and program operations need the write protect (wp) pin to be
+> de-asserted to take effect. Add the concept of destructive
+> operation and pass the information to exec_op() so controllers know
+> when they should de-assert this pin without having to decode
+> the command opcode.
+>=20
+> Created by Boris Brezillon.
+
+This can go away.
+
+>=20
+> https://github.com/bbrezillon/linux/commit/e612e1f2c69a33ac5f2c91d13669f0=
+f172d58717
+
+This as well.
+
+> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+Please use Boris' kernel.org e-mail for the authorship and SoB
+
+> Signed-off-by: David Regan <dregan@mail.com>
+>=20
 > ---
-> Note:
-> 
-> This depends on path "tools/nolibc: mark start_c as weak".
-> https://lore.kernel.org/lkml/20231012-nolibc-start_c-multiple-v1-1-fbfc73e0283f@weissschuh.net/
+>=20
+> Changes in v2: gave credit to Boris Brezillon
+> ---
+>  drivers/mtd/nand/raw/nand_base.c | 6 ++++--
+>  include/linux/mtd/rawnand.h      | 9 +++++++++
+>  2 files changed, 13 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand=
+_base.c
+> index d4b55155aeae..47cc2c35153b 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -1494,7 +1494,8 @@ static int nand_exec_prog_page_op(struct nand_chip =
+*chip, unsigned int page,
+>  			    NAND_COMMON_TIMING_NS(conf, tWB_max)),
+>  		NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tPROG_max), 0),
+>  	};
+> -	struct nand_operation op =3D NAND_OPERATION(chip->cur_cs, instrs);
+> +	struct nand_operation op =3D NAND_DESTRUCTIVE_OPERATION(chip->cur_cs,
+> +							      instrs);
+>  	int naddrs =3D nand_fill_column_cycles(chip, addrs, offset_in_page);
+>=20
+>  	if (naddrs < 0)
+> @@ -1917,7 +1918,8 @@ int nand_erase_op(struct nand_chip *chip, unsigned =
+int eraseblock)
+>  			NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tBERS_max),
+>  					 0),
+>  		};
+> -		struct nand_operation op =3D NAND_OPERATION(chip->cur_cs, instrs);
+> +		struct nand_operation op =3D NAND_DESTRUCTIVE_OPERATION(chip->cur_cs,
+> +								      instrs);
+>=20
+>  		if (chip->options & NAND_ROW_ADDR_3)
+>  			instrs[1].ctx.addr.naddrs++;
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index 90a141ba2a5a..31aceda8616c 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -1008,6 +1008,7 @@ struct nand_op_parser {
+>   */
+>  struct nand_operation {
+>  	unsigned int cs;
+> +	bool deassert_wp;
+>  	const struct nand_op_instr *instrs;
+>  	unsigned int ninstrs;
+>  };
+> @@ -1019,6 +1020,14 @@ struct nand_operation {
+>  		.ninstrs =3D ARRAY_SIZE(_instrs),			\
+>  	}
+>=20
+> +#define NAND_DESTRUCTIVE_OPERATION(_cs, _instrs)		\
+> +	{							\
+> +		.cs =3D _cs,					\
+> +		.deassert_wp =3D true,				\
+> +		.instrs =3D _instrs,				\
+> +		.ninstrs =3D ARRAY_SIZE(_instrs),			\
+> +	}
+> +
+>  int nand_op_parser_exec_op(struct nand_chip *chip,
+>  			   const struct nand_op_parser *parser,
+>  			   const struct nand_operation *op, bool check_only);
+> --
+> 2.37.3
+>=20
+>=20
 
-For these two patches: Acked-by: Willy Tarreau <w@1wt.eu>
 
-Thanks
-Willy
+Thanks,
+Miqu=C3=A8l
