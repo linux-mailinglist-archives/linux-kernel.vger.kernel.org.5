@@ -2,236 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31EE87C6F55
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F117C6F4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347282AbjJLNeg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 09:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44144 "EHLO
+        id S1378861AbjJLNeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 09:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347271AbjJLNef (ORCPT
+        with ESMTP id S1343724AbjJLNeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:34:35 -0400
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D41694;
-        Thu, 12 Oct 2023 06:34:30 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4S5qzR1lnGz9y0hP;
-        Thu, 12 Oct 2023 21:21:39 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwDXera79Sdl_EcMAg--.35445S2;
-        Thu, 12 Oct 2023 14:34:01 +0100 (CET)
-Message-ID: <4866a6ef46deebf9a9afdeb7efd600edb589da93.camel@huaweicloud.com>
-Subject: Re: [PATCH v3 02/25] ima: Align ima_post_path_mknod() definition
- with LSM infrastructure
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
-        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
-        tom@talpey.com, dmitry.kasatkin@gmail.com, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com, dhowells@redhat.com,
-        jarkko@kernel.org, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org, casey@schaufler-ca.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Thu, 12 Oct 2023 15:33:44 +0200
-In-Reply-To: <84cfe4d93cb5b02591f4bd921b828eb6f3e95faa.camel@linux.ibm.com>
-References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
-         <20230904133415.1799503-3-roberto.sassu@huaweicloud.com>
-         <a733fe780a3197150067ad35ed280bf85e11fa97.camel@linux.ibm.com>
-         <b51baf7741de1fdee8b36a87bd2dde71184d47a8.camel@huaweicloud.com>
-         <8646e30b0074a2932076b5a0a792b14be034de98.camel@linux.ibm.com>
-         <16c8c95f2e63ab9a2fba8cba919bf129d0541b61.camel@huaweicloud.com>
-         <c16551704db68c6e0ba89c729c892e9401f05dfc.camel@linux.ibm.com>
-         <2336abd6ae195eda221d54e3c2349a4760afaff2.camel@huaweicloud.com>
-         <84cfe4d93cb5b02591f4bd921b828eb6f3e95faa.camel@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Thu, 12 Oct 2023 09:34:21 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E6E91
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:34:17 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qqvpI-0005HV-3X; Thu, 12 Oct 2023 15:34:08 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qqvpH-001AAm-6a; Thu, 12 Oct 2023 15:34:07 +0200
+Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qqvpH-00E72q-3z; Thu, 12 Oct 2023 15:34:07 +0200
+Date:   Thu, 12 Oct 2023 15:34:07 +0200
+From:   Sascha Hauer <sha@pengutronix.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Boris Pismenny <borisp@nvidia.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: Re: Problem with io_uring splice and KTLS
+Message-ID: <20231012133407.GA3359458@pengutronix.de>
+References: <20231010141932.GD3114228@pengutronix.de>
+ <d729781a-3d12-423b-973e-c16fdbcbb60b@kernel.dk>
 MIME-Version: 1.0
-X-CM-TRANSID: GxC2BwDXera79Sdl_EcMAg--.35445S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3WrWfWFyfWr4DJF17XFWxXrb_yoWxKr43pF
-        W8J3WDGr4DJry7Cr10va15A34Sq34UJr1UXr1Ygw17Jr1Dtr1DXF18Gr1Y9rWrGr4UGr1U
-        XF1Utr9xurWUArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-        6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-        AIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
-        aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAIBF1jj5DzWQABsE
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d729781a-3d12-423b-973e-c16fdbcbb60b@kernel.dk>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-12 at 09:25 -0400, Mimi Zohar wrote:
-> On Thu, 2023-10-12 at 14:19 +0200, Roberto Sassu wrote:
-> > On Thu, 2023-10-12 at 07:42 -0400, Mimi Zohar wrote:
-> > > On Thu, 2023-10-12 at 09:29 +0200, Roberto Sassu wrote:
-> > > > On Wed, 2023-10-11 at 15:01 -0400, Mimi Zohar wrote:
-> > > > > On Wed, 2023-10-11 at 18:02 +0200, Roberto Sassu wrote:
-> > > > > > On Wed, 2023-10-11 at 10:38 -0400, Mimi Zohar wrote:
-> > > > > > > On Mon, 2023-09-04 at 15:33 +0200, Roberto Sassu wrote:
-> > > > > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > > > > > 
-> > > > > > > > Change ima_post_path_mknod() definition, so that it can be registered as
-> > > > > > > > implementation of the path_post_mknod hook. Since LSMs see a umask-stripped
-> > > > > > > > mode from security_path_mknod(), pass the same to ima_post_path_mknod() as
-> > > > > > > > well.
-> > > > > > > > Also, make sure that ima_post_path_mknod() is executed only if
-> > > > > > > > (mode & S_IFMT) is equal to zero or S_IFREG.
-> > > > > > > > 
-> > > > > > > > Add this check to take into account the different placement of the
-> > > > > > > > path_post_mknod hook (to be introduced) in do_mknodat().
-> > > > > > > 
-> > > > > > > Move "(to be introduced)" to when it is first mentioned.
-> > > > > > > 
-> > > > > > > > Since the new hook
-> > > > > > > > will be placed after the switch(), the check ensures that
-> > > > > > > > ima_post_path_mknod() is invoked as originally intended when it is
-> > > > > > > > registered as implementation of path_post_mknod.
-> > > > > > > > 
-> > > > > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > > > > > ---
-> > > > > > > >  fs/namei.c                        |  9 ++++++---
-> > > > > > > >  include/linux/ima.h               |  7 +++++--
-> > > > > > > >  security/integrity/ima/ima_main.c | 10 +++++++++-
-> > > > > > > >  3 files changed, 20 insertions(+), 6 deletions(-)
-> > > > > > > > 
-> > > > > > > > diff --git a/fs/namei.c b/fs/namei.c
-> > > > > > > > index e56ff39a79bc..c5e96f716f98 100644
-> > > > > > > > --- a/fs/namei.c
-> > > > > > > > +++ b/fs/namei.c
-> > > > > > > > @@ -4024,6 +4024,7 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
-> > > > > > > >  	struct path path;
-> > > > > > > >  	int error;
-> > > > > > > >  	unsigned int lookup_flags = 0;
-> > > > > > > > +	umode_t mode_stripped;
-> > > > > > > >  
-> > > > > > > >  	error = may_mknod(mode);
-> > > > > > > >  	if (error)
-> > > > > > > > @@ -4034,8 +4035,9 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
-> > > > > > > >  	if (IS_ERR(dentry))
-> > > > > > > >  		goto out1;
-> > > > > > > >  
-> > > > > > > > -	error = security_path_mknod(&path, dentry,
-> > > > > > > > -			mode_strip_umask(path.dentry->d_inode, mode), dev);
-> > > > > > > > +	mode_stripped = mode_strip_umask(path.dentry->d_inode, mode);
-> > > > > > > > +
-> > > > > > > > +	error = security_path_mknod(&path, dentry, mode_stripped, dev);
-> > > > > > > >  	if (error)
-> > > > > > > >  		goto out2;
-> > > > > > > >  
-> > > > > > > > @@ -4045,7 +4047,8 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
-> > > > > > > >  			error = vfs_create(idmap, path.dentry->d_inode,
-> > > > > > > >  					   dentry, mode, true);
-> > > > > > > >  			if (!error)
-> > > > > > > > -				ima_post_path_mknod(idmap, dentry);
-> > > > > > > > +				ima_post_path_mknod(idmap, &path, dentry,
-> > > > > > > > +						    mode_stripped, dev);
-> > > > > > > >  			break;
-> > > > > > > >  		case S_IFCHR: case S_IFBLK:
-> > > > > > > >  			error = vfs_mknod(idmap, path.dentry->d_inode,
-> > > > > > > > diff --git a/include/linux/ima.h b/include/linux/ima.h
-> > > > > > > > index 910a2f11a906..179ce52013b2 100644
-> > > > > > > > --- a/include/linux/ima.h
-> > > > > > > > +++ b/include/linux/ima.h
-> > > > > > > > @@ -32,7 +32,8 @@ extern int ima_read_file(struct file *file, enum kernel_read_file_id id,
-> > > > > > > >  extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
-> > > > > > > >  			      enum kernel_read_file_id id);
-> > > > > > > >  extern void ima_post_path_mknod(struct mnt_idmap *idmap,
-> > > > > > > > -				struct dentry *dentry);
-> > > > > > > > +				const struct path *dir, struct dentry *dentry,
-> > > > > > > > +				umode_t mode, unsigned int dev);
-> > > > > > > >  extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
-> > > > > > > >  extern int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size);
-> > > > > > > >  extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
-> > > > > > > > @@ -114,7 +115,9 @@ static inline int ima_post_read_file(struct file *file, void *buf, loff_t size,
-> > > > > > > >  }
-> > > > > > > >  
-> > > > > > > >  static inline void ima_post_path_mknod(struct mnt_idmap *idmap,
-> > > > > > > > -				       struct dentry *dentry)
-> > > > > > > > +				       const struct path *dir,
-> > > > > > > > +				       struct dentry *dentry,
-> > > > > > > > +				       umode_t mode, unsigned int dev)
-> > > > > > > >  {
-> > > > > > > >  	return;
-> > > > > > > >  }
-> > > > > > > > diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> > > > > > > > index 365db0e43d7c..76eba92d7f10 100644
-> > > > > > > > --- a/security/integrity/ima/ima_main.c
-> > > > > > > > +++ b/security/integrity/ima/ima_main.c
-> > > > > > > > @@ -696,18 +696,26 @@ void ima_post_create_tmpfile(struct mnt_idmap *idmap,
-> > > > > > > >  /**
-> > > > > > > >   * ima_post_path_mknod - mark as a new inode
-> > > > > > > >   * @idmap: idmap of the mount the inode was found from
-> > > > > > > > + * @dir: path structure of parent of the new file
-> > > > > > > >   * @dentry: newly created dentry
-> > > > > > > > + * @mode: mode of the new file
-> > > > > > > > + * @dev: undecoded device number
-> > > > > > > >   *
-> > > > > > > >   * Mark files created via the mknodat syscall as new, so that the
-> > > > > > > >   * file data can be written later.
-> > > > > > > >   */
-> > > > > > > >  void ima_post_path_mknod(struct mnt_idmap *idmap,
-> > > > > > > > -			 struct dentry *dentry)
-> > > > > > > > +			 const struct path *dir, struct dentry *dentry,
-> > > > > > > > +			 umode_t mode, unsigned int dev)
-> > > > > > > >  {
-> > > > > > > >  	struct integrity_iint_cache *iint;
-> > > > > > > >  	struct inode *inode = dentry->d_inode;
-> > > > > > > >  	int must_appraise;
-> > > > > > > >  
-> > > > > > > > +	/* See do_mknodat(), IMA is executed for case 0: and case S_IFREG: */
-> > > > > > > > +	if ((mode & S_IFMT) != 0 && (mode & S_IFMT) != S_IFREG)
-> > > > > > > > +		return;
-> > > > > > > > +
-> > > > > > > 
-> > > > > > > There's already a check below to make sure that this is a regular file.
-> > > > > > > Are both needed?
-> > > > > > 
-> > > > > > You are right, I can remove the first check.
-> > > > > 
-> > > > > The question then becomes why modify hook the arguments?   
-> > > > 
-> > > > We need to make sure that ima_post_path_mknod() has the same parameters
-> > > > as the LSM hook at the time we register it to the LSM infrastructure.
-> > > 
-> > > I'm trying to understand why the pre hook parameters and the missing
-> > > IMA parameter are used, as opposed to just defining the new
-> > > post_path_mknod hook like IMA.
+On Tue, Oct 10, 2023 at 08:28:13AM -0600, Jens Axboe wrote:
+> On 10/10/23 8:19 AM, Sascha Hauer wrote:
+> > Hi,
 > > 
-> > As an empyrical rule, I pass the same parameters as the corresponding
-> > pre hook (plus idmap, in this case). This is similar to the
-> > inode_setxattr hook. But I can be wrong, if desired I can reduce.
+> > I am working with a webserver using io_uring in conjunction with KTLS. The
+> > webserver basically splices static file data from a pipe to a socket which uses
+> > KTLS for encryption. When splice is done the socket is closed. This works fine
+> > when using software encryption in KTLS. Things go awry though when the software
+> > encryption is replaced with the CAAM driver which replaces the synchronous
+> > encryption with a asynchronous queue/interrupt/completion flow.
+> > 
+> > So far I have traced it down to tls_push_sg() calling tcp_sendmsg_locked() to
+> > send the completed encrypted messages. tcp_sendmsg_locked() sometimes waits for
+> > more memory on the socket by calling sk_stream_wait_memory(). This in turn
+> > returns -ERESTARTSYS due to:
+> > 
+> >         if (signal_pending(current))
+> >                 goto do_interrupted;
+> > 
+> > The current task has the TIF_NOTIFY_SIGNAL set due to:
+> > 
+> > io_req_normal_work_add()
+> > {
+> >         ...
+> >         /* This interrupts sk_stream_wait_memory() (notify_method == TWA_SIGNAL) */
+> >         task_work_add(req->task, &tctx->task_work, ctx->notify_method)))
+> > }
+> > 
+> > The call stack when sk_stream_wait_memory() fails is as follows:
+> > 
+> > [ 1385.428816]  dump_backtrace+0xa0/0x128
+> > [ 1385.432568]  show_stack+0x20/0x38
+> > [ 1385.435878]  dump_stack_lvl+0x48/0x60
+> > [ 1385.439539]  dump_stack+0x18/0x28
+> > [ 1385.442850]  tls_push_sg+0x100/0x238
+> > [ 1385.446424]  tls_tx_records+0x118/0x1d8
+> > [ 1385.450257]  tls_sw_release_resources_tx+0x74/0x1a0
+> > [ 1385.455135]  tls_sk_proto_close+0x2f8/0x3f0
+> > [ 1385.459315]  inet_release+0x58/0xb8
+> > [ 1385.462802]  inet6_release+0x3c/0x60
+> > [ 1385.466374]  __sock_release+0x48/0xc8
+> > [ 1385.470035]  sock_close+0x20/0x38
+> > [ 1385.473347]  __fput+0xbc/0x280
+> > [ 1385.476399]  ____fput+0x18/0x30
+> > [ 1385.479537]  task_work_run+0x80/0xe0
+> > [ 1385.483108]  io_run_task_work+0x40/0x108
+> > [ 1385.487029]  __arm64_sys_io_uring_enter+0x164/0xad8
+> > [ 1385.491907]  invoke_syscall+0x50/0x128
+> > [ 1385.495655]  el0_svc_common.constprop.0+0x48/0xf0
+> > [ 1385.500359]  do_el0_svc_compat+0x24/0x40
+> > [ 1385.504279]  el0_svc_compat+0x38/0x108
+> > [ 1385.508026]  el0t_32_sync_handler+0x98/0x140
+> > [ 1385.512294]  el0t_32_sync+0x194/0x198
+> > 
+> > So the socket is being closed and KTLS tries to send out the remaining
+> > completed messages.  From a splice point of view everything has been sent
+> > successfully, but not everything made it through KTLS to the socket and the
+> > remaining data is sent while closing the socket.
+> > 
+> > I vaguely understand what's going on here, but I haven't got the
+> > slightest idea what to do about this. Any ideas?
 > 
-> The inode_setxattr hook change example is legitimate, as EVM includes
-> idmap, while IMA doesn't. 
+> Two things to try:
 > 
-> Unless there is a good reason for the additional parameters, I'm not
-> sure that adding them makes sense.  Not modifying the parameter list
-> will reduce the size of this patch set.
+> 1) Depending on how you use the ring, set it up with
+> IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN. The latter will
+> avoid using signal based task_work notifications, which may be messing
+> you up here.
+> 
+> 2) io_uring will hold a reference to the file/socket. I'm unsure if this
+> is a problem in the above case, but sometimes it'll prevent the final
+> flush.
+> 
+> Do you have a reproducer that could be run to test? Sometimes easier to
+> see what's going on when you can experiment, it'll save some time.
 
-The hook is going to be used by any LSM. Without knowing all the
-possible use cases, maybe it is better to include more information now,
-than modifying the hook and respective implementations later.
+Okay, here is a reproducer:
 
-(again, no problem to reduce)
+https://github.com/saschahauer/webserver-uring-test.git
 
-Thanks
+Execute ./prepare.sh in that repository, it will compile the webserver,
+generate cert.pem/key.pem and generate some testfile to download. If the
+meson build doesn't work for you then you can compile the program by
+hand with something like:
 
-Roberto
+gcc -O3 -Wall -o webserver webserver_liburing.c -lcrypto -lssl -luring
 
+When the webserver is started you can get a file from it with:
+
+curl -k https://<ipaddr>:8443/foo -o foo
+
+or:
+
+while true; do curl -k https://<ipaddr>:8443/foo -o foo; if [ $? != 0 ]; then break; fi; done
+
+This should run without problems as by default likely the encryption
+requests are running synchronously.
+
+In case you don't have encryption hardware you can create an
+asynchronous encryption module using cryptd. Compile a kernel with
+CONFIG_CRYPTO_USER_API_AEAD and CONFIG_CRYPTO_CRYPTD and start the
+webserver with the '-c' option. /proc/crypto should then contain an
+entry with:
+
+ name         : gcm(aes)
+ driver       : cryptd(gcm_base(ctr(aes-generic),ghash-generic))
+ module       : kernel
+ priority     : 150
+
+Make sure there is no other module providing gcm(aes) with a priority higher
+than 150 so that this one is actually used.
+
+With that the while true loop above should break out with a short read
+fairly fast. Passing IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN
+to io_uring_queue_init() makes it harder to reproduce for me. With that
+I need multiple shells in parallel running the above loop.
+
+The repository also contains a kernel patch which will provide you a
+stack dump when KTLS gets an error from tcp_sendmsg_locked().
+
+Now I hope I haven't done anything silly in the webserver ;)
+
+Sascha
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
