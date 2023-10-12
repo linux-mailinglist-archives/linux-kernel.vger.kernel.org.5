@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E09F97C6926
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADFC27C692E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235558AbjJLJMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:12:38 -0400
+        id S235542AbjJLJM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:12:57 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235340AbjJLJMV (ORCPT
+        with ESMTP id S235480AbjJLJMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:12:21 -0400
+        Thu, 12 Oct 2023 05:12:25 -0400
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D87D3;
-        Thu, 12 Oct 2023 02:12:16 -0700 (PDT)
-X-UUID: 6b84b1ee68df11ee8051498923ad61e6-20231012
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACAB39D;
+        Thu, 12 Oct 2023 02:12:21 -0700 (PDT)
+X-UUID: 6b77138668df11ee8051498923ad61e6-20231012
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=W4fChxXWjEqipdLVfa/wlv7t54t+I/P3naA+3L+8CcA=;
-        b=Ya2f5gPSqKHt1HEMKDrYvA5P9eIEXX3orQPlcsL7faOucrzXjylQ26Z+R+TA5tU17umaga7edidyq/kWd97vozA308W0lnKcuMZu73ZNfdIUKSLUz6Kaf3Rg4wKQ2KLA0X/8IKok+i3SxTSEeub1Y4334PSUJBesBHlsBMfjnqI=;
+        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=hTZDEYT/olqT3JPFX3OgmsV9xlmvvcpIeFNrfUj/e4g=;
+        b=XTZOnnhw2K5zCgFWQLLMLFfTufFWWpgfqWux3R7YFLSAJOU4LQXay+Z2UU+5Z5++rnRs5NmiZ++GSHqxCED01Gd/sCQN1KwV+xCsx9JSS50Fl08noULaeS38nQq8Poujbta+AswXIkD/6zrJCyDMwM7u6QBprw7RRWB1NDyQcx4=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:17f46e64-0133-40c0-bd12-62a44765a45e,IP:0,U
+X-CID-O-INFO: VERSION:1.1.32,REQID:7b41dbb3-ccde-4ae4-a83e-e9a8a7573032,IP:0,U
         RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
         release,TS:0
-X-CID-META: VersionHash:5f78ec9,CLOUDID:d65a0ac4-1e57-4345-9d31-31ad9818b39f,B
+X-CID-META: VersionHash:5f78ec9,CLOUDID:d75a0ac4-1e57-4345-9d31-31ad9818b39f,B
         ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
         RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
         DKR:0,DKP:0,BRR:0,BRE:0
 X-CID-BVR: 0,NGT
 X-CID-BAS: 0,NGT,0,_
 X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 6b84b1ee68df11ee8051498923ad61e6-20231012
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
+X-UUID: 6b77138668df11ee8051498923ad61e6-20231012
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw02.mediatek.com
         (envelope-from <moudy.ho@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 242398297; Thu, 12 Oct 2023 17:12:08 +0800
+        with ESMTP id 957859296; Thu, 12 Oct 2023 17:12:08 +0800
 Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1118.26; Thu, 12 Oct 2023 17:12:07 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
@@ -49,19 +49,31 @@ To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         <angelogioacchino.delregno@collabora.com>,
         Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
         daoyuan huang <daoyuan.huang@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+        "Hans Verkuil" <hverkuil-cisco@xs4all.nl>
 CC:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
         Moudy Ho <moudy.ho@mediatek.com>
-Subject: [PATCH v7 02/12] media: platform: mtk-mdp3: add support second sets of MUTEX
-Date:   Thu, 12 Oct 2023 17:11:56 +0800
-Message-ID: <20231012091206.20165-3-moudy.ho@mediatek.com>
+Subject: [PATCH v7 03/12] media: platform: mtk-mdp3: introduce more pipelines from MT8195
+Date:   Thu, 12 Oct 2023 17:11:57 +0800
+Message-ID: <20231012091206.20165-4-moudy.ho@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20231012091206.20165-1-moudy.ho@mediatek.com>
 References: <20231012091206.20165-1-moudy.ho@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--8.967800-8.000000
+X-TMASE-MatchedRID: 9tznvLHRcTzPl7LciQedTgPZZctd3P4BK2i9pofGVSsKogmGusPLb8FQ
+        0J8JC8zgOfAiJ/eonC1mJS6k736MTIT3OBUyTeledXz3l78F3YlYN1akkye0qPt592eq2xoTVSd
+        AA6mVeIZQRjVnEuqiiK8okvFnr1sb/02XRYC/8eue7UdJp0QINZYcYQ11P5U/nugLWtXP+42jxY
+        yRBa/qJcFwgTvxipFajoczmuoPCq1VWUUpiy58T3zenOIFbqsQoYJPSrvKBCgZGAqx++0As6+/n
+        mgZrMvCQwymtxuJ6y0=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--8.967800-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 0435DB05A4D59D0D464556F9F1010023AD4DC239E93406743723087802F5DA822000:8
 X-MTK:  N
 X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
@@ -73,310 +85,183 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After setting up the second set of MMSYS (VPPSYS1), it is necessary
-to have a corresponding second set of MUTEX (MUTEX2) to assist in
-handling SOF/EOF.
+Increasing the number of sets built by MMSYS and MUTEX in MT8195
+will enable the creation of more pipelines in MDP3.
 
 Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
 ---
- .../platform/mediatek/mdp3/mtk-mdp3-cmdq.c    | 57 +++++++++++--------
- .../platform/mediatek/mdp3/mtk-mdp3-core.c    | 51 ++++++++++++-----
- .../platform/mediatek/mdp3/mtk-mdp3-core.h    |  4 +-
- 3 files changed, 74 insertions(+), 38 deletions(-)
+ .../platform/mediatek/mdp3/mtk-mdp3-cmdq.c    | 80 ++++++++++++-------
+ .../platform/mediatek/mdp3/mtk-mdp3-core.h    |  7 ++
+ 2 files changed, 60 insertions(+), 27 deletions(-)
 
 diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
-index 6adac857a477..67c8fcc3eda9 100644
+index 67c8fcc3eda9..31930ddbc828 100644
 --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
 +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
-@@ -44,15 +44,21 @@ static bool is_output_disabled(int p_id, const struct img_compparam *param, u32
- 	return (count < num) ? (dis_output || dis_tile) : true;
+@@ -50,6 +50,43 @@ static struct mtk_mutex *__get_mutex(const struct mdp_dev *mdp_dev,
+ 	return mdp_dev->mm_subsys[p->sub_id].mdp_mutex[p->mutex_id];
  }
  
-+static struct mtk_mutex *__get_mutex(const struct mdp_dev *mdp_dev,
-+				     const struct mdp_pipe_info *p)
++static enum mdp_pipe_id __get_pipe(const struct mdp_dev *mdp_dev,
++				   enum mtk_mdp_comp_id id)
 +{
-+	return mdp_dev->mm_subsys[p->sub_id].mdp_mutex[p->mutex_id];
++	enum mdp_pipe_id pipe_id;
++
++	switch (id) {
++	case MDP_COMP_RDMA0:
++		pipe_id = MDP_PIPE_RDMA0;
++		break;
++	case MDP_COMP_ISP_IMGI:
++		pipe_id = MDP_PIPE_IMGI;
++		break;
++	case MDP_COMP_WPEI:
++		pipe_id = MDP_PIPE_WPEI;
++		break;
++	case MDP_COMP_WPEI2:
++		pipe_id = MDP_PIPE_WPEI2;
++		break;
++	case MDP_COMP_RDMA1:
++		pipe_id = MDP_PIPE_RDMA1;
++		break;
++	case MDP_COMP_RDMA2:
++		pipe_id = MDP_PIPE_RDMA2;
++		break;
++	case MDP_COMP_RDMA3:
++		pipe_id = MDP_PIPE_RDMA3;
++		break;
++	default:
++		/* Avoid exceptions when operating MUTEX */
++		pipe_id = MDP_PIPE_RDMA0;
++		dev_err(&mdp_dev->pdev->dev, "Unknown pipeline id %d", id);
++		break;
++	}
++
++	return pipe_id;
 +}
 +
  static int mdp_path_subfrm_require(const struct mdp_path *path,
  				   struct mdp_cmdq_cmd *cmd,
--				   s32 *mutex_id, u32 count)
-+				   struct mdp_pipe_info *p, u32 count)
- {
+ 				   struct mdp_pipe_info *p, u32 count)
+@@ -57,7 +94,6 @@ static int mdp_path_subfrm_require(const struct mdp_path *path,
  	const int p_id = path->mdp_dev->mdp_data->mdp_plat_id;
  	const struct mdp_comp_ctx *ctx;
  	const struct mtk_mdp_driver_data *data = path->mdp_dev->mdp_data;
- 	struct device *dev = &path->mdp_dev->pdev->dev;
--	struct mtk_mutex **mutex = path->mdp_dev->mdp_mutex;
-+	struct mtk_mutex *mutex;
+-	struct device *dev = &path->mdp_dev->pdev->dev;
+ 	struct mtk_mutex *mutex;
  	int id, index;
  	u32 num_comp = 0;
+@@ -66,23 +102,7 @@ static int mdp_path_subfrm_require(const struct mdp_path *path,
+ 		num_comp = CFG_GET(MT8183, path->config, num_components);
  
-@@ -77,7 +83,8 @@ static int mdp_path_subfrm_require(const struct mdp_path *path,
- 		dev_err(dev, "Unknown pipeline and no mutex is assigned");
- 		return -EINVAL;
- 	}
--	*mutex_id = data->pipe_info[index].mutex_id;
-+	memcpy(p, &data->pipe_info[index], sizeof(struct mdp_pipe_info));
-+	mutex = __get_mutex(path->mdp_dev, p);
+ 	/* Decide which mutex to use based on the current pipeline */
+-	switch (path->comps[0].comp->public_id) {
+-	case MDP_COMP_RDMA0:
+-		index = MDP_PIPE_RDMA0;
+-		break;
+-	case MDP_COMP_ISP_IMGI:
+-		index = MDP_PIPE_IMGI;
+-		break;
+-	case MDP_COMP_WPEI:
+-		index = MDP_PIPE_WPEI;
+-		break;
+-	case MDP_COMP_WPEI2:
+-		index = MDP_PIPE_WPEI2;
+-		break;
+-	default:
+-		dev_err(dev, "Unknown pipeline and no mutex is assigned");
+-		return -EINVAL;
+-	}
++	index = __get_pipe(path->mdp_dev, path->comps[0].comp->public_id);
+ 	memcpy(p, &data->pipe_info[index], sizeof(struct mdp_pipe_info));
+ 	mutex = __get_mutex(path->mdp_dev, p);
  
- 	/* Set mutex mod */
- 	for (index = 0; index < num_comp; index++) {
-@@ -85,29 +92,28 @@ static int mdp_path_subfrm_require(const struct mdp_path *path,
- 		if (is_output_disabled(p_id, ctx->param, count))
- 			continue;
- 		id = ctx->comp->public_id;
--		mtk_mutex_write_mod(mutex[*mutex_id],
--				    data->mdp_mutex_table_idx[id], false);
-+		mtk_mutex_write_mod(mutex, data->mdp_mutex_table_idx[id], false);
-+
- 	}
- 
--	mtk_mutex_write_sof(mutex[*mutex_id],
--			    MUTEX_SOF_IDX_SINGLE_MODE);
-+	mtk_mutex_write_sof(mutex, MUTEX_SOF_IDX_SINGLE_MODE);
- 
- 	return 0;
- }
- 
- static int mdp_path_subfrm_run(const struct mdp_path *path,
- 			       struct mdp_cmdq_cmd *cmd,
--			       s32 *mutex_id, u32 count)
-+			       struct mdp_pipe_info *p, u32 count)
- {
- 	const int p_id = path->mdp_dev->mdp_data->mdp_plat_id;
- 	const struct mdp_comp_ctx *ctx;
- 	struct device *dev = &path->mdp_dev->pdev->dev;
--	struct mtk_mutex **mutex = path->mdp_dev->mdp_mutex;
-+	struct mtk_mutex *mutex;
- 	int index;
- 	u32 num_comp = 0;
- 	s32 event;
- 
--	if (-1 == *mutex_id) {
-+	if (-1 == p->mutex_id) {
- 		dev_err(dev, "Incorrect mutex id");
- 		return -EINVAL;
- 	}
-@@ -127,7 +133,8 @@ static int mdp_path_subfrm_run(const struct mdp_path *path,
- 	}
- 
- 	/* Enable the mutex */
--	mtk_mutex_enable_by_cmdq(mutex[*mutex_id], (void *)&cmd->pkt);
-+	mutex = __get_mutex(path->mdp_dev, p);
-+	mtk_mutex_enable_by_cmdq(mutex, (void *)&cmd->pkt);
- 
- 	/* Wait SOF events and clear mutex modules (optional) */
- 	for (index = 0; index < num_comp; index++) {
-@@ -174,7 +181,7 @@ static int mdp_path_config_subfrm(struct mdp_cmdq_cmd *cmd,
- 	const struct img_mmsys_ctrl *ctrl = NULL;
- 	const struct img_mux *set;
- 	struct mdp_comp_ctx *ctx;
--	s32 mutex_id;
-+	struct mdp_pipe_info pipe;
- 	int index, ret;
- 	u32 num_comp = 0;
- 
-@@ -185,7 +192,7 @@ static int mdp_path_config_subfrm(struct mdp_cmdq_cmd *cmd,
- 		ctrl = CFG_ADDR(MT8183, path->config, ctrls[count]);
- 
- 	/* Acquire components */
--	ret = mdp_path_subfrm_require(path, cmd, &mutex_id, count);
-+	ret = mdp_path_subfrm_require(path, cmd, &pipe, count);
- 	if (ret)
- 		return ret;
- 	/* Enable mux settings */
-@@ -204,7 +211,7 @@ static int mdp_path_config_subfrm(struct mdp_cmdq_cmd *cmd,
- 			return ret;
- 	}
- 	/* Run components */
--	ret = mdp_path_subfrm_run(path, cmd, &mutex_id, count);
-+	ret = mdp_path_subfrm_run(path, cmd, &pipe, count);
- 	if (ret)
- 		return ret;
- 	/* Wait components done */
-@@ -328,13 +335,13 @@ static void mdp_auto_release_work(struct work_struct *work)
- {
+@@ -336,11 +356,13 @@ static void mdp_auto_release_work(struct work_struct *work)
  	struct mdp_cmdq_cmd *cmd;
  	struct mdp_dev *mdp;
--	int id;
-+	struct mtk_mutex *mutex;
+ 	struct mtk_mutex *mutex;
++	enum mdp_pipe_id pipe_id;
  
  	cmd = container_of(work, struct mdp_cmdq_cmd, auto_release_work);
  	mdp = cmd->mdp;
  
--	id = mdp->mdp_data->pipe_info[MDP_PIPE_RDMA0].mutex_id;
--	mtk_mutex_unprepare(mdp->mdp_mutex[id]);
-+	mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[MDP_PIPE_RDMA0]);
-+	mtk_mutex_unprepare(mutex);
+-	mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[MDP_PIPE_RDMA0]);
++	pipe_id = __get_pipe(mdp, cmd->comps[0].public_id);
++	mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[pipe_id]);
+ 	mtk_mutex_unprepare(mutex);
  	mdp_comp_clocks_off(&mdp->pdev->dev, cmd->comps,
  			    cmd->num_comps);
- 
-@@ -354,7 +361,6 @@ static void mdp_handle_cmdq_callback(struct mbox_client *cl, void *mssg)
+@@ -361,6 +383,7 @@ static void mdp_handle_cmdq_callback(struct mbox_client *cl, void *mssg)
  	struct cmdq_cb_data *data;
  	struct mdp_dev *mdp;
  	struct device *dev;
--	int id;
++	enum mdp_pipe_id pipe_id;
  
  	if (!mssg) {
  		pr_info("%s:no callback data\n", __func__);
-@@ -379,9 +385,11 @@ static void mdp_handle_cmdq_callback(struct mbox_client *cl, void *mssg)
+@@ -388,7 +411,8 @@ static void mdp_handle_cmdq_callback(struct mbox_client *cl, void *mssg)
+ 		struct mtk_mutex *mutex;
  
- 	INIT_WORK(&cmd->auto_release_work, mdp_auto_release_work);
- 	if (!queue_work(mdp->clock_wq, &cmd->auto_release_work)) {
-+		struct mtk_mutex *mutex;
-+
  		dev_err(dev, "%s:queue_work fail!\n", __func__);
--		id = mdp->mdp_data->pipe_info[MDP_PIPE_RDMA0].mutex_id;
--		mtk_mutex_unprepare(mdp->mdp_mutex[id]);
-+		mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[MDP_PIPE_RDMA0]);
-+		mtk_mutex_unprepare(mutex);
+-		mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[MDP_PIPE_RDMA0]);
++		pipe_id = __get_pipe(mdp, cmd->comps[0].public_id);
++		mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[pipe_id]);
+ 		mtk_mutex_unprepare(mutex);
  		mdp_comp_clocks_off(&mdp->pdev->dev, cmd->comps,
  				    cmd->num_comps);
- 
-@@ -403,6 +411,7 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
- 	struct mdp_comp *comps = NULL;
+@@ -412,6 +436,7 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
  	struct device *dev = &mdp->pdev->dev;
  	const int p_id = mdp->mdp_data->mdp_plat_id;
-+	struct mtk_mutex *mutex = NULL;
+ 	struct mtk_mutex *mutex = NULL;
++	enum mdp_pipe_id pipe_id;
  	int i, ret;
  	u32 num_comp = 0;
  
-@@ -440,8 +449,8 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
+@@ -449,13 +474,6 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
  		goto err_free_comps;
  	}
  
--	i = mdp->mdp_data->pipe_info[MDP_PIPE_RDMA0].mutex_id;
--	ret = mtk_mutex_prepare(mdp->mdp_mutex[i]);
-+	mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[MDP_PIPE_RDMA0]);
-+	ret = mtk_mutex_prepare(mutex);
- 	if (ret) {
- 		dev_err(dev, "Fail to enable mutex clk\n");
- 		goto err_free_path;
-@@ -506,8 +515,8 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
- 	mdp_comp_clocks_off(&mdp->pdev->dev, cmd->comps,
- 			    cmd->num_comps);
- err_free_path:
--	i = mdp->mdp_data->pipe_info[MDP_PIPE_RDMA0].mutex_id;
--	mtk_mutex_unprepare(mdp->mdp_mutex[i]);
-+	if (mutex)
-+		mtk_mutex_unprepare(mutex);
- 	kfree(path);
- err_free_comps:
- 	kfree(comps);
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
-index fa59f8ab1b47..8959f83eb5b5 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
-@@ -146,8 +146,17 @@ void mdp_video_device_release(struct video_device *vdev)
- 	vb2_dma_contig_clear_max_seg_size(&mdp->pdev->dev);
- 
- 	mdp_comp_destroy(mdp);
--	for (i = 0; i < MDP_PIPE_MAX; i++)
--		mtk_mutex_put(mdp->mdp_mutex[i]);
-+	for (i = 0; i < mdp->mdp_data->pipe_info_len; i++) {
-+		enum mdp_mm_subsys_id idx;
-+		struct mtk_mutex *m;
-+		u32 m_id;
-+
-+		idx = mdp->mdp_data->pipe_info[i].sub_id;
-+		m_id = mdp->mdp_data->pipe_info[i].mutex_id;
-+		m = mdp->mm_subsys[idx].mdp_mutex[m_id];
-+		if (!IS_ERR_OR_NULL(m))
-+			mtk_mutex_put(m);
-+	}
- 
- 	mdp_vpu_shared_mem_free(&mdp->vpu);
- 	v4l2_m2m_release(mdp->m2m_dev);
-@@ -171,6 +180,9 @@ static int mdp_mm_subsys_deploy(struct mdp_dev *mdp, enum mdp_infra_id id)
- 		case MDP_INFRA_MMSYS:
- 			dev = &mdp->mm_subsys[i].mmsys;
- 			break;
-+		case MDP_INFRA_MUTEX:
-+			dev = &mdp->mm_subsys[i].mutex;
-+			break;
- 		default:
- 			dev_err(&mdp->pdev->dev, "Unknown infra id %d", id);
- 			return -EINVAL;
-@@ -214,18 +226,24 @@ static int mdp_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_destroy_device;
- 
--	mm_pdev = __get_pdev_by_id(pdev, NULL, MDP_INFRA_MUTEX);
--	if (WARN_ON(!mm_pdev)) {
--		ret = -ENODEV;
-+	ret = mdp_mm_subsys_deploy(mdp, MDP_INFRA_MUTEX);
-+	if (ret)
- 		goto err_destroy_device;
+-	mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[MDP_PIPE_RDMA0]);
+-	ret = mtk_mutex_prepare(mutex);
+-	if (ret) {
+-		dev_err(dev, "Fail to enable mutex clk\n");
+-		goto err_free_path;
 -	}
-+
- 	for (i = 0; i < mdp->mdp_data->pipe_info_len; i++) {
-+		enum mdp_mm_subsys_id idx;
-+		struct mtk_mutex **m;
-+
-+		idx = mdp->mdp_data->pipe_info[i].sub_id;
- 		mutex_id = mdp->mdp_data->pipe_info[i].mutex_id;
--		if (!IS_ERR_OR_NULL(mdp->mdp_mutex[mutex_id]))
-+		m = &mdp->mm_subsys[idx].mdp_mutex[mutex_id];
-+
-+		if (!IS_ERR_OR_NULL(*m))
- 			continue;
--		mdp->mdp_mutex[mutex_id] = mtk_mutex_get(&mm_pdev->dev);
--		if (IS_ERR(mdp->mdp_mutex[mutex_id])) {
--			ret = PTR_ERR(mdp->mdp_mutex[mutex_id]);
-+
-+		*m = mtk_mutex_get(mdp->mm_subsys[idx].mutex);
-+		if (IS_ERR(*m)) {
-+			ret = PTR_ERR(*m);
- 			goto err_free_mutex;
- 		}
+-
+ 	path->mdp_dev = mdp;
+ 	path->config = param->config;
+ 	path->param = param->param;
+@@ -475,6 +493,14 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
+ 		goto err_free_path;
  	}
-@@ -305,9 +323,16 @@ static int mdp_probe(struct platform_device *pdev)
- err_deinit_comp:
- 	mdp_comp_destroy(mdp);
- err_free_mutex:
--	for (i = 0; i < mdp->mdp_data->pipe_info_len; i++)
--		if (!IS_ERR_OR_NULL(mdp->mdp_mutex[i]))
--			mtk_mutex_put(mdp->mdp_mutex[i]);
-+	for (i = 0; i < mdp->mdp_data->pipe_info_len; i++) {
-+		enum mdp_mm_subsys_id idx;
-+		struct mtk_mutex *m;
-+
-+		idx = mdp->mdp_data->pipe_info[i].sub_id;
-+		mutex_id = mdp->mdp_data->pipe_info[i].mutex_id;
-+		m = mdp->mm_subsys[idx].mdp_mutex[mutex_id];
-+		if (!IS_ERR_OR_NULL(m))
-+			mtk_mutex_put(m);
+ 
++	pipe_id = __get_pipe(mdp, path->comps[0].comp->public_id);
++	mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[pipe_id]);
++	ret = mtk_mutex_prepare(mutex);
++	if (ret) {
++		dev_err(dev, "Fail to enable mutex clk\n");
++		goto err_free_path;
 +	}
- err_destroy_device:
- 	kfree(mdp);
- err_return:
++
+ 	ret = mdp_path_config(mdp, cmd, path);
+ 	if (ret) {
+ 		dev_err(dev, "mdp_path_config error\n");
 diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
-index 7a7cdd0ce968..fde2c0b95def 100644
+index fde2c0b95def..ece6509666fd 100644
 --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
 +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
-@@ -26,6 +26,7 @@ enum mdp_infra_id {
- 	MDP_INFRA_MMSYS,
- 	MDP_INFRA_MMSYS2,
- 	MDP_INFRA_MUTEX,
-+	MDP_INFRA_MUTEX2,
- 	MDP_INFRA_SCP,
- 	MDP_INFRA_MAX
+@@ -59,6 +59,13 @@ enum mdp_pipe_id {
+ 	MDP_PIPE_WPEI2,
+ 	MDP_PIPE_IMGI,
+ 	MDP_PIPE_RDMA0,
++	MDP_PIPE_RDMA1,
++	MDP_PIPE_RDMA2,
++	MDP_PIPE_RDMA3,
++	MDP_PIPE_SPLIT,
++	MDP_PIPE_SPLIT2,
++	MDP_PIPE_VPP0_SOUT,
++	MDP_PIPE_VPP1_SOUT,
+ 	MDP_PIPE_MAX
  };
-@@ -78,12 +79,13 @@ struct mtk_mdp_driver_data {
- 
- struct mdp_mm_subsys {
- 	struct device *mmsys;
-+	struct device *mutex;
-+	struct mtk_mutex *mdp_mutex[MDP_PIPE_MAX];
- };
- 
- struct mdp_dev {
- 	struct platform_device			*pdev;
- 	struct mdp_mm_subsys			mm_subsys[MDP_MM_SUBSYS_MAX];
--	struct mtk_mutex			*mdp_mutex[MDP_PIPE_MAX];
- 	struct mdp_comp				*comp[MDP_MAX_COMP_COUNT];
- 	const struct mtk_mdp_driver_data	*mdp_data;
  
 -- 
 2.18.0
