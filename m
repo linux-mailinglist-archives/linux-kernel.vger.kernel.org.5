@@ -2,167 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E4F7C65C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9073F7C65C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377412AbjJLGl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
+        id S1377275AbjJLGmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343567AbjJLGl0 (ORCPT
+        with ESMTP id S1343563AbjJLGmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:41:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6FEC4;
-        Wed, 11 Oct 2023 23:41:24 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 06:41:22 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697092883;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QiQ+QJLnKZUB1+VUZ4jufENKlSDw5YT/ILtFyVL9bPo=;
-        b=m7Wx1knVv4OyMdB2KolinwgohWkPE3vUJfBZeiNR5D0sJuNeN51Z5TncWZdMIEV8GJUN7T
-        YNRJIpz0g8P0wLfJG+vvSKW3VTqV5KU8Eva+ZGtk9Y7rl8hyyh7USkyWefBCUXwR21DeDT
-        DOnzrrqCNeMQb1o8tCsQbMAYYUMMHK1Cg4k/Houk61VmL3Rufts9nxSVrDUNGTQvy/Jr18
-        jr8AXap35UkEbCInVXzYpwJJktp0nu9p9kzzoFbCPfCWcWPEsxkiVtsvGfdSmq7vL0AXpn
-        bpR2g5AWDWnf4p9u3IW7KppSkdSIAwv+/TBb2sWwQGjKAR390vKTRcwDBHRpvQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697092883;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QiQ+QJLnKZUB1+VUZ4jufENKlSDw5YT/ILtFyVL9bPo=;
-        b=w0WBBOHHKC+g3w3xQ2E9eUtZ9ZUmfDKD4uug0YFVramsZXBsSOdXE8qaYqqSkZuwb2RRC4
-        kynG72+UaH27idDw==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/irq] x86/nmi: Fix out-of-order NMI nesting checks & false
- positive warning
-Cc:     Chris Mason <clm@fb.com>, "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <0cbff831-6e3d-431c-9830-ee65ee7787ff@paulmck-laptop>
-References: <0cbff831-6e3d-431c-9830-ee65ee7787ff@paulmck-laptop>
+        Thu, 12 Oct 2023 02:42:50 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1639B8
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:42:48 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C6P4tj013234;
+        Thu, 12 Oct 2023 06:42:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=t+WoBM0MjsmtUKWbbU/ZptCtQbJ0t63RthiJOJYVP+4=;
+ b=U2NdZ8MvppQSd3bqLPrrF7V7a2X6O09RKGCkOdkIT9AsbIAuwRKRf36K0NY4vhZgdxm9
+ wpz30/cZ7qTBIdtamV8JqaGN6IxQpVAdLYVVH2wWTMa7fx5yMxi6OeLxNfMb23WvOIYw
+ 5tigXx+b5dYg2mk6sBhok3vQ1c0sBccNYmmnOLvc/xndx6BfTLLd/1tSFcz/EP/eFaJi
+ llhLuAPoqT7O3NNN1/U9c1ONF6YIYtH5M8pfYPGlKaEwyQMJU7AKPtSjyFi13JWWKWM0
+ afvaTnQIg5XjetR/yzUg9ygELEfgquYWS1NITLDtF0/ru+oIiz3gwWGZRMc30llL9MK4 pg== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tp5xr8n35-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 06:42:20 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39C6gJbC010993
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 06:42:19 GMT
+Received: from win-platform-upstream01.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 11 Oct 2023 23:42:15 -0700
+From:   Sridharan S N <quic_sridsn@quicinc.com>
+To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <frieder.schrempf@kontron.de>, <mikhail.kshevetskiy@iopsys.eu>,
+        <olivier.maignial@hotmail.fr>, <quic_sridsn@quicinc.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     Md Sadre Alam <quic_mdalam@quicinc.com>
+Subject: [PATCH] mtd: spinand: winbond: add support for serial NAND flash
+Date:   Thu, 12 Oct 2023 12:11:34 +0530
+Message-ID: <20231012064134.4068621-1-quic_sridsn@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Message-ID: <169709288266.3135.14961359666670260279.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: iSuO3CduG71q1Vl-z8VvQn2sIxt39qvF
+X-Proofpoint-ORIG-GUID: iSuO3CduG71q1Vl-z8VvQn2sIxt39qvF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_02,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ mlxlogscore=999 suspectscore=0 phishscore=0 clxscore=1011
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310120057
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/irq branch of tip:
+Add support for W25N01JW, W25N02JWZEIF, W25N512GW,
+W25N02KWZEIR and W25N01GWZEIG.
 
-Commit-ID:     f44075ecafb726830e63d33fbca29413149eeeb8
-Gitweb:        https://git.kernel.org/tip/f44075ecafb726830e63d33fbca29413149eeeb8
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Wed, 11 Oct 2023 11:40:16 -07:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 12 Oct 2023 08:35:15 +02:00
+W25N02KWZEIR has 8b/512b on-die ECC capability and other
+four has 4b/512b on-die ECC capability.
 
-x86/nmi: Fix out-of-order NMI nesting checks & false positive warning
-
-The ->idt_seq and ->recv_jiffies variables added by:
-
-  1a3ea611fc10 ("x86/nmi: Accumulate NMI-progress evidence in exc_nmi()")
-
-... place the exit-time check of the bottom bit of ->idt_seq after the
-this_cpu_dec_return() that re-enables NMI nesting.  This can result in
-the following sequence of events on a given CPU in kernels built with
-CONFIG_NMI_CHECK_CPU=y:
-
-  o   An NMI arrives, and ->idt_seq is incremented to an odd number.
-      In addition, nmi_state is set to NMI_EXECUTING==1.
-
-  o   The NMI is processed.
-
-  o   The this_cpu_dec_return(nmi_state) zeroes nmi_state and returns
-      NMI_EXECUTING==1, thus opting out of the "goto nmi_restart".
-
-  o   Another NMI arrives and ->idt_seq is incremented to an even
-      number, triggering the warning.  But all is just fine, at least
-      assuming we don't get so many closely spaced NMIs that the stack
-      overflows or some such.
-
-Experience on the fleet indicates that the MTBF of this false positive
-is about 70 years.  Or, for those who are not quite that patient, the
-MTBF appears to be about one per week per 4,000 systems.
-
-Fix this false-positive warning by moving the "nmi_restart" label before
-the initial ->idt_seq increment/check and moving the this_cpu_dec_return()
-to follow the final ->idt_seq increment/check.  This way, all nested NMIs
-that get past the NMI_NOT_RUNNING check get a clean ->idt_seq slate.
-And if they don't get past that check, they will set nmi_state to
-NMI_LATCHED, which will cause the this_cpu_dec_return(nmi_state)
-to restart.
-
-Fixes: 1a3ea611fc10 ("x86/nmi: Accumulate NMI-progress evidence in exc_nmi()")
-Reported-by: Chris Mason <clm@fb.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Link: https://lore.kernel.org/r/0cbff831-6e3d-431c-9830-ee65ee7787ff@paulmck-laptop
+Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
 ---
- arch/x86/kernel/nmi.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/spi/winbond.c | 45 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
-index a0c5518..4766b6b 100644
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -507,12 +507,13 @@ DEFINE_IDTENTRY_RAW(exc_nmi)
- 	}
- 	this_cpu_write(nmi_state, NMI_EXECUTING);
- 	this_cpu_write(nmi_cr2, read_cr2());
-+
-+nmi_restart:
- 	if (IS_ENABLED(CONFIG_NMI_CHECK_CPU)) {
- 		WRITE_ONCE(nsp->idt_seq, nsp->idt_seq + 1);
- 		WARN_ON_ONCE(!(nsp->idt_seq & 0x1));
- 		WRITE_ONCE(nsp->recv_jiffies, jiffies);
- 	}
--nmi_restart:
+diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
+index f507e3759301..1a473021cca5 100644
+--- a/drivers/mtd/nand/spi/winbond.c
++++ b/drivers/mtd/nand/spi/winbond.c
+@@ -169,6 +169,51 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 					      &update_cache_variants),
+ 		     0,
+ 		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
++	SPINAND_INFO("W25N01JW",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xbc, 0x21),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&w25m02gv_ooblayout, w25n02kv_ecc_get_status)),
++	SPINAND_INFO("W25N02JWZEIF",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xbf, 0x22),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 2, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
++	SPINAND_INFO("W25N512GW",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x20),
++		     NAND_MEMORG(1, 2048, 64, 64, 512, 10, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
++	SPINAND_INFO("W25N02KWZEIR",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x22),
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
++	SPINAND_INFO("W25N01GWZEIG",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x21),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&w25m02gv_ooblayout, w25n02kv_ecc_get_status)),
+ };
  
- 	/*
- 	 * Needs to happen before DR7 is accessed, because the hypervisor can
-@@ -548,16 +549,16 @@ nmi_restart:
- 
- 	if (unlikely(this_cpu_read(nmi_cr2) != read_cr2()))
- 		write_cr2(this_cpu_read(nmi_cr2));
--	if (this_cpu_dec_return(nmi_state))
--		goto nmi_restart;
--
--	if (user_mode(regs))
--		mds_user_clear_cpu_buffers();
- 	if (IS_ENABLED(CONFIG_NMI_CHECK_CPU)) {
- 		WRITE_ONCE(nsp->idt_seq, nsp->idt_seq + 1);
- 		WARN_ON_ONCE(nsp->idt_seq & 0x1);
- 		WRITE_ONCE(nsp->recv_jiffies, jiffies);
- 	}
-+	if (this_cpu_dec_return(nmi_state))
-+		goto nmi_restart;
-+
-+	if (user_mode(regs))
-+		mds_user_clear_cpu_buffers();
- }
- 
- #if IS_ENABLED(CONFIG_KVM_INTEL)
+ static int winbond_spinand_init(struct spinand_device *spinand)
+-- 
+2.34.1
+
