@@ -2,150 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 329D77C6DC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A89017C6DCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347235AbjJLMPj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 08:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
+        id S1378475AbjJLMRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343869AbjJLMPh (ORCPT
+        with ESMTP id S1347221AbjJLMRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:15:37 -0400
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925B0BA;
-        Thu, 12 Oct 2023 05:15:35 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5a7c08b7744so10836377b3.3;
-        Thu, 12 Oct 2023 05:15:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697112934; x=1697717734;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wl3I/2bXbjqN636hLulYiW7jhp7Ro5bp+FnjB/CpQr8=;
-        b=D2SNDzY+ZHbtLcrDP13ADGWzFLyjOuelw38N4+vtkphygQlvQPwEkdKsXPbPexFS0d
-         CnIAdZ9/Q4B+YJfuL9S+wyoWOkG0UbDgBPC6DnYvk+QE936jjDo7Qe5Bq/9fg9yp/ou5
-         uIc24FIkl5NfC3hbHyRU+3Dtpi/ERTxwCOHJTlJFxRqmLG3k80KO49so/b5L41loveFH
-         Cdzxvs69fdzyrVRWVJPZaPDJ660loQjNdmfEeKdODjCGw4HlRojVp8wgMJbeeYgmjjfa
-         d+ao4P6ZKCLHUM5wgIReix5n+dRwJjHDqnWtfo1uc/4Knti+nituE0Fre0a9N375wmoC
-         WVMA==
-X-Gm-Message-State: AOJu0Yx8yz1pg/3Sj80YoB609SvRzojRV7vhgyopWecJf4mRDxRAZCaX
-        wQ/O6XFtpipofEGLVbo8EUG7XePMUUPCNg==
-X-Google-Smtp-Source: AGHT+IFVBU3c9WPwENNvq83TUmSuvwtpSnPnE5ioJfpYzfXuzrqrKsxIIgzUHtnBsVOsx9AdrMzxSg==
-X-Received: by 2002:a81:8742:0:b0:59f:6675:7771 with SMTP id x63-20020a818742000000b0059f66757771mr22443274ywf.35.1697112934475;
-        Thu, 12 Oct 2023 05:15:34 -0700 (PDT)
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
-        by smtp.gmail.com with ESMTPSA id g68-20020a0df647000000b0059b2be24f88sm5772597ywf.143.2023.10.12.05.15.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 05:15:33 -0700 (PDT)
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5a7b91faf40so11003367b3.1;
-        Thu, 12 Oct 2023 05:15:33 -0700 (PDT)
-X-Received: by 2002:a0d:d40f:0:b0:59b:fe46:82de with SMTP id
- w15-20020a0dd40f000000b0059bfe4682demr24538814ywd.18.1697112932799; Thu, 12
- Oct 2023 05:15:32 -0700 (PDT)
+        Thu, 12 Oct 2023 08:17:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CDDB7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:17:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697113069; x=1728649069;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=TsWwp6y4lxASPuSdg0tEU4cS1WQ994qMPTC91I8n58M=;
+  b=gcPiTjb9rf1xQ+7lnsRGphcM/o+ZpoaX1i155IgwgZfj17bCLtyiA/tQ
+   pXul+hYruE3Ws/M7gzqp7ZEAbp/H46vsAXqfFm2bu5umUjNI1PGvj7eFH
+   kztA+4bgc9Tq1DciqggNsl7kzd3sedIl06R/Kk5EJ4bZDAixI7IvP2NvT
+   a30TTNnzRG+ckyOYaU7+Cu4IJ05hhQHASBFhL/sUTAwPpEKkxrvpYaxAB
+   D+wOS6m0Xofgf8lsnov5MAFp4WY3m0ANygwd0rJoERcveeG1Rn69JGALr
+   25lLyg0UCHo1vyekP99LUdFIiiQuTzXgTs/HvElXjKTSfYNfoKyyK8qWs
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="382139887"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="382139887"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 05:17:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="844977593"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="844977593"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 05:17:45 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Arjan Van De Ven <arjan@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <jweiner@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Christoph Lameter" <cl@linux.com>
+Subject: Re: [PATCH 04/10] mm: restrict the pcp batch scale factor to avoid
+ too long latency
+References: <20230920061856.257597-1-ying.huang@intel.com>
+        <20230920061856.257597-5-ying.huang@intel.com>
+        <20231011125219.kuoluyuwxzva5q5w@techsingularity.net>
+Date:   Thu, 12 Oct 2023 20:15:42 +0800
+In-Reply-To: <20231011125219.kuoluyuwxzva5q5w@techsingularity.net> (Mel
+        Gorman's message of "Wed, 11 Oct 2023 13:52:19 +0100")
+Message-ID: <878r88f34h.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-References: <20231012-pouch-parkway-7d26c04b3300@spud>
-In-Reply-To: <20231012-pouch-parkway-7d26c04b3300@spud>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 12 Oct 2023 14:15:21 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWRzoBgxxkF6kpxr4tpUM4BzHnMUmW3vDR_BrrXiKae5Q@mail.gmail.com>
-Message-ID: <CAMuHMdWRzoBgxxkF6kpxr4tpUM4BzHnMUmW3vDR_BrrXiKae5Q@mail.gmail.com>
-Subject: Re: [PATCH v2] soc: renesas: make ARCH_R9A07G043 depend on required options
-To:     Conor Dooley <conor@kernel.org>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        soc@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
+Mel Gorman <mgorman@techsingularity.net> writes:
 
-On Thu, Oct 12, 2023 at 1:11 PM Conor Dooley <conor@kernel.org> wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
+> On Wed, Sep 20, 2023 at 02:18:50PM +0800, Huang Ying wrote:
+>> In page allocator, PCP (Per-CPU Pageset) is refilled and drained in
+>> batches to increase page allocation throughput, reduce page
+>> allocation/freeing latency per page, and reduce zone lock contention.
+>> But too large batch size will cause too long maximal
+>> allocation/freeing latency, which may punish arbitrary users.  So the
+>> default batch size is chosen carefully (in zone_batchsize(), the value
+>> is 63 for zone > 1GB) to avoid that.
+>> 
+>> In commit 3b12e7e97938 ("mm/page_alloc: scale the number of pages that
+>> are batch freed"), the batch size will be scaled for large number of
+>> page freeing to improve page freeing performance and reduce zone lock
+>> contention.  Similar optimization can be used for large number of
+>> pages allocation too.
+>> 
+>> To find out a suitable max batch scale factor (that is, max effective
+>> batch size), some tests and measurement on some machines were done as
+>> follows.
+>> 
+>> A set of debug patches are implemented as follows,
+>> 
+>> - Set PCP high to be 2 * batch to reduce the effect of PCP high
+>> 
+>> - Disable free batch size scaling to get the raw performance.
+>> 
+>> - The code with zone lock held is extracted from rmqueue_bulk() and
+>>   free_pcppages_bulk() to 2 separate functions to make it easy to
+>>   measure the function run time with ftrace function_graph tracer.
+>> 
+>> - The batch size is hard coded to be 63 (default), 127, 255, 511,
+>>   1023, 2047, 4095.
+>> 
+>> Then will-it-scale/page_fault1 is used to generate the page
+>> allocation/freeing workload.  The page allocation/freeing throughput
+>> (page/s) is measured via will-it-scale.  The page allocation/freeing
+>> average latency (alloc/free latency avg, in us) and allocation/freeing
+>> latency at 99 percentile (alloc/free latency 99%, in us) are measured
+>> with ftrace function_graph tracer.
+>> 
+>> The test results are as follows,
+>> 
+>> Sapphire Rapids Server
+>> ======================
+>> Batch	throughput	free latency	free latency	alloc latency	alloc latency
+>> 	page/s		avg / us	99% / us	avg / us	99% / us
+>> -----	----------	------------	------------	-------------	-------------
+>>   63	513633.4	 2.33		 3.57		 2.67		  6.83
+>>  127	517616.7	 4.35		 6.65		 4.22		 13.03
+>>  255	520822.8	 8.29		13.32		 7.52		 25.24
+>>  511	524122.0	15.79		23.42		14.02		 49.35
+>> 1023	525980.5	30.25		44.19		25.36		 94.88
+>> 2047	526793.6	59.39		84.50		45.22		140.81
+>> 
+>> Ice Lake Server
+>> ===============
+>> Batch	throughput	free latency	free latency	alloc latency	alloc latency
+>> 	page/s		avg / us	99% / us	avg / us	99% / us
+>> -----	----------	------------	------------	-------------	-------------
+>>   63	620210.3	 2.21		 3.68		 2.02		 4.35
+>>  127	627003.0	 4.09		 6.86		 3.51		 8.28
+>>  255	630777.5	 7.70		13.50		 6.17		15.97
+>>  511	633651.5	14.85		22.62		11.66		31.08
+>> 1023	637071.1	28.55		42.02		20.81		54.36
+>> 2047	638089.7	56.54		84.06		39.28		91.68
+>> 
+>> Cascade Lake Server
+>> ===================
+>> Batch	throughput	free latency	free latency	alloc latency	alloc latency
+>> 	page/s		avg / us	99% / us	avg / us	99% / us
+>> -----	----------	------------	------------	-------------	-------------
+>>   63	404706.7	 3.29		  5.03		 3.53		  4.75
+>>  127	422475.2	 6.12		  9.09		 6.36		  8.76
+>>  255	411522.2	11.68		 16.97		10.90		 16.39
+>>  511	428124.1	22.54		 31.28		19.86		 32.25
+>> 1023	414718.4	43.39		 62.52		40.00		 66.33
+>> 2047	429848.7	86.64		120.34		71.14		106.08
+>> 
+>> Commet Lake Desktop
+>> ===================
+>> Batch	throughput	free latency	free latency	alloc latency	alloc latency
+>> 	page/s		avg / us	99% / us	avg / us	99% / us
+>> -----	----------	------------	------------	-------------	-------------
+>> 
+>>   63	795183.13	 2.18		 3.55		 2.03		 3.05
+>>  127	803067.85	 3.91		 6.56		 3.85		 5.52
+>>  255	812771.10	 7.35		10.80		 7.14		10.20
+>>  511	817723.48	14.17		27.54		13.43		30.31
+>> 1023	818870.19	27.72		40.10		27.89		46.28
+>> 
+>> Coffee Lake Desktop
+>> ===================
+>> Batch	throughput	free latency	free latency	alloc latency	alloc latency
+>> 	page/s		avg / us	99% / us	avg / us	99% / us
+>> -----	----------	------------	------------	-------------	-------------
+>>   63	510542.8	 3.13		  4.40		 2.48		 3.43
+>>  127	514288.6	 5.97		  7.89		 4.65		 6.04
+>>  255	516889.7	11.86		 15.58		 8.96		12.55
+>>  511	519802.4	23.10		 28.81		16.95		26.19
+>> 1023	520802.7	45.30		 52.51		33.19		45.95
+>> 2047	519997.1	90.63		104.00		65.26		81.74
+>> 
+>> From the above data, to restrict the allocation/freeing latency to be
+>> less than 100 us in most times, the max batch scale factor needs to be
+>> less than or equal to 5.
+>> 
+>> So, in this patch, the batch scale factor is restricted to be less
+>> than or equal to 5.
+>> 
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
 >
-> Randy reported a randconfig build issue against linux-next:
-> WARNING: unmet direct dependencies detected for ERRATA_ANDES
->   Depends on [n]: RISCV_ALTERNATIVE [=n] && RISCV_SBI [=y]
->   Selected by [y]:
->   - ARCH_R9A07G043 [=y] && SOC_RENESAS [=y] && RISCV [=y] && NONPORTABLE [=y] && RISCV_SBI [=y]
+> Acked-by: Mel Gorman <mgorman@techsingularity.net>
 >
-> ../arch/riscv/errata/andes/errata.c:59:54: warning: 'struct alt_entry' declared inside parameter list will not be visible outside of this definition or declaration
->    59 | void __init_or_module andes_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
->
-> On RISC-V, alternatives are not usable in XIP kernels, which this
-> randconfig happened to select. Rather than add a check for whether
-> alternatives are available before selecting the ERRATA_ANDES config
-> option, rework the R9A07G043 Kconfig entry to depend on the
-> configuration options required to support its non-standard cache
-> coherency implementation.
->
-> Without these options enabled, the SoC is effectively non-functional to
-> begin with, so there's an extra benefit in preventing the creation of
-> non-functional kernels.
->
-> The "if RISCV_DMA_NONCOHERENT" can be dropped, as ERRATA_ANDES_CMO will
-> select it.
->
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Closes: https://lore.kernel.org/all/09a6b0f0-76a1-45e3-ab52-329c47393d1d@infradead.org/
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
->
-> I dropped Randy's t-b etc since this patch is quite different.
->
-> v2: drop the extra condition on the select of ERRATA_ANDES, move instead
-> to depending on required options.
+> However, it's worth noting that the time to free depends on the CPU and
+> while the CPUs you tested are reasonable, there are also slower CPUs out
+> there and I've at least one account that the time is excessive. While
+> this patch is fine, there may be a patch on top that makes this runtime
+> configurable, a Kconfig default or both.
 
-Thanks for the update!
+Sure.  Will add a Kconfig option first in a follow-on patch.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-fixes for v6.6.
-
-> --- a/drivers/soc/renesas/Kconfig
-> +++ b/drivers/soc/renesas/Kconfig
-> @@ -340,10 +340,12 @@ if RISCV
->  config ARCH_R9A07G043
->         bool "RISC-V Platform support for RZ/Five"
->         depends on NONPORTABLE
-> +       depends on RISCV_ALTERNATIVE
-> +       depends on RISCV_SBI
->         select ARCH_RZG2L
-> -       select AX45MP_L2_CACHE if RISCV_DMA_NONCOHERENT
-> +       select AX45MP_L2_CACHE
->         select DMA_GLOBAL_POOL
-> -       select ERRATA_ANDES if RISCV_SBI
-> +       select ERRATA_ANDES
->         select ERRATA_ANDES_CMO if ERRATA_ANDES
-
-As ERRATA_ANDES is now selected unconditionally, the test
-for it can be removed.  I can do that while applying.
-
->         help
->           This enables support for the Renesas RZ/Five SoC.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--
+Best Regards,
+Huang, Ying
