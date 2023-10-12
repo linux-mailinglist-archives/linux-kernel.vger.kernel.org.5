@@ -2,83 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B227C6EA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6D27C6EAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378727AbjJLM6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 08:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34998 "EHLO
+        id S1347197AbjJLM7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343971AbjJLM6n (ORCPT
+        with ESMTP id S234249AbjJLM7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:58:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD888C9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:58:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697115521; x=1728651521;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FezBOs4z5b5BdyWfX/5QiwvC0F3/xtHU+YBQMpqAKP8=;
-  b=fArE4YuH5qh2xA2WUXUevVG6uLD2VU7DW4Qe7fNpktJ3CsYaEsPPiURg
-   U/+laN+N2kvnth8gADu7A4EGFNorUk/2eeWj/QIgnPFEnXupBfOhkvwa4
-   +XknxyfWv8k7mU/RUmsJKeq6lIrXTCqV5aFppADyOWW1HuS32XOY6/V4+
-   D1iDB+/8vXQ5PWbRG0Chh4Tg4uaUThTMHN7CN6Q5+iZQXVYexm/42rf9s
-   upZ4wN/FSYqd3f9jTJs6ds4AVg4y9JiRRo9a12AhS5jr4/m1fHoGrvYXw
-   P+hUxZxmq2OcE5Ikfwv3aiXLg6eAyVc4dcnKpR1/OgZOkYSxOrzHRnULs
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="388769151"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="388769151"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 05:58:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="758008315"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="758008315"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.213.230]) ([10.254.213.230])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 05:58:32 -0700
-Message-ID: <d446571b-d267-fa4b-8b3a-b65a41f2048d@linux.intel.com>
-Date:   Thu, 12 Oct 2023 20:58:31 +0800
+        Thu, 12 Oct 2023 08:59:45 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BC5BE
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:59:42 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 02FAD40E01AA;
+        Thu, 12 Oct 2023 12:59:41 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id tT6wuOmSQBx8; Thu, 12 Oct 2023 12:59:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1697115578; bh=HBdHp5UwkW1aA9cF+N8u4mhQLoD6K3rEW45TWjWa/qE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HzlPlEUGzAVzeghIMcSZsA6bM8jMKqVxOirrwzAPjAk9fU7MbJnp/DHq1aKT9Tnj/
+         LYErF9cO5KkeNPOXNhCjx5BegkzrmE82ZmY+Ptn10tLZejk0BElLYbyPEe0/a81X3/
+         Tf4LQHJq436aZoS1lAHD+A37gFFtPoDzBootwM0+0mUFLp4WVwGkiHILSroFn2nEQm
+         W5QfVikLBxe5xwIoxCAgZw+EAu4e+NVEjeI7q0092i+dhmv5wszDuvglWpXEaGw1HB
+         pDdnN14/vhHiaTkUxB2Ul5+DgbV7zPxR1fVM53Ys0GjNi4NdyorfrYYFX/CzYd/COu
+         bvL9GVjYR/kGrgD1NvGmP9+C8t3wWoKyiVmTocw7hAxXjJTrcXzmRO19VdcSIrdtP8
+         W28S1fCbyiMLcHd2KeF3yeGfiRy8vTkituFBpjOIbadH92CdK/34yuESopvd1gCad8
+         4UHU1MNxoPTeL6nMzrsY55iAc1pl9LeLBU8S4Lxe2nhuSxySGUfIcl8lXcOgpcxmmI
+         XeaNvJR7RdIKJV0XJgNDeRSbt05hOuKvrlqZBjkt3p3uZxSatKHxzbY2wzS4KQEHOL
+         uHNt+Rar17nxoayMfrDvDbsFYA/j1m7jQKG0CgvBHA3CK53D7+302Hx1hOvVrxRGgw
+         1ODc9/+1EyWIMj3gXmUoolXI=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9C32340E0196;
+        Thu, 12 Oct 2023 12:59:29 +0000 (UTC)
+Date:   Thu, 12 Oct 2023 14:59:24 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     John Allen <john.allen@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, weijiang.yang@intel.com,
+        rick.p.edgecombe@intel.com, seanjc@google.com, x86@kernel.org,
+        thomas.lendacky@amd.com
+Subject: Re: [PATCH 7/9] x86/sev-es: Include XSS value in GHCB CPUID request
+Message-ID: <20231012125924.GFZSftrGx43ALVCtfS@fat_crate.local>
+References: <20231010200220.897953-1-john.allen@amd.com>
+ <20231010200220.897953-8-john.allen@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux.dev, jgg@nvidia.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/7] iommu: Decouple iommu_present() from bus ops
-Content-Language: en-US
-To:     Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org,
-        will@kernel.org
-References: <cover.1697047261.git.robin.murphy@arm.com>
- <6711338e24dd1edfd02187f25cf40d8622cefdb2.1697047261.git.robin.murphy@arm.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <6711338e24dd1edfd02187f25cf40d8622cefdb2.1697047261.git.robin.murphy@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231010200220.897953-8-john.allen@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/12 2:14, Robin Murphy wrote:
-> Much as I'd like to remove iommu_present(), the final remaining users
-> are proving stubbornly difficult to clean up, so kick that can down the
-> road and just rework it to preserve the current behaviour without
-> depending on bus ops. Since commit 57365a04c921 ("iommu: Move bus setup
-> to IOMMU device registration"), any registered IOMMU instance is already
-> considered "present" for every entry in iommu_buses, so it's simply a
-> case of validating the bus and checking we have at least once IOMMU.
+On Tue, Oct 10, 2023 at 08:02:18PM +0000, John Allen wrote:
+> When a guest issues a cpuid instruction for Fn0000000D_x0B (CetUserOffset), the
+> hypervisor may intercept and access the guest XSS value. For SEV-ES, this is
+> encrypted and needs to be included in the GHCB to be visible to the hypervisor.
+> The rdmsr instruction needs to be called directly as the code may be used in
+> early boot in which case the rdmsr wrappers should be avoided as they are
+> incompatible with the decompression boot phase.
 > 
-> Reviewed-by: Jason Gunthorpe<jgg@nvidia.com>
-> Signed-off-by: Robin Murphy<robin.murphy@arm.com>
+> Signed-off-by: John Allen <john.allen@amd.com>
+> ---
+>  arch/x86/kernel/sev-shared.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+> index 2eabccde94fb..e38a1d049bc1 100644
+> --- a/arch/x86/kernel/sev-shared.c
+> +++ b/arch/x86/kernel/sev-shared.c
+> @@ -890,6 +890,21 @@ static enum es_result vc_handle_cpuid(struct ghcb *ghcb,
+>  		/* xgetbv will cause #GP - use reset value for xcr0 */
+>  		ghcb_set_xcr0(ghcb, 1);
+>  
+> +	if (has_cpuflag(X86_FEATURE_SHSTK) && regs->ax == 0xd && regs->cx <= 1) {
+> +		unsigned long lo, hi;
+> +		u64 xss;
+> +
+> +		/*
+> +		 * Since vc_handle_cpuid may be used during early boot, the
+> +		 * rdmsr wrappers are incompatible and should not be used.
+> +		 * Invoke the instruction directly.
+> +		 */
+> +		asm volatile("rdmsr" : "=a" (lo), "=d" (hi)
+> +			     : "c" (MSR_IA32_XSS));
 
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+Does __rdmsr() work too?
 
-Best regards,
-baolu
+I know it has exception handling but a SEV-ES guest should not fault
+when accessing MSR_IA32_XSS anyway, especially if it has shadow stack
+enabled. And if it does fault, your version would explode too but
+__rdmsr() would be at least less code. :)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
