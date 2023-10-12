@@ -2,115 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C197C74E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA767C74E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347474AbjJLRhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
+        id S1347438AbjJLRhD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 13:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347378AbjJLRg4 (ORCPT
+        with ESMTP id S1347449AbjJLRgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:36:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F92213E;
-        Thu, 12 Oct 2023 10:23:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697131394; x=1728667394;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=xdt5/Au8+P8aciApF5KRE4r7URgA+4e3oS7ZjhG6eHQ=;
-  b=jsrlDXhAGvrxqm1Z2KZnnF75f0L0CK/GNzCpv6s2oReCTU2GDH4/Q+AN
-   0Wn8H3MdwxSsrh5bFgv/4GS65NqUKQNq7OW63/NPjNuWwljO72ncOlrmp
-   ixHQEm2e7xfM6iUYs6hAot/odE5x0f7Q/6kM3J+4VDbFw81gnBm+BFaFh
-   mHGn+dUEtoVo1H1bIuUVYMj0s5QEpG/NXojuvbcXDQl9qkIkLIH2CbF/c
-   NoGtkhNeI15GQM6AeJ8S/MuVSXYoZVEDxRFhYqOvddhVE35m8radtHnAS
-   ib3/4dePImn1PCOzmLXMvwZBgR8CVxSMHKPRVdGxsSV/QNKf5/BVvVKC8
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="365247170"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="365247170"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 10:23:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="870677425"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="870677425"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 10:23:13 -0700
-Received: from [10.54.75.156] (debox1-desk1.jf.intel.com [10.54.75.156])
-        by linux.intel.com (Postfix) with ESMTP id C355C580919;
-        Thu, 12 Oct 2023 10:23:13 -0700 (PDT)
-Message-ID: <6ed4cd5ae37a054d4780c8fa519dc83396b15c14.camel@linux.intel.com>
-Subject: Re: [PATCH V3 03/16] platform/x86/intel/vsec: Use cleanup.h
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, ilpo.jarvinen@linux.intel.com,
-        rajvi.jingar@linux.intel.com
-Cc:     oe-kbuild-all@lists.linux.dev
-Date:   Thu, 12 Oct 2023 10:23:13 -0700
-In-Reply-To: <202310121314.3Xpqom2w-lkp@intel.com>
-References: <20231012023840.3845703-4-david.e.box@linux.intel.com>
-         <202310121314.3Xpqom2w-lkp@intel.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 12 Oct 2023 13:36:49 -0400
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB51FD6C;
+        Thu, 12 Oct 2023 10:24:02 -0700 (PDT)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-27cfb8442f9so881447a91.2;
+        Thu, 12 Oct 2023 10:24:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697131442; x=1697736242;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CJnRK+79WNn0lGWIpav/hJW9jfda5+J6HE7W4OW4WDg=;
+        b=pIni7pUJgajGYSQU9SwzMEYgHHHdN24f7FuW5z6iwT5Y3Qbq4DKAVLmKXDNkehhJfb
+         o84qccj2pQfymB+6z1XrgKf8lXryt/dqJNBSvevXZ48TH0Zv0vSYqs4MC30fJRT7bvR7
+         kHfLxczs5QunRMwof5JIwzbPGEMHIdRC0gl9CzuomngS4iexxt334utspR42uH+tW8BX
+         PcSI3GQXJGAi0UVY934GK/O4ESSlBx/t12kVElLFUlc3ANTWhFdl8ku0u9jORuZOFxg5
+         lOLWAi8R3Uxoz0BjZ180Di6I/1e4CH+zC+Q8NmZ5SCUQuRnoOL7qfpp0PXFRypiRBhZi
+         lbxg==
+X-Gm-Message-State: AOJu0YzqW4RvugHeUHRKUhmnrSlogUhF3HRYg3or4SJpy28JPN8af9yh
+        gOShiXHzCV0D+0UughpY6HQLLgl9qWudgfxnaAU=
+X-Google-Smtp-Source: AGHT+IFUhH11sDmFlYL7MWiTUMkq8goHP9pDVnkcL763Chb34fwG4DLwbzeA5QXZ9dzWHTz7uN1GoKUjJnFvWXox8KU=
+X-Received: by 2002:a17:90b:14a:b0:27c:facc:e3eb with SMTP id
+ em10-20020a17090b014a00b0027cfacce3ebmr6883711pjb.31.1697131442112; Thu, 12
+ Oct 2023 10:24:02 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+References: <20231009183920.200859-1-irogers@google.com> <CAM9d7cgwam22Fn3tvJ7dJL1zHWTQa1ixvePTMPQmvYQLn2=DxA@mail.gmail.com>
+In-Reply-To: <CAM9d7cgwam22Fn3tvJ7dJL1zHWTQa1ixvePTMPQmvYQLn2=DxA@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 12 Oct 2023 10:23:51 -0700
+Message-ID: <CAM9d7cjgpXwC6D7F1DMrMw1j1k=o7oDw94Ofb_Xiyt_s7t5gJA@mail.gmail.com>
+Subject: Re: [PATCH v3 00/18] clang-tools support in tools
+To:     Ian Rogers <irogers@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Ming Wang <wangming01@loongson.cn>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-12 at 13:25 +0800, kernel test robot wrote:
-> Hi David,
->=20
-> kernel test robot noticed the following build warnings:
->=20
-> [auto build test WARNING on acce85a7dd28eac3858d44230f4c65985d0f271c]
->=20
-> url:=C2=A0=C2=A0=C2=A0
-> https://github.com/intel-lab-lkp/linux/commits/David-E-Box/platform-x86-i=
-ntel-vsec-Move-structures-to-header/20231012-104217
-> base:=C2=A0=C2=A0 acce85a7dd28eac3858d44230f4c65985d0f271c
-> patch link:=C2=A0=C2=A0=C2=A0
-> https://lore.kernel.org/r/20231012023840.3845703-4-david.e.box%40linux.in=
-tel.com
-> patch subject: [PATCH V3 03/16] platform/x86/intel/vsec: Use cleanup.h
-> reproduce:
-> (https://download.01.org/0day-ci/archive/20231012/202310121314.3Xpqom2w-l=
-kp@in
-> tel.com/reproduce)
->=20
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion
-> of
-> the same patch/commit), kindly add following tags
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes:
-> > https://lore.kernel.org/oe-kbuild-all/202310121314.3Xpqom2w-lkp@intel.c=
-om/
->=20
-> # many are suggestions rather than must-fix
->=20
-> ERROR:SPACING: need consistent spacing around '*' (ctx:WxV)
-> #31: FILE: drivers/platform/x86/intel/vsec.c:159:
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct intel_vsec_device __fre=
-e(kfree) *intel_vsec_dev =3D NULL;
+On Mon, Oct 9, 2023 at 10:31 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> Hi Ian,
+>
+> On Mon, Oct 9, 2023 at 11:39 AM Ian Rogers <irogers@google.com> wrote:
+> >
+> > Allow the clang-tools scripts to work with builds in tools such as
+> > tools/perf and tools/lib/perf. An example use looks like:
+> >
+> > ```
+> > $ cd tools/perf
+> > $ make CC=clang CXX=clang++
+> > $ ../../scripts/clang-tools/gen_compile_commands.py
+> > $ ../../scripts/clang-tools/run-clang-tools.py clang-tidy compile_commands.json -checks=-*,readability-named-parameter
+> > Skipping non-C file: 'tools/perf/bench/mem-memcpy-x86-64-asm.S'
+> > Skipping non-C file: 'tools/perf/bench/mem-memset-x86-64-asm.S'
+> > Skipping non-C file: 'tools/perf/arch/x86/tests/regs_load.S'
+> > 8 warnings generated.
+> > Suppressed 8 warnings (8 in non-user code).
+> > Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+> > 2 warnings generated.
+> > 4 warnings generated.
+> > Suppressed 4 warnings (4 in non-user code).
+> > Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+> > 2 warnings generated.
+> > 4 warnings generated.
+> > Suppressed 4 warnings (4 in non-user code).
+> > Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+> > 3 warnings generated.
+> > tools/perf/util/parse-events-flex.c:546:27: warning: all parameters should be named in a function [readability-named-parameter]
+> > void *yyalloc ( yy_size_t , yyscan_t yyscanner );
+> >                           ^
+> >                            /*size*/
+> > ...
+> > ```
+> >
+> > Fix a number of the more serious low-hanging issues in perf found by
+> > clang-tidy.
+> >
+> > This support isn't complete, in particular it doesn't support output
+> > directories properly and so fails for tools/lib/bpf, tools/bpf/bpftool
+> > and if an output directory is used.
+> >
+> > v3. Add Nick Desaulniers reviewed-by to patch 3. For Namhyung, drop
+> >     "perf hisi-ptt: Fix potential memory leak", split lock change out
+> >     of "perf svghelper: Avoid memory leak" and address comments in
+> >     "perf header: Fix various error path memory leaks".
+> > v2: Address comments by Nick Desaulniers in patch 3, and add their
+> >     Reviewed-by to patches 1 and 2.
+> >
+> > Ian Rogers (18):
+> >   gen_compile_commands: Allow the line prefix to still be cmd_
+> >   gen_compile_commands: Sort output compile commands by file name
+> >   run-clang-tools: Add pass through checks and header-filter arguments
+> >   perf bench uprobe: Fix potential use of memory after free
+> >   perf buildid-cache: Fix use of uninitialized value
+> >   perf env: Remove unnecessary NULL tests
+> >   perf jitdump: Avoid memory leak
+> >   perf mem-events: Avoid uninitialized read
+> >   perf dlfilter: Be defensive against potential NULL dereference
+> >   perf hists browser: Reorder variables to reduce padding
+> >   perf hists browser: Avoid potential NULL dereference
+> >   perf svghelper: Avoid memory leak
+> >   perf lock: Fix a memory leak on an error path
+> >   perf parse-events: Fix unlikely memory leak when cloning terms
+> >   tools api: Avoid potential double free
+> >   perf trace-event-info: Avoid passing NULL value to closedir
+> >   perf header: Fix various error path memory leaks
+> >   perf bpf_counter: Fix a few memory leaks
+>
+> I agree with your comment on v2 that it needs more work
+> to clean the code up.  Anyway I'm ok with v3 now.
+>
+> For ther perf part (patch 4 to 18),
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-These looks like false positives.
-
-David
-
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^
->=20
-
+Applied to perf-tools-next, thanks!
