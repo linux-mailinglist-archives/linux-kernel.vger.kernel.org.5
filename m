@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 401807C7510
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C817C7514
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441819AbjJLRuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
+        id S1379672AbjJLRun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379627AbjJLRuU (ORCPT
+        with ESMTP id S1379651AbjJLRuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:50:20 -0400
+        Thu, 12 Oct 2023 13:50:39 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B4CBB;
-        Thu, 12 Oct 2023 10:50:18 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 17:50:16 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D504D6;
+        Thu, 12 Oct 2023 10:50:37 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 17:50:35 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697133017;
+        s=2020; t=1697133036;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xoKlNZgjdrqPYu+DbG75XGlYO3OTTy8TALc2nVbhlaQ=;
-        b=yrWl93Ox9a2k5CgXeTw6z0LqM0Cla9scqnZLOEuNvdZrsgz+glTkZ5hDkrFkeGDGpPnL2z
-        yKgJstm/b7SMOLOFErd9LLo1Zz2Q2cuug7p+7821m5ETbaEWCF5N/gW2EAv4XJb7Br6udT
-        IoVRo5ukUvzeEtcj2PJzIgGanCR1VdIDyspkvgwBMJVWKRAXe0vvqAtSh3pCb4jaeO8Ipb
-        srTlFbUX5+pU2O5/BgdWJBRg6JHGoHO3vNgGjlJ43oAw0Cm0UW7OT6ZXv4I4xNJbLW7Wru
-        6IutHwdo7KFHCoD7AgaXbhzIkH0DIc1rZNywfS4gqDofIkbCO1sQyVB6/4hGDA==
+        bh=u1tRzLxcoMbWxvG+mukyL8m7+kfZ7rIvBFU2zqRdBCY=;
+        b=FmPglg7N3Aq85KxQQgdo5HL3aSPu7ftnaFGkOOGFO2xC602jFOlZ+PhVxCo64AgWP9rSRg
+        eIbmngOwHh9UgO4YURmni+ZJD4yaskMTyB7NeAsWzFX41NmWMC2tvLTh+KtBnIOzQdwPwd
+        VsDpU0QgW7R7tTThZa2KLMuIjX8SnsS7hqzFZteTcFyFugswI01WGKnJg3X4NoAAhQN/VZ
+        /tveEwAnhjGA3jsBtfPDixagLq3x8TMOiyOJHbW6xWVBHtTI0FSXb+7qQWEGgbOgt4MDjJ
+        S88k937aVijiM6vGrRvi2GsWiz94Sq9vxDTdJIGkiEhB8vfedrk8L9A88Lw11Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697133017;
+        s=2020e; t=1697133036;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xoKlNZgjdrqPYu+DbG75XGlYO3OTTy8TALc2nVbhlaQ=;
-        b=6oZUi3lQccefEf3BXBEk+9rchc1oqaC9Ad6vTUoUGIzwOSJengBUDx2hIhlUzXlNkOaW+A
-        3KrKiWd85JdSdmBQ==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+        bh=u1tRzLxcoMbWxvG+mukyL8m7+kfZ7rIvBFU2zqRdBCY=;
+        b=FhqAUCdVyd07m193GPDhmDCWLsDA7wnltmxS0XPHKrZjQaq93+DmqQfn5COEKlCZ5eajat
+        /bOnQV6hfVO6EcDQ==
+From:   "tip-bot2 for David Kaplan" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/topology: Rename 'DIE' domain to 'PKG'
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't used
+ at runtime
+Cc:     David Kaplan <david.kaplan@amd.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>,
         Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230712141056.GI3100107@hirez.programming.kicks-ass.net>
-References: <20230712141056.GI3100107@hirez.programming.kicks-ass.net>
+In-Reply-To: <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
+References: <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
 MIME-Version: 1.0
-Message-ID: <169713301636.3135.8978091401376991190.tip-bot2@tip-bot2>
+Message-ID: <169713303534.3135.10558074245117750218.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -70,147 +68,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+The following commit has been merged into the x86/bugs branch of tip:
 
-Commit-ID:     f577cd57bfaa889cf0718e30e92c08c7f78c9d85
-Gitweb:        https://git.kernel.org/tip/f577cd57bfaa889cf0718e30e92c08c7f78c9d85
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 12 Jul 2023 16:10:56 +02:00
+Commit-ID:     91174087dcc7565d8bf0d576544e42d5b1de6f39
+Gitweb:        https://git.kernel.org/tip/91174087dcc7565d8bf0d576544e42d5b1de6f39
+Author:        David Kaplan <david.kaplan@amd.com>
+AuthorDate:    Thu, 12 Oct 2023 16:10:31 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 12 Oct 2023 09:38:16 +02:00
+CommitterDate: Thu, 12 Oct 2023 19:44:34 +02:00
 
-sched/topology: Rename 'DIE' domain to 'PKG'
+x86/retpoline: Ensure default return thunk isn't used at runtime
 
-While reworking the x86 topology code Thomas tripped over creating a 'DIE' domain
-for the package mask. :-)
+All CPU bugs that require a return thunk define a special return thunk
+to use (e.g., srso_return_thunk).  The default thunk,
+__x86_return_thunk, should never be used after apply_returns()
+completes.  Otherwise this could lead to potential speculation holes.
 
-Since these names are CONFIG_SCHED_DEBUG=y only, rename them to make the
-name less ambiguous.
+Enforce this by replacing this thunk with a ud2 when alternatives are
+applied.  Alternative instructions are applied after apply_returns().
 
-[ Shrikanth Hegde: rename on s390 as well. ]
-[ Valentin Schneider: also rename it in the comments. ]
-[ mingo: port to recent kernels & find all remaining occurances. ]
+The default thunk is only used during kernel boot, it is not used during
+module init since that occurs after apply_returns().
 
-Reported-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: David Kaplan <david.kaplan@amd.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Valentin Schneider <vschneid@redhat.com>
-Acked-by: Mel Gorman <mgorman@suse.de>
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
-Acked-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
-Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lore.kernel.org/r/20230712141056.GI3100107@hirez.programming.kicks-ass.net
+Reviewed-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local
 ---
- arch/powerpc/kernel/smp.c   | 4 ++--
- arch/s390/kernel/topology.c | 2 +-
- arch/x86/kernel/smpboot.c   | 4 ++--
- kernel/sched/fair.c         | 2 +-
- kernel/sched/topology.c     | 8 ++++----
- 5 files changed, 10 insertions(+), 10 deletions(-)
+ arch/x86/lib/retpoline.S | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index 5826f51..4e48700 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -1051,7 +1051,7 @@ static struct sched_domain_topology_level powerpc_topology[] = {
- #endif
- 	{ shared_cache_mask, powerpc_shared_cache_flags, SD_INIT_NAME(CACHE) },
- 	{ cpu_mc_mask, SD_INIT_NAME(MC) },
--	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
-+	{ cpu_cpu_mask, SD_INIT_NAME(PKG) },
- 	{ NULL, },
- };
- 
-@@ -1595,7 +1595,7 @@ static void add_cpu_to_masks(int cpu)
- 	/* Skip all CPUs already part of current CPU core mask */
- 	cpumask_andnot(mask, cpu_online_mask, cpu_core_mask(cpu));
- 
--	/* If chip_id is -1; limit the cpu_core_mask to within DIE*/
-+	/* If chip_id is -1; limit the cpu_core_mask to within PKG */
- 	if (chip_id == -1)
- 		cpumask_and(mask, mask, cpu_cpu_mask(cpu));
- 
-diff --git a/arch/s390/kernel/topology.c b/arch/s390/kernel/topology.c
-index 68adf1d..66bda6a 100644
---- a/arch/s390/kernel/topology.c
-+++ b/arch/s390/kernel/topology.c
-@@ -522,7 +522,7 @@ static struct sched_domain_topology_level s390_topology[] = {
- 	{ cpu_coregroup_mask, cpu_core_flags, SD_INIT_NAME(MC) },
- 	{ cpu_book_mask, SD_INIT_NAME(BOOK) },
- 	{ cpu_drawer_mask, SD_INIT_NAME(DRAWER) },
--	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
-+	{ cpu_cpu_mask, SD_INIT_NAME(PKG) },
- 	{ NULL, },
- };
- 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 02765d9..e3b3e80 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -641,13 +641,13 @@ static void __init build_sched_topology(void)
- 	};
- #endif
- 	/*
--	 * When there is NUMA topology inside the package skip the DIE domain
-+	 * When there is NUMA topology inside the package skip the PKG domain
- 	 * since the NUMA domains will auto-magically create the right spanning
- 	 * domains based on the SLIT.
- 	 */
- 	if (!x86_has_numa_in_package) {
- 		x86_topology[i++] = (struct sched_domain_topology_level){
--			cpu_cpu_mask, x86_die_flags, SD_INIT_NAME(DIE)
-+			cpu_cpu_mask, x86_die_flags, SD_INIT_NAME(PKG)
- 		};
- 	}
- 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 9229051..a751e55 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -9555,7 +9555,7 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
-  * can only do it if @group is an SMT group and has exactly on busy CPU. Larger
-  * imbalances in the number of CPUS are dealt with in find_busiest_group().
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index 6376d01..fe05c13 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -356,15 +356,17 @@ SYM_FUNC_END(call_depth_return_thunk)
+  * This function name is magical and is used by -mfunction-return=thunk-extern
+  * for the compiler to generate JMPs to it.
   *
-- * If we are balancing load within an SMT core, or at DIE domain level, always
-+ * If we are balancing load within an SMT core, or at PKG domain level, always
-  * proceed.
-  *
-  * Return: true if @env::dst_cpu can do with asym_packing load balance. False
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index d950861..a63729f 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1119,7 +1119,7 @@ fail:
-  *
-  *  - Simultaneous multithreading (SMT)
-  *  - Multi-Core Cache (MC)
-- *  - Package (DIE)
-+ *  - Package (PKG)
-  *
-  * Where the last one more or less denotes everything up to a NUMA node.
-  *
-@@ -1141,13 +1141,13 @@ fail:
-  *
-  * CPU   0   1   2   3   4   5   6   7
-  *
-- * DIE  [                             ]
-+ * PKG  [                             ]
-  * MC   [             ] [             ]
-  * SMT  [     ] [     ] [     ] [     ]
-  *
-  *  - or -
-  *
-- * DIE  0-7 0-7 0-7 0-7 0-7 0-7 0-7 0-7
-+ * PKG  0-7 0-7 0-7 0-7 0-7 0-7 0-7 0-7
-  * MC	0-3 0-3 0-3 0-3 4-7 4-7 4-7 4-7
-  * SMT  0-1 0-1 2-3 2-3 4-5 4-5 6-7 6-7
-  *
-@@ -1681,7 +1681,7 @@ static struct sched_domain_topology_level default_topology[] = {
- #ifdef CONFIG_SCHED_MC
- 	{ cpu_coregroup_mask, cpu_core_flags, SD_INIT_NAME(MC) },
- #endif
--	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
-+	{ cpu_cpu_mask, SD_INIT_NAME(PKG) },
- 	{ NULL, },
- };
- 
+- * This code is only used during kernel boot or module init.  All
++ * This code is only used during kernel boot.  All
+  * 'JMP __x86_return_thunk' sites are changed to something else by
+  * apply_returns().
++ *
++ * This thunk is turned into a ud2 to ensure it is never used at runtime.
++ * Alternative instructions are applied after apply_returns().
+  */
+ SYM_CODE_START(__x86_return_thunk)
+ 	UNWIND_HINT_FUNC
+ 	ANNOTATE_NOENDBR
+-	ANNOTATE_UNRET_SAFE
+-	ret
++	ALTERNATIVE __stringify(ANNOTATE_UNRET_SAFE;ret),"ud2", X86_FEATURE_ALWAYS
+ 	int3
+ SYM_CODE_END(__x86_return_thunk)
+ EXPORT_SYMBOL(__x86_return_thunk)
