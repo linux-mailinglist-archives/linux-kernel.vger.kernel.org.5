@@ -2,229 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B14AD7C6C91
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56D47C6CAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377702AbjJLLks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:40:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
+        id S1378176AbjJLLqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347190AbjJLLko (ORCPT
+        with ESMTP id S1347180AbjJLLqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:40:44 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E3A394
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 04:40:42 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39CBeEJx047419;
-        Thu, 12 Oct 2023 06:40:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697110814;
-        bh=86JNobGYVcRaYcmgXkBHX9h9OSB9+MmhNELVhZ1N55c=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=QrKhQrHVHdJpgFelBS5ZwMX2uZ+J2hqVUqoFeMhJEcJdWQXldYAihm3Rn11skZ/XB
-         sBKyicCXZQ3MV+M8UOK2pnDE4mDAaN5++po8p93ejEPeVjp7woagJpxzZKeTjPhWo5
-         C1QrreZ8Llhe3/Mv2E6lyZoWpY3JJInhh41jbL+A=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39CBeEoG009100
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Oct 2023 06:40:14 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 12
- Oct 2023 06:40:14 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 12 Oct 2023 06:40:13 -0500
-Received: from [10.249.129.148] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39CBe7nP017559;
-        Thu, 12 Oct 2023 06:40:08 -0500
-Message-ID: <c9f17f9e-b9b5-9685-30ca-6a7d041dd8aa@ti.com>
-Date:   Thu, 12 Oct 2023 17:10:06 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] drm/tidss: Power up attached PM domains on probe
-Content-Language: en-US
-To:     <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <tzimmermann@suse.de>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <praneeth@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
-        <a-bhatia1@ti.com>, <j-luthra@ti.com>, <r-ravikumar@ti.com>,
-        <j-choudhary@ti.com>
-References: <20231009075018.2836020-1-devarsht@ti.com>
-From:   Devarsh Thakkar <devarsht@ti.com>
-In-Reply-To: <20231009075018.2836020-1-devarsht@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+        Thu, 12 Oct 2023 07:46:16 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAACBCC;
+        Thu, 12 Oct 2023 04:46:14 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CBOmjh010283;
+        Thu, 12 Oct 2023 11:45:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=GMq/d8wIlIS5b1XWrY/cIZlJoPlyP6hi04BzV3FkFXM=;
+ b=fu3U2FopfA3Dlqs10vcjjZpIst75vfvR5lBTTSKrsETmsa00Xbjwway2p6nYbZz+uA90
+ GpnXBZ9zeg92ifwT0LqyvlElhlaVjhJMglq8oLiy4eSm0c5mrqPe9kLZFi9Up9axgYit
+ cFSQdQ2iRKbCsDXutPyihcqstXnUu4VDU9hK8O8Gdd6e2vEnBJB1NpkqQm5YluoKN6A5
+ 8Z01zNmrp8YQnishReUrUksTWU3eQ01VMuH6jdICDVFh8XMGwDVUSt3uwvN6uJ5BUOHl
+ DRsYD3uRlCk3SBzqvNjH/IU6oLrD75mpLuY/ipCPb7MunOxocNaqnoAAiepBXeu5uovY Pw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpfwfghyc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 11:45:47 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39CBQ5Sv013256;
+        Thu, 12 Oct 2023 11:45:41 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpfwfgg5b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 11:45:40 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39C8ZxXn023015;
+        Thu, 12 Oct 2023 11:43:02 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkmc1xpc5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 11:43:02 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CBh20k20251240
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Oct 2023 11:43:02 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 121915805C;
+        Thu, 12 Oct 2023 11:43:02 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3C8358054;
+        Thu, 12 Oct 2023 11:42:59 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.11.225])
+        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 12 Oct 2023 11:42:59 +0000 (GMT)
+Message-ID: <c16551704db68c6e0ba89c729c892e9401f05dfc.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 02/25] ima: Align ima_post_path_mknod() definition
+ with LSM infrastructure
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Thu, 12 Oct 2023 07:42:57 -0400
+In-Reply-To: <16c8c95f2e63ab9a2fba8cba919bf129d0541b61.camel@huaweicloud.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904133415.1799503-3-roberto.sassu@huaweicloud.com>
+         <a733fe780a3197150067ad35ed280bf85e11fa97.camel@linux.ibm.com>
+         <b51baf7741de1fdee8b36a87bd2dde71184d47a8.camel@huaweicloud.com>
+         <8646e30b0074a2932076b5a0a792b14be034de98.camel@linux.ibm.com>
+         <16c8c95f2e63ab9a2fba8cba919bf129d0541b61.camel@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: LUux3OQCoy9lLLXSKwKkWHuSxhf9fHk0
+X-Proofpoint-ORIG-GUID: YlUmG3rxxU8JRB8hFOLPGa-Ek4CN4jHZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ lowpriorityscore=0 malwarescore=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 clxscore=1015 mlxscore=0 spamscore=0 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310120095
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 09/10/23 13:20, Devarsh Thakkar wrote:
-> Some SoC's such as AM62P have dedicated power domains
-> for OLDI which need to be powered on separetely along
-> with display controller.
+On Thu, 2023-10-12 at 09:29 +0200, Roberto Sassu wrote:
+> On Wed, 2023-10-11 at 15:01 -0400, Mimi Zohar wrote:
+> > On Wed, 2023-10-11 at 18:02 +0200, Roberto Sassu wrote:
+> > > On Wed, 2023-10-11 at 10:38 -0400, Mimi Zohar wrote:
+> > > > On Mon, 2023-09-04 at 15:33 +0200, Roberto Sassu wrote:
+> > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > > 
+> > > > > Change ima_post_path_mknod() definition, so that it can be registered as
+> > > > > implementation of the path_post_mknod hook. Since LSMs see a umask-stripped
+> > > > > mode from security_path_mknod(), pass the same to ima_post_path_mknod() as
+> > > > > well.
+> > > > > Also, make sure that ima_post_path_mknod() is executed only if
+> > > > > (mode & S_IFMT) is equal to zero or S_IFREG.
+> > > > > 
+> > > > > Add this check to take into account the different placement of the
+> > > > > path_post_mknod hook (to be introduced) in do_mknodat().
+> > > > 
+> > > > Move "(to be introduced)" to when it is first mentioned.
+> > > > 
+> > > > > Since the new hook
+> > > > > will be placed after the switch(), the check ensures that
+> > > > > ima_post_path_mknod() is invoked as originally intended when it is
+> > > > > registered as implementation of path_post_mknod.
+> > > > > 
+> > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > > ---
+> > > > >  fs/namei.c                        |  9 ++++++---
+> > > > >  include/linux/ima.h               |  7 +++++--
+> > > > >  security/integrity/ima/ima_main.c | 10 +++++++++-
+> > > > >  3 files changed, 20 insertions(+), 6 deletions(-)
+> > > > > 
+> > > > > diff --git a/fs/namei.c b/fs/namei.c
+> > > > > index e56ff39a79bc..c5e96f716f98 100644
+> > > > > --- a/fs/namei.c
+> > > > > +++ b/fs/namei.c
+> > > > > @@ -4024,6 +4024,7 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+> > > > >  	struct path path;
+> > > > >  	int error;
+> > > > >  	unsigned int lookup_flags = 0;
+> > > > > +	umode_t mode_stripped;
+> > > > >  
+> > > > >  	error = may_mknod(mode);
+> > > > >  	if (error)
+> > > > > @@ -4034,8 +4035,9 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+> > > > >  	if (IS_ERR(dentry))
+> > > > >  		goto out1;
+> > > > >  
+> > > > > -	error = security_path_mknod(&path, dentry,
+> > > > > -			mode_strip_umask(path.dentry->d_inode, mode), dev);
+> > > > > +	mode_stripped = mode_strip_umask(path.dentry->d_inode, mode);
+> > > > > +
+> > > > > +	error = security_path_mknod(&path, dentry, mode_stripped, dev);
+> > > > >  	if (error)
+> > > > >  		goto out2;
+> > > > >  
+> > > > > @@ -4045,7 +4047,8 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+> > > > >  			error = vfs_create(idmap, path.dentry->d_inode,
+> > > > >  					   dentry, mode, true);
+> > > > >  			if (!error)
+> > > > > -				ima_post_path_mknod(idmap, dentry);
+> > > > > +				ima_post_path_mknod(idmap, &path, dentry,
+> > > > > +						    mode_stripped, dev);
+> > > > >  			break;
+> > > > >  		case S_IFCHR: case S_IFBLK:
+> > > > >  			error = vfs_mknod(idmap, path.dentry->d_inode,
+> > > > > diff --git a/include/linux/ima.h b/include/linux/ima.h
+> > > > > index 910a2f11a906..179ce52013b2 100644
+> > > > > --- a/include/linux/ima.h
+> > > > > +++ b/include/linux/ima.h
+> > > > > @@ -32,7 +32,8 @@ extern int ima_read_file(struct file *file, enum kernel_read_file_id id,
+> > > > >  extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
+> > > > >  			      enum kernel_read_file_id id);
+> > > > >  extern void ima_post_path_mknod(struct mnt_idmap *idmap,
+> > > > > -				struct dentry *dentry);
+> > > > > +				const struct path *dir, struct dentry *dentry,
+> > > > > +				umode_t mode, unsigned int dev);
+> > > > >  extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
+> > > > >  extern int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size);
+> > > > >  extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
+> > > > > @@ -114,7 +115,9 @@ static inline int ima_post_read_file(struct file *file, void *buf, loff_t size,
+> > > > >  }
+> > > > >  
+> > > > >  static inline void ima_post_path_mknod(struct mnt_idmap *idmap,
+> > > > > -				       struct dentry *dentry)
+> > > > > +				       const struct path *dir,
+> > > > > +				       struct dentry *dentry,
+> > > > > +				       umode_t mode, unsigned int dev)
+> > > > >  {
+> > > > >  	return;
+> > > > >  }
+> > > > > diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> > > > > index 365db0e43d7c..76eba92d7f10 100644
+> > > > > --- a/security/integrity/ima/ima_main.c
+> > > > > +++ b/security/integrity/ima/ima_main.c
+> > > > > @@ -696,18 +696,26 @@ void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+> > > > >  /**
+> > > > >   * ima_post_path_mknod - mark as a new inode
+> > > > >   * @idmap: idmap of the mount the inode was found from
+> > > > > + * @dir: path structure of parent of the new file
+> > > > >   * @dentry: newly created dentry
+> > > > > + * @mode: mode of the new file
+> > > > > + * @dev: undecoded device number
+> > > > >   *
+> > > > >   * Mark files created via the mknodat syscall as new, so that the
+> > > > >   * file data can be written later.
+> > > > >   */
+> > > > >  void ima_post_path_mknod(struct mnt_idmap *idmap,
+> > > > > -			 struct dentry *dentry)
+> > > > > +			 const struct path *dir, struct dentry *dentry,
+> > > > > +			 umode_t mode, unsigned int dev)
+> > > > >  {
+> > > > >  	struct integrity_iint_cache *iint;
+> > > > >  	struct inode *inode = dentry->d_inode;
+> > > > >  	int must_appraise;
+> > > > >  
+> > > > > +	/* See do_mknodat(), IMA is executed for case 0: and case S_IFREG: */
+> > > > > +	if ((mode & S_IFMT) != 0 && (mode & S_IFMT) != S_IFREG)
+> > > > > +		return;
+> > > > > +
+> > > > 
+> > > > There's already a check below to make sure that this is a regular file.
+> > > > Are both needed?
+> > > 
+> > > You are right, I can remove the first check.
+> > 
+> > The question then becomes why modify hook the arguments?   
 > 
-> So during driver probe, power up all attached PM domains
-> enumerated in devicetree node for DSS.
+> We need to make sure that ima_post_path_mknod() has the same parameters
+> as the LSM hook at the time we register it to the LSM infrastructure.
+
+I'm trying to understand why the pre hook parameters and the missing
+IMA parameter are used, as opposed to just defining the new
+post_path_mknod hook like IMA.
+
+thanks,
+
+Mimi
+
 > 
-> This also prepares base to add display support for AM62P.
+> > > 
+> > > > >  	if (!ima_policy_flag || !S_ISREG(inode->i_mode))
+> > > > >  		return;
+> > > > >  
+> > > 
+> > 
 > 
 
-NAK, for this patch, as discussed with team there are already plans
-to have separate OLDI bridge driver which should eventually handle
-the additional power domains.
 
-Sorry for the noise.
-
-Regards
-Devarsh
-> Signed-off-by: Devarsh Thakkar <devarsht@ti.com> > ---
->   drivers/gpu/drm/tidss/tidss_drv.c | 76 +++++++++++++++++++++++++++++++
->   drivers/gpu/drm/tidss/tidss_drv.h |  5 ++
->   2 files changed, 81 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/tidss/tidss_drv.c b/drivers/gpu/drm/tidss/tidss_drv.c
-> index 4d063eb9cd0b..a703a27d17bf 100644
-> --- a/drivers/gpu/drm/tidss/tidss_drv.c
-> +++ b/drivers/gpu/drm/tidss/tidss_drv.c
-> @@ -8,6 +8,7 @@
->   #include <linux/of.h>
->   #include <linux/module.h>
->   #include <linux/pm_runtime.h>
-> +#include <linux/pm_domain.h>
->   
->   #include <drm/drm_atomic.h>
->   #include <drm/drm_atomic_helper.h>
-> @@ -114,6 +115,72 @@ static const struct drm_driver tidss_driver = {
->   	.minor			= 0,
->   };
->   
-> +static int tidss_detach_pm_domains(struct tidss_device *tidss)
-> +{
-> +	int i;
-> +
-> +	if (tidss->num_domains <= 1)
-> +		return 0;
-> +
-> +	for (i = 0; i < tidss->num_domains; i++) {
-> +		if (tidss->pd_link[i] && !IS_ERR(tidss->pd_link[i]))
-> +			device_link_del(tidss->pd_link[i]);
-> +		if (tidss->pd_dev[i] && !IS_ERR(tidss->pd_dev[i]))
-> +			dev_pm_domain_detach(tidss->pd_dev[i], true);
-> +		tidss->pd_dev[i] = NULL;
-> +		tidss->pd_link[i] = NULL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int tidss_attach_pm_domains(struct tidss_device *tidss)
-> +{
-> +	struct device *dev = tidss->dev;
-> +	int i;
-> +	int ret;
-> +	struct platform_device *pdev = to_platform_device(dev);
-> +	struct device_node *np = pdev->dev.of_node;
-> +
-> +	tidss->num_domains = of_count_phandle_with_args(np, "power-domains",
-> +							"#power-domain-cells");
-> +	if (tidss->num_domains <= 1) {
-> +		dev_dbg(dev, "One or less power domains, no need to do attach domains\n");
-> +		return 0;
-> +	}
-> +
-> +	tidss->pd_dev = devm_kmalloc_array(dev, tidss->num_domains,
-> +					   sizeof(*tidss->pd_dev), GFP_KERNEL);
-> +	if (!tidss->pd_dev)
-> +		return -ENOMEM;
-> +
-> +	tidss->pd_link = devm_kmalloc_array(dev, tidss->num_domains,
-> +					    sizeof(*tidss->pd_link), GFP_KERNEL);
-> +	if (!tidss->pd_link)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < tidss->num_domains; i++) {
-> +		tidss->pd_dev[i] = dev_pm_domain_attach_by_id(dev, i);
-> +		if (IS_ERR(tidss->pd_dev[i])) {
-> +			ret = PTR_ERR(tidss->pd_dev[i]);
-> +			goto fail;
-> +		}
-> +
-> +		tidss->pd_link[i] = device_link_add(dev, tidss->pd_dev[i],
-> +						    DL_FLAG_STATELESS |
-> +						    DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE);
-> +		if (!tidss->pd_link[i]) {
-> +			ret = -EINVAL;
-> +			goto fail;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +fail:
-> +	tidss_detach_pm_domains(tidss);
-> +	return ret;
-> +}
-> +
->   static int tidss_probe(struct platform_device *pdev)
->   {
->   	struct device *dev = &pdev->dev;
-> @@ -136,6 +203,13 @@ static int tidss_probe(struct platform_device *pdev)
->   
->   	platform_set_drvdata(pdev, tidss);
->   
-> +	/* powering up associated OLDI domains */
-> +	ret = tidss_attach_pm_domains(tidss);
-> +	if (ret < 0) {
-> +		dev_err(dev, "failed to attach power domains %d\n", ret);
-> +		return ret;
-> +	}
-> +
->   	ret = dispc_init(tidss);
->   	if (ret) {
->   		dev_err(dev, "failed to initialize dispc: %d\n", ret);
-> @@ -193,6 +267,7 @@ static int tidss_probe(struct platform_device *pdev)
->   	dispc_runtime_suspend(tidss->dispc);
->   #endif
->   	pm_runtime_disable(dev);
-> +	tidss_detach_pm_domains(tidss);
->   
->   	return ret;
->   }
-> @@ -220,6 +295,7 @@ static void tidss_remove(struct platform_device *pdev)
->   	/* devm allocated dispc goes away with the dev so mark it NULL */
->   	dispc_remove(tidss);
->   
-> +	tidss_detach_pm_domains(tidss);
->   	dev_dbg(dev, "%s done\n", __func__);
->   }
->   
-> diff --git a/drivers/gpu/drm/tidss/tidss_drv.h b/drivers/gpu/drm/tidss/tidss_drv.h
-> index d7f27b0b0315..3c8b37b3aba6 100644
-> --- a/drivers/gpu/drm/tidss/tidss_drv.h
-> +++ b/drivers/gpu/drm/tidss/tidss_drv.h
-> @@ -31,6 +31,11 @@ struct tidss_device {
->   
->   	spinlock_t wait_lock;	/* protects the irq masks */
->   	dispc_irq_t irq_mask;	/* enabled irqs in addition to wait_list */
-> +
-> +	int num_domains; /* Handle attached PM domains */
-> +	struct device **pd_dev;
-> +	struct device_link **pd_link;
-> +
->   };
->   
->   #define to_tidss(__dev) container_of(__dev, struct tidss_device, ddev)
