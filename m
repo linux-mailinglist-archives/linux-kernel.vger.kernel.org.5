@@ -2,69 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F467C7371
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052AC7C7374
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379320AbjJLQte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
+        id S1379493AbjJLQua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343912AbjJLQtd (ORCPT
+        with ESMTP id S235728AbjJLQu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:49:33 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF202BE
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:49:29 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c9d4f08d7cso4585ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:49:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697129369; x=1697734169; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9+ity2qTw7r/kpXykK9MCuhfw80NyC/9PfFPohTRZ0k=;
-        b=t7NBqbrdqprkqmjSs3M5nkgFSeB+GAwjqeb1/xsqUo1U2BbITMeUPNLnaC7TMgQmtl
-         K47tjTcfhLlDjdrKKYHbibXNF2cjz3P8y9+vrG4A2t4qfxbuRdeHCEXCvV1zBbBsjjlS
-         NfbE9tnsewPxKdCkKE1+ARx9X7bXIjWyrT+98gsG9ToGKcr47HvFfo4+mJ5irYfHV1pB
-         aL5Be8LH9NuPv9pPYBd7gXHNBWy3AGm0OLkEeSaz/SLWqQBcyCyBiohg5o1jyZxSy59h
-         D3kkX4udwURNc9+d0H/Boo0jEvq2idtTBYzVIhcU7QHJoMJPNxInaOaeES+Gt6eGA1O3
-         ZagQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697129369; x=1697734169;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9+ity2qTw7r/kpXykK9MCuhfw80NyC/9PfFPohTRZ0k=;
-        b=o4josflVXuvNGFaq4KatR9On+RNWadw1VHyhNUUkr9I62Zr6wiaz9lzf9SmMVnCDuW
-         sxWD8ePvvByi14zWZi+WqAB3JwqUuaLSmshhWvh6Zw63A4c/n73AZu8vPNFYfS/lyUOI
-         Z+xl4W/KaneNQTK4V3pqc71XV3CRbgh5SQFvRFSLst7oMGntHhGXhpHX8ogmEVmznu5t
-         l0cMXNfLfpFIhGROHtlNdxO9Du6Fx+K3k4I9s8L9NztEQg6mgEs40UzopwgyXvSvhvnI
-         zGKmFwowfOUSRxqscPlA6SAeJi4+1HCrrkfB58T39k4oIU3tXPlQa6QVb8qDn71gAwbb
-         vW3g==
-X-Gm-Message-State: AOJu0YyUxKWyyu8zTdMdb6e3gC0fCOZdmGlqnPbI+7gvFqIA6ls7bR3f
-        cbCw+PMa0x3jYAQ7AJ5Azsbxd9smHsxuY8dAwMRvMg==
-X-Google-Smtp-Source: AGHT+IEkh2osPD0bI28v9aMSShgDDKs5Lo9FYv9+wqXCGF/dtjKcb0biTQ2kHFhXhOmi20vmy2QIafWABrspTiXnehs=
-X-Received: by 2002:a17:902:f68c:b0:1c4:1392:e4b5 with SMTP id
- l12-20020a170902f68c00b001c41392e4b5mr489049plg.21.1697129369120; Thu, 12 Oct
- 2023 09:49:29 -0700 (PDT)
+        Thu, 12 Oct 2023 12:50:29 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1ABBE;
+        Thu, 12 Oct 2023 09:50:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6y1wB+wLmbd3DnNxETvQ+qCVK9s9E8u1DdnwFwmSGKc=; b=3Evlr9KoSDHi22us3TUTb+Fiyd
+        gpw+vQLph7yAIUkkXcLUqlYn6cWIAUPdtGWauTTIyuMru/9b6Fpqw2kSlok3vm+PyhsPpNckmHPl7
+        eYJIj5eVzmazuqs/5C1p7XZY7nBlj66Az8VFEVFwgx98zi1pBh553mqSYysImTi6L5R+8W8UTwCgp
+        ovUGic/6YcYy833JjclTyb8KHJwHjkMiIvikmnZ067/eCewx2XLGsFU/UdrzetMW62sjIfQcsRd+9
+        Y/za7hzSia8NxG/hekMKqNR0ospFPvJneh96OYcuV35sOaSCB2yx73EJIfVqYzyIH78cgU6w4Ggbn
+        FuS0O7KA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qqytH-001SdC-2n;
+        Thu, 12 Oct 2023 16:50:27 +0000
+Date:   Thu, 12 Oct 2023 09:50:27 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Joey Jiao <quic_jiangenj@quicinc.com>
+Cc:     linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] module: Add CONFIG_MODULE_DISABLE_INIT_FREE option
+Message-ID: <ZSgj02JtR+Hkc5qz@bombadil.infradead.org>
+References: <20231012014012.9030-1-quic_jiangenj@quicinc.com>
 MIME-Version: 1.0
-References: <0000000000008d231506067f6a78@google.com> <20230929133644.2072910-1-nogikh@google.com>
-In-Reply-To: <20230929133644.2072910-1-nogikh@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Thu, 12 Oct 2023 18:49:17 +0200
-Message-ID: <CANp29Y6O9Fwqn8YrTehriz2nujpasSpsECqofWFZwSdp5JHdVw@mail.gmail.com>
-Subject: Re: [syzbot] upstream boot error: can't ssh into the instance (15)
-To:     syzbot+be9661ba81a9c1cf6b15@syzkaller.appspotmail.com
-Cc:     linux-kernel@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        airlied@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, dvyukov@google.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012014012.9030-1-quic_jiangenj@quicinc.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,195 +50,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the record: the problems were solved by switching to qemu v8.
+On Thu, Oct 12, 2023 at 07:10:11AM +0530, Joey Jiao wrote:
+> To facilitate syzkaller test, it's essential for the module to retain the same
+> address across reboots.
 
-#syz invalid
+Why?
 
-On Fri, Sep 29, 2023 at 3:36=E2=80=AFPM Aleksandr Nogikh <nogikh@google.com=
-> wrote:
->
->
-> On Fri, Sep 29, 2023 at 3:29 PM syzbot <syzbot+be9661ba81a9c1cf6b15@syzka=
-ller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    9ed22ae6be81 Merge tag 'spi-fix-v6.6-rc3' of git://git.=
-ker..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D14b37a7c680=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dd4bdf71ec9a=
-ec6cc
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dbe9661ba81a9c=
-1cf6b15
-> > compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld=
- (GNU Binutils for Debian) 2.40
-> > userspace arch: arm64
-> >
-> > Downloadable assets:
-> > disk image (non-bootable): https://storage.googleapis.com/syzbot-assets=
-/384ffdcca292/non_bootable_disk-9ed22ae6.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/2c3d5eea45bd/vmli=
-nux-9ed22ae6.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/54444f361432=
-/Image-9ed22ae6.gz.xz
->
-> This appears on qemu-system-aarch64 with virt,virtualization=3Don,mte=3Do=
-n,graphics=3Don,usb=3Don.
->
-> I've run it locally using the assets above and it seems there are actuall=
-y two problems behind the report.
->
-> 1) For some reason, v7.2 of qemu-system-aarch64 just hangs with "-smp 2" =
-and prints no output.
->
-> Interestingly, it all works fine on qemu v8.0.4, so I don't know if it's =
-a qemu or a kernel problem.
-> Qemu v8 is unfortunately still too new for many distributions (we use deb=
-ian:bookworm on syzbot
-> and v7.2 is the latest there).
->
-> 2) If I set "-smp 1", it begins to boot, but quickly fails with several m=
-essages. First with
->
-> [    0.000000][    T0] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [    0.000000][    T0] BUG: KASAN: slab-out-of-bounds in __kasan_slab_all=
-oc+0x7c/0xcc
-> [    0.000000][    T0] Read at addr fcff000002c01008 by task swapper/0
-> [    0.000000][    T0] Pointer tag: [fc], memory tag: [f5]
-> [    0.000000][    T0]
-> [    0.000000][    T0] CPU: 0 PID: 0 Comm: swapper Not tainted 6.6.0-rc3-=
-syzkaller-00055-g9ed22ae6be81 #0
-> [    0.000000][    T0] Hardware name: linux,dummy-virt (DT)
-> [    0.000000][    T0] Call trace:
-> [    0.000000][    T0]  dump_backtrace+0x94/0xec
-> [    0.000000][    T0]  show_stack+0x18/0x24
-> [    0.000000][    T0]  dump_stack_lvl+0x48/0x60
-> [    0.000000][    T0]  print_report+0x108/0x618
-> [    0.000000][    T0]  kasan_report+0x88/0xac
-> [    0.000000][    T0]  __do_kernel_fault+0x17c/0x1e8
-> [    0.000000][    T0]  do_tag_check_fault+0x78/0x8c
-> [    0.000000][    T0]  do_mem_abort+0x44/0x94
-> [    0.000000][    T0]  el1_abort+0x40/0x60
-> [    0.000000][    T0]  el1h_64_sync_handler+0xd8/0xe4
-> [    0.000000][    T0]  el1h_64_sync+0x64/0x68
-> [    0.000000][    T0]  __kasan_slab_alloc+0x7c/0xcc
-> [    0.000000][    T0]  kmem_cache_alloc+0x144/0x290
-> [    0.000000][    T0]  bootstrap+0x2c/0x174
-> [    0.000000][    T0]  kmem_cache_init+0x144/0x1c8
-> [    0.000000][    T0]  mm_core_init+0x240/0x2d4
-> [    0.000000][    T0]  start_kernel+0x220/0x5fc
-> [    0.000000][    T0]  __primary_switched+0xb4/0xbc
-> [    0.000000][    T0]
-> [    0.000000][    T0] Allocated by task 0:
-> [    0.000000][    T0]  kasan_save_stack+0x3c/0x64
-> [    0.000000][    T0]  save_stack_info+0x38/0x118
-> [    0.000000][    T0]  kasan_save_alloc_info+0x14/0x20
-> [    0.000000][    T0]  __kasan_slab_alloc+0x94/0xcc
-> [    0.000000][    T0]  kmem_cache_alloc+0x144/0x290
-> [    0.000000][    T0]  bootstrap+0x2c/0x174
-> [    0.000000][    T0]  kmem_cache_init+0x134/0x1c8
-> [    0.000000][    T0]  mm_core_init+0x240/0x2d4
-> [    0.000000][    T0]  start_kernel+0x220/0x5fc
-> [    0.000000][    T0]  __primary_switched+0xb4/0xbc
-> [    0.000000][    T0]
-> [    0.000000][    T0] The buggy address belongs to the object at ffff000=
-002c01000
-> [    0.000000][    T0]  which belongs to the cache kmem_cache of size 208
-> [    0.000000][    T0] The buggy address is located 8 bytes inside of
-> [    0.000000][    T0]  208-byte region [ffff000002c01000, ffff000002c010=
-d0)
-> [    0.000000][    T0]
-> [    0.000000][    T0] The buggy address belongs to the physical page:
-> [    0.000000][    T0] page:(____ptrval____) refcount:1 mapcount:0 mappin=
-g:0000000000000000 index:0x0 pfn:0x42c01
-> [    0.000000][    T0] flags: 0x1ffc00000000800(slab|node=3D0|zone=3D0|la=
-stcpupid=3D0x7ff|kasantag=3D0x0)
-> [    0.000000][    T0] page_type: 0xffffffff()
-> [    0.000000][    T0] raw: 01ffc00000000800 fcff000002c01000 dead0000000=
-00100 dead000000000122
-> [    0.000000][    T0] raw: 0000000000000000 0000000080100010 00000001fff=
-fffff 0000000000000000
-> [    0.000000][    T0] page dumped because: kasan: bad access detected
-> [    0.000000][    T0]
-> [    0.000000][    T0] Memory state around the buggy address:
-> [    0.000000][    T0]  ffff000002c00e00: f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f=
-0 f0 f0 f0 f0 f0
-> [    0.000000][    T0]  ffff000002c00f00: f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f=
-0 f0 f0 f0 f0 f0
-> [    0.000000][    T0] >ffff000002c01000: f5 f5 f5 f5 f5 f5 f5 f5 f5 f5 f=
-5 f5 f5 f5 f5 f5
-> [    0.000000][    T0]                    ^
-> [    0.000000][    T0]  ffff000002c01100: f5 f5 f5 f5 f5 f5 f5 f5 f5 f5 f=
-5 f5 f5 f5 f5 f5
-> [    0.000000][    T0]  ffff000002c01200: f5 f5 f5 f5 f5 f5 f5 f5 f5 f5 f=
-5 f5 f5 f5 f5 f5
-> [    0.000000][    T0] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> And then with
->
-> [    8.765595][    T1] ------------[ cut here ]------------
-> [    8.766137][    T1] WARNING: CPU: 0 PID: 1 at drivers/gpu/drm/drm_mana=
-ged.c:133 drmm_add_final_kfree+0x7c/0x98
-> [    8.767715][    T1] Modules linked in:
-> [    8.768946][    T1] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G    B     =
-         6.6.0-rc3-syzkaller-00055-g9ed22ae6be81 #0
-> [    8.769970][    T1] Hardware name: linux,dummy-virt (DT)
-> [    8.770655][    T1] pstate: 20400009 (nzCv daif +PAN -UAO -TCO -DIT -S=
-SBS BTYPE=3D--)
-> [    8.771383][    T1] pc : drmm_add_final_kfree+0x7c/0x98
-> [    8.771878][    T1] lr : drmm_add_final_kfree+0x30/0x98
-> [    8.772388][    T1] sp : ffff80008000bcd0
-> [    8.772772][    T1] x29: ffff80008000bcd0 x28: 0000000000000000 x27: f=
-fff8000823c6068
-> [    8.773750][    T1] x26: ffff8000822c00b0 x25: ffff8000821eed90 x24: f=
-fff800082299df0
-> [    8.774586][    T1] x23: ffff8000823c6078 x22: faff000003c53010 x21: 0=
-000000000000000
-> [    8.775410][    T1] x20: f6ff000003850800 x19: f6ff000003850800 x18: f=
-fffffffffffffff
-> [    8.776238][    T1] x17: ffff80008082a678 x16: ffff8000808dbae8 x15: f=
-fff8000808db33c
-> [    8.777061][    T1] x14: ffff800080248568 x13: ffff800080015698 x12: f=
-fff800081893acc
-> [    8.777884][    T1] x11: ffff8000822c110c x10: ffff8000800145b4 x9 : f=
-fff8000802b8dcc
-> [    8.778747][    T1] x8 : ffff80008000bc90 x7 : 0000000000000000 x6 : 0=
-000000000008000
-> [    8.779554][    T1] x5 : f1ff000003794f00 x4 : 0000000000000000 x3 : 0=
-000000000000020
-> [    8.780369][    T1] x2 : 0000000000000000 x1 : f6ff000003850e38 x0 : f=
-6ff000003850800
-> [    8.781301][    T1] Call trace:
-> [    8.781667][    T1]  drmm_add_final_kfree+0x7c/0x98
-> [    8.782209][    T1]  __devm_drm_dev_alloc+0xb4/0xd4
-> [    8.782692][    T1]  vgem_init+0xac/0x140
-> [    8.783141][    T1]  do_one_initcall+0x80/0x1c4
-> [    8.783614][    T1]  kernel_init_freeable+0x1c8/0x290
-> [    8.784114][    T1]  kernel_init+0x24/0x1e0
-> [    8.784556][    T1]  ret_from_fork+0x10/0x20
-> [    8.785109][    T1] ---[ end trace 0000000000000000 ]---
->
-> For what it's worth, here are the commands I used to boot qemu:
->
-> $ cd /tmp
-> $ wget -O - 'https://storage.googleapis.com/syzbot-assets/7153da9da559/Im=
-age-9ed22ae6.gz.xz' | unxz > Image-9ed22ae6
-> $ wget -O - 'https://storage.googleapis.com/syzbot-assets/384ffdcca292/no=
-n_bootable_disk-9ed22ae6.raw.xz' | unxz > non_bootable_disk-9ed22ae6.raw
-> $ qemu-system-aarch64 -machine virt,virtualization=3Don,mte=3Don,graphics=
-=3Don,usb=3Don -cpu max -smp 1 -m 2048 -display none -serial stdio -drive f=
-ile=3D/tmp/non_bootable_disk-9ed22ae6.raw,if=3Dnone,format=3Draw,id=3Dhd0 -=
-device virtio-blk-device,drive=3Dhd0 -snapshot -kernel /tmp/Image-9ed22ae6
->
->
-> I'll tag the report as follows, feel free to update.
->
-> #syz set subsystems: arm, dri
+> In userspace, the execution of modprobe commands must
+> occur sequentially.
+
+Why?
+
+> In the kernel, selecting the CONFIG_MODULE_DISABLE_INIT_FREE
+> option disables the asynchronous freeing of init sections.
+
+No it does not.
+
+> Signed-off-by: Joey Jiao <quic_jiangenj@quicinc.com>
+> ---
+>  kernel/module/Kconfig | 8 ++++++++
+>  kernel/module/main.c  | 5 +++--
+>  2 files changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/module/Kconfig b/kernel/module/Kconfig
+> index 33a2e991f608..1cdbee4c51de 100644
+> --- a/kernel/module/Kconfig
+> +++ b/kernel/module/Kconfig
+> @@ -389,4 +389,12 @@ config MODULES_TREE_LOOKUP
+>  	def_bool y
+>  	depends on PERF_EVENTS || TRACING || CFI_CLANG
+>  
+> +config MODULE_DISABLE_INIT_FREE
+> +	bool "Disable freeing of init sections"
+> +	default n
+> +	help
+> +	  Allows users to prevent the freeing of init sections. This option is
+> +	  particularly helpful for syzkaller fuzzing, ensuring that the module
+> +	  consistently loads into the same address across reboots.
+> +
+>  endif # MODULES
+> diff --git a/kernel/module/main.c b/kernel/module/main.c
+> index 98fedfdb8db5..a5210b90c078 100644
+> --- a/kernel/module/main.c
+> +++ b/kernel/module/main.c
+> @@ -2593,8 +2593,9 @@ static noinline int do_init_module(struct module *mod)
+>  	 * be cleaned up needs to sync with the queued work - ie
+>  	 * rcu_barrier()
+>  	 */
+> -	if (llist_add(&freeinit->node, &init_free_list))
+> -		schedule_work(&init_free_wq);
+> +	if (llist_add(&freeinit->node, &init_free_list) &&
+> +		!IS_ENABLED(CONFIG_MODULE_DISABLE_INIT_FREE))
+> +			schedule_work(&init_free_wq);
+
+llist_add() returns true if the list was empty prior to adding the
+entry, so the functionality you are adding makes no sense with the
+commit log in any way shape or form.
+
+  Luis
