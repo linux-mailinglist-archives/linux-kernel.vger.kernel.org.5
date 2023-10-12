@@ -2,137 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 406A37C7331
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB5E7C7334
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344064AbjJLQj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59424 "EHLO
+        id S1379324AbjJLQjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344027AbjJLQj0 (ORCPT
+        with ESMTP id S1347190AbjJLQjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:39:26 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB89CA9;
-        Thu, 12 Oct 2023 09:39:23 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39CGd46D036926;
-        Thu, 12 Oct 2023 11:39:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697128744;
-        bh=8qGWk2MmoYlEABHB+jdRa8pwXPRY/VwhT1ctiVDXyao=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=BoKu7lrEik3wHsUbwCsTLP4bX3r3Hno9g5mdyv3kjTgcIZWUbSk1EgXKuA4yRxVMX
-         lwjd0o6vk/QAl58BHsuyuG30U6VBDCOWEdVbUsCWARXzawx+5ProUGpBapM6L5xDcx
-         58rv8/SsVpqeyo5l4vFm43Mdc+nl82ciOqTp1fR8=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39CGd4ws081254
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Oct 2023 11:39:04 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 12
- Oct 2023 11:39:03 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 12 Oct 2023 11:39:03 -0500
-Received: from [10.249.135.225] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39CGcxOT025695;
-        Thu, 12 Oct 2023 11:39:00 -0500
-Message-ID: <2d524100-7e34-7869-5e90-415614b767f3@ti.com>
-Date:   Thu, 12 Oct 2023 22:08:58 +0530
+        Thu, 12 Oct 2023 12:39:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6595D8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:39:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 256E0C433C8;
+        Thu, 12 Oct 2023 16:39:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697128778;
+        bh=nmKoxXIpfilzAZLTQAUFdY/ZQ+BuKyRRQ73Ee6ZQiiA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ebsMJVckreTvHUZVjLCuOTn9Wp8fV/+EF1ukRSr9CPFnwEfMFBG5/w/qpDTO+dVgK
+         zNmdKE9/Lrs31IpLCU9hPX2obqlst/bhu4JjbHEFaHEvepsfMn1405ZSTyqPQmUPf1
+         eo3A8iBlCJzL9DqU89Y/gp4kMM8xFDCFkduwC376TjPFl/Zmu0xtx544kYYNsFMVy8
+         w7zxDrjVcLakYrDg1eV4LvXdo+sBVypMqsoiQiU4mQb40453pltGUTDPiblNdZMCmu
+         0sGXkmCbJcXbI6bK4a6NvWKIWvWbuMbciQ0XKWd/pKb589JNOg48GJ69xqkevUKpdP
+         rwrnMZJ/E2hvg==
+Date:   Thu, 12 Oct 2023 17:39:31 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>, ankita@nvidia.com,
+        maz@kernel.org, oliver.upton@linux.dev, aniketa@nvidia.com,
+        cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com,
+        vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com,
+        jhubbard@nvidia.com, danw@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <20231012163931.GA12592@willie-the-truck>
+References: <ZP9MQdRYmlawNsbC@nvidia.com>
+ <ZQHUifAfJ+lZikAn@lpieralisi>
+ <ZQIFfqgR5zcidRR3@nvidia.com>
+ <ZRKW6uDR/+eXYMzl@lpieralisi>
+ <ZRLiDf204zCpO6Mv@arm.com>
+ <ZR6IZwcFNw55asW0@lpieralisi>
+ <20231012123541.GB11824@willie-the-truck>
+ <ZSf6Ue09IO6QMBs1@arm.com>
+ <20231012144807.GA12374@willie-the-truck>
+ <20231012154439.GM3952@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] net: ti: icssg-prueth: Fix tx_total_bytes count
-To:     Andrew Lunn <andrew@lunn.ch>, MD Danish Anwar <danishanwar@ti.com>
-CC:     Paolo Abeni <pabeni@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <srk@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        <r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>
-References: <20231011063700.1824093-1-danishanwar@ti.com>
- <4d7c2ab9-e980-42a5-9452-79bc0d33e094@lunn.ch>
- <7b5f195f-c5c8-6847-9458-3d5563cf0112@ti.com>
- <524856b3-6876-48d1-aebf-09f7f6c71f7b@lunn.ch>
-Content-Language: en-US
-From:   "Anwar, Md Danish" <a0501179@ti.com>
-In-Reply-To: <524856b3-6876-48d1-aebf-09f7f6c71f7b@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012154439.GM3952@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/2023 8:58 PM, Andrew Lunn wrote:
-> On Thu, Oct 12, 2023 at 10:51:12AM +0530, MD Danish Anwar wrote:
->> Hi Andrew,
->>
->> On 11/10/23 18:11, Andrew Lunn wrote:
->>>> @@ -29,7 +30,12 @@ void emac_update_hardware_stats(struct prueth_emac *emac)
->>>>  			     base + icssg_all_stats[i].offset,
->>>>  			     val);
->>>>  
->>>> +		if (!strncmp(icssg_ethtool_stats[i].name, "tx_good_frames", ETH_GSTRING_LEN))
->>>> +			tx_pkt_cnt = val;
->>>
->>> Doing a strncmp seems very expensive. Could you make use of
->>> icssg_stats.offset?
->>>
->>
->> Sure. I can define the offset of these two stats and then use them in if
->> condition as below.
->>
->> #define ICSSG_TX_PACKET_OFFSET 0xA0
->> #define ICSSG_TX_BYTE_OFFSET   0xEC
->>
->> if (icssg_ethtool_stats[i].offset == ICSSG_TX_PACKET_OFFSET)
->> 	tx_pkt_cnt = val;
->>
->> if (icssg_ethtool_stats[i].offset == ICSSG_TX_BYTE_OFFSET)
->> 	emac->stats[i] -= tx_pkt_cnt * 8;
+On Thu, Oct 12, 2023 at 12:44:39PM -0300, Jason Gunthorpe wrote:
+> On Thu, Oct 12, 2023 at 03:48:08PM +0100, Will Deacon wrote:
 > 
-> That is much better. Also consider adding something like:
+> > I guess my wider point is that I'm not convinced that non-cacheable is
+> > actually much better and I think we're going way off the deep end looking
+> > at what particular implementations do and trying to justify to ourselves
+> > that non-cacheable is safe, even though it's still a normal memory type
+> > at the end of the day.
 > 
-> BUILD_BUG_ON(ICSSG_TX_PACKET_OFFSET < ICSSG_TX_BYTE_OFFSET)
+> When we went over this with ARM it became fairly clear there wasn't an
+> official statement that Device-* is safe from uncontained
+> failures. For instance, looking at the actual IP, our architects
+> pointed out that ARM IP already provides ways for Device-* to trigger
+> uncontained failures today.
 > 
-> I've no idea if this is correct. Just something to prove at build time
-> that ICSSG_TX_PACKET_OFFSET is read before ICSSG_TX_BYTE_OFFSET.
+> We then mutually concluded that KVM safe implementations must already
+> be preventing uncontained failures for Device-* at the system level
+> and that same prevention will carry over to NormalNC as well.
 > 
+> IMHO, this seems to be a gap where ARM has not fully defined when
+> uncontained failures are allowed and left that as an implementation
+> choice.
+> 
+> In other words, KVM safety around uncontained failure is not a
+> property that can be reasoned about from the ARM architecture alone.
+> 
+> > The current wording talks about use-cases (I get this) and error containment
+> > (it's a property of the system) but doesn't talk at all about why Normal-NC
+> > is the right result.
+> 
+> Given that Device-* and NormalNC are equally implementation defined
+> with regards to uncontained failures, NormalNC allows more VM
+> functionality.
+> 
+> Further, we have a broad agreement that this use case is important,
+> and that NormalNC is the correct way to adress it.
+> 
+> I think you are right to ask for more formality from ARM team but also
+> we shouldn't hold up fixing real functional bugs in real shipping
+> server ARM products.
 
-These registers are defined sequentially in the structure
-miig_stats_regs. The offset for rx_packets is 0x0, rx_broadcast_frames
-is 0x4 and so on. Basically the offset for i'th stat is i * sizeof(u32).
+All I'm asking for is justification as to why Normal-NC is the right
+memory type rather than any other normal memory type. If it's not possible
+to explain that architecturally, then I'm not sure this change belongs in
+architecture code.
 
-In the structure, tx_packet is defined first (index 40, offset 0xA0) and
-then tx_bytes is defined (index 59, offset 0xEC).
+Ultimately, we need to be able to maintain this stuff, so we can't just
+blindly implement changes based on a combination of off-list discussions
+and individual product needs. For example, if somebody else rocks up
+tomorrow and asks for this to be Normal-writethrough, what grounds do
+we have to say no if we've taken this change already?
 
-In emac_update_hardware_stats() all these registers are read
-sequentially. Meaning first tx_packet register is read and then tx_byte.
+So please let's get to a point where we can actually reason about this.
 
-emac_update_hardware_stats() is called every 25s (by workqueue). Every
-time first tx_packet is read and then tx_byte. So every time we are
-decrementing tx_bytes by 8 bytes * num of packets, the num of packets
-always exists and it is read before doing this calculation.
-
-So I don't think any check is required to make sure
-ICSSG_TX_PACKET_OFFSET is read before ICSSG_TX_BYTE_OFFSET.
-
-The hardware design is such a way that these registers are read in a
-sequence and the same sequence is followed in driver (struct
-miig_stats_regs)
-
->      Andrew
-
--- 
-Thanks and Regards,
-Md Danish Anwar
+Will
