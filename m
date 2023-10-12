@@ -2,112 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B05CC7C6938
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541D57C6945
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235552AbjJLJPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
+        id S235438AbjJLJRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235679AbjJLJPQ (ORCPT
+        with ESMTP id S234155AbjJLJRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:15:16 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F17D6D;
-        Thu, 12 Oct 2023 02:14:43 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-406650da82bso7411795e9.3;
-        Thu, 12 Oct 2023 02:14:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697102082; x=1697706882; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xp3NeHp2th35KpL6HLgaJLB+RFFyCoVhK7zf77fPzNY=;
-        b=i3Ke+CI5VaKjcbrcYQAOGwIkhakrcTyK9iQk5YcQa+IYnAfxjF2aCHBedVhaCEt9En
-         I1iVaXGq23fcxWs4mK7KQ8BpCdpXg7tXlCVz+8Sv+sXtE7z9XnktM+yERghwKAqG0f4K
-         d9ZzLfR3NP3yMCevyFxlvK8yxDCbyz8VR6QtxwzjNG7OhKRVxA5dXw85TPlM3blo3GRH
-         Ic7EaS6WNii+TATrj1oYzjXCVJf20Syud1nhfl494DHufexTEZKuZSAGR/8GaXu4rPDG
-         LVbIGmRSgLEQ19OnRUayBUqo70J3WeaVBHPch/rHcgGPI0KG8C50fvL5cY3z9X0JQoY8
-         rxJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697102082; x=1697706882;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Xp3NeHp2th35KpL6HLgaJLB+RFFyCoVhK7zf77fPzNY=;
-        b=v/BVnSrZOEzwbBNo0PNT/4oYPsuVGU7fTI/5h9TGObo2B0dMyVDpiTXoISWojsXyxp
-         OgU24u1/mwMZA46dzqCSK0OBcW7i7R7H+4BeMiUDLlr83kdsMREXYdUmquV49zZP9zfk
-         LkvWhtiLHXJTI9mLmpPW8LroZExKjJxOm8ffO2aXrJRVhpcMFj6wT5qT7QFnslgSJkOM
-         tpxs3JJzvkO1PNleDsEO8M+LnbmKIWPHzTlJoXAu3J/1Z6bL37pM59IJYi9yU+xf2ncO
-         BH1JXxe5I1y6I4LI36qy7AAjy8R4WPe+0RRiukqFaDTTz2xjCDZgdxfrij0GypjIn8Q1
-         1+DQ==
-X-Gm-Message-State: AOJu0YwITAWQWsySGGhP2BGkNkjAvU78LCG2viGDHhzP8YBwX7V6CJNH
-        EdYj9bxsEmHrf51jna7xcsw=
-X-Google-Smtp-Source: AGHT+IHWB24cgRbdI1egHQYjLE+HRRaj5b6rXxJM9izmu2YahBKwJCcmvl9ojqNSAGCBVmjKkwY/TQ==
-X-Received: by 2002:a5d:664a:0:b0:31f:f91c:d872 with SMTP id f10-20020a5d664a000000b0031ff91cd872mr22652902wrw.19.1697102081883;
-        Thu, 12 Oct 2023 02:14:41 -0700 (PDT)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id dh13-20020a0560000a8d00b00327cd5e5ac1sm3257700wrb.1.2023.10.12.02.14.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 02:14:41 -0700 (PDT)
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Raju Rangoju <rajur@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH] net: cxgb3: simplify logic for rspq_check_napi
-Date:   Thu, 12 Oct 2023 11:14:29 +0200
-Message-Id: <20231012091429.2048-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        Thu, 12 Oct 2023 05:17:33 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF0A6CA;
+        Thu, 12 Oct 2023 02:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SY5yqmx7UFQ27nMH5z2Z6G4quyyShMn+b9u4K2hwCUk=; b=Kuw8PvSmEOCGiEh1bcE5c93zOf
+        UfMqN9elE915IiKRRyJatxJw8k66yVw8f6StP7tcTqF8Gxk957xNQ+xH9QRVvlkjW6PEkTf5/+/7b
+        Oq0aeMRXXwlo1UoyY8qUo5kTQniVMMjjBKB9dmKVt6Ro7dADusdPGIoTBvvdu5pcli2Ij6KZbv/jH
+        AYkZHhJtd8sDKci0/Kj9OwuLH2kYm0ltifRtcPkzAIeJ5PxAox8Zvbfm3xhh9A9HlqkX1I6qcdGkN
+        wBS2lnFMKio5saaCjl0JbBdZifa31gUptVONJxMgyMeoHmqUKyEencbuaSS6ZhzFlI+Iw+D1jV2aZ
+        ja5cOr/w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qqrn6-001hMl-2e;
+        Thu, 12 Oct 2023 09:17:12 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E353830036C; Thu, 12 Oct 2023 11:15:37 +0200 (CEST)
+Date:   Thu, 12 Oct 2023 11:15:37 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephane Eranian <eranian@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org,
+        Ben Woodard <woodard@redhat.com>,
+        Joe Mario <jmario@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Blaikie <blaikie@google.com>,
+        Xu Liu <xliuprof@google.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>
+Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
+Message-ID: <20231012091537.GM6307@noisy.programming.kicks-ass.net>
+References: <20231012035111.676789-1-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify logic for rspq_check_napi.
-Drop redundant and wrong napi_is_scheduled call as it's not race free
-and directly use the output of napi_schedule to understand if a napi is
-pending or not.
+On Wed, Oct 11, 2023 at 08:50:23PM -0700, Namhyung Kim wrote:
 
-rspq_check_napi main logic is to check if is_new_response is true and
-check if a napi is not scheduled. The result of this function is then
-used to detect if we are missing some interrupt and act on top of
-this... With this knowing, we can rework and simplify the logic and make
-it less problematic with testing an internal bit for napi.
+> Actually there's a performance issue about getting disassembly from the
+> objdump for kernel.  On my system, GNU objdump was really slower than the
+> one from LLVM for some reason so I had to pass the following option for
+> each perf report and perf annotate.
+> 
+>     $ sudo perf report --objdump=llvm-objdump ...
+> 
+>     # To save it in the config file and drop the command line option
+>     $ sudo perf config annotate.objdump=llvm-objdump
+> 
+> Even with this change, still the most processing time was spent on the
+> objdump to get the disassembly.  It'd be nice if we can get the result
+> without using objdump at all.
 
-Suggested-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- drivers/net/ethernet/chelsio/cxgb3/sge.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+So the kernel has an instruction decoder, all we need is something that
+can pretty print the result. IIRC Masami had an early version of that
+somewhere.
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb3/sge.c b/drivers/net/ethernet/chelsio/cxgb3/sge.c
-index 2e9a74fe0970..dfe4e0102960 100644
---- a/drivers/net/ethernet/chelsio/cxgb3/sge.c
-+++ b/drivers/net/ethernet/chelsio/cxgb3/sge.c
-@@ -2674,12 +2674,7 @@ static int rspq_check_napi(struct sge_qset *qs)
- {
- 	struct sge_rspq *q = &qs->rspq;
- 
--	if (!napi_is_scheduled(&qs->napi) &&
--	    is_new_response(&q->desc[q->cidx], q)) {
--		napi_schedule(&qs->napi);
--		return 1;
--	}
--	return 0;
-+	return is_new_response(&q->desc[q->cidx], q) && napi_schedule(&qs->napi);
- }
- 
- /*
--- 
-2.40.1
-
+With those bits, and some basic ELF parsing (find in objtool for
+instance) you can implement most of objdump yourself.
