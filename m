@@ -2,190 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 003687C67F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9787C6875
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347244AbjJLIEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 04:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49502 "EHLO
+        id S1347120AbjJLIEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 04:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343583AbjJLIEH (ORCPT
+        with ESMTP id S1343583AbjJLIEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 04:04:07 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0622DA9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:04:05 -0700 (PDT)
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S5hsz26cqzrTG0;
-        Thu, 12 Oct 2023 16:01:27 +0800 (CST)
-Received: from [10.174.178.209] (10.174.178.209) by
- dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 12 Oct 2023 16:04:02 +0800
-Message-ID: <a8a2dc17-7a7a-e725-8ae2-e7e0146150f0@huawei.com>
-Date:   Thu, 12 Oct 2023 16:04:02 +0800
+        Thu, 12 Oct 2023 04:04:42 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34D2A9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:04:40 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-536b39daec1so1173190a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:04:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697097879; x=1697702679; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=937YDLhB/LKhEB9XjdalzzUB5ZBYWrU2yT5JnPkc4iE=;
+        b=qewU/EcEEx41UZ8lkIg0A87JdPdglDONWNC9sEtjC4y5rLjBYQnL9A61N6cJe8sIif
+         pxbUaECuwefSL9FIpNiVJ1xXmyHHhy5R8ot/zXVQ94xDR7R1KHNCLCE2ByQPfotfmpB+
+         99eeB+cXxbYMJldlgIpfd9PZuv3nQCjE9oYk9zHXLEicFmmDXdcX/g81Bmi3Dzgep8tF
+         QVgUAaQGMahbx0n8yv1uwNz35gYERKvJt9ut5Q4rA0vvLsHgbvxh2I8PgfZiDLQhILyF
+         O9sXz8Lr7q+78LX6jpVyjKPcl2Ju538cjsjAT8M5/pTqwk8wanyA4zsLY8DNkMnURwLp
+         NyRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697097879; x=1697702679;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=937YDLhB/LKhEB9XjdalzzUB5ZBYWrU2yT5JnPkc4iE=;
+        b=d1M/ihZyKlQ36JgzxyRCfRezlXuSVnQi8uP9D4KHUkwNgz/Coz41GBNWRKtJDZ1kq6
+         Nkt0PSrPwpnAeJyOKkFuZyvGtzAhOHJHvk6gtA25c/QnGT9/6SVKf9KX9Rm2+lJjT6Fg
+         aY/erUddFcZyopYo66rbSAiEwiPrLPTAUr0EhU0EqTxi0d6m6f4TfkgG84nwXBKK8z/q
+         inqH1gyOQdLH8RnLo6yVMksPM7+8qda/jrsgQZHZnZCP6IQ7eFvgTfonmgMTGqh1zQ6j
+         oRWd4XewQnQJ8Yp6OCnPOs7wRKKHlFozh95yGmzKeSAfzugTtzGhK8wX5Ml6sP2qEVhl
+         1tww==
+X-Gm-Message-State: AOJu0YwWjqbnsjL3m76kk5MFdylpzveZHekQ6R11CRzLB2lKLpafExgp
+        3b9cwxpfqcPtDsAY/6Z1YaF7ksTbUTp8vRuUQmc/5w==
+X-Google-Smtp-Source: AGHT+IFkw+QlomjvvrPZT6/iMPFPNgS2KfjqRUczRUJTLw7MtE4TQ62uK3MgP17Mrm9Cmj76go5vcIhfgvcNqM1U/xI=
+X-Received: by 2002:a17:907:7636:b0:9ba:4163:1801 with SMTP id
+ jy22-20020a170907763600b009ba41631801mr5519834ejc.60.1697097879098; Thu, 12
+ Oct 2023 01:04:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH RFC] ubi: gluebi: Fix NULL pointer dereference caused by
- ftl notifier
-To:     Zhihao Cheng <chengzhihao1@huawei.com>, <richard@nod.at>,
-        <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>
-References: <20231010142925.545238-1-wangzhaolong1@huawei.com>
- <9f96baf1-962e-d595-0e4f-797315cd0348@huawei.com>
- <b972f615-3882-18cf-5b44-7ec021f92e0a@huawei.com>
-From:   ZhaoLong Wang <wangzhaolong1@huawei.com>
-In-Reply-To: <b972f615-3882-18cf-5b44-7ec021f92e0a@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.209]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010032117.1577496-1-yosryahmed@google.com>
+ <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
+ <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
+ <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
+ <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
+ <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com> <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
+In-Reply-To: <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 12 Oct 2023 01:04:03 -0700
+Message-ID: <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm very happy to receive a reply to the review.
-
-> 2. fd = open(/dev/ubi0_0, O_WRONLY)
->      ubi_open_volume  // vol->writers = 1
-> 
->           P1                    P2
->     gluebi_create -> mtd_device_register -> add_mtd_device:
->     device_register   // dev/mtd1 is visible
-> 
->                       fd = open(/dev/mtd1, O_WRONLY)
->                        gluebi_get_device
->                         gluebi->desc = ubi_open_volume
->                          gluebi->desc = ERR_PTR(EBUSY)
-> 
->     ftl_add_mtd
->      mtd_read
->       gluebi_read
->        gluebi->desc is ERR_PTR       (√)
-
-The reproduction steps for situations 2 and 3 have been added to link[1].
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=217992 [1]
-
-> 3.         P1                    P2
->     gluebi_create -> mtd_device_register -> add_mtd_device:
->     device_register   // dev/mtd1 is visible
-> 
->                       fd = open(/dev/mtd1, O_WRONLY)
->                        gluebi_get_device
->                         gluebi->desc = ubi_open_volume
-> 
->     ftl_add_mtd
->      mtd_read
->       gluebi_read
->        gluebi->desc is not ERR_PTR/NULL
-> 
->                      close(fd)
->                       gluebi_put_device
->                        ubi_close_volume
->                         kfree(desc)
->        ubi_read(gluebi->desc)   // UAF  (×)
-> 
-
-Yes, it's also a problem. Perhaps it should be set to NULL after
-destroying gluebi->desc.
-
-> 
-> No need to modify 'gluebi_write' and 'gluebi_erase'.
-> 
-
-The patch is as follows:
-
-diff --git a/drivers/mtd/ubi/gluebi.c b/drivers/mtd/ubi/gluebi.c
-index 1b980d15d9fb..8fc6017d1155 100644
---- a/drivers/mtd/ubi/gluebi.c
-+++ b/drivers/mtd/ubi/gluebi.c
-@@ -85,6 +85,7 @@ static int gluebi_get_device(struct mtd_info *mtd)
-  {
-  	struct gluebi_device *gluebi;
-  	int ubi_mode = UBI_READONLY;
-+	struct ubi_volume_desc *vdesc;
-
-  	if (mtd->flags & MTD_WRITEABLE)
-  		ubi_mode = UBI_READWRITE;
-@@ -109,12 +110,14 @@ static int gluebi_get_device(struct mtd_info *mtd)
-  	 * This is the first reference to this UBI volume via the MTD device
-  	 * interface. Open the corresponding volume in read-write mode.
-  	 */
--	gluebi->desc = ubi_open_volume(gluebi->ubi_num, gluebi->vol_id,
-+	vdesc = ubi_open_volume(gluebi->ubi_num, gluebi->vol_id,
-  				       ubi_mode);
--	if (IS_ERR(gluebi->desc)) {
-+	if (IS_ERR(vdesc)) {
-+		gluebi->desc = NULL;
-  		mutex_unlock(&devices_mutex);
--		return PTR_ERR(gluebi->desc);
-+		return PTR_ERR(vdesc);
-  	}
-+	gluebi->desc = vdesc;
-  	gluebi->refcnt += 1;
-  	mutex_unlock(&devices_mutex);
-  	return 0;
-@@ -134,8 +137,10 @@ static void gluebi_put_device(struct mtd_info *mtd)
-  	gluebi = container_of(mtd, struct gluebi_device, mtd);
-  	mutex_lock(&devices_mutex);
-  	gluebi->refcnt -= 1;
--	if (gluebi->refcnt == 0)
-+	if (gluebi->refcnt == 0) {
-  		ubi_close_volume(gluebi->desc);
-+		gluebi->desc = NULL;
-+	}
-  	mutex_unlock(&devices_mutex);
-  }
-
-@@ -154,9 +159,26 @@ static int gluebi_read(struct mtd_info *mtd, loff_t 
-from, size_t len,
-  		       size_t *retlen, unsigned char *buf)
-  {
-  	int err = 0, lnum, offs, bytes_left;
--	struct gluebi_device *gluebi;
-+	struct gluebi_device *gluebi = container_of(mtd, struct gluebi_device,
-+						    mtd);
-+	int isnt_get = unlikely(gluebi->desc == NULL) ? 1 : 0;
-+
-+	/**
-+	 * In normal case, the UBI volume desc has been initialized by
-+	 * ->_get_device(). However, in the ftl notifier process, the
-+	 * ->_get_device() is not executed in advance and the MTD device
-+	 * is directly scanned  which cause null pointe dereference.
-+	 * Therefore, try to get the MTD device here.
-+	 */
-+	if (unlikely(isnt_get)) {
-+		err = __get_mtd_device(mtd);
-+		if (err) {
-+			err_msg("cannot get MTD device %d, UBI device %d, volume %d, error %d",
-+				mtd->index, gluebi->ubi_num, gluebi->vol_id, err);
-+			return err;
-+		}
-+	}
-
--	gluebi = container_of(mtd, struct gluebi_device, mtd);
-  	lnum = div_u64_rem(from, mtd->erasesize, &offs);
-  	bytes_left = len;
-  	while (bytes_left) {
-@@ -176,6 +198,9 @@ static int gluebi_read(struct mtd_info *mtd, loff_t 
-from, size_t len,
-  	}
-
-  	*retlen = len - bytes_left;
-+
-+	if (unlikely(isnt_get))
-+		__put_mtd_device(mtd);
-  	return err;
-  }
+On Wed, Oct 11, 2023 at 8:13=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> On Wed, Oct 11, 2023 at 5:46=E2=80=AFAM Shakeel Butt <shakeelb@google.com=
+> wrote:
+> >
+> > On Tue, Oct 10, 2023 at 6:48=E2=80=AFPM Yosry Ahmed <yosryahmed@google.=
+com> wrote:
+> > >
+> > > On Tue, Oct 10, 2023 at 5:36=E2=80=AFPM Shakeel Butt <shakeelb@google=
+.com> wrote:
+> > > >
+> > > > On Tue, Oct 10, 2023 at 03:21:47PM -0700, Yosry Ahmed wrote:
+> > > > [...]
+> > > > >
+> > > > > I tried this on a machine with 72 cpus (also ixion), running both
+> > > > > netserver and netperf in /sys/fs/cgroup/a/b/c/d as follows:
+> > > > > # echo "+memory" > /sys/fs/cgroup/cgroup.subtree_control
+> > > > > # mkdir /sys/fs/cgroup/a
+> > > > > # echo "+memory" > /sys/fs/cgroup/a/cgroup.subtree_control
+> > > > > # mkdir /sys/fs/cgroup/a/b
+> > > > > # echo "+memory" > /sys/fs/cgroup/a/b/cgroup.subtree_control
+> > > > > # mkdir /sys/fs/cgroup/a/b/c
+> > > > > # echo "+memory" > /sys/fs/cgroup/a/b/c/cgroup.subtree_control
+> > > > > # mkdir /sys/fs/cgroup/a/b/c/d
+> > > > > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
+> > > > > # ./netserver -6
+> > > > >
+> > > > > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
+> > > > > # for i in $(seq 10); do ./netperf -6 -H ::1 -l 60 -t TCP_SENDFIL=
+E --
+> > > > > -m 10K; done
+> > > >
+> > > > You are missing '&' at the end. Use something like below:
+> > > >
+> > > > #!/bin/bash
+> > > > for i in {1..22}
+> > > > do
+> > > >    /data/tmp/netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K &
+> > > > done
+> > > > wait
+> > > >
+> > >
+> > > Oh sorry I missed the fact that you are running instances in parallel=
+, my bad.
+> > >
+> > > So I ran 36 instances on a machine with 72 cpus. I did this 10 times
+> > > and got an average from all instances for all runs to reduce noise:
+> > >
+> > > #!/bin/bash
+> > >
+> > > ITER=3D10
+> > > NR_INSTANCES=3D36
+> > >
+> > > for i in $(seq $ITER); do
+> > >   echo "iteration $i"
+> > >   for j in $(seq $NR_INSTANCES); do
+> > >     echo "iteration $i" >> "out$j"
+> > >     ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K >> "out$j" &
+> > >   done
+> > >   wait
+> > > done
+> > >
+> > > cat out* | grep 540000 | awk '{sum +=3D $5} END {print sum/NR}'
+> > >
+> > > Base: 22169 mbps
+> > > Patched: 21331.9 mbps
+> > >
+> > > The difference is ~3.7% in my runs. I am not sure what's different.
+> > > Perhaps it's the number of runs?
+> >
+> > My base kernel is next-20231009 and I am running experiments with
+> > hyperthreading disabled.
+>
+> Using next-20231009 and a similar 44 core machine with hyperthreading
+> disabled, I ran 22 instances of netperf in parallel and got the
+> following numbers from averaging 20 runs:
+>
+> Base: 33076.5 mbps
+> Patched: 31410.1 mbps
+>
+> That's about 5% diff. I guess the number of iterations helps reduce
+> the noise? I am not sure.
+>
+> Please also keep in mind that in this case all netperf instances are
+> in the same cgroup and at a 4-level depth. I imagine in a practical
+> setup processes would be a little more spread out, which means less
+> common ancestors, so less contended atomic operations.
 
 
+(Resending the reply as I messed up the last one, was not in plain text)
 
+I was curious, so I ran the same testing in a cgroup 2 levels deep
+(i.e /sys/fs/cgroup/a/b), which is a much more common setup in my
+experience. Here are the numbers:
+
+Base: 40198.0 mbps
+Patched: 38629.7 mbps
+
+The regression is reduced to ~3.9%.
+
+What's more interesting is that going from a level 2 cgroup to a level
+4 cgroup is already a big hit with or without this patch:
+
+Base: 40198.0 -> 33076.5 mbps (~17.7% regression)
+Patched: 38629.7 -> 31410.1 (~18.7% regression)
+
+So going from level 2 to 4 is already a significant regression for
+other reasons (e.g. hierarchical charging). This patch only makes it
+marginally worse. This puts the numbers more into perspective imo than
+comparing values at level 4. What do you think?
