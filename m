@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93CA77C709A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F487C70AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378304AbjJLOqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 10:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56684 "EHLO
+        id S1378354AbjJLOtg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 10:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235160AbjJLOqT (ORCPT
+        with ESMTP id S233260AbjJLOtf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:46:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC80DD;
-        Thu, 12 Oct 2023 07:46:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AB73C433C7;
-        Thu, 12 Oct 2023 14:46:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697121978;
-        bh=O2x78rOBWTFesFHLGuuhfU/0q39fTXA8lDOZUhM2/mQ=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=Q6nL+4M+7KTg9VgVgqbBhoqWdSfrxRveBtZLy+eErYUxSVUgM4+fg/IUKw9vZ5bnf
-         IQX9ZsfwvYb3k0iixw4+CYudyE3JD/hMcrvlLuyw2+uRL6DNAR6wkCitcOXK54ozu1
-         6n+ui8/e/T2z/5wVJHgRau597vQcWIH/Nfb+CBmf6j00OBUCfp1quLgMh7923EKNg1
-         WhkQ+daxcTe77B8ZZFqhn7A9HkLJNCRsBbz03mwnnBYoRLDWQDquCZY7DtMLFZhGjK
-         UC2fZf4SjBkwOaYj0XTjKzCgQ5SwoTIYraTnG+EtwC3ZbngUfn1fO2k9c97IysCcHn
-         j4nDsCl3g+mSQ==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     "Arnd Bergmann" <arnd@arndb.de>
-Cc:     "Jakub Kicinski" <kuba@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Arnd Bergmann" <arnd@kernel.org>,
-        "Nicolas Ferre" <nicolas.ferre@microchip.com>,
-        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        "Claudiu Beznea" <claudiu.beznea@tuxon.dev>,
-        "Pavel Machek" <pavel@ucw.cz>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Larry Finger" <Larry.Finger@lwfinger.net>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] [RFC] wireless: move obsolete drivers to staging
-References: <20231010155444.858483-1-arnd@kernel.org>
-        <2023101051-unmasked-cleaver-79b3@gregkh> <87y1g94szz.fsf@kernel.org>
-        <2023101139-pyromania-game-2237@gregkh> <87r0m1fwg9.fsf@kernel.org>
-        <20231011080955.1beeb010@kernel.org> <87sf6g2hc8.fsf@kernel.org>
-        <63e57ef8-c9f2-489a-8df8-51dcffd437c6@app.fastmail.com>
-Date:   Thu, 12 Oct 2023 17:48:47 +0300
-In-Reply-To: <63e57ef8-c9f2-489a-8df8-51dcffd437c6@app.fastmail.com> (Arnd
-        Bergmann's message of "Thu, 12 Oct 2023 16:36:26 +0200")
-Message-ID: <87fs2fgals.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Thu, 12 Oct 2023 10:49:35 -0400
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066FEA9;
+        Thu, 12 Oct 2023 07:49:34 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-59f82ad1e09so12547297b3.0;
+        Thu, 12 Oct 2023 07:49:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697122173; x=1697726973;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Eb3DoNCX4dAi2zJy5KwY6jsXZKuGpHpVa2pTm/f3Qp8=;
+        b=uHJR/XF+SRPLsknhOkYPN9W6ZF9ZP5a/CPQLr9C+kRhp9noa1Us0RltwNuJM+jKjuE
+         h99KZTFrWSQEGSfDMbPAoEi/V24DGyZG2H4bJBJtagOJxIQv2oObeH1O3QjHitypBwrs
+         oOHIIkORUpO7HR7wbxYMLE3iEAUd4V63Pw8RjoFEY3++4gjXLhwbS9IUJOLkAMXL6H0t
+         IlnCHFX+kuuEWcWWv/NaPLhoEolCj+uftAc02hEO7o8I6HcMXRLIW4EfsaIM8dcfML5e
+         6KA5m4mMcXslaaJMCniBd+/P5kTCnFNRf9yy8MKy3MPNsHajPTmnvY1zg/fCGIG4bDEv
+         CHvw==
+X-Gm-Message-State: AOJu0Yx/002vagrs6Wf6zQ5XL2qTsbJVqpmz499sK7JDpCrRXGiuTYzc
+        RLfihXNMIKkSuy2oG/ofNw9A1NKU1qjVQg==
+X-Google-Smtp-Source: AGHT+IEX6MMAPtEhlapgn4TZtg0LJe+T4yMLUfOaieynyEGo/wAfg4iVc9aXjGIGv1FDvBGI0+Zcow==
+X-Received: by 2002:a05:690c:d94:b0:5a7:fcae:f3e2 with SMTP id da20-20020a05690c0d9400b005a7fcaef3e2mr3007123ywb.43.1697122172833;
+        Thu, 12 Oct 2023 07:49:32 -0700 (PDT)
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
+        by smtp.gmail.com with ESMTPSA id p62-20020a0dcd41000000b0059f61be458esm5419ywd.82.2023.10.12.07.49.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 07:49:32 -0700 (PDT)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-59f82ad1e09so12546967b3.0;
+        Thu, 12 Oct 2023 07:49:31 -0700 (PDT)
+X-Received: by 2002:a05:690c:dd2:b0:5a7:fa8b:3fa6 with SMTP id
+ db18-20020a05690c0dd200b005a7fa8b3fa6mr3757707ywb.9.1697122171519; Thu, 12
+ Oct 2023 07:49:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010132701.1658737-1-claudiu.beznea.uj@bp.renesas.com> <20231010132701.1658737-7-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20231010132701.1658737-7-claudiu.beznea.uj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 12 Oct 2023 16:49:20 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVwO--GrdDP8pUHq-k5cVR31dGdvEM73z2E+NLEbD8GRw@mail.gmail.com>
+Message-ID: <CAMuHMdVwO--GrdDP8pUHq-k5cVR31dGdvEM73z2E+NLEbD8GRw@mail.gmail.com>
+Subject: Re: [PATCH 6/6] arm64: dts: renesas: rzg3s: Fix dtbs_check
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     magnus.damm@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Arnd Bergmann" <arnd@arndb.de> writes:
+Hi Claudiu,
 
-> On Thu, Oct 12, 2023, at 13:47, Kalle Valo wrote:
->>
->> Is anyone willing to submit patches? Use wireless-next as the baseline
->> for patches and one driver per commit, please. That way it's easy to
->> revert later, if needed (hopefully not).
+On Tue, Oct 10, 2023 at 3:27 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 >
-> I can do it, I've already done most of the work for moving the
-> drivers, so I just need to split up my existing patch and leave out
-> the bits that get added to drivers/staging.
-
-Awesome, thank you!
-
-> I'll also send Greg a patch to remove rtl8192u now that we know
-> that this has been broken for 7 years. Similarly, I'd include
-> another patch to remove PCMCIA support for libertas, as that
-> would otherwise be the only remaining 16-bit PCMCIA wlan card,
-> and I could find no indication of this one ever being popular,
-> unlike the USB/SDIO/SPI variants of the same device or the
-> other PCMCIA drivers.
+> Fix the following DTBS check warnings:
 >
-> This would leave only a handful of wext implementations in the
-> tree: ipw2x00, ps3-gelic-wireless, staging/rtl8712, staging/rtl8192e
-> and staging/ks7010. Since ipw2x00 is apparently still supported
-> in theory and was rather popular on Pentium-M based systems 20
-> years ago, this may still need to be converted to cfg80211
-> before you can remove support for wext style drivers altogether.
-> ps3-gelic-wireless and rtl8712 are also still maintained but have
-> a much smaller user base I assume.
+> arch/arm64/boot/dts/renesas/r9a08g045s33-smarc.dt: /: memory@48000000: 'device-type' does not match any of the regexes: 'pinctrl-[0-9]+'
+>         from schema $id: http://devicetree.org/schemas/memory.yaml#
+> arch/arm64/boot/dts/renesas/r9a08g045s33-smarc.dtb: /: memory@48000000: 'device_type' is a required property
+>         from schema $id: http://devicetree.org/schemas/memory.yaml#
+> arch/arm64/boot/dts/renesas/r9a08g045s33-smarc.dtb: cache-controller-0: 'cache-level' is a required property
+>         from schema $id: http://devicetree.org/schemas/cache.yaml#
+> arch/arm64/boot/dts/renesas/r9a08g045s33-smarc.dtb: cache-controller-0: 'cache-level' is a required property
+>         from schema $id: http://devicetree.org/schemas/cache.yaml#
+> arch/arm64/boot/dts/renesas/r9a08g045s33-smarc.dtb: cache-controller-0: Unevaluated properties are not allowed ('cache-size', 'cache-unified' were unexpected)
+>         from schema $id: http://devicetree.org/schemas/cache.yaml#
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Actually I would prefer to remove ipw2x00 and ps3-gelic-wireless as
-well. I have not seen any evidence that there would be users for those
-drivers. If we find out that there really are users I can easily add the
-drivers back. The faster we get rid of wext the better, it really needs
-to go away.
+Thanks for your patch!
+
+>  arch/arm64/boot/dts/renesas/r9a08g045.dtsi       | 1 +
+>  arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi | 2 +-
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v6.7, split in two parts.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
