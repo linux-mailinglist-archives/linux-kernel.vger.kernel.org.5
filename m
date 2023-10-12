@@ -2,126 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFFA7C77C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0747C77B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442713AbjJLUSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 16:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52196 "EHLO
+        id S1442541AbjJLUNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 16:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344109AbjJLUSB (ORCPT
+        with ESMTP id S1343828AbjJLUNW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 16:18:01 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE8ECA
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:17:58 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9b275afb6abso536715766b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:17:58 -0700 (PDT)
+        Thu, 12 Oct 2023 16:13:22 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EFFB7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:13:20 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-59e88a28b98so11776047b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:13:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697141877; x=1697746677; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=umich.edu; s=google-2016-06-03; t=1697141600; x=1697746400; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ALeoGKxiNsNupqhZSQanqEeTZk7gDRiZ8s33h27zT00=;
-        b=VjQQA2i+25ld5AjYxv18h+nEEzlPthMa1EMjkm+7Kkh8436osYa2j+xkzg1+NFy8W0
-         Wum2QXGXs2oF+EGm/k5OZ6nPtowqYCbumneeYaBq9+wx1CwSdAwCnQrmNP+x2IiMFcoC
-         LrgYoZXka3SWlCmHe7dFTQ1eTj7hrVduJZh6ijIhwXS6P0iRAxl44ZF3O36AIh5A7Jid
-         Y4oHaH9p8B/bUDPYf8OPFs/50Cgg2Z3kt21jTrtax4bDSxmDgXP0czP4SMTAMybMSsbq
-         ASONUuUUY/Fe77y8yPbnrLxQk5MmqCD9pA1/MuoY2sez9Y7Z4q8z/UxqWbuoHEk8a3Q0
-         sCCw==
+        bh=VmsqUR3a8IPD5QTie/FP4du92v7/hXM633MBDjWHf/Q=;
+        b=NkiVpPc5GQzIPVsu4db+d7tmdcgfNFg1RMClqtpM98KKaoTVqTbTgUlFJunCYcTWa2
+         KcGJ009a4sAVFmf0bMwPPQiq2alAezmJ7rxALbf2PPKfIlIMIu96qOlDhr9FpyAgPLhL
+         Nkd97k8SvjyF9TOLokrukMiqSbDWaHHwnqfUoqBFPEi/O5ei3eIVunFSCnRzvLKmIIT7
+         O2nkSxmcTJ7ULVbpX8lLOx01C9qZH2cQBtCqqlI2GGNfJqUlbtDGmN+am73DIsqC8NCN
+         1DrGyZl6rO9IKYC0tDp3BaSL33bZ8dBewoXIeHmE/CnfgtoZ+X4HZcR24nneGf6hMYgl
+         cOwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697141877; x=1697746677;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697141600; x=1697746400;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ALeoGKxiNsNupqhZSQanqEeTZk7gDRiZ8s33h27zT00=;
-        b=j1YQfYFg7rj6Nq1e5TD+zsynYpn9Ij4x2HJg3lFSh/45MlXX8nToyh4LJK9xqUH7vP
-         eLUyGzekCetfzDZvXO76eBD2HeRGkDLWB12f5yq9TMnX4xuId8qLL4uoX9HmE2oXGkug
-         0A9vkEP3+qNo65lITWqSzkYwTrX+96aDV/TLBtSv7epkyAg1QSWzxmYQZ7mqRmrxx13j
-         FlIEBehUnVQXAtEXMmbs4nHxj+KY8csSllwTkyI2vlVZHeV1e+HQKvFllQnQ5QexcOyp
-         cqcgLza7i3WhVEMTifqtHLEg2rOgUVLZxLNrbZgZsNCz3esosNlRx3hxpef6oahY0cni
-         w8hw==
-X-Gm-Message-State: AOJu0YyWbAGiNyF+SE4+Re0DBsr+zLqFYWLCKlkdVccKun/OYOZmdo6R
-        PrUVKkEcdMi3FlAEv3Dle6w=
-X-Google-Smtp-Source: AGHT+IGL/aK1BGpYJaP/mMy11SXb55Cywvjox0gtbzUH0yanedqIAwh6/5blT0OJLYZSBuGZJQt9Dw==
-X-Received: by 2002:a17:907:9715:b0:9ae:705a:8451 with SMTP id jg21-20020a170907971500b009ae705a8451mr21130335ejc.25.1697141877018;
-        Thu, 12 Oct 2023 13:17:57 -0700 (PDT)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id i3-20020a1709064ec300b00997d7aa59fasm11692552ejv.14.2023.10.12.13.17.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 13:17:56 -0700 (PDT)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     x86@kernel.org, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v2 4/4] x86/percpu: Introduce %rip-relative addressing to PER_CPU_VAR macro
-Date:   Thu, 12 Oct 2023 22:12:07 +0200
-Message-ID: <20231012201743.292149-5-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231012201743.292149-1-ubizjak@gmail.com>
-References: <20231012201743.292149-1-ubizjak@gmail.com>
+        bh=VmsqUR3a8IPD5QTie/FP4du92v7/hXM633MBDjWHf/Q=;
+        b=HoIWmwIxjQ6yt70B7Q7lzPncqAaHszigYlF9riHUtVBiVomqQz6ephYBqixaBjCUEX
+         3Vr2Z0JURcolnUcnuZP0IuYLlwSE/I8MgTs5YM1MsMs+eQI3vdymgc/vac2oAwalb+YZ
+         yXflJ2GAld/ucDHdDIBBa3w58AGaA1JYl3SwDBnPuX88IIu8fem0vRArklWh9DacWHDc
+         fXGamQlztcy4i+ShVxB/psJZF051AQdS+TXxqu9YJeGCvvvtAhuX6fDCgrpWcXVMg/MW
+         XVnvc4XFWqTxwCpWT6y5y2QIfMxvvsvQDWivko/O9jX/J930oOfI7BzOl8TErWzgWllf
+         zosg==
+X-Gm-Message-State: AOJu0Yw95j7zu35DZX/wSIOyaO2Rbo+Dwl6EFwIpB6p5ggZxzFYOBSqD
+        sV/MO2dUMkyqi9BRa6NkpUsSUD3IlMvDGfmrs0vIVg==
+X-Google-Smtp-Source: AGHT+IGTPmT8+w+G1CpKsLRQJBMcbPG+xe/GMXfSoBv66uXw5hXFwHW4CgQJ72SoDpWu+dr8jluUbQmqYWXnHRoPJrg=
+X-Received: by 2002:a81:4e10:0:b0:56c:e480:2b2b with SMTP id
+ c16-20020a814e10000000b0056ce4802b2bmr15175977ywb.12.1697141600157; Thu, 12
+ Oct 2023 13:13:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231009224347.2076221-1-mmaurer@google.com>
+In-Reply-To: <20231009224347.2076221-1-mmaurer@google.com>
+From:   Trevor Gross <tmgross@umich.edu>
+Date:   Thu, 12 Oct 2023 16:13:10 -0400
+Message-ID: <CALNs47vtnOfUarrH8qiJAZpp6bs1jjcsMyb3-A2Gy9YiaDFVEw@mail.gmail.com>
+Subject: Re: [PATCH] x86: Enable IBT in Rust if enabled in C
+To:     Matthew Maurer <mmaurer@google.com>
+Cc:     peterz@infradead.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce x86_64 %rip-relative addressing to PER_CPU_VAR macro.
-Instruction with %rip-relative address operand is one byte shorter than
-its absolute address counterpart and is also compatible with position
-independent executable (-fpie) build.
+On Mon, Oct 9, 2023 at 6:44=E2=80=AFPM Matthew Maurer <mmaurer@google.com> =
+wrote:
+> +KBUILD_RUSTFLAGS +=3D -Zcf-protection=3Dbranch -Zno-jump-tables
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
----
- arch/x86/include/asm/percpu.h | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+I have not tested this, but is it possible to enable these options via
+`-Cllvm-args=3D...` instead of using the unstable flags?
 
-diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-index 83e6a4bcea38..c53c5a7f8e78 100644
---- a/arch/x86/include/asm/percpu.h
-+++ b/arch/x86/include/asm/percpu.h
-@@ -4,19 +4,21 @@
- 
- #ifdef CONFIG_X86_64
- #define __percpu_seg		gs
-+#define __percpu_rel		(%rip)
- #else
- #define __percpu_seg		fs
-+#define __percpu_rel
- #endif
- 
- #ifdef __ASSEMBLY__
- 
- #ifdef CONFIG_SMP
- #define PER_CPU_ARG(arg)	%__percpu_seg:arg
--#define PER_CPU_VAR(var)	%__percpu_seg:var
-+#define PER_CPU_VAR(var)	%__percpu_seg:(var)##__percpu_rel
- #else /* ! SMP */
- #define PER_CPU_ARG(arg)	arg
--#define PER_CPU_VAR(var)	var
--#endif	/* SMP */
-+#define PER_CPU_VAR(var)	(var)##__percpu_rel
-+#endif /* SMP */
- 
- #ifdef CONFIG_X86_64_SMP
- #define INIT_PER_CPU_VAR(var)  init_per_cpu__##var
--- 
-2.41.0
+If so, I think this would be preferred in case the exact flags change
+before they become stable. It sounds like they are likely to change,
+see [1].
 
+If not, no big deal since it would just need an update at a rust version bu=
+mp.
+
+- Trevor
+
+[1]: https://rust-lang.zulipchat.com/#narrow/stream/131828-t-compiler/topic=
+/.60-Zbranch-protection.60.20stability
