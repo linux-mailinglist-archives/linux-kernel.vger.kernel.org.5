@@ -2,188 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F427C6490
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 07:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E297C6491
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 07:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377057AbjJLFVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 01:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
+        id S1377132AbjJLFVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 01:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234114AbjJLFVX (ORCPT
+        with ESMTP id S233879AbjJLFV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 01:21:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912D490
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 22:21:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697088081; x=1728624081;
-  h=date:from:to:cc:subject:message-id;
-  bh=uMm4ogi2McRaEroe5rYZnzEQxPQg2L4Bd0jiSW7AnKo=;
-  b=eswiK6BvGg+oaND5Zvbsn/EU7nVlnTiJPCt53RZqmUJeUYkB81uwWgAA
-   9xnYnMbraOO7YSuw93eiadlcZsNKd6MIRVtvye5LgEK5cG4hGFYwSHqJ7
-   XYj444FS6mvKWOMCGtQ29gg50zjTil0Xr2LZdvE8xjUW8m31Fl39H2la8
-   23Ip8+cVlwctvHYnm6bq28pEmmV/el4a89cFdLeaonzsyCJcMwEMjD93p
-   0JAnSEGe0g2q0M3bsiE2GuPr2UFUP0gaxX7HX7pbTwPAvGegh2UHRN0Ty
-   emzNOtpiGZJ2tkURxzQBTjlLmDcL7zr3A3eSsoUvE1n7FyOE+GaWi0d5N
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="382074805"
-X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
-   d="scan'208";a="382074805"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 22:21:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="870421884"
-X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
-   d="scan'208";a="870421884"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Oct 2023 22:21:20 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qqo8M-0003DD-0w;
-        Thu, 12 Oct 2023 05:21:18 +0000
-Date:   Thu, 12 Oct 2023 13:20:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/percpu] BUILD SUCCESS
- e29aad08b1da7772b362537be32335c0394e65fe
-Message-ID: <202310121337.mLTb85Hw-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 12 Oct 2023 01:21:29 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7B590;
+        Wed, 11 Oct 2023 22:21:28 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39C5LHCN051170;
+        Thu, 12 Oct 2023 00:21:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1697088077;
+        bh=mzJ6mczws2V1o12NE3ALNTxfbB/dSlBF4vOrX568DzU=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=Jx0wdWGinDG26kPvuiEwfOJty21+RPavdxMGn/hEds6NkWc9u5FaNSufX6gdhTSRF
+         g1b5GCiW92huGNJhviPjw8fOiIOXOJGoT4UisxtduyFvlQICFVZ9+ZFHZbzvL4Cxar
+         RC8CC4JT7IJuyVk98I/3G9HyYwYTL1PDBRsyyy/w=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39C5LHfM073317
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Oct 2023 00:21:17 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 12
+ Oct 2023 00:21:17 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 12 Oct 2023 00:21:17 -0500
+Received: from [10.24.69.31] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39C5LCIS092468;
+        Thu, 12 Oct 2023 00:21:13 -0500
+Message-ID: <7b5f195f-c5c8-6847-9458-3d5563cf0112@ti.com>
+Date:   Thu, 12 Oct 2023 10:51:12 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] net: ti: icssg-prueth: Fix tx_total_bytes count
+Content-Language: en-US
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Paolo Abeni <pabeni@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <srk@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        <r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>
+References: <20231011063700.1824093-1-danishanwar@ti.com>
+ <4d7c2ab9-e980-42a5-9452-79bc0d33e094@lunn.ch>
+From:   MD Danish Anwar <danishanwar@ti.com>
+In-Reply-To: <4d7c2ab9-e980-42a5-9452-79bc0d33e094@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/percpu
-branch HEAD: e29aad08b1da7772b362537be32335c0394e65fe  x86/percpu: Disable named address spaces for KASAN
+Hi Andrew,
 
-Unverified Warning (likely false positive, please contact us if interested):
+On 11/10/23 18:11, Andrew Lunn wrote:
+>> @@ -29,7 +30,12 @@ void emac_update_hardware_stats(struct prueth_emac *emac)
+>>  			     base + icssg_all_stats[i].offset,
+>>  			     val);
+>>  
+>> +		if (!strncmp(icssg_ethtool_stats[i].name, "tx_good_frames", ETH_GSTRING_LEN))
+>> +			tx_pkt_cnt = val;
+> 
+> Doing a strncmp seems very expensive. Could you make use of
+> icssg_stats.offset?
+> 
 
-fs/buffer.c:1386 lookup_bh_lru() warn: ignoring unreachable code.
-fs/buffer.c:1386 lookup_bh_lru() warn: inconsistent indenting
+Sure. I can define the offset of these two stats and then use them in if
+condition as below.
 
-Warning ids grouped by kconfigs:
+#define ICSSG_TX_PACKET_OFFSET 0xA0
+#define ICSSG_TX_BYTE_OFFSET   0xEC
 
-gcc_recent_errors
-`-- i386-randconfig-141-20231011
-    |-- fs-buffer.c-lookup_bh_lru()-warn:ignoring-unreachable-code.
-    `-- fs-buffer.c-lookup_bh_lru()-warn:inconsistent-indenting
+if (icssg_ethtool_stats[i].offset == ICSSG_TX_PACKET_OFFSET)
+	tx_pkt_cnt = val;
 
-elapsed time: 1879m
+if (icssg_ethtool_stats[i].offset == ICSSG_TX_BYTE_OFFSET)
+	emac->stats[i] -= tx_pkt_cnt * 8;
 
-configs tested: 99
-configs skipped: 113
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Pls let me know if this looks OK.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231011   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231011   gcc  
-i386         buildonly-randconfig-002-20231011   gcc  
-i386         buildonly-randconfig-003-20231011   gcc  
-i386         buildonly-randconfig-004-20231011   gcc  
-i386         buildonly-randconfig-005-20231011   gcc  
-i386         buildonly-randconfig-005-20231012   gcc  
-i386         buildonly-randconfig-006-20231011   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231011   gcc  
-i386                  randconfig-002-20231011   gcc  
-i386                  randconfig-003-20231011   gcc  
-i386                  randconfig-004-20231011   gcc  
-i386                  randconfig-005-20231011   gcc  
-i386                  randconfig-006-20231011   gcc  
-i386                  randconfig-011-20231011   gcc  
-i386                  randconfig-012-20231011   gcc  
-i386                  randconfig-013-20231011   gcc  
-i386                  randconfig-014-20231011   gcc  
-i386                  randconfig-015-20231011   gcc  
-i386                  randconfig-016-20231011   gcc  
-loongarch             randconfig-001-20231012   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                 randconfig-001-20231011   gcc  
-riscv                 randconfig-001-20231012   gcc  
-s390                  randconfig-001-20231011   gcc  
-s390                  randconfig-001-20231012   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231011   gcc  
-x86_64       buildonly-randconfig-002-20231011   gcc  
-x86_64       buildonly-randconfig-003-20231011   gcc  
-x86_64       buildonly-randconfig-004-20231011   gcc  
-x86_64       buildonly-randconfig-005-20231011   gcc  
-x86_64       buildonly-randconfig-006-20231011   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231011   gcc  
-x86_64                randconfig-001-20231012   gcc  
-x86_64                randconfig-002-20231011   gcc  
-x86_64                randconfig-002-20231012   gcc  
-x86_64                randconfig-003-20231011   gcc  
-x86_64                randconfig-004-20231011   gcc  
-x86_64                randconfig-005-20231011   gcc  
-x86_64                randconfig-006-20231011   gcc  
-x86_64                randconfig-011-20231011   gcc  
-x86_64                randconfig-012-20231011   gcc  
-x86_64                randconfig-013-20231011   gcc  
-x86_64                randconfig-014-20231011   gcc  
-x86_64                randconfig-015-20231011   gcc  
-x86_64                randconfig-016-20231011   gcc  
-x86_64                randconfig-071-20231011   gcc  
-x86_64                randconfig-072-20231011   gcc  
-x86_64                randconfig-073-20231011   gcc  
-x86_64                randconfig-074-20231011   gcc  
-x86_64                randconfig-075-20231011   gcc  
-x86_64                randconfig-076-20231011   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+> 	Andrew
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks and Regards,
+Danish
