@@ -2,160 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2152A7C7937
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 00:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E7A7C7964
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 00:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442963AbjJLWCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 18:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
+        id S1443039AbjJLWSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 18:18:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234509AbjJLWC3 (ORCPT
+        with ESMTP id S1443017AbjJLWSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 18:02:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4163BD8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 15:01:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697148103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jO+V0kCCN2H4fTh8SDF52Bqu9Ca+4ziotGTsqK4FPs0=;
-        b=XET1i8kX+DmJrIqQJY+sbhBmd437aBIsvwPEKCMJYsEUTaJflmGEcXiThnxJiZP16g4o3m
-        zQWDWHpJQhjTRn2cKwM80sKpOzc5h8h++Y3jQkAP1l9Ds2LbkHVyET/jvRvV/rQCQLucxJ
-        Kimzf7BMDFPAHDI1fyA3vTcJHerz9UI=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-90--x60IwsTNwuZNcCMLHw9Tw-1; Thu, 12 Oct 2023 18:01:41 -0400
-X-MC-Unique: -x60IwsTNwuZNcCMLHw9Tw-1
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3ae5c4872e8so296795b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 15:01:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697148101; x=1697752901;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jO+V0kCCN2H4fTh8SDF52Bqu9Ca+4ziotGTsqK4FPs0=;
-        b=J8GX2vpW87NSjjtsIt2nnmpxs5Lf4+hcIvGSgxIOoe3xKSLXlBmq96mCTYJkVEGKsO
-         KGkcANFduRS84Av+ZeoHPmyd206M6ir9IVw1k5TO73oqHBcyH9ntGpMaMhmKQAvQth95
-         tN3oihpyT7uzYQEOedYmKejShQ7lna+vIL/866seG6TJGC/kmnaUz0BK+CG5NgxmSL69
-         xu/YIpmFNTo0IK7Fcp7RXHpyBJGSUT9GVrhBR3sfeGCKTkN8kk0aX74lUn9BUQLNBNBb
-         lp8vowdJPaDF2KhQSq/2rq++fsh/pX7pWRoQ8kumrmjlR4J82kDBkINqAE6CLIXDo+68
-         jr+A==
-X-Gm-Message-State: AOJu0Yx8eJz9MW/0EBB6jg/7gwbN/IzD/460Q8Cu0D6uYEKvdiAQuttE
-        J8H14Iqzf6Nm4q669F7/OzxLxVFt0affaEpR9Q+SGM0smXVU1zEc8KB6LzopE9y7Mm97sy6I0FL
-        cLj0RKLnjRe1g/ZE9Na3ea70w
-X-Received: by 2002:a05:6808:2087:b0:3b2:9c2f:50e0 with SMTP id s7-20020a056808208700b003b29c2f50e0mr7037848oiw.5.1697148101013;
-        Thu, 12 Oct 2023 15:01:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGxqOd0z9Rrm05kMUw7f1NwIqG2E5WysntGtAunm/GI19UXZNOiR7r13fJ46GNQ81YF0h/Yjg==
-X-Received: by 2002:a05:6808:2087:b0:3b2:9c2f:50e0 with SMTP id s7-20020a056808208700b003b29c2f50e0mr7037819oiw.5.1697148100725;
-        Thu, 12 Oct 2023 15:01:40 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id p4-20020ac84604000000b004181234dd1dsm106401qtn.96.2023.10.12.15.01.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 15:01:40 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 18:01:37 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, david@redhat.com, hughd@google.com,
-        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
-        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 1/3] mm/rmap: support move to different root anon_vma
- in folio_move_anon_rmap()
-Message-ID: <ZShswW2rkKTwnrV3@x1n>
-References: <20231009064230.2952396-1-surenb@google.com>
- <20231009064230.2952396-2-surenb@google.com>
+        Thu, 12 Oct 2023 18:18:50 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B64A7DC
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 15:18:47 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CLvSdq013683;
+        Thu, 12 Oct 2023 22:18:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=vZaWFe467NA9vHpyizU+95xwYEOfJBJkdIfg6VnPuGA=;
+ b=myc4x/4C32syWkymHXJzv2H5yBucDFuDIhX7oQqlNTPaWMWtu4DN5T2tpiPMCZLlBMRx
+ t1DYpte/OzFdrKbzCylZi3wqPsxdvtw98XW6mWz0mB6iqx+GJw36VAmY7prd+N+zg/0I
+ mZZnZRtv9ed1UGvkfOxCxJHZW+wh8ab0xgLZ6ZUBItxmYseLD/S98PQPLTZFyTunCKmN
+ vJH66pG5vgm9Q760aFmz8nEwFJE9Ub0CcYTmAUURLVL9aTx85idaul0IsBglQVpKL9zf
+ 3QXLoG02dGN2kbqP93y7jny48PGWhiWYQvXss7GcIdddENmTZZ9Qkz1SN/dpvg17nxUq +w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tps5tgjh3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 22:18:38 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39CMAQYl025426;
+        Thu, 12 Oct 2023 22:18:37 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tps5tgjgt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 22:18:37 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39CL0mSC000640;
+        Thu, 12 Oct 2023 21:45:50 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkk5m2cq1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 21:45:50 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CLjnWW35717492
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Oct 2023 21:45:49 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7886B58060;
+        Thu, 12 Oct 2023 21:45:49 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3191158056;
+        Thu, 12 Oct 2023 21:45:49 +0000 (GMT)
+Received: from [9.61.9.6] (unknown [9.61.9.6])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 12 Oct 2023 21:45:49 +0000 (GMT)
+Message-ID: <4ecd19e5-9dfa-4157-9384-92c722064b2e@linux.ibm.com>
+Date:   Thu, 12 Oct 2023 16:45:48 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231009064230.2952396-2-surenb@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] regulator: core: Convert warning to debug print
+Content-Language: en-US
+To:     Mark Brown <broonie@kernel.org>
+Cc:     joel@jms.id.au, eajames@linux.ibm.com, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, lakshmiy@us.ibm.com
+References: <20231012174235.2424670-1-ninad@linux.ibm.com>
+ <aa596890-d98a-41c2-bc10-8c1db58ea23a@sirena.org.uk>
+From:   Ninad Palsule <ninad@linux.ibm.com>
+In-Reply-To: <aa596890-d98a-41c2-bc10-8c1db58ea23a@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Ur2C_DrL1dzqR1PcoOSAxb7sbw5Vr4nB
+X-Proofpoint-ORIG-GUID: w0wfcMLGYo3YhNGWCIKXPw4Qww0g076j
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_14,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 adultscore=0 priorityscore=1501 phishscore=0 mlxscore=0
+ spamscore=0 impostorscore=0 bulkscore=0 clxscore=1015 mlxlogscore=858
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310120187
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 08, 2023 at 11:42:26PM -0700, Suren Baghdasaryan wrote:
-> From: Andrea Arcangeli <aarcange@redhat.com>
-> 
-> For now, folio_move_anon_rmap() was only used to move a folio to a
-> different anon_vma after fork(), whereby the root anon_vma stayed
-> unchanged. For that, it was sufficient to hold the folio lock when
-> calling folio_move_anon_rmap().
-> 
-> However, we want to make use of folio_move_anon_rmap() to move folios
-> between VMAs that have a different root anon_vma. As folio_referenced()
-> performs an RMAP walk without holding the folio lock but only holding the
-> anon_vma in read mode, holding the folio lock is insufficient.
-> 
-> When moving to an anon_vma with a different root anon_vma, we'll have to
-> hold both, the folio lock and the anon_vma lock in write mode.
-> Consequently, whenever we succeeded in folio_lock_anon_vma_read() to
-> read-lock the anon_vma, we have to re-check if the mapping was changed
-> in the meantime. If that was the case, we have to retry.
-> 
-> Note that folio_move_anon_rmap() must only be called if the anon page is
-> exclusive to a process, and must not be called on KSM folios.
-> 
-> This is a preparation for UFFDIO_MOVE, which will hold the folio lock,
-> the anon_vma lock in write mode, and the mmap_lock in read mode.
-> 
-> Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
->  mm/rmap.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index c1f11c9dbe61..f9ddc50269d2 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -542,7 +542,9 @@ struct anon_vma *folio_lock_anon_vma_read(struct folio *folio,
->  	struct anon_vma *root_anon_vma;
->  	unsigned long anon_mapping;
->  
-> +retry:
->  	rcu_read_lock();
-> +retry_under_rcu:
->  	anon_mapping = (unsigned long)READ_ONCE(folio->mapping);
->  	if ((anon_mapping & PAGE_MAPPING_FLAGS) != PAGE_MAPPING_ANON)
->  		goto out;
-> @@ -552,6 +554,16 @@ struct anon_vma *folio_lock_anon_vma_read(struct folio *folio,
->  	anon_vma = (struct anon_vma *) (anon_mapping - PAGE_MAPPING_ANON);
->  	root_anon_vma = READ_ONCE(anon_vma->root);
->  	if (down_read_trylock(&root_anon_vma->rwsem)) {
-> +		/*
-> +		 * folio_move_anon_rmap() might have changed the anon_vma as we
-> +		 * might not hold the folio lock here.
-> +		 */
-> +		if (unlikely((unsigned long)READ_ONCE(folio->mapping) !=
-> +			     anon_mapping)) {
-> +			up_read(&root_anon_vma->rwsem);
-> +			goto retry_under_rcu;
+Hello Mark,
 
-Is adding this specific label worthwhile?  How about rcu unlock and goto
-retry (then it'll also be clear that we won't hold rcu read lock for
-unpredictable time)?
+Thanks for the review.
 
-> +		}
-> +
->  		/*
->  		 * If the folio is still mapped, then this anon_vma is still
->  		 * its anon_vma, and holding the mutex ensures that it will
+On 10/12/23 12:47, Mark Brown wrote:
+> On Thu, Oct 12, 2023 at 12:42:35PM -0500, Ninad Palsule wrote:
+>> There are some boards without the vcc regulators for eeprom or other
+>> devices. In such cases, we should not see the following warning and
+>> this confuses the user. We want to see this only when it is compiled
+>> with CONFIG_REGULATOR_DEBUG option.
+>> [0.747347] at24 6-0055: supply vcc not found, using dummy regulator
+>> [0.752877] pca953x 6-0074: supply vcc not found, using dummy regulator
+> This is a warning saying that the firmware description for the system is
+> incomplete in case things go wrong later - it is vanishingly unlikely
+> that these devices actually do not require supplies, we'd probably have
+> heard about it if they did.  If a supply is not described properly we
+> may for example decide to power off what we think is an unused supply
+> with bad results.
 
--- 
-Peter Xu
+You are right there are regulators for these supplies but they are 
+managed by the
+hardware hence not added in the device tree. I checked dts/aspeed 
+directory and
+non of the machine has “vcc-supply” defined and lot of them use eeprom.
+Also, I thought that this message is only useful in the lab to indicate 
+developer
+whether they missed the device tree definition or not but its not useful 
+in the
+field.  Hence proposed to put it under DEBUG.
+
+Please let me know if I missed something.
+
+Thanks!
+
+~ Ninad
+
 
