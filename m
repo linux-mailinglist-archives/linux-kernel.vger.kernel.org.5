@@ -2,52 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B57EA7C6A6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCA67C6A6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343641AbjJLKGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50422 "EHLO
+        id S235651AbjJLKG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235611AbjJLKGS (ORCPT
+        with ESMTP id S235578AbjJLKGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:06:18 -0400
+        Thu, 12 Oct 2023 06:06:25 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29209D;
-        Thu, 12 Oct 2023 03:06:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6205C43395;
-        Thu, 12 Oct 2023 10:06:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A66D8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:06:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30472C433C8;
+        Thu, 12 Oct 2023 10:06:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697105176;
-        bh=nmE5kc1sWWdzu/BYiwDppTah4huYcrYJ4W9pGYBd9Rk=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=cEf14eEfZ/wy59/GN+5vbPpeQdrZKRo/gut2my2Vuw+1OoCYdnlyigpqDts87N6Yo
-         U0/08E4II/oKHjMDDc5Iu0FUJAtzGfBgqclA+kqyHtsI4pBKmdKfqGWGcSbKm/62tA
-         AE8atHvjbCMeMu4YH2Cj1gXyUlJSzEGJs899OX/A/bwpdZWop0G1S/dATQN6xagUHJ
-         v7a0Oyn67oygTunqC9cqaPsaT43MFo2yZTDz4793bpeTx4e8U61iYyA16xNNqvW3JZ
-         9vTmNE17Jn/cb6k88GgDDOh/dcUooslTKvE0qQukVgthz4ZY6jKW3HGt0eJXZNbA6u
-         /v0SqjuTmqqEA==
-From:   Lee Jones <lee@kernel.org>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        lee@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        thierry.reding@gmail.com, ndesaulniers@google.com, trix@redhat.com,
-        baruch@tkos.co.il, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Devi Priya <quic_devipriy@quicinc.com>
-Cc:     linux-pwm@vger.kernel.org, u.kleine-koenig@pengutronix.de,
-        nathan@kernel.org
-In-Reply-To: <20231005160550.2423075-4-quic_devipriy@quicinc.com>
-References: <20231005160550.2423075-1-quic_devipriy@quicinc.com>
- <20231005160550.2423075-4-quic_devipriy@quicinc.com>
-Subject: Re: (subset) [PATCH V15 3/4] dt-bindings: mfd: qcom,tcsr: Add
- simple-mfd support for IPQ6018
-Message-Id: <169710517252.1166696.13811645504228005200.b4-ty@kernel.org>
-Date:   Thu, 12 Oct 2023 11:06:12 +0100
+        s=k20201202; t=1697105182;
+        bh=s/sZcf7nbHGgtGqnIcOjvr3LFAA8WfuaI+wbvCv/HyI=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=kZGe/FHAs9+4LTHdzHXm0+1PGY7i3nPHVD57gn6TDSc2Bb1npF2C35wRQ82wFC6m4
+         7cQS8FtUVc68v7i/MR/EnMNBVHJOfb3bW5ZLNE1D3PrsSEnCFZmXaUB1/34FQ25f7B
+         RzP7ryErVzHM4X7ovAsfcAlKeVNY4I9tF+a/6BvhNvc8jYH0ryJAXftTtgTnjJKZqU
+         eELZXoaLMm9NIhfJy0mnyc1l3bRdW9vMs0b8/eQ3DDxXe0xECnvDSe13tTTM09Fs7G
+         Fg5/qSG+nXV82eAvhnlXrU1MMKRzS4srhjnwPWmrNuwCd308hN8AYAz+SiLiVqJZuD
+         TExicGO5tUv8A==
+From:   Pratyush Yadav <pratyush@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Md Sadre Alam <quic_mdalam@quicinc.com>, tudor.ambarus@linaro.org,
+        pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, quic_srichara@quicinc.com,
+        quic_varada@quicinc.com
+Subject: Re: [PATCH] mtd: spi-nor: Ensure operation completion before shutdown
+In-Reply-To: <bb12db1205a5d1bfbee341d23defe0be@walle.cc> (Michael Walle's
+        message of "Thu, 12 Oct 2023 11:11:09 +0200")
+References: <20231012055148.2445303-1-quic_mdalam@quicinc.com>
+        <bb12db1205a5d1bfbee341d23defe0be@walle.cc>
+Date:   Thu, 12 Oct 2023 12:06:19 +0200
+Message-ID: <mafs034ygm9yc.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -58,17 +54,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Oct 2023 21:35:49 +0530, Devi Priya wrote:
-> Update the binding to include pwm as the child node to TCSR block and
-> add simple-mfd support for IPQ6018.
-> 
-> 
+On Thu, Oct 12 2023, Michael Walle wrote:
 
-Applied, thanks!
+> Hi,
+>
+> Am 2023-10-12 07:51, schrieb Md Sadre Alam:
+>> Ensure that there are no pending spi operation inprogress
+>> when system halts.
+>
+> What operation might be in progress here? Did you encounter some problems?
+> Please explain it in more detail in the commit message.
 
-[3/4] dt-bindings: mfd: qcom,tcsr: Add simple-mfd support for IPQ6018
-      commit: b4a32d218d424b81a58fbd419e1114b1c1f76168
++1
 
---
-Lee Jones [李琼斯]
+Ideally we should never reach this function with a pending operation. I
+think we should do a proper wait in the place we did the operation that
+needs waiting rather than here. That would make sure operations other
+than shutdown, like reads, also work properly.
 
+-- 
+Regards,
+Pratyush Yadav
