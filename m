@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E0D7C6370
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 05:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8537C6371
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 05:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377096AbjJLDwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 23:52:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
+        id S1377122AbjJLDwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 23:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376855AbjJLDvv (ORCPT
+        with ESMTP id S1377075AbjJLDvw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 23:51:51 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2C4E4;
-        Wed, 11 Oct 2023 20:51:28 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c9bca1d96cso4681665ad.3;
-        Wed, 11 Oct 2023 20:51:28 -0700 (PDT)
+        Wed, 11 Oct 2023 23:51:52 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E410FB;
+        Wed, 11 Oct 2023 20:51:30 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5859b2eaa55so389896a12.1;
+        Wed, 11 Oct 2023 20:51:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697082688; x=1697687488; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697082689; x=1697687489; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=joIOSqpc9II33WD29wSpcJoIAVdTr/6RN8dGhdgNwvk=;
-        b=chVFrLV1NWa2YvdYOoeVJ9VIF93RWLbhNFpxJBrsajGV2Bmekp1GNIWWoMD8JmINyk
-         GDQsgWHV+E0wsqEABTpkzYt8Ol4we1tOGYCKp1gejphlSusMeeHlGegLrxB0VkBMLnwv
-         Pksx3TKNywlc+BDTfq95dvNah0ILtKDYB14OkAIEGGpKDuPNkHhcWxnIsz2MQHlS3d4f
-         QyMV8hmFMScD8cZ30Ki9TuRrtR0wKS2fgw41r3mrK/rw9SmC1ct5vPbhD2ox6WLIWDbW
-         +kvu7AkwTdlfZ2mHQgvDexVPSJ9twoI6AvTGKYaXLTMzg66yclyixM/HPL2d0/6NAZcT
-         4jLA==
+        bh=0rVW03rOwjSZP2z69A2JhUmzH1YR4e60f99Uil62L7k=;
+        b=Yb86W2f0tG1zUIP9ufxVG7NSuJ3nGR18BGE6RWUZOR03IQTZnH7V5uNIj403Hre9zs
+         ET4/crZ4qirTi74U5gNuhTLrskrJY62zsWY/8xpzgQH3SFnBTDOXdpLlmLGzftL7I5IH
+         wHrpwvLggxVhb2lDNmYvlNBx33JqLeFRVs38pxeENGUyBiewRdWhbnnC6CioWL4g6kxN
+         b9y15KVxyNHIedAgpiRH0Kz411yGK3dgv6GliVCVMr4vq9wjozRuGXecxpd2v7QnUpj6
+         aek4Ngf+oA7J7S76e8pIXtMYEt6J/WVwN09Vp9eOVyVtT9K+XUFpSAmZZlZcj3k3rQoj
+         ZduQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697082688; x=1697687488;
+        d=1e100.net; s=20230601; t=1697082689; x=1697687489;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=joIOSqpc9II33WD29wSpcJoIAVdTr/6RN8dGhdgNwvk=;
-        b=cDvYHcCrzu0CYTW9p+1Gst/q1a/iI2e3rc0lMxse5+f4+w2yz1GCF4Eq2qyL7Eh/op
-         juOYN7bFWUPD29mwyz4u1OPGRwht+VVe2dDqiEPljzskPBsWS2Tu3aXqhwSPLVKZ4Cre
-         uSpU82UWAK+rgV/4sD0D5hBlx/ghsI/vKsSRNY5u6FoxViYShSjlBFLrrKt4wrY6ifod
-         /OUu7XtR+hlpoY/Af4BoHGG+odIFJR5q+y3Vdjd4vONS9tZ2yt85gu+6llTqZGBUEY73
-         LA+vtUPxyaJrXGaSN0AHYiNCJT6ynTMzidPYsBbhFlE7IwNMrAQbMNrul8rqoDqx+4eN
-         lSTA==
-X-Gm-Message-State: AOJu0YxeI/dBvuz6fEiKVNCzqg/XZs4elQFx3I8/IuYNF4kcO6sVNULG
-        nfUBbBcZT89ZeayV/DxgnqE=
-X-Google-Smtp-Source: AGHT+IHalb1WJG4zXzhKmnak0iddX0Bstj3qdul4VTCIEj8EVCZxS4aVV6iIU+VyMBzv6NqBeSPmWQ==
-X-Received: by 2002:a17:903:4307:b0:1c9:dbd3:94f7 with SMTP id jz7-20020a170903430700b001c9dbd394f7mr1326213plb.65.1697082687898;
-        Wed, 11 Oct 2023 20:51:27 -0700 (PDT)
+        bh=0rVW03rOwjSZP2z69A2JhUmzH1YR4e60f99Uil62L7k=;
+        b=dZ7jog7OKA6/ZYtiKR/p8Ohb/R9H50J79wGOKBii83nqawI2ciTXbZUZGf98cLlUDt
+         zkjuGHGHvSFv6MJxWQPPOpzZamtXH5aduMYSBTSXxAJbriD/KCbYl2vUXub4/O+sVNGV
+         Q9VrdrIvUElTz3yZkgENCDLJK0KFOnUFGMESnk+DBkcnQu2TNFgUq8A6xy6lVR6SszHP
+         p05kURyQUFVujJbc3uzB0tQoFLud96vN3mgjmmA8HjldNyh9J845pYGj2v8rS/XN9X1U
+         24wZ7O1RpkhUzksJce3zx96GG//KwSDuDaNfDv31JipKf7NNGiRD3tj+7eMpsvql/svA
+         Jv2A==
+X-Gm-Message-State: AOJu0YzSstcd83qva3KiJuCPTcGf3F7Zoa1HR/G7s8wGEpPfVEl6jzho
+        1OqbNK9l1nmXt5HFbet448HXwhR6EqE=
+X-Google-Smtp-Source: AGHT+IH8ujh/4bbYJYVL//tpIwkrgIUKdJURj1ThDc//wfn3ffSDugZFYP9KcXN0vYrC738yiQcFwA==
+X-Received: by 2002:a17:903:110d:b0:1c7:37e2:13ff with SMTP id n13-20020a170903110d00b001c737e213ffmr23895591plh.6.1697082689403;
+        Wed, 11 Oct 2023 20:51:29 -0700 (PDT)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:b1b9:d490:2f5e:be06])
-        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.51.26
+        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.51.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 20:51:27 -0700 (PDT)
+        Wed, 11 Oct 2023 20:51:29 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -64,9 +64,9 @@ Cc:     Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [PATCH 10/48] perf annotate-data: Add find_data_type()
-Date:   Wed, 11 Oct 2023 20:50:33 -0700
-Message-ID: <20231012035111.676789-11-namhyung@kernel.org>
+Subject: [PATCH 11/48] perf annotate-data: Add dso->data_types tree
+Date:   Wed, 11 Oct 2023 20:50:34 -0700
+Message-ID: <20231012035111.676789-12-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
 In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
 References: <20231012035111.676789-1-namhyung@kernel.org>
@@ -82,265 +82,226 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The find_data_type() is to get a data type from the memory access at the
-given address (IP) using a register and an offset.  It requires DWARF
-debug info in the DSO and searches the list of variables and function
-parameters in the scope.
-
-In a pseudo code, it does basically the following:
-
-  find_data_type(dso, ip, reg, offset)
-  {
-      pc = map__rip_2objdump(ip);
-      CU = dwarf_addrdie(dso->dwarf, pc);
-      scopes = die_get_scopes(CU, pc);
-      for_each_scope(S, scopes) {
-          V = die_find_variable_by_reg(S, pc, reg);
-          if (V && V.type == pointer_type) {
-              T = die_get_real_type(V);
-              if (offset < T.size)
-                  return T;
-          }
-      }
-      return NULL;
-  }
+To aggregate accesses to the same data type, add 'data_types' tree in
+DSO to maintain data types and find it by name and size.  It might have
+different data types that happen to have the same name.  So it also
+compares the size of the type.  Even if it doesn't 100% guarantee, it'd
+reduce the possiblility of mis-handling of such conflicts.  And I don't
+think it's common to have different types with the same name.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/Build           |   1 +
- tools/perf/util/annotate-data.c | 163 ++++++++++++++++++++++++++++++++
- tools/perf/util/annotate-data.h |  40 ++++++++
- 3 files changed, 204 insertions(+)
- create mode 100644 tools/perf/util/annotate-data.c
- create mode 100644 tools/perf/util/annotate-data.h
+ tools/perf/util/annotate-data.c | 95 +++++++++++++++++++++++++++++----
+ tools/perf/util/annotate-data.h |  9 ++++
+ tools/perf/util/dso.c           |  4 ++
+ tools/perf/util/dso.h           |  2 +
+ 4 files changed, 100 insertions(+), 10 deletions(-)
 
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index a82122516720..cdc8a850859c 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -195,6 +195,7 @@ perf-$(CONFIG_DWARF) += probe-finder.o
- perf-$(CONFIG_DWARF) += dwarf-aux.o
- perf-$(CONFIG_DWARF) += dwarf-regs.o
- perf-$(CONFIG_DWARF) += debuginfo.o
-+perf-$(CONFIG_DWARF) += annotate-data.o
- 
- perf-$(CONFIG_LIBDW_DWARF_UNWIND) += unwind-libdw.o
- perf-$(CONFIG_LOCAL_LIBUNWIND)    += unwind-libunwind-local.o
 diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-new file mode 100644
-index 000000000000..b3d519b7514b
---- /dev/null
+index b3d519b7514b..23381c0a5d38 100644
+--- a/tools/perf/util/annotate-data.c
 +++ b/tools/perf/util/annotate-data.c
-@@ -0,0 +1,163 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
+@@ -17,6 +17,76 @@
+ #include "strbuf.h"
+ #include "symbol.h"
+ 
 +/*
-+ * Convert sample address to data type using DWARF debug info.
-+ *
-+ * Written by Namhyung Kim <namhyung@kernel.org>
++ * Compare type name and size to maintain them in a tree.
++ * I'm not sure if DWARF would have information of a single type in many
++ * different places (compilation units).  If not, it could compare the
++ * offset of the type entry in the .debug_info section.
 + */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+
-+#include "annotate-data.h"
-+#include "debuginfo.h"
-+#include "debug.h"
-+#include "dso.h"
-+#include "map.h"
-+#include "map_symbol.h"
-+#include "strbuf.h"
-+#include "symbol.h"
-+
-+static bool find_cu_die(struct debuginfo *di, u64 pc, Dwarf_Die *cu_die)
++static int data_type_cmp(const void *_key, const struct rb_node *node)
 +{
-+	Dwarf_Off off, next_off;
-+	size_t header_size;
++	const struct annotated_data_type *key = _key;
++	struct annotated_data_type *type;
 +
-+	if (dwarf_addrdie(di->dbg, pc, cu_die) != NULL)
-+		return cu_die;
++	type = rb_entry(node, struct annotated_data_type, node);
 +
-+	/*
-+	 * There are some kernels don't have full aranges and contain only a few
-+	 * aranges entries.  Fallback to iterate all CU entries in .debug_info
-+	 * in case it's missing.
-+	 */
-+	off = 0;
-+	while (dwarf_nextcu(di->dbg, off, &next_off, &header_size,
-+			    NULL, NULL, NULL) == 0) {
-+		if (dwarf_offdie(di->dbg, off + header_size, cu_die) &&
-+		    dwarf_haspc(cu_die, pc))
-+			return true;
-+
-+		off = next_off;
-+	}
-+	return false;
++	if (key->type_size != type->type_size)
++		return key->type_size - type->type_size;
++	return strcmp(key->type_name, type->type_name);
 +}
 +
-+/* The type info will be saved in @type_die */
-+static int check_variable(Dwarf_Die *var_die, Dwarf_Die *type_die, int offset)
++static bool data_type_less(struct rb_node *node_a, const struct rb_node *node_b)
 +{
-+	Dwarf_Word size;
++	struct annotated_data_type *a, *b;
 +
-+	/* Get the type of the variable */
-+	if (die_get_real_type(var_die, type_die) == NULL) {
-+		pr_debug("variable has no type\n");
-+		return -1;
-+	}
++	a = rb_entry(node_a, struct annotated_data_type, node);
++	b = rb_entry(node_b, struct annotated_data_type, node);
 +
-+	/*
-+	 * It expects a pointer type for a memory access.
-+	 * Convert to a real type it points to.
-+	 */
-+	if (dwarf_tag(type_die) != DW_TAG_pointer_type ||
-+	    die_get_real_type(type_die, type_die) == NULL) {
-+		pr_debug("no pointer or no type\n");
-+		return -1;
-+	}
-+
-+	/* Get the size of the actual type */
-+	if (dwarf_aggregate_size(type_die, &size) < 0) {
-+		pr_debug("type size is unknown\n");
-+		return -1;
-+	}
-+
-+	/* Minimal sanity check */
-+	if ((unsigned)offset >= size) {
-+		pr_debug("offset: %d is bigger than size: %lu\n", offset, size);
-+		return -1;
-+	}
-+
-+	return 0;
++	if (a->type_size != b->type_size)
++		return a->type_size < b->type_size;
++	return strcmp(a->type_name, b->type_name) < 0;
 +}
 +
-+/* The result will be saved in @type_die */
-+static int find_data_type_die(struct debuginfo *di, u64 pc,
-+			      int reg, int offset, Dwarf_Die *type_die)
-+{
-+	Dwarf_Die cu_die, var_die;
-+	Dwarf_Die *scopes = NULL;
-+	int ret = -1;
-+	int i, nr_scopes;
-+
-+	/* Get a compile_unit for this address */
-+	if (!find_cu_die(di, pc, &cu_die)) {
-+		pr_debug("cannot find CU for address %lx\n", pc);
-+		return -1;
-+	}
-+
-+	/* Get a list of nested scopes - i.e. (inlined) functions and blocks. */
-+	nr_scopes = die_get_scopes(&cu_die, pc, &scopes);
-+
-+	/* Search from the inner-most scope to the outer */
-+	for (i = nr_scopes - 1; i >= 0; i--) {
-+		/* Look up variables/parameters in this scope */
-+		if (!die_find_variable_by_reg(&scopes[i], pc, reg, &var_die))
-+			continue;
-+
-+		/* Found a variable, see if it's correct */
-+		ret = check_variable(&var_die, type_die, offset);
-+		break;
-+	}
-+
-+	free(scopes);
-+	return ret;
-+}
-+
-+/**
-+ * find_data_type - Return a data type at the location
-+ * @ms: map and symbol at the location
-+ * @ip: instruction address of the memory access
-+ * @reg: register that holds the base address
-+ * @offset: offset from the base address
-+ *
-+ * This functions searches the debug information of the binary to get the data
-+ * type it accesses.  The exact location is expressed by (ip, reg, offset).
-+ * It return %NULL if not found.
-+ */
-+struct annotated_data_type *find_data_type(struct map_symbol *ms, u64 ip,
-+					   int reg, int offset)
++static struct annotated_data_type *dso__findnew_data_type(struct dso *dso,
++							  Dwarf_Die *type_die)
 +{
 +	struct annotated_data_type *result = NULL;
-+	struct dso *dso = ms->map->dso;
-+	struct debuginfo *di;
-+	Dwarf_Die type_die;
++	struct annotated_data_type key;
++	struct rb_node *node;
 +	struct strbuf sb;
-+	u64 pc;
++	char *type_name;
++	Dwarf_Word size;
 +
-+	di = debuginfo__new(dso->long_name);
-+	if (di == NULL) {
-+		pr_debug("cannot get the debug info\n");
++	strbuf_init(&sb, 32);
++	if (__die_get_typename(type_die, &sb) < 0)
++		strbuf_add(&sb, "(unknown type)", 14);
++	type_name = strbuf_detach(&sb, NULL);
++	dwarf_aggregate_size(type_die, &size);
++
++	/* Check existing nodes in dso->data_types tree */
++	key.type_name = type_name;
++	key.type_size = size;
++	node = rb_find(&key, &dso->data_types, data_type_cmp);
++	if (node) {
++		result = rb_entry(node, struct annotated_data_type, node);
++		free(type_name);
++		return result;
++	}
++
++	/* If not, add a new one */
++	result = zalloc(sizeof(*result));
++	if (result == NULL) {
++		free(type_name);
 +		return NULL;
 +	}
 +
-+	/*
-+	 * IP is a relative instruction address from the start of the map, as
-+	 * it can be randomized/relocated, it needs to translate to PC which is
-+	 * a file address for DWARF processing.
-+	 */
-+	pc = map__rip_2objdump(ms->map, ip);
-+	if (find_data_type_die(di, pc, reg, offset, &type_die) < 0)
-+		goto out;
++	result->type_name = type_name;
++	result->type_size = size;
 +
-+	result = zalloc(sizeof(*result));
-+	if (result == NULL)
-+		goto out;
-+
-+	strbuf_init(&sb, 32);
-+	if (__die_get_typename(&type_die, &sb) < 0)
-+		strbuf_add(&sb, "(unknown type)", 14);
-+
-+	result->type_name = strbuf_detach(&sb, NULL);
-+
-+out:
-+	debuginfo__delete(di);
++	rb_add(&result->node, &dso->data_types, data_type_less);
 +	return result;
 +}
-diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
-new file mode 100644
-index 000000000000..633147f78ca5
---- /dev/null
-+++ b/tools/perf/util/annotate-data.h
-@@ -0,0 +1,40 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _PERF_ANNOTATE_DATA_H
-+#define _PERF_ANNOTATE_DATA_H
 +
-+#include <errno.h>
-+#include <linux/compiler.h>
-+#include <linux/types.h>
+ static bool find_cu_die(struct debuginfo *di, u64 pc, Dwarf_Die *cu_die)
+ {
+ 	Dwarf_Off off, next_off;
+@@ -129,7 +199,6 @@ struct annotated_data_type *find_data_type(struct map_symbol *ms, u64 ip,
+ 	struct dso *dso = ms->map->dso;
+ 	struct debuginfo *di;
+ 	Dwarf_Die type_die;
+-	struct strbuf sb;
+ 	u64 pc;
+ 
+ 	di = debuginfo__new(dso->long_name);
+@@ -147,17 +216,23 @@ struct annotated_data_type *find_data_type(struct map_symbol *ms, u64 ip,
+ 	if (find_data_type_die(di, pc, reg, offset, &type_die) < 0)
+ 		goto out;
+ 
+-	result = zalloc(sizeof(*result));
+-	if (result == NULL)
+-		goto out;
+-
+-	strbuf_init(&sb, 32);
+-	if (__die_get_typename(&type_die, &sb) < 0)
+-		strbuf_add(&sb, "(unknown type)", 14);
+-
+-	result->type_name = strbuf_detach(&sb, NULL);
++	result = dso__findnew_data_type(dso, &type_die);
+ 
+ out:
+ 	debuginfo__delete(di);
+ 	return result;
+ }
 +
-+struct map_symbol;
-+
-+/**
-+ * struct annotated_data_type - Data type to profile
-+ * @type_name: Name of the data type
-+ * @type_size: Size of the data type
-+ *
-+ * This represents a data type accessed by samples in the profile data.
-+ */
-+struct annotated_data_type {
-+	char *type_name;
-+	int type_size;
-+};
-+
-+#ifdef HAVE_DWARF_SUPPORT
-+
-+/* Returns data type at the location (ip, reg, offset) */
-+struct annotated_data_type *find_data_type(struct map_symbol *ms, u64 ip,
-+					   int reg, int offset);
-+
-+#else /* HAVE_DWARF_SUPPORT */
-+
-+static inline struct annotated_data_type *
-+find_data_type(struct map_symbol *ms __maybe_unused, u64 ip __maybe_unused,
-+	       int reg __maybe_unused, int offset __maybe_unused)
++void annotated_data_type__tree_delete(struct rb_root *root)
 +{
-+	return NULL;
++	struct annotated_data_type *pos;
++
++	while (!RB_EMPTY_ROOT(root)) {
++		struct rb_node *node = rb_first(root);
++
++		rb_erase(node, root);
++		pos = rb_entry(node, struct annotated_data_type, node);
++		free(pos->type_name);
++		free(pos);
++	}
++}
+diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
+index 633147f78ca5..ab9f187bd7f1 100644
+--- a/tools/perf/util/annotate-data.h
++++ b/tools/perf/util/annotate-data.h
+@@ -4,6 +4,7 @@
+ 
+ #include <errno.h>
+ #include <linux/compiler.h>
++#include <linux/rbtree.h>
+ #include <linux/types.h>
+ 
+ struct map_symbol;
+@@ -16,6 +17,7 @@ struct map_symbol;
+  * This represents a data type accessed by samples in the profile data.
+  */
+ struct annotated_data_type {
++	struct rb_node node;
+ 	char *type_name;
+ 	int type_size;
+ };
+@@ -26,6 +28,9 @@ struct annotated_data_type {
+ struct annotated_data_type *find_data_type(struct map_symbol *ms, u64 ip,
+ 					   int reg, int offset);
+ 
++/* Release all data type information in the tree */
++void annotated_data_type__tree_delete(struct rb_root *root);
++
+ #else /* HAVE_DWARF_SUPPORT */
+ 
+ static inline struct annotated_data_type *
+@@ -35,6 +40,10 @@ find_data_type(struct map_symbol *ms __maybe_unused, u64 ip __maybe_unused,
+ 	return NULL;
+ }
+ 
++static inline void annotated_data_type__tree_delete(struct rb_root *root __maybe_unused)
++{
 +}
 +
-+#endif /* HAVE_DWARF_SUPPORT */
+ #endif /* HAVE_DWARF_SUPPORT */
+ 
+ #endif /* _PERF_ANNOTATE_DATA_H */
+diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
+index 1f629b6fb7cf..22fd5fa806ed 100644
+--- a/tools/perf/util/dso.c
++++ b/tools/perf/util/dso.c
+@@ -31,6 +31,7 @@
+ #include "debug.h"
+ #include "string2.h"
+ #include "vdso.h"
++#include "annotate-data.h"
+ 
+ static const char * const debuglink_paths[] = {
+ 	"%.0s%s",
+@@ -1327,6 +1328,7 @@ struct dso *dso__new_id(const char *name, struct dso_id *id)
+ 		dso->data.cache = RB_ROOT;
+ 		dso->inlined_nodes = RB_ROOT_CACHED;
+ 		dso->srclines = RB_ROOT_CACHED;
++		dso->data_types = RB_ROOT;
+ 		dso->data.fd = -1;
+ 		dso->data.status = DSO_DATA_STATUS_UNKNOWN;
+ 		dso->symtab_type = DSO_BINARY_TYPE__NOT_FOUND;
+@@ -1370,6 +1372,8 @@ void dso__delete(struct dso *dso)
+ 	symbols__delete(&dso->symbols);
+ 	dso->symbol_names_len = 0;
+ 	zfree(&dso->symbol_names);
++	annotated_data_type__tree_delete(&dso->data_types);
 +
-+#endif /* _PERF_ANNOTATE_DATA_H */
+ 	if (dso->short_name_allocated) {
+ 		zfree((char **)&dso->short_name);
+ 		dso->short_name_allocated = false;
+diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
+index 3759de8c2267..ce9f3849a773 100644
+--- a/tools/perf/util/dso.h
++++ b/tools/perf/util/dso.h
+@@ -154,6 +154,8 @@ struct dso {
+ 	size_t		 symbol_names_len;
+ 	struct rb_root_cached inlined_nodes;
+ 	struct rb_root_cached srclines;
++	struct rb_root	data_types;
++
+ 	struct {
+ 		u64		addr;
+ 		struct symbol	*symbol;
 -- 
 2.42.0.655.g421f12c284-goog
 
