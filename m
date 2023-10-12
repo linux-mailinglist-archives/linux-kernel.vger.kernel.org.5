@@ -2,118 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3BEB7C73F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1567C73F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379575AbjJLRRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
+        id S1379571AbjJLRSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347339AbjJLRRF (ORCPT
+        with ESMTP id S1344077AbjJLRSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:17:05 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D50C6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:17:03 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso201006566b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697131021; x=1697735821; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wFXiKIURKZBCGix17NH07fGcqKfM7DqUcRWS63HZQM0=;
-        b=BLIhoj2dAcUQY35Scp7r7h9OGOlfUl+asJ1I9dZgGPqVxKzPCDKQEuaK+2QZ6+OJ+N
-         y1EBqzGHT2RBLQaQEPWHtS10sa63N+yMMo0kLqijDRyBeRGXmf6U+6lfafQRWg9+ERxl
-         QE7G/utCrJx5v52/uPL/fc79vToqbNfgWC3eI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697131021; x=1697735821;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wFXiKIURKZBCGix17NH07fGcqKfM7DqUcRWS63HZQM0=;
-        b=UGBL+R/hpYu/aCbC6aV0DCVd9qwPvlsLyrqnh9vllfJ1rVyUO5XhVf24omQVU+Egze
-         6zUphQQkOQeVB5xcB7yPOOtspHNOXWzeoAdLvBeGo46ZqSShQKE3Jkh7ppk257kvsiZQ
-         OCnsAmGnJ7tDcX7OUchPlecTtSn0CncqD/QSHaHrq6Ja3sObLFT7Xt9SIU1etsaDAk18
-         w0IijhAuIWOemlpW4H5W4QD/sZfloEWPm8lJw9obhXNBck3aQ3uJ52MYrD0612C19U0b
-         9XCQjOAXiMvvvuLGRcMxxYhrKUOYp+023Q00m6HaPpKXhY+PJZ6+rLkaYZpl5lm9jwsu
-         dfSw==
-X-Gm-Message-State: AOJu0YxzgLFlsYK3XwO36YA7GWDUCBKpwjKul43tidb7EdrLdWcv3TMX
-        vQyrTwj0CnqfCtCC0FZD9KosNdyOZFAUVk0DUrcrFaON
-X-Google-Smtp-Source: AGHT+IEJakrjDzl9r1HSJhCXKWdu3dIGLvwhLCF9kdkCXF16fgm9tKRAsIqozoeBAZFk8Vu5UrMdQQ==
-X-Received: by 2002:a17:906:7697:b0:9b2:b119:4918 with SMTP id o23-20020a170906769700b009b2b1194918mr23759526ejm.13.1697131021724;
-        Thu, 12 Oct 2023 10:17:01 -0700 (PDT)
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
-        by smtp.gmail.com with ESMTPSA id cf7-20020a170906b2c700b009b296ce13a3sm11589882ejb.18.2023.10.12.10.17.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 10:17:01 -0700 (PDT)
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-9ad8a822508so203102366b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:17:01 -0700 (PDT)
-X-Received: by 2002:a17:906:8467:b0:9ae:62ec:f4a1 with SMTP id
- hx7-20020a170906846700b009ae62ecf4a1mr21592590ejc.33.1697131020742; Thu, 12
- Oct 2023 10:17:00 -0700 (PDT)
+        Thu, 12 Oct 2023 13:18:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A952CBB;
+        Thu, 12 Oct 2023 10:18:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13BACC433C7;
+        Thu, 12 Oct 2023 17:18:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697131108;
+        bh=8WQ9WakSvt0JZ1o1r9TPQaTSax9+Eye313WbhUWk1EQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Kl8LkNA5ef1H6uTBtWbtzIF1HUfk2o9uojzT2FId2a0LPq4wUbg5HLCCBup4tqfg3
+         MgfZd3BZLPSnF4AYYvsuiwsHT4fnhks+zBnlj89BPB/jmVRJKNegXtoLVwhGK44Tqt
+         IrmI9JAz96wnyYR3HK2KZLH/j/t68ZgSAMlBN6sE0vymx/6uA+jfs3CEPKeqfZTYlO
+         8dLFdcN5bD5MvkuTn+vOS7lXjuVuYE5rpDjmKjEhMF8WfRqSmPmVQQcb0GY8+zokJH
+         wKTPe0+CblOGkNsXx97tn/lnGjiL4tHnnwQ+vidKTT4MSnrEnvOpm7825WAoQFTdbK
+         KSfPvXbTIq/WA==
+Date:   Thu, 12 Oct 2023 18:18:23 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Nik Bune <n2h9z4@gmail.com>
+Cc:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        skhan@linuxfoundation.org, stwiss.opensource@diasemi.com,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [v2 PATCH] dt-bindings: watchdog: da9062-wdt: convert txt to yaml
+Message-ID: <20231012-flaky-humvee-0a0532621940@spud>
+References: <20231010211439.98458-1-n2h9z4@gmail.com>
 MIME-Version: 1.0
-References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
- <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
- <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com> <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com>
-In-Reply-To: <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 12 Oct 2023 10:16:43 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whNVf+YghEH4JNjp99NzG5+M7CQrLK42VNKnDydBG4ovA@mail.gmail.com>
-Message-ID: <CAHk-=whNVf+YghEH4JNjp99NzG5+M7CQrLK42VNKnDydBG4ovA@mail.gmail.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rTv/DG15mkuu5z6g"
+Content-Disposition: inline
+In-Reply-To: <20231010211439.98458-1-n2h9z4@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Oct 2023 at 08:19, Nadav Amit <namit@vmware.com> wrote:
->
-> +/*
-> + * Hold a constant alias for current_task, which would allow to avoid caching of
-> + * current task.
-> + *
-> + * We must mark const_current_task with the segment qualifiers, as otherwise gcc
-> + * would do redundant reads of const_current_task.
-> + */
-> +DECLARE_PER_CPU(struct pcpu_hot const __percpu_seg_override, const_pcpu_hot);
 
-Hmm. The only things I'm not super-happy about with your patch is
+--rTv/DG15mkuu5z6g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- (a) it looks like this depends on the alias analysis knowing that the
-__seg_gs isn't affected by normal memory ops. That implies that this
-will not work well with compiler versions that don't do that?
+On Tue, Oct 10, 2023 at 11:14:39PM +0200, Nik Bune wrote:
+> Convert txt file to yaml.
+> Add a mainterner block. Took a value from dlg,da9063 PMIC.
+>=20
+> Signed-off-by: Nik Bune <n2h9z4@gmail.com>
+> ---
+>=20
+> Changes in v2:
+> - Updated filename to be equal to compatible value.
+> - Removed ">" in description fields.=20
+> - Added optional properties to the example.=20
+> - Removed reg property, as it is not present in the txt version.=20
+>=20
+>=20
+>  .../bindings/watchdog/da9062-wdt.txt          | 34 -------------
+>  .../watchdog/dlg,da9062-watchdog.yaml         | 49 +++++++++++++++++++
+>  2 files changed, 49 insertions(+), 34 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/watchdog/da9062-wdt=
+=2Etxt
+>  create mode 100644 Documentation/devicetree/bindings/watchdog/dlg,da9062=
+-watchdog.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/watchdog/da9062-wdt.txt b/=
+Documentation/devicetree/bindings/watchdog/da9062-wdt.txt
+> deleted file mode 100644
+> index 354314d854ef..000000000000
+> --- a/Documentation/devicetree/bindings/watchdog/da9062-wdt.txt
+> +++ /dev/null
+> @@ -1,34 +0,0 @@
+> -* Dialog Semiconductor DA9062/61 Watchdog Timer
+> -
+> -Required properties:
+> -
+> -- compatible: should be one of the following valid compatible string lin=
+es:
+> -	"dlg,da9061-watchdog", "dlg,da9062-watchdog"
+> -	"dlg,da9062-watchdog"
+> -
+> -Optional properties:
+> -- dlg,use-sw-pm: Add this property to disable the watchdog during suspen=
+d.
+> -	Only use this option if you can't use the watchdog automatic suspend
+> -	function during a suspend (see register CONTROL_B).
+> -- dlg,wdt-sd: Set what happens on watchdog timeout. If this bit is set t=
+he
+> -	watchdog timeout triggers SHUTDOWN, if cleared the watchdog triggers
+> -	POWERDOWN. Can be 0 or 1. Only use this option if you want to change the
+> -	default chip's OTP setting for WATCHDOG_SD bit. If this property is NOT
+> -	set the WATCHDOG_SD bit and on timeout watchdog behavior will match the
+> -	chip's OTP settings.
+> -
+> -Example: DA9062
+> -
+> -	pmic0: da9062@58 {
+> -		watchdog {
+> -			compatible =3D "dlg,da9062-watchdog";
+> -		};
+> -	};
+> -
+> -Example: DA9061 using a fall-back compatible for the DA9062 watchdog dri=
+ver
+> -
+> -	pmic0: da9061@58 {
+> -		watchdog {
+> -			compatible =3D "dlg,da9061-watchdog", "dlg,da9062-watchdog";
+> -		};
+> -	};
+> diff --git a/Documentation/devicetree/bindings/watchdog/dlg,da9062-watchd=
+og.yaml b/Documentation/devicetree/bindings/watchdog/dlg,da9062-watchdog.ya=
+ml
+> new file mode 100644
+> index 000000000000..9b7ffdb01da0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/watchdog/dlg,da9062-watchdog.yaml
+> @@ -0,0 +1,49 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/watchdog/dlg,da9062-watchdog.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Dialog Semiconductor DA9062/61 Watchdog Timer
+> +
+> +maintainers:
+> +  - Steve Twiss <stwiss.opensource@diasemi.com>
+> +
+> +allOf:
+> +  - $ref: watchdog.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:=20
+> +      - dlg,da9061-watchdog
+> +      - dlg,da9062-watchdog
+> +
+> +  dlg,use-sw-pm:
+> +    type: boolean
+> +    description:
+> +      Add this property to disable the watchdog during suspend.
+> +      Only use this option if you can't use the watchdog automatic suspe=
+nd
+> +      function during a suspend (see register CONTROL_B).
+> + =20
+> +  dlg,wdt-sd:
+> +    type: boolean
 
- (b) This declaration doesn't match the other one. So now there are
-two *different* declarations for const_pcpu_hot, which I really don't
-like.
+This property is a boolean...
 
-That second one would seem to be trivial to just fix (or maybe not,
-and you do it that way for some horrible reason).
+> +    description:
+> +      Set what happens on watchdog timeout. If this bit is set the
+> +      watchdog timeout triggers SHUTDOWN, if cleared the watchdog trigge=
+rs
+> +      POWERDOWN. Can be 0 or 1.
 
-The first one sounds bad to me - basically making the *reason* for
-this patch go away - but maybe the compilers that don't support
-address spaces are so rare that we can ignore it.
+=2E.. but you say "can be 0 or 1". Does this refer to the bit value, or
+the property? There are no in-kernel users of this property as far as a
+quick grep shows so it is a bi hard to tell.
 
-            Linus
+Otherwise, I'm happy with this.
+
+Thanks,
+Conor.
+
+> Only use this option if you want to change the
+> +      default chip's OTP setting for WATCHDOG_SD bit. If this property i=
+s NOT
+> +      set the WATCHDOG_SD bit and on timeout watchdog behavior will matc=
+h the
+> +      chip's OTP settings.
+> +
+> +required:
+> +  - compatible
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    watchdog {
+> +      compatible =3D "dlg,da9062-watchdog";
+> +      dlg,use-sw-pm;
+> +      dlg,wdt-sd;
+> +    };
+> --=20
+> 2.34.1
+>=20
+
+--rTv/DG15mkuu5z6g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSgqXwAKCRB4tDGHoIJi
+0ggqAQCkoZx9c6Yh77TrRv7mNju5mBSXOD4Jza5NVnKIvTQlxAD/Tquzix7jblNL
+/bhL9kUfDSrutdB3WihQbqRy+mYzuQ4=
+=tJk+
+-----END PGP SIGNATURE-----
+
+--rTv/DG15mkuu5z6g--
