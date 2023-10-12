@@ -2,85 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 414A17C707B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508947C7082
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233097AbjJLOkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 10:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
+        id S1343730AbjJLOlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 10:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbjJLOku (ORCPT
+        with ESMTP id S229586AbjJLOls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:40:50 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1813EA9;
-        Thu, 12 Oct 2023 07:40:47 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c5028e5b88so1136301fa.3;
-        Thu, 12 Oct 2023 07:40:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697121645; x=1697726445; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3kw/R5D+s3aJanIgvu3nf4Gs9+0fYmqPraYbms7U3dY=;
-        b=DwVeY7kHZd8snQaNN6Y5NhbpQ0/BYx67rw6lzY4o5kNSGMJaFgSQ5V/IN/814EB6MV
-         VxzKLRWKbDYsAmnnc1WHj6Iesx8bYekuYLSGiUoBs+9EBVT6WaUj0DWkXWRhe1woeAcb
-         T+skGg+gArzc8hC4CSnWiCNtr0K1kF9VEvm681bZepPZHhlNHYRKh0e0naKxfldNaWAp
-         18UfTPvhAxExzwKoCPl2l0QmLm1FT6fx7ZSMN8La4YgQ/7toh+x3b9ZZdzFsVln5AzU+
-         9NeRjenVNaq3nHxPHI1m4L3Ly2uhqKA2svrFxly1FoWn0lZOcebl2CEq0zTnjKR+fZtj
-         RT9A==
+        Thu, 12 Oct 2023 10:41:48 -0400
+Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644E7BE
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:41:46 -0700 (PDT)
+Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-6c0f174540cso1410148a34.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:41:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697121645; x=1697726445;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3kw/R5D+s3aJanIgvu3nf4Gs9+0fYmqPraYbms7U3dY=;
-        b=PZYRjA/6Wr+98tZXo9m9C2MqFgzfmEVlHHmHVI0EdPSLZiAgeqCwiBEi2y8v/bPS8P
-         49sh7QjkHlWxQEr84PwM7h4954vR8Eb2iRuHZ06PfGdOVL9KxOiHA77bKUmxSe5TQtYQ
-         gJn71r+n2gVIzSNSYygc7dMyHBZFy1W/ZkF5bj8ZcfUupvkkDVHebfo2Qij0GqMBQi+4
-         Pk42cfibH0ckMOVP8j2TecaYsmpvXls4HR51qi9d6rR5PTjP3b6KBbAIbLoB1qKnj3lu
-         cIhRFz9pTOzTlfuKqN/ceuTtdBKe20vp95bgeRGiOGi1ZTTe0apQh0ebbp77hJCkvVdu
-         u2cg==
-X-Gm-Message-State: AOJu0YwFTJfaElhW7LGrNUfV+3X+2/nsbveZbO6zCK2mm5nDagFJsMFI
-        bf3iAcYtoOLNaeqqPXo3hwVmMSDlnJyemrvY
-X-Google-Smtp-Source: AGHT+IGH41yXs+O99grdygoszPTYW1zPKpN4EmD/LKIiUtotZlFPT/goo7+MpuARd/B4135q9i6NQg==
-X-Received: by 2002:a05:6512:4002:b0:504:369d:f11c with SMTP id br2-20020a056512400200b00504369df11cmr24729653lfb.34.1697121644971;
-        Thu, 12 Oct 2023 07:40:44 -0700 (PDT)
-Received: from ?IPV6:2001:999:704:2143:20b5:8471:77bf:6204? ([2001:999:704:2143:20b5:8471:77bf:6204])
-        by smtp.gmail.com with ESMTPSA id b17-20020a056512025100b005042ae13de4sm2854806lfo.302.2023.10.12.07.40.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 07:40:44 -0700 (PDT)
-Message-ID: <db511d14-f2fe-4b4e-bd13-223e7a33f933@gmail.com>
-Date:   Thu, 12 Oct 2023 17:41:34 +0300
+        d=1e100.net; s=20230601; t=1697121705; x=1697726505;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0sjLlGIFaUzWitAxPHuaZRKA3VR7ji9H637xkgZgO6c=;
+        b=E/fUm/Lv0NkAlbdgi0Hmoe6wteHzT92L8yDxz2RprPOZ2odNiMPbaS2q4ZCMNh1GsA
+         guolw1IHpKhvo8Wmri7uVnasyTdA3EEiwoPPKZJ91/ltXdHYPLC9MvaCV9Y2HZff1O/3
+         cOPBWKF6MmnhA0nL9Faecop4nEQrYSljAm5mgeh0Pk5XyWdaGNRhtqBD8W+Ulp59GxzY
+         O4DLG5eFtvN3rw8EL0fNbuCgDO6HiJgghb/C+p4685q+nTsyiC6D78JrxF3TAgSKQ/PQ
+         lFtfWVTHPC+cQcZlSEckggAU5Zd34kX5TXuJRsQQhDmu+uCwSPao2S8vmb5/p70zoGFj
+         frnQ==
+X-Gm-Message-State: AOJu0Yz8+BOiM42IEB94R2Dsm3xhVKf6tWoEDMDHGgw5sVWiN1uaD/AO
+        GqkfECp6aQyd6hqE0xSOR1LdbYx5UQRG0yTIgPw166VZDpDU
+X-Google-Smtp-Source: AGHT+IEuSWhLvSImEUWwm/crvQ4RlVw4J+LYSy+BxRn8YVmBQ6p1yaYel6U+3bJr01Qg/7Dbl55VzBv350526S0hwwbsniX3yq6o
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
- fck_src
-To:     Andreas Kemnade <andreas@kemnade.info>,
-        Tony Lindgren <tony@atomide.com>
-Cc:     bcousson@baylibre.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, jarkko.nikula@bitmer.com,
-        dmitry.torokhov@gmail.com, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-References: <20230705190324.355282-1-andreas@kemnade.info>
- <20230705190324.355282-2-andreas@kemnade.info>
- <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
- <20230920063353.GQ5285@atomide.com>
- <dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
- <20230921121626.GT5285@atomide.com> <20231006102348.GK34982@atomide.com>
- <20231006213003.0fbac87a@aktux> <20231007062518.GM34982@atomide.com>
- <20231007091156.588d7ba1@aktux>
-Content-Language: en-US
-From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-In-Reply-To: <20231007091156.588d7ba1@aktux>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a9d:6394:0:b0:6ba:8e4a:8e62 with SMTP id
+ w20-20020a9d6394000000b006ba8e4a8e62mr7059219otk.7.1697121705800; Thu, 12 Oct
+ 2023 07:41:45 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 07:41:45 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006a3d0d060785f027@google.com>
+Subject: [syzbot] [net?] [wireless?] WARNING in ieee80211_bss_info_change_notify
+ (2)
+From:   syzbot <syzbot+dd4779978217b1973180@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com,
+        johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,34 +58,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/2023 10:11, Andreas Kemnade wrote:
->> OK good to hear it works, I'll send out fixes for omap4 and 5, seems
->> the runtime PM warning is something different.
->>
->>> omap-mcbsp 40124000.mcbsp: Runtime PM usage count underflow!
->>> # cat /sys/bus/platform/devices/40124000.mcbsp/power/runtime_status 
->>> active
->>>
->>> even with no sound.  
->>
-> Well, it is a regression caused by your fix. Without it (and not reverting
-> the already applied ignore patch), runtime is properly suspended. Don't know
-> why yet.
+Hello,
 
-I guess it is because of the pm_runtime_put_sync() in the
-omap2_mcbsp_set_clks_src() around the fclk re-parenting.
-That is a bit dubious thing for sure. We need to disable the device to
-be able to re-parent the fclk but if we disable the device it is going
-to be powered down, right? I think we have appropriate context handling,
-so it might work, but it is certainly not a rock solid code... If you
-have a stream running already, you don't really want to kill the McBSP.
+syzbot found the following issue on:
 
-The problem is that this mux is outside of the McBSP IP, so we need a
-system level (iow, clk API) way to change it runtime.
+HEAD commit:    401644852d0b Merge tag 'fs_for_v6.6-rc6' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=176b01ad680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=32d0b9b42ceb8b10
+dashboard link: https://syzkaller.appspot.com/bug?extid=dd4779978217b1973180
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
-What is the machine driver where this happens? If you set the sysclk in
-hw_params of the machine driver, it will be OK, but if you do that in
-probe time then it is likely going to fail as you experienced
+Unfortunately, I don't have any reproducer for this issue yet.
 
--- 
-Péter
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/94b84d66fc32/disk-40164485.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2a510b785da4/vmlinux-40164485.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/663b784d908b/bzImage-40164485.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dd4779978217b1973180@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+wlan1: Failed check-sdata-in-driver check, flags: 0x0
+WARNING: CPU: 0 PID: 9044 at net/mac80211/main.c:236 ieee80211_bss_info_change_notify+0x2c9/0x820 net/mac80211/main.c:236
+Modules linked in:
+CPU: 0 PID: 9044 Comm: syz-executor.2 Not tainted 6.6.0-rc5-syzkaller-00072-g401644852d0b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+RIP: 0010:ieee80211_bss_info_change_notify+0x2c9/0x820 net/mac80211/main.c:236
+Code: 00 00 e8 4a e3 d6 f7 48 8b 74 24 08 48 89 74 24 08 e8 3b e3 d6 f7 8b 14 24 48 c7 c7 c0 a2 c4 8b 48 8b 74 24 08 e8 87 0b 9d f7 <0f> 0b e8 20 e3 d6 f7 4c 89 f2 48 b8 00 00 00 00 00 fc ff df 48 c1
+RSP: 0018:ffffc900062472d8 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff888020030c80 RCX: ffffc90003ec1000
+RDX: 0000000000040000 RSI: ffffffff814df0c6 RDI: 0000000000000001
+RBP: 0000000000000a00 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff888078ef8e20
+R13: ffff8880200328b0 R14: ffff8880200315a0 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0063) knlGS:00000000f7f3ab40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 00000000f72646b0 CR3: 0000000020d94000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ieee80211_ibss_disconnect+0x411/0x9d0 net/mac80211/ibss.c:726
+ ieee80211_ibss_leave+0x16/0x160 net/mac80211/ibss.c:1872
+ rdev_leave_ibss net/wireless/rdev-ops.h:569 [inline]
+ __cfg80211_leave_ibss+0x1a2/0x410 net/wireless/ibss.c:210
+ cfg80211_leave_ibss+0x59/0x80 net/wireless/ibss.c:228
+ cfg80211_change_iface+0x457/0xdf0 net/wireless/util.c:1137
+ nl80211_set_interface+0x708/0x9b0 net/wireless/nl80211.c:4222
+ genl_family_rcv_msg_doit+0x1fc/0x2e0 net/netlink/genetlink.c:971
+ genl_family_rcv_msg net/netlink/genetlink.c:1051 [inline]
+ genl_rcv_msg+0x55c/0x800 net/netlink/genetlink.c:1066
+ netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2545
+ genl_rcv+0x28/0x40 net/netlink/genetlink.c:1075
+ netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+ netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
+ netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0xd5/0x180 net/socket.c:745
+ ____sys_sendmsg+0x6ac/0x940 net/socket.c:2558
+ ___sys_sendmsg+0x135/0x1d0 net/socket.c:2612
+ __sys_sendmsg+0x117/0x1e0 net/socket.c:2641
+ do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+ __do_fast_syscall_32+0x61/0xe0 arch/x86/entry/common.c:178
+ do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+ entry_SYSENTER_compat_after_hwframe+0x70/0x82
+RIP: 0023:0xf7f3f579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f7f3a5ac EFLAGS: 00000292 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020000100
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+----------------
+Code disassembly (best guess), 2 bytes skipped:
+   0:	10 06                	adc    %al,(%rsi)
+   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+   6:	10 07                	adc    %al,(%rdi)
+   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+   c:	10 08                	adc    %cl,(%rax)
+   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+  1e:	00 51 52             	add    %dl,0x52(%rcx)
+  21:	55                   	push   %rbp
+  22:	89 e5                	mov    %esp,%ebp
+  24:	0f 34                	sysenter
+  26:	cd 80                	int    $0x80
+* 28:	5d                   	pop    %rbp <-- trapping instruction
+  29:	5a                   	pop    %rdx
+  2a:	59                   	pop    %rcx
+  2b:	c3                   	ret
+  2c:	90                   	nop
+  2d:	90                   	nop
+  2e:	90                   	nop
+  2f:	90                   	nop
+  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
