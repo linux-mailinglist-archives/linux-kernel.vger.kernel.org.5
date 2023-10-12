@@ -2,95 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF86E7C6FC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DD27C6FCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378971AbjJLNyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39602 "EHLO
+        id S1343887AbjJLNzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 09:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235121AbjJLNyO (ORCPT
+        with ESMTP id S233194AbjJLNzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:54:14 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9676BBE
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:54:11 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-143-1Z-BVDMOMH6eCM4V0M_dXw-1; Thu, 12 Oct 2023 14:54:07 +0100
-X-MC-Unique: 1Z-BVDMOMH6eCM4V0M_dXw-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 12 Oct
- 2023 14:54:06 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 12 Oct 2023 14:54:06 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Alexey Dobriyan' <adobriyan@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: RE: [PATCH] fs: move and constify sysctl_nr_open_min,
- sysctl_nr_open_max
-Thread-Topic: [PATCH] fs: move and constify sysctl_nr_open_min,
- sysctl_nr_open_max
-Thread-Index: AQHZ/HAt7Icw5TmRtk6309iepUgEDbBGK5FQ
-Date:   Thu, 12 Oct 2023 13:54:06 +0000
-Message-ID: <9b23bb6bcabe4f419cb8510e99275085@AcuMS.aculab.com>
-References: <02591c1e-936b-46bf-ad2b-402b33338eee@p183>
-In-Reply-To: <02591c1e-936b-46bf-ad2b-402b33338eee@p183>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 12 Oct 2023 09:55:12 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5689691;
+        Thu, 12 Oct 2023 06:55:11 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5384975e34cso1920615a12.0;
+        Thu, 12 Oct 2023 06:55:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697118910; x=1697723710; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-transfer-encoding
+         :content-disposition:mime-version:references:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fu8VOT2Hnt8xZp2XbOVoQ85nqe18SW0MJ+Lu2qeF2EE=;
+        b=kSa4UhHPZXPWVfLnPt7vIeVI4rIz7hsokcU+vxL4wA1nnlo9K+HgMNJcDHw2UPV1I9
+         ju7HeeqKCTsDtz8M0KaskJzTi+YCCQ7W5C0lqRqLwStlMuKeZD1ntQU/s9Cvudrt45zh
+         sUKeB/kZUceKfZLjIuG6gLSpMYN6S8Lv61SlYPXsH6qDYwOFx3KLkFcs3ABJSQzN9a6X
+         zSgNGDB+jMvevoJbnVMhUGhG7eEMIUzkcOmCh4OaiHc1aKr94TYXWsFnZAWjVq+U24vI
+         AAGgMqI+RdbMj/lEjQtg32H1Ec3Mh4oHoiX6VZrZnndqz/+DteiS9EK8YW46W1r/CvjV
+         pvmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697118910; x=1697723710;
+        h=user-agent:in-reply-to:content-transfer-encoding
+         :content-disposition:mime-version:references:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Fu8VOT2Hnt8xZp2XbOVoQ85nqe18SW0MJ+Lu2qeF2EE=;
+        b=VUY57f7WArh81WWyh0CCKkOZvjS2zcRalss8DN+mg0iBCW/drZ9sgpO2fZT/1z9tBn
+         eEZICAjT0lWfgiPdLuuNFtjkQz/qzNm65L8Fw47zSVePH/9IYtDft8ubXILneRp88FzU
+         R/JmKC3onnru5LES7n4shOc43aHw/4bXM2aLHAWme3fhXKbVCRv4qAFawiTYwdgY0GoU
+         iSWbvoUqz4n0IJ+8mtPJ2F1pxPmaPZOaHGxB1cQsMd6HGfm9Qm5dfpcWW7B9z+6JH7xb
+         wo87tuKBeCedqjmqadNHaYrYDZxDZqmexNOBt+c5yOGUY17XRc2RL3FnxOhkUu468w7m
+         Y1ug==
+X-Gm-Message-State: AOJu0YzI1m5Kq+AIFmZLyJqAfkxVo8gjkLv6IYcB4RNohFkyVY6IAqSj
+        +005/xLC4+lgVNUpZuGjg9E=
+X-Google-Smtp-Source: AGHT+IGFL/GdmvGinRbRH7PZlZJVM+sNoLaueLqYAs31lFSe24A12+nl+91t4XdlRciydU++p+bA/w==
+X-Received: by 2002:a05:6402:1cb1:b0:53b:3225:93c2 with SMTP id cz17-20020a0564021cb100b0053b322593c2mr14950542edb.8.1697118909629;
+        Thu, 12 Oct 2023 06:55:09 -0700 (PDT)
+Received: from orome.fritz.box (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id cw2-20020a056402228200b0053dea07b669sm1783014edb.87.2023.10.12.06.55.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 06:55:09 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 15:55:07 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Florian Fainelli <florian.fainelli@broadcom.com>
+Cc:     linux-pwm@vger.kernel.org, Angus Clark <angus.clark@broadcom.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] pwm: bcm2835: Add support for suspend/resume
+Message-ID: <ZSf6uxz4CPNtM59z@orome.fritz.box>
+References: <20231011170717.3738712-1-florian.fainelli@broadcom.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231011170717.3738712-1-florian.fainelli@broadcom.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQWxleGV5IERvYnJpeWFuDQo+IFNlbnQ6IDExIE9jdG9iZXIgMjAyMyAxOToyNA0KPiAN
-Cj4gc3lzY3RsX25yX29wZW5fbWluLCBzeXNjdGxfbnJfb3Blbl9tYXggdmFyaWFibGVzIGFyZSBy
-ZWFsbHkgaGFyZCBsaW1pdHMNCj4gb24gZnMubnJfb3BlbiBzeXNjdGwsIHRoZXkgYXJlbid0IGlu
-dGVyZXN0aW5nIHRvIHRoZSByZXN0IG9mIHRoZSBjb2RlDQo+IGFuZCBhcmUgY29uc3RhbnRzIChz
-eXNjdGxfbnJfb3BlbiBpcyBub3QgY29uc3RhbnQgb2J2aW91c2x5KS4NCj4gDQo+IFNpZ25lZC1v
-ZmYtYnk6IEFsZXhleSBEb2JyaXlhbiA8YWRvYnJpeWFuQGdtYWlsLmNvbT4NCj4gLS0tDQo+IA0K
-PiAgZnMvZmlsZS5jICAgICAgICAgICAgfCAgICA1IC0tLS0tDQo+ICBmcy9maWxlX3RhYmxlLmMg
-ICAgICB8ICAgMTAgKysrKysrKystLQ0KPiAgaW5jbHVkZS9saW51eC9maWxlLmggfCAgICAyIC0t
-DQo+ICAzIGZpbGVzIGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkNCj4g
-DQo+IC0tLSBhL2ZzL2ZpbGUuYw0KPiArKysgYi9mcy9maWxlLmMNCj4gQEAgLTI1LDExICsyNSw2
-IEBADQo+ICAjaW5jbHVkZSAiaW50ZXJuYWwuaCINCj4gDQo+ICB1bnNpZ25lZCBpbnQgc3lzY3Rs
-X25yX29wZW4gX19yZWFkX21vc3RseSA9IDEwMjQqMTAyNDsNCj4gLXVuc2lnbmVkIGludCBzeXNj
-dGxfbnJfb3Blbl9taW4gPSBCSVRTX1BFUl9MT05HOw0KPiAtLyogb3VyIG1pbigpIGlzIHVudXNh
-YmxlIGluIGNvbnN0YW50IGV4cHJlc3Npb25zIDstLyAqLw0KPiAtI2RlZmluZSBfX2NvbnN0X21p
-bih4LCB5KSAoKHgpIDwgKHkpID8gKHgpIDogKHkpKQ0KPiAtdW5zaWduZWQgaW50IHN5c2N0bF9u
-cl9vcGVuX21heCA9DQo+IC0JX19jb25zdF9taW4oSU5UX01BWCwgfihzaXplX3QpMC9zaXplb2Yo
-dm9pZCAqKSkgJiAtQklUU19QRVJfTE9ORzsNCj4gDQo+ICBzdGF0aWMgdm9pZCBfX2ZyZWVfZmR0
-YWJsZShzdHJ1Y3QgZmR0YWJsZSAqZmR0KQ0KPiAgew0KPiAtLS0gYS9mcy9maWxlX3RhYmxlLmMN
-Cj4gKysrIGIvZnMvZmlsZV90YWJsZS5jDQo+IEBAIC0xMTEsNiArMTExLDEyIEBAIHN0YXRpYyBp
-bnQgcHJvY19ucl9maWxlcyhzdHJ1Y3QgY3RsX3RhYmxlICp0YWJsZSwgaW50IHdyaXRlLCB2b2lk
-ICpidWZmZXIsDQo+ICAJcmV0dXJuIHByb2NfZG91bG9uZ3ZlY19taW5tYXgodGFibGUsIHdyaXRl
-LCBidWZmZXIsIGxlbnAsIHBwb3MpOw0KPiAgfQ0KPiANCj4gK3N0YXRpYyBjb25zdCB1bnNpZ25l
-ZCBpbnQgc3lzY3RsX25yX29wZW5fbWluID0gQklUU19QRVJfTE9ORzsNCj4gKy8qIG91ciBtaW4o
-KSBpcyB1bnVzYWJsZSBpbiBjb25zdGFudCBleHByZXNzaW9ucyA7LS8gKi8NCj4gKyNkZWZpbmUg
-X19jb25zdF9taW4oeCwgeSkgKCh4KSA8ICh5KSA/ICh4KSA6ICh5KSkNCj4gK3N0YXRpYyBjb25z
-dCB1bnNpZ25lZCBpbnQgc3lzY3RsX25yX29wZW5fbWF4ID0NCj4gKwlfX2NvbnN0X21pbihJTlRf
-TUFYLCB+KHNpemVfdCkwL3NpemVvZih2b2lkICopKSAmIC1CSVRTX1BFUl9MT05HOw0KDQpJIHRo
-aW5rIHlvdSdsbCBmaW5kIHRoYXQgbWluKCkgaXMgZmluZS4NCg0KQWx0aG91Z2ggdGhvc2UgdXBw
-ZXIgbGltaXRzIGxvb2sgc3VzcGVjdCB0byBtZS4NCkxvb2tzIGxpa2UgfjAuNUcgb24gMzJiaXQg
-YW5kIH4yRyBvbiA2NGJpdCBiYXNlZCBvbiB0aGUgc2l6ZSBvZiBhIGJpdG1hcD8NCkJ1dCB0aGUg
-a2VybmVsIHdpbGwgcnVuIG91dCBvZiBhZGRyZXNzIHNwYWNlIG11Y2ggZWFybGllciAtIGVzcCBv
-biAzMmJpdC4NCg0KCURhdmlkDQoNCiANCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRl
-LCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpS
-ZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Wed, Oct 11, 2023 at 10:07:17AM -0700, Florian Fainelli wrote:
+> Similar to other drivers, we need to make sure that the clock is
+> disabled during suspend and re-enabled during resume.
+>=20
+> Reported-by: Angus Clark <angus.clark@broadcom.com>
+> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> ---
+> Changes in v3:
+>=20
+> - removed __maybe_unused and use pm_ptr()
+>=20
+> Changes in v2:
+>=20
+> - use DEFINE_SIMPLE_DEV_PM_OPS as suggested by Uwe
+>=20
+>  drivers/pwm/pwm-bcm2835.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
 
+Applied, thanks.
+
+Thierry
