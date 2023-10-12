@@ -2,79 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3FC7C760A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3572F7C7609
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441994AbjJLSjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 14:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47168 "EHLO
+        id S1441919AbjJLSjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 14:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379690AbjJLSj2 (ORCPT
+        with ESMTP id S1379612AbjJLSjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 14:39:28 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3206EBE;
-        Thu, 12 Oct 2023 11:39:26 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CDTPVQ013404;
-        Thu, 12 Oct 2023 18:39:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=NsV0kpoOR7sCQ7NjSt84rdLl5aq1qP8KMvA+Lq6Vzew=;
- b=HFJj1V8TPQJ8Q1zPNYt0ECMeuDvf+EhClLxLLro+1VPCryyd7a/nmJJCQ4fahD0pSbfL
- AzeI+IcwrcxdRZ6beNweq8mMWXroocfIBqVv3lH09mBwu0NP2BmanEctYc7TSL9WrisW
- btr5DAsyrZPgm4UMNtCQ8U3TVaHHTyDbYAdnLu2RZTFWonPfF7CFXjekX4zAsdBTLJHa
- f5tqJoCRkslkq3UlaO9lNYAdus3AuaE90xQKmTBYRfAX4Ih99+a3+orHEBMGTbn6OOwO
- 4yR2aU1eeS2yfj+0bHJhXd8UVJF7y3WB2EhbO+GR+4EB/Nvv7EhyR0jt1UzmdSI09kaQ wg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tpfa6149m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 18:39:20 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39CIdCh2019442
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 18:39:12 GMT
-Received: from [10.216.46.114] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 12 Oct
- 2023 11:39:08 -0700
-Message-ID: <bac414a7-aa2a-4b93-82e0-998002c455e0@quicinc.com>
-Date:   Fri, 13 Oct 2023 00:09:04 +0530
+        Thu, 12 Oct 2023 14:39:18 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4DBB7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:39:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1697135955;
+        bh=a3nvpY6mqBaBUqBy6qoFGqPWfRmz0UC+DXMizhLUBRU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R9BLNfxYR1wohwcx/rNhxbyjh/vdwqbTO57kMyT9ZwXlMNmdtShUUU9ARj/qkR+DU
+         gsfK0d/v5788TkdRcUnQ3poO4OckihQnDwrJbMGwge9ct8ShOb9wMRltVZkefw3pgy
+         rLp/ZwBtrbyn688um6PzXAuclNp1oWC7Qro81OmQ=
+Date:   Thu, 12 Oct 2023 20:39:14 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Willy Tarreau <w@1wt.eu>, Zhangjin Wu <falcon@tinylab.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/nolibc: add tests for multi-object linkage
+Message-ID: <6b66305f-8172-463e-a50d-324c0c33a6ea@t-8ch.de>
+References: <20231012-nolibc-linkage-test-v1-1-315e682768b4@weissschuh.net>
+ <ZSea+etQwlxbi+Ok@1wt.eu>
+ <bfc17e76-fcbc-4ce6-97a8-c1ed72ed2a67@t-8ch.de>
+ <33e9afcd-a1cd-4f67-829b-85c86500a93e@paulmck-laptop>
+ <b278a643-3761-4699-bafc-df1b7245b8c2@t-8ch.de>
+ <ca67eb2c-3918-4a1f-b3e6-2023fda5d6a3@paulmck-laptop>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] usb: dwc3: core: Fix RAM interface getting stuck during
- enumeration
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "quic_ppratap@quicinc.com" <quic_ppratap@quicinc.com>,
-        "quic_wcheng@quicinc.com" <quic_wcheng@quicinc.com>,
-        "quic_jackp@quicinc.com" <quic_jackp@quicinc.com>,
-        "quic_ugoswami@quicinc.com" <quic_ugoswami@quicinc.com>
-References: <20231011100214.25720-1-quic_kriskura@quicinc.com>
- <20231012175912.umc3ugzk4iqwtcp3@synopsys.com>
-Content-Language: en-US
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <20231012175912.umc3ugzk4iqwtcp3@synopsys.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: POs1EbSOCYM0bZDIORmB48KYVnEyhtT0
-X-Proofpoint-GUID: POs1EbSOCYM0bZDIORmB48KYVnEyhtT0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_11,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- mlxlogscore=848 impostorscore=0 bulkscore=0 mlxscore=0 priorityscore=1501
- spamscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310120155
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca67eb2c-3918-4a1f-b3e6-2023fda5d6a3@paulmck-laptop>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -84,70 +48,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023-10-12 11:25:02-0700, Paul E. McKenney wrote:
+> [..]
 
-
-On 10/12/2023 11:29 PM, Thinh Nguyen wrote:
-
->> -static int dwc3_gadget_soft_disconnect(struct dwc3 *dwc)
->> +int dwc3_gadget_soft_disconnect(struct dwc3 *dwc)
->>   {
->>   	unsigned long flags;
->>   	int ret;
->> @@ -2701,7 +2701,7 @@ static int dwc3_gadget_soft_disconnect(struct dwc3 *dwc)
->>   	return ret;
->>   }
->>   
->> -static int dwc3_gadget_soft_connect(struct dwc3 *dwc)
->> +int dwc3_gadget_soft_connect(struct dwc3 *dwc)
->>   {
->>   	int ret;
->>   
->> @@ -3963,6 +3963,7 @@ static void dwc3_gadget_disconnect_interrupt(struct dwc3 *dwc)
->>   	dwc3_gadget_dctl_write_safe(dwc, reg);
->>   
->>   	dwc->connected = false;
->> +	dwc->cable_disconnected = true;
->>   
->>   	dwc3_disconnect_gadget(dwc);
->>   
->> @@ -4038,6 +4039,7 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
->>   	 */
->>   	dwc3_stop_active_transfers(dwc);
->>   	dwc->connected = true;
->> +	dwc->cable_disconnected = false;
->>   
->>   	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
->>   	reg &= ~DWC3_DCTL_TSTCTRL_MASK;
->> -- 
->> 2.42.0
->>
+> > Please pull the changes since the v6.6-rc1 tag from
+> > https://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git/
+> > 
+> > The branch 'fixes' up to and including
+> > 90864f0679fdbb3b2e1c3bdbe4b0a34df785cb0a for the v6.6 cycle.
+> > 
+> > The branch 'next' up to and including
+> > f2c7923763dae51226584494722349fef4df3748 for linux-next.
+> > 
+> > The branch 'next', based upon 'fixes', was tested as follows:
+> > 
+> > i386:          162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > x86_64:        162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > arm64:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > arm:           162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > mips:          162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
+> > ppc:           162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > ppc64:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > ppc64le:       162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > riscv:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> > s390:          162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
+> > loongarch:     162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
 > 
-> We can just reset the controller when there's End Transfer command
-> timeout as a failure recovery. No need to do what you're doing here.
+> I have a signed tag urgent/nolibc.2023.10.12a in the -rcu tree, so
+> please check the lead-in text for sanity.  (Everything after the digital
+> signature is automatically generated.)
+
+Looks good. But it's only a listing of the commit subjects, correct?
+
+> Testing for urgent/nolibc.2023.10.12a:
+> make run: 160 test(s): 160 passed,   0 skipped,   0 failed => status: success
+> make run-user: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning
 > 
-Hi Thinh,
+> Testing for full nolibc stack:
+> make run: 162 test(s): 162 passed,   0 skipped,   0 failed => status: success
+> make run-user: 162 test(s): 160 passed,   2 skipped,   0 failed => status: warning
+> 
+> > > But after about Wednesday of next week, getting things into the upcoming
+> > > merge window is pretty much as fast as sending them quickly to Linus,
+> > > if that makes sense.  Unless there is to be a -rc8 this time, but I
+> > > have heard no sign of that.
+> > > 
+> > > Make sense?
+> > 
+> > Sure, hopefully no more fixes are needed!
+> 
+> Ah, and have these been posted to a public mailing list?  If not, then I
+> need to send them out.
 
-  That was what I initially wanted to do, but there were couple of 
-reasons I wanted to take this approach:
+All patches went through the lists as part of the normal developent
+flow. They were not posted after rebasing.
 
-1. We can't just reset the controller in midst of gadget_interrupt. We 
-need to process it completely and then take action.
+For transparency I did the following follow-up changes:
 
-2. The above log was seen on QRD variant of SM8550/SM8650 easily. But on
-other platforms of same targets, the issue comes up at some other 
-instances of code, at a point where no IRQ is running. In such cases its 
-not possible to accurately find out code portions and reset the 
-controller. The way I confirmed that both platforms are having the same 
-issue is:
+* The rebase of "tools/nolibc: mark start_c as weak" required some
+  minor changes to resolve conflicts.
+* reword the message of
+  "tools/nolibc: drop test for getauxval(AT_PAGESZ)" slightly.
+* simplify the includes intruduced by
+  "selftests/nolibc: add tests for multi-object linkage".
 
-a. During cable disconnect, I am not receiving disconnect interrupt
-b. The reg dump is exactly same in both cases (BMU as well)
+> We reset the -next testing clock, so if all goes well, then I send the
+> three urgent commits to Linus on Monday.
 
-So I felt it was better to fix it during cable disconnect because even 
-if we remove cable, we are still in device mode only and in this case we 
-can unblock suspend and also bring back controller to a known state.
+Sounds good, thanks!
 
-Let me know your thoughts on the above.
-
-Regards,
-Krishna,
+Thomas
