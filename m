@@ -2,167 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F73C7C70E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D46D97C70EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347196AbjJLPEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34212 "EHLO
+        id S1379045AbjJLPFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379045AbjJLPE3 (ORCPT
+        with ESMTP id S1347171AbjJLPFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:04:29 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 114C9CC
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:04:27 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4066241289bso11672195e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:04:26 -0700 (PDT)
+        Thu, 12 Oct 2023 11:05:44 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2120.outbound.protection.outlook.com [40.107.237.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF20A90;
+        Thu, 12 Oct 2023 08:05:41 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MAoduIdB0EMI1EeBw2WRb2PpXJqj8GyO7f6Ak4DGdbZ9uT10s6zuT5UvaL10RtxSxskN4CpleV0ShtIDi9iV1PAN46v/7HkESEbAFWQJ5TudqQHAdENANssH3dxdbyJ573AMKv7bsBw1A7e8l646Hj4rcoqMxN4zwzxB64ItUF4VrQRfMnLmwk1VljjdXcHgQ7/7kAXtI695lN0JYZ4TGpLjp0V3SMfqZdSP7ca02tUIloLVVKmkVDHKLpWnm2klWgicRdFhAk8BxyKRiBYz6BKQ6rFeMyT9eFuIHIy+QTbDIC+CHY7eRMn1v+xXr0XdtmvQABBXHd07TqAPSKJ1sA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pmUoEMxmtg+XrVh3zuQOm0jIaQC1m5ysRiLcOu4e+10=;
+ b=C2rkWnOwc8E/DK6cGt+vB+73eDa8t7CmbSnXnBby6hfSVxR25f4eAFcznz1qNqC4SolEPlplVJOJspusDq74BwRcYBYT/wMpUWqqwsl8mCyLEyvd/dgpiJSYcfxd0gColnWbXrqPMNhf7xL/DgTiQeEQLQzjDx/TXzOo5X9liO7TPtCrqtcky2xfTbZE7t7/bkrZW/hllvAqOovUkw5XGu+9DXTsAiS6uTRuVdPrzRiPlh5Vqr6+WPSD1g1Zmjsi/GuhvSv+we2z+XDpyXH69vqVpzPaOlazIs+EJ5DRgy6LaCuG2Am9UZvSaGRkTiUgKwp7mfdKfTXfIOnc9watZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697123065; x=1697727865; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P6/hE83dFOY8xzxiFaTi6nXaEfmM6cCFOZ7/7sFQHGk=;
-        b=dV5J+rLf/BUMcDfUmM+7rUAfrOD9LChKnQYKT/tsR0d5OR+3J9UC/k3FVOzkX09Euv
-         xO5zRpfRoqAiKH/4yyR39DoqSFVjPmtLy87mSlW/B/IzjY5DOvEcsWiVvKKI1iteMKTX
-         2s4gYj3NvTYwg1RVcXq6bORxjgGCu3kFc68gwSYLjGwJAbRHPV9jHx3UfaPOgA8POgRP
-         MpMfFcNEjiIhBjq1IJMiK6hkY/BLHkJi4/SgcSJI3vzyeGqvIJUAbwjdTzbfHNE7f1Xa
-         CSdorFg/PhZqRFeDBhoOTxoKz8kY0KSe9BDa7jB8jGUdTBMpA/OGmzROxwFPUrsqflyj
-         VIwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697123065; x=1697727865;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P6/hE83dFOY8xzxiFaTi6nXaEfmM6cCFOZ7/7sFQHGk=;
-        b=D3Z3sgoO06RepCHBBgkj5VZ+/6xOSsmpSdvYJPhXJUzvwaNilKqn9gyWtOigRhxPGr
-         9qcaFOGTHZHDDmfZnwgU8a67sTtcjZHOlC3hvj0bPqdfiFfwZAXMCnNuoLE4a+V+ZI4t
-         Mp4HU/B4PwO4TNog2Es64ry8h78HZ/ssqu+NrdMcc0rPWwI6YLoPHTOEV6u1SS2pTluk
-         lWPiyrMO+9gKGzfykQlW7reReKo/y4LZaQ/73CxEFn1BTUGwzAsYswdOi+FeZFy4Y/4Z
-         t15SkYPNBShsZrilrVVgukKjse2Ru+WWoUoKc06kJr3sZvydF5QpxCuB7Vu/gTz7S52U
-         ca+A==
-X-Gm-Message-State: AOJu0YzsvTjbre8Q0nI3piz3VZse4DMvD4qal5DrRdwdAuRpx2xmZL6R
-        bvzcvYEtykS7v9JdNYtUH/56NA==
-X-Google-Smtp-Source: AGHT+IFJyxI7rdj8mcmCS4wzYOwuGNkd6Yy6Le22kTlKe9nA4+WV6KUocuBsOLidG3+0B/Xr0jhs1w==
-X-Received: by 2002:a05:600c:211:b0:405:3dbc:8823 with SMTP id 17-20020a05600c021100b004053dbc8823mr21915774wmi.12.1697123065350;
-        Thu, 12 Oct 2023 08:04:25 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id q19-20020a1cf313000000b0040596352951sm71876wmq.5.2023.10.12.08.04.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 08:04:24 -0700 (PDT)
-Message-ID: <a9c42b1d-919d-4c77-991d-be113b9cf2a5@linaro.org>
-Date:   Thu, 12 Oct 2023 17:04:24 +0200
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pmUoEMxmtg+XrVh3zuQOm0jIaQC1m5ysRiLcOu4e+10=;
+ b=OIEJ784BiolHSyhvIsbRwQu8ZL4J0QM53JkcXrO2ma+yiS3PitdlxA8Pz6Ujkr27eyGBeshf/QMq2g313JNJQ2bLpRgSUpql5aL1Kmg2mE3e99dbUxVWf9togXa4CZpECebxtqLStsrOGLxC1BxsP5pQzfXSZQ/AQK7Fobvg31o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from DM6PR13MB4249.namprd13.prod.outlook.com (2603:10b6:5:7b::25) by
+ PH0PR13MB6000.namprd13.prod.outlook.com (2603:10b6:510:16f::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6863.38; Thu, 12 Oct 2023 15:05:36 +0000
+Received: from DM6PR13MB4249.namprd13.prod.outlook.com
+ ([fe80::6287:b0d7:3d05:a8b3]) by DM6PR13MB4249.namprd13.prod.outlook.com
+ ([fe80::6287:b0d7:3d05:a8b3%6]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
+ 15:05:35 +0000
+Date:   Thu, 12 Oct 2023 17:05:19 +0200
+From:   Louis Peens <louis.peens@corigine.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, oss-drivers@corigine.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] nfp: replace deprecated strncpy with strscpy
+Message-ID: <ZSgLLwDD9J3uDutU@LouisNoVo>
+References: <20231011-strncpy-drivers-net-ethernet-netronome-nfp-nfpcore-nfp_resource-c-v1-1-7d1c984f0eba@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011-strncpy-drivers-net-ethernet-netronome-nfp-nfpcore-nfp_resource-c-v1-1-7d1c984f0eba@google.com>
+X-ClientProxiedBy: JNAP275CA0017.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::22)
+ To DM6PR13MB4249.namprd13.prod.outlook.com (2603:10b6:5:7b::25)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/6] thermal: gov_fair_share: Rearrange
- get_trip_level()
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-References: <13365827.uLZWGnKmhe@kreacher> <2244940.iZASKD2KPV@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <2244940.iZASKD2KPV@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR13MB4249:EE_|PH0PR13MB6000:EE_
+X-MS-Office365-Filtering-Correlation-Id: 79c8bfb7-0c19-46e4-cf3b-08dbcb34afec
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WHNlTejOU4s/xbIEVXIdpe3oSkAKisBtoSc34SnpxFDhs26n8yGoFpJKHnamQ0uQqXXW8eMUykOrUl/av44TmhWihjarXh4uSZX+MFulrWJrS5IBWL4kToHTe2s5RJzIQDJFl9JJ9naDno9m56GQK14+mTWle8LNESuG2Yg1PSxpyWHJO1TM9aUUofuLmwvn2WxWOXxud6+mns1xISW+InHxp6Y1VkKAh90GpwxX/GEdk5oAXbCZZbBZKnK09tmtJBQmTWSjCshdpNUDm7ZInrbx9wDyI9WuWlkF3ZO/bqSEYG1OPGCDG7NKCcUIua67QIlbB5Vrcd16IlMjULi3Pe1BFf+Z9oOvLS0xKY5DBOI139b4+e95VHre/rR109O72ZZuA7IfPJDs0k8ChJS3A/FNDJgXkmayxoaHSOimI9u+eXCSVt3SOXqIHkkNKwKbqI8tF6UVsdBh2+TD8QBSZADpPHtWtEiCEn7fzkLioQo7+5mQxxP6nRz+KPCiAhOgRwjQHcD4oeu5knyHXb9VCG2zGsAospHmEKUm7fTwIpFo3wIIMqFMZMh92stK9myeOd7MOooNOBSp2NObbluXtLJmLz1Et7iqgb+Om0rlqV0/wabvWYr7rLwxzTq2hD6ufB3k203b7eGtPuMNPynzbg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR13MB4249.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(346002)(376002)(136003)(396003)(39830400003)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(33716001)(83380400001)(478600001)(6666004)(9686003)(6506007)(6512007)(6486002)(38100700002)(54906003)(966005)(316002)(26005)(66556008)(66946007)(6916009)(66476007)(41300700001)(8676002)(8936002)(4326008)(44832011)(5660300002)(2906002)(86362001)(156123004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?64vkdV8kNrnRW+//kKx7FosAlonD6MqSeTigTDPdKCE+6OyFCvl89HyDSHRr?=
+ =?us-ascii?Q?5qAPs2PBgnTRYwQSLpNSsnDPQJAlOGGbr407yVdGAjT7QRxC4YBZnYpJMPiD?=
+ =?us-ascii?Q?8QfrGThlJOZZQBdjv0rnoq4JXJVjBxDh41ZaHtLDeMM4z01GUt/f/I0/lwN9?=
+ =?us-ascii?Q?OPUIpWC44m+YZWPHDlp3D3wOOAuWydMpllyuUdDitZb8DtIuAXMuR+lZWLYS?=
+ =?us-ascii?Q?fvIzLcCI2tnrCWpTubU4DaVttvJScAIQ4p6kPkEUNUN3/amI8T6HmEgWpXw8?=
+ =?us-ascii?Q?47InZIHU/ZxUACONVo9VssCSKtztPzZ6/+sG6yWDgxkMxhUlNUiOmWzJlmr7?=
+ =?us-ascii?Q?L01nAsdFtbkPr7k2S14EDnx/yWsrYyiig+Bqx8TVl3uhPaKXl9dmlYzQucNs?=
+ =?us-ascii?Q?R8wAOcxDbMmOdoeaIql4vt5PT+21170VRapt8yihvi3eHcpJCTwS9TdT4K1I?=
+ =?us-ascii?Q?1B6h/u+4IXJLOyb2mWjKYTM76RpR7NmFvsqqOHXfXKVAgo5Y1aygHqi2Ml3G?=
+ =?us-ascii?Q?yIrqlolMb3mXqRYBCE1U+1Zg5OwR6Yzj42EgmriGPcd0e1Dw+ZzcEhZI+24z?=
+ =?us-ascii?Q?BfuqsJIXNGeiMr0L+0Bd/HB96QIWfNt5lHvLhNJJi2v7g8jamOkKLVzqvMTL?=
+ =?us-ascii?Q?7y1KSP8ONSSpulqcfbUivmB+M/xHaDkjGXPgMsmzGnS+B/EWnmK8GLCQoVfK?=
+ =?us-ascii?Q?Fx5JP9PiB2n9gF015QrItB4WO9LgrOOZhT94380wTN9ppbSDSMVUnHv7J+/z?=
+ =?us-ascii?Q?bs4qpIB5HP7hMFNPWpMUjBGMHxjFKnMSZ0pdU9h/XzBGE3SK9kUHYiqIJSPb?=
+ =?us-ascii?Q?yRvuRlJBNqnqk5Rk6QpDUdoi898c7+mdlT3k/8gCzra9A2OBU1cA9Yc+TKCf?=
+ =?us-ascii?Q?O+xXv2YOtvILAy6oNDUxBcyeZljEd9yebJMZ9EvcUCzzb4YQwTou6wg/WMPb?=
+ =?us-ascii?Q?3gwo/RSh3uNvR4N7e1J1AkulD6t0faUF44q5ejGvoFjcf10QwhI+F/ROurie?=
+ =?us-ascii?Q?6t58QmnTGb+BJ3t88LwKPAzsjRDRv2lME285Us+9UAOytkOuoV/ZO9bkLcid?=
+ =?us-ascii?Q?FZqMi685lK2DlUe6zEaKP8K1D4pykL958bjEk3vWuon1/Gw05P/VbOopZrpz?=
+ =?us-ascii?Q?BCaA5aEIx6cjXtuUReEgzRKFNlc2OHeympY6dzluAY8mx+ujwFd7z0hMZz+P?=
+ =?us-ascii?Q?MY/7ZXr07d57idkwwZpyF2dmP4+2ApEUJVaIXufkhCAE7G7fJ/AMD7IaaWJG?=
+ =?us-ascii?Q?Q8wHefI2AgZzMkDSz+4F+1l3/dUA4Mtvy1HP7qwoOyTQKm5IHR2amIOmMU3N?=
+ =?us-ascii?Q?TGL3ooI0l8LWwq1vaEobBHrn478o0InqIYLBHhVwtSZG8rZSOaoVmua8osLG?=
+ =?us-ascii?Q?JSdrfcybFvbGyWYMAwiMZJk5WBhEkjytzNmzUjdsiyT5HeXicqDZ+5htxPub?=
+ =?us-ascii?Q?jCtdA65SnTJkGiEnQANagxbrdERqbxDBeFArvVrJlDWUhW5uybFqg+7umsGq?=
+ =?us-ascii?Q?kT3zvGDlv8CGoI/WfRkJdC1CAwrZH9ocObG6xtO53Nj7H7aD80J+PDmIJ7GF?=
+ =?us-ascii?Q?Wr5MCapaGAbyhre9OcesuRck4YF1eUV1L2fJk2jga0fFdCVafSV/tUyHbphB?=
+ =?us-ascii?Q?ag=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79c8bfb7-0c19-46e4-cf3b-08dbcb34afec
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR13MB4249.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 15:05:35.8072
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Uuki/S7+5OTgzF6JppymcTbPc4QzxtnE6qXunOYwDA8d6bkM5SKvMn/iU+H6RCLSgkMDSJAfvkp7Yu7ACgw2T6lpWqPXZWzRi6ohScpdlfg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR13MB6000
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2023 19:42, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Wed, Oct 11, 2023 at 09:48:39PM +0000, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
 > 
-> Make get_trip_level() use for_each_trip() to iterate over trip points
-> and make it call thermal_zone_trip_id() to obtain the integer ID of a
-> given trip point so as to avoid relying on the knowledge of struct
-> thermal_zone_device internals.
+> We expect res->name to be NUL-terminated based on its usage with format
+> strings:
+> |       dev_err(cpp->dev.parent, "Dangling area: %d:%d:%d:0x%0llx-0x%0llx%s%s\n",
+> |               NFP_CPP_ID_TARGET_of(res->cpp_id),
+> |               NFP_CPP_ID_ACTION_of(res->cpp_id),
+> |               NFP_CPP_ID_TOKEN_of(res->cpp_id),
+> |               res->start, res->end,
+> |               res->name ? " " : "",
+> |               res->name ? res->name : "");
+> ... and with strcmp()
+> |       if (!strcmp(res->name, NFP_RESOURCE_TBL_NAME)) {
 > 
-> The general functionality is not expected to be changed.
+> Moreover, NUL-padding is not required as `res` is already
+> zero-allocated:
+> |       res = kzalloc(sizeof(*res), GFP_KERNEL);
 > 
-> This change causes the governor to use trip pointers instead of trip
-> indices everywhere except for the fair_share_throttle() second argument
-> that will be modified subsequently along with the definition of the
-> governor .throttle() callback.
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding.
 > 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Let's also opt to use the more idiomatic strscpy() usage of (dest, src,
+> sizeof(dest)) rather than (dest, src, SOME_LEN).
+> 
+> Typically the pattern of 1) allocate memory for string, 2) copy string
+> into freshly-allocated memory is a candidate for kmemdup_nul() but in
+> this case we are allocating the entirety of the `res` struct and that
+> should stay as is. As mentioned above, simple 1:1 replacement of strncpy
+> -> strscpy :)
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 > ---
->   drivers/thermal/gov_fair_share.c |   30 ++++++++++++++----------------
->   1 file changed, 14 insertions(+), 16 deletions(-)
+> Note: build-tested only.
 > 
-> Index: linux-pm/drivers/thermal/gov_fair_share.c
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/gov_fair_share.c
-> +++ linux-pm/drivers/thermal/gov_fair_share.c
-> @@ -15,29 +15,27 @@
->   
->   #include "thermal_core.h"
->   
-> -/**
-> - * get_trip_level: - obtains the current trip level for a zone
-> - * @tz:		thermal zone device
-> - */
->   static int get_trip_level(struct thermal_zone_device *tz)
->   {
-> -	struct thermal_trip trip;
-> -	int count;
-> +	const struct thermal_trip *trip, *level_trip = NULL;
-> +	int trip_level;
->   
-> -	for (count = 0; count < tz->num_trips; count++) {
-> -		__thermal_zone_get_trip(tz, count, &trip);
-> -		if (tz->temperature < trip.temperature)
-> +	for_each_trip(tz, trip) {
-> +		if (level_trip && trip->temperature >= tz->temperature)
->   			break;
+> Found with: $ rg "strncpy\("
+Thanks Justin, I did also now check it on a nfp.
 
-Even if very likely the trip points are ordered by the hardware 
-enumeration, strictly we don't have yet the guarantee the trips are 
-ordered (as that is the final goal to correctly detect thresholds 
-crossing with the generic trip). We should go through all the trip 
-points, no?
-
-> +		level_trip = trip;
->   	}
->   
-> -	/*
-> -	 * count > 0 only if temperature is greater than first trip
-> -	 * point, in which case, trip_point = count - 1
-> -	 */
-> -	if (count > 0)
-> -		trace_thermal_zone_trip(tz, count - 1, trip.type);
-> +	/*  Bail out if the temperature is not greater than any trips. */
-> +	if (level_trip->temperature >= tz->temperature)
-> +		return 0;
-
-Isn't simpler to remove the test level_trip != NULL in the loop and then 
-check here if it is NULL and then return 0.
-
-> +	trip_level = thermal_zone_trip_id(tz, level_trip);
-> +
-> +	trace_thermal_zone_trip(tz, trip_level, level_trip->type);
->   
-> -	return count;
-> +	return trip_level;
->   }
->   
->   static long get_target_state(struct thermal_zone_device *tz,
+Acked-by: Louis Peens <louis.peens@corigine.com>
+> ---
+>  drivers/net/ethernet/netronome/nfp/nfpcore/nfp_resource.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/drivers/net/ethernet/netronome/nfp/nfpcore/nfp_resource.c b/drivers/net/ethernet/netronome/nfp/nfpcore/nfp_resource.c
+> index ce7492a6a98f..279ea0b56955 100644
+> --- a/drivers/net/ethernet/netronome/nfp/nfpcore/nfp_resource.c
+> +++ b/drivers/net/ethernet/netronome/nfp/nfpcore/nfp_resource.c
+> @@ -159,7 +159,7 @@ nfp_resource_acquire(struct nfp_cpp *cpp, const char *name)
+>  	if (!res)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> -	strncpy(res->name, name, NFP_RESOURCE_ENTRY_NAME_SZ);
+> +	strscpy(res->name, name, sizeof(res->name));
+>  
+>  	dev_mutex = nfp_cpp_mutex_alloc(cpp, NFP_RESOURCE_TBL_TARGET,
+>  					NFP_RESOURCE_TBL_BASE,
 > 
+> ---
+> base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+> change-id: 20231011-strncpy-drivers-net-ethernet-netronome-nfp-nfpcore-nfp_resource-c-1812b8357fcd
 > 
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
