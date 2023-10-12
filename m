@@ -2,192 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 154537C7152
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FC97C7155
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379279AbjJLPW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
+        id S1379274AbjJLPYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378354AbjJLPW5 (ORCPT
+        with ESMTP id S1379226AbjJLPYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:22:57 -0400
-Received: from outbound-smtp15.blacknight.com (outbound-smtp15.blacknight.com [46.22.139.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8148B8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:22:54 -0700 (PDT)
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp15.blacknight.com (Postfix) with ESMTPS id 2E4A41C3932
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:22:53 +0100 (IST)
-Received: (qmail 3313 invoked from network); 12 Oct 2023 15:22:53 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.197.19])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Oct 2023 15:22:52 -0000
-Date:   Thu, 12 Oct 2023 16:22:50 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Arjan Van De Ven <arjan@linux.intel.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Johannes Weiner <jweiner@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Lameter <cl@linux.com>
-Subject: Re: [PATCH 02/10] cacheinfo: calculate per-CPU data cache size
-Message-ID: <20231012152250.xuu5mvghwtonpvp2@techsingularity.net>
-References: <20230920061856.257597-1-ying.huang@intel.com>
- <20230920061856.257597-3-ying.huang@intel.com>
- <20231011122027.pw3uw32sdxxqjsrq@techsingularity.net>
- <87h6mwf3gf.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <20231012125253.fpeehd6362c5v2sj@techsingularity.net>
- <87v8bcdly7.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        Thu, 12 Oct 2023 11:24:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6574BCA
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:23:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697124192;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LPVVrFpPDVyx3xRaYdaYaCN0WQspDDkOcGN6DIUH97E=;
+        b=QV/ztgujZWk/Sf7cjX17+aLtBAb1FI315i0B1e8tFpq5IFYN4wxRUGrvDJwVSaDa8LhZsF
+        YQg+XyrLG1aLBlUddkQ9ZPnaAlyOSLGMux3r0X7PS+AwdgC166QwcSXUjhcX1p/kBeZw9o
+        SPgNCpkIR/+79eWE2JU0/Clw0vXKZOk=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-104-OqHDG5O3NOGuD9jbCZkTvw-1; Thu, 12 Oct 2023 11:23:01 -0400
+X-MC-Unique: OqHDG5O3NOGuD9jbCZkTvw-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-66d08175882so10464336d6.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:23:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697124181; x=1697728981;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LPVVrFpPDVyx3xRaYdaYaCN0WQspDDkOcGN6DIUH97E=;
+        b=jHt2tpruDY3maGEgN+XZjMbxoSd0N9GoqtAXDju3turvxUOvY+mvSWHRdaL8BywcZR
+         7tKznYSi8ic2H64SCrLIiTsdxMyuQ/0X0Z9U9AXbQUsfAXQLvQJ3c9o4nSJVKIh94cra
+         LyIbNx5fIQv5gGvjZ5B4dNvxOzUSc+rlutjSnirAI/KC/Ud/XsJQrq9EsWJHShFDDQNz
+         GLo0fg8qmxVF2my77rqJKJ1V2jfola+wR/ONbqq647HvLvl42zKxUBTWFrGOzTEkumFX
+         slShKdW17YHMolcZv7uCXoM/EdTH3yflo7Jqg98usfWQpF+FzfBeDDKg00HOJX8xe+eT
+         8OCA==
+X-Gm-Message-State: AOJu0Yzv6miVpO2pxol/ToGmK8zLwGaCyISkYNK24Ap9lElRsvbEORCH
+        qfUaFAXMfT9KjcyzxZa2ldtHaw7AHszpaepLBxFaZM+/xDRSh6RQyqznyxIgSwQ3QPfGaC6ygOC
+        ZQEA+9IpgsU2WlykcPCnspapa
+X-Received: by 2002:a0c:8e8c:0:b0:64f:8213:197d with SMTP id x12-20020a0c8e8c000000b0064f8213197dmr22337058qvb.33.1697124180401;
+        Thu, 12 Oct 2023 08:23:00 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHCeMZIB3m1qx2fbkdT4OPLLEqPsHeGO1L/iAH1/dZ2KldB+ZvbUW9y7GqXbzwRlkPP4euU0Q==
+X-Received: by 2002:a0c:8e8c:0:b0:64f:8213:197d with SMTP id x12-20020a0c8e8c000000b0064f8213197dmr22337044qvb.33.1697124180079;
+        Thu, 12 Oct 2023 08:23:00 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id dy18-20020ad44e92000000b0066d11c1f578sm883123qvb.97.2023.10.12.08.22.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 08:22:59 -0700 (PDT)
+Message-ID: <7df53e6b-9141-de85-b7a3-b9eb092ef7b4@redhat.com>
+Date:   Thu, 12 Oct 2023 17:22:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <87v8bcdly7.fsf@yhuang6-desk2.ccr.corp.intel.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Reply-To: eric.auger@redhat.com
+Subject: Re: [PATCH v3 3/3] arm64/kvm: Fine grain _EL2 system registers list
+ that affect nested virtualization
+Content-Language: en-US
+To:     Miguel Luis <miguel.luis@oracle.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev
+References: <20231011180103.91774-1-miguel.luis@oracle.com>
+ <20231011180103.91774-4-miguel.luis@oracle.com>
+From:   Eric Auger <eric.auger@redhat.com>
+In-Reply-To: <20231011180103.91774-4-miguel.luis@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,UPPERCASE_50_75 autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 09:12:00PM +0800, Huang, Ying wrote:
-> Mel Gorman <mgorman@techsingularity.net> writes:
-> 
-> > On Thu, Oct 12, 2023 at 08:08:32PM +0800, Huang, Ying wrote:
-> >> Mel Gorman <mgorman@techsingularity.net> writes:
-> >> 
-> >> > On Wed, Sep 20, 2023 at 02:18:48PM +0800, Huang Ying wrote:
-> >> >> Per-CPU data cache size is useful information.  For example, it can be
-> >> >> used to determine per-CPU cache size.  So, in this patch, the data
-> >> >> cache size for each CPU is calculated via data_cache_size /
-> >> >> shared_cpu_weight.
-> >> >> 
-> >> >> A brute-force algorithm to iterate all online CPUs is used to avoid
-> >> >> to allocate an extra cpumask, especially in offline callback.
-> >> >> 
-> >> >> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> >> >
-> >> > It's not necessarily relevant to the patch, but at least the scheduler
-> >> > also stores some per-cpu topology information such as sd_llc_size -- the
-> >> > number of CPUs sharing the same last-level-cache as this CPU. It may be
-> >> > worth unifying this at some point if it's common that per-cpu
-> >> > information is too fine and per-zone or per-node information is too
-> >> > coarse. This would be particularly true when considering locking
-> >> > granularity,
-> >> >
-> >> >> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> >> >> Cc: Andrew Morton <akpm@linux-foundation.org>
-> >> >> Cc: Mel Gorman <mgorman@techsingularity.net>
-> >> >> Cc: Vlastimil Babka <vbabka@suse.cz>
-> >> >> Cc: David Hildenbrand <david@redhat.com>
-> >> >> Cc: Johannes Weiner <jweiner@redhat.com>
-> >> >> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> >> >> Cc: Michal Hocko <mhocko@suse.com>
-> >> >> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-> >> >> Cc: Matthew Wilcox <willy@infradead.org>
-> >> >> Cc: Christoph Lameter <cl@linux.com>
-> >> >> ---
-> >> >>  drivers/base/cacheinfo.c  | 42 ++++++++++++++++++++++++++++++++++++++-
-> >> >>  include/linux/cacheinfo.h |  1 +
-> >> >>  2 files changed, 42 insertions(+), 1 deletion(-)
-> >> >> 
-> >> >> diff --git a/drivers/base/cacheinfo.c b/drivers/base/cacheinfo.c
-> >> >> index cbae8be1fe52..3e8951a3fbab 100644
-> >> >> --- a/drivers/base/cacheinfo.c
-> >> >> +++ b/drivers/base/cacheinfo.c
-> >> >> @@ -898,6 +898,41 @@ static int cache_add_dev(unsigned int cpu)
-> >> >>  	return rc;
-> >> >>  }
-> >> >>  
-> >> >> +static void update_data_cache_size_cpu(unsigned int cpu)
-> >> >> +{
-> >> >> +	struct cpu_cacheinfo *ci;
-> >> >> +	struct cacheinfo *leaf;
-> >> >> +	unsigned int i, nr_shared;
-> >> >> +	unsigned int size_data = 0;
-> >> >> +
-> >> >> +	if (!per_cpu_cacheinfo(cpu))
-> >> >> +		return;
-> >> >> +
-> >> >> +	ci = ci_cacheinfo(cpu);
-> >> >> +	for (i = 0; i < cache_leaves(cpu); i++) {
-> >> >> +		leaf = per_cpu_cacheinfo_idx(cpu, i);
-> >> >> +		if (leaf->type != CACHE_TYPE_DATA &&
-> >> >> +		    leaf->type != CACHE_TYPE_UNIFIED)
-> >> >> +			continue;
-> >> >> +		nr_shared = cpumask_weight(&leaf->shared_cpu_map);
-> >> >> +		if (!nr_shared)
-> >> >> +			continue;
-> >> >> +		size_data += leaf->size / nr_shared;
-> >> >> +	}
-> >> >> +	ci->size_data = size_data;
-> >> >> +}
-> >> >
-> >> > This needs comments.
-> >> >
-> >> > It would be nice to add a comment on top describing the limitation of
-> >> > CACHE_TYPE_UNIFIED here in the context of
-> >> > update_data_cache_size_cpu().
-> >> 
-> >> Sure.  Will do that.
-> >> 
-> >
-> > Thanks.
-> >
-> >> > The L2 cache could be unified but much smaller than a L3 or other
-> >> > last-level-cache. It's not clear from the code what level of cache is being
-> >> > used due to a lack of familiarity of the cpu_cacheinfo code but size_data
-> >> > is not the size of a cache, it appears to be the share of a cache a CPU
-> >> > would have under ideal circumstances.
-> >> 
-> >> Yes.  And it isn't for one specific level of cache.  It's sum of per-CPU
-> >> shares of all levels of cache.  But the calculation is inaccurate.  More
-> >> details are in the below reply.
-> >> 
-> >> > However, as it appears to also be
-> >> > iterating hierarchy then this may not be accurate. Caches may or may not
-> >> > allow data to be duplicated between levels so the value may be inaccurate.
-> >> 
-> >> Thank you very much for pointing this out!  The cache can be inclusive
-> >> or not.  So, we cannot calculate the per-CPU slice of all-level caches
-> >> via adding them together blindly.  I will change this in a follow-on
-> >> patch.
-> >> 
-> >
-> > Please do, I would strongly suggest basing this on LLC only because it's
-> > the only value you can be sure of. This change is the only change that may
-> > warrant a respin of the series as the history will be somewhat confusing
-> > otherwise.
-> 
-> I am still checking whether it's possible to get cache inclusive
-> information via cpuid.
-> 
+Hi Miguel,
 
-cpuid may be x86-specific so that potentially leads to different behaviours
-on different architectures.
+On 10/11/23 20:01, Miguel Luis wrote:
+> Implement a fine grained approach in the _EL2 sysreg ranges.
+>
+> Fixes: d0fc0a2519a6 ("KVM: arm64: nv: Add trap forwarding for HCR_EL2")
+> Signed-off-by: Miguel Luis <miguel.luis@oracle.com>
+> ---
+>  arch/arm64/kvm/emulate-nested.c | 88 ++++++++++++++++++++++++++++++---
+>  1 file changed, 82 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/arm64/kvm/emulate-nested.c b/arch/arm64/kvm/emulate-nested.c
+> index 9ced1bf0c2b7..3af49e130ee6 100644
+> --- a/arch/arm64/kvm/emulate-nested.c
+> +++ b/arch/arm64/kvm/emulate-nested.c
+> @@ -648,15 +648,91 @@ static const struct encoding_to_trap_config encoding_to_cgt[] __initconst = {
+>  	SR_TRAP(SYS_APGAKEYLO_EL1,	CGT_HCR_APK),
+>  	SR_TRAP(SYS_APGAKEYHI_EL1,	CGT_HCR_APK),
+>  	/* All _EL2 registers */
+> -	SR_RANGE_TRAP(sys_reg(3, 4, 0, 0, 0),
+> -		      sys_reg(3, 4, 3, 15, 7), CGT_HCR_NV),
+> +	SR_TRAP(SYS_VPIDR_EL2,		CGT_HCR_NV),
+I think you miss DBGVCR32_EL2
+> +	SR_TRAP(SYS_VMPIDR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_SCTLR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_ACTLR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_SCTLR2_EL2,		CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_HCR_EL2,
+> +		      SYS_HCRX_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_SMPRIMAP_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_SMCR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_SDER32_EL2,		CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_TTBR0_EL2,
+> +		      SYS_TCR2_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_VTTBR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_VTCR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_VNCR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_VSTTBR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_VSTCR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_DACR32_EL2,		CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_HDFGRTR_EL2,
+> +		      SYS_HAFGRTR_EL2,	CGT_HCR_NV),
+>  	/* Skip the SP_EL1 encoding... */
+>  	SR_TRAP(SYS_SPSR_EL2,		CGT_HCR_NV),
+>  	SR_TRAP(SYS_ELR_EL2,		CGT_HCR_NV),
+> -	SR_RANGE_TRAP(sys_reg(3, 4, 4, 1, 1),
+> -		      sys_reg(3, 4, 10, 15, 7), CGT_HCR_NV),
+> -	SR_RANGE_TRAP(sys_reg(3, 4, 12, 0, 0),
+> -		      sys_reg(3, 4, 14, 15, 7), CGT_HCR_NV),
+> +	/* SPSR_irq, SPSR_abt, SPSR_und, SPSR_fiq */
+> +	SR_RANGE_TRAP(sys_reg(3, 4, 4, 3, 0),
+> +		      sys_reg(3, 4, 4, 3, 3), CGT_HCR_NV),
+> +	SR_TRAP(SYS_IFSR32_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_AFSR0_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_AFSR1_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_ESR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_VSESR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_FPEXC32_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_TFSR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_FAR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_HPFAR_EL2,		CGT_HCR_NV),
+you miss BRBCR_EL2
+> +	SR_TRAP(SYS_PMSCR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_MAIR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_AMAIR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_MPAMHCR_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_MPAMVPMV_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_MPAM2_EL2,		CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_MPAMVPM0_EL2,
+> +		      SYS_MPAMVPM7_EL2,	CGT_HCR_NV),
+About the MPAM where did you find the pseudo code?
+> +	/*
+> +	 * Note that the spec. describes a group of MEC registers
+> +	 * whose access should not trap, therefore skip the following:
+> +	 * MECID_A0_EL2, MECID_A1_EL2, MECID_P0_EL2,
+> +	 * MECID_P1_EL2, MECIDR_EL2, VMECID_A_EL2,
+> +	 * VMECID_P_EL2.
+> +	 */
+> +	SR_RANGE_TRAP(SYS_VBAR_EL2,
+> +		      SYS_RMR_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_VDISR_EL2,		CGT_HCR_NV),
+> +	/* ICH_AP0R<m>_EL2 */
+> +	SR_RANGE_TRAP(SYS_ICH_AP0R0_EL2,
+> +		      SYS_ICH_AP0R3_EL2, CGT_HCR_NV),
+> +	/* ICH_AP1R<m>_EL2 */
+> +	SR_RANGE_TRAP(SYS_ICH_AP1R0_EL2,
+> +		      SYS_ICH_AP1R3_EL2, CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICC_SRE_EL2,	CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_ICH_HCR_EL2,
+> +		      SYS_ICH_EISR_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_ELRSR_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_ICH_VMCR_EL2,	CGT_HCR_NV),
+> +	/* ICH_LR<m>_EL2 */
+> +	SR_RANGE_TRAP(SYS_ICH_LR0_EL2,
+> +		      SYS_ICH_LR15_EL2, CGT_HCR_NV),
+> +	SR_TRAP(SYS_CONTEXTIDR_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_TPIDR_EL2,		CGT_HCR_NV),
+> +	SR_TRAP(SYS_SCXTNUM_EL2,	CGT_HCR_NV),
+> +	/* AMEVCNTVOFF0<n>_EL2, AMEVCNTVOFF1<n>_EL2  */
+> +	SR_RANGE_TRAP(SYS_AMEVCNTVOFF0n_EL2(0),
+> +		      SYS_AMEVCNTVOFF1n_EL2(15), CGT_HCR_NV),
+> +	/* CNT*_EL2 */
+> +	SR_TRAP(SYS_CNTVOFF_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_CNTPOFF_EL2,	CGT_HCR_NV),
+> +	SR_TRAP(SYS_CNTHCTL_EL2,	CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_CNTHP_TVAL_EL2,
+> +		      SYS_CNTHP_CVAL_EL2, CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_CNTHV_TVAL_EL2,
+> +		      SYS_CNTHV_CVAL_EL2, CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_CNTHVS_TVAL_EL2,
+> +		      SYS_CNTHVS_CVAL_EL2, CGT_HCR_NV),
+> +	SR_RANGE_TRAP(SYS_CNTHPS_TVAL_EL2,
+> +		      SYS_CNTHPS_CVAL_EL2, CGT_HCR_NV),
+>  	/* All _EL02, _EL12 registers */
+>  	SR_RANGE_TRAP(sys_reg(3, 5, 0, 0, 0),
+>  		      sys_reg(3, 5, 10, 15, 7), CGT_HCR_NV),
+Besides this looks good to me and to me this looks safer than the
+previous large span approach but that's my taste ;-)
 
-> If there's no reliable way to do that.  We can use the max value of
-> per-CPU share of each level of cache.  For inclusive cache, that will be
-> the value of LLC.  For non-inclusive cache, the value will be more
-> accurate.  For example, on Intel Sapphire Rapids, the L2 cache is 2 MB
-> per core, while LLC is 1.875 MB per core according to [1].
-> 
+Thanks
 
-Be that as it may, it still opens the possibility of significantly different
-behaviour depending on the CPU family. I would strongly recommend that you
-start with LLC only because LLC is also the topology level of interest used
-by the scheduler and it's information that is generally available. Trying
-to get accurate information on every level and the complexity of dealing
-with inclusive vs exclusive cache or write-back vs write-through should
-be a separate patch, with separate justification and notes on how it can
-lead to behaviour specific to the CPU family or architecture.
+Eric
 
--- 
-Mel Gorman
-SUSE Labs
+ 
+
