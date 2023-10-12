@@ -2,160 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7E27C70E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1911B7C70DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379203AbjJLPDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45908 "EHLO
+        id S1379031AbjJLPCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:02:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378304AbjJLPC7 (ORCPT
+        with ESMTP id S233710AbjJLPCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:02:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DCCC4
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:02:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697122926;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NqKWWi4N1dQcUV0pCxNw2tgDBfyOJnn+/IdI3vL5BCQ=;
-        b=bwXGB9X6Mdxjg1G/razCMVObyfS53Is97BntuZFxn1/staY5xd+Ryo/QPgQBlurJkXYGso
-        iQYf741ycaJxJHxGbTOKe1sS1c2p7BKyJyESveMIVZhjIpEoJDtcD95C+BlXtqoAbS6hai
-        j5OfCdvbUWsporrKk3iVclCEwq+wfzs=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-145-3SPO1wYlMI-bY1Cpdf3irQ-1; Thu, 12 Oct 2023 11:02:04 -0400
-X-MC-Unique: 3SPO1wYlMI-bY1Cpdf3irQ-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-668f04867deso11813686d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:02:04 -0700 (PDT)
+        Thu, 12 Oct 2023 11:02:11 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57D1C0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:02:06 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-27d1aee5aa1so807301a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:02:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697122926; x=1697727726; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=G1k6Zw8UuqvvxVPypr3/1NfwxB17P7mHux63viG+B0I=;
+        b=VVQqy4sZ9pjS8EPzakjIcDOyOdj4LcymyITOIiiWViphHXZQcjHB4qiipPkmBELYm5
+         zWcJIQfuyaOewTjhh552D1BKnqRB1ayNh9cYmx1X/Q6ce4JTEGL7X1q4NFsCQ5KTC6lh
+         +XgTlm/2xqHtJprA/6Kn/SSN1bo3a53/0F26C1toA2H15xX7iXsLK179bikb/PzRR41D
+         7pGbpWoWX3HKNidM7IdsY13atSqKutalKoomOHrts86XYdXmVZ3zuVnHooBcDL0KkP8m
+         nLot1eIWnaYDcsec+qTvIbJB62h8OGAx6VeA3reKnpmz+6K6X0ySG41eHBM5TJToDHpV
+         9bmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697122923; x=1697727723;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NqKWWi4N1dQcUV0pCxNw2tgDBfyOJnn+/IdI3vL5BCQ=;
-        b=YlD0ZaEs4hHqFOKIU/MvFfOe+hRc112l3w+qiEUFKypEY1LfUa2wcujmWV0hhfpMsw
-         tAlB+vpVhe0Ix362m58GKCTG73E7fOc6jV2AS5FJgQYC7KQGC4tyOfz1cysksq0P8Oez
-         IMhND3Uzj+wk27sVK7Q1LxxiUMJFA1q2tjmRLB4ZxdxU+tA6rWqKLeD238chwShnoSLS
-         IiDifimlPvPh5s+Sqy8VlkP4u9Efv/icXeNL9piQl7qcnJ85CrfTeCB0uXcqSMWv1zYw
-         aRVfLHACMY60etv16pQ30qzZ2OTXd5rN+itZADCc2lLeFinNV94N3AsmavjG4J4c1ddQ
-         HRRg==
-X-Gm-Message-State: AOJu0Yz4lRnoWdDHabuXYdsJf3heTDrF4AVPlUDCduEcfSIz3SFllwx+
-        7sXzYP+0Lro65EQZwYdKmTUaPCscgUdK7O4qc8CVb1QMfhqwj+CjT2xFF8GF406J2yllQBdrXbT
-        rzBUUN0AxOMELNNW94qPI7S/v
-X-Received: by 2002:a05:6214:5b03:b0:65d:1265:48c5 with SMTP id ma3-20020a0562145b0300b0065d126548c5mr25316472qvb.33.1697122923730;
-        Thu, 12 Oct 2023 08:02:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGjRHnSSwx/haWRgrBki1YsFkWJjXmdjCoMi0wMoPVGd/LNcVTz7v5WLv1JGQct9yRT+ZM1Mw==
-X-Received: by 2002:a05:6214:5b03:b0:65d:1265:48c5 with SMTP id ma3-20020a0562145b0300b0065d126548c5mr25316134qvb.33.1697122919236;
-        Thu, 12 Oct 2023 08:01:59 -0700 (PDT)
-Received: from rh (p200300c93f266600211746b64b43cdf8.dip0.t-ipconnect.de. [2003:c9:3f26:6600:2117:46b6:4b43:cdf8])
-        by smtp.gmail.com with ESMTPSA id o15-20020a0cfa8f000000b0066cfbe4e0f4sm2140112qvn.26.2023.10.12.08.01.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 08:01:58 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 17:01:54 +0200 (CEST)
-From:   Sebastian Ott <sebott@redhat.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v7 10/12] KVM: selftests: aarch64: Introduce vpmu_counter_access
- test
-In-Reply-To: <44608d30-c97a-c725-e8b2-0c5a81440869@redhat.com>
-Message-ID: <65b8bbdb-2187-3c85-0e5d-24befcf01333@redhat.com>
-References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-11-rananta@google.com> <44608d30-c97a-c725-e8b2-0c5a81440869@redhat.com>
+        d=1e100.net; s=20230601; t=1697122926; x=1697727726;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=G1k6Zw8UuqvvxVPypr3/1NfwxB17P7mHux63viG+B0I=;
+        b=bOItYhB8L1N0L4ju0+3+5X5ND+WoMWP3X+N9AwovkI1tF92AwCPeI6923moagD+bVm
+         a1LCvqlRSuVNJXLxY0D6hANept6nBfHJhZPXyA3XNVlvitJlZc+dkhr5qgruux40C3Aq
+         lvHKQDv6MOv27PncVp4YMYGAuvTeIa7z5XlVPFUu7dG7VCq63Oad9eWO/Vj1+2UGvEUm
+         Ro1HTaqcDDxnqJXbDnh2L6X8Udbmwkc+7lwgFe5FSGObAu6otivCbRKgdwPB4sFIkAO4
+         WztqTqGg4n20HUc9fQdWPSOnqIDgN6BgcTnsrEnCpD4AzwJMxrhXiamBcIRCL44E4/Qq
+         6KQg==
+X-Gm-Message-State: AOJu0YwsP1faY7H3wh5mv9rsyeFv2MZ5j8zehwd1JhyeBmzaSswFEBx4
+        gRqeDi7mZJKZRsmsX+lF0kmrfNiyQqSzvevtWT9K4Q==
+X-Google-Smtp-Source: AGHT+IFUBjfznNlabHSlGmEljGkRPP0xZPIgmRyEn+I2iwGnSk+5dptGFKEePz4PjFONkHSZ520fFvytvDVyOC/qL8M=
+X-Received: by 2002:a17:90a:c20d:b0:268:2af6:e48c with SMTP id
+ e13-20020a17090ac20d00b002682af6e48cmr34592483pjt.4.1697122925826; Thu, 12
+ Oct 2023 08:02:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463795790-346822177-1697122918=:6347"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230929183350.239721-1-mathieu.desnoyers@efficios.com>
+ <ZRfKKxBzfu+kf0tM@chenyu5-mobl2.ccr.corp.intel.com> <0f3cfff3-0df4-3cb7-95cb-ea378517e13b@efficios.com>
+ <ZSOMOhhkPIFmvz97@chenyu5-mobl2.ccr.corp.intel.com> <ebe4e40f-37df-40a9-9dfc-7f2a458151bd@efficios.com>
+ <ZSZ2ERMysY7iEo+x@chenyu5-mobl2.ccr.corp.intel.com> <1ae6290c-843f-4e50-9c81-7146d3597ed3@efficios.com>
+In-Reply-To: <1ae6290c-843f-4e50-9c81-7146d3597ed3@efficios.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 12 Oct 2023 17:01:54 +0200
+Message-ID: <CAKfTPtA2cCy13DqL86PXcRh2P1xtSLWm1ap+uM0S8RnXc-fjRA@mail.gmail.com>
+Subject: Re: [RFC PATCH] sched/fair: Bias runqueue selection towards almost
+ idle prev CPU
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Chen Yu <yu.c.chen@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>, Tim Chen <tim.c.chen@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
----1463795790-346822177-1697122918=:6347
-Content-Type: text/plain; charset=ISO-8859-7; format=flowed
-Content-Transfer-Encoding: 8BIT
-
-On Thu, 12 Oct 2023, Sebastian Ott wrote:
-> On Mon, 9 Oct 2023, Raghavendra Rao Ananta wrote:
->>  +/* Create a VM that has one vCPU with PMUv3 configured. */
->>  +static void create_vpmu_vm(void *guest_code)
->>  +{
->>  +	struct kvm_vcpu_init init;
->>  +	uint8_t pmuver, ec;
->>  +	uint64_t dfr0, irq = 23;
->>  +	struct kvm_device_attr irq_attr = {
->>  +		.group = KVM_ARM_VCPU_PMU_V3_CTRL,
->>  +		.attr = KVM_ARM_VCPU_PMU_V3_IRQ,
->>  +		.addr = (uint64_t)&irq,
->>  +	};
->>  +	struct kvm_device_attr init_attr = {
->>  +		.group = KVM_ARM_VCPU_PMU_V3_CTRL,
->>  +		.attr = KVM_ARM_VCPU_PMU_V3_INIT,
->>  +	};
->>  +
->>  +	/* The test creates the vpmu_vm multiple times. Ensure a clean state
->>  */
->>  +	memset(&vpmu_vm, 0, sizeof(vpmu_vm));
->>  +
->>  +	vpmu_vm.vm = vm_create(1);
->>  +	vm_init_descriptor_tables(vpmu_vm.vm);
->>  +	for (ec = 0; ec < ESR_EC_NUM; ec++) {
->>  +		vm_install_sync_handler(vpmu_vm.vm, VECTOR_SYNC_CURRENT, ec,
->>  +					guest_sync_handler);
->>  +	}
->>  +
->>  +	/* Create vCPU with PMUv3 */
->>  +	vm_ioctl(vpmu_vm.vm, KVM_ARM_PREFERRED_TARGET, &init);
->>  +	init.features[0] |= (1 << KVM_ARM_VCPU_PMU_V3);
->>  +	vpmu_vm.vcpu = aarch64_vcpu_add(vpmu_vm.vm, 0, &init, guest_code);
->>  +	vcpu_init_descriptor_tables(vpmu_vm.vcpu);
->>  +	vpmu_vm.gic_fd = vgic_v3_setup(vpmu_vm.vm, 1, 64,
->>  +					GICD_BASE_GPA, GICR_BASE_GPA);
->>  +
->>  +	/* Make sure that PMUv3 support is indicated in the ID register */
->>  +	vcpu_get_reg(vpmu_vm.vcpu,
->>  +		     KVM_ARM64_SYS_REG(SYS_ID_AA64DFR0_EL1), &dfr0);
->>  +	pmuver = FIELD_GET(ARM64_FEATURE_MASK(ID_AA64DFR0_PMUVER), dfr0);
->>  +	TEST_ASSERT(pmuver != ID_AA64DFR0_PMUVER_IMP_DEF &&
->>  +		    pmuver >= ID_AA64DFR0_PMUVER_8_0,
->>  +		    "Unexpected PMUVER (0x%x) on the vCPU with PMUv3",
->>  pmuver);
->>  +
->>  +	/* Initialize vPMU */
->>  +	vcpu_ioctl(vpmu_vm.vcpu, KVM_SET_DEVICE_ATTR, &irq_attr);
->>  +	vcpu_ioctl(vpmu_vm.vcpu, KVM_SET_DEVICE_ATTR, &init_attr);
->>  +}
+On Thu, 12 Oct 2023 at 16:33, Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
 >
-> This one fails to build for me:
-> aarch64/vpmu_counter_access.c: In function ¡create_vpmu_vm¢:
-> aarch64/vpmu_counter_access.c:456:47: error: ¡ID_AA64DFR0_PMUVER_MASK¢ 
-> undeclared (first use in this function); did you mean 
-> ¡ID_AA64DFR0_EL1_PMUVer_MASK¢?
->   456 |         pmuver = FIELD_GET(ARM64_FEATURE_MASK(ID_AA64DFR0_PMUVER),
->   dfr0);
+> On 2023-10-11 06:16, Chen Yu wrote:
+> > On 2023-10-10 at 09:49:54 -0400, Mathieu Desnoyers wrote:
+> >> On 2023-10-09 01:14, Chen Yu wrote:
+> >>> On 2023-09-30 at 07:45:38 -0400, Mathieu Desnoyers wrote:
+> >>>> On 9/30/23 03:11, Chen Yu wrote:
+> >>>>> Hi Mathieu,
+> >>>>>
+> >>>>> On 2023-09-29 at 14:33:50 -0400, Mathieu Desnoyers wrote:
+> >>>>>> Introduce the WAKEUP_BIAS_PREV_IDLE scheduler feature. It biases
+> >>>>>> select_task_rq towards the previous CPU if it was almost idle
+> >>>>>> (avg_load <= 0.1%).
+> >>>>>
+> >>>>> Yes, this is a promising direction IMO. One question is that,
+> >>>>> can cfs_rq->avg.load_avg be used for percentage comparison?
+> >>>>> If I understand correctly, load_avg reflects that more than
+> >>>>> 1 tasks could have been running this runqueue, and the
+> >>>>> load_avg is the direct proportion to the load_weight of that
+> >>>>> cfs_rq. Besides, LOAD_AVG_MAX seems to not be the max value
+> >>>>> that load_avg can reach, it is the sum of
+> >>>>> 1024 * (y + y^1 + y^2 ... )
+> >>>>>
+> >>>>> For example,
+> >>>>> taskset -c 1 nice -n -20 stress -c 1
+> >>>>> cat /sys/kernel/debug/sched/debug | grep 'cfs_rq\[1\]' -A 12 | grep "\.load_avg"
+> >>>>>      .load_avg                      : 88763
+> >>>>>      .load_avg                      : 1024
+> >>>>>
+> >>>>> 88763 is higher than LOAD_AVG_MAX=47742
+> >>>>
+> >>>> I would have expected the load_avg to be limited to LOAD_AVG_MAX somehow,
+> >>>> but it appears that it does not happen in practice.
+> >>>>
+> >>>> That being said, if the cutoff is really at 0.1% or 0.2% of the real max,
+> >>>> does it really matter ?
+> >>>>
+> >>>>> Maybe the util_avg can be used for precentage comparison I suppose?
+> >>>> [...]
+> >>>>> Or
+> >>>>> return cpu_util_without(cpu_rq(cpu), p) * 1000 <= capacity_orig_of(cpu) ?
+> >>>>
+> >>>> Unfortunately using util_avg does not seem to work based on my testing.
+> >>>> Even at utilization thresholds at 0.1%, 1% and 10%.
+> >>>>
+> >>>> Based on comments in fair.c:
+> >>>>
+> >>>>    * CPU utilization is the sum of running time of runnable tasks plus the
+> >>>>    * recent utilization of currently non-runnable tasks on that CPU.
+> >>>>
+> >>>> I think we don't want to include currently non-runnable tasks in the
+> >>>> statistics we use, because we are trying to figure out if the cpu is a
+> >>>> idle-enough target based on the tasks which are currently running, for the
+> >>>> purpose of runqueue selection when waking up a task which is considered at
+> >>>> that point in time a non-runnable task on that cpu, and which is about to
+> >>>> become runnable again.
+> >>>>
+> >>>
+> >>> Although LOAD_AVG_MAX is not the max possible load_avg, we still want to find
+> >>> a proper threshold to decide if the CPU is almost idle. The LOAD_AVG_MAX
+> >>> based threshold is modified a little bit:
+> >>>
+> >>> The theory is, if there is only 1 task on the CPU, and that task has a nice
+> >>> of 0, the task runs 50 us every 1000 us, then this CPU is regarded as almost
+> >>> idle.
+> >>>
+> >>> The load_sum of the task is:
+> >>> 50 * (1 + y + y^2 + ... + y^n)
+> >>> The corresponding avg_load of the task is approximately
+> >>> NICE_0_WEIGHT * load_sum / LOAD_AVG_MAX = 50.
+> >>> So:
+> >>>
+> >>> /* which is close to LOAD_AVG_MAX/1000 = 47 */
+> >>> #define ALMOST_IDLE_CPU_LOAD   50
+> >>
+> >> Sorry to be slow at understanding this concept, but this whole "load" value
+> >> is still somewhat magic to me.
+> >>
+> >> Should it vary based on CONFIG_HZ_{100,250,300,1000}, or is it independent ?
+> >> Where is it documented that the load is a value in "us" out of a window of
+> >> 1000 us ?
+> >>
+> >
+> > My understanding is that, the load_sum of a single task is a value in "us" out
+> > of a window of 1000 us, while the load_avg of the task will multiply the weight
+> > of the task. In this case a task with nice 0 is NICE_0_WEIGHT = 1024.
+> >
+> > __update_load_avg_se -> ___update_load_sum calculate the load_sum of a task(there
+> > is comments around ___update_load_sum to describe the pelt calculation),
+> > and ___update_load_avg() calculate the load_avg based on the task's weight.
+>
+> Thanks for your thorough explanation, now it makes sense.
+>
+> I understand as well that the cfs_rq->avg.load_sum is the result of summing
+> each task load_sum multiplied by their weight:
 
-Looks like there's a clash with
-"KVM: arm64: selftests: Import automatic generation of sysreg defs"
-from:
- 	https://lore.kernel.org/r/20231003230408.3405722-12-oliver.upton@linux.dev
----1463795790-346822177-1697122918=:6347--
+Please don't use load_sum but only *_avg.
+As already said, util_avg or runnable_avg are better metrics for you
 
+>
+> static inline void
+> enqueue_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se)
+> {
+>          cfs_rq->avg.load_avg += se->avg.load_avg;
+>          cfs_rq->avg.load_sum += se_weight(se) * se->avg.load_sum;
+> }
+>
+> Therefore I think we need to multiply the load_sum value we aim for by
+> get_pelt_divider(&cpu_rq(cpu)->cfs.avg) to compare it to a rq load_sum.
+>
+> I plan to compare the rq load sum to "10 * get_pelt_divider(&cpu_rq(cpu)->cfs.avg)"
+> to match runqueues which were previously idle (therefore with prior periods contribution
+> to the rq->load_sum being pretty much zero), and which have a current period rq load_sum
+> below or equal 10us per 1024us (<= 1%):
+>
+> static inline unsigned long cfs_rq_weighted_load_sum(struct cfs_rq *cfs_rq)
+> {
+>          return cfs_rq->avg.load_sum;
+> }
+>
+> static unsigned long cpu_weighted_load_sum(struct rq *rq)
+> {
+>          return cfs_rq_weighted_load_sum(&rq->cfs);
+> }
+>
+> /*
+>   * A runqueue is considered almost idle if:
+>   *
+>   *   cfs_rq->avg.load_sum / get_pelt_divider(&cfs_rq->avg) / 1024 <= 1%
+>   *
+>   * This inequality is transformed as follows to minimize arithmetic:
+>   *
+>   *   cfs_rq->avg.load_sum <= get_pelt_divider(&cfs_rq->avg) * 10
+>   */
+> static bool
+> almost_idle_cpu(int cpu, struct task_struct *p)
+> {
+>          if (!sched_feat(WAKEUP_BIAS_PREV_IDLE))
+>                  return false;
+>          return cpu_weighted_load_sum(cpu_rq(cpu)) <= 10 * get_pelt_divider(&cpu_rq(cpu)->cfs.avg);
+> }
+>
+> Does it make sense ?
+>
+> Thanks,
+>
+> Mathieu
+>
+>
+> >
+> >> And with this value "50", it would cover the case where there is only a
+> >> single task taking less than 50us per 1000us, and cases where the sum for
+> >> the set of tasks on the runqueue is taking less than 50us per 1000us
+> >> overall.
+> >>
+> >>>
+> >>> static bool
+> >>> almost_idle_cpu(int cpu, struct task_struct *p)
+> >>> {
+> >>>          if (!sched_feat(WAKEUP_BIAS_PREV_IDLE))
+> >>>                  return false;
+> >>>          return cpu_load_without(cpu_rq(cpu), p) <= ALMOST_IDLE_CPU_LOAD;
+> >>> }
+> >>>
+> >>> Tested this on Intel Xeon Platinum 8360Y, Ice Lake server, 36 core/package,
+> >>> total 72 core/144 CPUs. Slight improvement is observed in hackbench socket mode:
+> >>>
+> >>> socket mode:
+> >>> hackbench -g 16 -f 20 -l 480000 -s 100
+> >>>
+> >>> Before patch:
+> >>> Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
+> >>> Each sender will pass 480000 messages of 100 bytes
+> >>> Time: 81.084
+> >>>
+> >>> After patch:
+> >>> Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
+> >>> Each sender will pass 480000 messages of 100 bytes
+> >>> Time: 78.083
+> >>>
+> >>>
+> >>> pipe mode:
+> >>> hackbench -g 16 -f 20 --pipe  -l 480000 -s 100
+> >>>
+> >>> Before patch:
+> >>> Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
+> >>> Each sender will pass 480000 messages of 100 bytes
+> >>> Time: 38.219
+> >>>
+> >>> After patch:
+> >>> Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
+> >>> Each sender will pass 480000 messages of 100 bytes
+> >>> Time: 38.348
+> >>>
+> >>> It suggests that, if the workload has larger working-set/cache footprint, waking up
+> >>> the task on its previous CPU could get more benefit.
+> >>
+> >> In those tests, what is the average % of idleness of your cpus ?
+> >>
+> >
+> > For hackbench -g 16 -f 20 --pipe  -l 480000 -s 100, it is around 8~10% idle
+> > For hackbench -g 16 -f 20   -l 480000 -s 100, it is around 2~3% idle
+> >
+> > Then the CPUs in packge 1 are offlined to get stable result when the group number is low.
+> > hackbench -g 1 -f 20 --pipe  -l 480000 -s 100
+> > Some CPUs are busy, others are idle, and some are half-busy.
+> > Core  CPU     Busy%
+> > -     -       49.57
+> > 0     0       1.89
+> > 0     72      75.55
+> > 1     1       100.00
+> > 1     73      0.00
+> > 2     2       100.00
+> > 2     74      0.00
+> > 3     3       100.00
+> > 3     75      0.01
+> > 4     4       78.29
+> > 4     76      17.72
+> > 5     5       100.00
+> > 5     77      0.00
+> >
+> >
+> > hackbench -g 1 -f 20  -l 480000 -s 100
+> > Core  CPU     Busy%
+> > -     -       48.29
+> > 0     0       57.94
+> > 0     72      21.41
+> > 1     1       83.28
+> > 1     73      0.00
+> > 2     2       11.44
+> > 2     74      83.38
+> > 3     3       21.45
+> > 3     75      77.27
+> > 4     4       26.89
+> > 4     76      80.95
+> > 5     5       5.01
+> > 5     77      83.09
+> >
+> >
+> > echo NO_WAKEUP_BIAS_PREV_IDLE > /sys/kernel/debug/sched/features
+> > hackbench -g 1 -f 20 --pipe  -l 480000 -s 100
+> > Running in process mode with 1 groups using 40 file descriptors each (== 40 tasks)
+> > Each sender will pass 480000 messages of 100 bytes
+> > Time: 9.434
+> >
+> > echo WAKEUP_BIAS_PREV_IDLE > /sys/kernel/debug/sched/features
+> > hackbench -g 1 -f 20 --pipe  -l 480000 -s 100
+> > Running in process mode with 1 groups using 40 file descriptors each (== 40 tasks)
+> > Each sender will pass 480000 messages of 100 bytes
+> > Time: 9.373
+> >
+> > thanks,
+> > Chenyu
+>
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
+>
