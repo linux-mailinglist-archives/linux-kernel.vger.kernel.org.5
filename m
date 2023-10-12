@@ -2,72 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 822C67C6BE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058C37C6BF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378234AbjJLLEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
+        id S1378101AbjJLLLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378351AbjJLLD5 (ORCPT
+        with ESMTP id S1347144AbjJLLLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:03:57 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E28FE7;
-        Thu, 12 Oct 2023 04:03:47 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-53406799540so1542613a12.1;
-        Thu, 12 Oct 2023 04:03:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697108625; x=1697713425; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DmO8gUEeWTIeugQ59PUPtNR1b1/YDjgV/Nl6BnlhrW8=;
-        b=lq02rtKhtYV9WXEhHPIyywL6e0PVe5vDdvHSdIabg4poihEj4Omi4bVFi44wL0FkX2
-         8MiPL1RRpVySaal6sepybMMQbNXuxjGcVERkvuoPs88pa49lGULdjTtwwC+aaw6topuO
-         Uo4ONCjFtCTyp+g2awI0gUAAPFvOD6Ux2v7yqODqtxn3ApEhqoZfg1jsA8V5vlM7ZYOt
-         8hoAt5Zg5Pw36AnLGhCszaPD/bEhEfu+o133EgWJT0YCq1ihGQ+5aB0sI9BJMso4qUKv
-         tn5rZ0NAJc85w1C1HDC3kEzvtuw+MNoau6yWQCSO14bn7t4C/tdhVHaLdu7xLYW0ygZz
-         BXig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697108625; x=1697713425;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DmO8gUEeWTIeugQ59PUPtNR1b1/YDjgV/Nl6BnlhrW8=;
-        b=AOQH5Pffq7wFu72eEiDk44dA6/hKPjKuTrqhJb+tw+Xtr1G2iWPAmEOCDygOliFTLO
-         Mg+guCBmGGJaH00mZXo5ZjmZlHxqryfdWU1rsJm4YKmbu3bzThFQR32EoD3mWtx/UQO2
-         o+q2CjR9z36zayvdbUWeTrJRMb92JhI98QztFACK8v8t8tY8rxijuoQWV+Pa7QKxhFxU
-         7mt3rNtWYtqtDgIgSr/n96xPNPwAHWPdCv+DRay98s5LKdQmjT+SxArIXVWzBcKPzJZZ
-         EGuCH+KyBnGoe+19SJIpyQWHIRl8nFy4sHeQEQorJjjnZPy3wTO7X78aQyZ5SbHU8Kxm
-         g7mw==
-X-Gm-Message-State: AOJu0YxaOfbSlGLFLH3wrTI70f8G29jVKw7nc3vSqhsYVtgDbUJdx1mE
-        jsXIosepMHaFQzIA18oOtidCWvThfro=
-X-Google-Smtp-Source: AGHT+IHJ1KGqHqvgOy/LksbhX3FOc8BhoOJFt/mKXNAMyufYQ+XNXioG0Yvpj8Hc4U8pQ9x80GOZeg==
-X-Received: by 2002:a50:fb82:0:b0:523:3754:a4e1 with SMTP id e2-20020a50fb82000000b005233754a4e1mr20669977edq.22.1697108625169;
-        Thu, 12 Oct 2023 04:03:45 -0700 (PDT)
-Received: from orome.fritz.box (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id dk20-20020a0564021d9400b0053da3a9847csm2928338edb.42.2023.10.12.04.03.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 04:03:44 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 13:03:43 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        Johnny Liu <johnliu@nvidia.com>,
-        Ankur Pawar <ankurp@nvidia.com>
-Subject: Re: [PATCH] memory: tegra: Add Tegra234 clients for RCE and VI
-Message-ID: <ZSfSj42AXcnI895C@orome.fritz.box>
-References: <20231012104909.48518-1-jonathanh@nvidia.com>
+        Thu, 12 Oct 2023 07:11:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCD390;
+        Thu, 12 Oct 2023 04:11:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96B8CC433C9;
+        Thu, 12 Oct 2023 11:11:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697109092;
+        bh=EwQiuwFbaomZXmqROHOgDtEVeRGwSi1MJ7v1qwvt4U8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TDW/XJtLTjapueGdc6tOzLelydwQawimtJHdTy4w646oMoHw5hB+qJiH/TL5Zt+M7
+         4l2v6s56C7T7GlYiiDhiPvlSsAlRyywEaIETaNK4UWuPMLtmQuEKDfPEwOqh8HcLc7
+         Y8NG5AaDZXtIu4/DyIMKe5amcwegPH1yRGNWCl6MiO80UJpRMmLgWp14m1lcOqoN+W
+         m/G0ZiWYhzWOxz7z1MwN6Ob/3v8gZd+GnNzUGWN847DgDUzPPH3R66npcpngsLZfHt
+         3Nog6y3nQIFkA6A9GIunPY+CKXhgNKzujFx8PnQa/ckwim4/c6uEFYDHmoglRO6bcH
+         14VcnT4FJaSxg==
+From:   Conor Dooley <conor@kernel.org>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     conor@kernel.org, Conor Dooley <conor.dooley@microchip.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: [PATCH v2] soc: renesas: make ARCH_R9A07G043 depend on required options
+Date:   Thu, 12 Oct 2023 12:04:28 +0100
+Message-Id: <20231012-pouch-parkway-7d26c04b3300@spud>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="kuGnPKGhjCeiwyg1"
-Content-Disposition: inline
-In-Reply-To: <20231012104909.48518-1-jonathanh@nvidia.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2727; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=/uJK29z5MEJs0TMvy3aTBY0JfPs/7EpvP/EZ3xWqtiI=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKnql3ZJMAgc4KjPf30teJfwLK76hmsr5inOelbaaLqIU z+0u2BzRykLgxgHg6yYIkvi7b4WqfV/XHY497yFmcPKBDKEgYtTACbi/5bhf5F3dgxb0Nq/906w c4RM11GfvD3e7SNPkPmWuS5OmZeExRgZXn65kqwy8/iutZstK19bc0meOfBDVHiLm//k6M7pP8r fMgIA
+X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,141 +56,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Conor Dooley <conor.dooley@microchip.com>
 
---kuGnPKGhjCeiwyg1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Randy reported a randconfig build issue against linux-next:
+WARNING: unmet direct dependencies detected for ERRATA_ANDES
+  Depends on [n]: RISCV_ALTERNATIVE [=n] && RISCV_SBI [=y]
+  Selected by [y]:
+  - ARCH_R9A07G043 [=y] && SOC_RENESAS [=y] && RISCV [=y] && NONPORTABLE [=y] && RISCV_SBI [=y]
 
-On Thu, Oct 12, 2023 at 11:49:09AM +0100, Jon Hunter wrote:
-> Add the Tegra234 memory client entries for the Real-time Camera Engine
-> (RCE) and Video Input (VI) devices.
->=20
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
->  drivers/memory/tegra/tegra234.c | 60 +++++++++++++++++++++++++++++++++
->  1 file changed, 60 insertions(+)
+../arch/riscv/errata/andes/errata.c:59:54: warning: 'struct alt_entry' declared inside parameter list will not be visible outside of this definition or declaration
+   59 | void __init_or_module andes_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
 
-Krzysztof,
+On RISC-V, alternatives are not usable in XIP kernels, which this
+randconfig happened to select. Rather than add a check for whether
+alternatives are available before selecting the ERRATA_ANDES config
+option, rework the R9A07G043 Kconfig entry to depend on the
+configuration options required to support its non-standard cache
+coherency implementation.
 
-again, let me know how you want to handle this. I can pick it up into
-the Tegra tree along with Sumit's 2-patch series, or you can take these
-if you prefer, in which case:
+Without these options enabled, the SoC is effectively non-functional to
+begin with, so there's an extra benefit in preventing the creation of
+non-functional kernels.
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+The "if RISCV_DMA_NONCOHERENT" can be dropped, as ERRATA_ANDES_CMO will
+select it.
 
->=20
-> diff --git a/drivers/memory/tegra/tegra234.c b/drivers/memory/tegra/tegra=
-234.c
-> index 9e5b5dbd9c8d..42c79f9a70af 100644
-> --- a/drivers/memory/tegra/tegra234.c
-> +++ b/drivers/memory/tegra/tegra234.c
-> @@ -449,6 +449,18 @@ static const struct tegra_mc_client tegra234_mc_clie=
-nts[] =3D {
->  				.security =3D 0x38c,
->  			},
->  		},
-> +	}, {
-> +		.id =3D TEGRA234_MEMORY_CLIENT_VIW,
-> +		.name =3D "viw",
-> +		.bpmp_id =3D TEGRA_ICC_BPMP_VI,
-> +		.type =3D TEGRA_ICC_ISO_VI,
-> +		.sid =3D TEGRA234_SID_ISO_VI,
-> +		.regs =3D {
-> +			.sid =3D {
-> +				.override =3D 0x390,
-> +				.security =3D 0x394,
-> +			},
-> +		},
->  	}, {
->  		.id =3D TEGRA234_MEMORY_CLIENT_NVDECSRD,
->  		.name =3D "nvdecsrd",
-> @@ -621,6 +633,30 @@ static const struct tegra_mc_client tegra234_mc_clie=
-nts[] =3D {
->  				.security =3D 0x50c,
->  			},
->  		},
-> +	}, {
-> +		.id =3D TEGRA234_MEMORY_CLIENT_VIFALR,
-> +		.name =3D "vifalr",
-> +		.bpmp_id =3D TEGRA_ICC_BPMP_VIFAL,
-> +		.type =3D TEGRA_ICC_ISO_VIFAL,
-> +		.sid =3D TEGRA234_SID_ISO_VIFALC,
-> +		.regs =3D {
-> +			.sid =3D {
-> +				.override =3D 0x5e0,
-> +				.security =3D 0x5e4,
-> +			},
-> +		},
-> +	}, {
-> +		.id =3D TEGRA234_MEMORY_CLIENT_VIFALW,
-> +		.name =3D "vifalw",
-> +		.bpmp_id =3D TEGRA_ICC_BPMP_VIFAL,
-> +		.type =3D TEGRA_ICC_ISO_VIFAL,
-> +		.sid =3D TEGRA234_SID_ISO_VIFALC,
-> +		.regs =3D {
-> +			.sid =3D {
-> +				.override =3D 0x5e8,
-> +				.security =3D 0x5ec,
-> +			},
-> +		},
->  	}, {
->  		.id =3D TEGRA234_MEMORY_CLIENT_DLA0RDA,
->  		.name =3D "dla0rda",
-> @@ -701,6 +737,30 @@ static const struct tegra_mc_client tegra234_mc_clie=
-nts[] =3D {
->  				.security =3D 0x62c,
->  			},
->  		},
-> +	}, {
-> +		.id =3D TEGRA234_MEMORY_CLIENT_RCER,
-> +		.name =3D "rcer",
-> +		.bpmp_id =3D TEGRA_ICC_BPMP_RCE,
-> +		.type =3D TEGRA_ICC_NISO,
-> +		.sid =3D TEGRA234_SID_RCE,
-> +		.regs =3D {
-> +			.sid =3D {
-> +				.override =3D 0x690,
-> +				.security =3D 0x694,
-> +			},
-> +		},
-> +	}, {
-> +		.id =3D TEGRA234_MEMORY_CLIENT_RCEW,
-> +		.name =3D "rcew",
-> +		.bpmp_id =3D TEGRA_ICC_BPMP_RCE,
-> +		.type =3D TEGRA_ICC_NISO,
-> +		.sid =3D TEGRA234_SID_RCE,
-> +		.regs =3D {
-> +			.sid =3D {
-> +				.override =3D 0x698,
-> +				.security =3D 0x69c,
-> +			},
-> +		},
->  	}, {
->  		.id =3D TEGRA234_MEMORY_CLIENT_PCIE0R,
->  		.name =3D "pcie0r",
-> --=20
-> 2.34.1
->=20
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Closes: https://lore.kernel.org/all/09a6b0f0-76a1-45e3-ab52-329c47393d1d@infradead.org/
+Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+---
 
---kuGnPKGhjCeiwyg1
-Content-Type: application/pgp-signature; name="signature.asc"
+I dropped Randy's t-b etc since this patch is quite different.
 
------BEGIN PGP SIGNATURE-----
+v2: drop the extra condition on the select of ERRATA_ANDES, move instead
+to depending on required options.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmUn0o8ACgkQ3SOs138+
-s6GexhAAvLAcvebVMhHUHBK35Y86JIbFkXBpIv5wNbGCC75VR8wJSE8aCSu4xGFy
-UT/WippKF+E/QlKacmnAw72Vl3nu8RxmBLvLlRQbUt00P5NlYLv8cLkRz4PuqzX1
-07+VH6bp95Mjls6Fk+kZUhH2USfLcKm68xz+tJeMYobccqJy32u2bqVJGgaejNpo
-3NM9GOJsLKVfBDBcz6B/XthRDc0glT5/orzxTzrL9ikn3/iaVXu3AqzFqfiFBtxS
-zdnjOL3GZN6mCfiKvGC8GCrmZUvLGixXsWJfTyDhpcBErd5mcObKuyWWiJyaKUru
-CjSfFFN1CrOrFHGjPQBi13OsUxywtUMy6VAc8ztEn4wR+cgLpx2irPbEd7wqv19i
-b3Xr669nv/uAes0SGE6jmVvXxOp6Y7MkFuiR1op8ODOsYNhcTf7dS8iSSamqvkge
-7qY/AcrdSZnlpeVvjrLf1N2oftH73oK6YBntmkbvOqGdwSZCc+2Xdi3y0ghvWYbS
-zxogIGW0M3CCajVxKDcYD9TdJ0nGX+/+TwTkzoIxBxUKxO/b2h1OXhTalxo3HpJa
-DZT5jVw8aXtEGX+d7lBAxs7K6Iubvf3brSkujlGwuhZwEzGkVGdfHHTmWxwm12wL
-g+6R90f2J5K86XtNMnwR1DW8cT2qg1wwDauVyeaAMEs8DLFYkV8=
-=EA/3
------END PGP SIGNATURE-----
+CC: Geert Uytterhoeven <geert+renesas@glider.be>
+CC: Magnus Damm <magnus.damm@gmail.com>
+CC: Paul Walmsley <paul.walmsley@sifive.com>
+CC: Palmer Dabbelt <palmer@dabbelt.com>
+CC: Albert Ou <aou@eecs.berkeley.edu>
+CC: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+CC: linux-renesas-soc@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+CC: linux-riscv@lists.infradead.org
+---
+ drivers/soc/renesas/Kconfig | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---kuGnPKGhjCeiwyg1--
+diff --git a/drivers/soc/renesas/Kconfig b/drivers/soc/renesas/Kconfig
+index 7b74de732718..adedf02897c6 100644
+--- a/drivers/soc/renesas/Kconfig
++++ b/drivers/soc/renesas/Kconfig
+@@ -340,10 +340,12 @@ if RISCV
+ config ARCH_R9A07G043
+ 	bool "RISC-V Platform support for RZ/Five"
+ 	depends on NONPORTABLE
++	depends on RISCV_ALTERNATIVE
++	depends on RISCV_SBI
+ 	select ARCH_RZG2L
+-	select AX45MP_L2_CACHE if RISCV_DMA_NONCOHERENT
++	select AX45MP_L2_CACHE
+ 	select DMA_GLOBAL_POOL
+-	select ERRATA_ANDES if RISCV_SBI
++	select ERRATA_ANDES
+ 	select ERRATA_ANDES_CMO if ERRATA_ANDES
+ 	help
+ 	  This enables support for the Renesas RZ/Five SoC.
+-- 
+2.39.2
+
