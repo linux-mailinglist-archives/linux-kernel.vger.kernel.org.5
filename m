@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A04AD7C69FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5045E7C6A03
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235329AbjJLJsj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 05:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41684 "EHLO
+        id S235457AbjJLJw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbjJLJsh (ORCPT
+        with ESMTP id S229757AbjJLJw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:48:37 -0400
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3E2A9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:48:36 -0700 (PDT)
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6c6591642f2so173045a34.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:48:36 -0700 (PDT)
+        Thu, 12 Oct 2023 05:52:57 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F0CDA9;
+        Thu, 12 Oct 2023 02:52:56 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-27d292d38c0so26567a91.1;
+        Thu, 12 Oct 2023 02:52:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697104376; x=1697709176; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5GPcG4HISW15HdH/wIIcwcI9FurWIe0F/LA1VfavK10=;
+        b=a+i1Lu5rxeqYy+k+eTVqMTOsP6tSubXcxODUVlYyypqk1Bu+oYoe++zSdAw2OhzJk2
+         hkTEXPHxE9B5ACTtbOXNoX0IMai8gXFIA7MrhV65BepDaBvJX8J4jNUpedGQDU/MrCXH
+         90tPeSam7ZI5jPngU0QRuFCKhAgtvSQO3/Oy27no+I3MkAtHwi4UovNxXgcNPXRZLpmI
+         8SlIDXPjrlfo34uE/6fuP1Xl5Eb26yJ3G111FqdrjFeEZIOggx3h6b+Z+f8ejUKcRgB/
+         mqprNnNFyF0KBgjIRFNv5eMrgbfBU+bNklmn5xlJCoKx42fw6UzNhXefcuUlfKKe9a2M
+         VvZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697104115; x=1697708915;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X8jbtR6EIJYN3cjl7B8IUxCMmgUNZl5HM9s4d0S8FKU=;
-        b=f8Ojq+rwdQ7vTeHQNIkLLAMDZrx+3sMMme/q07yLL1V+7LtERGr28waCSYUYkJKJ3Y
-         DeelTQk18XN+06F/wF40lu/q783Lh1tTuAfauRbFMmEXL1SMoknUhvmfMONChIoyecAA
-         oQrz9IJwi7u1tO7raoQPPdOmL7LRSdXNAI8xWZzmZn5ScaRBtUE5e4EXrhYVCzZ7EOb1
-         tTYNl8WN9jqk5YJJMshwkf/UuqStjnuEeqryMEzN6UvOiFR+Jj1Bo0+bcJfc5WCbgOHt
-         eUSoPmjlHJZcxbQCjqxUyda8UP6gGVg7ff0BS+d7W0ezW03fl//75KmvnXKsSCr06Hgj
-         Of2A==
-X-Gm-Message-State: AOJu0YxAjssR18NPR+LoAFG+sQ70lyMJCflFpcq+ZJYJzpodbu5Kushz
-        c2G+1ttnATf5pGPhhozHanoQF5+/jYCF0IxNVzo=
-X-Google-Smtp-Source: AGHT+IFJsNRp/SJBQPV/ihjFMsqVZtF8CCaLdXIsRTAMH0LJmkC+CiTHzfgURtuijL9H4D73IQs2rFDcowit2lJ8Ixo=
-X-Received: by 2002:a4a:b807:0:b0:57b:3b64:7ea5 with SMTP id
- g7-20020a4ab807000000b0057b3b647ea5mr21393293oop.1.1697104115565; Thu, 12 Oct
- 2023 02:48:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697104376; x=1697709176;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=5GPcG4HISW15HdH/wIIcwcI9FurWIe0F/LA1VfavK10=;
+        b=pG3hlKH/tdAOYWjbjIavsjjDYjMw7UxjWW4oyCQRo06xo8HAhE+PU68Dutk4mVd7A0
+         K9X7GXJ18RLF0/PLEFosoEjTLmH3JA6l1DG/4jwqY5TeU2wOja5a4YaWAhQWy/aZHp03
+         JCS7/gAIOBgZbGTPWDQW7GT288Akvb+4LHit4gwAKpnGxUh6jB3osCDgHD1sme9HWDxH
+         6bTFasQiweKLnV5kQp5fCPYa5eqoXIY8Jj0397F7uvKHBUlfeHh4eiPGQbmMaD2HOa5X
+         O4ayfWHPMyq8qDqsQh2cdQFEtggOWqxZH5Vz63HsNpkyVlwK56nBa3305/1XValW/Kky
+         qQXw==
+X-Gm-Message-State: AOJu0Yx3WKpF7Jxw1gm0Yr0xbl/pg1AgMLblwKttzd0+/AgsT/ctl60r
+        xvHfhU0i1ITOiQojUa5IiAeEAVdqqv0=
+X-Google-Smtp-Source: AGHT+IE8Oe9KXbpDRNnlaCTZlxxhVs6faIab8J1drxYmO04exZINnSUsvkzdXNKkoTcZ/bL1+Zzl/A==
+X-Received: by 2002:a17:90a:b78f:b0:26f:7555:76 with SMTP id m15-20020a17090ab78f00b0026f75550076mr20070356pjr.11.1697104375764;
+        Thu, 12 Oct 2023 02:52:55 -0700 (PDT)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id z18-20020a17090abd9200b002609cadc56esm1421733pjr.11.2023.10.12.02.52.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 02:52:55 -0700 (PDT)
+Message-ID: <267abf02-4b60-4a2e-92cd-709e3da6f7d3@gmail.com>
+Date:   Thu, 12 Oct 2023 16:52:50 +0700
 MIME-Version: 1.0
-References: <20230929174442.1635558-1-bgeffon@google.com>
-In-Reply-To: <20230929174442.1635558-1-bgeffon@google.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 12 Oct 2023 11:48:24 +0200
-Message-ID: <CAJZ5v0g6160NYtRQun0D_qS-R6NfoXrX47muWt+sTN3wnNyHeA@mail.gmail.com>
-Subject: Re: [PATCH] pid: Allow frozen userspace to reboot from non-init pid ns
-To:     Brian Geffon <bgeffon@google.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Networking <netdev@vger.kernel.org>,
+        Linux Intel Wireless WAN <linuxwwan@intel.com>
+Cc:     M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: Intel 7560 LTE Modem stops working after resuming from standby
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 7:45 PM Brian Geffon <bgeffon@google.com> wrote:
->
-> When the system has a frozen userspace, for example, during hibernation
-> the child reaper task will also be frozen. Attmepting to deliver a
-> signal to it to handle the reboot(2) will ultimately lead to the system
-> hanging unless userspace is thawed.
->
-> This change checks if the current task is the suspending task and if so
-> it will allow it to proceed with a reboot from the non-init pid ns.
->
-> Signed-off-by: Brian Geffon <bgeffon@google.com>
-> Reported-by: Matthias Kaehlcke <mka@chromium.org>
-> Tested-by: Matthias Kaehlcke <mka@chromium.org>
+Hi,
 
-If the report is public, which I think is the case, having a Link: tag
-pointing to it here would be nice.
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-> ---
->  kernel/pid_namespace.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
-> index 0bf44afe04dd..4a93a5063eda 100644
-> --- a/kernel/pid_namespace.c
-> +++ b/kernel/pid_namespace.c
-> @@ -321,6 +321,15 @@ int reboot_pid_ns(struct pid_namespace *pid_ns, int cmd)
->         if (pid_ns == &init_pid_ns)
->                 return 0;
->
-> +       if (current->flags & PF_SUSPEND_TASK) {
-> +               /*
-> +                * Attempting to signal the child_reaper won't work if it's
-> +                * frozen. In this case we shutdown the system as if we were in
-> +                * the init_pid_ns.
-> +                */
+> I noticed a few days ago, after Fedora moved to Kernel 6.5, that my Intel LTE Modem was not working anymore after resuming from standby. 
+> 
+> The journal listed this error message multiple times:
+> kernel: iosm 0000:01:00.0: msg timeout
+> 
+> It took me a while to determine the root cause of the problem, since the modem did not work either in the following warm reboots. 
+> Only a shutdown revived the modem.
+> 
+> I did a bisection of the error and I was able to find the culprit:
+> 
+> [e4f5073d53be6cec0c654fac98372047efb66947] net: wwan: iosm: enable runtime pm support for 7560
 
-Is the system guaranteed to be in the right state for a shutdown at this point?
+See Bugzilla for the full thread.
 
-There is a system-wide suspend-resume or hibernation in progress, so
-system_transition_mutex should be held and that should cause reboot()
-to block anyway.  Do you know why it doesn't block and why the suspend
-task has any reason to call it?
+Anyway, I'm adding this regression to regzbot:
 
-> +               return 0;
-> +       }
-> +
->         switch (cmd) {
->         case LINUX_REBOOT_CMD_RESTART2:
->         case LINUX_REBOOT_CMD_RESTART:
-> --
-> 2.42.0.582.g8ccd20d70d-goog
->
+#regzbot introduced: e4f5073d53be6c https://bugzilla.kernel.org/show_bug.cgi?id=217996
+#regzbot title: pm support for Intel 7560 makes the modem stops working after resume
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217996
+
+-- 
+An old man doll... just what I always wanted! - Clara
