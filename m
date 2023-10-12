@@ -2,142 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D9D7C66C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6528D7C66CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235303AbjJLH1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 03:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46588 "EHLO
+        id S1377813AbjJLH3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 03:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234125AbjJLH1t (ORCPT
+        with ESMTP id S1377782AbjJLH3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 03:27:49 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BD1C0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 00:27:48 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9b2cee55056so106800866b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 00:27:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697095667; x=1697700467; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cpO+8N6ggvMIyIG5am2jOjkv+iT3BhhzojmCAW1bjhU=;
-        b=u1CgikyTBN4LI2mF0ECLMZKTCTHTDYtWzlK6xNXqj/jLkr93PVUmhB2gWKZKeNUobb
-         48/cwP8lBxIJWDEv+YX1MTD9IqRobEf5AWJn0xBbkPuTOS2FPKs9l6CFBg7+0WuiKitc
-         QoObNAFs2zjCs1gaf+30fGsAjDkCCZFB2B4CSBPlZ4F+f3ccID5GxpsxXXuwS4Ig6J2I
-         FphebwSsDgaRUtQAtFO5Mc0OxnORTq/6V5xx6iBU3tw8CBKk6Q2BwGwSyAaKO5IRgeej
-         xB+ny1c4R67vEjURH3blQgmhm/LKxsJ87lhI5iV2eedOGQulBxgHRefnU3KJgvQdPFhD
-         z2hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697095667; x=1697700467;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cpO+8N6ggvMIyIG5am2jOjkv+iT3BhhzojmCAW1bjhU=;
-        b=Hj5O6PcjSudYCgcpV71v5AXPEUsZJxEK3zWuyJhPg+zvNzan5VEtpinPm6wvRIgjWg
-         MazOGFgmYOqpIiChl95sQkTi+F9mh57QwgXLOZlH7BV3bhYAQDQsNjthvenwo/OwdzhP
-         hzFm5liHeYT80zUC/7iVDxZbTMlD5nHHPhfAxY2DV5UIj8UPVRw7yTiUotMiQLKc7Yai
-         9GrDD+Suubuo0K8xIWLYN32hZ4Dt2MnqMjQZ3RUZJo284N0J8ZUf0z4B765WVHIcMFvF
-         7rSTXTMUoItkA96sXNTnHYjcgzncfmoS3fEpHquYEnlzHiGpvvLBGKlqV4r4gQfmG0nt
-         Dizg==
-X-Gm-Message-State: AOJu0Yz4XKNgOQ3S1JyKkXowvLax00qrewgVFKjcSH/WEGq8xorj/66r
-        YQN2uNSYOMGtGemrSQ5BZxhDlw==
-X-Google-Smtp-Source: AGHT+IFV5FyEWmQEHtYUOXzcf6lrsEV0dDQD8M8rY8XCw88pqG1snmHCe3Q5hfRSUw4MIyV2eHG9Qg==
-X-Received: by 2002:a17:906:530e:b0:9b9:fdb2:376d with SMTP id h14-20020a170906530e00b009b9fdb2376dmr14533548ejo.39.1697095666983;
-        Thu, 12 Oct 2023 00:27:46 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id e10-20020a1709062c0a00b009b64987e1absm10597891ejh.139.2023.10.12.00.27.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 00:27:46 -0700 (PDT)
-Message-ID: <771d633a-04da-4982-9ce5-13c9dd7639a7@linaro.org>
-Date:   Thu, 12 Oct 2023 09:27:44 +0200
+        Thu, 12 Oct 2023 03:29:07 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A6F90
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 00:29:05 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qqq7l-0004HS-Ei; Thu, 12 Oct 2023 09:28:49 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qqq7j-0015rf-UG; Thu, 12 Oct 2023 09:28:47 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 910B2234B97;
+        Thu, 12 Oct 2023 07:28:47 +0000 (UTC)
+Date:   Thu, 12 Oct 2023 09:28:47 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Networking <netdev@vger.kernel.org>, Frank Li <Frank.Li@nxp.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the imx-mxs tree with the net tree
+Message-ID: <20231012-giveaway-cider-963ce91b73cf-mkl@pengutronix.de>
+References: <20231012101434.1e5e7340@canb.auug.org.au>
+ <20231012004356.GR819755@dragon>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC v2 5/5] dt-bindings: gpio: Add bindings for pinctrl based
- generic gpio driver
-Content-Language: en-US
-To:     AKASHI Takahiro <takahiro.akashi@linaro.org>, sudeep.holla@arm.com,
-        cristian.marussi@arm.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org, Oleksii_Moisieiev@epam.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-References: <20231005025843.508689-1-takahiro.akashi@linaro.org>
- <20231005025843.508689-6-takahiro.akashi@linaro.org>
- <a8d31c42-1248-4738-b01a-3abeedfd49eb@linaro.org> <ZSdIlaom+QO8IlKW@octopus>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZSdIlaom+QO8IlKW@octopus>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yptlk7dor5hap4t3"
+Content-Disposition: inline
+In-Reply-To: <20231012004356.GR819755@dragon>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2023 03:15, AKASHI Takahiro wrote:
 
->>> +additionalProperties: false
->>> +
->>> +examples:
->>> +  - |
->>> +    gpio0: gpio@0 {
->>
->> No reg, so no unit address.
-> 
-> My intention was to allow for multiple nodes (instances) of
-> pinctrl based gpio devices. But I don't care the naming.
+--yptlk7dor5hap4t3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-How can you have unit address without reg? This causes warnings.
+On 12.10.2023 08:43:56, Shawn Guo wrote:
+> On Thu, Oct 12, 2023 at 10:14:34AM +1100, Stephen Rothwell wrote:
+> > Hi all,
+> >=20
+> > Today's linux-next merge of the imx-mxs tree got a conflict in:
+> >=20
+> >   arch/arm64/boot/dts/freescale/imx93.dtsi
+> >=20
+> > between commit:
+> >=20
+> >   23ed2be5404d ("arm64: dts: imx93: add the Flex-CAN stop mode by GPR")
+>=20
+> Marc,
+>=20
+> Is there any particular reason why this dts change needs to go via net
+> tree?  Otherwise, could you drop it from net and let it go via i.MX tree?
 
-Best regards,
-Krzysztof
+As far as I understand the problem, the imx93 A0 silicon was supposed to
+have a functional auto-stop mode for the flexcan peripheral. But wakeup
+stress tests show that it doesn't work reliable. So this and the
+following patch switched the imx93 back to the "old" stop-mode via GPR,
+which needs a DT update.
 
+| 23ed2be5404d ("arm64: dts: imx93: add the Flex-CAN stop mode by GPR")
+| 63ead535570f ("can: flexcan: remove the auto stop mode for IMX93")
+
+See the description of 63ead535570f for more details.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--yptlk7dor5hap4t3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmUnoCsACgkQvlAcSiqK
+BOhqxAf/TR6JyrXcR2gU8M5fJLeDnX0Zlc2BMNkHrzylitpeLN9peBKaPdK4WLo/
+9EfPAWZn08z3d41N9mKFRwHTc5K/d9dz/eqYMqkiXHm6zIKjSRLASNQWdlhO29Uy
+CUTiz3GTK3DbQOzkVASfNpmaH/CTb42Nf66lfbRD85J4fPRKjoDiJhkDRGJlLheO
+5Bhky1pm5l8oNZaFfcH6LMeC75Qk+3Z1FW4Pbta5xsDE8b1LpgoaPuLvkK+BTDcD
+mdenpyH4XM/zx4nVZvaOLaL9DSY0lVOVWKVQtUbmRtcWOGclccU835SJo8oGWqmZ
+wq5I5ErI1HHytNZvt7FzLpDr2TE10Q==
+=Ylvq
+-----END PGP SIGNATURE-----
+
+--yptlk7dor5hap4t3--
