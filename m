@@ -2,142 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D669B7C6FD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4834C7C6FDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378940AbjJLN62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
+        id S1379045AbjJLN7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 09:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235121AbjJLN62 (ORCPT
+        with ESMTP id S1343887AbjJLN7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:58:28 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A947CBB
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:58:23 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40651b22977so2503885e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:58:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697119102; x=1697723902; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BcZvz58OosH2lGDIuEl6DlOcic+0phQ3UfuxYsqp/eA=;
-        b=bS1KB5alZItqEXsKSpKZChPuetxarSfDefIQlPQUL5Ay2HjljtHTOvIbq5kngcbdwN
-         TJp3vQMcLSL4GQdxeY5eMJ9wovKknNP3zZzSOyFG/jKczvQ7hi0x6VtFyMj8D3BDzmTb
-         FIjvo4epH31IG5ABKQu+qBDdLofOerMFih0Avxh/2HLYtmRdkOPoTUcr05V50R8YdaVf
-         pDX7wKtqbMARDULUEhnQy00dEr3X7FQE4ERiVr3m1NOtIhouwmYQzew2IxCc8437pMA3
-         JUdCnlLBZJhW8i6lCUT3cE4rFWXpqzhxoKtcQqr1Q2CsmlAQjugkj9LS+LIdiaUxsxrm
-         8HDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697119102; x=1697723902;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BcZvz58OosH2lGDIuEl6DlOcic+0phQ3UfuxYsqp/eA=;
-        b=ezuPhXm11APNcDmvmlZ2iHxxD8dH7sU5ohSHXgjNNvXYJG5QLIAtVddDAgzMQKnaNo
-         nRG7QatRLRRlOMPrRsCyuusyJREmVjojf5E2R8L92dEVDuHB0zvBVdU391jVZrona2dh
-         DAZAdGhJIJPPwHSlRqT49Y4nnsUTqR2Uzb0GbggpVRJzBjnuxDRJYnYQtUrzof9ypiNE
-         Ljdhv3Pj+mw2/W4+ymhvQAw4vOrY4CPp5pV51AJlp31xaNzhSqQ9xozmLc2ux8jdfo5n
-         lnmcmZKoPxztH7aC1CE8ow6bQP85ZcLCFa3OTEtNobTzbFtl9jvj+Caz0Bd+E0k53MAt
-         sy6w==
-X-Gm-Message-State: AOJu0Yx5E/S8/FTbgf7a5cSHoxLW6JKCbTZY4Uj/5w9QX9p+9rTYYWn9
-        9HE0hIXdmhntvTz9Zw/r6u22Kw==
-X-Google-Smtp-Source: AGHT+IEX4nDwJ5QBbqXM1eRAqAHPm4dDRQbr5bVhX7vDfoHgWUlVU7DOUB46kNI1sT4S5KCCp8cx2w==
-X-Received: by 2002:a05:600c:1d18:b0:404:72f9:d59a with SMTP id l24-20020a05600c1d1800b0040472f9d59amr21765331wms.0.1697119101941;
-        Thu, 12 Oct 2023 06:58:21 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:999:a3a0:3fed:c1e5:145f:8179? ([2a01:e0a:999:a3a0:3fed:c1e5:145f:8179])
-        by smtp.gmail.com with ESMTPSA id g7-20020a5d5407000000b00327df8fcbd9sm18598356wrv.9.2023.10.12.06.58.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 06:58:21 -0700 (PDT)
-Message-ID: <3f4784c7-a6a6-4567-bd80-7e3e82abed16@rivosinc.com>
-Date:   Thu, 12 Oct 2023 15:58:20 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 10/13] dt-bindings: riscv: add Zihintntl ISA extension
- description
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thu, 12 Oct 2023 09:59:42 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1951D91;
+        Thu, 12 Oct 2023 06:59:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=FnHNdC38Q+jXiFUjhIBZEqns97kQogNNrTq30YKI45A=; b=VbUIPx6Wr2kY0vEm8LGHv1IwtJ
+        m0hYSYDIXmWGEXRrNd1N/2yhyPjhAdpfJGcVvnDMUNqUl1fXXLigNkOW9HCBCBdvznmKE/2sBF2PE
+        e/FwMoVB5BR1J5plX7dRv1rw6DoXYDlMIXNmjxFd3sdbSnMbcdKQHWaNi7IIbRf3izaA=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:58068 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qqwDw-0002dW-0S; Thu, 12 Oct 2023 09:59:36 -0400
+Date:   Thu, 12 Oct 2023 09:59:35 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Evan Green <evan@rivosinc.com>
-References: <20231011111438.909552-1-cleger@rivosinc.com>
- <20231011111438.909552-11-cleger@rivosinc.com>
- <20231012-ambiguity-angular-d8c69cc01535@spud>
-From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <20231012-ambiguity-angular-d8c69cc01535@spud>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Conor Dooley <conor+dt@kernel.org>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org
+Message-Id: <20231012095935.0bf2c58c424559492e7f5c25@hugovil.com>
+In-Reply-To: <f24bab3b-4a45-4843-a834-e3a57c7d8aed@linaro.org>
+References: <20231011222105.2587175-1-hugo@hugovil.com>
+        <f24bab3b-4a45-4843-a834-e3a57c7d8aed@linaro.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] dt-bindings: max310x: convert to YAML
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 12 Oct 2023 09:53:02 +0200
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-
-On 12/10/2023 15:50, Conor Dooley wrote:
-> On Wed, Oct 11, 2023 at 01:14:35PM +0200, Clément Léger wrote:
->> Add description for Zihintntl ISA extension[1] which can now be
->> reported through hwprobe for userspace usage.
->> 
->> [1]
->> https://drive.google.com/file/d/13_wsN8YmRfH8YWysFyTX-DjTkCnBd9hj/view
->
->> 
-> Ditto. Who is even hosting this google drive anyway? I'd rather see 
-> GitHub links to docs from the releases, but since youre pointing at
-> the ISA manual I suppose those do not really exist.
-
-Acked, I'll fix all these as "Links:"
-
-Regarding the pdf sources themselves, I actually used the links as
-referred on the RISC-V wiki [1] which is the wiki mentioned from the
-riscv.org website [2]. I do not like it but there does not seems to have
-a proper specification release website...
-
-Maybe pointing only to a specific commit on the github repo that
-mentioned that the extension was ratified is better.
-
-Thanks,
-
-Clément
-
-[1] https://wiki.riscv.org/display/HOME/Recently+Ratified+Extensions
-[2] https://riscv.org/technical/specifications/
-
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> On 12/10/2023 00:21, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > Convert binding from text format to YAML.
 > 
-> Thanks, Conor.
->> 
->> Signed-off-by: Clément Léger <cleger@rivosinc.com> --- 
->> Documentation/devicetree/bindings/riscv/extensions.yaml | 6 ++++++ 
->> 1 file changed, 6 insertions(+)
->> 
->> diff --git
->> a/Documentation/devicetree/bindings/riscv/extensions.yaml
->> b/Documentation/devicetree/bindings/riscv/extensions.yaml index
->> 4c923800d751..70c2b0351357 100644 ---
->> a/Documentation/devicetree/bindings/riscv/extensions.yaml +++
->> b/Documentation/devicetree/bindings/riscv/extensions.yaml @@ -247,6
->> +247,12 @@ properties: The standard Zihintpause extension for pause
->> hints, as ratified in commit d8ab5c7 ("Zihintpause is ratified") of
->> the riscv-isa-manual.
->> 
->> +        - const: zihintntl +          description: +
->> The standard Zihintntl extension for non-temporal locality hints,
->> as +            ratified in commit 0dc91f5 ("Zihintntl is
->> ratified") of the +            riscv-isa-manual. + - const: zihpm 
->> description: The standard Zihpm extension for hardware performance
->> counters, as -- 2.42.0
->> 
+> Please use subject prefixes matching the subsystem. You can get them for
+> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+> your patch is touching. Missing prefix: serial:
+
+Hi,
+will add it for V2.
+
+
+> > 
+> > Additions to original text binding:
+> >   - add rs485 reference.
+> > 
+> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > ---
+> 
+> 
+> > diff --git a/Documentation/devicetree/bindings/serial/maxim,max310x.yaml b/Documentation/devicetree/bindings/serial/maxim,max310x.yaml
+> > new file mode 100644
+> > index 000000000000..05fd00d95260
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/serial/maxim,max310x.yaml
+> > @@ -0,0 +1,107 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/serial/maxim,max310x.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Maxim MAX310X Advanced Universal Asynchronous Receiver-Transmitter (UART)
+> > +
+> > +maintainers:
+> > +  - Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - maxim,max3107
+> > +      - maxim,max3108
+> > +      - maxim,max3109
+> > +      - maxim,max14830
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    maxItems: 1
+> > +
+> > +  clock-frequency:
+> > +    description:
+> > +      When there is no clock provider visible to the platform, this
+> > +      is the source crystal frequency for the IC in Hz.
+> > +    minimum: 1000000
+> > +    maximum: 4000000
+> 
+> This wasn't in original binding. Explain this in the commit msg.
+
+I will add the corresponding explanation in V2. 
+
+The 'clock-frequency' property is already supported
+by the driver but was not documented in the original txt binding.
+
+This is related to the commit d4d6f03c4fb3: serial: max310x: Try to
+get crystal clock rate from property (Author: Andy Shevchenko):
+    
+    In some configurations, mainly ACPI-based, the clock frequency of
+    the device is supplied by very well established 'clock-frequency'
+    property. Hence, try to get it from the property at last if no other
+    providers are available.
+
+
+> 
+> > +
+> > +  clock-names:
+> > +    enum:
+> > +      - xtal # External crystal
+> > +      - osc  # External clock source
+> 
+> clock-names follow immediately clocks.
+
+Will fix for V2.
+
+
+> 
+> > +
+> > +  gpio-controller: true
+> > +
+> > +  "#gpio-cells":
+> > +    const: 2
+> > +
+> > +  gpio-line-names:
+> > +    minItems: 1
+> > +    maxItems: 16
+> > +
+> > +allOf:
+> 
+> allOf: block goes after required: block.
+
+Will fix for V2.
+
+
+> 
+> > +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> > +  - $ref: /schemas/serial/serial.yaml#
+> > +  - $ref: /schemas/serial/rs485.yaml#
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +
+> > +oneOf:
+> > +  - required:
+> > +      - clocks
+> > +      - clock-names
+> > +  - required:
+> > +      - clock-frequency
+> 
+> That's also something new as well. The original binding required clocks.
+> Why are you changing this?
+
+See explanation above about clock-frequency.
+
+If clocks is not provided, than at least 'clock-frequency' must be
+provided.
+
+
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +    i2c {
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        serial@2c {
+> > +            compatible = "maxim,max3107";
+> > +            reg = <0x2c>;
+> > +            clocks = <&xtal4m>;
+> > +            clock-names = "xtal";
+> > +            interrupt-parent = <&gpio3>;
+> > +            interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
+> > +            gpio-controller;
+> > +            #gpio-cells = <2>;
+> > +        };
+> > +
+> 
+> One example is enuogh. All other are the same.
+
+Not really, clock-names is different for example 2 (osc), and example 3
+shows that 'clock-frequency' can be used if no clock is provided?
+
+Hugo.
