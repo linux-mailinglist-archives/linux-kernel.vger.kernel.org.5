@@ -2,225 +2,421 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 399577C710C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A202D7C7110
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347278AbjJLPK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
+        id S1347155AbjJLPLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235668AbjJLPKx (ORCPT
+        with ESMTP id S235398AbjJLPLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:10:53 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9408CC
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:10:47 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99357737980so181348066b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:10:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697123446; x=1697728246; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bpDYHFY2dl9s+q1D4aeetz4SQmaXlkXA2zbUfRxzbYc=;
-        b=1vgSpiTF8MDaMpI22ZweEJ9hVWGL11+TLQ7qqObOYNCcCLtPVPb25FFMmEsDSukhm0
-         hoFq14DpP02Ya3y5NqjkN0NAd/MhO/j6tFwgSFL/9EAd4+iL04Vt3K7Jn+5ZKzXgY5Wj
-         747+Egnuif6W2SepQsK6S6S7AXnk4bcLwOQzhO09+9o4Sd7oWth610VRxf47Ws05j3F7
-         OfdZFGmCZxzRV4xsM/4HKOrgJwpxUT6Te0jcdcoy2E+1vu+QQwEeoiPva/eiAnTk+2Bp
-         UdINlBPm5nUcgTU+KhetS3pS1sWs7ZWopbA2R5XCGXuWJd7UsQHXYzxpVLHZcpyxlR6v
-         yvrA==
+        Thu, 12 Oct 2023 11:11:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209A4B8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:10:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697123456;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=gvuUvnmAOc+5ancuDYl6HaH66MgYEJMxrZM267ANkfY=;
+        b=Xz0owk0FkW/59gR1tS72z0SuswMQwRNxh13pQIdzvyXLz2oVKeRIN6gQvJauP7DJ1KnxoN
+        IMdRLFuZECVrgeGaHcCmAJHUN60zRVwj8ITv2vzWNEw67UFsjekQS+Qvm8ZOISLcYOfg7y
+        64p3BjS6ARLm49Eu5gvagrL9u+ay41I=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-655-uBHEho_MN66bKlZcVykF6A-1; Thu, 12 Oct 2023 11:10:54 -0400
+X-MC-Unique: uBHEho_MN66bKlZcVykF6A-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-32661ca30d9so562492f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:10:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697123446; x=1697728246;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bpDYHFY2dl9s+q1D4aeetz4SQmaXlkXA2zbUfRxzbYc=;
-        b=FPaYsb/UfCTb0RY/jmCxgoWD1x5nhQ65AtTeQzSYxVB2iI3gxXtUgMvzdBzqSVDqH1
-         GpVqSgxxBUeHFwxRJ0qESeu4xPLgFut374p/kBS7Zf8SlIJgqdN6V4NDI90cTaQKZJqJ
-         CyLMeBAQtxBuQnm2StzpZZted47K3U1wJdwvq3QITnE3E2sX9bHLu8MQG7XUyF5/OrXG
-         JwiI9v16DaLAnvUWfgVqZA2A2BfGen9F+HCvYXh5At08R1J0JAH7FKVb5lvmU1DmEUDL
-         WJYcblNmFeGxEV807E0dNFLWSJ+zZzfHIILwQ5wYhWBMX4V6HXHsgj3EUL/GdI6cx/qu
-         LjXA==
-X-Gm-Message-State: AOJu0YzunHV29Rr5Ht6ONZrTRS+f2l/uilR62aNU5I0rH5L/xFB/OftJ
-        pm/90YhnjDfQjJwwTTq24/nAVIuamFFmqAad1Gi53Q==
-X-Google-Smtp-Source: AGHT+IG1NZsBF0x+ysdXPpuvixswdgMB2PNukO+5lnPWO4mvWEBQAq6PrIFm3ho2S4LstGS8XvPCoP0j7q2Idqu37TA=
-X-Received: by 2002:a17:907:b0d:b0:9ae:37c2:11b2 with SMTP id
- h13-20020a1709070b0d00b009ae37c211b2mr19347554ejl.15.1697123445857; Thu, 12
- Oct 2023 08:10:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697123453; x=1697728253;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gvuUvnmAOc+5ancuDYl6HaH66MgYEJMxrZM267ANkfY=;
+        b=p9LoQdKFol5R7O3BhfW2kRyZVDzfCApOn1ozLKnIlZSgjzg9niY2wl2lTf/7dLlGM5
+         Yn7XAaJ1JPMixvChAVHGQRtoShtCIelOxfsgKLj+KvqDa6jv1GdJSfLz6iW4IY81dnCS
+         S2SdNRlBEdz9R4DUjwiKmiIP8QsarrIy+NFplgyBwNZXEeet4X4bryW4c18dclF8OBf+
+         f6+jrgM3oGJ+Qg9240qZCWqGOdkQW3Z+fAwFPegVYxho5CO7EkmXa3H8tQrf/e0FqKKp
+         p1AzR/0pQfukPTBSz+F+q+i6FdDQb4o9A4oaZwdPJ1too6oJlAWdOHLB/I9pvXrUJacl
+         jd3g==
+X-Gm-Message-State: AOJu0Yx2qMHLRCD9l4OttJYam3uGL1QaMKhgVmhaTpco2kuZJLpZ5/TG
+        uMkw5NRMhbTRMPHzLXDpN6dIgLZd+yMPXUMWdGuyufSO3DzCQsU2qKMhKhRm//hChbUXGBfEpFH
+        KJ8caOAuGSeJ/Ubm+Irp9DJHu
+X-Received: by 2002:adf:ef4a:0:b0:32d:8cd1:52e4 with SMTP id c10-20020adfef4a000000b0032d8cd152e4mr2450238wrp.6.1697123453199;
+        Thu, 12 Oct 2023 08:10:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG5ar2o8WXFfVCyqb0e9PPVTvcWY+gQYuTndZOYtsUVd++yeA3HyBbywLy81/Mo2OC0N3s9Hw==
+X-Received: by 2002:adf:ef4a:0:b0:32d:8cd1:52e4 with SMTP id c10-20020adfef4a000000b0032d8cd152e4mr2450218wrp.6.1697123452809;
+        Thu, 12 Oct 2023 08:10:52 -0700 (PDT)
+Received: from fedora ([2a01:e0a:257:8c60:80f1:cdf8:48d0:b0a1])
+        by smtp.gmail.com with ESMTPSA id k23-20020a5d5257000000b003177074f830sm18599917wrc.59.2023.10.12.08.10.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 08:10:52 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 17:10:50 +0200
+From:   Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+To:     anton.yakovlev@opensynergy.com, mst@redhat.com
+Cc:     mvaralar@redhat.com, perex@perex.cz, tiwai@suse.com,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
+        manos.pitsidianakis@linaro.org, mripard@redhat.com
+Subject: [RFC PATCH] ALSA: virtio: use copy and fill_silence callbacks
+Message-ID: <ZSgMeoMx6NX2zCx/@fedora>
 MIME-Version: 1.0
-References: <20231010032117.1577496-1-yosryahmed@google.com>
- <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
- <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
- <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
- <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
- <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
- <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
- <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com> <CALvZod6zssp88j6e6EKTbu_oHS7iW5ocdTWH7f27Hg0byzut6g@mail.gmail.com>
-In-Reply-To: <CALvZod6zssp88j6e6EKTbu_oHS7iW5ocdTWH7f27Hg0byzut6g@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 12 Oct 2023 08:10:06 -0700
-Message-ID: <CAJD7tkZbUrs_6r9QcouHNnDbLKiZHdSA=2zyi3A41aqOW6kTNA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 6:35=E2=80=AFAM Shakeel Butt <shakeelb@google.com> =
-wrote:
->
-> On Thu, Oct 12, 2023 at 1:04=E2=80=AFAM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > On Wed, Oct 11, 2023 at 8:13=E2=80=AFPM Yosry Ahmed <yosryahmed@google.=
-com> wrote:
-> > >
-> > > On Wed, Oct 11, 2023 at 5:46=E2=80=AFAM Shakeel Butt <shakeelb@google=
-.com> wrote:
-> > > >
-> > > > On Tue, Oct 10, 2023 at 6:48=E2=80=AFPM Yosry Ahmed <yosryahmed@goo=
-gle.com> wrote:
-> > > > >
-> > > > > On Tue, Oct 10, 2023 at 5:36=E2=80=AFPM Shakeel Butt <shakeelb@go=
-ogle.com> wrote:
-> > > > > >
-> > > > > > On Tue, Oct 10, 2023 at 03:21:47PM -0700, Yosry Ahmed wrote:
-> > > > > > [...]
-> > > > > > >
-> > > > > > > I tried this on a machine with 72 cpus (also ixion), running =
-both
-> > > > > > > netserver and netperf in /sys/fs/cgroup/a/b/c/d as follows:
-> > > > > > > # echo "+memory" > /sys/fs/cgroup/cgroup.subtree_control
-> > > > > > > # mkdir /sys/fs/cgroup/a
-> > > > > > > # echo "+memory" > /sys/fs/cgroup/a/cgroup.subtree_control
-> > > > > > > # mkdir /sys/fs/cgroup/a/b
-> > > > > > > # echo "+memory" > /sys/fs/cgroup/a/b/cgroup.subtree_control
-> > > > > > > # mkdir /sys/fs/cgroup/a/b/c
-> > > > > > > # echo "+memory" > /sys/fs/cgroup/a/b/c/cgroup.subtree_contro=
-l
-> > > > > > > # mkdir /sys/fs/cgroup/a/b/c/d
-> > > > > > > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
-> > > > > > > # ./netserver -6
-> > > > > > >
-> > > > > > > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
-> > > > > > > # for i in $(seq 10); do ./netperf -6 -H ::1 -l 60 -t TCP_SEN=
-DFILE --
-> > > > > > > -m 10K; done
-> > > > > >
-> > > > > > You are missing '&' at the end. Use something like below:
-> > > > > >
-> > > > > > #!/bin/bash
-> > > > > > for i in {1..22}
-> > > > > > do
-> > > > > >    /data/tmp/netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K =
-&
-> > > > > > done
-> > > > > > wait
-> > > > > >
-> > > > >
-> > > > > Oh sorry I missed the fact that you are running instances in para=
-llel, my bad.
-> > > > >
-> > > > > So I ran 36 instances on a machine with 72 cpus. I did this 10 ti=
-mes
-> > > > > and got an average from all instances for all runs to reduce nois=
-e:
-> > > > >
-> > > > > #!/bin/bash
-> > > > >
-> > > > > ITER=3D10
-> > > > > NR_INSTANCES=3D36
-> > > > >
-> > > > > for i in $(seq $ITER); do
-> > > > >   echo "iteration $i"
-> > > > >   for j in $(seq $NR_INSTANCES); do
-> > > > >     echo "iteration $i" >> "out$j"
-> > > > >     ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K >> "out$j=
-" &
-> > > > >   done
-> > > > >   wait
-> > > > > done
-> > > > >
-> > > > > cat out* | grep 540000 | awk '{sum +=3D $5} END {print sum/NR}'
-> > > > >
-> > > > > Base: 22169 mbps
-> > > > > Patched: 21331.9 mbps
-> > > > >
-> > > > > The difference is ~3.7% in my runs. I am not sure what's differen=
-t.
-> > > > > Perhaps it's the number of runs?
-> > > >
-> > > > My base kernel is next-20231009 and I am running experiments with
-> > > > hyperthreading disabled.
-> > >
-> > > Using next-20231009 and a similar 44 core machine with hyperthreading
-> > > disabled, I ran 22 instances of netperf in parallel and got the
-> > > following numbers from averaging 20 runs:
-> > >
-> > > Base: 33076.5 mbps
-> > > Patched: 31410.1 mbps
-> > >
-> > > That's about 5% diff. I guess the number of iterations helps reduce
-> > > the noise? I am not sure.
-> > >
-> > > Please also keep in mind that in this case all netperf instances are
-> > > in the same cgroup and at a 4-level depth. I imagine in a practical
-> > > setup processes would be a little more spread out, which means less
-> > > common ancestors, so less contended atomic operations.
-> >
-> >
-> > (Resending the reply as I messed up the last one, was not in plain text=
-)
-> >
-> > I was curious, so I ran the same testing in a cgroup 2 levels deep
-> > (i.e /sys/fs/cgroup/a/b), which is a much more common setup in my
-> > experience. Here are the numbers:
-> >
-> > Base: 40198.0 mbps
-> > Patched: 38629.7 mbps
-> >
-> > The regression is reduced to ~3.9%.
-> >
-> > What's more interesting is that going from a level 2 cgroup to a level
-> > 4 cgroup is already a big hit with or without this patch:
-> >
-> > Base: 40198.0 -> 33076.5 mbps (~17.7% regression)
-> > Patched: 38629.7 -> 31410.1 (~18.7% regression)
-> >
-> > So going from level 2 to 4 is already a significant regression for
-> > other reasons (e.g. hierarchical charging). This patch only makes it
-> > marginally worse. This puts the numbers more into perspective imo than
-> > comparing values at level 4. What do you think?
->
-> This is weird as we are running the experiments on the same machine. I
-> will rerun with 2 levels as well. Also can you rerun the page fault
-> benchmark as well which was showing 9% regression in your original
-> commit message?
+This commit replaces the mmap mechanism with the copy() and
+fill_silence() callbacks for both capturing and playback for the
+virtio-sound driver. This change is required to prevent the updating of
+the content of a buffer that is already in the available ring.
 
-Thanks. I will re-run the page_fault tests, but keep in mind that the
-page fault benchmarks in will-it-scale are highly variable. We run
-them between kernel versions internally, and I think we ignore any
-changes below 10% as the benchmark is naturally noisy.
+The current mechanism splits a dma buffer into descriptors that are
+exposed to the device. This dma buffer is shared with the user
+application. When the device consumes a buffer, the driver moves the
+request from the used ring to available ring.
 
-I have a couple of runs for page_fault3_scalability showing a 2-3%
-improvement with this patch :)
+The driver exposes the buffer to the device without knowing if the
+content has been updated from the user. The section 2.8.21.1 of the
+virtio spec states that: "The device MAY access the descriptor chains
+the driver created and the memory they refer to immediately". If the
+device picks up buffers from the available ring just after it is
+notified, it happens that the content may be old.
+
+By providing the copy() callback, the driver first updates the content
+of the buffer, and then, exposes the buffer to the device by enqueuing
+it in the available ring. Thus, device always picks up a buffer that is
+updated.
+
+For capturing, the driver starts by exposing all the available buffers
+to device. After device updates the content of a buffer, it enqueues it
+in the used ring. It is only after the copy() for capturing is issued
+that the driver re-enqueues the buffer in the available ring.
+
+Note that the copy() function assumes that user is always writing a
+period. Testing shows that this is true but I may be wrong. This RFC
+aims at clarifying this.
+
+Signed-off-by: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+---
+ sound/virtio/virtio_pcm.c     | 11 ++--
+ sound/virtio/virtio_pcm.h     |  9 +++-
+ sound/virtio/virtio_pcm_msg.c | 50 ++++++++++++++++---
+ sound/virtio/virtio_pcm_ops.c | 94 +++++++++++++++++++++++++++++++----
+ 4 files changed, 137 insertions(+), 27 deletions(-)
+
+diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
+index c10d91fff2fb..bfe982952303 100644
+--- a/sound/virtio/virtio_pcm.c
++++ b/sound/virtio/virtio_pcm.c
+@@ -104,8 +104,6 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
+ 	 * only message-based transport.
+ 	 */
+ 	vss->hw.info =
+-		SNDRV_PCM_INFO_MMAP |
+-		SNDRV_PCM_INFO_MMAP_VALID |
+ 		SNDRV_PCM_INFO_BATCH |
+ 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		SNDRV_PCM_INFO_INTERLEAVED |
+@@ -471,12 +469,11 @@ int virtsnd_pcm_build_devs(struct virtio_snd *snd)
+ 			for (kss = ks->substream; kss; kss = kss->next)
+ 				vs->substreams[kss->number]->substream = kss;
+ 
+-			snd_pcm_set_ops(vpcm->pcm, i, &virtsnd_pcm_ops);
++			if (i == SNDRV_PCM_STREAM_CAPTURE)
++				snd_pcm_set_ops(vpcm->pcm, i, &virtsnd_pcm_capture_ops);
++			else
++				snd_pcm_set_ops(vpcm->pcm, i, &virtsnd_pcm_playback_ops);
+ 		}
+-
+-		snd_pcm_set_managed_buffer_all(vpcm->pcm,
+-					       SNDRV_DMA_TYPE_VMALLOC, NULL,
+-					       0, 0);
+ 	}
+ 
+ 	return 0;
+diff --git a/sound/virtio/virtio_pcm.h b/sound/virtio/virtio_pcm.h
+index 062eb8e8f2cf..1c1106ec971f 100644
+--- a/sound/virtio/virtio_pcm.h
++++ b/sound/virtio/virtio_pcm.h
+@@ -50,6 +50,8 @@ struct virtio_pcm_substream {
+ 	struct work_struct elapsed_period;
+ 	spinlock_t lock;
+ 	size_t buffer_bytes;
++	u8 *buffer;
++	size_t buffer_sz;
+ 	size_t hw_ptr;
+ 	bool xfer_enabled;
+ 	bool xfer_xrun;
+@@ -90,7 +92,8 @@ struct virtio_pcm {
+ 	struct virtio_pcm_stream streams[SNDRV_PCM_STREAM_LAST + 1];
+ };
+ 
+-extern const struct snd_pcm_ops virtsnd_pcm_ops;
++extern const struct snd_pcm_ops virtsnd_pcm_playback_ops;
++extern const struct snd_pcm_ops virtsnd_pcm_capture_ops;
+ 
+ int virtsnd_pcm_validate(struct virtio_device *vdev);
+ 
+@@ -117,7 +120,9 @@ int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *vss,
+ 
+ void virtsnd_pcm_msg_free(struct virtio_pcm_substream *vss);
+ 
+-int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss);
++int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss, bool single);
++
++int virtsnd_pcm_msg_send_locked(struct virtio_pcm_substream *vss, bool single);
+ 
+ unsigned int virtsnd_pcm_msg_pending_num(struct virtio_pcm_substream *vss);
+ 
+diff --git a/sound/virtio/virtio_pcm_msg.c b/sound/virtio/virtio_pcm_msg.c
+index aca2dc1989ba..9a5f9814cb62 100644
+--- a/sound/virtio/virtio_pcm_msg.c
++++ b/sound/virtio/virtio_pcm_msg.c
+@@ -132,7 +132,6 @@ static void virtsnd_pcm_sg_from(struct scatterlist *sgs, int nsgs, u8 *data,
+ int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *vss,
+ 			  unsigned int periods, unsigned int period_bytes)
+ {
+-	struct snd_pcm_runtime *runtime = vss->substream->runtime;
+ 	unsigned int i;
+ 
+ 	vss->msgs = kcalloc(periods, sizeof(*vss->msgs), GFP_KERNEL);
+@@ -142,7 +141,7 @@ int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *vss,
+ 	vss->nmsgs = periods;
+ 
+ 	for (i = 0; i < periods; ++i) {
+-		u8 *data = runtime->dma_area + period_bytes * i;
++		u8 *data = vss->buffer + period_bytes * i;
+ 		int sg_num = virtsnd_pcm_sg_num(data, period_bytes);
+ 		struct virtio_pcm_msg *msg;
+ 
+@@ -186,10 +185,12 @@ void virtsnd_pcm_msg_free(struct virtio_pcm_substream *vss)
+ /**
+  * virtsnd_pcm_msg_send() - Send asynchronous I/O messages.
+  * @vss: VirtIO PCM substream.
++ * @single: true to enqueue a single message, false to enqueue all of them.
+  *
+  * All messages are organized in an ordered circular list. Each time the
+- * function is called, all currently non-enqueued messages are added to the
+- * virtqueue. For this, the function keeps track of two values:
++ * function is called, first non-enqueued message is added to the virtqueue.
++ * When single is True, only the first message is enqueued. When False, all the
++ * available messages are enqueued.  The function keeps track of two values:
+  *
+  *   msg_last_enqueued = index of the last enqueued message,
+  *   msg_count = # of pending messages in the virtqueue.
+@@ -198,7 +199,7 @@ void virtsnd_pcm_msg_free(struct virtio_pcm_substream *vss)
+  *          spinlocks to be held by caller.
+  * Return: 0 on success, -errno on failure.
+  */
+-int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss)
++int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss, bool single)
+ {
+ 	struct snd_pcm_runtime *runtime = vss->substream->runtime;
+ 	struct virtio_snd *snd = vss->snd;
+@@ -211,6 +212,13 @@ int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss)
+ 	i = (vss->msg_last_enqueued + 1) % runtime->periods;
+ 	n = runtime->periods - vss->msg_count;
+ 
++	if (single) {
++		if (n < 1)
++			return -EFAULT;
++
++		n = 1;
++	}
++
+ 	for (; n; --n, i = (i + 1) % runtime->periods) {
+ 		struct virtio_pcm_msg *msg = vss->msgs[i];
+ 		struct scatterlist *psgs[] = {
+@@ -250,6 +258,36 @@ int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss)
+ 	return 0;
+ }
+ 
++/**
++ * virtsnd_pcm_msg_send_locked() - Send asynchronous I/O messages.
++ * @vss: VirtIO PCM substream.
++ * @single: true to enqueue a single message, false to enqueue all of them.
++ *
++ * This function holds the tx/rx queue and the VirtIO substream spinlocks
++ * before calling virtsnd_pcm_msg_send(). This is a wrapper function to ease
++ * the invocation of virtsnd_pcm_msg_send().
++ *
++ * Context: Any context.
++ * Return: 0 on success, -errno on failure.
++ */
++
++int virtsnd_pcm_msg_send_locked(struct virtio_pcm_substream *vss, bool single)
++{
++	struct virtio_snd_queue *queue;
++	int rc;
++	unsigned long flags;
++
++	queue = virtsnd_pcm_queue(vss);
++
++	spin_lock_irqsave(&queue->lock, flags);
++	spin_lock(&vss->lock);
++	rc = virtsnd_pcm_msg_send(vss, single);
++	spin_unlock(&vss->lock);
++	spin_unlock_irqrestore(&queue->lock, flags);
++
++	return rc;
++}
++
+ /**
+  * virtsnd_pcm_msg_pending_num() - Returns the number of pending I/O messages.
+  * @vss: VirtIO substream.
+@@ -320,8 +358,6 @@ static void virtsnd_pcm_msg_complete(struct virtio_pcm_msg *msg,
+ 					le32_to_cpu(msg->status.latency_bytes));
+ 
+ 		schedule_work(&vss->elapsed_period);
+-
+-		virtsnd_pcm_msg_send(vss);
+ 	} else if (!vss->msg_count) {
+ 		wake_up_all(&vss->msg_empty);
+ 	}
+diff --git a/sound/virtio/virtio_pcm_ops.c b/sound/virtio/virtio_pcm_ops.c
+index f8bfb87624be..a208439dbff8 100644
+--- a/sound/virtio/virtio_pcm_ops.c
++++ b/sound/virtio/virtio_pcm_ops.c
+@@ -238,6 +238,11 @@ static int virtsnd_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	 */
+ 	virtsnd_pcm_msg_free(vss);
+ 
++	vss->buffer_sz = params_buffer_bytes(hw_params);
++	vss->buffer = alloc_pages_exact(vss->buffer_sz, GFP_KERNEL);
++	if (!vss->buffer)
++		return -ENOMEM;
++
+ 	return virtsnd_pcm_msg_alloc(vss, params_periods(hw_params),
+ 				     params_period_bytes(hw_params));
+ }
+@@ -257,6 +262,11 @@ static int virtsnd_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	if (!virtsnd_pcm_msg_pending_num(vss))
+ 		virtsnd_pcm_msg_free(vss);
+ 
++	if (vss->buffer) {
++		free_pages_exact(vss->buffer, vss->buffer_sz);
++		vss->buffer = NULL;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -331,15 +341,18 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		queue = virtsnd_pcm_queue(vss);
+ 
+-		spin_lock_irqsave(&queue->lock, flags);
+-		spin_lock(&vss->lock);
+-		rc = virtsnd_pcm_msg_send(vss);
+-		if (!rc)
+-			vss->xfer_enabled = true;
+-		spin_unlock(&vss->lock);
+-		spin_unlock_irqrestore(&queue->lock, flags);
+-		if (rc)
+-			return rc;
++		// The buffers should be exposed first during capturing so that
++		// the device can consume them. Capturing cannot begin
++		// otherwise.
++		if (vss->direction == SNDRV_PCM_STREAM_CAPTURE) {
++			rc = virtsnd_pcm_msg_send_locked(vss, false);
++			if (rc)
++				return rc;
++		}
++
++		spin_lock_irqsave(&vss->lock, flags);
++		vss->xfer_enabled = true;
++		spin_unlock_irqrestore(&vss->lock, flags);
+ 
+ 		msg = virtsnd_pcm_ctl_msg_alloc(vss, VIRTIO_SND_R_PCM_START,
+ 						GFP_KERNEL);
+@@ -450,8 +463,66 @@ virtsnd_pcm_pointer(struct snd_pcm_substream *substream)
+ 	return hw_ptr;
+ }
+ 
+-/* PCM substream operators map. */
+-const struct snd_pcm_ops virtsnd_pcm_ops = {
++static int virtsnd_pcm_pb_copy(struct snd_pcm_substream *substream,
++			       int channel, unsigned long pos, struct iov_iter
++			       *src, unsigned long count)
++{
++	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
++
++	if (unlikely(pos + count > vss->buffer_sz))
++		return -EINVAL;
++
++	if (copy_from_iter(vss->buffer + pos, count, src) != count)
++		return -EFAULT;
++
++	return virtsnd_pcm_msg_send_locked(vss, true);
++}
++
++static int virtsnd_pcm_cap_copy(struct snd_pcm_substream *substream,
++				int channel, unsigned long pos, struct iov_iter
++				*dst, unsigned long count)
++{
++	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
++
++	if (unlikely(pos + count > vss->buffer_sz))
++		return -EINVAL;
++
++	if (copy_to_iter(vss->buffer + pos, count, dst) != count)
++		return -EFAULT;
++
++	return virtsnd_pcm_msg_send_locked(vss, true);
++}
++
++static int virtsnd_pcm_pb_silence(struct snd_pcm_substream *substream, int channel,
++				  unsigned long pos, unsigned long count)
++{
++	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
++
++	if (unlikely(pos + count > vss->buffer_sz))
++		return -EINVAL;
++
++	memset(vss->buffer + pos, 0, count);
++
++	return virtsnd_pcm_msg_send_locked(vss, true);
++}
++
++/* PCM substream operators map for playback. */
++const struct snd_pcm_ops virtsnd_pcm_playback_ops = {
++	.open = virtsnd_pcm_open,
++	.close = virtsnd_pcm_close,
++	.ioctl = snd_pcm_lib_ioctl,
++	.hw_params = virtsnd_pcm_hw_params,
++	.hw_free = virtsnd_pcm_hw_free,
++	.prepare = virtsnd_pcm_prepare,
++	.trigger = virtsnd_pcm_trigger,
++	.sync_stop = virtsnd_pcm_sync_stop,
++	.pointer = virtsnd_pcm_pointer,
++	.copy = virtsnd_pcm_pb_copy,
++	.fill_silence = virtsnd_pcm_pb_silence,
++};
++
++/* PCM substream operators map for capturing. */
++const struct snd_pcm_ops virtsnd_pcm_capture_ops = {
+ 	.open = virtsnd_pcm_open,
+ 	.close = virtsnd_pcm_close,
+ 	.ioctl = snd_pcm_lib_ioctl,
+@@ -461,4 +532,5 @@ const struct snd_pcm_ops virtsnd_pcm_ops = {
+ 	.trigger = virtsnd_pcm_trigger,
+ 	.sync_stop = virtsnd_pcm_sync_stop,
+ 	.pointer = virtsnd_pcm_pointer,
++	.copy = virtsnd_pcm_cap_copy,
+ };
+
+base-commit: 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
+-- 
+2.41.0
+
