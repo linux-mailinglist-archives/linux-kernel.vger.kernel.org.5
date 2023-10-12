@@ -2,249 +2,430 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F5A7C7133
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8897C7140
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343696AbjJLPPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42464 "EHLO
+        id S1379132AbjJLPSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347303AbjJLPPv (ORCPT
+        with ESMTP id S231680AbjJLPSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:15:51 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8424D9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:15:48 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-406aaccb41dso3571325e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:15:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697123747; x=1697728547; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=H40DjF2DvqAhDOEevi599YrHU/CFw/Fi+zNNdBCogjA=;
-        b=PNmY7qfsJg3qA3AO6xKiAA4NxniEBVrJkyckd53w30xZpAd5dOgSGGb9QHvrBXGwQ2
-         MbtrieVgkI4k0FunlkNKCTEfHQvpm8Vxb6mrxmFVHOdElFJZMAr30WS/NYGmkZsapG09
-         JuZanPHmB8N75iOTNFYEcsBoxkPGDb0P+4ECOkC+TxfCrm1GpFU4r+c9mRvwIPoIaYiL
-         ibc41BILwn3CiQEbAUiZVQ0vn0MGdffGlBHLtosFCq4EGCwqxQExLmiprjvED/ZzYy8/
-         XnC0eqElz5GHUJsYUeNB6cB1Ij0vYwioV1i/ZsUvU6h4PX6nro6WYD09JQLWemKmBvqu
-         nisA==
+        Thu, 12 Oct 2023 11:18:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867A8B8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697123831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N61O7dqOv5z704fPtB1xO3U6E0vm18ayN3uykalF+0E=;
+        b=ib4gbeZmzZimuMWlkVYdq2+VgU5dL558dbtIfA2hISwTYwj5eDlfb3UE4QyfqwSykJGEhv
+        A51MuADYCHqWdzI0O1z92hAggpVEoUA346Cid/6oLAXUeJ4qPhS248UTx6kHdUnEcKdkPT
+        Sp0vDms/c2tRXETl3WcoJyfI01lqUFc=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-453-n5eN2ejcPQGd9mY5Bl5JEw-1; Thu, 12 Oct 2023 11:16:59 -0400
+X-MC-Unique: n5eN2ejcPQGd9mY5Bl5JEw-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f42bcef2acso7368945e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:16:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697123747; x=1697728547;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H40DjF2DvqAhDOEevi599YrHU/CFw/Fi+zNNdBCogjA=;
-        b=QkQaYSQShsBmjs/f2Tue49YnmMqmNrBvnoU15dvYG650vBXUd4D/B9S4mdfX2TKo8u
-         78xDIuz08tfTH0D18fpO0SgeamEklNGgRNVKR/AaPXpwNsbfx/1GPtXgSMYN2odc/ox7
-         1Gf2r/uPK20KGQbTSu3hdYHl1viMb/MvLnz7prScuxzSssurPRzzIOdxnPKyyrmJQ5Ix
-         D6c0BHSiHTr3KhOvlhp/DwkCsO1Zgiww99pELAvQSApdIT5Vzy0Erq62bsOzqn9lbnnR
-         v9d/4dSC9oqF8uYWaT7NJX3HQ1tHF+3jLI22K++2NaMvLEkC0jZJX/X94f3YomHfJcBt
-         i+ew==
-X-Gm-Message-State: AOJu0YxN6AvsRikqMqdha5eGXB6/+efrSd8qeVU0rNu/oqNOG91feKAb
-        GQUGw7mOyzGpTzbhAXaPBvu7yQ==
-X-Google-Smtp-Source: AGHT+IGgtyD7d5JdTAOBgsfaVSkKTyr+ixUgoSAdL+LWzbJmc7NFj9h7df+UzeVb5v70tLe13yfemg==
-X-Received: by 2002:a05:600c:214f:b0:406:513d:738f with SMTP id v15-20020a05600c214f00b00406513d738fmr21976065wml.2.1697123746655;
-        Thu, 12 Oct 2023 08:15:46 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:999:a3a0:3fed:c1e5:145f:8179? ([2a01:e0a:999:a3a0:3fed:c1e5:145f:8179])
-        by smtp.gmail.com with ESMTPSA id m16-20020a7bca50000000b003fee6e170f9sm76694wml.45.2023.10.12.08.15.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 08:15:46 -0700 (PDT)
-Message-ID: <7b71ff39-bbc0-4ba9-8b98-d36fa127316e@rivosinc.com>
-Date:   Thu, 12 Oct 2023 17:15:45 +0200
+        d=1e100.net; s=20230601; t=1697123818; x=1697728618;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N61O7dqOv5z704fPtB1xO3U6E0vm18ayN3uykalF+0E=;
+        b=viv3QNp5h+MDgTcqBoErzOjIo11gFAJF2s8IfxzVJADaEX3SK/H63wkqMrEYvmJyE/
+         abdxEDRy7ESGumbs8MRQIYd6pGaNowVUVucaAGfnirWbpoNviEL/+SgwmpNPqo7Va4z/
+         A7e13n3VFbb9EAtKJ+RDIaVksUXpZEehA1tyhUAtRkbV080nfEFitc/N7wER3EUTMmaY
+         daiSiKNC3dOHLvdt9AOCrPb+AvcrGHvIuBSoL3I65ERMVWSEzRpp6Z86l4baqgsk7NXn
+         EpkadqdR6clW1hRj7igBM7t2Aiyg9yngorTWbIcoJjyA3k+tBxc+6UEtoDdh1Z+kosp6
+         aXMQ==
+X-Gm-Message-State: AOJu0YyxrENIW8f/MWFApXRhbzbI+AvXu2Cn4/cnfqU2Uckr3u2+u98Y
+        ultUMTzSuQ10nYsjqTufQ4186N1D479ndQ66HJmSmYz2SGHKLsTQqV1Hbu4NNVLzP40jQR/XB9K
+        VbaMRVdqiRq6tL+I0mauP2PcO
+X-Received: by 2002:adf:ef8f:0:b0:31f:a718:4cb6 with SMTP id d15-20020adfef8f000000b0031fa7184cb6mr19319518wro.46.1697123818304;
+        Thu, 12 Oct 2023 08:16:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHAFMy3JuuSbtpHzX18yLnNQpgdXSKnknNcM2R6XmpX/8dk97710VScPX4tGnGORP82f1D0NA==
+X-Received: by 2002:adf:ef8f:0:b0:31f:a718:4cb6 with SMTP id d15-20020adfef8f000000b0031fa7184cb6mr19319482wro.46.1697123817569;
+        Thu, 12 Oct 2023 08:16:57 -0700 (PDT)
+Received: from redhat.com ([2a06:c701:73d2:bf00:e379:826:5137:6b23])
+        by smtp.gmail.com with ESMTPSA id b5-20020a056000054500b00326dd5486dcsm18711740wrf.107.2023.10.12.08.16.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 08:16:56 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 11:16:54 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+Cc:     anton.yakovlev@opensynergy.com, perex@perex.cz, tiwai@suse.com,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
+        manos.pitsidianakis@linaro.org, mripard@redhat.com
+Subject: Re: [RFC PATCH] ALSA: virtio: use copy and fill_silence callbacks
+Message-ID: <20231012111525-mutt-send-email-mst@kernel.org>
+References: <ZSgMeoMx6NX2zCx/@fedora>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 02/13] riscv: add ISA extension probing for Zv*
- extensions
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Evan Green <evan@rivosinc.com>
-References: <20231011111438.909552-1-cleger@rivosinc.com>
- <20231011111438.909552-3-cleger@rivosinc.com>
- <b157edc4-a21f-40ac-8c9f-e989b34bb872@rivosinc.com>
- <20231012-darkness-neutron-fc1843ff05ff@spud>
-From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <20231012-darkness-neutron-fc1843ff05ff@spud>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSgMeoMx6NX2zCx/@fedora>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/10/2023 16:10, Conor Dooley wrote:
-> On Thu, Oct 12, 2023 at 03:17:14PM +0200, Clément Léger wrote:
->>
->>
->> On 11/10/2023 13:14, Clément Léger wrote:
->>> Add probing of some Zv* ISA extensions that are mentioned in "RISC-V
->>> Cryptography Extensions Volume II" [1]. These ISA extensions are the
->>> following:
->>>
->>> - Zvbb: Vector Basic Bit-manipulation
->>> - Zvbc: Vector Carryless Multiplication
->>> - Zvkb: Vector Cryptography Bit-manipulation
->>> - Zvkg: Vector GCM/GMAC.
->>> - Zvkned: NIST Suite: Vector AES Block Cipher
->>> - Zvknh[ab]: NIST Suite: Vector SHA-2 Secure Hash
->>> - Zvksed: ShangMi Suite: SM4 Block Cipher
->>> - Zvksh: ShangMi Suite: SM3 Secure Hash
->>> - Zvkn: NIST Algorithm Suite
->>> - Zvknc: NIST Algorithm Suite with carryless multiply
->>> - Zvkng: NIST Algorithm Suite with GCM.
->>> - Zvks: ShangMi Algorithm Suite
->>> - Zvksc: ShangMi Algorithm Suite with carryless multiplication
->>> - Zvksg: ShangMi Algorithm Suite with GCM.
->>> - Zvkt: Vector Data-Independent Execution Latency.
->>>
->>> [1] https://drive.google.com/file/d/1gb9OLH-DhbCgWp7VwpPOVrrY6f3oSJLL/view
->>>
->>> Signed-off-by: Clément Léger <cleger@rivosinc.com>
->>> ---
->>>  arch/riscv/include/asm/hwcap.h | 16 ++++++++++++++++
->>>  arch/riscv/kernel/cpufeature.c | 16 ++++++++++++++++
->>>  2 files changed, 32 insertions(+)
->>>
->>> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
->>> index b7b58258f6c7..4e46981ac6c8 100644
->>> --- a/arch/riscv/include/asm/hwcap.h
->>> +++ b/arch/riscv/include/asm/hwcap.h
->>> @@ -58,6 +58,22 @@
->>>  #define RISCV_ISA_EXT_ZICSR		40
->>>  #define RISCV_ISA_EXT_ZIFENCEI		41
->>>  #define RISCV_ISA_EXT_ZIHPM		42
->>> +#define RISCV_ISA_EXT_ZVBB		43
->>> +#define RISCV_ISA_EXT_ZVBC		44
->>> +#define RISCV_ISA_EXT_ZVKB		45
->>> +#define RISCV_ISA_EXT_ZVKG		46
->>> +#define RISCV_ISA_EXT_ZVKN		47
->>> +#define RISCV_ISA_EXT_ZVKNC		48
->>> +#define RISCV_ISA_EXT_ZVKNED		49
->>> +#define RISCV_ISA_EXT_ZVKNG		50
->>> +#define RISCV_ISA_EXT_ZVKNHA		51
->>> +#define RISCV_ISA_EXT_ZVKNHB		52
->>> +#define RISCV_ISA_EXT_ZVKS		53
->>> +#define RISCV_ISA_EXT_ZVKSC		54
->>> +#define RISCV_ISA_EXT_ZVKSED		55
->>> +#define RISCV_ISA_EXT_ZVKSH		56
->>> +#define RISCV_ISA_EXT_ZVKSG		57
->>
->> About Zvks/Zvkn, these extensions are actually shorthand for a few other
->> sub-extensions, it is still not clear if it should be parsed as is.
->> There are multiple solutions:
->>
->> - Handle them as-is, simply enable the extension, if reported through
->> hwprobe, userspace will be responsible to detect the sub-extensions
->> (current approach)
+On Thu, Oct 12, 2023 at 05:10:50PM +0200, Matias Ezequiel Vara Larsen wrote:
+> This commit replaces the mmap mechanism with the copy() and
+> fill_silence() callbacks for both capturing and playback for the
+> virtio-sound driver. This change is required to prevent the updating of
+> the content of a buffer that is already in the available ring.
 > 
-> I dislike this, since in-kernel users will have to check for "parent" &
-> "child" extensions.
+> The current mechanism splits a dma buffer into descriptors that are
+> exposed to the device. This dma buffer is shared with the user
+> application. When the device consumes a buffer, the driver moves the
+> request from the used ring to available ring.
 > 
->> - "Unfold" the extension in order to enable all the sub-extensions and
->> keep the main one (for instance for Zvkn, enable Zvkned, Zvknhb, Zvkb,
->> Zvkt, Zvkn)
+> The driver exposes the buffer to the device without knowing if the
+> content has been updated from the user. The section 2.8.21.1 of the
+> virtio spec states that: "The device MAY access the descriptor chains
+> the driver created and the memory they refer to immediately". If the
+> device picks up buffers from the available ring just after it is
+> notified, it happens that the content may be old.
 > 
-> We threw together some code for this a few months ago after some
-> discussion with some of your Rivos colleagues. The initial version of it
-> was in this thread with Evan:
-> https://lore.kernel.org/all/20230703-mangle-panning-75909ebbe30c@spud/
-> and in a later iteration there was some more done by myself and Drew:
-> https://lore.kernel.org/all/20230713-bootleg-tray-c5bfe58b5673@wendy/
-> One of the versions ended up as the riscv-extensions-strings-scalar-crypto
-> branch in my k.org repo:
-> https://git.kernel.org/pub/scm/linux/kernel/git/conor/linux.git/log/?h=riscv-extensions-strings-scalar-crypto
+> By providing the copy() callback, the driver first updates the content
+> of the buffer, and then, exposes the buffer to the device by enqueuing
+> it in the available ring. Thus, device always picks up a buffer that is
+> updated.
 > 
-
-Thanks for these information ! I think your version to handle extension
-group is pretty clean. Are you waiting for anything in particular except
-a Signed-off: from Evan to submit that patch ? If so, can I backport
-this patch in my branch, gather Evan SoB and rebase my series on top of it ?
-
-> That crypto stuff has all gone quiet of late unfortunately. I wonder if
-> Samuel is still working on it.
-
-I talked with Samuel and we agreed on the following plan: I'll actually
-carry on the bitmanip ISA part and he will resubmit the Zkr with
-archrandom part.
-
+> For capturing, the driver starts by exposing all the available buffers
+> to device. After device updates the content of a buffer, it enqueues it
+> in the used ring. It is only after the copy() for capturing is issued
+> that the driver re-enqueues the buffer in the available ring.
 > 
->> - "Unfold" but don't keep the extension "shorthand" in the ISA extension
->> list (for instance for Zvkn, enable Zvkned, Zvknhb, Zvkb, Zvkt)
+> Note that the copy() function assumes that user is always writing a
+> period. Testing shows that this is true but I may be wrong. This RFC
+> aims at clarifying this.
 > 
-> But I would also be fine with this one from a pure in-kernel PoV.
+> Signed-off-by: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
 
-Which is the case with your version FWIU (ie, only the child extensions
-are visible).
 
-> I think it's likely to be annoying for users though, since they won't be
-> able to poll for the "parent" unless we re-assemble the parents in
-> hwprobe etc (eugh).
+Thank you for working on this!
 
-Indeed, and re-assembling the parent is IMHO duplication of the existing
-information. Checking that the needed ISA extensions are present will be
-simple enough (simple bitmask) so I'm not sure that re-assembling the
-parents is necessary (But that's a personal statement and I'm pretty
-sure others will like it to be provided directly).
-
-Thanks,
-
-Clément
-
+> ---
+>  sound/virtio/virtio_pcm.c     | 11 ++--
+>  sound/virtio/virtio_pcm.h     |  9 +++-
+>  sound/virtio/virtio_pcm_msg.c | 50 ++++++++++++++++---
+>  sound/virtio/virtio_pcm_ops.c | 94 +++++++++++++++++++++++++++++++----
+>  4 files changed, 137 insertions(+), 27 deletions(-)
 > 
-> - don't permit passing the "parents" at all, and only deal with the
->   "children". We can enforce this for DT, but not for ACPI, so probably
->   not a runner>
-> Thanks,
-> Conor.
+> diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
+> index c10d91fff2fb..bfe982952303 100644
+> --- a/sound/virtio/virtio_pcm.c
+> +++ b/sound/virtio/virtio_pcm.c
+> @@ -104,8 +104,6 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
+>  	 * only message-based transport.
+>  	 */
+>  	vss->hw.info =
+> -		SNDRV_PCM_INFO_MMAP |
+> -		SNDRV_PCM_INFO_MMAP_VALID |
+>  		SNDRV_PCM_INFO_BATCH |
+>  		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>  		SNDRV_PCM_INFO_INTERLEAVED |
+> @@ -471,12 +469,11 @@ int virtsnd_pcm_build_devs(struct virtio_snd *snd)
+>  			for (kss = ks->substream; kss; kss = kss->next)
+>  				vs->substreams[kss->number]->substream = kss;
+>  
+> -			snd_pcm_set_ops(vpcm->pcm, i, &virtsnd_pcm_ops);
+> +			if (i == SNDRV_PCM_STREAM_CAPTURE)
+> +				snd_pcm_set_ops(vpcm->pcm, i, &virtsnd_pcm_capture_ops);
+> +			else
+> +				snd_pcm_set_ops(vpcm->pcm, i, &virtsnd_pcm_playback_ops);
+>  		}
+> -
+> -		snd_pcm_set_managed_buffer_all(vpcm->pcm,
+> -					       SNDRV_DMA_TYPE_VMALLOC, NULL,
+> -					       0, 0);
+>  	}
+>  
+>  	return 0;
+> diff --git a/sound/virtio/virtio_pcm.h b/sound/virtio/virtio_pcm.h
+> index 062eb8e8f2cf..1c1106ec971f 100644
+> --- a/sound/virtio/virtio_pcm.h
+> +++ b/sound/virtio/virtio_pcm.h
+> @@ -50,6 +50,8 @@ struct virtio_pcm_substream {
+>  	struct work_struct elapsed_period;
+>  	spinlock_t lock;
+>  	size_t buffer_bytes;
+> +	u8 *buffer;
+> +	size_t buffer_sz;
+>  	size_t hw_ptr;
+>  	bool xfer_enabled;
+>  	bool xfer_xrun;
+> @@ -90,7 +92,8 @@ struct virtio_pcm {
+>  	struct virtio_pcm_stream streams[SNDRV_PCM_STREAM_LAST + 1];
+>  };
+>  
+> -extern const struct snd_pcm_ops virtsnd_pcm_ops;
+> +extern const struct snd_pcm_ops virtsnd_pcm_playback_ops;
+> +extern const struct snd_pcm_ops virtsnd_pcm_capture_ops;
+>  
+>  int virtsnd_pcm_validate(struct virtio_device *vdev);
+>  
+> @@ -117,7 +120,9 @@ int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *vss,
+>  
+>  void virtsnd_pcm_msg_free(struct virtio_pcm_substream *vss);
+>  
+> -int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss);
+> +int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss, bool single);
+> +
+> +int virtsnd_pcm_msg_send_locked(struct virtio_pcm_substream *vss, bool single);
+>  
+>  unsigned int virtsnd_pcm_msg_pending_num(struct virtio_pcm_substream *vss);
+>  
+> diff --git a/sound/virtio/virtio_pcm_msg.c b/sound/virtio/virtio_pcm_msg.c
+> index aca2dc1989ba..9a5f9814cb62 100644
+> --- a/sound/virtio/virtio_pcm_msg.c
+> +++ b/sound/virtio/virtio_pcm_msg.c
+> @@ -132,7 +132,6 @@ static void virtsnd_pcm_sg_from(struct scatterlist *sgs, int nsgs, u8 *data,
+>  int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *vss,
+>  			  unsigned int periods, unsigned int period_bytes)
+>  {
+> -	struct snd_pcm_runtime *runtime = vss->substream->runtime;
+>  	unsigned int i;
+>  
+>  	vss->msgs = kcalloc(periods, sizeof(*vss->msgs), GFP_KERNEL);
+> @@ -142,7 +141,7 @@ int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *vss,
+>  	vss->nmsgs = periods;
+>  
+>  	for (i = 0; i < periods; ++i) {
+> -		u8 *data = runtime->dma_area + period_bytes * i;
+> +		u8 *data = vss->buffer + period_bytes * i;
+>  		int sg_num = virtsnd_pcm_sg_num(data, period_bytes);
+>  		struct virtio_pcm_msg *msg;
+>  
+> @@ -186,10 +185,12 @@ void virtsnd_pcm_msg_free(struct virtio_pcm_substream *vss)
+>  /**
+>   * virtsnd_pcm_msg_send() - Send asynchronous I/O messages.
+>   * @vss: VirtIO PCM substream.
+> + * @single: true to enqueue a single message, false to enqueue all of them.
+>   *
+>   * All messages are organized in an ordered circular list. Each time the
+> - * function is called, all currently non-enqueued messages are added to the
+> - * virtqueue. For this, the function keeps track of two values:
+> + * function is called, first non-enqueued message is added to the virtqueue.
+> + * When single is True, only the first message is enqueued. When False, all the
+> + * available messages are enqueued.  The function keeps track of two values:
+>   *
+>   *   msg_last_enqueued = index of the last enqueued message,
+>   *   msg_count = # of pending messages in the virtqueue.
+> @@ -198,7 +199,7 @@ void virtsnd_pcm_msg_free(struct virtio_pcm_substream *vss)
+>   *          spinlocks to be held by caller.
+>   * Return: 0 on success, -errno on failure.
+>   */
+> -int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss)
+> +int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss, bool single)
+>  {
+>  	struct snd_pcm_runtime *runtime = vss->substream->runtime;
+>  	struct virtio_snd *snd = vss->snd;
+> @@ -211,6 +212,13 @@ int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss)
+>  	i = (vss->msg_last_enqueued + 1) % runtime->periods;
+>  	n = runtime->periods - vss->msg_count;
+>  
+> +	if (single) {
+> +		if (n < 1)
+> +			return -EFAULT;
+> +
+> +		n = 1;
+> +	}
+> +
+>  	for (; n; --n, i = (i + 1) % runtime->periods) {
+>  		struct virtio_pcm_msg *msg = vss->msgs[i];
+>  		struct scatterlist *psgs[] = {
+> @@ -250,6 +258,36 @@ int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss)
+>  	return 0;
+>  }
+>  
+> +/**
+> + * virtsnd_pcm_msg_send_locked() - Send asynchronous I/O messages.
+> + * @vss: VirtIO PCM substream.
+> + * @single: true to enqueue a single message, false to enqueue all of them.
+> + *
+> + * This function holds the tx/rx queue and the VirtIO substream spinlocks
+> + * before calling virtsnd_pcm_msg_send(). This is a wrapper function to ease
+> + * the invocation of virtsnd_pcm_msg_send().
+> + *
+> + * Context: Any context.
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +
+> +int virtsnd_pcm_msg_send_locked(struct virtio_pcm_substream *vss, bool single)
+> +{
+> +	struct virtio_snd_queue *queue;
+> +	int rc;
+> +	unsigned long flags;
+> +
+> +	queue = virtsnd_pcm_queue(vss);
+> +
+> +	spin_lock_irqsave(&queue->lock, flags);
+> +	spin_lock(&vss->lock);
+> +	rc = virtsnd_pcm_msg_send(vss, single);
+> +	spin_unlock(&vss->lock);
+> +	spin_unlock_irqrestore(&queue->lock, flags);
+> +
+> +	return rc;
+> +}
+> +
+>  /**
+>   * virtsnd_pcm_msg_pending_num() - Returns the number of pending I/O messages.
+>   * @vss: VirtIO substream.
+> @@ -320,8 +358,6 @@ static void virtsnd_pcm_msg_complete(struct virtio_pcm_msg *msg,
+>  					le32_to_cpu(msg->status.latency_bytes));
+>  
+>  		schedule_work(&vss->elapsed_period);
+> -
+> -		virtsnd_pcm_msg_send(vss);
+>  	} else if (!vss->msg_count) {
+>  		wake_up_all(&vss->msg_empty);
+>  	}
+> diff --git a/sound/virtio/virtio_pcm_ops.c b/sound/virtio/virtio_pcm_ops.c
+> index f8bfb87624be..a208439dbff8 100644
+> --- a/sound/virtio/virtio_pcm_ops.c
+> +++ b/sound/virtio/virtio_pcm_ops.c
+> @@ -238,6 +238,11 @@ static int virtsnd_pcm_hw_params(struct snd_pcm_substream *substream,
+>  	 */
+>  	virtsnd_pcm_msg_free(vss);
+>  
+> +	vss->buffer_sz = params_buffer_bytes(hw_params);
+> +	vss->buffer = alloc_pages_exact(vss->buffer_sz, GFP_KERNEL);
+> +	if (!vss->buffer)
+> +		return -ENOMEM;
+> +
+>  	return virtsnd_pcm_msg_alloc(vss, params_periods(hw_params),
+>  				     params_period_bytes(hw_params));
+>  }
+> @@ -257,6 +262,11 @@ static int virtsnd_pcm_hw_free(struct snd_pcm_substream *substream)
+>  	if (!virtsnd_pcm_msg_pending_num(vss))
+>  		virtsnd_pcm_msg_free(vss);
+>  
+> +	if (vss->buffer) {
+> +		free_pages_exact(vss->buffer, vss->buffer_sz);
+> +		vss->buffer = NULL;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> @@ -331,15 +341,18 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
+>  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+>  		queue = virtsnd_pcm_queue(vss);
+>  
+> -		spin_lock_irqsave(&queue->lock, flags);
+> -		spin_lock(&vss->lock);
+> -		rc = virtsnd_pcm_msg_send(vss);
+> -		if (!rc)
+> -			vss->xfer_enabled = true;
+> -		spin_unlock(&vss->lock);
+> -		spin_unlock_irqrestore(&queue->lock, flags);
+> -		if (rc)
+> -			return rc;
+> +		// The buffers should be exposed first during capturing so that
+> +		// the device can consume them. Capturing cannot begin
+> +		// otherwise.
+> +		if (vss->direction == SNDRV_PCM_STREAM_CAPTURE) {
+> +			rc = virtsnd_pcm_msg_send_locked(vss, false);
+> +			if (rc)
+> +				return rc;
+> +		}
+> +
+> +		spin_lock_irqsave(&vss->lock, flags);
+> +		vss->xfer_enabled = true;
+> +		spin_unlock_irqrestore(&vss->lock, flags);
+>  
+>  		msg = virtsnd_pcm_ctl_msg_alloc(vss, VIRTIO_SND_R_PCM_START,
+>  						GFP_KERNEL);
+> @@ -450,8 +463,66 @@ virtsnd_pcm_pointer(struct snd_pcm_substream *substream)
+>  	return hw_ptr;
+>  }
+>  
+> -/* PCM substream operators map. */
+> -const struct snd_pcm_ops virtsnd_pcm_ops = {
+> +static int virtsnd_pcm_pb_copy(struct snd_pcm_substream *substream,
+> +			       int channel, unsigned long pos, struct iov_iter
+> +			       *src, unsigned long count)
+> +{
+> +	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
+> +
+> +	if (unlikely(pos + count > vss->buffer_sz))
+> +		return -EINVAL;
+> +
+> +	if (copy_from_iter(vss->buffer + pos, count, src) != count)
+> +		return -EFAULT;
+> +
+> +	return virtsnd_pcm_msg_send_locked(vss, true);
+> +}
+> +
+> +static int virtsnd_pcm_cap_copy(struct snd_pcm_substream *substream,
+> +				int channel, unsigned long pos, struct iov_iter
+> +				*dst, unsigned long count)
+> +{
+> +	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
+> +
+> +	if (unlikely(pos + count > vss->buffer_sz))
+> +		return -EINVAL;
+> +
+> +	if (copy_to_iter(vss->buffer + pos, count, dst) != count)
+> +		return -EFAULT;
+> +
+> +	return virtsnd_pcm_msg_send_locked(vss, true);
+> +}
+> +
+> +static int virtsnd_pcm_pb_silence(struct snd_pcm_substream *substream, int channel,
+> +				  unsigned long pos, unsigned long count)
+> +{
+> +	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
+> +
+> +	if (unlikely(pos + count > vss->buffer_sz))
+> +		return -EINVAL;
+> +
+> +	memset(vss->buffer + pos, 0, count);
+> +
+> +	return virtsnd_pcm_msg_send_locked(vss, true);
+> +}
+> +
+> +/* PCM substream operators map for playback. */
+> +const struct snd_pcm_ops virtsnd_pcm_playback_ops = {
+> +	.open = virtsnd_pcm_open,
+> +	.close = virtsnd_pcm_close,
+> +	.ioctl = snd_pcm_lib_ioctl,
+> +	.hw_params = virtsnd_pcm_hw_params,
+> +	.hw_free = virtsnd_pcm_hw_free,
+> +	.prepare = virtsnd_pcm_prepare,
+> +	.trigger = virtsnd_pcm_trigger,
+> +	.sync_stop = virtsnd_pcm_sync_stop,
+> +	.pointer = virtsnd_pcm_pointer,
+> +	.copy = virtsnd_pcm_pb_copy,
+> +	.fill_silence = virtsnd_pcm_pb_silence,
+> +};
+> +
+> +/* PCM substream operators map for capturing. */
+> +const struct snd_pcm_ops virtsnd_pcm_capture_ops = {
+>  	.open = virtsnd_pcm_open,
+>  	.close = virtsnd_pcm_close,
+>  	.ioctl = snd_pcm_lib_ioctl,
+> @@ -461,4 +532,5 @@ const struct snd_pcm_ops virtsnd_pcm_ops = {
+>  	.trigger = virtsnd_pcm_trigger,
+>  	.sync_stop = virtsnd_pcm_sync_stop,
+>  	.pointer = virtsnd_pcm_pointer,
+> +	.copy = virtsnd_pcm_cap_copy,
+>  };
 > 
->>
->> Thanks,
->>
->> Clément
->>
->>> +#define RISCV_ISA_EXT_ZVKT		58
->>>  
->>>  #define RISCV_ISA_EXT_MAX		64
->>>  
->>> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
->>> index 1cfbba65d11a..859d647f3ced 100644
->>> --- a/arch/riscv/kernel/cpufeature.c
->>> +++ b/arch/riscv/kernel/cpufeature.c
->>> @@ -174,6 +174,22 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->>>  	__RISCV_ISA_EXT_DATA(zba, RISCV_ISA_EXT_ZBA),
->>>  	__RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
->>>  	__RISCV_ISA_EXT_DATA(zbs, RISCV_ISA_EXT_ZBS),
->>> +	__RISCV_ISA_EXT_DATA(zvbb, RISCV_ISA_EXT_ZVBB),
->>> +	__RISCV_ISA_EXT_DATA(zvbc, RISCV_ISA_EXT_ZVBC),
->>> +	__RISCV_ISA_EXT_DATA(zvkb, RISCV_ISA_EXT_ZVKB),
->>> +	__RISCV_ISA_EXT_DATA(zvkg, RISCV_ISA_EXT_ZVKG),
->>> +	__RISCV_ISA_EXT_DATA(zvkn, RISCV_ISA_EXT_ZVKN),
->>> +	__RISCV_ISA_EXT_DATA(zvknc, RISCV_ISA_EXT_ZVKNC),
->>> +	__RISCV_ISA_EXT_DATA(zvkned, RISCV_ISA_EXT_ZVKNED),
->>> +	__RISCV_ISA_EXT_DATA(zvkng, RISCV_ISA_EXT_ZVKNG),
->>> +	__RISCV_ISA_EXT_DATA(zvknha, RISCV_ISA_EXT_ZVKNHA),
->>> +	__RISCV_ISA_EXT_DATA(zvknhb, RISCV_ISA_EXT_ZVKNHB),
->>> +	__RISCV_ISA_EXT_DATA(zvks, RISCV_ISA_EXT_ZVKS),
->>> +	__RISCV_ISA_EXT_DATA(zvksc, RISCV_ISA_EXT_ZVKSC),
->>> +	__RISCV_ISA_EXT_DATA(zvksed, RISCV_ISA_EXT_ZVKSED),
->>> +	__RISCV_ISA_EXT_DATA(zvksh, RISCV_ISA_EXT_ZVKSH),
->>> +	__RISCV_ISA_EXT_DATA(zvksg, RISCV_ISA_EXT_ZVKSG),
->>> +	__RISCV_ISA_EXT_DATA(zvkt, RISCV_ISA_EXT_ZVKT),
->>>  	__RISCV_ISA_EXT_DATA(smaia, RISCV_ISA_EXT_SMAIA),
->>>  	__RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
->>>  	__RISCV_ISA_EXT_DATA(sscofpmf, RISCV_ISA_EXT_SSCOFPMF),
+> base-commit: 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
+> -- 
+> 2.41.0
+
