@@ -2,145 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D01D7C7351
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9858C7C7353
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379519AbjJLQnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
+        id S1379533AbjJLQno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379320AbjJLQnf (ORCPT
+        with ESMTP id S1379499AbjJLQnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:43:35 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA05EC0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:43:33 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-692779f583fso955792b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:43:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697129013; x=1697733813; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FheJ03zTB1r9h7STvwuIv4tGnbOBTf52Cw7EqZS0/H8=;
-        b=nTHBI++d5+Qn9gfJqO2AOra/gPHc//57WHEi8CYbo2HWijiGgnFA8NngeOJfhjZ8cT
-         Ao7kVhZvgL+SD/oYRSdQYZcnlciebeIsmhPpY3sceCBwJEBQOA87fuC/VRMLXnJmoSJH
-         MqcyGdNbi4/eXb4lPQuCxZseaa/OsDjchqcW4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697129013; x=1697733813;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FheJ03zTB1r9h7STvwuIv4tGnbOBTf52Cw7EqZS0/H8=;
-        b=E6PgRFRPo7NzyYwVYoAw3WE2+YJ95S7gxhr1lWboKOxRsu8vxtcdf6KnaNoam5tEeq
-         TbNzXSDliUeW3oJglY22cg7UpSVdsE+oE+h0KOAOgE0ChROm+VYeTJWBycRnzXW03V8s
-         jUj0kcaTbolg5/yTRAyCTzQu5jpmvGgXaBxOBuNVbI0THTppxiksA7CeAEi8u3nvQEFW
-         FZcwiLHx1rtGUFLo6HjxdexcoFixYECGQVfFzBOJmwm+hQEfdSCBsIKm0v/X5C1u4AcA
-         Qr2zge0z66Upd2GvVT3Mf9+yG5dgrOhO7kivSLKCeEfbOJlYJgcky9Fwi2H/vI7pgweQ
-         wL+A==
-X-Gm-Message-State: AOJu0Yx+Lpq0424FmsPEkxzdc4gZLlTMMgwig38iyTbwzn8js2koYEbE
-        TXsIbqf4oYcph+IwSnckuXURmw==
-X-Google-Smtp-Source: AGHT+IHNYLYRAliVe1HCl7LxICrQAgkMgrh+0+zSF1yj3orms0Aj5ljjNrvRX7iZPDkay63VVPiNgw==
-X-Received: by 2002:a05:6a20:4287:b0:16b:aad0:effe with SMTP id o7-20020a056a20428700b0016baad0effemr19212702pzj.62.1697129013159;
-        Thu, 12 Oct 2023 09:43:33 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id k10-20020a637b4a000000b0059d8ecb79dcsm1970301pgn.20.2023.10.12.09.43.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 09:43:32 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 09:43:31 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Rafael Aquini <aquini@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] mm/slub: disable slab merging in the default
- configuration
-Message-ID: <202310120935.E066A3FE4@keescook>
-References: <20230627132131.214475-1-julian.pidancet@oracle.com>
- <48bd9819-3571-6b53-f1ad-ec013be742c0@google.com>
- <ZJxjgy/Mkh20WpXv@P9FQF9L96D.corp.robot.car>
- <d7962a66-12e9-6225-1e74-ccdfc9891da9@suse.cz>
+        Thu, 12 Oct 2023 12:43:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBE6CA;
+        Thu, 12 Oct 2023 09:43:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E58FC433C9;
+        Thu, 12 Oct 2023 16:43:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697129018;
+        bh=kfDTZe6bHsXYEX/cMTdKPK0HJuuqElf7yFpIZAfZdrk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=gpYnHIXtG/AI/50xVzbgYh9ZokHe+LC/HTuonFQ8uuofa9ptBdl+zXb+0i/ZAyT7A
+         nnkuqvny8W8DYDl2GaQiS9Pmz1pjdOfpLilw2xnVdxn8waw8ZXkKiQN3vxRvjgZaEh
+         PisSURAbi4YwOzw7LaMT+326xWgzSPAE91WS6p77Q4B0QLnvr8K3eI2hRrweV7K3qk
+         r6d6B7wpgHFoqR6rdmmaqULxVKtPQ8tKxKzYud1GpmUvPlFYDJvIcNtnewv5Tr1oXp
+         Riv7CkBMw6pspHVdC9vDShg5cUBCmrNw30jZ4j/JGqyFW98zghqXY2ZVYtwvriiIcL
+         Pj3IZl871HUsg==
+Date:   Thu, 12 Oct 2023 11:43:36 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc:     lpieralisi@kernel.org, robh@kernel.org, kw@linux.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        r-gunasekaran@ti.com, srk@ti.com
+Subject: Re: [PATCH] PCI: keystone: Don't enable BAR0 if link is not detected
+Message-ID: <20231012164336.GA1072823@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d7962a66-12e9-6225-1e74-ccdfc9891da9@suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <4e1f574c-6b36-c6e1-9153-90d599e2aaa7@ti.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 29, 2023 at 09:21:14AM +0200, Vlastimil Babka wrote:
-> On 6/28/23 18:44, Roman Gushchin wrote:
-> > On Tue, Jun 27, 2023 at 12:32:15PM -0700, David Rientjes wrote:
-> >> On Tue, 27 Jun 2023, Julian Pidancet wrote:
-> >> 
-> >> > Make CONFIG_SLAB_MERGE_DEFAULT default to n unless CONFIG_SLUB_TINY is
-> >> > enabled. Benefits of slab merging is limited on systems that are not
-> >> > memory constrained: the overhead is negligible and evidence of its
-> >> > effect on cache hotness is hard to come by.
-> >> > 
-> >> 
-> >> I don't have an objection to this, I think it makes sense.
+On Thu, Oct 12, 2023 at 10:15:09AM +0530, Siddharth Vadapalli wrote:
+> Hello Bjorn,
+> 
+> Thank you for reviewing the patch.
+> 
+> On 11/10/23 19:16, Bjorn Helgaas wrote:
+> > Hi Siddharth,
 > > 
-> > +1
+> > On Wed, Oct 11, 2023 at 06:04:51PM +0530, Siddharth Vadapalli wrote:
+> >> Since the function dw_pcie_host_init() ignores the absence of link under
+> >> the assumption that link can come up later, it is possible that the
+> >> pci_host_probe(bridge) function is invoked even when no endpoint device
+> >> is connected. In such a situation, the ks_pcie_v3_65_add_bus() function
+> >> configures BAR0 when the link is not up, resulting in Completion Timeouts
+> >> during the MSI configuration performed later by the PCI Express Port driver
+> >> to setup AER, PME and other services. Thus, leave BAR0 disabled if link is
+> >> not yet detected when the ks_pcie_v3_65_add_bus() function is invoked.
 > > 
-> > I believe the overhead was much larger when we had per-memcg slab caches,
-> > but now it should be fairly small on most systems.
+> > I'm trying to make sense of this.  In this path:
 > > 
-> > But I wonder if we need a new flag (SLAB_MERGE?) to explicitly force merging
-> > on per-slab cache basis.
+> >   pci_host_probe
+> >     pci_scan_root_bus_bridge
+> >       pci_register_host_bridge
+> > 	bus = pci_alloc_bus(NULL)    # root bus
+> > 	bus->ops->add_bus(bus)
+> > 	  ks_pcie_v3_65_add_bus
+> > 
+> > The BAR0 in question must belong to a Root Port.  And it sounds like
+> > the issue must be related to MSI-X, since the original MSI doesn't
+> > involve any BARs.
 > 
-> Damn, we just tried to add SLAB_NO_MERGE, that is if Linus pulls the PR, as
-> I've just found out that the last time he hated the idea [1] :) (but at the
-> same time I think the current attempt is very different in that it's not
-> coming via a random tree, and the comments make it clear that it's not for
-> everyone to enable in production configs just because they think they are
-> special).
-> 
-> But SLAB_MERGE, I doubt it would get many users being opt-in. People would
-> have to consciously opt-in to not being special.
-> 
-> As for changing the default, we definitely need to see the memory usage
-> results first, as was mentioned. It's not expected that disabling merging
-> would decrease performance, so no wonder the test didn't find such decrease,
-> but the expected downside is really increased memory overhead.
+> Yes, the issue is related to MSI-X. I will list down the exact set of function
+> calls below as well as the place where the completion timeout first occurs:
+> ks_pcie_probe
+>   dw_pcie_host_init
+>     pci_host_probe
+>       pci_bus_add_devices
+>         pci_bus_add_device
+>           device_attach
+>             __device_attach
+>               bus_for_each_drv
+>                 __device_attach_driver (invoked using fn(drv, data))
+>                   driver_probe_device
+>                     __driver_probe_device
+>                       really_probe
+>                         pci_device_probe
+>                           pcie_portdrv_probe
+>                             pcie_port_device_register
+>                               pcie_init_service_irqs
+>                                 pcie_port_enable_irq_vec
+>                                   pci_alloc_irq_vectors
+>                                     pci_alloc_irq_vectors_affinity
+>                                       __pci_enable_msix_range
+>                                         msix_capability_init
+>                                           msix_setup_interrupts
+>                                             msix_setup_msi_descs
+>                                               msix_prepare_msi_desc
+> In this function: msix_prepare_msi_desc, the following readl()
+> causes completion timeout:
+> 		desc->pci.msix_ctrl = readl(addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
+> The completion timeout with the readl is only observed when the link
+> is down (No Endpoint device is actually connected to the PCIe
+> connector slot).
 
-Did this analysis happen? Apologies if I missed it...
+Do you know the address ("addr")?  From pci_msix_desc_addr(), it looks
+like it should be:
 
-> But then again it's just a default and most people would use a distro config
-> anyway, and neither option seems to be an obvious winner to me? As for the
-> "security by default" argument, AFAIK we don't enable freelist
-> hardening/randomization by default, and I thought (not being the expert on
-> this) the heap spraying attacks concerned mainly generic kmalloc cache users
-> (see also [2]) and not some specific named caches being merged?
-> 
-> [1] https://lore.kernel.org/all/CA+55aFyepmdpbg9U2Pvp+aHjKmmGCrTK2ywzqfmaOTMXQasYNw@mail.gmail.com/
-> [2] https://lore.kernel.org/all/20230626031835.2279738-1-gongruiqi@huaweicloud.com/
+  desc->pci.mask_base + desc->msi_index * PCI_MSIX_ENTRY_SIZE
 
-I'm a fan of turning on any of these "by default", as that's been the
-historical approach, which tends to span years:
+and desc->pci.mask_base should be dev->msix_base, which we got from
+msix_map_region(), which ioremaps part of the BAR indicated by the
+MSI-X Table Offset/Table BIR register.
 
-- security feature introduced, default off in the kernel
-- distros enable it by default
-- kernel makes it default on
+I wonder if this readl() is being handled as an MMIO access to a
+downstream device instead of a Root Port BAR access because it's
+inside the Root Port's MMIO window.
 
-So perhaps we're better off making the other hardening features on by
-default since distros have been shipping with them for years now?
+Could you dump out these values just before the readl()?
 
--Kees
+  phys_addr inside msix_map_region()
+  dev->msix_base
+  desc->pci.mask_base
+  desc->msi_index
+  addr
+  call early_dump_pci_device() on the Root Port
 
--- 
-Kees Cook
+Bjorn
