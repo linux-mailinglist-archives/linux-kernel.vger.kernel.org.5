@@ -2,131 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8067C6188
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 02:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 841A87C6182
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 02:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376685AbjJLAJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 20:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34780 "EHLO
+        id S235257AbjJLAJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 20:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233862AbjJLAJ5 (ORCPT
+        with ESMTP id S235267AbjJLAJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 20:09:57 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973D1DD;
-        Wed, 11 Oct 2023 17:09:44 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BNqLww011417;
-        Thu, 12 Oct 2023 00:09:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=d0C+V6sz5Uxxcp9q65G5k+s9+Nrl3L1ZmUaYigZHa9E=;
- b=MSlltFXIO1Bo9oxRKnvLdKQcwsyqoWVR4J6RsmuYL40gy64V4Wzb/IxCOl2xXz7sgMbz
- Xx0Ju1x3oFfaxB4CtDWoeEIIPuI2klq6NnLSUYsqcdOfehRO4/t0Sb+ZV3Ug3lD12dVa
- VjB8N8CoH1BweKHduDvNHGlUWxBo1qr+UToFFNhewMZAhdyDof6aK9in0kDr+GZawofj
- TKvnIO4Cb0QwRCrsoD940lrMGsvt1cF9OU6z6tbtV3NIdt7oxVHKaataqRktZvjfa49H
- vBccD7431OgGnjmhJF/QiZcwnn9v4TnPXIJEJ5/2TBFNTw+U1D+cMLZroLhKuCoscrjA vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tp5rs8aph-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 00:09:09 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39BNtO5L018625;
-        Thu, 12 Oct 2023 00:09:09 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tp5rs8anu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 00:09:09 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39BLCPJO000685;
-        Thu, 12 Oct 2023 00:09:07 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkk5kunap-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 00:09:07 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39C097ij23331364
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Oct 2023 00:09:07 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1EA4A58050;
-        Thu, 12 Oct 2023 00:09:07 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DCAB958052;
-        Thu, 12 Oct 2023 00:09:04 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.14.38])
-        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Oct 2023 00:09:04 +0000 (GMT)
-Message-ID: <22761c3d88c2c4dbac747cc7ddca3d743c6d88d9.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 12/25] security: Introduce inode_post_setattr hook
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Wed, 11 Oct 2023 20:08:53 -0400
-In-Reply-To: <20230904133415.1799503-13-roberto.sassu@huaweicloud.com>
-References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
-         <20230904133415.1799503-13-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 5oAsIzlg-Cr9kUUn-MNBSJZG6yIO33Pw
-X-Proofpoint-GUID: F4tBJeQzGFC0-girdCtJDstv02LoVYEx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_18,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- mlxscore=0 mlxlogscore=998 clxscore=1015 malwarescore=0 spamscore=0
- lowpriorityscore=0 priorityscore=1501 adultscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310110213
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 11 Oct 2023 20:09:27 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD469E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 17:09:23 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-4527d436ddfso186875137.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 17:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697069362; x=1697674162; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8E6Rb76QtykLEtpxRTYbPOUD3PEgLNbGFAb6+VKc0g0=;
+        b=ldTJZADeta0UhUlotByppu58yUaQfL4ob0rR9p0XYk17+JPZjuNVRpWlIegSuDVttZ
+         6d8bL4JCAlZ0bFT4z29Y4iCTY55mmKxFQa3qwDxAd4FiMHSiM9Akk7E92WU3/H5Y9KSm
+         fKvUS1MkSG83JrBHUQ13sQS2r0nMV8ytX5d422Z1k5oT5+RvXoRAIRCiEQBYuUy9cP71
+         h4d7eOJhSb6IEK3eUSlkIqT1VartMBx6K7sjN+h8+8PQUQ8WsGbneQBQ6ySb5dfrBjV1
+         jtmeW5luwI/2fQhI120ufdWitKtL3TmGAp71euKzrM0nPaWrE3L5wXOABHZR7eDpcSOr
+         KujQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697069362; x=1697674162;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8E6Rb76QtykLEtpxRTYbPOUD3PEgLNbGFAb6+VKc0g0=;
+        b=s3jmh3ctpqkqgitv076gDiTyiSdjLDkGXj735tTWBsjjx9LXIRA0ZcM45iY8xFtuMj
+         NAkoyOHK9Nu15jOWtbQoFdWXFDGSsDAAUgdJBy8D6oMu8E6xbtov/OT8jJ9hOoHN/lWE
+         wrdqSYbb86C9RWo/7yUW7zsCAzf/Hd8JDCyaYAxDqaRBsu8X++kWbEwnyz2w6kwvcFjq
+         T0+ZX6bj/tBiq03EiUPhN0voVBrTv43QaC6xS2bqIupWuwu/hV3sDOVUW9N2pabaCIB1
+         ucEkq0oB+hfAKuKu3sqZmq+ZxqvywmDuSp9gCiDQLf6THZhQ7ikjk2X1Z/SXYAfDF7LJ
+         PvGA==
+X-Gm-Message-State: AOJu0YxGl+rYh8o9FmM1+GSZvZP0RFyovQuK20JqwdDF9ZDARZBpBL0S
+        auUZm5PcxSMsujTlCc5XFMzRAGAAc5E3fT5BZ/8=
+X-Google-Smtp-Source: AGHT+IE+jtGj0bpjr4ph2nFS2WUEiMP1Bl7FyBQFitIVf0PO5COhrul84X3ZhwP6TxoKBxvnZ7R7AtyFrDQXdrhBJCI=
+X-Received: by 2002:a67:e40d:0:b0:452:8953:729e with SMTP id
+ d13-20020a67e40d000000b004528953729emr22925899vsf.13.1697069361033; Wed, 11
+ Oct 2023 17:09:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231011114721.193732-1-bjorn@kernel.org>
+In-Reply-To: <20231011114721.193732-1-bjorn@kernel.org>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Thu, 12 Oct 2023 10:08:54 +1000
+Message-ID: <CAKmqyKMtD7cvNjvs=_=frbaUVpPunj4sX0Q+jgLqDSYKNAwWxg@mail.gmail.com>
+Subject: Re: [PATCH] riscv, qemu_fw_cfg: Add support for RISC-V architecture
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc:     Gabriel Somlo <somlo@cmu.edu>,
+        "Michael S. Tsirkin" <mst@redhat.com>, qemu-devel@nongnu.org,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gOn Mon, 2023-09-04 at 15:34 +0200, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
-> 
-> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-> the inode_post_setattr hook.
-> 
-> It is useful for EVM to recalculate the HMAC on modified file attributes
-> and other file metadata, after it verified the HMAC of current file
-> metadata with the inode_setattr hook.
+On Wed, Oct 11, 2023 at 11:34=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kerne=
+l.org> wrote:
+>
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+>
+> Qemu fw_cfg support was missing for RISC-V, which made it hard to do
+> proper vmcore dumps from qemu.
+>
+> Add the missing RISC-V arch-defines.
+>
+> You can now do vmcore dumps from qemu. Add "-device vmcoreinfo" to the
+> qemu command-line. From the qemu montior:
+>   (qemu) dump-guest-memory vmcore
+>
+> The vmcore can now be used, e.g., with the "crash" utility.
+>
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
 
-"useful"?  
+Acked-by: Alistair Francis <alistair.francis@wdc.com>
 
-At inode_setattr hook, EVM verifies the file's existing HMAC value.  At
-inode_post_setattr, EVM re-calculates the file's HMAC based on the
-modified file attributes and other file metadata.
+Alistair
 
-> 
-> LSMs should use the new hook instead of inode_setattr, when they need to
-> know that the operation was done successfully (not known in inode_setattr).
-> The new hook cannot return an error and cannot cause the operation to be
-> reverted.
-
-Other LSMs could similarly update security xattrs or ...
-
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-
+> ---
+>  drivers/firmware/Kconfig       | 2 +-
+>  drivers/firmware/qemu_fw_cfg.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+> index b59e3041fd62..f05ff56629b3 100644
+> --- a/drivers/firmware/Kconfig
+> +++ b/drivers/firmware/Kconfig
+> @@ -155,7 +155,7 @@ config RASPBERRYPI_FIRMWARE
+>
+>  config FW_CFG_SYSFS
+>         tristate "QEMU fw_cfg device support in sysfs"
+> -       depends on SYSFS && (ARM || ARM64 || PARISC || PPC_PMAC || SPARC =
+|| X86)
+> +       depends on SYSFS && (ARM || ARM64 || PARISC || PPC_PMAC || RISCV =
+|| SPARC || X86)
+>         depends on HAS_IOPORT_MAP
+>         default n
+>         help
+> diff --git a/drivers/firmware/qemu_fw_cfg.c b/drivers/firmware/qemu_fw_cf=
+g.c
+> index a69399a6b7c0..1448f61173b3 100644
+> --- a/drivers/firmware/qemu_fw_cfg.c
+> +++ b/drivers/firmware/qemu_fw_cfg.c
+> @@ -211,7 +211,7 @@ static void fw_cfg_io_cleanup(void)
+>
+>  /* arch-specific ctrl & data register offsets are not available in ACPI,=
+ DT */
+>  #if !(defined(FW_CFG_CTRL_OFF) && defined(FW_CFG_DATA_OFF))
+> -# if (defined(CONFIG_ARM) || defined(CONFIG_ARM64))
+> +# if (defined(CONFIG_ARM) || defined(CONFIG_ARM64) || defined(CONFIG_RIS=
+CV))
+>  #  define FW_CFG_CTRL_OFF 0x08
+>  #  define FW_CFG_DATA_OFF 0x00
+>  #  define FW_CFG_DMA_OFF 0x10
+>
+> base-commit: 1c8b86a3799f7e5be903c3f49fcdaee29fd385b5
+> --
+> 2.39.2
+>
+>
