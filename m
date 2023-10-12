@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 582EF7C7051
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A41F67C7054
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379132AbjJLOa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 10:30:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
+        id S1347288AbjJLOas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 10:30:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347299AbjJLOaV (ORCPT
+        with ESMTP id S1347318AbjJLOal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:30:21 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9986DE;
-        Thu, 12 Oct 2023 07:30:16 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53e2dc8fa02so208134a12.2;
-        Thu, 12 Oct 2023 07:30:16 -0700 (PDT)
+        Thu, 12 Oct 2023 10:30:41 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E479EE7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:30:39 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-3575732df7fso243615ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:30:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697121015; x=1697725815; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zp4wVCfS4MuzC+8sZiTH1CMTD77leYtWSl6pm5bOwTo=;
-        b=j7ZQ3wNGC9zNq9Z30DonZ87Dn8Yny6tEbGXkqXh5zD7f1mPWANl/CJHa+aaxVdmKKj
-         eV9eUxnoI4hfFD8jEpw2vcRCYyz7IrpdXDhgSJfklMk44UPKEnSzq9YfVAIX+m4vnDwH
-         J/SNcIvNIV7tcXvRoExSU0/FPGZfJ8KuCey8PQmy0BgxoSkvd5rV77UxgOX+f2NRRWc1
-         Sxl77xOWqNiQw7b11hVk7JMCSPeWYRfdkaGD06yscMx2vvhXSFeUaNZ/hrry/3pe2dPW
-         p2sY05liSErXPb7fIrEWbhSXC6FE8WyzbyyAjwz9iqsl+tWGoHieBf1Esf9l8y3mKZKu
-         bvVQ==
+        d=linuxfoundation.org; s=google; t=1697121039; x=1697725839; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9BtIVBlpSIVQw6t8LBvInNyNxUiBSBsc/dgu+7xr1DM=;
+        b=BnnIRehlNpdIkyHHezJpYzvt9OEX133vLDjEs9WwMw6duUBe8RJZbXCCQh5+yLO65A
+         /ioSpGKdnv9lSHQ2Tx1UGszln6WPAeUCYvpZIH0lwS+uf/0nCoTTEy1oXbQlUE73oIqp
+         MNSoVIBqOfgUHAltjn11P+zjO3giLJG60ji5g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697121015; x=1697725815;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zp4wVCfS4MuzC+8sZiTH1CMTD77leYtWSl6pm5bOwTo=;
-        b=aqXl8TG812H3ZWoSNFdEMoK1VXtuzFmk36JmI+bf2/lttZ9o98tjhcNAcn1h+v/zVq
-         KZfhISxiJMXKyyUqh9jmixVRpgS/iSzzq7FBBPtEG5K70YW8+pw+z7Ohv9ecib9yhQkG
-         LYsMn0BsoSdljmpru2heADjMyf+oPDMS6+jhDtbm9/Z48ngKcY+3WI+WiZdXk7zLJLsL
-         DeI7sMeqbeYjQeqTH5xLj5yY0q8GDLBRUs0CUNDbt9dmnn4M1sHC4ZqHtUw2pksUNwJV
-         7IsvcpZ6KCoFa8sitqtS+okO7xhvdfSWJTOcXsXycQ9S2ZSHKfP7fp5z4NdtdAAKmTdC
-         DlEQ==
-X-Gm-Message-State: AOJu0YyBBN6qNyIHsecmWJancMQY0Hgb7DS9XUyP69s02wwxuX1d7JH6
-        Wf77qb1TF0MGQjagIgR1t8Bm0bq1tE4=
-X-Google-Smtp-Source: AGHT+IHLzI8ne8OuqeIuLuJv4sq6vNdVpgCeX5faLw3CVHMUIUANnnos38xMW3g5gCPk+okf6wXx9Q==
-X-Received: by 2002:aa7:c154:0:b0:522:b112:6254 with SMTP id r20-20020aa7c154000000b00522b1126254mr21621650edp.4.1697121015055;
-        Thu, 12 Oct 2023 07:30:15 -0700 (PDT)
-Received: from orome.fritz.box (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id cy7-20020a0564021c8700b0053de19620b9sm1911874edb.2.2023.10.12.07.30.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 07:30:14 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 16:30:12 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Lukasz Luba <lukasz.luba@arm.com>, rafael@kernel.org,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] thermal/core: Hardening the self-encapsulation
-Message-ID: <ZSgC9DxVXC-bHleo@orome.fritz.box>
-References: <20231012102700.2858952-1-daniel.lezcano@linaro.org>
- <a6b51de7-4f56-4db9-a7dd-60555ac6c37f@arm.com>
- <d9f3bd7b-a5db-4d37-bb1f-f97e40c8a63a@linaro.org>
+        d=1e100.net; s=20230601; t=1697121039; x=1697725839;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9BtIVBlpSIVQw6t8LBvInNyNxUiBSBsc/dgu+7xr1DM=;
+        b=EGrXiwccE978/Zuq++dkwnkoy9OOMnZF9w5lvKAcK0ehSSkkPqWrDXD26LR+vbLHE2
+         u0lkKPH/8slfASP0iea51fQB9ucb4mSfpTn3bG7BEIXHCHKtbf0OH4sz8/dH33B28S3U
+         eeR85b7I+xBJsqFqKSQLhDQDtLvgIhJ15bg1NTt5OxTyamGVFSK9pYo+kuYaHhJdnvO7
+         /TcS5tQX2Rh6bMYUUJK8ZTz3cCduz6rLi2dujPSulSYR7qSSe0qTz1KrD3jtCoEwlkYs
+         yFmUur9mHRsrsiyGQ3yyMeav1hb/c37HeSD183g+L/tsh6xRyylRayc2KdF/tm7rQ2wM
+         G0og==
+X-Gm-Message-State: AOJu0YxFQ6Ie8xAxOBSSXg2B9d+/NqFAFqrPuJWf0KoFsyqyIvdpabjZ
+        hisrwqNwa9c1hYKs0Zedt0R3Kw==
+X-Google-Smtp-Source: AGHT+IEjKGDpe0KBGUPxH0HbRdhr8dUkJea9vMZ8EDBfdFLs7XawCtgbT5fturBjhOCH1RLjeVTwRA==
+X-Received: by 2002:a6b:3b83:0:b0:7a5:cd6b:7581 with SMTP id i125-20020a6b3b83000000b007a5cd6b7581mr2814293ioa.2.1697121039213;
+        Thu, 12 Oct 2023 07:30:39 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id f3-20020a02cac3000000b0041ab9b6f5b0sm4059769jap.128.2023.10.12.07.30.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 07:30:38 -0700 (PDT)
+Message-ID: <fafe90f3-5612-4dac-8ca7-4f0d0d6a05f7@linuxfoundation.org>
+Date:   Thu, 12 Oct 2023 08:30:37 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cSV4NKVWE6plEgmG"
-Content-Disposition: inline
-In-Reply-To: <d9f3bd7b-a5db-4d37-bb1f-f97e40c8a63a@linaro.org>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/8] selftests: Add printf attribute to kselftest
+ prints
+To:     =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>, Shuah <shuah@kernel.org>
+Cc:     ilpo.jarvinen@linux.intel.com,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1697012398.git.maciej.wieczor-retman@intel.com>
+ <13a47130763d109aa40de153ecbee9ede22d8356.1697012398.git.maciej.wieczor-retman@intel.com>
+ <a2a5cb05-8604-4303-9802-573359c68368@kernel.org>
+ <4h2eu6yhodrujbvem24v7cwal5tnk2agsqulpxwi4myk7n35uq@phbxlajivrpq>
+Content-Language: en-US
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <4h2eu6yhodrujbvem24v7cwal5tnk2agsqulpxwi4myk7n35uq@phbxlajivrpq>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,86 +78,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/12/23 01:32, Maciej Wieczór-Retman wrote:
+> On 2023-10-11 at 13:40:48 -0600, Shuah wrote:
+>> On 10/11/23 02:23, Maciej Wieczor-Retman wrote:
+>>> Kselftest header defines multiple variadic functions that use printf
+>>> along with other logic.
+>>>
+>>> There is no format checking for the variadic functions that use
+>>> printing inside kselftest.h. Because of this the compiler won't
+>>> be able to catch instances of mismatched printf formats and debugging
+>>> tests might be more difficult.
+>>>
+>>> Add the common __printf attribute macro to kselftest.h.
+>>>
+>>> Add __printf attribute to every function using formatted printing with
+>>> variadic arguments.
+>>>
+>>> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+>>> Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+>>> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+>>> ---
+>>> Changelog v4:
+>>> - Fix typo in patch subject. (Reinette)
+>>> - Add Reinette's reviewed-by tag.
+>>>
+>>
+>> I still need information on how you found these problems. Please
+>> add it to change log for each of these patches.
+> 
+> Sure, I'll add notes on methodology to patches 2-8. I understand that
+> this patch (1/8) message doesn't need that addition since the problems
+> it exposes are in separate patches.
+>
 
---cSV4NKVWE6plEgmG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes please. As mentioned a couple of times, I would like to see how
+the problem is found in each patch commit log.
 
-On Thu, Oct 12, 2023 at 03:14:23PM +0200, Daniel Lezcano wrote:
->=20
-> Hi Lukasz,
->=20
-> On 12/10/2023 14:01, Lukasz Luba wrote:
-> > Hi Daniel,
-> >=20
-> > On 10/12/23 11:26, Daniel Lezcano wrote:
-> > > The thermal private header has leaked all around the drivers which
-> > > interacted with the core internals. The thermal zone structure which
-> > > was part of the exported header led also to a leakage of the fields
-> > > into the different drivers, making very difficult to improve the core
-> > > code without having to change the drivers.
-> > >=20
-> > > Now we mostly fixed how the thermal drivers were interacting with the
-> > > thermal zones (actually fixed how they should not interact). The
-> > > thermal zone structure will be moved to the private thermal core
-> > > header. This header has been removed from the different drivers and
-> > > must belong to the core code only. In order to prevent this private
-> > > header to be included again in the drivers, make explicit only the
-> > > core code can include this header by defining a THERMAL_CORE_SUBSYS
-> > > macro. The private header will contain a check against this macro.
-> > >=20
-> > > The Tegra SoCtherm driver needs to access thermal_core.h to have the
-> > > get_thermal_instance() function definition. It is the only one
-> > > remaining driver which need to access the thermal_core.h header, so
-> > > the check will emit a warning at compilation time.
-> > >=20
-> > > Thierry Reding is reworking the driver to get rid of this function [1]
-> > > and thus when the changes will be merged, the compilation warning will
-> > > be converted to a compilation error, closing definitively the door to
-> > > the drivers willing to play with the thermal zone device internals.
-> >=20
-> > That looks like a good idea. Although, shouldn't we avoid the
-> > compilation warnings and just first merge the fixes for drivers?
->=20
-> Yes, we should but there is the series for nvidia (pointed in the changel=
-og)
-> which need a slight refresh for the bindings AFAIR. That series is since
-> March 2023 and Thierry seems busy [1]. I'm holding the hardening since th=
-en.
->=20
-> So I don't know how to make progress on this? I was assuming we can merge
-> this series and let the compiler recall what has to be fixed.
->=20
-> [1] https://lore.kernel.org/all/ZK14edZUih1kH_sZ@orome/
->=20
-> and as soon as it is fixed, we convert the WARNING to ERROR :P
+> Or would you like me to also note here more specifically what effect it
+> has in the rest of the series?
+> 
 
-Yeah, sorry about that. This has been plagued by bad luck. Since then
-the device that I need to test this on broke and it then took a while to
-get a new one. I still need to find time to set this up and do some more
-extensive testing to make sure I haven't regressed anything.
+Yes please.
 
-Thierry
+>> I am seeing checkpatch warning:
+>>
+>> WARNING: Prefer __printf(a, b) over __attribute__((format(printf, a, b)))
+>> #102: FILE: tools/testing/selftests/kselftest.h:81:
+>> +#define __printf(a, b)   __attribute__((format(printf, a, b)))
+> 
+> Running checkpatch.pl with --show-types shows the
+> PREFER_DEFINED_ATTRIBUTE_MACRO is raised. From looking at the error
+> message in the script it looks like a false positive:
+> 	"Prefer $new over __attribute__(($orig_attr$params))\n"
+> 
+> Please correct me if my train of thought is wrong but I think checkpatch
+> sees __printf() macro defined and it sees it's raw version
+> "__attribute__((format(printf, a, b)))" which it wants to replace with
+> the macro. But since the raw version is found in the define line that is
+> obviously not possible.
+> 
 
---cSV4NKVWE6plEgmG
-Content-Type: application/pgp-signature; name="signature.asc"
+This is fine.
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmUoAvIACgkQ3SOs138+
-s6FWNw/9Fbxna4WnbhzeH/lRKiMZOxQ2Qw7RCAatQfzWLSzU0+A1G1VxwDmlTyj8
-toZiJy/NkAfRGrR7Avbc6nmdnx20x4syCu9zjWcbnJcwQh+mmo3Vqg4hEW1OkbSC
-GnkXEckyRIPYbOScbEElOyoxFredVScWdyddHGka+9C1H1tXE7BR+P/I2zJZP/M9
-zAgo1/bvC3QHTgY3TK9yQRsZ5X10t4N14n4Q3h+RzrAQQl6Zsc5BBUh8OHt3+XTI
-hIeubvBJS7dXehCA0llu9iLIqCDMBv6z/tVbjdPQZJNsshPYqpwCYEm6t3k/pnxj
-EFGCWN/taqKHJi4Q36jjOFkCwoCXnKzhS1ViRcXkcZaC13n6ljiZM1/RzS3/wW2t
-CP6/7IG3dWB6euXSY8LGGxHxYN17epdICpIXmH1i6Ua1vfcjY2ynISDb2Ao+4Bvq
-89T7F9lGth9MneWGiDUm4n9OhEH5+q00u9sfus/MDWGLPzTqGiHKxcmjQQP0VDui
-nimpP/LnPXvD3Z4CUYHZpYkE0nnIHYF4utUfeuM5lCsRp8cHtHcVpB8KN8VZR+Fl
-LzUb1K6585hC28Vm87+EDI4HAZ9PpbxoJGGUsZZdBO2mzE30maU02l9UWEabEWeT
-4CfdVdBuWY2mw63GiHB/tOaFvz5D5EV9lhTxib8cO46f90lEd9k=
-=k0xl
------END PGP SIGNATURE-----
-
---cSV4NKVWE6plEgmG--
+thanks,
+-- Shuah
