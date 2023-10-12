@@ -2,68 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 508F97C6B00
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3E37C6B03
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347140AbjJLKYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36352 "EHLO
+        id S235691AbjJLKY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377847AbjJLKX4 (ORCPT
+        with ESMTP id S235694AbjJLKYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:23:56 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF32BA;
-        Thu, 12 Oct 2023 03:23:54 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id AF721660730F;
-        Thu, 12 Oct 2023 11:23:52 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697106233;
-        bh=EH0UlIYMDGYTYxLZU/+hOuPcJ7E2NwwQpH/7jhzm9OU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=VvWgXwjUe7RlKiAvb5UpFvxRP4FWWE03tI5pOgRFOOcnCS0wLR6xr6KvRGrJwxUsz
-         CSM7EdyfqzJzVJhONU4WX9fUfhUmidj3yuOG+2Abx1mYB0qjt6xYYgglrMZQmi6Nmc
-         lZ5VUG6kJfGDuGm/Z05kIjTaBnaH+g3Au5qCO+RMeoyOsh4wXVpAOw/A0U/lNM6N/W
-         Nl4WZDO+UwG3pqaScyohEdVM8xSFrSk2owimKrXpWlwg3kzRmXXDoB5zEyJzrf/X0Z
-         YO1/DmMJMxkto5hAX+LYKctI0NMoirgCs0LDk/NBvBGMqY3GkNX3dPNW49QKKO3exk
-         seQasIOhJUGyA==
-Message-ID: <1e578544-b062-6585-2574-1b40168a82af@collabora.com>
-Date:   Thu, 12 Oct 2023 12:23:50 +0200
+        Thu, 12 Oct 2023 06:24:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB9A114
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:24:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33593C433C8;
+        Thu, 12 Oct 2023 10:24:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697106276;
+        bh=0Ljt2/e3et0ja/EIacPM8+PVdZSTtxr6HVLa0adWuRc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ezl8LIgv/hwXINeaG2HyDxNbNKzV7PAKOAn13rz6rHGAMMb1vn+AjsCpUHB6kULoc
+         JQKqKBBQBsnFQOOKmJQuSBWSuJHJSrLVwoJ+oNxd493jMdxkFw4Umt4oumm+F+MI4G
+         I1MguCsBXItmVTZYQQnHIRYZgWY9fWdVLPd3tRNU1OZxaBk1sMo6RTG6wSAFmsmg63
+         t2PBMVvRzi3GYyhaKznQFmFt91OveyfoqGwXxOHvM1seGwg01MwWcNxIYTgSEfp31r
+         RPVvBI7ldeMmFTnakAe9KIp2B84aFmjRIHhrqlnkHwezMa46d/GSX8m9VsgnEKcHHY
+         mcAMfSRnpc8aQ==
+Date:   Thu, 12 Oct 2023 11:24:32 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Shawn Anastasio <sanastasio@raptorengineering.com>,
+        devicetree@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
+        Timothy Pearson <tpearson@raptorengineering.com>,
+        linux-kernel@vger.kernel.org,
+        Georgy Yakovlev <Georgy.Yakovlev@sony.com>
+Subject: Re: [PATCH 3/3] mfd: sie-cronos-cpld: Add driver for SIE cronos CPLD
+Message-ID: <20231012102432.GG8314@google.com>
+References: <2e9763cb4fa258fe11769a4ff1544d96c536a4a2.1696285339.git.sanastasio@raptorengineering.com>
+ <202310050807.eDZkgFy5-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v7 04/16] dt-bindings: media: mediatek: mdp3: add
- compatible for MT8195 RSZ
-Content-Language: en-US
-To:     Moudy Ho <moudy.ho@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20231012084037.19376-1-moudy.ho@mediatek.com>
- <20231012084037.19376-5-moudy.ho@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231012084037.19376-5-moudy.ho@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <202310050807.eDZkgFy5-lkp@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,11 +54,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 12/10/23 10:40, Moudy Ho ha scritto:
-> MT8195 RSZ inherited from MT8183, add the corresponding
-> compatible name to it.
+On Thu, 05 Oct 2023, kernel test robot wrote:
+
+> Hi Shawn,
 > 
-> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on lee-mfd/for-mfd-next]
+> [also build test WARNING on robh/for-next linus/master v6.6-rc4 next-20231004]
+> [cannot apply to lee-leds/for-leds-next lee-mfd/for-mfd-fixes]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Shawn-Anastasio/dt-bindings-mfd-sie-cronos-cpld-Add-initial-DT-binding/20231003-073243
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git for-mfd-next
+> patch link:    https://lore.kernel.org/r/2e9763cb4fa258fe11769a4ff1544d96c536a4a2.1696285339.git.sanastasio%40raptorengineering.com
+> patch subject: [PATCH 3/3] mfd: sie-cronos-cpld: Add driver for SIE cronos CPLD
+> config: i386-randconfig-063-20231005 (https://download.01.org/0day-ci/archive/20231005/202310050807.eDZkgFy5-lkp@intel.com/config)
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231005/202310050807.eDZkgFy5-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202310050807.eDZkgFy5-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> drivers/mfd/sie-cronos-cpld.c:509:34: warning: 'cronos_cpld_dt_ids' defined but not used [-Wunused-const-variable=]
+>      509 | static const struct of_device_id cronos_cpld_dt_ids[] = {
+>          |                                  ^~~~~~~~~~~~~~~~~~
+> 
+> 
+> vim +/cronos_cpld_dt_ids +509 drivers/mfd/sie-cronos-cpld.c
+> 
+>    508	
+>  > 509	static const struct of_device_id cronos_cpld_dt_ids[] = {
+>    510		{ .compatible = "sie,cronos-cpld", },
+>    511		{ }
+>    512	};
+>    513	MODULE_DEVICE_TABLE(of, cronos_cpld_dt_ids);
+>    514	
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Removing from my queue until this is fixed.
 
+-- 
+Lee Jones [李琼斯]
