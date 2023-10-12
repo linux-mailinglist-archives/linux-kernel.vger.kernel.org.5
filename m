@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3D67C7469
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C27077C7471
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441821AbjJLRWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49508 "EHLO
+        id S1379714AbjJLRWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379633AbjJLRWH (ORCPT
+        with ESMTP id S1379641AbjJLRWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:22:07 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B13101;
-        Thu, 12 Oct 2023 10:21:54 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-35749556444so6043785ab.1;
-        Thu, 12 Oct 2023 10:21:54 -0700 (PDT)
+        Thu, 12 Oct 2023 13:22:08 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E09110;
+        Thu, 12 Oct 2023 10:21:55 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-79fa2dbd793so50605839f.2;
+        Thu, 12 Oct 2023 10:21:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697131313; x=1697736113; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697131314; x=1697736114; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X+YoaYP9Btr77N0brD8AfqI/lJY3W3ao1Z4fzgsncX4=;
-        b=VnAwK5J0rveKf+Jbc8zkR6GtO/XYcOQxvWxUssOPiFxtSmV40zIKFNmTJ0gXQohaPS
-         eIQCW7ZRb2MPO7qTl7/2Y0EV7zOtY61VdjMlhIEE4hriaAmwjqMJB6iGbGHqQGlArsmI
-         nTiKzPcEsYaT047V0DdQ/L50RxC50NBUpeYIk4s+MMi8c5NAGvRfUtmKKpj2gEfYPTYa
-         3tC++Yz8Ly0OPuCjyBcmp4OocfqOvS1FEQ+e0BtcB4H3FNprOKUc9gMBmtix6yWUCLgs
-         pMV5a5UJj/PHe0qIaUyZ4dcnntKYrghFKM/YVoSHsbYKjWroauopLj7EK+ANmUQgUV5q
-         qQCA==
+        bh=fEjUcd2gIGh+rcuXSmEeq7H3LSdL8L2dg7mL1DHpCLA=;
+        b=S86mj4zvTnA7aWvjCjC+NP6W0tzW99TEMCDcgBAUy0zZrFgZkOHOqKVgC5ehYiaHZj
+         XDTY4D5R56lTmHfZ1gk6w/74lrmlR6Txvulqx2uxaDqCdZDMpjUny0zWP3ZchSLTsFBs
+         aiHHlwOl6O/iRUQUt0rA9c9eXV3XoMFvXGq7GryC42/UvhrtNM+q6G3DRznDxvYqVR6O
+         4IcOtvDnuxj9f8Q85Z3UepPucs6a8yJKQougESrxRzM5MifJ/d0oF6/+jsWh1zGAPuf6
+         erAPy0LtfAnpxSn/TFvArdg3FHv5LKtGwspNtzgW5C6zyN4iWdNWRUDd/w9xcXvyHjyF
+         Srvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697131313; x=1697736113;
+        d=1e100.net; s=20230601; t=1697131314; x=1697736114;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=X+YoaYP9Btr77N0brD8AfqI/lJY3W3ao1Z4fzgsncX4=;
-        b=GzWFspgz2Uxp6icRrc0+F0ymTHWFOTX55XdXWA1R+zqlEOvaEgyoxJUPTuaiL6MpSf
-         Qj+SSrnjlrZ5HlGUpKcyFUJ2eHrNP7/68fMpfHY7wpHQ0ZVYVlw1W+fz0xAPFuGfDhG0
-         4YZB1ruODDoq+pzSwl4IlyLxsClj/ongil/2xXHYoGsIW/uC9BtH4ZcSVOh6QQ6f+Txe
-         ep5M0TSN79seaw3MZaC0qBzsSORh4NBMm3E3pl2JekkqgoOFCwm/QcSZJvgX6a/T8HF2
-         rR2/2Zzd8PPcyhEkr4OLZ88kZGJBFIPSWyyz/xcX1D1qN946zCLyj9Dm+0Cx/nmGzdHe
-         aoLA==
-X-Gm-Message-State: AOJu0YxEcgUvKEh5xNfXDUCjwYe1jW+/jKPsrgj79/LMoM26NWKRNoA/
-        bKofB6HftJAWkbfA6KgcZpMtbIuO6pbj4w==
-X-Google-Smtp-Source: AGHT+IG+HdllqlDdhOsPyOnWFbuUZZ95wWQHaJTY+BF9SG+aE4TBrJpuLLdUX9KOVZdn5cJz2207KQ==
-X-Received: by 2002:a05:6e02:20ed:b0:351:3546:dabe with SMTP id q13-20020a056e0220ed00b003513546dabemr20726974ilv.0.1697131313252;
-        Thu, 12 Oct 2023 10:21:53 -0700 (PDT)
+        bh=fEjUcd2gIGh+rcuXSmEeq7H3LSdL8L2dg7mL1DHpCLA=;
+        b=BWI33e+1Uv2QyiC9E6VK7NBD7PQi4vbeYkz4MZyvMIu4Qqtjsc8X5GfK91Q18BY/bF
+         dMhOSHJzwbXeio65bG9He1NtjKLxB0DOShIxr20vqyxJopMQUariegJ+dYrOGz9UykVL
+         JKClI0SZD6MKAGPYG07T+GX2R+tO9Wnrd9Hemuo5lr8NjDoI7QxXZpXmVDlOyhVPQKZa
+         TWlE/3CrZub3WUmkaUwcHi9QODoG5Pj6yEX1jckXZRw8wqsmGuKNR8knQUpvOSgKQBiv
+         6IFkN94t8QcwG3NkFTfx9sCjMXnI5rKvKn7MSXIHSD/7GdD9oZ+wIE8KOlZ0OGpDyu4W
+         ayFw==
+X-Gm-Message-State: AOJu0YyvOSm0nRaqwG2q2VQYsszc5PNaWCb1IVjQHYmXWsek0ybNMqhK
+        6t4zUwfXjwClGCbC9VkHPHsxrJCWXzvgRw==
+X-Google-Smtp-Source: AGHT+IEV/Vrzy7GYGKStkhfIcOPZVQougajUarL/RjBl0TBZoeQlTnUSIKMli3EDdf3vdTIkew3RSg==
+X-Received: by 2002:a6b:6f05:0:b0:795:183b:1e3 with SMTP id k5-20020a6b6f05000000b00795183b01e3mr27077153ioc.6.1697131314198;
+        Thu, 12 Oct 2023 10:21:54 -0700 (PDT)
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id r25-20020a028819000000b0043cef0711c1sm3992211jai.158.2023.10.12.10.21.52
+        by smtp.googlemail.com with ESMTPSA id r25-20020a028819000000b0043cef0711c1sm3992211jai.158.2023.10.12.10.21.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 10:21:52 -0700 (PDT)
+        Thu, 12 Oct 2023 10:21:53 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     linux-kernel@vger.kernel.org, jbaron@akamai.com,
         gregkh@linuxfoundation.org, dri-devel@lists.freedesktop.org,
@@ -60,9 +60,9 @@ Cc:     daniel.vetter@ffwll.ch, jani.nikula@intel.com,
         robdclark@gmail.com, groeck@google.com, yanivt@google.com,
         bleung@google.com, linux-doc@vger.kernel.org,
         Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v7 06/25] dyndbg: split param_set_dyndbg_classes to module/wrapper fns
-Date:   Thu, 12 Oct 2023 11:21:17 -0600
-Message-ID: <20231012172137.3286566-7-jim.cromie@gmail.com>
+Subject: [PATCH v7 07/25] dyndbg: drop NUM_TYPE_ARRAY
+Date:   Thu, 12 Oct 2023 11:21:18 -0600
+Message-ID: <20231012172137.3286566-8-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231012172137.3286566-1-jim.cromie@gmail.com>
 References: <20231012172137.3286566-1-jim.cromie@gmail.com>
@@ -78,90 +78,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rename param_set_dyndbg_classes: add _module_ name & arg, old name is
-wrapper to new.  New arg allows caller to specify that only one module
-is affected by a prdbgs update.
+ARRAY_SIZE works here, since array decl is complete.
 
-Outer fn preserves kernel_param interface, passing NULL to inner fn.
-This selectivity will be used later to narrow the scope of changes
-made.
-
-no functional change.
+no functional change
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/dynamic_debug.c | 37 ++++++++++++++++++++++---------------
- 1 file changed, 22 insertions(+), 15 deletions(-)
+ include/linux/dynamic_debug.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index ba41fdeaaf98..b67c9b137447 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -708,18 +708,9 @@ static int param_set_dyndbg_classnames(const char *instr, const struct kernel_pa
- 	return 0;
- }
+diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+index b53217e4b711..8116d0a0d33a 100644
+--- a/include/linux/dynamic_debug.h
++++ b/include/linux/dynamic_debug.h
+@@ -106,11 +106,9 @@ struct ddebug_class_map {
+ 		.mod_name = KBUILD_MODNAME,				\
+ 		.base = _base,						\
+ 		.map_type = _maptype,					\
+-		.length = NUM_TYPE_ARGS(char*, __VA_ARGS__),		\
++		.length = ARRAY_SIZE(_var##_classnames),		\
+ 		.class_names = _var##_classnames,			\
+ 	}
+-#define NUM_TYPE_ARGS(eltype, ...)				\
+-        (sizeof((eltype[]){__VA_ARGS__}) / sizeof(eltype))
  
--/**
-- * param_set_dyndbg_classes - class FOO >control
-- * @instr: string echo>d to sysfs, input depends on map_type
-- * @kp:    kp->arg has state: bits/lvl, map, map_type
-- *
-- * Enable/disable prdbgs by their class, as given in the arguments to
-- * DECLARE_DYNDBG_CLASSMAP.  For LEVEL map-types, enforce relative
-- * levels by bitpos.
-- *
-- * Returns: 0 or <0 if error.
-- */
--int param_set_dyndbg_classes(const char *instr, const struct kernel_param *kp)
-+static int param_set_dyndbg_module_classes(const char *instr,
-+					   const struct kernel_param *kp,
-+					   const char *modnm)
- {
- 	const struct ddebug_class_param *dcp = kp->arg;
- 	const struct ddebug_class_map *map = dcp->map;
-@@ -756,8 +747,8 @@ int param_set_dyndbg_classes(const char *instr, const struct kernel_param *kp)
- 				KP_NAME(kp), inrep, CLASSMAP_BITMASK(map->length));
- 			inrep &= CLASSMAP_BITMASK(map->length);
- 		}
--		v2pr_info("bits:%lx > %s\n", inrep, KP_NAME(kp));
--		totct += ddebug_apply_class_bitmap(dcp, &inrep, dcp->bits, NULL);
-+		v2pr_info("bits:0x%lx > %s.%s\n", inrep, modnm ?: "*", KP_NAME(kp));
-+		totct += ddebug_apply_class_bitmap(dcp, &inrep, dcp->bits, modnm);
- 		*dcp->bits = inrep;
- 		break;
- 	case DD_CLASS_TYPE_LEVEL_NUM:
-@@ -770,7 +761,7 @@ int param_set_dyndbg_classes(const char *instr, const struct kernel_param *kp)
- 		old_bits = CLASSMAP_BITMASK(*dcp->lvl);
- 		new_bits = CLASSMAP_BITMASK(inrep);
- 		v2pr_info("lvl:%ld bits:0x%lx > %s\n", inrep, new_bits, KP_NAME(kp));
--		totct += ddebug_apply_class_bitmap(dcp, &new_bits, &old_bits, NULL);
-+		totct += ddebug_apply_class_bitmap(dcp, &new_bits, &old_bits, modnm);
- 		*dcp->lvl = inrep;
- 		break;
- 	default:
-@@ -779,6 +770,22 @@ int param_set_dyndbg_classes(const char *instr, const struct kernel_param *kp)
- 	vpr_info("%s: total matches: %d\n", KP_NAME(kp), totct);
- 	return 0;
- }
-+
-+/**
-+ * param_set_dyndbg_classes - class FOO >control
-+ * @instr: string echo>d to sysfs, input depends on map_type
-+ * @kp:    kp->arg has state: bits/lvl, map, map_type
-+ *
-+ * Enable/disable prdbgs by their class, as given in the arguments to
-+ * DECLARE_DYNDBG_CLASSMAP.  For LEVEL map-types, enforce relative
-+ * levels by bitpos.
-+ *
-+ * Returns: 0 or <0 if error.
-+ */
-+int param_set_dyndbg_classes(const char *instr, const struct kernel_param *kp)
-+{
-+	return param_set_dyndbg_module_classes(instr, kp, NULL);
-+}
- EXPORT_SYMBOL(param_set_dyndbg_classes);
- 
- /**
+ /* encapsulate linker provided built-in (or module) dyndbg data */
+ struct _ddebug_info {
 -- 
 2.41.0
 
