@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6537C6B08
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1403D7C6B0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347116AbjJLKZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
+        id S1343730AbjJLK07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:26:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235614AbjJLKZw (ORCPT
+        with ESMTP id S235638AbjJLK05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:25:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 392FAC9;
-        Thu, 12 Oct 2023 03:25:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23DCAC433C8;
-        Thu, 12 Oct 2023 10:25:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697106350;
-        bh=wzBgNttTkwq+ey3nh0EClZ1bDYJi51qfQW72cGgJJR8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dZf0271oiB81Qb9DHNDeeIaaCtG5Bs/F5DwukXxhL2PBdOlmTBlKedMCJtrkMu5WG
-         /MpuSpxGv5cBUVI9yjaCQR8MJvpvcQ1XagFHTi8smebHKMSMKTky0HjHKh9/Wq31J+
-         d2oQMniPYfOxxjlAWAFh1RboinpW7Fq7xcoghwfXYF1QI20PhpChhq9d3tbI6r8z91
-         Q/9hROpL7jKiO0MvqRA/t2c4CGrm3lFjpYh9Y6SU/GatLa4TJxvLouY7WuQIlGjCHS
-         QB/qk3l9pX33FdunNm2oFIzKzzgppj4l99CLUUptW/7pL/dQ4LyrYGCSK+Cb1VAvSO
-         Niynl0PqXZNKg==
-Date:   Thu, 12 Oct 2023 11:25:44 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, thierry.reding@gmail.com,
-        ndesaulniers@google.com, trix@redhat.com, baruch@tkos.co.il,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Devi Priya <quic_devipriy@quicinc.com>
-Cc:     linux-pwm@vger.kernel.org, u.kleine-koenig@pengutronix.de,
-        nathan@kernel.org
-Subject: Re: [PATCH V15 0/4] Add PWM support for IPQ chipsets
-Message-ID: <20231012102544.GH8314@google.com>
-References: <20231005160550.2423075-1-quic_devipriy@quicinc.com>
- <169710516837.1166696.14907666532929973777.b4-ty@kernel.org>
+        Thu, 12 Oct 2023 06:26:57 -0400
+Received: from qs51p00im-qukt01071902.me.com (qs51p00im-qukt01071902.me.com [17.57.155.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E251EB8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:26:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1697106415;
+        bh=Zm68BCMFb/hYtzGq5UaRnyX7k1qDLFhJZeNJbHCgEJE=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+        b=Nj7cKOfldEYblETNZbxkiuE/GWDO1mkPSt29lWUQ28dyqf/1YOTkgt5MZsrVJotCW
+         dV8bg3rq4Y8oa9yd5qnq65ge4zQJYEEwPG9RuT/pwlGjuLSrtHavjp0mWQ0/VTSnrv
+         EFfw/C60mD5apaVr5LKURwRJ0U1chIamST89LuK0/NgA6RwQS7f3mWuwaFPnKPW1dd
+         woXVQNWvfAheYqmmr4+ZMOLX35f1yp8RhISSW+Iwg+7Gdy3UDJdnYyaVQQ7U19vRyv
+         zjnGCPBZUMhWayorxg54dmtd+BfdPOBh/PosANSIqBs6zwshIQW3ZIc3nLrMmp2BPq
+         h2ZkB05dM7CQA==
+Received: from fedora.fritz.box (qs51p00im-dlb-asmtp-mailmevip.me.com [17.57.155.28])
+        by qs51p00im-qukt01071902.me.com (Postfix) with ESMTPSA id 66A4E5EC02C9;
+        Thu, 12 Oct 2023 10:26:52 +0000 (UTC)
+Date:   Thu, 12 Oct 2023 12:26:49 +0200
+From:   Lucy Mielke <lucymielke@icloud.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+        tglx@linutronix.de, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf/x86/p4: Fix "Wunused-but-set-variable" warning
+Message-ID: <ZSfJ6c5fo5enjvv+@fedora.fritz.box>
+References: <ZSGpl_hT23B6ix0M@mainframe>
+ <20231007203411.GA8085@noisy.programming.kicks-ass.net>
+ <ZSQqfr96SfZM_OEk@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <169710516837.1166696.14907666532929973777.b4-ty@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZSQqfr96SfZM_OEk@google.com>
+X-Proofpoint-ORIG-GUID: 9pFRWMcEYoBw4AFqbI9oJ7ZVnrKWy-je
+X-Proofpoint-GUID: 9pFRWMcEYoBw4AFqbI9oJ7ZVnrKWy-je
+X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
+ =?UTF-8?Q?2903e8d5c8f:6.0.138,18.0.790,17.0.605.474.0000000_definitions?=
+ =?UTF-8?Q?=3D2022-01-12=5F02:2020-02-14=5F02,2022-01-12=5F02,2020-01-23?=
+ =?UTF-8?Q?=5F02_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=685 adultscore=0
+ suspectscore=0 bulkscore=0 mlxscore=0 phishscore=0 malwarescore=0
+ spamscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2310120085
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Oct 2023, Lee Jones wrote:
-
-> On Thu, 05 Oct 2023 21:35:46 +0530, Devi Priya wrote:
-> > Add PWM driver and binding support for IPQ chipsets.
-> > Also, add support for pwm node in ipq6018.
-> > 
-> > V15:
-> > Detailed Change logs are added to the respective patches.
-> > 
-> > V14 can be found at:
-> > https://lore.kernel.org/linux-arm-msm/20231005043127.2690639-1-quic_devipriy@quicinc.com/
-> > 
-> > [...]
+Am Mon, Oct 09, 2023 at 09:29:50AM -0700 schrieb Sean Christopherson:
 > 
-> Applied, thanks!
+> rdmsr() writes to "high", but nothing ever reads from high.  FWIW, I would _love_
+> for rdmsrl() to have return semantics, e.g. to be able to do:
 > 
-> [1/4] pwm: driver for qualcomm ipq6018 pwm block
->       (no commit info)
-> [2/4] dt-bindings: pwm: add IPQ6018 binding
->       (no commit info)
-> [3/4] dt-bindings: mfd: qcom,tcsr: Add simple-mfd support for IPQ6018
->       commit: b4a32d218d424b81a58fbd419e1114b1c1f76168
-> [4/4] arm64: dts: qcom: ipq6018: add pwm node
->       (no commit info)
+> 	low  = (u32)rdmsrl(MSR_IA32_MISC_ENABLE);
+> 
+> or even
+> 
+> 	if (!(rdmsrl(MSR_IA32_MISC_ENABLE) & BIT(7)))
 
-Disregard - tooling error!
+I have taken a look and it seems to me like this macro is called quite a lot
+for different things thoughout the kernel tree, including drivers. If
+one were to change it to have return semantics instead of the way it
+currently works, you'd have to change around 300 occurences, right?
+(Let me know if I misunderstood something.)
 
--- 
-Lee Jones [ÊùéÁêºÊñØ]
+Return semantics or not, since the only way "high" is used in p4_pmu_init()
+is by being written to by rdmsr(), the variable can be completely removed by
+just using rdmsrl(). Would this be a patch you'd be interested in?
+
+Mit freundlichen Gr¸ﬂen / Best regards,
+	Lucy
