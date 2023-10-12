@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0507C70AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93CA77C709A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347050AbjJLOse convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 10:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56644 "EHLO
+        id S1378304AbjJLOqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 10:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234913AbjJLOsc (ORCPT
+        with ESMTP id S235160AbjJLOqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:48:32 -0400
-Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3B0BB;
-        Thu, 12 Oct 2023 07:48:30 -0700 (PDT)
-Received: from omf15.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay07.hostedemail.com (Postfix) with ESMTP id DD3C7160680;
-        Thu, 12 Oct 2023 14:48:28 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 29DF017;
-        Thu, 12 Oct 2023 14:48:25 +0000 (UTC)
-Message-ID: <e212997cf8b05608718fb6ac1766c390255664ac.camel@perches.com>
-Subject: Re: [PATCH v3] Documentation/process/coding-style.rst: space around
- const
-From:   Joe Perches <joe@perches.com>
-To:     Miguel Ojeda <ojeda@kernel.org>, dan.j.williams@intel.com
-Cc:     corbet@lwn.net, gregkh@linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@roeck-us.net, max.kellermann@ionos.com,
-        workflows@vger.kernel.org
-Date:   Thu, 12 Oct 2023 07:48:25 -0700
-In-Reply-To: <20231012115039.1680561-1-ojeda@kernel.org>
-References: <65271731e25f4_7258329472@dwillia2-xfh.jf.intel.com.notmuch>
-         <20231012115039.1680561-1-ojeda@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 12 Oct 2023 10:46:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC80DD;
+        Thu, 12 Oct 2023 07:46:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AB73C433C7;
+        Thu, 12 Oct 2023 14:46:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697121978;
+        bh=O2x78rOBWTFesFHLGuuhfU/0q39fTXA8lDOZUhM2/mQ=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=Q6nL+4M+7KTg9VgVgqbBhoqWdSfrxRveBtZLy+eErYUxSVUgM4+fg/IUKw9vZ5bnf
+         IQX9ZsfwvYb3k0iixw4+CYudyE3JD/hMcrvlLuyw2+uRL6DNAR6wkCitcOXK54ozu1
+         6n+ui8/e/T2z/5wVJHgRau597vQcWIH/Nfb+CBmf6j00OBUCfp1quLgMh7923EKNg1
+         WhkQ+daxcTe77B8ZZFqhn7A9HkLJNCRsBbz03mwnnBYoRLDWQDquCZY7DtMLFZhGjK
+         UC2fZf4SjBkwOaYj0XTjKzCgQ5SwoTIYraTnG+EtwC3ZbngUfn1fO2k9c97IysCcHn
+         j4nDsCl3g+mSQ==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     "Arnd Bergmann" <arnd@arndb.de>
+Cc:     "Jakub Kicinski" <kuba@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Arnd Bergmann" <arnd@kernel.org>,
+        "Nicolas Ferre" <nicolas.ferre@microchip.com>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        "Claudiu Beznea" <claudiu.beznea@tuxon.dev>,
+        "Pavel Machek" <pavel@ucw.cz>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Larry Finger" <Larry.Finger@lwfinger.net>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH] [RFC] wireless: move obsolete drivers to staging
+References: <20231010155444.858483-1-arnd@kernel.org>
+        <2023101051-unmasked-cleaver-79b3@gregkh> <87y1g94szz.fsf@kernel.org>
+        <2023101139-pyromania-game-2237@gregkh> <87r0m1fwg9.fsf@kernel.org>
+        <20231011080955.1beeb010@kernel.org> <87sf6g2hc8.fsf@kernel.org>
+        <63e57ef8-c9f2-489a-8df8-51dcffd437c6@app.fastmail.com>
+Date:   Thu, 12 Oct 2023 17:48:47 +0300
+In-Reply-To: <63e57ef8-c9f2-489a-8df8-51dcffd437c6@app.fastmail.com> (Arnd
+        Bergmann's message of "Thu, 12 Oct 2023 16:36:26 +0200")
+Message-ID: <87fs2fgals.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 29DF017
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
-X-Rspamd-Server: rspamout06
-X-Stat-Signature: o4bafx189b39fosaj9tugy1ng4t4hk6t
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18cEtRlNQpeQGZ7fw6pYLI6AhZUUOJ6xzw=
-X-HE-Tag: 1697122105-37381
-X-HE-Meta: U2FsdGVkX18LWY7kGsCiHQheQS4LqScy5dMW4qcBmdEHxO9ovUtXsMDNt3FkAATB6QEVj6OE5VKr4UAFNsAIwCqNYT78sS4IRUUdbpxEdwKbbQiuvZYmLA0q2w62E505D9p82THAebCe0EGd52BqQclvNnrB5jm3bYx30j0SfbAxRC90tUbNKQy0c3xbr70M0yWot2aDEWRaqUOjn3XUH8cUDtBfDujq+ldDZInBI6tHkpR6v5xxZk3rcr+RtUDYYT1F8yAEHIkHPJ0TLX5zI3adAfzmscsrlj8yQVrLZBgZUW4dEFQMHoHH+Hx0aj/d
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-12 at 13:50 +0200, Miguel Ojeda wrote:
-> On Wed, 11 Oct 2023 14:44:17 -0700, Dan Williams wrote:
-> > 
-> > I notice that clang-format reflows that example to:
-> > 
-> >     const void *a;
-> >     void *const b;
-> >     void **const c;
-> >     void *const *const d;
-> >     int strcmp(const char *a, const char *b);
-> > 
-> > ...but someone more clang-format savvy than me would need to propose the
-> > changes to the kernel's .clang-format template to match the style
-> > suggestion.
-> 
-> I think we could use:
-> 
->     diff --git a/.clang-format b/.clang-format
->     index 0bbb1991defe..9eeb511c0814 100644
->     --- a/.clang-format
->     +++ b/.clang-format
->     @@ -671,6 +671,7 @@ SortIncludes: false
->      SortUsingDeclarations: false
->      SpaceAfterCStyleCast: false
->      SpaceAfterTemplateKeyword: true
->     +SpaceAroundPointerQualifiers: Both
->      SpaceBeforeAssignmentOperators: true
->      SpaceBeforeCtorInitializerColon: true
->      SpaceBeforeInheritanceColon: true
-> 
-> At least that makes it match the documentation example -- I got this:
-> 
->     const void *a;
->     void * const b;
->     void ** const c;
->     void * const * const d;
->     int strcmp(const char *a, const char *b);
-> 
-> But it is only supported in version >= 12, so we need to wait for the
-> minimum LLVM version bump.
+"Arnd Bergmann" <arnd@arndb.de> writes:
 
-Do older versions of clang-format ignore entries
-they don't understand?
+> On Thu, Oct 12, 2023, at 13:47, Kalle Valo wrote:
+>>
+>> Is anyone willing to submit patches? Use wireless-next as the baseline
+>> for patches and one driver per commit, please. That way it's easy to
+>> revert later, if needed (hopefully not).
+>
+> I can do it, I've already done most of the work for moving the
+> drivers, so I just need to split up my existing patch and leave out
+> the bits that get added to drivers/staging.
 
+Awesome, thank you!
+
+> I'll also send Greg a patch to remove rtl8192u now that we know
+> that this has been broken for 7 years. Similarly, I'd include
+> another patch to remove PCMCIA support for libertas, as that
+> would otherwise be the only remaining 16-bit PCMCIA wlan card,
+> and I could find no indication of this one ever being popular,
+> unlike the USB/SDIO/SPI variants of the same device or the
+> other PCMCIA drivers.
+>
+> This would leave only a handful of wext implementations in the
+> tree: ipw2x00, ps3-gelic-wireless, staging/rtl8712, staging/rtl8192e
+> and staging/ks7010. Since ipw2x00 is apparently still supported
+> in theory and was rather popular on Pentium-M based systems 20
+> years ago, this may still need to be converted to cfg80211
+> before you can remove support for wext style drivers altogether.
+> ps3-gelic-wireless and rtl8712 are also still maintained but have
+> a much smaller user base I assume.
+
+Actually I would prefer to remove ipw2x00 and ps3-gelic-wireless as
+well. I have not seen any evidence that there would be users for those
+drivers. If we find out that there really are users I can easily add the
+drivers back. The faster we get rid of wext the better, it really needs
+to go away.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
