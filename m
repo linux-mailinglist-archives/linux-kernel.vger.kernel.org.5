@@ -2,148 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9073F7C65C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9B97C65C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377275AbjJLGmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38930 "EHLO
+        id S1377467AbjJLGnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343563AbjJLGmu (ORCPT
+        with ESMTP id S1343563AbjJLGnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:42:50 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1639B8
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:42:48 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C6P4tj013234;
-        Thu, 12 Oct 2023 06:42:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=t+WoBM0MjsmtUKWbbU/ZptCtQbJ0t63RthiJOJYVP+4=;
- b=U2NdZ8MvppQSd3bqLPrrF7V7a2X6O09RKGCkOdkIT9AsbIAuwRKRf36K0NY4vhZgdxm9
- wpz30/cZ7qTBIdtamV8JqaGN6IxQpVAdLYVVH2wWTMa7fx5yMxi6OeLxNfMb23WvOIYw
- 5tigXx+b5dYg2mk6sBhok3vQ1c0sBccNYmmnOLvc/xndx6BfTLLd/1tSFcz/EP/eFaJi
- llhLuAPoqT7O3NNN1/U9c1ONF6YIYtH5M8pfYPGlKaEwyQMJU7AKPtSjyFi13JWWKWM0
- afvaTnQIg5XjetR/yzUg9ygELEfgquYWS1NITLDtF0/ru+oIiz3gwWGZRMc30llL9MK4 pg== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tp5xr8n35-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 06:42:20 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39C6gJbC010993
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 06:42:19 GMT
-Received: from win-platform-upstream01.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 11 Oct 2023 23:42:15 -0700
-From:   Sridharan S N <quic_sridsn@quicinc.com>
-To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <frieder.schrempf@kontron.de>, <mikhail.kshevetskiy@iopsys.eu>,
-        <olivier.maignial@hotmail.fr>, <quic_sridsn@quicinc.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     Md Sadre Alam <quic_mdalam@quicinc.com>
-Subject: [PATCH] mtd: spinand: winbond: add support for serial NAND flash
-Date:   Thu, 12 Oct 2023 12:11:34 +0530
-Message-ID: <20231012064134.4068621-1-quic_sridsn@quicinc.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 12 Oct 2023 02:43:07 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F1A6ECC
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:43:05 -0700 (PDT)
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 7663F80A3;
+        Thu, 12 Oct 2023 06:43:04 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] printk: Check valid console index for preferred console
+Date:   Thu, 12 Oct 2023 09:42:56 +0300
+Message-ID: <20231012064300.50221-1-tony@atomide.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: iSuO3CduG71q1Vl-z8VvQn2sIxt39qvF
-X-Proofpoint-ORIG-GUID: iSuO3CduG71q1Vl-z8VvQn2sIxt39qvF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_02,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- mlxlogscore=999 suspectscore=0 phishscore=0 clxscore=1011
- priorityscore=1501 spamscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310120057
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for W25N01JW, W25N02JWZEIF, W25N512GW,
-W25N02KWZEIR and W25N01GWZEIG.
+Let's check for valid console index values for preferred console to avoid
+bogus console index numbers from kernel command line.
 
-W25N02KWZEIR has 8b/512b on-die ECC capability and other
-four has 4b/512b on-die ECC capability.
+Let's also return an error for negative index numbers for the preferred
+console. Unlike for device drivers, a negative index is not valid for the
+preferred console.
 
-Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
-Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+Let's also constify idx while at it.
+
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 ---
- drivers/mtd/nand/spi/winbond.c | 45 ++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
 
-diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index f507e3759301..1a473021cca5 100644
---- a/drivers/mtd/nand/spi/winbond.c
-+++ b/drivers/mtd/nand/spi/winbond.c
-@@ -169,6 +169,51 @@ static const struct spinand_info winbond_spinand_table[] = {
- 					      &update_cache_variants),
- 		     0,
- 		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
-+	SPINAND_INFO("W25N01JW",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xbc, 0x21),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25m02gv_ooblayout, w25n02kv_ecc_get_status)),
-+	SPINAND_INFO("W25N02JWZEIF",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xbf, 0x22),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 2, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
-+	SPINAND_INFO("W25N512GW",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x20),
-+		     NAND_MEMORG(1, 2048, 64, 64, 512, 10, 1, 1, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
-+	SPINAND_INFO("W25N02KWZEIR",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x22),
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
-+	SPINAND_INFO("W25N01GWZEIG",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x21),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25m02gv_ooblayout, w25n02kv_ecc_get_status)),
+Changes since v2:
+
+- Fix a mismerge for const char *name while changing the patch
+  order as noted by Jiri
+
+- Clarify patch description and code comments for struct console
+  negative index usage as noted by Petr
+
+Changes since v1:
+
+- Use const short idx and return an error on negative values
+
+---
+ include/linux/console.h |  2 +-
+ kernel/printk/printk.c  | 12 ++++++++++--
+ 2 files changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/console.h b/include/linux/console.h
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -340,7 +340,7 @@ enum con_flush_mode {
+ 	CONSOLE_REPLAY_ALL,
  };
  
- static int winbond_spinand_init(struct spinand_device *spinand)
+-extern int add_preferred_console(char *name, int idx, char *options);
++extern int add_preferred_console(char *name, const short idx, char *options);
+ extern void console_force_preferred_locked(struct console *con);
+ extern void register_console(struct console *);
+ extern int unregister_console(struct console *);
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2404,12 +2404,20 @@ static void set_user_specified(struct console_cmdline *c, bool user_specified)
+ 	console_set_on_cmdline = 1;
+ }
+ 
+-static int __add_preferred_console(char *name, int idx, char *options,
++static int __add_preferred_console(char *name, const short idx, char *options,
+ 				   char *brl_options, bool user_specified)
+ {
+ 	struct console_cmdline *c;
+ 	int i;
+ 
++	/*
++	 * We use a signed short index for struct console for device drivers to
++	 * indicate a not yet assigned index or port. However, a negative index
++	 * value is not valid for preferred console.
++	 */
++	if (idx < 0)
++		return -EINVAL;
++
+ 	/*
+ 	 *	See if this tty is not yet registered, and
+ 	 *	if we have a slot free.
+@@ -2513,7 +2521,7 @@ __setup("console=", console_setup);
+  * commonly to provide a default console (ie from PROM variables) when
+  * the user has not supplied one.
+  */
+-int add_preferred_console(char *name, int idx, char *options)
++int add_preferred_console(char *name, const short idx, char *options)
+ {
+ 	return __add_preferred_console(name, idx, options, NULL, false);
+ }
 -- 
-2.34.1
-
+2.42.0
