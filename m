@@ -2,134 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A78117C6B13
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5587C6B15
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347138AbjJLK1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53256 "EHLO
+        id S1377747AbjJLK1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347136AbjJLK1N (ORCPT
+        with ESMTP id S1343749AbjJLK1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:27:13 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C24FD8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:27:10 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-5041d6d8b10so1128978e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:27:09 -0700 (PDT)
+        Thu, 12 Oct 2023 06:27:35 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D38790
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:27:33 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3296b3f03e5so705634f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:27:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697106428; x=1697711228; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qijCfZsHvHC96hQQZArQt7jQu+tpQM/wpUps9/WsIyQ=;
-        b=kPHh3qk13GAeqoTfLFo0I7BWdDbYN3y7iWrdr2FHHDMFUs/z+bJIyIv28vjyOJuDCY
-         WK1soCRlmoFWnrtNxZK2BX7CKHMhYOB1HxCr0iccZ0oNR1FNBV5luMJuk00yX691dFct
-         BwOB4EUlMcqV80C/TwMkXfCpJ5xvfassGG9gR2uGJTL2Ebw8FjPXEt9pq6pQ/MpBX6w7
-         XLextbvHW1Kz0B/Liu4h0/yTpMUDfDme0mUpJzBiRZBw1Fokr9rw/nuzuJAFXASvFCHH
-         geYQhKCcJTKmMh8dZWY3Z8/YZMntc5fgvXPmyGy33ewkxCE4lQiyiJL66/1+UkPMxENJ
-         p4LA==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1697106451; x=1697711251; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lmBkcHAkPFx5rOPRPDBllwN3fSbL73RuCNWurkhctsI=;
+        b=TUrVWWG6cj8ZcvlpltH25cb5xQCnlI5AwNjQkVaUfUj99Ox+OR8LJ+GAiDUQJoh/iU
+         K68C2Jm7QhZrO8LwSy5vWB4o1sXv8H7WNkTxegdu1jJmnEKybgt89ywQKBQnkpZdA3Yb
+         jAmk/ME8XcMRm2rQwBy1g/o0JvgiwnCqDTkeXrpzmf2X1VfVmUvojc7LgwAYFGE4trmv
+         AvR3sz8Yyu1B3nJvwCzatEO/erJ5HDzhXrtV9vRKIzsrvsDAX8ZA3QWSwc13v80vnDmM
+         /7N7atwjf+yCyKXf3PBHyBv0bscMbVFvjfSASQDsNsPotFuFvu5eqTga+k4gj/6NaiLz
+         Y7vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697106428; x=1697711228;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qijCfZsHvHC96hQQZArQt7jQu+tpQM/wpUps9/WsIyQ=;
-        b=D2zSfQvLsXhentTZRzTwj6KpUvssWg1kkuSGxVGFXbiWXTpPJDlGl/88flnOoiV1Wf
-         tQG6DpMUExig+tsdCXo4GEuk9/D9SG8SQEjgwyVIOg3BYDAJqC3okoJpi2Bi05A1mNH/
-         xzLs0VrY5J/1yWNLr96JRskoHu27xn5DkfJsZ3xPtA48+pujCOjXeSgpdzNZe9cN6ckj
-         kQwY1FwRtArm7apdXjcdPoFnccWLTx8msPD28IL0faHclV06hixBPzQ3VOIplv0sroDi
-         IWDXksocPhpyEUHeoKP8/ZlilCT7+n8kte3UeuJta8TLsmgFFq+epxXDExBInvx/RY5T
-         z5Rw==
-X-Gm-Message-State: AOJu0YyRW5TLGhxox15opr5/c2sD6s3NY+V1KeJrHeBX97wzKCB6q8ud
-        FcckuUXlmBQzVRkOncXxREHRSQ==
-X-Google-Smtp-Source: AGHT+IHL56KOMkORTZhlEKfCtkjP4Y4TCN8HnBEroM2SEse98GL1iDYmlexphHHxq7EGLPNQ3mZDqw==
-X-Received: by 2002:a05:6512:3c2:b0:503:17c0:5374 with SMTP id w2-20020a05651203c200b0050317c05374mr16734076lfp.65.1697106428201;
-        Thu, 12 Oct 2023 03:27:08 -0700 (PDT)
-Received: from mai.box.freepro.com ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.gmail.com with ESMTPSA id z7-20020a7bc7c7000000b003fee567235bsm21506797wmk.1.2023.10.12.03.27.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 03:27:07 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rafael@kernel.org
-Cc:     Lukasz Luba <lukasz.luba@arm.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        linux-pm@vger.kernel.org (open list:THERMAL/POWER_ALLOCATOR),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] thermal/core: Reorder the headers inclusion
-Date:   Thu, 12 Oct 2023 12:26:59 +0200
-Message-Id: <20231012102700.2858952-2-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231012102700.2858952-1-daniel.lezcano@linaro.org>
-References: <20231012102700.2858952-1-daniel.lezcano@linaro.org>
+        d=1e100.net; s=20230601; t=1697106451; x=1697711251;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lmBkcHAkPFx5rOPRPDBllwN3fSbL73RuCNWurkhctsI=;
+        b=HRlU70vEphVq9Yoqm+RONQluc2pxme96eAQN/l9XRIs92MB5OhNhdOypUTI2xvmQkN
+         4t1ZWMifzcoSnan6F3sJWPDUElKhZ7GCdPAwlwl6Is3oDGni6NfaM8NygRUzwZuEnCFT
+         FF26ayF92xwYFGx1Sp10V75qah0HUhj1+RsV2pntfhv8IgcY/FRKYy22s2JMxZVSApiL
+         L2/V6KleY2LpFfOA5f7IuMX9MulZIYBWNa9FjR1r4pEnp+qKyORtkIBnSCRyyMMh+pXc
+         E4+frFBRSlQa6CgWxstdlehTpb/vTiDLOhb9+fKXGRDsJQczG+1PYXlBFyShI4+bE1uH
+         J6MA==
+X-Gm-Message-State: AOJu0Yxp2noncHW28VfoW8zNVEuMRjVDmmSaKm6tCo9DGeREESPif8UL
+        jOPlmw9wEVeSAnO95K83Aiknig==
+X-Google-Smtp-Source: AGHT+IHI1GZ3O+8Vul/1ATMdkAYGJnPS9jhdVvjZ8iYcdUltF97CUA2PT7IYjpRMObjiWrOl4/DhyQ==
+X-Received: by 2002:a05:6000:91:b0:317:5f13:5c2f with SMTP id m17-20020a056000009100b003175f135c2fmr19207742wrx.0.1697106451193;
+        Thu, 12 Oct 2023 03:27:31 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id f16-20020adfdb50000000b0031ff89af0e4sm17968546wrj.99.2023.10.12.03.27.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 03:27:30 -0700 (PDT)
+Message-ID: <54ed1269-8699-4531-abc6-09b602adece9@baylibre.com>
+Date:   Thu, 12 Oct 2023 12:27:28 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] PCI: mediatek-gen3: Fix translation window
+Content-Language: en-US
+To:     =?UTF-8?B?Smlhbmp1biBXYW5nICjnjovlu7rlhpsp?= 
+        <Jianjun.Wang@mediatek.com>, "robh@kernel.org" <robh@kernel.org>,
+        "kw@linux.com" <kw@linux.com>,
+        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        =?UTF-8?B?SmlleXkgWWFuZyAo5p2o5rSBKQ==?= <Jieyy.Yang@mediatek.com>,
+        =?UTF-8?B?Q2h1YW5qaWEgTGl1ICjmn7PkvKDlmIkp?= 
+        <Chuanjia.Liu@mediatek.com>,
+        =?UTF-8?B?SmlhbiBZYW5nICjmnajmiKwp?= <Jian.Yang@mediatek.com>,
+        =?UTF-8?B?UWl6aG9uZyBDaGVuZyAo56iL5ZWf5b+gKQ==?= 
+        <Qizhong.Cheng@mediatek.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Ryder Lee <Ryder.Lee@mediatek.com>
+References: <20231011122633.31559-1-jianjun.wang@mediatek.com>
+ <899c7275-ccca-43bb-b1ae-a3403dd18622@baylibre.com>
+ <088559162e5ec4e2d6d38d8a5707c6e0e12f5ac6.camel@mediatek.com>
+From:   Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <088559162e5ec4e2d6d38d8a5707c6e0e12f5ac6.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The next changes will move the thermal device structure inside the
-thermal core code. Consequently, the traces must be included after
-thermal_core.h as this one contains the thermal zone device structure
-definition the traces need.
 
-Reorder the inclusions.
 
-No functional changes intended.
+On 12/10/2023 08:17, Jianjun Wang (王建军) wrote:
+> On Wed, 2023-10-11 at 17:38 +0200, Alexandre Mergnat wrote:
+>>   
+>> External email : Please do not click links or open attachments until
+>> you have verified the sender or the content.
+>>  
+>> 
+>> On 11/10/2023 14:26, Jianjun Wang wrote:
+>> > The size of translation table should be a power of 2, using fls()
+>> cannot 
+>> > get the proper value when the size is not a power of 2. For
+>> example, 
+>> > fls(0x3e00000) - 1 = 25, hence the PCIe translation window size
+>> will be 
+>> > set to 0x2000000 instead of the expected size 0x3e00000. Fix
+>> translation 
+>> > window by splitting the MMIO space to multiple tables if its size
+>> is not 
+>> > a power of 2.
+>> 
+>> Hi Jianjun,
+>> 
+>> I've no knowledge in PCIE, so maybe what my suggestion is stupid:
+>> 
+>> Is it mandatory to fit the translation table size with 0x3e00000 (in 
+>> this example) ?
+>> I'm asking because you can have an issue by reaching the maximum 
+>> translation table number.
+>> 
+>> Is it possible to just use only one table with the power of 2 size
+>> above 
+>> 0x3e00000 => 0x4000000 ( fls(0x3e00000) = 26 = 0x4000000). The
+>> downside 
+>> of this method is wasting allocation space. AFAIK I already see this 
+>> kind of method for memory protection/allocation in embedded systems,
+>> so 
+>> I'm wondering if this method is safer than using multiple table for
+>> only 
+>> one size which isn't a power of 2.
+> 
+> Hi Alexandre,
+> 
+> It's not mandatory to fit the translation table size with 0x3e00000,
+> and yes we can use only one table with the power of 2 size to prevent
+> this.
+> 
+> For MediaTek's SoCs, the MMIO space range for each PCIe port is fixed,
+> and it will always be a power of 2, most of them will be 64MB. The
+> reason we have the size which isn't a power of 2 is that we reserve an
+> IO space for compatible purpose, some older devices may still use IO
+> space.
+> 
+> Take MT8195 as an example, its MMIO size is 64MB, and the declaration
+> in the DT is like:
+> ranges = <0x81000000 0 0x20000000 0x0 0x20000000 0 0x200000>,
+>           <0x82000000 0 0x20200000 0x0 0x20200000 0 0x3e00000>;
+> 
+> The MMIO space is splited to 2MB IO space and 62MB MEM space, that's
+> cause the current risk of the MEM space range, its actual available MEM
+> space is 32MB. But it still works for now because most of the devices
+> only require a very small amount of MEM space and will not reach ranges
+> higher than 32MB.
+> 
+> So for the concern of reaching the maximum translation table number, I
+> think maybe we can just print the warning message instead of return
+> error code, since it still works but have some limitations(MEM space
+> not set as DT expected).
+> 
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/thermal/gov_power_allocator.c | 6 +++---
- drivers/thermal/thermal_core.c        | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+Ok understood, thanks for your explanation.
+Then, IMHO, you should use only one table with the power of 2 size above 
+to make the code simpler, efficient, robust, more readable and avoid 
+confusion about the warning.
 
-diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-index d1c6ad92e5b4..6056ed15460b 100644
---- a/drivers/thermal/gov_power_allocator.c
-+++ b/drivers/thermal/gov_power_allocator.c
-@@ -11,12 +11,12 @@
- #include <linux/slab.h>
- #include <linux/thermal.h>
- 
--#define CREATE_TRACE_POINTS
--#include "thermal_trace_ipa.h"
--
- #define THERMAL_CORE_SUBSYS
- #include "thermal_core.h"
- 
-+#define CREATE_TRACE_POINTS
-+#include "thermal_trace_ipa.h" 
-+
- #define INVALID_TRIP -1
- 
- #define FRAC_BITS 10
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 9ee0ec3bdff6..51a6bed47213 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -21,13 +21,13 @@
- #include <linux/of.h>
- #include <linux/suspend.h>
- 
--#define CREATE_TRACE_POINTS
--#include "thermal_trace.h"
--
- #define THERMAL_CORE_SUBSYS
- #include "thermal_core.h"
- #include "thermal_hwmon.h"
- 
-+#define CREATE_TRACE_POINTS
-+#include "thermal_trace.h"
-+
- static DEFINE_IDA(thermal_tz_ida);
- static DEFINE_IDA(thermal_cdev_ida);
- 
+This is what is done for pci-mvebu.c AFAII.
+
+If you prefer waiting another reviewer with a better PCIE expertise than 
+me, it's ok for me. With the information I have currently, I prefer to 
+not approve the current implementation because, from my PoV, it 
+introduce unnecessary complexity.
+
+Thanks
+
+
 -- 
-2.34.1
-
+Regards,
+Alexandre
