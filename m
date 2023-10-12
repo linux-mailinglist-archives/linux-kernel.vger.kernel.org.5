@@ -2,93 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF5E7C64D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 07:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094347C64EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 07:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377125AbjJLFt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 01:49:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49946 "EHLO
+        id S1377165AbjJLFwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 01:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232808AbjJLFt0 (ORCPT
+        with ESMTP id S232808AbjJLFwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 01:49:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59FED9D;
-        Wed, 11 Oct 2023 22:49:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697089763; x=1728625763;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+UnJ52a5L6/XwETHQQED9zGF8bhbfqO5DxKfsQ7jr78=;
-  b=RuB33i/eCyRXck7QmwZkBkjIFj3u53dv3eSP0hUmZta52rdayA1D09tn
-   MCC4J6eFyxgtpWJXXcCwqFcWGHc0id5GrFTBSX/Erq2RLH0yfT/R8wGxo
-   rbz+c8ffoKT0g9wTdDBOcPlq4DHIe7RvlC3EVpNP4/g2AH3b/g4cXUsUO
-   wfK7RBnyMZ+9plYpznMzLok46U3ZV7EPF008xWEJi4a+bat07OYBokMtd
-   X1NXQYbd8+wjsJ1bLzvz0cIy3u5yRPEikC1HSU4v9AmVZsna9eo9mW9Yz
-   Zrj9yuy/khffpJ87zovLCLWxGy6u1eY+bejFxbnk0LOQHIrV6Nld4NJda
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="364205881"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="364205881"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 22:49:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="870430727"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="870430727"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Oct 2023 22:49:21 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qqoZT-0003Es-0c;
-        Thu, 12 Oct 2023 05:49:19 +0000
-Date:   Thu, 12 Oct 2023 13:48:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        ilpo.jarvinen@linux.intel.com, rajvi.jingar@linux.intel.com
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH V3 03/16] platform/x86/intel/vsec: Use cleanup.h
-Message-ID: <202310121333.TE7R7kSs-lkp@intel.com>
-References: <20231012023840.3845703-4-david.e.box@linux.intel.com>
+        Thu, 12 Oct 2023 01:52:24 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841DC9D
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 22:52:22 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C3tN9U029359;
+        Thu, 12 Oct 2023 05:51:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=qcppdkim1; bh=iLOCYuFvToEXWyeuR0V8GCWiuhk3vAizBPUCQ5xahXM=;
+ b=SqD58/68G3dpgIliEWraaA7vG1gs7AMdtOvEALKYiFT49hRR1D9bk28wp++xiD0yGT4O
+ mP/MDZifrM+FG6/tuMu7tCYwe8y5pArZQrMtgcwKbAxX+gLwLXfrTh24i91UCdI7FUW3
+ s2RGJd88Mql1ikIkBcxoPaF/kokTHkwm35rC0hiiD8eUIsSn8pjxUhlsrMCtVWfZzh8a
+ 7CkUXrQtN5iQKkXh0UxXrmA9LrIUW9jxfU53l8UqcRFJVufsC0G4JESIcO1G7m5ba20h
+ m/9P76qUZYNSAhRdEKLk0LINzcLp6cNmKc2nEROV0O2py78mFAEhlQWjDU+JEhwECB0Y VA== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnstytfaw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 05:51:57 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 39C5md07023136;
+        Thu, 12 Oct 2023 05:51:52 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3tk0dksk0c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 05:51:52 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39C5pqnB025355;
+        Thu, 12 Oct 2023 05:51:52 GMT
+Received: from hu-devc-blr-u22-a.qualcomm.com (hu-mdalam-blr.qualcomm.com [10.131.36.157])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 39C5pqEg025354
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 05:51:52 +0000
+Received: by hu-devc-blr-u22-a.qualcomm.com (Postfix, from userid 466583)
+        id 409B0412D9; Thu, 12 Oct 2023 11:21:51 +0530 (+0530)
+From:   Md Sadre Alam <quic_mdalam@quicinc.com>
+To:     tudor.ambarus@linaro.org, pratyush@kernel.org, michael@walle.cc,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     quic_srichara@quicinc.com, quic_varada@quicinc.com,
+        Md Sadre Alam <quic_mdalam@quicinc.com>
+Subject: [PATCH] mtd: spi-nor: Ensure operation completion before shutdown
+Date:   Thu, 12 Oct 2023 11:21:48 +0530
+Message-Id: <20231012055148.2445303-1-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012023840.3845703-4-david.e.box@linux.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: VgoyhuabBfVMOAxOj4MsziCZBct1asUr
+X-Proofpoint-GUID: VgoyhuabBfVMOAxOj4MsziCZBct1asUr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_02,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ bulkscore=0 malwarescore=0 suspectscore=0 priorityscore=1501
+ impostorscore=0 mlxlogscore=728 lowpriorityscore=0 clxscore=1011
+ spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310120049
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Ensure that there are no pending spi operation inprogress
+when system halts.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+---
+ drivers/mtd/spi-nor/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-[auto build test WARNING on acce85a7dd28eac3858d44230f4c65985d0f271c]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/David-E-Box/platform-x86-intel-vsec-Move-structures-to-header/20231012-104217
-base:   acce85a7dd28eac3858d44230f4c65985d0f271c
-patch link:    https://lore.kernel.org/r/20231012023840.3845703-4-david.e.box%40linux.intel.com
-patch subject: [PATCH V3 03/16] platform/x86/intel/vsec: Use cleanup.h
-reproduce: (https://download.01.org/0day-ci/archive/20231012/202310121333.TE7R7kSs-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310121333.TE7R7kSs-lkp@intel.com/
-
-# many are suggestions rather than must-fix
-
-ERROR:SPACING: need consistent spacing around '*' (ctx:WxV)
-#31: FILE: drivers/platform/x86/intel/vsec.c:159:
-+	struct intel_vsec_device __free(kfree) *intel_vsec_dev = NULL;
- 	                                       ^
-
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 1c443fe568cf..adc4d2c68695 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3690,6 +3690,9 @@ static void spi_nor_shutdown(struct spi_mem *spimem)
+ {
+ 	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+ 
++	/* Ensure no pending spi operation in progress */
++	spi_nor_wait_till_ready(nor);
++
+ 	spi_nor_restore(nor);
+ }
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
