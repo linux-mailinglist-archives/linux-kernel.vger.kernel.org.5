@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAF27C760C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483487C7615
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441975AbjJLSkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 14:40:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42886 "EHLO
+        id S1441975AbjJLSnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 14:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379677AbjJLSkH (ORCPT
+        with ESMTP id S1441821AbjJLSnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 14:40:07 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397C9BE
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:40:05 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso2436330a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:40:05 -0700 (PDT)
+        Thu, 12 Oct 2023 14:43:17 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1731DB7;
+        Thu, 12 Oct 2023 11:43:16 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-773ac11de71so83385385a.2;
+        Thu, 12 Oct 2023 11:43:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697136003; x=1697740803; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y1aZVXohRge+v3Vv/6fsNhXCZ7AScOuTNQZ+ekrGnkw=;
-        b=J6C9DRsYTiZlBsvb3/9mJVVnALTuEg9Gi4yBmo8R1Av16vSkmj6x0P3KVGxc1QbGv5
-         y6Oy5BHa5arD3b2wSdCsM5LeIlzruFbq0pxd6WNCdAHg82XHDLVeT2Jfw3dwct2TSK1e
-         Fxv/Pp1ycueB8LKnQkPUc8lhT9wwdF8LSySxOeI4hiCm6IhCzfJquUGxXO2SkKY0jHSv
-         NZkM49s0golYvrbwBCDhIRDYxiq22TS1XMWMD/kX77KYIUkylDEk3za1vp+TO+9nrZaK
-         hko+AfTrZW+mZLZ9Pj178S4W2IGmfRRNwzyqlV/E0wzh70NxHDCda6k1Km/1PZCGQe8C
-         TiOA==
+        d=gmail.com; s=20230601; t=1697136195; x=1697740995; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=G5vgE2fYXgKlfq4nH2TUkTSW1zkdBwLIEnXGe5BmWog=;
+        b=kkvrf9WxpDnYZVM9X1Ai3kCVyW2LzDsJU/Pw2yYXgIFa5NIJdInlUKmKYCQU5R9KO+
+         XJfeCGPYsbEiPn9+nH6HSas751dbK/5Ku+B17zgjTfvHjmN7jhCOFTHndVJw4EDarbh5
+         fg7mC+BGYvK2DctwJdgWL7KPkhZWaoC9BkfATDk4G9AFDU+8gKhfvQQtDHlWN2c20kKW
+         RIUbaBR4rhFEf6LVOb4huLpQrOOlys/MS4GcX6et5DxQCKOwc+cTR6wL0J3rYCc5sbMp
+         ae9cB91DJMsNXSJ/7xKFbthtQiCazsgzHERGJCQbzti/v/dkAzufZcp8lYkyErZT1aAi
+         FIEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697136003; x=1697740803;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y1aZVXohRge+v3Vv/6fsNhXCZ7AScOuTNQZ+ekrGnkw=;
-        b=bGvIAhFMz8bDkMFm4O3InnhnGx9PfmkA+ghmdsESvwSglpOVqZAGlog3WLEtoS9LBp
-         KZtBWvUUa7gQZOitUaHIbRc8uBESwF2QRE9fC4/yuuikgkoog84+izN6mbO2n5KeOHGf
-         K9Ny7j8VIdbvJHhQ4kgjMrl4jntrnM2jjlMlv+Zghzu+7+fUF2SQOtpkxsnS7tZT1Hko
-         BVPvlfXRpPpLgvPdZ20c8kZvFrgOvB9CTuhW1xgD7O2Lq4zwyJd5f07MdaIAlj5Q+CJg
-         6qEOGpE0StAzzfFR8wkUPicBi6QWqrrbR79MEoRmGvJVFeScZVMFo0qG6BdaJKSEg45S
-         KFBg==
-X-Gm-Message-State: AOJu0YxXPvYOtrAKXJaBD+kFQUMyuSUFRSXqukcaPO7A5SIBkAmOheaL
-        k4bgBkIGT/H6YzlT7zs3ZahNy8nhewa8YNwV6uQ=
-X-Google-Smtp-Source: AGHT+IEHHumjNQpn73kXZqpk0T02To9UzO7onfeg6sqCjti4bWA6fBS/ptoScbdqZYxE54CRPouSH8kbA0BFawhRjIw=
-X-Received: by 2002:a05:6402:510a:b0:53e:3584:d394 with SMTP id
- m10-20020a056402510a00b0053e3584d394mr169774edd.33.1697136003595; Thu, 12 Oct
- 2023 11:40:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697136195; x=1697740995;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=G5vgE2fYXgKlfq4nH2TUkTSW1zkdBwLIEnXGe5BmWog=;
+        b=P5FatIre245pFiehYJaK+qXyubCVOKboSWyvy8I9ouu4udKbA16lunrZ8BwUf1/yUQ
+         WHiEp3cn7/GWqoPGGhjYRvk++lYxOC7M2TU34RXdIdmvS8Kalcl7QNbZWXiLjSvVkm0W
+         O/tBkvOdYMUNdlcfNEZkKQfa+NNZiDklo4dqKWJrXcxPFlnRtxETXCRmsdgQCV+fbXoK
+         xidhjFYRLsIox4DR09VztJ9lO2WuOq811HqKbZcSV0rafETs7jma65yskgJSQhjox+Er
+         AOJqP6NxTOaHmBMgmUVKKpUrLvrQD8wbBLGFEyDIGZySApy60RKpGN2BX6K3ZMqhOqWY
+         A12g==
+X-Gm-Message-State: AOJu0YwQj7PZABKl6x9G0Cnpv3PpO722rQdM+ZO8n8uB9YpaoYIukLFq
+        r615b87TnDfLqXIYJZz2qAo=
+X-Google-Smtp-Source: AGHT+IGNXM1JbRwqsGrTfGInKbc4JVqtJUbsW3aoOcuBfbXiDeKITiAf0Ac6PH0/oHGa+6LYWwyvLQ==
+X-Received: by 2002:a05:620a:4106:b0:76f:1614:576b with SMTP id j6-20020a05620a410600b0076f1614576bmr29725754qko.1.1697136195052;
+        Thu, 12 Oct 2023 11:43:15 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id pa25-20020a05620a831900b00772662b7804sm6205838qkn.100.2023.10.12.11.43.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 11:43:14 -0700 (PDT)
+Message-ID: <1638385d-a5b3-40ab-ae0c-25b53d761336@gmail.com>
+Date:   Thu, 12 Oct 2023 11:43:09 -0700
 MIME-Version: 1.0
-References: <20231012161237.114733-1-ubizjak@gmail.com> <20231012161237.114733-2-ubizjak@gmail.com>
- <CAMzpN2ii5qMr36PSw8RzNuVB-9KhoQgyfet=FpPtT5F3hOmLmQ@mail.gmail.com> <CAFULd4ZVvRvssyj--un6vrLU5M816ysEkc4xpXnGSN=hyhTTFQ@mail.gmail.com>
-In-Reply-To: <CAFULd4ZVvRvssyj--un6vrLU5M816ysEkc4xpXnGSN=hyhTTFQ@mail.gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Thu, 12 Oct 2023 20:39:52 +0200
-Message-ID: <CAFULd4b=S09YvHoJ3UkY=DbJRS+xqhFwrP50YEYomntxy6JtnQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] x86/percpu: Use explicit segment registers in lib/cmpxchg{8,16}b_emu.S
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     x86@kernel.org, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 0/6] 6.1.58-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20231012180030.112560642@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231012180030.112560642@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,27 +79,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 7:54=E2=80=AFPM Uros Bizjak <ubizjak@gmail.com> wro=
-te:
-> > This will break on !SMP builds, where per-cpu variables are just
-> > regular data and not accessed with a segment prefix.
->
-> Ugh, indeed. Let me rethink this a bit.
+On 10/12/23 11:00, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.58 release.
+> There are 6 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 14 Oct 2023 18:00:23 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.58-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Something like this:
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-#ifdef CONFIG_SMP
-#define PER_CPU_ARG(arg)    %__percpu_seg:arg
-#define PER_CPU_VAR(var)    %__percpu_seg:(var)##__percpu_rel
-#else /* ! SMP */
-#define PER_CPU_ARG(arg)    arg
-#define PER_CPU_VAR(var)    (var)##__percpu_rel
-#endif    /* SMP */
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-and using the above PER_CPU_ARG in /lib/cmpxchg{8,16}b_emu.S will
-solve the issue.
-
-I will prepare a v2.
-
-Thanks,
-Uros.
