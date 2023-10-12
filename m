@@ -2,118 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A29587C7500
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3789E7C7504
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379609AbjJLRms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34618 "EHLO
+        id S1379592AbjJLRoQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 13:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344076AbjJLRmr (ORCPT
+        with ESMTP id S1344050AbjJLRoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:42:47 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EC7CA
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:42:46 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CH2IhP007409;
-        Thu, 12 Oct 2023 17:42:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=cEqeJI7HQsfdFlGZKhpTdsBgaJEphttefgQPDQdnvZI=;
- b=iLUr6LfADJxjaZqnCSY2cGzJbcmJoJ/oe48r4GxTXDF76IqGGDYmdSvv4SZmQPrMLFfj
- 2PXSXZXbmlzZeXr/4+n7SPWE+PnVYXeqx2q11srLprsHOoKSRnSSsYiGZxXxo7JiXF0Y
- DhQZgynWQPdkag2Q9drodI0ZusqYjvEDbVyxm89OFGy1gErUKGDQWNlfxdk3cOIVepgA
- qrEMPisQ6gYBhDxxMjdX5Y+cDstMAy1Pv8tCaopi/U6eQekt+q7ZVSL36AwQq+K/2i87
- ErMZnEcytVZPPZR52j+gNLL2DSI7iVEDuQ/B+i+gMMoX0ivScAtvo0Fr/vm0tUQsvRlX xQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpmuj1aha-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 17:42:41 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39CH2gOl008977;
-        Thu, 12 Oct 2023 17:42:41 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpmuj1ah1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 17:42:41 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39CG6pxg000640;
-        Thu, 12 Oct 2023 17:42:39 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkk5m13kg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 17:42:39 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CHgcCM23397106
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Oct 2023 17:42:38 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0BDE258055;
-        Thu, 12 Oct 2023 17:42:38 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B925F58043;
-        Thu, 12 Oct 2023 17:42:37 +0000 (GMT)
-Received: from gfwa153.aus.stglabs.ibm.com (unknown [9.3.84.127])
-        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Oct 2023 17:42:37 +0000 (GMT)
-From:   Ninad Palsule <ninad@linux.ibm.com>
-To:     joel@jms.id.au, eajames@linux.ibm.com, lgirdwood@gmail.com,
-        broonie@kernel.org, linux-kernel@vger.kernel.org,
-        lakshmiy@us.ibm.com
-Cc:     Ninad Palsule <ninad@linux.ibm.com>
-Subject: [PATCH v1] regulator: core: Convert warning to debug print
-Date:   Thu, 12 Oct 2023 12:42:35 -0500
-Message-Id: <20231012174235.2424670-1-ninad@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 12 Oct 2023 13:44:14 -0400
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27491C9;
+        Thu, 12 Oct 2023 10:44:13 -0700 (PDT)
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-57ddba5ba84so133367eaf.0;
+        Thu, 12 Oct 2023 10:44:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697132652; x=1697737452;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Pe7bpLJT3uvTuZB09KxlybQ/Xw31ItduIV6kQwN3xO4=;
+        b=VQswEwKWNUlZSkEKh00OKM3ZYfk5bgn2keF0F4k5tOFEQC/JPOkkh10A7qIKkR2gFP
+         haGNsw/swUypTQ+e8kJEXnPxbVAxD1LCFf6UxjNAldYzg0xcVrFtodTpMtO9ELyw7FvF
+         LtXVuEth5IXymvreOWqnq3E66GgpbLkdfr0f5EKAD5VHAYDfqXsZnhTCTO1p99YGjck8
+         nSwulXneOLyjP9wcnwF4Ilmu87m9BiY5ZYCVvFO6Vsssxwlf5nFILTLBdFSxsvILQtv2
+         79SQXBmziYH9EO9r76cavfuC8gP6TLxu/uUov5Lh7IeZ71R/tVm4Fj+Pc1tUUQ1SS28F
+         fR9A==
+X-Gm-Message-State: AOJu0YyyF/zb1L0Y6FTRYyo/INzdqX7mv0ccoLNeWTxTpoWtD2axZ5ki
+        52pvFD8C0rTc3XTc2obotEv0G2qyJAOlCDdEdMs=
+X-Google-Smtp-Source: AGHT+IGlh8ZNkVDw3rsaT4gXeZ10Ykb1ZWW62xdRl0XywCfW3u729x88z0FDpJ/m29/7Vgx6qeThdP3okBG4epcI/eA=
+X-Received: by 2002:a05:6820:390:b0:57c:6e35:251e with SMTP id
+ r16-20020a056820039000b0057c6e35251emr23653110ooj.1.1697132652457; Thu, 12
+ Oct 2023 10:44:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: iO51A1k9MQ6K7qHX8Xskc2ZxviScW5s5
-X-Proofpoint-GUID: sRbHWc3PZtZ_sHtmQK_tHFlwMHILt8Il
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_09,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
- clxscore=1011 malwarescore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- phishscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310120147
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231012102700.2858952-1-daniel.lezcano@linaro.org>
+ <a6b51de7-4f56-4db9-a7dd-60555ac6c37f@arm.com> <d9f3bd7b-a5db-4d37-bb1f-f97e40c8a63a@linaro.org>
+In-Reply-To: <d9f3bd7b-a5db-4d37-bb1f-f97e40c8a63a@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 12 Oct 2023 19:44:01 +0200
+Message-ID: <CAJZ5v0gC4+Jam0a4KpEr7onydn8Sp8MkN2yzVxm0W9qDpmEoDw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] thermal/core: Hardening the self-encapsulation
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Lukasz Luba <lukasz.luba@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>, rafael@kernel.org,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some boards without the vcc regulators for eeprom or other
-devices. In such cases, we should not see the following warning and
-this confuses the user. We want to see this only when it is compiled
-with CONFIG_REGULATOR_DEBUG option.
+On Thu, Oct 12, 2023 at 3:14 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+>
+> Hi Lukasz,
+>
+> On 12/10/2023 14:01, Lukasz Luba wrote:
+> > Hi Daniel,
+> >
+> > On 10/12/23 11:26, Daniel Lezcano wrote:
+> >> The thermal private header has leaked all around the drivers which
+> >> interacted with the core internals. The thermal zone structure which
+> >> was part of the exported header led also to a leakage of the fields
+> >> into the different drivers, making very difficult to improve the core
+> >> code without having to change the drivers.
+> >>
+> >> Now we mostly fixed how the thermal drivers were interacting with the
+> >> thermal zones (actually fixed how they should not interact). The
+> >> thermal zone structure will be moved to the private thermal core
+> >> header. This header has been removed from the different drivers and
+> >> must belong to the core code only. In order to prevent this private
+> >> header to be included again in the drivers, make explicit only the
+> >> core code can include this header by defining a THERMAL_CORE_SUBSYS
+> >> macro. The private header will contain a check against this macro.
+> >>
+> >> The Tegra SoCtherm driver needs to access thermal_core.h to have the
+> >> get_thermal_instance() function definition. It is the only one
+> >> remaining driver which need to access the thermal_core.h header, so
+> >> the check will emit a warning at compilation time.
+> >>
+> >> Thierry Reding is reworking the driver to get rid of this function [1]
+> >> and thus when the changes will be merged, the compilation warning will
+> >> be converted to a compilation error, closing definitively the door to
+> >> the drivers willing to play with the thermal zone device internals.
+> >
+> > That looks like a good idea. Although, shouldn't we avoid the
+> > compilation warnings and just first merge the fixes for drivers?
+>
+> Yes, we should but there is the series for nvidia (pointed in the
+> changelog) which need a slight refresh for the bindings AFAIR. That
+> series is since March 2023 and Thierry seems busy [1]. I'm holding the
+> hardening since then.
+>
+> So I don't know how to make progress on this? I was assuming we can
+> merge this series and let the compiler recall what has to be fixed.
+>
+> [1] https://lore.kernel.org/all/ZK14edZUih1kH_sZ@orome/
+>
+> and as soon as it is fixed, we convert the WARNING to ERROR :P
 
-[0.747347] at24 6-0055: supply vcc not found, using dummy regulator
-[0.752877] pca953x 6-0074: supply vcc not found, using dummy regulator
+To be honest, I'm not sure if anything needs to be done along the
+lines of this patch right now or even at all.
 
-Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
----
- drivers/regulator/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The only concern here would be that some new drivers would include
+thermal_core.h while we were waiting for the remaining existing
+abusers to be fixed, but since this hasn't happened for the last 6
+months, I'm not worried.
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index d8e1caaf207e..7d2e2495234e 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -2204,7 +2204,7 @@ struct regulator *_regulator_get(struct device *dev, const char *id,
- 			 * enabled, even if it isn't hooked up, and just
- 			 * provide a dummy.
- 			 */
--			dev_warn(dev, "supply %s not found, using dummy regulator\n", id);
-+			dev_dbg(dev, "supply %s not found, using dummy regulator\n", id);
- 			rdev = dummy_regulator_rdev;
- 			get_device(&rdev->dev);
- 			break;
--- 
-2.39.2
-
+It would be good to add a notice to thermal_core.h that this file is
+for internal use in the thermal core only, though.
