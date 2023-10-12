@@ -2,119 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3507C7A84
+	by mail.lfdr.de (Postfix) with ESMTP id 953017C7A85
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233762AbjJLXlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 19:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
+        id S232977AbjJLXlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 19:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233417AbjJLXlS (ORCPT
+        with ESMTP id S229960AbjJLXk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 19:41:18 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC32DD
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:41:17 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7a2cc9ee64cso60848539f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:41:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1697154076; x=1697758876; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8lPotT7caJ2i4rnfmOn5KsESAOXBOrfHJSZKahlwL+g=;
-        b=P4uS1OVAhhol/x5j9dfFaJZXBZAXoZyPEY4vGo1aH2YNwyG/8LORaaKOa6FXc/pdVM
-         IWVVoy7gOpYDXLGZtyh12nuKINDOOnT1kNTtj1tXdOBFPl8iX+D8NOv+elRuyF5jpl4+
-         AF0pjlkicHLO5bX5Ba/zUaFxzNF40KYAJBzh0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697154076; x=1697758876;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8lPotT7caJ2i4rnfmOn5KsESAOXBOrfHJSZKahlwL+g=;
-        b=PFsjwZhggp0U1D3IsKVI5eMIs6VmnTSrCiuRdvwSgymGsp3UPTzmoTp6tbJ8LXYRXZ
-         ZqC4inE5SNi2WqYkemnsFYKB0qcSysLGvXZVElzbLicdaWJcsTtiQ2vJsAdqiRQWJXjV
-         UptAF9B2XRAXCoWnQtRD7H4mzQJio63kHV7i1wbJJDhr8KBu+aV9/zqikEc5iosAeqSO
-         1dk7D8mGFN85zZGgm2Ghm80Z6+Ed1KA1CzqI2w4v/FT8eef965mMCOk85EP0QbmBVUvt
-         V1KbJj7Iroo6KQSHTbjWeQQu040laZofcFrL9yU/YWldZv2JvBzrYOX3Re6FfRvSMMuI
-         WRtA==
-X-Gm-Message-State: AOJu0YyPmEXGHOBh+WeM7sCCiAT++bE3USU1Zmak27iHCA+UpgncwqZb
-        2kWiIrFJlRJsVnOz06HojZSwhg==
-X-Google-Smtp-Source: AGHT+IHVcCcrRF23qP1MJVBs2OIkv1QitZZk132Zae4UHLUIu2aj2KVqpLdgi6v/dJwUgreFF9xBIA==
-X-Received: by 2002:a6b:f319:0:b0:783:63d6:4c5 with SMTP id m25-20020a6bf319000000b0078363d604c5mr29820716ioh.12.1697154076350;
-        Thu, 12 Oct 2023 16:41:16 -0700 (PDT)
-Received: from localhost.localdomain (d14-69-55-117.try.wideopenwest.com. [69.14.117.55])
-        by smtp.gmail.com with ESMTPSA id c6-20020a5ea806000000b0078702f4894asm4480238ioa.9.2023.10.12.16.41.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 16:41:15 -0700 (PDT)
-From:   "Nabil S. Alramli" <nalramli@fastly.com>
-To:     sbhogavilli@fastly.com, davem@davemloft.net, dsahern@kernel.org,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     srao@fastly.com, dev@nalramli.com
-Subject: [net] ipv4: Fix broken PMTUD when using L4 multipath hash
-Date:   Thu, 12 Oct 2023 19:40:25 -0400
-Message-Id: <20231012234025.4025-1-nalramli@fastly.com>
-X-Mailer: git-send-email 2.31.1.windows.1
-In-Reply-To: <20231012005721.2742-2-nalramli@fastly.com>
-References: <20231012005721.2742-2-nalramli@fastly.com>
+        Thu, 12 Oct 2023 19:40:58 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E119A9;
+        Thu, 12 Oct 2023 16:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697154057; x=1728690057;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=cHawmV/vH8ShZu4lAlyMw+gxQmAHaMjDhh3XDQFc8HQ=;
+  b=k6NYyfmK6uyl5RcNaO40N7wcRR5025AH+F2rwzTJhgCsc4RG2VFAdO1e
+   Tl3TcJhKxZi4+cxmlDxipXyxS3D9a2QLBgUTz6BRyn/cJ1/x1SO1d2ym4
+   gVxNCVmivERl2XYy430Yzq3BbBVY+kNH/6Q5E24nv038mvn4PwyWY7HbO
+   TSCQzWR8psKGPZxuCgwQzo5GaA953Z3WDBmpGGwnJthRGTRBNIpUP9tAE
+   kY6Fq46d2zaL+UmwpUxBPZ8ktsznwA+hBZ3H6VYLySLIbyhtILxFMl1Vr
+   144Yac7ELD2Bg8k7mdSxNzUNuKT44hqZM2QnBwMK5jdTR8spuh6IFOEF2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="365325254"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="365325254"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 16:40:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="748108742"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="748108742"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Oct 2023 16:40:56 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 12 Oct 2023 16:40:55 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 12 Oct 2023 16:40:55 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 12 Oct 2023 16:40:55 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jTRUNu0U4AxojDTyGMTrm0mqTVnuk28ZmOdycKQK83ddphHyjuyrVnNGsTCYeYW0AkLCNN1k8nnglWte+1z+hN17PYEL4H+jggMoVITxMEhenE78VqOyaxH4k1IoS1JiB4zir9qbzTY6sn2cx++Y7uZ2ywgmgtgnQAYxS4XKX9gPMtKNibU4Ujd6JPak3LDzSLSOf81n4xr3xFSK60Cs/JI6L2dY1LwN1DOvVeChRQwG7WYY+lcMZiIMbfqU9da1IRPOpD4xBfyFpCYWmC++XYhj9dHTpn4oS3rcwAlzVofReUGcjLlNRKzqmEss5Dz2kT23A07m0qKcfmkpTiaCyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cHawmV/vH8ShZu4lAlyMw+gxQmAHaMjDhh3XDQFc8HQ=;
+ b=oVVb02+zvyjhzAZIbNvm/UY/DBU3BM8JVfnLjer36NdlOp95GPnyBv2vEhZOHD4womzu5DTsruQar3gDZ4p1vcIff6EVf3AraSphvjNmu7e4ovdM63e60YLud56ZGlM5tlThhCuNmHDqgaMXHfN1nfPJP7yuPITDX8QPjSc7r0LRuZ4OC7O7apdu7fu/zW5kD6sPyB20mpJQ320cITMUtS1BgDPeOBGvX3H1GghNmKSBdgG3rnZxlTAUGdMoX1RlDBXnC+fNUv+QA4gjG5T/m8kXiP/tU5R0GWdvwlRBi6lW45IHuA0UP+oUWZ9x2QyeBQdG11dFou87hGN3emHw4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA3PR11MB8118.namprd11.prod.outlook.com (2603:10b6:806:2f1::13)
+ by SN7PR11MB7509.namprd11.prod.outlook.com (2603:10b6:806:346::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.43; Thu, 12 Oct
+ 2023 23:40:49 +0000
+Received: from SA3PR11MB8118.namprd11.prod.outlook.com
+ ([fe80::66b3:c77d:472e:4baa]) by SA3PR11MB8118.namprd11.prod.outlook.com
+ ([fe80::66b3:c77d:472e:4baa%3]) with mapi id 15.20.6863.032; Thu, 12 Oct 2023
+ 23:40:49 +0000
+Date:   Thu, 12 Oct 2023 16:40:46 -0700
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     Michal Wilczynski <michal.wilczynski@intel.com>,
+        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <nvdimm@lists.linux.dev>
+CC:     <rafael.j.wysocki@intel.com>, <andriy.shevchenko@intel.com>,
+        <lenb@kernel.org>, <dan.j.williams@intel.com>,
+        <vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        "Andy Shevchenko" <andy.shevchenko@gmail.com>
+Subject: RE: [PATCH v1 1/2] ACPI: NFIT: Fix memory leak, and local use of
+ devm_*()
+Message-ID: <652883fe10d38_780ef29459@dwillia2-xfh.jf.intel.com.notmuch>
+References: <20230926184520.2239723-1-michal.wilczynski@intel.com>
+ <20230926184520.2239723-2-michal.wilczynski@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230926184520.2239723-2-michal.wilczynski@intel.com>
+X-ClientProxiedBy: MW4PR03CA0144.namprd03.prod.outlook.com
+ (2603:10b6:303:8c::29) To SA3PR11MB8118.namprd11.prod.outlook.com
+ (2603:10b6:806:2f1::13)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA3PR11MB8118:EE_|SN7PR11MB7509:EE_
+X-MS-Office365-Filtering-Correlation-Id: 71c028dd-3602-40a1-9bfe-08dbcb7ca9e3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +MjBa4dElOSe57KC366jXKmWzR31kc1kKyVq2//DdwsMwQ405Xw6Ys0OuawJz31qpX+kC6arrlItsfpo74aSNN6v71OaFnV86I5LdZAtd95j2XXLJbbQbTWco3o/oN2Aviq7yZD9B6w/c6N9c8Vi1tsmrBpSoZYcR9l5TE3h//ATSqrUzzxMiHTLHqmZNFwqA+9j3jfjdkQ6E3ro2aT2AYYs2N0oLZWUdIqMl9mJsY/a2Yg1iYqjg1BCkOpsjW6PkUKOOxKi/dJ0clhYoK1KJUxCRlUGNoxg3Xqf2+dQ3kE1HFValHyZ47FrvMILMbss5EWBPEE/slr9PgSuKvnK5nnLg8ayBL/F2+L4338Su4pWf487omeel2gif1ewPSRkqZJ7E+6foW7WAHXEPCyCdwZXzkR/cOqqa11rNPxtrMtKU52MvkWXhziy+a/5ydmKLBwvG/JYFsZGK8+5U9ydC22Z0WfUqrbV5rxDKlQapdlCF3RmD8jvqGJj2uWlmGIoq64EG6I4UZdF8BYtM8w+A6E3Gnq8huY+iRr7GywZmpHlclMeP0ECIQfyWNAoUvbX
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR11MB8118.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(39860400002)(396003)(366004)(376002)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(54906003)(66556008)(66476007)(66946007)(6506007)(316002)(82960400001)(6666004)(38100700002)(2906002)(8676002)(4744005)(5660300002)(478600001)(4326008)(6486002)(8936002)(86362001)(41300700001)(9686003)(6512007)(83380400001)(26005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+UPtIvrzsGbcrHaT6I2PYfK+Ljw+tLyr4oDw2ETRW1Hkcu663TFtCfgY2JYp?=
+ =?us-ascii?Q?Gkc8PDRztpZxotWK4C8ipCaKhtPT4vR8U0wius+ZP8uKNRjfQ95scCozEj/X?=
+ =?us-ascii?Q?uEtBFuRWKB4PqPttkLUcYaF0MeG4IPqlVEijxLv8g8aefKMCosHW7GQI/Cv7?=
+ =?us-ascii?Q?zMHFG4z92VRAVlGXQQD2jr5MHCk0j0isEWzAJuhbJv/ef984jf+Z+kUWTLuV?=
+ =?us-ascii?Q?40pf/zmPBE2fh32eFifkh37Zuk7SnnGqC/tauU4jLQWFVyfYiRN6XUPMjRcK?=
+ =?us-ascii?Q?N7FwRI5qN/xM7EWMXbt5TfFh19KbTLMiw9d0CfxI46NWCxhABVdbXov18jrC?=
+ =?us-ascii?Q?hSna80EFoqxz+piiXsPPu+4GnquJm7zHY7O2gFdwZbPcUaO0tCImVz7gXXTc?=
+ =?us-ascii?Q?wh0Cs+6aMQ2bW0vABYLbafzk8pd84xmpbgEVLfpeRXOCT115B0VrjUPk8t07?=
+ =?us-ascii?Q?xxw34W+8XzBg8loJtCInGgl2vOZ8cOc8h8ugXv+eHt6xJMB2db/06qkzvtk4?=
+ =?us-ascii?Q?Oa/OH00Vz0FPwURIkehymabEpOk3uovzR/rlWDe9WmkvZUQ1yWcTNf07mhoA?=
+ =?us-ascii?Q?kxVqGOMOzLrPHRD0utJgQ3MeHjaYpKvQAgsVgQI9NujgtNbbp0l08Z4mNAc3?=
+ =?us-ascii?Q?KkhVJTAbzRxa4EHL1A55MT7Il5kOcKI0ipZJlXPJsKpGXeE8+RaiM2iicNU9?=
+ =?us-ascii?Q?ScphirVc1jI1q9SzoDDWk/npFcNTLJwRkFcIqWlhbQGXz14rXvp9neHzwonz?=
+ =?us-ascii?Q?Z+f9wyw19GDyCx7HRaKFaTsDp28IjZZy4ttVWfHPb3A3sSt68VpfLgF/JxOt?=
+ =?us-ascii?Q?c2x/dCCmyBKhTB8Y2Dk8b7vp985hYexkRTMzAmZ/37UjPbqV7FlId8JbNwM/?=
+ =?us-ascii?Q?6HkxyhSM5br+9/glDWxR+OpqqaW4UEWtPHtI8wERyy+YO9zwPF183nBnI+7e?=
+ =?us-ascii?Q?XVOwoGxi8J7qv87HP5jdr5SCgZ7HG/GYvS0fxiPB6xPJC/3NkLu+l3ybY6jy?=
+ =?us-ascii?Q?KUMKj56GH59pDErZsr7xnmMs90WgxWELFHfp66XzV08g/k/cG99hbOCUIzAi?=
+ =?us-ascii?Q?22OIiMWyVVIQGLkc5pAefysLCPpW0SDY33ZIoQaspLpOKf8SVJC4l48S4Rei?=
+ =?us-ascii?Q?IL6ySlTQ9aEvxcVfYj6fMcBKhWC/+70qYLPvd4AM9172f1i5OSt+YPPa2cpq?=
+ =?us-ascii?Q?wZ/eG+dqSAkZtRJqGeTxS+UvqQTg0NPUInFaJ9BDE08GBQurQ+jrd+mcXtOi?=
+ =?us-ascii?Q?fjW0ri5ImTAKsDdysmS+9wseRbmWGjZrrZhbvQA3MVkGWJEffTZxfzA0Ejva?=
+ =?us-ascii?Q?fTs/J9CJcZ8YYZK9rgNsj4xaKDvubvLzfX6KowMutvtmNTF3qQOccWzMebtw?=
+ =?us-ascii?Q?uKHrTz9qOMgclV+85rfUqJY+1hq63lamPDw86gGXjzCrTGlN4MYECmN9qIDZ?=
+ =?us-ascii?Q?/Tv85Ehi01zIWzOeba2Qg2FTz2Nnkhjwz419s8NP29Zv1Qr5dXpuTk1ohbRV?=
+ =?us-ascii?Q?REuvkZW7vC/LQLfTRHHY5UXH9lA1UKepATT0gnq8Vv4+LW1HSrvbFHhL1/K/?=
+ =?us-ascii?Q?g9g4KKBegQ5QJhDqOQQTX49Cab3LRfoKR8LVYVObLuAhQWYQhQSFV/aAf+IN?=
+ =?us-ascii?Q?Pw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 71c028dd-3602-40a1-9bfe-08dbcb7ca9e3
+X-MS-Exchange-CrossTenant-AuthSource: SA3PR11MB8118.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 23:40:49.1024
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l8YwX6+qErjZPfJaDPQAHkHJKYvsVPyNq49p26cfemYon+Valh4aRhzzoSjL2oEKy1+XzacLzXmPPatYG/LZkibyAVde1sPDus6pLKdwSow=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7509
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suresh Bhogavilli <sbhogavilli@fastly.com>
+Michal Wilczynski wrote:
+> devm_*() family of functions purpose is managing memory attached to a
+> device. So in general it should only be used for allocations that should
+> last for the whole lifecycle of the device. This is not the case for
+> acpi_nfit_init_interleave_set(). There are two allocations that are only
+> used locally in this function. What's more - if the function exits on
+> error path memory is never freed. It's still attached to dev and would
+> be freed on device detach, so this leak could be called a 'local leak'.
 
-On a node with multiple network interfaces, if we enable layer 4 hash
-policy with net.ipv4.fib_multipath_hash_policy=1, path MTU discovery is
-broken and TCP connection does not make progress unless the incoming
-ICMP Fragmentation Needed (type 3, code 4) message is received on the
-egress interface of selected nexthop of the socket.
+This analysis is incorrect devm cleans up on driver ->probe() failure in
+addition to ->remove(), and these error returns result in ->probe()
+failures. No leak, i.e. this is not a fix.
 
-This is because build_sk_flow_key() does not provide the sport and dport
-from the socket when calling flowi4_init_output(). This appears to be a
-copy/paste error of build_skb_flow_key() -> __build_flow_key() ->
-flowi4_init_output() call used for packet forwarding where an skb is
-present, is passed later to fib_multipath_hash() call, and can scrape
-out both sport and dport from the skb if L4 hash policy is in use.
-
-In the socket write case, fib_multipath_hash() does not get an skb so
-it expects the fl4 to have sport and dport populated when L4 hashing is
-in use. Not populating them results in creating a nexthop exception
-entry against a nexthop that may not be the one used by the socket.
-Hence it is not later matched when inet_csk_rebuild_route is called to
-update the cached dst entry in the socket, so TCP does not lower its MSS
-and the connection does not make progress.
-
-Fix this by providing the source port and destination ports to
-flowi4_init_output() call in build_sk_flow_key().
-
-Fixes: 4895c771c7f0 ("ipv4: Add FIB nexthop exceptions.")
-Signed-off-by: Suresh Bhogavilli <sbhogavilli@fastly.com>
----
- net/ipv4/route.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index e2bf4602b559..2517eb12b7ef 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -557,7 +557,8 @@ static void build_sk_flow_key(struct flowi4 *fl4, const struct sock *sk)
- 			   inet_test_bit(HDRINCL, sk) ?
- 				IPPROTO_RAW : sk->sk_protocol,
- 			   inet_sk_flowi_flags(sk),
--			   daddr, inet->inet_saddr, 0, 0, sk->sk_uid);
-+			   daddr, inet->inet_saddr, inet->inet_dport, inet->inet_sport,
-+			   sk->sk_uid);
- 	rcu_read_unlock();
- }
- 
--- 
-2.31.1
-
+The conversion to modern probe is ok if you want to resubmit that one
+without this intervening change.
