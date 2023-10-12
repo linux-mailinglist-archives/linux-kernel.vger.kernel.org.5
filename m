@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E657C76AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F757C76C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442098AbjJLTZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 15:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
+        id S1442158AbjJLTaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 15:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379697AbjJLTY7 (ORCPT
+        with ESMTP id S1441868AbjJLTaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 15:24:59 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79AADB7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:24:57 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9ae75ece209so218550566b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:24:57 -0700 (PDT)
+        Thu, 12 Oct 2023 15:30:17 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D3ABB
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:30:16 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6b1df4ebd52so72139b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:30:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697138696; x=1697743496; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pQgjxjgdz0Jx9fhWH2hRFe0ialjJ6rtancxgASfDniE=;
-        b=HmKsczK5ISJfEsL8NvZ1rtBB6tHM+DWYv7MSFqBkBREVGBeODKiPVV+ZR6WNT2+/WB
-         O5wL0UETNCdtamVU8pdnIjUyMdP2s8jGxaB39YE6P6XwmOANpLsQYDRUw9ig+TzXbSC+
-         Y9ocL1y4KI2v06a9Co2Ni+4BzYpZMCA9fpC0o=
+        d=chromium.org; s=google; t=1697139016; x=1697743816; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PIPGKLqX4lqtP5rqVW/Z8WpP9n2U6+vzX9cu74+l4o8=;
+        b=ClwdjZhHqjwVWio4JhMuQOREFoSrMk1z46czHsayyHLj3fLWFYQ282jFfOtwAl0BVe
+         n0FSgg1bBaRBtHKQUvGzhpJgEQs2gaBawGQNHBDZ/ypg2HTnPKFfn8gd8h+OpG/r0l7n
+         M89PgIVrMXRZ5/pBOcFhp0wCwuuR0SuXMaD2Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697138696; x=1697743496;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1697139016; x=1697743816;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pQgjxjgdz0Jx9fhWH2hRFe0ialjJ6rtancxgASfDniE=;
-        b=g+FOA3K0i1FxQ3TYhruG7gW9mgYgeA1lW2zh1jmLIG75gAJspa7lrU7T+1XypJgBoe
-         ptv7ASx8kM0dmJI4xgtORi+/zQ/d5DufL1QK5lBN6bgOe7/a7xM3BXlX540PNUSSxOhS
-         lsMl2Pk1jKXSR8K6b8QQTDN/DDIp1Mctl5EVJx/JeDFEeExRH6twI3kTcFmHIpTqssYp
-         z8Vq1j6qjE4m4vo1dl8kl28mTqAVknkfJ5VZaExzcIaOzAf/+kPA8trmwI9uRXOIIDgh
-         FB0a1Xi6bzQNrnKGacIRiKKHzj9UNejpxPyxcN4HKTRklYiQ8hA40xtLETKXmJBgy0sb
-         1AYQ==
-X-Gm-Message-State: AOJu0YwYhn8kR7LXy+mLn94vM1ULiDRxkcbZ4MZxkcoxw9wkjbNDFQ9q
-        riso/6/RRJ9CixVDf0J2Ok/9p9zl+a0hPFiHCKzj65E7
-X-Google-Smtp-Source: AGHT+IGUrwZm1CsBPy8yz1jjCWS/5xjRtL+QvROaCDHFOBjTC2tnTFPvCd5Fxi7bFgQSZEmEJC3ayw==
-X-Received: by 2002:a17:906:10ce:b0:9a1:e233:e627 with SMTP id v14-20020a17090610ce00b009a1e233e627mr24619363ejv.42.1697138695614;
-        Thu, 12 Oct 2023 12:24:55 -0700 (PDT)
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
-        by smtp.gmail.com with ESMTPSA id oy3-20020a170907104300b009ae482d70besm11339465ejb.134.2023.10.12.12.24.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 12:24:55 -0700 (PDT)
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-99c1c66876aso218017066b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:24:55 -0700 (PDT)
-X-Received: by 2002:a17:906:14e:b0:9ae:74d1:4b42 with SMTP id
- 14-20020a170906014e00b009ae74d14b42mr23002308ejh.76.1697138694810; Thu, 12
- Oct 2023 12:24:54 -0700 (PDT)
+        bh=PIPGKLqX4lqtP5rqVW/Z8WpP9n2U6+vzX9cu74+l4o8=;
+        b=EpVuMdidtWeUeNBs2Ek+Is5Zklrq+xgvLD0/9WmQsVY6J0LOyRbk5Po3NmDcZ1xnIm
+         9kEK0ml8uEl472S1kp9YiDt9UZl3VosWGYQsGLMY6DvaiGAJ8rSAWPJABGH/61kGXaCS
+         EGyh4JfsVxyxyJBVmtAOpXwmY9IZynBiKMjV3ytpO1+azXlbwB5t4yIECwbdI24PNbal
+         r4W4wmvuQlSHH7KT+m3Kg5eys9vPtzPiK72VAMctaTnne/H0LR5PFqr3Bfw8wK1hiAJt
+         i40mpVZvA/6XrC6SaOmxA+jlguggxucEwcEZR+FoaXrxAGlX1PcNp2xTqhl8yqMsb2TM
+         UwcQ==
+X-Gm-Message-State: AOJu0YyYAAcXW1fDlukq5ZhdZyV2h4QO23uf/8EVFac5HS6QW5DA/RD4
+        dbbxb5We78ASZG3LpoWy1CBoqQ==
+X-Google-Smtp-Source: AGHT+IERPTwnRrLuIcrF/qVItuc/Etf9Gx8qoNlfYGw4E40pryplJea9aQ7RybHzVk/5huQZcu4ZiQ==
+X-Received: by 2002:a05:6a20:7286:b0:15e:7323:5c0f with SMTP id o6-20020a056a20728600b0015e73235c0fmr30788570pzk.16.1697139015932;
+        Thu, 12 Oct 2023 12:30:15 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:7c85:4a99:f03e:6f30])
+        by smtp.gmail.com with ESMTPSA id b3-20020a639303000000b0057c25885fcfsm2075720pge.10.2023.10.12.12.30.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 12:30:15 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Simon Horman <horms@kernel.org>,
+        Edward Hill <ecgh@chromium.org>,
+        Laura Nao <laura.nao@collabora.com>, linux-usb@vger.kernel.org,
+        Grant Grundler <grundler@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v3 0/5] r8152: Avoid writing garbage to the adapter's registers
+Date:   Thu, 12 Oct 2023 12:24:59 -0700
+Message-ID: <20231012192552.3900360-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
 MIME-Version: 1.0
-References: <20231012143158.GA16133@redhat.com> <20231012143227.GA16143@redhat.com>
- <ZSg5KAFxVzKoFlhZ@gmail.com>
-In-Reply-To: <ZSg5KAFxVzKoFlhZ@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 12 Oct 2023 12:24:37 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgsybshMs3KLsyheP8hHhndrRhjo70L1qi+GdBZND8M+A@mail.gmail.com>
-Message-ID: <CAHk-=wgsybshMs3KLsyheP8hHhndrRhjo70L1qi+GdBZND8M+A@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] seqlock: change __seqprop() to return the function pointer
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexey Gladkov <legion@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,60 +76,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Oct 2023 at 11:21, Ingo Molnar <mingo@kernel.org> wrote:
->
-> Okay, so dropping 'const' makes sense in terms of staying bug-compatible
-> with the  previous API and not build-breaking the world - but could we
-> perhaps follow this up with fixups of the type misuse and then a removal
-> of the forced type casts from these APIs?
+This series is the result of a cooperative debug effort between
+Realtek and the ChromeOS team. On ChromeOS, we've noticed that Realtek
+Ethernet adapters can sometimes get so wedged that even a reboot of
+the host can't get them to enumerate again, assuming that the adapter
+was on a powered hub and din't lose power when the host rebooted. This
+is sometimes seen in the ChromeOS automated testing lab. The only way
+to recover adapters in this state is to manually power cycle them.
 
-No. The use of 'const' here is *not* a bug.
+I managed to reproduce one instance of this wedging (unknown if this
+is truly related to what the test lab sees) by doing this:
+1. Start a flood ping from a host to the device.
+2. Drop the device into kdb.
+3. Wait 90 seconds.
+4. Resume from kdb (the "g" command).
+5. Wait another 45 seconds.
 
-The thing is, 'const' doesn't mean what you seem to think it means. A
-'const' pointer in C in no way means that the target is constant - it
-means that *THIS* use of the pointer will not write to the target!
+Upon analysis, Realtek realized this was happening:
 
-Those may sound similar, but they are very very very different.
+1. The Linux driver was getting a "Tx timeout" after resuming from kdb
+   and then trying to reset itself.
+2. As part of the reset, the Linux driver was attempting to do a
+   read-modify-write of the adapter's registers.
+3. The read would fail (due to a timeout) and the driver pretended
+   that the register contained all 0xFFs. See commit f53a7ad18959
+   ("r8152: Set memory to all 0xFFs on failed reg reads")
+4. The driver would take this value of all 0xFFs, modify it, and
+   attempt to write it back to the adapter.
+5. By this time the USB channel seemed to recover and thus we'd
+   successfully write a value that was mostly 0xFFs to the adpater.
+6. The adapter didn't like this and would wedge itself.
 
-In particular, for the sequence
+Another Engineer also managed to reproduce wedging of the Realtek
+Ethernet adpater during a reboot test on an AMD Chromebook. In that
+case he was sometimes seeing -EPIPE returned from the control
+transfers.
 
-        seq = raw_seqcount_begin(seq_ptr);
-        ...
-        if (read_seqcount_retry(seq_ptr, seq))
-                goto retry;
+This patch series fixes both issues.
 
-then 'seq_ptr' really *is* a 'const' pointer. The reader very much
-does not write to it, and this very much is part of the fundamental
-design.
+Changes in v3:
+- Fixed v2 changelog ending up in the commit message.
+- farmework -> framework in comments.
 
-The above is *literally* what sequence locking is all about: readers
-are pure readers.
+Changes in v2:
+- ("Check for unplug in rtl_phy_patch_request()") new for v2.
+- ("Check for unplug in r8153b_ups_en() / r8153c_ups_en()") new for v2.
+- ("Rename RTL8152_UNPLUG to RTL8152_INACCESSIBLE") new for v2.
+- Reset patch no longer based on retry patch, since that was dropped.
+- Reset patch should be robust even if failures happen in probe.
+- Switched booleans to bits in the "flags" variable.
+- Check for -ENODEV instead of "udev->state == USB_STATE_NOTATTACHED"
 
-So no, making it a 'const seqptr_t' is absolutely not a bug. It's very
-much a FUNDAMENTAL FEATURE of sequence locks.
+Douglas Anderson (5):
+  r8152: Increase USB control msg timeout to 5000ms as per spec
+  r8152: Check for unplug in rtl_phy_patch_request()
+  r8152: Check for unplug in r8153b_ups_en() / r8153c_ups_en()
+  r8152: Rename RTL8152_UNPLUG to RTL8152_INACCESSIBLE
+  r8152: Block future register access if register access fails
 
-Now, I'm not sure how much we actually take advantage of this and
-there may not be very many cases of this all, but I really think this
-is fundamental to the whole data structure, and there are most
-definitely cases where we probably *should* take more advantage of the
-fact that a read_seqcount is a read-only op.
+ drivers/net/usb/r8152.c | 268 +++++++++++++++++++++++++++++++---------
+ 1 file changed, 209 insertions(+), 59 deletions(-)
 
-For example, I think a function like 'dget_parent()' should actually
-take a 'const struct dentry *dentry' as its argument, and the seqcount
-is embedded inside that dentry and as such would also be const.
+-- 
+2.42.0.655.g421f12c284-goog
 
-Right now the dentry code doesn't actually do that, because this isn't
-one of the areas we have constified, but it's conceptually the right
-thing to do. We use the dentry argument in a read-only manner
-(although the *parent* that we look up then is written to, and in the
-case of a root dentry, the parent may end up being the same as the
-original).
-
-Note that the 'const' should only be an issue for the begin/retry
-cases, and obviously not for the write ones, but those readers do use
-the seqprop_ptr() helper. So those absolutely need to handle the const
-case.
-
-So no, the cast wasn't "masking" anything at all. The 'const' is real.
-
-            Linus
