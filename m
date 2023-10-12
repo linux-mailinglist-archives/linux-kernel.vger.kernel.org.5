@@ -2,219 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FC97C7155
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A6E7C7153
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379274AbjJLPYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42736 "EHLO
+        id S1347155AbjJLPYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379226AbjJLPYE (ORCPT
+        with ESMTP id S1379229AbjJLPX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:24:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6574BCA
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:23:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697124192;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LPVVrFpPDVyx3xRaYdaYaCN0WQspDDkOcGN6DIUH97E=;
-        b=QV/ztgujZWk/Sf7cjX17+aLtBAb1FI315i0B1e8tFpq5IFYN4wxRUGrvDJwVSaDa8LhZsF
-        YQg+XyrLG1aLBlUddkQ9ZPnaAlyOSLGMux3r0X7PS+AwdgC166QwcSXUjhcX1p/kBeZw9o
-        SPgNCpkIR/+79eWE2JU0/Clw0vXKZOk=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-104-OqHDG5O3NOGuD9jbCZkTvw-1; Thu, 12 Oct 2023 11:23:01 -0400
-X-MC-Unique: OqHDG5O3NOGuD9jbCZkTvw-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-66d08175882so10464336d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:23:01 -0700 (PDT)
+        Thu, 12 Oct 2023 11:23:57 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 463F8BE
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:23:55 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so12773a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:23:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697124234; x=1697729034; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VHK1BXeTdm+7g9q0Gbvmqz6TzZXu3xcSDt6W9eTGzYc=;
+        b=wjzU5OR5w4DgbX1SvAChEx94DeItImQhJixpsg5DPd5Gzszf18rP4CU0QSzpL3BBSh
+         jjXXPrGyOWUuW102lTB8KS3StGIFsxW2CcSTdJYvSku95vFjauL0UmJDMhrURjZnme5L
+         6ZvCKntkJNlb9UdmVlBa3fLxbqkwNltp2kl3pGN9z6ZYZPUn6GIxwWutF3r/HW0Artm0
+         XA7OJyUj/zCrwiFfJWLrKxIdCUqrZrL72md8FGOiTy3JSCfI01pMl2fdMLuEGMNWg0vy
+         5Nrr11VhUBFsv6aLeTPElHa2rMOPVOecT4yRc/TS8PMDLQblPS6jLgUOXBnqzOIp5gCa
+         /JWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697124181; x=1697728981;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LPVVrFpPDVyx3xRaYdaYaCN0WQspDDkOcGN6DIUH97E=;
-        b=jHt2tpruDY3maGEgN+XZjMbxoSd0N9GoqtAXDju3turvxUOvY+mvSWHRdaL8BywcZR
-         7tKznYSi8ic2H64SCrLIiTsdxMyuQ/0X0Z9U9AXbQUsfAXQLvQJ3c9o4nSJVKIh94cra
-         LyIbNx5fIQv5gGvjZ5B4dNvxOzUSc+rlutjSnirAI/KC/Ud/XsJQrq9EsWJHShFDDQNz
-         GLo0fg8qmxVF2my77rqJKJ1V2jfola+wR/ONbqq647HvLvl42zKxUBTWFrGOzTEkumFX
-         slShKdW17YHMolcZv7uCXoM/EdTH3yflo7Jqg98usfWQpF+FzfBeDDKg00HOJX8xe+eT
-         8OCA==
-X-Gm-Message-State: AOJu0Yzv6miVpO2pxol/ToGmK8zLwGaCyISkYNK24Ap9lElRsvbEORCH
-        qfUaFAXMfT9KjcyzxZa2ldtHaw7AHszpaepLBxFaZM+/xDRSh6RQyqznyxIgSwQ3QPfGaC6ygOC
-        ZQEA+9IpgsU2WlykcPCnspapa
-X-Received: by 2002:a0c:8e8c:0:b0:64f:8213:197d with SMTP id x12-20020a0c8e8c000000b0064f8213197dmr22337058qvb.33.1697124180401;
-        Thu, 12 Oct 2023 08:23:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHCeMZIB3m1qx2fbkdT4OPLLEqPsHeGO1L/iAH1/dZ2KldB+ZvbUW9y7GqXbzwRlkPP4euU0Q==
-X-Received: by 2002:a0c:8e8c:0:b0:64f:8213:197d with SMTP id x12-20020a0c8e8c000000b0064f8213197dmr22337044qvb.33.1697124180079;
-        Thu, 12 Oct 2023 08:23:00 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id dy18-20020ad44e92000000b0066d11c1f578sm883123qvb.97.2023.10.12.08.22.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 08:22:59 -0700 (PDT)
-Message-ID: <7df53e6b-9141-de85-b7a3-b9eb092ef7b4@redhat.com>
-Date:   Thu, 12 Oct 2023 17:22:56 +0200
+        d=1e100.net; s=20230601; t=1697124234; x=1697729034;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VHK1BXeTdm+7g9q0Gbvmqz6TzZXu3xcSDt6W9eTGzYc=;
+        b=Xxw+yqfk33tLKtKi8KPSbBe4CVjJ9MhL76r0H7xGpxc9zD6DTGW9X+l0w5KfOknILm
+         B+WSBGzTh/saeyPqVPbOsrX7O2RpGcJGc1mkEeWJrioYrU13ACasjWneftRLHpRk+X5f
+         DQdSC7/AqBysyLUUODAgnnkSMKW3+KLZLH7HdblaK5K7XhG55Dw6IdyMrFH2qUppT4zv
+         rIrX3SfnW2JfX2/BmLA3GrmQ5D9MRrqjAHlZZanglhBS9nPQ/GzzGOe4Tx958IDFR2p/
+         dL02t/pCWkedye3WZ7cMHlxicBXbo3bLywBx+CcKBnVSKM1+dFBQyeXboWL7bPty0kcK
+         Q1PQ==
+X-Gm-Message-State: AOJu0YzNg2wkssIsAo2nj6pJZN5CxILZqLbj4MPJQalvvmI6NKhw/QoI
+        viBVBcXUbpiN2P7I+VLY/lCmcJqiLLALjxf/qZf3CQ==
+X-Google-Smtp-Source: AGHT+IFZGO459xegjVhoxo3jMuV9imFcJFGdp4gWgXQTdHQumNjI6BXPIPTq79D6jy3RfwJhKb+1ZhKvV4IVglpN5H8=
+X-Received: by 2002:a50:99d8:0:b0:53d:a40e:bed1 with SMTP id
+ n24-20020a5099d8000000b0053da40ebed1mr299680edb.3.1697124233496; Thu, 12 Oct
+ 2023 08:23:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Reply-To: eric.auger@redhat.com
-Subject: Re: [PATCH v3 3/3] arm64/kvm: Fine grain _EL2 system registers list
- that affect nested virtualization
-Content-Language: en-US
-To:     Miguel Luis <miguel.luis@oracle.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.linux.dev
-References: <20231011180103.91774-1-miguel.luis@oracle.com>
- <20231011180103.91774-4-miguel.luis@oracle.com>
-From:   Eric Auger <eric.auger@redhat.com>
-In-Reply-To: <20231011180103.91774-4-miguel.luis@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,UPPERCASE_50_75 autolearn=ham autolearn_force=no version=3.4.6
+References: <20231007021326.4156714-1-irogers@google.com> <20231007021326.4156714-2-irogers@google.com>
+ <002da48a-c40f-4d6a-881c-59490ea2de95@intel.com>
+In-Reply-To: <002da48a-c40f-4d6a-881c-59490ea2de95@intel.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 12 Oct 2023 08:23:41 -0700
+Message-ID: <CAP-5=fX6OkyWD_nC6aruSRi44Nkt-UMLqwRKtLUcE87q_Khgcg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/7] perf pmu: Rename perf_pmu__get_default_config to perf_pmu__arch_init
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miguel,
-
-On 10/11/23 20:01, Miguel Luis wrote:
-> Implement a fine grained approach in the _EL2 sysreg ranges.
+On Thu, Oct 12, 2023 at 4:52=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.=
+com> wrote:
 >
-> Fixes: d0fc0a2519a6 ("KVM: arm64: nv: Add trap forwarding for HCR_EL2")
-> Signed-off-by: Miguel Luis <miguel.luis@oracle.com>
-> ---
->  arch/arm64/kvm/emulate-nested.c | 88 ++++++++++++++++++++++++++++++---
->  1 file changed, 82 insertions(+), 6 deletions(-)
+> On 7/10/23 05:13, Ian Rogers wrote:
+> > Assign default_config as part of the
+> > init. perf_pmu__get_default_config was doing more than just getting
+> > the default config and so this is intended to better align with the
+> > code.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 >
-> diff --git a/arch/arm64/kvm/emulate-nested.c b/arch/arm64/kvm/emulate-nested.c
-> index 9ced1bf0c2b7..3af49e130ee6 100644
-> --- a/arch/arm64/kvm/emulate-nested.c
-> +++ b/arch/arm64/kvm/emulate-nested.c
-> @@ -648,15 +648,91 @@ static const struct encoding_to_trap_config encoding_to_cgt[] __initconst = {
->  	SR_TRAP(SYS_APGAKEYLO_EL1,	CGT_HCR_APK),
->  	SR_TRAP(SYS_APGAKEYHI_EL1,	CGT_HCR_APK),
->  	/* All _EL2 registers */
-> -	SR_RANGE_TRAP(sys_reg(3, 4, 0, 0, 0),
-> -		      sys_reg(3, 4, 3, 15, 7), CGT_HCR_NV),
-> +	SR_TRAP(SYS_VPIDR_EL2,		CGT_HCR_NV),
-I think you miss DBGVCR32_EL2
-> +	SR_TRAP(SYS_VMPIDR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_SCTLR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_ACTLR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_SCTLR2_EL2,		CGT_HCR_NV),
-> +	SR_RANGE_TRAP(SYS_HCR_EL2,
-> +		      SYS_HCRX_EL2,	CGT_HCR_NV),
-> +	SR_TRAP(SYS_SMPRIMAP_EL2,	CGT_HCR_NV),
-> +	SR_TRAP(SYS_SMCR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_SDER32_EL2,		CGT_HCR_NV),
-> +	SR_RANGE_TRAP(SYS_TTBR0_EL2,
-> +		      SYS_TCR2_EL2,	CGT_HCR_NV),
-> +	SR_TRAP(SYS_VTTBR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_VTCR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_VNCR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_VSTTBR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_VSTCR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_DACR32_EL2,		CGT_HCR_NV),
-> +	SR_RANGE_TRAP(SYS_HDFGRTR_EL2,
-> +		      SYS_HAFGRTR_EL2,	CGT_HCR_NV),
->  	/* Skip the SP_EL1 encoding... */
->  	SR_TRAP(SYS_SPSR_EL2,		CGT_HCR_NV),
->  	SR_TRAP(SYS_ELR_EL2,		CGT_HCR_NV),
-> -	SR_RANGE_TRAP(sys_reg(3, 4, 4, 1, 1),
-> -		      sys_reg(3, 4, 10, 15, 7), CGT_HCR_NV),
-> -	SR_RANGE_TRAP(sys_reg(3, 4, 12, 0, 0),
-> -		      sys_reg(3, 4, 14, 15, 7), CGT_HCR_NV),
-> +	/* SPSR_irq, SPSR_abt, SPSR_und, SPSR_fiq */
-> +	SR_RANGE_TRAP(sys_reg(3, 4, 4, 3, 0),
-> +		      sys_reg(3, 4, 4, 3, 3), CGT_HCR_NV),
-> +	SR_TRAP(SYS_IFSR32_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_AFSR0_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_AFSR1_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_ESR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_VSESR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_FPEXC32_EL2,	CGT_HCR_NV),
-> +	SR_TRAP(SYS_TFSR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_FAR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_HPFAR_EL2,		CGT_HCR_NV),
-you miss BRBCR_EL2
-> +	SR_TRAP(SYS_PMSCR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_MAIR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_AMAIR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_MPAMHCR_EL2,	CGT_HCR_NV),
-> +	SR_TRAP(SYS_MPAMVPMV_EL2,	CGT_HCR_NV),
-> +	SR_TRAP(SYS_MPAM2_EL2,		CGT_HCR_NV),
-> +	SR_RANGE_TRAP(SYS_MPAMVPM0_EL2,
-> +		      SYS_MPAMVPM7_EL2,	CGT_HCR_NV),
-About the MPAM where did you find the pseudo code?
-> +	/*
-> +	 * Note that the spec. describes a group of MEC registers
-> +	 * whose access should not trap, therefore skip the following:
-> +	 * MECID_A0_EL2, MECID_A1_EL2, MECID_P0_EL2,
-> +	 * MECID_P1_EL2, MECIDR_EL2, VMECID_A_EL2,
-> +	 * VMECID_P_EL2.
-> +	 */
-> +	SR_RANGE_TRAP(SYS_VBAR_EL2,
-> +		      SYS_RMR_EL2,	CGT_HCR_NV),
-> +	SR_TRAP(SYS_VDISR_EL2,		CGT_HCR_NV),
-> +	/* ICH_AP0R<m>_EL2 */
-> +	SR_RANGE_TRAP(SYS_ICH_AP0R0_EL2,
-> +		      SYS_ICH_AP0R3_EL2, CGT_HCR_NV),
-> +	/* ICH_AP1R<m>_EL2 */
-> +	SR_RANGE_TRAP(SYS_ICH_AP1R0_EL2,
-> +		      SYS_ICH_AP1R3_EL2, CGT_HCR_NV),
-> +	SR_TRAP(SYS_ICC_SRE_EL2,	CGT_HCR_NV),
-> +	SR_RANGE_TRAP(SYS_ICH_HCR_EL2,
-> +		      SYS_ICH_EISR_EL2,	CGT_HCR_NV),
-> +	SR_TRAP(SYS_ICH_ELRSR_EL2,	CGT_HCR_NV),
-> +	SR_TRAP(SYS_ICH_VMCR_EL2,	CGT_HCR_NV),
-> +	/* ICH_LR<m>_EL2 */
-> +	SR_RANGE_TRAP(SYS_ICH_LR0_EL2,
-> +		      SYS_ICH_LR15_EL2, CGT_HCR_NV),
-> +	SR_TRAP(SYS_CONTEXTIDR_EL2,	CGT_HCR_NV),
-> +	SR_TRAP(SYS_TPIDR_EL2,		CGT_HCR_NV),
-> +	SR_TRAP(SYS_SCXTNUM_EL2,	CGT_HCR_NV),
-> +	/* AMEVCNTVOFF0<n>_EL2, AMEVCNTVOFF1<n>_EL2  */
-> +	SR_RANGE_TRAP(SYS_AMEVCNTVOFF0n_EL2(0),
-> +		      SYS_AMEVCNTVOFF1n_EL2(15), CGT_HCR_NV),
-> +	/* CNT*_EL2 */
-> +	SR_TRAP(SYS_CNTVOFF_EL2,	CGT_HCR_NV),
-> +	SR_TRAP(SYS_CNTPOFF_EL2,	CGT_HCR_NV),
-> +	SR_TRAP(SYS_CNTHCTL_EL2,	CGT_HCR_NV),
-> +	SR_RANGE_TRAP(SYS_CNTHP_TVAL_EL2,
-> +		      SYS_CNTHP_CVAL_EL2, CGT_HCR_NV),
-> +	SR_RANGE_TRAP(SYS_CNTHV_TVAL_EL2,
-> +		      SYS_CNTHV_CVAL_EL2, CGT_HCR_NV),
-> +	SR_RANGE_TRAP(SYS_CNTHVS_TVAL_EL2,
-> +		      SYS_CNTHVS_CVAL_EL2, CGT_HCR_NV),
-> +	SR_RANGE_TRAP(SYS_CNTHPS_TVAL_EL2,
-> +		      SYS_CNTHPS_CVAL_EL2, CGT_HCR_NV),
->  	/* All _EL02, _EL12 registers */
->  	SR_RANGE_TRAP(sys_reg(3, 5, 0, 0, 0),
->  		      sys_reg(3, 5, 10, 15, 7), CGT_HCR_NV),
-Besides this looks good to me and to me this looks safer than the
-previous large span approach but that's my taste ;-)
+> One cosmetic comment otherwise:
+>
+> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+>
+> > ---
+> >  tools/perf/arch/arm/util/pmu.c  |  8 +++-----
+> >  tools/perf/arch/s390/util/pmu.c |  3 +--
+> >  tools/perf/arch/x86/util/pmu.c  |  5 ++---
+> >  tools/perf/util/pmu.c           | 14 +++++++-------
+> >  tools/perf/util/pmu.h           |  2 +-
+> >  5 files changed, 14 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/=
+pmu.c
+> > index a9623b128ece..d55d2b15f2e6 100644
+> > --- a/tools/perf/arch/arm/util/pmu.c
+> > +++ b/tools/perf/arch/arm/util/pmu.c
+> > @@ -14,22 +14,20 @@
+> >  #include "../../../util/pmu.h"
+> >  #include "../../../util/cs-etm.h"
+> >
+> > -struct perf_event_attr
+> > -*perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
+> > +void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+> >  {
+> >  #ifdef HAVE_AUXTRACE_SUPPORT
+> >       if (!strcmp(pmu->name, CORESIGHT_ETM_PMU_NAME)) {
+> >               /* add ETM default config here */
+> >               pmu->selectable =3D true;
+> > -             return cs_etm_get_default_config(pmu);
+> > +             pmu->default_config =3D cs_etm_get_default_config(pmu);
+> >  #if defined(__aarch64__)
+> >       } else if (strstarts(pmu->name, ARM_SPE_PMU_NAME)) {
+> > -             return arm_spe_pmu_default_config(pmu);
+> > +             pmu->default_config =3D arm_spe_pmu_default_config(pmu);
+> >       } else if (strstarts(pmu->name, HISI_PTT_PMU_NAME)) {
+> >               pmu->selectable =3D true;
+> >  #endif
+> >       }
+> >
+> >  #endif
+> > -     return NULL;
+> >  }
+> > diff --git a/tools/perf/arch/s390/util/pmu.c b/tools/perf/arch/s390/uti=
+l/pmu.c
+> > index 11f03f32e3fd..886c30e001fa 100644
+> > --- a/tools/perf/arch/s390/util/pmu.c
+> > +++ b/tools/perf/arch/s390/util/pmu.c
+> > @@ -13,11 +13,10 @@
+> >  #define      S390_PMUPAI_EXT         "pai_ext"
+> >  #define      S390_PMUCPUM_CF         "cpum_cf"
+> >
+> > -struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *=
+pmu)
+> > +void perf_pmu__arch_init(struct perf_pmu *pmu)
+> >  {
+> >       if (!strcmp(pmu->name, S390_PMUPAI_CRYPTO) ||
+> >           !strcmp(pmu->name, S390_PMUPAI_EXT) ||
+> >           !strcmp(pmu->name, S390_PMUCPUM_CF))
+> >               pmu->selectable =3D true;
+> > -     return NULL;
+> >  }
+> > diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/=
+pmu.c
+> > index 8b53ca468a50..811e2377d2d5 100644
+> > --- a/tools/perf/arch/x86/util/pmu.c
+> > +++ b/tools/perf/arch/x86/util/pmu.c
+> > @@ -17,19 +17,18 @@
+> >  #include "../../../util/pmus.h"
+> >  #include "env.h"
+> >
+> > -struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *=
+pmu __maybe_unused)
+> > +void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+> >  {
+> >  #ifdef HAVE_AUXTRACE_SUPPORT
+> >       if (!strcmp(pmu->name, INTEL_PT_PMU_NAME)) {
+> >               pmu->auxtrace =3D true;
+> > -             return intel_pt_pmu_default_config(pmu);
+> > +             pmu->default_config =3D intel_pt_pmu_default_config(pmu);
+> >       }
+> >       if (!strcmp(pmu->name, INTEL_BTS_PMU_NAME)) {
+> >               pmu->auxtrace =3D true;
+> >               pmu->selectable =3D true;
+> >       }
+> >  #endif
+> > -     return NULL;
+> >  }
+> >
+> >  int perf_pmus__num_mem_pmus(void)
+> > diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> > index 6b1b7f8f00fa..6e95b3d2c2e3 100644
+> > --- a/tools/perf/util/pmu.c
+> > +++ b/tools/perf/util/pmu.c
+> > @@ -954,12 +954,6 @@ void pmu_add_sys_aliases(struct perf_pmu *pmu)
+> >       pmu_for_each_sys_event(pmu_add_sys_aliases_iter_fn, pmu);
+> >  }
+> >
+> > -struct perf_event_attr * __weak
+> > -perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
+> > -{
+> > -     return NULL;
+> > -}
+> > -
+> >  static char *pmu_find_alias_name(struct perf_pmu *pmu, int dirfd)
+> >  {
+> >       FILE *file =3D perf_pmu__open_file_at(pmu, dirfd, "alias");
+> > @@ -991,6 +985,12 @@ static int pmu_max_precise(int dirfd, struct perf_=
+pmu *pmu)
+> >       return max_precise;
+> >  }
+> >
+> > +
+>
+> Double blank line
 
-Thanks
+Thanks, will fix in v2.
 
-Eric
+Ian
 
- 
-
+> > +void __weak
+> > +perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+> > +{
+> > +}
+> > +
+> >  struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, c=
+onst char *name)
+> >  {
+> >       struct perf_pmu *pmu;
+> > @@ -1037,7 +1037,7 @@ struct perf_pmu *perf_pmu__lookup(struct list_hea=
+d *pmus, int dirfd, const char
+> >       pmu_add_sys_aliases(pmu);
+> >       list_add_tail(&pmu->list, pmus);
+> >
+> > -     pmu->default_config =3D perf_pmu__get_default_config(pmu);
+> > +     perf_pmu__arch_init(pmu);
+> >
+> >       return pmu;
+> >  err:
+> > diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> > index 85190d058852..588c64e38d6b 100644
+> > --- a/tools/perf/util/pmu.h
+> > +++ b/tools/perf/util/pmu.h
+> > @@ -233,7 +233,7 @@ bool perf_pmu__file_exists(struct perf_pmu *pmu, co=
+nst char *name);
+> >
+> >  int perf_pmu__test(void);
+> >
+> > -struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *=
+pmu);
+> > +void perf_pmu__arch_init(struct perf_pmu *pmu);
+> >  void pmu_add_cpu_aliases_table(struct perf_pmu *pmu,
+> >                              const struct pmu_events_table *table);
+> >
+>
