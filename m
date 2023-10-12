@@ -2,109 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D56D77C61DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 02:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53A57C61ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 02:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376624AbjJLAhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 20:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55560 "EHLO
+        id S1376666AbjJLAkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 20:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233886AbjJLAha (ORCPT
+        with ESMTP id S233886AbjJLAkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 20:37:30 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833F698;
-        Wed, 11 Oct 2023 17:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1697071043;
-        bh=d0eWK5n2+GWr3yid0IrdcGPcamDTbmkULf2jKU9FMh4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=J7MKxLij/7k8M7iY9b6lnoDEYzdYn6acQA2nURqomPEU62BxrerraaAHhMuhLWHJJ
-         QDUnvexRjR/MWFe89JHnFbKsWuaOp030cDQ4DMkUVnvxQMob+z+BHCXyFL2tPOR3JV
-         5i2loRNYD1e0u6czG01uM0bnkaEehAr2HqgQ5VmH8rIM3ep2qJ1mcskWX4gh3PHEgy
-         07kdcXWhn9acQbMOCpw3i2a5ALnhr0zMxpD4pqIQVrUsRbWREfDgI6XlaoO4wG+gN+
-         G7IFnufOWJacFiws7WQ8dJd9/t+77gFsYhoJ7cLXNhVUtQVfInKbcgUsLdmwaNgpfj
-         yrMF2WXuKlAHA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S5W1Y66qDz4xWb;
-        Thu, 12 Oct 2023 11:37:21 +1100 (AEDT)
-Date:   Thu, 12 Oct 2023 11:37:21 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Kalle Valo <kvalo@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Wireless <linux-wireless@vger.kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the net-next tree with the wireless
- tree
-Message-ID: <20231012113648.46eea5ec@canb.auug.org.au>
+        Wed, 11 Oct 2023 20:40:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0FC9E;
+        Wed, 11 Oct 2023 17:40:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 83BDBC433CD;
+        Thu, 12 Oct 2023 00:40:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697071229;
+        bh=wGHJyiALp3GFYTvWaoHxyso+f2Vuj4QGs+ejJHlDf/k=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=VE5CUTDPsvYyqkldEDqOEXMVmFtYsTPZSIVSOrPhdqUiu+qC0gTSFu6e4mo37ejhQ
+         /nJHSRLR/5Uq37Vk7V8G+nOXlNvk8vH6E7h/jFJuVqHPRQONGS0TzuyWGyPhojUAH7
+         Y4urAQ4NY7DQHqZIv7DL90hwQTF8/SrBLn8tcK2EKIaO4+tESHK8SoJsiMlOStfslk
+         O/7RUIjozO0FXUzHR0diff2R+Z5LRSigjR9sS4lydG4rj6L1lOXawWzS/iyDrc3/8u
+         ubZ2+bqVueHFdmEqJE9Vi1b+9kyKU6EIaNcULLSEz66GZICCGoNPjSU3dE+Xj/HwlZ
+         8gXY0TDIzUzzA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5A538E21ED9;
+        Thu, 12 Oct 2023 00:40:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/wof5tWYoXT/+z+takc=pVNJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net-next v3 1/5] netdev: replace simple
+ napi_schedule_prep/__napi_schedule to napi_schedule
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169707122936.23011.6924255297609142862.git-patchwork-notify@kernel.org>
+Date:   Thu, 12 Oct 2023 00:40:29 +0000
+References: <20231009133754.9834-1-ansuelsmth@gmail.com>
+In-Reply-To: <20231009133754.9834-1-ansuelsmth@gmail.com>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     jgg@ziepe.ca, leon@kernel.org, wg@grandegger.com,
+        mkl@pengutronix.de, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, chris.snook@gmail.com,
+        rajur@chelsio.com, jeroendb@google.com, pkaligineedi@google.com,
+        shailend@google.com, dougmill@linux.ibm.com, nnac123@linux.ibm.com,
+        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        haren@linux.ibm.com, ricklind@linux.ibm.com, danymadden@us.ibm.com,
+        tlfalcon@linux.ibm.com, tariqt@nvidia.com,
+        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+        mcoquelin.stm32@gmail.com, khalasa@piap.pl, kvalo@kernel.org,
+        quic_jjohnson@quicinc.com, gregory.greenman@intel.com,
+        chandrashekar.devegowda@intel.com, linuxwwan@intel.com,
+        chiranjeevi.rapolu@linux.intel.com, haijun.liu@mediatek.com,
+        m.chetan.kumar@linux.intel.com, ricardo.martinez@linux.intel.com,
+        loic.poulain@linaro.org, ryazanov.s.a@gmail.com,
+        johannes@sipsolutions.net, ruc_gongyuanjun@163.com,
+        elder@linaro.org, bhupesh.sharma@linaro.org, horms@kernel.org,
+        robh@kernel.org, bcf@google.com, junfeng.guo@intel.com,
+        gustavoars@kernel.org, ziweixiao@google.com, rushilg@google.com,
+        tglx@linutronix.de, u.kleine-koenig@pengutronix.de,
+        krzysztof.kozlowski@linaro.org, YKarpov@ispras.ru, andrew@lunn.ch,
+        zhengzengkai@huawei.com, set_pte_at@outlook.com,
+        pagadala.yesu.anjaneyulu@intel.com, benjamin.berg@intel.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/wof5tWYoXT/+z+takc=pVNJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi all,
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Today's linux-next merge of the net-next tree got a conflict in:
+On Mon,  9 Oct 2023 15:37:50 +0200 you wrote:
+> Replace drivers that still use napi_schedule_prep/__napi_schedule
+> with napi_schedule helper as it does the same exact check and call.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
+> ---
+> Changes v3:
+> - Add Reviewed-by tag
+> Changes v2:
+> - Add missing semicolon
+> 
+> [...]
 
-  net/mac80211/key.c
+Here is the summary with links:
+  - [net-next,v3,1/5] netdev: replace simple napi_schedule_prep/__napi_schedule to napi_schedule
+    https://git.kernel.org/netdev/net-next/c/ef724517b596
+  - [net-next,v3,2/5] netdev: make napi_schedule return bool on NAPI successful schedule
+    https://git.kernel.org/netdev/net-next/c/0a779003213b
+  - [net-next,v3,3/5] netdev: replace napi_reschedule with napi_schedule
+    https://git.kernel.org/netdev/net-next/c/73382e919f3d
+  - [net-next,v3,4/5] net: tc35815: rework network interface interrupt logic
+    https://git.kernel.org/netdev/net-next/c/be176234d0a8
+  - [net-next,v3,5/5] netdev: use napi_schedule bool instead of napi_schedule_prep/__napi_schedule
+    https://git.kernel.org/netdev/net-next/c/d1fea38f01ac
 
-between commit:
-
-  02e0e426a2fb ("wifi: mac80211: fix error path key leak")
-
-from the wireless tree and commits:
-
-  2a8b665e6bcc ("wifi: mac80211: remove key_mtx")
-  7d6904bf26b9 ("Merge wireless into wireless-next")
-
-from the net-next tree.
-
-I fixed it up (I just used the latter, there may be more needed) and
-can carry the fix as necessary. This is now fixed as far as linux-next
-is concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the
-conflicting tree to minimise any particularly complex conflicts.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/wof5tWYoXT/+z+takc=pVNJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUnP8EACgkQAVBC80lX
-0GzuVgf/XJeoQF5D8JpWF3YB37FVbdZm3PvJJr0N5LKTsYcwwOhaBIms38+UcD5S
-TntSRx3UiVlPC4walmHH74a+d5is2W46BMSWSgkne58MLJ2Js/qEs1k6EnTzSwN/
-XW/bjrpjD0cTivwGTLssG/Zz+QmAkplL0xpgnkrQ4y1+JCoEAOXqejpJpENXloPP
-ZI9qOqb6hB6FEoyq5BS1PmvKqzBGCl9DB/WtYOFjP7iAIYTpHMlM8iUo7kUq2DxX
-WUI16HxCIa/d1Xbz+UWD0/VcIPAp/mRTU0oMjzyhx+ascJPtqdd9v0KR5mydh64I
-+FLQ2eGwYxXjr191YzYb2VFij29aJg==
-=bNpy
------END PGP SIGNATURE-----
-
---Sig_/wof5tWYoXT/+z+takc=pVNJ--
