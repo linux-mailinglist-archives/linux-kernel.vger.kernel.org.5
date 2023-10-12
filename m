@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6B77C733E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8383F7C7349
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379486AbjJLQkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
+        id S1379511AbjJLQmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:42:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379492AbjJLQkd (ORCPT
+        with ESMTP id S235728AbjJLQmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:40:33 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3248DD7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:40:31 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c503dbe50dso888341fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:40:31 -0700 (PDT)
+        Thu, 12 Oct 2023 12:42:15 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B30EACA
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:42:06 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c3c661f1a8so14968291fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:42:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697128829; x=1697733629; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697128925; x=1697733725; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=YHF9YtAywaLSZ4QgrHB4ZUzNaY0pz+zvYC0Cc3RIf4E=;
-        b=kn8v9rLYskyFniAgAxlEDNwY3X6cJbZLOG/2wYHkfdZr/ZQ3vf62IxHoQ1QxTwyYve
-         jhZgXzOCflqtBpjs7vuJf+xp/RxTjb6sCuLOBRVhodlLxgzUr5Up/TTUh7oSMNKpVXmG
-         5MWZ0eeZBavc6wGBUoatj7HUTtr6kRkJGviJLjXfmr8yWDo9P9sgEi9kejwFTTvvJqCN
-         +kX1HgLEfenX48BtB7Q416gSgUMO2sSDaxqOwYSt/jOzFiVI7WHj880Xtv1eelKkihLc
-         Rd19x5KaZovxrED6nTu34otvBxCQ4zIyd0Q49iRyXxHqm+vEOMj+QbNh0L8PzNEkHgOV
-         OeZA==
+        bh=dg7mdO3+bBBGRgz1JJW3EWOQYH5H024kENOkHNU4kLA=;
+        b=ZJS9bGyU78/AYtxhqYj7bVywM/lXcS7GgCK0Ae6mQ3nwl7n6Izbbmeb8yrrdlJGZn8
+         9p8vehdzeRlnXGLbVXPh9qX2dQiZ3AALf6av1YH4vzQQrcU7H0IvnTv0yzChXjXqwjMW
+         jchhPZ8YLvrCJD5zuB7Uqgks08scAaij9KQBdkhPQlBg0kO6C5UUAKu2cjpKHSGvT4Xf
+         tlYT/a3x9wVxyrVNjVI0t5s++l3duxBWhv1fIUz2rFeTjFgGByZNDNFF11XvxnAxNarL
+         G41pryUAXjl9xMVJwTlsj1oCzXQ8setzO+TPwtExnWsIirlC6iqtsW8ZVlT9ye+8dXws
+         X3zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697128829; x=1697733629;
+        d=1e100.net; s=20230601; t=1697128925; x=1697733725;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YHF9YtAywaLSZ4QgrHB4ZUzNaY0pz+zvYC0Cc3RIf4E=;
-        b=d3zjFu4Wxkx00AcqZBEUw0qHebfMptsXGKYQ/esYlSEGYHpqwkHYL9BX8iwN44s4aJ
-         GA2xCY9uHGlQ/2V/a/UozNHYU7HxjV4j+xhZ8SoyJtzNucTW5euePLn8L1OHneuymfWp
-         gOJdFlRjSrdeHeNcgGCaLPiZjMmt5vwO4ajwBxLlIxr1bC8cQ5InLme2w39I3ku1iJau
-         QMlUcX2xI4nbYjtr1uLMU3rlV4KEm1R450GreZ3G6xACSPtyTu/yhD8G+4PeeZVopqF9
-         UQiDOdv9quz9XhuPGh2QicCDEjmlPfQNVFnE7WRef08mzFaIID7CFfRJ1KskVfxAkDC+
-         KjvQ==
-X-Gm-Message-State: AOJu0Yxw+ro0TLD0JiinvsfQMXzXep0dNTctapfKv3Tx5BUaArDGuL1E
-        ivuM6jM7Wpn+JLp/KjvLpjVhAA==
-X-Google-Smtp-Source: AGHT+IEDPobvO18k9l1ohDFOUBrCelHZYp97YD+pzZqpBeLWBLVTSfWhTmZc2My6gDtqY0/Kt/zcHw==
-X-Received: by 2002:a2e:a0c8:0:b0:2b9:f13b:613c with SMTP id f8-20020a2ea0c8000000b002b9f13b613cmr21930353ljm.2.1697128829584;
-        Thu, 12 Oct 2023 09:40:29 -0700 (PDT)
+        bh=dg7mdO3+bBBGRgz1JJW3EWOQYH5H024kENOkHNU4kLA=;
+        b=DnrsvLcYlHzzj3EyDjmONu4budlEB0B0Q77alWwMOBqz1HHvZ3Y9UQi0ra+NWNPoSF
+         PdgD1dt5KZeCimNl/BXIvh1QEvuFEpK8zeZ5snaaqCJmZ2mHFYqpa9jP9MSCBdgetFNq
+         MQVFxHzvDwmPWjkCSEMKThucN+gh1cta/gOpDjtBUtRoNUScyMcHoaoXe1tw9SMH8esn
+         6gfO2YkAyMH/srdNzx34V1t5/LUJXq9wDYDXhyrYamzFYQqirk0v0w2ka3xZX+UrFP+e
+         0dPok5lA6kcgGPHPt7Y4bkMgZxa1gYr9jW7+Kz3nZHBvv8Bl/HLxMCHMzkoBo4hpif15
+         vUaw==
+X-Gm-Message-State: AOJu0YxJWvj14wq8NKghefamaFDIn9dwGwLeh/Docv/9dsx9/X1E3Qqj
+        fFM+twB6JTaKREk3Nv+xcVdJZw==
+X-Google-Smtp-Source: AGHT+IFBI9TpG5PuveaJYdzlvucg89JDXICF1SOKwex3xKjc7Qqn+pw4LfQpHoFOKn4cw2WXH+IZDA==
+X-Received: by 2002:a2e:8798:0:b0:2c0:cfa:a1a0 with SMTP id n24-20020a2e8798000000b002c00cfaa1a0mr20926580lji.46.1697128924867;
+        Thu, 12 Oct 2023 09:42:04 -0700 (PDT)
 Received: from [172.30.204.175] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id p9-20020a2e7409000000b002bfe8537f37sm3633373ljc.33.2023.10.12.09.40.25
+        by smtp.gmail.com with ESMTPSA id p9-20020a2e7409000000b002bfe8537f37sm3633373ljc.33.2023.10.12.09.41.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 09:40:29 -0700 (PDT)
-Message-ID: <7141c2dd-9dcd-4186-ba83-829fe925e464@linaro.org>
-Date:   Thu, 12 Oct 2023 18:40:25 +0200
+        Thu, 12 Oct 2023 09:42:04 -0700 (PDT)
+Message-ID: <02de745f-d648-497d-b520-712450f4ad9c@linaro.org>
+Date:   Thu, 12 Oct 2023 18:41:44 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 09/10] arm64: dts: qcom: sa8295p: Enable tertiary
- controller and its 4 USB ports
+Subject: Re: [PATCH v13 10/10] arm64: dts: qcom: sa8540-ride: Enable first
+ port of tertiary usb controller
 Content-Language: en-US
 To:     Krishna Kurapati <quic_kriskura@quicinc.com>,
         Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
@@ -74,9 +74,9 @@ Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         quic_jackp@quicinc.com, ahalaney@redhat.com,
         quic_shazhuss@quicinc.com
 References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-10-quic_kriskura@quicinc.com>
+ <20231007154806.605-11-quic_kriskura@quicinc.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231007154806.605-10-quic_kriskura@quicinc.com>
+In-Reply-To: <20231007154806.605-11-quic_kriskura@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -93,11 +93,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 10/7/23 17:48, Krishna Kurapati wrote:
-> Enable tertiary controller for SA8295P (based on SC8280XP).
-> Add pinctrl support for usb ports to provide VBUS to connected peripherals.
+> From: Andrew Halaney <ahalaney@redhat.com>
 > 
+> There is now support for the multiport USB controller this uses so
+> enable it.
+> 
+> The board only has a single port hooked up (despite it being wired up to
+> the multiport IP on the SoC). There's also a USB 2.0 mux hooked up,
+> which by default on boot is selected to mux properly. Grab the gpio
+> controlling that and ensure it stays in the right position so USB 2.0
+> continues to be routed from the external port to the SoC.
+> 
+> Co-developed-by: Andrew Halaney <ahalaney@redhat.com>
+> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> [Krishna: Rebased on top of usb-next]
+> Co-developed-by: Krishna Kurapati <quic_kriskura@quicinc.com>
 > Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
 > ---
+>   arch/arm64/boot/dts/qcom/sa8540p-ride.dts | 21 +++++++++++++++++++++
+>   1 file changed, 21 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> index b04f72ec097c..6904a4c201ff 100644
+> --- a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> +++ b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> @@ -503,6 +503,18 @@ &usb_2_qmpphy0 {
+>   	status = "okay";
+>   };
+>   
+> +&usb_2 {
+> +	pinctrl-0 = <&usb2_en_state>;
+> +	pinctrl-names = "default";
+> +
+> +	status = "okay";
+> +};
+> +
+> +&usb_2_dwc3 {
+These additions are not quite sorted alphabetically, it seems
+
+> +	phy-names = "usb2-port0", "usb3-port0";
+> +	phys = <&usb_2_hsphy0>, <&usb_2_qmpphy0>;
+property
+property-names
+
+With that:
+
 Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
