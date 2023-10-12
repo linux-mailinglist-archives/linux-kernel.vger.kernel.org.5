@@ -2,88 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FEC7C74DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B5D7C74DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379577AbjJLRgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:36:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
+        id S1347366AbjJLRfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347412AbjJLRfv (ORCPT
+        with ESMTP id S1347392AbjJLRfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:35:51 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8317296;
-        Thu, 12 Oct 2023 10:27:45 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-68fb85afef4so1057601b3a.1;
-        Thu, 12 Oct 2023 10:27:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697131665; x=1697736465; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Zlm6CWZnKCPJZluYdlrpPXBZjpw376jC++TlGrL7m2k=;
-        b=mjWrJ0155sQdQ1QAaGFZV4sshO/rCZwy2+mlCD6tP99TYEpQ2z915yAmbt6YfrLIb5
-         lCjCzuSd2/cDb2Ck1UIqLG8cTHPBACbJaAFXGuDXeA5wXOx2ct0fzicitiNTSJFrmb3J
-         32Yst58llv7v5OE1baLBb7O95y5Y4KucmwFWOf/mMkBYE/2vsbNfgJR72mQH7hnYBPz8
-         UjvYpF6/aRlrp+/yzbTDH9YinM9+hAk4CG5uXGnT+fmgwqEqwGbKM1Z/ZxQRhaTp2iUm
-         ziIuWGvBqufBQKgimzkxZ38nI+t0FtSvPHb234o3U0ikZee9cAJ7vGsy/oXKIiSPbbdh
-         gjYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697131665; x=1697736465;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Zlm6CWZnKCPJZluYdlrpPXBZjpw376jC++TlGrL7m2k=;
-        b=GHFcUqJgB54H2fdO5p/XNld5BRJ40anNetoDK7YdmMc1qk5nz88rhhwf8BTOxkhXbJ
-         +eHwguso8gREg3ddlp+61RE7NQsjtZj13M2IkPfkoVRK71HoQgvdnFJFFUcTUijO/TXP
-         5WawNpmOFjI3dmnHERu/VMuv8Kg557GEEprwoX8s+zwX3Xs8QpyvGjP6P/69B/qlFgwh
-         AEobETG/R1VP/5rrAisb67N6RUi+hnF30hkzxxy+p73SHwjxTPqIWqkPD6WMTFx05O3Y
-         Qt3jtkinmN3XyWq/tckA44gK1u7SKUZCbMuRM/I6Az31ndNRPXSRoHR5bnb72W46nGA6
-         iPvA==
-X-Gm-Message-State: AOJu0Yz1ZBG6vc/TRXHxbWUIT1BPuvCoLI7IErLCuvJErAJE224i+Lx6
-        8gw1XgPOUKUSY/cTcvp9F9g=
-X-Google-Smtp-Source: AGHT+IEnbEOfVXKC9Cu/Tpca62s3+j2t0CAyikXor5NWM/nqk+WTK/YeS0qoJoB1TfHlFKHXd7npsg==
-X-Received: by 2002:a05:6a00:13a3:b0:693:4552:cd6a with SMTP id t35-20020a056a0013a300b006934552cd6amr26381008pfg.16.1697131664854;
-        Thu, 12 Oct 2023 10:27:44 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id u23-20020a62ed17000000b006884844dfcdsm11962264pfh.55.2023.10.12.10.27.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 10:27:44 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 12 Oct 2023 07:27:43 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     WangJinchao <wangjinchao@xfusion.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stone.xulei@xfusion.com
-Subject: Re: [PATCH] workqueue: doc: Fix function and sysfs path errors
-Message-ID: <ZSgsj7gb5786KAUa@slm.duckdns.org>
-References: <202310121517+0800-wangjinchao@xfusion.com>
+        Thu, 12 Oct 2023 13:35:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D71572B4;
+        Thu, 12 Oct 2023 10:28:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697131708; x=1728667708;
+  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=4v+H0O0IXD5YGkRVSviC2erq+UMEGDFbWdbWf2xYauc=;
+  b=bZXt6ullIF4qNWO/f6u2KGhu8k9JmyCejMz3LsS+kuy3L62/a4epAPFc
+   xPRmjvBgFJkwNPBcgN4HoS5dFVYOApMemenifatMKo2U47sgZ/hsJoGQU
+   eXQzAB644MoLjshU908hvjpp3h54/pzQgUgpj25shuG3r/8B1qFmD6FDO
+   1C2ybBQB5XMbEdxRaAfST/bbbyV6n01pgdWGEvG3/MDQyJQvPw/JOkvW2
+   WCOqhSl70AAlKnDpUAW5sHSkziCavDbq1pIiBs400xZeah2ZXYqfs5fSG
+   f5jGLrc985r5ewEyaGOUXssEsQwYkjl7Vr2CDODBdx3uWEp/T13J+Jr8O
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="365249842"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="365249842"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 10:28:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="731021869"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="731021869"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 10:28:27 -0700
+Received: from [10.54.75.156] (debox1-desk1.jf.intel.com [10.54.75.156])
+        by linux.intel.com (Postfix) with ESMTP id 77FAE5807A3;
+        Thu, 12 Oct 2023 10:28:27 -0700 (PDT)
+Message-ID: <0bd97aed259d9ec0ff4d8c95f63d5db65550b893.camel@linux.intel.com>
+Subject: Re: [PATCH V3 10/16] platform/x86/intel/pmc: Split
+ pmc_core_ssram_get_pmc()
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
+Date:   Thu, 12 Oct 2023 10:28:27 -0700
+In-Reply-To: <c66f2061-a7e6-8df7-928-da2a14a3cb49@linux.intel.com>
+References: <20231012023840.3845703-1-david.e.box@linux.intel.com>
+         <20231012023840.3845703-11-david.e.box@linux.intel.com>
+         <c66f2061-a7e6-8df7-928-da2a14a3cb49@linux.intel.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202310121517+0800-wangjinchao@xfusion.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 03:17:38PM +0800, WangJinchao wrote:
-> alloc_ordered_queue -> alloc_ordered_workqueue
-> /sys/devices/virtual/WQ_NAME/
->     -> /sys/devices/virtual/workqueue/WQ_NAME/
-> 
-> Signed-off-by: WangJinchao <wangjinchao@xfusion.com>
+On Thu, 2023-10-12 at 18:14 +0300, Ilpo J=C3=A4rvinen wrote:
+> On Wed, 11 Oct 2023, David E. Box wrote:
+>=20
+> > On supported hardware, each PMC may have an associated SSRAM device for
+> > accessing additional counters.=C2=A0 However, only the SSRAM of the fir=
+st
+> > (primary) PMC is discoverable as a PCI device to the OS. The remaining
+> > (secondary) devices are hidden but their BARs are still accessible and
+> > their addresses are stored in the BAR of the exposed device. Clean up t=
+he
+> > code handling the SSRAM discovery. Create two separate functions for
+> > accessing the primary and secondary SSRAM devices.
+> >=20
+> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > ---
+> > V3 - New patch split from previous PATCH 2
+> > =C2=A0=C2=A0 - Update changelog
+> > =C2=A0=C2=A0 - Use cleanup.h to cleanup ioremap
+> >=20
+> > V2 - no change
+> >=20
+> > =C2=A0drivers/platform/x86/intel/pmc/core_ssram.c | 93 ++++++++++++++--=
+-----
+> > =C2=A01 file changed, 61 insertions(+), 32 deletions(-)
+> >=20
+> > diff --git a/drivers/platform/x86/intel/pmc/core_ssram.c
+> > b/drivers/platform/x86/intel/pmc/core_ssram.c
+> > index 815950713e25..af405d11919f 100644
+> > --- a/drivers/platform/x86/intel/pmc/core_ssram.c
+> > +++ b/drivers/platform/x86/intel/pmc/core_ssram.c
+> > @@ -8,6 +8,7 @@
+> > =C2=A0 *
+> > =C2=A0 */
+> > =C2=A0
+> > +#include <linux/cleanup.h>
+> > =C2=A0#include <linux/pci.h>
+> > =C2=A0#include <linux/io-64-nonatomic-lo-hi.h>
+> > =C2=A0
+> > @@ -21,6 +22,8 @@
+> > =C2=A0#define SSRAM_IOE_OFFSET=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A00x68
+> > =C2=A0#define SSRAM_DEVID_OFFSET=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00x70
+> > =C2=A0
+> > +DEFINE_FREE(pmc_core_iounmap, void __iomem *, iounmap(_T));
+> > +
+>=20
+> Was it that adding
+>=20
+> DEFINE_FREE(iounmap, void __iomem *, iounmap(_T));
+>=20
+> into some header did not work for some reason or why this? (Perhaps=20
+> because iounmap is also defined?)
 
-Applied to wq/for-6.6-fixes.
+No, I didn't think to add it. I'll try and send in the next version.
 
-Thanks.
+David
 
--- 
-tejun
+>=20
+
