@@ -2,163 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78ECA7C731C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1267C731F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379497AbjJLQdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
+        id S1379466AbjJLQfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343912AbjJLQdj (ORCPT
+        with ESMTP id S1343912AbjJLQfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:33:39 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD58C0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:33:36 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507975d34e8so320200e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697128414; x=1697733214; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BLyH6yQ7oOXpP9deXgxc3Z6pkd3CfbHZ/Wfl0aSvuj0=;
-        b=avpOyrpijl49x6OXB9leHSo/KS3iz3cILNKM8FSejNZrQfehuObNzCtaG36s74jQYr
-         78+oQpZrN75QJv3r5HVKSR9CcRk+8ngBtRSvCyaR2ng5x/gozcllvsmrIrogw5HUpEqA
-         Jg/cSCAz+CdioMCG0Ewxs3Nex6WUC7NjLfST/7j3dVyXpBb1YBZe5oFXK4j6DzS/1C9K
-         +LYGld6k9xVE0T+aOSqV3XMSgw46nqMpzxBW2Jrq1XAkHgVJa24IUTZYvBoLuppdfmQP
-         5I/QwB7+8Qa1CehzSUJQstROZbwapEP0FRtn0wCC2Mu39E36rwmnFsfOUCO7lq4CYn6S
-         0KMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697128414; x=1697733214;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BLyH6yQ7oOXpP9deXgxc3Z6pkd3CfbHZ/Wfl0aSvuj0=;
-        b=VOdPUvT6cJFlj7ubvZTb0nhtO0qwAXkHRlmWFs9FbV8VVTmuWUVeAPGhQS2ukl/Z+B
-         B04W3rNUSfJUjKKp8y+n91yxD8eJMP/AFOYHXHAPYX5FFVI6f9SOHsLCEwYP3JRUAxq5
-         pOIYfzA/g6ru1FYTj5vLvrMzbJJlLmX9Fdvdx6725oGRrO3AnSzrLEJmi+7aCe8/x4UD
-         yAYQgFAimt+4Us0MstSZ8GB1pggDCftos2+KmGUqyLOpBFHf/SXJkdrP9ktnisGHuKPt
-         y36t2o034eQ1TdnHtKkqApqrTvx9CNxcVlCO5ugSVFF0DVslfcYB7yAgSE+Ma+ndAVrP
-         VLXg==
-X-Gm-Message-State: AOJu0Yx5OVnGpDdUHeMh2Fg4FzYen2iRix4enSdWh6nMT9/BswBq77xe
-        Kwrlc42/KqlDN/LQREPi6dpVuQmHzDhVq8vzGas=
-X-Google-Smtp-Source: AGHT+IHBvaXreECltK9+IqA/KHLRTJ2l27nnFxnm8m2aOmpo+4SlKZEhJRYehBusH8I7Y4umXWzkNqhM5euxmKVUPmQ=
-X-Received: by 2002:ac2:5e21:0:b0:502:ff3b:766f with SMTP id
- o1-20020ac25e21000000b00502ff3b766fmr17488538lfg.6.1697128414290; Thu, 12 Oct
- 2023 09:33:34 -0700 (PDT)
+        Thu, 12 Oct 2023 12:35:09 -0400
+Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E40C0;
+        Thu, 12 Oct 2023 09:35:07 -0700 (PDT)
+Received: from [192.168.42.20] (p5b164245.dip0.t-ipconnect.de [91.22.66.69])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 8286B2FC0048;
+        Thu, 12 Oct 2023 18:35:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
+        s=default; t=1697128505;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dxjtNY2PIhe33mFCTAMP/mdiKX7jay1tXWg+m/RQ7IU=;
+        b=XiRoS6AAOtjavcoJqrTrF8V2iKReRcxJt8pSRcI5uQVVX1HGXsBdSdWQXezQLzP6RMvwz9
+        BUEky7D1jCK50DWjqIwZcBX+hee7RRXdZey7QHk95Pdk9M4V3r/kihDHaQuTcXC8OH+Ba/
+        NFFERt4RPad9atk4Tm77AuJaM8aaIqs=
+Authentication-Results: mail.tuxedocomputers.com;
+        auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
+Message-ID: <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
+Date:   Thu, 12 Oct 2023 18:35:05 +0200
 MIME-Version: 1.0
-References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
- <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
- <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com> <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com>
-In-Reply-To: <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Thu, 12 Oct 2023 18:33:22 +0200
-Message-ID: <CAFULd4Zp-eDsxpStBznMHUE3OcHZ97NAZrZEjJW63oEFWtM3OQ@mail.gmail.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] leds: rgb: Implement per-key keyboard backlight for
+ several TUXEDO devices
+Content-Language: en-US
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+References: <20231011190017.1230898-1-wse@tuxedocomputers.com>
+ <ZSe1GYLplZo5fsAe@duo.ucw.cz>
+ <0440ed38-c53b-4aa1-8899-969e5193cfef@tuxedocomputers.com>
+ <ZSf9QneKO/8IzWhd@duo.ucw.cz>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+In-Reply-To: <ZSf9QneKO/8IzWhd@duo.ucw.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 5:19=E2=80=AFPM Nadav Amit <namit@vmware.com> wrote=
-:
->
->
-> > On Oct 12, 2023, at 12:54 AM, Linus Torvalds <torvalds@linux-foundation=
-.org> wrote:
-> >
-> > !! External Email
-> >
-> > On Wed, 11 Oct 2023 at 14:33, Uros Bizjak <ubizjak@gmail.com> wrote:
-> >>
-> >> Reading the above, it looks to me that we don't want to play games
-> >> with "const aliased" versions of current_task [1], as proposed by
-> >> Nadav in his patch series.
-> >
-> > Well, maybe I'd like it if I saw what the effect of it was, but that
-> > patch mentions "sync_mm_rss()" which doesn't actually exist
-> > (SPLIT_RSS_COUNTING is never defined, the split version is gone and
-> > hasn't existed since commit f1a7941243c1 "mm: convert mm's rss stats
-> > into percpu_counter")
->
-> So I added a new version of the current aliasing (well, actually pcpu_hot
-> in the new version) on top of Uros=E2=80=99s patches, and the effect can =
-be seen
-> in many functions. I don=E2=80=99t want to bother with many examples so h=
-ere is
-> a common and simple one:
->
-> Currently syscall_exit_work() that starts with:
->
->    0xffffffff8111e120 <+0>: push   %rbp
->    0xffffffff8111e121 <+1>: mov    %rdi,%rbp
->    0xffffffff8111e124 <+4>: push   %rbx
->    0xffffffff8111e125 <+5>: mov    %rsi,%rbx
->    0xffffffff8111e128 <+8>: and    $0x20,%esi
->    0xffffffff8111e12b <+11>: je     0xffffffff8111e143 <syscall_exit_work=
-+35>
->    0xffffffff8111e12d <+13>: mov    %gs:0x2ac80,%rax
->    0xffffffff8111e136 <+22>: cmpb   $0x0,0x800(%rax)
->    0xffffffff8111e13d <+29>: jne    0xffffffff8111e22a <syscall_exit_work=
-+266>
->    0xffffffff8111e143 <+35>: mov    %gs:0x2ac80,%rax
->    0xffffffff8111e14c <+44>: cmpq   $0x0,0x7c8(%rax)
->
-> Using the const-alias changes the beginning of syscall_exit_work to:
->
->    0xffffffff8111cb80 <+0>: push   %r12
->    0xffffffff8111cb82 <+2>: mov    %gs:0x7ef0e0f6(%rip),%r12        # 0x2=
-ac80 <pcpu_hot>
->    0xffffffff8111cb8a <+10>: push   %rbp
->    0xffffffff8111cb8b <+11>: mov    %rdi,%rbp
->    0xffffffff8111cb8e <+14>: push   %rbx
->    0xffffffff8111cb8f <+15>: mov    %rsi,%rbx
->    0xffffffff8111cb92 <+18>: and    $0x20,%esi
->    0xffffffff8111cb95 <+21>: je     0xffffffff8111cba6 <syscall_exit_work=
-+38>
->    0xffffffff8111cb97 <+23>: cmpb   $0x0,0x800(%r12)
->    0xffffffff8111cba0 <+32>: jne    0xffffffff8111cc7a <syscall_exit_work=
-+250>
->    0xffffffff8111cba6 <+38>: cmpq   $0x0,0x7c8(%r12)
->
-> So we both see RIP-relative addressing is being used (hence the instructi=
-on is
-> one byte shorter) and the reload going away.
+Hi,
 
-Just a quick remark here:
+Am 12.10.23 um 16:05 schrieb Pavel Machek:
+> Hi!
+>
+>>>> There are however some known short comings:
+>>>> - The sysfs leds interface does only allow to write one key at a time. The
+>>>> controller however can only update row wise or the whole keyboard at once
+>>>> (whole keyboard update is currently not implemented). This means that even
+>>>> when you want to updated a whole row, the whole row is actually updated
+>>>> once for each key. So you actually write up to 18x as much as would be
+>>>> required.
+>>>> - When you want to update the brightness of the whole keyboard you have to
+>>>> write 126 sysfs entries, which inherently is somewhat slow, especially when
+>>>> using a slider that is live updating the brightness.
+>>>> - While the controller manages up to 126 leds, not all are actually
+>>>> populated. However the unused are not grouped at the end but also in
+>>>> between. To not have dead sysfs entries, this would require manual testing
+>>>> for each implemented device to see which leds are used and some kind of
+>>>> bitmap in the driver to sort out the unconnected ones.
+>>>> - It is not communicated to userspace which led entry controls which key
+>>>> exactly
+>>> Sooner or later, we'll need to support these keyboards.
+>>>
+>>> But this has way too many shortcomings (and we'd be stuck with the
+>>> interface forever).
+>> I had some thoughts on how the current userspace api could be expanded to
+>> better reflect the capabilities of RGB keyboards. What would be required for
+>> such an expansion to be considered?
+> You submit a proposal.
 
-For some reason existing percpu_stable_op asm uses %P operand
-modifier. This will drop all syntax-specific prefixes and issue the
-bare constant. It will also remove the (%rip) suffix. What we want
-here is a generic %a modifier (See 6.47.2.8 Generic Operand Modifiers
-[1]) that will substitute a memory reference, with the actual operand
-treated as the address. In combination with "p" constraint will DTRT
-and will emit symbol with the (%rip) suffix when available, also when
--fpie is in effect.
+My quick writeup:
 
-[1] https://gcc.gnu.org/onlinedocs/gcc-13.2.0/gcc.pdf
+New sysfs entires:
+- mode: single_zone_static, multi_zone_static, single_zone_breathing, 
+multi_zone_breathing, single_zone_color_cycle, multi_zone_color_cycle, etc.
+     - single_zone_static is mandatory, all other modes are optional (maybe even 
+freely definable by the driver)
+     - single_zone_static is the default and does not add any new sysfs entries 
+that aren't already present on multicolor leds aka brightness, max_brightness, 
+multi_index, mulit_intensity
+     - multi_zone_static adds a new entry zones_count. mulit_intensity has now 
+colors count * zones_count entries. aka a rgb keyboard with 126 leds would take 
+378 values for mulit_intensity
+     - other modes are more device specific e.g.
+         - multi_zone_breathing could have optional breathing_speed and 
+max_breathing speed entries depending on whether or not the hardware supports it.
+         - multi_zone_color_cycle could have a color_count and max_color_count 
+entry. e.g. with color_count 2 you would then write 756 values to multi 
+intensity, describing 2 states the driver should alternate between
 
-Uros.
+Every multi_zone_* mode could also output a zones_image. That is a greyscale 
+bitmap or even a svg containing the information where each zone is located and 
+which outline it has. For the bitmap the information would be encoded in the 
+grey value, aka 0 = zone 0 etc with 0xff = no zone (i.e. space between the 
+keys). For the svg, the name of the paths would indicate the zone they are 
+describing. Svg would have the advantage that it could be more easily used to 
+also describe non square devices like mice or headsets that also might have 
+complex RGB controllers.
+
+This might already be doable with triggers? I'm unsure of triggers allow to 
+change the length of multi_intensity however.
+
+>   
+>> I'm in contact with the KDE folks. Plasma already has a keyboard brightness
+>> slider, that soon
+>> https://gitlab.freedesktop.org/upower/upower/-/merge_requests/203 will work
+>> with multiple kbd_backlight. However the slowness of 126 sysfs entries makes
+>> it a little bit janky still.
+>>
+>> They are also thinking about expanding desktop accent colors to the keyboard
+>> backlight when it supports RGB.
+>>
+>> I have not reached out to the OpenRGB project yet, but is it alive and well
+>> and under constant development: https://gitlab.com/CalcProgrammer1/OpenRGB.
+>> Afaik it is currently a userspace only driver interacting directly with
+>> hidraw mostly and has not yet implemented the sysfs leds interface.
+>>
+>> Just listing this to show that there is definitely interest in this.
+> Yep, there's definitely interest.
+>
+>>> These days, displays with weird shapes are common. Like rounded
+>>> corners and holes in them. Perhaps this should be better modelled as a
+>>> weird display?
+>> I'm not sure if I can follow you here. Where would this be implemented? Also
+>> I asume displays asume equal distance between pixels and that columns are
+>> straight lines perpendicular to rows, which the key backlights have and are
+>> not.
+> Yes, I know displays are a bit different from RGB LEDs. Gamma is
+> another issue. Yes, it is quite weird display. But 6x22 display may be
+> better approximation of keyboard than ... 126 unrelated files.
+>
+> Or you could do 6x66 sparse display, I guess, to express the
+> shifts. But I believe 6x22 would be better.
+>
+> It would go to drivers/auxdisplay, most probably.
+
+Looking into it, thanks for the direction. But this would come with the downside 
+that upowers kbd_brightness no longer controls the keyboard.
+
+Another approach could be that i implement what i described under 
+multi_zone_static above without the zones_count entry. Then there wouldn't be 
+126 unrelated files, but a multi_intensity that is describing multiple 3 subled 
+leds. This would at least solve the performance problem and allow the shared 
+brightness adjust the hardware supports to be implemented.
+
+>
+> I checked
+> https://www.tuxedocomputers.com/en/Linux-Hardware/Zubehoer-USB-Co./USB-Zubehoer.tuxedo
+> , but you don't seem to have stand-alone keyboard with such RGB capability...?
+
+No, it's for the integrated keyboards in some of our devices, this driver 
+specifically is for the Stellaris line with optomechanical keyboards. The ite 
+controller is internally connected, but is using the usb protocol.
+
+https://www.tuxedocomputers.com/en/Linux-Hardware/Notebooks/15-16-inch/TUXEDO-Stellaris-15-Gen4.tuxedo
+
+Kind regards,
+
+Werner
+
+>
+> Best regards,
+> 								Pavel
