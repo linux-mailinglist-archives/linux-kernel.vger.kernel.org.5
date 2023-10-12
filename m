@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0058E7C69CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1357C69CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235542AbjJLJg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
+        id S235513AbjJLJhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:37:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbjJLJgx (ORCPT
+        with ESMTP id S234163AbjJLJhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:36:53 -0400
-Received: from out-207.mta1.migadu.com (out-207.mta1.migadu.com [IPv6:2001:41d0:203:375::cf])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE42A91
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:36:51 -0700 (PDT)
-Message-ID: <ed62f766-d59d-072b-b811-0b4dabf6f000@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697103409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZJ7Hvxze07BnW+iLsUmdQvphJeSNuEhC6cbejDQqx+I=;
-        b=M2oWhf1WUsxDITd54dPtMLI0p3RWx+acBeFB5GSpNUhWhAGw1KPbjcG2VQrdbLyqgBC0gH
-        KJS7kna6ZLAum46fmEE7Xp+j/LMMue+3QAAseUsK71VQEKViOAeqaiHh/4w8KAoWAa5wtc
-        dKqc2eV2+sFyCv1qemE4x1zsTydVCuE=
-Date:   Thu, 12 Oct 2023 17:36:40 +0800
+        Thu, 12 Oct 2023 05:37:50 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0630D9D
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:37:49 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-690d2441b95so558340b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:37:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697103468; x=1697708268; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fdZgfymsyd7ehqcxRdjpYNBTpQVaXLUbV7TLN4E1/DA=;
+        b=TatYyoXwwzMBbNs0kzOMQUFfhhimCMw3FM6rUQ04coq+PNfEsrNB//fl2aeq+VEGYl
+         isek97stIDYSw6iIhbNjBtzwzji3P6m24jo4p8lOJunja/JYaWizuHRIIkEVeZ0Od0LQ
+         +xQ9URyEIC3CCndQHExSJdzUwNVYHrSISMdZUcWu6w3wJ+wZqPwJGnI4YH8EevAuaIyj
+         Fv3RgsXvcOF0Swq6veDzPEgKUn8KWqxREyzAtN3ua47JuY1dRubHgHxSaxvX0Z6I+XG0
+         NYB5TCYoOR2gwXTMZnfL+YaH1WEoUsaDifmTbQyuYlDpTTTETEyL+NLLARxYMc1OmuJN
+         6TdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697103468; x=1697708268;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fdZgfymsyd7ehqcxRdjpYNBTpQVaXLUbV7TLN4E1/DA=;
+        b=KPg062EyyeiyuYck756CD5apZ70TTKTwDyPYJB2ZuKlA6yKZLhi0CpqNurbxEQKZYp
+         w5nKK0MPHS6Jz4JG+/pwXI3sHSQ+bK9pQ8gJwWjIjGIzSEeohTBmwfy9oXKI+2eFtz9P
+         +fQeWJfL5Nw2hrz9j2AD+iYsrQG+KYAGSAcpJLqEP6n9u4ILPYwA42H/BwjPI9zmqUEb
+         yQVlZPz0h37dPEaKzDguH+/ZqNe6uFthxg7p4YhnsNJLnQUATy+VOM+87yh56U+NqLHV
+         7nugeCQoIQGhrueVOxyK1NKsG9YTmOcGNnVi2+tp2ixVsTIhXc978ClvFsK6F1Ts4yDm
+         6CDQ==
+X-Gm-Message-State: AOJu0YwA/8TOe3rOzSrl345pTGncku0qY8KErOAnlFOlfbMhFVcEl4kx
+        zo6Q5wV81ZvbKe0yYq0VNR+Fp2nJ67A=
+X-Google-Smtp-Source: AGHT+IFtx9yabPtRA17h06vlo13OrJKoThnA6kM+dAvk+E82XxXruxxbs4KeGiTVxMXiCnkNk0pDTQ==
+X-Received: by 2002:a05:6a00:1595:b0:68f:cb69:8e66 with SMTP id u21-20020a056a00159500b0068fcb698e66mr31525387pfk.15.1697103468109;
+        Thu, 12 Oct 2023 02:37:48 -0700 (PDT)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id x15-20020aa7918f000000b00690dbab1623sm11371659pfa.81.2023.10.12.02.37.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 02:37:47 -0700 (PDT)
+Message-ID: <e6d1dae8-e28a-455a-a851-661c825fbdcf@gmail.com>
+Date:   Thu, 12 Oct 2023 16:37:42 +0700
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 2/2] mm: Init page count in reserve_bootmem_region when
- MEMINIT_EARLY
+User-Agent: Mozilla Thunderbird
 Content-Language: en-US
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        mike.kravetz@oracle.com, muchun.song@linux.dev,
-        willy@infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <15233624-f32e-172e-b2f6-7ca7bffbc96d@linux.dev>
- <20231001185934.GX3303@kernel.org>
- <90342474-432a-9fe3-2f11-915a04f0053f@linux.dev>
- <20231002084708.GZ3303@kernel.org>
- <f7e6f67a-4cac-73bd-1d5e-5020c6c8423d@redhat.com>
- <20231002111051.GA3303@kernel.org>
- <3057dab3-19f2-99ca-f125-e91a094975ed@redhat.com>
- <8c9ee3bd-6d71-4111-8f4e-91bc52b42ed4@linux.dev>
- <20231005050619.GB3303@kernel.org>
- <6545ac4c-1205-6c09-49ea-e00c24d1a2ff@linux.dev>
- <20231012091906.GQ3303@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <20231012091906.GQ3303@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yanjun Yang <yangyj.ee@gmail.com>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: Kernel 6.5 hangs on shutdown
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 2023/10/12 17:19, Mike Rapoport wrote:
-> On Thu, Oct 05, 2023 at 10:04:28PM +0800, Yajun Deng wrote:
->>>>>>>> That 'if' breaks the invariant that __free_pages_core is
->>>>>>>> always called for pages with initialized page count. Adding
->>>>>>>> it may lead to subtle bugs and random memory corruption so we
->>>>>>>> don't want to add it at the first place.
->>>>>>> As long as we have to special-case memory hotplug, we know that
->>>>>>> we are always coming via generic_online_page() in that case. We
->>>>>>> could either move some logic over there, or let
->>>>>>> __free_pages_core() know what it should do.
->>>>>> Looks like the patch rather special cases MEMINIT_EARLY, although
->>>>>> I didn't check throughfully other code paths.  Anyway, relying on
->>>>>> page_count() to be correct in different ways for different
->>>>>> callers of __free_pages_core() does not sound right to me.
->>>>> Absolutely agreed.
->>>>>
->>>> I already sent v5  a few days ago. Comments, please...
->>> Does it address all the feedback from this thread?
->> Except hotplug.
-> Please reread carefully the last comments from me and from David above.
->
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-I replied in another thread about that 'if' statement. David just 
-replied to me, let's discuss in another thread.
+> I use Dell OptiPlex 7050, and kernel hangs when shutting down the computer. 
+> Similar symptom has been reported on some forums, and all of them are using
+> Dell computers:
+> https://bbs.archlinux.org/viewtopic.php?pid=2124429
+> https://www.reddit.com/r/openSUSE/comments/16qq99b/tumbleweed_shutdown_did_not_finish_completely/
+> https://forum.artixlinux.org/index.php/topic,5997.0.html
+> 
+> Tested with various kernel and this bug seems to be caused by commit: 88afbb21d4b36fee6acaa167641f9f0fc122f01b.
 
+See Bugzilla for the full thread.
+
+Anyway, I'm adding this regression to be tracked by regzbot:
+
+#regzbot introduced: 88afbb21d4b36f https://bugzilla.kernel.org/show_bug.cgi?id=217995
+#regzbot title: x86 core fix pull causes shutdown hang on Dell OptiPlex 7050
+#regzbot link: https://bbs.archlinux.org/viewtopic.php?pid=2124429
+#regzbot link: https://www.reddit.com/r/openSUSE/comments/16qq99b/tumbleweed_shutdown_did_not_finish_completely/
+#regzbot link: https://forum.artixlinux.org/index.php/topic,5997.0.html
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217995
+
+-- 
+An old man doll... just what I always wanted! - Clara
