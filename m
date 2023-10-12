@@ -2,139 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BEAD7C6873
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003687C67F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347235AbjJLIDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 04:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
+        id S1347244AbjJLIEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 04:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343650AbjJLIDY (ORCPT
+        with ESMTP id S1343583AbjJLIEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 04:03:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71881A9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:02:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697097759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/ZJmk/yvxywysiwqAeSgrduB50WCm2128HhTQfYvMZg=;
-        b=VPG7Z/m1k/gCYpKmw65dO40n404Xqq9acW34eEWEHUHsxscKI89q8FfBAXkzeYGta0NLjH
-        5ZCG+4n5Ag47pGN8+KI5pySoCb/EhwVuOhLxZZ8FhOj7aspnhLdSM2FTMWMH/IsVtrgbvX
-        eTqHdam+HaH0PR06DSVUUqR1V8U1hcE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-494-FlziKThuMUG84E-vxgwHtQ-1; Thu, 12 Oct 2023 04:02:38 -0400
-X-MC-Unique: FlziKThuMUG84E-vxgwHtQ-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4066e59840eso4700735e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:02:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697097757; x=1697702557;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/ZJmk/yvxywysiwqAeSgrduB50WCm2128HhTQfYvMZg=;
-        b=uhw59dngE9cLAIaCgAHqltYxDrnyJdg+McB3ZNHav81Mm95hUlVM1ztRDxe33tqRai
-         +Xh2CBGjj0kz0rQ3LYiBW1aAG0dKYG3tZyB9Q0ysm4wpqkBnyqqBunB5VlDKLjF90oUQ
-         UQnTOItpZCr9T8uvmBNG9tlxWDWl57tvxxqBGVtdRpU4HAG1GPn0e8nE335ZR/bdSe2a
-         EfQfuCUs0xMjANx7anEodxa742+So0johTl+1o8VJ7gHecMljGMUX88ZiO/idTrde/TJ
-         dJSs01NVs57cNFjy3nJpZg1eanJWxIxh+eWMZCLSSXNXbrnBqDFkZIfoG+DRP0wEP/9P
-         pjgw==
-X-Gm-Message-State: AOJu0YyuIRpQHhw8xvxfP2XMDiXxh7/kj7rY1FepkUbe7DBcpfCIHtYI
-        2AoUBhYaHursopLzmhNWTlvc06aJ5fZh47vFyCdoxqjdHlw9E1MTmv3Tjp9/oWmugUR7FSwyY3S
-        mg4eyiOVjV/PhR51mJG9VtqH2
-X-Received: by 2002:a7b:c3d2:0:b0:405:514d:eb13 with SMTP id t18-20020a7bc3d2000000b00405514deb13mr20614225wmj.24.1697097757067;
-        Thu, 12 Oct 2023 01:02:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEv0KCNuksA2uv+yIsdoxozzE1E60kM7Qujdqf8Krj5f35WHmA6AkUHXRhBkdQLnBpDMh81EA==
-X-Received: by 2002:a7b:c3d2:0:b0:405:514d:eb13 with SMTP id t18-20020a7bc3d2000000b00405514deb13mr20614210wmj.24.1697097756750;
-        Thu, 12 Oct 2023 01:02:36 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id q15-20020a5d574f000000b00323384e04e8sm17558032wrw.111.2023.10.12.01.02.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 01:02:36 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org
-Cc:     dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Conor Dooley <conor@kernel.org>,
-        Peter Robinson <pbrobinson@gmail.com>
-Subject: Re: [PATCH v2 2/6] drm/ssd130x: Add a per controller family
- functions table
-In-Reply-To: <e6593ea5-daa1-466a-9d42-0c1872f41a13@suse.de>
-References: <20231012065822.1007930-1-javierm@redhat.com>
- <20231012065822.1007930-3-javierm@redhat.com>
- <e6593ea5-daa1-466a-9d42-0c1872f41a13@suse.de>
-Date:   Thu, 12 Oct 2023 10:02:35 +0200
-Message-ID: <87a5so46as.fsf@minerva.mail-host-address-is-not-set>
+        Thu, 12 Oct 2023 04:04:07 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0622DA9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:04:05 -0700 (PDT)
+Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S5hsz26cqzrTG0;
+        Thu, 12 Oct 2023 16:01:27 +0800 (CST)
+Received: from [10.174.178.209] (10.174.178.209) by
+ dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 12 Oct 2023 16:04:02 +0800
+Message-ID: <a8a2dc17-7a7a-e725-8ae2-e7e0146150f0@huawei.com>
+Date:   Thu, 12 Oct 2023 16:04:02 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH RFC] ubi: gluebi: Fix NULL pointer dereference caused by
+ ftl notifier
+To:     Zhihao Cheng <chengzhihao1@huawei.com>, <richard@nod.at>,
+        <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>, <yangerkun@huawei.com>
+References: <20231010142925.545238-1-wangzhaolong1@huawei.com>
+ <9f96baf1-962e-d595-0e4f-797315cd0348@huawei.com>
+ <b972f615-3882-18cf-5b44-7ec021f92e0a@huawei.com>
+From:   ZhaoLong Wang <wangzhaolong1@huawei.com>
+In-Reply-To: <b972f615-3882-18cf-5b44-7ec021f92e0a@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.209]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Zimmermann <tzimmermann@suse.de> writes:
+I'm very happy to receive a reply to the review.
 
-Hello Thomas,
+> 2. fd = open(/dev/ubi0_0, O_WRONLY)
+>      ubi_open_volume  // vol->writers = 1
+> 
+>           P1                    P2
+>     gluebi_create -> mtd_device_register -> add_mtd_device:
+>     device_register   // dev/mtd1 is visible
+> 
+>                       fd = open(/dev/mtd1, O_WRONLY)
+>                        gluebi_get_device
+>                         gluebi->desc = ubi_open_volume
+>                          gluebi->desc = ERR_PTR(EBUSY)
+> 
+>     ftl_add_mtd
+>      mtd_read
+>       gluebi_read
+>        gluebi->desc is ERR_PTR       (√)
 
-Thanks a lot for your feedback.
+The reproduction steps for situations 2 and 3 have been added to link[1].
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=217992 [1]
 
-> Hi Javier
->
-> Am 12.10.23 um 08:58 schrieb Javier Martinez Canillas:
-> [...]
->>   
->> +struct ssd130x_funcs {
->> +	int (*init)(struct ssd130x_device *ssd130x);
->> +	int (*set_buffer_sizes)(struct ssd130x_device *ssd130x);
->> +	void (*align_rect)(struct ssd130x_device *ssd130x, struct drm_rect *rect);
->> +	int (*update_rect)(struct ssd130x_device *ssd130x, struct drm_rect *rect,
->> +			   u8 *buf, u8 *data_array);
->> +	void (*clear_screen)(struct ssd130x_device *ssd130x,
->> +			     u8 *data_array);
->> +	void (*fmt_convert)(struct iosys_map *dst, const unsigned int *dst_pitch,
->> +			    const struct iosys_map *src, const struct drm_framebuffer *fb,
->> +			    const struct drm_rect *clip);
->> +};
->> +
->
-> You are reinventing DRM's atomic helpers. I strongly advised against 
-> doing that, as it often turns out bad. Maybe see my rant at [1] wrt to 
-> another driver.
->
-> It's much better to create a separate mode-setting pipeline for the 
-> ssd132x series and share the common code among pipelines. Your driver 
-> will have a clean and readable implementation for each supported 
-> chipset. Compare an old version of mgag200 [2] with the current driver 
-> to see the difference.
->
+> 3.         P1                    P2
+>     gluebi_create -> mtd_device_register -> add_mtd_device:
+>     device_register   // dev/mtd1 is visible
+> 
+>                       fd = open(/dev/mtd1, O_WRONLY)
+>                        gluebi_get_device
+>                         gluebi->desc = ubi_open_volume
+> 
+>     ftl_add_mtd
+>      mtd_read
+>       gluebi_read
+>        gluebi->desc is not ERR_PTR/NULL
+> 
+>                      close(fd)
+>                       gluebi_put_device
+>                        ubi_close_volume
+>                         kfree(desc)
+>        ubi_read(gluebi->desc)   // UAF  (×)
+> 
 
-I see what you mean. The reason why I didn't go that route was to minimize
-code duplication, but you are correct that each level of indirection makes
-the driver harder to read, to reason about and fragile (modifying a common
-callback could have undesired effects on other chip families as you said).
+Yes, it's also a problem. Perhaps it should be set to NULL after
+destroying gluebi->desc.
 
-I'll give it a try to what you propose in v3, have separate modesetting
-pipeline for SSD130x and SSD132x, even if this could lead to a little more
-duplicated code.
+> 
+> No need to modify 'gluebi_write' and 'gluebi_erase'.
+> 
 
-> Best regards
-> Thomas
->
+The patch is as follows:
 
--- 
-Best regards,
+diff --git a/drivers/mtd/ubi/gluebi.c b/drivers/mtd/ubi/gluebi.c
+index 1b980d15d9fb..8fc6017d1155 100644
+--- a/drivers/mtd/ubi/gluebi.c
++++ b/drivers/mtd/ubi/gluebi.c
+@@ -85,6 +85,7 @@ static int gluebi_get_device(struct mtd_info *mtd)
+  {
+  	struct gluebi_device *gluebi;
+  	int ubi_mode = UBI_READONLY;
++	struct ubi_volume_desc *vdesc;
 
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+  	if (mtd->flags & MTD_WRITEABLE)
+  		ubi_mode = UBI_READWRITE;
+@@ -109,12 +110,14 @@ static int gluebi_get_device(struct mtd_info *mtd)
+  	 * This is the first reference to this UBI volume via the MTD device
+  	 * interface. Open the corresponding volume in read-write mode.
+  	 */
+-	gluebi->desc = ubi_open_volume(gluebi->ubi_num, gluebi->vol_id,
++	vdesc = ubi_open_volume(gluebi->ubi_num, gluebi->vol_id,
+  				       ubi_mode);
+-	if (IS_ERR(gluebi->desc)) {
++	if (IS_ERR(vdesc)) {
++		gluebi->desc = NULL;
+  		mutex_unlock(&devices_mutex);
+-		return PTR_ERR(gluebi->desc);
++		return PTR_ERR(vdesc);
+  	}
++	gluebi->desc = vdesc;
+  	gluebi->refcnt += 1;
+  	mutex_unlock(&devices_mutex);
+  	return 0;
+@@ -134,8 +137,10 @@ static void gluebi_put_device(struct mtd_info *mtd)
+  	gluebi = container_of(mtd, struct gluebi_device, mtd);
+  	mutex_lock(&devices_mutex);
+  	gluebi->refcnt -= 1;
+-	if (gluebi->refcnt == 0)
++	if (gluebi->refcnt == 0) {
+  		ubi_close_volume(gluebi->desc);
++		gluebi->desc = NULL;
++	}
+  	mutex_unlock(&devices_mutex);
+  }
+
+@@ -154,9 +159,26 @@ static int gluebi_read(struct mtd_info *mtd, loff_t 
+from, size_t len,
+  		       size_t *retlen, unsigned char *buf)
+  {
+  	int err = 0, lnum, offs, bytes_left;
+-	struct gluebi_device *gluebi;
++	struct gluebi_device *gluebi = container_of(mtd, struct gluebi_device,
++						    mtd);
++	int isnt_get = unlikely(gluebi->desc == NULL) ? 1 : 0;
++
++	/**
++	 * In normal case, the UBI volume desc has been initialized by
++	 * ->_get_device(). However, in the ftl notifier process, the
++	 * ->_get_device() is not executed in advance and the MTD device
++	 * is directly scanned  which cause null pointe dereference.
++	 * Therefore, try to get the MTD device here.
++	 */
++	if (unlikely(isnt_get)) {
++		err = __get_mtd_device(mtd);
++		if (err) {
++			err_msg("cannot get MTD device %d, UBI device %d, volume %d, error %d",
++				mtd->index, gluebi->ubi_num, gluebi->vol_id, err);
++			return err;
++		}
++	}
+
+-	gluebi = container_of(mtd, struct gluebi_device, mtd);
+  	lnum = div_u64_rem(from, mtd->erasesize, &offs);
+  	bytes_left = len;
+  	while (bytes_left) {
+@@ -176,6 +198,9 @@ static int gluebi_read(struct mtd_info *mtd, loff_t 
+from, size_t len,
+  	}
+
+  	*retlen = len - bytes_left;
++
++	if (unlikely(isnt_get))
++		__put_mtd_device(mtd);
+  	return err;
+  }
+
+
 
