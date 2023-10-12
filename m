@@ -2,196 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9787C6875
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1D97C687E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347120AbjJLIEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 04:04:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
+        id S1347269AbjJLIGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 04:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343583AbjJLIEm (ORCPT
+        with ESMTP id S1347259AbjJLIGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 04:04:42 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34D2A9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:04:40 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-536b39daec1so1173190a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:04:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697097879; x=1697702679; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=937YDLhB/LKhEB9XjdalzzUB5ZBYWrU2yT5JnPkc4iE=;
-        b=qewU/EcEEx41UZ8lkIg0A87JdPdglDONWNC9sEtjC4y5rLjBYQnL9A61N6cJe8sIif
-         pxbUaECuwefSL9FIpNiVJ1xXmyHHhy5R8ot/zXVQ94xDR7R1KHNCLCE2ByQPfotfmpB+
-         99eeB+cXxbYMJldlgIpfd9PZuv3nQCjE9oYk9zHXLEicFmmDXdcX/g81Bmi3Dzgep8tF
-         QVgUAaQGMahbx0n8yv1uwNz35gYERKvJt9ut5Q4rA0vvLsHgbvxh2I8PgfZiDLQhILyF
-         O9sXz8Lr7q+78LX6jpVyjKPcl2Ju538cjsjAT8M5/pTqwk8wanyA4zsLY8DNkMnURwLp
-         NyRg==
+        Thu, 12 Oct 2023 04:06:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E0590
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:05:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697097920;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I5BfyE4ROg0DfC04dTnY4NwKgtFpCLhqUD4tbkNuiPI=;
+        b=Tyj4UPIBNONHZxxilmCVQGmEihOzqmAre4fUvQREgFVvY/3ceZ8iI+e0tTjugYBABPbtQN
+        t5fC1+aAnF8rRVL/iluljB+7r3lMzz4VomVr23DX1Wx6IVwIpw9/oSyKo+YGaMIA7LufHd
+        Akg3YVC8eIE+vcZSNXlEREy+BEkw31s=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-453-rzM8DeFkNW202jiBSjz5qQ-1; Thu, 12 Oct 2023 04:05:14 -0400
+X-MC-Unique: rzM8DeFkNW202jiBSjz5qQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-31f79595669so791160f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:05:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697097879; x=1697702679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=937YDLhB/LKhEB9XjdalzzUB5ZBYWrU2yT5JnPkc4iE=;
-        b=d1M/ihZyKlQ36JgzxyRCfRezlXuSVnQi8uP9D4KHUkwNgz/Coz41GBNWRKtJDZ1kq6
-         Nkt0PSrPwpnAeJyOKkFuZyvGtzAhOHJHvk6gtA25c/QnGT9/6SVKf9KX9Rm2+lJjT6Fg
-         aY/erUddFcZyopYo66rbSAiEwiPrLPTAUr0EhU0EqTxi0d6m6f4TfkgG84nwXBKK8z/q
-         inqH1gyOQdLH8RnLo6yVMksPM7+8qda/jrsgQZHZnZCP6IQ7eFvgTfonmgMTGqh1zQ6j
-         oRWd4XewQnQJ8Yp6OCnPOs7wRKKHlFozh95yGmzKeSAfzugTtzGhK8wX5Ml6sP2qEVhl
-         1tww==
-X-Gm-Message-State: AOJu0YwWjqbnsjL3m76kk5MFdylpzveZHekQ6R11CRzLB2lKLpafExgp
-        3b9cwxpfqcPtDsAY/6Z1YaF7ksTbUTp8vRuUQmc/5w==
-X-Google-Smtp-Source: AGHT+IFkw+QlomjvvrPZT6/iMPFPNgS2KfjqRUczRUJTLw7MtE4TQ62uK3MgP17Mrm9Cmj76go5vcIhfgvcNqM1U/xI=
-X-Received: by 2002:a17:907:7636:b0:9ba:4163:1801 with SMTP id
- jy22-20020a170907763600b009ba41631801mr5519834ejc.60.1697097879098; Thu, 12
- Oct 2023 01:04:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697097913; x=1697702713;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I5BfyE4ROg0DfC04dTnY4NwKgtFpCLhqUD4tbkNuiPI=;
+        b=hf3WDcllYE0sMzYrtwmETQtikIh2Cx8SdA1vfyZeasAHlXL1CBXjJ12dNvFQy0k4yD
+         Ylz5LI4C4Bc922syUSRajX5b5rxxlA+H4APdfxYOkQDfStJ+ID0SbguG7Gm6sAh0eMO4
+         n1wXcXMR/KTXzdGfDaZgOt8buvzBUu04+i89FCGQj7B+oOM4ksHLPqlRuIoa47IX52h8
+         aYcAAXQztwBSbMdnp9WENsZRue7JM9GUxllc72EWqKcpeqbIXvm12zoBkvWQONVH3y3o
+         sc/LPMWKW5sdxS3MRWgYIhKcdOP9SbhvzvAuu11Tj8ii8Bp3K/vnGjO+l2jJYnF7UGNA
+         NIUg==
+X-Gm-Message-State: AOJu0YwwDf46bOWDQ5XqikvLYI1hJYhHtPTI1icL2GYqWlCfyRiXnsJO
+        6razY6hKp/OvCgkkDeooV6vJA2g4GPvLwv6nxCRFqWdwPN8o26EuqkIfCc5ERpcelOE7r6XEi6L
+        SRrrW36BvHkzh5ibIAfy+4A49
+X-Received: by 2002:adf:f984:0:b0:314:314e:fdda with SMTP id f4-20020adff984000000b00314314efddamr18322534wrr.23.1697097913252;
+        Thu, 12 Oct 2023 01:05:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGFt1XwzzMhY09tN5qGTlWeEUZKQYgIaFEs1s2yqlG/dcK10DSfyCESrGI1Fxn+bzhxFtBA4g==
+X-Received: by 2002:adf:f984:0:b0:314:314e:fdda with SMTP id f4-20020adff984000000b00314314efddamr18322516wrr.23.1697097912921;
+        Thu, 12 Oct 2023 01:05:12 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id t4-20020a0560001a4400b0032763287473sm17849248wry.75.2023.10.12.01.05.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 01:05:12 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Conor Dooley <conor@kernel.org>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2 4/6] drm/ssd130x: Add support for the SSD132x OLED
+ controller family
+In-Reply-To: <CAMuHMdVuDvomz57RHr2NMG9+a=AXy1H39Tv5jN+1J2sqv4+3rg@mail.gmail.com>
+References: <20231012065822.1007930-1-javierm@redhat.com>
+ <20231012065822.1007930-5-javierm@redhat.com>
+ <CAMuHMdVuDvomz57RHr2NMG9+a=AXy1H39Tv5jN+1J2sqv4+3rg@mail.gmail.com>
+Date:   Thu, 12 Oct 2023 10:05:11 +0200
+Message-ID: <877cns466g.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-References: <20231010032117.1577496-1-yosryahmed@google.com>
- <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
- <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
- <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
- <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
- <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com> <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
-In-Reply-To: <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 12 Oct 2023 01:04:03 -0700
-Message-ID: <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 8:13=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
+
+Hello Geert,
+
+Thanks for your feedback.
+
+> Hi Javier,
 >
-> On Wed, Oct 11, 2023 at 5:46=E2=80=AFAM Shakeel Butt <shakeelb@google.com=
-> wrote:
-> >
-> > On Tue, Oct 10, 2023 at 6:48=E2=80=AFPM Yosry Ahmed <yosryahmed@google.=
-com> wrote:
-> > >
-> > > On Tue, Oct 10, 2023 at 5:36=E2=80=AFPM Shakeel Butt <shakeelb@google=
-.com> wrote:
-> > > >
-> > > > On Tue, Oct 10, 2023 at 03:21:47PM -0700, Yosry Ahmed wrote:
-> > > > [...]
-> > > > >
-> > > > > I tried this on a machine with 72 cpus (also ixion), running both
-> > > > > netserver and netperf in /sys/fs/cgroup/a/b/c/d as follows:
-> > > > > # echo "+memory" > /sys/fs/cgroup/cgroup.subtree_control
-> > > > > # mkdir /sys/fs/cgroup/a
-> > > > > # echo "+memory" > /sys/fs/cgroup/a/cgroup.subtree_control
-> > > > > # mkdir /sys/fs/cgroup/a/b
-> > > > > # echo "+memory" > /sys/fs/cgroup/a/b/cgroup.subtree_control
-> > > > > # mkdir /sys/fs/cgroup/a/b/c
-> > > > > # echo "+memory" > /sys/fs/cgroup/a/b/c/cgroup.subtree_control
-> > > > > # mkdir /sys/fs/cgroup/a/b/c/d
-> > > > > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
-> > > > > # ./netserver -6
-> > > > >
-> > > > > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
-> > > > > # for i in $(seq 10); do ./netperf -6 -H ::1 -l 60 -t TCP_SENDFIL=
-E --
-> > > > > -m 10K; done
-> > > >
-> > > > You are missing '&' at the end. Use something like below:
-> > > >
-> > > > #!/bin/bash
-> > > > for i in {1..22}
-> > > > do
-> > > >    /data/tmp/netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K &
-> > > > done
-> > > > wait
-> > > >
-> > >
-> > > Oh sorry I missed the fact that you are running instances in parallel=
-, my bad.
-> > >
-> > > So I ran 36 instances on a machine with 72 cpus. I did this 10 times
-> > > and got an average from all instances for all runs to reduce noise:
-> > >
-> > > #!/bin/bash
-> > >
-> > > ITER=3D10
-> > > NR_INSTANCES=3D36
-> > >
-> > > for i in $(seq $ITER); do
-> > >   echo "iteration $i"
-> > >   for j in $(seq $NR_INSTANCES); do
-> > >     echo "iteration $i" >> "out$j"
-> > >     ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K >> "out$j" &
-> > >   done
-> > >   wait
-> > > done
-> > >
-> > > cat out* | grep 540000 | awk '{sum +=3D $5} END {print sum/NR}'
-> > >
-> > > Base: 22169 mbps
-> > > Patched: 21331.9 mbps
-> > >
-> > > The difference is ~3.7% in my runs. I am not sure what's different.
-> > > Perhaps it's the number of runs?
-> >
-> > My base kernel is next-20231009 and I am running experiments with
-> > hyperthreading disabled.
+
+[...]
+
+>> +       u32 array_idx = 0;
+>> +       int ret, i, j;
 >
-> Using next-20231009 and a similar 44 core machine with hyperthreading
-> disabled, I ran 22 instances of netperf in parallel and got the
-> following numbers from averaging 20 runs:
+> unsigned int i, j;
 >
-> Base: 33076.5 mbps
-> Patched: 31410.1 mbps
->
-> That's about 5% diff. I guess the number of iterations helps reduce
-> the noise? I am not sure.
->
-> Please also keep in mind that in this case all netperf instances are
-> in the same cgroup and at a 4-level depth. I imagine in a practical
-> setup processes would be a little more spread out, which means less
-> common ancestors, so less contended atomic operations.
 
+Right, I'll change that in v3.
 
-(Resending the reply as I messed up the last one, was not in plain text)
+-- 
+Best regards,
 
-I was curious, so I ran the same testing in a cgroup 2 levels deep
-(i.e /sys/fs/cgroup/a/b), which is a much more common setup in my
-experience. Here are the numbers:
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
-Base: 40198.0 mbps
-Patched: 38629.7 mbps
-
-The regression is reduced to ~3.9%.
-
-What's more interesting is that going from a level 2 cgroup to a level
-4 cgroup is already a big hit with or without this patch:
-
-Base: 40198.0 -> 33076.5 mbps (~17.7% regression)
-Patched: 38629.7 -> 31410.1 (~18.7% regression)
-
-So going from level 2 to 4 is already a significant regression for
-other reasons (e.g. hierarchical charging). This patch only makes it
-marginally worse. This puts the numbers more into perspective imo than
-comparing values at level 4. What do you think?
