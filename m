@@ -2,192 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4534A7C713F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE9A7C7148
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378304AbjJLPR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
+        id S1379300AbjJLPTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbjJLPR6 (ORCPT
+        with ESMTP id S1379223AbjJLPTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:17:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338CC90;
-        Thu, 12 Oct 2023 08:17:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697123876; x=1728659876;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=RMPSQqVexqeHED3oyyvaeAW/AO8mRAYYchmY5OSbYOQ=;
-  b=nvwOv0hBJlJQ5DeeJjVz2SiVyGekrp9OOQuvQU5dUYh9ByDndUauUoE4
-   Ecef1x1+0dyxg/Dti+YlZqS8AhjkVaeN4qtDHI8ZcPvAEHwlIt/28NKoH
-   3W7JALNEv1KCr5pNokpKPu1PxjEiW7ULfbo83SV9CJtOyG2HeypFuxo+I
-   BiZsINRjgRbT9fXEivMfyX0WD1Y9OSbfiPNc1+hvOj/lQ8qkv7dkp+2mG
-   lWJf/FTI7t2QvBPEXurzS2A0K9CYQ5pMPnWmprtS1cS7IWbFGxyGE8rCH
-   V7/dtjn4SAa8wrcEQDjJ48P5gakqWrf1EQoZH5U56CFOhGYcsV1I+2T26
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="365215812"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="365215812"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 08:17:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="824644996"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="824644996"
-Received: from asroczyn-mobl.ger.corp.intel.com ([10.249.36.107])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 08:17:54 -0700
-Date:   Thu, 12 Oct 2023 18:17:52 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
-Subject: Re: [PATCH V3 11/16] platform/x86/intel/pmc: Find and register PMC
- telemetry entries
-In-Reply-To: <20231012023840.3845703-12-david.e.box@linux.intel.com>
-Message-ID: <72343163-f83e-1184-480-a565288bf21f@linux.intel.com>
-References: <20231012023840.3845703-1-david.e.box@linux.intel.com> <20231012023840.3845703-12-david.e.box@linux.intel.com>
+        Thu, 12 Oct 2023 11:19:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2130D9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:18:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697123909;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hv5P43oKEAvFZ6n9aYfnZBkLQfH7TMziNFT/6xuiaHQ=;
+        b=MJCXmsaDFxuQ90tsiRvJEirDGOQL3VaIxoIcUMIzoGrw5xCzi52v0o5tqp+lsuPErKEMkl
+        4W/MzqtG4Sq6El+f5sTOwAtdZiiNePusQ2S5msze/QNafj5/GH2+gato4T03jB06u+s6Ua
+        V9sargjQZ8k/HQUnlIl7S7kg1AeQIuI=
+Received: from mail-vs1-f71.google.com (mail-vs1-f71.google.com
+ [209.85.217.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-130-FlanP9GaO26gKOoC9vENOQ-1; Thu, 12 Oct 2023 11:18:12 -0400
+X-MC-Unique: FlanP9GaO26gKOoC9vENOQ-1
+Received: by mail-vs1-f71.google.com with SMTP id ada2fe7eead31-457bc85ac53so52944137.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:18:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697123892; x=1697728692;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Hv5P43oKEAvFZ6n9aYfnZBkLQfH7TMziNFT/6xuiaHQ=;
+        b=d9cVUidcprdPi9pQOBvZ86kX0NyHndZytau3RbOXTPejLfHEZAGuRTJl/chO3VS5+N
+         veCrGIBNc7SsdnwXWUn7y5uBy6E+vX4VWilsUuR+U0CKYmx9bT+O1l+2UtjqCdtmtq8i
+         9tdkn2dVQRxvZRqyDJzfgUAzqXotmrWtumy8Vh7lRvxC5feAKdzajMbM9pouAmrTGu6j
+         SEfUqe+gzY/UllEzGuZwIjKbGbkzGvYjuuUtq6a9seaEeWJ2mhjEOINadDL0sbf4aqPK
+         MKHkmmUi+zjtc04ewt0nrfZwRvRDNiNKW9RjTPZLw2nbtGVzqQ5vOeYe87MY8D0sZlrr
+         3HwQ==
+X-Gm-Message-State: AOJu0YxF1Xl8IaHOw7JdHqPeFomls2wBx0VIkkTyjZNmr1PvMArvYwQy
+        iv1EF3HJAQv39GOZGJhoAwrok6cip8/mY/fxRFBrP8+9wzfFjxcE/IgAu0bz3NdzYxnOAu9juKI
+        pOq9lGck4SOFecU5cKzh/lTLKm8qb7948SyzSYGHW
+X-Received: by 2002:a05:6102:3d0a:b0:44e:8626:71f2 with SMTP id i10-20020a0561023d0a00b0044e862671f2mr22039163vsv.13.1697123892159;
+        Thu, 12 Oct 2023 08:18:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHBNyWxcZmfVJRlq4Pd9a/3m/udTn/3W6XtpxOGOI/a95VPzronN+92jtFhhPc0gRK2z/j8d60xOLVLvtMLn1g=
+X-Received: by 2002:a05:6102:3d0a:b0:44e:8626:71f2 with SMTP id
+ i10-20020a0561023d0a00b0044e862671f2mr22039149vsv.13.1697123891899; Thu, 12
+ Oct 2023 08:18:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-573358152-1697123875=:1692"
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLACK autolearn=ham autolearn_force=no version=3.4.6
+References: <20231006205415.3501535-1-kuba@kernel.org> <ZSQ7z8gqIemJQXI6@google.com>
+ <20231009110613.2405ff47@kernel.org> <ZSRVoYbCuDXc7aR7@google.com>
+ <20231009144944.17c8eba3@kernel.org> <87sf6i6gzh.fsf@intel.com>
+ <20231010072359.0df918e9@kernel.org> <ZSXiapPMIPj3ko41@google.com>
+In-Reply-To: <ZSXiapPMIPj3ko41@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Thu, 12 Oct 2023 17:17:59 +0200
+Message-ID: <CABgObfa=k+xHztWPhWU31UqTgnoO=Yn7uT+9W-G9S7VW_HciQA@mail.gmail.com>
+Subject: Re: [PATCH] KVM: deprecate KVM_WERROR in favor of general WERROR
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        workflows@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Wed, Oct 11, 2023 at 1:46=E2=80=AFAM Sean Christopherson <seanjc@google.=
+com> wrote:
+> > > The DRM_I915_WERROR config depends on EXPERT and !COMPILE_TEST, and t=
+o
+> > > my knowledge this has never caused issues outside of i915 developers =
+and
+> > > CI.
+> >
+> > Ack, I think you do it right. I was trying to establish a precedent
+> > so that we can delete these as soon as they cause an issue, not sooner.
+>
+> So isn't the underlying problem simply that KVM_WERROR is enabled by defa=
+ult for
+> some configurations?  If that's the case, then my proposal to make KVM_WE=
+RROR
+> always off by default, and "depends on KVM && EXPERT && !KASAN", would ma=
+ke this
+> go away, no?
 
---8323329-573358152-1697123875=:1692
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+No objection to adding EXPERT. Adding W=3D1 when build-testing KVM
+patches is a good
+idea, you will still get the occasional patch from someone who didn't
+have it but that's fine.
 
-On Wed, 11 Oct 2023, David E. Box wrote:
+I added KVM_WERROR a relatively long time ago after a warning scrolled
+away too quickly (a
+harmless one, but also a kind that honestly shouldn't have made it to
+Linus). At the time there
+were still too many warnings to enable WERROR globally, and I feel
+that now we're on the
+same boat with W=3D1. I think we should keep KVM_WERROR (which was based on
+DRM_I915_WERROR indeed) and maintainers should just add W=3D1 when build-te=
+sting
+KVM patches.
 
-> The PMC SSRAM device contains counters that are structured in Intel
-> Platform Monitoring Technology (PMT) telemetry regions. Look for and
-> register these telemetry regions from the driver so that they may be read
-> using the Intel PMT ABI.
-> 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
-> V3 - no change
-> 
-> V2 - no change
-> 
->  drivers/platform/x86/intel/pmc/Kconfig      |  1 +
->  drivers/platform/x86/intel/pmc/core_ssram.c | 52 +++++++++++++++++++++
->  2 files changed, 53 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/intel/pmc/Kconfig b/drivers/platform/x86/intel/pmc/Kconfig
-> index b526597e4deb..d2f651fbec2c 100644
-> --- a/drivers/platform/x86/intel/pmc/Kconfig
-> +++ b/drivers/platform/x86/intel/pmc/Kconfig
-> @@ -7,6 +7,7 @@ config INTEL_PMC_CORE
->  	tristate "Intel PMC Core driver"
->  	depends on PCI
->  	depends on ACPI
-> +	depends on INTEL_PMT_TELEMETRY
->  	help
->  	  The Intel Platform Controller Hub for Intel Core SoCs provides access
->  	  to Power Management Controller registers via various interfaces. This
-> diff --git a/drivers/platform/x86/intel/pmc/core_ssram.c b/drivers/platform/x86/intel/pmc/core_ssram.c
-> index af405d11919f..1ecfa3804117 100644
-> --- a/drivers/platform/x86/intel/pmc/core_ssram.c
-> +++ b/drivers/platform/x86/intel/pmc/core_ssram.c
-> @@ -13,6 +13,8 @@
->  #include <linux/io-64-nonatomic-lo-hi.h>
->  
->  #include "core.h"
-> +#include "../vsec.h"
-> +#include "../pmt/telemetry.h"
->  
->  #define SSRAM_HDR_SIZE		0x100
->  #define SSRAM_PWRM_OFFSET	0x14
-> @@ -24,6 +26,49 @@
->  
->  DEFINE_FREE(pmc_core_iounmap, void __iomem *, iounmap(_T));
->  
-> +static void
-> +pmc_add_pmt(struct pmc_dev *pmcdev, u64 ssram_base, void __iomem *ssram)
-> +{
-> +	struct pci_dev *pcidev = pmcdev->ssram_pcidev;
-> +	struct intel_vsec_platform_info info = {};
-> +	struct intel_vsec_header *headers[2] = {};
-> +	struct intel_vsec_header header;
-> +	void __iomem *dvsec;
-> +	u32 dvsec_offset;
-> +	u32 table, hdr;
-> +
-> +	ssram = ioremap(ssram_base, SSRAM_HDR_SIZE);
-> +	if (!ssram)
-> +		return;
-> +
-> +	dvsec_offset = readl(ssram + SSRAM_DVSEC_OFFSET);
-> +	iounmap(ssram);
-> +
-> +	dvsec = ioremap(ssram_base + dvsec_offset, SSRAM_DVSEC_SIZE);
-> +	if (!dvsec)
-> +		return;
-> +
-> +	hdr = readl(dvsec + PCI_DVSEC_HEADER1);
-> +	header.id = readw(dvsec + PCI_DVSEC_HEADER2);
-> +	header.rev = PCI_DVSEC_HEADER1_REV(hdr);
-> +	header.length = PCI_DVSEC_HEADER1_LEN(hdr);
-> +	header.num_entries = readb(dvsec + INTEL_DVSEC_ENTRIES);
-> +	header.entry_size = readb(dvsec + INTEL_DVSEC_SIZE);
-> +
-> +	table = readl(dvsec + INTEL_DVSEC_TABLE);
-> +	header.tbir = INTEL_DVSEC_TABLE_BAR(table);
-> +	header.offset = INTEL_DVSEC_TABLE_OFFSET(table);
-> +	iounmap(dvsec);
-> +
-> +	headers[0] = &header;
-> +	info.caps = VSEC_CAP_TELEMETRY;
-> +	info.headers = headers;
-> +	info.base_addr = ssram_base;
-> +	info.parent = &pmcdev->pdev->dev;
-> +
-> +	intel_vsec_register(pcidev, &info);
-> +}
-> +
->  static const struct pmc_reg_map *pmc_core_find_regmap(struct pmc_info *list, u16 devid)
->  {
->  	for (; list->map; ++list)
-> @@ -98,6 +143,9 @@ pmc_core_get_secondary_pmc(struct pmc_dev *pmcdev, int pmc_idx, u32 offset)
->  	pwrm_base = get_base(secondary_ssram, SSRAM_PWRM_OFFSET);
->  	devid = readw(secondary_ssram + SSRAM_DEVID_OFFSET);
->  
-> +	/* Find and register and PMC telemetry entries */
-> +	pmc_add_pmt(pmcdev, ssram_base, main_ssram);
-> +
->  	map = pmc_core_find_regmap(pmcdev->regmap_list, devid);
->  	if (!map)
->  		return -ENODEV;
-> @@ -126,6 +174,9 @@ pmc_core_get_primary_pmc(struct pmc_dev *pmcdev)
->  	pwrm_base = get_base(ssram, SSRAM_PWRM_OFFSET);
->  	devid = readw(ssram + SSRAM_DEVID_OFFSET);
->  
-> +	/* Find and register and PMC telemetry entries */
-> +	pmc_add_pmt(pmcdev, ssram_base, ssram);
-> +
->  	map = pmc_core_find_regmap(pmcdev->regmap_list, devid);
->  	if (!map)
->  		return -ENODEV;
-> @@ -165,3 +216,4 @@ int pmc_core_ssram_init(struct pmc_dev *pmcdev)
->  
->  	return ret;
->  }
-> +MODULE_IMPORT_NS(INTEL_VSEC);
+Paolo
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-
--- 
- i.
-
---8323329-573358152-1697123875=:1692--
