@@ -2,151 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9DB7C6F47
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EE87C6F55
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378354AbjJLNct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42714 "EHLO
+        id S1347282AbjJLNeg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 09:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343875AbjJLNcs (ORCPT
+        with ESMTP id S1347271AbjJLNef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:32:48 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8664794
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:32:46 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c131ddfeb8so11187861fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:32:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697117565; x=1697722365; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k+Zt1DBOvbjWyM5nZyPvW6b5FstKOmZXoPjpZ0uP9fI=;
-        b=JV7ZHqiskua2NKFPMIXx5iv9sC4FHshVCmZk21ovx3+W9SDbfIouSWZLz01P2Tahuw
-         8+Gw1oeCWRNqf3lT+VhoPBwnj33wjly2PEIgB1vxlf1RyO1KweE9fZGi8HQgYVHIZ8f+
-         kEMIzyVrDCFCwi8rPmIntt20eCbgFTKGzWokhjU3eQwNf02Ol7/Pt0pqooZ+Tfin5fFD
-         CJpPOm0aPu9k6RN/8L4bdBXm8pL9fYwJQPbi3/B3Z/DNPn7uOGoVYvuE6Zv1J8E57Q1i
-         tH+/4+PrcZ1cfKwsWD/xwTwz3RN+96UT9Uu0QuaDZEwZErAPvFgUE7Q8qnbbU9SN/WYs
-         M4jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697117565; x=1697722365;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k+Zt1DBOvbjWyM5nZyPvW6b5FstKOmZXoPjpZ0uP9fI=;
-        b=vJx65PQgRswGvk7MGxdqZbzGff8AMBpYejqRaop4w+MhEYxvHS7Y1Zo1axwWv/2FKV
-         A+hu/V8W/yIR/Ow8ZS8FgAkQJ3cODb2ajzCIpvodiKfcFdCNJZkgpd7y/kruopO1dm17
-         H8OUyaSMI2fnfw6KmL++DlwMMDWBWBjydJUVPsYaU+LZWet348J0fS7vZ6SJSwUv6V/p
-         xX1vxhv8ABE1mAjcjQ9QYINfY+6MGyuIUzo3v6LbZQhSg4Q63G/EdQ2buU9aO6iG75Jd
-         2o48UioT/QF9+IdpzJ0h+QtCnqHnqXIntiP15hI0EA8A2ILwM3E/a2MIB3P6rWGfpLlY
-         UyDA==
-X-Gm-Message-State: AOJu0Yxuk4yjDs5+5psBqO6o6dQPxroSaX1r8/zTcjV05zBInDGbHV/w
-        dRm2FEfbaUI8OBrytsQoGvE1ZQ==
-X-Google-Smtp-Source: AGHT+IFPs/bLlnKI5rV0riktgZMew+HNuaQ17fiNlXKQMllkX9NsO4fVC7EE3ckESMzjyHW7bqIJ/g==
-X-Received: by 2002:a2e:b0ee:0:b0:2bc:d0f8:fb4f with SMTP id h14-20020a2eb0ee000000b002bcd0f8fb4fmr21576574ljl.7.1697117564601;
-        Thu, 12 Oct 2023 06:32:44 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id lf1-20020a170907174100b00992b2c55c67sm11094161ejc.156.2023.10.12.06.32.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 06:32:44 -0700 (PDT)
-Message-ID: <8bdeefb0-4a62-4bcb-be84-1efbc2e18377@linaro.org>
-Date:   Thu, 12 Oct 2023 15:32:42 +0200
+        Thu, 12 Oct 2023 09:34:35 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D41694;
+        Thu, 12 Oct 2023 06:34:30 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4S5qzR1lnGz9y0hP;
+        Thu, 12 Oct 2023 21:21:39 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwDXera79Sdl_EcMAg--.35445S2;
+        Thu, 12 Oct 2023 14:34:01 +0100 (CET)
+Message-ID: <4866a6ef46deebf9a9afdeb7efd600edb589da93.camel@huaweicloud.com>
+Subject: Re: [PATCH v3 02/25] ima: Align ima_post_path_mknod() definition
+ with LSM infrastructure
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
+        tom@talpey.com, dmitry.kasatkin@gmail.com, paul@paul-moore.com,
+        jmorris@namei.org, serge@hallyn.com, dhowells@redhat.com,
+        jarkko@kernel.org, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Thu, 12 Oct 2023 15:33:44 +0200
+In-Reply-To: <84cfe4d93cb5b02591f4bd921b828eb6f3e95faa.camel@linux.ibm.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904133415.1799503-3-roberto.sassu@huaweicloud.com>
+         <a733fe780a3197150067ad35ed280bf85e11fa97.camel@linux.ibm.com>
+         <b51baf7741de1fdee8b36a87bd2dde71184d47a8.camel@huaweicloud.com>
+         <8646e30b0074a2932076b5a0a792b14be034de98.camel@linux.ibm.com>
+         <16c8c95f2e63ab9a2fba8cba919bf129d0541b61.camel@huaweicloud.com>
+         <c16551704db68c6e0ba89c729c892e9401f05dfc.camel@linux.ibm.com>
+         <2336abd6ae195eda221d54e3c2349a4760afaff2.camel@huaweicloud.com>
+         <84cfe4d93cb5b02591f4bd921b828eb6f3e95faa.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v2 2/2] memory: tegra: set BPMP msg flags to reset IPC
- channels
-Content-Language: en-US
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sumit Gupta <sumitg@nvidia.com>
-Cc:     treding@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bbasu@nvidia.com
-References: <20231009100557.18224-1-sumitg@nvidia.com>
- <20231009100557.18224-3-sumitg@nvidia.com> <ZSfR1l3lHMScTyL9@orome.fritz.box>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZSfR1l3lHMScTyL9@orome.fritz.box>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: GxC2BwDXera79Sdl_EcMAg--.35445S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3WrWfWFyfWr4DJF17XFWxXrb_yoWxKr43pF
+        W8J3WDGr4DJry7Cr10va15A34Sq34UJr1UXr1Ygw17Jr1Dtr1DXF18Gr1Y9rWrGr4UGr1U
+        XF1Utr9xurWUArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
+        6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
+        AIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+        aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAIBF1jj5DzWQABsE
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2023 13:00, Thierry Reding wrote:
-> On Mon, Oct 09, 2023 at 03:35:57PM +0530, Sumit Gupta wrote:
->> From: Thierry Reding <treding@nvidia.com>
->>
->> Set the 'TEGRA_BPMP_MESSAGE_RESET' bit in newly added 'flags' field
->> of 'struct tegra_bpmp_message' to request for the reset of BPMP IPC
->> channels. This is used along with the 'suspended' check in BPMP driver
->> for handling early bandwidth requests due to the hotplug of CPU's
->> during system resume before the driver gets resumed.
->>
->> Fixes: f41e1442ac5b ("cpufreq: tegra194: add OPP support and set bandwidth")
->> Signed-off-by: Thierry Reding <treding@nvidia.com>
->> Co-developed-by: Sumit Gupta <sumitg@nvidia.com>
->> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
->> ---
->>  drivers/memory/tegra/tegra234.c | 4 ++++
->>  1 file changed, 4 insertions(+)
+On Thu, 2023-10-12 at 09:25 -0400, Mimi Zohar wrote:
+> On Thu, 2023-10-12 at 14:19 +0200, Roberto Sassu wrote:
+> > On Thu, 2023-10-12 at 07:42 -0400, Mimi Zohar wrote:
+> > > On Thu, 2023-10-12 at 09:29 +0200, Roberto Sassu wrote:
+> > > > On Wed, 2023-10-11 at 15:01 -0400, Mimi Zohar wrote:
+> > > > > On Wed, 2023-10-11 at 18:02 +0200, Roberto Sassu wrote:
+> > > > > > On Wed, 2023-10-11 at 10:38 -0400, Mimi Zohar wrote:
+> > > > > > > On Mon, 2023-09-04 at 15:33 +0200, Roberto Sassu wrote:
+> > > > > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > > > > > 
+> > > > > > > > Change ima_post_path_mknod() definition, so that it can be registered as
+> > > > > > > > implementation of the path_post_mknod hook. Since LSMs see a umask-stripped
+> > > > > > > > mode from security_path_mknod(), pass the same to ima_post_path_mknod() as
+> > > > > > > > well.
+> > > > > > > > Also, make sure that ima_post_path_mknod() is executed only if
+> > > > > > > > (mode & S_IFMT) is equal to zero or S_IFREG.
+> > > > > > > > 
+> > > > > > > > Add this check to take into account the different placement of the
+> > > > > > > > path_post_mknod hook (to be introduced) in do_mknodat().
+> > > > > > > 
+> > > > > > > Move "(to be introduced)" to when it is first mentioned.
+> > > > > > > 
+> > > > > > > > Since the new hook
+> > > > > > > > will be placed after the switch(), the check ensures that
+> > > > > > > > ima_post_path_mknod() is invoked as originally intended when it is
+> > > > > > > > registered as implementation of path_post_mknod.
+> > > > > > > > 
+> > > > > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > > > > > ---
+> > > > > > > >  fs/namei.c                        |  9 ++++++---
+> > > > > > > >  include/linux/ima.h               |  7 +++++--
+> > > > > > > >  security/integrity/ima/ima_main.c | 10 +++++++++-
+> > > > > > > >  3 files changed, 20 insertions(+), 6 deletions(-)
+> > > > > > > > 
+> > > > > > > > diff --git a/fs/namei.c b/fs/namei.c
+> > > > > > > > index e56ff39a79bc..c5e96f716f98 100644
+> > > > > > > > --- a/fs/namei.c
+> > > > > > > > +++ b/fs/namei.c
+> > > > > > > > @@ -4024,6 +4024,7 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+> > > > > > > >  	struct path path;
+> > > > > > > >  	int error;
+> > > > > > > >  	unsigned int lookup_flags = 0;
+> > > > > > > > +	umode_t mode_stripped;
+> > > > > > > >  
+> > > > > > > >  	error = may_mknod(mode);
+> > > > > > > >  	if (error)
+> > > > > > > > @@ -4034,8 +4035,9 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+> > > > > > > >  	if (IS_ERR(dentry))
+> > > > > > > >  		goto out1;
+> > > > > > > >  
+> > > > > > > > -	error = security_path_mknod(&path, dentry,
+> > > > > > > > -			mode_strip_umask(path.dentry->d_inode, mode), dev);
+> > > > > > > > +	mode_stripped = mode_strip_umask(path.dentry->d_inode, mode);
+> > > > > > > > +
+> > > > > > > > +	error = security_path_mknod(&path, dentry, mode_stripped, dev);
+> > > > > > > >  	if (error)
+> > > > > > > >  		goto out2;
+> > > > > > > >  
+> > > > > > > > @@ -4045,7 +4047,8 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+> > > > > > > >  			error = vfs_create(idmap, path.dentry->d_inode,
+> > > > > > > >  					   dentry, mode, true);
+> > > > > > > >  			if (!error)
+> > > > > > > > -				ima_post_path_mknod(idmap, dentry);
+> > > > > > > > +				ima_post_path_mknod(idmap, &path, dentry,
+> > > > > > > > +						    mode_stripped, dev);
+> > > > > > > >  			break;
+> > > > > > > >  		case S_IFCHR: case S_IFBLK:
+> > > > > > > >  			error = vfs_mknod(idmap, path.dentry->d_inode,
+> > > > > > > > diff --git a/include/linux/ima.h b/include/linux/ima.h
+> > > > > > > > index 910a2f11a906..179ce52013b2 100644
+> > > > > > > > --- a/include/linux/ima.h
+> > > > > > > > +++ b/include/linux/ima.h
+> > > > > > > > @@ -32,7 +32,8 @@ extern int ima_read_file(struct file *file, enum kernel_read_file_id id,
+> > > > > > > >  extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
+> > > > > > > >  			      enum kernel_read_file_id id);
+> > > > > > > >  extern void ima_post_path_mknod(struct mnt_idmap *idmap,
+> > > > > > > > -				struct dentry *dentry);
+> > > > > > > > +				const struct path *dir, struct dentry *dentry,
+> > > > > > > > +				umode_t mode, unsigned int dev);
+> > > > > > > >  extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
+> > > > > > > >  extern int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size);
+> > > > > > > >  extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
+> > > > > > > > @@ -114,7 +115,9 @@ static inline int ima_post_read_file(struct file *file, void *buf, loff_t size,
+> > > > > > > >  }
+> > > > > > > >  
+> > > > > > > >  static inline void ima_post_path_mknod(struct mnt_idmap *idmap,
+> > > > > > > > -				       struct dentry *dentry)
+> > > > > > > > +				       const struct path *dir,
+> > > > > > > > +				       struct dentry *dentry,
+> > > > > > > > +				       umode_t mode, unsigned int dev)
+> > > > > > > >  {
+> > > > > > > >  	return;
+> > > > > > > >  }
+> > > > > > > > diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> > > > > > > > index 365db0e43d7c..76eba92d7f10 100644
+> > > > > > > > --- a/security/integrity/ima/ima_main.c
+> > > > > > > > +++ b/security/integrity/ima/ima_main.c
+> > > > > > > > @@ -696,18 +696,26 @@ void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+> > > > > > > >  /**
+> > > > > > > >   * ima_post_path_mknod - mark as a new inode
+> > > > > > > >   * @idmap: idmap of the mount the inode was found from
+> > > > > > > > + * @dir: path structure of parent of the new file
+> > > > > > > >   * @dentry: newly created dentry
+> > > > > > > > + * @mode: mode of the new file
+> > > > > > > > + * @dev: undecoded device number
+> > > > > > > >   *
+> > > > > > > >   * Mark files created via the mknodat syscall as new, so that the
+> > > > > > > >   * file data can be written later.
+> > > > > > > >   */
+> > > > > > > >  void ima_post_path_mknod(struct mnt_idmap *idmap,
+> > > > > > > > -			 struct dentry *dentry)
+> > > > > > > > +			 const struct path *dir, struct dentry *dentry,
+> > > > > > > > +			 umode_t mode, unsigned int dev)
+> > > > > > > >  {
+> > > > > > > >  	struct integrity_iint_cache *iint;
+> > > > > > > >  	struct inode *inode = dentry->d_inode;
+> > > > > > > >  	int must_appraise;
+> > > > > > > >  
+> > > > > > > > +	/* See do_mknodat(), IMA is executed for case 0: and case S_IFREG: */
+> > > > > > > > +	if ((mode & S_IFMT) != 0 && (mode & S_IFMT) != S_IFREG)
+> > > > > > > > +		return;
+> > > > > > > > +
+> > > > > > > 
+> > > > > > > There's already a check below to make sure that this is a regular file.
+> > > > > > > Are both needed?
+> > > > > > 
+> > > > > > You are right, I can remove the first check.
+> > > > > 
+> > > > > The question then becomes why modify hook the arguments?   
+> > > > 
+> > > > We need to make sure that ima_post_path_mknod() has the same parameters
+> > > > as the LSM hook at the time we register it to the LSM infrastructure.
+> > > 
+> > > I'm trying to understand why the pre hook parameters and the missing
+> > > IMA parameter are used, as opposed to just defining the new
+> > > post_path_mknod hook like IMA.
+> > 
+> > As an empyrical rule, I pass the same parameters as the corresponding
+> > pre hook (plus idmap, in this case). This is similar to the
+> > inode_setxattr hook. But I can be wrong, if desired I can reduce.
 > 
-> Krzysztof,
+> The inode_setxattr hook change example is legitimate, as EVM includes
+> idmap, while IMA doesn't. 
 > 
-> this one has a build-time dependency on patch 1/2, so it'd make sense
-> for me to pick this up into the Tegra tree along with patch 1/2. That
-> is slightly easier because I already have a BPMP patch in the tree.
+> Unless there is a good reason for the additional parameters, I'm not
+> sure that adding them makes sense.  Not modifying the parameter list
+> will reduce the size of this patch set.
 
-Sounds good.
+The hook is going to be used by any LSM. Without knowing all the
+possible use cases, maybe it is better to include more information now,
+than modifying the hook and respective implementations later.
 
-Best regards,
-Krzysztof
+(again, no problem to reduce)
+
+Thanks
+
+Roberto
 
