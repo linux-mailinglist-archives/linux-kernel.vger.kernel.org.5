@@ -2,244 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0077C61A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 02:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F067C61A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 02:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233943AbjJLASd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 20:18:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38602 "EHLO
+        id S233923AbjJLAY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 20:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231381AbjJLASc (ORCPT
+        with ESMTP id S231381AbjJLAY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 20:18:32 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A03A94
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 17:18:31 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c9e06f058bso597815ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 17:18:31 -0700 (PDT)
+        Wed, 11 Oct 2023 20:24:56 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F58B94
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 17:24:55 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c9d140fb3eso3484595ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 17:24:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697069910; x=1697674710; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=JQN9vSH8iWVgcD57W2RcIWZ/SjzvV3Q0OmDN0z8ptDI=;
-        b=M7j++fpFlQQHNdNAF3r/i3RcFKqhfMGxHpmNVnLjc8ifSIaULWrYRP0nGpm6Y71jMR
-         2r17db967sUU884N0ozvFUBOjWv4dGO517LaGgSOB6G4Vb3bJQnmKAjch4LN8AHuU8Vg
-         JK8Xv/ydoKGgZNHZqEH6tm6WDSIgg38SMeMoGB0q7s3hkCBmqFl38Y2+G4dtb7cgNJc1
-         j9iJexKHb6HndKfo09THPHKlY1kJMdzcaxW5M3lXr7D8SJx2ZSXNDnmSSrvCtVLX9KQY
-         dfSrAtHmr4CJ2l06bkbmTdYbPB39kBJE5iw7xoCXNOVzkz7LBN0FJeZZXMT6pQ9GJTXl
-         jniw==
+        d=google.com; s=20230601; t=1697070295; x=1697675095; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TG++fvWfitw/Sd3Hpgv4FLh87i4JPu5cxo2T/O4RJwY=;
+        b=IQ7LCc4dLlKSkhl/k/jDiI6c6qxEapg6q03XfT+vMZt/x6+16yOiUq4zLS8KnCRBEd
+         s3beUpzLqnK3yJ6QavMqqgcsL6GbjizRR6HdI9Af32TX26zaTkAPDi4WeFNOkNxVTkME
+         2FyvtiLucNPxALbvDGfQSW4cpIIi6cQNXKvbyNOP//qbeDB9LL2BkVGHjuwBwClHXj7U
+         Aa637zUHDVlepYSQH4bfiwxw5CrNnKeImblV621OlWgvJciTJDnfKOBv3Pp2b3IKAm4v
+         NvZYsQTouwY4LkppeCC8nJ1bsOWhaaaZDPJrHw911uBRGrmQN9vJeMQ3ZyR59mYqRuJH
+         04IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697069910; x=1697674710;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JQN9vSH8iWVgcD57W2RcIWZ/SjzvV3Q0OmDN0z8ptDI=;
-        b=HFmVfYa02h2/jIRBEqNWVE4lG5FM1t4QiJfm1TCxVxe/KoXuyjFWZ59hXl8cnrl4Rz
-         DwZGGLn9KWlMgTuWcGolre32YeFVcH3qL7M39SbijYTEqJytwOum92A60ZUM0iCMjWpd
-         5G+Kw795Az9URaJyDdeUkiw0oy/ygFkZdUs7k7JkTfVLcjYYU7ZuYrrD9da33thynz9G
-         Q5LYlISRjdUX77c4JL0BGQgpTCt1DhPSAHGpNCPyUcatynOKhRqvl+HFdirMdz2sou/x
-         2EiIJTIsp9dKa95zlPOk5iCG2iTwokKH0zTe0wt/ZnuxJ/trgJ2+mynWqUspil76zxdD
-         jIKg==
-X-Gm-Message-State: AOJu0YyG88znyrfe1con07RWPXj+3hOKNDKhjbZBpzoy0GpsX/PkELbE
-        vU3QuJEAtQZG7TzG1lQZuVQ=
-X-Google-Smtp-Source: AGHT+IG98wO7FcURIdjLoQPmsNCek4Xf6WZBrqwekNrfkwlUVVnoj+q22YdqjCJUGgTgNKbya4DoGA==
-X-Received: by 2002:a17:902:c404:b0:1c9:9fa6:ce5b with SMTP id k4-20020a170902c40400b001c99fa6ce5bmr14972432plk.16.1697069910374;
-        Wed, 11 Oct 2023 17:18:30 -0700 (PDT)
-Received: from localhost ([216.228.127.130])
-        by smtp.gmail.com with ESMTPSA id jw14-20020a170903278e00b001adf6b21c77sm463933plb.107.2023.10.11.17.18.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 17:18:29 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 17:16:16 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Ankit Jain <ankitja@vmware.com>
-Cc:     peterz@infradead.org, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, qyousef@layalina.io, pjt@google.com,
-        joshdon@google.com, bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, namit@vmware.com,
-        amakhalov@vmware.com, srinidhir@vmware.com, vsirnapalli@vmware.com,
-        vbrahmajosyula@vmware.com, akaher@vmware.com,
-        srivatsa@csail.mit.edu
-Subject: Re: [PATCH RFC] cpumask: Randomly distribute the tasks within
- affinity mask
-Message-ID: <ZSc60HJ8mZGhLkAn@yury-ThinkPad>
-References: <20231011071925.761590-1-ankitja@vmware.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231011071925.761590-1-ankitja@vmware.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697070295; x=1697675095;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TG++fvWfitw/Sd3Hpgv4FLh87i4JPu5cxo2T/O4RJwY=;
+        b=SqaerRqrBkUw5ATmVN0fUtkaQEzMfhnQAg6hQBT4ABq9y2LchhcfBdtbsFrR4c6QBa
+         7LfwKW+LgPNcoRZcHAEWYy2kHX6UqPZSbs0AmSoEjD7QCS7OQjt3F2npcTolA3oqtjB4
+         MrIaQ6bkjizeNAE+GFSYVJDHHZ+nY1p3EHm4xpfFR8UpT2KZEJXYkdsR+iMye3Xj5bRv
+         hfRO8AVf8eK47dC78IFGVrliqREZE5FRWeBRL0D0BbXJ9I/vGzWK0SVTKJ4h04v9w1oZ
+         mXZfG44yWJvjvmmL3o0X0I1/iNR5PElC2V4feFLXBYvxJYXXyFk12aSKugMyNc8EkkZu
+         lNTA==
+X-Gm-Message-State: AOJu0YyGj0VH/93ARmPK/5jEm9fkg1T1SHH2Sl91BBWvdWuEln6dm4rH
+        jmuIqPDxr8M/Uz1cl7gbvHSQ0Tiysjws
+X-Google-Smtp-Source: AGHT+IExEy4MT1RlmnzZMLhm7/rDozk7wpxsAHnJrA5Qq1I4GYy529PiD6cmwEWrK8tPiRiz9sjCDjHq9E9y
+X-Received: from hi-h2o-specialist.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:3cef])
+ (user=arakesh job=sendgmr) by 2002:a17:90b:2391:b0:27d:1cfb:7185 with SMTP id
+ mr17-20020a17090b239100b0027d1cfb7185mr21475pjb.9.1697070294985; Wed, 11 Oct
+ 2023 17:24:54 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 17:24:49 -0700
+In-Reply-To: <20230930184821.310143-1-arakesh@google.com>
+Mime-Version: 1.0
+References: <20230930184821.310143-1-arakesh@google.com>
+X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
+Message-ID: <20231012002451.254737-1-arakesh@google.com>
+Subject: [PATCH v4 1/3] usb: gadget: uvc: prevent use of disabled endpoint
+From:   Avichal Rakesh <arakesh@google.com>
+To:     arakesh@google.com, dan.scally@ideasonboard.com,
+        laurent.pinchart@ideasonboard.com, m.grzeschik@pengutronix.de
+Cc:     etalvala@google.com, gregkh@linuxfoundation.org,
+        jchowdhary@google.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 12:49:25PM +0530, Ankit Jain wrote:
-> commit 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
-> and commit 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
-> introduced the logic to distribute the tasks at initial wakeup on cpus
-> where load balancing works poorly or disabled at all (isolated cpus).
-> 
-> There are cases in which the distribution of tasks
-> that are spawned on isolcpus does not happen properly.
-> In production deployment, initial wakeup of tasks spawn from
-> housekeeping cpus to isolcpus[nohz_full cpu] happens on first cpu
-> within isolcpus range instead of distributed across isolcpus.
-> 
-> Usage of distribute_cpu_mask_prev from one processes group,
-> will clobber previous value of another or other groups and vice-versa.
-> 
-> When housekeeping cpus spawn multiple child tasks to wakeup on
-> isolcpus[nohz_full cpu], using cpusets.cpus/sched_setaffinity(),
-> distribution is currently performed based on per-cpu
-> distribute_cpu_mask_prev counter.
-> At the same time, on housekeeping cpus there are percpu
-> bounded timers interrupt/rcu threads and other system/user tasks
-> would be running with affinity as housekeeping cpus. In a real-life
-> environment, housekeeping cpus are much fewer and are too much loaded.
-> So, distribute_cpu_mask_prev value from these tasks impacts
-> the offset value for the tasks spawning to wakeup on isolcpus and
-> thus most of the tasks end up waking up on first cpu within the
-> isolcpus set.
-> 
-> Steps to reproduce:
-> Kernel cmdline parameters:
-> isolcpus=2-5 skew_tick=1 nohz=on nohz_full=2-5
-> rcu_nocbs=2-5 rcu_nocb_poll idle=poll irqaffinity=0-1
-> 
-> * pid=$(echo $$)
-> * taskset -pc 0 $pid
-> * cat loop-normal.c
-> int main(void)
-> {
->         while (1)
->                 ;
->         return 0;
-> }
-> * gcc -o loop-normal loop-normal.c
-> * for i in {1..50}; do ./loop-normal & done
-> * pids=$(ps -a | grep loop-normal | cut -d' ' -f5)
-> * for i in $pids; do taskset -pc 2-5 $i ; done
-> 
-> Expected output:
-> * All 50 “loop-normal” tasks should wake up on cpu2-5
-> equally distributed.
-> * ps -eLo cpuid,pid,tid,ppid,cls,psr,cls,cmd | grep "^    [2345]"
-> 
-> Actual output:
-> * All 50 “loop-normal” tasks got woken up on cpu2 only
-> 
-> Analysis:
-> There are percpu bounded timer interrupt/rcu threads activities
-> going on every few microseconds on housekeeping cpus, exercising
-> find_lowest_rq() -> cpumask_any_and_distribute()/cpumask_any_distribute()
-> So, per cpu variable distribute_cpu_mask_prev for housekeeping cpus
-> keep on getting set to housekeeping cpus. Bash/docker processes
-> are sharing same per cpu variable as they run on housekeeping cpus.
-> Thus intersection of clobbered distribute_cpu_mask_prev and
-> new mask(isolcpus) return always first cpu within the new mask(isolcpus)
-> in accordance to the logic mentioned in commits above.
-> 
-> Fix the issue by using random cores out of the applicable CPU set
-> instead of relying on distribute_cpu_mask_prev.
-> 
-> Fixes: 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
-> Fixes: 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
-> 
-> Signed-off-by: Ankit Jain <ankitja@vmware.com>
-> ---
->  lib/cpumask.c | 40 +++++++++++++++++++++-------------------
->  1 file changed, 21 insertions(+), 19 deletions(-)
-> 
-> diff --git a/lib/cpumask.c b/lib/cpumask.c
-> index a7fd02b5ae26..95a7c1b40e95 100644
-> --- a/lib/cpumask.c
-> +++ b/lib/cpumask.c
-> @@ -155,45 +155,47 @@ unsigned int cpumask_local_spread(unsigned int i, int node)
->  }
->  EXPORT_SYMBOL(cpumask_local_spread);
->  
-> -static DEFINE_PER_CPU(int, distribute_cpu_mask_prev);
-> -
->  /**
->   * cpumask_any_and_distribute - Return an arbitrary cpu within src1p & src2p.
->   * @src1p: first &cpumask for intersection
->   * @src2p: second &cpumask for intersection
->   *
-> - * Iterated calls using the same srcp1 and srcp2 will be distributed within
-> - * their intersection.
-> + * Iterated calls using the same srcp1 and srcp2 will be randomly distributed
-> + * within their intersection.
->   *
->   * Returns >= nr_cpu_ids if the intersection is empty.
->   */
+Currently the set_alt callback immediately disables the endpoint and queues
+the v4l2 streamoff event. However, as the streamoff event is processed
+asynchronously, it is possible that the video_pump thread attempts to queue
+requests to an already disabled endpoint.
 
-This has been discussed a while ago, and the bottomline is that 'any'
-is not the same as 'random'. In practice, it means that getting 'any'
-cpu is cheaper than getting randomized one.
+This change moves disabling usb endpoint to the end of streamoff event
+callback. As the endpoint's state can no longer be used, video_pump is
+now guarded by uvc->state as well. To be consistent with the actual
+streaming state, uvc->state is now toggled between CONNECTED and STREAMING
+from the v4l2 event callback only.
 
-I'm not that deep in context of the problem you're trying to solve, but
-if you need randomized CPU, can you just add a new function for it?
-Something like cpumask_get_random().
+Link: https://lore.kernel.org/20230615171558.GK741@pendragon.ideasonboard.com/
+Link: https://lore.kernel.org/20230531085544.253363-1-dan.scally@ideasonboard.com/
+Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Signed-off-by: Avichal Rakesh <arakesh@google.com>
+---
+v1 -> v2: Rebased to ToT and reworded commit message.
+v2 -> v3: Fix email threading goof-up
+v3 -> v4: Address review comments & re-rebase to ToT
 
-The approach with find_nth_bit() itself looks good to me.
+ drivers/usb/gadget/function/f_uvc.c     | 11 +++++------
+ drivers/usb/gadget/function/f_uvc.h     |  2 +-
+ drivers/usb/gadget/function/uvc.h       |  2 +-
+ drivers/usb/gadget/function/uvc_v4l2.c  | 21 ++++++++++++++++++---
+ drivers/usb/gadget/function/uvc_video.c |  3 ++-
+ 5 files changed, 27 insertions(+), 12 deletions(-)
 
-Thanks,
-Yury
+diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
+index faa398109431..ae08341961eb 100644
+--- a/drivers/usb/gadget/function/f_uvc.c
++++ b/drivers/usb/gadget/function/f_uvc.c
+@@ -263,10 +263,13 @@ uvc_function_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
+ 	return 0;
+ }
 
->  unsigned int cpumask_any_and_distribute(const struct cpumask *src1p,
->  			       const struct cpumask *src2p)
->  {
-> -	unsigned int next, prev;
-> +	unsigned int n_cpus, nth_cpu;
->  
-> -	/* NOTE: our first selection will skip 0. */
-> -	prev = __this_cpu_read(distribute_cpu_mask_prev);
-> +	n_cpus = cpumask_weight_and(src1p, src2p);
-> +	if (n_cpus == 0)
-> +		return nr_cpu_ids;
->  
-> -	next = find_next_and_bit_wrap(cpumask_bits(src1p), cpumask_bits(src2p),
-> -					nr_cpumask_bits, prev + 1);
-> -	if (next < nr_cpu_ids)
-> -		__this_cpu_write(distribute_cpu_mask_prev, next);
-> +	nth_cpu = get_random_u32_below(n_cpus);
->  
-> -	return next;
-> +	return find_nth_and_bit(cpumask_bits(src1p), cpumask_bits(src2p),
-> +					nr_cpumask_bits, nth_cpu);
->  }
->  EXPORT_SYMBOL(cpumask_any_and_distribute);
->  
-> +/**
-> + * Returns an arbitrary cpu within srcp.
-> + *
-> + * Iterated calls using the same srcp will be randomly distributed
-> + */
->  unsigned int cpumask_any_distribute(const struct cpumask *srcp)
->  {
-> -	unsigned int next, prev;
-> +	unsigned int n_cpus, nth_cpu;
->  
-> -	/* NOTE: our first selection will skip 0. */
-> -	prev = __this_cpu_read(distribute_cpu_mask_prev);
-> -	next = find_next_bit_wrap(cpumask_bits(srcp), nr_cpumask_bits, prev + 1);
-> -	if (next < nr_cpu_ids)
-> -		__this_cpu_write(distribute_cpu_mask_prev, next);
-> +	n_cpus = cpumask_weight(srcp);
-> +	if (n_cpus == 0)
-> +		return nr_cpu_ids;
->  
-> -	return next;
-> +	nth_cpu = get_random_u32_below(n_cpus);
-> +
-> +	return find_nth_bit(cpumask_bits(srcp), nr_cpumask_bits, nth_cpu);
->  }
->  EXPORT_SYMBOL(cpumask_any_distribute);
-> -- 
-> 2.23.1
+-void uvc_function_setup_continue(struct uvc_device *uvc)
++void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep)
+ {
+ 	struct usb_composite_dev *cdev = uvc->func.config->cdev;
+
++	if (disable_ep && uvc->video.ep)
++		usb_ep_disable(uvc->video.ep);
++
+ 	usb_composite_setup_continue(cdev);
+ }
+
+@@ -337,15 +340,11 @@ uvc_function_set_alt(struct usb_function *f, unsigned interface, unsigned alt)
+ 		if (uvc->state != UVC_STATE_STREAMING)
+ 			return 0;
+
+-		if (uvc->video.ep)
+-			usb_ep_disable(uvc->video.ep);
+-
+ 		memset(&v4l2_event, 0, sizeof(v4l2_event));
+ 		v4l2_event.type = UVC_EVENT_STREAMOFF;
+ 		v4l2_event_queue(&uvc->vdev, &v4l2_event);
+
+-		uvc->state = UVC_STATE_CONNECTED;
+-		return 0;
++		return USB_GADGET_DELAYED_STATUS;
+
+ 	case 1:
+ 		if (uvc->state != UVC_STATE_CONNECTED)
+diff --git a/drivers/usb/gadget/function/f_uvc.h b/drivers/usb/gadget/function/f_uvc.h
+index 1db972d4beeb..e7f9f13f14dc 100644
+--- a/drivers/usb/gadget/function/f_uvc.h
++++ b/drivers/usb/gadget/function/f_uvc.h
+@@ -11,7 +11,7 @@
+
+ struct uvc_device;
+
+-void uvc_function_setup_continue(struct uvc_device *uvc);
++void uvc_function_setup_continue(struct uvc_device *uvc, int disale_ep);
+
+ void uvc_function_connect(struct uvc_device *uvc);
+
+diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
+index 6751de8b63ad..989bc6b4e93d 100644
+--- a/drivers/usb/gadget/function/uvc.h
++++ b/drivers/usb/gadget/function/uvc.h
+@@ -177,7 +177,7 @@ struct uvc_file_handle {
+  * Functions
+  */
+
+-extern void uvc_function_setup_continue(struct uvc_device *uvc);
++extern void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep);
+ extern void uvc_function_connect(struct uvc_device *uvc);
+ extern void uvc_function_disconnect(struct uvc_device *uvc);
+
+diff --git a/drivers/usb/gadget/function/uvc_v4l2.c b/drivers/usb/gadget/function/uvc_v4l2.c
+index 3f0a9795c0d4..c0d77564a204 100644
+--- a/drivers/usb/gadget/function/uvc_v4l2.c
++++ b/drivers/usb/gadget/function/uvc_v4l2.c
+@@ -451,7 +451,7 @@ uvc_v4l2_streamon(struct file *file, void *fh, enum v4l2_buf_type type)
+ 	 * Complete the alternate setting selection setup phase now that
+ 	 * userspace is ready to provide video frames.
+ 	 */
+-	uvc_function_setup_continue(uvc);
++	uvc_function_setup_continue(uvc, 0);
+ 	uvc->state = UVC_STATE_STREAMING;
+
+ 	return 0;
+@@ -463,11 +463,19 @@ uvc_v4l2_streamoff(struct file *file, void *fh, enum v4l2_buf_type type)
+ 	struct video_device *vdev = video_devdata(file);
+ 	struct uvc_device *uvc = video_get_drvdata(vdev);
+ 	struct uvc_video *video = &uvc->video;
++	int ret = 0;
+
+ 	if (type != video->queue.queue.type)
+ 		return -EINVAL;
+
+-	return uvcg_video_enable(video, 0);
++	uvc->state = UVC_STATE_CONNECTED;
++	ret = uvcg_video_enable(video, 0);
++	if (ret < 0) {
++		return ret;
++	}
++
++	uvc_function_setup_continue(uvc, 1);
++	return 0;
+ }
+
+ static int
+@@ -500,6 +508,14 @@ uvc_v4l2_subscribe_event(struct v4l2_fh *fh,
+ static void uvc_v4l2_disable(struct uvc_device *uvc)
+ {
+ 	uvc_function_disconnect(uvc);
++	/*
++	 * Drop uvc->state to CONNECTED if it was streaming before.
++	 * This ensures that the usb_requests are no longer queued
++	 * to the controller.
++	 */
++	if (uvc->state == UVC_STATE_STREAMING)
++		uvc->state = UVC_STATE_CONNECTED;
++
+ 	uvcg_video_enable(&uvc->video, 0);
+ 	uvcg_free_buffers(&uvc->video.queue);
+ 	uvc->func_connected = false;
+@@ -647,4 +663,3 @@ const struct v4l2_file_operations uvc_v4l2_fops = {
+ 	.get_unmapped_area = uvcg_v4l2_get_unmapped_area,
+ #endif
+ };
+-
+diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
+index 91af3b1ef0d4..c334802ac0a4 100644
+--- a/drivers/usb/gadget/function/uvc_video.c
++++ b/drivers/usb/gadget/function/uvc_video.c
+@@ -384,13 +384,14 @@ static void uvcg_video_pump(struct work_struct *work)
+ 	struct uvc_video_queue *queue = &video->queue;
+ 	/* video->max_payload_size is only set when using bulk transfer */
+ 	bool is_bulk = video->max_payload_size;
++	struct uvc_device *uvc = video->uvc;
+ 	struct usb_request *req = NULL;
+ 	struct uvc_buffer *buf;
+ 	unsigned long flags;
+ 	bool buf_done;
+ 	int ret;
+
+-	while (video->ep->enabled) {
++	while (uvc->state == UVC_STATE_STREAMING && video->ep->enabled) {
+ 		/*
+ 		 * Retrieve the first available USB request, protected by the
+ 		 * request lock.
+--
+2.42.0.609.gbb76f46606-goog
+
