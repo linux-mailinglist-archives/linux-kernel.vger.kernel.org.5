@@ -2,47 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E6F7C7273
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1077C7276
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379518AbjJLQZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
+        id S1379526AbjJLQZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:25:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344015AbjJLQZQ (ORCPT
+        with ESMTP id S1347324AbjJLQZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:25:16 -0400
+        Thu, 12 Oct 2023 12:25:26 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0357BC6;
-        Thu, 12 Oct 2023 09:25:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55A62C433C8;
-        Thu, 12 Oct 2023 16:25:14 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE69E3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:25:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CCC2C433C8;
+        Thu, 12 Oct 2023 16:25:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697127914;
-        bh=jhs8ocEdk0H8R7hydf3+ylgi+ceFyylN7MYk7og3q2M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Oiq8SU7bWFp3/+Zz1L2IIfOEgEFdISzkAr1MLzwI+DHW3lv3JkNOn+lfHrrUngOR0
-         ZtWDjzLSDlrdOJeR5/qXXJIfMeWClcsQ9EPWVURatNa3/jfpXh63hJRIKEihZlP0Zc
-         B5YFjX5wHduKITGsFrkoYE6WykCp5SJrJWWn86njNQGVRGUd8j/xEuHrGzYfOidIuD
-         CrUPBejr3vcLbixFKzn0eVW+hycNmO//7j2mWzsaRLgRaPmwlNlPOoc1UScTqxPTJW
-         fPXWLuk8Obn60f6KtR/VfH+Ef+hGyhwV+ydjLsFwQEsZIGlo7UUJZrDkC31NPpIcUE
-         upgmAkgDUyPmQ==
-Date:   Thu, 12 Oct 2023 11:25:12 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Shuai Xue <xueshuai@linux.alibaba.com>
-Cc:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
-        yangyicong@huawei.com, will@kernel.org,
-        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
-        robin.murphy@arm.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        rdunlap@infradead.org, mark.rutland@arm.com,
-        zhuo.song@linux.alibaba.com, renyu.zj@linux.alibaba.com
-Subject: Re: [PATCH v7 3/4] drivers/perf: add DesignWare PCIe PMU driver
-Message-ID: <20231012162512.GA1069387@bhelgaas>
+        s=k20201202; t=1697127924;
+        bh=9feK3ItMeeWwJ7VIPlyWwFyXf9aBwpQbldW6FpaCPok=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=MmifaNqVW0KF2jEk/QREfOeHUJJUTjUuR3z0Y7YzK/2lxDPf9rHQGgKgaHY65EXWd
+         6A37+tC0FyDH0IMKT7Ape4MnoBEOrVGKvU4RIsui53qz7heLWtCnPICUmj+yprUCuc
+         y/lmrDPTmwebPd65iJ+2z2dEr03L1Hpcz3dlzsPShupRgJsA9uNtbI5kUJgFNBtn7d
+         dghuOJvsMkZXBhaHMk6fu7dC8hFFs0XdZmdQ5Bb22ZpEtUP8bd6Zg/l9lpQXRVsRPB
+         8aRf5Ww2EVmOdoQ2W1uN02GQAhG+B8FMklmXGFFe2AFvS9TU9Ce270JNi0ElWgr3vt
+         sYha2tz+uzW0Q==
+Received: (nullmailer pid 1188735 invoked by uid 1000);
+        Thu, 12 Oct 2023 16:25:22 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012032856.2640-4-xueshuai@linux.alibaba.com>
+From:   Rob Herring <robh@kernel.org>
+To:     Eugen Hristev <eugen.hristev@collabora.com>
+Cc:     angelogioacchino.delregno@collabora.com,
+        devicetree@vger.kernel.org, kernel@collabora.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        matthias.bgg@gmail.com, conor+dt@kernel.org,
+        linux-kernel@vger.kernel.org, broonie@kernel.org,
+        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+        lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20231012151538.468893-1-eugen.hristev@collabora.com>
+References: <20231012151538.468893-1-eugen.hristev@collabora.com>
+Message-Id: <169712792200.1188719.6103742227495646067.robh@kernel.org>
+Subject: Re: [PATCH v3] dt-bindings: arm: mediatek: convert audsys and
+ mt2701-afe-pcm to yaml
+Date:   Thu, 12 Oct 2023 11:25:22 -0500
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -52,187 +56,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 11:28:55AM +0800, Shuai Xue wrote:
-> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
-> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
-> Core controller IP which provides statistics feature. The PMU is not a PCIe
-> Root Complex integrated End Point(RCiEP) device but only register counters
-> provided by each PCIe Root Port.
+
+On Thu, 12 Oct 2023 18:15:38 +0300, Eugen Hristev wrote:
+> Convert the mediatek,audsys binding to YAML, together with the associated
+> binding bindings/sound/mt2701-afe-pcm.yaml .
 > 
-> To facilitate collection of statistics the controller provides the
-> following two features for each Root Port:
+> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+> ---
+> Changes in v3:
+> - not added Rb Conor Dooley since the patch was changed in a big essence
+> - As per review by Krzysztof, also convert the mt2701-afe-pcm and reference
+> the correct schema in the audsys binding.
 > 
-> - Time Based Analysis (RX/TX data throughput and time spent in each
->   low-power LTSSM state)
-> - Event counters (Error and Non-Error for lanes)
+> Changes in v2:
+> - remove comment reference to inexistent binding
 > 
-> Note, only one counter for each type and does not overflow interrupt.
+> 
+>  .../bindings/arm/mediatek/mediatek,audsys.txt |  39 ---
+>  .../arm/mediatek/mediatek,audsys.yaml         | 153 ++++++++++++
+>  .../bindings/sound/mt2701-afe-pcm.txt         | 146 -----------
+>  .../bindings/sound/mt2701-afe-pcm.yaml        | 229 ++++++++++++++++++
+>  4 files changed, 382 insertions(+), 185 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/mt2701-afe-pcm.yaml
+> 
 
-Not sure what "does not overflow interrupt" means.  Does it mean
-there's no interrupt generated when the counter overflows?
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-> +config DWC_PCIE_PMU
-> +	tristate "Enable Synopsys DesignWare PCIe PMU Support"
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/sound/mt2701-afe-pcm.yaml:11:4: [error] missing starting space in comment (comments)
 
-The DWC_PCIE_PMU symbol and the "Synopsys DesignWare PCIe PMU" text
-suggest that this is generic and should work on any designs based on
-DesignWare IP, not just the Alibaba devices.
+dtschema/dtc warnings/errors:
 
-It appears that the current driver only supports Alibaba devices
-because it only looks at Root Ports with PCI_VENDOR_ID_ALIBABA, but I
-assume support for non-Alibaba devices is likely to be added in the
-future?
+doc reference errors (make refcheckdocs):
 
-If it is really generic for DesignWare-based devices the config symbol
-and menu entry seem fine.
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231012151538.468893-1-eugen.hristev@collabora.com
 
-Maybe mention the vendor (Synopsys or Alibaba) first in the menu
-entry, though, since that's what most other drivers do, e.g.,
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
-  tristate "Synopsys DesignWare PCIe PMU"
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-> +	depends on (ARM64 && PCI)
+pip3 install dtschema --upgrade
 
-I don't see any actual ARM64 dependency in the code, so maybe omit
-ARM64 (as PCIE_DW_PLAT_HOST does) or add "|| COMPILE_TEST"?
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
-> +	help
-> +	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
-> +	  monitoring event on platform including the Yitian 710.
-
-Should this mention Alibaba or T-Head?  I don't know how
-Alibaba/T-Head/Yitian are all related.
-
-> + * Put them togother as TRM used.
-
-s/togother/together/
-
-Maybe "Put them together as in TRM."?
-
-> +#define _dwc_pcie_format_attr(_name, _cfg, _fld)				\
-> +	(&((struct dwc_pcie_format_attr[]) {{					\
-> +		.attr = __ATTR(_name, 0444, dwc_pcie_pmu_format_show, NULL),	\
-> +		.config = _cfg,							\
-> +		.field = _fld,							\
-> +	}})[0].attr.attr)
-
-Seems weird to put the \ characters in column 81 where they make
-everything wrap unnecessarily on a 80-column terminal.  I guess it
-just happens to be where a tab after the longest line ends up.
-
-> +static void dwc_pcie_pmu_unregister_pmu(void *data)
-> +{
-> +	struct dwc_pcie_pmu *pcie_pmu = data;
-> +
-> +	if (!pcie_pmu->registered)
-> +		return;
-> +
-> +	perf_pmu_unregister(&pcie_pmu->pmu);
-> +	pcie_pmu->registered = false;
-> +}
-> +
-> +/*
-> + * Find the PMU of a PCI device.
-> + * @pdev: The PCI device.
-> + */
-> +static struct dwc_pcie_pmu *dwc_pcie_find_dev_pmu(struct pci_dev *pdev)
-> +{
-> +	struct dwc_pcie_pmu *pcie_pmu, *tmp;
-> +
-> +	list_for_each_entry_safe(pcie_pmu, tmp, &dwc_pcie_pmu_head, pmu_node) {
-> +		if (pcie_pmu->pdev == pdev) {
-> +			list_del(&pcie_pmu->pmu_node);
-
-Seems sort of weird to have a "find_dev" function actually *remove*
-the entry.  The entry was added to the list near the
-perf_pmu_register(), so maybe consider removing it in the caller or
-near the perf_pmu_unregister().  Maybe also reorder the functions as:
-
-  dwc_pcie_find_dev_pmu
-  dwc_pcie_pmu_unregister_pmu
-  dwc_pcie_pmu_notifier
-
-since dwc_pcie_find_dev_pmu() is a less interesting helper function.
-
-> +			return pcie_pmu;
-> +		}
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +static int dwc_pcie_pmu_notifier(struct notifier_block *nb,
-> +				     unsigned long action, void *data)
-> +{
-> +	struct device *dev = data;
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	struct dwc_pcie_pmu *pcie_pmu;
-> +
-> +	/* Unregister the PMU when the device is going to be deleted. */
-> +	if (action != BUS_NOTIFY_DEL_DEVICE)
-> +		return NOTIFY_DONE;
-> +
-> +	pcie_pmu = dwc_pcie_find_dev_pmu(pdev);
-> +	if (!pcie_pmu)
-> +		return NOTIFY_DONE;
-> +
-> +	dwc_pcie_pmu_unregister_pmu(pcie_pmu);
-> +
-> +	return NOTIFY_OK;
-> +}
-
-> +	/* Match the rootport with VSEC_RAS_DES_ID, and register a PMU for it */
-> +	for_each_pci_dev(pdev) {
-> +		u16 vsec;
-> +		u32 val;
-> +
-> +		if (!(pci_is_pcie(pdev) &&
-> +		      pci_pcie_type(pdev) == PCI_EXP_TYPE_ROOT_PORT))
-> +			continue;
-> +
-> +		vsec = pci_find_vsec_capability(pdev, PCI_VENDOR_ID_ALIBABA,
-> +						DWC_PCIE_VSEC_RAS_DES_ID);
-> +		if (!vsec)
-> +			continue;
-> +
-> +		pci_read_config_dword(pdev, vsec + PCI_VNDR_HEADER, &val);
-> +		if (PCI_VNDR_HEADER_REV(val) != 0x04 ||
-> +		    PCI_VNDR_HEADER_LEN(val) != 0x100)
-> +			continue;
-> +		pci_dbg(pdev,
-> +			"Detected PCIe Vendor-Specific Extended Capability RAS DES\n");
-> +
-> +		bdf = PCI_DEVID(pdev->bus->number, pdev->devfn);
-> +		name = devm_kasprintf(&plat_dev->dev, GFP_KERNEL, "dwc_rootport_%x",
-> +				      bdf);
-> +		if (!name) {
-> +			ret = -ENOMEM;
-> +			goto out;
-> +		}
-> +
-> +		/* All checks passed, go go go */
-> +		pcie_pmu = devm_kzalloc(&plat_dev->dev, sizeof(*pcie_pmu), GFP_KERNEL);
-> +		if (!pcie_pmu) {
-> +			ret = -ENOMEM;
-> +			goto out;
-> +		}
-> +
-> +		pcie_pmu->pdev = pdev;
-> +		pcie_pmu->ras_des = vsec;
-
-Looks like "ras_des" is the offset of a RAS DES Capability, and we
-only use the Vendor-specific DWC_PCIE_VSEC_RAS_DES_ID Capability to
-learn the RAS DES offset?
-
-That seems a little convoluted and unnecessarily Alibaba-specific.  A
-more generic way to do this would be for the RAS DES registers to be
-in a Designated Vendor-Specific Capability with DVSEC Vendor ID of
-PCI_VENDOR_ID_SYNOPSYS and a Synopsys-defined DVSEC ID that identifies
-RAS DES.
-
-Then we could use pci_find_dvsec_capability() to find the RAS DES
-Capability directly without the Alibaba dependency.  Obviously this
-would only work if the hardware/firmware design supports it, and I
-assume the Synopsis IP wasn't designed that way.
-
-Bjorn
