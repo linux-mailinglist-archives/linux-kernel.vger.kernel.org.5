@@ -2,98 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E65F77C77E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302397C77E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442763AbjJLUZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 16:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36040 "EHLO
+        id S1442502AbjJLU2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 16:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442598AbjJLUZZ (ORCPT
+        with ESMTP id S1344157AbjJLU2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 16:25:25 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440B683
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:25:22 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 383C92C0276;
-        Fri, 13 Oct 2023 09:25:19 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1697142319;
-        bh=bGXRBGo24BCLP/H5KzYL77QZ41XEWlPwdQq4XcnRZOE=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=hjB+rx/2tBm28QZdKtD44OCs3t1k/7mgOq5HwnYVrKOUtFX8Wqc+3G/sHM4ldY6wT
-         4gAnPq04NzB2mTAMl0QcIvxytuNKAGiClTc4Z8PtUlsvtGB7pzl1IueHWRSdUHPOdP
-         w/dSnRjIKKN2yDRVloDFo2IQYdKDpVln2NOFb48dj5vpqf6/7wrIm6Tj3H0F6CIHza
-         nhPxGpaLB7ZE9yB1FsPT7hNjRZrMWbKRHi9T1EqiXp+uLozYFHlLLQP1B0omVguqHi
-         r7WEDDk2Dv32CjIlIkLXVO+D9VUz+itnGzxrYlX5cKrjGgGNPQTp3zwcZjo9jsnwoV
-         tRbUW1lMtj6GQ==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B6528562f0001>; Fri, 13 Oct 2023 09:25:19 +1300
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Fri, 13 Oct 2023 09:25:18 +1300
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1118.037; Fri, 13 Oct 2023 09:25:18 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Andi Shyti <andi.shyti@kernel.org>
-CC:     "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "pierre.gondois@arm.com" <pierre.gondois@arm.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] i2c: mv64xxx: add support for FSM based recovery
-Thread-Topic: [PATCH v2 3/3] i2c: mv64xxx: add support for FSM based recovery
-Thread-Index: AQHZ9+y6MiGlK+7sFkG4dtUSaik2ObBFx/eAgAACsAA=
-Date:   Thu, 12 Oct 2023 20:25:18 +0000
-Message-ID: <d8074039-27b0-40b7-9e67-10c459e2a5d6@alliedtelesis.co.nz>
-References: <20231006003321.2100016-1-chris.packham@alliedtelesis.co.nz>
- <20231006003321.2100016-4-chris.packham@alliedtelesis.co.nz>
- <20231012201541.nzlxyjngm3d5asir@zenone.zhora.eu>
-In-Reply-To: <20231012201541.nzlxyjngm3d5asir@zenone.zhora.eu>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.33.22.30]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AF2702256CB38F4E961DA5B3DC803606@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Thu, 12 Oct 2023 16:28:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B17BBB
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:27:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697142469;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h7MhDUaGiq9G+tWNP9KfebmzehEOtMMS/KoW8Kay4rM=;
+        b=QNbsvZ8MWUywCkgbVC/z3FIIRIcdufibpNRS4hicmzY91FFgp2Xr5O1TKadN89wiKRltSO
+        xgMX/FkU1659ZJxSv5ByDlq3AIS+nbb9scUKXOilRIQWo7ycPa101pBc4TWc7TdYkSuRyv
+        qKhspXcusTVDgwV3Pc/xnGgRwy4g0Co=
+Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
+ [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-435-XSZmanjfMlqcjcYxFp8jEA-1; Thu, 12 Oct 2023 16:27:47 -0400
+X-MC-Unique: XSZmanjfMlqcjcYxFp8jEA-1
+Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-59c09bcf078so21740057b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:27:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697142467; x=1697747267;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h7MhDUaGiq9G+tWNP9KfebmzehEOtMMS/KoW8Kay4rM=;
+        b=HG1o8QyBM/uY/rm1KHarGuCRWa7bU3oe4xDicXkIJzgZfQo8AAStiU24eKoekxFAK0
+         CLmUIWlrjmtnu49TMRAp66Qq/oPszZ+e/n8z+sXrAZclFH9DCrC6cqCX0JvEJHYFHV6S
+         98EnV9BDZ1/J4yeRIZTyTfu1LwwJA7yYAdWbKGrAnOm9X6lqsMz6IHyguVdbb0kJhHwX
+         wJKZcV9pdDQmiA8erfpuvBe7suo5yvr96lkTwaeCJuIL+2lex96WLIW9b17t4WznzGMY
+         cG22sXFXSETagXeewn0ZvUrxYZfGb58qHTZbV8NZ9lT/ych1JmfaEOP+6k2VnMk8M2jF
+         QgZw==
+X-Gm-Message-State: AOJu0YzB8kfpBPHctrFHjFFFN84rmWF5eW4floOl0cF5W5fh1lqBzq3E
+        xeRNVeOVvkPNdwy0XnIuOdhlLCM508/6Xmxezepjv63+tcEDpOjZMsEXbWlc18B83oHr7f/bsNe
+        Iau0SZlqDxle7kzC8Jz6mqWr24bJm04IU
+X-Received: by 2002:a25:2109:0:b0:d90:a7a4:7093 with SMTP id h9-20020a252109000000b00d90a7a47093mr22970357ybh.55.1697142466872;
+        Thu, 12 Oct 2023 13:27:46 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFVZ5AlehRoD4uy/fEcf9fxDTMrdIb0t8hzbkAHLfVUYwOfQMOlVAmfNUNBfHCGsp/kHBKgMA==
+X-Received: by 2002:a25:2109:0:b0:d90:a7a4:7093 with SMTP id h9-20020a252109000000b00d90a7a47093mr22970345ybh.55.1697142466567;
+        Thu, 12 Oct 2023 13:27:46 -0700 (PDT)
+Received: from ?IPv6:2600:4040:5c6c:a300::feb? ([2600:4040:5c6c:a300::feb])
+        by smtp.gmail.com with ESMTPSA id dl15-20020ad44e0f000000b0066d1540f9ecsm69669qvb.77.2023.10.12.13.27.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 13:27:45 -0700 (PDT)
+Message-ID: <bd20306461d67f1c6aaadb3fe6a3d596fc70e13e.camel@redhat.com>
+Subject: Re: [PATCH] drm/nouveau/disp: fix DP capable DSM connectors
+From:   Lyude Paul <lyude@redhat.com>
+To:     Karol Herbst <kherbst@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        stable@vger.kernel.org
+Date:   Thu, 12 Oct 2023 16:27:38 -0400
+In-Reply-To: <20231011114134.861818-1-kherbst@redhat.com>
+References: <20231011114134.861818-1-kherbst@redhat.com>
+Organization: Red Hat Inc.
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=L6ZjvNb8 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=PchfyjaiVAwjaaGKlXQA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAxMy8xMC8yMyAwOToxNSwgQW5kaSBTaHl0aSB3cm90ZToNCj4gSGkgQ2hyaXMsDQo+DQo+
-IC4uLg0KPg0KPj4gK3N0YXRpYyBpbnQNCj4+ICttdjY0eHh4X2kyY19yZWNvdmVyX2J1cyhzdHJ1
-Y3QgaTJjX2FkYXB0ZXIgKmFkYXApDQo+PiArew0KPj4gKwlzdHJ1Y3QgbXY2NHh4eF9pMmNfZGF0
-YSAqZHJ2X2RhdGEgPSBpMmNfZ2V0X2FkYXBkYXRhKGFkYXApOw0KPj4gKwlpbnQgcmV0Ow0KPj4g
-Kwl1MzIgdmFsOw0KPj4gKw0KPj4gKwlkZXZfZGJnKCZhZGFwLT5kZXYsICJUcnlpbmcgaTJjIGJ1
-cyByZWNvdmVyeVxuIik7DQo+PiArCXdyaXRlbChNVjY0WFhYX0kyQ19VTlNUVUNLX1RSSUdHRVIs
-IGRydl9kYXRhLT51bnN0dWNrX3JlZyk7DQo+PiArCXJldCA9IHJlYWRsX3BvbGxfdGltZW91dF9h
-dG9taWMoZHJ2X2RhdGEtPnVuc3R1Y2tfcmVnLCB2YWwsDQo+PiArCQkJCQkhKHZhbCAmIE1WNjRY
-WFhfSTJDX1VOU1RVQ0tfSU5QUk9HUkVTUyksDQo+PiArCQkJCQkxMCwgMTAwMCk7DQo+IG1tbWho
-aC4uLiBzdGlsbCBhIGJpdCBza2VwdGljYWwgYWJvdXQgd2FpdGluZyAxMDAgdGltZXMgMTB1cyBp
-bg0KPiBhdG9taWMuDQo+DQo+IEknbSBzdGlsbCBvZiB0aGUgb3BpbmlvbiB0aGF0IHRoaXMgc2hv
-dWxkIHJ1biBpbiBhIHNlcGFyYXRlDQo+IHRocmVhZC4gQW55IGRpZmZlcmVudCBvcGluaW9uIGZy
-b20gdGhlIG5ldHdvcms/DQo+DQo+IEJUVywgZmlyc3QgcXVlc3Rpb24sIGNvbnNpZGVyaW5nIHRo
-YXQgeW91IGRlY3JlYXNlZCB0aGUgdGltZQ0KPiBjb25zaWRlcmFibHkuLi4gZG9lcyBpdCB3b3Jr
-Pw0KWWVzIGl0IHN0aWxsIHdvcmtzLiBJdCBkaWQgc3RvcCB3b3JraW5nIHdpdGggYSByZWFsbHkg
-bG93IHRpbWVvdXQgKDEwLCANCjEwMCkgYnV0IEkgZGlkbid0IGxvb2sgaGFyZCBmb3IgYW55dGhp
-bmcgaW4tYmV0d2Vlbi4NCj4NCj4gQW5kaQ==
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+
+On Wed, 2023-10-11 at 13:41 +0200, Karol Herbst wrote:
+> Just special case DP DSM connectors until we properly figure out how to
+> deal with this.
+>=20
+> This resolves user regressions on GPUs with such connectors without
+> reverting the original fix.
+>=20
+> Cc: Lyude Paul <lyude@redhat.com>
+> Cc: stable@vger.kernel.org # 6.4+
+> Closes: https://gitlab.freedesktop.org/drm/nouveau/-/issues/255
+> Fixes: 2b5d1c29f6c4 ("drm/nouveau/disp: PIOR DP uses GPIO for HPD, not PM=
+GR AUX interrupts")
+> Signed-off-by: Karol Herbst <kherbst@redhat.com>
+> ---
+>  drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c b/drivers/g=
+pu/drm/nouveau/nvkm/engine/disp/uconn.c
+> index 46b057fe1412e..3249e5c1c8930 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
+> @@ -62,6 +62,18 @@ nvkm_uconn_uevent_gpio(struct nvkm_object *object, u64=
+ token, u32 bits)
+>  	return object->client->event(token, &args, sizeof(args.v0));
+>  }
+> =20
+> +static bool
+> +nvkm_connector_is_dp_dms(u8 type)
+> +{
+> +	switch (type) {
+> +	case DCB_CONNECTOR_DMS59_DP0:
+> +	case DCB_CONNECTOR_DMS59_DP1:
+> +		return true;
+> +	default:
+> +		return false;
+> +	}
+> +}
+> +
+>  static int
+>  nvkm_uconn_uevent(struct nvkm_object *object, void *argv, u32 argc, stru=
+ct nvkm_uevent *uevent)
+>  {
+> @@ -101,7 +113,7 @@ nvkm_uconn_uevent(struct nvkm_object *object, void *a=
+rgv, u32 argc, struct nvkm_
+>  	if (args->v0.types & NVIF_CONN_EVENT_V0_UNPLUG) bits |=3D NVKM_GPIO_LO;
+>  	if (args->v0.types & NVIF_CONN_EVENT_V0_IRQ) {
+>  		/* TODO: support DP IRQ on ANX9805 and remove this hack. */
+> -		if (!outp->info.location)
+> +		if (!outp->info.location && !nvkm_connector_is_dp_dms(conn->info.type)=
+)
+>  			return -EINVAL;
+>  	}
+> =20
+
+--=20
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
+
