@@ -2,170 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEAB7C7A73
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3507C7A84
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbjJLXdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 19:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
+        id S233762AbjJLXlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 19:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjJLXdG (ORCPT
+        with ESMTP id S233417AbjJLXlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 19:33:06 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DCEA9;
-        Thu, 12 Oct 2023 16:33:04 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53e2dc8fa02so1047136a12.2;
-        Thu, 12 Oct 2023 16:33:04 -0700 (PDT)
+        Thu, 12 Oct 2023 19:41:18 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC32DD
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:41:17 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7a2cc9ee64cso60848539f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:41:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697153583; x=1697758383; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=fastly.com; s=google; t=1697154076; x=1697758876; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=naelrzab06bC9MMj4BGYD3OPqUStfN/T5v5pDuFLbLk=;
-        b=dlyQ8TTKBsiPgdtUU8mgHMtGCQhTsCDGjcC5ztMpBg8aWlPcEXhKFCxYAcRS/xbSGC
-         /KiHZafSMUXB+jaf4AEbXtfKo9GS+ndS0hStSCIAXISRDB6/UIhPwKt9ejxPA/OawkFZ
-         rf/X2CToDLl65xYUQfryZ/REIvkQ5653DP6GfZUN9gf8GUGDTZPMTe2FCDsITScwb6aM
-         gOhktB8XvMIJ0vCJMm/2tbllG6NlT7nHKIZsOUIu0z79rzHJ1GyxoJoTA1yZuT3te7II
-         oJSLqMGRr0Uv9BIjYpw1NIh26i4Gnfj5v/YJsZmICeMS/cuexREYj0BiUga2B7zB3rlm
-         5mMw==
+        bh=8lPotT7caJ2i4rnfmOn5KsESAOXBOrfHJSZKahlwL+g=;
+        b=P4uS1OVAhhol/x5j9dfFaJZXBZAXoZyPEY4vGo1aH2YNwyG/8LORaaKOa6FXc/pdVM
+         IWVVoy7gOpYDXLGZtyh12nuKINDOOnT1kNTtj1tXdOBFPl8iX+D8NOv+elRuyF5jpl4+
+         AF0pjlkicHLO5bX5Ba/zUaFxzNF40KYAJBzh0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697153583; x=1697758383;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697154076; x=1697758876;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=naelrzab06bC9MMj4BGYD3OPqUStfN/T5v5pDuFLbLk=;
-        b=XcPTA8QVU2LUG9kQM+Kw4jUx7xL7kDvCkxqof8gUyvMDC10Ke0SHj/Qn34yE2OdvsK
-         uFrvvdzy1yX3fdArW6+9s1bgEHMjvfaY6aAc3XgIzqUsq3CqrEaetqcAdzTd36x1ypoA
-         BAWyE+pSJd+BREb0a4KBiQEJGfJJc0A3SUc6kdjvOUBa7hCkKjwusyQ0rBOluxeLWAP3
-         fyK0F4ak2KKFTI54+okjRlD/LWfJPHaeTi7PO7IgBtFXAcOTRzdmECS3mLySIPPKzJYL
-         gMZcskk5S5oWLNFdIX36SrykKnIjIMbmcx5Z1z10znHtVXi6pgZEXpTEcnrdX/KUw4jk
-         z7uA==
-X-Gm-Message-State: AOJu0YznNrCwp2PboZtHnHcPlcz8dVNXHW7Lo45SQvyxnqWpy8ZABbMB
-        /djDH99bp0hcKvtAIgrGTIf8r6fEGTV+QjUqpzg++V9yZ0Y=
-X-Google-Smtp-Source: AGHT+IFktL1z+8uHtW7sSg/mm9ANSBxBw4G5ovXgGC7Jm0VRroUoXsw5G2EjR4YxqJnT4kE5+ExsDa7iJAWGsPaEWEM=
-X-Received: by 2002:aa7:c302:0:b0:533:97c:8414 with SMTP id
- l2-20020aa7c302000000b00533097c8414mr23598044edq.7.1697153583101; Thu, 12 Oct
- 2023 16:33:03 -0700 (PDT)
+        bh=8lPotT7caJ2i4rnfmOn5KsESAOXBOrfHJSZKahlwL+g=;
+        b=PFsjwZhggp0U1D3IsKVI5eMIs6VmnTSrCiuRdvwSgymGsp3UPTzmoTp6tbJ8LXYRXZ
+         ZqC4inE5SNi2WqYkemnsFYKB0qcSysLGvXZVElzbLicdaWJcsTtiQ2vJsAdqiRQWJXjV
+         UptAF9B2XRAXCoWnQtRD7H4mzQJio63kHV7i1wbJJDhr8KBu+aV9/zqikEc5iosAeqSO
+         1dk7D8mGFN85zZGgm2Ghm80Z6+Ed1KA1CzqI2w4v/FT8eef965mMCOk85EP0QbmBVUvt
+         V1KbJj7Iroo6KQSHTbjWeQQu040laZofcFrL9yU/YWldZv2JvBzrYOX3Re6FfRvSMMuI
+         WRtA==
+X-Gm-Message-State: AOJu0YyPmEXGHOBh+WeM7sCCiAT++bE3USU1Zmak27iHCA+UpgncwqZb
+        2kWiIrFJlRJsVnOz06HojZSwhg==
+X-Google-Smtp-Source: AGHT+IHVcCcrRF23qP1MJVBs2OIkv1QitZZk132Zae4UHLUIu2aj2KVqpLdgi6v/dJwUgreFF9xBIA==
+X-Received: by 2002:a6b:f319:0:b0:783:63d6:4c5 with SMTP id m25-20020a6bf319000000b0078363d604c5mr29820716ioh.12.1697154076350;
+        Thu, 12 Oct 2023 16:41:16 -0700 (PDT)
+Received: from localhost.localdomain (d14-69-55-117.try.wideopenwest.com. [69.14.117.55])
+        by smtp.gmail.com with ESMTPSA id c6-20020a5ea806000000b0078702f4894asm4480238ioa.9.2023.10.12.16.41.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 16:41:15 -0700 (PDT)
+From:   "Nabil S. Alramli" <nalramli@fastly.com>
+To:     sbhogavilli@fastly.com, davem@davemloft.net, dsahern@kernel.org,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     srao@fastly.com, dev@nalramli.com
+Subject: [net] ipv4: Fix broken PMTUD when using L4 multipath hash
+Date:   Thu, 12 Oct 2023 19:40:25 -0400
+Message-Id: <20231012234025.4025-1-nalramli@fastly.com>
+X-Mailer: git-send-email 2.31.1.windows.1
+In-Reply-To: <20231012005721.2742-2-nalramli@fastly.com>
+References: <20231012005721.2742-2-nalramli@fastly.com>
 MIME-Version: 1.0
-References: <20231005123413.GA488417@alecto.usersys.redhat.com>
- <20231012114550.152846-1-asavkov@redhat.com> <20231012094444.0967fa79@gandalf.local.home>
-In-Reply-To: <20231012094444.0967fa79@gandalf.local.home>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 12 Oct 2023 16:32:51 -0700
-Message-ID: <CAEf4BzZKWkJjOjw8x_eL_hsU-QzFuSzd5bkBH2EHtirN2hnEgA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next] bpf: change syscall_nr type to int in struct syscall_tp_t
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Artem Savkov <asavkov@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 6:43=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Thu, 12 Oct 2023 13:45:50 +0200
-> Artem Savkov <asavkov@redhat.com> wrote:
->
-> > linux-rt-devel tree contains a patch (b1773eac3f29c ("sched: Add suppor=
-t
-> > for lazy preemption")) that adds an extra member to struct trace_entry.
-> > This causes the offset of args field in struct trace_event_raw_sys_ente=
-r
-> > be different from the one in struct syscall_trace_enter:
-> >
-> > struct trace_event_raw_sys_enter {
-> >         struct trace_entry         ent;                  /*     0    12=
- */
-> >
-> >         /* XXX last struct has 3 bytes of padding */
-> >         /* XXX 4 bytes hole, try to pack */
-> >
-> >         long int                   id;                   /*    16     8=
- */
-> >         long unsigned int          args[6];              /*    24    48=
- */
-> >         /* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
-> >         char                       __data[];             /*    72     0=
- */
-> >
-> >         /* size: 72, cachelines: 2, members: 4 */
-> >         /* sum members: 68, holes: 1, sum holes: 4 */
-> >         /* paddings: 1, sum paddings: 3 */
-> >         /* last cacheline: 8 bytes */
-> > };
-> >
-> > struct syscall_trace_enter {
-> >         struct trace_entry         ent;                  /*     0    12=
- */
-> >
-> >         /* XXX last struct has 3 bytes of padding */
-> >
-> >         int                        nr;                   /*    12     4=
- */
-> >         long unsigned int          args[];               /*    16     0=
- */
-> >
-> >         /* size: 16, cachelines: 1, members: 3 */
-> >         /* paddings: 1, sum paddings: 3 */
-> >         /* last cacheline: 16 bytes */
-> > };
-> >
-> > This, in turn, causes perf_event_set_bpf_prog() fail while running bpf
-> > test_profiler testcase because max_ctx_offset is calculated based on th=
-e
-> > former struct, while off on the latter:
-> >
-> >   10488         if (is_tracepoint || is_syscall_tp) {
-> >   10489                 int off =3D trace_event_get_offsets(event->tp_e=
-vent);
-> >   10490
-> >   10491                 if (prog->aux->max_ctx_offset > off)
-> >   10492                         return -EACCES;
-> >   10493         }
-> >
-> > What bpf program is actually getting is a pointer to struct
-> > syscall_tp_t, defined in kernel/trace/trace_syscalls.c. This patch fixe=
-s
-> > the problem by aligning struct syscall_tp_t with with struct
-> > syscall_trace_(enter|exit) and changing the tests to use these structs
-> > to dereference context.
-> >
-> > Signed-off-by: Artem Savkov <asavkov@redhat.com>
->
+From: Suresh Bhogavilli <sbhogavilli@fastly.com>
 
-I think these changes make sense regardless, can you please resend the
-patch without RFC tag so that our CI can run tests for it?
+On a node with multiple network interfaces, if we enable layer 4 hash
+policy with net.ipv4.fib_multipath_hash_policy=1, path MTU discovery is
+broken and TCP connection does not make progress unless the incoming
+ICMP Fragmentation Needed (type 3, code 4) message is received on the
+egress interface of selected nexthop of the socket.
 
-> Thanks for doing a proper fix.
->
-> Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+This is because build_sk_flow_key() does not provide the sport and dport
+from the socket when calling flowi4_init_output(). This appears to be a
+copy/paste error of build_skb_flow_key() -> __build_flow_key() ->
+flowi4_init_output() call used for packet forwarding where an skb is
+present, is passed later to fib_multipath_hash() call, and can scrape
+out both sport and dport from the skb if L4 hash policy is in use.
 
-But looking at [0] and briefly reading some of the discussions you,
-Steven, had. I'm just wondering if it would be best to avoid
-increasing struct trace_entry altogether? It seems like preempt_count
-is actually a 4-bit field in trace context, so it doesn't seem like we
-really need to allocate an entire byte for both preempt_count and
-preempt_lazy_count. Why can't we just combine them and not waste 8
-extra bytes for each trace event in a ring buffer?
+In the socket write case, fib_multipath_hash() does not get an skb so
+it expects the fl4 to have sport and dport populated when L4 hashing is
+in use. Not populating them results in creating a nexthop exception
+entry against a nexthop that may not be the one used by the socket.
+Hence it is not later matched when inet_csk_rebuild_route is called to
+update the cached dst entry in the socket, so TCP does not lower its MSS
+and the connection does not make progress.
 
-  [0] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git=
-/commit/?id=3Db1773eac3f29cbdcdfd16e0339f1a164066e9f71
+Fix this by providing the source port and destination ports to
+flowi4_init_output() call in build_sk_flow_key().
 
->
-> -- Steve
+Fixes: 4895c771c7f0 ("ipv4: Add FIB nexthop exceptions.")
+Signed-off-by: Suresh Bhogavilli <sbhogavilli@fastly.com>
+---
+ net/ipv4/route.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index e2bf4602b559..2517eb12b7ef 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -557,7 +557,8 @@ static void build_sk_flow_key(struct flowi4 *fl4, const struct sock *sk)
+ 			   inet_test_bit(HDRINCL, sk) ?
+ 				IPPROTO_RAW : sk->sk_protocol,
+ 			   inet_sk_flowi_flags(sk),
+-			   daddr, inet->inet_saddr, 0, 0, sk->sk_uid);
++			   daddr, inet->inet_saddr, inet->inet_dport, inet->inet_sport,
++			   sk->sk_uid);
+ 	rcu_read_unlock();
+ }
+ 
+-- 
+2.31.1
+
