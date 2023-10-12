@@ -2,60 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C437C789D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FA37C78A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442918AbjJLVao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 17:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55642 "EHLO
+        id S1442934AbjJLVdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 17:33:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442824AbjJLVam (ORCPT
+        with ESMTP id S1442861AbjJLVdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 17:30:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1655CA9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:30:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2007FC433C7;
-        Thu, 12 Oct 2023 21:30:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697146240;
-        bh=yKRnRXKOfRmE25XMyAXq5WWfuyzH78vRJa2eFaPofP4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qrjFVlVulI8NyvKWHty4htvgfCyc+2h9h2fODc/g94+FbevWA2zHcWfyZXlv7IkFh
-         Pnitx/QdldQhcWfKCYltDme63QDg2x8CfVDxL2Qp7h644hoLMePFyfIEgXCY9jQzTa
-         yTrX1osr3u0pJbtgbFXprHtZ2ZwXb663L2AZxyLGO3wOf5FMxdhE/DUt2F+l/r81JZ
-         LD+VgIujQsJqKbA9GM8Yht63K4AiTUX0N3la7IFYq7ar+4zww1RmUaEwyPU4cnsLqS
-         wqagL4r55amWO8yWmbDf9iUv+uTkPt8KJg9KVPkfCyD+Tf0gNdBETEUYeOkIgBggcV
-         EG9za3UQP2e5g==
-Date:   Thu, 12 Oct 2023 14:30:38 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-Message-ID: <20231012213038.pnq6eds53dbqxstj@treble>
-References: <CAFULd4Y8NSArDqH=VMy8F97eNosUUGxrBMEyHH=MytjUBSCmjg@mail.gmail.com>
- <CAHk-=whMr8V_q3dq4iS0dpx4Nssu+aYWz+mA36p2ykA+OXTjXA@mail.gmail.com>
- <CAFULd4afyYK0-wAOo3oJDapX0iyu86m5+vVn9c35gk8fd6iwRQ@mail.gmail.com>
- <CAHk-=wiLyA0g3BvQ_nsF2PWi-FDtcNS5+4-ai1FX-xFzTBeTzg@mail.gmail.com>
- <ZScjptMn3fDmMFdg@gmail.com>
- <9b71932a-d410-4b92-b605-d6acc5d35069@zytor.com>
- <20231012013507.jrqnm35p7az6atov@treble>
- <ZSeP4vwQ9k/v63Cy@gmail.com>
- <20231012160801.blc2t37gfqhlah5h@treble>
- <ZSg0D0bRlzXdqZRS@gmail.com>
+        Thu, 12 Oct 2023 17:33:22 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F539B7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:33:21 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-57d086365f7so733941eaf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:33:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697146400; x=1697751200; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2BYkIIVgUSUDIvsA7oyJJgebrxVB8pqETFUsWWaA5is=;
+        b=IOWpv2JCe9JC4JjCyabZyXBCuX684ya0ywTyUwwZcrqk8O3vvY30+ETVxm7RfTCKWc
+         aoCoZ98ZWzIhX6kHV/YJaeBRV2QJYKsk0ZM+HrgnPM7YG7xO3WMalImRFmBzJtydwEkn
+         Fftj3S8mA4Chbc2ziDJvZEn0jWTyZjoeLrefo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697146400; x=1697751200;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2BYkIIVgUSUDIvsA7oyJJgebrxVB8pqETFUsWWaA5is=;
+        b=ksnl4i1LFaqyMm8si3h5Fhzk/nQJGwWb74lJzk7nvC8IfIxeyVywQVHFzFXJk5GlGn
+         JGHwEKL73pJe7IZSxmLNOC88CFYg4DIWj9yvrcSU69lELWjDtUvnZSYJapmYT7ueC6OF
+         LEOwyZVJJmEou3ByDDgw2uzC3yPRGoMu7U9nEYzCoqzw+M54DPza0lz7JkdAf546qQ8I
+         ZWM9oM+KBTkk6GZDY9tC9VykyovyiCtHyytRuNqX/KK2E3xrZT40VR776L5jLnH/bA3P
+         B+1R8RUo3fO6NE7tNzme+j6mWrWcMBFBhdi+54CInDFZPYQMkTjDwzmpRbCfaJKRO7rx
+         uKuA==
+X-Gm-Message-State: AOJu0YxE9JzUhi7YNA4T7Q1BWgJ87AZh+unPIbflSFgIZvemeHM7Kzum
+        npl/SLJTVQreNEQUe9IejdsvzA==
+X-Google-Smtp-Source: AGHT+IEWHo3wYMQMcz7GsN7HjGYb7tuVwk/HPXskUKjfbq7nnE1N5b1naGdES5Ku76oGH6B7c1F9zA==
+X-Received: by 2002:a05:6358:988d:b0:135:b4c:a490 with SMTP id q13-20020a056358988d00b001350b4ca490mr26095712rwa.10.1697146400420;
+        Thu, 12 Oct 2023 14:33:20 -0700 (PDT)
+Received: from google.com ([2401:fa00:1:10:7397:2561:ed13:bac8])
+        by smtp.gmail.com with ESMTPSA id n14-20020a62e50e000000b0069319bfed42sm12141026pff.79.2023.10.12.14.33.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 14:33:19 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 05:33:16 +0800
+From:   Chen-Yu Tsai <wenst@chromium.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Alexandre Mergnat <amergnat@baylibre.com>, matthias.bgg@gmail.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, kernel@collabora.com
+Subject: Re: [PATCH v2 1/4] arm64: dts: mediatek: cherry: Add platform
+ thermal configuration
+Message-ID: <20231012213316.GA2659196@google.com>
+References: <20230424112523.1436926-1-angelogioacchino.delregno@collabora.com>
+ <20230424112523.1436926-2-angelogioacchino.delregno@collabora.com>
+ <31d1d1e4-2f75-bbbd-3e4b-6c796f2d39d1@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZSg0D0bRlzXdqZRS@gmail.com>
+In-Reply-To: <31d1d1e4-2f75-bbbd-3e4b-6c796f2d39d1@baylibre.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -66,121 +75,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 07:59:43PM +0200, Ingo Molnar wrote:
-> 
-> * Josh Poimboeuf <jpoimboe@kernel.org> wrote:
-> 
-> > On Thu, Oct 12, 2023 at 08:19:14AM +0200, Ingo Molnar wrote:
-> > > 
-> > > * Josh Poimboeuf <jpoimboe@kernel.org> wrote:
-> > > 
-> > > > Though, another problem is that .text has a crazy amount of padding
-> > > > which makes it always the same size, due to the SRSO alias mitigation
-> > > > alignment linker magic.  We should fix that somehow.
-> > > 
-> > > We could emit a non-aligned end-of-text symbol (we might have it already),
-> > > and have a script or small .c program in scripts/ or tools/ that looks
-> > > at vmlinux and displays a user-friendly and accurate list of text and
-> > > data sizes in the kernel?
-> > > 
-> > > And since objtool is technically an 'object files tool', and it already
-> > > looks at sections & symbols, it could also grow a:
-> > > 
-> > > 	objtool size <objfile>
-> > > 
-> > > command that does the sane thing ... I'd definitely start using that, instead of 'size'.
-> > > 
-> > > /me runs :-)
+Hi Angelo
+
+On Tue, Apr 25, 2023 at 01:46:42PM +0200, Alexandre Mergnat wrote:
+> On 24/04/2023 13:25, AngeloGioacchino Del Regno wrote:
+> > This platform has three auxiliary NTC thermistors, connected to the
+> > SoC's ADC pins. Enable the auxadc in order to be able to read the
+> > ADC values, add a generic-adc-thermal LUT for each and finally assign
+> > them to the SoC's thermal zones.
 > > 
-> > Yeah, that's actually not a bad idea.
+> > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> > Tested-by: Chen-Yu Tsai <wenst@chromium.org>
+> > Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+> > ---
+> >   .../boot/dts/mediatek/mt8195-cherry.dtsi      | 105 ++++++++++++++++++
+> >   1 file changed, 105 insertions(+)
 > > 
-> > I had been thinking a "simple" script would be fine, but I'm realizing
-> > the scope of this thing could grow over time.  In which case a script is
-> > less than ideal.  And objtool already has the ability to do this pretty
-> > easily.
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
+> > index 8ac80a136c37..4229f4f7dc2f 100644
+> > --- a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
+> > @@ -114,6 +114,77 @@ ppvar_sys: regulator-ppvar-sys {
+> >   		regulator-boot-on;
+> >   	};
+> > +	/* Murata NCP03WF104F05RL */
+> > +	tboard_thermistor1: thermal-sensor-t1 {
+> > +		compatible = "generic-adc-thermal";
+> > +		#thermal-sensor-cells = <0>;
+> > +		io-channels = <&auxadc 0>;
+> > +		io-channel-names = "sensor-channel";
+> > +		temperature-lookup-table = <	(-10000) 1553
+> > +						(-5000) 1485
+> > +						0 1406
+> > +						5000 1317
+> > +						10000 1219
+> > +						15000 1115
+> > +						20000 1007
+> > +						25000 900
+> > +						30000 796
+> > +						35000 697
+> > +						40000 605
+> > +						45000 523
+> > +						50000 449
+> > +						55000 384
+> > +						60000 327
+> > +						65000 279
+> > +						70000 237
+> > +						75000 202
+> > +						80000 172
+> > +						85000 147
+> > +						90000 125
+> > +						95000 107
+> > +						100000 92
+> > +						105000 79
+> > +						110000 68
+> > +						115000 59
+> > +						120000 51
+> > +						125000 44>;
+> > +	};
+> > +
+> > +	tboard_thermistor2: thermal-sensor-t2 {
+> > +		compatible = "generic-adc-thermal";
+> > +		#thermal-sensor-cells = <0>;
+> > +		io-channels = <&auxadc 1>;
+> > +		io-channel-names = "sensor-channel";
+> > +		temperature-lookup-table = <	(-10000) 1553
+> > +						(-5000) 1485
+> > +						0 1406
+> > +						5000 1317
+> > +						10000 1219
+> > +						15000 1115
+> > +						20000 1007
+> > +						25000 900
+> > +						30000 796
+> > +						35000 697
+> > +						40000 605
+> > +						45000 523
+> > +						50000 449
+> > +						55000 384
+> > +						60000 327
+> > +						65000 279
+> > +						70000 237
+> > +						75000 202
+> > +						80000 172
+> > +						85000 147
+> > +						90000 125
+> > +						95000 107
+> > +						100000 92
+> > +						105000 79
+> > +						110000 68
+> > +						115000 59
+> > +						120000 51
+> > +						125000 44>;
+> > +	};
+> > +
+> >   	usb_vbus: regulator-5v0-usb-vbus {
+> >   		compatible = "regulator-fixed";
+> >   		regulator-name = "usb-vbus";
+> > @@ -260,6 +331,10 @@ &gpu {
+> >   	mali-supply = <&mt6315_7_vbuck1>;
+> >   };
+> > +&auxadc {
 > 
-> Yeah, and speed actually matters here: I have scripts that generate object 
-> comparisons between commits, and every second of runtime counts - and a 
-> script would be slower and more fragile for something like allmodconfig 
-> builds or larger disto configs.
+> Can you put it in alphabetical order please. ?
 
-Ah, good to know.
+I believe this patch needs to be respun?
 
-> BTW., maybe the right objtool subcommand would be 'objtool sections', with 
-> an 'objtool sections size' sub-sub-command. Because I think this discussion 
-> shows that it would be good to have a bit of visibility into the sanity of 
-> our sections setup, with 'objtool sections check' for example doing a 
-> sanity check on whether there's anything extra in the text section that 
-> shouldn't be there? Or so ...
-
-What would be an example of something "extra"?  A sanity check might fit
-better alongside the other checks already being done by the main objtool
-"subcommand" which gets run by the kernel build.
-
-BTW, I actually removed subcommands a while ago when I overhauled
-objtool's interface to make it easier to combine options.  That said,
-I'm not opposed to re-adding them if we can find a sane way to do so.
-
-Here's the current interface:
-
- Usage: objtool <actions> [<options>] file.o
-
-Actions:
-    -h, --hacks[=<jump_label,noinstr,skylake>]
-                          patch toolchain bugs/limitations
-    -i, --ibt             validate and annotate IBT
-    -l, --sls             validate straight-line-speculation mitigations
-    -m, --mcount          annotate mcount/fentry calls for ftrace
-    -n, --noinstr         validate noinstr rules
-    -o, --orc             generate ORC metadata
-    -r, --retpoline       validate and annotate retpoline usage
-    -s, --stackval        validate frame pointer rules
-    -t, --static-call     annotate static calls
-    -u, --uaccess         validate uaccess rules for SMAP
-        --cfi             annotate kernel control flow integrity (kCFI) function preambles
-        --dump[=<orc>]    dump metadata
-        --prefix <n>      generate prefix symbols
-        --rethunk         validate and annotate rethunk usage
-        --unret           validate entry unret placement
-
-Options:
-    -v, --verbose         verbose warnings
-        --backtrace       unwind on error
-        --backup          create .orig files before modification
-        --dry-run         don't write modifications
-        --link            object is a linked object
-        --mnop            nop out mcount call sites
-        --module          object is part of a kernel module
-        --no-unreachable  skip 'unreachable instruction' warnings
-        --sec-address     print section addresses in warnings
-        --stats           print statistics
-
-
-Note how all the actions can be easily combined in a single execution
-instance.
-
-If we re-added subcommands, most of the existing functionality would be
-part of a single subcommand.  It used to be called "check", but it's no
-longer a read-only operation so that's misleading.  I'll call it "run"
-for now.
-
-Right now my preference would be to leave the existing interface as-is,
-and then graft optional subcommands on top.  If no subcommand is
-specified then it would default to the "run" subcommand.  It's a little
-funky, but it would work well for the common case, where ~99% of the
-functionality lives.  And it doesn't break existing setups and
-backports.
-
-For example:
-
-  # current interface (no changes)
-  objtool --mcount --orc --retpoline --uaccess vmlinux.o
-
-  # same, with optional explicit "run" subcommand
-  objtool run --mcount --orc --retpoline --uaccess vmlinux.o
-
-  # new "size" subcommand
-  obtool size [options] vmlinux.o.before vmlinux.o.after
-
--- 
-Josh
+> > +	status = "okay";
+> > +};
+> > +
+> >   &i2c0 {
+> >   	status = "okay";
+> > @@ -1098,6 +1173,36 @@ mt6315_7_vbuck1: vbuck1 {
+> >   	};
+> >   };
+> > +&thermal_zones {
+> > +	soc-area-thermal {
+> > +		polling-delay = <1000>;
+> > +		polling-delay-passive = <250>;
+> > +		thermal-sensors = <&tboard_thermistor1>;
+> > +
+> > +		trips {
+> > +			trip-crit {
+> > +				temperature = <84000>;
+> > +				hysteresis = <1000>;
+> > +				type = "critical";
+> > +			};
+> > +		};
+> > +	};
+> > +
+> > +	pmic-area-thermal {
+> > +		polling-delay = <1000>;
+> > +		polling-delay-passive = <0>;
+> > +		thermal-sensors = <&tboard_thermistor2>;
+> > +
+> > +		trips {
+> > +			trip-crit {
+> > +				temperature = <84000>;
+> > +				hysteresis = <1000>;
+> > +				type = "critical";
+> > +			};
+> > +		};
+> > +	};
+> > +};
+> > +
+> >   &u3phy0 {
+> >   	status = "okay";
+> >   };
+> 
+> After that:
+> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+> 
+> Regards,
+> Alexandre
+> 
