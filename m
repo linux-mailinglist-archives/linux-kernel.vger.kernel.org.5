@@ -2,254 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F8A7C73A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BC87C739E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379597AbjJLRDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46742 "EHLO
+        id S1379551AbjJLRDn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 13:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379560AbjJLRDu (ORCPT
+        with ESMTP id S1378915AbjJLRDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:03:50 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA30E0;
-        Thu, 12 Oct 2023 10:03:47 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CCrf1c021857;
-        Thu, 12 Oct 2023 17:03:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=NH4khoV/UCQiLLBbnfOuncfM7J/RzeWNi52YYS+gsgo=;
- b=N1SzZNU+2aQyQ2TV1xhzHf2k0ar5ChTMzfnKO3s58yE1L9SpAQn0aeyC3AIzRBYQnRMH
- pfQeELhTecTXtmInO5D5aZm9TfjIKZHQW5N92nLvf/TauZJGaNR1n567kla3MNxxNcnp
- 02Ol7EJ9v5BW1jUPkBA3ObcXHZ3i63nI1Wb0jBx6aVOLcDs/QD7TiD5EMM3TkXq4eMau
- SUTFp20w/rg7/3/A6w+I4x4FYaXVTFlHfoSRFclIhloNr2fWs6/KhnQzKYy3iy655Nix
- j4PlShpSIkT2uHRj1ZPavTgbOuSxgb2GhTRAIn5OVGtXN/N+hhTHaEkjTBLbFk/6UieW YQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnv1rbft8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 17:03:37 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39CH3alO003878
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 17:03:36 GMT
-Received: from [10.216.13.237] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 12 Oct
- 2023 10:03:33 -0700
-Message-ID: <502135a8-6e82-4361-b0fc-e683694ca2cd@quicinc.com>
-Date:   Thu, 12 Oct 2023 22:33:28 +0530
+        Thu, 12 Oct 2023 13:03:42 -0400
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00399C0;
+        Thu, 12 Oct 2023 10:03:40 -0700 (PDT)
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6bc57401cb9so256583a34.0;
+        Thu, 12 Oct 2023 10:03:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697130220; x=1697735020;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WQ+0aHw6sQMmsRhISm2t/oJY7lh7N5E9AbFnFFga21k=;
+        b=JvV+IFeMmEvHin7JS3QYivIRwrYZIiZyCrPHWe/1Fh5j3xmRF5FFCKeM5dgTuHXnp0
+         q6ZGC7kAlU9jIifPM0P5DCN5qyoTroJzy5oN6jDW9j9Ga5s0XsT1hk0y6eWHzxk5PtOR
+         TkUUyF0Cl3nlW541Mmv/md/xbuqKtFfBNTyiedpwYZGkrVYXHOLX1izozaHN5LiqES/s
+         ELfNdeHIBsX2QapkzTVaGUWjUlxAU19MggRJj0pY3W88AYUwuLOjPat7jA2/WIr0kSjb
+         3xAFhIOfeLs6fQUhHTO6TPNE2TC1c72Gyudoy2FXu8oMzVcCavpwM89WjnwZfbgT8gNg
+         FqjQ==
+X-Gm-Message-State: AOJu0YzbSAh1jjhqmyEtkz42xJ/2Gd88+L7BjeHdl1MltVMa5wnfW85W
+        1VXEY3f/RYGnyAGrx9wfDGYYmiepd88mGBvzf8U=
+X-Google-Smtp-Source: AGHT+IGBZDKyJD0i4Rb6WrCw/7nCmvRCRZiPDHCjEHSYH2ay0b2U53TEfTm6dOdP4vl4qt1PTdMgxQtx16k2IVf+oXk=
+X-Received: by 2002:a4a:df07:0:b0:57b:73f6:6f80 with SMTP id
+ i7-20020a4adf07000000b0057b73f66f80mr24752122oou.0.1697130220076; Thu, 12 Oct
+ 2023 10:03:40 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: build failure after merge of the usb tree
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>, <vkoul@kernel.org>
-CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20231004132247.01c3bfeb@canb.auug.org.au>
- <2023100410-concave-explore-95bf@gregkh>
- <e26b26ff-9e88-4455-9172-1afb520583e7@quicinc.com>
- <2023100445-cymbal-glade-52c8@gregkh>
- <044a2146-f859-44b3-bcf7-66b68d3e7787@quicinc.com>
- <2023100912-tiara-pout-ba98@gregkh>
- <CAA8EJpo-cvf3vkvBe+5nF1FpDMXzWJZkaL6n0BAjPvg7xHQ_+w@mail.gmail.com>
-From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
-In-Reply-To: <CAA8EJpo-cvf3vkvBe+5nF1FpDMXzWJZkaL6n0BAjPvg7xHQ_+w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 4EkdUgrCgLqqYTwxxwKRUQJk4tnqrQcS
-X-Proofpoint-GUID: 4EkdUgrCgLqqYTwxxwKRUQJk4tnqrQcS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 phishscore=0
- mlxscore=0 clxscore=1011 spamscore=0 suspectscore=0 adultscore=0
- bulkscore=0 mlxlogscore=843 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2310120141
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230916113327.85693-1-bo.ye@mediatek.com> <a3255da4-b2af-4403-af68-3067a5fd49bf@linaro.org>
+In-Reply-To: <a3255da4-b2af-4403-af68-3067a5fd49bf@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 12 Oct 2023 19:03:28 +0200
+Message-ID: <CAJZ5v0i0Yk+juOQthy2dh89L9RdOBRHcSk43KLEGMeJszTXBVQ@mail.gmail.com>
+Subject: Re: [PATCH] Subject: thermal: Fix potential race condition in suspend/resume
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Bo Ye <bo.ye@mediatek.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        yugang.wang@mediatek.com, yongdong.zhang@mediatek.com,
+        browse.zhang@mediatek.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 12, 2023 at 5:39 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 16/09/2023 13:33, Bo Ye wrote:
+> > From: "yugang.wang" <yugang.wang@mediatek.com>
+> >
+> > Body:
+> > This patch fixes a race condition during system resume. It occurs if
+> > the system is exiting a suspend state and a user is trying to
+> > register/unregister a thermal zone concurrently. The root cause is
+> > that both actions access the `thermal_tz_list`.
+>
+> I'm not sure the tasks are already thawed during POST_RESTORE, so no
+> user can unload a driver and then reaching the race window.
 
-On 10/9/2023 3:19 PM, Dmitry Baryshkov wrote:
-> On Mon, 9 Oct 2023 at 12:48, Greg KH <gregkh@linuxfoundation.org> wrote:
->> On Mon, Oct 09, 2023 at 02:48:27PM +0530, Rohit Agarwal wrote:
->>> On 10/4/2023 6:16 PM, Greg KH wrote:
->>>> On Wed, Oct 04, 2023 at 12:17:27PM +0530, Rohit Agarwal wrote:
->>>>> On 10/4/2023 12:13 PM, Greg KH wrote:
->>>>>> On Wed, Oct 04, 2023 at 01:22:47PM +1100, Stephen Rothwell wrote:
->>>>>>> Hi all,
->>>>>>>
->>>>>>> After merging the usb tree, today's linux-next build (x86_64 allmodconfig)
->>>>>>> failed like this:
->>>>>>>
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:156:43: error: 'QPHY_V6_PCS_SW_RESET' undeclared here (not in a function); did you mean 'QPHY_V2_PCS_SW_RESET'?
->>>>>>>      156 |         [QPHY_SW_RESET]                 = QPHY_V6_PCS_SW_RESET,
->>>>>>>          |                                           ^~~~~~~~~~~~~~~~~~~~
->>>>>>>          |                                           QPHY_V2_PCS_SW_RESET
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:157:43: error: 'QPHY_V6_PCS_START_CONTROL' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_START_CONTROL'?
->>>>>>>      157 |         [QPHY_START_CTRL]               = QPHY_V6_PCS_START_CONTROL,
->>>>>>>          |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>>          |                                           QPHY_V3_PCS_START_CONTROL
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:158:43: error: 'QPHY_V6_PCS_PCS_STATUS1' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_PCS_STATUS1'?
->>>>>>>      158 |         [QPHY_PCS_STATUS]               = QPHY_V6_PCS_PCS_STATUS1,
->>>>>>>          |                                           ^~~~~~~~~~~~~~~~~~~~~~~
->>>>>>>          |                                           QPHY_V5_PCS_PCS_STATUS1
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:159:43: error: 'QPHY_V6_PCS_POWER_DOWN_CONTROL' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_POWER_DOWN_CONTROL'?
->>>>>>>      159 |         [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V6_PCS_POWER_DOWN_CONTROL,
->>>>>>>          |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>>          |                                           QPHY_V3_PCS_POWER_DOWN_CONTROL
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:162:43: error: 'QPHY_V6_PCS_USB3_AUTONOMOUS_MODE_CTRL' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_AUTONOMOUS_MODE_CTRL'?
->>>>>>>      162 |         [QPHY_PCS_AUTONOMOUS_MODE_CTRL] = QPHY_V6_PCS_USB3_AUTONOMOUS_MODE_CTRL,
->>>>>>>          |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>>          |                                           QPHY_V5_PCS_USB3_AUTONOMOUS_MODE_CTRL
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:163:44: error: 'QPHY_V6_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR'?
->>>>>>>      163 |         [QPHY_PCS_LFPS_RXTERM_IRQ_CLEAR] = QPHY_V6_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR,
->>>>>>>          |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>>          |                                            QPHY_V5_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:991:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG1' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_LOCK_DETECT_CONFIG1'?
->>>>>>>      991 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG1, 0xc4),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:992:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG2' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_LOCK_DETECT_CONFIG2'?
->>>>>>>      992 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG2, 0x89),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:993:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG3' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_LOCK_DETECT_CONFIG3'?
->>>>>>>      993 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG3, 0x20),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:994:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG6' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_LOCK_DETECT_CONFIG6'?
->>>>>>>      994 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG6, 0x13),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:997:26: error: 'QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_L' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_RCVR_DTCT_DLY_P1U2_L'?
->>>>>>>      997 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_L, 0xe7),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:998:26: error: 'QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_H' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_RCVR_DTCT_DLY_P1U2_H'?
->>>>>>>      998 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_H, 0x03),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:999:26: error: 'QPHY_V6_PCS_CDR_RESET_TIME' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_CDR_RESET_TIME'?
->>>>>>>      999 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_CDR_RESET_TIME, 0x0a),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1000:26: error: 'QPHY_V6_PCS_ALIGN_DETECT_CONFIG1' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_ALIGN_DETECT_CONFIG1'?
->>>>>>>     1000 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_ALIGN_DETECT_CONFIG1, 0x88),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1001:26: error: 'QPHY_V6_PCS_ALIGN_DETECT_CONFIG2' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_ALIGN_DETECT_CONFIG2'?
->>>>>>>     1001 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_ALIGN_DETECT_CONFIG2, 0x13),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1003:26: error: 'QPHY_V6_PCS_EQ_CONFIG1' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_EQ_CONFIG1'?
->>>>>>>     1003 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_EQ_CONFIG1, 0x4b),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1004:26: error: 'QPHY_V6_PCS_EQ_CONFIG5' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_EQ_CONFIG5'?
->>>>>>>     1004 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_EQ_CONFIG5, 0x10),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1008:26: error: 'QPHY_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL'?
->>>>>>>     1008 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1009:26: error: 'QPHY_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_USB3_RXEQTRAINING_DFE_TIME_S2'?
->>>>>>>     1009 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2, 0x07),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1010:26: error: 'QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_USB3_RCVR_DTCT_DLY_U3_L'?
->>>>>>>     1010 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L, 0x40),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1011:26: error: 'QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_H' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_RCVR_DTCT_DLY_U3_H'?
->>>>>>>     1011 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_H, 0x00),
->>>>>>>          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>>>>       78 |                 .offset = o,            \
->>>>>>>          |                           ^
->>>>>>>
->>>>>>> Caused by commit
->>>>>>>
->>>>>>>      685dbd1b2306 ("phy: qcom-qmp-usb: Add Qualcomm SDX75 USB3 PHY support")
->>>>>>>
->>>>>>> I have used the usb tree from next-20231003 for today.
->>>>>> Thanks, I've now reverted this from my tree.
->>>>> As mentioned in the cover letter of these changes, the series was dependent
->>>>> on the other submitted series [1], [2].
->>>> Ah, I missed that, I almost never read cover letters :)
->>>>
->>>>> Can you also pick these series [1], [2] to resolve this build failures.
->>>>> [1] https://lore.kernel.org/all/20230911203842.778411-1-dmitry.baryshkov@linaro.org/
->>>>> [2] https://lore.kernel.org/linux-phy/20230824211952.1397699-1-dmitry.baryshkov@linaro.org/
->>>> How about you just send this change with these others, or all of them as
->>>> one big series so they can be applied in the proper order?
->>> Adding Dmitry as well.
->>>
->>> I see some of the dependent patches are already applied and the patches from
->>> [2] are not.
->>> Since all the rest dependent changes are already applied,
->>> you can pick series[2] and then this series that should also be fine.
->>> Please let me know if this is fine?
->> What is "this" series?  I don't have any of these in my inbox at all
->> anymore, sorry.  Please resend the pending patches that need to be
->> applied to my usb tree and I will be glad to do so.
-> Actually, I wonder why the PHY patches were merged through the USB
-> tree, maybe that is the issue here.
-Yes Actually these patches needs to go via phy tree. Can you please drop 
-patch 1/5, 2/5 and 5/5
-from the series [3] (keeping [1] and [2] same reference from above to 
-avoid confusion).
+Yes, they are.
 
-[3] 
-https://lore.kernel.org/all/1695359525-4548-1-git-send-email-quic_rohiagar@quicinc.com/
+> Is that an observed issue?
 
-At the same time requesting Vinod to please pick the patches 1/5, 2/5 
-and 5/5 from series [3] and series [2].
+Good question, but the patch looks correct to me.
 
-Thanks,
-Rohit.
+> > In detail:
+> >
+> > 1. At PM_POST_SUSPEND during the resume, the system reads all thermal
+> >     zones in `thermal_tz_list`, then resets and updates their
+> >     temperatures.
+> > 2. When registering/unregistering a thermal zone, the
+> >     `thermal_tz_list` gets manipulated.
+> >
+> > These two actions might occur concurrently, causing a race condition.
+> > To solve this issue, we introduce a mutex lock to protect
+> > `thermal_tz_list` from being modified while it's being read and
+> > updated during the resume from suspend.
+> >
+> > Kernel oops excerpt related to this fix:
+> >
+> > [ 5201.869845] [T316822] pc: [0xffffffeb7d4876f0] mutex_lock+0x34/0x170
+> > [ 5201.869856] [T316822] lr: [0xffffffeb7ca98a84] thermal_pm_notify+0xd4/0x26c
+> > [... cut for brevity ...]
+> > [ 5201.871061] [T316822]  suspend_prepare+0x150/0x470
+> > [ 5201.871067] [T316822]  enter_state+0x84/0x6f4
+> > [ 5201.871076] [T316822]  state_store+0x15c/0x1e8
+> >
+> > Change-Id: Ifdbdecba17093f91eab7e36ce04b46d311ca6568
+> > Signed-off-by: yugang.wang <yugang.wang@mediatek.com>
+> > Signed-off-by: Bo Ye <bo.ye@mediatek.com>
+> > ---
+> >   drivers/thermal/thermal_core.c | 2 ++
+> >   1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> > index 8717a3343512..a7a18ed57b6d 100644
+> > --- a/drivers/thermal/thermal_core.c
+> > +++ b/drivers/thermal/thermal_core.c
+> > @@ -1529,12 +1529,14 @@ static int thermal_pm_notify(struct notifier_block *nb,
+> >       case PM_POST_HIBERNATION:
+> >       case PM_POST_RESTORE:
+> >       case PM_POST_SUSPEND:
+> > +             mutex_lock(&thermal_list_lock);
+> >               atomic_set(&in_suspend, 0);
+> >               list_for_each_entry(tz, &thermal_tz_list, node) {
+> >                       thermal_zone_device_init(tz);
+> >                       thermal_zone_device_update(tz,
+> >                                                  THERMAL_EVENT_UNSPECIFIED);
+> >               }
+> > +             mutex_unlock(&thermal_list_lock);
+> >               break;
+> >       default:
+> >               break;
+>
+> --
