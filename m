@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BCF7C7747
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0307C774C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442959AbjJLTt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 15:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37162 "EHLO
+        id S1442569AbjJLTts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 15:49:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442434AbjJLTtE (ORCPT
+        with ESMTP id S1442241AbjJLTtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Oct 2023 15:49:04 -0400
 Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADC7BB
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:48:43 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-79fe6da0049so55267339f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:48:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3AEEA
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:48:44 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-7a5a746e355so34119039f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:48:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697140122; x=1697744922; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697140123; x=1697744923; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aeZlT3fWkSsRBBC0KH8nwdyunCgP5eGN9Bq/f3gwBO4=;
-        b=V/v2dyJRdLMTggpwruH4K9XrHfEkCTLAqWlCyOMkdgwjUkNjOCIIqccC/qoqXSNf2c
-         XNkv9sYmZKwCIxXQZ6cyBwgLZARmo+kf9YYNMeUQ3QTLHAxcycmHtfoUc6mnhnFfYqiv
-         ZXGSZ3LFLm2voWs9aq5QgIFnLyEQgCPFOBeqSYqPQtq0kDZzhh5rIRmmyI3K48r6JU3R
-         hYOxPcn5nI/wYYZiV8AZo8HYcgzFq1YJaOz/VKELkX+fes4x2NYGdc0A52mzAMpfd9hX
-         n4OnG61M/VMC+2e7V3wuW/mTodGuJPHiKXLGcUMmv0U1Q6XarAiYXocZjGE+NA/pZhIw
-         wjYQ==
+        bh=mIhMRd3PEDx8wYJmsgE6KV38zHdcvoV+qxdam6F9QaA=;
+        b=f10FnZJ6oT5AtiE5JmcGHWt/EkOOVPUZ+pea27CHhT2KSZ2VmVloRtsrdCXWw5gwXc
+         GwnrVy5iZiCPzK+xzo9i/+1CdmXd35IunjqEeK+dTsgPWfPksQsj0w19HTFCW+vA623o
+         BnDqCZfhnCFoDEMXiTrI4pe/Z2iOM/Hmy/wnOr/2elXDmNRl+6mynac5PUd/6hul08xi
+         zPbu7E3pJTpkCZZOOGApAgso/PWAWIOOTT9aMLNYZgKfHH0ChtOSktOVEfa1YRdaOYMK
+         YWoCUlQkNL4E9HDNlX2f1d66Z227crMPPQessRkFj5SFTx2kAEv7uSTYcmSVx5aFlkKZ
+         bYEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697140122; x=1697744922;
+        d=1e100.net; s=20230601; t=1697140123; x=1697744923;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aeZlT3fWkSsRBBC0KH8nwdyunCgP5eGN9Bq/f3gwBO4=;
-        b=WNe+5/bz4r52wYs9GWSZITzhKHVUYDuXYgEDk2nWfoPsTNUSRNityldDGTFhfVt7hJ
-         asyF5ydA/aOGhbB7ILcWLKngJs0MFHTpcjWTyUDtyZnBdXpA65tXhQDCSTTPQPbX/kY0
-         S0aO2CcTd6qCspEriByNBwzWnDRcm84gkHOvDiugTamFs3J60WHS+NV82tJi9JS4jGO+
-         O6sjcwvNtYEbNdW1aKNA8RUnoqb8Dfud56jBoVOloy6lu0kYZgjOLqJPRphBtxgd/JVZ
-         qGxeBJ2UWGkoHq+GJzHCg0MRR2uzJ85EsnCMJVhBpZjbisTsJiKvpS6ZvZfD1XWBPPLb
-         epfQ==
-X-Gm-Message-State: AOJu0Yyednk+ENoJOYsASZQQMxvmoI/RJflAQUurKQB2xNTyZGcxLDFD
-        snjOZ8sY97eP7bbwIp3PR9IXQNcr7sV2BQ==
-X-Google-Smtp-Source: AGHT+IFFhJf/S6gN8jP4a20rhHTQC/HvlBHfDKD0Jy1c5AB7c08SdgSogYnGLzu7Mmjg+FissnHXPA==
-X-Received: by 2002:a5e:8c0c:0:b0:794:efb0:83d6 with SMTP id n12-20020a5e8c0c000000b00794efb083d6mr30403278ioj.12.1697140122710;
-        Thu, 12 Oct 2023 12:48:42 -0700 (PDT)
+        bh=mIhMRd3PEDx8wYJmsgE6KV38zHdcvoV+qxdam6F9QaA=;
+        b=I6/yoIpjr5Y+zZ+B+j7Yzf6aJW/tahLc8UHrr5TPt1zuanOf9BXGOk29pV5JGEwGwr
+         fHIaeaQqNNzbxDxeRXXTmwQCsqLJ0hs0qUjalhMXufFIT1vgV2gMhzGucI97uGO/vYVy
+         u8+RGb63G1NgzeQ3jJHlgDRLNPCIvSa+KiJ+vlE6ZbVarCKX9hJyoq/RLxrBQ2RWuLGQ
+         UUkwXEjVc0qUkuUEE3igr8B6FMtvZpAIigTB7osdDvGhDWLU6W7DzXk4fEeVW/n8CO0R
+         vONzips6j6J6gX7OF1l5mK7Ax2Zy1MMczwieO0Y9TfOE4AZ/TRYvmxeK+92mGhmx5XHB
+         r1Lw==
+X-Gm-Message-State: AOJu0YwNIN+Sd+3k8v5iscFR8PTD/sRLQZWpowZSKw1ZTZViBjUZFTR8
+        wYLEhhKInl4cFOLV1UW1XVxryUbaJxwb/Q==
+X-Google-Smtp-Source: AGHT+IHqH6cUbDs8xrXZJT4gDhu6yQsXMA72pQaQVz1Yklqvjqho03n48wy4VfixJtREREl3H41tPA==
+X-Received: by 2002:a05:6602:2014:b0:791:8f62:31ef with SMTP id y20-20020a056602201400b007918f6231efmr17972840iod.5.1697140123589;
+        Thu, 12 Oct 2023 12:48:43 -0700 (PDT)
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id h6-20020a5d9e06000000b007a25540c49bsm4307891ioh.27.2023.10.12.12.48.41
+        by smtp.googlemail.com with ESMTPSA id h6-20020a5d9e06000000b007a25540c49bsm4307891ioh.27.2023.10.12.12.48.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 12:48:42 -0700 (PDT)
+        Thu, 12 Oct 2023 12:48:43 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     linux-kernel@vger.kernel.org, jbaron@akamai.com,
         gregkh@linuxfoundation.org
 Cc:     david@redhat.com, lb@semihalf.com, linux@rasmusvillemoes.dk,
         joe@perches.com, mcgrof@kernel.org, Liam.Howlett@Oracle.com,
         linux-mm@kvack.org, Jim Cromie <jim.cromie@gmail.com>
-Subject: [RFC PATCH 06/10] dyndbg: add site_*() macros to avoid using _ddebug.site
-Date:   Thu, 12 Oct 2023 13:48:30 -0600
-Message-ID: <20231012194834.3288085-7-jim.cromie@gmail.com>
+Subject: [RFC PATCH 07/10] dyndbg: wire in __desc_*() functions
+Date:   Thu, 12 Oct 2023 13:48:31 -0600
+Message-ID: <20231012194834.3288085-8-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231012194834.3288085-1-jim.cromie@gmail.com>
 References: <20231012194834.3288085-1-jim.cromie@gmail.com>
@@ -74,92 +74,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-adjust ddebug_condense_sites() and dynamic_debug_init() to replace
-desc_*() uses with new site_*() macros which avoid the _ddebug.site
-pointers by relying upon site* cursors instead.
+change desc_*() macros to call __desc_*() functions, and #if 0 the
+comparisons to the site->_* ref.  This makes the _ddebug.site pointer
+unneccesary.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/dynamic_debug.c | 29 ++++++++++++++++-------------
- 1 file changed, 16 insertions(+), 13 deletions(-)
+ lib/dynamic_debug.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 563d373224ba..48564625a37e 100644
+index 48564625a37e..fb72a7b05b01 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -1426,6 +1426,9 @@ static void dd_store_range(struct maple_tree *mt, const struct _ddebug *start,
- 		v4pr_info("  ok %s at %lx\n", val, first);
+@@ -223,9 +223,9 @@ static struct ddebug_class_map *ddebug_find_valid_class(struct ddebug_table cons
+ 	return NULL;
  }
  
-+#define site_function(s)	(s)->_function
-+#define site_filename(s)	(s)->_filename
-+#define site_modname(s)		(s)->_modname
- 
- static void ddebug_condense_sites(struct _ddebug_info *di)
- {
-@@ -1440,27 +1443,27 @@ static void ddebug_condense_sites(struct _ddebug_info *di)
- 
- 		BUG_ON(site_function(cur_ds) != desc_function(cur_dd));
- 
--		if (!strcmp(desc_function(cur_dd), desc_function(func_dd)))
-+		if (!strcmp(site_function(cur_ds), site_function(func_ds)))
- 			continue;
--		dd_store_range(&mt_funcs, func_dd, cur_dd, "func", desc_function(func_dd));
-+		dd_store_range(&mt_funcs, func_dd, cur_dd, "func", site_function(func_ds));
- 		func_dd = cur_dd;
- 		func_ds = cur_ds;
- 
--		if (!strcmp(desc_filename(cur_dd), desc_filename(file_dd)))
-+		if (!strcmp(site_filename(cur_ds), site_filename(file_ds)))
- 			continue;
--		dd_store_range(&mt_files, file_dd, cur_dd, "file", desc_filename(file_dd));
-+		dd_store_range(&mt_files, file_dd, cur_dd, "file", site_filename(file_ds));
- 		file_dd = cur_dd;
- 		file_ds = cur_ds;
- 
--		if (!strcmp(desc_modname(cur_dd), desc_modname(mod_dd)))
-+		if (!strcmp(site_modname(cur_ds), site_modname(mod_ds)))
- 			continue;
--		dd_store_range(&mt_mods, mod_dd, cur_dd, "mod", desc_modname(mod_dd));
-+		dd_store_range(&mt_mods, mod_dd, cur_dd, "mod", site_modname(mod_ds));
- 		mod_dd = cur_dd;
- 		mod_ds = cur_ds;
- 	}
--	dd_store_range(&mt_funcs, func_dd, cur_dd, "func:", desc_function(func_dd));
--	dd_store_range(&mt_files, file_dd, cur_dd, "file:", desc_filename(file_dd));
--	dd_store_range(&mt_mods, mod_dd, cur_dd, "mod:", desc_modname(mod_dd));
-+	dd_store_range(&mt_funcs, func_dd, cur_dd, "func:", site_function(func_ds));
-+	dd_store_range(&mt_files, file_dd, cur_dd, "file:", site_filename(file_ds));
-+	dd_store_range(&mt_mods, mod_dd, cur_dd, "mod:", site_modname(mod_ds));
- }
- 
+-#define desc_modname(d)		(d)->site->_modname
+-#define desc_filename(d)	(d)->site->_filename
+-#define desc_function(d)	(d)->site->_function
++#define desc_modname(d)		__desc_modname(d)
++#define desc_filename(d)	__desc_filename(d)
++#define desc_function(d)	__desc_function(d)
  /*
-@@ -1688,13 +1691,13 @@ static int __init dynamic_debug_init(void)
- 	}
+  * tmp accessors, they cheat and seek a match in builtins.  Obviously
+  * this wont work for loaded modules, but doesnt work at all yet.
+@@ -235,11 +235,11 @@ static const char * __desc_function(struct _ddebug const *dp)
+ 	struct maple_tree *mt = &mt_funcs;
  
- 	site = site_mod_start = di.sites;
--	iter = iter_mod_start = __start___dyndbg;
--	modname = desc_modname(iter);
-+	iter = iter_mod_start = di.descs;
-+	modname = site_modname(site);
- 	i = mod_sites = mod_ct = 0;
+ 	void *ret = mtree_load(mt, (unsigned long)dp);
+-
++#if 0
+ 	if (ret != desc_function(dp))
+ 		pr_err("mt-load func %lx got %s want %s\n",
+ 		       (unsigned long)dp, (char*)ret, desc_function(dp));
+-
++#endif
+ 	return ret;
+ }
  
- 	for (; iter < __stop___dyndbg; iter++, site++, i++, mod_sites++) {
+@@ -248,11 +248,11 @@ static const char * __desc_filename(struct _ddebug const *dp)
+ 	struct maple_tree *mt = &mt_files;
  
--		if (strcmp(modname, desc_modname(iter))) {
-+		if (strcmp(modname, site_modname(site))) {
- 			mod_ct++;
- 			di.num_descs = mod_sites;
- 			di.num_sites = mod_sites;
-@@ -1705,7 +1708,7 @@ static int __init dynamic_debug_init(void)
- 				goto out_err;
+ 	void *ret = mtree_load(mt, (unsigned long)dp);
+-
++#if 0
+ 	if (ret != desc_filename(dp))
+ 		pr_err("mt-load file %lx got %s want %s\n",
+ 		       (unsigned long)dp, (char*)ret, desc_filename(dp));
+-
++#endif
+ 	return ret;
+ }
  
- 			mod_sites = 0;
--			modname = desc_modname(iter);
-+			modname = site_modname(site);
- 			iter_mod_start = iter;
- 			site_mod_start = site;
- 		}
+@@ -261,11 +261,11 @@ static const char * __desc_modname(struct _ddebug const *dp)
+ 	struct maple_tree *mt = &mt_mods;
+ 
+ 	void *ret = mtree_load(mt, (unsigned long)dp);
+-
++#if 0
+ 	if (ret != desc_modname(dp))
+ 		pr_err("mt-load mod %lx got %s want %s\n",
+ 		       (unsigned long)dp, (char*)ret, desc_modname(dp));
+-
++#endif
+ 	return ret;
+ }
+ 
+@@ -1441,7 +1441,7 @@ static void ddebug_condense_sites(struct _ddebug_info *di)
+ 	i = 0;
+ 	for (; i < di->num_descs; i++, cur_dd++, cur_ds++) {
+ 
+-		BUG_ON(site_function(cur_ds) != desc_function(cur_dd));
++		//BUG_ON(site_function(cur_ds) != desc_function(cur_dd));
+ 
+ 		if (!strcmp(site_function(cur_ds), site_function(func_ds)))
+ 			continue;
 -- 
 2.41.0
 
