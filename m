@@ -2,130 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E229E7C7258
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7867C725A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379511AbjJLQVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:21:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58340 "EHLO
+        id S1379527AbjJLQVY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 12:21:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344060AbjJLQVL (ORCPT
+        with ESMTP id S1347319AbjJLQVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:21:11 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F73DA9;
-        Thu, 12 Oct 2023 09:21:10 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-503397ee920so1503425e87.1;
-        Thu, 12 Oct 2023 09:21:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697127668; x=1697732468; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3SPN7XBgYtAbtWzOHt/0rYEE5hOBz9Hk2ZUOg0QfyB0=;
-        b=TNKw66xFB7Gmzg3kLfSQCIKjkEZRmAxFb1/RiyohVI3cY8qHEzndaJBsOkvlhpPkOu
-         WOSwTcLhQKwol4UZ+k9mxK3JzBnf3sEk13GfhO9Gpa09iKtetrceM2DjPrat+/wAgpVo
-         Bw2OM4xNcHmLGNTp/HOPChEUEf6fMawZ1ALZQBWTPSuX+TxZOLUuIpCQuzah0fHQn/dq
-         jdpsksDVqrEXLccCQbfi9+qxnN3ehb6dddmH1RD8OZeAXGsW4pgSeTE3JQzPY87DEW8o
-         V35E4MV2yyqsmKIXc1CNZgmUU6NK8XFvFFt1ijMItlxyvOUmbLepvtVv8KS3cGeKTOet
-         6jyQ==
+        Thu, 12 Oct 2023 12:21:21 -0400
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3661D8;
+        Thu, 12 Oct 2023 09:21:19 -0700 (PDT)
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-57ddba5ba84so124139eaf.0;
+        Thu, 12 Oct 2023 09:21:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697127668; x=1697732468;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3SPN7XBgYtAbtWzOHt/0rYEE5hOBz9Hk2ZUOg0QfyB0=;
-        b=ESgYAgQSU//Y9Xzo3ggqBgoDQ/7NKFpJSs+mzG7K1negl02ANf7EQX5i+xlpcnpKAI
-         uHEmj89U+Jmzeqjc65Z3hiKFXAZ3LjKLoCr6de0wTRBc6zfrFp2kLy/YF2r/j+gf1/nK
-         gCVBWTGbngKkq57WhGQoPyiDCRJkLMSyOgK4lNATBMGAJmvn+DVvHBlAmlexM/vsAf5C
-         WZ7GghnQYrzUaFLL8rZvGnQn1Gm2n9r7tqfF5DOGs4Q1YxjoYNTT1UqZsux5LanBZ/qr
-         iL7NGLLAFqwMJ2JAvYzRnuUmOuqXGmh69HonKX/V/IxIEFfrHGAFOfT+/lw/q7uICsRs
-         049A==
-X-Gm-Message-State: AOJu0YzchpT3Gz9EofEanaiONAKH5b5O8yf6OrJwm+u9iuZrUazjUWVM
-        CWckAnOc6aflpvRh601t0D8=
-X-Google-Smtp-Source: AGHT+IGJcGDV8jEbS1mMXyuVP2qOdoVGHW96/rwCFFkIKzmLucR5M69QbrDpBKtWgQ0ScTKfd89XZg==
-X-Received: by 2002:a05:6512:5ca:b0:4fa:5e76:7ad4 with SMTP id o10-20020a05651205ca00b004fa5e767ad4mr17671439lfo.10.1697127667970;
-        Thu, 12 Oct 2023 09:21:07 -0700 (PDT)
-Received: from hp-power-15.localdomain (78-62-135-63.static.zebra.lt. [78.62.135.63])
-        by smtp.gmail.com with ESMTPSA id br34-20020a056512402200b005068e7a2e7dsm2557470lfb.77.2023.10.12.09.21.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 09:21:07 -0700 (PDT)
-From:   Siarhei Volkau <lis8215@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Siarhei Volkau <lis8215@gmail.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH] MIPS: Take in account load hazards for HI/LO restoring
-Date:   Thu, 12 Oct 2023 19:20:27 +0300
-Message-ID: <20231012162027.3411684-1-lis8215@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        d=1e100.net; s=20230601; t=1697127679; x=1697732479;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fghx/3ez5n58sg38991FNjnRDD8UbfxWtztsAcswAE8=;
+        b=cZOwT7QKDoD5LPE6pZwbu9oHivlESZotA1GUIOH9rKijipk5a0fTEYrr62Nxmwc5hY
+         ElEHqL6YzRXo++MWDYYHnUCLzJQ4YrfQ7viDAzRFQjCHKZW/xAMTs2HbAsfzafdahsch
+         T9tfsW9LcXXaLThtgxlsv+mXJWVrv/vkNd7t6jLuw/fFL/0/LANC+d5bVzOQdkPEoUcz
+         sDPN4OPcUCJFRvLk1/zwfj2ajrB+tHAi9fMiUIhIXfFc9tVilpHWhkbcW4W9exQK0AVu
+         2guPZFmkp1EADTZExurtdGtmbkdQCb1PaOev3AdIVshmAXtwcHDgV+jra9I9lYMaGEn5
+         fZPg==
+X-Gm-Message-State: AOJu0YxGpkMgr+9CwDiQP+TQEm0DeYXas0kzfO/y4WODoXPQLoXagVYr
+        STU+8PJI1lE1uZA3QOwmb/cF/oDf16xBB9TzT+z3g51JVI0=
+X-Google-Smtp-Source: AGHT+IEtwVncZ1lNS/4QhQySCQtVDBTBTrHBnDC97w1kkgBQ2mlqnkLCMS+6fCDQkcNyuKd4fdP9SgKcafwgPr03XH0=
+X-Received: by 2002:a4a:b588:0:b0:578:c2af:45b5 with SMTP id
+ t8-20020a4ab588000000b00578c2af45b5mr22923283ooo.0.1697127679100; Thu, 12 Oct
+ 2023 09:21:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <13365827.uLZWGnKmhe@kreacher> <3256881.aeNJFYEL58@kreacher> <d2d6fae5-ace7-4b94-9354-a01cd6a7e343@linaro.org>
+In-Reply-To: <d2d6fae5-ace7-4b94-9354-a01cd6a7e343@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 12 Oct 2023 18:21:08 +0200
+Message-ID: <CAJZ5v0iBD-z6-ncM4jG_eDp+TNBLpPXSrhyrSC+UCt--wmf_8Q@mail.gmail.com>
+Subject: Re: [PATCH v1 1/6] thermal: trip: Simplify computing trip indices
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MIPS CPUs usually have 1 to 4 cycles load hazards, thus doing load
-and right after move to HI/LO will usually stall the pipeline for
-significant amount of time. Let's take it into account and separate
-loads and mthi/lo in instruction sequence.
+On Thu, Oct 12, 2023 at 4:27 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 06/10/2023 19:40, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > A trip index can be computed right away as a difference between the
+> > value of a trip pointer pointing to the given trip object and the
+> > start of the trips[] table in the thermal zone containing the trip, so
+> > change thermal_zone_trip_id() accordingly.
+> >
+> > No intentional functional impact (except for some speedup).
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >   drivers/thermal/thermal_trip.c |   13 +++++--------
+> >   1 file changed, 5 insertions(+), 8 deletions(-)
+> >
+> > Index: linux-pm/drivers/thermal/thermal_trip.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/thermal/thermal_trip.c
+> > +++ linux-pm/drivers/thermal/thermal_trip.c
+> > @@ -175,14 +175,11 @@ int thermal_zone_set_trip(struct thermal
+> >   int thermal_zone_trip_id(struct thermal_zone_device *tz,
+> >                        const struct thermal_trip *trip)
+> >   {
+> > -     int i;
+> > -
+> >       lockdep_assert_held(&tz->lock);
+> >
+> > -     for (i = 0; i < tz->num_trips; i++) {
+> > -             if (&tz->trips[i] == trip)
+> > -                     return i;
+> > -     }
+> > -
+> > -     return -ENODATA;
+> > +     /*
+> > +      * Assume the trip to be located within the bounds of the thermal
+> > +      * zone's trips[] table.
+> > +      */
+> > +     return trip - tz->trips;
+>
+> Shouldn't be divided by sizeof(*trip) ?
 
-The patch uses t6 and t7 registers as temporaries in addition to t8.
-
-The patch tries to deal with SmartMIPS, but I know little about and
-haven't tested it.
-
-Signed-off-by: Siarhei Volkau <lis8215@gmail.com>
----
- arch/mips/include/asm/stackframe.h | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
-
-diff --git a/arch/mips/include/asm/stackframe.h b/arch/mips/include/asm/stackframe.h
-index a8705aef47e1..3821d91b00fd 100644
---- a/arch/mips/include/asm/stackframe.h
-+++ b/arch/mips/include/asm/stackframe.h
-@@ -308,17 +308,11 @@
- 		jal	octeon_mult_restore
- #endif
- #ifdef CONFIG_CPU_HAS_SMARTMIPS
--		LONG_L	$24, PT_ACX(sp)
--		mtlhx	$24
--		LONG_L	$24, PT_HI(sp)
--		mtlhx	$24
--		LONG_L	$24, PT_LO(sp)
--		mtlhx	$24
--#elif !defined(CONFIG_CPU_MIPSR6)
-+		LONG_L	$14, PT_ACX(sp)
-+#endif
-+#if defined(CONFIG_CPU_HAS_SMARTMIPS) || !defined(CONFIG_CPU_MIPSR6)
- 		LONG_L	$24, PT_LO(sp)
--		mtlo	$24
--		LONG_L	$24, PT_HI(sp)
--		mthi	$24
-+		LONG_L	$15, PT_HI(sp)
- #endif
- #ifdef CONFIG_32BIT
- 		cfi_ld	$8, PT_R8, \docfi
-@@ -327,6 +321,14 @@
- 		cfi_ld	$10, PT_R10, \docfi
- 		cfi_ld	$11, PT_R11, \docfi
- 		cfi_ld	$12, PT_R12, \docfi
-+#ifdef CONFIG_CPU_HAS_SMARTMIPS
-+		mtlhx	$14
-+		mtlhx	$15
-+		mtlhx	$24
-+#elif !defined(CONFIG_CPU_MIPSR6)
-+		mtlo	$24
-+		mthi	$15
-+#endif
- 		cfi_ld	$13, PT_R13, \docfi
- 		cfi_ld	$14, PT_R14, \docfi
- 		cfi_ld	$15, PT_R15, \docfi
--- 
-2.41.0
-
+No, it's in sizeof(*trip) units already.
