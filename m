@@ -2,244 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A2F7C66C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEA37C66D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377791AbjJLHgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 03:36:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56478 "EHLO
+        id S1377919AbjJLHiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 03:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232199AbjJLHf7 (ORCPT
+        with ESMTP id S1377465AbjJLHiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 03:35:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73EB290;
-        Thu, 12 Oct 2023 00:35:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09031C433C8;
-        Thu, 12 Oct 2023 07:35:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697096157;
-        bh=vtUjYzbh3ksyEdtvSfgyPNGccq8OhGyaDiH5w29dMb4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JxRguLzShyfjqtscKFYcmXK4uKSohmdngtg0iVJbqrgODN+jrrlJJ8h16r9weMO4Y
-         UIfefhoNYPiDLQv91cs6cFFgYbEXyduuTkmrQ/MM4tY3NKdoeXHe58Dd3IB4Dx90oG
-         FNCnVVi24NKh9+3N2YIrNY52llaOSpiyqq1wSSu36lHKuDfzoMu+PJodjRi63B4buw
-         8qUCzocG0yZ717WL2r+3BXyabetdTsEmr80ngL37VcgdpXSnS8mlSXRfZpmm2F4P3P
-         b2d1IWozt94EdWGjhcMrE/ESHiAsMttxtLaxgY4xIgiFybuKrRVRvF9eNog3iuFQ8/
-         6dI7V9fCi3pMQ==
-Date:   Thu, 12 Oct 2023 08:36:10 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     <Marius.Cristea@microchip.com>
-Cc:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <lars@metafoo.de>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] iio: adc: MCP3564: fix warn: unsigned '__x' is never
- less than zero.
-Message-ID: <20231012083610.742cc74c@jic23-huawei>
-In-Reply-To: <bcc76066305e1c191ca02566132527b4c7520588.camel@microchip.com>
-References: <20231002161618.36373-1-marius.cristea@microchip.com>
-        <20231010104444.12e61984@jic23-huawei>
-        <bcc76066305e1c191ca02566132527b4c7520588.camel@microchip.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Thu, 12 Oct 2023 03:38:04 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078DCC9;
+        Thu, 12 Oct 2023 00:38:01 -0700 (PDT)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C7a5nT027495;
+        Thu, 12 Oct 2023 07:37:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : from : subject : to : cc : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=tPSkQTo/UIqXR9TJ1CiWAXvie/7O/aQcvxPdNMCnRaQ=;
+ b=jo7nfrBWGer9nMakApRz3RcoZA2ZN1f4jEeprif2AuN389dxBrqzxtL2efYXamLaR0du
+ fw6bN6bGl41UIqdYm2zlahXnnM0Rzb5exHValpP6Dp/Guoo9C4bv7lpYuTVb46n8eLSV
+ TYtZUNE8QHTCRPVOm+T+kOe/U2tYbzfVTF2GGZ5Fag3C1DI/iRNvWxGsWY5a0amLxEyj
+ jziFDXubpXE83YkuUsaRnwdStQMmdB9304Vm9l1FUJeOZmdJrytf/Y9IBJkVq7nkDT9Q
+ EMIWT6bOttjzlsaEml/ovKYPXMm/YPkxmAcOjP1UYdaQBo8I1h/AQuXK3wmR+giEHfvS 6A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpca98hq1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 07:37:47 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39C7at3T001180;
+        Thu, 12 Oct 2023 07:37:47 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpca98hpm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 07:37:47 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39C6hZva026364;
+        Thu, 12 Oct 2023 07:37:46 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkjnnp138-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 07:37:46 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39C7bj7E20906588
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Oct 2023 07:37:46 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E52E85805C;
+        Thu, 12 Oct 2023 07:37:45 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 80E3558058;
+        Thu, 12 Oct 2023 07:37:41 +0000 (GMT)
+Received: from [9.171.14.51] (unknown [9.171.14.51])
+        by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 12 Oct 2023 07:37:41 +0000 (GMT)
+Message-ID: <79fbe35c-4dd1-4f27-acb2-7a60794bc348@linux.vnet.ibm.com>
+Date:   Thu, 12 Oct 2023 13:07:39 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From:   Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>
+Subject: [Bisected] [1b4fa28a8b07] Build failure "net/core/gso_test.c"
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     willemb@google.com, fw@strlen.de, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, abdhalee@linux.vnet.ibm.com,
+        sachinp@linux.vnet.com, mputtash@linux.vnet.com
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: yLsQ2Nng7jDxAk8U1K_hek_n1amIIVYW
+X-Proofpoint-GUID: eG8iLiYuF54pSKJIIhddBbltn08Nb454
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_03,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ mlxscore=0 priorityscore=1501 suspectscore=0 adultscore=0 mlxlogscore=953
+ impostorscore=0 clxscore=1011 lowpriorityscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310120063
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Oct 2023 16:41:38 +0000
-<Marius.Cristea@microchip.com> wrote:
+Greetings,
 
->   Hi Jonathan,
->=20
->  Sorry, I think I've made a "mistake" related to naming the patches and
-> also not running the Smatch checker at a point in time.
->=20
->=20
->=20
-> On Tue, 2023-10-10 at 10:44 +0100, Jonathan Cameron wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you
-> > know the content is safe
-> >=20
-> > On Mon, 2 Oct 2023 19:16:18 +0300
-> > <marius.cristea@microchip.com> wrote:
-> >  =20
-> > > From: Marius Cristea <marius.cristea@microchip.com>
-> > >=20
-> > > The patch efea15e3c65d: "iio: adc: MCP3564: fix the static checker
-> > > warning"
-> > > leads to the following Smatch static checker warning:
-> > >=20
-> > > =C2=A0=C2=A0 smatch warnings:
-> > > =C2=A0=C2=A0 drivers/iio/adc/mcp3564.c:1105 mcp3564_fill_scale_tbls()=
- warn:
-> > > unsigned '__x' is never less than zero.
-> > >=20
-> > > vim +/__x +1105 drivers/iio/adc/mcp3564.c
-> > >=20
-> > > =C2=A0=C2=A0 1094
-> > > =C2=A0=C2=A0 1095=C2=A0 static void mcp3564_fill_scale_tbls(struct mc=
-p3564_state
-> > > *adc)
-> > > =C2=A0=C2=A0 1096=C2=A0 {
-> > > =C2=A0=C2=A0 .....
-> > > =C2=A0=C2=A0 1103=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 for (i =3D 0; i < MCP3564_MAX_PGA; i++) {
-> > > =C2=A0=C2=A0 1104=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ref =3D adc->vref_mv; =
-=20
-> > > =C2=A0> 1105=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tmp1 =3D shift_right((u64)ref=
- * NANO, pow); =20
-> > > =C2=A0=C2=A0 1106=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 div_u64_rem(tmp1, NANO,=
- &tmp0);
-> > > =C2=A0=C2=A0 1107
-> > > =C2=A0=C2=A0 .....
-> > > =C2=A0=C2=A0 1113=C2=A0 }
-> > >=20
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Closes:
-> > > https://lore.kernel.org/oe-kbuild-all/202309280738.NWjVfVt4-lkp@intel=
-.com/
-> > > Fixes: efea15e3c65d (iio: adc: MCP3564: fix the static checker
-> > > warning) =20
-> >=20
-> > This fix is fine but can you talk me through how the static checker
-> > warning fix
-> > in question has anything to do with this one?
-> >=20
-> > Was it just a case of fixing that issue allowing the static checker
-> > to
-> > get further before giving up?=C2=A0 In which case the description needs
-> > modifying.
-> >=20
-> > Or am I missing something in the following fix?
-> >=20
-> > diff --git a/drivers/iio/adc/mcp3564.c b/drivers/iio/adc/mcp3564.c
-> > index 64145f4ae55c..9ede1a5d5d7b 100644
-> > --- a/drivers/iio/adc/mcp3564.c
-> > +++ b/drivers/iio/adc/mcp3564.c
-> > @@ -1422,11 +1422,8 @@ static int mcp3564_probe(struct spi_device
-> > *spi)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct mcp3564_state *adc;
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 indio_dev =3D devm_iio_devic=
-e_alloc(&spi->dev, sizeof(*adc));
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!indio_dev) {
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 dev_err_probe(&indio_dev->dev, PTR_ERR(indio_dev),
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 "Can't allocate iio device\n");
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!indio_dev)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 return -ENOMEM;
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >=20
-> >  =20
->=20
->   I've got two bugs reported:
->=20
-> - The first one was reported by Dan Carpenter "Re: [bug report] iio:
-> adc: adding support for MCP3564 ADC". This bug was found using the
-> "Smatch static checker warning" and it was related to:
-> > --> 1426                 dev_err_probe(&indio_dev->dev, =20
-> PTR_ERR(indio_dev),
->=20
-> This bug was fixed by the above "[PATCH v1] iio: adc: MCP3564: fix the
-> static checker warning" and it was applied on "Applied to the togreg
-> branch of iio.git as that's where this driver is at the moment."
->=20
-> Also my mistake at this point was that I didn't setup and run the
-> "Smatch static checker warning"
->=20
->=20
-> > as that's all I'm seeing in that commit.
-> >  =20
-> Yes, that commit only handled part of the fix.
->=20
->=20
->=20
-> > > Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
-> > > ---
-> > > =C2=A0drivers/iio/adc/mcp3564.c | 2 +-
-> > > =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
-> > >=20
-> > > diff --git a/drivers/iio/adc/mcp3564.c b/drivers/iio/adc/mcp3564.c
-> > > index 9ede1a5d5d7b..e3f1de5fcc5a 100644
-> > > --- a/drivers/iio/adc/mcp3564.c
-> > > +++ b/drivers/iio/adc/mcp3564.c
-> > > @@ -1102,7 +1102,7 @@ static void mcp3564_fill_scale_tbls(struct
-> > > mcp3564_state *adc)
-> > >=20
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < MCP3564_MAX_PGA; i++=
-) {
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 ref =3D adc->vref_mv;
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 tmp1 =3D shift_right((u64)ref * NANO, pow);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 tmp1 =3D ((u64)ref * NANO) >> pow;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 div_u64_rem(tmp1, NANO, &tmp0);
-> > >=20
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 tmp1 =3D tmp1 * mcp3564_hwgain_frac[(2 * i) + 1];
-> > >=20
-> > > base-commit: 5e99f692d4e32e3250ab18d511894ca797407aec =20
-> >  =20
->=20
-> - The second bug was reported by "kernel test robot <lkp@intel.com>"
-> also by running Smatch and it was run on the initial driver (without
-> having the first patch applied)
->=20
-> smatch warnings:
-> drivers/iio/adc/mcp3564.c:1105 mcp3564_fill_scale_tbls() warn: unsigned
-> '__x' is never less than zero.
-> drivers/iio/adc/mcp3564.c:1426 mcp3564_probe() warn: passing zero to
-> 'PTR_ERR'
-> drivers/iio/adc/mcp3564.c:1426 mcp3564_probe() warn: address of NULL
-> pointer 'indio_dev'
->=20
->=20
-> The:"drivers/iio/adc/mcp3564.c:1426 mcp3564_probe() warn: passing zero
-> to 'PTR_ERR'" and "drivers/iio/adc/mcp3564.c:1426 mcp3564_probe() warn:
-> address of NULL pointer 'indio_dev'" were fixed by the first patch.
->=20
-> The "drivers/iio/adc/mcp3564.c:1105 mcp3564_fill_scale_tbls() warn:
-> unsigned '__x' is never less than zero." is fixed by the last patch
-> "[PATCH v1] iio: adc: MCP3564: fix warn: unsigned '__x' is never less
-> than zero."
->  by changeing:
->=20
-> -		tmp1 =3D shift_right((u64)ref * NANO, pow);
-> +		tmp1 =3D ((u64)ref * NANO) >> pow;
->=20
-> shift_right function is "Required to safely shift negative values" but
-> my value is always unsigned so it doesn't make sense to used it. This
-> error was reported when I have run the Smatch over the driver + first
-> patch (what was the latest from togreg).
->=20
-> I have applied the patch on top of what was the "latest" from togreg
-> branch and not on the initial driver.
->=20
->=20
-> I could change the description or I could provide a patch to handle
-> both warning reporting at once.
-If there are multiple issues then should be multiple patches. So starting
-point is definitely a version of this one with the correct description.
+[net-next] [6.6-rc4] Build failure "net/core/gso_test.c"
 
-Thanks,
+--- Traces ---
 
-Jonathan
+make -j 33 -s && make modules_install && make install
+net/core/gso_test.c:58:48: error: initializer element is not constant
+    58 |                 .segs = (const unsigned int[]) { gso_size },
+       |                                                ^
+net/core/gso_test.c:58:48: note: (near initialization for ‘cases[0]’)
+net/core/gso_test.c:65:48: error: initializer element is not constant
+    65 |                 .segs = (const unsigned int[]) { gso_size, 
+gso_size, 1 },
+       |                                                ^
+net/core/gso_test.c:65:48: note: (near initialization for ‘cases[1]’)
+net/core/gso_test.c:72:49: error: initializer element is not constant
+    72 |                 .frags = (const unsigned int[]) { gso_size, 1 },
+       |                                                 ^
+net/core/gso_test.c:72:49: note: (near initialization for ‘cases[2]’)
+net/core/gso_test.c:74:48: error: initializer element is not constant
+    74 |                 .segs = (const unsigned int[]) { gso_size, 
+gso_size, 1 },
+       |                                                ^
+net/core/gso_test.c:74:48: note: (near initialization for ‘cases[2]’)
+net/core/gso_test.c:80:49: error: initializer element is not constant
+    80 |                 .frags = (const unsigned int[]) { gso_size, 
+gso_size, 2 },
+       |                                                 ^
+net/core/gso_test.c:80:49: note: (near initialization for ‘cases[3]’)
+net/core/gso_test.c:82:48: error: initializer element is not constant
+    82 |                 .segs = (const unsigned int[]) { gso_size, 
+gso_size, 2 },
+       |                                                ^
+net/core/gso_test.c:82:48: note: (near initialization for ‘cases[3]’)
+net/core/gso_test.c:89:49: error: initializer element is not constant
+    89 |                 .frags = (const unsigned int[]) { gso_size, 3 },
+       |                                                 ^
+net/core/gso_test.c:89:49: note: (near initialization for ‘cases[4]’)
+net/core/gso_test.c:91:48: error: initializer element is not constant
+    91 |                 .segs = (const unsigned int[]) { 2 * gso_size, 3 },
+       |                                                ^
+net/core/gso_test.c:91:48: note: (near initialization for ‘cases[4]’)
+net/core/gso_test.c:99:53: error: initializer element is not constant
+    99 |                 .frag_skbs = (const unsigned int[]) { gso_size, 
+gso_size },
+       |                                                     ^
+net/core/gso_test.c:99:53: note: (near initialization for ‘cases[5]’)
+net/core/gso_test.c:101:48: error: initializer element is not constant
+   101 |                 .segs = (const unsigned int[]) { gso_size, 
+gso_size, gso_size },
+       |                                                ^
+net/core/gso_test.c:101:48: note: (near initialization for ‘cases[5]’)
+net/core/gso_test.c:107:53: error: initializer element is not constant
+   107 |                 .frag_skbs = (const unsigned int[]) { gso_size, 
+gso_size },
+       |                                                     ^
+net/core/gso_test.c:107:53: note: (near initialization for ‘cases[6]’)
+net/core/gso_test.c:109:48: error: initializer element is not constant
+   109 |                 .segs = (const unsigned int[]) { gso_size, 
+gso_size },
+       |                                                ^
+net/core/gso_test.c:109:48: note: (near initialization for ‘cases[6]’)
+net/core/gso_test.c:117:53: error: initializer element is not constant
+   117 |                 .frag_skbs = (const unsigned int[]) { gso_size, 
+1, gso_size, 2 },
+       |                                                     ^
+net/core/gso_test.c:117:53: note: (near initialization for ‘cases[7]’)
+net/core/gso_test.c:119:48: error: initializer element is not constant
+   119 |                 .segs = (const unsigned int[]) { gso_size, 
+gso_size, gso_size, 3 },
+       |                                                ^
+net/core/gso_test.c:119:48: note: (near initialization for ‘cases[7]’)
+make[4]: *** [scripts/Makefile.build:243: net/core/gso_test.o] Error 1
+make[4]: *** Waiting for unfinished jobs....
+make[3]: *** [scripts/Makefile.build:480: net/core] Error 2
+make[3]: *** Waiting for unfinished jobs....
 
->=20
-> Thanks,
-> Marius
+make[2]: *** [scripts/Makefile.build:480: net] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/root/net-next/Makefile:1913: .] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
+
+gitbisect points to below commit, reverting the below commit resolves 
+the issue
+
+commit 1b4fa28a8b07eb331aeb7fbfc806c0d2e3dc3627
+     net: parametrize skb_segment unit test to expand coverage
+
+-- 
+Regards,
+Tasmiya Nalatwad
+IBM Linux Technology Center
 
