@@ -2,131 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D0C7DAE5D
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 22:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FE27E2B10
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbjJ2VCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 17:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
+        id S231921AbjKFRjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 12:39:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjJ2VCh (ORCPT
+        with ESMTP id S231496AbjKFRjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 17:02:37 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E987B6
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 14:02:34 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 08B9C2C04A8;
-        Mon, 30 Oct 2023 10:02:32 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1698613352;
-        bh=B09d4lIdDANJfUjjq7WALyCU4zBVl2nQ2e3xFu+mesQ=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=1+E71eghvObYnW8IgIPprH0EwPuRbQrQFdc4HWOQYrKE/8GweBzEOevYnp9iRiMLC
-         AfeUfqjwbc86l0EXMChCT3bkwNtbcbPUZzuqFr5eKu5T5dx0JB9hugheb/dKxyqC5y
-         wy+vmlShMksYrLTSv8z4W9Lq5QJ1h67wxvMvO8krcOnmvC8GDNeUdpEOrJ33reVonL
-         48xY9s//UsykhI76PtFmhEnW2Mdy8akVMgRG/HAaeu0e6FWKWhILZVUwD+wCnj+bON
-         QJ9yehtZLkY9nDEmWbMhDnKSs31gr6l4o0DNZPR5wIk1hNXytaNXnh4AF4MI5KsBDc
-         o1UIMNGKqxZog==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B653ec8670001>; Mon, 30 Oct 2023 10:02:31 +1300
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 30 Oct 2023 10:02:31 +1300
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1118.039; Mon, 30 Oct 2023 10:02:31 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Andi Shyti <andi.shyti@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC:     "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 2/2] i2c: mv64xxx: add an optional bus-reset-gpios
- property
-Thread-Topic: [PATCH v5 2/2] i2c: mv64xxx: add an optional bus-reset-gpios
- property
-Thread-Index: AQHaCIYGLKsizTKN0UyQHbkVO99aL7BcpjeAgAACoICAABXxgIADrLSA
-Date:   Sun, 29 Oct 2023 21:02:31 +0000
-Message-ID: <8ffbd670-52c5-4344-9119-d7e55367092b@alliedtelesis.co.nz>
-References: <20231027033104.1348921-1-chris.packham@alliedtelesis.co.nz>
- <20231027033104.1348921-3-chris.packham@alliedtelesis.co.nz>
- <65911ec0-e073-435f-846a-c5501dd5d3a9@linaro.org>
- <9eebec9b-e6fd-4a22-89ea-b434f446e061@linaro.org>
- <20231027125537.5d5cu3wc4r4c2yb4@zenone.zhora.eu>
-In-Reply-To: <20231027125537.5d5cu3wc4r4c2yb4@zenone.zhora.eu>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.33.22.30]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <68B8A453696C744C9B89AAD75D34DE72@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Mon, 6 Nov 2023 12:39:03 -0500
+Received: from mx0a-0014ca01.pphosted.com (mx0a-0014ca01.pphosted.com [208.84.65.235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3352ED47;
+        Mon,  6 Nov 2023 09:39:01 -0800 (PST)
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3A6DZqkg010888;
+        Mon, 6 Nov 2023 09:38:58 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=proofpoint; bh=bM3emn
+        e8aZofXYNPRzpzPf1uwjrMSPbJCRQrESdcHNo=; b=Xnis9nx8sjmPzui0H7MqOI
+        ii75+t33NM+L7ZSN6dbwV0xysk+VTN04Z39ZhP8+Yh9Xh74trXiH1DGCjw0BzA/M
+        lYgw4qbhVvtFtHOltEtA94fV/MfqQ48OWlbR1Q17B/SQcbFJtu4UKDRnnAMBCpEb
+        STYL8m4tF/e9AnRbNG9Tb/ibbQEG9a5xR20q+oqhmUp3IB5VG6ykCSsF8MhXR4Vk
+        7+tuel8eUbfoODIbyd+gcLosSlWbS2OZHTxBUDuQq+Nq9rvT+rNvE2RYWfIqySU5
+        qCpR4F00zMkog7z5j70TS040hiSvvowy9rTFpGd2ndIc0OfKtBsptpBpDK7TbMkQ
+        ==
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2040.outbound.protection.outlook.com [104.47.57.40])
+        by mx0a-0014ca01.pphosted.com (PPS) with ESMTPS id 3u5jgsewv6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 09:38:56 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H04gEcbkyi91jKQltY8vnOnONPlpU56plLcQKn3VHYVIG4fyC26ZqMxYu0g/rzkiWxoiUFzvlkBo996O3jQQDYI6NJy40Gl5OoZBVPp+OOS6Q47n3hGTTK+OSaPg6FRMmFPySUNk4eWh6JNyuhBURoZijRsf92vWAJygKP+fRj4SlL9C9CcWAMe8BgnZZ0KL2bxnFIL8zc+IvO8j31SWXqzO3WW4uRU+fnEff4MT9DLwjMJmZWML++noIxYqZY/wOozy38EJDZ39z/kpAAdGglStexs3+FxkHGLI7+2jaDBNzWuj+s+0SCyFisYubuxZayDtAXGrYscWf4mxGrbVtw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bM3emne8aZofXYNPRzpzPf1uwjrMSPbJCRQrESdcHNo=;
+ b=baMfMhsz4aShkTXOI+jl1K6UByeOzO6bWuJDvjS/4e9tILYJE1z6F/X1dWp1FLN2Ocdf7rOmj3Dh4yENT3WA/Iw+h/NzLztKSWIL6eoMyafio6M4TMJgpjik7sUe5n/dAL7N5qDO+5lyG07tszxJnvg4C6GImUcrUgF9mF/ep+4Chfldl9PLgLlZm7tEHIAu+YdZ48KykcNlu/HbaVEs372QHWeQbDw+qz2Ex6tTVEPdbFJ2vjmcoG7O0bogkZh6dkU4Hboh1hxf2yH3MRRDM6BSxZd2q4mHBXh+Qmf5c6JNPQlu9xN1Jd2EoPUtg20Cf9zk3mqiX0Rfsv0LmxnOwQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 158.140.1.147) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bM3emne8aZofXYNPRzpzPf1uwjrMSPbJCRQrESdcHNo=;
+ b=Elzp3cR9JkO4poOfSAqEMCsiqqiITQ+IlvHuoYQeo9uh9LbnF1ZmFWOpYjE2tdpURYaRqvjUn5H4oUwmRoU6IsaQcsuVM7+RZDtlASIyaWBWmnw8zC05Nvj01XKApYEO8nEkOdDSbv0j9hfuYYUbB4VOqjTqXnjIuLGXVdojqr8=
+Received: from SJ0PR13CA0173.namprd13.prod.outlook.com (2603:10b6:a03:2c7::28)
+ by SA0PR07MB7580.namprd07.prod.outlook.com (2603:10b6:806:bb::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
+ 2023 17:38:48 +0000
+Received: from MW2NAM12FT018.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:a03:2c7:cafe::5c) by SJ0PR13CA0173.outlook.office365.com
+ (2603:10b6:a03:2c7::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.16 via Frontend
+ Transport; Mon, 6 Nov 2023 17:38:47 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
+ smtp.mailfrom=cadence.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
+ client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com; pr=C
+Received: from sjmaillnx1.cadence.com (158.140.1.147) by
+ MW2NAM12FT018.mail.protection.outlook.com (10.13.180.85) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6954.16 via Frontend Transport; Mon, 6 Nov 2023 17:38:47 +0000
+Received: from maileu5.global.cadence.com (eudvw-maileu5.cadence.com [10.160.110.202])
+        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 3A6Hcjgf010867
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 Nov 2023 09:38:46 -0800
+Received: from maileu4.global.cadence.com (10.160.110.201) by
+ maileu5.global.cadence.com (10.160.110.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 6 Nov 2023 18:38:44 +0100
+Received: from eu-cn01.cadence.com (10.160.89.184) by
+ maileu4.global.cadence.com (10.160.110.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7
+ via Frontend Transport; Mon, 6 Nov 2023 18:38:44 +0100
+Received: from eu-cn01.cadence.com (localhost.localdomain [127.0.0.1])
+        by eu-cn01.cadence.com (8.14.7/8.14.7) with ESMTP id 3A6HcOij400191;
+        Mon, 6 Nov 2023 18:38:34 +0100
+Received: (from pawell@localhost)
+        by eu-cn01.cadence.com (8.14.7/8.14.7/Submit) id 39C4lIv8293620;
+        Thu, 12 Oct 2023 06:47:18 +0200
+From:   Pawel Laszczak <pawell@cadence.com>
+To:     <peter.chen@kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <pawell@cadence.com>
+Subject: [PATCH] usb:cdnsp: remove TRB_FLUSH_ENDPOINT command
+Date:   Thu, 12 Oct 2023 06:46:28 +0200
+Message-ID: <20231012044628.293070-1-pawell@cadence.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=L6ZjvNb8 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=62ntRvTiAAAA:8 a=g14jhrGyAAAA:8 a=VwQbUJbxAAAA:8 a=KKAkSRfTAAAA:8 a=W1AI2-169aiEXg90ZX8A:9 a=QEXdDO2ut3YA:10 a=pToNdpNmrtiFLRE6bQ9Z:22 a=P511sJaWzJIkUf5biGsp:22 a=AjGcO6oz07-iQ99wixmX:22 a=cvBusfyB2V15izCimMoJ:22
-X-SEG-SpamProfiler-Score: 0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-CrossPremisesHeadersFilteredBySendConnector: maileu5.global.cadence.com
+X-OrganizationHeadersPreserved: maileu5.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW2NAM12FT018:EE_|SA0PR07MB7580:EE_
+X-MS-Office365-Filtering-Correlation-Id: f9e21436-736a-4823-3b69-08dbdeef3b46
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hIQ09Onb4wcY5VVMpYIThOMWVrGwlMf/uvKy3lJLZTBx7o/kJoTD8oSuurnmMHh1YePZvp0IWwStnmfqHvEvzxjlhM/4/rd6QZY/BlOFyQ40AVEotHqNc6tuaRBXl06p5nhk72s3gBwwjLDihQxRnACU9jNrErL9AHQphZdl/DDd1VCUcT9YvQUtAs4j0n0ZpfkRsr78in3Odn0ebv0bNEmwsLOwwNzHXmRvblHXECO+a5CJ8wZQbd2ZYRHfCgNI0wpbky1Kk8lAHk1f+oKIKQB7HEml4e6xCYdSjvCIUvpaDJVV4rpdpwXhciuLrPhg4mLRhguCR0zX068a2f/8I0Dme5onar16P6OPfgLP7atJ5VpSJHSyi0RkhEOIgvzXeqyzW1IDABBIGgW4L8NU247r2Nw4iUvMcsKAWhVrmgN8K7f4x6j98dKTaTCQVuwN6vQXIZK2x5SkVhwVmWZgJPyrMzzDqGjGp2MUgR/Ia3wXB1Tq9VKEuBSTOH8GKjDZn+rqx4AT8Eh6mzZibuOrT3RN8jpASZ6twQ1ESd4pDhX9056iSbwLJ7BWMEVeOpnx3zYOQ02/UfXp/AUQfJsu0J9jZKR3FvV54MOaBU+AyUXmr3RFsm5sEauN1X5uIX45fLD48BaWxRmCl1RKskItvdTl493ikEaMFbche9JyLB1HCguxrzlIU086zO3MwJ6KeCbEZyBJ4aqgNSyp7gKzoE7PqJhLT2gzP1k3bKVhVZXGnhJaPox+Bktu6lJc2XNG
+X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(136003)(376002)(396003)(230922051799003)(186009)(1800799009)(82310400011)(64100799003)(451199024)(40470700004)(46966006)(36840700001)(47076005)(36860700001)(83380400001)(356005)(6916009)(7636003)(82740400003)(6666004)(478600001)(426003)(70206006)(336012)(54906003)(26005)(42186006)(70586007)(2616005)(107886003)(1076003)(5660300002)(2906002)(8676002)(36756003)(4326008)(41300700001)(86362001)(8936002)(316002)(40480700001)(40460700003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2023 17:38:47.5284
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f9e21436-736a-4823-3b69-08dbdeef3b46
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: MW2NAM12FT018.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR07MB7580
+X-Proofpoint-ORIG-GUID: BkHE_GEzj6s0sTODFnDGX8lsu_wwm4tF
+X-Proofpoint-GUID: BkHE_GEzj6s0sTODFnDGX8lsu_wwm4tF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_13,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 phishscore=0
+ clxscore=1015 impostorscore=0 priorityscore=1501 lowpriorityscore=0
+ bulkscore=0 mlxscore=0 spamscore=0 mlxlogscore=760 malwarescore=0
+ adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2310240000 definitions=main-2311060144
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAyOC8xMC8yMyAwMTo1NSwgQW5kaSBTaHl0aSB3cm90ZToNCj4gSGkgS3J6eXN6dG9mLA0K
-Pg0KPiBPbiBGcmksIE9jdCAyNywgMjAyMyBhdCAwMTozNzowNVBNICswMjAwLCBLcnp5c3p0b2Yg
-S296bG93c2tpIHdyb3RlOg0KPj4gT24gMjcvMTAvMjAyMyAxMzoyNywgS3J6eXN6dG9mIEtvemxv
-d3NraSB3cm90ZToNCj4+PiBPbiAyNy8xMC8yMDIzIDA1OjMxLCBDaHJpcyBQYWNraGFtIHdyb3Rl
-Og0KPj4+PiBTb21lIGhhcmR3YXJlIGRlc2lnbnMgaGF2ZSBhIEdQSU8gdXNlZCB0byBjb250cm9s
-IHRoZSByZXNldCBvZiBhbGwgdGhlDQo+Pj4+IGRldmljZXMgb24gYW5kIEkyQyBidXMuIEl0J3Mg
-bm90IHBvc3NpYmxlIGZvciBldmVyeSBjaGlsZCBub2RlIHRvDQo+Pj4+IGRlY2xhcmUgYSByZXNl
-dC1ncGlvcyBwcm9wZXJ0eSBhcyBvbmx5IHRoZSBmaXJzdCBkZXZpY2UgcHJvYmVkIHdvdWxkIGJl
-DQo+Pj4+IGFibGUgdG8gc3VjY2Vzc2Z1bGx5IHJlcXVlc3QgaXQgKHRoZSBvdGhlcnMgd2lsbCBn
-ZXQgLUVCVVNZKS4gUmVwcmVzZW50DQo+PiBDYzogTWFyaywNCj4+DQo+PiBBbHNvIHRoaXMgcGFy
-dCBpcyBub3QgdHJ1ZS4gSWYgdGhlIGJ1cyBpcyBub24tZGlzY292ZXJhYmxlLCB0aGVuIGl0IGlz
-DQo+PiBwb3NzaWJsZSB0byBoYXZlIHJlc2V0LWdwaW9zIGluIGVhY2ggcHJvYmVkIGRldmljZS4g
-WW91IGNhbiBzaGFyZSBHUElPcywNCj4+IHNvIG5vIHByb2JsZW0gd2l0aCAtRUJVU1kgYXQgYWxs
-Lg0KPj4NCj4+IFRoZSBwcm9ibGVtIGlzIGRvaW5nIHJlc2V0Og0KPj4gMS4gaW4gcHJvcGVyIG1v
-bWVudCBmb3IgYWxsIGRldmljZXMNCj4+IDIuIHdpdGhvdXQgYWZmZWN0aW5nIG90aGVyIGRldmlj
-ZXMgd2hlbiBvbmUgdW5iaW5kcy9yZW1vdmUoKQ0KPiB5ZXMsIEkgdGhvdWdodCB0aGF0IHdlIGNv
-dWxkIGdldCB0byB0aGlzIHBvaW50LCBidXQgSSBkaWQgbm90DQo+IG9iamVjdCB0aGUgcGF0Y2gg
-YXMgSSBkaWRuJ3Qgc2VlIGFuIGltbWVkaWF0ZSBiZXR0ZXIgc29sdXRpb24uIEkNCj4gd291bGQg
-c3RpbGwgYmUgT0sgdG8gbWVyZ2UgaXQgdW50aWwgd2UgZGV2ZWxvcCBzb21ldGhpbmcgYmV0dGVy
-Lg0KPg0KPiBMZXQgbWUgbXVsbCB0aGlzIG92ZXIgYW5kIHdpbGwgYmUgYmFjayB0byB0aGUgdG9w
-aWMuDQoNCklmIHdlJ3JlIGhhcHB5IHdpdGggcGxhaW4gR1BJT3MgSSBjYW4gbW92ZSB3aGF0IEkn
-dmUgZG9uZSBzbyBmYXIgdG8gDQpzb21ld2hlcmUgaW4gdGhlIEkyQyBjb3JlLiBJIGtub3cgd2Un
-dmUgZ290IG90aGVyIGhhcmR3YXJlIGRlc2lnbnMgd2l0aCANCmRpZmZlcmVudCBjb250cm9sbGVy
-cyB0aGF0IGFsc28gaGF2ZSBtdXhlcyBjb25uZWN0ZWQgdG8gYSBjb21tb24gcmVzZXQgDQpHUElP
-IHNvIEkgd291bGQgaGF2ZSBlbmRlZCB1cCBtb3ZpbmcgdGhpcyBjb2RlIHRvIEkyQyBjb3JlIGV2
-ZW50dWFsbHkuDQoNCklmIHdlJ3JlIHRhbGtpbmcgYSBwcm9wZXIgcmVzZXQgZHJpdmVyIGltcGxl
-bWVudGVkIHVzaW5nIEdQSU9zIHRoZW4gdGhhdCANCm1pZ2h0IGJlIGEgYml0IG9mIGJpZ2dlciB0
-YXNrLg0KDQo+IFRoYW5rcywgS3J6eXN6dG9mIQ0KPiBBbmRpDQo+DQo+PiBUaGUgKDIpIGFib3Zl
-IGlzIG5vdCBzb2x2ZWFibGUgZWFzeSBpbiBrZXJuZWwgYW5kIHdlIGFscmVhZHkgaGFkIG5pY2UN
-Cj4+IHRhbGtzIGFib3V0IGl0IGp1c3QgZmV3IGRheXMgYWdvOg0KPj4gMS4gQXBwbGUgY2FzZToN
-Cj4+IGh0dHBzOi8vc2Nhbm1haWwudHJ1c3R3YXZlLmNvbS8/Yz0yMDk4OCZkPTFMTzc1UjJucmUx
-TFAzVHlFV01ZZzFJczRNei1ZUk9QUThKeHNKcXdrZyZ1PWh0dHBzJTNhJTJmJTJmc29jaWFsJTJl
-dHJlZWhvdXNlJTJlc3lzdGVtcyUyZiU0MG1hcmNhbiUyZjExMTI2ODc4MDMxMTYzNDE2MA0KPj4N
-Cj4+IDIuIG15IFdTQTg4NHg6DQo+PiBodHRwczovL3NjYW5tYWlsLnRydXN0d2F2ZS5jb20vP2M9
-MjA5ODgmZD0xTE83NVIybnJlMUxQM1R5RVdNWWcxSXM0TXotWVJPUFE4SXZ0TWZoeVEmdT1odHRw
-cyUzYSUyZiUyZmxvcmUlMmVrZXJuZWwlMmVvcmclMmZhbHNhLWRldmVsJTJmODRmOWYxYzQtMDYy
-Ny00OTg2LTgxNjAtYjRhYjk5NDY5YjgxJTQwbGluYXJvJTJlb3JnJTJmDQo+Pg0KPj4gTGFzdCwN
-Cj4+IEkgd291bGQgbGlrZSB0byBhcG9sb2dpemUgdG8geW91IENocmlzLiBJIHVuZGVyc3RhbmQg
-dGhhdCBicmluZ2luZyBzdWNoDQo+PiBmZWVkYmFjayBhdCB2NSBpcyBub3QgdGhhdCBnb29kLiBJ
-IGhhZCBwbGVudHkgb2YgdGltZSB0byBzYXkgc29tZXRoaW5nDQo+PiBlYXJsaWVyLCBzbyB0aGlz
-IGlzIG5vdCByZWFsbHkgcHJvZmVzc2lvbmFsIGZyb20gbXkgc2lkZS4gSSBhbSBzb3JyeSwNCj4+
-IGp1c3QgbXkgYnJhaW4gZGlkIG5vdCBjb25uZWN0IGFsbCB0aGVzZSB0b3BpY3MgdG9nZXRoZXIu
-DQo+Pg0KPj4gSSBhcG9sb2dpemUuDQo+Pg0KPj4gQmVzdCByZWdhcmRzLA0KPj4gS3J6eXN6dG9m
+Patch removes TRB_FLUSH_ENDPOINT command from driver.
+This command is not supported by controller and
+USBSSP returns TRB Error completion code for it.
+
+Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+---
+ drivers/usb/cdns3/cdnsp-debug.h  |  3 ---
+ drivers/usb/cdns3/cdnsp-gadget.c |  6 +-----
+ drivers/usb/cdns3/cdnsp-gadget.h |  5 -----
+ drivers/usb/cdns3/cdnsp-ring.c   | 24 ------------------------
+ 4 files changed, 1 insertion(+), 37 deletions(-)
+
+diff --git a/drivers/usb/cdns3/cdnsp-debug.h b/drivers/usb/cdns3/cdnsp-debug.h
+index f0ca865cce2a..ad617b7455b9 100644
+--- a/drivers/usb/cdns3/cdnsp-debug.h
++++ b/drivers/usb/cdns3/cdnsp-debug.h
+@@ -131,8 +131,6 @@ static inline const char *cdnsp_trb_type_string(u8 type)
+ 		return "Endpoint Not ready";
+ 	case TRB_HALT_ENDPOINT:
+ 		return "Halt Endpoint";
+-	case TRB_FLUSH_ENDPOINT:
+-		return "FLush Endpoint";
+ 	default:
+ 		return "UNKNOWN";
+ 	}
+@@ -328,7 +326,6 @@ static inline const char *cdnsp_decode_trb(char *str, size_t size, u32 field0,
+ 		break;
+ 	case TRB_RESET_EP:
+ 	case TRB_HALT_ENDPOINT:
+-	case TRB_FLUSH_ENDPOINT:
+ 		ret = snprintf(str, size,
+ 			       "%s: ep%d%s(%d) ctx %08x%08x slot %ld flags %c",
+ 			       cdnsp_trb_type_string(type),
+diff --git a/drivers/usb/cdns3/cdnsp-gadget.c b/drivers/usb/cdns3/cdnsp-gadget.c
+index 4b67749edb99..4a3f0f958256 100644
+--- a/drivers/usb/cdns3/cdnsp-gadget.c
++++ b/drivers/usb/cdns3/cdnsp-gadget.c
+@@ -1024,10 +1024,8 @@ static int cdnsp_gadget_ep_disable(struct usb_ep *ep)
+ 	pep->ep_state |= EP_DIS_IN_RROGRESS;
+ 
+ 	/* Endpoint was unconfigured by Reset Device command. */
+-	if (!(pep->ep_state & EP_UNCONFIGURED)) {
++	if (!(pep->ep_state & EP_UNCONFIGURED))
+ 		cdnsp_cmd_stop_ep(pdev, pep);
+-		cdnsp_cmd_flush_ep(pdev, pep);
+-	}
+ 
+ 	/* Remove all queued USB requests. */
+ 	while (!list_empty(&pep->pending_list)) {
+@@ -1424,8 +1422,6 @@ static void cdnsp_stop(struct cdnsp_device *pdev)
+ {
+ 	u32 temp;
+ 
+-	cdnsp_cmd_flush_ep(pdev, &pdev->eps[0]);
+-
+ 	/* Remove internally queued request for ep0. */
+ 	if (!list_empty(&pdev->eps[0].pending_list)) {
+ 		struct cdnsp_request *req;
+diff --git a/drivers/usb/cdns3/cdnsp-gadget.h b/drivers/usb/cdns3/cdnsp-gadget.h
+index e1b5801fdddf..dbee6f085277 100644
+--- a/drivers/usb/cdns3/cdnsp-gadget.h
++++ b/drivers/usb/cdns3/cdnsp-gadget.h
+@@ -1128,8 +1128,6 @@ union cdnsp_trb {
+ #define TRB_HALT_ENDPOINT	54
+ /* Doorbell Overflow Event. */
+ #define TRB_DRB_OVERFLOW	57
+-/* Flush Endpoint Command. */
+-#define TRB_FLUSH_ENDPOINT	58
+ 
+ #define TRB_TYPE_LINK(x)	(((x) & TRB_TYPE_BITMASK) == TRB_TYPE(TRB_LINK))
+ #define TRB_TYPE_LINK_LE32(x)	(((x) & cpu_to_le32(TRB_TYPE_BITMASK)) == \
+@@ -1539,8 +1537,6 @@ void cdnsp_queue_configure_endpoint(struct cdnsp_device *pdev,
+ void cdnsp_queue_reset_ep(struct cdnsp_device *pdev, unsigned int ep_index);
+ void cdnsp_queue_halt_endpoint(struct cdnsp_device *pdev,
+ 			       unsigned int ep_index);
+-void cdnsp_queue_flush_endpoint(struct cdnsp_device *pdev,
+-				unsigned int ep_index);
+ void cdnsp_force_header_wakeup(struct cdnsp_device *pdev, int intf_num);
+ void cdnsp_queue_reset_device(struct cdnsp_device *pdev);
+ void cdnsp_queue_new_dequeue_state(struct cdnsp_device *pdev,
+@@ -1574,7 +1570,6 @@ void cdnsp_irq_reset(struct cdnsp_device *pdev);
+ int cdnsp_halt_endpoint(struct cdnsp_device *pdev,
+ 			struct cdnsp_ep *pep, int value);
+ int cdnsp_cmd_stop_ep(struct cdnsp_device *pdev, struct cdnsp_ep *pep);
+-int cdnsp_cmd_flush_ep(struct cdnsp_device *pdev, struct cdnsp_ep *pep);
+ void cdnsp_setup_analyze(struct cdnsp_device *pdev);
+ int cdnsp_status_stage(struct cdnsp_device *pdev);
+ int cdnsp_reset_device(struct cdnsp_device *pdev);
+diff --git a/drivers/usb/cdns3/cdnsp-ring.c b/drivers/usb/cdns3/cdnsp-ring.c
+index 07f6068342d4..af981778382d 100644
+--- a/drivers/usb/cdns3/cdnsp-ring.c
++++ b/drivers/usb/cdns3/cdnsp-ring.c
+@@ -2123,19 +2123,6 @@ int cdnsp_cmd_stop_ep(struct cdnsp_device *pdev, struct cdnsp_ep *pep)
+ 	return ret;
+ }
+ 
+-int cdnsp_cmd_flush_ep(struct cdnsp_device *pdev, struct cdnsp_ep *pep)
+-{
+-	int ret;
+-
+-	cdnsp_queue_flush_endpoint(pdev, pep->idx);
+-	cdnsp_ring_cmd_db(pdev);
+-	ret = cdnsp_wait_for_cmd_compl(pdev);
+-
+-	trace_cdnsp_handle_cmd_flush_ep(pep->out_ctx);
+-
+-	return ret;
+-}
+-
+ /*
+  * The transfer burst count field of the isochronous TRB defines the number of
+  * bursts that are required to move all packets in this TD. Only SuperSpeed
+@@ -2465,17 +2452,6 @@ void cdnsp_queue_halt_endpoint(struct cdnsp_device *pdev, unsigned int ep_index)
+ 			    EP_ID_FOR_TRB(ep_index));
+ }
+ 
+-/*
+- * Queue a flush endpoint request on the command ring.
+- */
+-void  cdnsp_queue_flush_endpoint(struct cdnsp_device *pdev,
+-				 unsigned int ep_index)
+-{
+-	cdnsp_queue_command(pdev, 0, 0, 0, TRB_TYPE(TRB_FLUSH_ENDPOINT) |
+-			    SLOT_ID_FOR_TRB(pdev->slot_id) |
+-			    EP_ID_FOR_TRB(ep_index));
+-}
+-
+ void cdnsp_force_header_wakeup(struct cdnsp_device *pdev, int intf_num)
+ {
+ 	u32 lo, mid;
+-- 
+2.25.1
+
