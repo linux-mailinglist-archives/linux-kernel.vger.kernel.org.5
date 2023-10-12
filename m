@@ -2,174 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7D77C6B96
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 404EA7C6BA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377702AbjJLKyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45102 "EHLO
+        id S1378020AbjJLK4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235665AbjJLKyG (ORCPT
+        with ESMTP id S1377894AbjJLK4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:54:06 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5C494;
-        Thu, 12 Oct 2023 03:54:04 -0700 (PDT)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CAlNnF007306;
-        Thu, 12 Oct 2023 10:53:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=CZTYGOLITZz/5HSutlowApvi7I/NVLgN/RMhkr0VPug=;
- b=YA236edX0Xp7Q3ZSGlukmoukSXzLRk4gBJTsJlHpQo2t1io7WxhISc+IhSmD6axoFNC/
- aTNrxG77z3Ra0nVxF7X8Is/dITfCoaKIgnVIMaQFaHissaarATLAB2pMZi8WBpr+Q8JJ
- an97uIUv5DCY9rr1d9v4nhQ3FLI4RC8k1ffeJsKNZc7/sxQOUIUh4QvEBRAoTrQlSDvD
- KFfOYewU6GdZ2K2ip+p5ZskI7BO6tDTxbnbQeNPyNOqp65bhAPBGftMYAN/3GC6bpgLI
- aUx+1PkOXPd159NzepjwhU5pboLpMLG5to1ZFDG3I/YdVDAIxKt6ck2hcZCxpDP5ay0t Gg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpfbr05sc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 10:53:46 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39CAmbll010719;
-        Thu, 12 Oct 2023 10:53:46 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpfbr05rv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 10:53:46 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39CAVCL2000640;
-        Thu, 12 Oct 2023 10:53:44 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkk5kxraq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 10:53:44 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CArdEX20185690
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Oct 2023 10:53:41 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA94820043;
-        Thu, 12 Oct 2023 10:53:39 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 799A220040;
-        Thu, 12 Oct 2023 10:53:38 +0000 (GMT)
-Received: from [9.171.78.5] (unknown [9.171.78.5])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Oct 2023 10:53:38 +0000 (GMT)
-Message-ID: <5e7ec86d690ec5337052742ca75ad2ade23f291e.camel@linux.ibm.com>
-Subject: Re: [PATCH net v3] net/mlx5: fix calling mlx5_cmd_init() before DMA
- mask is set
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shay Drory <shayd@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jacob Keller <jacob.e.keller@intel.com>
-Date:   Thu, 12 Oct 2023 12:53:38 +0200
-In-Reply-To: <ZSbvxeLKS8zHltdg@x130>
-References: <20231011-mlx5_init_fix-v3-1-787ffb9183c6@linux.ibm.com>
-         <ZSbnUlJT1u3xUIqY@x130> <ZSbvxeLKS8zHltdg@x130>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: kRd3oGJK6y8N7MPlgAvIihFPuil2K1C6
-X-Proofpoint-GUID: LC3xu5ymSIwgc6Rq_1QRO0UnRdoy9rGg
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 12 Oct 2023 06:56:16 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D20B90;
+        Thu, 12 Oct 2023 03:56:15 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c9e072472bso3711545ad.2;
+        Thu, 12 Oct 2023 03:56:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697108175; x=1697712975;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W9Da9MBT9rB+lZA9zm7WjEfc17v4yeizFPCpeNj0xZ0=;
+        b=Ei07dD2m+RTvKQhFedviaU1CsU5TBQ/erBoTMJOHBNfnnycKPjdIy1+kaJ+4DWAfMJ
+         kBe5yBQuv7K4vIqZhY2mryVqSd+ASML7t2cXci4Qjrv0NY/YOwgMGowdIXzdEGSv8+fd
+         Pdn+qdl3Mxuz1s5wFIertknrqDOt970bnc/GBWa2GNSQs+LMZpG/MRumMXXg3Ne1jMA/
+         pNTw+eeeR3oqUZWNedlC94yT416cqbpqwIrCQhN6wxLhBH4lVjDQdcM1ZE+cH7gB/MnN
+         D50pm+hKYJk6EK1TinKUyzHGWj8QuaW/q0dDO+qzSYYbF4JN7HLBf/JtEVahNjyOTrCs
+         cMRA==
+X-Gm-Message-State: AOJu0YxQDamhMNb0DqygyM8iM0bsALWBmPRHUTJnuSFF/Smh+hmU4jGt
+        50OAzBhbYBGMx+iw2M9BUz8=
+X-Google-Smtp-Source: AGHT+IHrukWTPzhOjCyRsKwTW9N1rf4iR43yr7LemfnQgYdFKwX3fykZ3xDPkLmVgn5cqdkN8M/iSQ==
+X-Received: by 2002:a17:902:fa8f:b0:1c9:d948:33d5 with SMTP id lc15-20020a170902fa8f00b001c9d94833d5mr2349432plb.64.1697108174615;
+        Thu, 12 Oct 2023 03:56:14 -0700 (PDT)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id a7-20020a170902ecc700b001c3267ae31bsm1642297plh.301.2023.10.12.03.56.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 03:56:13 -0700 (PDT)
+From:   "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+        s=2023; t=1697108172;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=W9Da9MBT9rB+lZA9zm7WjEfc17v4yeizFPCpeNj0xZ0=;
+        b=p6mRBJRv15x2a8mugD54EELIKpHhGxE1HudINzkmlCUswZguuXtnlCIm/uEwKwVFGZVLJK
+        nYWY3ofQoWfYLeWEKmB7VlsdpqXtvMSIsU6UcKac9GL54ENIO1eIdN7DJjkuzehSfniMDg
+        qORCa7JwERprwg49vaR4XZH3DGZYcOA0iaWdlZhua/wejFBTrv0X29zVCWKoPHxCiZUyj+
+        6m2N1mhjzLGzrd+M41gY1i3BLQ8YfOEO7gI4LQKNrAbrF/BAbWNzNcAJZ6yUKmJvj2rjU8
+        m0xLBNvh1cZcYPP/CDUQ5IFVxGBe/Ql7NmfsVGUjkM9DsgHzdToaow1h361Ndg==
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        "Ricardo B. Marliere" <ricardo@marliere.net>
+Subject: [PATCH] docs: kbuild: add INSTALL_DTBS_PATH
+Date:   Thu, 12 Oct 2023 07:54:21 -0300
+Message-ID: <20231012105420.16779-2-ricardo@marliere.net>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 priorityscore=1501 clxscore=1011 adultscore=0 mlxscore=0
- spamscore=0 impostorscore=0 phishscore=0 suspectscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310120088
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-10-11 at 11:56 -0700, Saeed Mahameed wrote:
-> On 11 Oct 11:20, Saeed Mahameed wrote:
-> > On 11 Oct 09:57, Niklas Schnelle wrote:
-> > > Since commit 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe =
-and
-> > > reload routines") mlx5_cmd_init() is called in mlx5_mdev_init() which=
- is
-> > > called in probe_one() before mlx5_pci_init(). This is a problem becau=
-se
-> > > mlx5_pci_init() is where the DMA and coherent mask is set but
-> > > mlx5_cmd_init() already does a dma_alloc_coherent(). Thus a DMA
-> > > allocation is done during probe before the correct mask is set. This
-> > > causes probe to fail initialization of the cmdif SW structs on s390x
-> > > after that is converted to the common dma-iommu code. This is because=
- on
-> > > s390x DMA addresses below 4 GiB are reserved on current machines and
-> > > unlike the old s390x specific DMA API implementation common code
-> > > enforces DMA masks.
-> > >=20
-> > > Fix this by moving set_dma_caps() out of mlx5_pci_init() and into
-> > > probe_one() before mlx5_mdev_init(). To match the overall naming sche=
-me
-> > > rename it to mlx5_dma_init().
-> >=20
-> > How about we just call mlx5_pci_init() before mlx5_mdev_init(), instead=
- of
-> > breaking it apart ?
->=20
-> I just posted this RFC patch [1]:
+The documentation for kbuild and makefiles is missing an explanation of
+a variable important for some architectures.
 
-This patch works to solve the problem as well.
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ Documentation/kbuild/kbuild.rst    | 6 ++++++
+ Documentation/kbuild/makefiles.rst | 7 +++++++
+ 2 files changed, 13 insertions(+)
 
->=20
-> I am working in very limited conditions these days, and I don't have stro=
-ng
-> opinion on which approach to take, Leon, Niklas, please advise.
->=20
-> The three possible solutions:
->=20
-> 1) mlx5_pci_init() before mlx5_mdev_init(), I don't think enabling pci
-> before initializing cmd dma would be a problem.
->=20
-> 2) This patch.
->=20
-> 3) Shay's patch from the link below:
-> [1] https://patchwork.kernel.org/project/netdevbpf/patch/20231011184511.1=
-9818-1-saeed@kernel.org/
->=20
-> Thanks,
-> Saeed.
-
-My first gut feeling was option 1) but I'm just as happy with 2) or 3).
-For me option 2 is the least invasive but not by much.
-
-For me the important thing is what Jason also said yesterday. We need
-to merge something now to unbreak linux-next on s390x and to make sure
-we don't end up with a broken v6.7-rc1. This is already hampering our
-CI tests with linux-next. So let's do whatever can be merged the
-quickest and then feel free to do any refactoring ideas that this
-discussion might have spawned on top of that. My guess for this
-criteria would be 2).
-
-Thanks,
-Niklas
+diff --git a/Documentation/kbuild/kbuild.rst b/Documentation/kbuild/kbuild.rst
+index bd906407e307..9c8d1d046ea5 100644
+--- a/Documentation/kbuild/kbuild.rst
++++ b/Documentation/kbuild/kbuild.rst
+@@ -243,6 +243,12 @@ The output directory is often set using "O=..." on the commandline.
+ 
+ The value can be overridden in which case the default value is ignored.
+ 
++INSTALL_DTBS_PATH
++-----------------
++INSTALL_DTBS_PATH specifies where to install device tree blobs for
++relocations required by build roots.  This is not defined in the
++makefile but the argument can be passed to make if needed.
++
+ KBUILD_ABS_SRCTREE
+ --------------------------------------------------
+ Kbuild uses a relative path to point to the tree when possible. For instance,
+diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
+index e67eb261c9b0..d88d4f0f4f89 100644
+--- a/Documentation/kbuild/makefiles.rst
++++ b/Documentation/kbuild/makefiles.rst
+@@ -1623,6 +1623,13 @@ INSTALL_MOD_STRIP
+   INSTALL_MOD_STRIP value will be used as the option(s) to the strip
+   command.
+ 
++INSTALL_DTBS_PATH
++  This variable specifies a prefix for relocations required by build
++  roots. It defines a place for installing the device tree blobs. Like
++  INSTALL_MOD_PATH, it isn't defined in the Makefile, but can be passed
++  by the user if desired. Otherwise it defaults to the kernel install
++  path.
++
+ Makefile language
+ =================
+ 
+-- 
+2.42.0
 
