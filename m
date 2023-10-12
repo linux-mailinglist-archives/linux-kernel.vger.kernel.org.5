@@ -2,437 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4017C7A5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C077C7A60
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443095AbjJLXWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 19:22:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
+        id S1443090AbjJLX0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 19:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443006AbjJLXWc (ORCPT
+        with ESMTP id S1443006AbjJLX0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 19:22:32 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83952A9;
-        Thu, 12 Oct 2023 16:22:30 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 91C3D21220;
-        Thu, 12 Oct 2023 23:22:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1697152948; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7jh/n4J9VYawVOoGC8PbIeXicDNe+C9ekZxTBgsYjvc=;
-        b=Pr9hxM+ccVHAs+7Umz3gtcSLk/JZ5K1eXXXGh4olGRJiDNjUzu5UVjGs6uOF5kgp0z/hFL
-        f7qWCLCu0qw8vI+BSHiaFRcnHcagQWZFGwdwAf6VSjrtnTtlTyDCL9vkBF2DM+Cxvx5Heu
-        LV4lY4/TKb06MWMUZ2GA9jWqHO1mA0w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1697152948;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7jh/n4J9VYawVOoGC8PbIeXicDNe+C9ekZxTBgsYjvc=;
-        b=cCop0C063lQCg5MOVE+kD2sOtSyjZ/nVxg4M913Jpd6dXb9xDNw6x7mj6Sb6SRRWO/wr0n
-        XHme6PmNNBi/gqCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1B692139ED;
-        Thu, 12 Oct 2023 23:22:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id F5gGMLF/KGUlCwAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 12 Oct 2023 23:22:25 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 12 Oct 2023 19:26:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BB1BE;
+        Thu, 12 Oct 2023 16:26:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697153180; x=1728689180;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=pg1MvHpvDAODgWLTPHGAmwuGuQwXtvK/qRju1pFItuc=;
+  b=G2LOOVzFpxdGvcVMLCzlas2fbnePzllAQXzsb1Ive2Bwj/NZTh/tlLLL
+   iHat2U0w2uAcEwkJzv4EnCrz9mEOa2T3WyEH6D1M8xVeV/qZPMNJ7tL/N
+   AzRpptoTa5ocAmY4aBTjgUMSAFlPbepq5TwONGCOiOncpNuQ7nTxN6hTt
+   SiyViBSDTInmnvAeMiNZZZXHPL+AVeCZb9zJ32OBnIlgslzBsiUjR2dXP
+   6yakWyjAOaKnbtL5uXNs3tASexGv26en5t8WRZTH10xHuWLMN15CAtZga
+   FGvsm67CZ6A0ZEtxlWvFu5dQY4RrKLbhWsf7GvtGN94da4WebyZsFstG8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="416114158"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="416114158"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 16:26:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="783907010"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="783907010"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Oct 2023 16:26:19 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 12 Oct 2023 16:26:19 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 12 Oct 2023 16:26:18 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 12 Oct 2023 16:26:18 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 12 Oct 2023 16:26:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gHOwSQtVDwtP3QA7Q/oRzK9/l2XckR9XKuhCNTA32n69fqriIECGa3JkwfNs/Vit3eAtImTPAbrbn0VwqNjtIPH6EBoId2GNy9/u5Xqorn9KQiU+EZmgOf9oePscfKGX7rL6bWMpNeLJSfXXlHqm1EMQiTEWj6J0OjSfSZG9E/fgZaeIxR5B8lo8YdTpz9gynxC7KSmdUixa1Pb4d9ExanOf6Fow6MycEGz7TRPmGtLc1PTUYdRQI6OzCvTIAlNP4kDlG0qDExwex3IDsTaN42jaQmWb/rjHJ9/K4dCjYIh2k3rEL2mo7N2WZEMiiTvFVA0gtTDjxXZIZINZOmyU5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xb30Wc4h4XVlltel6nk3tl6HqRSZQn1nhtNSxHxj2CU=;
+ b=ipxxKeAbJ9MRQEgJ6pDwRTfPxo3PtlBBWXxGZI3lm0kbyukWSQtk+Bl3cvQInIr+g+Yi4/bZMi32KCCVkNyAp/SS+CZF/ODws82BtaqRdSlRIZaZdXt1Jivr+kt1ZCPOKJhWojTd7/piHnis760omqXAmRLJPCivTddk7LIbj27iwFWiJL1qIfOJfbjQPO0VYDho5uGVSexxmlUD1pAwQfAwKjZ72ApP5vJrJ3/v/2ZaACzkcRRhSNBTjjDWktX0q8hsex041s0EQ/A6cEYOlNa7zkqGnrwaxuOoZnN3StUa61Xfih6Q3BBWKt9sHITSBoXJnTtlybyBXXCQAlfmsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA3PR11MB8118.namprd11.prod.outlook.com (2603:10b6:806:2f1::13)
+ by SJ0PR11MB5893.namprd11.prod.outlook.com (2603:10b6:a03:429::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.46; Thu, 12 Oct
+ 2023 23:26:10 +0000
+Received: from SA3PR11MB8118.namprd11.prod.outlook.com
+ ([fe80::66b3:c77d:472e:4baa]) by SA3PR11MB8118.namprd11.prod.outlook.com
+ ([fe80::66b3:c77d:472e:4baa%3]) with mapi id 15.20.6863.032; Thu, 12 Oct 2023
+ 23:26:08 +0000
+Date:   Thu, 12 Oct 2023 16:26:05 -0700
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        <linux-efi@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Ard Biesheuvel <ardb@kernel.org>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Ira Weiny" <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Subject: RE: [PATCH 1/3] efi/cper, cxl: Decode CXL Component Events General
+ Media Event Record
+Message-ID: <6528808cef2ba_780ef294c5@dwillia2-xfh.jf.intel.com.notmuch>
+References: <20231012230301.58500-1-Smita.KoralahalliChannabasappa@amd.com>
+ <20231012230301.58500-2-Smita.KoralahalliChannabasappa@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231012230301.58500-2-Smita.KoralahalliChannabasappa@amd.com>
+X-ClientProxiedBy: MW4P222CA0009.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:303:114::14) To SA3PR11MB8118.namprd11.prod.outlook.com
+ (2603:10b6:806:2f1::13)
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Jeff Layton" <jlayton@kernel.org>
-Cc:     "Chuck Lever" <chuck.lever@oracle.com>,
-        "Olga Kornievskaia" <kolga@netapp.com>,
-        "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Jeff Layton" <jlayton@kernel.org>
-Subject: Re: [PATCH RFC] nfsd: new Kconfig option for legacy client tracking
-In-reply-to: <20231012-nfsd-cltrack-v1-1-4e2e405b2b96@kernel.org>
-References: <20231012-nfsd-cltrack-v1-1-4e2e405b2b96@kernel.org>
-Date:   Fri, 13 Oct 2023 10:22:21 +1100
-Message-id: <169715294196.26263.8724135216623551852@noble.neil.brown.name>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -11.10
-X-Spamd-Result: default: False [-11.10 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA3PR11MB8118:EE_|SJ0PR11MB5893:EE_
+X-MS-Office365-Filtering-Correlation-Id: 505b3a88-80c2-4589-fe76-08dbcb7a9d0e
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Q8LlbNj6VMXqba/rs0kz/Sz50iAspDmkedW0femSw7KOqRsjVQGREibYD1V+aWFPlpx1UVUmiBFsCeje+TNcCJGTbiWewFcwJtjZz8ijS/aELnXnuWCZVnu9KG8A/Jq2+DOQWOtU+epMS10pqFQcd2rPcAwKMf3uKqfky6LywgPmdIqqwQABheH5EHBbvJSVMoAQGTzY4nY/8IvIiG6Pn5tIFYjCL4G1sE8WrV8y5Cym/ZWznH8aXx19gx3CPlXqh5a+YM87sSN1N6Ex+JkB7ssAf43V6HfVv26ipGFNA/8OOKYWbfLLsadE2sWqtq5aD9V5XVW8lU8iiWvcj0H7fDl04Ws7QCGGh6Bl9tqASvW7F5nM+e0AdMIiBAkgLXVbnymwcOWGQanccjaL4RrcOQPzWdbrjxUBWDRU8hucCK2iS/iMgVuVNbOrQ1yhYKdHjG24j1NKyx9Fr4D98GdcCmjexJOrIB5P9hah6+GPCKAC2B3cUMOvASj3JA0C+SAUexUt4e6fLtlTO/kuXw5sXU+wW3czSNNt3xeBVRD2120bXe8UUxu0jr9VBEF5chbs
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR11MB8118.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(136003)(376002)(346002)(396003)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(9686003)(6512007)(6666004)(478600001)(6506007)(6486002)(86362001)(38100700002)(82960400001)(2906002)(316002)(26005)(5660300002)(66556008)(66476007)(66946007)(54906003)(8676002)(8936002)(4326008)(41300700001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MSTPaijI5l4KaiuxInNyb/0zSFoBJthBK7orMHof2NK6Mvh61l84N/k7oaYH?=
+ =?us-ascii?Q?4gIGtxziSNV7HOT7R/y4xlWlFn/Ulx0fz7o6J46LxM1dot53PA3DsTaFFpKK?=
+ =?us-ascii?Q?bpuhlkLCKw608hsozwegmp4puDIAC9xpC2AzfuSdMYSk0/+b/8Snk7OC/ntS?=
+ =?us-ascii?Q?kSs03I3jUNw8Gdi02PQPA4JyF4f5hmHNzZzELCPskHq8XpzJ1cmVAE0NwXxZ?=
+ =?us-ascii?Q?nz5S+5iqzG/nqGXnCcNeJ+3KxLEzksmD+3+o0XKklP0ALiz7EXALgxRguHEP?=
+ =?us-ascii?Q?+nROqV/N8dOcrd6Cqsm0RUQY7QO1JtAF4b01UpzZ/04ZR0GfE+80kOQC2/nv?=
+ =?us-ascii?Q?aavAcV3Fr3SNtREDE29eo2rf3pqN399J9/+tnW+CMOypRTgRCWx+YFxSrD2x?=
+ =?us-ascii?Q?76/z8j6q7xGiJPotqQTPci+LfR7/CyDBRxTjz/FsLl2GwxIEPBR6QTA5xi09?=
+ =?us-ascii?Q?5av0L1UDj5RZ/onQTCyrS0V1iemIQopisjV9cVRpBH5DbZmxhslUBRarK1GD?=
+ =?us-ascii?Q?QWAx8Rj53GV1AJfmFXHJPdK24xpJY/O8w3jZyaKhfb+haVowJg2recj2CmJQ?=
+ =?us-ascii?Q?oL2iY0ZWYAj/vF5/TyGpxh+Fi5iyYsAETEnip3940x7tFDtYtKSbEh4cdJnQ?=
+ =?us-ascii?Q?oha/WUr4oK7jLmjHt9p7aIq5XdBrA5fkcqQ7zngVnRhdtGrIaMIG+OeQs5t0?=
+ =?us-ascii?Q?hK9uh2raKBAl2Y1OfXDcjDkf1tcgfZjucD5/Wu/Ed2IUFTSqxyzqWRxRU52F?=
+ =?us-ascii?Q?ONDr4+MTERx8wze9PkmO0LSm/Fj+80Za0JRnFttR0gMXzhCxqe9AiwNfU8dQ?=
+ =?us-ascii?Q?AlJfVXTNZQxvaCVIpiUeoLDSyP7ht9/WTBwGOz9Qhcx9GazQzGISe53uFbFv?=
+ =?us-ascii?Q?ODivLnD8Nb2zQ7p3vudhxCzxb2AJXXM3IwgGdFAU7mm8VOVNBaD9+cM1xt34?=
+ =?us-ascii?Q?KA9lq86nA860CmHOb0H1daiL8WBbOF4bo97g6mABH26/3HOSSBDGk/RJk2zp?=
+ =?us-ascii?Q?54786+yaiXttitB6jqed8Spuxhwp1wtSmiPMqxAI6RewmZMeWB+7Pfk5DSZY?=
+ =?us-ascii?Q?m9HcdOEv4nISePFmzWCCHTVdkXcp1GkL2+9BPwBVeV/Ko3VF5YRnbowCD/aL?=
+ =?us-ascii?Q?wb1FFYB3qUILKtBHOudbfZc2DL5p32xUjrl7JjsYSgFzTMoeAzi+W5Rs3pYs?=
+ =?us-ascii?Q?5oyWJknWqnxss6qntxXZIOjdC4788Ua/WvYA7gGFjF36QZetDrfT8RnTDjwQ?=
+ =?us-ascii?Q?cDLuS6m1aWUm9PrDERgA0ecV+dQ0Al0DDIFHqzsHRfr/JZs0Z9McNOtFwGKd?=
+ =?us-ascii?Q?coscsAebx0xm9JI7U88aoR4Y1zyYW07vbs7T34MXgWYzLJ9OElnGA8v2/wr/?=
+ =?us-ascii?Q?0zMi8N4qCuoou/8Kao4DobPajTpc+tJs3ApnU3yFdxPzpp5WisljZzJyuwlP?=
+ =?us-ascii?Q?HNFKRo1e0lIMZvjS6nPkHOYMYfzL+hrxMNADoo1cIlSS/vEB6hsDbZIpUlZ/?=
+ =?us-ascii?Q?o4ZYeF8pBtDaT5tNozcobojZBqD0CnzFowoq5mOgDCPXAkNTk5rTBUmGYvkG?=
+ =?us-ascii?Q?K3XM2k1+BJtpwZhFpJbB7TXd51zTqAzVXDsxQhTa5ZjzgyOLC/0fn6WMLmgR?=
+ =?us-ascii?Q?ug=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 505b3a88-80c2-4589-fe76-08dbcb7a9d0e
+X-MS-Exchange-CrossTenant-AuthSource: SA3PR11MB8118.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 23:26:08.5844
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N8cUeGJloYph9GLEDe2lD3ikMVWcwISWq1JJT5OfUBacPLtieYpZz3ybmSYWdAjoBNiy1xkDDqCrFKnK4OICfYm054vwPZJgJgDA195mvEY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5893
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023, Jeff Layton wrote:
-> We've had a number of attempts at different NFSv4 client tracking
-> methods over the years, but now nfsdcld has emerged as the clear winner
-> since the others (recoverydir and the usermodehelper upcall) are
-> problematic.
->=20
-> As a prelude to eventually removing support for these client tracking
-> methods, add a new Kconfig option that enables them. Mark it deprecated
-> and make it default to N.
+Smita Koralahalli wrote:
+> Add support for decoding CXL Component Events General Media Event Record
+> as defined in CXL rev 3.0 section 8.2.9.2.1.1.
+> 
+> All the event records as defined in Event Record Identifier field of the
+> Common Event Record Format in CXL rev 3.0 section 8.2.9.2.1 follow the
+> CPER format for representing the hardware errors if reported by a
+> platform.
+> 
+> According to the CPER format, each event record including the General
+> Media is logged as a CXL Component Event as defined in UEFI 2.10
+> Section N.2.14 and is identified by a UUID as defined by Event Record
+> Identifier field in Common Event Record Format of CXL rev 3.0 section
+> 8.2.9.2.1. CXL Component Event Log field in Component Events Section
+> corresponds to the component/event specified by the section type UUID.
+> 
+> Add support for decoding CXL Component Events as defined in UEFI 2.10
+> Section N.2.14 and decoding Common Event Record as defined in CXL rev 3.0
+> section 8.2.9.2.1.
 
-This is an excellent idea - thanks.  I haven't looked closely at the
-patch, but if it builds then I suspect it is correct.
+So I think this is missing the rationale for the code duplication.
 
-Acked-by: NeilBrown <neilb@suse.de>
+Specifically, who is the consumer of this parsing relative to who is the
+consumer of the event records emitted by the CXL subsystem. Given the
+CXL subsystem event parsing already exists, and unlike this
+implementation can support DPA-to-HPA translation, why should Linux
+carry 2 emitters for what is effectively the same data?
 
-Thanks,
-NeilBrown
+What I would like to see is the CPER code post these record payloads on
+a notifier chain for the CXL subsystem to parse, annotate with extra CXL
+subsystem information, and emit from one control point.
 
-
-
->=20
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
-> Now that we've really settled on nfsdcld being the way forward for
-> NFSv4 client tracking, put the legacy methods under a new Kconfig option
-> that defaults to off.
->=20
-> This should make it easier to eventually deprecate this code and remove
-> it in the future (maybe in v6.10 or so)?
-> ---
->  fs/nfsd/Kconfig       | 16 +++++++++
->  fs/nfsd/nfs4recover.c | 97 +++++++++++++++++++++++++++++++++--------------=
-----
->  fs/nfsd/nfsctl.c      |  6 ++++
->  3 files changed, 85 insertions(+), 34 deletions(-)
->=20
-> diff --git a/fs/nfsd/Kconfig b/fs/nfsd/Kconfig
-> index 43b88eaf0673..2d21fbf154c6 100644
-> --- a/fs/nfsd/Kconfig
-> +++ b/fs/nfsd/Kconfig
-> @@ -158,3 +158,19 @@ config NFSD_V4_SECURITY_LABEL
-> =20
->  	If you do not wish to enable fine-grained security labels SELinux or
->  	Smack policies on NFSv4 files, say N.
-> +
-> +config NFSD_LEGACY_CLIENT_TRACKING
-> +	bool "Support legacy NFSv4 client tracking methods (deprecated)"
-> +	depends on NFSD_V4
-> +	default n
-> +	help
-> +	  The NFSv4 server needs to store a small amount of information on
-> +	  stable storage in order to handle state recovery after reboot. Most
-> +	  modern deployments upcall to a userland daemon for this (nfsdcld),
-> +	  but older NFS servers may store information directly in a
-> +	  recoverydir, or spawn a process directly using a usermodehelper
-> +	  upcall.
-> +
-> +	  These legacy client tracking methods have proven to be probelmatic
-> +	  and will be removed in the future. Say Y here if you need support
-> +	  for them in the interim.
-> diff --git a/fs/nfsd/nfs4recover.c b/fs/nfsd/nfs4recover.c
-> index 3509e73abe1f..2c060e0b1604 100644
-> --- a/fs/nfsd/nfs4recover.c
-> +++ b/fs/nfsd/nfs4recover.c
-> @@ -66,6 +66,7 @@ struct nfsd4_client_tracking_ops {
->  static const struct nfsd4_client_tracking_ops nfsd4_cld_tracking_ops;
->  static const struct nfsd4_client_tracking_ops nfsd4_cld_tracking_ops_v2;
-> =20
-> +#ifdef CONFIG_NFSD_LEGACY_CLIENT_TRACKING
->  /* Globals */
->  static char user_recovery_dirname[PATH_MAX] =3D "/var/lib/nfs/v4recovery";
-> =20
-> @@ -720,6 +721,7 @@ static const struct nfsd4_client_tracking_ops nfsd4_leg=
-acy_tracking_ops =3D {
->  	.version	=3D 1,
->  	.msglen		=3D 0,
->  };
-> +#endif /* CONFIG_NFSD_LEGACY_CLIENT_TRACKING */
-> =20
->  /* Globals */
->  #define NFSD_PIPE_DIR		"nfsd"
-> @@ -731,8 +733,10 @@ struct cld_net {
->  	spinlock_t		 cn_lock;
->  	struct list_head	 cn_list;
->  	unsigned int		 cn_xid;
-> -	bool			 cn_has_legacy;
->  	struct crypto_shash	*cn_tfm;
-> +#ifdef CONFIG_NFSD_LEGACY_CLIENT_TRACKING
-> +	bool			 cn_has_legacy;
-> +#endif
->  };
-> =20
->  struct cld_upcall {
-> @@ -793,7 +797,6 @@ __cld_pipe_inprogress_downcall(const struct cld_msg_v2 =
-__user *cmsg,
->  	uint8_t cmd, princhashlen;
->  	struct xdr_netobj name, princhash =3D { .len =3D 0, .data =3D NULL };
->  	uint16_t namelen;
-> -	struct cld_net *cn =3D nn->cld_net;
-> =20
->  	if (get_user(cmd, &cmsg->cm_cmd)) {
->  		dprintk("%s: error when copying cmd from userspace", __func__);
-> @@ -833,11 +836,15 @@ __cld_pipe_inprogress_downcall(const struct cld_msg_v=
-2 __user *cmsg,
->  				return PTR_ERR(name.data);
->  			name.len =3D namelen;
->  		}
-> +#ifdef CONFIG_NFSD_LEGACY_CLIENT_TRACKING
->  		if (name.len > 5 && memcmp(name.data, "hash:", 5) =3D=3D 0) {
-> +			struct cld_net *cn =3D nn->cld_net;
-> +
->  			name.len =3D name.len - 5;
->  			memmove(name.data, name.data + 5, name.len);
->  			cn->cn_has_legacy =3D true;
->  		}
-> +#endif
->  		if (!nfs4_client_to_reclaim(name, princhash, nn)) {
->  			kfree(name.data);
->  			kfree(princhash.data);
-> @@ -1010,7 +1017,9 @@ __nfsd4_init_cld_pipe(struct net *net)
->  	}
-> =20
->  	cn->cn_pipe->dentry =3D dentry;
-> +#ifdef CONFIG_NFSD_LEGACY_CLIENT_TRACKING
->  	cn->cn_has_legacy =3D false;
-> +#endif
->  	nn->cld_net =3D cn;
->  	return 0;
-> =20
-> @@ -1282,10 +1291,6 @@ nfsd4_cld_check(struct nfs4_client *clp)
->  {
->  	struct nfs4_client_reclaim *crp;
->  	struct nfsd_net *nn =3D net_generic(clp->net, nfsd_net_id);
-> -	struct cld_net *cn =3D nn->cld_net;
-> -	int status;
-> -	char dname[HEXDIR_LEN];
-> -	struct xdr_netobj name;
-> =20
->  	/* did we already find that this client is stable? */
->  	if (test_bit(NFSD4_CLIENT_STABLE, &clp->cl_flags))
-> @@ -1296,7 +1301,12 @@ nfsd4_cld_check(struct nfs4_client *clp)
->  	if (crp)
->  		goto found;
-> =20
-> -	if (cn->cn_has_legacy) {
-> +#ifdef CONFIG_NFSD_LEGACY_CLIENT_TRACKING
-> +	if (nn->cld_net->cn_has_legacy) {
-> +		int status;
-> +		char dname[HEXDIR_LEN];
-> +		struct xdr_netobj name;
-> +
->  		status =3D nfs4_make_rec_clidname(dname, &clp->cl_name);
->  		if (status)
->  			return -ENOENT;
-> @@ -1314,6 +1324,7 @@ nfsd4_cld_check(struct nfs4_client *clp)
->  			goto found;
-> =20
->  	}
-> +#endif
->  	return -ENOENT;
->  found:
->  	crp->cr_clp =3D clp;
-> @@ -1327,8 +1338,6 @@ nfsd4_cld_check_v2(struct nfs4_client *clp)
->  	struct nfsd_net *nn =3D net_generic(clp->net, nfsd_net_id);
->  	struct cld_net *cn =3D nn->cld_net;
->  	int status;
-> -	char dname[HEXDIR_LEN];
-> -	struct xdr_netobj name;
->  	struct crypto_shash *tfm =3D cn->cn_tfm;
->  	struct xdr_netobj cksum;
->  	char *principal =3D NULL;
-> @@ -1342,7 +1351,11 @@ nfsd4_cld_check_v2(struct nfs4_client *clp)
->  	if (crp)
->  		goto found;
-> =20
-> +#ifdef CONFIG_NFSD_LEGACY_CLIENT_TRACKING
->  	if (cn->cn_has_legacy) {
-> +		struct xdr_netobj name;
-> +		char dname[HEXDIR_LEN];
-> +
->  		status =3D nfs4_make_rec_clidname(dname, &clp->cl_name);
->  		if (status)
->  			return -ENOENT;
-> @@ -1360,6 +1373,7 @@ nfsd4_cld_check_v2(struct nfs4_client *clp)
->  			goto found;
-> =20
->  	}
-> +#endif
->  	return -ENOENT;
->  found:
->  	if (crp->cr_princhash.len) {
-> @@ -1663,6 +1677,7 @@ static const struct nfsd4_client_tracking_ops nfsd4_c=
-ld_tracking_ops_v2 =3D {
->  	.msglen		=3D sizeof(struct cld_msg_v2),
->  };
-> =20
-> +#ifdef CONFIG_NFSD_LEGACY_CLIENT_TRACKING
->  /* upcall via usermodehelper */
->  static char cltrack_prog[PATH_MAX] =3D "/sbin/nfsdcltrack";
->  module_param_string(cltrack_prog, cltrack_prog, sizeof(cltrack_prog),
-> @@ -2007,28 +2022,10 @@ static const struct nfsd4_client_tracking_ops nfsd4=
-_umh_tracking_ops =3D {
->  	.msglen		=3D 0,
->  };
-> =20
-> -int
-> -nfsd4_client_tracking_init(struct net *net)
-> +static inline int check_for_legacy_methods(int status, struct net *net)
->  {
-> -	int status;
-> -	struct path path;
->  	struct nfsd_net *nn =3D net_generic(net, nfsd_net_id);
-> -
-> -	/* just run the init if it the method is already decided */
-> -	if (nn->client_tracking_ops)
-> -		goto do_init;
-> -
-> -	/* First, try to use nfsdcld */
-> -	nn->client_tracking_ops =3D &nfsd4_cld_tracking_ops;
-> -	status =3D nn->client_tracking_ops->init(net);
-> -	if (!status)
-> -		return status;
-> -	if (status !=3D -ETIMEDOUT) {
-> -		nn->client_tracking_ops =3D &nfsd4_cld_tracking_ops_v0;
-> -		status =3D nn->client_tracking_ops->init(net);
-> -		if (!status)
-> -			return status;
-> -	}
-> +	struct path path;
-> =20
->  	/*
->  	 * Next, try the UMH upcall.
-> @@ -2045,14 +2042,46 @@ nfsd4_client_tracking_init(struct net *net)
->  	nn->client_tracking_ops =3D &nfsd4_legacy_tracking_ops;
->  	status =3D kern_path(nfs4_recoverydir(), LOOKUP_FOLLOW, &path);
->  	if (!status) {
-> -		status =3D d_is_dir(path.dentry);
-> +		status =3D !d_is_dir(path.dentry);
->  		path_put(&path);
-> -		if (!status) {
-> -			status =3D -EINVAL;
-> -			goto out;
-> -		}
-> +		if (status)
-> +			return -ENOTDIR;
-> +		status =3D nn->client_tracking_ops->init(net);
-> +	}
-> +	return status;
-> +}
-> +#else
-> +static inline int check_for_legacy_methods(int status, struct net *net)
-> +{
-> +	return status;
-> +}
-> +#endif /* CONFIG_LEGACY_NFSD_CLIENT_TRACKING */
-> +
-> +int
-> +nfsd4_client_tracking_init(struct net *net)
-> +{
-> +	struct nfsd_net *nn =3D net_generic(net, nfsd_net_id);
-> +	int status;
-> +
-> +	/* just run the init if it the method is already decided */
-> +	if (nn->client_tracking_ops)
-> +		goto do_init;
-> +
-> +	/* First, try to use nfsdcld */
-> +	nn->client_tracking_ops =3D &nfsd4_cld_tracking_ops;
-> +	status =3D nn->client_tracking_ops->init(net);
-> +	if (!status)
-> +		return status;
-> +	if (status !=3D -ETIMEDOUT) {
-> +		nn->client_tracking_ops =3D &nfsd4_cld_tracking_ops_v0;
-> +		status =3D nn->client_tracking_ops->init(net);
-> +		if (!status)
-> +			return status;
->  	}
-> =20
-> +	status =3D check_for_legacy_methods(status, net);
-> +	if (status)
-> +		goto out;
->  do_init:
->  	status =3D nn->client_tracking_ops->init(net);
->  out:
-> diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-> index 7ed02fb88a36..48d1dc9cccfb 100644
-> --- a/fs/nfsd/nfsctl.c
-> +++ b/fs/nfsd/nfsctl.c
-> @@ -75,7 +75,9 @@ static ssize_t write_maxconn(struct file *file, char *buf=
-, size_t size);
->  #ifdef CONFIG_NFSD_V4
->  static ssize_t write_leasetime(struct file *file, char *buf, size_t size);
->  static ssize_t write_gracetime(struct file *file, char *buf, size_t size);
-> +#ifdef CONFIG_NFSD_LEGACY_CLIENT_TRACKING
->  static ssize_t write_recoverydir(struct file *file, char *buf, size_t size=
-);
-> +#endif
->  static ssize_t write_v4_end_grace(struct file *file, char *buf, size_t siz=
-e);
->  #endif
-> =20
-> @@ -92,7 +94,9 @@ static ssize_t (*const write_op[])(struct file *, char *,=
- size_t) =3D {
->  #ifdef CONFIG_NFSD_V4
->  	[NFSD_Leasetime] =3D write_leasetime,
->  	[NFSD_Gracetime] =3D write_gracetime,
-> +#ifdef CONFIG_NFSD_LEGACY_CLIENT_TRACKING
->  	[NFSD_RecoveryDir] =3D write_recoverydir,
-> +#endif
->  	[NFSD_V4EndGrace] =3D write_v4_end_grace,
->  #endif
->  };
-> @@ -1012,6 +1016,7 @@ static ssize_t write_gracetime(struct file *file, cha=
-r *buf, size_t size)
->  	return nfsd4_write_time(file, buf, size, &nn->nfsd4_grace, nn);
->  }
-> =20
-> +#ifdef CONFIG_NFSD_LEGACY_CLIENT_TRACKING
->  static ssize_t __write_recoverydir(struct file *file, char *buf, size_t si=
-ze,
->  				   struct nfsd_net *nn)
->  {
-> @@ -1072,6 +1077,7 @@ static ssize_t write_recoverydir(struct file *file, c=
-har *buf, size_t size)
->  	mutex_unlock(&nfsd_mutex);
->  	return rv;
->  }
-> +#endif
-> =20
->  /*
->   * write_v4_end_grace - release grace period for nfsd's v4.x lock manager
->=20
-> ---
-> base-commit: 401644852d0b2a278811de38081be23f74b5bb04
-> change-id: 20231012-nfsd-cltrack-6198814aee58
->=20
-> Best regards,
-> --=20
-> Jeff Layton <jlayton@kernel.org>
->=20
->=20
-
+Otherwise if folks would like to see this printk() version of the error
+records then they also need to answer why the CXL subsystem should not
+also emit decoder error logs to printk?
