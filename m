@@ -2,140 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A29467C730C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78ECA7C731C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379525AbjJLQc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
+        id S1379497AbjJLQdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:33:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347324AbjJLQc0 (ORCPT
+        with ESMTP id S1343912AbjJLQdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:32:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00ECBC0;
-        Thu, 12 Oct 2023 09:32:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697128344; x=1728664344;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=jKhmhLoZMtAQbPlIEKKqj8u2OJYSYB1CSvXNiZknyjQ=;
-  b=XnZp7KbuRX3HcZms7vqNvYsdzRyXLBsp7cqpqjFevLPQq3K7Rdyd9eUz
-   OcWWN0+8olbW/qkPcdEuhNLA2s7J9OJgmHeV8SsY2fRjKkiwrd0bIr5qB
-   sdivQTUB5B15pxSbuOP8JTIGtW5WQjgzcDlRTI7iqzdwXNNgLkWSU9/2h
-   3zXw73Us7iswxA63eAvKBWFRb0g0e3bbGgEUz8NjYkqXb93/HFIvTmHSZ
-   u3xn9RiQ05etkWHsjk/HOQ5S0q+lhLbXUBYJaeZa70ogcz8fc1BK1FdRW
-   WqX/NCk2Q8Qf1tyUK2FZSLZnFSvWI6g0zA3GwwsUyr5+dwtvxCbY+hilE
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="375324576"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="375324576"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 09:32:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="898181366"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="898181366"
-Received: from asroczyn-mobl.ger.corp.intel.com ([10.249.36.107])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 09:30:34 -0700
-Date:   Thu, 12 Oct 2023 19:32:20 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Armin Wolf <W_Armin@gmx.de>, Hans de Goede <hdegoede@redhat.com>
-cc:     markgross@kernel.org, platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/6] platform/x86: wmi: Fix probe failure when failing
- to register WMI devices
-In-Reply-To: <20231007233933.72121-5-W_Armin@gmx.de>
-Message-ID: <6fc5eacc-15e7-8de4-a031-d57ae27568bd@linux.intel.com>
-References: <20231007233933.72121-1-W_Armin@gmx.de> <20231007233933.72121-5-W_Armin@gmx.de>
+        Thu, 12 Oct 2023 12:33:39 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD58C0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:33:36 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507975d34e8so320200e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:33:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697128414; x=1697733214; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BLyH6yQ7oOXpP9deXgxc3Z6pkd3CfbHZ/Wfl0aSvuj0=;
+        b=avpOyrpijl49x6OXB9leHSo/KS3iz3cILNKM8FSejNZrQfehuObNzCtaG36s74jQYr
+         78+oQpZrN75QJv3r5HVKSR9CcRk+8ngBtRSvCyaR2ng5x/gozcllvsmrIrogw5HUpEqA
+         Jg/cSCAz+CdioMCG0Ewxs3Nex6WUC7NjLfST/7j3dVyXpBb1YBZe5oFXK4j6DzS/1C9K
+         +LYGld6k9xVE0T+aOSqV3XMSgw46nqMpzxBW2Jrq1XAkHgVJa24IUTZYvBoLuppdfmQP
+         5I/QwB7+8Qa1CehzSUJQstROZbwapEP0FRtn0wCC2Mu39E36rwmnFsfOUCO7lq4CYn6S
+         0KMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697128414; x=1697733214;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BLyH6yQ7oOXpP9deXgxc3Z6pkd3CfbHZ/Wfl0aSvuj0=;
+        b=VOdPUvT6cJFlj7ubvZTb0nhtO0qwAXkHRlmWFs9FbV8VVTmuWUVeAPGhQS2ukl/Z+B
+         B04W3rNUSfJUjKKp8y+n91yxD8eJMP/AFOYHXHAPYX5FFVI6f9SOHsLCEwYP3JRUAxq5
+         pOIYfzA/g6ru1FYTj5vLvrMzbJJlLmX9Fdvdx6725oGRrO3AnSzrLEJmi+7aCe8/x4UD
+         yAYQgFAimt+4Us0MstSZ8GB1pggDCftos2+KmGUqyLOpBFHf/SXJkdrP9ktnisGHuKPt
+         y36t2o034eQ1TdnHtKkqApqrTvx9CNxcVlCO5ugSVFF0DVslfcYB7yAgSE+Ma+ndAVrP
+         VLXg==
+X-Gm-Message-State: AOJu0Yx5OVnGpDdUHeMh2Fg4FzYen2iRix4enSdWh6nMT9/BswBq77xe
+        Kwrlc42/KqlDN/LQREPi6dpVuQmHzDhVq8vzGas=
+X-Google-Smtp-Source: AGHT+IHBvaXreECltK9+IqA/KHLRTJ2l27nnFxnm8m2aOmpo+4SlKZEhJRYehBusH8I7Y4umXWzkNqhM5euxmKVUPmQ=
+X-Received: by 2002:ac2:5e21:0:b0:502:ff3b:766f with SMTP id
+ o1-20020ac25e21000000b00502ff3b766fmr17488538lfg.6.1697128414290; Thu, 12 Oct
+ 2023 09:33:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com> <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com>
+In-Reply-To: <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Thu, 12 Oct 2023 18:33:22 +0200
+Message-ID: <CAFULd4Zp-eDsxpStBznMHUE3OcHZ97NAZrZEjJW63oEFWtM3OQ@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 8 Oct 2023, Armin Wolf wrote:
+On Thu, Oct 12, 2023 at 5:19=E2=80=AFPM Nadav Amit <namit@vmware.com> wrote=
+:
+>
+>
+> > On Oct 12, 2023, at 12:54 AM, Linus Torvalds <torvalds@linux-foundation=
+.org> wrote:
+> >
+> > !! External Email
+> >
+> > On Wed, 11 Oct 2023 at 14:33, Uros Bizjak <ubizjak@gmail.com> wrote:
+> >>
+> >> Reading the above, it looks to me that we don't want to play games
+> >> with "const aliased" versions of current_task [1], as proposed by
+> >> Nadav in his patch series.
+> >
+> > Well, maybe I'd like it if I saw what the effect of it was, but that
+> > patch mentions "sync_mm_rss()" which doesn't actually exist
+> > (SPLIT_RSS_COUNTING is never defined, the split version is gone and
+> > hasn't existed since commit f1a7941243c1 "mm: convert mm's rss stats
+> > into percpu_counter")
+>
+> So I added a new version of the current aliasing (well, actually pcpu_hot
+> in the new version) on top of Uros=E2=80=99s patches, and the effect can =
+be seen
+> in many functions. I don=E2=80=99t want to bother with many examples so h=
+ere is
+> a common and simple one:
+>
+> Currently syscall_exit_work() that starts with:
+>
+>    0xffffffff8111e120 <+0>: push   %rbp
+>    0xffffffff8111e121 <+1>: mov    %rdi,%rbp
+>    0xffffffff8111e124 <+4>: push   %rbx
+>    0xffffffff8111e125 <+5>: mov    %rsi,%rbx
+>    0xffffffff8111e128 <+8>: and    $0x20,%esi
+>    0xffffffff8111e12b <+11>: je     0xffffffff8111e143 <syscall_exit_work=
++35>
+>    0xffffffff8111e12d <+13>: mov    %gs:0x2ac80,%rax
+>    0xffffffff8111e136 <+22>: cmpb   $0x0,0x800(%rax)
+>    0xffffffff8111e13d <+29>: jne    0xffffffff8111e22a <syscall_exit_work=
++266>
+>    0xffffffff8111e143 <+35>: mov    %gs:0x2ac80,%rax
+>    0xffffffff8111e14c <+44>: cmpq   $0x0,0x7c8(%rax)
+>
+> Using the const-alias changes the beginning of syscall_exit_work to:
+>
+>    0xffffffff8111cb80 <+0>: push   %r12
+>    0xffffffff8111cb82 <+2>: mov    %gs:0x7ef0e0f6(%rip),%r12        # 0x2=
+ac80 <pcpu_hot>
+>    0xffffffff8111cb8a <+10>: push   %rbp
+>    0xffffffff8111cb8b <+11>: mov    %rdi,%rbp
+>    0xffffffff8111cb8e <+14>: push   %rbx
+>    0xffffffff8111cb8f <+15>: mov    %rsi,%rbx
+>    0xffffffff8111cb92 <+18>: and    $0x20,%esi
+>    0xffffffff8111cb95 <+21>: je     0xffffffff8111cba6 <syscall_exit_work=
++38>
+>    0xffffffff8111cb97 <+23>: cmpb   $0x0,0x800(%r12)
+>    0xffffffff8111cba0 <+32>: jne    0xffffffff8111cc7a <syscall_exit_work=
++250>
+>    0xffffffff8111cba6 <+38>: cmpq   $0x0,0x7c8(%r12)
+>
+> So we both see RIP-relative addressing is being used (hence the instructi=
+on is
+> one byte shorter) and the reload going away.
 
-> When a WMI device besides the first one somehow fails to register, retval
-> is returned while still containing a negative error code. This causes the
-> ACPI device failing to probe, leaving behind zombie WMI devices leading
-> to various errors later.
-> Fix this by handling the single error path separately and return 0 after
-> trying to register all WMI devices. Also continue to register WMI devices
-> even if some fail to allocate.
+Just a quick remark here:
 
-I think the usual approach would be to unroll all registerations done so 
-far when an error occurs while registering n devices.
+For some reason existing percpu_stable_op asm uses %P operand
+modifier. This will drop all syntax-specific prefixes and issue the
+bare constant. It will also remove the (%rip) suffix. What we want
+here is a generic %a modifier (See 6.47.2.8 Generic Operand Modifiers
+[1]) that will substitute a memory reference, with the actual operand
+treated as the address. In combination with "p" constraint will DTRT
+and will emit symbol with the (%rip) suffix when available, also when
+-fpie is in effect.
 
-Do you Hans have something to add what would be the best course of action 
-here?
+[1] https://gcc.gnu.org/onlinedocs/gcc-13.2.0/gcc.pdf
 
--- 
- i.
-
-> Fixes: 6ee50aaa9a20 ("platform/x86: wmi: Instantiate all devices before adding them")
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-> ---
->  drivers/platform/x86/wmi.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-> index e3984801883a..ab24ea9ffc9a 100644
-> --- a/drivers/platform/x86/wmi.c
-> +++ b/drivers/platform/x86/wmi.c
-> @@ -1338,8 +1338,8 @@ static int parse_wdg(struct device *wmi_bus_dev, struct platform_device *pdev)
->  	struct wmi_block *wblock;
->  	union acpi_object *obj;
->  	acpi_status status;
-> -	int retval = 0;
->  	u32 i, total;
-> +	int retval;
-> 
->  	status = acpi_evaluate_object(device->handle, "_WDG", NULL, &out);
->  	if (ACPI_FAILURE(status))
-> @@ -1350,8 +1350,8 @@ static int parse_wdg(struct device *wmi_bus_dev, struct platform_device *pdev)
->  		return -ENXIO;
-> 
->  	if (obj->type != ACPI_TYPE_BUFFER) {
-> -		retval = -ENXIO;
-> -		goto out_free_pointer;
-> +		kfree(obj);
-> +		return -ENXIO;
->  	}
-> 
->  	gblock = (const struct guid_block *)obj->buffer.pointer;
-> @@ -1366,8 +1366,8 @@ static int parse_wdg(struct device *wmi_bus_dev, struct platform_device *pdev)
-> 
->  		wblock = kzalloc(sizeof(*wblock), GFP_KERNEL);
->  		if (!wblock) {
-> -			retval = -ENOMEM;
-> -			break;
-> +			dev_err(wmi_bus_dev, "Failed to allocate %pUL\n", &gblock[i].guid);
-> +			continue;
->  		}
-> 
->  		wblock->acpi_device = device;
-> @@ -1398,9 +1398,9 @@ static int parse_wdg(struct device *wmi_bus_dev, struct platform_device *pdev)
->  		}
->  	}
-> 
-> -out_free_pointer:
-> -	kfree(out.pointer);
-> -	return retval;
-> +	kfree(obj);
-> +
-> +	return 0;
->  }
-> 
->  /*
-> --
-> 2.39.2
-> 
-
+Uros.
