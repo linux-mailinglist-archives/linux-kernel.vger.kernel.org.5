@@ -2,121 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8D67C6809
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8123E7C6871
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235504AbjJLIxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 04:53:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
+        id S235490AbjJLIsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 04:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234133AbjJLIxu (ORCPT
+        with ESMTP id S232349AbjJLIsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 04:53:50 -0400
-X-Greylist: delayed 458 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 12 Oct 2023 01:53:48 PDT
-Received: from pv50p00im-ztbu10011701.me.com (pv50p00im-ztbu10011701.me.com [17.58.6.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D83B91
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:53:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kuroa.me; s=sig1;
-        t=1697100370; bh=epA+w5+uiHNt1jwJmjO/DUGjYA++VzjytxtotmoxQdw=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=J8z5wjYZ7wftaRZTggm1nOCS+GzXCGnJmJTtZbR/VwRhm6plRji3CsqhfkM7hTOXM
-         kkhmqPlY7e4NMZjrTOXhoFTnwvLW82AdXEiRcJRt7ufQ3lxHp+7kkSjXWeQ8JD/X9h
-         CtdVTPlka8J42EvpyJuK7Y1hYs0wldNEE8Pu/KuHJFp5Bs1P2m7IITAbxw/L6HVuQE
-         oQHi6PTsPowOkPNNYXngx4XZHhnVmKtZYy/BryZgENcD3OXg2bgPrRGaOUADZP69OB
-         t6mLFKFKwcTA5PORO6vHIwpyk4ft+ky4xTF4WldtzkW+uEho+r5Pi8ziE72LVODodC
-         avSMaO3VwbulA==
-Received: from localhost.localdomain (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
-        by pv50p00im-ztbu10011701.me.com (Postfix) with ESMTPSA id 2892B7401BF;
-        Thu, 12 Oct 2023 08:46:06 +0000 (UTC)
-From:   Xueming Feng <kuro@kuroa.me>
-To:     cdleonard@gmail.com
-Cc:     davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        usama.anjum@collabora.com, yoshfuji@linux-ipv6.org
-Subject: Re: [PATCH RFC] tcp: diag: Also support for FIN_WAIT1 sockets for tcp_abort()
-Date:   Thu, 12 Oct 2023 16:46:01 +0800
-Message-Id: <20231012084601.63183-1-kuro@kuroa.me>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
-In-Reply-To: <338ea07266aedd2e416a830ab3fe8f4224d07a30.1656877534.git.cdleonard@gmail.com>
-References: <338ea07266aedd2e416a830ab3fe8f4224d07a30.1656877534.git.cdleonard@gmail.com>
+        Thu, 12 Oct 2023 04:48:31 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBA9D62;
+        Thu, 12 Oct 2023 01:48:29 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C7wsFR030511;
+        Thu, 12 Oct 2023 08:48:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=EjNwXNWyPPQx56lwNethXlrj7uVzLAOKH/elKpWEvnc=;
+ b=WT6Zen/yG/HePZj+8sDvzSQBN4muTc4LpHkv5wjhzvdBGQxo0b6fLiP2ZutizIPP6xjg
+ rktSXv4RAvCbZLygY3mgMI7LMWh6n/qSXMTsqLnj1ETk3lwD0L9l5LfytDix1CQLdQjE
+ cf0VF/40/Lx5KHs3NLXVRNY+mHhS25kcLcdQdJSVH1ZHiDYHZyrGgXDUeZgc8im6JBj0
+ ui2MOGQQTA5/FzIwLLWWEXaWrk9Gwai6KL398NogF7U/siN9F1UKZLo0e3R93gYSDXhi
+ iLNMS02mAuTQmsAnyFpoPeUksYF0QptCv8aWtQ48JC2mcXWFEkQimVDHjpRHvzi7dxKO lw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tp9dp0fq4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 08:48:26 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39C8mPTF014669
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 08:48:25 GMT
+Received: from [10.216.58.179] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 12 Oct
+ 2023 01:48:21 -0700
+Message-ID: <fad5a7fb-cce1-46bc-a0af-72405c76d107@quicinc.com>
+Date:   Thu, 12 Oct 2023 14:18:17 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: QdiDBwQIRD3O2f_fmkj6vNqEYOEkzmC9
-X-Proofpoint-ORIG-GUID: QdiDBwQIRD3O2f_fmkj6vNqEYOEkzmC9
-X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.138,18.0.572,17.11.64.514.0000000_definitions?=
- =?UTF-8?Q?=3D2020-02-14=5F11:2020-02-14=5F02,2020-02-14=5F11,2022-02-23?=
- =?UTF-8?Q?=5F01_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=322 mlxscore=0 bulkscore=0
- suspectscore=0 adultscore=0 clxscore=1030 malwarescore=0 spamscore=0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] usb: gadget: ncm: Add support to update
+ wMaxSegmentSize via configfs
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        onathan Corbet <corbet@lwn.net>,
+        Linyu Yuan <quic_linyyuan@quicinc.com>,
+        <linux-usb@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
+        <quic_wcheng@quicinc.com>, <quic_jackp@quicinc.com>
+References: <20231009142005.21338-1-quic_kriskura@quicinc.com>
+ <20231009142005.21338-2-quic_kriskura@quicinc.com>
+ <CANP3RGfEk2DqZ3biyN78ycQYbDxCEG+H1me2vnEYuwXkNdXnTA@mail.gmail.com>
+ <CANP3RGcCpNOuVpdV9n0AFxZo-wsfwi8OfYgBk1WHNHaEd-4V-Q@mail.gmail.com>
+ <CANP3RGdY4LsOA6U5kuccApHCzL0_jBnY=pLOYrUuYtMZFTvnbw@mail.gmail.com>
+ <d19d9d08-c119-4991-b460-49925f601d15@quicinc.com>
+Content-Language: en-US
+In-Reply-To: <d19d9d08-c119-4991-b460-49925f601d15@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: UUH1rbL7Ry3iYl2STQt5A3KQzu16KWwR
+X-Proofpoint-GUID: UUH1rbL7Ry3iYl2STQt5A3KQzu16KWwR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_04,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=857 priorityscore=1501 spamscore=0 bulkscore=0
+ mlxscore=0 clxscore=1015 adultscore=0 impostorscore=0 malwarescore=0
  phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2310120074
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+ engine=8.12.0-2309180000 definitions=main-2310120073
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Aborting tcp connections via ss -K doesn't work in TCP_FIN_WAIT1 state,
-> this happens because the SOCK_DEAD flag is set. Fix by ignoring that > flag
-> for this special case.
-> 
-> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
-> 
-> ---
->  net/ipv4/tcp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> I tested that this fixes the problem but not certain about correctness.
-> 
-> Support for TCP_TIME_WAIT was added recently but it doesn't fix
-> TCP_FIN_WAIT1.
-> 
-> See: https://lore.kernel.org/netdev/20220627121038.> 226500-1-edumazet@google.com/
-> 
-> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-> index d9dd998fdb76..215e7d3fed13 100644
-> --- a/net/ipv4/tcp.c
-> +++ b/net/ipv4/tcp.c
-> @@ -4661,11 +4661,11 @@ int tcp_abort(struct sock *sk, int err)
->  
->  	/* Don't race with BH socket closes such as inet_csk_listen_stop. */
->  	local_bh_disable();
->  	bh_lock_sock(sk);
->  
-> -	if (!sock_flag(sk, SOCK_DEAD)) {
-> +	if (sk->sk_state == TCP_FIN_WAIT1 || !sock_flag(sk, SOCK_DEAD)) {
->  		sk->sk_err = err;
->  		/* This barrier is coupled with smp_rmb() in tcp_poll() */
->  		smp_wmb();
->  		sk_error_report(sk);
->  		if (tcp_need_reset(sk->sk_state))
-> -- 
 
-I recently encountered a problem that is related to this patch. Some of our 
-machines have orphaned TCP connections in FIN_WAIT1 state that stuck in 
-zero window probing state, because the probes are being acked.
 
-So I decide to kill it with `ss -K` that calls `tcp_abort`, it failed to kill
-the socket while reporting success. However, the socket stopped probing and 
-stays in FIN_WAIT1 state *forever*, with ss reporting no timer associated with 
-the socket.
+On 10/10/2023 10:08 AM, Krishna Kurapati PSSNV wrote:
+> 
 
-After some amateurish debugging, I found that because the FIN_WAIT1 socket have
-SOCK_DEAD flag set. Thus, `tcp_abort` will not call `tcp_done` but clear both
-`sk_write_queue` and `tcp_rtx_queue` in `tcp_write_queue_purge(* sock)`, 
-this has caused some problem when the socket is in 'persist' or 'retransmit'.
+>>
+>> ^ is this a problem now if we have >1 gadget?
+>> how does it work then?
+> 
+> 
+> You are right. This would effect unwrap call and the wMaxSegmentSize is 
+> used directly. Thanks for the catch. I didn't test with 2 NCM interfaces 
+> and hence I wasn't able to find this bug. Perhaps changing this to 
+> opts->max_segment_size would fix the implementation as unwrap would 
+> anyways be called after bind.
 
-`tcp_probe_timer()` will check if `sk_write_queue` is not empty and then reset
-the timer. Same goes for `tcp_retransmit_timer()`, which will check if 
-`tcp_rtx_queue` is not empty and then reset the timer. Clearing those queues
-without actually closing the socket caused the timer not being reset and the
-socket stuck in FIN_WAIT1 state forever.
+Hi Maciej,
 
-I can confirm that this patch will indeed close the socket, but I am also not 
-sure about the logical correctness of this patch being a newbie.
+  How about the below diff:
+
+---------
+
++/*
++ * Allow max segment size to be in parity with max_mtu possible
++ * for the interface.
++ */
++#define MAX_DATAGRAM_SIZE      GETHER_MAX_ETH_FRAME_LEN
++
+  #define FORMATS_SUPPORTED      (USB_CDC_NCM_NTB16_SUPPORTED |  \
+                                  USB_CDC_NCM_NTB32_SUPPORTED)
+
+@@ -194,7 +200,6 @@ static struct usb_cdc_ether_desc ecm_desc = {
+         /* this descriptor actually adds value, surprise! */
+         /* .iMACAddress = DYNAMIC */
+         .bmEthernetStatistics = cpu_to_le32(0), /* no statistics */
+-       .wMaxSegmentSize =      cpu_to_le16(ETH_FRAME_LEN),
+         .wNumberMCFilters =     cpu_to_le16(0),
+         .bNumberPowerFilters =  0,
+  };
+@@ -1180,10 +1185,15 @@ static int ncm_unwrap_ntb(struct gether *port,
+         struct sk_buff  *skb2;
+         int             ret = -EINVAL;
+         unsigned        ntb_max = 
+le32_to_cpu(ntb_parameters.dwNtbOutMaxSize);
+-       unsigned        frame_max = le16_to_cpu(ecm_desc.wMaxSegmentSize);
++       unsigned int    frame_max;
+         const struct ndp_parser_opts *opts = ncm->parser_opts;
+         unsigned        crc_len = ncm->is_crc ? sizeof(uint32_t) : 0;
+         int             dgram_counter;
++       struct f_ncm_opts *ncm_opts;
++       const struct usb_function_instance *fi = port->func.fi;
++
++       ncm_opts = container_of(fi, struct f_ncm_opts, func_inst);
++       frame_max = ncm_opts->max_segment_size;
+
+         /* dwSignature */
+         if (get_unaligned_le32(tmp) != opts->nth_sign) {
+@@ -1440,6 +1450,7 @@ static int ncm_bind(struct usb_configuration *c, 
+struct usb_function *f)
+          */
+         if (!ncm_opts->bound) {
+                 mutex_lock(&ncm_opts->lock);
++               ncm_opts->net->mtu = (ncm_opts->max_segment_size - 
+ETH_HLEN);
+                 gether_set_gadget(ncm_opts->net, cdev->gadget);
+                 status = gether_register_netdev(ncm_opts->net);
+                 mutex_unlock(&ncm_opts->lock);
+@@ -1484,6 +1495,8 @@ static int ncm_bind(struct usb_configuration *c, 
+struct usb_function *f)
+
+         status = -ENODEV;
+
++       ecm_desc.wMaxSegmentSize = (__le16)ncm_opts->max_segment_size;
++
+
+------
+
+I can limit the max segment size to (Max MTU + ETH_HELN) and this would 
+be logical to do. Also we can set the frame_max from ncm_opts itself 
+while initializing it to 1514 (default value) during alloc_inst callback 
+and nothing would break while still being backward compatible.
+
+Let me know your thoughts on this.
+
+Regards,
+Krishna,
