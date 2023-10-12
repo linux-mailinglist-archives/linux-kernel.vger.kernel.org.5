@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5327C736E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F467C7371
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379584AbjJLQss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47712 "EHLO
+        id S1379320AbjJLQte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379580AbjJLQsq (ORCPT
+        with ESMTP id S1343912AbjJLQtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:48:46 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BC7DE
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:48:44 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c9d3a21f7aso9983255ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:48:44 -0700 (PDT)
+        Thu, 12 Oct 2023 12:49:33 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF202BE
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:49:29 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c9d4f08d7cso4585ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:49:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697129324; x=1697734124; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1697129369; x=1697734169; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9zj94NuVMRyygdkOW8mvq9Nen4maWkMgZsmZqNR+8rw=;
-        b=bRTOFj4fSA056yrQKskox7o7RyuI3GNwUJPIzG55g6Vb1Vj52nUkqQhnJo4fRkVQZp
-         BQdiwdDAotjrg1oO3PqN4zr9BORHv9s5+pLpCKdN+IPZ2CV23Ab/nQujySzvosvML9TL
-         jxeSSVnjvDrn1e+T0a7dc/Ii+mk2RpVKRd34I=
+        bh=9+ity2qTw7r/kpXykK9MCuhfw80NyC/9PfFPohTRZ0k=;
+        b=t7NBqbrdqprkqmjSs3M5nkgFSeB+GAwjqeb1/xsqUo1U2BbITMeUPNLnaC7TMgQmtl
+         K47tjTcfhLlDjdrKKYHbibXNF2cjz3P8y9+vrG4A2t4qfxbuRdeHCEXCvV1zBbBsjjlS
+         NfbE9tnsewPxKdCkKE1+ARx9X7bXIjWyrT+98gsG9ToGKcr47HvFfo4+mJ5irYfHV1pB
+         aL5Be8LH9NuPv9pPYBd7gXHNBWy3AGm0OLkEeSaz/SLWqQBcyCyBiohg5o1jyZxSy59h
+         D3kkX4udwURNc9+d0H/Boo0jEvq2idtTBYzVIhcU7QHJoMJPNxInaOaeES+Gt6eGA1O3
+         ZagQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697129324; x=1697734124;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697129369; x=1697734169;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9zj94NuVMRyygdkOW8mvq9Nen4maWkMgZsmZqNR+8rw=;
-        b=qFgK93aT4JITorjdBV2kNgE4uRLlrD04Hv7R+5MoJjSNhXAjDGHZbmAUn1ojcpLUti
-         v5zx+LoXwQHtpntuB0gyYA3rCWcxWfgTtqUr2Klc4xfAtmUb2Tuy//qbI1ArlbvRsSlO
-         axt+a3nhpleLvJa9pDldFjrBYRm93magfSueiHkG4ynilnMieeEbv3r08nW3V19WumNi
-         Wy8pfHSXFjv8t+DRbxZ5xXS5354SB9DmhiN3OOZLjOKMJHZoVJkxpb3t44875oW/qONh
-         yRuaBEAv93pmzLg/PeG/oTPA/LZSLj9dlrR59Z4Oq7RhOkTsBQhW7XVeoKINYoTTEIGA
-         EpDw==
-X-Gm-Message-State: AOJu0YzPYagUQx0J2fghRHBZuqUjvOrGpPur7mWaGSjE0owsF4X14gsL
-        idBe+QFlKGg68iQfudYf0o+EnQ==
-X-Google-Smtp-Source: AGHT+IF831rt9uwN8FV+a7yFdX158syIhIfsDP9+BmIbnBUGEesMv6egJHZONGeGkhVAAiy8eu5gZw==
-X-Received: by 2002:a17:903:11d2:b0:1c7:2697:ec0a with SMTP id q18-20020a17090311d200b001c72697ec0amr28084231plh.30.1697129323902;
-        Thu, 12 Oct 2023 09:48:43 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x4-20020a170902ea8400b001c5076ae6absm2204778plb.126.2023.10.12.09.48.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 09:48:43 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Cc:     Kees Cook <keescook@chromium.org>, tony.luck@intel.com,
-        gpiccoli@igalia.com, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] pstore/platform: Add check for kstrdup
-Date:   Thu, 12 Oct 2023 09:48:41 -0700
-Message-Id: <169712932001.5350.10182418867498473478.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230623022706.32125-1-jiasheng@iscas.ac.cn>
-References: <20230623022706.32125-1-jiasheng@iscas.ac.cn>
+        bh=9+ity2qTw7r/kpXykK9MCuhfw80NyC/9PfFPohTRZ0k=;
+        b=o4josflVXuvNGFaq4KatR9On+RNWadw1VHyhNUUkr9I62Zr6wiaz9lzf9SmMVnCDuW
+         sxWD8ePvvByi14zWZi+WqAB3JwqUuaLSmshhWvh6Zw63A4c/n73AZu8vPNFYfS/lyUOI
+         Z+xl4W/KaneNQTK4V3pqc71XV3CRbgh5SQFvRFSLst7oMGntHhGXhpHX8ogmEVmznu5t
+         l0cMXNfLfpFIhGROHtlNdxO9Du6Fx+K3k4I9s8L9NztEQg6mgEs40UzopwgyXvSvhvnI
+         zGKmFwowfOUSRxqscPlA6SAeJi4+1HCrrkfB58T39k4oIU3tXPlQa6QVb8qDn71gAwbb
+         vW3g==
+X-Gm-Message-State: AOJu0YyUxKWyyu8zTdMdb6e3gC0fCOZdmGlqnPbI+7gvFqIA6ls7bR3f
+        cbCw+PMa0x3jYAQ7AJ5Azsbxd9smHsxuY8dAwMRvMg==
+X-Google-Smtp-Source: AGHT+IEkh2osPD0bI28v9aMSShgDDKs5Lo9FYv9+wqXCGF/dtjKcb0biTQ2kHFhXhOmi20vmy2QIafWABrspTiXnehs=
+X-Received: by 2002:a17:902:f68c:b0:1c4:1392:e4b5 with SMTP id
+ l12-20020a170902f68c00b001c41392e4b5mr489049plg.21.1697129369120; Thu, 12 Oct
+ 2023 09:49:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <0000000000008d231506067f6a78@google.com> <20230929133644.2072910-1-nogikh@google.com>
+In-Reply-To: <20230929133644.2072910-1-nogikh@google.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Thu, 12 Oct 2023 18:49:17 +0200
+Message-ID: <CANp29Y6O9Fwqn8YrTehriz2nujpasSpsECqofWFZwSdp5JHdVw@mail.gmail.com>
+Subject: Re: [syzbot] upstream boot error: can't ssh into the instance (15)
+To:     syzbot+be9661ba81a9c1cf6b15@syzkaller.appspotmail.com
+Cc:     linux-kernel@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        airlied@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, dvyukov@google.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,19 +72,195 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jun 2023 10:27:06 +0800, Jiasheng Jiang wrote:
-> Add check for the return value of kstrdup() and return the error
-> if it fails in order to avoid NULL pointer dereference.
-> 
-> 
+For the record: the problems were solved by switching to qemu v8.
 
-Applied to for-next/pstore, thanks!
+#syz invalid
 
-[1/1] pstore/platform: Add check for kstrdup
-      https://git.kernel.org/kees/c/a19d48f7c5d5
-
-Take care,
-
--- 
-Kees Cook
-
+On Fri, Sep 29, 2023 at 3:36=E2=80=AFPM Aleksandr Nogikh <nogikh@google.com=
+> wrote:
+>
+>
+> On Fri, Sep 29, 2023 at 3:29 PM syzbot <syzbot+be9661ba81a9c1cf6b15@syzka=
+ller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    9ed22ae6be81 Merge tag 'spi-fix-v6.6-rc3' of git://git.=
+ker..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D14b37a7c680=
+000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dd4bdf71ec9a=
+ec6cc
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dbe9661ba81a9c=
+1cf6b15
+> > compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld=
+ (GNU Binutils for Debian) 2.40
+> > userspace arch: arm64
+> >
+> > Downloadable assets:
+> > disk image (non-bootable): https://storage.googleapis.com/syzbot-assets=
+/384ffdcca292/non_bootable_disk-9ed22ae6.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/2c3d5eea45bd/vmli=
+nux-9ed22ae6.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/54444f361432=
+/Image-9ed22ae6.gz.xz
+>
+> This appears on qemu-system-aarch64 with virt,virtualization=3Don,mte=3Do=
+n,graphics=3Don,usb=3Don.
+>
+> I've run it locally using the assets above and it seems there are actuall=
+y two problems behind the report.
+>
+> 1) For some reason, v7.2 of qemu-system-aarch64 just hangs with "-smp 2" =
+and prints no output.
+>
+> Interestingly, it all works fine on qemu v8.0.4, so I don't know if it's =
+a qemu or a kernel problem.
+> Qemu v8 is unfortunately still too new for many distributions (we use deb=
+ian:bookworm on syzbot
+> and v7.2 is the latest there).
+>
+> 2) If I set "-smp 1", it begins to boot, but quickly fails with several m=
+essages. First with
+>
+> [    0.000000][    T0] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [    0.000000][    T0] BUG: KASAN: slab-out-of-bounds in __kasan_slab_all=
+oc+0x7c/0xcc
+> [    0.000000][    T0] Read at addr fcff000002c01008 by task swapper/0
+> [    0.000000][    T0] Pointer tag: [fc], memory tag: [f5]
+> [    0.000000][    T0]
+> [    0.000000][    T0] CPU: 0 PID: 0 Comm: swapper Not tainted 6.6.0-rc3-=
+syzkaller-00055-g9ed22ae6be81 #0
+> [    0.000000][    T0] Hardware name: linux,dummy-virt (DT)
+> [    0.000000][    T0] Call trace:
+> [    0.000000][    T0]  dump_backtrace+0x94/0xec
+> [    0.000000][    T0]  show_stack+0x18/0x24
+> [    0.000000][    T0]  dump_stack_lvl+0x48/0x60
+> [    0.000000][    T0]  print_report+0x108/0x618
+> [    0.000000][    T0]  kasan_report+0x88/0xac
+> [    0.000000][    T0]  __do_kernel_fault+0x17c/0x1e8
+> [    0.000000][    T0]  do_tag_check_fault+0x78/0x8c
+> [    0.000000][    T0]  do_mem_abort+0x44/0x94
+> [    0.000000][    T0]  el1_abort+0x40/0x60
+> [    0.000000][    T0]  el1h_64_sync_handler+0xd8/0xe4
+> [    0.000000][    T0]  el1h_64_sync+0x64/0x68
+> [    0.000000][    T0]  __kasan_slab_alloc+0x7c/0xcc
+> [    0.000000][    T0]  kmem_cache_alloc+0x144/0x290
+> [    0.000000][    T0]  bootstrap+0x2c/0x174
+> [    0.000000][    T0]  kmem_cache_init+0x144/0x1c8
+> [    0.000000][    T0]  mm_core_init+0x240/0x2d4
+> [    0.000000][    T0]  start_kernel+0x220/0x5fc
+> [    0.000000][    T0]  __primary_switched+0xb4/0xbc
+> [    0.000000][    T0]
+> [    0.000000][    T0] Allocated by task 0:
+> [    0.000000][    T0]  kasan_save_stack+0x3c/0x64
+> [    0.000000][    T0]  save_stack_info+0x38/0x118
+> [    0.000000][    T0]  kasan_save_alloc_info+0x14/0x20
+> [    0.000000][    T0]  __kasan_slab_alloc+0x94/0xcc
+> [    0.000000][    T0]  kmem_cache_alloc+0x144/0x290
+> [    0.000000][    T0]  bootstrap+0x2c/0x174
+> [    0.000000][    T0]  kmem_cache_init+0x134/0x1c8
+> [    0.000000][    T0]  mm_core_init+0x240/0x2d4
+> [    0.000000][    T0]  start_kernel+0x220/0x5fc
+> [    0.000000][    T0]  __primary_switched+0xb4/0xbc
+> [    0.000000][    T0]
+> [    0.000000][    T0] The buggy address belongs to the object at ffff000=
+002c01000
+> [    0.000000][    T0]  which belongs to the cache kmem_cache of size 208
+> [    0.000000][    T0] The buggy address is located 8 bytes inside of
+> [    0.000000][    T0]  208-byte region [ffff000002c01000, ffff000002c010=
+d0)
+> [    0.000000][    T0]
+> [    0.000000][    T0] The buggy address belongs to the physical page:
+> [    0.000000][    T0] page:(____ptrval____) refcount:1 mapcount:0 mappin=
+g:0000000000000000 index:0x0 pfn:0x42c01
+> [    0.000000][    T0] flags: 0x1ffc00000000800(slab|node=3D0|zone=3D0|la=
+stcpupid=3D0x7ff|kasantag=3D0x0)
+> [    0.000000][    T0] page_type: 0xffffffff()
+> [    0.000000][    T0] raw: 01ffc00000000800 fcff000002c01000 dead0000000=
+00100 dead000000000122
+> [    0.000000][    T0] raw: 0000000000000000 0000000080100010 00000001fff=
+fffff 0000000000000000
+> [    0.000000][    T0] page dumped because: kasan: bad access detected
+> [    0.000000][    T0]
+> [    0.000000][    T0] Memory state around the buggy address:
+> [    0.000000][    T0]  ffff000002c00e00: f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f=
+0 f0 f0 f0 f0 f0
+> [    0.000000][    T0]  ffff000002c00f00: f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f=
+0 f0 f0 f0 f0 f0
+> [    0.000000][    T0] >ffff000002c01000: f5 f5 f5 f5 f5 f5 f5 f5 f5 f5 f=
+5 f5 f5 f5 f5 f5
+> [    0.000000][    T0]                    ^
+> [    0.000000][    T0]  ffff000002c01100: f5 f5 f5 f5 f5 f5 f5 f5 f5 f5 f=
+5 f5 f5 f5 f5 f5
+> [    0.000000][    T0]  ffff000002c01200: f5 f5 f5 f5 f5 f5 f5 f5 f5 f5 f=
+5 f5 f5 f5 f5 f5
+> [    0.000000][    T0] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> And then with
+>
+> [    8.765595][    T1] ------------[ cut here ]------------
+> [    8.766137][    T1] WARNING: CPU: 0 PID: 1 at drivers/gpu/drm/drm_mana=
+ged.c:133 drmm_add_final_kfree+0x7c/0x98
+> [    8.767715][    T1] Modules linked in:
+> [    8.768946][    T1] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G    B     =
+         6.6.0-rc3-syzkaller-00055-g9ed22ae6be81 #0
+> [    8.769970][    T1] Hardware name: linux,dummy-virt (DT)
+> [    8.770655][    T1] pstate: 20400009 (nzCv daif +PAN -UAO -TCO -DIT -S=
+SBS BTYPE=3D--)
+> [    8.771383][    T1] pc : drmm_add_final_kfree+0x7c/0x98
+> [    8.771878][    T1] lr : drmm_add_final_kfree+0x30/0x98
+> [    8.772388][    T1] sp : ffff80008000bcd0
+> [    8.772772][    T1] x29: ffff80008000bcd0 x28: 0000000000000000 x27: f=
+fff8000823c6068
+> [    8.773750][    T1] x26: ffff8000822c00b0 x25: ffff8000821eed90 x24: f=
+fff800082299df0
+> [    8.774586][    T1] x23: ffff8000823c6078 x22: faff000003c53010 x21: 0=
+000000000000000
+> [    8.775410][    T1] x20: f6ff000003850800 x19: f6ff000003850800 x18: f=
+fffffffffffffff
+> [    8.776238][    T1] x17: ffff80008082a678 x16: ffff8000808dbae8 x15: f=
+fff8000808db33c
+> [    8.777061][    T1] x14: ffff800080248568 x13: ffff800080015698 x12: f=
+fff800081893acc
+> [    8.777884][    T1] x11: ffff8000822c110c x10: ffff8000800145b4 x9 : f=
+fff8000802b8dcc
+> [    8.778747][    T1] x8 : ffff80008000bc90 x7 : 0000000000000000 x6 : 0=
+000000000008000
+> [    8.779554][    T1] x5 : f1ff000003794f00 x4 : 0000000000000000 x3 : 0=
+000000000000020
+> [    8.780369][    T1] x2 : 0000000000000000 x1 : f6ff000003850e38 x0 : f=
+6ff000003850800
+> [    8.781301][    T1] Call trace:
+> [    8.781667][    T1]  drmm_add_final_kfree+0x7c/0x98
+> [    8.782209][    T1]  __devm_drm_dev_alloc+0xb4/0xd4
+> [    8.782692][    T1]  vgem_init+0xac/0x140
+> [    8.783141][    T1]  do_one_initcall+0x80/0x1c4
+> [    8.783614][    T1]  kernel_init_freeable+0x1c8/0x290
+> [    8.784114][    T1]  kernel_init+0x24/0x1e0
+> [    8.784556][    T1]  ret_from_fork+0x10/0x20
+> [    8.785109][    T1] ---[ end trace 0000000000000000 ]---
+>
+> For what it's worth, here are the commands I used to boot qemu:
+>
+> $ cd /tmp
+> $ wget -O - 'https://storage.googleapis.com/syzbot-assets/7153da9da559/Im=
+age-9ed22ae6.gz.xz' | unxz > Image-9ed22ae6
+> $ wget -O - 'https://storage.googleapis.com/syzbot-assets/384ffdcca292/no=
+n_bootable_disk-9ed22ae6.raw.xz' | unxz > non_bootable_disk-9ed22ae6.raw
+> $ qemu-system-aarch64 -machine virt,virtualization=3Don,mte=3Don,graphics=
+=3Don,usb=3Don -cpu max -smp 1 -m 2048 -display none -serial stdio -drive f=
+ile=3D/tmp/non_bootable_disk-9ed22ae6.raw,if=3Dnone,format=3Draw,id=3Dhd0 -=
+device virtio-blk-device,drive=3Dhd0 -snapshot -kernel /tmp/Image-9ed22ae6
+>
+>
+> I'll tag the report as follows, feel free to update.
+>
+> #syz set subsystems: arm, dri
