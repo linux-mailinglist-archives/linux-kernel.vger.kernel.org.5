@@ -2,105 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FDD7C79DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 00:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F117C79D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 00:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443079AbjJLWfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 18:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49778 "EHLO
+        id S1443035AbjJLWf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 18:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443052AbjJLWfe (ORCPT
+        with ESMTP id S1442098AbjJLWf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 18:35:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CE1D6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 15:35:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=b253Sj7wmuIogC42d3JJmtTfARbHB8IHESHD45gbU34=; b=EkygVsOH9hrpVo0xM/OUd0hcvC
-        KUzmW0K+RuzaXUL/CatKX58b5V7vaZ+FvsOppmVhqAeANVAhM1n0SBINotWoS5q1PIsfG75asmC14
-        0mo53qXGHGHapwOVj2oozA4WOCmE/gHvxGXBJuDmzFyYri6o7+sgdF52UlQVAl41BeJr273qJskuH
-        vrC1KZi/cfxtexC8WJbhj8RJw83gISWtJQM5+TkPmD65s04ZFBG9Q83C2sj481y+/7H5U8Rz42VXZ
-        gDuQEGAbMD+2bBYNwjEfIjPxV7/Nf5bScaAe/N5U9bTuiymB350GBv/vYXzAt2fjLNJ1KrYxjoJZW
-        6L3uMw+A==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qr4GC-001sP8-RB; Thu, 12 Oct 2023 22:34:28 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7E00830036C; Fri, 13 Oct 2023 00:34:28 +0200 (CEST)
-Date:   Fri, 13 Oct 2023 00:34:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Benjamin Segall <bsegall@google.com>
-Cc:     mingo@kernel.org, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
-        bristot@redhat.com, corbet@lwn.net, qyousef@layalina.io,
-        chris.hyser@oracle.com, patrick.bellasi@matbug.net, pjt@google.com,
-        pavel@ucw.cz, qperret@google.com, tim.c.chen@linux.intel.com,
-        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
-        yu.c.chen@intel.com, youssefesmat@chromium.org,
-        joel@joelfernandes.org, efault@gmx.de, tglx@linutronix.de
-Subject: Re: [PATCH 03/15] sched/fair: Add lag based placement
-Message-ID: <20231012223428.GP6307@noisy.programming.kicks-ass.net>
-References: <20230531115839.089944915@infradead.org>
- <20230531124603.794929315@infradead.org>
- <xm26fs2fhcu7.fsf@bsegall-linux.svl.corp.google.com>
+        Thu, 12 Oct 2023 18:35:26 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1147BB
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 15:35:22 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c5087d19a6so59011fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 15:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697150121; x=1697754921; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XXO4MwbGSox8rKRwzbnM2zZwOBZ2z8Fw/s+ke6QnvYQ=;
+        b=KV3CnEMxFJtvM3QTZMX6sbsVGR9yMUU3IaNqfwXPLsWzqHb9fji2VHY22O7/IVrWX/
+         qGuR4AMRwkJ0OByoVaoUbadLfPBLGIiTWprDSH1N3vBAXXzws3ICJRzCET2B6tWH/lCs
+         h1ArxcVwhGgXRmOFax8Kxupgi6my5yVaui2iT9E5x2Gr4a0vfIBOH6vTltN0liQcIHE0
+         lyZsaSRm/gyosCEpdgpkFIFIE7iGjnJ4Fdi9gjpbZ5h9CFKi0Ign3NqerVqegg22YwoC
+         im33GTdpW6hw7tH2CYJMgf2NBWkJg014ufolh+D8ABVXFty+4DgPW2v/+vOaf1jF+zT6
+         0Nyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697150121; x=1697754921;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XXO4MwbGSox8rKRwzbnM2zZwOBZ2z8Fw/s+ke6QnvYQ=;
+        b=DQDvNZcsyqxCQYpNt99LmJnmTz4ivZtiUhpr/jR7XkijqBVcQhqa/1ckzBjzyxtmF+
+         m//uyKE0XOVmBvTHVj/kIMBxutbuL03hvylebjmoNTe7Urj3d0Wr/kJ1GxpD9swr8HBu
+         6KLVdKrOdBTkZK1P1iOfl4lvJQUaE5DCVFuJ/mSkwlAXm97DdjTXHlbgg8qOQSfGsmfb
+         GUorIcRnTmZOlyt+jPMwTRKdygU4CnlurnzEuuo3iDlk83WeLqHejP83t92vANpzGcIz
+         zUCDsg2u7XvF93NocEGr5FJr+0z+L3JQpEJXb1RDHxtZAc8XC2812NVPiOih43zVHiJ+
+         CVcQ==
+X-Gm-Message-State: AOJu0YxmnjQpRrOeQF3U/cpog+afatNZnyEIl6b/iCFo6T4OrMjkX6nn
+        RYvrZU/YnQkUWBBorhbp/60z9g==
+X-Google-Smtp-Source: AGHT+IG2cIx6DdV3B+I16sZS0ktRHmF97um53+8sbh/NgQJX+5tMKhRcw84Ma5j9WlNR4GfU6ctdDw==
+X-Received: by 2002:a2e:8488:0:b0:2bc:d6a8:1efd with SMTP id b8-20020a2e8488000000b002bcd6a81efdmr21034673ljh.39.1697150121181;
+        Thu, 12 Oct 2023 15:35:21 -0700 (PDT)
+Received: from [192.168.1.2] (c-21d3225c.014-348-6c756e10.bbcust.telenor.se. [92.34.211.33])
+        by smtp.gmail.com with ESMTPSA id x21-20020a05651c105500b002bcb89e92dcsm3811671ljm.6.2023.10.12.15.35.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 15:35:20 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 0/3] Create a binding for the Marvell MV88E6xxx DSA
+ switches
+Date:   Fri, 13 Oct 2023 00:35:13 +0200
+Message-Id: <20231013-marvell-88e6152-wan-led-v1-0-0712ba99857c@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <xm26fs2fhcu7.fsf@bsegall-linux.svl.corp.google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKJ0KGUC/x3MTQqAIBBA4avErBtQ+5OuEi0sxxowC4UKorsnL
+ b/Few8kikwJ+uKBSCcn3kOGLAuYVxMWQrbZoISqpBAaNxNP8h61plY2Ci8T0JPNnutq6pxVzkK
+ uj0iO7/88jO/7AQR7dUFpAAAA
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Christian Marangi <ansuelsmth@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 12:15:12PM -0700, Benjamin Segall wrote:
-> Peter Zijlstra <peterz@infradead.org> writes:
-> 
-> > @@ -4853,49 +4872,119 @@ static void
-> >  place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
-> >  {
-> >  	u64 vruntime = avg_vruntime(cfs_rq);
-> > +	s64 lag = 0;
-> >  
-> > -	/* sleeps up to a single latency don't count. */
-> > -	if (!initial) {
-> > -		unsigned long thresh;
-> > +	/*
-> > +	 * Due to how V is constructed as the weighted average of entities,
-> > +	 * adding tasks with positive lag, or removing tasks with negative lag
-> > +	 * will move 'time' backwards, this can screw around with the lag of
-> > +	 * other tasks.
-> > +	 *
-> > +	 * EEVDF: placement strategy #1 / #2
-> > +	 */
-> 
-> So the big problem with EEVDF #1 compared to #2/#3 and CFS (hacky though
-> it is) is that it creates a significant perverse incentive to yield or
-> spin until you see yourself be preempted, rather than just sleep (if you
-> have any competition on the cpu). If you go to sleep immediately after
-> doing work and happen to do so near the end of a slice (arguably what
-> you _want_ to have happen overall), then you have to pay that negative
-> lag in wakeup latency later, because it is maintained through any amount
-> of sleep. (#1 or similar is good for reweight/migrate of course)
-> 
-> #2 in theory could be abused by micro-sleeping right before you are
-> preempted, but that isn't something tasks can really predict, unlike
-> seeing more "don't go to sleep, just spin, the latency numbers are so
-> much better" nonsense.
+This shows the path we could take with this, deprecating the
+weird external bus thing.
 
-Right, so I do have this:
+I don't know what to do about the irq lines with a pointless
+type flag that should be onecell:ed.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?h=sched/eevdf&id=344944e06f11da25b49328825ed15fedd63036d3
+I need proper schema checking to add LED support to the
+Marvell switch. Just how it is, it can't go on like this.
 
-That allows tasks to sleep away the lag -- with all the gnarly bits that
-sleep time has. And it reliably fixes the above. However, it also
-depresses a bunch of other stuff. Never a free lunch etc.
+Andrew: if you have lots of ideas and want to do lots of
+changes, feel free to just take over the patch set and do
+what you like, this is an RFC after all.
 
-It is so far the least horrible of the things I've tried. 
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Linus Walleij (3):
+      ARM: dts: marvell: Fix some common switch mistakes
+      RFC: dt-bindings: marvell: Rewrite in schema
+      RFC: net: dsa: mv88e6xxx: Register mdio-external
+
+ .../bindings/net/dsa/marvell,mv88e6xxx.yaml        | 249 +++++++++++++++++++++
+ .../devicetree/bindings/net/dsa/marvell.txt        | 109 ---------
+ MAINTAINERS                                        |   2 +-
+ arch/arm/boot/dts/marvell/armada-370-rd.dts        |   2 -
+ .../dts/marvell/armada-381-netgear-gs110emx.dts    |   2 -
+ .../dts/marvell/armada-385-clearfog-gtr-l8.dts     |   2 +-
+ .../dts/marvell/armada-385-clearfog-gtr-s4.dts     |   2 +-
+ arch/arm/boot/dts/marvell/armada-385-linksys.dtsi  |   2 -
+ arch/arm/boot/dts/marvell/armada-388-clearfog.dts  |   2 -
+ .../boot/dts/marvell/armada-xp-linksys-mamba.dts   |   2 -
+ drivers/net/dsa/mv88e6xxx/chip.c                   |  16 +-
+ 11 files changed, 267 insertions(+), 123 deletions(-)
+---
+base-commit: 69d714c69583c4387147d0b7f2f436d42baddadd
+change-id: 20231008-marvell-88e6152-wan-led-88c43b7fd2fd
+
+Best regards,
+-- 
+Linus Walleij <linus.walleij@linaro.org>
+
