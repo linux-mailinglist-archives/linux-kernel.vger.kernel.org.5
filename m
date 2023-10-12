@@ -2,437 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 745007C76D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9BF7C76AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442340AbjJLTam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 15:30:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51546 "EHLO
+        id S1442140AbjJLTZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 15:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442234AbjJLTaa (ORCPT
+        with ESMTP id S1442009AbjJLTZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 15:30:30 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 861BBCF
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:30:26 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-57b6a7e0deeso777630eaf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:30:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697139026; x=1697743826; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gcf2QHQ6TL/y4ldUWtXd1iY7HrL3wUwUVRkcf9G8sDo=;
-        b=K/clFkMd+XPolG0iAYTBF2zlEmF/6bHk3q/JPxGQIz+FKYm3hXETmsvhsawRxfavV+
-         BU8s10SGfdnAmqllT7Z87ZQ6ITKyrPt1p6wrQv2fluQHgdB7cPV8T2ME5jKVa2mTIHay
-         faYbRwVQvYjXa9ppr3+iBX4CTS9mGEQzi96qw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697139026; x=1697743826;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Gcf2QHQ6TL/y4ldUWtXd1iY7HrL3wUwUVRkcf9G8sDo=;
-        b=Yr8dSXnXVXqCKODo2YjlHYPimtqeD5NuFVJRi1vkNyt/h6kTZdokEoBYvEIs9TlqZG
-         2U+NgIdn5N1HzhqDh0ZgymGSRa9fakHvMKC6ggGsmeNA/QSIfMizLhIOr20MdJpKsONc
-         Mq6jamsfsZVxY5NYYeFFSJa8WhWRz/x+4xKd9W+ZcYG4T3kg3JLyxSqYgRsJC7cZXtRk
-         ctLjOK/+kxBvxXJJJkHpBu4lDzj/jxkM16nNBOoC1Zhb5x174c1Nig/12ifz/dGSPEIu
-         QibTWP//HRgUTzrrM8pqGDoOoXSU6WwkOmd8GPeqjfkGmuT8naySG1a3psFM5+WEeENd
-         eUYQ==
-X-Gm-Message-State: AOJu0Ywp/yLHMV1RBuPlDmD/ncZhFi5xsCDm1skFWUbBI/Arg0A6MgQR
-        OWJ1efqrWMzrTMzx3G7nGT84dQ==
-X-Google-Smtp-Source: AGHT+IGVMIagzcDJihVo3iwTpp5taRYV/4JiAT53a8LGf/J75FI9rrmlMqCXjag7LSIhKeXB0lCN3w==
-X-Received: by 2002:a05:6358:7e07:b0:134:e301:2c21 with SMTP id o7-20020a0563587e0700b00134e3012c21mr27381283rwm.15.1697139025586;
-        Thu, 12 Oct 2023 12:30:25 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:7c85:4a99:f03e:6f30])
-        by smtp.gmail.com with ESMTPSA id b3-20020a639303000000b0057c25885fcfsm2075720pge.10.2023.10.12.12.30.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 12:30:25 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Hayes Wang <hayeswang@realtek.com>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Simon Horman <horms@kernel.org>,
-        Edward Hill <ecgh@chromium.org>,
-        Laura Nao <laura.nao@collabora.com>, linux-usb@vger.kernel.org,
-        Grant Grundler <grundler@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v3 5/5] r8152: Block future register access if register access fails
-Date:   Thu, 12 Oct 2023 12:25:04 -0700
-Message-ID: <20231012122458.v3.5.Ib2affdbfdc2527aaeef9b46d4f23f7c04147faeb@changeid>
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-In-Reply-To: <20231012192552.3900360-1-dianders@chromium.org>
-References: <20231012192552.3900360-1-dianders@chromium.org>
+        Thu, 12 Oct 2023 15:25:38 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9BBC0;
+        Thu, 12 Oct 2023 12:25:36 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CHmqBa022129;
+        Thu, 12 Oct 2023 19:25:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=U6CHnxhmbie1MniY9mLh7MjnBVn+zWwHS+KdgGitcEQ=;
+ b=Lj7LFbae0VIKQW6cUfKxX9i7J40fAko4uGYwlQpiRxgf+k8seBqhW0M96rqsShc+9ZQq
+ z1ObH7W9TOP1Cho2vIjxT6PNDVCwJoH3jh1uOHPFEKSxC9wmAbmnWNN3bnMlxuPzzN2L
+ rGcR7afqjoHbl9rkqqjcHv+4bRhZJq+J5F5vBlDVQ68vrgkLbkyG6iW0Xq8aaDQzEFSz
+ rRqL5rOrVgi8ZKwpProfvKVxyBm4KESTbfxRaG0YkhLda7Ru02loaCaN7dwVtb8Mnw70
+ G3p2dYnt1wiGf9ov1EvWNjRuTdr0u56jldvbi/7RcdbHe/AER4lSpXDuEsmXvTfizchF Vw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tp9dp1tu4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 19:25:32 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39CJPVkW008144
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 19:25:31 GMT
+Received: from [10.71.115.198] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 12 Oct
+ 2023 12:25:30 -0700
+Message-ID: <1e8d6d63-f5e5-3e69-ae8e-cf3cd1b90ad8@quicinc.com>
+Date:   Thu, 12 Oct 2023 12:25:26 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [RFC] usb: dwc3: core: Fix RAM interface getting stuck during
+ enumeration
+Content-Language: en-US
+To:     Krishna Kurapati <quic_kriskura@quicinc.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
+        <quic_ugoswami@quicinc.com>
+References: <20231011100214.25720-1-quic_kriskura@quicinc.com>
+From:   Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <20231011100214.25720-1-quic_kriskura@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: J3G5IDxh8OqOn7biv9BCRHRxsyb8-VQh
+X-Proofpoint-GUID: J3G5IDxh8OqOn7biv9BCRHRxsyb8-VQh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_11,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0 bulkscore=0
+ mlxscore=0 clxscore=1015 adultscore=0 impostorscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310120161
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even though the functions to read/write registers can fail, most of
-the places in the r8152 driver that read/write register values don't
-check error codes. The lack of error code checking is problematic in
-at least two ways.
+Hi Krishna,
 
-The first problem is that the r8152 driver often uses code patterns
-similar to this:
-  x = read_register()
-  x = x | SOME_BIT;
-  write_register(x);
+On 10/11/2023 3:02 AM, Krishna Kurapati wrote:
+> This implementation is to fix RAM interface getting stuck during
+> enumeration and controller not responding to any command.
+> 
+> During plug-out test cases, it is sometimes seen that no events
+> are generated by the controller and all CSR register reads give "0"
+> and CSR_Timeout bit gets set indicating that CSR reads/writes are
+> timing out or timed out.
+> 
+> The issue comes up on different instnaces of enumeration on different
+> platforms. On one platform, the debug log is as follows:
+> 
+> Prepared a TRB on ep0out and did start transfer to get set
+> address request from host:
+> 
+> <...>-7191    [000] D..1.    66.421006: dwc3_gadget_ep_cmd: ep0out:
+> cmd 'Start Transfer' [406] params 00000000 efffa000 00000000 -->
+> status: Successful
+> 
+> <...>-7191    [000] D..1.    66.421196: dwc3_event: event (0000c040):
+> ep0out: Transfer Complete (sIL) [Setup Phase]
+> 
+> <...>-7191    [000] D..1.    66.421197: dwc3_ctrl_req: Set
+> Address(Addr = 01)
+> 
+> Then XFER NRDY received on ep0in for zero length status phase and
+> a Start Transfer was done on ep0in with 0-length packet in 2 Stage
+> status phase:
+> 
+> <...>-7191    [000] D..1.    66.421249: dwc3_event: event (000020c2):
+> ep0in: Transfer Not Ready [00000000] (Not Active) [Status Phase]
+> 
+> <...>-7191    [000] D..1.    66.421266: dwc3_prepare_trb: ep0in: trb
+> ffffffc00fcfd000 (E0:D0) buf 00000000efffa000 size 0 ctrl 00000c33
+> sofn 00000000 (HLcs:SC:status2)
+> 
+> <...>-7191    [000] D..1.    66.421387: dwc3_gadget_ep_cmd: ep0in: cmd
+> 'Start Transfer' [406] params 00000000 efffa000 00000000 -->status:
+> Successful
+> 
+> Then a bus reset was received directly after 500 msec. Software never
+> got the cmd complete for the start transfer done in status phase. Here
+> the RAM interface is stuck. So host issues a bus reset as link is
+> idle for 500 msec:
+> 
+> <...>-7191    [000] D..1.    66.935603: dwc3_event: event (00000101):
+> Reset [U0]
+> 
+> Then software sees that it is in status phase and we issue an ENDXFER
+> on ep0in and it gets timedout waiting for the CMDACT to go '0':
+> 
+> <...>-7191    [000] D..1.    66.958249: dwc3_gadget_ep_cmd: ep0in: cmd
+> 'End Transfer' [10508] params 00000000 00000000 00000000 --> status:
+> Timed Out
+> 
+> Upon debug with Synopsys, it turns out that the root cause is as
+> follows:
+> 
+> During any transfer, if the data is not successfully transmitted,
+> then a Done (with failure) handshake is returned, so that the BMU
+> can re-attempt the same data again by rewinding its data pointers.
+> 
+> But, if the USB IN is a 0-length payload (which is what is happening
+> in this case - 2 stage status phase of set_address), then there is no
+> need to rewind the pointers and the Done (with failure) handshake is
+> not returned for failure case. This keeps the Request-Done interface
+> busy till the next Done handshake. The MAC sends the 0-length payload
+> again when the host requests. If the transmission is successful this
+> time, the Done (with success) handshake is provided back. Otherwise,
+> it repeats the same steps again.
+> 
+> If the cable is disconnected or if the Host aborts the transfer on 3
+> consecutive failed attempts, the Request-Done handshake is not
+> complete. This keeps the interface busy.
+> 
+> The subsequent RAM access cannot proceed until the above pending
+> transfer is complete. This results in failure of any access to RAM
+> address locations. Many of the EndPoint commands need to access the
+> RAM and they would fail to complete successfully.
+> 
+> Furthermore when cable removal happens, this would not generate a
+> disconnect event and the "connected" flag remains true always blockin
+> suspend.
+> 
+> Synopsys confirmed that the issue is present on all USB3 devices and
+> as a workaround, suggested to re-initialize device mode.
+> 
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> ---
+>   drivers/usb/dwc3/core.c   | 20 ++++++++++++++++++++
+>   drivers/usb/dwc3/core.h   |  4 ++++
+>   drivers/usb/dwc3/drd.c    |  5 +++++
+>   drivers/usb/dwc3/gadget.c |  6 ++++--
+>   4 files changed, 33 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+> index 44ee8526dc28..d18b81cccdc5 100644
+> --- a/drivers/usb/dwc3/core.c
+> +++ b/drivers/usb/dwc3/core.c
+> @@ -122,6 +122,7 @@ static void __dwc3_set_mode(struct work_struct *work)
+>   	unsigned long flags;
+>   	int ret;
+>   	u32 reg;
+> +	u8 timeout = 100;
+>   	u32 desired_dr_role;
+>   
+>   	mutex_lock(&dwc->mutex);
+> @@ -137,6 +138,25 @@ static void __dwc3_set_mode(struct work_struct *work)
+>   	if (!desired_dr_role)
+>   		goto out;
+>   
+> +	/*
+> +	 * STAR 5001544 - If cable disconnect doesn't generate
+> +	 * disconnect event in device mode, then re-initialize the
+> +	 * controller.
+> +	 */
+> +	if ((dwc->cable_disconnected == true) &&
+> +		(dwc->current_dr_role == DWC3_GCTL_PRTCAP_DEVICE)) {
+> +		while (dwc->connected == true && timeout != 0) {
+> +			mdelay(10);
+> +			timeout--;
+> +		}
+> +
+> +		if (timeout == 0) {
+> +			dwc3_gadget_soft_disconnect(dwc);
+> +			udelay(100);
+> +			dwc3_gadget_soft_connect(dwc);
+> +		}
+> +	}
+> +
+>   	if (desired_dr_role == dwc->current_dr_role)
+>   		goto out;
+>   
+> diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+> index c6c87acbd376..7642330cf608 100644
+> --- a/drivers/usb/dwc3/core.h
+> +++ b/drivers/usb/dwc3/core.h
+> @@ -1355,6 +1355,7 @@ struct dwc3 {
+>   	int			last_fifo_depth;
+>   	int			num_ep_resized;
+>   	struct dentry		*debug_root;
+> +	bool			cable_disconnected;
+>   };
+>   
+>   #define INCRX_BURST_MODE 0
+> @@ -1568,6 +1569,9 @@ void dwc3_event_buffers_cleanup(struct dwc3 *dwc);
+>   
+>   int dwc3_core_soft_reset(struct dwc3 *dwc);
+>   
+> +int dwc3_gadget_soft_disconnect(struct dwc3 *dwc);
+> +int dwc3_gadget_soft_connect(struct dwc3 *dwc);
+> +
+>   #if IS_ENABLED(CONFIG_USB_DWC3_HOST) || IS_ENABLED(CONFIG_USB_DWC3_DUAL_ROLE)
+>   int dwc3_host_init(struct dwc3 *dwc);
+>   void dwc3_host_exit(struct dwc3 *dwc);
+> diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
+> index 039bf241769a..593c023fc39a 100644
+> --- a/drivers/usb/dwc3/drd.c
+> +++ b/drivers/usb/dwc3/drd.c
+> @@ -446,6 +446,8 @@ static int dwc3_usb_role_switch_set(struct usb_role_switch *sw,
+>   	struct dwc3 *dwc = usb_role_switch_get_drvdata(sw);
+>   	u32 mode;
+>   
+> +	dwc->cable_disconnected = false;
+> +
+>   	switch (role) {
+>   	case USB_ROLE_HOST:
+>   		mode = DWC3_GCTL_PRTCAP_HOST;
+> @@ -454,6 +456,9 @@ static int dwc3_usb_role_switch_set(struct usb_role_switch *sw,
+>   		mode = DWC3_GCTL_PRTCAP_DEVICE;
+>   		break;
+>   	default:
+> +		if (role == USB_ROLE_NONE)
+> +			dwc->cable_disconnected = true;
+> +
 
-...with the above pattern, if the read_register() fails and returns
-garbage then we'll end up trying to write modified garbage back to the
-Realtek adapter. If the write_register() succeeds that's bad. Note
-that as of commit f53a7ad18959 ("r8152: Set memory to all 0xFFs on
-failed reg reads") the "garbage" returned by read_register() will at
-least be consistent garbage, but it is still garbage.
+How do we handle cases where role switch isn't used? (ie extcon or maybe 
+no cable connection notification at all)
 
-It turns out that this problem is very serious. Writing garbage to
-some of the hardware registers on the Ethernet adapter can put the
-adapter in such a bad state that it needs to be power cycled (fully
-unplugged and plugged in again) before it can enumerate again.
-
-The second problem is that the r8152 driver generally has functions
-that are long sequences of register writes. Assuming everything will
-be OK if a random register write fails in the middle isn't a great
-assumption.
-
-One might wonder if the above two problems are real. You could ask if
-we would really have a successful write after a failed read. It turns
-out that the answer appears to be "yes, this can happen". In fact,
-we've seen at least two distinct failure modes where this happens.
-
-On a sc7180-trogdor Chromebook if you drop into kdb for a while and
-then resume, you can see:
-1. We get a "Tx timeout"
-2. The "Tx timeout" queues up a USB reset.
-3. In rtl8152_pre_reset() we try to reinit the hardware.
-4. The first several (2-9) register accesses fail with a timeout, then
-   things recover.
-
-The above test case was actually fixed by the patch ("r8152: Increase
-USB control msg timeout to 5000ms as per spec") but at least shows
-that we really can see successful calls after failed ones.
-
-On a different (AMD) based Chromebook with a particular adapter, we
-found that during reboot tests we'd also sometimes get a transitory
-failure. In this case we saw -EPIPE being returned sometimes. Retrying
-worked, but retrying is not always safe for all register accesses
-since reading/writing some registers might have side effects (like
-registers that clear on read).
-
-Let's fully lock out all register access if a register access fails.
-When we do this, we'll try to queue up a USB reset and try to unlock
-register access after the reset. This is slightly tricker than it
-sounds since the r8152 driver has an optimized reset sequence that
-only works reliably after probe happens. In order to handle this, we
-avoid the optimized reset if probe didn't finish.
-
-When locking out access, we'll use the existing infrastructure that
-the driver was using when it detected we were unplugged. This keeps us
-from getting stuck in delay loops in some parts of the driver.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-Originally when looking at this problem I thought that the obvious
-solution was to "just" add better error handling to the driver. This
-_sounds_ appealing, but it's a massive change and touches a
-significant portion of the lines in this driver. It's also not always
-obvious what the driver should be doing to handle errors.
-
-If you feel like you need to be convinced and to see what it looked
-like to add better error handling, I put up my "work in progress"
-patch when I was investigating this at: https://crrev.com/c/4937290
-
-There is still some active debate between the two approaches, though,
-so it would be interesting to hear if anyone had any opinions.
-
-Changes in v3:
-- Fixed v2 changelog ending up in the commit message.
-- farmework -> framework in comments.
-
-Changes in v2:
-- Reset patch no longer based on retry patch, since that was dropped.
-- Reset patch should be robust even if failures happen in probe.
-- Switched booleans to bits in the "flags" variable.
-- Check for -ENODEV instead of "udev->state == USB_STATE_NOTATTACHED"
-
- drivers/net/usb/r8152.c | 176 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 159 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index 151c3c383080..fce7c58f8142 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -773,6 +773,8 @@ enum rtl8152_flags {
- 	SCHEDULE_TASKLET,
- 	GREEN_ETHERNET,
- 	RX_EPROTO,
-+	IN_PRE_RESET,
-+	PROBED_WITH_NO_ERRORS,
- };
- 
- #define DEVICE_ID_LENOVO_USB_C_TRAVEL_HUB		0x721e
-@@ -953,6 +955,8 @@ struct r8152 {
- 	u8 version;
- 	u8 duplex;
- 	u8 autoneg;
-+
-+	unsigned int reg_access_reset_count;
- };
- 
- /**
-@@ -1200,6 +1204,91 @@ static unsigned int agg_buf_sz = 16384;
- 
- #define RTL_LIMITED_TSO_SIZE	(size_to_mtu(agg_buf_sz) - sizeof(struct tx_desc))
- 
-+/* If register access fails then we block access and issue a reset. If this
-+ * happens too many times in a row without a successful access then we stop
-+ * trying to reset and just leave access blocked.
-+ */
-+#define REGISTER_ACCESS_MAX_RESETS	3
-+
-+static void rtl_set_inaccessible(struct r8152 *tp)
-+{
-+	set_bit(RTL8152_INACCESSIBLE, &tp->flags);
-+	smp_mb__after_atomic();
-+}
-+
-+static void rtl_set_accessible(struct r8152 *tp)
-+{
-+	clear_bit(RTL8152_INACCESSIBLE, &tp->flags);
-+	smp_mb__after_atomic();
-+}
-+
-+static
-+int r8152_control_msg(struct r8152 *tp, unsigned int pipe, __u8 request,
-+		      __u8 requesttype, __u16 value, __u16 index, void *data,
-+		      __u16 size, const char *msg_tag)
-+{
-+	struct usb_device *udev = tp->udev;
-+	int ret;
-+
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
-+		return -ENODEV;
-+
-+	ret = usb_control_msg(udev, pipe, request, requesttype,
-+			      value, index, data, size,
-+			      USB_CTRL_GET_TIMEOUT);
-+
-+	/* No need to issue a reset report an error if the USB device got
-+	 * unplugged; just return immediately.
-+	 */
-+	if (ret == -ENODEV)
-+		return ret;
-+
-+	/* If the write was successful then we're done */
-+	if (ret >= 0) {
-+		tp->reg_access_reset_count = 0;
-+		return ret;
-+	}
-+
-+	dev_err(&udev->dev,
-+		"Failed to %s %d bytes at %#06x/%#06x (%d)\n",
-+		msg_tag, size, value, index, ret);
-+
-+	/* Block all future register access until we reset. Much of the oode
-+	 * in the driver doesn't check for errors. Notably, many parts of the
-+	 * driver do a read/modify/write of a register value without
-+	 * confirming that the read succeeded. Writing back modified garbage
-+	 * like this can fully wedge the adapter, requiring a power cycle.
-+	 */
-+	rtl_set_inaccessible(tp);
-+
-+	/* Failing to access registers in pre-reset is not surprising since we
-+	 * wouldn't be resetting if things were behaving normally. The register
-+	 * access we do in pre-reset isn't truly mandatory--we're just reusing
-+	 * the disable() function and trying to be nice by powering the
-+	 * adapter down before resetting it. Thus, if we're in pre-reset,
-+	 * we'll return right away and not try to queue up yet another reset.
-+	 * We know the post-reset is already coming.
-+	 *
-+	 * We'll also return right away if we haven't finished probe. At the
-+	 * end of probe we'll queue the reset just to make sure it doesn't
-+	 * timeout.
-+	 */
-+	if (test_bit(IN_PRE_RESET, &tp->flags) ||
-+	    !test_bit(PROBED_WITH_NO_ERRORS, &tp->flags))
-+		return ret;
-+
-+	if (tp->reg_access_reset_count < REGISTER_ACCESS_MAX_RESETS) {
-+		usb_queue_reset_device(tp->intf);
-+		tp->reg_access_reset_count++;
-+	} else if (tp->reg_access_reset_count == REGISTER_ACCESS_MAX_RESETS) {
-+		dev_err(&udev->dev,
-+			"Tried to reset %d times; giving up.\n",
-+			REGISTER_ACCESS_MAX_RESETS);
-+	}
-+
-+	return ret;
-+}
-+
- static
- int get_registers(struct r8152 *tp, u16 value, u16 index, u16 size, void *data)
- {
-@@ -1210,9 +1299,10 @@ int get_registers(struct r8152 *tp, u16 value, u16 index, u16 size, void *data)
- 	if (!tmp)
- 		return -ENOMEM;
- 
--	ret = usb_control_msg(tp->udev, tp->pipe_ctrl_in,
--			      RTL8152_REQ_GET_REGS, RTL8152_REQT_READ,
--			      value, index, tmp, size, USB_CTRL_GET_TIMEOUT);
-+	ret = r8152_control_msg(tp, tp->pipe_ctrl_in,
-+				RTL8152_REQ_GET_REGS, RTL8152_REQT_READ,
-+				value, index, tmp, size, "read");
-+
- 	if (ret < 0)
- 		memset(data, 0xff, size);
- 	else
-@@ -1233,9 +1323,9 @@ int set_registers(struct r8152 *tp, u16 value, u16 index, u16 size, void *data)
- 	if (!tmp)
- 		return -ENOMEM;
- 
--	ret = usb_control_msg(tp->udev, tp->pipe_ctrl_out,
--			      RTL8152_REQ_SET_REGS, RTL8152_REQT_WRITE,
--			      value, index, tmp, size, USB_CTRL_SET_TIMEOUT);
-+	ret = r8152_control_msg(tp, tp->pipe_ctrl_out,
-+				RTL8152_REQ_SET_REGS, RTL8152_REQT_WRITE,
-+				value, index, tmp, size, "write");
- 
- 	kfree(tmp);
- 
-@@ -1244,10 +1334,8 @@ int set_registers(struct r8152 *tp, u16 value, u16 index, u16 size, void *data)
- 
- static void rtl_set_unplug(struct r8152 *tp)
- {
--	if (tp->udev->state == USB_STATE_NOTATTACHED) {
--		set_bit(RTL8152_INACCESSIBLE, &tp->flags);
--		smp_mb__after_atomic();
--	}
-+	if (tp->udev->state == USB_STATE_NOTATTACHED)
-+		rtl_set_inaccessible(tp);
- }
- 
- static int generic_ocp_read(struct r8152 *tp, u16 index, u16 size,
-@@ -8265,6 +8353,19 @@ static int rtl8152_pre_reset(struct usb_interface *intf)
- 	if (!tp)
- 		return 0;
- 
-+	/* We can only use the optimized reset if we made it to the end of
-+	 * probe without any register access fails, which sets
-+	 * `PROBED_WITH_NO_ERRORS` to true. If we didn't have that then return
-+	 * an error here which tells the USB framework to fully unbind/rebind
-+	 * our driver.
-+	 */
-+	mutex_lock(&tp->control);
-+	if (!test_bit(PROBED_WITH_NO_ERRORS, &tp->flags)) {
-+		mutex_unlock(&tp->control);
-+		return -EIO;
-+	}
-+	mutex_unlock(&tp->control);
-+
- 	netdev = tp->netdev;
- 	if (!netif_running(netdev))
- 		return 0;
-@@ -8277,7 +8378,9 @@ static int rtl8152_pre_reset(struct usb_interface *intf)
- 	napi_disable(&tp->napi);
- 	if (netif_carrier_ok(netdev)) {
- 		mutex_lock(&tp->control);
-+		set_bit(IN_PRE_RESET, &tp->flags);
- 		tp->rtl_ops.disable(tp);
-+		clear_bit(IN_PRE_RESET, &tp->flags);
- 		mutex_unlock(&tp->control);
- 	}
- 
-@@ -8293,6 +8396,10 @@ static int rtl8152_post_reset(struct usb_interface *intf)
- 	if (!tp)
- 		return 0;
- 
-+	mutex_lock(&tp->control);
-+	rtl_set_accessible(tp);
-+	mutex_unlock(&tp->control);
-+
- 	/* reset the MAC address in case of policy change */
- 	if (determine_ethernet_addr(tp, &sa) >= 0) {
- 		rtnl_lock();
-@@ -9494,17 +9601,30 @@ static u8 __rtl_get_hw_ver(struct usb_device *udev)
- 	__le32 *tmp;
- 	u8 version;
- 	int ret;
-+	int i;
- 
- 	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
- 	if (!tmp)
- 		return 0;
- 
--	ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
--			      RTL8152_REQ_GET_REGS, RTL8152_REQT_READ,
--			      PLA_TCR0, MCU_TYPE_PLA, tmp, sizeof(*tmp),
--			      USB_CTRL_GET_TIMEOUT);
--	if (ret > 0)
--		ocp_data = (__le32_to_cpu(*tmp) >> 16) & VERSION_MASK;
-+	/* Retry up to 3 times in case there is a transitory error. We do this
-+	 * since retrying a read of the version is always safe and this
-+	 * function doesn't take advantage of r8152_control_msg() which would
-+	 * queue up a reset upon error.
-+	 */
-+	for (i = 0; i < 3; i++) {
-+		ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
-+				      RTL8152_REQ_GET_REGS, RTL8152_REQT_READ,
-+				      PLA_TCR0, MCU_TYPE_PLA, tmp, sizeof(*tmp),
-+				      USB_CTRL_GET_TIMEOUT);
-+		if (ret > 0) {
-+			ocp_data = (__le32_to_cpu(*tmp) >> 16) & VERSION_MASK;
-+			break;
-+		}
-+	}
-+
-+	if (i != 0 && ret > 0)
-+		dev_warn(&udev->dev, "Needed %d retries to read version\n", i);
- 
- 	kfree(tmp);
- 
-@@ -9784,7 +9904,29 @@ static int rtl8152_probe(struct usb_interface *intf,
- 	else
- 		device_set_wakeup_enable(&udev->dev, false);
- 
--	netif_info(tp, probe, netdev, "%s\n", DRIVER_VERSION);
-+	mutex_lock(&tp->control);
-+	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags)) {
-+		/* If the device is marked inaccessible before probe even
-+		 * finished then one of two things happened. Either we got a
-+		 * USB error during probe or the user already unplugged the
-+		 * device.
-+		 *
-+		 * If we got a USB error during probe then we skipped doing a
-+		 * reset in r8152_control_msg() and deferred it to here. This
-+		 * is because the queued reset will give up after 1 second
-+		 * (see usb_lock_device_for_reset()) and we want to make sure
-+		 * that we queue things up right before probe finishes.
-+		 *
-+		 * If the user already unplugged the device then the USB
-+		 * framework will call unbind right away for us. The extra
-+		 * reset we queue up here will be harmless.
-+		 */
-+		usb_queue_reset_device(tp->intf);
-+	} else {
-+		set_bit(PROBED_WITH_NO_ERRORS, &tp->flags);
-+		netif_info(tp, probe, netdev, "%s\n", DRIVER_VERSION);
-+	}
-+	mutex_unlock(&tp->control);
- 
- 	return 0;
- 
--- 
-2.42.0.655.g421f12c284-goog
-
+Thanks
+Wesley Cheng
