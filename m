@@ -2,92 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1403D7C6B0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58B67C6B0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343730AbjJLK07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42836 "EHLO
+        id S1377883AbjJLK1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235638AbjJLK05 (ORCPT
+        with ESMTP id S1377747AbjJLK1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:26:57 -0400
-Received: from qs51p00im-qukt01071902.me.com (qs51p00im-qukt01071902.me.com [17.57.155.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E251EB8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:26:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1697106415;
-        bh=Zm68BCMFb/hYtzGq5UaRnyX7k1qDLFhJZeNJbHCgEJE=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-        b=Nj7cKOfldEYblETNZbxkiuE/GWDO1mkPSt29lWUQ28dyqf/1YOTkgt5MZsrVJotCW
-         dV8bg3rq4Y8oa9yd5qnq65ge4zQJYEEwPG9RuT/pwlGjuLSrtHavjp0mWQ0/VTSnrv
-         EFfw/C60mD5apaVr5LKURwRJ0U1chIamST89LuK0/NgA6RwQS7f3mWuwaFPnKPW1dd
-         woXVQNWvfAheYqmmr4+ZMOLX35f1yp8RhISSW+Iwg+7Gdy3UDJdnYyaVQQ7U19vRyv
-         zjnGCPBZUMhWayorxg54dmtd+BfdPOBh/PosANSIqBs6zwshIQW3ZIc3nLrMmp2BPq
-         h2ZkB05dM7CQA==
-Received: from fedora.fritz.box (qs51p00im-dlb-asmtp-mailmevip.me.com [17.57.155.28])
-        by qs51p00im-qukt01071902.me.com (Postfix) with ESMTPSA id 66A4E5EC02C9;
-        Thu, 12 Oct 2023 10:26:52 +0000 (UTC)
-Date:   Thu, 12 Oct 2023 12:26:49 +0200
-From:   Lucy Mielke <lucymielke@icloud.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        tglx@linutronix.de, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf/x86/p4: Fix "Wunused-but-set-variable" warning
-Message-ID: <ZSfJ6c5fo5enjvv+@fedora.fritz.box>
-References: <ZSGpl_hT23B6ix0M@mainframe>
- <20231007203411.GA8085@noisy.programming.kicks-ass.net>
- <ZSQqfr96SfZM_OEk@google.com>
+        Thu, 12 Oct 2023 06:27:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C710FBA;
+        Thu, 12 Oct 2023 03:27:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07CBAC43391;
+        Thu, 12 Oct 2023 10:27:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697106421;
+        bh=GoK9J2GZ+U+c0uf62aOQkibvMW3DB2yaN21pbjSxWcA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QDZ99nT7+siBhEJ5mZtF9L943zqYQLF2ybIeyIv3bnRh1tOUSx/SaiBx0AJUO9/0M
+         oZGEqVAkOYbI9cS6xt0FTs4jfIk84HzbR1GHxI64cyzbTkW9jWmIL89TGHbwI7kBQ4
+         VVYpCIZhd2k8t8BjjR2PdgbvB6UtBsv8QMUhPL5Q=
+Date:   Thu, 12 Oct 2023 12:26:58 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     linux-kernel@vger.kernel.org, Andrew Donnellan <ajd@linux.ibm.com>,
+        Xiaoke Wang <xkernel.wang@foxmail.com>, stable@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] lib/test_meminit: fix off-by-one error in test_pages()
+Message-ID: <2023101201-grasp-smartly-2085@gregkh>
+References: <2023101238-greasily-reiterate-aafc@gregkh>
+ <CAG_fn=X-dnc06r0Yik24jBaL-f7ZzrUQiUJmMHeN9CaSa3ZveQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZSQqfr96SfZM_OEk@google.com>
-X-Proofpoint-ORIG-GUID: 9pFRWMcEYoBw4AFqbI9oJ7ZVnrKWy-je
-X-Proofpoint-GUID: 9pFRWMcEYoBw4AFqbI9oJ7ZVnrKWy-je
-X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.138,18.0.790,17.0.605.474.0000000_definitions?=
- =?UTF-8?Q?=3D2022-01-12=5F02:2020-02-14=5F02,2022-01-12=5F02,2020-01-23?=
- =?UTF-8?Q?=5F02_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=685 adultscore=0
- suspectscore=0 bulkscore=0 mlxscore=0 phishscore=0 malwarescore=0
- spamscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2310120085
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <CAG_fn=X-dnc06r0Yik24jBaL-f7ZzrUQiUJmMHeN9CaSa3ZveQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mon, Oct 09, 2023 at 09:29:50AM -0700 schrieb Sean Christopherson:
+On Thu, Oct 12, 2023 at 10:40:14AM +0200, Alexander Potapenko wrote:
+> On Thu, Oct 12, 2023 at 10:17â€¯AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > In commit efb78fa86e95 ("lib/test_meminit: allocate pages up to order
+> > MAX_ORDER"), the loop for testing pages is set to "<= MAX_ORDER" which
+> > causes crashes in systems when run.  Fix this to "< MAX_ORDER" to fix
+> > the test to work properly.
 > 
-> rdmsr() writes to "high", but nothing ever reads from high.  FWIW, I would _love_
-> for rdmsrl() to have return semantics, e.g. to be able to do:
-> 
-> 	low  = (u32)rdmsrl(MSR_IA32_MISC_ENABLE);
-> 
-> or even
-> 
-> 	if (!(rdmsrl(MSR_IA32_MISC_ENABLE) & BIT(7)))
+> What are the crashes you are seeing? Are those OOMs?
 
-I have taken a look and it seems to me like this macro is called quite a lot
-for different things thoughout the kernel tree, including drivers. If
-one were to change it to have return semantics instead of the way it
-currently works, you'd have to change around 300 occurences, right?
-(Let me know if I misunderstood something.)
+They are WARN_ON() triggers.  They are burried in the Android build
+system, let me see if I can uncover them.
 
-Return semantics or not, since the only way "high" is used in p4_pmu_init()
-is by being written to by rdmsr(), the variable can be completely removed by
-just using rdmsrl(). Would this be a patch you'd be interested in?
+> IIUC it should be valid to allocate with MAX_ORDER.
 
-Mit freundlichen Grüßen / Best regards,
-	Lucy
+"should", but I no longer get runtime warnings with this patch applied,
+so something is wrong :)
+
+Let me go dig for the logs again...
