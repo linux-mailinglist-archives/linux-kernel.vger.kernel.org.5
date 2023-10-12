@@ -2,78 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B91627C77E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1F67C77ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442679AbjJLUca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 16:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42396 "EHLO
+        id S1442751AbjJLUet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 16:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344046AbjJLUc2 (ORCPT
+        with ESMTP id S1343834AbjJLUes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 16:32:28 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936E9BE;
-        Thu, 12 Oct 2023 13:32:26 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a7c08b7744so17121707b3.3;
-        Thu, 12 Oct 2023 13:32:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697142746; x=1697747546; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cm/AgXb2pZX2bhYC2JHhdS0bLLkwtZFpfedsIjsGaxo=;
-        b=cL9/sn0t9eOihbG1agUbr/zv1Zjp6ue4q77quXg/X2JJpSwfsrqtm39fA7wIvW6L1V
-         9PBBpBfqcWKR0A92t9ssREy7SsHejx9rKnszq7F5T1uveKi0QIkbrW9/0pJbzgwJlkf9
-         X7qyh2z1UibiESsIu7MXru5bqN/SrG26vnEd44994PeZyH0pBQLUpq7oeynf6pr+/Iob
-         3FhbWeVO2ICcY1y5UdeFXHTa2Vk81zyb31lyZXBQctZRqj5cNlv0l9xa2BKzADGq5fX2
-         2LfZUWiX47SMswiGyAlP2y9RJnCmiB8izYbPRNL+s7cxBOe2ynkl/4AOIqL3DVSRJAEq
-         vkXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697142746; x=1697747546;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Cm/AgXb2pZX2bhYC2JHhdS0bLLkwtZFpfedsIjsGaxo=;
-        b=j41ughAjc2VwPAqfUzxQTaXjiIgU5baVChN9GUH756aPnqFiK/kIlqfh4/paQYVC1A
-         cq7nWLkdNW1ljOOG38+uM6ybi66inu0lwai74AZWW2ZtfxMWcXxNCQyYDDe+E0w15hL2
-         jIaUaAeORJYsVLl6S9opaFm8EcQ1YTI9IEsfTuR8FsK17S4FNZHt2kYG9UjXWczs2TQ1
-         0egkdAk0OCuojrOgGxJA2H1JlWX8aU5I2crouxY58mB9pv9M1tgyqYwmtdxoTZdXOBqy
-         WRlISBghXAHkt6vIX02ZIMZhbi/OvrlamalMcE9PfBC4t5eXwNonavzDCe0ywO0b2bVg
-         HpZg==
-X-Gm-Message-State: AOJu0YyvKbkCHlVyEXf9iLKmlDTMFMYzntmbwMk3cQIRdqjzznfOS6wo
-        TIbkCoabtZncH9qYTQCOrOsn/VZuOLzOjt92vTE=
-X-Google-Smtp-Source: AGHT+IHD0CrLdMGFNY3S67LMzgZgXb1f19I7/6TOigdCU28sHoSDLNP7bYc/AFFnRT0U0CZM/hzViQ0xuFqvTOJrbnk=
-X-Received: by 2002:a0d:e284:0:b0:5a7:baae:329f with SMTP id
- l126-20020a0de284000000b005a7baae329fmr10012845ywe.15.1697142745697; Thu, 12
- Oct 2023 13:32:25 -0700 (PDT)
+        Thu, 12 Oct 2023 16:34:48 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1D39D;
+        Thu, 12 Oct 2023 13:34:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83CDEC433C7;
+        Thu, 12 Oct 2023 20:34:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697142886;
+        bh=1NmsynG7soJV4+TPuN+O1s9KhLN02NtYFh7WcmBFz8A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I9O2rBWF8gDar/1iXLQ4oZZKDeER69jhL3u6eC5bovsQijynepBATCh0hAMHpTqWw
+         /vXM3y1SG0pkQD8OS+OKBAZ9rn0hsmJzk5VRmpHzXkF0Lu/LHurNnd62SH3TgwUrfa
+         MKAJeZiLT2kX2yjJB0VYjxbaW822eObD5KQ6gyQY7qbeycSYF/QvVL+i3wJBG2+Fn1
+         i1lGoa/2VsAuTKMzanhcWLUwwviGNuHAIjzoOsczqCc9s1mTHT9D6WP4q6N1v4VmX2
+         emS3ZnCa2dbdUphUNYx3TptZIkTbls5KnuJEZM5JJYdfSHoIGXXTiKA/O8JDlHlCcB
+         bSZmUDB1llELA==
+Received: (nullmailer pid 1698490 invoked by uid 1000);
+        Thu, 12 Oct 2023 20:34:44 -0000
+Date:   Thu, 12 Oct 2023 15:34:44 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Florian Fainelli <florian.fainelli@broadcom.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:ARM/Mediatek SoC support" <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "open list:RENESAS RZ/N1 A5PSW SWITCH DRIVER" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH net-next 1/2] net: dsa: Use conduit and user terms
+Message-ID: <20231012203444.GA1636217-robh@kernel.org>
+References: <20231010213942.3633407-1-florian.fainelli@broadcom.com>
+ <20231010213942.3633407-2-florian.fainelli@broadcom.com>
 MIME-Version: 1.0
-References: <20231009224347.2076221-1-mmaurer@google.com> <CALNs47vtnOfUarrH8qiJAZpp6bs1jjcsMyb3-A2Gy9YiaDFVEw@mail.gmail.com>
-In-Reply-To: <CALNs47vtnOfUarrH8qiJAZpp6bs1jjcsMyb3-A2Gy9YiaDFVEw@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 12 Oct 2023 22:32:14 +0200
-Message-ID: <CANiq72n4bwMn6HCNGm4iNPSsV4W83fh7yH+bKv+a9GKPBWuSsA@mail.gmail.com>
-Subject: Re: [PATCH] x86: Enable IBT in Rust if enabled in C
-To:     Trevor Gross <tmgross@umich.edu>
-Cc:     Matthew Maurer <mmaurer@google.com>, peterz@infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        Antoni Boucher <bouanto@zoho.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231010213942.3633407-2-florian.fainelli@broadcom.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,37 +67,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 10:13=E2=80=AFPM Trevor Gross <tmgross@umich.edu> w=
-rote:
->
-> I have not tested this, but is it possible to enable these options via
-> `-Cllvm-args=3D...` instead of using the unstable flags?
+On Tue, Oct 10, 2023 at 02:39:41PM -0700, Florian Fainelli wrote:
+> Use more inclusive terms throughout the DSA subsystem by moving away
+> from "master" which is replaced by "conduit" and "slave" which is
+> replaced by "user". No functional changes.
+> 
+> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> ---
+>  .../bindings/net/dsa/mediatek,mt7530.yaml     |    2 +-
 
-We probably want to use the "real" flag eventually instead of
-`-Cllvm-args`, right? So we would need to change it anyhow. And using
-the `-Z` one means we test the "real" flag already.
+Acked-by: Rob Herring <robh@kernel.org>
 
-Well, unless `-Cllvm-args` becomes the "official" way to enable this,
-like you suggest in the Zulip, but should that really happen? e.g.
-should not there be a generic flag for all backends for things like
-these?
-
-> If so, I think this would be preferred in case the exact flags change
-> before they become stable. It sounds like they are likely to change,
-> see [1].
-
-That is fine, they will change anyway from `-Z` to `-C`, so having to
-update those is expected.
-
-> If not, no big deal since it would just need an update at a rust version =
-bump.
-
-Yeah, I don't think it is a big deal, and the version bump looks like
-the best commit to put the change, in fact.
-
-It is true, though, that these ones in particular are conditionally
-enabled, so there is a slightly higher risk of forgetting about them.
-But that is why we should get more `Tested-by`s! :)
-
-Cheers,
-Miguel
+>  Documentation/networking/dsa/b53.rst          |   14 +-
+>  Documentation/networking/dsa/bcm_sf2.rst      |    2 +-
+>  .../networking/dsa/configuration.rst          |  104 +-
+>  Documentation/networking/dsa/dsa.rst          |  150 +-
+>  Documentation/networking/dsa/lan9303.rst      |    2 +-
+>  Documentation/networking/dsa/sja1105.rst      |    8 +-
+>  .../dts/marvell/armada-3720-espressobin.dtsi  |    2 +-
+>  drivers/net/dsa/b53/b53_common.c              |    4 +-
+>  drivers/net/dsa/b53/b53_mdio.c                |    2 +-
+>  drivers/net/dsa/bcm_sf2.c                     |   36 +-
+>  drivers/net/dsa/bcm_sf2.h                     |    2 +-
+>  drivers/net/dsa/bcm_sf2_cfp.c                 |    4 +-
+>  drivers/net/dsa/lan9303-core.c                |    4 +-
+>  drivers/net/dsa/lantiq_gswip.c                |   34 +-
+>  drivers/net/dsa/microchip/ksz9477.c           |    6 +-
+>  drivers/net/dsa/microchip/ksz_common.c        |   20 +-
+>  drivers/net/dsa/microchip/ksz_ptp.c           |    2 +-
+>  drivers/net/dsa/mt7530.c                      |   16 +-
+>  drivers/net/dsa/mv88e6xxx/chip.c              |    2 +-
+>  drivers/net/dsa/ocelot/felix.c                |   62 +-
+>  drivers/net/dsa/ocelot/felix.h                |    4 +-
+>  drivers/net/dsa/qca/qca8k-8xxx.c              |   48 +-
+>  drivers/net/dsa/qca/qca8k-common.c            |    2 +-
+>  drivers/net/dsa/qca/qca8k-leds.c              |    6 +-
+>  drivers/net/dsa/qca/qca8k.h                   |    2 +-
+>  drivers/net/dsa/realtek/realtek-smi.c         |   28 +-
+>  drivers/net/dsa/realtek/realtek.h             |    2 +-
+>  drivers/net/dsa/sja1105/sja1105_main.c        |    4 +-
+>  drivers/net/dsa/xrs700x/xrs700x.c             |   12 +-
+>  drivers/net/ethernet/broadcom/bcmsysport.c    |    2 +-
+>  drivers/net/ethernet/mediatek/mtk_eth_soc.c   |    2 +-
+>  include/linux/dsa/sja1105.h                   |    2 +-
+>  include/net/dsa.h                             |   54 +-
+>  include/net/dsa_stubs.h                       |   10 +-
+>  net/core/dev_ioctl.c                          |    2 +-
+>  net/dsa/Makefile                              |    4 +-
+>  net/dsa/{master.c => conduit.c}               |   96 +-
+>  net/dsa/conduit.h                             |   22 +
+>  net/dsa/dsa.c                                 |  218 +--
+>  net/dsa/dsa.h                                 |   10 +-
+>  net/dsa/master.h                              |   22 -
+>  net/dsa/netlink.c                             |   14 +-
+>  net/dsa/port.c                                |  114 +-
+>  net/dsa/port.h                                |    2 +-
+>  net/dsa/slave.h                               |   69 -
+>  net/dsa/switch.c                              |   18 +-
+>  net/dsa/switch.h                              |    4 +-
+>  net/dsa/tag.c                                 |   10 +-
+>  net/dsa/tag.h                                 |   26 +-
+>  net/dsa/tag_8021q.c                           |   22 +-
+>  net/dsa/tag_8021q.h                           |    2 +-
+>  net/dsa/tag_ar9331.c                          |    4 +-
+>  net/dsa/tag_brcm.c                            |   14 +-
+>  net/dsa/tag_dsa.c                             |    6 +-
+>  net/dsa/tag_gswip.c                           |    4 +-
+>  net/dsa/tag_hellcreek.c                       |    4 +-
+>  net/dsa/tag_ksz.c                             |   12 +-
+>  net/dsa/tag_lan9303.c                         |    4 +-
+>  net/dsa/tag_mtk.c                             |    4 +-
+>  net/dsa/tag_none.c                            |    4 +-
+>  net/dsa/tag_ocelot.c                          |   22 +-
+>  net/dsa/tag_ocelot_8021q.c                    |   12 +-
+>  net/dsa/tag_qca.c                             |    6 +-
+>  net/dsa/tag_rtl4_a.c                          |    6 +-
+>  net/dsa/tag_rtl8_4.c                          |    6 +-
+>  net/dsa/tag_rzn1_a5psw.c                      |    4 +-
+>  net/dsa/tag_sja1105.c                         |   30 +-
+>  net/dsa/tag_trailer.c                         |    4 +-
+>  net/dsa/tag_xrs700x.c                         |    4 +-
+>  net/dsa/{slave.c => user.c}                   | 1240 ++++++++---------
+>  net/dsa/user.h                                |   69 +
+>  72 files changed, 1385 insertions(+), 1385 deletions(-)
+>  rename net/dsa/{master.c => conduit.c} (79%)
+>  create mode 100644 net/dsa/conduit.h
+>  delete mode 100644 net/dsa/master.h
+>  delete mode 100644 net/dsa/slave.h
+>  rename net/dsa/{slave.c => user.c} (67%)
+>  create mode 100644 net/dsa/user.h
