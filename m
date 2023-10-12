@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 035567C638A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 05:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C62187C63A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 06:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377305AbjJLDz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 23:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
+        id S1377051AbjJLECK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 00:02:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347108AbjJLDxv (ORCPT
+        with ESMTP id S235367AbjJLEBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 23:53:51 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACA3171A;
-        Wed, 11 Oct 2023 20:52:05 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-58d261807e8so383513a12.2;
-        Wed, 11 Oct 2023 20:52:05 -0700 (PDT)
+        Thu, 12 Oct 2023 00:01:33 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205E41722;
+        Wed, 11 Oct 2023 20:52:06 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c735473d1aso4399105ad.1;
+        Wed, 11 Oct 2023 20:52:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697082724; x=1697687524; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697082726; x=1697687526; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NoNrgrTYCFhmQWw/dMn/hk+rVy7/lvgQA+Rba8TK9Aw=;
-        b=TvB1WPlswUHoMWa3lXsVY8CplYmUfqoTf9Mk8bYcE+NB2hicUFuELlTX68nYerrv20
-         8G8gXCigLZHo3+idPiipGEYjU8vRkWBNj7WHpymiJOE4t3JeR0c/GhYrFD8kXZQXX33w
-         kUxn4RQj2qlKp5VaEGyCoCJQuH6YjIsiU3U1Ss5PKTW4d+pLY+yHzcQRqgB9W+PT/7Le
-         LAUkymTLkiSlVLQZTKCDfZnmosIHo+DJYliJp87NAOgr/Z8Vc+mxfsSaBzh6elOr1oHd
-         2b+U9MPemW7/R9fgK50hY3Spa0BLJ4Nk9lBh3A0B/ttLrPbZ36fUmwbyuHXOfs4maZ3K
-         jmYg==
+        bh=mLaKLGWSqUFuR6JldirEmidqSxeEteg7NHTV+cCNTLU=;
+        b=jT4qk5U+udJI7tGJANiXTTxyV6zNByGvZ4ixj4F7DJOHfix8xRJtU2Yj0XGFbfTXOi
+         OXo6sAMCgDi6i8pSmjmXif5dgA0ahVbrheG10wBChUF28ipOPknda5usB+1lqgONc719
+         sxHYF93P4vtCxnMjj7RfW0ES9N6J0ZJj4XGOmDhrrSUKZrtMVWzARaJ/NRWzEuTGGEzZ
+         wpCp494QvD/4xORlt5KpQmY/f6yXF8WGgkhy6hFobG0wWOvZatmwm6bM1uvrZGziUQ26
+         hae664zpJlKRZb3pGiZqxJi4sUyT4GHHUVzYehm5doR70XJrh5r8QchtPx1xcgYwN2Kz
+         dQIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697082724; x=1697687524;
+        d=1e100.net; s=20230601; t=1697082726; x=1697687526;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=NoNrgrTYCFhmQWw/dMn/hk+rVy7/lvgQA+Rba8TK9Aw=;
-        b=LIgIkCK4Ss918AmS0KG0Vu7j0FFw/cjuTQhty108nCV2s07odg1AE1CSGLtsHn5IPY
-         IlUkMMea1XKBhlJJDrV9Irsc6rkiYH4ySdHy39OLkXQObEDXzL297CHxIKBPk+hQ6AGo
-         Cn1HAKvv0jbyhs2AJZGyuSh8ot9Y17D9O3E3tEmyt3y2CR1VqvBaTC0rY7qsBuXj999c
-         nzPFxtgpdMUnHaKjpo8Y+Ba5cJWFW6MSDwhjDZqLsDKBvnX118DNeIHawI/DTyo0pqCo
-         xEEX10E95CWEFAk/vakHTlzI7WGT3JqekdHFn9mu9wDnd8eGroCebD/vP20oS3G71oQZ
-         B7Cg==
-X-Gm-Message-State: AOJu0YzPgY1MpZXgO2wgFd+VpC01oUf7WcYWwzUykcMwku8/fnrnbA+P
-        z0V+gnP6i0oVd3bRiYH/Qok=
-X-Google-Smtp-Source: AGHT+IHp+5v8TvQ4w+OkmVq7Q10RkNSsylihPWkJ6Iz21p7k40Ucn4vL3rQcv9YJjmHjq+QJ3tBu+g==
-X-Received: by 2002:a17:903:184:b0:1c8:8f61:967b with SMTP id z4-20020a170903018400b001c88f61967bmr15783049plg.3.1697082724523;
-        Wed, 11 Oct 2023 20:52:04 -0700 (PDT)
+        bh=mLaKLGWSqUFuR6JldirEmidqSxeEteg7NHTV+cCNTLU=;
+        b=neu83P1LXaeMKzwC9cR8rCKSv2F8xRmxWvbZmDiDauQaGCLN6SD3KrDV+NtO5xCRtf
+         aUHIhUpl8nzZyiyHC1Hmn/MKChE6f+Hpm0LuF3K7lB9waoAlH0Yjlve4kz0oXhqk2swN
+         OycMSE366sVSevFG/ceDCKh9O60r1dlIgvLpCJjYNQGEw5n8ALD9hamRSw4yZzAatr0A
+         LXbRpC+Hmcf0jvoFHxbHwmN/BQjd3mQfCioZaSsg+MKxXD2IClHogr1S4ERbPD3aiRXl
+         NsFnKGAD+PIAQB1j7xfs5wG6zAl2mAhEFKB9r8O9lv7iF+P6JpR3PFbT3773U9q3pj7o
+         nmgw==
+X-Gm-Message-State: AOJu0YyQgHGUTr7bErPQBygb8/loWPKXSXF+mwx9lwazsjOecblnab0N
+        YjTswXi8OO5iim16kOJZuBM=
+X-Google-Smtp-Source: AGHT+IEBHcceyfL5BN3w/HlZUuDeOYJc3lMOzNXoXFfYjdvl7FwJAxPoxquIRRRn/JdbKrn6X8LlUQ==
+X-Received: by 2002:a17:902:ec85:b0:1c4:749e:e725 with SMTP id x5-20020a170902ec8500b001c4749ee725mr23136550plg.0.1697082725805;
+        Wed, 11 Oct 2023 20:52:05 -0700 (PDT)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:b1b9:d490:2f5e:be06])
-        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.52.03
+        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.52.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 20:52:04 -0700 (PDT)
+        Wed, 11 Oct 2023 20:52:05 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -64,9 +64,9 @@ Cc:     Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [PATCH 38/48] perf annotate: Add annotate_get_basic_blocks()
-Date:   Wed, 11 Oct 2023 20:51:01 -0700
-Message-ID: <20231012035111.676789-39-namhyung@kernel.org>
+Subject: [PATCH 39/48] perf annotate-data: Maintain variable type info
+Date:   Wed, 11 Oct 2023 20:51:02 -0700
+Message-ID: <20231012035111.676789-40-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
 In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
 References: <20231012035111.676789-1-namhyung@kernel.org>
@@ -82,295 +82,280 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The annotate_get_basic_blocks() is to find a list of basic blocks from
-the source instruction to the destination instruction in a function.
+As it collected basic block and variable information in each scope, it
+now can build a state table to find matching variable at the location.
 
-It'll be used to find variables in a scope.  Use BFS (Breadth First
-Search) to find a shortest path to carry the variable/register state
-minimally.
-
-Also change find_disasm_line() to be used in annotate_get_basic_blocks()
-and add 'allow_update' argument to control if it can update the IP.
+The struct type_state is to keep the type info saved in each register
+and stack slot.  The update_var_state() updates the table when it finds
+variables in the current address.  It expects die_collect_vars() filled
+a list of variables with type info and starting address.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate.c | 219 ++++++++++++++++++++++++++++++++++++-
- tools/perf/util/annotate.h |  16 +++
- 2 files changed, 232 insertions(+), 3 deletions(-)
+ tools/perf/util/annotate-data.c | 155 ++++++++++++++++++++++++++++++++
+ tools/perf/util/annotate-data.h |  29 ++++++
+ tools/perf/util/dwarf-aux.c     |   4 +
+ 3 files changed, 188 insertions(+)
 
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 1cf55f903ee4..8384bc37831c 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -3642,7 +3642,8 @@ static void symbol__ensure_annotate(struct map_symbol *ms, struct evsel *evsel)
- 	}
- }
+diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
+index 90793cbb6aa0..a88d2cdafa08 100644
+--- a/tools/perf/util/annotate-data.c
++++ b/tools/perf/util/annotate-data.c
+@@ -40,6 +40,57 @@ struct annotated_data_type stackop_type = {
+ /* Data type collection debug statistics */
+ struct annotated_data_stat ann_data_stat;
  
--static struct disasm_line *find_disasm_line(struct symbol *sym, u64 ip)
-+static struct disasm_line *find_disasm_line(struct symbol *sym, u64 ip,
-+					    bool allow_update)
- {
- 	struct disasm_line *dl;
- 	struct annotation *notes;
-@@ -3655,7 +3656,8 @@ static struct disasm_line *find_disasm_line(struct symbol *sym, u64 ip)
- 			 * llvm-objdump places "lock" in a separate line and
- 			 * in that case, we want to get the next line.
- 			 */
--			if (!strcmp(dl->ins.name, "lock") && *dl->ops.raw == '\0') {
-+			if (!strcmp(dl->ins.name, "lock") &&
-+			    *dl->ops.raw == '\0' && allow_update) {
- 				ip++;
- 				continue;
- 			}
-@@ -3766,7 +3768,7 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
- 	 * Get a disasm to extract the location from the insn.
- 	 * This is too slow...
- 	 */
--	dl = find_disasm_line(ms->sym, ip);
-+	dl = find_disasm_line(ms->sym, ip, /*allow_update=*/true);
- 	if (dl == NULL) {
- 		ann_data_stat.no_insn++;
- 		return NULL;
-@@ -3860,3 +3862,214 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
- 	istat->bad++;
- 	return NULL;
- }
-+
-+/* Basic block traversal (BFS) data structure */
-+struct basic_block_data {
-+	struct list_head queue;
-+	struct list_head visited;
++/* Type information in a register, valid when ok is true */
++struct type_state_reg {
++	Dwarf_Die type;
++	bool ok;
++	bool scratch;
 +};
 +
-+/*
-+ * During the traversal, it needs to know the parent block where the current
-+ * block block started from.  Note that single basic block can be parent of
-+ * two child basic blocks (in case of condition jump).
-+ */
-+struct basic_block_link {
-+	struct list_head node;
-+	struct basic_block_link *parent;
-+	struct annotated_basic_block *bb;
-+};
-+
-+/* Check any of basic block in the list already has the offset */
-+static bool basic_block_has_offset(struct list_head *head, s64 offset)
-+{
-+	struct basic_block_link *link;
-+
-+	list_for_each_entry(link, head, node) {
-+		s64 begin_offset = link->bb->begin->al.offset;
-+		s64 end_offset = link->bb->end->al.offset;
-+
-+		if (begin_offset <= offset && offset <= end_offset)
-+			return true;
-+	}
-+	return false;
-+}
-+
-+static bool is_new_basic_block(struct basic_block_data *bb_data,
-+			       struct disasm_line *dl)
-+{
-+	s64 offset = dl->al.offset;
-+
-+	if (basic_block_has_offset(&bb_data->visited, offset))
-+		return false;
-+	if (basic_block_has_offset(&bb_data->queue, offset))
-+		return false;
-+	return true;
-+}
-+
-+/* Add a basic block starting from dl and link it to the parent */
-+static int add_basic_block(struct basic_block_data *bb_data,
-+			   struct basic_block_link *parent,
-+			   struct disasm_line *dl)
-+{
-+	struct annotated_basic_block *bb;
-+	struct basic_block_link *link;
-+
-+	if (dl == NULL)
-+		return -1;
-+
-+	if (!is_new_basic_block(bb_data, dl))
-+		return 0;
-+
-+	bb = zalloc(sizeof(*bb));
-+	if (bb == NULL)
-+		return -1;
-+
-+	bb->begin = dl;
-+	bb->end = dl;
-+	INIT_LIST_HEAD(&bb->list);
-+
-+	link = malloc(sizeof(*link));
-+	if (link == NULL) {
-+		free(bb);
-+		return -1;
-+	}
-+
-+	link->bb = bb;
-+	link->parent = parent;
-+	list_add_tail(&link->node, &bb_data->queue);
-+	return 0;
-+}
-+
-+/* Returns true when it finds the target in the current basic block */
-+static bool process_basic_block(struct basic_block_data *bb_data,
-+				struct basic_block_link *link,
-+				struct symbol *sym, u64 target)
-+{
-+	struct disasm_line *dl, *next_dl, *last_dl;
-+	struct annotation *notes = symbol__annotation(sym);
-+	bool found = false;
-+
-+	dl = link->bb->begin;
-+	/* Check if it's already visited */
-+	if (basic_block_has_offset(&bb_data->visited, dl->al.offset))
-+		return false;
-+
-+	last_dl = list_last_entry(&notes->src->source,
-+				  struct disasm_line, al.node);
-+
-+	list_for_each_entry_from(dl, &notes->src->source, al.node) {
-+		/* Found the target instruction */
-+		if (sym->start + dl->al.offset == target) {
-+			found = true;
-+			break;
-+		}
-+		/* End of the function, finish the block */
-+		if (dl == last_dl)
-+			break;
-+		/* 'return' instruction finishes the block */
-+		if (dl->ins.ops == &ret_ops)
-+			break;
-+		/* normal instructions are part of the basic block */
-+		if (dl->ins.ops != &jump_ops)
-+			continue;
-+		/* jump to a different function, tail call or return */
-+		if (dl->ops.target.outside)
-+			break;
-+		/* jump instruction creates new basic block(s) */
-+		next_dl = find_disasm_line(sym, sym->start + dl->ops.target.offset,
-+					   /*allow_update=*/false);
-+		add_basic_block(bb_data, link, next_dl);
-+
-+		/*
-+		 * FIXME: determine conditional jumps properly.
-+		 * Conditional jumps create another basic block with the
-+		 * next disasm line.
-+		 */
-+		if (!strstr(dl->ins.name, "jmp")) {
-+			next_dl = list_next_entry(dl, al.node);
-+			add_basic_block(bb_data, link, next_dl);
-+		}
-+		break;
-+
-+	}
-+	link->bb->end = dl;
-+	return found;
-+}
-+
-+/*
-+ * It founds a target basic block, build a proper linked list of basic blocks
-+ * by following the link recursively.
-+ */
-+static void link_found_basic_blocks(struct basic_block_link *link,
-+				    struct list_head *head)
-+{
-+	while (link) {
-+		struct basic_block_link *parent = link->parent;
-+
-+		list_move(&link->bb->list, head);
-+		list_del(&link->node);
-+		free(link);
-+
-+		link = parent;
-+	}
-+}
-+
-+static void delete_basic_blocks(struct basic_block_data *bb_data)
-+{
-+	struct basic_block_link *link, *tmp;
-+
-+	list_for_each_entry_safe(link, tmp, &bb_data->queue, node) {
-+		list_del(&link->node);
-+		free(link->bb);
-+		free(link);
-+	}
-+
-+	list_for_each_entry_safe(link, tmp, &bb_data->visited, node) {
-+		list_del(&link->node);
-+		free(link->bb);
-+		free(link);
-+	}
-+}
-+
-+/**
-+ * annotate_get_basic_blocks - Get basic blocks for given address range
-+ * @sym: symbol to annotate
-+ * @src: source address
-+ * @dst: destination address
-+ * @head: list head to save basic blocks
-+ *
-+ * This function traverses disasm_lines from @src to @dst and save them in a
-+ * list of annotated_basic_block to @head.  It uses BFS to find the shortest
-+ * path between two.  The basic_block_link is to maintain parent links so
-+ * that it can build a list of blocks from the start.
-+ */
-+int annotate_get_basic_blocks(struct symbol *sym, s64 src, s64 dst,
-+			      struct list_head *head)
-+{
-+	struct basic_block_data bb_data = {
-+		.queue = LIST_HEAD_INIT(bb_data.queue),
-+		.visited = LIST_HEAD_INIT(bb_data.visited),
-+	};
-+	struct basic_block_link *link;
-+	struct disasm_line *dl;
-+	int ret = -1;
-+
-+	dl = find_disasm_line(sym, src, /*allow_update=*/false);
-+	if (add_basic_block(&bb_data, /*parent=*/NULL, dl) < 0)
-+		return -1;
-+
-+	/* Find shortest path from src to dst using BFS */
-+	while (!list_empty(&bb_data.queue)) {
-+		link = list_first_entry(&bb_data.queue, struct basic_block_link, node);
-+
-+		if (process_basic_block(&bb_data, link, sym, dst)) {
-+			link_found_basic_blocks(link, head);
-+			ret = 0;
-+			break;
-+		}
-+		list_move(&link->node, &bb_data.visited);
-+	}
-+	delete_basic_blocks(&bb_data);
-+	return ret;
-+}
-diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-index 99c8d30a2fa7..c2cc9baf08be 100644
---- a/tools/perf/util/annotate.h
-+++ b/tools/perf/util/annotate.h
-@@ -493,4 +493,20 @@ extern struct list_head ann_insn_stat;
- u64 annotate_calc_pcrel(struct map_symbol *ms, u64 ip, int offset,
- 			struct disasm_line *dl);
- 
-+/**
-+ * struct annotated_basic_block - Basic block of instructions
-+ * @list: List node
-+ * @begin: start instruction in the block
-+ * @end: end instruction in the block
-+ */
-+struct annotated_basic_block {
++/* Type information in a stack location, dynamically allocated */
++struct type_state_stack {
 +	struct list_head list;
-+	struct disasm_line *begin;
-+	struct disasm_line *end;
++	Dwarf_Die type;
++	int offset;
++	int size;
++	bool compound;
 +};
 +
-+/* Get a list of basic blocks from src to dst addresses */
-+int annotate_get_basic_blocks(struct symbol *sym, s64 src, s64 dst,
-+			      struct list_head *head);
++/* FIXME: This should be arch-dependent */
++#define TYPE_STATE_MAX_REGS  16
 +
- #endif	/* __PERF_ANNOTATE_H */
++/*
++ * State table to maintain type info in each register and stack location.
++ * It'll be updated when new variable is allocated or type info is moved
++ * to a new location (register or stack).  As it'd be used with the
++ * shortest path of basic blocks, it only maintains a single table.
++ */
++struct type_state {
++	struct type_state_reg regs[TYPE_STATE_MAX_REGS];
++	struct list_head stack_vars;
++};
++
++static bool has_reg_type(struct type_state *state, int reg)
++{
++	return (unsigned)reg < ARRAY_SIZE(state->regs);
++}
++
++void init_type_state(struct type_state *state, struct arch *arch __maybe_unused)
++{
++	memset(state, 0, sizeof(*state));
++	INIT_LIST_HEAD(&state->stack_vars);
++}
++
++void exit_type_state(struct type_state *state)
++{
++	struct type_state_stack *stack, *tmp;
++
++	list_for_each_entry_safe(stack, tmp, &state->stack_vars, list) {
++		list_del(&stack->list);
++		free(stack);
++	}
++}
++
+ /*
+  * Compare type name and size to maintain them in a tree.
+  * I'm not sure if DWARF would have information of a single type in many
+@@ -255,6 +306,110 @@ static int check_variable(Dwarf_Die *var_die, Dwarf_Die *type_die, int offset,
+ 	return 0;
+ }
+ 
++static struct type_state_stack *find_stack_state(struct type_state *state,
++						 int offset)
++{
++	struct type_state_stack *stack;
++
++	list_for_each_entry(stack, &state->stack_vars, list) {
++		if (offset == stack->offset)
++			return stack;
++
++		if (stack->compound && stack->offset < offset &&
++		    offset < stack->offset + stack->size)
++			return stack;
++	}
++	return NULL;
++}
++
++static void set_stack_state(struct type_state_stack *stack, int offset,
++			    Dwarf_Die *type_die)
++{
++	int tag;
++	Dwarf_Word size;
++
++	if (dwarf_aggregate_size(type_die, &size) < 0)
++		size = 0;
++
++	tag = dwarf_tag(type_die);
++
++	stack->type = *type_die;
++	stack->size = size;
++	stack->offset = offset;
++
++	switch (tag) {
++	case DW_TAG_structure_type:
++	case DW_TAG_union_type:
++		stack->compound = true;
++		break;
++	default:
++		stack->compound = false;
++		break;
++	}
++}
++
++static struct type_state_stack *findnew_stack_state(struct type_state *state,
++						    int offset, Dwarf_Die *type_die)
++{
++	struct type_state_stack *stack = find_stack_state(state, offset);
++
++	if (stack) {
++		set_stack_state(stack, offset, type_die);
++		return stack;
++	}
++
++	stack = malloc(sizeof(*stack));
++	if (stack) {
++		set_stack_state(stack, offset, type_die);
++		list_add(&stack->list, &state->stack_vars);
++	}
++	return stack;
++}
++
++/**
++ * update_var_state - Update type state using given variables
++ * @state: type state table
++ * @dloc: data location info
++ * @addr: instruction address to update
++ * @var_types: list of variables with type info
++ *
++ * This function fills the @state table using @var_types info.  Each variable
++ * is used only at the given location and updates an entry in the table.
++ */
++void update_var_state(struct type_state *state, struct data_loc_info *dloc,
++		      u64 addr, struct die_var_type *var_types)
++{
++	Dwarf_Die mem_die;
++	struct die_var_type *var;
++	int fbreg = dloc->fbreg;
++	int fb_offset = 0;
++
++	if (dloc->fb_cfa) {
++		if (die_get_cfa(dloc->di->dbg, addr, &fbreg, &fb_offset) < 0)
++			fbreg = -1;
++	}
++
++	for (var = var_types; var != NULL; var = var->next) {
++		if (var->addr != addr)
++			continue;
++		/* Get the type DIE using the offset */
++		if (!dwarf_offdie(dloc->di->dbg, var->die_off, &mem_die))
++			continue;
++
++		if (var->reg == DWARF_REG_FB) {
++			findnew_stack_state(state, var->offset, &mem_die);
++		} else if (var->reg == fbreg) {
++			findnew_stack_state(state, var->offset - fb_offset, &mem_die);
++		} else if (has_reg_type(state, var->reg)) {
++			struct type_state_reg *reg;
++
++			reg = &state->regs[var->reg];
++			reg->type = mem_die;
++			reg->ok = true;
++		}
++	}
++}
++
+ /* The result will be saved in @type_die */
+ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
+ {
+diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
+index ad6493ea2c8e..7fbb9eb2e96f 100644
+--- a/tools/perf/util/annotate-data.h
++++ b/tools/perf/util/annotate-data.h
+@@ -8,9 +8,12 @@
+ #include <linux/types.h>
+ 
+ struct annotated_op_loc;
++struct arch;
+ struct debuginfo;
++struct die_var_type;
+ struct evsel;
+ struct map_symbol;
++struct type_state;
+ 
+ /**
+  * struct annotated_member - Type of member field
+@@ -146,6 +149,16 @@ int annotated_data_type__update_samples(struct annotated_data_type *adt,
+ /* Release all data type information in the tree */
+ void annotated_data_type__tree_delete(struct rb_root *root);
+ 
++/* Initialize type state table */
++void init_type_state(struct type_state *state, struct arch *arch);
++
++/* Destroy type state table */
++void exit_type_state(struct type_state *state);
++
++/* Update type state table using variables */
++void update_var_state(struct type_state *state, struct data_loc_info *dloc,
++		      u64 addr, struct die_var_type *var_types);
++
+ #else /* HAVE_DWARF_SUPPORT */
+ 
+ static inline struct annotated_data_type *
+@@ -168,6 +181,22 @@ static inline void annotated_data_type__tree_delete(struct rb_root *root __maybe
+ {
+ }
+ 
++static inline void init_type_state(struct type_state *state __maybe_unused,
++				   struct arch *arch __maybe_unused)
++{
++}
++
++static inline void exit_type_state(struct type_state *state __maybe_unused)
++{
++}
++
++static inline void update_var_state(struct type_state *state __maybe_unused,
++				    struct data_loc_info *dloc __maybe_unused,
++				    u64 addr __maybe_unused,
++				    struct die_var_type *var_types __maybe_unused)
++{
++}
++
+ #endif /* HAVE_DWARF_SUPPORT */
+ 
+ #endif /* _PERF_ANNOTATE_DATA_H */
+diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+index 5ec895e0a069..923e974ad18e 100644
+--- a/tools/perf/util/dwarf-aux.c
++++ b/tools/perf/util/dwarf-aux.c
+@@ -9,6 +9,7 @@
+ #include <stdlib.h>
+ #include "debug.h"
+ #include "dwarf-aux.h"
++#include "dwarf-regs.h"
+ #include "strbuf.h"
+ #include "string2.h"
+ 
+@@ -1490,6 +1491,8 @@ static int reg_from_dwarf_op(Dwarf_Op *op)
+ 	case DW_OP_regx:
+ 	case DW_OP_bregx:
+ 		return op->number;
++	case DW_OP_fbreg:
++		return DWARF_REG_FB;
+ 	default:
+ 		break;
+ 	}
+@@ -1503,6 +1506,7 @@ static int offset_from_dwarf_op(Dwarf_Op *op)
+ 	case DW_OP_regx:
+ 		return 0;
+ 	case DW_OP_breg0 ... DW_OP_breg31:
++	case DW_OP_fbreg:
+ 		return op->number;
+ 	case DW_OP_bregx:
+ 		return op->number2;
 -- 
 2.42.0.655.g421f12c284-goog
 
