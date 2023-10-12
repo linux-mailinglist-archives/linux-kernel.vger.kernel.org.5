@@ -2,433 +2,848 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF01C7C74EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2537C74F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344065AbjJLRhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
+        id S1347425AbjJLRip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:38:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347448AbjJLRhi (ORCPT
+        with ESMTP id S1347378AbjJLRib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:37:38 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69766EA;
-        Thu, 12 Oct 2023 10:34:37 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 17:34:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697132075;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yvwOrUFWrpu9Nc3ylQ7uW/c3OdgBaPqsHxReckC4MJU=;
-        b=dppdalZeKL4r9LTF75yvb9l0BbN5GAeUD/CVtO9GZ1W1W/Pb63QNlbjyf8Crc8T+1Reug7
-        h4j3VDvq+IymV0WCFWF1MmXgagagUYF+WxWGAs+T2pD8KAcfywKCSQyuU7SANUrg5yJ4sW
-        jxAo5lvF6mUSfpfa1diArHmhq4BNAcpDyDgxEN7T6vQPUveHi/vstRox93PMbLOGI393y5
-        owI+eAsW17OpvtLs0u/i2iwlQAIu2awoZlqjQWrTCKz+IYFtB0NDLSV2PZVeVO04pW6WWu
-        HUPZSZ0RGT8mT8zgQLx7+ejx2gJeslMazcnYAxuhoBW7L+fwVJjL6Sak0CIPqQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697132075;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yvwOrUFWrpu9Nc3ylQ7uW/c3OdgBaPqsHxReckC4MJU=;
-        b=3bp2R36+JyL8QSRtZ9YLfVPCLpjINNDuTms8Wf2wzXmmkVhIIhkZ09LO8fBJ1bqp8ZV2/P
-        ZlXqHdaDHoRSMNCA==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf: Optimize perf_cgroup_switch()
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231009210425.GC6307@noisy.programming.kicks-ass.net>
-References: <20231009210425.GC6307@noisy.programming.kicks-ass.net>
+        Thu, 12 Oct 2023 13:38:31 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0255410F3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:36:18 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c9b70b9656so9294575ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:36:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697132178; x=1697736978; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1PJPK8X1xf2+3i1cLx/q4HtiqQmDA9ARYzIEHVvBE0M=;
+        b=dbtyEa2u5qjFnUrC7xdmmnKpIhrfApZ16M1hjWz4ap+FrSsOfaOVmeC1cn8LOmeZHj
+         o5rcagoEJ59pOIydEcU4YvxIb+x7gJUyriyz2ZqVGXqYr2TytYZHWwFq+aF3KUMBotzV
+         RDMOd7JqSND8VSGrC/gwruoVWYl8Qr892xRpHZWfppyzXwhyUvgLZETMdi/8QL934Iic
+         Nbfu3OY+E8TBa+tP6CMKrMAnsBpKG9slMEF8wy737arecQ24oG/QhnHrY3z0wsM+gQ/n
+         5Iqlxd7jyuAki4Q5Rr6dL1jp6OB3KnIhaEtEd995+kSI/xg4F6je4LVVMMLirA8rVIHD
+         rTQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697132178; x=1697736978;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1PJPK8X1xf2+3i1cLx/q4HtiqQmDA9ARYzIEHVvBE0M=;
+        b=EzWKYLpZ7O+XCYwooZDsXLlKS+lmAPbZb5ZQcpMyDDD3JbK5PviBJlJ8VRpwTgda6A
+         bWY/SfVlnMGNPl8BnPTfTqwbPNp4K9clV5gkE5B2jCpRMnoT8bmsWbcrZWMPfaeY9ETI
+         r8U2l1586xo8wnSoKTkoWXv9mK9f5Xz2x34DwGuamVDo88SuGt9eIxnw5ino8ReHhxS1
+         CbPhX8pC28VO5YtqrpBdDVAUyZo6ds62XUC4JW0nqSMcRWPsWzuHj0vMRFZvL7xb+RTA
+         U1hPmv7zepVprV0Q/ZMpKB7hYnsvbc2WweSvscCd0Z9G8scyHHMB4Nt7GwiUqDj8Hs8E
+         S7nw==
+X-Gm-Message-State: AOJu0YzEA3fB+xsnI/lkiQxDR32cpo6CgINQVSJvmvAqsjEd1nZtJ+KU
+        HhLqiL127Vvm5ZdTLob/dGTiPQ==
+X-Google-Smtp-Source: AGHT+IEZ5yyZuU1gj8n74cq9j2lxdVWBNZG+Qz5MZFjnrkcmiCV37kxR/0rHU6BVBelP0UqnZtBZHw==
+X-Received: by 2002:a17:902:db10:b0:1bd:f7d7:3bcd with SMTP id m16-20020a170902db1000b001bdf7d73bcdmr24394230plx.50.1697132178287;
+        Thu, 12 Oct 2023 10:36:18 -0700 (PDT)
+Received: from [192.168.3.101] ([104.28.240.135])
+        by smtp.gmail.com with ESMTPSA id q23-20020a170902edd700b001bc2831e1a9sm2252420plk.90.2023.10.12.10.36.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 10:36:17 -0700 (PDT)
+Message-ID: <1fb679ad-04b0-c1f6-1675-1921539382bd@bytedance.com>
+Date:   Fri, 13 Oct 2023 01:36:05 +0800
 MIME-Version: 1.0
-Message-ID: <169713207414.3135.17659480704085791106.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Content-Language: en-US
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
+        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
+        rostedt@goodmis.org, peterz@infradead.org,
+        akpm@linux-foundation.org, sander@svanheule.net,
+        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
+References: <20230905015255.81545-1-wuqiang.matt@bytedance.com>
+ <20230905015255.81545-2-wuqiang.matt@bytedance.com>
+ <20230925184212.5a0b6c627a837b50424c4a75@kernel.org>
+ <5ba828ef-e5f9-45bc-b0c7-b8b71ae8748a@bytedance.com>
+ <20231012230237.45726dfad125cf0e8d00ba53@kernel.org>
+From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
+Subject: Re: [PATCH v9 1/5] lib: objpool added: ring-array based lockless MPMC
+In-Reply-To: <20231012230237.45726dfad125cf0e8d00ba53@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+On 2023/10/12 22:02, Masami Hiramatsu (Google) wrote:
+> Hi Wuqiang,
+> 
+> On Mon, 9 Oct 2023 17:23:34 +0800
+> wuqiang <wuqiang.matt@bytedance.com> wrote:
+> 
+>> Hello Masami,
+>>
+>> Just got time for the new patch and got that ages[] was removed. ages[] is
+>> introduced the way like 2-phase commit to keep consitency and must be kept.
+>>
+>> Thinking of the following 2 cases that two cpu nodes are operating the same
+>> objpool_slot simultaneously:
+>>
+>> Case 1:
+>>
+>>     NODE 1:                  NODE 2:
+>>     push to an empty slot    pop will get wrong value
+>>
+>>     try_cmpxchg_acquire(&slot->tail, &tail, next)
+>>                              try_cmpxchg_release(&slot->head, &head, head + 1)
+>>                              return slot->entries[head & slot->mask]
+>>     WRITE_ONCE(slot->entries[tail & slot->mask], obj)
+> 
+> Today, I rethink the algorithm.
+> 
+> For this case, we can just add a `commit` to the slot for committing the tail
+> commit instead of the ages[].
+> 
+> CPU1                                       CPU2
+> push to an empty slot                      pop from the same slot
+> 
+> commit = tail = slot->tail;
+> next = tail + 1;
+> try_cmpxchg_acquire(&slot->tail,
+>                      &tail, next);
+>                                             while (head != commit) -> NG1
+> WRITE_ONCE(slot->entries[tail & slot->mask],
+>              obj)
+>                                             while (head != commit) -> NG2
+> WRITE_ONCE(&slot->commit, next);
+>                                             while (head != commit) -> OK
+>                                             try_cmpxchg_acquire(&slot->head,
+>                                                                 &head, next);
+>                                             return slot->entries[head & slot->mask]
+> 
+> So the NG1 and NG2 timing, the pop will fail.
+> 
+> This does not expect the nested "push" case because the reserve-commit block
+> will be interrupt disabled. This doesn't support NMI but that is OK.
 
-Commit-ID:     f06cc667f79909e9175460b167c277b7c64d3df0
-Gitweb:        https://git.kernel.org/tip/f06cc667f79909e9175460b167c277b7c64d3df0
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 09 Oct 2023 23:04:25 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 12 Oct 2023 19:28:38 +02:00
+If 2 push are performed in a row, slot->commit will be 'tail + 2', CPU2 won't
+meet the condition "head == commit".
 
-perf: Optimize perf_cgroup_switch()
+Since slot->commit' is always synced to slot->tail after a successful push,
+should pop check "tail != commit" ? In this case when a push is ongoing with
+the slot, pop() has to wait for its completion even if there are objects in
+the same slot.
 
-Namhyung reported that bd2756811766 ("perf: Rewrite core context handling")
-regresses context switch overhead when perf-cgroup is in use together
-with 'slow' PMUs like uncore.
+> If we need to support such NMI or remove irq-disable, we can do following
+> (please remember the push operation only happens on the slot owned by that
+>   CPU. So this is per-cpu process)
+> 
+> ---
+> do {
+>    commit = tail = slot->tail;
+>    next = tail + 1;
+> } while (!try_cmpxchg_acquire(&slot->tail, &tail, next));
+> 
+> WRITE_ONCE(slot->entries[tail & slot->mask], obj);
+> 
+> // At this point, "commit == slot->tail - 1" in this nest level.
+> // Only outmost (non-nexted) case, "commit == slot->commit"
+> if (commit != slot->commit)
+>    return; // do nothing. it must be updated by outmost one.
+> 
+> // catch up commit to tail.
+> do {
+>    commit = READ_ONCE(slot->tail);
+>    WRITE_ONCE(slot->commit, commit);
+>     // note that someone can interrupt this loop too.
+> } while (commit != READ_ONCE(slot->tail));
+> ---
 
-Specifically, perf_cgroup_switch()'s perf_ctx_disable() /
-ctx_sched_out() etc.. all iterate the full list of active PMUs for
-that CPU, even if they don't have cgroup events.
+Yes, I got you: push can only happen on local node and the first try has the
+right to extend 'commit'. It does resolve nested push attempts, and preemption
+must be disabled.
 
-Previously there was cgrp_cpuctx_list which linked the relevant PMUs
-together, but that got lost in the rework. Instead of re-instruducing
-a similar list, let the perf_event_pmu_context iteration skip those
-that do not have cgroup events. This avoids growing multiple versions
-of the perf_event_pmu_context iteration.
+The overflow/ABA issue can still happen if the cpu is being interrupted for
+long time.
 
-Measured performance (on a slightly different patch):
+> For the rethook this may be too much.
+> 
+> Thank you,
+> 
+>>
+>>
+>> Case 2:
+>>
+>>     NODE 1:                  NODE 2
+>>     push to slot w/ 1 obj    pop will get wrong value
+>>
+>>                              try_cmpxchg_release(&slot->head, &head, head + 1)
+>>     try_cmpxchg_acquire(&slot->tail, &tail, next)
+>>     WRITE_ONCE(slot->entries[tail & slot->mask], obj)
+>>                              return slot->entries[head & slot->mask]
 
-Before)
+The pre-condition should be: CPU 1 tries to push to a full slot, in this case
+tail = head + capacity but tail & mask == head & mask
 
-  $ taskset -c 0 ./perf bench sched pipe -l 10000 -G AAA,BBB
-  # Running 'sched/pipe' benchmark:
-  # Executed 10000 pipe operations between two processes
+>>
+>> Regards,
+>> wuqiang
+>>
+>> On 2023/9/25 17:42, Masami Hiramatsu (Google) wrote:
+>>> Hi Wuqiang,
+>>>
+>>> On Tue,  5 Sep 2023 09:52:51 +0800
+>>> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+>>>
+>>>> The object pool is a scalable implementaion of high performance queue
+>>>> for object allocation and reclamation, such as kretprobe instances.
+>>>>
+>>>> With leveraging percpu ring-array to mitigate the hot spot of memory
+>>>> contention, it could deliver near-linear scalability for high parallel
+>>>> scenarios. The objpool is best suited for following cases:
+>>>> 1) Memory allocation or reclamation are prohibited or too expensive
+>>>> 2) Consumers are of different priorities, such as irqs and threads
+>>>>
+>>>> Limitations:
+>>>> 1) Maximum objects (capacity) is determined during pool initializing
+>>>>      and can't be modified (extended) after objpool creation
+>>>> 2) The memory of objects won't be freed until objpool is finalized
+>>>> 3) Object allocation (pop) may fail after trying all cpu slots
+>>>
+>>> I made a simplifying patch on this by (mainly) removing ages array.
+>>> I also rename local variable to use more readable names, like slot,
+>>> pool, and obj.
+>>>
+>>> Here the results which I run the test_objpool.ko.
+>>>
+>>> Original:
+>>> [   50.500235] Summary of testcases:
+>>> [   50.503139]     duration: 1027135us 	hits:   30628293 	miss:          0 	sync: percpu objpool
+>>> [   50.510416]     duration: 1047977us 	hits:   30453023 	miss:          0 	sync: percpu objpool from vmalloc
+>>> [   50.517421]     duration: 1047098us 	hits:   31145034 	miss:          0 	sync & hrtimer: percpu objpool
+>>> [   50.524671]     duration: 1053233us 	hits:   30919640 	miss:          0 	sync & hrtimer: percpu objpool from vmalloc
+>>> [   50.531382]     duration: 1055822us 	hits:    3407221 	miss:     830219 	sync overrun: percpu objpool
+>>> [   50.538135]     duration: 1055998us 	hits:    3404624 	miss:     854160 	sync overrun: percpu objpool from vmalloc
+>>> [   50.546686]     duration: 1046104us 	hits:   19464798 	miss:          0 	async: percpu objpool
+>>> [   50.552989]     duration: 1033054us 	hits:   18957836 	miss:          0 	async: percpu objpool from vmalloc
+>>> [   50.560289]     duration: 1041778us 	hits:   33806868 	miss:          0 	async & hrtimer: percpu objpool
+>>> [   50.567425]     duration: 1048901us 	hits:   34211860 	miss:          0 	async & hrtimer: percpu objpool from vmalloc
+>>>
+>>> Simplified:
+>>> [   48.393236] Summary of testcases:
+>>> [   48.395384]     duration: 1013002us 	hits:   29661448 	miss:          0 	sync: percpu objpool
+>>> [   48.400351]     duration: 1057231us 	hits:   31035578 	miss:          0 	sync: percpu objpool from vmalloc
+>>> [   48.405660]     duration: 1043196us 	hits:   30546652 	miss:          0 	sync & hrtimer: percpu objpool
+>>> [   48.411216]     duration: 1047128us 	hits:   30601306 	miss:          0 	sync & hrtimer: percpu objpool from vmalloc
+>>> [   48.417231]     duration: 1051695us 	hits:    3468287 	miss:     892881 	sync overrun: percpu objpool
+>>> [   48.422405]     duration: 1054003us 	hits:    3549491 	miss:     898141 	sync overrun: percpu objpool from vmalloc
+>>> [   48.428425]     duration: 1052946us 	hits:   19005228 	miss:          0 	async: percpu objpool
+>>> [   48.433597]     duration: 1051757us 	hits:   19670866 	miss:          0 	async: percpu objpool from vmalloc
+>>> [   48.439280]     duration: 1042951us 	hits:   37135332 	miss:          0 	async & hrtimer: percpu objpool
+>>> [   48.445085]     duration: 1029803us 	hits:   37093248 	miss:          0 	async & hrtimer: percpu objpool from vmalloc
+>>>
+>>> Can you test it too?
+>>>
+>>> Thanks,
+>>>
+>>>   From f1f442ff653e329839e5452b8b88463a80a12ff3 Mon Sep 17 00:00:00 2001
+>>> From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+>>> Date: Mon, 25 Sep 2023 16:07:12 +0900
+>>> Subject: [PATCH] objpool: Simplify objpool by removing ages array
+>>>
+>>> Simplify the objpool code by removing ages array from per-cpu slot.
+>>> It chooses enough big capacity (which is a rounded up power of 2 value
+>>> of nr_objects + 1) for the entries array, the tail never catch up to
+>>> the head in per-cpu slot. Thus tail == head means the slot is empty.
+>>>
+>>> This also uses consistent local variable names for pool, slot and obj.
+>>>
+>>> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>>> ---
+>>>    include/linux/objpool.h |  61 ++++----
+>>>    lib/objpool.c           | 310 ++++++++++++++++------------------------
+>>>    2 files changed, 147 insertions(+), 224 deletions(-)
+>>>
+>>> diff --git a/include/linux/objpool.h b/include/linux/objpool.h
+>>> index 33c832216b98..ecd5ecaffcd3 100644
+>>> --- a/include/linux/objpool.h
+>>> +++ b/include/linux/objpool.h
+>>> @@ -38,33 +38,23 @@
+>>>     * struct objpool_slot - percpu ring array of objpool
+>>>     * @head: head of the local ring array (to retrieve at)
+>>>     * @tail: tail of the local ring array (to append at)
+>>> - * @bits: log2 of capacity (for bitwise operations)
+>>> - * @mask: capacity - 1
+>>> + * @mask: capacity of entries - 1
+>>> + * @entries: object entries on this slot.
+>>>     *
+>>>     * Represents a cpu-local array-based ring buffer, its size is specialized
+>>>     * during initialization of object pool. The percpu objpool slot is to be
+>>>     * allocated from local memory for NUMA system, and to be kept compact in
+>>> - * continuous memory: ages[] is stored just after the body of objpool_slot,
+>>> - * and then entries[]. ages[] describes revision of each item, solely used
+>>> - * to avoid ABA; entries[] contains pointers of the actual objects
+>>> - *
+>>> - * Layout of objpool_slot in memory:
+>>> - *
+>>> - * 64bit:
+>>> - *        4      8      12     16        32                 64
+>>> - * | head | tail | bits | mask | ages[4] | ents[4]: (8 * 4) | objects
+>>> - *
+>>> - * 32bit:
+>>> - *        4      8      12     16        32        48       64
+>>> - * | head | tail | bits | mask | ages[4] | ents[4] | unused | objects
+>>> + * continuous memory: CPU assigned number of objects are stored just after
+>>> + * the body of objpool_slot.
+>>>     *
+>>>     */
+>>>    struct objpool_slot {
+>>> -	uint32_t                head;
+>>> -	uint32_t                tail;
+>>> -	uint32_t                bits;
+>>> -	uint32_t                mask;
+>>> -} __packed;
+>>> +	uint32_t	head;
+>>> +	uint32_t	tail;
+>>> +	uint32_t	mask;
+>>> +	uint32_t	dummyr;
+>>> +	void *		entries[];
+>>> +};
+>>>    
+>>>    struct objpool_head;
+>>>    
+>>> @@ -82,12 +72,11 @@ typedef int (*objpool_fini_cb)(struct objpool_head *head, void *context);
+>>>     * @obj_size:   object & element size
+>>>     * @nr_objs:    total objs (to be pre-allocated)
+>>>     * @nr_cpus:    nr_cpu_ids
+>>> - * @capacity:   max objects per cpuslot
+>>> + * @capacity:   max objects on percpu slot
+>>>     * @gfp:        gfp flags for kmalloc & vmalloc
+>>>     * @ref:        refcount for objpool
+>>>     * @flags:      flags for objpool management
+>>>     * @cpu_slots:  array of percpu slots
+>>> - * @slot_sizes:	size in bytes of slots
+>>>     * @release:    resource cleanup callback
+>>>     * @context:    caller-provided context
+>>>     */
+>>> @@ -100,7 +89,6 @@ struct objpool_head {
+>>>    	refcount_t              ref;
+>>>    	unsigned long           flags;
+>>>    	struct objpool_slot   **cpu_slots;
+>>> -	int                    *slot_sizes;
+>>>    	objpool_fini_cb         release;
+>>>    	void                   *context;
+>>>    };
+>>> @@ -108,9 +96,12 @@ struct objpool_head {
+>>>    #define OBJPOOL_FROM_VMALLOC	(0x800000000)	/* objpool allocated from vmalloc area */
+>>>    #define OBJPOOL_HAVE_OBJECTS	(0x400000000)	/* objects allocated along with objpool */
+>>>    
+>>> +#define OBJPOOL_NR_OBJECT_MAX	(1 << 24)
+>>> +#define OBJPOOL_OBJECT_SIZE_MAX	(1 << 16)
+>>> +
+>>>    /**
+>>>     * objpool_init() - initialize objpool and pre-allocated objects
+>>> - * @head:    the object pool to be initialized, declared by caller
+>>> + * @pool:    the object pool to be initialized, declared by caller
+>>>     * @nr_objs: total objects to be pre-allocated by this object pool
+>>>     * @object_size: size of an object (should be > 0)
+>>>     * @gfp:     flags for memory allocation (via kmalloc or vmalloc)
+>>> @@ -128,47 +119,47 @@ struct objpool_head {
+>>>     * pop (object allocation) or do clearance before each push (object
+>>>     * reclamation).
+>>>     */
+>>> -int objpool_init(struct objpool_head *head, int nr_objs, int object_size,
+>>> +int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
+>>>    		 gfp_t gfp, void *context, objpool_init_obj_cb objinit,
+>>>    		 objpool_fini_cb release);
+>>>    
+>>>    /**
+>>>     * objpool_pop() - allocate an object from objpool
+>>> - * @head: object pool
+>>> + * @pool: object pool
+>>>     *
+>>>     * return value: object ptr or NULL if failed
+>>>     */
+>>> -void *objpool_pop(struct objpool_head *head);
+>>> +void *objpool_pop(struct objpool_head *pool);
+>>>    
+>>>    /**
+>>>     * objpool_push() - reclaim the object and return back to objpool
+>>>     * @obj:  object ptr to be pushed to objpool
+>>> - * @head: object pool
+>>> + * @pool: object pool
+>>>     *
+>>>     * return: 0 or error code (it fails only when user tries to push
+>>>     * the same object multiple times or wrong "objects" into objpool)
+>>>     */
+>>> -int objpool_push(void *obj, struct objpool_head *head);
+>>> +int objpool_push(void *obj, struct objpool_head *pool);
+>>>    
+>>>    /**
+>>>     * objpool_drop() - discard the object and deref objpool
+>>>     * @obj:  object ptr to be discarded
+>>> - * @head: object pool
+>>> + * @pool: object pool
+>>>     *
+>>>     * return: 0 if objpool was released or error code
+>>>     */
+>>> -int objpool_drop(void *obj, struct objpool_head *head);
+>>> +int objpool_drop(void *obj, struct objpool_head *pool);
+>>>    
+>>>    /**
+>>>     * objpool_free() - release objpool forcely (all objects to be freed)
+>>> - * @head: object pool to be released
+>>> + * @pool: object pool to be released
+>>>     */
+>>> -void objpool_free(struct objpool_head *head);
+>>> +void objpool_free(struct objpool_head *pool);
+>>>    
+>>>    /**
+>>>     * objpool_fini() - deref object pool (also releasing unused objects)
+>>> - * @head: object pool to be dereferenced
+>>> + * @pool: object pool to be dereferenced
+>>>     */
+>>> -void objpool_fini(struct objpool_head *head);
+>>> +void objpool_fini(struct objpool_head *pool);
+>>>    
+>>>    #endif /* _LINUX_OBJPOOL_H */
+>>> diff --git a/lib/objpool.c b/lib/objpool.c
+>>> index 22e752371820..f8e8f70d7253 100644
+>>> --- a/lib/objpool.c
+>>> +++ b/lib/objpool.c
+>>> @@ -15,104 +15,55 @@
+>>>     * Copyright: wuqiang.matt@bytedance.com
+>>>     */
+>>>    
+>>> -#define SLOT_AGES(s) ((uint32_t *)((char *)(s) + sizeof(struct objpool_slot)))
+>>> -#define SLOT_ENTS(s) ((void **)((char *)(s) + sizeof(struct objpool_slot) + \
+>>> -			(sizeof(uint32_t) << (s)->bits)))
+>>> -#define SLOT_OBJS(s) ((void *)((char *)(s) + sizeof(struct objpool_slot) + \
+>>> -			((sizeof(uint32_t) + sizeof(void *)) << (s)->bits)))
+>>> -#define SLOT_CORE(n) cpumask_nth((n) % num_possible_cpus(), cpu_possible_mask)
+>>> -
+>>> -/* compute the suitable num of objects to be managed per slot */
+>>> -static int objpool_nobjs(int size)
+>>> -{
+>>> -	return rounddown_pow_of_two((size - sizeof(struct objpool_slot)) /
+>>> -			(sizeof(uint32_t) + sizeof(void *)));
+>>> -}
+>>> -
+>>>    /* allocate and initialize percpu slots */
+>>>    static int
+>>> -objpool_init_percpu_slots(struct objpool_head *head, int nobjs,
+>>> -			void *context, objpool_init_obj_cb objinit)
+>>> +objpool_init_percpu_slots(struct objpool_head *pool, void *context,
+>>> +			  objpool_init_obj_cb objinit)
+>>>    {
+>>> -	int i, j, n, size, objsz, cpu = 0, nents = head->capacity;
+>>> -
+>>> -	/* aligned object size by sizeof(void *) */
+>>> -	objsz = ALIGN(head->obj_size, sizeof(void *));
+>>> -	/* shall we allocate objects along with percpu-slot */
+>>> -	if (objsz)
+>>> -		head->flags |= OBJPOOL_HAVE_OBJECTS;
+>>> -
+>>> -	/* vmalloc is used in default to allocate percpu-slots */
+>>> -	if (!(head->gfp & GFP_ATOMIC))
+>>> -		head->flags |= OBJPOOL_FROM_VMALLOC;
+>>> -
+>>> -	for (i = 0; i < head->nr_cpus; i++) {
+>>> -		struct objpool_slot *os;
+>>> +	int i, j, n, size, slot_size, cpu_count = 0;
+>>> +	struct objpool_slot *slot;
+>>>    
+>>> +	for (i = 0; i < pool->nr_cpus; i++) {
+>>>    		/* skip the cpus which could never be present */
+>>>    		if (!cpu_possible(i))
+>>>    			continue;
+>>>    
+>>>    		/* compute how many objects to be managed by this slot */
+>>> -		n = nobjs / num_possible_cpus();
+>>> -		if (cpu < (nobjs % num_possible_cpus()))
+>>> +		n = pool->nr_objs / num_possible_cpus();
+>>> +		if (cpu_count < (pool->nr_objs % num_possible_cpus()))
+>>>    			n++;
+>>> -		size = sizeof(struct objpool_slot) + sizeof(void *) * nents +
+>>> -		       sizeof(uint32_t) * nents + objsz * n;
+>>> +		cpu_count++;
+>>> +
+>>> +		slot_size = struct_size(slot, entries, pool->capacity);
+>>> +		size = slot_size + pool->obj_size * n;
+>>>    
+>>>    		/*
+>>>    		 * here we allocate percpu-slot & objects together in a single
+>>> -		 * allocation, taking advantage of warm caches and TLB hits as
+>>> -		 * vmalloc always aligns the request size to pages
+>>> +		 * allocation, taking advantage on NUMA.
+>>>    		 */
+>>> -		if (head->flags & OBJPOOL_FROM_VMALLOC)
+>>> -			os = __vmalloc_node(size, sizeof(void *), head->gfp,
+>>> +		if (pool->flags & OBJPOOL_FROM_VMALLOC)
+>>> +			slot = __vmalloc_node(size, sizeof(void *), pool->gfp,
+>>>    				cpu_to_node(i), __builtin_return_address(0));
+>>>    		else
+>>> -			os = kmalloc_node(size, head->gfp, cpu_to_node(i));
+>>> -		if (!os)
+>>> +			slot = kmalloc_node(size, pool->gfp, cpu_to_node(i));
+>>> +		if (!slot)
+>>>    			return -ENOMEM;
+>>>    
+>>>    		/* initialize percpu slot for the i-th slot */
+>>> -		memset(os, 0, size);
+>>> -		os->bits = ilog2(head->capacity);
+>>> -		os->mask = head->capacity - 1;
+>>> -		head->cpu_slots[i] = os;
+>>> -		head->slot_sizes[i] = size;
+>>> -		cpu = cpu + 1;
+>>> -
+>>> -		/*
+>>> -		 * manually set head & tail to avoid possible conflict:
+>>> -		 * We assume that the head item is ready for retrieval
+>>> -		 * iff head is equal to ages[head & mask]. but ages is
+>>> -		 * initialized as 0, so in view of the caller of pop(),
+>>> -		 * the 1st item (0th) is always ready, but the reality
+>>> -		 * could be: push() is stalled before the final update,
+>>> -		 * thus the item being inserted will be lost forever
+>>> -		 */
+>>> -		os->head = os->tail = head->capacity;
+>>> -
+>>> -		if (!objsz)
+>>> -			continue;
+>>> +		memset(slot, 0, size);
+>>> +		slot->mask = pool->capacity - 1;
+>>> +		pool->cpu_slots[i] = slot;
+>>>    
+>>>    		for (j = 0; j < n; j++) {
+>>> -			uint32_t *ages = SLOT_AGES(os);
+>>> -			void **ents = SLOT_ENTS(os);
+>>> -			void *obj = SLOT_OBJS(os) + j * objsz;
+>>> -			uint32_t ie = os->tail & os->mask;
+>>> +			void *obj = (void *)slot + slot_size + pool->obj_size * j;
+>>>    
+>>> -			/* perform object initialization */
+>>>    			if (objinit) {
+>>>    				int rc = objinit(obj, context);
+>>>    				if (rc)
+>>>    					return rc;
+>>>    			}
+>>> -
+>>> -			/* add obj into the ring array */
+>>> -			ents[ie] = obj;
+>>> -			ages[ie] = os->tail;
+>>> -			os->tail++;
+>>> -			head->nr_objs++;
+>>> +			slot->entries[j] = obj;
+>>> +			slot->tail++;
+>>>    		}
+>>>    	}
+>>>    
+>>> @@ -120,164 +71,135 @@ objpool_init_percpu_slots(struct objpool_head *head, int nobjs,
+>>>    }
+>>>    
+>>>    /* cleanup all percpu slots of the object pool */
+>>> -static void objpool_fini_percpu_slots(struct objpool_head *head)
+>>> +static void objpool_fini_percpu_slots(struct objpool_head *pool)
+>>>    {
+>>>    	int i;
+>>>    
+>>> -	if (!head->cpu_slots)
+>>> +	if (!pool->cpu_slots)
+>>>    		return;
+>>>    
+>>> -	for (i = 0; i < head->nr_cpus; i++) {
+>>> -		if (!head->cpu_slots[i])
+>>> -			continue;
+>>> -		if (head->flags & OBJPOOL_FROM_VMALLOC)
+>>> -			vfree(head->cpu_slots[i]);
+>>> -		else
+>>> -			kfree(head->cpu_slots[i]);
+>>> -	}
+>>> -	kfree(head->cpu_slots);
+>>> -	head->cpu_slots = NULL;
+>>> -	head->slot_sizes = NULL;
+>>> +	for (i = 0; i < pool->nr_cpus; i++)
+>>> +		kvfree(pool->cpu_slots[i]);
+>>> +	kfree(pool->cpu_slots);
+>>>    }
+>>>    
+>>>    /* initialize object pool and pre-allocate objects */
+>>> -int objpool_init(struct objpool_head *head, int nr_objs, int object_size,
+>>> +int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
+>>>    		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
+>>>    		objpool_fini_cb release)
+>>>    {
+>>>    	int nents, rc;
+>>>    
+>>>    	/* check input parameters */
+>>> -	if (nr_objs <= 0 || object_size <= 0)
+>>> +	if (nr_objs <= 0 || object_size <= 0 ||
+>>> +	    nr_objs > OBJPOOL_NR_OBJECT_MAX || object_size > OBJPOOL_OBJECT_SIZE_MAX)
+>>> +		return -EINVAL;
+>>> +
+>>> +	/* Align up to unsigned long size */
+>>> +	object_size = ALIGN(object_size, sizeof(unsigned long));
+>>> +
+>>> +	/*
+>>> +	 * To avoid filling up the entries array in the per-cpu slot,
+>>> +	 * use the power of 2 which is more than N + 1. Thus, the tail never
+>>> +	 * catch up to the pool, and able to use pool/tail as the sequencial
+>>> +	 * number.
+>>> +	 */
+>>> +	nents = roundup_pow_of_two(nr_objs + 1);
+>>> +	if (!nents)
+>>>    		return -EINVAL;
+>>>    
+>>> -	/* calculate percpu slot size (rounded to pow of 2) */
+>>> -	nents = max_t(int, roundup_pow_of_two(nr_objs),
+>>> -			objpool_nobjs(L1_CACHE_BYTES));
+>>> -
+>>> -	/* initialize objpool head */
+>>> -	memset(head, 0, sizeof(struct objpool_head));
+>>> -	head->nr_cpus = nr_cpu_ids;
+>>> -	head->obj_size = object_size;
+>>> -	head->capacity = nents;
+>>> -	head->gfp = gfp & ~__GFP_ZERO;
+>>> -	head->context = context;
+>>> -	head->release = release;
+>>> -
+>>> -	/* allocate array for percpu slots */
+>>> -	head->cpu_slots = kzalloc(head->nr_cpus * sizeof(void *) +
+>>> -			       head->nr_cpus * sizeof(int), head->gfp);
+>>> -	if (!head->cpu_slots)
+>>> +	/* initialize objpool pool */
+>>> +	memset(pool, 0, sizeof(struct objpool_head));
+>>> +	pool->nr_cpus = nr_cpu_ids;
+>>> +	pool->obj_size = object_size;
+>>> +	pool->nr_objs = nr_objs;
+>>> +	/* just prevent to fullfill the per-cpu ring array */
+>>> +	pool->capacity = nents;
+>>> +	pool->gfp = gfp & ~__GFP_ZERO;
+>>> +	pool->context = context;
+>>> +	pool->release = release;
+>>> +	/* vmalloc is used in default to allocate percpu-slots */
+>>> +	if (!(pool->gfp & GFP_ATOMIC))
+>>> +		pool->flags |= OBJPOOL_FROM_VMALLOC;
+>>> +
+>>> +	pool->cpu_slots = kzalloc(pool->nr_cpus * sizeof(void *), pool->gfp);
+>>> +	if (!pool->cpu_slots)
+>>>    		return -ENOMEM;
+>>> -	head->slot_sizes = (int *)&head->cpu_slots[head->nr_cpus];
+>>>    
+>>>    	/* initialize per-cpu slots */
+>>> -	rc = objpool_init_percpu_slots(head, nr_objs, context, objinit);
+>>> +	rc = objpool_init_percpu_slots(pool, context, objinit);
+>>>    	if (rc)
+>>> -		objpool_fini_percpu_slots(head);
+>>> +		objpool_fini_percpu_slots(pool);
+>>>    	else
+>>> -		refcount_set(&head->ref, nr_objs + 1);
+>>> +		refcount_set(&pool->ref, nr_objs + 1);
+>>>    
+>>>    	return rc;
+>>>    }
+>>>    EXPORT_SYMBOL_GPL(objpool_init);
+>>>    
+>>>    /* adding object to slot, abort if the slot was already full */
+>>> -static inline int objpool_try_add_slot(void *obj, struct objpool_slot *os)
+>>> +static inline int objpool_try_add_slot(void *obj, struct objpool_head *pool, int cpu)
+>>>    {
+>>> -	uint32_t *ages = SLOT_AGES(os);
+>>> -	void **ents = SLOT_ENTS(os);
+>>> -	uint32_t head, tail;
+>>> +	struct objpool_slot *slot = pool->cpu_slots[cpu];
+>>> +	uint32_t tail, next;
+>>>    
+>>>    	do {
+>>> -		/* perform memory loading for both head and tail */
+>>> -		head = READ_ONCE(os->head);
+>>> -		tail = READ_ONCE(os->tail);
+>>> -		/* just abort if slot is full */
+>>> -		if (tail - head > os->mask)
+>>> -			return -ENOENT;
+>>> -		/* try to extend tail by 1 using CAS to avoid races */
+>>> -		if (try_cmpxchg_acquire(&os->tail, &tail, tail + 1))
+>>> -			break;
+>>> -	} while (1);
+>>> +		uint32_t head = READ_ONCE(slot->head);
+>>>    
+>>> -	/* the tail-th of slot is reserved for the given obj */
+>>> -	WRITE_ONCE(ents[tail & os->mask], obj);
+>>> -	/* update epoch id to make this object available for pop() */
+>>> -	smp_store_release(&ages[tail & os->mask], tail);
+>>> +		tail = READ_ONCE(slot->tail);
+>>> +		next = tail + 1;
+>>> +
+>>> +		/* This must never happen because capacity >= N + 1 */
+>>> +		if (WARN_ON_ONCE((next > head && next - head > pool->nr_objs) ||
+>>> +				 (next < head && next > head + pool->nr_objs)))
+>>> +			return -EINVAL;
+>>> +
+>>> +	} while (!try_cmpxchg_acquire(&slot->tail, &tail, next));
+>>> +
+>>> +	WRITE_ONCE(slot->entries[tail & slot->mask], obj);
+>>>    	return 0;
+>>>    }
+>>>    
+>>>    /* reclaim an object to object pool */
+>>> -int objpool_push(void *obj, struct objpool_head *oh)
+>>> +int objpool_push(void *obj, struct objpool_head *pool)
+>>>    {
+>>>    	unsigned long flags;
+>>> -	int cpu, rc;
+>>> +	int rc;
+>>>    
+>>>    	/* disable local irq to avoid preemption & interruption */
+>>>    	raw_local_irq_save(flags);
+>>> -	cpu = raw_smp_processor_id();
+>>> -	do {
+>>> -		rc = objpool_try_add_slot(obj, oh->cpu_slots[cpu]);
+>>> -		if (!rc)
+>>> -			break;
+>>> -		cpu = cpumask_next_wrap(cpu, cpu_possible_mask, -1, 1);
+>>> -	} while (1);
+>>> +	rc = objpool_try_add_slot(obj, pool, raw_smp_processor_id());
+>>>    	raw_local_irq_restore(flags);
+>>>    
+>>>    	return rc;
+>>>    }
+>>>    EXPORT_SYMBOL_GPL(objpool_push);
+>>>    
+>>> -/* drop the allocated object, rather reclaim it to objpool */
+>>> -int objpool_drop(void *obj, struct objpool_head *head)
+>>> -{
+>>> -	if (!obj || !head)
+>>> -		return -EINVAL;
+>>> -
+>>> -	if (refcount_dec_and_test(&head->ref)) {
+>>> -		objpool_free(head);
+>>> -		return 0;
+>>> -	}
+>>> -
+>>> -	return -EAGAIN;
+>>> -}
+>>> -EXPORT_SYMBOL_GPL(objpool_drop);
+>>> -
+>>>    /* try to retrieve object from slot */
+>>> -static inline void *objpool_try_get_slot(struct objpool_slot *os)
+>>> +static inline void *objpool_try_get_slot(struct objpool_slot *slot)
+>>>    {
+>>> -	uint32_t *ages = SLOT_AGES(os);
+>>> -	void **ents = SLOT_ENTS(os);
+>>>    	/* do memory load of head to local head */
+>>> -	uint32_t head = smp_load_acquire(&os->head);
+>>> +	uint32_t head = smp_load_acquire(&slot->head);
+>>>    
+>>>    	/* loop if slot isn't empty */
+>>> -	while (head != READ_ONCE(os->tail)) {
+>>> -		uint32_t id = head & os->mask, prev = head;
+>>> +	while (head != READ_ONCE(slot->tail)) {
+>>>    
+>>>    		/* do prefetching of object ents */
+>>> -		prefetch(&ents[id]);
+>>> -
+>>> -		/* check whether this item was ready for retrieval */
+>>> -		if (smp_load_acquire(&ages[id]) == head) {
+>>> -			/* node must have been udpated by push() */
+>>> -			void *node = READ_ONCE(ents[id]);
+>>> -			/* commit and move forward head of the slot */
+>>> -			if (try_cmpxchg_release(&os->head, &head, head + 1))
+>>> -				return node;
+>>> -			/* head was already updated by others */
+>>> -		}
+>>> +		prefetch(&slot->entries[head & slot->mask]);
+>>> +
+>>> +		/* commit and move forward head of the slot */
+>>> +		if (try_cmpxchg_release(&slot->head, &head, head + 1))
+>>> +			/*
+>>> +			 * TBD: check overwrap the tail/head counter and warn
+>>> +			 * if it is broken. But this happens only if this
+>>> +			 * process slows down a lot and another CPU updates
+>>> +			 * the haed/tail just 2^32 + 1 times, and this slot
+>>> +			 * is empty.
+>>> +			 */
+>>> +			return slot->entries[head & slot->mask];
+>>>    
+>>>    		/* re-load head from memory and continue trying */
+>>> -		head = READ_ONCE(os->head);
+>>> -		/*
+>>> -		 * head stays unchanged, so it's very likely there's an
+>>> -		 * ongoing push() on other cpu nodes but yet not update
+>>> -		 * ages[] to mark it's completion
+>>> -		 */
+>>> -		if (head == prev)
+>>> -			break;
+>>> +		head = READ_ONCE(slot->head);
+>>>    	}
+>>>    
+>>>    	return NULL;
+>>> @@ -307,32 +229,42 @@ void *objpool_pop(struct objpool_head *head)
+>>>    EXPORT_SYMBOL_GPL(objpool_pop);
+>>>    
+>>>    /* release whole objpool forcely */
+>>> -void objpool_free(struct objpool_head *head)
+>>> +void objpool_free(struct objpool_head *pool)
+>>>    {
+>>> -	if (!head->cpu_slots)
+>>> +	if (!pool->cpu_slots)
+>>>    		return;
+>>>    
+>>>    	/* release percpu slots */
+>>> -	objpool_fini_percpu_slots(head);
+>>> +	objpool_fini_percpu_slots(pool);
+>>>    
+>>>    	/* call user's cleanup callback if provided */
+>>> -	if (head->release)
+>>> -		head->release(head, head->context);
+>>> +	if (pool->release)
+>>> +		pool->release(pool, pool->context);
+>>>    }
+>>>    EXPORT_SYMBOL_GPL(objpool_free);
+>>>    
+>>> -/* drop unused objects and defref objpool for releasing */
+>>> -void objpool_fini(struct objpool_head *head)
+>>> +/* drop the allocated object, rather reclaim it to objpool */
+>>> +int objpool_drop(void *obj, struct objpool_head *pool)
+>>>    {
+>>> -	void *nod;
+>>> +	if (!obj || !pool)
+>>> +		return -EINVAL;
+>>>    
+>>> -	do {
+>>> -		/* grab object from objpool and drop it */
+>>> -		nod = objpool_pop(head);
+>>> +	if (refcount_dec_and_test(&pool->ref)) {
+>>> +		objpool_free(pool);
+>>> +		return 0;
+>>> +	}
+>>> +
+>>> +	return -EAGAIN;
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(objpool_drop);
+>>> +
+>>> +/* drop unused objects and defref objpool for releasing */
+>>> +void objpool_fini(struct objpool_head *pool)
+>>> +{
+>>> +	void *obj;
+>>>    
+>>> -		/* drop the extra ref of objpool */
+>>> -		if (refcount_dec_and_test(&head->ref))
+>>> -			objpool_free(head);
+>>> -	} while (nod);
+>>> +	/* grab object from objpool and drop it */
+>>> +	while ((obj = objpool_pop(pool)))
+>>> +		objpool_drop(obj, pool);
+>>>    }
+>>>    EXPORT_SYMBOL_GPL(objpool_fini);
+>>
+> 
+> 
 
-       Total time: 0.901 [sec]
-
-        90.128700 usecs/op
-            11095 ops/sec
-
-After)
-
-  $ taskset -c 0 ./perf bench sched pipe -l 10000 -G AAA,BBB
-  # Running 'sched/pipe' benchmark:
-  # Executed 10000 pipe operations between two processes
-
-       Total time: 0.065 [sec]
-
-         6.560100 usecs/op
-           152436 ops/sec
-
-Fixes: bd2756811766 ("perf: Rewrite core context handling")
-Reported-by: Namhyung Kim <namhyung@kernel.org>
-Debugged-by: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20231009210425.GC6307@noisy.programming.kicks-ass.net
----
- include/linux/perf_event.h |   1 +-
- kernel/events/core.c       | 115 ++++++++++++++++++------------------
- 2 files changed, 61 insertions(+), 55 deletions(-)
-
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index f31f962..0367d74 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -878,6 +878,7 @@ struct perf_event_pmu_context {
- 	unsigned int			embedded : 1;
- 
- 	unsigned int			nr_events;
-+	unsigned int			nr_cgroups;
- 
- 	atomic_t			refcount; /* event <-> epc */
- 	struct rcu_head			rcu_head;
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 708d474..3eb26c2 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -375,6 +375,7 @@ enum event_type_t {
- 	EVENT_TIME = 0x4,
- 	/* see ctx_resched() for details */
- 	EVENT_CPU = 0x8,
-+	EVENT_CGROUP = 0x10,
- 	EVENT_ALL = EVENT_FLEXIBLE | EVENT_PINNED,
- };
- 
-@@ -684,20 +685,26 @@ do {									\
- 	___p;								\
- })
- 
--static void perf_ctx_disable(struct perf_event_context *ctx)
-+static void perf_ctx_disable(struct perf_event_context *ctx, bool cgroup)
- {
- 	struct perf_event_pmu_context *pmu_ctx;
- 
--	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry)
-+	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry) {
-+		if (cgroup && !pmu_ctx->nr_cgroups)
-+			continue;
- 		perf_pmu_disable(pmu_ctx->pmu);
-+	}
- }
- 
--static void perf_ctx_enable(struct perf_event_context *ctx)
-+static void perf_ctx_enable(struct perf_event_context *ctx, bool cgroup)
- {
- 	struct perf_event_pmu_context *pmu_ctx;
- 
--	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry)
-+	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry) {
-+		if (cgroup && !pmu_ctx->nr_cgroups)
-+			continue;
- 		perf_pmu_enable(pmu_ctx->pmu);
-+	}
- }
- 
- static void ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type);
-@@ -856,9 +863,9 @@ static void perf_cgroup_switch(struct task_struct *task)
- 		return;
- 
- 	perf_ctx_lock(cpuctx, cpuctx->task_ctx);
--	perf_ctx_disable(&cpuctx->ctx);
-+	perf_ctx_disable(&cpuctx->ctx, true);
- 
--	ctx_sched_out(&cpuctx->ctx, EVENT_ALL);
-+	ctx_sched_out(&cpuctx->ctx, EVENT_ALL|EVENT_CGROUP);
- 	/*
- 	 * must not be done before ctxswout due
- 	 * to update_cgrp_time_from_cpuctx() in
-@@ -870,9 +877,9 @@ static void perf_cgroup_switch(struct task_struct *task)
- 	 * perf_cgroup_set_timestamp() in ctx_sched_in()
- 	 * to not have to pass task around
- 	 */
--	ctx_sched_in(&cpuctx->ctx, EVENT_ALL);
-+	ctx_sched_in(&cpuctx->ctx, EVENT_ALL|EVENT_CGROUP);
- 
--	perf_ctx_enable(&cpuctx->ctx);
-+	perf_ctx_enable(&cpuctx->ctx, true);
- 	perf_ctx_unlock(cpuctx, cpuctx->task_ctx);
- }
- 
-@@ -965,6 +972,8 @@ perf_cgroup_event_enable(struct perf_event *event, struct perf_event_context *ct
- 	if (!is_cgroup_event(event))
- 		return;
- 
-+	event->pmu_ctx->nr_cgroups++;
-+
- 	/*
- 	 * Because cgroup events are always per-cpu events,
- 	 * @ctx == &cpuctx->ctx.
-@@ -985,6 +994,8 @@ perf_cgroup_event_disable(struct perf_event *event, struct perf_event_context *c
- 	if (!is_cgroup_event(event))
- 		return;
- 
-+	event->pmu_ctx->nr_cgroups--;
-+
- 	/*
- 	 * Because cgroup events are always per-cpu events,
- 	 * @ctx == &cpuctx->ctx.
-@@ -2677,9 +2688,9 @@ static void ctx_resched(struct perf_cpu_context *cpuctx,
- 
- 	event_type &= EVENT_ALL;
- 
--	perf_ctx_disable(&cpuctx->ctx);
-+	perf_ctx_disable(&cpuctx->ctx, false);
- 	if (task_ctx) {
--		perf_ctx_disable(task_ctx);
-+		perf_ctx_disable(task_ctx, false);
- 		task_ctx_sched_out(task_ctx, event_type);
- 	}
- 
-@@ -2697,9 +2708,9 @@ static void ctx_resched(struct perf_cpu_context *cpuctx,
- 
- 	perf_event_sched_in(cpuctx, task_ctx);
- 
--	perf_ctx_enable(&cpuctx->ctx);
-+	perf_ctx_enable(&cpuctx->ctx, false);
- 	if (task_ctx)
--		perf_ctx_enable(task_ctx);
-+		perf_ctx_enable(task_ctx, false);
- }
- 
- void perf_pmu_resched(struct pmu *pmu)
-@@ -3244,6 +3255,9 @@ ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type)
- 	struct perf_cpu_context *cpuctx = this_cpu_ptr(&perf_cpu_context);
- 	struct perf_event_pmu_context *pmu_ctx;
- 	int is_active = ctx->is_active;
-+	bool cgroup = event_type & EVENT_CGROUP;
-+
-+	event_type &= ~EVENT_CGROUP;
- 
- 	lockdep_assert_held(&ctx->lock);
- 
-@@ -3290,8 +3304,11 @@ ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type)
- 
- 	is_active ^= ctx->is_active; /* changed bits */
- 
--	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry)
-+	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry) {
-+		if (cgroup && !pmu_ctx->nr_cgroups)
-+			continue;
- 		__pmu_ctx_sched_out(pmu_ctx, is_active);
-+	}
- }
- 
- /*
-@@ -3482,7 +3499,7 @@ perf_event_context_sched_out(struct task_struct *task, struct task_struct *next)
- 		raw_spin_lock_nested(&next_ctx->lock, SINGLE_DEPTH_NESTING);
- 		if (context_equiv(ctx, next_ctx)) {
- 
--			perf_ctx_disable(ctx);
-+			perf_ctx_disable(ctx, false);
- 
- 			/* PMIs are disabled; ctx->nr_pending is stable. */
- 			if (local_read(&ctx->nr_pending) ||
-@@ -3502,7 +3519,7 @@ perf_event_context_sched_out(struct task_struct *task, struct task_struct *next)
- 			perf_ctx_sched_task_cb(ctx, false);
- 			perf_event_swap_task_ctx_data(ctx, next_ctx);
- 
--			perf_ctx_enable(ctx);
-+			perf_ctx_enable(ctx, false);
- 
- 			/*
- 			 * RCU_INIT_POINTER here is safe because we've not
-@@ -3526,13 +3543,13 @@ unlock:
- 
- 	if (do_switch) {
- 		raw_spin_lock(&ctx->lock);
--		perf_ctx_disable(ctx);
-+		perf_ctx_disable(ctx, false);
- 
- inside_switch:
- 		perf_ctx_sched_task_cb(ctx, false);
- 		task_ctx_sched_out(ctx, EVENT_ALL);
- 
--		perf_ctx_enable(ctx);
-+		perf_ctx_enable(ctx, false);
- 		raw_spin_unlock(&ctx->lock);
- 	}
- }
-@@ -3818,47 +3835,32 @@ static int merge_sched_in(struct perf_event *event, void *data)
- 	return 0;
- }
- 
--static void ctx_pinned_sched_in(struct perf_event_context *ctx, struct pmu *pmu)
-+static void pmu_groups_sched_in(struct perf_event_context *ctx,
-+				struct perf_event_groups *groups,
-+				struct pmu *pmu)
- {
--	struct perf_event_pmu_context *pmu_ctx;
- 	int can_add_hw = 1;
--
--	if (pmu) {
--		visit_groups_merge(ctx, &ctx->pinned_groups,
--				   smp_processor_id(), pmu,
--				   merge_sched_in, &can_add_hw);
--	} else {
--		list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry) {
--			can_add_hw = 1;
--			visit_groups_merge(ctx, &ctx->pinned_groups,
--					   smp_processor_id(), pmu_ctx->pmu,
--					   merge_sched_in, &can_add_hw);
--		}
--	}
-+	visit_groups_merge(ctx, groups, smp_processor_id(), pmu,
-+			   merge_sched_in, &can_add_hw);
- }
- 
--static void ctx_flexible_sched_in(struct perf_event_context *ctx, struct pmu *pmu)
-+static void ctx_groups_sched_in(struct perf_event_context *ctx,
-+				struct perf_event_groups *groups,
-+				bool cgroup)
- {
- 	struct perf_event_pmu_context *pmu_ctx;
--	int can_add_hw = 1;
- 
--	if (pmu) {
--		visit_groups_merge(ctx, &ctx->flexible_groups,
--				   smp_processor_id(), pmu,
--				   merge_sched_in, &can_add_hw);
--	} else {
--		list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry) {
--			can_add_hw = 1;
--			visit_groups_merge(ctx, &ctx->flexible_groups,
--					   smp_processor_id(), pmu_ctx->pmu,
--					   merge_sched_in, &can_add_hw);
--		}
-+	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry) {
-+		if (cgroup && !pmu_ctx->nr_cgroups)
-+			continue;
-+		pmu_groups_sched_in(ctx, groups, pmu_ctx->pmu);
- 	}
- }
- 
--static void __pmu_ctx_sched_in(struct perf_event_context *ctx, struct pmu *pmu)
-+static void __pmu_ctx_sched_in(struct perf_event_context *ctx,
-+			       struct pmu *pmu)
- {
--	ctx_flexible_sched_in(ctx, pmu);
-+	pmu_groups_sched_in(ctx, &ctx->flexible_groups, pmu);
- }
- 
- static void
-@@ -3866,6 +3868,9 @@ ctx_sched_in(struct perf_event_context *ctx, enum event_type_t event_type)
- {
- 	struct perf_cpu_context *cpuctx = this_cpu_ptr(&perf_cpu_context);
- 	int is_active = ctx->is_active;
-+	bool cgroup = event_type & EVENT_CGROUP;
-+
-+	event_type &= ~EVENT_CGROUP;
- 
- 	lockdep_assert_held(&ctx->lock);
- 
-@@ -3898,11 +3903,11 @@ ctx_sched_in(struct perf_event_context *ctx, enum event_type_t event_type)
- 	 * in order to give them the best chance of going on.
- 	 */
- 	if (is_active & EVENT_PINNED)
--		ctx_pinned_sched_in(ctx, NULL);
-+		ctx_groups_sched_in(ctx, &ctx->pinned_groups, cgroup);
- 
- 	/* Then walk through the lower prio flexible groups */
- 	if (is_active & EVENT_FLEXIBLE)
--		ctx_flexible_sched_in(ctx, NULL);
-+		ctx_groups_sched_in(ctx, &ctx->flexible_groups, cgroup);
- }
- 
- static void perf_event_context_sched_in(struct task_struct *task)
-@@ -3917,11 +3922,11 @@ static void perf_event_context_sched_in(struct task_struct *task)
- 
- 	if (cpuctx->task_ctx == ctx) {
- 		perf_ctx_lock(cpuctx, ctx);
--		perf_ctx_disable(ctx);
-+		perf_ctx_disable(ctx, false);
- 
- 		perf_ctx_sched_task_cb(ctx, true);
- 
--		perf_ctx_enable(ctx);
-+		perf_ctx_enable(ctx, false);
- 		perf_ctx_unlock(cpuctx, ctx);
- 		goto rcu_unlock;
- 	}
-@@ -3934,7 +3939,7 @@ static void perf_event_context_sched_in(struct task_struct *task)
- 	if (!ctx->nr_events)
- 		goto unlock;
- 
--	perf_ctx_disable(ctx);
-+	perf_ctx_disable(ctx, false);
- 	/*
- 	 * We want to keep the following priority order:
- 	 * cpu pinned (that don't need to move), task pinned,
-@@ -3944,7 +3949,7 @@ static void perf_event_context_sched_in(struct task_struct *task)
- 	 * events, no need to flip the cpuctx's events around.
- 	 */
- 	if (!RB_EMPTY_ROOT(&ctx->pinned_groups.tree)) {
--		perf_ctx_disable(&cpuctx->ctx);
-+		perf_ctx_disable(&cpuctx->ctx, false);
- 		ctx_sched_out(&cpuctx->ctx, EVENT_FLEXIBLE);
- 	}
- 
-@@ -3953,9 +3958,9 @@ static void perf_event_context_sched_in(struct task_struct *task)
- 	perf_ctx_sched_task_cb(cpuctx->task_ctx, true);
- 
- 	if (!RB_EMPTY_ROOT(&ctx->pinned_groups.tree))
--		perf_ctx_enable(&cpuctx->ctx);
-+		perf_ctx_enable(&cpuctx->ctx, false);
- 
--	perf_ctx_enable(ctx);
-+	perf_ctx_enable(ctx, false);
- 
- unlock:
- 	perf_ctx_unlock(cpuctx, ctx);
