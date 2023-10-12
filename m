@@ -2,143 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A41F67C7054
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35237C7055
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347288AbjJLOas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 10:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38498 "EHLO
+        id S1343993AbjJLOat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 10:30:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347318AbjJLOal (ORCPT
+        with ESMTP id S1347301AbjJLOao (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:30:41 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E479EE7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:30:39 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-3575732df7fso243615ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:30:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1697121039; x=1697725839; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9BtIVBlpSIVQw6t8LBvInNyNxUiBSBsc/dgu+7xr1DM=;
-        b=BnnIRehlNpdIkyHHezJpYzvt9OEX133vLDjEs9WwMw6duUBe8RJZbXCCQh5+yLO65A
-         /ioSpGKdnv9lSHQ2Tx1UGszln6WPAeUCYvpZIH0lwS+uf/0nCoTTEy1oXbQlUE73oIqp
-         MNSoVIBqOfgUHAltjn11P+zjO3giLJG60ji5g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697121039; x=1697725839;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9BtIVBlpSIVQw6t8LBvInNyNxUiBSBsc/dgu+7xr1DM=;
-        b=EGrXiwccE978/Zuq++dkwnkoy9OOMnZF9w5lvKAcK0ehSSkkPqWrDXD26LR+vbLHE2
-         u0lkKPH/8slfASP0iea51fQB9ucb4mSfpTn3bG7BEIXHCHKtbf0OH4sz8/dH33B28S3U
-         eeR85b7I+xBJsqFqKSQLhDQDtLvgIhJ15bg1NTt5OxTyamGVFSK9pYo+kuYaHhJdnvO7
-         /TcS5tQX2Rh6bMYUUJK8ZTz3cCduz6rLi2dujPSulSYR7qSSe0qTz1KrD3jtCoEwlkYs
-         yFmUur9mHRsrsiyGQ3yyMeav1hb/c37HeSD183g+L/tsh6xRyylRayc2KdF/tm7rQ2wM
-         G0og==
-X-Gm-Message-State: AOJu0YxFQ6Ie8xAxOBSSXg2B9d+/NqFAFqrPuJWf0KoFsyqyIvdpabjZ
-        hisrwqNwa9c1hYKs0Zedt0R3Kw==
-X-Google-Smtp-Source: AGHT+IEjKGDpe0KBGUPxH0HbRdhr8dUkJea9vMZ8EDBfdFLs7XawCtgbT5fturBjhOCH1RLjeVTwRA==
-X-Received: by 2002:a6b:3b83:0:b0:7a5:cd6b:7581 with SMTP id i125-20020a6b3b83000000b007a5cd6b7581mr2814293ioa.2.1697121039213;
-        Thu, 12 Oct 2023 07:30:39 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id f3-20020a02cac3000000b0041ab9b6f5b0sm4059769jap.128.2023.10.12.07.30.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 07:30:38 -0700 (PDT)
-Message-ID: <fafe90f3-5612-4dac-8ca7-4f0d0d6a05f7@linuxfoundation.org>
-Date:   Thu, 12 Oct 2023 08:30:37 -0600
+        Thu, 12 Oct 2023 10:30:44 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C83B8;
+        Thu, 12 Oct 2023 07:30:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1697121039;
+        bh=o1kg+AGvKdB61U4poXd0za0hN5gEmhGNi+P9Mbfn6eg=;
+        h=From:Date:Subject:To:Cc:From;
+        b=jUQ27btT8YKJCuioIZSEDXbZBsXqxhwNXLkT4ykSVnwwoAF3vdbcJMc5QV3r7x0z2
+         YGVeRBw12o2yq+bEyH8DM+KSibg8MQ8FSRK3TOPTpf5G2Kf8uHL1WCQVtxkY71Fnom
+         IbnMMzuvb2KSdH1IftvhoBtNf/RJcSlXMyFwZJl0=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date:   Thu, 12 Oct 2023 16:30:38 +0200
+Subject: [PATCH] const_structs.checkpatch: add xattr_handler
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/8] selftests: Add printf attribute to kselftest
- prints
-To:     =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>, Shuah <shuah@kernel.org>
-Cc:     ilpo.jarvinen@linux.intel.com,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1697012398.git.maciej.wieczor-retman@intel.com>
- <13a47130763d109aa40de153ecbee9ede22d8356.1697012398.git.maciej.wieczor-retman@intel.com>
- <a2a5cb05-8604-4303-9802-573359c68368@kernel.org>
- <4h2eu6yhodrujbvem24v7cwal5tnk2agsqulpxwi4myk7n35uq@phbxlajivrpq>
-Content-Language: en-US
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <4h2eu6yhodrujbvem24v7cwal5tnk2agsqulpxwi4myk7n35uq@phbxlajivrpq>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Message-Id: <20231012-vfs-xattr_const-v1-1-6c21e82d4d5e@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAA0DKGUC/x3MTQqAIBBA4avIrBPU/qCrRITZWLPRcCSE6O5Jy
+ 2/x3gOMiZBhEg8kvIkphgrdCHCnDQdK2qvBKNNqpY28Pctic06ri4GztH7vlOnVuA0ItboSeir
+ /cV7e9wNhjrUJYQAAAA==
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Wedson Almeida Filho <walmeida@microsoft.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697121038; l=904;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=o1kg+AGvKdB61U4poXd0za0hN5gEmhGNi+P9Mbfn6eg=;
+ b=AhaVBR9UW982Byqh7WkLNRE4oNV1ZYqKwiBMQtMwWsvezWr6GcNPcEsuQsAsIpdy9cCs2/lif
+ zacngGK2pz4ApJDG3AYjtDUo2sJUQTMHJlAMhfnNGIwsPnxHYc21u5C
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/23 01:32, Maciej Wieczór-Retman wrote:
-> On 2023-10-11 at 13:40:48 -0600, Shuah wrote:
->> On 10/11/23 02:23, Maciej Wieczor-Retman wrote:
->>> Kselftest header defines multiple variadic functions that use printf
->>> along with other logic.
->>>
->>> There is no format checking for the variadic functions that use
->>> printing inside kselftest.h. Because of this the compiler won't
->>> be able to catch instances of mismatched printf formats and debugging
->>> tests might be more difficult.
->>>
->>> Add the common __printf attribute macro to kselftest.h.
->>>
->>> Add __printf attribute to every function using formatted printing with
->>> variadic arguments.
->>>
->>> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
->>> Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
->>> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
->>> ---
->>> Changelog v4:
->>> - Fix typo in patch subject. (Reinette)
->>> - Add Reinette's reviewed-by tag.
->>>
->>
->> I still need information on how you found these problems. Please
->> add it to change log for each of these patches.
-> 
-> Sure, I'll add notes on methodology to patches 2-8. I understand that
-> this patch (1/8) message doesn't need that addition since the problems
-> it exposes are in separate patches.
->
+Now that the vfs can handle "const struct xattr_handler" make sure that
+new usages of the struct already enter the tree as const.
 
-Yes please. As mentioned a couple of times, I would like to see how
-the problem is found in each patch commit log.
+Link: https://lore.kernel.org/lkml/20230930050033.41174-1-wedsonaf@gmail.com/
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+This should be applied on top of the vfs.xattr branch of the vfs tree.
+---
+ scripts/const_structs.checkpatch | 1 +
+ 1 file changed, 1 insertion(+)
 
-> Or would you like me to also note here more specifically what effect it
-> has in the rest of the series?
-> 
+diff --git a/scripts/const_structs.checkpatch b/scripts/const_structs.checkpatch
+index dc39d938ea77..188412aa2757 100644
+--- a/scripts/const_structs.checkpatch
++++ b/scripts/const_structs.checkpatch
+@@ -94,3 +94,4 @@ vm_operations_struct
+ wacom_features
+ watchdog_ops
+ wd_ops
++xattr_handler
 
-Yes please.
+---
+base-commit: 295d3c441226d004d1ed59c4fcf62d5dba18d9e1
+change-id: 20231012-vfs-xattr_const-afd402507b6e
 
->> I am seeing checkpatch warning:
->>
->> WARNING: Prefer __printf(a, b) over __attribute__((format(printf, a, b)))
->> #102: FILE: tools/testing/selftests/kselftest.h:81:
->> +#define __printf(a, b)   __attribute__((format(printf, a, b)))
-> 
-> Running checkpatch.pl with --show-types shows the
-> PREFER_DEFINED_ATTRIBUTE_MACRO is raised. From looking at the error
-> message in the script it looks like a false positive:
-> 	"Prefer $new over __attribute__(($orig_attr$params))\n"
-> 
-> Please correct me if my train of thought is wrong but I think checkpatch
-> sees __printf() macro defined and it sees it's raw version
-> "__attribute__((format(printf, a, b)))" which it wants to replace with
-> the macro. But since the raw version is found in the define line that is
-> obviously not possible.
-> 
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
 
-This is fine.
-
-thanks,
--- Shuah
