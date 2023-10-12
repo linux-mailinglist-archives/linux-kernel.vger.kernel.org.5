@@ -2,200 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C92B7C625E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 03:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5445B7C624E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 03:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234183AbjJLBpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 21:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57658 "EHLO
+        id S233969AbjJLBfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 21:35:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233989AbjJLBpU (ORCPT
+        with ESMTP id S233269AbjJLBfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 21:45:20 -0400
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A444E98;
-        Wed, 11 Oct 2023 18:45:18 -0700 (PDT)
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231012014516epoutp04c3ac5cb2248aba0ef58fba6a05c5bd6f~NONO2GwH41763017630epoutp04Z;
-        Thu, 12 Oct 2023 01:45:16 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231012014516epoutp04c3ac5cb2248aba0ef58fba6a05c5bd6f~NONO2GwH41763017630epoutp04Z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1697075116;
-        bh=mSSwdhO6iAHAOEF3p3uIGoMW4JID2KH+xXt+a7q18zI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lL+Z9oNPd3WBt7ClIJee/bGX23lhFYlt+FyXVO/vPzmWiiUFrjz66glJb3VqrIYaD
-         hwKEnKLSmJb2/ORik1HXbq4t/FyKZhgx1/tbFIMIAx/ywuPW8WpARHtdbGRRMTLHDZ
-         ujXQkYKJ+vLPDh/wAP8Wk7HF6UfsRPw4WBtq+4js=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20231012014516epcas2p4820e15420eb03a034943d280d0743666~NONOeTaKW1250412504epcas2p4E;
-        Thu, 12 Oct 2023 01:45:16 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.36.69]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4S5XWv33qJz4x9Pr; Thu, 12 Oct
-        2023 01:45:15 +0000 (GMT)
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        62.78.09649.BAF47256; Thu, 12 Oct 2023 10:45:15 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20231012014514epcas2p3ca99a067f3044c5753309a08cd0b05c4~NONNRgGSp1736217362epcas2p3Z;
-        Thu, 12 Oct 2023 01:45:14 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231012014514epsmtrp11618661b71bca5b44530bba8ce23a48e~NONNO1nP52141621416epsmtrp1C;
-        Thu, 12 Oct 2023 01:45:14 +0000 (GMT)
-X-AuditID: b6c32a46-1c3eaa80000025b1-42-65274fab2c6b
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        04.0F.08742.AAF47256; Thu, 12 Oct 2023 10:45:14 +0900 (KST)
-Received: from tiffany (unknown [10.229.95.142]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231012014514epsmtip1831e5824c182001ced8785e96c927f36~NONM7MXAT1906819068epsmtip1g;
-        Thu, 12 Oct 2023 01:45:14 +0000 (GMT)
-Date:   Thu, 12 Oct 2023 10:35:05 +0900
-From:   Hyesoo Yu <hyesoo.yu@samsung.com>
-To:     Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com, pcc@google.com,
-        steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, david@redhat.com, eugenis@google.com,
-        kcc@google.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 17/37] arm64: mte: Disable dynamic tag storage
- management if HW KASAN is enabled
-Message-ID: <20231012013505.GB2426387@tiffany>
+        Wed, 11 Oct 2023 21:35:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA8398
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 18:35:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D16D4C433C7;
+        Thu, 12 Oct 2023 01:35:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697074509;
+        bh=5DoR2YU1D4xX1VebPXyELha2/iiGbD4A+95ErHCMFTQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q7oI5VfnN5Rp9fwb0qglShcsQIGWyf4nXG/2Ol784P1SLYZTdDgWhweoWiLjDBi2U
+         mFi6CQ+nrIJTHtSfSR1RWc2dJn35V4C38xV71gz6ycXUg9laJVJu+HNdDqWy8kXcjM
+         K5BGTvXytNrfQrhihQRmZS1pIe3Ok97yvwrdHJjY1gxRdFw9UF006RWTJDM1kZ5jLe
+         GHnnN8OEhnk3X6Kue4Iga64X9bH2uOK6inzk+s1pzaTbtaVnYcMXQgS+HvkmLwpZMh
+         C6qXuIDi6uLZZRXPnvAmwztk2ymIbVRM6Ys/1zNh24rE/wWZ6opdim7U14GTOUkz12
+         QbM69cgmhHM8w==
+Date:   Wed, 11 Oct 2023 18:35:07 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+Message-ID: <20231012013507.jrqnm35p7az6atov@treble>
+References: <20231010164234.140750-1-ubizjak@gmail.com>
+ <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <CAFULd4Y8NSArDqH=VMy8F97eNosUUGxrBMEyHH=MytjUBSCmjg@mail.gmail.com>
+ <CAHk-=whMr8V_q3dq4iS0dpx4Nssu+aYWz+mA36p2ykA+OXTjXA@mail.gmail.com>
+ <CAFULd4afyYK0-wAOo3oJDapX0iyu86m5+vVn9c35gk8fd6iwRQ@mail.gmail.com>
+ <CAHk-=wiLyA0g3BvQ_nsF2PWi-FDtcNS5+4-ai1FX-xFzTBeTzg@mail.gmail.com>
+ <ZScjptMn3fDmMFdg@gmail.com>
+ <9b71932a-d410-4b92-b605-d6acc5d35069@zytor.com>
 MIME-Version: 1.0
-In-Reply-To: <20230823131350.114942-18-alexandru.elisei@arm.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA02TeTBdVxzHe+69777H9MW1JDmRSapPs9BanvWQEJOit1uqk6SdyXTCG+54
-        guflLdJEJ0UREbUbJYiloRFCbEksr5YXW1UbirG2KBPEUmlIKOnjaif/fX7f8/2e3zm/M4eH
-        6/3CNeT5SRSMTCIKEJDaRHWziZ3Z7U8OMZZ/9+qgzNJiEqXd6iGRqs0brSe1cFH3RK9Gmg4j
-        0EJBLEDPSldxNJlQhaPGnHkCTS7FEeh3VSGGRuJTCXRvag5DM5XNBIqueUag8ok+DqqrbydQ
-        T00miUaLX3KQuvRnAj3IbOeg5PkpgPILD6LuhhwMpb54QqL44X4StX7bgCFV9B+YxnsPQ2Hq
-        BRKlDw0BFK1exlH9xgsCVT1c4aKIYVs0cLOM63KALs4uBvTaahKgI1SDXDqnXElHqOc4dMUP
-        pnR50VWSLl9K4tLDfXUk3fbdGkHnhqbidMX3X9OPK9IBvaDqJemKn0Lop+X7Pagz/kfFjMiH
-        kRkxEu8gHz+Jr5Pgw5Oe73ra2lkKzYQOyF5gJBEFMk4C1488zNz9AjTDFBgFiwKUGslDJJcL
-        LJyPyoKUCsZIHCRXOAkYqU+A1F5qLhcFypUSX3MJo3AUWlpa2WqMXv7ilIxeTKqivpy+cTwU
-        VPBjgBYPUjaw7PojbgzQ5ulR9wHsyr2CscUSgCMlidvFMoBj9QlkDOBtRYYGHFm9HsCohLZt
-        0ySA4U9XOJv7EtQBOHe3mNxkkjoE2yoLwCYbUBZwvGoGbAZwqoOEI9c7sc0FfeoczI0f2zLx
-        KXNYVn8XY1kXtqf/SWyyFuUCo0ZvbnWDVKo2rK1eBOyRXOHq8jH2QvpwprWSy7IhnI6P2mZ/
-        OPJXAsmyAt7pDN3WrWHG1JWtvjglhr9OjW9vaQzVgwQr74DRzetcVubD6Cg9NmkMfyzIJlje
-        A8dLrnBYCw07Vz5mR9KmmdvsGpYA9me8cpmMV5qx/A7MqV0iMzRxnNoLCzd4LJrA0hqLHMAp
-        ArsYqTzQl5FbSa3+f17voMBysPWzTN3vg5S5RfMmgPFAE4A8XGDAH/d7i9Hj+4guXmJkQZ4y
-        ZQAjbwK2mqdJxA13egdpvqZE4Sm0cbC0sbMT2lvZWtoLdvNHI7N89ChfkYLxZxgpI/svh/G0
-        DEOxq5FGR6y/Mnw473YmrGeuZfW9UwOL/bbG/5zsH53MG7vVJHZFs+cKq17qmLXmRQccPu/T
-        Mb3v2FKk/nN8IS3rdnNdBflm8jW5uIV6NOTWqB4pCQ3mhaZXZc8njtYKqXBl3I1vdh6kmd2w
-        2nP9cs1ojdfnyfgdXXXI6dff+O1wHD/rU8n4ieSUwRwP7Emavcfsjj6XDX/nyvOxWUO0g1G+
-        e5GN6bX3g5X5tVZ7HY/I7DpCpmoiL5xuUD8w4cTqhhuUYF5dzt6fdbs1nhhjXrOemN/3BUel
-        Y4hdsHhunKg8e3FPwSXM5u0qeojK0/tgsvlxdXXXogt+1gnXh5fzrU+t7FLWCwi5WCQ0xWVy
-        0b9Bj5x04gQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTZxiG855zenpaqZ4VXN9KxpKiEpqtiMzszbZs/PDHu2SOhWSQACqV
-        nvBZ7FpwfiwR0iIMQQgMhbZxMOVjXSdSyscQOgZV2lijwVhFGGxAGeqQQcMWZHSjkGX+u3Pf
-        15U8Px6GFF/k7WKy8ws4bb4yT0YLqe5hWcSbloQobp9pOBqZ2600uvTtfRo5XBloveYWH43O
-        PNionhRTaLGlAqCV9hck8lV3keinxucU8i1foNCUo5VAP1fVUahnboFAT+3DFCrrW6GQbcbL
-        Q/0Dbgrd7zPTaNL6Dw852+9Q6Aezm4dqn88BdKV1LxodbCRQ3ervNKqaeEijkcpBAjnKfiE2
-        2B4CFTsXadQwPg5QmfNPEg0EVinUdfMvPjJMHEBjzdf58Xuw9bIV4LUXNQAbHI/5uNFWiA3O
-        BR7ubJNjm+VLGtuWa/h4wttPY1f9GoWbiupI3Hn1LJ7vbAB40fGAxp23z2C/LeITNkX4norL
-        yz7BaWPeTxdmTX2jJzQB0UnrlB8UgYpt5YBhIPsWHB97pxwIGTF7A0BLST0oB4KNXgqNfjex
-        lUPhlMHJ24JmALxrD5DBgWL3wIUOKx3MNBsFXfaWTTmMjYHTXU9BUCBZDw0vfGfkBYdQNgc2
-        Vf26CYlYBbw+0EEErxCzBVBfK9qqX4HuhlkqmElWDh8FnmwiJBsOWwNMsBaw8fDcZDNRDVjj
-        S4bxJcP4v9EISAuQchqdOlOti9XE5nOfK3RKta4wP1ORcVxtA5uvI4/uBT2WPxRDgGDAEIAM
-        KQsTTWfv5sQilfLUaU57/Ki2MI/TDYFwhpJJRJL5SpWYzVQWcLkcp+G0/60EI9hVRMSFnXkj
-        cvCerfZgmSFxzd53Iydt6d2UuI/2dvSmSrtDtk/7S1xelSMQ+Oqknb+UViKMbOanpNbw5o79
-        XembK8SPdl6r6Ikylcadkh1jCi67Rkeks55cRfiY6aCkzRvx0H3r427VgSZJbtehBP2aMKX/
-        cG/S+dX4bfvPSfZHmNXL5ntHDt3JOJ2V5kl+tXof/fVOI/3Mr5+tf2xIf126FH1TEBKT4LCk
-        wuJk/Wt3L04mj6234IyFxMVr9fGmUO9Rwacn5GmXPDk+ZkWnbJvf0Xk4cfKIZbtL4ytNoj7j
-        cW+nG5IyvxgK2WG+vV561bEya4r11H448uMHv0V+bzp7Hj+TUbosZayc1OqU/wIpMteEqQMA
-        AA==
-X-CMS-MailID: 20231012014514epcas2p3ca99a067f3044c5753309a08cd0b05c4
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-        boundary="----E9vxk1eHFJMo0Hi_Q_rTTD2vXp5VKj0nvvVRz8vbSgBSYVSL=_d92b1_"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231012014514epcas2p3ca99a067f3044c5753309a08cd0b05c4
-References: <20230823131350.114942-1-alexandru.elisei@arm.com>
-        <20230823131350.114942-18-alexandru.elisei@arm.com>
-        <CGME20231012014514epcas2p3ca99a067f3044c5753309a08cd0b05c4@epcas2p3.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <9b71932a-d410-4b92-b605-d6acc5d35069@zytor.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-------E9vxk1eHFJMo0Hi_Q_rTTD2vXp5VKj0nvvVRz8vbSgBSYVSL=_d92b1_
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-
-On Wed, Aug 23, 2023 at 02:13:30PM +0100, Alexandru Elisei wrote:
-> Reserving the tag storage associated with a tagged page requires the
-> ability to migrate existing data if the tag storage is in use for data.
+On Wed, Oct 11, 2023 at 04:15:15PM -0700, H. Peter Anvin wrote:
+> On 10/11/23 15:37, Ingo Molnar wrote:
+> > 
+> > * Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> > 
+> > > > The only drawback is a larger binary size:
+> > > > 
+> > > >    text    data     bss     dec     hex filename
+> > > > 25546594        4387686  808452 30742732        1d518cc vmlinux-new.o
+> > > > 25515256        4387814  808452 30711522        1d49ee2 vmlinux-old.o
+> > > > 
+> > > > that increases by 31k (0.123%), probably due to 1578 rdgsbase alternatives.
+> > > 
+> > > I'm actually surprised that it increases the text size. The 'rdgsbase'
+> > > instruction should be smaller than a 'mov %gs', so I would have
+> > > expected the *data* size to increase due to the alternatives tables,
+> > > but not the text size.
+> > > 
+> > > [ Looks around ]
+> > > 
+> > > Oh. It's because we put the altinstructions into the text section.
+> > > That's kind of silly, but whatever.
+> > 
+> > Yeah, we should probably move .altinstructions from init-text to .init.data
+> > or so? Contains a bunch of other sections too that don't get executed
+> > directly ... and in fact has some non-code data structures too, such as ...
+> > ".apicdrivers". :-/
+> > 
+> > I suspect people put all that into .text because it was the easiest place
+> > to modify in the x86 linker script, and linker scripts are arguably scary.
+> > 
 > 
-> The kernel allocates pages, which are now tagged because of HW KASAN, in
-> non-preemptible contexts, which can make reserving the associate tag
-> storage impossible.
-> 
-> Don't expose the tag storage pages to the memory allocator if HW KASAN is
-> enabled.
-> 
-> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> ---
->  arch/arm64/kernel/mte_tag_storage.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_tag_storage.c
-> index 4a6bfdf88458..f45128d0244e 100644
-> --- a/arch/arm64/kernel/mte_tag_storage.c
-> +++ b/arch/arm64/kernel/mte_tag_storage.c
-> @@ -314,6 +314,18 @@ static int __init mte_tag_storage_activate_regions(void)
->  		return 0;
->  	}
->  
-> +	/*
-> +	 * The kernel allocates memory in non-preemptible contexts, which makes
-> +	 * migration impossible when reserving the associated tag storage.
-> +	 *
-> +	 * The check is safe to make because KASAN HW tags are enabled before
-> +	 * the rest of the init functions are called, in smp_prepare_boot_cpu().
-> +	 */
-> +	if (kasan_hw_tags_enabled()) {
-> +		pr_info("KASAN HW tags enabled, disabling tag storage");
-> +		return 0;
-> +	}
-> +
+> Well, it's more than that; "size" considers all non-writable sections to be
+> "text".
 
-Hi.
+Indeed, I added a printf to "size", it shows that all the following
+sections are "text":
 
-Is there no plan to enable HW KASAN in the current design ? 
-I wonder if dynamic MTE is only used for user ? 
+  .text
+  .pci_fixup
+  .tracedata
+  __ksymtab
+  __ksymtab_gpl
+  __ksymtab_strings
+  __init_rodata
+  __param
+  __ex_table
+  .notes
+  .orc_header
+  .orc_unwind_ip
+  .orc_unwind
+  .init.text
+  .altinstr_aux
+  .x86_cpu_dev.init
+  .parainstructions
+  .retpoline_sites
+  .return_sites
+  .call_sites
+  .altinstructions
+  .altinstr_replacement
+  .exit.text
+  .smp_locks
 
-Thanks,
-Hyesoo Yu.
+I can't fathom why it doesn't just filter based on the EXECINSTR section
+flag.
 
+"size" is probably worse than useless, as many of these sections can
+change size rather arbitrarily, especially .orc_* and .*_sites.
 
->  	for (i = 0; i < num_tag_regions; i++) {
->  		tag_range = &tag_regions[i].tag_range;
->  		for (pfn = tag_range->start; pfn <= tag_range->end; pfn += pageblock_nr_pages) {
-> -- 
-> 2.41.0
-> 
-> 
+I can't help but wonder how many hasty optimizations have been made over
+the years based on the sketchy output of this tool.
 
-------E9vxk1eHFJMo0Hi_Q_rTTD2vXp5VKj0nvvVRz8vbSgBSYVSL=_d92b1_
-Content-Type: text/plain; charset="utf-8"
+It should be trivial to replace the use of "size" with our own
+"text_size" script which does what we want, e.g., filter on EXECINSTR.
 
+Here are the current EXECINSTR sections:
 
-------E9vxk1eHFJMo0Hi_Q_rTTD2vXp5VKj0nvvVRz8vbSgBSYVSL=_d92b1_--
+  ~/git/binutils-gdb/binutils $ readelf -WS /tmp/vmlinux |grep X
+    [ 1] .text             PROGBITS        ffffffff81000000 200000 1200000 00  AX  0   0 4096
+    [21] .init.text        PROGBITS        ffffffff833b7000 27b7000 091b50 00  AX  0   0 16
+    [22] .altinstr_aux     PROGBITS        ffffffff83448b50 2848b50 00176a 00  AX  0   0  1
+    [30] .altinstr_replacement PROGBITS        ffffffff8372661a 2b2661a 0028b9 00  AX  0   0  1
+    [32] .exit.text        PROGBITS        ffffffff83728f10 2b28f10 0030c7 00  AX  0   0 16
+
+As Ingo mentioned, we could make .altinstr_replacement non-executable.
+That confuses objtool, but I think we could remedy that pretty easily.
+
+Though, another problem is that .text has a crazy amount of padding
+which makes it always the same size, due to the SRSO alias mitigation
+alignment linker magic.  We should fix that somehow.
+
+-- 
+Josh
