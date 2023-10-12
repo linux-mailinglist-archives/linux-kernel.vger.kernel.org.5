@@ -2,83 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF017C751B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 436657C7520
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379634AbjJLRvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46348 "EHLO
+        id S1441878AbjJLRwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:52:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344076AbjJLRv2 (ORCPT
+        with ESMTP id S1379655AbjJLRwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:51:28 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F47AB8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:51:26 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c9b70b9671so13665ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:51:26 -0700 (PDT)
+        Thu, 12 Oct 2023 13:52:31 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA54BD9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:52:29 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-53dd752685fso2236659a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:52:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697133085; x=1697737885; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=L4c9PxVdvDkaT2ILkkxYtn5SSd3e0yFpozDooEzbzQY=;
-        b=OpUpWRlfwa3dKx1B8Q6hV/FHslyyjw+Eojg0AT9cL3xVC7dQq8UR1sf7T4JwngUrq6
-         7C7TwLaUQbtASACzIcoCNobmDatORNrFhbURPFEZkx02idKPWxfOGbDUsAhtTcCspYCF
-         EMciRZ2BJr7jC0UR2NmDGpq8HDDznqTQSMeyKui8wgcM3rj0XskgCHGzTAZB3HlzJLXF
-         UzYTPZvDVOsv/NEJRxmA10PZVFNJgTUKKB7Egx7EuMkZk0gFxqLmW6lv1LQht8KUSaSx
-         aLgCWA6kafUd8Wr7ANshdSCunX+yogiE53oAlQ3McIcddJi+MVH6rTrMcnpq91Te45RT
-         jZjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697133085; x=1697737885;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1697133148; x=1697737948; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=L4c9PxVdvDkaT2ILkkxYtn5SSd3e0yFpozDooEzbzQY=;
-        b=OdpKcHkRZz4lxP8uMuRoNtW8VLMWofaA9tcNtefRxejPd8URxFk2WScqS/Ex+NK41z
-         rqctvJRU6ogzjfoeN07kxNYWKGSnqnplP8iftfijLvuLoS3U9PjOMBnLMhCbbn9UFRCc
-         V1orZ0xsQL0L/2zniEa7reR6i4KnhOYtP66SuZKdZu20KuTRWa+32FwBf7/gO7cmbl60
-         Bg43v8AXmqEXRSDA4ybgLvTRx/OC7o7NE+CrnsLWw8xxG6hWFUwBV0isvIrvwQDD8Xuq
-         5Dopcv+4e7mS7uangAH2UBH9l0A79IoGCgm7Kddyvx/YHBiYCOrQQFF+fI8/hSh7K0HX
-         J9xQ==
-X-Gm-Message-State: AOJu0YyqE1VrIfFkdG0DEWDk4vuIFcIOAbMfqWiv8M67XDXmwFoNiXjM
-        0gUehe4zR4h6YcM5kfUhL/1rLw==
-X-Google-Smtp-Source: AGHT+IGziI3ZRQjkieu2xDnq5tLcnAJNtfsrYkJBrREaYVXFowVZIeCyzQFHfI05gEW13Z6AT5ZQQw==
-X-Received: by 2002:a17:902:e952:b0:1c1:efe5:cce5 with SMTP id b18-20020a170902e95200b001c1efe5cce5mr3634pll.3.1697133085284;
-        Thu, 12 Oct 2023 10:51:25 -0700 (PDT)
-Received: from bsegall-linux.svl.corp.google.com.localhost ([2620:15c:2a3:200:5aa:bf1b:3872:9fec])
-        by smtp.gmail.com with ESMTPSA id c4-20020a62e804000000b00690c9fda0fesm12045027pfi.169.2023.10.12.10.51.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 10:51:24 -0700 (PDT)
-From:   Benjamin Segall <bsegall@google.com>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, mgorman@suse.de, bristot@redhat.com,
-        corbet@lwn.net, qyousef@layalina.io, chris.hyser@oracle.com,
-        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
-        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
-        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
-        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
-        tglx@linutronix.de
-Subject: Re: [PATCH] sched/fair: fix pick_eevdf to always find the correct se
-In-Reply-To: <699cc8b1-f341-4af7-9c47-fee961c5c4b7@bytedance.com> (Abel Wu's
-        message of "Thu, 12 Oct 2023 18:25:06 +0800")
-References: <20230531115839.089944915@infradead.org>
-        <20230531124603.931005524@infradead.org>
-        <xm261qego72d.fsf_-_@google.com>
-        <6b606049-3412-437f-af25-a4c33139e2d8@bytedance.com>
-        <xm26bkd4x5v4.fsf@bsegall-linux.svl.corp.google.com>
-        <699cc8b1-f341-4af7-9c47-fee961c5c4b7@bytedance.com>
-Date:   Thu, 12 Oct 2023 10:51:22 -0700
-Message-ID: <xm26pm1jhgpx.fsf@bsegall-linux.svl.corp.google.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        bh=pWeWf9WKcL+DWJavFYJJq/qaaNEhtZOwsOe7pUHZDW4=;
+        b=at+ZF7GqHA82Aey/60EeWFPxzmfMHogXYlB3VK0kIwgSvmBahbQWoYKci7YgMDNedb
+         9DzrBcaT9rWEmMMYoom3TjkSJB0SzE/AqeHkqqcsmYQdrrTfOCem+nPqodwBnMXNiuke
+         Cj/pKIwRAqwFGt17QKXzoDu3/TcZoThbXKSh2KX8aUv2VcMd5g3GMRW/QVMbG8UICgTy
+         EH95z+ieG0VVjKJj6qASCjqxuRbxR3e9JQabBOa/D79JzymCvGbO1RFnDYxAGkNW53NT
+         316Mhj1VbO4yTTnBiH5+vS4G1I9ejGDGKyWlgl+LLzKTpDRYFiOkwFhYnB+dtkmldwJt
+         Mulw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697133148; x=1697737948;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pWeWf9WKcL+DWJavFYJJq/qaaNEhtZOwsOe7pUHZDW4=;
+        b=OEXPXKYL6wf3am5ZAYoGAaQIB3L59lgeQW3YLYtEbJ5mwyXWJPEviFY1sZbh3S1nIJ
+         W6RDp2RUeFN5OV6b9VN1BXuTXsXke5URKXfP7RGFMlxVXtUZIyMayV2uXgNczLefbSIo
+         GrAIjmFSt9aWGcC35eP6FyXtkJFi4fZNjP5ErN6mS5QqMEgrwfRklRZC44rlCFnPhRDz
+         Is+3ytuHC4/vCVYXeRyxlRH41ycp2sZsXjgOJoHyI+WCDoI9ODYYnz8sq5Ii9ypS9bB4
+         1P1cc6ffIhLS5F9vvxKH9KbPQsvI60yO/TedB1/eVaD8PtCVfwIlNA+NY2t5N+J+biEy
+         WODg==
+X-Gm-Message-State: AOJu0YzBo/XkhU93WWg15lrUgghfxfKmxjO9x3moffRx8UGifaQJDxUY
+        3fxVXnScKhswsLz1YTs4gWcAf4R889wgUuKPMozwVNIkDr3mLQ==
+X-Google-Smtp-Source: AGHT+IF94rwhtOXahee33628oJr74h0dtdeFK68xf2sf1j5XpTs4iZzESsj8uyxX+5MEXXt5mxVFKK5yrF23aFVgJg8=
+X-Received: by 2002:a05:6402:205:b0:534:8bdf:a258 with SMTP id
+ t5-20020a056402020500b005348bdfa258mr22151348edv.31.1697133148079; Thu, 12
+ Oct 2023 10:52:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zp-eDsxpStBznMHUE3OcHZ97NAZrZEjJW63oEFWtM3OQ@mail.gmail.com>
+ <CAFULd4bBeMCBf5_VKWA8Ui=rhQtXf03zFUioq1DeQaYCfP8v=A@mail.gmail.com> <CAHk-=wgUwPruc3MP6=vode2SawVpNgb8-szV1HYoc6E1wAaw=w@mail.gmail.com>
+In-Reply-To: <CAHk-=wgUwPruc3MP6=vode2SawVpNgb8-szV1HYoc6E1wAaw=w@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Thu, 12 Oct 2023 19:52:16 +0200
+Message-ID: <CAFULd4Ytd9xShySxZcz9o6K9Nid9Sc=Dm=d=SkryCby06g2yQw@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nadav Amit <namit@vmware.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,54 +85,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Abel Wu <wuyun.abel@bytedance.com> writes:
-
-> On 10/12/23 5:01 AM, Benjamin Segall Wrote:
->> Abel Wu <wuyun.abel@bytedance.com> writes:
->> 
->>> On 9/30/23 8:09 AM, Benjamin Segall Wrote:
->>>> +	/*
->>>> +	 * Now best_left and all of its children are eligible, and we are just
->>>> +	 * looking for deadline == min_deadline
->>>> +	 */
->>>> +	node = &best_left->run_node;
->>>> +	while (node) {
->>>> +		struct sched_entity *se = __node_2_se(node);
->>>> +
->>>> +		/* min_deadline is the current node */
->>>> +		if (se->deadline == se->min_deadline)
->>>> +			return se;
->>>
->>> IMHO it would be better tiebreak on vruntime by moving this hunk to ..
->>>
->>>> +
->>>> +		/* min_deadline is in the left branch */
->>>>    		if (node->rb_left &&
->>>>    		    __node_2_se(node->rb_left)->min_deadline == se->min_deadline) {
->>>>    			node = node->rb_left;
->>>>    			continue;
->>>>    		}
->>>
->>> .. here, thoughts?
->> Yeah, that should work and be better on the tiebreak (and my test code
->> agrees). There's an argument that the tiebreak will never really come up
->> and it's better to avoid the potential one extra cache line from
->> "__node_2_se(node->rb_left)->min_deadline" though.
+On Thu, Oct 12, 2023 at 7:10=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> I see. Then probably do the same thing in the first loop?
+> On Thu, 12 Oct 2023 at 09:55, Uros Bizjak <ubizjak@gmail.com> wrote:
+> >
+> > An example:
 >
+> Oh, I'm convinced.
+>
+> The fix seems to be a simple one-liner, ie just
+>
+> -       asm(__pcpu_op2_##size(op, __percpu_arg(P[var]), "%[val]")       \
+> +       asm(__pcpu_op2_##size(op, __percpu_arg(a[var]), "%[val]")       \
 
-We effectively do that already sorta by accident almost always -
-computing best and best_left via deadline_gt rather than gte prioritizes
-earlier elements, which always have a better vruntime.
+The effect of the change:
 
-Then when we do the best_left->min_deadline vs best->deadline
-computation, we prioritize best_left, which is the one case it can be
-wrong, we'd need an additional
-"if (se->min_deadline == best->deadline &&
-(s64)(se->vruntime - best->vruntime) > 0) return best;" check at the end
-of the second loop.
+25542442        4387686  808452 30738580        1d50894 vmlinux-new.o
+25546484        4387686  808452 30742622        1d5185e vmlinux-old.o
 
-(Though again I don't know how much this sort of never-going-to-happen
-slight fairness improvement is worth compared to the extra bit of
-overhead)
+> and it turns out that we have other places where I think we could use tha=
+t '%a',
+>
+> For example, we have things like this:
+>
+>         asm ("lea sme_cmdline_arg(%%rip), %0"
+>              : "=3Dr" (cmdline_arg)
+>              : "p" (sme_cmdline_arg));
+>
+> and I think the only reason we do that ridiculous asm is that the code
+> in question really does want that (%rip) encoding. It sounds like this
+> could just do
+>
+>         asm ("lea %a1, %0"
+>              : "=3Dr" (cmdline_arg)
+>              : "p" (sme_cmdline_arg));
+>
+> instead. Once again, I claim ignorance of the operand modifiers as the
+> reason for these kinds of things.
+>
+> But coming back to the stable op thing, I do wonder if there is some
+> way we could avoid the unnecessary reload.
+>
+> I don't hate Nadav's patch, so that part is fine, but I'd like to
+> understand what it is that makes gcc think it needs to reload. We have
+> other cases (like the ALTERNATIVE() uses) where we *have* to use
+> inline asm, so it would be good to know...
+>
+> Is it just that "p" (in the constraint, not "P" in the modifier) ends
+> up always being seen as a memory access, even when we only use the
+> address?
+>
+> That part has never really been something we've been entirely clear
+> on. We *are* passing in just the address, so the hope in *that* place
+> is that it's only an address dependency, not a memory one.
+
+Let's see the difference of:
+
+--cut here--
+int m;
+
+void foo (void)
+{
+  asm ("# %a0" :: "p" (&m));
+}
+
+void bar (void)
+{
+  asm ("# %0" :: "m" (m));
+}
+--cut here--
+
+The internal dump shows:
+
+(insn:TI 5 2 15 2 (parallel [
+            (asm_operands/v ("# %a0") ("") 0 [
+                    (symbol_ref:DI ("m") [flags 0x2]  <var_decl
+0x7f3175011bd0 m>)
+                ]
+                 [
+                    (asm_input:DI ("p") rip.c:5)
+                ]
+                 [] rip.c:5)
+            (clobber (reg:CC 17 flags))
+        ]) "rip.c":5:3 -1
+     (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+vs:
+
+(insn:TI 5 2 13 2 (parallel [
+            (asm_operands/v ("# %0") ("") 0 [
+                    (mem/c:SI (symbol_ref:DI ("m") [flags 0x2]
+<var_decl 0x7f3175011bd0 m>) [1 m+0 S4 A32])
+                ]
+                 [
+                    (asm_input:SI ("m") rip.c:10)
+                ]
+                 [] rip.c:10)
+            (clobber (reg:CC 17 flags))
+        ]) "rip.c":10:3 -1
+     (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+The first argument is internally regarded as "constant":
+
+-- Macro: CONSTANT_P (X)
+    'CONSTANT_P', which is defined by target-independent code, accepts
+    integer-values expressions whose values are not explicitly known,
+    such as 'symbol_ref', 'label_ref', and 'high' expressions and
+    'const' arithmetic expressions, in addition to 'const_int' and
+    'const_double' expressions.
+
+So, it should not have any dependency.
+
+Perhaps a testcase should be created and posted to gcc-bugs for
+further analysis.
+
+Uros.
