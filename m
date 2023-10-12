@@ -2,213 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D26547C6E5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBCB7C6E5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378517AbjJLMjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 08:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35894 "EHLO
+        id S1378572AbjJLMkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378561AbjJLMjM (ORCPT
+        with ESMTP id S233496AbjJLMkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:39:12 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA35CA
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:39:10 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32d849cc152so892224f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:39:10 -0700 (PDT)
+        Thu, 12 Oct 2023 08:40:05 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19683BE
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:40:04 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-7b5fcf9c682so475717241.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:40:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697114348; x=1697719148; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SKYKtF8Rs4Df9JqahwPF42+aeaV4P03MLBBouRg8VCs=;
-        b=lBeelQmy8Jp8v3LkBLBjIzze0RVfupV6jscYc+Il2wYZvU8cKHvo2nuzQX+It9MnjS
-         NAA5l9DGk43hLKiWEnq85gS3h1/9EbwtNVx+OENgFBBAEZGHRdRJLkuBIzVy1UXi+PhJ
-         MSqeeFtXHI62tvW4/LDx6Q6ritAxhX2p7ZaqilN6QVrLwGmHIeeGNlxHt0j2wBwDL5QI
-         xMv+rnYTK8JjUEIN3JotdE0TvAirf5XAlFzD0ZkcDrgPfN2OsrNiN6GRuNwz2hnJcptj
-         AfBc9S82RGSdIVmFKpGtcjaxZW/I1uenBAHJH4mRmsqs9nwuCeWMMqptVPpwGfDPqBbB
-         PyQg==
+        d=linaro.org; s=google; t=1697114403; x=1697719203; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tt8LJtLvFa4Rzelj/hCcBlEMqvvZSzgk6VKh35H7YWM=;
+        b=fPAEQabfeDqCVs8GUtBuBzLBBoUIcvL34EsFfMkrUVbVQ8GOjDAgrhfHRx8bWVqK2z
+         tCjbp7HxOK86VfpTwja7YMAbmZVy+cdRdR5PbPJaiZabII/Uq7VC9j1HvBWEOUmByZcA
+         9C0xmoKighMuAXojl/wGTFuQ/PLmFnJed+KBwbNbsm1zZzxjvkbb+bnSWR3TEksveBZq
+         nQFAIpBQdLwkokcS7tLfsSEAbWyNRdEExKMCGWZy/ObI8miWALufWYRgjQ58qmu4zGFs
+         /5MMZQ+IclGFarAhoHrh4nF2ZRiSaJahsakhciDGmrBDv82GEixcoIOpJm6wTk02D3Cs
+         /twA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697114348; x=1697719148;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SKYKtF8Rs4Df9JqahwPF42+aeaV4P03MLBBouRg8VCs=;
-        b=Q69yBkgZln/FVPr1Y9nmp4T12jd0GU1gTj7UoPmptz8HWk6ZtqLdrQxWiG6XgpMIeU
-         0UPgFb4xCJLwJ3BOf99262NWF13TlggC9ISbvWNMm0hHRI7uaP4ZdPOe9qFC/9JhSqdC
-         4xwZdPG98EOgAdiZ/tAR62lX7uPQNWyE3mvLuBplgihSnNeT5xu4II8ydr6iLhY1gJ2v
-         2QVXcAqcyLq4r+2kS4mg7rbEBOtQGr//OLDaPe+VfTbR3JLgnJDbu+ZB3POhM9gbEwGw
-         CP/edpnLT1QhXLRweboZbHiD+/np57bnomvL0UMGUbPNhTz127uNOR5cUqILvXJ08Szm
-         7jZg==
-X-Gm-Message-State: AOJu0YxVhcPDeMl7gmjnBQIhKG79gzFjkdLdVMTSv0qrNI1bQgqJuFIA
-        O28nst2isNcj+0Dh+HMGvEdJyQ==
-X-Google-Smtp-Source: AGHT+IFBWgt+00+f3S0x0ai2M74aG+SX8T3vAsi59DA/kcaO81wHegEjRyQgxUJBa/frUcvaQZKWIg==
-X-Received: by 2002:a5d:55ce:0:b0:32d:8ac4:d23f with SMTP id i14-20020a5d55ce000000b0032d8ac4d23fmr2836947wrw.29.1697114348486;
-        Thu, 12 Oct 2023 05:39:08 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id n4-20020a5d4004000000b003197c7d08ddsm18412766wrp.71.2023.10.12.05.39.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 05:39:08 -0700 (PDT)
-Message-ID: <315c152a-da9f-4df8-aa91-9f641a33f1e2@linaro.org>
-Date:   Thu, 12 Oct 2023 14:39:00 +0200
+        d=1e100.net; s=20230601; t=1697114403; x=1697719203;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Tt8LJtLvFa4Rzelj/hCcBlEMqvvZSzgk6VKh35H7YWM=;
+        b=RtdsOKlj6Q+uB9PIIAJ4JRHp8wRU8Yl+sBCGphp+Q+gkej0Dmv9ckZi0UhtAyKH+iC
+         gqmP9nRBiqpr+mrplcgocqEaaABe3AP5Ohmo08H0QC1IyzktmBBVLnMjNHqJMf14G98q
+         jD/tigHBPnvhBSOkhZb1s9408eXAZIMQ6hVyj6QkoVxz+9GKhs7eyKPtnxJ4Rt5g8rx5
+         E/RDwJAx2f3CLLpBITso1zOCUOrcuEA5N09AUFUBU286tkHf/NQ8AILp/gIycrjNf/ML
+         PpjFgIZO1XgvtR0gPvVCqQheZSoyENmnNnvcknYr1VSyZVEKAeUSmdwRDIJBm7QdNlci
+         WwcA==
+X-Gm-Message-State: AOJu0Yyftt9V+LozROAMJBxHXlRwDOlk3e5Gc78/ekQL6InH8JL9mj4D
+        3dJVxsy6Jkid9xi7cxfWJfQuivT6p+JL9rG/nGwCRQ==
+X-Google-Smtp-Source: AGHT+IH8F07zsjW2qJRYYsYomNNTFA5ZGGtiXc/akliAtQg2/QM2cVqH2ztjtlh0j8rumFqj96vDeFaycWrenUJQ5SY=
+X-Received: by 2002:a05:6102:54a7:b0:457:a915:87ae with SMTP id
+ bk39-20020a05610254a700b00457a91587aemr4810545vsb.18.1697114403066; Thu, 12
+ Oct 2023 05:40:03 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/5] dt-bindings: media: Document STM32MP25 VDEC & VENC
- video codecs
-Content-Language: en-US
-To:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Daniel Almeida <daniel.almeida@collabora.com>,
-        Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-Cc:     Marco Felsch <m.felsch@pengutronix.de>,
-        Adam Ford <aford173@gmail.com>
-References: <20231010091643.3666290-1-hugues.fruchet@foss.st.com>
- <20231010091643.3666290-2-hugues.fruchet@foss.st.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231010091643.3666290-2-hugues.fruchet@foss.st.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20230728134832.326467-1-sumit.garg@linaro.org>
+ <CAFA6WYP7hgRWS_gp2AFEWDs27aOeUndB6+1dh95TtW2s1N+5Ag@mail.gmail.com> <a9515560-32bc-4f3b-a36c-87f7242081a9@siemens.com>
+In-Reply-To: <a9515560-32bc-4f3b-a36c-87f7242081a9@siemens.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 12 Oct 2023 18:09:51 +0530
+Message-ID: <CAFA6WYOZPD+y0SOQTCih8qf5_FjX6DWtPTki13MM8J8V8LaHMQ@mail.gmail.com>
+Subject: Re: [PATCH v2] tee: optee: Fix supplicant based device enumeration
+To:     Jan Kiszka <jan.kiszka@siemens.com>, jens.wiklander@linaro.org
+Cc:     op-tee@lists.trustedfirmware.org, arnd@linaro.org, ardb@kernel.org,
+        jerome.forissier@linaro.org, ilias.apalodimas@linaro.org,
+        masahisa.kojima@linaro.org, maxim.uvarov@linaro.org,
+        jarkko.sakkinen@linux.intel.com, linux-kernel@vger.kernel.org,
+        "Lopes Ivo, Diogo Miguel (T CED IFD-PT)" <diogo.ivo@siemens.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/2023 11:16, Hugues Fruchet wrote:
-> Add STM32MP25 VDEC video decoder & VENC video encoder bindings.
-> 
-> Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
-> ---
->  .../media/st,stm32mp25-video-codec.yaml       | 58 +++++++++++++++++++
->  1 file changed, 58 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml b/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
-> new file mode 100644
-> index 000000000000..479566171568
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
-> @@ -0,0 +1,58 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/st,stm32mp25-video-codec.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: STMicroelectronics STM32MP25 VDEC video decoder & VENC video encoder
-> +
-> +maintainers:
-> +  - Hugues Fruchet <hugues.fruchet@foss.st.com>
-> +
-> +description:
-> +  The STMicroelectronics STM32MP25 SOCs embeds a VDEC video hardware
-> +  decoder peripheral based on Verisilicon VC8000NanoD IP (former Hantro G1)
-> +  and a VENC video hardware encoder peripheral based on Verisilicon
-> +  VC8000NanoE IP (former Hantro H1).
-> +
-> +properties:
-> +  compatible:
-> +    items:
+On Wed, 11 Oct 2023 at 20:15, Jan Kiszka <jan.kiszka@siemens.com> wrote:
+>
+> On 29.08.23 13:03, Sumit Garg wrote:
+> > Hi Jan,
+> >
+> > On Fri, 28 Jul 2023 at 19:18, Sumit Garg <sumit.garg@linaro.org> wrote:
+> >>
+> >> Currently supplicant dependent optee device enumeration only registers
+> >> devices whenever tee-supplicant is invoked for the first time. But it
+> >> forgets to remove devices when tee-supplicant daemon stops running and
+> >> closes its context gracefully. This leads to following error for fTPM
+> >> driver during reboot/shutdown:
+> >>
+> >> [   73.466791] tpm tpm0: ftpm_tee_tpm_op_send: SUBMIT_COMMAND invoke error: 0xffff3024
+> >>
+> >> Fix this by separating supplicant dependent devices so that the
+> >> user-space service can detach supplicant devices before closing the
+> >> supplicant. While at it use the global system workqueue for OP-TEE bus
+> >> scanning work rather than our own custom one.
+> >>
+> >> Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
+> >> Link: https://github.com/OP-TEE/optee_os/issues/6094
+> >
+> > I see you have marked this issue as resolved. It would be good to have
+> > your tested-by tag if it works for you.
+> >
+>
+> Sorry for this very late reply. We finally validated that this works
+> fine for us, though only over 6.1, our current test target. I hope we
+> can enable tip of tree soon as well. But I think I can still add my
+>
+> Tested-by: Jan Kiszka <jan.kiszka@siemens.com>
+>
 
-Drop "items", we keep simple enum in such case.
+Thanks.
 
-> +      - enum:
-> +          - st,stm32mp25-vdec
-> +          - st,stm32mp25-venc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
+Jens,
 
-...
+Can you queue up this fix?
 
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    vdec: video-codec@580d0000 {
-> +        compatible = "st,stm32mp25-vdec";
-> +        reg = <0x580d0000 0x3c8>;
-> +        interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
-> +        clocks = <&ck_icn_p_vdec>;
-> +    };
-> +  - |
-> +    venc: video-codec@580e0000 {
-> +        compatible = "st,stm32mp25-venc";
-> +        reg = <0x580e0000 0x800>;
-> +        interrupts = <GIC_SPI 167 IRQ_TYPE_LEVEL_HIGH>;
-> +        clocks = <&ck_icn_p_venc>;
-> +    };
+-Sumit
 
-You can drop second example - it is the same as the first.
-
-Best regards,
-Krzysztof
-
+> Jan
+>
+> --
+> Siemens AG, Technology
+> Linux Expert Center
+>
