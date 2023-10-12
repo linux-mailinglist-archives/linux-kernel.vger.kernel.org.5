@@ -2,173 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6FA7C7970
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 00:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1097C7973
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 00:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442989AbjJLW1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 18:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
+        id S1443006AbjJLW14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 18:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344180AbjJLW1G (ORCPT
+        with ESMTP id S1442949AbjJLW1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 18:27:06 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A79B9BB
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 15:27:04 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso257505166b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 15:27:04 -0700 (PDT)
+        Thu, 12 Oct 2023 18:27:55 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 000E5CA
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 15:27:53 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d8b2eec15d3so2158161276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 15:27:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697149623; x=1697754423; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cHyo9fSi27Id6LrPtS/9KH9PdJ59imXr1RZnXM53Toc=;
-        b=Fc6Wu7AxnwLnFyy6wpgTW0M8x+YAUjXBLShtkcjTRNYBjS/G2TBOfw+BUwjEG4jwf2
-         uuDrECctgZN+L+YfhZ7xxs0+8+bdMTSXSAlsNi1YF5Zy2dVJrhZ+msZJfou8iQiBWDDJ
-         tZCacoKvCglAIwtzQ1bZF2Ovjh+vMbZyeE1nUwsZcfXy8Aq92fltbNtlRRl3gduOhXXX
-         KcMVzqHMb2FJsf9X7PIk0kj94OnVDPoYgPShWGooftLUHgFxZtm7dgqs/ARCXECeNnAy
-         c+vwDU6eS4fP/RMfLV9ed1Oe7lB/KQAsn3Ut80k/gQbeCXtgWSlJuBe+QLJDKqI0av0y
-         FyOw==
+        d=google.com; s=20230601; t=1697149673; x=1697754473; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rZYpAvmIgIMiNPsdg/lY35j3EeR/rUqwRQrzCZkd3d0=;
+        b=z0hOqJQAGcLilxNgiHT9cMELbFMFkG17er1m8n/oQ8MsVcVffzAje5T4EpZKz8d+cv
+         vsx3Qb6bz2QKuV0JWv5QDQ174OzMuXM+6vZDhBAwc7Sf5RxtZmokXG3qA8uEBdNC6Nv2
+         w3KUTbjj156Hck9EMxBGBM1JnDXKNuAJ4cUrvz8Js73DKWPkH4mQTxdwAGK9nfPblTv+
+         RM7L0tOanYbNO7+drkC2XzL2V+MsOL0dURSX3Uy9hmr+v9Y1AzjqJxbTV4Yvwedjcz+a
+         /hvVT+9/Qmsyrom9EzDM3gFhwfo9D04cFR0VgtWYHQzNiRp9xApV0n8NUEHAQmD/dZUq
+         DI4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697149623; x=1697754423;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cHyo9fSi27Id6LrPtS/9KH9PdJ59imXr1RZnXM53Toc=;
-        b=HCcq4HSh8JnFT8T5FULXC4n5GxAyFfVDCbqvlAKxRpO5VYIlrV14AGUeHlyNdnjaWC
-         Y/pfALp/ir3R9iW9fkFo6AOzRPAUSxkQBDCQ0yAwCV+cyNQOhiR2Hj8qVxbNZQrTZzCm
-         rqlsdnmXSxOq7fRPML5nna1rGvTX6vZ+bLvUpugH96Uyw9Nc/xsnoQKYCRdJvwmZvF3X
-         PeRtWrANiLpV//qH87sxlNJXONTba3OtJEXIe6GCkexn2ik39GgiMocik2QZVNefv4JH
-         xKq7P8SNJK/BsCWodJ97jm3MGcJX2XFOVZRrrOWu605YlOyfeEs9+kyDQGkuV/wzgifT
-         Tvbg==
-X-Gm-Message-State: AOJu0Yxf+tkscTpVZMfy9VmhT+nDTE65H9Otsm4kqGQeAvowMLikxHGI
-        0fNK1/GePgPv+ySanTfyJ1KIqct1YIV3/eQU9tLt9g==
-X-Google-Smtp-Source: AGHT+IGD1I7+hyhaygsRIBsksA6Z/9zQPJAvNgjGjr1zN+qJjt0GOQkR8nkHht+PI3KDyCs/v0xOZqolHjxki1yoH0A=
-X-Received: by 2002:a17:907:760a:b0:9bd:8bf6:887c with SMTP id
- jx10-20020a170907760a00b009bd8bf6887cmr2835890ejc.53.1697149623041; Thu, 12
- Oct 2023 15:27:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220927131518.30000-1-ojeda@kernel.org> <20220927131518.30000-26-ojeda@kernel.org>
- <Y0BfN1BdVCWssvEu@hirez.programming.kicks-ass.net> <CABCJKuenkHXtbWOLZ0_isGewxd19qkM7OcLeE2NzM6dSkXS4mQ@mail.gmail.com>
- <CANiq72k6s4=0E_AHv7FPsCQhkyxf7c-b+wUtzfjf+Spehe9Fmg@mail.gmail.com>
- <CABCJKuca0fOAs=E6LeHJiT2LOXEoPvLVKztA=u+ARcw=tbT=tw@mail.gmail.com>
- <20231012104741.GN6307@noisy.programming.kicks-ass.net> <CABCJKufEagwJ=TQnmVSK07RDjsPUt=3JGtwnK9ASmFqb7Vx8JQ@mail.gmail.com>
- <202310121130.256F581823@keescook>
-In-Reply-To: <202310121130.256F581823@keescook>
-From:   Ramon de C Valle <rcvalle@google.com>
-Date:   Thu, 12 Oct 2023 15:26:51 -0700
-Message-ID: <CAOcBZOQ=M7zpXTA7Ue1=2436N4=MFgKVRPmTQ1H=b1mUwJEqEQ@mail.gmail.com>
-Subject: Re: [PATCH v10 25/27] x86: enable initial Rust support
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, patches@lists.linux.dev,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        David Gow <davidgow@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1697149673; x=1697754473;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rZYpAvmIgIMiNPsdg/lY35j3EeR/rUqwRQrzCZkd3d0=;
+        b=DSKRbVq1v6Mz9LrGjBPe4NKJAVnFVTvR+qk1AfQ/Vwfbmw4eFvI95SAY5mLKrXqeAA
+         sWIlE1sp4r+4CABCFcnWMuftIKmzu7Fj6ZeRlcFNMev3PFK8dqyk1Qahrz1LmHkTz3f3
+         ok4fAuNcH8NQ+QmTdl5AAo+Q1J99RdScl4LTDJZQrleGN+k3cRFEIUjvzgUwpBZzp9vZ
+         wKWSe8Z6lap955Twgn0dcWm+9s+50+PtHW4PgkCIwhidmIDckuzMxobj1GKKNj8joSkW
+         QMWN0ehkSAa397+/l7x9TKXToAzlqhLtyYLv1G+u3ocPa3Mn8AqBbZYqofM7D/bf32YD
+         BaOA==
+X-Gm-Message-State: AOJu0YzI3D2sgyK0mNTtnfrZew8qbpqw5gSu/7H98YtApCY/3SOXcKxm
+        t32ls1il+A9MaMjaTyC1duF89DwgFmqbROyzng==
+X-Google-Smtp-Source: AGHT+IGvsAhFHjxwUVFZUgMRL3+/P7L3Q3QaP/2sCXzGdan8GAMGU0q90XgVFJVBfLiIRlvUoZwcR9p9tY0tNTEHNw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:8a0d:0:b0:d81:582b:4661 with SMTP
+ id g13-20020a258a0d000000b00d81582b4661mr526282ybl.8.1697149673145; Thu, 12
+ Oct 2023 15:27:53 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 22:27:52 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAOdyKGUC/x3NMQqAMAxA0atIZgO2IopXEQdtU81gLYmIIt7d4
+ viW/x9QEiaFvnhA6GTlPWaYsgC3TnEhZJ8NtrK1qYxFPSS6dKMXPkkUIx2Y1ht1U4cO28aH0LX zNDc15EgSCnz9g2F83w8DaSpFcAAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697149672; l=1565;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=5QhySr/Q36zDeZ98j7zPXD0GUeZwX1jIeAwMYdxCyJY=; b=KrpFlNS4TYnLFKZYhQfQ//GmLAMKDMsDyCpew83lBGhmjSjQwft46M0mgguiqwpB6z88nBcuU
+ Ds7ihe1nXe0DZ4uk2R64dfZCwG7NdZ7DIULPlIejpSdriFk3YldG2FT
+X-Mailer: b4 0.12.3
+Message-ID: <20231012-strncpy-drivers-net-phy-smsc-c-v1-1-00528f7524b3@google.com>
+Subject: [PATCH] net: phy: smsc: replace deprecated strncpy with ethtool_sprintf
+From:   Justin Stitt <justinstitt@google.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 11:31=E2=80=AFAM Kees Cook <keescook@chromium.org> =
-wrote:
->
-> On Thu, Oct 12, 2023 at 10:50:36AM -0700, Sami Tolvanen wrote:
-> > On Thu, Oct 12, 2023 at 3:47=E2=80=AFAM Peter Zijlstra <peterz@infradea=
-d.org> wrote:
-> > >
-> > > On Fri, Oct 14, 2022 at 11:34:30AM -0700, Sami Tolvanen wrote:
-> > > > On Fri, Oct 14, 2022 at 11:05 AM Miguel Ojeda
-> > > > <miguel.ojeda.sandonis@gmail.com> wrote:
-> > > > >
-> > > > > On Tue, Oct 11, 2022 at 1:16 AM Sami Tolvanen <samitolvanen@googl=
-e.com> wrote:
-> > > > > >
-> > > > > > Rust supports IBT with -Z cf-protection=3Dbranch, but I don't s=
-ee this
-> > > > > > option being enabled in the kernel yet. Cross-language CFI is g=
-oing to
-> > > > > > require a lot more work though because the type systems are not=
- quite
-> > > > > > compatible:
-> > > > > >
-> > > > > > https://github.com/rust-lang/rfcs/pull/3296
-> > > > >
-> > > > > I have pinged Ramon de C Valle as he is the author of the RFC abo=
-ve
-> > > > > and implementation work too; since a month or so ago he also lead=
-s the
-> > > > > Exploit Mitigations Project Group in Rust.
-> > > >
-> > > > Thanks, Miguel. I also talked to Ramon about KCFI earlier this week
-> > > > and he expressed interest in helping with rustc support for it. In =
-the
-> > > > meanwhile, I think we can just add a depends on !CFI_CLANG to avoid
-> > > > issues here.
-> > >
-> > > Having just read up on the thing it looks like the KCFI thing is
-> > > resolved.
-> > >
-> > > I'm not sure I understand most of the objections in that thread throu=
-gh
-> > > -- enabling CFI *will* break stuff, so what.
-> > >
-> > > Squashing the integer types seems a workable compromise I suppose. On=
-e
-> > > thing that's been floated in the past is adding a 'seed' attribute to
-> > > some functions in order to distinguish functions of otherwise identic=
-al
-> > > signature.
-> > >
-> > > The Rust thing would then also need to support this attribute.
-> > >
-> > > Are there any concrete plans for this? It would allow, for example,
-> > > to differentiate address_space_operations::swap_deactivate() from any
-> > > other random function that takes only a file argument, say:
-> > > locks_remove_file().
-> >
-> > I haven't really had time to look into it, so no concrete plans yet.
-> > Adding an attribute shouldn't be terribly difficult, but Kees
-> > expressed interest in automatic salting as well, which might be a more
-> > involved project:
-> >
-> > https://github.com/ClangBuiltLinux/linux/issues/1736
->
-> Automatic would be nice, but having an attribute would let us at least
-> start the process manually (or apply salting from static analysis
-> output, etc).
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-An idea would be to add something like the Rust cfi_encoding
-attribute[1] and use it with something similar to the Newtype
-Pattern[2], but in C[3], for aggregating function pointers that
-otherwise would be aggregated in the same group in different groups.
+ethtool_sprintf() is designed specifically for get_strings() usage.
+Let's replace strncpy in favor of this dedicated helper function.
 
-[1]: https://doc.rust-lang.org/nightly/unstable-book/language-features/cfi-=
-encoding.html
-[2]: https://doc.rust-lang.org/book/ch19-04-advanced-types.html#using-the-n=
-ewtype-pattern-for-type-safety-and-abstraction
-[3]: Wrapping a type in a struct should achieve something similar even
-without using the cfi_encoding attribute since the encoding for
-structs is <length><name>, where <name> is <unscoped-name>.
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+
+Found with: $ rg "strncpy\("
+---
+ drivers/net/phy/smsc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/phy/smsc.c b/drivers/net/phy/smsc.c
+index c88edb19d2e7..1c7306a1af13 100644
+--- a/drivers/net/phy/smsc.c
++++ b/drivers/net/phy/smsc.c
+@@ -507,10 +507,8 @@ static void smsc_get_strings(struct phy_device *phydev, u8 *data)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < ARRAY_SIZE(smsc_hw_stats); i++) {
+-		strncpy(data + i * ETH_GSTRING_LEN,
+-		       smsc_hw_stats[i].string, ETH_GSTRING_LEN);
+-	}
++	for (i = 0; i < ARRAY_SIZE(smsc_hw_stats); i++)
++		ethtool_sprintf(&data, "%s", smsc_hw_stats[i].string);
+ }
+ 
+ static u64 smsc_get_stat(struct phy_device *phydev, int i)
+
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231012-strncpy-drivers-net-phy-smsc-c-75dff87bab53
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
