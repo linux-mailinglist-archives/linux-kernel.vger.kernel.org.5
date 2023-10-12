@@ -2,158 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 836EF7C6F05
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116CD7C6F17
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344014AbjJLNS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35852 "EHLO
+        id S1378801AbjJLNYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 09:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343765AbjJLNSw (ORCPT
+        with ESMTP id S1347230AbjJLNYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:18:52 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D438191
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:18:50 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53e2308198dso115129a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:18:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1697116729; x=1697721529; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7pESXSq2cB1yHJ+chcqnwZf4qBvXPZQ+xBIxCqTvUZk=;
-        b=AWP9WKmZXZaU5jBtG/bU92wsbY0NX0Dx/XgPz6/FyIMPT/F27aNUxCvvoTVjPBH2Bd
-         H5SN9HjIUGnRR7uDQmpVSgrrnRe42AVNJYRfLPd7J0zMFVlAdXcb7Bhaah1THGgo44Rk
-         JR/sy6aS96WSvbg9JFRKKSg3p/QWuOGEicnLE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697116729; x=1697721529;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7pESXSq2cB1yHJ+chcqnwZf4qBvXPZQ+xBIxCqTvUZk=;
-        b=UABSv5SMcEX9gXGyTnwKNJ2nrDb4Lk0xwzhxANr5EGVx+E2uG9nQIaeHtlEoylCZjh
-         rUQ//2OSYEXiCi123rG9yrSg1xOWV5wy93j6iGFUh/9grI7k0etVSC9u9okgwM18N0wF
-         eq6hP2V6kSg1lUlXWU1ZlQbakhRPW2dgSdXQdpJ2uUpFvjMmkTGW6OAO4UG6yRfE9C4e
-         5fG93S8EO1K586aBLURM0w0Dx2sEimU6HLyEGQeBmtpY4hnRIMFXnvJgU6PtqTIBJSKv
-         oEwydi20RLFMWJ2bgdQHSHK1xJ95MjDIwc6bVDwmMaiGrdEHxdWDbpru57fasyzHRqmJ
-         zs3w==
-X-Gm-Message-State: AOJu0YypMx4FBxrerjrhRzalzdIeB5CgJ1mQGshsSE5MDbOEnNsBISzo
-        UkGaNznZ62EGnEP8kdrUUSxE4Q==
-X-Google-Smtp-Source: AGHT+IGJcRZ7cTA96fEttPOGRTmKTsJPCw4j/SDo4Z8rYwpHN8ZI7B+Q4X82DmJvmTQpxyufoY2UqQ==
-X-Received: by 2002:a05:6402:278c:b0:523:2e64:122b with SMTP id b12-20020a056402278c00b005232e64122bmr22060277ede.3.1697116729023;
-        Thu, 12 Oct 2023 06:18:49 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id gy6-20020a0564025bc600b0053e2a64b5f8sm137382edb.14.2023.10.12.06.18.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 06:18:48 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 15:18:46 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, jim.cromie@gmail.com,
-        =?utf-8?Q?=C5=81ukasz?= Bartosik <lb@semihalf.com>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "wayland-devel@lists.freedesktop.org" 
-        <wayland-devel@lists.freedesktop.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Subject: Re: [PATCH v1] dynamic_debug: add support for logs destination
-Message-ID: <ZSfyNgaHGGPiKqjN@phenom.ffwll.local>
-Mail-Followup-To: Pekka Paalanen <ppaalanen@gmail.com>,
-        jim.cromie@gmail.com,
-        =?utf-8?Q?=C5=81ukasz?= Bartosik <lb@semihalf.com>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "wayland-devel@lists.freedesktop.org" <wayland-devel@lists.freedesktop.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-References: <CAK8ByeLNc9UbTNG4x=40AxYqjjRCsvBNtNFai0PMveM2X4XCow@mail.gmail.com>
- <CAJfuBxyRF4q_T8LmHwR=-PKKDDpiFg2nO03uLnL8aGpRyBByKw@mail.gmail.com>
- <CAK8ByeLpkSV6o6gPw8eJVqq5+ynQrSDjemY7mXkO1ZmA0rYKfQ@mail.gmail.com>
- <CAJfuBxw+ANLwssAGWpkn5PeJb8ZKn4LXQkk2Gfv3aGsSN=S55Q@mail.gmail.com>
- <CAJfuBxy9qn-4i3SteTL1LBbBxPrFM52KkBd=1UhcKV3S_KdQvw@mail.gmail.com>
- <20231011114816.19d79f43@eldfell>
- <ZSZuACLwt5_XAL2n@phenom.ffwll.local>
- <20231012115548.292fa0bb@eldfell>
- <ZSfCMBXOOi9Luc6F@phenom.ffwll.local>
- <20231012133944.69711822@eldfell>
+        Thu, 12 Oct 2023 09:24:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA53ECC
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:24:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697117068; x=1728653068;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=cZ4V9GzEqz4BgoOaXGC/uxjgn6AC9Hl2WV/jrbzKEVY=;
+  b=U5xLo5pMDBHnfLqiwlJvQdJtHQIehW4ePqVD/PEjeAlpK2ez95hIu1n4
+   IyKBP/7iOEfnaUVbZ8E3TapdadQVfkCG4IR3iaARQE5JpABF5ANKBeOAq
+   CijYEEx4jKHfuGqOaYrTYBzj0VdsDkgS8tDrVOyMw2Yo0uJXo8btZAOZO
+   AT3q1/sl/RrmlSG9ZU4npFbG6kZ+36YxYr+anZJXIe2nQwRr72CCQTSrP
+   N5HihRsbAcA+L2RCQZ5fzaPV/cLIcreg7FkSILe69kfrdz7ZOvY+UG7Qm
+   u+45TDtMEc2eZ1WYdg8HSc+wzJOL/SbrgxFK0MGnQryW9b/+5rbc32UiB
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="3519284"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="3519284"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 06:21:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="927982873"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="927982873"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 06:21:08 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Arjan Van De Ven <arjan@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <jweiner@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Christoph Lameter" <cl@linux.com>
+Subject: Re: [PATCH 09/10] mm, pcp: avoid to reduce PCP high unnecessarily
+References: <20230920061856.257597-1-ying.huang@intel.com>
+        <20230920061856.257597-10-ying.huang@intel.com>
+        <20231011140949.rwsqfb57vyuub6va@techsingularity.net>
+        <87lec8ffij.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <20231012124958.dj5ug5hih3joa542@techsingularity.net>
+Date:   Thu, 12 Oct 2023 21:19:03 +0800
+In-Reply-To: <20231012124958.dj5ug5hih3joa542@techsingularity.net> (Mel
+        Gorman's message of "Thu, 12 Oct 2023 13:49:58 +0100")
+Message-ID: <87r0m0dlmg.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012133944.69711822@eldfell>
-X-Operating-System: Linux phenom 6.5.0-1-amd64 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 01:39:44PM +0300, Pekka Paalanen wrote:
-> On Thu, 12 Oct 2023 11:53:52 +0200
-> Daniel Vetter <daniel@ffwll.ch> wrote:
-> 
-> > On Thu, Oct 12, 2023 at 11:55:48AM +0300, Pekka Paalanen wrote:
-> > > On Wed, 11 Oct 2023 11:42:24 +0200
-> > > Daniel Vetter <daniel@ffwll.ch> wrote:
-> > >   
-> > > > On Wed, Oct 11, 2023 at 11:48:16AM +0300, Pekka Paalanen wrote:  
-> 
-> ...
-> 
-> > > > > - all selections tailored separately for each userspace subscriber
-> > > > > (- per open device file description selection of messages)    
-> > > > 
-> > > > Again this feels like a userspace problem. Sessions could register what
-> > > > kind of info they need for their session, and something like journald can
-> > > > figure out how to record it all.  
-> > > 
-> > > Only if the kernel actually attaches all the required information to
-> > > the debug messages *in machine readable form* so that userspace
-> > > actually can do the filtering. And that makes *that* information UABI.
-> > > Maybe that's fine? I wouldn't know.  
-> > 
-> > Well if you configure the filters to go into separate ringbuffers for each
-> > session (or whatever you want to split) it also becomes uapi.
-> 
-> It's a different UAPI: filter configuration vs. message structure. I
-> don't mind which it is, I just suspect one is easier to maintain and
-> extend than the other.
-> 
-> > Also I'd say that for the first cut just getting the logs out on demand
-> > should be good enough, multi-gpu (or multi-compositor) systems are a step
-> > further. We can figure those out when we get there.
-> 
-> This reminds me of what you recently said in IRC about a very different
-> topic:
-> 
-> 	<sima> swick[m], tell this past me roughly 10 years ago, would
-> 	have been easy to add into the design back when there was no
-> 	driver code yet 
-> 
-> I just want to mention today everything I can see as useful. It's up to
-> the people doing the actual work to decide what they include and how.
+Mel Gorman <mgorman@techsingularity.net> writes:
 
-I actually pondered this a bit more today, and I think even with hindsight
-the atomic design we ended up with was probably rather close to optimal.
+> On Thu, Oct 12, 2023 at 03:48:04PM +0800, Huang, Ying wrote:
+>> "
+>> On a 2-socket Intel server with 224 logical CPU, we run 8 kbuild
+>> instances in parallel (each with `make -j 28`) in 8 cgroup.  This
+>> simulates the kbuild server that is used by 0-Day kbuild service.
+>> With the patch, The number of pages allocated from zone (instead of
+>> from PCP) decreases 21.4%.
+>> "
+>> 
+>> I also showed the performance number for each step of optimization as
+>> follows (copied from the above patchset V2 link).
+>> 
+>> "
+>> 	build time   lock contend%	free_high	alloc_zone
+>> 	----------	----------	---------	----------
+>> base	     100.0	      13.5          100.0            100.0
+>> patch1	      99.2	      10.6	     19.2	      95.6
+>> patch3	      99.2	      11.7	      7.1	      95.6
+>> patch5	      98.4	      10.0	      8.2	      97.1
+>> patch7	      94.9	       0.7	      3.0	      19.0
+>> patch9	      94.9	       0.6	      2.7	      15.0  <--	this patch
+>> patch10	      94.9	       0.9	      8.8	      18.6
+>> "
+>> 
+>> Although I think the patch is helpful via avoiding the unnecessary
+>> pcp->high decaying, thus reducing the zone lock contention.  There's no
+>> visible benchmark score change for the patch.
+>> 
+>
+> Thanks!
+>
+> Given that it's another PCP field with an update in a relatively hot
+> path, I would suggest dropping this patch entirely if it does not affect
+> performance. It has the risk of being a magical heuristic that we forget
+> later whether it's even worthwhile.
 
-Sure there's a bunch of things that would have been nice to include, but
-another very hard requirement of atomic was that it's feasible to convert
-current drivers over to it. And I think going full free-standing state
-structures with unlimited (at least at the design level) queue depth would
-have been a bridge too far.
+OK.  Hope we can find some workloads that can benefit from the patch in
+the future.
 
-The hacks and conversion helpers are all gone by now, but "you can just
-peek at the object struct to get your state" was a huge help in reducing
-the conversion churn.
-
-But it definitely resulted in a big price we're still paying.
-
-tldr I don't think getting somewhere useful, even if somewhat deficient,
-is bad.
--Sima
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+--
+Best Regards,
+Huang, Ying
