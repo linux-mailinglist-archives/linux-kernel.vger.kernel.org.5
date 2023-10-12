@@ -2,107 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D92537C7A35
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4597C7A3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443038AbjJLXFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 19:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33312 "EHLO
+        id S1443062AbjJLXJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 19:09:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443052AbjJLXFX (ORCPT
+        with ESMTP id S1443042AbjJLXJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 19:05:23 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CE6E7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:04:57 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-693400e09afso358086b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:04:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697151897; x=1697756697; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MjY6Bfa7hXy3EtsVkBFJvcxDVqkLy8yAMFEk0tgy2ww=;
-        b=FwKxfCORdKGCkpYs8q/7h2nm6KnkQSHSDBLJd3Hu3X5dZAY26gZjPKl7hdPgBf2PXY
-         Yb8bWtg/9elAzYL+qyKwJmffHvQNsekkiWAlCdC1f1XIW8DlXTF58HBT1p0oRtCTcOGn
-         9g973lk7zBbvl+9zhnrwg/ZlpUWbp+9iuA6CEHm/WaJ6qxTEKluaigA20REqhOUmlsi2
-         3Bk1v3mDyuiz+UflRIHaIvM9TEkkdWUiLnAzvDMT++RtwmIsyGXDtLqKOnQrvkKcnGkj
-         7wb72gqCs2IxaI7dIHUYNBL+h+YEP3SLKFfYEh3iVOsuXFlfJEAvAGsEsUsvud3eI1ww
-         dznA==
+        Thu, 12 Oct 2023 19:09:58 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61951A9;
+        Thu, 12 Oct 2023 16:09:52 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6b1ef786b7fso205686b3a.3;
+        Thu, 12 Oct 2023 16:09:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697151897; x=1697756697;
+        d=1e100.net; s=20230601; t=1697152192; x=1697756992;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MjY6Bfa7hXy3EtsVkBFJvcxDVqkLy8yAMFEk0tgy2ww=;
-        b=He5R1br+iB66bmPSJufwwWvWDzgN1+V885mekdvisqtSC91Y+B8pVD8mSlAPhD8RD/
-         67MPE0O/LQbFKui6UrIefqdwW0qy5wjivKMJbpA9VtySZ5mhyzFBn9GRG9PV07Mzgdsq
-         Q+U0zNTQ7SueC9rcXdGEucFVkipZ/jMaIV7IAa9YnJIDfvk6PGZAzgTL40X/Bf3hzITV
-         y1efpf05JgIxa3kJ/NMvcZkdNRS1cvIZBxYvLJUUQbhnEVjOUDe/c0TdpVh0e0VyqBpD
-         OH7W6qfr1w5l1Ev7YsQ/KbvyhzW+aMrZ2nRFi0fuF3pQ1ElHIOvKQyW6O3jLmcXg6rMQ
-         1UHA==
-X-Gm-Message-State: AOJu0YziaBQ5C5XRUqLUy6XIpCwV4QJk/i0ttaJQQM05UK940mZCsY+P
-        TNXeQkCehP5v93Ud5sAyAIk=
-X-Google-Smtp-Source: AGHT+IH+4v5f93VcvRkHnnVgNR/Vyt3EU7gWUCAaBPEj/wJkDgmWUDn2+fSuZCy+1+14UNBZQ7kIzw==
-X-Received: by 2002:a05:6a00:2e92:b0:692:b3d4:e6c3 with SMTP id fd18-20020a056a002e9200b00692b3d4e6c3mr27619108pfb.0.1697151896807;
-        Thu, 12 Oct 2023 16:04:56 -0700 (PDT)
-Received: from localhost.localdomain ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id e4-20020a62ee04000000b006889664aa6csm12193998pfi.5.2023.10.12.16.04.52
+         :to:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8wklHuRjtu9eKbC21KJ0qhgZYz7A3pvh/X6lpMyLNrM=;
+        b=v+ke/KCUyICRQEdWVlOAFOqgTa0Sgz0YhoFCwUC1Hv8vUEGUqhX49lhQeKx74RzqFd
+         1+fkccDKj4UXLOvCv+l5gGyuaZZGNeCF1GIugAIknNG7uHZHOZFJ8F9DJIUvetVORxWq
+         cpp2I2KogxzEWfq2HaYdxsLYoFrr1yVt+Ejiq3Bd7R5nldzkJiD5/WIZ76f1sB+Mt3IG
+         Dlwz+dCM3c+UFwnzVxiaieMDeNtxowVpmkyFF02//g3zQrAXSmmvo0bMST1fK5GWV99S
+         EZlenNEzhNXaP0afr5Ou2lGlpxdiQ/t41+91d3K/b7cNHbHxpYQabPAnRoJYvrXogJx2
+         ExoQ==
+X-Gm-Message-State: AOJu0YwrmWthZuHM+qcjseNFv8U83IqEvtFx3bj5cUUKbRV4BDysS0iY
+        XLj2HxLfxyooowtpm32USwZQA6IikPTHhy3d
+X-Google-Smtp-Source: AGHT+IHvsCDN04Ikusz/wjPmqe2Bfs6yIv+y6wzyHh6AF+oowBYFNSfMXE3TPdFvoJQ/Y9nmBEzuMA==
+X-Received: by 2002:a05:6a00:1255:b0:68a:5449:7436 with SMTP id u21-20020a056a00125500b0068a54497436mr27851303pfi.32.1697152191710;
+        Thu, 12 Oct 2023 16:09:51 -0700 (PDT)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id e13-20020a63370d000000b0059d34fb9ccasm2244765pga.2.2023.10.12.16.09.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 16:04:55 -0700 (PDT)
-From:   Kuan-Wei Chiu <visitorckw@gmail.com>
-To:     zhenyuw@linux.intel.com, zhi.a.wang@intel.com
-Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, tvrtko.ursulin@linux.intel.com,
-        airlied@gmail.com, daniel@ffwll.ch,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH] drm/i915/gvt: Optimize mmio_offset_compare() for efficiency
-Date:   Fri, 13 Oct 2023 07:04:49 +0800
-Message-Id: <20231012230449.2109078-1-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 12 Oct 2023 16:09:51 -0700 (PDT)
+From:   "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+        s=2023; t=1697152189;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8wklHuRjtu9eKbC21KJ0qhgZYz7A3pvh/X6lpMyLNrM=;
+        b=jkUICrkHhzZYt0gxJJyhhDOcCLpoM+WvLDhOzH9js7npKWtH1hyBo+LGns3xP1WqjyQUOH
+        SvR3l1WcH+kWpfmcf0jzRfVRFeyheehJnlaoNFiMQv++O/xqSf+eoYaM0eIe96haeAPV7l
+        /vxbaTBBYb8iQv/z5Gpj+0FEcwn8NHCg7vr2etuFp065BpSgpSBaZmfF+TdK8XT8CIrb5b
+        w1lsV7t083yEea0tBFEiKzOKG8VrvcsLF4kqI23ntaVVlMUMZ+g9AVqfOhX5c+RoeBCB1+
+        Xwjd5ekArbsun+VV/vwGvG/183QCvFsyuE3mA4ZyqCxUbPT1x0S84fg3YQFsBw==
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+To:     Mike Isely <isely@pobox.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        "Ricardo B. Marliere" <ricardo@marliere.net>,
+        syzbot+621409285c4156a009b3@syzkaller.appspotmail.com
+Subject: [PATCH] media: pvrusb2: fix use after free on context disconnection
+Date:   Thu, 12 Oct 2023 20:09:12 -0300
+Message-ID: <20231012230911.48113-2-ricardo@marliere.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original code used conditional branching in the mmio_offset_compare
-function to compare two values and return -1, 1, or 0 based on the
-result. However, the list_sort comparison function only needs results
-<0, >0, or =0. This patch optimizes the code to make the comparison
-branchless, improving efficiency and reducing code size. This change
-reduces the number of comparison operations from 1-2 to a single
-subtraction operation, thereby saving the number of instructions.
+Upon module load, a kthread is created targeting the
+pvr2_context_thread_func function, which may call pvr2_context_destroy
+and thus call kfree() on the context object. However, that might happen
+before the usb hub_event handler is able to notify the driver. This
+patch adds a sanity check before the invalid read reported by syzbot,
+within the context disconnection call stack.
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+Fixes: e5be15c63804 ("V4L/DVB (7711): pvrusb2: Fix race on module unload")
+Reported-and-tested-by: syzbot+621409285c4156a009b3@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/000000000000a02a4205fff8eb92@google.com/
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
- drivers/gpu/drm/i915/gvt/debugfs.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/media/usb/pvrusb2/pvrusb2-context.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/i915/gvt/debugfs.c b/drivers/gpu/drm/i915/gvt/debugfs.c
-index baccbf1761b7..998d82a259c8 100644
---- a/drivers/gpu/drm/i915/gvt/debugfs.c
-+++ b/drivers/gpu/drm/i915/gvt/debugfs.c
-@@ -48,11 +48,7 @@ static int mmio_offset_compare(void *priv,
- 
- 	ma = container_of(a, struct diff_mmio, node);
- 	mb = container_of(b, struct diff_mmio, node);
--	if (ma->offset < mb->offset)
--		return -1;
--	else if (ma->offset > mb->offset)
--		return 1;
--	return 0;
-+	return ma->offset - mb->offset;
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-context.c b/drivers/media/usb/pvrusb2/pvrusb2-context.c
+index 14170a5d72b3..1764674de98b 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-context.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-context.c
+@@ -268,7 +268,8 @@ void pvr2_context_disconnect(struct pvr2_context *mp)
+ {
+ 	pvr2_hdw_disconnect(mp->hdw);
+ 	mp->disconnect_flag = !0;
+-	pvr2_context_notify(mp);
++	if (!pvr2_context_shutok())
++		pvr2_context_notify(mp);
  }
  
- static inline int mmio_diff_handler(struct intel_gvt *gvt,
+ 
 -- 
-2.25.1
+2.42.0
 
