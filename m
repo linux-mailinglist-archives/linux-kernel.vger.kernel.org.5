@@ -2,111 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E853E7C6D8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA81D7C6E25
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343875AbjJLMDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 08:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
+        id S1379333AbjJLLs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:48:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbjJLMDM (ORCPT
+        with ESMTP id S1378706AbjJLLrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:03:12 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A7BA9;
-        Thu, 12 Oct 2023 05:03:10 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CBslrH023887;
-        Thu, 12 Oct 2023 12:02:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=UwnvlILX10wd8eW3lTW+/kucpzhYMeZTj2OJc0Mjlm0=;
- b=qjO9DbRxlro0ypk4NLRIUY0akrkQDpDqUVzgsN2NjkJR31nP1EFCUlnefWgDgmkreTz4
- mTa+ZLnq1ivog3aaNOGmtef7cJQQYN+iTmppP0dyrNex0vV9k/qQuGxiIE5424mCQEZa
- aGDiflW33g6zFtBbVzRfEx5UjEsN1L+/zKvG9Hkviem+pF2lPcAs2vfv1VyK8akwnMw6
- 7pnlnqTsJdEUxcm+G3XFpzCVHNqbEj8nMMGjw0QNtVo/mCO2YanAr8WpLXTtcJS3esYM
- mlxYAdWzEN7V7EEWN8W/cdG2dYyQmPSf7cY+KwKHocs3+zSy9uiM0Jn/z4Ivkcg+mIxI Xw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpgbb88q9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 12:02:54 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39CBt1i8024392;
-        Thu, 12 Oct 2023 12:02:33 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpgbb87uc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 12:02:33 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39CC1X1A028191;
-        Thu, 12 Oct 2023 12:02:03 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkj1yfetg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 12:02:03 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CC22654850422
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Oct 2023 12:02:02 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1436F5805E;
-        Thu, 12 Oct 2023 12:02:02 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BF5B758059;
-        Thu, 12 Oct 2023 12:01:57 +0000 (GMT)
-Received: from [9.171.14.51] (unknown [9.171.14.51])
-        by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Oct 2023 12:01:57 +0000 (GMT)
-Message-ID: <a5f0f18e-4fe0-45b6-b962-f28bc9232293@linux.vnet.ibm.com>
-Date:   Thu, 12 Oct 2023 17:31:55 +0530
+        Thu, 12 Oct 2023 07:47:14 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44FA185;
+        Thu, 12 Oct 2023 04:47:08 -0700 (PDT)
+Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:7ae7:b86d:c19a:877e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id EC0CF660738C;
+        Thu, 12 Oct 2023 12:47:06 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697111227;
+        bh=2/0WQage6iY7ZIfSwpoGdnzQlJzC1UZq8fdQbr8LRKw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=L8cYZ8LKwxDdQJC/fkFna0Z4loJWQY4rlLc2nv/Iu86jK57Dgo5nLbgWL6uzreecL
+         kXVb7RHCUVlKxJXrPlrZTBFj0wjGyXvpXiK45iRJ3QADd1AjZvZTBkp4lJ47u1w2tz
+         8LSUo+83BEFBQ9rAZKDCL3bHB+qY/PPmhiOLoehJZIQtbLpsWqyyk8XPRxj1K1ZTbY
+         xBeynsjCo2i/JM5xiLNWE8A8rfak1nxqGNM5ADSU/4GokgPl+JIZaITV8jQKANfJXE
+         vR5aneBs49rxfpAOgs6fzUVB2eslLVMTPIGMR8A6GyzQlfki+NJE+lFeWQ+IidYIrS
+         iFucW8Q+HNdxw==
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Antti Palosaari <crope@iki.fi>
+Subject: [PATCH v11 33/56] media: usb: airspy: Set min_buffers_needed to 8
+Date:   Thu, 12 Oct 2023 13:46:19 +0200
+Message-Id: <20231012114642.19040-34-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
+References: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Bisected] [1b4fa28a8b07] Build failure "net/core/gso_test.c"
-Content-Language: en-US
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, willemb@google.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        abdhalee@linux.vnet.ibm.com, sachinp@linux.vnet.com,
-        mputtash@linux.vnet.com
-References: <79fbe35c-4dd1-4f27-acb2-7a60794bc348@linux.vnet.ibm.com>
- <20231012095746.GA26871@breakpoint.cc>
-From:   Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>
-In-Reply-To: <20231012095746.GA26871@breakpoint.cc>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: p9RRXOpJ__9haWxZNh885aVaHS8foOjh
-X-Proofpoint-ORIG-GUID: _dR317mRYU1r6GCnKAZudttmZcIsBbl0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- bulkscore=0 malwarescore=0 spamscore=0 phishscore=0 mlxlogscore=688
- impostorscore=0 clxscore=1015 priorityscore=1501 lowpriorityscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310120098
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+vb2 queue_setup checks for a minimum number of buffers so set
+min_buffers_needed to 8 and remove the useless check in
+airspy_queue_setup().
 
-Thank you Florian. I have tried the changes suggested by you and it 
-fixes the issue. With the suggested changes the problem is not seen.
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+CC: Antti Palosaari <crope@iki.fi>
+---
+ drivers/media/usb/airspy/airspy.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-On 10/12/23 15:27, Florian Westphal wrote:
-> .linear_len = GSO_TEST_SIZE,
-
+diff --git a/drivers/media/usb/airspy/airspy.c b/drivers/media/usb/airspy/airspy.c
+index 462eb8423506..56bc1b23d39b 100644
+--- a/drivers/media/usb/airspy/airspy.c
++++ b/drivers/media/usb/airspy/airspy.c
+@@ -483,15 +483,10 @@ static int airspy_queue_setup(struct vb2_queue *vq,
+ {
+ 	struct airspy *s = vb2_get_drv_priv(vq);
+ 
+-	dev_dbg(s->dev, "nbuffers=%d\n", *nbuffers);
+-
+-	/* Need at least 8 buffers */
+-	if (vq->num_buffers + *nbuffers < 8)
+-		*nbuffers = 8 - vq->num_buffers;
+ 	*nplanes = 1;
+ 	sizes[0] = PAGE_ALIGN(s->buffersize);
+ 
+-	dev_dbg(s->dev, "nbuffers=%d sizes[0]=%d\n", *nbuffers, sizes[0]);
++	dev_dbg(s->dev, "nbuffers=%d sizes[0]=%d\n", vb2_get_num_buffers(vq), sizes[0]);
+ 	return 0;
+ }
+ 
+@@ -1011,6 +1006,8 @@ static int airspy_probe(struct usb_interface *intf,
+ 	/* Init videobuf2 queue structure */
+ 	s->vb_queue.type = V4L2_BUF_TYPE_SDR_CAPTURE;
+ 	s->vb_queue.io_modes = VB2_MMAP | VB2_USERPTR | VB2_READ;
++	/* Need at least 8 buffers */
++	s->vb_queue.min_buffers_needed = 8;
+ 	s->vb_queue.drv_priv = s;
+ 	s->vb_queue.buf_struct_size = sizeof(struct airspy_frame_buf);
+ 	s->vb_queue.ops = &airspy_vb2_ops;
 -- 
-Regards,
-Tasmiya Nalatwad
-IBM Linux Technology Center
+2.39.2
 
