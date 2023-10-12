@@ -2,426 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8DE7C754B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F727C7563
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379623AbjJLR51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
+        id S1379619AbjJLR6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379684AbjJLR5L (ORCPT
+        with ESMTP id S1379684AbjJLR6u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:57:11 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0190A10C
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:57:06 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7bbe0a453so19335607b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:57:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697133426; x=1697738226; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y1x8BoWM8O8RCmIFn2DnLVwCXAu7C3bqwpGV//v0QwM=;
-        b=lREfPG5kPxl/QmmS3DthGrLvgUjKAU4GS1B3qOFipVomvdsiXOhuNTQl1W1VJMrAX9
-         62O/r8sOp7ZUfTCU33aH0COFnxJq9guXZjSCIR1y0RF9I3cZgez5iwqrM8N1ZEBTqLNi
-         zpy5D5qmd9XmBzxU97+WSPXOpt8pIyhUC1OYOGyHBvXbAqTa8uRQCL6cwY/JpKfzA8JD
-         0GCGWhu4YVtrZLOi7X41dRPOC72vWFNhMzUC/qK29ZAQ79BjDvVG9ND5BxGMhwlapq0j
-         VGccbYx1xLjl7uYezM4Ipp+JP0Fber7c7StQT0VgR1RXEV5Muf/6I2Ns02gln63rSGNa
-         2ARA==
+        Thu, 12 Oct 2023 13:58:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2052BB
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697133485;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FVsd25JJrPKVfuhRRuS6kpquTIw0T//+HNpizwkPWZ0=;
+        b=LV60t54gnhA/1beN1Vl8qe+aOQuZu07aNUCQJOj4PsF4NGeb6Bvmdp1sUm9bDHpN2DrYqo
+        +DlxW+XcFgXqccoGutKmuOpCLuKGo4GkzThSHsrymF9MBdcrwbRtJbAkU7friXoBx4NTCq
+        QqANCNs1/OK0zmWvxnl1S6Fynwei2bY=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-326-nF0KB5xuPbueV05CX2Xzxw-1; Thu, 12 Oct 2023 13:58:04 -0400
+X-MC-Unique: nF0KB5xuPbueV05CX2Xzxw-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9a9e12a3093so138883666b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:58:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697133426; x=1697738226;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y1x8BoWM8O8RCmIFn2DnLVwCXAu7C3bqwpGV//v0QwM=;
-        b=R2sAkvLIW49Hx5RrMR8Rd/bo4NsE0TYxNgQsQtJcmrTUWmCU6IXQrsHkg1bvHgmsxg
-         9r17aPNw+1hNGOqbXRoilkcZTyUkISs0DGu2N3gim/bieGjVOAk9pJOCzwLGqJDqwCii
-         E1147vVcVlZ1fmyeHsevwdnbddnYcoB5mmysznXATfYxx5kH0vF7CcWPnqKkH34JDW23
-         fCBsuTewmc0eqzV3i1iX0I2nvcXq1ACXxcMKlyVsBX2kXJiHM4ch2jrpeLEyqxRHd6Pp
-         2Rd8yxMLRhrLkzFWQgXPVmknUsARdTDQC6779/f/sUyUzU6Y5oPLP7xwfI0k7vZn1C9J
-         Dz0g==
-X-Gm-Message-State: AOJu0YwgcpwNx0PcYt5RG/RTv8P1cRnRo6JIS2AZm3gwiaQgaefmc0G3
-        Ejzdj95TpfoVxlLjSecQE7EN8a8BSp4D
-X-Google-Smtp-Source: AGHT+IEwTRbGSW1akUmOtQcpb4RZdxhs/m6hRtdXGRo0lvFCN0FEB1NatGHQAXPqEEbw1x6ExHj9KseGXdZU
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:6a89:babc:124b:e4e6])
- (user=irogers job=sendgmr) by 2002:a81:ce09:0:b0:59b:e684:3c7a with SMTP id
- t9-20020a81ce09000000b0059be6843c7amr436564ywi.4.1697133426007; Thu, 12 Oct
- 2023 10:57:06 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 10:56:45 -0700
-In-Reply-To: <20231012175645.1849503-1-irogers@google.com>
-Message-Id: <20231012175645.1849503-8-irogers@google.com>
-Mime-Version: 1.0
-References: <20231012175645.1849503-1-irogers@google.com>
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Subject: [PATCH v2 7/7] perf pmu: Lazily compute default config
-From:   Ian Rogers <irogers@google.com>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1697133483; x=1697738283;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FVsd25JJrPKVfuhRRuS6kpquTIw0T//+HNpizwkPWZ0=;
+        b=qWCXdgS8f5rUlGSkWpx/10OVb5PXoePDS6/Lvqio9U5ysKSu4w7YH84iLupH4UiLNv
+         kCEwoe/xT77FdUSOFQgQrR5kip4IAXdZ/PzvYcTQO4FpSJrflPZiyfkPIMYsog5DHYM1
+         5nqodFZ+XJmFKb4zmqDoheQYRTE6Mn+9MjQGolNctPuSVlhv7UDLPncFZl4Nhr4p1a2J
+         S0TQ0YBU+vStUS5FqPJ8QBEK5h0pHC0V9UjPvnQtdxtqN6x0tZm4/O1ywJacvRsiObfr
+         e2tjccLIF3qzRWhrJ53y/mhdjBMFVfaMG0D+phZj0th2v9oLHxJHi+S+xiXurNajsV+U
+         gfCw==
+X-Gm-Message-State: AOJu0YybmGqwIiuxtWbIeRuZxEmGVLx8j5PeVAi4ESBXFxdVyudlUNfI
+        mKKH0Fhp/1Vc4unX5XfxiVf4WF/t1zDYvwezkbgRIJI7h+KW2fSOUGdBRjVzIZWdAQSPnS6M/aB
+        MY1MR/VGJX1nyYktK61MK0fgj
+X-Received: by 2002:a17:907:7601:b0:9ba:b5:cba6 with SMTP id jx1-20020a170907760100b009ba00b5cba6mr16976172ejc.14.1697133483533;
+        Thu, 12 Oct 2023 10:58:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH9Ev4jZ1AjQIWBFFW64KwIs1qrFVUApRQO2mPNRQF9ONEf/GfLbNT6HeVYBtT/urA60vGy7A==
+X-Received: by 2002:a17:907:7601:b0:9ba:b5:cba6 with SMTP id jx1-20020a170907760100b009ba00b5cba6mr16976161ejc.14.1697133483205;
+        Thu, 12 Oct 2023 10:58:03 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
+        by smtp.gmail.com with ESMTPSA id gz24-20020a170906f2d800b00985ed2f1584sm11393950ejb.187.2023.10.12.10.58.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 10:58:02 -0700 (PDT)
+Message-ID: <78f3a73d-3c2a-4432-8ac5-9e4418f509cb@redhat.com>
+Date:   Thu, 12 Oct 2023 19:58:01 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/nouveau/dispnv04: fix a possible null pointer
+ dereference
+Content-Language: en-US
+To:     Ma Ke <make_ruc2021@163.com>
+Cc:     kherbst@redhat.com, lyude@redhat.com, airlied@gmail.com,
+        daniel@ffwll.ch, noralf@tronnes.org, tzimmermann@suse.de,
+        mripard@kernel.org, jani.nikula@intel.com,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20231007032349.3997387-1-make_ruc2021@163.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <20231007032349.3997387-1-make_ruc2021@163.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default config is computed during creation of the PMU and may do
-things like scanning sysfs, when the PMU may just be used as part of
-scanning. Change default_config to perf_event_attr_init_default, a
-callback that is used when a default config needs initializing. This
-avoids holding onto the memory for a perf_event_attr and copying.
+On 10/7/23 05:23, Ma Ke wrote:
+> In nv17_tv_get_ld_modes(), the return value of drm_mode_duplicate()
+> is assigned to mode, which will lead to a NULL pointer dereference
+> on failure of drm_mode_duplicate(). Add a check to avoid npd.
+> 
+> Signed-off-by: Ma Ke <make_ruc2021@163.com>
 
-On a tigerlake laptop running the pmu-scan benchmark:
+Reviewed-by: Danilo Krummrich <dakr@redhat.com>
 
-Before:
-Running 'internals/pmu-scan' benchmark:
-Computing performance of sysfs PMU event scan for 100 times
-  Average core PMU scanning took: 28.780 usec (+- 0.503 usec)
-  Average PMU scanning took: 283.480 usec (+- 18.471 usec)
-Number of openat syscalls: 30,227
-
-After:
-Running 'internals/pmu-scan' benchmark:
-Computing performance of sysfs PMU event scan for 100 times
-  Average core PMU scanning took: 27.880 usec (+- 0.169 usec)
-  Average PMU scanning took: 245.260 usec (+- 15.758 usec)
-Number of openat syscalls: 28,914
-
-Over 3 runs it is a nearly 12% reduction in execution time and a 4.3%
-of openat calls.
-
-Signed-off-by: Ian Rogers <irogers@google.com>
-Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
----
- tools/perf/arch/arm/util/cs-etm.c    | 13 ++------
- tools/perf/arch/arm/util/pmu.c       |  4 +--
- tools/perf/arch/arm64/util/arm-spe.c | 45 ++++++++++++++--------------
- tools/perf/arch/x86/util/intel-pt.c  | 25 ++++++++--------
- tools/perf/arch/x86/util/pmu.c       |  2 +-
- tools/perf/util/arm-spe.h            |  4 ++-
- tools/perf/util/cs-etm.h             |  2 +-
- tools/perf/util/intel-pt.h           |  3 +-
- tools/perf/util/parse-events.c       | 12 ++++----
- tools/perf/util/pmu.c                |  3 +-
- tools/perf/util/pmu.h                |  7 +++--
- 11 files changed, 58 insertions(+), 62 deletions(-)
-
-diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-index b8d6a953fd74..16bba74f048b 100644
---- a/tools/perf/arch/arm/util/cs-etm.c
-+++ b/tools/perf/arch/arm/util/cs-etm.c
-@@ -917,16 +917,9 @@ struct auxtrace_record *cs_etm_record_init(int *err)
-  * (CFG_CHG and evsel__set_config_if_unset()). If no default is set then user
-  * changes aren't tracked.
-  */
--struct perf_event_attr *
--cs_etm_get_default_config(struct perf_pmu *pmu __maybe_unused)
-+void
-+cs_etm_get_default_config(const struct perf_pmu *pmu __maybe_unused,
-+			  struct perf_event_attr *attr)
- {
--	struct perf_event_attr *attr;
--
--	attr = zalloc(sizeof(struct perf_event_attr));
--	if (!attr)
--		return NULL;
--
- 	attr->sample_period = 1;
--
--	return attr;
- }
-diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/pmu.c
-index f25f68f84a94..7f3af3b97f3b 100644
---- a/tools/perf/arch/arm/util/pmu.c
-+++ b/tools/perf/arch/arm/util/pmu.c
-@@ -20,12 +20,12 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
- 	if (!strcmp(pmu->name, CORESIGHT_ETM_PMU_NAME)) {
- 		/* add ETM default config here */
- 		pmu->selectable = true;
--		pmu->default_config = cs_etm_get_default_config(pmu);
-+		pmu->perf_event_attr_init_default = cs_etm_get_default_config;
- #if defined(__aarch64__)
- 	} else if (strstarts(pmu->name, ARM_SPE_PMU_NAME)) {
- 		pmu->selectable = true;
- 		pmu->is_uncore = false;
--		pmu->default_config = arm_spe_pmu_default_config(pmu);
-+		pmu->perf_event_attr_init_default = arm_spe_pmu_default_config;
- 	} else if (strstarts(pmu->name, HISI_PTT_PMU_NAME)) {
- 		pmu->selectable = true;
- #endif
-diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
-index 08a76734ccd2..e3acc739bd00 100644
---- a/tools/perf/arch/arm64/util/arm-spe.c
-+++ b/tools/perf/arch/arm64/util/arm-spe.c
-@@ -113,6 +113,25 @@ arm_spe_snapshot_resolve_auxtrace_defaults(struct record_opts *opts,
- 	}
- }
- 
-+static __u64 arm_spe_pmu__sample_period(const struct perf_pmu *arm_spe_pmu)
-+{
-+	static __u64 sample_period;
-+
-+	if (sample_period)
-+		return sample_period;
-+
-+	/*
-+	 * If kernel driver doesn't advertise a minimum,
-+	 * use max allowable by PMSIDR_EL1.INTERVAL
-+	 */
-+	if (perf_pmu__scan_file(arm_spe_pmu, "caps/min_interval", "%llu",
-+				&sample_period) != 1) {
-+		pr_debug("arm_spe driver doesn't advertise a min. interval. Using 4096\n");
-+		sample_period = 4096;
-+	}
-+	return sample_period;
-+}
-+
- static int arm_spe_recording_options(struct auxtrace_record *itr,
- 				     struct evlist *evlist,
- 				     struct record_opts *opts)
-@@ -136,7 +155,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
- 				return -EINVAL;
- 			}
- 			evsel->core.attr.freq = 0;
--			evsel->core.attr.sample_period = arm_spe_pmu->default_config->sample_period;
-+			evsel->core.attr.sample_period = arm_spe_pmu__sample_period(arm_spe_pmu);
- 			evsel->needs_auxtrace_mmap = true;
- 			arm_spe_evsel = evsel;
- 			opts->full_auxtrace = true;
-@@ -495,26 +514,8 @@ struct auxtrace_record *arm_spe_recording_init(int *err,
- 	return &sper->itr;
- }
- 
--struct perf_event_attr
--*arm_spe_pmu_default_config(struct perf_pmu *arm_spe_pmu)
-+void
-+arm_spe_pmu_default_config(const struct perf_pmu *arm_spe_pmu, struct perf_event_attr *attr)
- {
--	struct perf_event_attr *attr;
--
--	attr = zalloc(sizeof(struct perf_event_attr));
--	if (!attr) {
--		pr_err("arm_spe default config cannot allocate a perf_event_attr\n");
--		return NULL;
--	}
--
--	/*
--	 * If kernel driver doesn't advertise a minimum,
--	 * use max allowable by PMSIDR_EL1.INTERVAL
--	 */
--	if (perf_pmu__scan_file(arm_spe_pmu, "caps/min_interval", "%llu",
--				  &attr->sample_period) != 1) {
--		pr_debug("arm_spe driver doesn't advertise a min. interval. Using 4096\n");
--		attr->sample_period = 4096;
--	}
--
--	return attr;
-+	attr->sample_period = arm_spe_pmu__sample_period(arm_spe_pmu);
- }
-diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
-index 6d6cd8f9133c..fa0c718b9e72 100644
---- a/tools/perf/arch/x86/util/intel-pt.c
-+++ b/tools/perf/arch/x86/util/intel-pt.c
-@@ -60,7 +60,7 @@ struct intel_pt_recording {
- 	size_t				priv_size;
- };
- 
--static int intel_pt_parse_terms_with_default(struct perf_pmu *pmu,
-+static int intel_pt_parse_terms_with_default(const struct perf_pmu *pmu,
- 					     const char *str,
- 					     u64 *config)
- {
-@@ -84,7 +84,7 @@ static int intel_pt_parse_terms_with_default(struct perf_pmu *pmu,
- 	return err;
- }
- 
--static int intel_pt_parse_terms(struct perf_pmu *pmu, const char *str, u64 *config)
-+static int intel_pt_parse_terms(const struct perf_pmu *pmu, const char *str, u64 *config)
- {
- 	*config = 0;
- 	return intel_pt_parse_terms_with_default(pmu, str, config);
-@@ -177,7 +177,7 @@ static int intel_pt_pick_bit(int bits, int target)
- 	return pick;
- }
- 
--static u64 intel_pt_default_config(struct perf_pmu *intel_pt_pmu)
-+static u64 intel_pt_default_config(const struct perf_pmu *intel_pt_pmu)
- {
- 	char buf[256];
- 	int mtc, mtc_periods = 0, mtc_period;
-@@ -256,18 +256,17 @@ static int intel_pt_parse_snapshot_options(struct auxtrace_record *itr,
- 	return 0;
- }
- 
--struct perf_event_attr *
--intel_pt_pmu_default_config(struct perf_pmu *intel_pt_pmu)
-+void intel_pt_pmu_default_config(const struct perf_pmu *intel_pt_pmu,
-+				 struct perf_event_attr *attr)
- {
--	struct perf_event_attr *attr;
-+	static u64 config;
-+	static bool initialized;
- 
--	attr = zalloc(sizeof(struct perf_event_attr));
--	if (!attr)
--		return NULL;
--
--	attr->config = intel_pt_default_config(intel_pt_pmu);
--
--	return attr;
-+	if (!initialized) {
-+		config = intel_pt_default_config(intel_pt_pmu);
-+		initialized = true;
-+	}
-+	attr->config = config;
- }
- 
- static const char *intel_pt_find_filter(struct evlist *evlist,
-diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
-index 949b3e2c67bd..469555ae9b3c 100644
---- a/tools/perf/arch/x86/util/pmu.c
-+++ b/tools/perf/arch/x86/util/pmu.c
-@@ -23,7 +23,7 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
- 	if (!strcmp(pmu->name, INTEL_PT_PMU_NAME)) {
- 		pmu->auxtrace = true;
- 		pmu->selectable = true;
--		pmu->default_config = intel_pt_pmu_default_config(pmu);
-+		pmu->perf_event_attr_init_default = intel_pt_pmu_default_config;
- 	}
- 	if (!strcmp(pmu->name, INTEL_BTS_PMU_NAME)) {
- 		pmu->auxtrace = true;
-diff --git a/tools/perf/util/arm-spe.h b/tools/perf/util/arm-spe.h
-index 98d3235781c3..4f4900c18f3e 100644
---- a/tools/perf/util/arm-spe.h
-+++ b/tools/perf/util/arm-spe.h
-@@ -27,5 +27,7 @@ struct auxtrace_record *arm_spe_recording_init(int *err,
- int arm_spe_process_auxtrace_info(union perf_event *event,
- 				  struct perf_session *session);
- 
--struct perf_event_attr *arm_spe_pmu_default_config(struct perf_pmu *arm_spe_pmu);
-+void arm_spe_pmu_default_config(const struct perf_pmu *arm_spe_pmu,
-+				struct perf_event_attr *attr);
-+
- #endif
-diff --git a/tools/perf/util/cs-etm.h b/tools/perf/util/cs-etm.h
-index 7cca37887917..4696267a32f0 100644
---- a/tools/perf/util/cs-etm.h
-+++ b/tools/perf/util/cs-etm.h
-@@ -242,7 +242,7 @@ struct cs_etm_packet_queue {
- 
- int cs_etm__process_auxtrace_info(union perf_event *event,
- 				  struct perf_session *session);
--struct perf_event_attr *cs_etm_get_default_config(struct perf_pmu *pmu);
-+void cs_etm_get_default_config(const struct perf_pmu *pmu, struct perf_event_attr *attr);
- 
- enum cs_etm_pid_fmt {
- 	CS_ETM_PIDFMT_NONE,
-diff --git a/tools/perf/util/intel-pt.h b/tools/perf/util/intel-pt.h
-index c7d6068e3a6b..18fd0be52e6c 100644
---- a/tools/perf/util/intel-pt.h
-+++ b/tools/perf/util/intel-pt.h
-@@ -42,6 +42,7 @@ struct auxtrace_record *intel_pt_recording_init(int *err);
- int intel_pt_process_auxtrace_info(union perf_event *event,
- 				   struct perf_session *session);
- 
--struct perf_event_attr *intel_pt_pmu_default_config(struct perf_pmu *pmu);
-+void intel_pt_pmu_default_config(const struct perf_pmu *intel_pt_pmu,
-+				 struct perf_event_attr *attr);
- 
- #endif
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index c56e07bd7dd6..ea5579510b97 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -1418,11 +1418,10 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
- 	}
- 	fix_raw(&parsed_terms, pmu);
- 
--	if (pmu->default_config) {
--		memcpy(&attr, pmu->default_config, sizeof(struct perf_event_attr));
--	} else {
--		memset(&attr, 0, sizeof(attr));
--	}
-+	memset(&attr, 0, sizeof(attr));
-+	if (pmu->perf_event_attr_init_default)
-+		pmu->perf_event_attr_init_default(pmu, &attr);
-+
- 	attr.type = pmu->type;
- 
- 	if (list_empty(&parsed_terms.terms)) {
-@@ -1466,7 +1465,8 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
- 	 * When using default config, record which bits of attr->config were
- 	 * changed by the user.
- 	 */
--	if (pmu->default_config && get_config_chgs(pmu, &parsed_terms, &config_terms)) {
-+	if (pmu->perf_event_attr_init_default &&
-+	    get_config_chgs(pmu, &parsed_terms, &config_terms)) {
- 		parse_events_terms__exit(&parsed_terms);
- 		return -ENOMEM;
- 	}
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 8ef675ea7bdd..a967d25e899b 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1402,7 +1402,7 @@ int perf_pmu__config(struct perf_pmu *pmu, struct perf_event_attr *attr,
- 		     struct parse_events_terms *head_terms,
- 		     struct parse_events_error *err)
- {
--	bool zero = !!pmu->default_config;
-+	bool zero = !!pmu->perf_event_attr_init_default;
- 
- 	return perf_pmu__config_terms(pmu, attr, head_terms, zero, err);
- }
-@@ -2064,7 +2064,6 @@ void perf_pmu__delete(struct perf_pmu *pmu)
- 
- 	perf_cpu_map__put(pmu->cpus);
- 
--	zfree(&pmu->default_config);
- 	zfree(&pmu->name);
- 	zfree(&pmu->alias_name);
- 	zfree(&pmu->id);
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 5a05131aa4ce..d2895d415f08 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -92,10 +92,11 @@ struct perf_pmu {
- 	 */
- 	int max_precise;
- 	/**
--	 * @default_config: Optional default perf_event_attr determined in
--	 * architecture specific code.
-+	 * @perf_event_attr_init_default: Optional function to default
-+	 * initialize PMU specific parts of the perf_event_attr.
- 	 */
--	struct perf_event_attr *default_config;
-+	void (*perf_event_attr_init_default)(const struct perf_pmu *pmu,
-+					     struct perf_event_attr *attr);
- 	/**
- 	 * @cpus: Empty or the contents of either of:
- 	 * <sysfs>/bus/event_source/devices/<name>/cpumask.
--- 
-2.42.0.655.g421f12c284-goog
+> ---
+>   drivers/gpu/drm/nouveau/dispnv04/tvnv17.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c b/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
+> index 670c9739e5e1..4a08e61f3336 100644
+> --- a/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
+> +++ b/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
+> @@ -209,6 +209,8 @@ static int nv17_tv_get_ld_modes(struct drm_encoder *encoder,
+>   		struct drm_display_mode *mode;
+>   
+>   		mode = drm_mode_duplicate(encoder->dev, tv_mode);
+> +		if (!mode)
+> +			continue;
+>   
+>   		mode->clock = tv_norm->tv_enc_mode.vrefresh *
+>   			mode->htotal / 1000 *
 
