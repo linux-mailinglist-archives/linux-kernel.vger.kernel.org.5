@@ -2,83 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B35237C7055
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4967C7059
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343993AbjJLOat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 10:30:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38530 "EHLO
+        id S233405AbjJLOdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 10:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347301AbjJLOao (ORCPT
+        with ESMTP id S231750AbjJLOdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:30:44 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C83B8;
-        Thu, 12 Oct 2023 07:30:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1697121039;
-        bh=o1kg+AGvKdB61U4poXd0za0hN5gEmhGNi+P9Mbfn6eg=;
-        h=From:Date:Subject:To:Cc:From;
-        b=jUQ27btT8YKJCuioIZSEDXbZBsXqxhwNXLkT4ykSVnwwoAF3vdbcJMc5QV3r7x0z2
-         YGVeRBw12o2yq+bEyH8DM+KSibg8MQ8FSRK3TOPTpf5G2Kf8uHL1WCQVtxkY71Fnom
-         IbnMMzuvb2KSdH1IftvhoBtNf/RJcSlXMyFwZJl0=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Thu, 12 Oct 2023 16:30:38 +0200
-Subject: [PATCH] const_structs.checkpatch: add xattr_handler
+        Thu, 12 Oct 2023 10:33:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B169A9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:33:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697121185;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=dEigp1+IVvbV3HsL5vf6dh/kMBqJisFQ+4N2B09Iu7A=;
+        b=RMOPXIMWbsGvfGzjqNIDbPmIWSC1GRqsoRXU357IftiIx8EERJ/z16vf29dOzz6eGJPKPq
+        huYBNSR7Pv5Ie5AFpxIeLhS2akBrH6GhR22tK3p4ugK9nIDhWtH+9mEEC32TvbzAFGESxi
+        6WUW61Xqm2j3JnMa1H0/rix3OG+g1qc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-494-65IOoLAJN6OwML0JWpkZ9w-1; Thu, 12 Oct 2023 10:32:59 -0400
+X-MC-Unique: 65IOoLAJN6OwML0JWpkZ9w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 62B03280C297;
+        Thu, 12 Oct 2023 14:32:59 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.172])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B61B01C060DF;
+        Thu, 12 Oct 2023 14:32:57 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 12 Oct 2023 16:32:00 +0200 (CEST)
+Date:   Thu, 12 Oct 2023 16:31:58 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexey Gladkov <legion@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] seqlock: simplify SEQCOUNT_LOCKNAME()
+Message-ID: <20231012143158.GA16133@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231012-vfs-xattr_const-v1-1-6c21e82d4d5e@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAA0DKGUC/x3MTQqAIBBA4avIrBPU/qCrRITZWLPRcCSE6O5Jy
- 2/x3gOMiZBhEg8kvIkphgrdCHCnDQdK2qvBKNNqpY28Pctic06ri4GztH7vlOnVuA0ItboSeir
- /cV7e9wNhjrUJYQAAAA==
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Wedson Almeida Filho <walmeida@microsoft.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697121038; l=904;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=o1kg+AGvKdB61U4poXd0za0hN5gEmhGNi+P9Mbfn6eg=;
- b=AhaVBR9UW982Byqh7WkLNRE4oNV1ZYqKwiBMQtMwWsvezWr6GcNPcEsuQsAsIpdy9cCs2/lif
- zacngGK2pz4ApJDG3AYjtDUo2sJUQTMHJlAMhfnNGIwsPnxHYc21u5C
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the vfs can handle "const struct xattr_handler" make sure that
-new usages of the struct already enter the tree as const.
+1. Kill the "lockmember" argument. It is always s->lock plus
+   __seqprop_##lockname##_sequence() already uses s->lock and
+   ignores "lockmember".
 
-Link: https://lore.kernel.org/lkml/20230930050033.41174-1-wedsonaf@gmail.com/
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+2. Kill the "lock_acquire" argument. __seqprop_##lockname##_sequence()
+   can use the same "lockbase" prefix for _lock and _unlock.
+
+Apart from line numbers, gcc -E outputs the same code.
+
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 ---
-This should be applied on top of the vfs.xattr branch of the vfs tree.
----
- scripts/const_structs.checkpatch | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/seqlock.h | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/scripts/const_structs.checkpatch b/scripts/const_structs.checkpatch
-index dc39d938ea77..188412aa2757 100644
---- a/scripts/const_structs.checkpatch
-+++ b/scripts/const_structs.checkpatch
-@@ -94,3 +94,4 @@ vm_operations_struct
- wacom_features
- watchdog_ops
- wd_ops
-+xattr_handler
-
----
-base-commit: 295d3c441226d004d1ed59c4fcf62d5dba18d9e1
-change-id: 20231012-vfs-xattr_const-afd402507b6e
-
-Best regards,
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index e9bd2f65d7f4..b9a30c62ffe4 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -191,11 +191,9 @@ static inline void seqcount_lockdep_reader_access(const seqcount_t *s)
+  * @lockname:		"LOCKNAME" part of seqcount_LOCKNAME_t
+  * @locktype:		LOCKNAME canonical C data type
+  * @preemptible:	preemptibility of above locktype
+- * @lockmember:		argument for lockdep_assert_held()
+- * @lockbase:		associated lock release function (prefix only)
+- * @lock_acquire:	associated lock acquisition function (full call)
++ * @lockbase:		prefix for associated lock/unlock
+  */
+-#define SEQCOUNT_LOCKNAME(lockname, locktype, preemptible, lockmember, lockbase, lock_acquire) \
++#define SEQCOUNT_LOCKNAME(lockname, locktype, preemptible, lockbase)	\
+ typedef struct seqcount_##lockname {					\
+ 	seqcount_t		seqcount;				\
+ 	__SEQ_LOCK(locktype	*lock);					\
+@@ -216,7 +214,7 @@ __seqprop_##lockname##_sequence(const seqcount_##lockname##_t *s)	\
+ 		return seq;						\
+ 									\
+ 	if (preemptible && unlikely(seq & 1)) {				\
+-		__SEQ_LOCK(lock_acquire);				\
++		__SEQ_LOCK(lockbase##_lock(s->lock));			\
+ 		__SEQ_LOCK(lockbase##_unlock(s->lock));			\
+ 									\
+ 		/*							\
+@@ -242,7 +240,7 @@ __seqprop_##lockname##_preemptible(const seqcount_##lockname##_t *s)	\
+ static __always_inline void						\
+ __seqprop_##lockname##_assert(const seqcount_##lockname##_t *s)		\
+ {									\
+-	__SEQ_LOCK(lockdep_assert_held(lockmember));			\
++	__SEQ_LOCK(lockdep_assert_held(s->lock));			\
+ }
+ 
+ /*
+@@ -271,10 +269,10 @@ static inline void __seqprop_assert(const seqcount_t *s)
+ 
+ #define __SEQ_RT	IS_ENABLED(CONFIG_PREEMPT_RT)
+ 
+-SEQCOUNT_LOCKNAME(raw_spinlock, raw_spinlock_t,  false,    s->lock,        raw_spin, raw_spin_lock(s->lock))
+-SEQCOUNT_LOCKNAME(spinlock,     spinlock_t,      __SEQ_RT, s->lock,        spin,     spin_lock(s->lock))
+-SEQCOUNT_LOCKNAME(rwlock,       rwlock_t,        __SEQ_RT, s->lock,        read,     read_lock(s->lock))
+-SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     s->lock,        mutex,    mutex_lock(s->lock))
++SEQCOUNT_LOCKNAME(raw_spinlock, raw_spinlock_t,  false,    raw_spin)
++SEQCOUNT_LOCKNAME(spinlock,     spinlock_t,      __SEQ_RT, spin)
++SEQCOUNT_LOCKNAME(rwlock,       rwlock_t,        __SEQ_RT, read)
++SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
+ 
+ /*
+  * SEQCNT_LOCKNAME_ZERO - static initializer for seqcount_LOCKNAME_t
 -- 
-Thomas Weißschuh <linux@weissschuh.net>
+2.25.1.362.g51ebf55
+
 
