@@ -2,46 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E55C07C769C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A517C769E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441905AbjJLTWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 15:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
+        id S1442098AbjJLTXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 15:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjJLTW3 (ORCPT
+        with ESMTP id S1347366AbjJLTXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 15:22:29 -0400
+        Thu, 12 Oct 2023 15:23:01 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4877DB7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:22:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3C38C433C8;
-        Thu, 12 Oct 2023 19:22:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D910B7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:22:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F4A7C433C7;
+        Thu, 12 Oct 2023 19:22:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697138547;
-        bh=MF8UBOB+RPE0pevjlqdlPzoxbZCXJJU1HHFY/SxZI4k=;
+        s=k20201202; t=1697138578;
+        bh=dhkNkcd5s5dF4hY99APwOOIKtTfhuQ585ymiYD2asqE=;
         h=From:To:Cc:Subject:Date:From;
-        b=t3WBVe0Kz1NyMj9SaVq+OxmMJKYeJHubR9/Ls9IDo/l4bjOajqO6UNd3Ajp3VfcKj
-         eub6+1W6z9XCCsI4c1sFekcl1FAVPhTOUtEdDEtWDp00WlTJqNO6v3f8NYnQEcekLP
-         PZmutOGGzl2NwdX0CueZQ5ARlcPbv13GySqtL5jSu3EdjI+u0RZR/dTFRyqsU0OWHy
-         spEQl65b7D5CNAkOS1fcaW/8bYvqooEZrh7Alt5z++rjvJ9XdtWfS5DeQAsCD2zJrb
-         pNq8cuBTEgL916C/DDIknT35QkbHgtRwiRTrp7P3Q7pHgiyHmJUtv+jFJXR5Do4Za5
-         ka23mTmfDo6tQ==
-Received: (nullmailer pid 1547085 invoked by uid 1000);
-        Thu, 12 Oct 2023 19:22:25 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>
-Cc:     kernel test robot <lkp@intel.com>,
-        linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: rockchip: Fix unused rockchip_i2s_tdm_match warning for !CONFIG_OF
-Date:   Thu, 12 Oct 2023 14:22:00 -0500
-Message-ID: <20231012192201.1546607-1-robh@kernel.org>
-X-Mailer: git-send-email 2.42.0
+        b=aqFUhq0pY1YB2OjHpjc0rQz4kU1EVFhRX7IY2f1LSyOh0qJXFpzH4+Qlm5zltWdT3
+         I+gDoQUNF3S5+s75NqsZW5GugdC4+m35pte3sdBnx6tq2ga1Hac8J7pMbNHra+Efcg
+         V7YNhtDQEX/n+/LnIulfUF57Em6W5I+ZW2RuV+QrdgfdlXwY1GTNkXMZGjBBlIRjlg
+         h3F1IiXedOJgtVat2g57BmwtcEkPUKGFAVatVIwvM9+7/blH7Q6s+UuGI5EluTOM5Y
+         bJNJPKhG8EPkl9eTtRgB9lQeabHG5umqCVM1jNwZJZkBIe861zNWWcpb6Hh5UyjfAO
+         mEu5jxwitRKFg==
+From:   SeongJae Park <sj@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     SeongJae Park <sj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        damon@lists.linux.dev, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] mm/damon/sysfs-schemes: Do DAMOS tried regions update for only one apply interval
+Date:   Thu, 12 Oct 2023 19:22:52 +0000
+Message-Id: <20231012192256.33556-1-sj@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -54,35 +48,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 9958d85968ed ("ASoC: Use device_get_match_data()") dropped the
-unconditional use of rockchip_i2s_tdm_match resulting in this warning:
+Changes from RFC
+(https://lore.kernel.org/damon/20231010012600.83140-1-sj@kernel.org/)
+- Rebase on latest mm-unstable
 
-sound/soc/rockchip/rockchip_i2s_tdm.c:1315:34: warning: 'rockchip_i2s_tdm_match' defined but not used [-Wunused-const-variable=]
+DAMOS tried regions update feature of DAMON sysfs interface is doing the
+update for one aggregation interval after the request is made.  Since
+the per-scheme apply interval is supported, that behavior makes no much
+sense.  That is, the tried regions directory will have regions from
+multiple DAMON monitoring results snapshots, or no region for apply
+intervals that much shorter than, or longer than the aggregation
+interval, respectively.  Update the behavior to update the regions for
+each scheme for only its apply interval, and update the document.
 
-The fix is to drop of_match_ptr() which is not necessary because DT is
-always used for this driver.
+Since DAMOS apply interval is the aggregation by default, this change
+makes no visible behavioral difference to old users who don't explicitly
+set the apply intervals.
 
-Fixes: 9958d85968ed ("ASoC: Use device_get_match_data()")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310121802.CDAGVdF2-lkp@intel.com/
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- sound/soc/rockchip/rockchip_i2s_tdm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Patches Sequence
+----------------
 
-diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
-index 7e996550d1df..7e1625ad70c6 100644
---- a/sound/soc/rockchip/rockchip_i2s_tdm.c
-+++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
-@@ -1759,7 +1759,7 @@ static struct platform_driver rockchip_i2s_tdm_driver = {
- 	.remove = rockchip_i2s_tdm_remove,
- 	.driver = {
- 		.name = DRV_NAME,
--		.of_match_table = of_match_ptr(rockchip_i2s_tdm_match),
-+		.of_match_table = rockchip_i2s_tdm_match,
- 		.pm = &rockchip_i2s_tdm_pm_ops,
- 	},
- };
+The first two patches makes schemes of apply intervals that much shorter
+or longer than the aggregation interval to keep the maximum and minimum
+times for continuing the update.  After the two patches, the update
+aligns with the each scheme's apply interval.
+
+Finally, the third patch updates the document to reflect the behavior.
+
+SeongJae Park (3):
+  mm/damon/sysfs-schemes: do not update tried regions more than one
+    DAMON snapshot
+  mm/damon/sysfs: avoid empty scheme tried regions for large apply
+    interval
+  Docs/admin-guide/mm/damon/usage: update for tried regions update time
+    interval
+
+ Documentation/admin-guide/mm/damon/usage.rst |  6 +-
+ mm/damon/sysfs-common.h                      |  2 +
+ mm/damon/sysfs-schemes.c                     | 93 ++++++++++++++++++++
+ mm/damon/sysfs.c                             | 34 ++++++-
+ 4 files changed, 128 insertions(+), 7 deletions(-)
+
+
+base-commit: 937421b2a4e95c57fddf10477b949fa5693711da
 -- 
-2.42.0
+2.34.1
 
