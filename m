@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AF87C7543
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 129BA7C7546
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441952AbjJLR4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
+        id S1441975AbjJLR45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441848AbjJLR4v (ORCPT
+        with ESMTP id S1441848AbjJLR4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:56:51 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2425CA
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:56:49 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7e4745acdso19507997b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:56:49 -0700 (PDT)
+        Thu, 12 Oct 2023 13:56:54 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2EDB8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:56:52 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d85fc108f0eso1561917276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:56:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697133409; x=1697738209; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WBYNCwMRWf2j/q/jHdVPvtgHF8EEuq5iigzIRPIKj74=;
-        b=UA0+ynfW3kqF8FpfieUTk/yFBWoxAkzVA+DSBD//QT/H3HY8SsUWulcrR/bYvaJDxo
-         LKCH/IkD/fevswyvkjFZ9Me3zSljXO9s9JG0DJQYoimj5keNf9N+7oVzEdJWCgbt8/E/
-         UWWN/XcAhgwRwNz2Pv0tI74XiiYjTIW/8jAmTnBjsFpt5tTwI0/smjIJdtKIgsc22hUM
-         wyEYwg1AquvVWoxb4a69yESAPlVzVvdLMQVCYPdr/nVhFpawpVIkTnAzVYT+DP4FO1yN
-         zEILy4Vv+dCcQ4dTI0j1dxUTdSFodrPSKWv8gSiwYHZsHateGcyIOQGofWEIwe+GOESU
-         HEPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697133409; x=1697738209;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+        d=google.com; s=20230601; t=1697133412; x=1697738212; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=WBYNCwMRWf2j/q/jHdVPvtgHF8EEuq5iigzIRPIKj74=;
-        b=Fpm8fuIuKNLwxAWza7pj6MxxtSIEJ2mKhYte46RAkB6zntMBxzVjSjmUDoxeFkL/kT
-         5H2zQX+Q8n81C7hoKP9E52kCqZNbUF5zbqdrfkoh2hPk1safKV4eKHsyAv0gClT0UhI9
-         ESFmRF3GSLHqtwsEUrlzunPKA0TSfScu9FNKjZ0ZbGSpfMBdsg4DbtxVmeanLa9UrEoS
-         NkGp4pWQaCvCPKPxhgZdgzDPiayagGRX9woBtKdCtGlEXKNaPbWwgWvfRA614/ay1P7R
-         nSXMDA39keKWuVP40+GEtZQWojnYnY3bcHgFvrSO9+8flWqbTqhOI3Mm9lffnLR9obVF
-         tcvg==
-X-Gm-Message-State: AOJu0YxIBYCYEOE9fmG8hjIip7Hd1qe2wv7jjTGDPXklOMlokuCplXtG
-        8GkqC7xxrFBoEPwoWUbQplsHr1NAihyC
-X-Google-Smtp-Source: AGHT+IHw+89XI9SqD0f3m9NX2o1w09tj2COvD8HCR0n2aQj6ML6m/aLtOYL6vAFj+X7KkMX5yLAMWHeWEz1n
+        bh=5nkZcfdBOLCg2JD7+nD32uBrulHPlnA6DzJIE9BS0/8=;
+        b=kV5zSE4zWfhTUdCs/rnOxGyYltVNqQ4OXdGQgI9+rmOA2W4gmpFEIeHkfUAOnLHrpl
+         TcJ/TAbbmICHBVfMd/Bh9PyYh932Xw2Rqi3rdhzx2N12G0p/QR56fYvPE9IhZBtbRghP
+         laHoEVNM3cI/Lze1x9IH0AMLtMB5O1z65wr9HWS22k65q1c7opjUJJSKlIK9hWrKbSsy
+         QtbMPdSriu25p0LUh0VrwJSjb/R/g/lqENhdYNumFIGli7uMrBUSOhy9/FtXab4Pgxj1
+         s4S3YJ1DL65F0/0Qbo4WmCOGDyBa9WlrmfKmjBYuzZsh+qMGy+qo1RFL9yp7G/K5jN/I
+         m4wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697133412; x=1697738212;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5nkZcfdBOLCg2JD7+nD32uBrulHPlnA6DzJIE9BS0/8=;
+        b=CnCxI37jH6nir0uA513jIELzMmAqDYgDjU9DDMVxLyCQEYs2j6T3vD95lTq/+1AzEk
+         2UecLlkf/4OMd/RqJA45xlnptl5gDXFfnH9O7mApUjkCsyrUlHIWtWJuJaU5fS2D08Nt
+         mAJuQ+hVGCt0hoioKRxbo5Y40WvwDvDCGPbmtRxeolDUSmNlBUdjp9OeovbuY1FDkB+F
+         rd5GYyLX9njKTbdagYZgMDpN1wgJTtei5ra1k68A3ErCN13xA33zmjwCAh15CJW9tHQ7
+         UDyLe+U2OceXfBK+LT9gD6b8CSiSU5OBiqBc/6vJAVk0OEVqp7rcoug9q65J0ss9rkqV
+         miTw==
+X-Gm-Message-State: AOJu0Yx54gZrCr7uXFuPNHoJcmbD7zdEMIZvhR7pDghW8fnHwWzauSWZ
+        dh/36qAvmvgOV++wPUzKML/NZZm8LCOW
+X-Google-Smtp-Source: AGHT+IFgphkBNoBU2jpQ3RvZP3I7pTfsySTqC/W3j6gpxm3Z4BfagwfHVCD38rQVI4SUiYGelsSF+fL2bI/t
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:6a89:babc:124b:e4e6])
- (user=irogers job=sendgmr) by 2002:a81:bc0d:0:b0:58c:b45f:3e94 with SMTP id
- a13-20020a81bc0d000000b0058cb45f3e94mr498616ywi.8.1697133409197; Thu, 12 Oct
- 2023 10:56:49 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 10:56:38 -0700
-Message-Id: <20231012175645.1849503-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a25:aa48:0:b0:d9a:be7b:283c with SMTP id
+ s66-20020a25aa48000000b00d9abe7b283cmr65087ybi.0.1697133411989; Thu, 12 Oct
+ 2023 10:56:51 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 10:56:39 -0700
+In-Reply-To: <20231012175645.1849503-1-irogers@google.com>
+Message-Id: <20231012175645.1849503-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20231012175645.1849503-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Subject: [PATCH v2 0/7] PMU performance improvements
+Subject: [PATCH v2 1/7] perf pmu: Rename perf_pmu__get_default_config to perf_pmu__arch_init
 From:   Ian Rogers <irogers@google.com>
 To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
         Mike Leach <mike.leach@linaro.org>,
@@ -86,72 +88,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Performance improvements to pmu scanning by holding onto the
-event/metric tables for a cpuid (avoid regular expression comparisons)
-and by lazily computing the default perf_event_attr for a PMU.
+Assign default_config as part of the init. perf_pmu__get_default_config
+was doing more than just getting the default config and so this is
+intended to better align with the code.
 
-Before
-% Running 'internals/pmu-scan' benchmark:
-Computing performance of sysfs PMU event scan for 100 times
-  Average core PMU scanning took: 251.990 usec (+- 4.009 usec)
-  Average PMU scanning took: 3222.460 usec (+- 211.234 usec)
-% Running 'internals/pmu-scan' benchmark:
-Computing performance of sysfs PMU event scan for 100 times
-  Average core PMU scanning took: 260.120 usec (+- 7.905 usec)
-  Average PMU scanning took: 3228.995 usec (+- 211.196 usec)
-% Running 'internals/pmu-scan' benchmark:
-Computing performance of sysfs PMU event scan for 100 times
-  Average core PMU scanning took: 252.310 usec (+- 3.980 usec)
-  Average PMU scanning took: 3220.675 usec (+- 210.844 usec)
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/arch/arm/util/pmu.c  |  8 +++-----
+ tools/perf/arch/s390/util/pmu.c |  3 +--
+ tools/perf/arch/x86/util/pmu.c  |  5 ++---
+ tools/perf/util/pmu.c           | 13 ++++++-------
+ tools/perf/util/pmu.h           |  2 +-
+ 5 files changed, 13 insertions(+), 18 deletions(-)
 
-After:
-% Running 'internals/pmu-scan' benchmark:
-Computing performance of sysfs PMU event scan for 100 times
-  Average core PMU scanning took: 28.530 usec (+- 0.602 usec)
-  Average PMU scanning took: 275.725 usec (+- 18.253 usec)
-% Running 'internals/pmu-scan' benchmark:
-Computing performance of sysfs PMU event scan for 100 times
-  Average core PMU scanning took: 28.720 usec (+- 0.446 usec)
-  Average PMU scanning took: 271.015 usec (+- 18.762 usec)
-% Running 'internals/pmu-scan' benchmark:
-Computing performance of sysfs PMU event scan for 100 times
-  Average core PMU scanning took: 31.040 usec (+- 0.612 usec)
-  Average PMU scanning took: 267.340 usec (+- 17.209 usec)
-
-Measuring the pmu-scan benchmark on a Tigerlake laptop: core PMU
-scanning is reduced to 11.5% of the previous execution time, all PMU
-scanning is reduced to 8.4% of the previous execution time. There is a
-4.3% reduction in openat system calls.
-
-v2. Address feedback from Adrian Hunter and Yang Jihong to allow the
-    caching to address varying CPUIDs per PMU (currently an ARM64 only
-    feature) and to cache when there is no table to return.
-
-Ian Rogers (7):
-  perf pmu: Rename perf_pmu__get_default_config to perf_pmu__arch_init
-  perf intel-pt: Move PMU initialization from default config code
-  perf arm-spe: Move PMU initialization from default config code
-  perf pmu: Const-ify file APIs
-  perf pmu: Const-ify perf_pmu__config_terms
-  perf pmu-events: Remember the perf_events_map for a PMU
-  perf pmu: Lazily compute default config
-
- tools/perf/arch/arm/util/cs-etm.c    |  13 +---
- tools/perf/arch/arm/util/pmu.c       |  10 +--
- tools/perf/arch/arm64/util/arm-spe.c |  48 ++++++------
- tools/perf/arch/s390/util/pmu.c      |   3 +-
- tools/perf/arch/x86/util/intel-pt.c  |  27 +++----
- tools/perf/arch/x86/util/pmu.c       |   6 +-
- tools/perf/pmu-events/jevents.py     | 109 +++++++++++++++++----------
- tools/perf/util/arm-spe.h            |   4 +-
- tools/perf/util/cs-etm.h             |   2 +-
- tools/perf/util/intel-pt.h           |   3 +-
- tools/perf/util/parse-events.c       |  12 +--
- tools/perf/util/pmu.c                |  38 +++++-----
- tools/perf/util/pmu.h                |  22 +++---
- tools/perf/util/python.c             |   2 +-
- 14 files changed, 160 insertions(+), 139 deletions(-)
-
+diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/pmu.c
+index a9623b128ece..d55d2b15f2e6 100644
+--- a/tools/perf/arch/arm/util/pmu.c
++++ b/tools/perf/arch/arm/util/pmu.c
+@@ -14,22 +14,20 @@
+ #include "../../../util/pmu.h"
+ #include "../../../util/cs-etm.h"
+ 
+-struct perf_event_attr
+-*perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
++void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+ {
+ #ifdef HAVE_AUXTRACE_SUPPORT
+ 	if (!strcmp(pmu->name, CORESIGHT_ETM_PMU_NAME)) {
+ 		/* add ETM default config here */
+ 		pmu->selectable = true;
+-		return cs_etm_get_default_config(pmu);
++		pmu->default_config = cs_etm_get_default_config(pmu);
+ #if defined(__aarch64__)
+ 	} else if (strstarts(pmu->name, ARM_SPE_PMU_NAME)) {
+-		return arm_spe_pmu_default_config(pmu);
++		pmu->default_config = arm_spe_pmu_default_config(pmu);
+ 	} else if (strstarts(pmu->name, HISI_PTT_PMU_NAME)) {
+ 		pmu->selectable = true;
+ #endif
+ 	}
+ 
+ #endif
+-	return NULL;
+ }
+diff --git a/tools/perf/arch/s390/util/pmu.c b/tools/perf/arch/s390/util/pmu.c
+index 11f03f32e3fd..886c30e001fa 100644
+--- a/tools/perf/arch/s390/util/pmu.c
++++ b/tools/perf/arch/s390/util/pmu.c
+@@ -13,11 +13,10 @@
+ #define	S390_PMUPAI_EXT		"pai_ext"
+ #define	S390_PMUCPUM_CF		"cpum_cf"
+ 
+-struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu)
++void perf_pmu__arch_init(struct perf_pmu *pmu)
+ {
+ 	if (!strcmp(pmu->name, S390_PMUPAI_CRYPTO) ||
+ 	    !strcmp(pmu->name, S390_PMUPAI_EXT) ||
+ 	    !strcmp(pmu->name, S390_PMUCPUM_CF))
+ 		pmu->selectable = true;
+-	return NULL;
+ }
+diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
+index 8b53ca468a50..811e2377d2d5 100644
+--- a/tools/perf/arch/x86/util/pmu.c
++++ b/tools/perf/arch/x86/util/pmu.c
+@@ -17,19 +17,18 @@
+ #include "../../../util/pmus.h"
+ #include "env.h"
+ 
+-struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
++void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+ {
+ #ifdef HAVE_AUXTRACE_SUPPORT
+ 	if (!strcmp(pmu->name, INTEL_PT_PMU_NAME)) {
+ 		pmu->auxtrace = true;
+-		return intel_pt_pmu_default_config(pmu);
++		pmu->default_config = intel_pt_pmu_default_config(pmu);
+ 	}
+ 	if (!strcmp(pmu->name, INTEL_BTS_PMU_NAME)) {
+ 		pmu->auxtrace = true;
+ 		pmu->selectable = true;
+ 	}
+ #endif
+-	return NULL;
+ }
+ 
+ int perf_pmus__num_mem_pmus(void)
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 6428e2648289..d075da0eecc0 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -954,12 +954,6 @@ void pmu_add_sys_aliases(struct perf_pmu *pmu)
+ 	pmu_for_each_sys_event(pmu_add_sys_aliases_iter_fn, pmu);
+ }
+ 
+-struct perf_event_attr * __weak
+-perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
+-{
+-	return NULL;
+-}
+-
+ static char *pmu_find_alias_name(struct perf_pmu *pmu, int dirfd)
+ {
+ 	FILE *file = perf_pmu__open_file_at(pmu, dirfd, "alias");
+@@ -991,6 +985,11 @@ static int pmu_max_precise(int dirfd, struct perf_pmu *pmu)
+ 	return max_precise;
+ }
+ 
++void __weak
++perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
++{
++}
++
+ struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char *name)
+ {
+ 	struct perf_pmu *pmu;
+@@ -1037,7 +1036,7 @@ struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char
+ 	pmu_add_sys_aliases(pmu);
+ 	list_add_tail(&pmu->list, pmus);
+ 
+-	pmu->default_config = perf_pmu__get_default_config(pmu);
++	perf_pmu__arch_init(pmu);
+ 
+ 	return pmu;
+ err:
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index 85190d058852..588c64e38d6b 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -233,7 +233,7 @@ bool perf_pmu__file_exists(struct perf_pmu *pmu, const char *name);
+ 
+ int perf_pmu__test(void);
+ 
+-struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu);
++void perf_pmu__arch_init(struct perf_pmu *pmu);
+ void pmu_add_cpu_aliases_table(struct perf_pmu *pmu,
+ 			       const struct pmu_events_table *table);
+ 
 -- 
 2.42.0.655.g421f12c284-goog
 
