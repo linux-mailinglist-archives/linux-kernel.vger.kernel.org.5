@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 283547C6583
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1167C6584
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377455AbjJLGZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
+        id S1377526AbjJLGZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377453AbjJLGYs (ORCPT
+        with ESMTP id S1377791AbjJLGYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:24:48 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF781A3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:31 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7a6fd18abso9897927b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:31 -0700 (PDT)
+        Thu, 12 Oct 2023 02:24:50 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52E21B2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:33 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f61a639b9so9879167b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697091870; x=1697696670; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697091872; x=1697696672; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Fc/6/O/gRte1zMhmeMtD4ohISB3aWdPXWc8V2/IjDG4=;
-        b=MfjQ5C7JEOErhS+sVyt+9BIu5x/F+EcfbqxY16YvfH+Baa1uydnkaaaYfeNb++GAhe
-         w1jyj9CRpk9NtQvcuVy0u8EgsYvvICa06QNJGL60h6i1fNgf6a6eec6bbWSHgn9MylgN
-         ctHoEn3sNsfj17CE9duwG0Bt25OAZbgB5aOLWOMaeZIxRP1wm1cyCvbm4lnSbrqK6J7T
-         FjjHz3WCelmLYsstXYwiICf40c9lSzvWP+JzzaATTDQuiHLMs8ZhSdTHGTz5Fk3VVVEV
-         labXbkeucDueh9576aAAymNQDILXk4SL3yfSOXvYg7Wk8wqWmtjhHPUjLgpuc1NODLkv
-         KcfA==
+        bh=flxfAGeU36X3VCWvCeBnyhGj7NRxqRtkjKz9SEhq+zk=;
+        b=Qp8RZwl6K+UKiZuC0kkyEe1H4Dhxz1Q8ofiKc7xh4psBeYZL5MAAFeNeyu00AXzr/H
+         O86dFjRmhv86edW3lyAfIsA9fl7OkdB1dnKHoz12KrDJLt2TleEL1pB/rXW1KOVKrAws
+         QUQG9pxv3eMH4wAwZwB8XoZGCPnUy835T/KsTHrvMJ+MfsfqnG3Qi0l3mUVnSOdVPk9S
+         Hlrcs+dWL0uLJ4yAIbfMe42o724+HWKx0CtsN2ikMCdRxgPwuV2VK1lSSTqs2EQr26vB
+         9rBsoUZMAU/LdWtF0ZEPytcQNBKNTNwGlfc02UEBxuC0aiKcOLokSj9IhegbCuHykG7v
+         uiLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697091870; x=1697696670;
+        d=1e100.net; s=20230601; t=1697091872; x=1697696672;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fc/6/O/gRte1zMhmeMtD4ohISB3aWdPXWc8V2/IjDG4=;
-        b=JeQ8y4sZW8FhFE2q/ErWDBeUHvDF6MnMviuK7oLWPxqo6e5aYq7wjPI2DeuZhldHrS
-         0UBlk/ziFCByar0zZ6lSXJQk8hG84qpAbhHLpCZtqIsjRNWS2lJB1e3rK05CkqD15XAm
-         nRNVc+2E2ijV+mMOUzaV9w8i33QWBco4F0SROJpNhcZdv07/NWRb/b01c51bqF/YIiBj
-         dviotIwI/9WBDfLFENNewQH6HM8bU3C+MCkJu5zbRU7tZ18ReI2bIK/y5PBc3PbhXmp2
-         JSwDeuu3atZ9JmRsdT4Myz3TfSwpG7busHsat96iwmqngpQ+chwyqX8BzvotCf81RHG4
-         UT9Q==
-X-Gm-Message-State: AOJu0YwBALAdaDRGAzeps3Wzy0iwVjucWAk15wiVVWBNfxl/zW2rai20
-        rBHzX4ioN3eOygg/JNwQQvw6w/KLiBvx
-X-Google-Smtp-Source: AGHT+IHw9CWAC8FY76ZB7h38HkJJCF9yox3JXqj1NldAlfSd6AeHsF169JHHn8w35OGyvCUjrw3Xt+ij0Xpl
+        bh=flxfAGeU36X3VCWvCeBnyhGj7NRxqRtkjKz9SEhq+zk=;
+        b=r2moRX0id43FbjjIYuz8I9mP3vXV+Sgv6zWNa2lXXw39z6S1QjjMZ+bi2eUUJTOAkn
+         BADX6EaYBGlFIxghJF+pxYE2S8gCyKJ4uz2pKjNp1ZOyv3/Yhq8D0etiBKWbWkSXKs8O
+         4VyrwvpDsGk/u7MEhs+adZKcgehYPwwfK7h8wK2hI6V7zZJdj7O29RDp43pmTNoxAopC
+         f4slKMlI6VTQ9wM9QI0nBgJsXjObOURwlNP4gObO89o+G7d/tpKoN3A8d84cL+7bkvQo
+         UM7tRPSlThy6EpmidDBmZlL6psdUDpD84qtEB6cd8REbemTdNieSBduTmQR2ZCiS621K
+         Jxgg==
+X-Gm-Message-State: AOJu0YxXjAqNU2RGjw0G5dbIxesvOg2ESYHREn3gEPa5rXdkn7MIiKsp
+        trztqyXBQPyprSAK+to3dPjyMk/1VovT
+X-Google-Smtp-Source: AGHT+IGdUdinYuEq8T3uAohDpFLB8P8wmRDQ5QHEXJxvYYgkout89ScuOm/SWzNEJeVgK30fxeyLC6iN4e5k
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7be5:14d2:880b:c5c9])
- (user=irogers job=sendgmr) by 2002:a81:4005:0:b0:5a7:be34:345 with SMTP id
- l5-20020a814005000000b005a7be340345mr175704ywn.6.1697091870082; Wed, 11 Oct
- 2023 23:24:30 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 23:23:56 -0700
+ (user=irogers job=sendgmr) by 2002:a81:a909:0:b0:59b:e97e:f7e3 with SMTP id
+ g9-20020a81a909000000b0059be97ef7e3mr422912ywh.2.1697091872656; Wed, 11 Oct
+ 2023 23:24:32 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 23:23:57 -0700
 In-Reply-To: <20231012062359.1616786-1-irogers@google.com>
-Message-Id: <20231012062359.1616786-11-irogers@google.com>
+Message-Id: <20231012062359.1616786-12-irogers@google.com>
 Mime-Version: 1.0
 References: <20231012062359.1616786-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v2 10/13] perf record: Lazy load kernel symbols
+Subject: [PATCH v2 11/13] libperf: Lazily allocate mmap event copy
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -80,7 +80,7 @@ To:     Peter Zijlstra <peterz@infradead.org>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,82 +88,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 5b7ba82a7591 ("perf symbols: Load kernel maps before using")
-changed it so that loading a kernel dso would cause the symbols for
-the dso to be eagerly loaded. For perf record this is overhead as the
-symbols won't be used. Add a symbol_conf to control the behavior and
-disable it for perf record and perf inject.
+The event copy in the mmap is used to have storage to a read
+event. Not all users of mmaps read the events, such as perf record, so
+switch the allocation to being on first read rather than being
+embedded within the perf_mmap.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-inject.c   | 4 ++++
- tools/perf/builtin-record.c   | 2 ++
- tools/perf/util/event.c       | 4 ++--
- tools/perf/util/symbol_conf.h | 3 ++-
- 4 files changed, 10 insertions(+), 3 deletions(-)
+ tools/lib/perf/include/internal/mmap.h | 2 +-
+ tools/lib/perf/mmap.c                  | 9 +++++++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-index c8cf2fdd9cff..1539fb18c749 100644
---- a/tools/perf/builtin-inject.c
-+++ b/tools/perf/builtin-inject.c
-@@ -2265,6 +2265,10 @@ int cmd_inject(int argc, const char **argv)
- 		"perf inject [<options>]",
- 		NULL
- 	};
-+
-+	/* Disable eager loading of kernel symbols that adds overhead to perf inject. */
-+	symbol_conf.lazy_load_kernel_maps = true;
-+
- #ifndef HAVE_JITDUMP
- 	set_option_nobuild(options, 'j', "jit", "NO_LIBELF=1", true);
- #endif
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index dcf288a4fb9a..8ec818568662 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -3989,6 +3989,8 @@ int cmd_record(int argc, const char **argv)
- # undef set_nobuild
- #endif
+diff --git a/tools/lib/perf/include/internal/mmap.h b/tools/lib/perf/include/internal/mmap.h
+index 5a062af8e9d8..b11aaf5ed645 100644
+--- a/tools/lib/perf/include/internal/mmap.h
++++ b/tools/lib/perf/include/internal/mmap.h
+@@ -33,7 +33,7 @@ struct perf_mmap {
+ 	bool			 overwrite;
+ 	u64			 flush;
+ 	libperf_unmap_cb_t	 unmap_cb;
+-	char			 event_copy[PERF_SAMPLE_MAX_SIZE] __aligned(8);
++	void			*event_copy;
+ 	struct perf_mmap	*next;
+ };
  
-+	/* Disable eager loading of kernel symbols that adds overhead to perf record. */
-+	symbol_conf.lazy_load_kernel_maps = true;
- 	rec->opts.affinity = PERF_AFFINITY_SYS;
+diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
+index 2184814b37dd..91ae46aac378 100644
+--- a/tools/lib/perf/mmap.c
++++ b/tools/lib/perf/mmap.c
+@@ -51,6 +51,8 @@ int perf_mmap__mmap(struct perf_mmap *map, struct perf_mmap_param *mp,
  
- 	rec->evlist = evlist__new();
-diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
-index 923c0fb15122..68f45e9e63b6 100644
---- a/tools/perf/util/event.c
-+++ b/tools/perf/util/event.c
-@@ -617,13 +617,13 @@ struct map *thread__find_map(struct thread *thread, u8 cpumode, u64 addr,
- 	if (cpumode == PERF_RECORD_MISC_KERNEL && perf_host) {
- 		al->level = 'k';
- 		maps = machine__kernel_maps(machine);
--		load_map = true;
-+		load_map = !symbol_conf.lazy_load_kernel_maps;
- 	} else if (cpumode == PERF_RECORD_MISC_USER && perf_host) {
- 		al->level = '.';
- 	} else if (cpumode == PERF_RECORD_MISC_GUEST_KERNEL && perf_guest) {
- 		al->level = 'g';
- 		maps = machine__kernel_maps(machine);
--		load_map = true;
-+		load_map = !symbol_conf.lazy_load_kernel_maps;
- 	} else if (cpumode == PERF_RECORD_MISC_GUEST_USER && perf_guest) {
- 		al->level = 'u';
- 	} else {
-diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_conf.h
-index 0b589570d1d0..2b2fb9e224b0 100644
---- a/tools/perf/util/symbol_conf.h
-+++ b/tools/perf/util/symbol_conf.h
-@@ -42,7 +42,8 @@ struct symbol_conf {
- 			inline_name,
- 			disable_add2line_warn,
- 			buildid_mmap2,
--			guest_code;
-+			guest_code,
-+			lazy_load_kernel_maps;
- 	const char	*vmlinux_name,
- 			*kallsyms_name,
- 			*source_prefix,
+ void perf_mmap__munmap(struct perf_mmap *map)
+ {
++	free(map->event_copy);
++	map->event_copy = NULL;
+ 	if (map && map->base != NULL) {
+ 		munmap(map->base, perf_mmap__mmap_len(map));
+ 		map->base = NULL;
+@@ -226,6 +228,13 @@ static union perf_event *perf_mmap__read(struct perf_mmap *map,
+ 			unsigned int len = min(sizeof(*event), size), cpy;
+ 			void *dst = map->event_copy;
+ 
++			if (!dst) {
++				dst = malloc(PERF_SAMPLE_MAX_SIZE);
++				if (!dst)
++					return NULL;
++				map->event_copy = dst;
++			}
++
+ 			do {
+ 				cpy = min(map->mask + 1 - (offset & map->mask), len);
+ 				memcpy(dst, &data[offset & map->mask], cpy);
 -- 
 2.42.0.609.gbb76f46606-goog
 
