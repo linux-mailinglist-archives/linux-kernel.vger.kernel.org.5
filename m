@@ -2,163 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 211D77C6F07
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DE87C6F0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377488AbjJLNWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42490 "EHLO
+        id S1347225AbjJLNWS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 09:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343733AbjJLNWC (ORCPT
+        with ESMTP id S1347216AbjJLNWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:22:02 -0400
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B4594;
-        Thu, 12 Oct 2023 06:21:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1697116916; x=1697376116;
-        bh=a9Ak0X7bSTujHRssN+a+Hftra+UlXwNVYvmyqQQCilw=;
-        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=CakwaJnKAjcxT7b1G6jSKT+/BpZ3n4TnAJBO+wUhocU6wDlKI0nP6WhL3GDpYIuVE
-         3k+/Yb3acb18mnH+POGqFjYWjep/842QnWQkdVKtVjlEIvZNx6QofnjHqFN9j6Be96
-         DR9+/HiPdmnid2Fx0HaIcmtRo69k3Yft/IhUMoKmtFjrfi2t3jv+BuuVYL7e5T2YrQ
-         QzgYq9iQfC+Yj69RHyPe0jMoPIMcR+Et7ovrd4/H+i53LxRniPGghs2zgQyyBGdRaI
-         XtxPXUwaLpCc4pxaSGm+6QWomk58RgZKY+Te7tgXc8Sqs5ZQYbeqEkamajMZ/9F+8u
-         qJ19tjsuo75bA==
-Date:   Thu, 12 Oct 2023 13:21:46 +0000
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <nmi@metaspace.dk>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rust: macros: improve `#[vtable]` documentation
-Message-ID: <20231012132131.300014-1-benno.lossin@proton.me>
-Feedback-ID: 71780778:user:proton
+        Thu, 12 Oct 2023 09:22:16 -0400
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F76CF;
+        Thu, 12 Oct 2023 06:22:15 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5a7dafb659cso12021967b3.0;
+        Thu, 12 Oct 2023 06:22:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697116934; x=1697721734;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AIuI2uTX18VQPC9BHJlaZd8vFXkZjrOtgINb889VA28=;
+        b=eCHFmY/UQ5M8Hglfe3rocNg930JCqnaEDtypHXAT7RXLyt9DocHYChIAZ0c9djyWMb
+         Oyv80iEAcMzusPRk6cNeFxXyvXzTRDHPk4+pF+XlWEX/HiunBkLVR4UmOSwmDxxvcIKN
+         PVWeoZOT4LrQzct9/hViZMyD42jGCjblihxxn9YGnrShKeK8l2h6iE1uMMOIVcBkE2/N
+         tPylgmxxCykIbRY1x3diJu+qFNDj27xmWJKAiORu/d7u8/P5SGt9y06riLb9wl0iXsuG
+         0UZm/deWb7faVyzI+F/GJZGark+Z5rulxnumEhU9razzusG6mjijIzzw1lE8Q8iwPnJJ
+         fq9A==
+X-Gm-Message-State: AOJu0Yz8U0AKbgaCODbjTcDSq1R/6IgZiFKo/NRNs2p/qCI6emiMiTrX
+        CAe5MrYm8aWu8P0dUhVFiXN1NnIoH7pM5Q==
+X-Google-Smtp-Source: AGHT+IFohiDCOMCqK+Nd8DkbnJ2qG4u+A/2XF/G4pyd4gZMfQTJ4BUTWp3zMwWjQk8AhIZYmDQgIhA==
+X-Received: by 2002:a05:690c:f92:b0:5a7:e85b:b8e8 with SMTP id df18-20020a05690c0f9200b005a7e85bb8e8mr4474586ywb.26.1697116934078;
+        Thu, 12 Oct 2023 06:22:14 -0700 (PDT)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id x132-20020a817c8a000000b005925c896bc3sm5934126ywc.53.2023.10.12.06.22.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 06:22:13 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-d81d09d883dso1051508276.0;
+        Thu, 12 Oct 2023 06:22:13 -0700 (PDT)
+X-Received: by 2002:a25:e20b:0:b0:d85:b765:782c with SMTP id
+ h11-20020a25e20b000000b00d85b765782cmr21873299ybe.20.1697116933432; Thu, 12
+ Oct 2023 06:22:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010132701.1658737-1-claudiu.beznea.uj@bp.renesas.com> <20231010132701.1658737-3-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20231010132701.1658737-3-claudiu.beznea.uj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 12 Oct 2023 15:22:01 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXcQcu2ra7EDEdCw4ZPw=ucu-PFzfR2JoB70=HML5t2Fg@mail.gmail.com>
+Message-ID: <CAMuHMdXcQcu2ra7EDEdCw4ZPw=ucu-PFzfR2JoB70=HML5t2Fg@mail.gmail.com>
+Subject: Re: [PATCH 2/6] clk: renesas: r9a08g045: Add clock and reset support
+ for SDHI1 and SDHI2
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     magnus.damm@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Traits marked with `#[vtable]` need to provide default implementations
-for optional functions. The C side represents these with `NULL` in the
-vtable, so the default functions are never actually called. We do not
-want to replicate the default behavior from C in Rust, because that is
-not maintainable. Therefore we should use `build_error` in those default
-implementations. The error message for that is provided at
-`kernel::error::VTABLE_DEFAULT_ERROR`.
+On Tue, Oct 10, 2023 at 3:27 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Add clock and reset support for SDHI1 and SDHI2 blocks on
+> RZ/G3S (R9A08G045).
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Signed-off-by: Benno Lossin <benno.lossin@proton.me>
----
- rust/kernel/error.rs |  4 ++++
- rust/macros/lib.rs   | 32 ++++++++++++++++++++++++--------
- 2 files changed, 28 insertions(+), 8 deletions(-)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-clk-for-v6.7.
 
-diff --git a/rust/kernel/error.rs b/rust/kernel/error.rs
-index 05fcab6abfe6..1373cde025ef 100644
---- a/rust/kernel/error.rs
-+++ b/rust/kernel/error.rs
-@@ -335,3 +335,7 @@ pub(crate) fn from_result<T, F>(f: F) -> T
-         Err(e) =3D> T::from(e.to_errno() as i16),
-     }
- }
-+
-+/// Error message for calling a default function of a [`#[vtable]`](macros=
-::vtable) trait.
-+pub const VTABLE_DEFAULT_ERROR: &str =3D
-+    "This function must not be called, see the #[vtable] documentation.";
-diff --git a/rust/macros/lib.rs b/rust/macros/lib.rs
-index c42105c2ff96..dab9a1080b82 100644
---- a/rust/macros/lib.rs
-+++ b/rust/macros/lib.rs
-@@ -87,27 +87,41 @@ pub fn module(ts: TokenStream) -> TokenStream {
- /// implementation could just return `Error::EINVAL`); Linux typically use=
- C
- /// `NULL` pointers to represent these functions.
- ///
--/// This attribute is intended to close the gap. Traits can be declared an=
-d
--/// implemented with the `#[vtable]` attribute, and a `HAS_*` associated c=
-onstant
--/// will be generated for each method in the trait, indicating if the impl=
-ementor
--/// has overridden a method.
-+/// This attribute closes that gap. A trait can be annotated with the `#[v=
-table]` attribute.
-+/// Implementers of the trait will then also have to annotate the trait wi=
-th `#[vtable]`. This
-+/// attribute generates a `HAS_*` associated constant bool for each method=
- in the trait that is set
-+/// to true if the implementer has overridden the associated method.
-+///
-+/// If you want to make a function optional, you must provide a default im=
-plementation. But this
-+/// default implementation will never be executed, since these functions a=
-re exclusively called
-+/// from callbacks from the C side. This is because the vtable will have a=
- `NULL` entry and the C
-+/// side will execute the default behavior. Since it is not maintainable t=
-o replicate the default
-+/// behavior in Rust, you should use the following code:
-+///
-+/// ```compile_fail
-+/// # use kernel::error::VTABLE_DEFAULT_ERROR;
-+/// kernel::build_error(VTABLE_DEFAULT_ERROR)
-+/// ```
-+///
-+/// note that you might need to import [`kernel::error::VTABLE_DEFAULT_ERR=
-OR`].
- ///
--/// This attribute is not needed if all methods are required.
-+/// This macro should not be used when all function are required.
- ///
- /// # Examples
- ///
- /// ```ignore
-+/// # use kernel::error::VTABLE_DEFAULT_ERROR;
- /// use kernel::prelude::*;
- ///
- /// // Declares a `#[vtable]` trait
- /// #[vtable]
--/// pub trait Operations: Send + Sync + Sized {
-+/// pub trait Operations {
- ///     fn foo(&self) -> Result<()> {
--///         Err(EINVAL)
-+///         kernel::build_error(VTABLE_DEFAULT_ERROR)
- ///     }
- ///
- ///     fn bar(&self) -> Result<()> {
--///         Err(EINVAL)
-+///         kernel::build_error(VTABLE_DEFAULT_ERROR)
- ///     }
- /// }
- ///
-@@ -125,6 +139,8 @@ pub fn module(ts: TokenStream) -> TokenStream {
- /// assert_eq!(<Foo as Operations>::HAS_FOO, true);
- /// assert_eq!(<Foo as Operations>::HAS_BAR, false);
- /// ```
-+///
-+/// [`kernel::error::VTABLE_DEFAULT_ERROR`]: ../kernel/error/constant.VTAB=
-LE_DEFAULT_ERROR.html
- #[proc_macro_attribute]
- pub fn vtable(attr: TokenStream, ts: TokenStream) -> TokenStream {
-     vtable::vtable(attr, ts)
+Gr{oetje,eeting}s,
 
-base-commit: b2516f7af9d238ebc391bdbdae01ac9528f1109e
---=20
-2.41.0
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
