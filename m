@@ -2,155 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F637C71B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53357C71B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379382AbjJLPjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54054 "EHLO
+        id S1379454AbjJLPjo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 11:39:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347155AbjJLPjN (ORCPT
+        with ESMTP id S1347155AbjJLPjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:39:13 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0877EC9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:39:11 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4064867903cso13603945e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:39:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697125149; x=1697729949; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5Wg3EaV0LyOJdSGTmlTY0VxnIGoAeFlp+VouKoS5lNQ=;
-        b=qam4t52zhOlQYvHEQkXqZfHl4olMDg4/jI68jmOciD/tv32vxvVoxCeP34yi+dGqS8
-         xn4Eh8UKujgMLRqU/HM2arJnh6LvEdmxxyp4roKRHUQtzWbSQXBM4zQoIrRA6lEhDlcT
-         mznqKrnQA4zsgkQ/7dqsOmDJBrDkUHc1XFDUtz8HRWl1g2A5EXhpL15igk+sYDg4lqop
-         KiED5Hi820TZ9ENGH4EKKYMA7mDVkSbAVFNb0rU3Pw3c03ovbQVbpuNAbqez52P6RChf
-         DBJY/2GrJvZIWP5jzehdgyhc44iuK3rXv6XK7Mg0Zw5lEia/Z8/NNWAUw1YQZSjh7R+n
-         K/+Q==
+        Thu, 12 Oct 2023 11:39:43 -0400
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C99B8;
+        Thu, 12 Oct 2023 08:39:41 -0700 (PDT)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-d9ac3b4f42cso685668276.0;
+        Thu, 12 Oct 2023 08:39:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697125149; x=1697729949;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Wg3EaV0LyOJdSGTmlTY0VxnIGoAeFlp+VouKoS5lNQ=;
-        b=TMX/6SSGUaRgvE+wiwYJ7+kxM5YHF6u2uMuND5XAUngZ36EOSfwoQ0z+BJTJ04pmqa
-         wllvsSwI9GGzezI1dIgd5GR0mUUBHrkXVsDI+izekdF0K1DOGg8J714IYp9QFhEpRVjj
-         qeqaZmvCC3QHYT4WZw4yAJGmC9vUiGuseJuqCr4PvbqXLBBmzygZWbuJ/fcSlyIX/5fB
-         zpz57COpBxhgTUC06WL6HTuZlmU73N+BaylM8BUrHF6bEXPdUe/Q2ZOi0aCQDFjv9OiH
-         2J4Zy4ibJ0NnSwGm+uhWyGoTR66bK4pO9tPwGgaKKpP/yudsP6VFLBfr+0wL8VPRLUfm
-         5kLQ==
-X-Gm-Message-State: AOJu0YwFWb2tq/fxQ6jLfzofa+raPUfEX1oItaTIEg1qIK4htrXTOEAi
-        9jdvl1uSK8cZj71EUQDuEGWTog==
-X-Google-Smtp-Source: AGHT+IHijqQwPNdUCGMZLUhukz1Vn3a+qjqDBNhrhGPBsyvXuCmqOgvZ6RIuMv02qW+CQW/fPpew8A==
-X-Received: by 2002:a5d:5f04:0:b0:32d:8872:aacb with SMTP id cl4-20020a5d5f04000000b0032d8872aacbmr4751690wrb.53.1697125149337;
-        Thu, 12 Oct 2023 08:39:09 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id f8-20020adfe908000000b0032d8ce46caasm2778956wrm.93.2023.10.12.08.39.08
+        d=1e100.net; s=20230601; t=1697125181; x=1697729981;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T4kyj9ZjW+gYqmJqenBaJFDkWv6wTV1m+k4AYZcQP5U=;
+        b=Y485q4qrpddHaroBj2bBK8HtvIGSkf0jQUglHo+ijsrWX3FacyHS21tP/YLT9qc4gA
+         duc+P2NIYI5DjlDSA09j190GBBTnR6VNmRtRiNfmBNYYzzVqdDSw3ahKKYMKqTTCwrOd
+         L4SS8VZSM+NYEk6LKgQF4B8bMI1JDznxgnPGRA5ODcA3GTwDcprSWhglEzi+GpwCvLxj
+         Xi1v4b0nxN3HcJ1j63V+CPiATyj+jf0+cq7apUmyGgsK7dedX7uEQc3m3lDmBZLANvsr
+         ZDnRg1PZ0gt5bQM27Y8kBKRsE0p+1emjoTdfv5gCt41a6oHBpAN4xAfYdE2t2GfeF4JJ
+         nVNQ==
+X-Gm-Message-State: AOJu0YwoZHJ55xTSaqH2xJcpxzCEMDkiArywhzhVXCniarTG2ftP56a+
+        TM9eJZNThaps+7xHRGBjDIJ5MjB5fmRDgA==
+X-Google-Smtp-Source: AGHT+IHaPF7JLMVJohv1c+pvVujAPRbQ9QqRJJqjUSIXufp+uzyePS1WhCqd8F08pqLLiay0DXcW7g==
+X-Received: by 2002:a25:42c2:0:b0:d9a:4b66:72a4 with SMTP id p185-20020a2542c2000000b00d9a4b6672a4mr6055387yba.31.1697125180804;
+        Thu, 12 Oct 2023 08:39:40 -0700 (PDT)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
+        by smtp.gmail.com with ESMTPSA id u4-20020a258404000000b00d72176bdc5csm27732ybk.40.2023.10.12.08.39.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 08:39:08 -0700 (PDT)
-Message-ID: <a3255da4-b2af-4403-af68-3067a5fd49bf@linaro.org>
-Date:   Thu, 12 Oct 2023 17:39:08 +0200
+        Thu, 12 Oct 2023 08:39:40 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5a4c073cc06so19269977b3.1;
+        Thu, 12 Oct 2023 08:39:40 -0700 (PDT)
+X-Received: by 2002:a81:49d7:0:b0:59b:5255:4882 with SMTP id
+ w206-20020a8149d7000000b0059b52554882mr12310427ywa.20.1697125180367; Thu, 12
+ Oct 2023 08:39:40 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Subject: thermal: Fix potential race condition in
- suspend/resume
-Content-Language: en-US
-To:     Bo Ye <bo.ye@mediatek.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     yugang.wang@mediatek.com, yongdong.zhang@mediatek.com,
-        browse.zhang@mediatek.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230916113327.85693-1-bo.ye@mediatek.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20230916113327.85693-1-bo.ye@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20231010155444.858483-1-arnd@kernel.org> <2023101051-unmasked-cleaver-79b3@gregkh>
+ <87y1g94szz.fsf@kernel.org> <2023101139-pyromania-game-2237@gregkh>
+ <87r0m1fwg9.fsf@kernel.org> <20231011080955.1beeb010@kernel.org>
+ <87sf6g2hc8.fsf@kernel.org> <63e57ef8-c9f2-489a-8df8-51dcffd437c6@app.fastmail.com>
+ <b1c87f71abef5aba6b39893a417466bf9f65c2d5.camel@sipsolutions.net>
+In-Reply-To: <b1c87f71abef5aba6b39893a417466bf9f65c2d5.camel@sipsolutions.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 12 Oct 2023 17:39:28 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX3F9rvD3Fzbc1dwm7Vm73VW1x5ETbxkk-jJm3Bpr5i+A@mail.gmail.com>
+Message-ID: <CAMuHMdX3F9rvD3Fzbc1dwm7Vm73VW1x5ETbxkk-jJm3Bpr5i+A@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] wireless: move obsolete drivers to staging
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kalle Valo <kvalo@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Pavel Machek <pavel@ucw.cz>,
+        "David S . Miller" <davem@davemloft.net>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, Geoff Levand <geoff@infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/09/2023 13:33, Bo Ye wrote:
-> From: "yugang.wang" <yugang.wang@mediatek.com>
-> 
-> Body:
-> This patch fixes a race condition during system resume. It occurs if
-> the system is exiting a suspend state and a user is trying to
-> register/unregister a thermal zone concurrently. The root cause is
-> that both actions access the `thermal_tz_list`.
+Hi Johannes,
 
-I'm not sure the tasks are already thawed during POST_RESTORE, so no 
-user can unload a driver and then reaching the race window.
+On Thu, Oct 12, 2023 at 5:28 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+> On Thu, 2023-10-12 at 16:36 +0200, Arnd Bergmann wrote:
+> >
+> > ps3-gelic-wireless
+>
+> Didn't Sony disable Linux on PS3 eventually? Though maybe someone still
+> has some devices with old software.
 
-Is that an observed issue?
+If you didn't update the firmware, you could keep on using Linux.
 
+And people may have found a vulnerability in more recent firmware
+versions that allows them to run custom software.
+I don't know, it's been +10 years ago I touched a PS3 ;-)
 
-> In detail:
-> 
-> 1. At PM_POST_SUSPEND during the resume, the system reads all thermal
->     zones in `thermal_tz_list`, then resets and updates their
->     temperatures.
-> 2. When registering/unregistering a thermal zone, the
->     `thermal_tz_list` gets manipulated.
-> 
-> These two actions might occur concurrently, causing a race condition.
-> To solve this issue, we introduce a mutex lock to protect
-> `thermal_tz_list` from being modified while it's being read and
-> updated during the resume from suspend.
-> 
-> Kernel oops excerpt related to this fix:
-> 
-> [ 5201.869845] [T316822] pc: [0xffffffeb7d4876f0] mutex_lock+0x34/0x170
-> [ 5201.869856] [T316822] lr: [0xffffffeb7ca98a84] thermal_pm_notify+0xd4/0x26c
-> [... cut for brevity ...]
-> [ 5201.871061] [T316822]  suspend_prepare+0x150/0x470
-> [ 5201.871067] [T316822]  enter_state+0x84/0x6f4
-> [ 5201.871076] [T316822]  state_store+0x15c/0x1e8
-> 
-> Change-Id: Ifdbdecba17093f91eab7e36ce04b46d311ca6568
-> Signed-off-by: yugang.wang <yugang.wang@mediatek.com>
-> Signed-off-by: Bo Ye <bo.ye@mediatek.com>
-> ---
->   drivers/thermal/thermal_core.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-> index 8717a3343512..a7a18ed57b6d 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -1529,12 +1529,14 @@ static int thermal_pm_notify(struct notifier_block *nb,
->   	case PM_POST_HIBERNATION:
->   	case PM_POST_RESTORE:
->   	case PM_POST_SUSPEND:
-> +		mutex_lock(&thermal_list_lock);
->   		atomic_set(&in_suspend, 0);
->   		list_for_each_entry(tz, &thermal_tz_list, node) {
->   			thermal_zone_device_init(tz);
->   			thermal_zone_device_update(tz,
->   						   THERMAL_EVENT_UNSPECIFIED);
->   		}
-> +		mutex_unlock(&thermal_list_lock);
->   		break;
->   	default:
->   		break;
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
