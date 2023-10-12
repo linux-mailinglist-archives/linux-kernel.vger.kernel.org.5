@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78BE07C63A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 06:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A105F7C6392
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 05:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377329AbjJLEC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 00:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55686 "EHLO
+        id S1376959AbjJLD4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 23:56:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235374AbjJLEBf (ORCPT
+        with ESMTP id S1347066AbjJLDzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 00:01:35 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E8F172E;
-        Wed, 11 Oct 2023 20:52:08 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c60cec8041so3991835ad.3;
-        Wed, 11 Oct 2023 20:52:08 -0700 (PDT)
+        Wed, 11 Oct 2023 23:55:17 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A26C1739;
+        Wed, 11 Oct 2023 20:52:09 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c9e06f058bso1579295ad.0;
+        Wed, 11 Oct 2023 20:52:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697082727; x=1697687527; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697082728; x=1697687528; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1uOezb4cZDV5RInjOhQ1kglHXO9ceCmqMPAaugA2Fws=;
-        b=MoKHCygKSwaGJUUK1FQxbHAg87Ol4tlOMFRUL8LkUZmF+HSrgXfmmFrCMOhn2U/SbH
-         5OCFZ13r06Bo3us26Af51KOt0s5XmR3IsFyjlIhYgbs59/VEQYm4VHpTtfp8HVikBc9/
-         F1vv+GIlLomWekQq9vKE4DEeHG9bsenWYtkcmz09D7vC85lO1rXnAmL2nmH6PAccraBB
-         C3SSa2r3UXycNWN4L62u0dhu9u6VRGdZxrAByqHl+jiLYMjIWxQUAoKo2QYRe7Pnw0By
-         xwJRmmsVmFInIcnWiXDNh2qiGBG1rbkQDrsjUeq3GafUv6K6lZRFE7C/cVAI9QkKUnVb
-         o8Fg==
+        bh=c+cQ9CSkhhrD4qbqChHjPumcDdy/6FXJfEC4K6SPW0Y=;
+        b=dGuVDFkw9QZFISzPwqWnHTd5H+JTKV+73FvQMMNZo6nuWJlIA+d5vKt43lp6zQqgdS
+         w/wZOxQm2O2U+AJuF2pwuydFnV3uhzWIpCfunz7X1jChX7pniZHImqFV3Dwpsk6wF1HN
+         ZG+TQo0yKRNBbVrhSOl4NRF5fi16Gjymz8b+lnUrM5FZ3tlkPzT4a++QQLvCy2IkWAnP
+         OQD2cugAgXaYN11kv7bpCfyxPfLxFqXJ4WLFYIIqEl+/FKGoE1vag6ZqVl7fWmCyCxMf
+         cSSBCwBbrKP4TOTlwrW+wrhx1flUoUVudCgUm8B0ARK2qZPFGGL6n1NReOu77i7v3Ra+
+         oGIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697082727; x=1697687527;
+        d=1e100.net; s=20230601; t=1697082728; x=1697687528;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=1uOezb4cZDV5RInjOhQ1kglHXO9ceCmqMPAaugA2Fws=;
-        b=HDwlDnSo3/DCF9wyNEk/aRetaOwk/efTwBF4bXu3LuW8dMi9wRb/iTx8T98PEk6j0z
-         O1dYTDDwsGr8AtGTLVe1QvCJkCOmCmNOtpHCd/hd0wIVBz80oJpmRfGzrl7uKxn5FxwL
-         kiJoPk1q6GfVtZIuMIY8pdXCV9w9B0sNbnfng6tfJLPKyX9iyOBtZFpRiMX94/UP3l4+
-         xPiOYUd/a94Wk4GqITzVyqvs3BZtao03Nc372lgL4Tvf9we/fci2rgmuBfUOowhRegPd
-         Il1RARNw7nHGnFh/xcJOiumnsiEfpcrHCArgec1C0rC3xvNYAUwRepJs6na8sCttN4Op
-         H+LQ==
-X-Gm-Message-State: AOJu0Yz94cOsdrq6cJQfmtTpR0/bP2Nv+MLpfSAnjYdmNL5y0jDcBnJH
-        7weDhqx+fANu0Mv9O4vphe4=
-X-Google-Smtp-Source: AGHT+IEgZY3TnNf8iEy/TGlCaUg5WcrxoTFCjxq9iR/g1TXxY/TqIFy+lgJSqTNVoKUwaLrMv9c+Zw==
-X-Received: by 2002:a17:902:ab82:b0:1c1:e7b2:27ad with SMTP id f2-20020a170902ab8200b001c1e7b227admr19761542plr.60.1697082727072;
-        Wed, 11 Oct 2023 20:52:07 -0700 (PDT)
+        bh=c+cQ9CSkhhrD4qbqChHjPumcDdy/6FXJfEC4K6SPW0Y=;
+        b=gsCkVpz9fd3X6lt4faJ9xymy6aZnhUKgg1Hil2kigNsdywP5dBdZPZKRQrrFI71u0I
+         F2wSFKEsI6f7P9yoWolyncW9kJkQxHpdGwn0W+8ovaKckB+a0aqCmifYLFTS8eVlkg4L
+         MBa/W+S3mnXNKcU8BDi5L4CvDxzEXBnp8CIT62eYTsOTEJCFBdGXzuRTJE4NYyUqyA20
+         C+2xVmdhLTCgomYuaveLnnVwOdYAzJQdbDy2AokLmmD/VtkFby85B+vZOTfrnaX4cwAr
+         PCUlU0TzovelCBoRH5rUY2K0L5tWUhtpN8ZT3d8bIXwtJGlNKa1uL5nAyjFf7YMHgqts
+         FWDA==
+X-Gm-Message-State: AOJu0YyU9WLKXt7wxhzMxvLrJou7bjtkhOC9bDui4+s+nPOj40gTQ1Oo
+        lV0GW4ZfbWaVISIx553j8js=
+X-Google-Smtp-Source: AGHT+IGYY2REijxPTjznI/mr2/Fqobn49pWYTc0Hv7sPSWV59ECYgQRZBNuwQvYFQGVXK1RZC6vNOA==
+X-Received: by 2002:a17:903:110f:b0:1c9:d358:b3d9 with SMTP id n15-20020a170903110f00b001c9d358b3d9mr4393201plh.18.1697082728435;
+        Wed, 11 Oct 2023 20:52:08 -0700 (PDT)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:b1b9:d490:2f5e:be06])
-        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.52.05
+        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.52.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 20:52:06 -0700 (PDT)
+        Wed, 11 Oct 2023 20:52:08 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -64,9 +64,9 @@ Cc:     Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [PATCH 40/48] perf annotate-data: Add update_insn_state()
-Date:   Wed, 11 Oct 2023 20:51:03 -0700
-Message-ID: <20231012035111.676789-41-namhyung@kernel.org>
+Subject: [PATCH 41/48] perf annotate-data: Handle global variable access
+Date:   Wed, 11 Oct 2023 20:51:04 -0700
+Message-ID: <20231012035111.676789-42-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
 In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
 References: <20231012035111.676789-1-namhyung@kernel.org>
@@ -82,239 +82,237 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The update_insn_state() function is to update the type state table after
-processing each instruction.  For now, it handles MOV (on x86) insn
-to transfer type info from the source location to the target.
-
-The location can be a register or a stack slot.  Check carefully when
-memory reference happens and fetch the type correctly.  It basically
-ignores write to a memory since it doesn't change the type info.  One
-exception is writes to (new) stack slots for register spilling.
+When updating the instruction states, it also needs to handle global
+variable accesses.  Same as it does for PC-relative addressing, it can
+look up the type by address (if it's defined in the same file), or by
+name after finding the symbol by address (for declarations).
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate-data.c | 128 +++++++++++++++++++++++++++++++-
- tools/perf/util/annotate-data.h |  13 ++++
- tools/perf/util/annotate.c      |   1 +
- 3 files changed, 140 insertions(+), 2 deletions(-)
+ tools/perf/util/annotate-data.c | 45 ++++++++++++++++++++++++++++++---
+ tools/perf/util/annotate-data.h | 10 ++++++--
+ tools/perf/util/annotate.c      | 45 ++++++++++++++++++++-------------
+ tools/perf/util/annotate.h      |  5 ++++
+ 4 files changed, 83 insertions(+), 22 deletions(-)
 
 diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-index a88d2cdafa08..e8d80b1adda9 100644
+index e8d80b1adda9..37135698a5c8 100644
 --- a/tools/perf/util/annotate-data.c
 +++ b/tools/perf/util/annotate-data.c
-@@ -44,7 +44,6 @@ struct annotated_data_stat ann_data_stat;
- struct type_state_reg {
- 	Dwarf_Die type;
- 	bool ok;
--	bool scratch;
- };
+@@ -413,6 +413,7 @@ void update_var_state(struct type_state *state, struct data_loc_info *dloc,
+  * update_insn_state - Update type state for an instruction
+  * @state: type state table
+  * @dloc: data location info
++ * @cu_die: compile unit debug entry
+  * @dl: disasm line for the instruction
+  *
+  * This function updates the @state table for the target operand of the
+@@ -424,7 +425,7 @@ void update_var_state(struct type_state *state, struct data_loc_info *dloc,
+  * are true.
+  */
+ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
+-		       struct disasm_line *dl)
++		       void *cu_die, struct disasm_line *dl)
+ {
+ 	struct annotated_insn_loc loc;
+ 	struct annotated_op_loc *src = &loc.ops[INSN_OP_SOURCE];
+@@ -466,8 +467,46 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
+ 			return;
  
- /* Type information in a stack location, dynamically allocated */
-@@ -400,7 +399,7 @@ void update_var_state(struct type_state *state, struct data_loc_info *dloc,
- 			findnew_stack_state(state, var->offset, &mem_die);
- 		} else if (var->reg == fbreg) {
- 			findnew_stack_state(state, var->offset - fb_offset, &mem_die);
--		} else if (has_reg_type(state, var->reg)) {
-+		} else if (has_reg_type(state, var->reg) && var->offset == 0) {
- 			struct type_state_reg *reg;
- 
- 			reg = &state->regs[var->reg];
-@@ -410,6 +409,131 @@ void update_var_state(struct type_state *state, struct data_loc_info *dloc,
- 	}
- }
- 
-+/**
-+ * update_insn_state - Update type state for an instruction
-+ * @state: type state table
-+ * @dloc: data location info
-+ * @dl: disasm line for the instruction
-+ *
-+ * This function updates the @state table for the target operand of the
-+ * instruction at @dl if it transfers the type like MOV on x86.  Since it
-+ * tracks the type, it won't care about the values like in arithmetic
-+ * instructions like ADD/SUB/MUL/DIV and INC/DEC.
-+ *
-+ * Note that ops->reg2 is only available when both mem_ref and multi_regs
-+ * are true.
-+ */
-+void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
-+		       struct disasm_line *dl)
-+{
-+	struct annotated_insn_loc loc;
-+	struct annotated_op_loc *src = &loc.ops[INSN_OP_SOURCE];
-+	struct annotated_op_loc *dst = &loc.ops[INSN_OP_TARGET];
-+	Dwarf_Die type_die;
-+	int fbreg = dloc->fbreg;
-+	int fboff = 0;
+ retry:
+-		/* Check stack variables with offset */
+-		if (sreg == fbreg) {
++		/* Check if it's a global variable */
++		if (sreg == DWARF_REG_PC) {
++			Dwarf_Die var_die;
++			struct map_symbol *ms = dloc->ms;
++			int offset = src->offset;
++			u64 ip = ms->sym->start + dl->al.offset;
++			u64 pc, addr;
++			const char *var_name = NULL;
 +
-+	/* FIXME: remove x86 specific code and handle more instructions like LEA */
-+	if (!strstr(dl->ins.name, "mov"))
-+		return;
++			addr = annotate_calc_pcrel(ms, ip, offset, dl);
++			pc = map__rip_2objdump(ms->map, ip);
 +
-+	if (annotate_get_insn_location(dloc->arch, dl, &loc) < 0)
-+		return;
++			if (die_find_variable_by_addr(cu_die, pc, addr,
++						      &var_die, &offset) &&
++			    check_variable(&var_die, &type_die, offset,
++					   /*is_pointer=*/false) == 0 &&
++			    die_get_member_type(&type_die, offset, &type_die)) {
++				state->regs[dst->reg1].type = type_die;
++				state->regs[dst->reg1].ok = true;
++				return;
++			}
 +
-+	if (dloc->fb_cfa) {
-+		u64 ip = dloc->ms->sym->start + dl->al.offset;
-+		u64 pc = map__rip_2objdump(dloc->ms->map, ip);
++			/* Try to get the name of global variable */
++			offset = src->offset;
++			get_global_var_info(dloc->thread, ms, ip, dl,
++					    dloc->cpumode, &addr,
++					    &var_name, &offset);
 +
-+		if (die_get_cfa(dloc->di->dbg, pc, &fbreg, &fboff) < 0)
-+			fbreg = -1;
-+	}
-+
-+	/* Case 1. register to register transfers */
-+	if (!src->mem_ref && !dst->mem_ref) {
-+		if (!has_reg_type(state, dst->reg1))
-+			return;
-+
-+		if (has_reg_type(state, src->reg1))
-+			state->regs[dst->reg1] = state->regs[src->reg1];
-+		else
-+			state->regs[dst->reg1].ok = false;
-+	}
-+	/* Case 2. memory to register transers */
-+	if (src->mem_ref && !dst->mem_ref) {
-+		int sreg = src->reg1;
-+
-+		if (!has_reg_type(state, dst->reg1))
-+			return;
-+
-+retry:
-+		/* Check stack variables with offset */
-+		if (sreg == fbreg) {
-+			struct type_state_stack *stack;
-+			int offset = src->offset - fboff;
-+
-+			stack = find_stack_state(state, offset);
-+			if (stack && die_get_member_type(&stack->type,
-+							 offset - stack->offset,
-+							 &type_die)) {
++			if (var_name && die_find_variable_at(cu_die, var_name,
++							     pc, &var_die) &&
++			    check_variable(&var_die, &type_die, offset,
++					   /*is_pointer=*/false) == 0 &&
++			    die_get_member_type(&type_die, offset, &type_die)) {
 +				state->regs[dst->reg1].type = type_die;
 +				state->regs[dst->reg1].ok = true;
 +			} else
 +				state->regs[dst->reg1].ok = false;
 +		}
-+		/* And then dereference the pointer if it has one */
-+		else if (has_reg_type(state, sreg) && state->regs[sreg].ok &&
-+			 die_deref_ptr_type(&state->regs[sreg].type,
-+					    src->offset, &type_die)) {
-+			state->regs[dst->reg1].type = type_die;
-+			state->regs[dst->reg1].ok = true;
-+		}
-+		/* Or try another register if any */
-+		else if (src->multi_regs && sreg == src->reg1 &&
-+			 src->reg1 != src->reg2) {
-+			sreg = src->reg2;
-+			goto retry;
-+		}
-+		/* It failed to get a type info, mark it as invalid */
-+		else {
-+			state->regs[dst->reg1].ok = false;
-+		}
-+	}
-+	/* Case 3. register to memory transfers */
-+	if (!src->mem_ref && dst->mem_ref) {
-+		if (!has_reg_type(state, src->reg1) ||
-+		    !state->regs[src->reg1].ok)
-+			return;
-+
-+		/* Check stack variables with offset */
-+		if (dst->reg1 == fbreg) {
-+			struct type_state_stack *stack;
-+			int offset = dst->offset - fboff;
-+
-+			stack = find_stack_state(state, offset);
-+			if (stack) {
-+				/*
-+				 * The source register is likely to hold a type
-+				 * of member if it's a compound type.  Do not
-+				 * update the stack variable type since we can
-+				 * get the member type later by using the
-+				 * die_get_member_type().
-+				 */
-+				if (!stack->compound)
-+					set_stack_state(stack, offset,
-+							&state->regs[src->reg1].type);
-+			} else {
-+				findnew_stack_state(state, offset,
-+						    &state->regs[src->reg1].type);
-+			}
-+		}
-+		/*
-+		 * Ignore other transfers since it'd set a value in a struct
-+		 * and won't change the type.
-+		 */
-+	}
-+	/* Case 4. memory to memory transfers (not handled for now) */
-+}
-+
- /* The result will be saved in @type_die */
- static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
- {
++		/* And check stack variables with offset */
++		else if (sreg == fbreg) {
+ 			struct type_state_stack *stack;
+ 			int offset = src->offset - fboff;
+ 
 diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
-index 7fbb9eb2e96f..ff9acf6ea808 100644
+index ff9acf6ea808..0bfef29fa52c 100644
 --- a/tools/perf/util/annotate-data.h
 +++ b/tools/perf/util/annotate-data.h
-@@ -11,6 +11,7 @@ struct annotated_op_loc;
- struct arch;
- struct debuginfo;
- struct die_var_type;
-+struct disasm_line;
+@@ -14,6 +14,7 @@ struct die_var_type;
+ struct disasm_line;
  struct evsel;
  struct map_symbol;
++struct thread;
  struct type_state;
-@@ -78,6 +79,7 @@ extern struct annotated_data_type stackop_type;
+ 
+ /**
+@@ -79,11 +80,13 @@ extern struct annotated_data_type stackop_type;
  
  /**
   * struct data_loc_info - Data location information
-+ * @arch: architecture info
+- * @arch: architecture info
++ * @arch: CPU architecture info
++ * @thread: Thread info
   * @ms: Map and Symbol info
   * @ip: Instruction address
   * @var_addr: Data address (for global variables)
-@@ -90,6 +92,7 @@ extern struct annotated_data_type stackop_type;
-  */
- struct data_loc_info {
+  * @var_name: Variable name (for global variables)
++ * @cpumode: CPU execution mode
+  * @op: Instruction operand location (regs and offset)
+  * @di: Debug info
+  * @fbreg: Frame base register
+@@ -94,8 +97,10 @@ struct data_loc_info {
  	/* These are input field, should be filled by caller */
-+	struct arch *arch;
+ 	struct arch *arch;
  	struct map_symbol *ms;
++	struct thread *thread;
  	u64 ip;
  	u64 var_addr;
-@@ -159,6 +162,10 @@ void exit_type_state(struct type_state *state);
- void update_var_state(struct type_state *state, struct data_loc_info *dloc,
- 		      u64 addr, struct die_var_type *var_types);
++	u8 cpumode;
+ 	const char *var_name;
+ 	struct annotated_op_loc *op;
  
-+/* Update type state table for an instruction */
-+void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
-+		       struct disasm_line *dl);
-+
+@@ -164,7 +169,7 @@ void update_var_state(struct type_state *state, struct data_loc_info *dloc,
+ 
+ /* Update type state table for an instruction */
+ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
+-		       struct disasm_line *dl);
++		       void *cu_die, struct disasm_line *dl);
+ 
  #else /* HAVE_DWARF_SUPPORT */
  
- static inline struct annotated_data_type *
-@@ -197,6 +204,12 @@ static inline void update_var_state(struct type_state *state __maybe_unused,
+@@ -206,6 +211,7 @@ static inline void update_var_state(struct type_state *state __maybe_unused,
+ 
+ static inline void update_insn_state(struct type_state *state __maybe_unused,
+ 				     struct data_loc_info *dloc __maybe_unused,
++				     void *cu_die __maybe_unused,
+ 				     struct disasm_line *dl __maybe_unused)
  {
  }
- 
-+static inline void update_insn_state(struct type_state *state __maybe_unused,
-+				     struct data_loc_info *dloc __maybe_unused,
-+				     struct disasm_line *dl __maybe_unused)
-+{
-+}
-+
- #endif /* HAVE_DWARF_SUPPORT */
- 
- #endif /* _PERF_ANNOTATE_DATA_H */
 diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 8384bc37831c..ab4b6a1d86fe 100644
+index ab4b6a1d86fe..d82bfb3b519d 100644
 --- a/tools/perf/util/annotate.c
 +++ b/tools/perf/util/annotate.c
-@@ -3795,6 +3795,7 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
+@@ -3727,6 +3727,28 @@ u64 annotate_calc_pcrel(struct map_symbol *ms, u64 ip, int offset,
+ 	return map__rip_2objdump(ms->map, addr);
+ }
  
++void get_global_var_info(struct thread *thread, struct map_symbol *ms, u64 ip,
++			 struct disasm_line *dl, u8 cpumode, u64 *var_addr,
++			 const char **var_name, int *poffset)
++{
++	struct addr_location al;
++	struct symbol *var;
++	u64 map_addr;
++
++	*var_addr = annotate_calc_pcrel(ms, ip, *poffset, dl);
++	/* Kernel symbols might be relocated */
++	map_addr = *var_addr + map__reloc(ms->map);
++
++	addr_location__init(&al);
++	var = thread__find_symbol_fb(thread, cpumode, map_addr, &al);
++	if (var) {
++		*var_name = var->name;
++		/* Calculate type offset from the start of variable */
++		*poffset = map_addr - map__unmap_ip(al.map, var->start);
++	}
++	addr_location__exit(&al);
++}
++
+ /**
+  * hist_entry__get_data_type - find data type for given hist entry
+  * @he: hist entry
+@@ -3796,6 +3818,8 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
  	for_each_insn_op_loc(&loc, i, op_loc) {
  		struct data_loc_info dloc = {
-+			.arch = arch,
+ 			.arch = arch,
++			.thread = he->thread,
++			.cpumode = he->cpumode,
  			.ms = ms,
  			/* Recalculate IP for LOCK prefix or insn fusion */
  			.ip = ms->sym->start + dl->al.offset,
+@@ -3810,23 +3834,10 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
+ 
+ 		/* PC-relative addressing */
+ 		if (op_loc->reg1 == DWARF_REG_PC) {
+-			struct addr_location al;
+-			struct symbol *var;
+-			u64 map_addr;
+-
+-			dloc.var_addr = annotate_calc_pcrel(ms, ip, op_loc->offset, dl);
+-			/* Kernel symbols might be relocated */
+-			map_addr = dloc.var_addr + map__reloc(ms->map);
+-
+-			addr_location__init(&al);
+-			var = thread__find_symbol_fb(he->thread, he->cpumode,
+-						     map_addr, &al);
+-			if (var) {
+-				dloc.var_name = var->name;
+-				/* Calculate type offset from the start of variable */
+-				dloc.type_offset = map_addr - map__unmap_ip(al.map, var->start);
+-			}
+-			addr_location__exit(&al);
++			dloc.type_offset = op_loc->offset;
++			get_global_var_info(he->thread, ms, ip, dl, he->cpumode,
++					    &dloc.var_addr, &dloc.var_name,
++					    &dloc.type_offset);
+ 		}
+ 
+ 		mem_type = find_data_type(&dloc);
+diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+index c2cc9baf08be..0786528770e1 100644
+--- a/tools/perf/util/annotate.h
++++ b/tools/perf/util/annotate.h
+@@ -23,6 +23,7 @@ struct option;
+ struct perf_sample;
+ struct evsel;
+ struct symbol;
++struct thread;
+ struct annotated_data_type;
+ 
+ struct ins {
+@@ -493,6 +494,10 @@ extern struct list_head ann_insn_stat;
+ u64 annotate_calc_pcrel(struct map_symbol *ms, u64 ip, int offset,
+ 			struct disasm_line *dl);
+ 
++void get_global_var_info(struct thread *thread, struct map_symbol *ms, u64 ip,
++			 struct disasm_line *dl, u8 cpumode, u64 *var_addr,
++			 const char **var_name, int *poffset);
++
+ /**
+  * struct annotated_basic_block - Basic block of instructions
+  * @list: List node
 -- 
 2.42.0.655.g421f12c284-goog
 
