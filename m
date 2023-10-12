@@ -2,45 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 803E77C70B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1767C70BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379104AbjJLOuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 10:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        id S1376381AbjJLOxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 10:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379089AbjJLOuC (ORCPT
+        with ESMTP id S231290AbjJLOw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:50:02 -0400
+        Thu, 12 Oct 2023 10:52:57 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175ACB8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:50:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1533C433C8;
-        Thu, 12 Oct 2023 14:49:58 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A59B4C0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:52:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDC7CC433C7;
+        Thu, 12 Oct 2023 14:52:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697122200;
-        bh=z1ZRpKN4zGKXq55T5I704tUYnbOmVfb3YTkG0G86C4M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UvtwTxwHfDM2Xg+q/s9dvFpSAWc0Wgzy/sITutGQnDGMP0vF1cNiQgLiilNaam2bD
-         xxiqNQgnivwSW3pVxziO6J1mUqKQazgCMwj+mcW/nT9IfgNPORGd1LTrvZ0m5kOS41
-         vK4veMnWeZzu1ppbl7hP8/nopAQokhP/c51TgyyPIenQrc2V/3Jr6dJAFehs4QsSYS
-         N4V6FW5VfBOCaWfUCbFwux76xuSDd8OZScojUOxMJEc40W9ktyscHL0FxnJG4LmmXV
-         3QkZaG9+vd9HF+gkUXxfMgSdiwTG9aYdvfJ9BP61nDaeFBwNEQgfSuUflH0tB6dg+9
-         4HTuBPXTyVl7Q==
+        s=k20201202; t=1697122375;
+        bh=IYDm8ofYKOZAFbxQa32MHYpNBNA79HhiV1G9gyxN4IQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JVnBLfyrM0aoLkeHm29EX0fPCHIKaXsix+jYVpXjcHwoD7xcD0ZAM4ePIeH3yU/nD
+         7yTfYPhRsbMS1Z3U2ReHBjOxva0twYJOmkJ/Tl6SjS3UbEmLX0VZznvXCE1E7FYoce
+         L5F/CHl8HjKMXjx0V/xYH23HX3iR6Xg4RN928MsGT6hzzWnszfyJ1Qqv4RdtP8/A6Z
+         r4KKIp/Ouw7+MS75BHr8TGm6NhdiW96up4OgOQhbZ84qzAsGjaLLs4VJZQQ4TU6EEW
+         B+4CVRtgTCiBDpgvzM7Abf8cjcNXUQRF+0x+NkdYmUAa+IrcfkiBPg7GahJs80WXmp
+         hTjR0Ulm1rJ1A==
+Date:   Thu, 12 Oct 2023 22:40:46 +0800
 From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Guo Ren <guoren@kernel.org>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] riscv: errata: thead: use pa based instructions for CMO
-Date:   Thu, 12 Oct 2023 22:37:46 +0800
-Message-Id: <20231012143746.454-3-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20231012143746.454-1-jszhang@kernel.org>
-References: <20231012143746.454-1-jszhang@kernel.org>
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] riscv: errata: thead: use riscv_nonstd_cache_ops
+ for CMO
+Message-ID: <ZSgFbuD203L0XL4J@xhacker>
+References: <20231012141456.4078-1-jszhang@kernel.org>
+ <ZSgA1BtMv/YDHzQX@xhacker>
+ <20231012-remindful-coke-f9cfe950425f@spud>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231012-remindful-coke-f9cfe950425f@spud>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -50,59 +53,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T-HEAD CPUs such as C906/C910/C920 support phy address based CMO, use
-them so that we don't need to convert to virt address.
+On Thu, Oct 12, 2023 at 03:36:28PM +0100, Conor Dooley wrote:
+> On Thu, Oct 12, 2023 at 10:21:08PM +0800, Jisheng Zhang wrote:
+> > On Thu, Oct 12, 2023 at 10:14:54PM +0800, Jisheng Zhang wrote:
+> > > Previously, we use alternative mechanism to dynamically patch
+> > > the CMO operations for THEAD C906/C910 during boot for performance
+> > > reason. But as pointed out by Arnd, "there is already a significant
+> > > cost in accessing the invalidated cache lines afterwards, which is
+> > > likely going to be much higher than the cost of an indirect branch".
+> > > And indeed, there's no performance difference with GMAC and EMMC per
+> > > my test on Sipeed Lichee Pi 4A board.
+> > > 
+> > > Use riscv_nonstd_cache_ops for THEAD C906/C910 CMO to simplify
+> > > the alternative code, and to acchieve Arnd's goal -- "I think
+> > > moving the THEAD ops at the same level as all nonstandard operations
+> > > makes sense, but I'd still leave CMO as an explicit fast path that
+> > > avoids the indirect branch. This seems like the right thing to do both
+> > > for readability and for platforms on which the indirect branch has a
+> > > noticeable overhead."
+> > > 
+> > > To make bisect easy, I use two patches here: patch1 does the conversion
+> > > which just mimics current CMO behavior via. riscv_nonstd_cache_ops, I
+> > > assume no functionalities changes. patch2 uses T-HEAD PA based CMO
+> > > instructions so that we don't need to covert PA to VA.
+> > > 
+> > > Hi Guo,
+> > > 
+> > > I didn't use wback_inv for wback as you suggested during v1 reviewing,
+> > > this can be left as future optimizations.
+> > > 
+> > > Thanks
+> > > 
+> > > since v2:
+> > >   - collect Reviewed-by tag
+> > 
+> > Oh, I missed the tag collection, but I know maintainers are using b4 which can
+> > collect and apply tags automatically ;). let me know if want a new
+> > version.
+> 
+> It doesn't collect tags (AFAIU) from earlier revisions though.
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-Reviewed-by: Guo Ren <guoren@kernel.org>
----
- arch/riscv/errata/thead/errata.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
-
-diff --git a/arch/riscv/errata/thead/errata.c b/arch/riscv/errata/thead/errata.c
-index 3fefeb1b456e..632557f36b19 100644
---- a/arch/riscv/errata/thead/errata.c
-+++ b/arch/riscv/errata/thead/errata.c
-@@ -58,9 +58,9 @@ static bool errata_probe_pbmt(unsigned int stage,
-  * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
-  *   0000000    11001     00000      000      00000  0001011
-  */
--#define THEAD_inval_A0	".long 0x0265000b"
--#define THEAD_clean_A0	".long 0x0255000b"
--#define THEAD_flush_A0	".long 0x0275000b"
-+#define THEAD_inval_A0	".long 0x02a5000b"
-+#define THEAD_clean_A0	".long 0x0295000b"
-+#define THEAD_flush_A0	".long 0x02b5000b"
- #define THEAD_SYNC_S	".long 0x0190000b"
- 
- #define THEAD_CMO_OP(_op, _start, _size, _cachesize)			\
-@@ -79,23 +79,17 @@ asm volatile("mv a0, %1\n\t"						\
- 
- static void thead_errata_cache_inv(phys_addr_t paddr, size_t size)
- {
--	void *vaddr = phys_to_virt(paddr);
--
--	THEAD_CMO_OP(inval, vaddr, size, riscv_cbom_block_size);
-+	THEAD_CMO_OP(inval, paddr, size, riscv_cbom_block_size);
- }
- 
- static void thead_errata_cache_wback(phys_addr_t paddr, size_t size)
- {
--	void *vaddr = phys_to_virt(paddr);
--
--	THEAD_CMO_OP(clean, vaddr, size, riscv_cbom_block_size);
-+	THEAD_CMO_OP(clean, paddr, size, riscv_cbom_block_size);
- }
- 
- static void thead_errata_cache_wback_inv(phys_addr_t paddr, size_t size)
- {
--	void *vaddr = phys_to_virt(paddr);
--
--	THEAD_CMO_OP(flush, vaddr, size, riscv_cbom_block_size);
-+	THEAD_CMO_OP(flush, paddr, size, riscv_cbom_block_size);
- }
- 
- static const struct riscv_nonstd_cache_ops thead_errata_cmo_ops = {
--- 
-2.40.1
-
+oops I didn't know this before, just sent out v4 with real tag collection to
+make the merging progress smooth.
