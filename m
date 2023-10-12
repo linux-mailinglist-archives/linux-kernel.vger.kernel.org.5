@@ -2,97 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0AB7C7358
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5327C736E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379551AbjJLQot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40990 "EHLO
+        id S1379584AbjJLQss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:48:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233988AbjJLQos (ORCPT
+        with ESMTP id S1379580AbjJLQsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:44:48 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4B7CC;
-        Thu, 12 Oct 2023 09:44:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F299C433C7;
-        Thu, 12 Oct 2023 16:44:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697129086;
-        bh=Wj/b/rTXfuxjS20fYyMYenjOGieGl3jd2wJ+8o1xpmU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JJ3jZA5dX6S3T30H/LlG1i9szPvYNW9TYQTVqLJTF8nA2IrgPSQe1GqVufDKF5lPJ
-         uv7cYGUTT6u5EjNv9tUqJbzgnXG7VeWOWgdKdKN/cZyKdJk9y3+YsBkasq002BS67f
-         jC1dQqDEeSOGoiIrQN9WDzgu05syJ4BcD6Ow1p0E3yLzccZSFe3Id5KkQsJ2vB4jkb
-         Thy/r78N7Yof/za89a7cXQcByx53jnxzEX2kxWPQW4EJ6JUcigykPu1yp9D46wLBTW
-         kUqdt/MRAbQYovfhtihzNZ1jE6tVh98x2Npgl4002RU3/WVcRrrRWq0PX02wER8y5l
-         8tuuUEk5h9Wdw==
-Date:   Thu, 12 Oct 2023 09:48:38 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: soc: qcom: qcom,pmic-glink: add a
- gpio used to determine the Type-C port plug orientation
-Message-ID: <fdmytyymltbc2wvsobbbu57vfturwiq755fuj6vt5g35bf77ls@gkscepiyvn5a>
-References: <20231002-topic-sm8550-upstream-type-c-orientation-v2-0-125410d3ff95@linaro.org>
- <20231002-topic-sm8550-upstream-type-c-orientation-v2-1-125410d3ff95@linaro.org>
- <20231006154035.GA3979654-robh@kernel.org>
+        Thu, 12 Oct 2023 12:48:46 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BC7DE
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:48:44 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c9d3a21f7aso9983255ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:48:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697129324; x=1697734124; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9zj94NuVMRyygdkOW8mvq9Nen4maWkMgZsmZqNR+8rw=;
+        b=bRTOFj4fSA056yrQKskox7o7RyuI3GNwUJPIzG55g6Vb1Vj52nUkqQhnJo4fRkVQZp
+         BQdiwdDAotjrg1oO3PqN4zr9BORHv9s5+pLpCKdN+IPZ2CV23Ab/nQujySzvosvML9TL
+         jxeSSVnjvDrn1e+T0a7dc/Ii+mk2RpVKRd34I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697129324; x=1697734124;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9zj94NuVMRyygdkOW8mvq9Nen4maWkMgZsmZqNR+8rw=;
+        b=qFgK93aT4JITorjdBV2kNgE4uRLlrD04Hv7R+5MoJjSNhXAjDGHZbmAUn1ojcpLUti
+         v5zx+LoXwQHtpntuB0gyYA3rCWcxWfgTtqUr2Klc4xfAtmUb2Tuy//qbI1ArlbvRsSlO
+         axt+a3nhpleLvJa9pDldFjrBYRm93magfSueiHkG4ynilnMieeEbv3r08nW3V19WumNi
+         Wy8pfHSXFjv8t+DRbxZ5xXS5354SB9DmhiN3OOZLjOKMJHZoVJkxpb3t44875oW/qONh
+         yRuaBEAv93pmzLg/PeG/oTPA/LZSLj9dlrR59Z4Oq7RhOkTsBQhW7XVeoKINYoTTEIGA
+         EpDw==
+X-Gm-Message-State: AOJu0YzPYagUQx0J2fghRHBZuqUjvOrGpPur7mWaGSjE0owsF4X14gsL
+        idBe+QFlKGg68iQfudYf0o+EnQ==
+X-Google-Smtp-Source: AGHT+IF831rt9uwN8FV+a7yFdX158syIhIfsDP9+BmIbnBUGEesMv6egJHZONGeGkhVAAiy8eu5gZw==
+X-Received: by 2002:a17:903:11d2:b0:1c7:2697:ec0a with SMTP id q18-20020a17090311d200b001c72697ec0amr28084231plh.30.1697129323902;
+        Thu, 12 Oct 2023 09:48:43 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id x4-20020a170902ea8400b001c5076ae6absm2204778plb.126.2023.10.12.09.48.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 09:48:43 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Cc:     Kees Cook <keescook@chromium.org>, tony.luck@intel.com,
+        gpiccoli@igalia.com, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] pstore/platform: Add check for kstrdup
+Date:   Thu, 12 Oct 2023 09:48:41 -0700
+Message-Id: <169712932001.5350.10182418867498473478.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230623022706.32125-1-jiasheng@iscas.ac.cn>
+References: <20230623022706.32125-1-jiasheng@iscas.ac.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231006154035.GA3979654-robh@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 10:40:35AM -0500, Rob Herring wrote:
-> On Mon, Oct 02, 2023 at 12:20:21PM +0200, Neil Armstrong wrote:
-> > On SM8450 and SM8550 based platforms, the Type-C plug orientation is given on a
-> > GPIO line for each connector which are set by the PMIC(s).
-> > 
-> > Document this optional Type-C connector property, and take the
-> > assumption an active level represents an inverted/flipped orientation.
-> > 
-> > Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> > ---
-> >  .../devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml | 19 +++++++++++++++++++
-> >  1 file changed, 19 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml
-> > index bceb479f74c5..422921cf1f82 100644
-> > --- a/Documentation/devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml
-> > +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml
-> > @@ -35,6 +35,12 @@ properties:
-> >    '#size-cells':
-> >      const: 0
-> >  
-> > +  orientation-gpios:
-> > +    description: Array of input gpios for the Type-C connector orientation indication.
-> > +      The GPIO indication is used to detect the orientation of the Type-C connector.
-> > +      The array should contain a gpio entry for each PMIC Glink connector, in reg order.
-> > +      It is defined that GPIO active level means "CC2" or Reversed/Flipped orientation.
+On Fri, 23 Jun 2023 10:27:06 +0800, Jiasheng Jiang wrote:
+> Add check for the return value of kstrdup() and return the error
+> if it fails in order to avoid NULL pointer dereference.
 > 
-> Shouldn't this node then have 'orientation-switch'?
+> 
 
-The 'orientation-switch' property denotes that the node is the sink of a
-orientation switching event, but this node represents the source of such
-events (i.e. the connector-side).
+Applied to for-next/pstore, thanks!
 
-The array defines the gpio signal providing the current orientation for
-each of the listed usb-c-connectors under the node.
+[1/1] pstore/platform: Add check for kstrdup
+      https://git.kernel.org/kees/c/a19d48f7c5d5
 
-Regards,
-Bjorn
+Take care,
+
+-- 
+Kees Cook
+
