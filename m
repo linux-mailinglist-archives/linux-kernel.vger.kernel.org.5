@@ -2,197 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BACA37C71CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46F67C71D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379164AbjJLPrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
+        id S1379465AbjJLPrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233988AbjJLPq7 (ORCPT
+        with ESMTP id S1379197AbjJLPrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:46:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312EFC0;
-        Thu, 12 Oct 2023 08:46:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9CD7C433C7;
-        Thu, 12 Oct 2023 15:46:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697125617;
-        bh=REtBZa8reasxyEfgbRlAa7AZo0WSj8gv4icvTE1IL6g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LevFwFpylTDyPIuMI4Jzt/nZXRVMSHT9pnY6QL5k2+EHdeoccGOJFp9AgM8w48saq
-         MHg1OtvfhdpP0gy7b1NR7FE/riKA0PKhcu86ibkx4j9sBlpfJ6eQB4TdDnZlUuzjTS
-         Tn7rJhKEA1AttdQDJXw4PCTgXKehMPE8TFWhdNBvluK95enI7sJOsTOozH12f3ihFN
-         sWCa3gwEx58XlbEPBcMZwoLwaW2BmbQ4bgMYAELkZXKGnuhXX+CgwL9o/39Oi9w3KY
-         6LQeuZ2p88j15QBwTVxGacM+jMR+eS/Owp5hLDVJZCunUSYJ30900SKFWGGHqaYlH9
-         fbK0kAyDRuoiA==
-Date:   Thu, 12 Oct 2023 16:46:53 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Anshul Dalal <anshulusr@gmail.com>
-Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: input: bindings for Adafruit Seesaw
- Gamepad
-Message-ID: <20231012-woof-fit-8f5c163f07b0@spud>
-References: <20231010184827.1213507-1-anshulusr@gmail.com>
- <20231011-powdering-recycled-71608e794eaa@spud>
- <f1796d1a-bcd0-414d-b4e1-806e93eb202b@gmail.com>
+        Thu, 12 Oct 2023 11:47:33 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F02F5;
+        Thu, 12 Oct 2023 08:47:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=EBnjnVg+y4DDG6Px7ecx0HYcMluDmx+CBNhjuKFvPy8=; b=UHTSpsQThE+kLNmBQwnVqk6KF4
+        vini3NlLRTqt4OJRF5XxyKB8QRqaIwSIKCmiHk08DPnsezLgWQVoSP9LqGKjrwV3h7WdxEyyM+tsS
+        oY8NW3v4FiQLZhWwIhKpyi66jtls7EWuL3xxyBH0VJCMfH5I0k3Zsmk9PX4tkdNKG4333elt79LKq
+        oGazMbDNJEvP8f8r0O8ODfuqveoTHM7YfUuAigBCZ9ElafvTBjZb6OUW5uzMyNGBXrD/Y77YY+l3r
+        IYKNJiKoEmI5Y5BA7YjPvh7i90orNNWKXynfzxAUjt7+HvzxnRpV0+YtiwyN1r84iu1g49huHfTwI
+        GV3MJa/w==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qqxuA-001KXV-0w;
+        Thu, 12 Oct 2023 15:47:18 +0000
+Message-ID: <b5c1030a-9831-4580-8684-7c68f5888131@infradead.org>
+Date:   Thu, 12 Oct 2023 08:47:12 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="+Ch3KXm3gkqlOD2K"
-Content-Disposition: inline
-In-Reply-To: <f1796d1a-bcd0-414d-b4e1-806e93eb202b@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Intel-wired-lan] [PATCH net-next 3/3] idpf: fix undefined
+ reference to tcp_gro_complete() when !CONFIG_INET
+Content-Language: en-US
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Jacob Keller <jacob.e.keller@intel.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Michal Michalik <michal.michalik@intel.com>,
+        netdev@vger.kernel.org, Richard Cochran <richardcochran@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Milena Olech <milena.olech@intel.com>
+References: <20230920180745.1607563-1-aleksander.lobakin@intel.com>
+ <20230920180745.1607563-4-aleksander.lobakin@intel.com>
+ <2038f544-859f-4ffb-9840-37c1ba289259@infradead.org>
+ <0df556eb-71b2-9612-a81d-cd83c27a2cd7@intel.com>
+ <8eaece43-a30d-45e8-9610-28ed2af842fc@infradead.org>
+In-Reply-To: <8eaece43-a30d-45e8-9610-28ed2af842fc@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---+Ch3KXm3gkqlOD2K
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 9/20/23 18:30, Randy Dunlap wrote:
+> 
+> 
+> On 9/20/23 17:04, Jacob Keller wrote:
+>>
+>>
+>> On 9/20/2023 2:30 PM, Randy Dunlap wrote:
+>>>
+>>>
+>>> On 9/20/23 11:07, Alexander Lobakin wrote:
+>>>> When CONFIG_INET is not set, tcp_gro_complete is not compiled, although
+>>>> the drivers using it may still be compiled (spotted by Randy):
+>>>>
+>>>> aarch64-linux-ld: drivers/net/ethernet/intel/idpf/idpf_txrx.o:
+>>>> in function `idpf_rx_rsc.isra.0':
+>>>> drivers/net/ethernet/intel/idpf/idpf_txrx.c:2909:(.text+0x40cc):
+>>>> undefined reference to `tcp_gro_complete'
+>>>>
+>>>> The drivers need to guard the calls to it manually.
+>>>> Return early from the RSC completion function if !CONFIG_INET, it won't
+>>>> work properly either way. This effectively makes it be compiled-out
+>>>> almost entirely on such builds.
+>>>>
+>>>> Fixes: 3a8845af66ed ("idpf: add RX splitq napi poll support")
+>>>> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+>>>> Closes: https://lore.kernel.org/linux-next/4c84eb7b-3dec-467b-934b-8a0240f7fb12@infradead.org
+>>>> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+>>>
+>>> That builds for me.  Thanks.
+>>>
+>>> Tested-by: Randy Dunlap <rdunlap@infradead.org>
+>>>
+>>> I hope that these patches can be merged into the v6.6 instead of
+>>> v6.7 kernel at some point (i.e., [PATCH net] instead of net-next).
+>>>
+>>
+>> Did any of the offending code make it into 6.6? I thought all of this
+>> was from recent merges after 6.6 closed.
+>>
+>> Thanks,
+>> Jake
+> 
+> Oh, I think that you are correct. Sorry about my comment.
+> Thanks.
+> 
 
-On Thu, Oct 12, 2023 at 12:29:58AM +0530, Anshul Dalal wrote:
-> Hello,
->=20
-> On 10/11/23 21:45, Conor Dooley wrote:
-> > Hey,
-> >=20
-> > On Wed, Oct 11, 2023 at 12:18:23AM +0530, Anshul Dalal wrote:
-> >> Adds bindings for the Adafruit Seesaw Gamepad.
-> >>
-> >> The gamepad functions as an i2c device with the default address of 0x50
-> >> and has an IRQ pin that can be enabled in the driver to allow for a ri=
-sing
-> >> edge trigger on each button press or joystick movement.
-> >>
-> >> Product page:
-> >>   https://www.adafruit.com/product/5743
-> >> Arduino driver:
-> >>   https://github.com/adafruit/Adafruit_Seesaw
-> >>
-> >> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
-> >> ---
-> >>
-> >> Changes for v4:
-> >> - Fixed the URI for the id field
-> >> - Added `interrupts` property
-> >>
-> >> Changes for v3:
-> >> - Updated id field to reflect updated file name from previous version
-> >> - Added `reg` property
-> >>
-> >> Changes for v2:
-> >> - Renamed file to `adafruit,seesaw-gamepad.yaml`
-> >> - Removed quotes for `$id` and `$schema`
-> >> - Removed "Bindings for" from the description
-> >> - Changed node name to the generic name "joystick"
-> >> - Changed compatible to 'adafruit,seesaw-gamepad' instead of
-> >>   'adafruit,seesaw_gamepad'
-> >>
-> >>  .../input/adafruit,seesaw-gamepad.yaml        | 59 +++++++++++++++++++
-> >>  1 file changed, 59 insertions(+)
-> >>  create mode 100644 Documentation/devicetree/bindings/input/adafruit,s=
-eesaw-gamepad.yaml
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/input/adafruit,seesaw-g=
-amepad.yaml b/Documentation/devicetree/bindings/input/adafruit,seesaw-gamep=
-ad.yaml
-> >> new file mode 100644
-> >> index 000000000000..e8e676006d2f
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.=
-yaml
-> >> @@ -0,0 +1,59 @@
-> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >> +%YAML 1.2
-> >> +---
-> >> +$id: http://devicetree.org/schemas/input/adafruit,seesaw-gamepad.yaml#
-> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >> +
-> >> +title: Adafruit Mini I2C Gamepad with seesaw
-> >=20
-> > Binding mostly looks good to me. My main question is what is a seesaw?
-> >=20
->=20
-> Seesaw is a universal framework that enables extending I/O capabilities
-> of the i2c master devices with a compatible breakout board. As it
-> relates to the binding, this gamepad uses an AVR ATtiny816
-> microcontroller that reads the data from the buttons and the joystick
-> and sends the data to the master over i2c using the Seesaw framework.
+Even if this is just > v6.6 kernels (i.e., linux-next),
+it would be very good to get a fix merged for these build errors.
+I keep getting build errors in linux-next....
 
-Right. Not a framework I was aware of, thanks for explaining.
+>>
+>>>
+>>>> ---
+>>>>  drivers/net/ethernet/intel/idpf/idpf_txrx.c | 3 +++
+>>>>  1 file changed, 3 insertions(+)
+>>>>
+>>>> diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+>>>> index 6fa79898c42c..aa45afeb6496 100644
+>>>> --- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+>>>> +++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+>>>> @@ -2876,6 +2876,9 @@ static int idpf_rx_rsc(struct idpf_queue *rxq, struct sk_buff *skb,
+>>>>  	if (unlikely(!(ipv4 ^ ipv6)))
+>>>>  		return -EINVAL;
+>>>>  
+>>>> +	if (!IS_ENABLED(CONFIG_INET))
+>>>> +		return 0;
+>>>> +
+>>>>  	rsc_segments = DIV_ROUND_UP(skb->data_len, rsc_seg_len);
+>>>>  	if (unlikely(rsc_segments == 1))
+>>>>  		return 0;
+>>>
+> 
 
->=20
-> >> +
-> >> +maintainers:
-> >> +  - Anshul Dalal <anshulusr@gmail.com>
-> >> +
-> >> +description: |
-> >> +  Adafruit Mini I2C Gamepad
-> >> +
-> >> +    +-----------------------------+
-> >> +    |   ___                       |
-> >> +    |  /   \               (X)    |
-> >> +    | |  S  |  __   __  (Y)   (A) |
-> >> +    |  \___/  |ST| |SE|    (B)    |
-> >> +    |                             |
-> >> +    +-----------------------------+
-> >> +
-> >> +  S -> 10-bit percision bidirectional analog joystick
-> >> +  ST -> Start
-> >> +  SE -> Select
-> >> +  X, A, B, Y -> Digital action buttons
-> >> +
-> >> +  Product page: https://www.adafruit.com/product/5743
-> >> +  Arduino Driver: https://github.com/adafruit/Adafruit_Seesaw
-> >=20
-> > I'm not really sure what the arduino driver has to do with the binding.
-> > Why is a link to it more relevant than the freebsd driver, or the linux
-> > driver etc? Is there info about how the pad works in the arduino driver
-> >=20
-> > Otherwise, this seems good to me.
-
-> The Arduino driver I linked was the only resource that had the
-> implementation of the seesaw framework as well as the example code
-> specific to this device:
-> https://github.com/adafruit/Adafruit_Seesaw/tree/master/examples/Mini_I2C=
-_Gamepad_QT
-> On further thought, a link to the accompanying document from the
-> manufacturer (https://cdn-learn.adafruit.com/downloads/pdf/gamepad-qt.pdf)
-> might be more relevant for the binding which includes the hardware
-> description as well as links to the above-mentioned Arduino driver.
-
-A link to the manufacturer docs would be nice & if, as you say, the
-arduino driver was a useful resource for understanding the hardware then
-I suppose it can stay too :)
-
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
---+Ch3KXm3gkqlOD2K
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSgU7QAKCRB4tDGHoIJi
-0qBbAQDkXpWdZQqk8AnLNCXjpHuzqn8N1ak3hT2yNwWlJI5MMAEAgeaWoOrvEHEi
-GkHd0KtNDCVE2jKKyCIyF7/N2eOYuwA=
-=rbZ4
------END PGP SIGNATURE-----
-
---+Ch3KXm3gkqlOD2K--
+Thanks.
+-- 
+~Randy
