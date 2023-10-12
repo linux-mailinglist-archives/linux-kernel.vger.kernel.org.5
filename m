@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF447C6F79
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4F97C6F82
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378924AbjJLNnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
+        id S1378876AbjJLNnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 09:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235570AbjJLNnV (ORCPT
+        with ESMTP id S1347273AbjJLNnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:43:21 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63894C6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:43:19 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4064876e8b8so11565955e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:43:19 -0700 (PDT)
+        Thu, 12 Oct 2023 09:43:43 -0400
+Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8328C0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:43:41 -0700 (PDT)
+Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-49e15724283so331475e0c.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:43:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697118198; x=1697722998; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1697118221; x=1697723021; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N4IeBCo/H0Pkii9DyOhPHwFBC4JKR2N0oGI8kzrNC/Q=;
-        b=AtvsKXrpLeKfPXHMjuujqjiGCr3UQQoBD+eAOsEnarrSDfBEvXAq67w2S+yreeMz6s
-         j378W3nA3kROdKzqsmngPyKQy0/mXhPbybEVrbfeGjWxyt8U/BCLl+bJQnE5i2RTZv7x
-         DgTxn+gKAhvGtrNkne/R8ZVnj7EZR9rlU+MWc32LJGIqJSJBP9fE5CTPb+1dJx85L96t
-         t1LRvsGekSeD71iqTiVgxCEAtwE/kRJGteRNUc7+yBbggWK6N2Z/PGVMHielGVinhhso
-         oI4UGNzJhsbN3TtqTrT+ac5IIVbsXmVITgQJvPD/eFI8itWK6dOCK6+WoIINJw+jjn3Z
-         3cHA==
+        bh=L5UxfBdj/6JrF2qHbkJWuAP1+z4BtgpnwOECrshG7uA=;
+        b=gm6vIwL0lCFg1F/OVNH2S8Xf6IlaRAhDZlruNt+wJ5yFeMgkY4TB9N5EqFQPtV+Y+o
+         h2npIhs8HoAL0duy0bS8qY2QDxh+Km3g6Oxf4UdnmTt2dnfY/wMpAbNxype1tsOWTzPE
+         7c6RTZki67ukHP7z8fhZEGdcd0ds7tOwwTJcIILDBortEpFEippIkjaxyanX3KGjpkF1
+         PMX4n/CTL6H6wmscOyEEEFj1KVAWXoiQYb8KWk1PUITcaR8ad1iqusnzM3XiV3VRbRzf
+         QBmM4Ifvq4iOdsq+KwwiF9umA0inZtgT7OindRF/6iw9KL/zRCNQR1lb3aL8+eH8BxGY
+         6tFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697118198; x=1697722998;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697118221; x=1697723021;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N4IeBCo/H0Pkii9DyOhPHwFBC4JKR2N0oGI8kzrNC/Q=;
-        b=Ae9gV7KcSxntE88Gvi3UjfDwO3CjdwSJbK95t4uVKWTXVkzscjDWSIhvsWJ366y99x
-         EzqxXu18wz1ZuwkUdl0xQ/xltPYJzwoSWmDwHR2iKmpFUOkP6zcdrJqZTf3iA4maU9Kf
-         ZJ04EowLQF9RVWC2gOVy8TAQwHZwL51KexnhsHELLj6WlZJPURvnB2pTtOYwSc+H8OZk
-         rnTMuJmeSSv+kjJZTBZPkjvx8bYHdg/BEtV+OzDUNbIlQiy1c/jCtNRGRb2raNxcM88S
-         04sR1eiZh1hdEqWjfyT/4Owfd+k4JPPJJVc34UGv2nm8rC2DswiKhusb8ps1G3CLK1qW
-         8NxQ==
-X-Gm-Message-State: AOJu0YwfpEP1gV6hTu6zFeA/nShjOfjUk+GQOLHGb/T2fdGTsh2RHMp8
-        T6Qil/HDt1QnC5elZwxCeiI9iA==
-X-Google-Smtp-Source: AGHT+IHnRzeuBKH8ol++7BbrPtoIURuqIfw9VZZQIVVZiihXznuL1m4t1pel6YyqMJtEfqs+QX4oug==
-X-Received: by 2002:a05:600c:2a4e:b0:405:7b92:4558 with SMTP id x14-20020a05600c2a4e00b004057b924558mr21413073wme.38.1697118197746;
-        Thu, 12 Oct 2023 06:43:17 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id m8-20020a056000180800b00321773bb933sm18479932wrh.77.2023.10.12.06.43.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 06:43:17 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] memory: Use device_get_match_data()
-Date:   Thu, 12 Oct 2023 15:43:15 +0200
-Message-Id: <169711819279.89425.3243909355897642178.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231006224402.442078-1-robh@kernel.org>
-References: <20231006224402.442078-1-robh@kernel.org>
+        bh=L5UxfBdj/6JrF2qHbkJWuAP1+z4BtgpnwOECrshG7uA=;
+        b=squUn55dPaCMI3saNLEcNzwT8zWiQtQvIjZbxzigM/rsqikmXM1xdM8fhtE0voqBED
+         U+UP+eC0SBqjpEMqW9lf3M9U3oxW+o3fK0D4PNS8GLZkXwiN+b9sgit+ekrmrfcvq/5Z
+         ATnStpb5+YXJgXHVL7gd1LkJeIFyLNgMMBCFApQcuUmVxJf6DnELVnTrpqPQeCYg7yGi
+         fv3K7gzUymbSxDW42x6aQQeVosizZrA8neD6W4GP3e7uiYH7UesA21Zink9/7+/cAVBC
+         XbzHFiLKBlqWzDbbQduH3Qgi3ves/qhc/wfHE5dxgoLal6s3aM+ZLyEBwxs1aw7ckiwz
+         Yo1w==
+X-Gm-Message-State: AOJu0YyTlICiDAwKSTPGVyH1ac2bzTjjfnAl5stpXJhWT8TmQH64zTYK
+        8ySdnNqcT9sowQFebO35SPj2QNwVs8E93uAsOhPnTA==
+X-Google-Smtp-Source: AGHT+IEtzmuyswh9BkchHbtxmapjfde5JaFYoo08OhEksgVyX9vJ3Lzx6rWSdYd80NGUK2zgO4emVZenhzszDQU6FQo=
+X-Received: by 2002:a1f:ed41:0:b0:499:e671:1682 with SMTP id
+ l62-20020a1fed41000000b00499e6711682mr20231744vkh.3.1697118220736; Thu, 12
+ Oct 2023 06:43:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231012132131.300014-1-benno.lossin@proton.me>
+In-Reply-To: <20231012132131.300014-1-benno.lossin@proton.me>
+From:   Alice Ryhl <aliceryhl@google.com>
+Date:   Thu, 12 Oct 2023 15:43:29 +0200
+Message-ID: <CAH5fLgg=AmuR-93vuVmdr_oVUYCYuYas7Unrm0UFtQ2Yc3x6wA@mail.gmail.com>
+Subject: Re: [PATCH] rust: macros: improve `#[vtable]` documentation
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <nmi@metaspace.dk>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 12, 2023 at 3:22=E2=80=AFPM Benno Lossin <benno.lossin@proton.m=
+e> wrote:
+>
+> Traits marked with `#[vtable]` need to provide default implementations
+> for optional functions. The C side represents these with `NULL` in the
+> vtable, so the default functions are never actually called. We do not
+> want to replicate the default behavior from C in Rust, because that is
+> not maintainable. Therefore we should use `build_error` in those default
+> implementations. The error message for that is provided at
+> `kernel::error::VTABLE_DEFAULT_ERROR`.
+>
+> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
 
-On Fri, 06 Oct 2023 17:44:01 -0500, Rob Herring wrote:
-> Use preferred device_get_match_data() instead of of_match_device() to
-> get the driver match data. With this, adjust the includes to explicitly
-> include the correct headers.
-> 
-> 
-
-Applied, thanks!
-
-[1/1] memory: Use device_get_match_data()
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/09de3691daab15ae125cbf32f9f72fc90eada49d
-
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
