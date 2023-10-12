@@ -2,242 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A93547C6C0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD827C6C12
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378209AbjJLLPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:15:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
+        id S1378224AbjJLLP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbjJLLPS (ORCPT
+        with ESMTP id S1378207AbjJLLPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:15:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C86E0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 04:14:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697109268;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DRaC+0mMS0mqrKmBhT+mt/F7wkHtGnlArsECVSA7S7c=;
-        b=hR1OMGRooprtHII45+wgrGi+9TtD06edMnrSIcFallTokFYwT+ro7IrwQqtARldXlp20un
-        tLhPVFlMGiqfB4FwXRsb20Wn4OyTcxmis7mMZg/usMUv9hCoKlX5whHPNSGk0z6kMjia5Z
-        BiGy9d4J35E5qJ3aBRhaZAO3j3TzjAc=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-632-bt7fktxVPcyexyEM-FrQ1w-1; Thu, 12 Oct 2023 07:14:26 -0400
-X-MC-Unique: bt7fktxVPcyexyEM-FrQ1w-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9bd7c682b33so63735166b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 04:14:26 -0700 (PDT)
+        Thu, 12 Oct 2023 07:15:25 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05AB94
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 04:15:20 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d81dd7d76e0so856763276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 04:15:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697109320; x=1697714120; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y911gpikiKBoVvk2OZa8oqIqP+/8W07F+urby0JQ3ZM=;
+        b=X+3Je67IoP8WDkBg9T8C+ZQ+oii8wzOe+uDykVttTCFi1z2Acyf5R4Doc3Jo3lIaoK
+         HqVUg5ZHPYIMOVWWnisdKIOuqlmKkvyF5vXJNhwyaF/f56oX4qkfylChDpHQmEpWQmwS
+         6Qea5aiLl2pVXGOJVXbdZlNd4wc3n/N9Boz6l5i2YrEBtP8GqIwvqUK3WT278jR84Ppg
+         g4aUzSddXLp3VI3M8gXYCesZgijC/9PU9lDOh6bur8MF107Ou2KKWVEXDcZge0AJmgjw
+         ANiixgiTMQLiyp74lAhMYUeR5bRqrZUs/+Kdyui1AfrItMRVdxtOgXl5RLCWe6gVzsky
+         I44Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697109265; x=1697714065;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DRaC+0mMS0mqrKmBhT+mt/F7wkHtGnlArsECVSA7S7c=;
-        b=QMWa3aZtZKXdKrhoi6traJtFW8IEadTzRTa04WNKAHZ4CJQP/KYCjcVAuG2fUfpcKg
-         656YgRMTbWVCDFO3YIS6BijotUUxb+4QneonvPgqMimlfMXQ/YvEaRUwmRhDuSqiFEkT
-         3V4pZX55Q6Wu2Z+Pl+4Clbhho3QyF52qYurfvAzGfMmsV1WrnsWrr7+atFa7R+zcTlh4
-         8LUIzoXYnVUNUqULfFaXWECn8GCJKdw2W8yrpXkVcm3jrNOrf+imw7r3dc25QUdwClyd
-         TsRV2YtnvZNuS+5NZzauR1nUpHg5qFttj+pJVEVElHN3ALOmHd3h1Sg4QGBR6rAy54XK
-         HV6Q==
-X-Gm-Message-State: AOJu0YwSv4GWV5LpkR14Sx4aAS1WurKDPNi5uEr5W9bQ05K6DWgZPrn0
-        OKGg8+s1oguIGRUMqLPlZaKulnvexDfmiozXs36ywi/z/2e1ffPkE18iAtiID7DrybPnfApN5md
-        CgKaLC2H9f0gMXCgVPliirOAY
-X-Received: by 2002:a17:907:720b:b0:9a1:f4e8:87b9 with SMTP id dr11-20020a170907720b00b009a1f4e887b9mr25620939ejc.45.1697109265305;
-        Thu, 12 Oct 2023 04:14:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHs8ShNQHDZ6hbq2SG2uMzUpUZfypOCB88v9DfbsSj8Zps3xEVjhs2Lqn/YHWow7aMfu9rhnQ==
-X-Received: by 2002:a17:907:720b:b0:9a1:f4e8:87b9 with SMTP id dr11-20020a170907720b00b009a1f4e887b9mr25620912ejc.45.1697109264928;
-        Thu, 12 Oct 2023 04:14:24 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id ks8-20020a170906f84800b0099b6becb107sm11078691ejb.95.2023.10.12.04.14.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 04:14:24 -0700 (PDT)
-Message-ID: <5d2e9eba-a941-ea9a-161a-5b97d09d5d35@redhat.com>
-Date:   Thu, 12 Oct 2023 13:14:23 +0200
+        d=1e100.net; s=20230601; t=1697109320; x=1697714120;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y911gpikiKBoVvk2OZa8oqIqP+/8W07F+urby0JQ3ZM=;
+        b=KNxHXzgBP7QQ+NGe2MKUlZzTJKaKdoCvumTzR3Ez0jkWPXvgkDbPszztJpNrLwEjgX
+         ajuM+6cx0mScGaTbbF3REVAy6MO4Zef21FLut7sG13LbEF3w/s8S38drAit9bAMRhLyR
+         jZSPYKutxTjfwljr/FjBy+f5GPXkpuH/LGDWMi7YU8Nbv2yY4PxZzbhcGuyGp/OMw/c6
+         fGwgGeU6//6CE5gWkZl2iNb8dtaMlARco8iQV0EASU8KuuSluKxStWLQajV/vcWIBoVz
+         J2ftn9A0xJlucvzr8s6hRi1jDk+HXZ9Jwx8Q0foU05E/RO3O0V0EVor7xfOdl+utILyt
+         Xdaw==
+X-Gm-Message-State: AOJu0YyPSEL3yai5iSU4tc4w2jIdtihzNzt/0RjYNWB4C906e9D8UXK0
+        LHi3m/2klN572Tv1KokKDq5d6uQcm43OHyS0laXlYg==
+X-Google-Smtp-Source: AGHT+IGwIVeL7SRBtlxvksOhSK/PxqvkdWCx0W3SClEzqBWTGW1/iYOKoNkd6XXItp5p4xedKezhtXUmr+6UZipsZ9o=
+X-Received: by 2002:a25:ef4a:0:b0:d9a:be04:7faf with SMTP id
+ w10-20020a25ef4a000000b00d9abe047fafmr1804514ybm.9.1697109319751; Thu, 12 Oct
+ 2023 04:15:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v20 1/4] usb: Add support for Intel LJCA device
-Content-Language: en-US, nl
-To:     "Wu, Wentong" <wentong.wu@intel.com>,
-        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "oneukum@suse.com" <oneukum@suse.com>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "andi.shyti@linux.intel.com" <andi.shyti@linux.intel.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "bartosz.golaszewski@linaro.org" <bartosz.golaszewski@linaro.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-        "Wang, Zhifeng" <zhifeng.wang@intel.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1696833205-16716-1-git-send-email-wentong.wu@intel.com>
- <1696833205-16716-2-git-send-email-wentong.wu@intel.com>
- <ZSZ3IPgLk7uC5UGI@smile.fi.intel.com>
- <6a87b43a-0648-28d4-6c69-e0f684e44eb6@redhat.com>
- <DM6PR11MB4316BE44F53E276384FF06C88DCCA@DM6PR11MB4316.namprd11.prod.outlook.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <DM6PR11MB4316BE44F53E276384FF06C88DCCA@DM6PR11MB4316.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <2023101238-greasily-reiterate-aafc@gregkh> <CAG_fn=X-dnc06r0Yik24jBaL-f7ZzrUQiUJmMHeN9CaSa3ZveQ@mail.gmail.com>
+ <2023101201-grasp-smartly-2085@gregkh> <2023101241-old-germinate-7a05@gregkh>
+In-Reply-To: <2023101241-old-germinate-7a05@gregkh>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 12 Oct 2023 13:14:39 +0200
+Message-ID: <CAG_fn=W0cRThcNzE3G7bu5VqwOddTp_uqup3k7tZSMqM2te0_w@mail.gmail.com>
+Subject: Re: [PATCH] lib/test_meminit: fix off-by-one error in test_pages()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Andrew Donnellan <ajd@linux.ibm.com>,
+        Xiaoke Wang <xkernel.wang@foxmail.com>, stable@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Oct 12, 2023 at 12:37=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Oct 12, 2023 at 12:26:58PM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Oct 12, 2023 at 10:40:14AM +0200, Alexander Potapenko wrote:
+> > > On Thu, Oct 12, 2023 at 10:17=E2=80=AFAM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > In commit efb78fa86e95 ("lib/test_meminit: allocate pages up to ord=
+er
+> > > > MAX_ORDER"), the loop for testing pages is set to "<=3D MAX_ORDER" =
+which
+> > > > causes crashes in systems when run.  Fix this to "< MAX_ORDER" to f=
+ix
+> > > > the test to work properly.
+> > >
+> > > What are the crashes you are seeing? Are those OOMs?
+> >
+> > They are WARN_ON() triggers.  They are burried in the Android build
+> > system, let me see if I can uncover them.
+> >
+> > > IIUC it should be valid to allocate with MAX_ORDER.
+> >
+> > "should", but I no longer get runtime warnings with this patch applied,
+> > so something is wrong :)
 
-On 10/11/23 14:50, Wu, Wentong wrote:
->> From: Hans de Goede <hdegoede>
->>
->> Hi,
->>
->> On 10/11/23 12:21, Andy Shevchenko wrote:
->>> On Mon, Oct 09, 2023 at 02:33:22PM +0800, Wentong Wu wrote:
->>>> Implements the USB part of Intel USB-I2C/GPIO/SPI adapter device
->>>> named "La Jolla Cove Adapter" (LJCA).
->>>>
->>>> The communication between the various LJCA module drivers and the
->>>> hardware will be muxed/demuxed by this driver. Three modules ( I2C,
->>>> GPIO, and SPI) are supported currently.
->>>>
->>>> Each sub-module of LJCA device is identified by type field within the
->>>> LJCA message header.
->>>>
->>>> The sub-modules of LJCA can use ljca_transfer() to issue a transfer
->>>> between host and hardware. And ljca_register_event_cb is exported to
->>>> LJCA sub-module drivers for hardware event subscription.
->>>>
->>>> The minimum code in ASL that covers this board is Scope
->>>> (\_SB.PCI0.DWC3.RHUB.HS01)
->>>>     {
->>>>         Device (GPIO)
->>>>         {
->>>>             Name (_ADR, Zero)
->>>>             Name (_STA, 0x0F)
->>>>         }
->>>>
->>>>         Device (I2C)
->>>>         {
->>>>             Name (_ADR, One)
->>>>             Name (_STA, 0x0F)
->>>>         }
->>>>
->>>>         Device (SPI)
->>>>         {
->>>>             Name (_ADR, 0x02)
->>>>             Name (_STA, 0x0F)
->>>>         }
->>>>     }
->>>
->>> This commit message is not true anymore, or misleading at bare minimum.
->>> The ACPI specification is crystal clear about usage _ADR and _HID, i.e.
->>> they must NOT be used together for the same device node. So, can you
->>> clarify how the DSDT is organized and update the commit message and it
->>> may require (quite likely) to redesign the architecture of this
->>> driver. Sorry I missed this from previous rounds as I was busy by
->>> something else.
->>
->> This part of the commit message unfortunately is not accurate.
->> _ADR is not used in either DSDTs of shipping hw; nor in the code.
-> 
-> We have covered the _ADR in the code like below, it first try to find the
-> child device based on _ADR, if not found, it will check the _HID, and there
-> is clear comment in the function.
-> 
-> /* bind auxiliary device to acpi device */
-> static void ljca_auxdev_acpi_bind(struct ljca_adapter *adap,
-> 				   struct auxiliary_device *auxdev,
-> 				   u64 adr, u8 id)
-> {
-> 	struct ljca_match_ids_walk_data wd = { 0 };
-> 	struct acpi_device *parent, *adev;
-> 	struct device *dev = adap->dev;
-> 	char uid[4];
-> 
-> 	parent = ACPI_COMPANION(dev);
-> 	if (!parent)
-> 		return;
-> 
-> 	/*
-> 	 * get auxdev ACPI handle from the ACPI device directly
-> 	 * under the parent that matches _ADR.
-> 	 */
-> 	adev = acpi_find_child_device(parent, adr, false);
-> 	if (adev) {
-> 		ACPI_COMPANION_SET(&auxdev->dev, adev);
-> 		return;
-> 	}
-> 
-> 	/*
-> 	 * _ADR is a grey area in the ACPI specification, some
-> 	 * platforms use _HID to distinguish children devices.
-> 	 */
-> 	switch (adr) {
-> 	case LJCA_GPIO_ACPI_ADR:
-> 		wd.ids = ljca_gpio_hids;
-> 		break;
-> 	case LJCA_I2C1_ACPI_ADR:
-> 	case LJCA_I2C2_ACPI_ADR:
-> 		snprintf(uid, sizeof(uid), "%d", id);
-> 		wd.uid = uid;
-> 		wd.ids = ljca_i2c_hids;
-> 		break;
-> 	case LJCA_SPI1_ACPI_ADR:
-> 	case LJCA_SPI2_ACPI_ADR:
-> 		wd.ids = ljca_spi_hids;
-> 		break;
-> 	default:
-> 		dev_warn(dev, "unsupported _ADR\n");
-> 		return;
-> 	}
-> 
-> 	acpi_dev_for_each_child(parent, ljca_match_device_ids, &wd);
-
-Ah ok, I see. So the code:
-
-1. First tries to find the matching child acpi_device for the auxdev by ADR
-
-2. If 1. fails then falls back to HID + UID matching
-
-And there are DSDTs which use either:
-
-1. Only use _ADR to identify which child device is which, like the example
-   DSDT snippet from the commit msg.
-
-2. Only use _HID + _UID like the 2 example DSDT snippets from me email
-
-But there never is a case where both _ADR and _HID are used at
-the same time (which would be an ACPI spec violation as Andy said).
-
-So AFAICT there is no issue here since  _ADR and _HID are never
-user at the same time and the commit message correctly describes
-scenario 1. from above, so the commit message is fine too.
-
-So I believe that we can continue with this patch series in
-its current v20 form, which has already been staged for
-going into -next by Greg.
-
-Andy can you confirm that moving ahead with the current
-version is ok ?
-
-Regards,
-
-Hans
-
-
-
+I think I know what's going on. In March 2023 Kirill changed the
+semantics of MAX_ORDER to be inclusive: now alloc_pages() accepts
+0..MAX_ORDER, whereas previously it was 0..MAX_ORDER-1:
+https://github.com/torvalds/linux/commit/23baf831a32c04f9a968812511540b1b3e=
+648bf5
+Older kernel versions had an explicit check for order >=3D MAX_ORDER,
+which is what you're seeing on Android.
