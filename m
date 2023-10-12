@@ -2,125 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 260047C6267
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 03:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355217C6269
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 03:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235269AbjJLBrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 21:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52716 "EHLO
+        id S234080AbjJLBsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 21:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235260AbjJLBrl (ORCPT
+        with ESMTP id S233269AbjJLBsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 21:47:41 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCE1C9;
-        Wed, 11 Oct 2023 18:47:39 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C1UARb013082;
-        Thu, 12 Oct 2023 01:47:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=niFFbP3jkBocCEpB48HyTZeog/L/1NdzvkHsVOEBE3Q=;
- b=njh/SVwTdcEebmjBpo/HXTTpzYsuW3PCXq7Y9xpWKcFVWlmYXBiJf+tLmSK15ZRGpYPR
- nw7+JXGka6pwtoB+/3wspejQaMp0osBHE1y31FcFabNwEpDSpUAdWYp2NenXd6s5O2Fg
- rToSXuh9oM/oRTLe3UI3CeycTmo0FBZoFeFPNe9LXuUHHj21K1OoezF9QxeehKza3HBZ
- PKfuJa0xrnqMqAoCBtawKB+JytU7kTVrNl78y4aDOanVRXGJRxwVfyemuqqVL466F9CW
- 8W9KNb04vo7rzZCjS3NA0kbd+HO+rFkOrGy+c60dGBbZgL462KbLeSenZuorAE0WwGSh Zw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnmdsaqqy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 01:47:34 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39C1lXoU006865
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 01:47:33 GMT
-Received: from hu-jiangenj-sha.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 11 Oct 2023 18:47:32 -0700
-From:   Joey Jiao <quic_jiangenj@quicinc.com>
-To:     <linux-modules@vger.kernel.org>
-CC:     <quic_jiangenj@quicinc.com>, Luis Chamberlain <mcgrof@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4] module: Add CONFIG_MODULE_DISABLE_INIT_FREE option
-Date:   Thu, 12 Oct 2023 07:17:19 +0530
-Message-ID: <20231012014720.19748-1-quic_jiangenj@quicinc.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 11 Oct 2023 21:48:36 -0400
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857FAA9;
+        Wed, 11 Oct 2023 18:48:34 -0700 (PDT)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-1e10ba12fd3so255339fac.1;
+        Wed, 11 Oct 2023 18:48:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697075314; x=1697680114; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nchUXm+rbX4arDXAqlMb8BZfBxWIRFIQATpxfSNMMH8=;
+        b=Bfaqsih6AcyhJ7cEEnaxGaA3sEQOhi8hMKfq+eCauNZmzTH8l5jCoF4atOio91QONp
+         dusc8RX9ualqXOoXvWMEJ0BAZ1/tEoP1iydJWx5MbAq7K7m85zI/qK+BNr2rDqEotUPH
+         NgLSEUkTJvUJ/l58dYutBXBzbk36Gi2ucL2RE+RtNb9RSnoeK8xVicSt4ehF6vamIt12
+         1x/480ozIxnyc1+0lckAx+m6LJqGhJjVhIlyPpSHx8CLu4u3OhlwWEAgIcpdkRgrtnYs
+         az5uTw1pjGAYxTgOGD0W9pMLZE7o4Vkn2FyYGQDQ1IytogZjH+7UNCUCz33zxoBaI0mk
+         ysFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697075314; x=1697680114;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nchUXm+rbX4arDXAqlMb8BZfBxWIRFIQATpxfSNMMH8=;
+        b=vawRcSmx1NXFCA9bNrs9AsiicIe7DZZTwKM0Ay6VlIoejBCN+b+kuXilUYQy7hV9LI
+         XWkTLSaCAtdWeXo+fuzlMQ5ulbjAYc0ANI4Yxtly84ew88gJrFsMzizI5iCT8HPV1pKP
+         qbeVWgbJHu37wU1KwU1wO2WuO4++Lv6ZlW8EOo0b54YBWg5x/21xNQyG5Res0rsW4cl0
+         ziEpGo/FLHCpcQSlpRaUa9UaNEW2cPFwljxyBFgwDpFY55sr2Jfp0hk8+JGqHjQL/1v8
+         ESZG0H6TJl7gx87HGURdvtbvI+5E+Q1TzpqLWkYr5zWv/04DHay5/0hkdms4k7aaH5Of
+         G1iA==
+X-Gm-Message-State: AOJu0YxJ9CApn5T7MLH5C91AzpSYb9En75ltUjhB8aVz27S3147kx5s5
+        R2rupz1F/5lcjhM6Q42NQMlG8rJvvfOmaFNnXOY=
+X-Google-Smtp-Source: AGHT+IEhdHpJTKuxHDknu7UulelklUSgYcDsRR2l/HsxebE5TnUl/upt6bCk1mEQTSD1uLpjTTa+Vo+TxFSk1K/xnjk=
+X-Received: by 2002:a05:6870:4628:b0:1c8:b870:4e62 with SMTP id
+ z40-20020a056870462800b001c8b8704e62mr23717663oao.52.1697075313755; Wed, 11
+ Oct 2023 18:48:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: EjLvWMSfftV7a94CGc-vf1e4evPCmbtd
-X-Proofpoint-GUID: EjLvWMSfftV7a94CGc-vf1e4evPCmbtd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_02,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 bulkscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0
- clxscore=1015 spamscore=0 phishscore=0 impostorscore=0 mlxlogscore=951
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310120013
+References: <20231009124046.74710-1-hengqi.chen@gmail.com> <20231009124046.74710-3-hengqi.chen@gmail.com>
+ <202310101722.B6D6E6CEC@keescook>
+In-Reply-To: <202310101722.B6D6E6CEC@keescook>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+Date:   Thu, 12 Oct 2023 09:48:22 +0800
+Message-ID: <CAEyhmHSufv0hH_xY7SBfyc+GrG5ao-cUvjRZotV1neS7f6NGxQ@mail.gmail.com>
+Subject: Re: [PATCH 2/4] seccomp, bpf: Introduce SECCOMP_LOAD_FILTER operation
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, luto@amacapital.net,
+        wad@chromium.org, alexyonghe@tencent.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To facilitate syzkaller test, it's essential for the module to retain the
-same address across reboots. In userspace, the execution of modprobe
-commands must occur sequentially. In the kernel, selecting the
-CONFIG_MODULE_DISABLE_INIT_FREE option disables the asynchronous freeing
-of init sections.
+On Wed, Oct 11, 2023 at 8:24=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> On Mon, Oct 09, 2023 at 12:40:44PM +0000, Hengqi Chen wrote:
+> > This patch adds a new operation named SECCOMP_LOAD_FILTER.
+> > It accepts the same arguments as SECCOMP_SET_MODE_FILTER
+> > but only performs the loading process. If succeed, return a
+> > new fd associated with the JITed BPF program (the filter).
+> > The filter can then be pinned to bpffs using the returned
+> > fd and reused for different processes. To distinguish the
+> > filter from other BPF progs, BPF_PROG_TYPE_SECCOMP is added.
+> >
+> > Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+>
+> This part looks okay, I think. I need to spend some more time looking at
+> the BPF side. I want to make sure it is only possible to build a
+> BPF_PROG_TYPE_SECCOMP prog by going through seccomp. I want to make sure
+> we can never side-load some kind of unexpected program into seccomp,
+> etc. Since BPF_PROG_TYPE_SECCOMP is part of UAPI, is this controllable
+> through the bpf() syscall?
+>
 
-Signed-off-by: Joey Jiao <quic_jiangenj@quicinc.com>
----
- kernel/module/Kconfig | 12 ++++++++++++
- kernel/module/main.c  |  3 ++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+Currently, it failed at find_prog_type() since we don't register the
+prog type to BPF.
 
-diff --git a/kernel/module/Kconfig b/kernel/module/Kconfig
-index 33a2e991f608..88206bc4c7d4 100644
---- a/kernel/module/Kconfig
-+++ b/kernel/module/Kconfig
-@@ -389,4 +389,16 @@ config MODULES_TREE_LOOKUP
- 	def_bool y
- 	depends on PERF_EVENTS || TRACING || CFI_CLANG
- 
-+config MODULE_DISABLE_INIT_FREE
-+	bool "Disable freeing of init sections"
-+	default n
-+	help
-+	  By default, kernel will free init sections after module being fully
-+	  loaded.
-+
-+	  MODULE_DISABLE_INIT_FREE allows users to prevent the freeing of init
-+	  sections. This option is particularly helpful for syzkaller fuzzing,
-+	  ensuring that the module consistently loads into the same address
-+	  across reboots.
-+
- endif # MODULES
-diff --git a/kernel/module/main.c b/kernel/module/main.c
-index 98fedfdb8db5..0f242b7b29fe 100644
---- a/kernel/module/main.c
-+++ b/kernel/module/main.c
-@@ -2593,7 +2593,8 @@ static noinline int do_init_module(struct module *mod)
- 	 * be cleaned up needs to sync with the queued work - ie
- 	 * rcu_barrier()
- 	 */
--	if (llist_add(&freeinit->node, &init_free_list))
-+	if (llist_add(&freeinit->node, &init_free_list) &&
-+		!IS_ENABLED(CONFIG_MODULE_DISABLE_INIT_FREE))
- 		schedule_work(&init_free_wq);
- 
- 	mutex_unlock(&module_mutex);
--- 
-2.42.0
+> One thought I had, though, is I wonder if flags are needed to be
+> included with the fd? I'll ponder this a bit more...
+>
 
+bpf_prog_new_fd() already set O_RDWR and O_CLOEXEC.
+
+> --
+> Kees Cook
