@@ -2,83 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1827C6C60
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CFB7C6C63
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378556AbjJLLbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41034 "EHLO
+        id S1378288AbjJLLcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378431AbjJLLbW (ORCPT
+        with ESMTP id S1347200AbjJLLcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:31:22 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEAB2E6
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 04:31:20 -0700 (PDT)
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S5nRZ1c26z9tJ9;
-        Thu, 12 Oct 2023 19:27:22 +0800 (CST)
-Received: from [10.174.178.209] (10.174.178.209) by
- dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 12 Oct 2023 19:31:18 +0800
-Message-ID: <e1e25755-432d-fd8d-c3f6-7752f68e037e@huawei.com>
-Date:   Thu, 12 Oct 2023 19:31:18 +0800
+        Thu, 12 Oct 2023 07:32:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3AF94;
+        Thu, 12 Oct 2023 04:31:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C491CC433C7;
+        Thu, 12 Oct 2023 11:31:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697110311;
+        bh=JT88/pQMAEEHyd2DZ85PSl0cJFk5DkcNpVpfgfRhK5g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RPhkM87d2z0iM6l84Fp9uQg/4dFOH+ZVrQaPHqsy+3yesC9q0THnSjqT4bWtFDprJ
+         02JhZlyYH5tWQeRy1CBw55ONaaDX20/F3HdOMdsGQirtkzPdSM/SvZkhwKu8wCfii0
+         WCHbjjUuu6kmmcQfYylqg54GJDofdT3pRvOoMmBexHVg0yDQn77xdpqwHj/5vf4Trh
+         NuG3EP68Im1CGo902RlysA09rU3mYC+AuNLT1QAKjVwbpRJdn86Et7YGbyzWNW6isA
+         64jHXVWKVOb6RNhhR5bXFWt9UBpzdS/o9dDSXVmNVPzGdXrO3L/Y34e0mpYNRL+yXL
+         zpVlIxa/bdGxA==
+Date:   Thu, 12 Oct 2023 12:31:46 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Ilkka Koskinen <ilkka@os.amperecomputing.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the arm-perf tree
+Message-ID: <20231012113145.GA11708@willie-the-truck>
+References: <20231011172250.5a6498e5@canb.auug.org.au>
+ <e8ca559b-421e-c326-f33-6edc8bfade@os.amperecomputing.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH RFC] ubi: gluebi: Fix NULL pointer dereference caused by
- ftl notifier
-To:     <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>
-References: <20231010142925.545238-1-wangzhaolong1@huawei.com>
-From:   ZhaoLong Wang <wangzhaolong1@huawei.com>
-In-Reply-To: <20231010142925.545238-1-wangzhaolong1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.209]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e8ca559b-421e-c326-f33-6edc8bfade@os.amperecomputing.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Friendly ping ...
+On Thu, Oct 12, 2023 at 01:19:41AM -0700, Ilkka Koskinen wrote:
+> 
+> On Wed, 11 Oct 2023, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > After merging the arm-perf tree, today's linux-next build (htmldocs)
+> > produced this warning:
+> > 
+> > Documentation/admin-guide/perf/ampere_cspmu.rst: WARNING: document isn't included in any toctree
+> > 
+> > Introduced by commit
+> > 
+> >  53a810ad3c5c ("perf: arm_cspmu: ampere_cspmu: Add support for Ampere SoC PMU")
+> 
+> Thanks Stephen for catching another bug!
+> 
+> 
+> 
+> Will, it seems that I had made another stupid bug in the same patch. This
+> time I hadn't added the ampere cspmu document to perf toctree. I submitted a
+> fix for it:
+> 
+> 	https://lore.kernel.org/all/20231012074103.3772114-1-ilkka@os.amperecomputing.com/
+> 
+> 
+> Could you apply the patch or merge it with the ampere cspmu patch, whichever
+> you prefer?
 
-> If both flt.ko and gluebi.ko are loaded, the notiier of ftl
-> triggers NULL pointer dereference when trying to visit
-> ‘gluebi->desc’ in gluebi_read().
-> 
-> ubi_gluebi_init
->    ubi_register_volume_notifier
->      ubi_enumerate_volumes
->        ubi_notify_all
->          gluebi_notify    nb->notifier_call()
->            gluebi_create
->              mtd_device_register
->                mtd_device_parse_register
->                  add_mtd_device
->                    blktrans_notify_add   not->add()
->                      ftl_add_mtd         tr->add_mtd()
->                        scan_header
->                          mtd_read
->                            mtd_read
->                              mtd_read_oob
->                                gluebi_read   mtd->read()
->                                  gluebi->desc - NULL
-> 
-> Detailed reproduction information available at the link[1],
-> 
-> In the normal case, obtain gluebi->desc in the gluebi_get_device(),
-> and accesses gluebi->desc in the gluebi_read(). However,
-> gluebi_get_device() is not executed in advance in the
-> ftl_add_mtd() process, which leads to null pointer dereference.
+Cheers, I'll pick that up today.
 
+Will
