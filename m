@@ -2,247 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0543D7C77EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A677C77EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442502AbjJLUga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 16:36:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
+        id S1442767AbjJLUgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 16:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347394AbjJLUg2 (ORCPT
+        with ESMTP id S1347403AbjJLUgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 16:36:28 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A61A9D
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:36:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1697142985;
-        bh=FPaY66C3ZPJy5gK2Z09xtlcQh0OXYz9y/MMCrQXYRXk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=pE39xo8q970/u/dDuWfE2JdXtGoEW9tJAKiQcWQ0PttESH9jYzmzIiSGvxv72AHuf
-         A+rCuoNf5fI7xdMCEFoOvVTDr2QFAB5UsGBXR8VqrHDfNjiUheSQQ0Cb2snJw7eylu
-         OdYXcEN8wRqWxuSTBD4+fHyCzgLSN6KvAPwTODS2azICjIrsjm3F5qZp635DVewhxi
-         pG6V1gRuNRmjZFPcDjaqaSLctWbaO3PTSClWAScxG2ytl33f10MZzSi0fbRI2+bUI+
-         XtwkbTnxjE6kC492Id31HoDxTCeW1vN/hufzjA4QfyC/6zXiuJPNycPno3ogq5F438
-         As5Z7FSXOMquQ==
-Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4S61d54Kx6z1XSn;
-        Thu, 12 Oct 2023 16:36:25 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.c.chen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
-Subject: [RFC PATCH] sched/fair: Introduce WAKEUP_BIAS_PREV_IDLE to reduce migrations
-Date:   Thu, 12 Oct 2023 16:36:26 -0400
-Message-Id: <20231012203626.1298944-1-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 12 Oct 2023 16:36:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC8ACA
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:36:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7E70C433C7;
+        Thu, 12 Oct 2023 20:36:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697142996;
+        bh=qfX1SodUJMazOEDs5JlmUHg0AtVW+L6/EyjHuDRfotg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=T/IGlDQLSLZXodptqjPsCe0oLd2w5yn2DZDLWytelFLxee011GUtQir3kcxKUaCJt
+         QDUCbnHpHixhfPdP82/TmVJdQ8xrjgDlJFM7vjfqvLl/3P7fLO4O4KrCwVTMBjS2Rm
+         zAPfOcgM2km+8dzmSJaeD5SOmeJyNh/2SnkbnO3di5ESRFN++0WNbmT/9fsQvPuLY4
+         oT3PQ3dVuYA4aPCq2nN/tdbVe+/4WllbwBoTncgi8bwSjq95gWlLKoF9k9q5BZNZlk
+         QFraeoe2QTtRDPVPCYTRtmhKwu2jgHzCNTVOVuwNmjgAcp3WqLqmY/i5Gpz4zIns97
+         Kb1ngR6GQ0XMA==
+Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qr2Q6-003eHp-47;
+        Thu, 12 Oct 2023 21:36:34 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Date:   Thu, 12 Oct 2023 21:36:33 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     eric.auger@redhat.com
+Cc:     Miguel Luis <miguel.luis@oracle.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev
+Subject: Re: [PATCH v3 3/3] arm64/kvm: Fine grain _EL2 system registers list
+ that affect nested virtualization
+In-Reply-To: <7df53e6b-9141-de85-b7a3-b9eb092ef7b4@redhat.com>
+References: <20231011180103.91774-1-miguel.luis@oracle.com>
+ <20231011180103.91774-4-miguel.luis@oracle.com>
+ <7df53e6b-9141-de85-b7a3-b9eb092ef7b4@redhat.com>
+User-Agent: Roundcube Webmail/1.4.14
+Message-ID: <e6f3002c10848e911c4bfee3a1d472aa@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 217.182.43.188
+X-SA-Exim-Rcpt-To: eric.auger@redhat.com, miguel.luis@oracle.com, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, jingzhangos@google.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce the WAKEUP_BIAS_PREV_IDLE scheduler feature to reduce the
-task migration rate.
+On 2023-10-12 16:22, Eric Auger wrote:
+> Hi Miguel,
+> 
+> On 10/11/23 20:01, Miguel Luis wrote:
+>> Implement a fine grained approach in the _EL2 sysreg ranges.
+>> 
+>> Fixes: d0fc0a2519a6 ("KVM: arm64: nv: Add trap forwarding for 
+>> HCR_EL2")
+>> Signed-off-by: Miguel Luis <miguel.luis@oracle.com>
+>> ---
+>>  arch/arm64/kvm/emulate-nested.c | 88 
+>> ++++++++++++++++++++++++++++++---
+>>  1 file changed, 82 insertions(+), 6 deletions(-)
+>> 
+>> diff --git a/arch/arm64/kvm/emulate-nested.c 
+>> b/arch/arm64/kvm/emulate-nested.c
+>> index 9ced1bf0c2b7..3af49e130ee6 100644
+>> --- a/arch/arm64/kvm/emulate-nested.c
+>> +++ b/arch/arm64/kvm/emulate-nested.c
+>> @@ -648,15 +648,91 @@ static const struct encoding_to_trap_config 
+>> encoding_to_cgt[] __initconst = {
+>>  	SR_TRAP(SYS_APGAKEYLO_EL1,	CGT_HCR_APK),
+>>  	SR_TRAP(SYS_APGAKEYHI_EL1,	CGT_HCR_APK),
+>>  	/* All _EL2 registers */
+>> -	SR_RANGE_TRAP(sys_reg(3, 4, 0, 0, 0),
+>> -		      sys_reg(3, 4, 3, 15, 7), CGT_HCR_NV),
+>> +	SR_TRAP(SYS_VPIDR_EL2,		CGT_HCR_NV),
+> I think you miss DBGVCR32_EL2
 
-For scenarios where the system is under-utilized (CPUs are partly idle),
-eliminate frequent task migrations from almost idle CPU to completely
-idle CPUs by introducing a bias towards the previous CPU if it is idle
-or almost idle in select_idle_sibling(). Use 1% of the CPU capacity
-of the previously used CPU as CPU utilization "almost idle" cutoff.
+I don't think this register should be part of this list. We don't
+support AArch32 with NV, and the spec says that DBGVCR32_EL2 UNDEFs
+when EL1 doesn't support AArch32.
 
-For scenarios where the system is fully or over-utilized (CPUs are
-almost never idle), favor the previous CPU (rather than the target CPU)
-if all CPUs are busy to minimize migrations. (suggested by Chen Yu)
+So the change that needs to happen is to inject an UNDEF when trapping
+a DBGVCR32_EL2and not forward the trap to the guest.
 
-The following benchmarks are performed on a v6.5.5 kernel with
-mitigations=off.
+Thanks,
 
-This speeds up the following hackbench workload on a 192 cores AMD EPYC
-9654 96-Core Processor (over 2 sockets):
-
-hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
-
-from 49s to 31s. (37% speedup)
-
-We can observe that the number of migrations is reduced significantly
-(-90%) with this patch, which may explain the speedup:
-
-Baseline:      118M cpu-migrations  (9.286 K/sec)
-With patch:      5M cpu-migrations  (0.580 K/sec)
-
-As a consequence, the stalled-cycles-backend are reduced:
-
-Baseline:     8.16% backend cycles idle
-With patch:   6.85% backend cycles idle
-
-Interestingly, the rate of context switch increases with the patch, but
-it does not appear to be an issue performance-wise:
-
-Baseline:     454M context-switches (35.677 K/sec)
-With patch:   670M context-switches (70.805 K/sec)
-
-This was developed as part of the investigation into a weird regression
-reported by AMD where adding a raw spinlock in the scheduler context
-switch accelerated hackbench. It turned out that changing this raw
-spinlock for a loop of 10000x cpu_relax within do_idle() had similar
-benefits.
-
-This patch achieves a similar effect without the busy-waiting by
-allowing select_task_rq to favor almost idle previously used CPUs based
-on the utilization of that CPU. The threshold of 1% cpu_util for almost
-idle CPU has been identified empirically using the hackbench workload.
-
-Feedback is welcome. I am especially interested to learn whether this
-patch has positive or detrimental effects on performance of other
-workloads.
-
-Link: https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
-Link: https://lore.kernel.org/lkml/20230725193048.124796-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/f6dc1652-bc39-0b12-4b6b-29a2f9cd8484@amd.com/
-Link: https://lore.kernel.org/lkml/20230822113133.643238-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230823060832.454842-1-aaron.lu@intel.com/
-Link: https://lore.kernel.org/lkml/20230905171105.1005672-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/cover.1695704179.git.yu.c.chen@intel.com/
-Link: https://lore.kernel.org/lkml/20230929183350.239721-1-mathieu.desnoyers@efficios.com/
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <vschneid@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
-Cc: Aaron Lu <aaron.lu@intel.com>
-Cc: Chen Yu <yu.c.chen@intel.com>
-Cc: Tim Chen <tim.c.chen@intel.com>
-Cc: K Prateek Nayak <kprateek.nayak@amd.com>
-Cc: Gautham R . Shenoy <gautham.shenoy@amd.com>
-Cc: x86@kernel.org
----
- kernel/sched/fair.c     | 45 +++++++++++++++++++++++++++++++++++++++--
- kernel/sched/features.h |  6 ++++++
- 2 files changed, 49 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 1d9c2482c5a3..70bffe3b6bd7 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7113,6 +7113,23 @@ static inline bool asym_fits_cpu(unsigned long util,
- 	return true;
- }
- 
-+static unsigned long cpu_util_without(int cpu, struct task_struct *p);
-+
-+/*
-+ * A runqueue is considered almost idle if:
-+ *
-+ *   cpu_util_without(cpu, p) / 1024 <= 1% * capacity_of(cpu)
-+ *
-+ * This inequality is transformed as follows to minimize arithmetic:
-+ *
-+ *   cpu_util_without(cpu, p) <= 10 * capacity_of(cpu)
-+ */
-+static bool
-+almost_idle_cpu(int cpu, struct task_struct *p)
-+{
-+	return cpu_util_without(cpu, p) <= 10 * capacity_of(cpu);
-+}
-+
- /*
-  * Try and locate an idle core/thread in the LLC cache domain.
-  */
-@@ -7139,18 +7156,33 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	 */
- 	lockdep_assert_irqs_disabled();
- 
-+	/*
-+	 * With the WAKEUP_BIAS_PREV_IDLE feature, if the previous CPU
-+	 * is cache affine and almost idle, prefer the previous CPU to
-+	 * the target CPU to inhibit costly task migration.
-+	 */
-+	if (sched_feat(WAKEUP_BIAS_PREV_IDLE) &&
-+	    (prev == target || cpus_share_cache(prev, target)) &&
-+	    (available_idle_cpu(prev) || sched_idle_cpu(prev) || almost_idle_cpu(prev, p)) &&
-+	    asym_fits_cpu(task_util, util_min, util_max, prev))
-+		return prev;
-+
- 	if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
- 	    asym_fits_cpu(task_util, util_min, util_max, target))
- 		return target;
- 
- 	/*
--	 * If the previous CPU is cache affine and idle, don't be stupid:
-+	 * Without the WAKEUP_BIAS_PREV_IDLE feature, use the previous
-+	 * CPU if it is cache affine and idle if the target cpu is not
-+	 * idle.
- 	 */
--	if (prev != target && cpus_share_cache(prev, target) &&
-+	if (!sched_feat(WAKEUP_BIAS_PREV_IDLE) &&
-+	    prev != target && cpus_share_cache(prev, target) &&
- 	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
- 	    asym_fits_cpu(task_util, util_min, util_max, prev))
- 		return prev;
- 
-+
- 	/*
- 	 * Allow a per-cpu kthread to stack with the wakee if the
- 	 * kworker thread and the tasks previous CPUs are the same.
-@@ -7217,6 +7249,15 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
- 
-+	/*
-+	 * With the WAKEUP_BIAS_PREV_IDLE feature, if the previous CPU
-+	 * is cache affine, prefer the previous CPU when all CPUs are
-+	 * busy to inhibit migration.
-+	 */
-+	if (sched_feat(WAKEUP_BIAS_PREV_IDLE) &&
-+	    prev != target && cpus_share_cache(prev, target))
-+		return prev;
-+
- 	return target;
- }
- 
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index ee7f23c76bd3..1ba67d177fe0 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -37,6 +37,12 @@ SCHED_FEAT(CACHE_HOT_BUDDY, true)
-  */
- SCHED_FEAT(WAKEUP_PREEMPTION, true)
- 
-+/*
-+ * Bias runqueue selection towards the previous runqueue if it is almost
-+ * idle or if all CPUs are busy.
-+ */
-+SCHED_FEAT(WAKEUP_BIAS_PREV_IDLE, true)
-+
- SCHED_FEAT(HRTICK, false)
- SCHED_FEAT(HRTICK_DL, false)
- SCHED_FEAT(DOUBLE_TICK, false)
+         M.
 -- 
-2.39.2
-
+Jazz is not dead. It just smells funny...
