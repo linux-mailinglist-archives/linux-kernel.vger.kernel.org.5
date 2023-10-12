@@ -2,58 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1EFE7C6813
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5357C6889
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235486AbjJLIo4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 04:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44028 "EHLO
+        id S235514AbjJLIq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 04:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235430AbjJLIoy (ORCPT
+        with ESMTP id S235191AbjJLIqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 04:44:54 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859149D;
-        Thu, 12 Oct 2023 01:44:50 -0700 (PDT)
-Received: from lhrpeml100005.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S5jnb2WXVz687rH;
-        Thu, 12 Oct 2023 16:42:43 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (7.191.163.240) by
- lhrpeml100005.china.huawei.com (7.191.160.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 12 Oct 2023 09:44:46 +0100
-Received: from lhrpeml500005.china.huawei.com ([7.191.163.240]) by
- lhrpeml500005.china.huawei.com ([7.191.163.240]) with mapi id 15.01.2507.031;
- Thu, 12 Oct 2023 09:44:46 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Brett Creeley <brett.creeley@amd.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "yishaih@nvidia.com" <yishaih@nvidia.com>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "dan.carpenter@linaro.org" <dan.carpenter@linaro.org>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "shannon.nelson@amd.com" <shannon.nelson@amd.com>
-Subject: RE: [PATCH v2 vfio 1/3] pds/vfio: Fix spinlock bad magic BUG
-Thread-Topic: [PATCH v2 vfio 1/3] pds/vfio: Fix spinlock bad magic BUG
-Thread-Index: AQHZ/JbkCnaV2OiQRk6iZK1jPCVjpLBF1igQ
-Date:   Thu, 12 Oct 2023 08:44:46 +0000
-Message-ID: <597df40289ac4ee59df04af0349874b7@huawei.com>
-References: <20231011230115.35719-1-brett.creeley@amd.com>
- <20231011230115.35719-2-brett.creeley@amd.com>
-In-Reply-To: <20231011230115.35719-2-brett.creeley@amd.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.202.227.178]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Thu, 12 Oct 2023 04:46:23 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C244791
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:46:20 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39C8jqDc108859;
+        Thu, 12 Oct 2023 03:45:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1697100352;
+        bh=cX1BQ1rC85sdbyg1TW2AGmJ90AezhB07jyjrZ2ZMDEs=;
+        h=Date:Subject:From:To:CC:References:In-Reply-To;
+        b=bHlgatCE6pHyMS4puFUiQdOl69PMwFdG/vI6+g40pwoCoy3KO69iZYT3xue8djJd2
+         shtD/le7xHXe5tcmpR7q02H+84c1mPy+0EOLoreSDYz3p49LpnaBmRg+gSPrjYVvqs
+         wKZZaWV3ayjdRq3tH4n/T/vpHroPIcQjVujhP6nU=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39C8jqEb059176
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Oct 2023 03:45:52 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 12
+ Oct 2023 03:45:52 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 12 Oct 2023 03:45:52 -0500
+Received: from [10.249.129.148] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39C8jVH7000440;
+        Thu, 12 Oct 2023 03:45:32 -0500
+Message-ID: <bf984dfc-9616-7f93-905c-35fefb762e98@ti.com>
+Date:   Thu, 12 Oct 2023 14:15:25 +0530
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm/tidss: Power up attached PM domains on probe
+Content-Language: en-US
+From:   Devarsh Thakkar <devarsht@ti.com>
+To:     Maxime Ripard <mripard@kernel.org>
+CC:     <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <tzimmermann@suse.de>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <praneeth@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <a-bhatia1@ti.com>, <j-luthra@ti.com>, <r-ravikumar@ti.com>,
+        <j-choudhary@ti.com>
+References: <20231009075018.2836020-1-devarsht@ti.com>
+ <bmemgnq3emddmjsho3c3h4cj2fyyyp3xll73ozpsxxmxxcr3bn@lffrmuqqpbl3>
+ <3c6e6538-bce6-e9f0-4307-72b3ffe6030e@ti.com>
+In-Reply-To: <3c6e6538-bce6-e9f0-4307-72b3ffe6030e@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,72 +73,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Maxime,
+
+On 09/10/23 16:40, Devarsh Thakkar wrote:
+> Hi Maxime,
+> 
+> Thanks for the review.
+> 
+> On 09/10/23 14:53, Maxime Ripard wrote:
+>> Hi Devarsh,
+>>
+>> On Mon, Oct 09, 2023 at 01:20:18PM +0530, Devarsh Thakkar wrote:
+>>> Some SoC's such as AM62P have dedicated power domains
+>>> for OLDI which need to be powered on separetely along
+>>> with display controller.
+>>>
+>>> So during driver probe, power up all attached PM domains
+>>> enumerated in devicetree node for DSS.
+>>>
+>>> This also prepares base to add display support for AM62P.
+>>>
+>>> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+>>> ---
+>>>   drivers/gpu/drm/tidss/tidss_drv.c | 76 +++++++++++++++++++++++++++++++
+>>>   drivers/gpu/drm/tidss/tidss_drv.h |  5 ++
+>>>   2 files changed, 81 insertions(+)
+>>>
+>>> diff --git a/drivers/gpu/drm/tidss/tidss_drv.c b/drivers/gpu/drm/tidss/tidss_drv.c
+>>> index 4d063eb9cd0b..a703a27d17bf 100644
+>>> --- a/drivers/gpu/drm/tidss/tidss_drv.c
+>>> +++ b/drivers/gpu/drm/tidss/tidss_drv.c
+>>> @@ -8,6 +8,7 @@
+>>>   #include <linux/of.h>
+>>>   #include <linux/module.h>
+>>>   #include <linux/pm_runtime.h>
+>>> +#include <linux/pm_domain.h>
+>>>   
+>>>   #include <drm/drm_atomic.h>
+>>>   #include <drm/drm_atomic_helper.h>
+>>> @@ -114,6 +115,72 @@ static const struct drm_driver tidss_driver = {
+>>>   	.minor			= 0,
+>>>   };
+>>>   
+>>> +static int tidss_detach_pm_domains(struct tidss_device *tidss)
+>>> +{
+>>> +	int i;
+>>> +
+>>> +	if (tidss->num_domains <= 1)
+>>> +		return 0;
+>>> +
+>>> +	for (i = 0; i < tidss->num_domains; i++) {
+>>> +		if (tidss->pd_link[i] && !IS_ERR(tidss->pd_link[i]))
+>>> +			device_link_del(tidss->pd_link[i]);
+>>> +		if (tidss->pd_dev[i] && !IS_ERR(tidss->pd_dev[i]))
+>>> +			dev_pm_domain_detach(tidss->pd_dev[i], true);
+>>> +		tidss->pd_dev[i] = NULL;
+>>> +		tidss->pd_link[i] = NULL;
+>>> +	}
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static int tidss_attach_pm_domains(struct tidss_device *tidss)
+>>> +{
+>>> +	struct device *dev = tidss->dev;
+>>> +	int i;
+>>> +	int ret;
+>>> +	struct platform_device *pdev = to_platform_device(dev);
+>>> +	struct device_node *np = pdev->dev.of_node;
+>>> +
+>>> +	tidss->num_domains = of_count_phandle_with_args(np, "power-domains",
+>>> +							"#power-domain-cells");
+>>> +	if (tidss->num_domains <= 1) {
+>>> +		dev_dbg(dev, "One or less power domains, no need to do attach domains\n");
+>>> +		return 0;
+>>> +	}
+>>> +
+>>> +	tidss->pd_dev = devm_kmalloc_array(dev, tidss->num_domains,
+>>> +					   sizeof(*tidss->pd_dev), GFP_KERNEL);
+>>> +	if (!tidss->pd_dev)
+>>> +		return -ENOMEM;
+>>> +
+>>> +	tidss->pd_link = devm_kmalloc_array(dev, tidss->num_domains,
+>>> +					    sizeof(*tidss->pd_link), GFP_KERNEL);
+>>> +	if (!tidss->pd_link)
+>>> +		return -ENOMEM;
+>>> +
+>>> +	for (i = 0; i < tidss->num_domains; i++) {
+>>> +		tidss->pd_dev[i] = dev_pm_domain_attach_by_id(dev, i);
+>>> +		if (IS_ERR(tidss->pd_dev[i])) {
+>>> +			ret = PTR_ERR(tidss->pd_dev[i]);
+>>> +			goto fail;
+>>> +		}
+>>> +
+>>> +		tidss->pd_link[i] = device_link_add(dev, tidss->pd_dev[i],
+>>> +						    DL_FLAG_STATELESS |
+>>> +						    DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE);
+>>> +		if (!tidss->pd_link[i]) {
+>>> +			ret = -EINVAL;
+>>> +			goto fail;
+>>> +		}
+>>> +	}
+>>> +
+>>> +	return 0;
+>>> +fail:
+>>> +	tidss_detach_pm_domains(tidss);
+>>> +	return ret;
+>>> +}
+>>
+>> My understanding is that this will be done automatically at probe time.
+>> Why do we need to roll our own there? A comment on top of the function
+>> and the commit log would help.
+> 
+> By default, the TI SCI power domain controller driver only powers up one power
+> domain associated with device, With AM62P, we now have separate power domains
+> for OLDI Tx ports (for more efficient power-saving control) which is different
+> from core DSS device power domain, so this patch powers on the associated
+> power domains too if enumerated in device-tree.
+> 
+
+My bad, I think it is not the ti sci power domain controller driver but 
+the kernel core itself which seems to have a check to only allow one 
+power domain per device (thanks to Vignesh for pointing out) :
+
+	/*
+	 * Devices with multiple PM domains must be attached separately,
+	 * as we can only attach one PM domain per device.
+	 */
+	if (of_count_phandle_with_args(dev->of_node, "power-domains",
+				       "#power-domain-cells") != 1)
+		return 0;
+
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/base/power/domain.c?h=next-20231012#n2828
+
+But anyways, I talked to team internally and there are some plans to 
+have separate OLDI bridge driver which would inherit these new power 
+domains, so I guess we may not need this patch at all.
+
+Regards
+Devarsh
 
 
-> -----Original Message-----
-> From: Brett Creeley [mailto:brett.creeley@amd.com]
-> Sent: 12 October 2023 00:01
-> To: jgg@ziepe.ca; yishaih@nvidia.com; Shameerali Kolothum Thodi
-> <shameerali.kolothum.thodi@huawei.com>; kevin.tian@intel.com;
-> alex.williamson@redhat.com; dan.carpenter@linaro.org
-> Cc: kvm@vger.kernel.org; linux-kernel@vger.kernel.org;
-> brett.creeley@amd.com; shannon.nelson@amd.com
-> Subject: [PATCH v2 vfio 1/3] pds/vfio: Fix spinlock bad magic BUG
+> Regards
+> Devarsh
 > 
-> The following BUG was found when running on a kernel with
-> CONFIG_DEBUG_SPINLOCK=y set:
-> 
-> BUG: spinlock bad magic on CPU#2, bash/2481
->  lock: 0xffff8d6052a88f50, .magic: 00000000, .owner:
-> <none>/-1, .owner_cpu: 0
-> Call Trace:
->  <TASK>
->  dump_stack_lvl+0x36/0x50
->  do_raw_spin_lock+0x79/0xc0
->  pds_vfio_reset+0x1d/0x60 [pds_vfio_pci]
->  pci_reset_function+0x4b/0x70
->  reset_store+0x5b/0xa0
->  kernfs_fop_write_iter+0x137/0x1d0
->  vfs_write+0x2de/0x410
->  ksys_write+0x5d/0xd0
->  do_syscall_64+0x3b/0x90
->  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> 
-> As shown, the .magic: 00000000, does not match the expected value. This
-> is because spin_lock_init() is never called for the reset_lock. Fix
-> this by calling spin_lock_init(&pds_vfio->reset_lock) when initializing
-> the device.
-> 
-> Signed-off-by: Brett Creeley <brett.creeley@amd.com>
-> Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
-
-Reviewed-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-
-I think this needs to be fixed in HiSilicon driver as well. I will send out a 
-patch.
-
-Thanks,
-Shameer
-
-> ---
->  drivers/vfio/pci/pds/vfio_dev.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/vfio/pci/pds/vfio_dev.c b/drivers/vfio/pci/pds/vfio_dev.c
-> index 649b18ee394b..c351f588fa13 100644
-> --- a/drivers/vfio/pci/pds/vfio_dev.c
-> +++ b/drivers/vfio/pci/pds/vfio_dev.c
-> @@ -155,6 +155,8 @@ static int pds_vfio_init_device(struct vfio_device
-> *vdev)
-> 
->  	pds_vfio->vf_id = vf_id;
-> 
-> +	spin_lock_init(&pds_vfio->reset_lock);
-> +
->  	vdev->migration_flags = VFIO_MIGRATION_STOP_COPY |
-> VFIO_MIGRATION_P2P;
->  	vdev->mig_ops = &pds_vfio_lm_ops;
->  	vdev->log_ops = &pds_vfio_log_ops;
-> --
-> 2.17.1
-
+>>
+>> Thanks!
+>> Maxime
