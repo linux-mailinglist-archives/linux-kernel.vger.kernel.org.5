@@ -2,129 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D186D7C6610
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EA17C660C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377574AbjJLG7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
+        id S1377666AbjJLG7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347055AbjJLG7N (ORCPT
+        with ESMTP id S1347089AbjJLG7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:59:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6227694;
-        Wed, 11 Oct 2023 23:59:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697093952; x=1728629952;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=JEQtMyPEUMT8YzBgRZ5JST75BtIEg2mXzghTJIME9sA=;
-  b=Mo9cBGch28kTz7xfHCk/WxnRl6Dynt5y9zcD4H9B6oOGEhY5Ib8OQuW/
-   E8aFwzkarmiupO68xChvLA478azXDLL1L2U0bzETRURMIcY6hMy14wm6H
-   u1H2fdaHQKX2IPU5PzDl+dIw7tYZJWeTCLAl0NoZB7VLSeet6BSJ4pcxr
-   jfrxb8RNO38aCKXXyhgTjV6usNZa+yMm9vdVIhMc2rYezziVzZDS0Pu05
-   155PKlvx0rsqgPNgls1EIg6hJsoZFAQw8SWe6MbClckWTmXUEIZxywP85
-   TDjHYENBTARREXoEQVPKGC8whNMCT+A95gAJlPje7nyaUij9Sw0ydraUv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="471104298"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="471104298"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 23:59:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="897969016"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="897969016"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 11 Oct 2023 23:57:18 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qqpev-0003Ht-2n;
-        Thu, 12 Oct 2023 06:59:02 +0000
-Date:   Thu, 12 Oct 2023 14:58:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sarah Walker <sarah.walker@imgtec.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-doc@vger.kernel.org,
-        hns@goldelico.com, krzysztof.kozlowski+dt@linaro.org,
-        matthew.brost@intel.com, corbet@lwn.net, luben.tuikov@amd.com,
-        dakr@redhat.com, donald.robson@imgtec.com,
-        devicetree@vger.kernel.org, conor+dt@kernel.org,
-        mripard@kernel.org, Matt Coster <matt.coster@imgtec.com>,
-        robh+dt@kernel.org, faith.ekstrand@collabora.com,
-        linux-kernel@vger.kernel.org, afd@ti.com,
-        boris.brezillon@collabora.com, tzimmermann@suse.de,
-        christian.koenig@amd.com
-Subject: Re: [PATCH v7 10/20] drm/imagination: Add GPU ID parsing and
- firmware loading
-Message-ID: <202310121406.jT1fEThj-lkp@intel.com>
-References: <20231010133738.35274-11-sarah.walker@imgtec.com>
+        Thu, 12 Oct 2023 02:59:15 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD106CC
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:59:13 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a7eef0b931so8643437b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:59:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697093953; x=1697698753; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rIFmNYlAB1YA+BGURf8ha/w3pHco7mLuguJQgg17NrU=;
+        b=DT+OV1RuKG5TyclTIMf1IQbYnXmwyAwJJZWRR7bPGDgtOnmvT9JOLT0sU9eYHRfZfZ
+         ejKO5hE+GxBU2pF6crHRkiBywZcB3BYfVcektK1pX8CXz1J6pcUynnyEddUUiNfWLOTF
+         FgLxn2yp0Xb+UIzMHooOxAqGHYpArrLQEObSWUBFThUGRYBj0feiow+qzHnjmtwtNryI
+         pi95cd7Ug/75hfpZenKFeRUbrkKKynS4Y3UURwl0U43jGGNSIInD0owb2OtpR87pmT44
+         vo9yXQ00O3LjUg/e8OpXjemnqyANIh5U1nNhUnFY9T7LWgajQLei4AmrD9UFYUp8cnFV
+         yv/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697093953; x=1697698753;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rIFmNYlAB1YA+BGURf8ha/w3pHco7mLuguJQgg17NrU=;
+        b=evTGX8AirrvDjnOJLelRQclJFsgOLMlg1g6UZqKd1umXbx+I48YIL0U1AC46MI0FgV
+         t0h6oL0x1ftJGm3xNJ5WOWJmDSouTk9Lzlclh0LGRIkeNB2ibnqo6Cvt7U5zpkVf4nBQ
+         /sW18FMtAWxVFt19ay83IE1DvvrUUwUDLCShQ+ZhK4NQxWvIPdnzgB6H2JZhsGbkzoLm
+         FREsimPgIQpQkUKLu6eUVxRAPHQ8SO5GozQDHWZQnNjba7OzBmAUkC69QKXnMxjVoW5e
+         274CLJDTCTjfOa8XnDtYoVCr0IMSHDEXag1ZFI3uVW8eIIJJ/nn+KwOaLa3AzXutyaZE
+         rw4w==
+X-Gm-Message-State: AOJu0YxNY+xpl8x+k7qiaXgaw3mr3/wlwqcxl3CuADVqXS5QNThwqP2G
+        bO8uqEiabkeTYytkY7U5G+2duxowmLEkXDQTxy7svg==
+X-Google-Smtp-Source: AGHT+IFrsaoVltofG+8TvEr2LPoalB9tRfaZX/mDOWhp9hrmRfN0VLOhszhqLONmV29bVCQ61IU6QPECcxltuxJBLX4=
+X-Received: by 2002:a81:4908:0:b0:5a7:c22f:fdea with SMTP id
+ w8-20020a814908000000b005a7c22ffdeamr7245629ywa.8.1697093952900; Wed, 11 Oct
+ 2023 23:59:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010133738.35274-11-sarah.walker@imgtec.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231011130204.52265-1-brgl@bgdev.pl>
+In-Reply-To: <20231011130204.52265-1-brgl@bgdev.pl>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 12 Oct 2023 08:59:02 +0200
+Message-ID: <CACRpkdZD=Rf2ntpNJmrvXJn-oYPyet-GALZHsdKh-W0t=pN5aA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] i2c: mux: don't access GPIOLIB internal structures
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Peter Korsgaard <peter.korsgaard@barco.com>,
+        Peter Rosin <peda@axentia.se>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sarah,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on drm-misc/drm-misc-next]
-[also build test WARNING on drm/drm-next drm-intel/for-linux-next drm-tip/drm-tip next-20231011]
-[cannot apply to drm-exynos/exynos-drm-next drm-intel/for-linux-next-fixes linus/master v6.6-rc5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Sarah-Walker/sizes-h-Add-entries-between-SZ_32G-and-SZ_64T/20231010-221057
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20231010133738.35274-11-sarah.walker%40imgtec.com
-patch subject: [PATCH v7 10/20] drm/imagination: Add GPU ID parsing and firmware loading
-config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20231012/202310121406.jT1fEThj-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231012/202310121406.jT1fEThj-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310121406.jT1fEThj-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/gpu/drm/imagination/pvr_device_info.c:106: warning: Function parameter or member 'enhancements' not described in 'pvr_device_info_set_enhancements'
->> drivers/gpu/drm/imagination/pvr_device_info.c:106: warning: Function parameter or member 'enhancements_size' not described in 'pvr_device_info_set_enhancements'
->> drivers/gpu/drm/imagination/pvr_device_info.c:106: warning: Excess function parameter 'quirks' description in 'pvr_device_info_set_enhancements'
->> drivers/gpu/drm/imagination/pvr_device_info.c:106: warning: Excess function parameter 'quirks_size' description in 'pvr_device_info_set_enhancements'
+Hi Bartosz,
 
 
-vim +106 drivers/gpu/drm/imagination/pvr_device_info.c
+On Wed, Oct 11, 2023 at 3:02=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 
-    97	
-    98	/**
-    99	 * pvr_device_info_set_enhancements() - Set device enhancements from device information in firmware
-   100	 * @pvr_dev: Device pointer.
-   101	 * @quirks: Pointer to enhancements mask in device information.
-   102	 * @quirks_size: Size of enhancements mask, in u64s.
-   103	 */
-   104	void pvr_device_info_set_enhancements(struct pvr_device *pvr_dev, const u64 *enhancements,
-   105					      u32 enhancements_size)
- > 106	{
-   107		BUILD_BUG_ON(ARRAY_SIZE(enhancements_mapping) != PVR_FW_HAS_ERN_MAX);
-   108	
-   109		pvr_device_info_set_common(pvr_dev, enhancements, enhancements_size,
-   110					   enhancements_mapping, ARRAY_SIZE(enhancements_mapping));
-   111	}
-   112	
+> The backstory for this short series is that we are identyfing and
+> removing all unauthorized uses of GPIOLIB structures across the kernel.
+>
+> For example: there are many users that access struct gpio_chip when the
+> only user allowed to safely do this is the provider of that chip.
+>
+> We are very close to removing gpiochip_find(). Another function that
+> poses a similar problem is gpiod_to_chip() which also returns the
+> address of the underlying gpio_chip without assuring that it will not go
+> away e.g. due to a hot-unplug event or a device unbind.
+>
+> We'll need to replace it with gpiod_to_gpio_device() across the entire
+> tree. Let's start by actually providing it and adding the first user:
+> the i2c-mux-gpio driver which dereferences the otherwise opaque struct
+> gpio_desc.
+>
+> Let's also add a helper that allows to retrieve the address of the
+> struct device backing the GPIO device as this is another valid use-case.
+>
+> Finally, let's un-include the GPIO private header and fix the code to
+> access the device in a safe way.
+>
+> As the change is pretty minor, it would be best if patch 3/3 could be
+> acked by the I2C mux maintainers and went through the GPIO tree.
+> Otherwise, I can apply patches 1 and 2 and provide an immutable branch.
+>
+> Bartosz Golaszewski (3):
+>   gpiolib: provide gpio_device_to_device()
+>   gpiolib: provide gpiod_to_gpio_device()
+>   i2c: mux: gpio: don't fiddle with GPIOLIB internals
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The series:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Good job!
+
+Yours,
+Linus Walleij
