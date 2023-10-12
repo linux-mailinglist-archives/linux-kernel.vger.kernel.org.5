@@ -2,298 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D547C6961
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85C27C6966
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235514AbjJLJWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:22:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
+        id S235603AbjJLJXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:23:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235480AbjJLJWc (ORCPT
+        with ESMTP id S235572AbjJLJWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:22:32 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F0DB9D;
-        Thu, 12 Oct 2023 02:22:30 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39C9M4JZ044559;
-        Thu, 12 Oct 2023 04:22:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697102524;
-        bh=6cq5zMJqEj7ygC2Jw4PTN1YCg0IXpiWZRKu5hqPmTH4=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=X5HyGODfR3teFKPf/Qc0y5Yw5vflPXS0l6zFbblNC6ZVnV5hs/rPRZjnHREkleMWF
-         XGCiRH/PtyRzHrezEA9AusiaiH+8k1UMtAHaZUE3lyxFtHj9P13SOUsaGImI8B70/e
-         S4cOq/+ifhRpIHp39NXcV7YHeJ1VNWrXurVHShpE=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39C9M4CD091848
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Oct 2023 04:22:04 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 12
- Oct 2023 04:22:03 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 12 Oct 2023 04:22:04 -0500
-Received: from [172.24.227.94] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39C9LvdI019092;
-        Thu, 12 Oct 2023 04:21:57 -0500
-Message-ID: <7d97c149-473c-41df-8318-2cb5bb602f01@ti.com>
-Date:   Thu, 12 Oct 2023 14:51:56 +0530
+        Thu, 12 Oct 2023 05:22:54 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA674DA
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:22:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F13C1C433C8;
+        Thu, 12 Oct 2023 09:22:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697102571;
+        bh=BjOxZ1EFiH/qIGsevCoi8uYhpDF65O0lMqqR2TjIS6k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lcwCF/9ZoDcUuhqXgQ0Pq042hN8vA3TNQC/1SWr9aDBoxGbvbP/tvQ+PZfAHUXIVG
+         /jJdV42rml/1RkWasOXzk+GknCxl52mRPXBC+Aab0DKchnethua7BA8LOiw6p/xnFU
+         HmTDg8xfWLdvhwsWvm8zg6WxvBbb6vJdIQCmxs4nc5juqcj02ayGahoxXM398HEjzN
+         Q+YyFBZV+Sky/n1lwPHIV8GEFMj3u+8wXEQJ0UIVltQGe8VKsLdYhPS4zTaV3+2qCk
+         m1zDz80aMEstZbyyDtOl+5yMqRuVPVsPA7jsQCbxmYSfZg/1bkeSxq8L6fRB05MwFX
+         LlhwcRn+ORueA==
+From:   Conor Dooley <conor@kernel.org>
+To:     linux-riscv@lists.infradead.org
+Cc:     conor@kernel.org, Conor Dooley <conor.dooley@microchip.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] soc: sifive: shunt ccache driver to drivers/cache
+Date:   Thu, 12 Oct 2023 10:22:09 +0100
+Message-Id: <20231012-mooing-refined-ad1ab421c0d3@spud>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/4] arm64: dts: ti: k3-am654-base-board: add ICSSG2
- Ethernet support
-Content-Language: en-US
-To:     MD Danish Anwar <danishanwar@ti.com>, Nishanth Menon <nm@ti.com>
-CC:     Peng Fan <peng.fan@nxp.com>, Udit Kumar <u-kumar1@ti.com>,
-        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Tero Kristo <kristo@kernel.org>, <linux-omap@vger.kernel.org>,
-        <srk@ti.com>, <r-gunasekaran@ti.com>, Andrew Davis <afd@ti.com>
-References: <20231003105539.1698436-1-danishanwar@ti.com>
- <20231003105539.1698436-3-danishanwar@ti.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <20231003105539.1698436-3-danishanwar@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4788; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=QQJmomIqc987f3Vcg8dfnw5kTv8CmJ3TfKvt43fjd9Q=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKnqu/bdyFs/u6I1yr+2cEt+j8qCtZ0TZ83cVSd40q5V9 5v6ysK3HaUsDGIcDLJiiiyJt/tapNb/cdnh3PMWZg4rE8gQBi5OAZhIfzbDP92XE93XOwRN4hX8 /3WfSszcZmsuQZ+32Z8uXdD7vVxMOoHhf966qZ7aW+oz1iz82yemcmTlwvsMa5mil6/9Xrvy0dn 5mmwA
+X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Conor Dooley <conor.dooley@microchip.com>
 
+Move the ccache driver over to drivers/cache, out of the drivers/soc
+dumping ground, to this new collection point for cache controller
+drivers.
 
-On 03/10/23 16:25, MD Danish Anwar wrote:
-> ICSSG2 provides dual Gigabit Ethernet support.
-> 
-> For support SR2.0 ICSSG Ethernet firmware:
+Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+---
+CC: Conor Dooley <conor@kernel.org>
+CC: Palmer Dabbelt <palmer@dabbelt.com>
+CC: Paul Walmsley <paul.walmsley@sifive.com>
+CC: Emil Renner Berthing <kernel@esmil.dk>
+CC: linux-kernel@vger.kernel.org
+CC: linux-riscv@lists.infradead.org
+---
+ MAINTAINERS                                   | 14 +++++++-------
+ drivers/cache/Kconfig                         |  8 ++++++++
+ drivers/cache/Makefile                        |  3 ++-
+ drivers/{soc/sifive => cache}/sifive_ccache.c |  0
+ drivers/soc/Kconfig                           |  1 -
+ drivers/soc/Makefile                          |  1 -
+ drivers/soc/sifive/Kconfig                    | 10 ----------
+ drivers/soc/sifive/Makefile                   |  3 ---
+ 8 files changed, 17 insertions(+), 23 deletions(-)
+ rename drivers/{soc/sifive => cache}/sifive_ccache.c (100%)
+ delete mode 100644 drivers/soc/sifive/Kconfig
+ delete mode 100644 drivers/soc/sifive/Makefile
 
-Are you describing difference wrt SR1.0? Because there is no SR1.0 in
-mainline today. So this doesnt make sense
-
-> - provide different firmware blobs and use TX_PRU.
-> - IEP0 is used as PTP Hardware Clock and can only be used for one port.
-> - TX timestamp notification comes via INTC interrupt.
-> 
-
-
-You are also renaming existing dts file which needs to be called out
-clearly in the commit message something like:
-
-
-Rename the existing k3-am654-base-board.dts to k3-am654-common-board.dts
-This represents basic board where ICSSG/PRUs can be used for general
-purpose. k3-am654-base-board.dtb is now made of common-board + ICSSG2
-specific overlay which enables ICSSG2 dual Ethernet ports available on
-base board.
-
-
-
-> Reviewed-by: Andrew Davis <afd@ti.com>
-> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/Makefile               |   2 +
->  ...se-board.dts => k3-am654-common-board.dts} |   0
->  arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso   | 145 ++++++++++++++++++
->  3 files changed, 147 insertions(+)
->  rename arch/arm64/boot/dts/ti/{k3-am654-base-board.dts => k3-am654-common-board.dts} (100%)
->  create mode 100644 arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> 
-> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-> index e7b8e2e7f083..8f5c9515777e 100644
-> --- a/arch/arm64/boot/dts/ti/Makefile
-> +++ b/arch/arm64/boot/dts/ti/Makefile
-> @@ -42,12 +42,14 @@ dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb
->  dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
->  
->  # Boards with AM65x SoC
-> +k3-am654-base-board-dtbs := k3-am654-common-board.dtb k3-am654-icssg2.dtbo
->  k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb k3-am654-base-board-rocktech-rk101-panel.dtbo
->  dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
->  dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic-pg2.dtb
->  dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
->  dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-m2.dtb
->  dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-pg2.dtb
-> +dtb-$(CONFIG_ARCH_K3) += k3-am654-common-board.dtb
->  dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
->  dtb-$(CONFIG_ARCH_K3) += k3-am654-gp-evm.dtb
->  
-> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-common-board.dts
-> similarity index 100%
-> rename from arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-> rename to arch/arm64/boot/dts/ti/k3-am654-common-board.dts
-> diff --git a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> new file mode 100644
-> index 000000000000..7b7d32282668
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> @@ -0,0 +1,145 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/**
-> + * DT overlay for IDK application board on AM654 EVM
-> + *
-> + * Copyright (C) 2018-2023 Texas Instruments Incorporated - https://www.ti.com/
-> + */
-> +
-> +/dts-v1/;
-> +/plugin/;
-> +
-> +#include <dt-bindings/net/ti-dp83867.h>
-> +#include "k3-pinctrl.h"
-> +
-> +&{/} {
-> +	aliases {
-> +		ethernet1 = &icssg2_emac0;
-> +		ethernet2 = &icssg2_emac1;
-> +	};
-> +
-> +	/* Ethernet node on PRU-ICSSG2 */
-> +	icssg2_eth: icssg2-eth {
-> +		compatible = "ti,am654-icssg-prueth";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&icssg2_rgmii_pins_default>;
-> +		sram = <&msmc_ram>;
-> +		ti,prus = <&pru2_0>, <&rtu2_0>, <&tx_pru2_0>,
-> +			<&pru2_1>, <&rtu2_1>, <&tx_pru2_1>;
-> +		firmware-name = "ti-pruss/am65x-sr2-pru0-prueth-fw.elf",
-> +				"ti-pruss/am65x-sr2-rtu0-prueth-fw.elf",
-> +				"ti-pruss/am65x-sr2-txpru0-prueth-fw.elf",
-> +				"ti-pruss/am65x-sr2-pru1-prueth-fw.elf",
-> +				"ti-pruss/am65x-sr2-rtu1-prueth-fw.elf",
-> +				"ti-pruss/am65x-sr2-txpru1-prueth-fw.elf";
-> +
-> +		ti,pruss-gp-mux-sel = <2>,      /* MII mode */
-> +				      <2>,
-> +				      <2>,
-> +				      <2>,	/* MII mode */
-> +				      <2>,
-> +				      <2>;
-> +
-> +		ti,mii-g-rt = <&icssg2_mii_g_rt>;
-> +		ti,mii-rt = <&icssg2_mii_rt>;
-> +		ti,iep = <&icssg2_iep0>, <&icssg2_iep1>;
-> +
-> +		interrupt-parent = <&icssg2_intc>;
-> +		interrupts = <24 0 2>, <25 1 3>;
-> +		interrupt-names = "tx_ts0", "tx_ts1";
-> +
-> +		dmas = <&main_udmap 0xc300>, /* egress slice 0 */
-> +		       <&main_udmap 0xc301>, /* egress slice 0 */
-> +		       <&main_udmap 0xc302>, /* egress slice 0 */
-> +		       <&main_udmap 0xc303>, /* egress slice 0 */
-> +		       <&main_udmap 0xc304>, /* egress slice 1 */
-> +		       <&main_udmap 0xc305>, /* egress slice 1 */
-> +		       <&main_udmap 0xc306>, /* egress slice 1 */
-> +		       <&main_udmap 0xc307>, /* egress slice 1 */
-> +		       <&main_udmap 0x4300>, /* ingress slice 0 */
-> +		       <&main_udmap 0x4301>; /* ingress slice 1 */
-> +
-> +		dma-names = "tx0-0", "tx0-1", "tx0-2", "tx0-3",
-> +			    "tx1-0", "tx1-1", "tx1-2", "tx1-3",
-> +			    "rx0", "rx1";
-> +		ethernet-ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			icssg2_emac0: port@0 {
-> +				reg = <0>;
-> +				phy-handle = <&icssg2_phy0>;
-> +				phy-mode = "rgmii-id";
-> +				ti,syscon-rgmii-delay = <&scm_conf 0x4120>;
-> +				/* Filled in by bootloader */
-> +				local-mac-address = [00 00 00 00 00 00];
-> +			};
-> +			icssg2_emac1: port@1 {
-> +				reg = <1>;
-> +				phy-handle = <&icssg2_phy1>;
-> +				phy-mode = "rgmii-id";
-> +				ti,syscon-rgmii-delay = <&scm_conf 0x4124>;
-> +				/* Filled in by bootloader */
-> +				local-mac-address = [00 00 00 00 00 00];
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&main_pmx0 {
-> +
-> +	icssg2_mdio_pins_default: icssg2-mdio-default-pins {
-> +		pinctrl-single,pins = <
-> +			AM65X_IOPAD(0x0094, PIN_INPUT, 2) /* (AC19) PRG2_PRU0_GPO7.PRG2_MDIO0_MDIO */
-> +			AM65X_IOPAD(0x00c8, PIN_OUTPUT, 2) /* (AE15) PRG2_PRU1_GPO7.PRG2_MDIO0_MDC */
-> +		>;
-> +	};
-> +
-> +	icssg2_rgmii_pins_default: icssg2-rgmii-default-pins {
-> +		pinctrl-single,pins = <
-> +			AM65X_IOPAD(0x00ac, PIN_INPUT, 2) /* (AH15) PRG2_PRU1_GPO0.PRG2_RGMII2_RD0 */
-> +			AM65X_IOPAD(0x00b0, PIN_INPUT, 2) /* (AC16) PRG2_PRU1_GPO1.PRG2_RGMII2_RD1 */
-> +			AM65X_IOPAD(0x00b4, PIN_INPUT, 2) /* (AD17) PRG2_PRU1_GPO2.PRG2_RGMII2_RD2 */
-> +			AM65X_IOPAD(0x00b8, PIN_INPUT, 2) /* (AH14) PRG2_PRU1_GPO3.PRG2_RGMII2_RD3 */
-> +			AM65X_IOPAD(0x00cc, PIN_OUTPUT, 2) /* (AD15) PRG2_PRU1_GPO8.PRG2_RGMII2_TD0 */
-> +			AM65X_IOPAD(0x00d0, PIN_OUTPUT, 2) /* (AF14) PRG2_PRU1_GPO9.PRG2_RGMII2_TD1 */
-> +			AM65X_IOPAD(0x00d4, PIN_OUTPUT, 2) /* (AC15) PRG2_PRU1_GPO10.PRG2_RGMII2_TD2 */
-> +			AM65X_IOPAD(0x00d8, PIN_OUTPUT, 2) /* (AD14) PRG2_PRU1_GPO11.PRG2_RGMII2_TD3 */
-> +			AM65X_IOPAD(0x00dc, PIN_INPUT, 2) /* (AE14) PRG2_PRU1_GPO16.PRG2_RGMII2_TXC */
-> +			AM65X_IOPAD(0x00c4, PIN_OUTPUT, 2) /* (AC17) PRG2_PRU1_GPO6.PRG2_RGMII2_TX_CTL */
-> +			AM65X_IOPAD(0x00c0, PIN_INPUT, 2) /* (AG15) PRG2_PRU1_GPO5.PRG2_RGMII2_RXC */
-> +			AM65X_IOPAD(0x00bc, PIN_INPUT, 2) /* (AG14) PRG2_PRU1_GPO4.PRG2_RGMII2_RX_CTL */
-> +
-> +			AM65X_IOPAD(0x0078, PIN_INPUT, 2) /* (AF18) PRG2_PRU0_GPO0.PRG2_RGMII1_RD0 */
-> +			AM65X_IOPAD(0x007c, PIN_INPUT, 2) /* (AE18) PRG2_PRU0_GPO1.PRG2_RGMII1_RD1 */
-> +			AM65X_IOPAD(0x0080, PIN_INPUT, 2) /* (AH17) PRG2_PRU0_GPO2.PRG2_RGMII1_RD2 */
-> +			AM65X_IOPAD(0x0084, PIN_INPUT, 2) /* (AG18) PRG2_PRU0_GPO3.PRG2_RGMII1_RD3 */
-> +			AM65X_IOPAD(0x0098, PIN_OUTPUT, 2) /* (AH16) PRG2_PRU0_GPO8.PRG2_RGMII1_TD0 */
-> +			AM65X_IOPAD(0x009c, PIN_OUTPUT, 2) /* (AG16) PRG2_PRU0_GPO9.PRG2_RGMII1_TD1 */
-> +			AM65X_IOPAD(0x00a0, PIN_OUTPUT, 2) /* (AF16) PRG2_PRU0_GPO10.PRG2_RGMII1_TD2 */
-> +			AM65X_IOPAD(0x00a4, PIN_OUTPUT, 2) /* (AE16) PRG2_PRU0_GPO11.PRG2_RGMII1_TD3 */
-> +			AM65X_IOPAD(0x00a8, PIN_INPUT, 2) /* (AD16) PRG2_PRU0_GPO16.PRG2_RGMII1_TXC */
-> +			AM65X_IOPAD(0x0090, PIN_OUTPUT, 2) /* (AE17) PRG2_PRU0_GPO6.PRG2_RGMII1_TX_CTL */
-> +			AM65X_IOPAD(0x008c, PIN_INPUT, 2) /* (AF17) PRG2_PRU0_GPO5.PRG2_RGMII1_RXC */
-> +			AM65X_IOPAD(0x0088, PIN_INPUT, 2) /* (AG17) PRG2_PRU0_GPO4.PRG2_RGMII1_RX_CTL */
-> +		>;
-> +	};
-> +};
-> +
-> +&icssg2_mdio {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&icssg2_mdio_pins_default>;
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	icssg2_phy0: ethernet-phy@0 {
-> +		reg = <0>;
-> +		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-> +		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-> +	};
-> +
-> +	icssg2_phy1: ethernet-phy@3 {
-> +		reg = <3>;
-> +		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-> +		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-> +	};
-> +};
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 90f13281d297..ab32599fc799 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19580,6 +19580,13 @@ S:	Supported
+ N:	sifive
+ K:	[^@]sifive
+ 
++SIFIVE CACHE DRIVER
++M:	Conor Dooley <conor@kernel.org>
++L:	linux-riscv@lists.infradead.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/cache/sifive,ccache0.yaml
++F:	drivers/cache/sifive_ccache.c
++
+ SIFIVE FU540 SYSTEM-ON-CHIP
+ M:	Paul Walmsley <paul.walmsley@sifive.com>
+ M:	Palmer Dabbelt <palmer@dabbelt.com>
+@@ -19595,13 +19602,6 @@ S:	Maintained
+ F:	Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml
+ F:	drivers/dma/sf-pdma/
+ 
+-SIFIVE SOC DRIVERS
+-M:	Conor Dooley <conor@kernel.org>
+-L:	linux-riscv@lists.infradead.org
+-S:	Maintained
+-T:	git https://git.kernel.org/pub/scm/linux/kernel/git/conor/linux.git/
+-F:	Documentation/devicetree/bindings/cache/sifive,ccache0.yaml
+-F:	drivers/soc/sifive/
+ 
+ SILEAD TOUCHSCREEN DRIVER
+ M:	Hans de Goede <hdegoede@redhat.com>
+diff --git a/drivers/cache/Kconfig b/drivers/cache/Kconfig
+index a57677f908f3..433b7ded8787 100644
+--- a/drivers/cache/Kconfig
++++ b/drivers/cache/Kconfig
+@@ -8,4 +8,12 @@ config AX45MP_L2_CACHE
+ 	help
+ 	  Support for the L2 cache controller on Andes Technology AX45MP platforms.
+ 
++if ARCH_SIFIVE || ARCH_STARFIVE
++
++config SIFIVE_CCACHE
++	bool "Sifive Composable Cache controller"
++	help
++	  Support for the composable cache controller on SiFive platforms.
++
++endif
+ endmenu
+diff --git a/drivers/cache/Makefile b/drivers/cache/Makefile
+index 2012e7fb978d..7657cff3bd6c 100644
+--- a/drivers/cache/Makefile
++++ b/drivers/cache/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+-obj-$(CONFIG_AX45MP_L2_CACHE) += ax45mp_cache.o
++obj-$(CONFIG_AX45MP_L2_CACHE)	+= ax45mp_cache.o
++obj-$(CONFIG_SIFIVE_CCACHE)	+= sifive_ccache.o
+diff --git a/drivers/soc/sifive/sifive_ccache.c b/drivers/cache/sifive_ccache.c
+similarity index 100%
+rename from drivers/soc/sifive/sifive_ccache.c
+rename to drivers/cache/sifive_ccache.c
+diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
+index d21e75d69294..76afeff93045 100644
+--- a/drivers/soc/Kconfig
++++ b/drivers/soc/Kconfig
+@@ -23,7 +23,6 @@ source "drivers/soc/qcom/Kconfig"
+ source "drivers/soc/renesas/Kconfig"
+ source "drivers/soc/rockchip/Kconfig"
+ source "drivers/soc/samsung/Kconfig"
+-source "drivers/soc/sifive/Kconfig"
+ source "drivers/soc/starfive/Kconfig"
+ source "drivers/soc/sunxi/Kconfig"
+ source "drivers/soc/tegra/Kconfig"
+diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
+index 0706a27d13be..ba8f5b5460e1 100644
+--- a/drivers/soc/Makefile
++++ b/drivers/soc/Makefile
+@@ -28,7 +28,6 @@ obj-y				+= qcom/
+ obj-y				+= renesas/
+ obj-y				+= rockchip/
+ obj-$(CONFIG_SOC_SAMSUNG)	+= samsung/
+-obj-y				+= sifive/
+ obj-y				+= sunxi/
+ obj-$(CONFIG_ARCH_TEGRA)	+= tegra/
+ obj-y				+= ti/
+diff --git a/drivers/soc/sifive/Kconfig b/drivers/soc/sifive/Kconfig
+deleted file mode 100644
+index 139884addc41..000000000000
+--- a/drivers/soc/sifive/Kconfig
++++ /dev/null
+@@ -1,10 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-
+-if ARCH_SIFIVE || ARCH_STARFIVE
+-
+-config SIFIVE_CCACHE
+-	bool "Sifive Composable Cache controller"
+-	help
+-	  Support for the composable cache controller on SiFive platforms.
+-
+-endif
+diff --git a/drivers/soc/sifive/Makefile b/drivers/soc/sifive/Makefile
+deleted file mode 100644
+index 1f5dc339bf82..000000000000
+--- a/drivers/soc/sifive/Makefile
++++ /dev/null
+@@ -1,3 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-
+-obj-$(CONFIG_SIFIVE_CCACHE)	+= sifive_ccache.o
 -- 
-Regards
-Vignesh
+2.39.2
+
