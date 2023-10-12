@@ -2,249 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D48AE7C7885
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65907C7882
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442918AbjJLVUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 17:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
+        id S1442897AbjJLVUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 17:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442853AbjJLVUh (ORCPT
+        with ESMTP id S1442853AbjJLVUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 17:20:37 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3E6A9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:20:35 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9adb9fa7200so291553366b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:20:35 -0700 (PDT)
+        Thu, 12 Oct 2023 17:20:07 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7AB9D
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:20:05 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a813755ef4so8677027b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:20:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697145634; x=1697750434; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6E+ctilpvTRp1sWziPGrKb0bFclcGitH24520WnSwgs=;
-        b=JSK08vOudVUto1Q85NbEBLbPAjFq7RUlB4moKaknBcZRMtp+TKx5Ir771l3TMCnwXO
-         p4jfmVL5xfwwKTtWb3Rwn7VQ1FttL2OlYFIncHgSL/tpyzEF4/PJ6dEi319D185H9kgL
-         okpUIicCZ9wG+uDaUSA1M7yzr0KSsxln9JaA5uTFw7L0Ig6VB6/THAGkxt8sWUGEJ94j
-         PJ9ta3nO66/EQIdqnB9UBBlYT42kR0eXmwA6+rs4i9Z9eDn0o9vX2eIwzoM6dG5dgFcw
-         ICxoNTQyznjbZPy+mxmFqZMDMxn5BkEyFVZJ+Qlk0ru3F+XbEwhvRzafMQwr3h2R2xNL
-         SwGg==
+        d=google.com; s=20230601; t=1697145604; x=1697750404; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Hnx2hMUROy5hPaWMuQS6wGUcTD4C+Y8X52y6T46QNnk=;
+        b=XkLaD7X7q8fkKutL6vUFBc68A+tAQ9/sIOS21rjfw57sGiz+TOYsD85qQSv+C2xgxb
+         lQDhbPztXnHeZES2/gdkdSUtRMUy8REZ4UJFj9Wo4iRMZ84Dd5/liVwuL3Qa1TqBW3BH
+         jlpV7rdPPrLIYATw07Jk3evdgmyuXvzIHkEGEk1MHCN+1ZQ+EE4jMRSvwSBWHHzOEPAk
+         j1ScvGrYxWsfh5SFjmTTKze7NVdYdnL+tG8UWmick/5GdFthB9vlwYaNSPzlI2hnWGs9
+         EfgIFe99jOKuRqoGvITo5UTaq3jlPGHSrrVVVCoAM0y2QIbIcL9a34qRo7VFpnpf7FAi
+         zQ5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697145634; x=1697750434;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6E+ctilpvTRp1sWziPGrKb0bFclcGitH24520WnSwgs=;
-        b=BmFkKpq2pkHpn9e9LjR4YqZdN7WhmZgxrmk2t7SkKWejMz1Mr/f+ZLw7RdO6b1Y+u2
-         eC7DbXqq/4jojH9z8RJPk2ZsfIyircjngaFOqoWCDsY9ktOM/RyW1/7RKqrzPtlkTMtV
-         BSObE68fmdWst3AD38/xhhe/9RQvgZoQx8SO2ElDDgi0Ow9+qintzDvluXdrx6dyIZfj
-         A59vJwxskt0yyOrsRRE8y8/2OeUj2/qQy8piS/dQ7s6N8QSuVmngE6LNt6MVyh0UlsI7
-         xd+aEgmId+TVJCHePh77t1q7zQbTDqLG4OZxNGLIrPz6n4wDFnHMfHbO2baPzoK3RMtO
-         55mA==
-X-Gm-Message-State: AOJu0YyPCpWCdjjcGvdWbQrFqf89V/unCdRPC0Gvra1Zo6+dS4aQ/HqI
-        koLyLhxQ0jaqx8tQwS/+wt8Aqiq3y064Lpn7yI5OXQ==
-X-Google-Smtp-Source: AGHT+IHYyMKX/mt1qXenjXQXNg9i7QjMRmRu+cx5Qv0V/h53iTtEzf7z7GQSkj9UBoDduFKAXaEjA9B83NI+fRf1ZIE=
-X-Received: by 2002:a17:907:3e1a:b0:9ae:699d:8a31 with SMTP id
- hp26-20020a1709073e1a00b009ae699d8a31mr26012691ejc.33.1697145633579; Thu, 12
- Oct 2023 14:20:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231010032117.1577496-1-yosryahmed@google.com>
- <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
- <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
- <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
- <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
- <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
- <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
- <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
- <CALvZod6zssp88j6e6EKTbu_oHS7iW5ocdTWH7f27Hg0byzut6g@mail.gmail.com>
- <CAJD7tkZbUrs_6r9QcouHNnDbLKiZHdSA=2zyi3A41aqOW6kTNA@mail.gmail.com>
- <CAJD7tkbSwNOZu1r8VfUAD5v-g_NK3oASfO51FJDX4pdMYh9mjw@mail.gmail.com> <CALvZod5fWDWZDa=WoyOyckvx5ptjmFBMO9sOG0Sk0MgiDX4DSQ@mail.gmail.com>
-In-Reply-To: <CALvZod5fWDWZDa=WoyOyckvx5ptjmFBMO9sOG0Sk0MgiDX4DSQ@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 12 Oct 2023 14:19:55 -0700
-Message-ID: <CAJD7tkY9LrWHX3rjYwNnVK9sjtYPJyx6j_Y3DexTXfS9wwr+xA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1697145604; x=1697750404;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Hnx2hMUROy5hPaWMuQS6wGUcTD4C+Y8X52y6T46QNnk=;
+        b=Y2iq/EAFpdVbSFKtrHXzuG/4mm2wmQv5SX/A7oYzzfxm6y5l7Hd96dCT4XFdRb+Vqm
+         y3i5+jPPK1gJ32E2o0yt3sifFdcHtbiA9M9M2iSxkzEHtQnAZA5s3qPRG+VB2HpKhm+H
+         QVrR0J2JWLsz8dRidAGY9Be6ltdZJqWvqAldHkjmTA1d3FTSbezpH/8mFvJtzgVufAHG
+         F2k8A+P1Qv296KpoM4YLX9WunAIJRfAOPLcLFYwpz2uvDk3f8rVxEHWX3Gchpu55dj1t
+         neKo87IZI+zwDIg4cGyEGpaJbVXV/nqyy3sqZkXkwOqdgDT+FxvnOvOzHooLrP+AIhb1
+         v+/A==
+X-Gm-Message-State: AOJu0YwSyPESIX4U8hpW9ZxurOtrclSRhb4/eq+mVK59Y7IM9ZBI1J1l
+        kVITBX4JsCfSK/cj/J7BRL56OzKALXuj8jRA4A==
+X-Google-Smtp-Source: AGHT+IGEz38HdWBwXZW+qHolz7YTUuV4PlFesGO+loEhl5nFIdEKYX6auuR5XKLavYAKjeNoVukACpRoPzbikawFBw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:af27:0:b0:5a7:b54e:bfc1 with SMTP
+ id n39-20020a81af27000000b005a7b54ebfc1mr243135ywh.10.1697145604749; Thu, 12
+ Oct 2023 14:20:04 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 21:20:04 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAANjKGUC/yWNQQ6DMAwEv4J8rqUkFRe+UlVVCAZ8qIvsFFIh/
+ t60XFY7h9ndwUiZDLpmB6WVjV9SwV8aSHOUiZCHyhBcuHrnA1pWScsHB+WV1FAoI+WZ9Fe2apS 3YC5TT2c+npEFE7rWt6GPY0zBQV1flEYu/+fb/Ti++Q+lF4kAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697145603; l=2721;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=K5JHCGxkEZHPygsVoHqfoDZGkV0pxG6IhwPB2u479/U=; b=bsjP3OcLje0SPvVnGKRcZtcvFRKAeLjmhv0CkhKsA5enluy6XHRLQ3iodA/qzFgN/6BR552D8
+ h2380adLrRVA7mWJ7s69+bGSfcNmC0XDqvDOKG9KsHHWLGb/SSqaOQU
+X-Mailer: b4 0.12.3
+Message-ID: <20231012-strncpy-drivers-net-ethernet-wangxun-txgbe-txgbe_main-c-v1-1-c9bb3270ac98@google.com>
+Subject: [PATCH] net: txgbe: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Jiawen Wu <jiawenwu@trustnetic.com>,
+        Mengyuan Lou <mengyuanlou@net-swift.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 2:16=E2=80=AFPM Shakeel Butt <shakeelb@google.com> =
-wrote:
->
-> On Thu, Oct 12, 2023 at 2:06=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > [..]
-> > > > > >
-> > > > > > Using next-20231009 and a similar 44 core machine with hyperthr=
-eading
-> > > > > > disabled, I ran 22 instances of netperf in parallel and got the
-> > > > > > following numbers from averaging 20 runs:
-> > > > > >
-> > > > > > Base: 33076.5 mbps
-> > > > > > Patched: 31410.1 mbps
-> > > > > >
-> > > > > > That's about 5% diff. I guess the number of iterations helps re=
-duce
-> > > > > > the noise? I am not sure.
-> > > > > >
-> > > > > > Please also keep in mind that in this case all netperf instance=
-s are
-> > > > > > in the same cgroup and at a 4-level depth. I imagine in a pract=
-ical
-> > > > > > setup processes would be a little more spread out, which means =
-less
-> > > > > > common ancestors, so less contended atomic operations.
-> > > > >
-> > > > >
-> > > > > (Resending the reply as I messed up the last one, was not in plai=
-n text)
-> > > > >
-> > > > > I was curious, so I ran the same testing in a cgroup 2 levels dee=
-p
-> > > > > (i.e /sys/fs/cgroup/a/b), which is a much more common setup in my
-> > > > > experience. Here are the numbers:
-> > > > >
-> > > > > Base: 40198.0 mbps
-> > > > > Patched: 38629.7 mbps
-> > > > >
-> > > > > The regression is reduced to ~3.9%.
-> > > > >
-> > > > > What's more interesting is that going from a level 2 cgroup to a =
-level
-> > > > > 4 cgroup is already a big hit with or without this patch:
-> > > > >
-> > > > > Base: 40198.0 -> 33076.5 mbps (~17.7% regression)
-> > > > > Patched: 38629.7 -> 31410.1 (~18.7% regression)
-> > > > >
-> > > > > So going from level 2 to 4 is already a significant regression fo=
-r
-> > > > > other reasons (e.g. hierarchical charging). This patch only makes=
- it
-> > > > > marginally worse. This puts the numbers more into perspective imo=
- than
-> > > > > comparing values at level 4. What do you think?
-> > > >
-> > > > This is weird as we are running the experiments on the same machine=
-. I
-> > > > will rerun with 2 levels as well. Also can you rerun the page fault
-> > > > benchmark as well which was showing 9% regression in your original
-> > > > commit message?
-> > >
-> > > Thanks. I will re-run the page_fault tests, but keep in mind that the
-> > > page fault benchmarks in will-it-scale are highly variable. We run
-> > > them between kernel versions internally, and I think we ignore any
-> > > changes below 10% as the benchmark is naturally noisy.
-> > >
-> > > I have a couple of runs for page_fault3_scalability showing a 2-3%
-> > > improvement with this patch :)
-> >
-> > I ran the page_fault tests for 10 runs on a machine with 256 cpus in a
-> > level 2 cgroup, here are the results (the results in the original
-> > commit message are for 384 cpus in a level 4 cgroup):
-> >
-> >                LABEL            |     MEAN    |   MEDIAN    |   STDDEV =
-  |
-> > ------------------------------+-------------+-------------+------------=
--
-> >   page_fault1_per_process_ops |             |             |            =
-|
-> >   (A) base                    | 270249.164  | 265437.000  | 13451.836  =
-|
-> >   (B) patched                 | 261368.709  | 255725.000  | 13394.767  =
-|
-> >                               | -3.29%      | -3.66%      |            =
-|
-> >   page_fault1_per_thread_ops  |             |             |            =
-|
-> >   (A) base                    | 242111.345  | 239737.000  | 10026.031  =
-|
-> >   (B) patched                 | 237057.109  | 235305.000  | 9769.687   =
-|
-> >                               | -2.09%      | -1.85%      |            =
-|
-> >   page_fault1_scalability     |             |             |
-> >   (A) base                    | 0.034387    | 0.035168    | 0.0018283  =
-|
-> >   (B) patched                 | 0.033988    | 0.034573    | 0.0018056  =
-|
-> >                               | -1.16%      | -1.69%      |            =
-|
-> >   page_fault2_per_process_ops |             |             |
-> >   (A) base                    | 203561.836  | 203301.000  | 2550.764   =
-|
-> >   (B) patched                 | 197195.945  | 197746.000  | 2264.263   =
-|
-> >                               | -3.13%      | -2.73%      |            =
-|
-> >   page_fault2_per_thread_ops  |             |             |
-> >   (A) base                    | 171046.473  | 170776.000  | 1509.679   =
-|
-> >   (B) patched                 | 166626.327  | 166406.000  | 768.753    =
-|
-> >                               | -2.58%      | -2.56%      |            =
-|
-> >   page_fault2_scalability     |             |             |
-> >   (A) base                    | 0.054026    | 0.053821    | 0.00062121 =
-|
-> >   (B) patched                 | 0.053329    | 0.05306     | 0.00048394 =
-|
-> >                               | -1.29%      | -1.41%      |            =
-|
-> >   page_fault3_per_process_ops |             |             |
-> >   (A) base                    | 1295807.782 | 1297550.000 | 5907.585   =
-|
-> >   (B) patched                 | 1275579.873 | 1273359.000 | 8759.160   =
-|
-> >                               | -1.56%      | -1.86%      |            =
-|
-> >   page_fault3_per_thread_ops  |             |             |
-> >   (A) base                    | 391234.164  | 390860.000  | 1760.720   =
-|
-> >   (B) patched                 | 377231.273  | 376369.000  | 1874.971   =
-|
-> >                               | -3.58%      | -3.71%      |            =
-|
-> >   page_fault3_scalability     |             |             |
-> >   (A) base                    | 0.60369     | 0.60072     | 0.0083029  =
-|
-> >   (B) patched                 | 0.61733     | 0.61544     | 0.009855   =
-|
-> >                               | +2.26%      | +2.45%      |            =
-|
-> >
-> > The numbers are much better. I can modify the commit log to include
-> > the testing in the replies instead of what's currently there if this
-> > helps (22 netperf instances on 44 cpus and will-it-scale page_fault on
-> > 256 cpus -- all in a level 2 cgroup).
->
-> Yes this looks better. I think we should also ask intel perf and
-> phoronix folks to run their benchmarks as well (but no need to block
-> on them).
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-Anything I need to do for this to happen? (I thought such testing is
-already done on linux-next)
+Based on usage part_str usage within txgbe_read_pba_string(), we expect
+part_str to be NUL-terminated but not necessarily NUL-padded:
+|       /* put a null character on the end of our string */
+|       pba_num[10] = '\0';
 
-Also, any further comments on the patch (or the series in general)? If
-not, I can send a new commit message for this patch in-place.
+Interestingly, part_str is not used after txgbe_read_pba_string():
+| ...
+|	err = txgbe_read_pba_string(wx, part_str, TXGBE_PBANUM_LENGTH);
+|	if (err)
+|		strscpy(part_str, "Unknown", sizeof(part_str));
+|
+|	netif_info(wx, probe, netdev, "%pM\n", netdev->dev_addr);
+|
+|	return 0;
+|
+|err_remove_phy:
+|	txgbe_remove_phy(txgbe);
+|err_release_hw:
+|	wx_clear_interrupt_scheme(wx);
+|	wx_control_hw(wx, false);
+|err_free_mac_table:
+|	kfree(wx->mac_table);
+|err_pci_release_regions:
+|	pci_release_selected_regions(pdev,
+|				     pci_select_bars(pdev, IORESOURCE_MEM));
+|err_pci_disable_dev:
+|	pci_disable_device(pdev);
+|	return err;
+|}
+... this means this strncpy (or now strscpy) is probably useless. For
+now, let's make the swap to strscpy() as I am not sure if this is truly
+dead code or not.
+
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+
+Found with: $ rg "strncpy\("
+---
+ drivers/net/ethernet/wangxun/txgbe/txgbe_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/wangxun/txgbe/txgbe_main.c b/drivers/net/ethernet/wangxun/txgbe/txgbe_main.c
+index 5c3aed516ac2..c795fbab37be 100644
+--- a/drivers/net/ethernet/wangxun/txgbe/txgbe_main.c
++++ b/drivers/net/ethernet/wangxun/txgbe/txgbe_main.c
+@@ -739,7 +739,7 @@ static int txgbe_probe(struct pci_dev *pdev,
+ 	/* First try to read PBA as a string */
+ 	err = txgbe_read_pba_string(wx, part_str, TXGBE_PBANUM_LENGTH);
+ 	if (err)
+-		strncpy(part_str, "Unknown", TXGBE_PBANUM_LENGTH);
++		strscpy(part_str, "Unknown", sizeof(part_str));
+ 
+ 	netif_info(wx, probe, netdev, "%pM\n", netdev->dev_addr);
+ 
+
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231012-strncpy-drivers-net-ethernet-wangxun-txgbe-txgbe_main-c-05152bafac20
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
