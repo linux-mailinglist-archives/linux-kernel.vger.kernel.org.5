@@ -2,144 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3B87C75CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918A17C75F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbjJLSZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 14:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
+        id S1441905AbjJLSfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 14:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379676AbjJLSZE (ORCPT
+        with ESMTP id S1441945AbjJLSfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 14:25:04 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4019C0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:25:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B088C433C8;
-        Thu, 12 Oct 2023 18:25:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697135102;
-        bh=zgR+pS03VvFmqe0w7hJ5NS/7f3+7ZheUXgpeE+u0RQY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QEk9z4C5PC3A2OI6ZZ8L2XnUP2aFran46glqKH8ggIhfA0YyNKgqTX4FXP7LYdI1K
-         zEfLn348EuJdGLv1q/RY2b9HCkgGpuBgpp/FB8p3uHGbgvxsrNb/mh05GNk4tm+HjQ
-         feUFivTj0NoYb8Vzaj8CBZb4WQC6byw9ny4qLz8k/M+K8Qvl+n1XbHIkBLJR9eUINx
-         nwMPMaZ6gkYQ+ReQOdT0BqwUzDZ0Rjb7zzEYDfNxji+1x1O3bqGsfDNGHQYRdiF2Br
-         9ELhcgZQYG4RqgGoVN/NOcnoM0lwVSWkA1asFCO7mnT3mUlFso40RBBOSYMw4MU3cl
-         5d4xTj3oPdSkQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 29132CE0593; Thu, 12 Oct 2023 11:25:02 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 11:25:02 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Willy Tarreau <w@1wt.eu>, Zhangjin Wu <falcon@tinylab.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/nolibc: add tests for multi-object linkage
-Message-ID: <ca67eb2c-3918-4a1f-b3e6-2023fda5d6a3@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231012-nolibc-linkage-test-v1-1-315e682768b4@weissschuh.net>
- <ZSea+etQwlxbi+Ok@1wt.eu>
- <bfc17e76-fcbc-4ce6-97a8-c1ed72ed2a67@t-8ch.de>
- <33e9afcd-a1cd-4f67-829b-85c86500a93e@paulmck-laptop>
- <b278a643-3761-4699-bafc-df1b7245b8c2@t-8ch.de>
+        Thu, 12 Oct 2023 14:35:08 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6460BE;
+        Thu, 12 Oct 2023 11:35:05 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 16bddb04797c5061; Thu, 12 Oct 2023 20:35:04 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 1DFAB666870;
+        Thu, 12 Oct 2023 20:35:03 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Subject: [PATCH v2 1/6] thermal: trip: Simplify computing trip indices
+Date:   Thu, 12 Oct 2023 20:25:06 +0200
+Message-ID: <4882956.31r3eYUQgx@kreacher>
+In-Reply-To: <5734364.DvuYhMxLoT@kreacher>
+References: <5734364.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b278a643-3761-4699-bafc-df1b7245b8c2@t-8ch.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedriedtgdduudeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgv
+ lhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 12:51:28PM +0200, Thomas Weiﬂschuh wrote:
-> On 2023-10-12 03:41:50-0700, Paul E. McKenney wrote:
-> > On Thu, Oct 12, 2023 at 09:23:29AM +0200, Thomas Weiﬂschuh wrote:
-> > > Hi Willy, Paul,
-> > > 
-> > > On 2023-10-12 09:06:33+0200, Willy Tarreau wrote:
-> > > > On Thu, Oct 12, 2023 at 01:13:37AM +0200, Thomas Weiﬂschuh wrote:
-> > > > > While uncommon, nolibc executables can be linked together from multiple
-> > > > > compilation units.
-> > > > > Add some tests to make sure everything works in that case.
-> > > > (...)
-> > > 
-> > > [..]
-> > > 
-> > > > > Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
-> > > > > ---
-> > > > > Note:
-> > > > > 
-> > > > > This depends on path "tools/nolibc: mark start_c as weak".
-> > > > > https://lore.kernel.org/lkml/20231012-nolibc-start_c-multiple-v1-1-fbfc73e0283f@weissschuh.net/
-> > > > 
-> > > > For these two patches: Acked-by: Willy Tarreau <w@1wt.eu>
-> > > 
-> > > Thanks, applied locally.
-> > > 
-> > > I guess the linked patch "tools/nolibc: mark start_c as weak" should
-> > > also go into nolibc/fixes.
-> > > 
-> > > @Paul, would it introduce too much churn for you if I submit another
-> > > nolibc pull with an updated nolibc/fixes?
-> > > (And the rebased nolibc/next with this commit while we are at it)
-> > 
-> > Not a problem this week!
-> 
-> Great, then:
-> 
-> Please pull the changes since the v6.6-rc1 tag from
-> https://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git/
-> 
-> The branch 'fixes' up to and including
-> 90864f0679fdbb3b2e1c3bdbe4b0a34df785cb0a for the v6.6 cycle.
-> 
-> The branch 'next' up to and including
-> f2c7923763dae51226584494722349fef4df3748 for linux-next.
-> 
-> The branch 'next', based upon 'fixes', was tested as follows:
-> 
-> i386:          162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> x86_64:        162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> arm64:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> arm:           162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> mips:          162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
-> ppc:           162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> ppc64:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> ppc64le:       162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> riscv:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> s390:          162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
-> loongarch:     162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I have a signed tag urgent/nolibc.2023.10.12a in the -rcu tree, so
-please check the lead-in text for sanity.  (Everything after the digital
-signature is automatically generated.)
+A trip index can be computed right away as a difference between the
+value of a trip pointer pointing to the given trip object and the
+start of the trips[] table in the given thermal zone, so change
+thermal_zone_trip_id() accordingly.
 
-Testing for urgent/nolibc.2023.10.12a:
-make run: 160 test(s): 160 passed,   0 skipped,   0 failed => status: success
-make run-user: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning
+No intentional functional impact (except for some speedup).
 
-Testing for full nolibc stack:
-make run: 162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-make run-user: 162 test(s): 160 passed,   2 skipped,   0 failed => status: warning
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-> > But after about Wednesday of next week, getting things into the upcoming
-> > merge window is pretty much as fast as sending them quickly to Linus,
-> > if that makes sense.  Unless there is to be a -rc8 this time, but I
-> > have heard no sign of that.
-> > 
-> > Make sense?
-> 
-> Sure, hopefully no more fixes are needed!
+v1 -> v2: Rebase on top of current linux-next
 
-Ah, and have these been posted to a public mailing list?  If not, then I
-need to send them out.
+---
+ drivers/thermal/thermal_trip.c |   13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-We reset the -next testing clock, so if all goes well, then I send the
-three urgent commits to Linus on Monday.
+Index: linux-pm/drivers/thermal/thermal_trip.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_trip.c
++++ linux-pm/drivers/thermal/thermal_trip.c
+@@ -173,12 +173,9 @@ int thermal_zone_set_trip(struct thermal
+ int thermal_zone_trip_id(struct thermal_zone_device *tz,
+ 			 const struct thermal_trip *trip)
+ {
+-	int i;
+-
+-	for (i = 0; i < tz->num_trips; i++) {
+-		if (&tz->trips[i] == trip)
+-			return i;
+-	}
+-
+-	return -ENODATA;
++	/*
++	 * Assume the trip to be located within the bounds of the thermal
++	 * zone's trips[] table.
++	 */
++	return trip - tz->trips;
+ }
 
-							Thanx, Paul
+
+
