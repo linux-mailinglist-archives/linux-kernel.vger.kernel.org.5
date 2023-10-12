@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E355E7C70C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D5E7C70CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379135AbjJLOzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 10:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
+        id S1379138AbjJLO50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 10:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbjJLOzV (ORCPT
+        with ESMTP id S231290AbjJLO5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:55:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA87C0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:55:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697122520; x=1728658520;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=D6Z/7OuH6eEWJy7x6c15xSMxTQCda48ZaYiTnzVyKnM=;
-  b=gGZw0KbYWE0b3ryOcHgQ+YwGDy7h3Ov/364+K1T/TUuRG32TN+6Uqi3V
-   qD67OsUkw22rxkZQ6xtHE2KCjOBGlQF4RMn8dI0gu0EGqZxOKOi+12BQw
-   cJjF8m7Dli86EnH0ODS6XZbFDLrYycgLSTbdKes0Vky5xoq7E0tX+PVqz
-   Bb1XOZ0Caeumul+V+bfYG1M2urXzOLIqx6y7B9++rCnlxQUB1NMk2ETml
-   d/M2SKCD8Nl8QPyMyYqw3y1+vAXbKRLNa289hifJl6yBWhFOycsaSj/sO
-   ZX4TioUA9T0A16wrc3KLoKgsUEpLC1jkhXDx/Gk7W6zu7H2V6EoVx6woW
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="387786761"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="387786761"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 07:55:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="898145277"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="898145277"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 12 Oct 2023 07:53:27 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qqx5l-0003XT-1J;
-        Thu, 12 Oct 2023 14:55:13 +0000
-Date:   Thu, 12 Oct 2023 22:54:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Li zeming <zeming@nfschina.com>, tj@kernel.org,
-        jiangshanlai@gmail.com
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Li zeming <zeming@nfschina.com>
-Subject: Re: [PATCH] kernel/workqueue: =?utf-8?Q?Re?=
- =?utf-8?B?bW92ZSB1bm5lY2Vzc2FyeSDigJgw4oCZ?= values from hash
-Message-ID: <202310122250.6u2Qc26r-lkp@intel.com>
-References: <20230829181755.3204-1-zeming@nfschina.com>
+        Thu, 12 Oct 2023 10:57:25 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D251890;
+        Thu, 12 Oct 2023 07:57:23 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1F3F140E01AE;
+        Thu, 12 Oct 2023 14:57:22 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id TD9AmtNuADqb; Thu, 12 Oct 2023 14:57:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1697122640; bh=PpK5JSEHjxb7R7cDU1Nxot7FcmI5ydv5LNHuTP1O7kc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VGsfjGQYq9BpJs0S3tYqiajR0dLtJCe9Ar8jKuayjP1hUMsXRDtq9Ev2vKefOPjYF
+         3hsAV1okNqgrTY10X2asDVBKCBsepC7RsK44CV1qsjOvMZywtAhJPB3MCJggcQgig+
+         7bBHXc8Gs5syCuoCD7uKWOB4Sqe5oAdXWsCxRGtakGKMZUrGjhmrsMbp5WaxK8DbFI
+         0r63fieVNuVmSzFV8Y5OILZMob7deh8AjdZ0IFThn2Lu7XDxfHNOt2tFVIMq2SAh8u
+         Knelkc1zFZkoqy0FO6D1jR4M1Y2rmtPu2vNQjfbfVohWzf2b43QAsTm6GGcJlMxJm2
+         HFFuTLeYSmhBECsZ2qbkxLRTpMiKGPQqZloQc5ScXw40OvpA3v1q80w8iD727QHTXD
+         fCULMpC55ZZd+bVEGxaSpKTVoVMj7NHASwRDX2Qc8w/j6lG4t5yfIXtEK5GjzNQD2Y
+         j5Dzc/fyake0gW0uE/3YJFaPDmWSUkOjhUm87bGws41PrC8dOpXlRHSHiuWcV/vbla
+         ei9yA+AuL+EINxbsBFu8a1HAhOJlSfdJpTAtKHw7XaiVTtzZn2EwaNV8YAwY44N/+A
+         KFkqLut1LYk/0veEXSt3qDGITVdwZUKlY5YEwHk5Bs/R5PU9B9LprvnzdwcJ9T7/XF
+         egd71noOhoqak3pcRqaYnoaI=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3FDAD40E01AA;
+        Thu, 12 Oct 2023 14:57:13 +0000 (UTC)
+Date:   Thu, 12 Oct 2023 16:57:08 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Zhiquan Li <zhiquan1.li@intel.com>
+Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        tony.luck@intel.com, naoya.horiguchi@nec.com
+Subject: Re: [PATCH RESEND v2] x86/mce: Set PG_hwpoison page flag to avoid
+ the capture kernel panic
+Message-ID: <20231012145708.GIZSgJRIRq8OSF6UaB@fat_crate.local>
+References: <20230914030539.1622477-1-zhiquan1.li@intel.com>
+ <20231010082836.GDZSULNGto0cPRPU26@fat_crate.local>
+ <3f9e9468-ec74-42ad-8d42-c3f6fb8b5f74@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230829181755.3204-1-zeming@nfschina.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+In-Reply-To: <3f9e9468-ec74-42ad-8d42-c3f6fb8b5f74@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,55 +69,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Li,
+On Wed, Oct 11, 2023 at 11:00:57AM +0800, Zhiquan Li wrote:
+> Aha, this is the neat thing about the patch.  The main task of kdump
+> kernel is providing a "window" - /proc/vmcore, for the dump program to
+> access old memory.  A dump program running in userspace determines the
+> "policy".  Which pages need to be dumped is determined by the
+> configuration of dump program, it reads out the pages that the
+> sustaining engineer is interested in and excludes the rest.  The de
+> facto dump program (makedumpfile) already supports to identify those
+> poisoned pages and exclude them a decade ago:
 
-kernel test robot noticed the following build warnings:
+Yes, put that in your commit message.
 
-[auto build test WARNING on tj-wq/for-next]
-[also build test WARNING on linus/master v6.6-rc5 next-20231012]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> When we were developing the patch internally, Tony contributed a lot of
+> precious ideas and guidance, not only the code change he mentioned in
+> commit message.
+> 
+> The previous V2 sent by Tony missed the merge window of v6.5, so I
+> re-based it onto the latest v6.6 rc, re-validated and re-send the patch.
+>  And I will follow up the feedback from community.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Li-zeming/kernel-workqueue-Remove-unnecessary-0-values-from-hash/20230828-095048
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-next
-patch link:    https://lore.kernel.org/r/20230829181755.3204-1-zeming%40nfschina.com
-patch subject: [PATCH] kernel/workqueue: Remove unnecessary ‘0’ values from hash
-config: um-i386_defconfig (https://download.01.org/0day-ci/archive/20231012/202310122250.6u2Qc26r-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231012/202310122250.6u2Qc26r-lkp@intel.com/reproduce)
+Then you should ask Tony whether he wants Co-developed-by:. See
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310122250.6u2Qc26r-lkp@intel.com/
+Documentation/process/submitting-patches.rst
 
-All warnings (new ones prefixed by >>):
+for detail.
 
-   kernel/workqueue.c: In function 'wqattrs_hash':
->> kernel/workqueue.c:3777:7: warning: 'hash' is used uninitialized in this function [-Wuninitialized]
-     hash = jhash_1word(attrs->nice, hash);
-     ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+There it is also explained what an SOB chain is and how it should look
+like.
 
-
-vim +/hash +3777 kernel/workqueue.c
-
-5de7a03cac1476 Tejun Heo           2023-08-07  3771  
-6ba94429c8e7b8 Frederic Weisbecker 2015-04-02  3772  /* hash value of the content of @attr */
-6ba94429c8e7b8 Frederic Weisbecker 2015-04-02  3773  static u32 wqattrs_hash(const struct workqueue_attrs *attrs)
-226223ab3c4118 Tejun Heo           2013-03-12  3774  {
-dd46423224bbdf Li zeming           2023-08-30  3775  	u32 hash;
-226223ab3c4118 Tejun Heo           2013-03-12  3776  
-6ba94429c8e7b8 Frederic Weisbecker 2015-04-02 @3777  	hash = jhash_1word(attrs->nice, hash);
-6ba94429c8e7b8 Frederic Weisbecker 2015-04-02  3778  	hash = jhash(cpumask_bits(attrs->cpumask),
-6ba94429c8e7b8 Frederic Weisbecker 2015-04-02  3779  		     BITS_TO_LONGS(nr_cpumask_bits) * sizeof(long), hash);
-9546b29e4a6ad6 Tejun Heo           2023-08-07  3780  	hash = jhash(cpumask_bits(attrs->__pod_cpumask),
-9546b29e4a6ad6 Tejun Heo           2023-08-07  3781  		     BITS_TO_LONGS(nr_cpumask_bits) * sizeof(long), hash);
-8639ecebc9b179 Tejun Heo           2023-08-07  3782  	hash = jhash_1word(attrs->affn_strict, hash);
-6ba94429c8e7b8 Frederic Weisbecker 2015-04-02  3783  	return hash;
-d55262c4d16475 Tejun Heo           2013-04-01  3784  }
-226223ab3c4118 Tejun Heo           2013-03-12  3785  
+Thx.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
