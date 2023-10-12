@@ -2,94 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B857C6E3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D003B7C6E3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378687AbjJLMgE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 08:36:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39544 "EHLO
+        id S1378459AbjJLMgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378561AbjJLMf4 (ORCPT
+        with ESMTP id S235736AbjJLMgK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:35:56 -0400
-Received: from postfix2.imaqliq.com (postfix2.imaqliq.com [93.189.151.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9A1BE;
-        Thu, 12 Oct 2023 05:35:53 -0700 (PDT)
-Received: from verse.imaqliq.com (verse.imaqliq.com [93.189.151.95])
-        by postfix2.imaqliq.com (Postfix) with ESMTP id E78D01C2943;
-        Thu, 12 Oct 2023 15:35:50 +0300 (MSK)
+        Thu, 12 Oct 2023 08:36:10 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BC4BE
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:36:08 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53e07db272cso1157390a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:36:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697114167; x=1697718967; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PTJ3N0+zBUPnWL/t7pno8dCVeMaEsrQlEIlUPJvdi34=;
+        b=jxZbq/ZNNCesknzzT21F+cJuLnTu01QJd9yL7dmm5iI1sDLnKWKszD2NBvIQ0AkwjD
+         3npMMO2GfheNMt+Riia9wZszTcn5pSWNyDakBv15yAk5hkCLTtkcB8D8fzjt9VWtXDAu
+         FeQg1cywSz4+P2gaWPMjE+f9kDRhtdXSu2RFiyr5/4OsfpIDpg6ysmh0GtVvaSnKRF4I
+         t8EzpglWXT2wQiEwdJZsr+Gzu54g2E6qD+SbrmN37QbvseXQsA36SGZIVNM7mdj7gxpK
+         49fAjNqs6OkdcxZCy+8jch/W/eXoXytjsht/VGKXGGQipNfNDXBoNEWWeaoLd9EezMlE
+         D1UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697114167; x=1697718967;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PTJ3N0+zBUPnWL/t7pno8dCVeMaEsrQlEIlUPJvdi34=;
+        b=QQl5QfEnLIjd7djcHj5krwUgXatIgy4R515fzYxcC75mSZB453AjYWwQ/PgcDTHk9r
+         oCC3s19TSQntD41HK1jqgqBWxyyI/ntKlo8TyHf7nUTguq0/1zBroTI2WAUKm+QC19BU
+         FJLhgkuYOmzidroOOETzp+jA/rDUhscoDFZYC5SBUZ0WLknCm2T2CsrmSUx9DfPQ28BQ
+         ctvKT/K5rPKZ5FTFB4Gj+SGFHZiROha1WuAWc6xnX6CYD3N6j+Z9ax0/FU5eDkJjFlpp
+         vyoMZvN9WNtW1CvxJ+R9Wj+CQROTMiEfc7Eq9iobe6zPG2gmRcctNe/CxKCoOSWnB6VV
+         qXrw==
+X-Gm-Message-State: AOJu0Yyv/RlUsZEa8dh4IBXjqe6OQd8IBATJBhviyauHs/xz+zzCrH2d
+        C6jAQZ9EfKF4yjgREe3B8xBtLg==
+X-Google-Smtp-Source: AGHT+IENCIkj/c1raiI2b5fJHFk31HUMsR6sEBycifmsG5zViuqGBzFkLywfRDwQQRHL6Hf97dhyIg==
+X-Received: by 2002:a05:6402:344a:b0:525:bbc0:2a8c with SMTP id l10-20020a056402344a00b00525bbc02a8cmr21677054edc.33.1697114167066;
+        Thu, 12 Oct 2023 05:36:07 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.100])
+        by smtp.gmail.com with ESMTPSA id n8-20020aa7db48000000b005364b54a4basm10091597edt.80.2023.10.12.05.36.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 05:36:06 -0700 (PDT)
+Message-ID: <18813f69-dd38-4fa3-b8d1-af118e1e2749@linaro.org>
+Date:   Thu, 12 Oct 2023 14:36:04 +0200
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-In-Reply-To: <20231012103957.p2faputywfgh776x@CAB-WSD-L081021>
-References: <20231012103957.p2faputywfgh776x@CAB-WSD-L081021>,
-        <OF28B2B8C9.5BC0CD28-ON00258A46.0037688F-00258A46.0039155B@gdc.ru>
-Subject: Re: [PATCH] tty: serial: meson: hard LOCKUP on crtscts mode
-From:   pkrasavin@imaqliq.ru
-To:     "Dmitry Rokosov" <ddrokosov@salutedevices.com>
-Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Jiri Slaby" <jirislaby@kernel.org>,
-        "Neil Armstrong" <neil.armstrong@linaro.org>,
-        "Kevin Hilman" <khilman@baylibre.com>,
-        "Jerome Brunet" <jbrunet@baylibre.com>,
-        "Martin Blumenstingl" <martin.blumenstingl@googlemail.com>,
-        <linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kernel@sberdevices.ru>,
-        <linux-amlogic@lists.infradead.org>
-Date:   Thu, 12 Oct 2023 12:35:45 +0000
-Message-ID: <OF69FF15CB.37BD077D-ON00258A46.0044809B-00258A46.004530FF@gdc.ru>
-X-Mailer: Lotus Domino Web Server Release 12.0.2 November 03, 2022
-X-MIMETrack: Serialize by http on verse/com(Release 12.0.2|November 03, 2022) at 10/12/2023
- 12:35:45,
-        Serialize complete at 10/12/2023 12:35:45,
-        Serialize by Router on verse/com(Release 12.0.2|November 03, 2022) at 10/12/2023
- 12:35:50
-X-KeepSent: 69FF15CB:37BD077D-00258A46:0044809B;
- type=4; name=$KeepSent
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/2] dt-bindings: input: bindings for Adafruit Seesaw
+ Gamepad
+Content-Language: en-US
+To:     Anshul Dalal <anshulusr@gmail.com>, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+References: <20231010184827.1213507-1-anshulusr@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231010184827.1213507-1-anshulusr@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 180564 [Oct 12 2023]
-X-KLMS-AntiSpam-Version: 6.0.0.2
-X-KLMS-AntiSpam-Envelope-From: pkrasavin@imaqliq.ru
-X-KLMS-AntiSpam-Rate: 10
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dmarc=fail header.from=imaqliq.ru policy=none;spf=softfail smtp.mailfrom=imaqliq.ru;dkim=none
-X-KLMS-AntiSpam-Info: LuaCore: 539 539 807534d9021bfe9ca369c363d15ac993cd93d4d9, {rep_avail}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;gdc.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;verse.imaqliq.com:7.1.1;imaqliq.ru:7.1.1;93.189.151.95:7.1.2, FromAlignment: s, {Tracking_dmark_f}, ApMailHostAddress: 93.189.151.95
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2023/10/12 11:06:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/10/12 09:47:00 #22170412
-X-KLMS-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dmitry,
-
------ "Dmitry Rokosov" <ddrokosov@salutedevices.com> писал(а): -----
-
-> Please do not use braces where is single statement. In other words:
+On 10/10/2023 20:48, Anshul Dalal wrote:
+> Adds bindings for the Adafruit Seesaw Gamepad.
 > 
-> 	if (cflags & CRTSCTS) {
-> 		if (port->flags & UPF_HARD_FLOW)
-> 			val &= ~AML_UART_TWO_WIRE_EN;
-> 		else
-> 			termios->c_cflag &= ~CRTSCTS;
-> 	} else {
-> 		val |= AML_UART_TWO_WIRE_EN;
-> 	}
+> The gamepad functions as an i2c device with the default address of 0x50
+> and has an IRQ pin that can be enabled in the driver to allow for a rising
+> edge trigger on each button press or joystick movement.
+> 
+> Product page:
+>   https://www.adafruit.com/product/5743
+> Arduino driver:
+>   https://github.com/adafruit/Adafruit_Seesaw
+> 
+> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+> ---
+> 
 
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-thank you for your note, I will provide v2 without braces.
+Best regards,
+Krzysztof
 
---
-Regards,
-Pavel.
