@@ -2,130 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B747C738F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153CC7C7392
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379533AbjJLQ4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54356 "EHLO
+        id S1378915AbjJLQ55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:57:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378915AbjJLQ4t (ORCPT
+        with ESMTP id S1344025AbjJLQ5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:56:49 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F085C0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:56:47 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9b2cee55056so209143066b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:56:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697129805; x=1697734605; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jmrTXUYBrl82zPk6xTsWXlr1/jpE50Bjd2FIS9se3Js=;
-        b=gaF/Jl0WfZpYm4GGXPdKkPEzLHd6jnnZBRz/tZd1n+KqNo17OQSpGqZOX3gKGAARha
-         ksTqqrCCufAjEifAab1Vc4PhGnZrS+Azw4W1J5jUWthVOFuf5ltZPPpHS2AyzwEe/FB+
-         bwlvwFtIfGbdm4NNzIHxSKgk8j4W2rzVV3Uzw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697129805; x=1697734605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jmrTXUYBrl82zPk6xTsWXlr1/jpE50Bjd2FIS9se3Js=;
-        b=fMrLpAp0krDkLLCCl4b8gdvf3SM4aP0fKe4MKh6a7XpuZf4vQUHkXf47ltcdIZimbq
-         RsMzy2AXrxMF764epJoQwYhCJbstNgsCOtUDFLVi1IEE707NxrfFji89fe2GSBQOo7lj
-         LNhgmJkNG5797eickPP1hwibfMAkI24kqfnlljgtWnWJQYqbAQjdDiSab20TTzPsC0wD
-         t6vuLXV4K6WgbV6nhKNZC7Z86MITD8Ssxd5W6fnMjjwkR93LOiFfVa77oEgHdTQE9fku
-         JfH3GrKr8ywN1hYnswtXiNXMLqvPXcHXiFPUr5XFr70iptYRqcOQVvoeSYT8uVpcwDwt
-         TRwg==
-X-Gm-Message-State: AOJu0YzfBHVT+Yx076FIovWGDvdoCSJQh2Nrm3hRf2nF/fdfzE2v8QC0
-        Ft7ouAYcuDQX2AlqbgytyD6D74wZlbXWNTtm/K/hyKYS
-X-Google-Smtp-Source: AGHT+IERuR9DZJmcBTbJEibGLWn+MHNW4xUtJfYWmhNMB1wGDE8dCzZKgdEPmOyAP6B63jX9VDT3JA==
-X-Received: by 2002:a17:906:220c:b0:9b8:a556:87a5 with SMTP id s12-20020a170906220c00b009b8a55687a5mr20866248ejs.22.1697129805544;
-        Thu, 12 Oct 2023 09:56:45 -0700 (PDT)
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
-        by smtp.gmail.com with ESMTPSA id gq7-20020a170906e24700b009adc5802d08sm11310289ejb.190.2023.10.12.09.56.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 09:56:44 -0700 (PDT)
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-9b6559cbd74so210922266b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:56:44 -0700 (PDT)
-X-Received: by 2002:a17:906:518e:b0:9ad:8a29:f26a with SMTP id
- y14-20020a170906518e00b009ad8a29f26amr22916310ejk.63.1697129804061; Thu, 12
- Oct 2023 09:56:44 -0700 (PDT)
+        Thu, 12 Oct 2023 12:57:55 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC46B7;
+        Thu, 12 Oct 2023 09:57:54 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CDLifc010756;
+        Thu, 12 Oct 2023 16:57:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=tFLxmj09QJweq//cJjff42gF1cQIyOlmZvPRzNFpAgE=;
+ b=QyutPYSTY40Uo8WywxpJmE4wMv1CwNmnxeX+uqA+JXlBkJjKgf53UWMo4rxSbatkq67/
+ PF6B9i8Fq2msYf21sBZV4BFW8ePytgOvsMKkMi68DEm7GShhcQvXBfYRLNCqdZxEwO+/
+ NemiTVXUq/BO2xTFC/D0zDGoFpuZXJq+4vlBGMG96zWEuS0Ce52LuofJcIeMjvVhuXOl
+ DSPvn088YbYhaZHv67LOvN7MK4DCC6FWmydYJ/WKxY+dWtrw/s9WBiGUT/kq74Nj8lTG
+ iPH+3Kx7PhzROYEvfogWxSkY2SIsZBYbVrqi6A0ZAg280SuhPVBaezjKX49+ti8Veipf pA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tp87v9qcq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 16:57:47 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39CGvlQ6026494
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 16:57:47 GMT
+Received: from [10.216.13.237] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 12 Oct
+ 2023 09:57:42 -0700
+Message-ID: <6da8dc86-0b9a-488f-9046-9d9d269beeaf@quicinc.com>
+Date:   Thu, 12 Oct 2023 22:27:39 +0530
 MIME-Version: 1.0
-References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
- <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
- <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
- <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zp-eDsxpStBznMHUE3OcHZ97NAZrZEjJW63oEFWtM3OQ@mail.gmail.com>
-In-Reply-To: <CAFULd4Zp-eDsxpStBznMHUE3OcHZ97NAZrZEjJW63oEFWtM3OQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 12 Oct 2023 09:56:27 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiqpJfBicroWizUsc4k2Zyg+yHMgfbCSvU_gkT45KK0Cg@mail.gmail.com>
-Message-ID: <CAHk-=wiqpJfBicroWizUsc4k2Zyg+yHMgfbCSvU_gkT45KK0Cg@mail.gmail.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     Nadav Amit <namit@vmware.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/3] arm64: dts: qcom: Add interconnect nodes for SDX75
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <dmitry.baryshkov@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1696406908-9688-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1696406908-9688-2-git-send-email-quic_rohiagar@quicinc.com>
+ <3a042a26-81b4-4ab3-ba03-a38ae876634b@linaro.org>
+From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
+In-Reply-To: <3a042a26-81b4-4ab3-ba03-a38ae876634b@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: KRTXYAmRRvK2hXu9K0uZxZTC_73vYGrm
+X-Proofpoint-GUID: KRTXYAmRRvK2hXu9K0uZxZTC_73vYGrm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ malwarescore=0 priorityscore=1501 bulkscore=0 adultscore=0 phishscore=0
+ clxscore=1011 suspectscore=0 impostorscore=0 lowpriorityscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310120141
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Oct 2023 at 09:33, Uros Bizjak <ubizjak@gmail.com> wrote:
+
+On 10/12/2023 10:18 PM, Konrad Dybcio wrote:
 >
-> For some reason existing percpu_stable_op asm uses %P operand
-> modifier. This will drop all syntax-specific prefixes and issue the
-> bare constant. It will also remove the (%rip) suffix. What we want
-> here is a generic %a modifier (See 6.47.2.8 Generic Operand Modifiers
-> [1]) that will substitute a memory reference, with the actual operand
-> treated as the address. In combination with "p" constraint will DTRT
-> and will emit symbol with the (%rip) suffix when available, also when
-> -fpie is in effect.
+>
+> On 10/4/23 10:08, Rohit Agarwal wrote:
+>> Add interconnect nodes to support interconnects on SDX75.
+>> Also parallely add the interconnect property for UART required
+>> so that the bootup to shell does not break with interconnects
+>> in place.
+>>
+>> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sdx75.dtsi | 52 
+>> +++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 52 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sdx75.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sdx75.dtsi
+>> index e180aa4..b4723fa 100644
+>> --- a/arch/arm64/boot/dts/qcom/sdx75.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sdx75.dtsi
+>> @@ -8,6 +8,8 @@
+>>     #include <dt-bindings/clock/qcom,rpmh.h>
+>>   #include <dt-bindings/clock/qcom,sdx75-gcc.h>
+>> +#include <dt-bindings/interconnect/qcom,icc.h>
+>> +#include <dt-bindings/interconnect/qcom,sdx75.h>
+>>   #include <dt-bindings/interrupt-controller/arm-gic.h>
+>>   #include <dt-bindings/power/qcom,rpmhpd.h>
+>>   #include <dt-bindings/power/qcom-rpmpd.h>
+>> @@ -203,6 +205,19 @@
+>>           };
+>>       };
+>>   +    clk_virt: interconnect-0 {
+>> +        compatible = "qcom,sdx75-clk-virt";
+>> +        #interconnect-cells = <2>;
+>> +        qcom,bcm-voters = <&apps_bcm_voter>;
+>> +        clocks = <&rpmhcc RPMH_QPIC_CLK>;
+>> +    };
+>> +
+>> +    mc_virt: interconnect-1 {
+>> +        compatible = "qcom,sdx75-mc-virt";
+>> +        #interconnect-cells = <2>;
+>> +        qcom,bcm-voters = <&apps_bcm_voter>;
+>> +    };
+>> +
+>>       memory@80000000 {
+>>           device_type = "memory";
+>>           reg = <0x0 0x80000000 0x0 0x0>;
+>> @@ -434,6 +449,9 @@
+>>               clock-names = "m-ahb",
+>>                         "s-ahb";
+>>               iommus = <&apps_smmu 0xe3 0x0>;
+>> +            interconnects = <&clk_virt MASTER_QUP_CORE_0 
+>> QCOM_ICC_TAG_ALWAYS
+>> +                     &clk_virt SLAVE_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS>;
+>> +            interconnect-names = "qup-core";
+> No qup-config?
+>
+> My brain compiler says this would cause a dt checker warning, at least 
+> on next-20231012.
+If I check the tip, then there is only one interconnect entry.
+https://github.com/torvalds/linux/blob/master/Documentation/devicetree/bindings/soc/qcom/qcom%2Cgeni-se.yaml#L50
+For the debug uart, the qup-config is added.
+I did check the dtbs_check before sending these patches.
+Please let me know if I am missing anything.
 
-Well, I have to admit that I think the main reason we used "p" as a
-constraint was simply that we knew about it, and I don't think I've
-ever even realized "a" existed.
-
-In fact, we historically didn't use a lot of operand modifiers, and
-the only common ones (at least for x86) tend to be the "register size"
-modifiers (b/w/q)
-
-I just did
-
-    git grep 'asm.*[^%]%[a-z][0-9]' arch/x86
-
-and while that will only catch one-liner inline asm cases, all it
-finds is indeed just the size ones.
-
-A slightly smarter grep finds a couple of uses of '%c' for bare constants.
-
-So I think the "we used P for percpu_stable_op" is really mostly a "we
-are not actually very familiar with the operand modifiers".  We use
-the constraints fairly wildly, but the operand modifiers are a
-relative rarity.
-
-I suspect - but it's much too long ago - that some gcc person just
-told us that "solve this using 'P'" and we never went any further.
-
-So changing it to use 'a' sounds like the right thing to do, and we
-can only plead ignorance, not wilful stupidity.
-
-              Linus
+Thanks,
+Rohit.
+>
+> Konrad
