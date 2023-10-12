@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A047C7878
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CCC7C787F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442861AbjJLVRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 17:17:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40130 "EHLO
+        id S1442890AbjJLVTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 17:19:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442824AbjJLVRl (ORCPT
+        with ESMTP id S1442824AbjJLVTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 17:17:41 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A0EA9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:17:39 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53db1fbee70so2505041a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:17:39 -0700 (PDT)
+        Thu, 12 Oct 2023 17:19:17 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025AEBE
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:19:16 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c5c91bec75so11528215ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:19:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697145458; x=1697750258; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vq2DHHNgN1ay7Fwdp3I5ZMWfUBUlatwsBWWqlLrDB9s=;
-        b=MLRBPaM7BX5Hdbg2iij5zYMlth+9hzHEJM0LoD9nxjKlkE3irwmPu3OPJha6FsDeMx
-         otbrg1J2ZN/mRCU0MYczc0l5NpQK6Oq2LsfMTkBm5L7Z4z4FY+QCpI1MT34CDQGPAJJd
-         zyKETRB3KJlfThXqAl1TZudPFW52pjpAOQ6q+EDVIzSEMsCsM/hiW4wKHoWDLq/6ML4r
-         h/HklOSUk85cw+mEl7sJIOq+ipYOMBxUge9o0xdX+qShNJaSvPQ5pLiCrJUDMFkKosYk
-         Rq2if7V9so+qlyN5+N4/gZ8B0aH/6oYghzkOo52CmY3RDVAve2C3LIGOUMXMPKhZ59jG
-         V35g==
+        d=chromium.org; s=google; t=1697145555; x=1697750355; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WV1rWLSM7c49IBFcfuqXHQ0XbP6e2rrZoMUIcLvjd4A=;
+        b=nN0TJoSC4A0oGJtC+2ie+rPcv8L4wUsEemoRiePJk/iu8Uhv4MrLKEmEGSAZZ+iE3l
+         m6asIgeUsPP4bEj2Ameu5aGs/AUzFsJjwRYrI+QdQOb/CRyT4UqyiChvzST7c1Nw5/HP
+         i0TvZb05ObWgmMy4PGoyiahPg4CkNXiDoCy44=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697145458; x=1697750258;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vq2DHHNgN1ay7Fwdp3I5ZMWfUBUlatwsBWWqlLrDB9s=;
-        b=JEiO0twGTlX+/7QhkxWYOAfBT2fakd6Ihw/ZF13Xunoz1ewfilRhIbF4Pipyql1sUG
-         5qIo5IDRRagQaPmrvJkHfKW3Lnf8mBJzNdUYD24PSARzPm5zlt5ACjEVYugNeZOcxnCX
-         g6O3nBkZve0hkWGq0ojBcnKu6OmDPMyVC6Teml56SEUcr5ik7tGcYvVHoEF14/zwHv4+
-         KvIFeq16ESoj/rNn+C3mBkBaQhk7V08OhC5W7MyXOvEztmuYX8Nh2j7J2YtqvxGwO/ad
-         7LR2JirvZP2jZlKO0D2AHReV/Ac1fFJtXbn0DNFaMI5VIDUkOyyGvLNoIKJkIDwwVGFq
-         hiGQ==
-X-Gm-Message-State: AOJu0YyDPOK8I6BYtZ918iJFy0c74AON+1bt8RFkZWBxeRhvKZwz19AX
-        wu1pmU8OKG3QnmL77WPly768QrIiAMY0HM5N2sU=
-X-Google-Smtp-Source: AGHT+IFkk5bm0z+SbkCdj2ZECqmt8Zf7B2iGxvVYgN8WfLbpYYBKrqqKimZjM9pWxssXaEAMfUi+zM2eBiUJQ12DqNw=
-X-Received: by 2002:aa7:c909:0:b0:530:97b5:49ce with SMTP id
- b9-20020aa7c909000000b0053097b549cemr23858410edt.10.1697145457834; Thu, 12
- Oct 2023 14:17:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697145555; x=1697750355;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WV1rWLSM7c49IBFcfuqXHQ0XbP6e2rrZoMUIcLvjd4A=;
+        b=XzKQChY28By24ZHDoE+/J7cmR0T4haw2mgBZlI2e5O4ibnxnRb2F0IY/auTzDDayqw
+         jGCHiTT9v6HcM4D5ll5zcIwITbzx0+5/vbJL7tAVdC1fpc9NbXjza8bf2v+UxhZ6Cmgl
+         a0cjNY3/iC3C25Cjp4dUhIQbfRQq6wR4p+2V7vn/OeAHdu/t2w/0BpEsuw9meos9Tf57
+         mfqUamtIJt5UMd//YVI+bdLk73q1yAKmn0CQNG+WJ3GbTPhGJJPrOKvDXbPTMt6zKw84
+         UxOj6IsTU2e0fIosFfrA6cXfLuWSPkEQDhLSvlRJ/8JSZlya9WewVL5sfaUfoK33zW5+
+         22yw==
+X-Gm-Message-State: AOJu0YyIPr5pTxfmyRkpbDyPSmC3kbieqR83/P+2OVjVAXoOkXCTNWgn
+        LeJpg0Sf61piZTiT/xzgA0eb/A==
+X-Google-Smtp-Source: AGHT+IF/hXlwpKtWrDQ5SRLUQ/pVbfU+Uaom8WuJEFjDIKbXUNGpndpxYsJlrcNvUqHz/V6eFNrQJA==
+X-Received: by 2002:a17:902:ca14:b0:1c9:ca02:645c with SMTP id w20-20020a170902ca1400b001c9ca02645cmr4491963pld.36.1697145555476;
+        Thu, 12 Oct 2023 14:19:15 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id o12-20020a170902d4cc00b001c61073b076sm2429102plg.144.2023.10.12.14.19.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 14:19:14 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 14:19:13 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-net-drivers@amd.com, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] sfc: replace deprecated strncpy with strscpy
+Message-ID: <202310121402.7A27AB9@keescook>
+References: <20231012-strncpy-drivers-net-ethernet-sfc-mcdi-c-v1-1-478c8de1039d@google.com>
 MIME-Version: 1.0
-References: <20231012201743.292149-1-ubizjak@gmail.com> <3af8dcec-66ec-4bd4-b7bf-4bc6f5f3c70f@intel.com>
- <CAFULd4byzHyoz4xM1gL_T1wFkNE-ab8K4upXfPirxM9PdX5JWg@mail.gmail.com> <5722e74b-6fc6-4d6e-be25-069ea6385990@zytor.com>
-In-Reply-To: <5722e74b-6fc6-4d6e-be25-069ea6385990@zytor.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Thu, 12 Oct 2023 23:17:26 +0200
-Message-ID: <CAFULd4afhj-kJwneh7wz0sExWqOmPicG4fcfF++_fUMHpoNbXA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Introduce %rip-relative addressing to PER_CPU_VAR macro
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012-strncpy-drivers-net-ethernet-sfc-mcdi-c-v1-1-478c8de1039d@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,48 +74,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 11:08=E2=80=AFPM H. Peter Anvin <hpa@zytor.com> wro=
-te:
->
-> On 10/12/23 13:59, Uros Bizjak wrote:
-> > On Thu, Oct 12, 2023 at 10:53=E2=80=AFPM Dave Hansen <dave.hansen@intel=
-.com> wrote:
-> >>
-> >> On 10/12/23 13:12, Uros Bizjak wrote:
-> >>> The last patch introduces (%rip) suffix and uses it for x86_64 target=
-,
-> >>> resulting in a small code size decrease: text data bss dec hex filena=
-me
-> >>> 25510677 4386685 808388 30705750 1d48856 vmlinux-new.o 25510629 43866=
-85
-> >>> 808388 30705702 1d48826 vmlinux-old.o
-> >>
-> >> I feel like I'm missing some of the motivation here.
-> >>
-> >> 50 bytes is great and all, but it isn't without the cost of changing
-> >> some rules and introducing potential PER_CPU_ARG() vs. PER_CPU_VAR()
-> >> confusion.
-> >>
-> >> Are there some other side benefits?  What else does this enable?
-> >
-> > These changes are necessary to build the kernel as Position
-> > Independent Executable (PIE) on x86_64 [1]. And since I was working in
-> > percpu area I thought that it was worth implementing them.
-> >
-> > [1] https://lore.kernel.org/lkml/cover.1682673542.git.houwenlong.hwl@an=
-tgroup.com/
-> >
->
-> Are you PIC-adjusting the percpu variables as well?
+On Thu, Oct 12, 2023 at 08:38:19PM +0000, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> `desc` is expected to be NUL-terminated as evident by the manual
+> NUL-byte assignment. Moreover, NUL-padding does not seem to be
+> necessary.
+> 
+> The only caller of efx_mcdi_nvram_metadata() is
+> efx_devlink_info_nvram_partition() which provides a NULL for `desc`:
+> |       rc = efx_mcdi_nvram_metadata(efx, partition_type, NULL, version, NULL, 0);
+> 
+> Due to this, I am not sure this code is even reached but we should still
+> favor something other than strncpy.
+> 
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-After this patch (and after fixing percpu_stable_op to use "a" operand
-modifier on GCC), the only *one* remaining absolute reference to
-percpu variable remain in xen-head.S, where:
+Looks correct to me!
 
-    movq    $INIT_PER_CPU_VAR(fixed_percpu_data),%rax
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-should be changed to use leaq.
-
-All others should then be (%rip)-relative.
-
-Uros.
+-- 
+Kees Cook
