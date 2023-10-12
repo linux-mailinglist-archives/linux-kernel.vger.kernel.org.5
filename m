@@ -2,139 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C267C7516
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF017C751B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441880AbjJLRut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
+        id S1379634AbjJLRvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379676AbjJLRuk (ORCPT
+        with ESMTP id S1344076AbjJLRv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:50:40 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7F7CF;
-        Thu, 12 Oct 2023 10:50:39 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 17:50:36 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697133037;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZsTxEDhbaIphlw0jzXT8l5TRWd+hq/UI1Z+VXihjkW0=;
-        b=2Jtdq7HSABAAUZk6N8frXHwXVnTlsX3gqQxpS0nAf6Lc3YCyHYEkcsTQR3LcSee0zewOhk
-        3TcUaIJQsUlu1Cu7PXzYCd1/m43e8vcObJVwbVo7EB4quD1BMqEb3c2SV7mSEXH9ADWoNd
-        5t/u/PpbpBsOXQy4PbOODLuxI6/63sLl8B3P2Pfre7puGX+zEX8kpAFUw8FzIEHkdumJwM
-        3SlALlLqncsMKg07biAy2fkgDjscqVcIiDq4+ydjkMonD0z5d6pJBgOJMRNwGtewmy3eOZ
-        BwLTCQFtIiR3o9OwVIxWuDtgJZrPtbdl0wtP1wv4MXwKdc5rk/CgF2gwXFN6xw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697133037;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZsTxEDhbaIphlw0jzXT8l5TRWd+hq/UI1Z+VXihjkW0=;
-        b=RBYd5SsvwAcFbUISugZ6tbNxK7+D/f393O+/niDm+iafq8yfyJ+9uKRSGmufSQR1cvdMEM
-        9zbw2AWmltcA+CDA==
-From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] objtool: Fix return thunk patching in retpolines
-Cc:     David Kaplan <david.kaplan@amd.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231012024737.eg5phclogp67ik6x@treble>
-References: <20231012024737.eg5phclogp67ik6x@treble>
+        Thu, 12 Oct 2023 13:51:28 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F47AB8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:51:26 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c9b70b9671so13665ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:51:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697133085; x=1697737885; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=L4c9PxVdvDkaT2ILkkxYtn5SSd3e0yFpozDooEzbzQY=;
+        b=OpUpWRlfwa3dKx1B8Q6hV/FHslyyjw+Eojg0AT9cL3xVC7dQq8UR1sf7T4JwngUrq6
+         7C7TwLaUQbtASACzIcoCNobmDatORNrFhbURPFEZkx02idKPWxfOGbDUsAhtTcCspYCF
+         EMciRZ2BJr7jC0UR2NmDGpq8HDDznqTQSMeyKui8wgcM3rj0XskgCHGzTAZB3HlzJLXF
+         UzYTPZvDVOsv/NEJRxmA10PZVFNJgTUKKB7Egx7EuMkZk0gFxqLmW6lv1LQht8KUSaSx
+         aLgCWA6kafUd8Wr7ANshdSCunX+yogiE53oAlQ3McIcddJi+MVH6rTrMcnpq91Te45RT
+         jZjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697133085; x=1697737885;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L4c9PxVdvDkaT2ILkkxYtn5SSd3e0yFpozDooEzbzQY=;
+        b=OdpKcHkRZz4lxP8uMuRoNtW8VLMWofaA9tcNtefRxejPd8URxFk2WScqS/Ex+NK41z
+         rqctvJRU6ogzjfoeN07kxNYWKGSnqnplP8iftfijLvuLoS3U9PjOMBnLMhCbbn9UFRCc
+         V1orZ0xsQL0L/2zniEa7reR6i4KnhOYtP66SuZKdZu20KuTRWa+32FwBf7/gO7cmbl60
+         Bg43v8AXmqEXRSDA4ybgLvTRx/OC7o7NE+CrnsLWw8xxG6hWFUwBV0isvIrvwQDD8Xuq
+         5Dopcv+4e7mS7uangAH2UBH9l0A79IoGCgm7Kddyvx/YHBiYCOrQQFF+fI8/hSh7K0HX
+         J9xQ==
+X-Gm-Message-State: AOJu0YyqE1VrIfFkdG0DEWDk4vuIFcIOAbMfqWiv8M67XDXmwFoNiXjM
+        0gUehe4zR4h6YcM5kfUhL/1rLw==
+X-Google-Smtp-Source: AGHT+IGziI3ZRQjkieu2xDnq5tLcnAJNtfsrYkJBrREaYVXFowVZIeCyzQFHfI05gEW13Z6AT5ZQQw==
+X-Received: by 2002:a17:902:e952:b0:1c1:efe5:cce5 with SMTP id b18-20020a170902e95200b001c1efe5cce5mr3634pll.3.1697133085284;
+        Thu, 12 Oct 2023 10:51:25 -0700 (PDT)
+Received: from bsegall-linux.svl.corp.google.com.localhost ([2620:15c:2a3:200:5aa:bf1b:3872:9fec])
+        by smtp.gmail.com with ESMTPSA id c4-20020a62e804000000b00690c9fda0fesm12045027pfi.169.2023.10.12.10.51.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 10:51:24 -0700 (PDT)
+From:   Benjamin Segall <bsegall@google.com>
+To:     Abel Wu <wuyun.abel@bytedance.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, mgorman@suse.de, bristot@redhat.com,
+        corbet@lwn.net, qyousef@layalina.io, chris.hyser@oracle.com,
+        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
+        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
+        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
+        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
+        tglx@linutronix.de
+Subject: Re: [PATCH] sched/fair: fix pick_eevdf to always find the correct se
+In-Reply-To: <699cc8b1-f341-4af7-9c47-fee961c5c4b7@bytedance.com> (Abel Wu's
+        message of "Thu, 12 Oct 2023 18:25:06 +0800")
+References: <20230531115839.089944915@infradead.org>
+        <20230531124603.931005524@infradead.org>
+        <xm261qego72d.fsf_-_@google.com>
+        <6b606049-3412-437f-af25-a4c33139e2d8@bytedance.com>
+        <xm26bkd4x5v4.fsf@bsegall-linux.svl.corp.google.com>
+        <699cc8b1-f341-4af7-9c47-fee961c5c4b7@bytedance.com>
+Date:   Thu, 12 Oct 2023 10:51:22 -0700
+Message-ID: <xm26pm1jhgpx.fsf@bsegall-linux.svl.corp.google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Message-ID: <169713303673.3135.1345736146578099050.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/bugs branch of tip:
+Abel Wu <wuyun.abel@bytedance.com> writes:
 
-Commit-ID:     eadbe6606a85610c63e6cfaa9257dc7e3bbb901c
-Gitweb:        https://git.kernel.org/tip/eadbe6606a85610c63e6cfaa9257dc7e3bbb901c
-Author:        Josh Poimboeuf <jpoimboe@kernel.org>
-AuthorDate:    Wed, 11 Oct 2023 19:47:37 -07:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 12 Oct 2023 19:43:51 +02:00
+> On 10/12/23 5:01 AM, Benjamin Segall Wrote:
+>> Abel Wu <wuyun.abel@bytedance.com> writes:
+>> 
+>>> On 9/30/23 8:09 AM, Benjamin Segall Wrote:
+>>>> +	/*
+>>>> +	 * Now best_left and all of its children are eligible, and we are just
+>>>> +	 * looking for deadline == min_deadline
+>>>> +	 */
+>>>> +	node = &best_left->run_node;
+>>>> +	while (node) {
+>>>> +		struct sched_entity *se = __node_2_se(node);
+>>>> +
+>>>> +		/* min_deadline is the current node */
+>>>> +		if (se->deadline == se->min_deadline)
+>>>> +			return se;
+>>>
+>>> IMHO it would be better tiebreak on vruntime by moving this hunk to ..
+>>>
+>>>> +
+>>>> +		/* min_deadline is in the left branch */
+>>>>    		if (node->rb_left &&
+>>>>    		    __node_2_se(node->rb_left)->min_deadline == se->min_deadline) {
+>>>>    			node = node->rb_left;
+>>>>    			continue;
+>>>>    		}
+>>>
+>>> .. here, thoughts?
+>> Yeah, that should work and be better on the tiebreak (and my test code
+>> agrees). There's an argument that the tiebreak will never really come up
+>> and it's better to avoid the potential one extra cache line from
+>> "__node_2_se(node->rb_left)->min_deadline" though.
+>
+> I see. Then probably do the same thing in the first loop?
+>
 
-objtool: Fix return thunk patching in retpolines
+We effectively do that already sorta by accident almost always -
+computing best and best_left via deadline_gt rather than gte prioritizes
+earlier elements, which always have a better vruntime.
 
-With CONFIG_RETHUNK enabled, the compiler replaces every RET with a tail
-call to a return thunk ('JMP __x86_return_thunk').  Objtool annotates
-all such return sites so they can be patched during boot by
-apply_returns().
+Then when we do the best_left->min_deadline vs best->deadline
+computation, we prioritize best_left, which is the one case it can be
+wrong, we'd need an additional
+"if (se->min_deadline == best->deadline &&
+(s64)(se->vruntime - best->vruntime) > 0) return best;" check at the end
+of the second loop.
 
-The implementation of __x86_return_thunk() is just a bare RET.  It's
-only meant to be used temporarily until apply_returns() patches all
-return sites with either a JMP to another return thunk or an actual RET.
-
-The following commit:
-
-  e92626af3234 ("x86/retpoline: Remove .text..__x86.return_thunk section")
-
-broke objtool's detection of return sites in retpolines.  Since
-retpolines and return thunks are now in the same section, the compiler
-no longer uses relocations for the intra-section jumps between the
-retpolines and the return thunk, causing objtool to overlook them.
-
-As a result, none of the retpolines' return sites get patched.  Each one
-stays at 'JMP __x86_return_thunk', effectively a bare RET.
-
-Fix it by teaching objtool to detect when a non-relocated jump target is
-a return thunk (or retpoline).
-
-Fixes: e92626af3234 ("x86/retpoline: Remove .text..__x86.return_thunk section")
-Reported-by: David Kaplan <david.kaplan@amd.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20231012024737.eg5phclogp67ik6x@treble
----
- tools/objtool/check.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index e308d1b..e94756e 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1611,6 +1611,22 @@ static int add_jump_destinations(struct objtool_file *file)
- 		}
- 
- 		/*
-+		 * An intra-TU jump in retpoline.o might not have a relocation
-+		 * for its jump dest, in which case the above
-+		 * add_{retpoline,return}_call() didn't happen.
-+		 */
-+		if (jump_dest->sym && jump_dest->offset == jump_dest->sym->offset) {
-+			if (jump_dest->sym->retpoline_thunk) {
-+				add_retpoline_call(file, insn);
-+				continue;
-+			}
-+			if (jump_dest->sym->return_thunk) {
-+				add_return_call(file, insn, true);
-+				continue;
-+			}
-+		}
-+
-+		/*
- 		 * Cross-function jump.
- 		 */
- 		if (insn_func(insn) && insn_func(jump_dest) &&
+(Though again I don't know how much this sort of never-going-to-happen
+slight fairness improvement is worth compared to the extra bit of
+overhead)
