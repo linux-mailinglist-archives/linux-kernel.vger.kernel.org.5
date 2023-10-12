@@ -2,125 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD857C739A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F1A7C73A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379518AbjJLRDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
+        id S1379562AbjJLRDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344025AbjJLRDU (ORCPT
+        with ESMTP id S1379566AbjJLRDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:03:20 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0A890;
-        Thu, 12 Oct 2023 10:03:18 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C9sw0g002931;
-        Thu, 12 Oct 2023 17:02:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ChLw1gPCreVADDqa++lhTytF91fEXU6wneQX61ewHlw=;
- b=E+SieSW09RwnewnsW8ff95xBYbrxXFJVazHl1hsCavh9XtIwo10JkY9H0kRHWTo6jhTa
- Hvl40w7iYxVfyNCCk1EpbVm7Vsgip9C0rfk8lTVoR7kkSm6E27sUwujknyGdE4sGqbE2
- hXi1vOjn8Gjd4Kewa2eYPSA7KHKA9kcLgt23uEm+7I7e1k4SwnYEOM5f6IEln/mMNEKs
- dcIzIpzL2MRvE1588Y8vMEc4VZ9skAXoGUG8xc/pg3Nj0K+f/rYZnq81Wp+6TxDe2wMC
- 4fcOUWZ3H/7GrEC27sQ9p2UmY8X+B460kJWO5y/cQ74u5DDfux7/HJpC6vfomy4B/ES3 Qg== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tp0vwapma-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 17:02:40 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39CH2cE5005541
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 17:02:39 GMT
-Received: from [10.216.58.179] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 12 Oct
- 2023 10:02:32 -0700
-Message-ID: <cceab5a9-ac0f-4ecd-9aa5-0ede5615a13d@quicinc.com>
-Date:   Thu, 12 Oct 2023 22:32:28 +0530
+        Thu, 12 Oct 2023 13:03:48 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8E1DA
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:03:45 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9ae75ece209so197165966b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:03:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697130224; x=1697735024; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bpj60L1giOhZDrev97o25zjJHzefVjPnm5rNDXRL1v4=;
+        b=w+Dim5RPaej0Tkizr6QijIiVS19PbHFaqUExEpuN1hh/F/B20uAoVnCcr0K0oZ7m/2
+         ABLeQ6TMp+6a2cmG7YOaUIveKHyMpPBM5oxCl//v1cEGd88l68pssauqNzIRLSe4g6LY
+         fuW7AGtz/JFF2c/V5hZua+Y5voLL+AKqjsfuLrIdcmQbkAS2IbMyUHs40Ffr1Jr2JzfI
+         ybe9SLssOXj01zJNsMlcsOkRtKFcOyoaPOC8uvQWG+SOeix+kdJdIR9ZXcwd1fB8SuaF
+         09QPFEBIdDC5zYXdUPGb6gD7GhS/Hhm+tKInl0uRgV9emxbbQ/fkngnyeqzYNnDp5pmO
+         5yOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697130224; x=1697735024;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Bpj60L1giOhZDrev97o25zjJHzefVjPnm5rNDXRL1v4=;
+        b=VP/KKNoesEvhwFnw7IIbNCcBZndP5O6UhfFWfaFt5/TriFjPmBGceBEs5bj9DK4I8J
+         9WJxHJPrTBpvg9ow5FfdOcs5reAvSduzDMRj0YX4HVMg6mtz6XWTx4w6VPRYC0Y+k3zr
+         Q+DpURKO8tR1B+aytyD3As1Fr1m749+g7zotQ0ysYRyhv07fjxSS1tUg4ffGdWyO4amw
+         ZYf0PDcZ+0cx/nZh8/ewAh8KAOJit7TjzBdSgLReRKYQrrn1r684Y1tITAvx1mmRG6cZ
+         zhWqqUfy3cRe2QiBJ/wyKwyKwWJJpQ9VBXTQj85ynMqxgsJYApWMLFolHiYvFkCWhQ8G
+         Di8w==
+X-Gm-Message-State: AOJu0YyAUUbRZnN7ULsG9vZD3zqaep+kxuwpN99B2KW96BER9/87rtR6
+        KzY2HuD0bNGR0fCKtyiLKJoQqj20Jcre8xMI2BTLRg==
+X-Google-Smtp-Source: AGHT+IHnItZqj3WoRz3s0Uyjg3a1IGBWvjSwLhRqCZLGtotHoQvNSkjH2MugZe17HhUqAfVikbHBbvc6y+hxZvjZCKk=
+X-Received: by 2002:a17:906:845c:b0:9b8:f17a:fbc3 with SMTP id
+ e28-20020a170906845c00b009b8f17afbc3mr19609420ejy.64.1697130223912; Thu, 12
+ Oct 2023 10:03:43 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 08/10] arm64: dts: qcom: sc8280xp: Add multiport
- controller node for SC8280
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Andy Gross" <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        "Wesley Cheng" <quic_wcheng@quicinc.com>,
-        Johan Hovold <johan@kernel.org>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-9-quic_kriskura@quicinc.com>
- <467dd1cc-64af-43d7-93ca-be28043e2765@linaro.org>
-Content-Language: en-US
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <467dd1cc-64af-43d7-93ca-be28043e2765@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 6Gz5k3DFi_elboXfzKuruuxvwtr9HH-t
-X-Proofpoint-ORIG-GUID: 6Gz5k3DFi_elboXfzKuruuxvwtr9HH-t
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- phishscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015 mlxlogscore=774
- suspectscore=0 priorityscore=1501 adultscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310120141
+References: <20231012043501.9610-1-m.muzzammilashraf@gmail.com>
+In-Reply-To: <20231012043501.9610-1-m.muzzammilashraf@gmail.com>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Thu, 12 Oct 2023 19:03:07 +0200
+Message-ID: <CAMZdPi_RY7H8owUB=6-G3fnhXBVrKHjv6O5iLmLwu8bZUbJa3A@mail.gmail.com>
+Subject: Re: [PATCH v2] drivers: net: wwan: wwan_core.c: resolved spelling mistake
+To:     Muhammad Muzammil <m.muzzammilashraf@gmail.com>
+Cc:     horms@kernel.org, ryazanov.s.a@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Muhammad,
 
+On Thu, 12 Oct 2023 at 06:35, Muhammad Muzammil
+<m.muzzammilashraf@gmail.com> wrote:
+>
+> resolved typing mistake from devce to device
+>
+> changes since v1:
 
-On 10/12/2023 10:10 PM, Konrad Dybcio wrote:
-> 
-> 
-> On 10/7/23 17:48, Krishna Kurapati wrote:
->> Add USB and DWC3 node for tertiary port of SC8280 along with multiport
->> IRQ's and phy's. This will be used as a base for SA8295P and SA8295-Ride
->> platforms.
->>
->> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
->> ---
-> [...]
-> 
->> +
->> +            interconnects = <&aggre1_noc MASTER_USB3_MP 0 &mc_virt 
->> SLAVE_EBI1 0>,
->> +                    <&gem_noc MASTER_APPSS_PROC 0 &config_noc 
->> SLAVE_USB3_MP 0>;
-> Please use QCOM_ICC_TAG_ALWAYS from 
-> include/dt-bindings/interconnect/qcom,icc.h (like in sa8775p)
-> 
-> With that I think it's good to go :)
-> 
-Hi Konrad. Thanks for the review.
+Change log should not be part of the commit message, simply drop the above line.
 
-I see that the tags are used fr spi/i2c but not usb. So to maintain 
-uniformity, wanted to keep the same here.
+>         - resolved another typing mistake from concurent to
+>           concurrent
+>
+> Signed-off-by: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
+> ---
 
-Regards,
-Krishna,
+You can put your change log here, e.g:
+   v1: Fix 'concurrent' typo...
+
+>  drivers/net/wwan/wwan_core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/wwan/wwan_core.c b/drivers/net/wwan/wwan_core.c
+> index 87df60916960..72e01e550a16 100644
+> --- a/drivers/net/wwan/wwan_core.c
+> +++ b/drivers/net/wwan/wwan_core.c
+> @@ -302,7 +302,7 @@ static void wwan_remove_dev(struct wwan_device *wwandev)
+>
+>  static const struct {
+>         const char * const name;        /* Port type name */
+> -       const char * const devsuf;      /* Port devce name suffix */
+> +       const char * const devsuf;      /* Port device name suffix */
+>  } wwan_port_types[WWAN_PORT_MAX + 1] = {
+>         [WWAN_PORT_AT] = {
+>                 .name = "AT",
+> @@ -1184,7 +1184,7 @@ void wwan_unregister_ops(struct device *parent)
+>          */
+>         put_device(&wwandev->dev);
+>
+> -       rtnl_lock();    /* Prevent concurent netdev(s) creation/destroying */
+> +       rtnl_lock();    /* Prevent concurrent netdev(s) creation/destroying */
+>
+>         /* Remove all child netdev(s), using batch removing */
+>         device_for_each_child(&wwandev->dev, &kill_list,
+> --
+> 2.27.0
+>
