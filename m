@@ -2,202 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E73A37C6516
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8357C6513
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347050AbjJLGFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53294 "EHLO
+        id S1377329AbjJLGDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233976AbjJLGFh (ORCPT
+        with ESMTP id S1377308AbjJLGDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:05:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813D3BE;
-        Wed, 11 Oct 2023 23:05:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697090736; x=1728626736;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=VoDOon62gI4hOZbSKfv38Ulp5fjMaXpw1vIF+02CQ6k=;
-  b=MZ2OiTgi7dcK8oQIdYrdr8T4XvYa08J8fZifAojtqpjMpUyDlLfgjKPH
-   NiW9Z9h5JG1g28XxcajK4YJAMHRpwL4n8WrWvN/BKTvrNLdj12z4uiI1+
-   NI463m3Ana3r0/PbVQXncnP+aDpdZC/4KJ6FhuCXLJ/RVHiulLfJ+uJJp
-   NZ18wUvz6W2+6zJo6vFWR1tqqKib1mKAjIyp8WApjLIG2CbVLz5RC08R4
-   N3O8FEA3pcyxfu0EKPNBgxk6Gt6d5zseNvIJo/+5QfR0c2iQXrn5AEPIY
-   B1E9eR9G+n8cFQAgAsAGOiwMQUTVsTith9h/B8DsWf2tRomXfRXhIgDbT
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="364208713"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="364208713"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 23:05:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="704032474"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="704032474"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Oct 2023 23:05:34 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 11 Oct 2023 23:05:34 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Wed, 11 Oct 2023 23:05:34 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Wed, 11 Oct 2023 23:05:34 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hI6w8oPKhonnWP2TLsTGLt/jAOkxBgLS507/txxGnAENKdF4ynxFlNm9PAFHM3AWIpkf53nrBhgBZpC91PLoy/cqmgJxAXsFkXOX4Wvko+XxmB5IsgpjuXzoEDmDFTM+T/qc1kJb+n4q/svMvdiVte3Qy6TLS0/bA4meoK4sONQBt0Y27M5Ni7hOk+CSJC8AURbj/bQmpwaboSk434lWVDQtiToXnYx7e0Kqo7p4Ey3/qQWyfBKAeJ3sN2RbSHGWF1LLd+6ACClhA7ZdRsmIwDRMayihitqJ3bC8EpIVUmEu/A3hI58ybn4yial1hFGrvZhkvNaYa5HSSCh6GbVVJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CRZA19wl6L+lz8EkG1F+PcveVqYo1KMr3Dg9vIiQA0k=;
- b=nBbCkETefjbk0+5oLcXGbs6mjBb96F8auX4fE709csaCTMkptiN8ArS6KcP3xO0hTglSppIAlDhoThnEw+aBLySTLYpogtyMDrDBt0rqKiZ1Gp/wpOajhVghMEEN4CfNj2bCnn28ORWIiOfkBs7n7HgHwFjB1eD79/ls6S7b2Z8dpjCdzpi4O+O7i7ZvovYDqYws+G5avAflAohXL7yBqoRNDGqXWqDAVc3CkTAyY9/1ABoDrJxbgA72Oe+TDtuyfV9GOqskpha9VBlxloRqVkI/OqjTibOSAemDcCV1r+MUnehpnT7Id+JoD8ep6o4afJ8ZaI37CsT30kjxAwaeWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6304.namprd11.prod.outlook.com (2603:10b6:208:3c0::7)
- by CH0PR11MB5265.namprd11.prod.outlook.com (2603:10b6:610:e0::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Thu, 12 Oct
- 2023 06:05:31 +0000
-Received: from MN0PR11MB6304.namprd11.prod.outlook.com
- ([fe80::7edc:de45:7f2d:9ade]) by MN0PR11MB6304.namprd11.prod.outlook.com
- ([fe80::7edc:de45:7f2d:9ade%4]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
- 06:05:31 +0000
-Date:   Thu, 12 Oct 2023 13:56:06 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     "Luck, Tony" <tony.luck@intel.com>
-CC:     "Sang, Oliver" <oliver.sang@intel.com>,
-        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
-        lkp <lkp@intel.com>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "Yin, Fengwei" <fengwei.yin@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "Yazen Ghannam" <yazen.ghannam@amd.com>,
-        "Smita.KoralahalliChannabasappa@amd.com" 
-        <Smita.KoralahalliChannabasappa@amd.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v9 2/3] x86/mce: Add per-bank CMCI storm mitigation
-Message-ID: <ZSeKduDig1Z7ZuGN@feng-clx>
-References: <20231004183623.17067-3-tony.luck@intel.com>
- <202310111637.dee70328-oliver.sang@intel.com>
- <SJ1PR11MB6083D191286779302821A7EAFCCCA@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <ZSbCYt35j20ezT98@feng-clx>
- <SJ1PR11MB6083154D148B42B8B7BC48D9FCCCA@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <ZSeF6T0mkrH5pOgD@feng-clx>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZSeF6T0mkrH5pOgD@feng-clx>
-X-ClientProxiedBy: SG2PR04CA0154.apcprd04.prod.outlook.com (2603:1096:4::16)
- To MN0PR11MB6304.namprd11.prod.outlook.com (2603:10b6:208:3c0::7)
+        Thu, 12 Oct 2023 02:03:23 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA83D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:03:18 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3175e1bb38cso67864f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:03:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697090597; x=1697695397; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KukZ0tzE84dJ5AJr1KRIaqdGGLYRgHtX61fFFpt8ADk=;
+        b=C5/IzQIS4HVzbpXJj547WaUMKqHsXOtjhOlK6wpC9tAaJRI4Wd7KSsy3uyyFR8DvOL
+         j58TJL2G252eutdTVUBdjlFaLzzr2ah8466aDV1vXazsDDfv7TvD4lYFlzaZxR3khr9e
+         9z15Oims8dZcpTPQHLheB87S5dqn1WIwBlydRsru9ltsJKLj/dUkClShwhArXvR7dQE2
+         6QGTNR2liQXn1TYlQR7Y0NMi/ZiMUdEX3StA6J0lTHk9gMmt1Aj7It6/GmexQKKrxV8r
+         WENEKg6J1g4XLCNsVQCqMrzKQrXOQ+nyRXqdIheGNHhlN2kIF99HZlReUnWXN2yL2S/U
+         Z4eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697090597; x=1697695397;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KukZ0tzE84dJ5AJr1KRIaqdGGLYRgHtX61fFFpt8ADk=;
+        b=BJKWXpATkVZVLB8r+ufEtH+NTAJaQ0e0fxqw5Rkvb6D1AHuzQ1gfPirRPs8ZYssfuj
+         tzaNJcjPpdYTgljKP+k1Y6+9eoW+drDybjRh7Deqj2d4AWid2borfXVc0aEpmqoA0G4x
+         E6a6XOOtdbNAxUGq17BGXr78ZOW84BL8hlr3i2f3Aq6DjtU82/GSuQqc1irWizaRo8I3
+         rWTdQ7UgJRzBX/FMnNZNh14B6Rf9BGDi3lrfWkh+lNOzG5FlQWG4tdpEr76CyGJjKW05
+         Np3ZLdQCQSXUxMo3cqCSRZvMt6mMZ+QeuBfVMHiMLnT80WxFL0ylITY+nK0MWs+WAsew
+         WZJA==
+X-Gm-Message-State: AOJu0YxM1rWmAcpkSx0PZZahs2I8OPY5jCMLzi+EXbKp2g2Lz1O2BWk3
+        wd3BT6EHRb7/uLesMXgCtRqzTVUJuJg=
+X-Google-Smtp-Source: AGHT+IFB2oSKIwYOcPSVuc0SCaCm/kBAADGpf7YVFPSak9Ctn5S/X9uqzQq9jYYiYEg0JCubzmoy3A==
+X-Received: by 2002:adf:a457:0:b0:32d:8be3:f3fe with SMTP id e23-20020adfa457000000b0032d8be3f3femr1153754wra.7.1697090597162;
+        Wed, 11 Oct 2023 23:03:17 -0700 (PDT)
+Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
+        by smtp.gmail.com with ESMTPSA id j16-20020adff010000000b0032008f99216sm17285530wro.96.2023.10.11.23.03.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 23:03:16 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 08:03:15 +0200
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 2/2] staging: rtl8192u: Fix sleeping kzalloc() called
+ from invalid context
+Message-ID: <42f7b8728a5d9ada8c0432e1c11c30d13627fba7.1697089416.git.philipp.g.hortmann@gmail.com>
+References: <cover.1697089416.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6304:EE_|CH0PR11MB5265:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4f69ee32-2fb6-4b58-a7f8-08dbcae93cf7
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iYTB3W9+WZF8e7zXAry6QrOTqXNp3LoK9Ikaxz5zpKaV2Ey5T1/aNpuZY0RwJHSu6bJXlY1nzO4qEJRGhHr1Rer/YILJHtm7HRXkXrHVsxgSly+uKb+QqR7zcMS/Joun+WXPRD3vlvFkqxN6dpqs+q6UHqC9/dA29CQFA+u9mhK4EZw8PlQnBnr27BQHddfpjLZTHDA5jLe75O+evJBIwWp3/bSAXwjJsE9A5nnsW1yvwrSk0dBbK4GdWuUhs6vswnmU26ZKlSc+sqmsPq5JbUCmAUeCrEhjmSxQDK+1NX/HaLl+I/Oe3jiK4N9ROyvCPIVN2Ul5MJePTw+8BV4+Or5Ae5zLrNpgnpxEJ7UHLm8ptNXuMraZdB2CSjIiyzz0jMnPuq4bRx+9FlkVRab8f+rpNy/1KQX9tun60TF6WHdkcDQN3VyZA1CVNXZ6rho92hF8qhp1iG5zYMTjU7MefEzh4Q5Y4nkZJ2s/x6eFrsj5pjEkMr2WPOCNO9sRR+Z9DNvg/AcokDZBodHqUlgkJzcWHs34mwQkI62K5mkqhrI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6304.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(39860400002)(396003)(366004)(136003)(346002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(38100700002)(9686003)(6512007)(26005)(82960400001)(478600001)(966005)(6486002)(44832011)(5660300002)(8936002)(8676002)(4326008)(6862004)(86362001)(15650500001)(7416002)(2906002)(33716001)(316002)(54906003)(6636002)(41300700001)(66476007)(66556008)(66946007)(6666004)(6506007)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?K5nQ3Rj/Hgin1/p+Kg5COZoivLC9ANyyeJggcic4FJgm+EYNDaoDBqE7lPhK?=
- =?us-ascii?Q?LsEtVv96f2l4NUHlqWVm0IRhkn+IBBRpzB4p7kTDnXubl9gtzwQ/dIfJqiLE?=
- =?us-ascii?Q?cbhyVTqx9Gvtzv4TdFvz4ZzRTB537gxZUpsm6Aw8UClJBM0jFcfmc6uW/liN?=
- =?us-ascii?Q?G6N1Yh7/3w9O7Xy4wJpV5ObXRpIQjYIcvKt7b8SwfKLqmqxcFl1XjMyQrOIM?=
- =?us-ascii?Q?nbLPJN93S8Cr2AXuLUNluBrXAJbngMs/uZvNq+NJcowqoCAHhl5RIFhgKJXG?=
- =?us-ascii?Q?iASj/D4Fsha6pjYWaAosAD5kPLW9fDG3yABdpLT0najyOOD8bWGT7RrcTA1Z?=
- =?us-ascii?Q?J7H5AwVDzdYdRKmE+0TvDmCuo9Xu6XQKoA6Ta2sF3d6SPoWD50KrgXkjM/9H?=
- =?us-ascii?Q?8Vz801FnTCLLuD36XK0A7emyXt0kHhxsk/eNnyorZJ6mQYv5D0qPJ7WUfZBL?=
- =?us-ascii?Q?E3Fg9Bo89SG4vxWA+7C0HUIGrdYL/g6E8OGq4uu/vQdF8Hpf/ImcSAAS4q2s?=
- =?us-ascii?Q?+bgcekqkag1a9eJuDeSpAFGNZ/4nbGFfODHY7FAb0OOWgvV94AgzPrudaX+V?=
- =?us-ascii?Q?i1cbPJc2s9sovfmLwykM01IzyxsSzUW88lEjimpCFdYHl19R9yLzba7/KYZW?=
- =?us-ascii?Q?QqFqD6/WBfbVfQI7PsT6rJ7NE7ouT8abwA8xcY2vT4/pc/ilwGhwUosbQsX4?=
- =?us-ascii?Q?FgsOUTxpv8PAR8PnN6ug+EGkpPL2CimlsfWt6zgGA2feFPSHr4tNTEgJwL+N?=
- =?us-ascii?Q?9dNCOb0UqYwGpQz5xilhwJBhJ7EKfJmlGboEh9EW/4Oqw6UNyAr7Bl4i+Ntv?=
- =?us-ascii?Q?jmGSyTyyr1VVwdlaI5U3TF5wYLdj8ALQ5V5yh+URhfAKWQORIVgcSSRf0Ane?=
- =?us-ascii?Q?cuBbCkaFKS04eNUBHrvmvptQfWKazAfiVUT/Vett3/cI7nFfozynaIfWxJx0?=
- =?us-ascii?Q?4Ou+heKSZJuqlGBUdYCcWnDJ9pHLkOJjRUW5jfhkvSeZ/rE/HmKHKSXAYud9?=
- =?us-ascii?Q?1AB1cU3R4vu6tLd4o8/p6CZniZhsQnW3Fsss8NJkQJF4WGVjTsA2IyNXVETs?=
- =?us-ascii?Q?AAK15DTJ4s0d2HNdh7g000XsRd9jwRVRtymdDAEpfXBTYBORsX9volV6PXQu?=
- =?us-ascii?Q?6vSUIIAwpSiJj6toJ4AiwFTnWgGrl2okPlcgwvm2h6EaWIHEkTM6ZrjpN8fv?=
- =?us-ascii?Q?GHUzy8XZ9u/QYws1v9e2KM5Le4G5VJQFeAmcaGXb8ZTElj/vS62+LAQGG+ju?=
- =?us-ascii?Q?lhJLwetNEbmTy9I9RAFCqEdidhf7SzgZT7gf+hcuwa4oTjOJXNMRTojaJ7Ju?=
- =?us-ascii?Q?CplrnW9sqzIgjlaVi4aEUifgtRAb3Da0K/oI9NZMKg1fNH5yHiQtmCJ3xVlB?=
- =?us-ascii?Q?QNPmKcqwt0ga3npYb4VOG1AcZSYs1l38/eKBviiLBgwZc/dF9UcuKIfBbWDI?=
- =?us-ascii?Q?ZrWxJYAJMcqfP4asPBxdiMzHxZSzu2CDSRNVRjgWuZoQps7+LCbAOufPF+wE?=
- =?us-ascii?Q?H+qIxey6BcuxCbuKXGdJNGNQTLejfBuIDhuHjbrJ8msCX2/SWyJiwhGamVrd?=
- =?us-ascii?Q?spEFmvRhfCgPKY/Xvi/uH6Av6t9mTAJjcvMZRzE4?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f69ee32-2fb6-4b58-a7f8-08dbcae93cf7
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6304.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 06:05:30.3603
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: p4G+yxsVJ1tuVqUwSu3o61X34lLVFK3SFNnI0wT8aI884IRKCGcA1eotpHibLDI6pXHHT9ydgk2LjT49wV3i5A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5265
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1697089416.git.philipp.g.hortmann@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 01:36:41PM +0800, Feng Tang wrote:
-> On Thu, Oct 12, 2023 at 01:23:54AM +0800, Luck, Tony wrote:
-> > > IIRC, CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B was enabled in 0Day's
-> > > kernel config for quite a while, to force each funtion's start
-> > > address aligned on 64 bytes. Don't know if this has been changed
-> > > recently.
-> > >
-> > > Also I noticed the patch introduce a new per-cpu variable 'storm_desc",
-> > > if the function address is 64B aligned, then per-cpu data alignment
-> > > may be related.
-> > 
-> > If adding (removing, changing) per-cpu variables can cause 8% performance
-> > changes, then maybe there needs to be some way to insulate the builds
-> > from these side effects (as was done with the 64-byte function alignment).
-> > I've no ideas on how to achieve that :-(
+Sleeping kzalloc() called from invalid context leads to a crash of the
+system.
 
-As for mitigation (how to reduce these kind of strange performance
-changes), I have proposed a "selective isolation" in LPC 2021, in
-page 15 of https://lpc.events/event/11/contributions/895/attachments/770/1603/Strange_kernel_performance_changes_lpc_2021.pdf
+Fixes: 061e390b7c87f ("staging: rtl8192u: ieee80211_softmac: Move a large data struct onto the heap")
+Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+---
+Tested with rtl8192u (Belkin F5D8053) in Mode n (12.5 MB/s)
 
-As kernel binary is compactly linked together, the alignment change
-of text/data in earlier modules could affect other modules after them.
-MCE module is much easier to hit these strange performance changes,
-just because it sit in arch/ folder and get linked early in kernel
-binary.
+Dump of Error:
+[ 2141.025340] ================================
+[ 2141.025341] WARNING: inconsistent lock state
+[ 2141.025343] 6.6.0-rc1+ #15 Tainted: G         C OE
+[ 2141.025345] --------------------------------
+[ 2141.025346] inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+[ 2141.025348] gnome-shell/3018 [HC0[0]:SC1[1]:HE1:SE0] takes:
+[ 2141.025350] ffffffffbbe6b600 (fs_reclaim){+.?.}-{0:0}, at: __kmem_cache_alloc_node+0x48/0x720
+[ 2141.025360] {SOFTIRQ-ON-W} state was registered at:
+[ 2141.025362]   lock_acquire+0xdc/0x2c0
+[ 2141.025368]   fs_reclaim_acquire+0xaa/0xe0
+[ 2141.025371]   __kmem_cache_alloc_node+0x48/0x720
+[ 2141.025374]   __kmalloc_node+0x57/0x1a0
+[ 2141.025376]   alloc_cpumask_var_node+0x1f/0x30
+[ 2141.025380]   smp_prepare_cpus_common+0xce/0x180
+[ 2141.025385]   native_smp_prepare_cpus+0xe/0xd0
+[ 2141.025387]   kernel_init_freeable+0x284/0x560
+[ 2141.025391]   kernel_init+0x1a/0x140
+[ 2141.025395]   ret_from_fork+0x3c/0x60
+[ 2141.025398]   ret_from_fork_asm+0x1b/0x30
+[ 2141.025402] irq event stamp: 53750354
+[ 2141.025404] hardirqs last  enabled at (53750354): [<ffffffffbb1fbd21>] _raw_spin_unlock_irqrestore+0x31/0x70
+[ 2141.025408] hardirqs last disabled at (53750353): [<ffffffffbb1fb9b4>] _raw_spin_lock_irqsave+0x84/0xa0
+[ 2141.025411] softirqs last  enabled at (53750290): [<ffffffffbb1fd6cd>] __do_softirq+0x2cd/0x3b7
+[ 2141.025415] softirqs last disabled at (53750323): [<ffffffffba2d3fb0>] irq_exit_rcu+0xa0/0xe0
+[ 2141.025419]
+               other info that might help us debug this:
+[ 2141.025420]  Possible unsafe locking scenario:
 
-The idea of "selective isolation" is simple, by picking some modules
-sparsely and enforce some alignment to function/data/per-cpu data,
-so that they can act as fences/borders, separate kernel into multiple
-capsules, and make the alignment changes only take effect inside
-that specific capsule.
+[ 2141.025422]        CPU0
+[ 2141.025423]        ----
+[ 2141.025424]   lock(fs_reclaim);
+[ 2141.025426]   <Interrupt>
+[ 2141.025427]     lock(fs_reclaim);
+[ 2141.025429]
+                *** DEADLOCK ***
 
-Any thoughts? thanks!
+[ 2141.025430] no locks held by gnome-shell/3018.
+[ 2141.025432]
+               stack backtrace:
+[ 2141.025433] CPU: 2 PID: 3018 Comm: gnome-shell Tainted: G         C OE      6.6.0-rc1+ #15
+[ 2141.025436] Hardware name: FUJITSU ESPRIMO P710/D3161-A1, BIOS V4.6.5.3 R1.16.0 for D3161-A1x 10/29/2012
+[ 2141.025438] Call Trace:
+[ 2141.025439]  <TASK>
+[ 2141.025441]  dump_stack_lvl+0x5c/0xa0
+[ 2141.025445]  dump_stack+0x10/0x20
+[ 2141.025447]  print_usage_bug+0x22f/0x2c0
+[ 2141.025452]  mark_lock.part.0+0x6bf/0x8a0
+[ 2141.025456]  ? sched_clock_noinstr+0x9/0x10
+[ 2141.025461]  __lock_acquire+0xb75/0x1de0
+[ 2141.025465]  ? sched_clock_noinstr+0x9/0x10
+[ 2141.025469]  lock_acquire+0xdc/0x2c0
+[ 2141.025473]  ? __kmem_cache_alloc_node+0x48/0x720
+[ 2141.025478]  fs_reclaim_acquire+0xaa/0xe0
+[ 2141.025481]  ? __kmem_cache_alloc_node+0x48/0x720
+[ 2141.025484]  __kmem_cache_alloc_node+0x48/0x720
+[ 2141.025487]  ? ieee80211_rx_frame_softmac+0x2d3/0x1a10 [r8192u_usb]
+[ 2141.025508]  kmalloc_trace+0x2a/0xc0
+[ 2141.025510]  ? kmalloc_trace+0x2a/0xc0
+[ 2141.025513]  ieee80211_rx_frame_softmac+0x2d3/0x1a10 [r8192u_usb]
+[ 2141.025527]  ? ehci_urb_enqueue+0x12a/0x1020
+[ 2141.025534]  ieee80211_rx+0xf44/0x1e60 [r8192u_usb]
+[ 2141.025549]  ? __lock_acquire+0xbf3/0x1de0
+[ 2141.025552]  ? __lock_acquire+0xbf3/0x1de0
+[ 2141.025558]  rtl8192_rx_nomal+0x583/0x1180 [r8192u_usb]
+[ 2141.025570]  ? sched_clock_noinstr+0x9/0x10
+[ 2141.025573]  ? exc_page_fault+0x1b0/0x210
+[ 2141.025580]  rtl8192_irq_rx_tasklet+0x8a/0xc0 [r8192u_usb]
+[ 2141.025593]  tasklet_action_common.isra.0+0x10a/0x290
+[ 2141.025597]  tasklet_action+0x2d/0x40
+[ 2141.025600]  __do_softirq+0xca/0x3b7
+[ 2141.025605]  irq_exit_rcu+0xa0/0xe0
+[ 2141.025608]  common_interrupt+0x68/0xe0
+[ 2141.025611]  asm_common_interrupt+0x27/0x40
+[ 2141.025614] RIP: 0033:0x7f31fcbc5634
+[ 2141.025617] Code: 89 c9 48 c7 c6 3f 00 00 00 48 d3 ef 48 85 ff 0f 84 96 fe ff ff 48 0f bc cf 0f b6 04 08 0f b6 14 0a 29 d0 c3 66 90 38 c8 75 1c <48> 83 c2 01 48 83 fa 40 0f 84 23 fe ff ff 0f b6 04 17 0f b6 0c 16
+[ 2141.025620] RSP: 002b:00007fff36dad668 EFLAGS: 00000246
+[ 2141.025623] RAX: 0000000000000072 RBX: 0000000000000000 RCX: 0000000000000072
+[ 2141.025624] RDX: 0000000000000008 RSI: 0000563837956fc0 RDI: 000056383759c230
+[ 2141.025626] RBP: 0000563837956fc0 R08: 000000000000e000 R09: 0000000000000000
+[ 2141.025628] R10: 0000000000000001 R11: 00007f31fccca2e4 R12: 0000000000000012
+[ 2141.025629] R13: 000056383759c270 R14: 0000563837e1a5a0 R15: 0000563837956fc0
+[ 2141.025634]  </TASK>
+[ 2141.025644] BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
+[ 2141.025647] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 3018, name: gnome-shell
+[ 2141.025650] preempt_count: 100, expected: 0
+[ 2141.025651] RCU nest depth: 0, expected: 0
+[ 2141.025653] INFO: lockdep is turned off.
+[ 2141.025654] Preemption disabled at:
+[ 2141.025655] [<ffffffffbb1fd45e>] __do_softirq+0x5e/0x3b7
+[ 2141.025659] CPU: 2 PID: 3018 Comm: gnome-shell Tainted: G         C OE      6.6.0-rc1+ #15
+[ 2141.025662] Hardware name: FUJITSU ESPRIMO P710/D3161-A1, BIOS V4.6.5.3 R1.16.0 for D3161-A1x 10/29/2012
+[ 2141.025663] Call Trace:
+[ 2141.025664]  <TASK>
+[ 2141.025666]  dump_stack_lvl+0x7d/0xa0
+[ 2141.025669]  dump_stack+0x10/0x20
+[ 2141.025672]  __might_resched+0x1be/0x2e0
+[ 2141.025676]  __might_sleep+0x43/0x70
+[ 2141.025679]  __kmem_cache_alloc_node+0x568/0x720
+[ 2141.025682]  ? ieee80211_rx_frame_softmac+0x2d3/0x1a10 [r8192u_usb]
+[ 2141.025698]  kmalloc_trace+0x2a/0xc0
+[ 2141.025700]  ? kmalloc_trace+0x2a/0xc0
+[ 2141.025703]  ieee80211_rx_frame_softmac+0x2d3/0x1a10 [r8192u_usb]
+[ 2141.025716]  ? ehci_urb_enqueue+0x12a/0x1020
+[ 2141.025721]  ieee80211_rx+0xf44/0x1e60 [r8192u_usb]
+[ 2141.025735]  ? __lock_acquire+0xbf3/0x1de0
+[ 2141.025738]  ? __lock_acquire+0xbf3/0x1de0
+[ 2141.025744]  rtl8192_rx_nomal+0x583/0x1180 [r8192u_usb]
+[ 2141.025756]  ? sched_clock_noinstr+0x9/0x10
+[ 2141.025758]  ? exc_page_fault+0x1b0/0x210
+[ 2141.025765]  rtl8192_irq_rx_tasklet+0x8a/0xc0 [r8192u_usb]
+[ 2141.025778]  tasklet_action_common.isra.0+0x10a/0x290
+[ 2141.025782]  tasklet_action+0x2d/0x40
+[ 2141.025785]  __do_softirq+0xca/0x3b7
+[ 2141.025790]  irq_exit_rcu+0xa0/0xe0
+[ 2141.025793]  common_interrupt+0x68/0xe0
+[ 2141.025796]  asm_common_interrupt+0x27/0x40
+[ 2141.025798] RIP: 0033:0x7f31fcbc5634
+[ 2141.025800] Code: 89 c9 48 c7 c6 3f 00 00 00 48 d3 ef 48 85 ff 0f 84 96 fe ff ff 48 0f bc cf 0f b6 04 08 0f b6 14 0a 29 d0 c3 66 90 38 c8 75 1c <48> 83 c2 01 48 83 fa 40 0f 84 23 fe ff ff 0f b6 04 17 0f b6 0c 16
+[ 2141.025802] RSP: 002b:00007fff36dad668 EFLAGS: 00000246
+[ 2141.025804] RAX: 0000000000000072 RBX: 0000000000000000 RCX: 0000000000000072
+[ 2141.025806] RDX: 0000000000000008 RSI: 0000563837956fc0 RDI: 000056383759c230
+[ 2141.025807] RBP: 0000563837956fc0 R08: 000000000000e000 R09: 0000000000000000
+[ 2141.025809] R10: 0000000000000001 R11: 00007f31fccca2e4 R12: 0000000000000012
+[ 2141.025811] R13: 000056383759c270 R14: 0000563837e1a5a0 R15: 0000563837956fc0
+[ 2141.025815]  </TASK>
+---
+ .../rtl8192u/ieee80211/ieee80211_softmac.c    | 19 ++++++++-----------
+ drivers/staging/rtl8192u/r8192U.h             |  1 +
+ drivers/staging/rtl8192u/r8192U_core.c        |  6 ++++++
+ 3 files changed, 15 insertions(+), 11 deletions(-)
 
-- Feng
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
+index 92001cb36730..ff5d6f5aeed1 100644
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
++++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
+@@ -12,6 +12,7 @@
+  * Copyright who own it's copyright.
+  */
+ #include "ieee80211.h"
++#include "../r8192U.h"
  
-> Philip helped to clarify that 0Day kernel build does enable the 64 bytes
-> function address alignment.
+ #include <linux/random.h>
+ #include <linux/delay.h>
+@@ -1892,6 +1893,8 @@ ieee80211_rx_frame_softmac(struct ieee80211_device *ieee, struct sk_buff *skb,
+ 			   u16 stype)
+ {
+ 	struct rtl_80211_hdr_3addr *header = (struct rtl_80211_hdr_3addr *)skb->data;
++	struct net_device *dev = ieee->dev;
++	struct r8192_priv *priv = ieee80211_priv(dev);
+ 	u16 errcode;
+ 	int aid;
+ 	struct ieee80211_assoc_response_frame *assoc_resp;
+@@ -1917,12 +1920,7 @@ ieee80211_rx_frame_softmac(struct ieee80211_device *ieee, struct sk_buff *skb,
+ 		if ((ieee->softmac_features & IEEE_SOFTMAC_ASSOCIATE) &&
+ 		    ieee->state == IEEE80211_ASSOCIATING_AUTHENTICATED &&
+ 		    ieee->iw_mode == IW_MODE_INFRA) {
+-			struct ieee80211_network *network;
+-
+-			network = kzalloc(sizeof(*network), GFP_KERNEL);
+-			if (!network)
+-				return -ENOMEM;
+-
++			memset(priv->network, 0, sizeof(struct ieee80211_network));
+ 			errcode = assoc_parse(ieee, skb, &aid);
+ 			if (!errcode) {
+ 				ieee->state = IEEE80211_LINKED;
+@@ -1934,15 +1932,15 @@ ieee80211_rx_frame_softmac(struct ieee80211_device *ieee, struct sk_buff *skb,
+ 					assoc_resp = (struct ieee80211_assoc_response_frame *)skb->data;
+ 					if (ieee80211_parse_info_param(ieee, assoc_resp->info_element,\
+ 								       rx_stats->len - sizeof(*assoc_resp), \
+-								       network, rx_stats)) {
++								       priv->network, rx_stats)) {
+ 						return 1;
+ 					} else {
+ 						//filling the PeerHTCap. //maybe not necessary as we can get its info from current_network.
+-						memcpy(ieee->pHTInfo->PeerHTCapBuf, network->bssht.bdHTCapBuf, network->bssht.bdHTCapLen);
+-						memcpy(ieee->pHTInfo->PeerHTInfoBuf, network->bssht.bdHTInfoBuf, network->bssht.bdHTInfoLen);
++						memcpy(ieee->pHTInfo->PeerHTCapBuf, priv->network->bssht.bdHTCapBuf, priv->network->bssht.bdHTCapLen);
++						memcpy(ieee->pHTInfo->PeerHTInfoBuf, priv->network->bssht.bdHTInfoBuf, priv->network->bssht.bdHTInfoLen);
+ 					}
+ 					if (ieee->handle_assoc_response)
+-						ieee->handle_assoc_response(ieee->dev, (struct ieee80211_assoc_response_frame *)header, network);
++						ieee->handle_assoc_response(ieee->dev, (struct ieee80211_assoc_response_frame *)header, priv->network);
+ 				}
+ 				ieee80211_associate_complete(ieee);
+ 			} else {
+@@ -1957,7 +1955,6 @@ ieee80211_rx_frame_softmac(struct ieee80211_device *ieee, struct sk_buff *skb,
+ 				else
+ 					ieee80211_associate_abort(ieee);
+ 			}
+-			kfree(network);
+ 		}
+ 		break;
+ 
+diff --git a/drivers/staging/rtl8192u/r8192U.h b/drivers/staging/rtl8192u/r8192U.h
+index ff0ada00bf41..672bd19e4db7 100644
+--- a/drivers/staging/rtl8192u/r8192U.h
++++ b/drivers/staging/rtl8192u/r8192U.h
+@@ -908,6 +908,7 @@ typedef struct r8192_priv {
+ 
+ 	struct	ChnlAccessSetting  ChannelAccessSetting;
+ 	struct work_struct reset_wq;
++	struct ieee80211_network *network;
+ 
+ /**********************************************************/
+ 	/* For rtl819xUsb */
+diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
+index bf6d93de7a74..060475017d0d 100644
+--- a/drivers/staging/rtl8192u/r8192U_core.c
++++ b/drivers/staging/rtl8192u/r8192U_core.c
+@@ -1990,6 +1990,10 @@ static int rtl8192_init_priv_variable(struct net_device *dev)
+ 	if (!priv->pFirmware)
+ 		return -ENOMEM;
+ 
++	priv->network = kzalloc(sizeof(*priv->network), GFP_KERNEL);
++	if (!priv->network)
++		return -ENOMEM;
++
+ 	/* rx related queue */
+ 	skb_queue_head_init(&priv->rx_queue);
+ 	skb_queue_head_init(&priv->skb_queue);
+@@ -4572,6 +4576,8 @@ static int rtl8192_usb_probe(struct usb_interface *intf,
+ fail:
+ 	kfree(priv->pFirmware);
+ 	priv->pFirmware = NULL;
++	kfree(priv->network);
++	priv->network = NULL;
+ 	rtl8192_usb_deleteendpoints(dev);
+ 	msleep(10);
+ 	free_ieee80211(dev);
+-- 
+2.42.0
 
-[...]
