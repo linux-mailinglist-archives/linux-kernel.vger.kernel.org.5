@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B317C7227
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 875DC7C722A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379242AbjJLQNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:13:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
+        id S1347328AbjJLQNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:13:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379459AbjJLQM4 (ORCPT
+        with ESMTP id S1379465AbjJLQM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 12:12:56 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D77D7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:12:51 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9b974955474so177410766b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:12:51 -0700 (PDT)
+        Thu, 12 Oct 2023 12:12:57 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7D7C6
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:12:52 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9a9f139cd94so184952566b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:12:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697127169; x=1697731969; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697127170; x=1697731970; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yNuYyWEUkCBUvaAXEq0aoPImcZWnaX/wCmiSUbk6m0g=;
-        b=V2rRO5D1S6io1LE6CSxF+lmEvBSP+8ahYme8IDdPD5bhpeiwQpJ6aYv+NadBFzyfhL
-         +iqVYoVUBBQTcFz5yL0dahPZfDUR84rqyqig1ofbIGJXUCu2ZmGXQbJrwCJgIGF9seVw
-         nwlW5e4GodWVLa1IvbUfQ9T+EOTX0QqiBfzN7MQfW4N/3VInlVJBZbkJp0fefH9ZGcgP
-         HVBALteUPbkxVboZwc2HOq18HjDQM+ddQPuG0YA6iB75zrYC7uHu3a8DRFuMh8LAhiF4
-         0kVLDaBiKCM/oMY6/4yJ8O3IuuDOLUqeDeUtdZHebW4gILdYs0FqEHysF+A/RgYe0AJF
-         pokg==
+        bh=vSHi5/2cUoPsahCtfSXb7KL8cBzud0m2fEvRiojl9UE=;
+        b=HBrqdyQ6Bi+M81SeywaNr2vf2WxITqUWLBfSV4eEuvUaDPWm/BT5Bow1NEno8I9YAX
+         P8fkOKMzc7cRycd7wZMY11SWJLz5JqjLX/bmSQaJvi8KpAqCGMISo5TNOH1UJqbRK9F0
+         rI1zX9HZ7gsTQp6emG5+7mDpCcTXOhDkKjl6W4De2PfPRF9SinIV8i8a9pawul2o3VL6
+         TdprD8CzZTQOw8XF0q5FokKSPcvJFZZmIhNqKEXebTbjGzU791O0izkHmBQgCkKWnSB6
+         n4oZnJ74rwI/o8JOP1RYLOnskbIVpdY3iJcHBKJK2RImutJ/Qpv5luvp10nNorHpuE7z
+         544w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697127169; x=1697731969;
+        d=1e100.net; s=20230601; t=1697127170; x=1697731970;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yNuYyWEUkCBUvaAXEq0aoPImcZWnaX/wCmiSUbk6m0g=;
-        b=CPAubcppqO9YN4Z8blXlKE3GAiEcSePNQH8x7zzOL2711NeXG/F5EuTdSwDrPtGjHr
-         rXLO2phQMy/KpH3jFXOsZpE0Iim0fdsEurw7pJpOgSr1j5m5WDwWWvAKuS1NwrxnKhnJ
-         eQjVysPI7jj4nnKREad/RRvdkmFHwrTWH0ibe456YGZWLvfoE5w+GH2nrTDnG22PFITI
-         ds+2U2V6K67QU8Lv+E/igllIFEMsYM0t3MZRZ4JYhRl/V3lk6iPtinWk7L//eOXVX8uS
-         UzWbLMn0rAhwyH+Gg4utYl/sXysi0fxYd+SGVn21D7ohf+c7lyYcRMxBZ9sTTvrT6hA+
-         UjQg==
-X-Gm-Message-State: AOJu0YxOtkYkM3v0HKDMSUCDJz6UGZreTrm4a5TptBvEpqhe57gPmXcF
-        Zc1Lih529KrGyWt3rnWzR7I=
-X-Google-Smtp-Source: AGHT+IGx9PkHoJpnehpt9pu+WFKAxecc4I9gQHgLxLDfU4O7a5NswxaCFNLbcJfvXgFPcLDWLdekjw==
-X-Received: by 2002:a17:906:218:b0:9ba:2b14:44f2 with SMTP id 24-20020a170906021800b009ba2b1444f2mr10518666ejd.73.1697127169365;
-        Thu, 12 Oct 2023 09:12:49 -0700 (PDT)
+        bh=vSHi5/2cUoPsahCtfSXb7KL8cBzud0m2fEvRiojl9UE=;
+        b=G1Ihaqur5t80QocaGH+N6sNN1kBQ3D5odvjZUiGRkeRrCjMebsPAcrjLfQu9O/6IpH
+         tkBswz1xyw3wNEkd2w2U6S92yjqxeI++d3F91/3aJtL7H77aQ9PaRDUfbRPI8QFt4izg
+         hurdo53icCrxWHCEU4yAhJPVLZeg1AWlCaiEJd77rbRzRxP5xRHPaPy/TC3ByjXumHbr
+         ILBCv79ikW1pE/gJqPiJfsMpXLdeHJYE4GSlv42G/TpN8r0MrDa6GSc6jsXuwORYzcha
+         dNz+75ITa4Q7Z3jIC8nosPukCmMia5sNJM/z4ek6oPX5uPcSTW/1DalG4OOeowQzpO1r
+         TQNw==
+X-Gm-Message-State: AOJu0YxZpZqwyqnYNKtVoK3OT3H62FQpxcHCiIbNfNvZPmcDXpciXNWI
+        qey7keGZ/M3Vt+fFzjw8e+M=
+X-Google-Smtp-Source: AGHT+IFpYi1blV2KJsYt/+b2deArMIbm7cJzAsEuhn9TEMfBcKQAcEqKVR0HJV8k5hdf8tw21y1uTg==
+X-Received: by 2002:a17:906:76cf:b0:9b7:303b:1ecb with SMTP id q15-20020a17090676cf00b009b7303b1ecbmr22078486ejn.61.1697127170254;
+        Thu, 12 Oct 2023 09:12:50 -0700 (PDT)
 Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id ci24-20020a170906c35800b009a2235ed496sm11414461ejb.141.2023.10.12.09.12.48
+        by smtp.gmail.com with ESMTPSA id ci24-20020a170906c35800b009a2235ed496sm11414461ejb.141.2023.10.12.09.12.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 12 Oct 2023 09:12:49 -0700 (PDT)
 From:   Uros Bizjak <ubizjak@gmail.com>
 To:     x86@kernel.org, xen-devel@lists.xenproject.org,
         linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>, Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH 3/4] x86/percpu, xen: Correct PER_CPU_VAR usage to include symbol and its addend
-Date:   Thu, 12 Oct 2023 18:10:38 +0200
-Message-ID: <20231012161237.114733-4-ubizjak@gmail.com>
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 4/4] x86/percpu: Introduce %rip-relative addressing to PER_CPU_VAR macro
+Date:   Thu, 12 Oct 2023 18:10:39 +0200
+Message-ID: <20231012161237.114733-5-ubizjak@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231012161237.114733-1-ubizjak@gmail.com>
 References: <20231012161237.114733-1-ubizjak@gmail.com>
@@ -77,73 +77,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PER_CPU_VAR macro should be applied to a symbol and its addend.
-Inconsisten usage is currently harmless, but needs to be corrected
-before %rip-relative addressing is introduced to PER_CPU_VAR macro.
+Introduce x86_64 %rip-relative addressing to PER_CPU_VAR macro.
+Instruction with %rip-relative address operand is one byte shorter than
+its absolute address counterpart and is also compatible with position
+independent executable (-fpie) build.
 
-No functional changes intended.
-
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Borislav Petkov <bp@alien8.de>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
 ---
- arch/x86/xen/xen-asm.S | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/include/asm/percpu.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/xen/xen-asm.S b/arch/x86/xen/xen-asm.S
-index 9e5e68008785..448958ddbaf8 100644
---- a/arch/x86/xen/xen-asm.S
-+++ b/arch/x86/xen/xen-asm.S
-@@ -28,7 +28,7 @@
-  * non-zero.
-  */
- SYM_FUNC_START(xen_irq_disable_direct)
--	movb $1, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_mask
-+	movb $1, PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_mask)
- 	RET
- SYM_FUNC_END(xen_irq_disable_direct)
+diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+index 34734d730463..9a5f1896c5ef 100644
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@ -4,16 +4,18 @@
  
-@@ -69,7 +69,7 @@ SYM_FUNC_END(check_events)
- SYM_FUNC_START(xen_irq_enable_direct)
- 	FRAME_BEGIN
- 	/* Unmask events */
--	movb $0, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_mask
-+	movb $0, PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_mask)
+ #ifdef CONFIG_X86_64
+ #define __percpu_seg		gs
++#define __percpu_rel		(%rip)
+ #else
+ #define __percpu_seg		fs
++#define __percpu_rel
+ #endif
  
- 	/*
- 	 * Preempt here doesn't matter because that will deal with any
-@@ -78,7 +78,7 @@ SYM_FUNC_START(xen_irq_enable_direct)
- 	 */
+ #ifdef __ASSEMBLY__
  
- 	/* Test for pending */
--	testb $0xff, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_pending
-+	testb $0xff, PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_pending)
- 	jz 1f
+ #ifdef CONFIG_SMP
+-#define PER_CPU_VAR(var)	%__percpu_seg:var
++#define PER_CPU_VAR(var)	%__percpu_seg:(var)##__percpu_rel
+ #else /* ! SMP */
+-#define PER_CPU_VAR(var)	var
++#define PER_CPU_VAR(var)	(var)##__percpu_rel
+ #endif	/* SMP */
  
- 	call check_events
-@@ -97,7 +97,7 @@ SYM_FUNC_END(xen_irq_enable_direct)
-  * x86 use opposite senses (mask vs enable).
-  */
- SYM_FUNC_START(xen_save_fl_direct)
--	testb $0xff, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_mask
-+	testb $0xff, PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_mask)
- 	setz %ah
- 	addb %ah, %ah
- 	RET
-@@ -113,7 +113,7 @@ SYM_FUNC_END(xen_read_cr2);
- 
- SYM_FUNC_START(xen_read_cr2_direct)
- 	FRAME_BEGIN
--	_ASM_MOV PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_arch_cr2, %_ASM_AX
-+	_ASM_MOV PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_arch_cr2), %_ASM_AX
- 	FRAME_END
- 	RET
- SYM_FUNC_END(xen_read_cr2_direct);
+ #ifdef CONFIG_X86_64_SMP
 -- 
 2.41.0
 
