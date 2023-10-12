@@ -2,282 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B557C7163
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F5A7C7166
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379435AbjJLP0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
+        id S1379466AbjJLP1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379351AbjJLP0u (ORCPT
+        with ESMTP id S1379385AbjJLP1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:26:50 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22125D3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:26:48 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-27d18475ed4so931631a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:26:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697124407; x=1697729207; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0aiSrmhyZnUtCvLbxnd3hOR5zEzU1J8KjNK8bV2rzK8=;
-        b=NaDbY6/1e1AxqBc5dH/hCdmN4DJ0KT/i5LJEky5sQc0JDBxt64cpo9vq6XLS1ifzzM
-         g8k8I66F8TAdBZLCrw0pmxUgUl+jylwjDs6SXkngL/ajlqboUXRvjuF1miqkTsMZxjUi
-         56pd6l99paeQcxpa7PqAekKLsg+1iJcbPV7GVz4XmnIkBjU8I4OOB+7nZ3F7tJGUilzE
-         Yh8Cux4F1J579ds7RmiApXt2/A+RMWXtNSTCpSw9SSn4cKznnrz1TDlU4yZaiD1dyg9A
-         qVpAsHHG7JnXP++BeSLuNO9HkaxdQ8DH/u0NL+76VOQRA837vb5BU49Ez2xKbi32cJnA
-         J9+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697124407; x=1697729207;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0aiSrmhyZnUtCvLbxnd3hOR5zEzU1J8KjNK8bV2rzK8=;
-        b=pjk2fy4emPPslRK4a9Aap6mjCowynEErrQY9ejtxyWEgY/Wv28UtXxP6OSd19T9ODN
-         X7cj6DvCw01Pf0v2SVlAWqUz7M05p4Tu+pw92i1epiRACmef8gzlI14dHrg8eUpsr5RA
-         73eOJK2RBjhH8SiFUAQkqC4gWKUj8ZcZTc3a0MHQxMSTBa8Rl2OA7GGzHOXIo05GtSoC
-         FlJxhJ2vKem5p10hEyyDAz1ff50K8lUNLtF5Fo40ovnjYiskXW5VCy4sLc1kKS4IMB0X
-         WqcbRRYtp8K6igzGUcoE/I2EzkXVDePc7gT6QvVnhX0QPfMPET+Ev49kZKF4u6s+F6rY
-         OxZA==
-X-Gm-Message-State: AOJu0Yww1QWU12eqCePkD2+/+BnR8Y484HtCAM/MnTLlC0B6SNCvZ1dc
-        HEFTnvJORvjpgfmOh760SEGZAf5Wb5oyhSOblJ3yRw==
-X-Google-Smtp-Source: AGHT+IEL7ippOIa77XA2ge00ycs0OtiUOvjC5u8mY6u5oGISG8khKXUgE4wZugjEMyoKzrJsjnZsQ7ozH/O/bkzP3kk=
-X-Received: by 2002:a17:90b:4d82:b0:274:4f21:deae with SMTP id
- oj2-20020a17090b4d8200b002744f21deaemr19087167pjb.35.1697124407392; Thu, 12
- Oct 2023 08:26:47 -0700 (PDT)
+        Thu, 12 Oct 2023 11:27:00 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38D0E8;
+        Thu, 12 Oct 2023 08:26:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
+        :From:subject:date:message-id:reply-to;
+        bh=A4tcsRYv0zAR+IykEXFJLbmWdjR/S0UrKbdwgttyzoY=; b=G3u0szbsRjEx+Mk6e0l6H4z8GZ
+        D5WQkbWCRIC/ZTViHUXZ//ez4L6jtw4nEJnxlRNk8xyC5fgBPSUvWGd2wODWo88GaNdvXFPxFLuWc
+        1zve3NUjF1HuTcdQkaXz4nU94N+ZD6+6CmQgsuh1PI+YfkUxd3Js9UYDJJpi586XmMbk=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:41278 helo=pettiford.lan)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qqxaL-0003rP-GV; Thu, 12 Oct 2023 11:26:50 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Cc:     hugo@hugovil.com, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org
+Date:   Thu, 12 Oct 2023 11:26:47 -0400
+Message-Id: <20231012152647.2607455-1-hugo@hugovil.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20230929183350.239721-1-mathieu.desnoyers@efficios.com>
- <ZRfKKxBzfu+kf0tM@chenyu5-mobl2.ccr.corp.intel.com> <0f3cfff3-0df4-3cb7-95cb-ea378517e13b@efficios.com>
- <ZSOMOhhkPIFmvz97@chenyu5-mobl2.ccr.corp.intel.com> <ebe4e40f-37df-40a9-9dfc-7f2a458151bd@efficios.com>
- <ZSZ2ERMysY7iEo+x@chenyu5-mobl2.ccr.corp.intel.com>
-In-Reply-To: <ZSZ2ERMysY7iEo+x@chenyu5-mobl2.ccr.corp.intel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 12 Oct 2023 17:26:36 +0200
-Message-ID: <CAKfTPtCpMx9mHrWko6_hgbw+8HObcJJNkj3A6ZEP4C1PekcxMQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] sched/fair: Bias runqueue selection towards almost
- idle prev CPU
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, Tim Chen <tim.c.chen@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: [PATCH v2] dt-bindings: serial: max310x: convert to YAML
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Oct 2023 at 12:17, Chen Yu <yu.c.chen@intel.com> wrote:
->
-> On 2023-10-10 at 09:49:54 -0400, Mathieu Desnoyers wrote:
-> > On 2023-10-09 01:14, Chen Yu wrote:
-> > > On 2023-09-30 at 07:45:38 -0400, Mathieu Desnoyers wrote:
-> > > > On 9/30/23 03:11, Chen Yu wrote:
-> > > > > Hi Mathieu,
-> > > > >
-> > > > > On 2023-09-29 at 14:33:50 -0400, Mathieu Desnoyers wrote:
-> > > > > > Introduce the WAKEUP_BIAS_PREV_IDLE scheduler feature. It biases
-> > > > > > select_task_rq towards the previous CPU if it was almost idle
-> > > > > > (avg_load <= 0.1%).
-> > > > >
-> > > > > Yes, this is a promising direction IMO. One question is that,
-> > > > > can cfs_rq->avg.load_avg be used for percentage comparison?
-> > > > > If I understand correctly, load_avg reflects that more than
-> > > > > 1 tasks could have been running this runqueue, and the
-> > > > > load_avg is the direct proportion to the load_weight of that
-> > > > > cfs_rq. Besides, LOAD_AVG_MAX seems to not be the max value
-> > > > > that load_avg can reach, it is the sum of
-> > > > > 1024 * (y + y^1 + y^2 ... )
-> > > > >
-> > > > > For example,
-> > > > > taskset -c 1 nice -n -20 stress -c 1
-> > > > > cat /sys/kernel/debug/sched/debug | grep 'cfs_rq\[1\]' -A 12 | grep "\.load_avg"
-> > > > >     .load_avg                      : 88763
-> > > > >     .load_avg                      : 1024
-> > > > >
-> > > > > 88763 is higher than LOAD_AVG_MAX=47742
-> > > >
-> > > > I would have expected the load_avg to be limited to LOAD_AVG_MAX somehow,
-> > > > but it appears that it does not happen in practice.
-> > > >
-> > > > That being said, if the cutoff is really at 0.1% or 0.2% of the real max,
-> > > > does it really matter ?
-> > > >
-> > > > > Maybe the util_avg can be used for precentage comparison I suppose?
-> > > > [...]
-> > > > > Or
-> > > > > return cpu_util_without(cpu_rq(cpu), p) * 1000 <= capacity_orig_of(cpu) ?
-> > > >
-> > > > Unfortunately using util_avg does not seem to work based on my testing.
-> > > > Even at utilization thresholds at 0.1%, 1% and 10%.
-> > > >
-> > > > Based on comments in fair.c:
-> > > >
-> > > >   * CPU utilization is the sum of running time of runnable tasks plus the
-> > > >   * recent utilization of currently non-runnable tasks on that CPU.
-> > > >
-> > > > I think we don't want to include currently non-runnable tasks in the
-> > > > statistics we use, because we are trying to figure out if the cpu is a
-> > > > idle-enough target based on the tasks which are currently running, for the
-> > > > purpose of runqueue selection when waking up a task which is considered at
-> > > > that point in time a non-runnable task on that cpu, and which is about to
-> > > > become runnable again.
-> > > >
-> > >
-> > > Although LOAD_AVG_MAX is not the max possible load_avg, we still want to find
-> > > a proper threshold to decide if the CPU is almost idle. The LOAD_AVG_MAX
-> > > based threshold is modified a little bit:
-> > >
-> > > The theory is, if there is only 1 task on the CPU, and that task has a nice
-> > > of 0, the task runs 50 us every 1000 us, then this CPU is regarded as almost
-> > > idle.
-> > >
-> > > The load_sum of the task is:
-> > > 50 * (1 + y + y^2 + ... + y^n)
-> > > The corresponding avg_load of the task is approximately
-> > > NICE_0_WEIGHT * load_sum / LOAD_AVG_MAX = 50.
-> > > So:
-> > >
-> > > /* which is close to LOAD_AVG_MAX/1000 = 47 */
-> > > #define ALMOST_IDLE_CPU_LOAD   50
-> >
-> > Sorry to be slow at understanding this concept, but this whole "load" value
-> > is still somewhat magic to me.
-> >
-> > Should it vary based on CONFIG_HZ_{100,250,300,1000}, or is it independent ?
-> > Where is it documented that the load is a value in "us" out of a window of
-> > 1000 us ?
-> >
->
-> My understanding is that, the load_sum of a single task is a value in "us" out
-> of a window of 1000 us, while the load_avg of the task will multiply the weight
+From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-I'm not sure we can say this. We use a 1024us sampling rate for
-calculating weighted average but load_sum is in the range [0:47742]
-so what does it mean 47742us out of a window of 1000us ?
+Convert binding from text format to YAML.
 
-Beside this we have util_avg in the range [0:cpu capacity] which gives
-you the average running time of the cpu
+Additions to original text binding:
+  - add rs485 reference.
 
-> of the task. In this case a task with nice 0 is NICE_0_WEIGHT = 1024.
->
-> __update_load_avg_se -> ___update_load_sum calculate the load_sum of a task(there
-> is comments around ___update_load_sum to describe the pelt calculation),
-> and ___update_load_avg() calculate the load_avg based on the task's weight.
->
-> > And with this value "50", it would cover the case where there is only a
-> > single task taking less than 50us per 1000us, and cases where the sum for
-> > the set of tasks on the runqueue is taking less than 50us per 1000us
-> > overall.
-> >
-> > >
-> > > static bool
-> > > almost_idle_cpu(int cpu, struct task_struct *p)
-> > > {
-> > >         if (!sched_feat(WAKEUP_BIAS_PREV_IDLE))
-> > >                 return false;
-> > >         return cpu_load_without(cpu_rq(cpu), p) <= ALMOST_IDLE_CPU_LOAD;
-> > > }
-> > >
-> > > Tested this on Intel Xeon Platinum 8360Y, Ice Lake server, 36 core/package,
-> > > total 72 core/144 CPUs. Slight improvement is observed in hackbench socket mode:
-> > >
-> > > socket mode:
-> > > hackbench -g 16 -f 20 -l 480000 -s 100
-> > >
-> > > Before patch:
-> > > Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
-> > > Each sender will pass 480000 messages of 100 bytes
-> > > Time: 81.084
-> > >
-> > > After patch:
-> > > Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
-> > > Each sender will pass 480000 messages of 100 bytes
-> > > Time: 78.083
-> > >
-> > >
-> > > pipe mode:
-> > > hackbench -g 16 -f 20 --pipe  -l 480000 -s 100
-> > >
-> > > Before patch:
-> > > Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
-> > > Each sender will pass 480000 messages of 100 bytes
-> > > Time: 38.219
-> > >
-> > > After patch:
-> > > Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
-> > > Each sender will pass 480000 messages of 100 bytes
-> > > Time: 38.348
-> > >
-> > > It suggests that, if the workload has larger working-set/cache footprint, waking up
-> > > the task on its previous CPU could get more benefit.
-> >
-> > In those tests, what is the average % of idleness of your cpus ?
-> >
->
-> For hackbench -g 16 -f 20 --pipe  -l 480000 -s 100, it is around 8~10% idle
-> For hackbench -g 16 -f 20   -l 480000 -s 100, it is around 2~3% idle
->
-> Then the CPUs in packge 1 are offlined to get stable result when the group number is low.
-> hackbench -g 1 -f 20 --pipe  -l 480000 -s 100
-> Some CPUs are busy, others are idle, and some are half-busy.
-> Core    CPU     Busy%
-> -       -       49.57
-> 0       0       1.89
-> 0       72      75.55
-> 1       1       100.00
-> 1       73      0.00
-> 2       2       100.00
-> 2       74      0.00
-> 3       3       100.00
-> 3       75      0.01
-> 4       4       78.29
-> 4       76      17.72
-> 5       5       100.00
-> 5       77      0.00
->
->
-> hackbench -g 1 -f 20  -l 480000 -s 100
-> Core    CPU     Busy%
-> -       -       48.29
-> 0       0       57.94
-> 0       72      21.41
-> 1       1       83.28
-> 1       73      0.00
-> 2       2       11.44
-> 2       74      83.38
-> 3       3       21.45
-> 3       75      77.27
-> 4       4       26.89
-> 4       76      80.95
-> 5       5       5.01
-> 5       77      83.09
->
->
-> echo NO_WAKEUP_BIAS_PREV_IDLE > /sys/kernel/debug/sched/features
-> hackbench -g 1 -f 20 --pipe  -l 480000 -s 100
-> Running in process mode with 1 groups using 40 file descriptors each (== 40 tasks)
-> Each sender will pass 480000 messages of 100 bytes
-> Time: 9.434
->
-> echo WAKEUP_BIAS_PREV_IDLE > /sys/kernel/debug/sched/features
-> hackbench -g 1 -f 20 --pipe  -l 480000 -s 100
-> Running in process mode with 1 groups using 40 file descriptors each (== 40 tasks)
-> Each sender will pass 480000 messages of 100 bytes
-> Time: 9.373
->
-> thanks,
-> Chenyu
+Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+
+---
+Changes for V2:
+- Add serial prefix to log message title
+- Move clock-name property after clocks
+- Remove 'clock-frequency' property
+- Move 'allOf' block after 'required'
+- Remove examples 2 and 3
+
+ .../bindings/serial/maxim,max310x.txt         | 48 ------------
+ .../bindings/serial/maxim,max310x.yaml        | 74 +++++++++++++++++++
+ 2 files changed, 74 insertions(+), 48 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/serial/maxim,max310x.txt
+ create mode 100644 Documentation/devicetree/bindings/serial/maxim,max310x.yaml
+
+diff --git a/Documentation/devicetree/bindings/serial/maxim,max310x.txt b/Documentation/devicetree/bindings/serial/maxim,max310x.txt
+deleted file mode 100644
+index 79e10a05a96a..000000000000
+--- a/Documentation/devicetree/bindings/serial/maxim,max310x.txt
++++ /dev/null
+@@ -1,48 +0,0 @@
+-* Maxim MAX310X advanced Universal Asynchronous Receiver-Transmitter (UART)
+-
+-Required properties:
+-- compatible: Should be one of the following:
+-  - "maxim,max3107" for Maxim MAX3107,
+-  - "maxim,max3108" for Maxim MAX3108,
+-  - "maxim,max3109" for Maxim MAX3109,
+-  - "maxim,max14830" for Maxim MAX14830.
+-- reg: SPI chip select number.
+-- interrupts: Specifies the interrupt source of the parent interrupt
+-  controller. The format of the interrupt specifier depends on the
+-  parent interrupt controller.
+-- clocks: phandle to the IC source clock.
+-- clock-names: Should be "xtal" if clock is an external crystal or
+-  "osc" if an external clock source is used.
+-
+-Optional properties:
+-- gpio-controller: Marks the device node as a GPIO controller.
+-- #gpio-cells: Should be two. The first cell is the GPIO number and
+-  the second cell is used to specify the GPIO polarity:
+-    0 = active high,
+-    1 = active low.
+-
+-Example:
+-
+-/ {
+-	clocks {
+-		spi_uart_clk: osc_max14830 {
+-			compatible = "fixed-clock";
+-			#clock-cells = <0>;
+-			clock-frequency = <3686400>;
+-		};
+-
+-	};
+-};
+-
+-&spi0 {
+-	max14830: max14830@0 {
+-		compatible = "maxim,max14830";
+-		reg = <0>;
+-		clocks = <&spi_uart_clk>;
+-		clock-names = "osc";
+-		interrupt-parent = <&gpio3>;
+-		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
+-		gpio-controller;
+-		#gpio-cells = <2>;
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/serial/maxim,max310x.yaml b/Documentation/devicetree/bindings/serial/maxim,max310x.yaml
+new file mode 100644
+index 000000000000..889eeaca64a0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/serial/maxim,max310x.yaml
+@@ -0,0 +1,74 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/serial/maxim,max310x.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Maxim MAX310X Advanced Universal Asynchronous Receiver-Transmitter (UART)
++
++maintainers:
++  - Hugo Villeneuve <hvilleneuve@dimonoff.com>
++
++properties:
++  compatible:
++    enum:
++      - maxim,max3107
++      - maxim,max3108
++      - maxim,max3109
++      - maxim,max14830
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    enum:
++      - xtal # External crystal
++      - osc  # External clock source
++
++  gpio-controller: true
++
++  "#gpio-cells":
++    const: 2
++
++  gpio-line-names:
++    minItems: 1
++    maxItems: 16
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++  - $ref: /schemas/serial/serial.yaml#
++  - $ref: /schemas/serial/rs485.yaml#
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        serial@2c {
++            compatible = "maxim,max3107";
++            reg = <0x2c>;
++            clocks = <&xtal4m>;
++            clock-names = "xtal";
++            interrupt-parent = <&gpio3>;
++            interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
++            gpio-controller;
++            #gpio-cells = <2>;
++        };
++    };
+
+base-commit: 401644852d0b2a278811de38081be23f74b5bb04
+-- 
+2.39.2
+
