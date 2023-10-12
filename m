@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D007C6851
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3CD7C6839
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378185AbjJLIBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 04:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42186 "EHLO
+        id S1378187AbjJLICi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 04:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378212AbjJLIBJ (ORCPT
+        with ESMTP id S1343727AbjJLICe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 04:01:09 -0400
+        Thu, 12 Oct 2023 04:02:34 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A2CCF;
-        Thu, 12 Oct 2023 01:01:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7C45C433C8;
-        Thu, 12 Oct 2023 08:00:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C630990
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:02:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 661F5C433C8;
+        Thu, 12 Oct 2023 08:02:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697097663;
-        bh=4bm9Oe6eauMqGsfo8NuDGjzg2j6K20kXnmsJNdIG000=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tDttq06gKUul26yHhCrKsEKmy+r8THeGlb1ONLXVU0k6bFFZmn3cmxse/u9OQMJ8+
-         wo3btVKpeF/QoymLLqR2nTCMSE2lC0W7QyYdiCq6XGTTSr+ZiMYiaEz/6YEEkNnBWH
-         7OoOodgeSDSIdDM+hE07SNMJpbuVmExapHgaMvUOfidwlaPncV8wYfjVfNcdhqaDyF
-         O0pXHH3mHS+LgtPUTGfT099WPLqt2r++Y9XEOfK8mZOb89wyorT9ldNqNs6gLL7XrY
-         lEFCGX/6MDh3QqHwTZkVjbXlbQu6RbZEaHk+w8pElG6Rt1Yi0ErI8ZPhbJH95P7JTq
-         tedMrucX/TDOQ==
-Date:   Thu, 12 Oct 2023 09:01:13 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     David Lechner <dlechner@baylibre.com>
-Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/4] staging: iio: resolver: ad2s1210: simplify code
- with guard(mutex)
-Message-ID: <20231012090113.212342cf@jic23-huawei>
-In-Reply-To: <20231010-ad2s1210-mainline-v5-3-35a0f6ffa04a@baylibre.com>
-References: <20231010-ad2s1210-mainline-v5-0-35a0f6ffa04a@baylibre.com>
-        <20231010-ad2s1210-mainline-v5-3-35a0f6ffa04a@baylibre.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        s=k20201202; t=1697097752;
+        bh=TU9F1gc/e0XOseODiaVPTLHxcbpq+z20xh3tqdq7DK4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JtPYDdCfs/GuiYbvGrbUfwg+i4X2w9+xe5yPPini5aLkDC7zUmoUAcflCbRaw06ew
+         R/ZJSQDaRQpoCLssfgaW2lHF2h5BeJVOJHGl9ar5oYuCCNsj9cg4NUFUMY1/wllhxL
+         gd1HZs+g5oJ2w3f4bNYjqKtzrlAVTiOK7H3qO9Uzbvg2dPDoNjL4T81VG7BR/44drE
+         EG5XBMLWWUbcUlILCsnQoBIovlDfKqhnQaWP6H9HMnO5EDlpBpmWajXPIetLuZvytA
+         fJPtCeH09x5tDuQxpCr+dZmAIjkkQPwf84hkahR86gPALwlomCTU15anIol/m4Nk2M
+         1QaC9PujV9wrQ==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan+linaro@kernel.org>)
+        id 1qqqeq-0001Co-2a;
+        Thu, 12 Oct 2023 10:03:00 +0200
+From:   Johan Hovold <johan+linaro@kernel.org>
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan+linaro@kernel.org>
+Subject: [PATCH 0/2] arm64: defconfig: enable drivers for the Lenovo ThinkPad X13s 
+Date:   Thu, 12 Oct 2023 10:01:55 +0200
+Message-ID: <20231012080157.4616-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -56,11 +55,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 16:12:35 -0500
-David Lechner <dlechner@baylibre.com> wrote:
+Enable some more drivers for Qualcomm sc8280xp based machines like the
+Lenovo ThinkPad X13s so that sound and EFI variables work with the
+defconfig.
 
-> We can simplify the code and get rid of most of the gotos by using
-> guard(mutex) from cleanup.h.
-> 
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-Applied.
+Johan
+
+
+Johan Hovold (2):
+  arm64: defconfig: enable Qualcomm sc8280xp sound drivers
+  arm64: defconfig: enable Qualcomm UEFI Secure App driver
+
+ arch/arm64/configs/defconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+-- 
+2.41.0
+
