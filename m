@@ -2,70 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95EC97C7636
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CD17C763C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442009AbjJLTDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 15:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
+        id S1442012AbjJLTFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 15:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjJLTDl (ORCPT
+        with ESMTP id S229576AbjJLTFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 15:03:41 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F961C0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:03:38 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c8a1541232so11967425ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697137418; x=1697742218; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=h+UW4+U9HpV+E9ycAwBZg91gnF7Sw/DTzJeLz9wATvA=;
-        b=KAubfCj1S+bG6xkRbpfls3howND2lMjegG8CiiMKTaPC8AMb+PvBdSRjPOsXLwhPSB
-         fS9A82A0uL45C32+q87qYWAl3lXBX3VnIxkqFO9irHAyAS4mR6A8YaCSHSVTKa3n8ohC
-         veutWPALsUI0ecF9zfAtDRJpnb7ACVCbr1pJU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697137418; x=1697742218;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h+UW4+U9HpV+E9ycAwBZg91gnF7Sw/DTzJeLz9wATvA=;
-        b=iwrLLOAd0vmbty8Wa5qfjjnOIrI19oAZrtfh5siOWVNfrNBmPiWxhdrjbHfx58MpWQ
-         kRh+vGURfyjhReb0JqXnpwwFSTFBY63ftaORs3+WlEImsbT4tAztyYEOdhMiqjGTb9zz
-         CUE4S7JfrK6Qhgm8bLPnw7tCxfnpSfe20fDYuFKq2/6A/Mp7e9yE2ja5GibYscM56Ib6
-         AZjfk6Dd52YaluV9cqH79CjAkcJ2c+qym1ouTjIlMiAU8Ij6f/fPTIiWxZVjlhtVwN/T
-         hDqAYT10aRY73pmzR6Mdpl5X0P6sL7vqU+N0A564RGkfSvKoD9c+SJNgv2ews8XI3Sjw
-         wxLA==
-X-Gm-Message-State: AOJu0Yw5mOKSeMNMpnG0VE2iw5OyWbf0hztvLziznPC+h+u70M+b8NRt
-        1QvzaTT+oNyPItMZfZCrQQFj0Q==
-X-Google-Smtp-Source: AGHT+IHX6L/aLX9NNOcwqRVmh9iizTWqDKSZdokhOeYvlGzRhloHgIdhhspGR9BXHTu8NSRDETlQuw==
-X-Received: by 2002:a17:903:120b:b0:1bf:2e5c:7367 with SMTP id l11-20020a170903120b00b001bf2e5c7367mr28527771plh.42.1697137417668;
-        Thu, 12 Oct 2023 12:03:37 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id o2-20020a1709026b0200b001c75627545csm2324737plk.135.2023.10.12.12.03.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 12:03:37 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 12:03:32 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] qed: replace uses of strncpy
-Message-ID: <202310121203.0415E3B@keescook>
-References: <20231012-strncpy-drivers-net-ethernet-qlogic-qed-qed_debug-c-v2-1-16d2c0162b80@google.com>
+        Thu, 12 Oct 2023 15:05:11 -0400
+Received: from connect.vanmierlo.com (fieber.vanmierlo.com [84.243.197.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DFEABE;
+        Thu, 12 Oct 2023 12:05:09 -0700 (PDT)
+X-Footer: dmFubWllcmxvLmNvbQ==
+Received: from roundcube.vanmierlo.com ([192.168.37.37])
+        (authenticated user m.brock@vanmierlo.com)
+        by connect.vanmierlo.com (Kerio Connect 9.4.2) with ESMTPA;
+        Thu, 12 Oct 2023 21:05:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012-strncpy-drivers-net-ethernet-qlogic-qed-qed_debug-c-v2-1-16d2c0162b80@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Date:   Thu, 12 Oct 2023 21:05:02 +0200
+From:   m.brock@vanmierlo.com
+To:     Manikanta Guntupalli <manikanta.guntupalli@amd.com>
+Cc:     git@amd.com, michal.simek@amd.com, gregkh@linuxfoundation.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jirislaby@kernel.org, linux-arm-kernel@lists.infradead.org,
+        radhey.shyam.pandey@amd.com, srinivas.goud@amd.com,
+        shubhrajyoti.datta@amd.com, manion05gk@gmail.com
+Subject: Re: [PATCH V2 2/2] tty: serial: uartps: Add rs485 support to uartps
+ driver
+In-Reply-To: <20231011145602.3619616-3-manikanta.guntupalli@amd.com>
+References: <20231011145602.3619616-1-manikanta.guntupalli@amd.com>
+ <20231011145602.3619616-3-manikanta.guntupalli@amd.com>
+Message-ID: <47fcf873a011291d06740ee9af3a45e4@vanmierlo.com>
+X-Sender: m.brock@vanmierlo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,37 +50,270 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 06:35:41PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
+Manikanta Guntupalli wrote on 2023-10-11 16:56:
+> In RS485 half duplex configuration, DriverEnable and ReceiverEnable
+> shorted to each other, and at a time, any node acts as either a driver
+> or a receiver. Use either xlnx,phy-ctrl-gpios or RTS to control
+> RS485 phy as driver or a receiver.
 > 
-> This patch eliminates three uses of strncpy():
+> Signed-off-by: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
+> ---
+> Changes for V2:
+> Modify optional gpio name to xlnx,phy-ctrl-gpios.
+> Update commit description.
+> Add support for RTS, delay_rts_before_send and delay_rts_after_send in
+> RS485 mode.
+> ---
+>  drivers/tty/serial/xilinx_uartps.c | 116 ++++++++++++++++++++++++++++-
+>  1 file changed, 115 insertions(+), 1 deletion(-)
 > 
-> Firstly, `dest` is expected to be NUL-terminated which is evident by the
-> manual setting of a NUL-byte at size - 1. For this use specifically,
-> strscpy() is a viable replacement due to the fact that it guarantees
-> NUL-termination on the destination buffer.
+> diff --git a/drivers/tty/serial/xilinx_uartps.c
+> b/drivers/tty/serial/xilinx_uartps.c
+> index 8e521c69a959..abddcf1a8bf4 100644
+> --- a/drivers/tty/serial/xilinx_uartps.c
+> +++ b/drivers/tty/serial/xilinx_uartps.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/module.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/iopoll.h>
+> +#include <linux/gpio.h>
 > 
-> The next two cases should simply be memcpy() as the size of the src
-> string is always 3 and the destination string just wants the first 3
-> bytes changed.
-> 
-> To be clear, there are no buffer overread bugs in the current code as
-> the sizes and offsets are carefully managed such that buffers are
-> NUL-terminated. However, with these changes, the code is now more robust
-> and less ambiguous (and hopefully easier to read).
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+>  #define CDNS_UART_TTY_NAME	"ttyPS"
+>  #define CDNS_UART_NAME		"xuartps"
+> @@ -193,6 +194,7 @@ MODULE_PARM_DESC(rx_timeout, "Rx timeout, 1-255");
+>   * @clk_rate_change_nb:	Notifier block for clock changes
+>   * @quirks:		Flags for RXBS support.
+>   * @cts_override:	Modem control state override
+> + * @gpiod:		Pointer to the gpio descriptor
+>   */
+>  struct cdns_uart {
+>  	struct uart_port	*port;
+> @@ -203,10 +205,19 @@ struct cdns_uart {
+>  	struct notifier_block	clk_rate_change_nb;
+>  	u32			quirks;
+>  	bool cts_override;
+> +	struct gpio_desc	*gpiod;
+>  };
+>  struct cdns_platform_data {
+>  	u32 quirks;
+>  };
+> +
+> +struct serial_rs485 cdns_rs485_supported = {
+> +	.flags = SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND |
+> +		 SER_RS485_RTS_AFTER_SEND,
 
-Yup, this looks good to me now. Thanks!
+You promise here to support both RTS-on-send and RTS-after-send, but...
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> +	.delay_rts_before_send = 1,
+> +	.delay_rts_after_send = 1,
+> +};
+> +
+>  #define to_cdns_uart(_nb) container_of(_nb, struct cdns_uart, \
+>  		clk_rate_change_nb)
+> 
+> @@ -305,6 +316,42 @@ static void cdns_uart_handle_rx(void *dev_id,
+> unsigned int isrstatus)
+>  	tty_flip_buffer_push(&port->state->port);
+>  }
+> 
+> +/**
+> + * cdns_rs485_tx_setup - Tx setup specific to rs485
+> + * @cdns_uart: Handle to the cdns_uart
+> + */
+> +static void cdns_rs485_tx_setup(struct cdns_uart *cdns_uart)
+> +{
+> +	u32 val;
+> +
+> +	if (cdns_uart->gpiod) {
+> +		gpiod_set_value(cdns_uart->gpiod, 1);
+> +	} else {
+> +		val = readl(cdns_uart->port->membase + CDNS_UART_MODEMCR);
+> +		val &= ~CDNS_UART_MODEMCR_RTS;
+> +		writel(val, cdns_uart->port->membase + CDNS_UART_MODEMCR);
 
--- 
-Kees Cook
+Here you don't care about RTS-on-send or RTS-after-send anymore.
+And neither do you btw. in the if clause.
+
+> +	}
+> +}
+> +
+> +/**
+> + * cdns_rs485_rx_setup - Rx setup specific to rs485
+> + * @cdns_uart: Handle to the cdns_uart
+> + */
+> +static void cdns_rs485_rx_setup(struct cdns_uart *cdns_uart)
+> +{
+> +	u32 val;
+> +
+> +	if (cdns_uart->gpiod) {
+> +		gpiod_set_value(cdns_uart->gpiod, 0);
+> +	} else {
+> +		val = readl(cdns_uart->port->membase + CDNS_UART_MODEMCR);
+> +		val |= CDNS_UART_MODEMCR_RTS;
+> +		writel(val, cdns_uart->port->membase + CDNS_UART_MODEMCR);
+> +	}
+
+Same here.
+
+> +}
+> +
+> +static unsigned int cdns_uart_tx_empty(struct uart_port *port);
+> +
+
+I think it's better to move up the implementation than to use a forward
+declaration.
+
+>  /**
+>   * cdns_uart_handle_tx - Handle the bytes to be Txed.
+>   * @dev_id: Id of the UART port
+> @@ -313,12 +360,20 @@ static void cdns_uart_handle_rx(void *dev_id,
+> unsigned int isrstatus)
+>  static void cdns_uart_handle_tx(void *dev_id)
+>  {
+>  	struct uart_port *port = (struct uart_port *)dev_id;
+> +	struct cdns_uart *cdns_uart = port->private_data;
+>  	struct circ_buf *xmit = &port->state->xmit;
+> +	unsigned long time_out;
+>  	unsigned int numbytes;
+> 
+> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
+> +		cdns_rs485_tx_setup(cdns_uart);
+> +		if (cdns_uart->port->rs485.delay_rts_before_send)
+> +			mdelay(cdns_uart->port->rs485.delay_rts_before_send);
+
+mdelay?
+https://www.kernel.org/doc/html/latest/timers/timers-howto.html
+"In general, use of mdelay is discouraged and code should be refactored 
+to
+allow for the use of msleep."
+
+Furthermore, you're delaying before every burst of bytes here!
+Every TXEMPTY interrupt!
+
+> +	}
+> +
+>  	if (uart_circ_empty(xmit)) {
+>  		writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IDR);
+> -		return;
+> +		goto rs485_rx_setup;
+
+And when there was nothing more to send you waited for nothing.
+
+>  	}
+> 
+>  	numbytes = port->fifosize;
+> @@ -332,6 +387,23 @@ static void cdns_uart_handle_tx(void *dev_id)
+> 
+>  	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
+>  		uart_write_wakeup(port);
+> +
+> +rs485_rx_setup:
+> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
+> +		time_out = jiffies + usecs_to_jiffies(TX_TIMEOUT);
+> +		/* Wait for tx completion */
+> +		while ((cdns_uart_tx_empty(cdns_uart->port) != TIOCSER_TEMT) &&
+> +		       time_before(jiffies, time_out))
+> +			cpu_relax();
+> +
+> +		/*
+> +		 * Default Rx should be setup, because RX signaling path
+> +		 * need to enable to receive data.
+> +		 */
+> +		cdns_rs485_rx_setup(cdns_uart);
+> +		if (cdns_uart->port->rs485.delay_rts_after_send)
+> +			mdelay(cdns_uart->port->rs485.delay_rts_after_send);
+
+This is not delaying rts after send. You must keep RTS aka DE active for 
+a little
+longer so even the last stop bit(s) are transmitted correctly. So this 
+delay must
+happen before cdns_rs485_rx_setup().
+
+> +	}
+>  }
+> 
+>  /**
+> @@ -829,6 +901,9 @@ static int cdns_uart_startup(struct uart_port 
+> *port)
+>  		(CDNS_UART_CR_TXRST | CDNS_UART_CR_RXRST))
+>  		cpu_relax();
+> 
+> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED)
+> +		cdns_rs485_rx_setup(cdns_uart);
+> +
+>  	/*
+>  	 * Clear the RX disable bit and then set the RX enable bit to enable
+>  	 * the receiver.
+> @@ -1455,6 +1530,25 @@ MODULE_DEVICE_TABLE(of, cdns_uart_of_match);
+>  /* Temporary variable for storing number of instances */
+>  static int instances;
+> 
+> +/**
+> + * cdns_rs485_config - Called when an application calls TIOCSRS485 
+> ioctl.
+> + * @port: Pointer to the uart_port structure
+> + * @termios: Pointer to the ktermios structure
+> + * @rs485: Pointer to the serial_rs485 structure
+> + *
+> + * Return: 0
+> + */
+> +static int cdns_rs485_config(struct uart_port *port, struct ktermios 
+> *termios,
+> +			     struct serial_rs485 *rs485)
+> +{
+> +	port->rs485 = *rs485;
+> +
+> +	if (rs485->flags & SER_RS485_ENABLED)
+> +		dev_dbg(port->dev, "Setting UART to RS485\n");
+> +
+> +	return 0;
+> +}
+> +
+>  /**
+>   * cdns_uart_probe - Platform driver probe
+>   * @pdev: Pointer to the platform device structure
+> @@ -1597,9 +1691,28 @@ static int cdns_uart_probe(struct 
+> platform_device *pdev)
+>  	port->private_data = cdns_uart_data;
+>  	port->read_status_mask = CDNS_UART_IXR_TXEMPTY | CDNS_UART_IXR_RXTRIG 
+> |
+>  			CDNS_UART_IXR_OVERRUN | CDNS_UART_IXR_TOUT;
+> +	port->rs485_config = cdns_rs485_config;
+> +	port->rs485_supported = cdns_rs485_supported;
+>  	cdns_uart_data->port = port;
+>  	platform_set_drvdata(pdev, port);
+> 
+> +	rc = uart_get_rs485_mode(port);
+> +	if (rc)
+> +		goto err_out_clk_notifier;
+> +
+> +	cdns_uart_data->gpiod = devm_gpiod_get_optional(&pdev->dev, 
+> "xlnx,phy-ctrl",
+> +							GPIOD_OUT_LOW);
+> +	if (IS_ERR(cdns_uart_data->gpiod)) {
+> +		rc = PTR_ERR(cdns_uart_data->gpiod);
+> +		dev_err(port->dev, "xuartps: devm_gpiod_get_optional failed\n");
+> +		goto err_out_clk_notifier;
+> +	}
+> +
+> +	if (cdns_uart_data->gpiod) {
+> +		gpiod_direction_output(cdns_uart_data->gpiod, GPIOD_OUT_LOW);
+> +		gpiod_set_value(cdns_uart_data->gpiod, 0);
+> +	}
+> +
+>  	pm_runtime_use_autosuspend(&pdev->dev);
+>  	pm_runtime_set_autosuspend_delay(&pdev->dev, 
+> UART_AUTOSUSPEND_TIMEOUT);
+>  	pm_runtime_set_active(&pdev->dev);
+> @@ -1646,6 +1759,7 @@ static int cdns_uart_probe(struct platform_device 
+> *pdev)
+>  	pm_runtime_disable(&pdev->dev);
+>  	pm_runtime_set_suspended(&pdev->dev);
+>  	pm_runtime_dont_use_autosuspend(&pdev->dev);
+> +err_out_clk_notifier:
+>  #ifdef CONFIG_COMMON_CLK
+>  	clk_notifier_unregister(cdns_uart_data->uartclk,
+>  			&cdns_uart_data->clk_rate_change_nb);
+
+Maarten
+
