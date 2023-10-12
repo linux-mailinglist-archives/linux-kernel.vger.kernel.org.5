@@ -2,141 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BBF7C6C88
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14AD7C6C91
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377883AbjJLLkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
+        id S1377702AbjJLLks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343824AbjJLLkF (ORCPT
+        with ESMTP id S1347190AbjJLLko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:40:05 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EF07594
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 04:40:03 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6ECE913D5;
-        Thu, 12 Oct 2023 04:40:44 -0700 (PDT)
-Received: from [10.57.69.22] (unknown [10.57.69.22])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9DBF23F762;
-        Thu, 12 Oct 2023 04:40:02 -0700 (PDT)
-Message-ID: <42bbeab4-84f3-470e-bd42-2dae31b5775c@arm.com>
-Date:   Thu, 12 Oct 2023 12:40:01 +0100
+        Thu, 12 Oct 2023 07:40:44 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E3A394
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 04:40:42 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39CBeEJx047419;
+        Thu, 12 Oct 2023 06:40:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1697110814;
+        bh=86JNobGYVcRaYcmgXkBHX9h9OSB9+MmhNELVhZ1N55c=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=QrKhQrHVHdJpgFelBS5ZwMX2uZ+J2hqVUqoFeMhJEcJdWQXldYAihm3Rn11skZ/XB
+         sBKyicCXZQ3MV+M8UOK2pnDE4mDAaN5++po8p93ejEPeVjp7woagJpxzZKeTjPhWo5
+         C1QrreZ8Llhe3/Mv2E6lyZoWpY3JJInhh41jbL+A=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39CBeEoG009100
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Oct 2023 06:40:14 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 12
+ Oct 2023 06:40:14 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 12 Oct 2023 06:40:13 -0500
+Received: from [10.249.129.148] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39CBe7nP017559;
+        Thu, 12 Oct 2023 06:40:08 -0500
+Message-ID: <c9f17f9e-b9b5-9685-30ca-6a7d041dd8aa@ti.com>
+Date:   Thu, 12 Oct 2023 17:10:06 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/7] iommu: Decouple iommu_present() from bus ops
-To:     Baolu Lu <baolu.lu@linux.intel.com>, joro@8bytes.org,
-        will@kernel.org
-Cc:     iommu@lists.linux.dev, jgg@nvidia.com, linux-kernel@vger.kernel.org
-References: <cover.1697047261.git.robin.murphy@arm.com>
- <6711338e24dd1edfd02187f25cf40d8622cefdb2.1697047261.git.robin.murphy@arm.com>
- <43ca2a88-942e-4d65-87f1-30a7cf537edd@linux.intel.com>
-Content-Language: en-GB
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <43ca2a88-942e-4d65-87f1-30a7cf537edd@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm/tidss: Power up attached PM domains on probe
+Content-Language: en-US
+To:     <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <praneeth@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <a-bhatia1@ti.com>, <j-luthra@ti.com>, <r-ravikumar@ti.com>,
+        <j-choudhary@ti.com>
+References: <20231009075018.2836020-1-devarsht@ti.com>
+From:   Devarsh Thakkar <devarsht@ti.com>
+In-Reply-To: <20231009075018.2836020-1-devarsht@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-12 07:05, Baolu Lu wrote:
-> On 10/12/23 2:14 AM, Robin Murphy wrote:
->> Much as I'd like to remove iommu_present(), the final remaining users
->> are proving stubbornly difficult to clean up, so kick that can down the
->> road and just rework it to preserve the current behaviour without
->> depending on bus ops. Since commit 57365a04c921 ("iommu: Move bus setup
-> 
-> The iommu_present() is only used in below two drivers.
-> 
-> $ git grep iommu_present
-> drivers/gpu/drm/mediatek/mtk_drm_drv.c: if 
-> (!iommu_present(&platform_bus_type))
-> drivers/gpu/drm/tegra/drm.c:    if (host1x_drm_wants_iommu(dev) && 
-> iommu_present(&platform_bus_type)) {
-> 
-> Both are platform drivers and have the device pointer passed in. Just
-> out of curiosity, why not replacing them with device_iommu_mapped()
-> instead? Sorry if I overlooked previous discussion.
 
-Yes, we've already gone round in circles on this several times, that's 
-why it's explicitly called out as "stubbornly difficult" in the commit 
-message. The Mediatek one is entirely redundant, but it seems I have yet 
-to figure out the right CC list to get anyone to care about that 
-patch[1]. The Tegra one is making some non-obvious assumptions to 
-actually check on behalf of some *other* devices, even when the one to 
-hand may not be using the IOMMU itself[2]. That case is what the new 
-kerneldoc alludes to.
 
-My hope is to eventually punt this into the Tegra driver itself 
-(probably at the point when it needs something similar for 
-iommu_domain_alloc() as well), however previous experience has taught me 
-that trying to coordinate cross-subsystem work with drm-misc is an 
-ordeal best avoided until there is no possible alternative.
-
-Thanks,
-Robin.
-
-[1] https://patchwork.freedesktop.org/patch/536273/
-[2] 
-https://lore.kernel.org/linux-iommu/a0c7e954-ee3f-74fd-cfea-9b6dbce924dc@collabora.com/
-
+On 09/10/23 13:20, Devarsh Thakkar wrote:
+> Some SoC's such as AM62P have dedicated power domains
+> for OLDI which need to be powered on separetely along
+> with display controller.
 > 
-> Best regards,
-> baolu
+> So during driver probe, power up all attached PM domains
+> enumerated in devicetree node for DSS.
 > 
->> to IOMMU device registration"), any registered IOMMU instance is already
->> considered "present" for every entry in iommu_buses, so it's simply a
->> case of validating the bus and checking we have at least once IOMMU.
->>
->> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
->> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
->>
->> ---
->>
->> v3: Tweak to use the ops-based check rather than group-based, to
->>      properly match the existing behaviour
->> v4: Just look for IOMMU instances instead of managed devices
->> ---
->>   drivers/iommu/iommu.c | 21 ++++++++++++++++++++-
->>   1 file changed, 20 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index 5a3ce293a5de..7bb92e8b7a49 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -2000,9 +2000,28 @@ int bus_iommu_probe(const struct bus_type *bus)
->>       return 0;
->>   }
->> +/**
->> + * iommu_present() - make platform-specific assumptions about an IOMMU
->> + * @bus: bus to check
->> + *
->> + * Do not use this function. You want device_iommu_mapped() instead.
->> + *
->> + * Return: true if some IOMMU is present and aware of devices on the 
->> given bus;
->> + * in general it may not be the only IOMMU, and it may not have 
->> anything to do
->> + * with whatever device you are ultimately interested in.
->> + */
->>   bool iommu_present(const struct bus_type *bus)
->>   {
->> -    return bus->iommu_ops != NULL;
->> +    bool ret = false;
->> +
->> +    for (int i = 0; i < ARRAY_SIZE(iommu_buses); i++) {
->> +        if (iommu_buses[i] == bus) {
->> +            spin_lock(&iommu_device_lock);
->> +            ret = !list_empty(&iommu_device_list);
->> +            spin_unlock(&iommu_device_lock);
->> +        }
->> +    }
->> +    return ret;
->>   }
->>   EXPORT_SYMBOL_GPL(iommu_present);
+> This also prepares base to add display support for AM62P.
+> 
+
+NAK, for this patch, as discussed with team there are already plans
+to have separate OLDI bridge driver which should eventually handle
+the additional power domains.
+
+Sorry for the noise.
+
+Regards
+Devarsh
+> Signed-off-by: Devarsh Thakkar <devarsht@ti.com> > ---
+>   drivers/gpu/drm/tidss/tidss_drv.c | 76 +++++++++++++++++++++++++++++++
+>   drivers/gpu/drm/tidss/tidss_drv.h |  5 ++
+>   2 files changed, 81 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/tidss/tidss_drv.c b/drivers/gpu/drm/tidss/tidss_drv.c
+> index 4d063eb9cd0b..a703a27d17bf 100644
+> --- a/drivers/gpu/drm/tidss/tidss_drv.c
+> +++ b/drivers/gpu/drm/tidss/tidss_drv.c
+> @@ -8,6 +8,7 @@
+>   #include <linux/of.h>
+>   #include <linux/module.h>
+>   #include <linux/pm_runtime.h>
+> +#include <linux/pm_domain.h>
+>   
+>   #include <drm/drm_atomic.h>
+>   #include <drm/drm_atomic_helper.h>
+> @@ -114,6 +115,72 @@ static const struct drm_driver tidss_driver = {
+>   	.minor			= 0,
+>   };
+>   
+> +static int tidss_detach_pm_domains(struct tidss_device *tidss)
+> +{
+> +	int i;
+> +
+> +	if (tidss->num_domains <= 1)
+> +		return 0;
+> +
+> +	for (i = 0; i < tidss->num_domains; i++) {
+> +		if (tidss->pd_link[i] && !IS_ERR(tidss->pd_link[i]))
+> +			device_link_del(tidss->pd_link[i]);
+> +		if (tidss->pd_dev[i] && !IS_ERR(tidss->pd_dev[i]))
+> +			dev_pm_domain_detach(tidss->pd_dev[i], true);
+> +		tidss->pd_dev[i] = NULL;
+> +		tidss->pd_link[i] = NULL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int tidss_attach_pm_domains(struct tidss_device *tidss)
+> +{
+> +	struct device *dev = tidss->dev;
+> +	int i;
+> +	int ret;
+> +	struct platform_device *pdev = to_platform_device(dev);
+> +	struct device_node *np = pdev->dev.of_node;
+> +
+> +	tidss->num_domains = of_count_phandle_with_args(np, "power-domains",
+> +							"#power-domain-cells");
+> +	if (tidss->num_domains <= 1) {
+> +		dev_dbg(dev, "One or less power domains, no need to do attach domains\n");
+> +		return 0;
+> +	}
+> +
+> +	tidss->pd_dev = devm_kmalloc_array(dev, tidss->num_domains,
+> +					   sizeof(*tidss->pd_dev), GFP_KERNEL);
+> +	if (!tidss->pd_dev)
+> +		return -ENOMEM;
+> +
+> +	tidss->pd_link = devm_kmalloc_array(dev, tidss->num_domains,
+> +					    sizeof(*tidss->pd_link), GFP_KERNEL);
+> +	if (!tidss->pd_link)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < tidss->num_domains; i++) {
+> +		tidss->pd_dev[i] = dev_pm_domain_attach_by_id(dev, i);
+> +		if (IS_ERR(tidss->pd_dev[i])) {
+> +			ret = PTR_ERR(tidss->pd_dev[i]);
+> +			goto fail;
+> +		}
+> +
+> +		tidss->pd_link[i] = device_link_add(dev, tidss->pd_dev[i],
+> +						    DL_FLAG_STATELESS |
+> +						    DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE);
+> +		if (!tidss->pd_link[i]) {
+> +			ret = -EINVAL;
+> +			goto fail;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +fail:
+> +	tidss_detach_pm_domains(tidss);
+> +	return ret;
+> +}
+> +
+>   static int tidss_probe(struct platform_device *pdev)
+>   {
+>   	struct device *dev = &pdev->dev;
+> @@ -136,6 +203,13 @@ static int tidss_probe(struct platform_device *pdev)
+>   
+>   	platform_set_drvdata(pdev, tidss);
+>   
+> +	/* powering up associated OLDI domains */
+> +	ret = tidss_attach_pm_domains(tidss);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to attach power domains %d\n", ret);
+> +		return ret;
+> +	}
+> +
+>   	ret = dispc_init(tidss);
+>   	if (ret) {
+>   		dev_err(dev, "failed to initialize dispc: %d\n", ret);
+> @@ -193,6 +267,7 @@ static int tidss_probe(struct platform_device *pdev)
+>   	dispc_runtime_suspend(tidss->dispc);
+>   #endif
+>   	pm_runtime_disable(dev);
+> +	tidss_detach_pm_domains(tidss);
+>   
+>   	return ret;
+>   }
+> @@ -220,6 +295,7 @@ static void tidss_remove(struct platform_device *pdev)
+>   	/* devm allocated dispc goes away with the dev so mark it NULL */
+>   	dispc_remove(tidss);
+>   
+> +	tidss_detach_pm_domains(tidss);
+>   	dev_dbg(dev, "%s done\n", __func__);
+>   }
+>   
+> diff --git a/drivers/gpu/drm/tidss/tidss_drv.h b/drivers/gpu/drm/tidss/tidss_drv.h
+> index d7f27b0b0315..3c8b37b3aba6 100644
+> --- a/drivers/gpu/drm/tidss/tidss_drv.h
+> +++ b/drivers/gpu/drm/tidss/tidss_drv.h
+> @@ -31,6 +31,11 @@ struct tidss_device {
+>   
+>   	spinlock_t wait_lock;	/* protects the irq masks */
+>   	dispc_irq_t irq_mask;	/* enabled irqs in addition to wait_list */
+> +
+> +	int num_domains; /* Handle attached PM domains */
+> +	struct device **pd_dev;
+> +	struct device_link **pd_link;
+> +
+>   };
+>   
+>   #define to_tidss(__dev) container_of(__dev, struct tidss_device, ddev)
