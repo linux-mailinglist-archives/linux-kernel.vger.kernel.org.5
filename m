@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F6A7C7773
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F427C7777
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442541AbjJLTye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 15:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48542 "EHLO
+        id S1442582AbjJLT4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 15:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442588AbjJLTy2 (ORCPT
+        with ESMTP id S1442549AbjJLTz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 15:54:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066A8DA;
-        Thu, 12 Oct 2023 12:54:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=CSyPT7b+OGrcLFhMzi1tWe4i8irwCIBA39LooloVVJI=; b=rIqwWkkvXo/CE5Euy2SwaFBxhU
-        801Ba4eMfLWmgrn1MXv3PKag+tTKsavJbeMJwqNtD7uF35YP3EMCYSXQa1m0wxcVCHRb6ywGJLmWj
-        ACsJomCKgV8Jo1WvXVKZtCZIpMF22aqC+M463aa/CpAWBzHZnTGL4e+GnIKf6/8zxbymD43OzHTB1
-        Bs/9qFG/TYzl5CppW9Sk912lGrLi7vgfS03lrrxcZNFCHu5l6Q51Fsn9DTibGNc2twZ6IDBCl2f/T
-        99WhlqG3f9laCDRDDWz/PkZdMUVCnhUQrt1HfF7AqBk2qVjJyt0bvw5ag39BTRCjlIf9znJLL6vyZ
-        bu3cqdzQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qr1lA-001BSa-Fn; Thu, 12 Oct 2023 19:54:16 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-sparc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Erhard Furtner <erhard_f@mailbox.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 2/2] sparc: Allow nesting of lazy MMU mode
-Date:   Thu, 12 Oct 2023 20:54:15 +0100
-Message-Id: <20231012195415.282357-3-willy@infradead.org>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20231012195415.282357-1-willy@infradead.org>
-References: <20231012195415.282357-1-willy@infradead.org>
+        Thu, 12 Oct 2023 15:55:59 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734A7BB;
+        Thu, 12 Oct 2023 12:55:57 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-694ed847889so1172793b3a.2;
+        Thu, 12 Oct 2023 12:55:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697140557; x=1697745357; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HaXzfbWU3i0lFXzPNJ6yDNrmxF0PjC7ivMbZMx14cp8=;
+        b=gqg7Z+DzQ9F/PGlBVjxOnuTlSfMe1LJsH6/vIqOF+ID18kAdB3301WA6V85EEjSs+Z
+         MzFAf188TB0aPO7ERbdvIkcJ8WUKnhBof2jNZRhb5/CFQipdVf4vyq7PtSfS8R6m5FSk
+         BLKxxLeuN5okQcyApR9vFmw/aZI2iTRoXxowVgcOm+da4H6lWJ4QOB4nFFOozjhXJCN0
+         PJ2StuOx2lTLW0GggcVfIjrybUjjggG8+ZnRFEZ2j5AWjHt89oTU2Yq67+kGc5IpADYC
+         5Es7hio1+qlosaECtSMzweOAm8cOzyBIQnoSXV1ytIfZ55Xl26a0Z9dgE36Egf5el3wo
+         qN2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697140557; x=1697745357;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HaXzfbWU3i0lFXzPNJ6yDNrmxF0PjC7ivMbZMx14cp8=;
+        b=H0zVBlaRC7a+4T8yu11eMuGpIAnNX+6CdhgdjwTD3Hsnulj2MXayYbO9fweLqnbKhQ
+         8F18PipxBBLwbqCqIdyHIVVIFYmbT1ovAKqIZO1Pqjgjn3gGyWzVLsyGzke093/y0B0Y
+         C882zLMLveS7elelbjJh8vw7kUwUBRVv+YazbPHDZZAGmzTmZj9gzHnn67vU/KbG3FN7
+         vRq4G8A4ZwG7G3D3qeuanDqklqzqpkFxNPQtGfC0Hf03Upypy9DhD8pCearuCAexEieW
+         9fCt7cKW1+zSChte4r0T+SLm45u7Sk8S/+vXSJm3rm1z4iv/zuOrl2YIbmIUI7Kbsq+7
+         +Zug==
+X-Gm-Message-State: AOJu0Yw12d/mKV+2iqUxpH9p0GD20njKjr3Ni7x6v+WET2D8Br6orWFw
+        8dIRgD3Dme9GRex92QoPql0=
+X-Google-Smtp-Source: AGHT+IFIF+ce4T/COXsxWRK2KNuzL4fVcLJw8q/kp9HKKm+JujcfAT3D1IwTuETLD41GqcEjk+SoLQ==
+X-Received: by 2002:a05:6a20:6a28:b0:15e:5e8c:e45c with SMTP id p40-20020a056a206a2800b0015e5e8ce45cmr25423385pzk.30.1697140556879;
+        Thu, 12 Oct 2023 12:55:56 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id z125-20020a633383000000b0058a381de499sm2075450pgz.77.2023.10.12.12.55.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 12:55:56 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 12 Oct 2023 09:55:55 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Andrew Theurer <atheurer@redhat.com>,
+        Joe Mario <jmario@redhat.com>,
+        Sebastian Jug <sejug@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH] blk-mq: add module parameter to not run block kworker on
+ isolated CPUs
+Message-ID: <ZShPS46jgVsaBGHY@slm.duckdns.org>
+References: <20231010142216.1114752-1-ming.lei@redhat.com>
+ <ZSWb2DNV9cIPYv5H@slm.duckdns.org>
+ <ZSXuqZNsyjJk1FGX@fedora>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSXuqZNsyjJk1FGX@fedora>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As noted in commit 49147beb0ccb ("x86/xen: allow nesting of same lazy
-mode"), we can now nest calls to arch_enter_lazy_mmu_mode().  Use ->active
-as a counter instead of a flag and only drain the batch when the counter
-hits 0.
+Hello,
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Fixes: bcc6cc832573 ("mm: add default definition of set_ptes()")
----
- arch/sparc/mm/tlb.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+On Wed, Oct 11, 2023 at 08:39:05AM +0800, Ming Lei wrote:
+> I appreciate that any specific suggestions about dealing with isolated CPUs
+> generically for bound WQ can be shared.
 
-diff --git a/arch/sparc/mm/tlb.c b/arch/sparc/mm/tlb.c
-index b44d79d778c7..a82c7c32e47d 100644
---- a/arch/sparc/mm/tlb.c
-+++ b/arch/sparc/mm/tlb.c
-@@ -54,16 +54,15 @@ void arch_enter_lazy_mmu_mode(void)
- {
- 	struct tlb_batch *tb = this_cpu_ptr(&tlb_batch);
- 
--	tb->active = 1;
-+	tb->active++;
- }
- 
- void arch_leave_lazy_mmu_mode(void)
- {
- 	struct tlb_batch *tb = this_cpu_ptr(&tlb_batch);
- 
--	if (tb->tlb_nr)
-+	if ((--tb->active == 0) && tb->tlb_nr)
- 		flush_tlb_pending();
--	tb->active = 0;
- }
- 
- static void tlb_batch_add_one(struct mm_struct *mm, unsigned long vaddr,
+Oh, all I meant was whether we can at least collect this into or at least
+adjacent to the existing housekeeping / isolcpu parameters. Let's say
+there's someone who really wants to isolated some CPUs, how would they find
+out the different parameters if they're scattered across different
+subsystems?
+
+Thanks.
+
 -- 
-2.40.1
-
+tejun
