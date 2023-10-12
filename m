@@ -2,106 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 687177C7871
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8607C7873
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442889AbjJLVQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 17:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35626 "EHLO
+        id S1442890AbjJLVQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 17:16:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442853AbjJLVQA (ORCPT
+        with ESMTP id S1442372AbjJLVQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 17:16:00 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0004C9D
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:15:56 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-405361bba99so14549665e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:15:56 -0700 (PDT)
+        Thu, 12 Oct 2023 17:16:39 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D439E9D
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:16:37 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c9b70b9671so23925ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:16:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697145355; x=1697750155; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fM0DXXboWe5a80zsbvWwo3m0mrD8GmZVCasDLYdIcEM=;
-        b=P7WQLGDxIpcgOFEAVxE9bJ75x2ynuqHs+SEd9MknG+R39JD8CTEw4DPxA9Kj/P41GF
-         EZ2snNZMhdXe70w+aehWMBpsUXO6+SkAsndXHFa+ZYqACWNaW+wXcO6GPNQC6I0w7rTK
-         WRR/EWuG3ntYbdOUexfRsZgBX+t3NfVINGsi64WYBlkMrmEVyYVPHutt+7ED7v7MWsGb
-         jp4Jgyc+LuhuCjwxznaVCq5NpQY733o6TJVMNO4i8rkcxyM9Kjkpd8/YRIMiRQLxk0fA
-         tt8La86xNxOK91yYh+6mYJZx21T582fluM9whGp8l0PXiuSMiEjR/A38vSisNLsn7vWu
-         0avg==
+        d=google.com; s=20230601; t=1697145397; x=1697750197; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NmAbrYXCHrdmDHgSyanO5Oq0ZwHhxvZuo69nPGosiS8=;
+        b=07tSuCVgfhSO6cYf/0y+sue4e/BD2PFk07z6hdY+cWTZbd0elXoU0x5/9g8yNPVY8W
+         Nl1X4MB2j37XLjcGTSPtw73cylZUlyiVfaWlBgmQ2H3eu5QZkQcRBXCXMkkuxVTHotdx
+         R08Ml4gSL1bBANjVNISZDgBnohbUt/pj6NGRpXApsACyS4JEURGiGgG8wk3VkogiAGT6
+         eC6U0t31NxfTVRBNnloiXLVlZeeHMNdpnBl5YYD09KEcdonB86S7LhMFb/pgoGUWPK6w
+         RF0oOhI+AGPqY04aGjh5w+KMixC5P0nHKPLbNYTMHW8PxlztTfjcZw9b9Rkjpz6fO2YM
+         XV5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697145355; x=1697750155;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fM0DXXboWe5a80zsbvWwo3m0mrD8GmZVCasDLYdIcEM=;
-        b=gh28xU16iSuYBZu2xWrEu9iiSj6fiKszxpMIoGvl3BcwCR9xoeD9l76kQw+NPw2FU4
-         y31Ze7lRauN7OqS+NcYrxufHrT2ufu37j3vRSvluDx3opGcr9EOQb1LI8rE+K1CqA954
-         67Nuua9jXFJBUhhWBmyvXF/hBvZpcyB2ERQe5DhLC0k/elzjhanTRSs/yG0ISzPEnD4o
-         F1ud7hKRdnzftIJkSrvOu2MABgR/+fqLefV63mmJUpEqadNuL58eBVufJQ0Wj45IS2vz
-         P7FvbmJBoadoW+xgv7/o0xFjOm2ArWb36mypMPcHpJUCkc6Wmy9ZykEGOLVAf2bLRjRu
-         SHdQ==
-X-Gm-Message-State: AOJu0Yz120rkWgFmdD9gg6a5dLCvsp0lakk57LRsEbIIX3AOFSh/IAev
-        g8jtNu3MYoyf3kTwP0Eyr+NwLQ==
-X-Google-Smtp-Source: AGHT+IGnhYZy39oYwrq//smjlyz4lEvmT2v2EcPW/pw6yueHBg5L2AuBDkhLP/4ph9q70ITFtaBy4Q==
-X-Received: by 2002:a1c:7419:0:b0:3fe:89be:cd3 with SMTP id p25-20020a1c7419000000b003fe89be0cd3mr21652442wmc.22.1697145355443;
-        Thu, 12 Oct 2023 14:15:55 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id l25-20020a7bc459000000b004054dcbf92asm779383wmi.20.2023.10.12.14.15.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 14:15:55 -0700 (PDT)
-Message-ID: <561802cb-318c-4a83-92e6-5328be1106d4@linaro.org>
-Date:   Thu, 12 Oct 2023 23:15:54 +0200
+        d=1e100.net; s=20230601; t=1697145397; x=1697750197;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NmAbrYXCHrdmDHgSyanO5Oq0ZwHhxvZuo69nPGosiS8=;
+        b=BorXwZd9L23vuzuWe4RvuIJrLaN4HTb9UFzqVKqN+1aOZyg8oyoxL+hKEBX4aUDeQH
+         zORFAl59PP80dVmkduGzSfCFv6SV1ILTbWgC7NVxcbBxgL9ROvKBFqhjp7LUy4pEkMyK
+         qov1Barzv9OjwqSnc3M2yEFP/L6voDJ5QCZeuxIn84nb9t83+FUz9ZkdWnj+g4khfgQJ
+         8v2hUeTBG1EDNtMCVvZvVNAoiRpG2r7AzoLsaOL0nAbw7iGh9c09E/xcXXHfe/KvzTMm
+         qYv8G1JY8vjrJFU2f6XFpehSAktP8oTj2N4Yq4liKbg262ols23UnTbelhIlaCF7Iqtc
+         knSQ==
+X-Gm-Message-State: AOJu0YyznhOR0TjAD3iigCFHdyurUNdORo69os4aqkDSFNak4tG5voC4
+        qwkGpOHhUNbro2NfIxr7mZqwhV5NEvz8iqJ065K2Jw==
+X-Google-Smtp-Source: AGHT+IFSkYQPO6wwHvN4xF6AFvZW/RJQ26WNEZeSEgFgTrbWeyT5hKT9UKSRV6h5LzTjDNrXCavoRLc0BY+myTWjATI=
+X-Received: by 2002:a17:903:240c:b0:1c9:db79:255c with SMTP id
+ e12-20020a170903240c00b001c9db79255cmr67515plo.22.1697145397080; Thu, 12 Oct
+ 2023 14:16:37 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/6] thermal: gov_fair_share: Rearrange
- get_trip_level()
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-References: <5734364.DvuYhMxLoT@kreacher> <2176566.irdbgypaU6@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <2176566.irdbgypaU6@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20231010032117.1577496-1-yosryahmed@google.com>
+ <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
+ <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
+ <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
+ <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
+ <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
+ <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
+ <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
+ <CALvZod6zssp88j6e6EKTbu_oHS7iW5ocdTWH7f27Hg0byzut6g@mail.gmail.com>
+ <CAJD7tkZbUrs_6r9QcouHNnDbLKiZHdSA=2zyi3A41aqOW6kTNA@mail.gmail.com> <CAJD7tkbSwNOZu1r8VfUAD5v-g_NK3oASfO51FJDX4pdMYh9mjw@mail.gmail.com>
+In-Reply-To: <CAJD7tkbSwNOZu1r8VfUAD5v-g_NK3oASfO51FJDX4pdMYh9mjw@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 12 Oct 2023 14:16:25 -0700
+Message-ID: <CALvZod5fWDWZDa=WoyOyckvx5ptjmFBMO9sOG0Sk0MgiDX4DSQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2023 20:29, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Make get_trip_level() use for_each_trip() to iterate over trip points
-> and make it call thermal_zone_trip_id() to obtain the integer ID of a
-> given trip point so as to avoid relying on the knowledge of struct
-> thermal_zone_device internals.
-> 
-> The general functionality is not expected to be changed.
-> 
-> This change causes the governor to use trip pointers instead of trip
-> indices everywhere except for the fair_share_throttle() second argument
-> that will be modified subsequently along with the definition of the
-> governor .throttle() callback.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
+On Thu, Oct 12, 2023 at 2:06=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> [..]
+> > > > >
+> > > > > Using next-20231009 and a similar 44 core machine with hyperthrea=
+ding
+> > > > > disabled, I ran 22 instances of netperf in parallel and got the
+> > > > > following numbers from averaging 20 runs:
+> > > > >
+> > > > > Base: 33076.5 mbps
+> > > > > Patched: 31410.1 mbps
+> > > > >
+> > > > > That's about 5% diff. I guess the number of iterations helps redu=
+ce
+> > > > > the noise? I am not sure.
+> > > > >
+> > > > > Please also keep in mind that in this case all netperf instances =
+are
+> > > > > in the same cgroup and at a 4-level depth. I imagine in a practic=
+al
+> > > > > setup processes would be a little more spread out, which means le=
+ss
+> > > > > common ancestors, so less contended atomic operations.
+> > > >
+> > > >
+> > > > (Resending the reply as I messed up the last one, was not in plain =
+text)
+> > > >
+> > > > I was curious, so I ran the same testing in a cgroup 2 levels deep
+> > > > (i.e /sys/fs/cgroup/a/b), which is a much more common setup in my
+> > > > experience. Here are the numbers:
+> > > >
+> > > > Base: 40198.0 mbps
+> > > > Patched: 38629.7 mbps
+> > > >
+> > > > The regression is reduced to ~3.9%.
+> > > >
+> > > > What's more interesting is that going from a level 2 cgroup to a le=
+vel
+> > > > 4 cgroup is already a big hit with or without this patch:
+> > > >
+> > > > Base: 40198.0 -> 33076.5 mbps (~17.7% regression)
+> > > > Patched: 38629.7 -> 31410.1 (~18.7% regression)
+> > > >
+> > > > So going from level 2 to 4 is already a significant regression for
+> > > > other reasons (e.g. hierarchical charging). This patch only makes i=
+t
+> > > > marginally worse. This puts the numbers more into perspective imo t=
+han
+> > > > comparing values at level 4. What do you think?
+> > >
+> > > This is weird as we are running the experiments on the same machine. =
+I
+> > > will rerun with 2 levels as well. Also can you rerun the page fault
+> > > benchmark as well which was showing 9% regression in your original
+> > > commit message?
+> >
+> > Thanks. I will re-run the page_fault tests, but keep in mind that the
+> > page fault benchmarks in will-it-scale are highly variable. We run
+> > them between kernel versions internally, and I think we ignore any
+> > changes below 10% as the benchmark is naturally noisy.
+> >
+> > I have a couple of runs for page_fault3_scalability showing a 2-3%
+> > improvement with this patch :)
+>
+> I ran the page_fault tests for 10 runs on a machine with 256 cpus in a
+> level 2 cgroup, here are the results (the results in the original
+> commit message are for 384 cpus in a level 4 cgroup):
+>
+>                LABEL            |     MEAN    |   MEDIAN    |   STDDEV   =
+|
+> ------------------------------+-------------+-------------+-------------
+>   page_fault1_per_process_ops |             |             |            |
+>   (A) base                    | 270249.164  | 265437.000  | 13451.836  |
+>   (B) patched                 | 261368.709  | 255725.000  | 13394.767  |
+>                               | -3.29%      | -3.66%      |            |
+>   page_fault1_per_thread_ops  |             |             |            |
+>   (A) base                    | 242111.345  | 239737.000  | 10026.031  |
+>   (B) patched                 | 237057.109  | 235305.000  | 9769.687   |
+>                               | -2.09%      | -1.85%      |            |
+>   page_fault1_scalability     |             |             |
+>   (A) base                    | 0.034387    | 0.035168    | 0.0018283  |
+>   (B) patched                 | 0.033988    | 0.034573    | 0.0018056  |
+>                               | -1.16%      | -1.69%      |            |
+>   page_fault2_per_process_ops |             |             |
+>   (A) base                    | 203561.836  | 203301.000  | 2550.764   |
+>   (B) patched                 | 197195.945  | 197746.000  | 2264.263   |
+>                               | -3.13%      | -2.73%      |            |
+>   page_fault2_per_thread_ops  |             |             |
+>   (A) base                    | 171046.473  | 170776.000  | 1509.679   |
+>   (B) patched                 | 166626.327  | 166406.000  | 768.753    |
+>                               | -2.58%      | -2.56%      |            |
+>   page_fault2_scalability     |             |             |
+>   (A) base                    | 0.054026    | 0.053821    | 0.00062121 |
+>   (B) patched                 | 0.053329    | 0.05306     | 0.00048394 |
+>                               | -1.29%      | -1.41%      |            |
+>   page_fault3_per_process_ops |             |             |
+>   (A) base                    | 1295807.782 | 1297550.000 | 5907.585   |
+>   (B) patched                 | 1275579.873 | 1273359.000 | 8759.160   |
+>                               | -1.56%      | -1.86%      |            |
+>   page_fault3_per_thread_ops  |             |             |
+>   (A) base                    | 391234.164  | 390860.000  | 1760.720   |
+>   (B) patched                 | 377231.273  | 376369.000  | 1874.971   |
+>                               | -3.58%      | -3.71%      |            |
+>   page_fault3_scalability     |             |             |
+>   (A) base                    | 0.60369     | 0.60072     | 0.0083029  |
+>   (B) patched                 | 0.61733     | 0.61544     | 0.009855   |
+>                               | +2.26%      | +2.45%      |            |
+>
+> The numbers are much better. I can modify the commit log to include
+> the testing in the replies instead of what's currently there if this
+> helps (22 netperf instances on 44 cpus and will-it-scale page_fault on
+> 256 cpus -- all in a level 2 cgroup).
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+Yes this looks better. I think we should also ask intel perf and
+phoronix folks to run their benchmarks as well (but no need to block
+on them).
