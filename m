@@ -2,217 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F5A7C7166
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2027B7C7168
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379466AbjJLP1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:27:03 -0400
+        id S1379464AbjJLP1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:27:18 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379385AbjJLP1A (ORCPT
+        with ESMTP id S1379476AbjJLP1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:27:00 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38D0E8;
-        Thu, 12 Oct 2023 08:26:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-        :From:subject:date:message-id:reply-to;
-        bh=A4tcsRYv0zAR+IykEXFJLbmWdjR/S0UrKbdwgttyzoY=; b=G3u0szbsRjEx+Mk6e0l6H4z8GZ
-        D5WQkbWCRIC/ZTViHUXZ//ez4L6jtw4nEJnxlRNk8xyC5fgBPSUvWGd2wODWo88GaNdvXFPxFLuWc
-        1zve3NUjF1HuTcdQkaXz4nU94N+ZD6+6CmQgsuh1PI+YfkUxd3Js9UYDJJpi586XmMbk=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:41278 helo=pettiford.lan)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qqxaL-0003rP-GV; Thu, 12 Oct 2023 11:26:50 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Cc:     hugo@hugovil.com, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org
-Date:   Thu, 12 Oct 2023 11:26:47 -0400
-Message-Id: <20231012152647.2607455-1-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 12 Oct 2023 11:27:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04DCFD;
+        Thu, 12 Oct 2023 08:27:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11FEDC433C7;
+        Thu, 12 Oct 2023 15:27:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697124428;
+        bh=2H8uGr4Sh1OiavbH2JgHBR1t5d/J1kkWJxFqreXacg0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=bhzWOIrpuMZoiq7IdctJDzTQtMCE8yHFiZ3kY8XAPqEyyLH81t/fU18359sKdvOIj
+         uoKgIWPcSAiWMo52UUFt5+2zHdgtd1SPKUbjpL/BhFXQjyzZFtwxaqjmNFao8AaT1H
+         +baVPnJQC/38rsOJZ+7CzRAcGSaR0qiDUUUnFL55Fy9YTBryvjb4b33iQln0RzFddT
+         MHK94ipJ+h2DC0EbZJ3eexQdfoxyN49BeG6fy5PUTeko7tdY/dwac67KiVCgh646ME
+         Ws6pCtpHgaYvqqpfiod96tjTbIGsQXT+XSs3BO26ndwnU/k1U8OpKajzeZDEBKeeSx
+         hRpq/cpqM12GQ==
+Date:   Thu, 12 Oct 2023 10:27:05 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Shuai Xue <xueshuai@linux.alibaba.com>
+Cc:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
+        yangyicong@huawei.com, will@kernel.org,
+        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
+        robin.murphy@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        rdunlap@infradead.org, mark.rutland@arm.com,
+        zhuo.song@linux.alibaba.com, renyu.zj@linux.alibaba.com
+Subject: Re: [PATCH v7 2/4] PCI: Add Alibaba Vendor ID to linux/pci_ids.h
+Message-ID: <20231012152705.GA1070955@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012145940.GA1069329@bhelgaas>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
-Subject: [PATCH v2] dt-bindings: serial: max310x: convert to YAML
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On Thu, Oct 12, 2023 at 09:59:40AM -0500, Bjorn Helgaas wrote:
+> On Thu, Oct 12, 2023 at 11:28:54AM +0800, Shuai Xue wrote:
+> > The Alibaba Vendor ID (0x1ded) is now used by Alibaba elasticRDMA ("erdma")
+> > and will be shared with the upcoming PCIe PMU ("dwc_pcie_pmu"). Move the
+> > Vendor ID to linux/pci_ids.h so that it can shared by several drivers
+> > later.
+> > 
+> > Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> 
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>	# pci_ids.h
 
-Convert binding from text format to YAML.
+Hehe, just noticed that I acked this previously:
+https://lore.kernel.org/r/20230606153143.GA1124867@bhelgaas
 
-Additions to original text binding:
-  - add rs485 reference.
+You can pick up acks like that and include them when you post future
+versions so people don't have to ack them again.  (Drop the acks if
+you make significant changes to the patch, of course.)
 
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-
----
-Changes for V2:
-- Add serial prefix to log message title
-- Move clock-name property after clocks
-- Remove 'clock-frequency' property
-- Move 'allOf' block after 'required'
-- Remove examples 2 and 3
-
- .../bindings/serial/maxim,max310x.txt         | 48 ------------
- .../bindings/serial/maxim,max310x.yaml        | 74 +++++++++++++++++++
- 2 files changed, 74 insertions(+), 48 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/serial/maxim,max310x.txt
- create mode 100644 Documentation/devicetree/bindings/serial/maxim,max310x.yaml
-
-diff --git a/Documentation/devicetree/bindings/serial/maxim,max310x.txt b/Documentation/devicetree/bindings/serial/maxim,max310x.txt
-deleted file mode 100644
-index 79e10a05a96a..000000000000
---- a/Documentation/devicetree/bindings/serial/maxim,max310x.txt
-+++ /dev/null
-@@ -1,48 +0,0 @@
--* Maxim MAX310X advanced Universal Asynchronous Receiver-Transmitter (UART)
--
--Required properties:
--- compatible: Should be one of the following:
--  - "maxim,max3107" for Maxim MAX3107,
--  - "maxim,max3108" for Maxim MAX3108,
--  - "maxim,max3109" for Maxim MAX3109,
--  - "maxim,max14830" for Maxim MAX14830.
--- reg: SPI chip select number.
--- interrupts: Specifies the interrupt source of the parent interrupt
--  controller. The format of the interrupt specifier depends on the
--  parent interrupt controller.
--- clocks: phandle to the IC source clock.
--- clock-names: Should be "xtal" if clock is an external crystal or
--  "osc" if an external clock source is used.
--
--Optional properties:
--- gpio-controller: Marks the device node as a GPIO controller.
--- #gpio-cells: Should be two. The first cell is the GPIO number and
--  the second cell is used to specify the GPIO polarity:
--    0 = active high,
--    1 = active low.
--
--Example:
--
--/ {
--	clocks {
--		spi_uart_clk: osc_max14830 {
--			compatible = "fixed-clock";
--			#clock-cells = <0>;
--			clock-frequency = <3686400>;
--		};
--
--	};
--};
--
--&spi0 {
--	max14830: max14830@0 {
--		compatible = "maxim,max14830";
--		reg = <0>;
--		clocks = <&spi_uart_clk>;
--		clock-names = "osc";
--		interrupt-parent = <&gpio3>;
--		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
--		gpio-controller;
--		#gpio-cells = <2>;
--	};
--};
-diff --git a/Documentation/devicetree/bindings/serial/maxim,max310x.yaml b/Documentation/devicetree/bindings/serial/maxim,max310x.yaml
-new file mode 100644
-index 000000000000..889eeaca64a0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/serial/maxim,max310x.yaml
-@@ -0,0 +1,74 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/serial/maxim,max310x.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Maxim MAX310X Advanced Universal Asynchronous Receiver-Transmitter (UART)
-+
-+maintainers:
-+  - Hugo Villeneuve <hvilleneuve@dimonoff.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - maxim,max3107
-+      - maxim,max3108
-+      - maxim,max3109
-+      - maxim,max14830
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    enum:
-+      - xtal # External crystal
-+      - osc  # External clock source
-+
-+  gpio-controller: true
-+
-+  "#gpio-cells":
-+    const: 2
-+
-+  gpio-line-names:
-+    minItems: 1
-+    maxItems: 16
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+allOf:
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-+  - $ref: /schemas/serial/serial.yaml#
-+  - $ref: /schemas/serial/rs485.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        serial@2c {
-+            compatible = "maxim,max3107";
-+            reg = <0x2c>;
-+            clocks = <&xtal4m>;
-+            clock-names = "xtal";
-+            interrupt-parent = <&gpio3>;
-+            interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-+            gpio-controller;
-+            #gpio-cells = <2>;
-+        };
-+    };
-
-base-commit: 401644852d0b2a278811de38081be23f74b5bb04
--- 
-2.39.2
-
+> > ---
+> >  drivers/infiniband/hw/erdma/erdma_hw.h | 2 --
+> >  include/linux/pci_ids.h                | 2 ++
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/infiniband/hw/erdma/erdma_hw.h b/drivers/infiniband/hw/erdma/erdma_hw.h
+> > index 9d316fdc6f9a..a155519a862f 100644
+> > --- a/drivers/infiniband/hw/erdma/erdma_hw.h
+> > +++ b/drivers/infiniband/hw/erdma/erdma_hw.h
+> > @@ -11,8 +11,6 @@
+> >  #include <linux/types.h>
+> >  
+> >  /* PCIe device related definition. */
+> > -#define PCI_VENDOR_ID_ALIBABA 0x1ded
+> > -
+> >  #define ERDMA_PCI_WIDTH 64
+> >  #define ERDMA_FUNC_BAR 0
+> >  #define ERDMA_MISX_BAR 2
+> > diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+> > index 5fb3d4c393a9..d8760daf9e5a 100644
+> > --- a/include/linux/pci_ids.h
+> > +++ b/include/linux/pci_ids.h
+> > @@ -2601,6 +2601,8 @@
+> >  #define PCI_VENDOR_ID_TEKRAM		0x1de1
+> >  #define PCI_DEVICE_ID_TEKRAM_DC290	0xdc29
+> >  
+> > +#define PCI_VENDOR_ID_ALIBABA		0x1ded
+> > +
+> >  #define PCI_VENDOR_ID_TEHUTI		0x1fc9
+> >  #define PCI_DEVICE_ID_TEHUTI_3009	0x3009
+> >  #define PCI_DEVICE_ID_TEHUTI_3010	0x3010
+> > -- 
+> > 2.39.3
+> > 
+> > 
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
