@@ -2,180 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CD47C6E22
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B0B7C6E2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377883AbjJLMcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 08:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53080 "EHLO
+        id S1343894AbjJLMfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:35:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235703AbjJLMcp (ORCPT
+        with ESMTP id S235703AbjJLMfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:32:45 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A028AB8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:32:43 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so13248a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:32:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697113962; x=1697718762; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1tkwRjlYkcEjaX7ZtkQRjZiJVYqkPB3IbpRi2aMlfPI=;
-        b=mCD2FoVpTdj261rfKgwlzoC761ftFnnoaye89kmQpJ5EQ+u2L5YzeZerqFdoKmudZK
-         IWHuCDxhCbUDOT3wkkQ9DyQOqg0NWYI8XGp7Ydm/gqfX78RZ97TdOZmvy0XO0igNKURN
-         Dl+/PtvD8/gJIC5l4OltgVlN+obblW2wMxpORTWqgNK5I6gVxD5cPNoy7bwS1sVo9Vzl
-         PKSTEQMTRzp52xFgBMHmvwK+eUanLpssWupXQJqhIShDgvVk3jqC0zC8BFEwIZr1fLCB
-         NZFlpB1Gei2IaFX/G/Hv7DCMsJYLu2PXe7hi/cDvSWDJ7Wk5HD3zXr7FDfIDQiy5Jkro
-         Ep3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697113962; x=1697718762;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1tkwRjlYkcEjaX7ZtkQRjZiJVYqkPB3IbpRi2aMlfPI=;
-        b=LH9NNT8NnLk20V7jIJEQSCH45D6LAcjJ6TEXT+ZaOJf4LPfcu28VsbpaNc2SB2jpbb
-         S/wOQAofB6orXqf84t+PzPyt8erQVOCtgBbtpLyAhJWcXphsVc6BZYwOqkxdAqATFpu6
-         gxei3CIeJQoWprPWpOcT9EctIesV2i1Mdcws6dkh9D3vxWL5wGe1NrQ4nXsv/nh3A1XF
-         10muYNxMKc7U7ZfH7yAThnFCkYr6c3QET8jagHzMhkU22dOxO4YevX4jB0klI4fO+ffm
-         Dbt4BraHVrmzTHKqgiFbaD94QUNQJ+iTwN3MchrhQQZufP4bAVNeAhS5yGGJq1OCGhNU
-         6laQ==
-X-Gm-Message-State: AOJu0Yy7Zudg40iCYj/2cybitPaQFxjoyEre2dUdIcVe4+x0ckL2d3Mm
-        +o52HkZHxsaJ3RBwjsdu0fixIsux3lCi/sfV/rw7oIsjxm4WTpAnlVg=
-X-Google-Smtp-Source: AGHT+IEcUNfDN8SZcbcaIRWbxtyn/WNReXnvZO9j+g6zzk1Nl0XLUUcJYYeOax7WrQZcOy4167LxdOXQ86gqe0hIOPo=
-X-Received: by 2002:a50:c355:0:b0:52e:f99a:b5f8 with SMTP id
- q21-20020a50c355000000b0052ef99ab5f8mr244799edb.7.1697113961951; Thu, 12 Oct
- 2023 05:32:41 -0700 (PDT)
+        Thu, 12 Oct 2023 08:35:31 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2087.outbound.protection.outlook.com [40.107.223.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA95DBE
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:35:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kTbzTcz4NBss9+v4yUTqcbgu8Z5ut+K5D5wXA1O6UNnbp9ASBAjj5mbRW5FKJl6njWWU0oujzW6QWYVMRIIiEer7AocM8j5eN31zsp7a88jLujFJ9AxPgf774e7VTvcP5xL9YOkBUKksPmDojzoPAIHaMX4iuBF160NrmDfsKhhOnFpyAVVuQe2/hz20OzogJ4+t3E4lYsv1rh164bH1FRcVrKID7/1+SHD9IVaPMSwdjJn9AE0v02b4TG6fOPH292dhl4AzoJu5ZiPY9EuaMfBEb/KnhfAbT2a5WItruzPu06Pjc4Um4tKISOqDGOpbnzezA6iKGrQGVJqrUKAxKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+8i1QDQRgnEcNFH71h9YiSG/SvH2Vp96L3nXHeGTJf4=;
+ b=ksi5+I/u9lJ8rW3phDKHqmMlJDRI/xv8DoPyuNEmk5BByYJfbzGFwLotC3f49roEXKb+phfRUq8yLEaZRwd6AZRj96Ib1ukUrIRcGHIILSqYF7lBImhIi852q3FP0au/a1yY7GAr4QzX5jfDX5zTIdpz+d1sFDULsHM1KumKCVOSdqNO3UBRd+/sG/PMAmJOXRCZfPcqvKCpfKGKIHmOdHhPfm+C3kF8aXMOkABLjByDNXSSOmn2HN9PXHAJUic4DGdd1hXURm2SHA9Z+ysSYEzdSTWDPOhcpX5Pld2nCgU4FWyE+dmowIDrttF1L14CRdOi2sr/LZ1HWWFu2tuaEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+8i1QDQRgnEcNFH71h9YiSG/SvH2Vp96L3nXHeGTJf4=;
+ b=w8cwqlMFH59ADI23w3QdBgiGVRluVFSsZC4Rgm89+pou4AejuSgBZjgUpgKGCScs2mSNMuXTtvbNA+lfwmEceCwJliK8HNmeh5u4/cd11CHX7po/0pgc/yU2KaY+fjciGRqH09pX5BwRjRcuCE56ojia6OdkyXY2WXsplX6pwt4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by SJ2PR12MB7865.namprd12.prod.outlook.com (2603:10b6:a03:4cc::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Thu, 12 Oct
+ 2023 12:35:23 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::a7fa:4411:67a3:131d]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::a7fa:4411:67a3:131d%4]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
+ 12:35:23 +0000
+Message-ID: <1333e15b-f229-460a-8965-01ff3e778a4d@amd.com>
+Date:   Thu, 12 Oct 2023 14:35:15 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH drm-misc-next 2/3] drm/gpuva_mgr: generalize
+ dma_resv/extobj handling and GEM validation
+Content-Language: en-US
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>, Danilo Krummrich <dakr@redhat.com>,
+        daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        faith.ekstrand@collabora.com, bskeggs@redhat.com,
+        Liam.Howlett@oracle.com, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20230820215320.4187-1-dakr@redhat.com>
+ <20230820215320.4187-3-dakr@redhat.com>
+ <0c50ff22-0f11-1e27-c32e-694ce2b1e6c5@shipmail.org> <ZO864yp3UyVEfEjz@pollux>
+ <88c45fe6-0942-707c-9ea7-8486c177fcd7@shipmail.org> <ZO9Zq2RhbX8EeHrn@pollux>
+ <736b6b6d-9e04-a27d-7d60-0c45d696b304@shipmail.org>
+ <ZPB26A0/oLHTmyqk@cassiopeiae>
+ <a8f28d62-daec-927a-a33d-5be3eec6a1ed@shipmail.org>
+ <ZPDk/lao1JlBNGoJ@cassiopeiae>
+ <8a8253ae-0b85-df90-b480-64eeebfafc6d@shipmail.org>
+ <CAPM=9tz3o-m+8VJJ6hxWhykat0kpp1UE7dBJE3X91aHHo1Y2VA@mail.gmail.com>
+ <76963abd-77a1-4bbd-9537-7b230e648a90@amd.com>
+ <CAPM=9twSHGRoSoXxG+hz1T8iBX2VgPFvFsNCDnK_nHW9WJYBtw@mail.gmail.com>
+From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <CAPM=9twSHGRoSoXxG+hz1T8iBX2VgPFvFsNCDnK_nHW9WJYBtw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR4P281CA0090.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:cd::16) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-References: <20231009142005.21338-1-quic_kriskura@quicinc.com>
- <20231009142005.21338-2-quic_kriskura@quicinc.com> <CANP3RGfEk2DqZ3biyN78ycQYbDxCEG+H1me2vnEYuwXkNdXnTA@mail.gmail.com>
- <CANP3RGcCpNOuVpdV9n0AFxZo-wsfwi8OfYgBk1WHNHaEd-4V-Q@mail.gmail.com>
- <CANP3RGdY4LsOA6U5kuccApHCzL0_jBnY=pLOYrUuYtMZFTvnbw@mail.gmail.com>
- <d19d9d08-c119-4991-b460-49925f601d15@quicinc.com> <fad5a7fb-cce1-46bc-a0af-72405c76d107@quicinc.com>
-In-Reply-To: <fad5a7fb-cce1-46bc-a0af-72405c76d107@quicinc.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date:   Thu, 12 Oct 2023 05:32:22 -0700
-Message-ID: <CANP3RGcqWBYd9FqAX47rE9pFgBTB8=0CGdwkScm-OH1epHcVWQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] usb: gadget: ncm: Add support to update
- wMaxSegmentSize via configfs
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        onathan Corbet <corbet@lwn.net>,
-        Linyu Yuan <quic_linyyuan@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
-        quic_wcheng@quicinc.com, quic_jackp@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SJ2PR12MB7865:EE_
+X-MS-Office365-Filtering-Correlation-Id: 96370a12-b4ca-4826-9e0f-08dbcb1fb3fd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ci4UcZ2SkZhGpgeXpxS2yhJefqnsjuUP0U3dhKg4c6Abm/dahCqEVZB7TSYxv7MUsDD/pIbS/sxkBqF5Y3bITNm8LVWVvUOS06v6cXDOc44xU1dkj5L7YyZwaxjk6BNEWWSNauQWkepupmFz2FJlZyKAw2XTxb0jYe7pbyqiIONgLbHncF1ekEHM0Z6U7HyDXhzimsA74ihqz3apBWDp8MB4W5pVtQq1H5Q6f/XTtZWxcc0DQamNQ1N3YJeKCfHpWNbIURPVnVEt1APYQ/DIbLGOeQZpUfsX5A32ZucsQS6+VoT9yyeKZ5LGdQRNmPIgubiKIS9RyPQfB76mR55lanGbS8iwtkLKe49/6xLCyy4JB2Jrk2iyLiQznOW/Q7AkjurffkO6XcQswWxgTYN3vcnubfhFYT/HJ29bl/B8flY/442vXJt2LH2xYjYvJbZzaZ1KbqqbfMIjinqgjJTu/rSYSo1kOZRBFzeJI4vC9wfiX2oYV01MOldjV4eMBIjP09Qq9912cuf7IFNRo6I5fRto8nBswGf4EEm9e/0DhHnkB+3dPGFbCpRZGREwP2k9mRVcaVQ1sjCt+OwUbnoIWLooccHrgT7a34cv82DATZaxgc30vfQosqn/1yJZA25eKg2OgjFRawd2dxRh4YRSWg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(366004)(376002)(346002)(396003)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(66556008)(66946007)(316002)(6916009)(54906003)(41300700001)(6486002)(5660300002)(66476007)(4326008)(8936002)(7416002)(8676002)(31686004)(2906002)(83380400001)(6512007)(26005)(86362001)(2616005)(31696002)(66574015)(6666004)(38100700002)(6506007)(36756003)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UEFtZmdjSGxsM25wNlFVdk1ReWtwUGJFditKZThDdFRSL0hJQU5mNVpQY016?=
+ =?utf-8?B?TGQxYXNlRitBNEZ0dklZZjVraTNHR0xMZWxIVWt1MWxEQm5jeXJTZnFaSDRE?=
+ =?utf-8?B?Yk90dWQwVTZ2NjIwSVB5blpPaDJQaTZjOG1yVjdEYitaakZYd3loUzFwNHBJ?=
+ =?utf-8?B?aGdtNFBwYnlLWjE3Wmd5NksyMlBhbXhjbGw5K1JMVEZtN2g4bGhYOTJPR2hU?=
+ =?utf-8?B?cWlYbklUK0lNVnB0VEtjNlowQnlUM3lCeUNPNG0yYkcvcm9ITmVJYkM0bE1R?=
+ =?utf-8?B?K2p2QytPb050RThjUVF2SlZJOHZPb3Y3cjZvbktORkZUTEt2ZVFzaHd2MjFO?=
+ =?utf-8?B?ZHg5d3N2U05DMHpodk9FMmtrTlVrTTNhWjNFNUhQTTFzMzkrOVhCbVh0Qm1J?=
+ =?utf-8?B?ZUhwbXdJZFA0NnhuWXQ0cFFseEpMOTJVb2ZWa2hVZ0ZnWER5VXFERXRYUnEv?=
+ =?utf-8?B?ZiszYm15aVl5bzhDVE9CTVdwR2JHNFFHMXlqRXdURUY4RHZWRmozZjBxemZZ?=
+ =?utf-8?B?L21nMGxGWmJKcjdZSFNKdncwa3NGYWtsL1Rncko4STRDcWNVNzN0SW5Pemti?=
+ =?utf-8?B?QlNMN0VOUk05cFp1dWRiOFREb1IzUWlqUVUyeWVrZlE1QzV2WUUwaHRKdjYw?=
+ =?utf-8?B?djJ1QjN0M0pkQTNiYVNNcTNzb3Q4QUs5WG1aQ3JySVREMTNrdmxzVnZGVDND?=
+ =?utf-8?B?VFhuQy85MlY0RGdIVU1iaUZSZzlibnJWTzJwMTZrTjBPQmtUbExpSGRiOVZa?=
+ =?utf-8?B?ZXdUVW9tZmZpSDJvWC9GU0xpQzI5VEI2Vkk3TUZOKytXaU12RDRkaVZKazls?=
+ =?utf-8?B?KzJ3b3dobERVSTBoRC9MRThCSDF0QkgwV1dZSkc2RnJhc292Q00zelU3RzRJ?=
+ =?utf-8?B?cmhtS1RYNDdwb3RhSm5qWlhGMDZRUFIxSWdWcUdGOTA4VHJMMEhpQW5xWm5z?=
+ =?utf-8?B?ZWI5d2d5aFFPcUVNN0R1R3F5c3U1eUpONzRoMUVnOVZhaHJlQ2ZYcThtb3Jz?=
+ =?utf-8?B?LzNpb1VRcW1Id2NoUm1HNHJjZy9iN05reld3TkxQdG5OS0wzN2FPNVRCclFa?=
+ =?utf-8?B?SEhRaHdPMnJjTjBJeS9EREpIUk1MYmJGL3ZhQmJaRW02d0wvTEdYTzRKUFdI?=
+ =?utf-8?B?WTEzeWJieS9ua0w3TkxuWWRRbU9kYk1yOXZWQ3A4UktWbDhBdm4vS3hqa2o2?=
+ =?utf-8?B?WnpOMU9nbGlpQ2JvZmtyMytUMitpM1ZBZDV1MXMxMC9TWDRZZmQyNTQ3OU1h?=
+ =?utf-8?B?NUZYdW9YZ2Q0Z3VnNmpySUNZeUpzeitaTlZwSkNFeThSeC9rWE5halVXekJN?=
+ =?utf-8?B?WVhRaldpdlUzQU1lWXFERGxnZHJPQjJXR0NIVnVwNm04NE5rdGMxZk9UTE53?=
+ =?utf-8?B?WTljSE5FRnZ5TzNXdFNuMTFVRkpjaWxlaGhBcS9Ta3N6UTVZU0tzbVpTMEg1?=
+ =?utf-8?B?RkxEWkZkYW5EcHB5Z2s1Wkl0VGovTTFGMkxrSGNhNnJjUWVlMVNoclZHelhx?=
+ =?utf-8?B?OHpMOVVHbE9jY0RVTVJjaXhkOU9jbnpzSWNjUWlZek8vQTlweUhWcDNoZTE0?=
+ =?utf-8?B?WHFvVlBEOUFVOHJ5QmpwZEZiVklWQlowcktLUHh5Z3FzRlMrQnpOTUNHeUhZ?=
+ =?utf-8?B?S0RoVVpVNkovUyt1UU9PN1paSWs0RHZ0RlNidkt0SWFwcGNZQ05VcmZKSjFv?=
+ =?utf-8?B?enRlUU45ck9qSkRRQkVwWkVuZ2cyS0ZYOHlFcFdMQy9HK3BCY3ZnbHphT3NE?=
+ =?utf-8?B?cnpmbi9JNE9BQWhrc3ZCU1dLZVc2ZWtVVHNSTWJyR0NLZU1GazQrajlVUGxt?=
+ =?utf-8?B?YnVLM21rWTR5eTJhckZUOGhhUGxtVWthenhOQXNxcW43YWNIS1gwaisxLzB4?=
+ =?utf-8?B?YkZRVlZva0lNa25zby9aYVpIbjdqam5DaE01bWhLd3plSmJzVGRuNEN2RHNG?=
+ =?utf-8?B?M2pVM3ZCblBCdnZDT3czYXVpOGNrUXMzQUJmU1dIOGtEZXBVNFh6M25IU3JF?=
+ =?utf-8?B?ZHhBbmZlclQydWdzS3o4Wi9SYS93K0hmcmdjT3NYZDUvbW40dUFHbm9SeWVH?=
+ =?utf-8?B?aWY3eWhSdEtKSlg5bC9SR2JmUHk2MTJyVzlkMW5XMW1UUEYzd1J5dDY4U3Ey?=
+ =?utf-8?Q?Ur9I=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96370a12-b4ca-4826-9e0f-08dbcb1fb3fd
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 12:35:23.0084
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EgHHwSzxgMW3YrU/YGnrvOnDOncICu37EJGAU9uTVTVAugFwn6fMmgASDJKPlhpQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7865
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 1:48=E2=80=AFAM Krishna Kurapati PSSNV
-<quic_kriskura@quicinc.com> wrote:
->
->
->
-> On 10/10/2023 10:08 AM, Krishna Kurapati PSSNV wrote:
-> >
->
-> >>
-> >> ^ is this a problem now if we have >1 gadget?
-> >> how does it work then?
-> >
-> >
-> > You are right. This would effect unwrap call and the wMaxSegmentSize is
-> > used directly. Thanks for the catch. I didn't test with 2 NCM interface=
-s
-> > and hence I wasn't able to find this bug. Perhaps changing this to
-> > opts->max_segment_size would fix the implementation as unwrap would
-> > anyways be called after bind.
->
-> Hi Maciej,
->
->   How about the below diff:
->
-> ---------
->
-> +/*
-> + * Allow max segment size to be in parity with max_mtu possible
-> + * for the interface.
-> + */
-> +#define MAX_DATAGRAM_SIZE      GETHER_MAX_ETH_FRAME_LEN
-> +
->   #define FORMATS_SUPPORTED      (USB_CDC_NCM_NTB16_SUPPORTED |  \
->                                   USB_CDC_NCM_NTB32_SUPPORTED)
->
-> @@ -194,7 +200,6 @@ static struct usb_cdc_ether_desc ecm_desc =3D {
->          /* this descriptor actually adds value, surprise! */
->          /* .iMACAddress =3D DYNAMIC */
->          .bmEthernetStatistics =3D cpu_to_le32(0), /* no statistics */
-> -       .wMaxSegmentSize =3D      cpu_to_le16(ETH_FRAME_LEN),
->          .wNumberMCFilters =3D     cpu_to_le16(0),
->          .bNumberPowerFilters =3D  0,
->   };
-> @@ -1180,10 +1185,15 @@ static int ncm_unwrap_ntb(struct gether *port,
->          struct sk_buff  *skb2;
->          int             ret =3D -EINVAL;
->          unsigned        ntb_max =3D
-> le32_to_cpu(ntb_parameters.dwNtbOutMaxSize);
-> -       unsigned        frame_max =3D le16_to_cpu(ecm_desc.wMaxSegmentSiz=
-e);
-> +       unsigned int    frame_max;
->          const struct ndp_parser_opts *opts =3D ncm->parser_opts;
->          unsigned        crc_len =3D ncm->is_crc ? sizeof(uint32_t) : 0;
->          int             dgram_counter;
-> +       struct f_ncm_opts *ncm_opts;
-> +       const struct usb_function_instance *fi =3D port->func.fi;
-> +
-> +       ncm_opts =3D container_of(fi, struct f_ncm_opts, func_inst);
-> +       frame_max =3D ncm_opts->max_segment_size;
->
->          /* dwSignature */
->          if (get_unaligned_le32(tmp) !=3D opts->nth_sign) {
-> @@ -1440,6 +1450,7 @@ static int ncm_bind(struct usb_configuration *c,
-> struct usb_function *f)
->           */
->          if (!ncm_opts->bound) {
->                  mutex_lock(&ncm_opts->lock);
-> +               ncm_opts->net->mtu =3D (ncm_opts->max_segment_size -
-> ETH_HLEN);
->                  gether_set_gadget(ncm_opts->net, cdev->gadget);
->                  status =3D gether_register_netdev(ncm_opts->net);
->                  mutex_unlock(&ncm_opts->lock);
-> @@ -1484,6 +1495,8 @@ static int ncm_bind(struct usb_configuration *c,
-> struct usb_function *f)
->
->          status =3D -ENODEV;
->
-> +       ecm_desc.wMaxSegmentSize =3D (__le16)ncm_opts->max_segment_size;
+Am 12.10.23 um 12:33 schrieb Dave Airlie:
+> On Wed, 11 Oct 2023 at 17:07, Christian König <christian.koenig@amd.com> wrote:
+>> Am 10.10.23 um 22:23 schrieb Dave Airlie:
+>>>> I think we're then optimizing for different scenarios. Our compute
+>>>> driver will use mostly external objects only, and if shared, I don't
+>>>> forsee them bound to many VMs. What saves us currently here is that in
+>>>> compute mode we only really traverse the extobj list after a preempt
+>>>> fence wait, or when a vm is using a new context for the first time. So
+>>>> vm's extobj list is pretty large. Each bo's vma list will typically be
+>>>> pretty small.
+>>> Can I ask why we are optimising for this userspace, this seems
+>>> incredibly broken.
+>>>
+>>> We've has this sort of problem in the past with Intel letting the tail
+>>> wag the horse, does anyone remember optimising relocations for a
+>>> userspace that didn't actually need to use relocations?
+>>>
+>>> We need to ask why this userspace is doing this, can we get some
+>>> pointers to it? compute driver should have no reason to use mostly
+>>> external objects, the OpenCL and level0 APIs should be good enough to
+>>> figure this out.
+>> Well that is pretty normal use case, AMD works the same way.
+>>
+>> In a multi GPU compute stack you have mostly all the data shared between
+>> different hardware devices.
+>>
+>> As I said before looking at just the Vulcan use case is not a good idea
+>> at all.
+>>
+> It's okay, I don't think anyone is doing that, some of the these
+> use-cases are buried in server land and you guys don't communicate
+> them very well.
 
-this looks wrong. pretty sure this should be some form of cpu_to_le16
+Yeah, well everybody is trying very hard to get away from those 
+approaches :)
 
-> +
->
-> ------
->
-> I can limit the max segment size to (Max MTU + ETH_HELN) and this would
-> be logical to do. Also we can set the frame_max from ncm_opts itself
-> while initializing it to 1514 (default value) during alloc_inst callback
-> and nothing would break while still being backward compatible.
->
-> Let me know your thoughts on this.
->
-> Regards,
-> Krishna,
+But so far there hasn't been any breakthrough.
 
-Could you paste the full patch?
-This is hard to review without looking at much more context then email
-is providing
-(or, even better, send me a link to a CL in gerrit somewhere - for
-example aosp ACK mainline tree)
+>
+> multi-gpu compute would I'd hope be moving towards HMM/SVM type
+> solutions though?
+
+Unfortunately not in the foreseeable future. HMM seems more and more 
+like a dead end, at least for AMD.
+
+AMD still has hardware support in all of their MI* products, but for 
+Navi the features necessary for implementing HMM have been dropped. And 
+it looks more and more like their are not going to come back.
+
+Additional to that from the software side Felix summarized it in the HMM 
+peer2peer discussion thread recently quite well. A buffer object based 
+approach is not only simpler to handle, but also performant vise 
+multiple magnitudes faster.
+
+> I'm also not into looking at use-cases that used to be important but
+> might not as important going forward.
+
+Well multimedia applications and OpenGL are still around, but it's not 
+the main focus any more.
+
+Christian.
+
+>
+> Dave.
+>
+>
+>> Christian.
+>>
+>>> Dave.
+
