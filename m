@@ -2,207 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 248707C6937
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41FC7C6920
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235633AbjJLJPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52926 "EHLO
+        id S235540AbjJLJMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235618AbjJLJOu (ORCPT
+        with ESMTP id S235438AbjJLJMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:14:50 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA65B18F;
-        Thu, 12 Oct 2023 02:13:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Wp5Iab3YQO+kL2Pt3Wg09MfvraapsTSQohQxc/XyOAI=; b=eNWXa9sqk4ENg6S8BbBDcg1EY2
-        ZW9K/9WSBmHYbd3xwxx6y5aULE2lPFtgrWR0psD8ShVyr94YICzSnABslC3mX2BSW3abqjKeeIzC3
-        lMZ+HlgBgCoOg5KkHuvxMIce0vM+Q1Zi+m1dXYAABXJZAgSPHMJhPV9i7N/AlPuao1M3u8Utw+jt7
-        P4QTObyKIjP4oXjm+isnYZvLn07TDuCe13TO+1KzOGglIPFHYi0E1/9lQzc5UBsQeB7jk4XPYpSKn
-        WTd4TKfzAKfXC8rzxxmWILMQpgeD2Sgi/KdcZjuc8Mx6he6T+peLMyuJSnUhTyoO57XLPk6rWnAEJ
-        wDbgaV9w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qqrj6-001hHm-02;
-        Thu, 12 Oct 2023 09:13:30 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1D60F30036C; Thu, 12 Oct 2023 11:11:29 +0200 (CEST)
-Date:   Thu, 12 Oct 2023 11:11:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Ben Woodard <woodard@redhat.com>,
-        Joe Mario <jmario@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Blaikie <blaikie@google.com>,
-        Xu Liu <xliuprof@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>
-Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
-Message-ID: <20231012091128.GL6307@noisy.programming.kicks-ass.net>
-References: <20231012035111.676789-1-namhyung@kernel.org>
+        Thu, 12 Oct 2023 05:12:21 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017E3CC;
+        Thu, 12 Oct 2023 02:12:15 -0700 (PDT)
+X-UUID: 6b75705868df11ee8051498923ad61e6-20231012
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=qcuFsWl+TQUGvg3JkMe15rl4uK68feAJJ2PHKXmZyy8=;
+        b=vE3yEPkWp6DyfWudcIrVfo9zkA2F8l5qtCofEYdFLv58gKDlqwysjRhoM4yChOM5HX0+fJzI7Ia+MDnhHJshxMRSvvgWOYD65lxRq38YjJHUDIFxq1FbQ9UMk9kIWiixKQQ8ajLsSu7P1XCkE8onPg/PTFEaE4DEiFfY5dzJM5g=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:ab895b68-4b6f-4244-b75a-43ab9481f050,IP:0,U
+        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-25
+X-CID-META: VersionHash:5f78ec9,CLOUDID:7285f314-4929-4845-9571-38c601e9c3c9,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_ULS,TF_CID_SPAM_SNR
+X-UUID: 6b75705868df11ee8051498923ad61e6-20231012
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw02.mediatek.com
+        (envelope-from <moudy.ho@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1763418392; Thu, 12 Oct 2023 17:12:08 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 12 Oct 2023 17:12:07 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 12 Oct 2023 17:12:07 +0800
+From:   Moudy Ho <moudy.ho@mediatek.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        "Hans Verkuil" <hverkuil-cisco@xs4all.nl>
+CC:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Moudy Ho <moudy.ho@mediatek.com>
+Subject: [PATCH v7 00/12] add support MDP3 on MT8195 platform
+Date:   Thu, 12 Oct 2023 17:11:54 +0800
+Message-ID: <20231012091206.20165-1-moudy.ho@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--17.705500-8.000000
+X-TMASE-MatchedRID: 1nGv09E/7kfsAGjS6lxxKhlckvO1m+Jc0r/qCu/cY51GL0g1nVmkYYnz
+        ULiU6+ud0lMwLmE2TtsfomBuE1LWz2Nwa9aM37neEhGH3CRdKUXL0ev0kxsIk7hrZTuJiYxuoUY
+        /oTarxwDMmJZFFJPEpV9cRW5pTniDpljg/F9ExYRc/msUC5wFQWjb0AoQdda6D1JjPBpBp1ocAJ
+        RwO9xbIL31gS5fE2u9FvhdPTrJ1Srj0QYD9nJt/23NvezwBrVmLL6mJOIs/va0rcU5V/oSeyacn
+        bShnMCc9j3dzZfJjbRg62EFNWAoiBBAYzpZxAP8tG07VELUSnRozho8K1gAGkk7tZaD19NMo8WM
+        kQWv6iVfx6Zf83Do5VcppCzPq+1UkGUtrowrXLg=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--17.705500-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: E007537F27B8D70FCABFF5CD3C18660ECDC71C93D670D8C0C3E653D707F8F1E02000:8
+X-MTK:  N
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes since v6:
+- Rebase on v6.6-rc5.
+- Dependent dtsi files:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=792079
+- Dependent bindings:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=792477
+- Move the patch that fixes compile warnings from this series and
+  create a separate standalone patch.
 
-W00t!! Finally! :-)
+Changes since v5:
+- Rebase on v6.6-rc2.
+- Dependent dtsi files:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=786511
+- Dependent bindings:
+  https://patchwork.kernel.org/project/linux-mediatek/list/?series=786520
+- Integrate MMSY/MUTEX structure in "mdp_probe".
+- Fix the build warnings that were detected by the linux-media
+  build scripts tool.
 
-On Wed, Oct 11, 2023 at 08:50:23PM -0700, Namhyung Kim wrote:
+Changes since v4:
+- Rebase on v6.6-rc1
+- Remove any unnecessary DTS settings.
+- Adjust the usage of MOD and clock in blending components.
 
-> * How to use it
-> 
-> To get precise memory access samples, users can use `perf mem record`
-> command to utilize those events supported by their architecture.  Intel
-> machines would work best as they have dedicated memory access events but
-> they would have a filter to ignore low latency loads like less than 30
-> cycles (use --ldlat option to change the default value).
-> 
->     # To get memory access samples in kernel for 1 second (on Intel)
->     $ sudo perf mem record -a -K --ldlat=4 -- sleep 1
+Changes since v3:
+- Depend on :
+  [1] https://patchwork.kernel.org/project/linux-media/list/?series=719841
+- Suggested by Krzysztof, integrating all newly added bindings for
+  the mt8195 MDP3 into the file "mediatek,mt8195-mdp3.yaml".
+- Revise MDP3 nodes with generic names.
 
-Fundamentally this should work with anything PEBS from MEM_ as
-well, no? No real reason to rely on perf mem for this.
+Changes since v2:
+- Depend on :
+  [1] MMSYS/MUTEX: https://patchwork.kernel.org/project/linux-mediatek/list/?series=711592
+  [2] MDP3: https://patchwork.kernel.org/project/linux-mediatek/list/?series=711618
+- Suggested by Rob to revise MDP3 bindings to pass dtbs check
+- Add parallel paths feature.
+- Add blended components settings.
 
-> In perf report, it's just a matter of selecting new sort keys: 'type'
-> and 'typeoff'.  The 'type' shows name of the data type as a whole while
-> 'typeoff' shows name of the field in the data type.  I found it useful
-> to use it with --hierarchy option to group relevant entries in the same
-> level.
-> 
->     $ sudo perf report -s type,typeoff --hierarchy --stdio
->     ...
->     #
->     #    Overhead  Data Type / Data Type Offset
->     # ...........  ............................
->     #
->         23.95%     (stack operation)
->            23.95%     (stack operation) +0 (no field)
->         23.43%     (unknown)
->            23.43%     (unknown) +0 (no field)
->         10.30%     struct pcpu_hot
->             4.80%     struct pcpu_hot +0 (current_task)
->             3.53%     struct pcpu_hot +8 (preempt_count)
->             1.88%     struct pcpu_hot +12 (cpu_number)
->             0.07%     struct pcpu_hot +24 (top_of_stack)
->             0.01%     struct pcpu_hot +40 (softirq_pending)
->          4.25%     struct task_struct
->             1.48%     struct task_struct +2036 (rcu_read_lock_nesting)
->             0.53%     struct task_struct +2040 (rcu_read_unlock_special.b.blocked)
->             0.49%     struct task_struct +2936 (cred)
->             0.35%     struct task_struct +3144 (audit_context)
->             0.19%     struct task_struct +46 (flags)
->             0.17%     struct task_struct +972 (policy)
->             0.15%     struct task_struct +32 (stack)
->             0.15%     struct task_struct +8 (thread_info.syscall_work)
->             0.10%     struct task_struct +976 (nr_cpus_allowed)
->             0.09%     struct task_struct +2272 (mm)
->         ...
-> 
-> The (stack operation) and (unknown) have no type and field info.  FYI,
-> the stack operations are samples in PUSH, POP or RET instructions which
-> save or restore registers from/to the stack.  They are usually parts of
-> function prologue and epilogue and have no type info.  The next is the
-> struct pcpu_hot and you can see the first field (current_task) at offset
-> 0 was accessed mostly.  It's listed in order of access frequency (not in
-> offset) as you can see it in the task_struct.
-> 
-> In perf annotate, new --data-type option was added to enable data
-> field level annotation.  Now it only shows number of samples for each
-> field but we can improve it.
-> 
->     $ sudo perf annotate --data-type
->     Annotate type: 'struct pcpu_hot' in [kernel.kallsyms] (223 samples):
->     ============================================================================
->         samples     offset       size  field
->             223          0         64  struct pcpu_hot       {
->             223          0         64      union     {
->             223          0         48          struct        {
->              78          0          8              struct task_struct*      current_task;
->              98          8          4              int      preempt_count;
->              45         12          4              int      cpu_number;
->               0         16          8              u64      call_depth;
->               1         24          8              long unsigned int        top_of_stack;
->               0         32          8              void*    hardirq_stack_ptr;
->               1         40          2              u16      softirq_pending;
->               0         42          1              bool     hardirq_stack_inuse;
->                                                };
->             223          0         64          u8*  pad;
->                                            };
->                                        };
->     ...
-> 
-> This shows each struct one by one and field-level access info in C-like
-> style.  The number of samples for the outer struct is a sum of number of
-> samples in every field in the struct.  In unions, each field is placed
-> in the same offset so they will have the same number of samples.
+Changes since v1:
+- Depend on :
+  [1] MDP3 : https://patchwork.kernel.org/project/linux-mediatek/list/?series=698872
+  [2] MMSYS/MUTEX: https://patchwork.kernel.org/project/linux-mediatek/list/?series=684959
+- Fix compilation failure due to use of undeclared identifier in file "mtk-mdp3-cmdq.c"
 
-This is excellent -- and pretty much what I've been asking for forever.
+Hello,
 
-Would it be possible to have multiple sample columns, for eg.
-MEM_LOADS_UOPS_RETIRED.L1_HIT and MEM_LOADS_UOPS_RETIRED.L1_MISS
-or even more (adding LLC hit and miss as well etc.) ?
+This patch is used to add support for MDP3 on the MT8195 platform that
+contains more picture quality components, and can arrange more pipelines
+through two sets of MMSYS and MUTEX respectively.
 
-(for bonus points: --data-type=typename, would be awesome)
+Moudy Ho (12):
+  media: platform: mtk-mdp3: add support second sets of MMSYS
+  media: platform: mtk-mdp3: add support second sets of MUTEX
+  media: platform: mtk-mdp3: introduce more pipelines from MT8195
+  media: platform: mtk-mdp3: introduce more MDP3 components
+  media: platform: mtk-mdp3: add checks for dummy components
+  media: platform: mtk-mdp3: avoid multiple driver registrations
+  media: platform: mtk-mdp3: extend GCE event waiting in RDMA and WROT
+  media: platform: mtk-mdp3: add support for blending multiple
+    components
+  media: platform: mtk-mdp3: add mt8195 platform configuration
+  media: platform: mtk-mdp3: add mt8195 shared memory configurations
+  media: platform: mtk-mdp3: add mt8195 MDP3 component settings
+  media: platform: mtk-mdp3: add support for parallel pipe to improve
+    FPS
 
-Additionally, annotating the regular perf-annotate output with data-type
-information (where we have it) might also be very useful. That way, even
-when profiling with PEBS-cycles, an expensive memop immediately gives a
-clue as to what data-type to look at.
+ .../platform/mediatek/mdp3/mdp_cfg_data.c     | 729 +++++++++++++-
+ .../platform/mediatek/mdp3/mdp_reg_aal.h      |  25 +
+ .../platform/mediatek/mdp3/mdp_reg_color.h    |  31 +
+ .../media/platform/mediatek/mdp3/mdp_reg_fg.h |  23 +
+ .../platform/mediatek/mdp3/mdp_reg_hdr.h      |  31 +
+ .../platform/mediatek/mdp3/mdp_reg_merge.h    |  25 +
+ .../platform/mediatek/mdp3/mdp_reg_ovl.h      |  25 +
+ .../platform/mediatek/mdp3/mdp_reg_pad.h      |  21 +
+ .../platform/mediatek/mdp3/mdp_reg_rdma.h     |  24 +
+ .../platform/mediatek/mdp3/mdp_reg_rsz.h      |   2 +
+ .../platform/mediatek/mdp3/mdp_reg_tdshp.h    |  34 +
+ .../platform/mediatek/mdp3/mdp_reg_wrot.h     |   8 +
+ .../platform/mediatek/mdp3/mdp_sm_mt8195.h    | 283 ++++++
+ .../platform/mediatek/mdp3/mtk-img-ipi.h      |   4 +
+ .../platform/mediatek/mdp3/mtk-mdp3-cfg.h     |   2 +
+ .../platform/mediatek/mdp3/mtk-mdp3-cmdq.c    | 440 +++++++--
+ .../platform/mediatek/mdp3/mtk-mdp3-cmdq.h    |   1 +
+ .../platform/mediatek/mdp3/mtk-mdp3-comp.c    | 895 +++++++++++++++++-
+ .../platform/mediatek/mdp3/mtk-mdp3-comp.h    |  93 +-
+ .../platform/mediatek/mdp3/mtk-mdp3-core.c    | 139 ++-
+ .../platform/mediatek/mdp3/mtk-mdp3-core.h    |  50 +-
+ .../platform/mediatek/mdp3/mtk-mdp3-m2m.c     |  15 +
+ .../platform/mediatek/mdp3/mtk-mdp3-regs.c    |  18 +
+ .../platform/mediatek/mdp3/mtk-mdp3-regs.h    |   1 +
+ .../platform/mediatek/mdp3/mtk-mdp3-vpu.c     |   3 +-
+ 25 files changed, 2744 insertions(+), 178 deletions(-)
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_aal.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_color.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_fg.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_hdr.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_merge.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_ovl.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_pad.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_tdshp.h
+ create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_sm_mt8195.h
 
-> No TUI support yet.
+-- 
+2.18.0
 
-Yeah, nobody needs that anyway :-)
-
-> This can generate instructions like below.
-> 
->     ...
->     0x123456:  mov    0x18(%rdi), %rcx
->     0x12345a:  mov    0x10(%rcx), %rax     <=== sample
->     0x12345e:  test   %rax, %rax
->     0x123461:  je     <...>
->     ...
-> 
-> And imagine we have a sample at 0x12345a.  Then it cannot find a
-> variable for %rcx since DWARF didn't generate one (it only knows about
-> 'bar').  Without compiler support, all it can do is to track the code
-> execution in each instruction and propagate the type info in each
-> register and stack location by following the memory access.
-
-Right, this has more or less been the 'excuse' for why doing this has
-been 'difficult' for the past 10+ years :/
-
-> Actually I found a discussion in the DWARF mailing list to support
-> "inverted location lists" and it seems a perfect fit for this project.
-> It'd be great if new DWARF would provide a way to lookup variable and
-> type info using a concrete location info (like a register number).
-> 
->   https://lists.dwarfstd.org/pipermail/dwarf-discuss/2023-June/002278.html 
-
-Stephane was going to talk to tools people about this over 10 years ago
-:-)
-
-Thanks for *finally* getting this started!!
