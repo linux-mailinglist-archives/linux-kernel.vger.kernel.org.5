@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDA97C644C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 07:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2307C6458
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 07:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347036AbjJLFDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 01:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
+        id S1376996AbjJLFFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 01:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233876AbjJLFC7 (ORCPT
+        with ESMTP id S235228AbjJLFFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 01:02:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E435B7;
-        Wed, 11 Oct 2023 22:02:58 -0700 (PDT)
+        Thu, 12 Oct 2023 01:05:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB6890;
+        Wed, 11 Oct 2023 22:05:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697086978; x=1728622978;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=jG1dT9othqCwkOqyzv/5X7Fn/ARu2sl5yrw33fqWd5c=;
-  b=oAIe2G9Bsi0cy5uoNjVW6mlv9ZTt8l31xC9CxOmePfLIv+f4RWq6Eknf
-   u915CPYr0VylM7MkrHo6KTCTtCBTE5hCpOTv4zMnJmQeY31+SSVfSPauG
-   NEVJ8xOifPDHa4a5a9vtfVQmLscJIdVrx90i/13gevzLj8hwlZZAurnbx
-   XzHHoPu0R//fNjwdWcdQWykrWdqC2Yp1b/+IxqWjbtgqk4jiQdqTYDvTn
-   1YBt5H7aLLm53XyjkHVAxbrhWdS2hgyKWKzILAAr/EkA6BYprx9TuBjbM
-   A0AGI2fMtoG/aN0SJV++kBNCiaQDaE3TqSMYffBajBrzfhjfFN5FbmE8x
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="451324387"
+  t=1697087132; x=1728623132;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=qAqfjH4EeTiWuaON92xe5Ip4YWDBD4AvbFVckiNoGcs=;
+  b=h/GgI+PdFp/Y/bnhHOuHXxjEk0/nGWMGwZCDNji5f5wZ7trSrsLzGGXk
+   gCU+p96bvuKOGuQN0GBZK+PqJDxaWuRZmNRwbsSBWZXOKLKHfDExWUxE7
+   ThOPuDJF/mwOKaElcxwugs/D+n0HkczgzdGOke4tSbQ3zKGJ89Oe+HBjm
+   DZcr0D4Ex1pVda+H15R4as7oe+a9/4x+E7pm75tmIMoc7d74DZ6Ik/Yfh
+   VWdzMhklCXCA8SQvE+Vku6e8MO1y8w0rHwOu/+QjLmNgPHNQIGL6h5FcS
+   LazqihB8E92Zr3eRh3wSeRKxX86yo5un0eOO+oHSB0ax8i5Jztp3AL3rb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="382073058"
 X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
-   d="scan'208";a="451324387"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 22:02:54 -0700
+   d="scan'208";a="382073058"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 22:05:32 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="824441572"
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="870418848"
 X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
-   d="scan'208";a="824441572"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.41.84])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 22:02:48 -0700
-Message-ID: <54481503-67c6-40ec-a02a-31f4db4205f7@intel.com>
-Date:   Thu, 12 Oct 2023 08:02:45 +0300
+   d="scan'208";a="870418848"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmsmga002.fm.intel.com with ESMTP; 11 Oct 2023 22:05:30 -0700
+Date:   Thu, 12 Oct 2023 13:04:34 +0800
+From:   Xu Yilun <yilun.xu@linux.intel.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fpga: altera-ps-spi: Use spi_get_device_match_data()
+Message-ID: <ZSd+YgDbS5L7jNPJ@yilunxu-OptiPlex-7050>
+References: <20231006224624.444857-1-robh@kernel.org>
+ <ZSEMLQS+9gFEAX89@yilunxu-OptiPlex-7050>
+ <ZSEO5NrJl/kxd7LG@yilunxu-OptiPlex-7050>
+ <CAL_JsqKB4gqT06NnWj0Qkd0TuryYA15tjMSom1f+dMJfevy2Zw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf tools: Put the function return operation at the end
- of the function
-To:     "Kunwu.Chan" <chentao@kylinos.cn>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, kan.liang@linux.intel.com,
-        seanjc@google.com, kprateek.nayak@amd.com, robert.richter@amd.com
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kunwu.chan@hotmail.com
-References: <20231012031003.842368-1-chentao@kylinos.cn>
-Content-Language: en-US
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20231012031003.842368-1-chentao@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_JsqKB4gqT06NnWj0Qkd0TuryYA15tjMSom1f+dMJfevy2Zw@mail.gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/23 06:10, Kunwu.Chan wrote:
-> Function return operations should be performed after resource release.
+On Mon, Oct 09, 2023 at 07:48:07AM -0500, Rob Herring wrote:
+> On Sat, Oct 7, 2023 at 2:56 AM Xu Yilun <yilun.xu@linux.intel.com> wrote:
+> >
+> > On Sat, Oct 07, 2023 at 03:43:41PM +0800, Xu Yilun wrote:
+> > > On Fri, Oct 06, 2023 at 05:46:24PM -0500, Rob Herring wrote:
+> > > > Use preferred spi_get_device_match_data() instead of of_match_device() and
+> > > > spi_get_device_id() to get the driver match data. With this, adjust the
+> > > > includes to explicitly include the correct headers.
+> > > >
+> > > > Signed-off-by: Rob Herring <robh@kernel.org>
+> > >
+> > > Acked-by: Xu Yilun <yilun.xu@intel.com>
+> > >
+> > > Applied.
+> > >
+> > > >
+> > > >  static const struct spi_device_id altera_ps_spi_ids[] = {
+> > > > -   { "cyclone-ps-spi", CYCLONE5 },
+> > > > -   { "fpga-passive-serial", CYCLONE5 },
+> > > > -   { "fpga-arria10-passive-serial", ARRIA10 },
+> > > > +   { "cyclone-ps-spi", (uintptr_t)&c5_data },
+> > > > +   { "fpga-passive-serial", (uintptr_t)&c5_data },
+> > > > +   { "fpga-arria10-passive-serial", (uintptr_t)&a10_data },
+> >
+> > Sorry, one more. Should cast to kernel_ulong_t?
 > 
-> Fixes: 4e1b9c679fcb ("perf tools: Refactor print_event_desc()")
-> Signed-off-by: Kunwu.Chan <chentao@kylinos.cn>
-> ---
->  tools/perf/util/header.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+> Either will work. uintptr_t is somewhat new in the kernel and
+> preferred now I think.
+
+LGTM, Applied.
+
 > 
-> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> index d812e1e371a7..5763f21844b1 100644
-> --- a/tools/perf/util/header.c
-> +++ b/tools/perf/util/header.c
-> @@ -1998,13 +1998,14 @@ static struct evsel *read_event_desc(struct feat_fd *ff)
->  			id++;
->  		}
->  	}
-> -out:
-> -	free(buf);
-> -	return events;
-> +
->  error:
->  	free_event_desc(events);
->  	events = NULL;
-
-Always freeing the events is wrong.  That path is only for errors.
-
-That would show up if this had been tested.
-
-> -	goto out;
-> +
-> +out:
-> +	free(buf);
-> +	return events;
->  }
->  
->  static int __desc_attr__fprintf(FILE *fp, const char *name, const char *val,
-
+> Rob
