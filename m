@@ -2,254 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FF37C6512
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73A37C6516
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377222AbjJLGDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:03:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60100 "EHLO
+        id S1347050AbjJLGFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235318AbjJLGDQ (ORCPT
+        with ESMTP id S233976AbjJLGFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:03:16 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F371DD9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:03:11 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3232e96deaaso131065f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:03:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697090590; x=1697695390; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P51DOcc71lJTpG0lfeJ0M3wrbwZKUgR94Bu9pIZlYhc=;
-        b=JCzz9nWMGXPYgy9Q96T3NEC/dNaqlGKYG4dhyvq7+TDJBYFzmakk2lR9VJcZfJ8dqz
-         bfS9dAsJImjofXhOSiq8jP+X2jKy1jzKLxEiKdMdnkuSlwxAt5TilGNb02g7GECvP3bd
-         IBzKD/nK70MYbO2PX+alBPs8Ngj6zNUXkizXYxbY9D/2T6hNQeObZ0UbWhgdzbn+hCWY
-         Cucdof/qubCZHFwRNFHQBk2jmr3paWrQMI3Huo307Xaoh+NEt17ZLWCd8ujcAzOwU+8q
-         4IrEWDUY2F9BaYxeGMJL68/78LOMtjYWThTYaXgWs6WLt3KkDS9ckM9B5krDJ8u/8P2i
-         s/eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697090590; x=1697695390;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P51DOcc71lJTpG0lfeJ0M3wrbwZKUgR94Bu9pIZlYhc=;
-        b=AUJAGUouBxXY2r3ECcGnZASjA1zDD2TcokThyBIpZ/l4VeED6EMQ0XJpxsTnUwbYBE
-         /oEIRIoE0VovdtwBEfkn+9zEFuj9jTFVaepmlX0ZSmkCuhokiYBsApl5nM4ThXgOaCCR
-         1RXqInebyplA1kjeNGYdyRfP68/zijdj99FHNWqZTZICZ8YX5caqyYOti/ukePDKyms/
-         cLBy/uc3cCpo9P6oC/e6s6aJj9UyPDkdthw+dB8X53GiS1flZe53bL9GCd17XX0fVdUA
-         PmhkfFEYgC7tBLEds5W5nVj+jROsJar62RLplaYig0D6e5L5bS3il8vPAxgvkrUmIIDj
-         YamA==
-X-Gm-Message-State: AOJu0YwlgKvQqfGODdHaG3lUQ8KijNclgfRzyvR65LCZXae460Ficu+u
-        bRQbkw/Ko8T3tfN5T39Q+y4=
-X-Google-Smtp-Source: AGHT+IGIvf+tjlkPYziwdHAnytKW6Q7tiOb8d132sIfdRL9BEIekn7hxdfNJuTgA1fOscFyTYMivkQ==
-X-Received: by 2002:a05:600c:1d03:b0:405:39bb:38a8 with SMTP id l3-20020a05600c1d0300b0040539bb38a8mr20228961wms.2.1697090589701;
-        Wed, 11 Oct 2023 23:03:09 -0700 (PDT)
-Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id q6-20020adfb186000000b0032d87b13240sm3404038wra.73.2023.10.11.23.03.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 23:03:09 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 08:03:08 +0200
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 1/2] staging: rtl8192u: Fix missing alloc_workqueue()
-Message-ID: <ed45c3e9d69922dfe99bec9f48836a46c40472b7.1697089416.git.philipp.g.hortmann@gmail.com>
-References: <cover.1697089416.git.philipp.g.hortmann@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Thu, 12 Oct 2023 02:05:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813D3BE;
+        Wed, 11 Oct 2023 23:05:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697090736; x=1728626736;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=VoDOon62gI4hOZbSKfv38Ulp5fjMaXpw1vIF+02CQ6k=;
+  b=MZ2OiTgi7dcK8oQIdYrdr8T4XvYa08J8fZifAojtqpjMpUyDlLfgjKPH
+   NiW9Z9h5JG1g28XxcajK4YJAMHRpwL4n8WrWvN/BKTvrNLdj12z4uiI1+
+   NI463m3Ana3r0/PbVQXncnP+aDpdZC/4KJ6FhuCXLJ/RVHiulLfJ+uJJp
+   NZ18wUvz6W2+6zJo6vFWR1tqqKib1mKAjIyp8WApjLIG2CbVLz5RC08R4
+   N3O8FEA3pcyxfu0EKPNBgxk6Gt6d5zseNvIJo/+5QfR0c2iQXrn5AEPIY
+   B1E9eR9G+n8cFQAgAsAGOiwMQUTVsTith9h/B8DsWf2tRomXfRXhIgDbT
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="364208713"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="364208713"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 23:05:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="704032474"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="704032474"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Oct 2023 23:05:34 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 11 Oct 2023 23:05:34 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Wed, 11 Oct 2023 23:05:34 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Wed, 11 Oct 2023 23:05:34 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hI6w8oPKhonnWP2TLsTGLt/jAOkxBgLS507/txxGnAENKdF4ynxFlNm9PAFHM3AWIpkf53nrBhgBZpC91PLoy/cqmgJxAXsFkXOX4Wvko+XxmB5IsgpjuXzoEDmDFTM+T/qc1kJb+n4q/svMvdiVte3Qy6TLS0/bA4meoK4sONQBt0Y27M5Ni7hOk+CSJC8AURbj/bQmpwaboSk434lWVDQtiToXnYx7e0Kqo7p4Ey3/qQWyfBKAeJ3sN2RbSHGWF1LLd+6ACClhA7ZdRsmIwDRMayihitqJ3bC8EpIVUmEu/A3hI58ybn4yial1hFGrvZhkvNaYa5HSSCh6GbVVJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CRZA19wl6L+lz8EkG1F+PcveVqYo1KMr3Dg9vIiQA0k=;
+ b=nBbCkETefjbk0+5oLcXGbs6mjBb96F8auX4fE709csaCTMkptiN8ArS6KcP3xO0hTglSppIAlDhoThnEw+aBLySTLYpogtyMDrDBt0rqKiZ1Gp/wpOajhVghMEEN4CfNj2bCnn28ORWIiOfkBs7n7HgHwFjB1eD79/ls6S7b2Z8dpjCdzpi4O+O7i7ZvovYDqYws+G5avAflAohXL7yBqoRNDGqXWqDAVc3CkTAyY9/1ABoDrJxbgA72Oe+TDtuyfV9GOqskpha9VBlxloRqVkI/OqjTibOSAemDcCV1r+MUnehpnT7Id+JoD8ep6o4afJ8ZaI37CsT30kjxAwaeWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6304.namprd11.prod.outlook.com (2603:10b6:208:3c0::7)
+ by CH0PR11MB5265.namprd11.prod.outlook.com (2603:10b6:610:e0::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Thu, 12 Oct
+ 2023 06:05:31 +0000
+Received: from MN0PR11MB6304.namprd11.prod.outlook.com
+ ([fe80::7edc:de45:7f2d:9ade]) by MN0PR11MB6304.namprd11.prod.outlook.com
+ ([fe80::7edc:de45:7f2d:9ade%4]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
+ 06:05:31 +0000
+Date:   Thu, 12 Oct 2023 13:56:06 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+CC:     "Sang, Oliver" <oliver.sang@intel.com>,
+        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
+        lkp <lkp@intel.com>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "Yin, Fengwei" <fengwei.yin@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "Yazen Ghannam" <yazen.ghannam@amd.com>,
+        "Smita.KoralahalliChannabasappa@amd.com" 
+        <Smita.KoralahalliChannabasappa@amd.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "patches@lists.linux.dev" <patches@lists.linux.dev>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v9 2/3] x86/mce: Add per-bank CMCI storm mitigation
+Message-ID: <ZSeKduDig1Z7ZuGN@feng-clx>
+References: <20231004183623.17067-3-tony.luck@intel.com>
+ <202310111637.dee70328-oliver.sang@intel.com>
+ <SJ1PR11MB6083D191286779302821A7EAFCCCA@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <ZSbCYt35j20ezT98@feng-clx>
+ <SJ1PR11MB6083154D148B42B8B7BC48D9FCCCA@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <ZSeF6T0mkrH5pOgD@feng-clx>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <cover.1697089416.git.philipp.g.hortmann@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZSeF6T0mkrH5pOgD@feng-clx>
+X-ClientProxiedBy: SG2PR04CA0154.apcprd04.prod.outlook.com (2603:1096:4::16)
+ To MN0PR11MB6304.namprd11.prod.outlook.com (2603:10b6:208:3c0::7)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6304:EE_|CH0PR11MB5265:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4f69ee32-2fb6-4b58-a7f8-08dbcae93cf7
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iYTB3W9+WZF8e7zXAry6QrOTqXNp3LoK9Ikaxz5zpKaV2Ey5T1/aNpuZY0RwJHSu6bJXlY1nzO4qEJRGhHr1Rer/YILJHtm7HRXkXrHVsxgSly+uKb+QqR7zcMS/Joun+WXPRD3vlvFkqxN6dpqs+q6UHqC9/dA29CQFA+u9mhK4EZw8PlQnBnr27BQHddfpjLZTHDA5jLe75O+evJBIwWp3/bSAXwjJsE9A5nnsW1yvwrSk0dBbK4GdWuUhs6vswnmU26ZKlSc+sqmsPq5JbUCmAUeCrEhjmSxQDK+1NX/HaLl+I/Oe3jiK4N9ROyvCPIVN2Ul5MJePTw+8BV4+Or5Ae5zLrNpgnpxEJ7UHLm8ptNXuMraZdB2CSjIiyzz0jMnPuq4bRx+9FlkVRab8f+rpNy/1KQX9tun60TF6WHdkcDQN3VyZA1CVNXZ6rho92hF8qhp1iG5zYMTjU7MefEzh4Q5Y4nkZJ2s/x6eFrsj5pjEkMr2WPOCNO9sRR+Z9DNvg/AcokDZBodHqUlgkJzcWHs34mwQkI62K5mkqhrI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6304.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(39860400002)(396003)(366004)(136003)(346002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(38100700002)(9686003)(6512007)(26005)(82960400001)(478600001)(966005)(6486002)(44832011)(5660300002)(8936002)(8676002)(4326008)(6862004)(86362001)(15650500001)(7416002)(2906002)(33716001)(316002)(54906003)(6636002)(41300700001)(66476007)(66556008)(66946007)(6666004)(6506007)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?K5nQ3Rj/Hgin1/p+Kg5COZoivLC9ANyyeJggcic4FJgm+EYNDaoDBqE7lPhK?=
+ =?us-ascii?Q?LsEtVv96f2l4NUHlqWVm0IRhkn+IBBRpzB4p7kTDnXubl9gtzwQ/dIfJqiLE?=
+ =?us-ascii?Q?cbhyVTqx9Gvtzv4TdFvz4ZzRTB537gxZUpsm6Aw8UClJBM0jFcfmc6uW/liN?=
+ =?us-ascii?Q?G6N1Yh7/3w9O7Xy4wJpV5ObXRpIQjYIcvKt7b8SwfKLqmqxcFl1XjMyQrOIM?=
+ =?us-ascii?Q?nbLPJN93S8Cr2AXuLUNluBrXAJbngMs/uZvNq+NJcowqoCAHhl5RIFhgKJXG?=
+ =?us-ascii?Q?iASj/D4Fsha6pjYWaAosAD5kPLW9fDG3yABdpLT0najyOOD8bWGT7RrcTA1Z?=
+ =?us-ascii?Q?J7H5AwVDzdYdRKmE+0TvDmCuo9Xu6XQKoA6Ta2sF3d6SPoWD50KrgXkjM/9H?=
+ =?us-ascii?Q?8Vz801FnTCLLuD36XK0A7emyXt0kHhxsk/eNnyorZJ6mQYv5D0qPJ7WUfZBL?=
+ =?us-ascii?Q?E3Fg9Bo89SG4vxWA+7C0HUIGrdYL/g6E8OGq4uu/vQdF8Hpf/ImcSAAS4q2s?=
+ =?us-ascii?Q?+bgcekqkag1a9eJuDeSpAFGNZ/4nbGFfODHY7FAb0OOWgvV94AgzPrudaX+V?=
+ =?us-ascii?Q?i1cbPJc2s9sovfmLwykM01IzyxsSzUW88lEjimpCFdYHl19R9yLzba7/KYZW?=
+ =?us-ascii?Q?QqFqD6/WBfbVfQI7PsT6rJ7NE7ouT8abwA8xcY2vT4/pc/ilwGhwUosbQsX4?=
+ =?us-ascii?Q?FgsOUTxpv8PAR8PnN6ug+EGkpPL2CimlsfWt6zgGA2feFPSHr4tNTEgJwL+N?=
+ =?us-ascii?Q?9dNCOb0UqYwGpQz5xilhwJBhJ7EKfJmlGboEh9EW/4Oqw6UNyAr7Bl4i+Ntv?=
+ =?us-ascii?Q?jmGSyTyyr1VVwdlaI5U3TF5wYLdj8ALQ5V5yh+URhfAKWQORIVgcSSRf0Ane?=
+ =?us-ascii?Q?cuBbCkaFKS04eNUBHrvmvptQfWKazAfiVUT/Vett3/cI7nFfozynaIfWxJx0?=
+ =?us-ascii?Q?4Ou+heKSZJuqlGBUdYCcWnDJ9pHLkOJjRUW5jfhkvSeZ/rE/HmKHKSXAYud9?=
+ =?us-ascii?Q?1AB1cU3R4vu6tLd4o8/p6CZniZhsQnW3Fsss8NJkQJF4WGVjTsA2IyNXVETs?=
+ =?us-ascii?Q?AAK15DTJ4s0d2HNdh7g000XsRd9jwRVRtymdDAEpfXBTYBORsX9volV6PXQu?=
+ =?us-ascii?Q?6vSUIIAwpSiJj6toJ4AiwFTnWgGrl2okPlcgwvm2h6EaWIHEkTM6ZrjpN8fv?=
+ =?us-ascii?Q?GHUzy8XZ9u/QYws1v9e2KM5Le4G5VJQFeAmcaGXb8ZTElj/vS62+LAQGG+ju?=
+ =?us-ascii?Q?lhJLwetNEbmTy9I9RAFCqEdidhf7SzgZT7gf+hcuwa4oTjOJXNMRTojaJ7Ju?=
+ =?us-ascii?Q?CplrnW9sqzIgjlaVi4aEUifgtRAb3Da0K/oI9NZMKg1fNH5yHiQtmCJ3xVlB?=
+ =?us-ascii?Q?QNPmKcqwt0ga3npYb4VOG1AcZSYs1l38/eKBviiLBgwZc/dF9UcuKIfBbWDI?=
+ =?us-ascii?Q?ZrWxJYAJMcqfP4asPBxdiMzHxZSzu2CDSRNVRjgWuZoQps7+LCbAOufPF+wE?=
+ =?us-ascii?Q?H+qIxey6BcuxCbuKXGdJNGNQTLejfBuIDhuHjbrJ8msCX2/SWyJiwhGamVrd?=
+ =?us-ascii?Q?spEFmvRhfCgPKY/Xvi/uH6Av6t9mTAJjcvMZRzE4?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f69ee32-2fb6-4b58-a7f8-08dbcae93cf7
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6304.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 06:05:30.3603
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: p4G+yxsVJ1tuVqUwSu3o61X34lLVFK3SFNnI0wT8aI884IRKCGcA1eotpHibLDI6pXHHT9ydgk2LjT49wV3i5A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5265
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Missing alloc_workqueue() leads to a crash of the system.
+On Thu, Oct 12, 2023 at 01:36:41PM +0800, Feng Tang wrote:
+> On Thu, Oct 12, 2023 at 01:23:54AM +0800, Luck, Tony wrote:
+> > > IIRC, CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B was enabled in 0Day's
+> > > kernel config for quite a while, to force each funtion's start
+> > > address aligned on 64 bytes. Don't know if this has been changed
+> > > recently.
+> > >
+> > > Also I noticed the patch introduce a new per-cpu variable 'storm_desc",
+> > > if the function address is 64B aligned, then per-cpu data alignment
+> > > may be related.
+> > 
+> > If adding (removing, changing) per-cpu variables can cause 8% performance
+> > changes, then maybe there needs to be some way to insulate the builds
+> > from these side effects (as was done with the 64-byte function alignment).
+> > I've no ideas on how to achieve that :-(
 
-Fixes: 1761a85c3bed ("staging: rtl8192u: Remove create_workqueue()")
-Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
----
-Tested with rtl8192u (Belkin F5D8053) in Mode n (12.5 MB/s)
+As for mitigation (how to reduce these kind of strange performance
+changes), I have proposed a "selective isolation" in LPC 2021, in
+page 15 of https://lpc.events/event/11/contributions/895/attachments/770/1603/Strange_kernel_performance_changes_lpc_2021.pdf
 
-Dump of Error:
-[ 1428.338077] ------------[ cut here ]------------
-[ 1428.338079] WARNING: CPU: 2 PID: 6502 at kernel/workqueue.c:1938 __queue=
-_delayed_work+0x77/0xb0
-[ 1428.338086] Modules linked in: r8192u_usb(COE) cfg80211 lib80211 libarc4=
- xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink xfrm_user xfrm_a=
-lgo iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c=
- xt_addrtype iptable_filter bpfilter br_netfilter bridge stp llc overlay nl=
-s_iso8859_1 snd_hda_codec_hdmi intel_rapl_msr snd_hda_codec_conexant intel_=
-rapl_common snd_hda_codec_generic x86_pkg_temp_thermal ledtrig_audio intel_=
-powerclamp coretemp sch5627 mei_hdcp kvm_intel binfmt_misc kvm snd_hda_inte=
-l snd_intel_dspcfg i915 snd_intel_sdw_acpi crct10dif_pclmul ghash_clmulni_i=
-ntel snd_hda_codec sha512_ssse3 aesni_intel snd_hda_core crypto_simd snd_hw=
-dep cryptd snd_pcm sch56xx_common rapl snd_seq_midi intel_cstate snd_seq_mi=
-di_event input_leds joydev serio_raw drm_buddy snd_rawmidi ttm drm_display_=
-helper snd_seq at24 snd_seq_device snd_timer cec rc_core snd mei_me soundco=
-re mei drm_kms_helper i2c_algo_bit tpm_infineon mac_hid sch_fq_codel msr pa=
-rport_pc ppdev lp parport drm ramoops reed_solomon efi_pstore
-[ 1428.338200]  ip_tables x_tables autofs4 hid_generic usbhid hid crc32_pcl=
-mul i2c_i801 xhci_pci video ahci lpc_ich libahci i2c_smbus xhci_pci_renesas=
- e1000e wmi
-[ 1428.338223] CPU: 2 PID: 6502 Comm: kworker/2:0 Tainted: G         C OE  =
-    6.6.0-rc1+ #15
-[ 1428.338226] Hardware name: FUJITSU ESPRIMO P710/D3161-A1, BIOS V4.6.5.3 =
-R1.16.0 for D3161-A1x 10/29/2012
-[ 1428.338229] Workqueue: events rtl819x_watchdog_wqcallback [r8192u_usb]
-[ 1428.338249] RIP: 0010:__queue_delayed_work+0x77/0xb0
-[ 1428.338252] Code: c1 48 89 4a 60 81 ff 00 20 00 00 75 38 4c 89 cf e8 de =
-59 0d 00 5d c3 cc cc cc cc e8 b3 f5 ff ff 5d c3 cc cc cc cc 0f 0b eb bb <0f=
-> 0b 48 81 7a 68 e0 61 6f 81 74 99 0f 0b 48 8b 42 58 48 85 c0 74
-[ 1428.338255] RSP: 0000:ffffc9000c46bd08 EFLAGS: 00010046
-[ 1428.338258] RAX: 0000000000000001 RBX: 0000000000000200 RCX: 00000000000=
-00000
-[ 1428.338260] RDX: ffff88820efacfe8 RSI: 0000000000000000 RDI: 00000000000=
-02000
-[ 1428.338262] RBP: ffffc9000c46bd08 R08: 0000000000000000 R09: ffff88820ef=
-ad038
-[ 1428.338264] R10: 0000000000000001 R11: 0000000000000001 R12: ffff88820ef=
-acfe8
-[ 1428.338265] R13: 0000000000000001 R14: 0000000000002000 R15: 00000000000=
-00000
-[ 1428.338267] FS:  0000000000000000(0000) GS:ffff888215c00000(0000) knlGS:=
-0000000000000000
-[ 1428.338270] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1428.338272] CR2: 0000557da4e0d8e5 CR3: 000000011361e001 CR4: 00000000001=
-706e0
-[ 1428.338274] Call Trace:
-[ 1428.338276]  <TASK>
-[ 1428.338280]  ? show_regs+0x68/0x70
-[ 1428.338284]  ? __queue_delayed_work+0x77/0xb0
-[ 1428.338287]  ? __warn+0x8f/0x180
-[ 1428.338291]  ? __queue_delayed_work+0x77/0xb0
-[ 1428.338296]  ? report_bug+0x1f5/0x200
-[ 1428.338303]  ? handle_bug+0x46/0x80
-[ 1428.338307]  ? exc_invalid_op+0x19/0x70
-[ 1428.338311]  ? asm_exc_invalid_op+0x1b/0x20
-[ 1428.338323]  ? __queue_delayed_work+0x77/0xb0
-[ 1428.338327]  ? trace_hardirqs_off+0x4f/0xa0
-[ 1428.338331]  queue_delayed_work_on+0x8e/0x90
-[ 1428.338337]  hal_dm_watchdog+0x3f5/0x1420 [r8192u_usb]
-[ 1428.338356]  rtl819x_watchdog_wqcallback+0x6b/0xb60 [r8192u_usb]
-[ 1428.338369]  ? __this_cpu_preempt_check+0x13/0x20
-[ 1428.338377]  process_scheduled_works+0x308/0x580
-[ 1428.338389]  ? __pfx_worker_thread+0x10/0x10
-[ 1428.338392]  worker_thread+0x19b/0x360
-[ 1428.338398]  ? __pfx_worker_thread+0x10/0x10
-[ 1428.338400]  kthread+0x116/0x150
-[ 1428.338405]  ? __pfx_kthread+0x10/0x10
-[ 1428.338411]  ret_from_fork+0x3c/0x60
-[ 1428.338414]  ? __pfx_kthread+0x10/0x10
-[ 1428.338419]  ret_from_fork_asm+0x1b/0x30
-[ 1428.338433]  </TASK>
-[ 1428.338435] irq event stamp: 3280
-[ 1428.338436] hardirqs last  enabled at (3279): [<ffffffff81784921>] conso=
-le_unlock+0x101/0x120
-[ 1428.338440] hardirqs last disabled at (3280): [<ffffffff816f63a4>] queue=
-_delayed_work_on+0x74/0x90
-[ 1428.338443] softirqs last  enabled at (3272): [<ffffffff825fd6cd>] __do_=
-softirq+0x2cd/0x3b7
-[ 1428.338447] softirqs last disabled at (3265): [<ffffffff816d3fb0>] irq_e=
-xit_rcu+0xa0/0xe0
-[ 1428.338450] ---[ end trace 0000000000000000 ]---
-[ 1428.338456] BUG: kernel NULL pointer dereference, address: 0000000000000=
-1c0
-[ 1428.338458] #PF: supervisor read access in kernel mode
-[ 1428.338460] #PF: error_code(0x0000) - not-present page
-[ 1428.338462] PGD 0 P4D 0
-[ 1428.338464] Oops: 0000 [#1] PREEMPT SMP PTI
-[ 1428.338467] CPU: 2 PID: 6502 Comm: kworker/2:0 Tainted: G        WC OE  =
-    6.6.0-rc1+ #15
-[ 1428.338469] Hardware name: FUJITSU ESPRIMO P710/D3161-A1, BIOS V4.6.5.3 =
-R1.16.0 for D3161-A1x 10/29/2012
-[ 1428.338470] Workqueue: events rtl819x_watchdog_wqcallback [r8192u_usb]
-[ 1428.338483] RIP: 0010:__queue_work+0x38/0x610
-[ 1428.338485] Code: 89 fe 41 55 41 54 49 89 d4 53 48 89 f3 48 83 ec 18 8b =
-0d 43 23 ce 01 85 c9 74 0f 65 8b 05 c0 af ae 7e 85 c0 0f 84 da 02 00 00 <f7=
-> 83 c0 01 00 00 00 80 01 00 0f 85 eb 02 00 00 e8 33 d6 0a 00 31
-[ 1428.338488] RSP: 0000:ffffc9000c46bcb8 EFLAGS: 00010046
-[ 1428.338490] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000000=
-00001
-[ 1428.338491] RDX: ffff88820efacfe8 RSI: 0000000000000000 RDI: 00000000000=
-02000
-[ 1428.338493] RBP: ffffc9000c46bcf8 R08: ffff88820efacff0 R09: ffff88820ef=
-ad038
-[ 1428.338494] R10: 0000000000000001 R11: 0000000000000001 R12: ffff88820ef=
-acfe8
-[ 1428.338496] R13: 0000000000000001 R14: 0000000000002000 R15: 00000000000=
-00000
-[ 1428.338497] FS:  0000000000000000(0000) GS:ffff888215c00000(0000) knlGS:=
-0000000000000000
-[ 1428.338499] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1428.338500] CR2: 00000000000001c0 CR3: 000000011361e001 CR4: 00000000001=
-706e0
-[ 1428.338502] Call Trace:
-[ 1428.338503]  <TASK>
-[ 1428.338505]  ? show_regs+0x68/0x70
-[ 1428.338508]  ? __die_body+0x20/0x70
-[ 1428.338511]  ? __die+0x2b/0x40
-[ 1428.338514]  ? page_fault_oops+0x160/0x480
-[ 1428.338517]  ? search_bpf_extables+0xad/0x160
-[ 1428.338520]  ? __queue_work+0x38/0x610
-[ 1428.338523]  ? search_exception_tables+0x5f/0x70
-[ 1428.338526]  ? kernelmode_fixup_or_oops+0xa2/0x120
-[ 1428.338529]  ? __bad_area_nosemaphore+0x197/0x250
-[ 1428.338531]  ? vprintk_default+0x1d/0x30
-[ 1428.338535]  ? bad_area_nosemaphore+0x16/0x20
-[ 1428.338537]  ? do_user_addr_fault+0x34d/0xa40
-[ 1428.338539]  ? debug_smp_processor_id+0x17/0x20
-[ 1428.338541]  ? exc_page_fault+0x3c/0x210
-[ 1428.338545]  ? __this_cpu_preempt_check+0x13/0x20
-[ 1428.338548]  ? exc_page_fault+0x84/0x210
-[ 1428.338551]  ? asm_exc_page_fault+0x27/0x30
-[ 1428.338555]  ? __queue_work+0x38/0x610
-[ 1428.338559]  __queue_delayed_work+0x6d/0xb0
-[ 1428.338561]  queue_delayed_work_on+0x8e/0x90
-[ 1428.338565]  hal_dm_watchdog+0x3f5/0x1420 [r8192u_usb]
-[ 1428.338579]  rtl819x_watchdog_wqcallback+0x6b/0xb60 [r8192u_usb]
-[ 1428.338591]  ? __this_cpu_preempt_check+0x13/0x20
-[ 1428.338594]  process_scheduled_works+0x308/0x580
-[ 1428.338599]  ? __pfx_worker_thread+0x10/0x10
-[ 1428.338601]  worker_thread+0x19b/0x360
-[ 1428.338604]  ? __pfx_worker_thread+0x10/0x10
-[ 1428.338606]  kthread+0x116/0x150
-[ 1428.338609]  ? __pfx_kthread+0x10/0x10
-[ 1428.338612]  ret_from_fork+0x3c/0x60
-[ 1428.338615]  ? __pfx_kthread+0x10/0x10
-[ 1428.338618]  ret_from_fork_asm+0x1b/0x30
-[ 1428.338623]  </TASK>
----
- drivers/staging/rtl8192u/r8192U_core.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+As kernel binary is compactly linked together, the alignment change
+of text/data in earlier modules could affect other modules after them.
+MCE module is much easier to hit these strange performance changes,
+just because it sit in arch/ folder and get linked early in kernel
+binary.
 
-diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl81=
-92u/r8192U_core.c
-index 0a60ef20107c..bf6d93de7a74 100644
---- a/drivers/staging/rtl8192u/r8192U_core.c
-+++ b/drivers/staging/rtl8192u/r8192U_core.c
-@@ -2024,6 +2024,12 @@ static void rtl8192_init_priv_task(struct net_device=
- *dev)
- {
- 	struct r8192_priv *priv =3D ieee80211_priv(dev);
-=20
-+	priv->priv_wq =3D alloc_workqueue("priv_wq", 0, 0);
-+	if (!priv->priv_wq) {
-+		pr_err("alloc_workqueue for priv->priv_wq failed\n");
-+		return;
-+	}
-+
- 	INIT_WORK(&priv->reset_wq, rtl8192_restart);
-=20
- 	INIT_DELAYED_WORK(&priv->watch_dog_wq,
---=20
-2.42.0
+The idea of "selective isolation" is simple, by picking some modules
+sparsely and enforce some alignment to function/data/per-cpu data,
+so that they can act as fences/borders, separate kernel into multiple
+capsules, and make the alignment changes only take effect inside
+that specific capsule.
 
+Any thoughts? thanks!
+
+- Feng
+ 
+> Philip helped to clarify that 0Day kernel build does enable the 64 bytes
+> function address alignment.
+
+[...]
