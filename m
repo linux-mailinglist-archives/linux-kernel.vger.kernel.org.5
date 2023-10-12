@@ -2,149 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AF67C6E66
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA91F7C6E6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378293AbjJLMn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 08:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48914 "EHLO
+        id S1377883AbjJLMq3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 08:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343872AbjJLMnY (ORCPT
+        with ESMTP id S1343872AbjJLMq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:43:24 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7743091
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:43:22 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-32337a39009so187740f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:43:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697114601; x=1697719401; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2PTo8D4RniwPWfnLSwST03jUfEH27ZqxImSpo2iKD0U=;
-        b=xTm8VeR1s4Ey3xDL8WHa6fujFaMERiqYYcVLGrxeCLtMYPa8JCfAwLR6HP4PHtN+ax
-         Wgz/4unSb/hd+v6I23T+k7Ri30qSUtsuhE8qQjHQ6SE80QKUGEbgQPig/2SrcG6828sk
-         /D+Iv9be+NBO3PDIYlIuwYHIPOerBhY4njJeeJ9jHpmsv+UxZB9Rr0a7GY4QbS3Vj1Fm
-         7BhWQXo7Pf0Zap5uIdEPqKb33l/OG83gXtBcfEvkkWF2yNrzUuxUPaiRgstoU+VXryEZ
-         sjeVP7xFZhnVntlcfE0/zeReJ5DZmoy935nVGcQNebGFEaSuM10uQg0B/Lf+nu/U4bdX
-         z7aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697114601; x=1697719401;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2PTo8D4RniwPWfnLSwST03jUfEH27ZqxImSpo2iKD0U=;
-        b=S2pObqvj9uSbPgmr3BJzvgv+xtXtG6nf/DgiH3raQVbteSCWwiC0b7kSJoRvygYy9z
-         d2vsAR8Ydy9adcOtFP+4xFbzGLviO0rVpFf03T5TtodC0Vl3YwdREuzlhuh1997L2VlO
-         rKZP3K+/MaMm0QF3brSJ4P4apdMjrY3eL/smP4mgCjGgqaiRXotKDDIPfy2xGNdTVTMV
-         sjH9XEc8J3KgVbLbvHH7ybcjDg9gmoZaBm4bt022kixlLtlCWzltDHtxBe8tRWz6I6Vn
-         4SaXe8Sh3Jn+K3/E0xJ9hdjJiRO3STTxD9Rp2fcwpEEdgLHlJ0ds+Osnh4nZMY6VwWuy
-         s71g==
-X-Gm-Message-State: AOJu0YxQidEiVQnfBUW7/AM8TO3DsKSOV5DjUpMWgddxzm8lJY7Cqmio
-        YyktknuXpab0d5ehkFOowhryyg==
-X-Google-Smtp-Source: AGHT+IH68Cupe5msSVy6FrdJwuGjM46iOIqt4/Ht702cWr2lracdmexvQeKL+NR6J36QnG7vRCBFKg==
-X-Received: by 2002:adf:cf0a:0:b0:31a:e54e:c790 with SMTP id o10-20020adfcf0a000000b0031ae54ec790mr20264351wrj.6.1697114600879;
-        Thu, 12 Oct 2023 05:43:20 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:999:a3a0:3fed:c1e5:145f:8179? ([2a01:e0a:999:a3a0:3fed:c1e5:145f:8179])
-        by smtp.gmail.com with ESMTPSA id v6-20020adff686000000b0031980294e9fsm18116898wrp.116.2023.10.12.05.43.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 05:43:20 -0700 (PDT)
-Message-ID: <41b3c8c8-260d-4de1-92a4-245973274a60@rivosinc.com>
-Date:   Thu, 12 Oct 2023 14:43:18 +0200
+        Thu, 12 Oct 2023 08:46:28 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94EBFB8;
+        Thu, 12 Oct 2023 05:46:25 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4S5pvx3ZC2z9y0J2;
+        Thu, 12 Oct 2023 20:33:33 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwDnP5F16idlsrETAg--.31126S2;
+        Thu, 12 Oct 2023 13:45:55 +0100 (CET)
+Message-ID: <e6f0e7929abda6fa6ae7ef450b6e155b420a5f5b.camel@huaweicloud.com>
+Subject: Re: [PATCH v3 14/25] security: Introduce file_post_open hook
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
+        tom@talpey.com, dmitry.kasatkin@gmail.com, paul@paul-moore.com,
+        jmorris@namei.org, serge@hallyn.com, dhowells@redhat.com,
+        jarkko@kernel.org, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Thu, 12 Oct 2023 14:45:38 +0200
+In-Reply-To: <2026a46459563d8f5d132a099f402ddad8f06fae.camel@linux.ibm.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904133415.1799503-15-roberto.sassu@huaweicloud.com>
+         <2026a46459563d8f5d132a099f402ddad8f06fae.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] riscv: errata: thead: use riscv_nonstd_cache_ops
- for CMO
-Content-Language: en-US
-To:     Jisheng Zhang <jszhang@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Guo Ren <guoren@kernel.org>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-References: <20231001103433.3187-1-jszhang@kernel.org>
- <20231001103433.3187-2-jszhang@kernel.org>
-From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <20231001103433.3187-2-jszhang@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: LxC2BwDnP5F16idlsrETAg--.31126S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3JF1fKF1kKrWkJrW3tr15CFg_yoW7KFW8pF
+        Z5Ja17GFWkJFy7Wrn7Aa13uF4Sg395Kr1UWrZ5X34jyFnYqr1vgFs8Kr1Y9F45JrZYka40
+        v3W2grZxCryDZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
+        6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
+        AIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+        aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAIBF1jj5DyygABsW
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 01/10/2023 12:34, Jisheng Zhang wrote:
-> Previously, we use alternative mechanism to dynamically patch
-> the CMO operations for THEAD C906/C910 during boot for performance
-> reason. But as pointed out by Arnd, "there is already a significant
-> cost in accessing the invalidated cache lines afterwards, which is
-> likely going to be much higher than the cost of an indirect branch".
-> And indeed, there's no performance difference with GMAC and EMMC per
-> my test on Sipeed Lichee Pi 4A board.
+On Thu, 2023-10-12 at 08:36 -0400, Mimi Zohar wrote:
+> On Mon, 2023-09-04 at 15:34 +0200, Roberto Sassu wrote:
+> > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > 
+> > In preparation to move IMA and EVM to the LSM infrastructure, introduce the
+> > file_post_open hook. Also, export security_file_post_open() for NFS.
+> > 
+> > It is useful for IMA to calculate the dhigest of the file content, and to
+> > decide based on that digest whether the file should be made accessible to
+> > the requesting process.
 > 
-> Use riscv_nonstd_cache_ops for THEAD C906/C910 CMO to simplify
-> the alternative code, and to acchieve Arnd's goal -- "I think
-> moving the THEAD ops at the same level as all nonstandard operations
-> makes sense, but I'd still leave CMO as an explicit fast path that
-> avoids the indirect branch. This seems like the right thing to do both
-> for readability and for platforms on which the indirect branch has a
-> noticeable overhead."
+> Please remove "It is usefile for".   Perhaps something along the lines:
 > 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> Tested-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-> ---
->  arch/riscv/Kconfig.errata            |  1 +
->  arch/riscv/errata/thead/errata.c     | 75 +++++++++++++++++++++++++++-
->  arch/riscv/include/asm/errata_list.h | 50 +++----------------
->  3 files changed, 80 insertions(+), 46 deletions(-)
 > 
-> diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
-> index 566bcefeab50..d7972914f9de 100644
-> --- a/arch/riscv/Kconfig.errata
-> +++ b/arch/riscv/Kconfig.errata
-> @@ -78,6 +78,7 @@ config ERRATA_THEAD_CMO
->  	bool "Apply T-Head cache management errata"
->  	depends on ERRATA_THEAD && MMU
->  	select RISCV_DMA_NONCOHERENT
-> +	select RISCV_NONSTANDARD_CACHE_OPS
->  	default y
->  	help
->  	  This will apply the cache management errata to handle the
-> diff --git a/arch/riscv/errata/thead/errata.c b/arch/riscv/errata/thead/errata.c
-> index 0554ed4bf087..3fefeb1b456e 100644
-> --- a/arch/riscv/errata/thead/errata.c
-> +++ b/arch/riscv/errata/thead/errata.c
-> @@ -12,8 +12,10 @@
->  #include <asm/alternative.h>
->  #include <asm/cacheflush.h>
->  #include <asm/cpufeature.h>
-> +#include <asm/dma-noncoherent.h>
->  #include <asm/errata_list.h>
->  #include <asm/hwprobe.h>
-> +#include <asm/io.h>
->  #include <asm/patch.h>
->  #include <asm/vendorid_list.h>
->  
-> @@ -33,6 +35,75 @@ static bool errata_probe_pbmt(unsigned int stage,
->  	return false;
->  }
->  
-> +/*
-> + * dcache.ipa rs1 (invalidate, physical address)
-> + * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
-> + *   0000001    01010      rs1       000      00000  0001011
-> + * dache.iva rs1 (invalida, virtual address)
+> Based on policy, IMA calculates the digest of the file content and
+> decides ...
 
-Small typo here: invalidate instead of invalida
+Ok.
 
-Thanks,
+> > 
+> > LSMs should use this hook instead of file_open, if they need to make their
+> > decision based on an opened file (for example by inspecting the file
+> > content). The file is not open yet in the file_open hook.
+> 
+> The security hooks were originally defined for enforcing access
+> control.  As a result the hooks were placed before the action.  The
+> usage of the LSM hooks is not limited to just enforcing access control
+> these days.  For IMA/EVM to become full LSMs additional hooks are
+> needed post action.  Other LSMs, probably non-access control ones,
+> could similarly take some action post action, in this case successful
+> file open.
 
-Clément
+I don't know, I would not exclude LSMs to enforce access control. The
+post action can be used to update the state, which can be used to check
+next accesses (exactly what happens for EVM).
+
+> Having to justify the new LSM post hooks in terms of the existing LSMs,
+> which enforce access control, is really annoying and makes no sense. 
+> Please don't.
+
+Well, there is a relationship between the pre and post. But if you
+prefer, I remove this comparison.
+
+Thanks
+
+Roberto
+
+> > The new hook can
+> > return an error and can cause the open to be aborted.
+> 
+> Please make this a separate pagraph.
+> 
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > ---
+> >  fs/namei.c                    |  2 ++
+> >  fs/nfsd/vfs.c                 |  6 ++++++
+> >  include/linux/lsm_hook_defs.h |  1 +
+> >  include/linux/security.h      |  6 ++++++
+> >  security/security.c           | 17 +++++++++++++++++
+> >  5 files changed, 32 insertions(+)
+> > 
+> > diff --git a/fs/namei.c b/fs/namei.c
+> > index 1f5ec71360de..7dc4626859f0 100644
+> > --- a/fs/namei.c
+> > +++ b/fs/namei.c
+> > @@ -3634,6 +3634,8 @@ static int do_open(struct nameidata *nd,
+> >  	error = may_open(idmap, &nd->path, acc_mode, open_flag);
+> >  	if (!error && !(file->f_mode & FMODE_OPENED))
+> >  		error = vfs_open(&nd->path, file);
+> > +	if (!error)
+> > +		error = security_file_post_open(file, op->acc_mode);
+> >  	if (!error)
+> >  		error = ima_file_check(file, op->acc_mode);
+> >  	if (!error && do_truncate)
+> > diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
+> > index 8a2321d19194..3450bb1c8a18 100644
+> > --- a/fs/nfsd/vfs.c
+> > +++ b/fs/nfsd/vfs.c
+> > @@ -862,6 +862,12 @@ __nfsd_open(struct svc_rqst *rqstp, struct svc_fh *fhp, umode_t type,
+> >  		goto out_nfserr;
+> >  	}
+> >  
+> > +	host_err = security_file_post_open(file, may_flags);
+> > +	if (host_err) {
+> > +		fput(file);
+> > +		goto out_nfserr;
+> > +	}
+> > +
+> >  	host_err = ima_file_check(file, may_flags);
+> >  	if (host_err) {
+> >  		fput(file);
+> > diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> > index 1153e7163b8b..60ed33f0c80d 100644
+> > --- a/include/linux/lsm_hook_defs.h
+> > +++ b/include/linux/lsm_hook_defs.h
+> > @@ -188,6 +188,7 @@ LSM_HOOK(int, 0, file_send_sigiotask, struct task_struct *tsk,
+> >  	 struct fown_struct *fown, int sig)
+> >  LSM_HOOK(int, 0, file_receive, struct file *file)
+> >  LSM_HOOK(int, 0, file_open, struct file *file)
+> > +LSM_HOOK(int, 0, file_post_open, struct file *file, int mask)
+> >  LSM_HOOK(int, 0, file_truncate, struct file *file)
+> >  LSM_HOOK(int, 0, task_alloc, struct task_struct *task,
+> >  	 unsigned long clone_flags)
+> > diff --git a/include/linux/security.h b/include/linux/security.h
+> > index 665bba3e0081..a0f16511c059 100644
+> > --- a/include/linux/security.h
+> > +++ b/include/linux/security.h
+> > @@ -403,6 +403,7 @@ int security_file_send_sigiotask(struct task_struct *tsk,
+> >  				 struct fown_struct *fown, int sig);
+> >  int security_file_receive(struct file *file);
+> >  int security_file_open(struct file *file);
+> > +int security_file_post_open(struct file *file, int mask);
+> >  int security_file_truncate(struct file *file);
+> >  int security_task_alloc(struct task_struct *task, unsigned long clone_flags);
+> >  void security_task_free(struct task_struct *task);
+> > @@ -1044,6 +1045,11 @@ static inline int security_file_open(struct file *file)
+> >  	return 0;
+> >  }
+> >  
+> > +static inline int security_file_post_open(struct file *file, int mask)
+> > +{
+> > +	return 0;
+> > +}
+> > +
+> >  static inline int security_file_truncate(struct file *file)
+> >  {
+> >  	return 0;
+> > diff --git a/security/security.c b/security/security.c
+> > index 3947159ba5e9..3e0078b51e46 100644
+> > --- a/security/security.c
+> > +++ b/security/security.c
+> > @@ -2856,6 +2856,23 @@ int security_file_open(struct file *file)
+> >  	return fsnotify_perm(file, MAY_OPEN);
+> >  }
+> >  
+> > +/**
+> > + * security_file_post_open() - Recheck access to a file after it has been opened
+> 
+> The LSM post hooks aren't needed to enforce access control.   Probably
+> better to say something along the lines of "take some action after
+> successful file open".
+> 
+> > + * @file: the file
+> > + * @mask: access mask
+> > + *
+> > + * Recheck access with mask after the file has been opened. The hook is useful
+> > + * for LSMs that require the file content to be available in order to make
+> > + * decisions.
+> 
+> And reword the above accordingly.
+> 
+> > + *
+> > + * Return: Returns 0 if permission is granted.
+> > + */
+> > +int security_file_post_open(struct file *file, int mask)
+> > +{
+> > +	return call_int_hook(file_post_open, 0, file, mask);
+> > +}
+> > +EXPORT_SYMBOL_GPL(security_file_post_open);
+> > +
+> >  /**
+> >   * security_file_truncate() - Check if truncating a file is allowed
+> >   * @file: file
+> 
+
