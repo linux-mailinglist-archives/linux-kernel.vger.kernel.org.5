@@ -2,158 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E45737C64D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 07:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF5E7C64D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 07:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377551AbjJLFqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 01:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40616 "EHLO
+        id S1377125AbjJLFt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 01:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235354AbjJLFqS (ORCPT
+        with ESMTP id S232808AbjJLFt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 01:46:18 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE8D193
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 22:46:05 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3ae65e8eb45so352103b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 22:46:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697089565; x=1697694365; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HMmysdE7+hFUIPmp9MMMe3xjxP9qrN7IYcx3e2tg+gE=;
-        b=q2rFxBiC7dVO+AIBAj1om5KfTI5rAPzoQQXsgvhloFK1EqyUUOezeB9hBK9mXj1ZqD
-         0Nhs8xp3w5eX2hQKN9PAI/T5yW/Fikz9U4QHrZz6ILgxOu8+Wh6g5nqT+RQv/Yl57AbD
-         15ApKQHLcAeE3XC1kfwEaiYxyO4diEbXXcXpk9EADb6gCP66bHaVyqo/lclR0dxM+Fpm
-         5+o8C3dM3mC6jUZZOCI90CTr9+mmmW4Art/sFyz8V0Nk7CbUTi6tyVmovmnsDfgpllw1
-         iW1B2How1TbJ15CmSjYLzwR36T1bMJn6uWbDpK7XlWiQDUu5eo9pDtktYlqZIas3/kZn
-         MjMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697089565; x=1697694365;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HMmysdE7+hFUIPmp9MMMe3xjxP9qrN7IYcx3e2tg+gE=;
-        b=HcxuqIS7hbfNNrHFacfrsvMXwiPKf0MeAhPNo+fyTmuDSe42XyQNhYB6qHEzvDfinp
-         /BSMdiDGQa07sUgjBlyQqu/rPTNM2oHfnvB8DulJ/OtgBTcfu5vgVi0TV7wXe2vTl6wG
-         joE1tLg+Aehbf5d2MTmCO2nWoXcl4JwG/3kX+ccV3LMFCAhvDNnKT93Xj001qXgyWNQ6
-         dN8UFjMzUXYHbakMXIy/+rRS+SATi9uMSdwsiakeRGSA+uWJMmfeD9QdsB8NUIscJAWq
-         rvSeMoDD58ho1r0F36iamYM2z/rZrjArbURzjkO2DrdEPg9UCIZxWzWX2EFJzRXitot1
-         3FCQ==
-X-Gm-Message-State: AOJu0Yy5+TRrFCQ+dnDHYoqf7hcImr5vSbGY9jT1RcrlwhA+9LCC0lW1
-        ve84lZY3U6glN6O+Qziq1RWu
-X-Google-Smtp-Source: AGHT+IHN9zCwe//72WmN/4AIFcmMeQCy5WLSod7P5ruMv69SJKQqOewxIAI99dLEebbL3vgHPz4UMA==
-X-Received: by 2002:a05:6808:1441:b0:3af:583d:3c5d with SMTP id x1-20020a056808144100b003af583d3c5dmr30255565oiv.52.1697089564929;
-        Wed, 11 Oct 2023 22:46:04 -0700 (PDT)
-Received: from localhost.localdomain ([120.138.12.180])
-        by smtp.gmail.com with ESMTPSA id c5-20020a633505000000b0057cb5a780ebsm812396pga.76.2023.10.11.22.45.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 22:46:04 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, andersson@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-        linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
-        quic_nitirawa@quicinc.com, quic_narepall@quicinc.com,
-        quic_bhaskarv@quicinc.com, quic_richardp@quicinc.com,
-        quic_nguyenb@quicinc.com, quic_ziqichen@quicinc.com,
-        bmasney@redhat.com, krzysztof.kozlowski@linaro.org,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: [PATCH v6 5/5] arm64: dts: qcom: sm8250: Add OPP table support to UFSHC
-Date:   Thu, 12 Oct 2023 11:15:12 +0530
-Message-Id: <20231012054512.10963-6-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231012054512.10963-1-manivannan.sadhasivam@linaro.org>
-References: <20231012054512.10963-1-manivannan.sadhasivam@linaro.org>
+        Thu, 12 Oct 2023 01:49:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59FED9D;
+        Wed, 11 Oct 2023 22:49:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697089763; x=1728625763;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+UnJ52a5L6/XwETHQQED9zGF8bhbfqO5DxKfsQ7jr78=;
+  b=RuB33i/eCyRXck7QmwZkBkjIFj3u53dv3eSP0hUmZta52rdayA1D09tn
+   MCC4J6eFyxgtpWJXXcCwqFcWGHc0id5GrFTBSX/Erq2RLH0yfT/R8wGxo
+   rbz+c8ffoKT0g9wTdDBOcPlq4DHIe7RvlC3EVpNP4/g2AH3b/g4cXUsUO
+   wfK7RBnyMZ+9plYpznMzLok46U3ZV7EPF008xWEJi4a+bat07OYBokMtd
+   X1NXQYbd8+wjsJ1bLzvz0cIy3u5yRPEikC1HSU4v9AmVZsna9eo9mW9Yz
+   Zrj9yuy/khffpJ87zovLCLWxGy6u1eY+bejFxbnk0LOQHIrV6Nld4NJda
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="364205881"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="364205881"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 22:49:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="870430727"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="870430727"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 11 Oct 2023 22:49:21 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qqoZT-0003Es-0c;
+        Thu, 12 Oct 2023 05:49:19 +0000
+Date:   Thu, 12 Oct 2023 13:48:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "David E. Box" <david.e.box@linux.intel.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        ilpo.jarvinen@linux.intel.com, rajvi.jingar@linux.intel.com
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH V3 03/16] platform/x86/intel/vsec: Use cleanup.h
+Message-ID: <202310121333.TE7R7kSs-lkp@intel.com>
+References: <20231012023840.3845703-4-david.e.box@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012023840.3845703-4-david.e.box@linux.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UFS host controller, when scaling gears, should choose appropriate
-performance state of RPMh power domain controller along with clock
-frequency. So let's add the OPP table support to specify both clock
-frequency and RPMh performance states replacing the old "freq-table-hz"
-property.
+Hi David,
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 39 +++++++++++++++++++++-------
- 1 file changed, 30 insertions(+), 9 deletions(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index a4e58ad731c3..33abd84aae53 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -2198,21 +2198,42 @@ ufs_mem_hc: ufshc@1d84000 {
- 				<&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
- 				<&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
- 				<&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
--			freq-table-hz =
--				<37500000 300000000>,
--				<0 0>,
--				<0 0>,
--				<37500000 300000000>,
--				<0 0>,
--				<0 0>,
--				<0 0>,
--				<0 0>;
-+
-+			operating-points-v2 = <&ufs_opp_table>;
- 
- 			interconnects = <&aggre1_noc MASTER_UFS_MEM 0 &mc_virt SLAVE_EBI_CH0 0>,
- 					<&gem_noc MASTER_AMPSS_M0 0 &config_noc SLAVE_UFS_MEM_CFG 0>;
- 			interconnect-names = "ufs-ddr", "cpu-ufs";
- 
- 			status = "disabled";
-+
-+			ufs_opp_table: opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-37500000 {
-+					opp-hz = /bits/ 64 <37500000>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <37500000>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>;
-+					required-opps = <&rpmhpd_opp_low_svs>;
-+				};
-+
-+				opp-300000000 {
-+					opp-hz = /bits/ 64 <300000000>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <300000000>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>,
-+						 /bits/ 64 <0>;
-+					required-opps = <&rpmhpd_opp_nom>;
-+				};
-+			};
- 		};
- 
- 		ufs_mem_phy: phy@1d87000 {
+[auto build test WARNING on acce85a7dd28eac3858d44230f4c65985d0f271c]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/David-E-Box/platform-x86-intel-vsec-Move-structures-to-header/20231012-104217
+base:   acce85a7dd28eac3858d44230f4c65985d0f271c
+patch link:    https://lore.kernel.org/r/20231012023840.3845703-4-david.e.box%40linux.intel.com
+patch subject: [PATCH V3 03/16] platform/x86/intel/vsec: Use cleanup.h
+reproduce: (https://download.01.org/0day-ci/archive/20231012/202310121333.TE7R7kSs-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310121333.TE7R7kSs-lkp@intel.com/
+
+# many are suggestions rather than must-fix
+
+ERROR:SPACING: need consistent spacing around '*' (ctx:WxV)
+#31: FILE: drivers/platform/x86/intel/vsec.c:159:
++	struct intel_vsec_device __free(kfree) *intel_vsec_dev = NULL;
+ 	                                       ^
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
