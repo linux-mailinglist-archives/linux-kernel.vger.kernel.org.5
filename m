@@ -2,101 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E007C71BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40DB7C71D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379197AbjJLPlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
+        id S235737AbjJLPtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:49:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347307AbjJLPli (ORCPT
+        with ESMTP id S232023AbjJLPtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:41:38 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66C7B8;
-        Thu, 12 Oct 2023 08:41:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=1AUZ4kSi2AEEEv3nuAS4HldMWbbuyLi811omII/FRFQ=;
-        t=1697125296; x=1698334896; b=uMMpgm+03zIjdiuVAoc5NUM2xNDauYkoRpA5AvUdLOO6YDx
-        zyFyedf7xylZ6Jn64e9B+4GKwA1jVOw8l8Ky21YItTtTdWL72AzMkWCPIaKU+AvOOfgRsa4Gr/41r
-        TnSU+xUTC6ouMEvIdY94EVFTKMi8garyHJBZfj5F61cVFj9ZkZ/MBmnVSOW5PYgP9RSlrYpyS0H6A
-        haIvID0MkUIr5pnC6tOH6TgnDnwpzE/UQvnvzyxkzOac4ej0BNRZRGvJhD/56P9m8zeCTFu56R9+k
-        GToZw3eEA/vCvxePBzvgwlkzvcLHu84Dr+NVOnXCaxcvhJcLumjw89fV8vBN/ySA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.97-RC1)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1qqxoW-00000003T2i-3J0o;
-        Thu, 12 Oct 2023 17:41:29 +0200
-Message-ID: <d336126d58e12e8e67078c8142a524c667cc5639.camel@sipsolutions.net>
-Subject: Re: [PATCH] [RFC] wireless: move obsolete drivers to staging
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kalle Valo <kvalo@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Pavel Machek <pavel@ucw.cz>,
-        "David S . Miller" <davem@davemloft.net>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, Geoff Levand <geoff@infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Date:   Thu, 12 Oct 2023 17:41:27 +0200
-In-Reply-To: <CAMuHMdX3F9rvD3Fzbc1dwm7Vm73VW1x5ETbxkk-jJm3Bpr5i+A@mail.gmail.com>
-References: <20231010155444.858483-1-arnd@kernel.org>
-         <2023101051-unmasked-cleaver-79b3@gregkh> <87y1g94szz.fsf@kernel.org>
-         <2023101139-pyromania-game-2237@gregkh> <87r0m1fwg9.fsf@kernel.org>
-         <20231011080955.1beeb010@kernel.org> <87sf6g2hc8.fsf@kernel.org>
-         <63e57ef8-c9f2-489a-8df8-51dcffd437c6@app.fastmail.com>
-         <b1c87f71abef5aba6b39893a417466bf9f65c2d5.camel@sipsolutions.net>
-         <CAMuHMdX3F9rvD3Fzbc1dwm7Vm73VW1x5ETbxkk-jJm3Bpr5i+A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 12 Oct 2023 11:49:02 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE436B8;
+        Thu, 12 Oct 2023 08:48:59 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 43B821F8A4;
+        Thu, 12 Oct 2023 15:48:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697125738;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E7zcUuGqxLmhdnLjkvlh73uyAMqKR+CEj+MzY0szZiY=;
+        b=X/sXIoWUOOHs/rKpdfUBBZmLPKBLZYzVTC/EmZc9cFn7eKJ2VZysrhgBH/9H1E+aBtXgg/
+        sMHEnf5aU274XOrk+Uq/vMWxlAKDQBuHh/ySagA4KARbmJL7qqt1HU9y3pcgCUSXI1iWhc
+        4J7uSt+Q+w1TDdsVVKPEHn0/vfUA0Ss=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697125738;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E7zcUuGqxLmhdnLjkvlh73uyAMqKR+CEj+MzY0szZiY=;
+        b=sbnC5hIeFRj8DseFhD4PS7UC3NWjf/4++46lwwfkkD17+4yjLjLOAIMgNDcdERvk0Q4Csc
+        dbIHGagKzAbiHODw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D729139ED;
+        Thu, 12 Oct 2023 15:48:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id X6NEAmoVKGXZPwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 12 Oct 2023 15:48:58 +0000
+Date:   Thu, 12 Oct 2023 17:42:10 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the vfs-brauner tree with the btrfs
+ tree
+Message-ID: <20231012154210.GI2211@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20231009104840.1bdadc80@canb.auug.org.au>
+ <20231009-bauch-gedanken-e02e35804e03@brauner>
+ <20231011083754.45a9ed53@canb.auug.org.au>
+ <20231011092004.GE2211@suse.cz>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011092004.GE2211@suse.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+         ARC_NA(0.00)[];
+         HAS_REPLYTO(0.30)[dsterba@suse.cz];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[4];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLYTO_ADDR_EQ_FROM(0.00)[];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         TO_DN_ALL(0.00)[];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-12 at 17:39 +0200, Geert Uytterhoeven wrote:
-> Hi Johannes,
->=20
-> On Thu, Oct 12, 2023 at 5:28=E2=80=AFPM Johannes Berg <johannes@sipsoluti=
-ons.net> wrote:
-> > On Thu, 2023-10-12 at 16:36 +0200, Arnd Bergmann wrote:
-> > >=20
-> > > ps3-gelic-wireless
-> >=20
-> > Didn't Sony disable Linux on PS3 eventually? Though maybe someone still
-> > has some devices with old software.
->=20
-> If you didn't update the firmware, you could keep on using Linux.
->=20
-> And people may have found a vulnerability in more recent firmware
-> versions that allows them to run custom software.
+On Wed, Oct 11, 2023 at 11:20:04AM +0200, David Sterba wrote:
+> On Wed, Oct 11, 2023 at 08:37:54AM +1100, Stephen Rothwell wrote:
+> > Hi Christian,
+> > 
+> > On Mon, 9 Oct 2023 18:15:53 +0200 Christian Brauner <brauner@kernel.org> wrote:
+> > >
+> > > > I have dropped the vfs-brauner tree for today as there is no way I can
+> > > > sort them out in a reasonable time.  Please sort this out between
+> > > > yourselves.  
+> > > 
+> > > I'll fix that up!
+> > 
+> > The btrfs tree
+> > (git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git#for-next)
+> > has moved again.  I don't know (yet) if this will cause conflicts
+> > again, but there is a good chance that it will.
+> 
+> I'm updating the for-next snapshost a few times a week but as this would
+> cause too much work for the VFS merges I'll do one more push but remove
+> anything that is not finalized for 6.7 merge window.
+> 
+> This should provide a stable base. I may need to push some fixes but
+> this could be done via the next-fixes branch so that it would not
+> interfere with auto-merging of the regular for-next.
 
-Yeah, fair.
-
-> I don't know, it's been +10 years ago I touched a PS3 ;-)
-
-I never had one :-)
-
-But seriously - is it worth to try to keep a wireless driver for it if
-we don't even know anyone using a PS3 at all?
-
-But maybe we'll find someone :-)
-
-johannes
+The branch for-next at git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git
+has been pushed with top commit c6e8f898f56fae2cb5bc4396bec480f23cd8b066
+and I won't update it (expecting until the merge window).
