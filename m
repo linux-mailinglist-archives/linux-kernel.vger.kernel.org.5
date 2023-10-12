@@ -2,70 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1357C69CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118EA7C69D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235513AbjJLJhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54822 "EHLO
+        id S235525AbjJLJly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234163AbjJLJhu (ORCPT
+        with ESMTP id S229762AbjJLJlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:37:50 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0630D9D
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:37:49 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-690d2441b95so558340b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:37:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697103468; x=1697708268; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fdZgfymsyd7ehqcxRdjpYNBTpQVaXLUbV7TLN4E1/DA=;
-        b=TatYyoXwwzMBbNs0kzOMQUFfhhimCMw3FM6rUQ04coq+PNfEsrNB//fl2aeq+VEGYl
-         isek97stIDYSw6iIhbNjBtzwzji3P6m24jo4p8lOJunja/JYaWizuHRIIkEVeZ0Od0LQ
-         +xQ9URyEIC3CCndQHExSJdzUwNVYHrSISMdZUcWu6w3wJ+wZqPwJGnI4YH8EevAuaIyj
-         Fv3RgsXvcOF0Swq6veDzPEgKUn8KWqxREyzAtN3ua47JuY1dRubHgHxSaxvX0Z6I+XG0
-         NYB5TCYoOR2gwXTMZnfL+YaH1WEoUsaDifmTbQyuYlDpTTTETEyL+NLLARxYMc1OmuJN
-         6TdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697103468; x=1697708268;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fdZgfymsyd7ehqcxRdjpYNBTpQVaXLUbV7TLN4E1/DA=;
-        b=KPg062EyyeiyuYck756CD5apZ70TTKTwDyPYJB2ZuKlA6yKZLhi0CpqNurbxEQKZYp
-         w5nKK0MPHS6Jz4JG+/pwXI3sHSQ+bK9pQ8gJwWjIjGIzSEeohTBmwfy9oXKI+2eFtz9P
-         +fQeWJfL5Nw2hrz9j2AD+iYsrQG+KYAGSAcpJLqEP6n9u4ILPYwA42H/BwjPI9zmqUEb
-         yQVlZPz0h37dPEaKzDguH+/ZqNe6uFthxg7p4YhnsNJLnQUATy+VOM+87yh56U+NqLHV
-         7nugeCQoIQGhrueVOxyK1NKsG9YTmOcGNnVi2+tp2ixVsTIhXc978ClvFsK6F1Ts4yDm
-         6CDQ==
-X-Gm-Message-State: AOJu0YwA/8TOe3rOzSrl345pTGncku0qY8KErOAnlFOlfbMhFVcEl4kx
-        zo6Q5wV81ZvbKe0yYq0VNR+Fp2nJ67A=
-X-Google-Smtp-Source: AGHT+IFtx9yabPtRA17h06vlo13OrJKoThnA6kM+dAvk+E82XxXruxxbs4KeGiTVxMXiCnkNk0pDTQ==
-X-Received: by 2002:a05:6a00:1595:b0:68f:cb69:8e66 with SMTP id u21-20020a056a00159500b0068fcb698e66mr31525387pfk.15.1697103468109;
-        Thu, 12 Oct 2023 02:37:48 -0700 (PDT)
-Received: from [192.168.0.106] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id x15-20020aa7918f000000b00690dbab1623sm11371659pfa.81.2023.10.12.02.37.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 02:37:47 -0700 (PDT)
-Message-ID: <e6d1dae8-e28a-455a-a851-661c825fbdcf@gmail.com>
-Date:   Thu, 12 Oct 2023 16:37:42 +0700
+        Thu, 12 Oct 2023 05:41:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8739891
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:41:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96A3AC433C7;
+        Thu, 12 Oct 2023 09:41:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697103710;
+        bh=nAvxg4KzDTsOzbMCukymkltoz6OpLA5eAEmEqSLDeDo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J6ukDJkjIGjg/RETfSZR34lITrSLkGjMTs10FWMidORsXst2UcwuhUKktEpHVw/x4
+         KE8uL0+mYE715Q7Njw5fsFQE0Hi5RHgHZB56P+t0h4gKQp7u17NugHvRF6b0gGP2VA
+         PPE+wUXxwnHB/7tLGOVpNta73TM2Z5Z3PWVr3oUsRkmjIxwhEGJSTxy/Wn+mUBaCOS
+         tO9mT4OjYk6y0RjiJ7b+vztMPyu0oSKq0PG5jLxqzNc4go2IwKTS7dEek3Esu6hynr
+         M6ynK6gTSNbbEQoDoqVTKhbLUAeIKiP/y29XFrnrpEY/eiRoHPWgLT56PHV56koSzh
+         yGDofdIX1v2tA==
+Date:   Thu, 12 Oct 2023 10:41:45 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Inochi Amaoto <inochiama@outlook.com>
+Cc:     Chen Wang <unicorn_wang@outlook.com>,
+        Chao Wei <chao.wei@sophgo.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jisheng Zhang <jszhang@kernel.org>, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/7] riscv: dts: sophgo: add initial CV1812H SoC
+ device tree
+Message-ID: <20231012-gratuity-siesta-b9e06b11be43@spud>
+References: <MA0P287MB03321A9E3F3D8415DB9552B5FECDA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+ <IA1PR20MB4953AD81686694CEA4F5FC6ABBCDA@IA1PR20MB4953.namprd20.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yanjun Yang <yangyj.ee@gmail.com>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: Kernel 6.5 hangs on shutdown
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="FbIlMY2V77DRQAG0"
+Content-Disposition: inline
+In-Reply-To: <IA1PR20MB4953AD81686694CEA4F5FC6ABBCDA@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,32 +60,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-I notice a regression report on Bugzilla [1]. Quoting from it:
+--FbIlMY2V77DRQAG0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I use Dell OptiPlex 7050, and kernel hangs when shutting down the computer. 
-> Similar symptom has been reported on some forums, and all of them are using
-> Dell computers:
-> https://bbs.archlinux.org/viewtopic.php?pid=2124429
-> https://www.reddit.com/r/openSUSE/comments/16qq99b/tumbleweed_shutdown_did_not_finish_completely/
-> https://forum.artixlinux.org/index.php/topic,5997.0.html
-> 
-> Tested with various kernel and this bug seems to be caused by commit: 88afbb21d4b36fee6acaa167641f9f0fc122f01b.
+On Tue, Oct 10, 2023 at 03:53:54PM +0800, Inochi Amaoto wrote:
+> >On 2023/10/9 19:26, Inochi Amaoto wrote:
+> >> Add initial device tree for the CV1812H RISC-V SoC by SOPHGO.
+> >>
+> >> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> >> ---
+> >>   arch/riscv/boot/dts/sophgo/cv1812h.dtsi | 36 +++++++++++++++++++++++=
+++
+> >>   1 file changed, 36 insertions(+)
+> >>   create mode 100644 arch/riscv/boot/dts/sophgo/cv1812h.dtsi
+> >>
+> >> diff --git a/arch/riscv/boot/dts/sophgo/cv1812h.dtsi b/arch/riscv/boot=
+/dts/sophgo/cv1812h.dtsi
+> >> new file mode 100644
+> >> index 000000000000..3864d34b0100
+> >> --- /dev/null
+> >> +++ b/arch/riscv/boot/dts/sophgo/cv1812h.dtsi
+> >> @@ -0,0 +1,36 @@
+> >> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> >> +/*
+> >> + * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
+> >> + */
+> >> +
+> >> +#include <dt-bindings/interrupt-controller/irq.h>
+> >This include is not required.
+>=20
+> Thx.
 
-See Bugzilla for the full thread.
+I can drop this include on application. Is the rest of the series okay
+with you Chen Wang?
 
-Anyway, I'm adding this regression to be tracked by regzbot:
+Thanks,
+Conor.
 
-#regzbot introduced: 88afbb21d4b36f https://bugzilla.kernel.org/show_bug.cgi?id=217995
-#regzbot title: x86 core fix pull causes shutdown hang on Dell OptiPlex 7050
-#regzbot link: https://bbs.archlinux.org/viewtopic.php?pid=2124429
-#regzbot link: https://www.reddit.com/r/openSUSE/comments/16qq99b/tumbleweed_shutdown_did_not_finish_completely/
-#regzbot link: https://forum.artixlinux.org/index.php/topic,5997.0.html
+>=20
+> >> +#include "cv180x.dtsi"
+> >> +
+> >> +/ {
+> >> +    compatible =3D "sophgo,cv1812h";
+> >> +
+> >> +    memory@80000000 {
+> >> +        device_type =3D "memory";
+> >> +        reg =3D <0x80000000 0x10000000>;
+> >> +    };
+> >What's this defined for , I see this is different against cv1800b.
+>=20
+> CV1812h have a embedded 256MB RAM. The cv1800b is 64MB, This is why the
+> size is different. I write this node here because the RAM is embedded
+> and fixed size, and leave it in the board DT is unnecessary.
+>=20
+> >> +
+> >> +    soc {
+> >> +        interrupt-parent =3D <&plic>;
+> >> +
+> >> +        plic: interrupt-controller@70000000 {
+> >> +            compatible =3D "sophgo,cv1812h-plic", "thead,c900-plic";
+> >> +            reg =3D <0x70000000 0x4000000>;
+> >> +            interrupts-extended =3D <&cpu0_intc 11>, <&cpu0_intc 9>;
+> >> +            interrupt-controller;
+> >> +            #address-cells =3D <0>;
+> >> +            #interrupt-cells =3D <2>;
+> >> +            riscv,ndev =3D <101>;
+> >> +        };
+> >> +
+> >> +        clint: timer@74000000 {
+> >> +            compatible =3D "sophgo,cv1812h-clint", "thead,c900-clint";
+> >> +            reg =3D <0x74000000 0x10000>;
+> >> +            interrupts-extended =3D <&cpu0_intc 3>, <&cpu0_intc 7>;
+> >> +        };
+> >> +    };
+> >> +};
+> >> --
+> >> 2.42.0
+> >>
+> >
 
-Thanks.
+--FbIlMY2V77DRQAG0
+Content-Type: application/pgp-signature; name="signature.asc"
 
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217995
+-----BEGIN PGP SIGNATURE-----
 
--- 
-An old man doll... just what I always wanted! - Clara
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSe/WQAKCRB4tDGHoIJi
+0v+pAP4ikxNXQFMmYKQCRI/ErSVgvlUuINpu2o2hajLuAX07cgEArhvqcOM2wd87
+QPOM8fdmk7XQQ2hWX5EpJjl9qMH89gQ=
+=JHNn
+-----END PGP SIGNATURE-----
+
+--FbIlMY2V77DRQAG0--
