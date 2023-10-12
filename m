@@ -2,49 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6A17C7717
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11387C7719
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442334AbjJLTkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 15:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42840 "EHLO
+        id S1442340AbjJLTlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 15:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442228AbjJLTk3 (ORCPT
+        with ESMTP id S1442210AbjJLTlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 15:40:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A274C9;
-        Thu, 12 Oct 2023 12:40:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1F8B1C433C9;
-        Thu, 12 Oct 2023 19:40:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697139626;
-        bh=iRuEDYBMKlSEm7CBmdnAfuU+j5cDNY8VO8ZzrAGazgw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Aykr+cCXazwTwsAnJ2Sfzkj+k3mwXewNb7Dl9RUbQ32V2+bewULp4/8M+fZ4xI0it
-         cl2L9xVoOVBZk3lrmCqVkB1OKN9GRCg0LuT8COQUuxwUvZmRV3cBAqwr1lheKJOfxW
-         O6bUrDFBzOZL3whswAWHhn48mN2en4NgaygZ5rZ7wbSjYi8LivKGozMKB11DdvG3JX
-         efd0Cc3UUsSiK1tbllV2ifW2sDqWWBSGFoFXlBpkC+c7mEPuzx/tF4sHCOqIDk35nf
-         gXsEk7q67KrYQz9CD2O+K2Dfse/Qasu1AMO2ygva/kZLUKMjzeD6ts8rp+QjbS8KlA
-         gGwEmoEum0nSQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 05273E21EC2;
-        Thu, 12 Oct 2023 19:40:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 12 Oct 2023 15:41:15 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B082BB
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:41:13 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so2377227a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:41:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697139672; x=1697744472; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZuaDBcAqFMciEz4ZI1c+gQ/QSSvF5sHgbYm/hkimkbM=;
+        b=R2SKaFntGR15mNVDq37kEYa7Fhki4ATMHhI0vEk4L81Vk+voHhia2gmNUU9GrzCpA6
+         MGJMrViy0BC5BYIrk0v94eF+OfGVcjGsTPiaL1LZyVDEo2OYky7EtOZTvlpnGbt3Q1/5
+         4cG9w9ffwT4vl6kRPzm1qJSj0OzheB3EtkbDg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697139672; x=1697744472;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZuaDBcAqFMciEz4ZI1c+gQ/QSSvF5sHgbYm/hkimkbM=;
+        b=r6rzgaUegk41ETXPyAtn1Y/yz3nibE+fxFlSpCZayy15Ps+pbHS/uLABw2plzQfU4T
+         urtFOHmrOf+Dpoqjfdy6+T4/yWqBk0M1dp5EHa7Oi/bS2S0DmDJogBUSzM5jERtu06jy
+         XUPwnI2+WmigBBucDQA1ewTOAFpCGxsTVPfwnnwDBt+0QXXMDKnjVY4GbX9WJhMr+bnw
+         +rhFtWK3mdYbvbjhTTF8zI2BDEgfEpGrgLhGrlFn71KPW+AyfgJJtp93zoGhaN96sWSy
+         yTyM0H22WTmm2HJCIpLq0x1H0hu5TX4gN8e81U//Bg7OD56juusYwxg1AM/uAD/ZlU5g
+         s4iA==
+X-Gm-Message-State: AOJu0YyEpYwuir98LhANvZ0ktb61XrVS0qIfef7QOs83aBtsdnPeaATl
+        ebc9ARFAgNcijZV5LPjbs/HWBeTOedkTTcVTP0GkIQ==
+X-Google-Smtp-Source: AGHT+IGYLgMH6TXnafdTUxlK0+7OK/74IksWR+ScMUAL8DEk7d8fqxcqwOzLimULJA37jBrFYy2gww==
+X-Received: by 2002:a17:906:11e:b0:9bd:84af:e67a with SMTP id 30-20020a170906011e00b009bd84afe67amr4294819eje.54.1697139671937;
+        Thu, 12 Oct 2023 12:41:11 -0700 (PDT)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
+        by smtp.gmail.com with ESMTPSA id re9-20020a170906d8c900b0099b8234a9fesm11409379ejb.1.2023.10.12.12.41.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 12:41:10 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-99c1c66876aso220151166b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:41:10 -0700 (PDT)
+X-Received: by 2002:a17:906:1da1:b0:9ba:65e:752b with SMTP id
+ u1-20020a1709061da100b009ba065e752bmr14307248ejh.39.1697139670299; Thu, 12
+ Oct 2023 12:41:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] Bluetooth: btusb: Add date->evt_skb is NULL check
-From:   patchwork-bot+bluetooth@kernel.org
-Message-Id: <169713962601.24492.6840832383405920187.git-patchwork-notify@kernel.org>
-Date:   Thu, 12 Oct 2023 19:40:26 +0000
-References: <20231011051447.92581-1-wangyouwan@126.com>
-In-Reply-To: <20231011051447.92581-1-wangyouwan@126.com>
-To:     wangyouwan <wangyouwan@126.com>
-Cc:     marcel@holtmann.org, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAHk-=whNVf+YghEH4JNjp99NzG5+M7CQrLK42VNKnDydBG4ovA@mail.gmail.com>
+ <6EB66FDE-DDE1-40FA-A391-AEFF963CA97E@vmware.com>
+In-Reply-To: <6EB66FDE-DDE1-40FA-A391-AEFF963CA97E@vmware.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 12 Oct 2023 12:40:52 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whk1WOVzHdoQDm0wM+8ZrpG+zLucWCHhWAcs5OV7M6Q7Q@mail.gmail.com>
+Message-ID: <CAHk-=whk1WOVzHdoQDm0wM+8ZrpG+zLucWCHhWAcs5OV7M6Q7Q@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,61 +92,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Thu, 12 Oct 2023 at 12:32, Nadav Amit <namit@vmware.com> wrote:
+>
+> If you refer to the difference between DECLARE_PER_CPU_ALIGNED() and
+> DECLARE_PER_CPU() - that=E2=80=99s just a silly mistake that I made porti=
+ng my
+> old patch (I also put =E2=80=9Cconst=E2=80=9D in the wrong place of the d=
+eclaration, sorry).
 
-This patch was applied to bluetooth/bluetooth-next.git (master)
-by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+Yes, the only difference is the ALIGNED and the 'const', but I think
+also the alias attribute.
 
-On Wed, 11 Oct 2023 13:14:47 +0800 you wrote:
-> From: youwan Wang <wangyouwan@126.com>
-> 
-> fix crash because of null pointers
-> 
-> [ 6104.969662] BUG: kernel NULL pointer dereference, address: 00000000000000c8
-> [ 6104.969667] #PF: supervisor read access in kernel mode
-> [ 6104.969668] #PF: error_code(0x0000) - not-present page
-> [ 6104.969670] PGD 0 P4D 0
-> [ 6104.969673] Oops: 0000 [#1] SMP NOPTI
-> [ 6104.969684] RIP: 0010:btusb_mtk_hci_wmt_sync+0x144/0x220 [btusb]
-> [ 6104.969688] RSP: 0018:ffffb8d681533d48 EFLAGS: 00010246
-> [ 6104.969689] RAX: 0000000000000000 RBX: ffff8ad560bb2000 RCX: 0000000000000006
-> [ 6104.969691] RDX: 0000000000000000 RSI: ffffb8d681533d08 RDI: 0000000000000000
-> [ 6104.969692] RBP: ffffb8d681533d70 R08: 0000000000000001 R09: 0000000000000001
-> [ 6104.969694] R10: 0000000000000001 R11: 00000000fa83b2da R12: ffff8ad461d1d7c0
-> [ 6104.969695] R13: 0000000000000000 R14: ffff8ad459618c18 R15: ffffb8d681533d90
-> [ 6104.969697] FS:  00007f5a1cab9d40(0000) GS:ffff8ad578200000(0000) knlGS:00000
-> [ 6104.969699] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 6104.969700] CR2: 00000000000000c8 CR3: 000000018620c001 CR4: 0000000000760ef0
-> [ 6104.969701] PKRU: 55555554
-> [ 6104.969702] Call Trace:
-> [ 6104.969708]  btusb_mtk_shutdown+0x44/0x80 [btusb]
-> [ 6104.969732]  hci_dev_do_close+0x470/0x5c0 [bluetooth]
-> [ 6104.969748]  hci_rfkill_set_block+0x56/0xa0 [bluetooth]
-> [ 6104.969753]  rfkill_set_block+0x92/0x160
-> [ 6104.969755]  rfkill_fop_write+0x136/0x1e0
-> [ 6104.969759]  __vfs_write+0x18/0x40
-> [ 6104.969761]  vfs_write+0xdf/0x1c0
-> [ 6104.969763]  ksys_write+0xb1/0xe0
-> [ 6104.969765]  __x64_sys_write+0x1a/0x20
-> [ 6104.969769]  do_syscall_64+0x51/0x180
-> [ 6104.969771]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [ 6104.969773] RIP: 0033:0x7f5a21f18fef
-> [ 6104.9] RSP: 002b:00007ffeefe39010 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
-> [ 6104.969780] RAX: ffffffffffffffda RBX: 000055c10a7560a0 RCX: 00007f5a21f18fef
-> [ 6104.969781] RDX: 0000000000000008 RSI: 00007ffeefe39060 RDI: 0000000000000012
-> [ 6104.969782] RBP: 00007ffeefe39060 R08: 0000000000000000 R09: 0000000000000017
-> [ 6104.969784] R10: 00007ffeefe38d97 R11: 0000000000000293 R12: 0000000000000002
-> [ 6104.969785] R13: 00007ffeefe39220 R14: 00007ffeefe391a0 R15: 000055c10a72acf0
-> 
-> [...]
+However, I'd be happier if we had just one place that declares them, not tw=
+o.
 
-Here is the summary with links:
-  - Bluetooth: btusb: Add date->evt_skb is NULL check
-    https://git.kernel.org/bluetooth/bluetooth-next/c/79fd960e01d7
+Even if the two were identical, it seems wrong to have two
+declarations for the same thing.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> The =E2=80=9Ctrick=E2=80=9D that the patch does is to expose a new const_=
+pcpu_hot symbol that has
+> a =E2=80=9Cconst=E2=80=9D qualifier. For compilation units from which the=
+ symbol is effectively
+> constant, we use const_pcpu_hot. The compiler then knows that the value w=
+ould not
+> change.
 
+Oh, I don't disagree with that part.
 
+I just don't see why the 'asm' version would have any difference. For
+that too, the compiler should see that the result of the asm doesn't
+change.
+
+So my confusion / worry is not about the const alias. I like that part.
+
+My worry is literally "in other situations we _have_ to use asm(), and
+it's not clear why gcc wouldn't do as well for it".
+
+                  Linus
