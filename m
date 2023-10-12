@@ -2,48 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B82817C73A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D51067C73A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379620AbjJLRD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
+        id S1379464AbjJLREi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:04:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378915AbjJLRDu (ORCPT
+        with ESMTP id S1343956AbjJLREg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:03:50 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDA0D6;
-        Thu, 12 Oct 2023 10:03:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gkmLsGjV2f0W15bZiquisA3+eebGMiFMyy8eh2lGTTU=; b=tgz3lfJKJAKbfAetX7/cXWgPSl
-        Y5td+/opo905sVfVSYodiIZbwCI4OSaWHJTfjQdIz+oytgulU0aTW/DLvT1u28+QR7D98fWF6KXio
-        fT3T4IJlhrVY4srIoexXGqAIRDga3ZqlzFzqthR6e9rv42BbmS5jeme2WEPzgGAOxWfPR4lx+I45c
-        sAFydbtWGzw4UWHz+DornX7GUKjs1meDwtdzHnPywyrJCD6XhV+tjWXphNHNOWxvv6MlL7KYZjtLZ
-        fYHBjcNIA9BbZFTj3G2pFg/+TBoXSFb4RWLohg2Y6FplZSUEZptdkxYe+7YuzNtGxbE4Gic+pPhPa
-        +tekPbUg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qqz6C-001Tff-2e;
-        Thu, 12 Oct 2023 17:03:48 +0000
-Date:   Thu, 12 Oct 2023 10:03:48 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Joey Jiao <quic_jiangenj@quicinc.com>
-Cc:     linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] module: Add CONFIG_MODULE_DISABLE_INIT_FREE option
-Message-ID: <ZSgm9BK4oeJz3wx1@bombadil.infradead.org>
-References: <20231012014012.9030-1-quic_jiangenj@quicinc.com>
- <ZSgj02JtR+Hkc5qz@bombadil.infradead.org>
+        Thu, 12 Oct 2023 13:04:36 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F8DB7;
+        Thu, 12 Oct 2023 10:04:35 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4065dea9a33so12732125e9.3;
+        Thu, 12 Oct 2023 10:04:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697130273; x=1697735073; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zxblbh/t0mrVonJh8ZCDwMUCuDrP2ztYXAQn+IoFI4M=;
+        b=V0R5J90V2xW9UU8bVpqDEWEAHq/6sUOWubdxEFqDkOurzjiFFw44FhN9yhKp6AZeke
+         GcpwhpfXUt2gtCaZ/em+TNdC3se4z+C+sf3CJlaCZuuqPk0F+bLm7txaHrrzpK5gH30b
+         yc3sugmu8G4qu15oerjq+zA36w83seU9EI/Lrgt7OqJ50Eeyj+kC2rMxizniZfPWnvM9
+         R0EgQclCZOVi79FLHXKVVTq5BjrHe6Q1+/h3jr0bhSBlPqUTcq8TI8Z+uC0DZBhrYPzW
+         ZNNUf0uEAfqi9R9gBPupdCJfMjbvtyO0YPauR8oypNSoPtEIYUlGjGdZtD1rjpqpaz1P
+         mj8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697130273; x=1697735073;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zxblbh/t0mrVonJh8ZCDwMUCuDrP2ztYXAQn+IoFI4M=;
+        b=U+KcVmz+em6ZfSzCGW7k4VTemiOqJgU7QUEL44EWNm3KiOT15ZEJ4yiY2g7upmB/pC
+         waIotTromMulIthPpItoOi0cYhgdrrfEGlqX24aUsxAodqKGIN1z5ZXem3AUOuRRRJ19
+         RM3adjTtHIfwtEmHtxdU40E6RaD/mmn6TGuj6kSyBdpJetugqrq+PGAyRToSRwiNDtLh
+         7JH6X2r68UUyciD5tl7P+X/9qdCY1ZlG6dUCxarWI6l08cHWJJyVyhMHkADORR2WXiLB
+         F8Pn+6SorveBUCs+WgX1JXTN3e9ON7QYp+kjvfdyN4L7e0ryg8S83ztUSyA9gJjFCd+V
+         TGvg==
+X-Gm-Message-State: AOJu0Yy9dn+/RYzaT3dbNh1wGBpvsM9ilSeOE2rCM3/U/d0sk1oXtvMg
+        INrsaihaz0qKNIErpuOw7qY=
+X-Google-Smtp-Source: AGHT+IGvK0IbNKRWQIhKPbCMMuEMig/luZu/oW3qen35wW7u6BbnRgrpYxNQs0mm4SkyvjOQHZ5slw==
+X-Received: by 2002:a05:6000:186:b0:324:8353:940e with SMTP id p6-20020a056000018600b003248353940emr21204555wrx.34.1697130273071;
+        Thu, 12 Oct 2023 10:04:33 -0700 (PDT)
+Received: from lucifer.home ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.googlemail.com with ESMTPSA id h16-20020adffd50000000b003197869bcd7sm18875418wrs.13.2023.10.12.10.04.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 10:04:32 -0700 (PDT)
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andy Lutomirski <luto@kernel.org>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        Lorenzo Stoakes <lstoakes@gmail.com>
+Subject: [PATCH v4 0/3] permit write-sealed memfd read-only shared mappings
+Date:   Thu, 12 Oct 2023 18:04:27 +0100
+Message-ID: <cover.1697116581.git.lstoakes@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZSgj02JtR+Hkc5qz@bombadil.infradead.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,12 +77,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 09:50:27AM -0700, Luis Chamberlain wrote:
-> > In the kernel, selecting the CONFIG_MODULE_DISABLE_INIT_FREE
-> > option disables the asynchronous freeing of init sections.
-> 
-> No it does not.
+The man page for fcntl() describing memfd file seals states the following
+about F_SEAL_WRITE:-
 
-I take it back, your patch effectively only does this.
+    Furthermore, trying to create new shared, writable memory-mappings via
+    mmap(2) will also fail with EPERM.
 
-  Luis
+With emphasis on 'writable'. In turns out in fact that currently the kernel
+simply disallows all new shared memory mappings for a memfd with
+F_SEAL_WRITE applied, rendering this documentation inaccurate.
+
+This matters because users are therefore unable to obtain a shared mapping
+to a memfd after write sealing altogether, which limits their
+usefulness. This was reported in the discussion thread [1] originating from
+a bug report [2].
+
+This is a product of both using the struct address_space->i_mmap_writable
+atomic counter to determine whether writing may be permitted, and the
+kernel adjusting this counter when any VM_SHARED mapping is performed and
+more generally implicitly assuming VM_SHARED implies writable.
+
+It seems sensible that we should only update this mapping if VM_MAYWRITE is
+specified, i.e. whether it is possible that this mapping could at any point
+be written to.
+
+If we do so then all we need to do to permit write seals to function as
+documented is to clear VM_MAYWRITE when mapping read-only. It turns out
+this functionality already exists for F_SEAL_FUTURE_WRITE - we can
+therefore simply adapt this logic to do the same for F_SEAL_WRITE.
+
+We then hit a chicken and egg situation in mmap_region() where the check
+for VM_MAYWRITE occurs before we are able to clear this flag. To work
+around this, perform this check after we invoke call_mmap(), with careful
+consideration of error paths.
+
+Thanks to Andy Lutomirski for the suggestion!
+
+[1]:https://lore.kernel.org/all/20230324133646.16101dfa666f253c4715d965@linux-foundation.org/
+[2]:https://bugzilla.kernel.org/show_bug.cgi?id=217238
+
+v4:
+- Revert to performing the writable check _after_ the call_mmap()
+  invocation, as the only impact should be internal mm checks, rather than
+  call_mmap(), as suggested by Jan Kara.
+- Additionally, fixup error handling paths, which resulted in an i915 test
+  failure previously erroneously double-decrement the i_mmap_writable
+  counter. We do this by tracking whether we have in fact marked the mapping
+  writable. This is based on Jan's feedback also.
+
+v3:
+- Don't defer the writable check until after call_mmap() in case this
+  breaks f_ops->mmap() callbacks which assume this has been done
+  first. Instead, separate the check and enforcement of it across the call,
+  allowing for it to change vma->vm_flags in the meanwhile.
+- Improve/correct commit messages and comments throughout.
+https://lore.kernel.org/all/cover.1696709413.git.lstoakes@gmail.com
+
+v2:
+- Removed RFC tag.
+- Correct incorrect goto pointed out by Jan.
+- Reworded cover letter as suggested by Jan.
+https://lore.kernel.org/all/cover.1682890156.git.lstoakes@gmail.com/
+
+v1:
+https://lore.kernel.org/all/cover.1680560277.git.lstoakes@gmail.com/
+
+Lorenzo Stoakes (3):
+  mm: drop the assumption that VM_SHARED always implies writable
+  mm: update memfd seal write check to include F_SEAL_WRITE
+  mm: perform the mapping_map_writable() check after call_mmap()
+
+ fs/hugetlbfs/inode.c |  2 +-
+ include/linux/fs.h   |  4 ++--
+ include/linux/mm.h   | 26 +++++++++++++++++++-------
+ kernel/fork.c        |  2 +-
+ mm/filemap.c         |  2 +-
+ mm/madvise.c         |  2 +-
+ mm/mmap.c            | 27 ++++++++++++++++-----------
+ mm/shmem.c           |  2 +-
+ 8 files changed, 42 insertions(+), 25 deletions(-)
+
+--
+2.42.0
