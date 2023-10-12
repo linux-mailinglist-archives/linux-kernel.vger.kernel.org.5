@@ -2,120 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEAB47C6302
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 04:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D147C630C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 04:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376765AbjJLCrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 22:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35220 "EHLO
+        id S1347044AbjJLCtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 22:49:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233040AbjJLCrl (ORCPT
+        with ESMTP id S235273AbjJLCsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 22:47:41 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B50A4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 19:47:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9EC2C433C8;
-        Thu, 12 Oct 2023 02:47:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697078860;
-        bh=vhaHa8oKbBL75azKtpMU5ef0xkRutZtJTgdLyMCYYkg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eL+erSy7d10Jqji3GPYgAwTz6KfGrwSZ38v1Yhjdgos3aZ4jVE2EFku1x6pGc1NVK
-         3kwMcM9THnC6qTF9iCJBOdIK50UH8tciwpeNXAc44rGz/m5PDFplWN8E9Msoxt9y34
-         a5+Z+jVf087YhX+BNBInV01ed+EZGAsrvopZOr0aNGaw5S9Dyu8TLnKC0Y1n2Gfma+
-         fSBqNp5Mqte4siSpugopi9qfkLvhjWt/uskk0IKX/3NMc+PG0RiKs7Jpow89q6E3Gt
-         /BmFvA6mCfCwCnoIaiDXceOYBY5C006Es0IL1yNHk5i+xA574KO0hANbo/HOFJE+MD
-         QKNJurnGQ+6bA==
-Date:   Wed, 11 Oct 2023 19:47:37 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        David Kaplan <david.kaplan@amd.com>, x86@kernel.org,
-        luto@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] objtool: Fix return thunk patching in retpolines
-Message-ID: <20231012024737.eg5phclogp67ik6x@treble>
-References: <20231010171020.462211-2-david.kaplan@amd.com>
- <20231010174833.GG14330@noisy.programming.kicks-ass.net>
- <20231010195721.p5pb273kevg7ydxz@treble>
- <20231010200429.GIZSWuTWSUM9aId7a6@fat_crate.local>
- <20231010201912.7pjksbparssqu34k@treble>
- <20231010212254.ypk2wdogno55shit@treble>
- <20231011074142.GK14330@noisy.programming.kicks-ass.net>
- <20231011162843.grv6kixw4ides6uw@treble>
- <20231011223513.GH6307@noisy.programming.kicks-ass.net>
- <20231012022758.lf62lgf5jx5xrno7@treble>
+        Wed, 11 Oct 2023 22:48:52 -0400
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA12C6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 19:48:50 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VtykMeL_1697078924;
+Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0VtykMeL_1697078924)
+          by smtp.aliyun-inc.com;
+          Thu, 12 Oct 2023 10:48:47 +0800
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, willy@infradead.org,
+        catalin.marinas@arm.com, dave.hansen@linux.intel.com,
+        tj@kernel.org, mingo@redhat.com
+Subject: [PATCH RFC 0/5] support NUMA emulation for arm64
+Date:   Thu, 12 Oct 2023 10:48:37 +0800
+Message-Id: <20231012024842.99703-1-rongwei.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231012022758.lf62lgf5jx5xrno7@treble>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With CONFIG_RETHUNK enabled, the compiler replaces every RET with a tail
-call to a return thunk ('JMP __x86_return_thunk').  Objtool annotates
-all such return sites so they can be patched during boot by
-apply_returns().
+A brief introduction
+====================
 
-The implementation of __x86_return_thunk() is just a bare RET.  It's
-only meant to be used temporarily until apply_returns() patches all
-return sites with either a JMP to another return thunk or an actual RET.
+The NUMA emulation can fake more node base on a single
+node system, e.g.
 
-The following commit
+one node system:
 
-  e92626af3234 ("x86/retpoline: Remove .text..__x86.return_thunk section") retpolines
+[root@localhost ~]# numactl -H
+available: 1 nodes (0)
+node 0 cpus: 0 1 2 3 4 5 6 7
+node 0 size: 31788 MB
+node 0 free: 31446 MB
+node distances:
+node   0
+  0:  10
 
-broke objtool's detection of return sites in retpolines.  Since
-retpolines and return thunks are now in the same section, the compiler
-no longer uses relocations for the intra-section jumps between the
-retpolines and the return thunk, causing objtool to overlook them.
+add numa=fake=2 (fake 2 node on each origin node):
 
-As a result, none of the retpolines' return sites get patched.  Each one
-stays at 'JMP __x86_return_thunk', effectively a bare RET.
+[root@localhost ~]# numactl -H
+available: 2 nodes (0-1)
+node 0 cpus: 0 1 2 3 4 5 6 7
+node 0 size: 15806 MB
+node 0 free: 15451 MB
+node 1 cpus: 0 1 2 3 4 5 6 7
+node 1 size: 16029 MB
+node 1 free: 15989 MB
+node distances:
+node   0   1
+  0:  10  10
+  1:  10  10
 
-Fix it by teaching objtool to detect when a non-relocated jump target is
-a return thunk (or retpoline).
+As above shown, a new node has been faked. As cpus, the realization
+of x86 NUMA emulation is kept. Maybe each node should has 4 cores is
+better (not sure, next to do if so).
 
-Fixes: e92626af3234 ("x86/retpoline: Remove .text..__x86.return_thunk section")
-Reported-by: David Kaplan <david.kaplan@amd.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
----
- tools/objtool/check.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Why do this
+===========
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index e308d1ba664e..e94756e09ca9 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1610,6 +1610,22 @@ static int add_jump_destinations(struct objtool_file *file)
- 			return -1;
- 		}
- 
-+		/*
-+		 * An intra-TU jump in retpoline.o might not have a relocation
-+		 * for its jump dest, in which case the above
-+		 * add_{retpoline,return}_call() didn't happen.
-+		 */
-+		if (jump_dest->sym && jump_dest->offset == jump_dest->sym->offset) {
-+			if (jump_dest->sym->retpoline_thunk) {
-+				add_retpoline_call(file, insn);
-+				continue;
-+			}
-+			if (jump_dest->sym->return_thunk) {
-+				add_return_call(file, insn, true);
-+				continue;
-+			}
-+		}
-+
- 		/*
- 		 * Cross-function jump.
- 		 */
+It seems has following reasons:
+  (1) In x86 host, apply NUMA emulation can fake more nodes environment
+      to test or verify some performance stuff, but arm64 only has
+      one method that modify ACPI table to do this. It's troublesome
+      more or less.
+  (2) Reduce competition for some locks. Here an example we found:
+      will-it-scale/tlb_flush1_processes -t 96 -s 10, it shows obvious
+      hotspot on lruvec->lock when test in single environment. What's
+      more, The performance improved greatly if test in two more nodes
+      system. The data shows below (more is better):
+
+      ---------------------------------------------------------------------
+      threads/process |   1     |     12   |     24   |   48     |   96
+      ---------------------------------------------------------------------
+      one node        | 14 1122 | 110 5372 | 111 2615 | 79 7084  | 72 4516
+      ---------------------------------------------------------------------
+      numa=fake=2     | 14 1168 | 144 4848 | 215 9070 | 157 0412 | 142 3968
+      ---------------------------------------------------------------------
+                      | For concurrency 12, no lruvec->lock hotspot. For 24,
+      hotspot         | one node has 24% hotspot on lruvec->lock, but
+                      | two nodes env hasn't.
+      ---------------------------------------------------------------------
+
+As for risks (e.g. numa balance...), they need to be discussed here.
+
+Lastly, this just is a draft, I can improve next if it's acceptable.
+
+Thanks!
+
+Rongwei Wang (5):
+  mm/numa: move numa emulation APIs into generic files
+  mm: percpu: fix variable type of cpu
+  arch_numa: remove __init in early_cpu_to_node()
+  mm/numa: support CONFIG_NUMA_EMU for arm64
+  mm/numa: migrate leftover numa emulation into mm/numa.c
+
+ arch/x86/Kconfig                          |   8 -
+ arch/x86/include/asm/numa.h               |   3 -
+ arch/x86/mm/Makefile                      |   1 -
+ arch/x86/mm/numa.c                        | 216 +-------------
+ arch/x86/mm/numa_internal.h               |  14 +-
+ drivers/base/arch_numa.c                  |   7 +-
+ include/asm-generic/numa.h                |  33 +++
+ include/linux/percpu.h                    |   2 +-
+ mm/Kconfig                                |   8 +
+ mm/Makefile                               |   1 +
+ arch/x86/mm/numa_emulation.c => mm/numa.c | 333 +++++++++++++++++++++-
+ 11 files changed, 373 insertions(+), 253 deletions(-)
+ rename arch/x86/mm/numa_emulation.c => mm/numa.c (63%)
+
 -- 
-2.41.0
+2.32.0.3.gf3a3e56d6
 
