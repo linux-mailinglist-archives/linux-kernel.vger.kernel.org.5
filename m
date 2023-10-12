@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B0C7C6BFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C47417C6C01
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378175AbjJLLOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51388 "EHLO
+        id S1378092AbjJLLOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:14:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbjJLLOE (ORCPT
+        with ESMTP id S235687AbjJLLO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:14:04 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633DA90;
-        Thu, 12 Oct 2023 04:14:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 435CAC433C8;
-        Thu, 12 Oct 2023 11:14:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697109243;
-        bh=sIXVGxC92IW43eCqb+Te4zLMtmp1Zaw6/BPv7tZn5dQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mi+IKRHUxEP41a8bN16IMH2f7Xabr6BsAfA1Cg4FfDHWKam87nQOHUbzsrH7Zm0HJ
-         U9ARbb1Zn3ndMt8dGap4C5tu4+gYMwTGnSF3YaiWAEg80qYrzIEbvZAacRp2NUm7kZ
-         CoDjj+a/WRwUYxe2+FscRQ6GzgUHAy1gf5P9eKHOik0RqYQog3tBoE9FdYbiY/5xoS
-         01bsBrVNwF3m2tjrxvlqqNu/Cy7pU4ttBA6ghyfUqQB+MXt658T3aCXHaRya+5tIHT
-         t5cTl8s0MIo7KBydn5cP87PCWXtg7M6K9390Xkhb63MdP5OT8HTX8VyrPRgD6M83Fm
-         vhx2Vd8hF4HtA==
-Date:   Thu, 12 Oct 2023 12:13:57 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Naresh Solanki <naresh.solanki@9elements.com>,
-        zev@bewilderbeest.net, Sebastian Reichel <sre@kernel.org>,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] regulator: fixed: forward under-voltage events
-Message-ID: <77de152a-c637-40a2-846f-e79f52ddbee1@sirena.org.uk>
-References: <20231010085906.3440452-1-o.rempel@pengutronix.de>
- <20231010085906.3440452-3-o.rempel@pengutronix.de>
- <5e51792a-cc93-4364-a51b-c2b116d89369@sirena.org.uk>
- <20231010125531.GA3268051@pengutronix.de>
- <c2ee404d-d07f-42c6-b5ba-41659773e8eb@sirena.org.uk>
- <20231011075931.GA3305420@pengutronix.de>
- <2d14fd22-c37b-4c15-a2ea-a2fd2c201adb@sirena.org.uk>
- <ZSebeJKa0sEzNzP4@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
+        Thu, 12 Oct 2023 07:14:27 -0400
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1468C4;
+        Thu, 12 Oct 2023 04:14:25 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-9ae75ece209so135708466b.3;
+        Thu, 12 Oct 2023 04:14:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697109262; x=1697714062;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JtB8IDZz5dk1cNl4dqJ3VZqh/YbjyD7s+JDKd6G9pwQ=;
+        b=PwOpaSCmvvv/VNHf9uqHZeUNQd662kRTywsuiengjCmpAZebV/aJVu4UhQ0QUS1+Tl
+         GruToI0QOpExD/FubFt28KGVWxMBCwyOTXE2T6chE1TaWDBndsn9ttVElG3ipg3BrYjS
+         n3Q88t+ZCS5TT7GL/XybASUL8mzOFuiNeFRp1AybY/hZzw05ql7Hef2tacyNwHk81+q1
+         1UgWp1kgxqyP+Wz1HotSA5pV3GxmbFr7RPyGfaegNg1SFIjLUNfifve3PDo/b2mewbof
+         rutvTJBO+SLtEK720vRTYG61Xww8iOcRKvtza5a4Te0h00HOabVGcnWmAzzME8WGzj4V
+         ENOA==
+X-Gm-Message-State: AOJu0Yz+x8UNoB12O4CGtWWtl6W1PM/x4L/VIABHeprzgBdJIR1bjwkO
+        dI+4OdtbTJ+Y7U3Bw3xWg48=
+X-Google-Smtp-Source: AGHT+IErldYLlXudceU/+JDgQI7626yVVyudGsGX0Rne04CdkkqfMIRXx49NP8sygZHNlD2+n5+tXg==
+X-Received: by 2002:a17:906:73d4:b0:9b8:df8e:cbdd with SMTP id n20-20020a17090673d400b009b8df8ecbddmr19417346ejl.38.1697109261432;
+        Thu, 12 Oct 2023 04:14:21 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-011.fbsv.net. [2a03:2880:31ff:b::face:b00c])
+        by smtp.gmail.com with ESMTPSA id w22-20020aa7dcd6000000b00536e03f62bcsm10053640edu.59.2023.10.12.04.14.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 04:14:20 -0700 (PDT)
+From:   Breno Leitao <leitao@debian.org>
+To:     jlbec@evilplan.org, kuba@kernel.org, davem@davemloft.net,
+        pabeni@redhat.com
+Cc:     hch@lst.de, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        horms@kernel.org
+Subject: [PATCH net-next v4 0/4] net: netconsole: configfs entries for boot target
+Date:   Thu, 12 Oct 2023 04:13:57 -0700
+Message-Id: <20231012111401.333798-1-leitao@debian.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yPgIy+98SeAibYLd"
-Content-Disposition: inline
-In-Reply-To: <ZSebeJKa0sEzNzP4@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
-X-Cookie: I just had a NOSE JOB!!
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There is a limitation in netconsole, where it is impossible to
+disable or modify the target created from the command line parameter.
+(netconsole=...).
 
---yPgIy+98SeAibYLd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+"netconsole" cmdline parameter sets the remote IP, and if the remote IP
+changes, the machine needs to be rebooted (with the new remote IP set in
+the command line parameter).
 
-On Thu, Oct 12, 2023 at 10:08:40AM +0300, Matti Vaittinen wrote:
+This allows the user to modify a target without the need to restart the
+machine.
 
-> In my eyes the device-tree is correct place for this information
-> because whether an "anomaly" in regulator output compromises the system
-> is a property of hardware.
+This functionality sits on top of the dynamic target reconfiguration that is
+already implemented in netconsole.
 
-Yes, it's mainly the handling that has a policy element.
+The way to modify a boot time target is creating special named configfs
+directories, that will be associated with the targets coming from
+`netconsole=...`.
 
---yPgIy+98SeAibYLd
-Content-Type: application/pgp-signature; name="signature.asc"
+Example:
 
------BEGIN PGP SIGNATURE-----
+Let's suppose you have two netconsole targets defined at boot time::
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUn1PQACgkQJNaLcl1U
-h9CZowf/fAd9uF9zNJtl9V+wuJJIrq5Qh/d0B1IVIv+A5dDA1BCZop8AeeMb9yWM
-bahyii/LZyHKqo8x9mY57z4l7+Ucjx9KBDppvIg0E2ZwD8NpiXJ24OCC35GScUZ9
-ymQCZp7SuCzui/+6O5E9Om3PeZ54yZ/tZ1RiGIKUkWk/HVAKNn5UD2mR7qeI77cF
-ulE72VpQeg1SIhKkNEM1ZbElyuv2nCp/hCnYPbN0X4HDv8C/mO/+IGoLln0Trg8A
-qq3nX5IeUKa9cg0zrw0SlQXIKydsO6cqW48YM1Q9THc2xqnXceA0u2rQes6fz4fh
-yMP2qT0khgiWyqXr8Pl7W8LFW4w84w==
-=9kBd
------END PGP SIGNATURE-----
+ netconsole=4444@10.0.0.1/eth1,9353@10.0.0.2/12:34:56:78:9a:bc;4444@10.0.0.1/eth1,9353@10.0.0.3/12:34:56:78:9a:bc
 
---yPgIy+98SeAibYLd--
+You can modify these targets in runtime by creating the following targets::
+
+ $ mkdir cmdline1
+ $ cat cmdline1/remote_ip
+ 10.0.0.3
+ $ echo 0 > cmdline1/enabled
+ $ echo 10.0.0.4 > cmdline1/remote_ip
+ $ echo 1 > cmdline1/enabled
+
+==
+
+Changelog:
+ * Version 4:
+	* Rename NETCONSOLE_PARAM_TARGET_NAME to NETCONSOLE_PARAM_TARGET_PREFIX
+
+ * Version 3:
+	* Move some functions around to avoid forward declaration
+
+ * Version 2:
+	* Replaced the name of the NETCONSOLE_PARAM_TARGET_NAME macro
+	* Improved the code documentation
+	* Improved the user documentation
+
+Breno Leitao (4):
+  netconsole: move init/cleanup functions lower
+  netconsole: Initialize configfs_item for default targets
+  netconsole: Attach cmdline target to dynamic target
+  Documentation: netconsole: add support for cmdline targets
+
+ Documentation/networking/netconsole.rst |  22 +++-
+ drivers/net/netconsole.c                | 155 ++++++++++++++++--------
+ 2 files changed, 121 insertions(+), 56 deletions(-)
+
+-- 
+2.34.1
+
