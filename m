@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78BE77C78BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882637C78BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442947AbjJLVkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 17:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51754 "EHLO
+        id S1442995AbjJLVkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 17:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347421AbjJLVkA (ORCPT
+        with ESMTP id S1344156AbjJLVkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 17:40:00 -0400
+        Thu, 12 Oct 2023 17:40:03 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86AEBB
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:39:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FA8B8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:39:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697146756;
+        s=mimecast20190719; t=1697146752;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZJ9Uk8vtob23yRuVF7wPahjMzWrUIOh41bFxqRCyBio=;
-        b=WBczC93Hzv5F01qwkPWczYVlzFe0St0+BiU0tfkt/ZT8HF6VsWn2apCvF2jLVHO0DJI5RZ
-        9QRexNIomWoXO2y3fgBCdY+ySMZlUCiHAwSrJ6z/ln8cWc+TomOa1Nq/kGpUNUw9VtPREU
-        R4kaTRmPou6Nco73epTHrFhmOsb+N4o=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=wHqLtwUAaD2dDREXiqZ2XaEcrQiR2C2+WBV3WmiOV5E=;
+        b=Viyx/lZ/9/9hhkY8zcjEiAS1txiyyHAUtANR8gbjeURrmzKWkbjQ6a2cWAunrl8USQNmtf
+        0fEDqVPkKcjfAsDfHCm6wWPmtQM3/390pvDjEqs06IwZV/f7EWFV7yl+1J+orgQL0nn/5L
+        s0BW+yU3+frct6njeFFRqPdoV5DBGCE=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-682-e63ZL4ctPCqtguVsfO0pIg-1; Thu, 12 Oct 2023 17:39:09 -0400
-X-MC-Unique: e63ZL4ctPCqtguVsfO0pIg-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4074f9d17a5so9885145e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:39:09 -0700 (PDT)
+ us-mta-684-G2rNwOE_OLiTsdXkUKNuHQ-1; Thu, 12 Oct 2023 17:39:10 -0400
+X-MC-Unique: G2rNwOE_OLiTsdXkUKNuHQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-32d83fd3765so909215f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:39:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697146748; x=1697751548;
+        d=1e100.net; s=20230601; t=1697146749; x=1697751549;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZJ9Uk8vtob23yRuVF7wPahjMzWrUIOh41bFxqRCyBio=;
-        b=pwNjABrAVjnIqNSGWCwhaS9XliANjghtykOTSnhDjdY3DGfOvDGHa7W1ovU7haUmqb
-         b27JTifeLBvz0MeEYySysX/3hG6NY8a/1IcuxnhFe/w047y6WBw4daua4crvoip74RjC
-         1URLryaGDwawSE8sNm9yNjrttcJrHDWnKbGox3F1HTyH7IgOWpN34WEXbMU5uO/wRluQ
-         HOJYJjot3x8iMPI+klolyCVu+FB3gvl+q7RjQjR8nJ6M6TjsDnwVwiY+Vn3bPTdzZPym
-         r1xsCSbAg0cG6J+Cwlypem7ER5QDKaW055pDUIFgJyKGdkQyqzA6unRqhlaSgk++rCc1
-         HfPQ==
-X-Gm-Message-State: AOJu0YxOSWSHG+cRfwKtKd9GczgaUyLv6U8Q46cm0rJ5VQebg906cVQw
-        tVnVFdq+DO6V5rAPP5qLzHTIr0kfWPgV1Lr9B8fE2FKu1BzgzFLC7HA9qapSIJS9A6TO9ue+Yro
-        A8nziSV9Sefo0VlIBTC3dYwEp+PCJAUjBB+0Wjut6jvDwAe/5rQZUiNCklfxMRRdKAOQ1uoqoNT
-        kLC5k1XwE=
-X-Received: by 2002:a05:600c:c9:b0:406:4d8f:9fee with SMTP id u9-20020a05600c00c900b004064d8f9feemr22839631wmm.24.1697146747918;
-        Thu, 12 Oct 2023 14:39:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEVwgjP/Hf7E+GTWU2/1n528HLM8zVIW2Oo2fN83cMqwCJNV+YlT48U377E2jCVzQzV4FwMbQ==
-X-Received: by 2002:a05:600c:c9:b0:406:4d8f:9fee with SMTP id u9-20020a05600c00c900b004064d8f9feemr22839612wmm.24.1697146747448;
-        Thu, 12 Oct 2023 14:39:07 -0700 (PDT)
+        bh=wHqLtwUAaD2dDREXiqZ2XaEcrQiR2C2+WBV3WmiOV5E=;
+        b=GjDaBOZNu+diZLHV0U7yEv/A6LE/PX08z38DQtGGTc0H2TFliCLd3BYZ0oEdQY/3Cq
+         EHD2si7PWWGxEun3qEZT7RuHRzOPKhs+vuN1FrE3oEwXEwRdL5KUphcHVSaJQvfXPf8S
+         GLW1j/F+HQyDSWq8X8GoIg6Qs2Ay+r0vTGecmV1bV4bEuEhkk8pyfPu0N//TB/B9yIEy
+         sJG8IA/8tMndKE6uahom0i34IImC/qTYqWxPDW/Gl88ztn+PSipe33LCFIKUjZBixPfc
+         E83wy3ojZpLFRytI84QpnrSHTUZ3yG3s4h7efVw/1X/ypQSnVDO9vSNy42luyKAMUCD0
+         IrDw==
+X-Gm-Message-State: AOJu0YyeNMxvjKyXJfJW6SYEksRX+wE1fLf4RXY7/4BPZUROEAIachOK
+        Vf7vSmK9/5xfBUtD2dXDvDMFMaKIu2BZQ1Uvlt/5RacsjUpgdC3+64SByXdt/Ugi+yjvgolbdbg
+        hg+0UKW0NjI6uWmcpytM1kRnmo3HoV9dFvTj9NnNTXfKW/V7Z1kfMvDPu1Qda0/oRhk9H8PrWQy
+        KIZk5JQbc=
+X-Received: by 2002:adf:cd06:0:b0:32d:9789:6066 with SMTP id w6-20020adfcd06000000b0032d97896066mr896816wrm.5.1697146749231;
+        Thu, 12 Oct 2023 14:39:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHAjF0vCXT8TsSMSp2rxeCB08EEo5MwrMP0eMHg3wN8N+ODxNLGwSHHaVpR61BRU2PAIQc5Ug==
+X-Received: by 2002:adf:cd06:0:b0:32d:9789:6066 with SMTP id w6-20020adfcd06000000b0032d97896066mr896796wrm.5.1697146748871;
+        Thu, 12 Oct 2023 14:39:08 -0700 (PDT)
 Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id p23-20020a05600c205700b004064741f855sm801123wmg.47.2023.10.12.14.39.06
+        by smtp.gmail.com with ESMTPSA id z17-20020a5d4d11000000b0032d9548240fsm1895222wrt.82.2023.10.12.14.39.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 14:39:07 -0700 (PDT)
+        Thu, 12 Oct 2023 14:39:08 -0700 (PDT)
 From:   Javier Martinez Canillas <javierm@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
@@ -70,9 +70,9 @@ Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
         David Airlie <airlied@gmail.com>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v3 2/6] drm/ssd130x: Add a controller family id to the device info data
-Date:   Thu, 12 Oct 2023 23:38:32 +0200
-Message-ID: <20231012213843.1151060-3-javierm@redhat.com>
+Subject: [PATCH v3 3/6] drm/ssd130x: Rename commands that are shared across chip families
+Date:   Thu, 12 Oct 2023 23:38:33 +0200
+Message-ID: <20231012213843.1151060-4-javierm@redhat.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231012213843.1151060-1-javierm@redhat.com>
 References: <20231012213843.1151060-1-javierm@redhat.com>
@@ -88,132 +88,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To allow the driver to have a per Solomon display controller modesetting
-pipeline and support aother controller families besides SSD130x.
+There are some commands that are shared between the SSD130x and SSD132x
+controller families, define these as a common SSD13XX set of commands.
 
 Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 ---
 
-Changes in v3:
-- Drop the per controller family functions table (Thomas Zimmermann).
+(no changes since v1)
 
-Changes in v2:
-- Squash patch that uses drm_format_info_min_pitch() to calculate dest_pitch
-  with the following patch (Geert Uytterhoeven).
-- Store ssd13xx_family_funcs[SSD130X_FAMILY] in struct ssd130x_deviceinfo
-  (Geert Uytterhoeven).
-- Don't mix switch (family_id) and ssd13xx_funcs[family_id] (Geert Uytterhoeven).
-- Replace switch (family_id) by an .set_buffer_sizes (Geert Uytterhoeven).
-- Move the rect alignment to a per chip family function (Geert Uytterhoeven).
+ drivers/gpu/drm/solomon/ssd130x-spi.c |  4 +--
+ drivers/gpu/drm/solomon/ssd130x.c     | 47 +++++++++++++++------------
+ drivers/gpu/drm/solomon/ssd130x.h     |  4 +--
+ 3 files changed, 30 insertions(+), 25 deletions(-)
 
- drivers/gpu/drm/solomon/ssd130x-i2c.c | 1 +
- drivers/gpu/drm/solomon/ssd130x-spi.c | 2 ++
- drivers/gpu/drm/solomon/ssd130x.c     | 5 +++++
- drivers/gpu/drm/solomon/ssd130x.h     | 7 +++++++
- 4 files changed, 15 insertions(+)
-
-diff --git a/drivers/gpu/drm/solomon/ssd130x-i2c.c b/drivers/gpu/drm/solomon/ssd130x-i2c.c
-index b4eb2d64bf6e..8f89b89d553f 100644
---- a/drivers/gpu/drm/solomon/ssd130x-i2c.c
-+++ b/drivers/gpu/drm/solomon/ssd130x-i2c.c
-@@ -54,6 +54,7 @@ static void ssd130x_i2c_shutdown(struct i2c_client *client)
- }
- 
- static const struct of_device_id ssd130x_of_match[] = {
-+	/* ssd130x family */
- 	{
- 		.compatible = "sinowealth,sh1106",
- 		.data = &ssd130x_variants[SH1106_ID],
 diff --git a/drivers/gpu/drm/solomon/ssd130x-spi.c b/drivers/gpu/drm/solomon/ssd130x-spi.c
-index 19ab4942cb33..257819bccbc8 100644
+index 257819bccbc8..89989da705d7 100644
 --- a/drivers/gpu/drm/solomon/ssd130x-spi.c
 +++ b/drivers/gpu/drm/solomon/ssd130x-spi.c
-@@ -108,6 +108,7 @@ static void ssd130x_spi_shutdown(struct spi_device *spi)
- }
+@@ -34,10 +34,10 @@ static int ssd130x_spi_write(void *context, const void *data, size_t count)
+ 	struct spi_device *spi = t->spi;
+ 	const u8 *reg = data;
  
- static const struct of_device_id ssd130x_of_match[] = {
-+	/* ssd130x family */
- 	{
- 		.compatible = "sinowealth,sh1106",
- 		.data = &ssd130x_variants[SH1106_ID],
-@@ -142,6 +143,7 @@ MODULE_DEVICE_TABLE(of, ssd130x_of_match);
-  * not be needed for this driver to match the registered SPI devices.
-  */
- static const struct spi_device_id ssd130x_spi_table[] = {
-+	/* ssd130x family */
- 	{ "sh1106",  SH1106_ID },
- 	{ "ssd1305", SSD1305_ID },
- 	{ "ssd1306", SSD1306_ID },
+-	if (*reg == SSD130X_COMMAND)
++	if (*reg == SSD13XX_COMMAND)
+ 		gpiod_set_value_cansleep(t->dc, 0);
+ 
+-	if (*reg == SSD130X_DATA)
++	if (*reg == SSD13XX_DATA)
+ 		gpiod_set_value_cansleep(t->dc, 1);
+ 
+ 	/* Remove control byte since is not used in a 4-wire SPI interface */
 diff --git a/drivers/gpu/drm/solomon/ssd130x.c b/drivers/gpu/drm/solomon/ssd130x.c
-index 2852cddb098b..4df4c4ed61f1 100644
+index 4df4c4ed61f1..b63c28f0e86e 100644
 --- a/drivers/gpu/drm/solomon/ssd130x.c
 +++ b/drivers/gpu/drm/solomon/ssd130x.c
-@@ -104,6 +104,7 @@ const struct ssd130x_deviceinfo ssd130x_variants[] = {
- 		.default_width = 132,
- 		.default_height = 64,
- 		.page_mode_only = 1,
-+		.family_id = SSD130X_FAMILY,
- 	},
- 	[SSD1305_ID] = {
- 		.default_vcomh = 0x34,
-@@ -111,6 +112,7 @@ const struct ssd130x_deviceinfo ssd130x_variants[] = {
- 		.default_dclk_frq = 7,
- 		.default_width = 132,
- 		.default_height = 64,
-+		.family_id = SSD130X_FAMILY,
- 	},
- 	[SSD1306_ID] = {
- 		.default_vcomh = 0x20,
-@@ -119,6 +121,7 @@ const struct ssd130x_deviceinfo ssd130x_variants[] = {
- 		.need_chargepump = 1,
- 		.default_width = 128,
- 		.default_height = 64,
-+		.family_id = SSD130X_FAMILY,
- 	},
- 	[SSD1307_ID] = {
- 		.default_vcomh = 0x20,
-@@ -127,6 +130,7 @@ const struct ssd130x_deviceinfo ssd130x_variants[] = {
- 		.need_pwm = 1,
- 		.default_width = 128,
- 		.default_height = 39,
-+		.family_id = SSD130X_FAMILY,
- 	},
- 	[SSD1309_ID] = {
- 		.default_vcomh = 0x34,
-@@ -134,6 +138,7 @@ const struct ssd130x_deviceinfo ssd130x_variants[] = {
- 		.default_dclk_frq = 10,
- 		.default_width = 128,
- 		.default_height = 64,
-+		.family_id = SSD130X_FAMILY,
- 	}
- };
- EXPORT_SYMBOL_NS_GPL(ssd130x_variants, DRM_SSD130X);
+@@ -44,18 +44,24 @@
+ 
+ #define SSD130X_PAGE_HEIGHT 8
+ 
++/* ssd13xx commands */
++#define SSD13XX_CONTRAST			0x81
++#define SSD13XX_SET_SEG_REMAP			0xa0
++#define SSD13XX_SET_MULTIPLEX_RATIO		0xa8
++#define SSD13XX_DISPLAY_OFF			0xae
++#define SSD13XX_DISPLAY_ON			0xaf
++
++#define SSD13XX_SET_SEG_REMAP_MASK		GENMASK(0, 0)
++#define SSD13XX_SET_SEG_REMAP_SET(val)		FIELD_PREP(SSD13XX_SET_SEG_REMAP_MASK, (val))
++
++/* ssd130x commands */
+ #define SSD130X_PAGE_COL_START_LOW		0x00
+ #define SSD130X_PAGE_COL_START_HIGH		0x10
+ #define SSD130X_SET_ADDRESS_MODE		0x20
+ #define SSD130X_SET_COL_RANGE			0x21
+ #define SSD130X_SET_PAGE_RANGE			0x22
+-#define SSD130X_CONTRAST			0x81
+ #define SSD130X_SET_LOOKUP_TABLE		0x91
+ #define SSD130X_CHARGE_PUMP			0x8d
+-#define SSD130X_SET_SEG_REMAP			0xa0
+-#define SSD130X_DISPLAY_OFF			0xae
+-#define SSD130X_SET_MULTIPLEX_RATIO		0xa8
+-#define SSD130X_DISPLAY_ON			0xaf
+ #define SSD130X_START_PAGE_ADDRESS		0xb0
+ #define SSD130X_SET_COM_SCAN_DIR		0xc0
+ #define SSD130X_SET_DISPLAY_OFFSET		0xd3
+@@ -65,13 +71,12 @@
+ #define SSD130X_SET_COM_PINS_CONFIG		0xda
+ #define SSD130X_SET_VCOMH			0xdb
+ 
++/* ssd130x commands accessors */
+ #define SSD130X_PAGE_COL_START_MASK		GENMASK(3, 0)
+ #define SSD130X_PAGE_COL_START_HIGH_SET(val)	FIELD_PREP(SSD130X_PAGE_COL_START_MASK, (val) >> 4)
+ #define SSD130X_PAGE_COL_START_LOW_SET(val)	FIELD_PREP(SSD130X_PAGE_COL_START_MASK, (val))
+ #define SSD130X_START_PAGE_ADDRESS_MASK		GENMASK(2, 0)
+ #define SSD130X_START_PAGE_ADDRESS_SET(val)	FIELD_PREP(SSD130X_START_PAGE_ADDRESS_MASK, (val))
+-#define SSD130X_SET_SEG_REMAP_MASK		GENMASK(0, 0)
+-#define SSD130X_SET_SEG_REMAP_SET(val)		FIELD_PREP(SSD130X_SET_SEG_REMAP_MASK, (val))
+ #define SSD130X_SET_COM_SCAN_DIR_MASK		GENMASK(3, 3)
+ #define SSD130X_SET_COM_SCAN_DIR_SET(val)	FIELD_PREP(SSD130X_SET_COM_SCAN_DIR_MASK, (val))
+ #define SSD130X_SET_CLOCK_DIV_MASK		GENMASK(3, 0)
+@@ -171,20 +176,20 @@ static inline struct ssd130x_device *drm_to_ssd130x(struct drm_device *drm)
+ }
+ 
+ /*
+- * Helper to write data (SSD130X_DATA) to the device.
++ * Helper to write data (SSD13XX_DATA) to the device.
+  */
+ static int ssd130x_write_data(struct ssd130x_device *ssd130x, u8 *values, int count)
+ {
+-	return regmap_bulk_write(ssd130x->regmap, SSD130X_DATA, values, count);
++	return regmap_bulk_write(ssd130x->regmap, SSD13XX_DATA, values, count);
+ }
+ 
+ /*
+- * Helper to write command (SSD130X_COMMAND). The fist variadic argument
++ * Helper to write command (SSD13XX_COMMAND). The fist variadic argument
+  * is the command to write and the following are the command options.
+  *
+- * Note that the ssd130x protocol requires each command and option to be
+- * written as a SSD130X_COMMAND device register value. That is why a call
+- * to regmap_write(..., SSD130X_COMMAND, ...) is done for each argument.
++ * Note that the ssd13xx protocol requires each command and option to be
++ * written as a SSD13XX_COMMAND device register value. That is why a call
++ * to regmap_write(..., SSD13XX_COMMAND, ...) is done for each argument.
+  */
+ static int ssd130x_write_cmd(struct ssd130x_device *ssd130x, int count,
+ 			     /* u8 cmd, u8 option, ... */...)
+@@ -197,7 +202,7 @@ static int ssd130x_write_cmd(struct ssd130x_device *ssd130x, int count,
+ 
+ 	do {
+ 		value = va_arg(ap, int);
+-		ret = regmap_write(ssd130x->regmap, SSD130X_COMMAND, value);
++		ret = regmap_write(ssd130x->regmap, SSD13XX_COMMAND, value);
+ 		if (ret)
+ 			goto out_end;
+ 	} while (--count);
+@@ -341,13 +346,13 @@ static int ssd130x_init(struct ssd130x_device *ssd130x)
+ 	int ret;
+ 
+ 	/* Set initial contrast */
+-	ret = ssd130x_write_cmd(ssd130x, 2, SSD130X_CONTRAST, ssd130x->contrast);
++	ret = ssd130x_write_cmd(ssd130x, 2, SSD13XX_CONTRAST, ssd130x->contrast);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* Set segment re-map */
+-	seg_remap = (SSD130X_SET_SEG_REMAP |
+-		     SSD130X_SET_SEG_REMAP_SET(ssd130x->seg_remap));
++	seg_remap = (SSD13XX_SET_SEG_REMAP |
++		     SSD13XX_SET_SEG_REMAP_SET(ssd130x->seg_remap));
+ 	ret = ssd130x_write_cmd(ssd130x, 1, seg_remap);
+ 	if (ret < 0)
+ 		return ret;
+@@ -360,7 +365,7 @@ static int ssd130x_init(struct ssd130x_device *ssd130x)
+ 		return ret;
+ 
+ 	/* Set multiplex ratio value */
+-	ret = ssd130x_write_cmd(ssd130x, 2, SSD130X_SET_MULTIPLEX_RATIO, ssd130x->height - 1);
++	ret = ssd130x_write_cmd(ssd130x, 2, SSD13XX_SET_MULTIPLEX_RATIO, ssd130x->height - 1);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -914,7 +919,7 @@ static void ssd130x_encoder_atomic_enable(struct drm_encoder *encoder,
+ 	if (ret)
+ 		goto power_off;
+ 
+-	ssd130x_write_cmd(ssd130x, 1, SSD130X_DISPLAY_ON);
++	ssd130x_write_cmd(ssd130x, 1, SSD13XX_DISPLAY_ON);
+ 
+ 	backlight_enable(ssd130x->bl_dev);
+ 
+@@ -933,7 +938,7 @@ static void ssd130x_encoder_atomic_disable(struct drm_encoder *encoder,
+ 
+ 	backlight_disable(ssd130x->bl_dev);
+ 
+-	ssd130x_write_cmd(ssd130x, 1, SSD130X_DISPLAY_OFF);
++	ssd130x_write_cmd(ssd130x, 1, SSD13XX_DISPLAY_OFF);
+ 
+ 	ssd130x_power_off(ssd130x);
+ }
+@@ -1009,7 +1014,7 @@ static int ssd130x_update_bl(struct backlight_device *bdev)
+ 
+ 	ssd130x->contrast = brightness;
+ 
+-	ret = ssd130x_write_cmd(ssd130x, 1, SSD130X_CONTRAST);
++	ret = ssd130x_write_cmd(ssd130x, 1, SSD13XX_CONTRAST);
+ 	if (ret < 0)
+ 		return ret;
+ 
 diff --git a/drivers/gpu/drm/solomon/ssd130x.h b/drivers/gpu/drm/solomon/ssd130x.h
-index bbe374453605..c562c2d00c16 100644
+index c562c2d00c16..a5a25e054d2f 100644
 --- a/drivers/gpu/drm/solomon/ssd130x.h
 +++ b/drivers/gpu/drm/solomon/ssd130x.h
-@@ -24,7 +24,12 @@
- #define SSD130X_DATA				0x40
- #define SSD130X_COMMAND				0x80
+@@ -21,8 +21,8 @@
  
-+enum ssd130x_family_ids {
-+	SSD130X_FAMILY
-+};
-+
- enum ssd130x_variants {
-+	/* ssd130x family */
- 	SH1106_ID,
- 	SSD1305_ID,
- 	SSD1306_ID,
-@@ -42,6 +47,8 @@ struct ssd130x_deviceinfo {
- 	bool need_pwm;
- 	bool need_chargepump;
- 	bool page_mode_only;
-+
-+	enum ssd130x_family_ids family_id;
- };
+ #include <linux/regmap.h>
  
- struct ssd130x_device {
+-#define SSD130X_DATA				0x40
+-#define SSD130X_COMMAND				0x80
++#define SSD13XX_DATA				0x40
++#define SSD13XX_COMMAND				0x80
+ 
+ enum ssd130x_family_ids {
+ 	SSD130X_FAMILY
 -- 
 2.41.0
 
