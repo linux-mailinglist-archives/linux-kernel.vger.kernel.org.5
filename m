@@ -2,190 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D767C762B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 20:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 049F57C7630
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442021AbjJLSvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 14:51:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38506 "EHLO
+        id S1441912AbjJLTAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 15:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379624AbjJLSvb (ORCPT
+        with ESMTP id S229576AbjJLTAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 14:51:31 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5A783
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:51:29 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4066241289bso13933845e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 11:51:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697136688; x=1697741488; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ahmdd2XFDD/bHfs3mS/qHzV4nCgTn7SsexJm11yVJWM=;
-        b=UWxArW7ZLB5GsvYhkDbFlyiKuZCMo3P3uWng3onWA5Ur1AfU3l9qZecSg03s1X/mTZ
-         O5GP2ZCMdpyFLUUemzzt6pubjsS60juTOqotccalaU8u2Y635hn4mrkcZ9E/9V1Ezws5
-         4K0KYGFHyA0kQIaeIb3ABWMM3Oku4lm7DMQ7g31d3N4aozHIrUxZJRp+caYgmNGOH7VJ
-         hEym4Z8xmpTMysOIRAhSlc2vaDXtYaVGCf5ZWkLPJ+M7zxSXngMhDv019YzyLcwRfgGt
-         k69r0JGj+ciAQyrSO/QtkaKyy2/O4VE7V2HRSkrKzmLOHZ28wWuAkNXBkhzupr201Q7W
-         PkqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697136688; x=1697741488;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ahmdd2XFDD/bHfs3mS/qHzV4nCgTn7SsexJm11yVJWM=;
-        b=q/PJhId2EFPmo7vFuH1YtSq2sBfNQhrjjOKL19hhL+WtvK2hW/5ZBCAaJJ+Cr8psjj
-         kAIFxL1JgV8tHR1r9yIZWg6Vm5SF5L+U7sdUD1zzETEBrjt/t9XBJ+DgBuMbSxJE77cA
-         SEXSfdFoCWNFmF7NY/3C6hss+QOTtcY6GKOeYPLBWf9jw9HNMhi6veZdHlMjdF6fw9Jc
-         QB+180mXvic0A9qYQhMUMZ7FVSQ2cTUQN7Imn7JwAJIjWTt3x7YCkoRtDdKtlArWRo1z
-         T01jhtRSMeQjBuOXId9Vv+UNGUzSYcXlm8Fmbx3e2ZFk0dkAtOdHcOaTh2jg+NwIbYik
-         KAJA==
-X-Gm-Message-State: AOJu0Yx5lP034LOYiylCq8rcieo7SUoAqMrqvbRFPlleWcjKJpTPu40H
-        OX2RVolpZeauriTcigSRbMU=
-X-Google-Smtp-Source: AGHT+IHEq18okvfZCN33N+PVTyaCiUf/LhOcGwLFnve7qz6ofhBGIU6eWWApWeWY4NkDDb4mV81LLw==
-X-Received: by 2002:adf:e187:0:b0:32d:89ca:1761 with SMTP id az7-20020adfe187000000b0032d89ca1761mr4309278wrb.43.1697136687939;
-        Thu, 12 Oct 2023 11:51:27 -0700 (PDT)
-Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
-        by smtp.gmail.com with ESMTPSA id e28-20020adfa45c000000b0032d892e70b4sm4777440wra.37.2023.10.12.11.51.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 11:51:26 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 12 Oct 2023 20:51:24 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Breno Leitao <leitao@debian.org>, tglx@linutronix.de, bp@alien8.de,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] x86/bugs: Add a separate config for each mitigation
-Message-ID: <ZShALJDaxJ9VJvek@gmail.com>
-References: <20231010103028.4192223-1-leitao@debian.org>
- <ZSca08rnmZfkONEH@gmail.com>
- <ZSfucR6docdnLznb@gmail.com>
- <20231012170548.o5vi4kgpvpjyld7s@treble>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231012170548.o5vi4kgpvpjyld7s@treble>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        Thu, 12 Oct 2023 15:00:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899FA83
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:00:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697137220; x=1728673220;
+  h=date:from:to:cc:subject:message-id;
+  bh=8spqHpMtRrbsIRyyno0pEwc9CJ5xiXQdW6ZatM/WAvg=;
+  b=FeGsNcknzGrMhLaWFjqGh1TTe0Jl0v1k+onK1IUaG/KWmDVeW179ofj8
+   7M5smzJ/MuLfyxdZMdI4bY6FT2pvYrJFf9oBgMluVBmaLwG6EaNQSaRim
+   G5ANZN26DY9q3THj1pkmrgE3FVE4msWnq3o5zeKzgFNucAUULJA0bEabG
+   YkypzJdgL0QfIrVtn7RliWGvsdrVaTGV/vPvI57T6NOaXTU3ZiPBlWO+g
+   RYLwG1H6cOE3dOcZaa4Ph+Q4O0A6xeaykCmsl+aLSqne7Li2Zun9QerWD
+   5J1h+TAkOtzQrXdwQYCqXh9d/jJNiIjlvkFtJ38CtAZW4Kx2GcTR/R+Hf
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="471254755"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="471254755"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 12:00:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="878209753"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="878209753"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 12 Oct 2023 12:00:18 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qr0ub-0003lF-08;
+        Thu, 12 Oct 2023 19:00:16 +0000
+Date:   Fri, 13 Oct 2023 02:57:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:smp/urgent] BUILD SUCCESS
+ c4dd854f740c21ae8dd9903fc67969c5497cb14b
+Message-ID: <202310130241.DsIp99lP-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp/urgent
+branch HEAD: c4dd854f740c21ae8dd9903fc67969c5497cb14b  cpu-hotplug: Provide prototypes for arch CPU registration
 
-* Josh Poimboeuf <jpoimboe@kernel.org> wrote:
+elapsed time: 1827m
 
-> On Thu, Oct 12, 2023 at 06:02:41AM -0700, Breno Leitao wrote:
-> > > Yeah, so this #ifdeffery is unnecessarily ugly - we can actually assign 
-> > > integer values in the Kconfig language and use that for initialization.
-> > > 
-> > > Is there a reason why we wouldn't want to do something like:
-> > > 
-> > > 	static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init = CONFIG_BOOT_DEFAULT_X86_MITIGATE_RETBLEED;
-> > > 
-> > > ... or so?
-> > 
-> > Yes. There are two reasons rigth now:
-> > 
-> > 1) How to avoid the "undefined" behaviour when
-> > CONFIG_BOOT_DEFAULT_X86_MITIGATE_RETBLEED is not defined ? Something as:
-> > 
-> >  error: ‘CONFIG_BOOT_DEFAULT_X86_MITIGATE_RETBLEED’ undeclared (first use in this function)
-> > 
-> > 2) Right now, these _cmd values are all different by default. Here are a few
-> > examples when the kernel is compiled with the mitigations:
-> > 
-> >  retbleed_cmd = RETBLEED_CMD_AUTO (1)
-> >  spectre_v2_mitigation_cmd = SPECTRE_V2_CMD_AUTO (1)
-> >  ssb_mitigation_cmd = SPEC_STORE_BYPASS_CMD_AUTO (1)
-> >  l1tf_mitigation = L1TF_MITIGATION_FLUSH(2)
-> >  mds_mitigation =  MDS_MITIGATION_FULL(1)
-> >  taa_mitigation = TAA_MITIGATION_VERW (2)
-> >  mmio_mitigation = MMIO_MITIGATION_VERW (2)
-> >  gds_mitigation =  GDS_MITIGATION_FULL (3)
-> > 
-> > If there is a solution for 1, then I _think_ we can probably reorder the
-> > enums, so, the "AUTO" value is always 1?!
-> 
-> I'd rather avoid hard-coding enums as that adds fragility into the mix.
-> 
-> Another way to avoid ifdeffery:
-> 
-> static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init =
-> 	IS_ENABLED(CONFIG_MITIGATION_RETBLEED) ? RETBLEED_CMD_AUTO : RETBLEED_CMD_OFF;
+configs tested: 158
+configs skipped: 2
 
-I think we could make it a simple:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-	static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init = IS_ENABLED(CONFIG_MITIGATION_RETBLEED);
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                      axs103_smp_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231011   gcc  
+arc                   randconfig-001-20231012   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                         orion5x_defconfig   clang
+arm                   randconfig-001-20231012   gcc  
+arm                         wpcm450_defconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231011   gcc  
+i386         buildonly-randconfig-001-20231012   gcc  
+i386         buildonly-randconfig-002-20231011   gcc  
+i386         buildonly-randconfig-002-20231012   gcc  
+i386         buildonly-randconfig-003-20231011   gcc  
+i386         buildonly-randconfig-003-20231012   gcc  
+i386         buildonly-randconfig-004-20231011   gcc  
+i386         buildonly-randconfig-004-20231012   gcc  
+i386         buildonly-randconfig-005-20231011   gcc  
+i386         buildonly-randconfig-005-20231012   gcc  
+i386         buildonly-randconfig-006-20231011   gcc  
+i386         buildonly-randconfig-006-20231012   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231012   gcc  
+i386                  randconfig-002-20231012   gcc  
+i386                  randconfig-003-20231012   gcc  
+i386                  randconfig-004-20231012   gcc  
+i386                  randconfig-005-20231012   gcc  
+i386                  randconfig-006-20231012   gcc  
+i386                  randconfig-011-20231011   gcc  
+i386                  randconfig-012-20231011   gcc  
+i386                  randconfig-013-20231011   gcc  
+i386                  randconfig-014-20231011   gcc  
+i386                  randconfig-015-20231011   gcc  
+i386                  randconfig-016-20231011   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231011   gcc  
+loongarch             randconfig-001-20231012   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                      loongson3_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                         alldefconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc                      pcm030_defconfig   gcc  
+powerpc                     tqm8560_defconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231011   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231011   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                         apsh4a3a_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                ecovec24-romimage_defconfig   gcc  
+sh                        edosk7705_defconfig   gcc  
+sh                           se7750_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20231012   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20231012   gcc  
+x86_64       buildonly-randconfig-002-20231012   gcc  
+x86_64       buildonly-randconfig-003-20231012   gcc  
+x86_64       buildonly-randconfig-004-20231012   gcc  
+x86_64       buildonly-randconfig-005-20231012   gcc  
+x86_64       buildonly-randconfig-006-20231012   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-001-20231011   gcc  
+x86_64                randconfig-002-20231011   gcc  
+x86_64                randconfig-003-20231011   gcc  
+x86_64                randconfig-004-20231011   gcc  
+x86_64                randconfig-005-20231011   gcc  
+x86_64                randconfig-006-20231011   gcc  
+x86_64                randconfig-011-20231012   gcc  
+x86_64                randconfig-012-20231012   gcc  
+x86_64                randconfig-013-20231012   gcc  
+x86_64                randconfig-014-20231012   gcc  
+x86_64                randconfig-015-20231012   gcc  
+x86_64                randconfig-016-20231012   gcc  
+x86_64                randconfig-071-20231012   gcc  
+x86_64                randconfig-072-20231012   gcc  
+x86_64                randconfig-073-20231012   gcc  
+x86_64                randconfig-074-20231012   gcc  
+x86_64                randconfig-075-20231012   gcc  
+x86_64                randconfig-076-20231012   gcc  
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                    rhel-8.3-kselftests   gcc  
+x86_64                         rhel-8.3-kunit   gcc  
+x86_64                           rhel-8.3-ltp   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                  cadence_csp_defconfig   gcc  
 
-Because RETBLEED_CMD_AUTO && RETBLEED_CMD_OFF maps naturally to 1 and 0. 
-Maybe add a comment to the enum to maintain this property in the future 
-too.
-
-> > > 3)
-> > > 
-> > > And yes, now that the rush of CPU vulnerabilities seems to be ebbing, we 
-> > > should probably consider unifying the existing hodgepodge of mitigation 
-> > > Kconfig options as well, to not build up even more technical debt.
-> > 
-> > What do you mean by unifying the existing hodgepodge of mitigation
-> > Kconfigs? If you are implying to just have fewer config options, I think
-> > that is the opposite of what Linus has suggested previously:
-> > 
-> > https://lore.kernel.org/all/CAHk-=wjTHeQjsqtHcBGvy9TaJQ5uAm5HrCDuOD9v7qA9U1Xr4w@mail.gmail.com/
-> 
-> I read that as Ingo agreeing with me that we should rename all the
-> existing options for consistency.
-
-Yeah, and this is doubly important for security features: inconsistency 
-invites misunderstandings & bugs ...
-
-> > > Sometimes it can be a simple configuration mistake, or a user might have 
-> > > different opinion about the importance of a particular mitigation. Nothing 
-> > > heavy-handed, just a simple pr_info() table of changes?
-> > 
-> > That could be done, but, right now messages are printed in regard to the
-> > mitigations. Aren't these enough?
-> > 
-> > Here are some examples:
-> > 
-> >   pr_info("MDS: %s\n", mds_strings[mds_mitigation]);
-> >   pr_info("TAA: %s\n", taa_strings[taa_mitigation]);
-> >   pr_info("MMIO Stale Data: %s\n", mmio_strings[mmio_mitigation]);
-> >   pr_info("MMIO Stale Data: Unknown: No mitigations\n");
-> >   pr_info("%s\n", srbds_strings[srbds_mitigation]);
-> >   pr_info("%s\n", gds_strings[gds_mitigation]);
-> >   pr_info("%s\n", spectre_v1_strings[spectre_v1_mitigation]);
-> >   pr_info("%s\n", spectre_v2_user_strings[mode]);
-> >   pr_info("%s\n", retbleed_strings[retbleed_mitigation]);
-> >   pr_info("%s\n", ssb_strings[ssb_mode]);
-> 
-> But notice many/most of those functions exit early if the mitigation is
-> turned off, thereby skipping the pr_info().  It might be a matter of
-> just tweaking the print behavior and making it consistent across all the
-> mitigations.
-
-Yeah. A single consistent table would be the most user-friendly outcome, 
-with no silence. 'No output' is what kernels without the fixes do too, so 
-we should always output the chosen bootup status of relevant mitigations.
-
-This would make it a bit easier for users to report bugs too: for example 
-if some uncommon CPU model number is not enumerated by the mitigations code 
-and the kernel mistakenly believes that the CPU is safe. While much of this 
-information can be recovered from the sysfs files too, they are subject to 
-runtime changes and the values are also not reliably logged at bootup.
-
-Thanks,
-
-	Ingo
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
