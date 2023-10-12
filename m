@@ -2,146 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FB727C6257
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 03:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEA37C625B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 03:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234085AbjJLBjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 21:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60198 "EHLO
+        id S235257AbjJLBl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 21:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233989AbjJLBjG (ORCPT
+        with ESMTP id S234068AbjJLBlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 21:39:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199BBA9;
-        Wed, 11 Oct 2023 18:39:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697074744; x=1728610744;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=daGpMUfIbIbWopl8m0PHMFSs1YcPe9sCdDhFyZyEnPU=;
-  b=i1uZCB1v4/35BoZoZNvqmJT/xXrgbcMlMhH64siA79aZHuXwI/4LoZ89
-   qHERXZkK84FdjlkhUnjI28+gXzdch6HBOgRZKJD3wajA71k4tXpdYUlue
-   bki9v3x2XWbq63RsHpImeasQlMSk6qnLKeXqRVo0HJTHtIVZ5g/zI8suK
-   UuKmfEnuSo35Red0xgLCf54Jj8zomqqTSUvVIIeLM7TqeY381MK45ztNi
-   vlxZhadsapF1niZ3VKCrmGX15j3imAO957viSUZwj/fGbrqmM7h4/jwqB
-   awkLfR9Hvoc7eAQtFa7oSlQ947mhsDAtKcsjb4gjnuNiVmfIJl38Mq3cf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="384663184"
-X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
-   d="scan'208";a="384663184"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 18:39:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="877925198"
-X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
-   d="scan'208";a="877925198"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 11 Oct 2023 18:38:59 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qqkfA-0002yj-1u;
-        Thu, 12 Oct 2023 01:38:56 +0000
-Date:   Thu, 12 Oct 2023 09:38:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rob Herring <robh@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH v3 2/2] amba: bus: Enable compile testing
-Message-ID: <202310120929.APpnCpDs-lkp@intel.com>
-References: <20231006145732.3419115-2-andriy.shevchenko@linux.intel.com>
+        Wed, 11 Oct 2023 21:41:25 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF49C6;
+        Wed, 11 Oct 2023 18:41:23 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C1FQ3m017544;
+        Thu, 12 Oct 2023 01:41:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=UQIheOsqvn5ZbIDPMFljWaqWRk+AS+WNufhS+BGF2Ls=;
+ b=ZDePl1kyw2b7rxTClv1BRkiG2HuNv0wqsxevYZnPqeEdyhCoxRifjWwiI0LhzL1lPXrH
+ tNV/7JnYtI+mnSXh+NuDOuYI0Lwco25c7uXg9nwMDmel21LBJ5OxOD966dxVfoqyVUFk
+ 46HN3R6C6Hmu1erTrPD3nc5Z4RB0NHVrh/eqxkipCO4/2LhIHZevCwc1Xf9uRAv+dIEw
+ lHz3FlRMi4uFEcYEcbXqhUP/1zCggfJk/Oxl1MXPQAodCa/HhdT280ZkPL/Io/Tu48NM
+ oQJ+Ce+senWzXrOV0RTYHUzQ3JnMtwyJ7Mk0R2PnHTJWvi5h6dAgRTFwYLxeX2E07v5g 7A== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnkwnjrd5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 01:41:14 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39C1fElE006460
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 01:41:14 GMT
+Received: from hu-jiangenj-sha.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 11 Oct 2023 18:41:12 -0700
+From:   Joey Jiao <quic_jiangenj@quicinc.com>
+To:     <linux-modules@vger.kernel.org>
+CC:     <quic_jiangenj@quicinc.com>, Luis Chamberlain <mcgrof@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3] module: Add CONFIG_MODULE_DISABLE_INIT_FREE option
+Date:   Thu, 12 Oct 2023 07:10:11 +0530
+Message-ID: <20231012014012.9030-1-quic_jiangenj@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231006145732.3419115-2-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: zGy8rx1h8tt5MnbW9T97Roc3Y23dtCeu
+X-Proofpoint-GUID: zGy8rx1h8tt5MnbW9T97Roc3Y23dtCeu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_02,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=905
+ lowpriorityscore=0 bulkscore=0 mlxscore=0 suspectscore=0 phishscore=0
+ priorityscore=1501 malwarescore=0 impostorscore=0 adultscore=0 spamscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310120012
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+To facilitate syzkaller test, it's essential for the module to retain the same
+address across reboots. In userspace, the execution of modprobe commands must
+occur sequentially. In the kernel, selecting the CONFIG_MODULE_DISABLE_INIT_FREE
+option disables the asynchronous freeing of init sections.
 
-kernel test robot noticed the following build errors:
+Signed-off-by: Joey Jiao <quic_jiangenj@quicinc.com>
+---
+ kernel/module/Kconfig | 8 ++++++++
+ kernel/module/main.c  | 5 +++--
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
-[auto build test ERROR on rafael-pm/linux-next]
-[also build test ERROR on robh/for-next soc/for-next linus/master v6.6-rc5 next-20231011]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/amba-bus-Enable-compile-testing/20231006-225814
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
-patch link:    https://lore.kernel.org/r/20231006145732.3419115-2-andriy.shevchenko%40linux.intel.com
-patch subject: [PATCH v3 2/2] amba: bus: Enable compile testing
-config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20231012/202310120929.APpnCpDs-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231012/202310120929.APpnCpDs-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310120929.APpnCpDs-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/tty/serial/amba-pl011.c: In function 'pl011_sgbuf_init':
->> drivers/tty/serial/amba-pl011.c:380:30: error: implicit declaration of function 'phys_to_page'; did you mean 'pfn_to_page'? [-Werror=implicit-function-declaration]
-     380 |         sg_set_page(&sg->sg, phys_to_page(dma_addr),
-         |                              ^~~~~~~~~~~~
-         |                              pfn_to_page
-   drivers/tty/serial/amba-pl011.c:380:30: warning: passing argument 2 of 'sg_set_page' makes pointer from integer without a cast [-Wint-conversion]
-     380 |         sg_set_page(&sg->sg, phys_to_page(dma_addr),
-         |                              ^~~~~~~~~~~~~~~~~~~~~~
-         |                              |
-         |                              int
-   In file included from include/linux/kfifo.h:42,
-                    from include/linux/tty_port.h:5,
-                    from include/linux/tty.h:12,
-                    from drivers/tty/serial/amba-pl011.c:26:
-   include/linux/scatterlist.h:136:69: note: expected 'struct page *' but argument is of type 'int'
-     136 | static inline void sg_set_page(struct scatterlist *sg, struct page *page,
-         |                                                        ~~~~~~~~~~~~~^~~~
-   cc1: some warnings being treated as errors
-
-
-vim +380 drivers/tty/serial/amba-pl011.c
-
-68b65f7305e54b drivers/serial/amba-pl011.c     Russell King   2010-12-22  368  
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  369  static int pl011_sgbuf_init(struct dma_chan *chan, struct pl011_sgbuf *sg,
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  370  	enum dma_data_direction dir)
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  371  {
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27  372  	dma_addr_t dma_addr;
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27  373  
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27  374  	sg->buf = dma_alloc_coherent(chan->device->dev,
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27  375  		PL011_DMA_BUFFER_SIZE, &dma_addr, GFP_KERNEL);
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  376  	if (!sg->buf)
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  377  		return -ENOMEM;
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  378  
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27  379  	sg_init_table(&sg->sg, 1);
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27 @380  	sg_set_page(&sg->sg, phys_to_page(dma_addr),
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27  381  		PL011_DMA_BUFFER_SIZE, offset_in_page(dma_addr));
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27  382  	sg_dma_address(&sg->sg) = dma_addr;
-c64be9231e0893 drivers/tty/serial/amba-pl011.c Andrew Jackson 2014-11-07  383  	sg_dma_len(&sg->sg) = PL011_DMA_BUFFER_SIZE;
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  384  
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  385  	return 0;
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  386  }
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  387  
-
+diff --git a/kernel/module/Kconfig b/kernel/module/Kconfig
+index 33a2e991f608..1cdbee4c51de 100644
+--- a/kernel/module/Kconfig
++++ b/kernel/module/Kconfig
+@@ -389,4 +389,12 @@ config MODULES_TREE_LOOKUP
+ 	def_bool y
+ 	depends on PERF_EVENTS || TRACING || CFI_CLANG
+ 
++config MODULE_DISABLE_INIT_FREE
++	bool "Disable freeing of init sections"
++	default n
++	help
++	  Allows users to prevent the freeing of init sections. This option is
++	  particularly helpful for syzkaller fuzzing, ensuring that the module
++	  consistently loads into the same address across reboots.
++
+ endif # MODULES
+diff --git a/kernel/module/main.c b/kernel/module/main.c
+index 98fedfdb8db5..a5210b90c078 100644
+--- a/kernel/module/main.c
++++ b/kernel/module/main.c
+@@ -2593,8 +2593,9 @@ static noinline int do_init_module(struct module *mod)
+ 	 * be cleaned up needs to sync with the queued work - ie
+ 	 * rcu_barrier()
+ 	 */
+-	if (llist_add(&freeinit->node, &init_free_list))
+-		schedule_work(&init_free_wq);
++	if (llist_add(&freeinit->node, &init_free_list) &&
++		!IS_ENABLED(CONFIG_MODULE_DISABLE_INIT_FREE))
++			schedule_work(&init_free_wq);
+ 
+ 	mutex_unlock(&module_mutex);
+ 	wake_up_all(&module_wq);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0
+
