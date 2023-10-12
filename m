@@ -2,71 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CCC7C787F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D48AE7C7885
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 23:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442890AbjJLVTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 17:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57224 "EHLO
+        id S1442918AbjJLVUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 17:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442824AbjJLVTR (ORCPT
+        with ESMTP id S1442853AbjJLVUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 17:19:17 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025AEBE
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:19:16 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c5c91bec75so11528215ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:19:15 -0700 (PDT)
+        Thu, 12 Oct 2023 17:20:37 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3E6A9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:20:35 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9adb9fa7200so291553366b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 14:20:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697145555; x=1697750355; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WV1rWLSM7c49IBFcfuqXHQ0XbP6e2rrZoMUIcLvjd4A=;
-        b=nN0TJoSC4A0oGJtC+2ie+rPcv8L4wUsEemoRiePJk/iu8Uhv4MrLKEmEGSAZZ+iE3l
-         m6asIgeUsPP4bEj2Ameu5aGs/AUzFsJjwRYrI+QdQOb/CRyT4UqyiChvzST7c1Nw5/HP
-         i0TvZb05ObWgmMy4PGoyiahPg4CkNXiDoCy44=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697145555; x=1697750355;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1697145634; x=1697750434; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WV1rWLSM7c49IBFcfuqXHQ0XbP6e2rrZoMUIcLvjd4A=;
-        b=XzKQChY28By24ZHDoE+/J7cmR0T4haw2mgBZlI2e5O4ibnxnRb2F0IY/auTzDDayqw
-         jGCHiTT9v6HcM4D5ll5zcIwITbzx0+5/vbJL7tAVdC1fpc9NbXjza8bf2v+UxhZ6Cmgl
-         a0cjNY3/iC3C25Cjp4dUhIQbfRQq6wR4p+2V7vn/OeAHdu/t2w/0BpEsuw9meos9Tf57
-         mfqUamtIJt5UMd//YVI+bdLk73q1yAKmn0CQNG+WJ3GbTPhGJJPrOKvDXbPTMt6zKw84
-         UxOj6IsTU2e0fIosFfrA6cXfLuWSPkEQDhLSvlRJ/8JSZlya9WewVL5sfaUfoK33zW5+
-         22yw==
-X-Gm-Message-State: AOJu0YyIPr5pTxfmyRkpbDyPSmC3kbieqR83/P+2OVjVAXoOkXCTNWgn
-        LeJpg0Sf61piZTiT/xzgA0eb/A==
-X-Google-Smtp-Source: AGHT+IF/hXlwpKtWrDQ5SRLUQ/pVbfU+Uaom8WuJEFjDIKbXUNGpndpxYsJlrcNvUqHz/V6eFNrQJA==
-X-Received: by 2002:a17:902:ca14:b0:1c9:ca02:645c with SMTP id w20-20020a170902ca1400b001c9ca02645cmr4491963pld.36.1697145555476;
-        Thu, 12 Oct 2023 14:19:15 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id o12-20020a170902d4cc00b001c61073b076sm2429102plg.144.2023.10.12.14.19.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 14:19:14 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 14:19:13 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-net-drivers@amd.com, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] sfc: replace deprecated strncpy with strscpy
-Message-ID: <202310121402.7A27AB9@keescook>
-References: <20231012-strncpy-drivers-net-ethernet-sfc-mcdi-c-v1-1-478c8de1039d@google.com>
+        bh=6E+ctilpvTRp1sWziPGrKb0bFclcGitH24520WnSwgs=;
+        b=JSK08vOudVUto1Q85NbEBLbPAjFq7RUlB4moKaknBcZRMtp+TKx5Ir771l3TMCnwXO
+         p4jfmVL5xfwwKTtWb3Rwn7VQ1FttL2OlYFIncHgSL/tpyzEF4/PJ6dEi319D185H9kgL
+         okpUIicCZ9wG+uDaUSA1M7yzr0KSsxln9JaA5uTFw7L0Ig6VB6/THAGkxt8sWUGEJ94j
+         PJ9ta3nO66/EQIdqnB9UBBlYT42kR0eXmwA6+rs4i9Z9eDn0o9vX2eIwzoM6dG5dgFcw
+         ICxoNTQyznjbZPy+mxmFqZMDMxn5BkEyFVZJ+Qlk0ru3F+XbEwhvRzafMQwr3h2R2xNL
+         SwGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697145634; x=1697750434;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6E+ctilpvTRp1sWziPGrKb0bFclcGitH24520WnSwgs=;
+        b=BmFkKpq2pkHpn9e9LjR4YqZdN7WhmZgxrmk2t7SkKWejMz1Mr/f+ZLw7RdO6b1Y+u2
+         eC7DbXqq/4jojH9z8RJPk2ZsfIyircjngaFOqoWCDsY9ktOM/RyW1/7RKqrzPtlkTMtV
+         BSObE68fmdWst3AD38/xhhe/9RQvgZoQx8SO2ElDDgi0Ow9+qintzDvluXdrx6dyIZfj
+         A59vJwxskt0yyOrsRRE8y8/2OeUj2/qQy8piS/dQ7s6N8QSuVmngE6LNt6MVyh0UlsI7
+         xd+aEgmId+TVJCHePh77t1q7zQbTDqLG4OZxNGLIrPz6n4wDFnHMfHbO2baPzoK3RMtO
+         55mA==
+X-Gm-Message-State: AOJu0YyPCpWCdjjcGvdWbQrFqf89V/unCdRPC0Gvra1Zo6+dS4aQ/HqI
+        koLyLhxQ0jaqx8tQwS/+wt8Aqiq3y064Lpn7yI5OXQ==
+X-Google-Smtp-Source: AGHT+IHYyMKX/mt1qXenjXQXNg9i7QjMRmRu+cx5Qv0V/h53iTtEzf7z7GQSkj9UBoDduFKAXaEjA9B83NI+fRf1ZIE=
+X-Received: by 2002:a17:907:3e1a:b0:9ae:699d:8a31 with SMTP id
+ hp26-20020a1709073e1a00b009ae699d8a31mr26012691ejc.33.1697145633579; Thu, 12
+ Oct 2023 14:20:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012-strncpy-drivers-net-ethernet-sfc-mcdi-c-v1-1-478c8de1039d@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231010032117.1577496-1-yosryahmed@google.com>
+ <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
+ <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
+ <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
+ <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
+ <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
+ <CAJD7tkbHWW139-=3HQM1cNzJGje9OYSCsDtNKKVmiNzRjE4tjQ@mail.gmail.com>
+ <CAJD7tkbSBtNJv__uZT+uh9ie=-WeqPe9oBinGOH2wuZzJMvCAw@mail.gmail.com>
+ <CALvZod6zssp88j6e6EKTbu_oHS7iW5ocdTWH7f27Hg0byzut6g@mail.gmail.com>
+ <CAJD7tkZbUrs_6r9QcouHNnDbLKiZHdSA=2zyi3A41aqOW6kTNA@mail.gmail.com>
+ <CAJD7tkbSwNOZu1r8VfUAD5v-g_NK3oASfO51FJDX4pdMYh9mjw@mail.gmail.com> <CALvZod5fWDWZDa=WoyOyckvx5ptjmFBMO9sOG0Sk0MgiDX4DSQ@mail.gmail.com>
+In-Reply-To: <CALvZod5fWDWZDa=WoyOyckvx5ptjmFBMO9sOG0Sk0MgiDX4DSQ@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 12 Oct 2023 14:19:55 -0700
+Message-ID: <CAJD7tkY9LrWHX3rjYwNnVK9sjtYPJyx6j_Y3DexTXfS9wwr+xA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,35 +89,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 08:38:19PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> `desc` is expected to be NUL-terminated as evident by the manual
-> NUL-byte assignment. Moreover, NUL-padding does not seem to be
-> necessary.
-> 
-> The only caller of efx_mcdi_nvram_metadata() is
-> efx_devlink_info_nvram_partition() which provides a NULL for `desc`:
-> |       rc = efx_mcdi_nvram_metadata(efx, partition_type, NULL, version, NULL, 0);
-> 
-> Due to this, I am not sure this code is even reached but we should still
-> favor something other than strncpy.
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+On Thu, Oct 12, 2023 at 2:16=E2=80=AFPM Shakeel Butt <shakeelb@google.com> =
+wrote:
+>
+> On Thu, Oct 12, 2023 at 2:06=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
+m> wrote:
+> >
+> > [..]
+> > > > > >
+> > > > > > Using next-20231009 and a similar 44 core machine with hyperthr=
+eading
+> > > > > > disabled, I ran 22 instances of netperf in parallel and got the
+> > > > > > following numbers from averaging 20 runs:
+> > > > > >
+> > > > > > Base: 33076.5 mbps
+> > > > > > Patched: 31410.1 mbps
+> > > > > >
+> > > > > > That's about 5% diff. I guess the number of iterations helps re=
+duce
+> > > > > > the noise? I am not sure.
+> > > > > >
+> > > > > > Please also keep in mind that in this case all netperf instance=
+s are
+> > > > > > in the same cgroup and at a 4-level depth. I imagine in a pract=
+ical
+> > > > > > setup processes would be a little more spread out, which means =
+less
+> > > > > > common ancestors, so less contended atomic operations.
+> > > > >
+> > > > >
+> > > > > (Resending the reply as I messed up the last one, was not in plai=
+n text)
+> > > > >
+> > > > > I was curious, so I ran the same testing in a cgroup 2 levels dee=
+p
+> > > > > (i.e /sys/fs/cgroup/a/b), which is a much more common setup in my
+> > > > > experience. Here are the numbers:
+> > > > >
+> > > > > Base: 40198.0 mbps
+> > > > > Patched: 38629.7 mbps
+> > > > >
+> > > > > The regression is reduced to ~3.9%.
+> > > > >
+> > > > > What's more interesting is that going from a level 2 cgroup to a =
+level
+> > > > > 4 cgroup is already a big hit with or without this patch:
+> > > > >
+> > > > > Base: 40198.0 -> 33076.5 mbps (~17.7% regression)
+> > > > > Patched: 38629.7 -> 31410.1 (~18.7% regression)
+> > > > >
+> > > > > So going from level 2 to 4 is already a significant regression fo=
+r
+> > > > > other reasons (e.g. hierarchical charging). This patch only makes=
+ it
+> > > > > marginally worse. This puts the numbers more into perspective imo=
+ than
+> > > > > comparing values at level 4. What do you think?
+> > > >
+> > > > This is weird as we are running the experiments on the same machine=
+. I
+> > > > will rerun with 2 levels as well. Also can you rerun the page fault
+> > > > benchmark as well which was showing 9% regression in your original
+> > > > commit message?
+> > >
+> > > Thanks. I will re-run the page_fault tests, but keep in mind that the
+> > > page fault benchmarks in will-it-scale are highly variable. We run
+> > > them between kernel versions internally, and I think we ignore any
+> > > changes below 10% as the benchmark is naturally noisy.
+> > >
+> > > I have a couple of runs for page_fault3_scalability showing a 2-3%
+> > > improvement with this patch :)
+> >
+> > I ran the page_fault tests for 10 runs on a machine with 256 cpus in a
+> > level 2 cgroup, here are the results (the results in the original
+> > commit message are for 384 cpus in a level 4 cgroup):
+> >
+> >                LABEL            |     MEAN    |   MEDIAN    |   STDDEV =
+  |
+> > ------------------------------+-------------+-------------+------------=
+-
+> >   page_fault1_per_process_ops |             |             |            =
+|
+> >   (A) base                    | 270249.164  | 265437.000  | 13451.836  =
+|
+> >   (B) patched                 | 261368.709  | 255725.000  | 13394.767  =
+|
+> >                               | -3.29%      | -3.66%      |            =
+|
+> >   page_fault1_per_thread_ops  |             |             |            =
+|
+> >   (A) base                    | 242111.345  | 239737.000  | 10026.031  =
+|
+> >   (B) patched                 | 237057.109  | 235305.000  | 9769.687   =
+|
+> >                               | -2.09%      | -1.85%      |            =
+|
+> >   page_fault1_scalability     |             |             |
+> >   (A) base                    | 0.034387    | 0.035168    | 0.0018283  =
+|
+> >   (B) patched                 | 0.033988    | 0.034573    | 0.0018056  =
+|
+> >                               | -1.16%      | -1.69%      |            =
+|
+> >   page_fault2_per_process_ops |             |             |
+> >   (A) base                    | 203561.836  | 203301.000  | 2550.764   =
+|
+> >   (B) patched                 | 197195.945  | 197746.000  | 2264.263   =
+|
+> >                               | -3.13%      | -2.73%      |            =
+|
+> >   page_fault2_per_thread_ops  |             |             |
+> >   (A) base                    | 171046.473  | 170776.000  | 1509.679   =
+|
+> >   (B) patched                 | 166626.327  | 166406.000  | 768.753    =
+|
+> >                               | -2.58%      | -2.56%      |            =
+|
+> >   page_fault2_scalability     |             |             |
+> >   (A) base                    | 0.054026    | 0.053821    | 0.00062121 =
+|
+> >   (B) patched                 | 0.053329    | 0.05306     | 0.00048394 =
+|
+> >                               | -1.29%      | -1.41%      |            =
+|
+> >   page_fault3_per_process_ops |             |             |
+> >   (A) base                    | 1295807.782 | 1297550.000 | 5907.585   =
+|
+> >   (B) patched                 | 1275579.873 | 1273359.000 | 8759.160   =
+|
+> >                               | -1.56%      | -1.86%      |            =
+|
+> >   page_fault3_per_thread_ops  |             |             |
+> >   (A) base                    | 391234.164  | 390860.000  | 1760.720   =
+|
+> >   (B) patched                 | 377231.273  | 376369.000  | 1874.971   =
+|
+> >                               | -3.58%      | -3.71%      |            =
+|
+> >   page_fault3_scalability     |             |             |
+> >   (A) base                    | 0.60369     | 0.60072     | 0.0083029  =
+|
+> >   (B) patched                 | 0.61733     | 0.61544     | 0.009855   =
+|
+> >                               | +2.26%      | +2.45%      |            =
+|
+> >
+> > The numbers are much better. I can modify the commit log to include
+> > the testing in the replies instead of what's currently there if this
+> > helps (22 netperf instances on 44 cpus and will-it-scale page_fault on
+> > 256 cpus -- all in a level 2 cgroup).
+>
+> Yes this looks better. I think we should also ask intel perf and
+> phoronix folks to run their benchmarks as well (but no need to block
+> on them).
 
-Looks correct to me!
+Anything I need to do for this to happen? (I thought such testing is
+already done on linux-next)
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+Also, any further comments on the patch (or the series in general)? If
+not, I can send a new commit message for this patch in-place.
