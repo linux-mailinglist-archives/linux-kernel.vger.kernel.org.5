@@ -2,62 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6528D7C66CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A0B7C66CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377813AbjJLH3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 03:29:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60210 "EHLO
+        id S1377875AbjJLHaJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 03:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377782AbjJLH3H (ORCPT
+        with ESMTP id S1377791AbjJLHaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 03:29:07 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A6F90
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 00:29:05 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qqq7l-0004HS-Ei; Thu, 12 Oct 2023 09:28:49 +0200
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qqq7j-0015rf-UG; Thu, 12 Oct 2023 09:28:47 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 910B2234B97;
-        Thu, 12 Oct 2023 07:28:47 +0000 (UTC)
-Date:   Thu, 12 Oct 2023 09:28:47 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Networking <netdev@vger.kernel.org>, Frank Li <Frank.Li@nxp.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the imx-mxs tree with the net tree
-Message-ID: <20231012-giveaway-cider-963ce91b73cf-mkl@pengutronix.de>
-References: <20231012101434.1e5e7340@canb.auug.org.au>
- <20231012004356.GR819755@dragon>
+        Thu, 12 Oct 2023 03:30:07 -0400
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8689D;
+        Thu, 12 Oct 2023 00:30:04 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4S5gts4LNtz9xrtf;
+        Thu, 12 Oct 2023 15:17:09 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwCn_5BQoCdlXCMQAg--.31200S2;
+        Thu, 12 Oct 2023 08:29:34 +0100 (CET)
+Message-ID: <16c8c95f2e63ab9a2fba8cba919bf129d0541b61.camel@huaweicloud.com>
+Subject: Re: [PATCH v3 02/25] ima: Align ima_post_path_mknod() definition
+ with LSM infrastructure
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
+        tom@talpey.com, dmitry.kasatkin@gmail.com, paul@paul-moore.com,
+        jmorris@namei.org, serge@hallyn.com, dhowells@redhat.com,
+        jarkko@kernel.org, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Thu, 12 Oct 2023 09:29:16 +0200
+In-Reply-To: <8646e30b0074a2932076b5a0a792b14be034de98.camel@linux.ibm.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904133415.1799503-3-roberto.sassu@huaweicloud.com>
+         <a733fe780a3197150067ad35ed280bf85e11fa97.camel@linux.ibm.com>
+         <b51baf7741de1fdee8b36a87bd2dde71184d47a8.camel@huaweicloud.com>
+         <8646e30b0074a2932076b5a0a792b14be034de98.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yptlk7dor5hap4t3"
-Content-Disposition: inline
-In-Reply-To: <20231012004356.GR819755@dragon>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-CM-TRANSID: LxC2BwCn_5BQoCdlXCMQAg--.31200S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3WrWfAw4Utr48uF48Gw1Utrb_yoW7CF1fpF
+        WkJ3WDGrZ5Xry7uF10vayYyasav3y7tF1UWrn0gw1ayr9xtFnIgFsa9F4Y9ryrKF4DCry7
+        XF1UtrZxu3yjyFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAIBF1jj5Tu6AAAsu
+X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,61 +74,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2023-10-11 at 15:01 -0400, Mimi Zohar wrote:
+> On Wed, 2023-10-11 at 18:02 +0200, Roberto Sassu wrote:
+> > On Wed, 2023-10-11 at 10:38 -0400, Mimi Zohar wrote:
+> > > On Mon, 2023-09-04 at 15:33 +0200, Roberto Sassu wrote:
+> > > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > 
+> > > > Change ima_post_path_mknod() definition, so that it can be registered as
+> > > > implementation of the path_post_mknod hook. Since LSMs see a umask-stripped
+> > > > mode from security_path_mknod(), pass the same to ima_post_path_mknod() as
+> > > > well.
+> > > > Also, make sure that ima_post_path_mknod() is executed only if
+> > > > (mode & S_IFMT) is equal to zero or S_IFREG.
+> > > > 
+> > > > Add this check to take into account the different placement of the
+> > > > path_post_mknod hook (to be introduced) in do_mknodat().
+> > > 
+> > > Move "(to be introduced)" to when it is first mentioned.
+> > > 
+> > > > Since the new hook
+> > > > will be placed after the switch(), the check ensures that
+> > > > ima_post_path_mknod() is invoked as originally intended when it is
+> > > > registered as implementation of path_post_mknod.
+> > > > 
+> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > ---
+> > > >  fs/namei.c                        |  9 ++++++---
+> > > >  include/linux/ima.h               |  7 +++++--
+> > > >  security/integrity/ima/ima_main.c | 10 +++++++++-
+> > > >  3 files changed, 20 insertions(+), 6 deletions(-)
+> > > > 
+> > > > diff --git a/fs/namei.c b/fs/namei.c
+> > > > index e56ff39a79bc..c5e96f716f98 100644
+> > > > --- a/fs/namei.c
+> > > > +++ b/fs/namei.c
+> > > > @@ -4024,6 +4024,7 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+> > > >  	struct path path;
+> > > >  	int error;
+> > > >  	unsigned int lookup_flags = 0;
+> > > > +	umode_t mode_stripped;
+> > > >  
+> > > >  	error = may_mknod(mode);
+> > > >  	if (error)
+> > > > @@ -4034,8 +4035,9 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+> > > >  	if (IS_ERR(dentry))
+> > > >  		goto out1;
+> > > >  
+> > > > -	error = security_path_mknod(&path, dentry,
+> > > > -			mode_strip_umask(path.dentry->d_inode, mode), dev);
+> > > > +	mode_stripped = mode_strip_umask(path.dentry->d_inode, mode);
+> > > > +
+> > > > +	error = security_path_mknod(&path, dentry, mode_stripped, dev);
+> > > >  	if (error)
+> > > >  		goto out2;
+> > > >  
+> > > > @@ -4045,7 +4047,8 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+> > > >  			error = vfs_create(idmap, path.dentry->d_inode,
+> > > >  					   dentry, mode, true);
+> > > >  			if (!error)
+> > > > -				ima_post_path_mknod(idmap, dentry);
+> > > > +				ima_post_path_mknod(idmap, &path, dentry,
+> > > > +						    mode_stripped, dev);
+> > > >  			break;
+> > > >  		case S_IFCHR: case S_IFBLK:
+> > > >  			error = vfs_mknod(idmap, path.dentry->d_inode,
+> > > > diff --git a/include/linux/ima.h b/include/linux/ima.h
+> > > > index 910a2f11a906..179ce52013b2 100644
+> > > > --- a/include/linux/ima.h
+> > > > +++ b/include/linux/ima.h
+> > > > @@ -32,7 +32,8 @@ extern int ima_read_file(struct file *file, enum kernel_read_file_id id,
+> > > >  extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
+> > > >  			      enum kernel_read_file_id id);
+> > > >  extern void ima_post_path_mknod(struct mnt_idmap *idmap,
+> > > > -				struct dentry *dentry);
+> > > > +				const struct path *dir, struct dentry *dentry,
+> > > > +				umode_t mode, unsigned int dev);
+> > > >  extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
+> > > >  extern int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size);
+> > > >  extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
+> > > > @@ -114,7 +115,9 @@ static inline int ima_post_read_file(struct file *file, void *buf, loff_t size,
+> > > >  }
+> > > >  
+> > > >  static inline void ima_post_path_mknod(struct mnt_idmap *idmap,
+> > > > -				       struct dentry *dentry)
+> > > > +				       const struct path *dir,
+> > > > +				       struct dentry *dentry,
+> > > > +				       umode_t mode, unsigned int dev)
+> > > >  {
+> > > >  	return;
+> > > >  }
+> > > > diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> > > > index 365db0e43d7c..76eba92d7f10 100644
+> > > > --- a/security/integrity/ima/ima_main.c
+> > > > +++ b/security/integrity/ima/ima_main.c
+> > > > @@ -696,18 +696,26 @@ void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+> > > >  /**
+> > > >   * ima_post_path_mknod - mark as a new inode
+> > > >   * @idmap: idmap of the mount the inode was found from
+> > > > + * @dir: path structure of parent of the new file
+> > > >   * @dentry: newly created dentry
+> > > > + * @mode: mode of the new file
+> > > > + * @dev: undecoded device number
+> > > >   *
+> > > >   * Mark files created via the mknodat syscall as new, so that the
+> > > >   * file data can be written later.
+> > > >   */
+> > > >  void ima_post_path_mknod(struct mnt_idmap *idmap,
+> > > > -			 struct dentry *dentry)
+> > > > +			 const struct path *dir, struct dentry *dentry,
+> > > > +			 umode_t mode, unsigned int dev)
+> > > >  {
+> > > >  	struct integrity_iint_cache *iint;
+> > > >  	struct inode *inode = dentry->d_inode;
+> > > >  	int must_appraise;
+> > > >  
+> > > > +	/* See do_mknodat(), IMA is executed for case 0: and case S_IFREG: */
+> > > > +	if ((mode & S_IFMT) != 0 && (mode & S_IFMT) != S_IFREG)
+> > > > +		return;
+> > > > +
+> > > 
+> > > There's already a check below to make sure that this is a regular file.
+> > > Are both needed?
+> > 
+> > You are right, I can remove the first check.
+> 
+> The question then becomes why modify hook the arguments?   
 
---yptlk7dor5hap4t3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We need to make sure that ima_post_path_mknod() has the same parameters
+as the LSM hook at the time we register it to the LSM infrastructure.
 
-On 12.10.2023 08:43:56, Shawn Guo wrote:
-> On Thu, Oct 12, 2023 at 10:14:34AM +1100, Stephen Rothwell wrote:
-> > Hi all,
-> >=20
-> > Today's linux-next merge of the imx-mxs tree got a conflict in:
-> >=20
-> >   arch/arm64/boot/dts/freescale/imx93.dtsi
-> >=20
-> > between commit:
-> >=20
-> >   23ed2be5404d ("arm64: dts: imx93: add the Flex-CAN stop mode by GPR")
->=20
-> Marc,
->=20
-> Is there any particular reason why this dts change needs to go via net
-> tree?  Otherwise, could you drop it from net and let it go via i.MX tree?
+Thanks
 
-As far as I understand the problem, the imx93 A0 silicon was supposed to
-have a functional auto-stop mode for the flexcan peripheral. But wakeup
-stress tests show that it doesn't work reliable. So this and the
-following patch switched the imx93 back to the "old" stop-mode via GPR,
-which needs a DT update.
+Roberto
 
-| 23ed2be5404d ("arm64: dts: imx93: add the Flex-CAN stop mode by GPR")
-| 63ead535570f ("can: flexcan: remove the auto stop mode for IMX93")
+> > 
+> > > >  	if (!ima_policy_flag || !S_ISREG(inode->i_mode))
+> > > >  		return;
+> > > >  
+> > 
+> 
 
-See the description of 63ead535570f for more details.
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---yptlk7dor5hap4t3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmUnoCsACgkQvlAcSiqK
-BOhqxAf/TR6JyrXcR2gU8M5fJLeDnX0Zlc2BMNkHrzylitpeLN9peBKaPdK4WLo/
-9EfPAWZn08z3d41N9mKFRwHTc5K/d9dz/eqYMqkiXHm6zIKjSRLASNQWdlhO29Uy
-CUTiz3GTK3DbQOzkVASfNpmaH/CTb42Nf66lfbRD85J4fPRKjoDiJhkDRGJlLheO
-5Bhky1pm5l8oNZaFfcH6LMeC75Qk+3Z1FW4Pbta5xsDE8b1LpgoaPuLvkK+BTDcD
-mdenpyH4XM/zx4nVZvaOLaL9DSY0lVOVWKVQtUbmRtcWOGclccU835SJo8oGWqmZ
-wq5I5ErI1HHytNZvt7FzLpDr2TE10Q==
-=Ylvq
------END PGP SIGNATURE-----
-
---yptlk7dor5hap4t3--
