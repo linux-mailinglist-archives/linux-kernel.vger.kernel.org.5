@@ -2,151 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B417C7800
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA80C7C7804
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442540AbjJLUlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 16:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
+        id S1442670AbjJLUmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 16:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344079AbjJLUli (ORCPT
+        with ESMTP id S1343782AbjJLUmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 16:41:38 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B87CA;
-        Thu, 12 Oct 2023 13:41:20 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 35F223200B37;
-        Thu, 12 Oct 2023 16:41:14 -0400 (EDT)
-Received: from imap44 ([10.202.2.94])
-  by compute3.internal (MEProxy); Thu, 12 Oct 2023 16:41:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1697143273; x=1697229673; bh=Kcx2chQljPp1tO/RTaI3fBXk8864d+5dqsf
-        CYXZoMXY=; b=rJRlgRpG0v+aFSEnYV5yUdnk8chd0XOqsm+FEQ+dQmn8KgHPA98
-        IK9kHWFRXx6rwNcWu4DczT7uz4qWT4lm25rLGUm8u3xF6ONyrr2fsYJM2U+r/7v6
-        5AkYBAhSGeyiw6lFxXvLhFSd8ha6BU4wGHjRGpKpDgZD8vO9HPSESnko3hMBTX76
-        7xef4ex0to/kkOHJSy2MATuFzPM7cDj+OygowP5UkK89dNi2LZnlxro8DBu6VLaC
-        7wLtJa+bm7Kr5xBVhlMM+lFe6+p9ZgKh7FTRzFFjxKrDXT41STfosb6vgIBnIAC0
-        cz1W5I7FVx0RvHS89CzJHuxXVbgICNSbpAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1697143273; x=1697229673; bh=Kcx2chQljPp1tO/RTaI3fBXk8864d+5dqsf
-        CYXZoMXY=; b=IbEzv8FB9FajJZsu6CyFe0MV4PqB6XXzBLEwaOl12s8pz3x6zJb
-        riJYZpepjEglaEWbb/9QM0FqPYkfKOXT1+ZoN9SJTV67m+MAEFNeZ1cMdzqYQ999
-        MkdMzMfNk/REbYThagYky0NxMAVH3OJTPFQP6UoJiaX6LqEcp43qAu+5OVF45FHo
-        LGoioNFenrq4jKUMSaVVNmjd4BTbw5k6NzIrxizNV+ygq93TNyfgTaLxitmstdhL
-        9PlliNUEiyVpA9Y0NHhTOA1LP+FXnisystXN7ChH/LVtJ+85b3s6IdIYIhEJLSNl
-        hIO2qzbP6nJgt6ZP5TcPOlOKooxMWMJ9ZTg==
-X-ME-Sender: <xms:6VkoZSnQzxqL6AApKeEqwtxX28l7eT7u1dgCgxGHBwnRAcLVlnKUhw>
-    <xme:6VkoZZ2TQts-Z8BhJjaNdZJP_ojbLmnxHoyeqWyNX8efqydymZwzwyp6n3gRHxGJo
-    -c5WozGIoT4vkXZNi0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedriedtgddugeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfl
-    ihgrgihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtoh
-    hmqeenucggtffrrghtthgvrhhnpeetleegheefvdejfeeftdfhtdevfefgjeeufefgiedu
-    vdetheefheefgfelfeehudenucffohhmrghinhepvghlihhnuhigrdhorhhgpdgsohhoth
-    hlihhnrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
-    rhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:6VkoZQpAFF4boud0oyFbVlqvnKkbuK66Lp6F4DzvGhhn0nXXSwXEEA>
-    <xmx:6VkoZWmsQzq_uXYtTw7hEwiyxpniJvQFmjiA67IlMuWZu2SfKbOIGA>
-    <xmx:6VkoZQ2DxtaP7_1M_DmutKn__3vm9v-4Q9drRwf4JQiQJjbOtkv64A>
-    <xmx:6VkoZZvyt-dhkR4-zVaYN-kGkHx46ilb3jQZUk9-0cOAP7H1Vwpayw>
-Feedback-ID: ifd894703:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 3734536A0075; Thu, 12 Oct 2023 16:41:13 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
+        Thu, 12 Oct 2023 16:42:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5EAD7;
+        Thu, 12 Oct 2023 13:42:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697143349; x=1728679349;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=grZVskJc6ajq0UaMPLY1+vxdNrKtPGrIR2HY2iTkC6c=;
+  b=LhMEs1PpBrYA9bQkwuqrFDZrd4SocdTJoTV7BaFuUyYDQK2tcpCnS+mI
+   JKIwntNCpJ8Kph0htB2ByC7QyS9h+z70drOjbgXdPyYFNIDtKHNzEdrjz
+   NV+u21jzwaRLrM5M0CKW7l65/DZfD252ib2pbbEmkpDvRf3pePEBzspNC
+   7LOee5erNYibB8XtO1iScuTW5TKuQCsR3sm3xgRggK3xaE97Lc6/fv5qL
+   XS6tZnXfZPO14LX6Y5ps6o8IZ8xL5KpX6130pbHUgyiBhbgs1Pz9UgQJ2
+   2Oh2g4qSxjDHZfz7YfwUVat8zEZnITrpRWclk9TVeitj/qS1soiJNLXmL
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="375385887"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="375385887"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 13:42:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="824755431"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="824755431"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 12 Oct 2023 13:42:05 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qr2VP-0003rZ-2F;
+        Thu, 12 Oct 2023 20:42:03 +0000
+Date:   Fri, 13 Oct 2023 04:41:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tianyi Liu <i.pear@outlook.com>, seanjc@google.com,
+        pbonzini@redhat.com, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org, x86@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+        Tianyi Liu <i.pear@outlook.com>
+Subject: Re: [PATCH v2 4/5] perf kvm: Support sampling guest callchains
+Message-ID: <202310130419.cIkNaYZm-lkp@intel.com>
+References: <SY4P282MB108433024762F1F292D47C2A9DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Message-Id: <b35d73e8-260e-4296-a710-f20676e17c27@app.fastmail.com>
-In-Reply-To: <878r89b4jh.fsf@BL-laptop>
-References: <20231004161038.2818327-1-gregory.clement@bootlin.com>
- <20231004161038.2818327-4-gregory.clement@bootlin.com>
- <f98d0cf9-6339-4cb1-8019-56bc71bfb822@app.fastmail.com>
- <87edi3bxcl.fsf@BL-laptop>
- <e5b8c68e-8a1d-45e7-92bf-db0c2fa812ad@app.fastmail.com>
- <878r89b4jh.fsf@BL-laptop>
-Date:   Thu, 12 Oct 2023 21:40:52 +0100
-From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To:     "Gregory CLEMENT" <gregory.clement@bootlin.com>,
-        "paulburton@kernel.org" <paulburton@kernel.org>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Vladimir Kondratiev" <vladimir.kondratiev@intel.com>,
-        "Tawfik Bayouk" <tawfik.bayouk@mobileye.com>,
-        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
-        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 03/11] MIPS: support RAM beyond 32-bit
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NO_DNS_FOR_FROM,RCVD_IN_DNSWL_BLOCKED,T_SPF_HELO_TEMPERROR,
-        T_SPF_TEMPERROR autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SY4P282MB108433024762F1F292D47C2A9DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Tianyi,
 
+kernel test robot noticed the following build warnings:
 
-=E5=9C=A82023=E5=B9=B410=E6=9C=8811=E6=97=A5=E5=8D=81=E6=9C=88 =E4=B8=8B=
-=E5=8D=883:46=EF=BC=8CGregory CLEMENT=E5=86=99=E9=81=93=EF=BC=9A
-> Hello Jiaxun,
->
-[...]
->
-> There is a kind of mirror but its physical address start at 0x8000000
-> so beyond the first 512MBytes that are used for KSEG0.
+[auto build test WARNING on 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa]
 
-Really, KSEG0 range is 0x00000000 to 0x20000000, and 0x08000000 to 0x100=
-00000
-is definitely within that range.
+url:    https://github.com/intel-lab-lkp/linux/commits/Tianyi-Liu/KVM-Add-arch-specific-interfaces-for-sampling-guest-callchains/20231008-230042
+base:   8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
+patch link:    https://lore.kernel.org/r/SY4P282MB108433024762F1F292D47C2A9DCFA%40SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+patch subject: [PATCH v2 4/5] perf kvm: Support sampling guest callchains
+config: i386-randconfig-061-20231012 (https://download.01.org/0day-ci/archive/20231013/202310130419.cIkNaYZm-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231013/202310130419.cIkNaYZm-lkp@intel.com/reproduce)
 
-But I'd agree that 0x08000000 to 0x10000000 (32MB) seems too small for k=
-ernel
-text and data. So yeah, it makes sense to load kernel into XKPHYS.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310130419.cIkNaYZm-lkp@intel.com/
 
-My sugesstion is, kernel does not have to be aware of the mirror deisgn.
-Say that you have DDR fully mapped at 0x100000000, you can split memory
-space into two trunks: 0x08000000 to 0x10000000 and 0x102000000 to end
-of the dram. Since memblock always allocate from first continuous range
-in system, we can guarantee that ebase is allocated with in the first
-trunk.
+sparse warnings: (new ones prefixed by >>)
+>> arch/x86/events/core.c:2808:52: sparse: sparse: incorrect type in argument 1 (different modifiers) @@     expected void *addr @@     got struct stack_frame *const * @@
+   arch/x86/events/core.c:2808:52: sparse:     expected void *addr
+   arch/x86/events/core.c:2808:52: sparse:     got struct stack_frame *const *
+>> arch/x86/events/core.c:2811:52: sparse: sparse: incorrect type in argument 1 (different modifiers) @@     expected void *addr @@     got unsigned long const * @@
+   arch/x86/events/core.c:2811:52: sparse:     expected void *addr
+   arch/x86/events/core.c:2811:52: sparse:     got unsigned long const *
+>> arch/x86/events/core.c:2784:44: sparse: sparse: incorrect type in argument 1 (different modifiers) @@     expected void *addr @@     got unsigned int const * @@
+   arch/x86/events/core.c:2784:44: sparse:     expected void *addr
+   arch/x86/events/core.c:2784:44: sparse:     got unsigned int const *
+   arch/x86/events/core.c:2787:44: sparse: sparse: incorrect type in argument 1 (different modifiers) @@     expected void *addr @@     got unsigned int const * @@
+   arch/x86/events/core.c:2787:44: sparse:     expected void *addr
+   arch/x86/events/core.c:2787:44: sparse:     got unsigned int const *
 
-Thanks
+vim +2808 arch/x86/events/core.c
 
->
-> In short the 32bits mapping is the following:
->
->  - the controllers registers of the SoC are located  until 0x8000000,
->  - then from 0x8000000 to 0x10000000 there is the alias to low address=
-es
->    of the DDR
->  - then the SPIflash is mapped to from 0x10000000 to 0x20000000
->  - after the PCIe Memory 32-bit addr space is from 0x20000000 to
->    0x40000000
->
-> Gregory
->
->> [1]: https://elinux.org/images/1/1f/New-tricks-mips-linux.pdf
->
-> --=20
-> Gregory Clement, Bootlin
-> Embedded Linux and Kernel engineering
-> http://bootlin.com
+  2775	
+  2776	static inline void
+  2777	perf_callchain_guest32(struct perf_callchain_entry_ctx *entry)
+  2778	{
+  2779		struct stack_frame_ia32 frame;
+  2780		const struct stack_frame_ia32 *fp;
+  2781	
+  2782		fp = (void *)perf_guest_get_frame_pointer();
+  2783		while (fp && entry->nr < entry->max_stack) {
+> 2784			if (!perf_guest_read_virt(&fp->next_frame, &frame.next_frame,
+  2785				sizeof(frame.next_frame)))
+  2786				break;
+  2787			if (!perf_guest_read_virt(&fp->return_address, &frame.return_address,
+  2788				sizeof(frame.return_address)))
+  2789				break;
+  2790			perf_callchain_store(entry, frame.return_address);
+  2791			fp = (void *)frame.next_frame;
+  2792		}
+  2793	}
+  2794	
+  2795	void
+  2796	perf_callchain_guest(struct perf_callchain_entry_ctx *entry)
+  2797	{
+  2798		struct stack_frame frame;
+  2799		const struct stack_frame *fp;
+  2800		unsigned int guest_state;
+  2801	
+  2802		guest_state = perf_guest_state();
+  2803		perf_callchain_store(entry, perf_guest_get_ip());
+  2804	
+  2805		if (guest_state & PERF_GUEST_64BIT) {
+  2806			fp = (void *)perf_guest_get_frame_pointer();
+  2807			while (fp && entry->nr < entry->max_stack) {
+> 2808				if (!perf_guest_read_virt(&fp->next_frame, &frame.next_frame,
+  2809					sizeof(frame.next_frame)))
+  2810					break;
+> 2811				if (!perf_guest_read_virt(&fp->return_address, &frame.return_address,
+  2812					sizeof(frame.return_address)))
+  2813					break;
+  2814				perf_callchain_store(entry, frame.return_address);
+  2815				fp = (void *)frame.next_frame;
+  2816			}
+  2817		} else {
+  2818			perf_callchain_guest32(entry);
+  2819		}
+  2820	}
+  2821	
 
---=20
-- Jiaxun
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
