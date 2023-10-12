@@ -2,176 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E54317C6DED
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B397C6DFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378555AbjJLMXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 08:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36480 "EHLO
+        id S1378573AbjJLMYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233818AbjJLMXP (ORCPT
+        with ESMTP id S233496AbjJLMYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:23:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE2EBA
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 05:23:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697113394; x=1728649394;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=7uKE27R2y/wLv51v6eEem7rTHjDlCCUWdaUVwm5Xme4=;
-  b=EzJFmJYSd+rUbguFmV9UnBX3ETBZPn0Sz7j35Vrwavuaps3uQOekhcfS
-   RWGOSuQv49LIwXIjnnaAe+KUp6mDS3ecI0/FiUOzkdpJOp9HLmuJEzQFI
-   k8y7mhcpqn4t2UNdE8zvFq3LqAn0Cq1qo2AcFPVeVEmNCqKFYLenGOboe
-   5AXAWy1/wBcF7I0R43+yPd+W7GX/iGtt8XcLTCFuowJTwFOJ/jjGPptws
-   R2oi5ygsK2aSx/oZYnJ/j9KGwdA7Ui41g0MBFMTDDMpuq5LigSyh84jN6
-   OBMbzaCDtvvcZrhhxNur0qmFSxoMjxSGZltNHve7rC710jHLuSmL2fUyn
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="369972087"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="369972087"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 05:23:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="754226968"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="754226968"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 05:23:10 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Arjan Van De Ven <arjan@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Johannes Weiner <jweiner@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Christoph Lameter" <cl@linux.com>
-Subject: Re: [PATCH 01/10] mm, pcp: avoid to drain PCP when process exit
-References: <20230920061856.257597-1-ying.huang@intel.com>
-        <20230920061856.257597-2-ying.huang@intel.com>
-        <20231011124610.4punxroovolyvmgr@techsingularity.net>
-Date:   Thu, 12 Oct 2023 20:21:06 +0800
-In-Reply-To: <20231011124610.4punxroovolyvmgr@techsingularity.net> (Mel
-        Gorman's message of "Wed, 11 Oct 2023 13:46:10 +0100")
-Message-ID: <87zg0odob1.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Thu, 12 Oct 2023 08:24:53 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50096B7;
+        Thu, 12 Oct 2023 05:24:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 703CCC433C7;
+        Thu, 12 Oct 2023 12:24:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697113492;
+        bh=1GyAZLXBp65moRKSORYgOCHrvhgp+SxDzz7EnfVjVUk=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=aXAo4H2341hCLiNHeYtUIkEE8BIZpaaoCB0X8Xl5ewS0BVCn69f7haypyvkcPPIu4
+         dB6E8XstAvbZpOkfhtmE0cs5tYGcQbfxg/TmwlpmB23wZaLx9vvbNVIEHgRh3ZzLrA
+         LheqF5JlnNNk3/7I5cgbUtpdrbP39NRSk6KK+8zvmGu1h0YbRRmBzSpdGAd+RJhkGC
+         twuAC/6CQJqWhDw2PHPz47IjC1LuELgfbCstxM9EktBRM0dWvahPGzF9wU3fJZuxK7
+         +aM4/Nx2RV/KIhiOEhUp5fRCTzdo/dn6DsPnzUNWF7+YqDG/PbbWQRGm4WWDVCpgwp
+         bNmqclV3cVCrQ==
+Received: (nullmailer pid 393373 invoked by uid 1000);
+        Thu, 12 Oct 2023 12:24:49 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+From:   Rob Herring <robh@kernel.org>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc:     agross@kernel.org, dmitry.baryshkov@linaro.org,
+        quic_tdas@quicinc.com, linux-arm-msm@vger.kernel.org,
+        andersson@kernel.org, vladimir.zapolskiy@linaro.org,
+        devicetree@vger.kernel.org, mturquette@baylibre.com,
+        krzysztof.kozlowski+dt@linaro.org, jonathan@marek.ca,
+        sboyd@kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        konrad.dybcio@linaro.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        conor+dt@kernel.org
+In-Reply-To: <20231012113100.3656480-4-bryan.odonoghue@linaro.org>
+References: <20231012113100.3656480-1-bryan.odonoghue@linaro.org>
+ <20231012113100.3656480-4-bryan.odonoghue@linaro.org>
+Message-Id: <169711348945.393357.13855655138263608622.robh@kernel.org>
+Subject: Re: [PATCH v4 3/4] media: dt-bindings: media: camss: Add
+ qcom,sc8280xp-camss binding
+Date:   Thu, 12 Oct 2023 07:24:49 -0500
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mel Gorman <mgorman@techsingularity.net> writes:
 
-> On Wed, Sep 20, 2023 at 02:18:47PM +0800, Huang Ying wrote:
->> In commit f26b3fa04611 ("mm/page_alloc: limit number of high-order
->> pages on PCP during bulk free"), the PCP (Per-CPU Pageset) will be
->> drained when PCP is mostly used for high-order pages freeing to
->> improve the cache-hot pages reusing between page allocation and
->> freeing CPUs.
->> 
->> But, the PCP draining mechanism may be triggered unexpectedly when
->> process exits.  With some customized trace point, it was found that
->> PCP draining (free_high == true) was triggered with the order-1 page
->> freeing with the following call stack,
->> 
->>  => free_unref_page_commit
->>  => free_unref_page
->>  => __mmdrop
->>  => exit_mm
->>  => do_exit
->>  => do_group_exit
->>  => __x64_sys_exit_group
->>  => do_syscall_64
->> 
->> Checking the source code, this is the page table PGD
->> freeing (mm_free_pgd()).  It's a order-1 page freeing if
->> CONFIG_PAGE_TABLE_ISOLATION=y.  Which is a common configuration for
->> security.
->> 
->> Just before that, page freeing with the following call stack was
->> found,
->> 
->>  => free_unref_page_commit
->>  => free_unref_page_list
->>  => release_pages
->>  => tlb_batch_pages_flush
->>  => tlb_finish_mmu
->>  => exit_mmap
->>  => __mmput
->>  => exit_mm
->>  => do_exit
->>  => do_group_exit
->>  => __x64_sys_exit_group
->>  => do_syscall_64
->> 
->> So, when a process exits,
->> 
->> - a large number of user pages of the process will be freed without
->>   page allocation, it's highly possible that pcp->free_factor becomes
->>   > 0.
->> 
->> - after freeing all user pages, the PGD will be freed, which is a
->>   order-1 page freeing, PCP will be drained.
->> 
->> All in all, when a process exits, it's high possible that the PCP will
->> be drained.  This is an unexpected behavior.
->> 
->> To avoid this, in the patch, the PCP draining will only be triggered
->> for 2 consecutive high-order page freeing.
->> 
->> On a 2-socket Intel server with 224 logical CPU, we tested kbuild on
->> one socket with `make -j 112`.  With the patch, the build time
->> decreases 3.4% (from 206s to 199s).  The cycles% of the spinlock
->> contention (mostly for zone lock) decreases from 43.6% to 40.3% (with
->> PCP size == 361).  The number of PCP draining for high order pages
->> freeing (free_high) decreases 50.8%.
->> 
->> This helps network workload too for reduced zone lock contention.  On
->> a 2-socket Intel server with 128 logical CPU, with the patch, the
->> network bandwidth of the UNIX (AF_UNIX) test case of lmbench test
->> suite with 16-pair processes increase 17.1%.  The cycles% of the
->> spinlock contention (mostly for zone lock) decreases from 50.0% to
->> 45.8%.  The number of PCP draining for high order pages
->> freeing (free_high) decreases 27.4%.  The cache miss rate keeps 0.3%.
->> 
->> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
->
-> Acked-by: Mel Gorman <mgorman@techsingularity.net>
->
-> However, I want to note that batching on exit is not necessarily
-> unexpected. For processes that are multi-TB in size, the time to exit
-> can actually be quite large and batching is of benefit but optimising
-> for exit is rarely a winning strategy. The pattern of "all allocs on CPU
-> B and all frees on CPU B" or "short-lived tasks triggering a premature
-> drain" is a bit more compelling but not worth a changelog rewrite.
->> 
->> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
->> index 4106fbc5b4b3..64d5ed2bb724 100644
->> --- a/include/linux/mmzone.h
->> +++ b/include/linux/mmzone.h
->> @@ -676,12 +676,15 @@ enum zone_watermarks {
->>  #define high_wmark_pages(z) (z->_watermark[WMARK_HIGH] + z->watermark_boost)
->>  #define wmark_pages(z, i) (z->_watermark[i] + z->watermark_boost)
->>  
->> +#define	PCPF_PREV_FREE_HIGH_ORDER	0x01
->> +
->
-> The meaning of the flag and its intent should have been documented.
+On Thu, 12 Oct 2023 12:30:59 +0100, Bryan O'Donoghue wrote:
+> Add bindings for qcom,sc8280xp-camss in order to support the camera
+> subsystem for sc8280xp as found in the Lenovo x13s Laptop.
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+> This patch depends-on:
+> https://lore.kernel.org/lkml/20231004161853.86382-2-bryan.odonoghue@linaro.org/T
+>  .../bindings/media/qcom,sc8280xp-camss.yaml   | 581 ++++++++++++++++++
+>  1 file changed, 581 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
+> 
 
-Sure.  Will add comments for the flags.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
---
-Best Regards,
-Huang, Ying
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.example.dts:26:18: fatal error: dt-bindings/clock/qcom,sc8280xp-camcc.h: No such file or directory
+   26 |         #include <dt-bindings/clock/qcom,sc8280xp-camcc.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.example.dtb] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231012113100.3656480-4-bryan.odonoghue@linaro.org
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
