@@ -2,145 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 325E07C6A65
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1767C6A80
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343665AbjJLKEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43556 "EHLO
+        id S1343788AbjJLKIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235618AbjJLKEi (ORCPT
+        with ESMTP id S234179AbjJLKIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:04:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F951A9;
-        Thu, 12 Oct 2023 03:04:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697105076; x=1728641076;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=MYvAKDdK1BbhX247ponvSXkbWwL0F8DFfz3s+y5S/6A=;
-  b=HFpV/+3CBDf04+aVkrABphGBAWZjNx8q25IMzStybLeiNreelx7+n+Gq
-   jZR50QQEIM20CpK9+OfTaz6YB/k7zn4u/lsy0/hGI+y4CFD9RFUdPjv5/
-   nunh/62XYe/LsxFVSy/TYQzQDOLopsCRF5rEndkql02dOfKKK5y0ouggP
-   upXryH1GyKTxIn3K3XqGcBQMYD/M6i3Z+29j5P9/jOqpsgsFX2sJVUJpV
-   zntzp93yySzH4eLw8c7lRY3smu/VHTLD5uABXFQG9K2PcBqVMJEKY7qKk
-   9SAGin9aKdnAAUppCSC0zbQloq7J5oGKI9+SgmoEzXWNbEoUT0gx6aRTf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="388744141"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="388744141"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:04:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="789338995"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="789338995"
-Received: from nmalinin-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.58.130])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:04:31 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 3466E10A1B1; Thu, 12 Oct 2023 13:04:28 +0300 (+03)
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Fei Yang <fei.yang@intel.com>, stable@vger.kernel.org
-Subject: [PATCHv3] x86/alternatives: Disable KASAN in apply_alternatives()
-Date:   Thu, 12 Oct 2023 13:04:24 +0300
-Message-ID: <20231012100424.1456-1-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 12 Oct 2023 06:08:39 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665E0C6;
+        Thu, 12 Oct 2023 03:08:37 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-323ef9a8b59so736704f8f.3;
+        Thu, 12 Oct 2023 03:08:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697105316; x=1697710116; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=T61YK6EFuEDV5qJWA4z7WzFbSG37tp0bqVIjSbOkXyE=;
+        b=EfJRwDutfZmXSQa9iyd1ZNe0ahj28nmmBC5iAvGupVtHkw1kg5bAo6Bp4V7478Zba0
+         Ev8Gd/WrIchg4m5oPX3YH54nVFyVhGBB6zckwwA9DZMqfeQSfjhO/qwXX0JTACfwV/Ao
+         riAqWVzvjOYGClHxXjebnu3FExAWf1vGnxfxnxzaGJW0IYirSn/IApsFOzY+o9jx/tKf
+         PxG3qE7HcuSiFOSzoS5kFyBV+pYOHkr3FSNsYG+GbDNh3siEhyfw4VfFkTFiHetxF2YW
+         R+kqbMMKruwBoF4EaJ2zKK4k9cMWuZzaxEImdZiCCCHOHJDA0Nz7DufxI8n/l4gyvThh
+         pPyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697105316; x=1697710116;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T61YK6EFuEDV5qJWA4z7WzFbSG37tp0bqVIjSbOkXyE=;
+        b=K5gdyqCEMD4zEMUuqa4vA6fBJdOUQ3xvtmC8rnbnXjP2wIpEcinz3FZipiBpoQLmyG
+         UVutZWIiEPmpCrtEISafzirkKGzC5TgFph/HYM6BB8OBIcNuiyKfE9ZfkHc3SDQRJzSg
+         qxHwy4oGXeRuWIjNHfYsKshtekmjTh9Gf9SjoPcfV+15vNgCRrJxWXiil7lr/ceFa5cu
+         HNxthYxcFz/1TSkKGyXLKiJYlBM7cT0ToQNHh/m+3zhXGgYXKwLMznO9W6M4mH2bzAzU
+         ElRFt31X5n4M2HYhTnUiboRoq0hLOpptAJTqZGP0wLdxoDgOFrvHsdVUGDiUCZ9h4Xno
+         IWqA==
+X-Gm-Message-State: AOJu0YxMlcXEoNIF2AYUB+bjK9OxQe3/GJzdyVtv1ftjdFeaq5Fz2k2P
+        qH/gJ0uG7g1Iv7zXKU3N3v0=
+X-Google-Smtp-Source: AGHT+IGY5/V2HmMll0R7ee8D+XKgPX1fVMvqjMxzETQE5YP729txcGhYLYxlO8b4P76nKez6ryZjLw==
+X-Received: by 2002:a5d:6447:0:b0:31f:fb5d:96da with SMTP id d7-20020a5d6447000000b0031ffb5d96damr21560136wrw.64.1697105315533;
+        Thu, 12 Oct 2023 03:08:35 -0700 (PDT)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id dj16-20020a0560000b1000b003198a9d758dsm922737wrb.78.2023.10.12.03.08.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 03:08:35 -0700 (PDT)
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Raju Rangoju <rajur@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@kernel.org>, Simon Horman <horms@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-wireless@vger.kernel.org
+Cc:     Christian Marangi <ansuelsmth@gmail.com>
+Subject: [net-next PATCH v2 0/4] net: stmmac: improve tx timer logic
+Date:   Thu, 12 Oct 2023 12:04:55 +0200
+Message-Id: <20231012100459.6158-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fei has reported that KASAN triggers during apply_alternatives() on
-5-level paging machine:
+This series comes with the intention of restoring original performance
+of stmmac on some router/device that used the stmmac driver to handle
+gigabit traffic.
 
-	BUG: KASAN: out-of-bounds in rcu_is_watching
-	Read of size 4 at addr ff110003ee6419a0 by task swapper/0/0
-	...
-	__asan_load4
-	rcu_is_watching
-	trace_hardirqs_on
-	text_poke_early
-	apply_alternatives
-	...
+More info are present in patch 3. This cover letter is to show results
+and improvements of the following change.
 
-On machines with 5-level paging, cpu_feature_enabled(X86_FEATURE_LA57)
-got patched. It includes KASAN code, where KASAN_SHADOW_START depends on
-__VIRTUAL_MASK_SHIFT, which is defined with the cpu_feature_enabled().
+The move to hr_timer for tx timer and commit 8fce33317023 ("net: stmmac:
+Rework coalesce timer and fix multi-queue races") caused big performance
+regression on these kind of device.
 
-KASAN gets confused when apply_alternatives() patches the
-KASAN_SHADOW_START users. A test patch that makes KASAN_SHADOW_START
-static, by replacing __VIRTUAL_MASK_SHIFT with 56, fixes the issue.
+This was observed on ipq806x that after kernel 4.19 couldn't handle
+gigabit speed anymore.
 
-Disable KASAN while kernel patches alternatives.
+The following series is currently applied and tested in OpenWrt SNAPSHOT
+and have great performance increase. (the scenario is qca8k switch +
+stmmac dwmac1000) Some good comparison can be found here [1].
 
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reported-by: Fei Yang <fei.yang@intel.com>
-Fixes: 6657fca06e3f ("x86/mm: Allow to boot without LA57 if CONFIG_X86_5LEVEL=y")
-Cc: stable@vger.kernel.org
----
- v3:
-  - Summarize KASAN splat;
-  - Update comment in apply_alternatives();
+The difference is from a swconfig scenario (where dsa tagging is not
+used so very low CPU impact in handling traffic) and DSA scenario where
+tagging is used and there is a minimal impact in the CPU. As can be
+notice even with DSA in place we have better perf.
 
- v2:
-  - Move kasan_disable/_enable_current() to cover whole loop, not only
-    text_poke_early();
-  - Adjust commit message.
----
- arch/x86/kernel/alternative.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+It was observed by other user that also SQM scenario with cake scheduler
+were improved in the order of 100mbps (this scenario is CPU limited and
+any increase of perf is caused by removing load on the CPU)
 
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 517ee01503be..73be3931e4f0 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -403,6 +403,17 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
- 	u8 insn_buff[MAX_PATCH_LEN];
- 
- 	DPRINTK(ALT, "alt table %px, -> %px", start, end);
-+
-+	/*
-+	 * In the case CONFIG_X86_5LEVEL=y, KASAN_SHADOW_START is defined using
-+	 * cpu_feature_enabled(X86_FEATURE_LA57) and is therefore patched here.
-+	 * During the process, KASAN becomes confused seeing partial LA57
-+	 * conversion and triggers a false-positive out-of-bound report.
-+	 *
-+	 * Disable KASAN until the patching is complete.
-+	 */
-+	kasan_disable_current();
-+
- 	/*
- 	 * The scan order should be from start to end. A later scanned
- 	 * alternative code can overwrite previously scanned alternative code.
-@@ -452,6 +463,8 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
- 
- 		text_poke_early(instr, insn_buff, insn_buff_sz);
- 	}
-+
-+	kasan_enable_current();
- }
- 
- static inline bool is_jcc32(struct insn *insn)
+Been at least 15 days that this is in use without any complain or bug
+reported about queue timeout. (was the case with v1 before the
+additional patch was added, only appear on real world tests and not on
+iperf tests)
+
+[1] https://forum.openwrt.org/t/netgear-r7800-exploration-ipq8065-qca9984/285/3427?u=ansuel
+
+Changes v2:
+- Add patch to move tx timer arm outside tx clean.
+
+Christian Marangi (4):
+  net: introduce napi_is_scheduled helper
+  net: stmmac: improve TX timer arm logic
+  net: stmmac: move TX timer arm after DMA enable
+  net: stmmac: increase TX coalesce timer to 5ms
+
+ drivers/net/ethernet/chelsio/cxgb3/sge.c      |  8 ----
+ drivers/net/ethernet/stmicro/stmmac/common.h  |  2 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 37 +++++++++++++++----
+ drivers/net/wireless/realtek/rtw89/core.c     |  2 +-
+ include/linux/netdevice.h                     | 23 ++++++++++++
+ net/core/dev.c                                |  2 +-
+ 6 files changed, 56 insertions(+), 18 deletions(-)
+
 -- 
-2.41.0
+2.40.1
 
