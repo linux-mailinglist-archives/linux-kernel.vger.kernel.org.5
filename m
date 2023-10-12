@@ -2,135 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB91C7C6EEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CE37C6EF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378816AbjJLNOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49014 "EHLO
+        id S1378791AbjJLNPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 09:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378791AbjJLNO2 (ORCPT
+        with ESMTP id S1343659AbjJLNPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:14:28 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5595CCA
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:14:26 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4054496bde3so9747545e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:14:26 -0700 (PDT)
+        Thu, 12 Oct 2023 09:15:07 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D274D91
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:15:05 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9b27f99a356so31446466b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:15:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697116465; x=1697721265; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CGxpG5sySkyzmI8OEkqZujhsy1RfTOcPN5J5Y4xsLqQ=;
-        b=Wg0ipS7f1tkM3aoNIkur9kiLjZrxXqocPDT2dcG457X237ER/rzkf3SYCVLLUVeUie
-         0l5sG3DcjaAzGpX10MDnIuWWQiE9r5IhG9dwaygJWtd5TragV4MLPKN33wMS1AgtElvo
-         rZUuedOwhg9YEaFEtFrW3KAMpScGE2t9v4JYhpHZpaWUpVTMWLmBavoMM/NT5vHrcZzu
-         kOz7l7eFKgJrNW1VwKhYXJuUenk6kUWh2yjE1O6ZJgbazB35HhlhwX1IbGXItDsRQZaV
-         9lhQYBpYIzHvHO8IhdgVYLvgJNFjgUkFOKeP9rc9bL7D6l2KwLXtCVaV2QVl9+dKZtKm
-         X4/w==
+        d=ffwll.ch; s=google; t=1697116504; x=1697721304; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Yt4vMxdhc5OiS38raoXweqMb1s/YLyfC9lsMx2p9myQ=;
+        b=b24Ta8xZ1lr5BKfR3oLsXNu40rWwOA8LXtt32kroRAkwVjvTkGBfciNN2qHyNBsQcH
+         XO4xeq8a/jVmzwgNs+I+ct7pgvrqEJjY0z1W8blOTRHehZVymnkUlUDpX/huoSSnI/6K
+         vT5gJsejysyEW24tG63fY4jnqZq1+BhoQ6Bqc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697116465; x=1697721265;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CGxpG5sySkyzmI8OEkqZujhsy1RfTOcPN5J5Y4xsLqQ=;
-        b=V2Eoaq5w87Ibso6AugU26hiUXgfcSE4Rb7nxTURBZTnVZShMZ7zbpwXy8NCK8G5MF/
-         0OMfR08r2GuukzJnzf+GPIw7byzLklj44rSaov6yqo69rAnRya7W8by+NRUdtaqg8hbv
-         0YtPHK/7w8qQgmPHgpJgZ8HnKJ3vXl/vFWScdszV9x5XrRIIPG7n27hOTwAjGfwPSE2J
-         bwVjmFgogWCjc2m0MKriV58Rao7CDaWqlRF7d4MVm3fzvId4ETSE9c6Gw3FJm/N1r4Bx
-         pwnw3FJZem6tcunGKuD+K/HkWYOMJNfIWsO5fGHKy0spZda4tOr/TSyH+wj4UQxXeksi
-         wU6Q==
-X-Gm-Message-State: AOJu0YzeZo6sgLYcuHic8u6Ewsqsd2yF3kE9ClwNV9HvKR5rnplohEO2
-        HSAThYdAFsMTARmBUUB5TXxGvIUQZ3aDnAHQHU0=
-X-Google-Smtp-Source: AGHT+IG5FBvx6h3rweF+lc3pX+7wrDJo3+bueRZ5ZXPOGUr0QjJSlkyXomBlJX8IQEp5yOQntjegGg==
-X-Received: by 2002:a7b:ce89:0:b0:402:f07c:4b48 with SMTP id q9-20020a7bce89000000b00402f07c4b48mr20417716wmj.28.1697116464566;
-        Thu, 12 Oct 2023 06:14:24 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id i14-20020a05600c354e00b004068de50c64sm19851900wmq.46.2023.10.12.06.14.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 06:14:24 -0700 (PDT)
-Message-ID: <d9f3bd7b-a5db-4d37-bb1f-f97e40c8a63a@linaro.org>
-Date:   Thu, 12 Oct 2023 15:14:23 +0200
+        d=1e100.net; s=20230601; t=1697116504; x=1697721304;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Yt4vMxdhc5OiS38raoXweqMb1s/YLyfC9lsMx2p9myQ=;
+        b=q2Huu42w6mbaOAQmn+GY0JueicQCneZbhjNyOAMietZj3gzuZchKK4LASKR4zPM6ka
+         A2YQhRRXWAgGkhxZbKuds3o9ZHt71ukWVEaRtbR2u9YhsY4G4k+u8BaR8Dgi18oDZ1vf
+         VbOFJPc6CEVi2+NMwUiNYt1zSyrRq3C1lyfnuORLQeWzO6RxJjgGaWi6HIVPmTxvekEm
+         BnHa5cg1MKeT/5CCzMMYJkltV0fsPcbsWtBXfpcMYRpKuaghLe6xbt5VNhuaB5weUfvM
+         H39Hj7s7KPPYNIJePGoUan0bMFl/FPSB0XIuFNGIZ0vyXJYqFwert/AtELU6jxN7SXNI
+         Dq4w==
+X-Gm-Message-State: AOJu0Yw/WCQtmevhVcvD66a5OZzpBUgayZXoIHul9FkFFFMp9yeiVg5v
+        zqeiQDaQJJsvAdkAjhzWTF6nvw==
+X-Google-Smtp-Source: AGHT+IG1wzY++o5tjLk6V/f5yQyOkJd2nDhrUvnp9sslLy1xRLXgeWc9DgSOIu1gb5dgIYqodHnzlg==
+X-Received: by 2002:a17:906:100c:b0:9ae:6da8:181c with SMTP id 12-20020a170906100c00b009ae6da8181cmr18888342ejm.7.1697116503968;
+        Thu, 12 Oct 2023 06:15:03 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id w19-20020a170906481300b009b9720a85e5sm11049401ejq.38.2023.10.12.06.15.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 06:15:02 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 15:15:00 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Dave Airlie <airlied@gmail.com>,
+        Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>, Danilo Krummrich <dakr@redhat.com>,
+        daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        faith.ekstrand@collabora.com, bskeggs@redhat.com,
+        Liam.Howlett@oracle.com, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH drm-misc-next 2/3] drm/gpuva_mgr: generalize
+ dma_resv/extobj handling and GEM validation
+Message-ID: <ZSfxVFe-cm70xM5s@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= <thomas_os@shipmail.org>,
+        Danilo Krummrich <dakr@redhat.com>, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        faith.ekstrand@collabora.com, bskeggs@redhat.com,
+        Liam.Howlett@oracle.com, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <ZO9Zq2RhbX8EeHrn@pollux>
+ <736b6b6d-9e04-a27d-7d60-0c45d696b304@shipmail.org>
+ <ZPB26A0/oLHTmyqk@cassiopeiae>
+ <a8f28d62-daec-927a-a33d-5be3eec6a1ed@shipmail.org>
+ <ZPDk/lao1JlBNGoJ@cassiopeiae>
+ <8a8253ae-0b85-df90-b480-64eeebfafc6d@shipmail.org>
+ <CAPM=9tz3o-m+8VJJ6hxWhykat0kpp1UE7dBJE3X91aHHo1Y2VA@mail.gmail.com>
+ <76963abd-77a1-4bbd-9537-7b230e648a90@amd.com>
+ <CAPM=9twSHGRoSoXxG+hz1T8iBX2VgPFvFsNCDnK_nHW9WJYBtw@mail.gmail.com>
+ <1333e15b-f229-460a-8965-01ff3e778a4d@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] thermal/core: Hardening the self-encapsulation
-Content-Language: en-US
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>, rafael@kernel.org,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231012102700.2858952-1-daniel.lezcano@linaro.org>
- <a6b51de7-4f56-4db9-a7dd-60555ac6c37f@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <a6b51de7-4f56-4db9-a7dd-60555ac6c37f@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1333e15b-f229-460a-8965-01ff3e778a4d@amd.com>
+X-Operating-System: Linux phenom 6.5.0-1-amd64 
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Lukasz,
-
-On 12/10/2023 14:01, Lukasz Luba wrote:
-> Hi Daniel,
+On Thu, Oct 12, 2023 at 02:35:15PM +0200, Christian König wrote:
+> Am 12.10.23 um 12:33 schrieb Dave Airlie:
+> > On Wed, 11 Oct 2023 at 17:07, Christian König <christian.koenig@amd.com> wrote:
+> > > Am 10.10.23 um 22:23 schrieb Dave Airlie:
+> > > > > I think we're then optimizing for different scenarios. Our compute
+> > > > > driver will use mostly external objects only, and if shared, I don't
+> > > > > forsee them bound to many VMs. What saves us currently here is that in
+> > > > > compute mode we only really traverse the extobj list after a preempt
+> > > > > fence wait, or when a vm is using a new context for the first time. So
+> > > > > vm's extobj list is pretty large. Each bo's vma list will typically be
+> > > > > pretty small.
+> > > > Can I ask why we are optimising for this userspace, this seems
+> > > > incredibly broken.
+> > > > 
+> > > > We've has this sort of problem in the past with Intel letting the tail
+> > > > wag the horse, does anyone remember optimising relocations for a
+> > > > userspace that didn't actually need to use relocations?
+> > > > 
+> > > > We need to ask why this userspace is doing this, can we get some
+> > > > pointers to it? compute driver should have no reason to use mostly
+> > > > external objects, the OpenCL and level0 APIs should be good enough to
+> > > > figure this out.
+> > > Well that is pretty normal use case, AMD works the same way.
+> > > 
+> > > In a multi GPU compute stack you have mostly all the data shared between
+> > > different hardware devices.
+> > > 
+> > > As I said before looking at just the Vulcan use case is not a good idea
+> > > at all.
+> > > 
+> > It's okay, I don't think anyone is doing that, some of the these
+> > use-cases are buried in server land and you guys don't communicate
+> > them very well.
 > 
-> On 10/12/23 11:26, Daniel Lezcano wrote:
->> The thermal private header has leaked all around the drivers which
->> interacted with the core internals. The thermal zone structure which
->> was part of the exported header led also to a leakage of the fields
->> into the different drivers, making very difficult to improve the core
->> code without having to change the drivers.
->>
->> Now we mostly fixed how the thermal drivers were interacting with the
->> thermal zones (actually fixed how they should not interact). The
->> thermal zone structure will be moved to the private thermal core
->> header. This header has been removed from the different drivers and
->> must belong to the core code only. In order to prevent this private
->> header to be included again in the drivers, make explicit only the
->> core code can include this header by defining a THERMAL_CORE_SUBSYS
->> macro. The private header will contain a check against this macro.
->>
->> The Tegra SoCtherm driver needs to access thermal_core.h to have the
->> get_thermal_instance() function definition. It is the only one
->> remaining driver which need to access the thermal_core.h header, so
->> the check will emit a warning at compilation time.
->>
->> Thierry Reding is reworking the driver to get rid of this function [1]
->> and thus when the changes will be merged, the compilation warning will
->> be converted to a compilation error, closing definitively the door to
->> the drivers willing to play with the thermal zone device internals.
+> Yeah, well everybody is trying very hard to get away from those approaches
+> :)
 > 
-> That looks like a good idea. Although, shouldn't we avoid the
-> compilation warnings and just first merge the fixes for drivers?
+> But so far there hasn't been any breakthrough.
+> 
+> > 
+> > multi-gpu compute would I'd hope be moving towards HMM/SVM type
+> > solutions though?
+> 
+> Unfortunately not in the foreseeable future. HMM seems more and more like a
+> dead end, at least for AMD.
+> 
+> AMD still has hardware support in all of their MI* products, but for Navi
+> the features necessary for implementing HMM have been dropped. And it looks
+> more and more like their are not going to come back.
+> 
+> Additional to that from the software side Felix summarized it in the HMM
+> peer2peer discussion thread recently quite well. A buffer object based
+> approach is not only simpler to handle, but also performant vise multiple
+> magnitudes faster.
 
-Yes, we should but there is the series for nvidia (pointed in the 
-changelog) which need a slight refresh for the bindings AFAIR. That 
-series is since March 2023 and Thierry seems busy [1]. I'm holding the 
-hardening since then.
+This matches what I'm hearing from all over. Turns out that handling page
+faults in full generality in a compute/accel device (not just gpu) is just
+too damn hard. At least for anyone who isn't nvidia. Usually time bound
+preemption guarantees are the first to go, followed right after by a long
+list of more fixed function hardware blocks that outright can't cope with
+page faults.
 
-So I don't know how to make progress on this? I was assuming we can 
-merge this series and let the compiler recall what has to be fixed.
+There's so many corner cases where it breaks down that I feel like device
+driver allocated memory of one flavor or another will stick around for a
+very long time.
 
-[1] https://lore.kernel.org/all/ZK14edZUih1kH_sZ@orome/
+This isn't even counting the software challenges.
+-Sima
 
-and as soon as it is fixed, we convert the WARNING to ERROR :P
-
-
-
+> > I'm also not into looking at use-cases that used to be important but
+> > might not as important going forward.
+> 
+> Well multimedia applications and OpenGL are still around, but it's not the
+> main focus any more.
+> 
+> Christian.
+> 
+> > 
+> > Dave.
+> > 
+> > 
+> > > Christian.
+> > > 
+> > > > Dave.
+> 
 
 -- 
-<http://www.linaro.org/> Linaro.org â”‚ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
