@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 170FD7C647A
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 07:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FBE7C647C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 07:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347072AbjJLFQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 01:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36370 "EHLO
+        id S1377111AbjJLFQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 01:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377379AbjJLFQM (ORCPT
+        with ESMTP id S1377520AbjJLFQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 01:16:12 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F46BD45
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 22:15:46 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c9b70b9656so4365815ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 22:15:46 -0700 (PDT)
+        Thu, 12 Oct 2023 01:16:15 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550ECB8
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 22:15:51 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bdf4752c3cso4311895ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 22:15:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697087745; x=1697692545; darn=vger.kernel.org;
+        d=ventanamicro.com; s=google; t=1697087750; x=1697692550; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/KVKi7QKmfPZrGchNrI6Bys6/KZCng6FE4wZxaod/J0=;
-        b=DZaVzU0+AyzRJc3ufgtqqgJlOGxXQ3xades2Uu+jUbKqS15LvNRzis3rHmFBCFSNRG
-         6uxFbGimWp8FuwvYU5DZwy6hQG8VkS7CRwUWhIV7lv7/HhjQehL71w6bDjuPq4qVKYmY
-         dquOpgiI3jkqDo9iQLKxKKuxKyc8CbTLhldvXQxnrjgOra/z5KK0U1HP26VFl9ofujqH
-         3EEcGu4sm/cF8k3mpcRVmjYhOe9qrz2vn1U9iX8lbCvj1M8DEW2xo7qO9aJWLvqm3qmW
-         Wnk2XyWAqAblZoUQ3ZkzbQvrAHVeaD6yO9pBCoUxIOfyNbFOX0Rplf5j4S4VmRDW7AAb
-         S7hg==
+        bh=9VumssqyPhV2g3eQM7/n//T8x0MORKj84YM3EuzCDgk=;
+        b=PpBMcsLo0YLbCwEhfTkGiYXB/ljqeq5i+tc7tZeUFN3xxaV5pb+yuY+N93pff7q3g6
+         FfISoZsgmYzxMKByO3sUxAzct2Tj5UzuP0p4PKWoD58YQ9Fygeqq0ntTRobM/dWnx62Z
+         xKZig/1H5Zeg/jLhGBGLjtbpO266i7dzuetXzpwTBnek1W7p9WdpXj0c7av7o/xIC12F
+         uGg4xj9jO3fQFgzAHSHWJ2KSIbic1tDTJzduPiVq0AxYHZG1Fo/fG1QXGYpbfeh2UNMr
+         MwWoSvTxTgRIcvgP07aE8Vh4/BSNaDVFbejuJ0JnRAa/GLu6OhpAt/Ts7YWI1rsiObxS
+         3PEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697087745; x=1697692545;
+        d=1e100.net; s=20230601; t=1697087750; x=1697692550;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/KVKi7QKmfPZrGchNrI6Bys6/KZCng6FE4wZxaod/J0=;
-        b=V9jSBfHWo0QhzFLcpWv6hI3+FCX3AZALNSni8I8yIEXcmmgT4T1pktWKXcGw6/Byj3
-         M3Uw27oiKJZv9qx7cKhrhanskx4izJ2MplzwISRTJCn5bQ2KJ9w0N5uvHxV7lKQnIFaE
-         u3iDkNRUZwFKJfiQwJBPyOHdxt0/ffmoBBlz8wjNQk/NdvNafFitf3ao7Wxd/vk/0kq3
-         nPc8o3BdGYuHdN4C/ricpSMD5jaJGQ5JxeaoY1ZGOzeSxnle1qqsl714ZERHhFCLKfOb
-         3V15zs2/wDrMxEN8JkhxKIrLRivINSAosAAljsEWKpDU61PLVIJxKy3UN/pUJc8CLFXR
-         dGhg==
-X-Gm-Message-State: AOJu0YzDMmN+H+L19/CrerPVCf1AB+rxU3m9R6W31GQfUh5eFhULm+Xl
-        Ns2wL6C5htl1FmhcU+S0A7hHcQ==
-X-Google-Smtp-Source: AGHT+IGQA5WgnUWZWzG9GzMA7WhXboUt0Cn4w+hL60tDRhhBnvH97ndWcYP/2d/cQ1fXpGrnegy9iQ==
-X-Received: by 2002:a17:903:278e:b0:1c9:dc52:9d69 with SMTP id jw14-20020a170903278e00b001c9dc529d69mr1250864plb.64.1697087745576;
-        Wed, 11 Oct 2023 22:15:45 -0700 (PDT)
+        bh=9VumssqyPhV2g3eQM7/n//T8x0MORKj84YM3EuzCDgk=;
+        b=WyfHWrZ3kQ/53tQesJLxdusVgUIbAVPSd86HtqWWIPS3l0KWSsgkvB51MfYO43xci9
+         0JXgSevlmrIGEEE8dbRrL/AsYHyK1w7P577sMWJftZgRkqdBLhL6+dDQF7LRG5DxQObN
+         fDHrBGaoYerHvfi1ols/f59qToZ6MCFC3z687D/A1/SAg8Yfs0y40aUfvI3QPzwUKiPR
+         e1o2syGrZv+o6oH1JTYywp2UaG1m7wPQhiwlPpJ2WHt5dsexgVR0jFmGvILHPG1w9atl
+         jmQBov6P0RQ3k/6TznPns8yOcRKtSO63Ly5GKhj2HrghqBqMYx3/ASN3VewRq81o41Mr
+         k0Pg==
+X-Gm-Message-State: AOJu0YwWWhzQ0h0WB8pjnxdbV7gjAS6WNEOL2uOoMlmuCrvipN8ngDkL
+        mO8KYaNq9OwBcTduntE9QpDezg==
+X-Google-Smtp-Source: AGHT+IFQ1W43pn4VQeKIkawEacDc40dCj7u4jClbhdGq+OcNM4Reual0u2XRPGbMPIHdZ7ZptLiBeQ==
+X-Received: by 2002:a17:903:2341:b0:1c7:1f3f:b6dc with SMTP id c1-20020a170903234100b001c71f3fb6dcmr23793872plh.11.1697087750172;
+        Wed, 11 Oct 2023 22:15:50 -0700 (PDT)
 Received: from anup-ubuntu-vm.localdomain ([106.51.83.242])
-        by smtp.gmail.com with ESMTPSA id s18-20020a17090330d200b001b9d95945afsm851309plc.155.2023.10.11.22.15.41
+        by smtp.gmail.com with ESMTPSA id s18-20020a17090330d200b001b9d95945afsm851309plc.155.2023.10.11.22.15.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 22:15:45 -0700 (PDT)
+        Wed, 11 Oct 2023 22:15:49 -0700 (PDT)
 From:   Anup Patel <apatel@ventanamicro.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>,
         Atish Patra <atishp@atishpatra.org>,
@@ -61,17 +61,18 @@ Cc:     Conor Dooley <conor@kernel.org>,
         Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
         kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
         linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Anup Patel <apatel@ventanamicro.com>
-Subject: [PATCH v2 6/8] tty/serial: Add RISC-V SBI debug console based earlycon
-Date:   Thu, 12 Oct 2023 10:45:07 +0530
-Message-Id: <20231012051509.738750-7-apatel@ventanamicro.com>
+        linux-kernel@vger.kernel.org, Atish Patra <atishp@rivosinc.com>,
+        Anup Patel <apatel@ventanamicro.com>
+Subject: [PATCH v2 7/8] tty: Add SBI debug console support to HVC SBI driver
+Date:   Thu, 12 Oct 2023 10:45:08 +0530
+Message-Id: <20231012051509.738750-8-apatel@ventanamicro.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231012051509.738750-1-apatel@ventanamicro.com>
 References: <20231012051509.738750-1-apatel@ventanamicro.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,78 +81,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We extend the existing RISC-V SBI earlycon support to use the new
-RISC-V SBI debug console extension.
+From: Atish Patra <atishp@rivosinc.com>
 
+RISC-V SBI specification supports advanced debug console
+support via SBI DBCN extension.
+
+Extend the HVC SBI driver to support it.
+
+Signed-off-by: Atish Patra <atishp@rivosinc.com>
 Signed-off-by: Anup Patel <apatel@ventanamicro.com>
 ---
- drivers/tty/serial/Kconfig              |  2 +-
- drivers/tty/serial/earlycon-riscv-sbi.c | 32 +++++++++++++++++++++----
- 2 files changed, 29 insertions(+), 5 deletions(-)
+ drivers/tty/hvc/Kconfig         |  2 +-
+ drivers/tty/hvc/hvc_riscv_sbi.c | 76 ++++++++++++++++++++++++++++++---
+ 2 files changed, 70 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index bdc568a4ab66..cec46091a716 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -87,7 +87,7 @@ config SERIAL_EARLYCON_SEMIHOST
+diff --git a/drivers/tty/hvc/Kconfig b/drivers/tty/hvc/Kconfig
+index 4f9264d005c0..6e05c5c7bca1 100644
+--- a/drivers/tty/hvc/Kconfig
++++ b/drivers/tty/hvc/Kconfig
+@@ -108,7 +108,7 @@ config HVC_DCC_SERIALIZE_SMP
  
- config SERIAL_EARLYCON_RISCV_SBI
- 	bool "Early console using RISC-V SBI"
+ config HVC_RISCV_SBI
+ 	bool "RISC-V SBI console support"
 -	depends on RISCV_SBI_V01
 +	depends on RISCV_SBI
- 	select SERIAL_CORE
- 	select SERIAL_CORE_CONSOLE
- 	select SERIAL_EARLYCON
-diff --git a/drivers/tty/serial/earlycon-riscv-sbi.c b/drivers/tty/serial/earlycon-riscv-sbi.c
-index 27afb0b74ea7..c21cdef254e7 100644
---- a/drivers/tty/serial/earlycon-riscv-sbi.c
-+++ b/drivers/tty/serial/earlycon-riscv-sbi.c
-@@ -15,17 +15,41 @@ static void sbi_putc(struct uart_port *port, unsigned char c)
- 	sbi_console_putchar(c);
+ 	select HVC_DRIVER
+ 	help
+ 	  This enables support for console output via RISC-V SBI calls, which
+diff --git a/drivers/tty/hvc/hvc_riscv_sbi.c b/drivers/tty/hvc/hvc_riscv_sbi.c
+index 31f53fa77e4a..da318d7f55c5 100644
+--- a/drivers/tty/hvc/hvc_riscv_sbi.c
++++ b/drivers/tty/hvc/hvc_riscv_sbi.c
+@@ -39,21 +39,83 @@ static int hvc_sbi_tty_get(uint32_t vtermno, char *buf, int count)
+ 	return i;
  }
  
--static void sbi_console_write(struct console *con,
--			      const char *s, unsigned n)
-+static void sbi_0_1_console_write(struct console *con,
-+				  const char *s, unsigned int n)
+-static const struct hv_ops hvc_sbi_ops = {
++static const struct hv_ops hvc_sbi_v01_ops = {
+ 	.get_chars = hvc_sbi_tty_get,
+ 	.put_chars = hvc_sbi_tty_put,
+ };
+ 
+-static int __init hvc_sbi_init(void)
++static int hvc_sbi_dbcn_tty_put(uint32_t vtermno, const char *buf, int count)
  {
- 	struct earlycon_device *dev = con->data;
- 	uart_console_write(&dev->port, s, n, sbi_putc);
- }
- 
-+static void sbi_dbcn_console_write(struct console *con,
-+				   const char *s, unsigned int n)
-+{
-+	phys_addr_t pa = __pa(s);
+-	return PTR_ERR_OR_ZERO(hvc_alloc(0, 0, &hvc_sbi_ops, 16));
++	phys_addr_t pa;
++	struct sbiret ret;
++
++	if (is_vmalloc_addr(buf))
++		pa = page_to_phys(vmalloc_to_page(buf)) + offset_in_page(buf);
++	else
++		pa = __pa(buf);
 +
 +	if (IS_ENABLED(CONFIG_32BIT))
-+		sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRITE,
-+			  n, lower_32_bits(pa), upper_32_bits(pa), 0, 0, 0);
++		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRITE,
++				count, lower_32_bits(pa), upper_32_bits(pa),
++				0, 0, 0);
 +	else
-+		sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRITE,
-+			  n, pa, 0, 0, 0, 0);
++		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRITE,
++				count, pa, 0, 0, 0, 0);
++	if (ret.error)
++		return 0;
++
++	return count;
+ }
+-device_initcall(hvc_sbi_init);
+ 
+-static int __init hvc_sbi_console_init(void)
++static int hvc_sbi_dbcn_tty_get(uint32_t vtermno, char *buf, int count)
+ {
+-	hvc_instantiate(0, 0, &hvc_sbi_ops);
++	phys_addr_t pa;
++	struct sbiret ret;
++
++	if (is_vmalloc_addr(buf))
++		pa = page_to_phys(vmalloc_to_page(buf)) + offset_in_page(buf);
++	else
++		pa = __pa(buf);
++
++	if (IS_ENABLED(CONFIG_32BIT))
++		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_READ,
++				count, lower_32_bits(pa), upper_32_bits(pa),
++				0, 0, 0);
++	else
++		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_READ,
++				count, pa, 0, 0, 0, 0);
++	if (ret.error)
++		return 0;
++
++	return ret.value;
 +}
 +
- static int __init early_sbi_setup(struct earlycon_device *device,
- 				  const char *opt)
- {
--	device->con->write = sbi_console_write;
--	return 0;
-+	int ret = 0;
++static const struct hv_ops hvc_sbi_dbcn_ops = {
++	.put_chars = hvc_sbi_dbcn_tty_put,
++	.get_chars = hvc_sbi_dbcn_tty_get,
++};
++
++static int __init hvc_sbi_init(void)
++{
++	int err;
 +
 +	if ((sbi_spec_version >= sbi_mk_version(2, 0)) &&
 +	    (sbi_probe_extension(SBI_EXT_DBCN) > 0)) {
-+		device->con->write = sbi_dbcn_console_write;
++		err = PTR_ERR_OR_ZERO(hvc_alloc(0, 0, &hvc_sbi_dbcn_ops, 16));
++		if (err)
++			return err;
++		hvc_instantiate(0, 0, &hvc_sbi_dbcn_ops);
 +	} else {
-+		if (IS_ENABLED(CONFIG_RISCV_SBI_V01))
-+			device->con->write = sbi_0_1_console_write;
-+		else
-+			ret = -ENODEV;
++		if (IS_ENABLED(CONFIG_RISCV_SBI_V01)) {
++			err = PTR_ERR_OR_ZERO(hvc_alloc(0, 0, &hvc_sbi_v01_ops, 16));
++			if (err)
++				return err;
++			hvc_instantiate(0, 0, &hvc_sbi_v01_ops);
++		} else {
++			return -ENODEV;
++		}
 +	}
-+
-+	return ret;
+ 
+ 	return 0;
  }
- EARLYCON_DECLARE(sbi, early_sbi_setup);
+-console_initcall(hvc_sbi_console_init);
++device_initcall(hvc_sbi_init);
 -- 
 2.34.1
 
