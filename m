@@ -2,53 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3DA7C61B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 02:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F9E7C61B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 02:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376642AbjJLAab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 20:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
+        id S1376624AbjJLAa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 20:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233860AbjJLAa1 (ORCPT
+        with ESMTP id S233943AbjJLAa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 11 Oct 2023 20:30:27 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DF298
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 17:30:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A59E3C43397;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA5090
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 17:30:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 980C4C433CC;
         Thu, 12 Oct 2023 00:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1697070625;
-        bh=51tfv3kMjBGFcDAc9LOdPgHNhgvubjVRO3ku7iHFAX0=;
+        bh=IvJA5+/1A+oM3Zbf+KWTHlj+YZ6HcUH+DTBEV/43keg=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=OIbMzeaFADSfHFDUuZnm3TXeyFpyzFQa8nPFMovLi6AKX3fexivxBQdA84p8cWRQd
-         58+KAzs7gV/+/w7oq2l9anaxlWcS5cdG1vQOEikVEx76mzKx0LQVzl1nyepk+LH+Mx
-         B0d4pvj/j+6H9gHSSZS5Hn8/AHI+QY/vu2zAtmo+29oaJSZI6VqYcSJOtlOIl4I4KN
-         oL6cKas+G0IIERb2WADGf5vY/Lfgkb9KRf8nruq9od6Iw6CM97u5FGX+GxSxDTTcVT
-         meuFRIPcocSLvfBe6ZqMXf5SJy+H3UievbpkqMT21FbQSHBPFLwdDGdl6QX20dalK4
-         88knMj6OPtzjw==
+        b=sw0Sk+KSPrRRR8xtwZ4nK7l4zDBWMYBvOWApGoK3eIMAhVdVaeZMdKqX/wpP8mQbO
+         cLKpGhX3OClgSTBlZ38ECkn6JFFRzUw4z74y8+hsTSbDumicAS/u0QNv9VbdPB/IiK
+         Iwy1mKJAWa65MgA9pLXBJnzDNE9Wn2HDIlLXoSjuKdzBneInft+CJBk/kdu0kijYUV
+         b24xEqFAFxAxFxJdimzxA0NNQejb4LJjLaLZZ8QDjVs1iQdmUhk5GQBKvsg0se5yDk
+         BYHzP3otNyNT9hLAX2u3N4eAAkVsrNYLgMXBVUs+zhdawD2e2ffq3oz/U8EnIpxA5j
+         4g9jQhHf0jsyQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8F904C595C4;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 84CA3C595C5;
         Thu, 12 Oct 2023 00:30:25 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: dsa: mt7530: replace deprecated strncpy with
- ethtool_sprintf
+Subject: Re: [PATCH] net: mvpp2: replace deprecated strncpy with strscpy
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169707062558.15864.9019771433715033154.git-patchwork-notify@kernel.org>
+Message-Id: <169707062553.15864.15839733815188901404.git-patchwork-notify@kernel.org>
 Date:   Thu, 12 Oct 2023 00:30:25 +0000
-References: <20231009-strncpy-drivers-net-dsa-mt7530-c-v1-1-ec6677a6436a@google.com>
-In-Reply-To: <20231009-strncpy-drivers-net-dsa-mt7530-c-v1-1-ec6677a6436a@google.com>
+References: <20231010-strncpy-drivers-net-ethernet-marvell-mvpp2-mvpp2_main-c-v1-1-51be96ad0324@google.com>
+In-Reply-To: <20231010-strncpy-drivers-net-ethernet-marvell-mvpp2-mvpp2_main-c-v1-1-51be96ad0324@google.com>
 To:     Justin Stitt <justinstitt@google.com>
-Cc:     arinc.unal@arinc9.com, daniel@makrotopia.org,
-        Landen.Chao@mediatek.com, dqfext@gmail.com, sean.wang@mediatek.com,
-        andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-hardening@vger.kernel.org
+Cc:     mw@semihalf.com, linux@armlinux.org.uk, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -63,20 +58,23 @@ Hello:
 This patch was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Mon, 09 Oct 2023 18:29:19 +0000 you wrote:
+On Tue, 10 Oct 2023 21:24:42 +0000 you wrote:
 > `strncpy` is deprecated for use on NUL-terminated destination strings
 > [1] and as such we should prefer more robust and less ambiguous string
 > interfaces.
 > 
-> ethtool_sprintf() is designed specifically for get_strings() usage.
-> Let's replace strncpy in favor of this more robust and easier to
-> understand interface.
+> We expect `irqname` to be NUL-terminated based on its use with
+> of_irq_get_byname() -> of_property_match_string() wherein it is used
+> with a format string and a `strcmp`:
+> |       pr_debug("comparing %s with %s\n", string, p);
+> |       if (strcmp(string, p) == 0)
+> |               return i; /* Found it; return index */
 > 
 > [...]
 
 Here is the summary with links:
-  - net: dsa: mt7530: replace deprecated strncpy with ethtool_sprintf
-    https://git.kernel.org/netdev/net-next/c/ac49b992578d
+  - net: mvpp2: replace deprecated strncpy with strscpy
+    https://git.kernel.org/netdev/net-next/c/fda9e465a9d9
 
 You are awesome, thank you!
 -- 
