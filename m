@@ -2,90 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4F97C6F82
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4A47C6F84
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378876AbjJLNnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
+        id S1378891AbjJLNog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 09:44:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347273AbjJLNnn (ORCPT
+        with ESMTP id S1378679AbjJLNoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:43:43 -0400
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8328C0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:43:41 -0700 (PDT)
-Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-49e15724283so331475e0c.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:43:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697118221; x=1697723021; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L5UxfBdj/6JrF2qHbkJWuAP1+z4BtgpnwOECrshG7uA=;
-        b=gm6vIwL0lCFg1F/OVNH2S8Xf6IlaRAhDZlruNt+wJ5yFeMgkY4TB9N5EqFQPtV+Y+o
-         h2npIhs8HoAL0duy0bS8qY2QDxh+Km3g6Oxf4UdnmTt2dnfY/wMpAbNxype1tsOWTzPE
-         7c6RTZki67ukHP7z8fhZEGdcd0ds7tOwwTJcIILDBortEpFEippIkjaxyanX3KGjpkF1
-         PMX4n/CTL6H6wmscOyEEEFj1KVAWXoiQYb8KWk1PUITcaR8ad1iqusnzM3XiV3VRbRzf
-         QBmM4Ifvq4iOdsq+KwwiF9umA0inZtgT7OindRF/6iw9KL/zRCNQR1lb3aL8+eH8BxGY
-         6tFw==
+        Thu, 12 Oct 2023 09:44:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0199DBE
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:43:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697118229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3YeQNCi5I9TqMhLfVG8VlYOgAuXpSTrcqQ3sfxubQaM=;
+        b=iKGum11t/BM1BsJbGOXytigVtoaxXJvhAFb9uRd49SGTUI8WGMR5lHnOok3UVQHTj5FGWk
+        TU85Ip8v5S9LnPjBjp2yFYUpQKfORRIkSDyvDCvZh8WM9F0ZZdkut3NTeimpXasnKs8qud
+        Uj7PyxXu4D/mmimljPhSBtG0kfPCE68=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-15-TB8FSkt_O_W_RWri-YtCqQ-1; Thu, 12 Oct 2023 09:43:42 -0400
+X-MC-Unique: TB8FSkt_O_W_RWri-YtCqQ-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-538128e18e9so781929a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:43:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697118221; x=1697723021;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L5UxfBdj/6JrF2qHbkJWuAP1+z4BtgpnwOECrshG7uA=;
-        b=squUn55dPaCMI3saNLEcNzwT8zWiQtQvIjZbxzigM/rsqikmXM1xdM8fhtE0voqBED
-         U+UP+eC0SBqjpEMqW9lf3M9U3oxW+o3fK0D4PNS8GLZkXwiN+b9sgit+ekrmrfcvq/5Z
-         ATnStpb5+YXJgXHVL7gd1LkJeIFyLNgMMBCFApQcuUmVxJf6DnELVnTrpqPQeCYg7yGi
-         fv3K7gzUymbSxDW42x6aQQeVosizZrA8neD6W4GP3e7uiYH7UesA21Zink9/7+/cAVBC
-         XbzHFiLKBlqWzDbbQduH3Qgi3ves/qhc/wfHE5dxgoLal6s3aM+ZLyEBwxs1aw7ckiwz
-         Yo1w==
-X-Gm-Message-State: AOJu0YyTlICiDAwKSTPGVyH1ac2bzTjjfnAl5stpXJhWT8TmQH64zTYK
-        8ySdnNqcT9sowQFebO35SPj2QNwVs8E93uAsOhPnTA==
-X-Google-Smtp-Source: AGHT+IEtzmuyswh9BkchHbtxmapjfde5JaFYoo08OhEksgVyX9vJ3Lzx6rWSdYd80NGUK2zgO4emVZenhzszDQU6FQo=
-X-Received: by 2002:a1f:ed41:0:b0:499:e671:1682 with SMTP id
- l62-20020a1fed41000000b00499e6711682mr20231744vkh.3.1697118220736; Thu, 12
- Oct 2023 06:43:40 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697118222; x=1697723022;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3YeQNCi5I9TqMhLfVG8VlYOgAuXpSTrcqQ3sfxubQaM=;
+        b=v/AtIKUH8Hs5/yccE72Qg9IxjO9Ql/ZAdUIBwlv5D7RBk4LJOi7ARR0oFpW9ImuOkC
+         8VND/T4qZ6R3hjlL9RG4JVUdvyR7SbqtMd0WSrfx51VosF2b7gfXSb+u9C4KmTthNdro
+         jkYuusNC7HYKqiR4T0aUqxa65d7XPyqsASbMkyaAPBceZ9soZ32n8PDhip0tyVwDOuDG
+         wtW3x+11RB8wZC9yfXCeWak17uGSbR0ilfWFwtomxtM41IdSdlf7HGq9RLe9BaI5iMwZ
+         eUKxVSJTKwu6d9ySDfB9Q+KpyBgLIR4h7N3eh6MvDlnxd1D0EapHaXHQG6IVYZCiPcIL
+         hDvg==
+X-Gm-Message-State: AOJu0Yzgxv3h7btSRn/xmQpcNDls/LeIr9OYfGUc8kqa20hHj0hP5Iiv
+        I2UERmyuBJaIsL3mkpe993ix9gORdcwImSPs1yzsb3HSgVhtNgHeCMPHlzX+OizcfnoiNJcNUR1
+        pUtsKHOnKvIjAlvxVd5N8yJko
+X-Received: by 2002:a05:6402:371a:b0:53d:af00:1682 with SMTP id ek26-20020a056402371a00b0053daf001682mr5374475edb.40.1697118221754;
+        Thu, 12 Oct 2023 06:43:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGYrju74xO7Ncjxi1ob/0f1czuvGBIQLn9BbOM3AmEu++kZS53RZ8hOyqwr78oMVbrKwJ/ffw==
+X-Received: by 2002:a05:6402:371a:b0:53d:af00:1682 with SMTP id ek26-20020a056402371a00b0053daf001682mr5374460edb.40.1697118221361;
+        Thu, 12 Oct 2023 06:43:41 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:4783:a68:c1ee:15c5? ([2001:b07:6468:f312:4783:a68:c1ee:15c5])
+        by smtp.googlemail.com with ESMTPSA id d5-20020aa7ce05000000b005346a263bb1sm10062063edv.63.2023.10.12.06.43.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 06:43:40 -0700 (PDT)
+Message-ID: <9faf1a1a-af49-5f6f-9f33-6cf57f884c44@redhat.com>
+Date:   Thu, 12 Oct 2023 15:43:38 +0200
 MIME-Version: 1.0
-References: <20231012132131.300014-1-benno.lossin@proton.me>
-In-Reply-To: <20231012132131.300014-1-benno.lossin@proton.me>
-From:   Alice Ryhl <aliceryhl@google.com>
-Date:   Thu, 12 Oct 2023 15:43:29 +0200
-Message-ID: <CAH5fLgg=AmuR-93vuVmdr_oVUYCYuYas7Unrm0UFtQ2Yc3x6wA@mail.gmail.com>
-Subject: Re: [PATCH] rust: macros: improve `#[vtable]` documentation
-To:     Benno Lossin <benno.lossin@proton.me>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <nmi@metaspace.dk>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] kvm/sev: remove redundant MISC_CG_RES_SEV_ES
+Content-Language: en-US
+To:     =?UTF-8?Q?Jos=c3=a9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
+        seanjc@google.com, skhan@linuxfoundation.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20231010174932.29769-1-jose.pekkarinen@foxhound.fi>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20231010174932.29769-1-jose.pekkarinen@foxhound.fi>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 3:22=E2=80=AFPM Benno Lossin <benno.lossin@proton.m=
-e> wrote:
->
-> Traits marked with `#[vtable]` need to provide default implementations
-> for optional functions. The C side represents these with `NULL` in the
-> vtable, so the default functions are never actually called. We do not
-> want to replicate the default behavior from C in Rust, because that is
-> not maintainable. Therefore we should use `build_error` in those default
-> implementations. The error message for that is provided at
-> `kernel::error::VTABLE_DEFAULT_ERROR`.
->
-> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+On 10/10/23 19:49, José Pekkarinen wrote:
+> SEV-ES is an extra encrypted state that shares common resources
+> with SEV. Using an extra CG for its purpose doesn't seem to
+> provide much value. This patch will clean up the control group
+> along with multiple checks that become redundant with it.
+> 
+> The patch will also remove a redundant logic on sev initialization
+> that produces SEV-ES to be disabled, while supported by the cpu
+> and requested by the user through the sev_es parameter.
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+In what sense is it shared?  The SEV ASIDs and the SEV-ES ASIDs are 
+separate (and in both cases limited) resources, and therefore they have 
+separate cgroups.
+
+Paolo
+
+> Signed-off-by: José Pekkarinen<jose.pekkarinen@foxhound.fi>
+> ---
+>   arch/x86/kvm/svm/sev.c      | 18 +++---------------
+>   include/linux/misc_cgroup.h |  2 --
+>   2 files changed, 3 insertions(+), 17 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 07756b7348ae..8a06d92187cf 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -37,13 +37,9 @@
+>    * this file are not used but this file still gets compiled into the KVM AMD
+>    * module.
+>    *
+> - * We will not have MISC_CG_RES_SEV and MISC_CG_RES_SEV_ES entries in the enum
+> - * misc_res_type {} defined in linux/misc_cgroup.h.
+> - *
+>    * Below macros allow compilation to succeed.
+>    */
+>   #define MISC_CG_RES_SEV MISC_CG_RES_TYPES
+> -#define MISC_CG_RES_SEV_ES MISC_CG_RES_TYPES
+>   #endif
+>   
+>   #ifdef CONFIG_KVM_AMD_SEV
+> @@ -125,13 +121,13 @@ static bool __sev_recycle_asids(int min_asid, int max_asid)
+>   
+>   static int sev_misc_cg_try_charge(struct kvm_sev_info *sev)
+>   {
+> -	enum misc_res_type type = sev->es_active ? MISC_CG_RES_SEV_ES : MISC_CG_RES_SEV;
+> +	enum misc_res_type type = MISC_CG_RES_SEV;
+>   	return misc_cg_try_charge(type, sev->misc_cg, 1);
+>   }
+>   
+>   static void sev_misc_cg_uncharge(struct kvm_sev_info *sev)
+>   {
+> -	enum misc_res_type type = sev->es_active ? MISC_CG_RES_SEV_ES : MISC_CG_RES_SEV;
+> +	enum misc_res_type type = MISC_CG_RES_SEV;
+>   	misc_cg_uncharge(type, sev->misc_cg, 1);
+>   }
+>   
+> @@ -2167,7 +2163,7 @@ void __init sev_set_cpu_caps(void)
+>   void __init sev_hardware_setup(void)
+>   {
+>   #ifdef CONFIG_KVM_AMD_SEV
+> -	unsigned int eax, ebx, ecx, edx, sev_asid_count, sev_es_asid_count;
+> +	unsigned int eax, ebx, ecx, edx, sev_asid_count;
+>   	bool sev_es_supported = false;
+>   	bool sev_supported = false;
+>   
+> @@ -2236,14 +2232,7 @@ void __init sev_hardware_setup(void)
+>   	if (!boot_cpu_has(X86_FEATURE_SEV_ES))
+>   		goto out;
+>   
+> -	/* Has the system been allocated ASIDs for SEV-ES? */
+> -	if (min_sev_asid == 1)
+> -		goto out;
+> -
+> -	sev_es_asid_count = min_sev_asid - 1;
+> -	WARN_ON_ONCE(misc_cg_set_capacity(MISC_CG_RES_SEV_ES, sev_es_asid_count));
+>   	sev_es_supported = true;
+> -
+>   out:
+>   	if (boot_cpu_has(X86_FEATURE_SEV))
+>   		pr_info("SEV %s (ASIDs %u - %u)\n",
+> @@ -2271,7 +2260,6 @@ void sev_hardware_unsetup(void)
+>   	bitmap_free(sev_reclaim_asid_bitmap);
+>   
+>   	misc_cg_set_capacity(MISC_CG_RES_SEV, 0);
+> -	misc_cg_set_capacity(MISC_CG_RES_SEV_ES, 0);
+>   }
+>   
+>   int sev_cpu_init(struct svm_cpu_data *sd)
+> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
+> index c238207d1615..23d3cd153f60 100644
+> --- a/include/linux/misc_cgroup.h
+> +++ b/include/linux/misc_cgroup.h
+> @@ -15,8 +15,6 @@ enum misc_res_type {
+>   #ifdef CONFIG_KVM_AMD_SEV
+>   	/* AMD SEV ASIDs resource */
+>   	MISC_CG_RES_SEV,
+> -	/* AMD SEV-ES ASIDs resource */
+> -	MISC_CG_RES_SEV_ES,
+>   #endif
+>   	MISC_CG_RES_TYPES
+>   };
+> -- 
+
