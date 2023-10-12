@@ -2,124 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD037C6822
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4F57C680C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 10:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235443AbjJLIc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 04:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36160 "EHLO
+        id S235447AbjJLIeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 04:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235438AbjJLIc1 (ORCPT
+        with ESMTP id S235438AbjJLId7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 04:32:27 -0400
+        Thu, 12 Oct 2023 04:33:59 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDD0A9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:31:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767F290
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:33:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697099498;
+        s=mimecast20190719; t=1697099593;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IDXTErD9yX+SuZgZbDMto+/s3M8gWyq6fvO38E6htEU=;
-        b=UFGMT1raXrBRU2z39qMWETvaI4bKePz2qyKkWNLRR7hvflC3ghb+3Nr2kbOFz7YAikWNni
-        1K+WtYED8IPYNyHVk+bVKdAxCdYjDmqmKHj9INkR1/RU8J4D1Je+O8vV6aamksiqEZRXO9
-        A+vJput7+Otkl4rBF+AVHjFF95UjUEc=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=tFBAaGNNwzUAKJQrwPFimGzTzmH3Y9stjQwEsidNPuk=;
+        b=adpdRol50FtXPSQ3ysNjngV9wRQnZc0WAUF5kznO/aaJJIU5Y+D1fhiEuRXlxbP2Cs/Ypb
+        p+JEu1DKguFxRhRf6kMhGsEMjcLCunATtqKeS1DMrB4uWS/qHaenDjzQyOIqujPx3G4wjP
+        jn0diXV3Kv0RbKiIoHYXGk4wszLJEgw=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-190-q1dNdOTvNRGRWq5geoL82w-1; Thu, 12 Oct 2023 04:31:37 -0400
-X-MC-Unique: q1dNdOTvNRGRWq5geoL82w-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-534c9a316cbso100429a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:31:36 -0700 (PDT)
+ us-mta-562-O8AzaZEUOteEtuRhPBFsew-1; Thu, 12 Oct 2023 04:33:07 -0400
+X-MC-Unique: O8AzaZEUOteEtuRhPBFsew-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2c038a1e2f6so6983481fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 01:33:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697099496; x=1697704296;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IDXTErD9yX+SuZgZbDMto+/s3M8gWyq6fvO38E6htEU=;
-        b=L2H8Iaadrz6eKKnPNuhRB7+dsGuYfe96g9QYAECSr+kKBnLHLhE66mH+MgLnZgrt38
-         OTdHGA6Oa0TKooxciFVe6agdVppV/N63CSd/q4YBkAxTnJYAKcZGK1OL8xuI9uOAK1+b
-         eb9p0dqihz3yVbcTF5NqKUDYNc2s3VrcbFewGeD108MSt7hycctDd+veLRW+bQCpf5dd
-         O6vCJeT+94trCdRMNpsAdvDCaPhIGpl/HqZiAXOuiP1VpYbDpQ0xxrv9dZXXB38wB6Dx
-         tRc25o5UHBskILFWqeB/E0plasjZoH3rxghrim7W2G4K5NSl4y45c8mTpLWokbIxe1Ys
-         x9EA==
-X-Gm-Message-State: AOJu0Yy81U6LrTrfCWOig+YqggJi++V0jrnui+HbTecGsZ5tozwwCg2d
-        CSbUDZSST/SkS5skFghUMTRlnQql2q3ak34gV33vhRoeVWALUUcaT6a6qIQTRpPi8Pclvta7STs
-        /gHA8uexQT2ZUhScc7FTMY07B
-X-Received: by 2002:a05:6402:290c:b0:53d:aaf5:c49e with SMTP id ee12-20020a056402290c00b0053daaf5c49emr3925139edb.1.1697099495953;
-        Thu, 12 Oct 2023 01:31:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEsDOMpD2VqYx4OQvPxT4GPKqTdL4UTaNatbTMWJVg2p9WFu8D79ionvNKPMnlR0Lw9tOHV9A==
-X-Received: by 2002:a05:6402:290c:b0:53d:aaf5:c49e with SMTP id ee12-20020a056402290c00b0053daaf5c49emr3925127edb.1.1697099495658;
-        Thu, 12 Oct 2023 01:31:35 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-228-181.dyn.eolo.it. [146.241.228.181])
-        by smtp.gmail.com with ESMTPSA id cb5-20020a0564020b6500b0053ddbfa71ddsm1660937edb.47.2023.10.12.01.31.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 01:31:35 -0700 (PDT)
-Message-ID: <237ad66815a7988eaf9b0ed2132772c58e868cd8.camel@redhat.com>
-Subject: Re: [net PATCH] octeon_ep: update BQL sent bytes before ringing
- doorbell
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Shinas Rasheed <srasheed@marvell.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hgani@marvell.com
-Cc:     vimleshk@marvell.com, egallen@redhat.com, mschmidt@redhat.com,
-        Veerasenareddy Burru <vburru@marvell.com>,
-        Sathesh Edara <sedara@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Satananda Burla <sburla@marvell.com>,
-        Abhijit Ayarekar <aayarekar@marvell.com>
-Date:   Thu, 12 Oct 2023 10:31:33 +0200
-In-Reply-To: <20231010115015.2279977-1-srasheed@marvell.com>
-References: <20231010115015.2279977-1-srasheed@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        d=1e100.net; s=20230601; t=1697099586; x=1697704386;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tFBAaGNNwzUAKJQrwPFimGzTzmH3Y9stjQwEsidNPuk=;
+        b=BcKdQ0VDlL9WwgnZ/whXoi2YK4jYD+KUJyuPqO4i63OSt6/nF68zOs6wszAxZRAm7d
+         T2p9gEcQYy9BIARXTbBqeQFNeNUZKYwFhDjTLnBP21ZfZoU7+5Mw2fFL7CSm5rC5hf3q
+         fBmOhecWr+LdCiAX3Iwf2X+FN3JOrupvpJsGCpRk2BlRhf6Pz8wVvuX1Pffc2H3BztZP
+         nTK8QE8+SyhTVR2kNj+ea+8yXnLgUnxmkg2ftv+W6chwQUSCT37h+uZ1uzwmrHfQpF2H
+         GJLXP4AJLEKKEZfzPzsFFoS0gyzPcwCy6Pg2tIHWwiRwnHnGB11W7CI+zZ+3geWpOEBc
+         44hQ==
+X-Gm-Message-State: AOJu0Yz8+/GyLl5OmWlrFjQHo4wzJo53XJ+y8nM1kADgFbqpVx71h9sz
+        TX4Obe8/p9hIKXvq7jC0Gzc+Z03sU6iuADrAjnqVlkaN6j/zqSteQFFM/lIZEsWkrZKD4tYSit9
+        cAZoirzlb2ekpthIFUarVZ8pd
+X-Received: by 2002:a05:651c:88:b0:2bc:dd96:147c with SMTP id 8-20020a05651c008800b002bcdd96147cmr20352126ljq.34.1697099585841;
+        Thu, 12 Oct 2023 01:33:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFEP/yCsuTBbRW2UBpXpRJ1WBj8Tdvm+xry9N5pYzpQmfCztnp1gPgIReFyNmdzNKrkEmmgEw==
+X-Received: by 2002:a05:651c:88:b0:2bc:dd96:147c with SMTP id 8-20020a05651c008800b002bcdd96147cmr20352104ljq.34.1697099585471;
+        Thu, 12 Oct 2023 01:33:05 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70d:ee00:b271:fb6c:a931:4769? (p200300cbc70dee00b271fb6ca9314769.dip0.t-ipconnect.de. [2003:cb:c70d:ee00:b271:fb6c:a931:4769])
+        by smtp.gmail.com with ESMTPSA id 9-20020a05600c020900b003feea62440bsm18837414wmi.43.2023.10.12.01.33.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 01:33:05 -0700 (PDT)
+Message-ID: <63d119f7-5adb-861a-00c2-69a92b19ef9b@redhat.com>
+Date:   Thu, 12 Oct 2023 10:33:04 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 0/5] mm, kpageflags: support folio and fix output for
+ compound pages
+Content-Language: en-US
+To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+References: <20231010142801.3780917-1-naoya.horiguchi@linux.dev>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20231010142801.3780917-1-naoya.horiguchi@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-10-10 at 04:50 -0700, Shinas Rasheed wrote:
-> Sometimes Tx is completed immediately after doorbell is updated, which
-> causes Tx completion routing to update completion bytes before the
-> same packet bytes are updated in sent bytes in transmit function, hence
-> hitting BUG_ON() in dql_completed(). To avoid this, update BQL
-> sent bytes before ringing doorbell.
->=20
-> Fixes: 37d79d059606 ("octeon_ep: add Tx/Rx processing and interrupt suppo=
-rt")
-> Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
-> ---
->  drivers/net/ethernet/marvell/octeon_ep/octep_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/driver=
-s/net/ethernet/marvell/octeon_ep/octep_main.c
-> index dbc518ff8276..314f9c661f93 100644
-> --- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-> +++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-> @@ -718,6 +718,7 @@ static netdev_tx_t octep_start_xmit(struct sk_buff *s=
-kb,
->  	/* Flush the hw descriptor before writing to doorbell */
->  	wmb();
-> =20
-> +	netdev_tx_sent_queue(iq->netdev_q, skb->len);
+On 10.10.23 16:27, Naoya Horiguchi wrote:
+> Hi everyone,
+> 
+> This patchset addresses 2 issues in /proc/kpageflags.
+> 
+>    1. We can't easily tell folio from thp, because currently both pages are
+>       judged as thp, and
+>    2. we see some garbage data in records of compound tail pages because
+>       we use tail pages to store some internal data.
+> 
+> These issues require userspace programs to do additional work to understand
+> the page status, which makes situation more complicated.
+> 
+> This patchset tries to solve these by defining KPF_FOLIO for issue 1., and
+> by hiding part of page flag info on tail pages of compound pages for issue 2.
+> 
+> I think that technically some compound pages like thp/hugetlb/slab could be
+> considered as folio, but in this version KPF_FOLIO is set only on folios
 
-If tx completion and start_xmit happen on 2 different CPUs, how do you
-ensure that xmit_completion will observe the values written here?
+At least thp+hugetlb are most certainly folios. Regarding slab, I 
+suspect we no longer call them folios (cannot be mapped to user space). 
+But Im not sure about the type hierarchy.
 
-Specifically, don't you need to move netdev_tx_sent_queue() before the
-above memory barrier?
+> in pagecache (so "folios in narrower meaning").  I'm not confident about
+> this choice, so if you have any idea about this, please let me know.
 
-Thanks,
+It does sound inconsistent. What exactly do you want to tell user space 
+with the new flag?
 
-Paolo
+-- 
+Cheers,
+
+David / dhildenb
 
