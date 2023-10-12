@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2466B7C656F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C453A7C656E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377443AbjJLGYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:24:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
+        id S1377467AbjJLGYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377424AbjJLGYJ (ORCPT
+        with ESMTP id S1377428AbjJLGYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:24:09 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A4AC4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:06 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a3e0f8872so850702276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:06 -0700 (PDT)
+        Thu, 12 Oct 2023 02:24:10 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC34C9
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:09 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9ab7a8b736so808961276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697091846; x=1697696646; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697091848; x=1697696648; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=lab+IK477apFFSLjWykol92FbgsP0NP2xQdCcWnRJJc=;
-        b=HHqg13XMM6x5HB+wzaqVWPqgMBahLq/RY1RmgEc2/TmpFv4ho4MxYKvra36JQDWIf0
-         PsrGWjiBAuiToHNVg8at7GslsuGc9hywA1NRAZHS79TVEmrkOFYFU3/osWIkZKIDS1tb
-         VUfskzb4hwHd1ULwHXp674ukE7Kg6ids2LsZZybMBe+86SiIk5CD06mb2zn1kwb7128N
-         snnnO1QpY4sve61Yv6HhfLVVKykoQVXfAnDvu74tTlPeIsrU37It0HHQ2cNio8dE4LtR
-         X23KzD9P3ZLNtNc79cq+Ac5ANJpjIhxggQkilLvEHXNIYGfVNPYLhZ2z3vlU9RSYnHRE
-         Q+tw==
+        bh=e5eVmSUwSJxksG4NuITaTSZqNGvqcD7jLZAKoPJCuWU=;
+        b=y5oLkfN06TgWXS3T+DIqI41033RTHqlG50bSK7V7VQbAhwhGGcSjc4qAwqKygliEMw
+         Dzh/xEbTTErZN4BVS3Pbn0pku5E1Apc/bqPd6Ijh7VRRFgk3TbWeg64L30Wc1WorAbDI
+         YG3JeTkPUZUCwugaaFoloZaSE8CctvzKlONXqM6TlgyEdq0KhiT+M4srskMsnAlW5Lt8
+         /KhwYKQQyxkmrKvpGXmEqd1ntx5trZWSpnYKse13WRT+Ojt93O7egD7ZW47xYOAYtqCv
+         28251R+c3r7BXlB9v+5AgoBC9rpcEwCudlwhbgLlNKT8+UqnTLAEyDDeYiOAAEBZuw0Y
+         03CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697091846; x=1697696646;
+        d=1e100.net; s=20230601; t=1697091848; x=1697696648;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lab+IK477apFFSLjWykol92FbgsP0NP2xQdCcWnRJJc=;
-        b=sG/l+WgVWDyAO/wM4Jgz1jW56jI2e/5+biRPbnY8sa8Crn1kkN6LbnUyoniTgsqZn1
-         yu11cyBU2wa0yOSyPgvjDmt9CII2J6hIAoKSvYQz0CoqNnErDzX6cq4VyYhLZMH8bF50
-         P/bPzdMSYsVrMEUu6CZNOuODMe9lvRuvYJHc83wZnAtLrKj8AyTCtk+gNfdRgA4ieehZ
-         +mGch9nHav4BDPtrl34umOGS0BKlYHmYUopprtnSXH7Uo+QkeM6Cw0KaX0Ry8YdR7UA9
-         6b7q52P3YEZnW3zntxa7gjzAAjxmVkGAaZelEbN/9+QZ7Rp8Zup9rfCCCslufu88gQs6
-         r37g==
-X-Gm-Message-State: AOJu0Yx2Do7LG0dAedS5jfD5X5zeyX7AS0aFzTwtvAY5Q5C8hQ23FVfZ
-        ETub/ET901oBfRtHriCgDcISldrq7Iag
-X-Google-Smtp-Source: AGHT+IHnIAXcUzihWQojvyw8UJR3bPVrgp/MTrrJXWebCRY8gHHYkJpjznxCH58B5pkwT3b1yo+r8GOb/Yxd
+        bh=e5eVmSUwSJxksG4NuITaTSZqNGvqcD7jLZAKoPJCuWU=;
+        b=d3uPvUkYcR7EfabbNWR4ViVz+sJDd0REGb8rvAtFE8cadvKZIEVg+uH9vEWeSA5PNn
+         Nri8T+5Q5JKt2KeE1+dHa2InoNTTxnJyaGTHJ7bIyQIWthruZSHmwaQgeIjO//MgEfY3
+         yKeeIFAQQmbwYunJ1B6qO2VoKaCW9sbW8JiuFp5yniO4V0z730s7JnRYjLOfQFvgi/vV
+         GqlyOGSa8RJJ6cdGcrTa5a5HkmpgjcNmzTJW9eYslvKfhrbI4fPpPmXQeytVhUDNmQwm
+         NU1pqBLh+hOUmIVxeDTyZZje2rfcJoTfHOG2mrcfKDQcZrYmvMwk6ZCXIN+VnLZlMhmw
+         IsBg==
+X-Gm-Message-State: AOJu0YzkaMTy5O+PGCQRVad/iTK8QVpuzEIUtqE/R9jw5yEzvfeSpoGo
+        3XO2i+QHQ1FqLgPeciqRRBNnmcLYGj53
+X-Google-Smtp-Source: AGHT+IFmqFq4/wm5EgdUd3x0JEaVUvH+YjHVcBVN3IPYbimtzwGlyFiTzZuU2AziiY+gjwegOfUSdr2DJPxE
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7be5:14d2:880b:c5c9])
- (user=irogers job=sendgmr) by 2002:a25:2fd7:0:b0:d9a:6419:f8c2 with SMTP id
- v206-20020a252fd7000000b00d9a6419f8c2mr121947ybv.2.1697091846096; Wed, 11 Oct
- 2023 23:24:06 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 23:23:47 -0700
+ (user=irogers job=sendgmr) by 2002:a25:bccb:0:b0:d9a:61ca:7c7a with SMTP id
+ l11-20020a25bccb000000b00d9a61ca7c7amr138294ybm.11.1697091848675; Wed, 11 Oct
+ 2023 23:24:08 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 23:23:48 -0700
 In-Reply-To: <20231012062359.1616786-1-irogers@google.com>
-Message-Id: <20231012062359.1616786-2-irogers@google.com>
+Message-Id: <20231012062359.1616786-3-irogers@google.com>
 Mime-Version: 1.0
 References: <20231012062359.1616786-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v2 01/13] perf machine: Avoid out of bounds LBR memory read
+Subject: [PATCH v2 02/13] libperf rc_check: Make implicit enabling work for GCC
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -80,7 +80,7 @@ To:     Peter Zijlstra <peterz@infradead.org>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,49 +88,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running perf top with address sanitizer and "--call-graph=lbr" fails
-due to reading sample 0 when no samples exist. Add a guard to prevent
-this.
+Make the implicit REFCOUNT_CHECKING robust to when building with GCC.
 
-Fixes: e2b23483eb1d ("perf machine: Factor out lbr_callchain_add_lbr_ip()")
+Fixes: 9be6ab181b7b ("libperf rc_check: Enable implicitly with sanitizers")
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/machine.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ tools/lib/perf/include/internal/rc_check.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index addfae2f63ef..e0e2c4a943e4 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -2622,16 +2622,18 @@ static int lbr_callchain_add_lbr_ip(struct thread *thread,
- 		save_lbr_cursor_node(thread, cursor, i);
- 	}
+diff --git a/tools/lib/perf/include/internal/rc_check.h b/tools/lib/perf/include/internal/rc_check.h
+index d5d771ccdc7b..e88a6d8a0b0f 100644
+--- a/tools/lib/perf/include/internal/rc_check.h
++++ b/tools/lib/perf/include/internal/rc_check.h
+@@ -9,8 +9,12 @@
+  * Enable reference count checking implicitly with leak checking, which is
+  * integrated into address sanitizer.
+  */
+-#if defined(LEAK_SANITIZER) || defined(ADDRESS_SANITIZER)
++#if defined(__SANITIZE_ADDRESS__) || defined(LEAK_SANITIZER) || defined(ADDRESS_SANITIZER)
+ #define REFCNT_CHECKING 1
++#elif defined(__has_feature)
++#if __has_feature(address_sanitizer) || __has_feature(leak_sanitizer)
++#define REFCNT_CHECKING 1
++#endif
+ #endif
  
--	/* Add LBR ip from first entries.to */
--	ip = entries[0].to;
--	flags = &entries[0].flags;
--	*branch_from = entries[0].from;
--	err = add_callchain_ip(thread, cursor, parent,
--			       root_al, &cpumode, ip,
--			       true, flags, NULL,
--			       *branch_from);
--	if (err)
--		return err;
-+	if (lbr_nr > 0) {
-+		/* Add LBR ip from first entries.to */
-+		ip = entries[0].to;
-+		flags = &entries[0].flags;
-+		*branch_from = entries[0].from;
-+		err = add_callchain_ip(thread, cursor, parent,
-+				root_al, &cpumode, ip,
-+				true, flags, NULL,
-+				*branch_from);
-+		if (err)
-+			return err;
-+	}
- 
- 	return 0;
- }
+ /*
 -- 
 2.42.0.609.gbb76f46606-goog
 
