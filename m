@@ -2,146 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7102F7C77C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476007C77CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 22:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442408AbjJLUSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 16:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
+        id S1442701AbjJLUTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 16:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347403AbjJLUSr (ORCPT
+        with ESMTP id S1347375AbjJLUTy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 16:18:47 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF86CDD
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 13:18:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hc6HCNMBp8IlLh8DN5mOo6xzjEiwvUjh2K14S7K06EQ=; b=UXgboL6T6vWj55vMADPJkX8CSk
-        gvNHxS4VgKU8FrVZzda+94awkU07ZZcPRsaGdhBlL2sW01X3iIeBEHS+NBA3QfgmYJCZ01kbHKCAM
-        zJ2ni/YxaRuJ6vKxvrE6jcmZ1EXo0/XfWVJMWDc6RNf7Gav4qipw0vtwcGLx9St8wToVsY4RIa6gE
-        vmKc72e3sILpfqrMBe4+91KN/qYgvJjqo/UumT38BjjGUD2ioIo53ez5BuRfvzDtyIojYPspUaQHd
-        3IVUG5m0jh2JXRGOQh3V7GVe1ZItZaidt1wC1x6/Z1tQpo+ze7A/Z3vrEX0QbMQkwJaJJH6jne61i
-        l30AfPHw==;
-Received: from jlbec by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qr28n-000gUf-0E;
-        Thu, 12 Oct 2023 20:18:41 +0000
-Date:   Thu, 12 Oct 2023 13:18:32 -0700
-From:   Joel Becker <jlbec@evilplan.org>
-To:     Seamus Connor <sconnor@purestorage.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [WIP] configfs: improve item creation performance
-Message-ID: <ZShUmLU3X5QMiWQH@google.com>
-Mail-Followup-To: Seamus Connor <sconnor@purestorage.com>,
-        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org
-References: <20231011213919.52267-1-sconnor@purestorage.com>
+        Thu, 12 Oct 2023 16:19:54 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBCB2BB;
+        Thu, 12 Oct 2023 13:19:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B5FFC433C7;
+        Thu, 12 Oct 2023 20:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697141993;
+        bh=1w9tmt3+s2Cw6gjksSzd4+LnjhCxmFxThwc7u2OEO40=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=kDq3ZB8Yzrdfi+09U4iPx/0bycBidEiPLQhB7JjcFFAK8Lbgbq+204TE0qvE0geMr
+         IsLBuwR4c/WMDO5N5RAsg4OwdhtqKcHRsQ/ch7SUm/v/QrnYfC+KMXKdv8LwaCdqIf
+         YfqSm5JzU6xvlezsAlTmUU5rs7GMV+ZS6pO2E7ARPfLJvdvjF2zo6xvewp3k8v/vha
+         t52xxy8238rabB9uRmFSyXq/rf0gs7cbOsWYlGx03wowKIHVH2XYIZrEtmQmL5FLZ8
+         g39uxc13xMEDPWCyLbIwgSCJVRN24EnK2g8Vj+79UP8F8ZZCSnAyEJNs3xOKti/7Id
+         ZPRkOzWbppIEw==
+Message-ID: <c656a6b8ac2feefda16e6d1d548a9f80.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011213919.52267-1-sconnor@purestorage.com>
-X-Burt-Line: Trees are cool.
-X-Red-Smith: Ninety feet between bases is perhaps as close as man has ever
- come to perfection.
-Sender: Joel Becker <jlbec@ftp.linux.org.uk>
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URI_DOTEDU autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231011090028.1706653-4-quic_imrashai@quicinc.com>
+References: <20231011090028.1706653-1-quic_imrashai@quicinc.com> <20231011090028.1706653-4-quic_imrashai@quicinc.com>
+Subject: Re: [PATCH V2 3/4] clk: qcom: Add ECPRICC driver support for QDU1000 and QRU1000
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Taniya Das <quic_tdas@quicinc.com>,
+        Imran Shaik <quic_imrashai@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ajit Pandey <quic_ajipan@quicinc.com>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Imran Shaik <quic_imrashai@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 12 Oct 2023 13:19:51 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 02:39:19PM -0700, Seamus Connor wrote:
-> On my machine, creating 40,000 Items in a single directory takes roughly
-> 40 seconds. With this patch applied, that time drops down to around 130
-> ms.
+Quoting Imran Shaik (2023-10-11 02:00:27)
+> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+> index 3194c8beb06d..60a981ff2bac 100644
+> --- a/drivers/clk/qcom/Kconfig
+> +++ b/drivers/clk/qcom/Kconfig
+> @@ -667,6 +667,14 @@ config QDU_GCC_1000
+>           QRU1000 devices. Say Y if you want to use peripheral
+>           devices such as UART, SPI, I2C, USB, SD, PCIe, etc.
+> =20
+> +config QDU_ECPRICC_1000
+> +       tristate "QDU1000/QRU1000 ECPRI Clock Controller"
 
-Nice.
+This needs a 'depends on ARM64 || COMPILE_TEST' type of line here.
 
-> @@ -207,7 +212,10 @@ static struct configfs_dirent *configfs_new_dirent(struct configfs_dirent *paren
->  		return ERR_PTR(-ENOENT);
->  	}
->  	sd->s_frag = get_fragment(frag);
-> -	list_add(&sd->s_sibling, &parent_sd->s_children);
-> +	if (configfs_dirent_is_pinned(sd))
-> +		list_add_tail(&sd->s_sibling, &parent_sd->s_children);
-> +	else
-> +		list_add(&sd->s_sibling, &parent_sd->s_children);
->  	spin_unlock(&configfs_dirent_lock);
-
-This is subtle.  Your patch description of course describes why we are
-partitioning the items and attributes, but that will get lost into the
-memory hole very quickly.  Please add a comment.
-
-> @@ -449,6 +454,10 @@ static struct dentry * configfs_lookup(struct inode *dir,
->  
->  	spin_lock(&configfs_dirent_lock);
->  	list_for_each_entry(sd, &parent_sd->s_children, s_sibling) {
+> +       select QDU_GCC_1000
+> +       help
+> +         Support for the ECPRI clock controller on QDU1000 and
+> +         QRU1000 devices. Say Y if you want to support the ECPRI
+> +         clock controller functionality such as Ethernet.
 > +
-> +		if (configfs_dirent_is_pinned(sd))
-> +			break;
+>  config SDM_GCC_845
+>         tristate "SDM845/SDM670 Global Clock Controller"
+>         depends on ARM64 || COMPILE_TEST
+> diff --git a/drivers/clk/qcom/ecpricc-qdu1000.c b/drivers/clk/qcom/ecpric=
+c-qdu1000.c
+> new file mode 100644
+> index 000000000000..e26912f3dd39
+> --- /dev/null
+> +++ b/drivers/clk/qcom/ecpricc-qdu1000.c
+> @@ -0,0 +1,2466 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2022-2023, Qualcomm Innovation Center, Inc. All rights =
+reserved.
+> + */
 > +
->  		if ((sd->s_type & CONFIGFS_NOT_PINNED) &&
->  		    !strcmp(configfs_get_name(sd), dentry->d_name.name)) {
->  			struct configfs_attribute *attr = sd->s_element;
+> +#include <linux/clk-provider.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
 
-There's a lack of symmetry here.  The pinned check is an inline
-function, whereas the `CONFIGFS_NOT_PINNED` check is an open-coded
-bitmask.  Why not just:
+What is the of.h include for? Did you mean mod_devicetable.h instead of
+of_device_id?
 
-```
-		if (sd->s_type & CONFIGFS_IS_PINNED)
-			break;
-```
-
-Plus, aren't the pinned/not-pinned checks redundant?  Can't we avoid the
-extra conditional?
-
-
-```
-	spin_lock(&configfs_dirent_lock);
-	list_for_each_entry(sd, &parent_sd->s_children, s_sibling) {
--		if ((sd->s_type & CONFIGFS_NOT_PINNED) &&
--		    !strcmp(configfs_get_name(sd), dentry->d_name.name)) {
-+		/*
-+		 * The dirents for config_items are pinned in the
-+		 * dcache, so configfs_lookup() should never be called
-+		 * for items.  Thus, we're only looking up attributes.
-+		 *
-+		 * s_children is ordered so that attributes
-+		 * (CONFIGFS_NOT_PINNED) come before items (see
-+		 * configfs_new_dirent().  If we have reached a child item,
-+		 * we are done looking.
-+		 */
-+		if (!(sd->s_type & CONFIGFS_NOT_PINNED))
-+			break;
-+
-+		if (!strcmp(configfs_get_name(sd), dentry->d_name.name)) {
-			struct configfs_attribute *attr = sd->s_element;
-			umode_t mode = (attr->ca_mode & S_IALLUGO) | S_IFREG;
-```
-
-> -void configfs_hash_and_remove(struct dentry * dir, const char * name)
-> -{
-> -	struct configfs_dirent * sd;
-> -	struct configfs_dirent * parent_sd = dir->d_fsdata;
-
-Man, I thought we removed this years ago:
-https://lkml.indiana.edu/hypermail/linux/kernel/0803.0/0905.html.  No
-idea why that patch didn't land.
-
-Thanks,
-Joel
-
--- 
-
-Life's Little Instruction Book #222
-
-	"Think twice before burdening a friend with a secret."
-
-			http://www.jlbec.org/
-			jlbec@evilplan.org
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +
