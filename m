@@ -2,205 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2347C70DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7E27C70E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 17:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344035AbjJLPCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 11:02:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
+        id S1379203AbjJLPDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 11:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbjJLPCB (ORCPT
+        with ESMTP id S1378304AbjJLPC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 11:02:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52FB90;
+        Thu, 12 Oct 2023 11:02:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DCCC4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:02:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697122926;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NqKWWi4N1dQcUV0pCxNw2tgDBfyOJnn+/IdI3vL5BCQ=;
+        b=bwXGB9X6Mdxjg1G/razCMVObyfS53Is97BntuZFxn1/staY5xd+Ryo/QPgQBlurJkXYGso
+        iQYf741ycaJxJHxGbTOKe1sS1c2p7BKyJyESveMIVZhjIpEoJDtcD95C+BlXtqoAbS6hai
+        j5OfCdvbUWsporrKk3iVclCEwq+wfzs=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-145-3SPO1wYlMI-bY1Cpdf3irQ-1; Thu, 12 Oct 2023 11:02:04 -0400
+X-MC-Unique: 3SPO1wYlMI-bY1Cpdf3irQ-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-668f04867deso11813686d6.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 08:02:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697122923; x=1697727723;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NqKWWi4N1dQcUV0pCxNw2tgDBfyOJnn+/IdI3vL5BCQ=;
+        b=YlD0ZaEs4hHqFOKIU/MvFfOe+hRc112l3w+qiEUFKypEY1LfUa2wcujmWV0hhfpMsw
+         tAlB+vpVhe0Ix362m58GKCTG73E7fOc6jV2AS5FJgQYC7KQGC4tyOfz1cysksq0P8Oez
+         IMhND3Uzj+wk27sVK7Q1LxxiUMJFA1q2tjmRLB4ZxdxU+tA6rWqKLeD238chwShnoSLS
+         IiDifimlPvPh5s+Sqy8VlkP4u9Efv/icXeNL9piQl7qcnJ85CrfTeCB0uXcqSMWv1zYw
+         aRVfLHACMY60etv16pQ30qzZ2OTXd5rN+itZADCc2lLeFinNV94N3AsmavjG4J4c1ddQ
+         HRRg==
+X-Gm-Message-State: AOJu0Yz4lRnoWdDHabuXYdsJf3heTDrF4AVPlUDCduEcfSIz3SFllwx+
+        7sXzYP+0Lro65EQZwYdKmTUaPCscgUdK7O4qc8CVb1QMfhqwj+CjT2xFF8GF406J2yllQBdrXbT
+        rzBUUN0AxOMELNNW94qPI7S/v
+X-Received: by 2002:a05:6214:5b03:b0:65d:1265:48c5 with SMTP id ma3-20020a0562145b0300b0065d126548c5mr25316472qvb.33.1697122923730;
+        Thu, 12 Oct 2023 08:02:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGjRHnSSwx/haWRgrBki1YsFkWJjXmdjCoMi0wMoPVGd/LNcVTz7v5WLv1JGQct9yRT+ZM1Mw==
+X-Received: by 2002:a05:6214:5b03:b0:65d:1265:48c5 with SMTP id ma3-20020a0562145b0300b0065d126548c5mr25316134qvb.33.1697122919236;
         Thu, 12 Oct 2023 08:01:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697122919; x=1728658919;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=dLXAThUg4mC4xwb/QLYtkIGsnVYBumf2JaYAcch2EPg=;
-  b=gB4TKwezdaobVFOz5v64ZK6d+dlTx/BN04/jt+ArUzoOZodShpnsBPgK
-   teZJra2kaA1Q+QkarwpA75BhluOtWoCfC6CHYSQzRmOEWMJrDZnyF+1hT
-   y6u3/X6F+jK2VcEPAVvEFuU3oONQ6AC2osr1E36/zsQ5szDJifEgTLR5Y
-   rGL+HwWP7uDOj70FGSVT3WD6eH23Q+smYpivyNgmH0gk+v9nizENAu+5E
-   V2eMJajShNQMdvBkcaltOM7AVoa4OsNsn86IfRo/T9fL1D+EaHMAMhZG2
-   OjnZAVagspZBofkGD5I0+0hQEcsgqWKOlmLfAk50+qSnkfuC6B1C2d5Tj
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="449131765"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="449131765"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 08:01:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="747908047"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="747908047"
-Received: from asroczyn-mobl.ger.corp.intel.com ([10.249.36.107])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 08:01:26 -0700
-Date:   Thu, 12 Oct 2023 18:01:24 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
-Subject: Re: [PATCH V3 09/16] platform/x86/intel/pmc: Allow pmc_core_ssram_init
- to fail
-In-Reply-To: <20231012023840.3845703-10-david.e.box@linux.intel.com>
-Message-ID: <ac7be397-bc9-a135-9498-72dfa1fe456d@linux.intel.com>
-References: <20231012023840.3845703-1-david.e.box@linux.intel.com> <20231012023840.3845703-10-david.e.box@linux.intel.com>
+Received: from rh (p200300c93f266600211746b64b43cdf8.dip0.t-ipconnect.de. [2003:c9:3f26:6600:2117:46b6:4b43:cdf8])
+        by smtp.gmail.com with ESMTPSA id o15-20020a0cfa8f000000b0066cfbe4e0f4sm2140112qvn.26.2023.10.12.08.01.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 08:01:58 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 17:01:54 +0200 (CEST)
+From:   Sebastian Ott <sebott@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v7 10/12] KVM: selftests: aarch64: Introduce vpmu_counter_access
+ test
+In-Reply-To: <44608d30-c97a-c725-e8b2-0c5a81440869@redhat.com>
+Message-ID: <65b8bbdb-2187-3c85-0e5d-24befcf01333@redhat.com>
+References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-11-rananta@google.com> <44608d30-c97a-c725-e8b2-0c5a81440869@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="-1463795790-346822177-1697122918=:6347"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Oct 2023, David E. Box wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> Currently, if the PMC SSRAM initialization fails, no error is returned and
-> the only indication is that a PMC device has not been created.  Instead,
-> allow an error to be returned and handled directly by the caller.
+---1463795790-346822177-1697122918=:6347
+Content-Type: text/plain; charset=ISO-8859-7; format=flowed
+Content-Transfer-Encoding: 8BIT
 
-You might have a good reason for it but why isn't the call into 
-pmc_core_pmc_add() changed in this patch to take the error value into 
-account?
+On Thu, 12 Oct 2023, Sebastian Ott wrote:
+> On Mon, 9 Oct 2023, Raghavendra Rao Ananta wrote:
+>>  +/* Create a VM that has one vCPU with PMUv3 configured. */
+>>  +static void create_vpmu_vm(void *guest_code)
+>>  +{
+>>  +	struct kvm_vcpu_init init;
+>>  +	uint8_t pmuver, ec;
+>>  +	uint64_t dfr0, irq = 23;
+>>  +	struct kvm_device_attr irq_attr = {
+>>  +		.group = KVM_ARM_VCPU_PMU_V3_CTRL,
+>>  +		.attr = KVM_ARM_VCPU_PMU_V3_IRQ,
+>>  +		.addr = (uint64_t)&irq,
+>>  +	};
+>>  +	struct kvm_device_attr init_attr = {
+>>  +		.group = KVM_ARM_VCPU_PMU_V3_CTRL,
+>>  +		.attr = KVM_ARM_VCPU_PMU_V3_INIT,
+>>  +	};
+>>  +
+>>  +	/* The test creates the vpmu_vm multiple times. Ensure a clean state
+>>  */
+>>  +	memset(&vpmu_vm, 0, sizeof(vpmu_vm));
+>>  +
+>>  +	vpmu_vm.vm = vm_create(1);
+>>  +	vm_init_descriptor_tables(vpmu_vm.vm);
+>>  +	for (ec = 0; ec < ESR_EC_NUM; ec++) {
+>>  +		vm_install_sync_handler(vpmu_vm.vm, VECTOR_SYNC_CURRENT, ec,
+>>  +					guest_sync_handler);
+>>  +	}
+>>  +
+>>  +	/* Create vCPU with PMUv3 */
+>>  +	vm_ioctl(vpmu_vm.vm, KVM_ARM_PREFERRED_TARGET, &init);
+>>  +	init.features[0] |= (1 << KVM_ARM_VCPU_PMU_V3);
+>>  +	vpmu_vm.vcpu = aarch64_vcpu_add(vpmu_vm.vm, 0, &init, guest_code);
+>>  +	vcpu_init_descriptor_tables(vpmu_vm.vcpu);
+>>  +	vpmu_vm.gic_fd = vgic_v3_setup(vpmu_vm.vm, 1, 64,
+>>  +					GICD_BASE_GPA, GICR_BASE_GPA);
+>>  +
+>>  +	/* Make sure that PMUv3 support is indicated in the ID register */
+>>  +	vcpu_get_reg(vpmu_vm.vcpu,
+>>  +		     KVM_ARM64_SYS_REG(SYS_ID_AA64DFR0_EL1), &dfr0);
+>>  +	pmuver = FIELD_GET(ARM64_FEATURE_MASK(ID_AA64DFR0_PMUVER), dfr0);
+>>  +	TEST_ASSERT(pmuver != ID_AA64DFR0_PMUVER_IMP_DEF &&
+>>  +		    pmuver >= ID_AA64DFR0_PMUVER_8_0,
+>>  +		    "Unexpected PMUVER (0x%x) on the vCPU with PMUv3",
+>>  pmuver);
+>>  +
+>>  +	/* Initialize vPMU */
+>>  +	vcpu_ioctl(vpmu_vm.vcpu, KVM_SET_DEVICE_ATTR, &irq_attr);
+>>  +	vcpu_ioctl(vpmu_vm.vcpu, KVM_SET_DEVICE_ATTR, &init_attr);
+>>  +}
+>
+> This one fails to build for me:
+> aarch64/vpmu_counter_access.c: In function ¡create_vpmu_vm¢:
+> aarch64/vpmu_counter_access.c:456:47: error: ¡ID_AA64DFR0_PMUVER_MASK¢ 
+> undeclared (first use in this function); did you mean 
+> ¡ID_AA64DFR0_EL1_PMUVer_MASK¢?
+>   456 |         pmuver = FIELD_GET(ARM64_FEATURE_MASK(ID_AA64DFR0_PMUVER),
+>   dfr0);
 
-(I vaguely remember this was probably discussed in the context of some 
-earlier patch touching this area that it was about the other code dealing 
-with NULLs or something like that).
+Looks like there's a clash with
+"KVM: arm64: selftests: Import automatic generation of sysreg defs"
+from:
+ 	https://lore.kernel.org/r/20231003230408.3405722-12-oliver.upton@linux.dev
+---1463795790-346822177-1697122918=:6347--
 
--- 
- i.
-
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
-> V3 - New patch split from V2 PATCH 9
->    - Add dev_warn on pmc_core_ssram_init fail
-> 
->  drivers/platform/x86/intel/pmc/core.h       |  2 +-
->  drivers/platform/x86/intel/pmc/core.h       |  2 +-
->  drivers/platform/x86/intel/pmc/core_ssram.c | 21 +++++++++++++--------
->  drivers/platform/x86/intel/pmc/mtl.c        | 12 ++++++++----
->  3 files changed, 22 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/intel/pmc/core.h b/drivers/platform/x86/intel/pmc/core.h
-> index ccf24e0f5e50..edaa70067e41 100644
-> --- a/drivers/platform/x86/intel/pmc/core.h
-> +++ b/drivers/platform/x86/intel/pmc/core.h
-> @@ -492,7 +492,7 @@ int pmc_core_resume_common(struct pmc_dev *pmcdev);
->  int get_primary_reg_base(struct pmc *pmc);
->  extern void pmc_core_get_low_power_modes(struct pmc_dev *pmcdev);
->  
-> -extern void pmc_core_ssram_init(struct pmc_dev *pmcdev);
-> +extern int pmc_core_ssram_init(struct pmc_dev *pmcdev);
->  
->  int spt_core_init(struct pmc_dev *pmcdev);
->  int cnp_core_init(struct pmc_dev *pmcdev);
-> diff --git a/drivers/platform/x86/intel/pmc/core_ssram.c b/drivers/platform/x86/intel/pmc/core_ssram.c
-> index 13fa16f0d52e..815950713e25 100644
-> --- a/drivers/platform/x86/intel/pmc/core_ssram.c
-> +++ b/drivers/platform/x86/intel/pmc/core_ssram.c
-> @@ -35,20 +35,20 @@ static inline u64 get_base(void __iomem *addr, u32 offset)
->  	return lo_hi_readq(addr + offset) & GENMASK_ULL(63, 3);
->  }
->  
-> -static void
-> +static int
->  pmc_core_pmc_add(struct pmc_dev *pmcdev, u64 pwrm_base,
->  		 const struct pmc_reg_map *reg_map, int pmc_index)
->  {
->  	struct pmc *pmc = pmcdev->pmcs[pmc_index];
->  
->  	if (!pwrm_base)
-> -		return;
-> +		return -ENODEV;
->  
->  	/* Memory for primary PMC has been allocated in core.c */
->  	if (!pmc) {
->  		pmc = devm_kzalloc(&pmcdev->pdev->dev, sizeof(*pmc), GFP_KERNEL);
->  		if (!pmc)
-> -			return;
-> +			return -ENOMEM;
->  	}
->  
->  	pmc->map = reg_map;
-> @@ -57,10 +57,12 @@ pmc_core_pmc_add(struct pmc_dev *pmcdev, u64 pwrm_base,
->  
->  	if (!pmc->regbase) {
->  		devm_kfree(&pmcdev->pdev->dev, pmc);
-> -		return;
-> +		return -ENOMEM;
->  	}
->  
->  	pmcdev->pmcs[pmc_index] = pmc;
-> +
-> +	return 0;
->  }
->  
->  static void
-> @@ -96,7 +98,7 @@ pmc_core_ssram_get_pmc(struct pmc_dev *pmcdev, void __iomem *ssram, u32 offset,
->  		iounmap(ssram);
->  }
->  
-> -void pmc_core_ssram_init(struct pmc_dev *pmcdev)
-> +int pmc_core_ssram_init(struct pmc_dev *pmcdev)
->  {
->  	void __iomem *ssram;
->  	struct pci_dev *pcidev;
-> @@ -105,7 +107,7 @@ void pmc_core_ssram_init(struct pmc_dev *pmcdev)
->  
->  	pcidev = pci_get_domain_bus_and_slot(0, 0, PCI_DEVFN(20, 2));
->  	if (!pcidev)
-> -		goto out;
-> +		return -ENODEV;
->  
->  	ret = pcim_enable_device(pcidev);
->  	if (ret)
-> @@ -123,11 +125,14 @@ void pmc_core_ssram_init(struct pmc_dev *pmcdev)
->  	pmc_core_ssram_get_pmc(pmcdev, ssram, SSRAM_PCH_OFFSET, PMC_IDX_PCH);
->  
->  	iounmap(ssram);
-> -out:
-> -	return;
-> +
-> +	return 0;
->  
->  disable_dev:
-> +	pmcdev->ssram_pcidev = NULL;
->  	pci_disable_device(pcidev);
->  release_dev:
->  	pci_dev_put(pcidev);
-> +
-> +	return ret;
->  }
-> diff --git a/drivers/platform/x86/intel/pmc/mtl.c b/drivers/platform/x86/intel/pmc/mtl.c
-> index c3b5f4fe01d1..d1d3d33fb4b8 100644
-> --- a/drivers/platform/x86/intel/pmc/mtl.c
-> +++ b/drivers/platform/x86/intel/pmc/mtl.c
-> @@ -990,12 +990,16 @@ int mtl_core_init(struct pmc_dev *pmcdev)
->  	mtl_d3_fixup();
->  
->  	pmcdev->resume = mtl_resume;
-> -
->  	pmcdev->regmap_list = mtl_pmc_info_list;
-> -	pmc_core_ssram_init(pmcdev);
->  
-> -	/* If regbase not assigned, set map and discover using legacy method */
-> -	if (!pmc->regbase) {
-> +	/*
-> +	 * If ssram init fails use legacy method to at least get the
-> +	 * primary PMC
-> +	 */
-> +	ret = pmc_core_ssram_init(pmcdev);
-> +	if (ret) {
-> +		dev_warn(&pmcdev->pdev->dev,
-> +			 "ssram init failed, %d, using legacy init\n", ret);
->  		pmc->map = &mtl_socm_reg_map;
->  		ret = get_primary_reg_base(pmc);
->  		if (ret)
-> 
