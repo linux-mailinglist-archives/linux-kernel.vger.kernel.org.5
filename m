@@ -2,116 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1E17C7A45
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E425E7C7A53
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 01:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443075AbjJLXQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 19:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34188 "EHLO
+        id S1443085AbjJLXTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 19:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443006AbjJLXQG (ORCPT
+        with ESMTP id S1443006AbjJLXTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 19:16:06 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D933BA9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:16:04 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-690b7cb71aeso1140653b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 16:16:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697152564; x=1697757364; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=pH+QiaOpiodhML+ziwBZXDsGTkmJ8Um8VRUGUcj7OpE=;
-        b=AzlaMWoR1ee9Nm39y76CDwz6AH+QD8Xt2nuDg5CSu8mAAYAS+fYnJdhKg27SvPP0Lg
-         pda63qU/jOiOSj0RIbluNZBmojRdeY7S/Z5GYupLfGzrQkIKpxujfjV6y923W+J4toKD
-         LADaQSipY0KbusK8xM+FteRh9Srt6ysKRkLMjgb/g+cblz/Hobo/TzLiEfEy9ezstQBk
-         qAtw/nhnTp/Z+x91cFV2dz8RV1xnpP+tOnLGjfkEvGdZVTNIUihx1i91keH3k1e76ETV
-         pCzaPX12WcgxgrH7P0ncgd3lFONRftbrbbj7VeJtYIxloiDUj8Z7gjO6Fv8mxsmMVIJw
-         N37g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697152564; x=1697757364;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pH+QiaOpiodhML+ziwBZXDsGTkmJ8Um8VRUGUcj7OpE=;
-        b=XzHWkAeUccJzTkBbYhPfVUHoZJCZgTs661quxV9p/hNPECldIy3OTmSs2I/njUnYSB
-         VUzODynkGf/0xIQ07Oi5TNDYYNTb52k5d/ZlB2wQTrIKMX7xff9tVNQpZUcXmDU6PNdO
-         s7vh8czHXufYcaEd2D8SUd14EGX5opWR0nTOYN9YtE9q2l0riSgiYRwZ1n9HTAn1q3Da
-         A1elVZi4txQkYQ1Wml585pq/taWWsy62YnH7/dPaGFlTAPTVR6P42kSTJOtNZU1jb6Hf
-         CeXsBmQg3lHZpvwFoJ+/r5YYLxhUfDziUG8pC9MVulCedOVAmsCV2xZbrqr++eplM8t4
-         MB8A==
-X-Gm-Message-State: AOJu0Yx1QNa4w/B1MqoLJpluPu7koGTNR6Fls1H3C1dXq801HS3Fanoe
-        IGAUd30LaqG+byhAylrjqgg=
-X-Google-Smtp-Source: AGHT+IGWNM9HxyjKjEjKXLUp5t+0TS2LwspKsRp0pAtYtEaj1A0Nh8DQxXN2IsD0JhotBS2YQgTViA==
-X-Received: by 2002:a05:6a00:2d98:b0:68e:3616:604a with SMTP id fb24-20020a056a002d9800b0068e3616604amr34034272pfb.8.1697152564146;
-        Thu, 12 Oct 2023 16:16:04 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id u5-20020aa78385000000b0068620bee456sm12292131pfm.209.2023.10.12.16.16.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 16:16:03 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 12 Oct 2023 13:16:02 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Workqueue fixes for v6.6-rc5
-Message-ID: <ZSh-Mjmquc6wAw9B@slm.duckdns.org>
+        Thu, 12 Oct 2023 19:19:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 072F8BE;
+        Thu, 12 Oct 2023 16:19:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9493C433C7;
+        Thu, 12 Oct 2023 23:19:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697152777;
+        bh=W+HLtEgsaqMQgpJ9qQLMNO8wc9NamWUTclvh2/EECcI=;
+        h=From:Date:Subject:To:Cc:From;
+        b=eb0HV6fAD9Rk6Ik8iOB/zut66wHHTy9vzdNAuU5Y37dCLkEEqtrBdj+6zurj+g7dD
+         Zu0rApQ6FX+i6Uq/XP9m5V/XLARKXGhxcrocsOImcvu6nWIXNnT5yvdgQW0ZwrmX5f
+         K5rQe/z0omYrjx8I4DPCk9BIwIbMXHc+/z6X3nzbLm1ys8qjG6sxJB7HNbEpwg8E8B
+         8DeS7j2oeeGjRRqhRf3ctj0UeMGSvQLNU4v1uv3DsoCCfTx6qEbNzm9WXszuAXzJAs
+         5RMIldw/KTn8cjcTYcngTLS4YMoMJ1Hb8ng/vttPfvPkb2VfjmtBdOwA0+Thja2GmI
+         cRmfxNQ+amu9g==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Fri, 13 Oct 2023 00:19:30 +0100
+Subject: [PATCH] KVM: selftests: Initialise dynamically allocated
+ configuration names
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20231013-kvm-get-reg-list-str-init-v1-1-034f370ff8ab@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAAF/KGUC/x3MQQqDMBBG4avIrDtgUrG1VykuJPmbDtVYZoIUx
+ Ls3uPwW7+1kUIHRo9lJsYnJmivcpaHwnnICS6wm3/qra53nz7ZwQmFF4lmssBVlyVL41oc7Ygc
+ 3xJ5q/1W85He+n+Nx/AG3n083awAAAA==
+To:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Haibo Xu <haibo1.xu@intel.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Anup Patel <anup@brainfault.org>
+Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1387; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=W+HLtEgsaqMQgpJ9qQLMNO8wc9NamWUTclvh2/EECcI=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlKH8GuYwP3eqfpIbuiJvsgr1BzuWfe3QnN66dqLNE
+ ekce7+uJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZSh/BgAKCRAk1otyXVSH0K++B/
+ 9ysGHgribz8lwpyjHgElOFHnYUyx4g0hlrceRYQ6SlK0TR0BBFnZs828NRW/ucIoiP8C2TPiRi8g+Q
+ SeNjf+rFX7OqiXR8av/SUp78fgsSPHHm2xN53+yAQXt0PFQdGjcbcI4dLZe2x14W+suWr2eVKhdNZF
+ WZgGM9X0vYrdRJHXEFMMFW9zPT98d5ypP0/9f4CqGKNAGoQ2rNigsdeHRJdIlT0GkU/nSp5yXbJRsN
+ nNp8SG7EMdvwa7/4u62MX29zih0e9gsYED3yThnmnq4nthilSWhBP2PNRSYedodFyzwJT1mrogfSy6
+ pdJwqNge1SGhOjx/i9zdf8zMu/sBIg
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit dd64c873ed11cdae340be06dcd2364870fd3e4fc:
+When we dynamically generate a name for a configuration in get-reg-list
+we use strcat() to append to a buffer allocated using malloc() but we
+never initialise that buffer. Since malloc() offers no guarantees
+regarding the contents of the memory it returns this can lead to us
+corrupting, and likely overflowing, the buffer:
 
-  workqueue: Fix missed pwq_release_worker creation in wq_cpu_intensive_thresh_init() (2023-09-18 08:50:31 -1000)
+  vregs: PASS
+  vregs+pmu: PASS
+  sve: PASS
+  sve+pmu: PASS
+  vregs+pauth_address+pauth_generic: PASS
+  X�vr+gspauth_addre+spauth_generi+pmu: PASS
 
-are available in the Git repository at:
+Initialise the buffer to an empty string to avoid this.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git/ tags/wq-for-6.6-rc5-fixes
+Fixes: 17da79e009c37 ("KVM: arm64: selftests: Split get-reg-list test code")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ tools/testing/selftests/kvm/get-reg-list.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-for you to fetch changes up to 5d9c7a1e3e8e18db8e10c546de648cda2a57be52:
+diff --git a/tools/testing/selftests/kvm/get-reg-list.c b/tools/testing/selftests/kvm/get-reg-list.c
+index be7bf5224434..dd62a6976c0d 100644
+--- a/tools/testing/selftests/kvm/get-reg-list.c
++++ b/tools/testing/selftests/kvm/get-reg-list.c
+@@ -67,6 +67,7 @@ static const char *config_name(struct vcpu_reg_list *c)
+ 
+ 	c->name = malloc(len);
+ 
++	c->name[0] = '\0';
+ 	len = 0;
+ 	for_each_sublist(c, s) {
+ 		if (!strcmp(s->name, "base"))
 
-  workqueue: fix -Wformat-truncation in create_worker (2023-10-12 09:53:40 -1000)
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20231012-kvm-get-reg-list-str-init-76c8ed4e19d6
 
-----------------------------------------------------------------
-workqueue: Fixes for v6.6-rc5
-
-* Fix access-after-free in pwq allocation error path.
-
-* Implicitly ordered unbound workqueues should lose the implicit ordering if
-  an attribute change which isn't compatible with ordered operation is
-  requested. However, attribute changes requested through the sysfs
-  interface weren't doing that leaving no way to override the implicit
-  ordering through the sysfs interface. Fix it.
-
-* Other doc and misc updates.
-
-----------------------------------------------------------------
-Lucy Mielke (1):
-      workqueue: fix -Wformat-truncation in create_worker
-
-Waiman Long (1):
-      workqueue: Override implicit ordered attribute in workqueue_apply_unbound_cpumask()
-
-WangJinchao (1):
-      workqueue: doc: Fix function and sysfs path errors
-
-Zqiang (2):
-      workqueue: Fix UAF report by KASAN in pwq_release_workfn()
-      workqueue: Use the kmem_cache_free() instead of kfree() to release pwq
-
- Documentation/core-api/workqueue.rst               |  4 ++--
- .../translations/zh_CN/core-api/workqueue.rst      |  2 +-
- kernel/workqueue.c                                 | 24 +++++++++++++++++-----
- 3 files changed, 22 insertions(+), 8 deletions(-)
-
+Best regards,
 -- 
-tejun
+Mark Brown <broonie@kernel.org>
+
