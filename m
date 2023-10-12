@@ -2,73 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E1D7C6AB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203F77C6ABE
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377602AbjJLKPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35514 "EHLO
+        id S1343730AbjJLKQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347104AbjJLKPL (ORCPT
+        with ESMTP id S1343619AbjJLKQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:15:11 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1CEB8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:15:09 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-32d8c2c6dfdso758777f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:15:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697105708; x=1697710508; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nGBRtscR5XFDxdOEvFyr/E+oy+5VNzI6usKYmeqNS50=;
-        b=MiD8CQmeMKyPEpIgMLAsKr0oRB3e2v7zP/g8r3qA/0QN84vgCuNUSCwx4pvG/81LK+
-         QrFauRZtZpMUeV4YHbV4oRE//xcM90Q9oEN6UdAna6P/OozwYylbZS6mVKY+h6daLx63
-         mw2ftAaozJ8dBF8Zly+53CK6A1rIvMq4YXQmQlqUAGXv3fKhEKXgUCOSUPO7CllQd4h2
-         l1wGfVSYDZkc944/OvbDfElC4OkzB/K+ehdIMfNKKAhlCDpAFJjhOw4+MEkW9Ac3aJnd
-         Cw8oQSrvbxA9/uGhvvom9MdzB7wVU7pBoivOJ9uc9gJ5ViDgQWVgW5uZJrHDFMRmmICx
-         XPDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697105708; x=1697710508;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nGBRtscR5XFDxdOEvFyr/E+oy+5VNzI6usKYmeqNS50=;
-        b=eiEJSIcxqzikAX0H2sLuPE7uBtBj/82+oIgdwHwb213C/SyWSS8PQfwRFsZbnLfWPz
-         +2QBlYoHwGgDbu/3cKCz1pmacS3MX6jKs0en71OzzG6TVyAi0Iu+4L/20sMTPPFJ4yGp
-         IxLKrfCRDO4yvgiKo8DlaMWfUdnLXTWUvZzm9r++LyJryDlXMvri21QWXBBPKRIwHqvo
-         1fGxArbLMFGz5Oh1997ISTUzXofwGV9Gg4wD7GEudgb5RBVK2DvSNKbI/Qod/xhN7cxU
-         93JFioM/QU0FkMqwDXt6R+/gsjYwzC1H7U7frmXX7XNlyL9X1K6L+xaOi8XLWYh9/EXA
-         LiaQ==
-X-Gm-Message-State: AOJu0Yw4g8pFBKTDlL4yGxH3nRnbLk3pjOLMLYtlWwF0eMl6XK9eRwHI
-        cer2L/hk3HALH98rA+h1NcV3Mg==
-X-Google-Smtp-Source: AGHT+IF7ZOB1GpuF5uoZtYv82cP81Ykcjmt9UppAs2wf1pmdfGmQref1xRyVHDZlDqgkcVFCb/HFmQ==
-X-Received: by 2002:adf:dd82:0:b0:324:84bc:d59e with SMTP id x2-20020adfdd82000000b0032484bcd59emr19004327wrl.22.1697105708075;
-        Thu, 12 Oct 2023 03:15:08 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id ba18-20020a0560001c1200b0032d8a4b637bsm2981997wrb.22.2023.10.12.03.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 03:15:07 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 13:15:04 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Calvince Otieno <calvncce@gmail.com>
-Cc:     outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <error27@gmail.com>,
-        Archana <craechal@gmail.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Simon Horman <horms@kernel.org>, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] staging/wlan-ng: remove strcpy() use in favor of
- strscpy()
-Message-ID: <848becd6-9f65-4316-a2f0-ebf2ed2f5758@kadam.mountain>
-References: <ZSeD1UojAgrsOh16@lab-ubuntu>
- <f0c12a00-ad9e-45b2-9cb2-7a84f4f10ef9@kadam.mountain>
+        Thu, 12 Oct 2023 06:16:30 -0400
+Received: from qs51p00im-qukt01071501.me.com (qs51p00im-qukt01071501.me.com [17.57.155.4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E779A9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1697105786;
+        bh=V9EwkirTajpBW1rcGjr1s3Zyrn+kckHNbCosM4ZsFO8=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+        b=JQjexNZW6zkGzBTl3aA5JuP/LjxT/w+1O1AOX0rL8/rZ8rLL/kjbpnhCGEV3zS+xK
+         aAUET2/Yn1taNQrCoT1MFiXhKo4Yjwasp9d22gE24kfkV51p/qAYz2/+kObt7jKSML
+         ROch8fTLo5ce/dP9bA+UsFL1TkQTxZRzsvyBz1dc6DYSXDHEBHu/symKhiBovguTMV
+         Z6/yD0mTEHbKINvk96i65cTFiEdABxKSntAyqsH0kKZuK52thfOVWjJY7J0QVfNQhV
+         6ZxFWx3yf17LsXsnERkTqRNLF4hLjS8DJ3BzJiSwL6XfHzaTPQFyPP14iMR2hTNdOU
+         X1AOukMtq3OKQ==
+Received: from fedora.fritz.box (qs51p00im-dlb-asmtp-mailmevip.me.com [17.57.155.28])
+        by qs51p00im-qukt01071501.me.com (Postfix) with ESMTPSA id 1B4741C4011E;
+        Thu, 12 Oct 2023 10:16:24 +0000 (UTC)
+Date:   Thu, 12 Oct 2023 12:16:21 +0200
+From:   Lucy Mielke <lucymielke@icloud.com>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, boqun.feng@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] locking/lockdep: fix format-truncation compiler-warning
+Message-ID: <ZSfHdcCtyBe3I6Ss@fedora.fritz.box>
+References: <ZSb0B+9otHhd8jCp@fedora.fritz.box>
+ <ZScdgaVra/PHRRc/@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <f0c12a00-ad9e-45b2-9cb2-7a84f4f10ef9@kadam.mountain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZScdgaVra/PHRRc/@gmail.com>
+X-Proofpoint-ORIG-GUID: 7BAX9_0zew3GA19pg1HnOrGN_MXp-kFz
+X-Proofpoint-GUID: 7BAX9_0zew3GA19pg1HnOrGN_MXp-kFz
+X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
+ =?UTF-8?Q?2903e8d5c8f:6.0.138,18.0.572,17.0.605.474.0000000_definitions?=
+ =?UTF-8?Q?=3D2020-02-14=5F11:2020-02-14=5F02,2020-02-14=5F11,2020-01-23?=
+ =?UTF-8?Q?=5F02_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
+ malwarescore=0 mlxscore=0 suspectscore=0 clxscore=1015 bulkscore=0
+ mlxlogscore=507 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2310120083
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,18 +63,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 01:03:40PM +0300, Dan Carpenter wrote:
-> The simplest approach is to do a:
+Am Thu, Oct 12, 2023 at 12:11:13AM +0200 schrieb Ingo Molnar:
 > 
-> 	git grep strscpy | grep " - 1"
+> Mind including the output by GCC in the changelog?
 > 
-> But the better approach would be to write a Smatch or Coverity check to
-> prevent these in the future.
 
-I meant Coccinelle not Coverity.  Duh...
+Sure, let me resend the patch then :)
 
-Also btw, sometimes we want to keep the "don't necessarily terminate the
-string behavior".  That's rare and ugly, but it does exist.
+> ... actually needs 21+1 bytes?
+> 
+> Which I suppose is true - longest s64 is "-9223372036854775808"-ish, which 
+> converted to the fixed-point float format above is "-9223372036854775.80": 
+> 21 bytes, plus termination is another byte: 22.
+> 
+> Maybe put this into the changelog too, instead of relying on magic GCC 
+> calculations only. :-)
 
-regards,
-dan carpenter
+I can include it as well, of course!
+
+Mit freundlichen Grüßen / Best regards,
+	Lucy
