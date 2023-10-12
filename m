@@ -2,205 +2,778 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FA37C774E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AF07C7750
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 21:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442827AbjJLTtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 15:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49716 "EHLO
+        id S1442771AbjJLTue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 15:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442894AbjJLTtO (ORCPT
+        with ESMTP id S1442515AbjJLTuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 15:49:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4579CA;
-        Thu, 12 Oct 2023 12:49:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697140152; x=1728676152;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=OFRTkbuCp4gUoRDsnxtKl/MDW7mViJ2/X9SATIW9bJA=;
-  b=Nu6twVBs3sCvyTL05YJH5SRaNqG94SksOKxd5iavOHZf9DDCGr/aDlUq
-   Q9GgakbOop/ovb2q4aTZ6itAXouooB82+OJ89SCi79mpEiEBBgw+on8r8
-   1+5ueXLjCU1+KCufalZa8Q6FuhQvFaP8aU1CYkUSvvVc8a23NRvu9+Xfm
-   Auxd9ZO+bv5TMO95rFGR5aHAyezPjSNgVccr4eDNokwh6PafwO5owolri
-   BcCqs34aeHzoms6kumeBR6zqFwm5RSxhwZrUxZ/BqsaTdlmiKgPu5R319
-   VBBcYAf1XZv0rEzdlSOYBnWQvoOUp5gwwtGdpqqfV0eTjFfI7/JvFNJVd
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="370096842"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="370096842"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 12:49:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="731053508"
-X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="731053508"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Oct 2023 12:49:05 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 12 Oct 2023 12:49:05 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 12 Oct 2023 12:49:04 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Thu, 12 Oct 2023 12:49:04 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Thu, 12 Oct 2023 12:49:04 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Usz3oqYFuia4ofrRxybFaleEuqWTlVMjaL7FnlLvnS/qS7gsCaVLl63qD6F5Wfl0WHjdBB5mZpBmVt/wIEhfYoebYN1C4eV2sbyFpCQtMX6Y54RV3OMg++94MVjYgNXZL7M4pCciMKwxmmzE70Qzfir9tZAdCsLV9cMdYBPWcG/FNdAtEN1/0OoKJomEeuL7wYSxrU4uM+DKhsLD43IT2r3G2BWFGnlYhEqg7xZcgWIqZ2UxZn3430jnhASnMSsEpduDR9CrGmEnx1/tD4JYQdzH8CX24z+PqH9QV1SW8sVni34psKlHyexM8Gun76NB3gr/UpQVpzYssqzo6HOIKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Nc5gc/3wkftUOpB9ngp2c9loT1holP5PLzx7xqFSBN8=;
- b=XDG3yZ99YeokbND5vIrGznnaHZRJjMTa6XZxo2uNqHLGCME69AbaGCVqcYzLygBuNKwSvB5RoJss9cPXrwRHumHqOTrwW1gEKIB+s24IEOvC1QA9NiruqAWxsg4zIWXaUi3KtiQAfarDS2yVRHY18qYqbelqyi4hSvC8tVHjqPphMyTOlYdxfivrdxU4KLjeZ4UhkpISfQVfMOOkFpDnmSoo5owNegKau32H4eqxZhsdUHdZj/MXRZ+ThlKydwnNhqvth3o9mRZhaSrTHyM9tYdJE5P/XT2wBmnCHwbMrPMQlDoL9wrhYGOjz7WHmLqWY8r4Y3H+TDUuQoiMGyk+FQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
- by CY5PR11MB6344.namprd11.prod.outlook.com (2603:10b6:930:3b::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Thu, 12 Oct
- 2023 19:49:01 +0000
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::9654:610d:227a:104f]) by CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::9654:610d:227a:104f%5]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
- 19:49:01 +0000
-Message-ID: <6817dbd5-5db8-48e8-b7b8-0920c7e38730@intel.com>
-Date:   Thu, 12 Oct 2023 12:48:58 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 0/7] net: intel: replace deprecated strncpy uses
-Content-Language: en-US
-To:     Justin Stitt <justinstitt@google.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-CC:     <linux-hardening@vger.kernel.org>,
-        <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231010-netdev-replace-strncpy-resend-as-series-v1-0-caf9f0f2f021@google.com>
-From:   Jacob Keller <jacob.e.keller@intel.com>
-In-Reply-To: <20231010-netdev-replace-strncpy-resend-as-series-v1-0-caf9f0f2f021@google.com>
+        Thu, 12 Oct 2023 15:50:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91918116
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:49:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697140167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DIYKj0XHJ7SkNVhrA1VdBHme287zF4NRhJmJp+If7lc=;
+        b=YnndRW3if1EcUuTa5xSlascn4vHm/ilEzoXyu1DcC+KNyY37yvsi+THWo225m88MgKoz7Z
+        pe5ndIBjMV/7LePPK2YNPtWod+Y/qor5G0DiBeszXWJrCY/QW/Lj7gl6gPbL3VD4Flo0u+
+        BV2JMaLR3q2/LOj7fQxVtsudB5Kb73c=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-287-Xqv_ZTHDNB-FAJVC61qJsg-1; Thu, 12 Oct 2023 15:49:09 -0400
+X-MC-Unique: Xqv_ZTHDNB-FAJVC61qJsg-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4053d832d51so9011655e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 12:49:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697140149; x=1697744949;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DIYKj0XHJ7SkNVhrA1VdBHme287zF4NRhJmJp+If7lc=;
+        b=UxHa8+72H482t9Z24Ddl3jMszvmBHrdxz3rQMRWomh8urUtqQS/sGDP65yL1R64HRO
+         4PcPFK1OZ3xrwNYwbSJotAFBehwlXjG9ULt+by11zxJGngcIPeMdjKlIp14vj9LeJi3L
+         49faj8FaIzLAgBx2A2VM2VqkmPxSQFEprSk9ksvHVYPPqtDe5NKn3gico3mM9JHNJsEw
+         IBqmIbVulwJQGCJ5ouPJ6I5RKeHcWjIvfXfgPEorhBPoArbCPJOmWDLgeaSsCnN/VMD9
+         zTGPpfSQYqhbvQj0p0FYSvatwNfz/yyctLmsNewDt4bwfo1R+nXYLfBA+CVIDrPSPGo2
+         y2fw==
+X-Gm-Message-State: AOJu0Yzs4KnlSCG5GpvlI38THpTV5iXanplheW5h6EJ2RmoEO5enwGgJ
+        oGiLHNXTux/mAOLJ1oxAWIRq8kC1Gg8TaAf5OHaViZF7S14oU96+fd55p5sl8JI5AxkFtHbI7oo
+        2yC2/QJisoqkhR2IgWV6Jk9nj
+X-Received: by 2002:a05:600c:28c:b0:406:44e6:15f0 with SMTP id 12-20020a05600c028c00b0040644e615f0mr20913333wmk.5.1697140148448;
+        Thu, 12 Oct 2023 12:49:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH4Pj0MAGL9RKIg9/0VNj39PSrz1+6tG4KcyIe/F0EdR+g4EhVYkgQP1FqqitxeHgQLKrg6Sw==
+X-Received: by 2002:a05:600c:28c:b0:406:44e6:15f0 with SMTP id 12-20020a05600c028c00b0040644e615f0mr20913315wmk.5.1697140147937;
+        Thu, 12 Oct 2023 12:49:07 -0700 (PDT)
+Received: from starship ([89.237.100.246])
+        by smtp.gmail.com with ESMTPSA id k18-20020a7bc412000000b00405588aa40asm642631wmi.24.2023.10.12.12.49.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 12:49:07 -0700 (PDT)
+Message-ID: <708a5bb2dfb0cb085bd9215c2e8e4d0b3db69665.camel@redhat.com>
+Subject: Re: [PATCH RFC 07/11] KVM: x86: Make Hyper-V emulation optional
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org
+Date:   Thu, 12 Oct 2023 22:49:05 +0300
+In-Reply-To: <20231010160300.1136799-8-vkuznets@redhat.com>
+References: <20231010160300.1136799-1-vkuznets@redhat.com>
+         <20231010160300.1136799-8-vkuznets@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0012.namprd03.prod.outlook.com
- (2603:10b6:303:8f::17) To CO1PR11MB5089.namprd11.prod.outlook.com
- (2603:10b6:303:9b::16)
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|CY5PR11MB6344:EE_
-X-MS-Office365-Filtering-Correlation-Id: a2d08d6a-b74d-4130-25cb-08dbcb5c487b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 66A4X/jwkyM6aJfS32FziDgAr+bTMFmpwR3B7rFAoEmGQn+1XE/D92cCmfO694LmT8XZpWvgxzrudY74yZ4af3zTTzwBAcg7Bz5NuBRlSW3WZSad1e6F9XgyEsylrFQ6GCTlkD2/0ID7UPvribTJvOkjvRlGTyJwt3h98H1AlS6iIkqo7TisoDLI0qGVzjgDhnyxuJG7oZKUwjYFofQDe9YONhlce+foO36SXNNKxpCRbS/YnUC6szEkf7uwyWinjClsJtpG9CLLRWR2ObZM1bPILW6j0dglURmpRntycZoocA12d0nUSredPph/OMPWsonrJr2PjHXx4AbQ07J3sPODuZz3EWC/5chB7zvjVe0EN+uXs1/FoffZR36amfL1oVOdWbXqB0aNPhb5hXgFm12y80fKwQZBF7RvphCPSZWtZabCpwmmo98v8xgHg60FlaD9g5mD/CGlZ0M4k5OC369d7lG47m/78vNgiF1Gne6dy5sVfbTG0zPOhlwx+nM1UKdBVmr6H3M5PI+i88RJpKWQmlEM0ga2osTdpcQjZ+g9K8KVvoPnLnBUJ94bXhC+A72kN1c7Gk6TP36Qw07N6nW6vodW/Vp7084tNhKoHUTnagsbtNYbWoYrnAyQemUc0UrhUutieOmfBkcMTCdym1yjZctAax+I33qxfYpVgfJS8n0klI1nGhSG+TmPzQWL
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(136003)(346002)(39860400002)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(31686004)(966005)(53546011)(6512007)(82960400001)(86362001)(38100700002)(26005)(31696002)(36756003)(6506007)(8936002)(66556008)(6666004)(6486002)(2616005)(478600001)(4326008)(8676002)(41300700001)(2906002)(110136005)(5660300002)(66476007)(316002)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aWpwZE54bVdHaXZhUVhnVkZPTEpJSGVZMjdSVkRtcDdUZkZXSmxxYkVKMS9y?=
- =?utf-8?B?b1hzQXZHek5QTVpNdzBWMCtnR0ZReTI2RUR2ZWJRVXBDdjBQUHF0UXNPV3dX?=
- =?utf-8?B?MTYwR1dyYkxmS2RHYTNSUDJHckkrUEwydkFPRGNsaFVCb0tvL3VBSVoyTWVS?=
- =?utf-8?B?OGw3RFNseGlqNTVMMWUvOUtzZ0NnZGxCWkpVYzRiRlB0K0pHU3BOTmtJbEx3?=
- =?utf-8?B?TmVXU20vNlJnd3RjaS9kUjkzSDZ1dE83RVRYOXpvemxuN3FwOUZPWEZuYjUy?=
- =?utf-8?B?R0lrVk0yNXpFbzVsZlZWYVZzZ3hzb2tzYzJRcmFvNXhHSFRvRHVpMGZ1NXQv?=
- =?utf-8?B?cTNFc3BmRHpaY1NDR1dackRiYVNnWnZ5My9PeExxcEhPNmF0VEN4Z2JoTzkx?=
- =?utf-8?B?d0thb3VKdm4zaDhCQkJVcEdEbFJmekJxZzVCT0VHamZYaWQzeFd1a3R4NUlG?=
- =?utf-8?B?WDl0ekpXQm9PNmUzOXZWSTA1UjluZW1NVHU2TkNndWhVZ0VUZHpOY25kMlBG?=
- =?utf-8?B?UVNia1M1ZmhmNGpNeUJvcWlHeVhBOHBDUGFhaXpGdndsU09mMytEK0NWU3Qz?=
- =?utf-8?B?OWd4NlJUOHNsa3JXQW45UVBYWUZjNGtpaExhMm94ak9NZUMySmJnUEFqZk5P?=
- =?utf-8?B?a0xTeDk3TzFrRWFDZWlyL2w2KzdDUEZvc2tVYUNzczRGaEZXRnk5cFQvQVJ5?=
- =?utf-8?B?NkhuM3JqSENNdVlVRmc4ZWFLSlR3NGlnUldzRnlTL25UOWpsaHZMZEdFOGZH?=
- =?utf-8?B?TW9HV1BuYk5pQW9YY0xLQmZVOWM0NzN1R09BMzNjMHJTYkFGbzVPc0JpUVBW?=
- =?utf-8?B?S1o3bEpaREZSN3o5cHFtQ0VjOTZiWU56ekYvSVhTWGVObXdWenZQUEdaZGQ4?=
- =?utf-8?B?U2xyb1F0ZzBUSFppUUtSVy8wT29FSCtKZ3lHUHZOTWpUbzZSMFdpeFMrRHNI?=
- =?utf-8?B?NTAwYXlNaGRIeEMwVWZOd2U3ZjVabk16N1F0NXVPRjRuakk2TUJWNmFyZnBH?=
- =?utf-8?B?eUtnOFBxWHJGbXJOSnBhL1Z0VWo4aGU2V0FBVHpiL3F3cWhLSHJzSFF2K04z?=
- =?utf-8?B?bjVHKzRtN1BrOFlWQnlEUnpCSGR0b2VmOXgyYXNkcFZVRzNxNERzd253TStK?=
- =?utf-8?B?RVpnSkdrNHBibzRNNDc3KzV2bytlaWtzbGMrUGJwNnFVNmxyWVFTVU0yZXhv?=
- =?utf-8?B?VkZvZkRCc1Y4YlQrUjNxK2UrOXdkSnZzblNlc1h0cjFrckphVUU0NjdQN0J3?=
- =?utf-8?B?WHYrQUQ5WFFZb2VidFY3bG9UeFB0TXJyUmhyM0RHN2VxTVI2dm5nWDVzTGpF?=
- =?utf-8?B?YmJ2dWdwSERXNXkvVTk0eWZRT2lycWc2ZGxCR2l2TlRQNXNIaExheEsvWDB1?=
- =?utf-8?B?WGY2OUo2MEMrNHU5OWpEejJHSXJXbk9BSWhWRUFqVHExdjM2UmJrdUthbTFn?=
- =?utf-8?B?cVZqc09KSTRHblQ5N3dFOXlIUzZRN0NEUUl6U2ZHMlNDRGx3MmlEQmdoeTZH?=
- =?utf-8?B?VVdIemU3d1gvRkdKdWNJR0dBOE0xc3FsN1VqazJzWEJiYkJHdW4ycjhObEsv?=
- =?utf-8?B?eWdCaUdUWmRWZmFvMGsyL1k1UWVkQk5BYkNtSmo1M29wYVVFeHRqSjlrK0NH?=
- =?utf-8?B?VXRpUmlBRCsvSDMrellxZFNrSVc1b2o5UmNxWmd2Sm1GYlR4WmZESmltc0xl?=
- =?utf-8?B?enNjV0crdlpXbExKTVZpQUF3Z2cvVkpURlpPUHY4R0d4UXpDYm5NTldJUTZT?=
- =?utf-8?B?elRuWTdudEpkR3M4YjZPYmJZeU9ra3RhTkd1K3I5ZEphWUVZaDN1aGZNUTZL?=
- =?utf-8?B?T0FvWjkrVFFTbHVNcm5paFN4YWlZdmhjZUVSZkcrRDVFTzFKMk5kRmFxcEZL?=
- =?utf-8?B?OGRGMzd3Ujgva09mVGtwV05lU09BSGk4UFFQL29DT0R0VkRDbjkyNFgrVGMw?=
- =?utf-8?B?c2dXV1RTVXQyakE1NGVKWWxqMnJoRWpxTUZLbTRlaEtrcTE2M3hSTUJsSFh1?=
- =?utf-8?B?ZlZQQTdBSkFYQVd6Q3FQR2NOWmNxS2VzckI4OVlPWHA2REgxeVBMTWVmc3pq?=
- =?utf-8?B?ZzhjaHZ6cUJ6SHlKaXFVT1ZtWGRleFhrTGVoQ2ErbjkxeGdsL3AzUmoyUlYx?=
- =?utf-8?B?TDdMT0Rjb1JqYThqWkNOc3IxaUt3dUt3UThmOTMvcWZlaHNFSC90VGk1U0dL?=
- =?utf-8?B?OGc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2d08d6a-b74d-4130-25cb-08dbcb5c487b
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 19:49:01.7605
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hwrKOqWi482JhtKpxu8i6PHo4gLsg+TwwavoGZCS324JCStleHI8/0VS7b11cxY1VpO53S3zDVJzLgiYolCbTa1x84OuP1j8bIw/ZQaHwZ8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6344
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+У вт, 2023-10-10 у 18:02 +0200, Vitaly Kuznetsov пише:
+> Hyper-V emulation in KVM is a fairly big chunk and in some cases it may be
+> desirable to not compile it in to reduce module sizes as well as attack
+> surface. Introduce CONFIG_KVM_HYPERV option to make it possible.
+> 
+> Note, there's room for further nVMX/nSVM code optimizations when
+> !CONFIG_KVM_HYPERV, this will be done in follow-up patches.
+
+Maybe CONFIG_KVM_HYPERV_GUEST_SUPPORT or CONFIG_HYPERV_ON_KVM instead?
+
+IMHO CONFIG_KVM_HYPERV_GUEST_SUPPORT sounds good.
+
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  4 +++
+>  arch/x86/kvm/Kconfig            |  9 ++++++
+>  arch/x86/kvm/Makefile           | 17 +++++++---
+>  arch/x86/kvm/cpuid.c            |  6 ++++
+>  arch/x86/kvm/hyperv.h           | 29 +++++++++++++++--
+>  arch/x86/kvm/irq_comm.c         |  9 +++++-
+>  arch/x86/kvm/svm/hyperv.h       |  7 +++++
+>  arch/x86/kvm/svm/nested.c       |  2 ++
+>  arch/x86/kvm/svm/svm_onhyperv.h |  2 ++
+>  arch/x86/kvm/vmx/hyperv.h       |  8 +++++
+>  arch/x86/kvm/vmx/nested.c       | 17 ++++++++++
+>  arch/x86/kvm/x86.c              | 56 +++++++++++++++++++++++----------
+>  12 files changed, 143 insertions(+), 23 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 711dc880a9f0..b0a55b736b47 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1085,6 +1085,7 @@ enum hv_tsc_page_status {
+>  	HV_TSC_PAGE_BROKEN,
+>  };
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+>  /* Hyper-V emulation context */
+>  struct kvm_hv {
+>  	struct mutex hv_lock;
+> @@ -1117,6 +1118,7 @@ struct kvm_hv {
+>  
+>  	struct kvm_hv_syndbg hv_syndbg;
+>  };
+> +#endif
+>  
+>  struct msr_bitmap_range {
+>  	u32 flags;
+> @@ -1338,7 +1340,9 @@ struct kvm_arch {
+>  	/* reads protected by irq_srcu, writes by irq_lock */
+>  	struct hlist_head mask_notifier_list;
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+>  	struct kvm_hv hyperv;
+> +#endif
+>  
+>  #ifdef CONFIG_KVM_XEN
+>  	struct kvm_xen xen;
+> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+> index ed90f148140d..a06e19a8a8f6 100644
+> --- a/arch/x86/kvm/Kconfig
+> +++ b/arch/x86/kvm/Kconfig
+> @@ -129,6 +129,15 @@ config KVM_SMM
+>  
+>  	  If unsure, say Y.
+>  
+> +config KVM_HYPERV
+> +	bool "Support for Microsoft Hyper-V emulation"
+> +	depends on KVM
+> +	default y
+> +	help
+> +	  Provides KVM support for emulating Microsoft Hypervisor (Hyper-V).
 
 
-On 10/10/2023 3:26 PM, Justin Stitt wrote:
-> Hi,
-> 
-> This series aims to eliminate uses of strncpy() as it is a deprecated
-> interface [1] with many viable replacements available.
-> 
-> Predominantly, strscpy() is the go-to replacement as it guarantees
-> NUL-termination on the destination buffer (which strncpy does not). With
-> that being said, I did not identify any buffer overread problems as the
-> size arguments were carefully measured to leave room for trailing
-> NUL-bytes. Nonetheless, we should favor more robust and less ambiguous
-> interfaces.
-> 
-> Previously, each of these patches was sent individually at:
-> 1) https://lore.kernel.org/all/20231009-strncpy-drivers-net-ethernet-intel-e100-c-v1-1-ca0ff96868a3@google.com/
-> 2) https://lore.kernel.org/all/20231010-strncpy-drivers-net-ethernet-intel-e1000-e1000_main-c-v1-1-b1d64581f983@google.com/
-> 3) https://lore.kernel.org/all/20231010-strncpy-drivers-net-ethernet-intel-fm10k-fm10k_ethtool-c-v1-1-dbdc4570c5a6@google.com/
-> 4) https://lore.kernel.org/all/20231010-strncpy-drivers-net-ethernet-intel-i40e-i40e_ddp-c-v1-1-f01a23394eab@google.com/
-> 5) https://lore.kernel.org/all/20231010-strncpy-drivers-net-ethernet-intel-igb-igb_main-c-v1-1-d796234a8abf@google.com/
-> 6) https://lore.kernel.org/all/20231010-strncpy-drivers-net-ethernet-intel-igbvf-netdev-c-v1-1-69ccfb2c2aa5@google.com/
-> 7) https://lore.kernel.org/all/20231010-strncpy-drivers-net-ethernet-intel-igc-igc_main-c-v1-1-f1f507ecc476@google.com/
-> 
-> Consider these dead as this series is their new home :)
-> 
-> I found all these instances with: $ rg "strncpy\("
-> 
-> This series may collide in a not-so-nice way with [3]. This series can
-> go in after that one with a rebase. I'll send a v2 if necessary.
-> 
+It feels to me that the KConfig option can have a longer description.
 
-I'm working to apply these to the Intel Wired LAN dev-queue now, and
-I'll see how bad it is. I will ping you if I need a rebased version.
+What do you think about something like that:
 
-Thanks,
-Jake
+"Provides KVM support for emulating Microsoft Hypervisor (Hyper-V).
+
+This makes KVM expose a set of paravirtualized interfaces, 
+documented in the HyperV TLFS, 
+https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/reference/tlfs,
+which consists of a subset of paravirtualized interfaces that HyperV exposes
+to its guests.
+
+This improves performance of modern Windows guests.
+
+Say Y, unless you are sure that this kernel will not be used to run Windows guests."
+
+
+> +
+> +	  If unsure, say "Y".
+> +
+>  config KVM_XEN
+>  	bool "Support for Xen hypercall interface"
+>  	depends on KVM
+> diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
+> index 8ea872401cd6..ccd477178f07 100644
+> --- a/arch/x86/kvm/Makefile
+> +++ b/arch/x86/kvm/Makefile
+> @@ -11,7 +11,7 @@ include $(srctree)/virt/kvm/Makefile.kvm
+>  
+>  kvm-y			+= x86.o emulate.o i8259.o irq.o lapic.o \
+>  			   i8254.o ioapic.o irq_comm.o cpuid.o pmu.o mtrr.o \
+> -			   hyperv.o debugfs.o mmu/mmu.o mmu/page_track.o \
+> +			   debugfs.o mmu/mmu.o mmu/page_track.o \
+>  			   mmu/spte.o
+>  
+>  ifdef CONFIG_HYPERV
+> @@ -19,19 +19,28 @@ kvm-y			+= kvm_onhyperv.o
+>  endif
+>  
+>  kvm-$(CONFIG_X86_64) += mmu/tdp_iter.o mmu/tdp_mmu.o
+> +kvm-$(CONFIG_KVM_HYPERV) += hyperv.o
+>  kvm-$(CONFIG_KVM_XEN)	+= xen.o
+>  kvm-$(CONFIG_KVM_SMM)	+= smm.o
+>  
+>  kvm-intel-y		+= vmx/vmx.o vmx/vmenter.o vmx/pmu_intel.o vmx/vmcs12.o \
+> -			   vmx/hyperv.o vmx/hyperv_evmcs.o vmx/nested.o vmx/posted_intr.o
+> +			   vmx/nested.o vmx/posted_intr.o
+> +ifdef CONFIG_KVM_HYPERV
+> +kvm-intel-y		+= vmx/hyperv.o vmx/hyperv_evmcs.o
+> +endif
+> +
+>  kvm-intel-$(CONFIG_X86_SGX_KVM)	+= vmx/sgx.o
+>  
+>  ifdef CONFIG_HYPERV
+> -kvm-intel-y		+= vmx/vmx_onhyperv.o
+> +kvm-intel-y		+= vmx/vmx_onhyperv.o vmx/hyperv_evmcs.o
+>  endif
+>  
+>  kvm-amd-y		+= svm/svm.o svm/vmenter.o svm/pmu.o svm/nested.o svm/avic.o \
+> -			   svm/sev.o svm/hyperv.o
+> +			   svm/sev.o
+> +
+> +ifdef CONFIG_KVM_HYPERV
+> +kvm-amd-y		+= svm/hyperv.o
+> +endif
+
+I think that we can group all the files under one
+'ifdef CONFIG_KVM_HYPERV'.
+
+>  
+>  ifdef CONFIG_HYPERV
+>  kvm-amd-y		+= svm/svm_onhyperv.o
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 0544e30b4946..7a3533573f94 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -314,11 +314,15 @@ EXPORT_SYMBOL_GPL(kvm_update_cpuid_runtime);
+>  
+>  static bool kvm_cpuid_has_hyperv(struct kvm_cpuid_entry2 *entries, int nent)
+>  {
+> +#ifdef CONFIG_KVM_HYPERV
+>  	struct kvm_cpuid_entry2 *entry;
+>  
+>  	entry = cpuid_entry2_find(entries, nent, HYPERV_CPUID_INTERFACE,
+>  				  KVM_CPUID_INDEX_NOT_SIGNIFICANT);
+>  	return entry && entry->eax == HYPERV_CPUID_SIGNATURE_EAX;
+> +#else
+> +	return false;
+> +#endif
+
+Do you think that it might make sense to still complain loudly if the userspace
+still tries to enable hyperv cpuid?
+
+>  }
+>  
+>  static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+> @@ -441,11 +445,13 @@ static int kvm_set_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid_entry2 *e2,
+>  		return 0;
+>  	}
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+>  	if (kvm_cpuid_has_hyperv(e2, nent)) {
+>  		r = kvm_hv_vcpu_init(vcpu);
+>  		if (r)
+>  			return r;
+>  	}
+> +#endif
+>  
+>  	r = kvm_check_cpuid(vcpu, e2, nent);
+>  	if (r)
+> diff --git a/arch/x86/kvm/hyperv.h b/arch/x86/kvm/hyperv.h
+> index ddb1d0b019e6..3a6acd8a9fa8 100644
+> --- a/arch/x86/kvm/hyperv.h
+> +++ b/arch/x86/kvm/hyperv.h
+> @@ -24,6 +24,8 @@
+>  #include <linux/kvm_host.h>
+>  #include "x86.h"
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+> +
+>  /* "Hv#1" signature */
+>  #define HYPERV_CPUID_SIGNATURE_EAX 0x31237648
+>  
+> @@ -247,5 +249,28 @@ static inline int kvm_hv_verify_vp_assist(struct kvm_vcpu *vcpu)
+>  }
+>  
+>  int kvm_hv_vcpu_flush_tlb(struct kvm_vcpu *vcpu);
+> -
+> -#endif
+> +#else /* CONFIG_KVM_HYPERV */
+> +static inline void kvm_hv_setup_tsc_page(struct kvm *kvm,
+> +					 struct pvclock_vcpu_time_info *hv_clock) {}
+> +static inline void kvm_hv_request_tsc_page_update(struct kvm *kvm) {}
+> +static inline void kvm_hv_init_vm(struct kvm *kvm) {}
+> +static inline void kvm_hv_destroy_vm(struct kvm *kvm) {}
+> +static inline int kvm_hv_vcpu_init(struct kvm_vcpu *vcpu) { return 0; }
+> +static inline void kvm_hv_vcpu_uninit(struct kvm_vcpu *vcpu) {}
+> +static inline bool kvm_hv_hypercall_enabled(struct kvm_vcpu *vcpu) { return false; }
+> +static inline int kvm_hv_hypercall(struct kvm_vcpu *vcpu) { return HV_STATUS_ACCESS_DENIED; }
+> +static inline void kvm_hv_vcpu_purge_flush_tlb(struct kvm_vcpu *vcpu) {}
+> +static inline void kvm_hv_free_pa_page(struct kvm *kvm) {}
+> +static inline bool kvm_hv_synic_has_vector(struct kvm_vcpu *vcpu, int vector) { return false; }
+> +static inline bool kvm_hv_synic_auto_eoi_set(struct kvm_vcpu *vcpu, int vector) { return false; }
+> +static inline void kvm_hv_synic_send_eoi(struct kvm_vcpu *vcpu, int vector) {}
+> +static inline bool kvm_hv_invtsc_suppressed(struct kvm_vcpu *vcpu) { return false; }
+> +static inline void kvm_hv_set_cpuid(struct kvm_vcpu *vcpu, bool hyperv_enabled) {}
+> +static inline bool kvm_hv_has_stimer_pending(struct kvm_vcpu *vcpu) { return false; }
+> +static inline bool kvm_hv_is_tlb_flush_hcall(struct kvm_vcpu *vcpu) { return false; }
+> +static inline bool guest_hv_cpuid_has_l2_tlb_flush(struct kvm_vcpu *vcpu) { return false; }
+> +static inline int kvm_hv_verify_vp_assist(struct kvm_vcpu *vcpu) { return 0; }
+> +static inline u32 kvm_hv_get_vpindex(struct kvm_vcpu *vcpu) { return vcpu->vcpu_idx; }
+> +#endif /* CONFIG_KVM_HYPERV */
+> +
+> +#endif /* __ARCH_X86_KVM_HYPERV_H__ */
+> diff --git a/arch/x86/kvm/irq_comm.c b/arch/x86/kvm/irq_comm.c
+> index 16d076a1b91a..68f3f6c26046 100644
+> --- a/arch/x86/kvm/irq_comm.c
+> +++ b/arch/x86/kvm/irq_comm.c
+> @@ -144,7 +144,7 @@ int kvm_set_msi(struct kvm_kernel_irq_routing_entry *e,
+>  	return kvm_irq_delivery_to_apic(kvm, NULL, &irq, NULL);
+>  }
+>  
+> -
+> +#ifdef CONFIG_KVM_HYPERV
+>  static int kvm_hv_set_sint(struct kvm_kernel_irq_routing_entry *e,
+>  		    struct kvm *kvm, int irq_source_id, int level,
+>  		    bool line_status)
+> @@ -154,6 +154,7 @@ static int kvm_hv_set_sint(struct kvm_kernel_irq_routing_entry *e,
+>  
+>  	return kvm_hv_synic_set_irq(kvm, e->hv_sint.vcpu, e->hv_sint.sint);
+>  }
+> +#endif
+>  
+>  int kvm_arch_set_irq_inatomic(struct kvm_kernel_irq_routing_entry *e,
+>  			      struct kvm *kvm, int irq_source_id, int level,
+> @@ -163,9 +164,11 @@ int kvm_arch_set_irq_inatomic(struct kvm_kernel_irq_routing_entry *e,
+>  	int r;
+>  
+>  	switch (e->type) {
+> +#ifdef CONFIG_KVM_HYPERV
+>  	case KVM_IRQ_ROUTING_HV_SINT:
+>  		return kvm_hv_set_sint(e, kvm, irq_source_id, level,
+>  				       line_status);
+> +#endif
+>  
+>  	case KVM_IRQ_ROUTING_MSI:
+>  		if (kvm_msi_route_invalid(kvm, e))
+> @@ -314,11 +317,13 @@ int kvm_set_routing_entry(struct kvm *kvm,
+>  		if (kvm_msi_route_invalid(kvm, e))
+>  			return -EINVAL;
+>  		break;
+> +#ifdef CONFIG_KVM_HYPERV
+>  	case KVM_IRQ_ROUTING_HV_SINT:
+>  		e->set = kvm_hv_set_sint;
+>  		e->hv_sint.vcpu = ue->u.hv_sint.vcpu;
+>  		e->hv_sint.sint = ue->u.hv_sint.sint;
+>  		break;
+> +#endif
+>  #ifdef CONFIG_KVM_XEN
+>  	case KVM_IRQ_ROUTING_XEN_EVTCHN:
+>  		return kvm_xen_setup_evtchn(kvm, e, ue);
+> @@ -438,5 +443,7 @@ void kvm_scan_ioapic_routes(struct kvm_vcpu *vcpu,
+>  
+>  void kvm_arch_irq_routing_update(struct kvm *kvm)
+>  {
+> +#ifdef CONFIG_KVM_HYPERV
+>  	kvm_hv_irq_routing_update(kvm);
+> +#endif
+>  }
+> diff --git a/arch/x86/kvm/svm/hyperv.h b/arch/x86/kvm/svm/hyperv.h
+> index 02f4784b5d44..14eec2d9b6be 100644
+> --- a/arch/x86/kvm/svm/hyperv.h
+> +++ b/arch/x86/kvm/svm/hyperv.h
+> @@ -11,6 +11,7 @@
+>  #include "../hyperv.h"
+>  #include "svm.h"
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+>  static inline void nested_svm_hv_update_vm_vp_ids(struct kvm_vcpu *vcpu)
+>  {
+>  	struct vcpu_svm *svm = to_svm(vcpu);
+> @@ -41,5 +42,11 @@ static inline bool nested_svm_l2_tlb_flush_enabled(struct kvm_vcpu *vcpu)
+>  }
+>  
+>  void svm_hv_inject_synthetic_vmexit_post_tlb_flush(struct kvm_vcpu *vcpu);
+> +#else /* CONFIG_KVM_HYPERV */
+> +static inline void nested_svm_hv_update_vm_vp_ids(struct kvm_vcpu *vcpu) {}
+> +static inline bool nested_svm_l2_tlb_flush_enabled(struct kvm_vcpu *vcpu) { return false; }
+> +static inline void svm_hv_inject_synthetic_vmexit_post_tlb_flush(struct kvm_vcpu *vcpu) {}
+> +#endif /* CONFIG_KVM_HYPERV */
+> +
+>  
+>  #endif /* __ARCH_X86_KVM_SVM_HYPERV_H__ */
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index dd496c9e5f91..4d8cd378a30b 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -487,6 +487,7 @@ static void nested_save_pending_event_to_vmcb12(struct vcpu_svm *svm,
+>  
+>  static void nested_svm_transition_tlb_flush(struct kvm_vcpu *vcpu)
+>  {
+> +#ifdef CONFIG_KVM_HYPERV
+>  	/*
+>  	 * KVM_REQ_HV_TLB_FLUSH flushes entries from either L1's VP_ID or
+>  	 * L2's VP_ID upon request from the guest. Make sure we check for
+> @@ -495,6 +496,7 @@ static void nested_svm_transition_tlb_flush(struct kvm_vcpu *vcpu)
+>  	 */
+>  	if (to_hv_vcpu(vcpu) && npt_enabled)
+>  		kvm_make_request(KVM_REQ_HV_TLB_FLUSH, vcpu);
+> +#endif
+>  
+>  	/*
+>  	 * TODO: optimize unconditional TLB flush/MMU sync.  A partial list of
+> diff --git a/arch/x86/kvm/svm/svm_onhyperv.h b/arch/x86/kvm/svm/svm_onhyperv.h
+> index f85bc617ffe4..c25cf56e6adb 100644
+> --- a/arch/x86/kvm/svm/svm_onhyperv.h
+> +++ b/arch/x86/kvm/svm/svm_onhyperv.h
+> @@ -79,6 +79,7 @@ static inline void svm_hv_vmcb_dirty_nested_enlightenments(
+>  
+>  static inline void svm_hv_update_vp_id(struct vmcb *vmcb, struct kvm_vcpu *vcpu)
+>  {
+> +#ifdef CONFIG_KVM_HYPERV
+>  	struct hv_vmcb_enlightenments *hve = &vmcb->control.hv_enlightenments;
+>  	u32 vp_index = kvm_hv_get_vpindex(vcpu);
+>  
+> @@ -86,6 +87,7 @@ static inline void svm_hv_update_vp_id(struct vmcb *vmcb, struct kvm_vcpu *vcpu)
+>  		hve->hv_vp_id = vp_index;
+>  		vmcb_mark_dirty(vmcb, HV_VMCB_NESTED_ENLIGHTENMENTS);
+>  	}
+> +#endif
+>  }
+>  #else
+>  
+> diff --git a/arch/x86/kvm/vmx/hyperv.h b/arch/x86/kvm/vmx/hyperv.h
+> index d4ed99008518..933ef6cad5e6 100644
+> --- a/arch/x86/kvm/vmx/hyperv.h
+> +++ b/arch/x86/kvm/vmx/hyperv.h
+> @@ -20,6 +20,7 @@ enum nested_evmptrld_status {
+>  	EVMPTRLD_ERROR,
+>  };
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+>  u64 nested_get_evmptr(struct kvm_vcpu *vcpu);
+>  uint16_t nested_get_evmcs_version(struct kvm_vcpu *vcpu);
+>  int nested_enable_evmcs(struct kvm_vcpu *vcpu,
+> @@ -28,5 +29,12 @@ void nested_evmcs_filter_control_msr(struct kvm_vcpu *vcpu, u32 msr_index, u64 *
+>  int nested_evmcs_check_controls(struct vmcs12 *vmcs12);
+>  bool nested_evmcs_l2_tlb_flush_enabled(struct kvm_vcpu *vcpu);
+>  void vmx_hv_inject_synthetic_vmexit_post_tlb_flush(struct kvm_vcpu *vcpu);
+> +#else
+> +static inline u64 nested_get_evmptr(struct kvm_vcpu *vcpu) { return EVMPTR_INVALID; }
+> +static inline void nested_evmcs_filter_control_msr(struct kvm_vcpu *vcpu, u32 msr_index, u64 *pdata) {}
+> +static inline bool nested_evmcs_l2_tlb_flush_enabled(struct kvm_vcpu *vcpu) { return false; }
+> +static inline int nested_evmcs_check_controls(struct vmcs12 *vmcs12) { return 0; }
+> +#endif
+> +
+>  
+>  #endif /* __KVM_X86_VMX_HYPERV_H */
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index c5ec0ef51ff7..ca7e06759aa3 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -226,6 +226,7 @@ static void vmx_disable_shadow_vmcs(struct vcpu_vmx *vmx)
+>  
+>  static inline void nested_release_evmcs(struct kvm_vcpu *vcpu)
+>  {
+> +#ifdef CONFIG_KVM_HYPERV
+>  	struct kvm_vcpu_hv *hv_vcpu = to_hv_vcpu(vcpu);
+>  	struct vcpu_vmx *vmx = to_vmx(vcpu);
+>  
+> @@ -241,6 +242,7 @@ static inline void nested_release_evmcs(struct kvm_vcpu *vcpu)
+>  		hv_vcpu->nested.vm_id = 0;
+>  		hv_vcpu->nested.vp_id = 0;
+>  	}
+> +#endif
+>  }
+>  
+>  static void vmx_sync_vmcs_host_state(struct vcpu_vmx *vmx,
+> @@ -1139,6 +1141,7 @@ static void nested_vmx_transition_tlb_flush(struct kvm_vcpu *vcpu,
+>  {
+>  	struct vcpu_vmx *vmx = to_vmx(vcpu);
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+>  	/*
+>  	 * KVM_REQ_HV_TLB_FLUSH flushes entries from either L1's VP_ID or
+>  	 * L2's VP_ID upon request from the guest. Make sure we check for
+> @@ -1147,6 +1150,7 @@ static void nested_vmx_transition_tlb_flush(struct kvm_vcpu *vcpu,
+>  	 */
+>  	if (to_hv_vcpu(vcpu) && enable_ept)
+>  		kvm_make_request(KVM_REQ_HV_TLB_FLUSH, vcpu);
+> +#endif
+>  
+>  	/*
+>  	 * If vmcs12 doesn't use VPID, L1 expects linear and combined mappings
+> @@ -1576,6 +1580,7 @@ static void copy_vmcs12_to_shadow(struct vcpu_vmx *vmx)
+>  	vmcs_load(vmx->loaded_vmcs->vmcs);
+>  }
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+>  static void copy_enlightened_to_vmcs12(struct vcpu_vmx *vmx, u32 hv_clean_fields)
+>  {
+>  	struct vmcs12 *vmcs12 = vmx->nested.cached_vmcs12;
+> @@ -2083,6 +2088,10 @@ static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
+>  
+>  	return EVMPTRLD_SUCCEEDED;
+>  }
+> +#else /* CONFIG_KVM_HYPERV */
+> +static inline void copy_enlightened_to_vmcs12(struct vcpu_vmx *vmx, u32 hv_clean_fields) {}
+> +static inline void copy_vmcs12_to_enlightened(struct vcpu_vmx *vmx) {}
+> +#endif /* CONFIG_KVM_HYPERV */
+>  
+>  void nested_sync_vmcs12_to_shadow(struct kvm_vcpu *vcpu)
+>  {
+> @@ -3161,6 +3170,7 @@ static int nested_vmx_check_vmentry_hw(struct kvm_vcpu *vcpu)
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+>  static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu)
+>  {
+>  	struct vcpu_vmx *vmx = to_vmx(vcpu);
+> @@ -3188,6 +3198,9 @@ static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu)
+>  
+>  	return true;
+>  }
+> +#else
+> +static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu) { return true; }
+> +#endif
+>  
+>  static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
+>  {
+> @@ -3558,11 +3571,13 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
+>  	if (!nested_vmx_check_permission(vcpu))
+>  		return 1;
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+>  	evmptrld_status = nested_vmx_handle_enlightened_vmptrld(vcpu, launch);
+>  	if (evmptrld_status == EVMPTRLD_ERROR) {
+>  		kvm_queue_exception(vcpu, UD_VECTOR);
+>  		return 1;
+>  	}
+> +#endif
+>  
+>  	kvm_pmu_trigger_event(vcpu, PERF_COUNT_HW_BRANCH_INSTRUCTIONS);
+>  
+> @@ -7096,7 +7111,9 @@ struct kvm_x86_nested_ops vmx_nested_ops = {
+>  	.set_state = vmx_set_nested_state,
+>  	.get_nested_state_pages = vmx_get_nested_state_pages,
+>  	.write_log_dirty = nested_vmx_write_pml_buffer,
+> +#ifdef CONFIG_KVM_HYPERV
+>  	.enable_evmcs = nested_enable_evmcs,
+>  	.get_evmcs_version = nested_get_evmcs_version,
+>  	.hv_inject_synthetic_vmexit_post_tlb_flush = vmx_hv_inject_synthetic_vmexit_post_tlb_flush,
+> +#endif
+>  };
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index e273ce8e0b3f..78e18d28bc61 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1504,6 +1504,8 @@ static unsigned num_msrs_to_save;
+>  static const u32 emulated_msrs_all[] = {
+>  	MSR_KVM_SYSTEM_TIME, MSR_KVM_WALL_CLOCK,
+>  	MSR_KVM_SYSTEM_TIME_NEW, MSR_KVM_WALL_CLOCK_NEW,
+> +
+> +#ifdef CONFIG_KVM_HYPERV
+>  	HV_X64_MSR_GUEST_OS_ID, HV_X64_MSR_HYPERCALL,
+>  	HV_X64_MSR_TIME_REF_COUNT, HV_X64_MSR_REFERENCE_TSC,
+>  	HV_X64_MSR_TSC_FREQUENCY, HV_X64_MSR_APIC_FREQUENCY,
+> @@ -1521,6 +1523,7 @@ static const u32 emulated_msrs_all[] = {
+>  	HV_X64_MSR_SYNDBG_CONTROL, HV_X64_MSR_SYNDBG_STATUS,
+>  	HV_X64_MSR_SYNDBG_SEND_BUFFER, HV_X64_MSR_SYNDBG_RECV_BUFFER,
+>  	HV_X64_MSR_SYNDBG_PENDING_BUFFER,
+> +#endif
+>  
+>  	MSR_KVM_ASYNC_PF_EN, MSR_KVM_STEAL_TIME,
+>  	MSR_KVM_PV_EOI_EN, MSR_KVM_ASYNC_PF_INT, MSR_KVM_ASYNC_PF_ACK,
+> @@ -3914,6 +3917,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  		 * the need to ignore the workaround.
+>  		 */
+>  		break;
+> +#ifdef CONFIG_KVM_HYPERV
+>  	case HV_X64_MSR_GUEST_OS_ID ... HV_X64_MSR_SINT15:
+>  	case HV_X64_MSR_SYNDBG_CONTROL ... HV_X64_MSR_SYNDBG_PENDING_BUFFER:
+>  	case HV_X64_MSR_SYNDBG_OPTIONS:
+> @@ -3926,6 +3930,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  	case HV_X64_MSR_TSC_INVARIANT_CONTROL:
+>  		return kvm_hv_set_msr_common(vcpu, msr, data,
+>  					     msr_info->host_initiated);
+> +#endif
+>  	case MSR_IA32_BBL_CR_CTL3:
+>  		/* Drop writes to this legacy MSR -- see rdmsr
+>  		 * counterpart for further detail.
+> @@ -4270,6 +4275,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  		 */
+>  		msr_info->data = 0x20000000;
+>  		break;
+> +#ifdef CONFIG_KVM_HYPERV
+>  	case HV_X64_MSR_GUEST_OS_ID ... HV_X64_MSR_SINT15:
+>  	case HV_X64_MSR_SYNDBG_CONTROL ... HV_X64_MSR_SYNDBG_PENDING_BUFFER:
+>  	case HV_X64_MSR_SYNDBG_OPTIONS:
+> @@ -4283,6 +4289,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  		return kvm_hv_get_msr_common(vcpu,
+>  					     msr_info->index, &msr_info->data,
+>  					     msr_info->host_initiated);
+> +#endif
+>  	case MSR_IA32_BBL_CR_CTL3:
+>  		/* This legacy MSR exists but isn't fully documented in current
+>  		 * silicon.  It is however accessed by winxp in very narrow
+> @@ -4420,6 +4427,7 @@ static inline bool kvm_can_mwait_in_guest(void)
+>  		boot_cpu_has(X86_FEATURE_ARAT);
+>  }
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+>  static int kvm_ioctl_get_supported_hv_cpuid(struct kvm_vcpu *vcpu,
+>  					    struct kvm_cpuid2 __user *cpuid_arg)
+>  {
+> @@ -4440,6 +4448,7 @@ static int kvm_ioctl_get_supported_hv_cpuid(struct kvm_vcpu *vcpu,
+>  
+>  	return 0;
+>  }
+> +#endif
+>  
+>  int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>  {
+> @@ -4764,9 +4773,11 @@ long kvm_arch_dev_ioctl(struct file *filp,
+>  	case KVM_GET_MSRS:
+>  		r = msr_io(NULL, argp, do_get_msr_feature, 1);
+>  		break;
+> +#ifdef CONFIG_KVM_HYPERV
+>  	case KVM_GET_SUPPORTED_HV_CPUID:
+>  		r = kvm_ioctl_get_supported_hv_cpuid(NULL, argp);
+>  		break;
+> +#endif
+>  	case KVM_GET_DEVICE_ATTR: {
+>  		struct kvm_device_attr attr;
+>  		r = -EFAULT;
+> @@ -5580,14 +5591,11 @@ static int kvm_vcpu_ioctl_device_attr(struct kvm_vcpu *vcpu,
+>  static int kvm_vcpu_ioctl_enable_cap(struct kvm_vcpu *vcpu,
+>  				     struct kvm_enable_cap *cap)
+>  {
+> -	int r;
+> -	uint16_t vmcs_version;
+> -	void __user *user_ptr;
+> -
+>  	if (cap->flags)
+>  		return -EINVAL;
+>  
+>  	switch (cap->cap) {
+> +#ifdef CONFIG_KVM_HYPERV
+>  	case KVM_CAP_HYPERV_SYNIC2:
+>  		if (cap->args[0])
+>  			return -EINVAL;
+> @@ -5599,16 +5607,22 @@ static int kvm_vcpu_ioctl_enable_cap(struct kvm_vcpu *vcpu,
+>  		return kvm_hv_activate_synic(vcpu, cap->cap ==
+>  					     KVM_CAP_HYPERV_SYNIC2);
+>  	case KVM_CAP_HYPERV_ENLIGHTENED_VMCS:
+> -		if (!kvm_x86_ops.nested_ops->enable_evmcs)
+> -			return -ENOTTY;
+> -		r = kvm_x86_ops.nested_ops->enable_evmcs(vcpu, &vmcs_version);
+> -		if (!r) {
+> -			user_ptr = (void __user *)(uintptr_t)cap->args[0];
+> -			if (copy_to_user(user_ptr, &vmcs_version,
+> -					 sizeof(vmcs_version)))
+> -				r = -EFAULT;
+> +		{
+> +			int r;
+> +			uint16_t vmcs_version;
+> +			void __user *user_ptr;CONFIG_KVM_HYPERV_GUEST_SUPPORT
+> +
+> +			if (!kvm_x86_ops.nested_ops->enable_evmcs)
+> +				return -ENOTTY;
+> +			r = kvm_x86_ops.nested_ops->enable_evmcs(vcpu, &vmcs_version);
+> +			if (!r) {
+> +				user_ptr = (void __user *)(uintptr_t)cap->args[0];
+> +				if (copy_to_user(user_ptr, &vmcs_version,
+> +						 sizeof(vmcs_version)))
+> +					r = -EFAULT;
+> +			}
+> +			return r;
+>  		}
+> -		return r;
+>  	case KVM_CAP_HYPERV_DIRECT_TLBFLUSH:
+>  		if (!kvm_x86_ops.enable_l2_tlb_flush)
+>  			return -ENOTTY;
+> @@ -5617,6 +5631,7 @@ static int kvm_vcpu_ioctl_enable_cap(struct kvm_vcpu *vcpu,
+>  
+>  	case KVM_CAP_HYPERV_ENFORCE_CPUID:
+>  		return kvm_hv_set_enforce_cpuid(vcpu, cap->args[0]);
+> +#endif
+>  
+>  	case KVM_CAP_ENFORCE_PV_FEATURE_CPUID:
+>  		vcpu->arch.pv_cpuid.enforce = cap->args[0];
+> @@ -6009,9 +6024,11 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+>  		srcu_read_unlock(&vcpu->kvm->srcu, idx);
+>  		break;
+>  	}
+> +#ifdef CONFIG_KVM_HYPERV
+>  	case KVM_GET_SUPPORTED_HV_CPUID:
+>  		r = kvm_ioctl_get_supported_hv_cpuid(vcpu, argp);
+>  		break;
+> +#endif
+>  #ifdef CONFIG_KVM_XEN
+>  	case KVM_XEN_VCPU_GET_ATTR: {
+>  		struct kvm_xen_vcpu_attr xva;
+> @@ -7066,6 +7083,7 @@ int kvm_arch_vm_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
+>  		r = static_call(kvm_x86_mem_enc_unregister_region)(kvm, &region);
+>  		break;
+>  	}
+> +#ifdef CONFIG_KVM_HYPERV
+>  	case KVM_HYPERV_EVENTFD: {
+>  		struct kvm_hyperv_eventfd hvevfd;
+>  
+> @@ -7075,6 +7093,7 @@ int kvm_arch_vm_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
+>  		r = kvm_vm_ioctl_hv_eventfd(kvm, &hvevfd);
+>  		break;
+>  	}
+> +#endif
+>  	case KVM_SET_PMU_EVENT_FILTER:
+>  		r = kvm_vm_ioctl_set_pmu_event_filter(kvm, argp);
+>  		break;
+> @@ -10445,19 +10464,20 @@ static void vcpu_scan_ioapic(struct kvm_vcpu *vcpu)
+>  
+>  static void vcpu_load_eoi_exitmap(struct kvm_vcpu *vcpu)
+>  {
+> -	u64 eoi_exit_bitmap[4];
+> -
+>  	if (!kvm_apic_hw_enabled(vcpu->arch.apic))
+>  		return;
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+>  	if (to_hv_vcpu(vcpu)) {
+> +		u64 eoi_exit_bitmap[4];
+> +
+>  		bitmap_or((ulong *)eoi_exit_bitmap,
+>  			  vcpu->arch.ioapic_handled_vectors,
+>  			  to_hv_synic(vcpu)->vec_bitmap, 256);
+>  		static_call_cond(kvm_x86_load_eoi_exitmap)(vcpu, eoi_exit_bitmap);
+>  		return;
+>  	}
+> -
+> +#endif
+>  	static_call_cond(kvm_x86_load_eoi_exitmap)(
+>  		vcpu, (u64 *)vcpu->arch.ioapic_handled_vectors);
+>  }
+> @@ -10548,9 +10568,11 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>  		 * the flushes are considered "remote" and not "local" because
+>  		 * the requests can be initiated from other vCPUs.
+>  		 */
+> +#ifdef CONFIG_KVM_HYPERV
+>  		if (kvm_check_request(KVM_REQ_HV_TLB_FLUSH, vcpu) &&
+>  		    kvm_hv_vcpu_flush_tlb(vcpu))
+>  			kvm_vcpu_flush_tlb_guest(vcpu);
+> +#endif
+>  
+>  		if (kvm_check_request(KVM_REQ_REPORT_TPR_ACCESS, vcpu)) {
+>  			vcpu->run->exit_reason = KVM_EXIT_TPR_ACCESS;
+> @@ -10603,6 +10625,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>  			vcpu_load_eoi_exitmap(vcpu);
+>  		if (kvm_check_request(KVM_REQ_APIC_PAGE_RELOAD, vcpu))
+>  			kvm_vcpu_reload_apic_access_page(vcpu);
+> +#ifdef CONFIG_KVM_HYPERV
+>  		if (kvm_check_request(KVM_REQ_HV_CRASH, vcpu)) {
+>  			vcpu->run->exit_reason = KVM_EXIT_SYSTEM_EVENT;
+>  			vcpu->run->system_event.type = KVM_SYSTEM_EVENT_CRASH;
+> @@ -10633,6 +10656,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>  		 */
+>  		if (kvm_check_request(KVM_REQ_HV_STIMER, vcpu))
+>  			kvm_hv_process_stimers(vcpu);
+> +#endif
+>  		if (kvm_check_request(KVM_REQ_APICV_UPDATE, vcpu))
+>  			kvm_vcpu_update_apicv(vcpu);
+>  		if (kvm_check_request(KVM_REQ_APF_READY, vcpu))
+
+
+Looks reasonable, I didn't check everything though, I might have missed something.
+
+
+Best regards,
+	Maxim Levitsky
+
