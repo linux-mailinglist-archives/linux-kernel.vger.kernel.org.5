@@ -2,121 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 340F77C65E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9F87C65E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377538AbjJLGtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377520AbjJLGtI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1377518AbjJLGtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 12 Oct 2023 02:49:08 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2A8B8;
-        Wed, 11 Oct 2023 23:49:06 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39C6mrkg120908;
-        Thu, 12 Oct 2023 01:48:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697093333;
-        bh=2wfn00okckEnAQe34OjpighGIoLtsdqrAMnpGBO3Ozs=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=unMNsEe++yIsEFNDoMA/g+MqH4gfLHwkZFoRnQz8eu3CrmBkCBK1S/gdsCbeJ/Hf2
-         63agHXL8een1mF8XELvsxNAxYs9Hi/3yOZ921o6ooedg8dhn4/aayYZYfnl9SYsCtn
-         CCwIatQTBoFEZQ3SVCxsM5kzp04apnUuYjvoCEeQ=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39C6mrX0113243
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Oct 2023 01:48:53 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 12
- Oct 2023 01:48:53 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 12 Oct 2023 01:48:53 -0500
-Received: from uda0132425.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39C6mlUS104376;
-        Thu, 12 Oct 2023 01:48:48 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Jai Luthra <j-luthra@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devarsht@ti.com>, <a-bhatia1@ti.com>,
-        Jayesh Choudhary <j-choudhary@ti.com>,
-        Julien Panis <jpanis@baylibre.com>,
-        Esteban Blanc <eblanc@baylibre.com>
-Subject: Re: (subset) [PATCH v3 0/6] arm64: ti: Enable audio on AM62A
-Date:   Thu, 12 Oct 2023 12:18:45 +0530
-Message-ID: <169709313768.2957749.9372706059129778665.b4-ty@ti.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231003-mcasp_am62a-v3-0-2b631ff319ca@ti.com>
-References: <20231003-mcasp_am62a-v3-0-2b631ff319ca@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343579AbjJLGtF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 12 Oct 2023 02:49:05 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2044.outbound.protection.outlook.com [40.107.220.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780C490;
+        Wed, 11 Oct 2023 23:49:02 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GcRhC4D1g3VY55Ij2nI6a1OPENLt2wKtjjDu16WySuohqNBkx432ww8wUVJ01kSltH2Ww/cXZyFpqEme/2bLfQfVd2UH9rGPawS0ouPtjAT7SoF9Njg3he2JbpY1EwkgmxKVIPrCFy4OW84lD2TrCNb0zd7pbPCvuro5RIqu/eS7V3VHjpNWl5CDjJs5f7fiE8njEAqj57q2kCBgN5l3+v0OfMrYPAH4JZMJnZ0EdvH3PGnASa7xuAWvAm07gxctOi76okyZvviIJCWanrIPjIrDJ2rb/9Wsv22GoeMcdXMQADZ9RozJ/80//4VCLP4CKe0KkOSTlAhF3JP04ttb1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=b0rcKqqRnLr3rgbHxWwdaXYBjoSWRTeCAVTBFXarmrM=;
+ b=mp6sDFOorb9RVpUtdK0AGlntv5sSJ5C2swOHVgD9GHq6cSDtzo2MzDu+bEekdVsOHYCkcDaAr4cnvZSL7y88WRSl7t0YaHGTB2uGhJgZ/s/+wEFMOggB0EYKOm5/dTFDHVLLFZwGQxiBdNX9MMuk/NlKrMf1WvsZ9L7hRw7WQ1oPZp2bhC1a+yTcu/Zg5/Gv3I0cry3vsmVIvX00IgBFZ0i5GQWAwyL013gNGy5OxhrXH42iv7wIGVG0hFd99kX8SrdkoqOhHY6EhZkKG59o4gKSSGea3Ro+5foLeHIwIU5NpHU5sL4N+H9SZfyW82SIn80z0YsO1zBR4H/Dp3A0Aw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b0rcKqqRnLr3rgbHxWwdaXYBjoSWRTeCAVTBFXarmrM=;
+ b=RtRNy4A2+OW7HoFbxOsXtNMhY2p5eTHSQJAnN7QPieB3Q65MiU3GohCQMwSRk5uNznnfSOQGilZPRyY2A+Df8AXe82eqkkbnCzqGIr6BULjxOxnOqq22O+AZXoG++6SrpWJ0hmp8eDZFUuhUOUFS0C+KMnsob9gxSiRoZb8Bvcw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by CY8PR12MB8216.namprd12.prod.outlook.com (2603:10b6:930:78::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.44; Thu, 12 Oct
+ 2023 06:48:59 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::a7fa:4411:67a3:131d]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::a7fa:4411:67a3:131d%4]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
+ 06:48:59 +0000
+Message-ID: <067ee7e8-6dc3-4e84-84fe-bc00e1193848@amd.com>
+Date:   Thu, 12 Oct 2023 08:48:54 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] dma-buf: Fix NULL pointer dereference in
+ dma_fence_enable_sw_signaling()
+Content-Language: en-US
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        Arvind Yadav <Arvind.Yadav@amd.com>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <ZSarP0/+hG8/87//@work> <202310110903.FE533CBCD@keescook>
+ <0d63e8aa-5836-40e7-8f8a-2be10fbaac4a@embeddedor.com>
+From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <0d63e8aa-5836-40e7-8f8a-2be10fbaac4a@embeddedor.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: FR2P281CA0064.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:93::12) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|CY8PR12MB8216:EE_
+X-MS-Office365-Filtering-Correlation-Id: fd69f58b-3cc5-43a7-09fa-08dbcaef4ff9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Yz0x1Z0if7U3mtcZIZQyxZtyZUcOgRVjCBzGS9fLCxBw7P4O2gEI9wqKac0P9TEOXr7Yj//D4k64YMhq1oA6muds55a+4AhMCvy3bnEwNkh1FgLx1io+Z6n9aqNU8E+W5fNEP9rGPOH/rYyFVzsbEPGVWCp0zULTJJOGiZ8ahYMLeP6CwwS6xXfebgGoPw3IxICxUV1kB7Sz2OqOoD9dnjRgpTkajM2H8Wi29EGMCXTKhsvq20f6iw9yvXxUwdpp9AwbjBQ38nsShXp69aVI1axFEJBlo11Y1CXLboN3wA7lRW1sKC8pJwrfqigymFEt+vjnzXXBqu4LvzXH5kvq1PcBZqKpp/vTLoDNTmVjsN/1pc+EmycZqjw1MS29XyLyQEpsKnTBHwzhAr5NS1v7MFf943D1g4NNnYziENmaTIwE7rXaWi1TrsTpr6NgTw3ZHo3O2AQNT7RgYcE0GdWiD7GUf02uWs1Ezq1Oo/IW1sbQ3TqigNvcjESaSNs1d1PE83FP0lKGp4vbvix3Q7B/xdD6KaQQ08BIQkxQy0XQ/7n/zYVk3obiPo8Asak2opSV5QgOM+YzvNJyuIH1vZWKZzoS8aH++qM5e6EwLAthFIUwwJ1rIoDbBdVjU7IJ7y8uo9zMvyseW6adccmaTSYZZA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(396003)(366004)(136003)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(6486002)(478600001)(38100700002)(6666004)(8936002)(66556008)(66476007)(54906003)(110136005)(316002)(7416002)(66946007)(2906002)(31696002)(41300700001)(8676002)(36756003)(5660300002)(4326008)(86362001)(26005)(6512007)(2616005)(83380400001)(31686004)(6506007)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UnNseFdSMVh4SU9vdng3cVB0eHcxdlVNREpySno2elEvVUloT2Frczk0bU1y?=
+ =?utf-8?B?QVNHbUNKYUFCTGQyKzFDMEM4VkNGeEorOW1QK0ZRN0ZsRmtNRUlqd0UybFVY?=
+ =?utf-8?B?aFdBV200bEJOZjB3bWg1NEV1eDlwTkwwcGM3QXQ1Mm0xOC9qZWQvTnBBMTgr?=
+ =?utf-8?B?TjVjR0lZT1hqSGJDcGhGOVVNRkY4bVZpQTc5YXVydFBpSVpTV1Z6c3dpaEtK?=
+ =?utf-8?B?Zit0eEkvdW5rMXJNYmo2aGdVajE5V3ptaUhBaFRXc1NXMk1JaGN0YVgrZGE5?=
+ =?utf-8?B?b2h1SW9ncFp2dTQ3WnlNdkZObTlaSGJ6VEpYOVJyRFRhcVY4cjNYblpCMksx?=
+ =?utf-8?B?NWliQzBpTjVrMkpxLzIzdy9Yd09FamJxREovK1liRWxYa2dmSGptR2RWRVZl?=
+ =?utf-8?B?Z3EzZWdMZFgrdG1ReFhFUDBOOHZycDhLV0RZYVBOSDNWbjF1L3hwVVc4Sk1m?=
+ =?utf-8?B?VFh6LzY4RmNyaTg0aTBNWVh0aVplU29yNkU5QzhrMWJnRnVWWnc0bW5OWEtW?=
+ =?utf-8?B?MWhPdTU2VGFtMHZLRXNqZGc2TUpEZTZ3TUozRTlmZEdGcXpKUlBFMy8vZm1x?=
+ =?utf-8?B?QThwdW1lT3lVZS95L0VhdkdrMFJYNDRPU1QzaFlnbXF1TkhqZk1SNXNtckxL?=
+ =?utf-8?B?WGNCelNtUkczQ3dvZmtmSHVidEo5S1JVczBISldlanFBajZMYm1nMldZM1Ja?=
+ =?utf-8?B?ZlRIbWF2bWpGWnQ5ZWFXU1RyajJGQWdDVHV0YkNPeVVFVFVndElaaHowaXhy?=
+ =?utf-8?B?OS9zN0xDMjFmNlFORlNTMWFCbDhWU0RoZEsxWW4yT3VSK2JmbENNKzJwWnRi?=
+ =?utf-8?B?Vmg0NXJRTld1a0ZzNk1nNml5Q1lKdU5mNlNsVVdyOWYrdzE1WkZaUkJlaEI5?=
+ =?utf-8?B?ZkxmaWIzWWR5K0hsNDZ5Q1VLa2pDZk5Nc01LdDhmaWdYc2JXNndPRldGSTZK?=
+ =?utf-8?B?a1dXSzR5cG1ablRseDhxN0d2TWQ4eGs5N1ltR0xqU1NKSkRicUxmNG9JQ3I1?=
+ =?utf-8?B?RWpsa0NJWHhESUJKaWx4eUo1bVRtQ0s4MFpIWnd6dEZXUldpQm5mSGE1ZVc0?=
+ =?utf-8?B?MGd6eHRLWkRFMGVjZzI5bCtYdjVRVVJ1NWZPWGN3ZjNyVnZONFZMdXMrREdz?=
+ =?utf-8?B?dkFGb1JsWW8xVTBta1Q1MXQvaHJ1RENzYXVBcHhOaVYyejV3N0h1WThFS1J1?=
+ =?utf-8?B?Y3M1QVNURHFJU2srQzRwUGtxbTZqU3Y0NThMMlk4Y0Y1Vlkxd05PQWQ4am5i?=
+ =?utf-8?B?K21WdkdSK3NVNk12ZXFTL3A4MENuaElJME9YK3U3eEpXQWJTZUQxWUFzL0ZO?=
+ =?utf-8?B?MVNURWZMaGI3QXFyUTg2S2ZkWURXQWhIMys2OE1Ob1dDODMwOTJjaGJ1LzZX?=
+ =?utf-8?B?MEhFRFlsQW1EeDdLRFRTUHE2QnNidWxlZDA4SytkWC9nc0JUMWZ5dko0eXBH?=
+ =?utf-8?B?RlZwU3huM0pxMjhwdWlxaE1TS3lLQUxMd212Skp0dlBhNzBndGw2RXdxM1Zp?=
+ =?utf-8?B?VEJuY0t0SUczejBZMXE3cStNL1FRd0QvWTNsQ2pjUVV5eDQvSmkyZklUMWN6?=
+ =?utf-8?B?dFhZSnk1bkZkRk1VNHdISm9iZS8zZUM5R0VXRitobE9vS0ZJQ3FaNXFXcW1N?=
+ =?utf-8?B?bUVReDd6bHJtS2U3K3N4bkVMaGpjeHhBZlRGYWxCdmhWbnkxZmNNWklZZVZu?=
+ =?utf-8?B?Slo1T092dzJTTk9zYWVBc0pKUHBIRm5hanoxWVlPSTRXdGNzVVl5cUpBaXVK?=
+ =?utf-8?B?VkY3K3p5WVlaU2pCaGFzb2JBTnNpZ0IvZWU5U0d1TCtEL3Nqb1Y5dldxc1ZI?=
+ =?utf-8?B?cldRaGROMjErTTAyejJ0dDJza1E5SlN1QTVhUG9ZS3Frd2UwZXFoQkM3clJx?=
+ =?utf-8?B?ckl2S0RQQUxnb2U5UUxOaVQySFczOXJhemZkWmpHQmgwbTliUkJqWnRyU0d0?=
+ =?utf-8?B?TWdFRXZ1aTVDbmR6akx6Y2lRV3dOQkdVays4SHJYajRUMHN6aWFxTkR5NnJ0?=
+ =?utf-8?B?Vnh2YjB3eVlOU3Z2MkNPTmVOWHRDQlNOcGNQMUNLcFlKa3FaQTVsQnBUaTVX?=
+ =?utf-8?B?c3JMUjJJVWJyR0VQbXNPV2FnMExjazk2WTRMODhWVGFXbVhHVGh3L1psdkdw?=
+ =?utf-8?Q?qLeU=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd69f58b-3cc5-43a7-09fa-08dbcaef4ff9
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 06:48:59.2053
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: o5H1w3RP/Cu4mytWgZq5HBboMKLluJOe0gPdqSfxkt3GO0U0Chk1OIeJr5SZKxA2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8216
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jai Luthra,
 
-On Tue, 03 Oct 2023 14:41:29 +0530, Jai Luthra wrote:
-> This patch series adds support for audio via headphone jack on
-> SK-AM62A-LP. The jack is wired to TLV320AIC3106 (codec), which is
-> connected to McASP1 (serializer) on the SoC.
-> 
-> The TRRS 3.5mm jack can be used for simultaneous playback and recording.
-> 
-> 
-> [...]
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+Am 11.10.23 um 18:13 schrieb Gustavo A. R. Silva:
+>
+>
+> On 10/11/23 10:03, Kees Cook wrote:
+>> On Wed, Oct 11, 2023 at 08:03:43AM -0600, Gustavo A. R. Silva wrote:
+>>> Currently, a NULL pointer dereference will happen in function
+>>> `dma_fence_enable_sw_signaling()` (at line 615), in case `chain`
+>>> is not allocated in `mock_chain()` and this function returns
+>>> `NULL` (at line 86). See below:
+>>>
+>>> drivers/dma-buf/st-dma-fence-chain.c:
+>>>   86         chain = mock_chain(NULL, f, 1);
+>>>   87         if (!chain)
+>>>   88                 err = -ENOMEM;
+>>>   89
+>>>   90         dma_fence_enable_sw_signaling(chain);
+>>
+>> Instead of the larger patch, should line 88 here just do a "return
+>> -ENOMEM" instead?
+>
+> Nope. I would have to add a `goto` to skip 
+> `dma_fence_enable_sw_signaling(chain)`.
+>
+> I originally thought of that, but as other _signaling() functions have
+> sanity-checks inside, I decided to go with that solution.
+>
+> This bug has been there since Sep 2022. So, adding a sanity check 
+> inside that
+> function should prevent any other issue of this same kind to enter the 
+> codebase
+> and stay there for years.
 
-[1/6] arm64: dts: ti: k3-am62a-main: Add nodes for McASP
-      commit: 1d181c96ef3b6f9b29474fb18eb9f426bb6b16ac
-[2/6] arm64: dts: ti: k3-am62a7-sk: Split vcc_3v3 regulators
-      commit: 770480e7eb729d49f2a10530d628e9778c1b3bd8
-[3/6] arm64: dts: ti: k3-am62a7-sk: Drop i2c-1 to 100Khz
-      commit: 63e5aa69b821472a3203a29e17c025329c1b151f
-[4/6] arm64: dts: ti: k3-am62a7-sk: Add support for TPS6593 PMIC
-      commit: 3a8222080334fd0ffec9a6a563304f77571a1853
-[5/6] arm64: dts: ti: k3-am62a7-sk: Enable audio on AM62A
-      commit: 4a2c5dddf9e9049bfb3dde18657ee349131b0def
+I'm trying to remove those sanity checks for years since they are hiding 
+problems instead of getting them fixed.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Calling dma_fence_enable_sw_signaling with a NULL pointer is a coding 
+error and not a recoverable runtime error.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+The test case should be fixed instead.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Regards,
+Christian.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
---
-Vignesh
+>
+> -- 
+> Gustavo
+>
+>>
+>> -Kees
+>>
+>>>
+>>> drivers/dma-buf/dma-fence.c:
+>>>   611 void dma_fence_enable_sw_signaling(struct dma_fence *fence)
+>>>   612 {
+>>>   613         unsigned long flags;
+>>>   614
+>>>   615         spin_lock_irqsave(fence->lock, flags);
+>>>                    ^^^^^^^^^^^
+>>>                     |
+>>>               NULL pointer reference
+>>>               if fence == NULL
+>>>
+>>>   616         __dma_fence_enable_signaling(fence);
+>>>   617         spin_unlock_irqrestore(fence->lock, flags);
+>>>   618 }
+>>>
+>>> Fix this by adding a NULL check before dereferencing `fence` in
+>>> `dma_fence_enable_sw_signaling()`. This will prevent any other NULL
+>>> pointer dereference when the `fence` passed as an argument is `NULL`.
+>>>
+>>> Addresses-Coverity: ("Dereference after null check")
+>>> Fixes: d62c43a953ce ("dma-buf: Enable signaling on fence for 
+>>> selftests")
+>>> Cc: stable@vger.kernel.org
+>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>> ---
+>>>   drivers/dma-buf/dma-fence.c | 9 ++++++++-
+>>>   include/linux/dma-fence.h   | 2 +-
+>>>   2 files changed, 9 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
+>>> index 8aa8f8cb7071..4d2f13560d0f 100644
+>>> --- a/drivers/dma-buf/dma-fence.c
+>>> +++ b/drivers/dma-buf/dma-fence.c
+>>> @@ -607,14 +607,21 @@ static bool 
+>>> __dma_fence_enable_signaling(struct dma_fence *fence)
+>>>    * This will request for sw signaling to be enabled, to make the 
+>>> fence
+>>>    * complete as soon as possible. This calls 
+>>> &dma_fence_ops.enable_signaling
+>>>    * internally.
+>>> + *
+>>> + * Returns 0 on success and a negative error value when @fence is 
+>>> NULL.
+>>>    */
+>>> -void dma_fence_enable_sw_signaling(struct dma_fence *fence)
+>>> +int dma_fence_enable_sw_signaling(struct dma_fence *fence)
+>>>   {
+>>>       unsigned long flags;
+>>>   +    if (!fence)
+>>> +        return -EINVAL;
+>>> +
+>>>       spin_lock_irqsave(fence->lock, flags);
+>>>       __dma_fence_enable_signaling(fence);
+>>>       spin_unlock_irqrestore(fence->lock, flags);
+>>> +
+>>> +    return 0;
+>>>   }
+>>>   EXPORT_SYMBOL(dma_fence_enable_sw_signaling);
+>>>   diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+>>> index ebe78bd3d121..1e4025e925e6 100644
+>>> --- a/include/linux/dma-fence.h
+>>> +++ b/include/linux/dma-fence.h
+>>> @@ -399,7 +399,7 @@ int dma_fence_add_callback(struct dma_fence *fence,
+>>>                  dma_fence_func_t func);
+>>>   bool dma_fence_remove_callback(struct dma_fence *fence,
+>>>                      struct dma_fence_cb *cb);
+>>> -void dma_fence_enable_sw_signaling(struct dma_fence *fence);
+>>> +int dma_fence_enable_sw_signaling(struct dma_fence *fence);
+>>>     /**
+>>>    * dma_fence_is_signaled_locked - Return an indication if the fence
+>>> -- 
+>>> 2.34.1
+>>>
+>>>
+>>
 
