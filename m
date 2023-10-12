@@ -2,120 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DC97C6F95
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5EB7C6F9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347198AbjJLNqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
+        id S1378990AbjJLNrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 09:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343854AbjJLNqN (ORCPT
+        with ESMTP id S1343854AbjJLNrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:46:13 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6DDBE
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:46:12 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53e08b60febso1245933a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:46:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1697118370; x=1697723170; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WL4o0PnlTALPx2JWXQcQVAR5wsdcklh2Oh9j6J5p78o=;
-        b=s8s5pySfVGsOvbqrWvK2k8LuNwRuOVSZz33KIMLX/3ba1xPeA2UmJWZqChehN3e92F
-         v04YzDGP7HVwEwYO5OWlA8ULMTru471sNQIbYNZww5xDJ311BvdxnWp1JFavlr9QOQLf
-         wC/w7VNQabGsjUdburO0JP/G+GUbeKJJ4uZQrjlnFo0qJh0PJ21z3ZX7+2VlF9Hn7OZL
-         Gvz3aGCRnONbfH7npfPypuDvMH4DqykZB0E0Rpx/XH88v8KC+ORzMTLPDWnvINrQxqAb
-         v3k/b6+ljnzNqPNLgl5zsOELAweH2VCP9Q+e6yIAbQ/thAECha6Ai1PRSJJPeNa1EG1d
-         bx3g==
+        Thu, 12 Oct 2023 09:47:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E1BBE
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:46:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697118393;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7lA6iK0/UHM5oGG1Zev7Ey/lrzl0SVmWqGH8Yx0ceXg=;
+        b=amNRSPXG/RorFx5hH1sX3abmyQTts3+MvYUPEskiD7W6eGvzw7plaXzQuyQVCdlb9f+M6h
+        5FQWC/IGyIkvrbigMKwL4/BZwtwRV9W7/2PcMW1GEjkm54pg3M0OzeuWkI+GXfBPd+4SXN
+        v4rYxEcBRDs6f7ExGpJpA5Z+2TV7oYc=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-257-uQD1m9xIP0uReLRq5Mrf8w-1; Thu, 12 Oct 2023 09:46:30 -0400
+X-MC-Unique: uQD1m9xIP0uReLRq5Mrf8w-1
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-41975c9e66fso14473801cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 06:46:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697118370; x=1697723170;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WL4o0PnlTALPx2JWXQcQVAR5wsdcklh2Oh9j6J5p78o=;
-        b=e4rTKm/vClZT0vxaOGAPvY1lYVPJbzwaX2EehIAZZvk7cT8fR4isRQ6G4Fn+/bQkdd
-         3+I4d7ku6XezNC/SS3d5Pfy2U83DGpirb9pvm4v5RrF15/LRKdknuC8JhMh560e7FCUi
-         DHzGhv7MUvNNeqSQOlQHgF61bM5NVeAoEXPUf9qWMJ8uFS4ybVq47K0GBzar1lZd2lo2
-         7V/JTYruzX77VPp2+LIyVs5cQzv2gDsjpRxG7wD640D5YT+wCkZIq1sGvulftz+xTnNN
-         Ieffnb91i6OSonS+un34ux97LSJe/dxXRHRpM4Kn/TkoaiyHwYfIh86bYxO73fpS0zE5
-         DKuA==
-X-Gm-Message-State: AOJu0Yxd7lOgLxqXpVJydFMrKwyANwLUWWrKF6lfduNtpByJ+fDCV2TF
-        +DRNHduGxRVt+3NZj0ED7pBxlg==
-X-Google-Smtp-Source: AGHT+IH59hmoDS+3N9HnCWrAqCjVPZ4ryC0EzwYrla5+l9OzTXH6ATWKCWWbfSW9us9NhxA/rflDvg==
-X-Received: by 2002:aa7:d14c:0:b0:533:2327:1eed with SMTP id r12-20020aa7d14c000000b0053323271eedmr23591165edo.24.1697118370561;
-        Thu, 12 Oct 2023 06:46:10 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id er24-20020a056402449800b0052febc781bfsm2998183edb.36.2023.10.12.06.46.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 06:46:09 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 15:46:08 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-wireless@vger.kernel.org,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-wpan@vger.kernel.org,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Rodolfo Zitellini <rwz@xhero.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/10] appletalk: make localtalk and ppp support
- conditional
-Message-ID: <ZSf4oCBXZGi2BfqC@nanopsycho>
-References: <20231011140225.253106-1-arnd@kernel.org>
- <ZSa5bIcISlvW3zo5@nanopsycho>
- <82527b7f-4509-4a59-a9cf-2df47e6e1a7c@app.fastmail.com>
+        d=1e100.net; s=20230601; t=1697118390; x=1697723190;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7lA6iK0/UHM5oGG1Zev7Ey/lrzl0SVmWqGH8Yx0ceXg=;
+        b=UIS/0VTQ2fu332WsXN5/hZRnZomEgtB/3RKhFAewUUrQjLv3ZTvwnX9gJL0uC7cNVs
+         pOH+ceA2e2q4Qa3l5HsPXOQeMReEVe7SetFKASzl0/iSCFKDF7oJxtjxlBikt6j/CJ3Z
+         QDcTaf3TZkSxQATjS49jBHs6wU+eF7/InD9aQGQvv/nFYlnrvw65zke/QR3n4sqKLcUX
+         IcxojH93ZhklkDgU/xoP4narI4t3DucGz2qM5/3nE8FmvvVhDsYXbvgZXYfStSoxBEAw
+         +tNGHEJbeHbb0+/DfkvXgPKBQBn92WlnJ/uqIVDsE5nK0JCTFvt6BWY7kL9gV6itc01a
+         WzMQ==
+X-Gm-Message-State: AOJu0YwXes9e8afyC2aicwi6hOo4v/wtLpqpXlP3wc+/Sa0vtCLSgNsq
+        V3HAkULpe7Z70l9lHvGsQQUL+gqFsTFB5pIcvfm0A79PLWOKLRc5ohy+/HaEVQrrTIRgkTuu/cn
+        prVTVavquo6dd2K9a+TGw4JMY
+X-Received: by 2002:ac8:5895:0:b0:41a:b68:54d5 with SMTP id t21-20020ac85895000000b0041a0b6854d5mr28247533qta.0.1697118390107;
+        Thu, 12 Oct 2023 06:46:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFTGGdn/As7/O2x0iD1ySAEs+y/AqV8+MgJHJ0fH9dqt0fS7ZE6V6m6uVefR3MExhkSJpYHNw==
+X-Received: by 2002:ac8:5895:0:b0:41a:b68:54d5 with SMTP id t21-20020ac85895000000b0041a0b6854d5mr28247519qta.0.1697118389850;
+        Thu, 12 Oct 2023 06:46:29 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id bb36-20020a05622a1b2400b00403ad6ec2e8sm6182191qtb.26.2023.10.12.06.46.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 06:46:29 -0700 (PDT)
+Message-ID: <4c73e58f-13d3-7cb9-a706-b20ab7d2df18@redhat.com>
+Date:   Thu, 12 Oct 2023 15:46:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <82527b7f-4509-4a59-a9cf-2df47e6e1a7c@app.fastmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Reply-To: eric.auger@redhat.com
+Subject: Re: [PATCH v3 2/3] arm64: Add missing _EL2 encodings
+Content-Language: en-US
+To:     Miguel Luis <miguel.luis@oracle.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev
+References: <20231011180103.91774-1-miguel.luis@oracle.com>
+ <20231011180103.91774-3-miguel.luis@oracle.com>
+From:   Eric Auger <eric.auger@redhat.com>
+In-Reply-To: <20231011180103.91774-3-miguel.luis@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wed, Oct 11, 2023 at 05:57:38PM CEST, arnd@arndb.de wrote:
->On Wed, Oct 11, 2023, at 17:04, Jiri Pirko wrote:
->> Could you provide a cover letter for the set please?
->
->Subject: [PATCH v2 00/10] remove final .ndo_do_ioctl references
->
->The .ndo_do_ioctl() netdev operation used to be how one communicates
->with a network driver from userspace, but since my previous cleanup [1],
->it is purely internal to the kernel.
->
->Removing the cops appletalk/localtalk driver made me revisit the
->missing pieces from that older series, removing all the unused
->implementations in wireless drivers as well as the two kernel-internal
->callers in the ieee802154 and appletalk stacks.
->
->One ethernet driver was already merged in the meantime that should
->have used .ndo_eth_ioctl instead of .ndo_do_ioctl, so fix that as well.
->With the complete removal, any future drivers making this mistake
->cause build failures that are easier to spot.
+Hi Miguel,
 
-Looks fine.
-
-
+On 10/11/23 20:01, Miguel Luis wrote:
+> Some _EL2 encodings are missing. Add them.
 >
->[1] https://lore.kernel.org/netdev/20201106221743.3271965-1-arnd@kernel.org/
+> Signed-off-by: Miguel Luis <miguel.luis@oracle.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+
+Eric
+> ---
+>  arch/arm64/include/asm/sysreg.h | 37 +++++++++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
 >
->----
->Hope that helps, I had commented on the cops removal about sending
->this but of course not everyone here saw that. Let me know if I should
->resend the patches together with the cover letter.
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index ba5db50effec..d8e8607c9de8 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -484,6 +484,7 @@
+>  
+>  #define SYS_SCTLR_EL2			sys_reg(3, 4, 1, 0, 0)
+>  #define SYS_ACTLR_EL2			sys_reg(3, 4, 1, 0, 1)
+> +#define SYS_SCTLR2_EL2			sys_reg(3, 4, 1, 0, 3)
+>  #define SYS_HCR_EL2			sys_reg(3, 4, 1, 1, 0)
+>  #define SYS_MDCR_EL2			sys_reg(3, 4, 1, 1, 1)
+>  #define SYS_CPTR_EL2			sys_reg(3, 4, 1, 1, 2)
+> @@ -497,6 +498,10 @@
+>  #define SYS_VTCR_EL2			sys_reg(3, 4, 2, 1, 2)
+>  
+>  #define SYS_TRFCR_EL2			sys_reg(3, 4, 1, 2, 1)
+> +#define SYS_SDER32_EL2			sys_reg(3, 4, 1, 3, 1)
+> +#define SYS_VNCR_EL2			sys_reg(3, 4, 2, 2, 0)
+> +#define SYS_VSTTBR_EL2			sys_reg(3, 4, 2, 6, 0)
+> +#define SYS_VSTCR_EL2			sys_reg(3, 4, 2, 6, 2)
+>  #define SYS_HAFGRTR_EL2			sys_reg(3, 4, 3, 1, 6)
+>  #define SYS_SPSR_EL2			sys_reg(3, 4, 4, 0, 0)
+>  #define SYS_ELR_EL2			sys_reg(3, 4, 4, 0, 1)
+> @@ -514,6 +519,18 @@
+>  
+>  #define SYS_MAIR_EL2			sys_reg(3, 4, 10, 2, 0)
+>  #define SYS_AMAIR_EL2			sys_reg(3, 4, 10, 3, 0)
+> +#define SYS_MPAMHCR_EL2			sys_reg(3, 4, 10, 4, 0)
+> +#define SYS_MPAMVPMV_EL2		sys_reg(3, 4, 10, 4, 1)
+> +#define SYS_MPAM2_EL2			sys_reg(3, 4, 10, 5, 0)
+> +#define __SYS__MPAMVPMx_EL2(x)		sys_reg(3, 4, 10, 6, x)
+> +#define SYS_MPAMVPM0_EL2		__SYS__MPAMVPMx_EL2(0)
+> +#define SYS_MPAMVPM1_EL2		__SYS__MPAMVPMx_EL2(1)
+> +#define SYS_MPAMVPM2_EL2		__SYS__MPAMVPMx_EL2(2)
+> +#define SYS_MPAMVPM3_EL2		__SYS__MPAMVPMx_EL2(3)
+> +#define SYS_MPAMVPM4_EL2		__SYS__MPAMVPMx_EL2(4)
+> +#define SYS_MPAMVPM5_EL2		__SYS__MPAMVPMx_EL2(5)
+> +#define SYS_MPAMVPM6_EL2		__SYS__MPAMVPMx_EL2(6)
+> +#define SYS_MPAMVPM7_EL2		__SYS__MPAMVPMx_EL2(7)
+>  
+>  #define SYS_VBAR_EL2			sys_reg(3, 4, 12, 0, 0)
+>  #define SYS_RVBAR_EL2			sys_reg(3, 4, 12, 0, 1)
+> @@ -562,9 +579,29 @@
+>  
+>  #define SYS_CONTEXTIDR_EL2		sys_reg(3, 4, 13, 0, 1)
+>  #define SYS_TPIDR_EL2			sys_reg(3, 4, 13, 0, 2)
+> +#define SYS_SCXTNUM_EL2			sys_reg(3, 4, 13, 0, 7)
+> +
+> +#define __AMEV_op2(m)			(m & 0x7)
+> +#define __AMEV_CRm(n, m)		(n | ((m & 0x8) >> 3))
+> +#define __SYS__AMEVCNTVOFF0n_EL2(m)	sys_reg(3, 4, 13, __AMEV_CRm(0x8, m), __AMEV_op2(m))
+> +#define SYS_AMEVCNTVOFF0n_EL2(m)	__SYS__AMEVCNTVOFF0n_EL2(m)
+> +#define __SYS__AMEVCNTVOFF1n_EL2(m)	sys_reg(3, 4, 13, __AMEV_CRm(0xA, m), __AMEV_op2(m))
+> +#define SYS_AMEVCNTVOFF1n_EL2(m)	__SYS__AMEVCNTVOFF1n_EL2(m)
+>  
+>  #define SYS_CNTVOFF_EL2			sys_reg(3, 4, 14, 0, 3)
+>  #define SYS_CNTHCTL_EL2			sys_reg(3, 4, 14, 1, 0)
+> +#define SYS_CNTHP_TVAL_EL2		sys_reg(3, 4, 14, 2, 0)
+> +#define SYS_CNTHP_CTL_EL2		sys_reg(3, 4, 14, 2, 1)
+> +#define SYS_CNTHP_CVAL_EL2		sys_reg(3, 4, 14, 2, 2)
+> +#define SYS_CNTHV_TVAL_EL2		sys_reg(3, 4, 14, 3, 0)
+> +#define SYS_CNTHV_CTL_EL2		sys_reg(3, 4, 14, 3, 1)
+> +#define SYS_CNTHV_CVAL_EL2		sys_reg(3, 4, 14, 3, 2)
+> +#define SYS_CNTHVS_TVAL_EL2		sys_reg(3, 4, 14, 4, 0)
+> +#define SYS_CNTHVS_CTL_EL2		sys_reg(3, 4, 14, 4, 1)
+> +#define SYS_CNTHVS_CVAL_EL2		sys_reg(3, 4, 14, 4, 2)
+> +#define SYS_CNTHPS_TVAL_EL2		sys_reg(3, 4, 14, 5, 0)
+> +#define SYS_CNTHPS_CTL_EL2		sys_reg(3, 4, 14, 5, 1)
+> +#define SYS_CNTHPS_CVAL_EL2		sys_reg(3, 4, 14, 5, 2)
+>  
+>  /* VHE encodings for architectural EL0/1 system registers */
+>  #define SYS_BRBCR_EL12			sys_reg(2, 5, 9, 0, 0)
 
-Yes please. Thanks!
-
-
->
->    Arnd
