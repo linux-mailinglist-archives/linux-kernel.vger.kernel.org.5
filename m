@@ -2,143 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 887627C6EBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D417C6EC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 15:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378727AbjJLNFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 09:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
+        id S1378506AbjJLNGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 09:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343882AbjJLNFf (ORCPT
+        with ESMTP id S1343765AbjJLNG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 09:05:35 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DA291;
-        Thu, 12 Oct 2023 06:05:32 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CD2FJ9020431;
-        Thu, 12 Oct 2023 13:05:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=MdX39D2VCl3WqSbBA2/QodKI3FFA8NAfRhUxo9CYmpI=;
- b=oTVXtGsc/fSE5bnLHCfLaHb+3CiQ0EYzlqWZlfpEN1pl0Fv5F51l7DBuPO+RVr5Kihzf
- vIqH5vNxL+A0kjC/NIpTUGJmVH6iIoIDLka8nFMH63ZIsNJpCE16xagBHxJ1oPWZMa+G
- owVex5gq6MFInxQ/BMfkP24ECcQ3hi+tUP/wwsWWsxfr2Ao5zj8IyjjC6zgA3I5lHvg8
- dGiwQl82xInT80Ap+s7UH2N5NlZnd4+sN6X6YjXwKtc/OCIqiSU67bSAPu3JV0Mod8nQ
- 4BCnlw0dlSuWXI5dvK9vOjONUxaJnSiLafgeyikOa4HRKg12X0gK+G/8HGjXfKB9C+rB RQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tphb1r49g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 13:05:26 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39CD2HCC020614;
-        Thu, 12 Oct 2023 13:05:26 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tphb1r48n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 13:05:25 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39CCc1Ys025907;
-        Thu, 12 Oct 2023 13:05:24 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkjnnqk3d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 13:05:24 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CD5LxS44237196
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Oct 2023 13:05:21 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA0A320040;
-        Thu, 12 Oct 2023 13:05:20 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B633020043;
-        Thu, 12 Oct 2023 13:05:20 +0000 (GMT)
-Received: from [9.152.224.54] (unknown [9.152.224.54])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Oct 2023 13:05:20 +0000 (GMT)
-Message-ID: <5b54a227-2e18-46d5-9b15-aea9709cf2a5@linux.ibm.com>
-Date:   Thu, 12 Oct 2023 15:05:20 +0200
+        Thu, 12 Oct 2023 09:06:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05886BB;
+        Thu, 12 Oct 2023 06:06:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697115986; x=1728651986;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=GxRxI25797mAB3SvQoCXKOxK78lq69Yok/R7drs3Dvg=;
+  b=F/uCecGrOyEPPrMaOv1w5je26lXlMLtVg3G8kjDgFQbMZzMMlXlI+dVj
+   80esBJ+COvIVWkVzjrjT44G4XiGxUzBI/a2Z55STmk2DNjSIoff7fBT1G
+   4L82CTovpZ4jH8fapoTPKfxeDLIFehEAnm55PsuGL801GU7HMBv00Ehy3
+   ri2RU2AgYbrN0IaizJxebLCbAgZX5X5X6vbGIW6GHs/LkF9//PHn1rn5h
+   RPEIq+9nXeoVH19Eg/tWU3WVSR7jlzYfuNHpxZfdJe2almyHXVI2KHXXJ
+   gaVRtxf06UejyYyB/NaPGgiCLSBNW4UTkSe/JxYl9rySr7Da5iiKySSme
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="415960149"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="415960149"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 06:06:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="730920344"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="730920344"
+Received: from asroczyn-mobl.ger.corp.intel.com ([10.249.36.107])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 06:06:24 -0700
+Date:   Thu, 12 Oct 2023 16:06:21 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>, Shuah <shuah@kernel.org>
+cc:     Reinette Chatre <reinette.chatre@intel.com>,
+        linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 1/8] selftests: Add printf attribute to kselftest
+ prints
+In-Reply-To: <4h2eu6yhodrujbvem24v7cwal5tnk2agsqulpxwi4myk7n35uq@phbxlajivrpq>
+Message-ID: <fe517843-8b27-99c5-99c-f4fba4f2d2@linux.intel.com>
+References: <cover.1697012398.git.maciej.wieczor-retman@intel.com> <13a47130763d109aa40de153ecbee9ede22d8356.1697012398.git.maciej.wieczor-retman@intel.com> <a2a5cb05-8604-4303-9802-573359c68368@kernel.org>
+ <4h2eu6yhodrujbvem24v7cwal5tnk2agsqulpxwi4myk7n35uq@phbxlajivrpq>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net/smc: return the right falback reason when prefix
- checks fail
-To:     Dust Li <dust.li@linux.alibaba.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231012123729.29307-1-dust.li@linux.alibaba.com>
-Content-Language: en-US
-From:   Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <20231012123729.29307-1-dust.li@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: MBfSyhAb_8tj5JP09lTYfO1AzGohvjlX
-X-Proofpoint-GUID: W2eDNxbKHD0fOckijwWojFYiy3FjFkAU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=999 phishscore=0 clxscore=1015 malwarescore=0 suspectscore=0
- bulkscore=0 adultscore=0 priorityscore=1501 impostorscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310120107
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-292299776-1697115985=:1692"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
+--8323329-292299776-1697115985=:1692
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8BIT
 
-On 12.10.23 14:37, Dust Li wrote:
-> In the smc_listen_work(), if smc_listen_prfx_check() failed,
-> the real reason: SMC_CLC_DECL_DIFFPREFIX was dropped, and
-> SMC_CLC_DECL_NOSMCDEV was returned.
+On Thu, 12 Oct 2023, Maciej Wieczór-Retman wrote:
+
+> On 2023-10-11 at 13:40:48 -0600, Shuah wrote:
+> >On 10/11/23 02:23, Maciej Wieczor-Retman wrote:
+> >> Kselftest header defines multiple variadic functions that use printf
+> >> along with other logic.
+> >> 
+> >> There is no format checking for the variadic functions that use
+> >> printing inside kselftest.h. Because of this the compiler won't
+> >> be able to catch instances of mismatched printf formats and debugging
+> >> tests might be more difficult.
+> >> 
+> >> Add the common __printf attribute macro to kselftest.h.
+> >> 
+> >> Add __printf attribute to every function using formatted printing with
+> >> variadic arguments.
+> >> 
+> >> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+> >> Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> >> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+> >> ---
+> >> Changelog v4:
+> >> - Fix typo in patch subject. (Reinette)
+> >> - Add Reinette's reviewed-by tag.
+> >> 
+> >
+> >I still need information on how you found these problems. Please
+> >add it to change log for each of these patches.
 > 
-> Althrough this is also kind of SMC_CLC_DECL_NOSMCDEV, but return
-> the real reason is much friendly for debugging.
+> Sure, I'll add notes on methodology to patches 2-8. I understand that
+> this patch (1/8) message doesn't need that addition since the problems
+> it exposes are in separate patches.
 > 
-> Fixes: e49300a6bf62 ("net/smc: add listen processing for SMC-Rv2")
-> Signed-off-by: Dust Li <dust.li@linux.alibaba.com>
-
-As you point out the current code is not really wrong. So I am not sure,
-whether this should be a fix for net, or rather a debug improvement for
-net-next.
-
-> ---
->  net/smc/af_smc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Or would you like me to also note here more specifically what effect it
+> has in the rest of the series?
 > 
-> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-> index bacdd971615e..21d4476b937b 100644
-> --- a/net/smc/af_smc.c
-> +++ b/net/smc/af_smc.c
-> @@ -2361,7 +2361,7 @@ static int smc_listen_find_device(struct smc_sock *new_smc,
->  		smc_find_ism_store_rc(rc, ini);
->  		return (!rc) ? 0 : ini->rc;
->  	}
-> -	return SMC_CLC_DECL_NOSMCDEV;
-> +	return prfx_rc;
->  }
->  
->  /* listen worker: finish RDMA setup */
+> >I am seeing checkpatch warning:
+> >
+> >WARNING: Prefer __printf(a, b) over __attribute__((format(printf, a, b)))
+> >#102: FILE: tools/testing/selftests/kselftest.h:81:
+> >+#define __printf(a, b)   __attribute__((format(printf, a, b)))
+> 
+> Running checkpatch.pl with --show-types shows the
+> PREFER_DEFINED_ATTRIBUTE_MACRO is raised. From looking at the error
+> message in the script it looks like a false positive:
+> 	"Prefer $new over __attribute__(($orig_attr$params))\n"
+> 
+> Please correct me if my train of thought is wrong but I think checkpatch
+> sees __printf() macro defined and it sees it's raw version
+> "__attribute__((format(printf, a, b)))" which it wants to replace with
+> the macro. But since the raw version is found in the define line that is
+> obviously not possible.
 
-For the code change:
-Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
+Yes, this is clearly a false positive from checkpatch. Checkpatch's logic 
+cannot differentiate the definition from the use of __printf(), it just 
+assumes __printf() is there already, which is not true for selftests.
 
+The patch adds the capability to use __printf() elsewhere in the 
+selftests code but of course the definition of __printf() itself has to 
+use __attribute__().
+
+-- 
+ i.
+
+--8323329-292299776-1697115985=:1692--
