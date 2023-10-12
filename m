@@ -2,414 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F70B7C638E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 05:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDC77C6398
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 05:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377308AbjJLDz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 23:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58702 "EHLO
+        id S1347084AbjJLD6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 23:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377224AbjJLDyJ (ORCPT
+        with ESMTP id S1347113AbjJLD6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 23:54:09 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E7C19BE;
-        Wed, 11 Oct 2023 20:52:19 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c9d922c039so4500475ad.3;
-        Wed, 11 Oct 2023 20:52:19 -0700 (PDT)
+        Wed, 11 Oct 2023 23:58:34 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B66268F
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 20:53:03 -0700 (PDT)
+X-UUID: d161662e68b211ee8051498923ad61e6-20231012
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=cxUQtNLWOQuYtGfydR20dJ7su60TL+lNYW9NcXfqMT4=;
+        b=ghNq2MGTwPZqbV8y4YWMAgH9uLdGezHIQ+L5xycU2vuvgox0ijTIZckucXMhNDbT+hwTz6UHw57dRdKGuRQWj+BDZTLlVTSX/vf/uDaMJ5bqlPw1vJdz5WJstwyOi/9wj6rOq3wINmi/h4XzfpEK9GgwlRp3tAe3MAXr9a7gujU=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:13b6461d-7225-420d-a870-e4cb30c911ec,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:5f78ec9,CLOUDID:c8af06c4-1e57-4345-9d31-31ad9818b39f,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
+        NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: d161662e68b211ee8051498923ad61e6-20231012
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw02.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 124443557; Thu, 12 Oct 2023 11:52:52 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 12 Oct 2023 11:52:50 +0800
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 12 Oct 2023 11:52:50 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nsSfZ4Qp6Epc3Cn1vQDZbEj42bk2+hmRKtLijy/8xyidn8tblHDdds+1gPpeG4p6cxkpjx1/bOv0UktgH2kiFHIDz+CUM7oxAYZ7Uz7Dkh0UyUgBrvG2Te2kZ3AxwKvPNOvGWmKLw2b/dIJAbGF4CljZOaGC1XyVrx2ORRvxzRMrkLevySPuaTGYZtaJaLBfZaiP4+7YaVZQ5KPtzPDqzEzlUlUj3pSALY3K5bCmHqOYuJqQpi4DlouK5ZCvM+AMcDy2sadcbM2TsjU1NpiCjSiz2ULCjHjuUH3WbvQSMJBpV/494/ZXny4c+i3hCJQcroGHg5NQCTfB2wdyG+fAzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cxUQtNLWOQuYtGfydR20dJ7su60TL+lNYW9NcXfqMT4=;
+ b=MyfCqeEelMuK+2M9vOkYYKPrCEI48HiuU7Z8tHbb1RmPyr9/w+3VpPoRahW8CdJigaZBbNabwz6isA76FX8Y3lxSKEbFSt1dDx+UHnzFYgmfo7+qEEMxZ7bJMN8bRIOoKqyxHSaFQHVJhhhEn/Izsr6l7Np/AQzHL4evH5nBe7LsZO47JuE4BqwAAv2txZVUDL3rAhnSA7jjzP+SF0YhnkNI1Fe3R0Ize/Gs7PpUBZe853uTM3plfGCJUVXOWz24hxBOIR/9px+tZfv6kO/H9Cehs8wX3k7/9LdtGtl2ouTP/YneZTDJf9gS4hkiy50uCEWGfDxRodkKi7JKT6mqPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697082738; x=1697687538; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QS9t+1UxNgjEpS8viLjdstjzbOva5QnEdVrobE/OTdA=;
-        b=bSAoOHO33tol/ESOxDmDvL/TQKPwfY5KygPPBHNi9SEkU8RsObyvpyRnEi8WfQZfSS
-         9hZSJI3IS60/9GRGd4ag9qnhiPsCnDEKFOZ4LlesUzuG5X5hY+ue4NRfvF+h2hIghVW8
-         BeHC9BwOXONma8OcURk0Zs2VcqtRlQXI4/UuU6ucviragmUjlbFoIwj9gX532QVlJm3d
-         Xba5gViBlZUBhE65cNw15gr4N7hpVIsSNtbBLYJvhJlgEByqPuGXcZ9GlbEimWaQ8oUe
-         9O2dLRxf4/sxyktg5L+iFWj+tC32+kVhCTuLOWWMaSzDWzz4o3aEwfMl8MMZtuc3ztpN
-         lCfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697082738; x=1697687538;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=QS9t+1UxNgjEpS8viLjdstjzbOva5QnEdVrobE/OTdA=;
-        b=W2mX3hrUnG4rPb/t4d978qDHLhvccVx/J1dfd6cdaH6wE1l5QgIF2b+VeC1RULoHJh
-         itrXDzlFGolC7eKhkxY7IcMVeWldJ/aYcuUVdR1DIOahX3EiIGpLxHuviWv+TmjGH1Z7
-         KpyKXKJR2l1PruxOn2LA9sdw3azJvX5NRz5+ItHAhfbSg0b5wTXtdQBD1MNhNwdNMLw6
-         +BFnuUr+mC74kOtZZHNCFfiy1oLtYvdJFBjztIVdFUPp6qo1V16nvrM+m2+W0LkapVuo
-         2DRd2KyKDEXRsByw+Y7nD5TMXpcjQKwCqrko4ZVL3xCiSnTePUoVG5c0DAmD26LwS5SJ
-         JJrQ==
-X-Gm-Message-State: AOJu0YzB3h1d1ivphBiBMJJBXdppHdfU3Rafg5HHmhF2nHwgzOYMrtT+
-        VrjK4+SMPvJBDV8xFPRAMTY=
-X-Google-Smtp-Source: AGHT+IEXFEe8Cjy4EdVwkH80U06BM1WbOGfr6H7DU9pFZIgM7XFYxTFu9zlb6xkgBUsADflizhSD5A==
-X-Received: by 2002:a17:902:7893:b0:1bc:6c8:cded with SMTP id q19-20020a170902789300b001bc06c8cdedmr21435579pll.67.1697082737575;
-        Wed, 11 Oct 2023 20:52:17 -0700 (PDT)
-Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:b1b9:d490:2f5e:be06])
-        by smtp.gmail.com with ESMTPSA id w8-20020a170902d70800b001bc18e579aesm711374ply.101.2023.10.11.20.52.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 20:52:17 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [PATCH 48/48] perf annotate-data: Add debug message
-Date:   Wed, 11 Oct 2023 20:51:11 -0700
-Message-ID: <20231012035111.676789-49-namhyung@kernel.org>
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
-References: <20231012035111.676789-1-namhyung@kernel.org>
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cxUQtNLWOQuYtGfydR20dJ7su60TL+lNYW9NcXfqMT4=;
+ b=Pxg04vpSBYxFvuUQFpR4EBBxxSpu1WOOw5ml8yqY40vVs/5DSkCGAzRr/DBLSYR8+Fd6nWl3v9XcBgwRvO0xYrMd8HUnaf8zN0HpeIcz9i0Zjbmptg9Rt51SOXxuBs5r0ZiYluaIXMrsEVS9UkjkYP7teyWy3N6wV+W5l6QBYMU=
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
+ by SEZPR03MB7811.apcprd03.prod.outlook.com (2603:1096:101:18b::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Thu, 12 Oct
+ 2023 03:52:49 +0000
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::9c2c:c08a:212f:e984]) by TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::9c2c:c08a:212f:e984%7]) with mapi id 15.20.6863.041; Thu, 12 Oct 2023
+ 03:52:48 +0000
+From:   =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
+To:     "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
+CC:     "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "wenst@chromium.org" <wenst@chromium.org>,
+        =?utf-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
+        <Jason-JH.Lin@mediatek.com>,
+        "kernel@collabora.com" <kernel@collabora.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amergnat@baylibre.com" <amergnat@baylibre.com>,
+        "ehristev@collabora.com" <ehristev@collabora.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+Subject: Re: [PATCH v10 09/16] drm/mediatek: gamma: Support specifying number
+ of bits per LUT component
+Thread-Topic: [PATCH v10 09/16] drm/mediatek: gamma: Support specifying number
+ of bits per LUT component
+Thread-Index: AQHZxqWKQ+R0esZvP0OxE1QfeRKerrBF8dYA
+Date:   Thu, 12 Oct 2023 03:52:48 +0000
+Message-ID: <e0a8ea5406e81bcf06304e6c42efcd54af8bcbbf.camel@mediatek.com>
+References: <20230804072850.89365-1-angelogioacchino.delregno@collabora.com>
+         <20230804072850.89365-10-angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230804072850.89365-10-angelogioacchino.delregno@collabora.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|SEZPR03MB7811:EE_
+x-ms-office365-filtering-correlation-id: 54300ad0-5ef8-477f-1228-08dbcad6b3a9
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: O1iR+87PSSQgFgxc2C5H3PiFNDMZq+XQ4I5WeZT1Hh5sx3kABkT/E2gEqAAN78wmLOF9Zvv09qmrBy+I4dYQTCvoVZid1HtX2sW8aOl6RfZ/sqkpIsN/6f40aDTHxfLgLXUCnF87zL10WIDq2q1qZsgG5DLs+Dlv9dyV5ec5CcQwOkA4hohUWQL5t7AGRYzDHB8oNdGZARHHyWme5yroHQtuMAIySnFA2wSUIMeZe6+YsQVxGAiBGk3T1OOyakHVb+luUkGsZoJoMSP3FYDg8cCAva9Wx3Pmmm+885NaGj0eUbyAXyFTZMWrPDl+DBFbj1HvupQJ4M6pusDGhnllGvRZBMlMUre/vij/Xv7hwVj1LJ3ULAF+LzRRrw2ODTafBSeURveHjJosebqJwqnChFOEtvzwDBvLYRPHQ1QFA7Pcko/Is8lR7wMR/d5Tew93JSqGrPbxZnEEGM7qmIKNPW8p9YyTsHN6/T69nXOnv7gh3YHkEZ7fKj5IrqYl92tbWyav01GAMI3sfsZ8WCqKe8GbIiB30nK8z0R+p3IwwTjWipAvrbO9ELEqjylZJDv6elb/mWuBYBmO/ouK0xtXgkgMmPtD13K06APuggvZodNCsH7aaNsUSPGZ/jNm0CBVm8CYZ+Iv/fxQH7yU+jS1/ww0w4nWMptXj3OsXtP0Beg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(366004)(396003)(346002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(6512007)(6486002)(478600001)(71200400001)(7416002)(66556008)(26005)(83380400001)(76116006)(2906002)(66476007)(66446008)(5660300002)(54906003)(66946007)(110136005)(64756008)(6506007)(8936002)(316002)(4326008)(8676002)(41300700001)(86362001)(122000001)(85182001)(36756003)(38100700002)(38070700005)(2616005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UWhWd1lGSXloRmtVRUlFUmlLdjhYUCtXUWZWRnR0RTh3UTFDM3kwUkgzU29y?=
+ =?utf-8?B?QVRmMUtQb2xzMVRTNkFXRS9CaXk1SEVCb1d5L0FvVEZOM2puQTlTVW5mZkl2?=
+ =?utf-8?B?RU5QTVZNS3ZaL0VWdG5lZG1DYlVyb1RrM0VsbktWVlBvOVVQSmIrek5MQzVJ?=
+ =?utf-8?B?OWM3bCttK3dpcXNCbHdCMDJIeG1hNm9yckVNWGZXQkdJRFVHVEJGNlVuRml0?=
+ =?utf-8?B?MXU1RHlMOUZQVmRBT2Y4OGhjRWJlY29wWC9oM1lQdGhMdVJmMmt6NEdxT0d6?=
+ =?utf-8?B?L1lHdFVhVGNJRDlIR1FqcFpmRlBWelNGR2xZT3FpUmtldGlqSmhqNUZSeGQv?=
+ =?utf-8?B?WFZuSHBwQjhCQVFVdUtuOFRwZXcybCtFSnRWeHIrbUNLUGJ6NmZQZWJieVJW?=
+ =?utf-8?B?STJWMDc4cGdXVzVIYTBZbUdNc3gzSTVYVnNPZ0s5UVZHbXN6dGZ5bDdjL2Y2?=
+ =?utf-8?B?Y2oybzczcDZRb0pQb3YvL24xcmhBbjBQSGR5ZVVyU3FkU0p5WEVOek1Sak5u?=
+ =?utf-8?B?TS9FK0psdStlQXJ3akhsQVoyekFJSXp0SDk0NGVOejkzUzNrS2JFd2c2S3dQ?=
+ =?utf-8?B?RE4vMWNUTGFpZGdZWGwrUUFWVWNkYXR5ZXJTTnpGRFIrQUxMQ05ySmVJanU3?=
+ =?utf-8?B?UU5nMWY4NWlDWmJ5WktPYjY0d0ZuNzJja3Y4UkFQRitkSzFEVERZbUJNQXJh?=
+ =?utf-8?B?U2kxdG9sSUZEeEtvOUVNTko2S0lLK0FJQUdKQmlFTGtFczc3YTMrQk9QMGpY?=
+ =?utf-8?B?M094ZEM5M2I0MDJOcFcyc2pDNWpPSzVnQ0diSW03L2hYek5TUXgrZjF1bzJ4?=
+ =?utf-8?B?dThCcWJodjRsZG1mR0JoNWthcWtLWXZkQm8zQlhISk9qYld0c1BjcWZkSUlE?=
+ =?utf-8?B?VUNmVVdVRXZSb3VNQmhJVFVGNmtHTHlKT0R0RWhnTTlBOVlOVFQxVEJpSnR5?=
+ =?utf-8?B?R3JWSWwyUWZXNmFKaGh2cTBoS3VOalVDcVdGTTRJRHlCeDN4czlRMCtCUU5B?=
+ =?utf-8?B?UHJzYy9yeWExRU1FQUlzTlI4eTMwMFJjUDVvNHczcE5Dd2YxakRhNmd3d0h5?=
+ =?utf-8?B?NXlZRW9QNDVveVlxSzc5NlFxUkRWWlR6UHMrNnN0RFRLdU9uWUhzMHZWQ29B?=
+ =?utf-8?B?RDVkM0swTjRhR3ZLd0lVc1VqZStaOTdZNW1RRjB5bWxzQk9paHRoYWhhdGhq?=
+ =?utf-8?B?K0RYTWZaVzlpRWxYVDlWYU9MUGNpdkRKajdSTThtZVJ5L1N0Ykt1SVFHMnBH?=
+ =?utf-8?B?MXF3ZldGekl0ZC9MTUxqb01ITVVRNUtDdldKanUvUmhTY20zdXBHRFBIVXR5?=
+ =?utf-8?B?TzBuLzA1ckpNelRSaE9pQXRzM3EzVXEyN2dOODhnSmdUZkZqQWtoaVpnaVVQ?=
+ =?utf-8?B?NXJRbWNLaHNzYkt4TjlORFY3cFBpMURqcFIyYmFkcGpGUUtoSlFqczEwTnBH?=
+ =?utf-8?B?SDU1MkxpNVk3bnN6R09DcXllV2JWQ0JwT2JEalhHR04vZE9ncTZpWHlXbG1T?=
+ =?utf-8?B?NE95QnNvZzQvWGJFSjRkMkZyQWNDajB6aDl6NjFKaG9reUhhcU11Mkc1M2Q4?=
+ =?utf-8?B?Y3dHRHBEL3A5ZmJIN1VHMVdRWUNEK0VLcGxZS3B6a2l2Zm9HbGVZTk4rQkM1?=
+ =?utf-8?B?M1czMDdHbUVjRCtKT2RoVDVKVVJlTDZ1bzRTRmJqdUVJaFJnWXZaUmJxREdi?=
+ =?utf-8?B?MWNwcFZGa3F2aE9uc2oxUVIrRXI2NC9oN3B2ZXBsZ1J6VThCZmN5OVhSYU5X?=
+ =?utf-8?B?UVVkeUlhK1JEdU5hQWZMckd3OHhOMHl4eTBEQXE1RiszSjhSRDZ4YTZVbldw?=
+ =?utf-8?B?Y2JzbFg2eVIrWGJ5RGNZUE1xVDRDT1ZvTXpkMUV0MXA1QWRPcWIzMHV5UHF4?=
+ =?utf-8?B?aytQZDA2emkzT05FK0FMWTIrSWtYT2FFM2ZvcDJHSGVHMm9MT0RqMXc0SmtJ?=
+ =?utf-8?B?cXNrVENNcmlRdlJhOEQ5QUpHOThUSE5qczRHM3lyelI2UE1GZFo1MUJGVEIz?=
+ =?utf-8?B?R09LcGNxYmk4Nk85MWU2eFMrZEVtTlNzZGFJdU1aSU9qSjk2alI1U0FUNVZZ?=
+ =?utf-8?B?SXU0TDhwWkJmU01aUm5CTUdMUjFLdWQ2d2NKTE0xTW5zOUo0OFo4blhyVmdI?=
+ =?utf-8?Q?zFm9WZvYJ4/ffq/NUtEVLO/u/?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4FBA466E54686E40B7A5037AB59C36E9@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54300ad0-5ef8-477f-1228-08dbcad6b3a9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Oct 2023 03:52:48.8968
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: J0ke4lyPFbCaWRb4v8ODIQeroOb4DbcTJq5dcE3GP6fVp9kylaIo/9Hm2D+ico1AZfo7J0LRcB1gd8p/Gj7Y7Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB7811
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--12.803800-8.000000
+X-TMASE-MatchedRID: VPleTT1nwdQNtKv7cnNXnSa1MaKuob8PC/ExpXrHizxnnK6mXN72m/UR
+        5rR1XhwPxiuAqQgxJY9zhxDC2hUrqbM5yFdOCNfRY1bQMCMvmn4RvEpVd3vS1d9RlPzeVuQQQkz
+        RZrI7fzZMmm8bxtFZ3Q9iGlH7LPmcQkfxbJAyTm5jiC4p+/AIFvQ7szeVKdNbVI7KaIl9NheBz9
+        7t1wzOQ+LzNWBegCW2PZex/kxUIHW3sNbcHjySQd0H8LFZNFG7bkV4e2xSge5TVMPn/DACKYZRn
+        Q2aDiPCI50f2hesO9zCfAAIdDTlQ18I4oUq5Vga
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--12.803800-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: F7D90F2E7DE398B0D69C50D013B5BE3795E5D364BA30E06A6BE0B8836FBB99852000:8
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is just for debugging and not for merge.
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/annotate-data.c | 122 +++++++++++++++++++++++++++++---
- tools/perf/util/annotate-data.h |   2 +-
- 2 files changed, 114 insertions(+), 10 deletions(-)
-
-diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-index 68d7d207e2f7..bb0ad26e704d 100644
---- a/tools/perf/util/annotate-data.c
-+++ b/tools/perf/util/annotate-data.c
-@@ -115,6 +115,21 @@ void exit_type_state(struct type_state *state)
- 	}
- }
- 
-+static void debug_print_type_name(Dwarf_Die *die)
-+{
-+	struct strbuf sb;
-+	char *str;
-+
-+	if (!verbose)
-+		return;
-+
-+	strbuf_init(&sb, 32);
-+	__die_get_typename(die, &sb);
-+	str = strbuf_detach(&sb, NULL);
-+	pr_debug("%s (die:%lx)\n", str, dwarf_dieoffset(die));
-+	free(str);
-+}
-+
- /*
-  * Compare type name and size to maintain them in a tree.
-  * I'm not sure if DWARF would have information of a single type in many
-@@ -401,7 +416,7 @@ static struct type_state_stack *findnew_stack_state(struct type_state *state,
-  * is used only at the given location and updates an entry in the table.
-  */
- void update_var_state(struct type_state *state, struct data_loc_info *dloc,
--		      u64 addr, struct die_var_type *var_types)
-+		      u64 addr, u64 off, struct die_var_type *var_types)
- {
- 	Dwarf_Die mem_die;
- 	struct die_var_type *var;
-@@ -422,14 +437,20 @@ void update_var_state(struct type_state *state, struct data_loc_info *dloc,
- 
- 		if (var->reg == DWARF_REG_FB) {
- 			findnew_stack_state(state, var->offset, &mem_die);
-+			pr_debug("var [%lx] stack fbreg (%x, %d) type=", off, var->offset, var->offset);
-+			debug_print_type_name(&mem_die);
- 		} else if (var->reg == fbreg) {
- 			findnew_stack_state(state, var->offset - fb_offset, &mem_die);
-+			pr_debug("var [%lx] stack cfa (%x, %d) fb-offset=%d type=", off, var->offset - fb_offset, var->offset - fb_offset, fb_offset);
-+			debug_print_type_name(&mem_die);
- 		} else if (has_reg_type(state, var->reg) && var->offset == 0) {
- 			struct type_state_reg *reg;
- 
- 			reg = &state->regs[var->reg];
- 			reg->type = mem_die;
- 			reg->ok = true;
-+			pr_debug("var [%lx] reg%d type=", off, var->reg);
-+			debug_print_type_name(&mem_die);
- 		}
- 	}
- }
-@@ -509,6 +530,8 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
- 		    die_get_real_type(&func_die, &type_die)) {
- 			state->regs[state->ret_reg].type = type_die;
- 			state->regs[state->ret_reg].ok = true;
-+			pr_debug("fun [%lx] reg0 return from %s type=", dl->al.offset, dwarf_diename(&func_die));
-+			debug_print_type_name(&type_die);
- 		}
- 		return;
- 	}
-@@ -517,8 +540,10 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
- 	if (!strstr(dl->ins.name, "mov"))
- 		return;
- 
--	if (annotate_get_insn_location(dloc->arch, dl, &loc) < 0)
-+	if (annotate_get_insn_location(dloc->arch, dl, &loc) < 0) {
-+		pr_debug("failed to get mov insn loc\n");
- 		return;
-+	}
- 
- 	if (dloc->fb_cfa) {
- 		u64 ip = dloc->ms->sym->start + dl->al.offset;
-@@ -533,10 +558,14 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
- 		if (!has_reg_type(state, dst->reg1))
- 			return;
- 
--		if (has_reg_type(state, src->reg1))
-+		if (has_reg_type(state, src->reg1)) {
- 			state->regs[dst->reg1] = state->regs[src->reg1];
--		else if (dloc->ms->map->dso->kernel &&
--			 src->segment == INSN_SEG_X86_GS) {
-+			if (state->regs[dst->reg1].ok) {
-+				pr_debug("mov [%lx] reg%d -> reg%d type=", dl->al.offset, src->reg1, dst->reg1);
-+				debug_print_type_name(&state->regs[dst->reg1].type);
-+			}
-+		} else if (dloc->ms->map->dso->kernel &&
-+			   src->segment == INSN_SEG_X86_GS) {
- 			struct map_symbol *ms = dloc->ms;
- 			int offset = src->offset;
- 			u64 ip = ms->sym->start + dl->al.offset;
-@@ -556,6 +585,8 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
- 						var_name, offset, &type_die)) {
- 				state->regs[dst->reg1].type = type_die;
- 				state->regs[dst->reg1].ok = true;
-+				pr_debug("mov [%lx] percpu -> reg%d type=", dl->al.offset, dst->reg1);
-+				debug_print_type_name(&state->regs[dst->reg1].type);
- 			}
- 		} else
- 			state->regs[dst->reg1].ok = false;
-@@ -586,8 +617,13 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
- 						var_name, offset, &type_die)) {
- 				state->regs[dst->reg1].type = type_die;
- 				state->regs[dst->reg1].ok = true;
--			} else
-+				pr_debug("mov [%lx] PC-rel -> reg%d type=", dl->al.offset, dst->reg1);
-+				debug_print_type_name(&type_die);
-+			} else {
-+				if (var_name)
-+					pr_debug("??? [%lx] PC-rel (%lx: %s%+d)\n", dl->al.offset, var_addr, var_name, offset);
- 				state->regs[dst->reg1].ok = false;
-+			}
- 		}
- 		/* And check stack variables with offset */
- 		else if (sreg == fbreg) {
-@@ -600,6 +636,8 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
- 							 &type_die)) {
- 				state->regs[dst->reg1].type = type_die;
- 				state->regs[dst->reg1].ok = true;
-+				pr_debug("mov [%lx] stack (-%#x, %d) -> reg%d type=", dl->al.offset, -offset, offset, dst->reg1);
-+				debug_print_type_name(&type_die);
- 			} else
- 				state->regs[dst->reg1].ok = false;
- 		}
-@@ -609,6 +647,8 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
- 					    src->offset, &type_die)) {
- 			state->regs[dst->reg1].type = type_die;
- 			state->regs[dst->reg1].ok = true;
-+			pr_debug("mov [%lx] %#x(reg%d) -> reg%d type=", dl->al.offset, src->offset, sreg, dst->reg1);
-+			debug_print_type_name(&type_die);
- 		}
- 		/* Or try another register if any */
- 		else if (src->multi_regs && sreg == src->reg1 &&
-@@ -648,6 +688,8 @@ void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
- 				findnew_stack_state(state, offset,
- 						    &state->regs[src->reg1].type);
- 			}
-+			pr_debug("mov [%lx] reg%d -> stack (-%#x, %d) type=", dl->al.offset, src->reg1, -offset, offset);
-+			debug_print_type_name(&state->regs[src->reg1].type);
- 		}
- 		/*
- 		 * Ignore other transfers since it'd set a value in a struct
-@@ -751,6 +793,9 @@ static bool find_matching_type(struct type_state *state,
- 		    (unsigned)dloc->type_offset >= size)
- 			return false;
- 
-+		pr_debug("%s: [%lx] reg=%d offset=%d type=",
-+			 __func__, dloc->ip - dloc->ms->sym->start, reg, dloc->type_offset);
-+		debug_print_type_name(type_die);
- 		return true;
- 	}
- 
-@@ -764,6 +809,10 @@ static bool find_matching_type(struct type_state *state,
- 		*type_die = stack->type;
- 		/* Update the type offset from the start of slot */
- 		dloc->type_offset -= stack->offset;
-+
-+		pr_debug("%s: [%lx] stack offset=%d type=",
-+			 __func__, dloc->ip - dloc->ms->sym->start, dloc->type_offset);
-+		debug_print_type_name(type_die);
- 		return true;
- 	}
- 
-@@ -785,6 +834,11 @@ static bool find_matching_type(struct type_state *state,
- 		*type_die = stack->type;
- 		/* Update the type offset from the start of slot */
- 		dloc->type_offset -= fboff + stack->offset;
-+
-+		pr_debug("%s: [%lx] cfa stack offset=%d type_offset=%d type=",
-+			 __func__, dloc->ip - dloc->ms->sym->start,
-+			 dloc->type_offset + stack->offset, dloc->type_offset);
-+		debug_print_type_name(type_die);
- 		return true;
- 	}
- 
-@@ -808,12 +862,13 @@ static bool find_data_type_insn(struct data_loc_info *dloc, int reg,
- 	list_for_each_entry(bb, basic_blocks, list) {
- 		struct disasm_line *dl = bb->begin;
- 
-+		pr_debug("bb: [%lx - %lx]\n", bb->begin->al.offset, bb->end->al.offset);
- 		list_for_each_entry_from(dl, &notes->src->source, al.node) {
- 			u64 this_ip = sym->start + dl->al.offset;
- 			u64 addr = map__rip_2objdump(dloc->ms->map, this_ip);
- 
- 			/* Update variable type at this address */
--			update_var_state(&state, dloc, addr, var_types);
-+			update_var_state(&state, dloc, addr, dl->al.offset, var_types);
- 
- 			if (this_ip == dloc->ip) {
- 				found = find_matching_type(&state, dloc, reg,
-@@ -846,6 +901,16 @@ static int find_data_type_block(struct data_loc_info *dloc, int reg,
- 	u64 src_ip, dst_ip;
- 	int ret = -1;
- 
-+	if (dloc->fb_cfa) {
-+		u64 pc = map__rip_2objdump(dloc->ms->map, dloc->ip);
-+		int fbreg, fboff;
-+
-+		if (die_get_cfa(dloc->di->dbg, pc, &fbreg, &fboff) < 0)
-+			fbreg = -1;
-+
-+		pr_debug("CFA reg=%d offset=%d\n", fbreg, fboff);
-+	}
-+
- 	dst_ip = dloc->ip;
- 	for (int i = nr_scopes - 1; i >= 0; i--) {
- 		Dwarf_Addr base, start, end;
-@@ -854,12 +919,16 @@ static int find_data_type_block(struct data_loc_info *dloc, int reg,
- 		if (dwarf_ranges(&scopes[i], 0, &base, &start, &end) < 0)
- 			break;
- 
-+		pr_debug("scope: [%d/%d] (die:%lx)\n", i + 1, nr_scopes, dwarf_dieoffset(&scopes[i]));
- 		src_ip = map__objdump_2rip(dloc->ms->map, start);
- 
- 		/* Get basic blocks for this scope */
- 		if (annotate_get_basic_blocks(dloc->ms->sym, src_ip, dst_ip,
--					      &this_blocks) < 0)
-+					      &this_blocks) < 0) {
-+			pr_debug("cannot find a basic block from %lx to %lx\n",
-+				 src_ip - dloc->ms->sym->start, dst_ip - dloc->ms->sym->start);
- 			continue;
-+		}
- 		prepend_basic_blocks(&this_blocks, &basic_blocks);
- 
- 		/* Get variable info for this scope and add to var_types list */
-@@ -895,6 +964,18 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
- 	int fb_offset = 0;
- 	bool is_fbreg = false;
- 	u64 pc;
-+	char buf[64];
-+
-+	if (dloc->op->multi_regs)
-+		snprintf(buf, sizeof(buf), " or reg%d", dloc->op->reg2);
-+	else if (dloc->op->reg1 == DWARF_REG_PC)
-+		snprintf(buf, sizeof(buf), " (PC)");
-+	else
-+		buf[0] = '\0';
-+
-+	pr_debug("-----------------------------------------------------------\n");
-+	pr_debug("%s [%lx] for reg%d%s in %s\n", __func__, dloc->ip - dloc->ms->sym->start,
-+		 dloc->op->reg1, buf, dloc->ms->sym->name);
- 
- 	/*
- 	 * IP is a relative instruction address from the start of the map, as
-@@ -913,11 +994,15 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
- 	reg = loc->reg1;
- 	offset = loc->offset;
- 
-+	pr_debug("CU die offset: %lx\n", dwarf_dieoffset(&cu_die));
-+
- 	if (reg == DWARF_REG_PC) {
- 		if (die_find_variable_by_addr(&cu_die, pc, dloc->var_addr,
- 					      &var_die, &offset)) {
- 			ret = check_variable(&var_die, type_die, offset,
- 					     /*is_pointer=*/false);
-+			if (ret == 0)
-+				pr_debug("found PC-rel by addr=%lx offset=%d\n", dloc->var_addr, offset);
- 			dloc->type_offset = offset;
- 			goto out;
- 		}
-@@ -926,6 +1011,8 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
- 		    die_find_variable_at(&cu_die, dloc->var_name, pc, &var_die)) {
- 			ret = check_variable(&var_die, type_die, dloc->type_offset,
- 					     /*is_pointer=*/false);
-+			if (ret == 0)
-+				pr_debug("found \"%s\" by name offset=%d\n", dloc->var_name, dloc->type_offset);
- 			/* dloc->type_offset was updated by the caller */
- 			goto out;
- 		}
-@@ -978,6 +1065,21 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
- 		/* Found a variable, see if it's correct */
- 		ret = check_variable(&var_die, type_die, offset,
- 				     reg != DWARF_REG_PC && !is_fbreg);
-+		if (ret == 0) {
-+#if 0
-+			const char *filename;
-+			int lineno;
-+
-+			if (cu_find_lineinfo(&cu_die, pc, &filename, &lineno) < 0) {
-+				filename = "unknown";
-+				lineno = 0;
-+			}
-+#endif
-+			pr_debug("found \"%s\" in scope=%d/%d reg=%d offset=%#x (%d) loc->offset=%d fb-offset=%d (die:%lx scope:%lx) type=",
-+				 dwarf_diename(&var_die), i+1, nr_scopes, reg, offset, offset, loc->offset, fb_offset, dwarf_dieoffset(&var_die),
-+				 dwarf_dieoffset(&scopes[i])/*, filename, lineno*/);
-+			debug_print_type_name(type_die);
-+		}
- 		dloc->type_offset = offset;
- 		goto out;
- 	}
-@@ -994,8 +1096,10 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
- 		goto retry;
- 	}
- 
--	if (ret < 0)
-+	if (ret < 0) {
-+		pr_debug("no variable found\n");
- 		ann_data_stat.no_var++;
-+	}
- 
- out:
- 	free(scopes);
-diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
-index e293980eb11b..44e0f3770432 100644
---- a/tools/perf/util/annotate-data.h
-+++ b/tools/perf/util/annotate-data.h
-@@ -166,7 +166,7 @@ void exit_type_state(struct type_state *state);
- 
- /* Update type state table using variables */
- void update_var_state(struct type_state *state, struct data_loc_info *dloc,
--		      u64 addr, struct die_var_type *var_types);
-+		      u64 addr, u64 off, struct die_var_type *var_types);
- 
- /* Update type state table for an instruction */
- void update_insn_state(struct type_state *state, struct data_loc_info *dloc,
--- 
-2.42.0.655.g421f12c284-goog
-
+SGksIEFuZ2VsbzoNCg0KT24gRnJpLCAyMDIzLTA4LTA0IGF0IDA5OjI4ICswMjAwLCBBbmdlbG9H
+aW9hY2NoaW5vIERlbCBSZWdubyB3cm90ZToNCj4gTmV3IFNvQ3MsIGxpa2UgTVQ4MTk1LCBub3Qg
+b25seSBtYXkgc3VwcG9ydCBiaWdnZXIgbG9va3VwIHRhYmxlcywgYnV0DQo+IGhhdmUgZ290IGEg
+ZGlmZmVyZW50IHJlZ2lzdGVyIGxheW91dCB0byBzdXBwb3J0IGJpZ2dlciBwcmVjaXNpb246DQo+
+IHN1cHBvcnQgc3BlY2lmeWluZyB0aGUgbnVtYmVyIG9mIGBsdXRfYml0c2AgZm9yIGVhY2ggU29D
+IGFuZCB1c2UgaXQNCj4gaW4gbXRrX2dhbW1hX3NldF9jb21tb24oKSB0byBwZXJmb3JtIHRoZSBy
+aWdodCBjYWxjdWxhdGlvbi4NCg0KSSB3b3VsZCBsaWtlIHRvIG1lcmdlIHRoaXMgcGF0Y2ggd2l0
+aCB0aGUgMTItYml0IGx1dCBzdXBwb3J0Lg0KDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBBbmdlbG9H
+aW9hY2NoaW5vIERlbCBSZWdubyA8DQo+IGFuZ2Vsb2dpb2FjY2hpbm8uZGVscmVnbm9AY29sbGFi
+b3JhLmNvbT4NCj4gUmV2aWV3ZWQtYnk6IEphc29uLUpILkxpbiA8amFzb24tamgubGluQG1lZGlh
+dGVrLmNvbT4NCj4gUmV2aWV3ZWQtYnk6IEFsZXhhbmRyZSBNZXJnbmF0IDxhbWVyZ25hdEBiYXls
+aWJyZS5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2dh
+bW1hLmMgfCAxNSArKysrKysrKystLS0tLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlv
+bnMoKyksIDYgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJt
+L21lZGlhdGVrL210a19kaXNwX2dhbW1hLmMNCj4gYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsv
+bXRrX2Rpc3BfZ2FtbWEuYw0KPiBpbmRleCAwMDFiOTg2OTQ3NjEuLjE4NDViZDMyNmE2ZCAxMDA2
+NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2dhbW1hLmMNCj4g
+KysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2dhbW1hLmMNCj4gQEAgLTM4
+LDYgKzM4LDcgQEAgc3RydWN0IG10a19kaXNwX2dhbW1hX2RhdGEgew0KPiAgCWJvb2wgaGFzX2Rp
+dGhlcjsNCj4gIAlib29sIGx1dF9kaWZmOw0KPiAgCXUxNiBsdXRfc2l6ZTsNCj4gKwl1OCBsdXRf
+Yml0czsNCj4gIH07DQo+ICANCj4gIC8qDQo+IEBAIC05MSw5ICs5Miw5IEBAIHZvaWQgbXRrX2dh
+bW1hX3NldChzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdA0KPiBkcm1fY3J0Y19zdGF0ZSAqc3Rh
+dGUpDQo+ICAJZm9yIChpID0gMDsgaSA8IGdhbW1hLT5kYXRhLT5sdXRfc2l6ZTsgaSsrKSB7DQo+
+ICAJCXN0cnVjdCBkcm1fY29sb3JfbHV0IGRpZmYsIGh3bHV0Ow0KPiAgDQo+IC0JCWh3bHV0LnJl
+ZCA9IGRybV9jb2xvcl9sdXRfZXh0cmFjdChsdXRbaV0ucmVkLA0KPiBMVVRfQklUU19ERUZBVUxU
+KTsNCj4gLQkJaHdsdXQuZ3JlZW4gPSBkcm1fY29sb3JfbHV0X2V4dHJhY3QobHV0W2ldLmdyZWVu
+LA0KPiBMVVRfQklUU19ERUZBVUxUKTsNCj4gLQkJaHdsdXQuYmx1ZSA9IGRybV9jb2xvcl9sdXRf
+ZXh0cmFjdChsdXRbaV0uYmx1ZSwNCj4gTFVUX0JJVFNfREVGQVVMVCk7DQo+ICsJCWh3bHV0LnJl
+ZCA9IGRybV9jb2xvcl9sdXRfZXh0cmFjdChsdXRbaV0ucmVkLCBnYW1tYS0NCj4gPmRhdGEtPmx1
+dF9iaXRzKTsNCj4gKwkJaHdsdXQuZ3JlZW4gPSBkcm1fY29sb3JfbHV0X2V4dHJhY3QobHV0W2ld
+LmdyZWVuLA0KPiBnYW1tYS0+ZGF0YS0+bHV0X2JpdHMpOw0KPiArCQlod2x1dC5ibHVlID0gZHJt
+X2NvbG9yX2x1dF9leHRyYWN0KGx1dFtpXS5ibHVlLCBnYW1tYS0NCj4gPmRhdGEtPmx1dF9iaXRz
+KTsNCj4gIA0KPiAgCQlpZiAoIWdhbW1hLT5kYXRhLT5sdXRfZGlmZiB8fCAoaSAlIDIgPT0gMCkp
+IHsNCj4gIAkJCXdvcmQgPSBGSUVMRF9QUkVQKERJU1BfR0FNTUFfTFVUXzEwQklUX1IsDQo+IGh3
+bHV0LnJlZCk7DQo+IEBAIC0xMDEsMTMgKzEwMiwxMyBAQCB2b2lkIG10a19nYW1tYV9zZXQoc3Ry
+dWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QNCj4gZHJtX2NydGNfc3RhdGUgKnN0YXRlKQ0KPiAgCQkJ
+d29yZCB8PSBGSUVMRF9QUkVQKERJU1BfR0FNTUFfTFVUXzEwQklUX0IsDQo+IGh3bHV0LmJsdWUp
+Ow0KPiAgCQl9IGVsc2Ugew0KPiAgCQkJZGlmZi5yZWQgPSBsdXRbaV0ucmVkIC0gbHV0W2kgLSAx
+XS5yZWQ7DQo+IC0JCQlkaWZmLnJlZCA9IGRybV9jb2xvcl9sdXRfZXh0cmFjdChkaWZmLnJlZCwN
+Cj4gTFVUX0JJVFNfREVGQVVMVCk7DQo+ICsJCQlkaWZmLnJlZCA9IGRybV9jb2xvcl9sdXRfZXh0
+cmFjdChkaWZmLnJlZCwNCj4gZ2FtbWEtPmRhdGEtPmx1dF9iaXRzKTsNCj4gIA0KPiAgCQkJZGlm
+Zi5ncmVlbiA9IGx1dFtpXS5ncmVlbiAtIGx1dFtpIC0gMV0uZ3JlZW47DQo+IC0JCQlkaWZmLmdy
+ZWVuID0gZHJtX2NvbG9yX2x1dF9leHRyYWN0KGRpZmYuZ3JlZW4sDQo+IExVVF9CSVRTX0RFRkFV
+TFQpOw0KPiArCQkJZGlmZi5ncmVlbiA9IGRybV9jb2xvcl9sdXRfZXh0cmFjdChkaWZmLmdyZWVu
+LA0KPiBnYW1tYS0+ZGF0YS0+bHV0X2JpdHMpOw0KPiAgDQo+ICAJCQlkaWZmLmJsdWUgPSBsdXRb
+aV0uYmx1ZSAtIGx1dFtpIC0gMV0uYmx1ZTsNCj4gLQkJCWRpZmYuYmx1ZSA9IGRybV9jb2xvcl9s
+dXRfZXh0cmFjdChkaWZmLmJsdWUsDQo+IExVVF9CSVRTX0RFRkFVTFQpOw0KPiArCQkJZGlmZi5i
+bHVlID0gZHJtX2NvbG9yX2x1dF9leHRyYWN0KGRpZmYuYmx1ZSwNCj4gZ2FtbWEtPmRhdGEtPmx1
+dF9iaXRzKTsNCj4gIA0KPiAgCQkJd29yZCA9IEZJRUxEX1BSRVAoRElTUF9HQU1NQV9MVVRfMTBC
+SVRfUiwNCj4gZGlmZi5yZWQpOw0KPiAgCQkJd29yZCB8PSBGSUVMRF9QUkVQKERJU1BfR0FNTUFf
+TFVUXzEwQklUX0csDQo+IGRpZmYuZ3JlZW4pOw0KPiBAQCAtMjE3LDEwICsyMTgsMTIgQEAgc3Rh
+dGljIGludCBtdGtfZGlzcF9nYW1tYV9yZW1vdmUoc3RydWN0DQo+IHBsYXRmb3JtX2RldmljZSAq
+cGRldikNCj4gIA0KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfZGlzcF9nYW1tYV9kYXRhIG10
+ODE3M19nYW1tYV9kcml2ZXJfZGF0YSA9IHsNCj4gIAkuaGFzX2RpdGhlciA9IHRydWUsDQo+ICsJ
+Lmx1dF9iaXRzID0gMTAsDQo+ICAJLmx1dF9zaXplID0gNTEyLA0KPiAgfTsNCj4gIA0KPiAgc3Rh
+dGljIGNvbnN0IHN0cnVjdCBtdGtfZGlzcF9nYW1tYV9kYXRhIG10ODE4M19nYW1tYV9kcml2ZXJf
+ZGF0YSA9IHsNCj4gKwkubHV0X2JpdHMgPSAxMCwNCj4gIAkubHV0X2RpZmYgPSB0cnVlLA0KPiAg
+CS5sdXRfc2l6ZSA9IDUxMiwNCj4gIH07DQo=
