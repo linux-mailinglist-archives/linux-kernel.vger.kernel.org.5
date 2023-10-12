@@ -2,69 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7197D7C6284
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 04:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6497C6289
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 04:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234032AbjJLCBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 22:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45966 "EHLO
+        id S234011AbjJLCGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 22:06:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233797AbjJLCBP (ORCPT
+        with ESMTP id S233794AbjJLCGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 22:01:15 -0400
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FE0A9;
-        Wed, 11 Oct 2023 19:01:13 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VtyWj9M_1697076068;
-Received: from 30.97.48.228(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VtyWj9M_1697076068)
-          by smtp.aliyun-inc.com;
-          Thu, 12 Oct 2023 10:01:10 +0800
-Message-ID: <f06fbb72-dbea-6bfa-e5a0-337567708e7b@linux.alibaba.com>
-Date:   Thu, 12 Oct 2023 10:01:07 +0800
+        Wed, 11 Oct 2023 22:06:50 -0400
+Received: from wxsgout04.xfusion.com (wxsgout04.xfusion.com [36.139.87.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C441F98;
+        Wed, 11 Oct 2023 19:06:46 -0700 (PDT)
+Received: from wuxshcsitd00600.xfusion.com (unknown [10.32.133.213])
+        by wxsgout04.xfusion.com (SkyGuard) with ESMTPS id 4S5Xxw36Vvz9y7xl;
+        Thu, 12 Oct 2023 10:04:20 +0800 (CST)
+Received: from localhost (10.82.147.3) by wuxshcsitd00600.xfusion.com
+ (10.32.133.213) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 12 Oct
+ 2023 10:06:40 +0800
+Date:   Thu, 12 Oct 2023 10:06:40 +0800
+From:   Wang Jinchao <wangjinchao@xfusion.com>
+To:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <stone.xulei@xfusion.com>
+Subject: [RFC v2] padata: Simplify sysfs cpumask and sequencing logic
+Message-ID: <202310121006-wangjinchao@xfusion.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH] erofs: fix inode metadata space layout description in
- documentation
-To:     Chao Yu <chao@kernel.org>, Tiwei Bie <tiwei.btw@antgroup.com>,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org
-Cc:     linux-doc@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        ayushranjan@google.com, Yue Hu <huyue2@coolpad.com>
-References: <20231010113915.436591-1-tiwei.btw@antgroup.com>
- <9a6ccef5-3a35-ae0d-2a9c-1703c5038c81@linux.alibaba.com>
- <1a4d325b-d3a8-121b-1118-934fafcc8ebe@kernel.org>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <1a4d325b-d3a8-121b-1118-934fafcc8ebe@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-Originating-IP: [10.82.147.3]
+X-ClientProxiedBy: wuxshcsitd00603.xfusion.com (10.32.134.231) To
+ wuxshcsitd00600.xfusion.com (10.32.133.213)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chao,
+Hi, 
 
-On 2023/10/12 09:10, Chao Yu wrote:
-> On 2023/10/10 21:06, Gao Xiang wrote:
->>> Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
->>
->> Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> 
-> Looks fine to me for the version in dev-test branch.
-> 
-> Reviewed-by: Chao Yu <chao@kernel.org>
+I've identified several potential optimizations for padata.
+I'd appreciate it if you could take a look at my ideas to
+see if they are feasible.
 
-Yeah, thanks! I will add the tag when applying to -next.
+Utilizing the WQ_SYSFS from workqueue to support sysfs
+======================================================
 
-Thanks,
-Gao Xiang
+Padata relies on workqueue, and since workqueue has already implemented
+support for cpumask through WQ_SYSFS, we can reuse this functionality
+and avoid redundant implementation.
+Link: https://docs.kernel.org/core-api/workqueue.html#affinity-scopes
 
-> 
-> Thanks,
+Using completion to ensure the sequencing of the 'serial()'
+===========================================================
+
+In the current implementation, to ensure the sequencing of 'serial()',
+we've used seq_nr, reorder_list, padata_serial_queue, reorder_work...
+which has made the logic quite complex. These operations can be
+simplified by using 'completion'. Specifically:
+    1. in padata_do_parallel()
+       1. init_completion(parallel_done) **before** queue_work
+       2. queue_work(serial_work)
+    2. in padata_parallel_worker
+       1. complete(parallel_done) **after** parallel(padata)
+    3. in padata_serial_worker
+       1. wait_for_completion(parallel_done) **before** serial(padata)
+
+Here's a simplified code snippet:
+
+```c
+struct padata_priv {
+	struct completion parallel_done;
+	struct work_struct	parallel_work;
+	struct work_struct	serial_work;
+	void   (*parallel)(struct padata_priv *padata);
+	void   (*serial)(struct padata_priv *padata);
+}
+
+void padata_do_parallel(struct padata_priv *padata)
+{
+    ...
+    init_completion(&padata->parallel_done);
+	queue_work(pinst->serial_wq, &padata->serial_work);
+	queue_work(pinst->parallel_wq, &padata->parallel_work);
+    ...
+}
+
+static void padata_parallel_worker(struct work_struct *parallel_work)
+{
+	struct padata_priv *padata =
+		container_of(parallel_work, struct padata_priv, parallel_work);
+	padata->parallel(padata);
+	// notify serial_worker to do serial()
+	complete(&padata->parallel_done);
+}
+
+static void padata_serial_worker(struct work_struct *serial_work)
+{
+	struct padata_priv *padata =
+		container_of(serial_work, struct padata_priv, serial_work);
+	wait_for_completion(&padata->parallel_done);
+	padata->serial(padata);
+}
+```
+
