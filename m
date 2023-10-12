@@ -2,113 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 696D77C7036
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB267C7040
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347272AbjJLOWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 10:22:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43114 "EHLO
+        id S1344035AbjJLO1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 10:27:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235194AbjJLOWH (ORCPT
+        with ESMTP id S235736AbjJLO1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:22:07 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2543BB
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:22:05 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-65b162328edso5395566d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:22:05 -0700 (PDT)
+        Thu, 12 Oct 2023 10:27:51 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB4691
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:27:49 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32d834ec222so1010169f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:27:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1697120525; x=1697725325; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=7BE2R8PIkyHRd4gL99LO+dIQVqA8MQjkYJ3iaAbvj+E=;
-        b=P2LofO0wg0MZJpWNnTO8gBnfhAMOcMZwJ7QCx/X93aG2chXeovab2DfZbuR0geyR5Y
-         G8AgC9aZnhOWI3ZeLwL0kt3baw7imBiDa7b3dDRSWP6MrSpn8Yvnco2tam8faOvc3PWC
-         k+/2qkZ/y9zoAZd1BQ95HZqPOmBuAq2UKLZoV4PiTq7ZpxdB3apQCTmy0uYbSMdSQIyQ
-         6dBGZauKXqDFqPOSoCdgScdBpmer2ez1I0Co4zZj7Jcf3BBvb/8qB3UmZzsoeHnmy/PG
-         5/twEmQKlkeb41xGcTWg7+aavIs2sLe8l77fmCKGOA0evFQoGcUyy4Pj1zEvm4T0IF+3
-         bP3A==
+        d=linaro.org; s=google; t=1697120868; x=1697725668; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Z35x2KMCJCXsBIbmy9n6f3au11P/WJPEJir5cY6NYBA=;
+        b=cpEcuOqtZeBLV93szk1EtBzLksMPNyNvY1ONY2CJISb+/iYT++Uu3Vp2JwzXpqLTxq
+         BiuvAoogMVaofvPfvgdelErAt0LX2LSxKAarHJcUeOVkARPOrSBjSozPON3YqvNw1VyH
+         NyS39Kq8Usu+ub3nriwTX6LnK4+B8ZhJA6GDRRkxibPUpqG6qycYrg/4R6liC8fae/QW
+         4mC8JDEewYMZmG2hKX8XeaDEyfKNdOWnZ7wYWoeaVPk8MfHUEBywh1V1HHbSBrDaX1wZ
+         4do8+S9ioLEMs2e+3Ls0s5EHs9qn6XH96LgS1BFGbSYyAQGWVgMDN6CnpBTx3qIQKey+
+         IoRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697120525; x=1697725325;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1697120868; x=1697725668;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7BE2R8PIkyHRd4gL99LO+dIQVqA8MQjkYJ3iaAbvj+E=;
-        b=lrIwm1yF4a8vibfxAuwhvVO9Wrti+LXj4oTfJPx0NY9PWnmoTMjJATtj2xG2ZF24UK
-         f+8rZIumU2NQUej6uMn8UJIYDD/ilSzMHr0uNZv/eU1TOaXmpEnFvPPMzlfpSPCX+ETM
-         7h7+ObCJP4AApCpqqXqMLRsxYbSY5bs5eHqzjrZ7ss8TF/z9w2+ZFw0EGKY/wQ7wd7rP
-         lTq0Dh53rS6/UP/XQGHa0u0/uHXxBp9ODVOY9ioJbBzgBwF0jZptkagxb981YKLvBW8t
-         Ohc/6iAqo5Z1t4vUQrkfcbUSwEyt6ek5IdW80rUrUnDEmNy5i6g1vE1MEiQAMirJIoMn
-         GHiw==
-X-Gm-Message-State: AOJu0YyCQxIHWqhDSPZOumyGZqi91/rQIl0AZ1qj+M4J/ar/aPQIRGVB
-        vJsjBfaP1E5lJREDF3S3rvhlwA==
-X-Google-Smtp-Source: AGHT+IF8WXQQjj03Qgtha678waoUBFdOS2UgdJY4pIJn8t2ryLggunLaBPasQU/FB2X4h9VDQYiU3A==
-X-Received: by 2002:a05:6214:300e:b0:66d:12e0:2555 with SMTP id ke14-20020a056214300e00b0066d12e02555mr3239901qvb.33.1697120524914;
-        Thu, 12 Oct 2023 07:22:04 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:66a6])
-        by smtp.gmail.com with ESMTPSA id jy20-20020a0562142b5400b0065d05c8bb5dsm464815qvb.64.2023.10.12.07.22.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 07:22:04 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 10:22:03 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     =?utf-8?B?6LS65Lit5Z2k?= <hezhongkun.hzk@bytedance.com>
-Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [External] Re: [RFC PATCH] zswap: add writeback_time_threshold
- interface to shrink zswap pool
-Message-ID: <20231012142203.GB470544@cmpxchg.org>
-References: <20231011051117.2289518-1-hezhongkun.hzk@bytedance.com>
- <CAKEwX=OBYiH+G17YLRvEhx2Ode6q_hc0NgR6ZisBD_h0URcgSw@mail.gmail.com>
- <CACSyD1N6PPJCJ6TCTGijRKGEf2bGm+3mBLfr=DwCKgy+7-PBEw@mail.gmail.com>
+        bh=Z35x2KMCJCXsBIbmy9n6f3au11P/WJPEJir5cY6NYBA=;
+        b=gyLhaur9BtmBZcIlhYfi3l32pMTtcKhLhSeREQlbA6IO+X2LBjO7y0QrZpe2jRvx2p
+         8HT7qjDgD+VXtwwZYfXZEsqhDTodwPfbzN8/W42NrV27aLmHx9PmxgzG7pzWwd6YlYFF
+         DiFlK5FyyUuW7LxuI8PmeG4sy065iC2CpKZuwbII2s+I+MmOvfTuYc5V/lhr2BbMPoLE
+         mgX2/hd3PUhRszV/6OLelLd8drKzDxbWC0X/PkkaWTblZM6TdYQBLwdIjc9qXw1VtQQu
+         fgWhPnXw3rnyfvGXXnhujqflWUlzuPD/jBzy7QQmQCfhl0uIjz/LS+TxZH/XFRJnXfh5
+         Y3dg==
+X-Gm-Message-State: AOJu0Yzzhhk0GF3KRIIg424aE2iKouGwT/yW90MQSz3C4P+wam/7uGWA
+        dZuRWt4zguORRnkcsJEtalCgCw==
+X-Google-Smtp-Source: AGHT+IFD4a3WZd0zpYx192NfjOK9B5wAOPso8bC8/zQTNhtWjwd2SDA5n8vga56vCN0MrttiyJtvVg==
+X-Received: by 2002:a5d:654e:0:b0:31d:db92:31ae with SMTP id z14-20020a5d654e000000b0031ddb9231aemr22318455wrv.44.1697120867810;
+        Thu, 12 Oct 2023 07:27:47 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
+        by smtp.googlemail.com with ESMTPSA id j13-20020adfe50d000000b003196b1bb528sm18458016wrm.64.2023.10.12.07.27.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 07:27:47 -0700 (PDT)
+Message-ID: <d2d6fae5-ace7-4b94-9354-a01cd6a7e343@linaro.org>
+Date:   Thu, 12 Oct 2023 16:27:46 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/6] thermal: trip: Simplify computing trip indices
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+References: <13365827.uLZWGnKmhe@kreacher> <3256881.aeNJFYEL58@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <3256881.aeNJFYEL58@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACSyD1N6PPJCJ6TCTGijRKGEf2bGm+3mBLfr=DwCKgy+7-PBEw@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 10:13:16PM +0800, 贺中坤 wrote:
-> Hi Nhat, thanks for your detailed reply.
+On 06/10/2023 19:40, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> > We're currently trying to solve this exact problem. Our approach is to
-> > add a shrinker that automatically shrinks the size of the zswap pool:
-> >
-> > https://lore.kernel.org/lkml/20230919171447.2712746-1-nphamcs@gmail.com/
-> >
-> > It is triggered on memory-pressure, and can perform reclaim in a
-> > workload-specific manner.
-> >
-> > I'm currently working on v3 of this patch series, but in the meantime,
-> > could you take a look and see if it will address your issues as well?
-> >
-> > Comments and suggestions are always welcome, of course :)
-> >
+> A trip index can be computed right away as a difference between the
+> value of a trip pointer pointing to the given trip object and the
+> start of the trips[] table in the thermal zone containing the trip, so
+> change thermal_zone_trip_id() accordingly.
 > 
-> Thanks, I've seen both patches. But we hope to be able to reclaim memory
-> in advance, regardless of memory pressure, like memory.reclaim in memcg,
-> so we can offload memory in different tiers.
+> No intentional functional impact (except for some speedup).
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>   drivers/thermal/thermal_trip.c |   13 +++++--------
+>   1 file changed, 5 insertions(+), 8 deletions(-)
+> 
+> Index: linux-pm/drivers/thermal/thermal_trip.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_trip.c
+> +++ linux-pm/drivers/thermal/thermal_trip.c
+> @@ -175,14 +175,11 @@ int thermal_zone_set_trip(struct thermal
+>   int thermal_zone_trip_id(struct thermal_zone_device *tz,
+>   			 const struct thermal_trip *trip)
+>   {
+> -	int i;
+> -
+>   	lockdep_assert_held(&tz->lock);
+>   
+> -	for (i = 0; i < tz->num_trips; i++) {
+> -		if (&tz->trips[i] == trip)
+> -			return i;
+> -	}
+> -
+> -	return -ENODATA;
+> +	/*
+> +	 * Assume the trip to be located within the bounds of the thermal
+> +	 * zone's trips[] table.
+> +	 */
+> +	return trip - tz->trips;
 
-Can you use memory.reclaim itself for that? With Nhat's shrinker, it
-should move the whole pipeline (LRU -> zswap -> swap).
+Shouldn't be divided by sizeof(*trip) ?
 
-> Thanks for your review，we should update the store time when it was loaded.
-> But it confused me, there are two copies of the same page in memory
-> (compressed and uncompressed) after faulting in a page from zswap if
-> 'zswap_exclusive_loads_enabled' was disabled. I didn't notice any difference
-> when turning that option on or off because the frontswap_ops has been removed
-> and there is no frontswap_map anymore. Sorry, am I missing something?
+>   }
+> 
+> 
+> 
 
-In many instances, swapins already free the swap slot through the
-generic swap code (see should_try_to_free_swap()). It matters for
-shared pages, or for swapcaching read-only data when swap isn't full -
-it could be that isn't the case in your tests.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
