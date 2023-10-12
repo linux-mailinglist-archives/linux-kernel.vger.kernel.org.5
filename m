@@ -2,150 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4449D7C6AB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6067C6AB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343757AbjJLKNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43262 "EHLO
+        id S1343721AbjJLKPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:15:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234179AbjJLKNg (ORCPT
+        with ESMTP id S234179AbjJLKPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:13:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D401BA;
-        Thu, 12 Oct 2023 03:13:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35A9DC433C8;
-        Thu, 12 Oct 2023 10:13:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697105614;
-        bh=xWColKJFPVRA7NvNebvl5hGQQh/jYw+XU8N3pViNLDs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=LKiOGLNu4jAu2U0c0dMmIg6wu4Q05Ojxlo8zaukg8w4CSG5LWdN0HOxJHLijeHTWw
-         h3BC5NG80mvzIbPiW1S3gwHMJ3aNZhaairnu00FDF7IgP8mSbj2BzZeFNRegsjuEX8
-         GVUgyq6lRnP3diSdLfsfFGgoKvr1WLiKRt5LQ/CRJTn0PAqy79Pqyz/LslYWNEd0mo
-         VfM2x3dqoDNLyb0sbKxwuRrG323vFZE18b8xkymu02IQ706z+hyrvpUrzo8yuRHkvK
-         5gr9abvjCRSmBsjy00zszIVV/nRCUbpj9Iq77AceMWkso5nhZSUOPKC5qaEyNETDej
-         qWD9x9khugy7A==
-Message-ID: <5414753a03b924c5a5f5784783f4a530187be383.camel@kernel.org>
-Subject: Re: [PATCH -next v2] sunrpc: Use no_printk() in dfprintk*() dummies
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 12 Oct 2023 06:13:32 -0400
-In-Reply-To: <a93de2e8afa826745746b00fc5f64e513df5d52f.1697104757.git.geert+renesas@glider.be>
-References: <a93de2e8afa826745746b00fc5f64e513df5d52f.1697104757.git.geert+renesas@glider.be>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.module_f38+17164+63eeee4a) 
+        Thu, 12 Oct 2023 06:15:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A372D9D;
+        Thu, 12 Oct 2023 03:15:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697105701; x=1728641701;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dYC9BvIZGZ9sEAjxJUBPvKlJQCnqSQLaN/33GRubX9w=;
+  b=llBmfMiwz7U6zf/cjNLj2N8EMxkOhthz5X31ICzD/Y/jli7yH/KVeefN
+   wSZfTSdgsBq+cK7SKcq6FhRDBuUE73fvo9swc0wUGwLfLVgW8RUcsibkG
+   jstnTScc8CxlnN+J/uAmaSNYXakceWo+7yw0VNfn+iUiODpWLg3jwu1+3
+   UU9j50tWWMw4RLv91DoYTDzZec3S97Gr905qqPUaov3APW6FYD4iiNtMQ
+   IZVG3be70MrOehNf8BRQpoxSgPj0wlwdZwJmCPSEt1X2nuV6moZuPeuDc
+   GTLZlwGxtB+DxJ5/nrBHp+iu2RnKUG2eC7KCnZRDlsnPdVOo/Zcq+lMct
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="383747368"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="383747368"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:15:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="878059340"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
+   d="scan'208";a="878059340"
+Received: from nmalinin-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.58.130])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:14:59 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id B666810A1B1; Thu, 12 Oct 2023 13:14:56 +0300 (+03)
+Date:   Thu, 12 Oct 2023 13:14:56 +0300
+From:   kirill.shutemov@linux.intel.com
+To:     Nikolay Borisov <nik.borisov@suse.com>
+Cc:     ardb@kernel.org, linux-efi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/efistub: Don't try to print after ExitBootService()
+Message-ID: <20231012101456.goamenepqlte65jv@box.shutemov.name>
+References: <20231011192528.262425-1-nik.borisov@suse.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011192528.262425-1-nik.borisov@suse.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-12 at 12:08 +0200, Geert Uytterhoeven wrote:
-> When building NFS with W=3D1 and CONFIG_WERROR=3Dy, but
-> CONFIG_SUNRPC_DEBUG=3Dn:
->=20
->     fs/nfs/nfs4proc.c: In function =E2=80=98nfs4_proc_create_session=E2=
-=80=99:
->     fs/nfs/nfs4proc.c:9276:19: error: variable =E2=80=98ptr=E2=80=99 set =
-but not used [-Werror=3Dunused-but-set-variable]
->      9276 |         unsigned *ptr;
-> 	  |                   ^~~
->       CC      fs/nfs/callback.o
->     fs/nfs/callback.c: In function =E2=80=98nfs41_callback_svc=E2=80=99:
->     fs/nfs/callback.c:98:13: error: variable =E2=80=98error=E2=80=99 set =
-but not used [-Werror=3Dunused-but-set-variable]
->        98 |         int error;
-> 	  |             ^~~~~
->       CC      fs/nfs/flexfilelayout/flexfilelayout.o
->     fs/nfs/flexfilelayout/flexfilelayout.c: In function =E2=80=98ff_layou=
-t_io_track_ds_error=E2=80=99:
->     fs/nfs/flexfilelayout/flexfilelayout.c:1230:13: error: variable =E2=
-=80=98err=E2=80=99 set but not used [-Werror=3Dunused-but-set-variable]
->      1230 |         int err;
-> 	  |             ^~~
->       CC      fs/nfs/flexfilelayout/flexfilelayoutdev.o
->     fs/nfs/flexfilelayout/flexfilelayoutdev.c: In function =E2=80=98nfs4_=
-ff_alloc_deviceid_node=E2=80=99:
->     fs/nfs/flexfilelayout/flexfilelayoutdev.c:55:16: error: variable =E2=
-=80=98ret=E2=80=99 set but not used [-Werror=3Dunused-but-set-variable]
->        55 |         int i, ret =3D -ENOMEM;
-> 	  |                ^~~
->=20
-> All these are due to variables that are set unconditionally, but are
-> used only when debugging is enabled.
->=20
-> Fix this by changing the dfprintk*() dummy macros from empty loops to
-> calls to the no_printk() helper.  This informs the compiler that the
-> passed debug parameters are actually used, and enables format specifier
-> checking as a bonus.
->=20
-> This requires removing the protection by CONFIG_SUNRPC_DEBUG of the
-> declaration of nlmdbg_cookie2a(), as its reference is now visible to the
-> compiler, but optimized away.
->=20
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> v2:
->   - s/uncontionally/unconditionally/,
->   - Drop CONFIG_SUNRPC_DEBUG check in fs/lockd/svclock.c to fix build
->     failure.
-> ---
->  fs/lockd/svclock.c           | 2 --
->  include/linux/sunrpc/debug.h | 6 +++---
->  2 files changed, 3 insertions(+), 5 deletions(-)
->=20
-> diff --git a/fs/lockd/svclock.c b/fs/lockd/svclock.c
-> index 43aeba9de55cbbc5..119a0c31d30eed4f 100644
-> --- a/fs/lockd/svclock.c
-> +++ b/fs/lockd/svclock.c
-> @@ -55,7 +55,6 @@ static const struct rpc_call_ops nlmsvc_grant_ops;
->  static LIST_HEAD(nlm_blocked);
->  static DEFINE_SPINLOCK(nlm_blocked_lock);
-> =20
-> -#if IS_ENABLED(CONFIG_SUNRPC_DEBUG)
->  static const char *nlmdbg_cookie2a(const struct nlm_cookie *cookie)
->  {
->  	/*
-> @@ -82,7 +81,6 @@ static const char *nlmdbg_cookie2a(const struct nlm_coo=
-kie *cookie)
-> =20
->  	return buf;
->  }
-> -#endif
-> =20
->  /*
->   * Insert a blocked lock into the global list
-> diff --git a/include/linux/sunrpc/debug.h b/include/linux/sunrpc/debug.h
-> index f6aeed07fe04e3d5..76539c6673f2fb15 100644
-> --- a/include/linux/sunrpc/debug.h
-> +++ b/include/linux/sunrpc/debug.h
-> @@ -67,9 +67,9 @@ do {									\
->  # define RPC_IFDEBUG(x)		x
->  #else
->  # define ifdebug(fac)		if (0)
-> -# define dfprintk(fac, fmt, ...)	do {} while (0)
-> -# define dfprintk_cont(fac, fmt, ...)	do {} while (0)
-> -# define dfprintk_rcu(fac, fmt, ...)	do {} while (0)
-> +# define dfprintk(fac, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
-> +# define dfprintk_cont(fac, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
-> +# define dfprintk_rcu(fac, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
->  # define RPC_IFDEBUG(x)
->  #endif
-> =20
+On Wed, Oct 11, 2023 at 10:25:28PM +0300, Nikolay Borisov wrote:
+> setup_e820() is executed after UEFI's ExitBootService has been called.
+> This causes the firmware to throw an exception because Console IO
+> protocol handler is supposed to work only during boot service
+> environment. As per UEFI 2.9, section 12.1:
+> 
+>  "This protocol isused to handle input and output of text-based
+>  information intended for the system user during the operation of code
+>  in the boot services environment."
+> 
+> Running a TDX guest with TDVF with unaccepted memory disabled results in
+> the following output:
 
-Acked-by: Jeff Layton <jlayton@kernel.org>
+Oh. My bad.
+
+But there's other codepath that does the same. If setup_e820() fails with
+EFI_BUFFER_TOO_SMALL, efi_stub_entry() would try to print "exit_boot()
+failed\n".
+
+I wouldner if it is feasible to hook up earlyprintk console into
+efi_printk() machinery for after ExitBootService() case? Silent boot
+failure is not the best UX.
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
