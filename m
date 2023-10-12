@@ -2,107 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7AF7C73F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FCB7C73BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 19:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347346AbjJLRQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 13:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58704 "EHLO
+        id S1379549AbjJLRLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 13:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344032AbjJLRQc (ORCPT
+        with ESMTP id S1344032AbjJLRLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 13:16:32 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1422D6;
-        Thu, 12 Oct 2023 10:16:27 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CH2IQJ007409;
-        Thu, 12 Oct 2023 17:15:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=ruLAwstVJYOfziGmebf4MFgKg/exPipsxwb0UugNc+4=;
- b=b2mv3jUxA6k4cTp8yMzRSfLlz0S4Zy/Nc0UwZtt3Szi4QUfJ1Q+rStBO4u52y64zObaR
- ro/AiG7XiWrbz4Pxcgz9EmLvf/DoOywBPWDCH+I3Nw05JfLi0tzpjZhIZc9vM232dnMU
- ETX0JVSw5lp/ME6rm38lMrh2gPaoZc4AzFLlIFe846AJwQY9cbLP0b7r9Q38S68ztnAV
- AOmOZTArLtdDroBx2bmcjeCB4ANq065yMuOgntkJ1pyl2UaNiVdHVeKhzTVxiGMuQGae
- khByidn34IHmUOGBnrkpqPr2uJPly5yHdMsKno390q7OztC+dZWRvsQh/nZ2oWwWMOkO hA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpmuj0d14-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 17:15:44 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39CHFhwb020298;
-        Thu, 12 Oct 2023 17:15:43 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpmuj0cwm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 17:15:43 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39CFCsfw028188;
-        Thu, 12 Oct 2023 17:10:53 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkj1yh8y6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 17:10:53 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CHAqUv50135662
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Oct 2023 17:10:53 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C5ADB5805A;
-        Thu, 12 Oct 2023 17:10:52 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 87EDD5805D;
-        Thu, 12 Oct 2023 17:10:50 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.watson.ibm.com (unknown [9.31.99.90])
-        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Oct 2023 17:10:50 +0000 (GMT)
-Message-ID: <102b06b30518ac6595022e079de92717c92f3b8e.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 02/25] ima: Align ima_post_path_mknod() definition
- with LSM infrastructure
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Thu, 12 Oct 2023 13:10:50 -0400
-In-Reply-To: <4866a6ef46deebf9a9afdeb7efd600edb589da93.camel@huaweicloud.com>
-References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
-         <20230904133415.1799503-3-roberto.sassu@huaweicloud.com>
-         <a733fe780a3197150067ad35ed280bf85e11fa97.camel@linux.ibm.com>
-         <b51baf7741de1fdee8b36a87bd2dde71184d47a8.camel@huaweicloud.com>
-         <8646e30b0074a2932076b5a0a792b14be034de98.camel@linux.ibm.com>
-         <16c8c95f2e63ab9a2fba8cba919bf129d0541b61.camel@huaweicloud.com>
-         <c16551704db68c6e0ba89c729c892e9401f05dfc.camel@linux.ibm.com>
-         <2336abd6ae195eda221d54e3c2349a4760afaff2.camel@huaweicloud.com>
-         <84cfe4d93cb5b02591f4bd921b828eb6f3e95faa.camel@linux.ibm.com>
-         <4866a6ef46deebf9a9afdeb7efd600edb589da93.camel@huaweicloud.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: JsOvQDlFYlC1UJRUF-UeTH3-IMW7Gucg
-X-Proofpoint-GUID: d359mtKa2PkNdJRCP2N4Q_la3JjXXcGd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_09,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
- clxscore=1015 malwarescore=0 spamscore=0 mlxscore=0 mlxlogscore=806
- phishscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310120143
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        Thu, 12 Oct 2023 13:11:48 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C3EB7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 10:11:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E0C7C433C7;
+        Thu, 12 Oct 2023 17:11:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697130706;
+        bh=VzPEcBEfGG7bzCQHi8ZBzVEsTqFFfq1QWeQDFJnhb98=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K0v2CP0RfbHmYUisPKN1l6Z24/UD9XgfhoxOHWW3opy3RRSJL4GIsi8wjX329XcBv
+         1EIJTVRVwevDzcAJ7Av5ret0VPTmG3wY1tJWveQO+vx4ZItGiXm8z9zCLeJB/ZTQ5E
+         irWltl0lVTlyMwr1gEe1odqSFk3u+sBRkRQsKX4i8StG+raljDUJ/c2RzMjneZLKqk
+         z1Mf3REJ7emncLYgeTkx/fvkZZxf64UyIFaWjHtI8oVf3xnVqpNOoev/zY6ItsKXy2
+         oWuR/5uJglvZNLvqjEed8Smx33QvpTZzfWebhehCt/UV9Kq5wPi5BK+wruM244nWtR
+         Z+qg/0oV81Bgg==
+Date:   Thu, 12 Oct 2023 10:11:44 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "Kaplan, David" <David.Kaplan@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -v2] x86/retpoline: Ensure default return thunk isn't
+ used at runtime
+Message-ID: <20231012171144.wtzcheq7x3qwpym6@treble>
+References: <20231010171020.462211-1-david.kaplan@amd.com>
+ <20231010171020.462211-4-david.kaplan@amd.com>
+ <20231010193643.su6iqjniuxqqke6d@treble>
+ <SN6PR12MB2702315F5C39E5354D63E68E94CDA@SN6PR12MB2702.namprd12.prod.outlook.com>
+ <20231010204119.76i7vwecmeo6ex6d@treble>
+ <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -110,35 +56,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > > > We need to make sure that ima_post_path_mknod() has the same parameters
-> > > > > as the LSM hook at the time we register it to the LSM infrastructure.
-> > > > 
-> > > > I'm trying to understand why the pre hook parameters and the missing
-> > > > IMA parameter are used, as opposed to just defining the new
-> > > > post_path_mknod hook like IMA.
-> > > 
-> > > As an empyrical rule, I pass the same parameters as the corresponding
-> > > pre hook (plus idmap, in this case). This is similar to the
-> > > inode_setxattr hook. But I can be wrong, if desired I can reduce.
+On Thu, Oct 12, 2023 at 04:10:31PM +0200, Borislav Petkov wrote:
+> On Tue, Oct 10, 2023 at 01:41:19PM -0700, Josh Poimboeuf wrote:
+> > Even if it's not a security hole, I'd still view it as a major BUG() as
+> > it would directly contradict our understanding (and the comments above)
+> > and could cause performance or other correctness issues that would
+> > otherwise go unnoticed.
 > > 
-> > The inode_setxattr hook change example is legitimate, as EVM includes
-> > idmap, while IMA doesn't. 
-> > 
-> > Unless there is a good reason for the additional parameters, I'm not
-> > sure that adding them makes sense.  Not modifying the parameter list
-> > will reduce the size of this patch set.
+> > So I think an unconditional UD2 is warranted.
 > 
-> The hook is going to be used by any LSM. Without knowing all the
-> possible use cases, maybe it is better to include more information now,
-> than modifying the hook and respective implementations later.
+> Before David's outlook mangles v2, lemme send it from a real mail
+> client :-P.
 > 
-> (again, no problem to reduce)
+> v2 uses X86_FEATURE_ALWAYS as Josh requested.
+> 
+> ---
+> From: David Kaplan <david.kaplan@amd.com>
+> Date: Thu, 12 Oct 2023 08:52:32 -0500
+> Subject: [PATCH] x86/retpoline: Ensure default return thunk isn't used at runtime
+> 
+> All CPU bugs that require a return thunk define a special return thunk
+> to use (e.g., srso_return_thunk).  The default thunk,
+> __x86_return_thunk, should never be used after apply_returns()
+> completes.  Otherwise this could lead to potential speculation holes.
+> 
+> Enforce this by replacing this thunk with a ud2 when alternatives are
+> applied.  Alternative instructions are applied after apply_returns().
+> 
+> The default thunk is only used during kernel boot, it is not used during
+> module init since that occurs after apply_returns().
+> 
+> Signed-off-by: David Kaplan <david.kaplan@amd.com>
+> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
 
-Unless there is a known use case for a specific parameter, please
-minimize them.   Additional parameters can be added later as needed. 
+Reviewed-by: Josh Poimboeuf <jpoimboe@kernel.org>
 
 -- 
-thanks,
-
-Mimi
-
+Josh
