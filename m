@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAAE7C6582
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283547C6583
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 08:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377551AbjJLGYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 02:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
+        id S1377455AbjJLGZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 02:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377742AbjJLGYq (ORCPT
+        with ESMTP id S1377453AbjJLGYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 02:24:46 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7C913D
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:29 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a3a98b34dso877980276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:29 -0700 (PDT)
+        Thu, 12 Oct 2023 02:24:48 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF781A3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:31 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7a6fd18abso9897927b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 23:24:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697091868; x=1697696668; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697091870; x=1697696670; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=la0kth5B8NAHJ/7CJQBnk0UfsTSlln3eEBL7Ofw1InE=;
-        b=3KuoHDwI9ZKC4f52zPq/dwdG1hbh/cR5fj1PeoFeKz4+XwN82Fbt/nMwA0gCS/qptp
-         XuN1MVxbjX4hjM4mbN/AC9KsqtnRiXqWo6Ac/OsiOWiYYhBVgjzAhPc/YDTzREE0w4oT
-         6/0ea9mt0+2UowtLjk23ARu8B5Q44uQYD5rWZ9GzpMaEIJvOnzhzoPJO3q6nqmBnarcK
-         0m3VDdDhrQp5AxQrYCnrqkua7foOmHLY0Z8HJyWaKmjdsrz9J+d5d9cAa9ISHlTcCEwK
-         K9I14AxHOMJHI5M2kJ5gQUEmRBxW+pJwS3QvDBdrq5noajpPzxffw2fS30qqdpFWberO
-         4QDw==
+        bh=Fc/6/O/gRte1zMhmeMtD4ohISB3aWdPXWc8V2/IjDG4=;
+        b=MfjQ5C7JEOErhS+sVyt+9BIu5x/F+EcfbqxY16YvfH+Baa1uydnkaaaYfeNb++GAhe
+         w1jyj9CRpk9NtQvcuVy0u8EgsYvvICa06QNJGL60h6i1fNgf6a6eec6bbWSHgn9MylgN
+         ctHoEn3sNsfj17CE9duwG0Bt25OAZbgB5aOLWOMaeZIxRP1wm1cyCvbm4lnSbrqK6J7T
+         FjjHz3WCelmLYsstXYwiICf40c9lSzvWP+JzzaATTDQuiHLMs8ZhSdTHGTz5Fk3VVVEV
+         labXbkeucDueh9576aAAymNQDILXk4SL3yfSOXvYg7Wk8wqWmtjhHPUjLgpuc1NODLkv
+         KcfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697091868; x=1697696668;
+        d=1e100.net; s=20230601; t=1697091870; x=1697696670;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=la0kth5B8NAHJ/7CJQBnk0UfsTSlln3eEBL7Ofw1InE=;
-        b=V+oNZc9feNcXbOlWI670sH4f20fI2E1ExpVbMmA85JV8scSLUkabn7NXuYW4PlTMbC
-         TLU4NbPsMrFv5sRfphx7KUhJipgdDaK81CBtWwuMPMVmS13OyPUFmmdI9d2sDWj8W/dR
-         zfxZ3EW//vlOLNfeAya/hEIv+0I37JwCmXPgmj5Jxg5Tr068MwVUjdFsNnW+1dQo15av
-         eEYPM7zV9jTQL87ac6AzVDEGJeJKg+mmxV3EJFD1TEGw3lPeayYPckO34cqNqwQG2U/T
-         1SUhZKOpLG72IcEPymMZuncnJgyP3mI25J2PC4i/ICdWErsCn2rP7C4BLtRgbad+TSjh
-         pLbQ==
-X-Gm-Message-State: AOJu0YwBXujnqi9PCkIw7k9NzXeT4FDfFrEwc5/iYjDzsZ5unuVKBiFq
-        O0ygIYfyablj8ftxyEBI9Y69n3KU+9oO
-X-Google-Smtp-Source: AGHT+IEb5QCBrWCeAuptIs138Qw6ImZJcMdt+KABfOynkd4duT5ZLjm6TicU9k5h79l3BQQyxZZZa02wvlZ0
+        bh=Fc/6/O/gRte1zMhmeMtD4ohISB3aWdPXWc8V2/IjDG4=;
+        b=JeQ8y4sZW8FhFE2q/ErWDBeUHvDF6MnMviuK7oLWPxqo6e5aYq7wjPI2DeuZhldHrS
+         0UBlk/ziFCByar0zZ6lSXJQk8hG84qpAbhHLpCZtqIsjRNWS2lJB1e3rK05CkqD15XAm
+         nRNVc+2E2ijV+mMOUzaV9w8i33QWBco4F0SROJpNhcZdv07/NWRb/b01c51bqF/YIiBj
+         dviotIwI/9WBDfLFENNewQH6HM8bU3C+MCkJu5zbRU7tZ18ReI2bIK/y5PBc3PbhXmp2
+         JSwDeuu3atZ9JmRsdT4Myz3TfSwpG7busHsat96iwmqngpQ+chwyqX8BzvotCf81RHG4
+         UT9Q==
+X-Gm-Message-State: AOJu0YwBALAdaDRGAzeps3Wzy0iwVjucWAk15wiVVWBNfxl/zW2rai20
+        rBHzX4ioN3eOygg/JNwQQvw6w/KLiBvx
+X-Google-Smtp-Source: AGHT+IHw9CWAC8FY76ZB7h38HkJJCF9yox3JXqj1NldAlfSd6AeHsF169JHHn8w35OGyvCUjrw3Xt+ij0Xpl
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7be5:14d2:880b:c5c9])
- (user=irogers job=sendgmr) by 2002:a25:cfd0:0:b0:d9a:50d2:a8ba with SMTP id
- f199-20020a25cfd0000000b00d9a50d2a8bamr141489ybg.2.1697091867872; Wed, 11 Oct
- 2023 23:24:27 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 23:23:55 -0700
+ (user=irogers job=sendgmr) by 2002:a81:4005:0:b0:5a7:be34:345 with SMTP id
+ l5-20020a814005000000b005a7be340345mr175704ywn.6.1697091870082; Wed, 11 Oct
+ 2023 23:24:30 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 23:23:56 -0700
 In-Reply-To: <20231012062359.1616786-1-irogers@google.com>
-Message-Id: <20231012062359.1616786-10-irogers@google.com>
+Message-Id: <20231012062359.1616786-11-irogers@google.com>
 Mime-Version: 1.0
 References: <20231012062359.1616786-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v2 09/13] perf mem_info: Add and use map_symbol__exit and addr_map_symbol__exit
+Subject: [PATCH v2 10/13] perf record: Lazy load kernel symbols
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -88,179 +88,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix leak where mem_info__put wouldn't release the maps/map as used by
-perf mem. Add exit functions and use elsewhere that the maps and map
-are released.
+Commit 5b7ba82a7591 ("perf symbols: Load kernel maps before using")
+changed it so that loading a kernel dso would cause the symbols for
+the dso to be eagerly loaded. For perf record this is overhead as the
+symbols won't be used. Add a symbol_conf to control the behavior and
+disable it for perf record and perf inject.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/Build        |  1 +
- tools/perf/util/callchain.c  | 15 +++++----------
- tools/perf/util/hist.c       |  6 ++----
- tools/perf/util/machine.c    |  6 ++----
- tools/perf/util/map_symbol.c | 15 +++++++++++++++
- tools/perf/util/map_symbol.h |  4 ++++
- tools/perf/util/symbol.c     |  5 ++++-
- 7 files changed, 33 insertions(+), 19 deletions(-)
- create mode 100644 tools/perf/util/map_symbol.c
+ tools/perf/builtin-inject.c   | 4 ++++
+ tools/perf/builtin-record.c   | 2 ++
+ tools/perf/util/event.c       | 4 ++--
+ tools/perf/util/symbol_conf.h | 3 ++-
+ 4 files changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index 0ea5a9d368d4..96058f949ec9 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -49,6 +49,7 @@ perf-y += dso.o
- perf-y += dsos.o
- perf-y += symbol.o
- perf-y += symbol_fprintf.o
-+perf-y += map_symbol.o
- perf-y += color.o
- perf-y += color_config.o
- perf-y += metricgroup.o
-diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
-index 0a7919c2af91..02881d5b822c 100644
---- a/tools/perf/util/callchain.c
-+++ b/tools/perf/util/callchain.c
-@@ -1496,16 +1496,14 @@ static void free_callchain_node(struct callchain_node *node)
- 
- 	list_for_each_entry_safe(list, tmp, &node->parent_val, list) {
- 		list_del_init(&list->list);
--		map__zput(list->ms.map);
--		maps__zput(list->ms.maps);
-+		map_symbol__exit(&list->ms);
- 		zfree(&list->brtype_stat);
- 		free(list);
- 	}
- 
- 	list_for_each_entry_safe(list, tmp, &node->val, list) {
- 		list_del_init(&list->list);
--		map__zput(list->ms.map);
--		maps__zput(list->ms.maps);
-+		map_symbol__exit(&list->ms);
- 		zfree(&list->brtype_stat);
- 		free(list);
- 	}
-@@ -1591,8 +1589,7 @@ int callchain_node__make_parent_list(struct callchain_node *node)
- out:
- 	list_for_each_entry_safe(chain, new, &head, list) {
- 		list_del_init(&chain->list);
--		map__zput(chain->ms.map);
--		maps__zput(chain->ms.maps);
-+		map_symbol__exit(&chain->ms);
- 		zfree(&chain->brtype_stat);
- 		free(chain);
- 	}
-@@ -1676,10 +1673,8 @@ void callchain_cursor_reset(struct callchain_cursor *cursor)
- 	cursor->nr = 0;
- 	cursor->last = &cursor->first;
- 
--	for (node = cursor->first; node != NULL; node = node->next) {
--		map__zput(node->ms.map);
--		maps__zput(node->ms.maps);
--	}
-+	for (node = cursor->first; node != NULL; node = node->next)
-+		map_symbol__exit(&node->ms);
- }
- 
- void callchain_param_setup(u64 sample_type, const char *arch)
-diff --git a/tools/perf/util/hist.c b/tools/perf/util/hist.c
-index ac8c0ef48a7f..d62693b8fad8 100644
---- a/tools/perf/util/hist.c
-+++ b/tools/perf/util/hist.c
-@@ -524,8 +524,7 @@ static int hist_entry__init(struct hist_entry *he,
- 		map__put(he->mem_info->daddr.ms.map);
- 	}
- err:
--	maps__zput(he->ms.maps);
--	map__zput(he->ms.map);
-+	map_symbol__exit(&he->ms);
- 	zfree(&he->stat_acc);
- 	return -ENOMEM;
- }
-@@ -1317,8 +1316,7 @@ void hist_entry__delete(struct hist_entry *he)
- 	struct hist_entry_ops *ops = he->ops;
- 
- 	thread__zput(he->thread);
--	maps__zput(he->ms.maps);
--	map__zput(he->ms.map);
-+	map_symbol__exit(&he->ms);
- 
- 	if (he->branch_info) {
- 		map__zput(he->branch_info->from.ms.map);
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 8e5085b77c7b..6ca7500e2cf4 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -2389,8 +2389,7 @@ static int add_callchain_ip(struct thread *thread,
- 				      iter_cycles, branch_from, srcline);
- out:
- 	addr_location__exit(&al);
--	maps__put(ms.maps);
--	map__put(ms.map);
-+	map_symbol__exit(&ms);
- 	return err;
- }
- 
-@@ -3116,8 +3115,7 @@ static int append_inlines(struct callchain_cursor *cursor, struct map_symbol *ms
- 		if (ret != 0)
- 			return ret;
- 	}
--	map__put(ilist_ms.map);
--	maps__put(ilist_ms.maps);
-+	map_symbol__exit(&ilist_ms);
- 
- 	return ret;
- }
-diff --git a/tools/perf/util/map_symbol.c b/tools/perf/util/map_symbol.c
-new file mode 100644
-index 000000000000..bef5079f2403
---- /dev/null
-+++ b/tools/perf/util/map_symbol.c
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "map_symbol.h"
-+#include "maps.h"
-+#include "map.h"
+diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+index c8cf2fdd9cff..1539fb18c749 100644
+--- a/tools/perf/builtin-inject.c
++++ b/tools/perf/builtin-inject.c
+@@ -2265,6 +2265,10 @@ int cmd_inject(int argc, const char **argv)
+ 		"perf inject [<options>]",
+ 		NULL
+ 	};
 +
-+void map_symbol__exit(struct map_symbol *ms)
-+{
-+	maps__zput(ms->maps);
-+	map__zput(ms->map);
-+}
++	/* Disable eager loading of kernel symbols that adds overhead to perf inject. */
++	symbol_conf.lazy_load_kernel_maps = true;
 +
-+void addr_map_symbol__exit(struct addr_map_symbol *ams)
-+{
-+	map_symbol__exit(&ams->ms);
-+}
-diff --git a/tools/perf/util/map_symbol.h b/tools/perf/util/map_symbol.h
-index e08817b0c30f..72d5ed938ed6 100644
---- a/tools/perf/util/map_symbol.h
-+++ b/tools/perf/util/map_symbol.h
-@@ -22,4 +22,8 @@ struct addr_map_symbol {
- 	u64	      phys_addr;
- 	u64	      data_page_size;
- };
-+
-+void map_symbol__exit(struct map_symbol *ms);
-+void addr_map_symbol__exit(struct addr_map_symbol *ams);
-+
- #endif // __PERF_MAP_SYMBOL
-diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-index 2740d4457c13..d67a87072eec 100644
---- a/tools/perf/util/symbol.c
-+++ b/tools/perf/util/symbol.c
-@@ -2790,8 +2790,11 @@ struct mem_info *mem_info__get(struct mem_info *mi)
+ #ifndef HAVE_JITDUMP
+ 	set_option_nobuild(options, 'j', "jit", "NO_LIBELF=1", true);
+ #endif
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index dcf288a4fb9a..8ec818568662 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -3989,6 +3989,8 @@ int cmd_record(int argc, const char **argv)
+ # undef set_nobuild
+ #endif
  
- void mem_info__put(struct mem_info *mi)
- {
--	if (mi && refcount_dec_and_test(&mi->refcnt))
-+	if (mi && refcount_dec_and_test(&mi->refcnt)) {
-+		addr_map_symbol__exit(&mi->iaddr);
-+		addr_map_symbol__exit(&mi->daddr);
- 		free(mi);
-+	}
- }
++	/* Disable eager loading of kernel symbols that adds overhead to perf record. */
++	symbol_conf.lazy_load_kernel_maps = true;
+ 	rec->opts.affinity = PERF_AFFINITY_SYS;
  
- struct mem_info *mem_info__new(void)
+ 	rec->evlist = evlist__new();
+diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
+index 923c0fb15122..68f45e9e63b6 100644
+--- a/tools/perf/util/event.c
++++ b/tools/perf/util/event.c
+@@ -617,13 +617,13 @@ struct map *thread__find_map(struct thread *thread, u8 cpumode, u64 addr,
+ 	if (cpumode == PERF_RECORD_MISC_KERNEL && perf_host) {
+ 		al->level = 'k';
+ 		maps = machine__kernel_maps(machine);
+-		load_map = true;
++		load_map = !symbol_conf.lazy_load_kernel_maps;
+ 	} else if (cpumode == PERF_RECORD_MISC_USER && perf_host) {
+ 		al->level = '.';
+ 	} else if (cpumode == PERF_RECORD_MISC_GUEST_KERNEL && perf_guest) {
+ 		al->level = 'g';
+ 		maps = machine__kernel_maps(machine);
+-		load_map = true;
++		load_map = !symbol_conf.lazy_load_kernel_maps;
+ 	} else if (cpumode == PERF_RECORD_MISC_GUEST_USER && perf_guest) {
+ 		al->level = 'u';
+ 	} else {
+diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_conf.h
+index 0b589570d1d0..2b2fb9e224b0 100644
+--- a/tools/perf/util/symbol_conf.h
++++ b/tools/perf/util/symbol_conf.h
+@@ -42,7 +42,8 @@ struct symbol_conf {
+ 			inline_name,
+ 			disable_add2line_warn,
+ 			buildid_mmap2,
+-			guest_code;
++			guest_code,
++			lazy_load_kernel_maps;
+ 	const char	*vmlinux_name,
+ 			*kallsyms_name,
+ 			*source_prefix,
 -- 
 2.42.0.609.gbb76f46606-goog
 
