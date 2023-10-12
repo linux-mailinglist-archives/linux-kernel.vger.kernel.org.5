@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 464117C627C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 03:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A742C7C627E
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 03:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347031AbjJLB4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 21:56:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59470 "EHLO
+        id S234055AbjJLB5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 21:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233797AbjJLB4H (ORCPT
+        with ESMTP id S233797AbjJLB5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 21:56:07 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3CCB3A9;
-        Wed, 11 Oct 2023 18:56:06 -0700 (PDT)
-Received: from [10.0.0.178] (c-76-135-56-23.hsd1.wa.comcast.net [76.135.56.23])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 076E220B74C1;
-        Wed, 11 Oct 2023 18:56:05 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 076E220B74C1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1697075765;
-        bh=fkyT/+raROLPFX+mFalCuAsEjnzKBnBZN08qi2EQQx8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=JjpkcJ7c5qt70zQwpK4E0IycHV3l0gNfupU+nYn1cRC728Ifrru4U/q4DOgTGPeYH
-         wlT+PMGaztmYkTN7pyPMX7orM3UjwBX6W+exe2QwuzpcxLOeZfjdQz6DPjnk0n3zt4
-         iHHtkcFRITS6p2zZBCsDuxlqqHOd4Srwo5Ha22QE=
-Message-ID: <f94e3405-20c5-4701-8217-9542affef46f@linux.microsoft.com>
-Date:   Wed, 11 Oct 2023 18:56:04 -0700
+        Wed, 11 Oct 2023 21:57:47 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D82C6A9;
+        Wed, 11 Oct 2023 18:57:43 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8Cxh+iWUidlHDsxAA--.59104S3;
+        Thu, 12 Oct 2023 09:57:42 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxeuSTUidlFTghAA--.6471S3;
+        Thu, 12 Oct 2023 09:57:39 +0800 (CST)
+Subject: Re: [PATCH v6] selftests/clone3: Fix broken test under
+ !CONFIG_TIME_NS
+To:     Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <1689066814-13295-1-git-send-email-yangtiezhu@loongson.cn>
+ <0560a851-5e8c-d82a-8445-a16a92b967c9@loongson.cn>
+Cc:     linux-kselftest@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
+        Andrew Morton <akpm@linux-foundation.org>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <1c3a0544-d7fe-1a34-e61a-2f06f5758a81@loongson.cn>
+Date:   Thu, 12 Oct 2023 09:57:38 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 13/15] uapi: hyperv: Add mshv driver headers hvhdk.h,
- hvhdk_mini.h, hvgdk.h, hvgdk_mini.h
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        patches@lists.linux.dev, mikelley@microsoft.com, kys@microsoft.com,
-        haiyangz@microsoft.com, decui@microsoft.com,
-        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
-        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
-        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
-        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        will@kernel.org, catalin.marinas@arm.com
-References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1692309711-5573-14-git-send-email-nunodasneves@linux.microsoft.com>
- <ZN6m2gVmtVStuEfA@liuwe-devbox-debian-v2> <2023081923-crown-cake-79f7@gregkh>
- <c4482a6a-aed0-4750-aa1b-421f0e541cfa@linux.microsoft.com>
- <50f1721f-64fb-49ff-9740-0dac7cf832c8@linux.microsoft.com>
- <2023101133-blade-diary-11e4@gregkh>
-From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
-In-Reply-To: <2023101133-blade-diary-11e4@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <0560a851-5e8c-d82a-8445-a16a92b967c9@loongson.cn>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: AQAAf8CxeuSTUidlFTghAA--.6471S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7uw1fZrW7Kr4kury5tw1DurX_yoW8Gr47pF
+        W8ZF4UKFs5W347Aa9rG34DWFy5tws5JFy8ZFW8Z3srJryrX3ZYqr48Ka48uFyjgr1vv34F
+        y3WxGFs8uF1UA3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU3529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4j6r4UJwAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_
+        WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
+        CYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48J
+        MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8_gA5UUUU
+        U==
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/2023 11:42 PM, Greg KH wrote:
-> On Tue, Oct 10, 2023 at 03:49:48PM -0700, Nuno Das Neves wrote:
->> On 8/25/2023 11:24 AM, Nuno Das Neves wrote:
->>> On 8/19/2023 3:26 AM, Greg KH wrote:
->>>>
->>>> My "strong" opinion is the one kernel development rule that we have,
->>>> "you can not break userspace".  So, if you change these
->>>> values/structures/whatever in the future, and userspace tools break,
->>>> that's not ok and the changes have to be reverted.
->>>>
->>>> If you can control both sides of the API here (with open tools that you
->>>> can guarantee everyone will always update to), then yes, you can change
->>>> the api in the future.
->>>>
+Cc: Andrew Morton <akpm@linux-foundation.org>
 
-We control both sides of the API. The code is open. No one else can use it
-today, therefore we can guarantee all the users will stay updated.
+On 08/17/2023 03:22 PM, Tiezhu Yang wrote:
+> Hi Shuah,
+>
+> On 07/11/2023 05:13 PM, Tiezhu Yang wrote:
+>> When execute the following command to test clone3 under !CONFIG_TIME_NS:
+>>
+>>   # make headers && cd tools/testing/selftests/clone3 && make && ./clone3
+>>
+>> we can see the following error info:
+>>
+>>   # [7538] Trying clone3() with flags 0x80 (size 0)
+>>   # Invalid argument - Failed to create new process
+>>   # [7538] clone3() with flags says: -22 expected 0
+>>   not ok 18 [7538] Result (-22) is different than expected (0)
+>>   ...
+>>   # Totals: pass:18 fail:1 xfail:0 xpass:0 skip:0 error:0
+...
+>>
+>> Fixes: 515bddf0ec41 ("selftests/clone3: test clone3 with CLONE_NEWTIME")
+>> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>
+>> v6: Rebase on 6.5-rc1 and update the commit message
+>>
+>>  tools/testing/selftests/clone3/clone3.c | 7 ++++++-
+>>  1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>
+> Hi Shuah,
+>
+> Any comments? I guess this should go through the linux-kselftest tree.
+>
+> Thanks,
+> Tiezhu
+>
 
-> Just submit your fixed up patch series based on the previous review
-> comments and it will be reviewed again, just like all kernel patches
-> are.
+What is the status of this patch?
 
-I will do that.
+https://lore.kernel.org/lkml/1689066814-13295-1-git-send-email-yangtiezhu@loongson.cn/
 
-> Perhaps you all should take the time to do some kernel patch reviews of
-> other stuff sent to the mailing lists to get an idea of how this whole
-> process works, and to get better integrated into the kernel development
-> community,
-
-That is a good suggestion, I will do that.
-
-> before dumping a huge patchset on us with lots of process
-> questions like this?  Why are you asking the community to do a lot of
-> work and hand-holding when you aren't helping others out as well?
-
-I take your point, sorry my questions came off that way. I will work to
-improve on that :)
+This is a ping message, maybe you have forgot them?
 
 Thanks,
-Nuno
+Tiezhu
+
