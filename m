@@ -2,80 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E5F7C6E1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F527C6E1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378548AbjJLMaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 08:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34408 "EHLO
+        id S1347190AbjJLMbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233496AbjJLMaR (ORCPT
+        with ESMTP id S235709AbjJLMa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:30:17 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5A8B7;
-        Thu, 12 Oct 2023 05:30:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 705E7C433C7;
-        Thu, 12 Oct 2023 12:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697113816;
-        bh=yVocBoSmcdTl7F76wuVD4cWB0m01bOLi77HrEVQQ42s=;
+        Thu, 12 Oct 2023 08:30:58 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A2EB8;
+        Thu, 12 Oct 2023 05:30:56 -0700 (PDT)
+Received: from mercury (dyndsl-091-248-212-229.ewe-ip-backbone.de [91.248.212.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D0E2C660733F;
+        Thu, 12 Oct 2023 13:30:54 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697113854;
+        bh=SqYTiOtUppKlZvMe6nHnH40NTI0MY7sewDjs1R3rQVU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JGIAjR1TNCCcb2qQDVGzA/52tDUcLwv/Fe26Tj9aZzjqVV9PX6gxVj5Xfez0Jk3RO
-         sP15dGuTaLi8w05SzF63UzS7KFbgvNyzNeFZ8RHEAFlEM48pBxeP1OcIUWj19B4tFp
-         ZntFuMEP4h9P62XqNL+Pf2LmJDdbxOJ67Erya3Z5KItu9QOuzaFP6OIMXr7ePp8B2Y
-         gBkERdjIGO8GtiTktRA1gIgk4kvdZoanZqzXHWuukqH6UPeZ8hjA6MLLUENP+Wr4qN
-         CNyAH1WPlVXnDgSRloK0bo97ycINo6/K15AvLD5bsTldRKMVvMb53nKKjqxecrHpad
-         k9f7/SucMDqZA==
-Date:   Thu, 12 Oct 2023 18:00:11 +0530
-From:   Vinod Koul <vkoul@kernel.org>
+        b=HUeM/pezKZ48kW54SVra2V2rv+4szeF5ThlojEo06WDvEBgFWirXf4T/M1jkwAXG9
+         9xD/I4srIYRJhFx4UaPovNmSvSsp7OeEwwSRGY22v0ssyEPybt/tyWs0sGcQHqAY0A
+         qHCMCdrhVLYhYLGknT9LQQqxINcpo/fPpzWBeYkNnYD4+j8TJ+Cw45OU+fHzDrgIyO
+         NjwQarrxwt8vMWx0zB3l55oBGblCOZ8ziFcdVTgV2VZ+lf0i4qWmFWyCrY1nS5jKDs
+         cutarlN17iJe27Sfr89nmfexZWeTpG3+Yvq1aLDUqEu2hKVzUsP3zX4tjimzjSXjrn
+         jVwXKz7Dn3Pqw==
+Received: by mercury (Postfix, from userid 1000)
+        id A6A9810605A6; Thu, 12 Oct 2023 14:30:51 +0200 (CEST)
+Date:   Thu, 12 Oct 2023 14:30:51 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
 To:     Rob Herring <robh@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the dmaengine tree
-Message-ID: <ZSfm0wDCFD9cewrS@matsya>
-References: <20231010145412.4a758f9d@canb.auug.org.au>
- <CAL_JsqJkEutiwWdNe336pWbcLsHK9tNxHNYVOAACt_ncaBdBXQ@mail.gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH v3 1/3] dt-bindings: usb: add rk3588 compatible to
+ rockchip,dwc3
+Message-ID: <20231012123051.jkxj4mpczerc2igl@mercury.elektranox.org>
+References: <20231009172129.43568-1-sebastian.reichel@collabora.com>
+ <20231009172129.43568-2-sebastian.reichel@collabora.com>
+ <20231010162722.GA1006254-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dg275xcvg6oalgtm"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqJkEutiwWdNe336pWbcLsHK9tNxHNYVOAACt_ncaBdBXQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231010162722.GA1006254-robh@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-10-23, 08:41, Rob Herring wrote:
-> On Mon, Oct 9, 2023 at 10:54 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Hi all,
-> >
-> > After merging the dmaengine tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> >
-> > drivers/dma/mmp_tdma.c: In function 'mmp_tdma_probe':
-> > drivers/dma/mmp_tdma.c:638:36: error: unused variable 'of_id' [-Werror=unused-variable]
-> >   638 |         const struct of_device_id *of_id;
-> >       |                                    ^~~~~
-> > cc1: all warnings being treated as errors
-> >
-> > Caused by commit
-> >
-> >   a67ba97dfb30 ("dmaengine: Use device_get_match_data()")
-> 
-> FWIW, my patch has the above line removed. Seems it got dropped when applying.
 
-Looks like it got missed while applying the patch. The patch had a
-conflict so I had to manually apply this one...
+--dg275xcvg6oalgtm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sorry to have missed that
+Hi,
 
--- 
-~Vinod
+On Tue, Oct 10, 2023 at 11:27:22AM -0500, Rob Herring wrote:
+> [...]
+> > +allOf:
+> > +  - $ref: snps,dwc3.yaml#
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            const: rockchip,rk3328-dwc3
+> > +    then:
+> > +      properties:
+> > +        clocks:
+> > +          minItems: 3
+> > +          maxItems: 4
+> > +        clock-names:
+> > +          minItems: 3
+> > +          items:
+> > +            - const: ref_clk
+> > +            - const: suspend_clk
+> > +            - const: bus_clk
+> > +            - const: grf_clk
+>=20
+> No need to list everything again. Just:
+>=20
+> contains:
+>   const: grf_clk
+
+No, that does not work because 'grf_clk' is optional and by using
+'contains: grf_clk' the check will complain if the list does not
+contain 'grf_clk'.
+
+> [...] more improvements suggested by Rob [...]
+
+These look all fine to me and I fixed them up for v4.
+
+> > +        clock-names:
+> > +          minItems: 3
+> > +          items:
+> > +            - const: ref_clk
+> > +            - const: suspend_clk
+> > +            - const: bus_clk
+> > +            - const: utmi
+> > +            - const: pipe
+>=20
+> Again, can use 'contains' here. Where 'utmi' is in the list is already=20
+> defined by the top-level schema.
+
+Same issue as above. On RK3588 there is one USB3 controller, which
+needs all 5 clocks and two controllers with just the first 3 clocks.
+I initially had two different compatible strings to have fixed lists,
+but Krzysztof asked to use only a single one.
+
+-- Sebastian
+
+--dg275xcvg6oalgtm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUn5vMACgkQ2O7X88g7
++pq5iQ//SbD019jkFbISwPoG5pufL8vzlz6VbiCInwaeTLu/GuWEXfKMBsIz+1Ui
+p8mJnLWZ+WsvgHHJWDrF/OLlheQ7SJUEx2pd3hKGVI4HmuN/+cQ5Z30Dx4i8NpM9
+IW6hUHyE6HnRIGyM9ZHq51Qa6A/rE0Fas4FBcLo0LUWeE3cpJPIlofGW7rLJ8GEW
+9/dr70KmKSzo1/Lwsno+UY4VQtAdgMjo3vMqVooOwB6KnOAPYZHgK5C/A/JouzWd
+SuvHQ9Bp8iWiuhvLVgkHmVuJ2bjZEmBR0BgoZmQgE/pWcbf+/q6etR2hDafPS/8a
+Pxz4KDrnTSfw6v3ZdmsON+vEsyRdrm/qWlQldstzy22xlmt8NHT3wrbbucTaFj2W
+Sem+RN/Qj2hJeLqVQQPxGBKjCP2XXDH6SZHU0lO5z3YbUUmEh0Sco1kARE01Dg6S
+v7TvHjyDKuUB6UiuqwPrOq4+5Wh+LR3GxJrQqviJ1GzOd5h1iFOjDbKWZoH8KkMG
+OsHHN/zj+09EvatG5M3gUyNoT6upKhXHJhAx5VxNda2MuuikQmG2x6aUzlwJldvu
+dI+sfV+4opYtRakVfvKmVCZo06hHt8j1fRAOKE51x6MReMHL2R2cQWtr1MQpmeJP
+Y9u/fJ0NcKue4wu6YgGBleeH5c/BzSQTP2VfpvFQ0SP7eHHch8U=
+=LnH+
+-----END PGP SIGNATURE-----
+
+--dg275xcvg6oalgtm--
