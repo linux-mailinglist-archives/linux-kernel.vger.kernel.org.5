@@ -2,91 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 541D57C6945
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BA97C6942
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235438AbjJLJRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:17:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
+        id S235490AbjJLJQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:16:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234155AbjJLJRd (ORCPT
+        with ESMTP id S235460AbjJLJQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:17:33 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF0A6CA;
-        Thu, 12 Oct 2023 02:17:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SY5yqmx7UFQ27nMH5z2Z6G4quyyShMn+b9u4K2hwCUk=; b=Kuw8PvSmEOCGiEh1bcE5c93zOf
-        UfMqN9elE915IiKRRyJatxJw8k66yVw8f6StP7tcTqF8Gxk957xNQ+xH9QRVvlkjW6PEkTf5/+/7b
-        Oq0aeMRXXwlo1UoyY8qUo5kTQniVMMjjBKB9dmKVt6Ro7dADusdPGIoTBvvdu5pcli2Ij6KZbv/jH
-        AYkZHhJtd8sDKci0/Kj9OwuLH2kYm0ltifRtcPkzAIeJ5PxAox8Zvbfm3xhh9A9HlqkX1I6qcdGkN
-        wBS2lnFMKio5saaCjl0JbBdZifa31gUptVONJxMgyMeoHmqUKyEencbuaSS6ZhzFlI+Iw+D1jV2aZ
-        ja5cOr/w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qqrn6-001hMl-2e;
-        Thu, 12 Oct 2023 09:17:12 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E353830036C; Thu, 12 Oct 2023 11:15:37 +0200 (CEST)
-Date:   Thu, 12 Oct 2023 11:15:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Ben Woodard <woodard@redhat.com>,
-        Joe Mario <jmario@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Blaikie <blaikie@google.com>,
-        Xu Liu <xliuprof@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>
-Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
-Message-ID: <20231012091537.GM6307@noisy.programming.kicks-ass.net>
-References: <20231012035111.676789-1-namhyung@kernel.org>
+        Thu, 12 Oct 2023 05:16:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A247C6;
+        Thu, 12 Oct 2023 02:16:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83B6CC433C8;
+        Thu, 12 Oct 2023 09:16:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697102167;
+        bh=rDqxFRbS36X3wzsamcQt8JNV0Zh3cEeJ9KK8OwPwL34=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rNjZKIc5WgmZe4aHX0ioCqxU8rNxJtEyXsV/NZV4DN1RQmMfka5uyhlwEN23tcH++
+         DvtKsUTvf7WeFX3gNM1jbai6tEHBjnC5WSe2vcOXwRPCOr/b3FDfIqkksap9giSoRE
+         s8ZzFR5TYZlPEuO1PVfS7muBmugpP9L/kNepxckOC+FZKkDaQYAX7KH91EBMeTI6/s
+         cOt0rlsvEc2dWib0IjTUpxU5qDN83i+LfJoPcELEhqTUqqP8em/P6cOZzwjZysp72F
+         Mt43kC/Rt6W2p/tbfJTbbQItBjW7uSYSQrZQVQgzrbmBZfgEjZfdQY7p/p90selCLE
+         8WvC5QG/YiH4w==
+Date:   Thu, 12 Oct 2023 10:16:02 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RESEND PATCH V2] leds: sc27xx: Move mutex_init() to the end of
+ probe
+Message-ID: <20231012091602.GD8314@google.com>
+References: <20231012034735.804157-1-chunyan.zhang@unisoc.com>
+ <6110db84-546d-fc5c-f241-7923d673bbd5@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231012035111.676789-1-namhyung@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6110db84-546d-fc5c-f241-7923d673bbd5@linux.alibaba.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 08:50:23PM -0700, Namhyung Kim wrote:
+On Thu, 12 Oct 2023, Baolin Wang wrote:
 
-> Actually there's a performance issue about getting disassembly from the
-> objdump for kernel.  On my system, GNU objdump was really slower than the
-> one from LLVM for some reason so I had to pass the following option for
-> each perf report and perf annotate.
 > 
->     $ sudo perf report --objdump=llvm-objdump ...
 > 
->     # To save it in the config file and drop the command line option
->     $ sudo perf config annotate.objdump=llvm-objdump
+> On 10/12/2023 11:47 AM, Chunyan Zhang wrote:
+> > Move the mutex_init() to avoid redundant mutex_destroy() calls after
+> > that for each time the probe fails.
+> > 
+> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > ---
+> > Rebased onto linux-next.
+> > 
+> > V2:
+> > - Move the mutex_init() to the end of .probe() instead of adding
+> > mutex_destroy() according to Lee's comments.
+> > ---
+> >   drivers/leds/leds-sc27xx-bltc.c | 9 ++++-----
+> >   1 file changed, 4 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/leds/leds-sc27xx-bltc.c b/drivers/leds/leds-sc27xx-bltc.c
+> > index af1f00a2f328..ef57e57ecf07 100644
+> > --- a/drivers/leds/leds-sc27xx-bltc.c
+> > +++ b/drivers/leds/leds-sc27xx-bltc.c
+> > @@ -296,7 +296,6 @@ static int sc27xx_led_probe(struct platform_device *pdev)
+> >   		return -ENOMEM;
+> >   	platform_set_drvdata(pdev, priv);
+> > -	mutex_init(&priv->lock);
+> >   	priv->base = base;
+> >   	priv->regmap = dev_get_regmap(dev->parent, NULL);
+> >   	if (!priv->regmap) {
+> > @@ -309,13 +308,11 @@ static int sc27xx_led_probe(struct platform_device *pdev)
+> >   		err = of_property_read_u32(child, "reg", &reg);
+> >   		if (err) {
+> >   			of_node_put(child);
+> > -			mutex_destroy(&priv->lock);
+> >   			return err;
+> >   		}
+> >   		if (reg >= SC27XX_LEDS_MAX || priv->leds[reg].active) {
+> >   			of_node_put(child);
+> > -			mutex_destroy(&priv->lock);
+> >   			return -EINVAL;
+> >   		}
+> > @@ -325,9 +322,11 @@ static int sc27xx_led_probe(struct platform_device *pdev)
+> >   	err = sc27xx_led_register(dev, priv);
+> >   	if (err)
+> > -		mutex_destroy(&priv->lock);
+> > +		return err;
+> > -	return err;
+> > +	mutex_init(&priv->lock);
 > 
-> Even with this change, still the most processing time was spent on the
-> objdump to get the disassembly.  It'd be nice if we can get the result
-> without using objdump at all.
+> I think it is better to prepare all the required resources before
+> registering the led device, what I mean is moving mutex_init() before
+> calling sc27xx_led_register().
 
-So the kernel has an instruction decoder, all we need is something that
-can pretty print the result. IIRC Masami had an early version of that
-somewhere.
+Is the mutex used before this point?
 
-With those bits, and some basic ELF parsing (find in objtool for
-instance) you can implement most of objdump yourself.
+If not, I don't see any reason to initialise it sooner.
+
+-- 
+Lee Jones [李琼斯]
