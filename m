@@ -2,85 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B79BC7C6742
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DAC7C6710
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377940AbjJLHkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 03:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34658 "EHLO
+        id S1378050AbjJLHkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 03:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235326AbjJLHkZ (ORCPT
+        with ESMTP id S1347174AbjJLHkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 03:40:25 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D709CEB
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 00:40:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 65793C433C8;
-        Thu, 12 Oct 2023 07:40:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697096422;
-        bh=BKKA39C9Tt0Yl5gbHxH7plgRTiuALht33EVt+0dZXs8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=W0f3kzq10SC8Yrp7aB0WV20UVG9lh827u9S/TSvFKN3qLm9lubyiYhqXr2tUrALBH
-         jRLlkxTZshwBqVvsW6Y4aC7yazqE3TLu6UuGhHhXAQQEtMhKEJ0NirgE+AV30TGMZ2
-         1/kx+hQnc6qOr3fiiNvxMwvONJp8kvhyRXwBMNlygsONWqgSUFdhoLYB4fW8FnGGmD
-         3tPID4ZYRm2t2kTu1RKwC8awVEhapuDupKGjMOCWad6xwhPKeKuEkPavaErtg0ZSRq
-         cSdjbnL/20B2Cq/gK9drJYe85nJykcgNYK18BeIYXZVcjrXUxnbXQ9UjQZPzU+tzlO
-         SWaC17X0uS9xg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 43C83C595C3;
-        Thu, 12 Oct 2023 07:40:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 12 Oct 2023 03:40:45 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B635BB8;
+        Thu, 12 Oct 2023 00:40:42 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 939D31BF213;
+        Thu, 12 Oct 2023 07:40:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697096441;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=heuK9wS/h1/ViEMBxRuLhXkO1DWVAWnfvQ+18TvSWvU=;
+        b=DFFu+kfmRACXK4mcSTUWdCR7dGinlz6lcaC8WodAR0tD9NKtS2iXvKT1Q215rD7xb/fDV4
+        1bFbVbFcOgHnxxY2vBRz5r6L7vAH898733+QMOTSadBZ2kNud0z01azXLs2zZHvN5xmBZF
+        3oavn2NHYi+bcpq8G0CGbP0nvt7OJgQNQiV0VXkqYYeAASZwLQMT34oLPuAz2Qj4tbT6Y2
+        9HJyvnVfsEIR+g1p2Qe/p2LkYjwyoevVUe0G6vkVTJfv+vKYg3H5yR5VfHpH4o7Gyx4iDv
+        iUBCiIdY10PhmKrXfoYm20dkotoqkX5Bb4k7Z3xG7oT7fU/ro2EEnlzcKD771g==
+From:   Kamel Bouhara <kamel.bouhara@bootlin.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
+        mark.satterthwaite@touchnetix.com, bartp@baasheep.co.uk,
+        hannah.rossiter@touchnetix.com,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        bsp-development.geo@leica-geosystems.com,
+        Kamel Bouhara <kamel.bouhara@bootlin.com>
+Subject: [PATCH v3 0/3] Input: Add TouchNetix axiom touchscreen driver 
+Date:   Thu, 12 Oct 2023 09:40:31 +0200
+Message-Id: <20231012074034.1090436-1-kamel.bouhara@bootlin.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 net] nfc: nci: assert requested protocol is valid
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169709642227.8662.4260240100354019441.git-patchwork-notify@kernel.org>
-Date:   Thu, 12 Oct 2023 07:40:22 +0000
-References: <20231009200054.82557-1-jeremy@jcline.org>
-In-Reply-To: <20231009200054.82557-1-jeremy@jcline.org>
-To:     Jeremy Cline <jeremy@jcline.org>
-Cc:     krzysztof.kozlowski@linaro.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        dvyukov@google.com, linma@zju.edu.cn, ilane@ti.com,
-        linville@tuxdriver.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, horms@kernel.org,
-        syzbot+0839b78e119aae1fec78@syzkaller.appspotmail.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-GND-Sasl: kamel.bouhara@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Add a new driver for the TouchNetix's axiom family of
+touchscreen controller. This driver only support i2c
+and can be later adapted for SPI and USB support.
 
-This patch was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+---
+Changes in v2:
+ - Add device tree binding documentation
+ - Move core functions in axiom_i2c as we only care about i2c support now
+ - Use static function when required
+ - Use syntax dev_err_probe()
+ - Add an hardware based reset
 
-On Mon,  9 Oct 2023 16:00:54 -0400 you wrote:
-> The protocol is used in a bit mask to determine if the protocol is
-> supported. Assert the provided protocol is less than the maximum
-> defined so it doesn't potentially perform a shift-out-of-bounds and
-> provide a clearer error for undefined protocols vs unsupported ones.
-> 
-> Fixes: 6a2968aaf50c ("NFC: basic NCI protocol implementation")
-> Reported-and-tested-by: syzbot+0839b78e119aae1fec78@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=0839b78e119aae1fec78
-> Signed-off-by: Jeremy Cline <jeremy@jcline.org>
-> 
-> [...]
+Changes in v3:
+ - Remove irq-gpios property in dt-binding
+ - Use a generic node name
+ - Fix issues reported in https://lore.kernel.org/oe-kbuild-all/202310100300.oAC2M62R-lkp@intel.com/
 
-Here is the summary with links:
-  - [v2,net] nfc: nci: assert requested protocol is valid
-    https://git.kernel.org/netdev/net/c/354a6e707e29
+Kamel Bouhara (3):
+  dt-bindings: vendor-prefixes: Add TouchNetix AS
+  dt-bindings: input: Add TouchNetix axiom touchscreen
+  Input: Add TouchNetix axiom i2c touchscreen driver
 
-You are awesome, thank you!
+ .../touchscreen/touchnetix,axiom-ax54a.yaml   |  47 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |   7 +
+ drivers/input/touchscreen/Kconfig             |  13 +
+ drivers/input/touchscreen/Makefile            |   1 +
+ .../input/touchscreen/touchnetix_axiom_i2c.c  | 740 ++++++++++++++++++
+ 6 files changed, 810 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/touchnetix,axiom-ax54a.yaml
+ create mode 100644 drivers/input/touchscreen/touchnetix_axiom_i2c.c
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
