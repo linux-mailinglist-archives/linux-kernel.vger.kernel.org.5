@@ -2,168 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 846387C6DB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C074B7C6D95
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 14:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347225AbjJLMNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 08:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49992 "EHLO
+        id S1347208AbjJLMFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 08:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347297AbjJLMNK (ORCPT
+        with ESMTP id S233804AbjJLMFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 08:13:10 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24394D7D;
-        Thu, 12 Oct 2023 04:47:20 -0700 (PDT)
-Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:7ae7:b86d:c19a:877e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1C23666073BA;
-        Thu, 12 Oct 2023 12:47:19 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697111239;
-        bh=WlpSngD7A0Xes3T2AjXSHPISBbEOvphWL+prcr4Zf8E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U0y3rfbaL4QH8KGfD0QLyY1iew+s/RNBKm6GFspghcCrENBXYTXg8xRyIfkir+UF2
-         BKBFLvcqpLoAGTH9nrnD9cRpe9RFUPJ7RxT/pJuD4ZTTom8ck9ThnLkzS9VhqvIAQI
-         haeWlBuz9OM9VpCukP3mpc8LnDJE6WKd9jRl/gF/U6beuuwwaWc7RoRQlQ16bdCxk6
-         nwUedjUjGBuunt274h/m7qex5BLoWLyQ0p133YDSDBI1J6D/cW6Q5xW8G0mQX64rAT
-         OGNo7pUc9Sq4/f//KT1riNexbNxssvif6g+VbhEAO3ZOkFbghKeHDTu+OhopR7xADC
-         0VwRkH4Wse9JA==
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v11 56/56] media: test-drivers: Use helper for DELETE_BUFS ioctl
-Date:   Thu, 12 Oct 2023 13:46:42 +0200
-Message-Id: <20231012114642.19040-57-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
-References: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
+        Thu, 12 Oct 2023 08:05:48 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F66B7;
+        Thu, 12 Oct 2023 05:05:46 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C92KQk023342;
+        Thu, 12 Oct 2023 12:05:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=P0SruXYuZ4fEJEsgDPpc2f+UJe8To1pY+wkzUkXt4LI=;
+ b=PoZlMThnBPFX+PSYeb6Pt8iFq4xeMtMIfSDI8I0C0+z2wsaSF4hDPq1LEhlAqr/BoMKY
+ BswJxbAA54zX03L8HdgxHsc28+KjplepRikh6WFdE5SfCuHN3XOLZzrVg48nQ2EiQSxG
+ Neg5aOD7Kyz7KwK5irw+6rSZfVIosJE5EZKBPiAu+cxESlgGlPSjcoU0d2UxT1DkbSOe
+ cZbIc7MfpmBjaAGTRWv6q0fA1PbDmolPCnKz790GwUS3MLaTtCLiV+Tca25mMP5y2avn
+ /wezupiXDcLZQXcEJo90Gdv6E2ZeoGpojnJL/qsXeetUrRS13HvNjcn1lG+2VjAZUkyf BQ== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tjxxuakax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Oct 2023 12:05:37 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39CBigEg013637;
+        Thu, 12 Oct 2023 12:05:37 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tmfhtb69j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Oct 2023 12:05:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bLcdJtDqyxhV4w0KHAJVHOOgTaChiL2xknadKjzcVJs8mKwJkE/7yQ/ylsPvAKxn5nlU01UiKK8tmZGagEnTumESe86rqz3jNlCGfAzccYV8ZkFlnPkCXRJB3KfZPGKlENb2yafUZwzaUbKL+SaYZMomGWQA0Qi3I68eD0vaA0prHmxkGFLMYLRHm75cTJTJLJAinkWNLAoMz1qo7LJkzP6bwnue4dzObk8GXnpWC02O/0sR64T5ArqRSxTunZbfMEgPIb+mVwhvFPlZhyuqsRFw97ty7xlihibIiukmWgPzHT+oCt5rEZ9moVL50GugQe+d2EjKeyFMIY8sPeU0CQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=P0SruXYuZ4fEJEsgDPpc2f+UJe8To1pY+wkzUkXt4LI=;
+ b=BYhLDkjmG+dAylIHePQr6nYcroXpJ3oaJjaMzZJFUuGo0ifOPYJ4YYN4eC4FF/ilKMX7SgV/AiA3tzkT6oQaYZu4Z729HKAKajPUm84Q7tEYxbfMhXpJz+1xQM/e8mnVsE7lNMSElN6jD5STa40y44wU8bzvRoihH1X+CarCcpB8/oJ+nebb6hUcPAJvxGQqb9+VrQB7Tz3enzd6qYriXgjjTWy8vE8COVdvNTC3LVmIfRueXK+CPMqXYYndZh0GFxKwXid9LQRYW3NcKUYkImFHVr4H0K6KjjFkusTVozDy8X/DmUqsE11h3pdxcKSJlGJ+eLBZFVoYtFDuPaovWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P0SruXYuZ4fEJEsgDPpc2f+UJe8To1pY+wkzUkXt4LI=;
+ b=Yg9IbypUi0ynDPaMuJVTIIBU8pIbG/cTdv9YIbiqGWIjaO4ayqqn/HLhCRKxUph1szPhnZ3p5ZYixM6o8eKAPcEaeILv6z+nNLlAFjFDX75lO6Swy0itjnHir7v+bwI0WWOwx+/troPPsVnGysHAgKOw3AtFKZcDHiqcw+rdYuc=
+Received: from DM6PR10MB3817.namprd10.prod.outlook.com (2603:10b6:5:1fd::22)
+ by SA2PR10MB4730.namprd10.prod.outlook.com (2603:10b6:806:117::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.40; Thu, 12 Oct
+ 2023 12:05:34 +0000
+Received: from DM6PR10MB3817.namprd10.prod.outlook.com
+ ([fe80::b2ff:9828:4632:f1ff]) by DM6PR10MB3817.namprd10.prod.outlook.com
+ ([fe80::b2ff:9828:4632:f1ff%7]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
+ 12:05:34 +0000
+Message-ID: <d5913fe5-c94b-2b30-0d30-1866326e61f9@oracle.com>
+Date:   Thu, 12 Oct 2023 05:05:31 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [External] : Re: [PATCH 1/1] selftests/mm: include mman header to
+ access MREMAP_DONTUNMAP identifier
+Content-Language: en-US
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        akpm@linux-foundation.org, shuah@kernel.org
+Cc:     linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231012064048.433346-1-samasth.norway.ananda@oracle.com>
+ <3be75492-36e7-4ffe-ab0e-ef583b801af1@collabora.com>
+From:   samasth.norway.ananda@oracle.com
+In-Reply-To: <3be75492-36e7-4ffe-ab0e-ef583b801af1@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR07CA0049.namprd07.prod.outlook.com
+ (2603:10b6:a03:60::26) To DM6PR10MB3817.namprd10.prod.outlook.com
+ (2603:10b6:5:1fd::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB3817:EE_|SA2PR10MB4730:EE_
+X-MS-Office365-Filtering-Correlation-Id: dd737b87-7540-4933-13b9-08dbcb1b8a14
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: J794Wq7IvhPCdF2Wj3faDEJJ4nFf1s38ZIEnfo0B0iPpR28CBkvuYR2Q9SpFAouboE9oqK5HIplEq2UNHkVGYmwJRiiWgZfN78AqklZRwhC0tciGl4+ZqHguAjJLkEaQlxpr8P7vD5f7K6SxFYgwzdpl2lwfBXp4ec8HV26+QmkkbK7apLLKmm6q2s/mL/277GeNa6g113ziS20KISu1SmHkJisrV5OawZwXGwKtCdyEKwOnG2dOXrgFKO87Q7BSE7joV5aFmYebZZJOC9Xs5dXl7SiQqxWUmOR9pdMs28B6EBmt5IZ5wq34I1KmBCLWy3Pku/92DWeK3HQOrTe8WaHwBdLzSzsO9y2kWqcDzcMX+u/Uq0ZXifDCakH3xYl3ugr/mmKMSNUCnWzoFjmpwxHbCzNk3glj4jCcjWISf4Jux4bPFqyAnc3p+xG7+v/J9qdNbnNlxlzy87fokvwqpsBhvW6ljUlT4GfGremmOjxVWi0R5q3XMKSrlKN5KhwPkKeKtXlWNYySJ77+ZQq1E0ZASnzskBniau8MaSQQkuGzM1FIOdw3y3pn/URgVZZSoMb2Uqpu/oyD4aY3agqGyl04TMPmYdoVL5aq05RmqtsmS/YML/D1Ou7j1ksk3YM/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3817.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(346002)(39860400002)(136003)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(6512007)(9686003)(478600001)(31696002)(6486002)(86362001)(36756003)(6506007)(53546011)(8676002)(6666004)(8936002)(316002)(4744005)(5660300002)(4326008)(66556008)(66476007)(2906002)(41300700001)(66946007)(38100700002)(26005)(31686004)(2616005)(83380400001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZjlXdjFMUzBkbEZsRnBEK0VRTWtKQXNhMXV3dm9pbFRCK1FxeHRwWGtlbmxy?=
+ =?utf-8?B?WXVwTGhwRWdEaDdobHpsSDFzVjFpem5uN0VOdEF5MlFPY0JBMS9zUzI2NFVm?=
+ =?utf-8?B?UkFWM05icVlaOGxlbitUV3dFd2t5OTdja3JGaGU2dTRneklhWU9sVEQraWNV?=
+ =?utf-8?B?bVVPZlU5VEJ5U2tyL0pscGpySkdPWUE3MEZhNzhqQmNFZ3dHcEY1TmlPRTkr?=
+ =?utf-8?B?SU14dUdqTWx6YXY3N3k4amJtcFpiSm1XQU1tcmlScHIySEZpN01UNzFJRWpy?=
+ =?utf-8?B?QkxxMTJCQk1STGtOWXFYQ1Z5QU42OUR4Vk9oMEdIaUR6N0NyU0VSZ2FydUo4?=
+ =?utf-8?B?VWM5NUxPUWVvK3JSN21ZWllZSUlsR1JPY3lYbFRJYjFMNmhJMTFUTTlQRVEw?=
+ =?utf-8?B?NHhydnZuRXRQUVJkNzhUNnZoVFpLTG1mb1JzaDNRL0JMdHVOZDAxWm10SG9C?=
+ =?utf-8?B?MFFPc0gyOGg0YjlGNlkxa29XNjBla2hjM0kxUC9QalRZcm85Y3lRVXR5cDV0?=
+ =?utf-8?B?NWRSWndvc3BNWHVPVzIvbDdMWlFzeG5qM3FpZDQwL1RSdGhRdnQrMGpoTGlI?=
+ =?utf-8?B?NEhicGFSdjA4ZVgxeS9oMmcrQ2tNV0toektZM3dPOWd1a005ZnN0VmRiVWJt?=
+ =?utf-8?B?b3dQQURTSXZmRVJhZmFBKzNjaUZrMk5CVGZOTUcrVGdrM0lzVGpSYmVRMnNR?=
+ =?utf-8?B?RTZHU0ZhWmNEL3krUGc4MFovbTRPN0tsM0E3dzMzY3BzWDhYS0VRNEtSNmtp?=
+ =?utf-8?B?dHBlQitDWVI1cGdJRlpRcmh0cldidElmTlk4S0tSbHUrMDRnL21rRGVyZERn?=
+ =?utf-8?B?djB3a2J3Q3pnZUVlVzZ2cTdVd0hONnZpL0JGVE1xM2h2S2tLK0tCUm5abStJ?=
+ =?utf-8?B?QVpDRGwwbkNoeWZkNVdkNUc2S0xTL09qM1ZtQW55TzFBTnJxUitSVDlXRVox?=
+ =?utf-8?B?MkFTMURXWmNndFpkLzFPRnkyTWIyTHg2OFRXbVNmdVZOcUk5dlI3cmRCbDZM?=
+ =?utf-8?B?OTMvUmlpL09HaERvN1JUSUVKR0VYS1AvR1Z1d3NuUmJvQmhZbDJ2MitlQ0c0?=
+ =?utf-8?B?UWRobGNCOUxvMGsyWTZ4RkxMaUJZbVpOY085bVNMcy9zYVNkb05IQmtvS3NP?=
+ =?utf-8?B?N1kxZEtZcW5YeWRxTHdlT3E1R2k4WUxrOFQ5SllZc2FpQ05zMUtwRXNna092?=
+ =?utf-8?B?QWxwcHBtWVdGWHdFZGZUNkRPWWxVdFMvcGFKS3Q3MDZqS2VTMk0yWkRuYktT?=
+ =?utf-8?B?RU8waUNPQkZkemJJeFU3Wm82VEhjeElVM1lFc0pkb0dEVkJCY2JiLzlTMlo1?=
+ =?utf-8?B?THp5Z1dFZ3ZRTG5vODZWdDVEdW9QTWVuV0hubzZXYVZDVGJNaTdZL3Rpemsz?=
+ =?utf-8?B?VGVuckxPa2JlMWpUbElyYjdSOVNhaFJZVk1nV3lUNFQ5dkk3eUo4S3hRdTkv?=
+ =?utf-8?B?dkg5ZHJoSGY3ZzZVK3ptekFFbVRLOXFNQ093dnViSXZzcnp0SlJJeFhwK256?=
+ =?utf-8?B?RlgyaXE2V2hwcUR1Q2ZPaFpOU1R6RDVyRjJXMEhXYVZzUXErRGFvU2tqYk1j?=
+ =?utf-8?B?QTRXSDlsREdDMk9oY016NHpGMitrTnp5MHFPRzN1N3hOOStHejg5dVJTajg1?=
+ =?utf-8?B?RGhUUlBveHJtQU14aHM2NitMc3lZbXRCTFcwSUIvTFJqVVA5UExHMGlMazhB?=
+ =?utf-8?B?VEpmM1VHTkZ0V1lmdzdSRk5zY25Sd2hVeDU4d3pmSit3U3hUMUVhejY2Y1Mx?=
+ =?utf-8?B?RFlrMUo4SXJRRDNCZEpyWjB4UHFVUHRiNXMxR3ByLzJwNlhvSEV6ZVIyYWtv?=
+ =?utf-8?B?anhyV1FhQ01oOUNvQ1FXYXphbjFMYXdOMGg0RzhGckh5dExISHZNWXZhVGtL?=
+ =?utf-8?B?TTZZZGpvQUV5TTNuaVlKUlZUQnBoNVQrQU1VSHlneURUc0tOeW9XZVdya0VZ?=
+ =?utf-8?B?ckJwYVBnV1J5UncvNzhXR0xnZGJ3TVlqNlBzUE1lZVRKdmV0dGcrVGhyM1ND?=
+ =?utf-8?B?THoxQ09Db0xBbCtVYlJVSnh4UWxGZVQ2WUNuVko0NEVzZUw5OU5kdjJTRXpk?=
+ =?utf-8?B?c01zUWp5clBpeHZCdGZiaVdPNUtXUlVMV05rMWFWUityTW1BM1hIVVhHN1A1?=
+ =?utf-8?B?UjFsbVlOYlNWN2V0VC9kdldUWTBNaXllUTVIeWxMbDd0OVVSZ21ndmJiTnY1?=
+ =?utf-8?Q?YIIicgh8j14NI4h0Lzb41mo=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 4ta0d/nUN8nUxUisABmNyaYd/h3MwkzEQV0NzrRx4i+ZQK+QmhgC9gUi9Oenyuyyj/SQLfk3mOlgzNM3D+qZKvh0uXSM5vjMZbJQG137xWCn+O+nnUvgr2UkW+DTGnZbEovJlOE4YLcdIf81IcEYe9WIVOfeaGlluqQ1Y1dhVWAjXP7Ax3iPLboh7aPR4y9JV4DtXslct60xBpnmizpGHhqsaQMEqPh5xfDnhtc6WsHhLAcdeB9FeUGyR1c8v02bUsG3fMvRvMURXUqTyenCGAZChFFOAWj3mn+w3pnwkEk3HKyIcg28lvsjgZTdSVrBZIWySXN0T0LJqEmb8eHwuBgY7RZQ40wE/MXmXCmYoouE5EamOd/ay+SQ+7CP55YaFFLSluYGa5wx33PmZQxRMZq04b6ymyDQXeOKXcboQ7QgSVTaQnO9UOGbFFvYwnHyoZl9WfDaEr2HXH+5LObrhqdmkZm+TErocBpyV/3Upyv7r5aFcZsGHQe4XfYQ3vvA8rKwP6fC4jUXpblPx1T0jG8gio63zg4MrEUuN8pzYyacy1IQaCACl3cKJdAvK+0hwKXSK85oiSvSRPfGeGJCOkJ8Pjou2P0o81XVKuEpfqUuAaa/+zDClsGScLkTWTSik9HLy1NTtu0yty2QbpdXqdoxYvL/hL9ZwNDaJIHFQMEVEfrp54yGcEsqTQUx7Irt5w8pEQqvyWF6RrTLwegEuK6Wx0dssuuZh/S3f+PFaEWYDsdqT8ubsDpm4qgrHX+2yPekKdXuQI61LzqPC9omrdcItiKA706DZmpHsQKczNFjdsESwWOlYteJjP+QCnxLysJnSake4PvU8W2pyLpAmQ3i0yioMiR+EWxj4MiRaoKi0HxeBtu9hlGszT7mNWjKVJBEFBaUgWYWvPZm/ZWJu6pAoXcl9qfCyhgkanRDBRw=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd737b87-7540-4933-13b9-08dbcb1b8a14
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3817.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2023 12:05:34.5982
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: trCfxYoB0x+vrWGlv4lXysixEXBL8ZKzzqz6r1Qa99Sk1pOGo4ZrgjDoPdf1lx1rSC5csrPU3QeVK+opL6/YtiZOhZtp2xgYwsvliXqWmZW/Ltmx/xODJcc4wq6JKfFO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4730
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
+ mlxlogscore=988 adultscore=0 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310120099
+X-Proofpoint-GUID: LjomTstHoaGmmyteAsK0KKQlU0QCDudN
+X-Proofpoint-ORIG-GUID: LjomTstHoaGmmyteAsK0KKQlU0QCDudN
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow test drivers to use DELETE_BUFS by adding vb2_ioctl_delete_bufs() helper.
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
----
- drivers/media/test-drivers/vicodec/vicodec-core.c |  2 ++
- drivers/media/test-drivers/vimc/vimc-capture.c    |  2 ++
- drivers/media/test-drivers/visl/visl-video.c      |  2 ++
- drivers/media/test-drivers/vivid/vivid-core.c     | 13 ++++++++++---
- 4 files changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/test-drivers/vicodec/vicodec-core.c b/drivers/media/test-drivers/vicodec/vicodec-core.c
-index 69cbe2c094e1..f14a8fd506d0 100644
---- a/drivers/media/test-drivers/vicodec/vicodec-core.c
-+++ b/drivers/media/test-drivers/vicodec/vicodec-core.c
-@@ -1339,6 +1339,7 @@ static const struct v4l2_ioctl_ops vicodec_ioctl_ops = {
- 	.vidioc_prepare_buf	= v4l2_m2m_ioctl_prepare_buf,
- 	.vidioc_create_bufs	= v4l2_m2m_ioctl_create_bufs,
- 	.vidioc_expbuf		= v4l2_m2m_ioctl_expbuf,
-+	.vidioc_delete_bufs	= v4l2_m2m_ioctl_delete_bufs,
- 
- 	.vidioc_streamon	= v4l2_m2m_ioctl_streamon,
- 	.vidioc_streamoff	= v4l2_m2m_ioctl_streamoff,
-@@ -1725,6 +1726,7 @@ static int queue_init(void *priv, struct vb2_queue *src_vq,
- 	dst_vq->mem_ops = &vb2_vmalloc_memops;
- 	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
- 	dst_vq->lock = src_vq->lock;
-+	dst_vq->supports_delete_bufs = true;
- 
- 	return vb2_queue_init(dst_vq);
- }
-diff --git a/drivers/media/test-drivers/vimc/vimc-capture.c b/drivers/media/test-drivers/vimc/vimc-capture.c
-index aa944270e716..fda7ea3a6cb6 100644
---- a/drivers/media/test-drivers/vimc/vimc-capture.c
-+++ b/drivers/media/test-drivers/vimc/vimc-capture.c
-@@ -221,6 +221,7 @@ static const struct v4l2_ioctl_ops vimc_capture_ioctl_ops = {
- 	.vidioc_expbuf = vb2_ioctl_expbuf,
- 	.vidioc_streamon = vb2_ioctl_streamon,
- 	.vidioc_streamoff = vb2_ioctl_streamoff,
-+	.vidioc_delete_bufs = vb2_ioctl_delete_bufs,
- };
- 
- static void vimc_capture_return_all_buffers(struct vimc_capture_device *vcapture,
-@@ -435,6 +436,7 @@ static struct vimc_ent_device *vimc_capture_add(struct vimc_device *vimc,
- 	q->min_buffers_needed = 2;
- 	q->lock = &vcapture->lock;
- 	q->dev = v4l2_dev->dev;
-+	q->supports_delete_bufs = true;
- 
- 	ret = vb2_queue_init(q);
- 	if (ret) {
-diff --git a/drivers/media/test-drivers/visl/visl-video.c b/drivers/media/test-drivers/visl/visl-video.c
-index 7cac6a6456eb..bd6c112f7846 100644
---- a/drivers/media/test-drivers/visl/visl-video.c
-+++ b/drivers/media/test-drivers/visl/visl-video.c
-@@ -521,6 +521,7 @@ const struct v4l2_ioctl_ops visl_ioctl_ops = {
- 	.vidioc_prepare_buf		= v4l2_m2m_ioctl_prepare_buf,
- 	.vidioc_create_bufs		= v4l2_m2m_ioctl_create_bufs,
- 	.vidioc_expbuf			= v4l2_m2m_ioctl_expbuf,
-+	.vidioc_delete_bufs		= v4l2_m2m_ioctl_delete_bufs,
- 
- 	.vidioc_streamon		= v4l2_m2m_ioctl_streamon,
- 	.vidioc_streamoff		= v4l2_m2m_ioctl_streamoff,
-@@ -728,6 +729,7 @@ int visl_queue_init(void *priv, struct vb2_queue *src_vq,
- 	dst_vq->mem_ops = &vb2_vmalloc_memops;
- 	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
- 	dst_vq->lock = &ctx->vb_mutex;
-+	dst_vq->supports_delete_bufs = true;
- 
- 	return vb2_queue_init(dst_vq);
- }
-diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
-index b5656330578d..e139569a0e9c 100644
---- a/drivers/media/test-drivers/vivid/vivid-core.c
-+++ b/drivers/media/test-drivers/vivid/vivid-core.c
-@@ -769,6 +769,7 @@ static const struct v4l2_ioctl_ops vivid_ioctl_ops = {
- 	.vidioc_expbuf			= vb2_ioctl_expbuf,
- 	.vidioc_streamon		= vb2_ioctl_streamon,
- 	.vidioc_streamoff		= vb2_ioctl_streamoff,
-+	.vidioc_delete_bufs		= vb2_ioctl_delete_bufs,
- 
- 	.vidioc_enum_input		= vivid_enum_input,
- 	.vidioc_g_input			= vivid_g_input,
-@@ -876,12 +877,18 @@ static int vivid_create_queue(struct vivid_dev *dev,
- 	q->type = buf_type;
- 	q->io_modes = VB2_MMAP | VB2_DMABUF;
- 	q->io_modes |= V4L2_TYPE_IS_OUTPUT(buf_type) ?  VB2_WRITE : VB2_READ;
--	if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
-+	if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
- 		q->max_num_buffers = 64;
--	if (buf_type == V4L2_BUF_TYPE_SDR_CAPTURE)
-+		q->supports_delete_bufs = true;
-+	}
-+	if (buf_type == V4L2_BUF_TYPE_SDR_CAPTURE) {
- 		q->max_num_buffers = 1024;
--	if (buf_type == V4L2_BUF_TYPE_VBI_CAPTURE)
-+		q->supports_delete_bufs = true;
-+	}
-+	if (buf_type == V4L2_BUF_TYPE_VBI_CAPTURE) {
- 		q->max_num_buffers = 32768;
-+		q->supports_delete_bufs = true;
-+	}
- 
- 	if (allocators[dev->inst] != 1)
- 		q->io_modes |= VB2_USERPTR;
--- 
-2.39.2
+On 10/12/23 1:06 AM, Muhammad Usama Anjum wrote:
 
+> You have mentioned in other email that MREMAP_DONTUNMAP isn't present in
+> glibc older than 2.32. So including linux/mman.h solves the build error for
+> people having older glibc. Please add this to the description of the patch
+> to give the exact reason this patch should be accepted.
+> 
+
+Thanks Usama. I will send out a v2 patch with updated description as you 
+suggested.
