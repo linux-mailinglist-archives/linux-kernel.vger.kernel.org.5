@@ -2,63 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 170367C7250
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346AF7C7249
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 18:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379495AbjJLQSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 12:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42288 "EHLO
+        id S1379492AbjJLQSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 12:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235748AbjJLQSl (ORCPT
+        with ESMTP id S235745AbjJLQSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Oct 2023 12:18:41 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23257CF
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E2ADA
         for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:18:38 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6c4c594c0eeso731362a34.0
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-57be3d8e738so666609eaf.1
         for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 09:18:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1697127517; x=1697732317; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ooAliJQ037M4eOVQFvZfagVJEv1KTU2SclkArpuWyC4=;
-        b=eK35JLp+y158CfH1wRzgZ7O3989hYXqBIfbxSoZA0sLhfLnWtq2QgsSgELqbf5pTn7
-         NWr/anSNdfMj4sV01wS8MIaSd2v6N1NNOa2SgkaUXazigcHoLTfNVBk4oVJlkYs/FCmu
-         RPVqg81rhiUeFftHM1wb5+xQb6fWU574SeRKNl5R70NFDKh/oMMwCKoWV/LbQa/wAluH
-         AMKPDDx/noGIUiDyWkgolWeV6AIZq7bLTzrcYwHWroEREJdGpLcERVTMM7ozOvtGia0g
-         OyKw5iYNdcDC+TedpD47sr9WsVWjos4o3IbPzgUU8gM8e5P5rbVXHUgAxw/Ci8Mfl6g6
-         sU1Q==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1697127518; x=1697732318; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MoG577lFLPj6Stm65rhB03R9CTrwAM1hWYfR3bj9yuY=;
+        b=S7JMUEfHV+urguW5IMI1djDo6j0vNkxomhInLa/pPu0kCmrkSGlziFc1xBXmANZigy
+         F6hfA9k/Ya8Zkfk+98M5RbGXyYEU19RrDPjDOMJ5+N6uLohgQ7XSSEeUsECknmBlIhsp
+         dogQI+jw2X4B7g7qXk+Ssgx+cwzUVp7WMN6ez+KvCzS25HOgTb4LTQmpx9Q/gCgd4l6O
+         WVekUB7VWFmCFuUlbOd3OEu3Jf+NYzXmsFvX1tynwy0lXp9XCD3rCSUmzujmIiUpuYQ1
+         bWAffpk9e3Os7jsYhyytUe/hkwSQfKvtSiFoX6OJyFh1YY7QZDNMxExJpROFNavRfyWm
+         89WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697127517; x=1697732317;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ooAliJQ037M4eOVQFvZfagVJEv1KTU2SclkArpuWyC4=;
-        b=LJyXTw1YpmdccxcBHdl7Y2f/XZ0U4OMyLynrjN56ZyMVGKK/h1BE4VQ5diXvDrpfFf
-         eiEWLTQU1urqGQGD5/r4jR1A5FwkhD+IbnnpwcOTBdbnJwIjJDz8Mn87uAB8sS2JILQW
-         6JysgYgL+GReuqKFLw1h1RNkH8K01sGYEI5+YZ8HjnFyGOcbxABv77924p1jO2YfAhjX
-         lBgULlwFErGEaNB9lYuxTIzF4ACD7PE+BbKT0tAquDbVxGYPrpNAPfYiMRiXodmPskS0
-         y9FxxTkzNmsallbat2bsB948nWQmSIzKPa8Vv2BePnAOHI1mSvml00m/LI46vZqPC6G2
-         xwKw==
-X-Gm-Message-State: AOJu0YwFBALrGnyM0mpinJdPCwt9wsH+RvRTbwG1ZHeusB4z0CAZvR2w
-        eXoEy8/Hn4/NKCU8kqSYYFsl4o7G9Wbgs0JWXpkZcA==
-X-Google-Smtp-Source: AGHT+IGhfsaoo8siNOMwmrdcB94syobcfwea8ae5I+vCaw2DtZ9MEqnRBQMD79Fap8WSS7ctfAG+CQ==
-X-Received: by 2002:a05:6871:723:b0:1b7:3fd5:87cd with SMTP id f35-20020a056871072300b001b73fd587cdmr28742966oap.48.1697127517298;
+        d=1e100.net; s=20230601; t=1697127518; x=1697732318;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MoG577lFLPj6Stm65rhB03R9CTrwAM1hWYfR3bj9yuY=;
+        b=fwxW4TXupD3ab2JxhoIXkR5OwwzYM1VagVKQ3V8YFNPSr8CxJyAIg+U4jg50QlXXVF
+         +uvFAjl584Ji0a7YCBxBX8KZhyC6uP2WCYlinFXo3Il3gGFe2nrPq+qMtG5vMQ0Cl7Iu
+         yJeaK10bx7pALIrhZT7aHkf5PCQa1bmY447crqhvWgadeExsHwbqCnR8m86iWvAT1QVH
+         8ngq+ngBqUtXhvXRaMCs7KjOcsfSxWW2ltaIbSX4RRC2N+ZDWGunPBjypVmgM8xdG4d9
+         +2YxmbdhzE/fPseN29dozeljQA5iCtwWqfB7Jez/B5cRRkjALaTPa33WPJ3/oJ+OQcIr
+         EQTQ==
+X-Gm-Message-State: AOJu0YzG0w1uDzySK+gtv8V94iExyBZkT7s6dBYVXDNSwcwNKvzlqe4c
+        IGLqPb9h1CZgxlCsyfPzl+SbZrWhHOOskgbK/2MwjQ==
+X-Google-Smtp-Source: AGHT+IFOc92yFX+49qJQbv7QqD7hfYf7CLzNLnI0ftn8sWYTPcgnhfmGlDjl0b3DkerrWH+hlZUUBg==
+X-Received: by 2002:a05:6870:1814:b0:1da:ed10:bcb with SMTP id t20-20020a056870181400b001daed100bcbmr26357001oaf.31.1697127517984;
         Thu, 12 Oct 2023 09:18:37 -0700 (PDT)
 Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id ob16-20020a056871761000b001dd63f65870sm414529oac.28.2023.10.12.09.18.36
+        by smtp.gmail.com with ESMTPSA id ob16-20020a056871761000b001dd63f65870sm414529oac.28.2023.10.12.09.18.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 09:18:36 -0700 (PDT)
+        Thu, 12 Oct 2023 09:18:37 -0700 (PDT)
 From:   David Lechner <dlechner@baylibre.com>
 To:     linux-iio@vger.kernel.org
 Cc:     David Lechner <dlechner@baylibre.com>,
         Jonathan Cameron <jic23@kernel.org>,
         Michael Hennerich <Michael.Hennerich@analog.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 0/2] iio: resolver: ad2s1210: small cleanups
-Date:   Thu, 12 Oct 2023 11:18:11 -0500
-Message-ID: <20231012-ad2s1210-mainline-v1-0-b2ee31c0e9dd@baylibre.com>
+Subject: [PATCH 1/2] iio: resolver: ad2s1210: remove DRV_NAME macro
+Date:   Thu, 12 Oct 2023 11:18:12 -0500
+Message-ID: <20231012-ad2s1210-mainline-v1-1-b2ee31c0e9dd@baylibre.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231012-ad2s1210-mainline-v1-0-b2ee31c0e9dd@baylibre.com>
+References: <20231012-ad2s1210-mainline-v1-0-b2ee31c0e9dd@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.12.3
@@ -72,23 +75,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series contains a few small cleanups for the ad2s1210 resolver
-driver following up from the previous series[1].
+The DRV_NAME macro is only used in one place in the ad2s1210 driver and
+is not really needed so let's remove it.
 
-[1] https://lore.kernel.org/linux-iio/20231012092522.27ef48dd@jic23-huawei
-
+Suggested-by: Jonathan Cameron <jic23@kernel.org>
+Signed-off-by: David Lechner <dlechner@baylibre.com>
 ---
-David Lechner (2):
-      iio: resolver: ad2s1210: remove DRV_NAME macro
-      iio: resolver: ad2s1210: remove of_match_ptr()
+ drivers/iio/resolver/ad2s1210.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
- drivers/iio/resolver/ad2s1210.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
----
-base-commit: 291e45eeeb901b1d22b74ac5ea48cab3c407c705
-change-id: 20231012-ad2s1210-mainline-d80cc13acdce
+diff --git a/drivers/iio/resolver/ad2s1210.c b/drivers/iio/resolver/ad2s1210.c
+index bd4a90c222b5..00562bc542bb 100644
+--- a/drivers/iio/resolver/ad2s1210.c
++++ b/drivers/iio/resolver/ad2s1210.c
+@@ -68,8 +68,6 @@
+ #include <linux/iio/trigger_consumer.h>
+ #include <linux/iio/triggered_buffer.h>
+ 
+-#define DRV_NAME "ad2s1210"
+-
+ /* control register flags */
+ #define AD2S1210_ADDRESS_DATA		BIT(7)
+ #define AD2S1210_PHASE_LOCK_RANGE_44	BIT(5)
+@@ -1509,7 +1507,7 @@ MODULE_DEVICE_TABLE(spi, ad2s1210_id);
+ 
+ static struct spi_driver ad2s1210_driver = {
+ 	.driver = {
+-		.name = DRV_NAME,
++		.name = "ad2s1210",
+ 		.of_match_table = of_match_ptr(ad2s1210_of_match),
+ 	},
+ 	.probe = ad2s1210_probe,
 
-Best regards,
 -- 
-David Lechner <dlechner@baylibre.com>
+2.42.0
 
