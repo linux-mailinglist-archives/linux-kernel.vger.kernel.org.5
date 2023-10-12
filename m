@@ -2,223 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E708D7C69DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A850A7C69F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235574AbjJLJmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
+        id S235542AbjJLJqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235558AbjJLJl6 (ORCPT
+        with ESMTP id S235480AbjJLJqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:41:58 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AF591;
-        Thu, 12 Oct 2023 02:41:53 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 425331F74B;
-        Thu, 12 Oct 2023 09:41:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697103712; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vj1bsy2Gunm8i8C/E8CXqhB/cI+iZsazxKAsUR5zHAo=;
-        b=RtaNrwwdPmko1+Z5dMfMo8fk4BAdxuUKHQGrcfRW9XK5UBNcXt1ObAbPvfF9kaG3TKWbDW
-        f1FU+5Qcf8DdK/mNL6l7iqkysgBtWdCK9a1dRycBmB08cDZdh9hvciWiX5zKIJEKtL/HIs
-        fIxTNojv114ZA/OGxOzTa5LVQVqXgHA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697103712;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vj1bsy2Gunm8i8C/E8CXqhB/cI+iZsazxKAsUR5zHAo=;
-        b=8pEMSLQev2iW1GvcBoTUB1M+BNVeiceidtnBFKAQKqpAJYDTHIvoK8ab6eJL9WrqXDkg37
-        bvB/aPwT9sr5enDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2FE4B139ED;
-        Thu, 12 Oct 2023 09:41:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id iVCSC2C/J2ULdQAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 12 Oct 2023 09:41:52 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id B14F8A06B0; Thu, 12 Oct 2023 11:41:51 +0200 (CEST)
-Date:   Thu, 12 Oct 2023 11:41:51 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Max Kellermann <max.kellermann@ionos.com>,
-        Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
-        Dave Kleikamp <shaggy@kernel.org>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net,
-        Yang Xu <xuyang2018.jy@fujitsu.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
- support is disabled
-Message-ID: <20231012094151.qrha5b2him43mom5@quack3>
-References: <CAKPOu+-nC2bQTZYL0XTzJL6Tx4Pi1gLfNWCjU2Qz1f_5CbJc1w@mail.gmail.com>
- <20231011100541.sfn3prgtmp7hk2oj@quack3>
- <CAKPOu+_xdFALt9sgdd5w66Ab6KTqiy8+Z0Yd3Ss4+92jh8nCwg@mail.gmail.com>
- <20231011120655.ndb7bfasptjym3wl@quack3>
- <CAKPOu+-hLrrpZShHh0o6uc_KMW91suEd0_V_uzp5vMf4NM-8yw@mail.gmail.com>
- <CAKPOu+_0yjg=PrwAR8jKok8WskjdDEJOBtu3uKR_4Qtp8b7H1Q@mail.gmail.com>
- <20231011135922.4bij3ittlg4ujkd7@quack3>
- <20231011-braumeister-anrufen-62127dc64de0@brauner>
- <20231011162904.3dxkids7zzspcolp@quack3>
- <20231012-klebt-wahljahr-a29e40a2ea2a@brauner>
+        Thu, 12 Oct 2023 05:46:03 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A1368A9;
+        Thu, 12 Oct 2023 02:46:01 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23A8813D5;
+        Thu, 12 Oct 2023 02:46:42 -0700 (PDT)
+Received: from [10.57.69.218] (unknown [10.57.69.218])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1551B3F762;
+        Thu, 12 Oct 2023 02:45:58 -0700 (PDT)
+Message-ID: <998b90f4-1b04-72b0-7524-afe997db1b33@arm.com>
+Date:   Thu, 12 Oct 2023 10:45:57 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231012-klebt-wahljahr-a29e40a2ea2a@brauner>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 1/3] arm: perf: Include threshold control fields valid
+ in PMEVTYPER mask
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Zaid Al-Bassam <zalbassam@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev
+References: <20231010141551.2262059-1-james.clark@arm.com>
+ <20231010141551.2262059-2-james.clark@arm.com> <ZSZb2H8O5fuU3UrA@linux.dev>
+Content-Language: en-US
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <ZSZb2H8O5fuU3UrA@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 12-10-23 11:22:29, Christian Brauner wrote:
-> On Wed, Oct 11, 2023 at 06:29:04PM +0200, Jan Kara wrote:
-> > On Wed 11-10-23 17:27:37, Christian Brauner wrote:
-> > > On Wed, Oct 11, 2023 at 03:59:22PM +0200, Jan Kara wrote:
-> > > > On Wed 11-10-23 14:27:49, Max Kellermann wrote:
-> > > > > On Wed, Oct 11, 2023 at 2:18 PM Max Kellermann <max.kellermann@ionos.com> wrote:
-> > > > > > But without the other filesystems. I'll resend it with just the
-> > > > > > posix_acl.h hunk.
-> > > > > 
-> > > > > Thinking again, I don't think this is the proper solution. This may
-> > > > > server as a workaround so those broken filesystems don't suffer from
-> > > > > this bug, but it's not proper.
-> > > > > 
-> > > > > posix_acl_create() is only supposed to appy the umask if the inode
-> > > > > supports ACLs; if not, the VFS is supposed to do it. But if the
-> > > > > filesystem pretends to have ACL support but the kernel does not, it's
-> > > > > really a filesystem bug. Hacking the umask code into
-> > > > > posix_acl_create() for that inconsistent case doesn't sound right.
-> > > > > 
-> > > > > A better workaround would be this patch:
-> > > > > https://patchwork.kernel.org/project/linux-nfs/patch/151603744662.29035.4910161264124875658.stgit@rabbit.intern.cm-ag/
-> > > > > I submitted it more than 5 years ago, it got one positive review, but
-> > > > > was never merged.
-> > > > > 
-> > > > > This patch enables the VFS's umask code even if the filesystem
-> > > > > prerents to support ACLs. This still doesn't fix the filesystem bug,
-> > > > > but makes VFS's behavior consistent.
-> > > > 
-> > > > OK, that solution works for me as well. I agree it seems a tad bit cleaner.
-> > > > Christian, which one would you prefer?
-> > > 
-> > > So it always bugged me that POSIX ACLs push umask stripping down into
-> > > the individual filesystems but it's hard to get rid of this. And we
-> > > tried to improve the situation during the POSIX ACL rework by
-> > > introducing vfs_prepare_umask().
-> > > 
-> > > Aside from that, the problem had been that filesystems like nfs v4
-> > > intentionally raised SB_POSIXACL to prevent umask stripping in the VFS.
-> > > IOW, for them SB_POSIXACL was equivalent to "don't apply any umask".
-> > 
-> > Ah, what a hack...
-> > 
-> > > And afaict nfs v4 has it's own thing going on how and where umasks are
-> > > applied. However, since we now have the following commit in vfs.misc:
-> > > 
-> > > commit f61b9bb3f8386a5e59b49bf1310f5b34f47bcef9
-> > > Author:     Jeff Layton <jlayton@kernel.org>
-> > > AuthorDate: Mon Sep 11 20:25:50 2023 -0400
-> > > Commit:     Christian Brauner <brauner@kernel.org>
-> > > CommitDate: Thu Sep 21 15:37:47 2023 +0200
-> > > 
-> > >     fs: add a new SB_I_NOUMASK flag
-> > > 
-> > >     SB_POSIXACL must be set when a filesystem supports POSIX ACLs, but NFSv4
-> > >     also sets this flag to prevent the VFS from applying the umask on
-> > >     newly-created files. NFSv4 doesn't support POSIX ACLs however, which
-> > >     causes confusion when other subsystems try to test for them.
-> > > 
-> > >     Add a new SB_I_NOUMASK flag that allows filesystems to opt-in to umask
-> > >     stripping without advertising support for POSIX ACLs. Set the new flag
-> > >     on NFSv4 instead of SB_POSIXACL.
-> > > 
-> > >     Also, move mode_strip_umask to namei.h and convert init_mknod and
-> > >     init_mkdir to use it.
-> > > 
-> > >     Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > >     Message-Id: <20230911-acl-fix-v3-1-b25315333f6c@kernel.org>
-> > >     Signed-off-by: Christian Brauner <brauner@kernel.org>
-> > > 
-> > > I think it's possible to pick up the first patch linked above:
-> > >    
-> > > fix umask on NFS with CONFIG_FS_POSIX_ACL=n doesn't lead to any
-> > > 
-> > > and see whether we see any regressions from this.
-> > > 
-> > > The second patch I can't easily judge that should go through nfs if at
-> > > all.
-> > > 
-> > > So proposal/question: should we take the first patch into vfs.misc?
-> > 
-> > Sounds good to me. I have checked whether some other filesystem does not
-> > try to play similar games as NFS and it appears not although overlayfs does
-> > seem to play some games with umasks.
-> 
-> I think that overlayfs sets SB_POSIXACL unconditionally to ensure that
-> the upper filesystem can decide where the umask needs to be stripped. If
-> the upper filesystem doesn't have SB_POSIXACL then the umask will be
-> stripped directly in e.g., vfs_create(), and vfs_tmpfile(). If it does
-> then it will be done in the upper filesystems.
-> 
-> So with the patch I linked above that we have in vfs.misc we should be
-> able to  change overlayfs to behave similar to NFS:
 
-Yep, I was thinking that this might be what overlayfs wants. But I know
-far to few about overlayfs to be sure ;) That's why I've CCed Amir in my
-previous email...
 
-								Honza
+On 11/10/2023 09:24, Oliver Upton wrote:
+> Hi James,
+> 
+> On Tue, Oct 10, 2023 at 03:15:41PM +0100, James Clark wrote:
+>> FEAT_PMUv3_TH (Armv8.8) adds two new fields to PMEVTYPER, so include
+>> them in the mask. These aren't writable on 32 bit kernels as they are in
+>> the high part of the register, so split the mask definition to the asm
+>> files for each platform.
+>>
+>> Now where the value is used in some parts of KVM, include the asm file.
+>> There is no impact on guest PMUs emulated with KVM because the new
+>> fields are ignored when constructing the attributes for opening the
+>> event. But if threshold support is added to KVM at a later time no
+>> change to the mask will be needed.
+> 
+> KVM should treat TH and TC as RES0 if the feature isn't virtualized. I'd
 
+Ok will keep that in mind for if we virtualize it in the future. It
+looks like it will have to happen conditionally depending on the
+presence of the feature. But it looks like your current patch has the
+res0 fix for now.
+
+> rather move KVM away from using ARMV8_PMU_EVTYPE_MASK in the first
+> place. Looks like we already have an issue with the NSH bit, so I've
+> sent the below patch to fix it.
 > 
-> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-> index 9f43f0d303ad..361189b676b0 100644
-> --- a/fs/overlayfs/super.c
-> +++ b/fs/overlayfs/super.c
-> @@ -1489,8 +1489,16 @@ int ovl_fill_super(struct super_block *sb, struct fs_context *fc)
->         sb->s_xattr = ofs->config.userxattr ? ovl_user_xattr_handlers :
->                 ovl_trusted_xattr_handlers;
->         sb->s_fs_info = ofs;
-> +#ifdef CONFIG_FS_POSIX_ACL
->         sb->s_flags |= SB_POSIXACL;
-> +#endif
->         sb->s_iflags |= SB_I_SKIP_SYNC | SB_I_IMA_UNVERIFIABLE_SIGNATURE;
-> +       /*
-> +        * Ensure that umask handling is done by the filesystems used
-> +        * for the the upper layer instead of overlayfs as that would
-> +        * lead to unexpected results.
-> +        */
-> +       sb->s_iflags |= SB_I_NOUMASK;
+> https://lore.kernel.org/kvmarm/20231011081649.3226792-3-oliver.upton@linux.dev/
 > 
->         err = -ENOMEM;
->         root_dentry = ovl_get_root(sb, ctx->upper.dentry, oe);
-> 
-> Which means that umask handling will be done by the upper filesystems
-> just as is done right now and overlayfs can stop advertising SB_POSIXACL
-> support on a kernel that doesn't have support for it compiled in.
-> 
-> How does that sound?
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+
