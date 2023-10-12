@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A62B7C66DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6647C66C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 09:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378122AbjJLHms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 03:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46532 "EHLO
+        id S1378076AbjJLHoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 03:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378087AbjJLHm1 (ORCPT
+        with ESMTP id S1378051AbjJLHn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 03:42:27 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C9F101
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 00:42:21 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4054496bde3so7013565e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 00:42:21 -0700 (PDT)
+        Thu, 12 Oct 2023 03:43:58 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475BE90
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 00:43:57 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-313e742a787so329133f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 00:43:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697096540; x=1697701340; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697096636; x=1697701436; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=zVnJLtGE+EngqJ1AlaD5MygGW7yvysF32WwB76+2uYU=;
-        b=dQlnklHAUNvXbjZfflh3hYT++0z5g32/UqPgNwJK+Yh0FtX8FeB4Xj0DAoOJfY9j/w
-         1J1jlOEAoa5wQd69c5jo7rLZhfbr+gPDo5f4s9c0Vpu50ZO0iKduia3ocONorMKvbJBK
-         B7shpYYq1J/U+sKPzrybV0kg5h7HH96fZ6uvUEPYZrlEwm7mGFOXjOMxtKLqvMmM4Dt+
-         VYLrNOxzEVaFVvyF03HK/mRmXEys94DbDITkvdXs9+YKoFnBxZoVObpHrtIof35Vv4L6
-         RYWqMXtj+ahiDgHV4DOVwPA5CSk2AQMPKetXWNyBfLD+3ocphmamfxc19wsPS3rzk2Rc
-         8Rng==
+        bh=6pGb3HGceT5/2sWjhWBJAACKQ5znAHiL9SXNlGtYAVU=;
+        b=XpRk4LoW8NG/6ivu/yLDQ0Kih+zA07VKEpIaJ5kt7b7n+ezYDxmN52gXTJ9SVmNFHX
+         hdBqlF4elBpB020rVsaBt9eqFYo/UevkSUIrVCrgMVFtxTZlxTNAbxNEfNSBfZne14CL
+         gFFTFGtAZub0SRLFZ19a3JuV8pWGWC3qVk64D/GosCb2o0qk85Xpe7Bfkb/VCl+1eIg6
+         q0nsli6bVdxVAMg4oEamiLIwNvUenzGLc3P8K4AQVt6bbMTknSUvlkyrdMaNnW0j0jMO
+         e+rqp6gfNcbiDjMWxpCfwFUIhKmDYzEMShFbOWFBuzu3BNbk7lbHgVTuIdUFUnxGzUXW
+         WVWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697096540; x=1697701340;
+        d=1e100.net; s=20230601; t=1697096636; x=1697701436;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zVnJLtGE+EngqJ1AlaD5MygGW7yvysF32WwB76+2uYU=;
-        b=HkwwL6a7VUDIQ2EqTFV5IcvfTWnnbsDZ2ce+5cY1BtxQaby++VR+PWJnSZ7PtQsUgc
-         mh7+RLqgm+k9aqavdnrxSfoIhaiUuI3ruW6dVoJWHrZ+YA/tiKWwyUwew1L46xlJvS+5
-         tyWtRd+6fW8QEyz78S3iva2o/PM+vSPxZZlMTITlkfKFevfCg50CsUYk6Lh7ZOPBD3yl
-         SHl5q3iU9uFwvMgDQDFPFuxIN5qvpzCnVl5XNdackFJ3bSGLcBWKRaqflHk8gUd5gHJm
-         Rmi8tsjbi+kA3Ns89R2q5cyyW2EiIWXcY7da1iMjmMu93Hj0gk6MqOz0joDAZPzKA688
-         ccqQ==
-X-Gm-Message-State: AOJu0Ywx/lIGDrvvLZVkWj3vs51Xqm0nBd1kWAtanlqueu/9Z4NBW4ov
-        f0Dr1sVT5tZ3JdooU3r10604Lg==
-X-Google-Smtp-Source: AGHT+IGQg5JBcPhAKcdMSF1XfI0B94fUB/VhPkVgTYr/0l2HFAe9wFb8is/ekkWSEYK+b/PuUcmdoQ==
-X-Received: by 2002:a05:600c:1caa:b0:407:5b54:bb15 with SMTP id k42-20020a05600c1caa00b004075b54bb15mr4730207wms.36.1697096539734;
-        Thu, 12 Oct 2023 00:42:19 -0700 (PDT)
+        bh=6pGb3HGceT5/2sWjhWBJAACKQ5znAHiL9SXNlGtYAVU=;
+        b=iHxSFzSToqhWpdIrwgPZ6AtvSeaYwAqX//dX8lGlRb3eH43iLUBjp3Jh92Ty/5Wptr
+         PnYtwZ9v7JLb2/HgP2KvZIQomPqHbRBULPh30B7OMV/eWVhmkrRLdzBQwOMIOdx1ogjB
+         b0meyIT4gs/qPuZY3qtRZjOxp4UNuz2qNqISPcT3IK8gwqufky/gxANfAsiIa0CBkgjp
+         5gppx1XxWgpz0vyX6v3gFi7OdQDFVBX+NNl5m5IQXsPsd53Xnj6hOOGZLXXwf4v85QaL
+         ng1DViRGi/AsT7LSG5YHiM+81bErqpEjbMmt9iso2SpEeMgyxF2Sn3Q5R6ZEDuHPGMwZ
+         Cwbw==
+X-Gm-Message-State: AOJu0Yz3Fe25kZl5cxTpFpiDee5AADJjUeUcUvuIaQstFRQzXBmLLFfp
+        ioUgsLh3Xw1YJBby64O/EA3B1w==
+X-Google-Smtp-Source: AGHT+IFaWxysZLgTN32QN8lGWXQc+RXod5GHTptPjZL4LBGic628OKN+rsGkNpFfMStt2tFVcBuAVg==
+X-Received: by 2002:adf:ff88:0:b0:319:5234:5c92 with SMTP id j8-20020adfff88000000b0031952345c92mr14497982wrr.35.1697096635651;
+        Thu, 12 Oct 2023 00:43:55 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id v15-20020a5d43cf000000b003233b554e6esm17680843wrr.85.2023.10.12.00.42.18
+        by smtp.gmail.com with ESMTPSA id v15-20020a5d43cf000000b003233b554e6esm17680843wrr.85.2023.10.12.00.43.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 00:42:19 -0700 (PDT)
-Message-ID: <cfc9b2cc-e0a8-4115-a7c5-a75654adb84a@linaro.org>
-Date:   Thu, 12 Oct 2023 09:42:17 +0200
+        Thu, 12 Oct 2023 00:43:55 -0700 (PDT)
+Message-ID: <abe72aae-c43c-487a-8021-2c0f54319a5b@linaro.org>
+Date:   Thu, 12 Oct 2023 09:43:54 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: i2c: mv64xxx: add reset-gpios property
+Subject: Re: [PATCH v2 1/2] dt-bindings: usb: Add the binding example for the
+ Genesys Logic GL3523 hub
 Content-Language: en-US
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        gregory.clement@bootlin.com, andi.shyti@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+To:     Anand Moon <linux.amoon@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Icenowy Zheng <uwu@icenowy.me>
+Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20231012035838.2804064-1-chris.packham@alliedtelesis.co.nz>
- <20231012035838.2804064-2-chris.packham@alliedtelesis.co.nz>
+References: <20231011051152.133257-1-linux.amoon@gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -109,11 +111,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231012035838.2804064-2-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20231011051152.133257-1-linux.amoon@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -122,15 +124,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2023 05:58, Chris Packham wrote:
-> Add a reset-gpios property to the marvell,mv64xxx-i2c binding.
+On 11/10/2023 07:11, Anand Moon wrote:
+> Add the binding example for the USB3.1 Genesys Logic GL3523
+> integrates with USB 3.1 Gen 1 Super Speed and USB 2.0 High-Speed
+> hub.
+
+That's not what the patch does.
+
+> 
+> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+> ---
+> New patch.
+> ---
+>  .../bindings/usb/genesys,gl850g.yaml          | 28 +++++++++++++++++--
+>  1 file changed, 25 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+> index d0927f6768a4..2f6e0c870e1d 100644
+> --- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+> +++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+> @@ -22,29 +22,51 @@ properties:
+>    reg: true
+>  
+>    reset-gpios:
+> +    maxItems: 1
 
 Why?
 
-> 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
+>      description: GPIO controlling the RESET# pin.
+>  
+>    vdd-supply:
+>      description:
+>        the regulator that provides 3.3V core power to the hub.
+>  
+> +  peer-hub:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      phandle to the peer hub on the controller.
+> +
+>  required:
+>    - compatible
+>    - reg
+> +  - reset-gpios
 
+Why?
+
+> +  - vdd-supply
+> +  - peer-hub
+>  
+>  additionalProperties: false
+>  
+>  examples:
+>    - |
+>      #include <dt-bindings/gpio/gpio.h>
+> +
+>      usb {
+>          dr_mode = "host";
+>          #address-cells = <1>;
+>          #size-cells = <0>;
+>  
+> -        hub: hub@1 {
+> -            compatible = "usb5e3,608";
+> +        /* 2.0 hub on port 1 */
+> +        hub_2_0: hub@1 {
+> +            compatible = "usb5e3,610";
+>              reg = <1>;
+> -            reset-gpios = <&pio 7 2 GPIO_ACTIVE_LOW>;
+> +            vdd-supply = <&vcc_5v>;
+> +            peer-hub = <&hub_3_0>;
+> +            reset-gpios = <&gpio 20 GPIO_ACTIVE_LOW>;
+> +        };
+> +
+> +        /* 3.1 hub on port 4 */
+> +        hub_3_0: hub@2 {
+> +            compatible = "usb5e3,620";
+> +            reg = <2>;
+> +            vdd-supply = <&vcc_5v>;
+> +            peer-hub = <&hub_2_0>;
+> +            reset-gpios = <&gpio 20 GPIO_ACTIVE_LOW>;
+
+Really, what is happening here?
 
 Best regards,
 Krzysztof
