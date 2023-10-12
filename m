@@ -2,179 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B177C7087
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BEC47C708A
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346441AbjJLOmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 10:42:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
+        id S1346745AbjJLOoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 10:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjJLOmt (ORCPT
+        with ESMTP id S229586AbjJLOn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:42:49 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58284B8;
-        Thu, 12 Oct 2023 07:42:48 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C368C21899;
-        Thu, 12 Oct 2023 14:42:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697121766; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kBONdLWW5ZhlXA0fL/GHc+x8uvWg1IlMsTSWZwrIWBs=;
-        b=L7p0c+y7daLg5keyxjWIlcF6crevrCD1/mrmKxY+espRtapFQlZJ6mTfJKxliPbfsiC0Zk
-        jH6pS6Kya3P7cQ+ucjJcXhM/TrfxhfNZo1VUbkA8AZx016pIfYuoKmqIUhirA4VJOirkDq
-        0EgKNKSWvRGF3RsAFFC8TYZcTaMPkDU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697121766;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kBONdLWW5ZhlXA0fL/GHc+x8uvWg1IlMsTSWZwrIWBs=;
-        b=J7vo2vVBn3fUELiY4SRqm5W1alKUsAA71+aDqjN4NwgWqJelWk9OSdwSnY1rIMN3gPe5Qv
-        1ExJHgq3GaibDOCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AF9A0139F9;
-        Thu, 12 Oct 2023 14:42:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Sw/OKuYFKGXVHQAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 12 Oct 2023 14:42:46 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 2E53FA06B0; Thu, 12 Oct 2023 16:42:46 +0200 (CEST)
-Date:   Thu, 12 Oct 2023 16:42:46 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, Christian Brauner <brauner@kernel.org>,
-        Max Kellermann <max.kellermann@ionos.com>,
-        Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
-        Dave Kleikamp <shaggy@kernel.org>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net,
-        Yang Xu <xuyang2018.jy@fujitsu.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
- support is disabled
-Message-ID: <20231012144246.h3mklfe52gwacrr6@quack3>
-References: <20231011100541.sfn3prgtmp7hk2oj@quack3>
- <CAKPOu+_xdFALt9sgdd5w66Ab6KTqiy8+Z0Yd3Ss4+92jh8nCwg@mail.gmail.com>
- <20231011120655.ndb7bfasptjym3wl@quack3>
- <CAKPOu+-hLrrpZShHh0o6uc_KMW91suEd0_V_uzp5vMf4NM-8yw@mail.gmail.com>
- <CAKPOu+_0yjg=PrwAR8jKok8WskjdDEJOBtu3uKR_4Qtp8b7H1Q@mail.gmail.com>
- <20231011135922.4bij3ittlg4ujkd7@quack3>
- <20231011-braumeister-anrufen-62127dc64de0@brauner>
- <20231011170042.GA267994@mit.edu>
- <20231011172606.mztqyvclq6hq2qa2@quack3>
- <20231012142918.GB255452@mit.edu>
+        Thu, 12 Oct 2023 10:43:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A32A9;
+        Thu, 12 Oct 2023 07:43:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RCGoc6KqqltWggrW6SimibQ1DlxSv60q2tDrHJshffs=; b=VFVXm/pyFJYQilsOh0YcsxiAt/
+        r97iKwxOKRNHJSoTDO1oXS7d2c3szm6gkkM8nvCv2HqXjywypDixbBPTCPX44hX62u8S/Mpxs5onF
+        yjqwX5p7ugpU+iOO3WruLl3EwWtz4kjI1N4hQWBxcH95cCGySPVeANsHEcS6mjTDiY315UWgwFqhb
+        FvhoV+Sdu8pSaCBe23tBOqRzG+0luoEHzww4Ck4t3QANgkXcpyJOlq2IH9Cc+9VHbPKmTPLOwxBST
+        uxDbsc5S175i5R4/ZMXMQFm+xHPbB17emnkd5pIHulnEJnoJ7pNh1GQjYohTMzcZJGiUKUt+aLgwc
+        Rjr3tNEQ==;
+Received: from [2001:8b0:10b:5:8fd2:9e3e:cd2f:735f] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qqwup-00HSUF-4K; Thu, 12 Oct 2023 14:43:55 +0000
+Message-ID: <bb0e7a9f016f22993303dd10c2c92a6ef3c7ebf6.camel@infradead.org>
+Subject: Re: [PATCH v6 06/38] mm: Add default definition of set_ptes()
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>,
+        xen-devel <xen-devel@lists.xenproject.org>
+Date:   Thu, 12 Oct 2023 15:43:54 +0100
+In-Reply-To: <ZSf9DNSvgbT9DLmk@casper.infradead.org>
+References: <20230802151406.3735276-1-willy@infradead.org>
+         <20230802151406.3735276-7-willy@infradead.org>
+         <4c63ee3634ccfed7d687fcbdd9db60663bce481f.camel@infradead.org>
+         <ZSf9DNSvgbT9DLmk@casper.infradead.org>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-BEEc0mgIHGyqyvDjEr79"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012142918.GB255452@mit.edu>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -10.60
-X-Spamd-Result: default: False [-10.60 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[15];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         FREEMAIL_CC(0.00)[suse.cz,kernel.org,ionos.com,redhat.com,gmail.com,suse.com,vger.kernel.org,lists.sourceforge.net,fujitsu.com]
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 12-10-23 10:29:18, Theodore Ts'o wrote:
-> On Wed, Oct 11, 2023 at 07:26:06PM +0200, Jan Kara wrote:
-> > I don't think this is accurate. posix_acl_create() needs unmasked 'mode'
-> > because instead of using current_umask() for masking it wants to use
-> > whatever is stored in the ACLs as an umask.
-> > 
-> > So I still think we need to keep umask handling in both posix_acl_create()
-> > and vfs_prepare_mode(). But filesystem's only obligation would be to call
-> > posix_acl_create() if the inode is IS_POSIXACL. No more caring about when
-> > to apply umask and when not based on config or mount options.
-> 
-> Ah, right, thanks for the clarification.  I *think* the following
-> patch in the ext4 dev branch (not yet in Linus's tree, but it should
-> be in linux-next) should be harmless, though, right?  And once we get
-> the changes in vfs_prepare_mode() we can revert in ext4 --- or do
-> folks I think I should just drop it from the ext4 dev branch now?
 
-It definitely does no harm. As you say, you can revert it once the VFS
-changes land if you want.
+--=-BEEc0mgIHGyqyvDjEr79
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-								Honza
+T24gVGh1LCAyMDIzLTEwLTEyIGF0IDE1OjA1ICswMTAwLCBNYXR0aGV3IFdpbGNveCB3cm90ZToK
+PiBPbiBUaHUsIE9jdCAxMiwgMjAyMyBhdCAwMjo1MzowNVBNICswMTAwLCBEYXZpZCBXb29kaG91
+c2Ugd3JvdGU6Cj4gPiA+ICvCoMKgwqDCoMKgwqDCoGFyY2hfZW50ZXJfbGF6eV9tbXVfbW9kZSgp
+Owo+ID4gPiArwqDCoMKgwqDCoMKgwqBmb3IgKDs7KSB7Cj4gPiA+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqBzZXRfcHRlKHB0ZXAsIHB0ZSk7Cj4gPiA+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqBpZiAoLS1uciA9PSAwKQo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGJyZWFrOwo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgcHRlcCsrOwo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+cHRlID0gX19wdGUocHRlX3ZhbChwdGUpICsgKDFVTCA8PCBQRk5fUFRFX1NISUZUKSk7Cj4gPiA+
+ICvCoMKgwqDCoMKgwqDCoH0KPiA+ID4gK8KgwqDCoMKgwqDCoMKgYXJjaF9sZWF2ZV9sYXp5X21t
+dV9tb2RlKCk7Cj4gPiAKPiA+IFRoaXMgYnJlYWtzIHRoZSBYZW4gUFYgZ3Vlc3QuCj4gPiAKPiA+
+IEluIG1vdmVfcHRlcygpIGluIG1tL21yZW1hcC5jIHdlIGFyY2hfZW50ZXJfbGF6eV9tbXVfbW9k
+ZSgpIGFuZCB0aGVuCj4gPiBsb29wIGNhbGxpbmcgc2V0X3B0ZV9hdCgpLiBXaGljaCBub3cgKG9y
+IGF0IGxlYXN0IGluIGEgZmV3IGNvbW1pdHMgdGltZQo+ID4gd2hlbiB5b3Ugd2lyZSBpdCB1cCBm
+b3IgeDg2IGluIGNvbW1pdCBhM2UxYzkzNzJjOWI5NTkpIGVuZHMgdXAgaW4geW91cgo+ID4gaW1w
+bGVtZW50YXRpb24gb2Ygc2V0X3B0ZXMoKSwgY2FsbHMgYXJjaF9lbnRlcl9sYXp5X21tdV9tb2Rl
+KCkgYWdhaW4sCj4gPiBhbmQ6Cj4gPiAKPiA+IFvCoMKgwqAgMC42Mjg3MDBdIC0tLS0tLS0tLS0t
+LVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0tLQo+ID4gW8KgwqDCoCAwLjYyODcxOF0ga2VybmVsIEJV
+RyBhdCBhcmNoL3g4Ni9rZXJuZWwvcGFyYXZpcnQuYzoxNDQhCj4gCj4gRWFzeSBmaXggLi4uIGRv
+bid0IGRvIHRoYXQgOy0pCj4gCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvcGd0YWJsZS5o
+IGIvaW5jbHVkZS9saW51eC9wZ3RhYmxlLmgKPiBpbmRleCBhZjc2MzljM2IwYTMuLmYzZGE4ODM2
+ZjY4OSAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xpbnV4L3BndGFibGUuaAo+ICsrKyBiL2luY2x1
+ZGUvbGludXgvcGd0YWJsZS5oCj4gQEAgLTIzMSw5ICsyMzEsMTEgQEAgc3RhdGljIGlubGluZSBw
+dGVfdCBwdGVfbmV4dF9wZm4ocHRlX3QgcHRlKQo+IMKgc3RhdGljIGlubGluZSB2b2lkIHNldF9w
+dGVzKHN0cnVjdCBtbV9zdHJ1Y3QgKm1tLCB1bnNpZ25lZCBsb25nIGFkZHIsCj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwdGVfdCAqcHRlcCwgcHRlX3QgcHRlLCB1bnNpZ25lZCBp
+bnQgbnIpCj4gwqB7Cj4gK8KgwqDCoMKgwqDCoMKgYm9vbCBtdWx0aXBsZSA9IG5yID4gMTsKPiDC
+oMKgwqDCoMKgwqDCoMKgcGFnZV90YWJsZV9jaGVja19wdGVzX3NldChtbSwgcHRlcCwgcHRlLCBu
+cik7Cj4gwqAKPiAtwqDCoMKgwqDCoMKgwqBhcmNoX2VudGVyX2xhenlfbW11X21vZGUoKTsKPiAr
+wqDCoMKgwqDCoMKgwqBpZiAobXVsdGlwbGUpCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoGFyY2hfZW50ZXJfbGF6eV9tbXVfbW9kZSgpOwo+IMKgwqDCoMKgwqDCoMKgwqBmb3IgKDs7
+KSB7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzZXRfcHRlKHB0ZXAsIHB0ZSk7
+Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoLS1uciA9PSAwKQo+IEBAIC0y
+NDEsNyArMjQzLDggQEAgc3RhdGljIGlubGluZSB2b2lkIHNldF9wdGVzKHN0cnVjdCBtbV9zdHJ1
+Y3QgKm1tLCB1bnNpZ25lZCBsb25nIGFkZHIsCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqBwdGVwKys7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwdGUgPSBwdGVf
+bmV4dF9wZm4ocHRlKTsKPiDCoMKgwqDCoMKgwqDCoMKgfQo+IC3CoMKgwqDCoMKgwqDCoGFyY2hf
+bGVhdmVfbGF6eV9tbXVfbW9kZSgpOwo+ICvCoMKgwqDCoMKgwqDCoGlmIChtdWx0aXBsZSkKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgYXJjaF9sZWF2ZV9sYXp5X21tdV9tb2RlKCk7
+Cj4gwqB9Cj4gwqAjZW5kaWYKPiDCoCNkZWZpbmUgc2V0X3B0ZV9hdChtbSwgYWRkciwgcHRlcCwg
+cHRlKSBzZXRfcHRlcyhtbSwgYWRkciwgcHRlcCwgcHRlLCAxKQo+IAo+IEkgdGhpbmsgbG9uZy10
+ZXJtLCB3ZSBzaG91bGQgbWFrZSBsYXp5X21tdV9tb2RlIG5lc3RhYmxlLsKgIEJ1dCB0aGlzIGlz
+Cj4gYSByZWFzb25hYmxlIHF1aWNrIGZpeC4KCkkgZG9uJ3QgbXVjaCBsaWtlIGRvaW5nIGl0IGlt
+cGxpY2l0bHkgYmFzZWQgb24gKG5yPT0xKSBidXQgc3VyZSwgYXMgYQpxdWljayBmaXggdGhhdCB3
+b3Jrcy4gVGhlIDY0LWJpdCBQViBndWVzdCBub3cgYm9vdHMgYWdhaW4uCgpUZXN0ZWQtYnk6IERh
+dmlkIFdvb2Rob3VzZSA8ZHdtd0BhbWF6b24uY28udWs+CgpUaGFua3MuCg==
 
-> commit 484fd6c1de13b336806a967908a927cc0356e312
-> Author: Max Kellermann <max.kellermann@ionos.com>
-> Date:   Tue Sep 19 10:18:23 2023 +0200
-> 
->     ext4: apply umask if ACL support is disabled
->     
->     The function ext4_init_acl() calls posix_acl_create() which is
->     responsible for applying the umask.  But without
->     CONFIG_EXT4_FS_POSIX_ACL, ext4_init_acl() is an empty inline function,
->     and nobody applies the umask.
->     
->     This fixes a bug which causes the umask to be ignored with O_TMPFILE
->     on ext4:
->     
->      https://github.com/MusicPlayerDaemon/MPD/issues/558
->      https://bugs.gentoo.org/show_bug.cgi?id=686142#c3
->      https://bugzilla.kernel.org/show_bug.cgi?id=203625
->     
->     Reviewed-by: "J. Bruce Fields" <bfields@redhat.com>
->     Cc: stable@vger.kernel.org
->     Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
->     Link: https://lore.kernel.org/r/20230919081824.1096619-1-max.kellermann@ionos.com
->     Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> 
-> diff --git a/fs/ext4/acl.h b/fs/ext4/acl.h
-> index 0c5a79c3b5d4..ef4c19e5f570 100644
-> --- a/fs/ext4/acl.h
-> +++ b/fs/ext4/acl.h
-> @@ -68,6 +68,11 @@ extern int ext4_init_acl(handle_t *, struct inode *, struct inode *);
->  static inline int
->  ext4_init_acl(handle_t *handle, struct inode *inode, struct inode *dir)
->  {
-> +	/* usually, the umask is applied by posix_acl_create(), but if
-> +	   ext4 ACL support is disabled at compile time, we need to do
-> +	   it here, because posix_acl_create() will never be called */
-> +	inode->i_mode &= ~current_umask();
-> +
->  	return 0;
->  }
->  #endif  /* CONFIG_EXT4_FS_POSIX_ACL */
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+--=-BEEc0mgIHGyqyvDjEr79
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDEyMTQ0MzU0WjAvBgkqhkiG9w0BCQQxIgQgwua/EWmV
+rsYuj5rGngR0/cZGHI3bnLJ5uRrlV5SPiuUwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgB95JMRvLcnOmCbO/ex5isAkO8+7Ebesu93
+WDjcsUU7KhAz4BWHSFIBVc1usncnIn468Pl4E39jx7e8SdnXUMuU+iYDMrBpegAo+eXa+nOzIXYu
+P92eiUgXSQakuCE9qUmiX8su55GQGnpWXxKKwzINiKLmxyD2EoW3S+yJjD1n4PTIqNwDAxJ7dGNz
+sfEERUumVa371bNXdvUL3vjfYWJ6DQvDsfHHGwfrQEBZE332gYdyfN1rZC/kEr/9vzoJn6T/L5LL
+uTNUoRt4DRkG6YY6UAEDC+sTpEl+u+pbgVzaXuF+qHARh91bNVRV6DjxU9VLtf8GDjwgvjbuDVku
+eWoIExSNfNf9PCLRm2sWxBIkvZqmY9aNzxspZiX5cMsyyX7X3ZYVk+ObjhRpQq1dq22AZULmVoiK
+LzlgqdGXvPIoMXAzdPg2O2nkrHa9+z/ynaIseo4fWa+v0suSdlimNHvZfhPrWfVmraSVywCE7l8N
+PgHUB9GmSIRN9QOBAtm6QYk1/v8bB4/zm9p9OXL9UUT/GbF+loyQwfzEZwFkCJty8esgVLvPDjEB
+doosxaYOvMjoqSfarf6UxJv1bgJpc0xMWPPbGqYU8uaChIUTsVNfoT4dW6zs/yQ5ThPEa1TOEnNg
+Qc1eCLanpdPhnGsDt+zgbUU7pR8CwiuaaS9PhK2GpwAAAAAAAA==
+
+
+--=-BEEc0mgIHGyqyvDjEr79--
