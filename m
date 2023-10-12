@@ -2,56 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 172917C6953
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBB87C6957
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 11:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235408AbjJLJUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 05:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43382 "EHLO
+        id S235457AbjJLJVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 05:21:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbjJLJUH (ORCPT
+        with ESMTP id S229884AbjJLJVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:20:07 -0400
+        Thu, 12 Oct 2023 05:21:15 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C3E91
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 02:20:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2645C433C9;
-        Thu, 12 Oct 2023 09:20:02 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32E791;
+        Thu, 12 Oct 2023 02:21:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07BACC433C8;
+        Thu, 12 Oct 2023 09:21:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697102405;
-        bh=ejYO7bjf1A8FMBvT9wlRsMAYi2qDABsqSYG+FSBqeoU=;
+        s=k20201202; t=1697102473;
+        bh=SbH4FF+AoysrqBe5kKWS7My653sdFw0g+bfWwXIpZZk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tofKyyaHNySBvmVGxOieuISUQJKPo7gB0JxdO/edPBHPVbFEj9+IsHJsrXkKW8HZb
-         fHbP+n1gJOaTrnWcF0QbNqSmSwzcrqFPs62xhGskO2V58hmk89BmgIJRiUBpUxxC2m
-         RMQw/pt1VMkKFgR5hyiVYycYfd9i+YVTrZkVN6ZlAH74PqSMsTO+ghpJa3I6mEikLj
-         1nktx901SdMLELeM31yHBlMyEpj0uoi7+NPTmFR5OZrqfYSowozi5NFF94aZvLTjtu
-         KCWXf2epb6M75Jw0hS6Fyp689VUul4FErkC9317L8hfRb4rBq8SxjJa4ojgGXrdfWF
-         qSZzJ5xw5edag==
-Date:   Thu, 12 Oct 2023 12:19:06 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        mike.kravetz@oracle.com, muchun.song@linux.dev,
-        willy@infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] mm: Init page count in reserve_bootmem_region
- when MEMINIT_EARLY
-Message-ID: <20231012091906.GQ3303@kernel.org>
-References: <15233624-f32e-172e-b2f6-7ca7bffbc96d@linux.dev>
- <20231001185934.GX3303@kernel.org>
- <90342474-432a-9fe3-2f11-915a04f0053f@linux.dev>
- <20231002084708.GZ3303@kernel.org>
- <f7e6f67a-4cac-73bd-1d5e-5020c6c8423d@redhat.com>
- <20231002111051.GA3303@kernel.org>
- <3057dab3-19f2-99ca-f125-e91a094975ed@redhat.com>
- <8c9ee3bd-6d71-4111-8f4e-91bc52b42ed4@linux.dev>
- <20231005050619.GB3303@kernel.org>
- <6545ac4c-1205-6c09-49ea-e00c24d1a2ff@linux.dev>
+        b=iKwC4DIp81mBmf/nnA1FLjrVqbEsPK970YamzftlRJTsIi9bcrkBdYbyQqu/j8Jwi
+         MrqeGKEaSacHFGr3ZlV+8qz8+gEND1xEpj4+GGkOwjQ/nQ69sMzqSMaVFRe4fYIRvj
+         H41/C6eJ6rrxh6ieRFuKsNQ0a1Tb9BD5wBiFDH80HfJZXd9ibWbbzSFlQ3rmYoG7Cl
+         taQ3Zur00X1d7RWY/h1U+CtWA25Z2b9NWwwzKtDObQQu3hwo+0Zsj+jLl7JXYZHQvx
+         7dkBHX9aFWiD87o0fFkXdSfFCm4mV/S63lpG2BiRxvhBBbTb8yiLQF3l4qIPLAjlTq
+         UxSJSBiItIsYg==
+Date:   Thu, 12 Oct 2023 10:21:07 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Florian Eckert <fe@dev.tdt.de>
+Cc:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, pavel@ucw.cz, kabel@kernel.org,
+        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-leds@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2 3/4] trigger: ledtrig-tty: move variable definition to
+ the top
+Message-ID: <20231012092107.GE8314@google.com>
+References: <20230928132632.200263-1-fe@dev.tdt.de>
+ <20230928132632.200263-4-fe@dev.tdt.de>
+ <20231002140559.GB8453@google.com>
+ <66ca9e2231629a72e098e1b17736ca34@dev.tdt.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6545ac4c-1205-6c09-49ea-e00c24d1a2ff@linux.dev>
+In-Reply-To: <66ca9e2231629a72e098e1b17736ca34@dev.tdt.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -62,33 +57,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 10:04:28PM +0800, Yajun Deng wrote:
-> 
-> > > > > > > That 'if' breaks the invariant that __free_pages_core is
-> > > > > > > always called for pages with initialized page count. Adding
-> > > > > > > it may lead to subtle bugs and random memory corruption so we
-> > > > > > > don't want to add it at the first place.
-> > > > > >
-> > > > > > As long as we have to special-case memory hotplug, we know that
-> > > > > > we are always coming via generic_online_page() in that case. We
-> > > > > > could either move some logic over there, or let
-> > > > > > __free_pages_core() know what it should do.
-> > > > >
-> > > > > Looks like the patch rather special cases MEMINIT_EARLY, although
-> > > > > I didn't check throughfully other code paths.  Anyway, relying on
-> > > > > page_count() to be correct in different ways for different
-> > > > > callers of __free_pages_core() does not sound right to me.
-> > > >
-> > > > Absolutely agreed.
-> > > > 
-> > > I already sent v5� a few days ago. Comments, please...
-> >
-> > Does it address all the feedback from this thread?
-> 
-> Except hotplug. 
+On Wed, 11 Oct 2023, Florian Eckert wrote:
 
-Please reread carefully the last comments from me and from David above.
+> Hello Lee,
+> 
+> I only got reviews for the fixes and preparations for commits that change
+> the
+> tty subsystem, but no reaction from the maintainer of the feature I want to
+> add to ledtrig-tty for v1 and v2 patchset.
+> 
+> How should I proceed? Send a v3 with the the requested changes.
+> 
+> [Patch v2 1/4]: https://lore.kernel.org/linux-leds/20230928132632.200263-1-fe@dev.tdt.de/T/#m913d3822465f35b54dfa24b1dfe4d50e61352980
+> Change got a 'Reviewed-by: Jiri Slaby <jirislaby@kernel.org>'.
+> Will add this to an upcoming v3 again.
+> 
+> [Patch v2 2/4] : https://lore.kernel.org/linux-leds/20230928132632.200263-1-fe@dev.tdt.de/T/#m7ee7618894a66fd3c89bed488a2394265a3f8df1
+> I missed to add the robot error message to the commit message and also
+> missed
+> to add the the following 'Reported-by: kernel test robot <lkp@intel.com>'
+> and
+> 'Closes:
+> https://lore.kernel.org/oe-kbuild-all/202309270440.IJB24Xap-lkp@intel.com/'
+> to the commit message. Will add this to an upcoming v3.
+> 
+> And do not wait for the review of the following patches.
+> https://lore.kernel.org/linux-leds/20230928132632.200263-1-fe@dev.tdt.de/T/#mc0ecb912fa0e59015ad0a9b4cb491ae9f18c1ea9
+> https://lore.kernel.org/linux-leds/20230928132632.200263-1-fe@dev.tdt.de/T/#mba36217323c386ecd900e188bbdf6276c3c96c91
+
+Yes.  I've removed this from my queue.
+
+Better to resend it with the fixes.
 
 -- 
-Sincerely yours,
-Mike.
+Lee Jones [李琼斯]
