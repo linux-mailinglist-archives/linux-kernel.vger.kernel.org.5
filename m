@@ -2,192 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A58227C70C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E355E7C70C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 16:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379165AbjJLOyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 10:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34920 "EHLO
+        id S1379135AbjJLOzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 10:55:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbjJLOyX (ORCPT
+        with ESMTP id S231290AbjJLOzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:54:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF0BD7;
-        Thu, 12 Oct 2023 07:54:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96553C433C7;
-        Thu, 12 Oct 2023 14:54:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697122461;
-        bh=+ojXCG56gMjVZw+vx9Pj6zEubeSQNGY9Yfj0hYNQrvU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iqiaPRzY62d+KCn53LW4SeKoB5rJrf8XYH/0uzqIfa+WEd6tvkNAvImgd25Eql9wm
-         z9SfRMb3GsqCHUZiyrFhNSSR9eOR9DWiBiJALphEf+A+CboBiAb8nis1weMnpwdvZa
-         mQEeZBoedIqE1bXF3we+nYFkHweXsTDXK6AnC6i1vyuCJvN0UEShPSfclDBRB/zTmK
-         A7Rx/IhBWKziaV8gjoOEa1V6QyZyYYFqLiaKiSGBqKRWV1hFYRvJ38h1BCceYQtOn8
-         RdYbxGhpJlllcCDQYeSXQGXbiTwQS+NoB6f+ktAc8O2hFHaWBZd9V16tJZWUC01r8u
-         kH7rHVW6l27mg==
-Date:   Thu, 12 Oct 2023 15:54:17 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Charlie Jenkins <charlie@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v7 2/4] riscv: Checksum header
-Message-ID: <20231012-directory-drapery-fec6c7e2419d@spud>
-References: <20230919-optimize_checksum-v7-0-06c7d0ddd5d6@rivosinc.com>
- <20230919-optimize_checksum-v7-2-06c7d0ddd5d6@rivosinc.com>
+        Thu, 12 Oct 2023 10:55:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA87C0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 07:55:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697122520; x=1728658520;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=D6Z/7OuH6eEWJy7x6c15xSMxTQCda48ZaYiTnzVyKnM=;
+  b=gGZw0KbYWE0b3ryOcHgQ+YwGDy7h3Ov/364+K1T/TUuRG32TN+6Uqi3V
+   qD67OsUkw22rxkZQ6xtHE2KCjOBGlQF4RMn8dI0gu0EGqZxOKOi+12BQw
+   cJjF8m7Dli86EnH0ODS6XZbFDLrYycgLSTbdKes0Vky5xoq7E0tX+PVqz
+   Bb1XOZ0Caeumul+V+bfYG1M2urXzOLIqx6y7B9++rCnlxQUB1NMk2ETml
+   d/M2SKCD8Nl8QPyMyYqw3y1+vAXbKRLNa289hifJl6yBWhFOycsaSj/sO
+   ZX4TioUA9T0A16wrc3KLoKgsUEpLC1jkhXDx/Gk7W6zu7H2V6EoVx6woW
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="387786761"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="387786761"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 07:55:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="898145277"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="898145277"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 12 Oct 2023 07:53:27 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qqx5l-0003XT-1J;
+        Thu, 12 Oct 2023 14:55:13 +0000
+Date:   Thu, 12 Oct 2023 22:54:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Li zeming <zeming@nfschina.com>, tj@kernel.org,
+        jiangshanlai@gmail.com
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Li zeming <zeming@nfschina.com>
+Subject: Re: [PATCH] kernel/workqueue: =?utf-8?Q?Re?=
+ =?utf-8?B?bW92ZSB1bm5lY2Vzc2FyeSDigJgw4oCZ?= values from hash
+Message-ID: <202310122250.6u2Qc26r-lkp@intel.com>
+References: <20230829181755.3204-1-zeming@nfschina.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="/uRjsvow0K0+ny7V"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230919-optimize_checksum-v7-2-06c7d0ddd5d6@rivosinc.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230829181755.3204-1-zeming@nfschina.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Li,
 
---/uRjsvow0K0+ny7V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+kernel test robot noticed the following build warnings:
 
-On Tue, Sep 19, 2023 at 11:44:31AM -0700, Charlie Jenkins wrote:
-> Provide checksum algorithms that have been designed to leverage riscv
-> instructions such as rotate. In 64-bit, can take advantage of the larger
-> register to avoid some overflow checking.
->=20
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+[auto build test WARNING on tj-wq/for-next]
+[also build test WARNING on linus/master v6.6-rc5 next-20231012]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Same here,
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+url:    https://github.com/intel-lab-lkp/linux/commits/Li-zeming/kernel-workqueue-Remove-unnecessary-0-values-from-hash/20230828-095048
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-next
+patch link:    https://lore.kernel.org/r/20230829181755.3204-1-zeming%40nfschina.com
+patch subject: [PATCH] kernel/workqueue: Remove unnecessary ‘0’ values from hash
+config: um-i386_defconfig (https://download.01.org/0day-ci/archive/20231012/202310122250.6u2Qc26r-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231012/202310122250.6u2Qc26r-lkp@intel.com/reproduce)
 
-I think there are some "issues" attributed to this patch by the
-automation - but they spurious. This diff here could not cause a
-drivers/block/drbd/drbd_bitmap.c:1271: warning: Function parameter or membe=
-r 'peer_device' not described in 'drbd_bm_write_copy_pages'
-after all.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310122250.6u2Qc26r-lkp@intel.com/
 
-Cheers,
-Conor.
+All warnings (new ones prefixed by >>):
 
-> ---
->  arch/riscv/include/asm/checksum.h | 79 +++++++++++++++++++++++++++++++++=
-++++++
->  1 file changed, 79 insertions(+)
->=20
-> diff --git a/arch/riscv/include/asm/checksum.h b/arch/riscv/include/asm/c=
-hecksum.h
-> new file mode 100644
-> index 000000000000..dc0dd89f2a13
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/checksum.h
-> @@ -0,0 +1,79 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * IP checksum routines
-> + *
-> + * Copyright (C) 2023 Rivos Inc.
-> + */
-> +#ifndef __ASM_RISCV_CHECKSUM_H
-> +#define __ASM_RISCV_CHECKSUM_H
-> +
-> +#include <linux/in6.h>
-> +#include <linux/uaccess.h>
-> +
-> +#define ip_fast_csum ip_fast_csum
-> +
-> +#include <asm-generic/checksum.h>
-> +
-> +/*
-> + * Quickly compute an IP checksum with the assumption that IPv4 headers =
-will
-> + * always be in multiples of 32-bits, and have an ihl of at least 5.
-> + * @ihl is the number of 32 bit segments and must be greater than or equ=
-al to 5.
-> + * @iph is assumed to be word aligned.
-> + */
-> +static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
-> +{
-> +	unsigned long csum =3D 0;
-> +	int pos =3D 0;
-> +
-> +	do {
-> +		csum +=3D ((const unsigned int *)iph)[pos];
-> +		if (IS_ENABLED(CONFIG_32BIT))
-> +			csum +=3D csum < ((const unsigned int *)iph)[pos];
-> +	} while (++pos < ihl);
-> +
-> +	/*
-> +	 * ZBB only saves three instructions on 32-bit and five on 64-bit so not
-> +	 * worth checking if supported without Alternatives.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_RISCV_ISA_ZBB) &&
-> +	    IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
-> +		unsigned long fold_temp;
-> +
-> +		asm_volatile_goto(ALTERNATIVE("j %l[no_zbb]", "nop", 0,
-> +					      RISCV_ISA_EXT_ZBB, 1)
-> +		    :
-> +		    :
-> +		    :
-> +		    : no_zbb);
-> +
-> +		if (IS_ENABLED(CONFIG_32BIT)) {
-> +			asm(".option push				\n\
-> +			.option arch,+zbb				\n\
-> +				not	%[fold_temp], %[csum]		\n\
-> +				rori	%[csum], %[csum], 16		\n\
-> +				sub	%[csum], %[fold_temp], %[csum]	\n\
-> +			.option pop"
-> +			: [csum] "+r" (csum), [fold_temp] "=3D&r" (fold_temp));
-> +		} else {
-> +			asm(".option push				\n\
-> +			.option arch,+zbb				\n\
-> +				rori	%[fold_temp], %[csum], 32	\n\
-> +				add	%[csum], %[fold_temp], %[csum]	\n\
-> +				srli	%[csum], %[csum], 32		\n\
-> +				not	%[fold_temp], %[csum]		\n\
-> +				roriw	%[csum], %[csum], 16		\n\
-> +				subw	%[csum], %[fold_temp], %[csum]	\n\
-> +			.option pop"
-> +			: [csum] "+r" (csum), [fold_temp] "=3D&r" (fold_temp));
-> +		}
-> +		return csum >> 16;
-> +	}
-> +no_zbb:
-> +#ifndef CONFIG_32BIT
-> +	csum +=3D (csum >> 32) | (csum << 32);
-> +	csum >>=3D 32;
-> +#endif
-> +	return csum_fold((__force __wsum)csum);
-> +}
-> +
-> +#endif // __ASM_RISCV_CHECKSUM_H
->=20
-> --=20
-> 2.42.0
->=20
+   kernel/workqueue.c: In function 'wqattrs_hash':
+>> kernel/workqueue.c:3777:7: warning: 'hash' is used uninitialized in this function [-Wuninitialized]
+     hash = jhash_1word(attrs->nice, hash);
+     ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
---/uRjsvow0K0+ny7V
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+vim +/hash +3777 kernel/workqueue.c
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSgImQAKCRB4tDGHoIJi
-0vbVAPwKRp4UXBThl9GOTew5j0FmY9XGj3v2k798QY2F9FGN2QEA6p0JzpE5uOBn
-UP4ZzpdYbI/4Col0rf3CIiy6hz1TkA8=
-=R5LB
------END PGP SIGNATURE-----
+5de7a03cac1476 Tejun Heo           2023-08-07  3771  
+6ba94429c8e7b8 Frederic Weisbecker 2015-04-02  3772  /* hash value of the content of @attr */
+6ba94429c8e7b8 Frederic Weisbecker 2015-04-02  3773  static u32 wqattrs_hash(const struct workqueue_attrs *attrs)
+226223ab3c4118 Tejun Heo           2013-03-12  3774  {
+dd46423224bbdf Li zeming           2023-08-30  3775  	u32 hash;
+226223ab3c4118 Tejun Heo           2013-03-12  3776  
+6ba94429c8e7b8 Frederic Weisbecker 2015-04-02 @3777  	hash = jhash_1word(attrs->nice, hash);
+6ba94429c8e7b8 Frederic Weisbecker 2015-04-02  3778  	hash = jhash(cpumask_bits(attrs->cpumask),
+6ba94429c8e7b8 Frederic Weisbecker 2015-04-02  3779  		     BITS_TO_LONGS(nr_cpumask_bits) * sizeof(long), hash);
+9546b29e4a6ad6 Tejun Heo           2023-08-07  3780  	hash = jhash(cpumask_bits(attrs->__pod_cpumask),
+9546b29e4a6ad6 Tejun Heo           2023-08-07  3781  		     BITS_TO_LONGS(nr_cpumask_bits) * sizeof(long), hash);
+8639ecebc9b179 Tejun Heo           2023-08-07  3782  	hash = jhash_1word(attrs->affn_strict, hash);
+6ba94429c8e7b8 Frederic Weisbecker 2015-04-02  3783  	return hash;
+d55262c4d16475 Tejun Heo           2013-04-01  3784  }
+226223ab3c4118 Tejun Heo           2013-03-12  3785  
 
---/uRjsvow0K0+ny7V--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
