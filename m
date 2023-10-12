@@ -2,70 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE897C6A75
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AAE7C6A78
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 12:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343730AbjJLKHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 06:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
+        id S1343767AbjJLKIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 06:08:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235457AbjJLKHv (ORCPT
+        with ESMTP id S234179AbjJLKIQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 06:07:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5AD9D;
-        Thu, 12 Oct 2023 03:07:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06E00C433C8;
-        Thu, 12 Oct 2023 10:07:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697105269;
-        bh=gVg8UtHvBvE9+HDyXHQmUlBBjz6PEyk4GmrjWTk7gr0=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=hsd4x/JVT99DmsoB74tYqpbwpnDF8rRlK5umPGx7M9ndz4t68IAiK+HBaV95e8ikz
-         H6EniSCqf+vmv09fSNRc9s2J05jamDQnnLXmn+4o8pCKu2/ZAFWn6Y2F+iHw5Eslba
-         V3qHpo9S5GVy7tiDYs5FJjm7GGC1G1E5Clh325RHvX44JXRqHv+SMhBS1og010lzZR
-         uaoyO2w3iPpI3WT6182TPmV8+94P6PQ0wuJbzCebVO92NYhf8NzxIzp5f0n+2ZucJQ
-         TqD1bajiQ1qGQAHLAUCzb+wRrsIRFoyfhT+yhFLMHNIeIih//oX/Q0WlLI+qxZ9DQa
-         U7zNxQKdWIfQg==
-From:   Lee Jones <lee@kernel.org>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        lee@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        thierry.reding@gmail.com, baruch@tkos.co.il,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, u.kleine-koenig@pengutronix.de,
-        linux-pwm@vger.kernel.org, Devi Priya <quic_devipriy@quicinc.com>
-In-Reply-To: <20231006045317.1056625-3-quic_devipriy@quicinc.com>
-References: <20231006045317.1056625-1-quic_devipriy@quicinc.com>
- <20231006045317.1056625-3-quic_devipriy@quicinc.com>
-Subject: Re: (subset) [PATCH 2/4] dt-bindings: mfd: qcom,tcsr: Extend
- simple-mfd & pwm support for IPQ targets
-Message-Id: <169710526675.1167576.9872640040047520620.b4-ty@kernel.org>
-Date:   Thu, 12 Oct 2023 11:07:46 +0100
+        Thu, 12 Oct 2023 06:08:16 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CECA9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 03:08:13 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:b72e:818:7fe2:593d])
+        by albert.telenet-ops.be with bizsmtp
+        id wy872A00A56sUls06y87rb; Thu, 12 Oct 2023 12:08:10 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qqsbs-0068cO-Ox;
+        Thu, 12 Oct 2023 12:08:07 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qqsbv-001VAj-0c;
+        Thu, 12 Oct 2023 12:08:07 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>
+Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH -next v2] sunrpc: Use no_printk() in dfprintk*() dummies
+Date:   Thu, 12 Oct 2023 12:08:05 +0200
+Message-Id: <a93de2e8afa826745746b00fc5f64e513df5d52f.1697104757.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 06 Oct 2023 10:23:15 +0530, Devi Priya wrote:
-> Extend simple-mfd and pwm support for IPQ5332 & IPQ9574 SoCs.
-> 
-> 
+When building NFS with W=1 and CONFIG_WERROR=y, but
+CONFIG_SUNRPC_DEBUG=n:
 
-Applied, thanks!
+    fs/nfs/nfs4proc.c: In function ‘nfs4_proc_create_session’:
+    fs/nfs/nfs4proc.c:9276:19: error: variable ‘ptr’ set but not used [-Werror=unused-but-set-variable]
+     9276 |         unsigned *ptr;
+	  |                   ^~~
+      CC      fs/nfs/callback.o
+    fs/nfs/callback.c: In function ‘nfs41_callback_svc’:
+    fs/nfs/callback.c:98:13: error: variable ‘error’ set but not used [-Werror=unused-but-set-variable]
+       98 |         int error;
+	  |             ^~~~~
+      CC      fs/nfs/flexfilelayout/flexfilelayout.o
+    fs/nfs/flexfilelayout/flexfilelayout.c: In function ‘ff_layout_io_track_ds_error’:
+    fs/nfs/flexfilelayout/flexfilelayout.c:1230:13: error: variable ‘err’ set but not used [-Werror=unused-but-set-variable]
+     1230 |         int err;
+	  |             ^~~
+      CC      fs/nfs/flexfilelayout/flexfilelayoutdev.o
+    fs/nfs/flexfilelayout/flexfilelayoutdev.c: In function ‘nfs4_ff_alloc_deviceid_node’:
+    fs/nfs/flexfilelayout/flexfilelayoutdev.c:55:16: error: variable ‘ret’ set but not used [-Werror=unused-but-set-variable]
+       55 |         int i, ret = -ENOMEM;
+	  |                ^~~
 
-[2/4] dt-bindings: mfd: qcom,tcsr: Extend simple-mfd & pwm support for IPQ targets
-      commit: abbb729360a50ce949de94a983cb56b15b82018e
+All these are due to variables that are set unconditionally, but are
+used only when debugging is enabled.
 
---
-Lee Jones [李琼斯]
+Fix this by changing the dfprintk*() dummy macros from empty loops to
+calls to the no_printk() helper.  This informs the compiler that the
+passed debug parameters are actually used, and enables format specifier
+checking as a bonus.
+
+This requires removing the protection by CONFIG_SUNRPC_DEBUG of the
+declaration of nlmdbg_cookie2a(), as its reference is now visible to the
+compiler, but optimized away.
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+v2:
+  - s/uncontionally/unconditionally/,
+  - Drop CONFIG_SUNRPC_DEBUG check in fs/lockd/svclock.c to fix build
+    failure.
+---
+ fs/lockd/svclock.c           | 2 --
+ include/linux/sunrpc/debug.h | 6 +++---
+ 2 files changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/fs/lockd/svclock.c b/fs/lockd/svclock.c
+index 43aeba9de55cbbc5..119a0c31d30eed4f 100644
+--- a/fs/lockd/svclock.c
++++ b/fs/lockd/svclock.c
+@@ -55,7 +55,6 @@ static const struct rpc_call_ops nlmsvc_grant_ops;
+ static LIST_HEAD(nlm_blocked);
+ static DEFINE_SPINLOCK(nlm_blocked_lock);
+ 
+-#if IS_ENABLED(CONFIG_SUNRPC_DEBUG)
+ static const char *nlmdbg_cookie2a(const struct nlm_cookie *cookie)
+ {
+ 	/*
+@@ -82,7 +81,6 @@ static const char *nlmdbg_cookie2a(const struct nlm_cookie *cookie)
+ 
+ 	return buf;
+ }
+-#endif
+ 
+ /*
+  * Insert a blocked lock into the global list
+diff --git a/include/linux/sunrpc/debug.h b/include/linux/sunrpc/debug.h
+index f6aeed07fe04e3d5..76539c6673f2fb15 100644
+--- a/include/linux/sunrpc/debug.h
++++ b/include/linux/sunrpc/debug.h
+@@ -67,9 +67,9 @@ do {									\
+ # define RPC_IFDEBUG(x)		x
+ #else
+ # define ifdebug(fac)		if (0)
+-# define dfprintk(fac, fmt, ...)	do {} while (0)
+-# define dfprintk_cont(fac, fmt, ...)	do {} while (0)
+-# define dfprintk_rcu(fac, fmt, ...)	do {} while (0)
++# define dfprintk(fac, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
++# define dfprintk_cont(fac, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
++# define dfprintk_rcu(fac, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
+ # define RPC_IFDEBUG(x)
+ #endif
+ 
+-- 
+2.34.1
 
