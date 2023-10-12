@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6B27C6D6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343B17C6D6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378887AbjJLLza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43332 "EHLO
+        id S1347218AbjJLLzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442949AbjJLLzF (ORCPT
+        with ESMTP id S1442961AbjJLLzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 12 Oct 2023 07:55:05 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5E0658C;
-        Thu, 12 Oct 2023 04:53:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4520265A0;
+        Thu, 12 Oct 2023 04:53:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697111603; x=1728647603;
+  t=1697111607; x=1728647607;
   h=message-id:date:mime-version:subject:to:references:from:
    in-reply-to:content-transfer-encoding;
-  bh=QAxAyetg73HHGlwaNyN3/g6f3UuJ6ZNcnJXJPuO59jE=;
-  b=JqeEw8e1lPrLIr4OT1lSPdhtaMAV/WFgiqH5IS/sT/kmDGnQNieOnp0C
-   iXdtsWFBPHuYtmVDLUTx6jIRhshfrUx+bE7FaJ8G6RtK+L9R0+EdSjl9H
-   z9ZYQWtAqZBfN5mzfzdL097lb4MrYr+KNL64l7/5ntX7I5Vp1xXbWt1dt
-   U2FFKzC7gEFv9ciKgCAp7xJmCbqWAnUWLQd0Upvlj1rKDH9kOdxB6S/Qe
-   aeBA5lcIgxlbsD4u0ENcSC50dvw110BeS/ICqZRMfNYFkxCv5HHVDKQRJ
-   f0DAIxpc9HTXv+2LV6ohzlFMBeApMoSP0R4auDpZEr3vLaDGdPsu01ZUq
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="415949459"
+  bh=gctK71zo6mU9YBXPKhgvnbP3DBiV6PqC8v9oU1p5Z8I=;
+  b=G73GJrIZ1aDvjxYK6R+hJV9Ta3S9B+zAuiL+e59zRGpPMyyJ5xO1s4bl
+   uYFSfDiwShBPyunIafpNCnz2RR17idratMED1kvUuIKeTs8568+cb/aee
+   r2MWYFJbRIBUzRp0spIRYHclItBDb4Qssx0cIlUSHjwcmecuPIfgj/Dug
+   UxV6uDSArzSBF0FqVKSVAVuc28zAdd2hdUjiTPekuJI1I0VUhxTIXejAA
+   3EbVOKL9iS3pJVP9P+/WNvXJ+QgrUTqBKOCH0w91xzDM9Ny3zlTfdZf9U
+   /19psmJs7e+FXKuHYNJjUMtTiLnypqhxVXXBHT7jrFDT78/EtXa0lVbol
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="415949494"
 X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="415949459"
+   d="scan'208";a="415949494"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 04:52:28 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 04:52:44 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="870545554"
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="870545611"
 X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="870545554"
+   d="scan'208";a="870545611"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.41.84])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 04:52:22 -0700
-Message-ID: <18273cd4-a720-4eab-a14d-f24c5f3299bb@intel.com>
-Date:   Thu, 12 Oct 2023 14:52:20 +0300
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 04:52:38 -0700
+Message-ID: <c0aa0f90-21bc-43b3-9498-6b34997c348d@intel.com>
+Date:   Thu, 12 Oct 2023 14:52:36 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/7] perf intel-pt: Move PMU initialization from
- default config code
+Subject: Re: [PATCH v1 3/7] perf arm-spe: Move PMU initialization from default
+ config code
 Content-Language: en-US
 To:     Ian Rogers <irogers@google.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
@@ -69,11 +69,11 @@ To:     Ian Rogers <irogers@google.com>,
         coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20231007021326.4156714-1-irogers@google.com>
- <20231007021326.4156714-3-irogers@google.com>
+ <20231007021326.4156714-4-irogers@google.com>
 From:   Adrian Hunter <adrian.hunter@intel.com>
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
  Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20231007021326.4156714-3-irogers@google.com>
+In-Reply-To: <20231007021326.4156714-4-irogers@google.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -87,7 +87,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 7/10/23 05:13, Ian Rogers wrote:
-> Avoid setting PMU values in intel_pt_pmu_default_config, move to
+> Avoid setting PMU values in arm_spe_pmu_default_config, move to
 > perf_pmu__arch_init.
 > 
 > Signed-off-by: Ian Rogers <irogers@google.com>
@@ -95,33 +95,34 @@ On 7/10/23 05:13, Ian Rogers wrote:
 Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
 
 > ---
->  tools/perf/arch/x86/util/intel-pt.c | 2 --
->  tools/perf/arch/x86/util/pmu.c      | 1 +
->  2 files changed, 1 insertion(+), 2 deletions(-)
+>  tools/perf/arch/arm/util/pmu.c       | 2 ++
+>  tools/perf/arch/arm64/util/arm-spe.c | 3 ---
+>  2 files changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
-> index b923bca939d9..6d6cd8f9133c 100644
-> --- a/tools/perf/arch/x86/util/intel-pt.c
-> +++ b/tools/perf/arch/x86/util/intel-pt.c
-> @@ -267,8 +267,6 @@ intel_pt_pmu_default_config(struct perf_pmu *intel_pt_pmu)
+> diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/pmu.c
+> index d55d2b15f2e6..f25f68f84a94 100644
+> --- a/tools/perf/arch/arm/util/pmu.c
+> +++ b/tools/perf/arch/arm/util/pmu.c
+> @@ -23,6 +23,8 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+>  		pmu->default_config = cs_etm_get_default_config(pmu);
+>  #if defined(__aarch64__)
+>  	} else if (strstarts(pmu->name, ARM_SPE_PMU_NAME)) {
+> +		pmu->selectable = true;
+> +		pmu->is_uncore = false;
+>  		pmu->default_config = arm_spe_pmu_default_config(pmu);
+>  	} else if (strstarts(pmu->name, HISI_PTT_PMU_NAME)) {
+>  		pmu->selectable = true;
+> diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
+> index 9cc3d6dcb849..08a76734ccd2 100644
+> --- a/tools/perf/arch/arm64/util/arm-spe.c
+> +++ b/tools/perf/arch/arm64/util/arm-spe.c
+> @@ -516,8 +516,5 @@ struct perf_event_attr
+>  		attr->sample_period = 4096;
+>  	}
 >  
->  	attr->config = intel_pt_default_config(intel_pt_pmu);
->  
-> -	intel_pt_pmu->selectable = true;
+> -	arm_spe_pmu->selectable = true;
+> -	arm_spe_pmu->is_uncore = false;
 > -
 >  	return attr;
 >  }
->  
-> diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
-> index 811e2377d2d5..949b3e2c67bd 100644
-> --- a/tools/perf/arch/x86/util/pmu.c
-> +++ b/tools/perf/arch/x86/util/pmu.c
-> @@ -22,6 +22,7 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
->  #ifdef HAVE_AUXTRACE_SUPPORT
->  	if (!strcmp(pmu->name, INTEL_PT_PMU_NAME)) {
->  		pmu->auxtrace = true;
-> +		pmu->selectable = true;
->  		pmu->default_config = intel_pt_pmu_default_config(pmu);
->  	}
->  	if (!strcmp(pmu->name, INTEL_BTS_PMU_NAME)) {
 
