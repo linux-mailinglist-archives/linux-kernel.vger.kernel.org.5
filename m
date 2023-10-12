@@ -2,144 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7FE7C6C9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CF17C6C99
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 13:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378006AbjJLLoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 07:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39042 "EHLO
+        id S1343848AbjJLLns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 07:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbjJLLoa (ORCPT
+        with ESMTP id S232490AbjJLLnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 07:44:30 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098DA94;
-        Thu, 12 Oct 2023 04:44:27 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CBduDp001318;
-        Thu, 12 Oct 2023 11:43:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=GNP2HRT0gAKlMcfakYjbZFco/Zl8oaazBkcPChReGHQ=;
- b=WFCtacQLMNv5wEEpzBluoVkcEszDJnI9JxyAVzZY0M6RCZtLO5ERkqqyhDeU+QmHDwY2
- dUvZrkCKKi/qFYD3RjsMZvbsqqjkZWqwXUbvXW67H/ILfZHzyh6J4mXcOagCfagrap02
- 36y/C+rVsBV0UYsrbytqIt3nTTGrQ0iJfVStYiuNFhzjffsuObvZF45MbpJTWkFHg7nG
- ks84iifvgugT5jQwme2o5r3Gh02VrPBSebKVvAyw8S3N2dcrNzM3IXUHT1mewWxUeIeW
- 5zCqsAOVp0KA832uNWbxln9ONG0+KzYAsntVecYERoX0QMoOVHEuZTxX8RI7kwoz7WFb LA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpg49g2ng-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 11:43:43 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39CBdvmK001335;
-        Thu, 12 Oct 2023 11:43:42 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpg49g2j9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 11:43:42 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39C9uQ69025891;
-        Thu, 12 Oct 2023 11:43:39 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkjnnq6cr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 11:43:39 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CBhcqj20710036
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Oct 2023 11:43:39 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BF43F58057;
-        Thu, 12 Oct 2023 11:43:38 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 20C9C58061;
-        Thu, 12 Oct 2023 11:43:37 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.11.225])
-        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Oct 2023 11:43:37 +0000 (GMT)
-Message-ID: <b295d1aae72d8122178dc93c9aac21217bde682a.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 12/25] security: Introduce inode_post_setattr hook
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Thu, 12 Oct 2023 07:43:36 -0400
-In-Reply-To: <80e4a1ea172edb2d4d441b70dcd93bfa1654a5b7.camel@huaweicloud.com>
-References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
-         <20230904133415.1799503-13-roberto.sassu@huaweicloud.com>
-         <22761c3d88c2c4dbac747cc7ddca3d743c6d88d9.camel@linux.ibm.com>
-         <80e4a1ea172edb2d4d441b70dcd93bfa1654a5b7.camel@huaweicloud.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
+        Thu, 12 Oct 2023 07:43:47 -0400
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558EF94;
+        Thu, 12 Oct 2023 04:43:44 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Vu-jJbI_1697111019;
+Received: from 30.97.48.41(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vu-jJbI_1697111019)
+          by smtp.aliyun-inc.com;
+          Thu, 12 Oct 2023 19:43:40 +0800
+Message-ID: <59ab760c-de22-5f62-5532-9a94427e143c@linux.alibaba.com>
+Date:   Thu, 12 Oct 2023 19:43:54 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RESEND PATCH V2] leds: sc27xx: Move mutex_init() to the end of
+ probe
+To:     Lee Jones <lee@kernel.org>
+Cc:     Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20231012034735.804157-1-chunyan.zhang@unisoc.com>
+ <6110db84-546d-fc5c-f241-7923d673bbd5@linux.alibaba.com>
+ <20231012091602.GD8314@google.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20231012091602.GD8314@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: rZqxV2raaNky2t0Y2n1yXeJjRecmiZQx
-X-Proofpoint-GUID: RCCxgB8C4pZpo8TpW59RDhMvmyn-xMBX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 adultscore=0 clxscore=1015
- impostorscore=0 priorityscore=1501 suspectscore=0 lowpriorityscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310120095
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-12 at 09:42 +0200, Roberto Sassu wrote:
-> On Wed, 2023-10-11 at 20:08 -0400, Mimi Zohar wrote:
-> > gOn Mon, 2023-09-04 at 15:34 +0200, Roberto Sassu wrote:
-> > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > 
-> > > In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-> > > the inode_post_setattr hook.
-> > > 
-> > > It is useful for EVM to recalculate the HMAC on modified file attributes
-> > > and other file metadata, after it verified the HMAC of current file
-> > > metadata with the inode_setattr hook.
-> > 
-> > "useful"?  
-> > 
-> > At inode_setattr hook, EVM verifies the file's existing HMAC value.  At
-> > inode_post_setattr, EVM re-calculates the file's HMAC based on the
-> > modified file attributes and other file metadata.
-> > 
-> > > 
-> > > LSMs should use the new hook instead of inode_setattr, when they need to
-> > > know that the operation was done successfully (not known in inode_setattr).
-> > > The new hook cannot return an error and cannot cause the operation to be
-> > > reverted.
-> > 
-> > Other LSMs could similarly update security xattrs or ...
+
+
+On 10/12/2023 5:16 PM, Lee Jones wrote:
+> On Thu, 12 Oct 2023, Baolin Wang wrote:
 > 
-> I added your sentence. The one above is to satisfy Casey's request to
-> justify the addition of the new hook, and to explain why inode_setattr
-> is not sufficient.
+>>
+>>
+>> On 10/12/2023 11:47 AM, Chunyan Zhang wrote:
+>>> Move the mutex_init() to avoid redundant mutex_destroy() calls after
+>>> that for each time the probe fails.
+>>>
+>>> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+>>> ---
+>>> Rebased onto linux-next.
+>>>
+>>> V2:
+>>> - Move the mutex_init() to the end of .probe() instead of adding
+>>> mutex_destroy() according to Lee's comments.
+>>> ---
+>>>    drivers/leds/leds-sc27xx-bltc.c | 9 ++++-----
+>>>    1 file changed, 4 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/leds/leds-sc27xx-bltc.c b/drivers/leds/leds-sc27xx-bltc.c
+>>> index af1f00a2f328..ef57e57ecf07 100644
+>>> --- a/drivers/leds/leds-sc27xx-bltc.c
+>>> +++ b/drivers/leds/leds-sc27xx-bltc.c
+>>> @@ -296,7 +296,6 @@ static int sc27xx_led_probe(struct platform_device *pdev)
+>>>    		return -ENOMEM;
+>>>    	platform_set_drvdata(pdev, priv);
+>>> -	mutex_init(&priv->lock);
+>>>    	priv->base = base;
+>>>    	priv->regmap = dev_get_regmap(dev->parent, NULL);
+>>>    	if (!priv->regmap) {
+>>> @@ -309,13 +308,11 @@ static int sc27xx_led_probe(struct platform_device *pdev)
+>>>    		err = of_property_read_u32(child, "reg", &reg);
+>>>    		if (err) {
+>>>    			of_node_put(child);
+>>> -			mutex_destroy(&priv->lock);
+>>>    			return err;
+>>>    		}
+>>>    		if (reg >= SC27XX_LEDS_MAX || priv->leds[reg].active) {
+>>>    			of_node_put(child);
+>>> -			mutex_destroy(&priv->lock);
+>>>    			return -EINVAL;
+>>>    		}
+>>> @@ -325,9 +322,11 @@ static int sc27xx_led_probe(struct platform_device *pdev)
+>>>    	err = sc27xx_led_register(dev, priv);
+>>>    	if (err)
+>>> -		mutex_destroy(&priv->lock);
+>>> +		return err;
+>>> -	return err;
+>>> +	mutex_init(&priv->lock);
+>>
+>> I think it is better to prepare all the required resources before
+>> registering the led device, what I mean is moving mutex_init() before
+>> calling sc27xx_led_register().
+> 
+> Is the mutex used before this point?
+> 
+> If not, I don't see any reason to initialise it sooner.
 
-I was suggesting simplifying the wording.  Perhaps something like:
-
-Other LSMs could similarly take some action after successful file attri
-bute change.
-
--- 
-thanks,
-
-Mimi
-
+When inserting the led module, after registering the led device, users 
+can set the led brightness or pattern trigger before initializing the 
+mutex, which will crash the system. I know this may not be an actual 
+scenario, but this patch opens a small race window, that's what I concerned.
