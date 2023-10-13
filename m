@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B297C8879
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EDF27C887C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232332AbjJMPUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48874 "EHLO
+        id S232346AbjJMPU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 11:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbjJMPUB (ORCPT
+        with ESMTP id S232280AbjJMPU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:20:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6882BBD;
-        Fri, 13 Oct 2023 08:19:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4D88C433C8;
-        Fri, 13 Oct 2023 15:19:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697210399;
-        bh=Ys/cvxFKhwCwYOjOvCw9T7BfPly1K4cJ+M/3bmQc+Fk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HZqDUehC0aiPe3EqQfvthVAkOux7as2LZtQj4BGg5keUgoxhnb10bkvYC6qhQBOGl
-         y5k5MH0xIO1alBElMbWWaTIRylCkKD7AR17m6xRp5XhjAVPczx4AczzcyzHEWyN5At
-         Z90jnuNAqWpE/RA/0Jl+u0jBG6lEavH3x79l8jzV27akEMFd35AaVJUxUxhRsjlhq3
-         09iXnLNhhpnLQlenhk6V6b7igix4Uq7Uez7kr503GQ02lkcJd90PwbWq0vULZ7ldSH
-         PB2GoZ1B5bWWQJK2JhLjDoOASbKnmJM056xyx7+v85GI3dd85NRVmTNB7kVeEFbxTJ
-         TUFymO0A4PIUQ==
-Date:   Fri, 13 Oct 2023 16:19:54 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Martin Kepplinger <martink@posteo.de>
-Cc:     lorenzo@kernel.org, jic23@kernel.org, lars@metafoo.de,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, kernel@puri.sm, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: iio: imu: st,lsm6dsx: add mount-matrix
- property
-Message-ID: <20231013-violin-craziness-f63d75ce0116@spud>
-References: <20231012142041.253332-1-martink@posteo.de>
+        Fri, 13 Oct 2023 11:20:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C34CF
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:20:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697210413;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=k/AuDIRzij+kWm5ZIXiIa6zntO0S2SYmaTGa19iHgWE=;
+        b=gBQL8yRkiQTnqRH+5f5Z3CZ4A3iVrQZmlCVCXNAwaOrv7OmYvD8Q/N+Z/0/8OEv7ss3hMj
+        2toH1HWp/1VCDvo1WjHkUpfgbUuO7R+LuQE15Pgr9clUrUNuJdwS11b5428EM8COukjMJ8
+        nG8IrpNOY9nGatREz1EyUl1xgB8vin8=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-60-ts5xFpSuPgCzkQt4W8o4OQ-1; Fri, 13 Oct 2023 11:20:11 -0400
+X-MC-Unique: ts5xFpSuPgCzkQt4W8o4OQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32d9cd6eb0bso420498f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:20:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697210410; x=1697815210;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k/AuDIRzij+kWm5ZIXiIa6zntO0S2SYmaTGa19iHgWE=;
+        b=BnG902drfT1RwifL1iVuqsYBsm994zOqw90ZAgIlt8V7TbrtohclnfKRwreoDeoJAT
+         JMunEz6Ylw3qoAnLpPqgmNvyFREtHUXbNokj5pEK3BXxVRQwW86ahR8wKowX9YbXR+WP
+         hjoh5riA6MMSaY3QXrsn/eUIFH2GuUuk8Kuy47gQ62eHKewl3FoBjH/p9QDl+l8mfbbW
+         5RUGW8gl1oW4IJk8vx8oArlF8BdKRykHt8fDmDa4/a4n4BAdmmRFPNyX45qt7UXCtW5I
+         aONfVg3avJoyulLtDQQGftGMP3ZT3uGDqelpiaSJ5Y9njPk3d8n3W8oJ5cdfH8dC5Cqy
+         u+/w==
+X-Gm-Message-State: AOJu0Yw2cUKWUV+r6F0j6dvNL09qEdWfKPFeoAXpIYIzPu06nqoBvufY
+        ZX9CF2xwv6qgb02k1dV0qKEirbQ/605ulqT80wLslVsjrx/f143bNZrtJwcx5xF4HtKMO6l60Il
+        htGsqHOGCnrlGf+j+iAXW8ZjRXxiYuLNn
+X-Received: by 2002:a5d:4402:0:b0:32d:8907:2b18 with SMTP id z2-20020a5d4402000000b0032d89072b18mr6639640wrq.66.1697210410185;
+        Fri, 13 Oct 2023 08:20:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEGEAmpZE3P7fyIbvO0lrP+ZBuqaIET5uU3Qr8HuZR7EYE0qwIBfig1qZvB8TZA6vC0WREO5A==
+X-Received: by 2002:a5d:4402:0:b0:32d:8907:2b18 with SMTP id z2-20020a5d4402000000b0032d89072b18mr6639624wrq.66.1697210409848;
+        Fri, 13 Oct 2023 08:20:09 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id t9-20020a05600001c900b0032179c4a46dsm20991487wrx.100.2023.10.13.08.20.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 08:20:09 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        dri-devel@lists.freedesktop.org, Conor Dooley <conor@kernel.org>,
+        Peter Robinson <pbrobinson@gmail.com>
+Subject: Re: [PATCH v3 4/6] drm/ssd130x: Add support for the SSD132x OLED
+ controller family
+In-Reply-To: <21ed30ec-506d-4a4b-b787-37b054285914@suse.de>
+References: <20231012213843.1151060-1-javierm@redhat.com>
+ <20231012213843.1151060-5-javierm@redhat.com>
+ <6740c736-ba5f-4df2-ba2b-da0902f51f6d@suse.de>
+ <87bkd2sh77.fsf@minerva.mail-host-address-is-not-set>
+ <21ed30ec-506d-4a4b-b787-37b054285914@suse.de>
+Date:   Fri, 13 Oct 2023 17:20:08 +0200
+Message-ID: <87zg0m35xz.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="P8B0cjiJh5K8TxQ1"
-Content-Disposition: inline
-In-Reply-To: <20231012142041.253332-1-martink@posteo.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thomas Zimmermann <tzimmermann@suse.de> writes:
 
---P8B0cjiJh5K8TxQ1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hello Thomas,
 
-On Thu, Oct 12, 2023 at 02:20:41PM +0000, Martin Kepplinger wrote:
-> Add the mount-matrix optional property to the binding since it's supported
-> and very useful when using the chip on a board.
->=20
-> Signed-off-by: Martin Kepplinger <martink@posteo.de>
+[...]
+ 
+>> As you mention that these could be follow-up changes, I assume that you
+>> agree with the current approach. Should I expect your review / ack for
+>> this patch-set?
+>
+> Please take my ack for this patchset
+>
+> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+>
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Perfect, thanks a lot!
 
-Thanks,
-Cnor.
+> Best regards
+> Thomas
+>
 
-> ---
->=20
-> revision history
-> ----------------
-> v2: (thanks Jonathan)
-> * remove the addition to the example to avoid unrelated discussions :)
->=20
-> v1:
-> https://lore.kernel.org/linux-devicetree/20230721103410.575555-1-martink@=
-posteo.de/
->=20
->=20
->  Documentation/devicetree/bindings/iio/imu/st,lsm6dsx.yaml | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/iio/imu/st,lsm6dsx.yaml b/=
-Documentation/devicetree/bindings/iio/imu/st,lsm6dsx.yaml
-> index ee8724ad33ab..28b667a9cb76 100644
-> --- a/Documentation/devicetree/bindings/iio/imu/st,lsm6dsx.yaml
-> +++ b/Documentation/devicetree/bindings/iio/imu/st,lsm6dsx.yaml
-> @@ -93,6 +93,9 @@ properties:
->    wakeup-source:
->      $ref: /schemas/types.yaml#/definitions/flag
-> =20
-> +  mount-matrix:
-> +    description: an optional 3x3 mounting rotation matrix
-> +
->  required:
->    - compatible
->    - reg
-> --=20
-> 2.39.2
->=20
+-- 
+Best regards,
 
---P8B0cjiJh5K8TxQ1
-Content-Type: application/pgp-signature; name="signature.asc"
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSlgGgAKCRB4tDGHoIJi
-0oBKAQCus90abVTh797fUK9MBhVX7IgtB22InyoFl27Oq5aaBAD9Ho4MoB2mpS/+
-swxyv+swXVpmsEWkggAahOhWsfJ1CQg=
-=+Hu7
------END PGP SIGNATURE-----
-
---P8B0cjiJh5K8TxQ1--
