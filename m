@@ -2,171 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E88C47C7C4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 05:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE0E7C7C49
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 05:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbjJMDrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 23:47:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
+        id S229521AbjJMDqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 23:46:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJMDrC (ORCPT
+        with ESMTP id S229437AbjJMDqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 23:47:02 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C3DB7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 20:46:38 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c9d922c039so13966675ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 20:46:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697168797; x=1697773597; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=33P5FFRygetlcU5+dGmEWjGqVa6SrGuz6L2T8K/a7s4=;
-        b=N1XhCv/sQWoTsG0v0+clT6fI9n0WsXHuAynW0y2LGiPgB9L7mijTLLO3okQ1JMBkMT
-         bZ072SGPVHP5heyJ7pJpXscsSbXWW+A00ZJf/kx97NVqNmfxAohYyaJnGD8c1ehDxvJy
-         YzkYhYQv4gcxVZZ+mBNBOZ9VBCAhOyVSvz0kdYUhEdj5Hstu1qXDiclvcUQCrvZ7D8nb
-         qWfvbCNHIe/DcRzyaGEc5PBGKp8NnRAlEHB5j7W2qrsyMgtPwRjCeSABlph1RSE9sHr/
-         hvuJhHEs+U9KKIah63UETC5CZKt2qQyo5pnyo0JC9z65VsHeyK0AZhEOd7QZ9uuG/nD2
-         ZysA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697168797; x=1697773597;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=33P5FFRygetlcU5+dGmEWjGqVa6SrGuz6L2T8K/a7s4=;
-        b=UQjfRSy5CyN6w7qEYx8SOGyol5/UjqHbQkqXYfNMQCIwQwExgGuQy+YGe+g/30dg/V
-         24AqWIgXLLSu0h+TFyQqQjRd4VxOet5LNUGn78NLYtsPSdl15NTo9lDFlY1FDYulU0SV
-         B8dR1lGth+C0rR+HZUo5vMKI/h3nP940shFkCH/IWLyfspwS22RwTCI3+wV/XRTcHTuk
-         H57+DmCbcl7I+ZdcvIXwN6gGU5jE1ZO53DRqmlDmP8RE++wyuQXWiasy+OUVCs08XeEJ
-         Mjwy6lIc66NPgnwjAwnfkAaVM5ElqAJ0HQ3k6OxuaI82Y4Cq8g06cjTN5I66vyrtQ0bw
-         xv5g==
-X-Gm-Message-State: AOJu0Yy+d7TM43XnKP1mfbQsilXYlegARZWvjPyg1VkxddCb60LKHRRZ
-        X9OfkQ/syPmBndJe5MgUiLPwsg==
-X-Google-Smtp-Source: AGHT+IGmtIuRylG6tWS3X2p1tSnWquo4kI3XUhSHJ71OX9LnfIFLneZpcFkSW+lN7kE0mE89k2eRtw==
-X-Received: by 2002:a17:903:110f:b0:1c3:3b5c:1fbf with SMTP id n15-20020a170903110f00b001c33b5c1fbfmr34206950plh.10.1697168797524;
-        Thu, 12 Oct 2023 20:46:37 -0700 (PDT)
-Received: from [10.84.153.115] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id iz12-20020a170902ef8c00b001c9c3c377f2sm2772958plb.203.2023.10.12.20.46.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 20:46:37 -0700 (PDT)
-Message-ID: <e2a42ff2-d0f9-4963-bed7-229224ee8287@bytedance.com>
-Date:   Fri, 13 Oct 2023 11:46:24 +0800
+        Thu, 12 Oct 2023 23:46:51 -0400
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E42F6BB;
+        Thu, 12 Oct 2023 20:46:48 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vu0gIP._1697168804;
+Received: from 30.240.114.194(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vu0gIP._1697168804)
+          by smtp.aliyun-inc.com;
+          Fri, 13 Oct 2023 11:46:46 +0800
+Message-ID: <a2265967-5088-7f17-35e5-29bf1c85c15f@linux.alibaba.com>
+Date:   Fri, 13 Oct 2023 11:46:44 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Re: [PATCH] sched/fair: fix pick_eevdf to always find the correct
- se
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v7 3/4] drivers/perf: add DesignWare PCIe PMU driver
 Content-Language: en-US
-To:     Benjamin Segall <bsegall@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, mgorman@suse.de, bristot@redhat.com,
-        corbet@lwn.net, qyousef@layalina.io, chris.hyser@oracle.com,
-        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
-        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
-        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
-        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
-        tglx@linutronix.de
-References: <20230531115839.089944915@infradead.org>
- <20230531124603.931005524@infradead.org> <xm261qego72d.fsf_-_@google.com>
- <6b606049-3412-437f-af25-a4c33139e2d8@bytedance.com>
- <xm26bkd4x5v4.fsf@bsegall-linux.svl.corp.google.com>
- <699cc8b1-f341-4af7-9c47-fee961c5c4b7@bytedance.com>
- <xm26pm1jhgpx.fsf@bsegall-linux.svl.corp.google.com>
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <xm26pm1jhgpx.fsf@bsegall-linux.svl.corp.google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
+        yangyicong@huawei.com, will@kernel.org,
+        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
+        robin.murphy@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        rdunlap@infradead.org, mark.rutland@arm.com,
+        zhuo.song@linux.alibaba.com, renyu.zj@linux.alibaba.com
+References: <20231012162512.GA1069387@bhelgaas>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <20231012162512.GA1069387@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/23 1:51 AM, Benjamin Segall Wrote:
-> Abel Wu <wuyun.abel@bytedance.com> writes:
-> 
->> On 10/12/23 5:01 AM, Benjamin Segall Wrote:
->>> Abel Wu <wuyun.abel@bytedance.com> writes:
->>>
->>>> On 9/30/23 8:09 AM, Benjamin Segall Wrote:
->>>>> +	/*
->>>>> +	 * Now best_left and all of its children are eligible, and we are just
->>>>> +	 * looking for deadline == min_deadline
->>>>> +	 */
->>>>> +	node = &best_left->run_node;
->>>>> +	while (node) {
->>>>> +		struct sched_entity *se = __node_2_se(node);
->>>>> +
->>>>> +		/* min_deadline is the current node */
->>>>> +		if (se->deadline == se->min_deadline)
->>>>> +			return se;
->>>>
->>>> IMHO it would be better tiebreak on vruntime by moving this hunk to ..
->>>>
->>>>> +
->>>>> +		/* min_deadline is in the left branch */
->>>>>     		if (node->rb_left &&
->>>>>     		    __node_2_se(node->rb_left)->min_deadline == se->min_deadline) {
->>>>>     			node = node->rb_left;
->>>>>     			continue;
->>>>>     		}
->>>>
->>>> .. here, thoughts?
->>> Yeah, that should work and be better on the tiebreak (and my test code
->>> agrees). There's an argument that the tiebreak will never really come up
->>> and it's better to avoid the potential one extra cache line from
->>> "__node_2_se(node->rb_left)->min_deadline" though.
+
+
+On 2023/10/13 00:25, Bjorn Helgaas wrote:
+> On Thu, Oct 12, 2023 at 11:28:55AM +0800, Shuai Xue wrote:
+>> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
+>> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
+>> Core controller IP which provides statistics feature. The PMU is not a PCIe
+>> Root Complex integrated End Point(RCiEP) device but only register counters
+>> provided by each PCIe Root Port.
 >>
->> I see. Then probably do the same thing in the first loop?
+>> To facilitate collection of statistics the controller provides the
+>> following two features for each Root Port:
 >>
+>> - Time Based Analysis (RX/TX data throughput and time spent in each
+>>   low-power LTSSM state)
+>> - Event counters (Error and Non-Error for lanes)
+>>
+>> Note, only one counter for each type and does not overflow interrupt.
 > 
-> We effectively do that already sorta by accident almost always -
-> computing best and best_left via deadline_gt rather than gte prioritizes
-> earlier elements, which always have a better vruntime.
+> Not sure what "does not overflow interrupt" means.  Does it mean
+> there's no interrupt generated when the counter overflows?
 
-Sorry for not clarifying clearly about the 'same thing'. What I meant
-was to avoid touch left if the node itself has the min deadline.
+Yes, exactly. The rootport does NOT generate interrupt when the couter overflows.
+I think the assumption hidden in this design is 64-bit counter will not overflow
+within observable time.
 
-@@ -894,6 +894,9 @@ static struct sched_entity *__pick_eevdf(struct cfs_rq *cfs_rq)
-                 if (!best || deadline_gt(deadline, best, se))
-                         best = se;
+PCIe 5.0 slots can now reach anywhere between ~4GB/sec for a x1 slot up to ~64GB/sec
+for a x16 slot. The unit of counter is 16 byte.
 
-+               if (se->deadline == se->min_deadline)
-+                       break;
-+
-                 /*
-                  * Every se in a left branch is eligible, keep track of the
-                  * branch with the best min_deadline
-@@ -913,10 +916,6 @@ static struct sched_entity *__pick_eevdf(struct cfs_rq *cfs_rq)
-                                 break;
-                 }
+	2^64/(64/16*10^9)/60/60/24/365=146 years
 
--               /* min_deadline is at this node, no need to look right */
--               if (se->deadline == se->min_deadline)
--                       break;
--
-                 /* else min_deadline is in the right branch. */
-                 node = node->rb_right;
-         }
-
-(But still thanks for the convincing explanation on fairness.)
-
-Best,
-	Abel
+so, the counter will not overflow within 146 years.
+	
 
 > 
-> Then when we do the best_left->min_deadline vs best->deadline
-> computation, we prioritize best_left, which is the one case it can be
-> wrong, we'd need an additional
-> "if (se->min_deadline == best->deadline &&
-> (s64)(se->vruntime - best->vruntime) > 0) return best;" check at the end
-> of the second loop.
+>> +config DWC_PCIE_PMU 
+>> +	tristate "Enable Synopsys DesignWare PCIe PMU Support"
 > 
-> (Though again I don't know how much this sort of never-going-to-happen
-> slight fairness improvement is worth compared to the extra bit of
-> overhead)
+> The DWC_PCIE_PMU symbol and the "Synopsys DesignWare PCIe PMU" text
+> suggest that this is generic and should work on any designs based on
+> DesignWare IP, not just the Alibaba devices.>
+> 
+> It appears that the current driver only supports Alibaba devices
+> because it only looks at Root Ports with PCI_VENDOR_ID_ALIBABA, but I
+> assume support for non-Alibaba devices is likely to be added in the
+> future?
+
+Yes. The rootport is based on DesignWare IP and this PMU driver is expected
+to work for any device based on the same IP.
+
+Unfortunately, due to the limition of current IP design, we have to follow
+the databook and only support Alibaba device now. If a non-Alibaba device is
+added, this driver can support it with minimal modifications.
+
+> 
+> If it is really generic for DesignWare-based devices the config symbol
+> and menu entry seem fine.
+> 
+> Maybe mention the vendor (Synopsys or Alibaba) first in the menu
+> entry, though, since that's what most other drivers do, e.g.,
+> 
+>   tristate "Synopsys DesignWare PCIe PMU"
+
+Fine, I will change it.
+
+> 
+>> +	depends on (ARM64 && PCI)
+> 
+> I don't see any actual ARM64 dependency in the code, so maybe omit
+> ARM64 (as PCIE_DW_PLAT_HOST does) or add "|| COMPILE_TEST"?
+
+I will remove the ARM64 dependency and add COMPILE_TEST.
+
+> 
+>> +	help
+>> +	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
+>> +	  monitoring event on platform including the Yitian 710.
+> 
+> Should this mention Alibaba or T-Head?  I don't know how
+> Alibaba/T-Head/Yitian are all related.
+
+The server chips, named Yitian 710, are custom-built by Alibaba Group's chip
+development business, T-Head.
+
+	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
+	  monitoring event on platform including the Alibaba Yitian 710.
+
+Is this okay?
+
+> 
+>> + * Put them togother as TRM used.
+> 
+> s/togother/together/
+> 
+> Maybe "Put them together as in TRM."?
+
+My topo. Will fix it.
+
+> 
+>> +#define _dwc_pcie_format_attr(_name, _cfg, _fld)				\
+>> +	(&((struct dwc_pcie_format_attr[]) {{					\
+>> +		.attr = __ATTR(_name, 0444, dwc_pcie_pmu_format_show, NULL),	\
+>> +		.config = _cfg,							\
+>> +		.field = _fld,							\
+>> +	}})[0].attr.attr)
+> 
+> Seems weird to put the \ characters in column 81 where they make
+> everything wrap unnecessarily on a 80-column terminal.  I guess it
+> just happens to be where a tab after the longest line ends up.
+
+I see, will replace the last tab with some space to avoid across 80 column.
+
+> 
+>> +static void dwc_pcie_pmu_unregister_pmu(void *data)
+>> +{
+>> +	struct dwc_pcie_pmu *pcie_pmu = data;
+>> +
+>> +	if (!pcie_pmu->registered)
+>> +		return;
+>> +
+>> +	perf_pmu_unregister(&pcie_pmu->pmu);
+>> +	pcie_pmu->registered = false;
+>> +}
+>> +
+>> +/*
+>> + * Find the PMU of a PCI device.
+>> + * @pdev: The PCI device.
+>> + */
+>> +static struct dwc_pcie_pmu *dwc_pcie_find_dev_pmu(struct pci_dev *pdev)
+>> +{
+>> +	struct dwc_pcie_pmu *pcie_pmu, *tmp;
+>> +
+>> +	list_for_each_entry_safe(pcie_pmu, tmp, &dwc_pcie_pmu_head, pmu_node) {
+>> +		if (pcie_pmu->pdev == pdev) {
+>> +			list_del(&pcie_pmu->pmu_node);
+> 
+> Seems sort of weird to have a "find_dev" function actually *remove*
+> the entry.  The entry was added to the list near the
+> perf_pmu_register(), so maybe consider removing it in the caller or
+> near the perf_pmu_unregister().  
+
+Agreed, will move list_del() after perf_pmu_unregister().
+
+
+> Maybe also reorder the functions as:
+> 
+>   dwc_pcie_find_dev_pmu
+>   dwc_pcie_pmu_unregister_pmu
+>   dwc_pcie_pmu_notifier
+> 
+> since dwc_pcie_find_dev_pmu() is a less interesting helper function.
+
+Will reorder the funtions.
+
+
+> 
+>> +			return pcie_pmu;
+>> +		}
+>> +	}
+>> +
+>> +	return NULL;
+>> +}
+>> +
+>> +static int dwc_pcie_pmu_notifier(struct notifier_block *nb,
+>> +				     unsigned long action, void *data)
+>> +{
+>> +	struct device *dev = data;
+>> +	struct pci_dev *pdev = to_pci_dev(dev);
+>> +	struct dwc_pcie_pmu *pcie_pmu;
+>> +
+>> +	/* Unregister the PMU when the device is going to be deleted. */
+>> +	if (action != BUS_NOTIFY_DEL_DEVICE)
+>> +		return NOTIFY_DONE;
+>> +
+>> +	pcie_pmu = dwc_pcie_find_dev_pmu(pdev);
+>> +	if (!pcie_pmu)
+>> +		return NOTIFY_DONE;
+>> +
+>> +	dwc_pcie_pmu_unregister_pmu(pcie_pmu);
+>> +
+>> +	return NOTIFY_OK;
+>> +}
+> 
+>> +	/* Match the rootport with VSEC_RAS_DES_ID, and register a PMU for it */
+>> +	for_each_pci_dev(pdev) {
+>> +		u16 vsec;
+>> +		u32 val;
+>> +
+>> +		if (!(pci_is_pcie(pdev) &&
+>> +		      pci_pcie_type(pdev) == PCI_EXP_TYPE_ROOT_PORT))
+>> +			continue;
+>> +
+>> +		vsec = pci_find_vsec_capability(pdev, PCI_VENDOR_ID_ALIBABA,
+>> +						DWC_PCIE_VSEC_RAS_DES_ID);
+>> +		if (!vsec)
+>> +			continue;
+>> +
+>> +		pci_read_config_dword(pdev, vsec + PCI_VNDR_HEADER, &val);
+>> +		if (PCI_VNDR_HEADER_REV(val) != 0x04 ||
+>> +		    PCI_VNDR_HEADER_LEN(val) != 0x100)
+>> +			continue;
+>> +		pci_dbg(pdev,
+>> +			"Detected PCIe Vendor-Specific Extended Capability RAS DES\n");
+>> +
+>> +		bdf = PCI_DEVID(pdev->bus->number, pdev->devfn);
+>> +		name = devm_kasprintf(&plat_dev->dev, GFP_KERNEL, "dwc_rootport_%x",
+>> +				      bdf);
+>> +		if (!name) {
+>> +			ret = -ENOMEM;
+>> +			goto out;
+>> +		}
+>> +
+>> +		/* All checks passed, go go go */
+>> +		pcie_pmu = devm_kzalloc(&plat_dev->dev, sizeof(*pcie_pmu), GFP_KERNEL);
+>> +		if (!pcie_pmu) {
+>> +			ret = -ENOMEM;
+>> +			goto out;
+>> +		}
+>> +
+>> +		pcie_pmu->pdev = pdev;
+>> +		pcie_pmu->ras_des = vsec;
+> 
+> Looks like "ras_des" is the offset of a RAS DES Capability, and we
+> only use the Vendor-specific DWC_PCIE_VSEC_RAS_DES_ID Capability to
+> learn the RAS DES offset?
+
+Yes, RAS DES Capability is defined in Vendor-Specific Extended Capability.
+
+> 
+> That seems a little convoluted and unnecessarily Alibaba-specific.  A
+> more generic way to do this would be for the RAS DES registers to be
+> in a Designated Vendor-Specific Capability with DVSEC Vendor ID of
+> PCI_VENDOR_ID_SYNOPSYS and a Synopsys-defined DVSEC ID that identifies
+> RAS DES.
+> 
+> Then we could use pci_find_dvsec_capability() to find the RAS DES
+> Capability directly without the Alibaba dependency.  Obviously this
+> would only work if the hardware/firmware design supports it, and I
+> assume the Synopsis IP wasn't designed that way.
+
+Quite agree.
+
+A more general approach would be to define the RAS DES capability in the
+Designated Vendor-Specific Capability. This way, all devices based on the
+same IP could identify DES by using pci_find_dvsec_capability() with
+PCI_VENDOR_ID_SYNOPSYS, independent of the vendor ID of a given device.
+By implementing this approach, the PMU driver will be able to support the
+devices without any modifications needed.
+
+
+Thank you for valuable comments.
+
+Best Regards.
+Shuai
