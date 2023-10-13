@@ -2,191 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 772F87C9025
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CAA7C9028
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbjJMWPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 18:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
+        id S232280AbjJMWQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 18:16:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjJMWP2 (ORCPT
+        with ESMTP id S229830AbjJMWQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 18:15:28 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2095.outbound.protection.outlook.com [40.92.74.95])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82462BF;
-        Fri, 13 Oct 2023 15:15:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WgjvUsG0D+S18Qjl9hNNN0BDttEDp5YkTMMdasOCRGOImAc4kJAua4GkxKjHzq7fi5DoaRDvFLj8P01rTCa0eTmJKftlgZpsLoGDxMULBe7oUMJp9RWaXHAKVLtmqJYh+0vlXuiZ2h/PqQsKfuEDt/B1A0drMxp2lxw5FOW4+CUn96bOkdsI3AnwEC/TtThiMvmy02xHwhi7jGawb5Ou/MYRDtKJ2wWZ/7ExgDCpYak6Oj/ls0WFJBxLmGWoag5BiDV3t87JJ5wccnF8AyT+8qjDZlXlJ+jMeRUTC5odyXmSihBA/8SXXE6EDy/aVF50wZgxn6vfTXZ/nQZfLjZinw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ABXGUqWW485in+n8TfQ4QYk1w+PvdDA/dCIEaBq7c1c=;
- b=IPg9KiL4L4JPKn3GK7/L/eqbOdZlj1mJtOdq82YRVUtcbFA8PNncN7I3bu/cvJDf/qlPhadoZV+t1mfJCWHkyI+BrXg+Pue32ZzzlHeioH8h+OhA5aSVwVCzVXTjF4bQprxYLfCG+OLXBRqS+3iuTHWUqhREKYxC7bgMZtIzact2+dYcdhyBroonryuwd6DNfM54tdvW0DVfHNwLlfWlQPA85O6lHoj/g7VciKcZOlRwMPvBQhK1dNX3yUss0MbDDAmp12Xz47/r2X+IN58K0PXurHTLkj3aiPO+mYWnWh8TSfR2e7J8BnBJbV00+w9fTQfiCOr8cdqsEHUWyuADpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from DU0PR02MB7899.eurprd02.prod.outlook.com (2603:10a6:10:347::11)
- by AS8PR02MB8341.eurprd02.prod.outlook.com (2603:10a6:20b:521::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Fri, 13 Oct
- 2023 22:15:23 +0000
-Received: from DU0PR02MB7899.eurprd02.prod.outlook.com
- ([fe80::b753:178a:394e:af8e]) by DU0PR02MB7899.eurprd02.prod.outlook.com
- ([fe80::b753:178a:394e:af8e%7]) with mapi id 15.20.6863.043; Fri, 13 Oct 2023
- 22:15:23 +0000
-Date:   Fri, 13 Oct 2023 23:15:21 +0100
-From:   Cameron Williams <cang1@live.co.uk>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH v2 5/7] tty: 8250: Add support for and fix up additional
- Brainboxes PX cards
-Message-ID: <DU0PR02MB78993B38B6D95DE0A84DA5E8C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-TMN:  [M/IfLIGKqsbs0Cfb8Aqd1B0VLo+Nwv87]
-X-ClientProxiedBy: LO4P123CA0395.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:18f::22) To DU0PR02MB7899.eurprd02.prod.outlook.com
- (2603:10a6:10:347::11)
-X-Microsoft-Original-Message-ID: <ZSnBeXuNxlfs0N1D@CHIHIRO>
+        Fri, 13 Oct 2023 18:16:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC0BC2;
+        Fri, 13 Oct 2023 15:16:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697235370; x=1728771370;
+  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=MZOWfH1PAK2h89+1m5wg+GI+vWQsVXrKmtOPocFipGg=;
+  b=LDRMy0RjppZqFN1h0jFKM92aaOruDa38uq5lKDw/B/K283lh0o6GB/cY
+   ARU7f6NkmhTv8zzszA7bi4CSJJ2FkfJFoJxNvF9AR200KBs9Ie4yuTF1G
+   prcreav1RA1eMCAmljEbVWQlSVaqU/VOVv0gsNB6YcxU4nY+Qcv/N5tkV
+   9UElzt+2lS4tEDJvqYuan449YrDag8Z5W72uXit5Sbt0wcXFY4olaTs6r
+   vT5tvjiL1nHcvzeLS9YEzpyoXzvnZjgKyxNBJs1rncjrLuPcdVQvrRm9g
+   hvgso0P9xbRfB0a+euqDkjNwzet1DkiP+DraNojeWD5uOve3rpoXY0/B3
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="471507608"
+X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
+   d="scan'208";a="471507608"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 15:16:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="754865755"
+X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
+   d="scan'208";a="754865755"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 15:16:08 -0700
+Received: from jmloza-mobl.amr.corp.intel.com (unknown [10.212.236.32])
+        by linux.intel.com (Postfix) with ESMTP id 89D34580BF0;
+        Fri, 13 Oct 2023 15:16:08 -0700 (PDT)
+Message-ID: <ec4ba6b6d05c2b6ca34009f40e84f65801a8104b.camel@linux.intel.com>
+Subject: Re: [PATCH V3 03/16] platform/x86/intel/vsec: Use cleanup.h
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
+Date:   Fri, 13 Oct 2023 15:16:08 -0700
+In-Reply-To: <4315a8db-16fe-7421-c482-5aede4d5cdd@linux.intel.com>
+References: <20231012023840.3845703-1-david.e.box@linux.intel.com>
+          <20231012023840.3845703-4-david.e.box@linux.intel.com>
+          <114e1cc4-f129-b6cd-a83b-7d822cde178@linux.intel.com>
+         <fcd4ae3492b8bf08ec637a3405228efd2913921d.camel@linux.intel.com>
+         <4315a8db-16fe-7421-c482-5aede4d5cdd@linux.intel.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR02MB7899:EE_|AS8PR02MB8341:EE_
-X-MS-Office365-Filtering-Correlation-Id: d8e43b69-605d-4a09-1e39-08dbcc39e510
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uBojS9ITZCUrNskZZVvqHZcvcCXRFj8D1EigiH88Ld5F3JjTHQ6o/o6tE7AwN8AKqiDpUrfw3vemENyYehYsmTvGv/XjetN5HD7k/d3QpojynnlVRHeHdrhDDXExorOcMSk//s16bffpxkxRHHPG7vPIs/h++eMNKhVqSwaCVUHcjZh2i8MOkaOcfxWG3GfvHx/iOIuFiJ9hRwlB7hX8fow0tyyHeCJ/6Hc+9E/Xu58cOoipvo30iZefcpYS0B0k1WMuDq9oDmXocRzSU02LLmXpJ4tOfJIzE0/hDetAa+MAyXfFdpF3n/rO/bRqSLoXL4knjXOqMPYW04IcSEytM2KxzBKNRY+yX4vwujmzyIpPmn3XyiEqWOJL72ptVMMPrkqcGoL3+bEuNENDeNXJex4RsGxxOxN1YUF0K9UClVrlPYtH1uiGClvyso0QpYjRPcx38pJrSjK3KtpxFyCiqLi7SYHLJbpL612dVT51wpAmmHnxQrjDuzyVZdJ+vFVdpXVqhHXcPVwuy18wQyjSs1Eo3Q6z/TP7TCb2Qq3iiv8n5lPUGQzExW6feH9ftLlr4kMAPLs0lmNLizcvNZG5CA==
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gHCTn1RXwGflh/Zn+eoK96UbxrK9LRpR9v1NvudDTlEmtG2EI5BcbIxFD+1q?=
- =?us-ascii?Q?Oc7xGZ4r3ZnSw+tHQQz+im4+9MCqz8jxYcF79Hhaopd2J0p04n/9tfDxlvUD?=
- =?us-ascii?Q?1NTRketkquczDEv6zaVyN4trtvTLMEo0sT5h5J1ZCYYI6uOKrIxWF2t8en5C?=
- =?us-ascii?Q?iUqjIxelC8uoFMTCXpVAke6Ce7JUBG7HL143UwoTYTdQWpco5yPXduD0y3sv?=
- =?us-ascii?Q?FQb61H78QRUxwCPRw+Fl56ZUx1konOXQtj466QexUdBgVsaJ7XUnMQ+QivR3?=
- =?us-ascii?Q?ehCkSrZGagxBiBMSbJ47HuPVYwUOptDiRU5SG554ouqccfaZ0FCebS4GNdVY?=
- =?us-ascii?Q?SXMfpsOHd7PmIiWf4pBi1SqnGFYOMMbPNXT8Rf4tuxZlV6vY4qmS9218YRaw?=
- =?us-ascii?Q?HlKTdoLaBbNVdUfzm9ZiFvosd9nqOMe879bSuYVQEB5T8m8EGWF4B3+Dozdw?=
- =?us-ascii?Q?M1L/5QsJHIxj7X2e6R+0upJY24MRd6HgDGm4rSjA2y6PyHV8983IWCjd5Jjr?=
- =?us-ascii?Q?sCoayyiNpk0gqCDJOLNbS7hTTfKJ0iJNvaJfy1UIp8wlLlf/7HGkWGP1M032?=
- =?us-ascii?Q?gV4cXI5zern442PTyOfqK2sz0SonvwPJXw/FW8cTdR9RqwJGFJvu8+uVWI89?=
- =?us-ascii?Q?+6r+A3ufTUyIElS6XCQEWwMHrmj/tBOzw8znTxexjI3f7XNeZ9nFFEjsZvYL?=
- =?us-ascii?Q?qxDpCq0B+2sWUygchOf/KJibqP6sTEtFVsNr+H3upMFFHuFAXei2Pkl3Y1GO?=
- =?us-ascii?Q?pIKrPd7jOEt9lRAKrmBd3CB9QjQmTwi5JER4sHE+FvWJ0sz8mFjMI2m0vNGW?=
- =?us-ascii?Q?zZDZ8Dd3R5FoK3EigiL2d+HQzJG97CFNooWmdI2xbQ7AqQg9Y2T3pebNxjkK?=
- =?us-ascii?Q?Ti9mH8q1/fzCYCXBRBSov2ZF76bk+OKPIs5t870p44Ulymi8W2BSEwcGRuMp?=
- =?us-ascii?Q?MBGcraST2HxLViQ15MlGk+C3XDNfQnOY3wB7QYaCjeB9SnyMjFMpP81stT8u?=
- =?us-ascii?Q?ML2SsnyhE/ny0i8hoLnOxjnduTBbNCXpwJyhXVroYZQk8do8TLbfyTLD8R/u?=
- =?us-ascii?Q?/Nac+RERs8hVzKIf85Is8C+O/aboPD2h9hV4hTrelp5j/IYYZdXGvvt6XkMF?=
- =?us-ascii?Q?MfjjBBoTCpmeENJ2S+qXsFE5fyRuYivEk/5OyGypv9gK24DuXP8T/FDMgl1h?=
- =?us-ascii?Q?JrKCt4uq1eyZzR+iAh74/3hvEzBpLOS61CwUQA=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-bcc80.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8e43b69-605d-4a09-1e39-08dbcc39e510
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR02MB7899.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 22:15:23.3702
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR02MB8341
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix: PX-257 Revision 3 has 2 ports, not 4.
-Added: PX-275/279 card
-Added: PX-475 card serial port (LPT port is in parport_pc)
-Added/Fix: PX-857 is a variant of PX-803, add note. Add additional card revision
-Add: PX-820 card
-Fix: PX-835 is a variant of PX-846, add note
+On Fri, 2023-10-13 at 13:54 +0300, Ilpo J=C3=A4rvinen wrote:
+> On Thu, 12 Oct 2023, David E. Box wrote:
+>=20
+> > On Thu, 2023-10-12 at 17:46 +0300, Ilpo J=C3=A4rvinen wrote:
+> > > On Wed, 11 Oct 2023, David E. Box wrote:
+> > >=20
+> > > > Use cleanup.h helpers to handle cleanup of resources in
+> > > > intel_vsec_add_dev() after failures.
+> > > >=20
+> > > > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > > > ---
+> > > > V3 - New patch.
+> > > >=20
+> > > > =C2=A0drivers/platform/x86/intel/vsec.c | 17 ++++++++++-------
+> > > > =C2=A01 file changed, 10 insertions(+), 7 deletions(-)
+> > > >=20
+> > > > diff --git a/drivers/platform/x86/intel/vsec.c
+> > > > b/drivers/platform/x86/intel/vsec.c
+> > > > index 15866b7d3117..f03ab89ab7c0 100644
+> > > > --- a/drivers/platform/x86/intel/vsec.c
+> > > > +++ b/drivers/platform/x86/intel/vsec.c
+> > > > @@ -15,6 +15,7 @@
+> > > > =C2=A0
+> > > > =C2=A0#include <linux/auxiliary_bus.h>
+> > > > =C2=A0#include <linux/bits.h>
+> > > > +#include <linux/cleanup.h>
+> > > > =C2=A0#include <linux/delay.h>
+> > > > =C2=A0#include <linux/kernel.h>
+> > > > =C2=A0#include <linux/idr.h>
+> > > > @@ -155,10 +156,10 @@ EXPORT_SYMBOL_NS_GPL(intel_vsec_add_aux,
+> > > > INTEL_VSEC);
+> > > > =C2=A0static int intel_vsec_add_dev(struct pci_dev *pdev, struct
+> > > > intel_vsec_header *header,
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct intel_vsec_platform_info *info)
+> > > > =C2=A0{
+> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct intel_vsec_device=
+ *intel_vsec_dev;
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct intel_vsec_device=
+ __free(kfree) *intel_vsec_dev =3D NULL;
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct resource *re=
+s, *tmp;
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned long quirk=
+s =3D info->quirks;
+> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int i;
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int ret, i;
+> > > > =C2=A0
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!intel_vsec_sup=
+ported(header->id, info->caps))
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -EINVAL;
+> > > > @@ -178,10 +179,8 @@ static int intel_vsec_add_dev(struct pci_dev *=
+pdev,
+> > > > struct intel_vsec_header *he
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -ENOMEM;
+> > > > =C2=A0
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0res =3D kcalloc(hea=
+der->num_entries, sizeof(*res), GFP_KERNEL);
+> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!res) {
+> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0kfree(intel_vsec_dev);
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!res)
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -ENOMEM;
+> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> > > > =C2=A0
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (quirks & VSEC_Q=
+UIRK_TABLE_SHIFT)
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0header->offset >>=3D TABLE_OFFSET_SHIFT;
+> > > > @@ -208,8 +207,12 @@ static int intel_vsec_add_dev(struct pci_dev *=
+pdev,
+> > > > struct intel_vsec_header *he
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0intel_vsec_dev->ida =3D &intel_vsec_ida;
+> > > > =C2=A0
+> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return intel_vsec_add_au=
+x(pdev, NULL, intel_vsec_dev,
+> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 intel_vsec_name(header-=
+>id));
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D intel_vsec_add_a=
+ux(pdev, NULL, intel_vsec_dev,
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 intel_vsec_name(header->id));
+> > > > +
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0no_free_ptr(intel_vsec_d=
+ev);
+> > > > +
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return ret;
+> > >=20
+> > > So if intel_vsec_add_aux() returned an error, intel_vsec_dev won't be=
+=20
+> > > freed because of the call call to no_free_ptr() before return. I that=
+'s=20
+> > > not what you intended?
+> >=20
+> > It will have been freed if intel_vsec_add_aux() fails. It's a little me=
+ssy.
+> > That
+> > function creates the auxdev and assigns the release function which will=
+ free
+> > intel_vsec_dev when the device is removed. But there are failure points=
+ that
+> > will also invoke the release function. Because of this, for all the fai=
+lure
+> > points in that function we free intel_vsec_dev so that it's state doesn=
+'t
+> > need
+> > to be questioned here. This happens explicitly if the failure is before
+> > auxiliary_device_init(), or through the release function invoked by
+> > auxiliary_device_uninit() if after.
+>=20
+> Oh, that's really convoluted and no wonder I missed it completely. It=20
+> might even be that using cleanup.h here isn't really worth it. I know=20
+> I pushed you into that direction but I didn't realize all the complexity
+> at that point.
+>=20
+> If you still want to keep using cleanup.h, it would perhaps be less=20
+> dangerous if you change the code such that no_free_ptr() for
+> intel_vsec_dev and the resource (in 4/16, that's a similar case, isn't=
+=20
+> it?)
 
-Signed-off-by: Cameron Williams <cang1@live.co.uk>
----
-This is a resubmission series for the patch series below. That series
-was lots of changes sent to lots of maintainers, this series is just for
-the tty/serial/8250 subsystem.
+yes
 
-[1] https://lore.kernel.org/all/DU0PR02MB789950E64D808DB57E9D7312C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[2] https://lore.kernel.org/all/DU0PR02MB7899DE53DFC900EFB50E53F2C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[3] https://lore.kernel.org/all/DU0PR02MB7899033E7E81EAF3694BC20AC4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[4] https://lore.kernel.org/all/DU0PR02MB7899EABA8C3DCAC94DCC79D4C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+>  are before the intel_vsec_add_aux() call (and I'd also add a comment=20
+> to explain that freeing them is now responsability of=20
+> intel_vsec_add_aux()). That way, we don't leave a trap into there where=
+=20
+> somebody happily adds another no_free_ptr() to the same group and it=20
+> causes a mem leak.
 
- drivers/tty/serial/8250/8250_pci.c | 38 ++++++++++++++++++++++++++----
- 1 file changed, 33 insertions(+), 5 deletions(-)
+Sure. After the comment I'd just do this then still the value is still need=
+ed,
 
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-index b0a632415d8e..b0e7354ba119 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -5180,7 +5180,7 @@ static const struct pci_device_id serial_pci_tbl[] = {
- 	{	PCI_VENDOR_ID_INTASHIELD, 0x4015,
- 		PCI_ANY_ID, PCI_ANY_ID,
- 		0, 0,
--		pbn_oxsemi_4_15625000 },
-+		pbn_oxsemi_2_15625000 },
- 	/*
- 	 * Brainboxes PX-260/PX-701
- 	 */
-@@ -5188,6 +5188,13 @@ static const struct pci_device_id serial_pci_tbl[] = {
- 		PCI_ANY_ID, PCI_ANY_ID,
- 		0, 0,
- 		pbn_oxsemi_4_15625000 },
-+	/*
-+	 * Brainboxes PX-275/279
-+	 */
-+	{	PCI_VENDOR_ID_INTASHIELD, 0x0E41,
-+		PCI_ANY_ID, PCI_ANY_ID,
-+		0, 0,
-+		pbn_b2_8_115200 },
- 	/*
- 	 * Brainboxes PX-310
- 	 */
-@@ -5235,18 +5242,39 @@ static const struct pci_device_id serial_pci_tbl[] = {
- 		0, 0,
- 		pbn_oxsemi_4_15625000 },
- 	/*
--	 * Brainboxes PX-803
-+	 * Brainboxes PX-475
-+	 */
-+	{	PCI_VENDOR_ID_INTASHIELD, 0x401D,
-+		PCI_ANY_ID, PCI_ANY_ID,
-+		0, 0,
-+		pbn_oxsemi_1_15625000 },
-+	/*
-+	 * Brainboxes PX-803/PX-857
- 	 */
- 	{	PCI_VENDOR_ID_INTASHIELD, 0x4009,
- 		PCI_ANY_ID, PCI_ANY_ID,
- 		0, 0,
--		pbn_b0_1_115200 },
-+		pbn_b0_2_115200 },
-+	{	PCI_VENDOR_ID_INTASHIELD, 0x4018,
-+		PCI_ANY_ID, PCI_ANY_ID,
-+		0, 0,
-+		pbn_oxsemi_2_15625000 },
- 	{	PCI_VENDOR_ID_INTASHIELD, 0x401E,
- 		PCI_ANY_ID, PCI_ANY_ID,
- 		0, 0,
--		pbn_oxsemi_1_15625000 },
-+		pbn_oxsemi_2_15625000 },
-+	/*
-+	 * Brainboxes PX-820
-+	 */
-+	{	PCI_VENDOR_ID_INTASHIELD, 0x4002,
-+		PCI_ANY_ID, PCI_ANY_ID,
-+		0, 0,
-+		pbn_b0_4_115200 },
-+	{	PCI_VENDOR_ID_INTASHIELD, 0x4013,
-+		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-+		pbn_oxsemi_4_15625000 },
- 	/*
--	 * Brainboxes PX-846
-+	 * Brainboxes PX-835/PX-846
- 	 */
- 	{	PCI_VENDOR_ID_INTASHIELD, 0x4008,
- 		PCI_ANY_ID, PCI_ANY_ID,
--- 
-2.42.0
+	ret =3D intel_vsec_add_aux(pdev, NULL, no_free_ptr(intel_vsec_dev),
+                                 intel_vsec_name(header->id));
+
+David
 
