@@ -2,158 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0F07C8209
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A0D7C820A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbjJMJ3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 05:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
+        id S230510AbjJMJ3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 05:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbjJMJ3g (ORCPT
+        with ESMTP id S230480AbjJMJ3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 05:29:36 -0400
-Received: from out-193.mta0.migadu.com (out-193.mta0.migadu.com [91.218.175.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869C795
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:29:33 -0700 (PDT)
-Message-ID: <1c91dd62-886d-bb05-8aee-22191a8a2d8e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697189371;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v/wjLZqPF3Awyk9wCPsC+oeoryEbbL/rExrT85FbE7g=;
-        b=qog+KJ+9Xz9isSq2zUiU+zGAmWX6Vo/7c67KT5LwKYrxehhgfYUCDJcSPv96fSKshioIaB
-        MyF/YdAUO78EQywcEh7HAjhhmOEnmZm1lBjkju83Th/kt7rEwCMwqtb9sUoEb1OifPQraZ
-        37xNdDoUQ+XL4hpTiOW/+YWyHJFX9Xc=
-Date:   Fri, 13 Oct 2023 17:29:19 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCH v4 2/2] mm: Init page count in reserve_bootmem_region when
- MEMINIT_EARLY
-Content-Language: en-US
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        mike.kravetz@oracle.com, muchun.song@linux.dev,
-        willy@infradead.org, linux-mm@kvack.org,
+        Fri, 13 Oct 2023 05:29:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F126C9
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:29:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7E27C433C7;
+        Fri, 13 Oct 2023 09:29:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697189381;
+        bh=2Rtv1hzWn9/y5luZPHjn/Ic4VtigUzkY4Y2DYOUlc8U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QaoND89a9vi3ZXr6GSrmL8UktsMjOiSrY0ZwSAOnirchlhVifYz9y9EGAj4vFUt8h
+         WeAMvzDB1iv7KJQq0vSvyFfXupghD1FVRTOhUSoLgNR9tPX2jGw+fT4kGHRjFvRufi
+         PQXMYXA2UCk6PXyaigXfP9TNjz4sQjwHjU3Uf94QfUa/kaYMkcSPf4Fenr0mUiHE4c
+         lrUGr2bUcGKkejYqt9LrTvQ1MwQuDuEaA+CCkHg263bVGKA2eynMYMWK1TdEMdk8XX
+         KM7637wC5U2JqHdcz8pDhIGnYwnzH9f2elCzpCktDdfAn0snExum2Z2A1ZQTntPxP5
+         dknYMH/Mxq7gA==
+Date:   Fri, 13 Oct 2023 10:29:35 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>, ankita@nvidia.com,
+        maz@kernel.org, oliver.upton@linux.dev, aniketa@nvidia.com,
+        cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com,
+        vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com,
+        jhubbard@nvidia.com, danw@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
         linux-kernel@vger.kernel.org
-References: <20230928083302.386202-1-yajun.deng@linux.dev>
- <20230928083302.386202-3-yajun.deng@linux.dev>
- <20230929083018.GU3303@kernel.org>
- <f144b910-cd9f-a571-ce9b-a0a8b509c28a@redhat.com>
- <2f8c4741-5c7f-272d-9cef-9fda9fbc7ca6@linux.dev>
- <5382bf2d-5aa0-1498-8169-3248be4b5af3@linux.dev>
- <bf7143f4-9d50-cfc4-0ef6-d312a2cc896b@redhat.com>
- <38cd0cb9-efe9-b98a-2768-ccb48da8b812@linux.dev>
- <20231013084827.GT3303@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <20231013084827.GT3303@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v1 2/2] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <20231013092934.GA13524@willie-the-truck>
+References: <ZP9MQdRYmlawNsbC@nvidia.com>
+ <ZQHUifAfJ+lZikAn@lpieralisi>
+ <ZQIFfqgR5zcidRR3@nvidia.com>
+ <ZRKW6uDR/+eXYMzl@lpieralisi>
+ <ZRLiDf204zCpO6Mv@arm.com>
+ <ZR6IZwcFNw55asW0@lpieralisi>
+ <20231012123541.GB11824@willie-the-truck>
+ <ZSf6Ue09IO6QMBs1@arm.com>
+ <20231012144807.GA12374@willie-the-truck>
+ <ZSgsKSCv-zWgtWkm@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSgsKSCv-zWgtWkm@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 12, 2023 at 06:26:01PM +0100, Catalin Marinas wrote:
+> On Thu, Oct 12, 2023 at 03:48:08PM +0100, Will Deacon wrote:
+> > Claiming back the device also seems strange if the guest has been using
+> > non-cacheable accesses since I think you could get write merging and
+> > reordering with subsequent device accesses trying to reset the device.
+> 
+> True. Not sure we have a good story here (maybe reinvent the DWB barrier ;)).
 
-On 2023/10/13 16:48, Mike Rapoport wrote:
-> On Thu, Oct 12, 2023 at 05:53:22PM +0800, Yajun Deng wrote:
->> On 2023/10/12 17:23, David Hildenbrand wrote:
->>> On 10.10.23 04:31, Yajun Deng wrote:
->>>> On 2023/10/8 16:57, Yajun Deng wrote:
->>>>>> That looks wrong. if the page count would by pure luck be 0
->>>>>> already for hotplugged memory, you wouldn't clear the reserved
->>>>>> flag.
->>>>>>
->>>>>> These changes make me a bit nervous.
->>>>> Is 'if (page_count(page) || PageReserved(page))' be safer? Or do I
->>>>> need to do something else?
->>>>>
->>>> How about the following if statement? But it needs to add more patch
->>>> like v1 ([PATCH 2/4] mm: Introduce MEMINIT_LATE context).
->>>>
->>>> It'll be safer, but more complex. Please comment...
->>>>
->>>>      if (context != MEMINIT_EARLY || (page_count(page) ||
->>>> PageReserved(page)) {
->>>>
->>> Ideally we could make initialization only depend on the context, and not
->>> check for count or the reserved flag.
->>>
->> This link is v1,
->> https://lore.kernel.org/all/20230922070923.355656-1-yajun.deng@linux.dev/
->>
->> If we could make initialization only depend on the context, I'll modify it
->> based on v1.
-> Although ~20% improvement looks impressive, this is only optimization of a
-> fraction of the boot time, and realistically, how much 56 msec saves from
-> the total boot time when you boot a machine with 190G of RAM?
+We do have a good story for this part: use Device-nGnRE!
 
+> > > So, for now I'd only relax this if we know there's RAM(-like) on the
+> > > other side and won't trigger some potentially uncontainable errors as a
+> > > result.
+> > 
+> > I guess my wider point is that I'm not convinced that non-cacheable is
+> > actually much better and I think we're going way off the deep end looking
+> > at what particular implementations do and trying to justify to ourselves
+> > that non-cacheable is safe, even though it's still a normal memory type
+> > at the end of the day.
+> 
+> Is this about Device vs NC or Device/NC vs Normal Cacheable? The
+> justification for the former has been summarised in Lorenzo's write-up.
+> How the hardware behaves, it depends a lot on the RAS implementation.
+> The BSA has some statements but not sure it covers everything.
 
-There are a lot of factors that can affect the total boot time. 56 msec 
-saves may be insignificant.
+I don't know how to be more clear, but I'm asking why Normal-NC is the right
+memory type to use. Jason's explanation on the other thread about how it's
+basically the only option with FWB (with some hand-waving about why
+Normal-cacheable isn't safe) will have to do, but it needs to be in the
+commit message.
 
-But if we look at the boot log, we'll see there's a significant time jump.
+The host maps MMIO with Device-nGnRE. Allowing a guest to map it as Normal
+surely means the host is going to need additional logic to deal with that?
+We briefly discussed claiming back a device above and I'm not convinced
+that the code we have for doing that today will work correctly if the
+guest has issued a bunch of Normal-NC stores prior to the device being
+unmapped.
 
-before:
+Could we change these patches so that the memory type of the stage-1 VMA
+in the VMM is reflected in the stage-2? In other words, continue to use
+Device mappings at stage-2 for I/O but relax to Normal-NC if that's
+how the VMM has it mapped?
 
-[    0.250334] ACPI: PM-Timer IO Port: 0x508
+> Things can go wrong but that's not because Device does anything better.
+> Given the RAS implementation, external aborts caused on Device memory
+> (e.g. wrong size access) is uncontainable. For Normal NC it can be
+> contained (I can dig out the reasoning behind this if you want, IIUC
+> something to do with not being able to cancel an already issued Device
+> access since such accesses don't allow speculation due to side-effects;
+> for Normal NC, it's just about the software not getting the data).
 
-[    0.618994] Memory: 173413056K/199884452K available (18440K kernel 
-code, 4204K rwdata, 5608K rodata, 3188K init, 17024K bss, 5499616K 
-reserved, 20971520K cma-reserved)
+I really think these details belong in the commit message.
 
+> > Obviously, it's up to Marc and Oliver if they want to do this, but I'm
+> > wary without an official statement from Arm to say that Normal-NC is
+> > correct. There's mention of such a statement in the cover letter:
+> > 
+> >   > We hope ARM will publish information helping platform designers
+> >   > follow these guidelines.
+> > 
+> > but imo we shouldn't merge this without either:
+> > 
+> >   (a) _Architectural_ guidance (as opposed to some random whitepaper or
+> >       half-baked certification scheme).
+> 
+> Well, you know the story, the architects will probably make it a SoC or
+> integration issue, PCIe etc., not something that can live in the Arm
+> ARM. The best we could get is more recommendations in the RAS spec
+> around containment but not for things that might happen outside the CPU,
+> e.g. PCIe root complex.
 
-after:
+The Arm ARM _does_ mention PCI config space when talking about early write
+acknowledgement, so there's some precedence for providing guidance around
+which memory types to use.
 
-[    0.260229] software IO TLB: area num 32.
+> > - or -
+> > 
+> >   (b) A concrete justification based on the current architecture as to
+> >       why Normal-NC is the right thing to do for KVM.
+> 
+> To put it differently, we don't have any strong arguments why Device is
+> the right thing to do. We chose Device based on some understanding
+> software people had about how the hardware behaves, which apparently
+> wasn't entirely correct (and summarised by Lorenzo).
 
-[    0.563497] Memory: 173413056K/199884452K available (18440K kernel 
-code, 4204K rwdata, 5608K rodata, 3188K init, 17024K bss, 5499616K 
-reserved, 20971520K cma-reserved)
+I think we use Device because that's what the host uses in its stage-1
+and mismatched aliases are bad.
 
-
-Memory initialization is time consuming in the boot log.
-
-> I still think the improvement does not justify the churn, added complexity
-> and special casing of different code paths of initialization of struct pages.
->   
-
-
-Because there is a loop, if the order is MAX_ORDER, the loop will run 
-1024 times. The following 'if' would be safer:
-
-'if (context != MEMINIT_EARLY || (page_count(page) || >> 
-PageReserved(page)) {'
-
-This is a foundation. We may change this when we are able to safely 
-remove page init in the hotplug context one day.
-
-So the case for the early context is only temporary.
-
->> @Mike,  By the way,  this code will cost more time:
->>
->>                  if (context == MEMINIT_HOTPLUG)
->>                          flags = INIT_PAGE_COUNT | INIT_PAGE_RESERVED;
->>                  __init_single_page(page, pfn, zone, nid, flags);
->>
->>
->> [    0.014999] On node 0, zone DMA32: 31679 pages in unavailable ranges
->> [    0.311560] ACPI: PM-Timer IO Port: 0x508
->>
->>
->> This code will cost less time:
->>
->>                  __init_single_page(page, pfn, zone, nid, 0);
->>                  if (context == MEMINIT_HOTPLUG) {
->>                          init_page_count(page);
->>                          __SetPageReserved(page);
->>
->> [    0.014299] On node 0, zone DMA32: 31679 pages in unavailable ranges
->> [    0.250223] ACPI: PM-Timer IO Port: 0x508
->>
+Will
