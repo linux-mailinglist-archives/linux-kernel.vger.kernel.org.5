@@ -2,320 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E07F7C884A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E967C8847
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbjJMPFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:05:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46298 "EHLO
+        id S232286AbjJMPGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 11:06:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232286AbjJMPFB (ORCPT
+        with ESMTP id S230373AbjJMPGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:05:01 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B1FCF
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:04:58 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-27d113508bfso1726237a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:04:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697209498; x=1697814298; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=i+et0olFKLIXuqTKZSNcjwQQhWaV7GbRhiBuQ9dyCjg=;
-        b=ZNJCKShs7a7zRxTzZlGyL2f8CIUyAlqR3nMEmecXRrk3exAz5UjsGWMTG07w6Gw9MM
-         DcnpBsT3O1aG9LvJdHO2UJc7cAJrgU7Jn0iq2edYUTJQcds/ONCEpQH9tzitgig8KHaf
-         o33X2eG/XKYPsD8mgZt2qtoFP26AwiHBE2J8C6Qp7Ajz+oRKgu5kzC/P4NOPM1SRvhN1
-         kocGecxW7PMjcy81Vz3dyR9FiSY6VyJh1KabMEJFjd7BwPld7kSfMPNocvojq9uSHOC8
-         644UZN3b8G6Ag6w8P0VS4nxEoabGtfOVc4h9mvilZEqOzUH8E2WG6LIN3hQ9pDcG12fJ
-         iu8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697209498; x=1697814298;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=i+et0olFKLIXuqTKZSNcjwQQhWaV7GbRhiBuQ9dyCjg=;
-        b=fZCxbblIYsiTMHkHX/LlNmazXD4vh6exWHp5BywJ2au7EpOWmXDoQsvy/4enqt3srA
-         NQSivBPq/6zUgoqKV98K4VPaVVdOI3tx5A9l2njfQx7GyI+I6/phkAcnEU0c5ElAn5bQ
-         ASNrvPNGWkEy0BQXqUbHzOh0VaxfwfGHOmGRyL9jRqWvv5XEjdGjyWhw+BS0JjHqsa8x
-         C+mqnU3PkR2gfU83AOH7kgyThTRgX4hlxbCQeM7s3BlM4eS4+V04qAOkjA0uSnN/T1mX
-         ZLe9L1XK14/G3BNQfL+eKH52jLN5XW4jMx2xMw1M4Zg5geJ+z95cxYbRd5YEBpG3t4zR
-         OS4Q==
-X-Gm-Message-State: AOJu0YxvRNe2MSjGDQo6lGbi5nfVd/NQlq9TiPANg4Lgj5B50/dxQhPR
-        lKmHAXaPWLAItHz3An6X4S3lIuxfA45Ch+V33WMevg==
-X-Google-Smtp-Source: AGHT+IFK0CFw7xaGvqVkt3sgwb78rKASish563wiH8oSU4hu23qMPOyXDObZI4LbnPWVJuB65SO+wT5dAgMZN8/FLpU=
-X-Received: by 2002:a17:90a:6641:b0:27d:2054:9641 with SMTP id
- f1-20020a17090a664100b0027d20549641mr4920503pjm.36.1697209498275; Fri, 13 Oct
- 2023 08:04:58 -0700 (PDT)
+        Fri, 13 Oct 2023 11:06:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C80195;
+        Fri, 13 Oct 2023 08:06:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697209561; x=1728745561;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to;
+  bh=I9ejgnkc4T1U17W9HiaslETujXXaw9iMHZTTGR4wj6g=;
+  b=CpGBRA+/rCwc7WHWKUo5yeSoNPvXA7dAhVR/paN3eamEwe9rqz4owRZm
+   FgzkUbNT9Poc1pCkxfAhl0287uQXeu7vjdB2y+X0Lj2/YJXnWuMym/3z4
+   Xd8Hrq9NbJuLlsGNpNPRbb/sy9I/6SiOlVyFLwLwQ6YW/AM1PZrnlWiOe
+   GXN/N4P6flvLFocaWa1tz+VEZ6zz5Xz2qCor4Cw/6tRp02vT2pBAO6XN8
+   zMspGX1dobkQRFyIVV8dV4LdNQt1OW5Ha8A5juFGG0eKY703MEGYWhhxr
+   xlihfYOBmtbU1AT2DAV/s5S7TBTT/2fGgEAB+tA3RbwhSn5wP16kAcXEe
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="375552697"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="375552697"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 08:06:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="704676500"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="704676500"
+Received: from marinjul-mobl.amr.corp.intel.com (HELO [10.255.231.41]) ([10.255.231.41])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 08:06:00 -0700
+Content-Type: multipart/mixed; boundary="------------4QAAwMnZ7myaM0IpTAN94Ja9"
+Message-ID: <532fd5c3-dddb-4503-9b81-31c3d07a7119@intel.com>
+Date:   Fri, 13 Oct 2023 08:05:54 -0700
 MIME-Version: 1.0
-References: <20231012121707.51368-1-yangyicong@huawei.com> <20231012121707.51368-3-yangyicong@huawei.com>
-In-Reply-To: <20231012121707.51368-3-yangyicong@huawei.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 13 Oct 2023 17:04:46 +0200
-Message-ID: <CAKfTPtAtXYQ0LBwRo-RRcoFDTCn4_BGhJDCjH8PAhSgmAbs+bw@mail.gmail.com>
-Subject: Re: [PATCH v10 2/3] sched/fair: Scan cluster before scanning LLC in
- wake-up path
-To:     Yicong Yang <yangyicong@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, tim.c.chen@linux.intel.com,
-        yu.c.chen@intel.com, gautham.shenoy@amd.com, mgorman@suse.de,
-        vschneid@redhat.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, rostedt@goodmis.org,
-        bsegall@google.com, bristot@redhat.com, prime.zeng@huawei.com,
-        yangyicong@hisilicon.com, jonathan.cameron@huawei.com,
-        ego@linux.vnet.ibm.com, srikar@linux.vnet.ibm.com,
-        linuxarm@huawei.com, 21cnbao@gmail.com, kprateek.nayak@amd.com,
-        wuyun.abel@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/12] x86/mce: Fix hw MCE injection feature detection
+Content-Language: en-US
+To:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-coco@lists.linux.dev,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        Borislav Petkov <bp@suse.de>
+References: <cover.1696926843.git.isaku.yamahata@intel.com>
+ <23c6fa20777498bccd486aedc435eef9af174748.1696926843.git.isaku.yamahata@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <23c6fa20777498bccd486aedc435eef9af174748.1696926843.git.isaku.yamahata@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Oct 2023 at 14:19, Yicong Yang <yangyicong@huawei.com> wrote:
->
-> From: Barry Song <song.bao.hua@hisilicon.com>
->
-> For platforms having clusters like Kunpeng920, CPUs within the same cluster
-> have lower latency when synchronizing and accessing shared resources like
-> cache. Thus, this patch tries to find an idle cpu within the cluster of the
-> target CPU before scanning the whole LLC to gain lower latency. This
-> will be implemented in 2 steps in select_idle_sibling():
-> 1. When the prev_cpu/recent_used_cpu are good wakeup candidates, use them
->    if they're sharing cluster with the target CPU. Otherwise trying to
->    scan for an idle CPU in the target's cluster.
-> 2. Scanning the cluster prior to the LLC of the target CPU for an
->    idle CPU to wakeup.
->
-> Testing has been done on Kunpeng920 by pinning tasks to one numa and two
-> numa. On Kunpeng920, Each numa has 8 clusters and each cluster has 4 CPUs.
->
-> With this patch, We noticed enhancement on tbench and netperf within one
-> numa or cross two numa on top of tip-sched-core commit
-> 9b46f1abc6d4 ("sched/debug: Print 'tgid' in sched_show_task()")
->
-> tbench results (node 0):
->             baseline                     patched
->   1:        327.2833        372.4623 (   13.80%)
->   4:       1320.5933       1479.8833 (   12.06%)
->   8:       2638.4867       2921.5267 (   10.73%)
->  16:       5282.7133       5891.5633 (   11.53%)
->  32:       9810.6733       9877.3400 (    0.68%)
->  64:       7408.9367       7447.9900 (    0.53%)
-> 128:       6203.2600       6191.6500 (   -0.19%)
-> tbench results (node 0-1):
->             baseline                     patched
->   1:        332.0433        372.7223 (   12.25%)
->   4:       1325.4667       1477.6733 (   11.48%)
->   8:       2622.9433       2897.9967 (   10.49%)
->  16:       5218.6100       5878.2967 (   12.64%)
->  32:      10211.7000      11494.4000 (   12.56%)
->  64:      13313.7333      16740.0333 (   25.74%)
-> 128:      13959.1000      14533.9000 (    4.12%)
->
-> netperf results TCP_RR (node 0):
->             baseline                     patched
->   1:      76546.5033      90649.9867 (   18.42%)
->   4:      77292.4450      90932.7175 (   17.65%)
->   8:      77367.7254      90882.3467 (   17.47%)
->  16:      78519.9048      90938.8344 (   15.82%)
->  32:      72169.5035      72851.6730 (    0.95%)
->  64:      25911.2457      25882.2315 (   -0.11%)
-> 128:      10752.6572      10768.6038 (    0.15%)
->
-> netperf results TCP_RR (node 0-1):
->             baseline                     patched
->   1:      76857.6667      90892.2767 (   18.26%)
->   4:      78236.6475      90767.3017 (   16.02%)
->   8:      77929.6096      90684.1633 (   16.37%)
->  16:      77438.5873      90502.5787 (   16.87%)
->  32:      74205.6635      88301.5612 (   19.00%)
->  64:      69827.8535      71787.6706 (    2.81%)
-> 128:      25281.4366      25771.3023 (    1.94%)
->
-> netperf results UDP_RR (node 0):
->             baseline                     patched
->   1:      96869.8400     110800.8467 (   14.38%)
->   4:      97744.9750     109680.5425 (   12.21%)
->   8:      98783.9863     110409.9637 (   11.77%)
->  16:      99575.0235     110636.2435 (   11.11%)
->  32:      95044.7250      97622.8887 (    2.71%)
->  64:      32925.2146      32644.4991 (   -0.85%)
-> 128:      12859.2343      12824.0051 (   -0.27%)
->
-> netperf results UDP_RR (node 0-1):
->             baseline                     patched
->   1:      97202.4733     110190.1200 (   13.36%)
->   4:      95954.0558     106245.7258 (   10.73%)
->   8:      96277.1958     105206.5304 (    9.27%)
->  16:      97692.7810     107927.2125 (   10.48%)
->  32:      79999.6702     103550.2999 (   29.44%)
->  64:      80592.7413      87284.0856 (    8.30%)
-> 128:      27701.5770      29914.5820 (    7.99%)
->
-> Note neither Kunpeng920 nor x86 Jacobsville supports SMT, so the SMT branch
-> in the code has not been tested but it supposed to work.
->
-> Chen Yu also noticed this will improve the performance of tbench and
-> netperf on a 24 CPUs Jacobsville machine, there are 4 CPUs in one
-> cluster sharing L2 Cache.
->
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> [https://lore.kernel.org/lkml/Ytfjs+m1kUs0ScSn@worktop.programming.kicks-ass.net]
-> Tested-by: Yicong Yang <yangyicong@hisilicon.com>
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-> Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
-> Reviewed-by: Chen Yu <yu.c.chen@intel.com>
+This is a multi-part message in MIME format.
+--------------4QAAwMnZ7myaM0IpTAN94Ja9
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Isaku, when you report a bug, it would be great to include the folks who
+authored and worked on the original patch that introduced the bug.  I've
+gone ahead and done that for you here.
 
+On 10/10/23 01:35, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+> 
+> When initializing x86 MCE injection framework, it checks if hardware mce
+> injection is available or not.  When it's not available on AMD, set the
+> boolean variable to false to not use it.  The variable is on by default and
+> the feature is AMD specific based on the code.
+> 
+> Because the variable is default on, it is true on Intel platform (probably
+> on other non-AMD x86 platform).  It results in unchecked msr access of
+> MSR_K7_HWCR=0xc0010015 when injecting MCE on Intel platform.  (Probably on
+> other x86 platform.)
+> 
+> Make the variable of by default, and set the variable on when the hardware
+> feature is usable.
 
-> ---
->  kernel/sched/fair.c     | 41 +++++++++++++++++++++++++++++++++++++----
->  kernel/sched/sched.h    |  1 +
->  kernel/sched/topology.c | 12 ++++++++++++
->  3 files changed, 50 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 666ece65987f..4039f9b348ec 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7259,6 +7259,30 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
->                 }
->         }
->
-> +       if (static_branch_unlikely(&sched_cluster_active)) {
-> +               struct sched_group *sg = sd->groups;
-> +
-> +               if (sg->flags & SD_CLUSTER) {
-> +                       for_each_cpu_wrap(cpu, sched_group_span(sg), target + 1) {
-> +                               if (!cpumask_test_cpu(cpu, cpus))
-> +                                       continue;
-> +
-> +                               if (has_idle_core) {
-> +                                       i = select_idle_core(p, cpu, cpus, &idle_cpu);
-> +                                       if ((unsigned int)i < nr_cpumask_bits)
-> +                                               return i;
-> +                               } else {
-> +                                       if (--nr <= 0)
-> +                                               return -1;
-> +                                       idle_cpu = __select_idle_cpu(cpu, p);
-> +                                       if ((unsigned int)idle_cpu < nr_cpumask_bits)
-> +                                               return idle_cpu;
-> +                               }
-> +                       }
-> +                       cpumask_andnot(cpus, cpus, sched_group_span(sg));
-> +               }
-> +       }
-> +
->         for_each_cpu_wrap(cpu, cpus, target + 1) {
->                 if (has_idle_core) {
->                         i = select_idle_core(p, cpu, cpus, &idle_cpu);
-> @@ -7266,7 +7290,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
->                                 return i;
->
->                 } else {
-> -                       if (!--nr)
-> +                       if (--nr <= 0)
->                                 return -1;
->                         idle_cpu = __select_idle_cpu(cpu, p);
->                         if ((unsigned int)idle_cpu < nr_cpumask_bits)
-> @@ -7395,8 +7419,13 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->          */
->         if (prev != target && cpus_share_cache(prev, target) &&
->             (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
-> -           asym_fits_cpu(task_util, util_min, util_max, prev))
-> -               return prev;
-> +           asym_fits_cpu(task_util, util_min, util_max, prev)) {
-> +               if (!static_branch_unlikely(&sched_cluster_active))
-> +                       return prev;
-> +
-> +               if (cpus_share_resources(prev, target))
-> +                       return prev;
-> +       }
->
->         /*
->          * Allow a per-cpu kthread to stack with the wakee if the
-> @@ -7423,7 +7452,11 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->             (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)) &&
->             cpumask_test_cpu(recent_used_cpu, p->cpus_ptr) &&
->             asym_fits_cpu(task_util, util_min, util_max, recent_used_cpu)) {
-> -               return recent_used_cpu;
-> +               if (!static_branch_unlikely(&sched_cluster_active))
-> +                       return recent_used_cpu;
-> +
-> +               if (cpus_share_resources(recent_used_cpu, target))
-> +                       return recent_used_cpu;
->         }
->
->         /*
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 998f03d02de0..ef4fe7bcf740 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1859,6 +1859,7 @@ DECLARE_PER_CPU(struct sched_domain __rcu *, sd_numa);
->  DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
->  DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_cpucapacity);
->  extern struct static_key_false sched_asym_cpucapacity;
-> +extern struct static_key_false sched_cluster_active;
->
->  static __always_inline bool sched_asym_cpucap_active(void)
->  {
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 48cd88350d18..925cd68abc8b 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -673,7 +673,9 @@ DEFINE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
->  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_numa);
->  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
->  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_cpucapacity);
-> +
->  DEFINE_STATIC_KEY_FALSE(sched_asym_cpucapacity);
-> +DEFINE_STATIC_KEY_FALSE(sched_cluster_active);
->
->  static void update_top_cache_domain(int cpu)
->  {
-> @@ -2386,6 +2388,7 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
->         struct rq *rq = NULL;
->         int i, ret = -ENOMEM;
->         bool has_asym = false;
-> +       bool has_cluster = false;
->
->         if (WARN_ON(cpumask_empty(cpu_map)))
->                 goto error;
-> @@ -2514,12 +2517,18 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
->                         WRITE_ONCE(d.rd->max_cpu_capacity, capacity);
->
->                 cpu_attach_domain(sd, d.rd, i);
-> +
-> +               if (lowest_flag_domain(i, SD_CLUSTER))
-> +                       has_cluster = true;
->         }
->         rcu_read_unlock();
->
->         if (has_asym)
->                 static_branch_inc_cpuslocked(&sched_asym_cpucapacity);
->
-> +       if (has_cluster)
-> +               static_branch_inc_cpuslocked(&sched_cluster_active);
-> +
->         if (rq && sched_debug_verbose) {
->                 pr_info("root domain span: %*pbl (max cpu_capacity = %lu)\n",
->                         cpumask_pr_args(cpu_map), rq->rd->max_cpu_capacity);
-> @@ -2619,6 +2628,9 @@ static void detach_destroy_domains(const struct cpumask *cpu_map)
->         if (rcu_access_pointer(per_cpu(sd_asym_cpucapacity, cpu)))
->                 static_branch_dec_cpuslocked(&sched_asym_cpucapacity);
->
-> +       if (static_branch_unlikely(&sched_cluster_active))
-> +               static_branch_dec_cpuslocked(&sched_cluster_active);
-> +
->         rcu_read_lock();
->         for_each_cpu(i, cpu_map)
->                 cpu_attach_domain(NULL, &def_root_domain, i);
-> --
-> 2.24.0
->
+Gah, I'm finding that changelog impenetrable.  Here's what's missing:
+
+  * The entirety of check_hw_inj_possible() is for AMD hardware:
+    X86_FEATURE_SMCA, the MSRs, hw_injection_possible, everything.
+  * Only AMD systems with SMCA support hardware error injection
+    (anything other than "echo sw > /sys/kernel/debug/mce-inject/flags")
+  * That AMD-only restriction is enforced by 'hw_injection_possible'
+  * 'hw_injection_possible' is true by default and only set to false in
+    check_hw_inj_possible() ... the AMD-only code
+
+The end result is that everyone except SMCA-enabled AMD systems (Intel
+included) leaves hw_injection_possible=true.  They are free to try and
+inject hardware errors.  If they do, they'll get errors when writing to
+the MSRs.
+
+To fix this, make disable hw_injection_possible by default.  Only enable
+it on SMCA hardware that actually succeeds in ... whatever:
+
+                wrmsrl_safe(mca_msr_reg(bank, MCA_STATUS), status);
+                rdmsrl_safe(mca_msr_reg(bank, MCA_STATUS), &status);
+
+is doing.
+
+... and don't do it at the top of the function.  Why bother setting it
+to true only to disable it a moment later?
+
+Do something like the following instead.
+--------------4QAAwMnZ7myaM0IpTAN94Ja9
+Content-Type: text/x-patch; charset=UTF-8; name="amdmce.patch"
+Content-Disposition: attachment; filename="amdmce.patch"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL2FyY2gveDg2L2tlcm5lbC9jcHUvbWNlL2luamVjdC5jIGIvYXJjaC94
+ODYva2VybmVsL2NwdS9tY2UvaW5qZWN0LmMKaW5kZXggNGQ4ZDRiY2Y5MTVkLi4wMWVlODg2
+ZDg1NDAgMTAwNjQ0Ci0tLSBhL2FyY2gveDg2L2tlcm5lbC9jcHUvbWNlL2luamVjdC5jCisr
+KyBiL2FyY2gveDg2L2tlcm5lbC9jcHUvbWNlL2luamVjdC5jCkBAIC0zMyw3ICszMyw3IEBA
+CiAKICNpbmNsdWRlICJpbnRlcm5hbC5oIgogCi1zdGF0aWMgYm9vbCBod19pbmplY3Rpb25f
+cG9zc2libGUgPSB0cnVlOworc3RhdGljIGJvb2wgaHdfaW5qZWN0aW9uX3Bvc3NpYmxlOwog
+CiAvKgogICogQ29sbGVjdCBhbGwgdGhlIE1DaV9YWFggc2V0dGluZ3MKQEAgLTc0OCw5ICs3
+NDgsMTAgQEAgc3RhdGljIHZvaWQgY2hlY2tfaHdfaW5qX3Bvc3NpYmxlKHZvaWQpCiAJCXJk
+bXNybF9zYWZlKG1jYV9tc3JfcmVnKGJhbmssIE1DQV9TVEFUVVMpLCAmc3RhdHVzKTsKIAog
+CQlpZiAoIXN0YXR1cykgewotCQkJaHdfaW5qZWN0aW9uX3Bvc3NpYmxlID0gZmFsc2U7CiAJ
+CQlwcl93YXJuKCJQbGF0Zm9ybSBkb2VzIG5vdCBhbGxvdyAqaGFyZHdhcmUqIGVycm9yIGlu
+amVjdGlvbi4iCiAJCQkJIlRyeSB1c2luZyBBUEVJIEVJTkogaW5zdGVhZC5cbiIpOworCQl9
+IGVsc2UgeworCQkJaHdfaW5qZWN0aW9uX3Bvc3NpYmxlID0gdHJ1ZTsKIAkJfQogCiAJCXRv
+Z2dsZV9od19tY2VfaW5qZWN0KGNwdSwgZmFsc2UpOwo=
+
+--------------4QAAwMnZ7myaM0IpTAN94Ja9--
