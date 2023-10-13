@@ -2,162 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B307C8BCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5945B7C8BCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbjJMQv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46108 "EHLO
+        id S229923AbjJMQyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJMQvx (ORCPT
+        with ESMTP id S229632AbjJMQyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:51:53 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2540D95
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:51:52 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c9b70b9671so1845ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:51:52 -0700 (PDT)
+        Fri, 13 Oct 2023 12:54:00 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3516CBB
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:53:59 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id ada2fe7eead31-45456121514so976673137.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:53:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697215911; x=1697820711; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=opA5ekr/PL/39867RmHZYZSwyK7TejK/8oUw/N2yvZw=;
-        b=3m0E+hrL81oZ30STDHGqw+gxEQQir0I2aCEr0WXlQyHaLmkpg/NlYxRMU8aD5R9+HE
-         AF27xefwZLnlZ2U8TKZOfqYGzdjsNtE5GAy7XqyNvBpnzDLwOfYViYzDkv2A8RDTl2Xo
-         fWAQ9svD/kpp7AUxIQfVy1s2pL49eP/+loEdZcfREOtvfz9fOvVe9Zks46y2faen66AG
-         V4EiZCcIeCOqLqz9lCtBSAbm0AwscLxKBetOOaDkzlFHWIkxwV8dw5y/GYR2dG9wn8B+
-         5/4TFoSrVsIefZBF1Yo7D6BNA6gCAySpLeNPjNx7znLkVuN4KfoOaCsFnEaOqKE0OhYl
-         9ChQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697215911; x=1697820711;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1697216038; x=1697820838; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=opA5ekr/PL/39867RmHZYZSwyK7TejK/8oUw/N2yvZw=;
-        b=iRHcRWtEbnG0dw1vAdyIz30JKCv9q/W/nzVmAEa7P2W3PH1V2CMe0PqP7lwcDa6LvY
-         HoyOv7CUuvRRsbxPVDw0kN5FWE3oRBds3PoxrDm/Phgh9ITTwe3nguPrHoSUk0z8Se4R
-         6c0SdBgzI9yYMVdFy6/ePEIDNpz/DyywuGyZZV4hjH8T4Aet/qgGE/C/mLjKe8e749Ra
-         qNk/NL1d7N6FEO0fqEwIErdqdeb2dhHaIg8oi9aZW8ZAOgxjwQzVfXgc+j9jEyg42q7z
-         L/hK5+wTw/3JgNjTWEf/+U2setGnpxBoN3Gy4mteRgKqjD7athLnaK8/Bkh7Je2SbqBz
-         NmZA==
-X-Gm-Message-State: AOJu0YzadFKAxc1k/NJL6nOPAWa+Z5xJLGHRjF0XWM9fmTfJvgVg7S6j
-        NC1S8zeR4KDrCovJPGWtL/ueoQ==
-X-Google-Smtp-Source: AGHT+IF5khgGZGbOSagfW0YnUh8mBDK/Ecx1vxT656yULD8p5VPO0TXMO14dEmx9oS4qjdYBCOkKng==
-X-Received: by 2002:a17:903:2a85:b0:1ca:42a:1771 with SMTP id lv5-20020a1709032a8500b001ca042a1771mr123012plb.24.1697215911409;
-        Fri, 13 Oct 2023 09:51:51 -0700 (PDT)
-Received: from bsegall-linux.svl.corp.google.com.localhost ([2620:15c:2a3:200:216e:4b3d:e8ab:f961])
-        by smtp.gmail.com with ESMTPSA id b2-20020a170902650200b001c73eace0fesm4182340plk.157.2023.10.13.09.51.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 09:51:50 -0700 (PDT)
-From:   Benjamin Segall <bsegall@google.com>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, mgorman@suse.de, bristot@redhat.com,
-        corbet@lwn.net, qyousef@layalina.io, chris.hyser@oracle.com,
-        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
-        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
-        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
-        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
-        tglx@linutronix.de
-Subject: Re: [PATCH] sched/fair: fix pick_eevdf to always find the correct se
-In-Reply-To: <e2a42ff2-d0f9-4963-bed7-229224ee8287@bytedance.com> (Abel Wu's
-        message of "Fri, 13 Oct 2023 11:46:24 +0800")
-References: <20230531115839.089944915@infradead.org>
-        <20230531124603.931005524@infradead.org>
-        <xm261qego72d.fsf_-_@google.com>
-        <6b606049-3412-437f-af25-a4c33139e2d8@bytedance.com>
-        <xm26bkd4x5v4.fsf@bsegall-linux.svl.corp.google.com>
-        <699cc8b1-f341-4af7-9c47-fee961c5c4b7@bytedance.com>
-        <xm26pm1jhgpx.fsf@bsegall-linux.svl.corp.google.com>
-        <e2a42ff2-d0f9-4963-bed7-229224ee8287@bytedance.com>
-Date:   Fri, 13 Oct 2023 09:51:48 -0700
-Message-ID: <xm26bkd2h3dn.fsf@bsegall-linux.svl.corp.google.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        bh=UenrsX5MbwRjyqhnHRV6P//x8KJwOJVev+tfBEoM2w8=;
+        b=iJoaP0tvQ8QXVnxJf6RWYXj7LSEqJQS64gbefnJzh6Me8AlsOvKAoUZfnSZL+sqGUg
+         1CtQMWSjbeBw7oFZlk33GBkoxJQOkcrtHAuGYdK+VsDzbYw3FooPoldVjtbbUwdM0ns9
+         RUq7PEhGWRkeVMyvIpvvulXIJMyB5m77lAyhiyZQ4pnPpYBSblYV8YP31xW6OiQdego+
+         YseA5xGrpfAKLlWqUosFcm+EZyYLK8qMwaI2Q7i+D16ZRBN1/ZPW9N0TNb78JPvEzxrd
+         rnZuYjZ34tEtLPKuSkdJDE2R22NYuDj22D1IqTNY5IKC3Dr6Vg0P6GahKDqvHW4N5DwH
+         JQ4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697216038; x=1697820838;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UenrsX5MbwRjyqhnHRV6P//x8KJwOJVev+tfBEoM2w8=;
+        b=vpc88Gy0S0zk0xI6ptWHAWpVmCjM6izK65p92WiS2wZN9FvvWCQWhfEJH//GXDFU27
+         rA8HWKjP4Icftd1Gj/TZ5FFPaAxakAK9RHLWRN0iotRY6Mw3ZaIoroJ2MGFPQS1Mk/PX
+         wm4srgAupgTftjU7hVqYUpRLpMVYzpK6vixyr9t3eKtt9ZQpe/3Uh9uv44IR0wPcZzYl
+         0KYgmxVbj9jGk+YlGUALGngR8GAlqgNaLcNEXBQlvdikSZCC2V6NSMwW8LYxPfPB99qc
+         G8t/yjXbb4f9WqaEo2Er0YQe86RlRkHy52mtkbYJq1W30HkyfPpnsnAtxuQ6Z7M+z8qG
+         2nqA==
+X-Gm-Message-State: AOJu0YwBIgSHsReenMfT+8pcEeuCPQTH8SXYFx1Mqntz+rc/N+JkiAcP
+        hDxfLErDw2DAY5VyUg2cnu6YO+yxS6RxgbgXKqvdOA==
+X-Google-Smtp-Source: AGHT+IGunW9nkr39/HMSnnqsy3zHfTPQi/WNUhGsD3vAyos6IbZ6NpeB21zhi0TQaHG1JoYaVVDh8N0ewI1x40B2jsE=
+X-Received: by 2002:a67:e3ab:0:b0:452:5798:64bd with SMTP id
+ j11-20020a67e3ab000000b00452579864bdmr21175205vsm.35.1697216038158; Fri, 13
+ Oct 2023 09:53:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231012180030.112560642@linuxfoundation.org>
+In-Reply-To: <20231012180030.112560642@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 13 Oct 2023 22:23:46 +0530
+Message-ID: <CA+G9fYvB290Nt666yUC_CJi7_hfbfkFvpwhowtd9zawg41EYVg@mail.gmail.com>
+Subject: Re: [PATCH 6.1 0/6] 6.1.58-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LTP List <ltp@lists.linux.it>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Abel Wu <wuyun.abel@bytedance.com> writes:
+On Thu, 12 Oct 2023 at 23:31, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.1.58 release.
+> There are 6 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 14 Oct 2023 18:00:23 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.1.58-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> On 10/13/23 1:51 AM, Benjamin Segall Wrote:
->> Abel Wu <wuyun.abel@bytedance.com> writes:
->> 
->>> On 10/12/23 5:01 AM, Benjamin Segall Wrote:
->>>> Abel Wu <wuyun.abel@bytedance.com> writes:
->>>>
->>>>> On 9/30/23 8:09 AM, Benjamin Segall Wrote:
->>>>>> +	/*
->>>>>> +	 * Now best_left and all of its children are eligible, and we are just
->>>>>> +	 * looking for deadline == min_deadline
->>>>>> +	 */
->>>>>> +	node = &best_left->run_node;
->>>>>> +	while (node) {
->>>>>> +		struct sched_entity *se = __node_2_se(node);
->>>>>> +
->>>>>> +		/* min_deadline is the current node */
->>>>>> +		if (se->deadline == se->min_deadline)
->>>>>> +			return se;
->>>>>
->>>>> IMHO it would be better tiebreak on vruntime by moving this hunk to ..
->>>>>
->>>>>> +
->>>>>> +		/* min_deadline is in the left branch */
->>>>>>     		if (node->rb_left &&
->>>>>>     		    __node_2_se(node->rb_left)->min_deadline == se->min_deadline) {
->>>>>>     			node = node->rb_left;
->>>>>>     			continue;
->>>>>>     		}
->>>>>
->>>>> .. here, thoughts?
->>>> Yeah, that should work and be better on the tiebreak (and my test code
->>>> agrees). There's an argument that the tiebreak will never really come up
->>>> and it's better to avoid the potential one extra cache line from
->>>> "__node_2_se(node->rb_left)->min_deadline" though.
->>>
->>> I see. Then probably do the same thing in the first loop?
->>>
->> We effectively do that already sorta by accident almost always -
->> computing best and best_left via deadline_gt rather than gte prioritizes
->> earlier elements, which always have a better vruntime.
->
-> Sorry for not clarifying clearly about the 'same thing'. What I meant
-> was to avoid touch left if the node itself has the min deadline.
->
-> @@ -894,6 +894,9 @@ static struct sched_entity *__pick_eevdf(struct cfs_rq *cfs_rq)
->                 if (!best || deadline_gt(deadline, best, se))
->                         best = se;
->
-> +               if (se->deadline == se->min_deadline)
-> +                       break;
-> +
->                 /*
->                  * Every se in a left branch is eligible, keep track of the
->                  * branch with the best min_deadline
-> @@ -913,10 +916,6 @@ static struct sched_entity *__pick_eevdf(struct cfs_rq *cfs_rq)
->                                 break;
->                 }
->
-> -               /* min_deadline is at this node, no need to look right */
-> -               if (se->deadline == se->min_deadline)
-> -                       break;
-> -
->                 /* else min_deadline is in the right branch. */
->                 node = node->rb_right;
->         }
->
-> (But still thanks for the convincing explanation on fairness.)
->
 
-Ah, yes, in terms of optimizing performance rather than marginal
-fairness, that would help.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+NOTE:
+Following LTP dio and hugetlb test cases are back to PASS status.
+
+Fixes compared with last release.
+* bcm2711-rpi-4-b, ltp-dio
+  - dio01
+  - dio02
+  - dio03
+  - dio05
+  - dio06
+  - dio07
+  - dio08
+  - dio09
+  - dio11
+
+* bcm2711-rpi-4-b, ltp-hugetlb
+  - hugemmap11
+
+
+## Build
+* kernel: 6.1.58-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.1.y
+* git commit: 3fe61dd155ac48d1642f5cac17bd41a92ef585b7
+* git describe: v6.1.57-7-g3fe61dd155ac
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.5=
+7-7-g3fe61dd155ac
+
+## Test Regressions (compared to v6.1.57)
+
+## Metric Regressions (compared to v6.1.57)
+
+## Test Fixes (compared to v6.1.57)
+* bcm2711-rpi-4-b, ltp-dio
+  - dio01
+  - dio02
+  - dio03
+  - dio05
+  - dio06
+  - dio07
+  - dio08
+  - dio09
+  - dio11
+
+* bcm2711-rpi-4-b, ltp-hugetlb
+  - hugemmap11
+
+## Metric Fixes (compared to v6.1.57)
+
+## Test result summary
+total: 114725, pass: 97010, fail: 2320, skip: 15240, xfail: 155
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 149 total, 149 passed, 0 failed
+* arm64: 53 total, 52 passed, 1 failed
+* i386: 41 total, 39 passed, 2 failed
+* mips: 29 total, 27 passed, 2 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 38 total, 36 passed, 2 failed
+* riscv: 16 total, 15 passed, 1 failed
+* s390: 16 total, 16 passed, 0 failed
+* sh: 12 total, 10 passed, 2 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 46 total, 46 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+* v4l2-complianciance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
