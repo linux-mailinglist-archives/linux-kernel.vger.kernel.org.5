@@ -2,228 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFEE67C8E1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 22:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C39F07C8E21
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 22:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbjJMUFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 16:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36866 "EHLO
+        id S232023AbjJMUGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 16:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbjJMUFp (ORCPT
+        with ESMTP id S231707AbjJMUGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 16:05:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497DCB7;
-        Fri, 13 Oct 2023 13:05:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697227544; x=1728763544;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5it+lZKtnoTVXQpnj5JtqmDZwGeKWf9KR13g1UL7qjw=;
-  b=keF77/CCV/rnVrm2KhscP506Z7cLsHRpF32Bx9d+P2VbzatSsuplSHwm
-   8ti5nl+Pkvx/Y3MyRHd79vq5j1yyBE1CkfhTbnoQfnDO6tkgwsKtNJ2Gr
-   D41bvFcWVKSO/HPivYY80hS0paiEWkXl5u4sL9qKGpS3gX+pQxBV1VhWi
-   vr3f1GRkuNXMPAtWhhP/Ec3h+5um0pgZrH59vRDwr5RoPMja/SbBrWBzP
-   2+Jy48igYMZJiwBWdyTbew6wXmDgGL3xp6rjArR6Pi5Kk15hgQbqx9oiM
-   Yia5T5GcUL7/n53fVD9j0lHyzqD/UddmY9AdNYQi7UDhdCuLjbYxLHIG6
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="389115490"
-X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="389115490"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 13:05:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="789976484"
-X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="789976484"
-Received: from unknown (HELO smile.fi.intel.com) ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 13:05:40 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qrOPg-00000005Jz1-2wkn;
-        Fri, 13 Oct 2023 23:05:36 +0300
-Date:   Fri, 13 Oct 2023 23:05:36 +0300
-From:   "Shevchenko, Andriy" <andriy.shevchenko@intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Wu, Wentong" <wentong.wu@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "oneukum@suse.com" <oneukum@suse.com>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "andi.shyti@linux.intel.com" <andi.shyti@linux.intel.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "bartosz.golaszewski@linaro.org" <bartosz.golaszewski@linaro.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-        "Wang, Zhifeng" <zhifeng.wang@intel.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v20 1/4] usb: Add support for Intel LJCA device
-Message-ID: <ZSmjEKfYzFuAHXW+@smile.fi.intel.com>
-References: <1696833205-16716-1-git-send-email-wentong.wu@intel.com>
- <1696833205-16716-2-git-send-email-wentong.wu@intel.com>
- <ZSZ3IPgLk7uC5UGI@smile.fi.intel.com>
- <6a87b43a-0648-28d4-6c69-e0f684e44eb6@redhat.com>
- <DM6PR11MB4316BE44F53E276384FF06C88DCCA@DM6PR11MB4316.namprd11.prod.outlook.com>
- <5d2e9eba-a941-ea9a-161a-5b97d09d5d35@redhat.com>
+        Fri, 13 Oct 2023 16:06:19 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E7D60B7;
+        Fri, 13 Oct 2023 13:06:17 -0700 (PDT)
+Received: from [192.168.7.187] (pool-72-77-59-129.pitbpa.fios.verizon.net [72.77.59.129])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B2B8120B74C0;
+        Fri, 13 Oct 2023 13:06:16 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B2B8120B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1697227577;
+        bh=xoKklGFnQggRTNMZpyLB1ZexVKJ4U9krNfxQ+3+ZUhI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=TS7ygbJ/cMYAAjVfnFfnImCzrYQ6bGVzRBm+P0Dsk6O3F3u9VTdbcvygJKNlUsTi+
+         ouyT+c6gfLKbOlD0JEkfNDGsaW6DRnQusYCBu5xJzzeLzmsN3xXSyp/jHJGXzl8DRP
+         0OGHC554QkXuyNxP6qsBvbJpHeGzcQMu5OK4Bdgw=
+Message-ID: <19d3cb0b-e5ec-4a35-9ec5-06522903a80c@linux.microsoft.com>
+Date:   Fri, 13 Oct 2023 16:06:15 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d2e9eba-a941-ea9a-161a-5b97d09d5d35@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] audit,io_uring: io_uring openat triggers audit reference
+ count underflow
+Content-Language: en-US
+To:     Paul Moore <paul@paul-moore.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     Christian Brauner <brauner@kernel.org>, audit@vger.kernel.org,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, dan.clash@microsoft.com
+References: <20231012215518.GA4048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20231013-insofern-gegolten-75ca48b24cf5@brauner>
+ <672d257e-e28f-42bc-8ac7-253d20fe187c@kernel.dk>
+ <CAHC9VhQcSY9q=wVT7hOz9y=o3a67BVUnVGNotgAvE6vK7WAkBw@mail.gmail.com>
+From:   Dan Clash <daclash@linux.microsoft.com>
+In-Reply-To: <CAHC9VhQcSY9q=wVT7hOz9y=o3a67BVUnVGNotgAvE6vK7WAkBw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 01:14:23PM +0200, Hans de Goede wrote:
-> On 10/11/23 14:50, Wu, Wentong wrote:
-> >> On 10/11/23 12:21, Andy Shevchenko wrote:
-> >>> On Mon, Oct 09, 2023 at 02:33:22PM +0800, Wentong Wu wrote:
-> >>>> Implements the USB part of Intel USB-I2C/GPIO/SPI adapter device
-> >>>> named "La Jolla Cove Adapter" (LJCA).
-> >>>>
-> >>>> The communication between the various LJCA module drivers and the
-> >>>> hardware will be muxed/demuxed by this driver. Three modules ( I2C,
-> >>>> GPIO, and SPI) are supported currently.
-> >>>>
-> >>>> Each sub-module of LJCA device is identified by type field within the
-> >>>> LJCA message header.
-> >>>>
-> >>>> The sub-modules of LJCA can use ljca_transfer() to issue a transfer
-> >>>> between host and hardware. And ljca_register_event_cb is exported to
-> >>>> LJCA sub-module drivers for hardware event subscription.
-> >>>>
-> >>>> The minimum code in ASL that covers this board is Scope
-> >>>> (\_SB.PCI0.DWC3.RHUB.HS01)
-> >>>>     {
-> >>>>         Device (GPIO)
-> >>>>         {
-> >>>>             Name (_ADR, Zero)
-> >>>>             Name (_STA, 0x0F)
-> >>>>         }
-> >>>>
-> >>>>         Device (I2C)
-> >>>>         {
-> >>>>             Name (_ADR, One)
-> >>>>             Name (_STA, 0x0F)
-> >>>>         }
-> >>>>
-> >>>>         Device (SPI)
-> >>>>         {
-> >>>>             Name (_ADR, 0x02)
-> >>>>             Name (_STA, 0x0F)
-> >>>>         }
-> >>>>     }
-> >>>
-> >>> This commit message is not true anymore, or misleading at bare minimum.
-> >>> The ACPI specification is crystal clear about usage _ADR and _HID, i.e.
-> >>> they must NOT be used together for the same device node. So, can you
-> >>> clarify how the DSDT is organized and update the commit message and it
-> >>> may require (quite likely) to redesign the architecture of this
-> >>> driver. Sorry I missed this from previous rounds as I was busy by
-> >>> something else.
-> >>
-> >> This part of the commit message unfortunately is not accurate.
-> >> _ADR is not used in either DSDTs of shipping hw; nor in the code.
-> > 
-> > We have covered the _ADR in the code like below, it first try to find the
-> > child device based on _ADR, if not found, it will check the _HID, and there
-> > is clear comment in the function.
-> > 
-> > /* bind auxiliary device to acpi device */
-> > static void ljca_auxdev_acpi_bind(struct ljca_adapter *adap,
-> > 				   struct auxiliary_device *auxdev,
-> > 				   u64 adr, u8 id)
-> > {
-> > 	struct ljca_match_ids_walk_data wd = { 0 };
-> > 	struct acpi_device *parent, *adev;
-> > 	struct device *dev = adap->dev;
-> > 	char uid[4];
-> > 
-> > 	parent = ACPI_COMPANION(dev);
-> > 	if (!parent)
-> > 		return;
-> > 
-> > 	/*
-> > 	 * get auxdev ACPI handle from the ACPI device directly
-> > 	 * under the parent that matches _ADR.
-> > 	 */
-> > 	adev = acpi_find_child_device(parent, adr, false);
-> > 	if (adev) {
-> > 		ACPI_COMPANION_SET(&auxdev->dev, adev);
-> > 		return;
-> > 	}
-> > 
-> > 	/*
-> > 	 * _ADR is a grey area in the ACPI specification, some
-> > 	 * platforms use _HID to distinguish children devices.
-> > 	 */
-> > 	switch (adr) {
-> > 	case LJCA_GPIO_ACPI_ADR:
-> > 		wd.ids = ljca_gpio_hids;
-> > 		break;
-> > 	case LJCA_I2C1_ACPI_ADR:
-> > 	case LJCA_I2C2_ACPI_ADR:
-> > 		snprintf(uid, sizeof(uid), "%d", id);
-> > 		wd.uid = uid;
-> > 		wd.ids = ljca_i2c_hids;
-> > 		break;
-> > 	case LJCA_SPI1_ACPI_ADR:
-> > 	case LJCA_SPI2_ACPI_ADR:
-> > 		wd.ids = ljca_spi_hids;
-> > 		break;
-> > 	default:
-> > 		dev_warn(dev, "unsupported _ADR\n");
-> > 		return;
-> > 	}
-> > 
-> > 	acpi_dev_for_each_child(parent, ljca_match_device_ids, &wd);
-> 
-> Ah ok, I see. So the code:
-> 
-> 1. First tries to find the matching child acpi_device for the auxdev by ADR
-> 
-> 2. If 1. fails then falls back to HID + UID matching
-> 
-> And there are DSDTs which use either:
-> 
-> 1. Only use _ADR to identify which child device is which, like the example
->    DSDT snippet from the commit msg.
-> 
-> 2. Only use _HID + _UID like the 2 example DSDT snippets from me email
-> 
-> But there never is a case where both _ADR and _HID are used at
-> the same time (which would be an ACPI spec violation as Andy said).
-> 
-> So AFAICT there is no issue here since  _ADR and _HID are never
-> user at the same time and the commit message correctly describes
-> scenario 1. from above, so the commit message is fine too.
-> 
-> So I believe that we can continue with this patch series in
-> its current v20 form, which has already been staged for
-> going into -next by Greg.
-> 
-> Andy can you confirm that moving ahead with the current
-> version is ok ?
 
-Yes as we have a few weeks to fix corner cases.
 
-What I'm worrying is that opening door for _ADR that seems never used is kinda
-an overkill here (resolving non-existing problem). Looking at the design of the
-driver I'm not sure why ACPI HIDs are collected somewhere else than in the
-respective drivers. And looking at the ID lists themselves I am not sure why
-the firmware of the respective hardware platforms are not using _CID.
+On 2023-10-13 11:43, Paul Moore wrote:
+> On Fri, Oct 13, 2023 at 10:21 AM Jens Axboe <axboe@kernel.dk> wrote:
+>> On 10/13/23 2:24 AM, Christian Brauner wrote:
+>>> On Thu, Oct 12, 2023 at 02:55:18PM -0700, Dan Clash wrote:
+>>>> An io_uring openat operation can update an audit reference count
+>>>> from multiple threads resulting in the call trace below.
+>>>>
+>>>> A call to io_uring_submit() with a single openat op with a flag of
+>>>> IOSQE_ASYNC results in the following reference count updates.
+>>>>
+>>>> These first part of the system call performs two increments that do not race.
+>>>>
+>>>> do_syscall_64()
+>>>>    __do_sys_io_uring_enter()
+>>>>      io_submit_sqes()
+>>>>        io_openat_prep()
+>>>>          __io_openat_prep()
+>>>>            getname()
+>>>>              getname_flags()       /* update 1 (increment) */
+>>>>                __audit_getname()   /* update 2 (increment) */
+>>>>
+>>>> The openat op is queued to an io_uring worker thread which starts the
+>>>> opportunity for a race.  The system call exit performs one decrement.
+>>>>
+>>>> do_syscall_64()
+>>>>    syscall_exit_to_user_mode()
+>>>>      syscall_exit_to_user_mode_prepare()
+>>>>        __audit_syscall_exit()
+>>>>          audit_reset_context()
+>>>>             putname()              /* update 3 (decrement) */
+>>>>
+>>>> The io_uring worker thread performs one increment and two decrements.
+>>>> These updates can race with the system call decrement.
+>>>>
+>>>> io_wqe_worker()
+>>>>    io_worker_handle_work()
+>>>>      io_wq_submit_work()
+>>>>        io_issue_sqe()
+>>>>          io_openat()
+>>>>            io_openat2()
+>>>>              do_filp_open()
+>>>>                path_openat()
+>>>>                  __audit_inode()   /* update 4 (increment) */
+>>>>              putname()             /* update 5 (decrement) */
+>>>>          __audit_uring_exit()
+>>>>            audit_reset_context()
+>>>>              putname()             /* update 6 (decrement) */
+>>>>
+>>>> The fix is to change the refcnt member of struct audit_names
+>>>> from int to atomic_t.
+>>>>
+>>>> kernel BUG at fs/namei.c:262!
+>>>> Call Trace:
+>>>> ...
+>>>>   ? putname+0x68/0x70
+>>>>   audit_reset_context.part.0.constprop.0+0xe1/0x300
+>>>>   __audit_uring_exit+0xda/0x1c0
+>>>>   io_issue_sqe+0x1f3/0x450
+>>>>   ? lock_timer_base+0x3b/0xd0
+>>>>   io_wq_submit_work+0x8d/0x2b0
+>>>>   ? __try_to_del_timer_sync+0x67/0xa0
+>>>>   io_worker_handle_work+0x17c/0x2b0
+>>>>   io_wqe_worker+0x10a/0x350
+>>>>
+>>>> Cc: <stable@vger.kernel.org>
+>>>> Link: https://lore.kernel.org/lkml/MW2PR2101MB1033FFF044A258F84AEAA584F1C9A@MW2PR2101MB1033.namprd21.prod.outlook.com/
+>>>> Fixes: 5bd2182d58e9 ("audit,io_uring,io-wq: add some basic audit support to io_uring")
+>>>> Signed-off-by: Dan Clash <daclash@linux.microsoft.com>
+>>>> ---
+>>>>   fs/namei.c         | 9 +++++----
+>>>>   include/linux/fs.h | 2 +-
+>>>>   kernel/auditsc.c   | 8 ++++----
+>>>>   3 files changed, 10 insertions(+), 9 deletions(-)
+>>>>
+>>>> diff --git a/fs/namei.c b/fs/namei.c
+>>>> index 567ee547492b..94565bd7e73f 100644
+>>>> --- a/fs/namei.c
+>>>> +++ b/fs/namei.c
+>>>> @@ -188,7 +188,7 @@ getname_flags(const char __user *filename, int flags, int *empty)
+>>>>               }
+>>>>       }
+>>>>
+>>>> -    result->refcnt = 1;
+>>>> +    atomic_set(&result->refcnt, 1);
+>>>>       /* The empty path is special. */
+>>>>       if (unlikely(!len)) {
+>>>>               if (empty)
+>>>> @@ -249,7 +249,7 @@ getname_kernel(const char * filename)
+>>>>       memcpy((char *)result->name, filename, len);
+>>>>       result->uptr = NULL;
+>>>>       result->aname = NULL;
+>>>> -    result->refcnt = 1;
+>>>> +    atomic_set(&result->refcnt, 1);
+>>>>       audit_getname(result);
+>>>>
+>>>>       return result;
+>>>> @@ -261,9 +261,10 @@ void putname(struct filename *name)
+>>>>       if (IS_ERR(name))
+>>>>               return;
+>>>>
+>>>> -    BUG_ON(name->refcnt <= 0);
+>>>> +    if (WARN_ON_ONCE(!atomic_read(&name->refcnt)))
+>>>> +            return;
+>>>>
+>>>> -    if (--name->refcnt > 0)
+>>>> +    if (!atomic_dec_and_test(&name->refcnt))
+>>>>               return;
+>>>
+>>> Fine by me. I'd write this as:
+>>>
+>>> count = atomic_dec_if_positive(&name->refcnt);
+>>> if (WARN_ON_ONCE(unlikely(count < 0))
+>>>        return;
+>>> if (count > 0)
+>>>        return;
+>>
+>> Would be fine too, my suspicion was that most archs don't implement a
+>> primitive for that, and hence it might be more expensive than
+>> atomic_read()/atomic_dec_and_test() which do. But I haven't looked at
+>> the code generation. The dec_if_positive degenerates to a atomic cmpxchg
+>> for most cases.
+> 
+> I'm not too concerned, either approach works for me, the important bit
+> is moving to an atomic_t/refcount_t so we can protect ourselves
+> against the race.  The patch looks good to me and I'd like to get this
+> fix merged.
+> 
+> Dan, barring any further back-and-forth on the putname() change, I
+> would say to go ahead and make the change Christian suggested and
+> repost the patch.  Based on Jens comment above it seems safe to
+> preserve his 'Reviewed-by:' tag on the next revision.  Assuming there
+> are no objections posted in the meantime, I'll plan to merge the next
+> revision into the audit/stable-6.6 branch and get that up to Linus
+> (likely next week since it's Friday).
 
--- 
-With Best Regards,
-Andy Shevchenko
+I did not see many arch implementations of atomic_dec_if_positive.
+The x86_64 generated code looks like arch_atomic_dec_unless_positive()
+in atomic-arch-fallback.h with a loop around lock cmpxchg.
 
+I did not want to compound the email race so I did not send patch v2 but 
+I can if desired.
+
+
+devvm2 ~/linux $ sysctl kernel.arch
+kernel.arch = x86_64
+
+devvm2 ~/linux $ cat -n ./fs/namei.c | grep -B 7 -A 4 atomic_dec_if_positive
+    259  void putname(struct filename *name)
+    260  {
+    261          int count;
+    262
+    263          if (IS_ERR(name))
+    264                  return;
+    265
+    266          count = atomic_dec_if_positive(&name->refcnt);
+    267          if (WARN_ON_ONCE(unlikely(count < 0)))
+    268                  return;
+    269          if (count > 0)
+    270                  return;
+
+devvm2 ~/linux $ objdump --disassemble --line-numbers ./fs/namei.o | \
+grep -B 8 -A 12 atomic_dec_if_positive
+/home/daclash/linux/fs/namei.c:260
+      22e:       55                      push   %rbp
+      22f:       48 89 e5                mov    %rsp,%rbp
+      232:       41 54                   push   %r12
+arch_atomic_read():
+/home/daclash/linux/./arch/x86/include/asm/atomic.h:23
+      234:       8b 47 10                mov    0x10(%rdi),%eax
+      237:       49 89 fc                mov    %rdi,%r12
+raw_atomic_dec_if_positive():
+/home/daclash/linux/./include/linux/atomic/atomic-arch-fallback.h:2535
+      23a:       89 c2                   mov    %eax,%edx
+      23c:       83 ea 01                sub    $0x1,%edx
+      23f:       78 50                   js     291 <putname+0x71>
+arch_atomic_try_cmpxchg():
+/home/daclash/linux/./arch/x86/include/asm/atomic.h:115
+      241:       f0 41 0f b1 54 24 10    lock cmpxchg %edx,0x10(%r12)
+      248:       75 f0                   jne    23a <putname+0x1a>
+putname():
+/home/daclash/linux/fs/namei.c:269
+      24a:       85 d2                   test   %edx,%edx
+      24c:       75 22                   jne    270 <putname+0x50>
 
