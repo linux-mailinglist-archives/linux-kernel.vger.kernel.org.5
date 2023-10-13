@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5689C7C7B22
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 03:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903757C7B1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 03:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229445AbjJMBUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 21:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49104 "EHLO
+        id S229450AbjJMBTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 21:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjJMBUs (ORCPT
+        with ESMTP id S229436AbjJMBTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 21:20:48 -0400
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9EB9BA9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 18:20:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=aLj4B
-        qY2YBYcmIcxL988YnyhrGGYNyKmp6Yo5wsu3R0=; b=k02fwX3vSjsWETELM6crX
-        ZMmYLuGEkbZoN087Yix4cq1B3lVzOf6oKzAwgmnFEMRyMDfYZGkXf4Lkhac1HCg6
-        sx9Yu7j6d1TbC1MGVYpwIGXgHA0Iq3CUKQuVEt79MjG4fdj6AZkwCy7oO5rg7Wpo
-        tpOWdUA70P26mGaC5Od4ZM=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-        by zwqz-smtp-mta-g2-0 (Coremail) with SMTP id _____wD3_1P7mihlaruYAQ--.37582S4;
-        Fri, 13 Oct 2023 09:18:59 +0800 (CST)
-From:   Ma Ke <make_ruc2021@163.com>
-To:     kherbst@redhat.com, lyude@redhat.com, dakr@redhat.com,
-        airlied@gmail.com, daniel@ffwll.ch, tzimmermann@suse.de,
-        noralf@tronnes.org, mripard@kernel.org, jani.nikula@intel.com,
-        make_ruc2021@163.com
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        Thu, 12 Oct 2023 21:19:19 -0400
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C4283;
+        Thu, 12 Oct 2023 18:19:16 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R281e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Vu0C2vA_1697159952;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0Vu0C2vA_1697159952)
+          by smtp.aliyun-inc.com;
+          Fri, 13 Oct 2023 09:19:13 +0800
+Date:   Fri, 13 Oct 2023 09:19:12 +0800
+From:   Dust Li <dust.li@linux.alibaba.com>
+To:     Alexandra Winter <wintera@linux.ibm.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/nouveau/dispnv04: fix a possible null pointer dereference
-Date:   Fri, 13 Oct 2023 09:18:50 +0800
-Message-Id: <20231013011850.103967-1-make_ruc2021@163.com>
-X-Mailer: git-send-email 2.37.2
+Subject: Re: [PATCH net] net/smc: return the right falback reason when prefix
+ checks fail
+Message-ID: <20231013011912.GS92403@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20231012123729.29307-1-dust.li@linux.alibaba.com>
+ <5b54a227-2e18-46d5-9b15-aea9709cf2a5@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wD3_1P7mihlaruYAQ--.37582S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7JrykAryftw43ur1ruF17Jrb_yoW8JF1fpF
-        4xGFyYvr1DJFykKa40y3WDWFWY9a1kKFWvkw1ak39I93Z0yr1qqryDAr98Wry7JFW5GFy3
-        trn3Ja4qgr18Zr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0ziTGQkUUUUU=
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/xtbBFQIHC2B9oe1JLgAGsr
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5b54a227-2e18-46d5-9b15-aea9709cf2a5@linux.ibm.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In nv17_tv_get_hd_modes(), the return value of drm_mode_duplicate()
-is assigned to mode, which will lead to a NULL pointer dereference on
-failure of drm_mode_duplicate(). The same applies to drm_cvt_mode().
-Add a check to avoid null pointer dereference.
+On Thu, Oct 12, 2023 at 03:05:20PM +0200, Alexandra Winter wrote:
+>
+>
+>On 12.10.23 14:37, Dust Li wrote:
+>> In the smc_listen_work(), if smc_listen_prfx_check() failed,
+>> the real reason: SMC_CLC_DECL_DIFFPREFIX was dropped, and
+>> SMC_CLC_DECL_NOSMCDEV was returned.
+>> 
+>> Althrough this is also kind of SMC_CLC_DECL_NOSMCDEV, but return
+>> the real reason is much friendly for debugging.
+>> 
+>> Fixes: e49300a6bf62 ("net/smc: add listen processing for SMC-Rv2")
+>> Signed-off-by: Dust Li <dust.li@linux.alibaba.com>
+>
+>As you point out the current code is not really wrong. So I am not sure,
+>whether this should be a fix for net, or rather a debug improvement for
+>net-next.
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
----
- drivers/gpu/drm/nouveau/dispnv04/tvnv17.c | 4 ++++
- 1 file changed, 4 insertions(+)
+To be honest, I was a bit conflicted which branch should this go for.
+But after checking the code before e49300a6bf62 ("net/smc: add listen
+processing for SMC-Rv2"), I discovered the previous behavior was to return
+SMC_CLC_DECL_DIFFPREFIX. Therefor, I have decided it should be
+considered a fix.
 
-diff --git a/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c b/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
-index 670c9739e5e1..9c3dc9a5bb46 100644
---- a/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
-+++ b/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
-@@ -258,6 +258,8 @@ static int nv17_tv_get_hd_modes(struct drm_encoder *encoder,
- 		if (modes[i].hdisplay == output_mode->hdisplay &&
- 		    modes[i].vdisplay == output_mode->vdisplay) {
- 			mode = drm_mode_duplicate(encoder->dev, output_mode);
-+			if (!mode)
-+				continue;
- 			mode->type |= DRM_MODE_TYPE_PREFERRED;
- 
- 		} else {
-@@ -265,6 +267,8 @@ static int nv17_tv_get_hd_modes(struct drm_encoder *encoder,
- 					    modes[i].vdisplay, 60, false,
- 					    (output_mode->flags &
- 					     DRM_MODE_FLAG_INTERLACE), false);
-+			if (!mode)
-+				continue;
- 		}
- 
- 		/* CVT modes are sometimes unsuitable... */
--- 
-2.37.2
+I should have memtioned this in the commit message.
 
+Best regards,
+Dust
+
+
+>
+>> ---
+>>  net/smc/af_smc.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+>> index bacdd971615e..21d4476b937b 100644
+>> --- a/net/smc/af_smc.c
+>> +++ b/net/smc/af_smc.c
+>> @@ -2361,7 +2361,7 @@ static int smc_listen_find_device(struct smc_sock *new_smc,
+>>  		smc_find_ism_store_rc(rc, ini);
+>>  		return (!rc) ? 0 : ini->rc;
+>>  	}
+>> -	return SMC_CLC_DECL_NOSMCDEV;
+>> +	return prfx_rc;
+>>  }
+>>  
+>>  /* listen worker: finish RDMA setup */
+>
+>For the code change:
+>Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
