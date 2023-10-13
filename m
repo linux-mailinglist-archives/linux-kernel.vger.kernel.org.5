@@ -2,296 +2,536 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A13217C7E80
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F317C7E82
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbjJMHVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:21:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50202 "EHLO
+        id S229891AbjJMHVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 03:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjJMHVq (ORCPT
+        with ESMTP id S229671AbjJMHVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:21:46 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31BF3B7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:21:43 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-457c4e4a392so120399137.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:21:43 -0700 (PDT)
+        Fri, 13 Oct 2023 03:21:50 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E1DB7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:21:47 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-45271a44cc4so764848137.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:21:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697181702; x=1697786502; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j8abOWZApChL1PiO6AUXU9AraOSNbvy4h27WNIKy1U8=;
-        b=pzOa5h6G+lnHpaZY8t2znU2TwS1KthQ+/97ZXN8Hs1rk4xj5125RaPKW9r3HX8Cfbm
-         sfenu3ex8G3pN8nt+FdP+frvctpew/iUOSAhG7K0Ewx1GLmABGyDxrPQLyc8skJPSbye
-         jmx7e3nximNAGdxz5Nevpnfr0ZelAdEny8NJf19YAEmMCU4CXuzheNkHnkkLyN3ao544
-         3bBjWVnnMxLz4ummO8akiR9xyvqh70tSVJS9NegW5xCHCKCboXITnDuds/eum5+HnZwj
-         5MimExDuLNVQIOmVtc5JhREEVNNHRCdOZHM0dDx6YLNUb0AYFHYl6T3n4pOti/IooJIS
-         XEAQ==
+        d=linaro.org; s=google; t=1697181706; x=1697786506; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=VHJX1BRvULgvn4WwpwoF7Hs3K4fbIXjFBdDGQODdOww=;
+        b=e7I3gz7A9o73pEcNnc8Uvn+i9rhM6Q/zkk6JATNKQc6FXzxA8cuD1p2pUaNDa2AZzB
+         Gy+qteHeVa4v/XDb+rYYv62SFpxaEhJcjn6OpHlJTgAL3AgPJ4JgGNgVl8xJQX3DSMqr
+         qpy8VcBGGEqd2c5vu4dSPJkOAVLvNC4udLdSC8bWLOPVS91KluIQ4Y9CJjscyiAGI3us
+         YWY5VugWhL8O3UgBhp6HHELuyX180dtu/pb1ApfUip25jjY7kH4qo98J+/LbHjE0/rCE
+         IC8DLiG1WYCkWWyIVLX+NWE20Jh3BSRQ/Nwi8z9xHTNzfXt/jCmZwOwgeW2gbEb48TEH
+         1Ezg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697181702; x=1697786502;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j8abOWZApChL1PiO6AUXU9AraOSNbvy4h27WNIKy1U8=;
-        b=aCWXEU7eEH3Fk0vW27TvcZYXkF2Nd/hksBNTt05er3ViklrATCjIUrPV93YbvCTLxA
-         b7FJ/F/7dSwSE8gsRxf1vCrjf1SnI+mvFsdxT1J9wmMUE1NDEnZwDvct4w6fVDhI8KbP
-         y6HGk61KdvPmK1foT1loweo5v4qFuxPWkYPx8EunLPHvEE0lVgI4BgcOJ5+k1mYkmy3A
-         H1wVn+Nv8kXKs4fW5f4IEfaCcXkShVWxK05R/YcJN4e2VKqrifvf56urhS10/CFUBjor
-         CcxWnWDzsAuPKD0Yaq3B9X/IfgCBiGgAejK+hS9Y8vfcOD2/3TFkFJ8xO2uJDv2xGWba
-         cmig==
-X-Gm-Message-State: AOJu0YwYlGnDdv2DSVyf3xmwKwJe1mfnGpLoZ7Hx3j6Ta+pflzuMr5Q/
-        1rpTngM0XJPXdU50wsAoolZ/xAngw0i9wbhR0ceOzw==
-X-Google-Smtp-Source: AGHT+IGBIJ1+IYHOty4ow0VY+MIqV07mOzDrS2bzkJ5Er9WYHkkAIWiaTji+gKQOJegDt6nOcK6hqcbAv+JhMs9BdEc=
-X-Received: by 2002:a67:fd49:0:b0:452:5a4c:7278 with SMTP id
- g9-20020a67fd49000000b004525a4c7278mr20272141vsr.20.1697181701700; Fri, 13
- Oct 2023 00:21:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697181706; x=1697786506;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VHJX1BRvULgvn4WwpwoF7Hs3K4fbIXjFBdDGQODdOww=;
+        b=F/VymFtRoPLNaz2Nn02fHX0jJJruECW0eUFzTvcg7u+gPWmD1neoKGQx14uokjOlF2
+         c79rfDccJPc/umjyn+W4hc+q1v1mmPCb8g0lwG3s70ojX52D041395xafJhoUQgLIzhY
+         +sI9JnfsfGwMjHLOeMV2xEuGb7YbrM8edOJkrV9lgKMDnfp5yEpNPu/1hOFpLq/V2Nmw
+         Ji80QazW4XVibvmf5dZJYbfrmqscSRee9PXnjJ5ejWbyATUbONeIvZnGnSXHGxmxxgYX
+         aA0w+iYDQrCbcH92gf+meJjF19ST37cn66bNc5O4RGZC+ZNXOOG4fcrMZe3gNN16m9IJ
+         esRQ==
+X-Gm-Message-State: AOJu0Yy7WAjbEC1QYB3QHffMBAD6tZX3y6GFprwq0ZlkBpqe0UbY5vxR
+        X+8w4DEikyVt4t9gau4gLfvfnYo0Ap5XnVP/Pr4Pjp8nXND/sQ8mQDA=
+X-Google-Smtp-Source: AGHT+IGjgsoI5yZm8C57zgplRuOVfppUXRuBk3Gg7tfT+i0TOtYA11WUmQaaxVm5TWzLCXaYb5/cNQT19t/G2cKSXec=
+X-Received: by 2002:a67:e08c:0:b0:457:c18c:e0b0 with SMTP id
+ f12-20020a67e08c000000b00457c18ce0b0mr1414942vsl.11.1697181706247; Fri, 13
+ Oct 2023 00:21:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230927184158.243575-1-mirsad.todorovac@alu.unizg.hr>
- <0a201a6f-90dd-403c-97d0-94372be1e3e6@gmail.com> <CANpmjNP=jY2NzrXX4mgY5cL5tqZeLb18gQkzVhg1OofNtJ1VSw@mail.gmail.com>
- <250140d1-d592-45f4-aa27-691c1d68a528@alu.unizg.hr>
-In-Reply-To: <250140d1-d592-45f4-aa27-691c1d68a528@alu.unizg.hr>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 13 Oct 2023 09:21:05 +0200
-Message-ID: <CANpmjNNnkv1UH=RLaeejFicicRZFn4D2sChmppoFdOfJYY_0hw@mail.gmail.com>
-Subject: Re: [PATCH RFC v1 1/3] r8169: fix the KCSAN reported data-race in
- rtl_tx() while reading tp->cur_tx
-To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nic_swsd@realtek.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
+References: <20231003140637.31346-1-etienne.carriere@foss.st.com>
+ <20231003140637.31346-4-etienne.carriere@foss.st.com> <CAFA6WYOMHWFytm4cYy3kQf4E3qiytrnOTVY1gb2rzTDece490w@mail.gmail.com>
+ <bbb5ca0809954bee94c5f2886427f886@foss.st.com>
+In-Reply-To: <bbb5ca0809954bee94c5f2886427f886@foss.st.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri, 13 Oct 2023 12:51:35 +0530
+Message-ID: <CAFA6WYMKrB7xkOaef41LyVKHGAt8Dk0hbFUkiqubeZbJVY=9kw@mail.gmail.com>
+Subject: Re: [PATCH v10 3/4] tee: optee: support tracking system threads
+To:     Etienne CARRIERE - foss <etienne.carriere@foss.st.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>,
+        Jerome Forissier <jerome.forissier@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 at 07:01, Mirsad Goran Todorovac
-<mirsad.todorovac@alu.unizg.hr> wrote:
+On Wed, 11 Oct 2023 at 12:41, Etienne CARRIERE - foss
+<etienne.carriere@foss.st.com> wrote:
 >
-> On 9/28/2023 8:02 AM, Marco Elver wrote:
-> > On Wed, 27 Sept 2023 at 21:52, Heiner Kallweit <hkallweit1@gmail.com> w=
-rote:
-> >>
-> >> On 27.09.2023 20:41, Mirsad Goran Todorovac wrote:
-> >>> KCSAN reported the following data-race:
-> >>>
-> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>> BUG: KCSAN: data-race in rtl8169_poll [r8169] / rtl8169_start_xmit [r=
-8169]
-> >>>
-> >>> write (marked) to 0xffff888102474b74 of 4 bytes by task 5358 on cpu 2=
-9:
-> >>> rtl8169_start_xmit (drivers/net/ethernet/realtek/r8169_main.c:4254) r=
-8169
-> >>> dev_hard_start_xmit (./include/linux/netdevice.h:4889 ./include/linux=
-/netdevice.h:4903 net/core/dev.c:3544 net/core/dev.c:3560)
-> >>> sch_direct_xmit (net/sched/sch_generic.c:342)
-> >>> __dev_queue_xmit (net/core/dev.c:3817 net/core/dev.c:4306)
-> >>> ip_finish_output2 (./include/linux/netdevice.h:3082 ./include/net/nei=
-ghbour.h:526 ./include/net/neighbour.h:540 net/ipv4/ip_output.c:233)
-> >>> __ip_finish_output (net/ipv4/ip_output.c:311 net/ipv4/ip_output.c:293=
-)
-> >>> ip_finish_output (net/ipv4/ip_output.c:328)
-> >>> ip_output (net/ipv4/ip_output.c:435)
-> >>> ip_send_skb (./include/net/dst.h:458 net/ipv4/ip_output.c:127 net/ipv=
-4/ip_output.c:1486)
-> >>> udp_send_skb (net/ipv4/udp.c:963)
-> >>> udp_sendmsg (net/ipv4/udp.c:1246)
-> >>> inet_sendmsg (net/ipv4/af_inet.c:840 (discriminator 4))
-> >>> sock_sendmsg (net/socket.c:730 net/socket.c:753)
-> >>> __sys_sendto (net/socket.c:2177)
-> >>> __x64_sys_sendto (net/socket.c:2185)
-> >>> do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
-> >>> entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
-> >>>
-> >>> read to 0xffff888102474b74 of 4 bytes by interrupt on cpu 21:
-> >>> rtl8169_poll (drivers/net/ethernet/realtek/r8169_main.c:4397 drivers/=
-net/ethernet/realtek/r8169_main.c:4581) r8169
-> >>> __napi_poll (net/core/dev.c:6527)
-> >>> net_rx_action (net/core/dev.c:6596 net/core/dev.c:6727)
-> >>> __do_softirq (kernel/softirq.c:553)
-> >>> __irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632)
-> >>> irq_exit_rcu (kernel/softirq.c:647)
-> >>> common_interrupt (arch/x86/kernel/irq.c:247 (discriminator 14))
-> >>> asm_common_interrupt (./arch/x86/include/asm/idtentry.h:636)
-> >>> cpuidle_enter_state (drivers/cpuidle/cpuidle.c:291)
-> >>> cpuidle_enter (drivers/cpuidle/cpuidle.c:390)
-> >>> call_cpuidle (kernel/sched/idle.c:135)
-> >>> do_idle (kernel/sched/idle.c:219 kernel/sched/idle.c:282)
-> >>> cpu_startup_entry (kernel/sched/idle.c:378 (discriminator 1))
-> >>> start_secondary (arch/x86/kernel/smpboot.c:210 arch/x86/kernel/smpboo=
-t.c:294)
-> >>> secondary_startup_64_no_verify (arch/x86/kernel/head_64.S:433)
-> >>>
-> >>> value changed: 0x002f4815 -> 0x002f4816
-> >>>
-> >>> Reported by Kernel Concurrency Sanitizer on:
-> >>> CPU: 21 PID: 0 Comm: swapper/21 Tainted: G             L     6.6.0-rc=
-2-kcsan-00143-gb5cbe7c00aa0 #41
-> >>> Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.2=
-1 04/26/2023
-> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>>
-> >>> The write side of drivers/net/ethernet/realtek/r8169_main.c is:
-> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>>     4251         /* rtl_tx needs to see descriptor changes before upd=
-ated tp->cur_tx */
-> >>>     4252         smp_wmb();
-> >>>     4253
-> >>>   =E2=86=92 4254         WRITE_ONCE(tp->cur_tx, tp->cur_tx + frags + =
-1);
-> >>>     4255
-> >>>     4256         stop_queue =3D !netif_subqueue_maybe_stop(dev, 0, rt=
-l_tx_slots_avail(tp),
-> >>>     4257                                                 R8169_TX_STO=
-P_THRS,
-> >>>     4258                                                 R8169_TX_STA=
-RT_THRS);
-> >>>
-> >>> The read side is the function rtl_tx():
-> >>>
-> >>>     4355 static void rtl_tx(struct net_device *dev, struct rtl8169_pr=
-ivate *tp,
-> >>>     4356                    int budget)
-> >>>     4357 {
-> >>>     4358         unsigned int dirty_tx, bytes_compl =3D 0, pkts_compl=
- =3D 0;
-> >>>     4359         struct sk_buff *skb;
-> >>>     4360
-> >>>     4361         dirty_tx =3D tp->dirty_tx;
-> >>>     4362
-> >>>     4363         while (READ_ONCE(tp->cur_tx) !=3D dirty_tx) {
-> >>>     4364                 unsigned int entry =3D dirty_tx % NUM_TX_DES=
-C;
-> >>>     4365                 u32 status;
-> >>>     4366
-> >>>     4367                 status =3D le32_to_cpu(tp->TxDescArray[entry=
-].opts1);
-> >>>     4368                 if (status & DescOwn)
-> >>>     4369                         break;
-> >>>     4370
-> >>>     4371                 skb =3D tp->tx_skb[entry].skb;
-> >>>     4372                 rtl8169_unmap_tx_skb(tp, entry);
-> >>>     4373
-> >>>     4374                 if (skb) {
-> >>>     4375                         pkts_compl++;
-> >>>     4376                         bytes_compl +=3D skb->len;
-> >>>     4377                         napi_consume_skb(skb, budget);
-> >>>     4378                 }
-> >>>     4379                 dirty_tx++;
-> >>>     4380         }
-> >>>     4381
-> >>>     4382         if (tp->dirty_tx !=3D dirty_tx) {
-> >>>     4383                 dev_sw_netstats_tx_add(dev, pkts_compl, byte=
-s_compl);
-> >>>     4384                 WRITE_ONCE(tp->dirty_tx, dirty_tx);
-> >>>     4385
-> >>>     4386                 netif_subqueue_completed_wake(dev, 0, pkts_c=
-ompl, bytes_compl,
-> >>>     4387                                               rtl_tx_slots_a=
-vail(tp),
-> >>>     4388                                               R8169_TX_START=
-_THRS);
-> >>>     4389                 /*
-> >>>     4390                  * 8168 hack: TxPoll requests are lost when =
-the Tx packets are
-> >>>     4391                  * too close. Let's kick an extra TxPoll req=
-uest when a burst
-> >>>     4392                  * of start_xmit activity is detected (if it=
- is not detected,
-> >>>     4393                  * it is slow enough). -- FR
-> >>>     4394                  * If skb is NULL then we come here again on=
-ce a tx irq is
-> >>>     4395                  * triggered after the last fragment is mark=
-ed transmitted.
-> >>>     4396                  */
-> >>>   =E2=86=92 4397                 if (tp->cur_tx !=3D dirty_tx && skb)
-> >>>     4398                         rtl8169_doorbell(tp);
-> >>>     4399         }
-> >>>     4400 }
-> >>>
-> >>> Obviously from the code, an earlier detected data-race for tp->cur_tx=
- was fixed in the
-> >>> line 4363:
-> >>>
-> >>>     4363         while (READ_ONCE(tp->cur_tx) !=3D dirty_tx) {
-> >>>
-> >>> but the same solution is required for protecting the other access to =
-tp->cur_tx:
-> >>>
-> >>>   =E2=86=92 4397                 if (READ_ONCE(tp->cur_tx) !=3D dirty=
-_tx && skb)
-> >>>     4398                         rtl8169_doorbell(tp);
-> >>>
-> >>> The write in the line 4254 is protected with WRITE_ONCE(), but the re=
-ad in the line 4397
-> >>> might have suffered read tearing under some compiler optimisations.
-> >>>
-> >>> The fix eliminated the KCSAN data-race report for this bug.
-> >>>
-> >>> It is yet to be evaluated what happens if tp->cur_tx changes between =
-the test in line 4363
-> >>> and line 4397. This test should certainly not be cached by the compil=
-er in some register
-> >>> for such a long time, while asynchronous writes to tp->cur_tx might h=
-ave occurred in line
-> >>> 4254 in the meantime.
-> >>>
-> >>
-> >> netif_subqueue_completed_wake() has barriers ensuring that no cached v=
-alue for tp->cur_tx
-> >> is used in line 4397. I'm not aware of any reported issues with an obv=
-ious link to the
-> >> potentential issue you describe.
-> >> I don't have a strong opinion on these patches. They shouldn't hurt, a=
-nd if they make
-> >> KCSAN happy, why not.
+> > From: Sumit Garg <sumit.garg@linaro.org>
+> > Sent: Friday, October 6, 2023 11:33 AM
 > >
-> > Barries don't protect unmarked accesses from being miscompiled. So the
-> > use of barriers and marked accesses like READ_ONCE() is correct:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/tools/memory-model/Documentation/access-marking.txt
-> > That said, actually encountering a miscompilation depends on
-> > architecture and compiler. Using the right marked accesses just
-> > ensures things don't suddenly break because the compiler decided to be
-> > a little more clever.
+> > On Tue, 3 Oct 2023 at 19:36, Etienne Carriere
+> > <etienne.carriere@foss.st.com> wrote:
+> > >
+> > > Adds support in the OP-TEE driver to keep track of reserved system
+> > > threads. The logic allows one OP-TEE thread to be reserved to TEE system
+> > > sessions.
+> > >
+> > > The optee_cq_*() functions are updated to handle this if enabled,
+> > > that is when TEE describes how many thread context it supports
+> > > and when at least 1 session has registered as a system session
+> > > (using tee_client_system_session()).
+> > >
+> > > For sake of simplicity, initialization of call queue management
+> > > is factorized into new helper function optee_cq_init().
+> > >
+> > > The SMC ABI part of the driver enables this tracking, but the
+> > > FF-A ABI part does not.
+> > >
+> > >
+> > > Co-developed-by: Jens Wiklander <jens.wiklander@linaro.org>
+> > > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> > > Co-developed-by: Sumit Garg <sumit.garg@linaro.org>
+> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
+> > > ---
+> > > Changes since v9:
+> > > - Add a reference counter for TEE system thread provisioning. We reserve
+> > >   a TEE thread context for system session only when there is at least
+> > >   1 opened system session.
+> > > - Use 2 wait queue lists, normal_waiters and sys_waiter, as proposed in
+> > >   patch v8. Using a single list can prevent a waiting system thread from
+> > >   being resumed if the executing system thread wakes a normal waiter in
+> > >   the list.
 > >
-> >>> Fixes: 94d8a98e6235c ("r8169: reduce number of workaround doorbell ri=
-ngs")
-> >>> Cc: Heiner Kallweit <hkallweit1@gmail.com>
-> >>> Cc: nic_swsd@realtek.com
-> >>> Cc: "David S. Miller" <davem@davemloft.net>
-> >>> Cc: Eric Dumazet <edumazet@google.com>
-> >>> Cc: Jakub Kicinski <kuba@kernel.org>
-> >>> Cc: Paolo Abeni <pabeni@redhat.com>
-> >>> Cc: Marco Elver <elver@google.com>
-> >>> Cc: netdev@vger.kernel.org
-> >>> Link: https://lore.kernel.org/lkml/dc7fc8fa-4ea4-e9a9-30a6-7c83e6b531=
-88@alu.unizg.hr/
-> >>> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+> > How would that be possible? The system thread wakeup
+> > (free_thread_threshold = 0) is given priority over normal thread
+> > wakeup (free_thread_threshold = 1). I think a single queue list would
+> > be sufficient as demonstrated in v9.
 > >
-> > Acked-by: Marco Elver <elver@google.com>
 >
-> Hi, Marco,
+> Hello Sumit,
 >
-> Does this Acked-by: cover all of the [123]/3 in the patch series?
+> I think a system session can be trapped waiting when using a single queue list.
+> To have a chance to reach the TEE, a waiting thread must wait that a TEE thread comes out of the TEE and calls complete() on the waitqueue to wake next waiter.
+>
+> To illustrate, consider a 10 TEE threads configuration on TEE side (::total_thread_count=10 at init),
+> and several TEE clients in Linux OS, including 2 system sessions, from 2 consumer drivers (::sys_thread_req_count=2).
+>
+> Imagine the 9 normal threads and the 1 system thread are in use. (::free_thread_count=0),
+> Now comes the other system session: it goes to the waitqueue list.
+> Now comes a normal session invocation: it goes to the waitqueue list, 1st position.
+>
+> Now, TEE system thread returns to Linux:
+> It increments the counter, ::free_thread_count=1, and calls complete() for the waitequeue.
+> The 1st element in the waitqueue list is the last entered normal session invocation.
+> However, that waiter won't switch local boolean 'need_wait'  to false because ::free_thread_count=1 and ::sys_thread_req_count!=0.
+> So no attempt to reach TEE and wake another waiter on return.
+> At that point there is a system session in the waitqueue list that could enter TEE (::free_thread_count=1) but is waiting someone returns from the TEE.
 
-Technically, no. (Only if this was the cover lettter i.e. 0/n)
+I suppose the following loop tries to wake-up every waiter to give
+them a chance to enter OP-TEE. So with that system session would
+always be prefered over normal session, right?
 
-Send the non-RFC separately and I'll ack them.
+static void optee_cq_complete_one(struct optee_call_queue *cq)
+{
+        struct optee_call_waiter *w;
+
+        list_for_each_entry(w, &cq->waiters, list_node) {
+                if (!completion_done(&w->c)) {
+                        complete(&w->c);
+                        break;
+                }
+        }
+}
+
+-Sumit
+
+>
+> With 2 lists, we first treat system sessions to overcome that.
+> Am I missing something?
+>
+> Best regards,
+> Etienne
+>
+> > -Sumit
+> >
+> > > - Updated my e-mail address.
+> > > - Rephrased a bit the commit message.
+> > >
+> > > Changes since patch v8
+> > > - Patch v9 (reference below) attempted to simplify the implementation
+> > >   https://lore.kernel.org/lkml/20230517143311.585080-1-sumit.garg@linaro.org/#t
+> > >
+> > > Changes since v7:
+> > > - Changes the logic to reserve at most 1 call entry for system sessions
+> > >   as per patches v6 and v7 discussion threads (the 2 below bullets)
+> > >   and updates commit message accordingly.
+> > > - Field optee_call_queue::res_sys_thread_count is replaced with 2 fields:
+> > >   sys_thread_req_count and boolean sys_thread_in_use.
+> > > - Field optee_call_waiter::sys_thread is replaced with 2 fields:
+> > >   sys_thread_req and sys_thread_used.
+> > > - Adds inline description comments for struct optee_call_queue and
+> > >   struct optee_call_waiter.
+> > >
+> > > Changes since v6:
+> > > - Moved out changes related to adding boolean system thread attribute
+> > >   into optee driver call queue and SMC/FF-A ABIs API functions. These
+> > >   changes were squashed into patch 1/4 of this patch v7 series.
+> > > - Comment about adding a specific commit for call queue refactoring
+> > >   was not addressed such a patch would only introduce function
+> > >   optee_cq_init()  with very little content in (mutex & list init).
+> > > - Added Co-developed-by tag for Jens contribution as he's not responsible
+> > >   for the changes I made in this patch v7.
+> > >
+> > > No change since v5
+> > >
+> > > Changes since v4:
+> > > - New change that supersedes implementation proposed in PATCH v4
+> > >   (tee: system invocation"). Thanks to Jens implementation we don't need
+> > >   the new OP-TEE services that my previous patch versions introduced to
+> > >   monitor system threads entry. Now, Linux optee SMC ABI driver gets TEE
+> > >   provisioned thread contexts count once and monitors thread entries in
+> > >   OP-TEE on that basis and the system thread capability of the related
+> > >   tee session. By the way, I dropped the WARN_ONCE() call I suggested
+> > >   on tee thread exhaustion as it does not provides useful information.
+> > > ---
+> > >  drivers/tee/optee/call.c          | 128 ++++++++++++++++++++++++++++--
+> > >  drivers/tee/optee/ffa_abi.c       |   3 +-
+> > >  drivers/tee/optee/optee_private.h |  24 +++++-
+> > >  drivers/tee/optee/smc_abi.c       |  16 +++-
+> > >  4 files changed, 159 insertions(+), 12 deletions(-)
+> > >
+> > > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
+> > > index 152ae9bb1785..38543538d77b 100644
+> > > --- a/drivers/tee/optee/call.c
+> > > +++ b/drivers/tee/optee/call.c
+> > > @@ -39,9 +39,31 @@ struct optee_shm_arg_entry {
+> > >         DECLARE_BITMAP(map, MAX_ARG_COUNT_PER_ENTRY);
+> > >  };
+> > >
+> > > +void optee_cq_init(struct optee_call_queue *cq, int thread_count)
+> > > +{
+> > > +       mutex_init(&cq->mutex);
+> > > +       INIT_LIST_HEAD(&cq->sys_waiters);
+> > > +       INIT_LIST_HEAD(&cq->normal_waiters);
+> > > +
+> > > +       /*
+> > > +        * If cq->total_thread_count is 0 then we're not trying to keep
+> > > +        * track of how many free threads we have, instead we're relying on
+> > > +        * the secure world to tell us when we're out of thread and have to
+> > > +        * wait for another thread to become available.
+> > > +        */
+> > > +       cq->total_thread_count = thread_count;
+> > > +       cq->free_thread_count = thread_count;
+> > > +}
+> > > +
+> > >  void optee_cq_wait_init(struct optee_call_queue *cq,
+> > >                         struct optee_call_waiter *w, bool sys_thread)
+> > >  {
+> > > +       unsigned int free_thread_threshold;
+> > > +       bool need_wait = false;
+> > > +
+> > > +       memset(w, 0, sizeof(*w));
+> > > +       w->sys_thread = sys_thread;
+> > > +
+> > >         /*
+> > >          * We're preparing to make a call to secure world. In case we can't
+> > >          * allocate a thread in secure world we'll end up waiting in
+> > > @@ -53,15 +75,47 @@ void optee_cq_wait_init(struct optee_call_queue *cq,
+> > >         mutex_lock(&cq->mutex);
+> > >
+> > >         /*
+> > > -        * We add ourselves to the queue, but we don't wait. This
+> > > -        * guarantees that we don't lose a completion if secure world
+> > > -        * returns busy and another thread just exited and try to complete
+> > > -        * someone.
+> > > +        * We add ourselves to a queue, but we don't wait. This guarantees
+> > > +        * that we don't lose a completion if secure world returns busy and
+> > > +        * another thread just exited and try to complete someone.
+> > >          */
+> > >         init_completion(&w->c);
+> > > -       list_add_tail(&w->list_node, &cq->waiters);
+> > > +
+> > > +       if (sys_thread)
+> > > +               list_add_tail(&w->list_node, &cq->sys_waiters);
+> > > +       else
+> > > +               list_add_tail(&w->list_node, &cq->normal_waiters);
+> > > +
+> > > +       if (cq->total_thread_count) {
+> > > +               if (sys_thread || !cq->sys_thread_req_count)
+> > > +                       free_thread_threshold = 0;
+> > > +               else
+> > > +                       free_thread_threshold = 1;
+> > > +
+> > > +               if (cq->free_thread_count > free_thread_threshold)
+> > > +                       cq->free_thread_count--;
+> > > +               else
+> > > +                       need_wait = true;
+> > > +       }
+> > >
+> > >         mutex_unlock(&cq->mutex);
+> > > +
+> > > +       while (need_wait) {
+> > > +               optee_cq_wait_for_completion(cq, w);
+> > > +               mutex_lock(&cq->mutex);
+> > > +
+> > > +               if (sys_thread || !cq->sys_thread_req_count)
+> > > +                       free_thread_threshold = 0;
+> > > +               else
+> > > +                       free_thread_threshold = 1;
+> > > +
+> > > +               if (cq->free_thread_count > free_thread_threshold) {
+> > > +                       cq->free_thread_count--;
+> > > +                       need_wait = false;
+> > > +               }
+> > > +
+> > > +               mutex_unlock(&cq->mutex);
+> > > +       }
+> > >  }
+> > >
+> > >  void optee_cq_wait_for_completion(struct optee_call_queue *cq,
+> > > @@ -74,7 +128,11 @@ void optee_cq_wait_for_completion(struct optee_call_queue *cq,
+> > >         /* Move to end of list to get out of the way for other waiters */
+> > >         list_del(&w->list_node);
+> > >         reinit_completion(&w->c);
+> > > -       list_add_tail(&w->list_node, &cq->waiters);
+> > > +
+> > > +       if (w->sys_thread)
+> > > +               list_add_tail(&w->list_node, &cq->sys_waiters);
+> > > +       else
+> > > +               list_add_tail(&w->list_node, &cq->normal_waiters);
+> > >
+> > >         mutex_unlock(&cq->mutex);
+> > >  }
+> > > @@ -83,7 +141,15 @@ static void optee_cq_complete_one(struct optee_call_queue *cq)
+> > >  {
+> > >         struct optee_call_waiter *w;
+> > >
+> > > -       list_for_each_entry(w, &cq->waiters, list_node) {
+> > > +       /* Wake waiting system session first */
+> > > +       list_for_each_entry(w, &cq->sys_waiters, list_node) {
+> > > +               if (!completion_done(&w->c)) {
+> > > +                       complete(&w->c);
+> > > +                       break;
+> > > +               }
+> > > +       }
+> > > +
+> > > +       list_for_each_entry(w, &cq->normal_waiters, list_node) {
+> > >                 if (!completion_done(&w->c)) {
+> > >                         complete(&w->c);
+> > >                         break;
+> > > @@ -104,6 +170,8 @@ void optee_cq_wait_final(struct optee_call_queue *cq,
+> > >         /* Get out of the list */
+> > >         list_del(&w->list_node);
+> > >
+> > > +       cq->free_thread_count++;
+> > > +
+> > >         /* Wake up one eventual waiting task */
+> > >         optee_cq_complete_one(cq);
+> > >
+> > > @@ -119,6 +187,28 @@ void optee_cq_wait_final(struct optee_call_queue *cq,
+> > >         mutex_unlock(&cq->mutex);
+> > >  }
+> > >
+> > > +/* Count registered system sessions to reserved a system thread or not */
+> > > +static bool optee_cq_incr_sys_thread_count(struct optee_call_queue *cq)
+> > > +{
+> > > +       if (cq->total_thread_count <= 1)
+> > > +               return false;
+> > > +
+> > > +       mutex_lock(&cq->mutex);
+> > > +       cq->sys_thread_req_count++;
+> > > +       mutex_unlock(&cq->mutex);
+> > > +
+> > > +       return true;
+> > > +}
+> > > +
+> > > +static void optee_cq_decr_sys_thread_count(struct optee_call_queue *cq)
+> > > +{
+> > > +       mutex_lock(&cq->mutex);
+> > > +       cq->sys_thread_req_count--;
+> > > +       /* If there's someone waiting, let it resume */
+> > > +       optee_cq_complete_one(cq);
+> > > +       mutex_unlock(&cq->mutex);
+> > > +}
+> > > +
+> > >  /* Requires the filpstate mutex to be held */
+> > >  static struct optee_session *find_session(struct optee_context_data *ctxdata,
+> > >                                           u32 session_id)
+> > > @@ -361,6 +451,27 @@ int optee_open_session(struct tee_context *ctx,
+> > >         return rc;
+> > >  }
+> > >
+> > > +int optee_system_session(struct tee_context *ctx, u32 session)
+> > > +{
+> > > +       struct optee *optee = tee_get_drvdata(ctx->teedev);
+> > > +       struct optee_context_data *ctxdata = ctx->data;
+> > > +       struct optee_session *sess;
+> > > +       int rc = -EINVAL;
+> > > +
+> > > +       mutex_lock(&ctxdata->mutex);
+> > > +
+> > > +       sess = find_session(ctxdata, session);
+> > > +       if (sess && (sess->use_sys_thread ||
+> > > +                    optee_cq_incr_sys_thread_count(&optee->call_queue))) {
+> > > +               sess->use_sys_thread = true;
+> > > +               rc = 0;
+> > > +       }
+> > > +
+> > > +       mutex_unlock(&ctxdata->mutex);
+> > > +
+> > > +       return rc;
+> > > +}
+> > > +
+> > >  int optee_close_session_helper(struct tee_context *ctx, u32 session,
+> > >                                bool system_thread)
+> > >  {
+> > > @@ -380,6 +491,9 @@ int optee_close_session_helper(struct tee_context *ctx, u32 session,
+> > >
+> > >         optee_free_msg_arg(ctx, entry, offs);
+> > >
+> > > +       if (system_thread)
+> > > +               optee_cq_decr_sys_thread_count(&optee->call_queue);
+> > > +
+> > >         return 0;
+> > >  }
+> > >
+> > > diff --git a/drivers/tee/optee/ffa_abi.c b/drivers/tee/optee/ffa_abi.c
+> > > index 5fde9d4100e3..0c9055691343 100644
+> > > --- a/drivers/tee/optee/ffa_abi.c
+> > > +++ b/drivers/tee/optee/ffa_abi.c
+> > > @@ -852,8 +852,7 @@ static int optee_ffa_probe(struct ffa_device *ffa_dev)
+> > >         if (rc)
+> > >                 goto err_unreg_supp_teedev;
+> > >         mutex_init(&optee->ffa.mutex);
+> > > -       mutex_init(&optee->call_queue.mutex);
+> > > -       INIT_LIST_HEAD(&optee->call_queue.waiters);
+> > > +       optee_cq_init(&optee->call_queue, 0);
+> > >         optee_supp_init(&optee->supp);
+> > >         optee_shm_arg_cache_init(optee, arg_cache_flags);
+> > >         ffa_dev_set_drvdata(ffa_dev, optee);
+> > > diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
+> > > index b68273051454..69f6397c3646 100644
+> > > --- a/drivers/tee/optee/optee_private.h
+> > > +++ b/drivers/tee/optee/optee_private.h
+> > > @@ -40,15 +40,35 @@ typedef void (optee_invoke_fn)(unsigned long, unsigned long, unsigned long,
+> > >                                 unsigned long, unsigned long,
+> > >                                 struct arm_smccc_res *);
+> > >
+> > > +/*
+> > > + * struct optee_call_waiter - TEE entry may need to wait for a free TEE thread
+> > > + * @list_node          Reference in waiters list
+> > > + * @c                  Waiting completion reference
+> > > + * @sys_thread_req     True if waiter belongs to a system thread
+> > > + */
+> > >  struct optee_call_waiter {
+> > >         struct list_head list_node;
+> > >         struct completion c;
+> > > +       bool sys_thread;
+> > >  };
+> > >
+> > > +/*
+> > > + * struct optee_call_queue - OP-TEE call queue management
+> > > + * @mutex                      Serializes access to this struct
+> > > + * @sys_waiters                        List of system threads waiting to enter OP-TEE
+> > > + * @normal_waiters             List of normal threads waiting to enter OP-TEE
+> > > + * @total_thread_count         Overall number of thread context in OP-TEE or 0
+> > > + * @free_thread_count          Number of threads context free in OP-TEE
+> > > + * @sys_thread_req_count       Number of registered system thread sessions
+> > > + */
+> > >  struct optee_call_queue {
+> > >         /* Serializes access to this struct */
+> > >         struct mutex mutex;
+> > > -       struct list_head waiters;
+> > > +       struct list_head sys_waiters;
+> > > +       struct list_head normal_waiters;
+> > > +       int total_thread_count;
+> > > +       int free_thread_count;
+> > > +       int sys_thread_req_count;
+> > >  };
+> > >
+> > >  struct optee_notif {
+> > > @@ -254,6 +274,7 @@ int optee_supp_send(struct tee_context *ctx, u32 ret, u32 num_params,
+> > >  int optee_open_session(struct tee_context *ctx,
+> > >                        struct tee_ioctl_open_session_arg *arg,
+> > >                        struct tee_param *param);
+> > > +int optee_system_session(struct tee_context *ctx, u32 session);
+> > >  int optee_close_session_helper(struct tee_context *ctx, u32 session,
+> > >                                bool system_thread);
+> > >  int optee_close_session(struct tee_context *ctx, u32 session);
+> > > @@ -303,6 +324,7 @@ static inline void optee_to_msg_param_value(struct optee_msg_param *mp,
+> > >         mp->u.value.c = p->u.value.c;
+> > >  }
+> > >
+> > > +void optee_cq_init(struct optee_call_queue *cq, int thread_count);
+> > >  void optee_cq_wait_init(struct optee_call_queue *cq,
+> > >                         struct optee_call_waiter *w, bool sys_thread);
+> > >  void optee_cq_wait_for_completion(struct optee_call_queue *cq,
+> > > diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
+> > > index 1033d7da03ea..5595028d6dae 100644
+> > > --- a/drivers/tee/optee/smc_abi.c
+> > > +++ b/drivers/tee/optee/smc_abi.c
+> > > @@ -1211,6 +1211,7 @@ static const struct tee_driver_ops optee_clnt_ops = {
+> > >         .release = optee_release,
+> > >         .open_session = optee_open_session,
+> > >         .close_session = optee_close_session,
+> > > +       .system_session = optee_system_session,
+> > >         .invoke_func = optee_invoke_func,
+> > >         .cancel_req = optee_cancel_req,
+> > >         .shm_register = optee_shm_register,
+> > > @@ -1358,6 +1359,16 @@ static bool optee_msg_exchange_capabilities(optee_invoke_fn *invoke_fn,
+> > >         return true;
+> > >  }
+> > >
+> > > +static unsigned int optee_msg_get_thread_count(optee_invoke_fn *invoke_fn)
+> > > +{
+> > > +       struct arm_smccc_res res;
+> > > +
+> > > +       invoke_fn(OPTEE_SMC_GET_THREAD_COUNT, 0, 0, 0, 0, 0, 0, 0, &res);
+> > > +       if (res.a0)
+> > > +               return 0;
+> > > +       return res.a1;
+> > > +}
+> > > +
+> > >  static struct tee_shm_pool *
+> > >  optee_config_shm_memremap(optee_invoke_fn *invoke_fn, void **memremaped_shm)
+> > >  {
+> > > @@ -1610,6 +1621,7 @@ static int optee_probe(struct platform_device *pdev)
+> > >         struct optee *optee = NULL;
+> > >         void *memremaped_shm = NULL;
+> > >         unsigned int rpc_param_count;
+> > > +       unsigned int thread_count;
+> > >         struct tee_device *teedev;
+> > >         struct tee_context *ctx;
+> > >         u32 max_notif_value;
+> > > @@ -1637,6 +1649,7 @@ static int optee_probe(struct platform_device *pdev)
+> > >                 return -EINVAL;
+> > >         }
+> > >
+> > > +       thread_count = optee_msg_get_thread_count(invoke_fn);
+> > >         if (!optee_msg_exchange_capabilities(invoke_fn, &sec_caps,
+> > >                                              &max_notif_value,
+> > >                                              &rpc_param_count)) {
+> > > @@ -1726,8 +1739,7 @@ static int optee_probe(struct platform_device *pdev)
+> > >         if (rc)
+> > >                 goto err_unreg_supp_teedev;
+> > >
+> > > -       mutex_init(&optee->call_queue.mutex);
+> > > -       INIT_LIST_HEAD(&optee->call_queue.waiters);
+> > > +       optee_cq_init(&optee->call_queue, thread_count);
+> > >         optee_supp_init(&optee->supp);
+> > >         optee->smc.memremaped_shm = memremaped_shm;
+> > >         optee->pool = pool;
+> > > --
+> > > 2.25.1
+> > >
+> >
