@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE8A7C8E39
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 22:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972617C8E3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 22:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbjJMUTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 16:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49676 "EHLO
+        id S232041AbjJMUVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 16:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230469AbjJMUTi (ORCPT
+        with ESMTP id S230469AbjJMUVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 16:19:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9783B7;
-        Fri, 13 Oct 2023 13:19:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B6B6C433C7;
-        Fri, 13 Oct 2023 20:19:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697228376;
-        bh=tvtzyW2JqBM8XejJMr6a7ivykq0sPqszsj9fJx+J3FI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=PG3cMmrahWdVfIpMsUE4eUKoaeB8cpSGh8WI4UyjCIL6cTSkCxnzdSIxnluhHf2V7
-         wzdIO7exDf5StQx1eb1/PCQ8zpyAa805YY5Bjr0x9rHPijW9CG1HfcZ0t+q3J0gk7t
-         UX/kusjo1rrbH8doeXR15cpUB9bInOLYjGV8M2jCknx5gP8fWalWyKVMymnFsff5fE
-         E2ZTG5OgQLRh2sDmvcxSVLq75bDM+wac09FauQkjCWKNRYLHsEOSScswkpeHnUIXev
-         RcQhq6fMTTc/QHotF6zsKUjpoCR53NuA0MPh6CP76YI05XA10GxYMl3VpPv6AuLf9d
-         qG4VUhwCbC1Vw==
-Date:   Fri, 13 Oct 2023 15:19:34 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] PCI/DPC: Use defines with register fields
-Message-ID: <20231013201934.GA1124734@bhelgaas>
+        Fri, 13 Oct 2023 16:21:19 -0400
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BC5B7;
+        Fri, 13 Oct 2023 13:21:18 -0700 (PDT)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1c9e06f058bso16034995ad.0;
+        Fri, 13 Oct 2023 13:21:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697228478; x=1697833278;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ForsDPB0jZ2ImnQnOXHUTEo6P3ZZphz8F61hZrwbJRA=;
+        b=Syg5dJ5nOsicTEJ3KSBeUkqacIW+Lrs4kxcgjmp8ho0pLZoD5wWL3bIdCgn+umh8T9
+         bLkLuz1FBsT0JG44/c0jJDpGqMGnxXG2tQxzcRFwQAyEb4zcQxHz2xY6qk8sdSiENdrm
+         5TPpL6VoSjfFPvW1SB8QuBydrsz7fNnSTSH0V2UjQTwpPZ5/mkr9gkIaqWj5VgtWhHo3
+         Eud6/9lTFnbQaPERaozEpXLf6wybYrTCUQTgRsYGF26ytBs2lrxQJU9DLvIh2eyV0G0v
+         GRj78eDIBIvoA0pRPGcfWY1/95VJVIRyxz+KXXPeNXer9OMsimmXDrn+dy1zRnSknKtu
+         mwHA==
+X-Gm-Message-State: AOJu0YwZZbq13pLIyix9EgR93mcW/1RiFENUfhNemFnNhYz4BG+tnhYL
+        K2Dl67rnbuLN0kR0sNW/v88=
+X-Google-Smtp-Source: AGHT+IHK6Vdj3neWysihmjr6VT1kW5IXWWGbJ0lQ9gb9c+jVMTQ/Rh06taVZ8L/Iz6CXpCcTy5jQHw==
+X-Received: by 2002:a17:902:ea02:b0:1c1:fc5c:b31b with SMTP id s2-20020a170902ea0200b001c1fc5cb31bmr1705325plg.9.1697228477673;
+        Fri, 13 Oct 2023 13:21:17 -0700 (PDT)
+Received: from [192.168.51.14] (c-73-231-117-72.hsd1.ca.comcast.net. [73.231.117.72])
+        by smtp.gmail.com with ESMTPSA id ik26-20020a170902ab1a00b001bdc3768ca5sm4363921plb.254.2023.10.13.13.21.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Oct 2023 13:21:17 -0700 (PDT)
+Message-ID: <2f4eb591-b275-42fd-900e-292d0f87dd9e@acm.org>
+Date:   Fri, 13 Oct 2023 13:21:15 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231013112004.4239-3-ilpo.jarvinen@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] doc: blk-ioprio: Bring the doc in line with the
+ implementation
+Content-Language: en-US
+To:     Tang Yizhou <yizhou.tang@shopee.com>, houtao1@huawei.com,
+        jack@suse.cz, kch@nvidia.com
+Cc:     axboe@kernel.dk, tj@kernel.org, corbet@lwn.net,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yingfu.zhou@shopee.com,
+        chunguang.xu@shopee.com
+References: <20231012024228.2161283-1-yizhou.tang@shopee.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20231012024228.2161283-1-yizhou.tang@shopee.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 02:20:04PM +0300, Ilpo Järvinen wrote:
-> Use defines instead of literals and replace custom masking and shifts
-> with FIELD_GET() where it makes sense.
-> ...
-
->  	pci_read_config_word(pdev, pdev->dpc_cap + PCI_EXP_DPC_CAP, &cap);
-> -	pci_read_config_word(pdev, pdev->dpc_cap + PCI_EXP_DPC_CTL, &ctl);
->  
-> -	ctl = (ctl & 0xfff4) | PCI_EXP_DPC_CTL_EN_FATAL | PCI_EXP_DPC_CTL_INT_EN;
-> +	pci_read_config_word(pdev, pdev->dpc_cap + PCI_EXP_DPC_CTL, &ctl);
-> +	ctl |= PCI_EXP_DPC_CTL_EN_FATAL | PCI_EXP_DPC_CTL_INT_EN;
-> +	ctl &= ~PCI_EXP_DPC_CTL_EN_NONFATAL;
-
-This has been a little obtuse from the beginning.
-
-The original clears bits 0, 1, 3, then sets bits 0 and 3.
-The new code sets bits 0, 3, then clears bit 1.
-
-These are equivalent, but it's definitely some work to verify it.
-
-I think the point is to enable DPC on ERR_FATAL (but not ERR_NONFATAL)
-and to enable DPC interrupts.  What about something like this?
-
-  #define PCI_EXP_DPC_CTL_EN_MASK  0x0003
-
-  ctl &= ~PCI_EXP_DPC_CTL_EN_MASK;
-  ctl |= PCI_EXP_DPC_CTL_EN_FATAL | PCI_EXP_DPC_CTL_INT_EN;
-
->  	pci_write_config_word(pdev, pdev->dpc_cap + PCI_EXP_DPC_CTL, ctl);
-> -	pci_info(pdev, "enabled with IRQ %d\n", dev->irq);
->  
-> +	pci_info(pdev, "enabled with IRQ %d\n", dev->irq);
->  	pci_info(pdev, "error containment capabilities: Int Msg #%d, RPExt%c PoisonedTLP%c SwTrigger%c RP PIO Log %d, DL_ActiveErr%c\n",
->  		 cap & PCI_EXP_DPC_IRQ, FLAG(cap, PCI_EXP_DPC_CAP_RP_EXT),
->  		 FLAG(cap, PCI_EXP_DPC_CAP_POISONED_TLP),
-> -- 
-> 2.30.2
+On 10/11/23 19:42, Tang Yizhou wrote:
+> From: Tang Yizhou <yizhou.tang@shopee.com>
 > 
+> Our system administrator have noted that the names 'rt-to-be' and
+> 'all-to-idle' in the I/O priority policies table appeared without
+> explanations, leading to confusion. Let's bring these names in line
+> with the naming in the 'attribute' section.
+> 
+> Additionally,
+> 1. Correct the interface name to 'io.prio.class'.
+> 2. Add a table entry of 'promote-to-rt' for consistency.
+> 3. Fix a typo of 'priority'.
+> 
+> Suggested-by: Yingfu Zhou <yingfu.zhou@shopee.com>
+> Reviewed-by: Hou Tao <houtao1@huawei.com>
+> Signed-off-by: Tang Yizhou <yizhou.tang@shopee.com>
+> ---
+> v2:
+> Accept Bart's suggestion and rename the title of the patch.
+> Pick up Tao's Reviewed-by tag.
+
+Thank you for having changed the patch subject.
+
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
