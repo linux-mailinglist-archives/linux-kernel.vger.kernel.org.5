@@ -2,552 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3157C84B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E177C84B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbjJMLlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:41:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48922 "EHLO
+        id S231224AbjJMLk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231182AbjJMLld (ORCPT
+        with ESMTP id S230357AbjJMLky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:41:33 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA14BF;
-        Fri, 13 Oct 2023 04:41:29 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-578b4981526so1445681a12.0;
-        Fri, 13 Oct 2023 04:41:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697197289; x=1697802089; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NqmdY9wdtuIkGI9X+kiWyu9Dsbe2yqqmpAbj2yfRNHQ=;
-        b=RJ14zBA97KnDQWDBbrzT3LnN0slfOdZMrLiN9IzZuq3Qqy67Fh5r5qayWwfihxkACt
-         kfBkYipAPFPKqBd7uJ0x6GPOg2S2aFMPQzTscWd2bqsXWnWPIlIPlS+hjcFmJ+RtIU8y
-         sIiuXHEv6TdprnlhOWSJGkSR+ZTMpzMRFW1nIuwZEWRx2sBc0ZdMVsIWRE6xexrTzP2q
-         wMZ0SSUebNxbviO5RMj0A3L+RV6LQfqdVOf9e0VQ+EfNlVxhwBqQpjzRNUBnBhdviu5/
-         4YxrBOF5YlhGpwc4KMcDrk/uMfreiflLPB8dM6HRmlaN9hd80HoIWcNkUnSrev93u7wQ
-         707A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697197289; x=1697802089;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NqmdY9wdtuIkGI9X+kiWyu9Dsbe2yqqmpAbj2yfRNHQ=;
-        b=gHe9DKN2IlwRKVK1BbHlWUhc4KwdLwIU9T+CYFEFpLCaJVQvLySL6vHp8jPre4m2kk
-         R+Q/VpeBeMBOj1e7Z+s1LnEHniE0tEi4L4CkUzDz2eHMHpzvNNfMnLgFULpKQ9eou1x7
-         lH5iSUVY+1XHC4auoqq1IT+3tWTOJNMPuNT6ZMRqbOaUt/z0/ZZ0Lt/vAThWvox3MRAP
-         PLMvvaugiYM/J5q4DCo0SJDIebd4C5G7yC1HKDCW/ljToYAxjipc0bxUrdYnU6cfc58F
-         dr7zywgbotr/T5TZ9C6vQRq/xoDSE1IkIYD1StqGmHOhpxQMA9CBElm11gaNvA0d0XRb
-         Fy+A==
-X-Gm-Message-State: AOJu0Yx5Tp6W99qO41xakeRRd68Aqg/iQy32LfF02ovNpvra15OQzZIg
-        9zM5lvgL+bjCd5yZ3QURTNw=
-X-Google-Smtp-Source: AGHT+IEVM08/FQr65jZAIax5b4rP0SKxg3YTKjT0VYuWUVJjz51fTJKrQCpsdBhS1XRU2+DmTorXrA==
-X-Received: by 2002:a05:6a20:1608:b0:14b:887a:6d70 with SMTP id l8-20020a056a20160800b0014b887a6d70mr29396466pzj.15.1697197288849;
-        Fri, 13 Oct 2023 04:41:28 -0700 (PDT)
-Received: from [172.16.116.58] ([103.15.228.94])
-        by smtp.gmail.com with ESMTPSA id n5-20020a170902e54500b001c62d63b817sm3684550plf.179.2023.10.13.04.41.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Oct 2023 04:41:28 -0700 (PDT)
-Message-ID: <9affdae9-9e95-1f6c-5f18-845d5ffcbd71@gmail.com>
-Date:   Fri, 13 Oct 2023 17:11:23 +0530
-MIME-Version: 1.0
+        Fri, 13 Oct 2023 07:40:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F81BD;
+        Fri, 13 Oct 2023 04:40:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697197252; x=1728733252;
+  h=message-id:date:subject:from:to:cc:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=82ksFus1FvuHSBd8kr76FyH8yu5P3Jg5Dg52NexXk0M=;
+  b=SAiSFoAVIJbfzaiv/PQnBEm1nv4SnE9OTB9qKpDGnVUVbweNub1xOU5t
+   ah0sQGXDUO0GwycwqWopx1XV2QcABlh/yXDN1hBgNS3XhWnRtRPabqYzs
+   MpDAoBBEXspLzukejli9RkafqixwTGIodc0QZdziHfYmw8d98ksPntGFG
+   BodLj7SGyJhH++Us7pf3W+y0XZQBs8ahgETbhxObPm1HdZxdL+v+UuVVO
+   fLF/rioRyPJyy4Vsar4uRix2l7YdwrRTixp/FOHF/RIjNyN9G/GgJaT+L
+   3UvnbeNFOwGPHrg1gWz8ShHFC/3gUuW0yWmwzyTcykN+IhNUpANaAxGia
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="471400194"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="471400194"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 04:40:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="731340117"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="731340117"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Oct 2023 04:40:51 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 13 Oct 2023 04:40:51 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Fri, 13 Oct 2023 04:40:51 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Fri, 13 Oct 2023 04:40:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nwag51KBJ2Fx0IZr1ci2EKaDMEusvqy+43ifNK0TThCo0B2J0R9d39xKH73SiUzM7XKhGlCjEwQiE+q3Ml8sv7W2fLqzy9Pq8ZJft4zsl+7950Bl+i6R9dfz9eMkxbziBPeZh293HF8RrpQTsf/+kXu8vDu9tdkMoB3zRHoy1zaTDJ9ov3B8M9Ika5e8Vzx/URspMElGHKHPu3uWSJQx7iJwq/+cTmZq9y0+EwQIwNqwP4NesjahWBjoTvv2Fm6jEAyei56FyIHW0M/3yUzpOHsaOKRzMBXfCIyyKOvPOn6uLE8SbLKAmYYdwa3jkl2hpOSbp68Y0P3WaFL368WTFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=m0/4ojvdnOQflEtxv51n+HeNdprTLByQ87h01ly583k=;
+ b=MiyJ/4tsoYsiH9K5+ZBeYKITrvrIPzTURidBNpoHJea5TjtGusDZgujXw7ZhsOU5hpyfLwxo32Z3MGa6lw4pW22LLCX6FiHVWy1PIxyL2J1uWjz91P8yuGlmpFRzTXok1jofCA0SuE6zsfbkR+FaDMaVOk6TNbUKhck88eO7tc7mKWIZJCkWlpRu59q9m0Kakg1GD+LZRx8xTYO0A3G7U/oB9B46gVEPidOjYJXIPKF8KawrPIuRrzdj8YXF2PG6IHUl4w2tdi7tbQ7i3bwSPsMMRaHDu3dnm7oD4WtRoldugc598kY4z/5udnY6dE+Ikfa9oapsKWzzGhrOy11TAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
+ by CH3PR11MB8096.namprd11.prod.outlook.com (2603:10b6:610:155::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Fri, 13 Oct
+ 2023 11:40:40 +0000
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::f8f4:bed2:b2f8:cb6b]) by DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::f8f4:bed2:b2f8:cb6b%3]) with mapi id 15.20.6863.043; Fri, 13 Oct 2023
+ 11:40:39 +0000
+Message-ID: <b2097fa9-e2da-04f1-fdc4-a77aeb4a15f8@intel.com>
+Date:   Fri, 13 Oct 2023 19:42:50 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v8 2/3] greybus: Add BeaglePlay Linux Driver
-To:     greybus-dev@lists.linaro.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, vaishnav@beagleboard.org,
-        jkridner@beagleboard.org, nm@ti.com,
-        krzysztof.kozlowski+dt@linaro.org, johan@kernel.org,
-        elder@kernel.org
-References: <20231006041035.652841-1-ayushdevel1325@gmail.com>
- <20231006041035.652841-3-ayushdevel1325@gmail.com>
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v4 01/17] iommu: Add hwpt_type with user_data for
+ domain_alloc_user op
 Content-Language: en-US
-From:   Ayush Singh <ayushdevel1325@gmail.com>
-In-Reply-To: <20231006041035.652841-3-ayushdevel1325@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   Yi Liu <yi.l.liu@intel.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
+CC:     "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "Martins, Joao" <joao.m.martins@oracle.com>
+References: <20230921075138.124099-1-yi.l.liu@intel.com>
+ <20230921075138.124099-2-yi.l.liu@intel.com>
+ <BN9PR11MB52767E1B944C0B2F0667D5DE8CC3A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <43b3d605-fe3b-bcd6-a328-81d1448b7104@intel.com>
+In-Reply-To: <43b3d605-fe3b-bcd6-a328-81d1448b7104@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR03CA0092.apcprd03.prod.outlook.com
+ (2603:1096:4:7c::20) To DS0PR11MB7529.namprd11.prod.outlook.com
+ (2603:10b6:8:141::20)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|CH3PR11MB8096:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9a22a087-c598-4a9b-a7e1-08dbcbe13910
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: v/D3CjlIx4mgOm+97zNbfGH3XOGdiROyBc99QRxZucUL7TpcuSQOWFXb7qw6wWIGKsdCluctayWpuUJJqHapbDv/uY9AwPAzQCCKcX/UBOA2UaUCU2FgZDi1Tp+RhJgw3lhj3rDfaKtn2zxkPKinKJoeEjBvBn7GHlCoDcDJMhpY7XtgNG2Texak1ZUzLvY9ALKpa34P4dbufKHlhYIOPfMyVBlpSelxH9Qy0KEltcIBrzYsvO4q0uLgfs6+7g2SbLZKhW2I83mBnjx4UL4NxVnBEdmblLWYHZH1tw+fbWCy+cOwMhyOvCx9NNmX4p8S21EiPtUUWEpQjPLK2ny2Q7QRh2ZEd8Qw82/A27MiWPn9PvNWjQYD1qbAoUapeF+3/R5zfG1b/aAFMjUHBrQunJVgB6LZqZPgLEuuXr1ytnRNeczuFTQQiG1exqIzDkKhN8aTgzWLqgLM0ovrjiWw+rKLl3OWPUwVsFsPJJKFNzAl78nHMuw90wWHE4EBa0edL26sJ0Aa2kw6ylF04HZCEbGmP3oBvn3JRQ7ARwjFcr/5rZBWs9uOwjtkatH3RioRV5GNkZ+47iRxITCwNMEDW7dVKgs/pDVuv6l98OnF3cI6xjiViwchCOOV8ONKnl+MULqn/rn7cKRszJSp0b6bVA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(366004)(136003)(39860400002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(82960400001)(26005)(6506007)(36756003)(54906003)(66556008)(66946007)(66476007)(316002)(110136005)(86362001)(6512007)(38100700002)(2616005)(53546011)(31686004)(6486002)(478600001)(31696002)(6666004)(2906002)(966005)(7416002)(5660300002)(8936002)(8676002)(4326008)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cnErSTRUblhKTTl6UFJLc0FRblNOQ0kxUEt0RDNsUVo1UUYycU5OT1dkd0xI?=
+ =?utf-8?B?ZW0vMlZ2TFRydHZpMG01VUxjQXJGQzUwT2lCSHpyUTIzY2hNNjZGbkR6QkpC?=
+ =?utf-8?B?VHljSkE2RzdGeDFlRWVJL08wbHFjR0VQZmpiQUxBWnllcHZtUFBhV1VoUkFv?=
+ =?utf-8?B?YzJwR1QrUE5KeDVWTFIzYW1ueHBVbVBFZEdKRzVldEpUdnlOL0lxNElnR3ds?=
+ =?utf-8?B?SE5HVERZWEE3bXRSOGtiRkRNRjgzUGtoWDZmWERsQ3E3T3haK0NNem44djIw?=
+ =?utf-8?B?cEEwNnhiRVc4S3F6OTFkdDBkQXdnZFhCYmxieDB1cWhhNnJRVThkZm9WVnl3?=
+ =?utf-8?B?c3RDaUVwSlF1NDRUZlpMQmg0Y2x1bU55Qi8vN05BdXI5VkhTa0ZZWWFJdkF0?=
+ =?utf-8?B?ZlZjVzVDc3oxSDhWellpME5jdGt6anFQeGRLQWR2TGdZOStZRlRSRitxanN6?=
+ =?utf-8?B?Q1B0YnVOOHBRSm5yNVY4Y0I2NFlHSFczdXRzYmEzd2xodXBrSWR6ZTRCcUlI?=
+ =?utf-8?B?cXc4K0pDeUQxd1M5ZjhiZVdZZ1F3QU1QK0FkUGJUR2w0Q0tDRWg3ekVTV0dk?=
+ =?utf-8?B?bTdSc1loZGI5L2tvYXRBYU13cTN1VUJ5VG8xZDVoUUJ3MUdUam1MRUpBNmd2?=
+ =?utf-8?B?Q3l5V1RRZVpWZEEyVU9LZml1OUtQT09OQ2xvazVHd0lGM3RBT0hBbWdJb0Ni?=
+ =?utf-8?B?L0IrbVIwRXA0cHk1WkhEcy85RGxadXQ0S1FOakRpaHowaXNUMHc1Z0hkWkgr?=
+ =?utf-8?B?aDhTU0EzVGgrUjVNeTNQZ0p4bGFOaFJNRFBiY3MvU3E2ZWJYeVJqaHI4ZG5Q?=
+ =?utf-8?B?VnBUNGFmUjNpN0lIN0RST3lOckd4ZDJackcwWHk1NXlhOXZxYm9WaFVUcXBB?=
+ =?utf-8?B?dER2aEJzaXl4VkF6YVF2djJOM2JNQVYxT1RBbkdjQy8ybUUzT1lWRy85ZmVJ?=
+ =?utf-8?B?bzdJaEpickZvTGh6M04vTm5GUC9WZWlWcUhZOVVQUGVEd2RQcnpoditHZWpX?=
+ =?utf-8?B?WFpvZlIwTFczTGMxRFhjOStwVTU3TENsQnpIdVhBUGl5Z2lEb2RlTWdzR1B0?=
+ =?utf-8?B?bklxZFVMMVU2ZWJoVlFxck04VjVDTjJkWE1sRVEwUjRXTlZ0QmxqcVRjNkVX?=
+ =?utf-8?B?QWlqZHVmMGNVMitISy9rc2xCamM5cDd6NFVOOWJzT01ZNGJDcFVRUXJUZjdu?=
+ =?utf-8?B?U24xTUdmVFFpdUlleXd6eUFaN01XbENlSjFLcHpkcTlFQ3V0MGVtR3dwWGxQ?=
+ =?utf-8?B?cERaWkFjQXJLU25QZTVIejlmR1M2eGJTa0lVMjMrUStlOWcyRDVpM0RMMFhn?=
+ =?utf-8?B?MFBGVEVKem1JM0w1YWRYNUZtOTdqMWhVNVJjeEJJQm5HcC9haEc1Vm9POFE1?=
+ =?utf-8?B?blFacTBvZHI2bUQ0UzlnMmdneHk5RXBSUzNFYXhvQnVmNFoyUFMzcCtXMlJ0?=
+ =?utf-8?B?cTdDOElVSUxmVzBEWWxSQ2NDYkNZRmtHaFlYL0VlQXdpMEJSWlNLQWc5ZS9i?=
+ =?utf-8?B?cHZ3VGdVaWpsbG5XSGw5T0hqNlhCSmdNQ1AwTmp4RmJ6bFUraFd4eVNja0Jj?=
+ =?utf-8?B?RUZnMUo5T3RTZ1ZOOXR0NFRmbW9RaEpueWlVdlZFZEp3a2R3RHIyWkdVb1RH?=
+ =?utf-8?B?aXVyNXNoWWNGZ2tOMUxjQ2h3d25FOVNORTRyWGVmWDFwclhkWVhuTi83UUcw?=
+ =?utf-8?B?R2NLWnNHL3c2NGZWRDFjN2RVTTdHSnZqUDFTTjN1WUZLbTMzV3FzRlRyNWFV?=
+ =?utf-8?B?L05vazY0OWd1MzJvcWpVS0dMbStxNUNCWXU0UjNPSXBvMGEyZUpzRlVQVUZ0?=
+ =?utf-8?B?cjB1TmtGWnNISDRPUlV4a0hPWGtsZnZxS3htdDhJMGxnT3ZCTjh1UXl6NnhQ?=
+ =?utf-8?B?c3ZqNnpQa1lGempETkFqUFc0V25sSEZtbVd3V0pxS1pMaHFLTUJSdnVnLzFC?=
+ =?utf-8?B?eE5PdUVLZHJUTzZqdVgzSmJnSlYydjJXaVM3OHB1Tk13T2tCSFBJTkVKbTc1?=
+ =?utf-8?B?c2tsSDdJd1NNamRNL0NTOWdrL0dReXRvV3JCanpUV05vc1hYMlZUZlJGelh1?=
+ =?utf-8?B?YUtmWHFUNis2bHdrWHpYRzFaeHdwMkhCSFNzRnJ1UmFOd0xpaVJhVFRYWWdy?=
+ =?utf-8?Q?lA2IEVtt7Ju6EevRH9FH8EvtM?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a22a087-c598-4a9b-a7e1-08dbcbe13910
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 11:40:39.2174
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cCpK2APIwnLflRC1RXIYXO1pl3p6x7iIwGcMbecofNfI/fMKmKoTLs8Acqdf1GhS+TlXaSW+aaPQ4YQ8jDakZA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8096
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello everyone, I would like to get some feedback on the driver patch 
-before submitting the new version of this patch series.
-> Add the Greybus host driver for BeaglePlay board by BeagleBoard.org.
->
-> The current greybus setup involves running SVC in a user-space
-> application (GBridge) and using netlink to communicate with kernel
-> space. GBridge itself uses wpanusb kernel driver, so the greybus messages
-> travel from kernel space (gb_netlink) to user-space (GBridge) and then
-> back to kernel space (wpanusb) before reaching CC1352.
->
-> This driver directly communicates with CC1352 (running SVC Zephyr
-> application). Thus, it simplifies the complete greybus setup eliminating
-> user-space GBridge.
->
-> This driver is responsible for the following:
-> - Start SVC (CC1352) on driver load.
-> - Send/Receive Greybus messages to/from CC1352 using HDLC over UART.
-> - Print Logs from CC1352.
-> - Stop SVC (CC1352) on driver load.
->
-> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
-> ---
->   MAINTAINERS                     |   1 +
->   drivers/greybus/Kconfig         |  10 +
->   drivers/greybus/Makefile        |   2 +
->   drivers/greybus/gb-beagleplay.c | 501 ++++++++++++++++++++++++++++++++
->   4 files changed, 514 insertions(+)
->   create mode 100644 drivers/greybus/gb-beagleplay.c
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 5467669d7963..d87e30626a6a 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8974,6 +8974,7 @@ M:	Ayush Singh <ayushdevel1325@gmail.com>
->   L:	greybus-dev@lists.linaro.org (moderated for non-subscribers)
->   S:	Maintained
->   F:	Documentation/devicetree/bindings/net/ti,cc1352p7.yaml
-> +F:	drivers/greybus/gb-beagleplay.c
->   
->   GREYBUS SUBSYSTEM
->   M:	Johan Hovold <johan@kernel.org>
-> diff --git a/drivers/greybus/Kconfig b/drivers/greybus/Kconfig
-> index 78ba3c3083d5..033d31dbf3b8 100644
-> --- a/drivers/greybus/Kconfig
-> +++ b/drivers/greybus/Kconfig
-> @@ -17,6 +17,16 @@ menuconfig GREYBUS
->   
->   if GREYBUS
->   
-> +config GREYBUS_BEAGLEPLAY
-> +	tristate "Greybus BeaglePlay driver"
-> +	depends on SERIAL_DEV_BUS
-> +	help
-> +	  Select this option if you have a BeaglePlay where CC1352
-> +	  co-processor acts as Greybus SVC.
-> +
-> +	  To compile this code as a module, chose M here: the module
-> +	  will be called gb-beagleplay.ko
-> +
->   config GREYBUS_ES2
->   	tristate "Greybus ES3 USB host controller"
->   	depends on USB
-> diff --git a/drivers/greybus/Makefile b/drivers/greybus/Makefile
-> index 9bccdd229aa2..d986e94f8897 100644
-> --- a/drivers/greybus/Makefile
-> +++ b/drivers/greybus/Makefile
-> @@ -18,6 +18,8 @@ obj-$(CONFIG_GREYBUS)		+= greybus.o
->   # needed for trace events
->   ccflags-y += -I$(src)
->   
-> +obj-$(CONFIG_GREYBUS_BEAGLEPLAY)	+= gb-beagleplay.o
-> +
->   # Greybus Host controller drivers
->   gb-es2-y := es2.o
->   
-> diff --git a/drivers/greybus/gb-beagleplay.c b/drivers/greybus/gb-beagleplay.c
-> new file mode 100644
-> index 000000000000..43318c1993ba
-> --- /dev/null
-> +++ b/drivers/greybus/gb-beagleplay.c
-> @@ -0,0 +1,501 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Beagleplay Linux Driver for Greybus
-> + *
-> + * Copyright (c) 2023 Ayush Singh <ayushdevel1325@gmail.com>
-> + * Copyright (c) 2023 BeagleBoard.org Foundation
-> + */
-> +
-> +#include <linux/gfp.h>
-> +#include <linux/greybus.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/printk.h>
-> +#include <linux/serdev.h>
-> +#include <linux/tty.h>
-> +#include <linux/tty_driver.h>
-> +#include <linux/greybus/hd.h>
-> +#include <linux/init.h>
-> +#include <linux/device.h>
-> +#include <linux/crc-ccitt.h>
-> +#include <linux/circ_buf.h>
-> +#include <linux/types.h>
-> +#include <linux/workqueue.h>
-> +
-> +#define RX_HDLC_PAYLOAD 256
-> +#define CRC_LEN 2
-> +#define MAX_RX_HDLC (1 + RX_HDLC_PAYLOAD + CRC_LEN)
-> +#define TX_CIRC_BUF_SIZE 1024
-> +
-> +#define ADDRESS_GREYBUS 0x01
-> +#define ADDRESS_DBG 0x02
-> +#define ADDRESS_CONTROL 0x03
-> +
-> +#define HDLC_FRAME 0x7E
-> +#define HDLC_ESC 0x7D
-> +#define HDLC_XOR 0x20
-> +
-> +#define CONTROL_SVC_START 0x01
-> +#define CONTROL_SVC_STOP 0x02
-> +
-> +/* The maximum number of CPorts supported by Greybus Host Device */
-> +#define GB_MAX_CPORTS 32
-> +
-> +/**
-> + * struct gb_beagleplay - BeaglePlay Greybus driver
-> + *
-> + * @sd: underlying serdev device
-> + *
-> + * @gb_hd: greybus host device
-> + *
-> + * @tx_work: hdlc transmit work
-> + * @tx_producer_lock: hdlc transmit data producer lock. acquired when appending data to buffer.
-> + * @tx_consumer_lock: hdlc transmit data consumer lock. acquired when sending data over uart.
-> + * @tx_circ_buf: hdlc transmit circular buffer.
-> + * @tx_crc: hdlc transmit crc-ccitt fcs
-> + *
-> + * @rx_buffer_len: length of receive buffer filled.
-> + * @rx_buffer: hdlc frame receive buffer
-> + * @rx_in_esc: hdlc rx flag to indicate ESC frame
-> + */
-> +struct gb_beagleplay {
-> +	struct serdev_device *sd;
-> +
-> +	struct gb_host_device *gb_hd;
-> +
-> +	struct work_struct tx_work;
-> +	spinlock_t tx_producer_lock;
-> +	spinlock_t tx_consumer_lock;
-> +	struct circ_buf tx_circ_buf;
-> +	u16 tx_crc;
-> +
-> +	u16 rx_buffer_len;
-> +	bool rx_in_esc;
-> +	u8 rx_buffer[MAX_RX_HDLC];
-> +};
-> +
-> +/**
-> + * struct hdlc_payload - Structure to represent part of HDCL frame payload data.
-> + *
-> + * @len: buffer length in bytes
-> + * @buf: payload buffer
-> + */
-> +struct hdlc_payload {
-> +	u16 len;
-> +	void *buf;
-> +};
-> +
-> +static void hdlc_rx_greybus_frame(struct gb_beagleplay *bg, u8 *buf, u16 len)
-> +{
-> +	u16 cport_id;
-> +	struct gb_operation_msg_hdr *hdr = (struct gb_operation_msg_hdr *)buf;
-> +
-> +	memcpy(&cport_id, hdr->pad, sizeof(cport_id));
-> +
-> +	dev_dbg(&bg->sd->dev, "Greybus Operation %u type %X cport %u status %u received",
-> +		hdr->operation_id, hdr->type, cport_id, hdr->result);
-> +
-> +	greybus_data_rcvd(bg->gb_hd, cport_id, buf, len);
-> +}
-> +
-> +static void hdlc_rx_dbg_frame(const struct gb_beagleplay *bg, const char *buf, u16 len)
-> +{
-> +	dev_dbg(&bg->sd->dev, "CC1352 Log: %.*s", (int)len, buf);
-> +}
-> +
-> +/**
-> + * hdlc_write() - Consume HDLC Buffer.
-> + * @bg: beagleplay greybus driver
-> + *
-> + * Assumes that consumer lock has been acquired.
-> + */
-> +static void hdlc_write(struct gb_beagleplay *bg)
-> +{
-> +	int written;
-> +	/* Start consuming HDLC data */
-> +	int head = smp_load_acquire(&bg->tx_circ_buf.head);
-> +	int tail = bg->tx_circ_buf.tail;
-> +	int count = CIRC_CNT_TO_END(head, tail, TX_CIRC_BUF_SIZE);
-> +	const unsigned char *buf = &bg->tx_circ_buf.buf[tail];
-> +
-> +	if (count > 0) {
-> +		written = serdev_device_write_buf(bg->sd, buf, count);
-> +
-> +		/* Finish consuming HDLC data */
-> +		smp_store_release(&bg->tx_circ_buf.tail, (tail + written) & (TX_CIRC_BUF_SIZE - 1));
-> +	}
-> +}
-> +
-> +/**
-> + * hdlc_append() - Queue HDLC data for sending.
-> + * @bg: beagleplay greybus driver
-> + * @value: hdlc byte to transmit
-> + *
-> + * Assumes that producer lock as been acquired.
-> + */
-> +static void hdlc_append(struct gb_beagleplay *bg, u8 value)
-> +{
-> +	int tail, head = bg->tx_circ_buf.head;
-> +
-> +	while (true) {
-> +		tail = READ_ONCE(bg->tx_circ_buf.tail);
-> +
-> +		if (CIRC_SPACE(head, tail, TX_CIRC_BUF_SIZE) >= 1) {
-> +			bg->tx_circ_buf.buf[head] = value;
-> +
-> +			/* Finish producing HDLC byte */
-> +			smp_store_release(&bg->tx_circ_buf.head,
-> +					  (head + 1) & (TX_CIRC_BUF_SIZE - 1));
-> +			return;
-> +		}
-> +		dev_warn(&bg->sd->dev, "Tx circ buf full");
-> +		usleep_range(3000, 5000);
-> +	}
-> +}
-> +
-> +static void hdlc_append_escaped(struct gb_beagleplay *bg, u8 value)
-> +{
-> +	if (value == HDLC_FRAME || value == HDLC_ESC) {
-> +		hdlc_append(bg, HDLC_ESC);
-> +		value ^= HDLC_XOR;
-> +	}
-> +	hdlc_append(bg, value);
-> +}
-> +
-> +static void hdlc_append_tx_frame(struct gb_beagleplay *bg)
-> +{
-> +	bg->tx_crc = 0xFFFF;
-> +	hdlc_append(bg, HDLC_FRAME);
-> +}
-> +
-> +static void hdlc_append_tx_u8(struct gb_beagleplay *bg, u8 value)
-> +{
-> +	bg->tx_crc = crc_ccitt(bg->tx_crc, &value, 1);
-> +	hdlc_append_escaped(bg, value);
-> +}
-> +
-> +static void hdlc_append_tx_buf(struct gb_beagleplay *bg, const u8 *buf, u16 len)
-> +{
-> +	size_t i;
-> +
-> +	for (i = 0; i < len; i++)
-> +		hdlc_append_tx_u8(bg, buf[i]);
-> +}
-> +
-> +static void hdlc_append_tx_crc(struct gb_beagleplay *bg)
-> +{
-> +	bg->tx_crc ^= 0xffff;
-> +	hdlc_append_escaped(bg, bg->tx_crc & 0xff);
-> +	hdlc_append_escaped(bg, (bg->tx_crc >> 8) & 0xff);
-> +}
-> +
-> +static void hdlc_transmit(struct work_struct *work)
-> +{
-> +	struct gb_beagleplay *bg = container_of(work, struct gb_beagleplay, tx_work);
-> +
-> +	spin_lock_bh(&bg->tx_consumer_lock);
-> +	hdlc_write(bg);
-> +	spin_unlock_bh(&bg->tx_consumer_lock);
-> +}
-> +
-> +static void hdlc_tx_frames(struct gb_beagleplay *bg, u8 address, u8 control,
-> +			   const struct hdlc_payload payloads[], size_t count)
-> +{
-> +	size_t i;
-> +
-> +	spin_lock(&bg->tx_producer_lock);
-> +
-> +	hdlc_append_tx_frame(bg);
-> +	hdlc_append_tx_u8(bg, address);
-> +	hdlc_append_tx_u8(bg, control);
-> +
-> +	for (i = 0; i < count; ++i)
-> +		hdlc_append_tx_buf(bg, payloads[i].buf, payloads[i].len);
-> +
-> +	hdlc_append_tx_crc(bg);
-> +	hdlc_append_tx_frame(bg);
-> +
-> +	spin_unlock(&bg->tx_producer_lock);
-> +
-> +	schedule_work(&bg->tx_work);
-> +}
-> +
-> +static void hdlc_tx_s_frame_ack(struct gb_beagleplay *bg)
-> +{
-> +	hdlc_tx_frames(bg, bg->rx_buffer[0], (bg->rx_buffer[1] >> 1) & 0x7, NULL, 0);
-> +}
-> +
-> +static void hdlc_rx_frame(struct gb_beagleplay *bg)
-> +{
-> +	u16 crc, len;
-> +	u8 ctrl, *buf;
-> +	u8 address = bg->rx_buffer[0];
-> +
-> +	crc = crc_ccitt(0xffff, bg->rx_buffer, bg->rx_buffer_len);
-> +	if (crc != 0xf0b8) {
-> +		dev_warn_ratelimited(&bg->sd->dev, "CRC failed from %02x: 0x%04x", address, crc);
-> +		return;
-> +	}
-> +
-> +	ctrl = bg->rx_buffer[1];
-> +	buf = &bg->rx_buffer[2];
-> +	len = bg->rx_buffer_len - 4;
-> +
-> +	/* I-Frame, send S-Frame ACK */
-> +	if ((ctrl & 1) == 0)
-> +		hdlc_tx_s_frame_ack(bg);
-> +
-> +	switch (address) {
-> +	case ADDRESS_DBG:
-> +		hdlc_rx_dbg_frame(bg, buf, len);
-> +		break;
-> +	case ADDRESS_GREYBUS:
-> +		hdlc_rx_greybus_frame(bg, buf, len);
-> +		break;
-> +	default:
-> +		dev_warn_ratelimited(&bg->sd->dev, "unknown frame %u", address);
-> +	}
-> +}
-> +
-> +static int hdlc_rx(struct gb_beagleplay *bg, const u8 *data, size_t count)
-> +{
-> +	size_t i;
-> +	u8 c;
-> +
-> +	for (i = 0; i < count; ++i) {
-> +		c = data[i];
-> +
-> +		switch (c) {
-> +		case HDLC_FRAME:
-> +			if (bg->rx_buffer_len)
-> +				hdlc_rx_frame(bg);
-> +
-> +			bg->rx_buffer_len = 0;
-> +			break;
-> +		case HDLC_ESC:
-> +			bg->rx_in_esc = true;
-> +			break;
-> +		default:
-> +			if (bg->rx_in_esc) {
-> +				c ^= 0x20;
-> +				bg->rx_in_esc = false;
-> +			}
-> +
-> +			if (bg->rx_buffer_len < MAX_RX_HDLC) {
-> +				bg->rx_buffer[bg->rx_buffer_len] = c;
-> +				bg->rx_buffer_len++;
-> +			} else {
-> +				dev_err_ratelimited(&bg->sd->dev, "RX Buffer Overflow");
-> +				bg->rx_buffer_len = 0;
-> +			}
-> +		}
-> +	}
-> +
-> +	return count;
-> +}
-> +
-> +static int hdlc_init(struct gb_beagleplay *bg)
-> +{
-> +	INIT_WORK(&bg->tx_work, hdlc_transmit);
-> +	spin_lock_init(&bg->tx_producer_lock);
-> +	spin_lock_init(&bg->tx_consumer_lock);
-> +	bg->tx_circ_buf.head = 0;
-> +	bg->tx_circ_buf.tail = 0;
-> +
-> +	bg->tx_circ_buf.buf = devm_kmalloc(&bg->sd->dev, TX_CIRC_BUF_SIZE, GFP_KERNEL);
-> +	if (!bg->tx_circ_buf.buf)
-> +		return -ENOMEM;
-> +
-> +	bg->rx_buffer_len = 0;
-> +	bg->rx_in_esc = false;
-> +
-> +	return 0;
-> +}
-> +
-> +static void hdlc_deinit(struct gb_beagleplay *bg)
-> +{
-> +	flush_work(&bg->tx_work);
-> +}
-> +
-> +static int gb_tty_receive(struct serdev_device *sd, const unsigned char *data, size_t count)
-> +{
-> +	struct gb_beagleplay *bg = serdev_device_get_drvdata(sd);
-> +
-> +	return hdlc_rx(bg, data, count);
-> +}
-> +
-> +static void gb_tty_wakeup(struct serdev_device *serdev)
-> +{
-> +	struct gb_beagleplay *bg = serdev_device_get_drvdata(serdev);
-> +
-> +	schedule_work(&bg->tx_work);
-> +}
-> +
-> +static struct serdev_device_ops gb_beagleplay_ops = {
-> +	.receive_buf = gb_tty_receive,
-> +	.write_wakeup = gb_tty_wakeup,
-> +};
-> +
-> +static int gb_message_send(struct gb_host_device *hd, u16 cport, struct gb_message *msg, gfp_t mask)
-> +{
-> +	struct gb_beagleplay *bg = dev_get_drvdata(&hd->dev);
-> +	struct hdlc_payload payloads[2];
-> +
-> +	dev_dbg(&hd->dev, "Sending greybus message with Operation %u, Type: %X on Cport %u",
-> +		msg->header->operation_id, msg->header->type, cport);
-> +
-> +	if (msg->header->size > RX_HDLC_PAYLOAD)
-> +		return dev_err_probe(&hd->dev, -E2BIG, "Greybus message too big");
-> +
-> +	memcpy(msg->header->pad, &cport, sizeof(cport));
-> +
-> +	payloads[0].buf = msg->header;
-> +	payloads[0].len = sizeof(*msg->header);
-> +	payloads[1].buf = msg->payload;
-> +	payloads[1].len = msg->payload_size;
-> +
-> +	hdlc_tx_frames(bg, ADDRESS_GREYBUS, 0x03, payloads, 2);
-> +	greybus_message_sent(bg->gb_hd, msg, 0);
-> +
-> +	return 0;
-> +}
-> +
-> +static void gb_message_cancel(struct gb_message *message)
-> +{
-> +}
-> +
+On 2023/10/12 17:12, Yi Liu wrote:
+> On 2023/9/26 14:56, Tian, Kevin wrote:
+>>> From: Yi Liu <yi.l.liu@intel.com>
+>>> Sent: Thursday, September 21, 2023 3:51 PM
+>>> +
+>>> +/**
+>>> + * iommu_copy_user_data - Copy iommu driver specific user space data
+>>> + * @dst_data: Pointer to an iommu driver specific user data that is 
+>>> defined
+>>> in
+>>> + *            include/uapi/linux/iommufd.h
+>>> + * @src_data: Pointer to a struct iommu_user_data for user space data info
+>>> + * @data_len: Length of current user data structure, i.e. sizeof(struct 
+>>> _dst)
+>>> + * @min_len: Initial length of user data structure for backward 
+>>> compatibility.
+>>> + *           This should be offsetofend using the last member in the 
+>>> user data
+>>> + *           struct that was initially added to 
+>>> include/uapi/linux/iommufd.h
+>>> + */
+>>> +static inline int iommu_copy_user_data(void *dst_data,
+>>> +                       const struct iommu_user_data *src_data,
+>>> +                       size_t data_len, size_t min_len)
+>>
+>> iommu_copy_struct_from_user()?
+>>
+>> btw given the confusion raised on how this would be used is it clearer
+>> to move it to the patch together with the 1st user?
+> 
+> sure. How about your opinion? @Nic.
+> 
 
-I am not quite sure how to deal with `message_cancel`. The current 
-greybus message follow the following trajectory: Linux driver --UART--> 
-CC1352 Firmware --6lowpan--> greybus node.
+after a second thinking, the first user of this helper is the patch to
+extend mock iommu driver. Is it suitable to introduce a common API together
+with selftest code?
 
-The main method I can currently think to implement this in the Linux 
-driver. I can maintain an array containing a canceled greybus message ID 
-and a timestamp of when it was added. There are two ways to have a 
-message removed from this array:
+https://lore.kernel.org/linux-iommu/20230921075138.124099-14-yi.l.liu@intel.com/
 
-1. A canceled message is received: Just remove the message from array 
-and drop the received message.
-
-2. We have a GC kind of thing which cleans up array members if a set 
-timeout has passed since timestamp.
-
-
-Or maybe I am wrong and the expectation of `message_callback` is 
-different from what I tried to solve above?
-
-
-Sincerely
-
-Ayush Singh
-
+-- 
+Regards,
+Yi Liu
