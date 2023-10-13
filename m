@@ -2,283 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A88C7C8414
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4427C8413
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbjJMLIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
+        id S230356AbjJMLIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbjJMLId (ORCPT
+        with ESMTP id S230281AbjJMLIm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:08:33 -0400
-Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF8AED;
-        Fri, 13 Oct 2023 04:08:29 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 75BFE1000C4; Fri, 13 Oct 2023 12:08:28 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1697195308; bh=zTnxXs5WkLWGedGanBKBI5sMR53wBy4YKczpjgItnfU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bPMtAVT3v1LbwwIUARFzte6MHwLYlPQtYxXD6hI1aejBFH3t1V5bxpe9H9ZLEJKcQ
-         JX9a3us+tjDWNzYuubVN+ShIYMrC9u71f26/G48L5Ay5+4GMCEgytJyrkfmXSGOq6H
-         CDEICD2BuWogx41w8Xr+WumDEBQrocG7CcDdF0mLpZjZtUI+p7GFdvPYFh4ODwbztM
-         B6OeFcpAhSfOWNPnSaC/U6PCKt5Tdw6nKEirHHoTRcH+rW/J0+R2LIOFDHsHxqI6Lh
-         LTBaoSQ8DoOIPdZTFf5tdkWd7wjvSnFCVhoW0VcWV+29yChqQEkcgIEgfUtGvnkZEZ
-         ag/m8xIFd6dTQ==
-Date:   Fri, 13 Oct 2023 12:08:28 +0100
-From:   Sean Young <sean@mess.org>
-To:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org
-Subject: Re: [PATCH] media: rc: pwm-ir-tx: use hrtimer for edge generation
-Message-ID: <ZSklLLWaxpS98Agc@gofer.mess.org>
-References: <1696501739-29861-1-git-send-email-ivo.g.dimitrov.75@gmail.com>
-MIME-Version: 1.0
+        Fri, 13 Oct 2023 07:08:42 -0400
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2100.outbound.protection.outlook.com [40.107.114.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D96DD;
+        Fri, 13 Oct 2023 04:08:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nfsE3W8oVgKcpOlZwB6Sfj2gXL9YcyPmnkp+/lvb6jZjYmoTsQK9KGDucU9ZOiMYkrTAPmqyQ8M4LGznIbLYPec9AMsCJC1D8ToevunjIePinoWgEiGPaHeCw6pP1F4ojQRNNhBKxjdIH6KZCDWBuiY4zi1v9PR5riRqBxiwRIoQuAct3HhY7tdoxmNtKi0mLNCBEM3CN8SV6bDDsvq92LlvF/e5YYC4COhEqmyaZzAFtT3QBraBj0477aaxBu5aby6gS32BWt8ftAvZtq+CbbF12N53hL0Tewi535MbsVodHP8ueq7KzPzmvjjwLjz62I6YU+LSYyXuclDrpwdjUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rueLHzQ6Bontn22z1wfBC9BeodsVBDLFV6QQ0OykItQ=;
+ b=bcxTNic4xfZVswUbvL4L1mJ94USfs91gqGb6x1+vXju94YC7wR0kOTIbnsG14BuBec9Sf1jWXwWyxP/ukJnpeAdIvWQnEJpuHKZyiCUkm382V+e3lxefFevP808njxznDoRLFJbZ7ziSxZqbA/wZdujVKinY2J+1GGq9zUCmkIQRWvGwWKIOy60BINKEpwtLrBa7bM6K5Q7Dm+2GRmifrNe04InS8GPvHy4d0UYG3n0C2mqQq+pfjoKLhq3Fhrfyx4HLSNZp3W4cyODvcGph/7MZUu9YmfZs1HwCqvcxy9Ky+Vynyl1LGvu7+wXC8ZTtytkY0JvzMHhePBsfyQaq2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=zenithal.me; dmarc=pass action=none header.from=zenithal.me;
+ dkim=pass header.d=zenithal.me; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zenithal.me;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rueLHzQ6Bontn22z1wfBC9BeodsVBDLFV6QQ0OykItQ=;
+ b=Qaa8Ea8SiAjo/Xz696Lb61oZXkpZ1tbcW851e70Q5UHfCj9DX5q7cfzUiqzQnQoxzsWVQNFKT+LzYPoOzuszySH1YBB+OeT8K9YpX6A+MuI45c9XqcjbO5VDRcQ9JJUHbgOoaIzMuTirL5s4B4k4ZdyOvMRot4y7grVSFH8FrdU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=zenithal.me;
+Received: from TYYP286MB1406.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:de::5) by
+ TYWP286MB3646.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:3f8::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6886.30; Fri, 13 Oct 2023 11:08:37 +0000
+Received: from TYYP286MB1406.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::54a2:c3cf:4f5:91cc]) by TYYP286MB1406.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::54a2:c3cf:4f5:91cc%7]) with mapi id 15.20.6886.030; Fri, 13 Oct 2023
+ 11:08:37 +0000
+Date:   Fri, 13 Oct 2023 19:08:29 +0800
+From:   Hongren Zheng <i@zenithal.me>
+To:     syzbot <syzbot+e0dbc33630a092ccf033@syzkaller.appspotmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, shuah@kernel.org,
+        syzkaller-bugs@googlegroups.com, valentina.manea.m@gmail.com
+Subject: Re: [syzbot] [usb?] usb-testing boot error: KASAN:
+ slab-out-of-bounds Write in vhci_setup
+Message-ID: <ZSklLQuMjoso9RRY@Sun>
+References: <00000000000029242706077f3145@google.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1696501739-29861-1-git-send-email-ivo.g.dimitrov.75@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <00000000000029242706077f3145@google.com>
+X-Operating-System: Linux Sun 5.15.67
+X-Mailer: Mutt 2.2.7 (2022-08-07)
+X-ClientProxiedBy: SJ0PR13CA0049.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c2::24) To TYYP286MB1406.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:de::5)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYYP286MB1406:EE_|TYWP286MB3646:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3379e270-e867-4606-c5ce-08dbcbdcbfa5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CEhacZstV1XBsMrtpqMqdxjenf+ycwB294ecNM8R3Bxa9obDNU1LGrD4V0/OXYTIvCtix2CBoc4p5i00zq3tTt9WkUuVKPtXh2clnCFZzds6RSuoTaIEzHQG6q7m5mSXeLPQFqCGXbs5jwgngqDxEUIiPNjaEPkpEX9qu8s90hqaE4FnQ6yN4juuWfKEip8WazDoAXbXK+qZL+mrTjw3FZtBHluV/PglJJNru3TiUkg+Kz+Ob02AgNBzdRuq9idr/d1UwxHAtnmEJgMW0DNE/OoVzDOJ/gfE3azGgtjaO21Dy5lIKRkk7AROHOe4OzfNQq9CkRCjxHqFDh4g2JHie5p9r749p0Fo/3+eihj1/cVT6ZdU563M/lOSrCVH2sYkKpX7UewAX0emHcq/Z1oxVxVmlMvdxgwjDv9f5NEypBZqfBIEqRgCxXE1me+q3cqumAcDtuEmPyCiwaiv+bBjXwx/ZqfjHDPhbzQl1pv4MVh60uaqc+Is+c/zJFQP+yY7HcHTB0PzwAQ43Sn3pAqHe5i2bXS23lxV6ETpDBqfnBnsVnj7CO7LqIpfMHgVq/YnhYq5ERSev6b/8K1OQvFvPZZcOVFI1M0e3xGG7ECw5RI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYYP286MB1406.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(376002)(396003)(136003)(346002)(39830400003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(6506007)(38100700002)(6512007)(4326008)(9686003)(558084003)(86362001)(33716001)(2906002)(5660300002)(8676002)(8936002)(41320700001)(6666004)(316002)(66476007)(786003)(6486002)(66556008)(66946007)(41300700001)(478600001)(49092004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RwdZCU1iLSqpaiAmgADrdhnHVhZz5rZHVA84q51uD+HbYVCukphjFNUWvY6G?=
+ =?us-ascii?Q?kwjDfcWGF46VH4RF84w6GwCz3HRC8sXSjRSTbWGYaFMgKrz1azAth6EmDjog?=
+ =?us-ascii?Q?lep1OGDpaYC6uicwz5n/thOHQ5+CmQiIQQ1nN3uyiqhwH1HrZD0fx3jiDjm+?=
+ =?us-ascii?Q?J5T1TsJYa33bu2N1VWL1oVGF0USXHP/lDEu6p8JGGMOQ2+rrS0EVnUsz3c/5?=
+ =?us-ascii?Q?xkps/JqopwpN8FpNdaBKRDMU991eiyIevJ3b3QzO3KKLX0uHuBOCc4jKepM8?=
+ =?us-ascii?Q?O5ni3Cv/A/mbcfLTjC8rW3K9i6NFuW3tgB/LYaTxAlyHDkTG3MHdVaMniBgV?=
+ =?us-ascii?Q?fRb6Tqs1ruQ18crznf5xx+d7Lh0XrF/acgQ780NB/lqe4PTsqSIzbg+fxY71?=
+ =?us-ascii?Q?IOOqkXicgjbM3by3tHUGQ1tpVvzqzSv/lB8gr2LHjJfjvoM0nIyj/meTMuSU?=
+ =?us-ascii?Q?Qi0wlwnGd6yTyTx90IHmUeO9apFbhOmdX3crYjZy1ijnuxuH9rZcMJrsUcI8?=
+ =?us-ascii?Q?KqgCwiZ5Fd4VBoBCv/pAbZ4Ohfx7oMZ8Kjze4SjJTHPyF9HUba/cBre3xSal?=
+ =?us-ascii?Q?Wwj20dS2hp7lOK0daORx1Kg1nhaLqRmM6jOAvtH2br6igPaQuNNassAjvxKF?=
+ =?us-ascii?Q?HDZhFCR0x71X7rkTi2ecuHs3ye5MJKanC7MM9trg0v/09rt/c2l1kQWGySZB?=
+ =?us-ascii?Q?w/93TfyECgkinEdwA1OB+JBkOWosh+ggts+RxRj1ydmRlTjE7mQwifaieVJy?=
+ =?us-ascii?Q?5DNycDu49EgyDBHKIIJzdiGvjjY3pCnlCrKTppYhgjLtgBusiF4WqdtmiEyd?=
+ =?us-ascii?Q?I/a2Cefwn3tLGEeVgeebXME9yFw2e6nY3VI1riOT15FR7W0qlcinZPGG9D3Q?=
+ =?us-ascii?Q?f2TQTvcFfpioZOJJIZZoxW4yGhEZWfkzBjDVASDLkugA0g781zR9aBE+/lmE?=
+ =?us-ascii?Q?z+q+VjEsvLAiX+H5sxt/BIzLVGweWW1VnXz9ybKIA79kSghQqY+vRhGx3M7I?=
+ =?us-ascii?Q?1oO+xeDN1d2kHJ1KMdqeqipvuqJIEx2Wd2sDAmzPU1Ea1/spZUuHtq+RRFTH?=
+ =?us-ascii?Q?+2kEd2yDHi9Ea0to1rjx0B9/ji0Wp6dhCZ9bGkEgYSY/DoLtZNHGN1E6LdJZ?=
+ =?us-ascii?Q?3Zxi/NdTC7eRDl1keCkc1NIZjUxecjdjY4/ZWFecgVrlO0Ovu8jhIZYBuMG+?=
+ =?us-ascii?Q?OLp+UiXXxmuSxgNwpqQ0Woo8Tjmcoj6JnJWbvtcGja1mf6lk4WKAe/fROYNF?=
+ =?us-ascii?Q?1PSEheEqVSzIqOAcqEA7az2ka+xRc8LkJsG/OaxK4ASEy1Y+U4XXlPzfWMBZ?=
+ =?us-ascii?Q?p7lkhPc/MkkColLcDlxJQDCgYax/8UfK0HWpKjnjnVDVgvmaps/f2zLPlpXt?=
+ =?us-ascii?Q?UR4UuNZ0AHwmApjWJ/XjtIoyT8TsCTBtR0oDemRDMrhZPltx5PeO5FyRNVfQ?=
+ =?us-ascii?Q?CLGBXMLSZz7DBnvUbcAmJxfpkFN7pzlKMVdI2Jtc8H1ac1MPTJmBiaJjtWrP?=
+ =?us-ascii?Q?1q1/CQo21dNDNkBly/1kuhSjXvZWMIok2qh6J+uvEdFLnkFdEVaE9nQrYXRp?=
+ =?us-ascii?Q?WYj+oiFTvxQbWp5HoLUi9oxmfp5mXSc2loEQK0zj?=
+X-OriginatorOrg: zenithal.me
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3379e270-e867-4606-c5ce-08dbcbdcbfa5
+X-MS-Exchange-CrossTenant-AuthSource: TYYP286MB1406.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 11:08:37.3522
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 436d481c-43b1-4418-8d7f-84c1e4887cf0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WnDaebpbz9qftI+3+HCZd2aiOcBreXWvfOkpGIHRUMBsAFhlIq8ZdIPD31wxPT5e
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWP286MB3646
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 01:28:59PM +0300, Ivaylo Dimitrov wrote:
-> usleep_range() seems to suffer from scheduling latency of up to 400 us on
-> some platforms (like OMAP) which makes it unusable for IR pulses edge
-> timings. In the same time pwm_ir_trx() is called in a context with priority
-> which might not be suitable for real-time IR pulses generation.
-> 
-> Fix that by using hrtimer and a thread with sched_set_fifo() priority. That
-> way scheduling latency is compensated by the fact that PWM is controlled in
-> the thread after a completion is signalled in hrtimer function - we have
-> more or less the same latency for every edge. If completion comes earlier
-> than needed, we do udelay() till the exact time for the next edge. That
-> way pulse width generation is robust and precise and mostly independent of
-> the system load.
-> 
-> Tests on Nokia N900 showed that udelay() is called with up to 200 us in
-> worst cases, usually times are less that 100 us.
+On Wed, Oct 11, 2023 at 11:38:47PM -0700, syzbot wrote:
+> If the bug is a duplicate of another bug, reply with:
+> #syz dup: exact-subject-of-another-report
 
-Cc the RT folks, I would like some input on this. How bad is this for
-linux-rt or non-linux-rt for latency? Is this a problem, and if so is there
-an #ifdef we can use to avoid it in certain builds?
-
-> Signed-off-by: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
-> ---
->  drivers/media/rc/pwm-ir-tx.c | 122 ++++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 115 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
-> index 7732054c..cb6ce73 100644
-> --- a/drivers/media/rc/pwm-ir-tx.c
-> +++ b/drivers/media/rc/pwm-ir-tx.c
-> @@ -4,6 +4,7 @@
->   */
->  
->  #include <linux/kernel.h>
-> +#include <linux/kthread.h>
->  #include <linux/module.h>
->  #include <linux/pwm.h>
->  #include <linux/delay.h>
-> @@ -17,8 +18,16 @@
->  
->  struct pwm_ir {
->  	struct pwm_device *pwm;
-> +	struct hrtimer timer;
-> +	struct task_struct *tx_thread;
-> +	wait_queue_head_t tx_wq;
-> +	struct completion tx_done;
-> +	struct completion edge;
->  	unsigned int carrier;
->  	unsigned int duty_cycle;
-> +	unsigned int *txbuf;
-> +	unsigned int count;
-> +	unsigned int index;
->  };
->  
->  static const struct of_device_id pwm_ir_of_match[] = {
-> @@ -48,12 +57,41 @@ static int pwm_ir_set_carrier(struct rc_dev *dev, u32 carrier)
->  	return 0;
->  }
->  
-> -static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
-> -		     unsigned int count)
-> +static enum hrtimer_restart pwm_ir_timer_cb(struct hrtimer *timer)
-> +{
-> +	struct pwm_ir *pwm_ir = container_of(timer, struct pwm_ir, timer);
-> +	ktime_t now;
-> +
-> +	/*
-> +	 * If we happen to hit an odd latency spike, loop through the
-> +	 * pulses until we catch up.
-> +	 */
-> +	do {
-> +		u64 edge;
-> +
-> +		complete(&pwm_ir->edge);
-> +
-> +		if (pwm_ir->index >= pwm_ir->count)
-> +			return HRTIMER_NORESTART;
-> +
-> +		edge = US_TO_NS(pwm_ir->txbuf[pwm_ir->index]);
-> +		hrtimer_add_expires_ns(timer, edge);
-> +
-> +		pwm_ir->index++;
-> +
-> +		now = timer->base->get_time();
-> +
-> +	} while (hrtimer_get_expires_tv64(timer) < now);
-> +
-> +	return HRTIMER_RESTART;
-> +}
-> +
-> +static void _pwm_ir_tx(struct pwm_ir *pwm_ir)
->  {
-> -	struct pwm_ir *pwm_ir = dev->priv;
->  	struct pwm_device *pwm = pwm_ir->pwm;
->  	struct pwm_state state;
-> +	unsigned int *txbuf = pwm_ir->txbuf;
-> +	unsigned int count = pwm_ir->count;
->  	int i;
->  	ktime_t edge;
->  	long delta;
-> @@ -63,6 +101,8 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
->  	state.period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
->  	pwm_set_relative_duty_cycle(&state, pwm_ir->duty_cycle, 100);
->  
-> +	hrtimer_start(&pwm_ir->timer, 0, HRTIMER_MODE_REL);
-> +	wait_for_completion(&pwm_ir->edge);
->  	edge = ktime_get();
->  
->  	for (i = 0; i < count; i++) {
-> @@ -70,14 +110,50 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
->  		pwm_apply_state(pwm, &state);
->  
->  		edge = ktime_add_us(edge, txbuf[i]);
-> +		wait_for_completion(&pwm_ir->edge);
-> +
->  		delta = ktime_us_delta(edge, ktime_get());
-> +
->  		if (delta > 0)
-> -			usleep_range(delta, delta + 10);
-> +			udelay(delta);
-
-So you're sleeping if the timer arrives early, but what about if it arrives
-late? No amount of sleeping will here there.
-
->  	}
->  
->  	state.enabled = false;
->  	pwm_apply_state(pwm, &state);
->  
-> +	pwm_ir->count = 0;
-> +}
-> +
-> +static int pwm_ir_thread(void *data)
-> +{
-> +	struct pwm_ir *pwm_ir = data;
-> +
-> +	for (;;) {
-> +		wait_event_idle(pwm_ir->tx_wq,
-> +				kthread_should_stop() || pwm_ir->count);
-> +
-> +		if (kthread_should_stop())
-> +			break;
-> +
-> +		_pwm_ir_tx(pwm_ir);
-> +		complete(&pwm_ir->tx_done);
-> +	}
-> +
-> +	return 0;
-> +}
-
-Rather than creating a new thread, we could use re-use the process that
-is doing the TX, i.e. put this in pwm_ir_tx() itself. That should work,
-right?
-
-> +
-> +static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
-> +		     unsigned int count)
-> +{
-> +	struct pwm_ir *pwm_ir = dev->priv;
-> +
-> +	pwm_ir->txbuf = txbuf;
-> +	pwm_ir->count = count;
-> +	pwm_ir->index = 0;
-> +
-> +	wake_up(&pwm_ir->tx_wq);
-> +	wait_for_completion(&pwm_ir->tx_done);
-> +
->  	return count;
->  }
->  
-> @@ -91,12 +167,24 @@ static int pwm_ir_probe(struct platform_device *pdev)
->  	if (!pwm_ir)
->  		return -ENOMEM;
->  
-> +	platform_set_drvdata(pdev, pwm_ir);
-> +
->  	pwm_ir->pwm = devm_pwm_get(&pdev->dev, NULL);
->  	if (IS_ERR(pwm_ir->pwm))
->  		return PTR_ERR(pwm_ir->pwm);
->  
-> -	pwm_ir->carrier = 38000;
-> +	/* Use default, in case userspace does not set the carrier */
-> +	pwm_ir->carrier = DIV_ROUND_CLOSEST_ULL(pwm_get_period(pwm_ir->pwm),
-> +						NSEC_PER_SEC);
->  	pwm_ir->duty_cycle = 50;
-> +	pwm_ir->count = 0;
-> +
-> +	init_waitqueue_head(&pwm_ir->tx_wq);
-> +	init_completion(&pwm_ir->edge);
-> +	init_completion(&pwm_ir->tx_done);
-> +
-> +	hrtimer_init(&pwm_ir->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-> +	pwm_ir->timer.function = pwm_ir_timer_cb;
->  
->  	rcdev = devm_rc_allocate_device(&pdev->dev, RC_DRIVER_IR_RAW_TX);
->  	if (!rcdev)
-> @@ -110,14 +198,34 @@ static int pwm_ir_probe(struct platform_device *pdev)
->  	rcdev->s_tx_carrier = pwm_ir_set_carrier;
->  
->  	rc = devm_rc_register_device(&pdev->dev, rcdev);
-> -	if (rc < 0)
-> +	if (rc < 0) {
->  		dev_err(&pdev->dev, "failed to register rc device\n");
-> +		return rc;
-> +	}
-> +
-> +	pwm_ir->tx_thread = kthread_create(pwm_ir_thread, pwm_ir, "%s/tx",
-> +					   dev_name(&pdev->dev));
-> +	if (IS_ERR(pwm_ir->tx_thread))
-> +		return PTR_ERR(pwm_ir->tx_thread);
->  
-> -	return rc;
-> +	sched_set_fifo(pwm_ir->tx_thread);
-> +	wake_up_process(pwm_ir->tx_thread);
-> +
-> +	return 0;
-> +}
-> +
-> +static int pwm_ir_remove(struct platform_device *pdev)
-> +{
-> +	struct pwm_ir *pwm_ir = platform_get_drvdata(pdev);
-> +
-> +	kthread_stop(pwm_ir->tx_thread);
-> +
-> +	return 0;
->  }
->  
->  static struct platform_driver pwm_ir_driver = {
->  	.probe = pwm_ir_probe,
-> +	.remove = pwm_ir_remove,
->  	.driver = {
->  		.name	= DRIVER_NAME,
->  		.of_match_table = pwm_ir_of_match,
-> -- 
-> 1.9.1
+#syz dup: [syzbot] [usb?] linux-next boot error: KASAN: slab-out-of-bounds Write in vhci_setup
