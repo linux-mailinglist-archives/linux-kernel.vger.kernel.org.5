@@ -2,79 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BACA87C9177
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B047C917F
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbjJMXog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 19:44:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
+        id S231500AbjJMXqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 19:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231924AbjJMXof (ORCPT
+        with ESMTP id S230469AbjJMXqV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 19:44:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D42DC;
-        Fri, 13 Oct 2023 16:44:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 416F8C433C7;
-        Fri, 13 Oct 2023 23:44:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697240672;
-        bh=ijje59ACJtXkV0PV4ct/39uK254k7vq/jxYbdX4CDko=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Lkg3GJVLxAFEblDKDAbGOX3PPSz/Ohni7SKs69PJULcZqfl9siFQDYH6F9p3koTpk
-         Y8Rv/OCUkPNLJa6VlZAVE+4TCrVKJSY25ix+4pEjYDdDn1qur8kLVyUiN6M3snOiiR
-         txCLYu+RUcbqonpin8jPSXTY8E0sgJfIvxffMExnx4l64YtiqeECwQib5YLbrtnm1/
-         3Wgd3BPp+gJNUWFiqK6NReQwMAt3g0/xwkPjWja6VkTP6rK+jlEF2akKVqgzTD3x0M
-         BfDgrrBGcfku17AkV5gdT+usndxTkXyXKqrGrHlqIj6GT/LbtUeNNinKrFZGkD/n9/
-         bhRZOiWIFPxtw==
-Date:   Fri, 13 Oct 2023 16:44:30 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Simon Horman <horms@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v8 26/30] net: wan: framer: Add support for the Lantiq
- PEF2256 framer
-Message-ID: <20231013164430.7a57def5@kernel.org>
-In-Reply-To: <20231011061437.64213-27-herve.codina@bootlin.com>
-References: <20231011061437.64213-1-herve.codina@bootlin.com>
-        <20231011061437.64213-27-herve.codina@bootlin.com>
+        Fri, 13 Oct 2023 19:46:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84369C2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:46:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697240778; x=1728776778;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=bW1SZWdelds/lkiW3SdokPbSY1AXm9DYvOfwLHYRM18=;
+  b=LMPaLZGiG4N3iyfPhnQfRt5rS+3z9X8g5dSdZBMM1XezzLPnZbL4CkMU
+   791SVTi5B6qUQWyj6gPQa7FFkvUk5r32j6SDhlPbB+GC+ZYF7luo76721
+   L5j6LXp/wXnZgxX8dyOUpfYBxgIWLgyv3NWSFZTDbg6diokvwzmwt9hx7
+   /qIZMlC8EomtDBa+BrjcCdUws4AAVz9jhnPxbcE0cUH2C0jikgMC+Kycs
+   O/vIVcFbc93zqgvd4fl/k1H9nHJ9T1Mtv3iIj4rpGinNSVWHOBrJNTy3H
+   PMMpGX1FxVQWcx7VeHghbU668MzBdB1UkCnwzxHPJl9Ikfp0PXdeiqofo
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="389146485"
+X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
+   d="scan'208";a="389146485"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 16:46:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="754884193"
+X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
+   d="scan'208";a="754884193"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 13 Oct 2023 16:46:16 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qrRrC-0005Wf-1z;
+        Fri, 13 Oct 2023 23:46:14 +0000
+Date:   Sat, 14 Oct 2023 07:45:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mathieu Malaterre <malat@debian.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: cc1: error: AltiVec not supported in this target
+Message-ID: <202310140737.65pfgcSI-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Oct 2023 08:14:30 +0200 Herve Codina wrote:
-> The Lantiq PEF2256 is a framer and line interface component designed to
-> fulfill all required interfacing between an analog E1/T1/J1 line and the
-> digital PCM system highway/H.100 bus.
+Hi Mathieu,
 
-Acked-by: Jakub Kicinski <kuba@kernel.org>
+FYI, the error/warning still remains.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   8cb1f10d8c4b716c88b87ae4402a3305d96e5db2
+commit: ebd1d3b74f8542a8f3bb80b453692d6d18f84071 powerpc/32: Move the old 6xx -mcpu logic before the TARGET_CPU logic
+date:   4 years, 10 months ago
+config: powerpc-randconfig-002-20230923 (https://download.01.org/0day-ci/archive/20231014/202310140737.65pfgcSI-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231014/202310140737.65pfgcSI-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310140737.65pfgcSI-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> cc1: error: AltiVec not supported in this target
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
