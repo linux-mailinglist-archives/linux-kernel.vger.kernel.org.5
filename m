@@ -2,168 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8344C7C8488
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407B77C84A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbjJMLhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
+        id S231374AbjJMLiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbjJMLhQ (ORCPT
+        with ESMTP id S231338AbjJMLiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:37:16 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2050.outbound.protection.outlook.com [40.107.93.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE0FD8;
-        Fri, 13 Oct 2023 04:37:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KlcKPQeuXJlZu/MjZvzKH7cNWUoJsdqDBmj+pY+E3/6M2eLFnC86vwqfJhBGp0O4pChrdKRXdsLWDWnfdUqZVaKLtEY8wDUtwcrjkFSBdGDydHJNz5Zdgucu23XoWxYskZ2d+IVxg/zVatnqtNR8IKFvnK+CkTRsW9Sb0Y91Y8XcfyJk1Tx15rbFORWqDnhzo3RORfjBoYVe5SqnneeNNtUA6MMW1YTX8ChOrpriyr5paFgI81MNd8S5Z9lCRvQV3JMtzunw4wnCSd3BAzRDDjmbHIE0rJiS2BqEwwl4pH11v0zvFFeR8vGN3mYfGu2TMOz9rURT8nWTvk6aISvvZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8ZYM5GY2zTSu6VwKLieOUUPjaU67nd29Z4DDwhv0LCA=;
- b=GK++yO+JYwKUu/s8RFSMjzTWlok+jabyviVklIFQaPCvXVWuYf9wCise/QRFhYEEwfdl34poyTOE88vvmFrbcz34QAcsKDiQtXicXdmm1ScBx78u2r1FQJoibGgbYGPuF6YGhCCPWfds3LqGFn1W1xE1RY12HqI41cQ4B3MSoSoaXf859iRSJaIP50GbArYOJUXvbf97NTMZJri/FLQFtK/7QjUUF7B1JBhQqYfMpywIWFLDy53CtBrUBqhUbIV/Y8krCAxjx2lCjwr95vKXrRA/9wXy4qwKYPE22xct+Ou9aMVTpPXlgtwqSNshjH4Lx0fS4xctP/4DlqXtUvsGsg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8ZYM5GY2zTSu6VwKLieOUUPjaU67nd29Z4DDwhv0LCA=;
- b=bRjRNLoBhdNq/TGRugdf+Se0ViTRekXJ80RshINeMi8TnTagaIAX51OLJySjUmkQafRIHzrUm/K6SlHF3MBlzw7zozKuicED5GX+lHutK4uM/igUPm0X6saHCm5Sq9Skb/i9+8l59CXm3/ytLthzdMMF9V0lydpyEDzKDVdKNug=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
- CH3PR12MB8534.namprd12.prod.outlook.com (2603:10b6:610:15a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.41; Fri, 13 Oct
- 2023 11:37:10 +0000
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::5aa2:3605:1718:3332]) by DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::5aa2:3605:1718:3332%7]) with mapi id 15.20.6863.043; Fri, 13 Oct 2023
- 11:37:10 +0000
-Message-ID: <9d371f71-b7f9-4c4e-b42b-20cabaa42567@amd.com>
-Date:   Fri, 13 Oct 2023 07:37:06 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/edid: add 8 bpc quirk to the BenQ GW2765
-To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Alex Deucher <alexander.deucher@amd.com>
-References: <20231012184927.133137-1-hamza.mahfooz@amd.com>
- <ZSkcX1nJ4Ipf2ICd@intel.com>
-Content-Language: en-US
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-In-Reply-To: <ZSkcX1nJ4Ipf2ICd@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YQZPR01CA0145.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:8c::11) To DM4PR12MB6280.namprd12.prod.outlook.com
- (2603:10b6:8:a2::11)
+        Fri, 13 Oct 2023 07:38:13 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A15E4
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:38:10 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53e0d21a4easo2910266a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1697197088; x=1697801888; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aeuzswEtGNcv7PN7p/vCAjwlSADLyM73/cH0LYcA47I=;
+        b=ZmG025V4vsuxTVnYWAODi8mvbnl85+h9aWrAZT1KH17ad2i25YNQ/lktE+zpZUdv6V
+         dNsnqA3Cwuxbf2V7QlNpo3AyWsZmkWi6UiezX4AoQnT50DexT3xX2mVSQwJqM36spO/M
+         t9c13ciJUwGCVPbEreHdBmLjdptx78xcLSzv1QAXRkNx5M/pt8jfApSZHoGRJ4EZo7jj
+         4Nbe3hUNqyXGMXWIH3PpkwqlNc7QtoD8qDPMNBhLC4lZHNNuwVf3g1P4fYIhZAk039aV
+         LFxsPUHWx9o2lUip9BItNflyH20FX9/URpnrhyNUkDyRGkuKybguQoY6iYvRvT4DeJDX
+         SUHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697197088; x=1697801888;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aeuzswEtGNcv7PN7p/vCAjwlSADLyM73/cH0LYcA47I=;
+        b=JhRx77WZfczcEmgBneH0O1YddJhhQW5BDTOel+01Slqrgu2CKONSO+Xacq6mtMEucv
+         oqExOIvWOtYiSNd89YElKDm8gGLFQ8+6FnFcnY2Sf+RkHDmJVHH7FwPcoHc/rDQzr5oa
+         Xf0Q71/V9iblvNLgFbQNXLAEXqLqNjrhxmec2yMrHncOfTvxP67R00R/x756vVxO9k6o
+         niQc3++X42gNqm86oQ4td+nq+CXQSTAFp4TDL+1vvy2GyWTFqCY2McXh7dQ0S1sm2Ud/
+         z1MKIp5axeEaQEvIkrVFTqf+u8zum6YYSbZwDcSW8juj+20W/wc6w9XGhJSQzMSfmj7V
+         IKUA==
+X-Gm-Message-State: AOJu0YyrJylsV3Z2rMtOhINvp151k+tbtuCQMa/l2ZkYn4YE76QsukiQ
+        1H+gwLCt3oNIUcUr19dY6eiHIw==
+X-Google-Smtp-Source: AGHT+IFkTEGA0TMga8AxlgGtGhqbCixlBZi81dfQxvPnWxxILoG3AlMI2uAQ2CNX7IniM8KJqIQCNQ==
+X-Received: by 2002:a05:6402:3605:b0:53d:be55:3ee8 with SMTP id el5-20020a056402360500b0053dbe553ee8mr6667395edb.12.1697197088595;
+        Fri, 13 Oct 2023 04:38:08 -0700 (PDT)
+Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id v18-20020aa7d652000000b00533dad8a9c5sm11360772edr.38.2023.10.13.04.38.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 04:38:08 -0700 (PDT)
+From:   Luca Weiss <luca.weiss@fairphone.com>
+Subject: [PATCH 0/3] Handle reversed SBU orientation for FSA4480
+Date:   Fri, 13 Oct 2023 13:38:04 +0200
+Message-Id: <20231013-fsa4480-swap-v1-0-b877f62046cc@fairphone.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|CH3PR12MB8534:EE_
-X-MS-Office365-Filtering-Correlation-Id: a29d453e-c095-4d8d-409b-08dbcbe0bc8f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IBsXEKx1LVCnXXYODDW9qhJh3N0h/MVInMrRIfehog6V+1BeZG9dDKcWx7b8bDt9pDFucTBs60k0X++OWfhmEqLejXi1SRLzh4lmlEwD2Yy0kwxSekrRlctIAZOkiBbpRKgw0uBjJf1ojq61rEmyTP4N51pyUON0D4n4RUPqoJwIIl5L/+Wdyg/8btaW4zzscdiOk/OWUSWsSATH8J7/R49CmJuVqDd7E+Hj+lvEzskr2zJUi0I755rBqV1RUUE9+x3nozG29ZZXhy0HMqWpIKC61fId80k4BtNjTcgicJkC95DGdwQTe9HFTJ9d8KvcEO1l7erEOEZDb/e00mphwemr/lSBvOul1fPrT8HIsP4Z8ksLdMkqOiT377hj3J9HewIGUmA0BpAC3JjMYwtV7khyWpPuJevZR3YbWgp1BoZ7aAzXF85bLbr7kVkuH2FI9PG9gu51QEtLyD+yvK6zbOwtn3RtHzONYtx0cpehorvLHgqn+Z3DqA34QuhliHyiwrqsLwgz4JSzpCajPT/50ekJHw3LWSWcb2gqPxPWyheKLJvJp142RqbIQqvBkIbnuhQqCItvNFazdoESQo+tMmPOm2AjavYusL/kqvp5EFDe37d3wpfoOEObFNSvAH49
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(376002)(346002)(366004)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(54906003)(66574015)(2616005)(316002)(66556008)(6916009)(6512007)(66476007)(66946007)(6506007)(53546011)(38100700002)(6486002)(26005)(966005)(478600001)(83380400001)(6666004)(44832011)(31696002)(86362001)(2906002)(8936002)(8676002)(41300700001)(5660300002)(4326008)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Rmp6OHRwcU9BTnNONGlHY3N0UmoyK2E5VWZiMGhMZk1rVzlCRGh3eGd5Q0Vw?=
- =?utf-8?B?eGJHcnBPMFF1Y2MzaWZ3YWZ0ZmVyZzg5SWk5Mno1Wi9BdGpUNldYS0hqWE9P?=
- =?utf-8?B?UGdaS0RiZVZRMFk2ZTJqLzNjZVBwcjlXVzNpVUw1Y2lCSGIxU0Y1TWZhTTdC?=
- =?utf-8?B?dU9Eczh2NlRmU2I3cC9xUjlUVUpNMTV0RklsVkZXWkdyOHBDdW1jL1RlSEhl?=
- =?utf-8?B?eEtXRDFDQWJzVkdlT0cyRHF1T0JyZzlla3IxUGNBTHFsVlJSc2p1QVlGbnNG?=
- =?utf-8?B?ZE5WOWwvTTFnVmRWTWZmMWhyaHF6SVk0bE5YNCtrUmNZMXMrb1FwYjNxcG5r?=
- =?utf-8?B?LzFyT2F5ejVHdWI3eEZlZjhZTmdsalFRMm5iUDNIR3BneHJzL2xMd2Vpb2JN?=
- =?utf-8?B?UkNCYTZBRHZyOUxRUWRUd1U1VURpd1o2a0JONXBxWXUwY3BqN2VEVkl2c3dn?=
- =?utf-8?B?MHNzRnBhVEJXUFdVcGVXREdvdmZLOWRtV3ZuK2h0YVRZekFlNjA4ZXFpZlQ5?=
- =?utf-8?B?Qi9SdEN1bzlncDFURUZ1NWkxMk9uWWptdldLRzdOUThPN2YrVVhPbit3VHU5?=
- =?utf-8?B?NnV1NTd6bkpaUjNEWGQ0bGxOYm5sTEZKYk54V084ZkNONkFCNjIzSXhBMXlW?=
- =?utf-8?B?Q2lrWDAvbDJmOXR4QlE2TmpNSXphM3RQQnozQ0QzaHd0cnk0K25BZm84M29I?=
- =?utf-8?B?bjcxZXBibnhqdThoeEhhdEJLaFpYd01ZYTk0aDgvZFo5a0luT0g5amxrYkdE?=
- =?utf-8?B?UGQwYWRhZUF2YjAzUmxwbytvNHVjc3N0aUtpQktLb2ZGRFNMU3JwNjhTVzBJ?=
- =?utf-8?B?bDVQWGZ3ZDFrb2NSNDJvU0NBMjhDNXN6b0FwdEMvbVRMYUxsc0czTHRoQkR0?=
- =?utf-8?B?OFRZUkJFYTJvZW1DMHZPcHlDeXNxcms5UEJJaGpjdnFDcHNZeFI4NWZhR09E?=
- =?utf-8?B?aEtCK0xhRXU1VzY2eVVvMkptdXhucjdyc2ZKM1ljNFVLd2h1SUJ2R3daSVhn?=
- =?utf-8?B?a2x2elR4aXZNUXFYS3J2TlFrdkQ4UEFpN0tucEFHSUVWaUtLRER2NjJsRlBH?=
- =?utf-8?B?bDFNY3pFNG40TkpmMXEzZkZZYXNvalZwbVFiWHF6NHBGdVZyWmttdTVJMHZX?=
- =?utf-8?B?cmdpaFgvTDcwWVlHV0sxdmp4b1hGc2R2NlIwWGdETEdTZklpbU1VL1BPWHZs?=
- =?utf-8?B?dXc0RURRLzFpMEFxdGF5SWI3MnJMNlppY0ZTdDJFTW5kbmZwbzA0RFJkR1gx?=
- =?utf-8?B?NCtpdG0wWnd4T2ZzVzF0T1J5T1E4TE43OU5iUk5mU2xDTURMelhXTWpoVU51?=
- =?utf-8?B?NldNMnJ2SU5lT2Y5dGYwM0JVakFYV2ZxbTFscVdJa2Z6UEVodlhheDdjZ21H?=
- =?utf-8?B?V0hMR2t2TmNuT01nNy82ZWlCeUtzTGZWc3JwdndCUHVSZDNrZm51SU85N2g0?=
- =?utf-8?B?aFd4K09lMVFsRlhLbE1la3orcERIR2cxeERFeURBQkFTMUhuMkJhMmQ2Z2g3?=
- =?utf-8?B?dGt1WjdMUExGMXBZdFJNaE9jQTVjcGdZbTJBVyt5Qng0Szg0UlZuaGV0WHpj?=
- =?utf-8?B?MEEvZHhpSVo4YTMrTk5MMDhZdnMxd3lkYTJhV0dSTzY0ZkpkN0d4ZCtDVTk1?=
- =?utf-8?B?OWtjd1d2cVl6cWsyOUFITnAxVTJDUGt2SHJnR1JxbEkvWlFWYnYvL1gyZ0Jo?=
- =?utf-8?B?aHY3dkw2RFlaTExIQXJzRWpvOXJIcXdUUFBhcWQxampCY3E0WlFkRmJtZzNV?=
- =?utf-8?B?TnhpZHVUNUdiRGx6djhLdEcrSFZieGo2Q0U4aTRlSWxwMVJmSm82ay9kOUZu?=
- =?utf-8?B?NkpJNGtnY2F0b2lZTmwzUmRCTTh2MWlYY1pmdjl3eURXQmNwUXJRQ3FzRlN5?=
- =?utf-8?B?anZVVks4T0EzbHp6d0VGcW1RYkJuMmFCTThacTNSZ3B2MnVlTmNsSUdlZ2ZO?=
- =?utf-8?B?NGdqV3ljcVlGMTd3am1JN0t1YkM1WlZITjJiV204c0tMMkRRKzhpSVQwQ0ZI?=
- =?utf-8?B?RFR6SGFhTkErUHl1UmIxY2NzbTZaOUduQldYOUh2N2xIbEVLRlJUdmNsK0c0?=
- =?utf-8?B?ZlQ0cG9JTExhYjc2WWdCUmR6a0VFQlB4aHl2Z0JtcVRQTS80bWp1VFU0L091?=
- =?utf-8?Q?t1Tx/u7EIqNyZ0hdC4k6GyCAV?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a29d453e-c095-4d8d-409b-08dbcbe0bc8f
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 11:37:10.1446
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1Jn0B3zQGmHEosataAYoPBF5GRaomaTAHJcEnCdrrA8x+ISH3xSgoP9x2bMznAM9Q5HCFOujdoRlMGFLDp8OGQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8534
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABwsKWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDA0Nj3bTiRBMTCwPd4vLEAl3LJIM0c7MUc+NkQ0sloJaCotS0zAqwcdG
+ xtbUA2ylJb14AAAA=
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/23 06:30, Ville Syrjälä wrote:
-> On Thu, Oct 12, 2023 at 02:49:27PM -0400, Hamza Mahfooz wrote:
->> The BenQ GW2765 reports that it supports higher (> 8) bpc modes, but
->> when trying to set them we end up with a black screen. So, limit it to 8
->> bpc modes.
-> 
-> Bad cable/etc was ruled out as the cause?
+Short reason:
+Without swapping the SBU lanes, on QCM6490 Fairphone 5 the
+DisplayPort-over-USB-C doesn't work.
 
-Yup, the issue was also reproduced by two different people with same
-aforementioned monitor.
+The Orient-Chip OCP96011 used in this phone is generally compatible with
+FSA4480 but has a difference how AUX+/- should be connected to SBU1/2.
 
-> 
->>
->> Cc: stable@vger.kernel.org # 6.5+
->> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2610
->> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
->> ---
->>   drivers/gpu/drm/drm_edid.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
->> index 0454da505687..bca2af4fe1fc 100644
->> --- a/drivers/gpu/drm/drm_edid.c
->> +++ b/drivers/gpu/drm/drm_edid.c
->> @@ -123,6 +123,9 @@ static const struct edid_quirk {
->>   	/* AEO model 0 reports 8 bpc, but is a 6 bpc panel */
->>   	EDID_QUIRK('A', 'E', 'O', 0, EDID_QUIRK_FORCE_6BPC),
->>   
->> +	/* BenQ GW2765 */
->> +	EDID_QUIRK('B', 'N', 'Q', 0x78d6, EDID_QUIRK_FORCE_8BPC),
->> +
->>   	/* BOE model on HP Pavilion 15-n233sl reports 8 bpc, but is a 6 bpc panel */
->>   	EDID_QUIRK('B', 'O', 'E', 0x78b, EDID_QUIRK_FORCE_6BPC),
->>   
->> -- 
->> 2.42.0
-> 
+Long explanation, with my current understanding:
+* FSA4480 block diagram shows AUX+ connected to SBU2 and AUX- to SBU1.
+* OCP96011 block diagram shows AUX+ connected to SBU1 and AUX- to SBU2
+  (it's not 100% clear though in the picture but makes sense with the
+  observed behavior)
+* Fairphone 5 schematics have AUX+ connected to SBU2 and AUX- to SBU1,
+  which would be correct for FSA4480 but since OCP96011 is used (which
+  expects it to be the other way around) the Linux driver needs to
+  reverse it.
+  If AUX+ would be connected to SBU1 and AUX- to SBU2 as shown in the
+  OCP96011 block diagram, then no driver/dts change would be needed.
+
+Not sure if I've implemented the best solution in this patch. Other
+solutions I could think of are:
+* Add some custom boolean property to the node, e.g. 'fsa,swap-sbu'
+* Reverse when ocs,ocp96011 compatible is used. This would be incorrect
+  since when following the OCP96011 block diagram no reversing would be
+  needed, as explained above.
+
+However I think the current solution with data-lanes in the endpoint is
+the best fit and is also already used for a similar purpose in another
+USB mux driver.
+
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+Luca Weiss (3):
+      dt-bindings: usb: fsa4480: Add data-lanes property to endpoint
+      usb: typec: fsa4480: Add support to swap SBU orientation
+      dt-bindings: usb: fsa4480: Add compatible for OCP96011
+
+ .../devicetree/bindings/usb/fcs,fsa4480.yaml       | 43 +++++++++++-
+ drivers/usb/typec/mux/fsa4480.c                    | 81 ++++++++++++++++++++++
+ 2 files changed, 121 insertions(+), 3 deletions(-)
+---
+base-commit: e3b18f7200f45d66f7141136c25554ac1e82009b
+change-id: 20231013-fsa4480-swap-9b0f76d73c19
+
+Best regards,
 -- 
-Hamza
+Luca Weiss <luca.weiss@fairphone.com>
 
