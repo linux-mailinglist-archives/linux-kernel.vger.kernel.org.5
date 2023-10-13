@@ -2,536 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F317C7E82
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BEAE7C7E84
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbjJMHVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:21:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50210 "EHLO
+        id S229867AbjJMHXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 03:23:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjJMHVu (ORCPT
+        with ESMTP id S229671AbjJMHXs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:21:50 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E1DB7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:21:47 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-45271a44cc4so764848137.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:21:47 -0700 (PDT)
+        Fri, 13 Oct 2023 03:23:48 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19035BC
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:23:47 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4066241289bso18843175e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:23:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697181706; x=1697786506; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VHJX1BRvULgvn4WwpwoF7Hs3K4fbIXjFBdDGQODdOww=;
-        b=e7I3gz7A9o73pEcNnc8Uvn+i9rhM6Q/zkk6JATNKQc6FXzxA8cuD1p2pUaNDa2AZzB
-         Gy+qteHeVa4v/XDb+rYYv62SFpxaEhJcjn6OpHlJTgAL3AgPJ4JgGNgVl8xJQX3DSMqr
-         qpy8VcBGGEqd2c5vu4dSPJkOAVLvNC4udLdSC8bWLOPVS91KluIQ4Y9CJjscyiAGI3us
-         YWY5VugWhL8O3UgBhp6HHELuyX180dtu/pb1ApfUip25jjY7kH4qo98J+/LbHjE0/rCE
-         IC8DLiG1WYCkWWyIVLX+NWE20Jh3BSRQ/Nwi8z9xHTNzfXt/jCmZwOwgeW2gbEb48TEH
-         1Ezg==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697181825; x=1697786625; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gb3gYagB6dDOUEqTcgUJ+Jm7aEOybfjvWpE6CZqOl1I=;
+        b=bwuMD1bAxLcmK+He1bJrevM0UBZt7CQ/8n7HyEI9S+H9+Gu9kWWcQSo8Z+X5jegCMI
+         pBKe2zjA1X8R4EW0zABzNK6hLgBFwmVSHk9VzRJHSdcfC8MJo4fhDRny1r4k3SHeyl+F
+         px5QDDLubNQ/sqfQeGcxnqtg/KSMS2ud90DTztGMbKdT1WLPGQiLLXJmMOvdTnq02El4
+         7hyWbC5dSuru3LN7FNTshcsTp1/YUz0NNOTZSuZa+n6zB4OaBzQpKqxXqrXO1Dr0QEF5
+         BahptbaKltsHcIjDWI8vb6k2vDqW9/HVpEG5x4GXuzLXsrvKsobsCYxyFCigwazIImXl
+         wuUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697181706; x=1697786506;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1697181825; x=1697786625;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VHJX1BRvULgvn4WwpwoF7Hs3K4fbIXjFBdDGQODdOww=;
-        b=F/VymFtRoPLNaz2Nn02fHX0jJJruECW0eUFzTvcg7u+gPWmD1neoKGQx14uokjOlF2
-         c79rfDccJPc/umjyn+W4hc+q1v1mmPCb8g0lwG3s70ojX52D041395xafJhoUQgLIzhY
-         +sI9JnfsfGwMjHLOeMV2xEuGb7YbrM8edOJkrV9lgKMDnfp5yEpNPu/1hOFpLq/V2Nmw
-         Ji80QazW4XVibvmf5dZJYbfrmqscSRee9PXnjJ5ejWbyATUbONeIvZnGnSXHGxmxxgYX
-         aA0w+iYDQrCbcH92gf+meJjF19ST37cn66bNc5O4RGZC+ZNXOOG4fcrMZe3gNN16m9IJ
-         esRQ==
-X-Gm-Message-State: AOJu0Yy7WAjbEC1QYB3QHffMBAD6tZX3y6GFprwq0ZlkBpqe0UbY5vxR
-        X+8w4DEikyVt4t9gau4gLfvfnYo0Ap5XnVP/Pr4Pjp8nXND/sQ8mQDA=
-X-Google-Smtp-Source: AGHT+IGjgsoI5yZm8C57zgplRuOVfppUXRuBk3Gg7tfT+i0TOtYA11WUmQaaxVm5TWzLCXaYb5/cNQT19t/G2cKSXec=
-X-Received: by 2002:a67:e08c:0:b0:457:c18c:e0b0 with SMTP id
- f12-20020a67e08c000000b00457c18ce0b0mr1414942vsl.11.1697181706247; Fri, 13
- Oct 2023 00:21:46 -0700 (PDT)
+        bh=Gb3gYagB6dDOUEqTcgUJ+Jm7aEOybfjvWpE6CZqOl1I=;
+        b=DpnQet1qBsdJ8RuQJh+0YR+sFEm79hGYP23xMRw4zmWj2JOxOCUWUV+aRYFnOkekTS
+         EmWoLbWvOSjd0n4bjfyE5paVNTZWVRVGPv5zk8/wkOwIhIwsa5nNE6PNWoHxtYLulBEA
+         dzuHu/VYMIN7rwv/EuUpJaxURjG5RhSFM90SiPJnAFcD/pQQH7FZdQ7OtQBlw0rku/Cp
+         SA5oITl4oaZuh577BWuW1qx8LKs26oJ8K3VFkckQ8j253OL1wDXQ5wpGSRfBMkR2Y+Bw
+         h0JbxT1pWCmGow0QZjyDXpCm1/+L7pCxWDgOpQzjKmBCWLfua3ZHkKnESHwAd7ZfHRfg
+         ignw==
+X-Gm-Message-State: AOJu0YzhXBWPIGha77K8+IfzwoH9qSCHy48/iFcmnseAiDu2I6KHhyym
+        RSFp3OItc1viDGNe4BZT5zJUZ+lsebhcrzsNk6Q=
+X-Google-Smtp-Source: AGHT+IF+RKXGEq5EHir8wsGLD0lAZnjB+wgB691VzoDXLWE0fRX7rOlEhMnxP5TPZpfSHV3Q0je+7A==
+X-Received: by 2002:a05:600c:21ce:b0:407:68a3:6b5d with SMTP id x14-20020a05600c21ce00b0040768a36b5dmr3284206wmj.23.1697181825417;
+        Fri, 13 Oct 2023 00:23:45 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:4209:13a:988d:80be])
+        by smtp.gmail.com with ESMTPSA id y4-20020a1c4b04000000b004075d5664basm1775581wma.8.2023.10.13.00.23.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 00:23:45 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Dipen Patel <dipenp@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>
+Cc:     timestamp@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2] hte: tegra194: don't access struct gpio_chip
+Date:   Fri, 13 Oct 2023 09:23:40 +0200
+Message-Id: <20231013072340.16411-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20231003140637.31346-1-etienne.carriere@foss.st.com>
- <20231003140637.31346-4-etienne.carriere@foss.st.com> <CAFA6WYOMHWFytm4cYy3kQf4E3qiytrnOTVY1gb2rzTDece490w@mail.gmail.com>
- <bbb5ca0809954bee94c5f2886427f886@foss.st.com>
-In-Reply-To: <bbb5ca0809954bee94c5f2886427f886@foss.st.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Fri, 13 Oct 2023 12:51:35 +0530
-Message-ID: <CAFA6WYMKrB7xkOaef41LyVKHGAt8Dk0hbFUkiqubeZbJVY=9kw@mail.gmail.com>
-Subject: Re: [PATCH v10 3/4] tee: optee: support tracking system threads
-To:     Etienne CARRIERE - foss <etienne.carriere@foss.st.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>,
-        Jerome Forissier <jerome.forissier@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Oct 2023 at 12:41, Etienne CARRIERE - foss
-<etienne.carriere@foss.st.com> wrote:
->
-> > From: Sumit Garg <sumit.garg@linaro.org>
-> > Sent: Friday, October 6, 2023 11:33 AM
-> >
-> > On Tue, 3 Oct 2023 at 19:36, Etienne Carriere
-> > <etienne.carriere@foss.st.com> wrote:
-> > >
-> > > Adds support in the OP-TEE driver to keep track of reserved system
-> > > threads. The logic allows one OP-TEE thread to be reserved to TEE system
-> > > sessions.
-> > >
-> > > The optee_cq_*() functions are updated to handle this if enabled,
-> > > that is when TEE describes how many thread context it supports
-> > > and when at least 1 session has registered as a system session
-> > > (using tee_client_system_session()).
-> > >
-> > > For sake of simplicity, initialization of call queue management
-> > > is factorized into new helper function optee_cq_init().
-> > >
-> > > The SMC ABI part of the driver enables this tracking, but the
-> > > FF-A ABI part does not.
-> > >
-> > >
-> > > Co-developed-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > > Co-developed-by: Sumit Garg <sumit.garg@linaro.org>
-> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
-> > > ---
-> > > Changes since v9:
-> > > - Add a reference counter for TEE system thread provisioning. We reserve
-> > >   a TEE thread context for system session only when there is at least
-> > >   1 opened system session.
-> > > - Use 2 wait queue lists, normal_waiters and sys_waiter, as proposed in
-> > >   patch v8. Using a single list can prevent a waiting system thread from
-> > >   being resumed if the executing system thread wakes a normal waiter in
-> > >   the list.
-> >
-> > How would that be possible? The system thread wakeup
-> > (free_thread_threshold = 0) is given priority over normal thread
-> > wakeup (free_thread_threshold = 1). I think a single queue list would
-> > be sufficient as demonstrated in v9.
-> >
->
-> Hello Sumit,
->
-> I think a system session can be trapped waiting when using a single queue list.
-> To have a chance to reach the TEE, a waiting thread must wait that a TEE thread comes out of the TEE and calls complete() on the waitqueue to wake next waiter.
->
-> To illustrate, consider a 10 TEE threads configuration on TEE side (::total_thread_count=10 at init),
-> and several TEE clients in Linux OS, including 2 system sessions, from 2 consumer drivers (::sys_thread_req_count=2).
->
-> Imagine the 9 normal threads and the 1 system thread are in use. (::free_thread_count=0),
-> Now comes the other system session: it goes to the waitqueue list.
-> Now comes a normal session invocation: it goes to the waitqueue list, 1st position.
->
-> Now, TEE system thread returns to Linux:
-> It increments the counter, ::free_thread_count=1, and calls complete() for the waitequeue.
-> The 1st element in the waitqueue list is the last entered normal session invocation.
-> However, that waiter won't switch local boolean 'need_wait'  to false because ::free_thread_count=1 and ::sys_thread_req_count!=0.
-> So no attempt to reach TEE and wake another waiter on return.
-> At that point there is a system session in the waitqueue list that could enter TEE (::free_thread_count=1) but is waiting someone returns from the TEE.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-I suppose the following loop tries to wake-up every waiter to give
-them a chance to enter OP-TEE. So with that system session would
-always be prefered over normal session, right?
+Using struct gpio_chip is not safe as it will disappear if the
+underlying driver is unbound for any reason. Switch to using reference
+counted struct gpio_device and its dedicated accessors.
 
-static void optee_cq_complete_one(struct optee_call_queue *cq)
-{
-        struct optee_call_waiter *w;
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Tested-by: Dipen Patel <dipenp@nvidia.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+[andy: used gpio_device_find_by_fwnode()]
+Reviewed-by: Dipen Patel <dipenp@nvidia.com>
+Link: https://lore.kernel.org/r/20231010151709.4104747-3-andriy.shevchenko@linux.intel.com
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+Dipen,
 
-        list_for_each_entry(w, &cq->waiters, list_node) {
-                if (!completion_done(&w->c)) {
-                        complete(&w->c);
-                        break;
-                }
-        }
-}
+Can you retest this patch now rebased on top of current GPIO for-next?
 
--Sumit
+v1 -> v2:
+- rebase on top of current gpio/for-next
 
->
-> With 2 lists, we first treat system sessions to overcome that.
-> Am I missing something?
->
-> Best regards,
-> Etienne
->
-> > -Sumit
-> >
-> > > - Updated my e-mail address.
-> > > - Rephrased a bit the commit message.
-> > >
-> > > Changes since patch v8
-> > > - Patch v9 (reference below) attempted to simplify the implementation
-> > >   https://lore.kernel.org/lkml/20230517143311.585080-1-sumit.garg@linaro.org/#t
-> > >
-> > > Changes since v7:
-> > > - Changes the logic to reserve at most 1 call entry for system sessions
-> > >   as per patches v6 and v7 discussion threads (the 2 below bullets)
-> > >   and updates commit message accordingly.
-> > > - Field optee_call_queue::res_sys_thread_count is replaced with 2 fields:
-> > >   sys_thread_req_count and boolean sys_thread_in_use.
-> > > - Field optee_call_waiter::sys_thread is replaced with 2 fields:
-> > >   sys_thread_req and sys_thread_used.
-> > > - Adds inline description comments for struct optee_call_queue and
-> > >   struct optee_call_waiter.
-> > >
-> > > Changes since v6:
-> > > - Moved out changes related to adding boolean system thread attribute
-> > >   into optee driver call queue and SMC/FF-A ABIs API functions. These
-> > >   changes were squashed into patch 1/4 of this patch v7 series.
-> > > - Comment about adding a specific commit for call queue refactoring
-> > >   was not addressed such a patch would only introduce function
-> > >   optee_cq_init()  with very little content in (mutex & list init).
-> > > - Added Co-developed-by tag for Jens contribution as he's not responsible
-> > >   for the changes I made in this patch v7.
-> > >
-> > > No change since v5
-> > >
-> > > Changes since v4:
-> > > - New change that supersedes implementation proposed in PATCH v4
-> > >   (tee: system invocation"). Thanks to Jens implementation we don't need
-> > >   the new OP-TEE services that my previous patch versions introduced to
-> > >   monitor system threads entry. Now, Linux optee SMC ABI driver gets TEE
-> > >   provisioned thread contexts count once and monitors thread entries in
-> > >   OP-TEE on that basis and the system thread capability of the related
-> > >   tee session. By the way, I dropped the WARN_ONCE() call I suggested
-> > >   on tee thread exhaustion as it does not provides useful information.
-> > > ---
-> > >  drivers/tee/optee/call.c          | 128 ++++++++++++++++++++++++++++--
-> > >  drivers/tee/optee/ffa_abi.c       |   3 +-
-> > >  drivers/tee/optee/optee_private.h |  24 +++++-
-> > >  drivers/tee/optee/smc_abi.c       |  16 +++-
-> > >  4 files changed, 159 insertions(+), 12 deletions(-)
-> > >
-> > > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-> > > index 152ae9bb1785..38543538d77b 100644
-> > > --- a/drivers/tee/optee/call.c
-> > > +++ b/drivers/tee/optee/call.c
-> > > @@ -39,9 +39,31 @@ struct optee_shm_arg_entry {
-> > >         DECLARE_BITMAP(map, MAX_ARG_COUNT_PER_ENTRY);
-> > >  };
-> > >
-> > > +void optee_cq_init(struct optee_call_queue *cq, int thread_count)
-> > > +{
-> > > +       mutex_init(&cq->mutex);
-> > > +       INIT_LIST_HEAD(&cq->sys_waiters);
-> > > +       INIT_LIST_HEAD(&cq->normal_waiters);
-> > > +
-> > > +       /*
-> > > +        * If cq->total_thread_count is 0 then we're not trying to keep
-> > > +        * track of how many free threads we have, instead we're relying on
-> > > +        * the secure world to tell us when we're out of thread and have to
-> > > +        * wait for another thread to become available.
-> > > +        */
-> > > +       cq->total_thread_count = thread_count;
-> > > +       cq->free_thread_count = thread_count;
-> > > +}
-> > > +
-> > >  void optee_cq_wait_init(struct optee_call_queue *cq,
-> > >                         struct optee_call_waiter *w, bool sys_thread)
-> > >  {
-> > > +       unsigned int free_thread_threshold;
-> > > +       bool need_wait = false;
-> > > +
-> > > +       memset(w, 0, sizeof(*w));
-> > > +       w->sys_thread = sys_thread;
-> > > +
-> > >         /*
-> > >          * We're preparing to make a call to secure world. In case we can't
-> > >          * allocate a thread in secure world we'll end up waiting in
-> > > @@ -53,15 +75,47 @@ void optee_cq_wait_init(struct optee_call_queue *cq,
-> > >         mutex_lock(&cq->mutex);
-> > >
-> > >         /*
-> > > -        * We add ourselves to the queue, but we don't wait. This
-> > > -        * guarantees that we don't lose a completion if secure world
-> > > -        * returns busy and another thread just exited and try to complete
-> > > -        * someone.
-> > > +        * We add ourselves to a queue, but we don't wait. This guarantees
-> > > +        * that we don't lose a completion if secure world returns busy and
-> > > +        * another thread just exited and try to complete someone.
-> > >          */
-> > >         init_completion(&w->c);
-> > > -       list_add_tail(&w->list_node, &cq->waiters);
-> > > +
-> > > +       if (sys_thread)
-> > > +               list_add_tail(&w->list_node, &cq->sys_waiters);
-> > > +       else
-> > > +               list_add_tail(&w->list_node, &cq->normal_waiters);
-> > > +
-> > > +       if (cq->total_thread_count) {
-> > > +               if (sys_thread || !cq->sys_thread_req_count)
-> > > +                       free_thread_threshold = 0;
-> > > +               else
-> > > +                       free_thread_threshold = 1;
-> > > +
-> > > +               if (cq->free_thread_count > free_thread_threshold)
-> > > +                       cq->free_thread_count--;
-> > > +               else
-> > > +                       need_wait = true;
-> > > +       }
-> > >
-> > >         mutex_unlock(&cq->mutex);
-> > > +
-> > > +       while (need_wait) {
-> > > +               optee_cq_wait_for_completion(cq, w);
-> > > +               mutex_lock(&cq->mutex);
-> > > +
-> > > +               if (sys_thread || !cq->sys_thread_req_count)
-> > > +                       free_thread_threshold = 0;
-> > > +               else
-> > > +                       free_thread_threshold = 1;
-> > > +
-> > > +               if (cq->free_thread_count > free_thread_threshold) {
-> > > +                       cq->free_thread_count--;
-> > > +                       need_wait = false;
-> > > +               }
-> > > +
-> > > +               mutex_unlock(&cq->mutex);
-> > > +       }
-> > >  }
-> > >
-> > >  void optee_cq_wait_for_completion(struct optee_call_queue *cq,
-> > > @@ -74,7 +128,11 @@ void optee_cq_wait_for_completion(struct optee_call_queue *cq,
-> > >         /* Move to end of list to get out of the way for other waiters */
-> > >         list_del(&w->list_node);
-> > >         reinit_completion(&w->c);
-> > > -       list_add_tail(&w->list_node, &cq->waiters);
-> > > +
-> > > +       if (w->sys_thread)
-> > > +               list_add_tail(&w->list_node, &cq->sys_waiters);
-> > > +       else
-> > > +               list_add_tail(&w->list_node, &cq->normal_waiters);
-> > >
-> > >         mutex_unlock(&cq->mutex);
-> > >  }
-> > > @@ -83,7 +141,15 @@ static void optee_cq_complete_one(struct optee_call_queue *cq)
-> > >  {
-> > >         struct optee_call_waiter *w;
-> > >
-> > > -       list_for_each_entry(w, &cq->waiters, list_node) {
-> > > +       /* Wake waiting system session first */
-> > > +       list_for_each_entry(w, &cq->sys_waiters, list_node) {
-> > > +               if (!completion_done(&w->c)) {
-> > > +                       complete(&w->c);
-> > > +                       break;
-> > > +               }
-> > > +       }
-> > > +
-> > > +       list_for_each_entry(w, &cq->normal_waiters, list_node) {
-> > >                 if (!completion_done(&w->c)) {
-> > >                         complete(&w->c);
-> > >                         break;
-> > > @@ -104,6 +170,8 @@ void optee_cq_wait_final(struct optee_call_queue *cq,
-> > >         /* Get out of the list */
-> > >         list_del(&w->list_node);
-> > >
-> > > +       cq->free_thread_count++;
-> > > +
-> > >         /* Wake up one eventual waiting task */
-> > >         optee_cq_complete_one(cq);
-> > >
-> > > @@ -119,6 +187,28 @@ void optee_cq_wait_final(struct optee_call_queue *cq,
-> > >         mutex_unlock(&cq->mutex);
-> > >  }
-> > >
-> > > +/* Count registered system sessions to reserved a system thread or not */
-> > > +static bool optee_cq_incr_sys_thread_count(struct optee_call_queue *cq)
-> > > +{
-> > > +       if (cq->total_thread_count <= 1)
-> > > +               return false;
-> > > +
-> > > +       mutex_lock(&cq->mutex);
-> > > +       cq->sys_thread_req_count++;
-> > > +       mutex_unlock(&cq->mutex);
-> > > +
-> > > +       return true;
-> > > +}
-> > > +
-> > > +static void optee_cq_decr_sys_thread_count(struct optee_call_queue *cq)
-> > > +{
-> > > +       mutex_lock(&cq->mutex);
-> > > +       cq->sys_thread_req_count--;
-> > > +       /* If there's someone waiting, let it resume */
-> > > +       optee_cq_complete_one(cq);
-> > > +       mutex_unlock(&cq->mutex);
-> > > +}
-> > > +
-> > >  /* Requires the filpstate mutex to be held */
-> > >  static struct optee_session *find_session(struct optee_context_data *ctxdata,
-> > >                                           u32 session_id)
-> > > @@ -361,6 +451,27 @@ int optee_open_session(struct tee_context *ctx,
-> > >         return rc;
-> > >  }
-> > >
-> > > +int optee_system_session(struct tee_context *ctx, u32 session)
-> > > +{
-> > > +       struct optee *optee = tee_get_drvdata(ctx->teedev);
-> > > +       struct optee_context_data *ctxdata = ctx->data;
-> > > +       struct optee_session *sess;
-> > > +       int rc = -EINVAL;
-> > > +
-> > > +       mutex_lock(&ctxdata->mutex);
-> > > +
-> > > +       sess = find_session(ctxdata, session);
-> > > +       if (sess && (sess->use_sys_thread ||
-> > > +                    optee_cq_incr_sys_thread_count(&optee->call_queue))) {
-> > > +               sess->use_sys_thread = true;
-> > > +               rc = 0;
-> > > +       }
-> > > +
-> > > +       mutex_unlock(&ctxdata->mutex);
-> > > +
-> > > +       return rc;
-> > > +}
-> > > +
-> > >  int optee_close_session_helper(struct tee_context *ctx, u32 session,
-> > >                                bool system_thread)
-> > >  {
-> > > @@ -380,6 +491,9 @@ int optee_close_session_helper(struct tee_context *ctx, u32 session,
-> > >
-> > >         optee_free_msg_arg(ctx, entry, offs);
-> > >
-> > > +       if (system_thread)
-> > > +               optee_cq_decr_sys_thread_count(&optee->call_queue);
-> > > +
-> > >         return 0;
-> > >  }
-> > >
-> > > diff --git a/drivers/tee/optee/ffa_abi.c b/drivers/tee/optee/ffa_abi.c
-> > > index 5fde9d4100e3..0c9055691343 100644
-> > > --- a/drivers/tee/optee/ffa_abi.c
-> > > +++ b/drivers/tee/optee/ffa_abi.c
-> > > @@ -852,8 +852,7 @@ static int optee_ffa_probe(struct ffa_device *ffa_dev)
-> > >         if (rc)
-> > >                 goto err_unreg_supp_teedev;
-> > >         mutex_init(&optee->ffa.mutex);
-> > > -       mutex_init(&optee->call_queue.mutex);
-> > > -       INIT_LIST_HEAD(&optee->call_queue.waiters);
-> > > +       optee_cq_init(&optee->call_queue, 0);
-> > >         optee_supp_init(&optee->supp);
-> > >         optee_shm_arg_cache_init(optee, arg_cache_flags);
-> > >         ffa_dev_set_drvdata(ffa_dev, optee);
-> > > diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-> > > index b68273051454..69f6397c3646 100644
-> > > --- a/drivers/tee/optee/optee_private.h
-> > > +++ b/drivers/tee/optee/optee_private.h
-> > > @@ -40,15 +40,35 @@ typedef void (optee_invoke_fn)(unsigned long, unsigned long, unsigned long,
-> > >                                 unsigned long, unsigned long,
-> > >                                 struct arm_smccc_res *);
-> > >
-> > > +/*
-> > > + * struct optee_call_waiter - TEE entry may need to wait for a free TEE thread
-> > > + * @list_node          Reference in waiters list
-> > > + * @c                  Waiting completion reference
-> > > + * @sys_thread_req     True if waiter belongs to a system thread
-> > > + */
-> > >  struct optee_call_waiter {
-> > >         struct list_head list_node;
-> > >         struct completion c;
-> > > +       bool sys_thread;
-> > >  };
-> > >
-> > > +/*
-> > > + * struct optee_call_queue - OP-TEE call queue management
-> > > + * @mutex                      Serializes access to this struct
-> > > + * @sys_waiters                        List of system threads waiting to enter OP-TEE
-> > > + * @normal_waiters             List of normal threads waiting to enter OP-TEE
-> > > + * @total_thread_count         Overall number of thread context in OP-TEE or 0
-> > > + * @free_thread_count          Number of threads context free in OP-TEE
-> > > + * @sys_thread_req_count       Number of registered system thread sessions
-> > > + */
-> > >  struct optee_call_queue {
-> > >         /* Serializes access to this struct */
-> > >         struct mutex mutex;
-> > > -       struct list_head waiters;
-> > > +       struct list_head sys_waiters;
-> > > +       struct list_head normal_waiters;
-> > > +       int total_thread_count;
-> > > +       int free_thread_count;
-> > > +       int sys_thread_req_count;
-> > >  };
-> > >
-> > >  struct optee_notif {
-> > > @@ -254,6 +274,7 @@ int optee_supp_send(struct tee_context *ctx, u32 ret, u32 num_params,
-> > >  int optee_open_session(struct tee_context *ctx,
-> > >                        struct tee_ioctl_open_session_arg *arg,
-> > >                        struct tee_param *param);
-> > > +int optee_system_session(struct tee_context *ctx, u32 session);
-> > >  int optee_close_session_helper(struct tee_context *ctx, u32 session,
-> > >                                bool system_thread);
-> > >  int optee_close_session(struct tee_context *ctx, u32 session);
-> > > @@ -303,6 +324,7 @@ static inline void optee_to_msg_param_value(struct optee_msg_param *mp,
-> > >         mp->u.value.c = p->u.value.c;
-> > >  }
-> > >
-> > > +void optee_cq_init(struct optee_call_queue *cq, int thread_count);
-> > >  void optee_cq_wait_init(struct optee_call_queue *cq,
-> > >                         struct optee_call_waiter *w, bool sys_thread);
-> > >  void optee_cq_wait_for_completion(struct optee_call_queue *cq,
-> > > diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
-> > > index 1033d7da03ea..5595028d6dae 100644
-> > > --- a/drivers/tee/optee/smc_abi.c
-> > > +++ b/drivers/tee/optee/smc_abi.c
-> > > @@ -1211,6 +1211,7 @@ static const struct tee_driver_ops optee_clnt_ops = {
-> > >         .release = optee_release,
-> > >         .open_session = optee_open_session,
-> > >         .close_session = optee_close_session,
-> > > +       .system_session = optee_system_session,
-> > >         .invoke_func = optee_invoke_func,
-> > >         .cancel_req = optee_cancel_req,
-> > >         .shm_register = optee_shm_register,
-> > > @@ -1358,6 +1359,16 @@ static bool optee_msg_exchange_capabilities(optee_invoke_fn *invoke_fn,
-> > >         return true;
-> > >  }
-> > >
-> > > +static unsigned int optee_msg_get_thread_count(optee_invoke_fn *invoke_fn)
-> > > +{
-> > > +       struct arm_smccc_res res;
-> > > +
-> > > +       invoke_fn(OPTEE_SMC_GET_THREAD_COUNT, 0, 0, 0, 0, 0, 0, 0, &res);
-> > > +       if (res.a0)
-> > > +               return 0;
-> > > +       return res.a1;
-> > > +}
-> > > +
-> > >  static struct tee_shm_pool *
-> > >  optee_config_shm_memremap(optee_invoke_fn *invoke_fn, void **memremaped_shm)
-> > >  {
-> > > @@ -1610,6 +1621,7 @@ static int optee_probe(struct platform_device *pdev)
-> > >         struct optee *optee = NULL;
-> > >         void *memremaped_shm = NULL;
-> > >         unsigned int rpc_param_count;
-> > > +       unsigned int thread_count;
-> > >         struct tee_device *teedev;
-> > >         struct tee_context *ctx;
-> > >         u32 max_notif_value;
-> > > @@ -1637,6 +1649,7 @@ static int optee_probe(struct platform_device *pdev)
-> > >                 return -EINVAL;
-> > >         }
-> > >
-> > > +       thread_count = optee_msg_get_thread_count(invoke_fn);
-> > >         if (!optee_msg_exchange_capabilities(invoke_fn, &sec_caps,
-> > >                                              &max_notif_value,
-> > >                                              &rpc_param_count)) {
-> > > @@ -1726,8 +1739,7 @@ static int optee_probe(struct platform_device *pdev)
-> > >         if (rc)
-> > >                 goto err_unreg_supp_teedev;
-> > >
-> > > -       mutex_init(&optee->call_queue.mutex);
-> > > -       INIT_LIST_HEAD(&optee->call_queue.waiters);
-> > > +       optee_cq_init(&optee->call_queue, thread_count);
-> > >         optee_supp_init(&optee->supp);
-> > >         optee->smc.memremaped_shm = memremaped_shm;
-> > >         optee->pool = pool;
-> > > --
-> > > 2.25.1
-> > >
-> >
+ drivers/hte/hte-tegra194.c | 30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/hte/hte-tegra194.c b/drivers/hte/hte-tegra194.c
+index 6fe6897047ac..341a134cb7d0 100644
+--- a/drivers/hte/hte-tegra194.c
++++ b/drivers/hte/hte-tegra194.c
+@@ -132,7 +132,7 @@ struct tegra_hte_soc {
+ 	const struct tegra_hte_data *prov_data;
+ 	struct tegra_hte_line_data *line_data;
+ 	struct hte_chip *chip;
+-	struct gpio_chip *c;
++	struct gpio_device *gdev;
+ 	void __iomem *regs;
+ };
+ 
+@@ -418,7 +418,7 @@ static int tegra_hte_line_xlate(struct hte_chip *gc,
+ 	 * HTE/GTE namespace.
+ 	 */
+ 	if (gs->prov_data->type == HTE_TEGRA_TYPE_GPIO && !args) {
+-		line_id = desc->attr.line_id - gs->c->base;
++		line_id = desc->attr.line_id - gpio_device_get_base(gs->gdev);
+ 		map = gs->prov_data->map;
+ 		map_sz = gs->prov_data->map_sz;
+ 	} else if (gs->prov_data->type == HTE_TEGRA_TYPE_GPIO && args) {
+@@ -645,7 +645,7 @@ static bool tegra_hte_match_from_linedata(const struct hte_chip *chip,
+ 	if (!hte_dev || (hte_dev->prov_data->type != HTE_TEGRA_TYPE_GPIO))
+ 		return false;
+ 
+-	return hte_dev->c == gpiod_to_chip(hdesc->attr.line_data);
++	return hte_dev->gdev == gpiod_to_gpio_device(hdesc->attr.line_data);
+ }
+ 
+ static const struct of_device_id tegra_hte_of_match[] = {
+@@ -673,14 +673,11 @@ static void tegra_gte_disable(void *data)
+ 	tegra_hte_writel(gs, HTE_TECTRL, 0);
+ }
+ 
+-static int tegra_get_gpiochip_from_name(struct gpio_chip *chip, void *data)
++static void tegra_hte_put_gpio_device(void *data)
+ {
+-	return !strcmp(chip->label, data);
+-}
++	struct gpio_device *gdev = data;
+ 
+-static int tegra_gpiochip_match(struct gpio_chip *chip, void *data)
+-{
+-	return chip->fwnode == of_node_to_fwnode(data);
++	gpio_device_put(gdev);
+ }
+ 
+ static int tegra_hte_probe(struct platform_device *pdev)
+@@ -760,8 +757,8 @@ static int tegra_hte_probe(struct platform_device *pdev)
+ 
+ 		if (of_device_is_compatible(dev->of_node,
+ 					    "nvidia,tegra194-gte-aon")) {
+-			hte_dev->c = gpiochip_find("tegra194-gpio-aon",
+-						tegra_get_gpiochip_from_name);
++			hte_dev->gdev =
++				gpio_device_find_by_label("tegra194-gpio-aon");
+ 		} else {
+ 			gpio_ctrl = of_parse_phandle(dev->of_node,
+ 						     "nvidia,gpio-controller",
+@@ -772,14 +769,19 @@ static int tegra_hte_probe(struct platform_device *pdev)
+ 				return -ENODEV;
+ 			}
+ 
+-			hte_dev->c = gpiochip_find(gpio_ctrl,
+-						   tegra_gpiochip_match);
++			hte_dev->gdev =
++				gpio_device_find_by_fwnode(of_fwnode_handle(gpio_ctrl));
+ 			of_node_put(gpio_ctrl);
+ 		}
+ 
+-		if (!hte_dev->c)
++		if (!hte_dev->gdev)
+ 			return dev_err_probe(dev, -EPROBE_DEFER,
+ 					     "wait for gpio controller\n");
++
++		ret = devm_add_action_or_reset(dev, tegra_hte_put_gpio_device,
++					       hte_dev->gdev);
++		if (ret)
++			return ret;
+ 	}
+ 
+ 	hte_dev->chip = gc;
+-- 
+2.39.2
+
