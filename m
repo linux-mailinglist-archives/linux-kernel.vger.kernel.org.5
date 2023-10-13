@@ -2,116 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 810097C7EEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1F27C7EEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbjJMHsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42232 "EHLO
+        id S229946AbjJMHuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 03:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbjJMHsW (ORCPT
+        with ESMTP id S229965AbjJMHus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:48:22 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6193CCE
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:48:18 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c9fa869a63so2634645ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:48:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697183298; x=1697788098; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fl7fgJaWj5cTBuYX4JkcZ4GOPxj+pu0zJjF36kB0W04=;
-        b=VYQMYCbcP2Qex8QVkaQ7W5/Ixyj9unEuCEvVBn0mesxNZHIW7e/SjoHvSQ1j5KY0ex
-         WqdUUbq3cEiKR7sQNsGKsnzVGIBdKUopjgkQx9W3npq8yzAleyKd5Hwinbcz9MYP/9Ui
-         XdQsJgyndukeUo0r7xKc33qm9Enx5Wf7fZv2Lm29XD+zijFsrTn/N7TEa4HTwWLvuGWd
-         JHAIbQBR9kgoSBdoRTnfqVGChBBkpDrbN9YDxSGk+TjDX7oV7Pg55TTG7xSrbLo+Q74h
-         YS8lcPHnI74hSr2C7BNd/tU589AAARoWHKBUhE4ltS8YduW8VBOfUbAP6M+PmmekCbf7
-         bYRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697183298; x=1697788098;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fl7fgJaWj5cTBuYX4JkcZ4GOPxj+pu0zJjF36kB0W04=;
-        b=B/DD0FKUXHBWbg4co3Edp2WzkhGnh2CTRjEyIg+IjmgVl7j3Y93BG5lyc3QkTb4BRO
-         t0OnYyF4V2KBBWvC3ZJaPnmrUrAwqMZR4dXYxgMlQdHtfxdIgynOQWkM2SQnnMRqUSsC
-         EemT0o1P/d7xR9UqLoZcUsArdwJw0JYZ8q5uP/AYJijKAbSqdt/U/soCNlZ5cyip6vNG
-         K76vkvjy0fVFsylOtdiomnrwgYcuYcKV4ssg6zKZWHzTqv8rBV14vhf8+Tl0qZtfMOYt
-         33HkWnCKCs1GTGeVU3ltM/RBgKfvMpXreKxfX9+Rb1f4JAtD8FDR0F+d4JBIeWUqRVnN
-         8C3g==
-X-Gm-Message-State: AOJu0Yzfsv9Dwlhn06uujgs/lI2XDIkJGRGU0Kt0O2ZagpIBHQ1UDAyi
-        JUFOdEFoKYmfqB7xUjQvCoWDHxNEJ9b+8w==
-X-Google-Smtp-Source: AGHT+IGgrzD3/aqCAFAU3YdoAscnsRYQc/k0/7wXMAUFxVOP1TY9rj16GMYNHv75lxVgWqwyQXWCcA==
-X-Received: by 2002:a17:902:ceca:b0:1c5:9c73:c91c with SMTP id d10-20020a170902ceca00b001c59c73c91cmr28520232plg.48.1697183298112;
-        Fri, 13 Oct 2023 00:48:18 -0700 (PDT)
-Received: from Negi ([68.181.16.134])
-        by smtp.gmail.com with ESMTPSA id jh22-20020a170903329600b001c9d968563csm3229234plb.79.2023.10.13.00.48.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 00:48:17 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 00:48:17 -0700
-From:   Soumya Negi <soumya.negi97@gmail.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Jonathan Kim <jonathankim@gctsemi.com>,
-        Dean ahn <deanahn@gctsemi.com>,
+        Fri, 13 Oct 2023 03:50:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202D4BF;
+        Fri, 13 Oct 2023 00:50:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oiX2EcOICtWMCl8O283II31c/DVhUshikMhSt0dtcbs=; b=i0dkNR48dE8Mxm1KVD2599Pyx6
+        DmKGXdCjALh+8s6KMmM7qlfoEYO+LJHtza7ZMfvTDy4TmU8t+QbRwYz9JyWCoRoGdanlwF0/XA2Jz
+        iIn1cIw6DMhqxl5AyakiBAq0thCcllWjQeeeAr6EUYcedV52QwB1KdnYSqRdhPtbH8zCrwNtzWrTz
+        VQ88TKxaCd0Q0p45FIAXIMUfBmhy4S0VcG2VCUEfJP8oayX8gjBR12FoEnrLRL3gZA2eGCgBW9ldV
+        c7vy+sR/3J46YjZ07jSvoRLacZ/d6w334jFA6mhkcfD+CKBcnsEBHSwFImH+6n7rq0eOYpchM24Xg
+        S8ANZ/vg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qrCvu-004B18-3K; Fri, 13 Oct 2023 07:50:06 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BEF04300365; Fri, 13 Oct 2023 09:50:05 +0200 (CEST)
+Date:   Fri, 13 Oct 2023 09:50:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ramon de C Valle <rcvalle@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        outreachy@lists.linux.dev, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: gdm724x: Match alignment with open parenthesis
-Message-ID: <20231013074817.GC13814@Negi>
-References: <20231013060123.13400-1-soumya.negi97@gmail.com>
- <51deee17-33a5-d46c-1211-ca9186a4fe4@inria.fr>
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, patches@lists.linux.dev,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        David Gow <davidgow@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v10 25/27] x86: enable initial Rust support
+Message-ID: <20231013075005.GB12118@noisy.programming.kicks-ass.net>
+References: <20220927131518.30000-1-ojeda@kernel.org>
+ <20220927131518.30000-26-ojeda@kernel.org>
+ <Y0BfN1BdVCWssvEu@hirez.programming.kicks-ass.net>
+ <CABCJKuenkHXtbWOLZ0_isGewxd19qkM7OcLeE2NzM6dSkXS4mQ@mail.gmail.com>
+ <CANiq72k6s4=0E_AHv7FPsCQhkyxf7c-b+wUtzfjf+Spehe9Fmg@mail.gmail.com>
+ <CABCJKuca0fOAs=E6LeHJiT2LOXEoPvLVKztA=u+ARcw=tbT=tw@mail.gmail.com>
+ <20231012104741.GN6307@noisy.programming.kicks-ass.net>
+ <CABCJKufEagwJ=TQnmVSK07RDjsPUt=3JGtwnK9ASmFqb7Vx8JQ@mail.gmail.com>
+ <202310121130.256F581823@keescook>
+ <CAOcBZOTed1a1yOimdUN9yuuysZ1h6VXa57+5fLAE99SZxCwBMQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <51deee17-33a5-d46c-1211-ca9186a4fe4@inria.fr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAOcBZOTed1a1yOimdUN9yuuysZ1h6VXa57+5fLAE99SZxCwBMQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 08:42:42AM +0200, Julia Lawall wrote:
-> This and the next patch need to be in a series because they touch the same
-> file.
-> 
-> julia
+On Thu, Oct 12, 2023 at 03:15:12PM -0700, Ramon de C Valle wrote:
 
-Noted. Sending them as set.
+> [1]:
+> https://doc.rust-lang.org/nightly/unstable-book/language-features/cfi-encoding.html
 
-> On Thu, 12 Oct 2023, Soumya Negi wrote:
-> 
-> > Fix CHECK: Alignment should match open parenthesis
-> > Issue found by checkpatch.pl
-> >
-> > Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
-> > ---
-> >  drivers/staging/gdm724x/gdm_tty.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
-> > index 32b2e817ff04..4e5cac76db58 100644
-> > --- a/drivers/staging/gdm724x/gdm_tty.c
-> > +++ b/drivers/staging/gdm724x/gdm_tty.c
-> > @@ -271,8 +271,8 @@ int register_lte_tty_driver(void)
-> >  	int ret;
-> >
-> >  	for (i = 0; i < TTY_MAX_COUNT; i++) {
-> > -		tty_driver = tty_alloc_driver(GDM_TTY_MINOR,
-> > -				TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV);
-> > +		tty_driver = tty_alloc_driver(GDM_TTY_MINOR, TTY_DRIVER_REAL_RAW |
-> > +					      TTY_DRIVER_DYNAMIC_DEV);
-> >  		if (IS_ERR(tty_driver))
-> >  			return PTR_ERR(tty_driver);
-> >
-> > --
-> > 2.42.0
-> >
-> >
-> >
+I'm sorry, but that looks like a comment from where I'm sitting :-(
+Worst part is it being on a line of it's own and thus unrelated to
+anything.
+
+This rust syntax is horrific..
+
+
+> [2]:
+> https://doc.rust-lang.org/book/ch19-04-advanced-types.html#using-the-newtype-pattern-for-type-safety-and-abstraction
+
+I don't speak enough rust to even begin following this :/
+
+> [3]: Wrapping a type in a struct should achieve something similar even
+> without using the cfi_encoding attribute since the encoding for structs in
+> both are <length><name>, where <name> is <unscoped-name>.
+
+You're not talking about C, right?
+
