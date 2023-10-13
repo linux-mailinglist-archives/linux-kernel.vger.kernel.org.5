@@ -2,244 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 234977C7C58
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 05:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A06C7C7C61
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 05:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbjJMDwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 23:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
+        id S229508AbjJMD4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 23:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJMDwx (ORCPT
+        with ESMTP id S229436AbjJMD4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 23:52:53 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E825B7;
-        Thu, 12 Oct 2023 20:52:50 -0700 (PDT)
-Received: from kwepemm000005.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S6CCF1dmTzvPxs;
-        Fri, 13 Oct 2023 11:48:09 +0800 (CST)
-Received: from huawei.com (10.50.163.32) by kwepemm000005.china.huawei.com
- (7.193.23.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 13 Oct
- 2023 11:52:47 +0800
-From:   Longfang Liu <liulongfang@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <wangzhou1@hisilicon.com>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <liulongfang@huawei.com>
-Subject: [PATCH] crypto: hisilicon/qm - fix EQ/AEQ interrupt issue
-Date:   Fri, 13 Oct 2023 11:49:57 +0800
-Message-ID: <20231013034957.28311-1-liulongfang@huawei.com>
-X-Mailer: git-send-email 2.24.0
+        Thu, 12 Oct 2023 23:56:48 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18EA8B7;
+        Thu, 12 Oct 2023 20:56:47 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39D2uWDo023257;
+        Fri, 13 Oct 2023 03:56:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=1wN9r/ygJa5hc10Q0L1K794PKyr7Hfnc7rIOt55zZoM=;
+ b=OiTcZMR+01qfzd67dE+571bN6qiOZ502zvDM9saWdar39sRmLC8swtwW2YGqouxuawsw
+ bIyxzIZmCL0+ROqOLsZVKRvhPjkLMoQXlnZM/kGc5DmJx0VMk6iWLRAUIz+Pf06ZanIG
+ M70hvpUfrw2vOAyuY/lJrq8ied+DrG9wghCcW4HzTvVeE1moAUdaJESURRF+33qlzkat
+ tIJSMbOIdf90HcqA1cYxBxoMKzqBOKOf8ntGaQlm4Ix+mZAkbs3Ya5880ePvzcNV/532
+ g948+CO3f4PMsHQNjX7Ipq/SfGbNDrfJgCPSM/zj/ZbyqmcnAzprjcqG5wz75ydm64Xh Dw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tpt11ge2r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 03:56:41 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39D3uegw028840
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 03:56:40 GMT
+Received: from [10.216.41.155] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 12 Oct
+ 2023 20:56:37 -0700
+Message-ID: <ff5674b3-6536-4f37-92e7-0c114645cd49@quicinc.com>
+Date:   Fri, 13 Oct 2023 09:26:34 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.50.163.32]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm000005.china.huawei.com (7.193.23.27)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] usb: dwc3: core: Fix RAM interface getting stuck during
+ enumeration
+To:     Wesley Cheng <quic_wcheng@quicinc.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
+        <quic_ugoswami@quicinc.com>
+References: <20231011100214.25720-1-quic_kriskura@quicinc.com>
+ <1e8d6d63-f5e5-3e69-ae8e-cf3cd1b90ad8@quicinc.com>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <1e8d6d63-f5e5-3e69-ae8e-cf3cd1b90ad8@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: TIEZGCLijBgLjHeVO7eeOdFtMqJ0FnnY
+X-Proofpoint-ORIG-GUID: TIEZGCLijBgLjHeVO7eeOdFtMqJ0FnnY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_14,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=999 impostorscore=0 suspectscore=0
+ priorityscore=1501 spamscore=0 adultscore=0 clxscore=1015 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310130034
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During hisilicon accelerator live migration operation. In order to
-prevent the problem of EQ/AEQ interrupt loss. Migration driver will
-trigger an EQ/AEQ doorbell at the end of the migration.
 
-This operation may cause double interruption of EQ/AEQ events.
-To ensure that the EQ/AEQ interrupt processing function is normal.
-The interrupt handling functionality of EQ/AEQ needs to be updated.
-Used to handle repeated interrupts event.
 
-Fixes: b0eed085903e ("hisi_acc_vfio_pci: Add support for VFIO live migration")
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
----
- drivers/crypto/hisilicon/qm.c | 105 +++++++++++++---------------------
- include/linux/hisi_acc_qm.h   |   1 +
- 2 files changed, 41 insertions(+), 65 deletions(-)
+On 10/13/2023 12:55 AM, Wesley Cheng wrote:
+> Hi Krishna,
+> 
+> On 10/11/2023 3:02 AM, Krishna Kurapati wrote:
+>> This implementation is to fix RAM interface getting stuck during
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index f3b55c044dd3..c12dedcd6bba 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -854,47 +854,15 @@ static void qm_poll_req_cb(struct hisi_qp *qp)
- 	qm_db(qm, qp->qp_id, QM_DOORBELL_CMD_CQ, qp->qp_status.cq_head, 1);
- }
- 
--static int qm_get_complete_eqe_num(struct hisi_qm_poll_data *poll_data)
--{
--	struct hisi_qm *qm = poll_data->qm;
--	struct qm_eqe *eqe = qm->eqe + qm->status.eq_head;
--	u16 eq_depth = qm->eq_depth;
--	int eqe_num = 0;
--	u16 cqn;
--
--	while (QM_EQE_PHASE(eqe) == qm->status.eqc_phase) {
--		cqn = le32_to_cpu(eqe->dw0) & QM_EQE_CQN_MASK;
--		poll_data->qp_finish_id[eqe_num] = cqn;
--		eqe_num++;
--
--		if (qm->status.eq_head == eq_depth - 1) {
--			qm->status.eqc_phase = !qm->status.eqc_phase;
--			eqe = qm->eqe;
--			qm->status.eq_head = 0;
--		} else {
--			eqe++;
--			qm->status.eq_head++;
--		}
--
--		if (eqe_num == (eq_depth >> 1) - 1)
--			break;
--	}
--
--	qm_db(qm, 0, QM_DOORBELL_CMD_EQ, qm->status.eq_head, 0);
--
--	return eqe_num;
--}
--
- static void qm_work_process(struct work_struct *work)
- {
- 	struct hisi_qm_poll_data *poll_data =
- 		container_of(work, struct hisi_qm_poll_data, work);
- 	struct hisi_qm *qm = poll_data->qm;
-+	u16 eqe_num = poll_data->eqe_num;
- 	struct hisi_qp *qp;
--	int eqe_num, i;
-+	int i;
- 
--	/* Get qp id of completed tasks and re-enable the interrupt. */
--	eqe_num = qm_get_complete_eqe_num(poll_data);
- 	for (i = eqe_num - 1; i >= 0; i--) {
- 		qp = &qm->qp_array[poll_data->qp_finish_id[i]];
- 		if (unlikely(atomic_read(&qp->qp_status.flags) == QP_STOP))
-@@ -910,39 +878,55 @@ static void qm_work_process(struct work_struct *work)
- 	}
- }
- 
--static bool do_qm_eq_irq(struct hisi_qm *qm)
-+static void qm_get_complete_eqe_num(struct hisi_qm *qm)
- {
- 	struct qm_eqe *eqe = qm->eqe + qm->status.eq_head;
--	struct hisi_qm_poll_data *poll_data;
--	u16 cqn;
-+	struct hisi_qm_poll_data *poll_data = NULL;
-+	u16 eq_depth = qm->eq_depth;
-+	u16 cqn, eqe_num = 0;
- 
--	if (!readl(qm->io_base + QM_VF_EQ_INT_SOURCE))
--		return false;
-+	if (QM_EQE_PHASE(eqe) != qm->status.eqc_phase) {
-+		atomic64_inc(&qm->debug.dfx.err_irq_cnt);
-+		qm_db(qm, 0, QM_DOORBELL_CMD_EQ, qm->status.eq_head, 0);
-+		return;
-+	}
- 
--	if (QM_EQE_PHASE(eqe) == qm->status.eqc_phase) {
-+	cqn = le32_to_cpu(eqe->dw0) & QM_EQE_CQN_MASK;
-+	if (unlikely(cqn >= qm->qp_num))
-+		return;
-+	poll_data = &qm->poll_data[cqn];
-+
-+	while (QM_EQE_PHASE(eqe) == qm->status.eqc_phase) {
- 		cqn = le32_to_cpu(eqe->dw0) & QM_EQE_CQN_MASK;
--		poll_data = &qm->poll_data[cqn];
--		queue_work(qm->wq, &poll_data->work);
-+		poll_data->qp_finish_id[eqe_num] = cqn;
-+		eqe_num++;
-+
-+		if (qm->status.eq_head == eq_depth - 1) {
-+			qm->status.eqc_phase = !qm->status.eqc_phase;
-+			eqe = qm->eqe;
-+			qm->status.eq_head = 0;
-+		} else {
-+			eqe++;
-+			qm->status.eq_head++;
-+		}
- 
--		return true;
-+		if (eqe_num == (eq_depth >> 1) - 1)
-+			break;
- 	}
- 
--	return false;
-+	poll_data->eqe_num = eqe_num;
-+	queue_work(qm->wq, &poll_data->work);
-+	qm_db(qm, 0, QM_DOORBELL_CMD_EQ, qm->status.eq_head, 0);
- }
- 
- static irqreturn_t qm_eq_irq(int irq, void *data)
- {
- 	struct hisi_qm *qm = data;
--	bool ret;
--
--	ret = do_qm_eq_irq(qm);
--	if (ret)
--		return IRQ_HANDLED;
- 
--	atomic64_inc(&qm->debug.dfx.err_irq_cnt);
--	qm_db(qm, 0, QM_DOORBELL_CMD_EQ, qm->status.eq_head, 0);
-+	/* Get qp id of completed tasks and re-enable the interrupt */
-+	qm_get_complete_eqe_num(qm);
- 
--	return IRQ_NONE;
-+	return IRQ_HANDLED;
- }
- 
- static irqreturn_t qm_mb_cmd_irq(int irq, void *data)
-@@ -1024,6 +1008,8 @@ static irqreturn_t qm_aeq_thread(int irq, void *data)
- 	u16 aeq_depth = qm->aeq_depth;
- 	u32 type, qp_id;
- 
-+	atomic64_inc(&qm->debug.dfx.aeq_irq_cnt);
-+
- 	while (QM_AEQE_PHASE(aeqe) == qm->status.aeqc_phase) {
- 		type = (le32_to_cpu(aeqe->dw0) >> QM_AEQE_TYPE_SHIFT) &
- 			QM_AEQE_TYPE_MASK;
-@@ -1062,17 +1048,6 @@ static irqreturn_t qm_aeq_thread(int irq, void *data)
- 	return IRQ_HANDLED;
- }
- 
--static irqreturn_t qm_aeq_irq(int irq, void *data)
--{
--	struct hisi_qm *qm = data;
--
--	atomic64_inc(&qm->debug.dfx.aeq_irq_cnt);
--	if (!readl(qm->io_base + QM_VF_AEQ_INT_SOURCE))
--		return IRQ_NONE;
--
--	return IRQ_WAKE_THREAD;
--}
--
- static void qm_init_qp_status(struct hisi_qp *qp)
- {
- 	struct hisi_qp_status *qp_status = &qp->qp_status;
-@@ -4997,8 +4972,8 @@ static int qm_register_aeq_irq(struct hisi_qm *qm)
- 		return 0;
- 
- 	irq_vector = val & QM_IRQ_VECTOR_MASK;
--	ret = request_threaded_irq(pci_irq_vector(pdev, irq_vector), qm_aeq_irq,
--						   qm_aeq_thread, 0, qm->dev_name, qm);
-+	ret = request_threaded_irq(pci_irq_vector(pdev, irq_vector), NULL,
-+						   qm_aeq_thread, IRQF_ONESHOT, qm->dev_name, qm);
- 	if (ret)
- 		dev_err(&pdev->dev, "failed to request eq irq, ret = %d", ret);
- 
-diff --git a/include/linux/hisi_acc_qm.h b/include/linux/hisi_acc_qm.h
-index 34c64a02712c..369206363569 100644
---- a/include/linux/hisi_acc_qm.h
-+++ b/include/linux/hisi_acc_qm.h
-@@ -276,6 +276,7 @@ struct hisi_qm_poll_data {
- 	struct hisi_qm *qm;
- 	struct work_struct work;
- 	u16 *qp_finish_id;
-+	u16 eqe_num;
- };
- 
- /**
--- 
-2.24.0
+>> Synopsys confirmed that the issue is present on all USB3 devices and
+>> as a workaround, suggested to re-initialize device mode.
+>>
+>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+>> ---
+>>   drivers/usb/dwc3/core.c   | 20 ++++++++++++++++++++
+>>   drivers/usb/dwc3/core.h   |  4 ++++
+>>   drivers/usb/dwc3/drd.c    |  5 +++++
+>>   drivers/usb/dwc3/gadget.c |  6 ++++--
+>>   4 files changed, 33 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+>> index 44ee8526dc28..d18b81cccdc5 100644
+>> --- a/drivers/usb/dwc3/core.c
+>> +++ b/drivers/usb/dwc3/core.c
+>> @@ -122,6 +122,7 @@ static void __dwc3_set_mode(struct work_struct *work)
+>>       unsigned long flags;
+>>       int ret;
+>>       u32 reg;
+>> +    u8 timeout = 100;
+>>       u32 desired_dr_role;
+>>       mutex_lock(&dwc->mutex);
+>> @@ -137,6 +138,25 @@ static void __dwc3_set_mode(struct work_struct 
+>> *work)
+>>       if (!desired_dr_role)
+>>           goto out;
+>> +    /*
+>> +     * STAR 5001544 - If cable disconnect doesn't generate
+>> +     * disconnect event in device mode, then re-initialize the
+>> +     * controller.
+>> +     */
+>> +    if ((dwc->cable_disconnected == true) &&
+>> +        (dwc->current_dr_role == DWC3_GCTL_PRTCAP_DEVICE)) {
+>> +        while (dwc->connected == true && timeout != 0) {
+>> +            mdelay(10);
+>> +            timeout--;
+>> +        }
+>> +
+>> +        if (timeout == 0) {
+>> +            dwc3_gadget_soft_disconnect(dwc);
+>> +            udelay(100);
+>> +            dwc3_gadget_soft_connect(dwc);
+>> +        }
+>> +    }
+>> +
+>>       if (desired_dr_role == dwc->current_dr_role)
+>>           goto out;
+>> diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+>> index c6c87acbd376..7642330cf608 100644
+>> --- a/drivers/usb/dwc3/core.h
+>> +++ b/drivers/usb/dwc3/core.h
+>> @@ -1355,6 +1355,7 @@ struct dwc3 {
+>>       int            last_fifo_depth;
+>>       int            num_ep_resized;
+>>       struct dentry        *debug_root;
+>> +    bool            cable_disconnected;
+>>   };
+>>   #define INCRX_BURST_MODE 0
+>> @@ -1568,6 +1569,9 @@ void dwc3_event_buffers_cleanup(struct dwc3 *dwc);
+>>   int dwc3_core_soft_reset(struct dwc3 *dwc);
+>> +int dwc3_gadget_soft_disconnect(struct dwc3 *dwc);
+>> +int dwc3_gadget_soft_connect(struct dwc3 *dwc);
+>> +
+>>   #if IS_ENABLED(CONFIG_USB_DWC3_HOST) || 
+>> IS_ENABLED(CONFIG_USB_DWC3_DUAL_ROLE)
+>>   int dwc3_host_init(struct dwc3 *dwc);
+>>   void dwc3_host_exit(struct dwc3 *dwc);
+>> diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
+>> index 039bf241769a..593c023fc39a 100644
+>> --- a/drivers/usb/dwc3/drd.c
+>> +++ b/drivers/usb/dwc3/drd.c
+>> @@ -446,6 +446,8 @@ static int dwc3_usb_role_switch_set(struct 
+>> usb_role_switch *sw,
+>>       struct dwc3 *dwc = usb_role_switch_get_drvdata(sw);
+>>       u32 mode;
+>> +    dwc->cable_disconnected = false;
+>> +
+>>       switch (role) {
+>>       case USB_ROLE_HOST:
+>>           mode = DWC3_GCTL_PRTCAP_HOST;
+>> @@ -454,6 +456,9 @@ static int dwc3_usb_role_switch_set(struct 
+>> usb_role_switch *sw,
+>>           mode = DWC3_GCTL_PRTCAP_DEVICE;
+>>           break;
+>>       default:
+>> +        if (role == USB_ROLE_NONE)
+>> +            dwc->cable_disconnected = true;
+>> +
+> 
+> How do we handle cases where role switch isn't used? (ie extcon or maybe 
+> no cable connection notification at all)
+> 
 
+Hi Wesley,
+
+  Since I was considering fixing it during disconnect, I made it in role 
+switch. So no cable connection notification case has been ruled out in 
+this patch. But yes, extcon is a valid case. Will need to account for it.
+
+Regards,
+Krishna,
