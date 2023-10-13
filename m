@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7427C7D4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0097C7D64
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbjJMF4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 01:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45916 "EHLO
+        id S229676AbjJMGCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 02:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjJMF4b (ORCPT
+        with ESMTP id S229671AbjJMGCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 01:56:31 -0400
-Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF0BB8;
-        Thu, 12 Oct 2023 22:56:29 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 21A4D207FD;
-        Fri, 13 Oct 2023 07:56:28 +0200 (CEST)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id bMhhEHkMcl_U; Fri, 13 Oct 2023 07:56:27 +0200 (CEST)
-Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id B59DA207C6;
-        Fri, 13 Oct 2023 07:56:27 +0200 (CEST)
-Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-        by mailout2.secunet.com (Postfix) with ESMTP id AD85880004A;
-        Fri, 13 Oct 2023 07:56:27 +0200 (CEST)
-Received: from mbx-essen-02.secunet.de (10.53.40.198) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 13 Oct 2023 07:56:27 +0200
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
- (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Fri, 13 Oct
- 2023 07:56:27 +0200
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id 0A67C3183D0E; Fri, 13 Oct 2023 07:56:27 +0200 (CEST)
-Date:   Fri, 13 Oct 2023 07:56:26 +0200
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Ma Ke <make_ruc2021@163.com>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <dsahern@kernel.org>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net: ipv4: fix return value check in esp_remove_trailer
-Message-ID: <ZSjcCs6R5y7w/mhD@gauss3.secunet.de>
-References: <20231009011337.4037007-1-make_ruc2021@163.com>
+        Fri, 13 Oct 2023 02:02:41 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A7E58DD;
+        Thu, 12 Oct 2023 23:02:39 -0700 (PDT)
+Received: from chenguohua$jari.cn ( [182.148.14.172] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Fri, 13 Oct 2023 14:00:53
+ +0800 (GMT+08:00)
+X-Originating-IP: [182.148.14.172]
+Date:   Fri, 13 Oct 2023 14:00:53 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   chenguohua@jari.cn
+To:     chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com
+Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] nfsd: Clean up errors in filecache.c
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231009011337.4037007-1-make_ruc2021@163.com>
-X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
- mbx-essen-02.secunet.de (10.53.40.198)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <3265d6da.955.18b279f9aa9.Coremail.chenguohua@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwD3lD8V3ShldtvBAA--.749W
+X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQADEWUnvzMAGQAksg
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_00,RCVD_IN_PBL,RDNS_NONE,
+        T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 09:13:37AM +0800, Ma Ke wrote:
-> In esp_remove_trailer(), to avoid an unexpected result returned by
-> pskb_trim, we should check the return value of pskb_trim().
-> 
-> Signed-off-by: Ma Ke <make_ruc2021@163.com>
-
-Also applied, thanks!
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+c3BhY2UgcmVxdWlyZWQgYmVmb3JlIHRoZSBvcGVuIHBhcmVudGhlc2lzICcoJwoKU2lnbmVkLW9m
+Zi1ieTogR3VvSHVhIENoZW5nIDxjaGVuZ3VvaHVhQGphcmkuY24+Ci0tLQogZnMvbmZzZC9maWxl
+Y2FjaGUuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlv
+bigtKQoKZGlmZiAtLWdpdCBhL2ZzL25mc2QvZmlsZWNhY2hlLmMgYi9mcy9uZnNkL2ZpbGVjYWNo
+ZS5jCmluZGV4IGVmMDYzZjkzZmRlOS4uZjNhYWJjNmE5Zjk4IDEwMDY0NAotLS0gYS9mcy9uZnNk
+L2ZpbGVjYWNoZS5jCisrKyBiL2ZzL25mc2QvZmlsZWNhY2hlLmMKQEAgLTQxMiw3ICs0MTIsNyBA
+QCBuZnNkX2ZpbGVfZGlzcG9zZV9saXN0KHN0cnVjdCBsaXN0X2hlYWQgKmRpc3Bvc2UpCiBzdGF0
+aWMgdm9pZAogbmZzZF9maWxlX2Rpc3Bvc2VfbGlzdF9kZWxheWVkKHN0cnVjdCBsaXN0X2hlYWQg
+KmRpc3Bvc2UpCiB7Ci0Jd2hpbGUoIWxpc3RfZW1wdHkoZGlzcG9zZSkpIHsKKwl3aGlsZSAoIWxp
+c3RfZW1wdHkoZGlzcG9zZSkpIHsKIAkJc3RydWN0IG5mc2RfZmlsZSAqbmYgPSBsaXN0X2ZpcnN0
+X2VudHJ5KGRpc3Bvc2UsCiAJCQkJCQlzdHJ1Y3QgbmZzZF9maWxlLCBuZl9scnUpOwogCQlzdHJ1
+Y3QgbmZzZF9uZXQgKm5uID0gbmV0X2dlbmVyaWMobmYtPm5mX25ldCwgbmZzZF9uZXRfaWQpOwot
+LSAKMi4xNy4xCg==
