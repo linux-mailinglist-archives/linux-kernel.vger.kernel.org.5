@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE337C854C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75E17C854A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbjJMMFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:05:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
+        id S231293AbjJMMFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 08:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231381AbjJMMFi (ORCPT
+        with ESMTP id S231439AbjJMMFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 08:05:38 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EDCBD
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:05:35 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qrGv4-0004ip-VD; Fri, 13 Oct 2023 14:05:31 +0200
-Message-ID: <9787bd09-91b3-4a79-9ca9-e7199c925f36@leemhuis.info>
-Date:   Fri, 13 Oct 2023 14:05:29 +0200
+        Fri, 13 Oct 2023 08:05:45 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F48FDA;
+        Fri, 13 Oct 2023 05:05:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=JVNjKA5BDxHIuNoLtOyLa0d8PBvTaC7XyqHCbnt00h0=; b=C9
+        HT0EZtdZTTScE2v3IV7j2X36h2efmC5H3E6jYaFi4GMyhNJsRNTWKErZXFLPp+3JRhgc/JgIrGEXu
+        OA3001XO64hvR99tJBz1CoZKBkx5xMobrF7Le1xEwXXZ3Q+RECtFyZr1rUbrpfC4ln9grnpq1M3pk
+        1IGTLNwTDvDhvaQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qrGv4-0025Mw-JH; Fri, 13 Oct 2023 14:05:30 +0200
+Date:   Fri, 13 Oct 2023 14:05:30 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] net: mdio: replace deprecated strncpy with strscpy
+Message-ID: <e2b7f4fb-b2f9-4457-b5ae-4cf6acceb10d@lunn.ch>
+References: <20231012-strncpy-drivers-net-phy-mdio_bus-c-v1-1-15242e6f9ec4@google.com>
+ <a86149c3-077c-4380-83ec-99a368e6d589@lunn.ch>
+ <CAFhGd8qAfWiC0en-VXaR_DxNr+xFfw8zwUJ4KgCd8ieSmU3t5g@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [regression] some Dell systems hang at shutdown due to "x86/smp: Put
- CPUs into INIT on shutdown if possible" (was Fwd: Kernel 6.5 hangs on
- shutdown)
-Content-Language: en-US, de-DE
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Yanjun Yang <yangyj.ee@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>
-References: <e6d1dae8-e28a-455a-a851-661c825fbdcf@gmail.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <e6d1dae8-e28a-455a-a851-661c825fbdcf@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1697198735;8913fc85;
-X-HE-SMSGID: 1qrGv4-0004ip-VD
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFhGd8qAfWiC0en-VXaR_DxNr+xFfw8zwUJ4KgCd8ieSmU3t5g@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[CCing x86 maintainers]
-
-Hi Thomas!
-
-On 12.10.23 11:37, Bagas Sanjaya wrote:
+On Thu, Oct 12, 2023 at 03:01:06PM -0700, Justin Stitt wrote:
+> On Thu, Oct 12, 2023 at 2:59 PM Andrew Lunn <andrew@lunn.ch> wrote:
+> >
+> > On Thu, Oct 12, 2023 at 09:53:03PM +0000, Justin Stitt wrote:
+> > > strncpy() is deprecated for use on NUL-terminated destination strings
+> > > [1] and as such we should prefer more robust and less ambiguous string
+> > > interfaces.
+> >
+> > Hi Justin
+> >
+> > You just sent two patches with the same Subject. That got me confused
+> > for a while, is it a resend? A new version?
 > 
-> I notice a regression report on Bugzilla [1]. Quoting from it:
->>> I use Dell OptiPlex 7050, and kernel hangs when shutting down the
-computer.
->> Similar symptom has been reported on some forums, and all of them are using
->> Dell computers:
->> https://bbs.archlinux.org/viewtopic.php?pid=2124429
->> https://www.reddit.com/r/openSUSE/comments/16qq99b/tumbleweed_shutdown_did_not_finish_completely/
->> https://forum.artixlinux.org/index.php/topic,5997.0.html
+> Yep, just saw this.
+> 
+> I'm working (top to bottom) on a list of strncpy hits. I have an automated tool
+> fetch the prefix and update the subject line accordingly. They are two separate
+> patches but ended up with the same exact subject line due to oversight and
+> over-automation.
+> 
+> Looking for guidance:
+> Should I combine them into one patch?
 
-Another report: https://bugzilla.redhat.com/show_bug.cgi?id=2241279
+No, it is fine. Just try to avoid it in the future.
 
-From all those links it seems quite a lot of users with Dell machines
-are affected by this problem.
-
->> Tested with various kernel and this bug seems to be caused by commit: 88afbb21d4b36fee6acaa167641f9f0fc122f01b.
-
-Thomas, turns out that bisection result was slightly wrong: a recheck
-confirmed that the regression is actually caused by 45e34c8af58f23
-("x86/smp: Put CPUs into INIT on shutdown if possible") [v6.5-rc1] of
-yours. See https://bugzilla.kernel.org/show_bug.cgi?id=217995 for details.
-
-Ciao, Thorsten
-
-> Anyway, I'm adding this regression to be tracked by regzbot:
-> [...]
-
-#regzbot introduced: 45e34c8af58f
-#regzbot link: https://bugzilla.redhat.com/show_bug.cgi?id=2241279
+    Andrew
