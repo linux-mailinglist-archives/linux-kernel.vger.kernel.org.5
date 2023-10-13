@@ -2,1030 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D20E07C8BC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B307C8BCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbjJMQu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
+        id S230041AbjJMQv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbjJMQuT (ORCPT
+        with ESMTP id S229632AbjJMQvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:50:19 -0400
-Received: from hutie.ust.cz (hutie.ust.cz [IPv6:2a03:3b40:fe:f0::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D959FA9;
-        Fri, 13 Oct 2023 09:50:15 -0700 (PDT)
-From:   =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
-        t=1697215811; bh=9wDTq+IAbiKScPo+VZ4thlruw6fmYdbwIQxm5eW/Pz0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=aFoWMFDVtWtTZae4G0q771kZld5GDF7NE1Y3zq9oPT+Y9OIHW6mlguuIMamewEAlA
-         yGHRa7DMNqjnnwYTobicOywTpXb/Bj/Sbu/C7jFgaJji+0oMSGSAmbgm9cOlPwZ1DI
-         kFKYRYlqzLuiJwaTNKWCmv3UHt2Jhsx1OBJBm0lo=
-To:     =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     asahi@lists.linux.dev, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] dmaengine: apple-sio: Add Apple SIO driver
-Date:   Fri, 13 Oct 2023 18:49:36 +0200
-Message-Id: <20231013164936.60718-3-povik+lin@cutebit.org>
-In-Reply-To: <20231013164936.60718-1-povik+lin@cutebit.org>
-References: <20231013164936.60718-1-povik+lin@cutebit.org>
+        Fri, 13 Oct 2023 12:51:53 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2540D95
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:51:52 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c9b70b9671so1845ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:51:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697215911; x=1697820711; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=opA5ekr/PL/39867RmHZYZSwyK7TejK/8oUw/N2yvZw=;
+        b=3m0E+hrL81oZ30STDHGqw+gxEQQir0I2aCEr0WXlQyHaLmkpg/NlYxRMU8aD5R9+HE
+         AF27xefwZLnlZ2U8TKZOfqYGzdjsNtE5GAy7XqyNvBpnzDLwOfYViYzDkv2A8RDTl2Xo
+         fWAQ9svD/kpp7AUxIQfVy1s2pL49eP/+loEdZcfREOtvfz9fOvVe9Zks46y2faen66AG
+         V4EiZCcIeCOqLqz9lCtBSAbm0AwscLxKBetOOaDkzlFHWIkxwV8dw5y/GYR2dG9wn8B+
+         5/4TFoSrVsIefZBF1Yo7D6BNA6gCAySpLeNPjNx7znLkVuN4KfoOaCsFnEaOqKE0OhYl
+         9ChQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697215911; x=1697820711;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=opA5ekr/PL/39867RmHZYZSwyK7TejK/8oUw/N2yvZw=;
+        b=iRHcRWtEbnG0dw1vAdyIz30JKCv9q/W/nzVmAEa7P2W3PH1V2CMe0PqP7lwcDa6LvY
+         HoyOv7CUuvRRsbxPVDw0kN5FWE3oRBds3PoxrDm/Phgh9ITTwe3nguPrHoSUk0z8Se4R
+         6c0SdBgzI9yYMVdFy6/ePEIDNpz/DyywuGyZZV4hjH8T4Aet/qgGE/C/mLjKe8e749Ra
+         qNk/NL1d7N6FEO0fqEwIErdqdeb2dhHaIg8oi9aZW8ZAOgxjwQzVfXgc+j9jEyg42q7z
+         L/hK5+wTw/3JgNjTWEf/+U2setGnpxBoN3Gy4mteRgKqjD7athLnaK8/Bkh7Je2SbqBz
+         NmZA==
+X-Gm-Message-State: AOJu0YzadFKAxc1k/NJL6nOPAWa+Z5xJLGHRjF0XWM9fmTfJvgVg7S6j
+        NC1S8zeR4KDrCovJPGWtL/ueoQ==
+X-Google-Smtp-Source: AGHT+IF5khgGZGbOSagfW0YnUh8mBDK/Ecx1vxT656yULD8p5VPO0TXMO14dEmx9oS4qjdYBCOkKng==
+X-Received: by 2002:a17:903:2a85:b0:1ca:42a:1771 with SMTP id lv5-20020a1709032a8500b001ca042a1771mr123012plb.24.1697215911409;
+        Fri, 13 Oct 2023 09:51:51 -0700 (PDT)
+Received: from bsegall-linux.svl.corp.google.com.localhost ([2620:15c:2a3:200:216e:4b3d:e8ab:f961])
+        by smtp.gmail.com with ESMTPSA id b2-20020a170902650200b001c73eace0fesm4182340plk.157.2023.10.13.09.51.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 09:51:50 -0700 (PDT)
+From:   Benjamin Segall <bsegall@google.com>
+To:     Abel Wu <wuyun.abel@bytedance.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, mgorman@suse.de, bristot@redhat.com,
+        corbet@lwn.net, qyousef@layalina.io, chris.hyser@oracle.com,
+        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
+        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
+        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
+        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
+        tglx@linutronix.de
+Subject: Re: [PATCH] sched/fair: fix pick_eevdf to always find the correct se
+In-Reply-To: <e2a42ff2-d0f9-4963-bed7-229224ee8287@bytedance.com> (Abel Wu's
+        message of "Fri, 13 Oct 2023 11:46:24 +0800")
+References: <20230531115839.089944915@infradead.org>
+        <20230531124603.931005524@infradead.org>
+        <xm261qego72d.fsf_-_@google.com>
+        <6b606049-3412-437f-af25-a4c33139e2d8@bytedance.com>
+        <xm26bkd4x5v4.fsf@bsegall-linux.svl.corp.google.com>
+        <699cc8b1-f341-4af7-9c47-fee961c5c4b7@bytedance.com>
+        <xm26pm1jhgpx.fsf@bsegall-linux.svl.corp.google.com>
+        <e2a42ff2-d0f9-4963-bed7-229224ee8287@bytedance.com>
+Date:   Fri, 13 Oct 2023 09:51:48 -0700
+Message-ID: <xm26bkd2h3dn.fsf@bsegall-linux.svl.corp.google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a dmaengine driver for the Apple SIO coprocessor found on Apple
-SoCs where it provides DMA services. Have the driver support cyclic
-transactions so that ALSA drivers can rely on it in audio output to
-HDMI and DisplayPort.
+Abel Wu <wuyun.abel@bytedance.com> writes:
 
-Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
----
- MAINTAINERS             |   2 +
- drivers/dma/Kconfig     |  11 +
- drivers/dma/Makefile    |   1 +
- drivers/dma/apple-sio.c | 907 ++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 921 insertions(+)
- create mode 100644 drivers/dma/apple-sio.c
+> On 10/13/23 1:51 AM, Benjamin Segall Wrote:
+>> Abel Wu <wuyun.abel@bytedance.com> writes:
+>> 
+>>> On 10/12/23 5:01 AM, Benjamin Segall Wrote:
+>>>> Abel Wu <wuyun.abel@bytedance.com> writes:
+>>>>
+>>>>> On 9/30/23 8:09 AM, Benjamin Segall Wrote:
+>>>>>> +	/*
+>>>>>> +	 * Now best_left and all of its children are eligible, and we are just
+>>>>>> +	 * looking for deadline == min_deadline
+>>>>>> +	 */
+>>>>>> +	node = &best_left->run_node;
+>>>>>> +	while (node) {
+>>>>>> +		struct sched_entity *se = __node_2_se(node);
+>>>>>> +
+>>>>>> +		/* min_deadline is the current node */
+>>>>>> +		if (se->deadline == se->min_deadline)
+>>>>>> +			return se;
+>>>>>
+>>>>> IMHO it would be better tiebreak on vruntime by moving this hunk to ..
+>>>>>
+>>>>>> +
+>>>>>> +		/* min_deadline is in the left branch */
+>>>>>>     		if (node->rb_left &&
+>>>>>>     		    __node_2_se(node->rb_left)->min_deadline == se->min_deadline) {
+>>>>>>     			node = node->rb_left;
+>>>>>>     			continue;
+>>>>>>     		}
+>>>>>
+>>>>> .. here, thoughts?
+>>>> Yeah, that should work and be better on the tiebreak (and my test code
+>>>> agrees). There's an argument that the tiebreak will never really come up
+>>>> and it's better to avoid the potential one extra cache line from
+>>>> "__node_2_se(node->rb_left)->min_deadline" though.
+>>>
+>>> I see. Then probably do the same thing in the first loop?
+>>>
+>> We effectively do that already sorta by accident almost always -
+>> computing best and best_left via deadline_gt rather than gte prioritizes
+>> earlier elements, which always have a better vruntime.
+>
+> Sorry for not clarifying clearly about the 'same thing'. What I meant
+> was to avoid touch left if the node itself has the min deadline.
+>
+> @@ -894,6 +894,9 @@ static struct sched_entity *__pick_eevdf(struct cfs_rq *cfs_rq)
+>                 if (!best || deadline_gt(deadline, best, se))
+>                         best = se;
+>
+> +               if (se->deadline == se->min_deadline)
+> +                       break;
+> +
+>                 /*
+>                  * Every se in a left branch is eligible, keep track of the
+>                  * branch with the best min_deadline
+> @@ -913,10 +916,6 @@ static struct sched_entity *__pick_eevdf(struct cfs_rq *cfs_rq)
+>                                 break;
+>                 }
+>
+> -               /* min_deadline is at this node, no need to look right */
+> -               if (se->deadline == se->min_deadline)
+> -                       break;
+> -
+>                 /* else min_deadline is in the right branch. */
+>                 node = node->rb_right;
+>         }
+>
+> (But still thanks for the convincing explanation on fairness.)
+>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 84c2964ad0b6..66a9e3bec786 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1878,8 +1878,10 @@ M:	Martin Povišer <povik+lin@cutebit.org>
- L:	asahi@lists.linux.dev
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Maintained
-+F:	Documentation/devicetree/bindings/dma/apple,sio.yaml
- F:	Documentation/devicetree/bindings/sound/adi,ssm3515.yaml
- F:	Documentation/devicetree/bindings/sound/apple,*
-+F:	drivers/dma/apple-sio.c
- F:	sound/soc/apple/*
- F:	sound/soc/codecs/cs42l83-i2c.c
- F:	sound/soc/codecs/ssm3515.c
-diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 70ba506dabab..e82b50584cd4 100644
---- a/drivers/dma/Kconfig
-+++ b/drivers/dma/Kconfig
-@@ -89,10 +89,21 @@ config APPLE_ADMAC
- 	tristate "Apple ADMAC support"
- 	depends on ARCH_APPLE || COMPILE_TEST
- 	select DMA_ENGINE
-+	select DMA_VIRTUAL_CHANNELS
- 	default ARCH_APPLE
- 	help
- 	  Enable support for Audio DMA Controller found on Apple Silicon SoCs.
- 
-+config APPLE_SIO
-+	tristate "Apple SIO support"
-+	depends on ARCH_APPLE || COMPILE_TEST
-+	depends on APPLE_RTKIT
-+	select DMA_ENGINE
-+	default ARCH_APPLE
-+	help
-+	  Enable support for the SIO coprocessor found on Apple Silicon SoCs
-+	  where it provides DMA services.
-+
- config AT_HDMAC
- 	tristate "Atmel AHB DMA support"
- 	depends on ARCH_AT91
-diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-index 83553a97a010..787583ff2d45 100644
---- a/drivers/dma/Makefile
-+++ b/drivers/dma/Makefile
-@@ -18,6 +18,7 @@ obj-$(CONFIG_AMBA_PL08X) += amba-pl08x.o
- obj-$(CONFIG_AMCC_PPC440SPE_ADMA) += ppc4xx/
- obj-$(CONFIG_AMD_PTDMA) += ptdma/
- obj-$(CONFIG_APPLE_ADMAC) += apple-admac.o
-+obj-$(CONFIG_APPLE_SIO) += apple-sio.o
- obj-$(CONFIG_AT_HDMAC) += at_hdmac.o
- obj-$(CONFIG_AT_XDMAC) += at_xdmac.o
- obj-$(CONFIG_AXI_DMAC) += dma-axi-dmac.o
-diff --git a/drivers/dma/apple-sio.c b/drivers/dma/apple-sio.c
-new file mode 100644
-index 000000000000..2278388d9053
---- /dev/null
-+++ b/drivers/dma/apple-sio.c
-@@ -0,0 +1,907 @@
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
-+/*
-+ * Driver for SIO coprocessor on t8103 (M1) and other Apple SoCs
-+ *
-+ * Copyright (C) The Asahi Linux Contributors
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/bits.h>
-+#include <linux/completion.h>
-+#include <linux/device.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/init.h>
-+#include <linux/interrupt.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/of_dma.h>
-+#include <linux/soc/apple/rtkit.h>
-+
-+#include "dmaengine.h"
-+#include "virt-dma.h"
-+
-+#define NCHANNELS_MAX	0x80
-+
-+#define REG_CPU_CONTROL	0x44
-+#define CPU_CONTROL_RUN BIT(4)
-+
-+#define SIOMSG_DATA	GENMASK(63, 32)
-+#define SIOMSG_TYPE	GENMASK(23, 16)
-+#define SIOMSG_PARAM	GENMASK(31, 24)
-+#define SIOMSG_TAG	GENMASK(13, 8)
-+#define SIOMSG_EP	GENMASK(7, 0)
-+
-+#define EP_SIO		0x20
-+
-+#define MSG_START	0x2
-+#define MSG_SETUP	0x3
-+#define MSG_CONFIGURE	0x5
-+#define MSG_ISSUE	0x6
-+#define MSG_TERMINATE	0x8
-+#define MSG_ACK		0x65
-+#define MSG_NACK	0x66
-+#define MSG_STARTED	0x67
-+#define MSG_REPORT	0x68
-+
-+#define SIO_CALL_TIMEOUT_MS	100
-+#define SIO_SHMEM_SIZE		0x1000
-+#define SIO_NO_DESC_SLOTS	64
-+
-+/*
-+ * There are two kinds of 'transaction descriptors' in play here.
-+ *
-+ * There's the struct sio_tx, and the struct dma_async_tx_descriptor embedded
-+ * inside, which jointly represent a transaction to the dmaengine subsystem.
-+ * At this time we only support those transactions to be cyclic.
-+ *
-+ * Then there are the coprocessor descriptors, which is what the coprocessor
-+ * knows and understands. These don't seem to have a cyclic regime, so we can't
-+ * map the dmaengine transaction on an exact coprocessor counterpart. Instead
-+ * we continually queue up many coprocessor descriptors to implement a cyclic
-+ * transaction.
-+ *
-+ * The number below is the maximum of how far ahead (how many) coprocessor
-+ * descriptors we should be queuing up, per channel, for a cyclic transaction.
-+ * Basically it's a made-up number.
-+ */
-+#define SIO_MAX_NINFLIGHT	4
-+
-+struct sio_coproc_desc {
-+	u32 pad1;
-+	u32 flag;
-+	u64 unk;
-+	u64 iova;
-+	u64 size;
-+	u64 pad2;
-+	u64 pad3;
-+} __packed;
-+static_assert(sizeof(struct sio_coproc_desc) == 48);
-+
-+struct sio_shmem_chan_config {
-+	u32 datashape;
-+	u32 timeout;
-+	u32 fifo;
-+	u32 threshold;
-+	u32 limit;
-+} __packed;
-+
-+struct sio_data;
-+struct sio_tx;
-+
-+struct sio_chan {
-+	unsigned int no;
-+	struct sio_data *host;
-+	struct virt_dma_chan vc;
-+	struct work_struct terminate_wq;
-+
-+	bool configured;
-+	struct sio_shmem_chan_config cfg;
-+
-+	struct sio_tx *current_tx;
-+};
-+
-+#define SIO_NTAGS		16
-+
-+typedef void (*sio_ack_callback)(struct sio_chan *, void *, bool);
-+
-+struct sio_data {
-+	void __iomem *base;
-+	struct dma_device dma;
-+	struct device *dev;
-+	struct apple_rtkit *rtk;
-+	void *shmem;
-+	struct sio_coproc_desc *shmem_desc_base;
-+	unsigned long *desc_allocated;
-+
-+	struct sio_tagdata {
-+		DECLARE_BITMAP(allocated, SIO_NTAGS);
-+		int last_tag;
-+
-+		struct completion completions[SIO_NTAGS];
-+		bool atomic[SIO_NTAGS];
-+		bool acked[SIO_NTAGS];
-+
-+		sio_ack_callback ack_callback[SIO_NTAGS];
-+		void *cookie[SIO_NTAGS];
-+	} tags;
-+
-+	int nchannels;
-+	struct sio_chan channels[];
-+};
-+
-+struct sio_tx {
-+	struct virt_dma_desc vd;
-+	struct completion done;
-+
-+	bool terminated;
-+	size_t period_len;
-+	int nperiods;
-+	int ninflight;
-+	int next;
-+
-+	struct sio_coproc_desc *siodesc[];
-+};
-+
-+static int sio_send_siomsg(struct sio_data *sio, u64 msg);
-+static int sio_send_siomsg_atomic(struct sio_data *sio, u64 msg,
-+				  sio_ack_callback ack_callback,
-+				  void *cookie);
-+static int sio_call(struct sio_data *sio, u64 msg);
-+
-+static struct sio_chan *to_sio_chan(struct dma_chan *chan)
-+{
-+	return container_of(chan, struct sio_chan, vc.chan);
-+}
-+
-+static struct sio_tx *to_sio_tx(struct dma_async_tx_descriptor *tx)
-+{
-+	return container_of(tx, struct sio_tx, vd.tx);
-+}
-+
-+static int sio_alloc_tag(struct sio_data *sio)
-+{
-+	struct sio_tagdata *tags = &sio->tags;
-+	int tag, i;
-+
-+	/*
-+	 * Because tag number 0 is special, the usable tag range
-+	 * is 1...(SIO_NTAGS - 1). So, to pick the next usable tag,
-+	 * we do modulo (SIO_NTAGS - 1) *then* plus one.
-+	 */
-+
-+#define SIO_USABLE_TAGS (SIO_NTAGS - 1)
-+	tag = (READ_ONCE(tags->last_tag) % SIO_USABLE_TAGS) + 1;
-+
-+	for (i = 0; i < SIO_USABLE_TAGS; i++) {
-+		if (!test_and_set_bit(tag, tags->allocated))
-+			break;
-+
-+		tag = (tag % SIO_USABLE_TAGS) + 1;
-+	}
-+
-+	WRITE_ONCE(tags->last_tag, tag);
-+
-+	if (i < SIO_USABLE_TAGS)
-+		return tag;
-+	else
-+		return -EBUSY;
-+#undef SIO_USABLE_TAGS
-+}
-+
-+static void sio_free_tag(struct sio_data *sio, int tag)
-+{
-+	struct sio_tagdata *tags = &sio->tags;
-+
-+	if (WARN_ON(tag >= SIO_NTAGS))
-+		return;
-+
-+	tags->atomic[tag] = false;
-+	tags->ack_callback[tag] = NULL;
-+
-+	WARN_ON(!test_and_clear_bit(tag, tags->allocated));
-+}
-+
-+static void sio_set_tag_atomic(struct sio_data *sio, int tag,
-+			       sio_ack_callback ack_callback,
-+			       void *cookie)
-+{
-+	struct sio_tagdata *tags = &sio->tags;
-+
-+	tags->atomic[tag] = true;
-+	tags->ack_callback[tag] = ack_callback;
-+	tags->cookie[tag] = cookie;
-+}
-+
-+static struct sio_coproc_desc *sio_alloc_desc(struct sio_data *sio)
-+{
-+	int i;
-+
-+	for (i = 0; i < SIO_NO_DESC_SLOTS; i++)
-+		if (!test_and_set_bit(i, sio->desc_allocated))
-+			return sio->shmem_desc_base + i;
-+
-+	return NULL;
-+}
-+
-+static void sio_free_desc(struct sio_data *sio, struct sio_coproc_desc *desc)
-+{
-+	clear_bit(desc - sio->shmem_desc_base, sio->desc_allocated);
-+}
-+
-+static int sio_coproc_desc_slot(struct sio_data *sio, struct sio_coproc_desc *desc)
-+{
-+	return (desc - sio->shmem_desc_base) * 4;
-+}
-+
-+static enum dma_transfer_direction sio_chan_direction(int channo)
-+{
-+	/* Channel directions are fixed based on channel number */
-+	return (channo & 1) ? DMA_DEV_TO_MEM : DMA_MEM_TO_DEV;
-+}
-+
-+static void sio_tx_free(struct virt_dma_desc *vd)
-+{
-+	struct sio_data *sio = to_sio_chan(vd->tx.chan)->host;
-+	struct sio_tx *siotx = to_sio_tx(&vd->tx);
-+	int i;
-+
-+	for (i = 0; i < siotx->nperiods; i++)
-+		if (siotx->siodesc[i])
-+			sio_free_desc(sio, siotx->siodesc[i]);
-+	kfree(siotx);
-+}
-+
-+static struct dma_async_tx_descriptor *sio_prep_dma_cyclic(
-+		struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
-+		size_t period_len, enum dma_transfer_direction direction,
-+		unsigned long flags)
-+{
-+	struct sio_chan *siochan = to_sio_chan(chan);
-+	struct sio_tx *siotx = NULL;
-+	int i, nperiods = buf_len / period_len;
-+
-+	if (direction != sio_chan_direction(siochan->no))
-+		return NULL;
-+
-+	siotx = kzalloc(struct_size(siotx, siodesc, nperiods), GFP_NOWAIT);
-+	if (!siotx)
-+		return NULL;
-+
-+	init_completion(&siotx->done);
-+	siotx->period_len = period_len;
-+	siotx->nperiods = nperiods;
-+
-+	for (i = 0; i < nperiods; i++) {
-+		struct sio_coproc_desc *d;
-+
-+		siotx->siodesc[i] = d = sio_alloc_desc(siochan->host);
-+		if (!d) {
-+			sio_tx_free(&siotx->vd);
-+			return NULL;
-+		}
-+
-+		d->flag = 1; /* not sure what's up with this */
-+		d->iova = buf_addr + period_len * i;
-+		d->size = period_len;
-+	}
-+	dma_wmb();
-+
-+	return vchan_tx_prep(&siochan->vc, &siotx->vd, flags);
-+}
-+
-+static enum dma_status sio_tx_status(struct dma_chan *chan, dma_cookie_t cookie,
-+				     struct dma_tx_state *txstate)
-+{
-+	struct sio_chan *siochan = to_sio_chan(chan);
-+	struct virt_dma_desc *vd;
-+	struct sio_tx *siotx;
-+	enum dma_status ret;
-+	unsigned long flags;
-+	int periods_residue;
-+	size_t residue;
-+
-+	ret = dma_cookie_status(chan, cookie, txstate);
-+	if (ret == DMA_COMPLETE || !txstate)
-+		return ret;
-+
-+	spin_lock_irqsave(&siochan->vc.lock, flags);
-+	siotx = siochan->current_tx;
-+
-+	if (siotx && siotx->vd.tx.cookie == cookie) {
-+		ret = DMA_IN_PROGRESS;
-+		periods_residue = siotx->next - siotx->ninflight;
-+		while (periods_residue < 0)
-+			periods_residue += siotx->nperiods;
-+		residue = (siotx->nperiods - periods_residue) * siotx->period_len;
-+	} else {
-+		ret = DMA_IN_PROGRESS;
-+		residue = 0;
-+		vd = vchan_find_desc(&siochan->vc, cookie);
-+		if (vd) {
-+			siotx = to_sio_tx(&vd->tx);
-+			residue = siotx->period_len * siotx->nperiods;
-+		}
-+	}
-+	spin_unlock_irqrestore(&siochan->vc.lock, flags);
-+	dma_set_residue(txstate, residue);
-+
-+	return ret;
-+}
-+
-+static bool sio_fill_in_locked(struct sio_chan *siochan);
-+
-+static void sio_handle_issue_ack(struct sio_chan *siochan, void *cookie, bool ok)
-+{
-+	dma_cookie_t tx_cookie = (unsigned long) cookie;
-+	unsigned long flags;
-+	struct sio_tx *tx;
-+
-+	if (!ok) {
-+		dev_err(siochan->host->dev, "nacked issue on chan %d\n", siochan->no);
-+		return;
-+	}
-+
-+	spin_lock_irqsave(&siochan->vc.lock, flags);
-+	if (!siochan->current_tx || tx_cookie != siochan->current_tx->vd.tx.cookie ||
-+			siochan->current_tx->terminated)
-+		goto out;
-+
-+	tx = siochan->current_tx;
-+	tx->next = (tx->next + 1) % tx->nperiods;
-+	tx->ninflight++;
-+	sio_fill_in_locked(siochan);
-+
-+out:
-+	spin_unlock_irqrestore(&siochan->vc.lock, flags);
-+}
-+
-+static bool sio_fill_in_locked(struct sio_chan *siochan)
-+{
-+	struct sio_data *sio = siochan->host;
-+	struct sio_tx *tx = siochan->current_tx;
-+	struct sio_coproc_desc *d = tx->siodesc[tx->next];
-+	int ret;
-+
-+	if (tx->ninflight >= SIO_MAX_NINFLIGHT || tx->terminated)
-+		return false;
-+
-+	static_assert(sizeof(dma_cookie_t) <= sizeof(void *));
-+	ret = sio_send_siomsg_atomic(sio, FIELD_PREP(SIOMSG_EP, siochan->no) |
-+				     FIELD_PREP(SIOMSG_TYPE, MSG_ISSUE) |
-+				     FIELD_PREP(SIOMSG_DATA, sio_coproc_desc_slot(sio, d)),
-+				     sio_handle_issue_ack, (void *) (uintptr_t) tx->vd.tx.cookie);
-+	if (ret < 0)
-+		dev_err_ratelimited(sio->dev, "can't issue on chan %d ninflight %d: %d\n",
-+				    siochan->no, tx->ninflight, ret);
-+	return true;
-+}
-+
-+static void sio_update_current_tx_locked(struct sio_chan *siochan)
-+{
-+	struct virt_dma_desc *vd = vchan_next_desc(&siochan->vc);
-+
-+	if (vd && !siochan->current_tx) {
-+		list_del(&vd->node);
-+		siochan->current_tx = to_sio_tx(&vd->tx);
-+		sio_fill_in_locked(siochan);
-+	}
-+}
-+
-+static void sio_issue_pending(struct dma_chan *chan)
-+{
-+	struct sio_chan *siochan = to_sio_chan(chan);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&siochan->vc.lock, flags);
-+	vchan_issue_pending(&siochan->vc);
-+	sio_update_current_tx_locked(siochan);
-+	spin_unlock_irqrestore(&siochan->vc.lock, flags);
-+}
-+
-+static int sio_terminate_all(struct dma_chan *chan)
-+{
-+	struct sio_chan *siochan = to_sio_chan(chan);
-+	unsigned long flags;
-+	LIST_HEAD(to_free);
-+
-+	spin_lock_irqsave(&siochan->vc.lock, flags);
-+	if (siochan->current_tx && !siochan->current_tx->terminated) {
-+		dma_cookie_complete(&siochan->current_tx->vd.tx);
-+		siochan->current_tx->terminated = true;
-+		schedule_work(&siochan->terminate_wq);
-+	}
-+	vchan_get_all_descriptors(&siochan->vc, &to_free);
-+	spin_unlock_irqrestore(&siochan->vc.lock, flags);
-+
-+	vchan_dma_desc_free_list(&siochan->vc, &to_free);
-+
-+	return 0;
-+}
-+
-+static void sio_terminate_work(struct work_struct *wq)
-+{
-+	struct sio_chan *siochan = container_of(wq, struct sio_chan, terminate_wq);
-+	struct sio_tx *tx;
-+	unsigned long flags;
-+	int ret;
-+
-+	spin_lock_irqsave(&siochan->vc.lock, flags);
-+	tx = siochan->current_tx;
-+	spin_unlock_irqrestore(&siochan->vc.lock, flags);
-+
-+	if (WARN_ON(!tx))
-+		return;
-+
-+	ret = sio_call(siochan->host, FIELD_PREP(SIOMSG_EP, siochan->no) |
-+				      FIELD_PREP(SIOMSG_TYPE, MSG_TERMINATE));
-+	if (ret < 0)
-+		dev_err(siochan->host->dev, "terminate call on chan %d failed: %d\n",
-+			siochan->no, ret);
-+
-+	ret = wait_for_completion_timeout(&tx->done, msecs_to_jiffies(500));
-+	if (!ret)
-+		dev_err(siochan->host->dev, "terminate descriptor wait timed out\n");
-+
-+	tasklet_kill(&siochan->vc.task);
-+
-+	spin_lock_irqsave(&siochan->vc.lock, flags);
-+	WARN_ON(siochan->current_tx != tx);
-+	siochan->current_tx = NULL;
-+	sio_update_current_tx_locked(siochan);
-+	spin_unlock_irqrestore(&siochan->vc.lock, flags);
-+
-+	sio_tx_free(&tx->vd);
-+}
-+
-+static void sio_synchronize(struct dma_chan *chan)
-+{
-+	struct sio_chan *siochan = to_sio_chan(chan);
-+
-+	flush_work(&siochan->terminate_wq);
-+}
-+
-+static void sio_free_chan_resources(struct dma_chan *chan)
-+{
-+	sio_terminate_all(chan);
-+	sio_synchronize(chan);
-+	vchan_free_chan_resources(&to_sio_chan(chan)->vc);
-+}
-+
-+static struct dma_chan *sio_dma_of_xlate(struct of_phandle_args *dma_spec,
-+					 struct of_dma *ofdma)
-+{
-+	struct sio_data *sio = (struct sio_data *) ofdma->of_dma_data;
-+	unsigned int index = dma_spec->args[0];
-+
-+	if (dma_spec->args_count != 1 || index >= sio->nchannels)
-+		return ERR_PTR(-EINVAL);
-+
-+	return dma_get_slave_channel(&sio->channels[index].vc.chan);
-+}
-+
-+static void sio_rtk_crashed(void *cookie)
-+{
-+	struct sio_data *sio = cookie;
-+
-+	dev_err(sio->dev, "SIO down (crashed)");
-+}
-+
-+static void sio_process_report(struct sio_chan *siochan)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&siochan->vc.lock, flags);
-+	if (siochan->current_tx) {
-+		struct sio_tx *tx = siochan->current_tx;
-+
-+		if (tx->ninflight)
-+			tx->ninflight--;
-+		vchan_cyclic_callback(&tx->vd);
-+		if (!sio_fill_in_locked(siochan) && !tx->ninflight)
-+			complete(&tx->done);
-+	}
-+	spin_unlock_irqrestore(&siochan->vc.lock, flags);
-+}
-+
-+static void sio_recv_msg(void *cookie, u8 ep, u64 msg)
-+{
-+	struct sio_data *sio = cookie;
-+	struct sio_tagdata *tags = &sio->tags;
-+	u32 data;
-+	u8 param, type, tag, sioep;
-+
-+	if (ep != EP_SIO)
-+		goto unknown;
-+
-+	data  = FIELD_GET(SIOMSG_DATA, msg);
-+	param = FIELD_GET(SIOMSG_PARAM, msg);
-+	type  = FIELD_GET(SIOMSG_TYPE, msg);
-+	tag   = FIELD_GET(SIOMSG_TAG, msg);
-+	sioep = FIELD_GET(SIOMSG_EP, msg);
-+
-+	switch (type) {
-+	case MSG_STARTED:
-+		dev_info(sio->dev, "SIO protocol v%u\n", data);
-+		type = MSG_ACK; /* Pretend this is an ACK */
-+		fallthrough;
-+	case MSG_ACK:
-+	case MSG_NACK:
-+		if (WARN_ON(tag >= SIO_NTAGS))
-+			break;
-+
-+		if (tags->atomic[tag]) {
-+			sio_ack_callback callback = tags->ack_callback[tag];
-+
-+			if (callback && !WARN_ON(sioep >= sio->nchannels))
-+				callback(&sio->channels[sioep],
-+					 tags->cookie[tag], type == MSG_ACK);
-+			if (type == MSG_NACK)
-+				dev_err(sio->dev, "got a NACK on channel %d\n", sioep);
-+			sio_free_tag(sio, tag);
-+		} else {
-+			tags->acked[tag] = (type == MSG_ACK);
-+			complete(&tags->completions[tag]);
-+		}
-+		break;
-+
-+	case MSG_REPORT:
-+		if (WARN_ON(sioep >= sio->nchannels))
-+			break;
-+
-+		sio_process_report(&sio->channels[sioep]);
-+		break;
-+
-+	default:
-+		goto unknown;
-+	}
-+	return;
-+
-+unknown:
-+	dev_warn(sio->dev, "received unknown message: ep %x data %016llx\n",
-+		 ep, msg);
-+}
-+
-+static int _sio_send_siomsg(struct sio_data *sio, u64 msg, bool atomic,
-+			    sio_ack_callback ack_callback, void *cookie)
-+{
-+	int tag, ret;
-+
-+	tag = sio_alloc_tag(sio);
-+	if (tag < 0)
-+		return tag;
-+
-+	if (atomic)
-+		sio_set_tag_atomic(sio, tag, ack_callback, cookie);
-+	else
-+		reinit_completion(&sio->tags.completions[tag]);
-+
-+	msg &= ~SIOMSG_TAG;
-+	msg |= FIELD_PREP(SIOMSG_TAG, tag);
-+	ret = apple_rtkit_send_message(sio->rtk, EP_SIO, msg, NULL,
-+				       atomic);
-+	if (ret < 0) {
-+		sio_free_tag(sio, tag);
-+		return ret;
-+	}
-+
-+	return tag;
-+}
-+
-+static int sio_send_siomsg(struct sio_data *sio, u64 msg)
-+{
-+	return _sio_send_siomsg(sio, msg, false, NULL, NULL);
-+}
-+
-+static int sio_send_siomsg_atomic(struct sio_data *sio, u64 msg,
-+				  sio_ack_callback ack_callback,
-+				  void *cookie)
-+{
-+	return _sio_send_siomsg(sio, msg, true, ack_callback, cookie);
-+}
-+
-+static int sio_call(struct sio_data *sio, u64 msg)
-+{
-+	int tag, ret;
-+
-+	tag = sio_send_siomsg(sio, msg);
-+	if (tag < 0)
-+		return tag;
-+
-+	ret = wait_for_completion_timeout(&sio->tags.completions[tag],
-+					  msecs_to_jiffies(SIO_CALL_TIMEOUT_MS));
-+	if (!ret) {
-+		dev_warn(sio->dev, "call %8x timed out\n", msg);
-+		sio_free_tag(sio, tag);
-+		return -ETIME;
-+	}
-+
-+	ret = sio->tags.acked[tag];
-+	sio_free_tag(sio, tag);
-+
-+	return ret;
-+}
-+
-+static const struct apple_rtkit_ops sio_rtkit_ops = {
-+	.crashed = sio_rtk_crashed,
-+	.recv_message = sio_recv_msg,
-+};
-+
-+static int sio_device_config(struct dma_chan *chan,
-+			     struct dma_slave_config *config)
-+{
-+	struct sio_chan *siochan = to_sio_chan(chan);
-+	struct sio_data *sio = siochan->host;
-+	bool is_tx = sio_chan_direction(siochan->no) == DMA_MEM_TO_DEV;
-+	struct sio_shmem_chan_config *cfg_shmem = sio->shmem;
-+	struct sio_shmem_chan_config cfg;
-+	int ret;
-+
-+	switch (is_tx ? config->dst_addr_width : config->src_addr_width) {
-+	case DMA_SLAVE_BUSWIDTH_1_BYTE:
-+		cfg.datashape = 0;
-+		break;
-+	case DMA_SLAVE_BUSWIDTH_2_BYTES:
-+		cfg.datashape = 1;
-+		break;
-+	case DMA_SLAVE_BUSWIDTH_4_BYTES:
-+		cfg.datashape = 2;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	cfg.fifo = 0x800;
-+	cfg.limit = 0x800;
-+	cfg.threshold = 0x800;
-+
-+	/*
-+	 * Dmaengine prescribes we ought to apply the new configuration only
-+	 * to newly-queued descriptors.
-+	 *
-+	 * To comply with dmaengine's interface we take the lazy path here:
-+	 * we apply the configuration right away, we only allow the channel
-+	 * to be configured once, which means subsequent calls to `device_config`
-+	 * either return -EBUSY if the configuration differs, or they are
-+	 * a no-op if the configuration is the same as the starting one.
-+	 *
-+	 * This is the reasonable thing to do given that these sio channels
-+	 * are tied to fixed peripherals, and what's more given that the
-+	 * only planned consumer of this dmaengine driver in the kernel is
-+	 * diplayport audio support, where the DMA configuration is fixed,
-+	 * and no more than a single descriptor (a cyclic one) gets ever issued
-+	 * at the same time.
-+	 *
-+	 * The code complexity cost of tracking to which descriptor
-+	 * the configuration relates would be significant here, especially
-+	 * since we need to do a non-atomic operation to apply it (a call to
-+	 * the coprocessor) and dmaengine has its bunch of atomicity
-+	 * restrictions. And this complexity would be for naught since it
-+	 * doesn't even get exercised by the only planned consumer.
-+	 */
-+	if (siochan->configured && memcmp(&siochan->cfg, &cfg, sizeof(cfg)))
-+		return -EBUSY;
-+
-+	*cfg_shmem = cfg;
-+	dma_wmb();
-+
-+	ret = sio_call(sio, FIELD_PREP(SIOMSG_TYPE, MSG_CONFIGURE) |
-+			    FIELD_PREP(SIOMSG_EP, siochan->no));
-+
-+	if (ret == 1)
-+		ret = 0;
-+	else if (ret == 0)
-+		ret = -EINVAL;
-+
-+	if (ret == 0) {
-+		siochan->configured = true;
-+		siochan->cfg = cfg;
-+	}
-+
-+	return ret;
-+}
-+
-+static int sio_alloc_shmem(struct sio_data *sio)
-+{
-+	dma_addr_t iova;
-+	int err;
-+
-+	sio->shmem = dma_alloc_coherent(sio->dev, SIO_SHMEM_SIZE,
-+					&iova, GFP_KERNEL);
-+	if (!sio->shmem)
-+		return -ENOMEM;
-+
-+	sio->shmem_desc_base = (struct sio_coproc_desc *) (sio->shmem + 56);
-+	sio->desc_allocated = devm_kzalloc(sio->dev, SIO_NO_DESC_SLOTS / 32,
-+					   GFP_KERNEL);
-+	if (!sio->desc_allocated)
-+		return -ENOMEM;
-+
-+	err = sio_call(sio, FIELD_PREP(SIOMSG_TYPE, MSG_SETUP) |
-+			    FIELD_PREP(SIOMSG_PARAM, 1) |
-+			    FIELD_PREP(SIOMSG_DATA, iova >> 12));
-+	if (err != 1) {
-+		if (err == 0)
-+			err = -EINVAL;
-+		return err;
-+	}
-+
-+	err = sio_call(sio, FIELD_PREP(SIOMSG_TYPE, MSG_SETUP) |
-+			    FIELD_PREP(SIOMSG_PARAM, 2) |
-+			    FIELD_PREP(SIOMSG_DATA, SIO_SHMEM_SIZE));
-+	if (err != 1) {
-+		if (err == 0)
-+			err = -EINVAL;
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sio_send_dt_params(struct sio_data *sio)
-+{
-+	struct device_node *np = sio->dev->of_node;
-+	const char *propname = "apple,sio-firmware-params";
-+	int nparams, err, i;
-+
-+	nparams = of_property_count_u32_elems(np, propname);
-+	if (nparams < 0) {
-+		err = nparams;
-+		goto badprop;
-+	}
-+
-+	for (i = 0; i < nparams / 2; i++) {
-+		u32 key, val;
-+
-+		err = of_property_read_u32_index(np, propname, 2 * i, &key);
-+		if (err)
-+			goto badprop;
-+		err = of_property_read_u32_index(np, propname, 2 * i + 1, &val);
-+		if (err)
-+			goto badprop;
-+
-+		err = sio_call(sio, FIELD_PREP(SIOMSG_TYPE, MSG_SETUP) |
-+				    FIELD_PREP(SIOMSG_PARAM, key & 0xff) |
-+				    FIELD_PREP(SIOMSG_EP, key >> 8) |
-+				    FIELD_PREP(SIOMSG_DATA, val));
-+		if (err < 1) {
-+			if (err == 0)
-+				err = -ENXIO;
-+			return dev_err_probe(sio->dev, err, "sending SIO parameter %#x value %#x\n",
-+					     key, val);
-+		}
-+	}
-+
-+	return 0;
-+
-+badprop:
-+	return dev_err_probe(sio->dev, err, "failed to read '%s'\n", propname);
-+}
-+
-+static int sio_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct sio_data *sio;
-+	struct dma_device *dma;
-+	int nchannels;
-+	int err, i;
-+
-+	err = of_property_read_u32(np, "dma-channels", &nchannels);
-+	if (err || nchannels > NCHANNELS_MAX)
-+		return dev_err_probe(&pdev->dev, -EINVAL,
-+				     "missing or invalid dma-channels property\n");
-+
-+	sio = devm_kzalloc(&pdev->dev, struct_size(sio, channels, nchannels), GFP_KERNEL);
-+	if (!sio)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, sio);
-+	sio->dev = &pdev->dev;
-+	sio->nchannels = nchannels;
-+
-+	sio->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(sio->base))
-+		return PTR_ERR(sio->base);
-+
-+	sio->rtk = devm_apple_rtkit_init(&pdev->dev, sio, NULL, 0, &sio_rtkit_ops);
-+	if (IS_ERR(sio->rtk))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(sio->rtk),
-+				     "couldn't initialize rtkit\n");
-+	for (i = 1; i < SIO_NTAGS; i++)
-+		init_completion(&sio->tags.completions[i]);
-+
-+	dma = &sio->dma;
-+	dma_cap_set(DMA_PRIVATE, dma->cap_mask);
-+	dma_cap_set(DMA_CYCLIC, dma->cap_mask);
-+
-+	dma->dev = &pdev->dev;
-+	dma->device_free_chan_resources = sio_free_chan_resources;
-+	dma->device_tx_status = sio_tx_status;
-+	dma->device_issue_pending = sio_issue_pending;
-+	dma->device_terminate_all = sio_terminate_all;
-+	dma->device_synchronize = sio_synchronize;
-+	dma->device_prep_dma_cyclic = sio_prep_dma_cyclic;
-+	dma->device_config = sio_device_config;
-+
-+	dma->directions = BIT(DMA_MEM_TO_DEV);
-+	dma->residue_granularity = DMA_RESIDUE_GRANULARITY_SEGMENT;
-+	dma->dst_addr_widths = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
-+			       BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
-+			       BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
-+
-+	INIT_LIST_HEAD(&dma->channels);
-+	for (i = 0; i < nchannels; i++) {
-+		struct sio_chan *siochan = &sio->channels[i];
-+
-+		siochan->host = sio;
-+		siochan->no = i;
-+		siochan->vc.desc_free = sio_tx_free;
-+		INIT_WORK(&siochan->terminate_wq, sio_terminate_work);
-+		vchan_init(&siochan->vc, dma);
-+	}
-+
-+	writel(CPU_CONTROL_RUN, sio->base + REG_CPU_CONTROL);
-+
-+	err = apple_rtkit_boot(sio->rtk);
-+	if (err)
-+		return dev_err_probe(&pdev->dev, err, "SIO did not boot\n");
-+
-+	err = apple_rtkit_start_ep(sio->rtk, EP_SIO);
-+	if (err)
-+		return dev_err_probe(&pdev->dev, err, "starting SIO endpoint\n");
-+
-+	err = sio_call(sio, FIELD_PREP(SIOMSG_TYPE, MSG_START));
-+	if (err < 1) {
-+		if (err == 0)
-+			err = -ENXIO;
-+		return dev_err_probe(&pdev->dev, err, "starting SIO service\n");
-+	}
-+
-+	err = sio_send_dt_params(sio);
-+	if (err < 0)
-+		return dev_err_probe(&pdev->dev, err, "failed to send boot-up parameters\n");
-+
-+	err = sio_alloc_shmem(sio);
-+	if (err < 0)
-+		return err;
-+
-+	err = dma_async_device_register(&sio->dma);
-+	if (err)
-+		return dev_err_probe(&pdev->dev, err, "failed to register DMA device\n");
-+
-+	err = of_dma_controller_register(pdev->dev.of_node, sio_dma_of_xlate, sio);
-+	if (err) {
-+		dma_async_device_unregister(&sio->dma);
-+		return dev_err_probe(&pdev->dev, err, "failed to register with OF\n");
-+	}
-+
-+	return 0;
-+}
-+
-+static int sio_remove(struct platform_device *pdev)
-+{
-+	struct sio_data *sio = platform_get_drvdata(pdev);
-+
-+	of_dma_controller_free(pdev->dev.of_node);
-+	dma_async_device_unregister(&sio->dma);
-+	return 0;
-+}
-+
-+static const struct of_device_id sio_of_match[] = {
-+	{ .compatible = "apple,sio", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, sio_of_match);
-+
-+static struct platform_driver apple_sio_driver = {
-+	.driver = {
-+		.name = "apple-sio",
-+		.of_match_table = sio_of_match,
-+	},
-+	.probe = sio_probe,
-+	.remove = sio_remove,
-+};
-+module_platform_driver(apple_sio_driver);
-+
-+MODULE_AUTHOR("Martin Povišer <povik+lin@cutebit.org>");
-+MODULE_DESCRIPTION("Driver for SIO coprocessor on Apple SoCs");
-+MODULE_LICENSE("Dual MIT/GPL");
--- 
-2.38.3
-
+Ah, yes, in terms of optimizing performance rather than marginal
+fairness, that would help.
