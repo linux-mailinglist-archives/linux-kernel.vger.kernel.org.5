@@ -2,140 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1847D7C8029
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA457C800C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbjJMI01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52084 "EHLO
+        id S230036AbjJMIY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjJMI0X (ORCPT
+        with ESMTP id S229939AbjJMIYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:26:23 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE7B91
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:26:21 -0700 (PDT)
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39D7Opc1013924;
-        Fri, 13 Oct 2023 08:26:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2023-03-30;
- bh=/0aZsgxCF4y1JYPEwaC9JYKgoBe2Trmk++npA7bf5y0=;
- b=yIfGRlLEq+0gXPeFyUKwwaRRMbfR0usE+EYMVqFexk3LjdcmdShe7j1u5d1h+7QFnY1I
- 6j80BoCGHKU8PEg/oKn55odItYcfccBjT8W2iaKFXjMXl2Tn0J2n4sJ9IveAhZ3bGEk8
- OYI5ESiOOiBX7p1SMHRud+oTp7ZuzHfEucpalu5o27R7Q2UVkvUcS+12ctBf7pEehzHZ
- nSGaJCbqdhBe0c8PoTKkRYi/nqaBPW76+D324nr2lXWwSNCPtw91ssdtFwULOmhe2Pe4
- cALsLGhS8kz7GAugbpNQoIxd+eVXuygipDhZI/9y4HKtdzkigqVSFCvfQnWO4W78uHLH cQ== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tjx8cmk76-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 13 Oct 2023 08:26:17 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39D626bD020257;
-        Fri, 13 Oct 2023 08:26:17 GMT
-Received: from ban25x6uut24.us.oracle.com (ban25x6uut24.us.oracle.com [10.153.73.24])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3tptcj8d2r-1;
-        Fri, 13 Oct 2023 08:26:16 +0000
-From:   Si-Wei Liu <si-wei.liu@oracle.com>
-To:     jasowang@redhat.com, mst@redhat.com, eperezma@redhat.com,
-        sgarzare@redhat.com
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] vdpa_sim: implement .reset_map support
-Date:   Fri, 13 Oct 2023 01:23:40 -0700
-Message-Id: <1697185420-27213-1-git-send-email-si-wei.liu@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-13_03,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
- suspectscore=0 phishscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310130069
-X-Proofpoint-ORIG-GUID: y_bZp2PgS0bvm98lMFFCMa3cM5HRiHF2
-X-Proofpoint-GUID: y_bZp2PgS0bvm98lMFFCMa3cM5HRiHF2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Fri, 13 Oct 2023 04:24:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6162EB8;
+        Fri, 13 Oct 2023 01:24:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFCAFC433C7;
+        Fri, 13 Oct 2023 08:24:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697185464;
+        bh=QqmQxaKl/YOc8772F3o6ch9rZJ0UYhPVI1Fy6DaUYBM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=thtYiLb+x5/ppF+9l7rDIvcn10/GWovnyPX4SvtoxviY0BfdzBI7fcOfvJvhBzEHE
+         +0PcTJZF2L+Tn0IErma7NxaN+4qlExTpwAQLICr21qaNRsBhmVnTcv/rRgIpHLy5tC
+         0XjIMLiMk4ENAjWJiSZPMg5Xw0XjzmPhU9yKcEYrjVezQsav7eAz5qq50bY97Eg09H
+         RPAXc5IVHf3JjSZOYbjDX8rMexx6KcR5MtDk44gOcRoFFKoEGeOhbVAd7PEQ5yhgjh
+         GBSfYon3N8hO3D+VBe5ao1tu3V8uP5v26XuK88xbfFkoNtMn1FvGY6CPxftRZbY0kd
+         mux2g0sdQGGiA==
+Date:   Fri, 13 Oct 2023 10:24:19 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Dan Clash <daclash@linux.microsoft.com>
+Cc:     audit@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paul@paul-moore.com, axboe@kernel.dk,
+        linux-fsdevel@vger.kernel.org, dan.clash@microsoft.com
+Subject: Re: [PATCH] audit,io_uring: io_uring openat triggers audit reference
+ count underflow
+Message-ID: <20231013-insofern-gegolten-75ca48b24cf5@brauner>
+References: <20231012215518.GA4048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231012215518.GA4048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RFC only. Not tested on vdpa-sim-blk with user virtual address.
-Works fine with vdpa-sim-net which uses physical address to map.
+On Thu, Oct 12, 2023 at 02:55:18PM -0700, Dan Clash wrote:
+> An io_uring openat operation can update an audit reference count
+> from multiple threads resulting in the call trace below.
+> 
+> A call to io_uring_submit() with a single openat op with a flag of
+> IOSQE_ASYNC results in the following reference count updates.
+> 
+> These first part of the system call performs two increments that do not race.
+> 
+> do_syscall_64()
+>   __do_sys_io_uring_enter()
+>     io_submit_sqes()
+>       io_openat_prep()
+>         __io_openat_prep()
+>           getname()
+>             getname_flags()       /* update 1 (increment) */
+>               __audit_getname()   /* update 2 (increment) */
+> 
+> The openat op is queued to an io_uring worker thread which starts the
+> opportunity for a race.  The system call exit performs one decrement.
+> 
+> do_syscall_64()
+>   syscall_exit_to_user_mode()
+>     syscall_exit_to_user_mode_prepare()
+>       __audit_syscall_exit()
+>         audit_reset_context()
+>            putname()              /* update 3 (decrement) */
+> 
+> The io_uring worker thread performs one increment and two decrements.
+> These updates can race with the system call decrement.
+> 
+> io_wqe_worker()
+>   io_worker_handle_work()
+>     io_wq_submit_work()
+>       io_issue_sqe()
+>         io_openat()
+>           io_openat2()
+>             do_filp_open()
+>               path_openat()
+>                 __audit_inode()   /* update 4 (increment) */
+>             putname()             /* update 5 (decrement) */
+>         __audit_uring_exit()
+>           audit_reset_context()
+>             putname()             /* update 6 (decrement) */
+> 
+> The fix is to change the refcnt member of struct audit_names
+> from int to atomic_t.
+> 
+> kernel BUG at fs/namei.c:262!
+> Call Trace:
+> ...
+>  ? putname+0x68/0x70
+>  audit_reset_context.part.0.constprop.0+0xe1/0x300
+>  __audit_uring_exit+0xda/0x1c0
+>  io_issue_sqe+0x1f3/0x450
+>  ? lock_timer_base+0x3b/0xd0
+>  io_wq_submit_work+0x8d/0x2b0
+>  ? __try_to_del_timer_sync+0x67/0xa0
+>  io_worker_handle_work+0x17c/0x2b0
+>  io_wqe_worker+0x10a/0x350
+> 
+> Cc: <stable@vger.kernel.org>
+> Link: https://lore.kernel.org/lkml/MW2PR2101MB1033FFF044A258F84AEAA584F1C9A@MW2PR2101MB1033.namprd21.prod.outlook.com/
+> Fixes: 5bd2182d58e9 ("audit,io_uring,io-wq: add some basic audit support to io_uring")
+> Signed-off-by: Dan Clash <daclash@linux.microsoft.com>
+> ---
+>  fs/namei.c         | 9 +++++----
+>  include/linux/fs.h | 2 +-
+>  kernel/auditsc.c   | 8 ++++----
+>  3 files changed, 10 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 567ee547492b..94565bd7e73f 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -188,7 +188,7 @@ getname_flags(const char __user *filename, int flags, int *empty)
+>  		}
+>  	}
+>  
+> -	result->refcnt = 1;
+> +	atomic_set(&result->refcnt, 1);
+>  	/* The empty path is special. */
+>  	if (unlikely(!len)) {
+>  		if (empty)
+> @@ -249,7 +249,7 @@ getname_kernel(const char * filename)
+>  	memcpy((char *)result->name, filename, len);
+>  	result->uptr = NULL;
+>  	result->aname = NULL;
+> -	result->refcnt = 1;
+> +	atomic_set(&result->refcnt, 1);
+>  	audit_getname(result);
+>  
+>  	return result;
+> @@ -261,9 +261,10 @@ void putname(struct filename *name)
+>  	if (IS_ERR(name))
+>  		return;
+>  
+> -	BUG_ON(name->refcnt <= 0);
+> +	if (WARN_ON_ONCE(!atomic_read(&name->refcnt)))
+> +		return;
+>  
+> -	if (--name->refcnt > 0)
+> +	if (!atomic_dec_and_test(&name->refcnt))
+>  		return;
 
-This patch is based on top of [1].
+Fine by me. I'd write this as:
 
-[1] https://lore.kernel.org/virtualization/1696928580-7520-1-git-send-email-si-wei.liu@oracle.com/
-
-Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
----
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 28 +++++++++++++++++++++-------
- 1 file changed, 21 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index 76d4105..a7455f2 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -151,13 +151,6 @@ static void vdpasim_do_reset(struct vdpasim *vdpasim)
- 				 &vdpasim->iommu_lock);
- 	}
- 
--	for (i = 0; i < vdpasim->dev_attr.nas; i++) {
--		vhost_iotlb_reset(&vdpasim->iommu[i]);
--		vhost_iotlb_add_range(&vdpasim->iommu[i], 0, ULONG_MAX,
--				      0, VHOST_MAP_RW);
--		vdpasim->iommu_pt[i] = true;
--	}
--
- 	vdpasim->running = true;
- 	spin_unlock(&vdpasim->iommu_lock);
- 
-@@ -637,6 +630,25 @@ static int vdpasim_set_map(struct vdpa_device *vdpa, unsigned int asid,
- 	return ret;
- }
- 
-+static int vdpasim_reset_map(struct vdpa_device *vdpa, unsigned int asid)
-+{
-+	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
-+
-+	if (asid >= vdpasim->dev_attr.nas)
-+		return -EINVAL;
-+
-+	spin_lock(&vdpasim->iommu_lock);
-+	if (vdpasim->iommu_pt[asid])
-+		goto out;
-+	vhost_iotlb_reset(&vdpasim->iommu[asid]);
-+	vhost_iotlb_add_range(&vdpasim->iommu[asid], 0, ULONG_MAX,
-+			      0, VHOST_MAP_RW);
-+	vdpasim->iommu_pt[asid] = true;
-+out:
-+	spin_unlock(&vdpasim->iommu_lock);
-+	return 0;
-+}
-+
- static int vdpasim_bind_mm(struct vdpa_device *vdpa, struct mm_struct *mm)
- {
- 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
-@@ -759,6 +771,7 @@ static void vdpasim_free(struct vdpa_device *vdpa)
- 	.set_group_asid         = vdpasim_set_group_asid,
- 	.dma_map                = vdpasim_dma_map,
- 	.dma_unmap              = vdpasim_dma_unmap,
-+	.reset_map              = vdpasim_reset_map,
- 	.bind_mm		= vdpasim_bind_mm,
- 	.unbind_mm		= vdpasim_unbind_mm,
- 	.free                   = vdpasim_free,
-@@ -796,6 +809,7 @@ static void vdpasim_free(struct vdpa_device *vdpa)
- 	.get_iova_range         = vdpasim_get_iova_range,
- 	.set_group_asid         = vdpasim_set_group_asid,
- 	.set_map                = vdpasim_set_map,
-+	.reset_map              = vdpasim_reset_map,
- 	.bind_mm		= vdpasim_bind_mm,
- 	.unbind_mm		= vdpasim_unbind_mm,
- 	.free                   = vdpasim_free,
--- 
-1.8.3.1
-
+count = atomic_dec_if_positive(&name->refcnt);
+if (WARN_ON_ONCE(unlikely(count < 0))
+	return;
+if (count > 0)
+	return;
