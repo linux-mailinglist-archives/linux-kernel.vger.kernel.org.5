@@ -2,118 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E1D7C835E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE817C8363
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbjJMKkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 06:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
+        id S230147AbjJMKmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 06:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230292AbjJMKkK (ORCPT
+        with ESMTP id S229903AbjJMKme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 06:40:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD51012E;
-        Fri, 13 Oct 2023 03:39:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697193591; x=1728729591;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=EdUkyxDquqHULFKo1sZtr/htjjNPhFh4HnnBYrB4zq0=;
-  b=RgKqENDrjNQ6YiG3Ug3iNPVPOu8eIv2/DiRGPLHt8OrqgdPb0YVVzoXz
-   ZBh1SwfnFuMG/cyMp9crdGDmODisXv5jST6suS8VM5W3h+61/L4Ay9hRV
-   EzBaD8FPZs4Yp/gcHwiO0OqMY7UYeVn6wtWsOX1hKqvdClA6tu+x4Si7q
-   /S0kwzqbSNAoIypwZup6s9HuW/kSqCvU2AAEjCcyzsYiI1vTFCiJ2FYsE
-   yMcBFrvH7/18IfePRV/nVS8kuh58xg+zuEV2r6HmuelwKmqQ6dhT6G1vQ
-   aewTDEKLvxNhmtbCrZeZBthJzGP2VGbu2Fcrk4mENRQM+kVWE2MPkZANb
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="388003210"
-X-IronPort-AV: E=Sophos;i="6.03,221,1694761200"; 
-   d="scan'208";a="388003210"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 03:39:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="871022922"
-X-IronPort-AV: E=Sophos;i="6.03,221,1694761200"; 
-   d="scan'208";a="871022922"
-Received: from ttmerile-mobl1.ger.corp.intel.com ([10.249.37.202])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 03:39:47 -0700
-Date:   Fri, 13 Oct 2023 13:39:45 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-cc:     kernel test robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com,
-        oe-kbuild-all@lists.linux.dev,
-        "David E. Box" <david.e.box@linux.intel.com>
-Subject: Re: [PATCH V3 03/16] platform/x86/intel/vsec: Use cleanup.h
-In-Reply-To: <6ed4cd5ae37a054d4780c8fa519dc83396b15c14.camel@linux.intel.com>
-Message-ID: <b93a3e8-2d15-256a-4172-a22ef17dde9@linux.intel.com>
-References: <20231012023840.3845703-4-david.e.box@linux.intel.com>  <202310121314.3Xpqom2w-lkp@intel.com> <6ed4cd5ae37a054d4780c8fa519dc83396b15c14.camel@linux.intel.com>
+        Fri, 13 Oct 2023 06:42:34 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C6D83;
+        Fri, 13 Oct 2023 03:42:31 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3232be274a0so2033601f8f.1;
+        Fri, 13 Oct 2023 03:42:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697193750; x=1697798550; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Iqm6kUyRRlnkxoYetnLvUoj6TjUJCq4Ji7eQioxPBIM=;
+        b=EBGFTO+0R6/N/uf/pfRbGk+Q73dkxi/45es67NpN5z1s07YbU0pvrO9Gjv3ax4yWhK
+         Rk2NQNl7EvVzbKEtFHfpnJKK8iNODC9ibnwFwbIaxUwhBitUGx0jdtJniu3BhvM6BCr/
+         +zD1Q6DNIGL/Ts/mAyLsNKfk6JIHwM7/6fGdZSc+Q2s6YrnFen9JgvpDw92PcsN7x8Hp
+         mtVNR6jg2jNKSVODUlx0rIM8QdzAMvRCzT565b2HBMqnq4v7mD6yxD++S6rEYda9kowI
+         2nSRmYF0lBtWplysR3z54CWEIWpl9rjGNrJEcbOA5x6ktko+YpCY9BxF0iwwU3FFyyHp
+         cKfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697193750; x=1697798550;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Iqm6kUyRRlnkxoYetnLvUoj6TjUJCq4Ji7eQioxPBIM=;
+        b=gR6U9hnA32h+3kWehqzbq9qPwAVNYmUVOpPn6SxteSAXPk1NvKHcQx8cDWDbrohhXi
+         RmBXoG0BqCQcmSJoxZ7HXxXX78WHv3Zs4EM8CeickIZrE7TNKvQbmRHX47wgnEGp20mB
+         lmSP1zFQ8Jvre4P8CJ5eP+KwE4OIYeE2nwfZFYNvkO63WOkHN1FaU9oshL2/WY3A5CH4
+         Pu2d887PsvrkiEuz3hgnB2LaSkmgtE0Me1CJXvGGNhROTpQ3R6smHevC4XCROqo+AJ4k
+         fLy60zT9Ic96jKbbAEDVO+3yJEIPYT650NQ4zmzBLM+HrrzKfg2mfAlqPwcFmrOBd29C
+         emOA==
+X-Gm-Message-State: AOJu0YwZpzZIRGP7H1B2+lnujpZ4ckughnZI1QmCgUWZyjq3grwXxfl4
+        eskynT7mR7X6IHLRPr8oLw==
+X-Google-Smtp-Source: AGHT+IGtKjDkhX8UTowKlArgTyQIsuNtAthvG1KErb01OkSy12ZviiuvbMU3EBT09Dt3tLyVeShI2Q==
+X-Received: by 2002:adf:ab0f:0:b0:32d:8113:eda3 with SMTP id q15-20020adfab0f000000b0032d8113eda3mr7509783wrc.10.1697193750005;
+        Fri, 13 Oct 2023 03:42:30 -0700 (PDT)
+Received: from dorcaslitunya-virtual-machine.localdomain ([105.163.2.146])
+        by smtp.gmail.com with ESMTPSA id u9-20020a7bc049000000b004063ea92492sm2191882wmc.22.2023.10.13.03.42.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 03:42:29 -0700 (PDT)
+From:   Dorcas AnonoLitunya <anonolitunya@gmail.com>
+Cc:     anonolitunya@gmail.com, outreachy@lists.linux.dev,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [PATCH]Staging: sm750fb:Add snakecase naming style
+Date:   Fri, 13 Oct 2023 13:42:15 +0300
+Message-ID: <20231013104220.7527-1-anonolitunya@gmail.com>
+X-Mailer: git-send-email 2.42.0.345.gaab89be2eb
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1029817949-1697193589=:2026"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+From: Dorcas Anono Litunya <anonolitunya@gmail.com>
 
---8323329-1029817949-1697193589=:2026
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Change camelCase variables in file to snake_case for consistent naming
+practices. Issue found by checkpatch.
 
-Hi,
+Signed-off-by: Dorcas Anono Litunya <anonolitunya@gmail.com>
+---
+ drivers/staging/sm750fb/ddk750_mode.c | 86 +++++++++++++--------------
+ drivers/staging/sm750fb/ddk750_mode.h |  2 +-
+ drivers/staging/sm750fb/sm750_hw.c    |  2 +-
+ 3 files changed, 45 insertions(+), 45 deletions(-)
 
-I added checkpatch people, please check what looks a false positive below.
-
-On Thu, 12 Oct 2023, David E. Box wrote:
-
-> On Thu, 2023-10-12 at 13:25 +0800, kernel test robot wrote:
-> > Hi David,
-> > 
-> > kernel test robot noticed the following build warnings:
-> > 
-> > [auto build test WARNING on acce85a7dd28eac3858d44230f4c65985d0f271c]
-> > 
-> > url:   
-> > https://github.com/intel-lab-lkp/linux/commits/David-E-Box/platform-x86-intel-vsec-Move-structures-to-header/20231012-104217
-> > base:   acce85a7dd28eac3858d44230f4c65985d0f271c
-> > patch link:   
-> > https://lore.kernel.org/r/20231012023840.3845703-4-david.e.box%40linux.intel.com
-> > patch subject: [PATCH V3 03/16] platform/x86/intel/vsec: Use cleanup.h
-> > reproduce:
-> > (https://download.01.org/0day-ci/archive/20231012/202310121314.3Xpqom2w-lkp@in
-> > tel.com/reproduce)
-> > 
-> > If you fix the issue in a separate patch/commit (i.e. not just a new version
-> > of
-> > the same patch/commit), kindly add following tags
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Closes:
-> > > https://lore.kernel.org/oe-kbuild-all/202310121314.3Xpqom2w-lkp@intel.com/
-> > 
-> > # many are suggestions rather than must-fix
-> > 
-> > ERROR:SPACING: need consistent spacing around '*' (ctx:WxV)
-> > #31: FILE: drivers/platform/x86/intel/vsec.c:159:
-> > +       struct intel_vsec_device __free(kfree) *intel_vsec_dev = NULL;
-> 
-> These looks like false positives.
-
-I agree. If I interpret the error message right checkpatch seems to think
-that's a multiplication which is not the case here.
-
+diff --git a/drivers/staging/sm750fb/ddk750_mode.c b/drivers/staging/sm750fb/ddk750_mode.c
+index e00a6cb31947..f08dcab29172 100644
+--- a/drivers/staging/sm750fb/ddk750_mode.c
++++ b/drivers/staging/sm750fb/ddk750_mode.c
+@@ -14,13 +14,13 @@
+  * in bit 29:27 of Display Control register.
+  */
+ static unsigned long
+-displayControlAdjust_SM750LE(struct mode_parameter *pModeParam,
+-			     unsigned long dispControl)
++display_control_adjust_SM750LE(struct mode_parameter *p_mode_param,
++			       unsigned long disp_control)
+ {
+ 	unsigned long x, y;
+ 
+-	x = pModeParam->horizontal_display_end;
+-	y = pModeParam->vertical_display_end;
++	x = p_mode_param->horizontal_display_end;
++	y = p_mode_param->vertical_display_end;
+ 
+ 	/*
+ 	 * SM750LE has to set up the top-left and bottom-right
+@@ -42,41 +42,41 @@ displayControlAdjust_SM750LE(struct mode_parameter *pModeParam,
+ 	 */
+ 
+ 	/* Clear bit 29:27 of display control register */
+-	dispControl &= ~CRT_DISPLAY_CTRL_CLK_MASK;
++	disp_control &= ~CRT_DISPLAY_CTRL_CLK_MASK;
+ 
+ 	/* Set bit 29:27 of display control register for the right clock */
+ 	/* Note that SM750LE only need to supported 7 resolutions. */
+ 	if (x == 800 && y == 600)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL41;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL41;
+ 	else if (x == 1024 && y == 768)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL65;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL65;
+ 	else if (x == 1152 && y == 864)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL80;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL80;
+ 	else if (x == 1280 && y == 768)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL80;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL80;
+ 	else if (x == 1280 && y == 720)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL74;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL74;
+ 	else if (x == 1280 && y == 960)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL108;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL108;
+ 	else if (x == 1280 && y == 1024)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL108;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL108;
+ 	else /* default to VGA clock */
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL25;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL25;
+ 
+ 	/* Set bit 25:24 of display controller */
+-	dispControl |= (CRT_DISPLAY_CTRL_CRTSELECT | CRT_DISPLAY_CTRL_RGBBIT);
++	disp_control |= (CRT_DISPLAY_CTRL_CRTSELECT | CRT_DISPLAY_CTRL_RGBBIT);
+ 
+ 	/* Set bit 14 of display controller */
+-	dispControl |= DISPLAY_CTRL_CLOCK_PHASE;
++	disp_control |= DISPLAY_CTRL_CLOCK_PHASE;
+ 
+-	poke32(CRT_DISPLAY_CTRL, dispControl);
++	poke32(CRT_DISPLAY_CTRL, disp_control);
+ 
+-	return dispControl;
++	return disp_control;
+ }
+ 
+ /* only timing related registers will be  programed */
+-static int programModeRegisters(struct mode_parameter *pModeParam,
+-				struct pll_value *pll)
++static int program_mode_registers(struct mode_parameter *p_mode_param,
++				  struct pll_value *pll)
+ {
+ 	int ret = 0;
+ 	int cnt = 0;
+@@ -86,46 +86,46 @@ static int programModeRegisters(struct mode_parameter *pModeParam,
+ 		/* programe secondary pixel clock */
+ 		poke32(CRT_PLL_CTRL, sm750_format_pll_reg(pll));
+ 
+-		tmp = ((pModeParam->horizontal_total - 1) <<
++		tmp = ((p_mode_param->horizontal_total - 1) <<
+ 		       CRT_HORIZONTAL_TOTAL_TOTAL_SHIFT) &
+ 		     CRT_HORIZONTAL_TOTAL_TOTAL_MASK;
+-		tmp |= (pModeParam->horizontal_display_end - 1) &
++		tmp |= (p_mode_param->horizontal_display_end - 1) &
+ 		      CRT_HORIZONTAL_TOTAL_DISPLAY_END_MASK;
+ 
+ 		poke32(CRT_HORIZONTAL_TOTAL, tmp);
+ 
+-		tmp = (pModeParam->horizontal_sync_width <<
++		tmp = (p_mode_param->horizontal_sync_width <<
+ 		       CRT_HORIZONTAL_SYNC_WIDTH_SHIFT) &
+ 		     CRT_HORIZONTAL_SYNC_WIDTH_MASK;
+-		tmp |= (pModeParam->horizontal_sync_start - 1) &
++		tmp |= (p_mode_param->horizontal_sync_start - 1) &
+ 		      CRT_HORIZONTAL_SYNC_START_MASK;
+ 
+ 		poke32(CRT_HORIZONTAL_SYNC, tmp);
+ 
+-		tmp = ((pModeParam->vertical_total - 1) <<
++		tmp = ((p_mode_param->vertical_total - 1) <<
+ 		       CRT_VERTICAL_TOTAL_TOTAL_SHIFT) &
+ 		     CRT_VERTICAL_TOTAL_TOTAL_MASK;
+-		tmp |= (pModeParam->vertical_display_end - 1) &
++		tmp |= (p_mode_param->vertical_display_end - 1) &
+ 		      CRT_VERTICAL_TOTAL_DISPLAY_END_MASK;
+ 
+ 		poke32(CRT_VERTICAL_TOTAL, tmp);
+ 
+-		tmp = ((pModeParam->vertical_sync_height <<
++		tmp = ((p_mode_param->vertical_sync_height <<
+ 		       CRT_VERTICAL_SYNC_HEIGHT_SHIFT)) &
+ 		     CRT_VERTICAL_SYNC_HEIGHT_MASK;
+-		tmp |= (pModeParam->vertical_sync_start - 1) &
++		tmp |= (p_mode_param->vertical_sync_start - 1) &
+ 		      CRT_VERTICAL_SYNC_START_MASK;
+ 
+ 		poke32(CRT_VERTICAL_SYNC, tmp);
+ 
+ 		tmp = DISPLAY_CTRL_TIMING | DISPLAY_CTRL_PLANE;
+-		if (pModeParam->vertical_sync_polarity)
++		if (p_mode_param->vertical_sync_polarity)
+ 			tmp |= DISPLAY_CTRL_VSYNC_PHASE;
+-		if (pModeParam->horizontal_sync_polarity)
++		if (p_mode_param->horizontal_sync_polarity)
+ 			tmp |= DISPLAY_CTRL_HSYNC_PHASE;
+ 
+ 		if (sm750_get_chip_type() == SM750LE) {
+-			displayControlAdjust_SM750LE(pModeParam, tmp);
++			display_control_adjust_SM750LE(p_mode_param, tmp);
+ 		} else {
+ 			reg = peek32(CRT_DISPLAY_CTRL) &
+ 				~(DISPLAY_CTRL_VSYNC_PHASE |
+@@ -140,40 +140,40 @@ static int programModeRegisters(struct mode_parameter *pModeParam,
+ 
+ 		poke32(PANEL_PLL_CTRL, sm750_format_pll_reg(pll));
+ 
+-		reg = ((pModeParam->horizontal_total - 1) <<
++		reg = ((p_mode_param->horizontal_total - 1) <<
+ 			PANEL_HORIZONTAL_TOTAL_TOTAL_SHIFT) &
+ 			PANEL_HORIZONTAL_TOTAL_TOTAL_MASK;
+-		reg |= ((pModeParam->horizontal_display_end - 1) &
++		reg |= ((p_mode_param->horizontal_display_end - 1) &
+ 			PANEL_HORIZONTAL_TOTAL_DISPLAY_END_MASK);
+ 		poke32(PANEL_HORIZONTAL_TOTAL, reg);
+ 
+ 		poke32(PANEL_HORIZONTAL_SYNC,
+-		       ((pModeParam->horizontal_sync_width <<
++		       ((p_mode_param->horizontal_sync_width <<
+ 			 PANEL_HORIZONTAL_SYNC_WIDTH_SHIFT) &
+ 			PANEL_HORIZONTAL_SYNC_WIDTH_MASK) |
+-		       ((pModeParam->horizontal_sync_start - 1) &
++		       ((p_mode_param->horizontal_sync_start - 1) &
+ 			PANEL_HORIZONTAL_SYNC_START_MASK));
+ 
+ 		poke32(PANEL_VERTICAL_TOTAL,
+-		       (((pModeParam->vertical_total - 1) <<
++		       (((p_mode_param->vertical_total - 1) <<
+ 			 PANEL_VERTICAL_TOTAL_TOTAL_SHIFT) &
+ 			PANEL_VERTICAL_TOTAL_TOTAL_MASK) |
+-		       ((pModeParam->vertical_display_end - 1) &
++		       ((p_mode_param->vertical_display_end - 1) &
+ 			PANEL_VERTICAL_TOTAL_DISPLAY_END_MASK));
+ 
+ 		poke32(PANEL_VERTICAL_SYNC,
+-		       ((pModeParam->vertical_sync_height <<
++		       ((p_mode_param->vertical_sync_height <<
+ 			 PANEL_VERTICAL_SYNC_HEIGHT_SHIFT) &
+ 			PANEL_VERTICAL_SYNC_HEIGHT_MASK) |
+-		       ((pModeParam->vertical_sync_start - 1) &
++		       ((p_mode_param->vertical_sync_start - 1) &
+ 			PANEL_VERTICAL_SYNC_START_MASK));
+ 
+ 		tmp = DISPLAY_CTRL_TIMING | DISPLAY_CTRL_PLANE;
+-		if (pModeParam->vertical_sync_polarity)
++		if (p_mode_param->vertical_sync_polarity)
+ 			tmp |= DISPLAY_CTRL_VSYNC_PHASE;
+-		if (pModeParam->horizontal_sync_polarity)
++		if (p_mode_param->horizontal_sync_polarity)
+ 			tmp |= DISPLAY_CTRL_HSYNC_PHASE;
+-		if (pModeParam->clock_phase_polarity)
++		if (p_mode_param->clock_phase_polarity)
+ 			tmp |= DISPLAY_CTRL_CLOCK_PHASE;
+ 
+ 		reserved = PANEL_DISPLAY_CTRL_RESERVED_MASK |
+@@ -207,7 +207,7 @@ static int programModeRegisters(struct mode_parameter *pModeParam,
+ 	return ret;
+ }
+ 
+-int ddk750_setModeTiming(struct mode_parameter *parm, enum clock_type clock)
++int ddk750_set_mode_timing(struct mode_parameter *parm, enum clock_type clock)
+ {
+ 	struct pll_value pll;
+ 
+@@ -220,6 +220,6 @@ int ddk750_setModeTiming(struct mode_parameter *parm, enum clock_type clock)
+ 		outb_p(0x88, 0x3d4);
+ 		outb_p(0x06, 0x3d5);
+ 	}
+-	programModeRegisters(parm, &pll);
++	program_mode_registers(parm, &pll);
+ 	return 0;
+ }
+diff --git a/drivers/staging/sm750fb/ddk750_mode.h b/drivers/staging/sm750fb/ddk750_mode.h
+index 2df78a0937b2..1b70885f85e5 100644
+--- a/drivers/staging/sm750fb/ddk750_mode.h
++++ b/drivers/staging/sm750fb/ddk750_mode.h
+@@ -33,5 +33,5 @@ struct mode_parameter {
+ 	enum spolarity clock_phase_polarity;
+ };
+ 
+-int ddk750_setModeTiming(struct mode_parameter *parm, enum clock_type clock);
++int ddk750_set_mode_timing(struct mode_parameter *parm, enum clock_type clock);
+ #endif
+diff --git a/drivers/staging/sm750fb/sm750_hw.c b/drivers/staging/sm750fb/sm750_hw.c
+index 71247eaf26ee..4bc89218c11c 100644
+--- a/drivers/staging/sm750fb/sm750_hw.c
++++ b/drivers/staging/sm750fb/sm750_hw.c
+@@ -305,7 +305,7 @@ int hw_sm750_crtc_setMode(struct lynxfb_crtc *crtc,
+ 		clock = SECONDARY_PLL;
+ 
+ 	pr_debug("Request pixel clock = %lu\n", modparm.pixel_clock);
+-	ret = ddk750_setModeTiming(&modparm, clock);
++	ret = ddk750_set_mode_timing(&modparm, clock);
+ 	if (ret) {
+ 		pr_err("Set mode timing failed\n");
+ 		goto exit;
 -- 
- i.
+2.42.0.345.gaab89be2eb
 
---8323329-1029817949-1697193589=:2026--
