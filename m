@@ -2,256 +2,1041 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9127C7FD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D55367C8090
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbjJMIRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:17:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59762 "EHLO
+        id S230160AbjJMIqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbjJMIRg (ORCPT
+        with ESMTP id S230011AbjJMIp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:17:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FDD83;
-        Fri, 13 Oct 2023 01:17:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697185055; x=1728721055;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=rp85he2yYOgdOUk/LqvdG0g8kIj3V4NqZpLb6dFvbrI=;
-  b=bF98QDt92lighxHq/FpqWKaLQr+ReXUG3ylZkxHs+zwuFYoqx7PzKOpT
-   uYqPmu2pVGPK27/GiMxYEU+xpkU3/LY4amB7HE3c9FQVdAXg2NhZWpDry
-   9T0dYy6TiLa+nepWAL+ZRbGbrrOfEohd7oJo3W74Bzu5YRQ4CnHEor+x6
-   QpJcrdCVRhAt4JghsnGcweXkTCYKReHzASqIcFFZaQpznIuNaBF6jAiQ5
-   oIK2p92TFfWDqA6qtontYyoiDKjRen49CfFbL1ykVrBIvbQ2VagF9Yggl
-   bmYUFbaReAtYDRD+eRnsPq49ZJCu4RBoHXNeXhniiD0IJFFHLhUNZGahw
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="471365507"
-X-IronPort-AV: E=Sophos;i="6.03,221,1694761200"; 
-   d="scan'208";a="471365507"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 01:17:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="731276887"
-X-IronPort-AV: E=Sophos;i="6.03,221,1694761200"; 
-   d="scan'208";a="731276887"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Oct 2023 01:17:14 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 13 Oct 2023 01:17:13 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Fri, 13 Oct 2023 01:17:13 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Fri, 13 Oct 2023 01:17:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d0kifJBvhVYKpnw6bU/jWLcqvObhENZYTGlu5HY7sYU8wGa41ONddSC+/Hb5u/2JXe6oK67R1SKtrVAa4pcwKMJtlmUmIl5ml2Rtx8ly6z1F48hHFd4MfthN9fGinIISEEi5VNyy7n83R5l1PvFmKzinAmoYI6ROKoqMCuP8x83OYrI1hVsbbHdixClOR3Prt4i9Iz3D18ApzhmBTiA3CbFarE8NsbsoaqTXdzh3HFN9fvOaNv19vs7UrPTM/ThQ10CT9Ut2MXH0XNhbEudZgvozGKcbFfcCQLbj4NHYBJjGRWZ6Inmd+P92UIoQSLINK6by1helh83rhZ9EVhbQNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ffqutne4y+bTAbYVuUxmcMl9Zp2u59hJiEHvdt6yRIs=;
- b=c6zdN2nj61cW6CIIRlQ+8Rl0otPmAsRqelqcHa39jVpNSoJxTHavkUwBCReIkuMbcudQy6Cu1twgC0xiAIus/SU4I8CoPlaBFjqKceK97X9IcbqsJqwcMHGaYVh5vFo/Y9ToRMRZMp9KUFPzryDD1tvjMbRo9muDu9dgY1AUKeGu9e04P9CIQiTPY5kwyPuiVVkfzt/jznjgwliiCVAjuTZs0mceGPUt6n2XuuEzOWQxZtZ+p3sA2eWq93EqvTAjK0kurPwmocEuWIBEdcpNh3xUmrL9J3OB4T8sjFlSk34XRuZhkdVZY9ett7m1lD+wUODZRe43hnS5c9Aknzm/7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- CY5PR11MB6114.namprd11.prod.outlook.com (2603:10b6:930:2d::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6863.45; Fri, 13 Oct 2023 08:17:11 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::5e79:2d52:51e:f602]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::5e79:2d52:51e:f602%6]) with mapi id 15.20.6863.043; Fri, 13 Oct 2023
- 08:17:11 +0000
-Date:   Fri, 13 Oct 2023 15:49:00 +0800
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-CC:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        <iommu@lists.linux.dev>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 00/12] iommu: Prepare to deliver page faults to user
- space
-Message-ID: <ZSj2bIVtqNrLa9ct@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20230928042734.16134-1-baolu.lu@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230928042734.16134-1-baolu.lu@linux.intel.com>
-X-ClientProxiedBy: SG2PR02CA0068.apcprd02.prod.outlook.com
- (2603:1096:4:54::32) To DS7PR11MB5966.namprd11.prod.outlook.com
- (2603:10b6:8:71::6)
+        Fri, 13 Oct 2023 04:45:59 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B429B8
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:45:52 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31c5cac3ae2so1685066f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:45:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1697186751; x=1697791551; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=RFfzI11LegulDE7XgaYXT2HJBfBBXXES3r39H4TEfEo=;
+        b=ZmYKAVyFTNvEBces9buQAIrVoZoEONkbez3GXam7gzAvfWzci5xOOU5NCN6794QThy
+         NcyxyGqttadSweF7Wk3SLqDj3I3gtHp7v9kS1UmrlBnC85SZhU1LqIItSV5WnZ2wACw1
+         WTpaRc85CRGUHgh1Q8gYZBHSwFdP+DSP4Iziydbd4QWF45eU1f95P/uj0Y4HPo48CJBp
+         grphBFV6yNB3EHAXYLUvEL3BHv+pvStjbjet+qq3m5DW5OcNYwSYO7FK1i8vNaAN4X22
+         kGUdAF00mCPstPYEPx4jTWrAKwePLvioE4usQYHI5djKfUQGVFIRStE3gODxHnjzstUR
+         nrDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697186751; x=1697791551;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RFfzI11LegulDE7XgaYXT2HJBfBBXXES3r39H4TEfEo=;
+        b=UWFYUKGOh/nfoAY+XzPTewS3r8DdrW2z2Bzp4mSSjbLRwj/yhg2G9YGubMrM5WphPX
+         YNgJPfYvhOFtY9UBX4thT8jBXCVy/awwuvp34yaZO1ROHie8M1QKmEx0Inhmqd6CJ0VG
+         KfAIhZ0RK4VTYIqGCxT4W8IyV3UZ0X/PDv589hylm9sLv3MSRu9PYEvAlCJS8HNE8/+H
+         Mb7mXpM+lkTYbLt6t0851GOk1jxJs5Pj5MqwP93bdV6T/tkBgN3yP9q/bwoutNIyr7Xu
+         9C4IuX4cekqtidbeRjF4aGFJrGuszkJprOTqgexBGUBvxNyuHZ8SJzGj5ukJ0R56/X+i
+         xEnQ==
+X-Gm-Message-State: AOJu0YxrxS7O3XgMgEHAGweozLzVTpCZLU9ukV77j2QJEK6OFFVebfpT
+        +saIAXdP6CHtSecAJ0fNOrgVaw==
+X-Google-Smtp-Source: AGHT+IGWTNOV79hEHa/90mob8zbTTX3R6EHvScNp74r7DUTz7nYCbigNsjQrfw2/5e0XSYDnh7nZ3Q==
+X-Received: by 2002:adf:e542:0:b0:31a:d4e1:ea30 with SMTP id z2-20020adfe542000000b0031ad4e1ea30mr22787821wrm.17.1697186750622;
+        Fri, 13 Oct 2023 01:45:50 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:b50c:c5d5:8b1b:e06d])
+        by smtp.gmail.com with ESMTPSA id l14-20020a5d480e000000b0031c5e9c2ed7sm20384643wrq.92.2023.10.13.01.45.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 01:45:50 -0700 (PDT)
+References: <20231010062917.3624223-1-xianwei.zhao@amlogic.com>
+ <20231010062917.3624223-4-xianwei.zhao@amlogic.com>
+User-agent: mu4e 1.8.13; emacs 29.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Xianwei Zhao <xianwei.zhao@amlogic.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Chuan Liu <chuan.liu@amlogic.com>
+Subject: Re: [PATCH V2 3/4] clk: meson: c3: add support for the C3 SoC PLL
+ clock
+Date:   Fri, 13 Oct 2023 09:49:07 +0200
+In-reply-to: <20231010062917.3624223-4-xianwei.zhao@amlogic.com>
+Message-ID: <1jil7ax64i.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|CY5PR11MB6114:EE_
-X-MS-Office365-Filtering-Correlation-Id: 206535af-fb93-40d0-3103-08dbcbc4cc7d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: soUPpV7Pwq076nvciUwVgA1EnFULskSK0jwO52QK4E7zUooi5M9eE6eEVD4nDEp1Dtpnc9TPVzCLeANizEuS+wSFizTNBGrv1/KrIIbRHJsw2txNRFLRXbmkuOdz1WqsHwG+13b2XXkSok5B8nkZGoQBqExHbtNQ/aKJMbkWlKVzCWqyV5YzA9PbHTQL+ZIxcmeLG9GkOUyc5Upu+t1Knml1eCt2MCifH7B8GHQfej/36/4n8Ec/PQ0gdiMAWufHe517gbYK9eeMVi8hdQGPQ3jLJsbgJMK5u6GzYwHTKOWe4kQB3LPy8tdNS7NllXxxXqBwXfUQAYbKvwXfFbOB+zC7e7MG1cmrcp5x+Ni+PuUtDTPol512wLi+JO1TZTAAuvSw71cZuhohf8GCItnsLA/CNX5GtP/ABlywOpkcIIfNyPPATefVZOrPldvXlPWtjDadEDgnsdYGgCWTwrH2v8nY8MTcejP9g+X1jH+RefCeObLt9s1IR9/Aya3td7wKxEoR0+o6/QJfFVY92pQtFD3HkZ0pS5XDtAxeoyntP/h13CnaOi9hlc8J+q/XGetm8ynSu7pB6NkcoJIXP6tCbA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(396003)(136003)(346002)(366004)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(26005)(6506007)(6666004)(6512007)(83380400001)(4326008)(7416002)(5660300002)(3450700001)(2906002)(8676002)(478600001)(6486002)(41300700001)(966005)(66476007)(6916009)(66556008)(316002)(54906003)(66946007)(8936002)(82960400001)(38100700002)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?H+mP4oJ7m2z8TUqRsLU9CJBbu1JC/mpjDBmLTLeKoXSnnqJ2WB9UqGrzpdmN?=
- =?us-ascii?Q?YZHNVWumNkRTGa3U38irvn9YUR00d7+uvxAaEIVlvaiKW9cMsi9hqsrhtQju?=
- =?us-ascii?Q?Plf0HMktFFJi3RmYA/kNgOsrbv85jpxzxV8fsQhJV4nuWZEGV77lgrIdLgNv?=
- =?us-ascii?Q?N8gnM5YBwji/r01nqwpd1SSYL12HgmIpRTsetVDrGwfJSlVSz3XNDNVwzzoy?=
- =?us-ascii?Q?pfhS8oiVz0IumobN8U4aI/nIfo5s9xtdnRj2SFfaoAKUEEVaiiX080vS1eI/?=
- =?us-ascii?Q?gPB68oBcMAe/IfkaUDVsmoDlTnr/TDEBPXs1UG7pm+v+F6eIiTyJR0STzg/4?=
- =?us-ascii?Q?n1e0iSgI79AhJOpk0zrAYpZXi7ADXIe3rlUs5SjxoIFXD/kPdmOm2t+QEzkg?=
- =?us-ascii?Q?5/QoMaKI53n2L3y0khuEt7TXZoZU/QnQHY7+13Y+C+Gkcq0yzfuTX/G+OjmL?=
- =?us-ascii?Q?7wmeX7Dc+0pe0Sd7t8EDnJ+fHZiN+5LAGtLUdftpU+5pwWE50RZcOALChLIp?=
- =?us-ascii?Q?dB+879SA8uO9RKKOHNxp+HmgnLdprdXNR8aCPRokbwtnCiR1QCxb3IuNPrWA?=
- =?us-ascii?Q?frB5bUv9dy4hIVZp6A3nYSHx9KGIORxF4cSuwIA8zOHRm2JTepwwegwtuW8G?=
- =?us-ascii?Q?3my2XimDHy3L1BhsVTHD9uCfpA2TVHW3MKzmmiNBDP/+WZPacuaeDCRwU/Ls?=
- =?us-ascii?Q?KdOh8oMvPvF7wPieOuv3j/1MQZj5ZPZdVnOHA/I3gezyGr8q07Ismw3r8Htn?=
- =?us-ascii?Q?LRpovsIcj0qByudzIeUQhT5SF4bhE8JL12pTstUfAHlEpfkCxlAjtyGozaPy?=
- =?us-ascii?Q?VpcFbflWATQzCwTb/wpGA93OenPZiQJPtUcXFGssP6WHqoe3EQxkPCHv1av7?=
- =?us-ascii?Q?NR5jhv9s7vNesgIBQc43GHQIhoAd3dUcmnJm6yrVcews3Mjr3WzDcvZMJ/vG?=
- =?us-ascii?Q?4+Y6ecrPeShKkfo0w5FNc92DqPx8UO/zNo4IDq72i1yuBASzUvhQ2yejtak4?=
- =?us-ascii?Q?FUC0KN78+7dPMn+N1ejSibK2ptxeiiRqRMlAx7zwEnEqeVAFsYXRgRjmZ9o7?=
- =?us-ascii?Q?xybADK4f/gNV3z+/C/VlKdL3WetiNUVn6x1qGpABwXeA5Qm7yeqdotdaI9/O?=
- =?us-ascii?Q?788LDw638n3QmdUjIJEEja+gD4UgJ0UQbUMuiP8bQONj2RSYhfkDNhV6QAQP?=
- =?us-ascii?Q?ZknC8A5QHrWCvvkY4uD0v/7hm2AYVs6IvcdK09/ZGHAJjUQ2nfbxSk/BNhTG?=
- =?us-ascii?Q?Qce4y6nQVDFKhPLEdGYb+qteduloBh/sDK6NjzV/tB8XLsJkRk7FM+GTcLeq?=
- =?us-ascii?Q?5kLC4gmxzKMu/uRqVO3zIDpqFKKAxbWEohOPQaPV7Cu9wQZLKm6rEhWlAnGe?=
- =?us-ascii?Q?w5ef0P3N+Tjtve8juCBHaHwx/Yv09mKuRqmELVx52Z0U9cnIQKEy+ewVMHcY?=
- =?us-ascii?Q?Z1iAmFbjuXGjFPA/QqKrledrtpHkVi2QG+m3ReY/fgiv9ocKV7VeAtE9BBpT?=
- =?us-ascii?Q?c6kyNFEmgnnq9B8fSQljdu0i6f3OT+Vdvs/fcorxU0ZRX3uPsJZeVH9ZqxrN?=
- =?us-ascii?Q?O+v/saU7O6GS0RJKctgcsasEDnEa2dbFyXm/OiqM?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 206535af-fb93-40d0-3103-08dbcbc4cc7d
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 08:17:11.3781
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PTm9j5ZFfZMtRDsMzPKrjiX/n+WFqoiYwDGn2JjgOGFgLwpr0EePYdiZL35ANQdK1ghJj+Gm8fYM4wEvPXUy1Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6114
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested and verified that IOPF requests and responses are triggered and
-handled successfully with SVM enabled on DSA on SPR platform. 
 
-Tested-by: Yan Zhao <yan.y.zhao@intel.com>
+On Tue 10 Oct 2023 at 14:29, Xianwei Zhao <xianwei.zhao@amlogic.com> wrote:
 
-On Thu, Sep 28, 2023 at 12:27:22PM +0800, Lu Baolu wrote:
-> When a user-managed page table is attached to an IOMMU, it is necessary
-> to deliver IO page faults to user space so that they can be handled
-> appropriately. One use case for this is nested translation, which is
-> currently being discussed in the mailing list.
-> 
-> I have posted a RFC series [1] that describes the implementation of
-> delivering page faults to user space through IOMMUFD. This series has
-> received several comments on the IOMMU refactoring, which I am trying to
-> address in this series.
-> 
-> The major refactoring includes:
-> 
-> - [PATCH 01 ~ 04] Move include/uapi/linux/iommu.h to
->   include/linux/iommu.h. Remove the unrecoverable fault data definition.
-> - [PATCH 05 ~ 06] Remove iommu_[un]register_device_fault_handler().
-> - [PATCH 07 ~ 10] Separate SVA and IOPF. Make IOPF a generic page fault
->   handling framework.
-> - [PATCH 11 ~ 12] Improve iopf framework for iommufd use.
-> 
-> This is also available at github [2].
-> 
-> [1] https://lore.kernel.org/linux-iommu/20230530053724.232765-1-baolu.lu@linux.intel.com/
-> [2] https://github.com/LuBaolu/intel-iommu/commits/preparatory-io-pgfault-delivery-v6
-> 
-> Change log:
-> v6:
->  - [PATCH 09/12] Check IS_ERR() against the iommu domain. [Jingqi/Jason]
->  - [PATCH 12/12] Rename the comments and name of iopf_queue_flush_dev(),
->    no functionality changes. [Kevin]
->  - All patches rebased on the latest iommu/core branch.
-> 
-> v5: https://lore.kernel.org/linux-iommu/20230914085638.17307-1-baolu.lu@linux.intel.com/
->  - Consolidate per-device fault data management. (New patch 11)
->  - Improve iopf_queue_flush_dev(). (New patch 12)
-> 
-> v4: https://lore.kernel.org/linux-iommu/20230825023026.132919-1-baolu.lu@linux.intel.com/
->  - Merge iommu_fault_event and iopf_fault. They are duplicate.
->  - Move iommu_report_device_fault() and iommu_page_response() to
->    io-pgfault.c.
->  - Move iommu_sva_domain_alloc() to iommu-sva.c.
->  - Add group->domain and use it directly in sva fault handler.
->  - Misc code refactoring and refining.
-> 
-> v3: https://lore.kernel.org/linux-iommu/20230817234047.195194-1-baolu.lu@linux.intel.com/
->  - Convert the fault data structures from uAPI to kAPI.
->  - Merge iopf_device_param into iommu_fault_param.
->  - Add debugging on domain lifetime for iopf.
->  - Remove patch "iommu: Change the return value of dev_iommu_get()".
->  - Remove patch "iommu: Add helper to set iopf handler for domain".
->  - Misc code refactoring and refining.
-> 
-> v2: https://lore.kernel.org/linux-iommu/20230727054837.147050-1-baolu.lu@linux.intel.com/
->  - Remove unrecoverable fault data definition as suggested by Kevin.
->  - Drop the per-device fault cookie code considering that doesn't make
->    much sense for SVA.
->  - Make the IOMMU page fault handling framework generic. So that it can
->    available for use cases other than SVA.
-> 
-> v1: https://lore.kernel.org/linux-iommu/20230711010642.19707-1-baolu.lu@linux.intel.com/
-> 
-> Lu Baolu (12):
->   iommu: Move iommu fault data to linux/iommu.h
->   iommu/arm-smmu-v3: Remove unrecoverable faults reporting
->   iommu: Remove unrecoverable fault data
->   iommu: Cleanup iopf data structure definitions
->   iommu: Merge iopf_device_param into iommu_fault_param
->   iommu: Remove iommu_[un]register_device_fault_handler()
->   iommu: Merge iommu_fault_event and iopf_fault
->   iommu: Prepare for separating SVA and IOPF
->   iommu: Make iommu_queue_iopf() more generic
->   iommu: Separate SVA and IOPF
->   iommu: Consolidate per-device fault data management
->   iommu: Improve iopf_queue_flush_dev()
-> 
->  include/linux/iommu.h                         | 258 ++++++++---
->  drivers/iommu/intel/iommu.h                   |   2 +-
->  drivers/iommu/iommu-sva.h                     |  71 ---
->  include/uapi/linux/iommu.h                    | 161 -------
->  .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  14 +-
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |  51 +-
->  drivers/iommu/intel/iommu.c                   |  25 +-
->  drivers/iommu/intel/svm.c                     |   8 +-
->  drivers/iommu/io-pgfault.c                    | 438 +++++++++++-------
->  drivers/iommu/iommu-sva.c                     |  82 +++-
->  drivers/iommu/iommu.c                         | 232 ----------
->  MAINTAINERS                                   |   1 -
->  drivers/iommu/Kconfig                         |   4 +
->  drivers/iommu/Makefile                        |   3 +-
->  drivers/iommu/intel/Kconfig                   |   1 +
->  15 files changed, 578 insertions(+), 773 deletions(-)
->  delete mode 100644 drivers/iommu/iommu-sva.h
->  delete mode 100644 include/uapi/linux/iommu.h
-> 
-> -- 
-> 2.34.1
-> 
+> Add the C3 PLL clock controller driver for the Amlogic C3 SoC family.
+>
+> Signed-off-by: Xianwei Zhao <xianwei.zhao@amlogic.com>
+> ---
+> V1 -> V2: Delete macro definition.
+> ---
+>  drivers/clk/meson/Kconfig  |  12 +
+>  drivers/clk/meson/Makefile |   1 +
+>  drivers/clk/meson/c3-pll.c | 808 +++++++++++++++++++++++++++++++++++++
+>  drivers/clk/meson/c3-pll.h |  35 ++
+>  4 files changed, 856 insertions(+)
+>  create mode 100644 drivers/clk/meson/c3-pll.c
+>  create mode 100644 drivers/clk/meson/c3-pll.h
+>
+> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
+> index c5303e4c1604..76be4bbd2afb 100644
+> --- a/drivers/clk/meson/Kconfig
+> +++ b/drivers/clk/meson/Kconfig
+> @@ -128,6 +128,18 @@ config COMMON_CLK_A1_PERIPHERALS
+>  	  device, A1 SoC Family. Say Y if you want A1 Peripherals clock
+>  	  controller to work.
+>  
+> +config COMMON_CLK_C3_PLL
+> +	tristate "Amlogic C3 PLL clock controller"
+> +	default y
+> +	select COMMON_CLK_MESON_REGMAP
+> +	select COMMON_CLK_MESON_PLL
+> +	select COMMON_CLK_MESON_CLKC_UTILS
+> +	help
+> +	  Support for the PLL clock controller on Amlogic C302X and C308L devices,
+> +	  AKA c3. Amlogic C302X and C308L devices include AW402, AW409 and AW419.
+> +	  Say Y if you want the board to work, because PLLs are the parent of most
+> +	  peripherals.
+> +
+>  config COMMON_CLK_G12A
+>  	tristate "G12 and SM1 SoC clock controllers support"
+>  	depends on ARM64
+> diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
+> index 9ee4b954c896..4420af628b31 100644
+> --- a/drivers/clk/meson/Makefile
+> +++ b/drivers/clk/meson/Makefile
+> @@ -19,6 +19,7 @@ obj-$(CONFIG_COMMON_CLK_AXG) += axg.o axg-aoclk.o
+>  obj-$(CONFIG_COMMON_CLK_AXG_AUDIO) += axg-audio.o
+>  obj-$(CONFIG_COMMON_CLK_A1_PLL) += a1-pll.o
+>  obj-$(CONFIG_COMMON_CLK_A1_PERIPHERALS) += a1-peripherals.o
+> +obj-$(CONFIG_COMMON_CLK_C3_PLL) += c3-pll.o
+>  obj-$(CONFIG_COMMON_CLK_GXBB) += gxbb.o gxbb-aoclk.o
+>  obj-$(CONFIG_COMMON_CLK_G12A) += g12a.o g12a-aoclk.o
+>  obj-$(CONFIG_COMMON_CLK_MESON8B) += meson8b.o meson8-ddr.o
+> diff --git a/drivers/clk/meson/c3-pll.c b/drivers/clk/meson/c3-pll.c
+> new file mode 100644
+> index 000000000000..97619bc7ab79
+> --- /dev/null
+> +++ b/drivers/clk/meson/c3-pll.c
+> @@ -0,0 +1,808 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Amlogic C3 PLL Controller Driver
+> + *
+> + * Copyright (c) 2023 Amlogic, inc.
+> + * Author: Chuan Liu <chuan.liu@amlogic.com>
+> + */
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/clk.h>
+> +#include "clk-regmap.h"
+> +#include "clk-pll.h"
+> +#include "c3-pll.h"
+> +#include "meson-clkc-utils.h"
+> +#include <dt-bindings/clock/amlogic,c3-pll-clkc.h>
+> +
+> +static const struct clk_parent_data pll_dco_parent = {
+> +	.fw_name = "pll_in",
+> +};
+> +
+> +static const struct clk_parent_data mclk_pll_dco_parent = {
+> +	.fw_name = "mclk_pll_in",
+> +};
+
+I'm assuming this section relates to Documentation section 6.6.3.5 MPLL
+because all the fixed clock looks very familiar.
+
+Because of the naming of another clock below, I'm not quite sure. Please clarify
+
+> +
+> +static struct clk_regmap fixed_pll_dco = {
+> +	.data = &(struct meson_clk_pll_data){
+> +		.en = {
+> +			.reg_off = ANACTRL_FIXPLL_CTRL0,
+> +			.shift   = 28,
+> +			.width   = 1,
+> +		},
+> +		.m = {
+> +			.reg_off = ANACTRL_FIXPLL_CTRL0,
+> +			.shift   = 0,
+> +			.width   = 8,
+> +		},
+> +		.n = {
+> +			.reg_off = ANACTRL_FIXPLL_CTRL0,
+> +			.shift   = 16,
+> +			.width   = 5,
+> +		},
+> +		.l = {
+> +			.reg_off = ANACTRL_FIXPLL_CTRL0,
+> +			.shift   = 31,
+> +			.width   = 1,
+> +		},
+> +		.rst = {
+> +			.reg_off = ANACTRL_FIXPLL_CTRL0,
+> +			.shift   = 29,
+> +			.width   = 1,
+> +		},
+> +	},
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "fixed_pll_dco",
+> +		.ops = &meson_clk_pll_ro_ops,
+> +		.parent_data = &pll_dco_parent,
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_regmap fixed_pll = {
+> +	.data = &(struct clk_regmap_div_data){
+> +		.offset = ANACTRL_FIXPLL_CTRL0,
+> +		.shift = 12,
+> +		.width = 3,
+> +		.flags = CLK_DIVIDER_POWER_OF_TWO,
+> +	},
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "fixed_pll",
+> +		.ops = &clk_regmap_divider_ro_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fixed_pll_dco.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+
+Need a comment about why this is using RO ops
+
+> +
+> +static struct clk_fixed_factor fclk_div40_div = {
+> +	.mult = 1,
+> +	.div = 40,
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "fclk_div40_div",
+> +		.ops = &clk_fixed_factor_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fixed_pll.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_regmap fclk_div40 = {
+> +	.data = &(struct clk_regmap_gate_data){
+> +		.offset = ANACTRL_FIXPLL_CTRL4,
+> +		.bit_idx = 0,
+> +	},
+> +	.hw.init = &(struct clk_init_data) {
+> +		.name = "fclk_div40",
+> +		.ops = &clk_regmap_gate_ro_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fclk_div40_div.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+
+Don't see div40 in the diagram, where does it come from ?
+
+> +
+> +static struct clk_fixed_factor fclk_div2_div = {
+> +	.mult = 1,
+> +	.div = 2,
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "fclk_div2_div",
+> +		.ops = &clk_fixed_factor_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fixed_pll.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_regmap fclk_div2 = {
+> +	.data = &(struct clk_regmap_gate_data){
+> +		.offset = ANACTRL_FIXPLL_CTRL4,
+> +		.bit_idx = 24,
+> +	},
+> +	.hw.init = &(struct clk_init_data) {
+> +		.name = "fclk_div2",
+> +		.ops = &clk_regmap_gate_ro_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fclk_div2_div.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_fixed_factor fclk_div2p5_div = {
+> +	.mult = 2,
+> +	.div = 5,
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "fclk_div2p5_div",
+> +		.ops = &clk_fixed_factor_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fixed_pll.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+
+This one is wrong if I follow the doc.
+It is supposed to be fixed 8 divider taking it's source directly from
+the DCO, skipping the OD post divider ... assuming the doc is up to date.
+
+> +
+> +static struct clk_regmap fclk_div2p5 = {
+> +	.data = &(struct clk_regmap_gate_data){
+> +		.offset = ANACTRL_FIXPLL_CTRL4,
+> +		.bit_idx = 4,
+> +	},
+> +	.hw.init = &(struct clk_init_data) {
+> +		.name = "fclk_div2p5",
+> +		.ops = &clk_regmap_gate_ro_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fclk_div2p5_div.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_fixed_factor fclk_div3_div = {
+> +	.mult = 1,
+> +	.div = 3,
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "fclk_div3_div",
+> +		.ops = &clk_fixed_factor_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fixed_pll.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_regmap fclk_div3 = {
+> +	.data = &(struct clk_regmap_gate_data){
+> +		.offset = ANACTRL_FIXPLL_CTRL4,
+> +		.bit_idx = 20,
+> +	},
+> +	.hw.init = &(struct clk_init_data) {
+> +		.name = "fclk_div3",
+> +		.ops = &clk_regmap_gate_ro_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fclk_div3_div.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_fixed_factor fclk_div4_div = {
+> +	.mult = 1,
+> +	.div = 4,
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "fclk_div4_div",
+> +		.ops = &clk_fixed_factor_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fixed_pll.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_regmap fclk_div4 = {
+> +	.data = &(struct clk_regmap_gate_data){
+> +		.offset = ANACTRL_FIXPLL_CTRL4,
+> +		.bit_idx = 21,
+> +	},
+> +	.hw.init = &(struct clk_init_data) {
+> +		.name = "fclk_div4",
+> +		.ops = &clk_regmap_gate_ro_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fclk_div4_div.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_fixed_factor fclk_div5_div = {
+> +	.mult = 1,
+> +	.div = 5,
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "fclk_div5_div",
+> +		.ops = &clk_fixed_factor_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fixed_pll.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_regmap fclk_div5 = {
+> +	.data = &(struct clk_regmap_gate_data){
+> +		.offset = ANACTRL_FIXPLL_CTRL4,
+> +		.bit_idx = 22,
+> +	},
+> +	.hw.init = &(struct clk_init_data) {
+> +		.name = "fclk_div5",
+> +		.ops = &clk_regmap_gate_ro_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fclk_div5_div.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_fixed_factor fclk_div7_div = {
+> +	.mult = 1,
+> +	.div = 7,
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "fclk_div7_div",
+> +		.ops = &clk_fixed_factor_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fixed_pll.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_regmap fclk_div7 = {
+> +	.data = &(struct clk_regmap_gate_data){
+> +		.offset = ANACTRL_FIXPLL_CTRL4,
+> +		.bit_idx = 23,
+> +	},
+> +	.hw.init = &(struct clk_init_data) {
+> +		.name = "fclk_div7",
+> +		.ops = &clk_regmap_gate_ro_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&fclk_div7_div.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static const struct reg_sequence c3_gp0_init_regs[] = {
+> +	{ .reg = ANACTRL_GP0PLL_CTRL1,	.def = 0x0 },
+> +	{ .reg = ANACTRL_GP0PLL_CTRL2,	.def = 0x0 },
+
+This should re-init GP0 rate on boot which is not desirable in case the
+bootloader had already set a rate (for splash screen for example)
+
+Sugguest you drop these
+
+> +	{ .reg = ANACTRL_GP0PLL_CTRL3,	.def = 0x48681c00 },
+> +	{ .reg = ANACTRL_GP0PLL_CTRL4,  .def = 0x88770290 },
+> +	{ .reg = ANACTRL_GP0PLL_CTRL5,  .def = 0x3927200a },
+> +	{ .reg = ANACTRL_GP0PLL_CTRL6,	.def = 0x56540000, .delay_us = 10 },
+> +	{ .reg = ANACTRL_GP0PLL_CTRL0,	.def = 0x080304fa },
+> +	{ .reg = ANACTRL_GP0PLL_CTRL0,	.def = 0x380304fa, .delay_us = 10 },
+> +	{ .reg = ANACTRL_GP0PLL_CTRL0,	.def = 0X180304fa }
+> +};
+> +
+> +static const struct pll_params_table c3_gp0_pll_params_table[] = {
+> +	PLL_PARAMS(150, 1), /* DCO = 3600M */
+> +	PLL_PARAMS(130, 1), /* DCO = 3120M */
+> +	PLL_PARAMS(192, 1), /* DCO = 4608M */
+> +	PLL_PARAMS(125, 1), /* DCO = 3000M */
+> +	{ /* sentinel */  }
+> +};
+
+Why can't C3 use mult_range for GP0, like the other SoC ?
+Doc says DCO can do 3 to 6GHz
+
+> +
+> +/* The maximum frequency divider supports is 32, not 128(2^7) */
+> +static const struct clk_div_table c3_gp0_pll_od_table[] = {
+> +	{ 0,  1 },
+> +	{ 1,  2 },
+> +	{ 2,  4 },
+> +	{ 3,  8 },
+> +	{ 4, 16 },
+> +	{ 5, 32 },
+> +	{ /* sentinel */ }
+> +};
+
+Please put that table next to the related divider
+Same for other instances
+
+> +
+> +static struct clk_regmap gp0_pll_dco = {
+> +	.data = &(struct meson_clk_pll_data){
+> +		.en = {
+> +			.reg_off = ANACTRL_GP0PLL_CTRL0,
+> +			.shift   = 28,
+> +			.width   = 1,
+> +		},
+> +		.m = {
+> +			.reg_off = ANACTRL_GP0PLL_CTRL0,
+> +			.shift   = 0,
+> +			.width   = 9,
+> +		},
+> +		.frac = {
+> +			.reg_off = ANACTRL_GP0PLL_CTRL1,
+> +			.shift   = 0,
+> +			.width   = 19,
+> +		},
+> +		.n = {
+> +			.reg_off = ANACTRL_GP0PLL_CTRL0,
+> +			.shift   = 10,
+> +			.width   = 5,
+> +		},
+> +		.l = {
+> +			.reg_off = ANACTRL_GP0PLL_CTRL0,
+> +			.shift   = 31,
+> +			.width   = 1,
+> +		},
+> +		.rst = {
+> +			.reg_off = ANACTRL_GP0PLL_CTRL0,
+> +			.shift   = 29,
+> +			.width   = 1,
+> +		},
+> +		.table = c3_gp0_pll_params_table,
+> +		.init_regs = c3_gp0_init_regs,
+> +		.init_count = ARRAY_SIZE(c3_gp0_init_regs),
+> +	},
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "gp0_pll_dco",
+> +		.ops = &meson_clk_pll_ops,
+> +		.parent_data = &pll_dco_parent,
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_regmap gp0_pll = {
+> +	.data = &(struct clk_regmap_div_data){
+> +		.offset = ANACTRL_GP0PLL_CTRL0,
+> +		.shift = 16,
+> +		.width = 3,
+> +		.table = c3_gp0_pll_od_table,
+> +	},
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "gp0_pll",
+> +		.ops = &clk_regmap_divider_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&gp0_pll_dco.hw
+> +		},
+> +		.num_parents = 1,
+> +		.flags = CLK_SET_RATE_PARENT,
+> +	},
+> +};
+> +
+> +static const struct reg_sequence c3_hifi_init_regs[] = {
+> +	{ .reg = ANACTRL_HIFIPLL_CTRL0,	.def = 0x08010496 },
+> +	{ .reg = ANACTRL_HIFIPLL_CTRL0,	.def = 0x38010496 },
+
+Same here, this an hidden hard coded rate init, with enable on top.
+Please drop this
+
+If you need a specific rate after the init, use assigned-rate in DT
+
+> +	{ .reg = ANACTRL_HIFIPLL_CTRL1,	.def = 0x0000ce40 },
+> +	{ .reg = ANACTRL_HIFIPLL_CTRL2,	.def = 0x00000000 },
+> +	{ .reg = ANACTRL_HIFIPLL_CTRL3,	.def = 0x6a285c00 },
+> +	{ .reg = ANACTRL_HIFIPLL_CTRL4, .def = 0x65771290 },
+> +	{ .reg = ANACTRL_HIFIPLL_CTRL5, .def = 0x3927200a },
+> +	{ .reg = ANACTRL_HIFIPLL_CTRL6,	.def = 0x56540000, .delay_us = 50 },
+> +	{ .reg = ANACTRL_HIFIPLL_CTRL0,	.def = 0x18010496, .delay_us = 20 },
+> +};
+> +
+> +static const struct pll_params_table c3_hifi_pll_params_table[] = {
+> +	PLL_PARAMS(150, 1), /* DCO = 3600M */
+> +	PLL_PARAMS(130, 1), /* DCO = 3120M */
+> +	PLL_PARAMS(192, 1), /* DCO = 4608M */
+> +	PLL_PARAMS(125, 1), /* DCO = 3000M */
+> +	{ /* sentinel */  }
+> +};
+
+Again, why can't HiFi use mult range ?
+
+> +
+> +static struct clk_regmap hifi_pll_dco = {
+> +	.data = &(struct meson_clk_pll_data){
+> +		.en = {
+> +			.reg_off = ANACTRL_HIFIPLL_CTRL0,
+> +			.shift   = 28,
+> +			.width   = 1,
+> +		},
+> +		.m = {
+> +			.reg_off = ANACTRL_HIFIPLL_CTRL0,
+> +			.shift   = 0,
+> +			.width   = 8,
+> +		},
+> +		.frac = {
+> +			.reg_off = ANACTRL_HIFIPLL_CTRL1,
+> +			.shift   = 0,
+> +			.width   = 19,
+> +		},
+> +		.n = {
+> +			.reg_off = ANACTRL_HIFIPLL_CTRL0,
+> +			.shift   = 10,
+> +			.width   = 5,
+> +		},
+> +		.l = {
+> +			.reg_off = ANACTRL_HIFIPLL_CTRL0,
+> +			.shift   = 31,
+> +			.width   = 1,
+> +		},
+> +		.rst = {
+> +			.reg_off = ANACTRL_HIFIPLL_CTRL0,
+> +			.shift   = 29,
+> +			.width   = 1,
+> +		},
+> +		.table = c3_hifi_pll_params_table,
+> +		.init_regs = c3_hifi_init_regs,
+> +		.init_count = ARRAY_SIZE(c3_hifi_init_regs),
+> +	},
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "hifi_pll_dco",
+> +		.ops = &meson_clk_pll_ops,
+> +		.parent_data = &pll_dco_parent,
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_regmap hifi_pll = {
+> +	.data = &(struct clk_regmap_div_data){
+> +		.offset = ANACTRL_HIFIPLL_CTRL0,
+> +		.shift = 16,
+> +		.width = 2,
+> +		.flags = CLK_DIVIDER_POWER_OF_TWO,
+> +	},
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "hifi_pll",
+> +		.ops = &clk_regmap_divider_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&hifi_pll_dco.hw
+> +		},
+> +		.num_parents = 1,
+> +		.flags = CLK_SET_RATE_PARENT,
+> +	},
+> +};
+> +
+
+I cannot make out what all the mclk section below relates to in
+documentation clock. Could you please clarify ?
+
+> +static const struct reg_sequence c3_mclk_init_regs[] = {
+> +	{ .reg = ANACTRL_MPLL_CTRL0,	.def = 0x20011063 },
+> +	{ .reg = ANACTRL_MPLL_CTRL0,	.def = 0x30011063 },
+
+Again, hidden rate set on init ...
+
+> +	{ .reg = ANACTRL_MPLL_CTRL1,	.def = 0x1420500f },
+> +	{ .reg = ANACTRL_MPLL_CTRL2,	.def = 0x00023041 },
+> +	{ .reg = ANACTRL_MPLL_CTRL3,	.def = 0x18180000 },
+> +	{ .reg = ANACTRL_MPLL_CTRL0,	.def = 0x10011063 },
+> +	{ .reg = ANACTRL_MPLL_CTRL2,	.def = 0x00023001 }
+> +};
+> +
+> +static const struct pll_params_table c3_mclk_pll_params_table[] = {
+> +	PLL_PARAMS(99, 1), /* VCO = 2376M */
+> +	{ /* sentinel */  }
+> +};
+> +
+> +static const struct clk_div_table c3_mpll_od_table[] = {
+> +	{ 0,  1 },
+> +	{ 1,  2 },
+> +	{ 2,  4 },
+> +	{ 3,  8 },
+> +	{ 4, 16 },
+> +	{ /* sentinel */ }
+> +};
+> +
+> +static struct clk_regmap mclk_pll_dco = {
+> +	.data = &(struct meson_clk_pll_data){
+> +		.en = {
+> +			.reg_off = ANACTRL_MPLL_CTRL0,
+> +			.shift   = 28,
+> +			.width   = 1,
+> +		},
+> +		.m = {
+> +			.reg_off = ANACTRL_MPLL_CTRL0,
+> +			.shift   = 0,
+> +			.width   = 9,
+> +		},
+> +		.n = {
+> +			.reg_off = ANACTRL_MPLL_CTRL0,
+> +			.shift   = 10,
+> +			.width   = 5,
+> +		},
+> +		.l = {
+> +			.reg_off = ANACTRL_MPLL_CTRL0,
+> +			.shift   = 31,
+> +			.width   = 1,
+> +		},
+> +		.rst = {
+> +			.reg_off = ANACTRL_MPLL_CTRL0,
+> +			.shift   = 29,
+> +			.width   = 1,
+> +		},
+> +		.table = c3_mclk_pll_params_table,
+> +		.init_regs = c3_mclk_init_regs,
+> +		.init_count = ARRAY_SIZE(c3_mclk_init_regs),
+> +	},
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "mclk_pll_dco",
+> +		.ops = &meson_clk_pll_ops,
+> +		.parent_data = &mclk_pll_dco_parent,
+> +		.num_parents = 1,
+> +	},
+> +};
+> +
+> +static struct clk_regmap mclk_pll = {
+> +	.data = &(struct clk_regmap_div_data){
+> +		.offset = ANACTRL_MPLL_CTRL0,
+> +		.shift = 12,
+> +		.width = 3,
+> +		.table = c3_mpll_od_table,
+> +	},
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "mclk_pll",
+> +		.ops = &clk_regmap_divider_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&mclk_pll_dco.hw
+> +		},
+> +		.num_parents = 1,
+> +		.flags = CLK_SET_RATE_PARENT,
+> +	},
+> +};
+> +
+> +static struct clk_regmap mclk_pll_clk = {
+> +	.data = &(struct clk_regmap_div_data){
+> +		.offset = ANACTRL_MPLL_CTRL4,
+> +		.shift = 16,
+> +		.width = 5,
+> +		.flags = CLK_DIVIDER_ONE_BASED | CLK_DIVIDER_ALLOW_ZERO,
+> +	},
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "mclk_pll_clk",
+> +		.ops = &clk_regmap_divider_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&mclk_pll.hw
+> +		},
+> +		.num_parents = 1,
+> +		.flags = CLK_SET_RATE_PARENT,
+> +	},
+> +};
+
+
+"mclk_pll" then "mclk_pll_clk" ... that is confusing
+
+> +
+> +static const struct clk_parent_data mclk_parent[] = {
+> +	{ .hw = &mclk_pll_clk.hw },
+> +	{ .fw_name = "mclk_pll_in" },
+> +	{ .hw = &fclk_div40.hw }
+> +};
+> +
+> +static struct clk_regmap mclk0_sel = {
+> +	.data = &(struct clk_regmap_mux_data){
+> +		.offset = ANACTRL_MPLL_CTRL4,
+> +		.mask = 0x3,
+> +		.shift = 4,
+> +	},
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "mclk0_sel",
+> +		.ops = &clk_regmap_mux_ops,
+> +		.parent_data = mclk_parent,
+> +		.num_parents = ARRAY_SIZE(mclk_parent),
+> +	},
+> +};
+> +
+> +static struct clk_regmap mclk0_sel_out = {
+> +	.data = &(struct clk_regmap_gate_data){
+> +		.offset = ANACTRL_MPLL_CTRL4,
+> +		.bit_idx = 1,
+> +	},
+> +	.hw.init = &(struct clk_init_data) {
+> +		.name = "mclk0_sel_out",
+> +		.ops = &clk_regmap_gate_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&mclk0_sel.hw
+> +		},
+> +		.num_parents = 1,
+> +		.flags = CLK_SET_RATE_PARENT,
+> +	},
+> +};
+> +
+> +static struct clk_regmap mclk0_div = {
+> +	.data = &(struct clk_regmap_div_data){
+> +		.offset = ANACTRL_MPLL_CTRL4,
+> +		.shift = 2,
+> +		.width = 1,
+> +	},
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "mclk0_div",
+> +		.ops = &clk_regmap_divider_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&mclk0_sel_out.hw
+> +		},
+> +		.num_parents = 1,
+> +		.flags = CLK_SET_RATE_PARENT,
+> +	},
+> +};
+> +
+> +static struct clk_regmap mclk0 = {
+> +	.data = &(struct clk_regmap_gate_data){
+> +		.offset = ANACTRL_MPLL_CTRL4,
+> +		.bit_idx = 0,
+> +	},
+> +	.hw.init = &(struct clk_init_data) {
+> +		.name = "mclk0",
+> +		.ops = &clk_regmap_gate_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&mclk0_div.hw
+> +		},
+> +		.num_parents = 1,
+> +		.flags = CLK_SET_RATE_PARENT,
+> +	},
+> +};
+> +
+> +static struct clk_regmap mclk1_sel = {
+> +	.data = &(struct clk_regmap_mux_data){
+> +		.offset = ANACTRL_MPLL_CTRL4,
+> +		.mask = 0x3,
+> +		.shift = 12,
+> +	},
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "mclk1_sel",
+> +		.ops = &clk_regmap_mux_ops,
+> +		.parent_data = mclk_parent,
+> +		.num_parents = ARRAY_SIZE(mclk_parent),
+> +	},
+> +};
+> +
+> +static struct clk_regmap mclk1_sel_out = {
+> +	.data = &(struct clk_regmap_gate_data){
+> +		.offset = ANACTRL_MPLL_CTRL4,
+> +		.bit_idx = 9,
+> +	},
+> +	.hw.init = &(struct clk_init_data) {
+> +		.name = "mclk1_sel_out",
+> +		.ops = &clk_regmap_gate_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&mclk1_sel.hw
+> +		},
+> +		.num_parents = 1,
+> +		.flags = CLK_SET_RATE_PARENT,
+> +	},
+> +};
+> +
+> +static struct clk_regmap mclk1_div = {
+> +	.data = &(struct clk_regmap_div_data){
+> +		.offset = ANACTRL_MPLL_CTRL4,
+> +		.shift = 10,
+> +		.width = 1,
+> +	},
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "mclk1_div",
+> +		.ops = &clk_regmap_divider_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&mclk1_sel_out.hw
+> +		},
+> +		.num_parents = 1,
+> +		.flags = CLK_SET_RATE_PARENT,
+> +	},
+> +};
+> +
+> +static struct clk_regmap mclk1 = {
+> +	.data = &(struct clk_regmap_gate_data){
+> +		.offset = ANACTRL_MPLL_CTRL4,
+> +		.bit_idx = 8,
+> +	},
+> +	.hw.init = &(struct clk_init_data) {
+> +		.name = "mclk1",
+> +		.ops = &clk_regmap_gate_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&mclk1_div.hw
+> +		},
+> +		.num_parents = 1,
+> +		.flags = CLK_SET_RATE_PARENT,
+> +	},
+> +};
+> +
+> +static struct clk_hw *c3_pll_hw_clks[] = {
+> +	[CLKID_FIXED_PLL_DCO]	= &fixed_pll_dco.hw,
+> +	[CLKID_FIXED_PLL]	= &fixed_pll.hw,
+> +	[CLKID_FCLK_DIV40_DIV]	= &fclk_div40_div.hw,
+> +	[CLKID_FCLK_DIV40]	= &fclk_div40.hw,
+> +	[CLKID_FCLK_DIV2_DIV]	= &fclk_div2_div.hw,
+> +	[CLKID_FCLK_DIV2]	= &fclk_div2.hw,
+> +	[CLKID_FCLK_DIV2P5_DIV]	= &fclk_div2p5_div.hw,
+> +	[CLKID_FCLK_DIV2P5]	= &fclk_div2p5.hw,
+> +	[CLKID_FCLK_DIV3_DIV]	= &fclk_div3_div.hw,
+> +	[CLKID_FCLK_DIV3]	= &fclk_div3.hw,
+> +	[CLKID_FCLK_DIV4_DIV]	= &fclk_div4_div.hw,
+> +	[CLKID_FCLK_DIV4]	= &fclk_div4.hw,
+> +	[CLKID_FCLK_DIV5_DIV]	= &fclk_div5_div.hw,
+> +	[CLKID_FCLK_DIV5]	= &fclk_div5.hw,
+> +	[CLKID_FCLK_DIV7_DIV]	= &fclk_div7_div.hw,
+> +	[CLKID_FCLK_DIV7]	= &fclk_div7.hw,
+> +	[CLKID_GP0_PLL_DCO]	= &gp0_pll_dco.hw,
+> +	[CLKID_GP0_PLL]		= &gp0_pll.hw,
+> +	[CLKID_HIFI_PLL_DCO]	= &hifi_pll_dco.hw,
+> +	[CLKID_HIFI_PLL]	= &hifi_pll.hw,
+> +	[CLKID_MCLK_PLL_DCO]	= &mclk_pll_dco.hw,
+> +	[CLKID_MCLK_PLL]	= &mclk_pll.hw,
+> +	[CLKID_MCLK_PLL_CLK]	= &mclk_pll_clk.hw,
+> +	[CLKID_MCLK0_SEL]	= &mclk0_sel.hw,
+> +	[CLKID_MCLK0_SEL_OUT]	= &mclk0_sel_out.hw,
+> +	[CLKID_MCLK0_DIV]	= &mclk0_div.hw,
+> +	[CLKID_MCLK0]		= &mclk0.hw,
+> +	[CLKID_MCLK1_SEL]	= &mclk1_sel.hw,
+> +	[CLKID_MCLK1_SEL_OUT]	= &mclk1_sel_out.hw,
+> +	[CLKID_MCLK1_DIV]	= &mclk1_div.hw,
+> +	[CLKID_MCLK1]		= &mclk1.hw
+> +};
+> +
+> +/* Convenience table to populate regmap in .probe */
+> +static struct clk_regmap *const c3_pll_clk_regmaps[] = {
+> +	&fixed_pll_dco,
+> +	&fixed_pll,
+> +	&fclk_div40,
+> +	&fclk_div2,
+> +	&fclk_div2p5,
+> +	&fclk_div3,
+> +	&fclk_div4,
+> +	&fclk_div5,
+> +	&fclk_div7,
+> +	&gp0_pll_dco,
+> +	&gp0_pll,
+> +	&hifi_pll_dco,
+> +	&hifi_pll,
+> +	&mclk_pll_dco,
+> +	&mclk_pll,
+> +	&mclk_pll_clk,
+> +	&mclk0_sel,
+> +	&mclk0_sel_out,
+> +	&mclk0_div,
+> +	&mclk0,
+> +	&mclk1_sel,
+> +	&mclk1_sel_out,
+> +	&mclk1_div,
+> +	&mclk1,
+> +};
+> +
+> +static struct regmap_config clkc_regmap_config = {
+> +	.reg_bits       = 32,
+> +	.val_bits       = 32,
+> +	.reg_stride     = 4,
+> +};
+> +
+> +static struct meson_clk_hw_data c3_pll_clks = {
+> +	.hws = c3_pll_hw_clks,
+> +	.num = ARRAY_SIZE(c3_pll_hw_clks),
+> +};
+> +
+> +static int aml_c3_pll_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct regmap *regmap;
+> +	void __iomem *base;
+> +	int clkid, ret, i;
+> +
+> +	base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(base))
+> +		return PTR_ERR(base);
+> +
+> +	regmap = devm_regmap_init_mmio(dev, base, &clkc_regmap_config);
+> +	if (IS_ERR(regmap))
+> +		return PTR_ERR(regmap);
+> +
+> +	/* Populate regmap for the regmap backed clocks */
+> +	for (i = 0; i < ARRAY_SIZE(c3_pll_clk_regmaps); i++)
+> +		c3_pll_clk_regmaps[i]->map = regmap;
+> +
+> +	for (clkid = 0; clkid < c3_pll_clks.num; clkid++) {
+> +		/* array might be sparse */
+> +		if (!c3_pll_clks.hws[clkid])
+> +			continue;
+> +
+> +		ret = devm_clk_hw_register(dev, c3_pll_clks.hws[clkid]);
+> +		if (ret) {
+> +			dev_err(dev, "Clock registration failed\n");
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	return devm_of_clk_add_hw_provider(dev, meson_clk_hw_get,
+> +					   &c3_pll_clks);
+> +}
+> +
+> +static const struct of_device_id c3_pll_clkc_match_table[] = {
+> +	{
+> +		.compatible = "amlogic,c3-pll-clkc",
+> +	},
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, c3_pll_clkc_match_table);
+> +
+> +static struct platform_driver c3_pll_driver = {
+> +	.probe		= aml_c3_pll_probe,
+> +	.driver		= {
+> +		.name	= "c3-pll-clkc",
+> +		.of_match_table = c3_pll_clkc_match_table,
+> +	},
+> +};
+> +
+> +module_platform_driver(c3_pll_driver);
+> +MODULE_AUTHOR("Chuan Liu <chuan.liu@amlogic.com>");
+> +MODULE_LICENSE("GPL");
+> diff --git a/drivers/clk/meson/c3-pll.h b/drivers/clk/meson/c3-pll.h
+> new file mode 100644
+> index 000000000000..92a08196a46f
+> --- /dev/null
+> +++ b/drivers/clk/meson/c3-pll.h
+> @@ -0,0 +1,35 @@
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
+> +/*
+> + * Copyright (c) 2023 Amlogic, inc.
+> + * Author: Chuan Liu <chuan.liu@amlogic.com>
+> + */
+> +
+> +#ifndef __AML_C3_PLL_H__
+> +#define __AML_C3_PLL_H__
+> +
+> +#define ANACTRL_FIXPLL_CTRL0			0x0040
+> +#define ANACTRL_FIXPLL_CTRL4			0x0050
+> +#define ANACTRL_GP0PLL_CTRL0			0x0080
+> +#define ANACTRL_GP0PLL_CTRL1			0x0084
+> +#define ANACTRL_GP0PLL_CTRL2			0x0088
+> +#define ANACTRL_GP0PLL_CTRL3			0x008c
+> +#define ANACTRL_GP0PLL_CTRL4			0x0090
+> +#define ANACTRL_GP0PLL_CTRL5			0x0094
+> +#define ANACTRL_GP0PLL_CTRL6			0x0098
+> +#define ANACTRL_GP0PLL_STS			0x009c
+> +#define ANACTRL_HIFIPLL_CTRL0			0x0100
+> +#define ANACTRL_HIFIPLL_CTRL1			0x0104
+> +#define ANACTRL_HIFIPLL_CTRL2			0x0108
+> +#define ANACTRL_HIFIPLL_CTRL3			0x010c
+> +#define ANACTRL_HIFIPLL_CTRL4			0x0110
+> +#define ANACTRL_HIFIPLL_CTRL5			0x0114
+> +#define ANACTRL_HIFIPLL_CTRL6			0x0118
+> +#define ANACTRL_HIFIPLL_STS			0x011c
+> +#define ANACTRL_MPLL_CTRL0			0x0180
+> +#define ANACTRL_MPLL_CTRL1			0x0184
+> +#define ANACTRL_MPLL_CTRL2			0x0188
+> +#define ANACTRL_MPLL_CTRL3			0x018c
+> +#define ANACTRL_MPLL_CTRL4			0x0190
+> +#define ANACTRL_MPLL_STS			0x01a4
+> +
+> +#endif  /* __AML_C3_PLL_H__ */
+
