@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDAE97C843D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676AC7C8441
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231130AbjJMLSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
+        id S231182AbjJMLSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230441AbjJMLSc (ORCPT
+        with ESMTP id S231124AbjJMLSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:18:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCE3B7;
+        Fri, 13 Oct 2023 07:18:33 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA43C0;
         Fri, 13 Oct 2023 04:18:29 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 11:18:26 -0000
+Date:   Fri, 13 Oct 2023 11:18:27 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1697195907;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ubTp/0jO7M8gTlbN18aXMtPlK8oLH70xqfq1ZuyfzV0=;
-        b=pJfk1kwCXhmY/6CLtV4kbtgrs8nBymXpcmBimvVYVwoNgrYQyzJjEq0DGs4EnPdjBkSMRT
-        3N64rBsd7kwUyygrhM0x1cbZbo6m2FivDYAwRkx4xyAwUHZxekTzs1TloKNTmit95ztfg9
-        E0HVH88wibWqH3w41pL9UDA/WaggpQh0B4+x3pg40mHWW6lhUOgiiy/sjJ2nd2/bGww6wI
-        mibgRAD+fWLVmlhPTSA7a9vHwaaWdFDI69vcQ5MvMWT46At8C7z24Dudre3UhKiKsyXMeQ
-        gzoKw38CHUXOT6EP98Iy7eIW2wk+UusXIUI8mXqxv6olAOzVCdTsq8HI2dlEdg==
+        bh=ihpIi2zGpV5iO/jJMKvvrWvIgzFRX85SMyep/niyOVw=;
+        b=VveKxmNqOx7pw67Y8bqrI1W0+budg++VYzA6N/TVK1zRbilqaVLpaQRDUCG+CZ/DST9fwt
+        1T/2QW5pmt0FdYVtSu8OuGNnVY25UR9oRbBVMAWIkDonAAmDCB0lDyCOvVsMTSEYZ18+H5
+        RtYydfb7Ti7ydrDqHG8+EGVClvJ4CIqjs/jDzSbOALLhoRCmyTpGpfW7P27swMmH7U9u3X
+        oV9Ahehk+cKsurYoEdAOrA3xqvWUbaKmZs+l0uq2tOBDWnMU/VjNI+rPS1ipMffA1/3QXa
+        U4Dw7Eg83a3VWRc/M7E/GiT8ccAR1g1biPajS3h0b+mtF8SD0Wd5it6fY7Br2g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1697195907;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,14 +36,14 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ubTp/0jO7M8gTlbN18aXMtPlK8oLH70xqfq1ZuyfzV0=;
-        b=QXu+iRrSRdi8ennv6D94GeiGdaq5KC/H7eAK48l7ElfTM2HpFH+t9sCPugC7OLiHVb1Ylj
-        RhVgNa7jI82/DqDg==
+        bh=ihpIi2zGpV5iO/jJMKvvrWvIgzFRX85SMyep/niyOVw=;
+        b=Q5fTleJKNiHeF1s0R7vK/nO0PDS6X07j7xhaUw56bYEBmZW9c26wwnDJVFUb7js4jlzOe6
+        7ZUf7F/8o9+ZNKBQ==
 From:   "tip-bot2 for Brian Gerst" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry/32: Clean up syscall fast exit tests
+Subject: [tip: x86/entry] x86/entry/64: Use TASK_SIZE_MAX for canonical RIP test
 Cc:     Brian Gerst <brgerst@gmail.com>, Ingo Molnar <mingo@kernel.org>,
         Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@alien8.de>,
@@ -55,10 +55,10 @@ Cc:     Brian Gerst <brgerst@gmail.com>, Ingo Molnar <mingo@kernel.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231011224351.130935-4-brgerst@gmail.com>
-References: <20231011224351.130935-4-brgerst@gmail.com>
+In-Reply-To: <20231011224351.130935-3-brgerst@gmail.com>
+References: <20231011224351.130935-3-brgerst@gmail.com>
 MIME-Version: 1.0
-Message-ID: <169719590633.3135.1644131863421264861.tip-bot2@tip-bot2>
+Message-ID: <169719590716.3135.10309736631158969894.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -74,18 +74,20 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     1a09a27153f91cd7676b2d4ca574577572a8c999
-Gitweb:        https://git.kernel.org/tip/1a09a27153f91cd7676b2d4ca574577572a8c999
+Commit-ID:     58978b44df7276f7c75a2c6aad6c201421cd4daa
+Gitweb:        https://git.kernel.org/tip/58978b44df7276f7c75a2c6aad6c201421cd4daa
 Author:        Brian Gerst <brgerst@gmail.com>
-AuthorDate:    Wed, 11 Oct 2023 18:43:51 -04:00
+AuthorDate:    Wed, 11 Oct 2023 18:43:50 -04:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Fri, 13 Oct 2023 13:05:28 +02:00
 
-x86/entry/32: Clean up syscall fast exit tests
+x86/entry/64: Use TASK_SIZE_MAX for canonical RIP test
 
-Merge compat and native code and clarify comments.
-
-No change in functionality expected.
+Using shifts to determine if an address is canonical is difficult for
+the compiler to optimize when the virtual address width is variable
+(LA57 feature) without using inline assembly.  Instead, compare RIP
+against TASK_SIZE_MAX.  The only user executable address outside of that
+range is the deprecated vsyscall page, which can fall back to using IRET.
 
 Signed-off-by: Brian Gerst <brgerst@gmail.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
@@ -99,69 +101,26 @@ Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Josh Poimboeuf <jpoimboe@redhat.com>
 Cc: Uros Bizjak <ubizjak@gmail.com>
-Link: https://lore.kernel.org/r/20231011224351.130935-4-brgerst@gmail.com
+Link: https://lore.kernel.org/r/20231011224351.130935-3-brgerst@gmail.com
 ---
- arch/x86/entry/common.c | 48 ++++++++++++++++++----------------------
- 1 file changed, 22 insertions(+), 26 deletions(-)
+ arch/x86/entry/common.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index 4c7154d..d813160 100644
+index 9021465..4c7154d 100644
 --- a/arch/x86/entry/common.c
 +++ b/arch/x86/entry/common.c
-@@ -255,34 +255,30 @@ __visible noinstr bool do_fast_syscall_32(struct pt_regs *regs)
- 	if (!__do_fast_syscall_32(regs))
+@@ -110,10 +110,10 @@ __visible noinstr bool do_syscall_64(struct pt_regs *regs, int nr)
+ 	 * in kernel space.  This essentially lets the user take over
+ 	 * the kernel, since userspace controls RSP.
+ 	 *
+-	 * Change top bits to match the most significant bit (47th or 56th bit
+-	 * depending on paging mode) in the address.
++	 * TASK_SIZE_MAX covers all user-accessible addresses other than
++	 * the deprecated vsyscall page.
+ 	 */
+-	if (unlikely(!__is_canonical_address(regs->ip, __VIRTUAL_MASK_SHIFT + 1)))
++	if (unlikely(regs->ip >= TASK_SIZE_MAX))
  		return false;
  
--#ifdef CONFIG_X86_64
  	/*
--	 * Opportunistic SYSRETL: if possible, try to return using SYSRETL.
--	 * SYSRETL is available on all 64-bit CPUs, so we don't need to
--	 * bother with SYSEXIT.
--	 *
--	 * Unlike 64-bit opportunistic SYSRET, we can't check that CX == IP,
--	 * because the ECX fixup above will ensure that this is essentially
--	 * never the case.
-+	 * Check that the register state is valid for using SYSRETL/SYSEXIT
-+	 * to exit to userspace.  Otherwise use the slower but fully capable
-+	 * IRET exit path.
- 	 */
--	return regs->cs == __USER32_CS && regs->ss == __USER_DS &&
--		regs->ip == landing_pad &&
--		(regs->flags & (X86_EFLAGS_RF | X86_EFLAGS_TF)) == 0;
--#else
--	/*
--	 * Opportunistic SYSEXIT: if possible, try to return using SYSEXIT.
--	 *
--	 * Unlike 64-bit opportunistic SYSRET, we can't check that CX == IP,
--	 * because the ECX fixup above will ensure that this is essentially
--	 * never the case.
--	 *
--	 * We don't allow syscalls at all from VM86 mode, but we still
--	 * need to check VM, because we might be returning from sys_vm86.
--	 */
--	return regs->cs == __USER_CS && regs->ss == __USER_DS &&
--		regs->ip == landing_pad &&
--		(regs->flags & (X86_EFLAGS_RF | X86_EFLAGS_TF | X86_EFLAGS_VM)) == 0;
--#endif
-+
-+	/* XEN PV guests always use the IRET path */
-+	if (cpu_feature_enabled(X86_FEATURE_XENPV))
-+		return false;
-+
-+	/* EIP must point to the VDSO landing pad */
-+	if (unlikely(regs->ip != landing_pad))
-+		return false;
-+
-+	/* CS and SS must match the values set in MSR_STAR */
-+	if (unlikely(regs->cs != __USER32_CS || regs->ss != __USER_DS))
-+		return false;
-+
-+	/* If the TF, RF, or VM flags are set, use IRET */
-+	if (unlikely(regs->flags & (X86_EFLAGS_RF | X86_EFLAGS_TF | X86_EFLAGS_VM)))
-+		return false;
-+
-+	/* Use SYSRETL/SYSEXIT to exit to userspace */
-+	return true;
- }
- 
- /* Returns true to return using SYSEXIT/SYSRETL, or false to use IRET */
