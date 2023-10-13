@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D0F7C8A3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E5F7C8A4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbjJMQF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
+        id S232829AbjJMQFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232679AbjJMQFY (ORCPT
+        with ESMTP id S232695AbjJMQFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:05:24 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5298136
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:05:08 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-57de9237410so1309086eaf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:05:08 -0700 (PDT)
+        Fri, 13 Oct 2023 12:05:25 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB9E194
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:05:12 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7dd65052aso30665487b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:05:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697213108; x=1697817908; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1697213111; x=1697817911; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0E2adTq+ZvO86bFiocTbWu1/NJw0Sxi2mxF0K0O3yCI=;
-        b=CW+BYi6iU/jlGC1kBBGyca/HWtmzV3cYN/uvg4zlIiSHxDcVsGKAS/rr/PvbZHnQAl
-         AuYbPZCEGshgShNjCUDliCzZiKhQ2b0RK6IgOp7DJcd1KllXCvbW6VURKbA1mEMGCOVL
-         aEQlIESaOcANPUvDqykyoHPQ8TQ27s71dI2ofimWG1QBzURYM24amXyKuvAoooWXvwZJ
-         XQ1NXCHY0QnyS53dHlQXQ+KyCa7YCsbx4XZ0Orjyj3t/XLy76FS2ygdrTh1H1nwKLh94
-         N/J9mWfhK4Mccmkf63ErlWULIOk6VpmmCfExBQrlTbULkKYQ+k+QOIEnycld1iH6Kihg
-         imCg==
+        bh=tJIUpMJ5wACe5qVMzOsP9GUn7pUpbtvNyTj02yy63pw=;
+        b=CgWHbEBf4CeGZwSS+Iwwm7byS3IDHNWp24uKKZbOOQe7dvaAXNdUmD2AJS0AlaY6sf
+         d0dNs2V8Yx4bft/zp19dYJpFSOCybDGaO0SxkkkHbHggJitkqpdvjzzc/zxDC1VutWWo
+         eBrQBRYfYzbB3gn5kZiKQ+7IG2xTbLmOqF4qeuiy5Kj9MD9bVqQm85nL5hoPoCEuDVMw
+         fjmE5kscePYUzzT9NpAO3YQT2KxY9ct7Lvi6C1pYu+Ox85r7gYrZ7LwGpVt00JOjJLqo
+         w4s7HGy/IeKKkaYgQkPVJ267XujjkI8KpkoFnhcLOwjZ5yI+UZAMpMvB5E8mh9KykRAG
+         VevQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697213108; x=1697817908;
+        d=1e100.net; s=20230601; t=1697213111; x=1697817911;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0E2adTq+ZvO86bFiocTbWu1/NJw0Sxi2mxF0K0O3yCI=;
-        b=mjluDY2+GZtMyXfyacmoJZFx8IyJ55L0YwrYEp/wvhmufLBIh0Lx1hB0xt0RT81Jo+
-         CRwQcJSqy4SlVEuJ/UykLg0YmQiJw5dPi4ac60Or4/2sKEMvGAodRQG7cnx8H+/P2Q/S
-         mFjGXqgYTSKYf0aRSRrYJpOAPOpFyQJcPWg+5YJ1BOjUqJBERNQgYM2dnS2ERX7aghul
-         ox+QEw9xL/mnwk0a+9uyUy/kzweE7cl7HnkLfMnVJC8SXlgXAPtzrwZLovhv5t1HHOHc
-         gQWix1T0gEcVq4aYBHR2y5PtPg+vQdKP5E4Wn8IdkBDyRQmiZMcP1Qc8m8pdBp/PAFO2
-         sN+g==
-X-Gm-Message-State: AOJu0YwTtjBLB7xnxVmVhh+SCnAENJgL8CpzFRQy9zXgX6mrTTIZSmOK
-        1hBi5y3SF9oeK5vKiJgkxNS7iqnZ/zptxDx+o8Y=
-X-Google-Smtp-Source: AGHT+IETtWM/w2WA9DKTdQv6dDMKZy6/XPv3txCpzyyRcq09faeMnhs/q9OovphD5y5FtIjEDZUykVEwQt4DOxp6Yu8=
-X-Received: by 2002:a4a:9c85:0:b0:567:4e58:6aaf with SMTP id
- z5-20020a4a9c85000000b005674e586aafmr27825009ooj.6.1697213107970; Fri, 13 Oct
- 2023 09:05:07 -0700 (PDT)
+        bh=tJIUpMJ5wACe5qVMzOsP9GUn7pUpbtvNyTj02yy63pw=;
+        b=gbuKH/74rIkRIUF5qUbT/ucr1n2ZFbRxWkNp0aH9NFOMcFPm9haZKXh1NiN3ofUTOU
+         mlvXL+EF7Kb9eQalJ1jLw4lQImjZAyt2A22k+RjIMJZWEQsxkfp5j8wKwMLLpamlus6i
+         MBMYU1vBdccDgd9R5ZlTXw8I4VPXqhitho2qp9QrSM+zNgNbDmYOn54kYWIf3f+xK7Dv
+         TUxSvPzBIZD2DBPdqzsI08NvlwVJsvJWGCWlC4vuxMvYJljA18co+2GkvI1SwBkioR5h
+         xR4TcUYKGKMSxedMqj0W7hP74DHzzrZaC6JdkX7sltmkn/LsGC5iQNAf8zse6L59RIZo
+         YyQQ==
+X-Gm-Message-State: AOJu0YxWo94D7I5yAEDaD/WMss2gDLMuul3Lac2JFoWBmwunJbaor03N
+        xti9mwFBbumN6mAPr2uGPC6FR3hZVa89bl7xwe06
+X-Google-Smtp-Source: AGHT+IHpOSANOrQKBQgtUgStfgXLEaTDhiwuX8RmP+7vz4a8DNxO1ohlNmWN6m1GXQ9c27fFcBbMW4NNTEH1Lhj5YvE=
+X-Received: by 2002:a25:4e05:0:b0:d69:8faa:5a28 with SMTP id
+ c5-20020a254e05000000b00d698faa5a28mr24864064ybb.55.1697213111288; Fri, 13
+ Oct 2023 09:05:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZSkg7y2Y2T3midXB@lab-ubuntu> <67d90726-15b9-4d64-87c6-bfbf662cbe81@kadam.mountain>
-In-Reply-To: <67d90726-15b9-4d64-87c6-bfbf662cbe81@kadam.mountain>
-From:   Calvince Otieno <calvncce@gmail.com>
-Date:   Fri, 13 Oct 2023 19:04:56 +0300
-Message-ID: <CADFX3ORVXcEBzovdbPawW2SLxcMoraKBmmLuOFkMpnHj=T48qQ@mail.gmail.com>
-Subject: Re: [PATCH v2] staging: wlan-ng: remove helper function prism2sta_inf_handover()
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Luke Koch <lu.ale.koch@gmail.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Simon Horman <horms@kernel.org>, linux-staging@lists.linux.dev
+References: <20231012215518.GA4048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20231013-karierte-mehrzahl-6a938035609e@brauner> <CAHC9VhTQFyyE59A3WG3Z0xkP6m31h1M0bvS=yihE7ukpUiDMug@mail.gmail.com>
+ <55620008-1d90-4312-921e-cef348bc7b85@kernel.dk>
+In-Reply-To: <55620008-1d90-4312-921e-cef348bc7b85@kernel.dk>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 13 Oct 2023 12:05:00 -0400
+Message-ID: <CAHC9VhTb6T6fiVTQTBKP6t-zQnDtSck1TuBbETBjs4bt=ryh=Q@mail.gmail.com>
+Subject: Re: [PATCH] audit,io_uring: io_uring openat triggers audit reference
+ count underflow
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Dan Clash <daclash@linux.microsoft.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        dan.clash@microsoft.com, audit@vger.kernel.org,
+        io-uring@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 3:12=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro=
-.org> wrote:
+On Fri, Oct 13, 2023 at 12:00=E2=80=AFPM Jens Axboe <axboe@kernel.dk> wrote=
+:
+> On 10/13/23 9:56 AM, Paul Moore wrote:
+> > * You didn't mention if you've marked this for stable or if you're
+> > going to send this up to Linus now or wait for the merge window.  At a
+> > minimum this should be marked for stable, and I believe it should also
+> > be sent up to Linus prior to the v6.6 release; I'm guessing that is
+> > what you're planning to do, but you didn't mention it here.
 >
-> On Fri, Oct 13, 2023 at 01:50:23PM +0300, Calvince Otieno wrote:
-> > prism2sta_inf_handover() function basically calls pr_debug() to print
-> > a literal string. This can be done by the parent function directly.
-> >
-> > Signed-off-by: Calvince Otieno <calvncce@gmail.com>
-> > ---
-> > Patch version v2:
-> >       - Replace pr_debug() utility function with the module specific ne=
-tdev_dbg()
->
-> This isn't a v2 patch, right?  This patch assumes that we applied the
-> v1 patch...
->
-> This patch is not white space damaged though so that's good.
->
-> regards,
-> dan carpenter
->
->
+> The patch already has a stable tag and the commit it fixes, can't
+> imagine anyone would strip those...
 
-Hello Dan,
-Does this response mean that the patch was accepted?
+I've had that done in the past with patches, although admittedly not
+with VFS related patches and not by Christian.  I just wanted to make
+sure since it wasn't clear from the (automated?) merge response.
 
---
-Kind regards,
-Calvince Otieno
+> But yes, as per my email, just
+> wanting to make sure this is going to 6.6 and not queued for 6.7.
+
+Agreed.
+
+--=20
+paul-moore.com
