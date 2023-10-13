@@ -2,102 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A227C8928
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F407C8935
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbjJMPxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55530 "EHLO
+        id S232467AbjJMP4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 11:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232041AbjJMPxh (ORCPT
+        with ESMTP id S231533AbjJMP4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:53:37 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92112B7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:53:34 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7a29359c80bso20138339f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:53:34 -0700 (PDT)
+        Fri, 13 Oct 2023 11:56:16 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA37BB
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:56:13 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40776b1ff73so2395265e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:56:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697212414; x=1697817214; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a1ab2WuFIKFA3ma0ZjQfVChX06Ccj0lK7DdwFjTIGBA=;
-        b=bMCaOVPLmjdUUJk41icyyKvHf1jHZrvZQoTWQ4b1Ya5gbBeRrnMoRTgUwfP4imhfvI
-         MbwEz9u096CsLR/j76Wn9e4rzzt2v0fbiJcIlhO9U/HgNNJqagGnkqiwz+Fek/TbMqOK
-         bKacmQD095tA5wDxDPeRrSLk3sKybZsOg5nkSr6h/4iOJtyLmMTLuz5SYx2q/TzJwGNK
-         CVJ+PJI9v1mR2ssV4Uevdktyw6xc0zV+lAlK1mAYCMVGg5kMegq4I4FLcxjuodOGLjoN
-         Iqwv4QtiuCX8wLvZAXStKGMyR8tfCvh6yjsBKuQLf/flv/DozNgCZU2PRevqWvUWp14H
-         ADLg==
+        d=linaro.org; s=google; t=1697212572; x=1697817372; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eeV8mwVr2qqt0AVCLeJMQI/U6jyncSF2xLGT0JjXz0w=;
+        b=FxWwk9Z0FpE7p5jN4moR/+DRbYUVegMYPJ72smoVyz2Ano5UdwvT0fQ7hg8HFCL2YS
+         p11T/dx+D5XtreuOV9c2R6kLnOoJMC4NLpaobY+/gjfokJwCkTQUrxUOZ38yhqCojsCY
+         atGHqyj5iEokuZ3P+rJkrrw+awQB8ts9mx/rk1Zow/i0LaKl7JWJ27JwLQWDKm9AHb4m
+         cJgJVQA3KfRJLi2/cSrc9HRzGnz4u5+nyW5DgB0mNB8m4MTTl5DsMz/Yz0HlEJK7yAy/
+         lYFandeMPYTwnoFCouH1r0fbEH3SYBYQoNYdbRDQTtyG58JlEI1HQZNmw2Tj8kIPXHFe
+         AfCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697212414; x=1697817214;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a1ab2WuFIKFA3ma0ZjQfVChX06Ccj0lK7DdwFjTIGBA=;
-        b=dZw29/XeRLULbdpxEISLf7EnLXEiLTSyrx57o4Ww/Ikg59j1WzedhGVGgWkIBl11Og
-         fmWHrSh4HSnmQ0WXP+YdcPjVUzBB6sqZIb8Pps/chJHmvki6dmtLMnmwD1elzxcas8Sz
-         jjq7wNauW66sZSBMlfoiNFTtF07W0SkMoae0tJKlb/I19z0RRcTtQ9UwVonhDkRvlqUx
-         MXq+gGFifieBQV1dr0CspB2E/MaAPYymTBK1dDsWc9Hn6ViQiRdVzy1MAD6jNI50lhMO
-         u/K1WD9hlXQLct7Jo/Fsf7IcgXgmJehLdgJf49vBu3omB57lW6Oh11Nn8pFdL5wj7Zpk
-         B1Jg==
-X-Gm-Message-State: AOJu0YwHADAM+XMxOVuPFgiBkTdbLJ7wpPLA3WwGCNZNh56UPANrMMv9
-        dPRZBIu7bb7/MXeJLafnnHWecA==
-X-Google-Smtp-Source: AGHT+IGD+Y6udldFEfNzSbeSH4ZSFKpxb16IumSgm5Ax2wKNRo/VZ1i60Er7mUo8Y6PAYB6BQM7MWg==
-X-Received: by 2002:a05:6602:368c:b0:792:7c78:55be with SMTP id bf12-20020a056602368c00b007927c7855bemr26797941iob.0.1697212413928;
-        Fri, 13 Oct 2023 08:53:33 -0700 (PDT)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id d24-20020a6b6818000000b007911db1e6f4sm4935706ioc.44.2023.10.13.08.53.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Oct 2023 08:53:33 -0700 (PDT)
-Message-ID: <f1a37128-004b-4605-81a5-11f778cd5498@kernel.dk>
-Date:   Fri, 13 Oct 2023 09:53:32 -0600
+        d=1e100.net; s=20230601; t=1697212572; x=1697817372;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eeV8mwVr2qqt0AVCLeJMQI/U6jyncSF2xLGT0JjXz0w=;
+        b=U3yViR2lHXGxLa0uOyoOPcWTYHlE6wY0fU1hUxpDRPkThmjklf5NdZMlDzgjozgDP0
+         V1MTWuzjhsAzvvjsIVof2NefWIAz21GKRSkM3q76GqsJ/EzSHqftyWefMncG4Vm5gwkE
+         9n3HAkRMLSKx/u3TsRX1scAzBDLqF/wy/gk9/R/sgQTZ06/XCJ9fUb6ypgq9eVot0Mck
+         wb4FLabatNoUkih+kg1BPE6RKGyuje1Eq4mGiYx/SeAVwzl2VJ/ueryyJY7CMgcYW8p1
+         8C17oS6QA2QTIvzpepRNmf7nC0e2flw5KMN7kzGDovklAjlhp4zTkas934ubaCLfJJ3x
+         xfdQ==
+X-Gm-Message-State: AOJu0YyTfx16waIeDfem+cwopfTKHs/3o86JEpduKIGPYIQASzXHBwRO
+        Q1sGyaxD0TVtZbRfGeKtTC2sZQ==
+X-Google-Smtp-Source: AGHT+IGxYfzD8CnnGBJcwffwT+sLmo1TXKCJR1s8yImxg5JTv+J2FYJjyguZrzqOBGPE6zRTrmNnoA==
+X-Received: by 2002:a1c:6a0c:0:b0:404:757e:c5ba with SMTP id f12-20020a1c6a0c000000b00404757ec5bamr22625270wmc.26.1697212572018;
+        Fri, 13 Oct 2023 08:56:12 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id c5-20020a05600c0a4500b003fe1fe56202sm518136wmq.33.2023.10.13.08.56.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 08:56:11 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 18:56:08 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Dorcas Litunya <anonolitunya@gmail.com>
+Cc:     outreachy@lists.linux.dev,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [PATCH]Staging: sm750fb:Add snakecase naming style
+Message-ID: <780713a6-5f93-4393-a46d-36904e7fbd11@kadam.mountain>
+References: <20231013104220.7527-1-anonolitunya@gmail.com>
+ <efcb4734-0349-493e-be93-b95381eb6c78@kadam.mountain>
+ <ZSkq7E+Tp1X/qiER@dorcaslitunya-virtual-machine>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] audit,io_uring: io_uring openat triggers audit reference
- count underflow
-Content-Language: en-US
-To:     Christian Brauner <brauner@kernel.org>,
-        Dan Clash <daclash@linux.microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, paul@paul-moore.com,
-        linux-fsdevel@vger.kernel.org, dan.clash@microsoft.com,
-        audit@vger.kernel.org, io-uring@vger.kernel.org
-References: <20231012215518.GA4048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20231013-karierte-mehrzahl-6a938035609e@brauner>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20231013-karierte-mehrzahl-6a938035609e@brauner>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSkq7E+Tp1X/qiER@dorcaslitunya-virtual-machine>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/23 9:44 AM, Christian Brauner wrote:
-> On Thu, 12 Oct 2023 14:55:18 -0700, Dan Clash wrote:
->> An io_uring openat operation can update an audit reference count
->> from multiple threads resulting in the call trace below.
->>
->> A call to io_uring_submit() with a single openat op with a flag of
->> IOSQE_ASYNC results in the following reference count updates.
->>
->> These first part of the system call performs two increments that do not race.
->>
->> [...]
+On Fri, Oct 13, 2023 at 02:33:00PM +0300, Dorcas Litunya wrote:
+> On Fri, Oct 13, 2023 at 01:48:08PM +0300, Dan Carpenter wrote:
+> > On Fri, Oct 13, 2023 at 01:42:15PM +0300, Dorcas AnonoLitunya wrote:
+> > > From: Dorcas Anono Litunya <anonolitunya@gmail.com>
+> > > 
+> > > Change camelCase variables in file to snake_case for consistent naming
+> > > practices. Issue found by checkpatch.
+> > > 
+> > > Signed-off-by: Dorcas Anono Litunya <anonolitunya@gmail.com>
+> > > ---
+> > >  drivers/staging/sm750fb/ddk750_mode.c | 86 +++++++++++++--------------
+> > >  drivers/staging/sm750fb/ddk750_mode.h |  2 +-
+> > >  drivers/staging/sm750fb/sm750_hw.c    |  2 +-
+> > >  3 files changed, 45 insertions(+), 45 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/sm750fb/ddk750_mode.c b/drivers/staging/sm750fb/ddk750_mode.c
+> > > index e00a6cb31947..f08dcab29172 100644
+> > > --- a/drivers/staging/sm750fb/ddk750_mode.c
+> > > +++ b/drivers/staging/sm750fb/ddk750_mode.c
+> > > @@ -14,13 +14,13 @@
+> > >   * in bit 29:27 of Display Control register.
+> > >   */
+> > >  static unsigned long
+> > > -displayControlAdjust_SM750LE(struct mode_parameter *pModeParam,
+> > > -			     unsigned long dispControl)
+> > > +display_control_adjust_SM750LE(struct mode_parameter *p_mode_param,
+> > 
+> > The p stands for pointer.  We don't like that naming style.  Just call
+> > it mode_param.
+> > 
+> > Thes are the renamed things.
+> > 
+> > displayControlAdjust_SM750LE => display_control_adjust_SM750LE
+> > pModeParam => p_mode_param
+> > dispControl => disp_control
+> > programModeRegisters => program_mode_registers
+> > ddk750_setModeTiming => ddk750_set_mode_timing
+> > 
+> > I feel like this would be better broken up probably into one variable
+> > per patch.  It's jumping around between files.  These variables are not
+> > closely related.
+> Thanks for the feedback Dan. I will revise to do one variable per patch.
 > 
-> Picking this up as is. Let me know if this needs another tree.
+> However,I have an inquiry the main reason its jumping between files is because one of the
+> functions I am modifying(the ddk_set_mode_timing) is imported and used
+> in other files. In this case, should I do one patch per variable per
+> file?
 
-Since it's really vfs related, your tree is fine.
+No that would break the build...
 
-> Applied to the vfs.misc branch of the vfs/vfs.git tree.
-> Patches in the vfs.misc branch should appear in linux-next soon.
+It's just that I felt that in this case it's especially useful to
+break it apart because some of them affect multiple files and some of
+the variables are local to a given function.  (You should still adjust
+the header file to match even though the compiler doesn't care).
 
-You'll send it in for 6.6, right?
-
--- 
-Jens Axboe
+regards,
+dan carpenter
 
