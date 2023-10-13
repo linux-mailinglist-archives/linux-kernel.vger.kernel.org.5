@@ -2,108 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C2C7C8E16
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 22:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432147C8E18
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 22:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbjJMUDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 16:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36964 "EHLO
+        id S231978AbjJMUDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 16:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbjJMUDF (ORCPT
+        with ESMTP id S231840AbjJMUDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 16:03:05 -0400
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514A5C0;
-        Fri, 13 Oct 2023 13:03:03 -0700 (PDT)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 144C11C0065; Fri, 13 Oct 2023 22:03:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-        t=1697227382;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v9IjOJlh+NOlawd305vpof4MMBTGRJ5ONp9S38ZFw1c=;
-        b=LTVA2vMPDHy6f9X2wvaF0rXijKZtYNyIjqpLGCUmd5mR2C9PgaZvthJhljP4xJaxbljL+o
-        /LfA9tInl3ITndc8sEonRvdvh2i+lYudbFBS+3nLq6cyqCTTRtNp4iHxVUCdUdBAB1L4wx
-        ekJ7ejGxo1D0JcHvYd7/swG8suifaWA=
-Date:   Fri, 13 Oct 2023 22:03:01 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Werner Sembach <wse@tuxedocomputers.com>
-Cc:     ojeda@kernel.org, Lee Jones <lee@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Subject: Re: Implement per-key keyboard backlight as auxdisplay?
-Message-ID: <ZSmidd1M5Nre4Qh+@duo.ucw.cz>
-References: <20231011190017.1230898-1-wse@tuxedocomputers.com>
- <ZSe1GYLplZo5fsAe@duo.ucw.cz>
- <0440ed38-c53b-4aa1-8899-969e5193cfef@tuxedocomputers.com>
- <ZSf9QneKO/8IzWhd@duo.ucw.cz>
- <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
- <ZSk16iTBmZ2fLHZ0@duo.ucw.cz>
- <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
- <ZSmg4tqXiYiX18K/@duo.ucw.cz>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="96GhfOL9JQ93T59f"
-Content-Disposition: inline
-In-Reply-To: <ZSmg4tqXiYiX18K/@duo.ucw.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 13 Oct 2023 16:03:36 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65250BE
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 13:03:35 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-578137b42b7so1534831a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 13:03:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697227415; x=1697832215; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vffxO0sw6Zb0lQ2AM2IHgtRpxIRkuWcHJpB50yNrKk4=;
+        b=MaUHIFF3UuDrrkbcH8UycN1Y729i91/QO7knrBnjdJ1bEkQbDKCIvVZ6XRg2cU8Jqf
+         Gb9MY76yNK2BxF56WZAxDyYLphlDY+L6VzQubUmt7G7+2a7REojBUKTPXpNWfxWCpUKz
+         h5t1Jek4iHyZ8L62HcJtPPM0CH2Qn+PQvFRkM3UKjhT3/M6+uQuqEVtrS8MmaUDzv6AS
+         YBYkajHlWXePZq0wLrXuFSrYFLyz+mJ+LdHpNMwJke98cB9QYm5cl2ItKiimOA3bJoax
+         cynqpsePu1lmYUeyAZ1Gv/7HnBb4E3t6ilQBjDzD5S7XFIU2TeqRsWdSMeubBMk8iiGa
+         77xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697227415; x=1697832215;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vffxO0sw6Zb0lQ2AM2IHgtRpxIRkuWcHJpB50yNrKk4=;
+        b=Ed0urIUMdAmHwXNEGiMCOl9oQltZAHt/RPMbjrU/3bCoUEx/r03IJ39KC/wsBlCQHB
+         f7B5nbTPy3X8O5RRYBccUBvJ3ORenCOFje8oFoYbC9YHqQquGqquNdeIvhrB0PBCXaMW
+         H6Awy0llVRvnuidlieL1+PSz1Ta98tkPdECFe/NUAijeYmay9n8W4qkTp9YNkkCwOAJ5
+         kdAXqGC7MA9+Ea2rO5KxU2BuqQxgx+DXglmEuH5o+TCTULLen/LFPq6Np0Cv0qFCM3qB
+         DPF8zgjWjPfVqXnrJUTDtWOlpB2n/vBcdwGjUJOuUNo8+csue33GT+UT3aSVWCyiS63Y
+         WSGA==
+X-Gm-Message-State: AOJu0YzrhHuqd6HQBcZQHsyZ+O8e40xVbqszw2YlUeVRrSKFlju8wJG8
+        NgdEU4z/qVsCCh/wBoFJm6Mav7Bw/nI=
+X-Google-Smtp-Source: AGHT+IGonwtskxsEKWK2/VEwk3FOCJq5hhnqRsHBzBiWFfH/KBni4+gOTzTak2R8kVPU2PdLuYSln5EeA3o=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:f54d:b0:1c9:b785:bc46 with SMTP id
+ h13-20020a170902f54d00b001c9b785bc46mr241059plf.12.1697227414850; Fri, 13 Oct
+ 2023 13:03:34 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 13:03:33 -0700
+In-Reply-To: <3228f3dd7652146780b60419296033a79051ea75.camel@infradead.org>
+Mime-Version: 1.0
+References: <ZRysGAgk6W1bpXdl@google.com> <d6dc1242ff731cf0f2826760816081674ade9ff9.camel@infradead.org>
+ <ZR2pwdZtO3WLCwjj@google.com> <34057852-f6c0-d6d5-261f-bbb5fa056425@oracle.com>
+ <ZSXqZOgLYkwLRWLO@google.com> <8f3493ca4c0e726d5c3876bb7dd2cfc432d9deaa.camel@infradead.org>
+ <ZSmHcECyt5PdZyIZ@google.com> <5ea168df6dfbe910524a381b88347636e1a6a3bc.camel@infradead.org>
+ <ZSmUV3AoFWBTMx-o@google.com> <3228f3dd7652146780b60419296033a79051ea75.camel@infradead.org>
+Message-ID: <ZSmilTCQ-LITYJPK@google.com>
+Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock periodically
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
+        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---96GhfOL9JQ93T59f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> > The specific keyboard RGB controller I want to implement takes 6*21 rgb
-> > values. However not every one is actually mapped to a physical key. e.g=
-=2E the
-> > bottom row needs less entries because of the space bar. Additionally the
-> > keys are ofc not in a straight line from top to bottom.
+On Fri, Oct 13, 2023, David Woodhouse wrote:
+> On Fri, 2023-10-13 at 12:02 -0700, Sean Christopherson wrote:
+> > > But while I'm picking on the edge cases and suggesting that we *can*
+> > > cope with some of them, I do agree with your suggestion that "let
+> > > kvmclock run by itself without being clamped back to
+> > > CLOCK_MONOTONIC_RAW" should be an opt *in* feature.
+> >=20
+> > Yeah, I'm of the mind that just because we can cope with some edge case=
+s, doesn't
+> > mean we should.=C2=A0 At this point, kvmclock really should be consider=
+ed deprecated
+> > on modern hardware.=C2=A0 I.e. needs to be supported for older VMs, but=
+ shouldn't be
+> > advertised/used when creating entirely new VMs.
+> >=20
+> > Hence my desire to go with a low effort solution for getting kvmclock t=
+o play nice
+> > with modern hardware.
 >=20
-> So... a bit of rationale. The keyboard does not really fit into the
-> LED subsystem; LEDs are expected to be independent ("hdd led") and not
-> a matrix of them.
+> Yeah... although the kvmclock is also the *Xen* clock (and the clock on
+> which Xen timers are based). So while I'm perfectly prepared to call
+> those Xen guests "older VMs", I do still have to launch quite a lot of
+> new ones the same... :)
+
+Heh, yeah, by "new" I meant "new shapes/classes/types of VMs", not simply "=
+new
+instances of existing VM types".
+
+> > > > > [1] Yes, I believe "back" does happen. I have test failures in my=
+ queue
+> > > > > to look at, where guests see the "Xen" clock going backwards.
+> > > >=20
+> > > > Yeah, I assume "back" can happen based purely on the wierdness of t=
+he pvclock math.o
+> > > >=20
+> > > > What if we add a module param to disable KVM's TSC synchronization =
+craziness
+> > > > entirely?=C2=A0 If we first clean up the peroidic sync mess, then i=
+t seems like it'd
+> > > > be relatively straightforward to let kill off all of the synchroniz=
+ation, including
+> > > > the synchronization of kvmclock to the host's TSC-based CLOCK_MONOT=
+ONIC_RAW.
+> > > >=20
+> > > > Not intended to be a functional patch...
+> > >=20
+> > > Will stare harder at the actual patch when it isn't Friday night.
+> > >=20
+> > > In the meantime, I do think a KVM cap that the VMM opts into is bette=
+r
+> > > than a module param?
+> >=20
+> > Hmm, yeah, I think a capability would be cleaner overall.=C2=A0 Then KV=
+M could return
+> > -EINVAL instead of silently forcing synchronization if the platform con=
+ditions
+> > aren't meant, e.g. if the TSC isn't constant or if the host timekeeping=
+ isn't
+> > using TSC.
 >=20
-> We do see various strange displays these days -- they commonly have
-> rounded corners and holes in them. I'm not sure how that's currently
-> supported, but I believe it is reasonable to view keyboard as a
-> display with slightly weird placing of pixels.
+> Right.
 >=20
-> Plus, I'd really like to play tetris on one of those :-).
+> > The interaction with kvmclock_periodic_sync might be a bit awkward, but=
+ that's
+> > easy enough to solve with a wrapper.
 >=20
-> So, would presenting them as auxdisplay be acceptable? Or are there
-> better options?
+> At least that's all per-KVM already. We do also still need to deal with
+> the mess of having a single system-wide kvm_guest_has_master_clock and
+> different KVMs explicitly setting that to 1 or 0, don't we?
 
-Oh and... My existing keyboard membrane-based Chicony, and it is from
-time when PS/2 was still in wide use. I am slowly looking for a new
-keyboard. If you know of one with nice mechanical switches, RGB
-backlight with known protocol, and hopefully easily available in Czech
-republic, let me know.
+Hmm, I think the simplest way to handle kvm_guest_has_master_clock would be=
+ to
+have KVM check that the host clocksource is TSC-based when enabling the cap=
+ability,
+but define the behavior to be that once kvmclock is tied to the TSC, it's *=
+always*
+tied to the TSC, even if the host switches to a different clock source.  Th=
+en VMs
+for which kvmclock is tied to TSC can simply not set kvm_guest_has_master_c=
+lock
+and be skipped by pvclock_gtod_update_fn().
 
-Best regards,
-								Pavel
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
-
---96GhfOL9JQ93T59f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZSmidQAKCRAw5/Bqldv6
-8qQ2AKCBGTKHxfVPIxGuMChs0D4oO1LDGwCfakWEaV9v+/Ut+yVuwzG27YC/Yqg=
-=mzp6
------END PGP SIGNATURE-----
-
---96GhfOL9JQ93T59f--
+Side topic, I have no idea why that thing is an atomic.  It's just a flag t=
+hat
+tracks if at least one VM is using masterclock, and its only usage is to di=
+sable
+all masterclocks if the host stops using TSC as the clocksource for whateve=
+r reason.
+It really should just be a simple bool that's accessed with {READ,WRITE}_ON=
+CE().
