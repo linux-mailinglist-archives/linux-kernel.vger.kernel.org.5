@@ -2,638 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C5B7C8226
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8C87C8250
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbjJMJho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 05:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38178 "EHLO
+        id S231430AbjJMJjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 05:39:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230512AbjJMJhn (ORCPT
+        with ESMTP id S231283AbjJMJiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 05:37:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BD2BE
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697189819;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YnfceKfpnNfioFfuyj/sLNue74yevcvUBw1BegkkoUI=;
-        b=TVpSbdlcCjCWHdaAuasebzFDM35oShk5LKjN+yB2BQUQs4Wcq4/e5f8Juu6xEr46mUdSEy
-        Mss0zyKn99t7hEn7p1y2llUit6YnhDlv2Hyo+XSYbTfgNxaMaV9psk9jUlUEgrdFE9uUft
-        zFToCewOUcwyZWfZAJnz8SaCnPzVics=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-350-n71ny1gJMay8iKKJe0AgZA-1; Fri, 13 Oct 2023 05:36:56 -0400
-X-MC-Unique: n71ny1gJMay8iKKJe0AgZA-1
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6b258f81045so426330b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:36:56 -0700 (PDT)
+        Fri, 13 Oct 2023 05:38:17 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466AD95
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:38:15 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-533c5d10dc7so3341835a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:38:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697189894; x=1697794694; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YrzadSgsgTlC4uFU2lvzbmqnsROGfT+yADAPxLvJUbc=;
+        b=Pfbs7NoInWO6/jaxpi3xTSQoVdUqFnQxOpCODoAWd+ypoSBz2xwHaSkpSRuZ/1rZxY
+         f74fqcHMTw+IHNZj1+qpWQ2lKcPxtM1wSrDnWVebDLtoj1c/yBvruBx0oUYZZyOzjJcv
+         AIdw9VY0GyeqUfww4KNAc++WTy7xBDq7D3GJJSRHBFUS6L+1xM1ckQuRh10cglfkYf90
+         z1yOLqRXkfw+n6HDsrSc7Ekk0yW9p0ncORONUiHRWAF2g6i+iSC99hI14iuFmFJfOzbz
+         lp3zcgyiSIXD6AKTSfcFKaw0Vf9Ve137DYxBg6sFaxrkS7Id9G58lJa7R1gRnO/bcRhB
+         Mtiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697189816; x=1697794616;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YnfceKfpnNfioFfuyj/sLNue74yevcvUBw1BegkkoUI=;
-        b=r3OBHxpc/HtbNQaxXhJzqRtgpKuRvcJQRRiGxXhxZ1TaamiEFzTRs3i62GCZmG5vGb
-         EKQ6iFaB56qErI9IsqrmJXG8AKY0CYXRG5hpZOJ+roxXlM2qgkiaX5WsEFl39gzPGPfV
-         SPURighORWLE5nkbRUVFg1KJmySkBy2uJEvHn7cW0BA69mbPyVeVFo+Hc1//BawLl87D
-         0kdAtRP8Qnz4hpa2Ktp1pALFJugQidBBWqwv7nZJtyul9jL5RFzBKpONAgUJRzcAAQoI
-         +jZaTZ1BKjX0l43US33Jr7Z+tzgKGjPw8pwvpPqFY/7BUeMUSlwsW7Mxeq/5GfY3q/4s
-         8WMQ==
-X-Gm-Message-State: AOJu0YzMHGXU0u4HmOc3MLnFu9oZsW3nivaL/FCuQF4GIuZUq8wxRHhP
-        8z2j508hU7hifqFdmjMDP2P90sSRhzaVkbfZ5fMFlmLo9xyjXwE/j1orudcSggiZpLhfKmx8ETv
-        Qgcis5rbKef5JtulOFOTOfmxk
-X-Received: by 2002:a05:6a20:7f83:b0:15e:b8a1:57b9 with SMTP id d3-20020a056a207f8300b0015eb8a157b9mr32606691pzj.24.1697189815718;
-        Fri, 13 Oct 2023 02:36:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGNAtCdhbEudvQa8D2rhwFTN/N7q/afDX/TXVDKgjUht/qcfb5IeKz8YZTW0kHGb5nUx7gasw==
-X-Received: by 2002:a05:6a20:7f83:b0:15e:b8a1:57b9 with SMTP id d3-20020a056a207f8300b0015eb8a157b9mr32606664pzj.24.1697189815259;
-        Fri, 13 Oct 2023 02:36:55 -0700 (PDT)
-Received: from smtpclient.apple ([116.73.132.235])
-        by smtp.gmail.com with ESMTPSA id x4-20020a170902ea8400b001c5076ae6absm3423217plb.126.2023.10.13.02.36.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 13 Oct 2023 02:36:54 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.4\))
-Subject: Re: [PATCH v8] hv/hv_kvp_daemon:Support for keyfile based connection
- profile
-From:   Ani Sinha <anisinha@redhat.com>
-In-Reply-To: <1696847920-31125-1-git-send-email-shradhagupta@linux.microsoft.com>
-Date:   Fri, 13 Oct 2023 15:06:46 +0530
-Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Olaf Hering <olaf@aepfle.de>,
-        Shradha Gupta <shradhagupta@microsoft.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <A8905E07-2D01-46D6-A40D-C9F7461393EB@redhat.com>
-References: <1696847920-31125-1-git-send-email-shradhagupta@linux.microsoft.com>
-To:     Shradha Gupta <shradhagupta@linux.microsoft.com>
-X-Mailer: Apple Mail (2.3696.120.41.1.4)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1697189894; x=1697794694;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YrzadSgsgTlC4uFU2lvzbmqnsROGfT+yADAPxLvJUbc=;
+        b=HpNNPYmjW42qe8FFhw2aUZQDIfrwmILSW21bLvn6XE9F7KeWHpBzqp7wBJomg2jhR6
+         5dEH3j8rxtXncMLURjQJhGDd6TSW4ISyKZuWHBQePZuHMDRzg9F1H9wPOzN62rpf1dgW
+         CYcRFlHlBiBXkwxAUgzqi5zjz6jRJStGsOUZwSKTYBOzFtz6ZJk5hLXMJz2hodZsATph
+         IaL1A/mdfRYOt5Cw9cQzE+EqlJKsHDu2PyzcnN6U+Bq2HhDYEqGXRSU6C5XxQbd9n2NK
+         TPHwCKibukYUpnCjNwOdYU9ijf1OfT33neX4uxvHaSrKdYTscCFIEp9cF/Myqrx8MSkK
+         dmJw==
+X-Gm-Message-State: AOJu0Yz96hWTQVb7eeYV+hs64HyhZuaP02ZHT+yzJ8+4DUZ4TqxjFMnN
+        0bTL/8BKX4AB4QvmLjdpiwNJcwMDkp/eBWP0+jw=
+X-Google-Smtp-Source: AGHT+IFC2l0dKbmk5L2CWl20eFCVR64gyKwMwVR09fBSniA03uVOaJWiajBSO8N2uxjKcZQlGHdp+YwS0+MCAYapzwk=
+X-Received: by 2002:a50:ee84:0:b0:532:bed7:d0dd with SMTP id
+ f4-20020a50ee84000000b00532bed7d0ddmr25307669edr.5.1697189893461; Fri, 13 Oct
+ 2023 02:38:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zp-eDsxpStBznMHUE3OcHZ97NAZrZEjJW63oEFWtM3OQ@mail.gmail.com>
+ <CAFULd4bBeMCBf5_VKWA8Ui=rhQtXf03zFUioq1DeQaYCfP8v=A@mail.gmail.com>
+ <CAHk-=wgUwPruc3MP6=vode2SawVpNgb8-szV1HYoc6E1wAaw=w@mail.gmail.com>
+ <CAHk-=whzhXdRz1UNaQWTSY2ue8biGqfS18VXcEQasQNCyg_AwQ@mail.gmail.com> <CAFULd4ZdfUQszrp6hKzKXosj0-yzizx+-4BZG7SzEpZPCdUFuA@mail.gmail.com>
+In-Reply-To: <CAFULd4ZdfUQszrp6hKzKXosj0-yzizx+-4BZG7SzEpZPCdUFuA@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Fri, 13 Oct 2023 11:38:01 +0200
+Message-ID: <CAFULd4Y5JocT9yRwS0Zkro-pAHihmOHP2D8fMLR29j8_Gy_nNA@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nadav Amit <namit@vmware.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: multipart/mixed; boundary="000000000000b76f50060795d072"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--000000000000b76f50060795d072
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Oct 12, 2023 at 8:01=E2=80=AFPM Uros Bizjak <ubizjak@gmail.com> wro=
+te:
+>
+> On Thu, Oct 12, 2023 at 7:47=E2=80=AFPM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Thu, 12 Oct 2023 at 10:10, Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > The fix seems to be a simple one-liner, ie just
+> > >
+> > > -       asm(__pcpu_op2_##size(op, __percpu_arg(P[var]), "%[val]")    =
+   \
+> > > +       asm(__pcpu_op2_##size(op, __percpu_arg(a[var]), "%[val]")    =
+   \
+> >
+> > Nope. That doesn't work at all.
+> >
+> > It turns out that we're not the only ones that didn't know about the
+> > 'a' modifier.
+> >
+> > clang has also never heard of it in this context, and the above
+> > one-liner results in an endless sea of errors, with
+> >
+> >      error: invalid operand in inline asm: 'movq %gs:${1:a}, $0'
+> >
+> > Looking around, I think it's X86AsmPrinter::PrintAsmOperand() that is
+> > supposed to handle these things, and while it does have some handling
+> > for 'a', the comment around it says
+> >
+> >     case 'a': // This is an address.  Currently only 'i' and 'r' are ex=
+pected.
+> >
+> > and I think our use ends up just confusing the heck out of clang. Of
+> > course, clang also does this:
+> >
+> >     case 'P': // This is the operand of a call, treat specially.
+> >         PrintPCRelImm(MI, OpNo, O);
+> >         return false;
+> >
+> > so clang *already* generates those 'current' accesses as PCrelative, an=
+d I see
+> >
+> >         movq    %gs:pcpu_hot(%rip), %r13
+> >
+> > in the generated code.
+> >
+> > End result: clang actually generates what we want just using 'P', and
+> > the whole "P vs a" is only a gcc thing.
+>
+> Ugh, this isn't exactly following Clang's claim that "In general,
+> Clang is highly compatible with the GCC inline assembly extensions,
+> allowing the same set of constraints, modifiers and operands as GCC
+> inline assembly."
 
-> On 09-Oct-2023, at 4:08 PM, Shradha Gupta =
-<shradhagupta@linux.microsoft.com> wrote:
->=20
-> Ifcfg config file support in NetworkManger is deprecated. This patch
-> provides support for the new keyfile config format for connection
-> profiles in NetworkManager. The patch modifies the hv_kvp_daemon code
-> to generate the new network configuration in keyfile
-> format(.ini-style format) along with a ifcfg format configuration.
-> The ifcfg format configuration is also retained to support easy
-> backward compatibility for distro vendors. These configurations are
-> stored in temp files which are further translated using the
-> hv_set_ifconfig.sh script. This script is implemented by individual
-> distros based on the network management commands supported.
-> For example, RHEL's implementation could be found here:
-> =
-https://gitlab.com/redhat/centos-stream/src/hyperv-daemons/-/blob/c9s/hv_s=
-et_ifconfig.sh
-> Debian's implementation could be found here:
-> =
-https://github.com/endlessm/linux/blob/master/debian/cloud-tools/hv_set_if=
-config
->=20
-> The next part of this support is to let the Distro vendors consume
-> these modified implementations to the new configuration format.
->=20
-> Tested-on: Rhel9(Hyper-V, Azure)(nm and ifcfg files verified)
+For added fun I obtained some old clang:
 
-Was this patch tested with ipv6? We are seeing a mix of ipv6 and ipv4 =
-addresses in ipv6 section:
+$ clang --version
+clang version 11.0.0 (Fedora 11.0.0-3.fc33)
 
-]# cat eth0.nmconnection=20
+and tried to compile this:
 
-[connection]
-autoconnect=3Dyes
-interface-name=3Deth0
+int m;
+__seg_gs int n;
 
-[ethernet]
-mac-address=3D00:15:5D:C4:63:45
-
-[ipv6]
-method=3Dmanual
-address=3D1234:1234:1234:1234:0000:0000:0000:0113/120
-gateway=3D10.73.199.254
-dns=3D10.72.17.5
-
-Gateway and dns should be in ipv6.=20
-
-Ipv4 dns addresses comes from /etc/resolv.conf and in our system:
-
-# /usr/libexec/hypervkvpd/hv_get_dns_info
-10.72.17.5
-10.68.5.26
-
-[root@vm-197-248 ~]# cat /etc/resolv.conf=20
-# Generated by NetworkManager
-search lab.eng.pek2.redhat.com
-nameserver 10.72.17.5
-nameserver 10.68.5.26
-
-So we should check if the addresses are indeed ipv6 or not and should =
-not print it if !is_ipv4(). Ipv6 addresses may not be provisioned.
-
-I will post a patch fix when we complete our internal testing.
-
-
-> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-> ---
-> Changes v7->v8
-> * Fix some filename variable names to avoid confusion
-> * Add initialization of is_ipv6 variable
-> * Add a few comments
-> ---
-> tools/hv/hv_kvp_daemon.c    | 233 +++++++++++++++++++++++++++++++-----
-> tools/hv/hv_set_ifconfig.sh |  39 +++++-
-> 2 files changed, 235 insertions(+), 37 deletions(-)
->=20
-> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-> index 27f5e7dfc2f7..264eeb9c46a9 100644
-> --- a/tools/hv/hv_kvp_daemon.c
-> +++ b/tools/hv/hv_kvp_daemon.c
-> @@ -1171,12 +1171,79 @@ static int process_ip_string(FILE *f, char =
-*ip_string, int type)
-> 	return 0;
-> }
->=20
-> +/*
-> + * Only IPv4 subnet strings needs to be converted to plen
-> + * For IPv6 the subnet is already privided in plen format
-> + */
-> +static int kvp_subnet_to_plen(char *subnet_addr_str)
-> +{
-> +	int plen =3D 0;
-> +	struct in_addr subnet_addr4;
-> +
-> +	/*
-> +	 * Convert subnet address to binary representation
-> +	 */
-> +	if (inet_pton(AF_INET, subnet_addr_str, &subnet_addr4) =3D=3D 1) =
+void foo (void)
 {
-> +		uint32_t subnet_mask =3D ntohl(subnet_addr4.s_addr);
-> +
-> +		while (subnet_mask & 0x80000000) {
-> +			plen++;
-> +			subnet_mask <<=3D 1;
-> +		}
-> +	} else {
-> +		return -1;
-> +	}
-> +
-> +	return plen;
-> +}
-> +
-> +static int process_ip_string_nm(FILE *f, char *ip_string, char =
-*subnet,
-> +				int is_ipv6)
-> +{
-> +	char addr[INET6_ADDRSTRLEN];
-> +	char subnet_addr[INET6_ADDRSTRLEN];
-> +	int error, i =3D 0;
+  asm ("# %a0 %a1" :: "p" (&m), "p" (&n));
+  asm ("# %P0 %P1" :: "p" (&m), "p" (&n));
+}
 
-This should be initialised to 1
+clang-11:
 
-=
-https://developer-old.gnome.org/NetworkManager/stable/nm-settings-keyfile.=
-html#:~:text=3DFile%20Format,%2Dsettings(5)).
+       # m n
+       # m n
 
-Also see below.
+clang-11 -fpie:
 
-> +	int ip_offset =3D 0, subnet_offset =3D 0;
-> +	int plen;
-> +
-> +	memset(addr, 0, sizeof(addr));
-> +	memset(subnet_addr, 0, sizeof(subnet_addr));
-> +
-> +	while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
-> +				   (MAX_IP_ADDR_SIZE * 2)) &&
-> +				   parse_ip_val_buffer(subnet,
-> +						       &subnet_offset,
-> +						       subnet_addr,
-> +						       (MAX_IP_ADDR_SIZE =
-*
-> +							2))) {
-> +		if (!is_ipv6)
-> +			plen =3D kvp_subnet_to_plen((char =
-*)subnet_addr);
-> +		else
-> +			plen =3D atoi(subnet_addr);
-> +
-> +		if (plen < 0)
-> +			return plen;
-> +
-> +		error =3D fprintf(f, "address%d=3D%s/%d\n", ++i, (char =
-*)addr,
-> +				plen);
-> +		if (error < 0)
-> +			return error;
-> +
-> +		memset(addr, 0, sizeof(addr));
-> +		memset(subnet_addr, 0, sizeof(subnet_addr));
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value =
-*new_val)
-> {
-> 	int error =3D 0;
-> -	char if_file[PATH_MAX];
-> -	FILE *file;
-> +	char if_filename[PATH_MAX];
-> +	char nm_filename[PATH_MAX];
-> +	FILE *ifcfg_file, *nmfile;
-> 	char cmd[PATH_MAX];
-> +	int is_ipv6 =3D 0;
-> 	char *mac_addr;
-> 	int str_len;
->=20
-> @@ -1197,7 +1264,7 @@ static int kvp_set_ip_info(char *if_name, struct =
-hv_kvp_ipaddr_value *new_val)
-> 	 * in a given distro to configure the interface and so are free
-> 	 * ignore information that may not be relevant.
-> 	 *
-> -	 * Here is the format of the ip configuration file:
-> +	 * Here is the ifcfg format of the ip configuration file:
-> 	 *
-> 	 * HWADDR=3Dmacaddr
-> 	 * DEVICE=3Dinterface name
-> @@ -1220,6 +1287,32 @@ static int kvp_set_ip_info(char *if_name, =
-struct hv_kvp_ipaddr_value *new_val)
-> 	 * tagged as IPV6_DEFAULTGW and IPV6 NETMASK will be tagged as
-> 	 * IPV6NETMASK.
-> 	 *
-> +	 * Here is the keyfile format of the ip configuration file:
-> +	 *
-> +	 * [ethernet]
-> +	 * mac-address=3Dmacaddr
-> +	 * [connection]
-> +	 * interface-name=3Dinterface name
-> +	 *
-> +	 * [ipv4]
-> +	 * method=3D<protocol> (where <protocol> is "auto" if DHCP is =
-configured
-> +	 *                       or "manual" if no boot-time protocol =
-should be used)
-> +	 *
-> +	 * address1=3Dipaddr1/plen
-> +	 * address2=3Dipaddr2/plen
-> +	 *
-> +	 * gateway=3Dgateway1;gateway2
-> +	 *
-> +	 * dns=3Ddns1;dns2
-> +	 *
-> +	 * [ipv6]
-> +	 * address1=3Dipaddr1/plen
-> +	 * address2=3Dipaddr2/plen
-> +	 *
-> +	 * gateway=3Dgateway1;gateway2
-> +	 *
-> +	 * dns=3Ddns1;dns2
-> +	 *
-> 	 * The host can specify multiple ipv4 and ipv6 addresses to be
-> 	 * configured for the interface. Furthermore, the configuration
-> 	 * needs to be persistent. A subsequent GET call on the =
-interface
-> @@ -1227,14 +1320,29 @@ static int kvp_set_ip_info(char *if_name, =
-struct hv_kvp_ipaddr_value *new_val)
-> 	 * call.
-> 	 */
->=20
-> -	snprintf(if_file, sizeof(if_file), "%s%s%s", KVP_CONFIG_LOC,
-> -		"/ifcfg-", if_name);
-> +	/*
-> +	 * We are populating both ifcfg and nmconnection files
-> +	 */
-> +	snprintf(if_filename, sizeof(if_filename), "%s%s%s", =
-KVP_CONFIG_LOC,
-> +		 "/ifcfg-", if_name);
->=20
-> -	file =3D fopen(if_file, "w");
-> +	ifcfg_file =3D fopen(if_filename, "w");
->=20
-> -	if (file =3D=3D NULL) {
-> +	if (!ifcfg_file) {
-> 		syslog(LOG_ERR, "Failed to open config file; error: %d =
-%s",
-> -				errno, strerror(errno));
-> +		       errno, strerror(errno));
-> +		return HV_E_FAIL;
-> +	}
-> +
-> +	snprintf(nm_filename, sizeof(nm_filename), "%s%s%s%s", =
-KVP_CONFIG_LOC,
-> +		 "/", if_name, ".nmconnection");
-> +
-> +	nmfile =3D fopen(nm_filename, "w");
-> +
-> +	if (!nmfile) {
-> +		syslog(LOG_ERR, "Failed to open config file; error: %d =
-%s",
-> +		       errno, strerror(errno));
-> +		fclose(ifcfg_file);
-> 		return HV_E_FAIL;
-> 	}
->=20
-> @@ -1248,14 +1356,31 @@ static int kvp_set_ip_info(char *if_name, =
-struct hv_kvp_ipaddr_value *new_val)
-> 		goto setval_error;
-> 	}
->=20
-> -	error =3D kvp_write_file(file, "HWADDR", "", mac_addr);
-> -	free(mac_addr);
-> +	error =3D kvp_write_file(ifcfg_file, "HWADDR", "", mac_addr);
-> +	if (error < 0)
-> +		goto setmac_error;
-> +
-> +	error =3D kvp_write_file(ifcfg_file, "DEVICE", "", if_name);
-> +	if (error < 0)
-> +		goto setmac_error;
-> +
-> +	error =3D fprintf(nmfile, "\n[connection]\n");
-> +	if (error < 0)
-> +		goto setmac_error;
-> +
-> +	error =3D kvp_write_file(nmfile, "interface-name", "", if_name);
-> 	if (error)
-> -		goto setval_error;
-> +		goto setmac_error;
->=20
-> -	error =3D kvp_write_file(file, "DEVICE", "", if_name);
-> +	error =3D fprintf(nmfile, "\n[ethernet]\n");
-> +	if (error < 0)
-> +		goto setmac_error;
-> +
-> +	error =3D kvp_write_file(nmfile, "mac-address", "", mac_addr);
-> 	if (error)
-> -		goto setval_error;
-> +		goto setmac_error;
-> +
-> +	free(mac_addr);
->=20
-> 	/*
-> 	 * The dhcp_enabled flag is only for IPv4. In the case the host =
-only
-> @@ -1263,47 +1388,91 @@ static int kvp_set_ip_info(char *if_name, =
-struct hv_kvp_ipaddr_value *new_val)
-> 	 * proceed to parse and pass the IPv6 information to the
-> 	 * disto-specific script hv_set_ifconfig.
-> 	 */
-> +
-> +	/*
-> +	 * First populate the ifcfg file format
-> +	 */
-> 	if (new_val->dhcp_enabled) {
-> -		error =3D kvp_write_file(file, "BOOTPROTO", "", "dhcp");
-> +		error =3D kvp_write_file(ifcfg_file, "BOOTPROTO", "", =
-"dhcp");
-> 		if (error)
-> 			goto setval_error;
-> -
-> 	} else {
-> -		error =3D kvp_write_file(file, "BOOTPROTO", "", "none");
-> +		error =3D kvp_write_file(ifcfg_file, "BOOTPROTO", "", =
-"none");
-> 		if (error)
-> 			goto setval_error;
-> 	}
->=20
-> -	/*
-> -	 * Write the configuration for ipaddress, netmask, gateway and
-> -	 * name servers.
-> -	 */
-> -
-> -	error =3D process_ip_string(file, (char *)new_val->ip_addr, =
-IPADDR);
-> +	error =3D process_ip_string(ifcfg_file, (char =
-*)new_val->ip_addr,
-> +				  IPADDR);
-> 	if (error)
-> 		goto setval_error;
->=20
-> -	error =3D process_ip_string(file, (char *)new_val->sub_net, =
-NETMASK);
-> +	error =3D process_ip_string(ifcfg_file, (char =
-*)new_val->sub_net,
-> +				  NETMASK);
-> 	if (error)
-> 		goto setval_error;
->=20
-> -	error =3D process_ip_string(file, (char *)new_val->gate_way, =
-GATEWAY);
-> +	error =3D process_ip_string(ifcfg_file, (char =
-*)new_val->gate_way,
-> +				  GATEWAY);
-> 	if (error)
-> 		goto setval_error;
->=20
-> -	error =3D process_ip_string(file, (char *)new_val->dns_addr, =
-DNS);
-> +	error =3D process_ip_string(ifcfg_file, (char =
-*)new_val->dns_addr, DNS);
-> 	if (error)
-> 		goto setval_error;
->=20
-> -	fclose(file);
-> +	if (new_val->addr_family =3D=3D ADDR_FAMILY_IPV6) {
+       # m(%rip) n(%rip)
+       # m n
 
-I think we should have done something like
+clang-11 -m32:
 
-new_val->addr_family & ADDR_FAMILY_IPV6 here.
+       # m n
+       # m n
 
-> +		error =3D fprintf(nmfile, "\n[ipv6]\n");
-> +		if (error < 0)
-> +			goto setval_error;
-> +		is_ipv6 =3D 1;
-> +	} else {
-> +		error =3D fprintf(nmfile, "\n[ipv4]\n");
-> +		if (error < 0)
-> +			goto setval_error;
-> +	}
-> +
-> +	/*
-> +	 * Now we populate the keyfile format
-> +	 */
-> +
-> +	if (new_val->dhcp_enabled) {
-> +		error =3D kvp_write_file(nmfile, "method", "", "auto");
-> +		if (error < 0)
-> +			goto setval_error;
-> +	} else {
-> +		error =3D kvp_write_file(nmfile, "method", "", =
-"manual");
-> +		if (error < 0)
-> +			goto setval_error;
-> +	}
-> +
-> +	/*
-> +	 * Write the configuration for ipaddress, netmask, gateway and
-> +	 * name services
-> +	 */
-> +	error =3D process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> +				     (char *)new_val->sub_net, is_ipv6);
-> +	if (error < 0)
-> +		goto setval_error;
-> +
-> +	error =3D fprintf(nmfile, "gateway=3D%s\n", (char =
-*)new_val->gate_way);
-> +	if (error < 0)
-> +		goto setval_error;
-> +
-> +	error =3D fprintf(nmfile, "dns=3D%s\n", (char =
-*)new_val->dns_addr);
-> +	if (error < 0)
-> +		goto setval_error;
-> +
-> +	fclose(nmfile);
-> +	fclose(ifcfg_file);
->=20
-> 	/*
-> 	 * Now that we have populated the configuration file,
-> 	 * invoke the external script to do its magic.
-> 	 */
->=20
-> -	str_len =3D snprintf(cmd, sizeof(cmd), KVP_SCRIPTS_PATH "%s %s",
-> -			   "hv_set_ifconfig", if_file);
-> +	str_len =3D snprintf(cmd, sizeof(cmd), KVP_SCRIPTS_PATH "%s %s =
-%s",
-> +			   "hv_set_ifconfig", if_filename, nm_filename);
-> 	/*
-> 	 * This is a little overcautious, but it's necessary to suppress =
-some
-> 	 * false warnings from gcc 8.0.1.
-> @@ -1316,14 +1485,16 @@ static int kvp_set_ip_info(char *if_name, =
-struct hv_kvp_ipaddr_value *new_val)
->=20
-> 	if (system(cmd)) {
-> 		syslog(LOG_ERR, "Failed to execute cmd '%s'; error: %d =
-%s",
-> -				cmd, errno, strerror(errno));
-> +		       cmd, errno, strerror(errno));
-> 		return HV_E_FAIL;
-> 	}
-> 	return 0;
-> -
-> +setmac_error:
-> +	free(mac_addr);
-> setval_error:
-> 	syslog(LOG_ERR, "Failed to write config file");
-> -	fclose(file);
-> +	fclose(ifcfg_file);
-> +	fclose(nmfile);
-> 	return error;
-> }
->=20
-> diff --git a/tools/hv/hv_set_ifconfig.sh b/tools/hv/hv_set_ifconfig.sh
-> index d10fe35b7f25..ae5a7a8249a2 100755
-> --- a/tools/hv/hv_set_ifconfig.sh
-> +++ b/tools/hv/hv_set_ifconfig.sh
-> @@ -18,12 +18,12 @@
-> #
-> # This example script is based on a RHEL environment.
-> #
-> -# Here is the format of the ip configuration file:
-> +# Here is the ifcfg format of the ip configuration file:
-> #
-> # HWADDR=3Dmacaddr
-> # DEVICE=3Dinterface name
-> # BOOTPROTO=3D<protocol> (where <protocol> is "dhcp" if DHCP is =
-configured
-> -#                       or "none" if no boot-time protocol should be =
-used)
-> +# 			or "none" if no boot-time protocol should be =
-used)
-> #
-> # IPADDR0=3Dipaddr1
-> # IPADDR1=3Dipaddr2
-> @@ -41,6 +41,32 @@
-> # tagged as IPV6_DEFAULTGW and IPV6 NETMASK will be tagged as
-> # IPV6NETMASK.
-> #
-> +# Here is the keyfile format of the ip configuration file:
-> +#
-> +# [ethernet]
-> +# mac-address=3Dmacaddr
-> +# [connection]
-> +# interface-name=3Dinterface name
-> +#
-> +# [ipv4]
-> +# method=3D<protocol> (where <protocol> is "auto" if DHCP is =
-configured
-> +#                       or "manual" if no boot-time protocol should =
-be used)
-> +#
-> +# address1=3Dipaddr1/plen
-> +# address=3Dipaddr2/plen
+gcc:
 
-address2 here?
+       # m(%rip) n(%rip)
+       # m n
 
-> +#
-> +# gateway=3Dgateway1;gateway2
-> +#
-> +# dns=3Ddns1;
-> +#
-> +# [ipv6]
-> +# address1=3Dipaddr1/plen
-> +# address2=3Dipaddr1/plen
+gcc -fpie:
 
-ipaddr2 ?
+       # m(%rip) n(%rip)
+       # m n
 
-> +#
-> +# gateway=3Dgateway1;gateway2
-> +#
-> +# dns=3Ddns1;dns2
-> +#
-> # The host can specify multiple ipv4 and ipv6 addresses to be
-> # configured for the interface. Furthermore, the configuration
-> # needs to be persistent. A subsequent GET call on the interface
-> @@ -48,18 +74,19 @@
-> # call.
-> #
->=20
-> -
-> -
-> echo "IPV6INIT=3Dyes" >> $1
-> echo "NM_CONTROLLED=3Dno" >> $1
-> echo "PEERDNS=3Dyes" >> $1
-> echo "ONBOOT=3Dyes" >> $1
->=20
-> -
-> cp $1 /etc/sysconfig/network-scripts/
->=20
-> +chmod 600 $2
-> +interface=3D$(echo $2 | awk -F - '{ print $2 }')
-> +filename=3D"${2##*/}"
-> +
-> +sed '/\[connection\]/a autoconnect=3Dtrue' $2 > =
-/etc/NetworkManager/system-connections/${filename}
->=20
-> -interface=3D$(echo $1 | awk -F - '{ print $2 }')
->=20
-> /sbin/ifdown $interface 2>/dev/null
-> /sbin/ifup $interface 2>/dev/null
-> --=20
-> 2.34.1
->=20
+gcc -m32:
 
+       # m n
+       # m n
+
+Please find attached a patch that should bring some order to this
+issue. The patch includes two demonstration sites, the generated code
+for mem_encrypt_identity.c does not change while the change in
+percpu.h brings expected 4kB code size reduction.
+
+Uros.
+
+--000000000000b76f50060795d072
+Content-Type: text/plain; charset="US-ASCII"; name="memref.diff.txt"
+Content-Disposition: attachment; filename="memref.diff.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lnof0qsl0>
+X-Attachment-Id: f_lnof0qsl0
+
+ZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL2NvbXBpbGVyLmggYi9hcmNoL3g4Ni9p
+bmNsdWRlL2FzbS9jb21waWxlci5oCm5ldyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAw
+MDAwMC4uMzdjOWRlYTUwYmU2Ci0tLSAvZGV2L251bGwKKysrIGIvYXJjaC94ODYvaW5jbHVkZS9h
+c20vY29tcGlsZXIuaApAQCAtMCwwICsxLDE2IEBACisvKiBTUERYLUxpY2Vuc2UtSWRlbnRpZmll
+cjogR1BMLTIuMCAqLworI2lmbmRlZiBfX0FTTV9YODZfQ09NUElMRVJfSAorI2RlZmluZSBfX0FT
+TV9YODZfQ09NUElMRVJfSAorCisvKgorICogU3Vic3RpdHV0ZSBhIG1lbW9yeSByZWZlcmVuY2Us
+IHdpdGggdGhlIGFjdHVhbAorICogb3BlcmFuZCB0cmVhdGVkIGFzIHRoZSBhZGRyZXNzLgorICov
+CisKKyNpZmRlZiBfX2NsYW5nX18KKyNkZWZpbmUgX19tZW1yZWYoeCkJCSIlUCIgI3gKKyNlbHNl
+CisjZGVmaW5lIF9fbWVtcmVmKHgpCQkiJWEiICN4CisjZW5kaWYKKworI2VuZGlmIC8qIF9fQVNN
+X1g4Nl9DT01QSUxFUl9IICovCmRpZmYgLS1naXQgYS9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wZXJj
+cHUuaCBiL2FyY2gveDg2L2luY2x1ZGUvYXNtL3BlcmNwdS5oCmluZGV4IDYwZWE3NzU1YzBmZS4u
+OTJiOGQ2MGEzYmY1IDEwMDY0NAotLS0gYS9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wZXJjcHUuaAor
+KysgYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wZXJjcHUuaApAQCAtMjYsNiArMjYsNyBAQAogCiAj
+aW5jbHVkZSA8bGludXgva2VybmVsLmg+CiAjaW5jbHVkZSA8bGludXgvc3RyaW5naWZ5Lmg+Cisj
+aW5jbHVkZSA8YXNtL2NvbXBpbGVyLmg+CiAKICNpZmRlZiBDT05GSUdfU01QCiAKQEAgLTcxLDcg
+KzcyLDcgQEAKICNkZWZpbmUgX19teV9jcHVfcHRyKHB0cikJKF9fbXlfY3B1X3R5cGUoKnB0cikg
+KikodWludHB0cl90KShwdHIpCiAjZGVmaW5lIF9fbXlfY3B1X3Zhcih2YXIpCSgqX19teV9jcHVf
+cHRyKCZ2YXIpKQogI2RlZmluZSBfX3BlcmNwdV9hcmcoeCkJCV9fcGVyY3B1X3ByZWZpeCAiJSIg
+I3gKLSNkZWZpbmUgX19mb3JjZV9wZXJjcHVfYXJnKHgpCV9fZm9yY2VfcGVyY3B1X3ByZWZpeCAi
+JSIgI3gKKyNkZWZpbmUgX19mb3JjZV9wZXJjcHVfbWVtcmVmKHgpIF9fZm9yY2VfcGVyY3B1X3By
+ZWZpeCBfX21lbXJlZih4KQogCiAvKgogICogSW5pdGlhbGl6ZWQgcG9pbnRlcnMgdG8gcGVyLWNw
+dSB2YXJpYWJsZXMgbmVlZGVkIGZvciB0aGUgYm9vdApAQCAtMTc1LDcgKzE3Niw3IEBAIGRvIHsJ
+CQkJCQkJCQlcCiAjZGVmaW5lIHBlcmNwdV9zdGFibGVfb3Aoc2l6ZSwgb3AsIF92YXIpCQkJCVwK
+ICh7CQkJCQkJCQkJXAogCV9fcGNwdV90eXBlXyMjc2l6ZSBwZm9fdmFsX187CQkJCQlcCi0JYXNt
+KF9fcGNwdV9vcDJfIyNzaXplKG9wLCBfX2ZvcmNlX3BlcmNwdV9hcmcoUFt2YXJdKSwgIiVbdmFs
+XSIpCVwKKwlhc20oX19wY3B1X29wMl8jI3NpemUob3AsIF9fZm9yY2VfcGVyY3B1X21lbXJlZihb
+dmFyXSksICIlW3ZhbF0iKSBcCiAJICAgIDogW3ZhbF0gX19wY3B1X3JlZ18jI3NpemUoIj0iLCBw
+Zm9fdmFsX18pCQkJXAogCSAgICA6IFt2YXJdICJwIiAoJihfdmFyKSkpOwkJCQkJXAogCSh0eXBl
+b2YoX3ZhcikpKHVuc2lnbmVkIGxvbmcpIHBmb192YWxfXzsJCQlcCmRpZmYgLS1naXQgYS9hcmNo
+L3g4Ni9tbS9tZW1fZW5jcnlwdF9pZGVudGl0eS5jIGIvYXJjaC94ODYvbW0vbWVtX2VuY3J5cHRf
+aWRlbnRpdHkuYwppbmRleCBkNzNhZWIxNjQxN2YuLjY3NjhmNTg2YWI1MSAxMDA2NDQKLS0tIGEv
+YXJjaC94ODYvbW0vbWVtX2VuY3J5cHRfaWRlbnRpdHkuYworKysgYi9hcmNoL3g4Ni9tbS9tZW1f
+ZW5jcnlwdF9pZGVudGl0eS5jCkBAIC00Myw2ICs0Myw3IEBACiAKICNpbmNsdWRlIDxhc20vc2V0
+dXAuaD4KICNpbmNsdWRlIDxhc20vc2VjdGlvbnMuaD4KKyNpbmNsdWRlIDxhc20vY29tcGlsZXIu
+aD4KICNpbmNsdWRlIDxhc20vY21kbGluZS5oPgogI2luY2x1ZGUgPGFzbS9jb2NvLmg+CiAjaW5j
+bHVkZSA8YXNtL3Nldi5oPgpAQCAtNTgyLDEzICs1ODMsMTMgQEAgdm9pZCBfX2luaXQgc21lX2Vu
+YWJsZShzdHJ1Y3QgYm9vdF9wYXJhbXMgKmJwKQogCSAqIGlkZW50aXR5IG1hcHBlZCwgc28gd2Ug
+bXVzdCBvYnRhaW4gdGhlIGFkZHJlc3MgdG8gdGhlIFNNRSBjb21tYW5kCiAJICogbGluZSBhcmd1
+bWVudCBkYXRhIHVzaW5nIHJpcC1yZWxhdGl2ZSBhZGRyZXNzaW5nLgogCSAqLwotCWFzbSAoImxl
+YSBzbWVfY21kbGluZV9hcmcoJSVyaXApLCAlMCIKKwlhc20gKCJsZWEgIiBfX21lbXJlZigxKSAi
+LCAlMCIKIAkgICAgIDogIj1yIiAoY21kbGluZV9hcmcpCiAJICAgICA6ICJwIiAoc21lX2NtZGxp
+bmVfYXJnKSk7Ci0JYXNtICgibGVhIHNtZV9jbWRsaW5lX29uKCUlcmlwKSwgJTAiCisJYXNtICgi
+bGVhICIgX19tZW1yZWYoMSkgIiwgJTAiCiAJICAgICA6ICI9ciIgKGNtZGxpbmVfb24pCiAJICAg
+ICA6ICJwIiAoc21lX2NtZGxpbmVfb24pKTsKLQlhc20gKCJsZWEgc21lX2NtZGxpbmVfb2ZmKCUl
+cmlwKSwgJTAiCisJYXNtICgibGVhICIgX19tZW1yZWYoMSkgIiwgJTAiCiAJICAgICA6ICI9ciIg
+KGNtZGxpbmVfb2ZmKQogCSAgICAgOiAicCIgKHNtZV9jbWRsaW5lX29mZikpOwogCg==
+--000000000000b76f50060795d072--
