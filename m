@@ -2,148 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE69B7C8CD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDEA7C8CEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbjJMSMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 14:12:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50792 "EHLO
+        id S231447AbjJMSOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 14:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbjJMSMG (ORCPT
+        with ESMTP id S229632AbjJMSOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 14:12:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9855E6;
-        Fri, 13 Oct 2023 11:12:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8423FC433C7;
-        Fri, 13 Oct 2023 18:12:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697220724;
-        bh=GEg5YuIE8UF4NZRdoKQgB/R137hqA2LKlhnXmjOkreI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bpe0KFYD/DtoQg62xNTpUaMVBbmI9Mayf6s+q6MsC9a9V94yYmRGN1QCeYkxtQLid
-         gNCIrFGjMnlaKnosvA8QmBmrPjzft3qEyCRefCksLkMFqVw7aZQbCOz+X0Gnb5wfjE
-         Ejc4q+8iBdLA281w/cxT4b1G9izV1vQDQXnUefjvrLx8MT062EcVsXxYDrZEtDe6ED
-         zekBpXCt8pV64AyVgPjuKbIU4ZnJtJjuZDgeo4uBEvK/7fIIq3qFre9lKRuQ41i4eX
-         amEgkzk+4nKklKstVQidFKkkdBEdJ0GpPJdHfRFh3ZsylaQ/p7zbSkxqXqhFlb0ukO
-         JaMLSOFc/+zFQ==
-Date:   Fri, 13 Oct 2023 19:12:18 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Ivan Mikhaylov <fr0st61te@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: adc: provide max34408/9 device tree
- binding document
-Message-ID: <20231013191218.26cbe06a@jic23-huawei>
-In-Reply-To: <9996a912-7b4e-4247-bb8a-716782fbcc2a@linaro.org>
-References: <20231007234838.8748-1-fr0st61te@gmail.com>
-        <20231007234838.8748-2-fr0st61te@gmail.com>
-        <20231010154042.2ef667b2@jic23-huawei>
-        <383064a5b0863a4a616cd60cff8d4bc18e397fd7.camel@gmail.com>
-        <20231012084052.504ac930@jic23-huawei>
-        <e7b74daa9d0131246fd10f47aa4128bc8f8f3177.camel@gmail.com>
-        <20231013091952.00002573@Huawei.com>
-        <2eafa89c-7c95-4bc1-85cb-a6d7417dcea8@linaro.org>
-        <20231013100930.000043b2@Huawei.com>
-        <9996a912-7b4e-4247-bb8a-716782fbcc2a@linaro.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Fri, 13 Oct 2023 14:14:17 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78BC9BE
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:14:15 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-533d31a8523so4169919a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697220854; x=1697825654; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QcKr/CZetWXeaiAMnijTZoyqZxIstUr2Yy9KcLmxk00=;
+        b=FSbj0/YIy7dtP70FXrcGCypq32D2Ps1K+M8jb4R7s14dQVCUvPwCQVzReljnfXHkGE
+         ubJ0IM+Z6j0BFbLxUfvEfD511/VmdoqfFykJ0Zxppu58q9j8rGnYv9G/wYq6pXAEmTlP
+         7cbfV/fg1nAy55H1oN9cWGNf44tWBgJ32YM70Mf9zZUqK77jqh+u460vREa/+wDwv25T
+         YztdGafB8AnKUqYODJ4Wl0tHNA613OuwEYjp36bnNikm8ZOGD2Tg65GhvybBAQ/IuYom
+         SVgNU26IlV338LBH41hw3UAAiOffJrMLWmm7LzwedTkPMJgPwZBc0zpACjdGFXnLGlAt
+         Udcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697220854; x=1697825654;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QcKr/CZetWXeaiAMnijTZoyqZxIstUr2Yy9KcLmxk00=;
+        b=EvxvsWfbwlS4Ee1m29YO2OMrzmiLm+09hnw8FWeZpWgaDkzPCVT3NDNpyr31ZXDEwQ
+         lssJQpCzzXx612mgA+7r081qUYSopc9eB79c2HxBphigfpTQP5tLoyYhGAboClicOOWg
+         UCbtYD8GyXwGTHqC1eUg4i5zyq0AtLZaLgjD9v5J40EvOfEHRgy6hsETpo2e4iXS30Yw
+         d1J7mhiodUn+y0AWU6g6iHcNeSodsQo0opVeUvuFwq7l5C/sdKkxdSHwxSaRlEdObA9n
+         rAqu14XCEBMRzUfau01XQcSFEc0TD//AD8+tiAF6ZwT4RZiMvZl2G4Z5zmnf99+J5KVw
+         xfWw==
+X-Gm-Message-State: AOJu0YzWEmrsuNs/u83AXsObG4xsBRX4JZCb2uOOdDddCnUqazQRGFks
+        Xr9NPUqPrp5kQwk+hMgBwSp8s7v+MRaWcYfA5ws=
+X-Google-Smtp-Source: AGHT+IEtJ5x+F9mrNzc9avM60w7274IkSanoEYkFNsZVZpimqjl8luZlhJSocnsp0jQBDKCWgiF2t/gD7rtoBeBCgsA=
+X-Received: by 2002:a05:6402:50c7:b0:53d:ed7a:11f2 with SMTP id
+ h7-20020a05640250c700b0053ded7a11f2mr7624692edb.38.1697220853805; Fri, 13 Oct
+ 2023 11:14:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20231006173205.371205-1-robdclark@gmail.com> <CAPj87rNT7rhL_GiSA6GtgcnByKwTmWUsFVMWTRSECz2QydjtMg@mail.gmail.com>
+In-Reply-To: <CAPj87rNT7rhL_GiSA6GtgcnByKwTmWUsFVMWTRSECz2QydjtMg@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Fri, 13 Oct 2023 11:14:02 -0700
+Message-ID: <CAF6AEGtS8ZTiDs=6P4fkq9WjxAHbi6Nzr2vNVqiF-JaMqGYqgQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/ci: Default to UART for logging
+To:     Daniel Stone <daniel@fooishbar.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Emma Anholt <emma@anholt.net>,
+        open list <linux-kernel@vger.kernel.org>,
+        Helen Koike <helen.koike@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 11:53:33 +0200
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+On Fri, Oct 13, 2023 at 9:28=E2=80=AFAM Daniel Stone <daniel@fooishbar.org>=
+ wrote:
+>
+> On Fri, 6 Oct 2023 at 18:32, Rob Clark <robdclark@gmail.com> wrote:
+> > ssh logging is the default for mesa, as it is generally more reliable.
+> > But if there are kernel issues, especially at boot, UART logging is
+> > infinitely more useful.
+>
+> Hmm, we should still be capturing the UART boot logs regardless. Those
+> go into a collapsed 'LAVA boot' section but they don't just disappear
+> ... ?
 
-> On 13/10/2023 11:09, Jonathan Cameron wrote:
-> >>>>>>>> +=C2=A0 shtdn-enable-gpios:=C2=A0      =20
-> >>>>>>>
-> >>>>>>> I guess the review crossed with you sending v5.=C2=A0 There is so=
-me
-> >>>>>>> feedback on v4 you need
-> >>>>>>> to address here.=C2=A0      =20
-> >>>>>>
-> >>>>>> Jonathan, I thought I did, I've changed ena to powerdown-gpios from
-> >>>>>> Krzysztof's comments but about this one pin I'm still not sure, it
-> >>>>>> looks like *-enable-gpios (like in *-enable-gpios pins in
-> >>>>>> iio/frequency/adi,adf4377.yaml) pin or is it not? Or maybe any
-> >>>>>> other
-> >>>>>> suggestions about naming of this one?
-> >>>>>>
-> >>>>>> Thanks.     =20
-> >>>>>
-> >>>>> shutdown-gpios and make the sense (active high / low) such that
-> >>>>> setting
-> >>>>> it results in teh device being shut down.
-> >>>>> Or treat it as an enable and enable-gpios
-> >>>>>
-> >>>>> Something that indicates both shutdown and enable is confusing ;)
-> >>>>>
-> >>>>> Jonathan     =20
-> >>>>
-> >>>>
-> >>>> Jonathan, then I make these changes:
-> >>>>
-> >>>> powerdown-gpios: -> output-enable:   =20
-> >>> Needs to retain the gpios bit as we want the standard gpio stuff to p=
-ick
-> >>> them up. I'm not that keen on output-enable-gpios though.  The activi=
-ty
-> >>> here is very much 'shutdown because of error or not enabled' I think.
-> >>> So perhaps we flip the sense and document that it needs to be active =
-low?
-> >>>    =20
-> >>>> shtdn-enable-gpios: -> enable-gpios:
-> >>>>
-> >>>> Is it ok?   =20
-> >>>
-> >>> Conor, Rob, Krzysztof - you probably have a better insight into this =
-than
-> >>> I do.
-> >>>    =20
-> >>
-> >> "enable-gpios" are for turning on a specific feature, not powering
-> >> on/off entire device. For example to enable regulator output.
-> >>
-> >> "powerdown-gpios" are for turning device on/off.
-> >>
-> >> I don't know what do you have in your device. =20
-> > Ok. Sounds like that what is enable-gpios above should be shutdown-gpio=
-s. =20
->=20
-> shutdown-gpios sounds exactly the same as powerdown-gpios and it is
-> already used in exactly same context.
-Oops. Yup. powerdown-gpios seems appropriate.
->=20
-> > The other case is a device output indicating whether the device is
-> > shutdown.  That can happen because it was told to do so (via the other =
-gpio),
-> > or because it is in an error state. What's a good naming convention for=
- that? =20
->=20
-> There is no convention and I did not see such case so far.
-> powerdown-status-gpios? powerdown-state-gpios?
-Either seems reasonable.
+Hmm, I wasn't seeing anything in the raw log, which doesn't collapse sectio=
+ns..
 
-Thanks,
+That said, I still think uart is preferable to ssh for kernel CI.. we
+aren't running jobs at the scale of mesa CI jobs so even if we get
+UART flakes 1/1000 (or even 1/100) times, that is an acceptable
+trade-off for the fact that uart can still work when things are too
+fubar for ssh.
 
-J
->=20
->=20
->=20
-> Best regards,
-> Krzysztof
->=20
-
+BR,
+-R
