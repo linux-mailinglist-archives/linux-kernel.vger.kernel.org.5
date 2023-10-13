@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C74247C84D7
+	by mail.lfdr.de (Postfix) with ESMTP id 724FF7C84D6
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbjJMLry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44806 "EHLO
+        id S231421AbjJMLr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231222AbjJMLrv (ORCPT
+        with ESMTP id S231283AbjJMLrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Oct 2023 07:47:51 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EFBBE;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821FFBF;
         Fri, 13 Oct 2023 04:47:49 -0700 (PDT)
 Received: from obbardc-t14.home (unknown [IPv6:2a00:23c8:b70a:ae01:c2e1:3bb7:ed5c:6a0d])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: obbardc)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A2AC1660735A;
-        Fri, 13 Oct 2023 12:47:47 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 24893660735E;
+        Fri, 13 Oct 2023 12:47:48 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697197667;
-        bh=7wBhq8J/K/1bY+rvYJYJn0dZJWPNRTfsi3k23DiS4JQ=;
+        s=mail; t=1697197668;
+        bh=CCYO2Nxk6wHQeFOamNkL/4O7unR6kwkhjTCQuRoEydY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=auERhDk/wHm2olVXfZGaBS+q8f0ICzVsMWGOl9LcOlyjS57+Jb/4c2IDhiOxPygoW
-         CWvBv3s7DV+bskN7fNyogAYvIn3RYndPReHhslD84IAO7P5A3aH22BgZB0ZQIhZoOc
-         TD+nfHK/evLVd7o3yflCbfuUALEFcMPTI+9y6oBk2zKicEmiNJ6ISYTE/E0rK78k+S
-         1jOT+e29BeOLL5zqBoquBPwyzDOWVfO2OCTpRDO3Ru0kqDvxe+pX4u9mBr+dxTdVts
-         erM4OfVptiTR+Y2Y3rnLGYnoSQcaeAV2/Qm174hNNXTDtVFeUezgliteiAo4JM88UZ
-         1yMSKDJABKlvw==
+        b=XN2hI3fYED/cM0FKRFyzVDLMLuOThRPGfqH52Baig1uVi93sCyF8orvE3K3/wyciY
+         aTS3P6U34nJKMd4bIw94gbKZ3tS6O/3CXTLqLqH8RreEWYVVUzk4/PjRvWZ9V4LMle
+         BCmwQY8zEhnTacnUQd0jkK9iIjgaoRskGmDNUl81/Gp24lVEBIWVgqTfu2OD+Wki63
+         5TmLyj6gQTDowHkDOuj5S7eD8+/R0xsViFXcCp6ZRRar37ixnfPBUSDsyJjwgrhsMh
+         UyiMdWzRBVN4zmyrYH+TtYadA5v0mcApRkiLgQdEdrh46GXHfmFhbOpW8Sy6+KiOyy
+         BsCRc9JizbPvg==
 From:   Christopher Obbard <chris.obbard@collabora.com>
 To:     linux-rockchip@lists.infradead.org
 Cc:     kernel@collabora.com,
         Christopher Obbard <chris.obbard@collabora.com>,
-        Arnaud Ferraris <arnaud.ferraris@collabora.com>,
         Brian Norris <briannorris@chromium.org>,
-        Caleb Connolly <kc@postmarketos.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Corentin Labbe <clabbe@baylibre.com>,
+        FUKAUMI Naoki <naoki@radxa.com>,
         Heiko Stuebner <heiko@sntech.de>,
-        Johan Jonker <jbx6244@gmail.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
         Judy Hsiao <judyhsiao@chromium.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rick Wertenbroek <rick.wertenbroek@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/2] arm64: dts: rockchip: Add i2s0-2ch-bus-bclk-off pins to RK3399
-Date:   Fri, 13 Oct 2023 12:47:26 +0100
-Message-ID: <20231013114737.494410-2-chris.obbard@collabora.com>
+        Rob Herring <robh+dt@kernel.org>,
+        Yogesh Hegde <yogi.kernel@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 2/2] arm64: dts: rockchip: Fix i2s0 pin conflict on ROCK Pi 4 boards
+Date:   Fri, 13 Oct 2023 12:47:27 +0100
+Message-ID: <20231013114737.494410-3-chris.obbard@collabora.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231013114737.494410-1-chris.obbard@collabora.com>
 References: <20231013114737.494410-1-chris.obbard@collabora.com>
@@ -65,43 +64,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 0efaf8078393 ("arm64: dts: rockchip: add i2s0-2ch-bus pins on
-rk3399") introduced a pinctl for i2s0 in two-channel mode. Commit
-91419ae0420f ("arm64: dts: rockchip: use BCLK to GPIO switch on rk3399")
-modified i2s0 to switch the corresponding pins off when idle.
+Commit 91419ae0420f ("arm64: dts: rockchip: use BCLK to GPIO switch on
+rk3399") modified i2s0 to switch the corresponding pins off when idle.
+For the ROCK Pi 4 boards, this means that i2s0 has the following pinctrl
+setting:
 
-Although an idle pinctrl node was added for i2s0 in 8-channel mode, a
-similar idle pinctrl node for i2s0 in 2-channel mode was not added. Add
-it.
+    pinctrl-names = "bclk_on", "bclk_off";
+    pinctrl-0 = <&i2s0_2ch_bus>;
+    pinctrl-1 = <&i2s0_8ch_bus_bclk_off>;
+
+Due to this change, i2s0 fails to probe on my Radxa ROCK 4SE and ROCK Pi
+4B boards:
+
+    rockchip-pinctrl pinctrl: pin gpio3-29 already requested by leds; cannot claim for ff880000.i2s
+    rockchip-pinctrl pinctrl: pin-125 (ff880000.i2s) status -22
+    rockchip-pinctrl pinctrl: could not request pin 125 (gpio3-29) from group i2s0-8ch-bus-bclk-off  on device rockchip-pinctrl
+    rockchip-i2s ff880000.i2s: Error applying setting, reverse things back
+    rockchip-i2s ff880000.i2s: bclk disable failed -22
+
+A pin requested for i2s0_8ch_bus_bclk_off has already been requested by
+user_led2, so whichever driver probes first will have the pin allocated.
+
+The hardware uses 2-channel i2s so fix this error by setting pinctl-1 to
+i2s0_2ch_bus_bclk_off which doesn't contain the pin allocated to user_led2.
+
+I checked the schematics for all Radxa boards based on ROCK Pi 4 and this
+change is compatible with all boards.
 
 Fixes: 91419ae0420f ("arm64: dts: rockchip: use BCLK to GPIO switch on rk3399")
 Signed-off-by: Christopher Obbard <chris.obbard@collabora.com>
 ---
 
- arch/arm64/boot/dts/rockchip/rk3399.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index 9da0b6d77c8d2..5bc2d4faeea6d 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -2457,6 +2457,16 @@ i2s0_2ch_bus: i2s0-2ch-bus {
- 					<4 RK_PA0 1 &pcfg_pull_none>;
- 			};
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+index 7dccbe8a93930..f2279aa6ca9e1 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+@@ -492,6 +492,7 @@ &i2c4 {
  
-+			i2s0_2ch_bus_bclk_off: i2s0-2ch-bus-bclk-off {
-+				rockchip,pins =
-+					<3 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>,
-+					<3 RK_PD1 1 &pcfg_pull_none>,
-+					<3 RK_PD2 1 &pcfg_pull_none>,
-+					<3 RK_PD3 1 &pcfg_pull_none>,
-+					<3 RK_PD7 1 &pcfg_pull_none>,
-+					<4 RK_PA0 1 &pcfg_pull_none>;
-+			};
-+
- 			i2s0_8ch_bus: i2s0-8ch-bus {
- 				rockchip,pins =
- 					<3 RK_PD0 1 &pcfg_pull_none>,
+ &i2s0 {
+ 	pinctrl-0 = <&i2s0_2ch_bus>;
++	pinctrl-1 = <&i2s0_2ch_bus_bclk_off>;
+ 	rockchip,capture-channels = <2>;
+ 	rockchip,playback-channels = <2>;
+ 	status = "okay";
 -- 
 2.42.0
 
