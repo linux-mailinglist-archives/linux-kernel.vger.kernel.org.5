@@ -2,283 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E687C902D
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D75437C9033
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbjJMWRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 18:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34956 "EHLO
+        id S232280AbjJMWWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 18:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231500AbjJMWRt (ORCPT
+        with ESMTP id S229830AbjJMWWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 18:17:49 -0400
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01olkn2029.outbound.protection.outlook.com [40.92.66.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE51A9;
-        Fri, 13 Oct 2023 15:17:47 -0700 (PDT)
+        Fri, 13 Oct 2023 18:22:47 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2070.outbound.protection.outlook.com [40.107.95.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1A4B7;
+        Fri, 13 Oct 2023 15:22:45 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NFrANLHFUkCoIQrpLOx0mDRZXH23oNvtK5Jm7hLTmANW71aau1rphj3fkU5yv+LetCqraU9gyRo10EwunKDGljUn7TqdPiWHARZ09UZeNT0Zb+KHuQ9KPret5iNTzidcLzpyzf/Ztohh8OyWFDcH9dsC1GUo6bLZiV8G769VKf0p/fLBdrI9Qn0MXg5MTDmuIn10uFA1Kjpbd5jyiHqMetuaQUPU88KFdf0eRJ3pgmE3jBWyy8iUFhdhz9yuYPmR7ApHzput2rAd9B9W28WQottGLdfQiwdK/0uPhJWGa6Lx5u7Ay4TRCOcgodVFIpdzq9fZtl3vaDbc+THl4DKXEw==
+ b=lwuzLOQ+ciZXnB2mzWZhL+/iCcKZ+ywVVYFfAm45xHLwgCe9bO/q01jqWU40d43GfJBPW2+9i32RMH30ZKw1jDM1eyMDmTfT7f7UMQN8llu1+7O+VEPIz7NmVM8dP4T7vl2m0x6aaILdJtHozAp4K3oWMwy+R/uCxJbtHx0gb+WV1uHSyq2w33Aqz5TYOTa4jqp9f1+W2zc7D0RD9/cY7QxW9nBc76sn2EDd38QWGW416rqpp6kC0wNaoHFjUkdNLvHu8HYZzCLhCfkRWfjaMcEf1z/qM91smaEgkLvoWM3g6m9ami4kjPM2TnmzjVXh+C/7lz+LO2E5X5/vQjGJkw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b/aUVxsQiu6kJLxJR8AfNKIUBXHj47MbuPNjalD0Yg8=;
- b=elX3VkiDYeDlupLeL0bsTboyACTnquWs3fyn+MY47YMEqSE9/XjCySo2VhxzCZvlQMLay65OwDtACQ5/j/+v/vbuSD+i7cay0H8T7iGwAz/jeTUUVyxyhQ+VKCaqwFBUvY+P2az2CQrGRS4YKE1z3susgblgO57sgSokGrsX82GWlunWcXmW+GJ4j0UqUxf0iJNuQzOqCaOlGQCn6tXMAKEFZrtQReZDGVRnABsXmaZbis5BeLZt2EatWhYhkIdZc/WKL2+J6E/MayDxYun+JMjhtsjEQxIpU7rJhhBy+B/8z/nh8j/RiD3NMxckxDakY3+8JhtJsH5PcPCx+BCZkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from DU0PR02MB7899.eurprd02.prod.outlook.com (2603:10a6:10:347::11)
- by AS8PR02MB8341.eurprd02.prod.outlook.com (2603:10a6:20b:521::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Fri, 13 Oct
- 2023 22:17:45 +0000
-Received: from DU0PR02MB7899.eurprd02.prod.outlook.com
- ([fe80::b753:178a:394e:af8e]) by DU0PR02MB7899.eurprd02.prod.outlook.com
- ([fe80::b753:178a:394e:af8e%7]) with mapi id 15.20.6863.043; Fri, 13 Oct 2023
- 22:17:45 +0000
-Date:   Fri, 13 Oct 2023 23:17:43 +0100
-From:   Cameron Williams <cang1@live.co.uk>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH v2 7/7] tty: 8250: Add Brainboxes Oxford Semiconductor-based
- quirks
-Message-ID: <DU0PR02MB789927949F9C84AACD694F48C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-TMN:  [UnqAW8LsBGo7qdpPLT5U/47sAHMKj3wV]
-X-ClientProxiedBy: LO4P123CA0577.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:276::21) To DU0PR02MB7899.eurprd02.prod.outlook.com
- (2603:10a6:10:347::11)
-X-Microsoft-Original-Message-ID: <ZSnCB-iQukM72kN_@CHIHIRO>
+ bh=wyn+TBoJwtb24Rv+zU6dnZ6QuuZg/Lukolnve67yK60=;
+ b=m1Iq9PKvacqmsNE/gYFlynQjdQC59PQutwb66Ey21q7/8hv6y7POo5YChX2e0A3eDFYMKYmtXvtGCDlAcJ4e6TFy0JHIyEDwFL515OAspbJ94KnmdZK01YeiQKvzcOWUP1NnhrV1VDCxFmrvrbyQ3rDZO1jVHXCSqo02BuduMSlv++1Ycw5w/65caRUirttSXj6QNTDpFTjrSYHrxA0gKDtV08rBfm1vBsANcvdD0NEcsnAkS+fIdyGOP6iFqfXOJXTBXKJNlI5vIehypI86KAtPx/bHn+ZIUej90clSbKkoNdv6mwvel2XDlgtI4CUshS2OLACTfI+CQHlq4wiuUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wyn+TBoJwtb24Rv+zU6dnZ6QuuZg/Lukolnve67yK60=;
+ b=qHBD49/KLW9v/gpnLfuE9qe2/VTLCEav11PS0jzZcIL01qwGy80qBbLPc/426fVDY0lE3Cc3UxCgL+RLQTCWLrXTyefojudMc2NyxccOcruVBpLzGfbKTLj/alSLMDKoWa1O4mCcMahjkLSdIEmeSIA1Ayninl7iMJUY5qOEZeaRliUHIAQfbVcHWR6diyaaC7Hf3SLHcnITxVJ0chncCE8IzB7/54PIPdhbErGTEts/rwdoWGjxfRz99mGJj7oDBdz5bn3G/WFNFRj3pxF1YzH1Nsmh+YrMp6USM/DE1ThFo5EObRGibAnJ/yrP/rZjH83sFusW5Qf8xkUROjtbGg==
+Received: from DS7PR03CA0123.namprd03.prod.outlook.com (2603:10b6:5:3b4::8) by
+ CH2PR12MB4149.namprd12.prod.outlook.com (2603:10b6:610:7c::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6863.37; Fri, 13 Oct 2023 22:22:43 +0000
+Received: from DS1PEPF00017092.namprd03.prod.outlook.com
+ (2603:10b6:5:3b4:cafe::76) by DS7PR03CA0123.outlook.office365.com
+ (2603:10b6:5:3b4::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.30 via Frontend
+ Transport; Fri, 13 Oct 2023 22:22:43 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ DS1PEPF00017092.mail.protection.outlook.com (10.167.17.135) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.22 via Frontend Transport; Fri, 13 Oct 2023 22:22:43 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 13 Oct
+ 2023 15:22:41 -0700
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Fri, 13 Oct 2023 15:22:41 -0700
+Received: from Asurada-Nvidia (10.127.8.11) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Fri, 13 Oct 2023 15:22:40 -0700
+Date:   Fri, 13 Oct 2023 15:22:38 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Yi Liu <yi.l.liu@intel.com>
+CC:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "Martins, Joao" <joao.m.martins@oracle.com>
+Subject: Re: [PATCH v4 01/17] iommu: Add hwpt_type with user_data for
+ domain_alloc_user op
+Message-ID: <ZSnDLoA90PC2DuNI@Asurada-Nvidia>
+References: <20230921075138.124099-1-yi.l.liu@intel.com>
+ <20230921075138.124099-2-yi.l.liu@intel.com>
+ <BN9PR11MB52767E1B944C0B2F0667D5DE8CC3A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <43b3d605-fe3b-bcd6-a328-81d1448b7104@intel.com>
+ <b2097fa9-e2da-04f1-fdc4-a77aeb4a15f8@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <b2097fa9-e2da-04f1-fdc4-a77aeb4a15f8@intel.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR02MB7899:EE_|AS8PR02MB8341:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5d2578f6-0f94-4c90-5cc1-08dbcc3a39aa
+X-MS-TrafficTypeDiagnostic: DS1PEPF00017092:EE_|CH2PR12MB4149:EE_
+X-MS-Office365-Filtering-Correlation-Id: 697fedde-4986-4f04-578d-08dbcc3aeb8d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: I3eM6MfTwaz/UbV/XS79bm1Qbpm0DqssTKm0xOG4WijO9au2CHxp2t2OMh7/DDcjZDUlNdTslBalP0fAYMuzsYhGUCUvLadkdh+FY+g3w3GHWApr2LPwBOq8lnCVVd8nonhlbe8GKZ1tiD5YdJrGmzvxTUNdmdXnlvCV2fdZtE+EhoGgr5+w4dwY4zecVQzoi1mUZJ5yssM8HFRQOyUyUpNIIj4VP1U6M+Bbxw47NQWoevXkq0hyjbyx7EGZRFJu6Q1/v6l2PBOSLaMYcv1gnLn671NPnICh+VNJKJvyjg6dSlIHb82kZvSUJesLq8iY4D5pouDAanJ5GyLxdhfj9ymeGag6Hc5lGVkQIJLHQH/oBUq5xxfA398Cas9GTOelXCxvuTJeIIDuGgeycccXEjke+qFxGgeAo3qWeyGft6HWWltHgMYAzHOTdP71SBoYzlEDbDd+E6vYJLuYOIXkCPfh5/kua1U/dUFpkd4Yaw/nvKWpWOMSPTNAnqIIGCwwWcdJFC7xfVOkLR4XS/6+ncP0QL8gSthJdSES8hUPJJ01EtgEjARuTcjYOrTxtOVME3a1JIoSRAaLxoN5yW/oLg==
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zxAQ1ZDlStAZxdD/HXygU6MykDgi/9GMykVYbBO/uVHuMMbUxnHEfhIAC2vM?=
- =?us-ascii?Q?orfw4716O69cQbYVi+qq98ATl3OCzwPvewtNq71MVQPCC2F6dr00sD/MSxQL?=
- =?us-ascii?Q?FsHviXGBFMyRrXOFAl2xlRhcbwtfkUUPbxHCfx3BWMVp7T2F30spMyUBLec1?=
- =?us-ascii?Q?coffVRxuNA8zWdnkMoi+PCj9ihrKhdQ4UalpfaQJTqf+6c6mTAOrGcjU7lg6?=
- =?us-ascii?Q?SIUJ+WXQB/IyRz5iG2q5yFRZzsBrDiIq95zw46Z1e3w9JvjteqxuL3L6V6Zw?=
- =?us-ascii?Q?FfCFSPnSAqAHqFCfjqEyd2MwmVAYHJZebg6w+w7LJrxA7iyKvXxjFwOIOLPU?=
- =?us-ascii?Q?h8JjCPVUlvoUPOXMi+0YVSZIgLQ3aBqdnVK72YM0qbnMGT8S9bn7hCLEacjN?=
- =?us-ascii?Q?uuj0CfqvTFQ8xZF/rv3YMm+w1eXiSyPHI3RAIuNv9he4oGBJVAkSQpo9yk/M?=
- =?us-ascii?Q?UmFTBkkL5SYSymGco6qCfNt/2xinB4XFouBMgF+D54a1wLK5q7q9oh7SWxtI?=
- =?us-ascii?Q?SKIwnWbbOzpEtsCkIqZ3fzAQ+WtH4GKXBRAWK6zpRrF9wzRbByhs6FNffS9d?=
- =?us-ascii?Q?bJaaDhWGE+EQfVdDPdJuOMBk/u2TN/NQXVwxGwy6bkiQqxa15yFckdDuMmpc?=
- =?us-ascii?Q?6pWaiZBSrqF9Xjo93DaGaLB02epEaFyllBCeDWOSzOyrP39Bcpf8fx1nQCyO?=
- =?us-ascii?Q?cdTJm9acsS3Yuyvz0oO2SxUuNlxpn9SlOeXcWJz8EaaJAQzVqkEG1SDdVpcG?=
- =?us-ascii?Q?pyK/PNoTZvnUz0Ny6b3bBIoQE6Yf8LWiESgKPAJIOD/5x2/vnnF69zRs8JOi?=
- =?us-ascii?Q?681cvS6ZPy/Aigt3oib+VR4Mi0vQBukohWcjDBsdyI8wmCe+m1bxwxeK2zam?=
- =?us-ascii?Q?Yf7b+iFypVMzZaYmp2qVzcXL1QElzLB1naTMxAZqGEC/SuXJ3hcTqKXlQ/5/?=
- =?us-ascii?Q?wk2RWJwCcovSACvQOCUCa2gAevNZYNqNTI9B+mcjgdi5piZg3MeftB6CepC+?=
- =?us-ascii?Q?lo1IHyWp+u3EoMPkhv1E+fR0i3xlax8h6vT+W4BhVJGfjOeq9N9bxIlbTUZG?=
- =?us-ascii?Q?IExUL8w3MUB6F6CH+8wsUc6y5PZDRE9AbrjxSM3+KPCAeJIGUqgLaDgQqldj?=
- =?us-ascii?Q?pdDdMHeTr17Ktn2FK+5tFlqnU0oI6uMsNylHDQfxReoJ8zoB+1I2OfsHnee3?=
- =?us-ascii?Q?6zGXF7Raga7uy7c7+je4s3LXL9UhSZJJI4WdfA=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-bcc80.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d2578f6-0f94-4c90-5cc1-08dbcc3a39aa
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR02MB7899.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 22:17:45.3233
+X-Microsoft-Antispam-Message-Info: yRZOqvRsuRJYUtu7Ff9lIER9AwOr1+/voIqtKfE9YOmNo8236VKoUsqzueR8GMKg2/URP93LQIFZy1zrLlzIwvUQ6o+DWx/W3ozkkHGhyDZAG242uv+Mkpbf8DtASS5JTVTEnJWfyWKgPXsx2iXYAphcA0Rf63mSdbfHqqPVZMgOuX8+QOSGHuZ3uN+SVQu+swyPz2uMs89RbJdGnU9MOoudj6eyGwFyh5gtP9WOe0kzdq718ME6PpgYYdw1peWZ6rCZaVu0JacjEPZPvRVH0+IPOOzloNeoMKAkA+ZtvJDCeO/4wEsGIA9L2Uo63duEn4eSdJgYebOLoVrp2/wj56UvVrCcyfzcJsQ+5d9HokUU/nXKCMQ44c8Z+fvK2YnbflCLjuZzCKSCTZ+2a1M7SzMFqbWn7QAr86USvr94KGjuN4m9Jsg3wmres10R6/CyALd84IaZnzKtqp1g/CSP9sfK7O2AOwjfqElDZdxK9wbfFM1JuHsGMFTm6HbZ8tETtZoEfrTdv7KLl1SDTuYDlDwSvmoBNqSCBTmXYSmxn/afdr+3NLjo9Vcr3Mgx20J+3JBAMnIIxuCZbY1BIalVFBPvRFJs/c0Z/MIM81grF5l11HVEFZq9f2oHPOI2rH+kVPqNx/e6WK/fTvRH+ZihBP2wqy0HSfmNSEl3LfgU8uPhUNdOZ9pNOjE3ztuufFx7V7QpmFpw8r9rY+ABOLrR5d8P0W5DTPHRvlG2RDoLS1Kzd77ZgJkTAbGYElY7Bfk1wfDREQPXeyr+n6mbaUfbgPCLAGJHmp0ni2xw9YGqpUQ=
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(39860400002)(136003)(376002)(230922051799003)(451199024)(64100799003)(1800799009)(82310400011)(186009)(36840700001)(46966006)(40470700004)(9686003)(53546011)(55016003)(82740400003)(40480700001)(40460700003)(86362001)(7636003)(36860700001)(356005)(316002)(47076005)(7416002)(336012)(478600001)(70586007)(426003)(41300700001)(2906002)(83380400001)(26005)(8936002)(966005)(5660300002)(4326008)(54906003)(70206006)(6916009)(33716001)(8676002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 22:22:43.3885
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR02MB8341
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 697fedde-4986-4f04-578d-08dbcc3aeb8d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00017092.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4149
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the later revisions of the Brainboxes PX cards are based
-on the Oxford Semiconductor chipset. Due to the chip's unique setup
-these cards need to be initialised.
-Previously these were tested against a reference card with the same broken
-baudrate on another PC, cancelling out the effect. With this patch they
-work and can transfer/receive find against an FTDI-based device.
+On Fri, Oct 13, 2023 at 07:42:50PM +0800, Yi Liu wrote:
+> On 2023/10/12 17:12, Yi Liu wrote:
+> > On 2023/9/26 14:56, Tian, Kevin wrote:
+> > > > From: Yi Liu <yi.l.liu@intel.com>
+> > > > Sent: Thursday, September 21, 2023 3:51 PM
+> > > > +
+> > > > +/**
+> > > > + * iommu_copy_user_data - Copy iommu driver specific user space data
+> > > > + * @dst_data: Pointer to an iommu driver specific user data that is
+> > > > defined
+> > > > in
+> > > > + *            include/uapi/linux/iommufd.h
+> > > > + * @src_data: Pointer to a struct iommu_user_data for user space data info
+> > > > + * @data_len: Length of current user data structure, i.e. sizeof(struct
+> > > > _dst)
+> > > > + * @min_len: Initial length of user data structure for backward
+> > > > compatibility.
+> > > > + *           This should be offsetofend using the last member in the
+> > > > user data
+> > > > + *           struct that was initially added to
+> > > > include/uapi/linux/iommufd.h
+> > > > + */
+> > > > +static inline int iommu_copy_user_data(void *dst_data,
+> > > > +                       const struct iommu_user_data *src_data,
+> > > > +                       size_t data_len, size_t min_len)
+> > > 
+> > > iommu_copy_struct_from_user()?
+> > > 
+> > > btw given the confusion raised on how this would be used is it clearer
+> > > to move it to the patch together with the 1st user?
+> > 
+> > sure. How about your opinion? @Nic.
+> > 
+> 
+> after a second thinking, the first user of this helper is the patch to
+> extend mock iommu driver. Is it suitable to introduce a common API together
+> with selftest code?
+> 
+> https://lore.kernel.org/linux-iommu/20230921075138.124099-14-yi.l.liu@intel.com/
 
-Add all of the cards which require this setup to the quirks table.
-Thanks to Maciej W. Rozycki for clarification on this chip.
+I feel no...
 
-Signed-off-by: Cameron Williams <cang1@live.co.uk>
----
-This patch requires patch 5 and 6 in this series to have any effect.
+But I could separate iommu_copy_struct_from_user and its array
+drivitive into an additional patch placed before the selftest
+changes, so at least it would be closer to the first callers.
 
-This is a resubmission series for the patch series below. That series
-was lots of changes sent to lots of maintainers, this series is just for
-the tty/serial/8250 subsystem.
-
-[1] https://lore.kernel.org/all/DU0PR02MB789950E64D808DB57E9D7312C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[2] https://lore.kernel.org/all/DU0PR02MB7899DE53DFC900EFB50E53F2C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[3] https://lore.kernel.org/all/DU0PR02MB7899033E7E81EAF3694BC20AC4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-[4] https://lore.kernel.org/all/DU0PR02MB7899EABA8C3DCAC94DCC79D4C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-
- drivers/tty/serial/8250/8250_pci.c | 147 +++++++++++++++++++++++++++++
- 1 file changed, 147 insertions(+)
-
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-index 82b445ddedb4..8242918970f6 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -2429,6 +2429,153 @@ static struct pci_serial_quirk pci_serial_quirks[] = {
- 		.init			= pci_oxsemi_tornado_init,
- 		.setup		= pci_oxsemi_tornado_setup,
- 	},
-+	/*
-+	 * Brainboxes devices - all Oxsemi based
-+	 */
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x4027,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x4028,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x4029,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x4019,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x4016,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x4015,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x400A,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x400E,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x400C,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x400B,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x400F,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x4010,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x4011,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x401D,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x401E,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x4013,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x4017,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
-+	{
-+		.vendor		= PCI_VENDOR_ID_INTASHIELD,
-+		.device		= 0x4018,
-+		.subvendor	= PCI_ANY_ID,
-+		.subdevice	= PCI_ANY_ID,
-+		.init		= pci_oxsemi_tornado_init,
-+		.setup		= pci_oxsemi_tornado_setup,
-+	},
- 	{
- 		.vendor         = PCI_VENDOR_ID_INTEL,
- 		.device         = 0x8811,
--- 
-2.42.0
-
+Thanks
+Nic
