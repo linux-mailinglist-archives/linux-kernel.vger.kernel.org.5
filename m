@@ -2,147 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E1E7C897D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD74D7C899C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232540AbjJMQB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:01:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
+        id S232594AbjJMQEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232452AbjJMQB5 (ORCPT
+        with ESMTP id S232371AbjJMQEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:01:57 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0BEB7;
-        Fri, 13 Oct 2023 09:01:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=R1BXEjw/tdVpUH9FfenMcwOFEve9DMEy/SsDnd6XIV8=; b=g+CaL7TNnTOSCiZ8cFDSFAoPWe
-        P4/WPfJckr/usSf+r9yzJT1lS4xprCch7vI7na4OF1+wDRkfh9hV43y2+MQiSygejZqJwwLCqj1Ko
-        qdjwNr1NdfCOq++uUQvWWjkdxyDIN2/vMLnhH0SHt02IFOd2WuyAO1QQc9+x234lQ6jV3F5/JCZQS
-        YRjSra9iyBZBfy8wKY8BOyV/JRR+lnVLZqM3ER4TDgEWKECQ2ma5a6nihfEv+5NGDfApEEaMQYiU4
-        yMijICBewF3eqYM94tkOI9/4sIRvmpdn9FGPS8t0dkSCwDip2AtFHHz0Oq8mgXmnqTes/JxSoko9h
-        O/UVkEJA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qrKbP-002rBl-2p;
-        Fri, 13 Oct 2023 16:01:30 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 030C83002E1; Fri, 13 Oct 2023 18:01:29 +0200 (CEST)
-Date:   Fri, 13 Oct 2023 18:01:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Meng Li <li.meng@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Huang Rui <ray.huang@amd.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-acpi@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Shimmer Huang <shimmer.huang@amd.com>,
-        Perry Yuan <Perry.Yuan@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Wyes Karny <wyes.karny@amd.com>
-Subject: Re: [RESEND PATCH V9 3/7] cpufreq: amd-pstate: Enable amd-pstate
- preferred core supporting.
-Message-ID: <20231013160128.GB36211@noisy.programming.kicks-ass.net>
-References: <20231013033118.3759311-1-li.meng@amd.com>
- <20231013033118.3759311-4-li.meng@amd.com>
+        Fri, 13 Oct 2023 12:04:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63FC7BF
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:03:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697213003;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nqf6Wos6j/dOB8iX9uZ+sliE7IdSLRs7IhOwsFPasV8=;
+        b=VODI7twvozOQjvrYoVl3L/C37UefnbihSBANHao4JKIwX7V0sFsOrXMHNMvpy7cNDpoGOE
+        BzqayvxV7Nkk714OaXlwXcD4CoCvcN2xt3HzKUJla/HeLOeT8vpohf2qBRVnmMxtnt8vYy
+        S7bp0GjdWzdXZ7lkDn6BLijzoJ4259M=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-694-KMMaU5QkNK6QYcars7KklA-1; Fri, 13 Oct 2023 12:03:20 -0400
+X-MC-Unique: KMMaU5QkNK6QYcars7KklA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3D804887E6B;
+        Fri, 13 Oct 2023 16:03:19 +0000 (UTC)
+Received: from [10.22.17.138] (unknown [10.22.17.138])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 78D7D1C06535;
+        Fri, 13 Oct 2023 16:03:18 +0000 (UTC)
+Message-ID: <f75859e0-04d4-3da2-8df0-eb8841623a7c@redhat.com>
+Date:   Fri, 13 Oct 2023 12:03:18 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231013033118.3759311-4-li.meng@amd.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v8 0/7] cgroup/cpuset: Support remote partitions
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>
+References: <20230905133243.91107-1-longman@redhat.com>
+ <ahevhcy2aa7k3plmfvlepjehs6u3fun3j4oyskdz7axkhftlyi@zr3j473rciwi>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ahevhcy2aa7k3plmfvlepjehs6u3fun3j4oyskdz7axkhftlyi@zr3j473rciwi>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 11:31:14AM +0800, Meng Li wrote:
+On 10/13/23 11:50, Michal Koutný wrote:
+> Hello.
+>
+> (I know this is heading for 6.7. Still I wanted to have a look at this
+> after it stabilized somehow to understand the new concept better but I
+> still have some questions below.)
+>
+> On Tue, Sep 05, 2023 at 09:32:36AM -0400, Waiman Long <longman@redhat.com> wrote:
+>> Both scheduling and isolated partitions can be formed as a remote
+>> partition. A local partition can be created under a remote partition.
+>> A remote partition, however, cannot be formed under a local partition
+>> for now.
+>>
+>>
+>> With this patch series, we allow the creation of remote partition
+>> far from the root. The container management tool can manage the
+>> "cpuset.cpus.exclusive" file without impacting the other cpuset
+>> files that are managed by other middlewares. Of course, invalid
+>> "cpuset.cpus.exclusive" values will be rejected.
+> I take the example with a nested cgroup `cont` to which I want to
+> dedicate two CPUs (0 and 1).
+> IIUC, I can do this both with a chain of local root partitions or as a
+> single remote partion.
+>
+>
+> [chain]
+>    root
+>    |                           \
+>    mid1a                        mid1b
+>     cpuset.cpus=0-1              cpuset.cpus=2-15
+>     cpuset.cpus.partition=root
+>    |
+>    mid2
+>     cpuset.cpus=0-1
+>     cpuset.cpus.partition=root
+>    |
+>    cont
+>     cpuset.cpus=0-1
+>     cpuset.cpus.partition=root
+In this case, the effective CPUs of both mid1a and mid2 will be empty. 
+IOW, you can't have any task in these 2 cpusets.
+>
+> [remote]
+>    root
+>    |                           \
+>    mid1a                        mid1b
+>     cpuset.cpus.exclusive=0-1    cpuset.cpus=2-15
+>    |
+>    mid2
+>     cpuset.cpus.exclusive=0-1
+>    |
+>    cont
+>     cpuset.cpus.exclusive=0-1
+>     cpuset.cpus.partition=root
+>
+> In the former case I must configure cpuset.cpus and
+> cpuset.cpus.partition along the whole path and in the second case
+> cpuset.cpus.exclusive still along the whole path and root at the bottom
+> only.
+>
+> What is the difference between the two configs above?
+> (Or can you please give an example where the remote partitions are
+> better illustrated?)
 
-> +#define AMD_PSTATE_PREFCORE_THRESHOLD	166
-> +#define AMD_PSTATE_MAX_CPPC_PERF	255
-
-> +static void amd_pstate_init_prefcore(struct amd_cpudata *cpudata)
-> +{
-> +	int ret, prio;
-> +	u32 highest_perf;
-> +	static u32 max_highest_perf = 0, min_highest_perf = U32_MAX;
-
-What serializes these things?
-
-Also, *why* are you using u32 here, what's wrong with something like:
-
-	int max_hp = INT_MIN, min_hp = INT_MAX;
-
-> +
-> +	ret = amd_pstate_get_highest_perf(cpudata->cpu, &highest_perf);
-> +	if (ret)
-> +		return;
-> +
-> +	cpudata->hw_prefcore = true;
-> +	/* check if CPPC preferred core feature is enabled*/
-> +	if (highest_perf == AMD_PSTATE_MAX_CPPC_PERF) {
-
-Which effectively means <255 (also, seems to suggest MAX_CPPC_PERF might
-not be the best name, hmm?)
-
-Should you not write '>= 255' then? Just in case something 'funny'
-happens?
-
-> +		pr_debug("AMD CPPC preferred core is unsupported!\n");
-> +		cpudata->hw_prefcore = false;
-> +		return;
-> +	}
-> +
-> +	if (!amd_pstate_prefcore)
-> +		return;
-> +
-> +	/* The maximum value of highest perf is 255 */
-> +	prio = (int)(highest_perf & 0xff);
-
-If for some weird reason you get 0x1ff or whatever above (dodgy BIOS
-never happens, right) then this makes sense how?
-
-Perhaps stop sending patches at break-nek speed and think for a little
-while on how to write this and not be confused?
+For the remote case, you can have intermediate tasks in both mid1a and 
+mid2 as long as cpuset.cpus contains more CPUs than cpuset.cpus.exclusive.
 
 
-> +	/*
-> +	 * The priorities can be set regardless of whether or not
-> +	 * sched_set_itmt_support(true) has been called and it is valid to
-> +	 * update them at any time after it has been called.
-> +	 */
-> +	sched_set_itmt_core_prio(prio, cpudata->cpu);
-> +
-> +	if (max_highest_perf <= min_highest_perf) {
-> +		if (highest_perf > max_highest_perf)
-> +			max_highest_perf = highest_perf;
-> +
-> +		if (highest_perf < min_highest_perf)
-> +			min_highest_perf = highest_perf;
-> +
-> +		if (max_highest_perf > min_highest_perf) {
-> +			/*
-> +			 * This code can be run during CPU online under the
-> +			 * CPU hotplug locks, so sched_set_itmt_support()
-> +			 * cannot be called from here.  Queue up a work item
-> +			 * to invoke it.
-> +			 */
-> +			schedule_work(&sched_prefcore_work);
-> +		}
-> +	}
+> <snip>
+>> Modern container orchestration tools like Kubernetes use the cgroup
+>> hierarchy to manage different containers. And it is relying on other
+>> middleware like systemd to help managing it. If a container needs to
+>> use isolated CPUs, it is hard to get those with the local partitions
+>> as it will require the administrative parent cgroup to be a partition
+>> root too which tool like systemd may not be ready to manage.
+> Such tools ready aren't ready to manage cpuset.cpus.exclusive, are they?
+> IOW tools need to distinguish exclusive and "shared" CPUs which is equal
+> to distinguishing root and member partitions.
 
-Not a word about what serializes these variables.
+They will be ready eventually. This requirement of remote partition 
+actually came from our OpenShift team as the use of just local partition 
+did not meet their need. They don't need access to exclusive CPUs in the 
+parent cgroup layer for their management daemons. They do need to 
+activate isolated partition in selected child cgroups to support our 
+Telco customers to run workloads like DPDK.
 
-> +}
+So they will add the support to upstream Kubernetes.
+
+Cheers,
+Longman
+
+
