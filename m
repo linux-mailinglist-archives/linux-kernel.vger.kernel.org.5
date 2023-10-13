@@ -2,116 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E457C899B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D0F7C8A3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbjJMQE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
+        id S232486AbjJMQF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232444AbjJMQE4 (ORCPT
+        with ESMTP id S232679AbjJMQFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:04:56 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459C7FF
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:04:54 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-27d10ef87caso1894493a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:04:54 -0700 (PDT)
+        Fri, 13 Oct 2023 12:05:24 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5298136
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:05:08 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-57de9237410so1309086eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:05:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697213093; x=1697817893; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ADc+BeDNpPzla2tCfp6/O/BMhR8EnDpGynEOWTUgWb8=;
-        b=gxm26gU4AUd54mmMxn/0KxpyCzlPKtW4pmThbi2fgl6sxzH1iQW7Z89EFXyJskB01A
-         J+Dh7icAWML1mszE/kYY9Cyn0N3c6PeSAo0XWwwdYyaDMkut9tRS+SxEnqgdAcw3bJ30
-         1zau014ut4E36eDXgXawVX/wRRyWbe9ozn8drAz1w3t81aLkrVnlyKWEAD4VlnmgGh1o
-         pfdeDNpj477+RdcU086FTEg7poBqrZ7UwmlnaqEdiy0siNVDropCFYn926f6iujgTpEe
-         vDCXms9EowmxBBFTauKIJip7ALDd66qEKzKzUecT9aWRCVZY9rIeNoeHvxM7pWQDbXa9
-         XtvQ==
+        d=gmail.com; s=20230601; t=1697213108; x=1697817908; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0E2adTq+ZvO86bFiocTbWu1/NJw0Sxi2mxF0K0O3yCI=;
+        b=CW+BYi6iU/jlGC1kBBGyca/HWtmzV3cYN/uvg4zlIiSHxDcVsGKAS/rr/PvbZHnQAl
+         AuYbPZCEGshgShNjCUDliCzZiKhQ2b0RK6IgOp7DJcd1KllXCvbW6VURKbA1mEMGCOVL
+         aEQlIESaOcANPUvDqykyoHPQ8TQ27s71dI2ofimWG1QBzURYM24amXyKuvAoooWXvwZJ
+         XQ1NXCHY0QnyS53dHlQXQ+KyCa7YCsbx4XZ0Orjyj3t/XLy76FS2ygdrTh1H1nwKLh94
+         N/J9mWfhK4Mccmkf63ErlWULIOk6VpmmCfExBQrlTbULkKYQ+k+QOIEnycld1iH6Kihg
+         imCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697213093; x=1697817893;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ADc+BeDNpPzla2tCfp6/O/BMhR8EnDpGynEOWTUgWb8=;
-        b=syHDV2mhmLWcRNPGWmK4XRbXg/3+GRiIkVuOKxvl/yoUQKWXEiFkRd/c1Y0mj7SSJo
-         C3ypb2XB5+DwHrPj93wdJ8FLwA1UZ2Un4GtElsk+KIX2nA9PC+dHKSV6ubPerqZPP2J9
-         Z96VOO46rHa6oXu8+pjhtw/JTud4qFmpq0epQshBHPrN7nS4Gvv9D3U/8FCr7NxNqnfg
-         E1jhMk3zvEnxyfUH+f7imydJdlaj4uzUOuMq3wAB4kukrJNXJAuuU2liDr4hQjjiwTYF
-         cCdcmAhKCvYBoy2PP9b08QWFClJxREagdlc0Mgpm8PFf/950Gh7DK28JKeSK3X8K6lew
-         Dv+w==
-X-Gm-Message-State: AOJu0Yw2piWOlAr2suiOsTPGoJQgLXN1Y4TLGJ2Vv9hu01t0nLQMhaf4
-        smBQPuaBEWpVjKyGXV4Y6WaTldiKxhI=
-X-Google-Smtp-Source: AGHT+IEcsPOvRyLvVS8jZmnRvkncSdtTLsQZ1Gen7Urn6MH5MesInY1HJFiwTH23pF9G2/PTTFsjYQsoenY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:ab47:b0:1ca:1a30:cf34 with SMTP id
- ij7-20020a170902ab4700b001ca1a30cf34mr14339plb.11.1697213093615; Fri, 13 Oct
- 2023 09:04:53 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 09:04:51 -0700
-In-Reply-To: <20231011204150.51166-1-ubizjak@gmail.com>
-Mime-Version: 1.0
-References: <20231011204150.51166-1-ubizjak@gmail.com>
-Message-ID: <ZSlqo-k2htjN1gPh@google.com>
-Subject: Re: [PATCH tip] x86/percpu: Rewrite arch_raw_cpu_ptr()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nadav Amit <namit@vmware.com>, Ingo Molnar <mingo@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697213108; x=1697817908;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0E2adTq+ZvO86bFiocTbWu1/NJw0Sxi2mxF0K0O3yCI=;
+        b=mjluDY2+GZtMyXfyacmoJZFx8IyJ55L0YwrYEp/wvhmufLBIh0Lx1hB0xt0RT81Jo+
+         CRwQcJSqy4SlVEuJ/UykLg0YmQiJw5dPi4ac60Or4/2sKEMvGAodRQG7cnx8H+/P2Q/S
+         mFjGXqgYTSKYf0aRSRrYJpOAPOpFyQJcPWg+5YJ1BOjUqJBERNQgYM2dnS2ERX7aghul
+         ox+QEw9xL/mnwk0a+9uyUy/kzweE7cl7HnkLfMnVJC8SXlgXAPtzrwZLovhv5t1HHOHc
+         gQWix1T0gEcVq4aYBHR2y5PtPg+vQdKP5E4Wn8IdkBDyRQmiZMcP1Qc8m8pdBp/PAFO2
+         sN+g==
+X-Gm-Message-State: AOJu0YwTtjBLB7xnxVmVhh+SCnAENJgL8CpzFRQy9zXgX6mrTTIZSmOK
+        1hBi5y3SF9oeK5vKiJgkxNS7iqnZ/zptxDx+o8Y=
+X-Google-Smtp-Source: AGHT+IETtWM/w2WA9DKTdQv6dDMKZy6/XPv3txCpzyyRcq09faeMnhs/q9OovphD5y5FtIjEDZUykVEwQt4DOxp6Yu8=
+X-Received: by 2002:a4a:9c85:0:b0:567:4e58:6aaf with SMTP id
+ z5-20020a4a9c85000000b005674e586aafmr27825009ooj.6.1697213107970; Fri, 13 Oct
+ 2023 09:05:07 -0700 (PDT)
+MIME-Version: 1.0
+References: <ZSkg7y2Y2T3midXB@lab-ubuntu> <67d90726-15b9-4d64-87c6-bfbf662cbe81@kadam.mountain>
+In-Reply-To: <67d90726-15b9-4d64-87c6-bfbf662cbe81@kadam.mountain>
+From:   Calvince Otieno <calvncce@gmail.com>
+Date:   Fri, 13 Oct 2023 19:04:56 +0300
+Message-ID: <CADFX3ORVXcEBzovdbPawW2SLxcMoraKBmmLuOFkMpnHj=T48qQ@mail.gmail.com>
+Subject: Re: [PATCH v2] staging: wlan-ng: remove helper function prism2sta_inf_handover()
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Luke Koch <lu.ale.koch@gmail.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Simon Horman <horms@kernel.org>, linux-staging@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023, Uros Bizjak wrote:
-> Additionaly, the patch introduces 'rdgsbase' alternative for CPUs with
-> X86_FEATURE_FSGSBASE. The rdgsbase instruction *probably* will end up
-> only decoding in the first decoder etc. But we're talking single-cycle
-> kind of effects, and the rdgsbase case should be much better from
-> a cache perspective and might use fewer memory pipeline resources to
-> offset the fact that it uses an unusual front end decoder resource...
+On Fri, Oct 13, 2023 at 3:12=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro=
+.org> wrote:
+>
+> On Fri, Oct 13, 2023 at 01:50:23PM +0300, Calvince Otieno wrote:
+> > prism2sta_inf_handover() function basically calls pr_debug() to print
+> > a literal string. This can be done by the parent function directly.
+> >
+> > Signed-off-by: Calvince Otieno <calvncce@gmail.com>
+> > ---
+> > Patch version v2:
+> >       - Replace pr_debug() utility function with the module specific ne=
+tdev_dbg()
+>
+> This isn't a v2 patch, right?  This patch assumes that we applied the
+> v1 patch...
+>
+> This patch is not white space damaged though so that's good.
+>
+> regards,
+> dan carpenter
+>
+>
 
-The switch to RDGSBASE should be a separate patch, and should come with actual
-performance numbers.  
+Hello Dan,
+Does this response mean that the patch was accepted?
 
-A significant percentage of data accesses in Intel's TDX-Module[*] use this
-pattern, e.g. even global data is relative to GS.base in the module due its rather
-odd and restricted environment.  Back in the early days of TDX, the module used
-RD{FS,GS}BASE instead of prefixes to get pointers to per-CPU and global data
-structures in the TDX-Module.  It's been a few years so I forget the exact numbers,
-but at the time a single transition between guest and host would have something
-like ~100 reads of FS.base or GS.base.  Switching from RD{FS,GS}BASE to prefixed
-accesses reduced the latency for a guest<->host transition through the TDX-Module
-by several thousand cycles, as every RD{FS,GS}BASE had a latency of ~18 cycles
-(again, going off 3+ year old memories).
-
-The TDX-Module code is pretty much a pathological worth case scenario, but I
-suspect its usage is very similar to most usage of raw_cpu_ptr(), e.g. get a
-pointer to some data structure and then do multiple reads/writes from/to that
-data structure.
-
-The other wrinkle with RD{FS,FS}GSBASE is that they are trivially easy to emulate.
-If a hypervisor/VMM is advertising FSGSBASE even when it's not supported by
-hardware, e.g. to migrate VMs to older hardware, then every RDGSBASE will end up
-taking a few thousand cycles (#UD -> VM-Exit -> emulate).  I would be surprised
-if any hypervisor actually does this as it would be easier/smarter to simply not
-advertise FSGSBASE if migrating to older hardware might be necessary, e.g. KVM
-doesn't support emulating RD{FS,GS}BASE.  But at the same time, the whole reason
-I stumbled on the TDX-Module's sub-optimal RD{FS,GS}BASE usage was because I had
-hacked KVM to emulate RD{FS,GS}BASE so that I could do KVM TDX development on older
-hardware.  I.e. it's not impossible that this code could run on hardware where
-RDGSBASE is emulated in software.
-
-[*] https://www.intel.com/content/www/us/en/download/738875/intel-trust-domain-extension-intel-tdx-module.html
+--
+Kind regards,
+Calvince Otieno
