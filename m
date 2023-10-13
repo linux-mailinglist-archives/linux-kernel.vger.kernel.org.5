@@ -2,99 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A81067C8B40
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94FCC7C8B3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232686AbjJMQcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47854 "EHLO
+        id S232384AbjJMQcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231789AbjJMQbu (ORCPT
+        with ESMTP id S231521AbjJMQbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:31:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FC5138
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:30:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB43FC433C7;
-        Fri, 13 Oct 2023 16:30:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697214659;
-        bh=UhsiyLWpL6PODRiDXR4L4zDoj2dJa8jOUZmaiu9xQhU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=A4On1qqi9cYF0h0xfOzqALiK7J8ty6wIJR7FhK0Mbn8GtYEwXnZB1WyTNgSI/goeM
-         tAl5egrMh/qfmDRZD7ef+6TKTH9ODYM3/F97YXDBIqJZCLKwP5UPiAfBcHK3MNAQZS
-         WmSYHua4BjFOOkYc9uKg6a+TfN06hU4HAIqqpjxsisp2u9Sk/QVGU7eEa7UrSH5VbD
-         s7sRuR/Iz1hj1URMAVIjojCtHG3emblLfBvpmPRjCKdEhzrLDd0n290Uqe6dPKg1ce
-         umrTGrZyjDNHtj0DL6D7TmGZuV3z0gm0jeJuI/Rc50P+syD80ZwiR9zMKXzwH9oKn/
-         eE1WgQXlD96EA==
-Date:   Fri, 13 Oct 2023 09:30:56 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v5 08/16] net: ethtool: Add a command to expose
- current time stamping layer
-Message-ID: <20231013093056.4f915df1@kernel.org>
-In-Reply-To: <20231013161446.st7tlemyaj3ggkgk@skbuf>
-References: <20231009155138.86458-1-kory.maincent@bootlin.com>
-        <20231009155138.86458-9-kory.maincent@bootlin.com>
-        <2fbde275-e60b-473d-8488-8f0aa637c294@broadcom.com>
-        <20231010102343.3529e4a7@kmaincent-XPS-13-7390>
-        <20231013090020.34e9f125@kernel.org>
-        <20231013161446.st7tlemyaj3ggkgk@skbuf>
+        Fri, 13 Oct 2023 12:31:53 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 44704D7A
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:31:23 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4412511FB;
+        Fri, 13 Oct 2023 09:32:03 -0700 (PDT)
+Received: from [10.57.66.151] (unknown [10.57.66.151])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74CB73F5A1;
+        Fri, 13 Oct 2023 09:31:21 -0700 (PDT)
+Message-ID: <a9d7103f-efcb-4ab8-91b9-6f1737789c49@arm.com>
+Date:   Fri, 13 Oct 2023 17:31:20 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 0/2] Swap-out small-sized THP without splitting
+Content-Language: en-GB
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231010142111.3997780-1-ryan.roberts@arm.com>
+ <87zg0pfyux.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <87zg0pfyux.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 19:14:46 +0300 Vladimir Oltean wrote:
-> > What is "PRECISION"? DMA is a separate block like MAC and PHY.  
+On 11/10/2023 07:37, Huang, Ying wrote:
+> Ryan Roberts <ryan.roberts@arm.com> writes:
 > 
-> If DMA is a separate block like MAC and PHY, can it have its own PHC
-> device, and the ethtool UAPI only lists the timestamping-capable PHCs
-> for one NIC, and is able to select between them? 
+> [...]
+> 
+>> Finally on testing, I've run the mm selftests and see no regressions, but I
+>> don't think there is anything in there specifically aimed towards swap? Are
+>> there any functional or performance tests that I should run? It would certainly
+>> be good to confirm I haven't regressed PMD-size THP swap performance.
+> 
+> I have used swap sub test case of vm-scalbility to test.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/
 
-Possibly, I guess. There are some devices which use generic (i.e.
-modeled by Linux as separate struct device) DMA controllers to read 
-out packets from "MAC" FIFOs. In practice I'm not sure if any of those
-DMA controllers has time stamping capabilities.
+I ended up using `usemem`, which is the core of this test suite, but deviated
+from the pre-canned test case to allow me to use anonymous memory and get
+numbers for small-sized THP (this is a very useful tool - thanks for pointing it
+out!)
 
-> Translation between the UAPI-visible PHC index and MAC, DMA, phylib
-> PHY, other PHY etc can then be done by the kernel as needed.
+I've run the tests on Ampere Altra, set up with a 35G block ram device as the
+swap device and from inside a memcg limited to 40G memory. I've then run
+`usemem` with 70 processes (each has its own core), each allocating and writing
+1G of memory. I've repeated everything 5 times and taken the mean and stdev:
 
-Translation by the kernel at which point?
 
-IMHO it'd indeed be clearer for the user to have an ability to read 
-the PHC for SOF_..._DMA via ETHTOOL_MSG_TS_LIST_GET_REPLY as a separate
-entry, rather than e.g. assume that DMA uses the same PHC as MAC.
+Mean Performance Improvement vs 4K/baseline
+
+| alloc size |            baseline |    remove-huge-flag | swap-file-small-thp |
+|            |  v6.6-rc4+anonfolio |           + patch 1 |           + patch 2 |
+|:-----------|--------------------:|--------------------:|--------------------:|
+| 4K Page    |                0.0% |                2.3% |                9.1% |
+| 64K THP    |              -44.1% |              -46.3% |               30.6% |
+| 2M THP     |               56.0% |               54.2% |               60.1% |
+
+
+Standard Deviation as Percentage of Mean
+
+| alloc size |            baseline |    remove-huge-flag | swap-file-small-thp |
+|            |  v6.6-rc4+anonfolio |           + patch 1 |           + patch 2 |
+|:-----------|--------------------:|--------------------:|--------------------:|
+| 4K Page    |                3.4% |                7.1% |                1.7% |
+| 64K THP    |                1.9% |                5.6% |                7.7% |
+| 2M THP     |                1.9% |                2.1% |                3.2% |
+
+
+I don't see any meaningful performance cost to removing the HUGE flag, so
+hopefully this gives us confidence to move forward with patch 1.
+
+You can indeed see the performance regression in the baseline when THP is
+configured to allocate small-sized THP only (in this case 64K). And you can see
+the regression is fixed by patch 2, which avoids splitting the THP and thus
+avoids the extra TLBIs. This correlates with what I saw in kernel compilation
+workload.
+
+Huang Ying, based on these results, do you still want me to persue a per-cpu
+solution to avoid potential contention on the swap info lock? - I proposed in
+the thread against patch 2 to do this in the swap_slots layer if so, rather than
+in swapfile.c directly (I'm not sure how your original proposal would actually
+work?). But based on these results, its not obvious to me that there is a
+definite problem here, and it might be simpler to avoid the complexity?
+
+Thanks,
+Ryan
+
+> 
+> --
+> Best Regards,
+> Huang, Ying
+
