@@ -2,47 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 458567C8D51
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D0F7C8D58
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbjJMSuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 14:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
+        id S229958AbjJMSzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 14:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbjJMSuC (ORCPT
+        with ESMTP id S229518AbjJMSzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 14:50:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23D783;
-        Fri, 13 Oct 2023 11:50:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30438C433C7;
-        Fri, 13 Oct 2023 18:50:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697223000;
-        bh=qbUhClXwCDstZ4eK3GIEiGy9pkTKB0h+E9ACoIDl4Yw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=I/oWOCZGMWXmib/Yf+Ch+QmUNSmIjY2L/Yo61Z3IRTw0ok6+Z9Nklv9tkME6QVWR3
-         WTzhexm0DvNCSGG3b+O8nuQSNFRO35ZJorEPFBmr64BCusGm8M+IsQDvVWTWxvxo6B
-         DQZIA4b1BntNjSOpACuY3/Q2z9eXV5iqIcNxcAp4vDnal2eSvnrIhj/kIxzsJIFGUw
-         PmFM6IxYzf898PbRN8V0shlVfcHBPV+rbsMBdv4VsRhj+PYX59g9RjQa/tXI7/IC0N
-         7yiBWmb+/4fk5zJttNBjPNi+38CL1UnptnjzohRHbmhb9aa5kaS+PPhlMjaC8cDiyk
-         9/fGs5XEn+fMw==
-Date:   Fri, 13 Oct 2023 13:49:58 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc:     lpieralisi@kernel.org, robh@kernel.org, kw@linux.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        r-gunasekaran@ti.com, srk@ti.com
-Subject: Re: [PATCH] PCI: keystone: Don't enable BAR0 if link is not detected
-Message-ID: <20231013184958.GA1118393@bhelgaas>
+        Fri, 13 Oct 2023 14:55:07 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E650BB
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:55:05 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9be3b66f254so34305666b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697223304; x=1697828104; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vTnCuQhHu4vMJ5ozMAEPYZByiFfPswag7KkaGVloQKk=;
+        b=bqDpJuarTe0xYUp8E2Z8K31fSWhh6FFn+zDQZbfbeCNjT8ztCg7jUYLlZelh1MOYs2
+         fZFfNifMRfUL/ZFcdJ7yxHzbvacHBmn/vVPEsgl3NyCogHTh2bIUl7HE0mImJ2Z033r4
+         7sGm1pIlttsm+tunGIRtoAhPelsRlZ1oE+65U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697223304; x=1697828104;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vTnCuQhHu4vMJ5ozMAEPYZByiFfPswag7KkaGVloQKk=;
+        b=h+KlB7JkAvvY1tAMpeXwiR8TbMlFYyYmGSpPBbiTmkwj9iC4dm63iA/77BSthK3RSt
+         VbsHL/imM12wINUJCuxx77PpDpvGySe+Ogbje7bjw8AoYmPmJfzcWkJ2nzIbiPNFRTJh
+         lOhfgRStGhzDRbntThUoYPuETdPxk1We4tsoG9xA0ZDW7WmTPBPMTw8ddmjygl1oyM62
+         CJ5/7YQANQ63p0s1JzLRSAo4nQiCXzKRpoUtICmo26nreS1ZRjYIdYkTB9oow/uUiUla
+         T4wLhkoAKup79ZwnHPguBljFldwxBWgo8N28Fa32TBtvFahsec7YR1U9iICvAwOgToA5
+         WzfQ==
+X-Gm-Message-State: AOJu0YzS9sKSe5z61AommyBAl38eTv59ZRTRHC3v9JJQs8Kj58zJt6Ng
+        C8L+iqthS2h0rsHFcrVWcoZqBX3wKflDYdoBLF122w==
+X-Google-Smtp-Source: AGHT+IHjl/UtDt96Jwf7Uc8dOBIYYS72HR7IpJxWDb/qTMlELBZd0NYaryEu21KpK/elbm2rb6lMKw==
+X-Received: by 2002:a17:907:778e:b0:9a1:bd82:de24 with SMTP id ky14-20020a170907778e00b009a1bd82de24mr24120517ejc.12.1697223304048;
+        Fri, 13 Oct 2023 11:55:04 -0700 (PDT)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
+        by smtp.gmail.com with ESMTPSA id rn4-20020a170906d92400b0099bc038eb2bsm12651044ejb.58.2023.10.13.11.55.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Oct 2023 11:55:03 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-99c3c8adb27so382521266b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:55:03 -0700 (PDT)
+X-Received: by 2002:a17:906:2189:b0:9ae:6ad0:f6db with SMTP id
+ 9-20020a170906218900b009ae6ad0f6dbmr23995223eju.71.1697223303355; Fri, 13 Oct
+ 2023 11:55:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <98d5c497-c411-1909-3ea4-8eb7aa6e8b1a@ti.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20220927131518.30000-1-ojeda@kernel.org> <20220927131518.30000-26-ojeda@kernel.org>
+ <Y0BfN1BdVCWssvEu@hirez.programming.kicks-ass.net> <CABCJKuenkHXtbWOLZ0_isGewxd19qkM7OcLeE2NzM6dSkXS4mQ@mail.gmail.com>
+ <CANiq72k6s4=0E_AHv7FPsCQhkyxf7c-b+wUtzfjf+Spehe9Fmg@mail.gmail.com>
+ <CABCJKuca0fOAs=E6LeHJiT2LOXEoPvLVKztA=u+ARcw=tbT=tw@mail.gmail.com>
+ <20231012104741.GN6307@noisy.programming.kicks-ass.net> <CABCJKufEagwJ=TQnmVSK07RDjsPUt=3JGtwnK9ASmFqb7Vx8JQ@mail.gmail.com>
+ <202310121130.256F581823@keescook> <CAOcBZOTed1a1yOimdUN9yuuysZ1h6VXa57+5fLAE99SZxCwBMQ@mail.gmail.com>
+ <20231013075005.GB12118@noisy.programming.kicks-ass.net> <CAOcBZOTP_vQuFaqREqy-hkG69aBvJ+xrhEQi_EFKvtsNjne1dw@mail.gmail.com>
+In-Reply-To: <CAOcBZOTP_vQuFaqREqy-hkG69aBvJ+xrhEQi_EFKvtsNjne1dw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 13 Oct 2023 11:54:46 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjLUit_gae7anFNz4sV0o2Uc=TD_9P8sYeqMSeW_UG2Rg@mail.gmail.com>
+Message-ID: <CAHk-=wjLUit_gae7anFNz4sV0o2Uc=TD_9P8sYeqMSeW_UG2Rg@mail.gmail.com>
+Subject: Re: [PATCH v10 25/27] x86: enable initial Rust support
+To:     Ramon de C Valle <rcvalle@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, patches@lists.linux.dev,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        David Gow <davidgow@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,138 +97,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 10:36:01AM +0530, Siddharth Vadapalli wrote:
-> On 13/10/23 10:33, Siddharth Vadapalli wrote:
-> > On 12/10/23 22:13, Bjorn Helgaas wrote:
-> >> On Thu, Oct 12, 2023 at 10:15:09AM +0530, Siddharth Vadapalli wrote:
-> >>> On 11/10/23 19:16, Bjorn Helgaas wrote:
-> > ...
-> >>>                                               msix_prepare_msi_desc
-> >>> In this function: msix_prepare_msi_desc, the following readl()
-> >>> causes completion timeout:
-> >>> 		desc->pci.msix_ctrl = readl(addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
-> >>> The completion timeout with the readl is only observed when the link
-> >>> is down (No Endpoint device is actually connected to the PCIe
-> >>> connector slot).
-> >>
-> >> Do you know the address ("addr")?  From pci_msix_desc_addr(), it looks
-> >> like it should be:
-> >>
-> >>   desc->pci.mask_base + desc->msi_index * PCI_MSIX_ENTRY_SIZE
-> >>
-> >> and desc->pci.mask_base should be dev->msix_base, which we got from
-> >> msix_map_region(), which ioremaps part of the BAR indicated by the
-> >> MSI-X Table Offset/Table BIR register.
-> >>
-> >> I wonder if this readl() is being handled as an MMIO access to a
-> >> downstream device instead of a Root Port BAR access because it's
-> >> inside the Root Port's MMIO window.
-> >>
-> >> Could you dump out these values just before the readl()?
-> >>
-> >>   phys_addr inside msix_map_region()
-> >>   dev->msix_base
-> >>   desc->pci.mask_base
-> >>   desc->msi_index
-> >>   addr
-> > 
-> > phys_addr: 0x10102000
-> > msix_base: 0xffff80000997a000
-> > mask_base: 0xffff80000997a000
-> > msi_index: 0
-> > addr: 0xffff80000997a000
-> > 
-> > Also, the details of BAR allocation from the logs are:
-> > keystone-pcie 5500000.pcie: host bridge /bus@100000/pcie@5500000 ranges:
-> > keystone-pcie 5500000.pcie:       IO 0x0010020000..0x001002ffff -> 0x0000000000
-> > keystone-pcie 5500000.pcie:      MEM 0x0010030000..0x0017ffffff -> 0x0010030000
-> > keystone-pcie 5500000.pcie: iATU unroll: enabled
-> > keystone-pcie 5500000.pcie: iATU regions: 8 ob, 8 ib, align 64K, limit 4G
-> > keystone-pcie 5500000.pcie: Phy link never came up
-> > keystone-pcie 5500000.pcie: PCI host bridge to bus 0000:00
-> > pci_bus 0000:00: root bus resource [bus 00-ff]
-> > pci_bus 0000:00: root bus resource [io  0x0000-0xffff]
-> > pci_bus 0000:00: root bus resource [mem 0x10030000-0x17ffffff]
-> > pci 0000:00:00.0: [104c:b00c] type 01 class 0x060400
-> > pci 0000:00:00.0: reg 0x10: [mem 0x05500000-0x055fffff]
-> > pci 0000:00:00.0: reg 0x38: [mem 0x00000000-0x0000ffff pref]
-> > pci 0000:00:00.0: supports D1
-> > pci 0000:00:00.0: PME# supported from D0 D1 D3hot
-> > pci 0000:00:00.0: BAR 0: assigned [mem 0x10100000-0x101fffff]
-> > pci 0000:00:00.0: BAR 6: assigned [mem 0x10030000-0x1003ffff pref]
-> > pci 0000:00:00.0: PCI bridge to [bus 01-ff]
-> > 
-> > The value of phys_addr lies within the range allocated to BAR0.
-> > 
-> >>   call early_dump_pci_device() on the Root Port
-> > 
-> > I invoked early_dump_pci_device() within the pci_setup_device() function in
-> > drivers/pci/probe.c and the output is:
+On Fri, 13 Oct 2023 at 05:18, Ramon de C Valle <rcvalle@google.com> wrote:
+>
+> Both C and repr(C) Rust structs have this encoding, but I understand
+> the problems with doing this in C since it doesn't have
+> repr(transparent) structs so there would be a lot of casting back and
+> forth. Maybe there is an alternative or this could be done for less
+> used function pairs?
 
-It'd be better to dump the config space immediately before the readl()
-since the PCI core did change some things in the interim.
+We actually have some C variations of what I think people want to use
+"repr(transparent) struct" for in Rust.
 
-> > pci 0000:00:00.0: config space:
-> > 00000000: 4c 10 0c b0 07 01 10 00 01 00 04 06 00 00 01 00
+Of course, that is depending on what kind of context you want to use
+it for, and I might have lost some background. But I'm assuming you're
+talking about the situation where you want to treat two or more types
+as being "compatible" within certain contexts.
 
-  PCI_COMMAND = 0x0107
-    PCI_COMMAND_IO | PCI_COMMAND_MEMORY | PCI_COMMAND_MASTER | PCI_COMMAND_SERR
+There's the actual standard C "_Generic()" alternative, which allows
+you to make macros etc that use different types transparently.
 
-> > 00000010: 00 00 50 05 00 00 00 00 00 01 ff 00 00 00 00 00
-> > 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+It's not very widely used in the kernel, because we only fairly
+recently moved to require recent enough compiler versions, but we do
+use it now in a couple of places.
 
-  PCI_IO_BASE            =       0x00 low 4 bits indicate 16-bit addressing
-  PCI_IO_LIMIT           =       0x00
-  PCI_MEMORY_BASE        =     0x0000
-  PCI_MEMORY_LIMIT       =     0x0000
-  PCI_PREF_MEMORY_BASE   =     0x0000 low 4 bits indicate 32-bit pref
-  PCI_PREF_MEMORY_LIMIT  =     0x0000
-  PCI_PREF_BASE_UPPER32  = 0x00000000
-  PCI_PREF_LIMIT_UPPER32 = 0x00000000
+And there's the much more traditional gcc extension in the form of the
+__attribute__((__transparent_union__)) thing. In the kernel, that one
+is even less used, and that one use is likely going away since the
+need for it is going away.
 
-We can't tell from this whether the prefetchable window is implemented
-(but I'm sure keystone *does* implement it).  If PCI_PREF_MEMORY_BASE
-and PCI_PREF_MEMORY_LIMIT are read-only zeros, it is not implemented.
-If they are writable, it is enabled at the same range as the
-non-prefetchable window.
+But while it's not standard C, it's actually been supported by
+relevant compilers for much longer than "_Generic" has, and is
+designed exactly for the "I have a function that can take arguments of
+different types", either because the types are bitwise identical (even
+if _conceptually_ not the same), or simply because you have a
+different argument that describes the type (the traditional C union
+model).
 
-Similarly for the I/O window; we can't tell whether the base/limit are
-read-only zero or writable.
+I suspect, for example, that we *should* have used those transparent
+unions for the "this function can take either a folio or a page" case,
+instead of duplicating functions for the two uses.
 
-So we have these windows that look like they're probably enabled:
+But probably because few people aren familiar with the syntax, that's
+not what happened.
 
-  io window   at [io  0x0000-0x0fff]
-  mem window  at [mem 0x00000000-0x000fffff]
-  pref window at [mem 0x00000000-0x000fffff pref]
-
-No idea whether it makes a difference, but these windows seem
-misconfigured.  The default should probably be to make them all
-disabled (as in f73eedc90bf7 ("PCI: vmd: Disable bridge window for
-domain reset")):
-
-  PCI_IO_BASE            = 0xf0
-  PCI_IO_LIMIT           = 0x00
-  PCI_MEMORY_BASE        = 0xfff0
-  PCI_MEMORY_LIMIT       = 0x0000
-  PCI_PREF_MEMORY_BASE   = 0xfff0
-  PCI_PREF_MEMORY_LIMIT  = 0x0000
-  PCI_PREF_BASE_UPPER32  = 0xffffffff
-  PCI_PREF_LIMIT_UPPER32 = 0x00000000
-
-The PCI core should reconfigure and enable them as needed by
-downstream devices.
-
-> I also noticed that the value of desc->pci.msix_ctrl obtained from
-> the readl is always 0xffffffff irrespective of whether or not an
-> endpoint device is connected. This isn't expected right? The only
-> difference between the cases where endpoint device is connected and
-> isn't connected is the completion timeout.
-
-Right, I wouldn't expect that.  PCI_MSIX_ENTRY_VECTOR_CTRL has a bunch
-of reserved bits that should be zero.
-
-I assume MSI-X actually does work for downstream endpoints?  I
-wouldn't think anybody would have bothered with
-ks_pcie_v3_65_add_bus() unless MSI-X works.
-
-Bjorn
+             Linus
