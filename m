@@ -2,107 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33ED67C87B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03247C87BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbjJMOTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 10:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59444 "EHLO
+        id S232098AbjJMOVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 10:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232034AbjJMOTe (ORCPT
+        with ESMTP id S232037AbjJMOVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 10:19:34 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728F6BE;
-        Fri, 13 Oct 2023 07:19:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-        :From:subject:date:message-id:reply-to;
-        bh=iQgc8ugoV+cWytBNeAfWc+zsoe0xTQmmxE4CSL1oZV4=; b=LynlOPyJLi2iPH8rD2ayaq6Uww
-        Zs778MjaKr+WCdxwgB/rn+BIvJgtLBJP9h6n+GE1Q0JmFSsfTeAfVrnT4kUJ3OgXrG9VZKUX1IP0U
-        YiapD9tXhpsP2vf/TI46iWW4JayTBYfWKFANQj/R1VKW88sESy9fRurD9X9JM6jxMn2U=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:40430 helo=pettiford.lan)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qrJ0k-0005Ve-El; Fri, 13 Oct 2023 10:19:31 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, hvilleneuve@dimonoff.com
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        devicetree@vger.kernel.org, hugo@hugovil.com
-Date:   Fri, 13 Oct 2023 10:19:25 -0400
-Message-Id: <20231013141925.3427158-3-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231013141925.3427158-1-hugo@hugovil.com>
-References: <20231013141925.3427158-1-hugo@hugovil.com>
+        Fri, 13 Oct 2023 10:21:37 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C70E6CA
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:21:34 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7a24c86aae3so29706539f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:21:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697206894; x=1697811694; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AScjHWZao3JWzSTjB5/ohVC8e3iHyB9Wq7OFyIrmWB0=;
+        b=WCGALqVN6mIgNUe82QIUlKXjiDAF+udqOQd+aF8rspE47C0XKATFIS8ziQs+tixtjA
+         CJ782Aq0TzYOQJeEIlL5YfYGNho8XfdO1t3CZ0u0EpJPj+m9cYHwBOAjXlCoSErSFxWo
+         zyp4zSeIpeIbDLh5Z8Sn6ULZQueU3uAkn5X3zdq3V3slt67B9T2kdBGYihHIzKdQmuNN
+         EEf6zWndS32dUbW8+B+YzwpUo5/HbFc+1wi3DfDMTU3pcKiDLOlOrEeum2ubvMzwmepj
+         kYRIv4OFl6nsPEv0GWaGcPiMiDbmZ04oiRdf892Wh++9vUU/sJ4CEcsgtgOKlGC7Pkvo
+         GG3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697206894; x=1697811694;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AScjHWZao3JWzSTjB5/ohVC8e3iHyB9Wq7OFyIrmWB0=;
+        b=tW8NApKtIta/rSsfTbdt3PHtUql/y3rfjfJNrVt/qtH/AElqCyQO6BqqPj+0Y1sKPk
+         fFPanwclyQ3dgSvud+Fukht/cPaZ/vZVZ8SBDhrId81usEH8eA3rhbwPDep5ipZZo9mR
+         Q+CXYnKBKtTsD2wnVe2E9gPlGjOiVstm/8iM1/qSxJhodwWMvWC3hCOKC1RQ+VQWAG1Z
+         0j8ztM119WYsoyK1S2kPNrrYjqoZRqGcqlqKmp/woHHn6tavrdytTAIKXvwYg1v8/DS2
+         ADSTnEeZ/Gzxo2PjM52VKXXbwyuBXOQYGAYtDaiB42wGa0MZRTpvSKcXjwWWXvpODSzc
+         Vztg==
+X-Gm-Message-State: AOJu0YxpbzvKYKjSCvo5EFngMHvOXOVzP1fiHptNopyIf8yhP16TQgK8
+        WWOB515kPogGcnzpyfBtTyV1Wg==
+X-Google-Smtp-Source: AGHT+IG4Rtj3NyiZvBnrsWw8vZbB/oOVwWkg1O+QaRYX/lm7eF3rhFGao8bunVUuyXcTNCS5dZmTBg==
+X-Received: by 2002:a6b:5a0a:0:b0:790:958e:a667 with SMTP id o10-20020a6b5a0a000000b00790958ea667mr25742740iob.2.1697206894059;
+        Fri, 13 Oct 2023 07:21:34 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id i13-20020a02b68d000000b004290fd3a68dsm4549709jam.1.2023.10.13.07.21.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Oct 2023 07:21:33 -0700 (PDT)
+Message-ID: <672d257e-e28f-42bc-8ac7-253d20fe187c@kernel.dk>
+Date:   Fri, 13 Oct 2023 08:21:32 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] audit,io_uring: io_uring openat triggers audit reference
+ count underflow
+Content-Language: en-US
+To:     Christian Brauner <brauner@kernel.org>,
+        Dan Clash <daclash@linux.microsoft.com>
+Cc:     audit@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paul@paul-moore.com,
+        linux-fsdevel@vger.kernel.org, dan.clash@microsoft.com
+References: <20231012215518.GA4048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20231013-insofern-gegolten-75ca48b24cf5@brauner>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20231013-insofern-gegolten-75ca48b24cf5@brauner>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
-Subject: [PATCH 2/2] dt-bindings: serial: sc16is7xx: remove 'clock-frequency' property
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On 10/13/23 2:24 AM, Christian Brauner wrote:
+> On Thu, Oct 12, 2023 at 02:55:18PM -0700, Dan Clash wrote:
+>> An io_uring openat operation can update an audit reference count
+>> from multiple threads resulting in the call trace below.
+>>
+>> A call to io_uring_submit() with a single openat op with a flag of
+>> IOSQE_ASYNC results in the following reference count updates.
+>>
+>> These first part of the system call performs two increments that do not race.
+>>
+>> do_syscall_64()
+>>   __do_sys_io_uring_enter()
+>>     io_submit_sqes()
+>>       io_openat_prep()
+>>         __io_openat_prep()
+>>           getname()
+>>             getname_flags()       /* update 1 (increment) */
+>>               __audit_getname()   /* update 2 (increment) */
+>>
+>> The openat op is queued to an io_uring worker thread which starts the
+>> opportunity for a race.  The system call exit performs one decrement.
+>>
+>> do_syscall_64()
+>>   syscall_exit_to_user_mode()
+>>     syscall_exit_to_user_mode_prepare()
+>>       __audit_syscall_exit()
+>>         audit_reset_context()
+>>            putname()              /* update 3 (decrement) */
+>>
+>> The io_uring worker thread performs one increment and two decrements.
+>> These updates can race with the system call decrement.
+>>
+>> io_wqe_worker()
+>>   io_worker_handle_work()
+>>     io_wq_submit_work()
+>>       io_issue_sqe()
+>>         io_openat()
+>>           io_openat2()
+>>             do_filp_open()
+>>               path_openat()
+>>                 __audit_inode()   /* update 4 (increment) */
+>>             putname()             /* update 5 (decrement) */
+>>         __audit_uring_exit()
+>>           audit_reset_context()
+>>             putname()             /* update 6 (decrement) */
+>>
+>> The fix is to change the refcnt member of struct audit_names
+>> from int to atomic_t.
+>>
+>> kernel BUG at fs/namei.c:262!
+>> Call Trace:
+>> ...
+>>  ? putname+0x68/0x70
+>>  audit_reset_context.part.0.constprop.0+0xe1/0x300
+>>  __audit_uring_exit+0xda/0x1c0
+>>  io_issue_sqe+0x1f3/0x450
+>>  ? lock_timer_base+0x3b/0xd0
+>>  io_wq_submit_work+0x8d/0x2b0
+>>  ? __try_to_del_timer_sync+0x67/0xa0
+>>  io_worker_handle_work+0x17c/0x2b0
+>>  io_wqe_worker+0x10a/0x350
+>>
+>> Cc: <stable@vger.kernel.org>
+>> Link: https://lore.kernel.org/lkml/MW2PR2101MB1033FFF044A258F84AEAA584F1C9A@MW2PR2101MB1033.namprd21.prod.outlook.com/
+>> Fixes: 5bd2182d58e9 ("audit,io_uring,io-wq: add some basic audit support to io_uring")
+>> Signed-off-by: Dan Clash <daclash@linux.microsoft.com>
+>> ---
+>>  fs/namei.c         | 9 +++++----
+>>  include/linux/fs.h | 2 +-
+>>  kernel/auditsc.c   | 8 ++++----
+>>  3 files changed, 10 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/fs/namei.c b/fs/namei.c
+>> index 567ee547492b..94565bd7e73f 100644
+>> --- a/fs/namei.c
+>> +++ b/fs/namei.c
+>> @@ -188,7 +188,7 @@ getname_flags(const char __user *filename, int flags, int *empty)
+>>  		}
+>>  	}
+>>  
+>> -	result->refcnt = 1;
+>> +	atomic_set(&result->refcnt, 1);
+>>  	/* The empty path is special. */
+>>  	if (unlikely(!len)) {
+>>  		if (empty)
+>> @@ -249,7 +249,7 @@ getname_kernel(const char * filename)
+>>  	memcpy((char *)result->name, filename, len);
+>>  	result->uptr = NULL;
+>>  	result->aname = NULL;
+>> -	result->refcnt = 1;
+>> +	atomic_set(&result->refcnt, 1);
+>>  	audit_getname(result);
+>>  
+>>  	return result;
+>> @@ -261,9 +261,10 @@ void putname(struct filename *name)
+>>  	if (IS_ERR(name))
+>>  		return;
+>>  
+>> -	BUG_ON(name->refcnt <= 0);
+>> +	if (WARN_ON_ONCE(!atomic_read(&name->refcnt)))
+>> +		return;
+>>  
+>> -	if (--name->refcnt > 0)
+>> +	if (!atomic_dec_and_test(&name->refcnt))
+>>  		return;
+> 
+> Fine by me. I'd write this as:
+> 
+> count = atomic_dec_if_positive(&name->refcnt);
+> if (WARN_ON_ONCE(unlikely(count < 0))
+> 	return;
+> if (count > 0)
+> 	return;
 
-The 'clock-frequency' property is supported but mainly in ACPI-based
-configurations, for example.
+Would be fine too, my suspicion was that most archs don't implement a
+primitive for that, and hence it might be more expensive than
+atomic_read()/atomic_dec_and_test() which do. But I haven't looked at
+the code generation. The dec_if_positive degenerates to a atomic cmpxchg
+for most cases.
 
-This property has therefore no place in the sc16is7xx YAML binding.
-
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
----
- .../devicetree/bindings/serial/nxp,sc16is7xx.yaml  | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml b/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
-index 5dec15b7e7c3..5050176e8b80 100644
---- a/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
-+++ b/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
-@@ -28,13 +28,6 @@ properties:
-   clocks:
-     maxItems: 1
- 
--  clock-frequency:
--    description:
--      When there is no clock provider visible to the platform, this
--      is the source crystal or external clock frequency for the IC in Hz.
--    minimum: 1
--    maximum: 80000000
--
-   gpio-controller: true
- 
-   "#gpio-cells":
-@@ -74,18 +67,13 @@ required:
-   - compatible
-   - reg
-   - interrupts
-+  - clocks
- 
- allOf:
-   - $ref: /schemas/spi/spi-peripheral-props.yaml#
-   - $ref: /schemas/serial/serial.yaml#
-   - $ref: /schemas/serial/rs485.yaml#
- 
--oneOf:
--  - required:
--      - clocks
--  - required:
--      - clock-frequency
--
- unevaluatedProperties: false
- 
- examples:
 -- 
-2.39.2
+Jens Axboe
 
