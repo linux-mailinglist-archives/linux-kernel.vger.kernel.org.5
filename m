@@ -2,140 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0D87C7D80
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E92077C7D91
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbjJMGKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 02:10:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
+        id S229726AbjJMGOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 02:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbjJMGKG (ORCPT
+        with ESMTP id S229441AbjJMGOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 02:10:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C24C9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:09:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697177357;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TdKa29R/s7p3SCM8FO+OVeTHJOkKpc2DM547C4oMUjs=;
-        b=bd2nAkb7vh1it4hAyNOfDiq4g11Nvhgn1v/DQyE1xqs8o8RYetgVEwhY/JuUKi6LhBVufg
-        VTaDrxE4hf9VkLhmJGCVSkXYeEXutVZIS01tvdIuwBxBpc9/bs827pqH5r5mpk8fn5Ip0/
-        tcdR3vhOOGOrq8HAL2bv180OgMbfPVU=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-251-NzoDNIGjNQmRQnvuPysP0w-1; Fri, 13 Oct 2023 02:09:15 -0400
-X-MC-Unique: NzoDNIGjNQmRQnvuPysP0w-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-6557c921df1so16782886d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:09:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697177355; x=1697782155;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TdKa29R/s7p3SCM8FO+OVeTHJOkKpc2DM547C4oMUjs=;
-        b=oXNYEouIAalMEH6d5dJWPkpxaO/rDa/xXJflEwypHqfzBu+cmIbIa0eUv+AFhwRobq
-         AoZbJv4utcFo7hVTzbxonftJHqXNrefzDilygj7ytEoQKUj3FetBQ9i2XFeIEQnzsHkL
-         iiQrZwu4pHmD8SOusd7iR4SWBtNV2gbVXaMHT3nThBzLbztJ0+mpYSIDy0ewciH153on
-         BWai42RbR/ZBPOoctdvOsdmZ4VeqBKErq5qhZ5ukGErZ2TcWkhmG0XtaAV4fkJ7WDfXD
-         letjR8ybvOMxKP0JdyFdDvNh8/FsATNE6JUoEImiPSH9tmSR4kp9D41DEFwlpGIPqcPf
-         ON4A==
-X-Gm-Message-State: AOJu0Yzdgi09F/qayMpPMB73PBb9fYsfoicWAhNgEcELfMKBnu3n+IQQ
-        M/90xMYm+4IXEvh2NB/FVrG/VYCweVazxl55YMRVuVqcFShtiNwiPh0a8O1eiq4uiMjY6menXon
-        iUIfEtAUrjppUWZUGziCQPpCP
-X-Received: by 2002:a05:6214:2582:b0:66d:2140:1f88 with SMTP id fq2-20020a056214258200b0066d21401f88mr2318762qvb.5.1697177355447;
-        Thu, 12 Oct 2023 23:09:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGHnAnXBBGQtF8EmDjLlH7fKrVFzQ8FDgdZEmabajsIP1Nje6CRdy3z0hXW8LQAgNsSsrRi3w==
-X-Received: by 2002:a05:6214:2582:b0:66d:2140:1f88 with SMTP id fq2-20020a056214258200b0066d21401f88mr2318741qvb.5.1697177355096;
-        Thu, 12 Oct 2023 23:09:15 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.94.163])
-        by smtp.gmail.com with ESMTPSA id dm9-20020ad44e29000000b0066d15724ff7sm419693qvb.52.2023.10.12.23.09.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 23:09:14 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 08:09:09 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Qais Yousef <qyousef@layalina.io>, Hao Luo <haoluo@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Xia Fukun <xiafukun@huawei.com>
-Subject: Re: [PATCH] cgroup/cpuset: Change nr_deadline_tasks to an atomic_t
- value
-Message-ID: <ZSjfBWgZf15TchA5@localhost.localdomain>
-References: <20231009191515.3262292-1-longman@redhat.com>
- <ZSTiULEnD7SF9n7y@localhost.localdomain>
- <6b769316-6434-5054-43f5-7933fc2bee01@redhat.com>
- <31e06652-1dbd-e32f-3123-d17e178c5c27@redhat.com>
- <ZSZZfImXuCG4Xvaz@localhost.localdomain>
- <389a8abc-7f0f-7bcc-bc58-f70f045d00a5@redhat.com>
- <c421a8d5-b364-d3c6-df18-2a6766fc069b@redhat.com>
+        Fri, 13 Oct 2023 02:14:32 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 77F5395;
+        Thu, 12 Oct 2023 23:14:29 -0700 (PDT)
+Received: from chenguohua$jari.cn ( [182.148.14.172] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Fri, 13 Oct 2023 14:12:40
+ +0800 (GMT+08:00)
+X-Originating-IP: [182.148.14.172]
+Date:   Fri, 13 Oct 2023 14:12:40 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   chenguohua@jari.cn
+To:     chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com
+Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] nfsd: Clean up errors in export.h
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c421a8d5-b364-d3c6-df18-2a6766fc069b@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <75e4607f.958.18b27aa63f8.Coremail.chenguohua@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwBn+D3Y3yhlsNvBAA--.689W
+X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQADEWUnvzMAJgADs4
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_00,RCVD_IN_PBL,RDNS_NONE,
+        T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/23 12:35, Waiman Long wrote:
-> On 10/11/23 08:54, Waiman Long wrote:
-
-...
-
-> > We can argue that there can be racing between cgroup_exit() and the
-> > iteration of tasks in cpuset_attach() or cpuset_can_attach(). An
-> > rcu_read_lock() is probably needed. I am stilling investigating that.
-> 
-> Cgroup has a rather complex task migration and iteration scheme. According
-> to the following comments in include/linux/cgroup-defs.h:
-> 
->         /*
->          * Lists running through all tasks using this cgroup group.
->          * mg_tasks lists tasks which belong to this cset but are in the
->          * process of being migrated out or in.  Protected by
->          * css_set_lock, but, during migration, once tasks are moved to
->          * mg_tasks, it can be read safely while holding cgroup_mutex.
->          */
->         struct list_head tasks;
->         struct list_head mg_tasks;
->         struct list_head dying_tasks;
-> 
-> I haven't fully figured out how that protection works yet. Assuming that is
-> the case, task iteration in cpuset_attach() should be fine since
-> cgroup_mutex is indeed held when it is invoked. That protection, however,
-> does not applied to nr_deadline_tasks. It may be too costly to acquire
-> cpuset_mutex before updating nr_deadline_tasks in cgroup_exit(). So changing
-> it to an atomic_t should be the easy way out of the potential racing
-> problem.
-
-My biggest perplexity is/was still about dl_rebuild_rd_accounting() and
-cgroup_exit(); I wonder if the latter, operating outside cpuset_mutex
-guard, might still be racy wrt the former (even if we change to
-atomic_t).
-
-However, looking again at it, dl_rebuild_rd_accounting() operates on
-css(es) via css_task_iter_start(), which grabs css_set_lock. So maybe we
-are OK already also for this case?
-
-Apologies for being pedantic, but we fought already several times with
-races around these bits and now I'm probably over-suspicious. :)
-
-Thanks,
-Juri
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+ImZvbyAqCWJhciIgc2hvdWxkIGJlICJmb28gKmJhciIKClNpZ25lZC1vZmYtYnk6IEd1b0h1YSBD
+aGVuZyA8Y2hlbmd1b2h1YUBqYXJpLmNuPgotLS0KIGZzL25mc2QvZXhwb3J0LmggfCAxNCArKysr
+KysrLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwgNyBkZWxldGlvbnMo
+LSkKCmRpZmYgLS1naXQgYS9mcy9uZnNkL2V4cG9ydC5oIGIvZnMvbmZzZC9leHBvcnQuaAppbmRl
+eCAyZGY4YWUyNWFhZDMuLmQ0ZWQzMjRhYjEyMCAxMDA2NDQKLS0tIGEvZnMvbmZzZC9leHBvcnQu
+aAorKysgYi9mcy9uZnNkL2V4cG9ydC5oCkBAIC02MiwxMyArNjIsMTMgQEAgc3RydWN0IGV4cG9y
+dF9zdGF0cyB7CiAKIHN0cnVjdCBzdmNfZXhwb3J0IHsKIAlzdHJ1Y3QgY2FjaGVfaGVhZAloOwot
+CXN0cnVjdCBhdXRoX2RvbWFpbiAqCWV4X2NsaWVudDsKKwlzdHJ1Y3QgYXV0aF9kb21haW4gICAg
+ICpleF9jbGllbnQ7CiAJaW50CQkJZXhfZmxhZ3M7CiAJc3RydWN0IHBhdGgJCWV4X3BhdGg7CiAJ
+a3VpZF90CQkJZXhfYW5vbl91aWQ7CiAJa2dpZF90CQkJZXhfYW5vbl9naWQ7CiAJaW50CQkJZXhf
+ZnNpZDsKLQl1bnNpZ25lZCBjaGFyICoJCWV4X3V1aWQ7IC8qIDE2IGJ5dGUgZnNpZCAqLworCXVu
+c2lnbmVkIGNoYXIgICAgICAgICAgKmV4X3V1aWQ7IC8qIDE2IGJ5dGUgZnNpZCAqLwogCXN0cnVj
+dCBuZnNkNF9mc19sb2NhdGlvbnMgZXhfZnNsb2NzOwogCXVpbnQzMl90CQlleF9uZmxhdm9yczsK
+IAlzdHJ1Y3QgZXhwX2ZsYXZvcl9pbmZvCWV4X2ZsYXZvcnNbTUFYX1NFQ0lORk9fTElTVF07CkBA
+IC04Nyw3ICs4Nyw3IEBAIHN0cnVjdCBzdmNfZXhwb3J0IHsKIHN0cnVjdCBzdmNfZXhwa2V5IHsK
+IAlzdHJ1Y3QgY2FjaGVfaGVhZAloOwogCi0Jc3RydWN0IGF1dGhfZG9tYWluICoJZWtfY2xpZW50
+OworCXN0cnVjdCBhdXRoX2RvbWFpbiAgICAgKmVrX2NsaWVudDsKIAlpbnQJCQlla19mc2lkdHlw
+ZTsKIAl1MzIJCQlla19mc2lkWzZdOwogCkBAIC0xMDgsMTEgKzEwOCwxMSBAQCBfX2JlMzIgY2hl
+Y2tfbmZzZF9hY2Nlc3Moc3RydWN0IHN2Y19leHBvcnQgKmV4cCwgc3RydWN0IHN2Y19ycXN0ICpy
+cXN0cCk7CiBpbnQJCQluZnNkX2V4cG9ydF9pbml0KHN0cnVjdCBuZXQgKik7CiB2b2lkCQkJbmZz
+ZF9leHBvcnRfc2h1dGRvd24oc3RydWN0IG5ldCAqKTsKIHZvaWQJCQluZnNkX2V4cG9ydF9mbHVz
+aChzdHJ1Y3QgbmV0ICopOwotc3RydWN0IHN2Y19leHBvcnQgKglycXN0X2V4cF9nZXRfYnlfbmFt
+ZShzdHJ1Y3Qgc3ZjX3Jxc3QgKiwKK3N0cnVjdCBzdmNfZXhwb3J0ICAgICAgKnJxc3RfZXhwX2dl
+dF9ieV9uYW1lKHN0cnVjdCBzdmNfcnFzdCAqLAogCQkJCQkgICAgIHN0cnVjdCBwYXRoICopOwot
+c3RydWN0IHN2Y19leHBvcnQgKglycXN0X2V4cF9wYXJlbnQoc3RydWN0IHN2Y19ycXN0ICosCitz
+dHJ1Y3Qgc3ZjX2V4cG9ydCAgICAgICpycXN0X2V4cF9wYXJlbnQoc3RydWN0IHN2Y19ycXN0ICos
+CiAJCQkJCXN0cnVjdCBwYXRoICopOwotc3RydWN0IHN2Y19leHBvcnQgKglycXN0X2ZpbmRfZnNp
+ZHplcm9fZXhwb3J0KHN0cnVjdCBzdmNfcnFzdCAqKTsKK3N0cnVjdCBzdmNfZXhwb3J0ICAgICAg
+KnJxc3RfZmluZF9mc2lkemVyb19leHBvcnQoc3RydWN0IHN2Y19ycXN0ICopOwogaW50CQkJZXhw
+X3Jvb3RmaChzdHJ1Y3QgbmV0ICosIHN0cnVjdCBhdXRoX2RvbWFpbiAqLAogCQkJCQljaGFyICpw
+YXRoLCBzdHJ1Y3Qga25mc2RfZmggKiwgaW50IG1heHNpemUpOwogX19iZTMyCQkJZXhwX3BzZXVk
+b3Jvb3Qoc3RydWN0IHN2Y19ycXN0ICosIHN0cnVjdCBzdmNfZmggKik7CkBAIC0xMjcsNiArMTI3
+LDYgQEAgc3RhdGljIGlubGluZSBzdHJ1Y3Qgc3ZjX2V4cG9ydCAqZXhwX2dldChzdHJ1Y3Qgc3Zj
+X2V4cG9ydCAqZXhwKQogCWNhY2hlX2dldCgmZXhwLT5oKTsKIAlyZXR1cm4gZXhwOwogfQotc3Ry
+dWN0IHN2Y19leHBvcnQgKiBycXN0X2V4cF9maW5kKHN0cnVjdCBzdmNfcnFzdCAqLCBpbnQsIHUz
+MiAqKTsKK3N0cnVjdCBzdmNfZXhwb3J0ICpycXN0X2V4cF9maW5kKHN0cnVjdCBzdmNfcnFzdCAq
+LCBpbnQsIHUzMiAqKTsKIAogI2VuZGlmIC8qIE5GU0RfRVhQT1JUX0ggKi8KLS0gCjIuMTcuMQo=
 
