@@ -2,639 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF917C8071
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C0A7C8069
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbjJMIgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57022 "EHLO
+        id S230122AbjJMIfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbjJMIgb (ORCPT
+        with ESMTP id S230073AbjJMIf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:36:31 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8DB53A9;
-        Fri, 13 Oct 2023 01:36:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=r86dB
-        yXANDOJwFZxFZCrfeab7vcM6Wm6pQDuzSLDzC8=; b=mpPKktqPvVWtv7yYyhGwV
-        1aKu7xvOLzzbIseDfybBU2kh37befQ/DIiIO6NSaEi4EuESjCies50jo/AkUBGr+
-        3o5wrS5dDNx4JXDCg+P6C90PgOLzBUAZJ/1zHDm/ucKKYlovEqftw2e/DvyK/rLb
-        SYZbST9cgrwVy0AvnFx8Es=
-Received: from test-Z390-GAMING-X.bayhubtech.com (unknown [58.48.115.170])
-        by zwqz-smtp-mta-g4-4 (Coremail) with SMTP id _____wBnT+41ASllgCy9AQ--.13444S2;
-        Fri, 13 Oct 2023 16:35:02 +0800 (CST)
-From:   liuchang_125125@163.com
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     mark.tao@bayhubtech.com, shaper.liu@bayhubtech.com,
-        thomas.hu@bayhubtech.com, chevron.li@bayhubtech.com,
-        charl.liu@bayhubtech.com, Charl Liu <liuchang_125125@163.com>
-Subject: [PATCH 9/9] scsi: bht: util: Add the source files related to utility
-Date:   Fri, 13 Oct 2023 16:34:59 +0800
-Message-Id: <20231013083459.10381-1-liuchang_125125@163.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 13 Oct 2023 04:35:27 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2080.outbound.protection.outlook.com [40.107.8.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D99EBF;
+        Fri, 13 Oct 2023 01:35:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YB5WyyHXk8ozcWdZcq1es442EI5yiw/hn1BMErWlKebfzVpAP+2k9xw7r8GW/OIfrSwzCL61eeQNpZEW4bu/KYzAhJpmZHJV2cgD0Lp9H7fSvfgzD7CNewsJCNzTarkV2UTAA7LelPfh/hbtoyF7B63SWUiYLHwDBDLfUrFiW5Dzfc+uslh5I0c0rgfKrGuV8uKrcbOKf5Q6baVBb3EhPARKh5cHv8BwCbXIFIsxqkYgBkYn6YGYy5Yuw9SqwL0y9P/iS8/ZdIoQxjoeDkmNKe8Ix54Fl7+GLsT2n026y32Nx3O2ialO1XnBQgwb34OiNc60MQJ8ASH8/QC+7j3xng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AuUP94naGobgFn9SQF063tw7la/NGO5cR7AdtE9flYs=;
+ b=OebQl5dKm5Y+88W0IbHlBaJ8gux7O9tFdX8Ip8w0XEaavZPR+2sjaPi0HH03x5iZzDm7L2bSUXlVdk2HhIGW9jIoNDSoiGNtAG+0vnjFi75fvWTa+90I/HXaJQtKAQagbyYibiRoLWnR2+2AwKcwOF4jnbsEaeFlyPwhdpko99vEDVAU103x/WW5IoMECWeRWKy8UBrtLLx1JWFPwqhbJQy7UVcWnFX6YagPL7lzm4c8eOdiHBEQV3kG9lpN7+8LJeVFC1ueT/pMuL0Z0kP3B9GpFMkV35G/dlsZ78SGIN1Rz890dmqK5cyF3z+LHSAN5mYmPNu+rImqz7VVAGKdhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AuUP94naGobgFn9SQF063tw7la/NGO5cR7AdtE9flYs=;
+ b=Cflkhsf7IaWA8KjMRZ2FE7bJyFhAlRhd3Wv1bnXKyGpVkC4+YTWtNO6KAga6GLHWw5/iE2Aa3UKIWmwnjj/9FxKTR6ThVk5IhVrWVOHLfu6hSiX/v89b5XvY2AuqOy4OotcIJnXe8/UF1Y/NlQSuyxAN+4Pfyx+VZ1FuaZEo4h8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DU2PR04MB8774.eurprd04.prod.outlook.com (2603:10a6:10:2e1::21)
+ by DU0PR04MB9496.eurprd04.prod.outlook.com (2603:10a6:10:32d::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.46; Fri, 13 Oct
+ 2023 08:35:21 +0000
+Received: from DU2PR04MB8774.eurprd04.prod.outlook.com
+ ([fe80::ad2:49f8:14b:25c7]) by DU2PR04MB8774.eurprd04.prod.outlook.com
+ ([fe80::ad2:49f8:14b:25c7%7]) with mapi id 15.20.6863.046; Fri, 13 Oct 2023
+ 08:35:21 +0000
+Message-ID: <80a6a56b-4a12-99bb-acb3-94a5753b2de4@nxp.com>
+Date:   Fri, 13 Oct 2023 11:35:17 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 2/2] arm64: dts: imx8mp: add reserve-memory nodes for
+ DSP
+To:     Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "S.J. Wang" <shengjiu.wang@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Mpuaudiosw <Mpuaudiosw@nxp.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-imx <linux-imx@nxp.com>, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        LnxRevLi <LnxRevLi@nxp.com>,
+        "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
+References: <20231010090929.4371-1-iuliana.prodan@oss.nxp.com>
+ <20231010090929.4371-3-iuliana.prodan@oss.nxp.com>
+ <2301291.ElGaqSPkdT@steina-w>
+Content-Language: en-US
+From:   Iuliana Prodan <iuliana.prodan@nxp.com>
+In-Reply-To: <2301291.ElGaqSPkdT@steina-w>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR02CA0202.eurprd02.prod.outlook.com
+ (2603:10a6:20b:28f::9) To DU2PR04MB8774.eurprd04.prod.outlook.com
+ (2603:10a6:10:2e1::21)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wBnT+41ASllgCy9AQ--.13444S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Cr4xZFy8Jr1rJFWxAw47Arb_yoWkAFy5pa
-        1aga45AanrXws3Cw4xAw18tF45C397AF9IgrZxurWavwnxXrWvq3Z2kFyjyFyxJw17ur1U
-        tFn5KFy2kr4Dtw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRnXo3UUUUU=
-X-Originating-IP: [58.48.115.170]
-X-CM-SenderInfo: polxux5dqjsiqsvrjki6rwjhhfrp/xtbBnxcIWVetlJKwaAAAs9
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU2PR04MB8774:EE_|DU0PR04MB9496:EE_
+X-MS-Office365-Filtering-Correlation-Id: cc7fc941-82c6-498c-ea75-08dbcbc7566e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AmCt9/Rr/tossMS5Xo1yPjcW2y5Cs4H8CAw1NE0PBN83Zrf8LgJGdFdqRmZdjYbH9cT6KF6xjaOkdTeM77sL+Ys0XlBqf1XSclbRwLCyuoVKR0keSxnl2CFCT21pxSqWanXnCJK6BYIrQxz8D0Fz4RFq4xFEJUpOpPB2rUpbJmo+tR5fGONBejKEh+j4D0s45x+QYIzCa9tbg2rlnx60S+5kdmth+1tIO8XTZJ/GCYLjUAU3y23QisCvWS34581eJv3ybM2Cked7aFjFA6fVTrjH5ckiIXHSBmdjvVxiZRnJpJEv58KSnwV50Si4CS9PfDEF169Xjt2T2Ym6Ee492/MUsvKa+AA9Y1QpreSz5UQoXgNaUrwJ0w3IX0G5a1MS1XlHjan6/JAgFMprVq91Eo7V1jAv7ZzdV0Ph3O4QVN6LCXiHk2gcucLBh0S7YfH7+H+o5QpiHvl5ihL9B+JuS0yKhVnPjtJ46a7jsdyFkftdQz6utVNnFgrkGl58HkT3UFLyV03sapxta0WUrQmY43ES1Y0ZgJaWYK34SXI8/J2/rjdc/HS/yehmkiTU+shlWQK0RCyfCSOS31CtYyYZ4G6SF/rWymUJ0VKdunEtlq1YImE42xNdyYV5ZjWNngAGnDw0nCz/a6tgqye2CoPcMVdQJ9lqEHXgMd6LrNWgyT4jGIxhVOokcGy4OSiR2L6l
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8774.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(366004)(39860400002)(136003)(396003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(7416002)(6506007)(2906002)(31696002)(6666004)(478600001)(6486002)(8676002)(4326008)(8936002)(41300700001)(44832011)(110136005)(5660300002)(66946007)(54906003)(66556008)(316002)(66476007)(38100700002)(36756003)(26005)(31686004)(86362001)(6512007)(2616005)(53546011)(921005)(32563001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OTk4aXBIeWdFVnluU0JFSGdPQW5wNWk3aHVDOWZ2SVF4eEhNbmhtbnlRQko4?=
+ =?utf-8?B?ZTVBZTNrMkllbjNMV3BKYzAyNGtWY1JxaEczMUw0QjJMNjcwaHdVUzdHcG0r?=
+ =?utf-8?B?ekFDbG90R2h1eGZSbnIyekNRb01MSnhScFNmN2ljRnNOQ0ZRZlQvRTlVWHBj?=
+ =?utf-8?B?QldPeXhNcTlBbnltL2k4OU0rcUlzckUwY2V2YmpER080M1FFQzFjZU1kUnFB?=
+ =?utf-8?B?VndWZDhiTWlNb3J2SFVBRVRPVVo5RlFXNWhqTUFFbG9FOVhvQ3FtWncvMFl5?=
+ =?utf-8?B?OUpDMnFvREtwaU5zdXRXNDQvM0xINk8wSEtCQmUvc3Z2bWVjMjRoRFBwUEND?=
+ =?utf-8?B?UGpIVU1WYk9Cdmo0Wjd6ZXdGNkpsR0hvUW9DTlJyaHIxNGg5WDR5K05XazdX?=
+ =?utf-8?B?M3JhZXcrSlBlM1JTUFoxN2ZUaVRJbVBadjlPczZFMkRFVU14RStwWWJJTitH?=
+ =?utf-8?B?eXEzUm0yQmNJb2MyVmxwbis2VzhDNTVSMEx4U1RqaURiSWFzbEFkdWd4QmJJ?=
+ =?utf-8?B?aEs4bnJaaWN4V0lBaHFQdFhTa0ExejVYLzVFalNWMEF4Y3VleUUvWkRBWlhv?=
+ =?utf-8?B?NDJYOVVYMWZIeGtOUTVWK0tpU2MxMitmbG81VTN4VEJSclNGQmE2SVBXektQ?=
+ =?utf-8?B?U0NqblhmUVBvc0FrT0NWSWhhRzQvdU1mT3FHK1ZjUnROcU5mdncrU2oxTXlz?=
+ =?utf-8?B?NWxKZGJpRmx3d1k3ZWIzQi9BTWh1NytwVXRZNnRCRXk0ZXUwb21PUkVVWkZ3?=
+ =?utf-8?B?bHMyOXJxdnV1b2M3Q2pDY0VtRjhzeXJTbmg3TkNRZ1VkSk5OODhzSXdNT3dl?=
+ =?utf-8?B?dElZTXcySW9la0t5azZrMFlkZFJuWEtnRk5hS1ZVMjZCZ1V0N0tiUUk1bmhW?=
+ =?utf-8?B?ZHgzRTFaRlpPUUVaQ280MjVvUWQ5UlcyREZQVE4rSHFNVVI3YUF5NXF2bWZV?=
+ =?utf-8?B?bXpRK2FYMTJiS2JBZmNWTEtCeGNFOEg2RFk3TVBlOXJ3L1BsMTZycVQwWThC?=
+ =?utf-8?B?UnFFT0RoK0ZRSE0zdCsxRDIyK09ySGpxN0RPb0xLeGVJTGdOMHhmdzFlUGdu?=
+ =?utf-8?B?RGkwTUN2UnlyemI4SDJ1d21wYTJSNzNNVGl3MXlhc3lKUkpocFdxTUIxZjkv?=
+ =?utf-8?B?TXc0QVIyeDdXdUF0RGhUUThnUTE3Uk9UZEdjUHVWTnVFdm9qTWZ3dHpkYXUy?=
+ =?utf-8?B?Q3NwZDZMcS9KeEt1ZVJrT05BSDVVaXRYMFB1OG9MMmtJcTVtNzdxL2xQNVlk?=
+ =?utf-8?B?bFFlMU8rWDJBN3ZFM3JoR01mK1JaWkhTNDU4OGVoSk56eGQrUFJNUGJxVnFm?=
+ =?utf-8?B?M3FKaDJXMWlqN2RHcnpUWDV6TmFzcmVTTEw1SW80emtrQVJvclo3VHgycUFn?=
+ =?utf-8?B?aEl4UFlHMzRsS2JhcVgwMlI2VDBldEtpNDZaazdRQTlvM0xlVHgrZW5ySjZh?=
+ =?utf-8?B?clcvUWdpWWJueWV1cUxoMWdyWnM0Mk16ZGQ0Qm94dmNsN2ovb2xzVkRuRWlw?=
+ =?utf-8?B?Vm5Ea3lWM0lIYjN1THFOSnRoWFBKeFFyYXc5OERsSVlRd2VUOWRqWHRSams5?=
+ =?utf-8?B?eFI4dGxOSlNDZHowa0wwQTR0WWMyc2lvLy9sZmRRcmhuSnhhZWVBdkVrVDJv?=
+ =?utf-8?B?NHQzWWtKUDZCbVIxRXFkdDg0Tms5c2hhcmZ5MDVZc0ZNS3dSOW9LdVRXZ2RL?=
+ =?utf-8?B?ekE2ZEd3OTcxclFhLzF5YkZaNktHc25BN3FCUU9YcVd5b1k4Wmw0ZWQ3N2xw?=
+ =?utf-8?B?a3ZkQ3hIQ05qakJaMnhQdFdVdFdKbWswZlZ6QW0rWDBFcXRMOXlZMStSZ29v?=
+ =?utf-8?B?c2xOK0NXOFhoVzc3alA0RXdZb015RnFabi9kanV5L3VTb3pJZ0RyRjRBTllr?=
+ =?utf-8?B?TW9SdzBPUkpUNFRJS3p5S3lCbjZmSWg2YUJxdEdDN25RemgrY1k4VmJTcCtM?=
+ =?utf-8?B?cGd0a2tjMk92UTlLNkRVR05GUDBTcGJtY2NQY2U2dzExY21FTW1vZWpDZTIv?=
+ =?utf-8?B?MXZxM3ZmMGhBSFc5VUEwNTUrYU5yQ2tYTFdaZFRKbmZLazJNZWRrSTFnUC9o?=
+ =?utf-8?B?Zm9ITXVLdDZRYnovYWdTd1NMTEUrRi93WUQyQVBsaGJZTFQzT01HTWd3OUhJ?=
+ =?utf-8?Q?p/F2njr6FGVcgp8ZcRxVDivoi?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cc7fc941-82c6-498c-ea75-08dbcbc7566e
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8774.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 08:35:21.4729
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uNzCT8cgQiARErIrwnVbaMqtPRW9ptGJyb/TJdmKswpEyAl2MNzq6foWR9nLHNfW31IHGhMMJ+UpzALVkm2Xzw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9496
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charl Liu <liuchang_125125@163.com>
+Hi Alexander,
 
-1.debug: define related functions for debugging
-2.util: define utility functions
+On 10/11/2023 8:37 AM, Alexander Stein wrote:
+> Hi Iuliana,
+>
+> Am Dienstag, 10. Oktober 2023, 11:09:29 CEST schrieb Iuliana Prodan (OSS):
+>> From: Iuliana Prodan <iuliana.prodan@nxp.com>
+>>
+>> Add the reserve-memory nodes used by DSP when the rpmsg
+>> feature is enabled.
+>>
+>> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+>> ---
+>>   arch/arm64/boot/dts/freescale/imx8mp.dtsi | 16 ++++++++++++++++
+>>   1 file changed, 16 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+>> b/arch/arm64/boot/dts/freescale/imx8mp.dtsi index
+>> cc406bb338fe..22815b3ea890 100644
+>> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+>> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+>> @@ -211,6 +211,22 @@
+>>   			reg = <0 0x92400000 0 0x2000000>;
+>>   			no-map;
+>>   		};
+>> +
+>> +		dsp_vdev0vring0: vdev0vring0@942f0000 {
+>> +			reg = <0 0x942f0000 0 0x8000>;
+>> +			no-map;
+>> +		};
+>> +
+>> +		dsp_vdev0vring1: vdev0vring1@942f8000 {
+>> +			reg = <0 0x942f8000 0 0x8000>;
+>> +			no-map;
+>> +		};
+>> +
+>> +		dsp_vdev0buffer: vdev0buffer@94300000 {
+>> +			compatible = "shared-dma-pool";
+>> +			reg = <0 0x94300000 0 0x100000>;
+>> +			no-map;
+>> +		};
+> Please configure these reserved memories on board level. Not every i.MX8MP
+> based board uses this DSP or has these memory addresses available.
 
-Signed-off-by: Charl Liu <liuchang_125125@163.com>
----
-Change in V1:
-Add the source files related to utility.
----
- drivers/scsi/bht/util/debug.c | 413 ++++++++++++++++++++++++++++++++++
- drivers/scsi/bht/util/util.c  | 141 ++++++++++++
- 2 files changed, 554 insertions(+)
- create mode 100644 drivers/scsi/bht/util/debug.c
- create mode 100644 drivers/scsi/bht/util/util.c
+Will it be ok in imx8mp-evk.dts?
 
-diff --git a/drivers/scsi/bht/util/debug.c b/drivers/scsi/bht/util/debug.c
-new file mode 100644
-index 000000000000..16e87908724f
---- /dev/null
-+++ b/drivers/scsi/bht/util/debug.c
-@@ -0,0 +1,413 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2014 BHT Inc.
-+ *
-+ * File Name: debug.c
-+ *
-+ * Abstract: define related functions for debugging
-+ *
-+ * Version: 1.00
-+ *
-+ * Author: Peter.Guo
-+ *
-+ * Environment:	OS Independent
-+ *
-+ * History:
-+ *
-+ * 8/25/2014		Creation	Peter.Guo
-+ */
-+
-+#define _NO_CRT_STDIO_INLINE
-+#include "../include/basic.h"
-+#include "../include/debug.h"
-+#include "../include/util.h"
-+
-+#define DBG_CHR_IN_LINE	124
-+#define DBG_PREFIX	"BHT-"
-+
-+u32 g_dbg_module = DBG_MODULE_CONTROL;
-+u32 g_dbg_feature = DBG_FEATURE_CONTROL;
-+u32 g_dbg_ctrl = DBG_CTRL_CONTROL;
-+
-+#if DBG || _DEBUG
-+static char dbg_module[][14] = {
-+	"BHT-SDHOST : ",
-+	"BHT-VENHOST: ",
-+	"BHT-TRANS  : ",
-+	"BHT-CARD   : ",
-+	"BHT-CARD   : ",
-+	"BHT-CARD   : ",
-+	"BHT-CARD   : ",
-+	"BHT-TQFLOW : ",
-+	"BHT-TQPLC  : ",
-+	"BHT-TQDMA  : ",
-+	"BHT-THR    : ",
-+	"BHT-REQMNG : ",
-+	"BHT-MAINPM : ",
-+	"BHT-GENIO  : ",
-+	"BHT-TIMER  : ",
-+	"BHT-THERMAL: ",
-+	"BHT-CFG    : ",
-+	"BHT-OTHER  : ",
-+	"BHT-OSETAPI: ",
-+	"BHT-OSENTRY: ",
-+	"BHT-OSAPI  : ",
-+	"BHT-UNKNOW : "
-+};
-+#endif
-+
-+typedef struct {
-+	u32 index;
-+	byte Data[DBG_CHR_IN_LINE];
-+} tO2DbgLineInfo;
-+
-+#define O2DBG_MAX_COUNT 0x4000
-+#define O2DBG_MAX_RAM_SIZE (O2DBG_MAX_COUNT * sizeof(tO2DbgLineInfo))
-+
-+/* Global Debug Virtual Buffer for RAM Debug */
-+tO2DbgLineInfo *pO2DbgInfo;
-+/* Global Ram Buffer item count */
-+atomic_t gO2DbgInfoCnt;
-+
-+void x_assert(char *str, unsigned int uline)
-+{
-+	DbgErr("Assert failed %s line:%u\n", str, uline);
-+}
-+
-+/*
-+ * Function Name: DbgRamInit
-+ * Abstract: This Function is called by driver init entry to allocate Global Memory for Debug
-+ *
-+ * Input:
-+ * Output:
-+ *
-+ * Return value: void
-+ * Notes:
-+ *
-+ */
-+
-+void DbgRamInit(void)
-+{
-+	os_atomic_set(&gO2DbgInfoCnt, 0);
-+	pO2DbgInfo = (tO2DbgLineInfo *) os_alloc_vbuff(O2DBG_MAX_RAM_SIZE);
-+	if (pO2DbgInfo != NULL)
-+		os_memset(pO2DbgInfo, 0, O2DBG_MAX_RAM_SIZE);
-+}
-+
-+void DbgRamInitNon(void)
-+{
-+	os_atomic_set(&gO2DbgInfoCnt, 0);
-+	pO2DbgInfo = NULL;
-+}
-+
-+/*
-+ * Function Name: DbgRamInit
-+ * Abstract: This Function is called by driver remove entry to free Global Memory for Debug
-+ *
-+ * Input:
-+ * Output:
-+ *
-+ * Return value: void
-+ * Notes:
-+ *
-+ */
-+void DbgRamFree(void)
-+{
-+	os_atomic_set(&gO2DbgInfoCnt, 0);
-+	if (pO2DbgInfo != NULL)
-+		os_free_vbuff(pO2DbgInfo);
-+	pO2DbgInfo = NULL;
-+
-+}
-+
-+/*
-+ * Function Name: DbgRamAdd
-+ * Abstract: This Function is used to Add a Debug log to Debug Ram buffer
-+ *
-+ * Input: byte *dbgbuf: The Debug log want to add to ram buffer
-+ * Output:
-+ *
-+ * Return value: void
-+ * Notes:
-+ *
-+ */
-+static void DbgRamAdd(byte *dbgbuf)
-+{
-+	u32 i;
-+	int cnt = 0;
-+	int index = 0;
-+	u32 len = (u32) strlen(dbgbuf);
-+
-+	if (pO2DbgInfo == NULL)
-+		return;
-+	cnt = (int)os_atomic_read(&gO2DbgInfoCnt);
-+	os_atomic_add(&gO2DbgInfoCnt, 1);
-+	index = cnt % O2DBG_MAX_COUNT;
-+
-+	pO2DbgInfo[index].index = cnt;
-+	for (i = 0; i < DBG_CHR_IN_LINE; i++) {
-+		if (i < len)
-+			pO2DbgInfo[index].Data[i] = dbgbuf[i];
-+		else
-+			pO2DbgInfo[index].Data[i] = '\0';
-+	}
-+}
-+
-+/*
-+ * Function Name: DbgErr
-+ * Abstract: This Function is used to print errlog and add log to Ram buffer
-+ *
-+ * Input: byte *info: The err log
-+ * Output:
-+ *
-+ * Return value: void
-+ * Notes:
-+ *
-+ */
-+
-+void PrintMsg(byte *info, ...)
-+{
-+#define DBG_PREFIX_MSG      "BHT-MSG    : "
-+
-+	byte dbgbuf[512];
-+	va_list ap;
-+
-+	va_start(ap, info);
-+
-+	{
-+		byte *buffer;
-+
-+		buffer = dbgbuf;
-+		os_memcpy(buffer, DBG_PREFIX_MSG, 13);
-+		buffer += 13;
-+
-+		vsnprintf(buffer, sizeof(dbgbuf) - 13, info, ap);
-+	}
-+
-+	va_end(ap);
-+	os_print(dbgbuf);
-+}
-+
-+/*
-+ * Function Name: DbgErr
-+ * Abstract: This Function is used to print errlog and add log to Ram buffer
-+ *
-+ * Input: byte *info: The err log
-+ * Output:
-+ *
-+ * Return value: void
-+ * Notes:
-+ *
-+ */
-+
-+void DbgErr(byte *info, ...)
-+{
-+#define DBG_PREFIX_ERR      "BHT-ERROR  : "
-+
-+	byte dbgbuf[512];
-+	va_list ap;
-+
-+	va_start(ap, info);
-+
-+	{
-+		byte *buffer;
-+
-+		buffer = dbgbuf;
-+		os_memcpy(buffer, DBG_PREFIX_ERR, 13);
-+		buffer += 13;
-+
-+		vsnprintf(buffer, sizeof(dbgbuf) - 13, info, ap);
-+	}
-+
-+	va_end(ap);
-+	DbgRamAdd(dbgbuf);
-+	os_print(dbgbuf);
-+}
-+
-+#if DBG || _DEBUG
-+/*
-+ * Function Name: DbgWarn
-+ * Abstract: This Function is used to print warn log and add log to Ram buffer
-+ *
-+ * Input: u32 module; The module id which to print warn log
-+ *        byte ram:   whether add the log to ram or not
-+ *        byte *info: the string for log
-+ * Output:
-+ *
-+ * Return value: void
-+ * Notes:
-+ *
-+ */
-+
-+void DbgWarn(u32 module, byte ram, byte *info, ...)
-+{
-+#define DBG_PREFIX_WARN  "BHT-WARNING: "
-+
-+	byte dbgbuf[512];
-+	va_list ap;
-+
-+	va_start(ap, info);
-+	if (module & g_dbg_module) {
-+		byte *buffer;
-+
-+		buffer = dbgbuf;
-+		os_memcpy(buffer, DBG_PREFIX_WARN, 13);
-+		buffer += 13;
-+
-+		vsnprintf(buffer, sizeof(dbgbuf) - 13, info, ap);
-+	}
-+
-+	va_end(ap);
-+	if (module & g_dbg_module) {
-+		os_print(dbgbuf);
-+		if (ram)
-+			DbgRamAdd(dbgbuf);
-+	}
-+}
-+
-+/*
-+ * Function Name: DbgWarn
-+ * Abstract: This Function is used to print info log and add log to Ram buffer
-+ *
-+ * Input: u32 module; The module id which to print info log
-+ *        u32 feature: The feature the info is
-+ *        byte ram:   whether add the log to ram or not
-+ *        byte *info: the string for log
-+ * Output:
-+ *
-+ * Return value: void
-+ * Notes:
-+ *
-+ */
-+void DbgInfo(u32 module, u32 feature, byte ram, byte *info, ...)
-+{
-+	byte dbgbuf[512];
-+	va_list ap;
-+
-+	va_start(ap, info);
-+	if ((module & g_dbg_module) && (g_dbg_feature & feature)) {
-+		byte *buffer;
-+		u32 idx = fls32(module);
-+
-+		if (idx > 20)
-+			idx = 21;
-+		buffer = dbgbuf;
-+		os_memcpy(buffer, dbg_module[idx], 13);
-+		buffer += 13;
-+
-+		vsnprintf(buffer, sizeof(dbgbuf) - 13, info, ap);
-+	}
-+
-+	va_end(ap);
-+	if ((module & g_dbg_module) && (g_dbg_feature & feature)) {
-+		os_print(dbgbuf);
-+		if (ram)
-+			DbgRamAdd(dbgbuf);
-+	}
-+}
-+
-+#ifdef DBG_PERFORMANCE
-+static u64 cputick2_100ns(u64 period, u64 freq)
-+{
-+
-+	u64 timeIn100ns = 0;
-+
-+	if (freq > 0) {
-+		/* difference between performance counters, needs to convert to 100ns. */
-+		u64 countersDiff = period;
-+
-+		/* get seconds */
-+		timeIn100ns = countersDiff / freq;
-+
-+		/* get milliseconds */
-+		countersDiff = (countersDiff % freq) * 1000;
-+		timeIn100ns *= 1000;
-+		timeIn100ns += countersDiff / freq;
-+
-+		/* get 100 nanoseconds */
-+		countersDiff = (countersDiff % freq) * 10000;
-+		timeIn100ns *= 10000;
-+		timeIn100ns += countersDiff / freq;
-+	}
-+
-+	return timeIn100ns;
-+
-+}
-+
-+void calc_req_start(tPerTick *tick, u32 sec_cnt, bool bWrite)
-+{
-+	u64 period = 0;
-+	u64 cpu;
-+
-+	period = os_get_performance_tick(&cpu);
-+	if (tick->tick_io_end == 0) {
-+		os_memset(tick, 0, sizeof(tPerTick));
-+		/* not calculate */
-+		goto next;
-+	}
-+
-+	/* not continue and not 1MB print */
-+	if ((bWrite != tick->last_dir || sec_cnt != 0x800)
-+	    && (tick->io_cnt != 0)) {
-+		DbgErr("Avg Write=%d iocnt=%d T1=%d T2=%d T3=%d\n",
-+		       tick->last_dir, tick->io_cnt,
-+		       cputick2_100ns(tick->avg_start_2_thr,
-+				      cpu) / tick->io_cnt,
-+		       cputick2_100ns(tick->avg_thr_2_iodone,
-+				      cpu) / tick->io_cnt,
-+		       (tick->io_cnt >
-+			1) ? cputick2_100ns(tick->avg_iodone_2_next,
-+					    cpu) / (tick->io_cnt - 1) : 0);
-+		os_memset(tick, 0, sizeof(tPerTick));
-+	}
-+
-+next:
-+	if (sec_cnt == 0x800) {
-+		tick->last_dir = bWrite;
-+		tick->start_io_tick = tick->tick_start = period;
-+		tick->io_cnt++;
-+		if (tick->tick_io_end) {
-+			period = (tick->tick_start - tick->tick_io_end);
-+			tick->avg_iodone_2_next += period;
-+		}
-+	} else {
-+		/* We conly calculate 1MB case */
-+		os_memset(tick, 0, sizeof(tPerTick));
-+		tick->start_io_tick = period;
-+	}
-+
-+}
-+
-+void calc_io_end(tPerTick *tick)
-+{
-+	u64 period = 0;
-+	u64 cpu_freq = 0;
-+
-+	period = os_get_performance_tick(&cpu_freq);
-+	tick->io_duration =
-+	    cputick2_100ns(period - tick->start_io_tick, cpu_freq);
-+	if (tick->tick_thr_start == 0)
-+		return;
-+
-+	tick->tick_io_end = period;
-+	{
-+		period = tick->tick_io_end - tick->tick_thr_start;
-+		tick->avg_thr_2_iodone += period;
-+	}
-+}
-+
-+void calc_thr_start(tPerTick *tick)
-+{
-+	u64 period = 0;
-+
-+	if (tick->tick_start == 0)
-+		return;
-+
-+	tick->tick_thr_start = os_get_performance_tick(NULL);
-+	{
-+		period = tick->tick_thr_start - tick->tick_start;
-+		tick->avg_start_2_thr += period;
-+	}
-+}
-+#endif
-+#endif
-diff --git a/drivers/scsi/bht/util/util.c b/drivers/scsi/bht/util/util.c
-new file mode 100644
-index 000000000000..b7afd9bee9a0
---- /dev/null
-+++ b/drivers/scsi/bht/util/util.c
-@@ -0,0 +1,141 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2014 BHT Inc.
-+ *
-+ * File Name: util.c
-+ *
-+ * Abstract: This Include file used to implement platform independent APIs
-+ *
-+ * Version: 1.00
-+ *
-+ * Author: Peter.Guo
-+ *
-+ * Environment:	OS Independent
-+ *
-+ * History:
-+ *
-+ * 8/25/2014		Creation	Peter.Guo
-+ */
-+
-+#include "../include/basic.h"
-+#include "../include/debug.h"
-+
-+/*
-+ *
-+ * Function Name: swapu32
-+ *
-+ * Abstract:
-+ *
-+ *			swap the u32 type byte order
-+ *
-+ * Input:
-+ *
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			none
-+ *
-+ * Notes:
-+ */
-+u32 swapu32(u32 value)
-+{
-+	u32 ret = ((value & 0xFF000000) >> 24) | ((value & 0x00FF0000) >> 8) |
-+	    ((value & 0x0000FF00) << 8) | ((value & 0x000000FF) << 24);
-+	return ret;
-+}
-+
-+static void *va_offset_va(void *va, u32 offset)
-+{
-+	va = (byte *) va + offset;
-+	return va;
-+}
-+
-+void pa_offset_pa(phy_addr_t *pa, u32 offset)
-+{
-+	u32 pal = 0, pah = 0;
-+	u64 pa64 = 0;
-+
-+	pal = os_get_phy_addr32l(*pa);
-+	pah = os_get_phy_addr32h(*pa);
-+	pa64 = pah;
-+	pa64 <<= 32;
-+	pa64 += pal;
-+	pa64 += offset;
-+	os_set_phy_add64(pa, pa64);
-+}
-+
-+bool resize_dma_buf(dma_desc_buf_t *p, u32 sz)
-+{
-+	if (sz > p->len) {
-+		DbgErr("try to put over size to buf\n");
-+		return FALSE;
-+	}
-+	p->va = va_offset_va(p->va, sz);
-+	pa_offset_pa(&p->pa, sz);
-+	p->len = p->len - sz;
-+	return TRUE;
-+}
-+
-+void dump_dma_buf(char *str, const dma_desc_buf_t *pdma)
-+{
-+}
-+
-+u32 fls32(u32 x)
-+{
-+	s32 i;
-+
-+	for (i = 31; i >= 0; i--) {
-+		if (x & (1 << i))
-+			return i;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * This function will generate percetage of specified value
-+ */
-+bool random_percent_check(u32 percent)
-+{
-+	u32 val = 0;
-+
-+	val = os_random_get(100);
-+
-+	if (val >= (100 - percent))
-+		return TRUE;
-+	else
-+		return FALSE;
-+}
-+
-+void util_init_waitloop(void *pdx, u32 timeout_ms, u32 per_us,
-+			loop_wait_t *wait)
-+{
-+	if (((bht_dev_ext_t *) pdx)->dump_mode == FALSE) {
-+		wait->dump_mode = FALSE;
-+		wait->tick = os_get_cur_tick();
-+		wait->timeout = timeout_ms;
-+	} else {
-+		wait->dump_mode = TRUE;
-+		wait->tick = per_us;
-+		wait->timeout = timeout_ms * 1000;
-+	}
-+}
-+
-+bool util_is_timeout(loop_wait_t *wait)
-+{
-+	bool ret = FALSE;
-+
-+	if (wait->dump_mode == FALSE) {
-+		ret = os_is_timeout(wait->tick, wait->timeout);
-+	} else {
-+		if (wait->timeout == 0)
-+			ret = TRUE;
-+		wait->timeout -= os_min(wait->timeout, wait->tick);
-+	}
-+
-+	return ret;
-+}
--- 
-2.34.1
+Thanks,
+Iulia
 
+> Best regards,
+> Alexander
+>
+>>   	};
+>>
+>>   	pmu {
+>
