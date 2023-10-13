@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF027C87EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D177C87F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbjJMOe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 10:34:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
+        id S232191AbjJMOiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 10:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbjJMOe0 (ORCPT
+        with ESMTP id S232144AbjJMOiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 10:34:26 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E203295;
-        Fri, 13 Oct 2023 07:34:24 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32d569e73acso2010944f8f.1;
-        Fri, 13 Oct 2023 07:34:24 -0700 (PDT)
+        Fri, 13 Oct 2023 10:38:00 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12C6BB;
+        Fri, 13 Oct 2023 07:37:55 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6c7bbfb7a73so1351500a34.3;
+        Fri, 13 Oct 2023 07:37:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697207663; x=1697812463; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9fTZrrokaIOz1ZV+SInDo976tod0Liz3CoLDMTgWcH0=;
-        b=C9SQBbhJKJecwn50em8+HJuMwgnCVrLPWpX9HTyk36ILtF6nTw7q9H4Yt1IRxJcduo
-         qOabtbr7Lz3SPTCXnaTjg9nCHu8zZnZDPhgXQNN0vY00FMnY13kLpjgeaweEluBFA0uh
-         DvA2wiP5AbgvJ1xvCUcECu87PC1Fcgu4+OVIkh7Rn9XU4OY5d63b6qccT/x0nsmxqtZE
-         v9uu7sFE9fRQINApGM/iYEO0KYblnqXBXpG6+s3eJULNm5aTbNdWeVEj3G8ipId+3Iqg
-         wm52X+FdE182yA8ODWx1e6IaDZzxqhISI1LrVhawrPWLc+jBO62eRJjrxo3alSynvHIl
-         2DEw==
+        d=gmail.com; s=20230601; t=1697207875; x=1697812675; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UbPsrJcoBy9BqlyOGafIHjglt8aQnlICvj5agohrEkI=;
+        b=AY039YuwAvOIL3w5JOMPROqP4jeoy3HmesJasfe3f/6Yics7E5YNIJdBqORyjmDNL7
+         87FcVeEEK1vv74C3nMY5YWqCum839Xwv8ofzNWf6owV+P1V4C6jYvYNze5k0Jo9B4lMf
+         PKUdwu/vY84x7of6B31ZgO6YEcGPoYqSPF56vBZbFViVatQ9o9hO3htr8nVru5prQLmy
+         XR58MSXQ8/cz3ECOu4Lf3bLi9UngXlNM/DHoAlI0ywUOBGIrQxCL101aUaJrlb8yYg2B
+         NsbRZ4f0hGwecj/Fl9qoXMuKq2uT8jU9Sqqs8EvKbkmHOj6A3huGP15/ZTJDKRUp/yzz
+         aLow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697207663; x=1697812463;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9fTZrrokaIOz1ZV+SInDo976tod0Liz3CoLDMTgWcH0=;
-        b=mFlLND7l9v8EatEesOjIrq2Go5hn9zzDQjAeIe656peBbvrDU8EDkYBmLqMoasNci5
-         s8gcwaGZtID8CUZO2a12HMEXs5G1RbvcIP+MRUfAR4d6S1Hd4dG8XJMYj+E6AW8Gi4+F
-         uSA3WNAQ1HqgAMDdJGO+YGx+UkNR4VWQ3AjoMtCgg90iJgYP0091+uGSMcETSs0Menf5
-         yIDJvWbXIKogohv60CqR1JUXOIU/IJKUANoEwZc/ulRQ+zGIO28Xzv9d+elKmOBYFUwc
-         5Yk4mQp5KfMNeHbs+akDZf5L7XBOlbucIOzp91G4eLmWn8YSIxZ7Q69u1aGREHWQg4VF
-         pmCQ==
-X-Gm-Message-State: AOJu0YyVa9AdOTk40KGTqLWLkYuIvIWKKwIWqz+HCBuboXRKHja5HOy/
-        1iKsNSFUPjDiSs+0WkdTi48=
-X-Google-Smtp-Source: AGHT+IGhUx1gxNh0EBMNVDn2ORKY6FbHk9azpCU8Sw4RKk5gT3991VT9SA0MucWaQzn4DZ2hoEYSUg==
-X-Received: by 2002:a05:6000:c4f:b0:32d:9579:94e0 with SMTP id do15-20020a0560000c4f00b0032d957994e0mr3173368wrb.27.1697207663133;
-        Fri, 13 Oct 2023 07:34:23 -0700 (PDT)
-Received: from [127.0.1.1] (2a02-8389-41cf-e200-9a91-fa21-8c45-3dc4.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:9a91:fa21:8c45:3dc4])
-        by smtp.gmail.com with ESMTPSA id e3-20020a056000194300b0031f82743e25sm20855889wry.67.2023.10.13.07.34.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 07:34:22 -0700 (PDT)
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date:   Fri, 13 Oct 2023 16:34:21 +0200
-Subject: [PATCH] rtc: pcf85363: fix wrong mask/val parameters in
- regmap_update_bits call
+        d=1e100.net; s=20230601; t=1697207875; x=1697812675;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UbPsrJcoBy9BqlyOGafIHjglt8aQnlICvj5agohrEkI=;
+        b=Mqk1jqeu7xbPsY+96glbbLRWiZRGb3Xs0UNq83wPc+CdrXACPi+xesXML2AL+3fLfB
+         3woovgDvCxUDDDtG5f6sgdW2+qZCmeyn5VU4heQSOKknn96HlyUNPiI/sDMFBEv1RpHG
+         C/KQQWBAIyNyUqEQEhLexDTPPaUsxXXzq6g6l2ojPGuiAtNNkHIobrJXg272qoKvCdf2
+         SUi0+Y61eetQKYcHLPy6ZtqouNw/zkhTd4n07LboY5wFs998aRR5IprY3b1/tFTE+cXo
+         Lqto3M9MrMo0c0TfHkDKYZrJqREU0xJqhYEVcNukk92GNpKloR6uQQicT5rOvKTtDYmh
+         LMnA==
+X-Gm-Message-State: AOJu0YwZ06ljRblg+kfcqDLAt0P6caPQ1DqBYZNPRFJMaFdh7IilRkSn
+        rRU/7JvH0ihDzbCHM4FOLUg=
+X-Google-Smtp-Source: AGHT+IFfm+l7CiPc096l3so6sYjYDqpMw8wulF9kO9eG3vYQ6hHQHV4GyWqRQmtsxauxwFJ4npblNw==
+X-Received: by 2002:a05:6830:18f8:b0:6c4:e81f:59b8 with SMTP id d24-20020a05683018f800b006c4e81f59b8mr27317088otf.22.1697207874959;
+        Fri, 13 Oct 2023 07:37:54 -0700 (PDT)
+Received: from [172.16.49.130] (cpe-70-114-247-242.austin.res.rr.com. [70.114.247.242])
+        by smtp.googlemail.com with ESMTPSA id t26-20020a05683014da00b006c4d56392f4sm684143otq.24.2023.10.13.07.37.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Oct 2023 07:37:54 -0700 (PDT)
+Message-ID: <2e52c8b4-e70a-453f-853a-1962c8167dfa@gmail.com>
+Date:   Fri, 13 Oct 2023 09:37:52 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] crypto: remove md4 driver
+Content-Language: en-US
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        James Prestwood <prestwoj@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+References: <20231008040140.1647892-1-dimitri.ledkov@canonical.com>
+ <ZSkeWHdOAOfjtpwJ@gondor.apana.org.au>
+From:   Denis Kenzior <denkenz@gmail.com>
+In-Reply-To: <ZSkeWHdOAOfjtpwJ@gondor.apana.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231013-topic-pcf85363_regmap_update_bits-v1-1-c454f016f71f@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAGxVKWUC/x2NQQrDIBAAvxI8V4iR1tCvlCKrWZM9xMiuKYWQv
- 9f0OAzMHEqQCUU9u0Mxfkhoyw3MrVNxgTyjpqmxGvrBmt5YXbdCUZeYxrt9WM84r1D8Xiao6AN
- V0c4FOzqXwCRQrRNAUAeGHJertIJU5EsUxkTf//z1Ps8fuYpcOIwAAAA=
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697207662; l=1329;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=oJ0Z7JgDTNSci5EgbxEjZIMHUQ9Fje0lkGp/yeK4WcU=;
- b=rjRqxt4/yW3/wMNlOb2OmYw8NQCIku8SYF9dKwrvJ1xkhNuIdWF2bh7e9BnJYuGRehdJFmKjI
- JVgPuiKsAucDbNGZHLWV4SaYhYLXgYHcgWzYo6VufICtjYAyv1ZegN5
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -82,39 +82,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current implementation passes PIN_IO_INTA_OUT (2) as a mask and
-PIN_IO_INTAPM (GENMASK(1, 0)) as a value.
-Swap the variables to assign mask and value the right way.
+Hi Herbert,
 
-This error was first introduced with the alarm support. For better or
-worse it worked as expected because 0x02 was applied as a mask to 0x03,
-resulting 0x02 anyway. This will of course not work for any other value.
+On 10/13/23 05:39, Herbert Xu wrote:
+> On Sun, Oct 08, 2023 at 05:01:39AM +0100, Dimitri John Ledkov wrote:
+>> No internal users left and cryptographically insecure. Users should
+>> upgrade to something else, e.g. sha256 blake3.
+>>
+>> Some drivers have their own full or partial md4 implementation without
+>> using crypto/md4.
+>>
+>> Userspace code search indicates a few copies of hash_info.h
+>> https://codesearch.debian.net/search?q=HASH_ALGO_MD4&literal=1 without
+>> need for MD4.
+>>
+>> Preserve uapi hash algorithm indexes and array length, but rename the
+>> MD4 enum.
+>>
+>> Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+>> ---
+>>   crypto/Kconfig                 |   6 -
+>>   crypto/Makefile                |   1 -
+>>   crypto/hash_info.c             |   4 +-
+>>   crypto/md4.c                   | 241 ---------------------------------
+>>   crypto/tcrypt.c                |  12 --
+>>   crypto/testmgr.c               |   6 -
+>>   crypto/testmgr.h               |  42 ------
+>>   include/uapi/linux/hash_info.h |   2 +-
+>>   8 files changed, 3 insertions(+), 311 deletions(-)
+>>   delete mode 100644 crypto/md4.c
+> 
+> Patch applied.  Thanks.
 
-Fixes: e5aac267a10a ("rtc: pcf85363: add alarm support")
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- drivers/rtc/rtc-pcf85363.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Does this patch break userspace?
 
-diff --git a/drivers/rtc/rtc-pcf85363.c b/drivers/rtc/rtc-pcf85363.c
-index 06194674d71c..540042b9eec8 100644
---- a/drivers/rtc/rtc-pcf85363.c
-+++ b/drivers/rtc/rtc-pcf85363.c
-@@ -438,7 +438,7 @@ static int pcf85363_probe(struct i2c_client *client)
- 	if (client->irq > 0 || wakeup_source) {
- 		regmap_write(pcf85363->regmap, CTRL_FLAGS, 0);
- 		regmap_update_bits(pcf85363->regmap, CTRL_PIN_IO,
--				   PIN_IO_INTA_OUT, PIN_IO_INTAPM);
-+				   PIN_IO_INTAPM, PIN_IO_INTA_OUT);
- 	}
- 
- 	if (client->irq > 0) {
+Here's a thread regarding MD4 the last time its removal was attempted:
+https://lore.kernel.org/linux-crypto/20210818144617.110061-1-ardb@kernel.org/
 
----
-base-commit: 10a6e5feccb877c3c75ad11d27942ad52c24815f
-change-id: 20231013-topic-pcf85363_regmap_update_bits-77b3877fa1fa
+Please note that iwd does use MD4 hashes here:
+https://git.kernel.org/pub/scm/libs/ell/ell.git/tree/ell/checksum.c#n63
 
-Best regards,
--- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
+https://git.kernel.org/pub/scm/network/wireless/iwd.git/tree/src/eap-mschapv2.c#n165
 
+Regards,
+-Denis
