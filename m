@@ -2,58 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A21197C8CC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12EB97C8CC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbjJMSE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 14:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36870 "EHLO
+        id S231130AbjJMSGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 14:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJMSE4 (ORCPT
+        with ESMTP id S229632AbjJMSGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 14:04:56 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01A983
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:04:54 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qrMWo-00083i-4x; Fri, 13 Oct 2023 20:04:50 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qrMWn-001Rlc-Hm; Fri, 13 Oct 2023 20:04:49 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qrMWn-00FjD1-8T; Fri, 13 Oct 2023 20:04:49 +0200
-Date:   Fri, 13 Oct 2023 20:04:49 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] pwm: make it possible to apply pwm changes in
- atomic context
-Message-ID: <20231013180449.mcdmklbsz2rlymzz@pengutronix.de>
-References: <cover.1697193646.git.sean@mess.org>
- <9c0f1616fca5b218336b9321bfefe7abb7e1749f.1697193646.git.sean@mess.org>
- <ZSkvTKr42sUZImiM@orome.fritz.box>
- <ZSlbFukZKGNpR5PM@gofer.mess.org>
- <ZSljioc2OfPfxVeB@orome.fritz.box>
+        Fri, 13 Oct 2023 14:06:31 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9232483;
+        Fri, 13 Oct 2023 11:06:29 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39DI4WLl032638;
+        Fri, 13 Oct 2023 18:06:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=vaD/UyOgCzH1f4BWhGyZ86jeahW3IqcsyGoJ0uzGvVw=;
+ b=HJ6ldSZQiFmzHyasbQs5aeQH8SUUp5UzVOGVBx+BnNx5cDris5QsGMM9/ULwLD0Vi2gJ
+ 0GOLh9lNSDIQAHJn+I8VtLCAEMAWF6xi762H0qwfSj9bfkLgKGcyrumpInqdHZulf8E5
+ L014PYXp/NMCQwsh9NEx5VdjRijTOm3kZhS+PrVC7Lor3asrI4g6Gm+FnYTgEmZ5spgl
+ 1XxFOgMHQM+3p+2zyd1qAEVsU6ssKrux7mbqzB5kcti03a3MzvVsPlqJ0MRNGqUGVTVw
+ iNEYEH/14gkkJsB1S1lvfPMjne6SyQevQpAxp4qZ9KWsBbWU9z3sPZuqSDyII0naIyWD nA== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tjxxudjhr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Oct 2023 18:06:14 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39DH1Rh5040182;
+        Fri, 13 Oct 2023 18:06:13 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tpteaxna3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Oct 2023 18:06:13 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bUEL1D93EekOWXVjnPQJt/oUb6g1wRSB/a8tY19U1w1PF5b/iFrftQ2wUoJuI8ZxdDFxPAsOMywmMPeSusf7F1sFNzjUdeqWFm1nskUvoyYqWaNQfftOX9K18xypwkV0jhRdLiH6nywCj5uB26xb84ec5BerNZqBX3lT1snwFnN53FPt4bTWK6AYdpW71x3hEEJXDdi3Ct437naXipQSGr+ucV8+LMlNfBk7F74RbNFkGxQcoExWS6lMBca0SnGd8Fr4IfgkBCEtSmOnVqcdrAcWrOiQqYG6c1QsYDUkVUAx9Ww5o4Eh14QyUeR1CwwdghWFMthoUvJW1m7dFkU8ZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vaD/UyOgCzH1f4BWhGyZ86jeahW3IqcsyGoJ0uzGvVw=;
+ b=PMgTo8N/47qBj3EI5dVD0O9cqDQ5+eIWb2fwy8bWyAo2FOrkw7NyIC0I7zDQoe4AZ1Cyu2cMoKeGWPa72ISub7wioC7ufTcm9elCLuXfUPJF50+VaRdc26NCkDT+ZBf8zuwY2DED2gs4vmQPkOT4SuS1nfO8Ab/emQ0zwiEqpHgHcGDZZy05Ly8nrzpKyFKj4rxM2VyEU8SUueCdwjHxPGjDyKX+lDMnov41CGau/9ucb+glSbJsoMqc0GIDrSIdFLI8JxO7H1GLNULDPl4UWDNqlIPfVKRZc+kW9XvJSbJEZAi+xsEXJJYMvaGrPxe0s3jOdxGmF3sjKnHta3mS2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vaD/UyOgCzH1f4BWhGyZ86jeahW3IqcsyGoJ0uzGvVw=;
+ b=t6vz5y0kbDOz3kw4DccadaFYqbDtDN6imVCPdDIxH6DNCaMpBhQOTdAelLd5VPTowag4O9dyXr2/sCFzXdWSNXwwJSZ3K6vC79ehOS7VKZPgdLr8Zp2HvA5NcHpPFQAQI5654ONQjiceS5TmPB6KsDn1JuPTqWUMHj582xBaS78=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by CY8PR10MB6852.namprd10.prod.outlook.com (2603:10b6:930:84::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Fri, 13 Oct
+ 2023 18:06:11 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::1ae3:44f0:f5b:2383]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::1ae3:44f0:f5b:2383%4]) with mapi id 15.20.6863.046; Fri, 13 Oct 2023
+ 18:06:10 +0000
+To:     Wenchao Hao <haowenchao2@huawei.com>
+Cc:     Hannes Reinecke <hare@suse.de>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <louhongxiang@huawei.com>
+Subject: Re: [PATCH] scsi: libfc: Fix potential NULL pointer dereference in
+ fc_lport_ptp_setup
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1wmvql7nb.fsf@ca-mkp.ca.oracle.com>
+References: <20231011130350.819571-1-haowenchao2@huawei.com>
+Date:   Fri, 13 Oct 2023 14:06:08 -0400
+In-Reply-To: <20231011130350.819571-1-haowenchao2@huawei.com> (Wenchao Hao's
+        message of "Wed, 11 Oct 2023 21:03:50 +0800")
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR08CA0006.namprd08.prod.outlook.com
+ (2603:10b6:a03:100::19) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vcxtukqygxnpby24"
-Content-Disposition: inline
-In-Reply-To: <ZSljioc2OfPfxVeB@orome.fritz.box>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|CY8PR10MB6852:EE_
+X-MS-Office365-Filtering-Correlation-Id: b0f1e937-3ad5-436d-698a-08dbcc17148e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eJIEXxI5RNtUF5zvXhyxS4TmHjckR7sw0DwXJ1epEOhcYFL2mfLbpZ1MXaMTodM7oV+TvgJLlbqndI69QkGdLaMtX0s7CxwTZaZwqc5J+uVLl7gl+KFMd2oH3JtVGmn5X5WxlimOtJYUl/ebI1tnk4CdKlaRGKM8b4saTDE7pWQoXz9ubGegR+GHT5xf6swnp+6EdurWHVgLqTEV5L6SfTB/luFOob3A+JPWkpOk234CpmAp1+6dC1vlyL+KAvpbn4uQT3yAjCJLReQ2Q3xImJx1IazQZ8hXyve7PQsEktTIy/QF39daFOJFd76VxABrdIzjHoofHyMSyr+Hvmr92uGd/nPWevUuaKOAmtLZbVaKZw7E+ODZPC/x0EVDQsPe/9M+mYVoYeDBdc3Y3qezerqBwSigLDBHRZ2RyGFnmxRA/30U8kLj6CEL4D/bNnBfbjqcyPJrQtNIEet+xoHcJwViDebYawJEd3XZYWNEA4jnrfGSL4MM7fMJFeTFEwhF3G/7ruqGqCRY2nUqHHkjoagLDZeN1aiQjneuUhGLgf5vKVY4xKIWXUVSmFQ7GV1/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(396003)(136003)(366004)(346002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(6486002)(6512007)(36916002)(478600001)(41300700001)(6916009)(83380400001)(4744005)(54906003)(66556008)(5660300002)(66946007)(26005)(8676002)(8936002)(316002)(66476007)(2906002)(4326008)(86362001)(38100700002)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Fq9Vu14BE9FBTbs6nmPoEUpyGraa7lDNly+P4kD0UaQfrxs4brW087+OFCy5?=
+ =?us-ascii?Q?Z0Un4taqn9irhgQEkMDLJtZFj+AAwgHMvxVtsOvyZsOKlUuOjTtoy9Esfr1O?=
+ =?us-ascii?Q?BNgd7tmUf5GIY5R5lh3du52VKpcSfyUjua5n3zc2l93p9ZvPIQHJB6syT15b?=
+ =?us-ascii?Q?cOFH32cEDGaceNM04d4g+zgyzUnQs6ci1OuOWv6SZjp4bPJyETKSuIHubS8f?=
+ =?us-ascii?Q?Tiq/y/Dp93SkCpSCUYtKG6l26Hf51OuUTNmJ6l+xnSU2JbxLx8tRWlr8/JE5?=
+ =?us-ascii?Q?MP0m2VxfXp9zKAGFGA1qbuQIw77FEnDAI4bnzkHJip1F45EhXLCic2hkLIz6?=
+ =?us-ascii?Q?ATtBgEI9N+Itt2JQ/Ax6sX/MuAY+Kx1x7VB4YJnpLuOM2fMN0gmqpJf+SIyA?=
+ =?us-ascii?Q?5KJ8ko4VHQwdoj/z2kOUCF8MoFitBVeY96+IDIV3n/qwXewIR1vN6GZxwsww?=
+ =?us-ascii?Q?oalbA3Cqmk+rpdiF75l+LWespuGPpEo1jqsrVyNd5eOzkYa/h98ES3PJRhac?=
+ =?us-ascii?Q?VLqQ02MvLlvl6sESDC332yEaROxC68vMEt0QWL8sGxUFgMPJG73gklXoMgON?=
+ =?us-ascii?Q?t/d/A4WSzhsjPdjUojqIZd+48Y7vIW4TrUjJr/8ZXBkvvDKNcJGPalqapPkm?=
+ =?us-ascii?Q?h3oBpxxUB0/hvNX/nF0606xCXB6zG0E0rnD9k6VIeEiApl1s5Q24bLehG9AP?=
+ =?us-ascii?Q?6nPeEZM7G5MBc4uoLoG7+dAx2PP2JQgv3ASgHS7hwszrDVC0iIzF5eo4D+QN?=
+ =?us-ascii?Q?0eT7ahVKcEKyNHWKPgI/hXWl3KqadBC3Bs9CxkmwPo+pnJyl1crH3lHKd4Jl?=
+ =?us-ascii?Q?y1QExloSrSK+Sw6L4b0K+Co0vJjhx7t+RFDgH2zVDkw4ivqwu/ejfNQhzpy9?=
+ =?us-ascii?Q?bpZVte4BDrdXBYrVyE90M6KkuqyA2gY4ER0n/DByr8JTbLhddt/l+Sr+x0wA?=
+ =?us-ascii?Q?d1BPIC0/Ki+HS7LP9h+ME5o/AUUScKiXlTwpERB0vmfvOfaW5x+dPg7mzjVn?=
+ =?us-ascii?Q?0pc3O8F7HouxOCLewWLR6kmjKSb3QAqQ2gIw1YB04njDfaQRJkHT1/tfboSC?=
+ =?us-ascii?Q?k9LjtLsk9WBv6NoY8zmf2SrHZ6kAEvC+iXjSwI9FnSBMmVvOTcys5eEc5uRA?=
+ =?us-ascii?Q?7SO7uTAiFIsDjtvzWHsvnOaypq/GfPfxPpEawjFCPxXX/1Akf8xRtyK92sUa?=
+ =?us-ascii?Q?6BLFvYJmkBKDoUwO+a/c77OZ50g8BfS+dNFvyhzXhbjawX0IbgZKvbtaOBgi?=
+ =?us-ascii?Q?0o5CmhyvR896aCb4rqtHjpZNBp/Bb4T63F2QWnmyA0JX5MYOanyj88/uuvs6?=
+ =?us-ascii?Q?a+OjYhP3+8xj1vpVTnZzbxGvK1xe/7Ud3dI08Lf1GfRZozIhe1xwpJDopmRy?=
+ =?us-ascii?Q?JF9rihd/ak7UMm9xjb15PCyj14vsHfsk67c2rxXLSae3L8s6k4sp8Qwkr/8m?=
+ =?us-ascii?Q?5ESIH30ZD65kpplZ9eT5BxwKnEcQyylzMDtZtzYHojQDsihMwYid8wbYA9IP?=
+ =?us-ascii?Q?YJrQ8eofIpd0KHSO24v2x1jXEXbWCkdQtgA1ZXUutoRM2TT4bjot3Mqa0+TD?=
+ =?us-ascii?Q?FZD1+nOVqD2j3JGeps6dg99x0h+M3ANsO3bGYtbfk31cSs7Pp3hPHQ9jGP4w?=
+ =?us-ascii?Q?Kw=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: pCkL/2vyh/jUlt2aEcKF9LN7aC6bNTSDUtoZxXWFi33cB0pI5L9qNqAMwJj7LN9GmmbAQX7fSp7jAN+9afoYEQnuLZexMn81hqZ1LZVMFn/C8ObPkp/e26HwoAguWx/RZA/1mVtzVHAlSRk/rvZojEfDoZ0QeW3FK/bX8kV2hNdSBqZKidFwGZqgBdZSwayAo+PR+qrSScxU32h0evr2W3HRwrjHoKy+p2f+wn+fFaKpFfNdtq8s2be6qtN2RiDVBeyTdEJa+7JzhWCS0yn1vE751g4Kc9Zg8l71wReCKrx7k0v2caYaCgAjrWropL94IflX0eYrk5jnHfWv/ILRNbIwXP9mliyl8QEbNOZqis3t6dR9/oDoz7Zeq1SexLR0T8xhGR70W0edTvm0BRTFvCHvZMliZrUs4+6dJgtMF6TZSGPyXDtyIXe94QrfgRRMNp9rHUyX9oR9yFXDt+BfZml8IlNUyzJapMNbMkkDzxQOJXFxgEl5vN6XH5ao+1x86ZH3FVf/MeFCPxHC22YrslKRLjVLxaSh5O/GAvpNXerB+m8xOw7zRC+4B2+QjG+QnWVGXTM3SaxRCQTIfaEcmCjB1bhBFwxNvQX+OhIOQlM96XPtooVa0FxpIg23h6xMLifJNO6Bs3cxkcxC0DP9kxcLChjfvc+3QOI873x9lQT4zTShD4MBtwxnFLhcEmqcPBRStWvt9xZcwDZZ43tYVv7AgTpa+yd5yVa69LVn5+dJiAMWSccoaWR4qIBK+ikJnnV3pciFLIDmW+7NDPkm8fuBPIK9UtI0UEO92MaLvApzwnFFyrOlQGOzZHYTTVKdAjmUMuD9Lug/2n3ECkoMhhY/yQSm5PcJuVpapxtjQx0VJ94WCX340dY3vT9YFmzo
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0f1e937-3ad5-436d-698a-08dbcc17148e
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 18:06:10.5228
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3THSkyHbJbtf/SHvF9t29tm1HIcWNZrycX6Wcfnb+DoMytwiLDH3rncmhCmBgJ3ASt+kvS9q9Kr3LAFkPNhkqHA34w4dXCAr5+oOxSCfE6E=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB6852
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-13_09,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0
+ mlxlogscore=807 adultscore=0 suspectscore=0 phishscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310130155
+X-Proofpoint-GUID: hPFL5b6Mf3Ke0q4ybJ1XM-BFMvOPfuE-
+X-Proofpoint-ORIG-GUID: hPFL5b6Mf3Ke0q4ybJ1XM-BFMvOPfuE-
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,125 +153,15 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---vcxtukqygxnpby24
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Wenchao,
 
-Hello,
+> fc_lport_ptp_setup() did not check the return value of
+> fc_rport_create() which is possible to return NULL which would cause a
+> NULL pointer dereference. Address this issue by checking return value
+> of fc_rport_create() and log error message on fc_rport_create()
+> failed.
 
-On Fri, Oct 13, 2023 at 05:34:34PM +0200, Thierry Reding wrote:
-> On Fri, Oct 13, 2023 at 03:58:30PM +0100, Sean Young wrote:
-> > On Fri, Oct 13, 2023 at 01:51:40PM +0200, Thierry Reding wrote:
-> > > On Fri, Oct 13, 2023 at 11:46:14AM +0100, Sean Young wrote:
-> > > [...]
-> > > > diff --git a/include/linux/pwm.h b/include/linux/pwm.h
-> > > > index d2f9f690a9c1..93f166ab03c1 100644
-> > > > --- a/include/linux/pwm.h
-> > > > +++ b/include/linux/pwm.h
-> > > > @@ -267,6 +267,7 @@ struct pwm_capture {
-> > > >   * @get_state: get the current PWM state. This function is only
-> > > >   *	       called once per PWM device when the PWM chip is
-> > > >   *	       registered.
-> > > > + * @atomic: can the driver execute pwm_apply_state in atomic conte=
-xt
-> > > >   * @owner: helps prevent removal of modules exporting active PWMs
-> > > >   */
-> > > >  struct pwm_ops {
-> > > > @@ -278,6 +279,7 @@ struct pwm_ops {
-> > > >  		     const struct pwm_state *state);
-> > > >  	int (*get_state)(struct pwm_chip *chip, struct pwm_device *pwm,
-> > > >  			 struct pwm_state *state);
-> > > > +	bool atomic;
-> > > >  	struct module *owner;
-> > > >  };
-> > >=20
-> > > As I mentioned earlier, this really belongs in struct pwm_chip rather
-> > > than struct pwm_ops. I know that Uwe said this is unlikely to happen,
-> > > and that may be true, but at the same time it's not like I'm asking
-> > > much. Whether you put this in struct pwm_ops or struct pwm_chip is
-> > > about the same amount of code, and putting it into pwm_chip is much
-> > > more flexible, so it's really a no-brainer.
-> >=20
-> > Happy to change this of course. I changed it and then changed it back a=
-fter
-> > Uwe's comment, I'll fix this in the next version.
-> >=20
-> > One tiny advantage is that pwm_ops is static const while pwm_chip is
-> > allocated per-pwm, so will need instructions for setting the value. Hav=
-ing
-> > said that, the difference is tiny, it's a single bool.
->=20
-> Yeah, it's typically a single assignment, so from a code point of view
-> it should be pretty much the same. I suppose from an instruction level
-> point of view, yes, this might add a teeny-tiny bit of overhead.
->=20
-> On the other hand it lets us do interesting things like initialize
-> chip->atomic =3D !regmap_might_sleep() for those drivers that use regmap
-> and then not worry about it any longer.
->=20
-> Given that, I'm also wondering if we should try to keep the terminology
-> a bit more consistent. "Atomic" is somewhat overloaded because ->apply()
-> and ->get_state() are part of the "atomic" PWM API (in the sense that
-> applying changes are done as a single, atomic operation, rather than in
-> the sense of "non-sleeping" operation).
->=20
-> So pwm_apply_state_atomic() is then doubly atomic, which is a bit weird.
-> On the other hand it's a bit tedious to convert all existing users to
-> pwm_apply_state_might_sleep().
->=20
-> Perhaps as a compromise we can add pwm_apply_state_might_sleep() and
-> make pwm_apply_state() a (deprecated) alias for that, so that existing
-> drivers can be converted one by one.
+Applied to 6.7/scsi-staging, thanks!
 
-To throw in my green for our bike shed: I'd pick
-
-	pwm_apply_state_cansleep()
-
-to match what gpio does (with gpiod_set_value_cansleep()). (Though I
-have to admit that semantically Thierry's might_sleep is nicer as it
-matches might_sleep().)
-
-If we don't want to have an explicit indicator for the atomic/fast
-variant (again similar to the gpio framework), maybe we can drop
-"_state" which I think is somehow redundant and go for:
-
-	pwm_apply (fast)
-	pwm_apply_cansleep (sleeping)
-	pwm_apply_state (compat alias for pwm_apply_cansleep())
-
-(maybe replace cansleep with might_sleep). Similar for pwm_get_state()
-we could use the opportunity and make
-
-	pwm_get()
-
-actually call ->get_state() and introduce
-
-	pwm_get_lastapplied()
-
-with the semantic of todays pwm_get_state(). Do we need a
-pwm_get_cansleep/might_sleep()?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---vcxtukqygxnpby24
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUphsAACgkQj4D7WH0S
-/k6Exgf/SslgJkq9wxqIrotIrMj9NqpF1D4hMBxPW0FePgl21tJ23I4t2YyHT2MW
-x5S8hPckkkhVD+rKMbdTLO2J5ixU/ems11N+Cz5ScrA6JM9lX1UvXcm8VEppCbuf
-upnqeEPb+lzyBgtD1/dBz72xJOQXkpCtfOTHjQatE4Uo05tf8ntYLmByvHmMnoIb
-MkfKcDXQwmLJheS3pqG0RpBTtdWXhm+6BqCHR+fwHeHhpsUoFYzQCxVmWh+FX7LC
-P1Yup1ajVGxDIJtM/+Q1HBAUw+OYq1YgQQnPy7zAljwh0mRA+r7t/6heFdZP1+9f
-EdMtfXZAsOjYFAYqHoHd5FUBTynyfA==
-=t7Yp
------END PGP SIGNATURE-----
-
---vcxtukqygxnpby24--
+-- 
+Martin K. Petersen	Oracle Linux Engineering
