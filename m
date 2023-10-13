@@ -2,90 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB3F7C9192
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2207C919A
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 02:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbjJMXuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 19:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52382 "EHLO
+        id S232383AbjJNAAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 20:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232579AbjJMXug (ORCPT
+        with ESMTP id S232326AbjJNAAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 19:50:36 -0400
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCABC0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:50:31 -0700 (PDT)
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6c0dc76e736so3486699a34.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:50:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697241031; x=1697845831;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mVucjE2yjEUScH3CxBlb1yDLAQs8UXrP8jjUHECcl9E=;
-        b=n7ZhSQy+kU6uAEQaXdvmMEsP+Gwz9UpaO4F/agQTHuy2vnADErdSU96TPq/EpDKXgm
-         Q7UWy1wlSN7RiT8NzUDArl56wWZBVDl0cA44UkaJZnldMWNhJEF1+mOIvZWNfngUFfG0
-         fYE6Fy3trP0pLT2ZIoDfH8AVTP3xu2HVm33lJ2StsqMttIA7TLsnqm4f53v0rFCEARHS
-         DF/6xzZHO0lM5wjaAzm40AQ1gK5m4GW9cztY/CIBdhSUPKPuGF/DdtrhlV6jS8ihTOY2
-         D6VcGIpOMnWpTsxXhsjNp/GPokO0G3qkfX6V+KFbQkRyzJRLsd2EGXWVh9ql7On5tCEw
-         k2gg==
-X-Gm-Message-State: AOJu0Yx9yzCB6JWx4A55ip1q1CkxZvGZomC+/0oDbMRG79pg/1AfltX/
-        BYf2jYQBFLICprLS/I/Fcv1mWYeh2IiyLTB/TEhyBES1tpBo
-X-Google-Smtp-Source: AGHT+IE3mNXgUnbffBl6NSf5U/f6BkF5zcp3zWCtahDMEOqUgDVEwA664Ic/SJhZmaojLteaqQnARfehrtWV0EEV2R2SYULgmyRN
+        Fri, 13 Oct 2023 20:00:18 -0400
+X-Greylist: delayed 469 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 13 Oct 2023 17:00:15 PDT
+Received: from mx.manguebit.com (mx.manguebit.com [167.235.159.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB25BE
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 17:00:15 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 20:52:11 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
+        s=dkim; t=1697241140;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5bsDw6yHHct7yDhePGgvyRyMqwFfVNp3FGbg+Dajzw0=;
+        b=osPC+RLVzn4ub/0Wy0HXidTzTCaiamTKskPsHwgDS1dqDLy4cVJDxxmlgEQVpRvCX/+MWF
+        G/B4gMOg/Otx7VTt6wH1f+oM793bHoZ7vxOTv3I/pxyrrxN8SJNRv/PPyzL1wSh1i2WrB2
+        +Yhb5+OroSxPUIykL2Nr1i3U1H1NBRwSgJWQsj0CnP9cHjqtDuIh+9sg/Y/TLZU/3WAnW3
+        dIjw+XEGF7ADXonAhUIBmF4GNXesHZVBzC5hiFzyulKdRiIuvA4sN3p2nSML+BEFfuajgS
+        Gyn7jG8I/PRL+XU69q6hZjKsSa+7XoBW0cVnqGYGGg9bVw0i75f6Tbz/mij0eQ==
+ARC-Seal: i=1; s=dkim; d=manguebit.com; t=1697241140; a=rsa-sha256;
+        cv=none;
+        b=Ewo+65jKz8/FLnZh8lOE5/KEHvEZndFBHCFzEwnUHv+QWH7xtnVEF2sGT/7GF4CYKC7ulZ
+        Nn5VcSKLawgTH/CRGrMe7P52dYv0mEGSRHAYOdIEm198azmq9CZgyt7Um+AB+wYazbf4in
+        GG7lHdG0bA26DgwbZDy3D+qv8EGgE56wVig7p236flGgDd+g7xke09hN4jTSKX1awOivdV
+        2AXmtJOGxLHsQvW84mV9MFclfiExdOjeOcL4hr2zc8w6tDpKcsjByIOfxbtojzW1GQVNVu
+        Q8bYOyhtHfJ8H1OkGtxz2ucf5RTRrYkrboCEjF8nA1Uo3r0KqwqW0vykjjxNgg==
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=pc@manguebit.com smtp.mailfrom=pc@manguebit.com
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
+        s=dkim; t=1697241140;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5bsDw6yHHct7yDhePGgvyRyMqwFfVNp3FGbg+Dajzw0=;
+        b=s55wGhOQnNGZLioGpGqp8uX9GsKVa/ZMbXV36rUJkUkDch/3dFoMkUyLZega8ivqCy+2y/
+        mf/5ZF3orU99tW73oRdtfwMr1Lug3uGc3zAoutA+kL8rI84BxPaVt+jhV7cY6icn+4rd6P
+        Jz7M2U8qmfGjfRe51zLCAgt2JkCvoDBReu3Q5nssYJtmQbeT+Msa071GXRMiNzj+yszCLV
+        AbFgeTnMvoNmyfP22zvu05uSfRuxa6ObUvHEEiV2bzSq/IFaudqicrwcnBoh/oUHXYoSyh
+        fi058u0dQ90IP2iyJDsdDunW4m7Lzm+y9+bBAhE5aUsnE+yR5KukoTJbuPZP6g==
+From:   Paulo Alcantara <pc@manguebit.com>
+To:     matoro <matoro_mailinglist_kernel@matoro.tk>,
+        "Dr. Bernd Feige" <bernd.feige@uniklinik-freiburg.de>
+CC:     tom@talpey.com, smfrench@gmail.com, paul@darkrain42.org,
+        linux-cifs@vger.kernel.org, bagasdotme@gmail.com,
+        regressions@lists.linux.dev, ronniesahlberg@gmail.com,
+        nspmangalore@gmail.com, brian.pardy@gmail.com,
+        bharathsm@microsoft.com, linux-kernel@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_Possible_bug_report=3A_kern?= =?US-ASCII?Q?el_6=2E5=2E0/6=2E5=2E1_high_load_when?= =?US-ASCII?Q?_CIFS_share_is_mounted_=28cifsd?= =?US-ASCII?Q?-cfid-laundromat_in=22D=22_state=29?=
+In-Reply-To: <83d00d50bc628a85db71adb440d8afb5@matoro.tk>
+References: <CAO+kfxTwOvaxYV0ZRESxZB-4LHsF9b_VBjAKahhwUm5a1_c4ug@mail.gmail.com> <ZPfPfyIoVxw5L6El@debian.me> <CAO+kfxQgXOsx6u+xLKGJe0KDiFsRAGstSpnrwxjQF6udgz5HFQ@mail.gmail.com> <CAO+kfxTvA6N=i+jGf0XbSyqf85i=q+vR6R9d_42OWfM2sWWXaA@mail.gmail.com> <CAH2r5mtUedfLSv81Z-Yb3_=AbD_QpT3tVbU1PRzMTituaw7bgA@mail.gmail.com> <CAH2r5mt6YzapEKDo=hQ64yvBn7=jwMmY1c85NOABKcMPKPp3KA@mail.gmail.com> <CAO+kfxQtOKoKdb+LtMeFxgu8VXa73nbmTPSfscbdwjUXM7ME_A@mail.gmail.com> <CAH2r5msNf9WDHrBZSi5FhHDSewSNxMAuXTetMJDnoNh3CF_oMA@mail.gmail.com> <a895f860-11fa-e6d9-d042-a32bd08f9e9d@talpey.com> <CAH2r5mszCxPtdURenMVgeVDX5zc8knumH=ASXyUufPa7SxbJBw@mail.gmail.com> <ZRN9MtBqYnT6oX60@vaarsuvius> <85d538fec5a086acf62d5a803056586a6c00e4bd.camel@uniklinik-freiburg.de> <83d00d50bc628a85db71adb440d8afb5@matoro.tk>
+Message-ID: <E1F307C7-9B1E-40F6-860B-6050856E8395@manguebit.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:9881:b0:1dc:e729:66f7 with SMTP id
- eg1-20020a056870988100b001dce72966f7mr9518941oab.8.1697241031086; Fri, 13 Oct
- 2023 16:50:31 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 16:50:31 -0700
-In-Reply-To: <0000000000006a3d0d060785f027@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c19b400607a1b88c@google.com>
-Subject: Re: [syzbot] [net?] [wireless?] WARNING in ieee80211_bss_info_change_notify
- (2)
-From:   syzbot <syzbot+dd4779978217b1973180@syzkaller.appspotmail.com>
-To:     SHA-cyfmac-dev-list@infineon.com, ajay.kathat@microchip.com,
-        amitkarwar@gmail.com, aspriel@gmail.com,
-        brcm80211-dev-list.pdl@broadcom.com, claudiu.beznea@microchip.com,
-        davem@davemloft.net, edumazet@google.com, franky.lin@broadcom.com,
-        ganapathi017@gmail.com, geomatsi@gmail.com,
-        gregkh@linuxfoundation.org, hante.meuleman@broadcom.com,
-        huxinming820@gmail.com, imitsyanko@quantenna.com,
-        johannes.berg@intel.com, johannes@sipsolutions.net,
-        kuba@kernel.org, kvalo@kernel.org,
-        libertas-dev@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        sharvari.harisangam@nxp.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+Could you please try two commits[1][2] from for-next?
 
-commit 7b0a0e3c3a88260b6fcb017e49f198463aa62ed1
-Author: Johannes Berg <johannes.berg@intel.com>
-Date:   Thu Apr 14 14:50:57 2022 +0000
+[1] https://git=2Esamba=2Eorg/?p=3Dsfrench/cifs-2=2E6=2Egit;a=3Dcommit;h=
+=3De95f3f74465072c2545d8e65a3c3a96e37129cf8
+[2] https://git=2Esamba=2Eorg/?p=3Dsfrench/cifs-2=2E6=2Egit;a=3Dcommit;h=
+=3D81ba10959970d15c388bf29866b01b62f387e6a3
 
-    wifi: cfg80211: do some rework towards MLO link APIs
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13fdd89d680000
-start commit:   ce583d5fb9d3 Merge tag 'for-v6.6-rc2' of git://git.kernel...
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1003d89d680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17fdd89d680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5d83dadac33c08b7
-dashboard link: https://syzkaller.appspot.com/bug?extid=dd4779978217b1973180
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=157a58e5680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=170cf875680000
-
-Reported-by: syzbot+dd4779978217b1973180@syzkaller.appspotmail.com
-Fixes: 7b0a0e3c3a88 ("wifi: cfg80211: do some rework towards MLO link APIs")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+On 13 October 2023 20:19:37 GMT-03:00, matoro <matoro_mailinglist_kernel@m=
+atoro=2Etk> wrote:
+>On 2023-10-05 05:55, Dr=2E Bernd Feige wrote:
+>> Am Dienstag, dem 26=2E09=2E2023 um 17:54 -0700 schrieb Paul Aurich:
+>>> Perhaps the laundromat thread should be using msleep_interruptible()?
+>>>=20
+>>> Using an interruptible sleep appears to prevent the thread from
+>>> contributing
+>>> to the load average, and has the happy side-effect of removing the
+>>> up-to-1s delay
+>>> when tearing down the tcon (since a7c01fa93ae, kthread_stop() will
+>>> return
+>>> early triggered by kthread_stop)=2E
+>>=20
+>> Sorry for chiming in so late - I'm also on gentoo (kernel 6=2E5=2E5-
+>> gentoo), but as a client of Windows AD=2E
+>>=20
+>> Just want to emphasize that using uninterruptible sleep has not just
+>> unhappy but devastating side-effects=2E
+>>=20
+>> I have 8 processors and 16 cifsd-cfid-laundromat processes, so
+>> /proc/loadavg reports a load average of 16 on a totally idle system=2E
+>>=20
+>> This means that load-balancing software will never start additional
+>> tasks on this system - "make -l" but also any other load-dependent
+>> system=2E Just reducing the number of cifsd-cfid-laundromat processes
+>> does not fix this - even a single one makes loadavg report a wrong
+>> result for load balancing=2E
+>>=20
+>> So, if cifsd-cfid-laundromat must really be uninterruptible, the only
+>> solution would be to change the way loadavg is computed by the kernel
+>> to exclude uninterruptible but sleeping processes=2E But must it be
+>> uninterruptible?
+>>=20
+>> Thanks and best regards,
+>> Bernd
+>
+>This is a huge problem here as well, as a client to Samba using SMB1 (for=
+ Unix extensions)=2E
+>
+>For others encountering this problem, I was able to work around it with t=
+he following snippet:
+>
+>diff --git a/fs/smb/client/cached_dir=2Ec b/fs/smb/client/cached_dir=2Ec
+>index 2d5e9a9d5b8b=2E=2Efc2caccb597a 100644
+>--- a/fs/smb/client/cached_dir=2Ec
+>+++ b/fs/smb/client/cached_dir=2Ec
+>@@ -576,7 +576,7 @@ cifs_cfids_laundromat_thread(void *p)
+>        struct list_head entry;
+>
+>        while (!kthread_should_stop()) {
+>-               ssleep(1);
+>+               msleep_interruptible(1000);
+>                INIT_LIST_HEAD(&entry);
+>                if (kthread_should_stop())
+>                        return 0;
