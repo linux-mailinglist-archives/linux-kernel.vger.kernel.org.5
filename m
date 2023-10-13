@@ -2,58 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 171E47C7FC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1572E7C7FC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbjJMIQW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Oct 2023 04:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52292 "EHLO
+        id S230027AbjJMIQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbjJMIQU (ORCPT
+        with ESMTP id S230033AbjJMIQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:16:20 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B0B83;
-        Fri, 13 Oct 2023 01:16:18 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S6K4z5wT1z67g6l;
-        Fri, 13 Oct 2023 16:13:07 +0800 (CST)
-Received: from localhost (10.126.172.163) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 13 Oct
- 2023 09:16:15 +0100
-Date:   Fri, 13 Oct 2023 09:16:15 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Jagath Jog J <jagathjog1996@gmail.com>,
-        <andriy.shevchenko@linux.intel.com>, <lars@metafoo.de>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC 1/2] dt-bindings: iio: imu: Add DT binding doc for BMI323
-Message-ID: <20231013091615.00007399@Huawei.com>
-In-Reply-To: <CACRpkdY4yJKmc_Sbr=4sJ0WseCEEBOQ7wKj4fBUMG2_cx-Xxbw@mail.gmail.com>
-References: <20230918080314.11959-1-jagathjog1996@gmail.com>
-        <20230918080314.11959-2-jagathjog1996@gmail.com>
-        <20230924143710.7c6edc4a@jic23-huawei>
-        <CAM+2EuJ8o5X2ucph8gic2=03bbLQmUCX=j3SFLrqD4Y6rwXs9A@mail.gmail.com>
-        <20230930170530.0b8f185c@jic23-huawei>
-        <CAM+2EuKzBVbTF2SrpYEYfzap1wrONboFV-QuTU9Fz7sVjqJLeA@mail.gmail.com>
-        <20231010100002.0163d681@jic23-huawei>
-        <CACRpkdY+K90mN1Q1tf38FLRgEsz3q8dK9SJYSQVwGe=PL3FaUQ@mail.gmail.com>
-        <20231010154216.6032a1c2@jic23-huawei>
-        <CACRpkdY4yJKmc_Sbr=4sJ0WseCEEBOQ7wKj4fBUMG2_cx-Xxbw@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Fri, 13 Oct 2023 04:16:31 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FAD0C9;
+        Fri, 13 Oct 2023 01:16:29 -0700 (PDT)
+Received: from kwepemm000005.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S6K3R34hqzvPvX;
+        Fri, 13 Oct 2023 16:11:47 +0800 (CST)
+Received: from [10.67.121.110] (10.67.121.110) by
+ kwepemm000005.china.huawei.com (7.193.23.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 13 Oct 2023 16:16:26 +0800
+Subject: Re: [PATCH v16 2/2] Documentation: add debugfs description for vfio
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
+        <jonathan.cameron@huawei.com>, <bcreeley@amd.com>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+References: <20230926093356.56014-1-liulongfang@huawei.com>
+ <20230926093356.56014-3-liulongfang@huawei.com>
+ <20231003132635.7df44c44.alex.williamson@redhat.com>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <dbd0de80-1646-87b7-5d97-48a5bd7a174b@huawei.com>
+Date:   Fri, 13 Oct 2023 16:16:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.126.172.163]
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+In-Reply-To: <20231003132635.7df44c44.alex.williamson@redhat.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.110]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm000005.china.huawei.com (7.193.23.27)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,41 +53,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 21:51:17 +0200
-Linus Walleij <linus.walleij@linaro.org> wrote:
+On 2023/10/4 3:26, Alex Williamson wrote:
+> On Tue, 26 Sep 2023 17:33:56 +0800
+> liulongfang <liulongfang@huawei.com> wrote:
+> 
+>> From: Longfang Liu <liulongfang@huawei.com>
+>>
+>> 1.Add an debugfs document description file to help users understand
+>> how to use the accelerator live migration driver's debugfs.
+>> 2.Update the file paths that need to be maintained in MAINTAINERS
+>>
+>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>> ---
+>>  Documentation/ABI/testing/debugfs-vfio | 25 +++++++++++++++++++++++++
+>>  MAINTAINERS                            |  1 +
+>>  2 files changed, 26 insertions(+)
+>>  create mode 100644 Documentation/ABI/testing/debugfs-vfio
+>>
+>> diff --git a/Documentation/ABI/testing/debugfs-vfio b/Documentation/ABI/testing/debugfs-vfio
+>> new file mode 100644
+>> index 000000000000..7959ec5ac445
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/debugfs-vfio
+>> @@ -0,0 +1,25 @@
+>> +What:		/sys/kernel/debug/vfio
+>> +Date:		Sep 2023
+>> +KernelVersion:  6.7
+>> +Contact:	Longfang Liu <liulongfang@huawei.com>
+>> +Description:	This debugfs file directory is used for debugging
+>> +		of vfio devices, it's a common directory for all vfio devices.
+>> +		Vfio core will create a device subdirectory under this
+>> +		directory.
+>> +
+>> +What:		/sys/kernel/debug/vfio/<device>/migration
+>> +Date:		Sep 2023
+>> +KernelVersion:  6.7
+>> +Contact:	Longfang Liu <liulongfang@huawei.com>
+>> +Description:	This debugfs file directory is used for debugging
+>> +		of vfio devices that support live migration.
+>> +		The debugfs of each vfio device that supports live migration
+>> +		could be created under this directory.
+>> +
+>> +What:		/sys/kernel/debug/vfio/<device>/migration/state
+>> +Date:		Sep 2023
+>> +KernelVersion:  6.7
+>> +Contact:	Longfang Liu <liulongfang@huawei.com>
+>> +Description:	Read the live migration status of the vfio device.
+>> +		The status of these live migrations includes:
+>> +		ERROR, RUNNING, STOP, STOP_COPY, RESUMING.
+> 
+> This is another area that's doomed to be out of sync, it's already not
+> updated for P2P states.  Better to avoid the problem and say something
+> like "The contents of the state file reflects the migration state
+> relative to those defined in the vfio_device_mig_state enum".
+> 
+> Also, as suggested last time, October is a more realistic date.  Thanks,
+> 
 
-> On Tue, Oct 10, 2023 at 4:42 PM Jonathan Cameron <jic23@kernel.org> wrote:
-> 
-> > We kind of lost the question along the way.  Wasn't so much about whether
-> > there was a generic binding but more about whether it is worth providing
-> > separate controls for the two IRQ pins?  Or just assume no one is crazy
-> > enough to play that level of mix and match.  
-> 
-> Ugh no, that's upfront design for a nonexistent use case.
-> 
-> - First, to even consider open drain the designer need to be really
->   short of IRQ lines/rails, and, despite knowing it's a bad idea, decide
->   to share this line between several peripherals, even though it will
->   require I2C traffic to just determine which one even fired the IRQ.
-> 
-> - Second, be interested in using two IRQs to distinguish between
->   different events? When we just faced the situation that we had
->   too few IRQ lines so we need to start sharing them with open
->   drain...?
-> 
-> It's not gonna happen.
-> 
-> Stay with just drive-open-drain; and configure them all as that if
-> that property is set.
+OK, I will modify it in the next version
 
-Good insights, I'd not really thought about the wider reasons for using
-this :)  Not done any circuit design or embedded board bring up in a
-long while.
+Thanks
+Longfang.
 
-Thanks!
-
+> Alex
 > 
-> Yours,
-> Linus Walleij
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 7b1306615fc0..bd01ca674c60 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -22304,6 +22304,7 @@ L:	kvm@vger.kernel.org
+>>  S:	Maintained
+>>  T:	git https://github.com/awilliam/linux-vfio.git
+>>  F:	Documentation/ABI/testing/sysfs-devices-vfio-dev
+>> +F:	Documentation/ABI/testing/debugfs-vfio
+>>  F:	Documentation/driver-api/vfio.rst
+>>  F:	drivers/vfio/
+>>  F:	include/linux/vfio.h
 > 
-
+> .
+> 
