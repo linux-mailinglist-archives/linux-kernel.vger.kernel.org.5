@@ -2,70 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1ED67C8219
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D48407C821E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbjJMJbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 05:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52038 "EHLO
+        id S231134AbjJMJeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 05:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbjJMJbo (ORCPT
+        with ESMTP id S230424AbjJMJeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 05:31:44 -0400
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88E4BE;
-        Fri, 13 Oct 2023 02:31:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1697189502; x=1728725502;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=njmefSqG9ONV48MJlnC5TzeJNM5ymdvYqkhrV4QEMXQ=;
-  b=Tvz8AX0T+fnZjLMO7auzz5eY7JeKSCIES+DYJdGfuUYYZ17khIuB0Vsm
-   E3uIQhj88M5tjZ2jT2fe4xaOsxkD+yRd7UynVcDYQx6ELeMV3nyG4n/Uf
-   wAkel0UHsdNThyvmeas2ZEvIusz2KswRgwZo3cHaZHO0i4JUjWNaHd73a
-   q2sLDckN/IaPgrf13EMuaAjFeiRtJRl5uhVz6FCFLx4GDcdViJN8DTOsU
-   a2WSA97Ycufs+hHCYAA1lnWOda1TBbma7mcOjfF+WoXyIJceh5NJITEkm
-   6i9tuSp/4qTcmnyNPZSnaPLFckKQ3acaOyZAQp27lX4e0Ahxu7sL/CXRS
-   g==;
-X-IronPort-AV: E=Sophos;i="6.03,221,1694728800"; 
-   d="scan'208";a="33449897"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 13 Oct 2023 11:31:39 +0200
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 75BC4280082;
-        Fri, 13 Oct 2023 11:31:39 +0200 (CEST)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     Daniel Baluta <daniel.baluta@nxp.com>,
-        Mpuaudiosw <Mpuaudiosw@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "S.J. Wang" <shengjiu.wang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-imx <linux-imx@nxp.com>, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        LnxRevLi <LnxRevLi@nxp.com>
-Subject: Re: [PATCH v3 2/2] arm64: dts: imx8mp: add reserve-memory nodes for DSP
-Date:   Fri, 13 Oct 2023 11:31:39 +0200
-Message-ID: <7769811.31r3eYUQgx@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <80a6a56b-4a12-99bb-acb3-94a5753b2de4@nxp.com>
-References: <20231010090929.4371-1-iuliana.prodan@oss.nxp.com> <2301291.ElGaqSPkdT@steina-w> <80a6a56b-4a12-99bb-acb3-94a5753b2de4@nxp.com>
+        Fri, 13 Oct 2023 05:34:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953ACBD;
+        Fri, 13 Oct 2023 02:34:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6354C433C7;
+        Fri, 13 Oct 2023 09:34:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697189652;
+        bh=aqNTWk/jLrgnCA59noQX1Z0OD+kaSq0f7Cj2KJ+dY7M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sWMAeeBqIkpI34Z+ITknz6l3Bw/5EvKniAa2W9YT6hM+MssyAs6Z+4VuyQ1LHE9m4
+         7K2yz6zc8HBODFAsnlPAViSy5OmwWBWu5JFoTB5i3KtXXu71zbSllc85RQrHQVssCL
+         ca0g9xRjkWR7D/3s1fj3nIklhqs24WWQoUpPI+RVfL51wdxZp+XhGkt79fgpaEj1/T
+         UVjPymfCA6ZhNSOPZ0SdNBy1MaGznZKwnhs9EtvZIHGU9IftrK6HeeY+dP5URXehs1
+         bg2qA3QdcObOy3NQifFNmWh5ItRopcwdJQqrLjRXZ9rB2awpZYD6WTbHgDSOsnRYt9
+         BNmevFk8cgr+A==
+Date:   Fri, 13 Oct 2023 11:34:07 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc:     Peter Rosin <peda@axentia.se>,
+        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] i2c: mv64xxx: add an optional reset-gpios property
+Message-ID: <20231013093407.p2oqsagk62vrqacc@zenone.zhora.eu>
+References: <20231012035838.2804064-1-chris.packham@alliedtelesis.co.nz>
+ <20231012035838.2804064-3-chris.packham@alliedtelesis.co.nz>
+ <20231012102140.kydfi2tppvhd7bdn@zenone.zhora.eu>
+ <63403365-2d23-b4a0-d869-070686d62ab5@axentia.se>
+ <812dd506-c61b-4967-9b0b-ea35a111bc7f@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <812dd506-c61b-4967-9b0b-ea35a111bc7f@alliedtelesis.co.nz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,82 +60,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Iuliana,
+Hi Chris,
 
-Am Freitag, 13. Oktober 2023, 10:35:17 CEST schrieb Iuliana Prodan:
-> Hi Alexander,
->=20
-> On 10/11/2023 8:37 AM, Alexander Stein wrote:
-> > Hi Iuliana,
-> >=20
-> > Am Dienstag, 10. Oktober 2023, 11:09:29 CEST schrieb Iuliana Prodan (OS=
-S):
-> >> From: Iuliana Prodan <iuliana.prodan@nxp.com>
-> >>=20
-> >> Add the reserve-memory nodes used by DSP when the rpmsg
-> >> feature is enabled.
-> >>=20
-> >> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
-> >> ---
-> >>=20
-> >>   arch/arm64/boot/dts/freescale/imx8mp.dtsi | 16 ++++++++++++++++
-> >>   1 file changed, 16 insertions(+)
-> >>=20
-> >> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> >> b/arch/arm64/boot/dts/freescale/imx8mp.dtsi index
-> >> cc406bb338fe..22815b3ea890 100644
-> >> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> >> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> >> @@ -211,6 +211,22 @@
-> >>=20
-> >>   			reg =3D <0 0x92400000 0 0x2000000>;
-> >>   			no-map;
-> >>   	=09
-> >>   		};
-> >>=20
-> >> +
-> >> +		dsp_vdev0vring0: vdev0vring0@942f0000 {
-> >> +			reg =3D <0 0x942f0000 0 0x8000>;
-> >> +			no-map;
-> >> +		};
-> >> +
-> >> +		dsp_vdev0vring1: vdev0vring1@942f8000 {
-> >> +			reg =3D <0 0x942f8000 0 0x8000>;
-> >> +			no-map;
-> >> +		};
-> >> +
-> >> +		dsp_vdev0buffer: vdev0buffer@94300000 {
-> >> +			compatible =3D "shared-dma-pool";
-> >> +			reg =3D <0 0x94300000 0 0x100000>;
-> >> +			no-map;
-> >> +		};
-> >=20
-> > Please configure these reserved memories on board level. Not every i.MX=
-8MP
-> > based board uses this DSP or has these memory addresses available.
->=20
-> Will it be ok in imx8mp-evk.dts?
+...
 
-If that is the board using the DSP and the reserved memory, then yes.
+>              static struct mv64xxx_i2c_regs mv64xxx_i2c_regs_mv64xxx = {
+>             @@ -1083,6 +1084,10 @@ mv64xxx_i2c_probe(struct platform_device *pd)
+>                     if (drv_data->irq < 0)
+>                             return drv_data->irq;
+> 
+>             +       drv_data->reset_gpio = devm_gpiod_get_optional(&pd->dev, "reset", GPIOD_OUT_HIGH);
+>             +       if (IS_ERR(drv_data->reset_gpio))
+>             +               return PTR_ERR(drv_data->reset_gpio);
+> 
+>         if this optional why are we returning in case of error?
+> 
+> gpiod_get_optional() will return NULL if the property is not present. The main
+> error I care about here is -EPROBE_DEFER but I figure other errors are also
+> relevant. This same kind of pattern is used in other drivers.
 
-Best regards,
-Alexander
+we already discussed about this, I don't have a strong opinion,
+you can leave it as it is... I recon this is a matter of pure
+taste.
 
-> Thanks,
-> Iulia
->=20
-> > Best regards,
-> > Alexander
-> >=20
-> >>   	};
-> >>   =09
-> >>   	pmu {
+Would you just mind adding an error message using
+dev_err_probe()?
 
-
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
-
+Thanks,
+Andi
