@@ -2,250 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8C27C8055
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229B37C8066
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbjJMIdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53110 "EHLO
+        id S230098AbjJMIfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:35:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbjJMIdS (ORCPT
+        with ESMTP id S229900AbjJMIfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:33:18 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B844A9;
-        Fri, 13 Oct 2023 01:33:16 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-66d0f945893so15109906d6.1;
-        Fri, 13 Oct 2023 01:33:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697185995; x=1697790795; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cB14EJe8gaSIsrChU+ryklBeoO0BpFobtwILGows1XY=;
-        b=Ny0ydS34c3okbdjU+8YO+ebA+IEG6lo/0gGkOMQcfvMfwfBRzwk/Ca/4+WvpKRd64w
-         5X5fqh6AZaqJZHZvKfI6AUKXcpi+GYvRIRXQoFoOJdTGLnfj5ok2gmHdq9e/1jmCTMU6
-         uc2dv3YnZ8tekYf0cb2qQPBVAcoko3kYBJ/XIy3/d4pzqDHzcbeNDTHVeSn+SQiCppHu
-         HFzVC2tIS/+QO15TLzHsucoQBo9nEYojdHYqjXnes2NTIyZaS44Y6cNi3HlR17lK4Ksg
-         JippH/I6O/q15EzCyOo5N0zQaZN6nZqoCHJjFzJJcVO+Q2aCYK88Wp6V2Ivq14LbOjNW
-         mcgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697185995; x=1697790795;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cB14EJe8gaSIsrChU+ryklBeoO0BpFobtwILGows1XY=;
-        b=KoObdpMeJCnB9HiyKu/9URLt5CqIomYpEYIXEHPsQbTmy7neQNLwfLSwZFMhtMJ15A
-         0t+g+B57P3j3FmJxazbV/7sSSWE6WSbLiivL3DtqShehlcvMv6ICdtF2ETEHCVrCYlJQ
-         L++6MyRsVg7/FbHfJZJCpLLICpccspbiiskjHoq1mlY76bLF69rnLvbF9Gw/eqm1tKqg
-         ttgjniO7a4Ng4aOAouxji/nXje+g1b9AHTUJ6ZRst39JdCYcd1J4yACdAkcd8D3OD0Ok
-         fz/Jkhvj8V2pMya7yNdZ17U59Z+J9q1uzPzp+8ea1zyz/2MLa1Vo0QQu7bqjEA9Pdi0X
-         hkEw==
-X-Gm-Message-State: AOJu0YzXdE6ebkJ7sdSh4GYxD1lzpx5sTsuNJY8UyTctS9vc/stkx7Ah
-        Mj3EXAQfJLAJAy+seuiuPL68wjSi5Rmwdoy0zkQjrLIg7gYOLfe2
-X-Google-Smtp-Source: AGHT+IE6W8lv3qmlq0fV4g9Q/NkdBL1ED8anuar1B71O4TG7gG/AueoWY+/HF/6Z/AZwJeRRAy0LUdgFSxhLHVzoBlE=
-X-Received: by 2002:a05:6214:5197:b0:66d:12d1:351c with SMTP id
- kl23-20020a056214519700b0066d12d1351cmr6602735qvb.31.1697185995112; Fri, 13
- Oct 2023 01:33:15 -0700 (PDT)
+        Fri, 13 Oct 2023 04:35:15 -0400
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9D805BE;
+        Fri, 13 Oct 2023 01:35:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=5MOpr
+        jAOmKuRQcUEFPjJnljw9+pk28pP88631pmQ2V4=; b=TtTV8rMsFGMzsof06r6ey
+        TN+KdGZoxGw9EVowzSLK0PkAJx7I9uJQX9IzEix6yc4iMR0F0YSGs4+qnupVYjyo
+        faEOJJ3LoatohGINbcjyGxhsKlI8ES/Nl3X/e4B68K2Wv121bz22Rkhs1ERf29Dk
+        bjTAmGMGHvoed8xjaPZCaw=
+Received: from test-Z390-GAMING-X.bayhubtech.com (unknown [58.48.115.170])
+        by zwqz-smtp-mta-g3-4 (Coremail) with SMTP id _____wD3n6SsACllYx2+AQ--.7595S2;
+        Fri, 13 Oct 2023 16:32:45 +0800 (CST)
+From:   liuchang_125125@163.com
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     mark.tao@bayhubtech.com, shaper.liu@bayhubtech.com,
+        thomas.hu@bayhubtech.com, chevron.li@bayhubtech.com,
+        charl.liu@bayhubtech.com, Charl Liu <liuchang_125125@163.com>
+Subject: [PATCH 0/9] Add support for Bayhub SD/MMC controller
+Date:   Fri, 13 Oct 2023 16:32:42 +0800
+Message-Id: <20231013083242.10227-1-liuchang_125125@163.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231013013536.2047-1-zhujun2@cmss.chinamobile.com>
-In-Reply-To: <20231013013536.2047-1-zhujun2@cmss.chinamobile.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Fri, 13 Oct 2023 16:32:38 +0800
-Message-ID: <CALOAHbBubM3Z9JTZ4hCvvWFw0m-1mFP3BthFHA_8Xyr80zyS7g@mail.gmail.com>
-Subject: Re: [PATCH] selftests: bpf: remove unused variables
-To:     zhujun2 <zhujun2@cmss.chinamobile.com>
-Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        andrii@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wD3n6SsACllYx2+AQ--.7595S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3JF4rJr43GrW5JryUXF1kZrb_yoW3tF1fpF
+        WrZ34rAw4UKrWIkrn7Kry2yFy3JayxGryDK3y2q3s8ua4IkFyrtrnrJFy5AF93Xr18trnF
+        qFs0qFyDK3WDKFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0p_8n5dUUUUU=
+X-Originating-IP: [58.48.115.170]
+X-CM-SenderInfo: polxux5dqjsiqsvrjki6rwjhhfrp/xtbBnwQHWVetlIO+lQABsC
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 9:35=E2=80=AFAM zhujun2 <zhujun2@cmss.chinamobile.c=
-om> wrote:
->
-> These variables are never referenced in the code, just remove them.
+From: Charl Liu <liuchang_125125@163.com>
 
-You can't remove them because they are really referenced in the CHECK() mar=
-co.
-Sending a patch without even testing a build is bad :(
+The Bayhub's SD/MMC Card interface driver implements card detection,
+card initialization, and other application level functions. The whole
+project is divided into 9 patches to commit. Patch [1/9] and patch
+[2/9] commit the Kconfig and Makefile, and the other code is divided
+into 7 patches (patch [3/9] to patch [9/9]) by function.
 
->
-> Signed-off-by: zhujun2 <zhujun2@cmss.chinamobile.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/atomic_bounds.c      | 1 -
->  tools/testing/selftests/bpf/prog_tests/kfree_skb.c          | 2 --
->  tools/testing/selftests/bpf/prog_tests/perf_branches.c      | 6 +-----
->  .../testing/selftests/bpf/prog_tests/probe_read_user_str.c  | 4 ++--
->  tools/testing/selftests/bpf/prog_tests/test_overhead.c      | 4 ++--
->  tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c       | 1 -
->  6 files changed, 5 insertions(+), 13 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c b/too=
-ls/testing/selftests/bpf/prog_tests/atomic_bounds.c
-> index 69bd7853e..4715cde38 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
-> @@ -7,7 +7,6 @@
->  void test_atomic_bounds(void)
->  {
->         struct atomic_bounds *skel;
-> -       __u32 duration =3D 0;
->
->         skel =3D atomic_bounds__open_and_load();
->         if (CHECK(!skel, "skel_load", "couldn't load program\n"))
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c b/tools/t=
-esting/selftests/bpf/prog_tests/kfree_skb.c
-> index c07991544..b0992a9ed 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-> @@ -20,7 +20,6 @@ static void on_sample(void *ctx, int cpu, void *data, _=
-_u32 size)
->  {
->         struct meta *meta =3D (struct meta *)data;
->         struct ipv6_packet *pkt_v6 =3D data + sizeof(*meta);
-> -       int duration =3D 0;
->
->         if (CHECK(size !=3D 72 + sizeof(*meta), "check_size", "size %u !=
-=3D %zu\n",
->                   size, 72 + sizeof(*meta)))
-> @@ -65,7 +64,6 @@ void serial_test_kfree_skb(void)
->         struct perf_buffer *pb =3D NULL;
->         int err, prog_fd;
->         bool passed =3D false;
-> -       __u32 duration =3D 0;
->         const int zero =3D 0;
->         bool test_ok[2];
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_branches.c b/too=
-ls/testing/selftests/bpf/prog_tests/perf_branches.c
-> index bc24f8333..0942b9891 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/perf_branches.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
-> @@ -13,7 +13,6 @@ static void check_good_sample(struct test_perf_branches=
- *skel)
->         int required_size =3D skel->bss->required_size_out;
->         int written_stack =3D skel->bss->written_stack_out;
->         int pbe_size =3D sizeof(struct perf_branch_entry);
-> -       int duration =3D 0;
->
->         if (CHECK(!skel->bss->valid, "output not valid",
->                  "no valid sample from prog"))
-> @@ -43,7 +42,6 @@ static void check_bad_sample(struct test_perf_branches =
-*skel)
->         int written_global =3D skel->bss->written_global_out;
->         int required_size =3D skel->bss->required_size_out;
->         int written_stack =3D skel->bss->written_stack_out;
-> -       int duration =3D 0;
->
->         if (CHECK(!skel->bss->valid, "output not valid",
->                  "no valid sample from prog"))
-> @@ -61,7 +59,7 @@ static void test_perf_branches_common(int perf_fd,
->                                       void (*cb)(struct test_perf_branche=
-s *))
->  {
->         struct test_perf_branches *skel;
-> -       int err, i, duration =3D 0;
-> +       int err, i;
->         bool detached =3D false;
->         struct bpf_link *link;
->         volatile int j =3D 0;
-> @@ -102,7 +100,6 @@ static void test_perf_branches_common(int perf_fd,
->  static void test_perf_branches_hw(void)
->  {
->         struct perf_event_attr attr =3D {0};
-> -       int duration =3D 0;
->         int pfd;
->
->         /* create perf event */
-> @@ -143,7 +140,6 @@ static void test_perf_branches_hw(void)
->  static void test_perf_branches_no_hw(void)
->  {
->         struct perf_event_attr attr =3D {0};
-> -       int duration =3D 0;
->         int pfd;
->
->         /* create perf event */
-> diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c=
- b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-> index e41929813..a7c6ad8d6 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-> @@ -9,7 +9,7 @@ static const char str3[] =3D "mestringblubblubblubblubblu=
-b";
->  static int test_one_str(struct test_probe_read_user_str *skel, const cha=
-r *str,
->                         size_t len)
->  {
-> -       int err, duration =3D 0;
-> +       int err;
->         char buf[256];
->
->         /* Ensure bytes after string are ones */
-> @@ -44,7 +44,7 @@ static int test_one_str(struct test_probe_read_user_str=
- *skel, const char *str,
->  void test_probe_read_user_str(void)
->  {
->         struct test_probe_read_user_str *skel;
-> -       int err, duration =3D 0;
-> +       int err;
->
->         skel =3D test_probe_read_user_str__open_and_load();
->         if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_overhead.c b/too=
-ls/testing/selftests/bpf/prog_tests/test_overhead.c
-> index f27013e38..6161009df 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-> @@ -17,7 +17,7 @@ static __u64 time_get_ns(void)
->
->  static int test_task_rename(const char *prog)
->  {
-> -       int i, fd, duration =3D 0, err;
-> +       int i, fd, err;
->         char buf[] =3D "test_overhead";
->         __u64 start_time;
->
-> @@ -66,7 +66,7 @@ void test_test_overhead(void)
->         struct bpf_program *fentry_prog, *fexit_prog;
->         struct bpf_object *obj;
->         struct bpf_link *link;
-> -       int err, duration =3D 0;
-> +       int err;
->         char comm[16] =3D {};
->
->         if (CHECK_FAIL(prctl(PR_GET_NAME, comm, 0L, 0L, 0L)))
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c b/tool=
-s/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-> index 8b50a992d..5af434353 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-> @@ -40,7 +40,6 @@ static bool expect_str(char *buf, size_t size, const ch=
-ar *str, const char *name
->  {
->         static char escbuf_expected[CMD_OUT_BUF_SIZE * 4];
->         static char escbuf_actual[CMD_OUT_BUF_SIZE * 4];
-> -       static int duration =3D 0;
->         bool ok;
->
->         ok =3D size =3D=3D strlen(str) && !memcmp(buf, str, size);
-> --
-> 2.17.1
->
->
->
->
+Charl Liu (9):
+  scsi: Update Kconfig and Makefile for supporting Bayhub's SD/MMC Card
+    interface driver
+  scsi: bht: Add Bayhub module's Kconfig and Makefile for compiling
+    Bayhub's SD/MMC Card interface driver
+  scsi: bht: card: Add the source files related to card initialization
+  scsi: bht: host: Add the source files related to host initialization,
+    command handler, interrupt handler and transfer handler
+  scsi: bht: include: Add the header files related to Bayhub specific
+    struct, enum and macro
+  scsi: bht: linux_os: Add the source files related to SCSI frame and
+    driver entry
+  scsi: bht: main: Add the source files related to driver setting
+    management
+  scsi: bht: tagqueue: Add the source files related to tagqueue transfer
+    function
+  scsi: bht: util: Add the source files related to utility
+
+ drivers/scsi/Kconfig                         |    1 +
+ drivers/scsi/Makefile                        |    2 +
+ drivers/scsi/bht/Kconfig                     |   10 +
+ drivers/scsi/bht/Makefile                    |   18 +
+ drivers/scsi/bht/card/card_ddr200_support.c  |  195 ++
+ drivers/scsi/bht/card/card_ddr200_support.h  |   38 +
+ drivers/scsi/bht/card/cardcommon.c           |  961 ++++++
+ drivers/scsi/bht/card/cardcommon.h           |  123 +
+ drivers/scsi/bht/card/cardinterface.c        | 2448 ++++++++++++++
+ drivers/scsi/bht/card/mmc.c                  | 1666 ++++++++++
+ drivers/scsi/bht/card/output_tuning.c        |  756 +++++
+ drivers/scsi/bht/card/sd.c                   | 3029 ++++++++++++++++++
+ drivers/scsi/bht/card/thermal.c              |  348 ++
+ drivers/scsi/bht/card/uhs2.c                 | 1228 +++++++
+ drivers/scsi/bht/host/cmdhandler.c           | 1686 ++++++++++
+ drivers/scsi/bht/host/handler.h              |   36 +
+ drivers/scsi/bht/host/host.c                 | 2947 +++++++++++++++++
+ drivers/scsi/bht/host/hostreg.h              |  478 +++
+ drivers/scsi/bht/host/hostven.c              | 2774 ++++++++++++++++
+ drivers/scsi/bht/host/hostven.h              |   31 +
+ drivers/scsi/bht/host/irqhandler.c           |  742 +++++
+ drivers/scsi/bht/host/transhandler.c         | 1730 ++++++++++
+ drivers/scsi/bht/include/basic.h             |  395 +++
+ drivers/scsi/bht/include/card.h              |  626 ++++
+ drivers/scsi/bht/include/cardapi.h           |   85 +
+ drivers/scsi/bht/include/cfgmng.h            | 1303 ++++++++
+ drivers/scsi/bht/include/cmdhandler.h        |  289 ++
+ drivers/scsi/bht/include/debug.h             |  169 +
+ drivers/scsi/bht/include/funcapi.h           |   80 +
+ drivers/scsi/bht/include/function.h          |   94 +
+ drivers/scsi/bht/include/globalcfg.h         |   78 +
+ drivers/scsi/bht/include/host.h              |  282 ++
+ drivers/scsi/bht/include/hostapi.h           |  170 +
+ drivers/scsi/bht/include/hostvenapi.h        |   47 +
+ drivers/scsi/bht/include/osapi.h             |  201 ++
+ drivers/scsi/bht/include/reqapi.h            |   80 +
+ drivers/scsi/bht/include/tq.h                |  159 +
+ drivers/scsi/bht/include/tqapi.h             |   36 +
+ drivers/scsi/bht/include/transh.h            |  132 +
+ drivers/scsi/bht/include/transhapi.h         |   25 +
+ drivers/scsi/bht/include/util.h              |   37 +
+ drivers/scsi/bht/linux_os/linux_api.c        | 2207 +++++++++++++
+ drivers/scsi/bht/linux_os/linux_api.h        |   90 +
+ drivers/scsi/bht/linux_os/linux_base.c       |  985 ++++++
+ drivers/scsi/bht/linux_os/linux_scsi.c       | 1076 +++++++
+ drivers/scsi/bht/linux_os/linux_scsi.h       |  239 ++
+ drivers/scsi/bht/main/autotimerfunc.c        |  335 ++
+ drivers/scsi/bht/main/cfgmng.c               | 1132 +++++++
+ drivers/scsi/bht/main/funcapi.h              |   36 +
+ drivers/scsi/bht/main/geniofunc.c            |  618 ++++
+ drivers/scsi/bht/main/pmfunc.c               |  357 +++
+ drivers/scsi/bht/main/reqmng.c               |  546 ++++
+ drivers/scsi/bht/main/testcase.c             |  213 ++
+ drivers/scsi/bht/main/thread.c               |  530 +++
+ drivers/scsi/bht/tagqueue/tagqueue.c         | 2517 +++++++++++++++
+ drivers/scsi/bht/tagqueue/tq_merge.c         |  433 +++
+ drivers/scsi/bht/tagqueue/tq_trans_api.h     |   91 +
+ drivers/scsi/bht/tagqueue/tq_util.h          |   29 +
+ drivers/scsi/bht/tagqueue/tqadma2.c          |  821 +++++
+ drivers/scsi/bht/tagqueue/tqadma3.c          |  504 +++
+ drivers/scsi/bht/tagqueue/tqadma_sdma_like.c |  373 +++
+ drivers/scsi/bht/tagqueue/tqpolicy.c         |  210 ++
+ drivers/scsi/bht/tagqueue/tqsdma.c           |  285 ++
+ drivers/scsi/bht/util/debug.c                |  413 +++
+ drivers/scsi/bht/util/util.c                 |  141 +
+ 65 files changed, 39716 insertions(+)
+ create mode 100644 drivers/scsi/bht/Kconfig
+ create mode 100644 drivers/scsi/bht/Makefile
+ create mode 100644 drivers/scsi/bht/card/card_ddr200_support.c
+ create mode 100644 drivers/scsi/bht/card/card_ddr200_support.h
+ create mode 100644 drivers/scsi/bht/card/cardcommon.c
+ create mode 100644 drivers/scsi/bht/card/cardcommon.h
+ create mode 100644 drivers/scsi/bht/card/cardinterface.c
+ create mode 100644 drivers/scsi/bht/card/mmc.c
+ create mode 100644 drivers/scsi/bht/card/output_tuning.c
+ create mode 100644 drivers/scsi/bht/card/sd.c
+ create mode 100644 drivers/scsi/bht/card/thermal.c
+ create mode 100644 drivers/scsi/bht/card/uhs2.c
+ create mode 100644 drivers/scsi/bht/host/cmdhandler.c
+ create mode 100644 drivers/scsi/bht/host/handler.h
+ create mode 100644 drivers/scsi/bht/host/host.c
+ create mode 100644 drivers/scsi/bht/host/hostreg.h
+ create mode 100644 drivers/scsi/bht/host/hostven.c
+ create mode 100644 drivers/scsi/bht/host/hostven.h
+ create mode 100644 drivers/scsi/bht/host/irqhandler.c
+ create mode 100644 drivers/scsi/bht/host/transhandler.c
+ create mode 100644 drivers/scsi/bht/include/basic.h
+ create mode 100644 drivers/scsi/bht/include/card.h
+ create mode 100644 drivers/scsi/bht/include/cardapi.h
+ create mode 100644 drivers/scsi/bht/include/cfgmng.h
+ create mode 100644 drivers/scsi/bht/include/cmdhandler.h
+ create mode 100644 drivers/scsi/bht/include/debug.h
+ create mode 100644 drivers/scsi/bht/include/funcapi.h
+ create mode 100644 drivers/scsi/bht/include/function.h
+ create mode 100644 drivers/scsi/bht/include/globalcfg.h
+ create mode 100644 drivers/scsi/bht/include/host.h
+ create mode 100644 drivers/scsi/bht/include/hostapi.h
+ create mode 100644 drivers/scsi/bht/include/hostvenapi.h
+ create mode 100644 drivers/scsi/bht/include/osapi.h
+ create mode 100644 drivers/scsi/bht/include/reqapi.h
+ create mode 100644 drivers/scsi/bht/include/tq.h
+ create mode 100644 drivers/scsi/bht/include/tqapi.h
+ create mode 100644 drivers/scsi/bht/include/transh.h
+ create mode 100644 drivers/scsi/bht/include/transhapi.h
+ create mode 100644 drivers/scsi/bht/include/util.h
+ create mode 100644 drivers/scsi/bht/linux_os/linux_api.c
+ create mode 100644 drivers/scsi/bht/linux_os/linux_api.h
+ create mode 100644 drivers/scsi/bht/linux_os/linux_base.c
+ create mode 100644 drivers/scsi/bht/linux_os/linux_scsi.c
+ create mode 100644 drivers/scsi/bht/linux_os/linux_scsi.h
+ create mode 100644 drivers/scsi/bht/main/autotimerfunc.c
+ create mode 100644 drivers/scsi/bht/main/cfgmng.c
+ create mode 100644 drivers/scsi/bht/main/funcapi.h
+ create mode 100644 drivers/scsi/bht/main/geniofunc.c
+ create mode 100644 drivers/scsi/bht/main/pmfunc.c
+ create mode 100644 drivers/scsi/bht/main/reqmng.c
+ create mode 100644 drivers/scsi/bht/main/testcase.c
+ create mode 100644 drivers/scsi/bht/main/thread.c
+ create mode 100644 drivers/scsi/bht/tagqueue/tagqueue.c
+ create mode 100644 drivers/scsi/bht/tagqueue/tq_merge.c
+ create mode 100644 drivers/scsi/bht/tagqueue/tq_trans_api.h
+ create mode 100644 drivers/scsi/bht/tagqueue/tq_util.h
+ create mode 100644 drivers/scsi/bht/tagqueue/tqadma2.c
+ create mode 100644 drivers/scsi/bht/tagqueue/tqadma3.c
+ create mode 100644 drivers/scsi/bht/tagqueue/tqadma_sdma_like.c
+ create mode 100644 drivers/scsi/bht/tagqueue/tqpolicy.c
+ create mode 100644 drivers/scsi/bht/tagqueue/tqsdma.c
+ create mode 100644 drivers/scsi/bht/util/debug.c
+ create mode 100644 drivers/scsi/bht/util/util.c
 
 
---=20
-Regards
-Yafang
+base-commit: 401644852d0b2a278811de38081be23f74b5bb04
+-- 
+2.34.1
+
