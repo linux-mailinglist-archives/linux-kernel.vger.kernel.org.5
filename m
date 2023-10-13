@@ -2,164 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0997C7E27
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00F77C7E2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbjJMGw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 02:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54130 "EHLO
+        id S229692AbjJMGw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 02:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjJMGwY (ORCPT
+        with ESMTP id S229844AbjJMGw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 02:52:24 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8194BBD
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:52:21 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c4fdf94666so13512291fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:52:21 -0700 (PDT)
+        Fri, 13 Oct 2023 02:52:57 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A062391
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:52:55 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3226cc3e324so1681290f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:52:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697179940; x=1697784740; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1697179974; x=1697784774; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wRvzuM3dXYzryQCk7xWcNKlO4Iw1AA1aiww1cz8HI1c=;
-        b=vThq0d5qwoZXPLqrOB0G1rcQTQQTAWKnLagpQVfhwOxlp9kqbdClcjxDtyvU6MlXp5
-         V5tx+3lVsQBNGh/1wi9GwgMulN51KFTHo+FgrVeq5Qv/2bpEsnhs7A2oMDujhLsJpnVU
-         E1/PYvjRZMsAYcDqC/jNpOBmiNYYR0Wiq9qW3joiD6qRoIeDqVnKgxX8qSJTYpGeo0ud
-         9AbcyyoDxJDgYQHlYxkunkLixgw0nH1xBb12yRtUSVb09u8P5DH1vtc9gvRh+F3lf56L
-         R2Y7oD8743mLF+HOHuchIh0qpO6plCcLSQr/3eWzTwt7m1/v7xRlFqcRVCV9LSI+/Yhm
-         KaBg==
+        bh=1fwSnEb/oGascEkxYNcgQ1DoI1EHky2CUmiF3z/VGsc=;
+        b=GYlopn326+7oIKGsv5aOk3rwQt+B2C9Segb05eeyTYefmmkOKySTR60+DS3l0yjHaw
+         iAF3a4W3Ear7ActfzBJPN5uMIyCQVGL1Km5Jepn/isS5ohGqvakfBKYGorY4+tScabPy
+         4xqiP8OsC555O/yqZR7wPvuc2n52CbHP5Dno8ApSnHjylmLsRndMqybQv4Yo2QIkerlB
+         AdwBdFNQGwDcWkFLCCQpcUJB86ysC+GhHg0rvQL+dUzrL3arRepfh+u+qF//IgmD/0Ts
+         Te8BfwxrUoDTEYtum2RwF7APurj5TDzeZKNwG9uSfukbDZqUgl7mgbha/v8/hA6MAnAh
+         LKww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697179940; x=1697784740;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1697179974; x=1697784774;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wRvzuM3dXYzryQCk7xWcNKlO4Iw1AA1aiww1cz8HI1c=;
-        b=jlyihFFUQDVIkxE8QqOrd1edXJtz4zY/KId0NlfHffCzdrmAJgo6Oez/UuteiAE6R/
-         PuedXc6sEnZSv2RdP2cs1wcq3/eT9WNxaV4n25QS81d33nZuB2JMO0MSlzqMEr+3GnZI
-         d+fHEmwVUIr5Jgqca2D9YsHak7e3jAbgscatkvVA8ktpPstZqjJ63P2v1wuyqharliLd
-         aWx/BM0SKRnvvxTr+Dz4BHOwPI6qiYyjUI7HpXxouRidDzJiGgNVMM8NTkMgNYhA8c+2
-         mSbmUv7BzMSzc2bVVWwoOasTPzBoEDYvuNQxtYu8bWd4pPvb3lyXjLDAQVpQSU+CxDQ+
-         jBxw==
-X-Gm-Message-State: AOJu0YxoSdsRszpBDpB24B1DOfCaCxCp8miQV51WC07IwrlxfXVSK+9q
-        uGeEQ1suYPoIzj006rSvYd0VsQ==
-X-Google-Smtp-Source: AGHT+IFADddCYZ38EnTUlRm0EqHQtivs9ca8CdPuf4zS7leyOacZHyyn6vDZMQw0pAQ1qx77VWhF+g==
-X-Received: by 2002:a2e:9a84:0:b0:2c2:8e57:24a7 with SMTP id p4-20020a2e9a84000000b002c28e5724a7mr24109272lji.21.1697179939751;
-        Thu, 12 Oct 2023 23:52:19 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id n9-20020adff089000000b0031ad2f9269dsm19962518wro.40.2023.10.12.23.52.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 23:52:18 -0700 (PDT)
-Message-ID: <e58ecc95-5133-4542-8178-338583bca2ab@linaro.org>
-Date:   Fri, 13 Oct 2023 08:52:17 +0200
+        bh=1fwSnEb/oGascEkxYNcgQ1DoI1EHky2CUmiF3z/VGsc=;
+        b=rSMV2hel3DMhZbaOL16y6Pi6sMYm1Bqxx2b0Wx/ChEgBLYUm+PUv3G8xX2FyPhwuJP
+         KONvk2FNdVW4WkBszUKjQu6CnMEmZsXEzvbSFIdLIVV2y/cUILN2ruwPye8qlvxT8Q6E
+         FXYFJFME3sIUlxr8tjcLdvfbR1kgPAFpyt5rjk3/m5PAPV7eUA4sUy6/1jRd11ZriTeW
+         fb5qWSBI/Bq6A4eLQDPuuVNpqSE8vsb/LFb0C5QZvxy0KN6v9VFihUUzTNIeqqnJBvno
+         nL2HsbrmWXkYR2yuRISdgVHi3vJPlb/SNI/9bAueABoMKEl9r+LAS9lYjklEtfdqNv8x
+         tTZQ==
+X-Gm-Message-State: AOJu0Yzm8avp9nljTvYSxrsRf8AiTo5f+r9/aAV/YJknbIbjfO2I1W/u
+        oEXLRVokvzNM5Z7W5gtJWfVyGHOEQDByPs7Y
+X-Google-Smtp-Source: AGHT+IGMvyjlULk/r5LkFCrZSMyEp4or+xvVuLLJOmX7A/O77IAh6ozNhv8iIiCmMKKwFR0y5b4qsQ==
+X-Received: by 2002:adf:f449:0:b0:32d:9daf:3f94 with SMTP id f9-20020adff449000000b0032d9daf3f94mr536713wrp.53.1697179973479;
+        Thu, 12 Oct 2023 23:52:53 -0700 (PDT)
+Received: from lab-ubuntu ([41.90.69.21])
+        by smtp.gmail.com with ESMTPSA id a1-20020a056000100100b0032d9efeccd8sm377463wrx.51.2023.10.12.23.52.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 23:52:53 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 09:52:50 +0300
+From:   Calvince Otieno <calvncce@gmail.com>
+To:     outreachy@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Luke Koch <lu.ale.koch@gmail.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Simon Horman <horms@kernel.org>,
+        Calvince Otieno <calvncce@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: wlan-ng: remove unused functions
+Message-ID: <ZSjpQlUcyOoYv4Yh@lab-ubuntu>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 15/16] dt-bindings: display: mediatek: split: add
- compatible for MT8195
-Content-Language: en-US
-To:     Moudy Ho <moudy.ho@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20231012084037.19376-1-moudy.ho@mediatek.com>
- <20231012084037.19376-16-moudy.ho@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231012084037.19376-16-moudy.ho@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2023 10:40, Moudy Ho wrote:
-> Add compatible string and GCE property for MT8195 SPLIT, of
-> which is operated by MDP3.
-> 
-> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+The following functions were defined in the prism2mgmt.h file but neither
+declared nor used anywhere. It is recommended that they be removed.
 
+	- void prism2mgmt_get_grpaddr(u32 did, struct p80211pstrd *pstr,
+				      struct hfa384x *priv);
+	- int prism2mgmt_set_grpaddr(u32 did,
+		                   u8 *prism2buf, struct p80211pstrd *pstr,
+	                           struct hfa384x *priv);
+	- int prism2mgmt_get_grpaddr_index(u32 did);
 
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: mediatek,mt8195-mdp3-split
-> +
-> +    then:
-> +      required:
-> +        - mediatek,gce-client-reg
+Signed-off-by: Calvince Otieno <calvncce@gmail.com>
+---
+ drivers/staging/wlan-ng/prism2mgmt.h | 8 --------
+ 1 file changed, 8 deletions(-)
 
-else:
-  mediatek,gce-client-reg: false
-
-
-> +
->  additionalProperties: false
->  
->  examples:
-
-Best regards,
-Krzysztof
+diff --git a/drivers/staging/wlan-ng/prism2mgmt.h b/drivers/staging/wlan-ng/prism2mgmt.h
+index 083a055ee986..8c3f1ac35913 100644
+--- a/drivers/staging/wlan-ng/prism2mgmt.h
++++ b/drivers/staging/wlan-ng/prism2mgmt.h
+@@ -78,14 +78,6 @@ void prism2mgmt_pstr2bytestr(struct hfa384x_bytestr *bytestr,
+ void prism2mgmt_bytestr2pstr(struct hfa384x_bytestr *bytestr,
+ 			     struct p80211pstrd *pstr);
+ 
+-/* functions to convert Group Addresses */
+-void prism2mgmt_get_grpaddr(u32 did, struct p80211pstrd *pstr,
+-			    struct hfa384x *priv);
+-int prism2mgmt_set_grpaddr(u32 did,
+-			   u8 *prism2buf, struct p80211pstrd *pstr,
+-			   struct hfa384x *priv);
+-int prism2mgmt_get_grpaddr_index(u32 did);
+-
+ void prism2sta_processing_defer(struct work_struct *data);
+ 
+ void prism2sta_commsqual_defer(struct work_struct *data);
+-- 
+Calvince Otieno
 
