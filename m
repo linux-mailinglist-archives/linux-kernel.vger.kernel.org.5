@@ -2,284 +2,400 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 819C17C8159
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 264B07C8160
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbjJMJHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 05:07:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41580 "EHLO
+        id S230410AbjJMJId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 05:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbjJMJH2 (ORCPT
+        with ESMTP id S230374AbjJMJIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 05:07:28 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 607EBBE;
-        Fri, 13 Oct 2023 02:07:25 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S6LH72sX5z688J2;
-        Fri, 13 Oct 2023 17:06:59 +0800 (CST)
-Received: from localhost (10.126.172.163) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 13 Oct
- 2023 10:07:22 +0100
-Date:   Fri, 13 Oct 2023 10:07:20 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Sridharan, Vilas" <Vilas.Sridharan@amd.com>
-CC:     "Duran, Leo" <leo.duran@amd.com>,
-        "Ghannam, Yazen" <Yazen.Ghannam@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Jiaqi Yan <jiaqiyan@google.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Grimm, Jon" <Jon.Grimm@amd.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "linuxarm@huawei.com" <linuxarm@huawei.com>,
-        "shiju.jose@huawei.com" <shiju.jose@huawei.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "jthoughton@google.com" <jthoughton@google.com>,
-        "somasundaram.a@hpe.com" <somasundaram.a@hpe.com>,
-        "erdemaktas@google.com" <erdemaktas@google.com>,
-        "pgonda@google.com" <pgonda@google.com>,
-        "duenwen@google.com" <duenwen@google.com>,
-        "mike.malvestuto@intel.com" <mike.malvestuto@intel.com>,
-        "gthelen@google.com" <gthelen@google.com>,
-        "tanxiaofei@huawei.com" <tanxiaofei@huawei.com>,
-        "prime.zeng@hisilicon.com" <prime.zeng@hisilicon.com>,
-        "kangkang.shen@futurewei.com" <kangkang.shen@futurewei.com>,
-        "wanghuiqiang@huawei.com" <wanghuiqiang@huawei.com>
-Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entries
- for set of scrub attributes
-Message-ID: <20231013100720.0000699e@Huawei.com>
-In-Reply-To: <BL0PR12MB4673059A5AC97F648CD00FB1EAD3A@BL0PR12MB4673.namprd12.prod.outlook.com>
-References: <20230915172818.761-1-shiju.jose@huawei.com>
-        <20230915172818.761-3-shiju.jose@huawei.com>
-        <CACw3F50jRzJnr9h7qYyD3t+6h7Uw9QMfkCkgu7a=7Lv0Tpi8Zg@mail.gmail.com>
-        <20230922111740.000046d7@huawei.com>
-        <CACw3F539gZc0FoJLo6VvYSyZmeWZ3Pbec7AzsH+MYUJJNzQbUQ@mail.gmail.com>
-        <92f48c1c-3235-49b2-aabd-7da87ad3febc@google.com>
-        <20231006140224.000018a2@Huawei.com>
-        <BL0PR12MB4673F5E024B62D64B065DBE4EAC9A@BL0PR12MB4673.namprd12.prod.outlook.com>
-        <20231011173553.00001b39@Huawei.com>
-        <BL0PR12MB4673336E2BD4686AFF5EE737EAD3A@BL0PR12MB4673.namprd12.prod.outlook.com>
-        <20231012160224.00003f87@Huawei.com>
-        <BL0PR12MB4673059A5AC97F648CD00FB1EAD3A@BL0PR12MB4673.namprd12.prod.outlook.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Fri, 13 Oct 2023 05:08:32 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70499B8
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:08:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1FE2C433C7;
+        Fri, 13 Oct 2023 09:08:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697188109;
+        bh=D3SBs+wve8fXQDw91s7Zt3wTRdjNPe3bByL+Rc+UX4E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=is2V4cvIWfVlw+zpdr+XW81rENFQj3+Dmw/xQxMg+FeWvTAnyJSlpa27QJCJJC3ZE
+         o9/I0jpCjh33sgZ9eXE6SR5PU/b/33ZqACM/ZknutLz93xWWXs/aIw1bJ9y0nMa3kp
+         1ffgTRsJS4vVmkvhm8dwSyxKXVDHGriwjtlDwpDZs07yh57q1iciR+0vLa7UBe7JwX
+         RJfGEFRrX3FgE83zTDeluHBESuUMGJMnosSv4ieFWewGNbJxB/nrf5sdcZdai3UhS9
+         sV7/A2/Bjzb31lgn0ocwOdl98j7Q9TABaYyBxBltVM7JL5ny+kVyrmRL2tPHOc0tir
+         M13gHkt8RzWtA==
+Date:   Fri, 13 Oct 2023 10:08:24 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Inochi Amaoto <inochiama@outlook.com>
+Cc:     Chao Wei <chao.wei@sophgo.com>,
+        Chen Wang <unicorn_wang@outlook.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 4/7] riscv: dts: sophgo: Separate common devices from
+ cv1800b soc
+Message-ID: <20231013-catchable-wince-f24060feb639@spud>
+References: <IA1PR20MB49531C1C34C3E972DBBA4151BBCEA@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <20231009112642.477337-1-inochiama@outlook.com>
+ <IA1PR20MB49532560A3CA2670A0EAB846BBCEA@IA1PR20MB4953.namprd20.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.172.163]
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="HRy542+WJiRGwJph"
+Content-Disposition: inline
+In-Reply-To: <IA1PR20MB49532560A3CA2670A0EAB846BBCEA@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Oct 2023 15:44:18 +0000
-"Sridharan, Vilas" <Vilas.Sridharan@amd.com> wrote:
 
-> [AMD Official Use Only - General]
-> 
-> > Are you thinking a code first proposal?  If you think doing this through the standards body is a good idea then perhaps message back here so we know when to look for further proposals in mantis.  
-> 
-> I am not super familiar with what you mean by 'code first proposal', but we are thinking about crafting an ECN (or a set of ECNs) for ACPI, that will be made public through ACPI's normal process.
-> 
-There are two ways to go about getting an ECN into the specification
-and which one is chosen affects the 'made it public' part of the ECN.
+--HRy542+WJiRGwJph
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-One is public from the start and is done via a proposal submitted to the Specification
-Updates section of the tianocore bugzilla. This is referred to as "code
-first", but actually just means the request came from discussions initially
-had outside of the UEFI forum. They are still discussed in ASWG, but review
-also occurs in public on the bugzilla.
-https://bugzilla.tianocore.org/buglist.cgi?component=Specification%20Update&product=EDK2%20Code%20First&resolution=---
+Yo,
 
-The other is the more traditional method of proposing in private. There the issue
-is that the review is limited to those who both engage closely with ASWG and those
-who can remember their mantis password. Before we post any software based on changes
-going via that route (as its covered by UEFI forum IP rules) we have to wait for a
-formal specification release.  So basically the traditional method is typically slower
-and doesn't let us do helpful things like ask the kernel community to review the
-proposed changes. The code first route was added a few years ago to provide the
-options for companies that preferred the flexibility and openness it provides.
+On Mon, Oct 09, 2023 at 07:26:35PM +0800, Inochi Amaoto wrote:
+> Move the cpu and the common peripherals of CV181x and CV180x to new file.
+>=20
+> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> ---
+>  arch/riscv/boot/dts/sophgo/cv1800b.dtsi       | 95 +------------------
+>  .../dts/sophgo/{cv1800b.dtsi =3D> cv180x.dtsi}  | 19 +---
+>  2 files changed, 2 insertions(+), 112 deletions(-)
+>  copy arch/riscv/boot/dts/sophgo/{cv1800b.dtsi =3D> cv180x.dtsi} (80%)
+>=20
+> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dt=
+s/sophgo/cv1800b.dtsi
+> index df40e87ee063..0904154f9829 100644
+> --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> @@ -3,106 +3,13 @@
+>   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+>   */
+>=20
+> -#include <dt-bindings/interrupt-controller/irq.h>
+> +#include "cv180x.dtsi"
+>=20
+>  / {
+>  	compatible =3D "sophgo,cv1800b";
+> -	#address-cells =3D <1>;
+> -	#size-cells =3D <1>;
+> -
+> -	cpus: cpus {
+> -		#address-cells =3D <1>;
+> -		#size-cells =3D <0>;
+> -		timebase-frequency =3D <25000000>;
+> -
+> -		cpu0: cpu@0 {
+> -			compatible =3D "thead,c906", "riscv";
+> -			device_type =3D "cpu";
+> -			reg =3D <0>;
+> -			d-cache-block-size =3D <64>;
+> -			d-cache-sets =3D <512>;
+> -			d-cache-size =3D <65536>;
+> -			i-cache-block-size =3D <64>;
+> -			i-cache-sets =3D <128>;
+> -			i-cache-size =3D <32768>;
+> -			mmu-type =3D "riscv,sv39";
+> -			riscv,isa =3D "rv64imafdc";
+> -			riscv,isa-base =3D "rv64i";
+> -			riscv,isa-extensions =3D "i", "m", "a", "f", "d", "c", "zicntr", "zic=
+sr",
+> -					       "zifencei", "zihpm";
+> -
+> -			cpu0_intc: interrupt-controller {
+> -				compatible =3D "riscv,cpu-intc";
+> -				interrupt-controller;
+> -				#address-cells =3D <0>;
+> -				#interrupt-cells =3D <1>;
+> -			};
+> -		};
+> -	};
+> -
+> -	osc: oscillator {
+> -		compatible =3D "fixed-clock";
+> -		clock-output-names =3D "osc_25m";
+> -		#clock-cells =3D <0>;
+> -	};
+>=20
+>  	soc {
+> -		compatible =3D "simple-bus";
+>  		interrupt-parent =3D <&plic>;
+> -		#address-cells =3D <1>;
+> -		#size-cells =3D <1>;
+> -		dma-noncoherent;
+> -		ranges;
+> -
+> -		uart0: serial@4140000 {
+> -			compatible =3D "snps,dw-apb-uart";
+> -			reg =3D <0x04140000 0x100>;
+> -			interrupts =3D <44 IRQ_TYPE_LEVEL_HIGH>;
+> -			clocks =3D <&osc>;
+> -			reg-shift =3D <2>;
+> -			reg-io-width =3D <4>;
+> -			status =3D "disabled";
+> -		};
+> -
+> -		uart1: serial@4150000 {
+> -			compatible =3D "snps,dw-apb-uart";
+> -			reg =3D <0x04150000 0x100>;
+> -			interrupts =3D <45 IRQ_TYPE_LEVEL_HIGH>;
+> -			clocks =3D <&osc>;
+> -			reg-shift =3D <2>;
+> -			reg-io-width =3D <4>;
+> -			status =3D "disabled";
+> -		};
+> -
+> -		uart2: serial@4160000 {
+> -			compatible =3D "snps,dw-apb-uart";
+> -			reg =3D <0x04160000 0x100>;
+> -			interrupts =3D <46 IRQ_TYPE_LEVEL_HIGH>;
+> -			clocks =3D <&osc>;
+> -			reg-shift =3D <2>;
+> -			reg-io-width =3D <4>;
+> -			status =3D "disabled";
+> -		};
+> -
+> -		uart3: serial@4170000 {
+> -			compatible =3D "snps,dw-apb-uart";
+> -			reg =3D <0x04170000 0x100>;
+> -			interrupts =3D <47 IRQ_TYPE_LEVEL_HIGH>;
+> -			clocks =3D <&osc>;
+> -			reg-shift =3D <2>;
+> -			reg-io-width =3D <4>;
+> -			status =3D "disabled";
+> -		};
+> -
+> -		uart4: serial@41c0000 {
+> -			compatible =3D "snps,dw-apb-uart";
+> -			reg =3D <0x041c0000 0x100>;
+> -			interrupts =3D <48 IRQ_TYPE_LEVEL_HIGH>;
+> -			clocks =3D <&osc>;
+> -			reg-shift =3D <2>;
+> -			reg-io-width =3D <4>;
+> -			status =3D "disabled";
+> -		};
+>=20
+>  		plic: interrupt-controller@70000000 {
+>  			compatible =3D "sophgo,cv1800b-plic", "thead,c900-plic";
+> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dt=
+s/sophgo/cv180x.dtsi
+> similarity index 80%
+> copy from arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> copy to arch/riscv/boot/dts/sophgo/cv180x.dtsi
+> index df40e87ee063..ffaf51724c98 100644
 
-As you can see from the link above, there is a lot of activity via the code
-first route these days.
+Firstly, this form of diff really threw me, I was quite confused for a
+few minutes. A copy plus a pair of diffs doesn't really make much sense,
+when the operation being carried is an extraction of some nodes to a
+different file.
 
-Jonathan
+> --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> +++ b/arch/riscv/boot/dts/sophgo/cv180x.dtsi
+> @@ -1,12 +1,12 @@
+>  // SPDX-License-Identifier: (GPL-2.0 OR MIT)
+>  /*
+>   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+> + * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
+
+Also, is moving around some bits of hw description really a
+copyrightable change?
+
+>   */
+>=20
+>  #include <dt-bindings/interrupt-controller/irq.h>
+>=20
+>  / {
+> -	compatible =3D "sophgo,cv1800b";
+>  	#address-cells =3D <1>;
+>  	#size-cells =3D <1>;
+>=20
+> @@ -48,7 +48,6 @@ osc: oscillator {
+>=20
+>  	soc {
+>  		compatible =3D "simple-bus";
+> -		interrupt-parent =3D <&plic>;
+>  		#address-cells =3D <1>;
+>  		#size-cells =3D <1>;
+>  		dma-noncoherent;
+> @@ -103,21 +102,5 @@ uart4: serial@41c0000 {
+>  			reg-io-width =3D <4>;
+>  			status =3D "disabled";
+>  		};
+> -
+> -		plic: interrupt-controller@70000000 {
+> -			compatible =3D "sophgo,cv1800b-plic", "thead,c900-plic";
+> -			reg =3D <0x70000000 0x4000000>;
+> -			interrupts-extended =3D <&cpu0_intc 11>, <&cpu0_intc 9>;
+> -			interrupt-controller;
+> -			#address-cells =3D <0>;
+> -			#interrupt-cells =3D <2>;
+> -			riscv,ndev =3D <101>;
+> -		};
+> -
+> -		clint: timer@74000000 {
+> -			compatible =3D "sophgo,cv1800b-clint", "thead,c900-clint";
+> -			reg =3D <0x74000000 0x10000>;
+> -			interrupts-extended =3D <&cpu0_intc 3>, <&cpu0_intc 7>;
+> -		};
+>  	};
+>  };
+
+What I wanted to comment on was this though - it seems that both the
+cv1800b and the cv1812h have identical plic and clint nodes, other than
+their compatibles? If that is the case, why create a cv1800b and a
+cv1812h specific file containing entirely new nodes, when overriding the
+compatible would be sufficient? Doubly so if the other SoCs in the
+cv18xx series are going to have identical layouts.
+
+I gave it a quick test locally with the below diff applied on top of
+this series - although I didn't make sure that I didn't re-order the
+plic & clint nodes, I just wanted to demonstrate what I had done.
+
+Cheers,
+Conor.
+
+-- 8< --
+
+diff --git a/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts b/arch/riscv/=
+boot/dts/sophgo/cv1800b-milkv-duo.dts
+index 3af9e34b3bc7..a9d809a49e7a 100644
+--- a/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
++++ b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
+@@ -5,7 +5,7 @@
+=20
+ /dts-v1/;
+=20
+-#include "cv1800b.dtsi"
++#include "cv180x.dtsi"
+=20
+ / {
+ 	model =3D "Milk-V Duo";
+diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/=
+sophgo/cv1800b.dtsi
+index 0904154f9829..e69de29bb2d1 100644
+--- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+@@ -1,30 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+-/*
+- * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+- */
+-
+-#include "cv180x.dtsi"
+-
+-/ {
+-	compatible =3D "sophgo,cv1800b";
+-
+-	soc {
+-		interrupt-parent =3D <&plic>;
+-
+-		plic: interrupt-controller@70000000 {
+-			compatible =3D "sophgo,cv1800b-plic", "thead,c900-plic";
+-			reg =3D <0x70000000 0x4000000>;
+-			interrupts-extended =3D <&cpu0_intc 11>, <&cpu0_intc 9>;
+-			interrupt-controller;
+-			#address-cells =3D <0>;
+-			#interrupt-cells =3D <2>;
+-			riscv,ndev =3D <101>;
+-		};
+-
+-		clint: timer@74000000 {
+-			compatible =3D "sophgo,cv1800b-clint", "thead,c900-clint";
+-			reg =3D <0x74000000 0x10000>;
+-			interrupts-extended =3D <&cpu0_intc 3>, <&cpu0_intc 7>;
+-		};
+-	};
+-};
+diff --git a/arch/riscv/boot/dts/sophgo/cv180x.dtsi b/arch/riscv/boot/dts/s=
+ophgo/cv180x.dtsi
+index 64ffb23d3626..1a2c44ba4de9 100644
+--- a/arch/riscv/boot/dts/sophgo/cv180x.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv180x.dtsi
+@@ -48,6 +48,7 @@ osc: oscillator {
+=20
+ 	soc {
+ 		compatible =3D "simple-bus";
++		interrupt-parent =3D <&plic>;
+ 		#address-cells =3D <1>;
+ 		#size-cells =3D <1>;
+ 		dma-noncoherent;
+@@ -174,5 +175,21 @@ uart4: serial@41c0000 {
+ 			reg-io-width =3D <4>;
+ 			status =3D "disabled";
+ 		};
++
++		plic: interrupt-controller@70000000 {
++			compatible =3D "sophgo,cv1800b-plic", "thead,c900-plic";
++			reg =3D <0x70000000 0x4000000>;
++			interrupts-extended =3D <&cpu0_intc 11>, <&cpu0_intc 9>;
++			interrupt-controller;
++			#address-cells =3D <0>;
++			#interrupt-cells =3D <2>;
++			riscv,ndev =3D <101>;
++		};
++
++		clint: timer@74000000 {
++			compatible =3D "sophgo,cv1800b-clint", "thead,c900-clint";
++			reg =3D <0x74000000 0x10000>;
++			interrupts-extended =3D <&cpu0_intc 3>, <&cpu0_intc 7>;
++		};
+ 	};
+ };
+diff --git a/arch/riscv/boot/dts/sophgo/cv1812h.dtsi b/arch/riscv/boot/dts/=
+sophgo/cv1812h.dtsi
+index 3864d34b0100..c0a8d3290cc8 100644
+--- a/arch/riscv/boot/dts/sophgo/cv1812h.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv1812h.dtsi
+@@ -15,22 +15,13 @@ memory@80000000 {
+ 	};
+=20
+ 	soc {
+-		interrupt-parent =3D <&plic>;
+=20
+ 		plic: interrupt-controller@70000000 {
+ 			compatible =3D "sophgo,cv1812h-plic", "thead,c900-plic";
+-			reg =3D <0x70000000 0x4000000>;
+-			interrupts-extended =3D <&cpu0_intc 11>, <&cpu0_intc 9>;
+-			interrupt-controller;
+-			#address-cells =3D <0>;
+-			#interrupt-cells =3D <2>;
+-			riscv,ndev =3D <101>;
+ 		};
+=20
+ 		clint: timer@74000000 {
+ 			compatible =3D "sophgo,cv1812h-clint", "thead,c900-clint";
+-			reg =3D <0x74000000 0x10000>;
+-			interrupts-extended =3D <&cpu0_intc 3>, <&cpu0_intc 7>;
+ 		};
+ 	};
+ };
 
 
->     -Vilas
-> 
-> -----Original Message-----
-> From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-> Sent: Thursday, October 12, 2023 11:02 AM
-> To: Sridharan, Vilas <Vilas.Sridharan@amd.com>
-> Cc: Duran, Leo <leo.duran@amd.com>; Ghannam, Yazen <Yazen.Ghannam@amd.com>; David Rientjes <rientjes@google.com>; Jiaqi Yan <jiaqiyan@google.com>; Luck, Tony <tony.luck@intel.com>; Grimm, Jon <Jon.Grimm@amd.com>; dave.hansen@linux.intel.com; linuxarm@huawei.com; shiju.jose@huawei.com; linux-acpi@vger.kernel.org; linux-mm@kvack.org; linux-kernel@vger.kernel.org; rafael@kernel.org; lenb@kernel.org; naoya.horiguchi@nec.com; james.morse@arm.com; david@redhat.com; jthoughton@google.com; somasundaram.a@hpe.com; erdemaktas@google.com; pgonda@google.com; duenwen@google.com; mike.malvestuto@intel.com; gthelen@google.com; tanxiaofei@huawei.com; prime.zeng@hisilicon.com; kangkang.shen@futurewei.com; wanghuiqiang@huawei.com
-> Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entries for set of scrub attributes
-> 
-> Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
-> 
-> 
-> On Thu, 12 Oct 2023 13:41:19 +0000
-> "Sridharan, Vilas" <Vilas.Sridharan@amd.com> wrote:
-> 
-> > [AMD Official Use Only - General]
-> >
-> > + Leo and Yazen  
-> 
-> Hi All.
-> 
-> + Kangkang and Wanghuiqiang (Henson),
-> 
-> >
-> > We looked at RASF and RAS2 again. We don't think RASF is worth fixing. Our preference is to coalesce around RAS2 because we think it can be extended in interesting ways.  
-> 
-> Absolutely agree. I'm guessing RAS2 was previous go at fixing RASF though I haven't done the archaeology.
-> 
-> >
-> > The patrol scrub function probably needs some changes to be more general across different types of hardware (there are some baked-in assumptions that don't always hold true).  
-> 
-> Agreed. One aspect I'd love to see improved is expanded discoverability of what the hardware can do.
-> 
-> >
-> > We will look at some spec changes to fix the patrol scrub function, and we are going to start thinking about other functions that can be added to RAS2.  
-> 
-> Feel free to reach out if you want some early input on this. Are you thinking a code first proposal?  If you think doing this through the standards body is a good idea then perhaps message back here so we know when to look for further proposals in mantis.
-> 
-> Thanks,
-> 
-> Jonathan
-> >
-> >     -Vilas
-> >
-> > -----Original Message-----
-> > From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-> > Sent: Wednesday, October 11, 2023 12:36 PM
-> > To: Sridharan, Vilas <Vilas.Sridharan@amd.com>
-> > Cc: David Rientjes <rientjes@google.com>; Jiaqi Yan
-> > <jiaqiyan@google.com>; Luck, Tony <tony.luck@intel.com>; Grimm, Jon
-> > <Jon.Grimm@amd.com>; dave.hansen@linux.intel.com; linuxarm@huawei.com;
-> > shiju.jose@huawei.com; linux-acpi@vger.kernel.org; linux-mm@kvack.org;
-> > linux-kernel@vger.kernel.org; rafael@kernel.org; lenb@kernel.org;
-> > naoya.horiguchi@nec.com; james.morse@arm.com; david@redhat.com;
-> > jthoughton@google.com; somasundaram.a@hpe.com; erdemaktas@google.com;
-> > pgonda@google.com; duenwen@google.com; mike.malvestuto@intel.com;
-> > gthelen@google.com; tanxiaofei@huawei.com; prime.zeng@hisilicon.com
-> > Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation
-> > entries for set of scrub attributes
-> >
-> > Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
-> >
-> >
-> > On Fri, 6 Oct 2023 13:06:53 +0000
-> > "Sridharan, Vilas" <Vilas.Sridharan@amd.com> wrote:
-> >  
-> > > [AMD Official Use Only - General]
-> > >
-> > > I do not believe AMD has implemented RASF/RAS2 at all.
-> > >
-> > > We are looking at it, but our initial impression is that it is
-> > > insufficiently flexible for general use. (Not just for this feature,
-> > > but for others in the future.)
-> > >
-> > >     -Vilas  
-> >
-> > Hi Vilas,
-> >
-> > So obvious question is - worth fixing?
-> >
-> > I'm not particularly keen to see 10+ different ways of meeting this requirement.
-> >
-> > Probably not too bad if that's 10+ drivers implementing the same userspace ABI, but definitely don't want 10 drivers and 10 ABIs.
-> >
-> > Jonathan
-> >  
-> > >
-> > > -----Original Message-----
-> > > From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-> > > Sent: Friday, October 6, 2023 9:02 AM
-> > > To: David Rientjes <rientjes@google.com>
-> > > Cc: Jiaqi Yan <jiaqiyan@google.com>; Luck, Tony
-> > > <tony.luck@intel.com>; Grimm, Jon <Jon.Grimm@amd.com>;
-> > > dave.hansen@linux.intel.com; Sridharan, Vilas
-> > > <Vilas.Sridharan@amd.com>; linuxarm@huawei.com;
-> > > shiju.jose@huawei.com; linux-acpi@vger.kernel.org;
-> > > linux-mm@kvack.org; linux-kernel@vger.kernel.org; rafael@kernel.org;
-> > > lenb@kernel.org; naoya.horiguchi@nec.com; james.morse@arm.com;
-> > > david@redhat.com; jthoughton@google.com; somasundaram.a@hpe.com;
-> > > erdemaktas@google.com; pgonda@google.com; duenwen@google.com;
-> > > mike.malvestuto@intel.com; gthelen@google.com;
-> > > tanxiaofei@huawei.com; prime.zeng@hisilicon.com
-> > > Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation
-> > > entries for set of scrub attributes
-> > >
-> > > Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
-> > >
-> > >
-> > > On Wed, 4 Oct 2023 20:18:12 -0700 (PDT) David Rientjes
-> > > <rientjes@google.com> wrote:
-> > >  
-> > > > On Wed, 27 Sep 2023, Jiaqi Yan wrote:
-> > > >  
-> > > > > > > 1. I am not aware of any chip/platform hardware that
-> > > > > > > implemented the hw ps part defined in ACPI RASF/RAS2 spec.
-> > > > > > > So I am curious what the RAS experts from different hardware
-> > > > > > > vendors think about this. For example, Tony and Dave from
-> > > > > > > Intel, Jon and Vilas from AMD. Is there any hardware
-> > > > > > > platform (if allowed to disclose) that implemented ACPI
-> > > > > > > RASF/RAS2? If so, will vendors continue to support the
-> > > > > > > control of patrol scrubber using the ACPI spec? If not (as Tony said in [1], will the vendor consider starting some future platform?
-> > > > > > >
-> > > > > > > If we are unlikely to get the vendor support, creating this
-> > > > > > > ACPI specific sysfs API (and the driver implementations) in
-> > > > > > > Linux seems to have limited meaning.  
-> > > > > >
-> > > > > > There is a bit of a chicken and egg problem here. Until there
-> > > > > > is reasonable support in kernel (or it looks like there will
-> > > > > > be), BIOS teams push back on a requirement to add the tables.
-> > > > > > I'd encourage no one to bother with RASF - RAS2 is much less
-> > > > > > ambiguous.  
-> > > > >
-> > > > > Here mainly to re-ping folks from Intel (Tony and Dave)  and AMD
-> > > > > (Jon and Vilas) for your opinion on RAS2.
-> > > > >  
-> > > >
-> > > > We'll need to know from vendors, ideally at minimum from both
-> > > > Intel and AMD, whether RAS2 is the long-term vision here.  Nothing
-> > > > is set in stone, of course, but deciding whether RAS2 is the
-> > > > standard that we should be rallying around will help to guide
-> > > > future development including in the kernel.
-> > > >
-> > > > If RAS2 is insufficient for future use cases or we would need to
-> > > > support multiple implementations in the kernel for configuring the
-> > > > patrol scrubber depending on vendor, that's great feedback to have.
-> > > >
-> > > > I'd much rather focus on implementing something in the kernel that
-> > > > we have some clarity about the vendors supporting, especially when
-> > > > it comes with user visible interfaces, as opposed to something
-> > > > that may not be used long term.  I think that's a fair ask and
-> > > > that vendor feedback is required here?  
-> > >
-> > > Agreed and happy to have feedback from Intel and AMD + all the other CPU vendors who make use of ACPI + all the OEMs who add stuff well beyond what Intel and AMD tell them to :)  I'll just note a lot of the ACPI support in the kernel covers stuff not used on mainstream x86 platforms because they are doing something custom and we didn't want 2 + X custom implementations...
-> > >
-> > > Some other interfaces for scrub control (beyond existing embedded ones) will surface in the next few months where RAS2 is not appropriate.
-> > >
-> > > Jonathan
-> > >
-> > >  
-> >  
-> 
+--HRy542+WJiRGwJph
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSkJCAAKCRB4tDGHoIJi
+0hLjAP9uhdq/uFqw1y5AWsBajuIbbjWB6T8ehBPoOgeVL2rkRgD/WmLiknuSuAEI
+BQ55/MLUDoaZ5d+USumgf+i775N/UQg=
+=YNF8
+-----END PGP SIGNATURE-----
+
+--HRy542+WJiRGwJph--
