@@ -2,115 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2EA7C8C92
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 19:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346457C8C99
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 19:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbjJMRsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 13:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42826 "EHLO
+        id S230469AbjJMRv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 13:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJMRsl (ORCPT
+        with ESMTP id S229518AbjJMRvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 13:48:41 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF266BB
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:48:39 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9936b3d0286so396160766b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:48:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697219318; x=1697824118; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xDPc1YioSb3KUnMIDBSq84//2Atay2Wv50Tb3yT+Q0Q=;
-        b=IAbL9s0oSv63uxy7HvVk3Km1zT9yzKFxA0KQ7u+5D03v0pmqDREYJkThecWgqY3Zgl
-         x2yqhITBSI9ZPs9KddFdnh/25aA+KwrGugwWGpeFV89iDtRGiJtNo06G87MT8FJjxRcI
-         4hRXDu2psyCmGUXRZr2x0l3K7Suz6Me7Z0hJ4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697219318; x=1697824118;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xDPc1YioSb3KUnMIDBSq84//2Atay2Wv50Tb3yT+Q0Q=;
-        b=FjbzUXZTs+XZ71ud+4q+EuORK3swjYjb+KRyD18vNxl4ICy2fIX1mMxTVqeDGcwFVh
-         WAfAtVzKxBZueha1awvGD5wJ0Bm3BWFkWjisvw8epdKEqpbMxOHB/UWXmxYY8/cJzLJm
-         CHa9Jp0sILMgBu1UZSaEGoladm77dyCkbv94Ra0InRTbbsADA1sC4hdNbiGuYiXdYWw+
-         991x+aWqlpxaBZJC7iCrnBZpBcaMfur/wY1vPxvNpgAPGyx2NXxgViGiB+guSSJRKxbj
-         ++tVYP4o6srNqs3Ijmyp7ht+XteyiSXJVCvI7ndZva8GTtle8IrEsMS9GWicyV0fVzJt
-         PiaA==
-X-Gm-Message-State: AOJu0YySGlXGqbvx9g4G/McMugr16pq7WfC2C+vf6/3G/aFjeQE2QSa/
-        nSl/mbgfvp3q9C17MD48voeQmlbVq9NVVS9Y/cuBaQ==
-X-Google-Smtp-Source: AGHT+IEp1diNMol+ba2NN4E/d68ZcALq7aK1xCDYre4/Ya5RZYugzBxxhYEBOKFbm8OC0fG9HWEFSA==
-X-Received: by 2002:a17:906:10a:b0:9a1:cbe4:d029 with SMTP id 10-20020a170906010a00b009a1cbe4d029mr28246808eje.74.1697219317955;
-        Fri, 13 Oct 2023 10:48:37 -0700 (PDT)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
-        by smtp.gmail.com with ESMTPSA id si5-20020a170906cec500b009b97d9ae329sm12656675ejb.198.2023.10.13.10.48.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Oct 2023 10:48:37 -0700 (PDT)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-536b39daec1so3989864a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:48:37 -0700 (PDT)
-X-Received: by 2002:a17:907:7702:b0:9ae:5523:3f84 with SMTP id
- kw2-20020a170907770200b009ae55233f84mr22085726ejc.72.1697219316989; Fri, 13
- Oct 2023 10:48:36 -0700 (PDT)
+        Fri, 13 Oct 2023 13:51:55 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA30883
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:51:53 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qrMK5-0006CR-OY; Fri, 13 Oct 2023 19:51:41 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qrMK5-001RiD-AW; Fri, 13 Oct 2023 19:51:41 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qrMK5-00Fiwn-16; Fri, 13 Oct 2023 19:51:41 +0200
+Date:   Fri, 13 Oct 2023 19:51:40 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc:     Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Stefan Wahren <wahrenst@gmx.net>, linux-pwm@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] pwm: bcm2835: allow pwm driver to be used in
+ atomic context
+Message-ID: <20231013175140.dzlz4grrgngoyxbc@pengutronix.de>
+References: <cover.1697193646.git.sean@mess.org>
+ <6ce73b2688f059e7169935699044104cf37b2425.1697193646.git.sean@mess.org>
+ <84429d39-aa54-462d-85cd-c5d06a614a0e@gmx.net>
+ <5203415.ElGaqSPkdT@steina-w>
 MIME-Version: 1.0
-References: <e6d1dae8-e28a-455a-a851-661c825fbdcf@gmail.com> <9787bd09-91b3-4a79-9ca9-e7199c925f36@leemhuis.info>
-In-Reply-To: <9787bd09-91b3-4a79-9ca9-e7199c925f36@leemhuis.info>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 13 Oct 2023 10:48:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj99i00K5ZD_OJj3d8rLG07bnTH=0_GxpzxrSzNF-WYQQ@mail.gmail.com>
-Message-ID: <CAHk-=wj99i00K5ZD_OJj3d8rLG07bnTH=0_GxpzxrSzNF-WYQQ@mail.gmail.com>
-Subject: Re: [regression] some Dell systems hang at shutdown due to "x86/smp:
- Put CPUs into INIT on shutdown if possible" (was Fwd: Kernel 6.5 hangs on shutdown)
-To:     Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Yanjun Yang <yangyj.ee@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ssu5t4hquxq747is"
+Content-Disposition: inline
+In-Reply-To: <5203415.ElGaqSPkdT@steina-w>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 at 05:05, Linux regression tracking (Thorsten
-Leemhuis) <regressions@leemhuis.info> wrote:
->
-> Thomas, turns out that bisection result was slightly wrong: a recheck
-> confirmed that the regression is actually caused by 45e34c8af58f23
-> ("x86/smp: Put CPUs into INIT on shutdown if possible") [v6.5-rc1] of
-> yours. See https://bugzilla.kernel.org/show_bug.cgi?id=217995 for details.
 
-That commit does look pretty dangerous.
+--ssu5t4hquxq747is
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If *anything* is done through SMI after the code does that
-smp_park_other_cpus_in_init() sequence, I wouldn't be surprised in the
-least if the machine is hung.
+Hello,
 
-That's made worse since it looks like the shutdown sequence isn't
-necessarily run on the boot CPU, so the boot CPU itself may be in
-INIT, and any SMI quite possibly ends up treating that CPU specially.
+On Fri, Oct 13, 2023 at 01:13:50PM +0200, Alexander Stein wrote:
+> Am Freitag, 13. Oktober 2023, 13:04:48 CEST schrieb Stefan Wahren:
+> > Am 13.10.23 um 12:46 schrieb Sean Young:
+> > > clk_get_rate() may do a mutex lock. Since the clock rate cannot chang=
+e on
+> > > an rpi, simply fetch it once.
+> >=20
+> > does it mean you checked all possible SoCs (BCM2835, BCM2836, BCM2837,
+> > BCM2711, BCM2712) for this change?
+> >=20
+> > Is it impossible that the real clock can never be influenced by turbo
+> > mode like SPI?
+>=20
+> Assuming the clock can change, which I would, then a clock notifier seems=
+=20
+> appropriate. See [1] for an example.
 
-Who knows what SMI does, but the fact that the affected machines seem
-to be mainly from one particular manufacturer does tend to imply it's
-something like that.
+I'm not a fan. If the clock changes, the output also changes. With a
+clock notifier you can soften the issue and reconfigure to something
+similar as the original wave form, but a glitch happens for sure.
 
-And the code does do a fair amount *after* shutting down cpu's. Not
-just things like calling x86_platform.iommu_shutdown(), but also
-things like possibly the tboot shutdown sequence (which almost
-*certainly* is some SMI thing).
+I already toyed with the thought to add clk_rate_exclusive_get() to all
+PWM drivers, but didn't come around it yet.
 
-I dunno. Thomas - I htink the argument for that commit was fairly
-theoretical, and reverting it seems the obvious thing, unless you have
-some idea of what might be wrong.
+Best regards
+Uwe
 
-               Linus
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ssu5t4hquxq747is
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUpg6wACgkQj4D7WH0S
+/k6zXAf8CLxtrbWX3bu/WNzhyWl92SzyhIaU0UrVF1cyUmSvSccu/9afnKYtgPfZ
+2lsWg4a1AVndcN2OoIZ8Fqf6eKdMNqSnxc1cyOH3rL7o+6wYPACNRQ907zK44Ah9
+FYPytiBMKZq+xXTBU1Qbm6Vrn2dQxXBv0/mOIz6pLI2mcdN66Ad1a2Bf2avkddd5
+NoU5DJhuRI8ywHb34lexulqMdCQqjNZhcj46TFks3bk3FVT76aBRXhwOesaJnmy8
+hSg84cJn8TiQzgsOkP5Px580mOQQ0eYFGB8DZm7tlljXRhEgiuRwcrOXeFfaITI4
+lI87RD2C73qZIV7fLaOKCHWr3GQraw==
+=x/eO
+-----END PGP SIGNATURE-----
+
+--ssu5t4hquxq747is--
