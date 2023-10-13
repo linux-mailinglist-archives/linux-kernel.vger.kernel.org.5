@@ -2,74 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 749FB7C8D6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 21:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671107C8D6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 21:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbjJMTCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 15:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
+        id S231583AbjJMTEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 15:04:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbjJMTCu (ORCPT
+        with ESMTP id S231465AbjJMTEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 15:02:50 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E73A9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:02:49 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-27763c2c27dso1943197a91.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:02:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697223769; x=1697828569; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ezE2irapYgf+YDmCO+ecdM4YYnOHGtV+6PhfUW/a4YY=;
-        b=WtM5iYcZ0vQKSZZu7rJE8xA6RbvNvyNAbvufCAgnTHRVKQKmPp/AnzESJFM74PmErn
-         paN5MgssmZFSLw3kI4TSjpb3xpGfBEC6BlBRlBKw8/Ofdlwz6FGko6oWBgY+V1+WIOuA
-         9VPKcrFmXIm9lisw9UTH1gj5bFOEV0Nclvx+VjZlhdRrE0Op+cUGol6uLqYsOdXdjZNk
-         IHKsFOmBLNmj6O8ninCMzQrEA5S5ZH7qmYxHPKmeob926gOMh7/l0C8OxQhNgtnF4vcS
-         HJLXqLAzlS7wz9NqY3lJxzVFZxPfykRaLvyCkF2oPDbxMnCX9r/vCfG3Mm+RJRkq3vXd
-         iCZw==
+        Fri, 13 Oct 2023 15:04:32 -0400
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E443C2;
+        Fri, 13 Oct 2023 12:04:31 -0700 (PDT)
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6c49f781855so1557009a34.3;
+        Fri, 13 Oct 2023 12:04:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697223769; x=1697828569;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ezE2irapYgf+YDmCO+ecdM4YYnOHGtV+6PhfUW/a4YY=;
-        b=xAib5SehmSEvbbGEzuw5/0Byz4nZn+SETxn3HvnEi8wwTjEynCTPdLhZxf6AxHBHBd
-         27FeasHAgMFyv2eJOhDwNMRfzEueX2AqQb/57e1dX05os4neo9BW+XlOy+xSPBWlX4eC
-         zLjbnzJAbH0qeDS9MOIl7wFS5dOznr4pbpe3i/U2NZrxMxrLL6x8pCMVDMwHLrvaoBY/
-         oCw6U2knCieLWOWMlJcilN+Bj5X0BltB/pjs05zLr0LJ4p+a5Lvmyg8aQ0lDoI2Ap2Hd
-         0iumxAf7QGFB2VyuHXoqNF5vL00rRSQGV+dW9jgtgM6q8XdiHn/T+qffPTFPcK5/bJ+z
-         YXlQ==
-X-Gm-Message-State: AOJu0YziKuurHDXLUGEDfLjYH3DwmNyXo4uwPir+5bRKTjWhjfznt4cJ
-        SZ19P1TI2kYUnGyJnUTrx1s9serbPYs=
-X-Google-Smtp-Source: AGHT+IFsRDjBWN+t3sGf9QNb0ZMoT2HmbFQflBNsCIqmCQ1tXfo/BQiXBdPZIocaFxyPZNEYUCGoo663YvE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:c705:b0:27d:1af4:2ef3 with SMTP id
- o5-20020a17090ac70500b0027d1af42ef3mr165731pjt.3.1697223768664; Fri, 13 Oct
- 2023 12:02:48 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 12:02:47 -0700
-In-Reply-To: <5ea168df6dfbe910524a381b88347636e1a6a3bc.camel@infradead.org>
-Mime-Version: 1.0
-References: <ZRtl94_rIif3GRpu@google.com> <9975969725a64c2ba2b398244dba3437bff5154e.camel@infradead.org>
- <ZRysGAgk6W1bpXdl@google.com> <d6dc1242ff731cf0f2826760816081674ade9ff9.camel@infradead.org>
- <ZR2pwdZtO3WLCwjj@google.com> <34057852-f6c0-d6d5-261f-bbb5fa056425@oracle.com>
- <ZSXqZOgLYkwLRWLO@google.com> <8f3493ca4c0e726d5c3876bb7dd2cfc432d9deaa.camel@infradead.org>
- <ZSmHcECyt5PdZyIZ@google.com> <5ea168df6dfbe910524a381b88347636e1a6a3bc.camel@infradead.org>
-Message-ID: <ZSmUV3AoFWBTMx-o@google.com>
-Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock periodically
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
-        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        d=1e100.net; s=20230601; t=1697223870; x=1697828670;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SOea3bsamMK4hAXF6CNzM5cnxGOtZw/7j8mHNIqbKNo=;
+        b=vECfDo7D8rFez9889/lYemRxSwvtcVQWC9XoXXoRDMDG7maGnEoLQ1j7iWyKgEC0lD
+         S47AQH11GuVRVzi5HKby3neVErxVVJ5boC9/PhphgXbEs4yQToxIid0CY/h6Sgdy/Ot8
+         GKW+LNugtdOOquRc1Q3F5KmNCZDTbFWHI3xq9oHQmF38W1ToAGNStMMJ7utyIXyk6AVS
+         I9yXJZdMNeovFmZnJTR4boHUqSUFirp7/pKiAixxOOX0wkOJ0S3wQDToU9XGT4bUxmaB
+         aub6ZLJsaVuVaI81Rvn9kkmHDHGcXAFts90mziwQG/1P47vIcTGmYn9i/+T4/7aCOZNE
+         WfIA==
+X-Gm-Message-State: AOJu0Yy2pvQSdEwtPmNSdTtD3c2wAmg+Kk8dLhgKcVilQdqS58RnSqLj
+        eUQrFHN9Oy0wErYlEZNDHoMA6w9Nug==
+X-Google-Smtp-Source: AGHT+IHmQjAasi9qypMXf81lriTnj2NPbj41ulVVOk4ZfRqplqK31lYG66kevPxsF+n6lPlYzHMQQg==
+X-Received: by 2002:a05:6830:3d17:b0:6c0:e5c3:40b5 with SMTP id eu23-20020a0568303d1700b006c0e5c340b5mr26495473otb.6.1697223870362;
+        Fri, 13 Oct 2023 12:04:30 -0700 (PDT)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id r25-20020a056830135900b006c63d749becsm752581otq.58.2023.10.13.12.04.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 12:04:29 -0700 (PDT)
+Received: (nullmailer pid 247804 invoked by uid 1000);
+        Fri, 13 Oct 2023 19:04:28 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Jan Luebbe <jlu@pengutronix.de>, Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Richter <rric@kernel.org>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] EDAC: armada_xp: Explicitly include correct DT includes
+Date:   Fri, 13 Oct 2023 14:03:42 -0500
+Message-ID: <20231013190342.246973-1-robh@kernel.org>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,83 +64,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023, David Woodhouse wrote:
-> On Fri, 2023-10-13 at 11:07 -0700, Sean Christopherson wrote:
-> > I generally support the idea, but I think it needs to an opt-in from us=
-erspace.
-> > Essentially a "I pinky swear to give all vCPUs the same TSC frequency, =
-to not
-> > suspend the host, and to not run software/firmware that writes IA32_TSC=
-_ADJUST".
-> > AFAICT, there are too many edge cases and assumptions about userspace f=
-or KVM to
-> > safely couple kvmclock to guest TSC by default.
->=20
-> I think IA32_TSC_ADJUST is OK, isn't it? There is a "real" TSC value
-> and if vCPUs adjust themselves forward and backwards from that, it's
-> just handled as a delta.
+The DT of_device.h and of_platform.h date back to the separate
+of_platform_bus_type before it was merged into the regular platform bus.
+As part of that merge prepping Arm DT support 13 years ago, they
+"temporarily" include each other. They also include platform_device.h
+and of.h. As a result, there's a pretty much random mix of those include
+files used throughout the tree. In order to detangle these headers and
+replace the implicit includes with struct declarations, users need to
+explicitly include the correct includes.
 
-I meant the host writing IA32_TSC_ADJUST.  E.g. if a host SMM handler mucks=
- with
-TSC offsets to try and hide the time spent in the SMM handler, then the pla=
-tform
-owner gets to keep the pieces.
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ drivers/edac/armada_xp_edac.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> And we solved 'give all vCPUS the same TSC frequency' by making that
-> KVM-wide.
->=20
-> Maybe suspending and resuming the host can be treated like live
-> migration, where you know the host TSC is different so you have to make
-> do with a delta based on CLOCK_TAI.
->=20
-> But while I'm picking on the edge cases and suggesting that we *can*
-> cope with some of them, I do agree with your suggestion that "let
-> kvmclock run by itself without being clamped back to
-> CLOCK_MONOTONIC_RAW" should be an opt *in* feature.
+diff --git a/drivers/edac/armada_xp_edac.c b/drivers/edac/armada_xp_edac.c
+index c4bd2fb9c46b..f18db536d58e 100644
+--- a/drivers/edac/armada_xp_edac.c
++++ b/drivers/edac/armada_xp_edac.c
+@@ -5,7 +5,9 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/edac.h>
+-#include <linux/of_platform.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
+ 
+ #include <asm/hardware/cache-l2x0.h>
+ #include <asm/hardware/cache-aurora-l2.h>
+-- 
+2.42.0
 
-Yeah, I'm of the mind that just because we can cope with some edge cases, d=
-oesn't
-mean we should.  At this point, kvmclock really should be considered deprec=
-ated
-on modern hardware.  I.e. needs to be supported for older VMs, but shouldn'=
-t be
-advertised/used when creating entirely new VMs.
-
-Hence my desire to go with a low effort solution for getting kvmclock to pl=
-ay nice
-with modern hardware.
-
-> > > [1] Yes, I believe "back" does happen. I have test failures in my que=
-ue
-> > > to look at, where guests see the "Xen" clock going backwards.
-> >=20
-> > Yeah, I assume "back" can happen based purely on the wierdness of the p=
-vclock math.o
-> >=20
-> > What if we add a module param to disable KVM's TSC synchronization craz=
-iness
-> > entirely?=C2=A0 If we first clean up the peroidic sync mess, then it se=
-ems like it'd
-> > be relatively straightforward to let kill off all of the synchronizatio=
-n, including
-> > the synchronization of kvmclock to the host's TSC-based CLOCK_MONOTONIC=
-_RAW.
-> >=20
-> > Not intended to be a functional patch...
->=20
-> Will stare harder at the actual patch when it isn't Friday night.
->=20
-> In the meantime, I do think a KVM cap that the VMM opts into is better
-> than a module param?
-
-Hmm, yeah, I think a capability would be cleaner overall.  Then KVM could r=
-eturn
--EINVAL instead of silently forcing synchronization if the platform conditi=
-ons
-aren't meant, e.g. if the TSC isn't constant or if the host timekeeping isn=
-'t
-using TSC.
-
-The interaction with kvmclock_periodic_sync might be a bit awkward, but tha=
-t's
-easy enough to solve with a wrapper.
