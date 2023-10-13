@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D487C8534
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6EF7C8537
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231657AbjJMMAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45940 "EHLO
+        id S231802AbjJMMA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 08:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231708AbjJMMAL (ORCPT
+        with ESMTP id S231664AbjJMMAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 08:00:11 -0400
+        Fri, 13 Oct 2023 08:00:15 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F151707;
-        Fri, 13 Oct 2023 04:59:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E05E9C433C8;
-        Fri, 13 Oct 2023 11:59:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E08E1712;
+        Fri, 13 Oct 2023 04:59:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3DCBC43391;
+        Fri, 13 Oct 2023 11:59:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697198389;
-        bh=gBu5d6YUhfCKIA13MA7EoAu72nhKwN2C8OoerYKkJQw=;
+        s=k20201202; t=1697198392;
+        bh=nWIP4xfrd3qkBMSKcHJBc9IkCcpsOv0EzxPd1dhN1Ek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S+XhprrZuKYQhkPOGnbJV7Ei0BptNRQ+kTCnTCtt9/Qt2cgIRP/nJg8PQwfnqXsFV
-         wHtVcbS9955Q+UReAhH2yh7NIeWCN2xIhdSFZ9saUh2//i+b49fa4KxTfe5IyniKoc
-         PkIs7JyzhXHkK8tLBxkRoCloMCGDPiNMMtCeY9LoyEX1ft5mzp69oNmghN5mELrQt4
-         e1LYsvvdtMu6XhFsvWfG9zl8tsK/T9+h8Jm5l7bpaKtARXcZfmB+vaPsseGlD93KEF
-         nq47VSSNuWPeqGiBSub3PxkKul9UHyw3xBpxQwI0SOE/IODa9HtCWtPAUbJ+lxfEke
-         mdvcK8rP8F/jQ==
+        b=RQIuu4BAIwI6k+oU0wifjBngiuFyzaRnYxTFaoyx9ScfypCh1e0T3aRV4hHiPZsdt
+         zdztgcKRU2HeLwGjH4PHDsiJypf8giuGPBkQfln1Q3/DR+7Ll8vLUXCYZWyHc9H7sz
+         2FgMHwoV6+4hZ6zA3Okpr347dR0vByBRIqCqy5+tSgsYKbbyqSefG+SkD0O3saXG8f
+         p3QBAqQe6E4rhrzhBPG9coOSmsyQi48bqWqCr60TTCAscHV1w00su1T9E9E0E3pN6p
+         0v+aZnkte483VLx107t6mme9r0o3WaMyvX63Dc7pow2T4NvWUU3YbK41pPlHMJ05az
+         iV1wgXYiA+3fQ==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Frederic Weisbecker <frederic@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     Frederic Weisbecker <frederic@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: [PATCH 14/18] rcu: Conditionally build CPU-hotplug teardown callbacks
-Date:   Fri, 13 Oct 2023 13:58:58 +0200
-Message-Id: <20231013115902.1059735-15-frederic@kernel.org>
+Subject: [PATCH 15/18] rcu: Standardize explicit CPU-hotplug calls
+Date:   Fri, 13 Oct 2023 13:58:59 +0200
+Message-Id: <20231013115902.1059735-16-frederic@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231013115902.1059735-1-frederic@kernel.org>
 References: <20231013115902.1059735-1-frederic@kernel.org>
@@ -56,189 +56,328 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Among the three CPU-hotplug teardown RCU callbacks, two of them early
-exit if CONFIG_HOTPLUG_CPU=n, and one is left unchanged. In any case
-all of them have an implementation when CONFIG_HOTPLUG_CPU=n.
+rcu_report_dead() and rcutree_migrate_callbacks() have their headers in
+rcupdate.h while those are pure rcutree calls, like the other CPU-hotplug
+functions.
 
-Align instead with the common way to deal with CPU-hotplug teardown
-callbacks and provide a proper stub when they are not supported.
+Also rcu_cpu_starting() and rcu_report_dead() have different naming
+conventions while they mirror each other's effects.
+
+Fix the headers and propose a naming that relates both functions and
+aligns with the prefix of other rcutree CPU-hotplug functions.
 
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- include/linux/rcutree.h |  11 +++-
- kernel/rcu/tree.c       | 114 +++++++++++++++++++---------------------
- 2 files changed, 63 insertions(+), 62 deletions(-)
+ .../Expedited-Grace-Periods.rst                      |  2 +-
+ .../RCU/Design/Memory-Ordering/TreeRCU-gp-fqs.svg    |  4 ++--
+ .../RCU/Design/Memory-Ordering/TreeRCU-gp.svg        |  4 ++--
+ .../RCU/Design/Memory-Ordering/TreeRCU-hotplug.svg   |  4 ++--
+ .../RCU/Design/Requirements/Requirements.rst         |  4 ++--
+ arch/arm64/kernel/smp.c                              |  4 ++--
+ arch/powerpc/kernel/smp.c                            |  2 +-
+ arch/s390/kernel/smp.c                               |  2 +-
+ arch/x86/kernel/smpboot.c                            |  2 +-
+ include/linux/interrupt.h                            |  2 +-
+ include/linux/rcupdate.h                             |  2 --
+ include/linux/rcutiny.h                              |  2 +-
+ include/linux/rcutree.h                              |  7 ++++++-
+ kernel/cpu.c                                         |  6 +++---
+ kernel/rcu/tree.c                                    | 12 ++++++++----
+ 15 files changed, 33 insertions(+), 26 deletions(-)
 
+diff --git a/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst b/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
+index 93d899d53258..414f8a2012d6 100644
+--- a/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
++++ b/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
+@@ -181,7 +181,7 @@ operations is carried out at several levels:
+    of this wait (or series of waits, as the case may be) is to permit a
+    concurrent CPU-hotplug operation to complete.
+ #. In the case of RCU-sched, one of the last acts of an outgoing CPU is
+-   to invoke ``rcu_report_dead()``, which reports a quiescent state for
++   to invoke ``rcutree_report_cpu_dead()``, which reports a quiescent state for
+    that CPU. However, this is likely paranoia-induced redundancy.
+ 
+ +-----------------------------------------------------------------------+
+diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp-fqs.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp-fqs.svg
+index 7ddc094d7f28..d82a77d03d8c 100644
+--- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp-fqs.svg
++++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp-fqs.svg
+@@ -1135,7 +1135,7 @@
+        font-weight="bold"
+        font-size="192"
+        id="text202-7-5-3-27-6-5"
+-       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_report_dead()</text>
++       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcutree_report_cpu_dead()</text>
+     <text
+        xml:space="preserve"
+        x="3745.7725"
+@@ -1256,7 +1256,7 @@
+        font-style="normal"
+        y="3679.27"
+        x="-3804.9949"
+-       xml:space="preserve">rcu_cpu_starting()</text>
++       xml:space="preserve">rcutree_report_cpu_starting()</text>
+     <g
+        style="fill:none;stroke-width:0.025in"
+        id="g3107-7-5-0"
+diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
+index 069f6f8371c2..6e690a3be161 100644
+--- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
++++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
+@@ -3274,7 +3274,7 @@
+          font-weight="bold"
+          font-size="192"
+          id="text202-7-5-3-27-6-5"
+-         style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_report_dead()</text>
++         style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcutree_report_cpu_dead()</text>
+       <text
+          xml:space="preserve"
+          x="3745.7725"
+@@ -3395,7 +3395,7 @@
+          font-style="normal"
+          y="3679.27"
+          x="-3804.9949"
+-         xml:space="preserve">rcu_cpu_starting()</text>
++         xml:space="preserve">rcutree_report_cpu_starting()</text>
+       <g
+          style="fill:none;stroke-width:0.025in"
+          id="g3107-7-5-0"
+diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-hotplug.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-hotplug.svg
+index 2c9310ba29ba..4fa7506082bf 100644
+--- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-hotplug.svg
++++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-hotplug.svg
+@@ -607,7 +607,7 @@
+        font-weight="bold"
+        font-size="192"
+        id="text202-7-5-3-27-6"
+-       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_report_dead()</text>
++       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcutree_report_cpu_dead()</text>
+     <text
+        xml:space="preserve"
+        x="3745.7725"
+@@ -728,7 +728,7 @@
+        font-style="normal"
+        y="3679.27"
+        x="-3804.9949"
+-       xml:space="preserve">rcu_cpu_starting()</text>
++       xml:space="preserve">rcutree_report_cpu_starting()</text>
+     <g
+        style="fill:none;stroke-width:0.025in"
+        id="g3107-7-5-0"
+diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+index f3b605285a87..cccafdaa1f84 100644
+--- a/Documentation/RCU/Design/Requirements/Requirements.rst
++++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+@@ -1955,12 +1955,12 @@ if offline CPUs block an RCU grace period for too long.
+ 
+ An offline CPU's quiescent state will be reported either:
+ 
+-1.  As the CPU goes offline using RCU's hotplug notifier (rcu_report_dead()).
++1.  As the CPU goes offline using RCU's hotplug notifier (rcutree_report_cpu_dead()).
+ 2.  When grace period initialization (rcu_gp_init()) detects a
+     race either with CPU offlining or with a task unblocking on a leaf
+     ``rcu_node`` structure whose CPUs are all offline.
+ 
+-The CPU-online path (rcu_cpu_starting()) should never need to report
++The CPU-online path (rcutree_report_cpu_starting()) should never need to report
+ a quiescent state for an offline CPU.  However, as a debugging measure,
+ it does emit a warning if a quiescent state was not already reported
+ for that CPU.
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index 8fa646c90c67..196533c362e1 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -215,7 +215,7 @@ asmlinkage notrace void secondary_start_kernel(void)
+ 	if (system_uses_irq_prio_masking())
+ 		init_gic_priority_masking();
+ 
+-	rcu_cpu_starting(cpu);
++	rcutree_report_cpu_starting(cpu);
+ 	trace_hardirqs_off();
+ 
+ 	/*
+@@ -401,7 +401,7 @@ void __noreturn cpu_die_early(void)
+ 
+ 	/* Mark this CPU absent */
+ 	set_cpu_present(cpu, 0);
+-	rcu_report_dead();
++	rcutree_report_cpu_dead();
+ 
+ 	if (IS_ENABLED(CONFIG_HOTPLUG_CPU)) {
+ 		update_cpu_boot_status(CPU_KILL_ME);
+diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+index 5826f5108a12..a30d4d93ff0b 100644
+--- a/arch/powerpc/kernel/smp.c
++++ b/arch/powerpc/kernel/smp.c
+@@ -1629,7 +1629,7 @@ void start_secondary(void *unused)
+ 
+ 	smp_store_cpu_info(cpu);
+ 	set_dec(tb_ticks_per_jiffy);
+-	rcu_cpu_starting(cpu);
++	rcutree_report_cpu_starting(cpu);
+ 	cpu_callin_map[cpu] = 1;
+ 
+ 	if (smp_ops->setup_cpu)
+diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+index a4edb7ea66ea..214a1b67f80a 100644
+--- a/arch/s390/kernel/smp.c
++++ b/arch/s390/kernel/smp.c
+@@ -898,7 +898,7 @@ static void smp_start_secondary(void *cpuvoid)
+ 	S390_lowcore.restart_flags = 0;
+ 	restore_access_regs(S390_lowcore.access_regs_save_area);
+ 	cpu_init();
+-	rcu_cpu_starting(cpu);
++	rcutree_report_cpu_starting(cpu);
+ 	init_cpu_timer();
+ 	vtime_init();
+ 	vdso_getcpu_init();
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 4e45ff44aa07..4ccb76f89af8 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -288,7 +288,7 @@ static void notrace start_secondary(void *unused)
+ 
+ 	cpu_init();
+ 	fpu__init_cpu();
+-	rcu_cpu_starting(raw_smp_processor_id());
++	rcutree_report_cpu_starting(raw_smp_processor_id());
+ 	x86_cpuinit.early_percpu_clock_init();
+ 
+ 	ap_starting();
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index a92bce40b04b..d05e1e9a553c 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -566,7 +566,7 @@ enum
+  *
+  * _ RCU:
+  * 	1) rcutree_migrate_callbacks() migrates the queue.
+- * 	2) rcu_report_dead() reports the final quiescent states.
++ * 	2) rcutree_report_cpu_dead() reports the final quiescent states.
+  *
+  * _ IRQ_POLL: irq_poll_cpu_dead() migrates the queue
+  */
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index aa351ddcbe8d..f7206b2623c9 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -122,8 +122,6 @@ static inline void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
+ void rcu_init(void);
+ extern int rcu_scheduler_active;
+ void rcu_sched_clock_irq(int user);
+-void rcu_report_dead(void);
+-void rcutree_migrate_callbacks(int cpu);
+ 
+ #ifdef CONFIG_TASKS_RCU_GENERIC
+ void rcu_init_tasks_generic(void);
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 7b949292908a..d9ac7b136aea 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -171,6 +171,6 @@ static inline void rcu_all_qs(void) { barrier(); }
+ #define rcutree_offline_cpu      NULL
+ #define rcutree_dead_cpu         NULL
+ #define rcutree_dying_cpu        NULL
+-static inline void rcu_cpu_starting(unsigned int cpu) { }
++static inline void rcutree_report_cpu_starting(unsigned int cpu) { }
+ 
+ #endif /* __LINUX_RCUTINY_H */
 diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-index 153cfc7bbffd..46875c4e9f56 100644
+index 46875c4e9f56..254244202ea9 100644
 --- a/include/linux/rcutree.h
 +++ b/include/linux/rcutree.h
-@@ -110,9 +110,16 @@ void rcu_all_qs(void);
+@@ -110,7 +110,7 @@ void rcu_all_qs(void);
  /* RCUtree hotplug events */
  int rcutree_prepare_cpu(unsigned int cpu);
  int rcutree_online_cpu(unsigned int cpu);
--int rcutree_offline_cpu(unsigned int cpu);
-+void rcu_cpu_starting(unsigned int cpu);
-+
-+#ifdef CONFIG_HOTPLUG_CPU
- int rcutree_dead_cpu(unsigned int cpu);
- int rcutree_dying_cpu(unsigned int cpu);
 -void rcu_cpu_starting(unsigned int cpu);
-+int rcutree_offline_cpu(unsigned int cpu);
-+#else
-+#define rcutree_dead_cpu NULL
-+#define rcutree_dying_cpu NULL
-+#define rcutree_offline_cpu NULL
-+#endif
++void rcutree_report_cpu_starting(unsigned int cpu);
  
+ #ifdef CONFIG_HOTPLUG_CPU
+ int rcutree_dead_cpu(unsigned int cpu);
+@@ -122,4 +122,9 @@ int rcutree_offline_cpu(unsigned int cpu);
+ #define rcutree_offline_cpu NULL
+ #endif
+ 
++void rcutree_migrate_callbacks(int cpu);
++
++/* Called from hotplug and also arm64 early secondary boot failure */
++void rcutree_report_cpu_dead(void);
++
  #endif /* __LINUX_RCUTREE_H */
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 076e75fed8bb..2491766e1fd5 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1388,10 +1388,10 @@ void cpuhp_report_idle_dead(void)
+ 	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
+ 
+ 	BUG_ON(st->state != CPUHP_AP_OFFLINE);
+-	rcu_report_dead();
++	rcutree_report_cpu_dead();
+ 	st->state = CPUHP_AP_IDLE_DEAD;
+ 	/*
+-	 * We cannot call complete after rcu_report_dead() so we delegate it
++	 * We cannot call complete after rcutree_report_cpu_dead() so we delegate it
+ 	 * to an online cpu.
+ 	 */
+ 	smp_call_function_single(cpumask_first(cpu_online_mask),
+@@ -1617,7 +1617,7 @@ void notify_cpu_starting(unsigned int cpu)
+ 	struct cpuhp_cpu_state *st = per_cpu_ptr(&cpuhp_state, cpu);
+ 	enum cpuhp_state target = min((int)st->target, CPUHP_AP_ONLINE);
+ 
+-	rcu_cpu_starting(cpu);	/* Enables RCU usage on this CPU. */
++	rcutree_report_cpu_starting(cpu);	/* Enables RCU usage on this CPU. */
+ 	cpumask_set_cpu(cpu, &cpus_booted_once_mask);
+ 
+ 	/*
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 2e1e7eadf2cc..f9c6b2680cbb 100644
+index f9c6b2680cbb..36d8818eaec1 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -4237,25 +4237,6 @@ static bool rcu_init_invoked(void)
- 	return !!rcu_state.n_online_cpus;
- }
+@@ -4216,7 +4216,7 @@ bool rcu_lockdep_current_cpu_online(void)
+ 	rdp = this_cpu_ptr(&rcu_data);
+ 	/*
+ 	 * Strictly, we care here about the case where the current CPU is
+-	 * in rcu_cpu_starting() and thus has an excuse for rdp->grpmask
++	 * in rcutree_report_cpu_starting() and thus has an excuse for rdp->grpmask
+ 	 * not being up to date. So arch_spin_is_locked() might have a
+ 	 * false positive if it's held by some *other* CPU, but that's
+ 	 * OK because that just means a false *negative* on the warning.
+@@ -4445,8 +4445,10 @@ int rcutree_online_cpu(unsigned int cpu)
+  * from the incoming CPU rather than from the cpuhp_step mechanism.
+  * This is because this function must be invoked at a precise location.
+  * This incoming CPU must not have enabled interrupts yet.
++ *
++ * This mirrors the effects of rcutree_report_cpu_dead().
+  */
+-void rcu_cpu_starting(unsigned int cpu)
++void rcutree_report_cpu_starting(unsigned int cpu)
+ {
+ 	unsigned long mask;
+ 	struct rcu_data *rdp;
+@@ -4500,8 +4502,10 @@ void rcu_cpu_starting(unsigned int cpu)
+  * Note that this function is special in that it is invoked directly
+  * from the outgoing CPU rather than from the cpuhp_step mechanism.
+  * This is because this function must be invoked at a precise location.
++ *
++ * This mirrors the effect of rcutree_report_cpu_starting().
+  */
+-void rcu_report_dead(void)
++void rcutree_report_cpu_dead(void)
+ {
+ 	unsigned long flags;
+ 	unsigned long mask;
+@@ -5072,7 +5076,7 @@ void __init rcu_init(void)
+ 	pm_notifier(rcu_pm_notify, 0);
+ 	WARN_ON(num_online_cpus() > 1); // Only one CPU this early in boot.
+ 	rcutree_prepare_cpu(cpu);
+-	rcu_cpu_starting(cpu);
++	rcutree_report_cpu_starting(cpu);
+ 	rcutree_online_cpu(cpu);
  
--/*
-- * Near the end of the offline process.  Trace the fact that this CPU
-- * is going offline.
-- */
--int rcutree_dying_cpu(unsigned int cpu)
--{
--	bool blkd;
--	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
--	struct rcu_node *rnp = rdp->mynode;
--
--	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
--		return 0;
--
--	blkd = !!(READ_ONCE(rnp->qsmask) & rdp->grpmask);
--	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
--			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
--	return 0;
--}
--
- /*
-  * All CPUs for the specified rcu_node structure have gone offline,
-  * and all tasks that were preempted within an RCU read-side critical
-@@ -4301,23 +4282,6 @@ static void rcu_cleanup_dead_rnp(struct rcu_node *rnp_leaf)
- 	}
- }
- 
--/*
-- * The CPU has been completely removed, and some other CPU is reporting
-- * this fact from process context.  Do the remainder of the cleanup.
-- * There can only be one CPU hotplug operation at a time, so no need for
-- * explicit locking.
-- */
--int rcutree_dead_cpu(unsigned int cpu)
--{
--	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
--		return 0;
--
--	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
--	// Stop-machine done, so allow nohz_full to disable tick.
--	tick_dep_clear(TICK_DEP_BIT_RCU);
--	return 0;
--}
--
- /*
-  * Propagate ->qsinitmask bits up the rcu_node tree to account for the
-  * first CPU in a given leaf rcu_node structure coming online.  The caller
-@@ -4470,29 +4434,6 @@ int rcutree_online_cpu(unsigned int cpu)
- 	return 0;
- }
- 
--/*
-- * Near the beginning of the process.  The CPU is still very much alive
-- * with pretty much all services enabled.
-- */
--int rcutree_offline_cpu(unsigned int cpu)
--{
--	unsigned long flags;
--	struct rcu_data *rdp;
--	struct rcu_node *rnp;
--
--	rdp = per_cpu_ptr(&rcu_data, cpu);
--	rnp = rdp->mynode;
--	raw_spin_lock_irqsave_rcu_node(rnp, flags);
--	rnp->ffmask &= ~rdp->grpmask;
--	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
--
--	rcutree_affinity_setting(cpu, cpu);
--
--	// nohz_full CPUs need the tick for stop-machine to work quickly
--	tick_dep_set(TICK_DEP_BIT_RCU);
--	return 0;
--}
--
- /*
-  * Mark the specified CPU as being online so that subsequent grace periods
-  * (both expedited and normal) will wait on it.  Note that this means that
-@@ -4646,7 +4587,60 @@ void rcutree_migrate_callbacks(int cpu)
- 		  cpu, rcu_segcblist_n_cbs(&rdp->cblist),
- 		  rcu_segcblist_first_cb(&rdp->cblist));
- }
--#endif
-+
-+/*
-+ * The CPU has been completely removed, and some other CPU is reporting
-+ * this fact from process context.  Do the remainder of the cleanup.
-+ * There can only be one CPU hotplug operation at a time, so no need for
-+ * explicit locking.
-+ */
-+int rcutree_dead_cpu(unsigned int cpu)
-+{
-+	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
-+	// Stop-machine done, so allow nohz_full to disable tick.
-+	tick_dep_clear(TICK_DEP_BIT_RCU);
-+	return 0;
-+}
-+
-+/*
-+ * Near the end of the offline process.  Trace the fact that this CPU
-+ * is going offline.
-+ */
-+int rcutree_dying_cpu(unsigned int cpu)
-+{
-+	bool blkd;
-+	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-+	struct rcu_node *rnp = rdp->mynode;
-+
-+	blkd = !!(READ_ONCE(rnp->qsmask) & rdp->grpmask);
-+	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
-+			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
-+	return 0;
-+}
-+
-+/*
-+ * Near the beginning of the process.  The CPU is still very much alive
-+ * with pretty much all services enabled.
-+ */
-+int rcutree_offline_cpu(unsigned int cpu)
-+{
-+	unsigned long flags;
-+	struct rcu_data *rdp;
-+	struct rcu_node *rnp;
-+
-+	rdp = per_cpu_ptr(&rcu_data, cpu);
-+	rnp = rdp->mynode;
-+	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-+	rnp->ffmask &= ~rdp->grpmask;
-+	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+
-+	rcutree_affinity_setting(cpu, cpu);
-+
-+	// nohz_full CPUs need the tick for stop-machine to work quickly
-+	tick_dep_set(TICK_DEP_BIT_RCU);
-+	return 0;
-+}
-+#endif /* #ifdef CONFIG_HOTPLUG_CPU */
- 
- /*
-  * On non-huge systems, use expedited RCU grace periods to make suspend
+ 	/* Create workqueue for Tree SRCU and for expedited GPs. */
 -- 
 2.34.1
 
