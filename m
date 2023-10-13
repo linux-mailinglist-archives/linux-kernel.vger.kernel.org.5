@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FED7C85B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3146F7C85B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbjJMMYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
+        id S231802AbjJMMYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 08:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231725AbjJMMYb (ORCPT
+        with ESMTP id S231724AbjJMMYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Oct 2023 08:24:31 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03F4BD
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F1ECA
         for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:24:28 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1qrHD6-00016D-4T; Fri, 13 Oct 2023 14:24:08 +0200
+        id 1qrHD6-00016F-4V; Fri, 13 Oct 2023 14:24:08 +0200
 Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ore@pengutronix.de>)
-        id 1qrHD4-001OKi-W2; Fri, 13 Oct 2023 14:24:07 +0200
+        id 1qrHD5-001OKj-0t; Fri, 13 Oct 2023 14:24:07 +0200
 Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
         (envelope-from <ore@pengutronix.de>)
-        id 1qrHD4-00FiNm-2y;
+        id 1qrHD4-00FiNw-32;
         Fri, 13 Oct 2023 14:24:06 +0200
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     "David S. Miller" <davem@davemloft.net>,
@@ -47,9 +47,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
         UNGLinuxDriver@microchip.com,
         "Russell King (Oracle)" <linux@armlinux.org.uk>,
         devicetree@vger.kernel.org
-Subject: [PATCH net-next v3 2/7] net: dsa: microchip: Set unique MAC at startup for WoL support
-Date:   Fri, 13 Oct 2023 14:24:00 +0200
-Message-Id: <20231013122405.3745475-3-o.rempel@pengutronix.de>
+Subject: [PATCH net-next v3 3/7] net: dsa: microchip: ksz9477: add Wake on LAN support
+Date:   Fri, 13 Oct 2023 14:24:01 +0200
+Message-Id: <20231013122405.3745475-4-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231013122405.3745475-1-o.rempel@pengutronix.de>
 References: <20231013122405.3745475-1-o.rempel@pengutronix.de>
@@ -67,123 +67,227 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set a unique global MAC address for each switch on the network at system
-startup by syncing the switch's global MAC address with the Ethernet
-address of the DSA master interface. This is crucial for supporting
-Wake-on-LAN (WoL) functionality, as it requires a unique address for
-each switch.
-
-Although the operation is performed only at system start and won't sync
-if the master Ethernet address changes dynamically, it lays the
-groundwork for WoL support by ensuring a unique MAC address for each
-switch.
+Add WoL support for KSZ9477 family of switches. This code was tested on
+KSZ8563 chip and supports only wake on Magic Packet for now.
+Other parts needed for fully operational WoL support are in the followup
+patches.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- drivers/net/dsa/microchip/ksz_common.c | 69 +++++++++++++++++++++++---
- 1 file changed, 62 insertions(+), 7 deletions(-)
+ drivers/net/dsa/microchip/ksz9477.c    | 109 +++++++++++++++++++++++++
+ drivers/net/dsa/microchip/ksz9477.h    |   4 +
+ drivers/net/dsa/microchip/ksz_common.c |  26 ++++++
+ drivers/net/dsa/microchip/ksz_common.h |   4 +
+ 4 files changed, 143 insertions(+)
 
-diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index 02fab1adb27f..db0ef4ad181e 100644
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -2173,6 +2173,57 @@ static int ksz_pirq_setup(struct ksz_device *dev, u8 p)
- 	return ksz_irq_common_setup(dev, pirq);
+diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
+index cde8ef33d029..3d9b6d6083cf 100644
+--- a/drivers/net/dsa/microchip/ksz9477.c
++++ b/drivers/net/dsa/microchip/ksz9477.c
+@@ -56,6 +56,112 @@ int ksz9477_change_mtu(struct ksz_device *dev, int port, int mtu)
+ 				  REG_SW_MTU_MASK, frame_size);
  }
  
 +/**
-+ * ksz_cmn_write_global_mac_addr - Write global MAC address to switch.
++ * ksz9477_handle_wake_reason - Handle wake reason on a specified port.
 + * @dev: The device structure.
-+ * @addr: Pointer to MAC address.
++ * @port: The port number.
 + *
-+ * This function programs the switch's MAC address register with the given
-+ * MAC address. The global MAC address is used as the source address in MAC
-+ * pause control frames, for HSR self-address filtering, Wake-on-LAN (WoL),
-+ * and for self-address filtering purposes.
++ * This function reads the PME (Power Management Event) status register of a
++ * specified port to determine the wake reason. If there is no wake event, it
++ * returns early. Otherwise, it logs the wake reason which could be due to a
++ * "Magic Packet", "Link Up", or "Energy Detect" event. The PME status register
++ * is then cleared to acknowledge the handling of the wake event.
 + *
 + * Return: 0 on success, or an error code on failure.
 + */
-+static int ksz_cmn_write_global_mac_addr(struct ksz_device *dev,
-+					 const unsigned char *addr)
++static int ksz9477_handle_wake_reason(struct ksz_device *dev, int port)
 +{
-+	const u16 *regs = dev->info->regs;
-+	int i, ret;
++	u8 pme_status;
++	int ret;
 +
-+	for (i = 0; i < ETH_ALEN; i++) {
-+		ret = ksz_write8(dev, regs[REG_SW_MAC_ADDR] + i, addr[i]);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * ksz_cmn_set_default_switch_mac_addr - Set the switch's global MAC address
-+ *                                       from master port.
-+ * @dev: The device structure.
-+ *
-+ * This function retrieves the MAC address from the master network device
-+ * associated with the CPU port and writes it to the switch's global MAC
-+ * address register.
-+ *
-+ * Return: 0 on success, or an error code on failure.
-+ */
-+static int ksz_cmn_set_default_switch_mac_addr(struct ksz_device *dev)
-+{
-+	struct dsa_switch *ds = dev->ds;
-+	struct net_device *master;
-+
-+	/* use CPU port to get master net device because it is guaranteed
-+	 * to be a valid port
-+	 */
-+	master = dsa_port_to_master(dsa_to_port(ds, dev->cpu_port));
-+
-+	return ksz_cmn_write_global_mac_addr(dev, master->dev_addr);
-+}
-+
- static int ksz_setup(struct dsa_switch *ds)
- {
- 	struct ksz_device *dev = ds->priv;
-@@ -2194,6 +2245,16 @@ static int ksz_setup(struct dsa_switch *ds)
- 		return ret;
- 	}
- 
-+	/* Set switch MAC address from master port.
-+	 * In the current implementation, this operation is only
-+	 * performed during system start and will not sync if the master
-+	 * Ethernet address changes dynamically thereafter. The global MAC
-+	 * address still can be overwritten for HSR use cases.
-+	 */
-+	ret = ksz_cmn_set_default_switch_mac_addr(dev);
++	ret = ksz_pread8(dev, port, REG_PORT_PME_STATUS, &pme_status);
 +	if (ret)
 +		return ret;
 +
- 	/* set broadcast storm protection 10% rate */
- 	regmap_update_bits(ksz_regmap_16(dev), regs[S_BROADCAST_CTRL],
- 			   BROADCAST_STORM_RATE,
-@@ -3572,8 +3633,6 @@ static int ksz_switch_macaddr_get(struct dsa_switch *ds, int port,
- 	const unsigned char *addr = slave->dev_addr;
- 	struct ksz_switch_macaddr *switch_macaddr;
- 	struct ksz_device *dev = ds->priv;
--	const u16 *regs = dev->info->regs;
--	int i;
++	if (!pme_status)
++		return 0;
++
++	dev_dbg(dev->dev, "Wake event on port %d due to: %s %s %s\n", port,
++		pme_status & PME_WOL_MAGICPKT ? "\"Magic Packet\"" : "",
++		pme_status & PME_WOL_LINKUP ? "\"Link Up\"" : "",
++		pme_status & PME_WOL_ENERGY ? "\"Enery detect\"" : "");
++
++	return ksz_pwrite8(dev, port, REG_PORT_PME_STATUS, pme_status);
++}
++
++/**
++ * ksz9477_get_wol - Get Wake-on-LAN settings for a specified port.
++ * @dev: The device structure.
++ * @port: The port number.
++ * @wol: Pointer to ethtool Wake-on-LAN settings structure.
++ *
++ * This function checks the PME Pin Control Register to see if  PME Pin Output
++ * Enable is set, indicating PME is enabled. If enabled, it sets the supported
++ * and active WoL flags.
++ */
++void ksz9477_get_wol(struct ksz_device *dev, int port,
++		     struct ethtool_wolinfo *wol)
++{
++	u8 pme_ctrl, pme_conf;
++	int ret;
++
++	ret = ksz_read8(dev, REG_SW_PME_CTRL, &pme_conf);
++	if (ret)
++		return;
++
++	if (!(pme_conf & PME_ENABLE))
++		return;
++
++	wol->supported = WAKE_MAGIC;
++
++	ret = ksz_pread8(dev, port, REG_PORT_PME_CTRL, &pme_ctrl);
++	if (ret)
++		return;
++
++	if (pme_ctrl & PME_WOL_MAGICPKT)
++		wol->wolopts |= WAKE_MAGIC;
++}
++
++/**
++ * ksz9477_set_wol - Set Wake-on-LAN settings for a specified port.
++ * @dev: The device structure.
++ * @port: The port number.
++ * @wol: Pointer to ethtool Wake-on-LAN settings structure.
++ *
++ * This function configures Wake-on-LAN (WoL) settings for a specified port.
++ * It validates the provided WoL options, checks if PME is enabled via the
++ * switch's PME Pin Control Register, clears any previous wake reasons,
++ * and sets the Magic Packet flag in the port's PME control register if
++ * specified.
++ *
++ * Return: 0 on success, or other error codes on failure.
++ */
++int ksz9477_set_wol(struct ksz_device *dev, int port,
++		    struct ethtool_wolinfo *wol)
++{
++	u8 pme_conf, pme_ctrl = 0;
++	int ret;
++
++	if (wol->wolopts & ~WAKE_MAGIC)
++		return -EINVAL;
++
++	ret = ksz_read8(dev, REG_SW_PME_CTRL, &pme_conf);
++	if (ret)
++		return ret;
++
++	if (!(pme_conf & PME_ENABLE))
++		return -EOPNOTSUPP;
++
++	ret = ksz9477_handle_wake_reason(dev, port);
++	if (ret)
++		return ret;
++
++	if (wol->wolopts & WAKE_MAGIC)
++		pme_ctrl |= PME_WOL_MAGICPKT;
++
++	return ksz_pwrite8(dev, port, REG_PORT_PME_CTRL, pme_ctrl);
++}
++
+ static int ksz9477_wait_vlan_ctrl_ready(struct ksz_device *dev)
+ {
+ 	unsigned int val;
+@@ -1006,6 +1112,9 @@ void ksz9477_port_setup(struct ksz_device *dev, int port, bool cpu_port)
+ 		ksz_pread16(dev, port, REG_PORT_PHY_INT_ENABLE, &data16);
  
- 	/* Make sure concurrent MAC address changes are blocked */
- 	ASSERT_RTNL();
-@@ -3599,11 +3658,7 @@ static int ksz_switch_macaddr_get(struct dsa_switch *ds, int port,
- 	refcount_set(&switch_macaddr->refcount, 1);
- 	dev->switch_macaddr = switch_macaddr;
- 
--	/* Program the switch MAC address to hardware */
--	for (i = 0; i < ETH_ALEN; i++)
--		ksz_write8(dev, regs[REG_SW_MAC_ADDR] + i, addr[i]);
--
--	return 0;
-+	return ksz_cmn_write_global_mac_addr(dev, addr);
+ 	ksz9477_port_acl_init(dev, port);
++
++	/* clear pending wake flags */
++	ksz9477_handle_wake_reason(dev, port);
  }
  
- static void ksz_switch_macaddr_put(struct dsa_switch *ds)
+ void ksz9477_config_cpu_port(struct dsa_switch *ds)
+diff --git a/drivers/net/dsa/microchip/ksz9477.h b/drivers/net/dsa/microchip/ksz9477.h
+index f90e2e8ebe80..fa8d0318b437 100644
+--- a/drivers/net/dsa/microchip/ksz9477.h
++++ b/drivers/net/dsa/microchip/ksz9477.h
+@@ -58,6 +58,10 @@ void ksz9477_switch_exit(struct ksz_device *dev);
+ void ksz9477_port_queue_split(struct ksz_device *dev, int port);
+ void ksz9477_hsr_join(struct dsa_switch *ds, int port, struct net_device *hsr);
+ void ksz9477_hsr_leave(struct dsa_switch *ds, int port, struct net_device *hsr);
++void ksz9477_get_wol(struct ksz_device *dev, int port,
++		     struct ethtool_wolinfo *wol);
++int ksz9477_set_wol(struct ksz_device *dev, int port,
++		    struct ethtool_wolinfo *wol);
+ 
+ int ksz9477_port_acl_init(struct ksz_device *dev, int port);
+ void ksz9477_port_acl_free(struct ksz_device *dev, int port);
+diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
+index db0ef4ad181e..bef1951fe6f2 100644
+--- a/drivers/net/dsa/microchip/ksz_common.c
++++ b/drivers/net/dsa/microchip/ksz_common.c
+@@ -319,6 +319,8 @@ static const struct ksz_dev_ops ksz9477_dev_ops = {
+ 	.mdb_del = ksz9477_mdb_del,
+ 	.change_mtu = ksz9477_change_mtu,
+ 	.phylink_mac_link_up = ksz9477_phylink_mac_link_up,
++	.wol_get = ksz9477_get_wol,
++	.wol_set = ksz9477_set_wol,
+ 	.config_cpu_port = ksz9477_config_cpu_port,
+ 	.tc_cbs_set_cinc = ksz9477_tc_cbs_set_cinc,
+ 	.enable_stp_addr = ksz9477_enable_stp_addr,
+@@ -2935,6 +2937,28 @@ static int ksz_set_mac_eee(struct dsa_switch *ds, int port,
+ 	return 0;
+ }
+ 
++static void ksz_get_wol(struct dsa_switch *ds, int port,
++			struct ethtool_wolinfo *wol)
++{
++	struct ksz_device *dev = ds->priv;
++
++	memset(wol, 0, sizeof(*wol));
++
++	if (dev->dev_ops->wol_get)
++		dev->dev_ops->wol_get(dev, port, wol);
++}
++
++static int ksz_set_wol(struct dsa_switch *ds, int port,
++		       struct ethtool_wolinfo *wol)
++{
++	struct ksz_device *dev = ds->priv;
++
++	if (dev->dev_ops->wol_set)
++		return dev->dev_ops->wol_set(dev, port, wol);
++
++	return -EOPNOTSUPP;
++}
++
+ static void ksz_set_xmii(struct ksz_device *dev, int port,
+ 			 phy_interface_t interface)
+ {
+@@ -3782,6 +3806,8 @@ static const struct dsa_switch_ops ksz_switch_ops = {
+ 	.get_pause_stats	= ksz_get_pause_stats,
+ 	.port_change_mtu	= ksz_change_mtu,
+ 	.port_max_mtu		= ksz_max_mtu,
++	.get_wol		= ksz_get_wol,
++	.set_wol		= ksz_set_wol,
+ 	.get_ts_info		= ksz_get_ts_info,
+ 	.port_hwtstamp_get	= ksz_hwtstamp_get,
+ 	.port_hwtstamp_set	= ksz_hwtstamp_set,
+diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
+index 8842efca0871..43d0d8717eaa 100644
+--- a/drivers/net/dsa/microchip/ksz_common.h
++++ b/drivers/net/dsa/microchip/ksz_common.h
+@@ -373,6 +373,10 @@ struct ksz_dev_ops {
+ 				    int duplex, bool tx_pause, bool rx_pause);
+ 	void (*setup_rgmii_delay)(struct ksz_device *dev, int port);
+ 	int (*tc_cbs_set_cinc)(struct ksz_device *dev, int port, u32 val);
++	void (*wol_get)(struct ksz_device *dev, int port,
++			struct ethtool_wolinfo *wol);
++	int (*wol_set)(struct ksz_device *dev, int port,
++		       struct ethtool_wolinfo *wol);
+ 	void (*config_cpu_port)(struct dsa_switch *ds);
+ 	int (*enable_stp_addr)(struct ksz_device *dev);
+ 	int (*reset)(struct ksz_device *dev);
 -- 
 2.39.2
 
