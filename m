@@ -2,121 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E6D7C869B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 15:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8FD7C869F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 15:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbjJMNTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 09:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58740 "EHLO
+        id S231928AbjJMNTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 09:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231590AbjJMNS6 (ORCPT
+        with ESMTP id S231927AbjJMNTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 09:18:58 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C35ABF;
-        Fri, 13 Oct 2023 06:18:57 -0700 (PDT)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39DDI009014110;
-        Fri, 13 Oct 2023 13:18:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=OipLsM9Ay1YZlFLfXCD8/SUSKEY3RW42dMk8BIaPPts=;
- b=MeH97IcpVUTWK5zOaa4xHlyvBMAMEl8kkfEa4K+/4YjctVeRrd4AqsJzPmG3KdwWbM8A
- CAg0oxn/LjjdZhMS8rz05qsB+WijCPAbGkB0HmBeNOCC+DJdcFq5q//7ZTxJSRBxiCxU
- IrvZzT64ZiLz1mGfnD8sCA+sv3wVdvAXEEJyo3vwCBRJLJCe8EPdlkeD6Cc0jQpLxtFL
- bZXZqsP9bLe/2dOV/xPoQ7gbFnwUeHVFN8a5F9H9WC99FK0g3e8UCrBLdH1KMx2/dN/Y
- 49bBgR4ZkBbX2P0LTNiXvBMFSQx87WPkPcvnZNPmnw+DDDaJOLReeCicfcr6WjSPp41I Mg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tq6n680sk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Oct 2023 13:18:18 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39DDI7td014828;
-        Fri, 13 Oct 2023 13:18:17 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tq6n680r9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Oct 2023 13:18:17 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39DBLMcn007530;
-        Fri, 13 Oct 2023 13:18:16 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tpt5ac32g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Oct 2023 13:18:16 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39DDIFEl57868690
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 13 Oct 2023 13:18:16 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C58C658054;
-        Fri, 13 Oct 2023 13:18:15 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 19C235805D;
-        Fri, 13 Oct 2023 13:18:13 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.129.99])
-        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 13 Oct 2023 13:18:12 +0000 (GMT)
-Message-ID: <a3ce31b0890c9633e498222351ffc2bc1fcbf973.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 17/25] security: Introduce inode_post_create_tmpfile
- hook
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Fri, 13 Oct 2023 09:18:12 -0400
-In-Reply-To: <20230904133415.1799503-18-roberto.sassu@huaweicloud.com>
-References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
-         <20230904133415.1799503-18-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: iR2zFBc3Xz0Ij_GmqvRjQyUDVntg8yNH
-X-Proofpoint-ORIG-GUID: iRLTBHwzP0f1ormTaYY3SHqNpdveXyPm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-13_04,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=862
- priorityscore=1501 clxscore=1015 impostorscore=0 lowpriorityscore=0
- phishscore=0 mlxscore=0 spamscore=0 adultscore=0 suspectscore=0
- bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310130111
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 13 Oct 2023 09:19:10 -0400
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42223C2;
+        Fri, 13 Oct 2023 06:19:06 -0700 (PDT)
+Received: from [192.168.0.185] (ip5f5bf22a.dynamic.kabel-deutschland.de [95.91.242.42])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 09CBF61E5FE01;
+        Fri, 13 Oct 2023 15:18:17 +0200 (CEST)
+Message-ID: <7add0297-709f-4836-832f-f8fbd412eca5@molgen.mpg.de>
+Date:   Fri, 13 Oct 2023 15:18:16 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 3/3] usb: chipidea: Add support for NPCM
+To:     Tomer Maimon <tmaimon77@gmail.com>
+Cc:     peter.chen@kernel.org, gregkh@linuxfoundation.org,
+        avifishman70@gmail.com, tali.perry1@gmail.com, joel@jms.id.au,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        j.neuschaefer@gmx.net, openbmc@lists.ozlabs.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231012230057.3365626-1-tmaimon77@gmail.com>
+ <20231012230057.3365626-4-tmaimon77@gmail.com>
+Content-Language: en-US
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20231012230057.3365626-4-tmaimon77@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-09-04 at 15:34 +0200, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
+Dear Tomer,
+
+
+Thank you for your patch.
+
+Am 13.10.23 um 01:00 schrieb Tomer Maimon:
+> Add Nuvoton NPCM BMC SoCs support to USB ChipIdea driver.
+> NPCM SoC include ChipIdea IP block that used for USB device controller
+
+include*s*
+“that *is* used” or just “… used for”
+
+> mode.
+
+Please add a line, how you tested this patch.
+
+> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+> Acked-by: Peter Chen <peter.chen@kernel.org>
+> ---
+>   drivers/usb/chipidea/Kconfig        |   4 +
+>   drivers/usb/chipidea/Makefile       |   1 +
+>   drivers/usb/chipidea/ci_hdrc_npcm.c | 114 ++++++++++++++++++++++++++++
+>   3 files changed, 119 insertions(+)
+>   create mode 100644 drivers/usb/chipidea/ci_hdrc_npcm.c
 > 
-> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-> the inode_post_create_tmpfile hook.
-> 
-> It is useful for IMA to mark new temp files as successfully appraised and
-> let them be subsequently opened for further modification.
+> diff --git a/drivers/usb/chipidea/Kconfig b/drivers/usb/chipidea/Kconfig
+> index c815824a0b2d..bab45bc62361 100644
+> --- a/drivers/usb/chipidea/Kconfig
+> +++ b/drivers/usb/chipidea/Kconfig
+> @@ -43,6 +43,10 @@ config USB_CHIPIDEA_MSM
+>   	tristate "Enable MSM hsusb glue driver" if EXPERT
+>   	default USB_CHIPIDEA
+>   
+> +config USB_CHIPIDEA_NPCM
+> +	tristate "Enable NPCM hsusb glue driver" if EXPERT
+> +	default USB_CHIPIDEA
+> +
+>   config USB_CHIPIDEA_IMX
+>   	tristate "Enable i.MX USB glue driver" if EXPERT
+>   	depends on OF
+> diff --git a/drivers/usb/chipidea/Makefile b/drivers/usb/chipidea/Makefile
+> index 71afeab97e83..718cb24603dd 100644
+> --- a/drivers/usb/chipidea/Makefile
+> +++ b/drivers/usb/chipidea/Makefile
+> @@ -13,6 +13,7 @@ ci_hdrc-$(CONFIG_USB_OTG_FSM)		+= otg_fsm.o
+>   
+>   obj-$(CONFIG_USB_CHIPIDEA_GENERIC)	+= ci_hdrc_usb2.o
+>   obj-$(CONFIG_USB_CHIPIDEA_MSM)		+= ci_hdrc_msm.o
+> +obj-$(CONFIG_USB_CHIPIDEA_NPCM)		+= ci_hdrc_npcm.o
+>   obj-$(CONFIG_USB_CHIPIDEA_PCI)		+= ci_hdrc_pci.o
+>   obj-$(CONFIG_USB_CHIPIDEA_IMX)		+= usbmisc_imx.o ci_hdrc_imx.o
+>   obj-$(CONFIG_USB_CHIPIDEA_TEGRA)	+= ci_hdrc_tegra.o
+> diff --git a/drivers/usb/chipidea/ci_hdrc_npcm.c b/drivers/usb/chipidea/ci_hdrc_npcm.c
+> new file mode 100644
+> index 000000000000..37b64a3dbd96
+> --- /dev/null
+> +++ b/drivers/usb/chipidea/ci_hdrc_npcm.c
+> @@ -0,0 +1,114 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2023 Nuvoton Technology corporation.
+> +
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/usb/chipidea.h>
+> +#include <linux/clk.h>
+> +#include <linux/io.h>
+> +#include <linux/reset-controller.h>
+> +#include <linux/of.h>
+> +
+> +#include "ci.h"
+> +
+> +struct npcm_udc_data {
+> +	struct platform_device	*ci;
+> +	struct clk		*core_clk;
+> +	struct ci_hdrc_platform_data pdata;
+> +};
+> +
+> +static int npcm_udc_notify_event(struct ci_hdrc *ci, unsigned event)
+> +{
+> +	struct device *dev = ci->dev->parent;
+> +
+> +	switch (event) {
+> +	case CI_HDRC_CONTROLLER_RESET_EVENT:
+> +		/* clear all mode bits */
+> +		hw_write(ci, OP_USBMODE, 0xffffffff, 0x0);
+> +		break;
+> +	default:
+> +		dev_dbg(dev, "unknown ci_hdrc event\n");
 
-As tmp files can be made persistent, treat new tmp files like other new
-files, so that the file hash is calculated and stored in the security
-xattr.
+Please print it out.
 
--- 
-thanks,
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int npcm_udc_probe(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +	struct npcm_udc_data *ci;
+> +	struct platform_device *plat_ci;
+> +	struct device *dev = &pdev->dev;
+> +
+> +	ci = devm_kzalloc(&pdev->dev, sizeof(*ci), GFP_KERNEL);
+> +	if (!ci)
+> +		return -ENOMEM;
+> +	platform_set_drvdata(pdev, ci);
+> +
+> +	ci->core_clk = devm_clk_get_optional(dev, NULL);
+> +	if (IS_ERR(ci->core_clk))
+> +		return PTR_ERR(ci->core_clk);
+> +
+> +	ret = clk_prepare_enable(ci->core_clk);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "failed to enable the clock: %d\n", ret);
+> +
+> +	ci->pdata.name = dev_name(dev);
+> +	ci->pdata.capoffset = DEF_CAPOFFSET;
+> +	ci->pdata.flags	= CI_HDRC_REQUIRES_ALIGNED_DMA |
+> +		CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS;
+> +	ci->pdata.phy_mode = USBPHY_INTERFACE_MODE_UTMI;
+> +	ci->pdata.notify_event = npcm_udc_notify_event;
+> +
+> +	plat_ci = ci_hdrc_add_device(dev, pdev->resource, pdev->num_resources,
+> +				     &ci->pdata);
+> +	if (IS_ERR(plat_ci)) {
+> +		ret = PTR_ERR(plat_ci);
+> +		dev_err(dev, "failed to register HDRC NPCM device: %d\n", ret);
+> +		goto clk_err;
+> +	}
+> +
+> +	pm_runtime_no_callbacks(dev);
+> +	pm_runtime_enable(dev);
+> +
+> +	return 0;
+> +
+> +clk_err:
+> +	clk_disable_unprepare(ci->core_clk);
+> +	return ret;
+> +}
+> +
+> +static int npcm_udc_remove(struct platform_device *pdev)
+> +{
+> +	struct npcm_udc_data *ci = platform_get_drvdata(pdev);
+> +
+> +	pm_runtime_disable(&pdev->dev);
+> +	ci_hdrc_remove_device(ci->ci);
+> +	clk_disable_unprepare(ci->core_clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id npcm_udc_dt_match[] = {
+> +	{ .compatible = "nuvoton,npcm750-udc", },
+> +	{ .compatible = "nuvoton,npcm845-udc", },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, npcm_udc_dt_match);
+> +
+> +static struct platform_driver npcm_udc_driver = {
+> +	.probe = npcm_udc_probe,
+> +	.remove = npcm_udc_remove,
+> +	.driver = {
+> +		.name = "npcm_udc",
+> +		.of_match_table = npcm_udc_dt_match,
+> +	},
+> +};
+> +
+> +module_platform_driver(npcm_udc_driver);
+> +
+> +MODULE_DESCRIPTION("NPCM USB device controller driver");
+> +MODULE_AUTHOR("Tomer Maimon <tomer.maimon@nuvoton.com>");
 
-Mimi
+Should that address also be recorded as the patch author?
 
+> +MODULE_LICENSE("GPL v2");
+
+
+Kind regards,
+
+Paul
