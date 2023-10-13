@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 482E97C8BD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DCD7C8BD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbjJMQys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
+        id S229518AbjJMQzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJMQyr (ORCPT
+        with ESMTP id S229683AbjJMQzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:54:47 -0400
-Received: from out-198.mta1.migadu.com (out-198.mta1.migadu.com [95.215.58.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B265AD
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:54:45 -0700 (PDT)
-Message-ID: <58ed787f-a3b1-58d3-74a5-3a6e8c4c970a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697216082;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bFYiULr6F/P0Mtox7L6PbFCpW6iv+F01a/eo96NoyTs=;
-        b=TUHuLF04Jm3hSEVbAw2g19VbmJgt632qjJxcZSSi5yKBZUiHK07SX1NECkqY+moL56vlyJ
-        cIWcNlgp5VmjTwUhVpbPpmwYpykxL1qffWPVUyB5WHxqsNlahLMoF4tn5w+3bz1eoCH18Y
-        NJPxOnXWj4ER5rkSg2XIhT1ogYHo8uY=
-Date:   Fri, 13 Oct 2023 09:54:35 -0700
-MIME-Version: 1.0
-Subject: Re: linux-next: build warning after merge of the bpf-next tree
-Content-Language: en-US
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daan De Meyer <daan.j.demeyer@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-References: <20231013114007.2fb09691@canb.auug.org.au>
- <20231013163034.73314060@canb.auug.org.au>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20231013163034.73314060@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Fri, 13 Oct 2023 12:55:38 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8E695
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:55:35 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-6b697b7f753so316056b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:55:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697216135; x=1697820935; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SqpC3O39vWA5duvUzqUKP8E1siQNepZhPn4u3Os8+q4=;
+        b=RU7X/bN2TE0sR2S0pHwbe+KI1fUlsj4j9qUV5hwQXLYLGibXDJ0Z0J/Q6/a8WfFcCM
+         fExWeAqmNIAeDGO8q7GOrxOPd/uO72AUz/SQBP4Gh6ZqPpxzDjLyevO/FVaxfs5atX2U
+         lV+MZGKEvs6tkcW+kotZhOh8zvbU8JsTCQrPd8J+7j51MMQAqMn7+yN+Nz/VN0GOKuLk
+         lQoxUyg2pIhgGyqHva4FLAo6q4MU+jH3537wG6TheF6PdgYGKN46nE+d8VBMWQzd19yx
+         Xx74ONT+lhQYu1d9vyTtP/nzw9HWaXKbFtrtnP3HzLgN1WMXUGgYbRMAZ5pZ78ffTt0o
+         54gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697216135; x=1697820935;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SqpC3O39vWA5duvUzqUKP8E1siQNepZhPn4u3Os8+q4=;
+        b=W+fowZ4L2sBcEAmB9pBrf/1B667dc3KMoW4g7nke/Dak5AwzBtwiHkZCqUr9Jto8s4
+         gV9QDG0fE0IFNMN9HQTDmfIjegPJkdV4ClDgTxjcFbrUSPehXLm6v/NRR3wpXi1VRi5X
+         qWx69Ayq1BYffM2+MT4BgvQ1fRIonQeCcM8t+xNPJ0PVN0/vXXh1ps8NFDG4aT1tJL48
+         1MvF9jS8d8FpFZ6FyFUSlhZMTBNdnQtjp2sIGSTVpa6j0szpwRtkvudWLqRCcNrEAAhP
+         gCvaewnZQZdF+1kYQ3T2nZFGMdwO62L5LIamCIkbsbvj7PyBR0ewKmXgX9E2UEGGDepU
+         NB+Q==
+X-Gm-Message-State: AOJu0Ywvz3Zff7T19F07f8nffaVnTgWNRZvf0JvgMRFGYdslFbp6Tqa2
+        HQd/vzrNr8fYl5NFoyTrxP4YOavrMNA=
+X-Google-Smtp-Source: AGHT+IGj5xI/++tlsxAohTj1c+Qq338n1HPZhLbwf3cqW8PuGxWCGz5IRSyv9cGVcgL/NLV+GP5fOnU9smg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2e05:b0:68f:cb69:8e76 with SMTP id
+ fc5-20020a056a002e0500b0068fcb698e76mr640155pfb.2.1697216134809; Fri, 13 Oct
+ 2023 09:55:34 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 09:55:33 -0700
+In-Reply-To: <7c4b1c78-de74-5fff-7327-0863f403eb7e@redhat.com>
+Mime-Version: 1.0
+References: <ZSQO4fHaAxDkbGyz@google.com> <20231009200608.GJ800259@ZenIV>
+ <ZSRgdgQe3fseEQpf@google.com> <20231009204037.GK800259@ZenIV>
+ <ZSRwDItBbsn2IfWl@google.com> <20231010000910.GM800259@ZenIV>
+ <ZSSaWPc5wjU9k1Kw@google.com> <20231010003746.GN800259@ZenIV>
+ <ZSXeipdJcWZjLx8k@google.com> <7c4b1c78-de74-5fff-7327-0863f403eb7e@redhat.com>
+Message-ID: <ZSl2hdfF8XSXss3h@google.com>
+Subject: Re: [PATCH gmem FIXUP] kvm: guestmem: do not use a file system
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/23 10:30 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> On Fri, 13 Oct 2023 11:40:07 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> After merging the bpf-next tree, today's linux-next build (arm
->> multi_v7_defconfig) produced this warning:
->>
->> net/ipv4/af_inet.c: In function 'inet_getname':
->> net/ipv4/af_inet.c:791:13: warning: unused variable 'sin_addr_len' [-Wunused-variable]
->>    791 |         int sin_addr_len = sizeof(*sin);
->>        |             ^~~~~~~~~~~~
->>
->> Introduced by commit
->>
->>    fefba7d1ae19 ("bpf: Propagate modified uaddrlen from cgroup sockaddr programs")
-> 
-> This became a build failure for the i386 defconfig build, so I applied
-> the following patch:
-> 
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Fri, 13 Oct 2023 16:25:08 +1100
-> Subject: [PATCH] fix up for "bpf: Propagate modified uaddrlen from cgroup sockaddr programs"
-> 
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->   net/ipv4/af_inet.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-> index 7e27ad37b939..0fcab6b6cb04 100644
-> --- a/net/ipv4/af_inet.c
-> +++ b/net/ipv4/af_inet.c
-> @@ -788,7 +788,9 @@ int inet_getname(struct socket *sock, struct sockaddr *uaddr,
->   	struct sock *sk		= sock->sk;
->   	struct inet_sock *inet	= inet_sk(sk);
->   	DECLARE_SOCKADDR(struct sockaddr_in *, sin, uaddr);
-> +#ifdef CONFIG_CGROUP_BPF
->   	int sin_addr_len = sizeof(*sin);
-> +#endif
+On Wed, Oct 11, 2023, Paolo Bonzini wrote:
+> Your patch 2 looks good, but perhaps instead of setting the owner we could
+> stash the struct module* in a global, and try_get/put it from open and
+> release respectively?  That is, .owner keeps the kvm module alive and the
+> kvm module keeps kvm-intel/kvm-amd alive.  That would subsume patches 1 and 3.
 
-Thanks for the report and taking care of it.
-
-Daan, something that was missed in ipv4 getname. It should be done similar to 
-inet6_getname() in af_inet6.c such that it "return sin_addr_len;" in this 
-function to avoid the compiler warning here in ipv4.
-
+I don't think that would be a net positive.  We'd have to implement .open() for
+several file types just to get a reference to the sub-module.  At that point, the
+odds of forgetting to implement .open() are about the same as forgetting to set
+.owner when adding a new file type, e.g. guest_memfd.
