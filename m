@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F29FA7C85BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE687C85A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231775AbjJMMYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39766 "EHLO
+        id S231707AbjJMMY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 08:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231723AbjJMMYa (ORCPT
+        with ESMTP id S231682AbjJMMY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 08:24:30 -0400
+        Fri, 13 Oct 2023 08:24:28 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B457FC0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:24:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDA4BE
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:24:26 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1qrHD6-00016I-4U; Fri, 13 Oct 2023 14:24:08 +0200
+        id 1qrHD6-00016J-4U; Fri, 13 Oct 2023 14:24:08 +0200
 Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ore@pengutronix.de>)
-        id 1qrHD5-001OKo-3b; Fri, 13 Oct 2023 14:24:07 +0200
+        id 1qrHD5-001OKr-3q; Fri, 13 Oct 2023 14:24:07 +0200
 Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
         (envelope-from <ore@pengutronix.de>)
-        id 1qrHD4-00FiOR-3D;
-        Fri, 13 Oct 2023 14:24:06 +0200
+        id 1qrHD5-00FiOb-03;
+        Fri, 13 Oct 2023 14:24:07 +0200
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     "David S. Miller" <davem@davemloft.net>,
         Andrew Lunn <andrew@lunn.ch>,
@@ -47,9 +47,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
         UNGLinuxDriver@microchip.com,
         "Russell King (Oracle)" <linux@armlinux.org.uk>,
         devicetree@vger.kernel.org
-Subject: [PATCH net-next v3 6/7] net: dsa: microchip: use wakeup-source DT property to enable PME output
-Date:   Fri, 13 Oct 2023 14:24:04 +0200
-Message-Id: <20231013122405.3745475-7-o.rempel@pengutronix.de>
+Subject: [PATCH net-next v3 7/7] net: dsa: microchip: do not shut down the switch if WoL is active
+Date:   Fri, 13 Oct 2023 14:24:05 +0200
+Message-Id: <20231013122405.3745475-8-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231013122405.3745475-1-o.rempel@pengutronix.de>
 References: <20231013122405.3745475-1-o.rempel@pengutronix.de>
@@ -67,58 +67,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KSZ switches with WoL support signals wake event over PME pin. If this
-pin is attached to some external PMIC or System Controller can't be
-described as GPIO, the only way to describe it in the devicetree is to
-use wakeup-source property. So, add support for this property and enable
-PME switch output if this property is present.
+For Wake on Lan we should not reconfigure, reset or power down the
+switch on shut down sequence.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- drivers/net/dsa/microchip/ksz9477.c    | 3 +++
- drivers/net/dsa/microchip/ksz_common.c | 3 +++
- drivers/net/dsa/microchip/ksz_common.h | 1 +
- 3 files changed, 7 insertions(+)
+ drivers/net/dsa/microchip/ksz9477_i2c.c |  3 +++
+ drivers/net/dsa/microchip/ksz_common.c  | 18 ++++++++++++++++++
+ drivers/net/dsa/microchip/ksz_common.h  |  2 ++
+ drivers/net/dsa/microchip/ksz_spi.c     |  3 +++
+ 4 files changed, 26 insertions(+)
 
-diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
-index 8d51ec629d76..8035e14ac372 100644
---- a/drivers/net/dsa/microchip/ksz9477.c
-+++ b/drivers/net/dsa/microchip/ksz9477.c
-@@ -1241,6 +1241,9 @@ int ksz9477_setup(struct dsa_switch *ds)
- 	/* enable global MIB counter freeze function */
- 	ksz_cfg(dev, REG_SW_MAC_CTRL_6, SW_MIB_COUNTER_FREEZE, true);
+diff --git a/drivers/net/dsa/microchip/ksz9477_i2c.c b/drivers/net/dsa/microchip/ksz9477_i2c.c
+index 2710afad4f3a..fe818742051c 100644
+--- a/drivers/net/dsa/microchip/ksz9477_i2c.c
++++ b/drivers/net/dsa/microchip/ksz9477_i2c.c
+@@ -66,6 +66,9 @@ static void ksz9477_i2c_shutdown(struct i2c_client *i2c)
+ 	if (!dev)
+ 		return;
  
-+	if (dev->wakeup_source)
-+		ksz_write8(dev, REG_SW_PME_CTRL, PME_ENABLE);
++	if (ksz_wol_is_active(dev))
++		return;
 +
- 	return 0;
- }
+ 	if (dev->dev_ops->reset)
+ 		dev->dev_ops->reset(dev);
  
 diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index bef1951fe6f2..820edda82cea 100644
+index 820edda82cea..c3669b9cc6ce 100644
 --- a/drivers/net/dsa/microchip/ksz_common.c
 +++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -4240,6 +4240,9 @@ int ksz_switch_register(struct ksz_device *dev)
- 			dev_err(dev->dev, "inconsistent synclko settings\n");
- 			return -EINVAL;
- 		}
-+
-+		dev->wakeup_source = of_property_read_bool(dev->dev->of_node,
-+							   "wakeup-source");
- 	}
+@@ -2959,6 +2959,24 @@ static int ksz_set_wol(struct dsa_switch *ds, int port,
+ 	return -EOPNOTSUPP;
+ }
  
- 	ret = dsa_register_switch(dev->ds);
++bool ksz_wol_is_active(struct ksz_device *dev)
++{
++	struct dsa_port *dp;
++
++	if (!dev->wakeup_source)
++		return false;
++
++	dsa_switch_for_each_user_port(dp, dev->ds) {
++		struct ethtool_wolinfo wol;
++
++		ksz_get_wol(dev->ds, dp->index, &wol);
++		if (wol.wolopts)
++			return true;
++	}
++
++	return false;
++}
++
+ static void ksz_set_xmii(struct ksz_device *dev, int port,
+ 			 phy_interface_t interface)
+ {
 diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-index 43d0d8717eaa..80679f38ee12 100644
+index 80679f38ee12..84b1eed8cd2a 100644
 --- a/drivers/net/dsa/microchip/ksz_common.h
 +++ b/drivers/net/dsa/microchip/ksz_common.h
-@@ -163,6 +163,7 @@ struct ksz_device {
- 	phy_interface_t compat_interface;
- 	bool synclko_125;
- 	bool synclko_disable;
-+	bool wakeup_source;
+@@ -397,6 +397,8 @@ bool ksz_get_gbit(struct ksz_device *dev, int port);
+ phy_interface_t ksz_get_xmii(struct ksz_device *dev, int port, bool gbit);
+ extern const struct ksz_chip_data ksz_switch_chips[];
  
- 	struct vlan_table *vlan_cache;
++bool ksz_wol_is_active(struct ksz_device *dev);
++
+ /* Common register access functions */
+ static inline struct regmap *ksz_regmap_8(struct ksz_device *dev)
+ {
+diff --git a/drivers/net/dsa/microchip/ksz_spi.c b/drivers/net/dsa/microchip/ksz_spi.c
+index 279338451621..c5d9c3d86ddb 100644
+--- a/drivers/net/dsa/microchip/ksz_spi.c
++++ b/drivers/net/dsa/microchip/ksz_spi.c
+@@ -114,6 +114,9 @@ static void ksz_spi_shutdown(struct spi_device *spi)
+ 	if (!dev)
+ 		return;
+ 
++	if (ksz_wol_is_active(dev))
++		return;
++
+ 	if (dev->dev_ops->reset)
+ 		dev->dev_ops->reset(dev);
  
 -- 
 2.39.2
