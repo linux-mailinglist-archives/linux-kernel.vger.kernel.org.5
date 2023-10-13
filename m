@@ -2,162 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 911AA7C9116
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD3E7C9118
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232435AbjJMW5m convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Oct 2023 18:57:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38796 "EHLO
+        id S232463AbjJMW6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 18:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232431AbjJMW5l (ORCPT
+        with ESMTP id S229830AbjJMW6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 18:57:41 -0400
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715BFBE;
-        Fri, 13 Oct 2023 15:57:39 -0700 (PDT)
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-27d104fa285so2039182a91.2;
-        Fri, 13 Oct 2023 15:57:39 -0700 (PDT)
+        Fri, 13 Oct 2023 18:58:32 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB2EBF
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 15:58:30 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so31824611fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 15:58:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697237908; x=1697842708; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=1uqCtAsTfHcqR/oA1gOEiEIXlrIe3/h8ohNMcatu9+4=;
+        b=sbHX+jn8vfJ83sj1VHP33aR/1aCrQhiFxuOqk72O6a13Onurk5PD1PqWcNWdJC6NwE
+         V2bL8Wn2ilzis6UiLggsPuV4gQ2Gdk6vudf5R6ePx99DP72ONHwgW7RI+w+zfOjFgYcg
+         9PK41w6F+UXH/jx+wRZnh5MnYgSV+9HDB/83qSPLVY7lZsNzyh+TOf/CE6prmm+oJEF+
+         mxsKlS9FRTRnOJSAZ+jHXTaY9rSh8fVb1dqcqoJKtKk1bvmcxgfHL0WKecN3Zra34u97
+         NnujeObq/FzKyf+/ZRktSjl3V5HAQarKdEVLmkXsNbKBlsKIk1O1WPCQp5gDOZyHoskC
+         qPQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697237859; x=1697842659;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4rQJT81/yzbQzjWsAaHq+5H9Y0QP+lwQhpZXPD22nck=;
-        b=pEcGRGcVIjcJY5VD9AAiE56TZLRWvi9RBPtwHE02ktWKDxsjFJSOT8+xKSHn1b6Oc2
-         ibmfI/Bkt2HMA1Fv41F8RvjbtiH97tyPdK2VX0Hh4aQxWqV6envjP0syMx71b+PXqvCd
-         RWY9jnWQyPl6RNOB2mOthYNPVHjvyBJLa6RfH/FbwX6TIXe3raCoNx2pXqgcX9ayvjrp
-         vZ7mNf05kg3KSEeVpuhmPRVqa3XdByP3mSozKSFILlUoVNfShBaz4pTGytgLBSvsizXl
-         H9ViiakTkMxuCK1PPR99q425J2jtMUMyZDOWsl3CYF4IEPEJ6rUVSqiTh3jWXM8hS8by
-         V2Yg==
-X-Gm-Message-State: AOJu0Yy3/zqYlkwxb6IrQq3PypzLmI6HOoyEUBnZ6yzgTzfnXtpQdghm
-        exyScHed5m/b8Ym7XMLdcH8DUZhxaKJfEFaX/8Z0z4WLpZw=
-X-Google-Smtp-Source: AGHT+IG6RY+Y0DCmrkpCgAxzPt2hRky+SZdvagZZco+YP/UpdQT8IE1gzOfM1HKV1WYgWFiPFjBiVSJ76om3xfS8vwo=
-X-Received: by 2002:a17:90a:1089:b0:274:4161:b9dc with SMTP id
- c9-20020a17090a108900b002744161b9dcmr27158941pja.31.1697237858654; Fri, 13
- Oct 2023 15:57:38 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697237908; x=1697842708;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1uqCtAsTfHcqR/oA1gOEiEIXlrIe3/h8ohNMcatu9+4=;
+        b=wQKRMd1BjBjLFSggPeK6HT1hOsv55HkZqPRoebre+AgfwrOkNJdKPxXVI49zqgFlPG
+         7JuNBt4Wkrc4MqA7sIVu+f1gMtWEr2ogjbSq+nJE5bxGLIm/rxkET4h2FVHQHAOrwF3p
+         mLPW/ECd+VEYeb4w999FN7hOhjXodzUb8OWMrpcCM/FB8Y8VXkIvgeIAy2FCnjibMkyq
+         vgj9I0v7zfVnzWbq90z5vs3nTouRe7Q0T+ZWT2koXIqg8L4RyWW7c63ZNhEKhLHS/Od8
+         SDTTmBnZAL4YZ3lPCe5eUF9lSbUjGlVrIDwOxCbqP9fHtjUyyxk5+9QHrR6m0bRZZM4h
+         Xplg==
+X-Gm-Message-State: AOJu0YywciZjKzczaevyY/QxizVmvhwMB0E3Wc+mFVLNFvlTttYLfLoL
+        MBIcIKVr28QyDDT178LYPnQG7w==
+X-Google-Smtp-Source: AGHT+IEYluYBp3QhexUDfG+FFIOoQ6SnqxeyN10CTUhvnzyRfci78xhHo498ZkzZvGT5/DId3jScTQ==
+X-Received: by 2002:a2e:8912:0:b0:2c0:923:19c2 with SMTP id d18-20020a2e8912000000b002c0092319c2mr24444696lji.15.1697237907999;
+        Fri, 13 Oct 2023 15:58:27 -0700 (PDT)
+Received: from [192.168.4.141] ([178.235.177.169])
+        by smtp.gmail.com with ESMTPSA id 8-20020a2e1448000000b002c27cd20711sm84658lju.3.2023.10.13.15.58.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Oct 2023 15:58:27 -0700 (PDT)
+Message-ID: <b1e3fdc4-8f7a-409d-87d3-5b837af703a9@linaro.org>
+Date:   Sat, 14 Oct 2023 00:58:21 +0200
 MIME-Version: 1.0
-References: <20231004204741.985422-1-namhyung@kernel.org> <ZSnHek1HlQTkfjhG@kernel.org>
-In-Reply-To: <ZSnHek1HlQTkfjhG@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 13 Oct 2023 15:57:27 -0700
-Message-ID: <CAM9d7cip5qmPRhWF37JH_21Q8SjKQCTBVyF_PLE-ytTFOwpasg@mail.gmail.com>
-Subject: Re: [PATCH] perf bench sched pipe: Add -G/--cgroups option
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: qcom: pmic_glink_altmode: Print error when retimer
+ setup fails
+To:     Luca Weiss <luca.weiss@fairphone.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231013-glink-altmode-ret-v1-1-77941537a35b@fairphone.com>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231013-glink-altmode-ret-v1-1-77941537a35b@fairphone.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+On 13.10.2023 15:56, Luca Weiss wrote:
+> It can be useful to know with which return value the retimer_set call
+> failed, so include this info in the dev_err print.
+> 
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-On Fri, Oct 13, 2023 at 3:41 PM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Wed, Oct 04, 2023 at 01:47:41PM -0700, Namhyung Kim escreveu:
-> > The -G/--cgroups option is to put sender and receiver in different
-> > cgroups in order to measure cgroup context switch overheads.
-> >
-> > Users need to make sure the cgroups exist and accessible.
-> >
-> >   # perf stat -e context-switches,cgroup-switches \
-> >   > taskset -c 0 perf bench sched pipe -l 10000 > /dev/null
-> >
-> >    Performance counter stats for 'taskset -c 0 perf bench sched pipe -l 10000':
-> >
-> >               20,001      context-switches
-> >                    2      cgroup-switches
-> >
-> >          0.053449651 seconds time elapsed
-> >
-> >          0.011286000 seconds user
-> >          0.041869000 seconds sys
-> >
-> >   # perf stat -e context-switches,cgroup-switches \
-> >   > taskset -c 0 perf bench sched pipe -l 10000 -G AAA,BBB > /dev/null
-> >
-> >    Performance counter stats for 'taskset -c 0 perf bench sched pipe -l 10000 -G AAA,BBB':
-> >
-> >               20,001      context-switches
-> >               20,001      cgroup-switches
-> >
-> >          0.052768627 seconds time elapsed
->
-> So I tried with:
->
-> [root@quaco ~]# perf bench sched pipe -G system.slice,user.slice
-> # Running 'sched/pipe' benchmark:
-> cannot enter to cgroup: system.slice
-> cannot enter to cgroup: user.slice
-> # Executed 1000000 pipe operations between two processes
->
->      Total time: 6.301 [sec]
->
->        6.301478 usecs/op
->          158692 ops/sec
-> [root@quaco ~]#
->
-> Should't it bail out when not managing to enter the cgroups?
-
-Hmm.. right.  Will fix.
-
->
-> Also:
->
-> [root@quaco ~]# mkdir /sys/fs/cgroup/AAA
-> [root@quaco ~]# mkdir /sys/fs/cgroup/BBB
-> [root@quaco ~]#
-> [root@quaco ~]# perf bench sched pipe -G AAA,BBB
-> # Running 'sched/pipe' benchmark:
-> cannot enter to cgroup: AAA
-> cannot enter to cgroup: BBB
-> # Executed 1000000 pipe operations between two processes
->
->      Total time: 6.397 [sec]
->
->        6.397830 usecs/op
->          156302 ops/sec
-> [root@quaco ~]#
->
-> -rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/AAA/cgroup.procs
-> [root@quaco ~]# ls -la /sys/fs/cgroup/AAA/cgroup.threads
-> -rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/AAA/cgroup.threads
-> [root@quaco ~]# ls -la /sys/fs/cgroup/BBB/cgroup.threads
-> -rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/BBB/cgroup.threads
-> [root@quaco ~]# ls -la /sys/fs/cgroup/BBB/cgroup.procs
-> -rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/BBB/cgroup.procs
-> [root@quaco ~]#
->
-> [root@quaco ~]# perf bench sched pipe -G AAA,BBB
-> # Running 'sched/pipe' benchmark:
-> cannot enter to cgroup: AAA (written=-1, len=6, errno=Operation not supported)
-> cannot enter to cgroup: BBB (written=-1, len=6, errno=Operation not supported)
-> # Executed 1000000 pipe operations between two processes
->
->      Total time: 6.303 [sec]
->
->        6.303221 usecs/op
->          158649 ops/sec
-> [root@quaco ~]#
->
-> I'm certainly missing something here :-\
-
-Try to enable some cgroup controllers first.  Like
-
-  # echo +cpu > /sys/fs/cgroup/AAA/cgroup.subtree_control
-  # echo +cpu > /sys/fs/cgroup/BBB/cgroup.subtree_control
-
-Thanks,
-Namhyung
+Konrad
