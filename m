@@ -2,102 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FADC7C8609
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C02B7C8617
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbjJMMrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51786 "EHLO
+        id S231680AbjJMMtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 08:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjJMMrm (ORCPT
+        with ESMTP id S230006AbjJMMs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 08:47:42 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423C391
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:47:40 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-406609df1a6so21658175e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:47:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697201259; x=1697806059; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ervPFL/TG3o0dE2xT/eAo5yG2fgj6Cb0JMvl2Z2fxv0=;
-        b=Ze7p7RlyRLPD1Iw7I9UzFRPbCE5NASMViu8baKiPBKcDdePz6ma9MOcqWbVaCvpp1U
-         cPJ9pl1fgSb34Hrenm3n7Lom2cgEoXV0wY4PxDjTFZsgUvwch9pEt5hvzN85ihr3MbZ5
-         Ge6llrv0DFOh/VdFd//GQMh/6UTnwA6lwrnT39Zg4SMtmFc75ai0aKlL6GKKI1uq/tqS
-         W55RUSAi/94a4PaLqQTzXdrN8YU3h3STZvNzW8g2KAp5q7kZmze88pyalLmafiEMXcBe
-         st2ZfMFM8xOT8k6Appnh6ScXzIcxuau1P5Km8d301r5+aSkU0m4k47gmZmyq2ChvZjTI
-         iZSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697201259; x=1697806059;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ervPFL/TG3o0dE2xT/eAo5yG2fgj6Cb0JMvl2Z2fxv0=;
-        b=lNmOn62kdyfuU2WBEHgFImskWAedIi9l1CNomE4AULwOHxbmN4dahe3U/qlKZoyLZK
-         4/Zn6CouvZiRnoADdzdwQzjceMcd3mReGHC1XBF4mW5qlLJIUINF1G5/XE+kWuJq1En0
-         kp8EbhuPMvT85w7eWmqIwZb/PATGgT+Is6xetHURKWD8W/mlqsU99g89EqmIKgAV9ynk
-         6P3hODRf2DkOUWJ0jzeXdN8T/cv7t1BbHlgu29IOqUtMzjnYAn6p9RGk0kie9jm6Gagu
-         bb37UN3XQQIJXlRJo7AjGxpqqEu8Y/LwpMNJ+A5rNXHlw5hommUZrDw9TM6ULkcesdqh
-         OjbQ==
-X-Gm-Message-State: AOJu0YykqO58RNs2EwA4AnN6KV1RzHapB3RzdIS18iCNHbcf+lmwdtdk
-        BF+HpPZJQM8fNLR2M+K9oGx+Iw==
-X-Google-Smtp-Source: AGHT+IHhzIlFxj8d4ohukDY7iqXaClJZbJDY308xKT0JLX1n0fbOwxxPKsjOIQ58MCRH3/ui/VpKqw==
-X-Received: by 2002:a05:600c:3b14:b0:407:4944:76e5 with SMTP id m20-20020a05600c3b1400b00407494476e5mr12663582wms.22.1697201258612;
-        Fri, 13 Oct 2023 05:47:38 -0700 (PDT)
-Received: from srini-hackbase.lan ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id p8-20020adfce08000000b003271be8440csm20649689wrn.101.2023.10.13.05.47.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 05:47:38 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>, Stable@vger.kernel.org
-In-Reply-To: <20231009-nvmem-imx-v2-0-86cb135c20a4@nxp.com>
-References: <20231009-nvmem-imx-v2-0-86cb135c20a4@nxp.com>
-Subject: Re: [PATCH v2 0/3] nvmem: imx: correct nregs for i.MX6UL/ULL/SLL
-Message-Id: <169720125773.175470.3037003596155345027.b4-ty@linaro.org>
-Date:   Fri, 13 Oct 2023 13:47:37 +0100
+        Fri, 13 Oct 2023 08:48:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED108BE
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697201291;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=h78T/7NPGQz52SHwxHI3clyF7jiR025tvOcU1xIze+A=;
+        b=FRPdpewyp5EOGrYQwJt5n8PRMABbAo3+E2zVJgqT236jBdRCSwtqaZOqtK2RMzKI0Aqab6
+        Sce2WJbzorrFBAb3sHB12dEQxEtNAw05cN8oxQMtlTzOflfWy2l9lwdfAIOLAaXAUMg5x8
+        DQwwEHUN8g8mCdmdcH0ZBMAynkMuLyk=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-589-0i1UD0zaOym2JiTld1dkKQ-1; Fri, 13 Oct 2023 08:48:08 -0400
+X-MC-Unique: 0i1UD0zaOym2JiTld1dkKQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 921211C00D21;
+        Fri, 13 Oct 2023 12:48:07 +0000 (UTC)
+Received: from localhost (unknown [10.72.120.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9FA2D492BFA;
+        Fri, 13 Oct 2023 12:48:06 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Andrew Theurer <atheurer@redhat.com>,
+        Joe Mario <jmario@redhat.com>,
+        Sebastian Jug <sejug@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH V2] blk-mq: don't schedule block kworker on isolated CPUs
+Date:   Fri, 13 Oct 2023 20:47:58 +0800
+Message-ID: <20231013124758.1492796-1-ming.lei@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Kernel parameter of `isolcpus=` or 'nohz_full=' are used for isolating CPUs
+for specific task, and user often won't want block IO to disturb these CPUs,
+also long IO latency may be caused if blk-mq kworker is scheduled on these
+isolated CPUs.
 
-On Mon, 09 Oct 2023 15:57:26 +0800, Peng Fan (OSS) wrote:
-> The current code does not include the register space hole, after check
-> the fuse map of the three SoCs, update the nregs to fix the issue.
-> 
-> 
+Kernel workqueue only respects this limit for WQ_UNBOUND, for bound wq,
+the responsibility should be on wq user.
 
-Applied, thanks!
+So don't not run block kworker on isolated CPUs by ruling out isolated CPUs
+from hctx->cpumask. Meantime in cpuhp handler, use queue map to check if
+all CPUs in this hw queue are offline, this way can avoid any cost in fast
+IO code path.
 
-[1/3] nvmem: imx: correct nregs for i.MX6SLL
-      commit: e898831a66834fb7c9ec5816c9683e746656c25c
-[2/3] nvmem: imx: correct nregs for i.MX6UL
-      commit: f46cfdaf5c0723abcec6da48408fc52d710b424d
-[3/3] nvmem: imx: correct nregs for i.MX6ULL
-      commit: d0b450caca6f07826dfac1f60faabadf0a226b05
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Andrew Theurer <atheurer@redhat.com>
+Cc: Joe Mario <jmario@redhat.com>
+Cc: Sebastian Jug <sejug@redhat.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+---
+V2:
+	- remove module parameter, meantime use queue map to check if
+	all cpus in one hctx are offline
 
-Best regards,
+ block/blk-mq.c | 42 +++++++++++++++++++++++++++++++++---------
+ 1 file changed, 33 insertions(+), 9 deletions(-)
+
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index ec922c6bccbe..91055bdc4426 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -29,6 +29,7 @@
+ #include <linux/prefetch.h>
+ #include <linux/blk-crypto.h>
+ #include <linux/part_stat.h>
++#include <linux/sched/isolation.h>
+ 
+ #include <trace/events/block.h>
+ 
+@@ -3476,14 +3477,27 @@ static bool blk_mq_hctx_has_requests(struct blk_mq_hw_ctx *hctx)
+ 	return data.has_rq;
+ }
+ 
+-static inline bool blk_mq_last_cpu_in_hctx(unsigned int cpu,
+-		struct blk_mq_hw_ctx *hctx)
++static bool blk_mq_hctx_has_online_cpu(struct blk_mq_hw_ctx *hctx)
+ {
+-	if (cpumask_first_and(hctx->cpumask, cpu_online_mask) != cpu)
+-		return false;
+-	if (cpumask_next_and(cpu, hctx->cpumask, cpu_online_mask) < nr_cpu_ids)
+-		return false;
+-	return true;
++	struct blk_mq_tag_set *tag_set = hctx->queue->tag_set;
++	int cpu;
++
++	/*
++	 * hctx->cpumask has rule out isolated CPUs, but userspace still
++	 * might submit IOs on these isolated CPUs, so use queue map to
++	 * check if all CPUs mapped to this hctx are offline
++	 */
++	for_each_possible_cpu(cpu) {
++		unsigned idx = tag_set->map[hctx->type].mq_map[cpu];
++
++		if (idx != hctx->queue_num)
++			continue;
++
++		if (cpu_online(cpu))
++			return true;
++	}
++
++	return false;
+ }
+ 
+ static int blk_mq_hctx_notify_offline(unsigned int cpu, struct hlist_node *node)
+@@ -3491,8 +3505,7 @@ static int blk_mq_hctx_notify_offline(unsigned int cpu, struct hlist_node *node)
+ 	struct blk_mq_hw_ctx *hctx = hlist_entry_safe(node,
+ 			struct blk_mq_hw_ctx, cpuhp_online);
+ 
+-	if (!cpumask_test_cpu(cpu, hctx->cpumask) ||
+-	    !blk_mq_last_cpu_in_hctx(cpu, hctx))
++	if (blk_mq_hctx_has_online_cpu(hctx))
+ 		return 0;
+ 
+ 	/*
+@@ -3900,6 +3913,8 @@ static void blk_mq_map_swqueue(struct request_queue *q)
+ 	}
+ 
+ 	queue_for_each_hw_ctx(q, hctx, i) {
++		int cpu;
++
+ 		/*
+ 		 * If no software queues are mapped to this hardware queue,
+ 		 * disable it and free the request entries.
+@@ -3926,6 +3941,15 @@ static void blk_mq_map_swqueue(struct request_queue *q)
+ 		 */
+ 		sbitmap_resize(&hctx->ctx_map, hctx->nr_ctx);
+ 
++		/*
++		 * rule out isolated CPUs from hctx->cpumask for avoiding to
++		 * run wq worker on isolated CPU
++		 */
++		for_each_cpu(cpu, hctx->cpumask) {
++			if (cpu_is_isolated(cpu))
++				cpumask_clear_cpu(cpu, hctx->cpumask);
++		}
++
+ 		/*
+ 		 * Initialize batch roundrobin counts
+ 		 */
 -- 
-Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+2.41.0
 
