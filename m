@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEF67C8BB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C8C7C8BAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbjJMQj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
+        id S232034AbjJMQlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbjJMQjz (ORCPT
+        with ESMTP id S232386AbjJMQkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:39:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637B395
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:39:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697215194; x=1728751194;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=B1ZFeff2FC+/axoCPBEmU86xwJXgzwT7MgIqAA9nOyk=;
-  b=NBQPfMnpLZemig+ywjTx4QNKGKs3xoxPpp+bkecfZovh71+hEtbFyC69
-   REiJB8O3Yn5z4wk4eCyaCcvMOwWNMbdaiN92X6qpqyaKokuz8+YFjxgzB
-   uzGcqxnxaq6EGqquE8Mfsgis8+DAy6FrfD8qLkUNcvaZ1rC+tZBhDCwYc
-   B5HlLNizrvifXZJb4OOZ9hT61Gyfkr4tND2x+C+T+NfMu7jS/XXPtU3D4
-   onpLRNkgzAueL8o+gu2esaYj3nMAbFDg+tJDXO8Yp9SbSkoDt+r6HNSPC
-   WupWUnzheNOl1AvT2L67onZphOsD9VLqdqAodGvuDcQomd8SfVSy7rCI/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="385058262"
-X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
-   d="scan'208";a="385058262"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 09:39:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="871146758"
-X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
-   d="scan'208";a="871146758"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 13 Oct 2023 09:39:52 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qrLCY-000589-1p;
-        Fri, 13 Oct 2023 16:39:50 +0000
-Date:   Sat, 14 Oct 2023 00:39:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: undefined reference to `.L874'
-Message-ID: <202310140044.PAShwiKd-lkp@intel.com>
+        Fri, 13 Oct 2023 12:40:53 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC477101;
+        Fri, 13 Oct 2023 09:40:31 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53e3b8f906fso1703263a12.2;
+        Fri, 13 Oct 2023 09:40:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697215229; x=1697820029; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=igsu/mDD6XdnLZ3nDzMRhMBFqtqYaFu/W30OUakU5+8=;
+        b=iFhsodYIW4Mf3t7suO1hhRkIwKjeYJS6aJancBxKU9ax5yQY2KM2ptnzHe1Y4p/7YR
+         Xz3L2713BTdmZSikW3cUmXfo526Ru26qukZcO2cEhNo2fBQLRR3kfCNEZdv+lto2glsJ
+         6d8YyjjeLYR4jmbiUoK0FRcy/TU3Z2HEL0+4eP6hzyi1tzbHn0HTh0VrVAKWkgmj7LeX
+         TC9hoMsELW3vOeFtbfExgR89D9mgtBAAgjE3VLmKk3HsXaNaTI3d/2RtJTWKzU2bl35s
+         1EgR4nw9Z1nf0kMjSZPguzrgZrgaCTjMVus8frcKFfKtFHml6WyHH5nsqsvkeF9gnen+
+         VYog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697215229; x=1697820029;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=igsu/mDD6XdnLZ3nDzMRhMBFqtqYaFu/W30OUakU5+8=;
+        b=rlwg0uqnXsM76M0MDsa7+ajMD7upqoXLvIsAu2ReSOUSv7PG6Iq/nYHmJSJ/Q4pO0b
+         Mros0uKBTCNsbxu1jj27+qhZVJL9++V22uUml/REC1DEk4exAWgTC3cm9ecPQZQuZigK
+         cvuFHRQR7+n1oaPkwcjuTg/l3bRNTNEwQW6+wKvjYsuIyHfGFHQPcJfnLNC35IAcv4dw
+         y0HaGZtklWJtnjK9ojV2H4gfl7/t16h5ssqGuGZd/0QNI6YovrEfUDME4qG82lEmjxSz
+         +A0R8hSEVUydqQAeJDhP742r6e0hEFzMo1UPq1eR8gRdpDEXujfhVDCa1zK4yesFhdkQ
+         TuKg==
+X-Gm-Message-State: AOJu0Yz2l5H8ZZxlAODahvhLZDzSqWYECr+wgAGE0Q8UxDmoPs+XNkxE
+        Qq0UjFoYUXGDCmhfw7pIM7gmgeBBHVMKLw==
+X-Google-Smtp-Source: AGHT+IG46/efdGsqBVwi2BN7FMlbH9aMseKY3y61y3LBMb5mfle8djHJNLa7hIkxkcixGTbAQ/sBwg==
+X-Received: by 2002:a17:907:774d:b0:9a2:ecd:d963 with SMTP id kx13-20020a170907774d00b009a20ecdd963mr24524148ejc.44.1697215228783;
+        Fri, 13 Oct 2023 09:40:28 -0700 (PDT)
+Received: from fedora.. ([213.149.38.59])
+        by smtp.googlemail.com with ESMTPSA id rn4-20020a170906d92400b0099bc038eb2bsm12531902ejb.58.2023.10.13.09.40.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 09:40:28 -0700 (PDT)
+From:   Robert Marko <robimarko@gmail.com>
+To:     andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robimarko@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v3 1/2] dt-bindings: clocks: qcom,gcc-ipq8074: allow QMP PCI PHY PIPE clocks
+Date:   Fri, 13 Oct 2023 18:39:33 +0200
+Message-ID: <20231013164025.3541606-1-robimarko@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   10a6e5feccb877c3c75ad11d27942ad52c24815f
-commit: 079c8d9da26ed041a54706de68b754337e6df17e mtd: rawnand: export 'nand_exit_status_op()'
-date:   3 months ago
-config: parisc-allyesconfig (https://download.01.org/0day-ci/archive/20231014/202310140044.PAShwiKd-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231014/202310140044.PAShwiKd-lkp@intel.com/reproduce)
+QMP PCI PHY PIPE clocks are inputs for the GCC clock controller.
+In order to describe this in DTS, allow passing them as the inputs to GCC.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310140044.PAShwiKd-lkp@intel.com/
+This has a benefit that it avoids doing a global matching by name.
 
-All errors (new ones prefixed by >>):
+Signed-off-by: Robert Marko <robimarko@gmail.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+Changes in v3:
+* Change the commit message to describe the relationship between PIPE
+clocks and GCC controller
 
-   hppa-linux-ld: drivers/mtd/nand/raw/nand_base.o: in function `nand_do_write_ops':
->> (.text+0x4a24): undefined reference to `.L874'
+ Documentation/devicetree/bindings/clock/qcom,gcc-ipq8074.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-ipq8074.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc-ipq8074.yaml
+index 52e7831a8d6d..2d44ddc45aab 100644
+--- a/Documentation/devicetree/bindings/clock/qcom,gcc-ipq8074.yaml
++++ b/Documentation/devicetree/bindings/clock/qcom,gcc-ipq8074.yaml
+@@ -27,11 +27,15 @@ properties:
+     items:
+       - description: board XO clock
+       - description: sleep clock
++      - description: Gen3 QMP PCIe PHY PIPE clock
++      - description: Gen2 QMP PCIe PHY PIPE clock
+ 
+   clock-names:
+     items:
+       - const: xo
+       - const: sleep_clk
++      - const: pcie0_pipe
++      - const: pcie1_pipe
+ 
+ required:
+   - compatible
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0
+
