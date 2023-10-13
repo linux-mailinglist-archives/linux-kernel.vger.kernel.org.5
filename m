@@ -2,99 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FF97C7FB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9384C7C7FBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbjJMIMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37258 "EHLO
+        id S229989AbjJMIPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230036AbjJMIME (ORCPT
+        with ESMTP id S229743AbjJMIPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:12:04 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 10038B8;
-        Fri, 13 Oct 2023 01:12:03 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 423D411FB;
-        Fri, 13 Oct 2023 01:12:43 -0700 (PDT)
-Received: from [10.57.80.116] (unknown [10.57.80.116])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BF9193F7A6;
-        Fri, 13 Oct 2023 01:12:01 -0700 (PDT)
-Message-ID: <0f6d3d0a-3685-4a0c-b922-b5aa72f20b19@arm.com>
-Date:   Fri, 13 Oct 2023 09:12:42 +0100
+        Fri, 13 Oct 2023 04:15:31 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72997B8
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:15:07 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6c64c2c0f97so1159136a34.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:15:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697184907; x=1697789707; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B7XrkvxpdQNcTRb83EGgQlRqrrmQRtd14yMqKtbUE9A=;
+        b=ijzCBXoPg4+nNlJw6Jqpu9oMupyVRPxSW1ExtMa7fgrK2viDgZkE8O4l1C6vLb5nsu
+         uyVLnlwfD/ZoWeFuiQAFD/jeat8g2Rql8E85SfEcU5nTKGqzAp1tNOKW/3xW89CDwgRu
+         VmJrD9+2YpgRhtI8miCIzolOVtVKbMF+7EUj51hU9wzRcqRlOerCj/9Cyvj1z4Zi/gme
+         WjF0E2DuNdiJa+DUQaLIrm9LipLy2Wp1XZxPhZC5q7/3gPPf0jqt6+ZG9pcBcxK+1xtc
+         K9KmDuUlI/JnlmtuesTx9wwy8r7vV2GzuVXpxPbz2gUWfA/+109ghHJ1w2oAkNFH9rIT
+         YxqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697184907; x=1697789707;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B7XrkvxpdQNcTRb83EGgQlRqrrmQRtd14yMqKtbUE9A=;
+        b=VQT5vNWBN5kNWZV78ibyHF7FctD+gC2J7UXabuK8hMsitvxnOBF6d4NUsnYoFM0WZZ
+         n+UiL6yg/sgJwGQyj6qP2HSuXjA7Bwr/vRmMcaodb15nvvvKk3QzSvFv6+O9jLFzebgZ
+         3w3f1xkj39dfdiztTdqj3LZ0jmt9065ifYrL9kgY1qam88BdErmGRJf5AZULMiGnbd2S
+         MC8qn1mm3/XMiMacmGtAEktmZQM0zH0zdKgTzMzGA+qtUii4Fgy4Ha9zxndGfcTGyiLO
+         /YNs0EWLjeWoaQZfAl7ROhe8DYncUHwCbL6A79DL31f5qHwx5UVLuaFbH7jJtYOOtiBk
+         mBOw==
+X-Gm-Message-State: AOJu0YwEq/osYRBnpOvLXTOldhHRhhSyIPb3bBDKWeWIls+HZTwmAM3A
+        DbwuIVjxBwiF7Iag5e8E6X+xgg==
+X-Google-Smtp-Source: AGHT+IEmnqQcms2nEsarjh9nowrnSb+3pVJITyIyAk/J8MbpVcU1rAcnVCHRXAMLpmhoEaoTEeyJlQ==
+X-Received: by 2002:a05:6870:ab13:b0:1e9:9f9b:eb76 with SMTP id gu19-20020a056870ab1300b001e99f9beb76mr6544679oab.14.1697184906630;
+        Fri, 13 Oct 2023 01:15:06 -0700 (PDT)
+Received: from [10.84.153.115] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id r6-20020a63b106000000b0056946623d7esm2911607pgf.55.2023.10.13.01.14.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Oct 2023 01:15:06 -0700 (PDT)
+Message-ID: <00d22bc9-4abe-4e7d-9393-4025ed8c3642@bytedance.com>
+Date:   Fri, 13 Oct 2023 16:14:55 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/6] thermal: core: Pass trip pointers to governor
- .throttle() callbacks
+Subject: Re: Re: [PATCH 03/15] sched/fair: Add lag based placement
 Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>
-References: <13365827.uLZWGnKmhe@kreacher>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <13365827.uLZWGnKmhe@kreacher>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, corbet@lwn.net,
+        qyousef@layalina.io, chris.hyser@oracle.com,
+        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
+        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
+        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
+        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
+        tglx@linutronix.de
+References: <20230531115839.089944915@infradead.org>
+ <20230531124603.794929315@infradead.org>
+ <87f1feec-1be5-4d24-a206-e30238072ae1@bytedance.com>
+ <20231011132456.GO14330@noisy.programming.kicks-ass.net>
+ <57c6d8c8-380e-45d9-b9d0-690662fcd6f4@bytedance.com>
+ <20231013073739.GA12118@noisy.programming.kicks-ass.net>
+From:   Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <20231013073739.GA12118@noisy.programming.kicks-ass.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+On 10/13/23 3:37 PM, Peter Zijlstra Wrote:
+> On Thu, Oct 12, 2023 at 03:04:47PM +0800, Abel Wu wrote:
+>> On 10/11/23 9:24 PM, Peter Zijlstra Wrote:
+> 
+>>>>> +		 * we should inflate the lag before placement such that the
+>>>>> +		 * effective lag after placement comes out right.
+>>>>> +		 *
+>>>>> +		 * As such, invert the above relation for vl'_i to get the vl_i
+>>>>> +		 * we need to use such that the lag after placement is the lag
+>>>>> +		 * we computed before dequeue.
+>>>>> +		 *
+>>>>> +		 *   vl'_i = vl_i - w_i*vl_i / (W + w_i)
+>>>>> +		 *         = ((W + w_i)*vl_i - w_i*vl_i) / (W + w_i)
+>>>>> +		 *
+>>>>> +		 *   (W + w_i)*vl'_i = (W + w_i)*vl_i - w_i*vl_i
+>>>>> +		 *                   = W*vl_i
+>>>>> +		 *
+>>>>> +		 *   vl_i = (W + w_i)*vl'_i / W
+>>>
+>>> And then we obtain the scale factor: (W + w_i)/W, which is >1, right?
+>>
+>> Yeah, I see. But the scale factor is only for the to-be-placed entity.
+>> Say there is an entity k on the tree:
+>>
+>> 	vl_k	= V - v_k
+>>
+>> adding the to-be-placed entity i affects this by:
+>>
+>> 	define delta := w_i*vl_i / (W + w_i)
+>>
+>> 	vl'_k	= V' - v_k
+>> 		= V - delta - (V - vl_k)
+>> 		= vl_k - delta
+>>
+>> hence for any entity on the tree, its lag is offsetted by @delta. So
+>> I wonder if we should simply do offsetting rather than scaling.
+> 
+> I don't see the point, the result is the same and computing delta seems
+> numerically less stable.
 
-
-On 10/6/23 18:38, Rafael J. Wysocki wrote:
-> Hi All,
-> 
-> While working on https://lore.kernel.org/linux-pm/4846448.GXAFRqVoOG@kreacher/
-> I started to change thermal governors so as to reduce the usage of trip
-> indices in them.  At that time, I was concerned that they could not be
-> replaced with trip pointers overall, because they were needed in certain
-> situations (tracing, debug messages, userspace governor) and computing them
-> whenever they were needed would be extra overhead with relatively weak
-> justification.  In the meantime, however, I realized that for a given trip
-> pointer, it is actually trivial to compute the corresponding index: it is
-> sufficient to subtract the start of the trips[] table in the thermal zone
-> containing the trip from that trip pointer for this purpose.  Patch [1/6]
-> modifies thermal_zone_trip_id() in accordance with this observation.
-> 
-> Now that the cost of computing a trip index for a given trip pointer and
-> thermal zone is not a concern any more, the governors can be generally
-> switched over to using trip pointers for representing trips.  One of the
-> things they need to do sometimes, though, is to iterate over trips in a
-> given thermal zone (the core needs to do that too, of course) and
-> for_each_thermal_trip() is somewhat inconvenient for this purpose, because
-> it requires callback functions to be defined and in some cases new data
-> types need to be introduced just in order to use it.  For this reason,
-> patch [2/6] adds a macro for iterating over trip points in a given thermal
-> zone with the help of a trip pointer and changes for_each_thermal_trip() to
-> use that macro internally.
-> 
-> Patches [3-5/6] change individual governors to prepare them for using trip
-> pointers everywhere for representing trips, except for the trip argument of
-> the .throttle() callback and patch [6/6] finally changes the .throttle()
-> callback definition so that it takes a trip pointer as the argument
-> representing the trip.
-> 
-> Please refer to the individual patch changelogs for details.
-> 
-> Thanks!
-> 
-> 
-> 
-
-I have issues to apply this series, could you tell me the best
-base branch from your tree?
-
-I will give it a try on my boards and review.
-
-Thanks,
-Lukasz
+Right. I was not myself then, please forget what I said..
