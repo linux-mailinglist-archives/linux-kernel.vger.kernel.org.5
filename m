@@ -2,324 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 938AE7C8273
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C797C8275
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbjJMJtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 05:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
+        id S231244AbjJMJt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 05:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbjJMJtO (ORCPT
+        with ESMTP id S230120AbjJMJt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 05:49:14 -0400
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479FE95
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:49:12 -0700 (PDT)
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39D9SVN8004572;
-        Fri, 13 Oct 2023 11:49:03 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:references:in-reply-to
-        :content-type:content-transfer-encoding:mime-version; s=
-        selector1; bh=XIJllFa3lyrGANH10umtce4GqB7bYAU7W5gGSo/oanM=; b=kS
-        EbrAdoW/ajKQZOaFa4aEjskTCZc6GkQfC2kOo7Xob43CKKQIrimm+u6yM2y7Rd73
-        irTAv5M8hH47Uv0klQ2wj7dBndp8C0UlVIfb0FFqoSHQ1u13c5NVQVoEvFRCfczY
-        w8Le1kmRkmLVLLEhWma4n9f7HPNIXs8+XDF0G6jRE3ujlvalWYRv6BEXqFBuPDcE
-        /CSpeuzJ7D8xULXZd4zAC55iCPcZi2Ua/U4h7WsuMK7lWOSwWH+BEBeZMQz5XXHR
-        tHv+ReAxX0+EEZAIuU6MGhpsk7FVuhNZh3q+myy6O1Lm2ZfEkvDctNvvjllbs/0A
-        9elVHDYzbcmiSEboBuLw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkj9h89np-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Oct 2023 11:49:02 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0F269100056;
-        Fri, 13 Oct 2023 11:49:01 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E732121A208;
-        Fri, 13 Oct 2023 11:49:01 +0200 (CEST)
-Received: from SHFDAG1NODE1.st.com (10.75.129.69) by SHFDAG1NODE2.st.com
- (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 13 Oct
- 2023 11:48:59 +0200
-Received: from SHFDAG1NODE1.st.com ([fe80::117e:c4ab:ed81:6cb1]) by
- SHFDAG1NODE1.st.com ([fe80::117e:c4ab:ed81:6cb1%14]) with mapi id
- 15.01.2507.027; Fri, 13 Oct 2023 11:48:59 +0200
-From:   Etienne CARRIERE - foss <etienne.carriere@foss.st.com>
-To:     Sumit Garg <sumit.garg@linaro.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Jens Wiklander" <jens.wiklander@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>,
-        Jerome Forissier <jerome.forissier@linaro.org>
-Subject: Re: [PATCH v10 3/4] tee: optee: support tracking system threads
-Thread-Topic: [PATCH v10 3/4] tee: optee: support tracking system threads
-Thread-Index: AQHZ9gLa0eDXIY4qt063d7Hb9IRsn7A8YsSAgAfLecSAAxABgIAANORE///qbICAACKwav//45oAgAAkeqw=
-Date:   Fri, 13 Oct 2023 09:48:59 +0000
-Message-ID: <62e525fefd934329822a16edd9b6b5ab@foss.st.com>
-References: <20231003140637.31346-1-etienne.carriere@foss.st.com>
- <20231003140637.31346-4-etienne.carriere@foss.st.com>
- <CAFA6WYOMHWFytm4cYy3kQf4E3qiytrnOTVY1gb2rzTDece490w@mail.gmail.com>
- <bbb5ca0809954bee94c5f2886427f886@foss.st.com>
- <CAFA6WYMKrB7xkOaef41LyVKHGAt8Dk0hbFUkiqubeZbJVY=9kw@mail.gmail.com>
- <5ba5ab8d2cc7477588dd0f6c7531cf16@foss.st.com>
- <CAFA6WYPRgAnq_WZGbqvrn4de9Gk9fzTDs+NmcWyFn-QAC2+c8w@mail.gmail.com>
- <adb7df76eb8f4a7399b89f681383df84@foss.st.com>,<CAFA6WYMK2nM+uhtNPJH2bdtXpi=5SZdsxv5P5NSzOp1k4Ty+zg@mail.gmail.com>
-In-Reply-To: <CAFA6WYMK2nM+uhtNPJH2bdtXpi=5SZdsxv5P5NSzOp1k4Ty+zg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.201.20.20]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 13 Oct 2023 05:49:57 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67BE895
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:49:55 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-57ba5f05395so1062465eaf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:49:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697190594; x=1697795394; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8MkPWND7FIkLGaSpYdCJBetKFsUpZ+ghS1+KD9FYO1o=;
+        b=RGqBYNKDyc/5d0B/BO7536+ukuFlMmPAuq+admErSsxEcZQ04EAaxxl11Uc5XdZI85
+         NBX293QIkq01D37VlJnWvejqH1a5qmRnRjJZqOR0oMoUHncp+glwccQQdgEfuvzeEAQX
+         OfOw1YKjK6tmNeFTz5XkO8+6RbszyCnPurJBuUcCggjs06nxMWspSW5KDtvWyfU+daKb
+         xI71C0iXCfJV0ye7wIWJWF9fxtkDrIxVPtjXOX9+V5nLK02e6NYm4RcZ/uGQiTd1apMd
+         pKbXHhBbtXHlMH0o0m4LwbyN1/Oewp9kBvrQaKBxaeFxb1zx5dflHmOvNqE9dkz9mNgV
+         aEcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697190594; x=1697795394;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8MkPWND7FIkLGaSpYdCJBetKFsUpZ+ghS1+KD9FYO1o=;
+        b=Ob55/LYAabTfTHS6/X7bdz9JEXRINg6fhPEaXU957me+Rjm6Z0ZIfirwkbVlZvM1/E
+         7faab481xqxZeFJXM4bfmo0Ippec+EAiknGjejNSta1t4Reyh9jZ701g9Polkfzh2u/r
+         KoQn8XHfHvhgFnS2dCZJJUmXKEnPlCM3qwOFM4IxKG5D+gri037bxXGfJyXBz39NZ1hX
+         yRyDaPddLfVRE6056TZAZnjD7EVin8NGCom9Rd8z9n4fh+VYbqRHLfRYM9OP0ciW8W73
+         JZ/Wls06NBjvZpA60HlDk/4n6eblFKiwQrVkNROMKzaf41EzFSO68HpQmUSSZv+TeSYu
+         WNVw==
+X-Gm-Message-State: AOJu0Yy4f5N54QBPZEf81ze5Y+iW7wNJvspA38R9syoKhxInsW2E54D9
+        oxoP6ck1s7z2mkv8zRNNYMw=
+X-Google-Smtp-Source: AGHT+IGIXctYQD3YbPZTMQ8Deht71+5hv/JyjFhdZPDyakxzik07y6xT2JwDpoQhOrITnjwqYHKjpw==
+X-Received: by 2002:a05:6358:3994:b0:145:794e:ac30 with SMTP id b20-20020a056358399400b00145794eac30mr28075515rwe.17.1697190594478;
+        Fri, 13 Oct 2023 02:49:54 -0700 (PDT)
+Received: from [10.0.2.15] ([103.37.201.178])
+        by smtp.gmail.com with ESMTPSA id s3-20020aa78283000000b00692b6fe1c7asm13559396pfm.179.2023.10.13.02.49.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Oct 2023 02:49:54 -0700 (PDT)
+Message-ID: <4266e5dd-39d8-05ec-d420-4f4c78c5f016@gmail.com>
+Date:   Fri, 13 Oct 2023 15:19:50 +0530
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-13_03,2023-10-12_01,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] jfs : fs array-index-out-of-bounds in txCommit
+To:     Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+        Linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+0558d19c373e44da3c18@syzkaller.appspotmail.com
+References: <20230919155542.4354-1-ghandatmanas@gmail.com>
+ <423182d1-3d75-4a73-9011-da24658a40cc@oracle.com>
+ <3d4e0f62-35bb-4b18-a64c-191c88415032@gmail.com>
+ <52616ab2-6f8a-4313-a687-91a8d1081c8b@oracle.com>
+Content-Language: en-US
+From:   Manas Ghandat <ghandatmanas@gmail.com>
+In-Reply-To: <52616ab2-6f8a-4313-a687-91a8d1081c8b@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Sumit Garg <sumit.garg@linaro.org>
-> Sent: Friday, October 13, 2023 11:36 AM
->=20
-> On Fri, 13 Oct 2023 at 14:53, Etienne CARRIERE - foss
-> <etienne.carriere@foss.st.com> wrote:
-> >
-> > > From: Sumit Garg <sumit.garg@linaro.org>
-> > > Sent: Friday, October 13, 2023 11:13 AM
-> > >
-> > > On Fri, 13 Oct 2023 at 14:09, Etienne CARRIERE - foss
-> > > <etienne.carriere@foss.st.com> wrote:
-> > > >
-> > > > > From: Sumit Garg <sumit.garg@linaro.org>
-> > > > > Sent: Friday, October 13, 2023 9:21 AM
-> > > > >
-> > > > > On Wed, 11 Oct 2023 at 12:41, Etienne CARRIERE - foss
-> > > > > <etienne.carriere@foss.st.com> wrote:
-> > > > > >
-> > > > > > > From: Sumit Garg <sumit.garg@linaro.org>
-> > > > > > > Sent: Friday, October 6, 2023 11:33 AM
-> > > > > > >
-> > > > > > > On Tue, 3 Oct 2023 at 19:36, Etienne Carriere
-> > > > > > > <etienne.carriere@foss.st.com> wrote:
-> > > > > > > >
-> > > > > > > > Adds support in the OP-TEE driver to keep track of reserved=
- system
-> > > > > > > > threads. The logic allows one OP-TEE thread to be reserved =
-to TEE system
-> > > > > > > > sessions.
-> > > > > > > >
-> > > > > > > > The optee_cq_*() functions are updated to handle this if en=
-abled,
-> > > > > > > > that is when TEE describes how many thread context it suppo=
-rts
-> > > > > > > > and when at least 1 session has registered as a system sess=
-ion
-> > > > > > > > (using tee_client_system_session()).
-> > > > > > > >
-> > > > > > > > For sake of simplicity, initialization of call queue manage=
-ment
-> > > > > > > > is factorized into new helper function optee_cq_init().
-> > > > > > > >
-> > > > > > > > The SMC ABI part of the driver enables this tracking, but t=
-he
-> > > > > > > > FF-A ABI part does not.
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > Co-developed-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > > > > > > > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > > > > > > > Co-developed-by: Sumit Garg <sumit.garg@linaro.org>
-> > > > > > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > > > > > > Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.c=
-om>
-> > > > > > > > ---
-> > > > > > > > Changes since v9:
-> > > > > > > > - Add a reference counter for TEE system thread provisionin=
-g. We reserve
-> > > > > > > >   a TEE thread context for system session only when there i=
-s at least
-> > > > > > > >   1 opened system session.
-> > > > > > > > - Use 2 wait queue lists, normal_waiters and sys_waiter, as=
- proposed in
-> > > > > > > >   patch v8. Using a single list can prevent a waiting syste=
-m thread from
-> > > > > > > >   being resumed if the executing system thread wakes a norm=
-al waiter in
-> > > > > > > >   the list.
-> > > > > > >
-> > > > > > > How would that be possible? The system thread wakeup
-> > > > > > > (free_thread_threshold =3D 0) is given priority over normal t=
-hread
-> > > > > > > wakeup (free_thread_threshold =3D 1). I think a single queue =
-list would
-> > > > > > > be sufficient as demonstrated in v9.
-> > > > > > >
-> > > > > >
-> > > > > > Hello Sumit,
-> > > > > >
-> > > > > > I think a system session can be trapped waiting when using a si=
-ngle queue list.
-> > > > > > To have a chance to reach the TEE, a waiting thread must wait t=
-hat a TEE thread comes out of the TEE and calls complete() on the waitqueue=
- to wake next waiter.
-> > > > > >
-> > > > > > To illustrate, consider a 10 TEE threads configuration on TEE s=
-ide (::total_thread_count=3D10 at init),
-> > > > > > and several TEE clients in Linux OS, including 2 system session=
-s, from 2 consumer drivers (::sys_thread_req_count=3D2).
-> > > > > >
-> > > > > > Imagine the 9 normal threads and the 1 system thread are in use=
-. (::free_thread_count=3D0),
-> > > > > > Now comes the other system session: it goes to the waitqueue li=
-st.
-> > > > > > Now comes a normal session invocation: it goes to the waitqueue=
- list, 1st position.
-> > > > > >
-> > > > > > Now, TEE system thread returns to Linux:
-> > > > > > It increments the counter, ::free_thread_count=3D1, and calls c=
-omplete() for the waitequeue.
-> > > > > > The 1st element in the waitqueue list is the last entered norma=
-l session invocation.
-> > > > > > However, that waiter won't switch local boolean 'need_wait'  to=
- false because ::free_thread_count=3D1 and ::sys_thread_req_count!=3D0.
-> > > > > > So no attempt to reach TEE and wake another waiter on return.
-> > > > > > At that point there is a system session in the waitqueue list t=
-hat could enter TEE (::free_thread_count=3D1) but is waiting someone return=
-s from the TEE.
-> > > > >
-> > > > > I suppose the following loop tries to wake-up every waiter to giv=
-e
-> > > > > them a chance to enter OP-TEE. So with that system session would
-> > > > > always be prefered over normal session, right?
-> > > >
-> > > > No, the below loop will wake only the 1st waiter it finds in the li=
-st that is
-> > > > current waiting (completion_done() returns false). So if it finds a=
- normal
-> > > > session, it will only wake this one which, in turn, will not try to=
- reach the
-> > > > TEE from the while(need_wiat) loop in optee_cq_wait_init(), because=
- there is
-> > > > not enough free threads. Because it does not reach the TEE, it will=
- not
-> > > > it wake another waiter.
-> > > >
-> > >
-> > > Okay I see your point, so how about the following change on top of v9=
-.
-> > > I still think having 2 queues is an overkill here.
-> > >
-> > > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-> > > index df5fb5410b72..47f57054d9b7 100644
-> > > --- a/drivers/tee/optee/call.c
-> > > +++ b/drivers/tee/optee/call.c
-> > > @@ -60,6 +60,7 @@ void optee_cq_wait_init(struct optee_call_queue *cq=
-,
-> > >          */
-> > >         init_completion(&w->c);
-> > >         list_add_tail(&w->list_node, &cq->waiters);
-> > > +       w->sys_thread =3D sys_thread;
-> > >
-> > > ...
-> > >
-> > > @@ -83,6 +84,14 @@ static void optee_cq_complete_one(struct
-> > > optee_call_queue *cq)
-> > >  {
-> > >         struct optee_call_waiter *w;
-> > >
-> > > +       /* Try to wakeup system session capable threads first */
-> > > +       list_for_each_entry(w, &cq->waiters, list_node) {
-> > > +               if (!completion_done(&w->c) && w->sys_thread) {
-> > > +                       complete(&w->c);
-> > > +                       return;
-> > > +               }
-> > > +       }
-> > > +
-> >
-> > Indeed, looking for system sessions first in the list would address the=
- issue.
-> > I would test sys_thread firs: if (w->sys_thread && !completion_done(&w-=
->c))
->=20
-> Ack.
->=20
-> >
-> > That said, is it better to have 2 lists or to have 1 list possibly scan=
-ned twice?
->=20
-> I would prefer to reuse the existing queue.
+On 05/10/23 19:50, Dave Kleikamp wrote:
 
-Ok, I'll do.
+> On 10/5/23 12:15AM, Manas Ghandat wrote:
+>> On 04/10/23 00:46, Dave Kleikamp wrote:
+>>> The size of the xad array can be either XTROOTMAXSLOT or 
+>>> XTPAGEMAXSLOT depending on whether it is the root, imbedded in the 
+>>> inode, or not. It is currently declared with the smaller value so we 
+>>> can use xtpage_t within the inode.
+>>>
+>>> I had promised to address this, but haven't gotten to it yet. I'll 
+>>> try to carve out some time to do that.
+>>>
+>>> Thanks,
+>>> Shaggy
+>>
+>> Can you guide with the workflow of how things should be done. I can 
+>> try to work on it and resolve the issue.
+>>
+>
+> I was able to cobble this together. It compiles cleanly, but I haven't
+> tested it yet.
+>
+> In order to make array bounds checking sane, provide a separate
+> definition of the in-inode xtree root and the external xtree page.
+>
+> Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+> ---
+>  fs/jfs/jfs_dinode.h |  2 +-
+>  fs/jfs/jfs_imap.c   |  6 +++---
+>  fs/jfs/jfs_incore.h |  2 +-
+>  fs/jfs/jfs_txnmgr.c |  4 ++--
+>  fs/jfs/jfs_xtree.c  |  4 ++--
+>  fs/jfs/jfs_xtree.h  | 37 +++++++++++++++++++++++--------------
+>  6 files changed, 32 insertions(+), 23 deletions(-)
+>
+> diff --git a/fs/jfs/jfs_dinode.h b/fs/jfs/jfs_dinode.h
+> index 6b231d0d0071..603aae17a693 100644
+> --- a/fs/jfs/jfs_dinode.h
+> +++ b/fs/jfs/jfs_dinode.h
+> @@ -96,7 +96,7 @@ struct dinode {
+>  #define di_gengen    u._file._u1._imap._gengen
+>
+>              union {
+> -                xtpage_t _xtroot;
+> +                xtroot_t _xtroot;
+>                  struct {
+>                      u8 unused[16];    /* 16: */
+>                      dxd_t _dxd;    /* 16: */
+> diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
+> index 1b267eec3f36..394e0af0e5df 100644
+> --- a/fs/jfs/jfs_imap.c
+> +++ b/fs/jfs/jfs_imap.c
+> @@ -670,7 +670,7 @@ int diWrite(tid_t tid, struct inode *ip)
+>           * This is the special xtree inside the directory for storing
+>           * the directory table
+>           */
+> -        xtpage_t *p, *xp;
+> +        xtroot_t *p, *xp;
+>          xad_t *xad;
+>
+>          jfs_ip->xtlid = 0;
+> @@ -684,7 +684,7 @@ int diWrite(tid_t tid, struct inode *ip)
+>           * copy xtree root from inode to dinode:
+>           */
+>          p = &jfs_ip->i_xtroot;
+> -        xp = (xtpage_t *) &dp->di_dirtable;
+> +        xp = (xtroot_t *) &dp->di_dirtable;
+>          lv = ilinelock->lv;
+>          for (n = 0; n < ilinelock->index; n++, lv++) {
+>              memcpy(&xp->xad[lv->offset], &p->xad[lv->offset],
+> @@ -713,7 +713,7 @@ int diWrite(tid_t tid, struct inode *ip)
+>       *    regular file: 16 byte (XAD slot) granularity
+>       */
+>      if (type & tlckXTREE) {
+> -        xtpage_t *p, *xp;
+> +        xtroot_t *p, *xp;
+>          xad_t *xad;
+>
+>          /*
+> diff --git a/fs/jfs/jfs_incore.h b/fs/jfs/jfs_incore.h
+> index 721def69e732..dd4264aa9bed 100644
+> --- a/fs/jfs/jfs_incore.h
+> +++ b/fs/jfs/jfs_incore.h
+> @@ -66,7 +66,7 @@ struct jfs_inode_info {
+>      lid_t    xtlid;        /* lid of xtree lock on directory */
+>      union {
+>          struct {
+> -            xtpage_t _xtroot;    /* 288: xtree root */
+> +            xtroot_t _xtroot;    /* 288: xtree root */
+>              struct inomap *_imap;    /* 4: inode map header    */
+>          } file;
+>          struct {
+> diff --git a/fs/jfs/jfs_txnmgr.c b/fs/jfs/jfs_txnmgr.c
+> index ce4b4760fcb1..dccc8b3f1045 100644
+> --- a/fs/jfs/jfs_txnmgr.c
+> +++ b/fs/jfs/jfs_txnmgr.c
+> @@ -783,7 +783,7 @@ struct tlock *txLock(tid_t tid, struct inode *ip, 
+> struct metapage * mp,
+>              if (mp->xflag & COMMIT_PAGE)
+>                  p = (xtpage_t *) mp->data;
+>              else
+> -                p = &jfs_ip->i_xtroot;
+> +                p = (xtpage_t *) &jfs_ip->i_xtroot;
+>              xtlck->lwm.offset =
+>                  le16_to_cpu(p->header.nextindex);
+>          }
+> @@ -1676,7 +1676,7 @@ static void xtLog(struct jfs_log * log, struct 
+> tblock * tblk, struct lrd * lrd,
+>
+>      if (tlck->type & tlckBTROOT) {
+>          lrd->log.redopage.type |= cpu_to_le16(LOG_BTROOT);
+> -        p = &JFS_IP(ip)->i_xtroot;
+> +        p = (xtpage_t *) &JFS_IP(ip)->i_xtroot;
+>          if (S_ISDIR(ip->i_mode))
+>              lrd->log.redopage.type |=
+>                  cpu_to_le16(LOG_DIR_XTREE);
+> diff --git a/fs/jfs/jfs_xtree.c b/fs/jfs/jfs_xtree.c
+> index 2d304cee884c..5ee618d17e77 100644
+> --- a/fs/jfs/jfs_xtree.c
+> +++ b/fs/jfs/jfs_xtree.c
+> @@ -1213,7 +1213,7 @@ xtSplitRoot(tid_t tid,
+>      struct xtlock *xtlck;
+>      int rc;
+>
+> -    sp = &JFS_IP(ip)->i_xtroot;
+> +    sp = (xtpage_t *) &JFS_IP(ip)->i_xtroot;
+>
+>      INCREMENT(xtStat.split);
+>
+> @@ -2098,7 +2098,7 @@ int xtAppend(tid_t tid,        /* transaction id */
+>   */
+>  void xtInitRoot(tid_t tid, struct inode *ip)
+>  {
+> -    xtpage_t *p;
+> +    xtroot_t *p;
+>
+>      /*
+>       * acquire a transaction lock on the root
+> diff --git a/fs/jfs/jfs_xtree.h b/fs/jfs/jfs_xtree.h
+> index ad7592191d76..0f6cf5a1ce75 100644
+> --- a/fs/jfs/jfs_xtree.h
+> +++ b/fs/jfs/jfs_xtree.h
+> @@ -65,24 +65,33 @@ struct xadlist {
+>  #define XTPAGEMAXSLOT    256
+>  #define XTENTRYSTART    2
+>
+> -/*
+> - *    xtree page:
+> - */
+> -typedef union {
+> -    struct xtheader {
+> -        __le64 next;    /* 8: */
+> -        __le64 prev;    /* 8: */
+> +struct xtheader {
+> +    __le64 next;    /* 8: */
+> +    __le64 prev;    /* 8: */
+>
+> -        u8 flag;    /* 1: */
+> -        u8 rsrvd1;    /* 1: */
+> -        __le16 nextindex;    /* 2: next index = number of entries */
+> -        __le16 maxentry;    /* 2: max number of entries */
+> -        __le16 rsrvd2;    /* 2: */
+> +    u8 flag;    /* 1: */
+> +    u8 rsrvd1;    /* 1: */
+> +    __le16 nextindex;    /* 2: next index = number of entries */
+> +    __le16 maxentry;    /* 2: max number of entries */
+> +    __le16 rsrvd2;    /* 2: */
+>
+> -        pxd_t self;    /* 8: self */
+> -    } header;        /* (32) */
+> +    pxd_t self;    /* 8: self */
+> +};
+>
+> +/*
+> + *    xtree root (in inode):
+> + */
+> +typedef union {
+> +    struct xtheader header;
+>      xad_t xad[XTROOTMAXSLOT];    /* 16 * maxentry: xad array */
+> +} xtroot_t;
+> +
+> +/*
+> + *    xtree page:
+> + */
+> +typedef union {
+> +    struct xtheader header;
+> +    xad_t xad[XTPAGEMAXSLOT];    /* 16 * maxentry: xad array */
+>  } xtpage_t;
+>
+>  /*
 
-BR,
-Etienne
+I tested this patch and it has not triggered any bug.
 
->=20
-> -Sumit
->=20
-> > I'm fine with both ways.
-> >
-> > etienne
-> >
-> >
-> > >         list_for_each_entry(w, &cq->waiters, list_node) {
-> > >                 if (!completion_done(&w->c)) {
-> > >                         complete(&w->c);
-> > > diff --git a/drivers/tee/optee/optee_private.h
-> > > b/drivers/tee/optee/optee_private.h
-> > > index 6bb5cae09688..a7817ce9f90f 100644
-> > > --- a/drivers/tee/optee/optee_private.h
-> > > +++ b/drivers/tee/optee/optee_private.h
-> > > @@ -43,6 +43,7 @@ typedef void (optee_invoke_fn)(unsigned long,
-> > > unsigned long, unsigned long,
-> > >  struct optee_call_waiter {
-> > >         struct list_head list_node;
-> > >         struct completion c;
-> > > +       bool sys_thread;
-> > >  };
-> > >
-> > >  struct optee_call_queue {
-> > >
-> > > -Sumit
-> > >
-> > > > >
-> > > > > static void optee_cq_complete_one(struct optee_call_queue *cq)
-> > > > > {
-> > > > >         struct optee_call_waiter *w;
-> > > > >
-> > > > >         list_for_each_entry(w, &cq->waiters, list_node) {
-> > > > >                 if (!completion_done(&w->c)) {
-> > > > >                         complete(&w->c);
-> > > > >                         break;
-> > > > >                 }
-> > > > >         }
-> > > > > }
-> > > > >
-> > > > > -Sumit
-> > > > >
-> > > >
-> > > > Note I've found a error in this patch v10, see below.
-> > > >
-> > > > BR,
-> > > > Etienne
-> > > >
-> > > >
-> > > > > >
-> > > > > > With 2 lists, we first treat system sessions to overcome that.
-> > > > > > Am I missing something?
-> > > > > >
-> > > > > > Best regards,
-> > > > > > Etienne
-> > > > > >
-> > > > > > > -Sumit
-> > > > > > >
-> > (snip)
->=20
