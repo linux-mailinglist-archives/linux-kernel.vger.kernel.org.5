@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABC57C8421
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA837C8423
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbjJMLMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:12:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
+        id S230429AbjJMLMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:12:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbjJMLMS (ORCPT
+        with ESMTP id S230081AbjJMLMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:12:18 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B4B9791
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:12:14 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8BxHOsMJillY7IxAA--.25707S3;
-        Fri, 13 Oct 2023 19:12:12 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxjd4KJilleMkiAA--.9894S3;
-        Fri, 13 Oct 2023 19:12:12 +0800 (CST)
-Message-ID: <9c2ec240-bca0-4f99-96db-a5156bbd82e5@loongson.cn>
-Date:   Fri, 13 Oct 2023 19:12:09 +0800
+        Fri, 13 Oct 2023 07:12:45 -0400
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09593CA
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:12:39 -0700 (PDT)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1e987fa0d87so2602338fac.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:12:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697195558; x=1697800358;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=by43HP5P2wCaYE3AXTk6u5hvUascQ0ivlvkmhO35+tQ=;
+        b=fmAvshlSxkfu07bnq3DqVW3N5PMDMDlTcJZkwiT4SDu0A8QHd/GP03i12Ydt5N02kX
+         /zbxTXVjj+CA4Ufa1CsR3grd46tdjaOENxvWZGz++kMvG3DIkz9IWhy8eeBA5M+qGVA+
+         fOQpauRC47br41P7ene0j5UqrrzLm5Nn6EhB6E4guZ+kHp8qrkkQ/1M5NpHLQrMQNRB+
+         WzsXvuyw/aIAn+y0GOtI2sglA+GpmmNSgAd+2O8VLN/pnzD9X7ub0TvA0TeohyZOjU/P
+         2nPari7XcDDblDv3iUNXXs6iz1AmAf98+tDdblx6flJwIp+6MZcOqW7hH8aiPUDwIz6f
+         nP5Q==
+X-Gm-Message-State: AOJu0YwnMfzefgVN1XBr2W3SXKz8lUx2MkreOa/qGWE6mRG+SWkyrimP
+        MuYbVs3XSXiIs8DbkZL7kHPBCdGtCu6c6bU+kRK0dKeyx02V
+X-Google-Smtp-Source: AGHT+IGCzZxj4XP2AxDCBDfmXmKwgKGpaekW5mC0xmrgaIW7jCHJRwL8dDP2+4EGDMrZuT2UDhNy6IwuunhEZfEcajfHoYvbemzp
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] loongarch/mm: disable WUC for pgprot_writecombine as
- same as ioremap_wc
-Content-Language: en-US
-To:     Xi Ruoyao <xry111@xry111.site>, WANG Xuerui <kernel@xen0n.name>,
-        Icenowy Zheng <uwu@icenowy.me>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Weihao Li <liweihao@loongson.cn>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Jun Yi <yijun@loongson.cn>, Baoquan He <bhe@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Hongchen Zhang <zhanghongchen@loongson.cn>,
-        Binbin Zhou <zhoubinbin@loongson.cn>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Zhihong Dong <donmor3000@hotmail.com>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20231009042841.635366-1-uwu@icenowy.me>
- <4f1af31b-15be-cb47-6b34-45de1b5696be@loongson.cn>
- <42b0e6f6-c2b5-49c6-b1f2-0200bef913da@xen0n.name>
- <3641d3fe-c2e7-868f-ab0d-3951c9a78b6d@loongson.cn>
- <8373ccfd93b0402caf9f5c06a2d9b93b3c0d0b49.camel@xry111.site>
-From:   Sui Jingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <8373ccfd93b0402caf9f5c06a2d9b93b3c0d0b49.camel@xry111.site>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8Cxjd4KJilleMkiAA--.9894S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj9xXoWruw1fWr4xXFy8GFy8uFy5WrX_yoWfGrX_uF
-        yDWwsrGwn5WF1DJwnYkr4IqrWagrn2vry8Ca9rJF13J343X3yxKF4kGr95Zw18JF4rGr1U
-        Gr93Aa9av3sI9osvyTuYvTs0mTUanT9S1TB71UUUUjJqnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUbfkYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4UJVWxJr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
-        6r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
-        1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_
-        Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
-        AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
-        cVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
-        8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v2
-        6r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcApnDUUUU
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:b782:b0:1dd:3076:9dfd with SMTP id
+ ed2-20020a056870b78200b001dd30769dfdmr10505799oab.8.1697195556923; Fri, 13
+ Oct 2023 04:12:36 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 04:12:36 -0700
+In-Reply-To: <ZSklqKDnv9OAGMC3@Sun>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000048edd60607972229@google.com>
+Subject: Re: [syzbot] [usb?] linux-next boot error: KASAN: slab-out-of-bounds
+ Write in vhci_setup
+From:   syzbot <syzbot+6867a9777f4b8dc4e256@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, i@zenithal.me,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        linux-usb@vger.kernel.org, sfr@canb.auug.org.au, shuah@kernel.org,
+        syzkaller-bugs@googlegroups.com, valentina.manea.m@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
+
+syzbot tried to test the proposed patch but the build/boot failed:
+
+failed to checkout kernel repo git@github.com:ZenithalHourlyRate/linux.git/usbip-fix-wrong-platform-data: failed to run ["git" "fetch" "--force" "a8488ce2ff9e416d20038a4d32925ba1057cfba2" "usbip-fix-wrong-platform-data"]: exit status 128
+Host key verification failed.
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
 
 
-On 2023/10/10 20:26, Xi Ruoyao wrote:
->> For DMA non-coherent buffers, we should try to implement arch-specific dma_map_ops,
->> invalidate the CPU cache and flush the CPU write buffer before the device do DMA. Instead
->> of pretend to be DMA coherent for all buffers, a kernel cmdline is not a system level
->> solution for all of GPU drivers and OS release.
-> IIUC this is a hardware bug of 7A1000 and 7A2000, so the proper location
-> of the workaround is in the bridge chip driver.  Or am I
-> misunderstanding something?
 
+Tested on:
 
-The ls2k1000 and ls2k2000 SoC (which don't use with 7A1000 and 7A2000) are also suffer form this
-problem. If this is a hardware bug of 7A1000 and 7A2000, why forbidden WC mapping of pages in
-system RAM?
+commit:         [unknown 
+git tree:       git@github.com:ZenithalHourlyRate/linux.git usbip-fix-wrong-platform-data
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9e549f76cbaa1b13
+dashboard link: https://syzkaller.appspot.com/bug?extid=6867a9777f4b8dc4e256
+compiler:       
 
-The problem of this patch and the <16c52e503043> commit is that it forbidden all WC mappings by
-default. Even pages in system RAM.
-
+Note: no patches were applied.
