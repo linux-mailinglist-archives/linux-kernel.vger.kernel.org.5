@@ -2,201 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B42947C865E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 15:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67ACC7C865F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 15:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbjJMNFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 09:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54528 "EHLO
+        id S231761AbjJMNGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 09:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbjJMNFm (ORCPT
+        with ESMTP id S231400AbjJMNGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 09:05:42 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF23391
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 06:05:40 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39D5IHZf031433;
-        Fri, 13 Oct 2023 13:05:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=ZpVQjZLUjrm6AXMKPgqu2lAk/MlW4RlXdT8wWxzO4ZQ=;
- b=EXhnVIrUVQteOJYGnPhNlBAznoz7DRruEWlGD2eLItIY8Vruhq5/+RhYadlDeSPifLkM
- b6nQmtMySLvo/OMccRr3FJGNRn8Y1n7dJiLx6ebK/ixMkoLaqVR/7363o3CulCXXRf5A
- m0L7ykv0JI///gAcKeZsGl837ak8Tsyyk8tyEW+ahTk0+8T8c78us/AcXM5b2mETVZyS
- oMGY7LzpidE6ZVFqsZP//ox6+t0AK1mO1ndgD6fDSIbEtRo3bFQxPBoBAMMLy0Y53UiY
- GP2RfSnDmk1l4IGZSC7/7JvHX4Ja+UL440POgERV3jzKA62PWbFLCXyjvtfEoV+QqCis oA== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tpt109qm0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Oct 2023 13:05:00 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39DD507t012608
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Oct 2023 13:05:00 GMT
-Received: from hu-charante-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Fri, 13 Oct 2023 06:04:56 -0700
-From:   Charan Teja Kalla <quic_charante@quicinc.com>
-To:     <akpm@linux-foundation.org>, <osalvador@suse.de>,
-        <dan.j.williams@intel.com>, <david@redhat.com>, <vbabka@suse.cz>,
-        <mgorman@techsingularity.net>, <aneesh.kumar@linux.ibm.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Charan Teja Kalla <quic_charante@quicinc.com>
-Subject: [PATCH] mm/sparsemem: fix race in accessing memory_section->usage
-Date:   Fri, 13 Oct 2023 18:34:27 +0530
-Message-ID: <1697202267-23600-1-git-send-email-quic_charante@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 13 Oct 2023 09:06:11 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDD0BD
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 06:06:10 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so25057771fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 06:06:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697202369; x=1697807169; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DK51toRuvEyC4XxD8JJ3v08lCOGveUpNKHDsanrs0bg=;
+        b=I1M7lfgQQVYPiPMX5n6H+uAr/Ms1StJdQ5MvNxqeAXwDCkMQGRkr/iMpTOifpHV6TW
+         xyf5QTFmA+FOvN+UHpc5VvqZCgkLNWf6Ek6xfiDqteIazEVjghS4XE4mOhherhXSTVC+
+         5k6PAC/2/FNUhgIwgfTbFmoAWJPyxW++R2zKCNTkeDqUkIkESDVUJpAjmCCQqQWZDK90
+         Q9ljt15ni1Urm9Vyu8wz4qcXhSOlid+BuRi3rs1KId5JW+xk7xUpehu6D293I/ldLQJp
+         fxWnf3e95fLhH0pbq2qqqzdLTYLYuyvNPYJu7e1h0Jwd+FNqzYjdf9RYIAKTCNtCGL56
+         Wo7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697202369; x=1697807169;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DK51toRuvEyC4XxD8JJ3v08lCOGveUpNKHDsanrs0bg=;
+        b=P+7f6wqAXwu3qii4pkgDSNDV4W3+Fn2uZgCfhfqF/oA8MliWPwCbXlm1uyGQbzzLtD
+         R10O2h6diRtt06SKLmYI/DzgkHVAYVZt7zIMzufPZv8i4ImGHK0w2T6AfYruMlbLj6OF
+         KVWKaI0cwCwIcEsRv4nv/5eKpkYWvXlyLuSS80LWk2TYpvFmyXpL1kDziPV8+v8HBCh7
+         uYY99evV8ogy5ccXTKcbwt+EVuXUd0Nax1KuB1Egt/ovWcWHiIPWSMEaWdKda+NaAI4T
+         0vr04OpLj2yrpsZ8jBghnotfjwpAJ8WG6av4Kkm3cnVzCpnDwqqv2GwxFpodWUCv458Z
+         oNBQ==
+X-Gm-Message-State: AOJu0YzceSBf4e98QFTdpidKhTACIJuCgUvh5NRoFiiHeOufgqPX6OWU
+        RcnhkIswDgYO/HH+FKnzxFvImGPFcXi/KygFIg==
+X-Google-Smtp-Source: AGHT+IFOQDqVu2VVbVYv+QVYi8VkQku+W+tBpf1uvDqh7LU/iyX02lA0Z5aiIi6oY+xRc3sLxgXNcDK/7AaVIOTVhC8=
+X-Received: by 2002:a05:6512:ea5:b0:502:f2a4:152f with SMTP id
+ bi37-20020a0565120ea500b00502f2a4152fmr29412611lfb.10.1697202368314; Fri, 13
+ Oct 2023 06:06:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: dtJjyDBU33e-bVtY1MuaXuU5_edqm5lj
-X-Proofpoint-ORIG-GUID: dtJjyDBU33e-bVtY1MuaXuU5_edqm5lj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-13_04,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- spamscore=0 bulkscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
- priorityscore=1501 mlxlogscore=999 phishscore=0 malwarescore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310130109
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231011224351.130935-1-brgerst@gmail.com> <20231011224351.130935-2-brgerst@gmail.com>
+ <2df50490-a493-4e27-a8b1-15b094ab99d8@suse.com>
+In-Reply-To: <2df50490-a493-4e27-a8b1-15b094ab99d8@suse.com>
+From:   Brian Gerst <brgerst@gmail.com>
+Date:   Fri, 13 Oct 2023 09:05:56 -0400
+Message-ID: <CAMzpN2gsRqO3eFtHFvCddNOWPQunuTc7W=OKxdGhqodq0oYQkg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] x86/entry/64: Convert SYSRET validation tests to C
+To:     Nikolay Borisov <nik.borisov@suse.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The below race is observed on a PFN which falls into the device memory
-region with the system memory configuration where PFN's are such that
-[ZONE_NORMAL ZONE_DEVICE  ZONE_NORMAL]. Since normal zone start and
-end pfn contains the device memory PFN's as well, the compaction
-triggered will try on the device memory PFN's too though they end up in
-NOP(because pfn_to_online_page() returns NULL for ZONE_DEVICE memory
-sections). When from other core, the section mappings are being removed
-for the ZONE_DEVICE region, that the PFN in question belongs to,
-on which compaction is currently being operated is resulting into the
-kernel crash with CONFIG_SPASEMEM_VMEMAP enabled.
+On Fri, Oct 13, 2023 at 8:39=E2=80=AFAM Nikolay Borisov <nik.borisov@suse.c=
+om> wrote:
+>
+>
+>
+> On 12.10.23 =D0=B3. 1:43 =D1=87., Brian Gerst wrote:
+> > Signed-off-by: Brian Gerst <brgerst@gmail.com>
+> > ---
+> >   arch/x86/entry/common.c        | 43 ++++++++++++++++++++++++++-
+> >   arch/x86/entry/entry_64.S      | 53 ++-------------------------------=
+-
+> >   arch/x86/include/asm/syscall.h |  2 +-
+> >   3 files changed, 45 insertions(+), 53 deletions(-)
+> >
+> > diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+> > index 0551bcb197fb..207149a0a9b3 100644
+> > --- a/arch/x86/entry/common.c
+> > +++ b/arch/x86/entry/common.c
+> > @@ -71,7 +71,8 @@ static __always_inline bool do_syscall_x32(struct pt_=
+regs *regs, int nr)
+> >       return false;
+> >   }
+> >
+> > -__visible noinstr void do_syscall_64(struct pt_regs *regs, int nr)
+> > +/* Returns true to return using SYSRET, or false to use IRET */
+> > +__visible noinstr bool do_syscall_64(struct pt_regs *regs, int nr)
+> >   {
+> >       add_random_kstack_offset();
+> >       nr =3D syscall_enter_from_user_mode(regs, nr);
+> > @@ -85,6 +86,46 @@ __visible noinstr void do_syscall_64(struct pt_regs =
+*regs, int nr)
+> >
+> >       instrumentation_end();
+> >       syscall_exit_to_user_mode(regs);
+> > +
+> > +     /*
+> > +      * Check that the register state is valid for using SYSRET to exi=
+t
+> > +      * to userspace.  Otherwise use the slower but fully capable IRET
+> > +      * exit path.
+> > +      */
+> > +
+> > +     /* XEN PV guests always use IRET path */
+> > +     if (cpu_feature_enabled(X86_FEATURE_XENPV))
+> > +             return false;
+> > +
+> > +     /* SYSRET requires RCX =3D=3D RIP and R11 =3D=3D EFLAGS */
+> > +     if (unlikely(regs->cx !=3D regs->ip || regs->r11 !=3D regs->flags=
+))
+> > +             return false;
+>
+>
+> Under what conditions do we expect this to not be true since we've come
+> via the syscall which adheres to this layout? IOW isn't this always
+> going to be true and we can simply eliminate it?
 
-compact_zone()			memunmap_pages
--------------			---------------
-__pageblock_pfn_to_page
-   ......
- (a)pfn_valid():
-     valid_section()//return true
-			      (b)__remove_pages()->
-				  sparse_remove_section()->
-				    section_deactivate():
-				    [Free the array ms->usage and set
-				     ms->usage = NULL]
-     pfn_section_valid()
-     [Access ms->usage which
-     is NULL]
+Any syscall that can modify pt_regs, like sigreturn(), exec(), etc.
+Also ptrace can change registers.
 
-NOTE: From the above it can be said that the race is reduced to between
-the pfn_valid()/pfn_section_valid() and the section deactivate with
-SPASEMEM_VMEMAP enabled.
-
-The commit b943f045a9af("mm/sparse: fix kernel crash with
-pfn_section_valid check") tried to address the same problem by clearing
-the SECTION_HAS_MEM_MAP with the expectation of valid_section() returns
-false thus ms->usage is not accessed.
-
-Fix this issue by the below steps:
-a) Clear SECTION_HAS_MEM_MAP before freeing the ->usage.
-b) RCU protected read side critical section will either return NULL when
-SECTION_HAS_MEM_MAP is cleared or can successfully access ->usage.
-c) Synchronize the rcu on the write side and free the ->usage. No
-attempt will be made to access ->usage after this as the
-SECTION_HAS_MEM_MAP is cleared thus valid_section() return false.
-
-Since the section_deactivate() is a rare operation and will come in the
-hot remove path, impact of synchronize_rcu() should be negligble.
-
-Fixes: f46edbd1b151 ("mm/sparsemem: add helpers track active portions of a section at boot")
-Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
----
- include/linux/mmzone.h | 11 +++++++++--
- mm/sparse.c            | 14 ++++++++------
- 2 files changed, 17 insertions(+), 8 deletions(-)
-
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 4106fbc..c877396 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -1987,6 +1987,7 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
- static inline int pfn_valid(unsigned long pfn)
- {
- 	struct mem_section *ms;
-+	int ret;
- 
- 	/*
- 	 * Ensure the upper PAGE_SHIFT bits are clear in the
-@@ -2000,13 +2001,19 @@ static inline int pfn_valid(unsigned long pfn)
- 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
- 		return 0;
- 	ms = __pfn_to_section(pfn);
--	if (!valid_section(ms))
-+	rcu_read_lock();
-+	if (!valid_section(ms)) {
-+		rcu_read_unlock();
- 		return 0;
-+	}
- 	/*
- 	 * Traditionally early sections always returned pfn_valid() for
- 	 * the entire section-sized span.
- 	 */
--	return early_section(ms) || pfn_section_valid(ms, pfn);
-+	ret = early_section(ms) || pfn_section_valid(ms, pfn);
-+	rcu_read_unlock();
-+
-+	return ret;
- }
- #endif
- 
-diff --git a/mm/sparse.c b/mm/sparse.c
-index 77d91e5..ca7dbe1 100644
---- a/mm/sparse.c
-+++ b/mm/sparse.c
-@@ -792,6 +792,13 @@ static void section_deactivate(unsigned long pfn, unsigned long nr_pages,
- 		unsigned long section_nr = pfn_to_section_nr(pfn);
- 
- 		/*
-+		 * Mark the section invalid so that valid_section()
-+		 * return false. This prevents code from dereferencing
-+		 * ms->usage array.
-+		 */
-+		ms->section_mem_map &= ~SECTION_HAS_MEM_MAP;
-+
-+		/*
- 		 * When removing an early section, the usage map is kept (as the
- 		 * usage maps of other sections fall into the same page). It
- 		 * will be re-used when re-adding the section - which is then no
-@@ -799,16 +806,11 @@ static void section_deactivate(unsigned long pfn, unsigned long nr_pages,
- 		 * was allocated during boot.
- 		 */
- 		if (!PageReserved(virt_to_page(ms->usage))) {
-+			synchronize_rcu();
- 			kfree(ms->usage);
- 			ms->usage = NULL;
- 		}
- 		memmap = sparse_decode_mem_map(ms->section_mem_map, section_nr);
--		/*
--		 * Mark the section invalid so that valid_section()
--		 * return false. This prevents code from dereferencing
--		 * ms->usage array.
--		 */
--		ms->section_mem_map &= ~SECTION_HAS_MEM_MAP;
- 	}
- 
- 	/*
--- 
-2.7.4
-
+Brian Gerst
