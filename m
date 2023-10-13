@@ -2,252 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4BB7C7E38
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161B77C7E3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjJMGza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 02:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42306 "EHLO
+        id S229869AbjJMGzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 02:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjJMGzZ (ORCPT
+        with ESMTP id S229908AbjJMGzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 02:55:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD9D9BD;
-        Thu, 12 Oct 2023 23:55:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697180122; x=1728716122;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=JQAbTe0ieOadd0hoG/pD/c+KBl0PX6rseZ5XazSEsPQ=;
-  b=mBr8tYvyUGSuvMSFc1ZDS7YwKNrJG3O6CyFNVAn4Nis/0aYfWvICqsA4
-   504txvlzLK7IuGAP4fFXPUPvsXZrFMEw77K0oUmNvV+LICZyccr0ITDs5
-   loeIMtYCZsxWPUdwHPYrf4WzawitEDO1GQnCDTl1PGBxmoFy9QDL+cBFH
-   j3u18gJ9XHY7PY/x3HT24lPoYfVaVp4UiQ3m76GQI+/qmYWUIXfy+l6qL
-   HI33t6Q6YxZe6eillt4Z3+8yrE8XK534A2icn+t50HbyvKMpo/S5YT/s/
-   YTFlXlpBWoBvahxiGI6Gy39zYcx1Z9E90o3O+bNiu5rkY1dR7DNXXs/JH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="451596010"
-X-IronPort-AV: E=Sophos;i="6.03,221,1694761200"; 
-   d="scan'208";a="451596010"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 23:55:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="704512902"
-X-IronPort-AV: E=Sophos;i="6.03,221,1694761200"; 
-   d="scan'208";a="704512902"
-Received: from iweiny-mobl.amr.corp.intel.com (HELO localhost) ([10.212.55.67])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 23:55:21 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-Date:   Thu, 12 Oct 2023 23:55:20 -0700
-Subject: [PATCH RFC 2/2] cxl/memdev: Register for and process CPER events
+        Fri, 13 Oct 2023 02:55:44 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEBBE4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:55:40 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-66d17bdabe1so7898416d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:55:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697180139; x=1697784939; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eO8iTMtMps7SJ1gkASJBUeik5rnOtaoib7nQV5Hk7o0=;
+        b=QN9hbD4BN5nOZQ0xH734qYvqSZgkDevucN3qUCSgw94w8aDexHOamgHm9wq115KUQc
+         MF8/L00lEuCbz9i8jIC56JuRFljLyDQRUbVEndwfkIJbZDm+b4PdPD7eXPe8MBVTC2p8
+         5n+HKzmJzmLfpHQ2J/NCp8KfyUgz28EsONJaRaqgzgecf2OoosLXCOuj4rXdQTZDsB1x
+         n+Z0dfQT6eS6osqNAi6/glKHXxgoU/4K4tZ8EyyD6uc6uirrY8rumqlN3cJ1SFOulFUZ
+         9ARi/Hpg7hunee4zh4wvVs5y4I1upuDqhzPNkhx7B1Uv/86ndI5VN7PGhUJETjCy2UY/
+         yAPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697180139; x=1697784939;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eO8iTMtMps7SJ1gkASJBUeik5rnOtaoib7nQV5Hk7o0=;
+        b=lKLmRLlR0xob0oH3dfwqnfLmXGlH2jEbMHJguZDTaC/skKAjkn7NQFpveDJFsyWs7Z
+         ug3b65VNjnL43JDuS8u6t4g8ndElGUfNrpdf5sdOmzwx0WO2HF9oJdaQ/nAUtfk19jDM
+         1fRLU07xsmUvS06419W2t4zt+dnPl25xzf/7+xztXhxLbycPFjcClmWRIbAN0ofH2dJl
+         NaPjzrVVNwfv1IjxxcC+npxWp+6zeoMIjVCGKto4CAZzNdMvlKdfNiCGw3qRl4sXk2yi
+         BFpp3U0OJ6zz2LC6wXgqtuguvRAxzGD7MbCRTH4gPOtrUshr1UI9OQLXeXtZ/hRIdsyC
+         ytJg==
+X-Gm-Message-State: AOJu0YxL9w1erpQAcinPUFvVeBQqvV/SC/PcZCeU8e6C/OoO78iofY+Y
+        8uXS+REoAv2DU8tv8SlU02zyPQ==
+X-Google-Smtp-Source: AGHT+IGB0FwDBBChD4D0y+VdEjFsR3KdOby6roCRaeARxILqOpmZI2BVtWLiZgHT0WzpnwSjPmD6nQ==
+X-Received: by 2002:a0c:b25e:0:b0:65b:26d4:7fc2 with SMTP id k30-20020a0cb25e000000b0065b26d47fc2mr23259971qve.2.1697180139202;
+        Thu, 12 Oct 2023 23:55:39 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.100])
+        by smtp.gmail.com with ESMTPSA id w10-20020a0cc24a000000b0065b229ecb8dsm445035qvh.3.2023.10.12.23.55.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 23:55:38 -0700 (PDT)
+Message-ID: <eea92f7c-fd9b-42a0-8171-eb014a2c4bc9@linaro.org>
+Date:   Fri, 13 Oct 2023 08:55:35 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: imu: Add Bosch BMI323
+Content-Language: en-US
+To:     Jagath Jog J <jagathjog1996@gmail.com>, jic23@kernel.org,
+        andriy.shevchenko@linux.intel.com, u.kleine-koenig@pengutronix.de,
+        lars@metafoo.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linus.walleij@linaro.org
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231013034808.8948-1-jagathjog1996@gmail.com>
+ <20231013034808.8948-2-jagathjog1996@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231013034808.8948-2-jagathjog1996@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230601-cxl-cper-v1-2-99ba43f8f770@intel.com>
-References: <20230601-cxl-cper-v1-0-99ba43f8f770@intel.com>
-In-Reply-To: <20230601-cxl-cper-v1-0-99ba43f8f770@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-        Ira Weiny <ira.weiny@intel.com>
-X-Mailer: b4 0.13-dev-c6835
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697180119; l=6111;
- i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
- bh=JQAbTe0ieOadd0hoG/pD/c+KBl0PX6rseZ5XazSEsPQ=;
- b=tJ8cgVM2yqRPwooLNSeaBEKFjX6JljDnrGlEuxEJX54NEEvMs+pV/k92yVrLcliMFh9wFlVWO
- gtJbsMlpC3EAZ+I1+NVag+KZudkxb3lvDw02V+eawp5nRjJY7DlG+5M
-X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
- pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the firmware has configured CXL event support to be firmware first
-the OS can process those events through CPER records.
+On 13/10/2023 05:48, Jagath Jog J wrote:
+> Add devicetree description document for Bosch BMI323, a 6-Axis IMU.
+> 
+> Signed-off-by: Jagath Jog J <jagathjog1996@gmail.com>
+> ---
 
-Detect firmware first configuration and register a notifier callback to
-process catch records for this memdev.  Process those records destined
-for this memdev through the normal trace mechanism.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Not-Yet-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
----
-RFC comments:
-The matching of the CPER event to the MDS is a bit hacky right now and
-could probably be much more robust.  But the general approach seems
-sound.  Simply register a notifier for each device and when that device
-finds a record for itself call the normal trace mechanisms.
----
- drivers/cxl/core/mbox.c |  7 ++---
- drivers/cxl/cxlmem.h    |  5 ++++
- drivers/cxl/pci.c       | 70 ++++++++++++++++++++++++++++++++++++++++++++++++-
- 3 files changed, 78 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-index 4df4f614f490..3a8ce7801e04 100644
---- a/drivers/cxl/core/mbox.c
-+++ b/drivers/cxl/core/mbox.c
-@@ -860,9 +860,9 @@ static const uuid_t mem_mod_event_uuid =
- 	UUID_INIT(0xfe927475, 0xdd59, 0x4339,
- 		  0xa5, 0x86, 0x79, 0xba, 0xb1, 0x13, 0xb7, 0x74);
- 
--static void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
--				   enum cxl_event_log_type type,
--				   struct cxl_event_record_raw *record)
-+void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
-+			    enum cxl_event_log_type type,
-+			    struct cxl_event_record_raw *record)
- {
- 	uuid_t *id = &record->hdr.id;
- 
-@@ -885,6 +885,7 @@ static void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
- 		trace_cxl_generic_event(cxlmd, type, record);
- 	}
- }
-+EXPORT_SYMBOL_NS_GPL(cxl_event_trace_record, CXL);
- 
- static int cxl_clear_event_record(struct cxl_memdev_state *mds,
- 				  enum cxl_event_log_type log,
-diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-index 706f8a6d1ef4..2b4210c291b9 100644
---- a/drivers/cxl/cxlmem.h
-+++ b/drivers/cxl/cxlmem.h
-@@ -477,6 +477,8 @@ struct cxl_memdev_state {
- 	struct cxl_security_state security;
- 	struct cxl_fw_state fw;
- 
-+	struct notifier_block cxl_cper_nb;
-+
- 	struct rcuwait mbox_wait;
- 	int (*mbox_send)(struct cxl_memdev_state *mds,
- 			 struct cxl_mbox_cmd *cmd);
-@@ -863,6 +865,9 @@ void set_exclusive_cxl_commands(struct cxl_memdev_state *mds,
- void clear_exclusive_cxl_commands(struct cxl_memdev_state *mds,
- 				  unsigned long *cmds);
- void cxl_mem_get_event_records(struct cxl_memdev_state *mds, u32 status);
-+void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
-+			    enum cxl_event_log_type type,
-+			    struct cxl_event_record_raw *record);
- int cxl_set_timestamp(struct cxl_memdev_state *mds);
- int cxl_poison_state_init(struct cxl_memdev_state *mds);
- int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index 44a21ab7add5..19922e32c098 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /* Copyright(c) 2020 Intel Corporation. All rights reserved. */
-+#include <asm-generic/unaligned.h>
- #include <linux/io-64-nonatomic-lo-hi.h>
- #include <linux/moduleparam.h>
- #include <linux/module.h>
-@@ -10,6 +11,7 @@
- #include <linux/pci.h>
- #include <linux/aer.h>
- #include <linux/io.h>
-+#include <linux/efi.h>
- #include "cxlmem.h"
- #include "cxlpci.h"
- #include "cxl.h"
-@@ -748,6 +750,70 @@ static bool cxl_event_int_is_fw(u8 setting)
- 	return mode == CXL_INT_FW;
- }
- 
-+#define CXL_EVENT_HDR_FLAGS_REC_SEVERITY GENMASK(1, 0)
-+int cxl_cper_event(struct notifier_block *nb, unsigned long action, void *data)
-+{
-+	struct cxl_cper_notifier_data *nd = data;
-+	struct cxl_event_record_raw record;
-+	enum cxl_event_log_type log_type;
-+	struct cxl_memdev_state *mds;
-+	u32 hdr_flags;
-+
-+	mds = container_of(nb, struct cxl_memdev_state, cxl_cper_nb);
-+
-+	/* Need serial number for device identification */
-+	if (!(nd->rec->hdr.validation_bits & CPER_CXL_DEVICE_SN_VALID))
-+		return NOTIFY_DONE;
-+
-+	/* FIXME endianess and bytes of serial number need verification */
-+	/* FIXME Should other values be checked? */
-+	if (memcmp(&mds->cxlds.serial, &nd->rec->hdr.dev_serial_num,
-+		   sizeof(mds->cxlds.serial)))
-+		return NOTIFY_DONE;
-+
-+	/*
-+	 * UEFI v2.10 defines N.2.14 defines the CXL CPER record as not
-+	 * including the uuid field from the CXL record.
-+	 *
-+	 * Build the record from the UUID passed.
-+	 */
-+	record = (struct cxl_event_record_raw) {
-+		.hdr.id = nd->uuid,
-+	};
-+	memcpy(&record.hdr.length, &nd->rec->comp_event_log,
-+		CPER_CXL_REC_LEN(nd->rec));
-+
-+	/* ensure record can always handle the full CPER provided data */
-+	BUILD_BUG_ON(sizeof(record) <
-+		(CPER_CXL_COMP_EVENT_LOG_SIZE + sizeof(record.hdr.id)));
-+
-+	hdr_flags = get_unaligned_le24(record.hdr.flags);
-+	log_type = FIELD_GET(CXL_EVENT_HDR_FLAGS_REC_SEVERITY, hdr_flags);
-+
-+	cxl_event_trace_record(mds->cxlds.cxlmd, log_type, &record);
-+
-+	return NOTIFY_OK;
-+}
-+
-+static void cxl_unregister_cper_events(void *_mds)
-+{
-+	struct cxl_memdev_state *mds = _mds;
-+
-+	unregister_cxl_cper_notifier(&mds->cxl_cper_nb);
-+}
-+
-+static void register_cper_events(struct cxl_memdev_state *mds)
-+{
-+	mds->cxl_cper_nb.notifier_call = cxl_cper_event;
-+
-+	if (register_cxl_cper_notifier(&mds->cxl_cper_nb)) {
-+		dev_err(mds->cxlds.dev, "CPER registration failed\n");
-+		return;
-+	}
-+
-+	devm_add_action_or_reset(mds->cxlds.dev, cxl_unregister_cper_events, mds);
-+}
-+
- static int cxl_event_config(struct pci_host_bridge *host_bridge,
- 			    struct cxl_memdev_state *mds)
- {
-@@ -758,8 +824,10 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
- 	 * When BIOS maintains CXL error reporting control, it will process
- 	 * event records.  Only one agent can do so.
- 	 */
--	if (!host_bridge->native_cxl_error)
-+	if (!host_bridge->native_cxl_error) {
-+		register_cper_events(mds);
- 		return 0;
-+	}
- 
- 	rc = cxl_mem_alloc_event_buf(mds);
- 	if (rc)
-
--- 
-2.41.0
+Best regards,
+Krzysztof
 
