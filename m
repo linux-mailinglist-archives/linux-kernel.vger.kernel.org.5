@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E06407C84F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBF57C84FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbjJMLtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:49:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35940 "EHLO
+        id S231293AbjJMLuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231615AbjJMLtc (ORCPT
+        with ESMTP id S231637AbjJMLth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:49:32 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2788611B
+        Fri, 13 Oct 2023 07:49:37 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF82128
         for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:49:09 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40572aeb6d0so20608325e9.1
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-405524e6769so12850415e9.1
         for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:49:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697197747; x=1697802547; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697197748; x=1697802548; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=f9Heyw2bPG0qaWUlPboXZ9YrcRBEbXtxsdZV2np9Ptk=;
-        b=bkizvJdn7qJGt0KlLaSfH8Du5EBxmJoXZzEVA8GPG5r82fGRF4Uqe/c/uLsYN9qFoT
-         RuZHbtuD3MhaewRhKwnyYIIyG8KA/NdOfGS3jMmABS547WHcEzzg80IWAsdpcaf7Uh6+
-         IJwfR8AXbXYHE1BqrWglmF51Tk63drBGQY9orNGe+sxk68z87eYGyNt4FsbylvTCC7NP
-         2LUVmjqZwPUKmd4EE93Mb47z+2qDfaxQF3n8i3aDJ726UwiQz73RoaDscD+MN7xkQ2QX
-         YAfzwUGHhn6Ibxq9oeFehMxv3X6ZhsiZNYBNaWD46GK/t68XVuvSXDmhmBxztBzzhXqr
-         llXg==
+        bh=PE/p2CAXymaVYCSJyW/v/kTP5stsCvV8KjJ1np5Cumk=;
+        b=Be4Ywpk2wBnM9Llf72gBNK9yeikzw3ibCxGTVUaNkJefkYLZOect5uTT8HlhvzL18C
+         MQZ1YT+pDkhVD4Je0e66cN2f2L+dZHfW+ArNcK0IKGLlqd4mZW0v4fL+LyPCdVYlI4cN
+         gMjVvVbItaSDLThKd9Ly69ZeE8O2AfEC7Mgy4/JF5nB/z8DA71WAdoAl/BH+DI1t4BXz
+         JgdTwyC11gvRFuWq3AchwQjICN8Ozp0SeZl4gTFaXw7d4xFhAD6QENLtPbWUpg923QEK
+         ixKyoAaCcHbq7VNLztyo5cYHkGGi5JVJQbgZGDhmCtd2cf4f3+65+pIW9JBedYxW16y8
+         fhXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697197747; x=1697802547;
+        d=1e100.net; s=20230601; t=1697197748; x=1697802548;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=f9Heyw2bPG0qaWUlPboXZ9YrcRBEbXtxsdZV2np9Ptk=;
-        b=RnP5mV/s8JztcIvkH7AzYvwU1a66IjpAj8rn227QdHQ7cJCrQ9QU6VjHYnOwOcpwM4
-         CSHZWtA8zhwj3SdYKEpd2tlYa04NhG44x1qPhRQy2O5+CwHundN/EJb7+qBknm1jJkJG
-         pbvz+L9uabeyJ5gSwMw51uEiS/+j0Jb2NZfgzrqGGy4G/rVOCdBeZ/rXkUIcQnLTN0W+
-         YHenXigc/gCAnwnQwGmBJ5ZAJV+PniJ83oWidGwtrrJ8IXC1eYwKBW66v/OJ2gO8Tr2D
-         CeHuOpSrqDnQqvnYzCSdrlKxROpsHKYOCvZQOFER5gRXZiHwGI7Nc50mbRQhH62qx8xB
-         USUQ==
-X-Gm-Message-State: AOJu0YyhDow/e+rRvcJyPtFFynOuBUUriOe1MKFtUevXVNKogTBZGIQS
-        Xbe9nzqW2JBsTJxEYAh+7vJ1yg==
-X-Google-Smtp-Source: AGHT+IEnwo69CmHD5Qs5HcqhGzB/4dWNJStokIatU7263uXLolybJc7B7UGHuPytZ5oFSbz9IMF4RQ==
-X-Received: by 2002:a05:600c:3b18:b0:407:536d:47ae with SMTP id m24-20020a05600c3b1800b00407536d47aemr9754099wms.38.1697197747308;
-        Fri, 13 Oct 2023 04:49:07 -0700 (PDT)
+        bh=PE/p2CAXymaVYCSJyW/v/kTP5stsCvV8KjJ1np5Cumk=;
+        b=kJOqoK1cdP9AnptsMxsuKe56B9XuXgLFGTz4gYtwuoGWb7CDmgkQm8mfCVCbnJvFeq
+         FhXkEw5uB+HPuNpOT5m0ctJ20gaNb/7AF8G33GBALfcrFtFuX9uaxFHgM3XwRiXkby8e
+         8e7WOxp4pJxsf1nJvJBV5Cu82hgFmcOTFxw5ExvoHYnjDtM9aPo1g1UCz2potT0QJuMD
+         r03hN+2Naikb5Y7Gki05v+GC4Qkls7XZBLUKaw4Ysuv5wnAU8tCKkJdKCpAJ8PfAVVYr
+         gRue6MQV+sFkHmrf4ncmXc1py5xmBfHB4ldkfetiafaM3msVTvNp6BNrwhO0p7KiB6V0
+         y9Aw==
+X-Gm-Message-State: AOJu0YwwP3OeOolPdyYVkRK1NK4rop8uBuhLAPwNnpqsIFzKFoqEK5xa
+        Krk9v1FZMYU0jZbzZqcf8Nk7PA==
+X-Google-Smtp-Source: AGHT+IE3EPZwdcV6+9c0MT7noLRZ3EscIaBUOrxg76lWbF2gmzuNksXZSHu188cOIVvgnjobPtdBNg==
+X-Received: by 2002:a05:600c:3659:b0:401:b425:2414 with SMTP id y25-20020a05600c365900b00401b4252414mr21070016wmq.18.1697197748446;
+        Fri, 13 Oct 2023 04:49:08 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:4209:13a:988d:80be])
-        by smtp.gmail.com with ESMTPSA id j23-20020a05600c1c1700b00407754b998dsm974509wms.27.2023.10.13.04.49.06
+        by smtp.gmail.com with ESMTPSA id j23-20020a05600c1c1700b00407754b998dsm974509wms.27.2023.10.13.04.49.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 04:49:06 -0700 (PDT)
+        Fri, 13 Oct 2023 04:49:08 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -63,10 +63,12 @@ To:     Andy Gross <agross@kernel.org>,
         Srini Kandagatla <srinivas.kandagatla@linaro.org>
 Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v4 14/15] firmware: qcom: scm: clarify the comment in qcom_scm_pas_init_image()
-Date:   Fri, 13 Oct 2023 13:48:42 +0200
-Message-Id: <20231013114843.63205-15-brgl@bgdev.pl>
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v4 15/15] arm64: defconfig: enable SHM Bridge support for the TZ memory allocator
+Date:   Fri, 13 Oct 2023 13:48:43 +0200
+Message-Id: <20231013114843.63205-16-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231013114843.63205-1-brgl@bgdev.pl>
 References: <20231013114843.63205-1-brgl@bgdev.pl>
@@ -83,36 +85,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-The "memory protection" mechanism mentioned in the comment is the SHM
-Bridge. This is also the reason why we do not convert this call to using
-the TZ memory allocator.
+Enable SHM Bridge support in the Qualcomm TrustZone allocator by default
+as even on architectures that don't support it, we automatically fall
+back to the default behavior.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/firmware/qcom/qcom_scm.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-index 839773270a21..7ba5cff6e4e7 100644
---- a/drivers/firmware/qcom/qcom_scm.c
-+++ b/drivers/firmware/qcom/qcom_scm.c
-@@ -563,9 +563,13 @@ int qcom_scm_pas_init_image(u32 peripheral, const void *metadata, size_t size,
- 	struct qcom_scm_res res;
- 
- 	/*
--	 * During the scm call memory protection will be enabled for the meta
--	 * data blob, so make sure it's physically contiguous, 4K aligned and
--	 * non-cachable to avoid XPU violations.
-+	 * During the SCM call the hypervisor will make the buffer containing
-+	 * the program data into an SHM Bridge. This is why we exceptionally
-+	 * must not use the TrustZone memory allocator here as - depending on
-+	 * Kconfig - it may already use the SHM Bridge mechanism internally.
-+	 *
-+	 * If we pass a buffer that is already part of an SHM Bridge to this
-+	 * call, it will fail.
- 	 */
- 	mdata_buf = dma_alloc_coherent(__scm->dev, size, &mdata_phys,
- 				       GFP_KERNEL);
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index b4220fff2b44..8cca74242cf6 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -255,6 +255,7 @@ CONFIG_INTEL_STRATIX10_RSU=m
+ CONFIG_EFI_CAPSULE_LOADER=y
+ CONFIG_IMX_SCU=y
+ CONFIG_IMX_SCU_PD=y
++CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE=y
+ CONFIG_GNSS=m
+ CONFIG_GNSS_MTK_SERIAL=m
+ CONFIG_MTD=y
 -- 
 2.39.2
 
