@@ -2,169 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E8F7C7F28
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5767C7F3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbjJMH7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
+        id S229947AbjJMIBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbjJMH7r (ORCPT
+        with ESMTP id S229863AbjJMIBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:59:47 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00EE6B8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:59:45 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id ada2fe7eead31-4577c1ae94fso795974137.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:59:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697183985; x=1697788785; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=REWI9aVVUrDk67MWEBoCKN3t/aYt3f7m0oP9Ii5DchY=;
-        b=YHrBAUglzHn79P+UoSQc3Fg2KMkJqHy29ILAgTS3pyXjdAPKfsTXQv+dO2EIqdlpaz
-         YNcrOlKHcdRLquqTqblelIoy7Oo0kyx2VxiB78jIV4qS8Ej4UPGabk+fnCzwCxJ1/UTS
-         BY486mfnwiXS1+b/jt7vi1vTNsoARFfqZqIHm37z619ik/htdzudPHhxiU2vjk0oXjFG
-         CHGIjLY0kVYyaicVyCUIX7goI5wiv8pz6E37tC/sof0yBz23iUaTqoEfqI8utpDD2oK/
-         TaWCIBjTUFc1lFSHjzjVFCoqwawSZ4slLCDzp7gNVgD5xcCBGilvA3OxUPsSfbH+EXw0
-         fOWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697183985; x=1697788785;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=REWI9aVVUrDk67MWEBoCKN3t/aYt3f7m0oP9Ii5DchY=;
-        b=ayMobXQ24dl79rxAMmN817BPtQMA0hR6NLNa73hyIQdjxFVGMHijNmvM31B0V9hDes
-         XF3Z6C50K0JgsQlwEJQxRp42caBgG6Hnh6pwgVj5p5mIlHU32Nb3MQ24XORXE4tofm7j
-         Q5yaYSWYhBO/IhDHEyMNwimC0WUmdjSsQxFKhpY+tNIBx/mS+2lMtPP24GdP0T/lqtNP
-         QRR3Z/CZC18THcz7K9ZNYdqAjjQDZ7gkp/ph0y/sxXqST6Ma4snnuzvMLC23J3muouxN
-         wPaek0JJy+sPwWA6hpY1S29ofcwbUiPT3FWQON6BiP/BYdsejhiwkeE2MNhHrDQP96P4
-         aP/A==
-X-Gm-Message-State: AOJu0YzORRy3UHvViUozfBxHqSFMPq8o/xKYkLlhpToFAHkfh1Dd/iwz
-        oEBWZVp6S/rKU2CA4GOpSuQBZdZWFYO6338bZ9PyPA==
-X-Google-Smtp-Source: AGHT+IHhTeTi3Gj505Mx41j5LL+4dFLAR7SjmoTwKizwc56WY8GM2CHR/4kcLzIx9ca66aTrVt4/PRvpPsiimuxIb6M=
-X-Received: by 2002:a05:6102:f09:b0:457:79e5:50df with SMTP id
- v9-20020a0561020f0900b0045779e550dfmr16193319vss.33.1697183985048; Fri, 13
- Oct 2023 00:59:45 -0700 (PDT)
+        Fri, 13 Oct 2023 04:01:30 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D959C2;
+        Fri, 13 Oct 2023 01:01:28 -0700 (PDT)
+Received: from kwepemm000003.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S6JlP2TdXzVlWf;
+        Fri, 13 Oct 2023 15:57:53 +0800 (CST)
+Received: from ubuntu2204.huawei.com (10.67.174.22) by
+ kwepemm000003.china.huawei.com (7.193.23.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 13 Oct 2023 16:01:25 +0800
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <namhyung@kernel.org>, <irogers@google.com>,
+        <adrian.hunter@intel.com>, <linux-perf-users@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <yangjihong1@huawei.com>
+Subject: [PATCH] perf data: Increase RLIMIT_NOFILE limit when open too many files in perf_data__create_dir()
+Date:   Fri, 13 Oct 2023 07:59:45 +0000
+Message-ID: <20231013075945.698874-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231013074540.8980-1-masahisa.kojima@linaro.org> <20231013074540.8980-7-masahisa.kojima@linaro.org>
-In-Reply-To: <20231013074540.8980-7-masahisa.kojima@linaro.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Fri, 13 Oct 2023 13:29:34 +0530
-Message-ID: <CAFA6WYMoWn6MgoRp8hD89PwmLeHaO+X1sGB0QOMQDLJtuseP3g@mail.gmail.com>
-Subject: Re: [PATCH v9 6/6] tee: optee: restore efivars ops when
- tee-supplicant stops
-To:     Masahisa Kojima <masahisa.kojima@linaro.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-efi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.22]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm000003.china.huawei.com (7.193.23.66)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kojima-san,
+If using parallel threads to collect data, perf record needs at least 6 fds
+per CPU. (one for sys_perf_event_open, four for pipe msg and ack of the
+pipe, see record__thread_data_open_pipes(), and one for open perf.data.XXX)
+For an environment with more than 100 cores, if perf record uses both
+`-a` and `--threads` options, it is easy to exceed the upper limit of the
+file descriptor number, when we run out of them try to increase the limits.
 
-On Fri, 13 Oct 2023 at 13:18, Masahisa Kojima
-<masahisa.kojima@linaro.org> wrote:
->
-> When tee-supplicant stops, tee-based EFI variable service
-> is no longer available. Restore the efivars generic ops at the
-> moment when tee-supplicant stops.
+Before:
+  $ ulimit -n
+  1024
+  $ lscpu | grep 'On-line CPU(s)'
+  On-line CPU(s) list:                0-159
+  $ perf record --threads -a sleep 1
+  Failed to create data directory: Too many open files
 
-This is a layering violation as evident from below linking error. The
-tee-supplicant is internal to how OP-TEE is implemented. I have
-already shared a unified way to handle shutdown of supplicant
-dependent devices here [1].
+After:
+  $ ulimit -n
+  1024
+  $ lscpu | grep 'On-line CPU(s)'
+  On-line CPU(s) list:                0-159
+  $ perf record --threads -a sleep 1
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.394 MB perf.data (1576 samples) ]
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+---
+ tools/perf/util/data.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-[1] https://lore.kernel.org/all/20230728134832.326467-1-sumit.garg@linaro.org/
+diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
+index fc16299c915f..098f9e3bb2e7 100644
+--- a/tools/perf/util/data.c
++++ b/tools/perf/util/data.c
+@@ -17,6 +17,7 @@
+ #include "util.h" // rm_rf_perf_data()
+ #include "debug.h"
+ #include "header.h"
++#include "evsel.h"
+ #include <internal/lib.h>
+ 
+ static void close_dir(struct perf_data_file *files, int nr)
+@@ -35,6 +36,7 @@ void perf_data__close_dir(struct perf_data *data)
+ 
+ int perf_data__create_dir(struct perf_data *data, int nr)
+ {
++	enum rlimit_action set_rlimit = NO_CHANGE;
+ 	struct perf_data_file *files = NULL;
+ 	int i, ret;
+ 
+@@ -54,11 +56,21 @@ int perf_data__create_dir(struct perf_data *data, int nr)
+ 			goto out_err;
+ 		}
+ 
++retry_open:
+ 		ret = open(file->path, O_RDWR|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR);
+ 		if (ret < 0) {
++			/*
++			 * If using parallel threads to collect data,
++			 * perf record needs at least 6 fds per CPU.
++			 * When we run out of them try to increase the limits.
++			 */
++			if (errno == EMFILE && evsel__increase_rlimit(&set_rlimit))
++				goto retry_open;
++
+ 			ret = -errno;
+ 			goto out_err;
+ 		}
++		set_rlimit = NO_CHANGE;
+ 
+ 		file->fd = ret;
+ 	}
+-- 
+2.34.1
 
--Sumit
-
->
-> Linking error occurs if we set CONFIG_OPTEE=y and
-> CONFIG_TEE_STMM_EFI=m. Use IS_REACHABLE() guard to call
-> tee_stmm_restore_efivars_generic_ops() function.
->
-> Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
-> ---
->  drivers/firmware/efi/stmm/tee_stmm_efi.c | 8 +++++++-
->  drivers/tee/optee/supp.c                 | 4 ++++
->  include/linux/efi.h                      | 1 +
->  3 files changed, 12 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/firmware/efi/stmm/tee_stmm_efi.c b/drivers/firmware/efi/stmm/tee_stmm_efi.c
-> index edc165bc1bb0..e804b260edaa 100644
-> --- a/drivers/firmware/efi/stmm/tee_stmm_efi.c
-> +++ b/drivers/firmware/efi/stmm/tee_stmm_efi.c
-> @@ -572,10 +572,16 @@ static int tee_stmm_efi_probe(struct device *dev)
->         return 0;
->  }
->
-> -static int tee_stmm_efi_remove(struct device *dev)
-> +void tee_stmm_restore_efivars_generic_ops(void)
->  {
->         efivars_unregister(&tee_efivars);
->         efivars_generic_ops_register();
-> +}
-> +EXPORT_SYMBOL_GPL(tee_stmm_restore_efivars_generic_ops);
-> +
-> +static int tee_stmm_efi_remove(struct device *dev)
-> +{
-> +       tee_stmm_restore_efivars_generic_ops();
->
->         return 0;
->  }
-> diff --git a/drivers/tee/optee/supp.c b/drivers/tee/optee/supp.c
-> index 322a543b8c27..d07d4fc4e72e 100644
-> --- a/drivers/tee/optee/supp.c
-> +++ b/drivers/tee/optee/supp.c
-> @@ -3,6 +3,7 @@
->   * Copyright (c) 2015, Linaro Limited
->   */
->  #include <linux/device.h>
-> +#include <linux/efi.h>
->  #include <linux/slab.h>
->  #include <linux/uaccess.h>
->  #include "optee_private.h"
-> @@ -58,6 +59,9 @@ void optee_supp_release(struct optee_supp *supp)
->                 complete(&req->c);
->         }
->
-> +       if (IS_REACHABLE(CONFIG_TEE_STMM_EFI))
-> +               tee_stmm_restore_efivars_generic_ops();
-> +
->         supp->ctx = NULL;
->         supp->req_id = -1;
->
-> diff --git a/include/linux/efi.h b/include/linux/efi.h
-> index 489707b9b0b0..9b60893d6299 100644
-> --- a/include/linux/efi.h
-> +++ b/include/linux/efi.h
-> @@ -1365,5 +1365,6 @@ extern struct blocking_notifier_head efivar_ops_nh;
->
->  void efivars_generic_ops_register(void);
->  void efivars_generic_ops_unregister(void);
-> +void tee_stmm_restore_efivars_generic_ops(void);
->
->  #endif /* _LINUX_EFI_H */
-> --
-> 2.30.2
->
