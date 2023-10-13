@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FAD97C8C04
+	by mail.lfdr.de (Postfix) with ESMTP id 741A57C8C05
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 19:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbjJMRIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 13:08:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
+        id S230347AbjJMRIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 13:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbjJMRIm (ORCPT
+        with ESMTP id S229697AbjJMRIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 13:08:42 -0400
+        Fri, 13 Oct 2023 13:08:49 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD53FA9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:08:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B9ACA
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:08:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697216881;
+        s=mimecast20190719; t=1697216887;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5HPRLiZ6quHlzEGy6WTaNXEgpU/KungfD7Pl9VH4HkU=;
-        b=VbRRXcBKd6Omdu+Bkg/N3kwFAhis3gpDlLedF74mWThFxZtKLqUwsL/3w3RVOdqPkSG+L2
-        Rq/L3ZA71bslv3B3e0sLNpgXOJyI2SFXV2sNDkzu7/CgeK/H+D/xhFf8bEWHcSMqiJMRdr
-        zEsCnKWj2dS3EIWEyI0M534dN3j35r4=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-478-4mX55QlZNQ-kmobt6IHXeA-1; Fri, 13 Oct 2023 13:08:00 -0400
-X-MC-Unique: 4mX55QlZNQ-kmobt6IHXeA-1
+        bh=DzYU8tZrQoBUqhyJIMs+CkJlNvAKzLmyrsJLGqvx8lA=;
+        b=MlWGA7jSIt/ownhnQ4IhqZRcSafeff2tBbR8VPXLwGaqllS+bvOIY+kl3NiSJ/ozC+v4lf
+        myMBMa8kTZ7hONhv5Enc3GMLtwIGPPf95Noyw0gbM+ij0/naAkSpTUQB2RPNH42MySPKIk
+        gpWbTFXX2l8/93gj0r3ofarKBPZ/dxY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-34-mOnxf32-N0SiogJ9B7HHaA-1; Fri, 13 Oct 2023 13:08:02 -0400
+X-MC-Unique: mOnxf32-N0SiogJ9B7HHaA-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DE02438210B1;
-        Fri, 13 Oct 2023 17:07:59 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 86B7581D9E1;
+        Fri, 13 Oct 2023 17:08:01 +0000 (UTC)
 Received: from p1.luc.cera.cz (unknown [10.45.225.161])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5CE9F1C06536;
-        Fri, 13 Oct 2023 17:07:58 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 20B4D1C060DF;
+        Fri, 13 Oct 2023 17:08:00 +0000 (UTC)
 From:   Ivan Vecera <ivecera@redhat.com>
 To:     netdev@vger.kernel.org
 Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
@@ -47,9 +47,9 @@ Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
         intel-wired-lan@lists.osuosl.org
-Subject: [PATCH net-next 1/5] i40e: Add initial devlink support
-Date:   Fri, 13 Oct 2023 19:07:51 +0200
-Message-ID: <20231013170755.2367410-2-ivecera@redhat.com>
+Subject: [PATCH net-next 2/5] i40e: Split and refactor i40e_nvm_version_str()
+Date:   Fri, 13 Oct 2023 19:07:52 +0200
+Message-ID: <20231013170755.2367410-3-ivecera@redhat.com>
 In-Reply-To: <20231013170755.2367410-1-ivecera@redhat.com>
 References: <20231013170755.2367410-1-ivecera@redhat.com>
 MIME-Version: 1.0
@@ -58,332 +58,259 @@ X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an initial support for devlink interface to i40e driver.
+The function formats NVM version string according adapter's
+EETrackID value. If this value OEM specific (0xffffffff) then
+the reported version is with format:
+"<gen>.<snap>.<release>"
+and in other case
+"<nvm_maj>.<nvm_min> <eetrackid> <cvid_maj>.<cvid_bld>.<cvid_min>"
 
-Similarly to ice driver the implementation doe not enable devlink
-to manage device-wide configuration and devlink instance is created
-for each physical function of PCIe device.
+These versions are reported in the subsequent patch in this series
+that implements devlink .info_get but separately.
+
+So split the function into separate ones, refactor it to use them
+and remove ugly static string buffer.
+Additionally convert NVM/OEM version mask macros to use GENMASK and
+use FIELD_GET/FIELD_PREP for them in i40e_nvm_version_str() and
+i40e_get_oem_version(). This makes code more readable and allows
+us to remove related shift macros.
 
 Signed-off-by: Ivan Vecera <ivecera@redhat.com>
 ---
- drivers/net/ethernet/intel/Kconfig            |   1 +
- drivers/net/ethernet/intel/i40e/Makefile      |   3 +-
- drivers/net/ethernet/intel/i40e/i40e.h        |   3 +
- .../net/ethernet/intel/i40e/i40e_devlink.c    | 118 ++++++++++++++++++
- .../net/ethernet/intel/i40e/i40e_devlink.h    |  18 +++
- drivers/net/ethernet/intel/i40e/i40e_main.c   |  27 +++-
- 6 files changed, 164 insertions(+), 6 deletions(-)
- create mode 100644 drivers/net/ethernet/intel/i40e/i40e_devlink.c
- create mode 100644 drivers/net/ethernet/intel/i40e/i40e_devlink.h
+ drivers/net/ethernet/intel/i40e/i40e.h        | 133 +++++++++++++-----
+ .../net/ethernet/intel/i40e/i40e_ethtool.c    |   4 +-
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |  12 +-
+ 3 files changed, 105 insertions(+), 44 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/Kconfig b/drivers/net/ethernet/intel/Kconfig
-index e6684f3cc0ce..06ddd7147c7f 100644
---- a/drivers/net/ethernet/intel/Kconfig
-+++ b/drivers/net/ethernet/intel/Kconfig
-@@ -225,6 +225,7 @@ config I40E
- 	depends on PTP_1588_CLOCK_OPTIONAL
- 	depends on PCI
- 	select AUXILIARY_BUS
-+	select NET_DEVLINK
- 	help
- 	  This driver supports Intel(R) Ethernet Controller XL710 Family of
- 	  devices.  For more information on how to identify your adapter, go
-diff --git a/drivers/net/ethernet/intel/i40e/Makefile b/drivers/net/ethernet/intel/i40e/Makefile
-index 2f21b3e89fd0..cad93f323bd5 100644
---- a/drivers/net/ethernet/intel/i40e/Makefile
-+++ b/drivers/net/ethernet/intel/i40e/Makefile
-@@ -24,6 +24,7 @@ i40e-objs := i40e_main.o \
- 	i40e_ddp.o \
- 	i40e_client.o   \
- 	i40e_virtchnl_pf.o \
--	i40e_xsk.o
-+	i40e_xsk.o	\
-+	i40e_devlink.o
- 
- i40e-$(CONFIG_I40E_DCB) += i40e_dcb.o i40e_dcb_nl.o
 diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
-index 214744de120d..b7e20cea19c2 100644
+index b7e20cea19c2..c4cd54aa4dd5 100644
 --- a/drivers/net/ethernet/intel/i40e/i40e.h
 +++ b/drivers/net/ethernet/intel/i40e/i40e.h
-@@ -9,10 +9,12 @@
- #include <linux/types.h>
- #include <linux/avf/virtchnl.h>
- #include <linux/net/intel/i40e_client.h>
-+#include <net/devlink.h>
- #include <net/pkt_cls.h>
- #include <net/udp_tunnel.h>
- #include "i40e_dcb.h"
- #include "i40e_debug.h"
-+#include "i40e_devlink.h"
- #include "i40e_io.h"
- #include "i40e_prototype.h"
- #include "i40e_register.h"
-@@ -411,6 +413,7 @@ static inline const u8 *i40e_channel_mac(struct i40e_channel *ch)
- /* struct that defines the Ethernet device */
- struct i40e_pf {
- 	struct pci_dev *pdev;
-+	struct devlink_port devlink_port;
- 	struct i40e_hw hw;
- 	DECLARE_BITMAP(state, __I40E_STATE_SIZE__);
- 	struct msix_entry *msix_entries;
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_devlink.c b/drivers/net/ethernet/intel/i40e/i40e_devlink.c
-new file mode 100644
-index 000000000000..66b7f5be45ae
---- /dev/null
-+++ b/drivers/net/ethernet/intel/i40e/i40e_devlink.c
-@@ -0,0 +1,118 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright(c) 2023 Intel Corporation. */
-+
-+#include <net/devlink.h>
-+#include "i40e.h"
-+#include "i40e_devlink.h"
-+
-+static const struct devlink_ops i40e_devlink_ops = {
-+};
-+
-+/**
-+ * i40e_alloc_pf - Allocate devlink and return i40e_pf structure pointer
-+ * @dev: the device to allocate for
+@@ -49,23 +49,19 @@
+ #define I40E_QUEUE_WAIT_RETRY_LIMIT	10
+ #define I40E_INT_NAME_STR_LEN		(IFNAMSIZ + 16)
+ 
+-#define I40E_NVM_VERSION_LO_SHIFT	0
+-#define I40E_NVM_VERSION_LO_MASK	(0xff << I40E_NVM_VERSION_LO_SHIFT)
+-#define I40E_NVM_VERSION_HI_SHIFT	12
+-#define I40E_NVM_VERSION_HI_MASK	(0xf << I40E_NVM_VERSION_HI_SHIFT)
+-#define I40E_OEM_VER_BUILD_MASK		0xffff
+-#define I40E_OEM_VER_PATCH_MASK		0xff
+-#define I40E_OEM_VER_BUILD_SHIFT	8
+-#define I40E_OEM_VER_SHIFT		24
+ #define I40E_PHY_DEBUG_ALL \
+ 	(I40E_AQ_PHY_DEBUG_DISABLE_LINK_FW | \
+ 	I40E_AQ_PHY_DEBUG_DISABLE_ALL_LINK_FW)
+ 
+ #define I40E_OEM_EETRACK_ID		0xffffffff
+-#define I40E_OEM_GEN_SHIFT		24
+-#define I40E_OEM_SNAP_MASK		0x00ff0000
+-#define I40E_OEM_SNAP_SHIFT		16
+-#define I40E_OEM_RELEASE_MASK		0x0000ffff
++#define I40E_NVM_VERSION_LO_MASK	GENMASK(7, 0)
++#define I40E_NVM_VERSION_HI_MASK	GENMASK(15, 12)
++#define I40E_OEM_VER_BUILD_MASK		GENMASK(23, 8)
++#define I40E_OEM_VER_PATCH_MASK		GENMASK(7, 0)
++#define I40E_OEM_VER_MASK		GENMASK(31, 24)
++#define I40E_OEM_GEN_MASK		GENMASK(31, 24)
++#define I40E_OEM_SNAP_MASK		GENMASK(23, 16)
++#define I40E_OEM_RELEASE_MASK		GENMASK(15, 0)
+ 
+ #define I40E_RX_DESC(R, i)	\
+ 	(&(((union i40e_rx_desc *)((R)->desc))[i]))
+@@ -954,43 +950,104 @@ struct i40e_device {
+ };
+ 
+ /**
+- * i40e_nvm_version_str - format the NVM version strings
++ * i40e_info_nvm_ver - format the NVM version string
+  * @hw: ptr to the hardware info
++ * @buf: string buffer to store
++ * @len: buffer size
 + *
-+ * Allocate a devlink instance for this device and return the private
-+ * area as the i40e_pf structure.
-+ **/
-+struct i40e_pf *i40e_alloc_pf(struct device *dev)
-+{
-+	struct devlink *devlink;
++ * Formats NVM version string as:
++ * <gen>.<snap>.<release> when eetrackid == I40E_OEM_EETRACK_ID
++ * <nvm_major>.<nvm_minor> otherwise
+  **/
+-static inline char *i40e_nvm_version_str(struct i40e_hw *hw)
++static inline void i40e_info_nvm_ver(struct i40e_hw *hw, char *buf, size_t len)
+ {
+-	static char buf[32];
+-	u32 full_ver;
++	struct i40e_nvm_info *nvm = &hw->nvm;
+ 
+-	full_ver = hw->nvm.oem_ver;
+-
+-	if (hw->nvm.eetrack == I40E_OEM_EETRACK_ID) {
++	if (nvm->eetrack == I40E_OEM_EETRACK_ID) {
++		u32 full_ver = nvm->oem_ver;
+ 		u8 gen, snap;
+ 		u16 release;
+ 
+-		gen = (u8)(full_ver >> I40E_OEM_GEN_SHIFT);
+-		snap = (u8)((full_ver & I40E_OEM_SNAP_MASK) >>
+-			I40E_OEM_SNAP_SHIFT);
+-		release = (u16)(full_ver & I40E_OEM_RELEASE_MASK);
+-
+-		snprintf(buf, sizeof(buf), "%x.%x.%x", gen, snap, release);
++		gen = FIELD_GET(I40E_OEM_GEN_MASK, full_ver);
++		snap = FIELD_GET(I40E_OEM_SNAP_MASK, full_ver);
++		release = FIELD_GET(I40E_OEM_RELEASE_MASK, full_ver);
++		snprintf(buf, len, "%x.%x.%x", gen, snap, release);
+ 	} else {
+-		u8 ver, patch;
++		u8 major, minor;
 +
-+	devlink = devlink_alloc(&i40e_devlink_ops, sizeof(struct i40e_pf), dev);
-+	if (!devlink)
-+		return NULL;
-+
-+	return devlink_priv(devlink);
-+}
-+
-+/**
-+ * i40e_free_pf - Free i40e_pf structure and associated devlink
-+ * @pf: the PF structure
-+ *
-+ * Free i40e_pf structure and devlink allocated by devlink_alloc.
-+ **/
-+void i40e_free_pf(struct i40e_pf *pf)
-+{
-+	struct devlink *devlink = priv_to_devlink(pf);
-+
-+	devlink_free(devlink);
-+}
-+
-+/**
-+ * i40e_devlink_register - Register devlink interface for this PF
-+ * @pf: the PF to register the devlink for.
-+ *
-+ * Register the devlink instance associated with this physical function.
-+ **/
-+void i40e_devlink_register(struct i40e_pf *pf)
-+{
-+	devlink_register(priv_to_devlink(pf));
-+}
-+
-+/**
-+ * i40e_devlink_unregister - Unregister devlink resources for this PF.
-+ * @pf: the PF structure to cleanup
-+ *
-+ * Releases resources used by devlink and cleans up associated memory.
-+ **/
-+void i40e_devlink_unregister(struct i40e_pf *pf)
-+{
-+	devlink_unregister(priv_to_devlink(pf));
-+}
-+
-+/**
-+ * i40e_devlink_set_switch_id - Set unique switch id based on pci dsn
-+ * @pf: the PF to create a devlink port for
-+ * @ppid: struct with switch id information
-+ */
-+static void i40e_devlink_set_switch_id(struct i40e_pf *pf,
-+				       struct netdev_phys_item_id *ppid)
-+{
-+	u64 id = pci_get_dsn(pf->pdev);
-+
-+	ppid->id_len = sizeof(id);
-+	put_unaligned_be64(id, &ppid->id);
-+}
-+
-+/**
-+ * i40e_devlink_create_port - Create a devlink port for this PF
-+ * @pf: the PF to create a port for
-+ *
-+ * Create and register a devlink_port for this PF. Note that although each
-+ * physical function is connected to a separate devlink instance, the port
-+ * will still be numbered according to the physical function id.
-+ *
-+ * Return: zero on success or an error code on failure.
-+ **/
-+int i40e_devlink_create_port(struct i40e_pf *pf)
-+{
-+	struct devlink *devlink = priv_to_devlink(pf);
-+	struct devlink_port_attrs attrs = {};
-+	struct device *dev = &pf->pdev->dev;
-+	int err;
-+
-+	attrs.flavour = DEVLINK_PORT_FLAVOUR_PHYSICAL;
-+	attrs.phys.port_number = pf->hw.pf_id;
-+	i40e_devlink_set_switch_id(pf, &attrs.switch_id);
-+	devlink_port_attrs_set(&pf->devlink_port, &attrs);
-+	err = devlink_port_register(devlink, &pf->devlink_port, pf->hw.pf_id);
-+	if (err) {
-+		dev_err(dev, "devlink_port_register failed: %d\n", err);
-+		return err;
++		major = FIELD_GET(I40E_NVM_VERSION_HI_MASK, nvm->version);
++		minor = FIELD_GET(I40E_NVM_VERSION_LO_MASK, nvm->version);
++		snprintf(buf, len, "%x.%02x", major, minor);
 +	}
-+
-+	return 0;
 +}
 +
 +/**
-+ * i40e_devlink_destroy_port - Destroy the devlink_port for this PF
-+ * @pf: the PF to cleanup
++ * i40e_info_eetrack - format the EETrackID string
++ * @hw: ptr to the hardware info
++ * @buf: string buffer to store
++ * @len: buffer size
 + *
-+ * Unregisters the devlink_port structure associated with this PF.
++ * Returns hexadecimally formated EETrackID if it is
++ * different from I40E_OEM_EETRACK_ID or empty string.
 + **/
-+void i40e_devlink_destroy_port(struct i40e_pf *pf)
++static inline void i40e_info_eetrack(struct i40e_hw *hw, char *buf, size_t len)
 +{
-+	devlink_port_type_clear(&pf->devlink_port);
-+	devlink_port_unregister(&pf->devlink_port);
++	struct i40e_nvm_info *nvm = &hw->nvm;
++
++	buf[0] = '\0';
++	if (nvm->eetrack != I40E_OEM_EETRACK_ID)
++		snprintf(buf, len, "0x%08x", nvm->eetrack);
 +}
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_devlink.h b/drivers/net/ethernet/intel/i40e/i40e_devlink.h
-new file mode 100644
-index 000000000000..469fb3d2ee25
---- /dev/null
-+++ b/drivers/net/ethernet/intel/i40e/i40e_devlink.h
-@@ -0,0 +1,18 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2023, Intel Corporation. */
 +
-+#ifndef _I40E_DEVLINK_H_
-+#define _I40E_DEVLINK_H_
++/**
++ * i40e_info_civd_ver - format the NVM version strings
++ * @hw: ptr to the hardware info
++ * @buf: string buffer to store
++ * @len: buffer size
++ *
++ * Returns formated combo image version if adapter's EETrackID is
++ * different from I40E_OEM_EETRACK_ID or empty string.
++ **/
++static inline void i40e_info_civd_ver(struct i40e_hw *hw, char *buf, size_t len)
++{
++	struct i40e_nvm_info *nvm = &hw->nvm;
 +
-+#include <linux/device.h>
++	buf[0] = '\0';
++	if (nvm->eetrack != I40E_OEM_EETRACK_ID) {
++		u32 full_ver = nvm->oem_ver;
++		u8 major, minor;
+ 		u16 build;
+ 
+-		ver = (u8)(full_ver >> I40E_OEM_VER_SHIFT);
+-		build = (u16)((full_ver >> I40E_OEM_VER_BUILD_SHIFT) &
+-			 I40E_OEM_VER_BUILD_MASK);
+-		patch = (u8)(full_ver & I40E_OEM_VER_PATCH_MASK);
+-
+-		snprintf(buf, sizeof(buf),
+-			 "%x.%02x 0x%x %d.%d.%d",
+-			 (hw->nvm.version & I40E_NVM_VERSION_HI_MASK) >>
+-				I40E_NVM_VERSION_HI_SHIFT,
+-			 (hw->nvm.version & I40E_NVM_VERSION_LO_MASK) >>
+-				I40E_NVM_VERSION_LO_SHIFT,
+-			 hw->nvm.eetrack, ver, build, patch);
++		major = FIELD_GET(I40E_OEM_VER_MASK, full_ver);
++		build = FIELD_GET(I40E_OEM_VER_BUILD_MASK, full_ver);
++		minor = FIELD_GET(I40E_OEM_VER_PATCH_MASK, full_ver);
++		snprintf(buf, len, "%d.%d.%d", major, build, minor);
+ 	}
++}
 +
-+struct i40e_pf;
++/**
++ * i40e_nvm_version_str - format the NVM version strings
++ * @hw: ptr to the hardware info
++ * @buf: string buffer to store
++ * @len: buffer size
++ **/
++static inline char *i40e_nvm_version_str(struct i40e_hw *hw, char *buf,
++					 size_t len)
++{
++	char ver[16] = " ";
 +
-+struct i40e_pf *i40e_alloc_pf(struct device *dev);
-+void i40e_free_pf(struct i40e_pf *pf);
-+void i40e_devlink_register(struct i40e_pf *pf);
-+void i40e_devlink_unregister(struct i40e_pf *pf);
-+int i40e_devlink_create_port(struct i40e_pf *pf);
-+void i40e_devlink_destroy_port(struct i40e_pf *pf);
++	/* Get NVM version */
++	i40e_info_nvm_ver(hw, buf, len);
 +
-+#endif /* _I40E_DEVLINK_H_ */
++	/* Append EETrackID if provided */
++	i40e_info_eetrack(hw, &ver[1], sizeof(ver) - 1);
++	if (strlen(ver) > 1)
++		strlcat(buf, ver, len);
++
++	/* Append combo image version if provided */
++	i40e_info_civd_ver(hw, &ver[1], sizeof(ver) - 1);
++	if (strlen(ver) > 1)
++		strlcat(buf, ver, len);
+ 
+ 	return buf;
+ }
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+index a89f7ca510fd..ebf36f76c0d7 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+@@ -2006,8 +2006,8 @@ static void i40e_get_drvinfo(struct net_device *netdev,
+ 	struct i40e_pf *pf = vsi->back;
+ 
+ 	strscpy(drvinfo->driver, i40e_driver_name, sizeof(drvinfo->driver));
+-	strscpy(drvinfo->fw_version, i40e_nvm_version_str(&pf->hw),
+-		sizeof(drvinfo->fw_version));
++	i40e_nvm_version_str(&pf->hw, drvinfo->fw_version,
++			     sizeof(drvinfo->fw_version));
+ 	strscpy(drvinfo->bus_info, pci_name(pf->pdev),
+ 		sizeof(drvinfo->bus_info));
+ 	drvinfo->n_priv_flags = I40E_PRIV_FLAGS_STR_LEN;
 diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 1e52e1debf7c..f0e563a7f7b3 100644
+index f0e563a7f7b3..ba8fb0556216 100644
 --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
 +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -14211,6 +14211,8 @@ int i40e_vsi_release(struct i40e_vsi *vsi)
- 	}
- 	set_bit(__I40E_VSI_RELEASING, vsi->state);
- 	uplink_seid = vsi->uplink_seid;
-+	if (vsi->type == I40E_VSI_MAIN)
-+		i40e_devlink_destroy_port(pf);
- 	if (vsi->type != I40E_VSI_SRIOV) {
- 		if (vsi->netdev_registered) {
- 			vsi->netdev_registered = false;
-@@ -14398,6 +14400,8 @@ static struct i40e_vsi *i40e_vsi_reinit_setup(struct i40e_vsi *vsi)
- 
- err_rings:
- 	i40e_vsi_free_q_vectors(vsi);
-+	if (vsi->type == I40E_VSI_MAIN)
-+		i40e_devlink_destroy_port(pf);
- 	if (vsi->netdev_registered) {
- 		vsi->netdev_registered = false;
- 		unregister_netdev(vsi->netdev);
-@@ -14544,9 +14548,15 @@ struct i40e_vsi *i40e_vsi_setup(struct i40e_pf *pf, u8 type,
- 		ret = i40e_netif_set_realnum_tx_rx_queues(vsi);
- 		if (ret)
- 			goto err_netdev;
-+		if (vsi->type == I40E_VSI_MAIN) {
-+			ret = i40e_devlink_create_port(pf);
-+			if (ret)
-+				goto err_netdev;
-+			SET_NETDEV_DEVLINK_PORT(vsi->netdev, &pf->devlink_port);
-+		}
- 		ret = register_netdev(vsi->netdev);
- 		if (ret)
--			goto err_netdev;
-+			goto err_dl_port;
- 		vsi->netdev_registered = true;
- 		netif_carrier_off(vsi->netdev);
- #ifdef CONFIG_I40E_DCB
-@@ -14589,6 +14599,9 @@ struct i40e_vsi *i40e_vsi_setup(struct i40e_pf *pf, u8 type,
- 		free_netdev(vsi->netdev);
- 		vsi->netdev = NULL;
- 	}
-+err_dl_port:
-+	if (vsi->type == I40E_VSI_MAIN)
-+		i40e_devlink_destroy_port(pf);
- err_netdev:
- 	i40e_aq_delete_element(&pf->hw, vsi->seid, NULL);
- err_vsi:
-@@ -15619,7 +15632,7 @@ static int i40e_init_recovery_mode(struct i40e_pf *pf, struct i40e_hw *hw)
- 	iounmap(hw->hw_addr);
- 	pci_release_mem_regions(pf->pdev);
- 	pci_disable_device(pf->pdev);
--	kfree(pf);
-+	i40e_free_pf(pf);
- 
- 	return err;
+@@ -10798,7 +10798,9 @@ static void i40e_get_oem_version(struct i40e_hw *hw)
+ 			   &gen_snap);
+ 	i40e_read_nvm_word(hw, block_offset + I40E_NVM_OEM_RELEASE_OFFSET,
+ 			   &release);
+-	hw->nvm.oem_ver = (gen_snap << I40E_OEM_SNAP_SHIFT) | release;
++	hw->nvm.oem_ver =
++		FIELD_PREP(I40E_OEM_GEN_MASK | I40E_OEM_SNAP_MASK, gen_snap) |
++		FIELD_PREP(I40E_OEM_RELEASE_MASK, release);
+ 	hw->nvm.eetrack = I40E_OEM_EETRACK_ID;
  }
-@@ -15696,7 +15709,7 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	 * the Admin Queue structures and then querying for the
- 	 * device's current profile information.
- 	 */
--	pf = kzalloc(sizeof(*pf), GFP_KERNEL);
-+	pf = i40e_alloc_pf(&pdev->dev);
- 	if (!pf) {
- 		err = -ENOMEM;
- 		goto err_pf_alloc;
-@@ -16223,6 +16236,8 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	/* print a string summarizing features */
- 	i40e_print_features(pf);
  
-+	i40e_devlink_register(pf);
-+
- 	return 0;
+@@ -15674,6 +15676,7 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	struct i40e_hw *hw;
+ 	static u16 pfs_found;
+ 	u16 wol_nvm_bits;
++	char nvm_ver[32];
+ 	u16 link_status;
+ #ifdef CONFIG_I40E_DCB
+ 	int status;
+@@ -15845,11 +15848,12 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	i40e_get_oem_version(hw);
  
- 	/* Unwind what we've done if something failed in the setup */
-@@ -16243,7 +16258,7 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- err_pf_reset:
- 	iounmap(hw->hw_addr);
- err_ioremap:
--	kfree(pf);
-+	i40e_free_pf(pf);
- err_pf_alloc:
- 	pci_release_mem_regions(pdev);
- err_pci_reg:
-@@ -16268,6 +16283,8 @@ static void i40e_remove(struct pci_dev *pdev)
- 	int ret_code;
- 	int i;
+ 	/* provide nvm, fw, api versions, vendor:device id, subsys vendor:device id */
++	i40e_nvm_version_str(hw, nvm_ver, sizeof(nvm_ver));
+ 	dev_info(&pdev->dev, "fw %d.%d.%05d api %d.%d nvm %s [%04x:%04x] [%04x:%04x]\n",
+ 		 hw->aq.fw_maj_ver, hw->aq.fw_min_ver, hw->aq.fw_build,
+-		 hw->aq.api_maj_ver, hw->aq.api_min_ver,
+-		 i40e_nvm_version_str(hw), hw->vendor_id, hw->device_id,
+-		 hw->subsystem_vendor_id, hw->subsystem_device_id);
++		 hw->aq.api_maj_ver, hw->aq.api_min_ver, nvm_ver,
++		 hw->vendor_id, hw->device_id, hw->subsystem_vendor_id,
++		 hw->subsystem_device_id);
  
-+	i40e_devlink_unregister(pf);
-+
- 	i40e_dbg_pf_exit(pf);
- 
- 	i40e_ptp_stop(pf);
-@@ -16393,7 +16410,7 @@ static void i40e_remove(struct pci_dev *pdev)
- 	kfree(pf->vsi);
- 
- 	iounmap(hw->hw_addr);
--	kfree(pf);
-+	i40e_free_pf(pf);
- 	pci_release_mem_regions(pdev);
- 
- 	pci_disable_device(pdev);
+ 	if (hw->aq.api_maj_ver == I40E_FW_API_VERSION_MAJOR &&
+ 	    hw->aq.api_min_ver > I40E_FW_MINOR_VERSION(hw))
 -- 
 2.41.0
 
