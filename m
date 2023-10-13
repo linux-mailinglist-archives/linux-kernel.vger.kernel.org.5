@@ -2,99 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B18E7C88D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFDB27C88D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232448AbjJMPiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34300 "EHLO
+        id S232452AbjJMPiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 11:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbjJMPiG (ORCPT
+        with ESMTP id S232363AbjJMPiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:38:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B101B7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:38:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23000C433C7;
-        Fri, 13 Oct 2023 15:38:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697211484;
-        bh=px0hJPJGEqtnzB/MjJ58emJOrCiTxUB3k4inPhEhfaA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XzuXey+AHMzZAixNzyFupLKEPwKIBR+pbSrkdDOop+ewZvwoQMoJMNICYcA85ENaK
-         dZhagi2FO/JOY2mbsIulNwL5kcylmuSYX/p3XK0F+61PmKWGg8rhXHEblDitKsQlLj
-         xh9ZImfa61APFcqWUhJafjZaZZuPiWoHpqzFzKOmFXQbfSOFnp1wNoolJGGcQxa6OV
-         hICmMZNEGycnkFfpMUO7ZEsCWKkc3Iy0jN5kwWi/GutSXjqy3Y03J0x1mLSi2S5GQl
-         xUIVwWEMSgl1ITDyaCXCH7hh0o3TxUXp1I+4QuEKpw95niQ/qm/2DO9dFGDUFt3j6H
-         tu+sZwR3lP4FQ==
-Date:   Fri, 13 Oct 2023 16:38:01 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ninad Palsule <ninad@linux.ibm.com>
-Cc:     joel@jms.id.au, eajames@linux.ibm.com, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, lakshmiy@us.ibm.com
-Subject: Re: [PATCH v1] regulator: core: Convert warning to debug print
-Message-ID: <ZSlkWZvtEFfSkqNE@finisterre.sirena.org.uk>
-References: <20231012174235.2424670-1-ninad@linux.ibm.com>
- <aa596890-d98a-41c2-bc10-8c1db58ea23a@sirena.org.uk>
- <4ecd19e5-9dfa-4157-9384-92c722064b2e@linux.ibm.com>
+        Fri, 13 Oct 2023 11:38:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF10BB
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:38:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nIvCCdy1XG+H8Wg1HwoDHOGu2NtliluWxAZAtaron5k=; b=CLSPltngKWwQZ0Fgf/Lu8NGihP
+        6Sit9fIrkm/ThLkMwmxqLVQ/1O/RCT1Ujh3mgoslXVmHv1rQtqQnMfV9br4am3Lzfme7MQ6DeY6a9
+        x8mSVawNdgg2FUGtYfFqzYDdV6Xwrzz3LEPhfdIVRHaW1LlDgnuUxgdVHgyFTzG4QfRNOeFTYkTea
+        0wNOKdbTmBxwrrwrPpGWKLw84Y6ljikPz4GCgHXnysWZOeY/rCp2LdUxuRpt1sDrB1XktkzpM1sKH
+        XQC/LY2ojHY0Afzr/wIKpLFxEbixyZH4gnIN59BTMO3jC2nbT168iog/gQkv4d5HhlIlVjb385XsY
+        9lDcArxg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qrKFA-006A5i-Gv; Fri, 13 Oct 2023 15:38:28 +0000
+Date:   Fri, 13 Oct 2023 16:38:28 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Michal Hocko <mhocko@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Zhaoyang Huang <huangzhaoyang@gmail.com>, steve.kang@unisoc.com
+Subject: Re: [RFC PATCH 1/1] mm: only use old generation and stable tier for
+ madv_pageout
+Message-ID: <ZSlkdGk2KG+zHAkg@casper.infradead.org>
+References: <20231013113028.2720996-1-zhaoyang.huang@unisoc.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="n28rsL+V8HFb05jF"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4ecd19e5-9dfa-4157-9384-92c722064b2e@linux.ibm.com>
-X-Cookie: Save energy:  Drive a smaller shell.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231013113028.2720996-1-zhaoyang.huang@unisoc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 13, 2023 at 07:30:28PM +0800, zhaoyang.huang wrote:
+> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> 
+> Dropping pages of young generation or unstable tier via madvise could
+> make the system experience heavy page thrashing and IO pressure.
 
---n28rsL+V8HFb05jF
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+... then userspace should not do that?
 
-On Thu, Oct 12, 2023 at 04:45:48PM -0500, Ninad Palsule wrote:
+> @@ -5091,6 +5091,7 @@ static int get_tier_idx(struct lruvec *lruvec, int type)
+>  
+>  	return tier - 1;
+>  }
+> +EXPORT_SYMBOL_GPL(get_tier_idx);
 
-> You are right there are regulators for these supplies but they are managed
-> by the
-> hardware hence not added in the device tree. I checked dts/aspeed directo=
-ry
-> and
-> non of the machine has =E2=80=9Cvcc-supply=E2=80=9D defined and lot of th=
-em use eeprom.
-
-Fixed voltage regulators can be used for this.
-
-> Also, I thought that this message is only useful in the lab to indicate
-> developer
-> whether they missed the device tree definition or not but its not useful =
-in
-> the
-> field.=C2=A0 Hence proposed to put it under DEBUG.
-
-The theory is that it shouldn't come up in the field since people see it
-during development and fix things then, are people actually looking at
-these logs?  I think my understanding was that they're mostly BMCs
-people interacted with via a UI of some kind.
-
---n28rsL+V8HFb05jF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUpZFYACgkQJNaLcl1U
-h9BRbgf7BMkUCUTTzJyxK6t4pfQKCOwLc61M58ANJQuO0pPn29IzNSupCAkwNkn2
-yUTyz1wZnx7FiFqqfbqz2A0w3l9xye0xFaTw2oF7rl9F11Sux6xLw+srEUKpQqbj
-J9s2s1XMpuEz6T7xhWUK0h+KPZGo9ZTJofW+7aeS2iGRFT135UBRK8rXXLnOVOT3
-g/KzLlXPpi3Zj0K5Khgfjj/pFcgEoB2vfnNKXAtuiGUYmPo/tsvW3vEtGaM+5A9j
-rB8nJ8DqV6cteY/qo8LX1Qbb3tBsOiWVt+G0k8Mv7jrRIvKYw/fHeKgrBOpSe+rQ
-ulxMn9YTFLNkXc68+ataqIu7Wom+0A==
-=WMBi
------END PGP SIGNATURE-----
-
---n28rsL+V8HFb05jF--
+Why would this need to be exported to modules in order to be used by
+madvise?  Is this patch just a trojan horse so you can use get_tier_idx
+in your own module?  NAK.
