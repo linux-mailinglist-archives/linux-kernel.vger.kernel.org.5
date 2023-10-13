@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 651677C85B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE757C85B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbjJMMYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45218 "EHLO
+        id S231565AbjJMMYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 08:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231686AbjJMMY2 (ORCPT
+        with ESMTP id S231718AbjJMMYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 08:24:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A5EA9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:23:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697199822;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vwN+VRkxykWHFEl4T0SvO4kStJ12qK5OjC3MhcTM/F4=;
-        b=biLIm7FcQ8Wa+uBdjxl0crwzyVE7fBShJldmJmRgGtI6o8W7wxpmjq6NN+V6JkjZOr0WfM
-        tGjYb8t4mZe5rF2S79sJCKTDpqN7+eQoAf/Yx167VpXA023MJVDRDaNYEuKojfLfl+hXzb
-        H9GTRnvZE8dJJBsh3twAPfaapvKxKxA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-647-Tn6ZvY3WOyGPTjrkKiO8Hw-1; Fri, 13 Oct 2023 08:23:38 -0400
-X-MC-Unique: Tn6ZvY3WOyGPTjrkKiO8Hw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EEE4F81D785;
-        Fri, 13 Oct 2023 12:23:37 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D7E13903;
-        Fri, 13 Oct 2023 12:23:32 +0000 (UTC)
-Date:   Fri, 13 Oct 2023 20:23:28 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Andrew Theurer <atheurer@redhat.com>,
-        Joe Mario <jmario@redhat.com>, Sebastian Jug <sejug@redhat.com>
-Subject: Re: [PATCH] blk-mq: add module parameter to not run block kworker on
- isolated CPUs
-Message-ID: <ZSk2wNH4KIR4rR+N@fedora>
-References: <20231010142216.1114752-1-ming.lei@redhat.com>
- <ZSWb2DNV9cIPYv5H@slm.duckdns.org>
- <ZSkpUFlw8FINofLG@lothringen>
+        Fri, 13 Oct 2023 08:24:30 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B56BF
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:24:28 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qrHD6-00016C-4U; Fri, 13 Oct 2023 14:24:08 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qrHD4-001OKg-UQ; Fri, 13 Oct 2023 14:24:06 +0200
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qrHD4-00FiNS-2o;
+        Fri, 13 Oct 2023 14:24:06 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+Subject: [PATCH net-next v3 0/7] net: dsa: microchip: provide Wake on LAN support
+Date:   Fri, 13 Oct 2023 14:23:58 +0200
+Message-Id: <20231013122405.3745475-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZSkpUFlw8FINofLG@lothringen>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 01:26:08PM +0200, Frederic Weisbecker wrote:
-> On Tue, Oct 10, 2023 at 08:45:44AM -1000, Tejun Heo wrote:
-> > > +static bool respect_cpu_isolation;
-> > > +module_param(respect_cpu_isolation, bool, 0444);
-> > > +MODULE_PARM_DESC(respect_cpu_isolation,
-> > > +		"Don't schedule blk-mq worker on isolated CPUs passed in "
-> > > +		"isolcpus= or nohz_full=. User need to guarantee to not run "
-> > > +		"block IO on isolated CPUs (default: false)");
-> > 
-> > Any chance we can centralize these? It's no fun to try to hunt down module
-> > params to opt in different subsystems and the housekeeping interface does
-> > have some provisions for selecting different parts. I'd much prefer to see
-> > these settings to be collected into a central place.
-> 
-> Do we need this parameter in the first place? Shouldn't we avoid scheduling
-> blk-mq worker on isolated CPUs in any case?
+changes v3:
+- use ethernet address of DSA master instead from devicetree
+- use dev_ops->wol* instead of list of supported switch
+- don't shotdown the switch if WoL is enabled
+- rework on top of latest HSR changes
 
-Yeah, I think this parameter isn't necessary, will remove it in V2.
+changes v2:
+- rebase against latest next
 
+This series of patches provides Wake on LAN support for the KSZ9477
+family of switches. It was tested on KSZ8565 Switch with PME pin
+attached to an external PMIC.
 
-Thanks,
-Ming
+The patch making WoL configuration persist on system shutdown will be
+send separately, since it will potentially need more discussion.
+
+Oleksij Rempel (7):
+  net: dsa: microchip: Add missing MAC address register offset for
+    ksz8863
+  net: dsa: microchip: Set unique MAC at startup for WoL support
+  net: dsa: microchip: ksz9477: add Wake on LAN support
+  net: dsa: microchip: ksz9477: add Wake on PHY event support
+  dt-bindings: net: dsa: microchip: add wakeup-source property
+  net: dsa: microchip: use wakeup-source DT property to enable PME
+    output
+  net: dsa: microchip: do not shut down the switch if WoL is active
+
+ .../bindings/net/dsa/microchip,ksz.yaml       |   2 +
+ drivers/net/dsa/microchip/ksz9477.c           | 116 +++++++++++++++++
+ drivers/net/dsa/microchip/ksz9477.h           |   4 +
+ drivers/net/dsa/microchip/ksz9477_i2c.c       |   3 +
+ drivers/net/dsa/microchip/ksz_common.c        | 117 ++++++++++++++++--
+ drivers/net/dsa/microchip/ksz_common.h        |   7 ++
+ drivers/net/dsa/microchip/ksz_spi.c           |   3 +
+ 7 files changed, 245 insertions(+), 7 deletions(-)
+
+-- 
+2.39.2
 
