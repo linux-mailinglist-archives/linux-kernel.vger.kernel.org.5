@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC397C8EE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 23:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA50F7C8EE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 23:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbjJMVTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 17:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
+        id S232169AbjJMVTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 17:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjJMVTE (ORCPT
+        with ESMTP id S229958AbjJMVTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 17:19:04 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3E195
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:19:03 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a538026d1so3583032276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:19:03 -0700 (PDT)
+        Fri, 13 Oct 2023 17:19:21 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCECC95
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:19:19 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c888b3a25aso19991815ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:19:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697231942; x=1697836742; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=N4+CtI556J9JFEvOEeYrRcVrS1TVGZF3yEU9Xn9OFZQ=;
-        b=NjvuZHHp3Q2oe5XUefCBd9GTF09bhdNGJvhVrebFTQuck8UWquJp/r0TOx+nGR9ImN
-         DVZIfmrsONZ3Za8rSoamW3RZ1TsPAZjKe7kRzmQHJpMelJwQBrE1oIO+XjVrRQ3bWRN9
-         4kf6m8Bwo75xMGMRCNMIrEGqWu/7H6u46TbBO/UjGhwY0qhqnu6muxmCYMTV0Pq8QSRE
-         v6xRivdZxugkAcFHPe3UwFHS2cynuCW9H0UTXrnKGozgs66IdGKes4WMQ47Or2P3aPLQ
-         ttFSSNcA5oJATjcJe1BNdRzjopz4QXDRlG2RAiJNbFDEkd39543JBOqAlgp5OM4Qt29A
-         3mGQ==
+        d=gmail.com; s=20230601; t=1697231959; x=1697836759; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yEpkSqStdpwPiK/rVH9XpS0uAjkRc6GI778X+nK4/Co=;
+        b=PVt4Uk6bIGUargV6BJhzdZsEKWEcZfX2IZ6ubVazLiKvqdLsESKGbi2iQrFkizpHYH
+         BWaZuOZfLBrS3V8bb86PLvzqSyPQWcZmueLdI0tqWnh5d1E99STgDSn/UI/shbcrS8EX
+         RNi/5xSNIYrP2Q3ECt7qIJw7ytncO/FAYblzBIuQkuURPZaFWsDH0PVUQ3gdJCVqRFMx
+         M9Lm2At7bz81pQ4q/KjnBVgtq70OnY0gaD8SO0anvtNFLzrs+NAfUMiL87lsGUJmGvj5
+         oHECZUKXAXwAaHSFf1TeNxloOU05lLGSU2G2R48M8ZMwxWyoemZTunTH+GYrRH0Kba8p
+         XUHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697231942; x=1697836742;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=N4+CtI556J9JFEvOEeYrRcVrS1TVGZF3yEU9Xn9OFZQ=;
-        b=gTLtqhV6VRIT6wjRsfqhQLkXkzIR8d6Pa1TTuU+6xcEziDKcTqkcj6M6+Y3sI7nfw7
-         oSYPC+mJy6wHSFYMcGJxe8hLAIc7rxRwoRxAjuuLKgGNCHMajyNrCmHYKZXp1NGPdymp
-         oizLtMvUDLrxGg9LIAZ3pP+R4dPpPHIOsQJzUWu8JCcyIT4/YuNjY6gXRQxOmaYXHx0y
-         DHH26Kytm7ers+MogLIZ613YGH5qp7XqhaqpQNJHOJz0lX+5dNQZFZZoKNMquXAeo0/C
-         ddmY/Sz5a24ZuXldeDqh8Jb1J9s25qIxniHuBg2OFTNiNLOLBCK7jT9cbJItRfBxjOI6
-         +VNA==
-X-Gm-Message-State: AOJu0YxqnZBgYkqi0RGqnu9fZIIDHauVc8Fa4cbHDKI3Aqz4BorSydns
-        Tpz8r8bgo/yhNZzKb4Zm9TMUPTvNxm1xF36gvg==
-X-Google-Smtp-Source: AGHT+IEFb+Qs6BTE+zyGOCrDNzNGdtyo01KqMmcNmLj5isa5JH6R18iurGgDqKsZiv3/Xb0t9jJcuSPS0a+wC2ky9w==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:3287:0:b0:d9a:57da:f947 with SMTP
- id y129-20020a253287000000b00d9a57daf947mr240255yby.10.1697231942564; Fri, 13
- Oct 2023 14:19:02 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 21:19:02 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAEW0KWUC/x2NwQ6CMBAFf4Xs2U0oKCb+ivFQ21fZSCrZbUBD+
- HerhznMZWYjgwqMLs1GikVMXrmKOzQURp8fYInVqWu73rWuZyuaw/zhqLJAjTMKr6KYYMa+jD+ G58SSpXDglOL9eIrnAT5Rjc6KJO//8Hrb9y8Km03XgAAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697231941; l=1572;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=OSQ5/H1d2DSJHA3zq39nDy1jyEwcj6KdEZ8Bf85001Y=; b=rK8wm0iB2qBgcr7yAjY8LjP8bH4QTKD95phQLYodnopUNZNaD494aasGTBmnNvqeAdPqZ7GPn
- ANHCGppFYCEDI4mQKlnrCmk0WDBjgv6VrZFvqJH39tvoq2tMaXQyncq
-X-Mailer: b4 0.12.3
-Message-ID: <20231013-strncpy-drivers-net-wireless-ath-ath6kl-init-c-v1-1-d69c599b49a9@google.com>
-Subject: [PATCH] ath6kl: replace deprecated strncpy with memcpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        d=1e100.net; s=20230601; t=1697231959; x=1697836759;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yEpkSqStdpwPiK/rVH9XpS0uAjkRc6GI778X+nK4/Co=;
+        b=GrPHTrEZxbatX0Abp3Y84yPJF3xziYq3gFqD4Ev6GHXMTUxHjH1gB9s1np2E6De863
+         Blz7ShnGHHh4qqIGmk9wsahcRxEAQu9njgGO3cpMAoH5VUiV3jGXB5lIRwZQ7JuGSEUk
+         HS1JqVucs/z9Ir807kzg+2vVmi4kcOteWga0K0CgYV8hQqsK4tAoEv9MqmJBvD4zocqK
+         txJpDunjBEkaScVP/5lzKfLBehquvWZDpZ/1VTvspd8SOY7dP8b9FD6zO5xF8xTA6V3t
+         QIe2nEy3UqbR7pcvafrlILxx1wPDLYhuFjwhVJEKSTUnYFZ1rH+jLaILaAXUXetGCfQT
+         /z6A==
+X-Gm-Message-State: AOJu0Yy5w96iG9AMrhsVnBRWBbOKWdjufG9f05VS2JBeFe6+oAHrB1N+
+        u/sF/sSJIT9svQ4eLzfBRnO1Nxw3Hwu86w==
+X-Google-Smtp-Source: AGHT+IGne9RAForm81Cux/ImQ6vwu8UtSeNW4OLKNkPG30bXI6R9jSzKXWlJzEYOoBTC2MoPirf6nw==
+X-Received: by 2002:a17:902:a504:b0:1c6:17a4:afb3 with SMTP id s4-20020a170902a50400b001c617a4afb3mr22449486plq.16.1697231959067;
+        Fri, 13 Oct 2023 14:19:19 -0700 (PDT)
+Received: from Negi ([68.181.16.134])
+        by smtp.gmail.com with ESMTPSA id d17-20020a170903231100b001bb99e188fcsm4301830plh.194.2023.10.13.14.19.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 14:19:18 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 14:19:18 -0700
+From:   Soumya Negi <soumya.negi97@gmail.com>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Jonathan Kim <jonathankim@gctsemi.com>,
+        Dean ahn <deanahn@gctsemi.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        outreachy@lists.linux.dev, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tty: gdm724x: Fix coding style checkpatch warnings
+Message-ID: <20231013211917.GC25352@Negi>
+References: <20231013051502.9578-1-soumya.negi97@gmail.com>
+ <663c85bb-90c3-4ae1-ab0b-5ab1a8abd2a7@kadam.mountain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <663c85bb-90c3-4ae1-ab0b-5ab1a8abd2a7@kadam.mountain>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,48 +77,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous
-interfaces.
+On Fri, Oct 13, 2023 at 11:53:36AM +0300, Dan Carpenter wrote:
+> On Thu, Oct 12, 2023 at 10:14:58PM -0700, Soumya Negi wrote:
+> > @@ -271,8 +272,8 @@ int register_lte_tty_driver(void)
+> >  	int ret;
+> >  
+> >  	for (i = 0; i < TTY_MAX_COUNT; i++) {
+> > -		tty_driver = tty_alloc_driver(GDM_TTY_MINOR,
+> > -				TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV);
+> > +		tty_driver = tty_alloc_driver(GDM_TTY_MINOR, TTY_DRIVER_REAL_RAW |
+> > +					      TTY_DRIVER_DYNAMIC_DEV);
+> 
+> Don't do this.  The code was better before. The parameter
+> "TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV" is one thing and
+> splitting it up like that makes the code less readable.  And I bet they
+> had to indent it like that to get under the 80 character limit.
+> 
+> This is an example of checkpatch giving bad advice.
 
-The affected code's purpose is to truncate strings that are too long
-with "..." like:
-foobar -> fo...
+Hi Dan,
 
-The lengths have been carefully calculated and as such this has decayed
-to a simple byte copy from one buffer to another -- let's use memcpy().
+Will keep this in mind for other similar checkpatch warnings.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
+Thanks,
+Soumya
 
-Found with: $ rg "strncpy\("
----
- drivers/net/wireless/ath/ath6kl/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath6kl/init.c b/drivers/net/wireless/ath/ath6kl/init.c
-index 201e45554070..15f455adb860 100644
---- a/drivers/net/wireless/ath/ath6kl/init.c
-+++ b/drivers/net/wireless/ath/ath6kl/init.c
-@@ -1677,7 +1677,7 @@ static void ath6kl_init_get_fwcaps(struct ath6kl *ar, char *buf, size_t buf_len)
- 
- 			/* add "..." to the end of string */
- 			trunc_len = strlen(trunc) + 1;
--			strncpy(buf + buf_len - trunc_len, trunc, trunc_len);
-+			memcpy(buf + buf_len - trunc_len, trunc, trunc_len);
- 
- 			return;
- 		}
-
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20231013-strncpy-drivers-net-wireless-ath-ath6kl-init-c-ffdb45d76eaf
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+> regards,
+> dan carpenter
+> 
