@@ -2,267 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 439E37C8CCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADEE7C8CE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbjJMSHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 14:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
+        id S230260AbjJMSMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 14:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbjJMSHt (ORCPT
+        with ESMTP id S231336AbjJMSMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 14:07:49 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB7891
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:07:46 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a3942461aso3429479276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:07:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697220466; x=1697825266; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PvKDPaw+QIOESW8HQR3wI94B1SCpRWY2eOMQFgHhpck=;
-        b=nmhyQiCqVql4HRLeehIy6wJ7VM1jYk+Bry3frLK/qUnfQgKwzXeAXeRtUrbKh89Iyj
-         kNy8Iw8uiR3KSxkHRB+5HnuntAZNV/0CQ9msf6/VbUGM1TNtYh4ma1LENo2HJq7ON/aV
-         w0ifyAJUAie2AZN2PnhJPKuhiOfk52uWsmEOOQe9Q+l8f0YdeFaXi0oWEucTFnh+67rE
-         tICqjBek64YO/ALZn+zTB4OcN32BR4pv0LZ+yKP1+7N+AiI8DMCVHfeKq02hx6WT7Wuz
-         kUVOopZJH21ysM+j/KniLUqIG1v6jASWtpzyF0rjmNXKMiGLaDgO1IPwbs2khwIZ7qXT
-         MFQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697220466; x=1697825266;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=PvKDPaw+QIOESW8HQR3wI94B1SCpRWY2eOMQFgHhpck=;
-        b=PyNlWCY5yhWOkFfK14VcpZJn989frLROaXN3QonyVHovqzcM/WcXQyCOBD0ud10X97
-         6xYmF6d70G2aLtD8yEAHqYqXVop9J5u7aK9hvo1lGiA1GA7yvvWhUjP2fFRTut9KQhzs
-         PUYQJbCkrQHexfOM4k1vmHoJ21JVkHOaKOZnbP5nZhCaUWHptnBhUanlYyrIvUwBxAkv
-         fqnSQrQGNPKqThnSFy+OHyp0NnbCR9aGJw8gM86RmcfqOeXS8JvMRUJHo3hkNsVLu5ch
-         tpkZ+Cql5i+dvyqSwW65nKkXtMkf68c8/0ZtAowsAYicEfjlbNUum9DquRJY/gt3QQ+h
-         2omA==
-X-Gm-Message-State: AOJu0Yx9RDbfRgnhBz2i6wCebu2iUZBFujjcxFLcxQ4yWmhny+qG0MR7
-        +8zV2G959yebEX6IOuInmalieloQROc=
-X-Google-Smtp-Source: AGHT+IGCiJa78jVmD9wzZk02a+k13vciXuotJPmPePzI1vR3bESQmSJ6CySHioa8DCCeFY/ISgbeFFQj2ZM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:ab24:0:b0:d9a:da96:f9ca with SMTP id
- u33-20020a25ab24000000b00d9ada96f9camr114009ybi.6.1697220465987; Fri, 13 Oct
- 2023 11:07:45 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 11:07:44 -0700
-In-Reply-To: <8f3493ca4c0e726d5c3876bb7dd2cfc432d9deaa.camel@infradead.org>
-Mime-Version: 1.0
-References: <ZRrxtagy7vJO5tgU@google.com> <52a3cea2084482fc67e35a0bf37453f84dcd6297.camel@infradead.org>
- <ZRtl94_rIif3GRpu@google.com> <9975969725a64c2ba2b398244dba3437bff5154e.camel@infradead.org>
- <ZRysGAgk6W1bpXdl@google.com> <d6dc1242ff731cf0f2826760816081674ade9ff9.camel@infradead.org>
- <ZR2pwdZtO3WLCwjj@google.com> <34057852-f6c0-d6d5-261f-bbb5fa056425@oracle.com>
- <ZSXqZOgLYkwLRWLO@google.com> <8f3493ca4c0e726d5c3876bb7dd2cfc432d9deaa.camel@infradead.org>
-Message-ID: <ZSmHcECyt5PdZyIZ@google.com>
-Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock periodically
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
-        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Fri, 13 Oct 2023 14:12:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D4D91
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:11:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697220715;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XIlRT028Oilu2T1armBjKk281LICHF+uokOf7ejKB88=;
+        b=Ng3wW6/7ZrJ9rc4tRm5VYgk78GL5Ouk0eTcrQK+TOEmblSa1CPj0OmKh2RsrzbE+A6KWq+
+        pBEMYRMGkPNy3f+a2YzDiKsHV4e8VjD/9MvYsasRxwBVzD4Ns3R0VDcuJU9B11+2KtoprF
+        VctEgwsp4VGz+mKcCSr5cTrPSRQYdAg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-41-AhnJ3bsNPlSj1UTHtQz4mg-1; Fri, 13 Oct 2023 14:11:48 -0400
+X-MC-Unique: AhnJ3bsNPlSj1UTHtQz4mg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3575F88B7A0;
+        Fri, 13 Oct 2023 18:11:48 +0000 (UTC)
+Received: from llong.com (unknown [10.22.17.138])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 87F7C20296DB;
+        Fri, 13 Oct 2023 18:11:47 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH-cgroup 0/4] cgroup/cpuset: Improve CPU isolation in isolated partitions
+Date:   Fri, 13 Oct 2023 14:11:18 -0400
+Message-Id: <20231013181122.3518610-1-longman@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023, David Woodhouse wrote:
-> On Tue, 2023-10-10 at 17:20 -0700, Sean Christopherson wrote:
-> > On Wed, Oct 04, 2023, Dongli Zhang wrote:
-> > > > -static void kvm_gen_kvmclock_update(struct kvm_vcpu *v)
-> > > > -{
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct kvm *kvm =3D v->k=
-vm;
-> > > > -
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0kvm_make_request(KVM_REQ=
-_CLOCK_UPDATE, v);
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0schedule_delayed_work(&k=
-vm->arch.kvmclock_update_work,
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0KVMCLOCK_UPDATE_DELAY);
-> > > > -}
-> > > > -
-> > > > =C2=A0#define KVMCLOCK_SYNC_PERIOD (300 * HZ)
-> > >=20
-> > > While David mentioned "maximum delta", how about to turn above into a=
- module
-> > > param with the default 300HZ.
-> > >=20
-> > > BTW, 300HZ should be enough for vCPU hotplug case, unless people pref=
-er 1-hour
-> > > or 1-day.
-> >=20
-> > Hmm, I think I agree with David that it would be better if KVM can take=
- care of
-> > the gory details and promise a certain level of accuracy.=C2=A0 I'm usu=
-ally a fan of
-> > punting complexity to userspace, but requiring every userspace to figur=
-e out the
-> > ideal sync frequency on every platform is more than a bit unfriendly.=
-=C2=A0 And it
-> > might not even be realistic unless userspace makes assumptions about ho=
-w the kernel
-> > computes CLOCK_MONOTONIC_RAW from TSC cycles.
-> >=20
->=20
-> I think perhaps I would rather save up my persuasiveness on the topic
-> of "let's not make things too awful for userspace to cope with" for the
-> live update/migration mess. I think I need to dust off that attempt at
-> fixing our 'how to migrate with clocks intact' documentation from
-> https://lore.kernel.org/kvm/13f256ad95de186e3b6bcfcc1f88da5d0ad0cb71.came=
-l@infradead.org/
-> The changes we're discussing here obviously have an effect on migration
-> too.
->=20
-> Where the host TSC is actually reliable, I would really prefer for the
-> kvmclock to just be a fixed function of the guest TSC and *not* to be
-> arbitrarily yanked back[1] to the host's CLOCK_MONOTONIC periodically.
+Isolated cpuset partition can currently be created to contain an
+exclusive set of CPUs not used in other cgroups and with load balancing
+disabled to reduce interference from the scheduler.
 
-CLOCK_MONOTONIC_RAW!  Just wanted to clarify because if kvmclock were tied =
-to the
-non-raw clock, then we'd have to somehow reconcile host NTP updates.
+The main purpose of this isolated partition type is to dynamically
+emulate what can be done via the "isolcpus" boot command line option,
+specifically the default domain flag. One effect of the "isolcpus" option
+is to remove the isolated CPUs from the cpumasks of unbound workqueues
+since running work functions in an isolated CPU can be a major source
+of interference. Changing the unbound workqueue cpumasks can be done at
+run time by writing an appropriate cpumask without the isolated CPUs to
+/sys/devices/virtual/workqueue/cpumask. So one can set up an isolated
+cpuset partition and then write to the cpumask sysfs file to achieve
+similar level of CPU isolation. However, this manual process can be
+error prone.
 
-I generally support the idea, but I think it needs to an opt-in from usersp=
-ace.
-Essentially a "I pinky swear to give all vCPUs the same TSC frequency, to n=
-ot
-suspend the host, and to not run software/firmware that writes IA32_TSC_ADJ=
-UST".
-AFAICT, there are too many edge cases and assumptions about userspace for K=
-VM to
-safely couple kvmclock to guest TSC by default.
+This patch series implements automatic exclusion of isolated CPUs from
+unbound workqueue cpumasks when an isolated cpuset partition is created
+and then adds those CPUs back when the isolated partition is destroyed.
 
-> [1] Yes, I believe "back" does happen. I have test failures in my queue
-> to look at, where guests see the "Xen" clock going backwards.
+There are also other places in the kernel that look at the HK_FLAG_DOMAIN
+cpumask or other HK_FLAG_* cpumasks and exclude the isolated CPUs from
+certain actions to further reduce interference. CPUs in an isolated
+cpuset partition will not be able to avoid those interferences yet. That
+may change in the future as the need arises.
 
-Yeah, I assume "back" can happen based purely on the wierdness of the pvclo=
-ck math.o
+Waiman Long (4):
+  workqueue: Add workqueue_unbound_exclude_cpumask() to exclude CPUs
+    from wq_unbound_cpumask
+  selftests/cgroup: Minor code cleanup and reorganization of
+    test_cpuset_prs.sh
+  cgroup/cpuset: Keep track of CPUs in isolated partitions
+  cgroup/cpuset: Take isolated CPUs out of workqueue unbound cpumask
 
-What if we add a module param to disable KVM's TSC synchronization crazines=
-s
-entirely?  If we first clean up the peroidic sync mess, then it seems like =
-it'd
-be relatively straightforward to let kill off all of the synchronization, i=
-ncluding
-the synchronization of kvmclock to the host's TSC-based CLOCK_MONOTONIC_RAW=
-.
+ Documentation/admin-guide/cgroup-v2.rst       |  10 +-
+ include/linux/workqueue.h                     |   2 +-
+ kernel/cgroup/cpuset.c                        | 237 +++++++++++++-----
+ kernel/workqueue.c                            |  42 +++-
+ .../selftests/cgroup/test_cpuset_prs.sh       | 209 +++++++++------
+ 5 files changed, 350 insertions(+), 150 deletions(-)
 
-Not intended to be a functional patch...
-
----
- arch/x86/kvm/x86.c | 35 ++++++++++++++++++++++++++++++++---
- 1 file changed, 32 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 5b2104bdd99f..75fc6cbaef0d 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -157,6 +157,9 @@ module_param(min_timer_period_us, uint, S_IRUGO | S_IWU=
-SR);
- static bool __read_mostly kvmclock_periodic_sync =3D true;
- module_param(kvmclock_periodic_sync, bool, S_IRUGO);
-=20
-+static bool __read_mostly enable_tsc_sync =3D true;
-+module_param_named(tsc_synchronization, enable_tsc_sync, bool, 0444);
-+
- /* tsc tolerance in parts per million - default to 1/2 of the NTP threshol=
-d */
- static u32 __read_mostly tsc_tolerance_ppm =3D 250;
- module_param(tsc_tolerance_ppm, uint, S_IRUGO | S_IWUSR);
-@@ -2722,6 +2725,12 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcp=
-u, u64 data)
- 	bool matched =3D false;
- 	bool synchronizing =3D false;
-=20
-+	if (!enable_tsc_sync) {
-+		offset =3D kvm_compute_l1_tsc_offset(vcpu, data);
-+		kvm_vcpu_write_tsc_offset(vcpu, offset);
-+		return;
-+	}
-+
- 	raw_spin_lock_irqsave(&kvm->arch.tsc_write_lock, flags);
- 	offset =3D kvm_compute_l1_tsc_offset(vcpu, data);
- 	ns =3D get_kvmclock_base_ns();
-@@ -2967,9 +2976,12 @@ static void pvclock_update_vm_gtod_copy(struct kvm *=
-kvm)
- 					&ka->master_kernel_ns,
- 					&ka->master_cycle_now);
-=20
--	ka->use_master_clock =3D host_tsc_clocksource && vcpus_matched
--				&& !ka->backwards_tsc_observed
--				&& !ka->boot_vcpu_runs_old_kvmclock;
-+	WARN_ON_ONCE(!host_tsc_clocksource && !enable_tsc_sync);
-+
-+	ka->use_master_clock =3D host_tsc_clocksource &&
-+			       (vcpus_matched || !enable_tsc_sync) &&
-+			       !ka->backwards_tsc_observed &&
-+			       !ka->boot_vcpu_runs_old_kvmclock;
-=20
- 	if (ka->use_master_clock)
- 		atomic_set(&kvm_guest_has_master_clock, 1);
-@@ -3278,6 +3290,9 @@ static void kvmclock_sync_fn(struct work_struct *work=
-)
-=20
- void kvm_adjust_pv_clock_users(struct kvm *kvm, bool add_user)
- {
-+	if (!enable_tsc_sync)
-+		return;
-+
- 	/*
- 	 * Doesn't need to be a spinlock, but can't be kvm->lock as this is
- 	 * call while holding a vCPU's mutext.
-@@ -5528,6 +5543,11 @@ static int kvm_arch_tsc_set_attr(struct kvm_vcpu *vc=
-pu,
- 		if (get_user(offset, uaddr))
- 			break;
-=20
-+		if (!enable_tsc_sync) {
-+			kvm_vcpu_write_tsc_offset(vcpu, offset);
-+			break;
-+		}
-+
- 		raw_spin_lock_irqsave(&kvm->arch.tsc_write_lock, flags);
-=20
- 		matched =3D (vcpu->arch.virtual_tsc_khz &&
-@@ -12188,6 +12208,9 @@ int kvm_arch_hardware_enable(void)
- 	if (ret !=3D 0)
- 		return ret;
-=20
-+	if (!enable_tsc_sync)
-+		return 0;
-+
- 	local_tsc =3D rdtsc();
- 	stable =3D !kvm_check_tsc_unstable();
- 	list_for_each_entry(kvm, &vm_list, vm_list) {
-@@ -13670,6 +13693,12 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_vmgexit_msr_proto=
-col_exit);
-=20
- static int __init kvm_x86_init(void)
- {
-+	if (!boot_cpu_has(X86_FEATURE_CONSTANT_TSC))
-+		enable_tsc_sync =3D true;
-+
-+	if (!enable_tsc_sync)
-+		kvmclock_periodic_sync =3D false;
-+
- 	kvm_mmu_x86_module_init();
- 	mitigate_smt_rsb &=3D boot_cpu_has_bug(X86_BUG_SMT_RSB) && cpu_smt_possib=
-le();
- 	return 0;
-
-base-commit: 7d2edad0beb2a6f07f6e6c2d477d5874f5417d6c
---=20
+-- 
+2.39.3
 
