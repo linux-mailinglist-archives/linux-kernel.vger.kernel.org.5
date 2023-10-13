@@ -2,87 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2241B7C7B4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 03:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E827C7B50
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 03:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229487AbjJMBnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 21:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
+        id S229498AbjJMBpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 21:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJMBnu (ORCPT
+        with ESMTP id S229450AbjJMBpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 21:43:50 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B9EBB;
-        Thu, 12 Oct 2023 18:43:48 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39D1QwBS000909;
-        Fri, 13 Oct 2023 01:42:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=lqJi9R4Y6Xefr89eckmLA1t1hKHCECZfuxNDRt7dtGU=;
- b=LFX+pxBBFGFiqP6CNcWO0letVoSnYCFgBLp50GsrJ4WnkqcoE1KT1wf/T6V35CVBxaR9
- oh+e2Ah+OCVxjQ1kx121IMvyog/KUwnYtR7W5d9/8UEASGeoBi1UvIVCzrPNukUipUIN
- 16oJJGDSVdbSv2448RyIZ8/75RsXrDwpIYnkQPpzOUnW8BDxzal8KDkejRWEK4Ed9s25
- IyxL/NRJT0sYIHLB4c51zHyxNYu7FcJgPiqVmWqS4jiCJnHRJ4KudPgbmdKYaDVH4UIc
- MTrIY+rpW8HtYwT7Ov6JTsEFAK4+OmwGQ6/Ap8IjJygAptClTZcc2N9Q9kUNdbHSTyMe AA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tpt1k07fk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Oct 2023 01:42:22 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39D1gLbV001368
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Oct 2023 01:42:21 GMT
-Received: from [10.50.46.242] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 12 Oct
- 2023 18:42:14 -0700
-Message-ID: <e951d2be-0807-acff-5959-38dad7560659@quicinc.com>
-Date:   Fri, 13 Oct 2023 07:12:10 +0530
+        Thu, 12 Oct 2023 21:45:12 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3C4C9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 18:45:10 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-690d935dbc2so328234b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 18:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697161510; x=1697766310; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NkKDwESUMv6DmJniI4kRJ0Fze3BlCpWsKbtTeuEzRoQ=;
+        b=wctTAqWM+C+AavijPGVNcXf4bwP+E/t8KAOEKi+zZG4WomkiYnQOuVGojNwl+bo1Fy
+         kfVb9Y0l2NAq0k2sjYQSOnJdfEbR134ajyLXqORuY+Qph83AwRWE/6T3z7aTb1ubtMtQ
+         xKOQ2jc67GIJXMkuJliRocizaVmoAx2MyjAfUzU4XvUrgvEAaSHQ/2qOqXxJEJF+abvJ
+         sfERUcLnEhb6LnDv0ya5fLIlGmUwirNgqnIlxI7WdWz5s5xnwAmlnkvHmHGb4SqYVjul
+         y5u9bI9EGvU8QWeR6dqxsq6h04/a32jq64ZNoIeYqn9uj1ezriMuQoRbHEs3K8KIZNSE
+         pbUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697161510; x=1697766310;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NkKDwESUMv6DmJniI4kRJ0Fze3BlCpWsKbtTeuEzRoQ=;
+        b=HxZ62kjFMb5HP7tX1RWTKzrt36AYQkt2aysJ1Bw/aXlu4khvVZQLVEOC64/G8eNNt6
+         Ftd0QpxhhDQmhv2O18dX7RgV2F+AyWPC7Uw97s7hpw3mIOFAQ2BNalWJcrQAdye7g2q5
+         +8SYtZR+kY7O1sPv6N/Q6BRRJU2zYd545+YmtQ3Nw20SiysSmh6RfK3epaw/sXaEuFUZ
+         uy7E00z64O5DbE0qeUTwMg8CscKUchsGvTbE2FH2SC9H62jeBRW6p5HPWI5m0NqUhUYl
+         IrX0IaCbfdjLS+U/ixqTMBL0Fo6HoEehpqegzWDzViweb99LUz5XazCniu/z/r1LkJ8y
+         cOuw==
+X-Gm-Message-State: AOJu0YwvVPuZDaOc0PRVmeNLnt4DI6CWctQlevUOF7uLwOBwm0YS3dCV
+        5fomDYfB6lKZ7lsJ0OAh/j0/xA==
+X-Google-Smtp-Source: AGHT+IFOeU/L1UU0SiBejqeHPkF2yLffG9fB6o7ii0U1VZbx4ZnCvJrB7MjXM1YaKAbTSIdFVKU0ZQ==
+X-Received: by 2002:a05:6a20:7da2:b0:15d:6fd3:8e74 with SMTP id v34-20020a056a207da200b0015d6fd38e74mr31715422pzj.3.1697161509881;
+        Thu, 12 Oct 2023 18:45:09 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id l21-20020a170902d35500b001c737950e4dsm2659672plk.2.2023.10.12.18.45.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 18:45:09 -0700 (PDT)
+Message-ID: <f39ef992-4789-4c30-92ef-e3114a31d5c7@kernel.dk>
+Date:   Thu, 12 Oct 2023 19:45:07 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH 0/4] PM: hibernate: LZ4 compression support
-To:     Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Tejun Heo <tj@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
-        <quic_kprasan@quicinc.com>, <quic_mpilaniy@quicinc.com>,
-        <quic_shrekk@quicinc.com>, <mpleshivenkov@google.com>,
-        <ericyin@google.com>
-References: <cover.1696410298.git.quic_nprakash@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Problem with io_uring splice and KTLS
 Content-Language: en-US
-From:   Nikhil V <quic_nprakash@quicinc.com>
-In-Reply-To: <cover.1696410298.git.quic_nprakash@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Sascha Hauer <sha@pengutronix.de>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Boris Pismenny <borisp@nvidia.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+References: <20231010141932.GD3114228@pengutronix.de>
+ <d729781a-3d12-423b-973e-c16fdbcbb60b@kernel.dk>
+ <20231012133407.GA3359458@pengutronix.de>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20231012133407.GA3359458@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: kTL2ZntX3j8tvzq0vpM4pAzd-453bPa0
-X-Proofpoint-GUID: kTL2ZntX3j8tvzq0vpM4pAzd-453bPa0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_14,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
- spamscore=0 mlxscore=0 malwarescore=0 priorityscore=1501 adultscore=0
- clxscore=1015 bulkscore=0 impostorscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310130013
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,84 +78,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/12/23 7:34 AM, Sascha Hauer wrote:
+> In case you don't have encryption hardware you can create an
+> asynchronous encryption module using cryptd. Compile a kernel with
+> CONFIG_CRYPTO_USER_API_AEAD and CONFIG_CRYPTO_CRYPTD and start the
+> webserver with the '-c' option. /proc/crypto should then contain an
+> entry with:
+> 
+>  name         : gcm(aes)
+>  driver       : cryptd(gcm_base(ctr(aes-generic),ghash-generic))
+>  module       : kernel
+>  priority     : 150
 
+I did a bit of prep work to ensure I had everything working for when
+there's time to dive into it, but starting it with -c doesn't register
+this entry. Turns out the bind() in there returns -1/ENOENT. For the
+life of me I can't figure out what I'm missing. I tried this with both
+arm64 and x86-64. On the latter there's some native AES that is higher
+priority, but I added a small hack in cryptd to ensure it's the highest
+one. But I don't even get that far...
 
-On 10/4/2023 3:00 PM, Nikhil V wrote:
-> This patch series covers the following:
-> 1. Renaming lzo* to generic names, except for lzo_xxx() APIs. This is
-> used in the next patch where we move to crypto based APIs for
-> compression. There are no functional changes introduced by this
-> approach.
-> 
-> 
-> 2. Replace LZO library calls with crypto generic APIs
-> 
-> Currently for hibernation, LZO is the only compression algorithm
-> available and uses the existing LZO library calls. However, there
-> is no flexibility to switch to other algorithms which provides better
-> results. The main idea is that different compression algorithms have
-> different characteristics and hibernation may benefit when it uses
-> alternate algorithms.
-> 
-> By moving to crypto based APIs, it lays a foundation to use other
-> compression algorithms for hibernation.
-> 
-> 
-> 3. LZ4 compression
-> Extend the support for LZ4 compression to be used with hibernation.
-> The main idea is that different compression algorithms
-> have different characteristics and hibernation may benefit when it uses
-> any of these algorithms: a default algorithm, having higher
-> compression rate but is slower(compression/decompression) and a
-> secondary algorithm, that is faster(compression/decompression) but has
-> lower compression rate.
-> 
-> LZ4 algorithm has better decompression speeds over LZO. This reduces
-> the hibernation image restore time.
-> As per test results:
->                                      LZO             LZ4
-> Size before Compression(bytes)   682696704       682393600
-> Size after Compression(bytes)    146502402       155993547
-> Decompression Rate               335.02 MB/s     501.05 MB/s
-> Restore time                       4.4s             3.8s
-> 
-> LZO is the default compression algorithm used for hibernation. Enable
-> CONFIG_HIBERNATION_DEF_COMP_LZ4 to set the default compressor as LZ4.
-> 
-> Compression Benchmarks: https://github.com/lz4/lz4
-> 
-> 
-> 4. Support to select compression algorithm
-> 
-> Currently the default compression algorithm is selected based on
-> Kconfig. Introduce a kernel command line parameter "hib_compression" to
-> override this behaviour.
-> 
-> Users can set "hib_compression" command line parameter to specify
-> the algorithm.
-> Usage:
->      LZO: hib_compression=lzo
->      LZ4: hib_compression=lz4
-> LZO is the default compression algorithm used with hibernation.
-> 
-> Nikhil V (4):
->    PM: hibernate: Rename lzo* to make it generic
->    PM: hibernate: Move to crypto APIs for LZO compression
->    PM: hibernate: Add support for LZ4 compression for hibernation
->    PM: hibernate: Support to select compression algorithm
-> 
->   .../admin-guide/kernel-parameters.txt         |   6 +
->   kernel/power/Kconfig                          |  25 ++-
->   kernel/power/hibernate.c                      |  85 +++++++-
->   kernel/power/power.h                          |  19 ++
->   kernel/power/swap.c                           | 189 +++++++++++-------
->   5 files changed, 250 insertions(+), 74 deletions(-)
-> 
+-- 
+Jens Axboe
 
-Hi @Rafael/@Pavel/@Len,
-
-Could you please let me know if you have any concerns/comments on this 
-approach?
-
-Regards,
-Nikhil V
