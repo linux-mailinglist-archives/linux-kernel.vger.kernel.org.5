@@ -2,197 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C0A7C8069
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6527B7C806D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbjJMIfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48590 "EHLO
+        id S230073AbjJMIf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:35:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbjJMIf1 (ORCPT
+        with ESMTP id S230125AbjJMIf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:35:27 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2080.outbound.protection.outlook.com [40.107.8.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D99EBF;
-        Fri, 13 Oct 2023 01:35:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YB5WyyHXk8ozcWdZcq1es442EI5yiw/hn1BMErWlKebfzVpAP+2k9xw7r8GW/OIfrSwzCL61eeQNpZEW4bu/KYzAhJpmZHJV2cgD0Lp9H7fSvfgzD7CNewsJCNzTarkV2UTAA7LelPfh/hbtoyF7B63SWUiYLHwDBDLfUrFiW5Dzfc+uslh5I0c0rgfKrGuV8uKrcbOKf5Q6baVBb3EhPARKh5cHv8BwCbXIFIsxqkYgBkYn6YGYy5Yuw9SqwL0y9P/iS8/ZdIoQxjoeDkmNKe8Ix54Fl7+GLsT2n026y32Nx3O2ialO1XnBQgwb34OiNc60MQJ8ASH8/QC+7j3xng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AuUP94naGobgFn9SQF063tw7la/NGO5cR7AdtE9flYs=;
- b=OebQl5dKm5Y+88W0IbHlBaJ8gux7O9tFdX8Ip8w0XEaavZPR+2sjaPi0HH03x5iZzDm7L2bSUXlVdk2HhIGW9jIoNDSoiGNtAG+0vnjFi75fvWTa+90I/HXaJQtKAQagbyYibiRoLWnR2+2AwKcwOF4jnbsEaeFlyPwhdpko99vEDVAU103x/WW5IoMECWeRWKy8UBrtLLx1JWFPwqhbJQy7UVcWnFX6YagPL7lzm4c8eOdiHBEQV3kG9lpN7+8LJeVFC1ueT/pMuL0Z0kP3B9GpFMkV35G/dlsZ78SGIN1Rz890dmqK5cyF3z+LHSAN5mYmPNu+rImqz7VVAGKdhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AuUP94naGobgFn9SQF063tw7la/NGO5cR7AdtE9flYs=;
- b=Cflkhsf7IaWA8KjMRZ2FE7bJyFhAlRhd3Wv1bnXKyGpVkC4+YTWtNO6KAga6GLHWw5/iE2Aa3UKIWmwnjj/9FxKTR6ThVk5IhVrWVOHLfu6hSiX/v89b5XvY2AuqOy4OotcIJnXe8/UF1Y/NlQSuyxAN+4Pfyx+VZ1FuaZEo4h8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DU2PR04MB8774.eurprd04.prod.outlook.com (2603:10a6:10:2e1::21)
- by DU0PR04MB9496.eurprd04.prod.outlook.com (2603:10a6:10:32d::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.46; Fri, 13 Oct
- 2023 08:35:21 +0000
-Received: from DU2PR04MB8774.eurprd04.prod.outlook.com
- ([fe80::ad2:49f8:14b:25c7]) by DU2PR04MB8774.eurprd04.prod.outlook.com
- ([fe80::ad2:49f8:14b:25c7%7]) with mapi id 15.20.6863.046; Fri, 13 Oct 2023
- 08:35:21 +0000
-Message-ID: <80a6a56b-4a12-99bb-acb3-94a5753b2de4@nxp.com>
-Date:   Fri, 13 Oct 2023 11:35:17 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 2/2] arm64: dts: imx8mp: add reserve-memory nodes for
- DSP
-To:     Alexander Stein <alexander.stein@ew.tq-group.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "S.J. Wang" <shengjiu.wang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Mpuaudiosw <Mpuaudiosw@nxp.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-imx <linux-imx@nxp.com>, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        LnxRevLi <LnxRevLi@nxp.com>,
-        "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
-References: <20231010090929.4371-1-iuliana.prodan@oss.nxp.com>
- <20231010090929.4371-3-iuliana.prodan@oss.nxp.com>
- <2301291.ElGaqSPkdT@steina-w>
-Content-Language: en-US
-From:   Iuliana Prodan <iuliana.prodan@nxp.com>
-In-Reply-To: <2301291.ElGaqSPkdT@steina-w>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR02CA0202.eurprd02.prod.outlook.com
- (2603:10a6:20b:28f::9) To DU2PR04MB8774.eurprd04.prod.outlook.com
- (2603:10a6:10:2e1::21)
+        Fri, 13 Oct 2023 04:35:56 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DA5D8
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:35:52 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9ae75ece209so296984866b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:35:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697186151; x=1697790951; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=grAXNyzj17V163hszU2PuUkW35ZyN7Jv6aHwdCjJTRE=;
+        b=wc4zvkFtVEemWaccUpPqFi69q1NX5e8bcw2kpjxxpuw7Rk0+EufAOO7mjSWH0I3uvO
+         i8cn+5vNuOkObisSTOYfF+lmICd5UEfTqJFJbrTMKeECs5ah6aj2EDgb7JcXbn7GyM1K
+         ENy2aS2OFlq3/M7+AYGuwyW1n99+tPGWF7JhomEZtpDz8nScH6Ti34ASaFojb46Kf5ep
+         HGnHfhr3nb58ZJNvXgOBlrvZF7oe8PR+tqUKB1qAKwkGUqq/pAjibg75V9vf0hX3ElGz
+         Hi0WrBKYeZ+WGy+xFAlgQdyIBqZTvc8vSxN12JV9aLm5mOx9YqVakEUxOJVUkai8nQcX
+         aSUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697186151; x=1697790951;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=grAXNyzj17V163hszU2PuUkW35ZyN7Jv6aHwdCjJTRE=;
+        b=AMPnhO1V1nG/c/meOC3LxbVH8PbjDWMPluXN/X4uCvH6nWJ0SngyFFWL2UyzAktNtu
+         Y6ry0ZDu6OIyOwmyp3DJOkO0wb6OFy2Rj7xY+o99cqTMgmBq2l5vfvc1SuCoeZg7oTo6
+         bpCc2aMLqrMiwAnFdtnVG84YcDnGlw1JEgtH3Qgfb5dK/BVnysJ2dOcHRfXo900jBh4F
+         j6/WCElf934r+0WW92HyCWkulkja2ek22fsi1AOZEoua1HMPTpJSB55fJ1WzIOuCN40z
+         wuCeikDg1s1hjOpVleDfKQ9+cT0r4mN/nvtCXb8RxldhnOsfPpNQP4IvLegG9HOhYLAi
+         HCvg==
+X-Gm-Message-State: AOJu0YzBg11RWtxQP1UXtgNJr/y9Or4nT+ex+vS5o36/52TYBeb9kvdY
+        izZOtME/xlwJ/Nt//hCtpdgdxA==
+X-Google-Smtp-Source: AGHT+IGg28eJurm7V7gHx4DA0SLNZUEN0KN94ZRpgP3IJpAj3xNkaHLTKmv/yJpZLEohRje77iNvwA==
+X-Received: by 2002:a17:907:75f7:b0:9a1:c9c5:5fa1 with SMTP id jz23-20020a17090775f700b009a1c9c55fa1mr23611892ejc.4.1697186150802;
+        Fri, 13 Oct 2023 01:35:50 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.100])
+        by smtp.gmail.com with ESMTPSA id i11-20020a170906a28b00b009737b8d47b6sm12010902ejz.203.2023.10.13.01.35.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Oct 2023 01:35:50 -0700 (PDT)
+Message-ID: <2eafa89c-7c95-4bc1-85cb-a6d7417dcea8@linaro.org>
+Date:   Fri, 13 Oct 2023 10:35:49 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8774:EE_|DU0PR04MB9496:EE_
-X-MS-Office365-Filtering-Correlation-Id: cc7fc941-82c6-498c-ea75-08dbcbc7566e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AmCt9/Rr/tossMS5Xo1yPjcW2y5Cs4H8CAw1NE0PBN83Zrf8LgJGdFdqRmZdjYbH9cT6KF6xjaOkdTeM77sL+Ys0XlBqf1XSclbRwLCyuoVKR0keSxnl2CFCT21pxSqWanXnCJK6BYIrQxz8D0Fz4RFq4xFEJUpOpPB2rUpbJmo+tR5fGONBejKEh+j4D0s45x+QYIzCa9tbg2rlnx60S+5kdmth+1tIO8XTZJ/GCYLjUAU3y23QisCvWS34581eJv3ybM2Cked7aFjFA6fVTrjH5ckiIXHSBmdjvVxiZRnJpJEv58KSnwV50Si4CS9PfDEF169Xjt2T2Ym6Ee492/MUsvKa+AA9Y1QpreSz5UQoXgNaUrwJ0w3IX0G5a1MS1XlHjan6/JAgFMprVq91Eo7V1jAv7ZzdV0Ph3O4QVN6LCXiHk2gcucLBh0S7YfH7+H+o5QpiHvl5ihL9B+JuS0yKhVnPjtJ46a7jsdyFkftdQz6utVNnFgrkGl58HkT3UFLyV03sapxta0WUrQmY43ES1Y0ZgJaWYK34SXI8/J2/rjdc/HS/yehmkiTU+shlWQK0RCyfCSOS31CtYyYZ4G6SF/rWymUJ0VKdunEtlq1YImE42xNdyYV5ZjWNngAGnDw0nCz/a6tgqye2CoPcMVdQJ9lqEHXgMd6LrNWgyT4jGIxhVOokcGy4OSiR2L6l
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8774.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(366004)(39860400002)(136003)(396003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(7416002)(6506007)(2906002)(31696002)(6666004)(478600001)(6486002)(8676002)(4326008)(8936002)(41300700001)(44832011)(110136005)(5660300002)(66946007)(54906003)(66556008)(316002)(66476007)(38100700002)(36756003)(26005)(31686004)(86362001)(6512007)(2616005)(53546011)(921005)(32563001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OTk4aXBIeWdFVnluU0JFSGdPQW5wNWk3aHVDOWZ2SVF4eEhNbmhtbnlRQko4?=
- =?utf-8?B?ZTVBZTNrMkllbjNMV3BKYzAyNGtWY1JxaEczMUw0QjJMNjcwaHdVUzdHcG0r?=
- =?utf-8?B?ekFDbG90R2h1eGZSbnIyekNRb01MSnhScFNmN2ljRnNOQ0ZRZlQvRTlVWHBj?=
- =?utf-8?B?QldPeXhNcTlBbnltL2k4OU0rcUlzckUwY2V2YmpER080M1FFQzFjZU1kUnFB?=
- =?utf-8?B?VndWZDhiTWlNb3J2SFVBRVRPVVo5RlFXNWhqTUFFbG9FOVhvQ3FtWncvMFl5?=
- =?utf-8?B?OUpDMnFvREtwaU5zdXRXNDQvM0xINk8wSEtCQmUvc3Z2bWVjMjRoRFBwUEND?=
- =?utf-8?B?UGpIVU1WYk9Cdmo0Wjd6ZXdGNkpsR0hvUW9DTlJyaHIxNGg5WDR5K05XazdX?=
- =?utf-8?B?M3JhZXcrSlBlM1JTUFoxN2ZUaVRJbVBadjlPczZFMkRFVU14RStwWWJJTitH?=
- =?utf-8?B?eXEzUm0yQmNJb2MyVmxwbis2VzhDNTVSMEx4U1RqaURiSWFzbEFkdWd4QmJJ?=
- =?utf-8?B?aEs4bnJaaWN4V0lBaHFQdFhTa0ExejVYLzVFalNWMEF4Y3VleUUvWkRBWlhv?=
- =?utf-8?B?NDJYOVVYMWZIeGtOUTVWK0tpU2MxMitmbG81VTN4VEJSclNGQmE2SVBXektQ?=
- =?utf-8?B?U0NqblhmUVBvc0FrT0NWSWhhRzQvdU1mT3FHK1ZjUnROcU5mdncrU2oxTXlz?=
- =?utf-8?B?NWxKZGJpRmx3d1k3ZWIzQi9BTWh1NytwVXRZNnRCRXk0ZXUwb21PUkVVWkZ3?=
- =?utf-8?B?bHMyOXJxdnV1b2M3Q2pDY0VtRjhzeXJTbmg3TkNRZ1VkSk5OODhzSXdNT3dl?=
- =?utf-8?B?dElZTXcySW9la0t5azZrMFlkZFJuWEtnRk5hS1ZVMjZCZ1V0N0tiUUk1bmhW?=
- =?utf-8?B?ZHgzRTFaRlpPUUVaQ280MjVvUWQ5UlcyREZQVE4rSHFNVVI3YUF5NXF2bWZV?=
- =?utf-8?B?bXpRK2FYMTJiS2JBZmNWTEtCeGNFOEg2RFk3TVBlOXJ3L1BsMTZycVQwWThC?=
- =?utf-8?B?UnFFT0RoK0ZRSE0zdCsxRDIyK09ySGpxN0RPb0xLeGVJTGdOMHhmdzFlUGdu?=
- =?utf-8?B?RGkwTUN2UnlyemI4SDJ1d21wYTJSNzNNVGl3MXlhc3lKUkpocFdxTUIxZjkv?=
- =?utf-8?B?TXc0QVIyeDdXdUF0RGhUUThnUTE3Uk9UZEdjUHVWTnVFdm9qTWZ3dHpkYXUy?=
- =?utf-8?B?Q3NwZDZMcS9KeEt1ZVJrT05BSDVVaXRYMFB1OG9MMmtJcTVtNzdxL2xQNVlk?=
- =?utf-8?B?bFFlMU8rWDJBN3ZFM3JoR01mK1JaWkhTNDU4OGVoSk56eGQrUFJNUGJxVnFm?=
- =?utf-8?B?M3FKaDJXMWlqN2RHcnpUWDV6TmFzcmVTTEw1SW80emtrQVJvclo3VHgycUFn?=
- =?utf-8?B?aEl4UFlHMzRsS2JhcVgwMlI2VDBldEtpNDZaazdRQTlvM0xlVHgrZW5ySjZh?=
- =?utf-8?B?clcvUWdpWWJueWV1cUxoMWdyWnM0Mk16ZGQ0Qm94dmNsN2ovb2xzVkRuRWlw?=
- =?utf-8?B?Vm5Ea3lWM0lIYjN1THFOSnRoWFBKeFFyYXc5OERsSVlRd2VUOWRqWHRSams5?=
- =?utf-8?B?eFI4dGxOSlNDZHowa0wwQTR0WWMyc2lvLy9sZmRRcmhuSnhhZWVBdkVrVDJv?=
- =?utf-8?B?NHQzWWtKUDZCbVIxRXFkdDg0Tms5c2hhcmZ5MDVZc0ZNS3dSOW9LdVRXZ2RL?=
- =?utf-8?B?ekE2ZEd3OTcxclFhLzF5YkZaNktHc25BN3FCUU9YcVd5b1k4Wmw0ZWQ3N2xw?=
- =?utf-8?B?a3ZkQ3hIQ05qakJaMnhQdFdVdFdKbWswZlZ6QW0rWDBFcXRMOXlZMStSZ29v?=
- =?utf-8?B?c2xOK0NXOFhoVzc3alA0RXdZb015RnFabi9kanV5L3VTb3pJZ0RyRjRBTllr?=
- =?utf-8?B?TW9SdzBPUkpUNFRJS3p5S3lCbjZmSWg2YUJxdEdDN25RemgrY1k4VmJTcCtM?=
- =?utf-8?B?cGd0a2tjMk92UTlLNkRVR05GUDBTcGJtY2NQY2U2dzExY21FTW1vZWpDZTIv?=
- =?utf-8?B?MXZxM3ZmMGhBSFc5VUEwNTUrYU5yQ2tYTFdaZFRKbmZLazJNZWRrSTFnUC9o?=
- =?utf-8?B?Zm9ITXVLdDZRYnovYWdTd1NMTEUrRi93WUQyQVBsaGJZTFQzT01HTWd3OUhJ?=
- =?utf-8?Q?p/F2njr6FGVcgp8ZcRxVDivoi?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc7fc941-82c6-498c-ea75-08dbcbc7566e
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8774.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 08:35:21.4729
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uNzCT8cgQiARErIrwnVbaMqtPRW9ptGJyb/TJdmKswpEyAl2MNzq6foWR9nLHNfW31IHGhMMJ+UpzALVkm2Xzw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9496
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/2] dt-bindings: adc: provide max34408/9 device tree
+ binding document
+Content-Language: en-US
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Ivan Mikhaylov <fr0st61te@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20231007234838.8748-1-fr0st61te@gmail.com>
+ <20231007234838.8748-2-fr0st61te@gmail.com>
+ <20231010154042.2ef667b2@jic23-huawei>
+ <383064a5b0863a4a616cd60cff8d4bc18e397fd7.camel@gmail.com>
+ <20231012084052.504ac930@jic23-huawei>
+ <e7b74daa9d0131246fd10f47aa4128bc8f8f3177.camel@gmail.com>
+ <20231013091952.00002573@Huawei.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231013091952.00002573@Huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
-
-On 10/11/2023 8:37 AM, Alexander Stein wrote:
-> Hi Iuliana,
->
-> Am Dienstag, 10. Oktober 2023, 11:09:29 CEST schrieb Iuliana Prodan (OSS):
->> From: Iuliana Prodan <iuliana.prodan@nxp.com>
+On 13/10/2023 10:19, Jonathan Cameron wrote:
+> On Thu, 12 Oct 2023 19:27:33 +0300
+> Ivan Mikhaylov <fr0st61te@gmail.com> wrote:
+> 
+>> On Thu, 2023-10-12 at 08:40 +0100, Jonathan Cameron wrote:
+>>> On Tue, 10 Oct 2023 23:22:48 +0300
+>>> Ivan Mikhaylov <fr0st61te@gmail.com> wrote:
+>>>   
+>>>> On Tue, 2023-10-10 at 15:40 +0100, Jonathan Cameron wrote:  
+>>>>> On Sun,  8 Oct 2023 02:48:37 +0300
+>>>>> Ivan Mikhaylov <fr0st61te@gmail.com> wrote:
+>>>>>     
+>>>>>> The hardware binding for i2c current monitoring device with
+>>>>>> overcurrent
+>>>>>> control.
+>>>>>>
+>>>>>> Signed-off-by: Ivan Mikhaylov <fr0st61te@gmail.com>
+>>>>>> ---
+>>>>>>  .../bindings/iio/adc/maxim,max34408.yaml      | 141
+>>>>>> ++++++++++++++++++
+>>>>>>  1 file changed, 141 insertions(+)
+>>>>>>  create mode 100644
+>>>>>> Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
+>>>>>>
+>>>>>> diff --git
+>>>>>> a/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
+>>>>>> b/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..9749f1fd1802
+>>>>>> --- /dev/null
+>>>>>> +++
+>>>>>> b/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
+>>>>>> @@ -0,0 +1,141 @@
+>>>>>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>>>>>> +%YAML 1.2
+>>>>>> +---
+>>>>>> +$id:
+>>>>>> http://devicetree.org/schemas/iio/adc/maxim,max34408.yaml#
+>>>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>>>> +
+>>>>>> +title: Two- and four-channel current monitors with overcurrent
+>>>>>> control
+>>>>>> +
+>>>>>> +maintainers:
+>>>>>> +  - Ivan Mikhaylov <fr0st61te@gmail.com>
+>>>>>> +
+>>>>>> +description: |
+>>>>>> +  The MAX34408/MAX34409 are two- and four-channel current
+>>>>>> monitors
+>>>>>> that are
+>>>>>> +  configured and monitored with a standard I2C/SMBus serial
+>>>>>> interface. Each
+>>>>>> +  unidirectional current sensor offers precision high-side
+>>>>>> operation with a
+>>>>>> +  low full-scale sense voltage. The devices automatically
+>>>>>> sequence
+>>>>>> through
+>>>>>> +  two or four channels and collect the current-sense samples
+>>>>>> and
+>>>>>> average them
+>>>>>> +  to reduce the effect of impulse noise. The raw ADC samples
+>>>>>> are
+>>>>>> compared to
+>>>>>> +  user-programmable digital thresholds to indicate overcurrent
+>>>>>> conditions.
+>>>>>> +  Overcurrent conditions trigger a hardware output to provide
+>>>>>> an
+>>>>>> immediate
+>>>>>> +  indication to shut down any necessary external circuitry.
+>>>>>> +
+>>>>>> +  Specifications about the devices can be found at:
+>>>>>> + 
+>>>>>> https://www.analog.com/media/en/technical-documentation/data-sheets/MAX34408-MAX34409.pdf
+>>>>>> +
+>>>>>> +properties:
+>>>>>> +  compatible:
+>>>>>> +    enum:
+>>>>>> +      - maxim,max34408
+>>>>>> +      - maxim,max34409
+>>>>>> +
+>>>>>> +  "#address-cells":
+>>>>>> +    const: 1
+>>>>>> +
+>>>>>> +  "#size-cells":
+>>>>>> +    const: 0
+>>>>>> +
+>>>>>> +  reg:
+>>>>>> +    maxItems: 1
+>>>>>> +
+>>>>>> +  interrupts:
+>>>>>> +    maxItems: 1
+>>>>>> +
+>>>>>> +  powerdown-gpios:
+>>>>>> +    description:
+>>>>>> +      Shutdown Output. Open-drain output. This output
+>>>>>> transitions
+>>>>>> to high impedance
+>>>>>> +      when any of the digital comparator thresholds are
+>>>>>> exceeded
+>>>>>> as long as the ENA
+>>>>>> +      pin is high.
+>>>>>> +    maxItems: 1
+>>>>>> +
+>>>>>> +  shtdn-enable-gpios:    
+>>>>>
+>>>>> I guess the review crossed with you sending v5.  There is some
+>>>>> feedback on v4 you need
+>>>>> to address here.    
+>>>>
+>>>> Jonathan, I thought I did, I've changed ena to powerdown-gpios from
+>>>> Krzysztof's comments but about this one pin I'm still not sure, it
+>>>> looks like *-enable-gpios (like in *-enable-gpios pins in
+>>>> iio/frequency/adi,adf4377.yaml) pin or is it not? Or maybe any
+>>>> other
+>>>> suggestions about naming of this one?
+>>>>
+>>>> Thanks.  
+>>>
+>>> shutdown-gpios and make the sense (active high / low) such that
+>>> setting
+>>> it results in teh device being shut down.
+>>> Or treat it as an enable and enable-gpios
+>>>
+>>> Something that indicates both shutdown and enable is confusing ;)
+>>>
+>>> Jonathan  
 >>
->> Add the reserve-memory nodes used by DSP when the rpmsg
->> feature is enabled.
 >>
->> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
->> ---
->>   arch/arm64/boot/dts/freescale/imx8mp.dtsi | 16 ++++++++++++++++
->>   1 file changed, 16 insertions(+)
+>> Jonathan, then I make these changes:
 >>
->> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
->> b/arch/arm64/boot/dts/freescale/imx8mp.dtsi index
->> cc406bb338fe..22815b3ea890 100644
->> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
->> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
->> @@ -211,6 +211,22 @@
->>   			reg = <0 0x92400000 0 0x2000000>;
->>   			no-map;
->>   		};
->> +
->> +		dsp_vdev0vring0: vdev0vring0@942f0000 {
->> +			reg = <0 0x942f0000 0 0x8000>;
->> +			no-map;
->> +		};
->> +
->> +		dsp_vdev0vring1: vdev0vring1@942f8000 {
->> +			reg = <0 0x942f8000 0 0x8000>;
->> +			no-map;
->> +		};
->> +
->> +		dsp_vdev0buffer: vdev0buffer@94300000 {
->> +			compatible = "shared-dma-pool";
->> +			reg = <0 0x94300000 0 0x100000>;
->> +			no-map;
->> +		};
-> Please configure these reserved memories on board level. Not every i.MX8MP
-> based board uses this DSP or has these memory addresses available.
-
-Will it be ok in imx8mp-evk.dts?
-
-Thanks,
-Iulia
-
-> Best regards,
-> Alexander
->
->>   	};
+>> powerdown-gpios: -> output-enable:
+> Needs to retain the gpios bit as we want the standard gpio stuff to pick
+> them up. I'm not that keen on output-enable-gpios though.  The activity
+> here is very much 'shutdown because of error or not enabled' I think.
+> So perhaps we flip the sense and document that it needs to be active low?
+> 
+>> shtdn-enable-gpios: -> enable-gpios:
 >>
->>   	pmu {
->
+>> Is it ok?
+> 
+> Conor, Rob, Krzysztof - you probably have a better insight into this than
+> I do.
+> 
+
+"enable-gpios" are for turning on a specific feature, not powering
+on/off entire device. For example to enable regulator output.
+
+"powerdown-gpios" are for turning device on/off.
+
+I don't know what do you have in your device.
+
+Best regards,
+Krzysztof
+
