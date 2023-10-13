@@ -2,136 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1487C7DA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6792A7C7DA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbjJMGZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 02:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
+        id S229762AbjJMG13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 02:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJMGZQ (ORCPT
+        with ESMTP id S229441AbjJMG11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 02:25:16 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B67B7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:25:14 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7F27E2188E;
-        Fri, 13 Oct 2023 06:25:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1697178313; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=T9TmIodEecjXhOeeyVrpi/lTsL8WIjPMSwLYTMa8tvQ=;
-        b=JLCLMy6wswunI8hU6sPbjwoP/t0Ty/c1IeLSfXcWEuOBv28FvZWwfXG+kGX0L0Wl2ItZdD
-        S3PaaGn1Jf6TSo1slBFf0sxtePdCdMP1uQXZ5fBfPCT6GRl4eaHvwuaBNC9Q1lFgsfbWyE
-        3X81qg0HtXKG5100/xI+weOypjXniQI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1697178313;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=T9TmIodEecjXhOeeyVrpi/lTsL8WIjPMSwLYTMa8tvQ=;
-        b=7AjiLkauuPFUix9b7kF2COHEbA56vaqruZLElPf2aJkyNCInFjhKjCW81fMGi8QcLuAW3b
-        PJuVEysxjDJ3ihBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 713BE138EF;
-        Fri, 13 Oct 2023 06:25:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id bkqXG8niKGX/NwAAMHmgww
-        (envelope-from <dwagner@suse.de>); Fri, 13 Oct 2023 06:25:13 +0000
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH] nvme: update firmware version after commit
-Date:   Fri, 13 Oct 2023 08:26:23 +0200
-Message-ID: <20231013062623.6745-1-dwagner@suse.de>
+        Fri, 13 Oct 2023 02:27:27 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF0FBB;
+        Thu, 12 Oct 2023 23:27:26 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39D5hPdL032001;
+        Fri, 13 Oct 2023 06:27:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=nZ5lTCInN9V+BiHFhjiwiOZL80UvMAm2wBOPGV3c8hs=;
+ b=PIbhud9ZDl14e/CamvI9CVKJeKBZYD2B1OhDt3NACIwA/jLKcq8+52EHtZOjjM+mhzkt
+ p9KBXQSOUepHfbjvDl3wkxf3tb/kHcx3ryELFPQgeLvOilSUlFB9gP8VpzssCQAlB3hT
+ spyBdYR7cYdAbT2lsn6FZnYyqpGcttnvfPCpMQsqrbMqjkjgElcn1rcukLrkw516QT8A
+ LmmYC3JmW4dcFDgU8a7I2ucKvUiQgkvXQ8gSBFsCHUQ2eXJ0j9SC+aG8jGv7c96/PLWD
+ 2pNmN6VlDuJdQhoYZxAghPxQjNjtb9EnNSCw1f3aTcuUlAz26N+knoUKqUBUcCeYNRdx +A== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tpt11gkeq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 06:27:24 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39D6RN3I027061
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 06:27:23 GMT
+Received: from hu-jiangenj-sha.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 12 Oct 2023 23:27:21 -0700
+From:   Joey Jiao <quic_jiangenj@quicinc.com>
+To:     <linux-modules@vger.kernel.org>
+CC:     <quic_jiangenj@quicinc.com>, <quic_likaid@quicinc.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5] module: Add CONFIG_MODULE_DISABLE_INIT_FREE option
+Date:   Fri, 13 Oct 2023 11:57:11 +0530
+Message-ID: <20231013062711.28852-1-quic_jiangenj@quicinc.com>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: 0.50
-X-Spamd-Result: default: False [0.50 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         MIME_GOOD(-0.10)[text/plain];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         RCPT_COUNT_FIVE(0.00)[5];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         MID_CONTAINS_FROM(1.00)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.40)[77.76%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Q3BD-YPWkCQJsHYXFN2FbszG-u0t-0kW
+X-Proofpoint-ORIG-GUID: Q3BD-YPWkCQJsHYXFN2FbszG-u0t-0kW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-13_03,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=852 impostorscore=0 suspectscore=0
+ priorityscore=1501 spamscore=0 adultscore=0 clxscore=1015 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310130054
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The firmware version sysfs entry needs to be updated after a successfully
-firmware activation.
+Syzkaller uses the _RET_IP_ (also known as pc) to decode covered
+file/function/line, and it employs pc ^ hash(prev_pc) (referred to as
+signal) to indicate covered edge. If the pc for the same file/line
+keeps changing across reboots, syzkaller will report incorrect coverage
+data. Additionally, even if kaslr can be disabled, we cannot get the
+same covered edge for module because both pc and prev_pc have changed,
+thus altering pc ^ hash(prev_pc).
 
-nvme-cli stopped issuing an Identify Controller command to list the
-current firmware information and relies on sysfs showing the current
-firmware version.
+To facilitate syzkaller coverage, it is crucial for both the core kernel
+and modules to maintain at the same addresses across reboots.
 
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
+So, the following steps are necessary:
+- In userspace:
+  1) To maintain an uninterrupted loading sequence, it is recommended to
+execute modprobe commands by loading one module at a time, to avoid any
+interference from the scheduler.
+  2) Avoid unloading any module during fuzzing.
+- In kernel:
+  1) Disable CONFIG_RANDOMIZE_BASE to load the core kernel at the same
+address consistently.
+  2) To ensure deterministic module loading at the same address, enabling
+CONFIG_MODULE_DISABLE_INIT_FREE prevents the asynchronous freeing of init
+sections. Without this option, there is a possibility that the next module
+could be loaded into previous freed init pages of a previous loaded module.
+
+It is important to note that this option is intended for fuzzing tests only
+and should not be set as the default configuration in production builds.
+
+Signed-off-by: Joey Jiao <quic_jiangenj@quicinc.com>
 ---
- drivers/nvme/host/core.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ kernel/module/Kconfig | 13 +++++++++++++
+ kernel/module/main.c  |  3 ++-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 62612f87aafa..bb15d878e8a2 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -4079,6 +4079,20 @@ static void nvme_get_fw_slot_info(struct nvme_ctrl *ctrl)
- 	kfree(log);
- }
+diff --git a/kernel/module/Kconfig b/kernel/module/Kconfig
+index 33a2e991f608..d0df0b5997b0 100644
+--- a/kernel/module/Kconfig
++++ b/kernel/module/Kconfig
+@@ -389,4 +389,17 @@ config MODULES_TREE_LOOKUP
+ 	def_bool y
+ 	depends on PERF_EVENTS || TRACING || CFI_CLANG
  
-+static void nvme_update_firmware_rev(struct nvme_ctrl *ctrl)
-+{
-+	struct nvme_id_ctrl *id;
-+	int ret;
++config MODULE_DISABLE_INIT_FREE
++	bool "Disable freeing of init sections"
++	default n
++	depends on !RANDOMIZE_BASE
++	help
++	  By default, the kernel frees init sections after module is fully
++	  loaded.
 +
-+	ret = nvme_identify_ctrl(ctrl, &id);
-+	if (ret) {
-+		dev_warn(ctrl->device, "Identify Controller failed (%d)\n", ret);
-+		return;
-+	}
-+	memcpy(ctrl->subsys->firmware_rev, id->fr,
-+	       sizeof(ctrl->subsys->firmware_rev));
-+}
++	  Enabling MODULE_DISABLE_INIT_FREE allows users to prevent the freeing
++	  of init sections. It is particularly helpful for syzkaller fuzzing,
++	  ensuring that the module consistently loads at the same address
++	  across reboots.
 +
- static void nvme_fw_act_work(struct work_struct *work)
- {
- 	struct nvme_ctrl *ctrl = container_of(work,
-@@ -4109,6 +4123,7 @@ static void nvme_fw_act_work(struct work_struct *work)
- 	nvme_unquiesce_io_queues(ctrl);
- 	/* read FW slot information to clear the AER */
- 	nvme_get_fw_slot_info(ctrl);
-+	nvme_update_firmware_rev(ctrl);
+ endif # MODULES
+diff --git a/kernel/module/main.c b/kernel/module/main.c
+index 98fedfdb8db5..d226df3a6cf6 100644
+--- a/kernel/module/main.c
++++ b/kernel/module/main.c
+@@ -2593,7 +2593,8 @@ static noinline int do_init_module(struct module *mod)
+ 	 * be cleaned up needs to sync with the queued work - ie
+ 	 * rcu_barrier()
+ 	 */
+-	if (llist_add(&freeinit->node, &init_free_list))
++	if (!IS_ENABLED(CONFIG_MODULE_DISABLE_INIT_FREE) &&
++	    llist_add(&freeinit->node, &init_free_list))
+ 		schedule_work(&init_free_wq);
  
- 	queue_work(nvme_wq, &ctrl->async_event_work);
- }
+ 	mutex_unlock(&module_mutex);
 -- 
 2.42.0
 
