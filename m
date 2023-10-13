@@ -2,55 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E98E27C8532
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D75497C852C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbjJMMBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52746 "EHLO
+        id S231625AbjJML7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231750AbjJMMAZ (ORCPT
+        with ESMTP id S231580AbjJML7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 08:00:25 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95EA1D58;
-        Fri, 13 Oct 2023 05:00:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B3C4C433C9;
-        Fri, 13 Oct 2023 11:59:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697198401;
-        bh=OrFL+Yftu/dBFajCkxlvH2Gier1tRKWYsuU8KyLe3dM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sMyYYtKJ6dCQrEqAGWWgpSh3oU9RJ/2NrbUph/U7CVV4Co0COOAd1YUHMmbT5JEZ3
-         nxDYpp9JYWLYbOYzTbAojl6BucGZyU3Qnx7Zx9hoqFwFptPvg0cvS/RkD0iSde8Udc
-         U2MfXIhJIh2cQIUKhsk/vxkPDjpw1vJ7a3JhnVD0YwtiCj9Y8Tf4U7vsvc5XFOA2W0
-         tteZjbF+Rp9tjAuZ2SwGGlKFd6+H5DKYLzmbV/NqAdvZLqcqSvEQang4eG65pLZhlg
-         vbbqemSvesQV+NBPydDED1XVc2DItoCUa++0cnaf602gc2880KXrGwqBt9+l/t3mGM
-         TNXTiELmPnKxA==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
-        Yong He <alexyonghe@tencent.com>,
-        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-        Like Xu <likexu@tencent.com>
-Subject: [PATCH 18/18] srcu: Only accelerate on enqueue time
-Date:   Fri, 13 Oct 2023 13:59:02 +0200
-Message-Id: <20231013115902.1059735-19-frederic@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231013115902.1059735-1-frederic@kernel.org>
-References: <20231013115902.1059735-1-frederic@kernel.org>
+        Fri, 13 Oct 2023 07:59:13 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3A5CA;
+        Fri, 13 Oct 2023 04:59:11 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9b64b98656bso321418866b.0;
+        Fri, 13 Oct 2023 04:59:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697198350; x=1697803150; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=thbVoOKvvFFfWREjhW0EaTYNaIfFHPUXv/GpkLEVSkM=;
+        b=TTMxU0lcAo/FXowvRY2PNcaRM04eQ21t4KaXoOX/Jl7TVH2+Aod7Kk5fmPquNZ7b+e
+         T0PINfOFo4qFnrO44Ml1tqjwhzoJMEeY2s3aS8s5HQMNpuIZbK0izzDGWDUcmtbOZblP
+         El76AISotSocNUhEPJomnLKMjXyUEvTeyGvnW32nRnfoxxMD5M+k0ZOVJm0DVsJBxCZG
+         EoHQNYoqtoXBODVxJ6CekIiJBGppX5BeYeAte8SOHjQExbNcXvUwA8nHWoszo/vUD9iB
+         pzDdCEY4ylDdjvwg6udXRQ1OFlt+krQsNMI5LY94WEx1ibLTwgwAITfiHxqd+Xx6HA+T
+         wHdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697198350; x=1697803150;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=thbVoOKvvFFfWREjhW0EaTYNaIfFHPUXv/GpkLEVSkM=;
+        b=nIJfGuiHlipFMCe2h7UAiqzzNKwdiGV1w8BYPe7l36g6tgUmeDH4R9Q6IePCR3MM1h
+         3TgXz7vn/z9Ru5GNp27cu6R661aMnAtcQMBkCSKcWAqMfKcNaEaJbiJYm8BBA1odggyO
+         kuHYgO93tqY7bz8qo3Z1wo9qSwFxK293nS1VdRKcIC3NfAqRTtuEKR4n3zrvK7yWNiTC
+         bFgnW04grnUEb67tR5fQMsMlD4Hi8P29LxxaFEaXESwfQrRYQIqq1TUjc/09yRj3nAiQ
+         7Sb3Qu1qawd0rB8tAXD8WOd0fdqHa3iDk/zByVmetHA0iff1KCQeZ/P68VCKRiG/aGOg
+         x8qQ==
+X-Gm-Message-State: AOJu0YwRkJvjD1tw0DAbI4L1U733rOXIzDtJPqLHBMwyBRfUKwK8Ww8z
+        7tRg2JgSyGSqNDglzTuwvHMLnVPddYg=
+X-Google-Smtp-Source: AGHT+IFVTrO5QAjuQ+dzy+VrB5ivQQbjM4YWV1IRwl+W0iT1JCPlgwxSx8TsLHtgYfHzzMVhvqQZ8A==
+X-Received: by 2002:a17:906:8a64:b0:9b3:120:f319 with SMTP id hy4-20020a1709068a6400b009b30120f319mr22632705ejc.51.1697198350045;
+        Fri, 13 Oct 2023 04:59:10 -0700 (PDT)
+Received: from localhost (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id qq25-20020a17090720d900b00977cad140a8sm12349240ejb.218.2023.10.13.04.59.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 04:59:09 -0700 (PDT)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCH 0/5] PM: domains: Drop pm_genpd_opp_to_performance_state()
+Date:   Fri, 13 Oct 2023 13:59:06 +0200
+Message-ID: <169719833142.3828427.5236534342833939623.b4-ty@nvidia.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231012152108.101270-1-ulf.hansson@linaro.org>
+References: <20231012152108.101270-1-ulf.hansson@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,61 +77,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acceleration in SRCU happens on enqueue time for each new callback. This
-operation is expected not to fail and therefore any similar attempt
-from other places shouldn't find any remaining callbacks to accelerate.
+From: Thierry Reding <treding@nvidia.com>
 
-Moreover accelerations performed beyond enqueue time are error prone
-because rcu_seq_snap() then may return the snapshot for a new grace
-period that is not going to be started.
 
-Remove these dangerous and needless accelerations and introduce instead
-assertions reporting leaking unaccelerated callbacks beyond enqueue
-time.
+On Thu, 12 Oct 2023 17:21:08 +0200, Ulf Hansson wrote:
+> Since commit 7c41cdcd3bbe ("OPP: Simplify the over-designed pstate <-> level
+> dance"), there is no longer any users of the
+> pm_genpd_opp_to_performance_state() API, while a few genpd providers are still
+> assigning the redundant ->opp_to_performance_state() callback.
+> 
+> Let's clean this up so we can drop pm_genpd_opp_to_performance_state() and the
+> callback too.
+> 
+> [...]
 
-Co-developed-by: Yong He <alexyonghe@tencent.com>
-Signed-off-by: Yong He <alexyonghe@tencent.com>
-Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Co-developed-by: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
-Signed-off-by: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
-Reviewed-by: Like Xu <likexu@tencent.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/rcu/srcutree.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Applied, thanks!
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 9fab9ac36996..560e99ec5333 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -784,8 +784,7 @@ static void srcu_gp_start(struct srcu_struct *ssp)
- 	spin_lock_rcu_node(sdp);  /* Interrupts already disabled. */
- 	rcu_segcblist_advance(&sdp->srcu_cblist,
- 			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
--	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
--				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
-+	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
- 	spin_unlock_rcu_node(sdp);  /* Interrupts remain disabled. */
- 	WRITE_ONCE(ssp->srcu_sup->srcu_gp_start, jiffies);
- 	WRITE_ONCE(ssp->srcu_sup->srcu_n_exp_nodelay, 0);
-@@ -1721,6 +1720,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
- 	ssp = sdp->ssp;
- 	rcu_cblist_init(&ready_cbs);
- 	spin_lock_irq_rcu_node(sdp);
-+	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
- 	rcu_segcblist_advance(&sdp->srcu_cblist,
- 			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
- 	if (sdp->srcu_cblist_invoking ||
-@@ -1750,8 +1750,6 @@ static void srcu_invoke_callbacks(struct work_struct *work)
- 	 */
- 	spin_lock_irq_rcu_node(sdp);
- 	rcu_segcblist_add_len(&sdp->srcu_cblist, -len);
--	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
--				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
- 	sdp->srcu_cblist_invoking = false;
- 	more = rcu_segcblist_ready_cbs(&sdp->srcu_cblist);
- 	spin_unlock_irq_rcu_node(sdp);
+[1/5] soc/tegra: pmc: Drop the ->opp_to_performance_state() callback
+      commit: cda263907a6f88c75fb97cf7adecffaafb6237ec
+
+Best regards,
 -- 
-2.34.1
-
+Thierry Reding <treding@nvidia.com>
