@@ -2,103 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 175B67C7C36
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 05:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B117C7C37
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 05:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbjJMDfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 23:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60316 "EHLO
+        id S229562AbjJMDiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 23:38:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjJMDfn (ORCPT
+        with ESMTP id S229445AbjJMDiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 23:35:43 -0400
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D473B7;
-        Thu, 12 Oct 2023 20:35:41 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Vu0mA1C_1697168137;
-Received: from 30.97.48.67(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vu0mA1C_1697168137)
-          by smtp.aliyun-inc.com;
-          Fri, 13 Oct 2023 11:35:38 +0800
-Message-ID: <e1d3f57c-774a-840d-f811-1b91cc40079a@linux.alibaba.com>
-Date:   Fri, 13 Oct 2023 11:35:52 +0800
+        Thu, 12 Oct 2023 23:38:10 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9B44EA9;
+        Thu, 12 Oct 2023 20:38:08 -0700 (PDT)
+Received: from chenguohua$jari.cn ( [182.148.14.172] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Fri, 13 Oct 2023 11:36:24
+ +0800 (GMT+08:00)
+X-Originating-IP: [182.148.14.172]
+Date:   Fri, 13 Oct 2023 11:36:24 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   chenguohua@jari.cn
+To:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH] kallsyms: Clean up errors in module.h
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH V3] leds: sc27xx: Move mutex_init() down
-To:     Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>
-Cc:     linux-leds@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20231013022010.854367-1-chunyan.zhang@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20231013022010.854367-1-chunyan.zhang@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <4819dee9.948.18b271b53e5.Coremail.chenguohua@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwC3VUA4uyhl2djBAA--.664W
+X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQADEWUnvzMAGQAZsd
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_00,RCVD_IN_PBL,RDNS_NONE,
+        T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/13/2023 10:20 AM, Chunyan Zhang wrote:
-> Move the mutex_init() to avoid redundant mutex_destroy() calls after
-> that for each time the probe fails.
-> 
-> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-
-LGTM. Thanks.
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-
-> ---
-> Rebased onto linux-next.
-> 
-> V3: Move the mutex_init() before sc27xx_led_register(), in case it maybe
-> used right after led registerd.
-> 
-> V2: Move the mutex_init() to the end of .probe() instead of adding mutex_destroy().
-> ---
->   drivers/leds/leds-sc27xx-bltc.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/leds/leds-sc27xx-bltc.c b/drivers/leds/leds-sc27xx-bltc.c
-> index af1f00a2f328..f04db793e8d6 100644
-> --- a/drivers/leds/leds-sc27xx-bltc.c
-> +++ b/drivers/leds/leds-sc27xx-bltc.c
-> @@ -296,7 +296,6 @@ static int sc27xx_led_probe(struct platform_device *pdev)
->   		return -ENOMEM;
->   
->   	platform_set_drvdata(pdev, priv);
-> -	mutex_init(&priv->lock);
->   	priv->base = base;
->   	priv->regmap = dev_get_regmap(dev->parent, NULL);
->   	if (!priv->regmap) {
-> @@ -309,13 +308,11 @@ static int sc27xx_led_probe(struct platform_device *pdev)
->   		err = of_property_read_u32(child, "reg", &reg);
->   		if (err) {
->   			of_node_put(child);
-> -			mutex_destroy(&priv->lock);
->   			return err;
->   		}
->   
->   		if (reg >= SC27XX_LEDS_MAX || priv->leds[reg].active) {
->   			of_node_put(child);
-> -			mutex_destroy(&priv->lock);
->   			return -EINVAL;
->   		}
->   
-> @@ -323,6 +320,8 @@ static int sc27xx_led_probe(struct platform_device *pdev)
->   		priv->leds[reg].active = true;
->   	}
->   
-> +	mutex_init(&priv->lock);
-> +
->   	err = sc27xx_led_register(dev, priv);
->   	if (err)
->   		mutex_destroy(&priv->lock);
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+c3BhY2UgcmVxdWlyZWQgYWZ0ZXIgdGhhdCAnLCcgKGN0eDpWeFYpCgpTaWduZWQtb2ZmLWJ5OiBH
+dW9IdWEgQ2hlbmcgPGNoZW5ndW9odWFAamFyaS5jbj4KLS0tCiBpbmNsdWRlL2xpbnV4L21vZHVs
+ZS5oIHwgNCArKy0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9u
+cygtKQoKZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbW9kdWxlLmggYi9pbmNsdWRlL2xpbnV4
+L21vZHVsZS5oCmluZGV4IGE5OGUxODhjZjM3Yi4uNDhhZWJlYTcyZDNhIDEwMDY0NAotLS0gYS9p
+bmNsdWRlL2xpbnV4L21vZHVsZS5oCisrKyBiL2luY2x1ZGUvbGludXgvbW9kdWxlLmgKQEAgLTE1
+Miw3ICsxNTIsNyBAQCBleHRlcm4gdm9pZCBjbGVhbnVwX21vZHVsZSh2b2lkKTsKICNkZWZpbmUg
+X19pbml0Y29uc3Rfb3JfbW9kdWxlCiAjZGVmaW5lIF9fSU5JVF9PUl9NT0RVTEUJLnRleHQKICNk
+ZWZpbmUgX19JTklUREFUQV9PUl9NT0RVTEUJLmRhdGEKLSNkZWZpbmUgX19JTklUUk9EQVRBX09S
+X01PRFVMRQkuc2VjdGlvbiAiLnJvZGF0YSIsImEiLCVwcm9nYml0cworI2RlZmluZSBfX0lOSVRS
+T0RBVEFfT1JfTU9EVUxFCS5zZWN0aW9uICIucm9kYXRhIiwgImEiLCAlcHJvZ2JpdHMKICNlbHNl
+CiAjZGVmaW5lIF9faW5pdF9vcl9tb2R1bGUgX19pbml0CiAjZGVmaW5lIF9faW5pdGRhdGFfb3Jf
+bW9kdWxlIF9faW5pdGRhdGEKQEAgLTgwMiw3ICs4MDIsNyBAQCBzdGF0aWMgaW5saW5lIGJvb2wg
+d2l0aGluX21vZHVsZSh1bnNpZ25lZCBsb25nIGFkZHIsIGNvbnN0IHN0cnVjdCBtb2R1bGUgKm1v
+ZCkKIH0KIAogLyogR2V0L3B1dCBhIGtlcm5lbCBzeW1ib2wgKGNhbGxzIHNob3VsZCBiZSBzeW1t
+ZXRyaWMpICovCi0jZGVmaW5lIHN5bWJvbF9nZXQoeCkgKHsgZXh0ZXJuIHR5cGVvZih4KSB4IF9f
+YXR0cmlidXRlX18oKHdlYWssdmlzaWJpbGl0eSgiaGlkZGVuIikpKTsgJih4KTsgfSkKKyNkZWZp
+bmUgc3ltYm9sX2dldCh4KSAoeyBleHRlcm4gdHlwZW9mKHgpIHggX19hdHRyaWJ1dGVfXygod2Vh
+aywgdmlzaWJpbGl0eSgiaGlkZGVuIikpKTsgJih4KTsgfSkKICNkZWZpbmUgc3ltYm9sX3B1dCh4
+KSBkbyB7IH0gd2hpbGUgKDApCiAjZGVmaW5lIHN5bWJvbF9wdXRfYWRkcih4KSBkbyB7IH0gd2hp
+bGUgKDApCiAKLS0gCjIuMTcuMQo=
