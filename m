@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF397C857F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED257C8589
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbjJMMSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39990 "EHLO
+        id S231590AbjJMMUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 08:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231409AbjJMMS2 (ORCPT
+        with ESMTP id S231381AbjJMMT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 08:18:28 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96DAECE;
-        Fri, 13 Oct 2023 05:18:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=CNs9q6TO8zQOf3XyoHnGAzwbhrXwJMta9EMqOJxaZjs=; b=FcSKKAMrYCs7Sft+F3dTF65Q36
-        7qvaAA5PO4ttfd1tVymV+CHjS9ypOFv6v5ruZJrxemV7D4U4WEL6FEFWXHrjyW8nnJWWtSV8QQEOG
-        1y0CsUMDkFuYvKI9JLqATQsd2TV7hDBo9qvPGfHB8uVRe2DV6M02swNFUgC2CE40NrZQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qrH7S-0025TK-6a; Fri, 13 Oct 2023 14:18:18 +0200
-Date:   Fri, 13 Oct 2023 14:18:18 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] net: phy: replace deprecated strncpy with ethtool_sprintf
-Message-ID: <73dd8e28-516a-4a85-a309-c411a82c958c@lunn.ch>
-References: <20231012-strncpy-drivers-net-phy-nxp-cbtx-c-v1-1-4510f20aa0e6@google.com>
+        Fri, 13 Oct 2023 08:19:59 -0400
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4269CBE;
+        Fri, 13 Oct 2023 05:19:57 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 725D51C0050; Fri, 13 Oct 2023 14:19:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+        t=1697199595;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/y2UoERvx8e0wwtD04T8hSXGJ9Ej3eDoObCJrOk+Msc=;
+        b=XlbA8Hh7BmDFC+bSVIHd6zYdRmtX4n5nLogZ7neLVGIhSPWKArMBBbaUT3b4CMxJVg9yne
+        iiqY7+SVBbWQeYNyvRjHII3Lf/Nk+FJNnywSbU1mNbqr4JQ4Gv1xdZc/31Sgm1bRGQ55nN
+        0vPQXRz7G3zbXAlE++sTMyEmumGHoSA=
+Date:   Fri, 13 Oct 2023 14:19:54 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: Re: [PATCH] leds: rgb: Implement per-key keyboard backlight for
+ several TUXEDO devices
+Message-ID: <ZSk16iTBmZ2fLHZ0@duo.ucw.cz>
+References: <20231011190017.1230898-1-wse@tuxedocomputers.com>
+ <ZSe1GYLplZo5fsAe@duo.ucw.cz>
+ <0440ed38-c53b-4aa1-8899-969e5193cfef@tuxedocomputers.com>
+ <ZSf9QneKO/8IzWhd@duo.ucw.cz>
+ <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="15YJOgOjsKwaYDow"
 Content-Disposition: inline
-In-Reply-To: <20231012-strncpy-drivers-net-phy-nxp-cbtx-c-v1-1-4510f20aa0e6@google.com>
+In-Reply-To: <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -52,36 +53,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Justin
 
-The Subject line should say which PHY you are patching, nxp-cbtx. The
-patches which follow do have driver names. Please repost with the
-Subject corrected.
+--15YJOgOjsKwaYDow
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Please also take a look at
+Hi!
 
-https://www.kernel.org/doc/html/latest/process/maintainer-netdev.html
+> Every multi_zone_* mode could also output a zones_image. That is a greysc=
+ale
+> bitmap or even a svg containing the information where each zone is located
+> and which outline it has. For the bitmap the information would be encoded=
+ in
+> the grey value, aka 0 =3D zone 0 etc with 0xff =3D no zone (i.e. space be=
+tween
+> the keys). For the svg, the name of the paths would indicate the
+> zone they
 
-which will tell you about networking subsystem specific processes it
-would be nice to follow.
+This is not really suitable for kernel.
 
+> > It would go to drivers/auxdisplay, most probably.
+>=20
+> Looking into it, thanks for the direction. But this would come with the
+> downside that upowers kbd_brightness no longer controls the keyboard.
 
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> ethtool_sprintf() is designed specifically for get_strings() usage.
-> Let's replace strncpy in favor of this dedicated helper function.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+Yep. We could add some kind of kludge to fix that.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Perhaps first question is to ask auxdisplay people if treating
+keyboard as a weird display is okay? cc: lkml, leds, drm, input at
+least.
 
-    Andrew
+Best regards,
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
 
----
-pw-bot: cr
+--15YJOgOjsKwaYDow
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZSk16gAKCRAw5/Bqldv6
+8sniAJ0WixY2vRASdMoSZ+sZGVmhrjybCACguFT9SBT9d9Dr5wR4G9/UCeJNMs0=
+=cElG
+-----END PGP SIGNATURE-----
+
+--15YJOgOjsKwaYDow--
