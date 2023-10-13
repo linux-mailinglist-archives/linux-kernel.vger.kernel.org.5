@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB847C9186
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A837F7C9187
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232624AbjJMXrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 19:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35990 "EHLO
+        id S232651AbjJMXrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 19:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232431AbjJMXrb (ORCPT
+        with ESMTP id S232431AbjJMXrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 19:47:31 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27154C9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:47:29 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-57e40f0189aso1414289eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:47:29 -0700 (PDT)
+        Fri, 13 Oct 2023 19:47:35 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A98CE
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:47:34 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-69101022969so2336894b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:47:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697240848; x=1697845648; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697240854; x=1697845654; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=r89DHYNFueYR4hgHMDPSPQFhhiG/h3pT42UPfUI4Rls=;
-        b=cl7tUULvjPs3bgr/tGYI8Xfn/lvfYqXoT3+luUwnDz/QSrcL9Qo3PirdFQA8xKK+e8
-         Yd0IPnQZA+wExu69LNe3Jf3U75XLfguJqjhjYwahYE4uH2KIrpVM0VPPZ2PxC65Kg+GB
-         eBWUdNadXY4lt+aTJfFgVA0r7MOUeqvcXjHhmUBXJWWnn+8zRyxhPBc9dIBzKDg03rA6
-         MU31A+FEnxoxsN7rVIp7+Dx4nAEheo2Evzb4kCH8DlCLbOD+8D6By470GBTCY1P/7DzL
-         5SMAaISgkpHQAG+h7D2pntUc8p0cfQ0BKTpwCE2eiQKkaw7Tev6BJNmfYQ2l9LGd249f
-         FFFQ==
+        bh=KJrm38iAyueby6JBNctMCXPsnK32BGQQ6vdEWVAMrOI=;
+        b=Zs9iaBg42ugfcYr/gMAk5pvACGuWjAZa2udPvD0fUM7sxe6ZxWQFV29PGgGfb8Z5/k
+         hova8YP7lNGQRy652t714a2xOFuqcMamgzopfy6cgAmUC1fkVIK/5EwMshPKFBwWpHg6
+         zEpqbSCToQO5Ge9sWdJEarJwKSjoOD9nBsB3fqdoAU6ngr7dqErl7/7UhAKLTbE/6vSf
+         f5rrDfaSpsGTVON6h1RfIlqyOyYSJWZgTjo/NVYSWi/RrF+naLbFCpE3aEMcdcVreTNq
+         SH1VzcddBhs1dxVZtgRCkhsfkkvypNI5vrwrpUmMTTCJ9h7qNBQXQwmMfonAxQT9F2FB
+         P+BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697240848; x=1697845648;
+        d=1e100.net; s=20230601; t=1697240854; x=1697845654;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=r89DHYNFueYR4hgHMDPSPQFhhiG/h3pT42UPfUI4Rls=;
-        b=HlJczW2Wf/WFnrLJpvRkEH2eYa9mXhAO00dax68PLHyo0K7x8bz+n9NkVVux4Ecdme
-         KuPVnCHZQMiRSb+rIEAhfeU7v7beqm4VCW+RWm70rJRLLdEwxaXHBImhIeueAOX53l0v
-         i6sy9FQrmgtDpYIls6wszU4uwfauI5AVydBsVrkgs58sHGfObsc42JeicQAJ3O47XkA1
-         2A93E3hRKhIdr8OugLPSjFfW+mZ6o0hDBpoqTKIUg2ULvxuW/y2hMXplIkl4n6TgMdpJ
-         Z9I+PEpPbhupOBnkhudAFLFCIhO8OU/Bcs1wpC38+9P7xcn4khumkR8ASnSooVwKN90P
-         rtiw==
-X-Gm-Message-State: AOJu0YwVWheEqAOETwYsQYfAM3hqeRMnXT7xLhIP+DLA6lKn/ExHhxQG
-        ghOFveKUr0Y5Xct4zbcwlHWTPgIAoO86HA==
-X-Google-Smtp-Source: AGHT+IHpm9L9w26cR56Xl0+1a/XfcF/QkUYxetvJQ0A+dROfp7mUBHZhBJzlpVkHR1SOBSjca4y1Cw==
-X-Received: by 2002:a05:6358:785:b0:143:82e0:8cbc with SMTP id n5-20020a056358078500b0014382e08cbcmr32934611rwj.1.1697240848301;
-        Fri, 13 Oct 2023 16:47:28 -0700 (PDT)
+        bh=KJrm38iAyueby6JBNctMCXPsnK32BGQQ6vdEWVAMrOI=;
+        b=TaUHMtiofR9J847L6wqh9jOos6qt6xTKE7TdiDkGbc4Wg9rwW4+33UcKgzi/CTRbQf
+         /+NbPS4GWxG5f5Aqlw+9+cgGIBBQpG1ukYOJLp/6a94H84ZuOdo6zcEbNYjPnzzFyaPf
+         7p49sIyNEe4kwYed6UpLN1xMpzfae+H5p9YZpldmMEnBw9nHpIdWKOUmEv4DfC/SlNCA
+         +VuexTrduvaDW3YWr7ClFQ30Je3uGK2JC/7HsqEiFcdLY0QZhnrfhII3BHIogccU8cGF
+         +tBF2ES32+N47e5zCAntu8fesxTBi8+iKd8iqOoMRONHwqAN8x2tiL4yJZUCLAw9QXvu
+         TwUQ==
+X-Gm-Message-State: AOJu0YxQ3zrGDVMIH4CfsQUcRVIozE6XlkNN5HeyOKkZ2g68SMejwCb5
+        myM66NNt3MZEUBu1YWkMb18=
+X-Google-Smtp-Source: AGHT+IF1mGIbXjDKLdhU2OfABBCjTb53/aZjpWeSJXdEb++F85/NkhjrKRUi1T1G0bdAZx9se0SIhA==
+X-Received: by 2002:a05:6a00:814:b0:690:3a0f:4165 with SMTP id m20-20020a056a00081400b006903a0f4165mr33074285pfk.32.1697240853802;
+        Fri, 13 Oct 2023 16:47:33 -0700 (PDT)
 Received: from Negi ([68.181.16.134])
-        by smtp.gmail.com with ESMTPSA id f6-20020a637546000000b0057c29fec795sm3909355pgn.37.2023.10.13.16.47.27
+        by smtp.gmail.com with ESMTPSA id 1-20020a631241000000b005a9b20408a7sm1980883pgs.23.2023.10.13.16.47.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 16:47:27 -0700 (PDT)
+        Fri, 13 Oct 2023 16:47:33 -0700 (PDT)
 From:   Soumya Negi <soumya.negi97@gmail.com>
 To:     Martyn Welch <martyn@welchs.me.uk>,
         Manohar Vanga <manohar.vanga@gmail.com>,
@@ -57,9 +57,9 @@ To:     Martyn Welch <martyn@welchs.me.uk>,
 Cc:     outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
         linux-staging@lists.linux.dev,
         Soumya Negi <soumya.negi97@gmail.com>
-Subject: [PATCH 1/4] staging: vme_user: Correct spelling mistakes in comments
-Date:   Fri, 13 Oct 2023 16:47:13 -0700
-Message-ID: <f41caa8e7c987fdc010942838117fece8151affe.1697240381.git.soumya.negi97@gmail.com>
+Subject: [PATCH 2/4] staging: vme_user: Fix unbalanced {} in if-else blocks
+Date:   Fri, 13 Oct 2023 16:47:14 -0700
+Message-ID: <b0fad6de7405a105235b3b595e0bb2c51be7dcf0.1697240381.git.soumya.negi97@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1697240381.git.soumya.negi97@gmail.com>
 References: <cover.1697240381.git.soumya.negi97@gmail.com>
@@ -75,35 +75,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix misspelled words in vme.c. Issue found by checkpatch.pl
+Add missing braces so that {} are balanced in all arms of if-else
+statements as per Linux coding style. Issue found by checkpatch.pl
 
 Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
 ---
- drivers/staging/vme_user/vme.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/vme_user/vme.c        | 3 ++-
+ drivers/staging/vme_user/vme_tsi148.c | 7 ++++---
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
-index 5960562dcd96..80083ea0fb53 100644
+index 80083ea0fb53..6519a7c994a0 100644
 --- a/drivers/staging/vme_user/vme.c
 +++ b/drivers/staging/vme_user/vme.c
-@@ -1603,7 +1603,7 @@ EXPORT_SYMBOL(vme_lm_get);
-  * @callback: Pointer to callback function called when triggered.
-  * @data: Generic pointer that will be passed to the callback function.
-  *
-- * Attach a callback to the specificed offset into the location monitors
-+ * Attach a callback to the specified offset into the location monitors
-  * monitored addresses. A generic pointer is provided to allow data to be
-  * passed to the callback when called.
-  *
-@@ -1638,7 +1638,7 @@ EXPORT_SYMBOL(vme_lm_attach);
-  * @resource: Pointer to VME location monitor resource.
-  * @monitor: Offset to which callback should be removed.
-  *
-- * Remove the callback associated with the specificed offset into the
-+ * Remove the callback associated with the specified offset into the
-  * location monitors monitored addresses.
-  *
-  * Return: Zero on success, -EINVAL when provided with an invalid location
+@@ -1849,8 +1849,9 @@ static int __vme_register_driver_bus(struct vme_driver *drv,
+ 		if (vdev->dev.platform_data) {
+ 			list_add_tail(&vdev->drv_list, &drv->devices);
+ 			list_add_tail(&vdev->bridge_list, &bridge->devices);
+-		} else
++		} else {
+ 			device_unregister(&vdev->dev);
++		}
+ 	}
+ 	return 0;
+ 
+diff --git a/drivers/staging/vme_user/vme_tsi148.c b/drivers/staging/vme_user/vme_tsi148.c
+index 2f5eafd50934..d549c22da534 100644
+--- a/drivers/staging/vme_user/vme_tsi148.c
++++ b/drivers/staging/vme_user/vme_tsi148.c
+@@ -2118,8 +2118,9 @@ static int tsi148_slot_get(struct vme_bridge *tsi148_bridge)
+ 	if (!geoid) {
+ 		slot = ioread32be(bridge->base + TSI148_LCSR_VSTAT);
+ 		slot = slot & TSI148_LCSR_VSTAT_GA_M;
+-	} else
++	} else {
+ 		slot = geoid;
++	}
+ 
+ 	return (int)slot;
+ }
+@@ -2196,9 +2197,9 @@ static int tsi148_crcsr_init(struct vme_bridge *tsi148_bridge,
+ 	dev_info(tsi148_bridge->parent, "CR/CSR Offset: %d\n", cbar);
+ 
+ 	crat = ioread32be(bridge->base + TSI148_LCSR_CRAT);
+-	if (crat & TSI148_LCSR_CRAT_EN)
++	if (crat & TSI148_LCSR_CRAT_EN) {
+ 		dev_info(tsi148_bridge->parent, "CR/CSR already enabled\n");
+-	else {
++	} else {
+ 		dev_info(tsi148_bridge->parent, "Enabling CR/CSR space\n");
+ 		iowrite32be(crat | TSI148_LCSR_CRAT_EN,
+ 			bridge->base + TSI148_LCSR_CRAT);
 -- 
 2.42.0
 
