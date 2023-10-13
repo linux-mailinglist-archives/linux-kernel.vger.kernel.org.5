@@ -2,71 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBE47C9125
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC457C9126
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232435AbjJMXDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 19:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58674 "EHLO
+        id S232384AbjJMXDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 19:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232384AbjJMXDd (ORCPT
+        with ESMTP id S232569AbjJMXDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 19:03:33 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6D4B7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:03:31 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-4576946ce96so1172542137.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:03:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697238210; x=1697843010; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rcn85z62MW6ga0naGLzuTjsyYsLiQwr0ThT4Anw3LQg=;
-        b=BQsNjhkMDfJskhnmNfWzaus27gbDoaDZ9uSIIYaJCGO0RXPm3WooZ5HgabWmNIbOAK
-         Mmkm/AbDjQVee3KVfu3/KBVYcimxsAJ2ZquZU4fwOFAPb+CUpX6Woxyofv0K1M8XmpVQ
-         q7r+YLMa2d1KfTq9PKUoS/stmKNgPMLz0KX99i5N9u1twYjPQMzrznAVuOeRwVZiPB8I
-         XbefDsEZYUOV9Zcgbx01MeO8LQRmiDI/6lngutx3wvWWgj+Sjx0CnHPsrnmrjbzhcnft
-         Xop1tArTQHBIUoddJd/RiGT2VVK81Ad8BXc2yUzp1RDvYf/VNKSUo/EcTBrF08z6bqTY
-         P3+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697238210; x=1697843010;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rcn85z62MW6ga0naGLzuTjsyYsLiQwr0ThT4Anw3LQg=;
-        b=OhHRsk+isEYvtQURyDKUjNPEd1R9LpCUU4SVyq2uHrQsdPFLRWYJiw7/5HBliHzxiG
-         +t0jXriHvsk4+Jz+1qYMWlOdm5NQ2L5gdwTos2BfprwJsb4LqFbX4ychOQm19odyz2TU
-         xeMErg7Z9ZZ1RHFC9MGkNLjz90XTzNSGglXRlC2aGnMPr+AiGmwmipLupp/JXAaQHLfw
-         1LSCfewtin2C27v6jrIvggFK8xVJkpToYYTws/PGGmLS8hmUS8FBzh6tPYzynq4lqivE
-         iAWjSvy8+VXT/g6YLlx2VYPXqX80VE715t72LPlXOxxoOZIOYZTlkwh/qrkEF/Ki6ijc
-         RFuQ==
-X-Gm-Message-State: AOJu0YwRNVTRCdtAbc37wVOA/VB5CYdGtX1RY2n+JfHxJcH+F2Urr8DQ
-        qDGWoY7tfLlajQqfmmmA9dHbtCQF4KWlMvnmg6s=
-X-Google-Smtp-Source: AGHT+IESShPQpD+fP8oD44dOFdRAXvUyePnVcWCuKhsxWqQa7Q51s71AiV0cNscNwQFJMSB6GIsyvA==
-X-Received: by 2002:a67:ec53:0:b0:452:7617:a757 with SMTP id z19-20020a67ec53000000b004527617a757mr27797924vso.26.1697238210704;
-        Fri, 13 Oct 2023 16:03:30 -0700 (PDT)
-Received: from fedora (072-189-067-006.res.spectrum.com. [72.189.67.6])
-        by smtp.gmail.com with ESMTPSA id c12-20020ab0694c000000b0078cc4e0d7e3sm551678uas.27.2023.10.13.16.03.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 16:03:30 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 19:03:06 -0400
-From:   William Breathitt Gray <william.gray@linaro.org>
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc:     lee@kernel.org, alexandre.torgue@foss.st.com,
-        linux-iio@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/6] counter: stm32-timer-cnt: add support for events
-Message-ID: <ZSnMqienA28Phx6b@fedora>
-References: <20230922143920.3144249-1-fabrice.gasnier@foss.st.com>
- <20230922143920.3144249-7-fabrice.gasnier@foss.st.com>
+        Fri, 13 Oct 2023 19:03:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1BAC9
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:03:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08918C433C8;
+        Fri, 13 Oct 2023 23:03:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697238217;
+        bh=iqMnf/BMDJwzFbazhNU1KYWGcCmtvvfRHnstjXFUjjI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZUTjQumTZ1JveX+KrzUF3EwwZD/Pxno1XqLO1TzfKno1IuxXHIs3vOK/nIfwOPdL/
+         xeNNkczh+TtrWXDVYrRIdnn7+9im/UhKjbxO6iuLlPojtaRryOFXJoj3ncg/btA51H
+         lhaub5grrZ5APfH3VqKgGNR8JfXkMfVrdtn2irjS/dpnBUjVLtwerlQSXIHgak5Pv5
+         aKfZi82HsYKYQfNcZ2efxAUVK+KngZj4/7R0Z0j+zymh8hBKyEPLkcJkQC+pRtV6M0
+         +Gqolbt6tMZKLKv/MzdjR5NT1zKtUfu4QvQbUKXDYp8KHYD5JgCWH0+nCMHY9uYnNs
+         cHFmtLLXJ9qow==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 32A7D40016; Fri, 13 Oct 2023 20:03:34 -0300 (-03)
+Date:   Fri, 13 Oct 2023 20:03:34 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] perf bench sched pipe: Add -G/--cgroups option
+Message-ID: <ZSnMxtnt7o5mLj+w@kernel.org>
+References: <20231004204741.985422-1-namhyung@kernel.org>
+ <ZSnHek1HlQTkfjhG@kernel.org>
+ <CAM9d7cip5qmPRhWF37JH_21Q8SjKQCTBVyF_PLE-ytTFOwpasg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pxeJ7ygJWhyBF1Hz"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230922143920.3144249-7-fabrice.gasnier@foss.st.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7cip5qmPRhWF37JH_21Q8SjKQCTBVyF_PLE-ytTFOwpasg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,39 +58,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Fri, Oct 13, 2023 at 03:57:27PM -0700, Namhyung Kim escreveu:
+> Hi Arnaldo,
+> 
+> On Fri, Oct 13, 2023 at 3:41 PM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > Em Wed, Oct 04, 2023 at 01:47:41PM -0700, Namhyung Kim escreveu:
+> > > The -G/--cgroups option is to put sender and receiver in different
+> > > cgroups in order to measure cgroup context switch overheads.
+> > >
+> > > Users need to make sure the cgroups exist and accessible.
+> > >
+> > >   # perf stat -e context-switches,cgroup-switches \
+> > >   > taskset -c 0 perf bench sched pipe -l 10000 > /dev/null
+> > >
+> > >    Performance counter stats for 'taskset -c 0 perf bench sched pipe -l 10000':
+> > >
+> > >               20,001      context-switches
+> > >                    2      cgroup-switches
+> > >
+> > >          0.053449651 seconds time elapsed
+> > >
+> > >          0.011286000 seconds user
+> > >          0.041869000 seconds sys
+> > >
+> > >   # perf stat -e context-switches,cgroup-switches \
+> > >   > taskset -c 0 perf bench sched pipe -l 10000 -G AAA,BBB > /dev/null
+> > >
+> > >    Performance counter stats for 'taskset -c 0 perf bench sched pipe -l 10000 -G AAA,BBB':
+> > >
+> > >               20,001      context-switches
+> > >               20,001      cgroup-switches
+> > >
+> > >          0.052768627 seconds time elapsed
+> >
+> > So I tried with:
+> >
+> > [root@quaco ~]# perf bench sched pipe -G system.slice,user.slice
+> > # Running 'sched/pipe' benchmark:
+> > cannot enter to cgroup: system.slice
+> > cannot enter to cgroup: user.slice
+> > # Executed 1000000 pipe operations between two processes
+> >
+> >      Total time: 6.301 [sec]
+> >
+> >        6.301478 usecs/op
+> >          158692 ops/sec
+> > [root@quaco ~]#
+> >
+> > Should't it bail out when not managing to enter the cgroups?
+> 
+> Hmm.. right.  Will fix.
+> 
+> >
+> > Also:
+> >
+> > [root@quaco ~]# mkdir /sys/fs/cgroup/AAA
+> > [root@quaco ~]# mkdir /sys/fs/cgroup/BBB
+> > [root@quaco ~]#
+> > [root@quaco ~]# perf bench sched pipe -G AAA,BBB
+> > # Running 'sched/pipe' benchmark:
+> > cannot enter to cgroup: AAA
+> > cannot enter to cgroup: BBB
+> > # Executed 1000000 pipe operations between two processes
+> >
+> >      Total time: 6.397 [sec]
+> >
+> >        6.397830 usecs/op
+> >          156302 ops/sec
+> > [root@quaco ~]#
+> >
+> > -rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/AAA/cgroup.procs
+> > [root@quaco ~]# ls -la /sys/fs/cgroup/AAA/cgroup.threads
+> > -rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/AAA/cgroup.threads
+> > [root@quaco ~]# ls -la /sys/fs/cgroup/BBB/cgroup.threads
+> > -rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/BBB/cgroup.threads
+> > [root@quaco ~]# ls -la /sys/fs/cgroup/BBB/cgroup.procs
+> > -rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/BBB/cgroup.procs
+> > [root@quaco ~]#
+> >
+> > [root@quaco ~]# perf bench sched pipe -G AAA,BBB
+> > # Running 'sched/pipe' benchmark:
+> > cannot enter to cgroup: AAA (written=-1, len=6, errno=Operation not supported)
+> > cannot enter to cgroup: BBB (written=-1, len=6, errno=Operation not supported)
+> > # Executed 1000000 pipe operations between two processes
+> >
+> >      Total time: 6.303 [sec]
+> >
+> >        6.303221 usecs/op
+> >          158649 ops/sec
+> > [root@quaco ~]#
+> >
+> > I'm certainly missing something here :-\
+> 
+> Try to enable some cgroup controllers first.  Like
+> 
+>   # echo +cpu > /sys/fs/cgroup/AAA/cgroup.subtree_control
+>   # echo +cpu > /sys/fs/cgroup/BBB/cgroup.subtree_control
 
---pxeJ7ygJWhyBF1Hz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[root@quaco cgroup]# echo +cpu > /sys/fs/cgroup/AAA/cgroup.subtree_control
+[root@quaco cgroup]# echo +cpu > /sys/fs/cgroup/BBB/cgroup.subtree_control
+[root@quaco cgroup]# perf bench sched pipe -G AAA,BBB
+# Running 'sched/pipe' benchmark:
+cannot enter to cgroup: AAA (written=-1, len=6, errno=Operation not supported)
+cannot enter to cgroup: BBB (written=-1, len=6, errno=Operation not supported)
+# Executed 1000000 pipe operations between two processes
 
-On Fri, Sep 22, 2023 at 04:39:20PM +0200, Fabrice Gasnier wrote:
-> Add support for capture and overflow events. Also add the related
-> validation and configuration. Captured counter value can be retrieved
-> through CCRx register. Register and enable interrupts to push events.
->=20
-> Acked-by: Lee Jones <lee@kernel.org>
-> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+     Total time: 6.267 [sec]
 
-Hi Fabrice,
-
-Please split the capture and overflow events code to their own patches.
-
-I think there will be some changes to this patch anyway due to the
-changes you'll make in the precursor patches, so I'll hold off until v3
-to review.
-
-William Breathitt Gray
-
---pxeJ7ygJWhyBF1Hz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZSnMqgAKCRC1SFbKvhIj
-K6CGAP9OtP4qcJ/aIPKgrEecjHFXVX6zX1mOr8ftEiECf8/tVAD/cjbV86RlHwaQ
-f/v03XJrz5ibiBFz53tKPk1+KnZ76AQ=
-=cWtK
------END PGP SIGNATURE-----
-
---pxeJ7ygJWhyBF1Hz--
+       6.267680 usecs/op
+         159548 ops/sec
+[root@quaco cgroup]# cat /sys/fs/cgroup/AAA/cgroup.subtree_control
+cpu
+[root@quaco cgroup]# cat /sys/fs/cgroup/BBB/cgroup.subtree_control
+cpu
+[root@quaco cgroup]# uname -a
+Linux quaco 6.5.6-200.fc38.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Oct  6 19:02:35 UTC 2023 x86_64 GNU/Linux
+[root@quaco cgroup]#
