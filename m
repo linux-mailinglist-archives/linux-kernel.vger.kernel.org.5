@@ -2,159 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 878FE7C7EE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2197C7ED7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbjJMHsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55264 "EHLO
+        id S229966AbjJMHrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 03:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbjJMHsV (ORCPT
+        with ESMTP id S229863AbjJMHrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:48:21 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE10121
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:48:17 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c9de3f66e5so12934745ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:48:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697183297; x=1697788097; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/0kb1FiHCSEkQxzh7PJsrM1RNssRIDlYu3IfcoLIqjk=;
-        b=jWTIDKvF/rzOpPe97OvEHTe7umWdFHhD5GxtTms14bT0yKCpZNfqOcJiqTmgMmTc06
-         1as5Gb1HrCuQ0EEEmM0S4UcLZZskKrkasOkhkX6DUdLbi7x0ZCZG+aK7o62TVg43CkGd
-         wvH2jLs5ZFmzt99N//LA4sMsdgRif6hVcpV/Aoo/iNckLAQrcq+3HODUI30t9KCtdm/9
-         5rfSl1rX5EW6z3xBXHxHTAXcmdJh3sUU1Fe/WasWLEwoEg/vDOwr5cfl9LqycmEFzQE5
-         hjVitV2Ly2s7TbjvfZatang697k7kfQDeiFoJ8P975eXJft5mWRGwo7MCx39eLQ3b+zf
-         O/AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697183297; x=1697788097;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/0kb1FiHCSEkQxzh7PJsrM1RNssRIDlYu3IfcoLIqjk=;
-        b=KaNMVU0i3thZEtTpekojIQRa5+TmuFVqdxRKOKOz0oiIV8XnAf+Y9t4PmBC6vXiyk8
-         oepIjY7vOIgLHab0dElZLfoHVpVu4kdrSx27vAGvAIKIkDrdcjdZo29Np86VKGScElse
-         VafR5II4cSoDEYBqMabHk9uuksVEwqsRzui/6c2rUiKKFf+F9el69vfdSyOusJr47mvY
-         T0FjZ4DbRtIah5DZu35vsDkmS9+T94EagaZ9C1K/uUj+Nptk7+RvRch2mf/APkTy9aRU
-         E+EfXphpmikb4XvZ7pkegAU+0/zVwdTCNPmlbj/M05fzO2zDwiPKMe8Y2/2EouKKoBZR
-         uaaA==
-X-Gm-Message-State: AOJu0YxPoiibWnVE2jmp/xCOKOAGcCoWpitmdEjU5odFBnMHKJJru9Fg
-        DHguTqY8wnptlHh2SIwtf88Uqm/BTRDcBOZZprg=
-X-Google-Smtp-Source: AGHT+IEr3/GGqqC8nXhIEzypzuLKDe4Rc0uWXujjo4TuULJCozbCr3188pVwv0FnPXvQh74Eic8zPg==
-X-Received: by 2002:a17:903:54d:b0:1c4:335:b06d with SMTP id jo13-20020a170903054d00b001c40335b06dmr22738543plb.32.1697183297103;
-        Fri, 13 Oct 2023 00:48:17 -0700 (PDT)
-Received: from localhost.localdomain (fp9875a45d.knge128.ap.nuro.jp. [152.117.164.93])
-        by smtp.gmail.com with ESMTPSA id z8-20020a170903018800b001c9ccbb8fdasm3200548plg.260.2023.10.13.00.48.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 00:48:16 -0700 (PDT)
-From:   Masahisa Kojima <masahisa.kojima@linaro.org>
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org
-Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Masahisa Kojima <masahisa.kojima@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-efi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v9 6/6] tee: optee: restore efivars ops when tee-supplicant stops
-Date:   Fri, 13 Oct 2023 16:45:39 +0900
-Message-Id: <20231013074540.8980-7-masahisa.kojima@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231013074540.8980-1-masahisa.kojima@linaro.org>
-References: <20231013074540.8980-1-masahisa.kojima@linaro.org>
+        Fri, 13 Oct 2023 03:47:33 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 17E89B8
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:47:30 -0700 (PDT)
+Received: from wangkailong$jari.cn ( [182.148.14.172] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Fri, 13 Oct 2023 15:45:46
+ +0800 (GMT+08:00)
+X-Originating-IP: [182.148.14.172]
+Date:   Fri, 13 Oct 2023 15:45:46 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "KaiLong Wang" <wangkailong@jari.cn>
+To:     mark@fasheh.com, jlbec@evilplan.org
+Cc:     ocfs2-devel@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] ocfs2: Clean up errors in dlmunlock.c
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Message-ID: <f2d4ee9.96a.18b27ffa1db.Coremail.wangkailong@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwDXaD6q9Shld9_BAA--.636W
+X-CM-SenderInfo: 5zdqwypdlo00nj6mt2flof0/1tbiAQADB2UnvzMAKwAFsl
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_00,RCVD_IN_PBL,RDNS_NONE,
+        T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When tee-supplicant stops, tee-based EFI variable service
-is no longer available. Restore the efivars generic ops at the
-moment when tee-supplicant stops.
-
-Linking error occurs if we set CONFIG_OPTEE=y and
-CONFIG_TEE_STMM_EFI=m. Use IS_REACHABLE() guard to call
-tee_stmm_restore_efivars_generic_ops() function.
-
-Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
----
- drivers/firmware/efi/stmm/tee_stmm_efi.c | 8 +++++++-
- drivers/tee/optee/supp.c                 | 4 ++++
- include/linux/efi.h                      | 1 +
- 3 files changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/firmware/efi/stmm/tee_stmm_efi.c b/drivers/firmware/efi/stmm/tee_stmm_efi.c
-index edc165bc1bb0..e804b260edaa 100644
---- a/drivers/firmware/efi/stmm/tee_stmm_efi.c
-+++ b/drivers/firmware/efi/stmm/tee_stmm_efi.c
-@@ -572,10 +572,16 @@ static int tee_stmm_efi_probe(struct device *dev)
- 	return 0;
- }
- 
--static int tee_stmm_efi_remove(struct device *dev)
-+void tee_stmm_restore_efivars_generic_ops(void)
- {
- 	efivars_unregister(&tee_efivars);
- 	efivars_generic_ops_register();
-+}
-+EXPORT_SYMBOL_GPL(tee_stmm_restore_efivars_generic_ops);
-+
-+static int tee_stmm_efi_remove(struct device *dev)
-+{
-+	tee_stmm_restore_efivars_generic_ops();
- 
- 	return 0;
- }
-diff --git a/drivers/tee/optee/supp.c b/drivers/tee/optee/supp.c
-index 322a543b8c27..d07d4fc4e72e 100644
---- a/drivers/tee/optee/supp.c
-+++ b/drivers/tee/optee/supp.c
-@@ -3,6 +3,7 @@
-  * Copyright (c) 2015, Linaro Limited
-  */
- #include <linux/device.h>
-+#include <linux/efi.h>
- #include <linux/slab.h>
- #include <linux/uaccess.h>
- #include "optee_private.h"
-@@ -58,6 +59,9 @@ void optee_supp_release(struct optee_supp *supp)
- 		complete(&req->c);
- 	}
- 
-+	if (IS_REACHABLE(CONFIG_TEE_STMM_EFI))
-+		tee_stmm_restore_efivars_generic_ops();
-+
- 	supp->ctx = NULL;
- 	supp->req_id = -1;
- 
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 489707b9b0b0..9b60893d6299 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -1365,5 +1365,6 @@ extern struct blocking_notifier_head efivar_ops_nh;
- 
- void efivars_generic_ops_register(void);
- void efivars_generic_ops_unregister(void);
-+void tee_stmm_restore_efivars_generic_ops(void);
- 
- #endif /* _LINUX_EFI_H */
--- 
-2.30.2
-
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+c3BhY2VzIHJlcXVpcmVkIGFyb3VuZCB0aGF0ICc8JyAoY3R4OlZ4VikKRVJST1I6IHNwYWNlcyBy
+ZXF1aXJlZCBhcm91bmQgdGhhdCAnPScgKGN0eDpWeFYpCkVSUk9SOiBzcGFjZSByZXF1aXJlZCBi
+ZWZvcmUgdGhhdCAnJicgKGN0eDpPeFYpCkVSUk9SOiBzcGFjZXMgcmVxdWlyZWQgYXJvdW5kIHRo
+YXQgJz09JyAoY3R4OlZ4VikKRVJST1I6IHNwYWNlcyByZXF1aXJlZCBhcm91bmQgdGhhdCAnOicg
+KGN0eDpWeEUpCgpTaWduZWQtb2ZmLWJ5OiBLYWlMb25nIFdhbmcgPHdhbmdrYWlsb25nQGphcmku
+Y24+Ci0tLQogZnMvb2NmczIvZGxtL2RsbXVubG9jay5jIHwgOCArKysrLS0tLQogMSBmaWxlIGNo
+YW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9mcy9v
+Y2ZzMi9kbG0vZGxtdW5sb2NrLmMgYi9mcy9vY2ZzMi9kbG0vZGxtdW5sb2NrLmMKaW5kZXggNzMx
+OGU0Nzk0ZWY5Li5hYzliMjliMmExMWYgMTAwNjQ0Ci0tLSBhL2ZzL29jZnMyL2RsbS9kbG11bmxv
+Y2suYworKysgYi9mcy9vY2ZzMi9kbG0vZGxtdW5sb2NrLmMKQEAgLTE4NCw4ICsxODQsOCBAQCBz
+dGF0aWMgZW51bSBkbG1fc3RhdHVzIGRsbXVubG9ja19jb21tb24oc3RydWN0IGRsbV9jdHh0ICpk
+bG0sCiAJCQltbG9nKDAsICIlczolLipzOiBjbGVhcmluZyBhY3Rpb25zLCAlc1xuIiwKIAkJCSAg
+ICAgZGxtLT5uYW1lLCByZXMtPmxvY2tuYW1lLmxlbiwKIAkJCSAgICAgcmVzLT5sb2NrbmFtZS5u
+YW1lLAotCQkJICAgICBzdGF0dXM9PURMTV9SRUNPVkVSSU5HPyJyZWNvdmVyaW5nIjoKLQkJCSAg
+ICAgKHN0YXR1cz09RExNX01JR1JBVElORz8ibWlncmF0aW5nIjoKKwkJCSAgICAgc3RhdHVzID09
+IERMTV9SRUNPVkVSSU5HID8gInJlY292ZXJpbmciIDoKKwkJCSAgICAgKHN0YXR1cyA9PSBETE1f
+TUlHUkFUSU5HID8gIm1pZ3JhdGluZyIgOgogCQkJCShzdGF0dXMgPT0gRExNX0ZPUldBUkQgPyAi
+Zm9yd2FyZCIgOgogCQkJCQkJIm5vbG9ja21hbmFnZXIiKSkpOwogCQkJYWN0aW9ucyA9IDA7CkBA
+IC00MzYsNyArNDM2LDcgQEAgaW50IGRsbV91bmxvY2tfbG9ja19oYW5kbGVyKHN0cnVjdCBvMm5l
+dF9tc2cgKm1zZywgdTMyIGxlbiwgdm9pZCAqZGF0YSwKIAkJZ290byBub3RfZm91bmQ7CiAJfQog
+Ci0JcXVldWU9JnJlcy0+Z3JhbnRlZDsKKwlxdWV1ZSA9ICZyZXMtPmdyYW50ZWQ7CiAJc3Bpbl9s
+b2NrKCZyZXMtPnNwaW5sb2NrKTsKIAlpZiAocmVzLT5zdGF0ZSAmIERMTV9MT0NLX1JFU19SRUNP
+VkVSSU5HKSB7CiAJCXNwaW5fdW5sb2NrKCZyZXMtPnNwaW5sb2NrKTsKQEAgLTQ1OSw3ICs0NTks
+NyBAQCBpbnQgZGxtX3VubG9ja19sb2NrX2hhbmRsZXIoc3RydWN0IG8ybmV0X21zZyAqbXNnLCB1
+MzIgbGVuLCB2b2lkICpkYXRhLAogCQlnb3RvIGxlYXZlOwogCX0KIAotCWZvciAoaT0wOyBpPDM7
+IGkrKykgeworCWZvciAoaSA9IDA7IGkgPCAzOyBpKyspIHsKIAkJbGlzdF9mb3JfZWFjaF9lbnRy
+eShpdGVyLCBxdWV1ZSwgbGlzdCkgewogCQkJaWYgKGl0ZXItPm1sLmNvb2tpZSA9PSB1bmxvY2st
+PmNvb2tpZSAmJgogCQkJICAgIGl0ZXItPm1sLm5vZGUgPT0gdW5sb2NrLT5ub2RlX2lkeCkgewot
+LSAKMi4xNy4xCg==
