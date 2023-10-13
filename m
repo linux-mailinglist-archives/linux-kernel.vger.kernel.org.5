@@ -2,108 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 101A47C8B17
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47FA7C8B0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232169AbjJMQ1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58110 "EHLO
+        id S230220AbjJMQYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbjJMQ1e (ORCPT
+        with ESMTP id S230053AbjJMQYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:27:34 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87A5EE;
-        Fri, 13 Oct 2023 09:25:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
- t=1697214245; x=1697819045; i=w_armin@gmx.de;
- bh=CVQm8LoNgvVfXdiZgWsMZAe2kCFpRmb9gu9VWobI3Ak=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=rS5HIDc29yY5lvCJRzumFM3VDPqoh2g5WTfNa4ZnWya1uPjNmJ5RN8FDYvNXaYX2sSnDLpHjmhZ
- x56uPaYzpC/KxcMsVFzfq7vS5KkFmprjown2xJBIKDepRduox/17f/mYHbP4OgNrAkDoYIbA0L8Hu
- eXnlYwi4tRkhUrmbkrNj5v94EdZ7CmcXoq7EMkVCvndF5e2pDVIC8dWn/44DhOKAHQNJryEr8bojA
- Cu+IrGfkoRObdSAmQpZjaGY21QTVm3f2Q4qBBOkez1FEnxOaYfAr/H+DM5qPReDuN4MKWkELddwwd
- HIT0QFJ6t5bZ5WSsT1eBrqffS3s2MmhcDHwQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MvK0R-1rhvXg1Wsr-00rHe1; Fri, 13
- Oct 2023 18:24:05 +0200
-Message-ID: <896d6ea7-f258-46f3-aed8-80c0a372e7e1@gmx.de>
-Date:   Fri, 13 Oct 2023 18:24:04 +0200
+        Fri, 13 Oct 2023 12:24:45 -0400
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D474AD;
+        Fri, 13 Oct 2023 09:24:44 -0700 (PDT)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1e10ba12fd3so1282755fac.1;
+        Fri, 13 Oct 2023 09:24:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697214283; x=1697819083; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=NZs5dBVvL8WiMBXWyFhU0nbTUlLlApXVMkA85zryGNY=;
+        b=Ho/xQ+kgGBY9yeCPbzCClAClbMqAfLLdCDKhCwRwnxQWJEUFxyOjOySV8YVKoQJ5Nc
+         0nDe1uZbxcMQ27P6tPms6cn7z15pCJ9F/w10oPNoAoWPdYrIVraRP+QqeYqTdzG4FQso
+         7FxxgpCwz13DJN5d7xNj9tXlXTx8wWTLtzcJJTgbL05u56F/Ujve1SmSX7EkVTAfmLQ4
+         VUK5XtDHnnMo857v3kZ2fHHBQ2MSruPyICpZXOsw8ENkckqJsFXFOxFmoEPsJiPft51M
+         CFPEAN1fSvJYocEGy7Sj+H3bgF2cD97eiaXJ8ifPBtRow6GeDgFbd3lTVd7YIVsLZJ0D
+         EpUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697214283; x=1697819083;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NZs5dBVvL8WiMBXWyFhU0nbTUlLlApXVMkA85zryGNY=;
+        b=tk2NdX7xXPY3SHAf9knYiNaHMaNwL1LawqjybN4jXI8COHQXRLoBv/jIdLqs2PK617
+         YhAPlVPWM+35dbt9v8oiZl22hD2a7J00HKWWmAHqzi30my0zFyXjMH8yu0+o8RrRb0If
+         7JgJRXRQ4j0MOfSobbJpZxlkwa/2YWDewGKNVD8rhW5uufW5dzWdWRK0Q15Tmnygiek4
+         +hRNsvKMaatnS9yd4zFII7hpyPX8UWMLc40RuACdMN/Sj8hRT0MgvT3DP/ruhsz4zL8B
+         I+GJfpAzUchukFIfhTm8f17Qm3jITtescMzUx34hbKcdr27S1X+nKUAAvWTBDT+nuOwc
+         cjkw==
+X-Gm-Message-State: AOJu0YyFJ8eq2K7K876KpgLkg8qy4MvDpis6Dxh1gbl6vJ4C25gt1d+K
+        EN7lJ9ucMGnn3z5p5UBYxi0=
+X-Google-Smtp-Source: AGHT+IFGYCd/N+rPNVxVUr5XyZgvZlE2KWP/I3hCNw8Dr+H1r9wACkBJTRNdNs5V8axQznfFCLtaQA==
+X-Received: by 2002:a05:6871:5319:b0:1e9:9469:a858 with SMTP id hx25-20020a056871531900b001e99469a858mr8477450oac.39.1697214283317;
+        Fri, 13 Oct 2023 09:24:43 -0700 (PDT)
+Received: from [192.168.1.119] ([216.130.59.33])
+        by smtp.gmail.com with ESMTPSA id m3-20020a056870a10300b001e98fa5c9edsm818649oae.40.2023.10.13.09.24.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Oct 2023 09:24:42 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Message-ID: <56fe16bf-3fc9-49f9-9646-c236b885afa5@lwfinger.net>
+Date:   Fri, 13 Oct 2023 11:24:40 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/6] platform/x86: wmi: Fix probe failure when failing to
- register WMI devices
-To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     markgross@kernel.org, platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20231007233933.72121-1-W_Armin@gmx.de>
- <20231007233933.72121-5-W_Armin@gmx.de>
- <6fc5eacc-15e7-8de4-a031-d57ae27568bd@linux.intel.com>
+Subject: Re: [PATCH] [RFC] wireless: move obsolete drivers to staging
 Content-Language: en-US
-From:   Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <6fc5eacc-15e7-8de4-a031-d57ae27568bd@linux.intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Philipp Hortmann <philipp.g.hortmann@gmail.com>,
+        Arnd Bergmann <arnd@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Jakub Kicinski <kuba@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
+References: <20231010155444.858483-1-arnd@kernel.org>
+ <e93e4008-65c5-4f1d-812a-64b48f0513a2@gmail.com>
+ <c8f43e1b-aed1-4b45-ba7c-d896ff66dfa7@app.fastmail.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+In-Reply-To: <c8f43e1b-aed1-4b45-ba7c-d896ff66dfa7@app.fastmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:EK+Efva867AZQd/pngXuCRoMSWCKsbU3BZ2LoSxyFTtKI/9Ls/8
- 7AESfO8NSY++2ZAJxEcZqfc7Y+WulVTqN/u5egAVKNQNXbA2jhEaWQTlsp0tpnB+nqQ5bCE
- i/+QsgFg7L4qF6HjoH5vz0RI8CnaQW3xVnYlAcKHtDITKPOTs9AsctbLu9jAAduVPE1Vdux
- l8jCLhe9NsWwhcY4TIPdA==
-UI-OutboundReport: notjunk:1;M01:P0:yL7P5dpsr1Q=;FI74T1kRVwujr3ewrZDRZyodviQ
- hp8cED04DUAs6M5zJc3Bx+H/L8EGLJlXjUWCDJORwHyVK20GCH9kSY+3ABJ7URoUrXvXhsNjt
- 6sOK+vvmOYusms6mhEd4IB+E1CWelQlprVm2xcmKJHSQd9TRa0w0d9CpLlJN+P7+6bwXjEOQ0
- O/BrAIw2k2Xi5X0aNYkWWcixM4Ds6GgG5QwtaO534eAcB0IzyyhmJTgfcAaLMQ5Y9XKlzq94K
- I1tai+SvuqkrNNdUBvnSpdo1BjhJ7epn2fh+yP9P+DalGmw1Dgg8KRG/TMk4+IUMXM7otv5OC
- WPkxXRUOFJKs1dfh33ADF+bA+yHRGarZH+dlbP+xpvtV0+UrRE6oEfdvyhPMIMZtc06zYmZbH
- /ZfRFRi/xV0sXptqsAJ3UxoBLAIdB13rDQoy345qlX2qzf2+kqZSYTB0QMyEnnacvKBIuDcwx
- aPbN/glVgxQlEcw+49Cn2KCYXmoUT/TCSZpAsJlNEJtVSwgoPkGLvg9yoXLNLJtlxHX+zNHZS
- vAk93QHf0udxj8fpIruiIwWjH8uV2GBe+fgtoNI424Bcl5pWHo/U9VaJmDuL30rlVBpzqnkGO
- v4NL8369UTZ3EXk/W+El1TFLpLFcHR3z2kdt54SDfuy6eIP4ulN0jUD8t5gVhe9ZIwR4cm2eO
- n8cggNNF1ZqLaDUKBc2R4rAtJHZCkCU8NFKKy0xD14no8qIgyfsadaYhepu4IMhZI2xWbnb8q
- XlvI5LKIIrNZ/1bFaYc3lyFGQFdev8C/lPzaKyjhRTF8FqAWK5W3qPfhtVkV3v9d2D5iAM8bO
- O0syXu1mbEoKjfd9YpCkCn6SSXu0YbuyHrT2FtjzrA6PGAgX7OOHmMyna8Z0wHq4r4NCansq0
- petLHZJ1t7P6YYfY8xq6gk3zgbQBIEURYD4E0wufqASVNm2Mp5YL9ohe6jdXGeuXczAsMYLF1
- UFJj/lHVJ2pj9FVgL66pdRK0o7Y=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 12.10.23 um 18:32 schrieb Ilpo J=C3=A4rvinen:
+On 10/13/23 10:36, Arnd Bergmann wrote:
+> At the moment, I'd suggest focusing on the drivers that still use wext (git grep 
+> -w iw_handler_def drivers), if we can show that rtl8192e, rtl8712 or ks7010 have 
+> been broken for a while, removing those would help with removing wext altogether.
 
-> On Sun, 8 Oct 2023, Armin Wolf wrote:
->
->> When a WMI device besides the first one somehow fails to register, retv=
-al
->> is returned while still containing a negative error code. This causes t=
-he
->> ACPI device failing to probe, leaving behind zombie WMI devices leading
->> to various errors later.
->> Fix this by handling the single error path separately and return 0 afte=
-r
->> trying to register all WMI devices. Also continue to register WMI devic=
-es
->> even if some fail to allocate.
-> I think the usual approach would be to unroll all registerations done so
-> far when an error occurs while registering n devices.
+I do not know about the the others, but rtl8712 is still in use according to the 
+flow of questions I see on a GitHub repo that I maintain.
 
-I agree, however the surrounding code unrolls only the WMI device registra=
-tion,
-so i kept it that way. After all, this patch focuses on fixing the "zombie=
-" WMI devices
-problem, so changing the code to unroll all registrations should be done i=
-n a separate
-patch IMHO.
+There has been some recent effort to convert rtl8192e to use cfg/nl/mac80211. 
+That one is problematic as it has the same PCI_ID as RTL8192SE, but the drivers 
+differ. Note the special code in the probe routine of 
+drivers/net/wireless/realtek/rtlwifi/rtl8192se to detect if the wrong one has 
+triggered the routine. That code should also be in the probe routine for 
+RTL8192E with the test negated. I have both devices, but it has been a long time 
+since I actually used either of them. I also have an rtl8712 device, thus I 
+should be available for testing.
 
-Armin Wolf
+Larry
 
-> Do you Hans have something to add what would be the best course of actio=
-n
-> here?
->
