@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A73A07C9185
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB847C9186
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232594AbjJMXr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 19:47:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49582 "EHLO
+        id S232624AbjJMXrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 19:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232431AbjJMXrZ (ORCPT
+        with ESMTP id S232431AbjJMXrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 19:47:25 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE22B7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:47:24 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-27cfb8bc7eeso2070362a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:47:24 -0700 (PDT)
+        Fri, 13 Oct 2023 19:47:31 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27154C9
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:47:29 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-57e40f0189aso1414289eaf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:47:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697240843; x=1697845643; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VsmJKoEfZzH5dGYcow1pJhun4pr6MeJ+V/BA29opGNE=;
-        b=Opx/OBWvAWPfh+l+UYe3LDKo2X6Q6T63yMI8Qju/iynzAssM8WA0YOFhGlIOZ1fCif
-         2lRZGc4P7TflC5Ojdsma0HaD64wkYYlFAMsD7fXA/epxJOiWosg0UuyT7leUlphzj5pw
-         Wkn9p5/fvmHRZNMBx5GA0ltEy6HgplVsPRzQ7W9CPdLQHny59ha0Hge5LanSJH6Tvifu
-         4/EDnizCfFySkQlsFsPoIeSb6Epu0prqGYhXa7jyqn0WtqGUmOTPJRrgj2NAoj6wHI8+
-         BjUyivF1E3Jdulx4QKOfaC6QEWElNRWQ1vYEVcoDBhpA+jbjwOtYbqx8P4jQlkS+JyVH
-         Q/rQ==
+        d=gmail.com; s=20230601; t=1697240848; x=1697845648; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r89DHYNFueYR4hgHMDPSPQFhhiG/h3pT42UPfUI4Rls=;
+        b=cl7tUULvjPs3bgr/tGYI8Xfn/lvfYqXoT3+luUwnDz/QSrcL9Qo3PirdFQA8xKK+e8
+         Yd0IPnQZA+wExu69LNe3Jf3U75XLfguJqjhjYwahYE4uH2KIrpVM0VPPZ2PxC65Kg+GB
+         eBWUdNadXY4lt+aTJfFgVA0r7MOUeqvcXjHhmUBXJWWnn+8zRyxhPBc9dIBzKDg03rA6
+         MU31A+FEnxoxsN7rVIp7+Dx4nAEheo2Evzb4kCH8DlCLbOD+8D6By470GBTCY1P/7DzL
+         5SMAaISgkpHQAG+h7D2pntUc8p0cfQ0BKTpwCE2eiQKkaw7Tev6BJNmfYQ2l9LGd249f
+         FFFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697240843; x=1697845643;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VsmJKoEfZzH5dGYcow1pJhun4pr6MeJ+V/BA29opGNE=;
-        b=BueNRyzfTXf3NqD8nqzEieh6T3RDB4NSUOp0s4nF7p6ePV558xsxEXidwMITwNvz7C
-         KLB8F55yRk357Iyd6m0CrTUlMU05Pp0hflBMEIkXaWX8PEWc3/ihgpSAuZ9iHbDNv3Et
-         zjXZSUMgih4mPg0SOqHUP4L3v3XTq+GEYie1EPl+KZON+WI6C94fQ7Bkz/McLr+FMM6T
-         2gg+wtOUFh1b5hc5DF4Xz4Q7mfZR6zpaPm2Cfgy8hTZYEkmpGnf1kad3oONRilzssNs7
-         Y7pgzaiKfY9/kd9xUhzJZ+n3MPEdm9upj/3vZY3UIDuO/1HiLC5Ppohyy+i8qraKg9Hy
-         cNZA==
-X-Gm-Message-State: AOJu0YyV8e+FTx71511FfqYkN6vORvXmUrfpEcZeG8y9RElTzyEQr266
-        J9IHt+UkFYpYKqb0ddInvYHFmU8hvM7JsA==
-X-Google-Smtp-Source: AGHT+IGiZmINZuvHcm5NXBP1zW2GwN+KlqVDpBtLEE4e25BQLM8VJn2APtskH4zjuBFz7ve0BvcqqA==
-X-Received: by 2002:a17:90b:888:b0:27d:6dd:fb7d with SMTP id bj8-20020a17090b088800b0027d06ddfb7dmr8827933pjb.17.1697240843536;
-        Fri, 13 Oct 2023 16:47:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697240848; x=1697845648;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r89DHYNFueYR4hgHMDPSPQFhhiG/h3pT42UPfUI4Rls=;
+        b=HlJczW2Wf/WFnrLJpvRkEH2eYa9mXhAO00dax68PLHyo0K7x8bz+n9NkVVux4Ecdme
+         KuPVnCHZQMiRSb+rIEAhfeU7v7beqm4VCW+RWm70rJRLLdEwxaXHBImhIeueAOX53l0v
+         i6sy9FQrmgtDpYIls6wszU4uwfauI5AVydBsVrkgs58sHGfObsc42JeicQAJ3O47XkA1
+         2A93E3hRKhIdr8OugLPSjFfW+mZ6o0hDBpoqTKIUg2ULvxuW/y2hMXplIkl4n6TgMdpJ
+         Z9I+PEpPbhupOBnkhudAFLFCIhO8OU/Bcs1wpC38+9P7xcn4khumkR8ASnSooVwKN90P
+         rtiw==
+X-Gm-Message-State: AOJu0YwVWheEqAOETwYsQYfAM3hqeRMnXT7xLhIP+DLA6lKn/ExHhxQG
+        ghOFveKUr0Y5Xct4zbcwlHWTPgIAoO86HA==
+X-Google-Smtp-Source: AGHT+IHpm9L9w26cR56Xl0+1a/XfcF/QkUYxetvJQ0A+dROfp7mUBHZhBJzlpVkHR1SOBSjca4y1Cw==
+X-Received: by 2002:a05:6358:785:b0:143:82e0:8cbc with SMTP id n5-20020a056358078500b0014382e08cbcmr32934611rwj.1.1697240848301;
+        Fri, 13 Oct 2023 16:47:28 -0700 (PDT)
 Received: from Negi ([68.181.16.134])
-        by smtp.gmail.com with ESMTPSA id ne10-20020a17090b374a00b0027732eb24bbsm657618pjb.4.2023.10.13.16.47.22
+        by smtp.gmail.com with ESMTPSA id f6-20020a637546000000b0057c29fec795sm3909355pgn.37.2023.10.13.16.47.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 16:47:22 -0700 (PDT)
+        Fri, 13 Oct 2023 16:47:27 -0700 (PDT)
 From:   Soumya Negi <soumya.negi97@gmail.com>
 To:     Martyn Welch <martyn@welchs.me.uk>,
         Manohar Vanga <manohar.vanga@gmail.com>,
@@ -56,10 +57,12 @@ To:     Martyn Welch <martyn@welchs.me.uk>,
 Cc:     outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
         linux-staging@lists.linux.dev,
         Soumya Negi <soumya.negi97@gmail.com>
-Subject: [PATCH 0/4] staging: vme_user: Coding style cleanup patches
-Date:   Fri, 13 Oct 2023 16:47:12 -0700
-Message-ID: <cover.1697240381.git.soumya.negi97@gmail.com>
+Subject: [PATCH 1/4] staging: vme_user: Correct spelling mistakes in comments
+Date:   Fri, 13 Oct 2023 16:47:13 -0700
+Message-ID: <f41caa8e7c987fdc010942838117fece8151affe.1697240381.git.soumya.negi97@gmail.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <cover.1697240381.git.soumya.negi97@gmail.com>
+References: <cover.1697240381.git.soumya.negi97@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,22 +75,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset performs trivial code cleanups on the driver 
-staging/vme_user to improve code readability. All patches address 
-issues reported by checkpatch.pl, and may be applied in any sequence.
+Fix misspelled words in vme.c. Issue found by checkpatch.pl
 
-Soumya Negi (4):
-  staging: vme_user: Correct spelling mistakes in comments
-  staging: vme_user: Fix unbalanced {} in if-else blocks
-  staging: vme_user: Add spaces around '*'
-  staging: vme_user: Add spaces around '<<' operator
+Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
+---
+ drivers/staging/vme_user/vme.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/staging/vme_user/vme.c        |   7 +-
- drivers/staging/vme_user/vme.h        |   2 +-
- drivers/staging/vme_user/vme_tsi148.c |   7 +-
- drivers/staging/vme_user/vme_tsi148.h | 548 +++++++++++++-------------
- 4 files changed, 283 insertions(+), 281 deletions(-)
-
+diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
+index 5960562dcd96..80083ea0fb53 100644
+--- a/drivers/staging/vme_user/vme.c
++++ b/drivers/staging/vme_user/vme.c
+@@ -1603,7 +1603,7 @@ EXPORT_SYMBOL(vme_lm_get);
+  * @callback: Pointer to callback function called when triggered.
+  * @data: Generic pointer that will be passed to the callback function.
+  *
+- * Attach a callback to the specificed offset into the location monitors
++ * Attach a callback to the specified offset into the location monitors
+  * monitored addresses. A generic pointer is provided to allow data to be
+  * passed to the callback when called.
+  *
+@@ -1638,7 +1638,7 @@ EXPORT_SYMBOL(vme_lm_attach);
+  * @resource: Pointer to VME location monitor resource.
+  * @monitor: Offset to which callback should be removed.
+  *
+- * Remove the callback associated with the specificed offset into the
++ * Remove the callback associated with the specified offset into the
+  * location monitors monitored addresses.
+  *
+  * Return: Zero on success, -EINVAL when provided with an invalid location
 -- 
 2.42.0
 
