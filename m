@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB737C8526
+	by mail.lfdr.de (Postfix) with ESMTP id 490B77C8525
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbjJML7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52674 "EHLO
+        id S231612AbjJML7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:59:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231714AbjJML7b (ORCPT
+        with ESMTP id S231439AbjJML7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:59:31 -0400
+        Fri, 13 Oct 2023 07:59:41 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19BD1EA;
-        Fri, 13 Oct 2023 04:59:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E070C433C7;
-        Fri, 13 Oct 2023 11:59:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E765D45;
+        Fri, 13 Oct 2023 04:59:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53D40C433C9;
+        Fri, 13 Oct 2023 11:59:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697198365;
-        bh=661eskRrrn3a2q2Gc7DQU5Vpxig1R977JLUBlgWFz9M=;
+        s=k20201202; t=1697198368;
+        bh=wRGVcYhTxP8eygVB6ZOjmRcvjfz3wTIYLDKxh2D4weM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JzRgL/7G2NKdgepQIw580jwYQf78okNF3NQ7Yh6KggurGldEHEarYXCCKpmg9vE1U
-         RebNIbFvV5eEneaH4YuaPWr6mA/zAAPf46Pro1qsP7gKq1tO+gKIGKsfpaKS94YZOr
-         qFGwVaOEsFLLb8e7/WM3NDiX+XBFiPnqPCMgfcxgTinx1ySo9Ym4H4fJrxbFAFM+gl
-         0JWMn/SZnUWxITKP5piPgSM+r65d42sskl7bZc+IrLRndHIDy6sPfGdpZ6i238Mauv
-         m9OOsF+zoIztDofBjvspP8PJoav/zg4OpSSJZRSyLHvaJA5BgjKOYN/KEhCJ/ovgc/
-         AOo//PccRp3CA==
+        b=F5x0R/yPpNxmwo2U54GxSzJU9oRfnwMWHyt+bQ9sH/wKADP3bX7rc0VQf/pKMOOTr
+         9/8WrWNIL1qlwiKxWWYTeOQ4SvoB3UrpkEDBuAabkUklQvo0g1LuO8EPNACMUuNvQC
+         gVnOUIiaNqw6c1pSKBi7FXcwRBcpZolQLaqnGs2G3xeJigZB0SvA27uBc08eWUaXyl
+         UIo1GsvCWRUL4wQgfpM33qFQhks6dyJXx3kyu1ZdDwk2sj2X6aiJ66/V7VV2q24ZDr
+         7ablgXg1odbuiGRx74KEm+KmXWeZMCYNogOxr3pZtT41YBFCJdqFt7rPyLof9ihrTj
+         zAkaTSusRVk/Q==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
@@ -38,12 +38,10 @@ Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
         Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 06/18] mm: Remove kmem_valid_obj()
-Date:   Fri, 13 Oct 2023 13:58:50 +0200
-Message-Id: <20231013115902.1059735-7-frederic@kernel.org>
+Subject: [PATCH 07/18] rcu: Dump memory object info if callback function is invalid
+Date:   Fri, 13 Oct 2023 13:58:51 +0200
+Message-Id: <20231013115902.1059735-8-frederic@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231013115902.1059735-1-frederic@kernel.org>
 References: <20231013115902.1059735-1-frederic@kernel.org>
@@ -61,134 +59,142 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhen Lei <thunder.leizhen@huawei.com>
 
-Function kmem_dump_obj() will splat if passed a pointer to a non-slab
-object. So nothing calls it directly, instead calling kmem_valid_obj()
-first to determine whether the passed pointer to a valid slab object. This
-means that merging kmem_valid_obj() into kmem_dump_obj() will make the
-code more concise. Therefore, convert kmem_dump_obj() to work the same
-way as vmalloc_dump_obj(), removing the need for the kmem_dump_obj()
-caller to check kmem_valid_obj().  After this, there are no remaining
-calls to kmem_valid_obj() anymore, and it can be safely removed.
+When a structure containing an RCU callback rhp is (incorrectly) freed
+and reallocated after rhp is passed to call_rcu(), it is not unusual for
+rhp->func to be set to NULL. This defeats the debugging prints used by
+__call_rcu_common() in kernels built with CONFIG_DEBUG_OBJECTS_RCU_HEAD=y,
+which expect to identify the offending code using the identity of this
+function.
 
-Suggested-by: Matthew Wilcox <willy@infradead.org>
+And in kernels build without CONFIG_DEBUG_OBJECTS_RCU_HEAD=y, things
+are even worse, as can be seen from this splat:
+
+Unable to handle kernel NULL pointer dereference at virtual address 0
+... ...
+PC is at 0x0
+LR is at rcu_do_batch+0x1c0/0x3b8
+... ...
+ (rcu_do_batch) from (rcu_core+0x1d4/0x284)
+ (rcu_core) from (__do_softirq+0x24c/0x344)
+ (__do_softirq) from (__irq_exit_rcu+0x64/0x108)
+ (__irq_exit_rcu) from (irq_exit+0x8/0x10)
+ (irq_exit) from (__handle_domain_irq+0x74/0x9c)
+ (__handle_domain_irq) from (gic_handle_irq+0x8c/0x98)
+ (gic_handle_irq) from (__irq_svc+0x5c/0x94)
+ (__irq_svc) from (arch_cpu_idle+0x20/0x3c)
+ (arch_cpu_idle) from (default_idle_call+0x4c/0x78)
+ (default_idle_call) from (do_idle+0xf8/0x150)
+ (do_idle) from (cpu_startup_entry+0x18/0x20)
+ (cpu_startup_entry) from (0xc01530)
+
+This commit therefore adds calls to mem_dump_obj(rhp) to output some
+information, for example:
+
+  slab kmalloc-256 start ffff410c45019900 pointer offset 0 size 256
+
+This provides the rough size of the memory block and the offset of the
+rcu_head structure, which as least provides at least a few clues to help
+locate the problem. If the problem is reproducible, additional slab
+debugging can be enabled, for example, CONFIG_DEBUG_SLAB=y, which can
+provide significantly more information.
+
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- include/linux/slab.h |  5 +++--
- mm/slab_common.c     | 41 +++++++++++------------------------------
- mm/util.c            |  4 +---
- 3 files changed, 15 insertions(+), 35 deletions(-)
+ kernel/rcu/rcu.h      | 7 +++++++
+ kernel/rcu/srcutiny.c | 1 +
+ kernel/rcu/srcutree.c | 1 +
+ kernel/rcu/tasks.h    | 1 +
+ kernel/rcu/tiny.c     | 1 +
+ kernel/rcu/tree.c     | 1 +
+ 6 files changed, 12 insertions(+)
 
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index 8228d1276a2f..ff56ab804bf6 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -245,8 +245,9 @@ DEFINE_FREE(kfree, void *, if (_T) kfree(_T))
- size_t ksize(const void *objp);
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index 98e13be411af..d612731feea4 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -10,6 +10,7 @@
+ #ifndef __LINUX_RCU_H
+ #define __LINUX_RCU_H
  
- #ifdef CONFIG_PRINTK
--bool kmem_valid_obj(void *object);
--void kmem_dump_obj(void *object);
-+bool kmem_dump_obj(void *object);
-+#else
-+static inline bool kmem_dump_obj(void *object) { return false; }
- #endif
++#include <linux/slab.h>
+ #include <trace/events/rcu.h>
  
  /*
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index cd71f9581e67..a425bedf2103 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -528,26 +528,6 @@ bool slab_is_available(void)
+@@ -248,6 +249,12 @@ static inline void debug_rcu_head_unqueue(struct rcu_head *head)
  }
+ #endif	/* #else !CONFIG_DEBUG_OBJECTS_RCU_HEAD */
  
- #ifdef CONFIG_PRINTK
--/**
-- * kmem_valid_obj - does the pointer reference a valid slab object?
-- * @object: pointer to query.
-- *
-- * Return: %true if the pointer is to a not-yet-freed object from
-- * kmalloc() or kmem_cache_alloc(), either %true or %false if the pointer
-- * is to an already-freed object, and %false otherwise.
-- */
--bool kmem_valid_obj(void *object)
--{
--	struct folio *folio;
--
--	/* Some arches consider ZERO_SIZE_PTR to be a valid address. */
--	if (object < (void *)PAGE_SIZE || !virt_addr_valid(object))
--		return false;
--	folio = virt_to_folio(object);
--	return folio_test_slab(folio);
--}
--EXPORT_SYMBOL_GPL(kmem_valid_obj);
--
- static void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct slab *slab)
- {
- 	if (__kfence_obj_info(kpp, object, slab))
-@@ -566,11 +546,11 @@ static void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct slab *
-  * and, if available, the slab name, return address, and stack trace from
-  * the allocation and last free path of that object.
-  *
-- * This function will splat if passed a pointer to a non-slab object.
-- * If you are not sure what type of object you have, you should instead
-- * use mem_dump_obj().
-+ * Return: %true if the pointer is to a not-yet-freed object from
-+ * kmalloc() or kmem_cache_alloc(), either %true or %false if the pointer
-+ * is to an already-freed object, and %false otherwise.
-  */
--void kmem_dump_obj(void *object)
-+bool kmem_dump_obj(void *object)
- {
- 	char *cp = IS_ENABLED(CONFIG_MMU) ? "" : "/vmalloc";
- 	int i;
-@@ -578,13 +558,13 @@ void kmem_dump_obj(void *object)
- 	unsigned long ptroffset;
- 	struct kmem_obj_info kp = { };
- 
--	if (WARN_ON_ONCE(!virt_addr_valid(object)))
--		return;
-+	/* Some arches consider ZERO_SIZE_PTR to be a valid address. */
-+	if (object < (void *)PAGE_SIZE || !virt_addr_valid(object))
-+		return false;
- 	slab = virt_to_slab(object);
--	if (WARN_ON_ONCE(!slab)) {
--		pr_cont(" non-slab memory.\n");
--		return;
--	}
-+	if (!slab)
-+		return false;
++static inline void debug_rcu_head_callback(struct rcu_head *rhp)
++{
++	if (unlikely(!rhp->func))
++		kmem_dump_obj(rhp);
++}
 +
- 	kmem_obj_info(&kp, object, slab);
- 	if (kp.kp_slab_cache)
- 		pr_cont(" slab%s %s", cp, kp.kp_slab_cache->name);
-@@ -621,6 +601,7 @@ void kmem_dump_obj(void *object)
- 		pr_info("    %pS\n", kp.kp_free_stack[i]);
- 	}
+ extern int rcu_cpu_stall_suppress_at_boot;
  
-+	return true;
- }
- EXPORT_SYMBOL_GPL(kmem_dump_obj);
- #endif
-diff --git a/mm/util.c b/mm/util.c
-index 8cbbfd3a3d59..6eddd891198e 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -1060,10 +1060,8 @@ void mem_dump_obj(void *object)
- {
- 	const char *type;
+ static inline bool rcu_stall_is_suppressed_at_boot(void)
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index 336af24e0fe3..c38e5933a5d6 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -138,6 +138,7 @@ void srcu_drive_gp(struct work_struct *wp)
+ 	while (lh) {
+ 		rhp = lh;
+ 		lh = lh->next;
++		debug_rcu_head_callback(rhp);
+ 		local_bh_disable();
+ 		rhp->func(rhp);
+ 		local_bh_enable();
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index f1a905200fc2..833a8f848a90 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1710,6 +1710,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+ 	rhp = rcu_cblist_dequeue(&ready_cbs);
+ 	for (; rhp != NULL; rhp = rcu_cblist_dequeue(&ready_cbs)) {
+ 		debug_rcu_head_unqueue(rhp);
++		debug_rcu_head_callback(rhp);
+ 		local_bh_disable();
+ 		rhp->func(rhp);
+ 		local_bh_enable();
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 8d65f7d576a3..7c845532a50a 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -538,6 +538,7 @@ static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp, struct rcu_tasks_percpu
+ 	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+ 	len = rcl.len;
+ 	for (rhp = rcu_cblist_dequeue(&rcl); rhp; rhp = rcu_cblist_dequeue(&rcl)) {
++		debug_rcu_head_callback(rhp);
+ 		local_bh_disable();
+ 		rhp->func(rhp);
+ 		local_bh_enable();
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index 42f7589e51e0..fec804b79080 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -97,6 +97,7 @@ static inline bool rcu_reclaim_tiny(struct rcu_head *head)
  
--	if (kmem_valid_obj(object)) {
--		kmem_dump_obj(object);
-+	if (kmem_dump_obj(object))
- 		return;
--	}
+ 	trace_rcu_invoke_callback("", head);
+ 	f = head->func;
++	debug_rcu_head_callback(head);
+ 	WRITE_ONCE(head->func, (rcu_callback_t)0L);
+ 	f(head);
+ 	rcu_lock_release(&rcu_callback_map);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 3c7281fc25a7..aae515071ffd 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2135,6 +2135,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 		trace_rcu_invoke_callback(rcu_state.name, rhp);
  
- 	if (vmalloc_dump_obj(object))
- 		return;
+ 		f = rhp->func;
++		debug_rcu_head_callback(rhp);
+ 		WRITE_ONCE(rhp->func, (rcu_callback_t)0L);
+ 		f(rhp);
+ 
 -- 
 2.34.1
 
