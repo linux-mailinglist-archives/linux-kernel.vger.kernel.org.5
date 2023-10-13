@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2598C7C8C5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 19:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398497C8C5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 19:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbjJMRfR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Oct 2023 13:35:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
+        id S229891AbjJMRhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 13:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJMRfP (ORCPT
+        with ESMTP id S229697AbjJMRhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 13:35:15 -0400
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D65A9;
-        Fri, 13 Oct 2023 10:35:14 -0700 (PDT)
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-57be74614c0so60409eaf.1;
-        Fri, 13 Oct 2023 10:35:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697218513; x=1697823313;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xVZ2KoSdWfm9vU181b1VE9CrcI7d4A9Y2SwYBj4ZNFQ=;
-        b=eDvVh/XhjIWqrFVjybj2lC0zJ3YQMImVdd+EQO60wH2XBIbbxRzduW8w8fKUIvCAF9
-         9Wnoggwzuc/WYolq9y61CvWdbnNXTORAgrQZlcsCW9kVvEqHcRpr0igMGk4L/2tIMYbl
-         SWPLG8+W88p0qWUShUDkaOczGpA/nTWnZ6ACm6v9Kh5A5m83MypCBUFe3F7Bhp7zcVPJ
-         DRVi/wDJ3atuTJD5/IWdir4rpMGBUvxQygzq9Q8k0zklvQyrn+h9/bogGr5I8IXy+vEV
-         AGz1C6l2s+uiIAzaBS161+C8PMJfRhs/5TPQknN61T8o6b0dHWqaedoxGxLHd7zQs3Y9
-         AU0A==
-X-Gm-Message-State: AOJu0Yz3enznZofcAY4pGpDyio0j6VpPT9L/BCPWVhVMrfjKll2tv90N
-        qjwbZ9Q4vDKdbWx4bjRzQl89ZZog/hynpi/mCf4=
-X-Google-Smtp-Source: AGHT+IH3xv7V34FMwvzR1bbYcbgAU7fSJdrqQFOkjnTGDH1njPe4OVrx7RRPKcLGBYtI8xJr/hXYh1u8+rf4M0xUFRs=
-X-Received: by 2002:a4a:d9d1:0:b0:581:84e9:a7ad with SMTP id
- l17-20020a4ad9d1000000b0058184e9a7admr1895451oou.1.1697218513548; Fri, 13 Oct
- 2023 10:35:13 -0700 (PDT)
+        Fri, 13 Oct 2023 13:37:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74BFBF
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:37:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA7FEC433C8;
+        Fri, 13 Oct 2023 17:37:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697218658;
+        bh=HJT283gufmNTKZ1HBQ/5iGWVvMQLBiV0kx1VBpmJJ2o=;
+        h=From:Date:Subject:To:Cc:From;
+        b=Hh2dLgaVMsg08SS9GArO1W/6DeLTcXQhQ5sUQbYuB26xBHcm48kAyKz28jwDPPkF/
+         OEwu1nH+YpE9d0Yfvm1bVR5exlTowmYY4KjepN07FD7NZ2hfCwsOwguvuorkH24hX5
+         eUJHm+cwxKiyRstBVYfj9pRBNSgjBpMi0qKCrl4tVn2pSDZNC8jsSo5mOu8BvC0PpQ
+         ZuQqpA5O0P6YoyrLVCGjf84zgEcr2I0umirU/hT78DLnpURA0H+wpdxb9EOJ2cwuwY
+         +wh+eF9L406GFV2sw0AKgytpy/UuHo23vISKpMj2+/3eod5vizMR6n1Vt7lLWyD/U3
+         tP0BRGaxgw0YA==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Fri, 13 Oct 2023 18:37:33 +0100
+Subject: [PATCH] ASoC: dwc: Fix non-DT instantiation
 MIME-Version: 1.0
-References: <20231011083334.3987477-1-michal.wilczynski@intel.com> <20231011083334.3987477-3-michal.wilczynski@intel.com>
-In-Reply-To: <20231011083334.3987477-3-michal.wilczynski@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 13 Oct 2023 19:35:02 +0200
-Message-ID: <CAJZ5v0h-NCAst+pQre2kVeidE7t4N5PM2UU46LbYPsdmKDRAoQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/6] ACPI: AC: Use string_choices API instead of
- ternary operator
-To:     Michal Wilczynski <michal.wilczynski@intel.com>
-Cc:     linux-acpi@vger.kernel.org, rafael@kernel.org,
-        dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        lenb@kernel.org, dave.jiang@intel.com, ira.weiny@intel.com,
-        rui.zhang@intel.com, linux-kernel@vger.kernel.org,
-        nvdimm@lists.linux.dev, Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231013-asoc-fix-dwc-v1-1-63211bb746b9@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAFyAKWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDA0Nj3cTi/GTdtMwK3ZTyZF0DMyNLk0TjFGMzc1MloJaColSgFNi46Nj
+ aWgBOVaAjXgAAAA==
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1128; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=HJT283gufmNTKZ1HBQ/5iGWVvMQLBiV0kx1VBpmJJ2o=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlKYBgq42EeqOZ620pMX7z5W9hELZSAYwy4YNTO
+ S+uXAn88ZiJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZSmAYAAKCRAk1otyXVSH
+ 0NgfB/4xxyVdMMJQWFk24fk2jmqzHiHSBcyUZxRVj8niv5wH4r3RjJx6aZToR776cRsXQfCR228
+ ZD4MHe/kyNV4aIpS7dpt3vU9eDVaugyovL1FJMPbrgXKokQNlqAQevLZgmzDCl2aknq2dgNxhjA
+ h/j1ZAWqFFXrpd62ntGfmMaXX2SyGTpneB9rJ47egALZo2lXuqY+bHnxNUKajLHJoV9SfVYgxux
+ myxewmqBUBmJA8FXtTjguqwdGxtF5iFbWtW6+HNEwCcY109lNthgo8omZbfDC4QOv9jc2+eUAGT
+ pS6eOJ6X0ehJAUa0f9Fz2PjQeZkZBnG/MAP5pW+JQOpEB4UL
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 10:34 AM Michal Wilczynski
-<michal.wilczynski@intel.com> wrote:
->
-> Use modern string_choices API instead of manually determining the
-> output using ternary operator.
->
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
-> ---
->  drivers/acpi/ac.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/acpi/ac.c b/drivers/acpi/ac.c
-> index 83d45c681121..f809f6889b4a 100644
-> --- a/drivers/acpi/ac.c
-> +++ b/drivers/acpi/ac.c
-> @@ -17,6 +17,7 @@
->  #include <linux/delay.h>
->  #include <linux/platform_device.h>
->  #include <linux/power_supply.h>
-> +#include <linux/string_choices.h>
->  #include <linux/acpi.h>
->  #include <acpi/battery.h>
->
-> @@ -243,8 +244,8 @@ static int acpi_ac_add(struct acpi_device *device)
->                 goto err_release_ac;
->         }
->
-> -       pr_info("%s [%s] (%s)\n", acpi_device_name(device),
-> -               acpi_device_bid(device), ac->state ? "on-line" : "off-line");
-> +       pr_info("%s [%s] (%s-line)\n", acpi_device_name(device),
-> +               acpi_device_bid(device), str_on_off(ac->state));
->
->         ac->battery_nb.notifier_call = acpi_ac_battery_notify;
->         register_acpi_notifier(&ac->battery_nb);
-> --
+Commit d6d6c513f5d2 ("ASoC: dwc: Use ops to get platform data")
+converted the DesignWare I2S driver to use a DT specific function to
+obtain platform data but this breaks at least non-DT systems such as
+AMD.  Revert it.
 
-Applied as 6.7 material, thanks!
+Fixes: d6d6c513f5d2 ("ASoC: dwc: Use ops to get platform data")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/dwc/dwc-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index 2ff619a29655..c04466f5492e 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -917,7 +917,7 @@ static int jh7110_i2stx0_clk_cfg(struct i2s_clk_config_data *config)
+ 
+ static int dw_i2s_probe(struct platform_device *pdev)
+ {
+-	const struct i2s_platform_data *pdata = of_device_get_match_data(&pdev->dev);
++	const struct i2s_platform_data *pdata = pdev->dev.platform_data;
+ 	struct dw_i2s_dev *dev;
+ 	struct resource *res;
+ 	int ret, irq;
+
+---
+base-commit: fbfe616ad40c06d68b83b657a94cd2e709dda37b
+change-id: 20231013-asoc-fix-dwc-06294a3d3675
+
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
+
