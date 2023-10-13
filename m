@@ -2,129 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD977C7DD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC26B7C7DD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbjJMGqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 02:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43224 "EHLO
+        id S229768AbjJMGrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 02:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjJMGqO (ORCPT
+        with ESMTP id S229638AbjJMGrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 02:46:14 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31862B7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:46:12 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32003aae100so1900572f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:46:12 -0700 (PDT)
+        Fri, 13 Oct 2023 02:47:00 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24DFBC
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:46:57 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3af5b5d7f16so1023542b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:46:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697179570; x=1697784370; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=VfuCZ1aZoqluUffIFaghB+5m1laq1jm/KJJ3FY8NzhI=;
-        b=sl+/Z2Wz0INFGfX+TEbfE5C/+KkSvjLg5yN21Jis6BXaHmiLq07QplkPfh0uMuROAr
-         qHoY6B498QlnNpK69ID94DqBlgSzEa28rkHyLSo75jSVps7GSoULOTS3PMm0nlbPOrWY
-         LGQRLtQt4WD1lb/64QhR0fJj6xq7LQm/q4prWRGUgmr4UbJzPuHpZ5Eo8o8LtwJDR/VT
-         kr3ykBLXKeMVaIUhEvqj3jN2YYCCLFkWIi5ZS2zTGEFmH46yChKfSrsIqE7tMvLQ1/Bi
-         UTQCJbMuzsRahQlW9jiK4ZBJOxg4mWS+H61HIVdQq5++oixfkLBihmXzq0RCH+RP0XtI
-         94Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697179570; x=1697784370;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=ventanamicro.com; s=google; t=1697179617; x=1697784417; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VfuCZ1aZoqluUffIFaghB+5m1laq1jm/KJJ3FY8NzhI=;
-        b=gGmlQOyixG59ElprT/7cKnQ65ebptVuFJeuS48o5DueJJGqfBtSnafgfZIGSBKyTYh
-         t6ur6LT4/+frJedd7ev71wdqSWN/Nz1ObInJIwit6NosyPIj4cCyQ8W8R2ur5TuXI8BQ
-         04WWM1Qc81mjesyxuN+3R91HGimOKDLWkwS9zMbGIe59F2j3S0CkYxO4XmBBJyoAeOjB
-         yDP6X1TeLdiYVUcFnWZEXiyEiT57zAskekPGJAcGCv5dJzMR/k4VrcYFdL9ZaYA69H1I
-         lk05i7dxeTk0tZzVFzvTVvcyY1IQcmx2UL5z1kkXIJ68DrPiGSeVCGKurJT3r5dM5c+e
-         WojA==
-X-Gm-Message-State: AOJu0Yx8NxGh61pAPoKRITOA25SUJXaMgE/oOC5ewxVx9M2c+jTgHPr+
-        fngJvBEnL05LDmoFFUya2gVJqQ==
-X-Google-Smtp-Source: AGHT+IERgsLgQ3Jk7JTMsv5Fzp2ccPiuC/UAkG2yPXHZxR4WbChOgg4cZSXJ7MFTS+paUXgbuQ5bXw==
-X-Received: by 2002:a5d:5c07:0:b0:31f:d50e:a14f with SMTP id cc7-20020a5d5c07000000b0031fd50ea14fmr26160325wrb.10.1697179570612;
-        Thu, 12 Oct 2023 23:46:10 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id n9-20020adff089000000b0031ad2f9269dsm19962518wro.40.2023.10.12.23.46.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 23:46:09 -0700 (PDT)
-Message-ID: <0e972a0a-af27-4837-a80c-cbab0002d368@linaro.org>
-Date:   Fri, 13 Oct 2023 08:46:07 +0200
+        bh=WAv9PsVdxpQ39eb66YGKg9NOnjKSeQxVJzuKdUvt8g0=;
+        b=HdMQLLbSIMoicCfTeg4pAxxWkHko2eTKn+dqdCYi8fSEIw6JdDrO5HT3IDURrohzAs
+         3hLNG11WPGRucjpWVSIO1SjWCqgDrCKvxGG42LYoFDr3Ux+O9YzbB23L/X1ji0w4PGiI
+         RzwXiVuVSp3TBE2RACs4j9QJXGwro0S5nTMfZkHPHhTPExs2hClL976s+Cpohgn5uRAd
+         qadC/iCn8392iZvreyLCUfbUGmF7PAeeoR7TDddAVmxu1Jlt+Kqum9XmO/zh9BtG0IXk
+         23rCBH4gOGQs/0YN+Srs4cnDW2pR7CtdEfTPu57JcgwJGcCFoa5dzgPPjOqOUdp4QXp5
+         3dwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697179617; x=1697784417;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WAv9PsVdxpQ39eb66YGKg9NOnjKSeQxVJzuKdUvt8g0=;
+        b=leRKZskOBUCfGrXYcKAY9v9U0yydlBNet0NQhnNtpplkN7yhyBas2QhSOuGlKk1NOm
+         pma4ZaC2yc5HtpsagjnnP52tOeqpUFxT9jkkKviZC11Tj2quARQSJ9a6DmlS+J/EbYi/
+         GepBtCebX4SIdVeWbI6i8eGgUrTqQNXZKIFIponEdk7HkBIOAia5K8hJY+Z8j1K1o10I
+         kGGhWxN1GNTxircz46kHiDmG5RlA76EXpvq1EuuDirpvzitTnHoAf81mKvQreLOGAvsS
+         4r8a3U9Y8noJZXwzbA79vkSQ7GXB9KkvjI4DpRS16hGJ9Qm9HFI/+KxFThAbtzQR9u4G
+         9R1A==
+X-Gm-Message-State: AOJu0YzhElBg4rxvShoVbDXhjfK03YB4yRH/zTt9ORgFMwrGbTtWw7i7
+        GWRU3SPFbTZHuNcggiQoICi7Q4VA0u1DDC1Ji8mOzQ==
+X-Google-Smtp-Source: AGHT+IHvlhFetP1dLXJSaeAASQ1+0TblhiMmTGYHfkXU7fwztEdzGyQj8XdRw0QEmGOCm8yj/Vq8HKuwasAapN28CNA=
+X-Received: by 2002:aca:240f:0:b0:3a7:330d:93da with SMTP id
+ n15-20020aca240f000000b003a7330d93damr26242512oic.19.1697179616944; Thu, 12
+ Oct 2023 23:46:56 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 02/16] dt-bindings: media: mediatek: mdp3: merge the
- indentical RDMA under display
-To:     Moudy Ho <moudy.ho@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
+References: <20231003044403.1974628-1-apatel@ventanamicro.com>
+ <20231003044403.1974628-8-apatel@ventanamicro.com> <20231012-countable-darkish-7e449edc763d@spud>
+In-Reply-To: <20231012-countable-darkish-7e449edc763d@spud>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Fri, 13 Oct 2023 12:16:45 +0530
+Message-ID: <CAK9=C2ViQj5iNBvQcMpYii2p+CrOiQ3hY8t5_U8mrJTcMVZCYw@mail.gmail.com>
+Subject: Re: [PATCH v10 07/15] dt-bindings: interrupt-controller: Add RISC-V
+ incoming MSI controller
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
         Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20231012084037.19376-1-moudy.ho@mediatek.com>
- <20231012084037.19376-3-moudy.ho@mediatek.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231012084037.19376-3-moudy.ho@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -134,61 +85,272 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2023 10:40, Moudy Ho wrote:
+On Thu, Oct 12, 2023 at 10:05=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
+ote:
+>
+> Hey,
+>
+> On Tue, Oct 03, 2023 at 10:13:55AM +0530, Anup Patel wrote:
+> > We add DT bindings document for the RISC-V incoming MSI controller
+> > (IMSIC) defined by the RISC-V advanced interrupt architecture (AIA)
+> > specification.
+> >
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>
+> Just FYI, since they'll reply to this themselves, but some of the
+> Microchip folks have run into problems with sparse hart indexes while
+> trying to use the imsic binding to describe some configurations they
+> have. I think there were also so problems with how to describe to a
+> linux guest which file to use, when the first hart available to the
+> guest does not use the first file. They'll do a better job of describing
+> their problems than I will, so I shall leave it to them!
 
->  
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: mediatek,mt8183-mdp3-rdma
-> +
-> +    then:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: RDMA clock
-> +            - description: RSZ clock (shared SRAM with RDMA)
-> +
-> +        mboxes:
-> +          items:
-> +            - description: used for 1st data pipe from RDMA
-> +            - description: used for 2nd data pipe from RDMA
+Quoting AIA spec:
+"For the purpose of locating the memory pages of interrupt files in the
+address space, assume each hart (or each hart within a group) has a
+unique hart number that may or may not be related to the unique hart
+identifiers (=E2=80=9Chart IDs=E2=80=9D) that the RISC-V Privileged Archite=
+cture assigns
+to harts."
 
-interrupts:
-  false
+It is very easy to get confused between the AIA "hart index" and
+"hart IDs" defined by the RISC-V Privileged specification but these
+are two very different things. The AIA "hart index" over here is the
+bits in the address of an IMSIC file.
 
-> +
-> +      required:
-> +        - mboxes
-> +        - mediatek,gce-events
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: mediatek,mt8195-vdo1-rdma
-> +
-> +    then:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: RDMA clock
+This DT binding follows the IMSIC file arrangement in the address
+space as defined by the section "3.6 Arrangement of the memory
+regions of multiple interrupt files" of the AIA specification. This
+arrangement is MANDATORY for platforms having both APLIC
+and IMSIC because in MSI-mode the APLIC generates target
+MSI address based the IMSIC file arrangement described in the
+section "3.6 Arrangement of the memory regions of multiple
+interrupt files". In fact, this also applies to virtual platforms
+created by hypervisors (KVM, Xen, ...)
 
-mboxes: false
-mediatek,gce-events: false
-
-I am not so sure it is actually "simpler" to merge these. They are quite
-different. You will end up with unmanageable allOf  with a lot of
-branches (which supposedly you want to remove).
+Regards,
+Anup
 
 
-> +
->  additionalProperties: false
->  
->  examples:
-
-Best regards,
-Krzysztof
-
+>
+> Cheers,
+> Conor.
+>
+> > Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > ---
+> >  .../interrupt-controller/riscv,imsics.yaml    | 172 ++++++++++++++++++
+> >  1 file changed, 172 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/interrupt-control=
+ler/riscv,imsics.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/interrupt-controller/ris=
+cv,imsics.yaml b/Documentation/devicetree/bindings/interrupt-controller/ris=
+cv,imsics.yaml
+> > new file mode 100644
+> > index 000000000000..84976f17a4a1
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/interrupt-controller/riscv,imsi=
+cs.yaml
+> > @@ -0,0 +1,172 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/interrupt-controller/riscv,imsics.y=
+aml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: RISC-V Incoming MSI Controller (IMSIC)
+> > +
+> > +maintainers:
+> > +  - Anup Patel <anup@brainfault.org>
+> > +
+> > +description: |
+> > +  The RISC-V advanced interrupt architecture (AIA) defines a per-CPU i=
+ncoming
+> > +  MSI controller (IMSIC) for handling MSIs in a RISC-V platform. The R=
+ISC-V
+> > +  AIA specification can be found at https://github.com/riscv/riscv-aia=
+.
+> > +
+> > +  The IMSIC is a per-CPU (or per-HART) device with separate interrupt =
+file
+> > +  for each privilege level (machine or supervisor). The configuration =
+of
+> > +  a IMSIC interrupt file is done using AIA CSRs and it also has a 4KB =
+MMIO
+> > +  space to receive MSIs from devices. Each IMSIC interrupt file suppor=
+ts a
+> > +  fixed number of interrupt identities (to distinguish MSIs from devic=
+es)
+> > +  which is same for given privilege level across CPUs (or HARTs).
+> > +
+> > +  The device tree of a RISC-V platform will have one IMSIC device tree=
+ node
+> > +  for each privilege level (machine or supervisor) which collectively =
+describe
+> > +  IMSIC interrupt files at that privilege level across CPUs (or HARTs)=
+.
+> > +
+> > +  The arrangement of IMSIC interrupt files in MMIO space of a RISC-V p=
+latform
+> > +  follows a particular scheme defined by the RISC-V AIA specification.=
+ A IMSIC
+> > +  group is a set of IMSIC interrupt files co-located in MMIO space and=
+ we can
+> > +  have multiple IMSIC groups (i.e. clusters, sockets, chiplets, etc) i=
+n a
+> > +  RISC-V platform. The MSI target address of a IMSIC interrupt file at=
+ given
+> > +  privilege level (machine or supervisor) encodes group index, HART in=
+dex,
+> > +  and guest index (shown below).
+> > +
+> > +  XLEN-1            > (HART Index MSB)                  12    0
+> > +  |                  |                                  |     |
+> > +  -------------------------------------------------------------
+> > +  |xxxxxx|Group Index|xxxxxxxxxxx|HART Index|Guest Index|  0  |
+> > +  -------------------------------------------------------------
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/interrupt-controller.yaml#
+> > +  - $ref: /schemas/interrupt-controller/msi-controller.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - enum:
+> > +          - qemu,imsics
+> > +      - const: riscv,imsics
+> > +
+> > +  reg:
+> > +    minItems: 1
+> > +    maxItems: 16384
+> > +    description:
+> > +      Base address of each IMSIC group.
+> > +
+> > +  interrupt-controller: true
+> > +
+> > +  "#interrupt-cells":
+> > +    const: 0
+> > +
+> > +  msi-controller: true
+> > +
+> > +  "#msi-cells":
+> > +    const: 0
+> > +
+> > +  interrupts-extended:
+> > +    minItems: 1
+> > +    maxItems: 16384
+> > +    description:
+> > +      This property represents the set of CPUs (or HARTs) for which gi=
+ven
+> > +      device tree node describes the IMSIC interrupt files. Each node =
+pointed
+> > +      to should be a riscv,cpu-intc node, which has a CPU node (i.e. R=
+ISC-V
+> > +      HART) as parent.
+> > +
+> > +  riscv,num-ids:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    minimum: 63
+> > +    maximum: 2047
+> > +    description:
+> > +      Number of interrupt identities supported by IMSIC interrupt file=
+.
+> > +
+> > +  riscv,num-guest-ids:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    minimum: 63
+> > +    maximum: 2047
+> > +    description:
+> > +      Number of interrupt identities are supported by IMSIC guest inte=
+rrupt
+> > +      file. When not specified it is assumed to be same as specified b=
+y the
+> > +      riscv,num-ids property.
+> > +
+> > +  riscv,guest-index-bits:
+> > +    minimum: 0
+> > +    maximum: 7
+> > +    default: 0
+> > +    description:
+> > +      Number of guest index bits in the MSI target address.
+> > +
+> > +  riscv,hart-index-bits:
+> > +    minimum: 0
+> > +    maximum: 15
+> > +    description:
+> > +      Number of HART index bits in the MSI target address. When not
+> > +      specified it is calculated based on the interrupts-extended prop=
+erty.
+> > +
+> > +  riscv,group-index-bits:
+> > +    minimum: 0
+> > +    maximum: 7
+> > +    default: 0
+> > +    description:
+> > +      Number of group index bits in the MSI target address.
+> > +
+> > +  riscv,group-index-shift:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    minimum: 0
+> > +    maximum: 55
+> > +    default: 24
+> > +    description:
+> > +      The least significant bit position of the group index bits in th=
+e
+> > +      MSI target address.
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupt-controller
+> > +  - msi-controller
+> > +  - "#msi-cells"
+> > +  - interrupts-extended
+> > +  - riscv,num-ids
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    // Example 1 (Machine-level IMSIC files with just one group):
+> > +
+> > +    interrupt-controller@24000000 {
+> > +      compatible =3D "qemu,imsics", "riscv,imsics";
+> > +      interrupts-extended =3D <&cpu1_intc 11>,
+> > +                            <&cpu2_intc 11>,
+> > +                            <&cpu3_intc 11>,
+> > +                            <&cpu4_intc 11>;
+> > +      reg =3D <0x28000000 0x4000>;
+> > +      interrupt-controller;
+> > +      #interrupt-cells =3D <0>;
+> > +      msi-controller;
+> > +      #msi-cells =3D <0>;
+> > +      riscv,num-ids =3D <127>;
+> > +    };
+> > +
+> > +  - |
+> > +    // Example 2 (Supervisor-level IMSIC files with two groups):
+> > +
+> > +    interrupt-controller@28000000 {
+> > +      compatible =3D "qemu,imsics", "riscv,imsics";
+> > +      interrupts-extended =3D <&cpu1_intc 9>,
+> > +                            <&cpu2_intc 9>,
+> > +                            <&cpu3_intc 9>,
+> > +                            <&cpu4_intc 9>;
+> > +      reg =3D <0x28000000 0x2000>, /* Group0 IMSICs */
+> > +            <0x29000000 0x2000>; /* Group1 IMSICs */
+> > +      interrupt-controller;
+> > +      #interrupt-cells =3D <0>;
+> > +      msi-controller;
+> > +      #msi-cells =3D <0>;
+> > +      riscv,num-ids =3D <127>;
+> > +      riscv,group-index-bits =3D <1>;
+> > +      riscv,group-index-shift =3D <24>;
+> > +    };
+> > +...
+> > --
+> > 2.34.1
+> >
