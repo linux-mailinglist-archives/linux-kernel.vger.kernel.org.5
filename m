@@ -2,198 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EBA7C8F9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 23:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A517C8FA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 23:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbjJMVyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 17:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54140 "EHLO
+        id S232200AbjJMVzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 17:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJMVyW (ORCPT
+        with ESMTP id S231469AbjJMVzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 17:54:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCCDB7;
-        Fri, 13 Oct 2023 14:54:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697234061; x=1728770061;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=dltmjFDVO3vTssOWPlJg915YZex65bACfWFkwBG7/Uo=;
-  b=jcXb0PWw747iZQb3w3o8zj95a6z47sdLymFrTuSjLuuN7NA7n10ZjbzQ
-   gCFXTo3t/2oPKqydt6em+dVMhjKyXTU59N0ePEXgJe6cKIJcUuGyK8USV
-   FUgoHjhAntNP73+TB7ySOC+W5QxYRGJMAP/tDgCtGKNanZ1lYLDrIKHKy
-   F1sO3WnEnP3xlekxd8fMkqyIaxyiHHVd/2NTXfwaFSxCa8J9EWJzVxqih
-   ZmTEdHlkqeRjonC0sGFxhegfwEdjtJKU1SysQCQiL8OiYBH2yTjB6Ss8x
-   ujiNIMHzFdwHyiq200zJgTRxjD3BsLbF2lZQRLPpoelwNLeqTkk8mQiNh
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="384142834"
-X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="384142834"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 14:54:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="784311876"
-X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="784311876"
-Received: from bgras-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.59.145])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 14:54:13 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 9110A104350; Sat, 14 Oct 2023 00:54:10 +0300 (+03)
-Date:   Sat, 14 Oct 2023 00:54:10 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Michael Roth <michael.roth@amd.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
-        khalid.elmously@canonical.com, philip.cox@canonical.com,
-        aarcange@redhat.com, peterx@redhat.com, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv14 5/9] efi: Add unaccepted memory support
-Message-ID: <20231013215410.3os6d2ya7v5yu7vd@box.shutemov.name>
-References: <20230606142637.5171-1-kirill.shutemov@linux.intel.com>
- <20230606142637.5171-6-kirill.shutemov@linux.intel.com>
- <20231010210518.jguawj7bscwgvszv@amd.com>
- <20231013123358.y4pcdp5fgtt4ax6g@box.shutemov.name>
- <20231013162210.bqepgz6wnh7uohqq@box>
- <34d94c58-f5f3-48eb-5833-0ef0c90cf868@suse.cz>
- <20231013172728.66pm7os3fp7laxwr@box>
+        Fri, 13 Oct 2023 17:55:18 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11D9B7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:55:16 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9a58aa4983so3034108276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:55:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1697234116; x=1697838916; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LKGSCOVLbkYhGYoq+rtlt3uTKCf4verh3lWQ8sV6E5A=;
+        b=P1WAcFezEm1NvXvZtbYJCwmZeudvXGnk1C4nrNAWPQcchDGRu8o60gX93BCGMUyyDr
+         2Ond7dftnmvBmmi/F9j7w3wldMUXfyfTgCEPQQynYKtGlUgXjfddnSJZ5Ljqp6NMXf5T
+         aM2WULrobajmf22xevmho4VZMv4M8CKUkmaMqqKbrO9TJ5rCvQ8xnM7hPg8aRdRZsR9r
+         si4OMsMCJqZxkKQj89zQwXwK3Z/sRmnU/MYMJv8/BnvznnU5WX3Q9VO1+rd1McsJawQ9
+         52HjduOd1/tKPfr+cO9bQ0L8UO2Tml/spW6B51s/nqVsgctgqPtYwPs8nW5Q8znIv154
+         lJlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697234116; x=1697838916;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LKGSCOVLbkYhGYoq+rtlt3uTKCf4verh3lWQ8sV6E5A=;
+        b=Kljf9zIqn050d2Odk7nQy1XYUz9vIWLCxk13KArmUtndc7KGIeZTrtj08tRo2Pgw0A
+         rw/SW1BtK9Mt21wDT514BTEjfbGraPK3OzLo4Fe9xduZBFoKlSZkSwjjK9sZ2TLWKsyp
+         wpgbloRRMwDXq2AWJBXL53ad02I9kSkFDA8noO3EAcXuZBKkG8Wr8v2heiFoQrq6N9bo
+         Z3saLw6gSokthiN4zofRnUlnOfblW2vfIfe9pwe0iejsVj7vwZbIDGJL9qrcmZJbn4qW
+         pkU12lMCpSztIxHN+/RZcEwpaDCxnbFd7Bqgcb8sZ9+S5MFxhhtF+ivqWtWprPloLU83
+         UZIw==
+X-Gm-Message-State: AOJu0Yx41RUFc3ZQJbzEl2hK2WOdgtMmX9U+2niPS/st1lzvK4xVB49r
+        502yD184gHikpLsV5QFqnKEQt0Sk3u4C+du3yldK5rj20LabLws=
+X-Google-Smtp-Source: AGHT+IG7mv21RwUbd4s8yApgHo1oFDE2XPy+OCLcTrQN0/TOGlzUdlKn7So/TOy+xlC76NBVGDCjNC3AbSNbPwuT8pc=
+X-Received: by 2002:a25:ae8b:0:b0:d9a:d20d:7d5a with SMTP id
+ b11-20020a25ae8b000000b00d9ad20d7d5amr6426451ybj.1.1697234115842; Fri, 13 Oct
+ 2023 14:55:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231013172728.66pm7os3fp7laxwr@box>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230912205658.3432-1-casey.ref@schaufler-ca.com>
+ <20230912205658.3432-1-casey@schaufler-ca.com> <CAHC9VhRcbp3iWQwL7FTUrcU1C3OsZ413Nbq+17oTwW7hZ7XvBw@mail.gmail.com>
+In-Reply-To: <CAHC9VhRcbp3iWQwL7FTUrcU1C3OsZ413Nbq+17oTwW7hZ7XvBw@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 13 Oct 2023 17:55:04 -0400
+Message-ID: <CAHC9VhSqY5+DR-jXprrftb1=CzDvhTh0Ep66A16RMd4L7W7TYw@mail.gmail.com>
+Subject: Re: [PATCH v15 00/11] LSM: Three basic syscalls
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     linux-security-module@vger.kernel.org, jmorris@namei.org,
+        serge@hallyn.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, mic@digikod.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 08:27:28PM +0300, Kirill A. Shutemov wrote:
-> I will test the idea with larger unit_size to see how it behaves.
+On Thu, Oct 12, 2023 at 6:07=E2=80=AFPM Paul Moore <paul@paul-moore.com> wr=
+ote:
+>
+> On Tue, Sep 12, 2023 at 4:57=E2=80=AFPM Casey Schaufler <casey@schaufler-=
+ca.com> wrote:
+> >
+> > Add three system calls for the Linux Security Module ABI ...
+>
+> First off, a big thank you to Casey who took it upon himself to turn
+> my pseudo-code syscall suggestion into a proper patchset and saw it
+> through 15 revisions.  Thanks also go out to everyone that has helped
+> review and comment on this effort; I know everyone is busy, but these
+> reviews are important.
+>
+> I'm happy to say that I think we're in a good place with this revision
+> of the LSM syscall patchset.  I only see two outstanding issues, and
+> neither of those are bugs/showstoppers that affect the API, they are
+> simply areas where the implementation could be improved.  With the
+> understanding that Casey is busy for the rest of the month, and my
+> desire to make sure this patchset gets a full dev cycle in linux-next,
+> I'm going to suggest merging this into the lsm/next-queue branch soon
+> (likely tomorrow) in preparation for merging it into lsm/next once the
+> upcoming merge window closes.  Those who want to help improve the
+> implementation, as suggested in the feedback on this revision or
+> otherwise, are welcome to submit patches against the lsm/next-queue
+> branch and I will merge them into that branch once they pass review.
+>
+> If I don't hear any objections I'll plan on merging this patchset
+> tomorrow, I'll send a follow-up reply to this email when it's done.
 
-It indeed uncovered an issue. We need to record ranges on accepting_list
-in unit_size granularity. Otherwise, we fail to stop parallel accept
-requests to the same unit_size block if they don't overlap on physical
-addresses.
+Since it's been *almost* a full 24 hours and no objections I went
+ahead and merged this patchset into lsm/next-queue with the intention
+of bringing them into lsm/next after the upcoming merge window closes.
+For those of you who have suggested changes, please feel free to
+submit patches against the lsm/next-queue branch and we can get them
+queued up along with these patches.
 
-Updated patch:
+Thanks everyone!
 
-diff --git a/drivers/firmware/efi/unaccepted_memory.c b/drivers/firmware/efi/unaccepted_memory.c
-index 853f7dc3c21d..8af0306c8e5c 100644
---- a/drivers/firmware/efi/unaccepted_memory.c
-+++ b/drivers/firmware/efi/unaccepted_memory.c
-@@ -5,9 +5,17 @@
- #include <linux/spinlock.h>
- #include <asm/unaccepted_memory.h>
- 
--/* Protects unaccepted memory bitmap */
-+/* Protects unaccepted memory bitmap and accepting_list */
- static DEFINE_SPINLOCK(unaccepted_memory_lock);
- 
-+struct accept_range {
-+	struct list_head list;
-+	unsigned long start;
-+	unsigned long end;
-+};
-+
-+static LIST_HEAD(accepting_list);
-+
- /*
-  * accept_memory() -- Consult bitmap and accept the memory if needed.
-  *
-@@ -24,6 +32,7 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
- {
- 	struct efi_unaccepted_memory *unaccepted;
- 	unsigned long range_start, range_end;
-+	struct accept_range range, *entry;
- 	unsigned long flags;
- 	u64 unit_size;
- 
-@@ -78,20 +87,58 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
- 	if (end > unaccepted->size * unit_size * BITS_PER_BYTE)
- 		end = unaccepted->size * unit_size * BITS_PER_BYTE;
- 
--	range_start = start / unit_size;
--
-+	range.start = start / unit_size;
-+	range.end = DIV_ROUND_UP(end, unit_size);
-+retry:
- 	spin_lock_irqsave(&unaccepted_memory_lock, flags);
-+
-+	/*
-+	 * Check if anybody works on accepting the same range of the memory.
-+	 *
-+	 * The check with unit_size granularity. It is crucial to catch all
-+	 * accept requests to the same unit_size block, even if they don't
-+	 * overlap on physical address level.
-+	 */
-+	list_for_each_entry(entry, &accepting_list, list) {
-+		if (entry->end < range.start)
-+			continue;
-+		if (entry->start >= range.end)
-+			continue;
-+
-+		/*
-+		 * Somebody else accepting the range. Or at least part of it.
-+		 *
-+		 * Drop the lock and retry until it is complete.
-+		 */
-+		spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
-+		cond_resched();
-+		goto retry;
-+	}
-+
-+	/*
-+	 * Register that the range is about to be accepted.
-+	 * Make sure nobody else will accept it.
-+	 */
-+	list_add(&range.list, &accepting_list);
-+
-+	range_start = range.start;
- 	for_each_set_bitrange_from(range_start, range_end, unaccepted->bitmap,
--				   DIV_ROUND_UP(end, unit_size)) {
-+				   range.end) {
- 		unsigned long phys_start, phys_end;
- 		unsigned long len = range_end - range_start;
- 
- 		phys_start = range_start * unit_size + unaccepted->phys_base;
- 		phys_end = range_end * unit_size + unaccepted->phys_base;
- 
-+		spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
-+
- 		arch_accept_memory(phys_start, phys_end);
-+
-+		spin_lock_irqsave(&unaccepted_memory_lock, flags);
- 		bitmap_clear(unaccepted->bitmap, range_start, len);
- 	}
-+
-+	list_del(&range.list);
- 	spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
- }
- 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+--=20
+paul-moore.com
