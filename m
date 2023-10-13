@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B29B7C88B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829747C88B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232363AbjJMPdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232326AbjJMPds (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232350AbjJMPds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 13 Oct 2023 11:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231419AbjJMPdr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 13 Oct 2023 11:33:47 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCEEBB
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:33:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7EDB7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:33:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697211226; x=1728747226;
+  t=1697211224; x=1728747224;
   h=date:from:to:cc:subject:message-id;
-  bh=ntLbEzN2I91PFCok5T085kZD9ytsByDv1nxG/dL5Bw4=;
-  b=FZEw2iPPtLrts3FiJqwMlo7Os8Sged/MzWa8qecY+9hokLbxlNIqfXCq
-   FYNBQU7zBRm9Ynv+N7VwIbWoYBX9wZs1Z80rI2pyhbU7y9RHF+tRGv4ou
-   tAFKGbsfxP0kCCqzvZs21RcK+MLNAHHAOaZYAml3Bed2HrbIG+zE2pb08
-   SnFVp8ZuxE+VlW7dRWqfWEaXI0AVajx7Zu44tG67/EYIrtEG2qtBGtpl8
-   +LiEa3lFBP18V8a5gL+gZ50J6PtRmwA3Efw+7C3F5XBDyJSyr4Doxn4D/
-   unxddSNoSKYIUldNrHTTfpNnJ3kS5JVOEJSfJHaauRL7GPR0KfvYJiwFT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="365465652"
+  bh=C26ElHuTtcu0LDblcFdo2yGfpSl3bA55iYCiSXlZSrw=;
+  b=cDsLj9Bujz1/aX5WqmBKwaMvd7Fhs3pCmH0jaecHjAU2gMGiOKGxvVX4
+   z1Iz7P8O3rURuZMaIbFLB0WGJDxLF/hhNa7/Nz/eUUFrP2islPZ+mMRQe
+   k2axmAhOlVD5oOCSK32XLdraJsBswLfs8X0KBmuQLl9Pu+JgJiimWiV/V
+   cvgjgExA0t9coIFBuLkZTxJ6RdQCFOEqf1ENW8DcKjDHt7OzAWNGEfr/C
+   oXkLahCDSdPpYRbnRJuRh7ogi3zmGhD9MxC9b6yn28IaWBMhdfQvtOdKs
+   6vJP0eL0rQZOMHHskS43r+H4/BzBZvCB/dfs3/dAPfFuO9NiSFAEMngZj
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="365465645"
 X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
-   d="scan'208";a="365465652"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 08:33:45 -0700
+   d="scan'208";a="365465645"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 08:33:44 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="845515486"
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="898605871"
 X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
-   d="scan'208";a="845515486"
+   d="scan'208";a="898605871"
 Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 13 Oct 2023 08:33:43 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 13 Oct 2023 08:31:52 -0700
 Received: from kbuild by f64821696465 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qrKAX-00050m-1K;
+        id 1qrKAX-00050p-1O;
         Fri, 13 Oct 2023 15:33:41 +0000
-Date:   Fri, 13 Oct 2023 23:33:02 +0800
+Date:   Fri, 13 Oct 2023 23:33:26 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/apic] BUILD SUCCESS
- 441ccc351256533b6381e86a5648dbfe04b74286
-Message-ID: <202310132300.2GXoxnuq-lkp@intel.com>
+Subject: [tip:x86/irq] BUILD SUCCESS
+ f44075ecafb726830e63d33fbca29413149eeeb8
+Message-ID: <202310132324.ab6MzjeS-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -60,13 +60,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/apic
-branch HEAD: 441ccc351256533b6381e86a5648dbfe04b74286  x86/msi: Fix compile error caused by CONFIG_GENERIC_MSI_IRQ=y && !CONFIG_X86_LOCAL_APIC
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/irq
+branch HEAD: f44075ecafb726830e63d33fbca29413149eeeb8  x86/nmi: Fix out-of-order NMI nesting checks & false positive warning
 
-elapsed time: 1982m
+elapsed time: 1976m
 
 configs tested: 100
-configs skipped: 127
+configs skipped: 111
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
