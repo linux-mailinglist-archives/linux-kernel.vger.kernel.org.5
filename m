@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 861637C7F73
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795D17C7F78
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbjJMIGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:06:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40544 "EHLO
+        id S230033AbjJMIGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbjJMIGQ (ORCPT
+        with ESMTP id S229884AbjJMIGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Oct 2023 04:06:16 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB22BE;
-        Fri, 13 Oct 2023 01:06:13 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 08:06:11 -0000
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97FCC9;
+        Fri, 13 Oct 2023 01:06:14 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 08:06:12 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697184372;
+        s=2020; t=1697184373;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WVkVHSk6yXaW8A0Pth63XEOGYs5GXYV28ITDfyv0A3g=;
-        b=OUXwZCKhYsuX9XtN67aBn/0Kx+I9i9KNzbqMYkzXSZl2I+rqhObKlcRwVb/pbsQHyNc10s
-        JMRmYIxczpcLJg2ndK6SPx1Eve24zFcIwId7mPwT226bXCvG51MGTvzzQX0PNJCQbQLCt5
-        EUqUwlYLzHzAlNQhpHuqndPhzxyv710cwBbvy3LS2/VrpnjA5yC4cKjCGbP5Jm+hZQpW1R
-        LMH37nT4vy2qeOjSVqF0rKFHNianOCB+gXXL+wEmYeL++rb52iR1fJi9qknyosMGr3mjmX
-        M685h4pB0MXGsUBLtxMEJDzSQGXornoPzWx4N/zxqdIzOmFrULNkNT45AwFr0g==
+        bh=OBaUkWG9J3apSizB+NsKQOuu0IKcHSFNhRVgtXFc2Yk=;
+        b=e59yyw6+xMgAiFzup1SCDx7Tr3kxwbMhv0r38xQKVSQoE2mESiWBM3USdCiAn7CPEtO32P
+        bZS0J6rjdCT2YyhTOstteaA4zW9pyxYDXFAuKvPFiSgCgXGEpWcS/IX8j+fN6vyGculKkZ
+        iUbmWvvzdEe7fJZt0vEUGviAJWjJdntttLv5isjZHT82iXAjzioR+ZiEVmkgwAQznoIMK6
+        PE2odCSwXMegXwR2xZwVME44J+SYk1gYYc1wgHueTQSCDHm8IJMHyJr+6rRvtVshXHJW65
+        SCrtx5g0UOQXG11WrKfNIzRadBtsXUwVXiDeOl7ft3rcXoO2ARwmgW70x5JR8g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697184372;
+        s=2020e; t=1697184373;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WVkVHSk6yXaW8A0Pth63XEOGYs5GXYV28ITDfyv0A3g=;
-        b=1nKYlqZyyP6uo/odnEaeRqQowOi3UqcEx51ocaQbMa0ABsqAp2dIDjiE85poUic3uY/itQ
-        5bSjKW22MGkkfuCA==
-From:   "tip-bot2 for Mathieu Desnoyers" <tip-bot2@linutronix.de>
+        bh=OBaUkWG9J3apSizB+NsKQOuu0IKcHSFNhRVgtXFc2Yk=;
+        b=EZWI+CC5Ik1bgDyrvw6SehZXmDsOP+elnBTv89uG0m9ZRdZw9rDFUPrmUDMIKMGqcdU1IB
+        2x7aUOK/sJg61+Ag==
+From:   "tip-bot2 for Haifeng Xu" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Make PELT acronym definition searchable
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: sched/core] sched/psi: Bail out early from irq time accounting
+Cc:     Haifeng Xu <haifeng.xu@shopee.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Chengming Zhou <zhouchengming@bytedance.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231012125824.1260774-1-mathieu.desnoyers@efficios.com>
-References: <20231012125824.1260774-1-mathieu.desnoyers@efficios.com>
+In-Reply-To: <20230926115722.467833-1-haifeng.xu@shopee.com>
+References: <20230926115722.467833-1-haifeng.xu@shopee.com>
 MIME-Version: 1.0
-Message-ID: <169718437144.3135.18167310232938119222.tip-bot2@tip-bot2>
+Message-ID: <169718437261.3135.12208635380704050499.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,39 +67,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     1b8a955dd338dfbf39831d4687c25263e885a9cb
-Gitweb:        https://git.kernel.org/tip/1b8a955dd338dfbf39831d4687c25263e885a9cb
-Author:        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-AuthorDate:    Thu, 12 Oct 2023 08:58:24 -04:00
+Commit-ID:     0c2924079f5a83ed715630680e338b3685a0bf7d
+Gitweb:        https://git.kernel.org/tip/0c2924079f5a83ed715630680e338b3685a0bf7d
+Author:        Haifeng Xu <haifeng.xu@shopee.com>
+AuthorDate:    Tue, 26 Sep 2023 11:57:22 
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 13 Oct 2023 09:56:30 +02:00
+CommitterDate: Fri, 13 Oct 2023 09:56:29 +02:00
 
-sched: Make PELT acronym definition searchable
+sched/psi: Bail out early from irq time accounting
 
-The PELT acronym definition can be found right at the top of
-kernel/sched/pelt.c (of course), but it cannot be found through use of
+We could bail out early when psi was disabled.
 
-grep -r PELT kernel/sched/
-
-Add the acronym "(PELT)" after "Per Entity Load Tracking" at the top of
-the source file.
-
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20231012125824.1260774-1-mathieu.desnoyers@efficios.com
+Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
+Link: https://lore.kernel.org/r/20230926115722.467833-1-haifeng.xu@shopee.com
 ---
- kernel/sched/pelt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/psi.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
-index 0f31076..63b6cf8 100644
---- a/kernel/sched/pelt.c
-+++ b/kernel/sched/pelt.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * Per Entity Load Tracking
-+ * Per Entity Load Tracking (PELT)
-  *
-  *  Copyright (C) 2007 Red Hat, Inc., Ingo Molnar <mingo@redhat.com>
-  *
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 44a7877..519bc92 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -998,6 +998,9 @@ void psi_account_irqtime(struct task_struct *task, u32 delta)
+ 	struct psi_group_cpu *groupc;
+ 	u64 now;
+ 
++	if (static_branch_likely(&psi_disabled))
++		return;
++
+ 	if (!task->pid)
+ 		return;
+ 
