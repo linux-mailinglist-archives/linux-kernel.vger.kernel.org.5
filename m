@@ -2,279 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BB87C8BBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73787C8BBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbjJMQt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36618 "EHLO
+        id S230387AbjJMQuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbjJMQt0 (ORCPT
+        with ESMTP id S229958AbjJMQuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:49:26 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5A4BB
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:49:24 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-405524e6769so15031865e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:49:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697215763; x=1697820563; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nz4f3IlrP+KvlAwyWza5Savvd/r4RIbASaykdzTPF2Q=;
-        b=Zr38qGbTftWVwYVo/sIa97l2o26Fp9ztdIwVUF6s6kBA77xdtmtvnpPmdWYDyGMKo7
-         nVQQTOMTEOywlYdWt+nmoHapfNMv2PUzYE8M/TP24eMxBRAjr6hXtifvHtezuYLUnG2J
-         i1J/cZxNkV0Hrdty0/0s+ksJ4b+QBX7/ZherxAK++qBpzyWc4eQa5SA791PWFAKGWHnm
-         exbvQ0ZqDP1gn+D3fzLnSVmwMygK6yuj0aDmk6J+B6BOdJE/ZNBhxNjEFEREutpv6WOi
-         3AJgsLek1XG3JhaR/xrsiVo1MYAgfbPycU42mgenIr1SJJXq8LthBdxYiY4VwMuaRCNg
-         l9aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697215763; x=1697820563;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nz4f3IlrP+KvlAwyWza5Savvd/r4RIbASaykdzTPF2Q=;
-        b=rF6FDrsXLdWi0siiaKSLjldccfGsQXpE+N02VS3EPehTsKAlQQJYqQp19B8TpNlnfW
-         4sEIknr4lrpkjIdf73pVVpuFmh1MpD6Qd2rWTvqfvNl3plHTPr589lc2alFYoGaHeDzg
-         ycEdagoflZRxXTYfkTI+t3UsO86eydoUWvHSNP1JPHC/+MWRf1KOgTEre1gU2DV2q/+I
-         kjzk60G0QAeRhovXPNTnWiCG4gTgXU4b26kpQHvyGGgyqYChETeRRDOC8qhYw2qHy04X
-         aU3NGXUXF+ul0qJZl64WTdVVrvIoh2UxL5DDEpWMlc28ETeCC4NuwIhmP+TCXZH71ckM
-         YvKw==
-X-Gm-Message-State: AOJu0YxtEaPjzXfJzLAw9/QsT05gnkkpJ4CTSVzKAdf0lWUNLuqshw4B
-        Y/X7LI/mMupMobDOSPPz38ASnRH2FObUgIpkFbVhJQ==
-X-Google-Smtp-Source: AGHT+IFtLjgll1xakrK/VXVK5frgZzT7mNEQp+t035PCVEvFE07IjQVR2WujR5jmn9Xe1LJF1YS/ZP6IHRPFfrZ4aQw=
-X-Received: by 2002:a05:600c:a0a:b0:405:19dd:ad82 with SMTP id
- z10-20020a05600c0a0a00b0040519ddad82mr538198wmp.16.1697215762890; Fri, 13 Oct
- 2023 09:49:22 -0700 (PDT)
+        Fri, 13 Oct 2023 12:50:18 -0400
+Received: from hutie.ust.cz (hutie.ust.cz [IPv6:2a03:3b40:fe:f0::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005C6B7;
+        Fri, 13 Oct 2023 09:50:15 -0700 (PDT)
+From:   =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
+        t=1697215810; bh=Zz8k/vmZ3NGYYQQPdxfPH4QZU0TH/TxEf+ATJmTjL7A=;
+        h=From:To:Cc:Subject:Date;
+        b=hAdic2C8HcMkOI+fxprcLO8c4u0x8x+m8k8xEjpvFolJB+VM3EIaZmVyTakYQDNas
+         D0LOl7xZ3qK+kq3272moX0ZlXHjv3QegAKrkltDToL8igO5+iPwnqMi0VhFn2TntVi
+         1wJwVJ0jJw6dGlkVTsBv9wEiLyOxICu+YW0Ns50w=
+To:     =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     asahi@lists.linux.dev, dmaengine@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] Apple SIO driver
+Date:   Fri, 13 Oct 2023 18:49:34 +0200
+Message-Id: <20231013164936.60718-1-povik+lin@cutebit.org>
 MIME-Version: 1.0
-References: <20231009064230.2952396-1-surenb@google.com> <20231009064230.2952396-3-surenb@google.com>
- <214b78ed-3842-5ba1-fa9c-9fa719fca129@redhat.com> <CAJuCfpHzSm+z9b6uxyYFeqr5b5=6LehE9O0g192DZdJnZqmQEw@mail.gmail.com>
- <478697aa-f55c-375a-6888-3abb343c6d9d@redhat.com> <CA+EESO5nvzka0KzFGzdGgiCWPLg7XD-8jA9=NTUOKFy-56orUg@mail.gmail.com>
- <ZShS3UT+cjJFmtEy@x1n> <205abf01-9699-ff1c-3e4e-621913ada64e@redhat.com> <ZSlragGjFEw9QS1Y@x1n>
-In-Reply-To: <ZSlragGjFEw9QS1Y@x1n>
-From:   Lokesh Gidra <lokeshgidra@google.com>
-Date:   Fri, 13 Oct 2023 09:49:10 -0700
-Message-ID: <CA+EESO5ESxxricWx2EFneizLGj2Cb5tuM3kbAicc0ggA4Wh2oQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-To:     Peter Xu <peterx@redhat.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 9:08=E2=80=AFAM Peter Xu <peterx@redhat.com> wrote:
->
-> On Fri, Oct 13, 2023 at 11:56:31AM +0200, David Hildenbrand wrote:
-> > Hi Peter,
->
-> Hi, David,
->
-> >
-> > > I used to have the same thought with David on whether we can simplify=
- the
-> > > design to e.g. limit it to single mm.  Then I found that the trickies=
-t is
-> > > actually patch 1 together with the anon_vma manipulations, and the pr=
-oblem
-> > > is that's not avoidable even if we restrict the api to apply on singl=
-e mm.
-> > >
-> > > What else we can benefit from single mm?  One less mmap read lock, bu=
-t
-> > > probably that's all we can get; IIUC we need to keep most of the rest=
- of
-> > > the code, e.g. pgtable walks, double pgtable lockings, etc.
-> >
-> > No existing mechanisms move anon pages between unrelated processes, tha=
-t
-> > naturally makes me nervous if we're doing it "just because we can".
->
-> IMHO that's also the potential, when guarded with userfaultfd descriptor
-> being shared between two processes.
->
-> See below with more comment on the raised concerns.
->
-> >
-> > >
-> > > Actually, even though I have no solid clue, but I had a feeling that =
-there
-> > > can be some interesting way to leverage this across-mm movement, whil=
-e
-> > > keeping things all safe (by e.g. elaborately requiring other proc to =
-create
-> > > uffd and deliver to this proc).
-> >
-> > Okay, but no real use cases yet.
->
-> I can provide a "not solid" example.  I didn't mention it because it's
-> really something that just popped into my mind when thinking cross-mm, so=
- I
-> never discussed with anyone yet nor shared it anywhere.
->
-> Consider VM live upgrade in a generic form (e.g., no VFIO), we can do tha=
-t
-> very efficiently with shmem or hugetlbfs, but not yet anonymous.  We can =
-do
-> extremely efficient postcopy live upgrade now with anonymous if with REMA=
-P.
->
-> Basically I see it a potential way of moving memory efficiently especiall=
-y
-> with thp.
->
-> >
-> > >
-> > > Considering Andrea's original version already contains those bits and=
- all
-> > > above, I'd vote that we go ahead with supporting two MMs.
-> >
-> > You can do nasty things with that, as it stands, on the upstream codeba=
-se.
-> >
-> > If you pin the page in src_mm and move it to dst_mm, you successfully b=
-roke
-> > an invariant that "exclusive" means "no other references from other
-> > processes". That page is marked exclusive but it is, in fact, not exclu=
-sive.
->
-> It is still exclusive to the dst mm?  I see your point, but I think you'r=
-e
-> taking exclusiveness altogether with pinning, and IMHO that may not be
-> always necessary?
->
-> >
-> > Once you achieved that, you can easily have src_mm not have MMF_HAS_PIN=
-NED,
->
-> (I suppose you meant dst_mm here)
->
-> > so you can just COW-share that page. Now you successfully broke the
-> > invariant that COW-shared pages must not be pinned. And you can even tr=
-igger
-> > VM_BUG_ONs, like in sanity_check_pinned_pages().
->
-> Yeah, that's really unfortunate.  But frankly, I don't think it's the fau=
-lt
-> of this new feature, but the rest.
->
-> Let's imagine if the MMF_HAS_PINNED wasn't proposed as a per-mm flag, but
-> per-vma, which I don't see why we can't because it's simply a hint so far=
-.
-> Then if we apply the same rule here, UFFDIO_REMAP won't even work for
-> single-mm as long as cross-vma. Then UFFDIO_REMAP as a whole feature will
-> be NACKed simply because of this..
->
-> And I don't think anyone can guarantee a per-vma MMF_HAS_PINNED can never
-> happen, or any further change to pinning solution that may affect this.  =
-So
-> far it just looks unsafe to remap a pin page to me.
->
-> I don't have a good suggestion here if this is a risk.. I'd think it risk=
-y
-> then to do REMAP over pinned pages no matter cross-mm or single-mm.  It
-> means probably we just rule them out: folio_maybe_dma_pinned() may not ev=
-en
-> be enough to be safe with fast-gup.  We may need page_needs_cow_for_dma()
-> with proper write_protect_seq no matter cross-mm or single-mm?
->
-> >
-> > Can it all be fixed? Sure, with more complexity. For something without =
-clear
-> > motivation, I'll have to pass.
->
-> I think what you raised is a valid concern, but IMHO it's better fixed no
-> matter cross-mm or single-mm.  What do you think?
->
-> In general, pinning lose its whole point here to me for an userspace eith=
-er
-> if it DONTNEEDs it or REMAP it.  What would be great to do here is we unp=
-in
-> it upon DONTNEED/REMAP/whatever drops the page, because it loses its
-> coherency anyway, IMHO.
->
-> >
-> > Once there is real demand, we can revisit it and explore what else we w=
-ould
-> > have to take care of (I don't know how memcg behaves when moving betwee=
-n
-> > completely unrelated processes, maybe that works as expected, I don't k=
-now
-> > and I have no time to spare on reviewing features with no real use case=
-s)
-> > and announce it as a new feature.
->
-> Good point.  memcg is probably needed..
->
-> So you reminded me to do a more thorough review against zap/fault paths, =
-I
-> think what's missing are (besides page pinning):
->
->   - mem_cgroup_charge()/mem_cgroup_uncharge():
->
->     (side note: I think folio_throttle_swaprate() is only for when
->      allocating new pages, so not needed here)
->
->   - check_stable_address_space() (under pgtable lock)
->
->   - tlb flush
->
->     Hmm???????????????? I can't see anywhere we did tlb flush, batched or
->     not, either single-mm or cross-mm should need it.  Is this missing?
->
-IIUC, ptep_clear_flush() flushes tlb entry. So I think we are doing
-unbatched flushing. Possibly a nice performance improvement later on
-would be to try doing it batched. Suren can throw more light on it.
+Hi,
 
-One thing I was wondering is don't we need cache flush for the src
-pages? mremap's move_page_tables() does it. IMHO, it's required here
-as well.
+on v2 of this driver we had discussion over the device_config op not
+following the dmaengine spec. I came up with a lazy solution I am
+happy with. See sio_device_config for details.
 
-> >
-> >
-> > Note: that (with only reading the documentation) it also kept me wonder=
-ing
-> > how the MMs are even implied from
-> >
-> >        struct uffdio_move {
-> >            __u64 dst;    /* Destination of move */
-> >            __u64 src;    /* Source of move */
-> >            __u64 len;    /* Number of bytes to move */
-> >            __u64 mode;   /* Flags controlling behavior of move */
-> >            __s64 move;   /* Number of bytes moved, or negated error */
-> >        };
-> >
-> > That probably has to be documented as well, in which address space dst =
-and
-> > src reside.
->
-> Agreed, some better documentation will never hurt.  Dst should be in the =
-mm
-> address space that was bound to the userfault descriptor.  Src should be =
-in
-> the current mm address space.
->
-> Thanks,
->
-> --
-> Peter Xu
->
+Changes since v2:
+https://lore.kernel.org/asahi/CAEg-Je8_f_hZ3VyBg+8tK8uobWNaEqCwp==2JhV6jVpPYXj_Pg@mail.gmail.com/T/#t
+ - do requested formatting fixes
+ - fix device_config up to spec in a lazy way
+
+Changes since v1:
+https://lore.kernel.org/asahi/20230712133806.4450-1-povik+lin@cutebit.org/T/#t
+ - move to using virt-dma
+ - drop redundant cookie field from `sio_tx`
+ - use DECLARE_BITMAP for `allocated` in sio_tagdata
+
+Original cover letter from v1 follows.
+--
+
+Hi all,
+
+see attached a driver for the SIO coprocessor found on recent Apple
+SoCs. This coprocessor provides general DMA services, it can feed
+many peripherals but so far it seems it will only be useful for
+audio output over HDMI/DisplayPort. So the driver here only supports
+the DMA_CYCLIC mode of transactions with the focus being on audio.
+There's a downstream prototype ALSA driver the DMA driver is being
+tested against.
+
+Some of the boilerplate code in implementing the dmaengine interface
+was lifted from apple-admac.c. Among other things these two drivers
+have in common that they implement the DMA_CYCLIC regime on top of
+hardware/coprocessor layer supporting linear transactions only.
+
+The binding schema saw two RFC rounds before and has a reviewed-by
+from Rob.
+https://lore.kernel.org/asahi/167693643966.613996.10372170526471864080.robh@kernel.org
+
+Best regards,
+Martin
+
+
+Martin Povišer (2):
+  dt-bindings: dma: apple,sio: Add schema
+  dmaengine: apple-sio: Add Apple SIO driver
+
+ .../devicetree/bindings/dma/apple,sio.yaml    | 111 +++
+ MAINTAINERS                                   |   2 +
+ drivers/dma/Kconfig                           |  11 +
+ drivers/dma/Makefile                          |   1 +
+ drivers/dma/apple-sio.c                       | 907 ++++++++++++++++++
+ 5 files changed, 1032 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/apple,sio.yaml
+ create mode 100644 drivers/dma/apple-sio.c
+
+-- 
+2.38.3
+
