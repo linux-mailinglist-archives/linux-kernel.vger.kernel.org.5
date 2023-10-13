@@ -2,158 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CF37C883C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A747C8849
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232239AbjJMPED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36156 "EHLO
+        id S232312AbjJMPFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 11:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232166AbjJMPEB (ORCPT
+        with ESMTP id S232286AbjJMPFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:04:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF13BB
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:03:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bkpVCw4M4TmudAbrNzO1zak+GqCkMswU+m1zihAXMT8=; b=MPRU7qimzOznnzeVU1CsVDQOPX
-        J497Z2eqAsmxgyPKnKJ3gM9nuyHTFdo8+6oEh7kKukLSmrZf8o+vvRoLEZK45URRVxOTqRg0EvxCg
-        ztm1APYPQ1L4+UVIIdZgjmJ1iZU4GRmdbS822Vm0GgRcT7jbZKUN5yD3g8lXTw77g4wAPrVJHhUVU
-        MbJbER2RsDsvjJfxCzCgBM622cQUKwZq4esj/v1uBQdzaVo9HkZ/NPmw+fIZ4olFQcv9ZYFKHqIso
-        5y92lqD3SFdpMyoyCkEVSM2rQQJueBY0GgNLKF9LBo58FNZBvarl7ExZppS/VitRbrRjA6t5Z4zDl
-        jFyUuEGg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qrJgr-0061yU-AA; Fri, 13 Oct 2023 15:03:01 +0000
-Date:   Fri, 13 Oct 2023 16:03:01 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Naoya Horiguchi <naoya.horiguchi@linux.dev>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/5] mm, kpageflags: support folio and fix output for
- compound pages
-Message-ID: <ZSlcJWvTNi3rEcPf@casper.infradead.org>
-References: <20231010142801.3780917-1-naoya.horiguchi@linux.dev>
- <63d119f7-5adb-861a-00c2-69a92b19ef9b@redhat.com>
- <20231012150226.GA473412@u2004>
- <86170ebf-cbe3-1cda-dcb4-87e18695f9cd@redhat.com>
+        Fri, 13 Oct 2023 11:05:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D5F95
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:04:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697209456;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fanr2UVL+2nniIjAFaTEYZESUnPsIrFphLfF6ehOj0I=;
+        b=Dc47Ji2TW/9B0Z85fRWwxjD+7BiNamd5ATtazWp1ho7t3VkHXfBxW4k7C+4JEjWkhnYjq0
+        xXjFeAndPxeu6ZfDHeyiVPlRljTDh7tOHOKtdBDODv790Zp8GpZvk7vXfPXKKhCa9lHB0M
+        twchm5wMKLyodiCeEm3VZgy44rA1pR8=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-156-wTEUg9VsMmyz5s1vR_i8Vg-1; Fri, 13 Oct 2023 11:04:03 -0400
+X-MC-Unique: wTEUg9VsMmyz5s1vR_i8Vg-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-66216e7385fso22163946d6.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:04:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697209443; x=1697814243;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Fanr2UVL+2nniIjAFaTEYZESUnPsIrFphLfF6ehOj0I=;
+        b=KAu7dMOnP6vEqAzCc6/N4Pj3jYGsypfC6CHxoLOZfWImeqHmRbZWpV4oGvHYqffiaG
+         k2JItpoT32D7LwW1dJ7V6HuJGGwUWCNG4ln0hFo+ab4aC80GMkxhQN241hrFeChGRyca
+         HdbhUr2eX7fHdbenP/6YrxdlPSan/A461tWrClwzQgEm5/+BlHy3z8TDL5vwIpyH/ATw
+         Z8kbmiSz1KcQ0N1estbhjahhW6koCcJGH+wwSRO/WKOl5n/UBdhbhZKPtvPjqKHFw+zL
+         KPf1sf6KPuLWZblT5EiJZy/xgplp/2eyetAztll3fzOtNG1Xv8RFkhEQGvBEqPwXnUU2
+         vNMg==
+X-Gm-Message-State: AOJu0YwFn4lox8vDD0PG8JyRfQITNEh8P1ZTV1Kui7TE5JOXZJY4LZx2
+        bkv9zy+Rw636fZOeCO6R69WB6i+scr2Rs2jDCYo5YMOmycdhZp3SwEjeDRpiJGtzg0g8fHFsWOp
+        zAgvtoEb+QLYTuciGAB+uonwf
+X-Received: by 2002:a0c:ea2c:0:b0:656:51b9:990e with SMTP id t12-20020a0cea2c000000b0065651b9990emr26082255qvp.57.1697209443233;
+        Fri, 13 Oct 2023 08:04:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFrk96WeM7PEfTiXqFn+XI1KMhVsRiXg6a34mYtKQ92DjlhZ/wrrzpdhvKPOXfvZbnSnt+L+w==
+X-Received: by 2002:a0c:ea2c:0:b0:656:51b9:990e with SMTP id t12-20020a0cea2c000000b0065651b9990emr26082228qvp.57.1697209442773;
+        Fri, 13 Oct 2023 08:04:02 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id a24-20020a0ca998000000b006616fbcc077sm732483qvb.129.2023.10.13.08.04.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 08:04:02 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 10:04:00 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v4 12/15] firmware: qcom: scm: add support for SHM bridge
+ operations
+Message-ID: <jcsd2xrj44ekh34ptl3gluzyikjqlauje7qdfohinju73twui7@fuglljx55uz7>
+References: <20231013114843.63205-1-brgl@bgdev.pl>
+ <20231013114843.63205-13-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <86170ebf-cbe3-1cda-dcb4-87e18695f9cd@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231013114843.63205-13-brgl@bgdev.pl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 05:30:34PM +0200, David Hildenbrand wrote:
-> On 12.10.23 17:02, Naoya Horiguchi wrote:
-> > On Thu, Oct 12, 2023 at 10:33:04AM +0200, David Hildenbrand wrote:
-> > > On 10.10.23 16:27, Naoya Horiguchi wrote:
-> > > > Hi everyone,
-> > > > 
-> > > > This patchset addresses 2 issues in /proc/kpageflags.
-> > > > 
-> > > >     1. We can't easily tell folio from thp, because currently both pages are
-> > > >        judged as thp, and
-> > > >     2. we see some garbage data in records of compound tail pages because
-> > > >        we use tail pages to store some internal data.
-> > > > 
-> > > > These issues require userspace programs to do additional work to understand
-> > > > the page status, which makes situation more complicated.
-> > > > 
-> > > > This patchset tries to solve these by defining KPF_FOLIO for issue 1., and
-> > > > by hiding part of page flag info on tail pages of compound pages for issue 2.
-> > > > 
-> > > > I think that technically some compound pages like thp/hugetlb/slab could be
-> > > > considered as folio, but in this version KPF_FOLIO is set only on folios
-> > > 
-> > > At least thp+hugetlb are most certainly folios. Regarding slab, I suspect we
-> > > no longer call them folios (cannot be mapped to user space). But Im not sure
-> > > about the type hierarchy.
-> > 
-> > I'm not sure about the exact definition of "folio", and I think it's better
-> > to make KPF_FOLIO set based on the definition.
+On Fri, Oct 13, 2023 at 01:48:40PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> Me neither. But in any case a THP *is* a folio. So you'd have to set that
-> flag in any case.
+> Add low-level primitives for enabling SHM bridge support as well as
+> creating and destroying SHM bridge pools to qcom-scm.
 > 
-> And any order-0 page (i.e., anon, pagecache) is also a folio. What you seem
-> to imply with folio is "large folio". So KPF_FOLIO is really wrong as far as
-> I can tell.
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Our type hierarchy is degenerate ... in both the neutral and negative
-sense of the word.  A folio is simply not-a-tail-page.  So, as you said,
-all head pages and all order-0 pages are folios.
+Code wise this looks good to me, firmware interface wise I can't
+properly review, so:
 
-But we're still struggling against the legacy of our "struct page is
-everything" mistake, and trying to fix that too.  The general term I've
-chosen for this is "memdesc", but we aren't very far down the route of
-disentangling the various types from either page or folio.  I'd imagined
-that we'd convert everything to folio, then get into splitting them out,
-but at least for ptdesc and slab we've gone for the direct conversion
-approach.
+Acked-by: Andrew Halaney <ahalaney@redhat.com>
 
-At some point we probably want to disentangle anon folios from file
-folios, but that's a fair ways down the list, after turning folios into a
-separate allocation from struct page.  At least on my list ... if someone
-wants to do that as a matter of urgency, I'm sure they can be accomodated.
-It's not an easy task, for sure.  Our needs are better expressed as
-(in Java terms) Interfaces rather than subclasses.  Or Traits/Generics
-if you've started learning Rust.
-
-We definitely have the concept of "mappable to userspace" which applies
-to anon, file, netmem, some device driver allocations, some vmalloc
-allocations, but not slab, page tables, or free memory.  Those memdescs
-need refcount, mapcount, dirty flag, lock flag, maybe mapping?
-
-Then we have "managed by the LRU" which applies to anon & file only.
-Those memdescs need refcount, lru, and a pile of flags.
-
-There's definitely scope for reordering and shrinking the various
-memdescs.  Once they're fully separated from struct page.  What we _call_
-them is a separate struggle.  Try to imagine how shrink_folio_list()
-works if filemem & anonmem have different types ...
-
-> > > It does sound inconsistent. What exactly do you want to tell user space with
-> > > the new flag?
-> > 
-> > The current most problematic behavior is to report folio as thp (order-2
-> > pagecache page is definitely a folio but not a thp), and this is what the
-> > new flag is intended to tell.
-> 
-> We are currently considering calling these sub-PMD sized THPs "small-sized
-> THP". [1] Arguably, we're starting with the anon part where we won't get
-> around exposing them to the user in sysfs.
-> 
-> So I wouldn't immediately say that these things are not THPs. They are not
-> PMD-sized THP. A slab/hugetlb is certainly not a thp but a folio. Whereby
-> slabs can also be order-0 folios, but hugetlb can't.
-
-I think this is a mistake.  Users expect THPs to be PMD sized.  We already
-have the term "large folio" in use for file-backed memory; why do we
-need to invent a new term for anon large folios?
-
-> Looking at other interfaces, we do expose:
-> 
-> include/uapi/linux/kernel-page-flags.h:#define KPF_COMPOUND_HEAD        15
-> include/uapi/linux/kernel-page-flags.h:#define KPF_COMPOUND_TAIL        16
-> 
-> So maybe we should just continue talking about compound pages or do we have
-> to use both terms here in this interface?
-
-I don;t know how easy it's going to be to distinguish between a head
-and tail page in the Glorious Future once pages and folios are separated.
