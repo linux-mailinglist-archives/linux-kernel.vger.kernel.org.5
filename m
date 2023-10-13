@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BBF7C8130
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1D57C812E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbjJMI7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
+        id S231206AbjJMI6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbjJMI6b (ORCPT
+        with ESMTP id S230321AbjJMI6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:58:31 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71BCDCE
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:58:30 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S6Kzx4wvpzvQ2w;
-        Fri, 13 Oct 2023 16:53:49 +0800 (CST)
+        Fri, 13 Oct 2023 04:58:30 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DB995
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:58:28 -0700 (PDT)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4S6L2G3p2Lz15NSb;
+        Fri, 13 Oct 2023 16:55:50 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 13 Oct 2023 16:58:25 +0800
+ 15.1.2507.31; Fri, 13 Oct 2023 16:58:26 +0800
 From:   Kefeng Wang <wangkefeng.wang@huawei.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 CC:     <willy@infradead.org>, <linux-mm@kvack.org>,
@@ -32,9 +32,9 @@ CC:     <willy@infradead.org>, <linux-mm@kvack.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH -next v2 08/19] sched/fair: use folio_xchg_access_time() in numa_hint_fault_latency()
-Date:   Fri, 13 Oct 2023 16:55:52 +0800
-Message-ID: <20231013085603.1227349-9-wangkefeng.wang@huawei.com>
+Subject: [PATCH -next v2 09/19] mm: mprotect: use a folio in change_pte_range()
+Date:   Fri, 13 Oct 2023 16:55:53 +0800
+Message-ID: <20231013085603.1227349-10-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20231013085603.1227349-1-wangkefeng.wang@huawei.com>
 References: <20231013085603.1227349-1-wangkefeng.wang@huawei.com>
@@ -54,26 +54,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert to use folio_xchg_access_time() in numa_hint_fault_latency().
+Use a folio in change_pte_range() to save three compound_head() calls.
 
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/mprotect.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 78ad23fcb7f9..bc07f29a4a42 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1766,7 +1766,7 @@ static int numa_hint_fault_latency(struct folio *folio)
- 	int last_time, time;
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index f1dc8f8c84ef..81991102f785 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -114,7 +114,7 @@ static long change_pte_range(struct mmu_gather *tlb,
+ 			 * pages. See similar comment in change_huge_pmd.
+ 			 */
+ 			if (prot_numa) {
+-				struct page *page;
++				struct folio *folio;
+ 				int nid;
+ 				bool toptier;
  
- 	time = jiffies_to_msecs(jiffies);
--	last_time = xchg_page_access_time(&folio->page, time);
-+	last_time = folio_xchg_access_time(folio, time);
+@@ -122,13 +122,14 @@ static long change_pte_range(struct mmu_gather *tlb,
+ 				if (pte_protnone(oldpte))
+ 					continue;
  
- 	return (time - last_time) & PAGE_ACCESS_TIME_MASK;
- }
+-				page = vm_normal_page(vma, addr, oldpte);
+-				if (!page || is_zone_device_page(page) || PageKsm(page))
++				folio = vm_normal_folio(vma, addr, oldpte);
++				if (!folio || folio_is_zone_device(folio) ||
++				    folio_test_ksm(folio))
+ 					continue;
+ 
+ 				/* Also skip shared copy-on-write pages */
+ 				if (is_cow_mapping(vma->vm_flags) &&
+-				    page_count(page) != 1)
++				    folio_ref_count(folio) != 1)
+ 					continue;
+ 
+ 				/*
+@@ -136,14 +137,15 @@ static long change_pte_range(struct mmu_gather *tlb,
+ 				 * it cannot move them all from MIGRATE_ASYNC
+ 				 * context.
+ 				 */
+-				if (page_is_file_lru(page) && PageDirty(page))
++				if (folio_is_file_lru(folio) &&
++				    folio_test_dirty(folio))
+ 					continue;
+ 
+ 				/*
+ 				 * Don't mess with PTEs if page is already on the node
+ 				 * a single-threaded process is running on.
+ 				 */
+-				nid = page_to_nid(page);
++				nid = folio_nid(folio);
+ 				if (target_node == nid)
+ 					continue;
+ 				toptier = node_is_toptier(nid);
+@@ -157,7 +159,7 @@ static long change_pte_range(struct mmu_gather *tlb,
+ 					continue;
+ 				if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING &&
+ 				    !toptier)
+-					xchg_page_access_time(page,
++					folio_xchg_access_time(folio,
+ 						jiffies_to_msecs(jiffies));
+ 			}
+ 
 -- 
 2.27.0
 
