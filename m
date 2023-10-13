@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8D77C84FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2849E7C84FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231601AbjJMLtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
+        id S231598AbjJMLtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231550AbjJMLtL (ORCPT
+        with ESMTP id S231566AbjJMLtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Oct 2023 07:49:11 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536DADC
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:49:03 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-4066241289bso21022385e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:49:03 -0700 (PDT)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EECE6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:49:04 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-405524e6769so12849785e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:49:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697197742; x=1697802542; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697197743; x=1697802543; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=p/0qKoBBzx1o8heobCmZaZFWvw6elFeS/Pei4C+kHSs=;
-        b=s/g0csrclmz3GozRG0l5wyE/Lttb9W3OTncNXhgdsDZ1NlYbdblXzvxmstNm1KXlf3
-         VyGmLNQRy9a5I3oEP9dkkom19lij7iEWQzEDpUt4byNMFMSGKmyLVeUZmviPFNSnlDtO
-         bVIP+GWJEX2EGjzpvFaDYnZfZgSFpN91why1wiVmRvfOqhy0wLFlIaq8K+hdKViJvkYV
-         xQtIoNKh/uWpzwNGZBXxfhh9WgXFDxH+mRKVPfoGzBPi2PgCQfYwH8XM0j2kwgNwarFb
-         Ba2RRX7nleM7XZg+g3nN7vnRELqNQlKf8TXHREE9x8FSBAk4C3zPzy2ahV9Wq9eSY9cR
-         bOEg==
+        bh=R1+SqUu3MEUpRvP0zkJ91SMCh/hUg62w85Orn9bNfZQ=;
+        b=iiC4B+4BMLo8n0lvIhn4Pqn5G9B5rg/KkSUXId0vkYWVj+p9Aannl4x7fTxkxd+ig+
+         ipt07JwXCtDVfBegfW4GzCyeejHtFJ9J4YSzLxCT/yg+4jPLqJGLS3rd1gav+8hKpUzv
+         XKFYZXjYQpDK853jUbmItDr6A7XBpGVTzI/5TrUVXmLm7UhleFmPbnZdorgDqTR2tCYC
+         440YeCyYJk3MBVvxbWb1FT5TnZhZRv1VOqSiKhzkqQv5BdJugj5a9C/CH1VJ79htk8l1
+         MXyQL+EUEd9ynbj7LcYuTLqHiLLi07IpKqppoIwQLR1ZHsmna1XCRWRDWMvyAlH7Dxf3
+         qFTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697197742; x=1697802542;
+        d=1e100.net; s=20230601; t=1697197743; x=1697802543;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=p/0qKoBBzx1o8heobCmZaZFWvw6elFeS/Pei4C+kHSs=;
-        b=ZfQx7rKWEcC64yj2qi9JQccQ6Ex8hZWHPK0OH2jTcnowbWoz07KS4ODbmiY+nyqMDR
-         wxbT8CPb8PFMBSARVHezemvuoz5bwcIchYn/0KkrVixB3YJz0OC9f0xAwXCHNELrACVb
-         1zWbZnaRffTzTsFI8uAhuKS9c2ye4CcvvlsoVAL/XZeqvgUTj1iDcTsiaiVc8EZZTGMd
-         8apuwIhEO+WDHN8R0dgssbqqtTFhRddgm3DanKPFi33m1yXyd2zNqm7rhpEJwNaw/2+a
-         RbMvkIblijiTkCa7jTotHLefhVh+gIxOmwcq7/32LJn2dXXqZW/73eI5/+Ym8w3jF4WQ
-         0pMw==
-X-Gm-Message-State: AOJu0YyMgzc7tHgu862ocM+4bXuWdhRqMeXz3d2EN5MqOdBsFSHHkXhA
-        P4MFc7vOEJ6mpNTmEzJchKKbRw==
-X-Google-Smtp-Source: AGHT+IHoBO8HhGjm81+tFaTERty06vctUqUtTt7LVjwozBsdYYmJBEYr6WrYmoqnx9XpNk3164HUaQ==
-X-Received: by 2002:a1c:f718:0:b0:405:3a63:6d12 with SMTP id v24-20020a1cf718000000b004053a636d12mr23826471wmh.17.1697197741772;
-        Fri, 13 Oct 2023 04:49:01 -0700 (PDT)
+        bh=R1+SqUu3MEUpRvP0zkJ91SMCh/hUg62w85Orn9bNfZQ=;
+        b=ZpHfT7O3ilLkPgGG5oKE1Juh5TwmYm/DHmj97uqeLS/8n3YE/3HUgea3F7sVERa4q4
+         sEC8Ez4S1nzIWaSuotj9S3Eh+6+ji7HyIYSDu3lEk1ANu9XyJAg13rDxfqtAVbmVjv4M
+         TjMmchyufKLCnYl7w4q3nAT+QGqE+kS++MQHL1Dj9ZGanDlRQYo2ago5OFijYU7vkeB9
+         LKBTMA3MJ7GZmXP1C7TN0E8D28dV324F9of1mrQK4EO04HPS2IMvB886R1mfSmlg0Uxi
+         xZAuyX68qcCvHdysmTSXcaecxNV5nM4kxH99CkJd2eUB1DLC3iVNcygMGyJQGvkFLrCq
+         3PZQ==
+X-Gm-Message-State: AOJu0YzKQ3N9kXKdsictapQinuyfwVITFtZtAPcYOX1fHse3mla37UtM
+        8wEN6KOCxWsM0PGhlDMJ34U0lg==
+X-Google-Smtp-Source: AGHT+IHDwKNnkQ4WyyEUpEb+olLuPuuRdwsgI6TaMaTMotsUWqpHhmc5CD14COCyN8ypkhuiPDZtdg==
+X-Received: by 2002:a05:600c:450a:b0:401:c7ec:b930 with SMTP id t10-20020a05600c450a00b00401c7ecb930mr18683731wmo.10.1697197743011;
+        Fri, 13 Oct 2023 04:49:03 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:4209:13a:988d:80be])
-        by smtp.gmail.com with ESMTPSA id j23-20020a05600c1c1700b00407754b998dsm974509wms.27.2023.10.13.04.49.00
+        by smtp.gmail.com with ESMTPSA id j23-20020a05600c1c1700b00407754b998dsm974509wms.27.2023.10.13.04.49.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 04:49:01 -0700 (PDT)
+        Fri, 13 Oct 2023 04:49:02 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -64,17 +64,17 @@ To:     Andy Gross <agross@kernel.org>,
 Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v4 09/15] firmware: qcom: scm: make qcom_scm_lmh_dcvsh() use the TZ allocator
-Date:   Fri, 13 Oct 2023 13:48:37 +0200
-Message-Id: <20231013114843.63205-10-brgl@bgdev.pl>
+Subject: [PATCH v4 10/15] firmware: qcom: scm: make qcom_scm_qseecom_app_get_id() use the TZ allocator
+Date:   Fri, 13 Oct 2023 13:48:38 +0200
+Message-Id: <20231013114843.63205-11-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231013114843.63205-1-brgl@bgdev.pl>
 References: <20231013114843.63205-1-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -84,51 +84,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
 Let's use the new TZ memory allocator to obtain a buffer for this call
-instead of using dma_alloc_coherent().
+instead of manually kmalloc()ing it and then mapping to physical space.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
 ---
- drivers/firmware/qcom/qcom_scm.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/firmware/qcom/qcom_scm.c | 18 ++++--------------
+ 1 file changed, 4 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-index 31071a714cf1..11638daa2fe5 100644
+index 11638daa2fe5..3a6cefb4eb2e 100644
 --- a/drivers/firmware/qcom/qcom_scm.c
 +++ b/drivers/firmware/qcom/qcom_scm.c
-@@ -1340,8 +1340,6 @@ EXPORT_SYMBOL_GPL(qcom_scm_lmh_profile_change);
- int qcom_scm_lmh_dcvsh(u32 payload_fn, u32 payload_reg, u32 payload_val,
- 		       u64 limit_node, u32 node_id, u64 version)
- {
--	dma_addr_t payload_phys;
--	u32 *payload_buf;
- 	int ret, payload_size = 5 * sizeof(u32);
+@@ -1525,37 +1525,27 @@ int qcom_scm_qseecom_app_get_id(const char *app_name, u32 *app_id)
+ 	unsigned long app_name_len = strlen(app_name);
+ 	struct qcom_scm_desc desc = {};
+ 	struct qcom_scm_qseecom_resp res = {};
+-	dma_addr_t name_buf_phys;
+-	char *name_buf;
+ 	int status;
  
- 	struct qcom_scm_desc desc = {
-@@ -1356,7 +1354,9 @@ int qcom_scm_lmh_dcvsh(u32 payload_fn, u32 payload_reg, u32 payload_val,
- 		.owner = ARM_SMCCC_OWNER_SIP,
- 	};
+ 	if (app_name_len >= name_buf_size)
+ 		return -EINVAL;
  
--	payload_buf = dma_alloc_coherent(__scm->dev, payload_size, &payload_phys, GFP_KERNEL);
-+	u32 *payload_buf __free(qcom_tzmem) = qcom_tzmem_alloc(__scm->mempool,
-+							       payload_size,
-+							       GFP_KERNEL);
- 	if (!payload_buf)
+-	name_buf = kzalloc(name_buf_size, GFP_KERNEL);
++	char *name_buf __free(qcom_tzmem) = qcom_tzmem_alloc(__scm->mempool,
++							     name_buf_size,
++							     GFP_KERNEL);
+ 	if (!name_buf)
  		return -ENOMEM;
  
-@@ -1366,11 +1366,10 @@ int qcom_scm_lmh_dcvsh(u32 payload_fn, u32 payload_reg, u32 payload_val,
- 	payload_buf[3] = 1;
- 	payload_buf[4] = payload_val;
+ 	memcpy(name_buf, app_name, app_name_len);
  
--	desc.args[0] = payload_phys;
-+	desc.args[0] = qcom_tzmem_to_phys(payload_buf);
+-	name_buf_phys = dma_map_single(__scm->dev, name_buf, name_buf_size, DMA_TO_DEVICE);
+-	status = dma_mapping_error(__scm->dev, name_buf_phys);
+-	if (status) {
+-		kfree(name_buf);
+-		dev_err(__scm->dev, "qseecom: failed to map dma address\n");
+-		return status;
+-	}
+-
+ 	desc.owner = QSEECOM_TZ_OWNER_QSEE_OS;
+ 	desc.svc = QSEECOM_TZ_SVC_APP_MGR;
+ 	desc.cmd = QSEECOM_TZ_CMD_APP_LOOKUP;
+ 	desc.arginfo = QCOM_SCM_ARGS(2, QCOM_SCM_RW, QCOM_SCM_VAL);
+-	desc.args[0] = name_buf_phys;
++	desc.args[0] = qcom_tzmem_to_phys(name_buf);
+ 	desc.args[1] = app_name_len;
  
- 	ret = qcom_scm_call(__scm->dev, &desc, NULL);
+ 	status = qcom_scm_qseecom_call(&desc, &res);
+-	dma_unmap_single(__scm->dev, name_buf_phys, name_buf_size, DMA_TO_DEVICE);
+-	kfree(name_buf);
  
--	dma_free_coherent(__scm->dev, payload_size, payload_buf, payload_phys);
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(qcom_scm_lmh_dcvsh);
+ 	if (status)
+ 		return status;
 -- 
 2.39.2
 
