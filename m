@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B81897C7EFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 291697C7F02
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbjJMHwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54572 "EHLO
+        id S229930AbjJMHxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 03:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbjJMHwi (ORCPT
+        with ESMTP id S229744AbjJMHxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:52:38 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A243D83
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:52:36 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31fa15f4cc6so1679348f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:52:36 -0700 (PDT)
+        Fri, 13 Oct 2023 03:53:31 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B2583
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:53:28 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-457819ae142so758654137.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:53:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697183555; x=1697788355; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lTHX0FRa0mIsovtBPL6JAcK8C3YX/mCkit2iZ+0AIBg=;
-        b=TSRSSwC+Y8X4UkwZe0u1l5p560VIJqmYulA3kPTy/U1NZJ5Lbz0oTv2MYtTuJCNiFl
-         jEpqGrI336ooXhd2ojCjmWDj34IrcyMAyXhLDCemPkoSzpEzMkoW6MPWY+Oj5SHP4gz8
-         eUqF0rB1FbJ21sTZLyGk8r82o92zIvotnkgUvjHDJ8rBoR4QcUJ62DjLjGHV34TtDlPQ
-         YLVpRZ21TUQ9Z//nxVdcbMRNDWZR/D/a9LCqtvmMiQHt3O1ILlYXN4epvxQisVmxRCmt
-         EgVEYjvpnvhtZbmyCoQm9BgyE9suXb9ohiuEEaQ0DCix/cS3ZHhWVlTk6GQY83mU92P6
-         Y58A==
+        d=linaro.org; s=google; t=1697183608; x=1697788408; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gXBNB01UeisT6KBlYVbfz6auMQKWtIS6m6y0sOninrM=;
+        b=FXGdAvkPCHuS8Ogu0IteEbBYYwn1ye+kGlJz/EeI7+O3M7bIuYTLN2rKcRflvGqBnJ
+         CXYSMNQpXdwtdiantgFCq9HDmjBpXhqRwYeAvPt0RB3I0lpVg/CIPJyBGgRCdFYk8WYz
+         VO987P6eZ/gbVxQcKRzRkG+iNJ5eIpn2ICK2BwAQNDTgiCfqwqPbFrpLRLiL04B48zR6
+         Tb7hgqa83B6ZsqOK7WapNTyGI4yIeAVxC6aq1zmQ+S4vrNVZAGBbm+jLoOHspfDbaLqw
+         uhN0HmUMuC8YHaewCROg0S2CVsi4dQlFa/2rf0s9kodo5K0NIY+fVGOqi3yrYWyLNELT
+         PndA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697183555; x=1697788355;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lTHX0FRa0mIsovtBPL6JAcK8C3YX/mCkit2iZ+0AIBg=;
-        b=nm9VhdoFRI8erGkxtjP0eVfoDSp/8aY5YytXrskqTrbKZ+OFQymmQE4fRv35IhZSFr
-         6vBFNVFjuay4rGveJ4u+qQbgW1re65dePTpFgLMsn8n9h1Mzw/2ABtS5312cwQwCZ+zf
-         DqOz7I9DwVP7WXhySCRt+RDRJG0WGURGsFhwAufZQvJPGmKSEBfngxhNpsb1DlB7GnyY
-         O8YQRIvw7ApDzZ0waqOWcR8H+Yg0YG9DV4XEm7vXoh84IKf6A7d9Pt9FvWjpHLo81OF7
-         2+yNlXKYfWZDuUNPVUXepMhKFj+J3zH+lCpgJGwvNO7s59sf922AlFA3ZTD5S17g5rdo
-         MRUQ==
-X-Gm-Message-State: AOJu0Yw3sz7HM0mqaAEhP0UIFkuTUQ4W1Lum37JPWCf4405QpkTaMgbI
-        sbzT4BgPsCJaAIEU1p20TNmpzAzRt0wAm9HXiI4g2d34
-X-Google-Smtp-Source: AGHT+IGiyB9W+thMrr/86BjFDhdIxFVIHXZpdrHzrUUMm74SeNpy7U029sugpKwEw5/NWnsIWPXEtA==
-X-Received: by 2002:a5d:504e:0:b0:321:4c7e:45e3 with SMTP id h14-20020a5d504e000000b003214c7e45e3mr22735710wrt.11.1697183554975;
-        Fri, 13 Oct 2023 00:52:34 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id d12-20020a5d538c000000b0032769103ae9sm20171592wrv.69.2023.10.13.00.52.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 00:52:34 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>
-In-Reply-To: <20231012103600.3381340-1-m.szyprowski@samsung.com>
-References: <CGME20231012103636eucas1p21eec119a94d1f2adfe8d1c2602bd4012@eucas1p2.samsung.com>
- <20231012103600.3381340-1-m.szyprowski@samsung.com>
-Subject: Re: [PATCH] arm64: defconfig: add various drivers for Amlogic
- based boards
-Message-Id: <169718355421.802317.14102706469164690952.b4-ty@linaro.org>
-Date:   Fri, 13 Oct 2023 09:52:34 +0200
+        d=1e100.net; s=20230601; t=1697183608; x=1697788408;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gXBNB01UeisT6KBlYVbfz6auMQKWtIS6m6y0sOninrM=;
+        b=iVH2HtZHfMaY3szstACUuuX+x55BKCcI0MOsa9BHLycWRWluvHExz86kA8ZoyisDub
+         YDcGu28hAYVj/N+MIeUNMrolH9DTQnk0M1rHY7EDORUbDqJlUy1N7GeUUq42Wm/L/PEq
+         0rj2hkemAiRN/k3tiiigBckCOzunfCyNEvA4+JA3WjWEqntGx2esWiJS5YfEcW3ON1kI
+         hj9msy5+Dk+uUburYECi2p0F0T50q0ArS9g17x5qMYQJE/rVQAl1FCAnKUtP80ieAne0
+         qBhn+zL5MPnY+RYsSixpILGfN/sJm+3ylBEG69n2dct+yR9l0Xq9hhqOCh+Ylkk0Vz05
+         mctQ==
+X-Gm-Message-State: AOJu0YxE4NVBb17s1hIVZ/2U0I2UBGZkMi40uS9WByuoebSzhdu9qdj5
+        Lec20boeps2SBDGoeaOQCOJ0/loOzDFPlQb//xtmvw==
+X-Google-Smtp-Source: AGHT+IFSsRyvuxZKsbDP3Zwd7BRqoVdHhDIE+9L3uKu6crtpSXyHxt51iEaTNUN4M/U7oCib2S7wRwtGEQ5ae9fLt1M=
+X-Received: by 2002:a05:6102:a52:b0:457:adcf:2f9e with SMTP id
+ i18-20020a0561020a5200b00457adcf2f9emr5656509vss.24.1697183607881; Fri, 13
+ Oct 2023 00:53:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+References: <20230807025343.1939-1-masahisa.kojima@linaro.org>
+ <20230807025343.1939-5-masahisa.kojima@linaro.org> <CAC_iWjL3YpZb4ryko1DR9CM1x+VTV8mfnN=AwBR4F09Agc0vRQ@mail.gmail.com>
+In-Reply-To: <CAC_iWjL3YpZb4ryko1DR9CM1x+VTV8mfnN=AwBR4F09Agc0vRQ@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri, 13 Oct 2023 13:23:16 +0530
+Message-ID: <CAFA6WYN_E=4nN1-j2-nQ_pi+b083UmKPNO9Saub7aZLAx4PCww@mail.gmail.com>
+Subject: Re: [PATCH v8 4/5] efivarfs: automatically update super block flag
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Masahisa Kojima <masahisa.kojima@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jeremy Kerr <jk@ozlabs.org>, linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -78,41 +75,198 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Ilias,
 
-On Thu, 12 Oct 2023 12:36:00 +0200, Marek Szyprowski wrote:
-> Enable drivers for the hardware blocks present on the Amlogic Meson SoC
-> based boards: Khadas VIM3 and Hardkernel Odroid N2 to increase testing
-> coverage.
-> 
-> 
+On Wed, 11 Oct 2023 at 22:30, Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+> Kojima-san
+> Apologies for the late reply, I just found some to test this.
+>
+> On Sun, 6 Aug 2023 at 19:55, Masahisa Kojima <masahisa.kojima@linaro.org> wrote:
+> >
+> > efivar operation is updated when the tee_stmm_efi module is probed.
+> > tee_stmm_efi module supports SetVariable runtime service,
+> > but user needs to manually remount the efivarfs as RW to enable
+> > the write access if the previous efivar operation does not support
+> > SerVariable and efivarfs is mounted as read-only.
+> >
+> > This commit notifies the update of efivar operation to
+> > efivarfs subsystem, then drops SB_RDONLY flag if the efivar
+> > operation supports SetVariable.
+>
+> The RO->RW transition works fine and I did manage to test basic stuff
+> like setting up efibootmgr options.  IIUC the RW->RO should be covered
+> by this patchset [0] ?
 
-Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v6.7/defconfig)
+Yeah.
 
-[1/1] arm64: defconfig: add various drivers for Amlogic based boards
-      https://git.kernel.org/amlogic/c/a23bfeda86239d29f18a149a7e658cc3d4e5ef8a
+> Wouldn't it be better to detect that the tee device of the supplicant
+> closes and use that to switch the permissions?  I get why we need that
+> for the TPM, the entire subsystem needs to send TPM commands *before*
+> the supplicant dies.   But this is not needed for the EFI variables
+> case, we could just remount the FS as RO the moment the supplicant
+> dies.
 
-These changes has been applied on the intermediate git tree [1].
+As we discussed offline, we should have a unified approach to notify
+kernel TEE client drivers. So the approach implemented as part of [0]
+should address the needs for fTPM as well as EFI.
 
-The v6.7/defconfig branch will then be sent via a formal Pull Request to the Linux SoC maintainers
-for inclusion in their intermediate git branches in order to be sent to Linus during
-the next merge window, or sooner if it's a set of fixes.
+-Sumit
 
-In the cases of fixes, those will be merged in the current release candidate
-kernel and as soon they appear on the Linux master branch they will be
-backported to the previous Stable and Long-Stable kernels [2].
-
-The intermediate git branches are merged daily in the linux-next tree [3],
-people are encouraged testing these pre-release kernels and report issues on the
-relevant mailing-lists.
-
-If problems are discovered on those changes, please submit a signed-off-by revert
-patch followed by a corrective changeset.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-[3] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-
--- 
-Neil
-
+>
+> [0] https://lore.kernel.org/all/20230728134832.326467-1-sumit.garg@linaro.org/
+>
+> Regards
+> /Ilias
+> >
+> > Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
+> > ---
+> >  drivers/firmware/efi/efi.c  |  6 ++++++
+> >  drivers/firmware/efi/vars.c |  8 ++++++++
+> >  fs/efivarfs/super.c         | 33 +++++++++++++++++++++++++++++++++
+> >  include/linux/efi.h         |  8 ++++++++
+> >  4 files changed, 55 insertions(+)
+> >
+> > diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+> > index 53ae25bbb6ac..d2eec5ed8e5e 100644
+> > --- a/drivers/firmware/efi/efi.c
+> > +++ b/drivers/firmware/efi/efi.c
+> > @@ -32,6 +32,7 @@
+> >  #include <linux/ucs2_string.h>
+> >  #include <linux/memblock.h>
+> >  #include <linux/security.h>
+> > +#include <linux/notifier.h>
+> >
+> >  #include <asm/early_ioremap.h>
+> >
+> > @@ -187,6 +188,9 @@ static const struct attribute_group efi_subsys_attr_group = {
+> >         .is_visible = efi_attr_is_visible,
+> >  };
+> >
+> > +struct blocking_notifier_head efivar_ops_nh;
+> > +EXPORT_SYMBOL_GPL(efivar_ops_nh);
+> > +
+> >  static struct efivars generic_efivars;
+> >  static struct efivar_operations generic_ops;
+> >
+> > @@ -427,6 +431,8 @@ static int __init efisubsys_init(void)
+> >                 platform_device_register_simple("efivars", 0, NULL, 0);
+> >         }
+> >
+> > +       BLOCKING_INIT_NOTIFIER_HEAD(&efivar_ops_nh);
+> > +
+> >         error = sysfs_create_group(efi_kobj, &efi_subsys_attr_group);
+> >         if (error) {
+> >                 pr_err("efi: Sysfs attribute export failed with error %d.\n",
+> > diff --git a/drivers/firmware/efi/vars.c b/drivers/firmware/efi/vars.c
+> > index e9dc7116daf1..f654e6f6af87 100644
+> > --- a/drivers/firmware/efi/vars.c
+> > +++ b/drivers/firmware/efi/vars.c
+> > @@ -63,6 +63,7 @@ int efivars_register(struct efivars *efivars,
+> >                      const struct efivar_operations *ops)
+> >  {
+> >         int rv;
+> > +       int event;
+> >
+> >         if (down_interruptible(&efivars_lock))
+> >                 return -EINTR;
+> > @@ -77,6 +78,13 @@ int efivars_register(struct efivars *efivars,
+> >
+> >         __efivars = efivars;
+> >
+> > +       if (efivar_supports_writes())
+> > +               event = EFIVAR_OPS_RDWR;
+> > +       else
+> > +               event = EFIVAR_OPS_RDONLY;
+> > +
+> > +       blocking_notifier_call_chain(&efivar_ops_nh, event, NULL);
+> > +
+> >         pr_info("Registered efivars operations\n");
+> >         rv = 0;
+> >  out:
+> > diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+> > index e028fafa04f3..0f6e4d223aea 100644
+> > --- a/fs/efivarfs/super.c
+> > +++ b/fs/efivarfs/super.c
+> > @@ -14,11 +14,36 @@
+> >  #include <linux/slab.h>
+> >  #include <linux/magic.h>
+> >  #include <linux/statfs.h>
+> > +#include <linux/notifier.h>
+> >
+> >  #include "internal.h"
+> >
+> >  LIST_HEAD(efivarfs_list);
+> >
+> > +struct efivarfs_info {
+> > +       struct super_block *sb;
+> > +       struct notifier_block nb;
+> > +};
+> > +
+> > +static struct efivarfs_info info;
+> > +
+> > +static int efivarfs_ops_notifier(struct notifier_block *nb, unsigned long event,
+> > +                                void *data)
+> > +{
+> > +       switch (event) {
+> > +       case EFIVAR_OPS_RDONLY:
+> > +               info.sb->s_flags |= SB_RDONLY;
+> > +               break;
+> > +       case EFIVAR_OPS_RDWR:
+> > +               info.sb->s_flags &= ~SB_RDONLY;
+> > +               break;
+> > +       default:
+> > +               return NOTIFY_DONE;
+> > +       }
+> > +
+> > +       return NOTIFY_OK;
+> > +}
+> > +
+> >  static void efivarfs_evict_inode(struct inode *inode)
+> >  {
+> >         clear_inode(inode);
+> > @@ -255,6 +280,12 @@ static int efivarfs_fill_super(struct super_block *sb, struct fs_context *fc)
+> >         if (!root)
+> >                 return -ENOMEM;
+> >
+> > +       info.sb = sb;
+> > +       info.nb.notifier_call = efivarfs_ops_notifier;
+> > +       err = blocking_notifier_chain_register(&efivar_ops_nh, &info.nb);
+> > +       if (err)
+> > +               return err;
+> > +
+> >         INIT_LIST_HEAD(&efivarfs_list);
+> >
+> >         err = efivar_init(efivarfs_callback, (void *)sb, true, &efivarfs_list);
+> > @@ -281,6 +312,8 @@ static int efivarfs_init_fs_context(struct fs_context *fc)
+> >
+> >  static void efivarfs_kill_sb(struct super_block *sb)
+> >  {
+> > +       blocking_notifier_chain_unregister(&efivar_ops_nh, &info.nb);
+> > +       info.sb = NULL;
+> >         kill_litter_super(sb);
+> >
+> >         if (!efivar_is_available())
+> > diff --git a/include/linux/efi.h b/include/linux/efi.h
+> > index 603bba2d6437..17cd628b5c42 100644
+> > --- a/include/linux/efi.h
+> > +++ b/include/linux/efi.h
+> > @@ -1365,6 +1365,14 @@ bool efi_config_table_is_usable(const efi_guid_t *guid, unsigned long table)
+> >
+> >  umode_t efi_attr_is_visible(struct kobject *kobj, struct attribute *attr, int n);
+> >
+> > +/*
+> > + * efivar ops event type
+> > + */
+> > +#define EFIVAR_OPS_RDONLY 0
+> > +#define EFIVAR_OPS_RDWR 1
+> > +
+> > +extern struct blocking_notifier_head efivar_ops_nh;
+> > +
+> >  void efivars_generic_ops_register(void);
+> >  void efivars_generic_ops_unregister(void);
+> >
+> > --
+> > 2.30.2
+> >
