@@ -2,200 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A09F57C7BAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 04:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3697C7BB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 04:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229518AbjJMCkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 22:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60490 "EHLO
+        id S229508AbjJMCo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 22:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjJMCkF (ORCPT
+        with ESMTP id S229436AbjJMCo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 22:40:05 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C4DDE;
-        Thu, 12 Oct 2023 19:40:03 -0700 (PDT)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-        by mailout.nyi.internal (Postfix) with ESMTP id 646F45C0380;
-        Thu, 12 Oct 2023 22:40:01 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Thu, 12 Oct 2023 22:40:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1697164801; x=1697251201; bh=v/NfjpcqgjT4cCUGFXPV+Rh0Ny4ORRueTJG
-        R6kwHMb8=; b=h98MYJKTyJxh5BlvDbqEbS/QDtKUAxWwg2gGTDuH6bPyNZVeWqr
-        wx7264K7BBz32R/co1ATerAhNOMz75YLvm0fgTpgMMNQu55w/LVhZfVZ8OAJaCJq
-        7nb9dXr37pUg3xsw+b7il6/ccYQEcPhPb1vK4CCQEDrzy95IV5o4SoOHlrLXJpUS
-        Eb6yPF/vCqUumwQwHr6SUOmSXmec1KGdbHy/VnWCwJ1VS7MFAVN4kRWjtDai5r4e
-        6Iyb5UfYgyfG6nkNOqOd32AZHM4b4h2XiUHG2i77ha6HhTxsKzAs97rGYCPcA6Jm
-        X5Z16cCuPlMvm2fDFuvmbQ+0wtUWZGtKmxA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1697164801; x=1697251201; bh=v/NfjpcqgjT4cCUGFXPV+Rh0Ny4ORRueTJG
-        R6kwHMb8=; b=Jt+wF3cEaxzWcr3/XY+Wti7uxW1slOr+Hh/k2JZeVBiHjcLII+Z
-        nY0JUMQAUmDbFKRWkpDfuKIptHIvAR4kGoNSizhDviET/VuKiZVCLSJwzXlYZuVd
-        CpnkeoHXGKe3B0+EamZEayG0kSpjwW7ne9v4AUmksO5OEuGQtcIFvB9B8Tp7Kdlb
-        8KnNMyLprmaqX8wELioBDQZV7M5B73HYVbhOMQu/7XxjsD97mBwdVhOEsAQdEYiM
-        4Zs6ZIclabu89A++eIi9tF47Z7p4t5528a4i5yVVr0vyQgwSV2oj8Dm/R1FxOYyU
-        hjjXgGv4TTuQcjNkFh96NNn3NsYXWo/LI0g==
-X-ME-Sender: <xms:AK4oZfYmg8hEeYfVAyN9-NVArxIb9pHAIGMu3LtUcRruvGFiFXYofA>
-    <xme:AK4oZea2lrufPdbPIb_b2cpZxrufVNi-KdhmDGxE6gD8ljT5zvF1TCt_XZjTxXcnY
-    ctZD-IlCEos>
-X-ME-Received: <xmr:AK4oZR_c5k74EqiyFt1B-u0NuLBMh1OUK8IicBC-0xnMyiMUjlVPKb21xDJnQHX7pAYonr_C7pXIwMswwGu5E6yaqAnpZ1_E9drmkcuN1Xom8hNHEleP_4lU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedriedugdeitdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkffggfgfhvfevfhfujggtgfesthekredttdefjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    ekueffkefhffetjeeikeevtdfhgefhgeetfedvgeevveejgeffleelffekveejtdenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
-    hthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:AK4oZVr_hhUjuDK8v1CelxtwSzRQiPkQJ28QaIhT5GG36oeAhMe8dA>
-    <xmx:AK4oZapZISNp-1EU-J-rAeME2Ys8rS-j8-lysqiKkCn9cG15lAW-6g>
-    <xmx:AK4oZbSFYIFmjcllZIBS8h0RkMXumwjif1oWQKDJk2WMEEF9D0_4Rw>
-    <xmx:Aa4oZVB9SQ5uAQPRwuokl4D2K98Gt4SH7aFjq0x66MdNJYh_gIZC1A>
-Feedback-ID: i31e841b0:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 Oct 2023 22:39:53 -0400 (EDT)
-Message-ID: <c45fc3e5-05ca-14ab-0536-4f670973b927@themaw.net>
-Date:   Fri, 13 Oct 2023 10:39:49 +0800
+        Thu, 12 Oct 2023 22:44:27 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 18E8083
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 19:44:25 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 267A611FB;
+        Thu, 12 Oct 2023 19:45:05 -0700 (PDT)
+Received: from a077893.blr.arm.com (a077893.blr.arm.com [10.162.41.8])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 52BE93F7A6;
+        Thu, 12 Oct 2023 19:44:22 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org, James Clark <james.clark@arm.com>
+Subject: [PATCH V2] drivers: perf: arm_pmuv3: Read PMMIR_EL1 unconditionally
+Date:   Fri, 13 Oct 2023 08:13:54 +0530
+Message-Id: <20231013024354.1289070-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Ian Kent <raven@themaw.net>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Matthew House <mattlloydhouse@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20230928130147.564503-1-mszeredi@redhat.com>
- <20230928130147.564503-5-mszeredi@redhat.com>
- <CAHC9VhQD9r+Qf5Vz1XmxUdJJJO7HNTKdo8Ux=n+xkxr=JGFMrw@mail.gmail.com>
- <CAJfpegsPbDgaz46x4Rr9ZgCpF9rohVHsvuWtQ5LNAdiYU_D4Ww@mail.gmail.com>
- <a25f2736-1837-f4ca-b401-85db24f46452@themaw.net>
- <CAJfpegv78njkWdaShTskKXoGOpKAndvYYJwq7CLibiu+xmLCvg@mail.gmail.com>
- <7fe3c01f-c225-394c-fac5-cabfc70f3606@themaw.net>
-Content-Language: en-US
-Subject: Re: [PATCH v3 4/4] add listmount(2) syscall
-In-Reply-To: <7fe3c01f-c225-394c-fac5-cabfc70f3606@themaw.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/10/23 08:27, Ian Kent wrote:
-> On 5/10/23 23:47, Miklos Szeredi wrote:
->> On Thu, 5 Oct 2023 at 06:23, Ian Kent <raven@themaw.net> wrote:
->>
->>> The proc interfaces essentially use <mount namespace>->list to provide
->>>
->>> the mounts that can be seen so it's filtered by mount namespace of the
->>>
->>> task that's doing the open().
->>>
->>>
->>> See fs/namespace.c:mnt_list_next() and just below the m_start(), 
->>> m_next(),
->> /proc/$PID/mountinfo will list the mount namespace of $PID. Whether
->> current task has permission to do so is decided at open time.
->>
->> listmount() will list the children of the given mount ID.  The mount
->> ID is looked up in the task's mount namespace, so this cannot be used
->> to list mounts of other namespaces.  It's a more limited interface.
->
-> Yep. But isn't the ability to see these based on task privilege?
->
->
-> Is the proc style restriction actually what we need here (or some 
-> variation
->
-> of that implementation)?
->
->
-> An privileged task typically has the init namespace as its mount 
-> namespace
->
-> and mounts should propagate from there so it should be able to see all 
-> mounts.
->
->
-> If the file handle has been opened in a task that is using some other 
-> mount
->
-> namespace then presumably that's what the program author wants the 
-> task to see.
->
-> So I'm not sure I see a problem obeying the namespace of a given task.
+Currently the PMUv3 driver only reads PMMIR_EL1 if the PMU implements
+FEAT_PMUv3p4 and the STALL_SLOT event, but the check for STALL_SLOT event
+isn't necessary and can be removed.
 
-I've had a look through the code we had in the old fsinfo() proposal
+The check for STALL_SLOT event was introduced with the read of PMMIR_EL1 in
+commit f5be3a61fdb5dd11 ("arm64: perf: Add support caps under sysfs")
 
-because I think we need to consider the use cases that are needed.
+When this logic was written, the ARM ARM said:
 
+| If STALL_SLOT is not implemented, it is IMPLEMENTATION DEFINED whether
+| the PMMIR System registers are implemented.
 
-IIRC initially we had a flag FSINFO_ATTR_MOUNT_CHILDREN that essentially
+... and thus the driver had to check for STALL_SLOT event to verify that
+PMMIR_EL1 was implemented and accesses to PMMIR_EL1 would not be UNDEFINED.
 
-enumerated the children of the given mount in much the same way as is
+Subsequently, the architecture was retrospectively tightened to require
+that any FEAT_PMUv3p4 implementation implements PMMIR_EL1. Since the G.b
+release of the ARM ARM, the wording regarding STALL_SLOT event has been
+removed, and the description of PMMIR_EL1 says:
 
-done now in this system call.
+| This register is present only when FEAT_PMUv3p4 is implemented.
 
+Drop the unnecessary check for STALL_SLOT event when reading PMMIR_EL1.
 
-But because we needed to enumerate mounts in the same way as the proc file
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Reviewed-by: James Clark <james.clark@arm.com>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on v6.6-rc5
 
-system mount tables a flag FSINFO_ATTR_MOUNT_ALL was added that essentially
+Changes in V2:
 
-used the mount namespace mounts list in a similar way to the proc file
+- Updated commit message to include previous context about STALL_SLOT check
 
-system so that a list of mounts for a mount namespace could be retrieved.
+Changes in V1:
 
+https://lore.kernel.org/all/20231009075631.193208-1-anshuman.khandual@arm.com/
 
-This later use case is what is used by processes that monitor mounts and
+ drivers/perf/arm_pmuv3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-is what's needed more so than enumerating the children as we do now.
+diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+index 144593092727..92fefc1bc7f6 100644
+--- a/drivers/perf/arm_pmuv3.c
++++ b/drivers/perf/arm_pmuv3.c
+@@ -1126,7 +1126,7 @@ static void __armv8pmu_probe_pmu(void *info)
+ 			     pmceid, ARMV8_PMUV3_MAX_COMMON_EVENTS);
+ 
+ 	/* store PMMIR register for sysfs */
+-	if (is_pmuv3p4(pmuver) && (pmceid_raw[1] & BIT(31)))
++	if (is_pmuv3p4(pmuver))
+ 		cpu_pmu->reg_pmmir = read_pmmir();
+ 	else
+ 		cpu_pmu->reg_pmmir = 0;
+-- 
+2.25.1
 
-
-I'm still looking at the mount id lookup.
-
-
-Ian
-
->
->
-> Ian
->
->>
->> I sort of understand the reasoning behind calling into a security hook
->> on entry to statmount() and listmount().  And BTW I also think that if
->> statmount() and listmount() is limited in this way, then the same
->> limitation should be applied to the proc interfaces.  But that needs
->> to be done real carefully because it might cause regressions. OTOH if
->> it's only done on the new interfaces, then what is the point, since
->> the old interfaces will be available indefinitely?
->>
->> Also I cannot see the point in hiding some mount ID's from the list.
->> It seems to me that the list is just an array of numbers that in
->> itself doesn't carry any information.
->>
->> Thanks,
->> Miklos
