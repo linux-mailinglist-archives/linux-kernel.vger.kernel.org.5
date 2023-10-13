@@ -2,46 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2E77C8520
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DDD7C8521
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbjJML7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
+        id S231590AbjJML7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231368AbjJML7K (ORCPT
+        with ESMTP id S231479AbjJML7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:59:10 -0400
+        Fri, 13 Oct 2023 07:59:13 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1E7CA;
-        Fri, 13 Oct 2023 04:59:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E96DC433C7;
-        Fri, 13 Oct 2023 11:59:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872BBC9;
+        Fri, 13 Oct 2023 04:59:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA9F8C433C8;
+        Fri, 13 Oct 2023 11:59:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697198348;
-        bh=mdyvAP957loI8J8QOxKdfswgmuSBf12C4pS3V4YG9sU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=pBISt8PuC4Qco3NADCdhtqPjh8dL/EGmsyK4MpMEaCOQGER+N58KwVTqtvk4Vz7yY
-         rfPBy11nvSgnf2hGZ65acpV1yi67Fj2TzCrlLJqlNMNBi4T9N9ncqoWPeJn4BGIpmW
-         Pa99/cUGBkYtiIru0Tujlu9afRUtEG62O1oIizKQgI4jpccT2OcexRg3XECNMLJ54U
-         2WIqP8De3l43jf/b6bdxERbTuci/Wj2h5N+yrLoXxttJadTjYuQnFVbELVZ07X0kQ4
-         ehhPif6PypewPdFE3DOSgzhqUthvsGbPqt13MY6YlO0wfvG676ak723kwMQY2XVQku
-         +LXrt303Qa/jQ==
+        s=k20201202; t=1697198351;
+        bh=3eBYDTkgQaXsYR67+otBc1WF4QZDBr1bb/8NAZitcis=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=GjciNQHBgTaujV2YgKuszJVG75vd0v5Sdj0qB0zOrrztJLsKd4G5u5Q96Yl3roHfW
+         SvmYnxjYChGPOfHEw8tX94L1f32RIPY4Qgh1NeESzM/EaI7zWpjcLtF0VuaUH+HMYS
+         R43V10VNExqNF1t/yyj8bEGz7imS6Zrneh1GCyhNn/GYZ+8kOkkmGcF+RPm+l+xAbs
+         kZQmcQsobtP4GpVztNVu4AhO2PR2TKsifZT437968FExewObUmL46ptXbJTeFkcmAg
+         0J90DyZYUEv8KqF7ozFswqhfVnFJJyValjwtY6+TW5NzBezmtQGjG4HwFsx/MpqQSP
+         xJ/PUpIqBXAOw==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: [PATCH 00/18] RCU fixes for v6.7
-Date:   Fri, 13 Oct 2023 13:58:44 +0200
-Message-Id: <20231013115902.1059735-1-frederic@kernel.org>
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH 01/18] Revert "checkpatch: Error out if deprecated RCU API used"
+Date:   Fri, 13 Oct 2023 13:58:45 +0200
+Message-Id: <20231013115902.1059735-2-frederic@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231013115902.1059735-1-frederic@kernel.org>
+References: <20231013115902.1059735-1-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -54,71 +56,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-Please find below the general (S)RCU fixes:
+The definition for single-argument kfree_rcu() has been removed,
+so that any further attempt to use it will result in a build error.
+Because of this build error, there is no longer any need for a special
+check in checkpatch.pl.
 
-Catalin Marinas (1):
-  rcu: kmemleak: Ignore kmemleak false positives when RCU-freeing
-    objects
+Therefore, revert commit 1eacac3255495be7502d406e2ba5444fb5c3607c.
 
-Denis Arefev (1):
-  srcu: Fix srcu_struct node grpmask overflow on 64-bit systems
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ scripts/checkpatch.pl | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-Frederic Weisbecker (8):
-  rcu: Use rcu_segcblist_segempty() instead of open coding it
-  rcu: Assume IRQS disabled from rcu_report_dead()
-  rcu: Assume rcu_report_dead() is always called locally
-  rcu: Conditionally build CPU-hotplug teardown callbacks
-  rcu: Standardize explicit CPU-hotplug calls
-  rcu: Comment why callbacks migration can't wait for CPUHP_RCUTREE_PREP
-  srcu: Fix callbacks acceleration mishandling
-  srcu: Only accelerate on enqueue time
-
-Joel Fernandes (Google) (3):
-  Revert "checkpatch: Error out if deprecated RCU API used"
-  srcu: Fix error handling in init_srcu_struct_fields()
-  rcu/tree: Remove superfluous return from void call_rcu* functions
-
-Paul E. McKenney (2):
-  rcu: Add sysfs to provide throttled access to rcu_barrier()
-  rcu: Eliminate rcu_gp_slow_unregister() false positive
-
-Yue Haibing (1):
-  rcu: Remove unused function declaration rcu_eqs_special_set()
-
-Zhen Lei (2):
-  mm: Remove kmem_valid_obj()
-  rcu: Dump memory object info if callback function is invalid
-
- .../Expedited-Grace-Periods.rst               |   2 +-
- .../Design/Memory-Ordering/TreeRCU-gp-fqs.svg |   4 +-
- .../RCU/Design/Memory-Ordering/TreeRCU-gp.svg |   4 +-
- .../Memory-Ordering/TreeRCU-hotplug.svg       |   4 +-
- .../RCU/Design/Requirements/Requirements.rst  |   4 +-
- .../admin-guide/kernel-parameters.txt         |   7 +
- arch/arm64/kernel/smp.c                       |   4 +-
- arch/powerpc/kernel/smp.c                     |   2 +-
- arch/s390/kernel/smp.c                        |   2 +-
- arch/x86/kernel/smpboot.c                     |   2 +-
- include/linux/interrupt.h                     |   2 +-
- include/linux/rcupdate.h                      |   2 -
- include/linux/rcutiny.h                       |   2 +-
- include/linux/rcutree.h                       |  17 +-
- include/linux/slab.h                          |   5 +-
- kernel/cpu.c                                  |  13 +-
- kernel/rcu/rcu.h                              |   7 +
- kernel/rcu/rcu_segcblist.c                    |   4 +-
- kernel/rcu/srcutiny.c                         |   1 +
- kernel/rcu/srcutree.c                         |  76 ++++--
- kernel/rcu/tasks.h                            |   1 +
- kernel/rcu/tiny.c                             |   1 +
- kernel/rcu/tree.c                             | 230 ++++++++++++------
- mm/slab_common.c                              |  41 +---
- mm/util.c                                     |   4 +-
- scripts/checkpatch.pl                         |   9 -
- 26 files changed, 284 insertions(+), 166 deletions(-)
-
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 7d16f863edf1..25fdb7fda112 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -6427,15 +6427,6 @@ sub process {
+ 			}
+ 		}
+ 
+-# check for soon-to-be-deprecated single-argument k[v]free_rcu() API
+-		if ($line =~ /\bk[v]?free_rcu\s*\([^(]+\)/) {
+-			if ($line =~ /\bk[v]?free_rcu\s*\([^,]+\)/) {
+-				ERROR("DEPRECATED_API",
+-				      "Single-argument k[v]free_rcu() API is deprecated, please pass rcu_head object or call k[v]free_rcu_mightsleep()." . $herecurr);
+-			}
+-		}
+-
+-
+ # check for unnecessary "Out of Memory" messages
+ 		if ($line =~ /^\+.*\b$logFunctions\s*\(/ &&
+ 		    $prevline =~ /^[ \+]\s*if\s*\(\s*(\!\s*|NULL\s*==\s*)?($Lval)(\s*==\s*NULL\s*)?\s*\)/ &&
 -- 
 2.34.1
 
