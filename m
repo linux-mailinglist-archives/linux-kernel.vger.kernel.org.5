@@ -2,91 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE14B7C910C
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E1A7C9111
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbjJMWxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 18:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38640 "EHLO
+        id S230469AbjJMW4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 18:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232645AbjJMWxG (ORCPT
+        with ESMTP id S229830AbjJMW42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 18:53:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CDACF;
-        Fri, 13 Oct 2023 15:53:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697237585; x=1728773585;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=2C5UrgkdXJHfjfoqNAM4SPZu5C0wbXCYHnYx7Cjk8OU=;
-  b=QIobGk0vrvjP9DUEc4lMNykP6fid709P0alhU4tlHcI+dizFmSG6/TOr
-   PkffopnbUHRqtiiIxazBHBOpB5o9XGJhkQhER3v/IZ3trJ8ObDZwGWU7R
-   ZcP4sGFk3mnnKyslB7pu3NJBBKeJrj7EDKmpt0B2zPMy9rMZCAGRsySL8
-   NlpTbpkoMoevRDn15r1Gktx2zR6GShKzFeNZrVk7SVg08ugjLYs80E2P8
-   igujlAk7rNMGsm/uf69M2l+B6H/MSjcI5jWvGZO/wHOVxN5adbrvWoG3p
-   8pdu886R4eDkVi5yQLRTMo3PtMfaQSVjE6+wyTQi8p4NVgT4qxYLhmIB3
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="388134476"
-X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="388134476"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 15:53:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="871267063"
-X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="871267063"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 13 Oct 2023 15:52:57 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qrR1b-0005US-1U;
-        Fri, 13 Oct 2023 22:52:55 +0000
-Date:   Sat, 14 Oct 2023 06:52:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Michael Walle <michael@walle.cc>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Kory Maincent <kory.maincent@bootlin.com>
-Subject: Re: [PATCH net-next v5 10/16] net: ethtool: Add a command to list
- available time stamping layers
-Message-ID: <202310140615.H4ByVgnr-lkp@intel.com>
-References: <20231009155138.86458-11-kory.maincent@bootlin.com>
+        Fri, 13 Oct 2023 18:56:28 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D538AB7;
+        Fri, 13 Oct 2023 15:56:26 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39DLJNgG017941;
+        Fri, 13 Oct 2023 22:56:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=tIv8PKWqTNvf7LEb9nHTdGBuAH32pLXCPsbisyTQ9h8=;
+ b=FGC7gDXDIKQOgVqzozCMJCCPtZCS+Aq+iBD/z/VAiIDqyOOI9t+QVu6yI95XR3Zx8ZMy
+ YovccVIDVSQyY/UVNEQ9nbwQkz0PDzp/z/j+0108StqdtwQzNSSRQ0NAi1V64f4bDn0e
+ Y0ZH8f8lQrGNP6ZsXKdWZji5UfLyf84NLc7sC4TShdQ/MMYPheq9D9TsPm7WRdnuPLpA
+ N/vOeAHz6L7r5Om09xUlvVIV3xoPl1zLpeVO7Awywg17AJDtKGZXv8NOG11+jRzBrbV/
+ kvMU8w7ylZW5+UQIjfPcXDLZ9P4BXnoPRwAFthXhSsUDbLWQCM1DHWn1dXv1gIyWPQ7P DA== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tjyvux1mj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Oct 2023 22:56:22 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39DL8isA006017;
+        Fri, 13 Oct 2023 22:56:22 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tptct2ukk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Oct 2023 22:56:22 +0000
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39DMuL2a028304;
+        Fri, 13 Oct 2023 22:56:21 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3tptct2uk4-1;
+        Fri, 13 Oct 2023 22:56:21 +0000
+From:   Anjali Kulkarni <anjali.k.kulkarni@oracle.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     davem@davemloft.net, Liam.Howlett@oracle.com,
+        netdev@vger.kernel.org, oliver.sang@intel.com, kuba@kernel.org,
+        horms@kernel.org, anjali.k.kulkarni@oracle.com
+Subject: [PATCH v1] Fix NULL pointer dereference in cn_filter()
+Date:   Fri, 13 Oct 2023 15:56:19 -0700
+Message-ID: <20231013225619.987912-1-anjali.k.kulkarni@oracle.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231009155138.86458-11-kory.maincent@bootlin.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-13_12,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 bulkscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310130199
+X-Proofpoint-ORIG-GUID: hT7UL-RIcTeRO0UK7AxwyczkJvQ660aN
+X-Proofpoint-GUID: hT7UL-RIcTeRO0UK7AxwyczkJvQ660aN
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,34 +73,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Köry,
+Check that sk_user_data is not NULL, else return from cn_filter().
 
-kernel test robot noticed the following build warnings:
+Fixes: 2aa1f7a1f47c ("connector/cn_proc: Add filtering to fix some bugs")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202309201456.84c19e27-oliver.sang@intel.com/
+Signed-off-by: Anjali Kulkarni <anjali.k.kulkarni@oracle.com>
+---
+ drivers/connector/cn_proc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[auto build test WARNING on net-next/main]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/K-ry-Maincent/net-Convert-PHYs-hwtstamp-callback-to-use-kernel_hwtstamp_config/20231009-235451
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231009155138.86458-11-kory.maincent%40bootlin.com
-patch subject: [PATCH net-next v5 10/16] net: ethtool: Add a command to list available time stamping layers
-reproduce: (https://download.01.org/0day-ci/archive/20231014/202310140615.H4ByVgnr-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310140615.H4ByVgnr-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> Documentation/networking/ethtool-netlink.rst:2022: WARNING: Title underline too short.
-
-vim +2022 Documentation/networking/ethtool-netlink.rst
-
-  2020	
-  2021	TS_LIST_GET
-> 2022	==========
-  2023	
-
+diff --git a/drivers/connector/cn_proc.c b/drivers/connector/cn_proc.c
+index 05d562e9c8b1..a8e55569e4f5 100644
+--- a/drivers/connector/cn_proc.c
++++ b/drivers/connector/cn_proc.c
+@@ -54,7 +54,7 @@ static int cn_filter(struct sock *dsk, struct sk_buff *skb, void *data)
+ 	enum proc_cn_mcast_op mc_op;
+ 	uintptr_t val;
+ 
+-	if (!dsk || !data)
++	if (!dsk || !data || !dsk->sk_user_data)
+ 		return 0;
+ 
+ 	ptr = (__u32 *)data;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0
+
