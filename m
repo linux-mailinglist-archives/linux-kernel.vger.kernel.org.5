@@ -2,303 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F6E7C829F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3EB07C829B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231301AbjJMJ5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 05:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44070 "EHLO
+        id S231260AbjJMJ5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 05:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbjJMJ5b (ORCPT
+        with ESMTP id S230526AbjJMJ5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 05:57:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA0CA9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:56:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697191006;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R9Nes4o/OPm7jVacYP7oyYJpCPXDJR40Q0Sq3rgGM8g=;
-        b=KSHcSUydwa9kZozfd9VrEfWq4dNJsMUyH+7hd/wj/g5QiX6wgVn7UQhb6IfBhDFo8xXb13
-        GqwzyLMOEebMnTkQqqB1686EZF++zYrMZKev9uo6oudLwVpVoxVsFc52PkRQL37hIcLvbj
-        hnyY9AjfsDQC5FpiGvcZq0PRcaPauQ0=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-163-HvOABJzhMyWg8_DGac79MA-1; Fri, 13 Oct 2023 05:56:35 -0400
-X-MC-Unique: HvOABJzhMyWg8_DGac79MA-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3296bd73d91so1126836f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:56:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697190994; x=1697795794;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R9Nes4o/OPm7jVacYP7oyYJpCPXDJR40Q0Sq3rgGM8g=;
-        b=WQp8gScBKaZzGdbth8F3CFEWZk+BRjXm/X/28+6QNEi1L+KedV2CJtfB94jN+kSLe0
-         nul1o8YIViWvcoxKP3DZHJznPM8U1WkOt31WCQ/Lmdea84La4YCMN/JQ0x64e4lzf1/F
-         7mMK0CkXzSRgreCau+KFOuZnRTyKmy3h/uIuSvZrjZetPlpXLav8a8ATQw+p/tFQt3It
-         bgHZhuKRustzKRJ7HZ2rKe2qbwbUEhUTAkXrdAZys5pwLDeitFk0DaR761yzgQyuxzGP
-         Zx3JfraaTtIDLMEmqw7b/DeQEhxa32ErIGyAUqLIZjpib5iehLlRRYz+/VHLRDyOWrg5
-         bELQ==
-X-Gm-Message-State: AOJu0YypoZYVd+Jvx2QDVSxd/7JU4JBl453Va5Pi91rKQooFrZY7NW4I
-        mSPVyzb+RBZJAwah4Pnw5HPQ/jnRkJxTopZx/O7GawquEIU5eUing0lg3KOAoQDnIepnc2yQGE7
-        x43bt5HpgZJgNj4niJEyh3aYA
-X-Received: by 2002:adf:a19b:0:b0:32d:8942:a000 with SMTP id u27-20020adfa19b000000b0032d8942a000mr4804878wru.20.1697190994106;
-        Fri, 13 Oct 2023 02:56:34 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHDmR8ay0Jo6bUN7SnkfjJvl1Y+K6Q+GuBFpH5FfJ1pGwuzNq5/eAJEgPiKOvx8Fv92EbKkDQ==
-X-Received: by 2002:adf:a19b:0:b0:32d:8942:a000 with SMTP id u27-20020adfa19b000000b0032d8942a000mr4804847wru.20.1697190993574;
-        Fri, 13 Oct 2023 02:56:33 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c718:9300:1381:43e2:7c78:b68f? (p200300cbc7189300138143e27c78b68f.dip0.t-ipconnect.de. [2003:cb:c718:9300:1381:43e2:7c78:b68f])
-        by smtp.gmail.com with ESMTPSA id t4-20020a0560001a4400b0032763287473sm20703578wry.75.2023.10.13.02.56.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Oct 2023 02:56:33 -0700 (PDT)
-Message-ID: <205abf01-9699-ff1c-3e4e-621913ada64e@redhat.com>
-Date:   Fri, 13 Oct 2023 11:56:31 +0200
+        Fri, 13 Oct 2023 05:57:06 -0400
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2123.outbound.protection.outlook.com [40.107.114.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D85BE;
+        Fri, 13 Oct 2023 02:57:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KSZmXGBQ1QbSAdxPzRqfOHWt3+rr38XEkByazZaHmwNhpxLufwpZHG+m73pwi0UkxhmF8qNfVvbig8I83vHndsQnosH1o0GlL52x0fq9Hx3ftRVFF0Pe3V/Pm93pPgaJYCfvyRquq7dXB5ZXt3zMMNfHoGm7oAm4uBfynLLHCEHvzCHZ95+cRjTYrXlqsVzYgEaI5M4j5Im/QZbt8GkCnlo+IGtHFqN1+P14t52l5BtdgYkvLYMwBTimTom5RH88eqYmB7irTWZ7qmI2Lx/TsWKwbin1Tr8M8C7IFJ5eZGTjS2exMfY40h0bFlywiKwh9V+lQ0hkJ2Wy/nHAUe3FaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Of/FLdaoDBHEa8E79swtn2r5NFHl/EG7u4j6AmdUFao=;
+ b=CC6gQEO3YBAUP1aHRHPFctYB91Z0+Mtw3/K7VG/UFlEE1+4nDQBt6Z6aD8TQnA0cXNR1CyEhW5V6l7fTfjaC6VVWA9e+vy207IG0CDGwXd+Rqr4X4zxEizhT/PalPxx3XXwUH7HJ3c1FPZJ7Hm2qPFOdrD2fW03RbEBUNHlEA2eW5vGdfc9rQ8MNu2iDyf/gIe57+TR23rV8OKg7aoIU1F2Dy/ByRq3pUqLQ3B+p6F3Cn/xtAypaqbINXw+4db1dCJ76v+d8sFhzex27avD6zx6ckst+9jSLJm07R1rSwdkOUFhOwk2MPOWz0jquQI4zdn4czxTdaAYVLupX2EVAxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=zenithal.me; dmarc=pass action=none header.from=zenithal.me;
+ dkim=pass header.d=zenithal.me; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zenithal.me;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Of/FLdaoDBHEa8E79swtn2r5NFHl/EG7u4j6AmdUFao=;
+ b=iexLm/uSopYcUnZ4i5HZVSy622b2IbjZvJM8cR85M4UVLufCSD4ucES47Dg6MNklC6Pm0YJkTNgzq5QHSf4mA+lfWMZPUF59AACyPjCRlGFQiye7h8n+5jwUrfQkCP9jbrMCVgmyMwh86mUbYw3qoOu1XrI7B2buQrZZuD5bbA8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=zenithal.me;
+Received: from TYYP286MB1406.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:de::5) by
+ OSZP286MB1943.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:1a6::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6886.30; Fri, 13 Oct 2023 09:57:01 +0000
+Received: from TYYP286MB1406.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::54a2:c3cf:4f5:91cc]) by TYYP286MB1406.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::54a2:c3cf:4f5:91cc%7]) with mapi id 15.20.6886.030; Fri, 13 Oct 2023
+ 09:57:01 +0000
+Date:   Fri, 13 Oct 2023 17:56:54 +0800
+From:   Hongren Zheng <i@zenithal.me>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        sfr@canb.auug.org.au
+Subject: Re: [PATCH v2 1/1] usbip: Use platform_device_register_full()
+Message-ID: <ZSkUZpMhiwweSPX5@Sun>
+References: <20231006164312.3528524-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231006164312.3528524-1-andriy.shevchenko@linux.intel.com>
+X-Operating-System: Linux Sun 5.15.67
+X-Mailer: Mutt 2.2.7 (2022-08-07)
+X-ClientProxiedBy: BY3PR10CA0006.namprd10.prod.outlook.com
+ (2603:10b6:a03:255::11) To TYYP286MB1406.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:de::5)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>, Lokesh Gidra <lokeshgidra@google.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, hughd@google.com, mhocko@suse.com,
-        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
-        Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com,
-        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
-        jdduke@google.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
-References: <20231009064230.2952396-1-surenb@google.com>
- <20231009064230.2952396-3-surenb@google.com>
- <214b78ed-3842-5ba1-fa9c-9fa719fca129@redhat.com>
- <CAJuCfpHzSm+z9b6uxyYFeqr5b5=6LehE9O0g192DZdJnZqmQEw@mail.gmail.com>
- <478697aa-f55c-375a-6888-3abb343c6d9d@redhat.com>
- <CA+EESO5nvzka0KzFGzdGgiCWPLg7XD-8jA9=NTUOKFy-56orUg@mail.gmail.com>
- <ZShS3UT+cjJFmtEy@x1n>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-In-Reply-To: <ZShS3UT+cjJFmtEy@x1n>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYYP286MB1406:EE_|OSZP286MB1943:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4666718b-e5cf-4384-918e-08dbcbd2bf32
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gfkmf1YPnT6BVkLVBm1waZ8RDIfA2Ffl6V0Ez7RmNiYTkuNDzC/QNL57fyuiHITPECpa2l2VeXosRZMCvjQfkWvU9eQ+RtTYCBPPijCMJbNLitnH0dqRIy6LxUP+X+RbG2aZ5WgtDEbjsKhxoRBeOb8UhFSlhvC4EMcrYMmBV+xOEC/qHjPuv3wOwLncbcrwlc6CZcizQ0//1+8Urr7eQNw/8Yab6Rv/ZIaxRqTgWXpxrKx2a+bo3IdUqmB+ipseR9p6Kyc4Vm+hYlA33IZev+zqIRzaUJ4RRGaxNdVCe1asRk+Ut4SjZFiFdBAXunOqKs8OssGwYCV4uYTA57bdTUwqC3GPKcX+HpIoJP03othVPuSQbkOfbVxhkYSXgkYr1vKazkUD4c9zOsO7Cp7QfkjMT5DigvWBEzAqQ7YuO+1Wh+cyBcU1+GH/LYcCM1yLys467zD9xDJSfljUnJQNjTyqBkkvmEkoz41S6lV6D+tyrJBZxh3UZuKdD5/DOUVU5HSCdBJn/O+pFG3Z9W62cTknlsbgjg65Eiae74ibLj8jq0kf5WM9cPxti51xZ8dh0rmKmi6xO5Tpg9NH1bIEn2svO+Kku2q3e4NTRL2RXvY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYYP286MB1406.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39830400003)(366004)(396003)(376002)(346002)(136003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(6666004)(6506007)(6512007)(9686003)(83380400001)(478600001)(5660300002)(4326008)(8676002)(2906002)(41300700001)(8936002)(966005)(6486002)(33716001)(66476007)(786003)(54906003)(316002)(66556008)(6916009)(66946007)(38100700002)(41320700001)(86362001)(49092004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?L84h99eHXQpW63HAhy0VjuswnVF1YlpDUx+BP1jpoA3kSSqihiogpzvXlGUc?=
+ =?us-ascii?Q?psvq2Y+295tWsuj6hcMFrcyEdDfOoUqQNpPvsDvJQapggwbfDmZH4VOfi/Q+?=
+ =?us-ascii?Q?T9nA4wC81LyU74EBAChsHz0gQU9OYEMyHacJbhQg61NB3+i8EsCp0dvLPirc?=
+ =?us-ascii?Q?ynZYS65HWvweHfCgjS4m/5mEIsr/9X7MjhO9/8HK79/c0NlsttxkdFpr6Re+?=
+ =?us-ascii?Q?LCUEbHvcAvLRQJurUzM6f3hWlmIxlsSJEvxQiGOGC0XpPVGo4DxHiB7kiGio?=
+ =?us-ascii?Q?gyMX9bH9uIUIdWI9l7qwLQD810OQDbbeBykhDWeG+k7avesKOYdAvH2Er9hB?=
+ =?us-ascii?Q?KG6DHKefLqhkNan3+tjcq/MFzNKnRE5Q1bVGVWRZWjQM3HU/VhZqM+PR2Brl?=
+ =?us-ascii?Q?SyiJMGKt53fnMIoE9Oqckn2YftqdPW7jl8NvXUa8r2W96V3nVePwJbIyiF+O?=
+ =?us-ascii?Q?4eECQ8c47DbG0FAvM9gnubR0kIuWfAgE/wso1MQPVxleDllOSYZUiph/ukOw?=
+ =?us-ascii?Q?7CPczibjRAyurd7p5PQ3/nQD3uxBIs3qg7e1Y830cmYIFqTQdtWLn3mG+ES7?=
+ =?us-ascii?Q?ywRk8uJFq8Ui7CK5rRCAoI7Msc/iFo7LamPbRt6CRyVpqbCy5MEIwVME/q+7?=
+ =?us-ascii?Q?QKS7p/l0l20dHsRgh8NavO4Zpmqr11tpLY1Ru/2CMKOIQ/v59OzfxvGD1wbh?=
+ =?us-ascii?Q?Mhyfr3+X/z4t52Dy4oINy/BRwU/x4QgE1Z72fGj9zP4v3/zVhqBqbAB5seNX?=
+ =?us-ascii?Q?tLIkOp2pBjaU7DQYbdpj2NLzR1kI2XahuCfkSsBt/xrZbE/KXiM+Sp1Zy2ct?=
+ =?us-ascii?Q?QwekpDy63U7NUNPdK0/hnbg0O/gPGtr0AaF8dlr6qc7i15egSgsWgyOm95N5?=
+ =?us-ascii?Q?qW3s1VoIMdTDCviGD1Hp9N9/vmcoibSXwRB5UCHDflpjwuhlLcCr/RrGjX66?=
+ =?us-ascii?Q?tYoO/OayJ7os/13mSn6XytPpnlo4y90xezuOBbfH6OCgn+wIXbdD7zcVBvwM?=
+ =?us-ascii?Q?G14/XO/B6sluYc8v9YOoDStZr/c+mAYb2htC+JoI9CMzODwVdjjRiZp9OoSY?=
+ =?us-ascii?Q?yg9r7LCQXlYN04YLW+5rxWLKx/NoQ9RDsVoBzBSzN23/iy3+xi3N1OBVAQH9?=
+ =?us-ascii?Q?9DzGIdxfPmRt5fKRyGKCjY+uAnHWCoEjHrRPZwG6K8A/Er9mLbZga80SFrj7?=
+ =?us-ascii?Q?CwRe/2rxEQML+tRnojVSjQM/u64Bg35VT5NFjEOREhsoeBIUlFfp4s1ORexC?=
+ =?us-ascii?Q?Ps/q5/ABnNutfmNLOXP8h6eysbn+UIn+dzCtlPpviq91gGTtNFQ8T20vwBbx?=
+ =?us-ascii?Q?vQdAAOtPGnO8mJI3jUksO0hQ0cxUVqEO5LFX8UPnkM+1FEM42XC8PgtVZbx2?=
+ =?us-ascii?Q?AujyK7i8jHoqNI7IK0uF2KrXkPOH5pVNBAyiH4oNPUF8Es/gXxK/bYAEJQ6+?=
+ =?us-ascii?Q?KVuqNNdhwPRH8LGTBIEZLzhGxpOVK+fo77CuSVN8Ed1AkCAnQLvG69GfBWSI?=
+ =?us-ascii?Q?5Dn6sSnorvoIg6EcNZHaxBKDTUUjCUU0D38ZvNi/7tIYetK0vjtPlhP4wXuC?=
+ =?us-ascii?Q?x3OsVYmCaOk8eThRJ5GFxhftOaUE1rr2DsQERHu7?=
+X-OriginatorOrg: zenithal.me
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4666718b-e5cf-4384-918e-08dbcbd2bf32
+X-MS-Exchange-CrossTenant-AuthSource: TYYP286MB1406.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 09:57:01.6599
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 436d481c-43b1-4418-8d7f-84c1e4887cf0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: R/0040w9nAjiP8D9NeUNx7T224s0mKz91qrR9EUwtxm1f2UgB+XzAgOZtSGR/9Sv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSZP286MB1943
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.10.23 22:11, Peter Xu wrote:
-> On Mon, Oct 09, 2023 at 05:29:08PM +0100, Lokesh Gidra wrote:
->> On Mon, Oct 9, 2023 at 5:24 PM David Hildenbrand <david@redhat.com> wrote:
->>>
->>> On 09.10.23 18:21, Suren Baghdasaryan wrote:
->>>> On Mon, Oct 9, 2023 at 7:38 AM David Hildenbrand <david@redhat.com> wrote:
->>>>>
->>>>> On 09.10.23 08:42, Suren Baghdasaryan wrote:
->>>>>> From: Andrea Arcangeli <aarcange@redhat.com>
->>>>>>
->>>>>> Implement the uABI of UFFDIO_MOVE ioctl.
->>>>>> UFFDIO_COPY performs ~20% better than UFFDIO_MOVE when the application
->>>>>> needs pages to be allocated [1]. However, with UFFDIO_MOVE, if pages are
->>>>>> available (in userspace) for recycling, as is usually the case in heap
->>>>>> compaction algorithms, then we can avoid the page allocation and memcpy
->>>>>> (done by UFFDIO_COPY). Also, since the pages are recycled in the
->>>>>> userspace, we avoid the need to release (via madvise) the pages back to
->>>>>> the kernel [2].
->>>>>> We see over 40% reduction (on a Google pixel 6 device) in the compacting
->>>>>> thread’s completion time by using UFFDIO_MOVE vs. UFFDIO_COPY. This was
->>>>>> measured using a benchmark that emulates a heap compaction implementation
->>>>>> using userfaultfd (to allow concurrent accesses by application threads).
->>>>>> More details of the usecase are explained in [2].
->>>>>> Furthermore, UFFDIO_MOVE enables moving swapped-out pages without
->>>>>> touching them within the same vma. Today, it can only be done by mremap,
->>>>>> however it forces splitting the vma.
->>>>>>
->>>>>> [1] https://lore.kernel.org/all/1425575884-2574-1-git-send-email-aarcange@redhat.com/
->>>>>> [2] https://lore.kernel.org/linux-mm/CA+EESO4uO84SSnBhArH4HvLNhaUQ5nZKNKXqxRCyjniNVjp0Aw@mail.gmail.com/
->>>>>>
->>>>>> Update for the ioctl_userfaultfd(2)  manpage:
->>>>>>
->>>>>>       UFFDIO_MOVE
->>>>>>           (Since Linux xxx)  Move a continuous memory chunk into the
->>>>>>           userfault registered range and optionally wake up the blocked
->>>>>>           thread. The source and destination addresses and the number of
->>>>>>           bytes to move are specified by the src, dst, and len fields of
->>>>>>           the uffdio_move structure pointed to by argp:
->>>>>>
->>>>>>               struct uffdio_move {
->>>>>>                   __u64 dst;    /* Destination of move */
->>>>>>                   __u64 src;    /* Source of move */
->>>>>>                   __u64 len;    /* Number of bytes to move */
->>>>>>                   __u64 mode;   /* Flags controlling behavior of move */
->>>>>>                   __s64 move;   /* Number of bytes moved, or negated error */
->>>>>>               };
->>>>>>
->>>>>>           The following value may be bitwise ORed in mode to change the
->>>>>>           behavior of the UFFDIO_MOVE operation:
->>>>>>
->>>>>>           UFFDIO_MOVE_MODE_DONTWAKE
->>>>>>                  Do not wake up the thread that waits for page-fault
->>>>>>                  resolution
->>>>>>
->>>>>>           UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES
->>>>>>                  Allow holes in the source virtual range that is being moved.
->>>>>>                  When not specified, the holes will result in ENOENT error.
->>>>>>                  When specified, the holes will be accounted as successfully
->>>>>>                  moved memory. This is mostly useful to move hugepage aligned
->>>>>>                  virtual regions without knowing if there are transparent
->>>>>>                  hugepages in the regions or not, but preventing the risk of
->>>>>>                  having to split the hugepage during the operation.
->>>>>>
->>>>>>           The move field is used by the kernel to return the number of
->>>>>>           bytes that was actually moved, or an error (a negated errno-
->>>>>>           style value).  If the value returned in move doesn't match the
->>>>>>           value that was specified in len, the operation fails with the
->>>>>>           error EAGAIN.  The move field is output-only; it is not read by
->>>>>>           the UFFDIO_MOVE operation.
->>>>>>
->>>>>>           The operation may fail for various reasons. Usually, remapping of
->>>>>>           pages that are not exclusive to the given process fail; once KSM
->>>>>>           might deduplicate pages or fork() COW-shares pages during fork()
->>>>>>           with child processes, they are no longer exclusive. Further, the
->>>>>>           kernel might only perform lightweight checks for detecting whether
->>>>>>           the pages are exclusive, and return -EBUSY in case that check fails.
->>>>>>           To make the operation more likely to succeed, KSM should be
->>>>>>           disabled, fork() should be avoided or MADV_DONTFORK should be
->>>>>>           configured for the source VMA before fork().
->>>>>>
->>>>>>           This ioctl(2) operation returns 0 on success.  In this case, the
->>>>>>           entire area was moved.  On error, -1 is returned and errno is
->>>>>>           set to indicate the error.  Possible errors include:
->>>>>>
->>>>>>           EAGAIN The number of bytes moved (i.e., the value returned in
->>>>>>                  the move field) does not equal the value that was
->>>>>>                  specified in the len field.
->>>>>>
->>>>>>           EINVAL Either dst or len was not a multiple of the system page
->>>>>>                  size, or the range specified by src and len or dst and len
->>>>>>                  was invalid.
->>>>>>
->>>>>>           EINVAL An invalid bit was specified in the mode field.
->>>>>>
->>>>>>           ENOENT
->>>>>>                  The source virtual memory range has unmapped holes and
->>>>>>                  UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES is not set.
->>>>>>
->>>>>>           EEXIST
->>>>>>                  The destination virtual memory range is fully or partially
->>>>>>                  mapped.
->>>>>>
->>>>>>           EBUSY
->>>>>>                  The pages in the source virtual memory range are not
->>>>>>                  exclusive to the process. The kernel might only perform
->>>>>>                  lightweight checks for detecting whether the pages are
->>>>>>                  exclusive. To make the operation more likely to succeed,
->>>>>>                  KSM should be disabled, fork() should be avoided or
->>>>>>                  MADV_DONTFORK should be configured for the source virtual
->>>>>>                  memory area before fork().
->>>>>>
->>>>>>           ENOMEM Allocating memory needed for the operation failed.
->>>>>>
->>>>>>           ESRCH
->>>>>>                  The faulting process has exited at the time of a
->>>>>>                  UFFDIO_MOVE operation.
->>>>>>
->>>>>
->>>>> A general comment simply because I realized that just now: does anything
->>>>> speak against limiting the operations now to a single MM?
->>>>>
->>>>> The use cases I heard so far don't need it. If ever required, we could
->>>>> consider extending it.
->>>>>
->>>>> Let's reduce complexity and KIS unless really required.
->>>>
->>>> Let me check if there are use cases that require moves between MMs.
->>>> Andrea seems to have put considerable effort to make it work between
->>>> MMs and it would be a pity to lose that. I can send a follow-up patch
->>>> to recover that functionality and even if it does not get merged, it
->>>> can be used in the future as a reference. But first let me check if we
->>>> can drop it.
->>
->> For the compaction use case that we have it's fine to limit it to
->> single MM. However, for general use I think Peter will have a better
->> idea.
+On Fri, Oct 06, 2023 at 07:43:12PM +0300, Andy Shevchenko wrote:
+> The code to create the child platform device is essentially the same as
+> what platform_device_register_full() does, so change over to use
+> that same function to reduce duplication.
 > 
-
-Hi Peter,
-
-> I used to have the same thought with David on whether we can simplify the
-> design to e.g. limit it to single mm.  Then I found that the trickiest is
-> actually patch 1 together with the anon_vma manipulations, and the problem
-> is that's not avoidable even if we restrict the api to apply on single mm.
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> v2: (hopefully) fixed run-time NULL-dereference (LKP)
+>  drivers/usb/usbip/vhci_hcd.c | 55 +++++++++++++-----------------------
+>  1 file changed, 20 insertions(+), 35 deletions(-)
 > 
-> What else we can benefit from single mm?  One less mmap read lock, but
-> probably that's all we can get; IIUC we need to keep most of the rest of
-> the code, e.g. pgtable walks, double pgtable lockings, etc.
+> diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
+> index 37d1fc34e8a5..f845b91848b9 100644
+> --- a/drivers/usb/usbip/vhci_hcd.c
+> +++ b/drivers/usb/usbip/vhci_hcd.c
+  
+> -	for (i = 0; i < vhci_num_controllers; i++) {
+> -		void *vhci = &vhcis[i];
 
-No existing mechanisms move anon pages between unrelated processes, that 
-naturally makes me nervous if we're doing it "just because we can".
+The void *vhci here is intended
 
-> 
-> Actually, even though I have no solid clue, but I had a feeling that there
-> can be some interesting way to leverage this across-mm movement, while
-> keeping things all safe (by e.g. elaborately requiring other proc to create
-> uffd and deliver to this proc).
+platform_device_add_data "Add a copy of platform specific data to the
+platform device's platform_data pointer"
 
-Okay, but no real use cases yet.
+however, vhcis is static so it is not intended to be copied (the
+pdev inside struct vhci might be the cause)
 
-> 
-> Considering Andrea's original version already contains those bits and all
-> above, I'd vote that we go ahead with supporting two MMs.
+> -		ret = platform_device_add_data(vhcis[i].pdev, &vhci, sizeof(void *));
+> -		if (ret)
+> -			goto err_driver_register;
+> -	}
+> -
+>  	ret = platform_driver_register(&vhci_driver);
+>  	if (ret)
+>  		goto err_driver_register;
+>  
+>  	for (i = 0; i < vhci_num_controllers; i++) {
+> -		ret = platform_device_add(vhcis[i].pdev);
+> +		struct platform_device_info pdevinfo = {
+> +			.name = driver_name,
+> +			.id = i,
+> +			.data = &vhcis[i],
 
-You can do nasty things with that, as it stands, on the upstream codebase.
+here should be a &vhci
 
-If you pin the page in src_mm and move it to dst_mm, you successfully 
-broke an invariant that "exclusive" means "no other references from 
-other processes". That page is marked exclusive but it is, in fact, not 
-exclusive.
+> +			.size_data = sizeof(void *),
+> +		};
+> +
+> +		vhcis[i].pdev = platform_device_register_full(&pdevinfo);
+> +		ret = PTR_ERR_OR_ZERO(vhcis[i].pdev);
+>  }
+> -- 
+> 2.40.0.1.gaa8946217a0b
 
-Once you achieved that, you can easily have src_mm not have 
-MMF_HAS_PINNED, so you can just COW-share that page. Now you 
-successfully broke the invariant that COW-shared pages must not be 
-pinned. And you can even trigger VM_BUG_ONs, like in 
-sanity_check_pinned_pages().
+I have reproduced the boot error reported by syzbot in
+https://lore.kernel.org/linux-usb/00000000000029242706077f3145@google.com/
+https://lore.kernel.org/linux-usb/0000000000007634c1060793197c@google.com/
 
-Can it all be fixed? Sure, with more complexity. For something without 
-clear motivation, I'll have to pass.
+and adding back void *vhci fixed it
 
-Once there is real demand, we can revisit it and explore what else we 
-would have to take care of (I don't know how memcg behaves when moving 
-between completely unrelated processes, maybe that works as expected, I 
-don't know and I have no time to spare on reviewing features with no 
-real use cases) and announce it as a new feature.
-
-
-Note: that (with only reading the documentation) it also kept me 
-wondering how the MMs are even implied from
-
-        struct uffdio_move {
-            __u64 dst;    /* Destination of move */
-            __u64 src;    /* Source of move */
-            __u64 len;    /* Number of bytes to move */
-            __u64 mode;   /* Flags controlling behavior of move */
-            __s64 move;   /* Number of bytes moved, or negated error */
-        };
-
-That probably has to be documented as well, in which address space dst 
-and src reside.
-
--- 
-Cheers,
-
-David / dhildenb
-
+I'll send a patch.
