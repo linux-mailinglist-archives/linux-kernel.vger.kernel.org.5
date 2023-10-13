@@ -2,56 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64EA97C8917
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA1F7C891D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbjJMPsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
+        id S232441AbjJMPu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 11:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232372AbjJMPsG (ORCPT
+        with ESMTP id S232041AbjJMPu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:48:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8606BB
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:48:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC20AC433C7;
-        Fri, 13 Oct 2023 15:48:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697212085;
-        bh=U1YKFSXY08tJibk9UQhz6q54OPcpF6fXz3U2EjQSuK0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JkWOrR9826ylpMuzJMiAyn0/eOUE38ZcixBepBRBTMBoE4e//5ma1fRX1ha14UIn8
-         eIbMe3RrWdLUTkTZMkvbIxyPP4mLU1ZoZl8JAxgJxjOdoZ4bvs/07wm8IZs6VO9w9F
-         ZJO9o+pEAt9L2/xWfMnGh4f/6mGQ6vGdzJkd+k6WW/hBRHrmJtzKyi1wfer+Z3HERu
-         ahy3e7eJweHhEFcp8Nw4U9c2MYhZWnaKciOlsZaZb75zi0G64SXKXgQGdo4xB9C2DA
-         NMpFStVO1OJr3Li5xce9AFLJfjNSXwib9wFtroWGY7fY+ACSXvlmGIT74wfzAVSiMD
-         5qTlH4hR+0vhg==
-Date:   Fri, 13 Oct 2023 17:48:00 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v1 3/3] net: phy: micrel: Fix forced link mode
- for KSZ886X switches
-Message-ID: <20231013154800.GQ29570@kernel.org>
-References: <20231011123856.1443308-1-o.rempel@pengutronix.de>
- <20231011123856.1443308-3-o.rempel@pengutronix.de>
+        Fri, 13 Oct 2023 11:50:26 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5FF4BB;
+        Fri, 13 Oct 2023 08:50:23 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3DD141FDA3;
+        Fri, 13 Oct 2023 15:50:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1697212222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=z7RHgYxxzJ/pOaovwvv6HlOwhHh2FXPWvC+R+XRmWbc=;
+        b=rdx60rFehK2i6+arc2yuiZqIq756SIqcqRE5cIrCX+EWupt5oxfx2pNoElAE/FjEWbUFcK
+        CF4xNdSKbYbUsSdq56KIy8rGrsflEgwHE3c5aZvzNfl6jcNpND9eFAUJ470HmKmXGPUzBF
+        OKwmcXz+bdiR/zPShFexlDrS5E1zIMc=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 06C37138EF;
+        Fri, 13 Oct 2023 15:50:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id hhfdAD5nKWXKWAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Fri, 13 Oct 2023 15:50:22 +0000
+Date:   Fri, 13 Oct 2023 17:50:20 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>
+Subject: Re: [PATCH v8 0/7] cgroup/cpuset: Support remote partitions
+Message-ID: <ahevhcy2aa7k3plmfvlepjehs6u3fun3j4oyskdz7axkhftlyi@zr3j473rciwi>
+References: <20230905133243.91107-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tesk6d4tqdsww4u2"
 Content-Disposition: inline
-In-Reply-To: <20231011123856.1443308-3-o.rempel@pengutronix.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <20230905133243.91107-1-longman@redhat.com>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -5.70
+X-Spamd-Result: default: False [-5.70 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.20)[multipart/signed,text/plain];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[12];
+         SIGNED_PGP(-2.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:~];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,53 +88,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 02:38:56PM +0200, Oleksij Rempel wrote:
-> Address a link speed detection issue in KSZ886X PHY driver when in
-> forced link mode. Previously, link partners like "ASIX AX88772B"
-> with KSZ8873 could fall back to 10Mbit instead of configured 100Mbit.
-> 
-> The issue arises as KSZ886X PHY continues sending Fast Link Pulses (FLPs)
-> even with autonegotiation off, misleading link partners in autoneg mode,
-> leading to incorrect link speed detection.
-> 
-> Now, when autonegotiation is disabled, the driver sets the link state
-> forcefully using KSZ886X_CTRL_FORCE_LINK bit. This action, beyond just
-> disabling autonegotiation, makes the PHY state more reliably detected by
-> link partners using parallel detection, thus fixing the link speed
-> misconfiguration.
-> 
-> With autonegotiation enabled, link state is not forced, allowing proper
-> autonegotiation process participation.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  drivers/net/phy/micrel.c | 32 +++++++++++++++++++++++++++++---
->  1 file changed, 29 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-> index 927d3d54658e..12f093aed4ff 100644
-> --- a/drivers/net/phy/micrel.c
-> +++ b/drivers/net/phy/micrel.c
-> @@ -1729,9 +1729,35 @@ static int ksz886x_config_aneg(struct phy_device *phydev)
->  {
->  	int ret;
->  
-> -	ret = genphy_config_aneg(phydev);
-> -	if (ret)
-> -		return ret;
-> +	if (phydev->autoneg != AUTONEG_ENABLE) {
-> +		ret = genphy_setup_forced(phydev);
-> +		if (ret)
-> +			return ret;
-> +
-> +		/* When autonegotation is disabled, we need to manually force
 
-nit: autonegotiation
+--tesk6d4tqdsww4u2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +		 * the link state. If we don't do this, the PHY will keep
-> +		 * sending Fast Link Pulses (FLPs) which are part of the
-> +		 * autonegotiation process. This is not desired when
-> +		 * autonegotiation is off.
-> +		 */
+Hello.
 
-...
+(I know this is heading for 6.7. Still I wanted to have a look at this
+after it stabilized somehow to understand the new concept better but I
+still have some questions below.)
+
+On Tue, Sep 05, 2023 at 09:32:36AM -0400, Waiman Long <longman@redhat.com> =
+wrote:
+> Both scheduling and isolated partitions can be formed as a remote
+> partition. A local partition can be created under a remote partition.
+> A remote partition, however, cannot be formed under a local partition
+> for now.
+>=20
+>=20
+> With this patch series, we allow the creation of remote partition
+> far from the root. The container management tool can manage the
+> "cpuset.cpus.exclusive" file without impacting the other cpuset
+> files that are managed by other middlewares. Of course, invalid
+> "cpuset.cpus.exclusive" values will be rejected.
+
+I take the example with a nested cgroup `cont` to which I want to
+dedicate two CPUs (0 and 1).
+IIUC, I can do this both with a chain of local root partitions or as a
+single remote partion.
+
+
+[chain]
+  root
+  |                           \
+  mid1a                        mid1b
+   cpuset.cpus=3D0-1              cpuset.cpus=3D2-15
+   cpuset.cpus.partition=3Droot  =20
+  |
+  mid2
+   cpuset.cpus=3D0-1
+   cpuset.cpus.partition=3Droot
+  |
+  cont
+   cpuset.cpus=3D0-1
+   cpuset.cpus.partition=3Droot
+
+
+[remote]
+  root
+  |                           \
+  mid1a                        mid1b
+   cpuset.cpus.exclusive=3D0-1    cpuset.cpus=3D2-15
+  |
+  mid2
+   cpuset.cpus.exclusive=3D0-1
+  |
+  cont
+   cpuset.cpus.exclusive=3D0-1
+   cpuset.cpus.partition=3Droot
+
+In the former case I must configure cpuset.cpus and
+cpuset.cpus.partition along the whole path and in the second case
+cpuset.cpus.exclusive still along the whole path and root at the bottom
+only.
+
+What is the difference between the two configs above?
+(Or can you please give an example where the remote partitions are
+better illustrated?)
+
+<snip>
+> Modern container orchestration tools like Kubernetes use the cgroup
+> hierarchy to manage different containers. And it is relying on other
+> middleware like systemd to help managing it. If a container needs to
+> use isolated CPUs, it is hard to get those with the local partitions
+> as it will require the administrative parent cgroup to be a partition
+> root too which tool like systemd may not be ready to manage.
+
+Such tools ready aren't ready to manage cpuset.cpus.exclusive, are they?
+IOW tools need to distinguish exclusive and "shared" CPUs which is equal
+to distinguishing root and member partitions.
+
+Thanks,
+Michal
+
+
+
+--tesk6d4tqdsww4u2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZSlnOgAKCRAGvrMr/1gc
+jlo1AP4xYSAUf4DNG5nuDm9LyX+YsGRZ3bq7u4QtsOcCrbBDcQEAxQyx0Jkugln1
+c2iV+v7jMcqrtN8iFmXXCc/E1ZE49Qs=
+=9/XE
+-----END PGP SIGNATURE-----
+
+--tesk6d4tqdsww4u2--
