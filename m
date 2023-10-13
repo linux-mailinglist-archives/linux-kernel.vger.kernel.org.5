@@ -2,304 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE0E7C7C49
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 05:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3AE57C7C4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 05:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229521AbjJMDqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 23:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
+        id S229562AbjJMDr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 23:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJMDqv (ORCPT
+        with ESMTP id S229437AbjJMDry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 23:46:51 -0400
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E42F6BB;
-        Thu, 12 Oct 2023 20:46:48 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vu0gIP._1697168804;
-Received: from 30.240.114.194(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vu0gIP._1697168804)
-          by smtp.aliyun-inc.com;
-          Fri, 13 Oct 2023 11:46:46 +0800
-Message-ID: <a2265967-5088-7f17-35e5-29bf1c85c15f@linux.alibaba.com>
-Date:   Fri, 13 Oct 2023 11:46:44 +0800
+        Thu, 12 Oct 2023 23:47:54 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B20E1B7;
+        Thu, 12 Oct 2023 20:47:50 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 39D3lCCr016307;
+        Fri, 13 Oct 2023 05:47:12 +0200
+Date:   Fri, 13 Oct 2023 05:47:12 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Solar Designer <solar@openwall.com>
+Cc:     Vegard Nossum <vegard.nossum@oracle.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        security@kernel.org, corbet@lwn.net, workflows@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jiri Kosina <jikos@kernel.org>
+Subject: Re: [RFC PATCH] Documentation: security-bugs.rst: linux-distros
+ relaxed their rules
+Message-ID: <20231013034712.GC15920@1wt.eu>
+References: <20231007140454.25419-1-w@1wt.eu>
+ <5ae47535-b6e0-8b48-4d59-a167e37c7fcc@oracle.com>
+ <20231007163936.GA26837@1wt.eu>
+ <20231012215122.GA8245@openwall.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH v7 3/4] drivers/perf: add DesignWare PCIe PMU driver
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
-        yangyicong@huawei.com, will@kernel.org,
-        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
-        robin.murphy@arm.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        rdunlap@infradead.org, mark.rutland@arm.com,
-        zhuo.song@linux.alibaba.com, renyu.zj@linux.alibaba.com
-References: <20231012162512.GA1069387@bhelgaas>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20231012162512.GA1069387@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012215122.GA8245@openwall.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/10/13 00:25, Bjorn Helgaas wrote:
-> On Thu, Oct 12, 2023 at 11:28:55AM +0800, Shuai Xue wrote:
->> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
->> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
->> Core controller IP which provides statistics feature. The PMU is not a PCIe
->> Root Complex integrated End Point(RCiEP) device but only register counters
->> provided by each PCIe Root Port.
->>
->> To facilitate collection of statistics the controller provides the
->> following two features for each Root Port:
->>
->> - Time Based Analysis (RX/TX data throughput and time spent in each
->>   low-power LTSSM state)
->> - Event counters (Error and Non-Error for lanes)
->>
->> Note, only one counter for each type and does not overflow interrupt.
+On Thu, Oct 12, 2023 at 11:51:22PM +0200, Solar Designer wrote:
+> Hi all,
 > 
-> Not sure what "does not overflow interrupt" means.  Does it mean
-> there's no interrupt generated when the counter overflows?
-
-Yes, exactly. The rootport does NOT generate interrupt when the couter overflows.
-I think the assumption hidden in this design is 64-bit counter will not overflow
-within observable time.
-
-PCIe 5.0 slots can now reach anywhere between ~4GB/sec for a x1 slot up to ~64GB/sec
-for a x16 slot. The unit of counter is 16 byte.
-
-	2^64/(64/16*10^9)/60/60/24/365=146 years
-
-so, the counter will not overflow within 146 years.
-	
-
+> Thank you (especially Willy) for your effort on this.
 > 
->> +config DWC_PCIE_PMU 
->> +	tristate "Enable Synopsys DesignWare PCIe PMU Support"
+> Out of the 3 paragraphs, the first one looks good to me as-is, but for
+> the last two I propose the slightly edited versions below.
 > 
-> The DWC_PCIE_PMU symbol and the "Synopsys DesignWare PCIe PMU" text
-> suggest that this is generic and should work on any designs based on
-> DesignWare IP, not just the Alibaba devices.>
+> On Sat, Oct 07, 2023 at 04:04:54PM +0200, Willy Tarreau wrote:
+> > +Please note that the respective policies and rules are different since
+> > +the 3 lists pursue different goals.  Coordinating between the kernel
+> > +security team and other teams is difficult since occasional embargoes
+> > +start from the availability of a fix for the kernel security team, while
+> > +for other lists they generally start from the initial post to the list,
+> > +regardless of the availability of a fix.
 > 
-> It appears that the current driver only supports Alibaba devices
-> because it only looks at Root Ports with PCI_VENDOR_ID_ALIBABA, but I
-> assume support for non-Alibaba devices is likely to be added in the
-> future?
-
-Yes. The rootport is based on DesignWare IP and this PMU driver is expected
-to work for any device based on the same IP.
-
-Unfortunately, due to the limition of current IP design, we have to follow
-the databook and only support Alibaba device now. If a non-Alibaba device is
-added, this driver can support it with minimal modifications.
-
+> ---
+> Please note that the respective policies and rules are different since
+> the 3 lists pursue different goals.  Coordinating between the kernel
+> security team and other teams is difficult since for the kernel security
+> team occasional embargoes (as subject to a maximum allowed number of
+> days) start from the availability of a fix, while for "linux-distros"
+> they start from the initial post to the list regardless of the
+> availability of a fix.
+> ---
 > 
-> If it is really generic for DesignWare-based devices the config symbol
-> and menu entry seem fine.
+> I added the part in braces to explain why the difference in when
+> embargoes start matters.  I also moved part of that sentence for
+> consistency.  Finally, I replaced "other lists" with specific reference
+> to "linux-distros" because this paragraph talks only about 3 specific
+> lists and on "oss-security" there are no embargoes.
+
+It's fine by me as it doesn't change the spirit but improves the wording.
+
+> On Sat, Oct 07, 2023 at 06:39:36PM +0200, Willy Tarreau wrote:
+> > On Sat, Oct 07, 2023 at 06:30:11PM +0200, Vegard Nossum wrote:
+> > > On 07/10/2023 16:04, Willy Tarreau wrote:
+> > > > +As such, the kernel security team strongly recommends that reporters of
+> > > > +potential security issues DO NOT contact the "linux-distros" mailing
+> > > > +list BEFORE a fix is accepted by the affected code's maintainers and you
+> > > 
+> > > is s/BEFORE/UNTIL/ clearer?
+> > 
+> > Probably, yes.
 > 
-> Maybe mention the vendor (Synopsys or Alibaba) first in the menu
-> entry, though, since that's what most other drivers do, e.g.,
+> I agree.  Also, the sentence jumps from "reporters" to "you" implying
+> that "you" is a reporter, but maybe it's better to make that explicit.
+
+Ah, I hate doing this, I generally avoid "you" and "we" in docs but
+given these ones are instructions it's easy to fall in the trap. I'll
+try to improve it.
+
+> > > > +have read the linux-distros wiki page above and you fully understand the
+> > > > +requirements that doing so will impose on you and the kernel community.
+> > > > +This also means that in general it doesn't make sense to Cc: both lists
+> > > > +at once, except for coordination if a fix remains under embargo. And in
+> > > > +general, please do not Cc: the kernel security list about fixes that
+> > > > +have already been merged.
 > 
->   tristate "Synopsys DesignWare PCIe PMU"
+> This implies that in general a fix does not remain under embargo.
 
-Fine, I will change it.
+This is most often the case.
 
+> However, contacting "linux-distros" only makes sense when a fix does
+> remain under embargo (either not yet pushed to a public list/repo, or
+> under the Linux kernel exception for a public not-too-revealing fix) -
+> otherwise, the issue should be brought to "oss-security" right away.
 > 
->> +	depends on (ARM64 && PCI)
+> Edited:
 > 
-> I don't see any actual ARM64 dependency in the code, so maybe omit
-> ARM64 (as PCIE_DW_PLAT_HOST does) or add "|| COMPILE_TEST"?
-
-I will remove the ARM64 dependency and add COMPILE_TEST.
-
+> ---
+> As such, the kernel security team strongly recommends that as a reporter
+> of a potential security issue you DO NOT contact the "linux-distros"
+> mailing list UNTIL a fix is accepted by the affected code's maintainers
+> and you have read the distros wiki page above and you fully understand
+> the requirements that contacting "linux-distros" will impose on you and
+> the kernel community.  This also means that in general it doesn't make
+> sense to Cc: both lists at once, except maybe for coordination if and
+> while an accepted fix has not yet been merged.  In other words, until a
+> fix is accepted do not Cc: "linux-distros", and after it's merged do not
+> Cc: the kernel security team.
+> ---
 > 
->> +	help
->> +	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
->> +	  monitoring event on platform including the Yitian 710.
+> This allows possible Cc'ing of both lists in the time window between
+> "fix is accepted by the affected code's maintainers" and "merged".
+> Makes sense?  I worry this distinction between accepted and merged may
+> be overly complicated for some, but I don't have better wording.
+
+I think it's fine as is. I care a lot about giving clear instructions,
+especially for first-time reporters, for whom it's always particularly
+stressful to report a bug. With this update I think there's enough
+guidance and it should help, so OK for me.
+
+> > > I guess the problem with this would be if
+> > > somebody on s@k.o does a reply-all which would add distros right back in
+> > > the loop -OR- a patch has already been developed and included.
+> > 
+> > Then this would be deliberate, there would an in-reply-to so that would
+> > not be a problem. I really doubt anyone from s@k.o would Cc linux-distros
+> > anyway since it would imply disclosing some details from a reporter, and
+> > we do not do that, it's up to the reporter to do it if they want.
 > 
-> Should this mention Alibaba or T-Head?  I don't know how
-> Alibaba/T-Head/Yitian are all related.
+> I think we don't want to complicate the setup, which we'd then have to
+> explain somewhere.  With my concern/edit above, also the logic isn't
+> that simple.
 
-The server chips, named Yitian 710, are custom-built by Alibaba Group's chip
-development business, T-Head.
+Agreed, let's leave it to the reporter to do what they want with the
+instructions above and be done with it.
 
-	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
-	  monitoring event on platform including the Alibaba Yitian 710.
+Jiri, does your Acked-by still stand with these adjustment ? If so, I'll
+resend the updated version today or this week-end, as time permits.
 
-Is this okay?
-
-> 
->> + * Put them togother as TRM used.
-> 
-> s/togother/together/
-> 
-> Maybe "Put them together as in TRM."?
-
-My topo. Will fix it.
-
-> 
->> +#define _dwc_pcie_format_attr(_name, _cfg, _fld)				\
->> +	(&((struct dwc_pcie_format_attr[]) {{					\
->> +		.attr = __ATTR(_name, 0444, dwc_pcie_pmu_format_show, NULL),	\
->> +		.config = _cfg,							\
->> +		.field = _fld,							\
->> +	}})[0].attr.attr)
-> 
-> Seems weird to put the \ characters in column 81 where they make
-> everything wrap unnecessarily on a 80-column terminal.  I guess it
-> just happens to be where a tab after the longest line ends up.
-
-I see, will replace the last tab with some space to avoid across 80 column.
-
-> 
->> +static void dwc_pcie_pmu_unregister_pmu(void *data)
->> +{
->> +	struct dwc_pcie_pmu *pcie_pmu = data;
->> +
->> +	if (!pcie_pmu->registered)
->> +		return;
->> +
->> +	perf_pmu_unregister(&pcie_pmu->pmu);
->> +	pcie_pmu->registered = false;
->> +}
->> +
->> +/*
->> + * Find the PMU of a PCI device.
->> + * @pdev: The PCI device.
->> + */
->> +static struct dwc_pcie_pmu *dwc_pcie_find_dev_pmu(struct pci_dev *pdev)
->> +{
->> +	struct dwc_pcie_pmu *pcie_pmu, *tmp;
->> +
->> +	list_for_each_entry_safe(pcie_pmu, tmp, &dwc_pcie_pmu_head, pmu_node) {
->> +		if (pcie_pmu->pdev == pdev) {
->> +			list_del(&pcie_pmu->pmu_node);
-> 
-> Seems sort of weird to have a "find_dev" function actually *remove*
-> the entry.  The entry was added to the list near the
-> perf_pmu_register(), so maybe consider removing it in the caller or
-> near the perf_pmu_unregister().  
-
-Agreed, will move list_del() after perf_pmu_unregister().
-
-
-> Maybe also reorder the functions as:
-> 
->   dwc_pcie_find_dev_pmu
->   dwc_pcie_pmu_unregister_pmu
->   dwc_pcie_pmu_notifier
-> 
-> since dwc_pcie_find_dev_pmu() is a less interesting helper function.
-
-Will reorder the funtions.
-
-
-> 
->> +			return pcie_pmu;
->> +		}
->> +	}
->> +
->> +	return NULL;
->> +}
->> +
->> +static int dwc_pcie_pmu_notifier(struct notifier_block *nb,
->> +				     unsigned long action, void *data)
->> +{
->> +	struct device *dev = data;
->> +	struct pci_dev *pdev = to_pci_dev(dev);
->> +	struct dwc_pcie_pmu *pcie_pmu;
->> +
->> +	/* Unregister the PMU when the device is going to be deleted. */
->> +	if (action != BUS_NOTIFY_DEL_DEVICE)
->> +		return NOTIFY_DONE;
->> +
->> +	pcie_pmu = dwc_pcie_find_dev_pmu(pdev);
->> +	if (!pcie_pmu)
->> +		return NOTIFY_DONE;
->> +
->> +	dwc_pcie_pmu_unregister_pmu(pcie_pmu);
->> +
->> +	return NOTIFY_OK;
->> +}
-> 
->> +	/* Match the rootport with VSEC_RAS_DES_ID, and register a PMU for it */
->> +	for_each_pci_dev(pdev) {
->> +		u16 vsec;
->> +		u32 val;
->> +
->> +		if (!(pci_is_pcie(pdev) &&
->> +		      pci_pcie_type(pdev) == PCI_EXP_TYPE_ROOT_PORT))
->> +			continue;
->> +
->> +		vsec = pci_find_vsec_capability(pdev, PCI_VENDOR_ID_ALIBABA,
->> +						DWC_PCIE_VSEC_RAS_DES_ID);
->> +		if (!vsec)
->> +			continue;
->> +
->> +		pci_read_config_dword(pdev, vsec + PCI_VNDR_HEADER, &val);
->> +		if (PCI_VNDR_HEADER_REV(val) != 0x04 ||
->> +		    PCI_VNDR_HEADER_LEN(val) != 0x100)
->> +			continue;
->> +		pci_dbg(pdev,
->> +			"Detected PCIe Vendor-Specific Extended Capability RAS DES\n");
->> +
->> +		bdf = PCI_DEVID(pdev->bus->number, pdev->devfn);
->> +		name = devm_kasprintf(&plat_dev->dev, GFP_KERNEL, "dwc_rootport_%x",
->> +				      bdf);
->> +		if (!name) {
->> +			ret = -ENOMEM;
->> +			goto out;
->> +		}
->> +
->> +		/* All checks passed, go go go */
->> +		pcie_pmu = devm_kzalloc(&plat_dev->dev, sizeof(*pcie_pmu), GFP_KERNEL);
->> +		if (!pcie_pmu) {
->> +			ret = -ENOMEM;
->> +			goto out;
->> +		}
->> +
->> +		pcie_pmu->pdev = pdev;
->> +		pcie_pmu->ras_des = vsec;
-> 
-> Looks like "ras_des" is the offset of a RAS DES Capability, and we
-> only use the Vendor-specific DWC_PCIE_VSEC_RAS_DES_ID Capability to
-> learn the RAS DES offset?
-
-Yes, RAS DES Capability is defined in Vendor-Specific Extended Capability.
-
-> 
-> That seems a little convoluted and unnecessarily Alibaba-specific.  A
-> more generic way to do this would be for the RAS DES registers to be
-> in a Designated Vendor-Specific Capability with DVSEC Vendor ID of
-> PCI_VENDOR_ID_SYNOPSYS and a Synopsys-defined DVSEC ID that identifies
-> RAS DES.
-> 
-> Then we could use pci_find_dvsec_capability() to find the RAS DES
-> Capability directly without the Alibaba dependency.  Obviously this
-> would only work if the hardware/firmware design supports it, and I
-> assume the Synopsis IP wasn't designed that way.
-
-Quite agree.
-
-A more general approach would be to define the RAS DES capability in the
-Designated Vendor-Specific Capability. This way, all devices based on the
-same IP could identify DES by using pci_find_dvsec_capability() with
-PCI_VENDOR_ID_SYNOPSYS, independent of the vendor ID of a given device.
-By implementing this approach, the PMU driver will be able to support the
-devices without any modifications needed.
-
-
-Thank you for valuable comments.
-
-Best Regards.
-Shuai
+Thanks!
+Willy
