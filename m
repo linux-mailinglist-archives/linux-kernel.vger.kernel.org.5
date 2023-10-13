@@ -2,93 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB7F7C7D3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4337C7D38
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbjJMFvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 01:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53070 "EHLO
+        id S229726AbjJMFve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 01:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbjJMFvd (ORCPT
+        with ESMTP id S229713AbjJMFvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Oct 2023 01:51:33 -0400
-Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82455B8;
-        Thu, 12 Oct 2023 22:51:32 -0700 (PDT)
-Received: by mail-vk1-xa31.google.com with SMTP id 71dfb90a1353d-49dd647a477so602500e0c.3;
-        Thu, 12 Oct 2023 22:51:32 -0700 (PDT)
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2902EC0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 22:51:30 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9b974955474so264158466b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 22:51:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697176291; x=1697781091; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=56kQkprx3TRWNeBVoMuQr5JwJ/QXZfiuioAFvvpFj4I=;
-        b=BMa4xP9F/FsjgBVjSfyJhppJMNcsirXevzMZp+tXTvJWvFAh686MRuDp0U3eiuENes
-         JDnMvYZyOK1xg141ZwLH444jTh9uRiF1Xh1opMSV8yvsPmsZPMTlSpzOrC8DVyqKN2tN
-         U6b4Ux2h9CBIXWvXw1YtPnsm1V6G0gi68M8hA1MkQQO2eU6uA2In0Q3DyinqaRBWra4s
-         KPNCcWgnv06syZCOXLRQnggH98KDE5ZSK6cV4xwKwNcJ35Kc3iDIZAksbj413yfEdWoT
-         fbK1buu0eo22XufKl9QGX6RrPI+ebAkaIFOBLwk7o7HeWXWXYW45AXfhSAMhKhm2s9Sc
-         EdMg==
+        d=tuxon.dev; s=google; t=1697176288; x=1697781088; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UAXPkFEVO9NEy1CgnJcKxdErF48Wzyp1pIE8KdvUE5o=;
+        b=fDJq079Qcm6+VouFFteEdR81wVhKmMYv+DwLQVlUh/PIuuQ+5lsG68xiay0vQ9yGxC
+         hu3eYKfrEgy+FafaqyS3II5Kql0PhwBcoJF2YWXAekviRo9C0qHckPA7aTLMIbzeIHlE
+         1fsg/TwYjYDWLFq4wMvkhBy/P0C3oDA3azTYHSryWnpd4RACUUWVMAqiaSP5lkTl8nNJ
+         sa0QgOsjrGy0TfFOInvBeLiJ6+tyoQ071WuzoFd2BpTVPoo6ZUZeFvs59WFl908XLlDt
+         8aqPqfSwrFYtp7hJEsec9m1N7rNyw4aaPYdu/jMxMo3RsAYf6Unic8ppYu/HuYRM0Nc+
+         t+Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697176291; x=1697781091;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=56kQkprx3TRWNeBVoMuQr5JwJ/QXZfiuioAFvvpFj4I=;
-        b=vOaZnmNOW1G4CHHTGcjjafAZdmh53FcvkwCtKxl2FsX6EqVy0LZbzY4bI93PmRimds
-         H8uwMgLWCvWVnDV6YtiAndmp6x94o80L69r+1WWMdcv0ye3Fqr6A7zxXL7bUVl5mNPId
-         QJVM/x7n5buTcEVNoMkEtzvnunvbc406hW0G1S4Jpwjg2H4qLGlhX/jn+BBslfekx3JF
-         PT3ceLFYjoit3t9aGT7eLiIJTku/yNd+gFBWlUnEAKC1ruvXncM5loWernoZZYYvDJKH
-         R+oacoCvwWMf9bGUJiMgFcz/NegGP7KPlKSU5jxJyXth9wJqdE3xvCqfDeXpUe20WRh3
-         widw==
-X-Gm-Message-State: AOJu0Yyl1MUJBgbMjLw5IgITmTAW84ir0fJ/d6Df4GIXFPB9rTGiOlSe
-        hdXukhL+SCYoGBszpMJouI2dYGt7ib5eHg==
-X-Google-Smtp-Source: AGHT+IEpuJ6CMnYCOoL/8cJVMPTxG4zVlqYPsSZcGsSOBygoUVhD7rbfvC9bMaz7R1+CcaSOiYJl/Q==
-X-Received: by 2002:a1f:ac4f:0:b0:4a4:1575:4e5f with SMTP id v76-20020a1fac4f000000b004a415754e5fmr2826424vke.6.1697176291398;
-        Thu, 12 Oct 2023 22:51:31 -0700 (PDT)
-Received: from dreambig.dreambig.corp ([58.27.187.115])
-        by smtp.gmail.com with ESMTPSA id fb15-20020a056a002d8f00b006932657075bsm10949829pfb.82.2023.10.12.22.51.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 22:51:31 -0700 (PDT)
-From:   Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-Subject: [PATCH] drivers: scsi: cxgbi: libcxgbi.c: Fixed 'generated' typo
-Date:   Fri, 13 Oct 2023 10:51:21 +0500
-Message-Id: <20231013055121.12310-1-m.muzzammilashraf@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1697176288; x=1697781088;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UAXPkFEVO9NEy1CgnJcKxdErF48Wzyp1pIE8KdvUE5o=;
+        b=OWEzAqmFJ7tJtU1w3JY0HndR1YXVY0Ldq73wp75fpOReaXNJtxu+tnwXVFLC5nCaEF
+         fngBcuVZMJ8ybbHPKs4VpJvZ0f00v0kkUfQdWXpZZEgNwh5qHK9z9Bh/n0rp9y9Sh5Uo
+         CLhXq97RnrM5mSJ50PsvAnCp+aRsfHY2iwOWlBuucmbl9u/PXpf2uWncf3XLj+PO4QBx
+         xNQIJ45+omSkYNd/8EVpD3RuKK3kI1U60wflMVpHZVSk8EYC/c5Hw+xL2ATJnptJRHrU
+         14LPLlZjmFpuu97rTB+LCuTdsbzTSH5rcXSEBxCfyQXLOLXdAgAYvOIsODKZQE39H6yD
+         uPzA==
+X-Gm-Message-State: AOJu0Yw34hhnmThr9jS28yZ7vb69Zu2LEoYbj/xKfVf+qBvTMBbY77RS
+        DEsHJDzNi3N9knTuavdqK/2f5A==
+X-Google-Smtp-Source: AGHT+IHmc9LtDuylGDF0Uig4QbannJCtiHcJ/b42Sf8kD1VjI0wEyeEWOKYrTIT/FTWC9eedWAgM5A==
+X-Received: by 2002:a17:906:3156:b0:9b2:b71f:83be with SMTP id e22-20020a170906315600b009b2b71f83bemr22216827eje.1.1697176288653;
+        Thu, 12 Oct 2023 22:51:28 -0700 (PDT)
+Received: from [192.168.50.4] ([82.78.167.133])
+        by smtp.gmail.com with ESMTPSA id w13-20020a170906480d00b0098d2d219649sm12086328ejq.174.2023.10.12.22.51.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 22:51:28 -0700 (PDT)
+Message-ID: <e678ef3a-0f84-4ea2-9116-a661b91b2e32@tuxon.dev>
+Date:   Fri, 13 Oct 2023 08:51:25 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/6] arm64: dts: renesas: rzg3s-smarc: Enable SDHI1
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     magnus.damm@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231010132701.1658737-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231010132701.1658737-6-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdW+5MZXRbDtZtmrMkrCtwqqKUcW_W1_5U_2yO6w6aCa_w@mail.gmail.com>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <CAMuHMdW+5MZXRbDtZtmrMkrCtwqqKUcW_W1_5U_2yO6w6aCa_w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed 'generated' typo
 
-Signed-off-by: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
----
- drivers/scsi/cxgbi/libcxgbi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/cxgbi/libcxgbi.c b/drivers/scsi/cxgbi/libcxgbi.c
-index abde60a50cf7..bf75940f2be1 100644
---- a/drivers/scsi/cxgbi/libcxgbi.c
-+++ b/drivers/scsi/cxgbi/libcxgbi.c
-@@ -1294,7 +1294,7 @@ static int cxgbi_ddp_reserve(struct cxgbi_conn *cconn,
- 
- 	/*
- 	 * the ddp tag will be used for the itt in the outgoing pdu,
--	 * the itt genrated by libiscsi is saved in the ppm and can be
-+	 * the itt generated by libiscsi is saved in the ppm and can be
- 	 * retrieved via the ddp tag
- 	 */
- 	err = cxgbi_ppm_ppods_reserve(ppm, ttinfo->nr_pages, 0, &ttinfo->idx,
--- 
-2.27.0
+On 12.10.2023 17:44, Geert Uytterhoeven wrote:
+> Hi Claudiu,
+> 
+> On Tue, Oct 10, 2023 at 3:27 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> Add SDHI1 to RZ/G3S Smarc Carrier-II board. This is connected to a uSD
+>> interface. Although Vccq doesn't cross the boundary of SoM it has
+>> been added to RZ/G3S Smarc Carrier-II dtsi to have all the bits related to
+>> SDHI1 in a single place. At the moment SoM is used only with RZ/G3S Smarc
+>> Carrier-II board.
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> Thanks for your patch!
+> 
+>> --- a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
+>> +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
+>> @@ -11,6 +11,27 @@
+>>  / {
+>>         aliases {
+>>                 serial0 = &scif0;
+>> +               mmc1 = &sdhi1;
+>> +       };
+>> +
+>> +       /* Reserved regulators 0-9 for SoM. */
+>> +       vcc_sdhi1: regulator10 {
+> 
+> You can use sensible names for the regulators to avoid conflicts.
+> E.g. "regulator-vcc-sdhi1".
 
+OK, I'm aware of that, I'll use it like this in the next version.
+
+Thank you,
+Claudiu Beznea
+
+> 
+> The rest LGTM.
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
