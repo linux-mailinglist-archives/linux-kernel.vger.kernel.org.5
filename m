@@ -2,136 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D377C7D3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7B87C7D41
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjJMFwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 01:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49382 "EHLO
+        id S229692AbjJMFxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 01:53:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjJMFwQ (ORCPT
+        with ESMTP id S229650AbjJMFxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 01:52:16 -0400
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50500B8;
-        Thu, 12 Oct 2023 22:52:13 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Vu15FF8_1697176328;
-Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0Vu15FF8_1697176328)
-          by smtp.aliyun-inc.com;
-          Fri, 13 Oct 2023 13:52:09 +0800
-From:   Jingbo Xu <jefflexu@linux.alibaba.com>
-To:     tj@kernel.org, guro@fb.com
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, jack@suse.cz,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, willy@infradead.org,
-        joseph.qi@linux.alibaba.com
-Subject: [PATCH v2] writeback, cgroup: switch inodes with dirty timestamps to release dying cgwbs
-Date:   Fri, 13 Oct 2023 13:52:08 +0800
-Message-Id: <20231013055208.15457-1-jefflexu@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+        Fri, 13 Oct 2023 01:53:53 -0400
+Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817AAC0;
+        Thu, 12 Oct 2023 22:53:50 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 4D60720847;
+        Fri, 13 Oct 2023 07:53:48 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id QFD-3-QelxB8; Fri, 13 Oct 2023 07:53:47 +0200 (CEST)
+Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 17372207C6;
+        Fri, 13 Oct 2023 07:53:47 +0200 (CEST)
+Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
+        by mailout2.secunet.com (Postfix) with ESMTP id 1247D80004A;
+        Fri, 13 Oct 2023 07:53:47 +0200 (CEST)
+Received: from mbx-essen-02.secunet.de (10.53.40.198) by
+ cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 13 Oct 2023 07:53:46 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
+ (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Fri, 13 Oct
+ 2023 07:53:46 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 48E423182B10; Fri, 13 Oct 2023 07:53:46 +0200 (CEST)
+Date:   Fri, 13 Oct 2023 07:53:46 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     Cong Wang <xiyou.wangcong@gmail.com>, Ma Ke <make_ruc2021@163.com>,
+        <davem@davemloft.net>, <dsahern@kernel.org>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: ipv6: fix return value check in esp_remove_trailer
+Message-ID: <ZSjbatU0tcVZGWCW@gauss3.secunet.de>
+References: <20231007005953.3994960-1-make_ruc2021@163.com>
+ <ZSLh0vtpbP81Vh7G@pop-os.localdomain>
+ <ZSUTdBpSTgNz5CA8@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZSUTdBpSTgNz5CA8@gondor.apana.org.au>
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-02.secunet.de (10.53.40.198)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cgwb cleanup routine will try to release the dying cgwb by switching
-the attached inodes.  It fetches the attached inodes from wb->b_attached
-list, omitting the fact that inodes only with dirty timestamps reside in
-wb->b_dirty_time list, which is the case when lazytime is enabled.  This
-causes enormous zombie memory cgroup when lazytime is enabled, as inodes
-with dirty timestamps can not be switched to a live cgwb for a long time.
+On Tue, Oct 10, 2023 at 05:03:48PM +0800, Herbert Xu wrote:
+> On Sun, Oct 08, 2023 at 10:07:30AM -0700, Cong Wang wrote:
+> > On Sat, Oct 07, 2023 at 08:59:53AM +0800, Ma Ke wrote:
+> > > In esp_remove_trailer(), to avoid an unexpected result returned by
+> > > pskb_trim, we should check the return value of pskb_trim().
+> > > 
+> > > Signed-off-by: Ma Ke <make_ruc2021@163.com>
+> > > ---
+> > >  net/ipv6/esp6.c | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > We need the same change for net/ipv4/esp4.c?
+> 
+> Please verify that it can actually fail first.  Note that I'm
+> busy right now so I haven't looked at it at all.
 
-It is reasonable not to switch cgwb for inodes with dirty data, as
-otherwise it may break the bandwidth restrictions.  However since the
-writeback of inode metadata is not accounted for, let's also switch
-inodes with dirty timestamps to avoid zombie memory and block cgroups
-when laztytime is enabled.
-
-Fixs: c22d70a162d3 ("writeback, cgroup: release dying cgwbs by switching attached inodes")
-Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
----
-v2: add comment explaining why switching for inodes with dirty
-timestamps is needed
-
-v1: https://lore.kernel.org/all/20231011084228.77615-1-jefflexu@linux.alibaba.com/
----
- fs/fs-writeback.c | 41 +++++++++++++++++++++++++++++------------
- 1 file changed, 29 insertions(+), 12 deletions(-)
-
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index c1af01b2c42d..1767493dffda 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -613,6 +613,24 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
- 	kfree(isw);
- }
- 
-+static bool isw_prepare_wbs_switch(struct inode_switch_wbs_context *isw,
-+				   struct list_head *list, int *nr)
-+{
-+	struct inode *inode;
-+
-+	list_for_each_entry(inode, list, i_io_list) {
-+		if (!inode_prepare_wbs_switch(inode, isw->new_wb))
-+			continue;
-+
-+		isw->inodes[*nr] = inode;
-+		(*nr)++;
-+
-+		if (*nr >= WB_MAX_INODES_PER_ISW - 1)
-+			return true;
-+	}
-+	return false;
-+}
-+
- /**
-  * cleanup_offline_cgwb - detach associated inodes
-  * @wb: target wb
-@@ -625,7 +643,6 @@ bool cleanup_offline_cgwb(struct bdi_writeback *wb)
- {
- 	struct cgroup_subsys_state *memcg_css;
- 	struct inode_switch_wbs_context *isw;
--	struct inode *inode;
- 	int nr;
- 	bool restart = false;
- 
-@@ -647,17 +664,17 @@ bool cleanup_offline_cgwb(struct bdi_writeback *wb)
- 
- 	nr = 0;
- 	spin_lock(&wb->list_lock);
--	list_for_each_entry(inode, &wb->b_attached, i_io_list) {
--		if (!inode_prepare_wbs_switch(inode, isw->new_wb))
--			continue;
--
--		isw->inodes[nr++] = inode;
--
--		if (nr >= WB_MAX_INODES_PER_ISW - 1) {
--			restart = true;
--			break;
--		}
--	}
-+	/*
-+	 * In addition to the inodes that have completed writeback, also switch
-+	 * cgwbs for those inodes only with dirty timestamps. Otherwise, those
-+	 * inodes won't be written back for a long time when lazytime is
-+	 * enabled, and thus pinning the dying cgwbs. It won't break the
-+	 * bandwidth restrictions, as writeback of inode metadata is not
-+	 * accounted for.
-+	 */
-+	restart = isw_prepare_wbs_switch(isw, &wb->b_attached, &nr);
-+	if (!restart)
-+		restart = isw_prepare_wbs_switch(isw, &wb->b_dirty_time, &nr);
- 	spin_unlock(&wb->list_lock);
- 
- 	/* no attached inodes? bail out */
--- 
-2.19.1.6.gb485710b
+It can, we don't linearize the packte data anymore.
 
