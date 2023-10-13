@@ -2,88 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1CC7C840B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B1C7C840E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbjJMLGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49028 "EHLO
+        id S230014AbjJMLIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbjJMLGq (ORCPT
+        with ESMTP id S229743AbjJMLIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:06:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66090BD;
-        Fri, 13 Oct 2023 04:06:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5316CC433C7;
-        Fri, 13 Oct 2023 11:06:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697195204;
-        bh=dHEzqTXEd5FUqIWp2K1kqMsP14aeiGQKm0u06PA0HcE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A5HDk4rTMac0ZEF70SjLE1OdS4lgzRgjZOcMi/zVghFKH2rSbdQwMHk5HJ7GgUBct
-         oXigqpxJ2qdal5HQr6ITv22qa12IRW3OyuIYq4ZplaqbV3Tsqy3ZTjJsx7okY/ut7+
-         OfxWc1TE+R43VI1XKXV0M39RIG5Ezml63PUPZZyEGChJCckwtwz50DEFWRoQ1LQp8O
-         YGGdT1fJGF51wGXv7tyCjKBASMgZs4G9H9Sxz29t6YXp4Z25/8sAjbO/n6yCioORTN
-         PlCWeNa6p7dL9PUP3sLuHvLcfQVclrUQLcFmVMlIphoWQ/5BQcSA2P+hK/OIgtOO8O
-         8AV43E1pBvl0A==
-Date:   Fri, 13 Oct 2023 13:06:38 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Edward AD <twuufnxlz@gmail.com>
-Cc:     syzbot+509238e523e032442b80@syzkaller.appspotmail.com,
-        davem@davemloft.net, edumazet@google.com, johannes.berg@intel.com,
-        johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] rfkill: fix deadlock in rfkill_send_events
-Message-ID: <20231013110638.GD29570@kernel.org>
-References: <000000000000e3788c06074e2b84@google.com>
- <20231010010814.1799012-2-twuufnxlz@gmail.com>
+        Fri, 13 Oct 2023 07:08:18 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E3CCD91
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:08:15 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 10BAC11FB;
+        Fri, 13 Oct 2023 04:08:56 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.81.31])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 80AB83F7A6;
+        Fri, 13 Oct 2023 04:08:14 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 12:08:11 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        James Clark <james.clark@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] drivers: perf: arm_pmuv3: Drop some unused arguments
+ from armv8_pmu_init()
+Message-ID: <ZSklGz0kQR4D90gj@FVFF77S0Q05N>
+References: <20231013040307.1296109-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231010010814.1799012-2-twuufnxlz@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231013040307.1296109-1-anshuman.khandual@arm.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 09:08:15AM +0800, Edward AD wrote:
-> syzbot report:
-> syz-executor675/5132 is trying to acquire lock:
-> ffff8880297ee088 (&data->mtx){+.+.}-{3:3}, at: rfkill_send_events+0x226/0x3f0 net/rfkill/core.c:286
+On Fri, Oct 13, 2023 at 09:33:07AM +0530, Anshuman Khandual wrote:
+> There is just a single call site remaining for armv8_pmu_init(), passing on
+> NULL pointers for all custom 'struct attribute_group's. These arguments are
+> not really getting used, and hence can be dropped. Afterwards the function
+> armv8_pmu_init_nogroups() itself becomes redundant, and can also be dropped
+> as well.
 > 
-> but task is already holding lock:
-> ffff88801bfc0088 (&data->mtx){+.+.}-{3:3}, at: rfkill_fop_open+0x146/0x750 net/rfkill/core.c:1183
-> 
-> other info that might help us debug this:
->  Possible unsafe locking scenario:
-> 
->        CPU0
->        ----
->   lock(&data->mtx);
->   lock(&data->mtx);
-> 
->  *** DEADLOCK ***
-> 
-> In 2c3dfba4cf84 insert rfkill_sync() to rfkill_fop_open(), it will call
-> rfkill_send_events() and then triger this issue.
-> 
-> Fixes: 2c3dfba4cf84 ("rfkill: sync before userspace visibility/changes")
-> Reported-and-tested-by: syzbot+509238e523e032442b80@syzkaller.appspotmail.com
-> Signed-off-by: Edward AD <twuufnxlz@gmail.com>
+> The commit e424b1798526 ("arm64: perf: Refactor PMU init callbacks") wanted
+> to preserve the notion that non-default sysfs attributes could be used some
+> time in the future and hence armv8_pmu_init_nogroups() stayed on but now it
+> can be dropped to remove some redundant indirection, simplifying the code.
 
-Hi Edward,
+If you can make that commit message:
 
-I am wondering if you considered moving the rfkill_sync() calls
-to before &data->mtx is taken, to avoid the need to drop and
-retake it?
+| All the PMU init functions want the default sysfs attribute groups, and so
+| these all call armv8_pmu_init_nogroups(), with none calling armv8_pmu_init()
+| directly. When we introduced armv8_pmu_init_nogroups() in commit:
+| 
+|   e424b1798526 ("arm64: perf: Refactor PMU init callbacks")
+| 
+| ... we thought that we might need custom attribute groups in future, but as we
+| evidently haven't, we can remove the option.
+| 
+| This patch folds armv8_pmu_init_nogroups() into armv8_pmu_init(), removing the
+| ability to use custome attribute groups and simplifying the code.
 
-Perhaps it doesn't work for some reason (compile tested only!).
-But this does seem somehow cleaner for me.
+Then:
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
+
+> CC: James Clark <james.clark@arm.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> This applies on v6.6-rc5
+> 
+> Changes in V2:
+> 
+> - Dropped the helper armv8_pmu_init_nogroups()
+> - Updated the commit message
+> 
+> Changes in V1:
+> 
+> https://lore.kernel.org/all/20231009035638.165270-1-anshuman.khandual@arm.com/
+> 
+>  drivers/perf/arm_pmuv3.c | 44 +++++++++++-----------------------------
+>  1 file changed, 12 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+> index 8fcaa26f0f8a..c093b6e823f6 100644
+> --- a/drivers/perf/arm_pmuv3.c
+> +++ b/drivers/perf/arm_pmuv3.c
+> @@ -1187,10 +1187,7 @@ static void armv8_pmu_register_sysctl_table(void)
+>  }
+>  
+>  static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
+> -			  int (*map_event)(struct perf_event *event),
+> -			  const struct attribute_group *events,
+> -			  const struct attribute_group *format,
+> -			  const struct attribute_group *caps)
+> +			  int (*map_event)(struct perf_event *event))
+>  {
+>  	int ret = armv8pmu_probe_pmu(cpu_pmu);
+>  	if (ret)
+> @@ -1212,27 +1209,17 @@ static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
+>  
+>  	cpu_pmu->name			= name;
+>  	cpu_pmu->map_event		= map_event;
+> -	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_EVENTS] = events ?
+> -			events : &armv8_pmuv3_events_attr_group;
+> -	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_FORMATS] = format ?
+> -			format : &armv8_pmuv3_format_attr_group;
+> -	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_CAPS] = caps ?
+> -			caps : &armv8_pmuv3_caps_attr_group;
+> -
+> +	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_EVENTS] = &armv8_pmuv3_events_attr_group;
+> +	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_FORMATS] = &armv8_pmuv3_format_attr_group;
+> +	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_CAPS] = &armv8_pmuv3_caps_attr_group;
+>  	armv8_pmu_register_sysctl_table();
+>  	return 0;
+>  }
+>  
+> -static int armv8_pmu_init_nogroups(struct arm_pmu *cpu_pmu, char *name,
+> -				   int (*map_event)(struct perf_event *event))
+> -{
+> -	return armv8_pmu_init(cpu_pmu, name, map_event, NULL, NULL, NULL);
+> -}
+> -
+>  #define PMUV3_INIT_SIMPLE(name)						\
+>  static int name##_pmu_init(struct arm_pmu *cpu_pmu)			\
+>  {									\
+> -	return armv8_pmu_init_nogroups(cpu_pmu, #name, armv8_pmuv3_map_event);\
+> +	return armv8_pmu_init(cpu_pmu, #name, armv8_pmuv3_map_event);	\
+>  }
+>  
+>  PMUV3_INIT_SIMPLE(armv8_pmuv3)
+> @@ -1263,44 +1250,37 @@ PMUV3_INIT_SIMPLE(armv8_nvidia_denver)
+>  
+>  static int armv8_a35_pmu_init(struct arm_pmu *cpu_pmu)
+>  {
+> -	return armv8_pmu_init_nogroups(cpu_pmu, "armv8_cortex_a35",
+> -				       armv8_a53_map_event);
+> +	return armv8_pmu_init(cpu_pmu, "armv8_cortex_a35", armv8_a53_map_event);
+>  }
+>  
+>  static int armv8_a53_pmu_init(struct arm_pmu *cpu_pmu)
+>  {
+> -	return armv8_pmu_init_nogroups(cpu_pmu, "armv8_cortex_a53",
+> -				       armv8_a53_map_event);
+> +	return armv8_pmu_init(cpu_pmu, "armv8_cortex_a53", armv8_a53_map_event);
+>  }
+>  
+>  static int armv8_a57_pmu_init(struct arm_pmu *cpu_pmu)
+>  {
+> -	return armv8_pmu_init_nogroups(cpu_pmu, "armv8_cortex_a57",
+> -				       armv8_a57_map_event);
+> +	return armv8_pmu_init(cpu_pmu, "armv8_cortex_a57", armv8_a57_map_event);
+>  }
+>  
+>  static int armv8_a72_pmu_init(struct arm_pmu *cpu_pmu)
+>  {
+> -	return armv8_pmu_init_nogroups(cpu_pmu, "armv8_cortex_a72",
+> -				       armv8_a57_map_event);
+> +	return armv8_pmu_init(cpu_pmu, "armv8_cortex_a72", armv8_a57_map_event);
+>  }
+>  
+>  static int armv8_a73_pmu_init(struct arm_pmu *cpu_pmu)
+>  {
+> -	return armv8_pmu_init_nogroups(cpu_pmu, "armv8_cortex_a73",
+> -				       armv8_a73_map_event);
+> +	return armv8_pmu_init(cpu_pmu, "armv8_cortex_a73", armv8_a73_map_event);
+>  }
+>  
+>  static int armv8_thunder_pmu_init(struct arm_pmu *cpu_pmu)
+>  {
+> -	return armv8_pmu_init_nogroups(cpu_pmu, "armv8_cavium_thunder",
+> -				       armv8_thunder_map_event);
+> +	return armv8_pmu_init(cpu_pmu, "armv8_cavium_thunder", armv8_thunder_map_event);
+>  }
+>  
+>  static int armv8_vulcan_pmu_init(struct arm_pmu *cpu_pmu)
+>  {
+> -	return armv8_pmu_init_nogroups(cpu_pmu, "armv8_brcm_vulcan",
+> -				       armv8_vulcan_map_event);
+> +	return armv8_pmu_init(cpu_pmu, "armv8_brcm_vulcan", armv8_vulcan_map_event);
+>  }
+>  
+>  static const struct of_device_id armv8_pmu_of_device_ids[] = {
+> -- 
+> 2.25.1
+> 
