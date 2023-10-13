@@ -2,155 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DC27C8821
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526347C883A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232222AbjJMO5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 10:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
+        id S232256AbjJMPDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 11:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbjJMO5R (ORCPT
+        with ESMTP id S232221AbjJMPDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 10:57:17 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 78919C9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:57:10 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81B9611FB;
-        Fri, 13 Oct 2023 07:57:50 -0700 (PDT)
-Received: from localhost (ionvoi01-desktop.cambridge.arm.com [10.2.78.69])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AD6313F7A6;
-        Fri, 13 Oct 2023 07:57:09 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 15:57:08 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-        will@kernel.org, mark.rutland@arm.com, maz@kernel.org,
-        anshuman.khandual@arm.com, krisman@suse.de, broonie@kernel.org,
-        james.morse@arm.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: cpufeature: Display the set of cores with a
- feature
-Message-ID: <ZSlatZeiT4UgYsY7@arm.com>
-References: <20231013013016.197102-1-jeremy.linton@arm.com>
+        Fri, 13 Oct 2023 11:03:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7759A95
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:02:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697209378;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J0KUZHh+WhAjJ7l87OQYW6THQnkK4w0QFU8cZolbEYw=;
+        b=Emkgv9h97n3SLKmlc9NHJzm044/EJAtpMk4Ztq3Jd6P+LW3W48ZAlDSi01ntOsyky9N+8b
+        a72psSCf6h3v0NP9993Uyk84fhfWVj8jh36lgfOBFUyC8OE5f1gR+jTinCHm11rJuPADmp
+        1rSoWWvQXWyo/XCEQzQ0wNGSPLAFUC0=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-477-3g7JGaMLMn25FeMqtIRQ_A-1; Fri, 13 Oct 2023 11:02:52 -0400
+X-MC-Unique: 3g7JGaMLMn25FeMqtIRQ_A-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32172e3679bso1367348f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:02:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697209070; x=1697813870;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J0KUZHh+WhAjJ7l87OQYW6THQnkK4w0QFU8cZolbEYw=;
+        b=b8rsICNanu+5TuC/NCSAHpqrFvJ0W5icTgLltbuQgQSXxT/yiT31jieBVs35ExR6Z8
+         qXTGxzYjGaCQJ5E19R9FccK103PvpYLwq1A92OwcE3apnE/xWBei6sR9mirjL7JDsl6Y
+         IzBK1TqGt+M8SR1+IZh+tdbj9Ax+kDGv6UkedbLdKo9qyQB9v+By3Jc0Hshbx+gAjpQv
+         3hialK61RQNCzL6fek+y1gOHt9bS8sSo94v0IlthNiliROCtKUEGo/KdOae3q41lxFAl
+         J8axfjqxADNkalVMzjQzETl2SXyZ/ERkx8KR4Az/XXGlP73UahfiI3icmp7UVBZlflMC
+         OoYQ==
+X-Gm-Message-State: AOJu0YwsZzYcNrXvACMclXgGtBIaYY5obqWgxietwsc75nyte/VTHjUw
+        1mxjxus3A9gZHaWrAmpU6XFmt+FP07N7DFTzrzu7oQ1Ne8AashbewXLvZPPwzKaIwcJDqT1botj
+        xsjg3T1wwzyn6bG9DhGsF78T8
+X-Received: by 2002:a5d:4009:0:b0:32d:a2c3:19f3 with SMTP id n9-20020a5d4009000000b0032da2c319f3mr108897wrp.41.1697209069740;
+        Fri, 13 Oct 2023 07:57:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGRosWdyIwSDhkhLp9fyiN5rDE/nomm1Dpd7/zJdSNPlJngVcDhbhUosjDeZgaxvfZX71AXPA==
+X-Received: by 2002:a5d:4009:0:b0:32d:a2c3:19f3 with SMTP id n9-20020a5d4009000000b0032da2c319f3mr108875wrp.41.1697209069389;
+        Fri, 13 Oct 2023 07:57:49 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id q6-20020adfb186000000b0032d87b13240sm7104304wra.73.2023.10.13.07.57.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 07:57:49 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Cc:     Conor Dooley <conor@kernel.org>, dri-devel@lists.freedesktop.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Peter Robinson <pbrobinson@gmail.com>
+Subject: Re: [PATCH v3 4/6] drm/ssd130x: Add support for the SSD132x OLED
+ controller family
+In-Reply-To: <6740c736-ba5f-4df2-ba2b-da0902f51f6d@suse.de>
+References: <20231012213843.1151060-1-javierm@redhat.com>
+ <20231012213843.1151060-5-javierm@redhat.com>
+ <6740c736-ba5f-4df2-ba2b-da0902f51f6d@suse.de>
+Date:   Fri, 13 Oct 2023 16:57:48 +0200
+Message-ID: <87bkd2sh77.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231013013016.197102-1-jeremy.linton@arm.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Thomas Zimmermann <tzimmermann@suse.de> writes:
 
-On Thursday 12 Oct 2023 at 20:30:16 (-0500), Jeremy Linton wrote:
-> The AMU feature can be enabled on a subset of the cores in a system.
-> Because of that, it prints a message for each core as it is detected.
-> This becomes tedious when there are hundreds of cores. Instead, for
-> CPU features which can be enabled on a subset of the present cores,
-> lets wait until update_cpu_capabilities() and print the subset of cores
-> the feature was enabled on.
-> 
-> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
-> ---
->  arch/arm64/include/asm/cpufeature.h |  2 ++
->  arch/arm64/kernel/cpufeature.c      | 16 +++++++++++++---
->  2 files changed, 15 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-> index 5bba39376055..19b4d001d845 100644
-> --- a/arch/arm64/include/asm/cpufeature.h
-> +++ b/arch/arm64/include/asm/cpufeature.h
-> @@ -23,6 +23,7 @@
->  #include <linux/bug.h>
->  #include <linux/jump_label.h>
->  #include <linux/kernel.h>
-> +#include <linux/cpumask.h>
->  
->  /*
->   * CPU feature register tracking
-> @@ -380,6 +381,7 @@ struct arm64_cpu_capabilities {
->  	 * method is robust against being called multiple times.
->  	 */
->  	const struct arm64_cpu_capabilities *match_list;
-> +	const struct cpumask *cpus;
->  };
->  
->  static inline int cpucap_default_scope(const struct arm64_cpu_capabilities *cap)
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 444a73c2e638..18711e35924c 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -1944,8 +1944,6 @@ int get_cpu_with_amu_feat(void)
->  static void cpu_amu_enable(struct arm64_cpu_capabilities const *cap)
->  {
->  	if (has_cpuid_feature(cap, SCOPE_LOCAL_CPU)) {
-> -		pr_info("detected CPU%d: Activity Monitors Unit (AMU)\n",
-> -			smp_processor_id());
->  		cpumask_set_cpu(smp_processor_id(), &amu_cpus);
->  
->  		/* 0 reference values signal broken/disabled counters */
-> @@ -2411,10 +2409,12 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
->  		 * message to be shown until at least one CPU is detected to
->  		 * support the feature.
->  		 */
-> +		.desc = "Activity Monitors Unit (AMU)",
->  		.capability = ARM64_HAS_AMU_EXTN,
->  		.type = ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE,
->  		.matches = has_amu,
->  		.cpu_enable = cpu_amu_enable,
-> +		.cpus = &amu_cpus,
->  		ARM64_CPUID_FIELDS(ID_AA64PFR0_EL1, AMU, IMP)
->  	},
->  #endif /* CONFIG_ARM64_AMU_EXTN */
-> @@ -2981,7 +2981,7 @@ static void update_cpu_capabilities(u16 scope_mask)
->  		    !caps->matches(caps, cpucap_default_scope(caps)))
->  			continue;
->  
-> -		if (caps->desc)
-> +		if (caps->desc && !caps->cpus)
->  			pr_info("detected: %s\n", caps->desc);
->  
->  		__set_bit(caps->capability, system_cpucaps);
-> @@ -3330,6 +3330,7 @@ unsigned long cpu_get_elf_hwcap2(void)
->  
->  static void __init setup_system_capabilities(void)
->  {
-> +	int i;
->  	/*
->  	 * We have finalised the system-wide safe feature
->  	 * registers, finalise the capabilities that depend
-> @@ -3338,6 +3339,15 @@ static void __init setup_system_capabilities(void)
->  	 */
->  	update_cpu_capabilities(SCOPE_SYSTEM);
->  	enable_cpu_capabilities(SCOPE_ALL & ~SCOPE_BOOT_CPU);
-> +
-> +	for (i = 0; i < ARM64_NCAPS; i++) {
-> +		const struct arm64_cpu_capabilities *caps = cpucap_ptrs[i];
-> +
-> +		if (caps && caps->cpus && caps->desc &&
-> +			cpumask_any(caps->cpus) < nr_cpu_ids)
-> +			pr_info("detected: %s on CPU%*pbl\n",
-> +				caps->desc, cpumask_pr_args(caps->cpus));
-> +	}
->  }
->  
->  void __init setup_cpu_features(void)
-> -- 
-> 2.41.0
-> 
+Hello Thomas,
 
-It looks very nice to me! I gave it a run on an RD-N2 FVP so FWIW:
+Thanks a lot for your feedback.
 
-Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
-Tested-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> Hi Javier,
+>
+> thanks for this patch.
+>
+> Am 12.10.23 um 23:38 schrieb Javier Martinez Canillas:
+> [...]
+>>   
+>> +static int ssd132x_fb_blit_rect(struct drm_framebuffer *fb,
+>> +				const struct iosys_map *vmap,
+>> +				struct drm_rect *rect, u8 *buf,
+>> +				u8 *data_array)
+>> +{
+>> +	struct ssd130x_device *ssd130x = drm_to_ssd130x(fb->dev);
+>> +	unsigned int dst_pitch = drm_rect_width(rect);
+>> +	struct iosys_map dst;
+>> +	int ret = 0;
+>> +
+>> +	/* Align x to display segment boundaries */
+>> +	rect->x1 = round_down(rect->x1, SSD132X_SEGMENT_WIDTH);
+>> +	rect->x2 = min_t(unsigned int, round_up(rect->x2, SSD132X_SEGMENT_WIDTH),
+>> +			 ssd130x->width);
+>> +
+>> +	ret = drm_gem_fb_begin_cpu_access(fb, DMA_FROM_DEVICE);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	iosys_map_set_vaddr(&dst, buf);
+>> +	drm_fb_xrgb8888_to_gray8(&dst, &dst_pitch, vmap, fb, rect);
+>
+> Here's an idea for a follow-up patchset.
+>
+> You could attempt to integrate the gray8 and mono conversions into 
+> drm_fb_blit(). With some the right parameters, both, ssd130x and ssd132x 
+> could use the same blitting code from BO to buffer.
+>
 
-The same could be used for DBM, but I'm not sure if creating a mask of
-supporting CPUs is worth it, for this purpose only.
+Yeah, I considered that but as mentioned in the commit message want to see
+what are the needs of the SSD133x controller family (I bought a SSD1331
+display but haven't had time to play with it yet) before trying to factor
+out the common bits in helper functions.
 
-Hope it helps,
-Ionela.
+[...]
+
+>> +
+>> +	ssd130x_state->buffer = kcalloc(pitch, ssd130x->height, GFP_KERNEL);
+>> +	if (!ssd130x_state->buffer)
+>> +		return -ENOMEM;
+>
+> It's unrelated to these patches and I know it's been discussed 
+> endlessly, but I have a questions about buffer allocation. That memory 
+> acts as another shadow buffer for the device's memory, such that format 
+> conversion becomes easier.
+>
+
+Correct.
+
+> But then, why is ->buffer part of the plane_state? Shouldn't it be part 
+> of the plane and never be re-allocated? The real size of that buffer is 
+> <width> times <height> (not <pitch>). That size is static over the 
+> lifetime of the device. That would represent the semantics much better.
+>
+> This would allow for additional changes: blit_rect and update_rect would 
+> be much easier to separate: no more segment adjustments for the blit 
+> code; only for updates. If the update code has high latency (IDK), you 
+> could push it into a worker thread to run besides the DRM logic. The gud 
+> and repaper drivers do something to this effect.
+>
+>
+
+The idea of making it part of the plane state is that this buffer could be
+optional, for example in the case of user-space using the native display
+format instead of the emulated XRGB8888.
+
+In that case, an intermediate buffer won't be used because the shadow-plane
+format will already be the native one (e.g: R1) and there won't be a need
+to do any format conversion (only the conversion to the data format as is
+expected by the controller).
+
+Take a look to Geert's patch adding R1 support to ssd130x for an example:
+
+https://lore.kernel.org/all/72746f6d9c47f09fc057ad7a4bbb3b7f423af803.1689252746.git.geert@linux-m68k.org/
+
+That's why it was decided that making it part of the plane state follows
+better the KMS model, because when using R1 this buffer won't even be
+allocated in the primary plane .atomic_check handler.
+
+[...]
+
+>> +	drm_atomic_helper_damage_iter_init(&iter, old_plane_state, plane_state);
+>> +	drm_atomic_for_each_plane_damage(&iter, &damage) {
+>> +		dst_clip = plane_state->dst;
+>> +
+>> +		if (!drm_rect_intersect(&dst_clip, &damage))
+>> +			continue;
+>> +
+>> +		ssd132x_fb_blit_rect(fb, &shadow_plane_state->data[0], &dst_clip,
+>> +				     ssd130x_plane_state->buffer,
+>> +				     ssd130x_crtc_state->data_array);
+>> +	}
+>
+> Here's another idea for a another follow-up patchset:
+>
+> You are allocating state->buffer to cover the whole display, right? It's 
+> <pitch> times <height> IIRC.  Maybe it would make sense to split the 
+> damage loop into two loops and inline the driver's blit_rect() function. 
+> Something like that
+>
+>    begin_cpu_access()
+>
+>    for_each(damage) {
+>      drm_fb_blit( "from GEM BO to buffer" )
+>    }
+>
+>    end_cpu_access()
+>
+>    for_each(damge) {
+>      update_rect( "from buffer to device" )
+>    }
+>
+> With the changes from the other comments, the first loop could become 
+> entirely device-neutral AFAICT.
+>
+
+Regardless, splitting the blit and update rect might make sense and is an
+intersesting idea. I need to explore this, thanks for the suggestion.
+
+As you mention that these could be follow-up changes, I assume that you
+agree with the current approach. Should I expect your review / ack for
+this patch-set?
+
+> Best regards
+> Thomas
+>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
