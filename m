@@ -2,118 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FCC7C8B3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E653F7C8B1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbjJMQcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
+        id S229890AbjJMQdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:33:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231521AbjJMQbx (ORCPT
+        with ESMTP id S229518AbjJMQdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:31:53 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 44704D7A
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:31:23 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4412511FB;
-        Fri, 13 Oct 2023 09:32:03 -0700 (PDT)
-Received: from [10.57.66.151] (unknown [10.57.66.151])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74CB73F5A1;
-        Fri, 13 Oct 2023 09:31:21 -0700 (PDT)
-Message-ID: <a9d7103f-efcb-4ab8-91b9-6f1737789c49@arm.com>
-Date:   Fri, 13 Oct 2023 17:31:20 +0100
+        Fri, 13 Oct 2023 12:33:07 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F36DC;
+        Fri, 13 Oct 2023 09:33:06 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39DEuLHS023685;
+        Fri, 13 Oct 2023 16:32:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=XQ3aeOmPzgrQrmVazfq5ZwF1RIShqKIieMaVMu6i7lY=;
+ b=bw6jflWHJEmnXkh/4KjMP3ZjEpk73vyQ+CEaZ+Sq+kzhVi2g1NjjTXq4p32B/kv+9ENI
+ SofSdbSula2hzKRrFWZSop48mTXDO770FluBcTMSI2YmMwJlWq5zXBBi7TOPSdskxKhV
+ p5Lw9J84C8pa3zQDm9/KEHz5b/ia8QooPcR4Z08zBCEN6LJHIpdKCOyx47/AlQVc8zSn
+ fwQW1RzhwwlInNPA8yvvmw0ityGBEujhu1DcItgykus+sviwWzzOH5Gjdv4x0uqYwlrw
+ IF22PX0+MpiF9ZoqoUHxVYHLuYpqTBTveJoqtZ9U2XxuhIThyQJs2c9bu6h/rbv+dzxC 0g== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tpt0x2a1n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 16:32:40 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39DGWeKr012683
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 16:32:40 GMT
+Received: from quicinc.com (10.49.16.6) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 13 Oct
+ 2023 09:32:36 -0700
+Date:   Fri, 13 Oct 2023 09:32:35 -0700
+From:   Guru Das Srinagesh <quic_gurus@quicinc.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+CC:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        "Maximilian Luz" <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        "Srini Kandagatla" <srinivas.kandagatla@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kernel@quicinc.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v4 06/15] firmware: qcom: scm: smc: switch to using the
+ SCM allocator
+Message-ID: <ZSlxI8mibrMtNzqU@quicinc.com>
+Mail-Followup-To: Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20231013114843.63205-1-brgl@bgdev.pl>
+ <20231013114843.63205-7-brgl@bgdev.pl>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 0/2] Swap-out small-sized THP without splitting
-Content-Language: en-GB
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231010142111.3997780-1-ryan.roberts@arm.com>
- <87zg0pfyux.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <87zg0pfyux.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231013114843.63205-7-brgl@bgdev.pl>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: VcMdlBiGm54gxOOiTDHvqPoxZYYKcC4I
+X-Proofpoint-ORIG-GUID: VcMdlBiGm54gxOOiTDHvqPoxZYYKcC4I
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-13_07,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ lowpriorityscore=0 bulkscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=598 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310130140
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2023 07:37, Huang, Ying wrote:
-> Ryan Roberts <ryan.roberts@arm.com> writes:
-> 
-> [...]
-> 
->> Finally on testing, I've run the mm selftests and see no regressions, but I
->> don't think there is anything in there specifically aimed towards swap? Are
->> there any functional or performance tests that I should run? It would certainly
->> be good to confirm I haven't regressed PMD-size THP swap performance.
-> 
-> I have used swap sub test case of vm-scalbility to test.
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/
+On Oct 13 2023 13:48, Bartosz Golaszewski wrote:
 
-I ended up using `usemem`, which is the core of this test suite, but deviated
-from the pre-canned test case to allow me to use anonymous memory and get
-numbers for small-sized THP (this is a very useful tool - thanks for pointing it
-out!)
+[...]
 
-I've run the tests on Ampere Altra, set up with a 35G block ram device as the
-swap device and from inside a memcg limited to 40G memory. I've then run
-`usemem` with 70 processes (each has its own core), each allocating and writing
-1G of memory. I've repeated everything 5 times and taken the mean and stdev:
+> @@ -192,25 +193,12 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
+>  						      SCM_SMC_FIRST_EXT_IDX]);
+>  		}
+>  
+> -		args_phys = dma_map_single(dev, args_virt, alloc_len,
+> -					   DMA_TO_DEVICE);
+> -
+> -		if (dma_mapping_error(dev, args_phys)) {
+> -			kfree(args_virt);
+> -			return -ENOMEM;
+> -		}
+> -
+> -		smc.args[SCM_SMC_LAST_REG_IDX] = args_phys;
+> +		smc.args[SCM_SMC_LAST_REG_IDX] = qcom_tzmem_to_phys(args_virt);
+>  	}
+>  
+>  	/* ret error check follows after args_virt cleanup*/
 
+Since args_virt cleanup is being removed, please remove this comment also.
 
-Mean Performance Improvement vs 4K/baseline
+>  	ret = __scm_smc_do(dev, &smc, &smc_res, atomic);
+>  
+> -	if (args_virt) {
+> -		dma_unmap_single(dev, args_phys, alloc_len, DMA_TO_DEVICE);
+> -		kfree(args_virt);
+> -	}
+> -
+>  	if (ret)
+>  		return ret;
 
-| alloc size |            baseline |    remove-huge-flag | swap-file-small-thp |
-|            |  v6.6-rc4+anonfolio |           + patch 1 |           + patch 2 |
-|:-----------|--------------------:|--------------------:|--------------------:|
-| 4K Page    |                0.0% |                2.3% |                9.1% |
-| 64K THP    |              -44.1% |              -46.3% |               30.6% |
-| 2M THP     |               56.0% |               54.2% |               60.1% |
-
-
-Standard Deviation as Percentage of Mean
-
-| alloc size |            baseline |    remove-huge-flag | swap-file-small-thp |
-|            |  v6.6-rc4+anonfolio |           + patch 1 |           + patch 2 |
-|:-----------|--------------------:|--------------------:|--------------------:|
-| 4K Page    |                3.4% |                7.1% |                1.7% |
-| 64K THP    |                1.9% |                5.6% |                7.7% |
-| 2M THP     |                1.9% |                2.1% |                3.2% |
-
-
-I don't see any meaningful performance cost to removing the HUGE flag, so
-hopefully this gives us confidence to move forward with patch 1.
-
-You can indeed see the performance regression in the baseline when THP is
-configured to allocate small-sized THP only (in this case 64K). And you can see
-the regression is fixed by patch 2, which avoids splitting the THP and thus
-avoids the extra TLBIs. This correlates with what I saw in kernel compilation
-workload.
-
-Huang Ying, based on these results, do you still want me to persue a per-cpu
-solution to avoid potential contention on the swap info lock? - I proposed in
-the thread against patch 2 to do this in the swap_slots layer if so, rather than
-in swapfile.c directly (I'm not sure how your original proposal would actually
-work?). But based on these results, its not obvious to me that there is a
-definite problem here, and it might be simpler to avoid the complexity?
-
-Thanks,
-Ryan
-
-> 
-> --
-> Best Regards,
-> Huang, Ying
-
+Guru Das.
