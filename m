@@ -2,88 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 541637C8B23
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222667C8B28
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232194AbjJMQ2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58710 "EHLO
+        id S232374AbjJMQ3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232493AbjJMQ1e (ORCPT
+        with ESMTP id S233150AbjJMQ3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:27:34 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484D910A
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:25:39 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c8a6aa0cd1so18726855ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:25:39 -0700 (PDT)
+        Fri, 13 Oct 2023 12:29:04 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5BC210A
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:27:03 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9be3b66f254so15657366b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:27:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1697214339; x=1697819139; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fGsIQtn1kUOEPH/EyvUO5nXHmKVACT2hdgnYK7YYsf8=;
-        b=MAlztth3RyslyF84xmcY5tfcU2AGBZQz5P3EreddPRY/Q5C5UVWkRn2zTXN5lWaJTX
-         YHHlD4QJJ8S9yWL6lpmTOEUgIa2Q5SU4F6xj6nr5njiu6hPsPutyRulJNSwI9HcS6J55
-         GJ/rqR6wp7Qc4BFqW6ZxwqvFH0Cl1cUKTem6DKFJS6HTgsQXy/OPNoBWPoUv4HOOpgo0
-         UMe+XYg0Y3yuPP8V9Rtk6fUlNWQb3WSmeNygsKBoH0X6L/ovV7GknJaS4NV5CdyZCPfP
-         MbODyDAz7pfHuYXMFxKF4xgj+K8Q9EAfkLnw5Tp9Aricbo4/PtLpsGQCL5HzE2HWb/ca
-         AGVg==
+        d=fooishbar-org.20230601.gappssmtp.com; s=20230601; t=1697214421; x=1697819221; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dDChyjARcHDkjDQPX6XB8cVwDI75Vj0OVvNyqfGNTb8=;
+        b=s3cNDlsldiqyjzOLg547DBYOsLYWWbgb6vsLhuV0Y8zYJFWObDbWfQayX07PPazwy3
+         kj4r4qXeU8T8YUbExJ+PwPRssFn5eIsLRE2yzpK32dBYrWEBECdplmy1+tA0wlSCsQRz
+         stE9FPJqLNUju96XVYsoe7bD8iAE87W7WgUASDq7P4qegELjSRlxJXadZ7eq0Vyro9Ri
+         hiV79oeRFHXlAwlE86Whb2IKKAtxqaf3hEOITkM4Ok5AnhKZ759/SMyS2SeMWB5mFy6b
+         5O/541Ubm1QvqN7VcqHH6BzDk0s8zTOU+x6Fmf3hVHF9BqbBFyHrjCmmK/K5gmgu+BM5
+         awsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697214339; x=1697819139;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fGsIQtn1kUOEPH/EyvUO5nXHmKVACT2hdgnYK7YYsf8=;
-        b=qkL6mPpsJ+7igLBgG/7kALR8ZNOvYrC3wp4iRX/xo4lyG8ftCX76mLlamYbbL1kaFp
-         p60/dSbil09U4vZpUuVx8jbRxRLoKmzE6YxwfxYdoBojrfgoRGwA+CnU2eVlIewynKt+
-         WyeAaZzSPgTqcBj51+RCBlPJjl/1+/SGwTFWF3ieTxH0mpn7oZmNjDBclvwDWcF7hPtE
-         rHf+PY4JAkXmsBkE5tS2ioHBUQhBxyyZgsDb+WTEcctY2F2rhO8Phsah73RIrKLQjrCG
-         Ju7cpTRNYcGBPKq29eXpo7m2TuUp/PQu1U4Q1xcpN5vpqgOL4NVczYxLQGPeIDc0WEok
-         EPvQ==
-X-Gm-Message-State: AOJu0YzHWC6k5kv6Wl74tNd7nS5aH5n8rPNubMdDcQTCzwvXcMKHFLUF
-        BQy2VHJ3TzgK2aYuMuO1M+EcSA==
-X-Google-Smtp-Source: AGHT+IHpc/Tkf9Pt5e2oD3IFVvwS6bTXm6J3mOQbVyXxjR0oCfbQQ1e+XvWpuSp0soQAKko2C1ScUg==
-X-Received: by 2002:a17:902:d2d1:b0:1ca:220:ce42 with SMTP id n17-20020a170902d2d100b001ca0220ce42mr2271443plc.37.1697214338684;
-        Fri, 13 Oct 2023 09:25:38 -0700 (PDT)
-Received: from hermes.local (204-195-126-68.wavecable.com. [204.195.126.68])
-        by smtp.gmail.com with ESMTPSA id x11-20020a1709028ecb00b001c3721897fcsm4025457plo.277.2023.10.13.09.25.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 09:25:38 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 09:25:36 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "open list:ARM/Mediatek SoC support" <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH net-next v2 1/2] net: dsa: Use conduit and user terms
-Message-ID: <20231013092536.09183d47@hermes.local>
-In-Reply-To: <20231012231029.tqz3e5dnlvbmcmja@skbuf>
-References: <20231011222026.4181654-1-florian.fainelli@broadcom.com>
-        <20231011222026.4181654-1-florian.fainelli@broadcom.com>
-        <20231011222026.4181654-2-florian.fainelli@broadcom.com>
-        <20231011222026.4181654-2-florian.fainelli@broadcom.com>
-        <20231012231029.tqz3e5dnlvbmcmja@skbuf>
+        d=1e100.net; s=20230601; t=1697214421; x=1697819221;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dDChyjARcHDkjDQPX6XB8cVwDI75Vj0OVvNyqfGNTb8=;
+        b=pgIWESVWPkBJvtFWsCba5PU2uxoph9hlbNoBPQdjaKm+mt+rtkB0SDeRxkfRWzy39t
+         W6B9jI++HOA2qHTdpP/J/cOfKXphXinOHiDzIU3YkYHhkOJ/Lj7tTX9By9oYaJSW3/sB
+         XvRQWxnnK7IqfqsWDHTGwcFx92QADQBuBuXWqoGVIdiu2KmrV0fCEVPqk/gi0Z3DYcnz
+         8nwGip8/bHqwJAaYbZw3kYfKn//I8nCZZXGavAOQcKFet0S3Jfws1+tl8xxpAfDjCnKg
+         vahUN478dDYMMxU6wm7iHXcxg4HwnkAsJ7bOFq+okEz009cG2mSercWaTdiRxb+Z3MWB
+         Ck/A==
+X-Gm-Message-State: AOJu0YzvsNM5R6lv52a9iaehjZZy5JGDDW3JJDJNgD2Pn9gjQJ06ocuV
+        3dO5ZkW59x+Cn8pcoobCjJrlk7m8cf/zzUf4KSXV8Q==
+X-Google-Smtp-Source: AGHT+IH4mCWm8Z2elsfB5wPDuFnQnwc2DSuvszMcvKnLJwB6uCPWL0qpI196Srkb4PahcQqJyczrTAjD9wvlQcukgRA=
+X-Received: by 2002:a17:907:74b:b0:9bd:bbc1:1c5f with SMTP id
+ xc11-20020a170907074b00b009bdbbc11c5fmr1802252ejb.35.1697214421164; Fri, 13
+ Oct 2023 09:27:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20231006073831.10402-1-shawn.sung@mediatek.com> <20231006073831.10402-5-shawn.sung@mediatek.com>
+In-Reply-To: <20231006073831.10402-5-shawn.sung@mediatek.com>
+From:   Daniel Stone <daniel@fooishbar.org>
+Date:   Fri, 13 Oct 2023 17:26:47 +0100
+Message-ID: <CAPj87rMUbP12uwzyhV=94wR7LkQK4JfTB4kEMGADq2YJOk8Vrw@mail.gmail.com>
+Subject: Re: [PATCH v7 04/23] dt-bindings: display: mediatek: padding: Add MT8188
+To:     Hsiao Chien Sung <shawn.sung@mediatek.com>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        CK Hu <ck.hu@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
+        Singo Chang <singo.chang@mediatek.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        "Nancy . Lin" <nancy.lin@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Shawn,
 
-Is there going to be a corresponding change to iproute2 devlink?
+On Fri, 6 Oct 2023 at 08:38, Hsiao Chien Sung <shawn.sung@mediatek.com> wrote:
+> +  Padding provides ability to add pixels to width and height of a layer with
+> +  specified colors. Due to hardware design, Mixer in VDOSYS1 requires
+> +  width of a layer to be 2-pixel-align, or 4-pixel-align when ETHDR is enabled,
+> +  we need Padding to deal with odd width.
+> +  Please notice that even if the Padding is in bypass mode, settings in
+> +  register must be cleared to 0, or undefined behaviors could happen.
+
+If I understand the driver correctly, padding is automatically applied
+to compensate for unaligned dimensions. The first/last rows/columns of
+the overlay area will be filled with a specified colour (black?) to
+preserve the area. This is unfortunately not OK to do transparently.
+Userspace must be aware of this policy decision and specifically
+request it. If not, the atomic request check should fail and tell
+userspace that the requested configuration is not possible to achieve.
+
+Cheers,
+Daniel
