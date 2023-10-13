@@ -2,199 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB367C8474
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3BE7C847E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbjJMLfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
+        id S231159AbjJMLgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjJMLfB (ORCPT
+        with ESMTP id S231130AbjJMLg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:35:01 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A2D59B7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:34:59 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C3BFE11FB;
-        Fri, 13 Oct 2023 04:35:39 -0700 (PDT)
-Received: from [10.57.80.116] (unknown [10.57.80.116])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9AADC3F7A6;
-        Fri, 13 Oct 2023 04:34:56 -0700 (PDT)
-Message-ID: <1891aa6c-037f-46a1-9584-17aaa63e4e74@arm.com>
-Date:   Fri, 13 Oct 2023 12:35:42 +0100
+        Fri, 13 Oct 2023 07:36:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EBBB7;
+        Fri, 13 Oct 2023 04:36:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697196987; x=1728732987;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3kHNtyQVnjAw9mhsimssz82xFGGV/T8R0wPGXi0ez5k=;
+  b=NjBiBEMjrjd9NqR/lCsxi6uvfS1Ow24iEwNCPXEYcqHAUIkQx65P1el8
+   Yjhrb+ziNL8TuY4gTIZMtztbD2UHeuf4F1Y8giic4pLWYnyul9PZIBpQ2
+   XzLor/tkzlxHWaEwqoDulElMRj9UPqoyONH0sF5DV5qWxjq8gFL1c6nPB
+   56noZfTuyR07pvX3jOiGx+/4eTu1xLw9tM01XAJYF+u3rPQystJENdtC9
+   NETmV8FgV9t8gqVTUp2fsZPxBbFDnKd6IL8qr+pBS0efR9IlSTDTodPhP
+   Dqd72Q5ncfO8bed88pOptbmBQHfd/jP8/Jt4yA/Y3Zj8YX5an1Is9omER
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="382391386"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="382391386"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 04:36:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="1001916985"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="1001916985"
+Received: from bsankiew-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.0.114])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 04:36:18 -0700
+From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+To:     akpm@linux-foundation.org, christian@kellner.me,
+        fenghua.yu@intel.com, keescook@chromium.org,
+        ndesaulniers@google.com, coltonlewis@google.com,
+        dmatlack@google.com, vipinsh@google.com, seanjc@google.com,
+        brauner@kernel.org, pbonzini@redhat.com, shuah@kernel.org,
+        hannes@cmpxchg.org, nphamcs@gmail.com, reinette.chatre@intel.com
+Cc:     ilpo.jarvinen@linux.intel.com, linux-kselftest@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v6 0/8] Add printf attribute to kselftest functions
+Date:   Fri, 13 Oct 2023 13:36:04 +0200
+Message-ID: <cover.1697196663.git.maciej.wieczor-retman@intel.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 00/25] timer: Move from a push remote at enqueue to a
- pull at expiry model
-Content-Language: en-US
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Arjan van de Ven <arjan@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Siewior <bigeasy@linutronix.de>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>
-References: <20231004123454.15691-1-anna-maria@linutronix.de>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20231004123454.15691-1-anna-maria@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anna-Maria
+kselftest.h declares many variadic functions that can print some
+formatted message while also executing selftest logic. These
+declarations don't have any compiler mechanism to verify if passed
+arguments are valid in comparison with format specifiers used in
+printf() calls.
 
-On 10/4/23 13:34, Anna-Maria Behnsen wrote:
-> Hi,
-> 
+Attribute addition can make debugging easier, the code more consistent
+and prevent mismatched or missing variables.
 
-[snip]
+The first patch adds __printf() macro and applies it to all functions
+in kselftest.h that use printf format specifiers. After compiling all
+selftests using:
+	make -C tools/testing/selftests
+many instances of format specifier mismatching are exposed in the form
+of -Wformat warnings.
 
-> 
-> 
-> Testing
-> ~~~~~~~
-> 
-> Enqueue
-> ^^^^^^^
-> 
-> The impact of wasting cycles during enqueue by using the heuristic in
-> contrast to always queuing the timer on the local CPU was measured with a
-> micro benchmark. Therefore a timer is enqueued and dequeued in a loop with
-> 1000 repetitions on a isolated CPU. The time the loop takes is measured. A
-> quarter of the remaining CPUs was kept busy. This measurement was repeated
-> several times. With the patch queue the average duration was reduced by
-> approximately 25%.
-> 
-> 	145ns	plain v6
-> 	109ns	v6 with patch queue
-> 
-> 
-> Furthermore the impact of residence in deep idle states of an idle system
-> was investigated. The patch queue doesn't downgrade this behavior.
-> 
-> dbench test
-> ^^^^^^^^^^^
-> 
-> A dbench test starting X pairs of client servers are used to create load on
-> the system. The measurable value is the throughput. The tests were executed
-> on a zen3 machine. The base is the tip tree branch timers/core which is
-> based on a v6.6-rc1.
-> 
-> governor menu
-> 
-> X pairs	timers/core	pull-model	impact
-> ----------------------------------------------
-> 1	353.19 (0.19)	353.45 (0.30)	0.07%
-> 2	700.10 (0.96)	687.00 (0.20)	-1.87%
-> 4	1329.37 (0.63)	1282.91 (0.64)	-3.49%
-> 8	2561.16 (1.28)	2493.56	(1.76)	-2.64%
-> 16	4959.96 (0.80)	4914.59 (0.64)	-0.91%
-> 32	9741.92 (3.44)	8979.83 (1.13)	-7.82%
-> 64	16535.40 (2.84)	16388.47 (4.02)	-0.89%
-> 128	22136.83 (2.42)	23174.50 (1.43)	4.69%
-> 256	39256.77 (4.48)	38994.00 (0.39)	-0.67%
-> 512	36799.03 (1.83)	38091.10 (0.63)	3.51%
-> 1024	32903.03 (0.86)	35370.70 (0.89)	7.50%
-> 
-> 
-> governor teo
-> 
-> X pairs	timers/core	pull-model	impact
-> ----------------------------------------------
-> 1	350.83 (1.27)	352.45 (0.96)	0.46%
-> 2	699.52 (0.85)	690.10 (0.54)	-1.35%
-> 4	1339.53 (1.99)	1294.71 (2.71)	-3.35%
-> 8	2574.10 (0.76)	2495.46 (1.97)	-3.06%
-> 16	4898.50 (1.74)	4783.06 (1.64)	-2.36%
-> 32	9115.50 (4.63)	9037.83 (1.58)	-0.85%
-> 64	16663.90 (3.80)	16042.00 (1.72)	-3.73%
-> 128	25044.93 (1.11)	23250.03 (1.08)	-7.17%
-> 256	38059.53 (1.70)	39658.57 (2.98)	4.20%
-> 512	36369.30 (0.39)	38890.13 (0.36)	6.93%
-> 1024	33956.83 (1.14)	35514.83 (0.29)	4.59%
-> 
-> 
-> 
-> Ping Pong Oberservation
-> ^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> During testing on a mostly idle machine a ping pong game could be observed:
-> a process_timeout timer is expired remotely on a non idle CPU. Then the CPU
-> where the schedule_timeout() was executed to enqueue the timer comes out of
-> idle and restarts the timer using schedule_timeout() and goes back to idle
-> again. This is due to the fair scheduler which tries to keep the task on
-> the CPU which it previously executed on.
-> 
-> 
+Fix the mismatched format specifiers caught by __printf() attribute in
+multiple tests.
 
-I have tested this on my 2 Arm boards with mainline kernel
-and almost-mainline. On both platforms it looks stable.
-The results w/ your patchset looks better.
+Series is based on kselftests next branch.
 
-1. rockpi4b - mainline kernel (but no UI)
+Changelog v6:
+- Add methodology notes to all patches.
+- No functional changes in the patches.
 
-Limiting the cpumask for only 4 Little CPUs and setting
-performance governor for cpufreq and menu for idle.
+Changelog v5:
+- Mention in the cover letter what methodology was used to find the
+  mismatched format specifiers.
+- No functional changes in the patches.
 
-1.1. perf bench sched pipe
+Changelog v4:
+- Fix patch 1/8 subject typo.
+- Add Reinette's reviewed-by tags.
+- Rebase onto new kselftest/next patches.
 
-w/o patchset vs. w/ patchset
-avg [ops/sec]:
-(more is better)
-23012.33 vs. 23154.33 (+0.6%)
+Changelog v3:
+- Changed git signature from Wieczor-Retman Maciej to Maciej
+  Wieczor-Retman.
+- Added one review tag.
+- Rebased onto updated kselftests next branch.
 
-avg [usecs/op]:
-(less is better)
-43.453 vs. 43.187 (-0.6%)
+Changelog v2:
+- Add review and fixes tags to patches.
+- Add two patches with mismatch fixes.
+- Fix missed attribute in selftests/kvm. (Andrew)
+- Fix previously missed issues in selftests/mm (Ilpo)
 
-1.2. perf bench sched messaging
-(less is better)
+[v5] https://lore.kernel.org/all/cover.1697012398.git.maciej.wieczor-retman@intel.com/
+[v4] https://lore.kernel.org/all/cover.1696846568.git.maciej.wieczor-retman@intel.com/
+[v3] https://lore.kernel.org/all/cover.1695373131.git.maciej.wieczor-retman@intel.com/
+[v2] https://lore.kernel.org/all/cover.1693829810.git.maciej.wieczor-retman@intel.com/
+[v1] https://lore.kernel.org/all/cover.1693216959.git.maciej.wieczor-retman@intel.com/
 
-w/o patchset vs. w/ patchset
-avg total time [s]:
-2.7855 vs. 2.7005 (-3.1%)
+Maciej Wieczor-Retman (8):
+  selftests: Add printf attribute to kselftest prints
+  selftests/cachestat: Fix print_cachestat format
+  selftests/openat2: Fix wrong format specifier
+  selftests/pidfd: Fix ksft print formats
+  selftests/sigaltstack: Fix wrong format specifier
+  selftests/kvm: Replace attribute with macro
+  selftests/mm: Substitute attribute with a macro
+  selftests/resctrl: Fix wrong format specifier
 
-2. pixel6 (kernel v5.18 with backported patchset)
-
-2.1 Speedometer 2.0 (JS test running in Chrome browser)
-
-w/o patchset vs. w/ patchset
-149 vs. 146 (-2%)
-
-2.2 Geekbench 5
-(more is better)
-
-Single core
-w/o patchset vs. w/ patchset
-1025 vs. 1017 (-0.7%)
-
-Multi core
-w/o patchset vs. w/ patchset
-2756 vs. 2813 (+2%)
+ .../selftests/cachestat/test_cachestat.c       |  2 +-
+ tools/testing/selftests/kselftest.h            | 18 ++++++++++--------
+ .../testing/selftests/kvm/include/test_util.h  |  8 ++++----
+ tools/testing/selftests/mm/mremap_test.c       |  2 +-
+ tools/testing/selftests/mm/pkey-helpers.h      |  2 +-
+ tools/testing/selftests/openat2/openat2_test.c |  2 +-
+ .../selftests/pidfd/pidfd_fdinfo_test.c        |  2 +-
+ tools/testing/selftests/pidfd/pidfd_test.c     | 12 ++++++------
+ tools/testing/selftests/resctrl/cache.c        |  2 +-
+ tools/testing/selftests/sigaltstack/sas.c      |  2 +-
+ 10 files changed, 27 insertions(+), 25 deletions(-)
 
 
-The performance looks good. Only one test 'Speedometer'
-has some interesting lower score.
+base-commit: 2531f374f922e77ba51f24d1aa6fa11c7f4c36b8
+-- 
+2.42.0
 
-Fill free to add:
-
-Tested-by: Lukasz Luba <lukasz.luba@arm.com>
-
-Regards,
-Lukasz
