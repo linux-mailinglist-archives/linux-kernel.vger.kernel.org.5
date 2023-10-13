@@ -2,219 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 025F27C889F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CCA7C889B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbjJMP10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32830 "EHLO
+        id S232354AbjJMP1Z convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Oct 2023 11:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232332AbjJMP1Z (ORCPT
+        with ESMTP id S232273AbjJMP1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:27:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE7BCC
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697210795;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mUdyGKrhTvWzjp7XpWrq9UCsdSwHboq+VnImVBM5VZ4=;
-        b=ReU36xhWm1fRg196v4z0pxKn+DKzwa9oc/huKPBHa+cwXgKPJukuu8rxIVOshDvmQEhUfH
-        px/d0w1kCC3iIdr5hTZ20sg19Gk6P1sSMencLdUsUZSi7KJ6833dGUxFzyVrzCcT7heJLN
-        znf6yqUzRuhXFfrEsw1uiz02fcAMU90=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-412-6dCuIPGpMmCwFF9kt8A13w-1; Fri, 13 Oct 2023 11:26:28 -0400
-X-MC-Unique: 6dCuIPGpMmCwFF9kt8A13w-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6b2dff02dfcso629908b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:26:28 -0700 (PDT)
+        Fri, 13 Oct 2023 11:27:24 -0400
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B689C9;
+        Fri, 13 Oct 2023 08:27:20 -0700 (PDT)
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-57ddba5ba84so229993eaf.0;
+        Fri, 13 Oct 2023 08:27:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697210788; x=1697815588;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mUdyGKrhTvWzjp7XpWrq9UCsdSwHboq+VnImVBM5VZ4=;
-        b=Rd3OZTgbfcMWKLcJexIinxwqP3aB8mVl3WM+7Qj1pPsbK4k5FnoLPSeOaofFYKvAKx
-         E5jDexPM4jwqj+hwYNVMod8VOOJpIvX4VeKzwpU7qf5bIon8pIHJoiV65+a1rMiqCBgj
-         iBgHaFKzRN6vCfUUQxoKHY0XjwlCjt7/NAQAvR3GjQkudmamOOE8UP2h5zMGL2OyZSiu
-         0Lpvs1nesLi6c9c7t7Yl7vNfargkzuKcFaaYGEBTWo9aR5u3LBD73yhwj/+t/2XvjPSw
-         n8EnmDUvUglElXNf+Ks0QpaKmELb3Xlr8nYS6BkQ/K9C7OmHUho37pxaD/yu2vILhr9w
-         o2rg==
-X-Gm-Message-State: AOJu0YyGhAvbdUqtKU2iJFrqejHsSZeC6/68TdWBwC1bamGmHZz9W3e9
-        uYbxWvEenQIFmaR2eu5a2nX5QSEMA54DM5UZg6/7XVx+B3UkduF+egDp667Uy7125pzFF9RJCAz
-        oESwD2ruJCTFNAGnX98MIdlqa
-X-Received: by 2002:a05:6a00:8c7:b0:68b:e710:ee9c with SMTP id s7-20020a056a0008c700b0068be710ee9cmr32827278pfu.19.1697210787874;
-        Fri, 13 Oct 2023 08:26:27 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFRdz5NBa4dtFt7emb8U609yGEVLPswchIPrAH3ophOZ9xhZ2QHHxm7yDuRdiRpg2RrHSvIUQ==
-X-Received: by 2002:a05:6a00:8c7:b0:68b:e710:ee9c with SMTP id s7-20020a056a0008c700b0068be710ee9cmr32827258pfu.19.1697210787487;
-        Fri, 13 Oct 2023 08:26:27 -0700 (PDT)
-Received: from redhat.com ([2804:431:c7ec:597b:9920:d8b1:f175:73f7])
-        by smtp.gmail.com with ESMTPSA id m11-20020a656a0b000000b0059d6f5196fasm3102920pgu.78.2023.10.13.08.26.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 08:26:26 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 12:26:22 -0300
-From:   Leonardo Bras <leobras@redhat.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Imran Khan <imran.f.khan@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH smp,csd] Throw an error if a CSD lock is stuck for too
- long
-Message-ID: <ZSlhnu0n9eOfkN-U@redhat.com>
-References: <bc7cc8b0-f587-4451-8bcd-0daae627bcc7@paulmck-laptop>
- <c87d7939-a88c-ad2d-82f2-866e04692882@oracle.com>
- <a77da319-3161-4e42-894e-521d29fa8348@paulmck-laptop>
+        d=1e100.net; s=20230601; t=1697210840; x=1697815640;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2nUDXrT0stOFmjcIAQLP4jzYXflJAno/zxPmKI4vR7E=;
+        b=BfKe6vZFK9UPCP3lDG/ssgFfC2/oI/3NlUUM06tspoUuH/Blz4PZKHDesT/jESKdNO
+         moGmCD8W6r/rqa33MN+FzxtKo03AT8C3y9oLfL6MPuOgT66761zQtw9wkTU9IxtFOpdG
+         X9iWdBFFc97XGG1ryI1FGDEkak+skJdvGM1EWEQJvx8q1Icbqehd0Gm5CFugVcjNCRVl
+         6ZGKqQeUO39tHjb4n1IyB2lD6NQE6setpghs9EZYxgoYzhIiHblsolvnJD36nXS9I7gz
+         +7o2t+wMyk4QGr7NcBPEkf741ddiUFvNuAxNbL+Z1mI/801isMHA53eXtm5ogpQ1AH5C
+         mZ6g==
+X-Gm-Message-State: AOJu0YxfSUgvgilNI0rKARARjtwJowYtJYzy3oH2zd/tgKuPCmiOCCir
+        u4uiJOhxygyK6ypImH2+Ji2sVQx+Hw3fg7/NAnA=
+X-Google-Smtp-Source: AGHT+IFGEiYulFwt6vAOmsUSk7LDEV6P/ugFJQ9isRKdOdnVbJrwx4O5eNPTzxh5lPgeAxsE8BNFt5f4UQ1nfKWZWRE=
+X-Received: by 2002:a4a:b588:0:b0:578:c2af:45b5 with SMTP id
+ t8-20020a4ab588000000b00578c2af45b5mr25632718ooo.0.1697210839825; Fri, 13 Oct
+ 2023 08:27:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a77da319-3161-4e42-894e-521d29fa8348@paulmck-laptop>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+References: <20230922184425.290894-1-nfraprado@collabora.com> <6627b83b-bee7-a123-d845-cad8523ffb30@collabora.com>
+In-Reply-To: <6627b83b-bee7-a123-d845-cad8523ffb30@collabora.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 13 Oct 2023 17:27:08 +0200
+Message-ID: <CAJZ5v0hU9E10BeEjF-PZ8Yx9NZO1YimitockY3Hsobha7dARDQ@mail.gmail.com>
+Subject: Re: [PATCH v2] thermal/core: Don't update trip points inside the
+ hysteresis range
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>, kernel@collabora.com,
+        Amit Kucheria <amitk@kernel.org>,
+        Caesar Wang <wxt@rock-chips.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Zhang Rui <rui.zhang@intel.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 09:39:38AM -0700, Paul E. McKenney wrote:
-> On Fri, Oct 06, 2023 at 10:32:07AM +1100, Imran Khan wrote:
-> > Hello Paul,
-> > 
-> > On 6/10/2023 3:48 am, Paul E. McKenney wrote:
-> > > The CSD lock seems to get stuck in 2 "modes". When it gets stuck
-> > > temporarily, it usually gets released in a few seconds, and sometimes
-> > > up to one or two minutes.
-> > > 
-> > > If the CSD lock stays stuck for more than several minutes, it never
-> > > seems to get unstuck, and gradually more and more things in the system
-> > > end up also getting stuck.
-> > > 
-> > > In the latter case, we should just give up, so the system can dump out
-> > > a little more information about what went wrong, and, with panic_on_oops
-> > > and a kdump kernel loaded, dump a whole bunch more information about
-> > > what might have gone wrong.
-> > > 
-> > > Question: should this have its own panic_on_ipistall switch in
-> > > /proc/sys/kernel, or maybe piggyback on panic_on_oops in a different
-> > > way than via BUG_ON?
-> > > 
-> > panic_on_ipistall (set to 1 by default) looks better option to me. For systems
-> > where such delay is acceptable and system can eventually get back to sane state,
-> > this option (set to 0 after boot) would prevent crashing the system for
-> > apparently benign CSD hangs of long duration.
-> 
-> Good point!  How about like the following?
-> 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 6bcf3786291b86f13b3e13d51e998737a8009ec3
-> Author: Rik van Riel <riel@surriel.com>
-> Date:   Mon Aug 21 16:04:09 2023 -0400
-> 
->     smp,csd: Throw an error if a CSD lock is stuck for too long
->     
->     The CSD lock seems to get stuck in 2 "modes". When it gets stuck
->     temporarily, it usually gets released in a few seconds, and sometimes
->     up to one or two minutes.
->     
->     If the CSD lock stays stuck for more than several minutes, it never
->     seems to get unstuck, and gradually more and more things in the system
->     end up also getting stuck.
->     
->     In the latter case, we should just give up, so the system can dump out
->     a little more information about what went wrong, and, with panic_on_oops
->     and a kdump kernel loaded, dump a whole bunch more information about what
->     might have gone wrong.  In addition, there is an smp.panic_on_ipistall
->     kernel boot parameter that by default retains the old behavior, but when
->     set enables the panic after the CSD lock has been stuck for more than
->     five minutes.
->     
->     [ paulmck: Apply Imran Khan feedback. ]
->     
->     Link: https://lore.kernel.org/lkml/bc7cc8b0-f587-4451-8bcd-0daae627bcc7@paulmck-laptop/
->     Signed-off-by: Rik van Riel <riel@surriel.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->     Cc: Peter Zijlstra <peterz@infradead.org>
->     Cc: Valentin Schneider <vschneid@redhat.com>
->     Cc: Juergen Gross <jgross@suse.com>
->     Cc: Jonathan Corbet <corbet@lwn.net>
->     Cc: Randy Dunlap <rdunlap@infradead.org>
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 0a1731a0f0ef..592935267ce2 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -5858,6 +5858,11 @@
->  			This feature may be more efficiently disabled
->  			using the csdlock_debug- kernel parameter.
->  
-> +	smp.panic_on_ipistall= [KNL]
-> +			If a csd_lock_timeout extends for more than
-> +			five minutes, panic the system.  By default, let
-> +			CSD-lock acquisition take as long as they take.
-> +
+On Mon, Sep 25, 2023 at 9:29 AM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
+>
+> Il 22/09/23 20:44, Nícolas F. R. A. Prado ha scritto:
+> > When searching for the trip points that need to be set, the nearest
+> > higher trip point's temperature is used for the high trip, while the
+> > nearest lower trip point's temperature minus the hysteresis is used for
+> > the low trip. The issue with this logic is that when the current
+> > temperature is inside a trip point's hysteresis range, both high and low
+> > trips will come from the same trip point. As a consequence instability
+> > can still occur like this:
+> > * the temperature rises slightly and enters the hysteresis range of a
+> >    trip point
+> > * polling happens and updates the trip points to the hysteresis range
+> > * the temperature falls slightly, exiting the hysteresis range, crossing
+> >    the trip point and triggering an IRQ, the trip points are updated
+> > * repeat
+> >
+> > So even though the current hysteresis implementation prevents
+> > instability from happening due to IRQs triggering on the same
+> > temperature value, both ways, it doesn't prevent it from happening due
+> > to an IRQ on one way and polling on the other.
+> >
+> > To properly implement a hysteresis behavior, when inside the hysteresis
+> > range, don't update the trip points. This way, the previously set trip
+> > points will stay in effect, which will in a way remember the previous
+> > state (if the temperature signal came from above or below the range) and
+> > therefore have the right trip point already set. The exception is if
+> > there was no previous trip point set, in which case a previous state
+> > doesn't exist, and so it's sensible to allow the hysteresis range as
+> > trip points.
+> >
+> > The following logs show the current behavior when running on a real
+> > machine:
+> >
+> > [  202.524658] thermal thermal_zone0: new temperature boundaries: -2147483647 < x < 40000
+> >     203.562817: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=36986 temp=37979
+> > [  203.562845] thermal thermal_zone0: new temperature boundaries: 37000 < x < 40000
+> >     204.176059: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=37979 temp=40028
+> > [  204.176089] thermal thermal_zone0: new temperature boundaries: 37000 < x < 100000
+> >     205.226813: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=40028 temp=38652
+> > [  205.226842] thermal thermal_zone0: new temperature boundaries: 37000 < x < 40000
+> >
+> > And with this patch applied:
+> >
+> > [  184.933415] thermal thermal_zone0: new temperature boundaries: -2147483647 < x < 40000
+> >     185.981182: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=36986 temp=37872
+> >     186.744685: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=37872 temp=40058
+> > [  186.744716] thermal thermal_zone0: new temperature boundaries: 37000 < x < 100000
+> >     187.773284: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=40058 temp=38698
+> >
+> > Fixes: 060c034a9741 ("thermal: Add support for hardware-tracked trip points")
+> > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>
+> >
+> > ---
+> >
+> > Changes in v2:
+> > - Changed logic as suggested by Rafael
+> > - Added log example to commit message
+> > - Added fixes tag
+> >
+> >   drivers/thermal/thermal_trip.c | 19 +++++++++++++++++--
+> >   1 file changed, 17 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/thermal/thermal_trip.c b/drivers/thermal/thermal_trip.c
+> > index 024e2e365a26..597ac4144e33 100644
+> > --- a/drivers/thermal/thermal_trip.c
+> > +++ b/drivers/thermal/thermal_trip.c
+> > @@ -55,6 +55,7 @@ void __thermal_zone_set_trips(struct thermal_zone_device *tz)
+> >   {
+> >       struct thermal_trip trip;
+> >       int low = -INT_MAX, high = INT_MAX;
+> > +     bool same_trip = false;
+> >       int i, ret;
+> >
+> >       lockdep_assert_held(&tz->lock);
+> > @@ -63,6 +64,7 @@ void __thermal_zone_set_trips(struct thermal_zone_device *tz)
+> >               return;
+> >
+> >       for (i = 0; i < tz->num_trips; i++) {
+> > +             bool low_set = false;
+> >               int trip_low;
+> >
+> >               ret = __thermal_zone_get_trip(tz, i , &trip);
+> > @@ -71,18 +73,31 @@ void __thermal_zone_set_trips(struct thermal_zone_device *tz)
+> >
+> >               trip_low = trip.temperature - trip.hysteresis;
+> >
+> > -             if (trip_low < tz->temperature && trip_low > low)
+> > +             if (trip_low < tz->temperature && trip_low > low) {
+> >                       low = trip_low;
+> > +                     low_set = true;
+> > +                     same_trip = false;
+> > +             }
+> >
+> >               if (trip.temperature > tz->temperature &&
+> > -                 trip.temperature < high)
+> > +                 trip.temperature < high) {
+> >                       high = trip.temperature;
+> > +                     same_trip = low_set;
+> > +             }
+> >       }
+> >
+> >       /* No need to change trip points */
+> >       if (tz->prev_low_trip == low && tz->prev_high_trip == high)
+> >               return;
+> >
+> > +     /*
+> > +      * If "high" and "low" are the same, skip the change unless this is the
+> > +      * first time.
+> > +      */
+> > +     if (same_trip && (tz->prev_low_trip != -INT_MAX ||
+> > +         tz->prev_high_trip != INT_MAX))
+> > +             return;
+> > +
+> >       tz->prev_low_trip = low;
+> >       tz->prev_high_trip = high;
+> >
 
-It could be interesting to have it as an s64 parameter (in {mili,}seconds) 
-instead of bool, this way the user could pick the time to wait before the 
-panic happens. 0 or -1 could mean disabled.
+Applied as 6.7 material, but I added a Co-developed-by tag for myself,
+because it has been based on my patch.
 
-What do you think?
-
-Other than that,
-Reviewed-by: Leonardo Bras <leobras@redhat.com>
-
-
->  	smsc-ircc2.nopnp	[HW] Don't use PNP to discover SMC devices
->  	smsc-ircc2.ircc_cfg=	[HW] Device configuration I/O port
->  	smsc-ircc2.ircc_sir=	[HW] SIR base I/O port
-> diff --git a/kernel/smp.c b/kernel/smp.c
-> index 8455a53465af..b6a0773a7015 100644
-> --- a/kernel/smp.c
-> +++ b/kernel/smp.c
-> @@ -170,6 +170,8 @@ static DEFINE_PER_CPU(void *, cur_csd_info);
->  
->  static ulong csd_lock_timeout = 5000;  /* CSD lock timeout in milliseconds. */
->  module_param(csd_lock_timeout, ulong, 0444);
-> +static bool panic_on_ipistall;
-> +module_param(panic_on_ipistall, bool, 0444);
->  
->  static atomic_t csd_bug_count = ATOMIC_INIT(0);
->  
-> @@ -230,6 +232,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
->  	}
->  
->  	ts2 = sched_clock();
-> +	/* How long since we last checked for a stuck CSD lock.*/
->  	ts_delta = ts2 - *ts1;
->  	if (likely(ts_delta <= csd_lock_timeout_ns || csd_lock_timeout_ns == 0))
->  		return false;
-> @@ -243,9 +246,17 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
->  	else
->  		cpux = cpu;
->  	cpu_cur_csd = smp_load_acquire(&per_cpu(cur_csd, cpux)); /* Before func and info. */
-> +	/* How long since this CSD lock was stuck. */
-> +	ts_delta = ts2 - ts0;
->  	pr_alert("csd: %s non-responsive CSD lock (#%d) on CPU#%d, waiting %llu ns for CPU#%02d %pS(%ps).\n",
-> -		 firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), ts2 - ts0,
-> +		 firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), ts_delta,
->  		 cpu, csd->func, csd->info);
-> +	/*
-> +	 * If the CSD lock is still stuck after 5 minutes, it is unlikely
-> +	 * to become unstuck. Use a signed comparison to avoid triggering
-> +	 * on underflows when the TSC is out of sync between sockets.
-> +	 */
-> +	BUG_ON(panic_on_ipistall && (s64)ts_delta > 300000000000LL);
->  	if (cpu_cur_csd && csd != cpu_cur_csd) {
->  		pr_alert("\tcsd: CSD lock (#%d) handling prior %pS(%ps) request.\n",
->  			 *bug_id, READ_ONCE(per_cpu(cur_csd_func, cpux)),
-> 
-
+Thanks!
