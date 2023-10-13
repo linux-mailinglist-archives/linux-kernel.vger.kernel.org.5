@@ -2,587 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D62A37C7E92
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AEB57C7E95
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbjJMH3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
+        id S229886AbjJMHaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 03:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjJMH27 (ORCPT
+        with ESMTP id S229688AbjJMHax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:28:59 -0400
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2114EB7;
-        Fri, 13 Oct 2023 00:28:55 -0700 (PDT)
+        Fri, 13 Oct 2023 03:30:53 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F27B8;
+        Fri, 13 Oct 2023 00:30:51 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40537481094so19401545e9.0;
+        Fri, 13 Oct 2023 00:30:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1697182136; x=1728718136;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ucD0r9Udodc0qIvBU5yQklLA2HMoKo+p5kT8TsgfM+Y=;
-  b=fj0vtQiV4Ab5anFNQja2vObUkSjwc/ZdgNXxpIRUmnLeUoSu7JESLzQ5
-   3SZpgmXRAUOQM0G+/60M1R7tTleGKpq2NXr/+7k3PNShs1k51vOZzobLv
-   ICY+S2zoiSAcmnduBtLZVYWllKa1fPw1ClSlWVHgbjUsAsiAw0GZgOH83
-   IXWKuuOu9LK7eOJiq9RbsjuRG4wWQuZakfG3NV7f7U6Cq7zY64NqNeMdy
-   3nBifIt47TqOc5snw+UEsgm2Z5Dt2iBCX+SKNYGS/5LsI37bWOpfpzPvu
-   I2JVs6s/0icW/xs/3AGBk19u5KcMuMVyFJ4rWo76ATn4artz2c6prrKJq
-   g==;
-X-IronPort-AV: E=Sophos;i="6.03,221,1694728800"; 
-   d="scan'208";a="33446470"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 13 Oct 2023 09:28:54 +0200
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id ED666280082;
-        Fri, 13 Oct 2023 09:28:53 +0200 (CEST)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     dmitry.baryshkov@linaro.org, andrzej.hajda@intel.com,
-        neil.armstrong@linaro.org, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@gmail.com,
-        daniel@ffwll.ch, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com, vkoul@kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, Sandor Yu <Sandor.yu@nxp.com>,
-        Sandor.yu@nxp.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com, oliver.brown@nxp.com,
-        sam@ravnborg.org
-Subject: Re: [PATCH v10 1/7] drm: bridge: Cadence: Creat mhdp helper driver
-Date:   Fri, 13 Oct 2023 09:28:54 +0200
-Message-ID: <8621221.DvuYhMxLoT@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <d9695d40842ccfd2faab7be9dbc3aa385fec0293.1697162990.git.Sandor.yu@nxp.com>
-References: <cover.1697162990.git.Sandor.yu@nxp.com> <d9695d40842ccfd2faab7be9dbc3aa385fec0293.1697162990.git.Sandor.yu@nxp.com>
+        d=gmail.com; s=20230601; t=1697182250; x=1697787050; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vzVL5vVmRYO7lL+aDIjM1G9uTaxxQRQWQ2vKxVi0PEE=;
+        b=aVDSiankkK8vXZeHSgWVWxEcPu7tkybVPvPmusHLHOfPoTKLWS+pUCSuROzuDaeHgL
+         oZG5iXUrw+gTe9m8hHLTdalAP6mw7KDu1e+W+mJ47g1cKVC8VNAqT4CrqSf1yzG6Xb1Q
+         +bsW5AdSNdxOrm2ySJHxb4Q5DOIbqbdwich18k3bI/d9LAaR8gBh/s8FYkR9AX93B3u8
+         hL0U0btNw2R3zpdqk5wMNCoyLt6MrbjPiq5y0dknbcYzFtepDLbJvY4AH+30iOuApnVo
+         6BDN/ocz7yOrnXyBSjlfSdIo+/fWZeL2/xDz85/AvaJ4opKDKjVDFjbW8ZElWoHnt55t
+         D6Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697182250; x=1697787050;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vzVL5vVmRYO7lL+aDIjM1G9uTaxxQRQWQ2vKxVi0PEE=;
+        b=jFnm6lS5b4f/28OmjPS1AxQEmmnYqqLp8xiXAW0j1MRYql4cW/b6ohVi9cWG6q2N9e
+         NQAGNrV1Lix2ynn2GyOeCTQ0v2ko+Tt1d6manfLe2oy66S+RudyPkgu7zyIxlXMAWtx8
+         jKAmJ3ju0Si4HKGVySUmUEmoulw+IQJZc4+CPp3KtYFIYrsbqGAXjym+2qTY5UIm2vT/
+         FJz+8X77XqTLLcP2zEyuhQjtn74UOExMVtP+8bYwj+jR79ncHS+2ch7tVgbTQHllyD5n
+         XVFu8Bn9866AxKANlvOebwzO1NyNvODMPiNlHW+zrAws1xH7QbyDpAF0JTAZp5Vnls0B
+         yOVg==
+X-Gm-Message-State: AOJu0YzcgWCCZi2fyWHmZtXeuvzWYiI6Pk0Wjz+RUiIFVipxOmZc5Gab
+        mjZzhDahXQJzsMva6m+yJ5k=
+X-Google-Smtp-Source: AGHT+IGQSk4HywK3W12gZApu9SDZ1U/7aZSF8TJnTms0OUo172gVR9nFhI8WW/HWhSIhw74vG/hXEw==
+X-Received: by 2002:adf:a31e:0:b0:32d:888a:c2cf with SMTP id c30-20020adfa31e000000b0032d888ac2cfmr6034412wrb.7.1697182249845;
+        Fri, 13 Oct 2023 00:30:49 -0700 (PDT)
+Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
+        by smtp.gmail.com with ESMTPSA id h15-20020a05600016cf00b0032cc35c2ef7sm9889328wrf.29.2023.10.13.00.30.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 00:30:48 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 13 Oct 2023 09:30:46 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Sandipan Das <sandipan.das@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Uros Bizjak <ubizjak@gmail.com>
+Subject: Re: [PATCH] perf/x86/amd/uncore: fix error codes in amd_uncore_init()
+Message-ID: <ZSjyJuqk3z0RyKP2@gmail.com>
+References: <cec62eba-c4b8-4cb7-9671-58894dd4b974@moroto.mountain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cec62eba-c4b8-4cb7-9671-58894dd4b974@moroto.mountain>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sandor,
 
-thanks for the updated series.
+* Dan Carpenter <dan.carpenter@linaro.org> wrote:
 
-Am Freitag, 13. Oktober 2023, 05:24:20 CEST schrieb Sandor Yu:
-> MHDP8546 mailbox access functions will be share to other mhdp driver
-> and Cadence HDP-TX HDMI/DP PHY drivers.
-> Create a new mhdp helper driver and move all those functions into.
->=20
-> cdns_mhdp_reg_write() is renamed to cdns_mhdp_dp_reg_write(),
-> because it use the DPTX command ID DPTX_WRITE_REGISTER.
->=20
-> New cdns_mhdp_reg_write() is created with the general command ID
-> GENERAL_REGISTER_WRITE.
->=20
-> Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
+> Some of the error paths in this function return don't initialize the
+> error code.  Return -ENODEV.
+> 
+> Fixes: d6389d3ccc13 ("perf/x86/amd/uncore: Refactor uncore management")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 > ---
-> v9->v10:
->  *use mhdp helper driver to replace macro functions,
->  move maibox access function and mhdp hdmi/dp common API
->  functions into the driver.
->=20
->  drivers/gpu/drm/bridge/cadence/Kconfig        |   4
->  drivers/gpu/drm/bridge/cadence/Makefile       |   1 +
->  .../gpu/drm/bridge/cadence/cdns-mhdp-helper.c | 306 ++++++++++++++
->  .../drm/bridge/cadence/cdns-mhdp8546-core.c   | 383 +++---------------
->  .../drm/bridge/cadence/cdns-mhdp8546-core.h   |  44 +-
->  include/drm/bridge/cdns-mhdp-helper.h         |  96 +++++
->  6 files changed, 473 insertions(+), 361 deletions(-)
->  create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp-helper.c
->  create mode 100644 include/drm/bridge/cdns-mhdp-helper.h
->=20
-> diff --git a/drivers/gpu/drm/bridge/cadence/Kconfig
-> b/drivers/gpu/drm/bridge/cadence/Kconfig index ec35215a20034..0b7b4626a7a=
-f0
-> 100644
-> --- a/drivers/gpu/drm/bridge/cadence/Kconfig
-> +++ b/drivers/gpu/drm/bridge/cadence/Kconfig
-> @@ -20,6 +20,9 @@ config DRM_CDNS_DSI_J721E
->  	  the routing of the DSS DPI signal to the Cadence DSI.
->  endif
->=20
-> +config CDNS_MHDP_HELPER
-> +	tristate
-> +
->  config DRM_CDNS_MHDP8546
->  	tristate "Cadence DPI/DP bridge"
->  	select DRM_DISPLAY_DP_HELPER
-> @@ -27,6 +30,7 @@ config DRM_CDNS_MHDP8546
->  	select DRM_DISPLAY_HELPER
->  	select DRM_KMS_HELPER
->  	select DRM_PANEL_BRIDGE
-> +	select CDNS_MHDP_HELPER
->  	depends on OF
->  	help
->  	  Support Cadence DPI to DP bridge. This is an internal
-> diff --git a/drivers/gpu/drm/bridge/cadence/Makefile
-> b/drivers/gpu/drm/bridge/cadence/Makefile index
-> c95fd5b81d137..087dc074820d7 100644
-> --- a/drivers/gpu/drm/bridge/cadence/Makefile
-> +++ b/drivers/gpu/drm/bridge/cadence/Makefile
-> @@ -2,6 +2,7 @@
->  obj-$(CONFIG_DRM_CDNS_DSI) +=3D cdns-dsi.o
->  cdns-dsi-y :=3D cdns-dsi-core.o
->  cdns-dsi-$(CONFIG_DRM_CDNS_DSI_J721E) +=3D cdns-dsi-j721e.o
-> +obj-$(CONFIG_CDNS_MHDP_HELPER) +=3D cdns-mhdp-helper.o
->  obj-$(CONFIG_DRM_CDNS_MHDP8546) +=3D cdns-mhdp8546.o
->  cdns-mhdp8546-y :=3D cdns-mhdp8546-core.o cdns-mhdp8546-hdcp.o
->  cdns-mhdp8546-$(CONFIG_DRM_CDNS_MHDP8546_J721E) +=3D cdns-mhdp8546-j721e=
-=2Eo
-> diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp-helper.c
-> b/drivers/gpu/drm/bridge/cadence/cdns-mhdp-helper.c new file mode 100644
-> index 0000000000000..2e3eee40494f0
-> --- /dev/null
-> +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp-helper.c
-> @@ -0,0 +1,306 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2023 NXP Semiconductor, Inc.
-> + *
-> + */
-> +#include <drm/bridge/cdns-mhdp-helper.h>
-> +#include <linux/dev_printk.h>
-> +#include <linux/module.h>
-> +
-> +/* Mailbox helper functions */
-> +int cdns_mhdp_mailbox_read(struct cdns_mhdp_base *base)
-> +{
-> +	int ret, empty;
-> +
-> +	WARN_ON(!mutex_is_locked(base->mbox_mutex));
-> +
-> +	ret =3D readx_poll_timeout(readl, base->regs + CDNS_MAILBOX_EMPTY,
-> +				 empty, !empty, MAILBOX_RETRY_US,
-> +				 MAILBOX_TIMEOUT_US);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return readl(base->regs + CDNS_MAILBOX_RX_DATA) & 0xff;
-> +}
-> +EXPORT_SYMBOL_GPL(cdns_mhdp_mailbox_read);
+>  arch/x86/events/amd/uncore.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/events/amd/uncore.c b/arch/x86/events/amd/uncore.c
+> index 9b444ce24108..a389828f378c 100644
+> --- a/arch/x86/events/amd/uncore.c
+> +++ b/arch/x86/events/amd/uncore.c
+> @@ -1009,7 +1009,8 @@ static struct amd_uncore uncores[UNCORE_TYPE_MAX] = {
+>  static int __init amd_uncore_init(void)
+>  {
+>  	struct amd_uncore *uncore;
+> -	int ret, i;
+> +	int ret = -ENODEV;
+> +	int i;
+>  
+>  	if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD &&
+>  	    boot_cpu_data.x86_vendor != X86_VENDOR_HYGON)
 
-No need to export this. You can make this function actually static.
+Ugh, why on Earth didn't GCC warn about this? The bad pattern is pretty 
+simple & obvious once pointed out ... compilers should have no trouble 
+realizing that 'ret' is returned uninitialized in some of these control 
+paths. Yet not a peep from the compiler ...
 
-> +
-> +int cdns_mhdp_mailbox_write(struct cdns_mhdp_base *base, u8 val)
-> +{
-> +	int ret, full;
-> +
-> +	WARN_ON(!mutex_is_locked(base->mbox_mutex));
-> +
-> +	ret =3D readx_poll_timeout(readl, base->regs + CDNS_MAILBOX_FULL,
-> +				 full, !full, MAILBOX_RETRY_US,
-> +				 MAILBOX_TIMEOUT_US);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	writel(val, base->regs + CDNS_MAILBOX_TX_DATA);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(cdns_mhdp_mailbox_write);
+Thanks for the fix!
 
-No need to export that one as well. You can make this function actually sta=
-tic=20
-as these two functions are only called from the helper itself.
-
-> +
-> +int cdns_mhdp_mailbox_recv_header(struct cdns_mhdp_base *base,
-> +				  u8 module_id, u8 opcode,
-> +				  u16 req_size)
-> +{
-> +	u32 mbox_size, i;
-> +	u8 header[4];
-> +	int ret;
-> +
-> +	/* read the header of the message */
-> +	for (i =3D 0; i < sizeof(header); i++) {
-> +		ret =3D cdns_mhdp_mailbox_read(base);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		header[i] =3D ret;
-> +	}
-> +
-> +	mbox_size =3D get_unaligned_be16(header + 2);
-> +
-> +	if (opcode !=3D header[0] || module_id !=3D header[1] ||
-> +	    req_size !=3D mbox_size) {
-> +		/*
-> +		 * If the message in mailbox is not what we want, we need=20
-to
-> +		 * clear the mailbox by reading its contents.
-> +		 */
-> +		for (i =3D 0; i < mbox_size; i++)
-> +			if (cdns_mhdp_mailbox_read(base) < 0)
-> +				break;
-> +
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(cdns_mhdp_mailbox_recv_header);
-> +
-> +int cdns_mhdp_mailbox_recv_data(struct cdns_mhdp_base *base,
-> +				u8 *buff, u16 buff_size)
-> +{
-> +	u32 i;
-> +	int ret;
-> +
-> +	for (i =3D 0; i < buff_size; i++) {
-> +		ret =3D cdns_mhdp_mailbox_read(base);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		buff[i] =3D ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(cdns_mhdp_mailbox_recv_data);
-> +
-> +int cdns_mhdp_mailbox_send(struct cdns_mhdp_base *base, u8 module_id,
-> +			   u8 opcode, u16 size, u8 *message)
-> +{
-> +	u8 header[4];
-> +	int ret, i;
-> +
-> +	header[0] =3D opcode;
-> +	header[1] =3D module_id;
-> +	put_unaligned_be16(size, header + 2);
-> +
-> +	for (i =3D 0; i < sizeof(header); i++) {
-> +		ret =3D cdns_mhdp_mailbox_write(base, header[i]);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	for (i =3D 0; i < size; i++) {
-> +		ret =3D cdns_mhdp_mailbox_write(base, message[i]);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(cdns_mhdp_mailbox_send);
-> +
-> +/* General helper functions */
-> +int cdns_mhdp_reg_read(struct cdns_mhdp_base *base, u32 addr, u32 *value)
-> +{
-> +	u8 msg[4], resp[8];
-> +	int ret;
-> +
-> +	put_unaligned_be32(addr, msg);
-> +
-> +	mutex_lock(base->mbox_mutex);
-> +
-> +	ret =3D cdns_mhdp_mailbox_send(base, MB_MODULE_ID_GENERAL,
-> +				     GENERAL_REGISTER_READ,
-> +				     sizeof(msg), msg);
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret =3D cdns_mhdp_mailbox_recv_header(base, MB_MODULE_ID_GENERAL,
-> +					    GENERAL_REGISTER_READ,
-> +					    sizeof(resp));
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret =3D cdns_mhdp_mailbox_recv_data(base, resp, sizeof(resp));
-> +	if (ret)
-> +		goto out;
-> +
-> +	/* Returned address value should be the same as requested */
-> +	if (memcmp(msg, resp, sizeof(msg))) {
-> +		ret =3D -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	*value =3D get_unaligned_be32(resp + 4);
-> +
-> +out:
-> +	mutex_unlock(base->mbox_mutex);
-> +	if (ret) {
-> +		dev_err(base->dev, "Failed to read register\n");
-> +		*value =3D 0;
-> +	}
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(cdns_mhdp_reg_read);
-> +
-> +int cdns_mhdp_reg_write(struct cdns_mhdp_base *base, u32 addr, u32 val)
-> +{
-> +	u8 msg[8];
-> +	int ret;
-> +
-> +	put_unaligned_be32(addr, msg);
-> +	put_unaligned_be32(val, msg + 4);
-> +
-> +	mutex_lock(base->mbox_mutex);
-> +
-> +	ret =3D cdns_mhdp_mailbox_send(base, MB_MODULE_ID_GENERAL,
-> +				     GENERAL_REGISTER_WRITE,
-> +				     sizeof(msg), msg);
-> +
-> +	mutex_unlock(base->mbox_mutex);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(cdns_mhdp_reg_write);
-> +
-> +/* DPTX helper functions */
-> +int cdns_mhdp_dp_reg_write(struct cdns_mhdp_base *base, u16 addr, u32 va=
-l)
-> +{
-> +	u8 msg[6];
-> +	int ret;
-> +
-> +	put_unaligned_be16(addr, msg);
-> +	put_unaligned_be32(val, msg + 2);
-> +
-> +	mutex_lock(base->mbox_mutex);
-> +
-> +	ret =3D cdns_mhdp_mailbox_send(base, MB_MODULE_ID_DP_TX,
-> +				     DPTX_WRITE_REGISTER, sizeof(msg),=20
-msg);
-> +
-> +	mutex_unlock(base->mbox_mutex);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(cdns_mhdp_dp_reg_write);
-> +
-> +int cdns_mhdp_dp_reg_write_bit(struct cdns_mhdp_base *base, u16 addr,
-> +			       u8 start_bit, u8 bits_no, u32 val)
-> +{
-> +	u8 field[8];
-> +	int ret;
-> +
-> +	put_unaligned_be16(addr, field);
-> +	field[2] =3D start_bit;
-> +	field[3] =3D bits_no;
-> +	put_unaligned_be32(val, field + 4);
-> +
-> +	mutex_lock(base->mbox_mutex);
-> +
-> +	ret =3D cdns_mhdp_mailbox_send(base, MB_MODULE_ID_DP_TX,
-> +				     DPTX_WRITE_FIELD, sizeof(field),=20
-field);
-> +
-> +	mutex_unlock(base->mbox_mutex);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(cdns_mhdp_dp_reg_write_bit);
-> +
-> +int cdns_mhdp_dpcd_read(struct cdns_mhdp_base *base,
-> +			u32 addr, u8 *data, u16 len)
-> +{
-> +	u8 msg[5], reg[5];
-> +	int ret;
-> +
-> +	put_unaligned_be16(len, msg);
-> +	put_unaligned_be24(addr, msg + 2);
-> +
-> +	mutex_lock(base->mbox_mutex);
-> +
-> +	ret =3D cdns_mhdp_mailbox_send(base, MB_MODULE_ID_DP_TX,
-> +				     DPTX_READ_DPCD, sizeof(msg),=20
-msg);
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret =3D cdns_mhdp_mailbox_recv_header(base, MB_MODULE_ID_DP_TX,
-> +					    DPTX_READ_DPCD,
-> +					    sizeof(reg) + len);
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret =3D cdns_mhdp_mailbox_recv_data(base, reg, sizeof(reg));
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret =3D cdns_mhdp_mailbox_recv_data(base, data, len);
-> +
-> +out:
-> +	mutex_unlock(base->mbox_mutex);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(cdns_mhdp_dpcd_read);
-> +
-> +int cdns_mhdp_dpcd_write(struct cdns_mhdp_base *base, u32 addr, u8 value)
-> +{
-> +	u8 msg[6], reg[5];
-> +	int ret;
-> +
-> +	put_unaligned_be16(1, msg);
-> +	put_unaligned_be24(addr, msg + 2);
-> +	msg[5] =3D value;
-> +
-> +	mutex_lock(base->mbox_mutex);
-> +
-> +	ret =3D cdns_mhdp_mailbox_send(base, MB_MODULE_ID_DP_TX,
-> +				     DPTX_WRITE_DPCD, sizeof(msg),=20
-msg);
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret =3D cdns_mhdp_mailbox_recv_header(base, MB_MODULE_ID_DP_TX,
-> +					    DPTX_WRITE_DPCD,=20
-sizeof(reg));
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret =3D cdns_mhdp_mailbox_recv_data(base, reg, sizeof(reg));
-> +	if (ret)
-> +		goto out;
-> +
-> +	if (addr !=3D get_unaligned_be24(reg + 2))
-> +		ret =3D -EINVAL;
-> +
-> +out:
-> +	mutex_unlock(base->mbox_mutex);
-> +
-> +	if (ret)
-> +		dev_err(base->dev, "dpcd write failed: %d\n", ret);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(cdns_mhdp_dpcd_write);
-> +
-> +MODULE_DESCRIPTION("Cadence MHDP Helper driver");
-> +MODULE_AUTHOR("Sandor Yu <Sandor.yu@nxp.com>");
-> +MODULE_LICENSE("GPL");
-> [...]
-> diff --git a/include/drm/bridge/cdns-mhdp-helper.h
-> b/include/drm/bridge/cdns-mhdp-helper.h new file mode 100644
-> index 0000000000000..b89db9e842266
-> --- /dev/null
-> +++ b/include/drm/bridge/cdns-mhdp-helper.h
-> @@ -0,0 +1,96 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2023 NXP Semiconductor, Inc.
-> + */
-> +#ifndef __CDNS_MHDP_HELPER_H__
-> +#define __CDNS_MHDP_HELPER_H__
-> +
-> +#include <asm/unaligned.h>
-> +#include <linux/iopoll.h>
-> +
-> +/* mailbox regs offset */
-> +#define CDNS_MAILBOX_FULL			0x00008
-> +#define CDNS_MAILBOX_EMPTY			0x0000c
-> +#define CDNS_MAILBOX_TX_DATA			0x00010
-> +#define CDNS_MAILBOX_RX_DATA			0x00014
-> +
-> +#define MAILBOX_RETRY_US			1000
-> +#define MAILBOX_TIMEOUT_US			2000000
-> +
-> +/* Module ID Code */
-> +#define MB_MODULE_ID_DP_TX			0x01
-> +#define MB_MODULE_ID_HDMI_TX			0x03
-> +#define MB_MODULE_ID_HDCP_TX			0x07
-> +#define MB_MODULE_ID_HDCP_RX			0x08
-> +#define MB_MODULE_ID_HDCP_GENERAL		0x09
-> +#define MB_MODULE_ID_GENERAL			0x0A
-> +
-> +/* General Commands */
-> +#define GENERAL_MAIN_CONTROL			0x01
-> +#define GENERAL_TEST_ECHO			0x02
-> +#define GENERAL_BUS_SETTINGS			0x03
-> +#define GENERAL_TEST_ACCESS			0x04
-> +#define GENERAL_REGISTER_WRITE			0x05
-> +#define GENERAL_WRITE_FIELD			0x06
-> +#define GENERAL_REGISTER_READ			0x07
-> +#define GENERAL_GET_HPD_STATE			0x11
-> +
-> +/* DPTX Commands */
-> +#define DPTX_SET_POWER_MNG			0x00
-> +#define DPTX_SET_HOST_CAPABILITIES		0x01
-> +#define DPTX_GET_EDID				0x02
-> +#define DPTX_READ_DPCD				0x03
-> +#define DPTX_WRITE_DPCD				0x04
-> +#define DPTX_ENABLE_EVENT			0x05
-> +#define DPTX_WRITE_REGISTER			0x06
-> +#define DPTX_READ_REGISTER			0x07
-> +#define DPTX_WRITE_FIELD			0x08
-> +#define DPTX_TRAINING_CONTROL			0x09
-> +#define DPTX_READ_EVENT				0x0a
-> +#define DPTX_READ_LINK_STAT			0x0b
-> +#define DPTX_SET_VIDEO				0x0c
-> +#define DPTX_SET_AUDIO				0x0d
-> +#define DPTX_GET_LAST_AUX_STAUS			0x0e
-> +#define DPTX_SET_LINK_BREAK_POINT		0x0f
-> +#define DPTX_FORCE_LANES			0x10
-> +#define DPTX_HPD_STATE				0x11
-> +#define DPTX_ADJUST_LT				0x12
-> +
-> +/* HDMI TX Commands */
-> +#define HDMI_TX_READ				0x00
-> +#define HDMI_TX_WRITE				0x01
-> +#define HDMI_TX_UPDATE_READ			0x02
-> +#define HDMI_TX_EDID				0x03
-> +#define HDMI_TX_EVENTS				0x04
-> +#define HDMI_TX_HPD_STATUS			0x05
-> +
-> +struct cdns_mhdp_base {
-> +	struct device *dev;
-> +	void __iomem *regs;
-> +	/* protect mailbox communications with the firmware */
-> +	struct mutex *mbox_mutex;
-> +};
-> +
-> +/* Mailbox helper functions */
-> +int cdns_mhdp_mailbox_read(struct cdns_mhdp_base *base);
-> +int cdns_mhdp_mailbox_write(struct cdns_mhdp_base *base, u8 val);
-
-You can remove these two declarations.
-
-Best regards,
-Alexander
-
-Best regards,
-> +int cdns_mhdp_mailbox_recv_header(struct cdns_mhdp_base *base,
-> +				  u8 module_id, u8 opcode, u16=20
-req_size);
-> +int cdns_mhdp_mailbox_recv_data(struct cdns_mhdp_base *base,
-> +				u8 *buff, u16 buff_size);
-> +int cdns_mhdp_mailbox_send(struct cdns_mhdp_base *base, u8 module_id,
-> +			   u8 opcode, u16 size, u8 *message);
-> +
-> +/* General commands helper functions */
-> +int cdns_mhdp_reg_read(struct cdns_mhdp_base *base, u32 addr, u32 *value=
-);
-> +int cdns_mhdp_reg_write(struct cdns_mhdp_base *base, u32 addr, u32 val);
-> +
-> +/* DPTX commands helper functions */
-> +int cdns_mhdp_dp_reg_write(struct cdns_mhdp_base *base, u16 addr, u32 va=
-l);
-> +int cdns_mhdp_dp_reg_write_bit(struct cdns_mhdp_base *base, u16 addr, +=
-=09
-	=09
->       u8 start_bit, u8 bits_no, u32 val);
-> +int cdns_mhdp_dpcd_read(struct cdns_mhdp_base *base,
-> +			u32 addr, u8 *data, u16 len);
-> +int cdns_mhdp_dpcd_write(struct cdns_mhdp_base *base, u32 addr, u8 value=
-);
-> +
-> +#endif /* __CDNS_MHDP_HELPER_H__ */
-
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-
-
-
+	Ingo
