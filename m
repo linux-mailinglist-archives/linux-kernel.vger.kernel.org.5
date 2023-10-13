@@ -2,50 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8A57C88EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 591EB7C88EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232466AbjJMPlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
+        id S232465AbjJMPmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 11:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbjJMPlp (ORCPT
+        with ESMTP id S232467AbjJMPmC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:41:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F877C9;
-        Fri, 13 Oct 2023 08:41:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E96F9C433C7;
-        Fri, 13 Oct 2023 15:41:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697211704;
-        bh=WtbPqvXD8Sp/dZdaV6c5+xedVuADZeNktkl6UocO2vQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OLrrFrOx70w9wRHUO2/WbfZRJDcD6ULGeBlcbzzq2Qvy/LgaudtfdpL/5WAfzLrmK
-         as0k8cc00B4vYeXBDj01em/D5j/kSmb9datCsxZqSI/wTI+bp1h6Yat69GLzEzZoRB
-         +EASbtsyAeW6QwKqlWDEgVWWVotHzJGIkrBeUqZpeEtQCTMwwHDGbYcTMTudvyEU67
-         ezLyTM3H1kGB5OHPoQlZH+U4/CUNmGIM+ONK1M351GpICPWDlks27Z+RMmNa8T9vRo
-         yDXZacPNJTm6yfQ4ygkzhz1PWQj08a7zqEKirFx9QhdZ3TOFi0uDgzXucFlCULImMT
-         xMeY2nNuQ/4AA==
-Date:   Fri, 13 Oct 2023 17:41:41 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Wenchao Hao <haowenchao2@huawei.com>
-Cc:     Hannes Reinecke <hare@suse.de>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, louhongxiang@huawei.com
-Subject: Re: [PATCH] scsi: libfc: Fix potential NULL pointer dereference in
- fc_lport_ptp_setup
-Message-ID: <20231013154141.GO29570@kernel.org>
-References: <20231011130350.819571-1-haowenchao2@huawei.com>
+        Fri, 13 Oct 2023 11:42:02 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D72BB
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:41:58 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1e9d3cc6e7aso729087fac.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1697211718; x=1697816518; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=58F4pC3mBDu8F+pvcYNIm1FByUJEAPva6M9hCs3f/vs=;
+        b=n+BqQMAKWJX45AnFEWePhAqGlkLkXrnY0T7msk+XhAMKqkVcC1Zncxg9ON0N79vJQi
+         uuCIL7VVp44DdNoBOoFFoZM4dH1AjhOWHn8i/jNP+HbNGexnAJVYNcdGfhSCXIuv5zZk
+         xG8BSJqWHcc1NGCb5y/9PfstHSukkld0lzVWudGZ38hwnUAnKvHVf51rJg81bjSrDAD8
+         QsXt0gsfgcjBv0JOp28jbp7zOeqUKPu3YOQivYr/XxG0Heg5lRqySMHPxQdx97uWW8h8
+         ukDBuHjTaiDAytEaWbqZZgRowb8J1y5SXTGPlox+JisQsKaGTs7BGacRiVDBz1FZiNq9
+         bMjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697211718; x=1697816518;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=58F4pC3mBDu8F+pvcYNIm1FByUJEAPva6M9hCs3f/vs=;
+        b=RqfVYdZjbAl2wVfWtP4/CFJZHAlZKB4XmJKlBkkXD6yh5examero+LHn4sQPWsk8Ie
+         iCgrgRzxFOjmJqFoS2Rk+CG2tu1xdflSb9wdsMniQhyPS09KWfRFiDyo78AgY3bDKmb7
+         FCnhooKQy+Ntm511NkMsKQXiyQofgBn2615kCBYtDwIchqrTtUMX2jwkqYGGg2fJK0vk
+         ZtyYfdzDpJ5Jw1NMeG+MH/Ax/Ni9EAWTZ5+bLI/vlQTg5ksL7NSTIB1LLGITTypu/IPH
+         58Duc6/ltovPtcJuNn8S+KLhAOowfvLzwkHqeJS1m7kvzrpIlwcMepJnqIgEz6DCSN6b
+         +nlg==
+X-Gm-Message-State: AOJu0YxKGpf6IiqFxuDh9ljGJFN/c5coOCMtHAOru7I/94Nm2DoIFJJj
+        vUMoqMlxUgJkQo0eiUB6UCfMG0MnYGpiXohGEPUgoQ==
+X-Google-Smtp-Source: AGHT+IEzcIYsSKMe5bsbRMbzf4xh1PED9ixUfbd1o7ixVah0VHZj9arKWffuv9/jPa1nkBsBkAGklSaRf41sshg9uSY=
+X-Received: by 2002:a05:6870:6587:b0:1e9:b7a7:8efe with SMTP id
+ fp7-20020a056870658700b001e9b7a78efemr5211668oab.2.1697211718067; Fri, 13 Oct
+ 2023 08:41:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011130350.819571-1-haowenchao2@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+References: <20231012051509.738750-1-apatel@ventanamicro.com>
+ <20231012051509.738750-8-apatel@ventanamicro.com> <87fs2ghxyz.fsf@all.your.base.are.belong.to.us>
+In-Reply-To: <87fs2ghxyz.fsf@all.your.base.are.belong.to.us>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Fri, 13 Oct 2023 21:11:46 +0530
+Message-ID: <CAK9=C2XFTULtQ6YoNHDb7WJwm8p3wkG_pJA8h+XYGEOzt18Ctg@mail.gmail.com>
+Subject: Re: [PATCH v2 7/8] tty: Add SBI debug console support to HVC SBI driver
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Conor Dooley <conor@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,16 +78,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 09:03:50PM +0800, Wenchao Hao wrote:
-> fc_lport_ptp_setup() did not check the return value of fc_rport_create()
-> which is possible to return NULL which would cause a NULL pointer
-> dereference. Address this issue by checking return value of
-> fc_rport_create() and log error message on fc_rport_create() failed.
-> 
-> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+On Thu, Oct 12, 2023 at 5:08=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel=
+.org> wrote:
+>
+> Anup Patel <apatel@ventanamicro.com> writes:
+>
+> > From: Atish Patra <atishp@rivosinc.com>
+> >
+> > RISC-V SBI specification supports advanced debug console
+> > support via SBI DBCN extension.
+> >
+> > Extend the HVC SBI driver to support it.
+> >
+> > Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > ---
+> >  drivers/tty/hvc/Kconfig         |  2 +-
+> >  drivers/tty/hvc/hvc_riscv_sbi.c | 76 ++++++++++++++++++++++++++++++---
+> >  2 files changed, 70 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/tty/hvc/Kconfig b/drivers/tty/hvc/Kconfig
+> > index 4f9264d005c0..6e05c5c7bca1 100644
+> > --- a/drivers/tty/hvc/Kconfig
+> > +++ b/drivers/tty/hvc/Kconfig
+> > @@ -108,7 +108,7 @@ config HVC_DCC_SERIALIZE_SMP
+> >
+> >  config HVC_RISCV_SBI
+> >       bool "RISC-V SBI console support"
+> > -     depends on RISCV_SBI_V01
+> > +     depends on RISCV_SBI
+> >       select HVC_DRIVER
+> >       help
+> >         This enables support for console output via RISC-V SBI calls, w=
+hich
+> > diff --git a/drivers/tty/hvc/hvc_riscv_sbi.c b/drivers/tty/hvc/hvc_risc=
+v_sbi.c
+> > index 31f53fa77e4a..da318d7f55c5 100644
+> > --- a/drivers/tty/hvc/hvc_riscv_sbi.c
+> > +++ b/drivers/tty/hvc/hvc_riscv_sbi.c
+> > @@ -39,21 +39,83 @@ static int hvc_sbi_tty_get(uint32_t vtermno, char *=
+buf, int count)
+> >       return i;
+> >  }
+> >
+> > -static const struct hv_ops hvc_sbi_ops =3D {
+> > +static const struct hv_ops hvc_sbi_v01_ops =3D {
+> >       .get_chars =3D hvc_sbi_tty_get,
+> >       .put_chars =3D hvc_sbi_tty_put,
+> >  };
+> >
+> > -static int __init hvc_sbi_init(void)
+> > +static int hvc_sbi_dbcn_tty_put(uint32_t vtermno, const char *buf, int=
+ count)
+> >  {
+> > -     return PTR_ERR_OR_ZERO(hvc_alloc(0, 0, &hvc_sbi_ops, 16));
+> > +     phys_addr_t pa;
+> > +     struct sbiret ret;
+> > +
+> > +     if (is_vmalloc_addr(buf))
+> > +             pa =3D page_to_phys(vmalloc_to_page(buf)) + offset_in_pag=
+e(buf);
+>
+> What is assumed from buf here? If buf is crossing a page, you need to
+> adjust the count, no?
+
+I never saw a page crossing buffer but I will certainly address this
+in the next revision.
+
+>
+> > +     else
+> > +             pa =3D __pa(buf);
+> > +
+> > +     if (IS_ENABLED(CONFIG_32BIT))
+> > +             ret =3D sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRIT=
+E,
+> > +                             count, lower_32_bits(pa), upper_32_bits(p=
+a),
+> > +                             0, 0, 0);
+> > +     else
+> > +             ret =3D sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRIT=
+E,
+> > +                             count, pa, 0, 0, 0, 0);
+> > +     if (ret.error)
+> > +             return 0;
+> > +
+> > +     return count;
+> >  }
+> > -device_initcall(hvc_sbi_init);
+> >
+> > -static int __init hvc_sbi_console_init(void)
+> > +static int hvc_sbi_dbcn_tty_get(uint32_t vtermno, char *buf, int count=
+)
+> >  {
+> > -     hvc_instantiate(0, 0, &hvc_sbi_ops);
+> > +     phys_addr_t pa;
+> > +     struct sbiret ret;
+> > +
+> > +     if (is_vmalloc_addr(buf))
+> > +             pa =3D page_to_phys(vmalloc_to_page(buf)) + offset_in_pag=
+e(buf);
+>
+> And definitely adjust count here, if we're crossing a page!
+
+Sure, I will update here as well.
 
 Thanks,
-
-I verified that fc_lport_ptp_setup can return NULL (if kzalloc fails).
-
-Reviewed-by: Simon Horman <horms@kernel.org>
+Anup
