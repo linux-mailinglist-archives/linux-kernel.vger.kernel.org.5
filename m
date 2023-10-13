@@ -2,185 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 591EB7C88EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A0F7C88F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbjJMPmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55078 "EHLO
+        id S232470AbjJMPn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 11:43:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232467AbjJMPmC (ORCPT
+        with ESMTP id S232486AbjJMPny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:42:02 -0400
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D72BB
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:41:58 -0700 (PDT)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1e9d3cc6e7aso729087fac.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:41:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697211718; x=1697816518; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=58F4pC3mBDu8F+pvcYNIm1FByUJEAPva6M9hCs3f/vs=;
-        b=n+BqQMAKWJX45AnFEWePhAqGlkLkXrnY0T7msk+XhAMKqkVcC1Zncxg9ON0N79vJQi
-         uuCIL7VVp44DdNoBOoFFoZM4dH1AjhOWHn8i/jNP+HbNGexnAJVYNcdGfhSCXIuv5zZk
-         xG8BSJqWHcc1NGCb5y/9PfstHSukkld0lzVWudGZ38hwnUAnKvHVf51rJg81bjSrDAD8
-         QsXt0gsfgcjBv0JOp28jbp7zOeqUKPu3YOQivYr/XxG0Heg5lRqySMHPxQdx97uWW8h8
-         ukDBuHjTaiDAytEaWbqZZgRowb8J1y5SXTGPlox+JisQsKaGTs7BGacRiVDBz1FZiNq9
-         bMjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697211718; x=1697816518;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=58F4pC3mBDu8F+pvcYNIm1FByUJEAPva6M9hCs3f/vs=;
-        b=RqfVYdZjbAl2wVfWtP4/CFJZHAlZKB4XmJKlBkkXD6yh5examero+LHn4sQPWsk8Ie
-         iCgrgRzxFOjmJqFoS2Rk+CG2tu1xdflSb9wdsMniQhyPS09KWfRFiDyo78AgY3bDKmb7
-         FCnhooKQy+Ntm511NkMsKQXiyQofgBn2615kCBYtDwIchqrTtUMX2jwkqYGGg2fJK0vk
-         ZtyYfdzDpJ5Jw1NMeG+MH/Ax/Ni9EAWTZ5+bLI/vlQTg5ksL7NSTIB1LLGITTypu/IPH
-         58Duc6/ltovPtcJuNn8S+KLhAOowfvLzwkHqeJS1m7kvzrpIlwcMepJnqIgEz6DCSN6b
-         +nlg==
-X-Gm-Message-State: AOJu0YxKGpf6IiqFxuDh9ljGJFN/c5coOCMtHAOru7I/94Nm2DoIFJJj
-        vUMoqMlxUgJkQo0eiUB6UCfMG0MnYGpiXohGEPUgoQ==
-X-Google-Smtp-Source: AGHT+IEzcIYsSKMe5bsbRMbzf4xh1PED9ixUfbd1o7ixVah0VHZj9arKWffuv9/jPa1nkBsBkAGklSaRf41sshg9uSY=
-X-Received: by 2002:a05:6870:6587:b0:1e9:b7a7:8efe with SMTP id
- fp7-20020a056870658700b001e9b7a78efemr5211668oab.2.1697211718067; Fri, 13 Oct
- 2023 08:41:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231012051509.738750-1-apatel@ventanamicro.com>
- <20231012051509.738750-8-apatel@ventanamicro.com> <87fs2ghxyz.fsf@all.your.base.are.belong.to.us>
-In-Reply-To: <87fs2ghxyz.fsf@all.your.base.are.belong.to.us>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Fri, 13 Oct 2023 21:11:46 +0530
-Message-ID: <CAK9=C2XFTULtQ6YoNHDb7WJwm8p3wkG_pJA8h+XYGEOzt18Ctg@mail.gmail.com>
-Subject: Re: [PATCH v2 7/8] tty: Add SBI debug console support to HVC SBI driver
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+        Fri, 13 Oct 2023 11:43:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B27B7;
+        Fri, 13 Oct 2023 08:43:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697211832; x=1728747832;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=29s3G1E9QTs2ByafqFzcoETkhW2Zmk6RFxqLUJpfMg4=;
+  b=nSXee22DwG/hXZS82mu2mR2s8jD5nVzDLGztMHa2GzkciKIglmh/arQh
+   DAdVqHowsUq5zd2kELZe2yvLQMk2xMV0VCUxvG/MJFMWdfDofqODmxzvh
+   mT/acw52XYjYh7gpF6GCoiIY2mP0Xw0S1sWqWp54Dqrx6w8bLh5hIrB3W
+   poMXMP8iZsFtS7AR5VjwCYrfEO+kYoRGSs1H4IQPYbXnuW5L1lrXdqgux
+   M+0Vi44CXsY51PDbNxV/+xTwQtEbDgNI5GVAOgpvpNWNwISTqrTT44xXk
+   uo2Hq5qB7qju8hjGMyanEenMsomL8dsYDg0DegguCUswfH2bA/pwOGp+L
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="370274666"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="370274666"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 08:43:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="928461808"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="928461808"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 13 Oct 2023 08:43:44 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qrKKE-00052P-0v;
+        Fri, 13 Oct 2023 15:43:42 +0000
+Date:   Fri, 13 Oct 2023 23:43:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Alexander Graf <graf@amazon.com>, linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-crypto@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Conor Dooley <conor@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Olivia Mackall <olivia@selenic.com>,
+        Petre Eftime <petre.eftime@gmail.com>,
+        Erdem Meydanlli <meydanli@amazon.nl>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Kyunghwan Kwon <k@mononn.com>
+Subject: Re: [PATCH v4 2/2] misc: Add Nitro Secure Module driver
+Message-ID: <202310132329.UIMS3J8a-lkp@intel.com>
+References: <20231009212053.2007-3-graf@amazon.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009212053.2007-3-graf@amazon.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 5:08=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel=
-.org> wrote:
->
-> Anup Patel <apatel@ventanamicro.com> writes:
->
-> > From: Atish Patra <atishp@rivosinc.com>
-> >
-> > RISC-V SBI specification supports advanced debug console
-> > support via SBI DBCN extension.
-> >
-> > Extend the HVC SBI driver to support it.
-> >
-> > Signed-off-by: Atish Patra <atishp@rivosinc.com>
-> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > ---
-> >  drivers/tty/hvc/Kconfig         |  2 +-
-> >  drivers/tty/hvc/hvc_riscv_sbi.c | 76 ++++++++++++++++++++++++++++++---
-> >  2 files changed, 70 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/drivers/tty/hvc/Kconfig b/drivers/tty/hvc/Kconfig
-> > index 4f9264d005c0..6e05c5c7bca1 100644
-> > --- a/drivers/tty/hvc/Kconfig
-> > +++ b/drivers/tty/hvc/Kconfig
-> > @@ -108,7 +108,7 @@ config HVC_DCC_SERIALIZE_SMP
-> >
-> >  config HVC_RISCV_SBI
-> >       bool "RISC-V SBI console support"
-> > -     depends on RISCV_SBI_V01
-> > +     depends on RISCV_SBI
-> >       select HVC_DRIVER
-> >       help
-> >         This enables support for console output via RISC-V SBI calls, w=
-hich
-> > diff --git a/drivers/tty/hvc/hvc_riscv_sbi.c b/drivers/tty/hvc/hvc_risc=
-v_sbi.c
-> > index 31f53fa77e4a..da318d7f55c5 100644
-> > --- a/drivers/tty/hvc/hvc_riscv_sbi.c
-> > +++ b/drivers/tty/hvc/hvc_riscv_sbi.c
-> > @@ -39,21 +39,83 @@ static int hvc_sbi_tty_get(uint32_t vtermno, char *=
-buf, int count)
-> >       return i;
-> >  }
-> >
-> > -static const struct hv_ops hvc_sbi_ops =3D {
-> > +static const struct hv_ops hvc_sbi_v01_ops =3D {
-> >       .get_chars =3D hvc_sbi_tty_get,
-> >       .put_chars =3D hvc_sbi_tty_put,
-> >  };
-> >
-> > -static int __init hvc_sbi_init(void)
-> > +static int hvc_sbi_dbcn_tty_put(uint32_t vtermno, const char *buf, int=
- count)
-> >  {
-> > -     return PTR_ERR_OR_ZERO(hvc_alloc(0, 0, &hvc_sbi_ops, 16));
-> > +     phys_addr_t pa;
-> > +     struct sbiret ret;
-> > +
-> > +     if (is_vmalloc_addr(buf))
-> > +             pa =3D page_to_phys(vmalloc_to_page(buf)) + offset_in_pag=
-e(buf);
->
-> What is assumed from buf here? If buf is crossing a page, you need to
-> adjust the count, no?
+Hi Alexander,
 
-I never saw a page crossing buffer but I will certainly address this
-in the next revision.
+kernel test robot noticed the following build errors:
 
->
-> > +     else
-> > +             pa =3D __pa(buf);
-> > +
-> > +     if (IS_ENABLED(CONFIG_32BIT))
-> > +             ret =3D sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRIT=
-E,
-> > +                             count, lower_32_bits(pa), upper_32_bits(p=
-a),
-> > +                             0, 0, 0);
-> > +     else
-> > +             ret =3D sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRIT=
-E,
-> > +                             count, pa, 0, 0, 0, 0);
-> > +     if (ret.error)
-> > +             return 0;
-> > +
-> > +     return count;
-> >  }
-> > -device_initcall(hvc_sbi_init);
-> >
-> > -static int __init hvc_sbi_console_init(void)
-> > +static int hvc_sbi_dbcn_tty_get(uint32_t vtermno, char *buf, int count=
-)
-> >  {
-> > -     hvc_instantiate(0, 0, &hvc_sbi_ops);
-> > +     phys_addr_t pa;
-> > +     struct sbiret ret;
-> > +
-> > +     if (is_vmalloc_addr(buf))
-> > +             pa =3D page_to_phys(vmalloc_to_page(buf)) + offset_in_pag=
-e(buf);
->
-> And definitely adjust count here, if we're crossing a page!
+[auto build test ERROR on char-misc/char-misc-testing]
+[also build test ERROR on char-misc/char-misc-next char-misc/char-misc-linus soc/for-next linus/master v6.6-rc5 next-20231012]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Sure, I will update here as well.
+url:    https://github.com/intel-lab-lkp/linux/commits/Alexander-Graf/Import-CBOR-library/20231010-052529
+base:   char-misc/char-misc-testing
+patch link:    https://lore.kernel.org/r/20231009212053.2007-3-graf%40amazon.com
+patch subject: [PATCH v4 2/2] misc: Add Nitro Secure Module driver
+config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20231013/202310132329.UIMS3J8a-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231013/202310132329.UIMS3J8a-lkp@intel.com/reproduce)
 
-Thanks,
-Anup
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310132329.UIMS3J8a-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from include/asm-generic/ioctl.h:5,
+                    from arch/powerpc/include/uapi/asm/ioctl.h:12,
+                    from include/uapi/linux/ioctl.h:5,
+                    from include/uapi/linux/random.h:12,
+                    from include/linux/random.h:10,
+                    from include/linux/nodemask.h:97,
+                    from include/linux/list_lru.h:12,
+                    from include/linux/fs.h:13,
+                    from drivers/misc/nsm.c:23:
+>> include/uapi/asm-generic/ioctl.h:70:9: error: initializer element is not constant
+      70 |         (((dir)  << _IOC_DIRSHIFT) | \
+         |         ^
+   include/uapi/asm-generic/ioctl.h:88:33: note: in expansion of macro '_IOC'
+      88 | #define _IOWR(type,nr,size)     _IOC(_IOC_READ|_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
+         |                                 ^~~~
+   include/uapi/linux/nsm.h:172:33: note: in expansion of macro '_IOWR'
+     172 | #define NSM_IOCTL_ATTESTATION   _IOWR(NSM_MAGIC, 0x6, union nsm_attestation)
+         |                                 ^~~~~
+   drivers/misc/nsm.c:1209:11: note: in expansion of macro 'NSM_IOCTL_ATTESTATION'
+    1209 |         { NSM_IOCTL_ATTESTATION, _fill_req_attestation, _parse_resp_attestation },
+         |           ^~~~~~~~~~~~~~~~~~~~~
+   include/uapi/asm-generic/ioctl.h:70:9: note: (near initialization for 'nsm_ioctls[6].cmd')
+      70 |         (((dir)  << _IOC_DIRSHIFT) | \
+         |         ^
+   include/uapi/asm-generic/ioctl.h:88:33: note: in expansion of macro '_IOC'
+      88 | #define _IOWR(type,nr,size)     _IOC(_IOC_READ|_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
+         |                                 ^~~~
+   include/uapi/linux/nsm.h:172:33: note: in expansion of macro '_IOWR'
+     172 | #define NSM_IOCTL_ATTESTATION   _IOWR(NSM_MAGIC, 0x6, union nsm_attestation)
+         |                                 ^~~~~
+   drivers/misc/nsm.c:1209:11: note: in expansion of macro 'NSM_IOCTL_ATTESTATION'
+    1209 |         { NSM_IOCTL_ATTESTATION, _fill_req_attestation, _parse_resp_attestation },
+         |           ^~~~~~~~~~~~~~~~~~~~~
+>> include/uapi/asm-generic/ioctl.h:70:9: error: initializer element is not constant
+      70 |         (((dir)  << _IOC_DIRSHIFT) | \
+         |         ^
+   include/uapi/asm-generic/ioctl.h:88:33: note: in expansion of macro '_IOC'
+      88 | #define _IOWR(type,nr,size)     _IOC(_IOC_READ|_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
+         |                                 ^~~~
+   include/uapi/linux/nsm.h:186:33: note: in expansion of macro '_IOWR'
+     186 | #define NSM_IOCTL_RANDOM        _IOWR(NSM_MAGIC, 0x7, union nsm_get_random)
+         |                                 ^~~~~
+   drivers/misc/nsm.c:1210:11: note: in expansion of macro 'NSM_IOCTL_RANDOM'
+    1210 |         { NSM_IOCTL_RANDOM, _fill_req_get_random, _parse_resp_get_random },
+         |           ^~~~~~~~~~~~~~~~
+   include/uapi/asm-generic/ioctl.h:70:9: note: (near initialization for 'nsm_ioctls[7].cmd')
+      70 |         (((dir)  << _IOC_DIRSHIFT) | \
+         |         ^
+   include/uapi/asm-generic/ioctl.h:88:33: note: in expansion of macro '_IOC'
+      88 | #define _IOWR(type,nr,size)     _IOC(_IOC_READ|_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
+         |                                 ^~~~
+   include/uapi/linux/nsm.h:186:33: note: in expansion of macro '_IOWR'
+     186 | #define NSM_IOCTL_RANDOM        _IOWR(NSM_MAGIC, 0x7, union nsm_get_random)
+         |                                 ^~~~~
+   drivers/misc/nsm.c:1210:11: note: in expansion of macro 'NSM_IOCTL_RANDOM'
+    1210 |         { NSM_IOCTL_RANDOM, _fill_req_get_random, _parse_resp_get_random },
+         |           ^~~~~~~~~~~~~~~~
+
+
+vim +70 include/uapi/asm-generic/ioctl.h
+
+8a1ab3155c2ac7 David Howells 2012-10-04  68  
+8a1ab3155c2ac7 David Howells 2012-10-04  69  #define _IOC(dir,type,nr,size) \
+8a1ab3155c2ac7 David Howells 2012-10-04 @70  	(((dir)  << _IOC_DIRSHIFT) | \
+8a1ab3155c2ac7 David Howells 2012-10-04  71  	 ((type) << _IOC_TYPESHIFT) | \
+8a1ab3155c2ac7 David Howells 2012-10-04  72  	 ((nr)   << _IOC_NRSHIFT) | \
+8a1ab3155c2ac7 David Howells 2012-10-04  73  	 ((size) << _IOC_SIZESHIFT))
+8a1ab3155c2ac7 David Howells 2012-10-04  74  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
