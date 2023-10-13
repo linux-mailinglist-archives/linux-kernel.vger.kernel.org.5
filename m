@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA207C8DB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 21:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D9E7C8DB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 21:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231731AbjJMTVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 15:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49598 "EHLO
+        id S231750AbjJMTWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 15:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbjJMTVs (ORCPT
+        with ESMTP id S231468AbjJMTWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 15:21:48 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F3495;
-        Fri, 13 Oct 2023 12:21:45 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-313e742a787so1553732f8f.1;
-        Fri, 13 Oct 2023 12:21:45 -0700 (PDT)
+        Fri, 13 Oct 2023 15:22:23 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A213A95
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:22:21 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9ba081173a3so404022766b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:22:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697224904; x=1697829704; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RxJuvqrlrMiNG1ulmdPZtrlk8o7WsHfPxtKGTiZjzss=;
-        b=Co01GOYGKAW0tQQfAmpsibGFUdT3tWMB9LGgrEHqjrWdnn/cictPGKaT+buXMDDxo8
-         9mTSPOyQbM3yktvph8Uhm/RwJLa0Mn4cU+kZThLUoJWrYiJ9/xtPPGqc+uZjvX3KAN62
-         6hBHeHM2CxjrCAHFF9Oz/WjWhOInzArEYZTez7GrG3NX2AwKV75PmJreeufy9LfAIOZX
-         bWdVkbBACxDIcSI+Jc99LgAyqwEIIvuJCZDnmyKZIaSMrv8/TJdZy/rQxjr1wtaSJCbY
-         0NXkL2E4UnP0PcJwK0w2zHIafoqQ8XQXF8mPIAXUn/kvvmrwF8Kmmflk9CqIWjhR9MWu
-         YrNA==
+        d=linux-foundation.org; s=google; t=1697224940; x=1697829740; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=yMlHIs+RXRwcCam9b7W7YcpdMJXw0XO1+U1rinkBh7Y=;
+        b=B2UXJ/8UW+lWrvcfgGZ79/xVAgiwWwCcEzlsu5QD4aRfSd0ppsdnw/aHTXkDVhK1+p
+         erS3XncMNha87j7pXShBzshTdQGxAoq9oXXwYo7SD0Xmi9WNomuuVkuS43f6j20tFFEW
+         uuQDwbsKi2hSojyJsSd/39B9If/BlzqXP0nT4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697224904; x=1697829704;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RxJuvqrlrMiNG1ulmdPZtrlk8o7WsHfPxtKGTiZjzss=;
-        b=H2KUddwtoOqGJArF+kzDzhh8WF+mnFxXnJYUK/f2MsHmJ7X9bERJvDuHvuJqIkysqu
-         pxAtvjbTJvEIskwnGzi7MdtoqVfjIJ+5PU4gNBZ7H33gev02Mj6Upn4h9N3h6WxZB/Hi
-         psMqiNG2aMxjgmKmbdGkMi3jpD+vKReyyVWOBzd5OhHOpoP3WjKMHC52Vte0owa9MbYq
-         edpxKLA9ijejU70TZ/RxJ4rvreDX/eDkJYqWtOGNsbIGbmUqwjSujxOJ1s1IhQu08q6k
-         nm+YeG5A+NSkJWf9J5gUf/KciFoIcb/kpSp4UNh9SmQWKVjZHnkcizsOGURoQryPKUFf
-         JoTg==
-X-Gm-Message-State: AOJu0YyOrnJSqDkJmBTNME15si8d48czKCRofb4hRfrgqgW44wqyPcyF
-        AnqcM/zdENmbxVocMjsbiiU=
-X-Google-Smtp-Source: AGHT+IELDlyPz7gN5vyh6szAavsAMEHQMOCMaIDGJwmShMWPYZa5uXJZDWsPkLOjZ0lf9lhi98Ixag==
-X-Received: by 2002:adf:b353:0:b0:317:6734:c2ae with SMTP id k19-20020adfb353000000b003176734c2aemr905155wrd.11.1697224903581;
-        Fri, 13 Oct 2023 12:21:43 -0700 (PDT)
-Received: from jernej-laptop.localnet ([188.159.248.16])
-        by smtp.gmail.com with ESMTPSA id o9-20020a5d4749000000b0032d9523de65sm4071755wrs.48.2023.10.13.12.21.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 12:21:43 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     conor@kernel.org, Julian Ribbeck <julian.ribbeck@gmx.de>
-Cc:     conor+dt@kernel.org, devicetree@vger.kernel.org,
-        julian.ribbeck@gmx.de, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        robh+dt@kernel.org, samuel@sholland.org, wens@csie.org
-Subject: Re: [PATCH v4 1/2] ARM: dts: sun7i: Add Iteaduino Plus A20
-Date:   Fri, 13 Oct 2023 21:21:42 +0200
-Message-ID: <22045443.EfDdHjke4D@jernej-laptop>
-In-Reply-To: <2242644.iZASKD2KPV@jernej-laptop>
-References: <20230929-given-making-f3fac6afb176@spud>
- <20231006090154.9289-1-julian.ribbeck@gmx.de>
- <2242644.iZASKD2KPV@jernej-laptop>
+        d=1e100.net; s=20230601; t=1697224940; x=1697829740;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yMlHIs+RXRwcCam9b7W7YcpdMJXw0XO1+U1rinkBh7Y=;
+        b=Nu9iXPqzBZXCsOgxyAxjcziBQJ2DcT7uFyeSCJi9hItzaFa4YdjdjyCgghcV3kCvjs
+         2HVkBeruXJ1joDnUdlTGRQXSF/VE9MrmXtdLp1VcTkPWd5aNnRBX4RiVm4lhzD4DxuRx
+         rzwroo4DbmQsr8JV5O65LHi4VyBJ1azwyFVBPNUzu19ZPDaaxH/JecMDQoky4Aq6hSD0
+         bi1kO+9UVJQJ1pdbg2r+qhNbo26jjPSDCY24+8CM/5Ec2iiMyShow/MaETlHyb8tvODY
+         krUBJ9ddmkgPsylkI0nfDO/lL8QaHs6XvXBlJ0WaNHiQsEkjei3MUOhBRRsxwr/feoqJ
+         sa0w==
+X-Gm-Message-State: AOJu0YwbZJLiMIcz7E6exJNS2/94V/GRrDJJnBXNWwVTVWcq8PTcEWZD
+        ABJ9/4vMcWkAUS6YolTH4NT2pSyvlubwjcOTuA9tVxi7
+X-Google-Smtp-Source: AGHT+IGzm52kbpIluUC9fFpPd+zxi0YOO+fM8SIN/PYQU1XKPC4QbXS31Vo7iG/3MRKSZM+BCFfX2g==
+X-Received: by 2002:a17:906:99c2:b0:9be:7b67:1674 with SMTP id s2-20020a17090699c200b009be7b671674mr40974ejn.3.1697224940182;
+        Fri, 13 Oct 2023 12:22:20 -0700 (PDT)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
+        by smtp.gmail.com with ESMTPSA id g21-20020a170906349500b0099290e2c163sm12607067ejb.204.2023.10.13.12.22.19
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Oct 2023 12:22:19 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-9ba1eb73c27so403547066b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:22:19 -0700 (PDT)
+X-Received: by 2002:a17:907:7790:b0:9b9:facb:d950 with SMTP id
+ ky16-20020a170907779000b009b9facbd950mr17575861ejc.72.1697224939431; Fri, 13
+ Oct 2023 12:22:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20220927131518.30000-1-ojeda@kernel.org> <20220927131518.30000-26-ojeda@kernel.org>
+ <Y0BfN1BdVCWssvEu@hirez.programming.kicks-ass.net> <CABCJKuenkHXtbWOLZ0_isGewxd19qkM7OcLeE2NzM6dSkXS4mQ@mail.gmail.com>
+ <CANiq72k6s4=0E_AHv7FPsCQhkyxf7c-b+wUtzfjf+Spehe9Fmg@mail.gmail.com>
+ <CABCJKuca0fOAs=E6LeHJiT2LOXEoPvLVKztA=u+ARcw=tbT=tw@mail.gmail.com>
+ <20231012104741.GN6307@noisy.programming.kicks-ass.net> <CABCJKufEagwJ=TQnmVSK07RDjsPUt=3JGtwnK9ASmFqb7Vx8JQ@mail.gmail.com>
+ <202310121130.256F581823@keescook> <CAOcBZOTed1a1yOimdUN9yuuysZ1h6VXa57+5fLAE99SZxCwBMQ@mail.gmail.com>
+ <20231013075005.GB12118@noisy.programming.kicks-ass.net> <CAOcBZOTP_vQuFaqREqy-hkG69aBvJ+xrhEQi_EFKvtsNjne1dw@mail.gmail.com>
+ <CAHk-=wjLUit_gae7anFNz4sV0o2Uc=TD_9P8sYeqMSeW_UG2Rg@mail.gmail.com> <5D8CA5EF-F5B0-4911-85B8-A363D9344FA7@zytor.com>
+In-Reply-To: <5D8CA5EF-F5B0-4911-85B8-A363D9344FA7@zytor.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 13 Oct 2023 12:22:02 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiiBpw-0MKBbPkvo54=Cvyi0b3_1bDtqbgiD4ixd+OPow@mail.gmail.com>
+Message-ID: <CAHk-=wiiBpw-0MKBbPkvo54=Cvyi0b3_1bDtqbgiD4ixd+OPow@mail.gmail.com>
+Subject: Re: [PATCH v10 25/27] x86: enable initial Rust support
+To:     "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Ramon de C Valle <rcvalle@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, patches@lists.linux.dev,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        David Gow <davidgow@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-doc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,191 +99,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne petek, 13. oktober 2023 ob 21:18:00 CEST je Jernej =C5=A0krabec napisal=
-(a):
-> Dne petek, 06. oktober 2023 ob 11:01:30 CEST je Julian Ribbeck napisal(a):
-> > Iteaduino Plus A20 is very similar to Iteaduino Plus A10. In fact it
-> > shares the same breakout board and the Itead Core A20 on top of it, is
-> > only adapted to support the dual-core A20.
-> >=20
-> > This commits enables the following hardware:
-> >=20
-> > * HDMI Video output
-> > * USB
-> > * SATA (untested due to lack of hardware I could attach)
-> > * Ethernet
-> > * MMC storage
-> > * UART
-> > * USB OTG (untested, because I don't own an USB OTG cable/device)
-> >=20
-> > Signed-off-by: Julian Ribbeck <julian.ribbeck@gmx.de>
-> > ---
-> >  arch/arm/boot/dts/allwinner/Makefile          |   1 +
-> >  .../sun7i-a20-itead-iteaduino-plus.dts        | 104 ++++++++++++++++++
-> >  2 files changed, 105 insertions(+)
-> >  create mode 100644 arch/arm/boot/dts/allwinner/sun7i-a20-itead-iteadui=
-no-plus.dts
-> >=20
-> > diff --git a/arch/arm/boot/dts/allwinner/Makefile b/arch/arm/boot/dts/a=
-llwinner/Makefile
-> > index eebb5a0c873a..39af5ad94590 100644
-> > --- a/arch/arm/boot/dts/allwinner/Makefile
-> > +++ b/arch/arm/boot/dts/allwinner/Makefile
-> > @@ -124,6 +124,7 @@ dtb-$(CONFIG_MACH_SUN7I) +=3D \
-> >  	sun7i-a20-haoyu-marsboard.dtb \
-> >  	sun7i-a20-hummingbird.dtb \
-> >  	sun7i-a20-itead-ibox.dtb \
-> > +	sun7i-a20-itead-iteaduino-plus.dts \
->=20
-> This should be .dtb.
->=20
-> Other than that:
-> Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
->=20
-> I'll fix it while applying.
->=20
-> For future reference, please follow proper patch submission procedure:
-> - each revision should be sent in separate thread
-> - each new revision should contain changelog, either in cover letter (when
-> there is more than one patch) or below --- line in each patch
-> - compatible description patch comes before first usage (I'll invert order
-> when applying)
+On Fri, 13 Oct 2023 at 12:01, H. Peter Anvin <hpa@zytor.com> wrote:
+>
+> Transparent unions have been standard C since C99.
 
-Sorry, I won't apply it as yet. How was this tested if it didn't even built=
- due
-to mistake in Makefile?
+Ahh, I didn't realize they made it into the standard.
 
-Best regards,
-Jernej
+In gcc, they've been usable for a lot longer (ie --std=gnu89 certainly
+is happy with them), but the kernel never really picked up on them.
 
->=20
-> Best regards,
-> Jernej
->=20
-> >  	sun7i-a20-i12-tvbox.dtb \
-> >  	sun7i-a20-icnova-a20-adb4006.dtb \
-> >  	sun7i-a20-icnova-swac.dtb \
-> > diff --git a/arch/arm/boot/dts/allwinner/sun7i-a20-itead-iteaduino-plus=
-=2Edts b/arch/arm/boot/dts/allwinner/sun7i-a20-itead-iteaduino-plus.dts
-> > new file mode 100644
-> > index 000000000000..c9f9b0275381
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/allwinner/sun7i-a20-itead-iteaduino-plus.dts
-> > @@ -0,0 +1,104 @@
-> > +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-> > +
-> > +/dts-v1/;
-> > +#include "sun7i-a20.dtsi"
-> > +#include "sunxi-itead-core-common.dtsi"
-> > +
-> > +/ {
-> > +	model =3D "Itead Iteaduino Plus A20";
-> > +	compatible =3D "itead,iteaduino-plus-a20", "allwinner,sun7i-a20";
-> > +
-> > +	hdmi-connector {
-> > +		compatible =3D "hdmi-connector";
-> > +		type =3D "a";
-> > +
-> > +		port {
-> > +			hdmi_con_in: endpoint {
-> > +				remote-endpoint =3D <&hdmi_out_con>;
-> > +			};
-> > +		};
-> > +	};
-> > +};
-> > +
-> > +&ac_power_supply {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&ahci {
-> > +	target-supply =3D <&reg_ahci_5v>;
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&axp209 {
-> > +	interrupt-parent =3D <&nmi_intc>;
-> > +	interrupts =3D <0 IRQ_TYPE_LEVEL_LOW>;
-> > +};
-> > +
-> > +&battery_power_supply {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&codec {
-> > +	stauts =3D "okay";
-> > +};
-> > +
-> > +&de {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&emac {
-> > +	pinctrl-names =3D "default";
-> > +	pinctrl-0 =3D <&emac_pa_pins>;
-> > +	phy-handle =3D <&phy1>;
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&emac_sram {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&hdmi {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&hdmi_out {
-> > +	hdmi_out_con: endpoint {
-> > +		remote-endpoint =3D <&hdmi_con_in>;
-> > +	};
-> > +};
-> > +
-> > +&mdio {
-> > +	status =3D "okay";
-> > +
-> > +	phy1: ethernet-phy@1 {
-> > +		reg =3D <1>;
-> > +	};
-> > +};
-> > +
-> > +&mmc0 {
-> > +	vmmc-supply =3D <&reg_vcc3v3>;
-> > +	bus-width =3D <4>;
-> > +	cd-gpios =3D <&pio 7 1 GPIO_ACTIVE_LOW>; /* PH1 */
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&otg_sram {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&reg_ahci_5v {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&reg_usb0_vbus {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&usb_otg {
-> > +	status =3D "okay";
-> > +	dr_mode =3D "host";
-> > +};
-> > +
-> > +&usbphy {
-> > +	usb0_vbus-supply =3D <&reg_usb0_vbus>;
-> > +};
-> > --
-> > 2.42.0
-> >=20
-> >=20
->=20
->=20
->=20
->=20
->=20
+I think they've mainly been used by glibc for a couple of functions
+that can take a couple of different types without complaining.
 
-
-
-
+           Linus
