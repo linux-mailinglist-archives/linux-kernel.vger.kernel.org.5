@@ -2,97 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A47837C87AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096217C87AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232118AbjJMORQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 10:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47846 "EHLO
+        id S232123AbjJMORa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 10:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbjJMORP (ORCPT
+        with ESMTP id S231194AbjJMOR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 10:17:15 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44AF8BD
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:17:13 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-79fb8f60374so25207839f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:17:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697206632; x=1697811432; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1lb0SFgyj6zGJaRNFKO8Je487qWXLpWh8PHdGLC7mEg=;
-        b=rU54gqVEzYsQZ7f6VJPxHh7iNpzjdOpdnTAa21/nEuGR1zJtX4M54Vglev3lFy5vDf
-         ztz090y0fkMw6xq2hqfo1fVIocvrAe3ki7TNWk69hbFr/z070KePQqPuqSwdTpqIhArk
-         3PL0FLtDrWufqMa1Yf7HKmdWaHZpHmvp0aQXi0INB+sNQrBnLvU98l88Swd9m3brAldk
-         +VqgY/L7DjiLiwGpkAlg9XltcTFw6xU671ZXmTZHfR38wqQUOsY+A9x8ZBYEtKIFkMhc
-         ZPrmwOFy3tHz9tUiUrCHdIggH9TtlsXj4MPD+mXznBGkAXtEGD974jjoYE0v6VW4tLrM
-         lNcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697206632; x=1697811432;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1lb0SFgyj6zGJaRNFKO8Je487qWXLpWh8PHdGLC7mEg=;
-        b=GNQHYrN0FV1kMpZYRKDf6l5GGshhEkyGOC9K/80Awbz0MVTLXNX5c/ROhPX9bPaVhL
-         a/cT01MbCTiuMj13OI/1LSlD7QKBk0U/RPEs6doKgGE36EpTWxX74692mUjCSnXQTwAr
-         sJ1ntyqFY4EV7O99gew9fLz//O6XpTA3ODA/SomPA0GXxXk4X3GFkWlx3ByNvZOFMiBO
-         0CkveWFVsnka6FOky24Eg9492FH3I9meh9v8JQCAPVFRPpMAh/r5HMWcnn9uYY4vvRIP
-         ysu32EsuFDbKm2YD0zmDMgCAU+64TAJyl06IKPDRbo0BktsJtTOnJlNvDBwk36+b7XFj
-         jyiA==
-X-Gm-Message-State: AOJu0YzBuaPC0UZMTWmyD5IshIDLZ5z+9sjH/I6P2G6mF/NVfrRbdwmv
-        JIsC+bbUfJTQFnfKMThjTFd9sw==
-X-Google-Smtp-Source: AGHT+IEydHkg/2e8895o6lSJMDIQXRgt9993c9M2+hVQE0mcpprgcN8ai280jQg9eHXky6Ub5tyYkw==
-X-Received: by 2002:a05:6602:2a44:b0:792:9b50:3c3d with SMTP id k4-20020a0566022a4400b007929b503c3dmr33052533iov.1.1697206632640;
-        Fri, 13 Oct 2023 07:17:12 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id r29-20020a056638045d00b0043a1b134b10sm4479225jap.114.2023.10.13.07.17.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 07:17:12 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     linux-block@vger.kernel.org, Milan Broz <gmazyland@gmail.com>
-Cc:     gjoyce@linux.vnet.ibm.com, jonathan.derrick@linux.dev,
-        linux-kernel@vger.kernel.org, Ondrej Kozina <okozina@redhat.com>
-In-Reply-To: <20231003100209.380037-1-gmazyland@gmail.com>
-References: <20231003100209.380037-1-gmazyland@gmail.com>
-Subject: Re: [PATCH] block: Fix regression in sed-opal for a saved key.
-Message-Id: <169720663183.1920390.9547818439734957498.b4-ty@kernel.dk>
-Date:   Fri, 13 Oct 2023 08:17:11 -0600
+        Fri, 13 Oct 2023 10:17:28 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA426D8;
+        Fri, 13 Oct 2023 07:17:23 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3B7C221A01;
+        Fri, 13 Oct 2023 14:17:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1697206642; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3I7xUNHL0g2s71bMvgTRR/Ie+t515rJ/kQMEyfshuUM=;
+        b=iVLBWv20wJKQHkXhK9SNTttjnhi31pxi8zFlNZRK2AZYglALFIKehB6KDPZh2/expdfzzt
+        Ek8ejiZnD0WPOL1tmNBzhczTPX8rpk3sWeDGQog/mH3cONil8PCI9ozk46KpZHESX+wr8u
+        uikMF7qfzdl8DLvE7gINhulI715Pp8M=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 17C741358F;
+        Fri, 13 Oct 2023 14:17:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8dB4A3JRKWUjLAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Fri, 13 Oct 2023 14:17:22 +0000
+Date:   Fri, 13 Oct 2023 16:17:21 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] mm: memcontrol: Don't css_get() on root_mem_cgroup in
+ get_mem_cgroup_from_mm()
+Message-ID: <ZSlRcQ3JoPLFRBec@dhcp22.suse.cz>
+References: <20231012161504.3445042-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012161504.3445042-1-longman@redhat.com>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -8.10
+X-Spamd-Result: default: False [-8.10 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu 12-10-23 12:15:04, Waiman Long wrote:
+> As reference counting in the root memcg is disabled, there is no need
+> to get a reference if root memcg is to be returned.
 
-On Tue, 03 Oct 2023 12:02:09 +0200, Milan Broz wrote:
-> The commit 3bfeb61256643281ac4be5b8a57e9d9da3db4335
-> introduced the use of keyring for sed-opal.
+Does this give any measurable wins?
+ 
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  mm/memcontrol.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> Unfortunately, there is also a possibility to save
-> the Opal key used in opal_lock_unlock().
-> 
-> This patch switches the order of operation, so the cached
-> key is used instead of failure for opal_get_key.
-> 
-> [...]
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 5b009b233ab8..2b3864194042 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1060,8 +1060,10 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
+>  	rcu_read_lock();
+>  	do {
+>  		memcg = mem_cgroup_from_task(rcu_dereference(mm->owner));
+> -		if (unlikely(!memcg))
+> +		if (unlikely(!memcg)) {
+>  			memcg = root_mem_cgroup;
+> +			break;
+> +		}
+>  	} while (!css_tryget(&memcg->css));
+>  	rcu_read_unlock();
+>  	return memcg;
+> -- 
+> 2.39.3
 
-Applied, thanks!
-
-[1/1] block: Fix regression in sed-opal for a saved key.
-      commit: 4eaf0932c69bdc56d2c2af30404f9c918b1f6295
-
-Best regards,
 -- 
-Jens Axboe
-
-
-
+Michal Hocko
+SUSE Labs
