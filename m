@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD8B7C8DFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 21:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412597C8E01
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 21:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbjJMT40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 15:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
+        id S231950AbjJMT56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 15:57:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbjJMT4Y (ORCPT
+        with ESMTP id S231886AbjJMT5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 15:56:24 -0400
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3244195;
-        Fri, 13 Oct 2023 12:56:21 -0700 (PDT)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 09C301C0050; Fri, 13 Oct 2023 21:56:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-        t=1697226979;
+        Fri, 13 Oct 2023 15:57:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD9F95
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697227027;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jq/F5+J9wLO4vOEhN66CaFJA8HdsP3GorB/oM4sdsIk=;
-        b=NmBrcN46bAlqAc8k37gS9CZrPYzsUOwBg8fUDhRwlNDqgS5VquJq2CY4yjOylgR3A4vz9l
-        70V6+FXAp1jm0a2SpCNbYeY0QedxzxEF9hRgRMglLN6A/ryHq7p6V/LEEqAM+SYxLFcb0T
-        8YwyenZY1bnk6O3EP/GZ39yZd0sA6kM=
-Date:   Fri, 13 Oct 2023 21:56:18 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Werner Sembach <wse@tuxedocomputers.com>
-Cc:     ojeda@kernel.org, Lee Jones <lee@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Subject: Re: Implement per-key keyboard backlight as auxdisplay?
-Message-ID: <ZSmg4tqXiYiX18K/@duo.ucw.cz>
-References: <20231011190017.1230898-1-wse@tuxedocomputers.com>
- <ZSe1GYLplZo5fsAe@duo.ucw.cz>
- <0440ed38-c53b-4aa1-8899-969e5193cfef@tuxedocomputers.com>
- <ZSf9QneKO/8IzWhd@duo.ucw.cz>
- <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
- <ZSk16iTBmZ2fLHZ0@duo.ucw.cz>
- <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ChxwyGqYyTrVtmpYs+W8xWj0pmQUAOAJISxRBQDY6Oc=;
+        b=SOahBSt8mftpotTnoJCLk6NQClEyyEJljkONj8xnE6IS3odRlV1hawy0PiMnf/zVHDV22q
+        NQHQIMkbQdrSF4MMpIIINxlvyZ/3RKtMVLQM1MJAw0mMmr0epupQB+blbTx4/xi2WsXzu/
+        I3BE2zdk78UF3AoAfi0Xbjbl6cpk4fw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-357-EesnMxLINtKyF73qNaYtHA-1; Fri, 13 Oct 2023 15:57:06 -0400
+X-MC-Unique: EesnMxLINtKyF73qNaYtHA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F4028185A7B4;
+        Fri, 13 Oct 2023 19:57:05 +0000 (UTC)
+Received: from omen.home.shazbot.org (unknown [10.22.10.36])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 82F3B40C6CA0;
+        Fri, 13 Oct 2023 19:57:05 +0000 (UTC)
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     alex.williamson@redhat.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, clg@redhat.com
+Subject: [PATCH 0/2] vfio/mtty: Add migration support
+Date:   Fri, 13 Oct 2023 13:56:51 -0600
+Message-Id: <20231013195653.1222141-1-alex.williamson@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="N7n33QpGAkTgmfyU"
-Content-Disposition: inline
-In-Reply-To: <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,56 +56,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We've seen a request for CI and development to have access to migratable
+vfio devices without any specific hardware requirements.  One way to do
+that is to enable migration support on the mtty mdev sample driver, as
+done here.
 
---N7n33QpGAkTgmfyU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This device is particularly easy to migrate because it doesn't actually
+do DMA, or in fact much of anything.  Therefore we can claim P2P and
+dirty logging as well.  PRE_COPY support is also included in a similar
+fashion to hisi_acc.  This provides early compatibility testing, which
+is probably over-done, but perhaps illustrates good practice with
+matching data stream magic, versioning, and feature flags.  These might
+later be used for backwards compatibility, particularly since I'm not
+positive that copying the struct serial_port between source and
+destination is sufficient.
 
-Hi!
+Along the way, testing migration where the source and target are
+incompatible, I fixed an eventfd leak.  Thanks,
 
-> coming from the leds mailing list I'm writing with Pavel how to best hand=
-le
-> per-key RGB keyboards.
->=20
-> His suggestion was that it could be implemented as an aux display, but he
-> also suggested that I ask first if this fits.
+Alex
 
-Thanks for doing this.
+Alex Williamson (2):
+  vfio/mtty: Fix eventfd leak
+  vfio/mtty: Enable migration support
 
-> The specific keyboard RGB controller I want to implement takes 6*21 rgb
-> values. However not every one is actually mapped to a physical key. e.g. =
-the
-> bottom row needs less entries because of the space bar. Additionally the
-> keys are ofc not in a straight line from top to bottom.
+ samples/vfio-mdev/mtty.c | 610 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 605 insertions(+), 5 deletions(-)
 
-So... a bit of rationale. The keyboard does not really fit into the
-LED subsystem; LEDs are expected to be independent ("hdd led") and not
-a matrix of them.
+-- 
+2.40.1
 
-We do see various strange displays these days -- they commonly have
-rounded corners and holes in them. I'm not sure how that's currently
-supported, but I believe it is reasonable to view keyboard as a
-display with slightly weird placing of pixels.
-
-Plus, I'd really like to play tetris on one of those :-).
-
-So, would presenting them as auxdisplay be acceptable? Or are there
-better options?
-
-Best regards,
-								Pavel
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
-
---N7n33QpGAkTgmfyU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZSmg4gAKCRAw5/Bqldv6
-8vs1AJ9BZjtk1gkmyD0cS+oSxeJwzwcjKwCdGTjWT+VUCWYHDh3v+eArFhOO+go=
-=OCDY
------END PGP SIGNATURE-----
-
---N7n33QpGAkTgmfyU--
