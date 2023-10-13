@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A85F37C7E10
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204DD7C7E1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbjJMGuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 02:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37014 "EHLO
+        id S229903AbjJMGvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 02:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbjJMGus (ORCPT
+        with ESMTP id S229879AbjJMGvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 02:50:48 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE12ACA
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:50:46 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32c9f2ce71aso1453362f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:50:46 -0700 (PDT)
+        Fri, 13 Oct 2023 02:51:08 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF74F4
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:51:06 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-317c3ac7339so1645083f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:51:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697179845; x=1697784645; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697179865; x=1697784665; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=TFuRNGVhAqNTFM80/BKZUt73EVJAwdzXpQQj7uGhqRk=;
-        b=ELAByzJKLUJIY1Ijxug/QRe4lTVPyXB1LTTztDSzq0QC0kKGw4yyw4CaVGddncMQGS
-         1KcdnR9FMcpWzWMXxQUDJSWJ/9w2A1ih6mJebilmqhxkTKKLj+hJb2EsNlDGPGhxZf2N
-         ui1XquujFL8exsU9I6d+1PSF4tOJUZX6r2ySH8N0MDs9Uu3caJMkSACZZEVEV6NVU/yY
-         GjoUIncDhY/ti4CQdp6yKiJFfD1WZgJHQ7k6CawRfT7YCKIdaO/D3J7PB04WHDfnMqKE
-         RWTgQqQbhGgGbkW2v8U0rHQPdAXmq9S/pF2cEcHLIF2LMJqZMB062N2Iu/4II53YjZOf
-         FlxA==
+        bh=rs5tvnA6ZTP7CqDXn8H8HZ0VbV4Mo71VO1+HHPmXo3U=;
+        b=HzolzRSToXs4rrhLDtJg25Lj2fnvXEh5wYy2jszbwpnuhDXOqodx0d3GCFYzsMr0rF
+         nDD6BHgS2VQ58arfKsXSdgt1edct9sr03T73CHB6C7GJW93qUjlJl0KuU8Yx96gq9u9H
+         PBE1nn7spigwqn1BNNs3LEXLNbVgiAt8GpvfQd0Z3w/i5OjStDFFtqOzPLyAsnKakVJn
+         NxvZ7ZUVfamdlmJsCMCnZJHLt45QRmP7MtdlTfZlITq7JNp08NohaHG/IZk4YmG47Ch6
+         apukG8g60LQ1o/iY9c929yYwe9yrTEZatkKLr5wjg0rYGSAEdY5JKKx9dWMFS/o2Q+Sl
+         vk3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697179845; x=1697784645;
+        d=1e100.net; s=20230601; t=1697179865; x=1697784665;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TFuRNGVhAqNTFM80/BKZUt73EVJAwdzXpQQj7uGhqRk=;
-        b=pe84Iq22CbO+Wag6qX/ntep20kz0iYNYAzm8RdphrJbyit6T9ILZQzH17U7dmwgOFj
-         hwFgkwuRxn5CVckV61WOzAGGDWbX3Er1eqLTNCj+lc3bWt2Hag+4iaUalqN8A3SSFJQ3
-         NXJBWexV/1Ux/LfY8odGVMU5d6MmGXAFH8XvHPOo445lLwM2qOii1lJ9aW35UU1ZPrFB
-         CQNitmQWxWoKw66w+LbYhyDiTqKfTWC7MrgfUShaoBsHOphOQhi4dpURyI1OJ+klHK/s
-         Ez2NY0f68SHnW0Z5OOEjfUss9kx0fbr+MsC/E7lDiWeV7BZFqcc5knfQ7miSZZGzKmaO
-         /iyA==
-X-Gm-Message-State: AOJu0YwuN2XizZMveruoMWrBfJWwiydlYsvmUZcVBmU6xvAkY/GDMIg8
-        dYQs89XqfI8pKo3CiSR5x5cqmBsBZ7RncH2s+7c=
-X-Google-Smtp-Source: AGHT+IFTCy6eETAhfFhEbJ+BV0dA/XIF/fyrtJ3VEBNbC2klFyfI/+/jCISa2D2lADTZsmzX/Xst8A==
-X-Received: by 2002:a5d:5f04:0:b0:32d:8872:aacb with SMTP id cl4-20020a5d5f04000000b0032d8872aacbmr6198531wrb.53.1697179845305;
-        Thu, 12 Oct 2023 23:50:45 -0700 (PDT)
+        bh=rs5tvnA6ZTP7CqDXn8H8HZ0VbV4Mo71VO1+HHPmXo3U=;
+        b=ssjaDqvVkbs4QxPrjumvDac+vTj6D2hkr7Ox7QONLAwyTG7xCILmBBDRvK1+Z6J+zV
+         8Zyl0OsH3PMoQKp++/42R54eZL1uXv4tx7LYxWYa8WAYDDviK4X+84ACKz5ZYnj9rluF
+         Ce92/Wt0uvQoa+g7OOcGrI3dSptK+KT+4WbN0JPyAM+X2LacxNGioBXk4THbwudF6Pc/
+         3xILiBH0OodhDzRILzLhKgUwXSvmeEXpU4HZdDKAJ4oOTvpb6lHAce+zWPTQJ0dLeThx
+         4x6LIhqQMZRP9q4YBFK3jThYy3zDAZXoZSGN5VzeZhY1KeM0YaNGfPbSTsJM/lVewjgg
+         MUnQ==
+X-Gm-Message-State: AOJu0YxpXZXL2ihVFTnC9hDPOPRVpy12KbjCR0Ag45Pyo48lNZ80l8Bu
+        v9IiGEzYdN6TDbyd49aR5NVzmg==
+X-Google-Smtp-Source: AGHT+IFFq1tOfVoru0uUm0yFwBHOzSZ36FJIl6vpMUQwLfTl6JUM7a3HO6txXfE3kE576eoR+FPg8A==
+X-Received: by 2002:a5d:6d41:0:b0:323:2f54:b6cb with SMTP id k1-20020a5d6d41000000b003232f54b6cbmr22384738wri.8.1697179865114;
+        Thu, 12 Oct 2023 23:51:05 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id n9-20020adff089000000b0031ad2f9269dsm19962518wro.40.2023.10.12.23.50.43
+        by smtp.gmail.com with ESMTPSA id n9-20020adff089000000b0031ad2f9269dsm19962518wro.40.2023.10.12.23.51.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 23:50:44 -0700 (PDT)
-Message-ID: <4ae958a1-fbb6-4a55-aaa7-b43de17f0463@linaro.org>
-Date:   Fri, 13 Oct 2023 08:50:43 +0200
+        Thu, 12 Oct 2023 23:51:04 -0700 (PDT)
+Message-ID: <3b430c60-aee5-4b94-be85-b0025b4bbe80@linaro.org>
+Date:   Fri, 13 Oct 2023 08:51:03 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 10/16] dt-bindings: media: mediatek: mdp3: add
- component TDSHP for MT8195
+Subject: Re: [PATCH v7 12/16] dt-bindings: display: mediatek: color: add
+ compatible for MT8195
 Content-Language: en-US
 To:     Moudy Ho <moudy.ho@mediatek.com>,
         Chun-Kuang Hu <chunkuang.hu@kernel.org>,
@@ -75,7 +75,7 @@ Cc:     dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
 References: <20231012084037.19376-1-moudy.ho@mediatek.com>
- <20231012084037.19376-11-moudy.ho@mediatek.com>
+ <20231012084037.19376-13-moudy.ho@mediatek.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -121,7 +121,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231012084037.19376-11-moudy.ho@mediatek.com>
+In-Reply-To: <20231012084037.19376-13-moudy.ho@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -135,13 +135,12 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 12/10/2023 10:40, Moudy Ho wrote:
-> Add the fundamental hardware configuration of component TDSHP,
-> which is controlled by MDP3 on MT8195.
+> Add a compatible string for the COLOR block in MediaTek MT8195 that
+> is controlled by MDP3.
 > 
 > Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> ---
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
