@@ -2,105 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C1D7C8627
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7537C862C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbjJMMwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:52:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54104 "EHLO
+        id S231419AbjJMMyl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Oct 2023 08:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbjJMMv7 (ORCPT
+        with ESMTP id S230197AbjJMMyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 08:51:59 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C5FECBD
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:51:53 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8AxZ+hmPSllO7cxAA--.59996S3;
-        Fri, 13 Oct 2023 20:51:50 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxjNxjPSllVeUiAA--.7995S3;
-        Fri, 13 Oct 2023 20:51:49 +0800 (CST)
-Message-ID: <73ddfc81-3f94-4403-8bb2-d537742a7042@loongson.cn>
-Date:   Fri, 13 Oct 2023 20:51:46 +0800
+        Fri, 13 Oct 2023 08:54:40 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD38BD
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:54:36 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-317-U7r5hpf3P-qz6uyO7uX2kQ-1; Fri, 13 Oct 2023 13:54:34 +0100
+X-MC-Unique: U7r5hpf3P-qz6uyO7uX2kQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 13 Oct
+ 2023 13:54:32 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 13 Oct 2023 13:54:32 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Frederic Weisbecker' <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     Denis Arefev <arefev@swemel.ru>, Boqun Feng <boqun.feng@gmail.com>,
+        "Joel Fernandes" <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: RE: [PATCH 09/18] srcu: Fix srcu_struct node grpmask overflow on
+ 64-bit systems
+Thread-Topic: [PATCH 09/18] srcu: Fix srcu_struct node grpmask overflow on
+ 64-bit systems
+Thread-Index: AQHZ/czQOSuWXrFURUqEf76SS6pOObBHq6Fg
+Date:   Fri, 13 Oct 2023 12:54:32 +0000
+Message-ID: <f6cc79b13ccf471aa275bee88559b6bd@AcuMS.aculab.com>
+References: <20231013115902.1059735-1-frederic@kernel.org>
+ <20231013115902.1059735-10-frederic@kernel.org>
+In-Reply-To: <20231013115902.1059735-10-frederic@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] loongarch/mm: disable WUC for pgprot_writecombine as
- same as ioremap_wc
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-To:     Xi Ruoyao <xry111@xry111.site>, WANG Xuerui <kernel@xen0n.name>,
-        Icenowy Zheng <uwu@icenowy.me>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Weihao Li <liweihao@loongson.cn>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Jun Yi <yijun@loongson.cn>, Baoquan He <bhe@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Hongchen Zhang <zhanghongchen@loongson.cn>,
-        Binbin Zhou <zhoubinbin@loongson.cn>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Zhihong Dong <donmor3000@hotmail.com>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20231009042841.635366-1-uwu@icenowy.me>
- <4f1af31b-15be-cb47-6b34-45de1b5696be@loongson.cn>
- <42b0e6f6-c2b5-49c6-b1f2-0200bef913da@xen0n.name>
- <3641d3fe-c2e7-868f-ab0d-3951c9a78b6d@loongson.cn>
- <8373ccfd93b0402caf9f5c06a2d9b93b3c0d0b49.camel@xry111.site>
-From:   Sui Jingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <8373ccfd93b0402caf9f5c06a2d9b93b3c0d0b49.camel@xry111.site>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8DxjNxjPSllVeUiAA--.7995S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7Xr4rCFykXF1fWrWftFWfCrX_yoWDZrg_uF
-        Wv9asrGw4fWFsrtF47tr4Ygr9xKw1qvry0q3y8tasIq345CFZ7WF4v9wnFkr15JF45CrWk
-        Wr12qFW8tanF9osvyTuYvTs0mTUanT9S1TB71UUUUjJqnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUbfxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6F4UJVW0owAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
-        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
-        Jw1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
-        CY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8
-        JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
-        v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
-        67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2
-        IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07joc_-UUUUU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Frederic Weisbecker
+> Sent: 13 October 2023 12:59
+> 
+> The value of a bitwise expression 1 << (cpu - sdp->mynode->grplo)
+> is subject to overflow due to a failure to cast operands to a larger
+> data type before performing the bitwise operation.
+> 
+> The maximum result of this subtraction is defined by the RCU_FANOUT_LEAF
+> Kconfig option, which on 64-bit systems defaults to 16 (resulting in a
+> maximum shift of 15), but which can be set up as high as 64 (resulting
+> in a maximum shift of 63).  A value of 31 can result in sign extension,
+> resulting in 0xffffffff80000000 instead of the desired 0x80000000.
+> A value of 32 or greater triggers undefined behavior per the C standard.
+> 
+> This bug has not been known to cause issues because almost all kernels
+> take the default CONFIG_RCU_FANOUT_LEAF=16.  Furthermore, as long as a
+> given compiler gives a deterministic non-zero result for 1<<N for N>=32,
+> the code correctly invokes all SRCU callbacks, albeit wasting CPU time
+> along the way.
+> 
+> This commit therefore substitutes the correct 1UL for the buggy 1.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Signed-off-by: Denis Arefev <arefev@swemel.ru>
+> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Cc: David Laight <David.Laight@aculab.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/rcu/srcutree.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 833a8f848a90..5602042856b1 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
+>  				snp->grplo = cpu;
+>  			snp->grphi = cpu;
+>  		}
+> -		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+> +		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
+>  	}
+>  	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
+>  	return true;
+> @@ -835,7 +835,7 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
+>  	int cpu;
+> 
+>  	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
+> -		if (!(mask & (1 << (cpu - snp->grplo))))
+> +		if (!(mask & (1UL << (cpu - snp->grplo))))
+>  			continue;
+>  		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
+>  	}
 
+That loop is entirely horrid.
+The compiler almost certainly has to reload snp->grphi every iteration.
+Also it looks as though the bottom bit of mask is checked first.
+So how about:
+	grphi = snp->grphi;
+	for (cpu = snp->grplo; cpu <= grphi; cpu++, mask >>= 1) {
+		if (!(mask & 1))
+			continue;
+		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
+	}
 
-On 2023/10/10 20:26, Xi Ruoyao wrote:
->> - For buffers at VRAM(device memory), we replace the WC mappings with uncached mappings.
->> - For buffers reside in RAM, we replace the WC mappings with cached mappings.
->>
->> By this way, we were able to minimum the side effects, and meet the usable requirements
->> for all of the GPU drivers.
-> AFAIK there has been some clear NAK from DRM maintainers towards this
-> "approach".  So it's not possible to be applied upstream.
+	David		
 
+> --
+> 2.34.1
 
-Yeah, domain specific reviewers are really hard to persuade to accept our solution.
-Probably because they are not know our hardware very well. But the side effects of
-this patch is really too hurt to accept. In this case, if you really want to make
-a progress by workaround. I think you could try scan the PCI device in the whole
-system on boot time. Turn off the WC mappings when there is a AMD or ATI GPUs found.
-Leave the the WC mappings open at the rest of cases. But this is yet another ugly
-workaround. Perhaps it is a bit of better than this because there is no way left.
-
-  
-  
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
