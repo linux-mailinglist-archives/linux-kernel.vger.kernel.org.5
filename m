@@ -2,126 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7DD7C9146
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DFFD7C9148
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbjJMXUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 19:20:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33288 "EHLO
+        id S232374AbjJMXUl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Oct 2023 19:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjJMXUa (ORCPT
+        with ESMTP id S229830AbjJMXUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 19:20:30 -0400
-Received: from matoro.tk (unknown [IPv6:2600:1700:4b10:9d80::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 16538BB
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:20:12 -0700 (PDT)
-DKIM-Signature: a=rsa-sha256; bh=gPIeawjQuHddn41D6zeRo1qSWujy7kV/buuOoF9n4OY=;
- c=relaxed/relaxed; d=matoro.tk;
- h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:In-Reply-To:Message-Id:Message-Id:References:References:Autocrypt:Openpgp;
- i=@matoro.tk; s=20230917; t=1697239177; v=1; x=1697671177;
- b=pxk+1LUXTBRrIGazGe0iAZ9P+i/5Xu2Pvys6EHru0vVD5Ns9hQ3E5jOiQ7hQ/Mn0GzFbwtvL
- fCPG9h1dncDv5nQuF195etaOxEIPFCpMcq1+m1payiLnHdY8Qlkoo6fpKBbArmWcxQhe2Rlu3HG
- ViZtjYsrLNBx0ZeSMRHQpmZz7O4M+IisGCscUSytz7AnLTZr1ZFGFheFggfJs7NXK4h5Rt2ofh3
- UlrBnjMEZsbJ4Ob0I8RTmtTJ2clVgGeLbgvQsJOBH3/KM7NpJZMcmsiIPXngKqdUS8mup9Wrke6
- +z7a2TY7G18BU6aJBYYE0mREmoCyfaQJuyqznRlXl2CmQDVWQuA1wMUWom3xwTjvigZT9qwewyS
- 7wDeAt9rkZyFMuNln22tutBY+Pan4XFlXbXF2xUQryyk6qKg7XP+FIkhKLg/sTAd5rzRPAyJblr
- nHU9utmcG9KmoEsrog9FNxi2HRMt88f8ee6XlcMGFJUkK+WSTxTESehd8rZEmJJXx6EahwOKrox
- ZTXxL/E3hr3AxghoLFzDOwhYEfNyq9bmBU43fjbmyGdLlr6VfbvCZtOJkR/ztxeTjIPdJ9PcpmI
- /Mf5+FoayzHoh18qFPwZ0JCM6tvHXvSpm3qN0Lrtb4JQClnWQbj5T5pxWSKQ3wFehU0CQrnxHzK
- 9HmvyTO5i2E=
-Received: by matoro.tk (envelope-sender
- <matoro_mailinglist_kernel@matoro.tk>) with ESMTPS id 0b729feb; Fri, 13 Oct
- 2023 19:19:37 -0400
+        Fri, 13 Oct 2023 19:20:39 -0400
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5532B7;
+        Fri, 13 Oct 2023 16:20:38 -0700 (PDT)
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-3514bf96fd2so9919235ab.0;
+        Fri, 13 Oct 2023 16:20:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697239238; x=1697844038;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Sa2C969BUJQ8yo0gA0piHzbT0Go/f15MBqddSU/JLXU=;
+        b=m+aEqz2ZGxtMNMshSmn1J/fYfnLOL1buXxjLGLVzt+lu8N39STQq/nW9MfSTQhQF3/
+         3HrQGi0toWbXU3jN6n6p1SmpGC7M9uqpxW6WLRhV8gCSgRMc8g8VK45XJv4hAtJqgqLB
+         e9lShhOYFXHigyKMmW0yKtM8PNwGnbHBsp8iZNinv7DDmzQsoCkz93svf5QooNHBbmjj
+         wmPH+02jvOKoglu7o/YNfvBr+P7G+O2K0HDbISCxk7SUn4XMugAMgQRLARErnOyqO6ny
+         p04a7yQm9trjEiZoezw3BK2xkRAxv6NYyAmB/VnnHTZknFQoVXgod7qSQ9WAenVTACog
+         dN+g==
+X-Gm-Message-State: AOJu0Yzs/HXToqIxxLdyW/PjttuEm4w1UAw2q13HFCAjBCBozbKq3MXd
+        dGYvj45MudFHiTs2zXH1tJ30ba8LG4jGeBGvQcA=
+X-Google-Smtp-Source: AGHT+IE0y0tvlvZ6xw48zKfwrXD2Ru9GizuXS55BY1GlJUKcsZoXsahxXTZpTwkvAxMbKckIA19S6YLDG7uCQ36bBXI=
+X-Received: by 2002:a92:c08b:0:b0:357:61d7:200f with SMTP id
+ h11-20020a92c08b000000b0035761d7200fmr3210991ile.12.1697239238012; Fri, 13
+ Oct 2023 16:20:38 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Fri, 13 Oct 2023 19:19:37 -0400
-From:   matoro <matoro_mailinglist_kernel@matoro.tk>
-To:     "Dr. Bernd Feige" <bernd.feige@uniklinik-freiburg.de>
-Cc:     tom@talpey.com, smfrench@gmail.com, paul@darkrain42.org,
-        linux-cifs@vger.kernel.org, bagasdotme@gmail.com,
-        regressions@lists.linux.dev, pc@manguebit.com,
-        ronniesahlberg@gmail.com, nspmangalore@gmail.com,
-        brian.pardy@gmail.com, bharathsm@microsoft.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: Possible bug report: kernel 6.5.0/6.5.1 high load when CIFS share
- is mounted (cifsd-cfid-laundromat in"D" state)
-In-Reply-To: <85d538fec5a086acf62d5a803056586a6c00e4bd.camel@uniklinik-freiburg.de>
-References: <CAO+kfxTwOvaxYV0ZRESxZB-4LHsF9b_VBjAKahhwUm5a1_c4ug@mail.gmail.com>
- <ZPfPfyIoVxw5L6El@debian.me>
- <CAO+kfxQgXOsx6u+xLKGJe0KDiFsRAGstSpnrwxjQF6udgz5HFQ@mail.gmail.com>
- <CAO+kfxTvA6N=i+jGf0XbSyqf85i=q+vR6R9d_42OWfM2sWWXaA@mail.gmail.com>
- <CAH2r5mtUedfLSv81Z-Yb3_=AbD_QpT3tVbU1PRzMTituaw7bgA@mail.gmail.com>
- <CAH2r5mt6YzapEKDo=hQ64yvBn7=jwMmY1c85NOABKcMPKPp3KA@mail.gmail.com>
- <CAO+kfxQtOKoKdb+LtMeFxgu8VXa73nbmTPSfscbdwjUXM7ME_A@mail.gmail.com>
- <CAH2r5msNf9WDHrBZSi5FhHDSewSNxMAuXTetMJDnoNh3CF_oMA@mail.gmail.com>
- <a895f860-11fa-e6d9-d042-a32bd08f9e9d@talpey.com>
- <CAH2r5mszCxPtdURenMVgeVDX5zc8knumH=ASXyUufPa7SxbJBw@mail.gmail.com>
- <ZRN9MtBqYnT6oX60@vaarsuvius>
- <85d538fec5a086acf62d5a803056586a6c00e4bd.camel@uniklinik-freiburg.de>
-Message-ID: <83d00d50bc628a85db71adb440d8afb5@matoro.tk>
-X-Sender: matoro_mailinglist_kernel@matoro.tk
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,T_SPF_HELO_TEMPERROR,
-        T_SPF_TEMPERROR autolearn=no autolearn_force=no version=3.4.6
+References: <20231004204741.985422-1-namhyung@kernel.org> <ZSnHek1HlQTkfjhG@kernel.org>
+ <CAM9d7cip5qmPRhWF37JH_21Q8SjKQCTBVyF_PLE-ytTFOwpasg@mail.gmail.com>
+ <ZSnMxtnt7o5mLj+w@kernel.org> <CAM9d7cg75rnPpOUB4wUqUPCbsEZucOyu0sB1UwF3kk-4E8q2SA@mail.gmail.com>
+In-Reply-To: <CAM9d7cg75rnPpOUB4wUqUPCbsEZucOyu0sB1UwF3kk-4E8q2SA@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 13 Oct 2023 16:20:27 -0700
+Message-ID: <CAM9d7cgAg7LfTvZhR3+Mh64GjhnLQZ6Pjae_8agMLABc0_weqg@mail.gmail.com>
+Subject: Re: [PATCH] perf bench sched pipe: Add -G/--cgroups option
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-05 05:55, Dr. Bernd Feige wrote:
-> Am Dienstag, dem 26.09.2023 um 17:54 -0700 schrieb Paul Aurich:
->> Perhaps the laundromat thread should be using msleep_interruptible()?
->> 
->> Using an interruptible sleep appears to prevent the thread from
->> contributing
->> to the load average, and has the happy side-effect of removing the
->> up-to-1s delay
->> when tearing down the tcon (since a7c01fa93ae, kthread_stop() will
->> return
->> early triggered by kthread_stop).
-> 
-> Sorry for chiming in so late - I'm also on gentoo (kernel 6.5.5-
-> gentoo), but as a client of Windows AD.
-> 
-> Just want to emphasize that using uninterruptible sleep has not just
-> unhappy but devastating side-effects.
-> 
-> I have 8 processors and 16 cifsd-cfid-laundromat processes, so
-> /proc/loadavg reports a load average of 16 on a totally idle system.
-> 
-> This means that load-balancing software will never start additional
-> tasks on this system - "make -l" but also any other load-dependent
-> system. Just reducing the number of cifsd-cfid-laundromat processes
-> does not fix this - even a single one makes loadavg report a wrong
-> result for load balancing.
-> 
-> So, if cifsd-cfid-laundromat must really be uninterruptible, the only
-> solution would be to change the way loadavg is computed by the kernel
-> to exclude uninterruptible but sleeping processes. But must it be
-> uninterruptible?
-> 
-> Thanks and best regards,
-> Bernd
+On Fri, Oct 13, 2023 at 4:10 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> diff --git a/tools/perf/bench/sched-pipe.c b/tools/perf/bench/sched-pipe.c
+> index 1103fd658d5d..25236f339b90 100644
+> --- a/tools/perf/bench/sched-pipe.c
+> +++ b/tools/perf/bench/sched-pipe.c
+> @@ -118,9 +118,9 @@ static void enter_cgroup(struct cgroup *cgrp)
+>
+>         /* try cgroup v2 interface first */
+>         if (threaded)
+> -               fd = openat(cgrp->fd, "cgroup.procs", O_WRONLY);
+> -       else
+>                 fd = openat(cgrp->fd, "cgroup.threads", O_WRONLY);
+> +       else
+> +               fd = openat(cgrp->fd, "cgroup.progs", O_WRONLY);
+>
+>         /* try cgroup v1 if failed */
+>         if (fd < 0)
 
-This is a huge problem here as well, as a client to Samba using SMB1 
-(for Unix extensions).
+Oh, actually it should be 'procs' instead of 'progs'.
 
-For others encountering this problem, I was able to work around it with 
-the following snippet:
-
-diff --git a/fs/smb/client/cached_dir.c b/fs/smb/client/cached_dir.c
-index 2d5e9a9d5b8b..fc2caccb597a 100644
---- a/fs/smb/client/cached_dir.c
-+++ b/fs/smb/client/cached_dir.c
-@@ -576,7 +576,7 @@ cifs_cfids_laundromat_thread(void *p)
-         struct list_head entry;
-
-         while (!kthread_should_stop()) {
--               ssleep(1);
-+               msleep_interruptible(1000);
-                 INIT_LIST_HEAD(&entry);
-                 if (kthread_should_stop())
-                         return 0;
+Thanks,
+Namhyung
