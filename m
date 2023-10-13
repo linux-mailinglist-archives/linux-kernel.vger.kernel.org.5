@@ -2,59 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE43C7C81AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1665B7C81B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbjJMJOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 05:14:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60366 "EHLO
+        id S230437AbjJMJPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 05:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbjJMJOK (ORCPT
+        with ESMTP id S230332AbjJMJPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 05:14:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58097B7;
-        Fri, 13 Oct 2023 02:14:07 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 09:14:04 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697188445;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=JXoy92x7s272DXAiZXjUYPhfFtA82gP22Z6+rTxNQxo=;
-        b=2w28x1l3tK8DVI48mctwy0mHDOWCaPqZmqVxehmZp73Og/9sKoSzx0VAnEsKCUxZUM+JZq
-        oudxH83Lf8CvKsu4n79nVVX8+bgIc6VV0dWpgew//2rah/ZfvURuu0sDJjeEpILrYnQfhN
-        emQxzVo9TaDhv9s7dglA9PMR10EbMUHx7anPll6RxTX1bXw8VU9cBMKXJD84XPA4lhujTQ
-        z4LueOAissr9qz46ZLgSl+qpXAaFm3xFwrb0dyS+zJqUXOQqX0vthKyNVI35iCvfaZtw4s
-        aaoj5+xWL85u3iOLZDajLvb0Oz/NfarzOzheYW/kk1LG+6FQ1AEi4+ylxwjzOg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697188445;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=JXoy92x7s272DXAiZXjUYPhfFtA82gP22Z6+rTxNQxo=;
-        b=O62c0XyuF+lkDpmnPmjIHCekg6knmYQEcazcXRPf/rMnNjfqqynEEsmLkPDW2VZzBujVY9
-        cVikve3J6meAa0BQ==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/seqlock: Propagate 'const' pointers
- within read-only methods, remove forced type casts
-Cc:     Ingo Molnar <mingo@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-MIME-Version: 1.0
-Message-ID: <169718844432.3135.15889232861404181753.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Fri, 13 Oct 2023 05:15:14 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A96795
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:15:12 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C174921871;
+        Fri, 13 Oct 2023 09:15:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1697188510; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=efOBm3e13ZjEOj+ZGaXSfOb0Hkfg1ATCQXj1BE9CT/M=;
+        b=lLi3T9YOusq8Wctbl0n66KEIJZRhNfDyerrLnb7Pe1zQWNzFKaPw2kLCiAhooVCe2YxEbv
+        LwUWxooe0UHbboAP+gPikEwlO0HmLPtg5nwJbGOADV8AR/+U2X7OuBwexobfmYdT9m/kyc
+        JfyncHoug92gPyW4WDtR13Ah14H0yyc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1697188510;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=efOBm3e13ZjEOj+ZGaXSfOb0Hkfg1ATCQXj1BE9CT/M=;
+        b=eCWLIDHO5dkzaxRvzaXYHOIOJKMneeEod4anzkMO5Ri2hw3Qyp2EW6bVrXKOds4pW+o/po
+        Mu3gwtC1+/Y2qYAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 733411358F;
+        Fri, 13 Oct 2023 09:15:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id zEk2G54KKWU/DQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 13 Oct 2023 09:15:10 +0000
+Date:   Fri, 13 Oct 2023 11:15:09 +0200
+Message-ID: <87il7aopcy.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+Subject: Re: [PATCH v7 01/13] ASoC: SOF: core: Ensure sof_ops_free() is still called when probe never ran.
+In-Reply-To: <20231009115437.99976-2-maarten.lankhorst@linux.intel.com>
+References: <20231009115437.99976-1-maarten.lankhorst@linux.intel.com>
+        <20231009115437.99976-2-maarten.lankhorst@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -3.10
+X-Spamd-Result: default: False [-3.10 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[15];
+         MID_CONTAINS_FROM(1.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -64,117 +99,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+On Mon, 09 Oct 2023 13:54:25 +0200,
+Maarten Lankhorst wrote:
+> 
+> In an effort to not call sof_ops_free twice, we stopped running it when
+> probe was aborted.
+> 
+> Check the result of cancel_work_sync to see if this was the case.
+> 
+> Fixes: 31bb7bd9ffee ("ASoC: SOF: core: Only call sof_ops_free() on remove if the probe was successful")
+> Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+> Acked-by: Mark Brown <broonie@kernel.org>
 
-Commit-ID:     0bb27df504fb8d3c53f8dfdf9bee09731a90672f
-Gitweb:        https://git.kernel.org/tip/0bb27df504fb8d3c53f8dfdf9bee09731a90672f
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Fri, 13 Oct 2023 10:15:46 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 13 Oct 2023 10:41:55 +02:00
+Your Signed-off-by tag is missing.
 
-locking/seqlock: Propagate 'const' pointers within read-only methods, remove forced type casts
+Could you resubmit?
 
-Currently __seqprop_ptr() is an inline function that must chose to either
-use 'const' or non-const seqcount related pointers - but this results in
-the undesirable loss of 'const' propagation, via a forced type cast.
 
-The easiest solution would be to turn the pointer wrappers into macros that
-pass through whatever type is passed to them - but the clever maze of
-seqlock API instantiation macros relies on the GCC CPP '##' macro
-extension, which isn't recursive, so inline functions must be used here.
+thanks,
 
-So create two wrapper variants instead: 'ptr' and 'const_ptr', and pick the
-right one for the codepaths that are const: read_seqcount_begin() and
-read_seqcount_retry().
+Takashi
 
-This cleans up type handling and allows the removal of all type forcing.
-
-No change in functionality.
-
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Paul E. McKenney <paulmck@kernel.org>
----
- include/linux/seqlock.h | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
-
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 4b8dcd3..80f21d2 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -200,9 +200,15 @@ typedef struct seqcount_##lockname {					\
- } seqcount_##lockname##_t;						\
- 									\
- static __always_inline seqcount_t *					\
--__seqprop_##lockname##_ptr(const seqcount_##lockname##_t *s)		\
-+__seqprop_##lockname##_ptr(seqcount_##lockname##_t *s)			\
- {									\
--	return (void *)&s->seqcount; /* drop const */			\
-+	return &s->seqcount;						\
-+}									\
-+									\
-+static __always_inline const seqcount_t *				\
-+__seqprop_##lockname##_const_ptr(const seqcount_##lockname##_t *s)	\
-+{									\
-+	return &s->seqcount;						\
- }									\
- 									\
- static __always_inline unsigned						\
-@@ -247,9 +253,14 @@ __seqprop_##lockname##_assert(const seqcount_##lockname##_t *s)		\
-  * __seqprop() for seqcount_t
-  */
- 
--static inline seqcount_t *__seqprop_ptr(const seqcount_t *s)
-+static inline seqcount_t *__seqprop_ptr(seqcount_t *s)
-+{
-+	return s;
-+}
-+
-+static inline const seqcount_t *__seqprop_const_ptr(const seqcount_t *s)
- {
--	return (void *)s; /* drop const */
-+	return s;
- }
- 
- static inline unsigned __seqprop_sequence(const seqcount_t *s)
-@@ -302,6 +313,7 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
- 	__seqprop_case((s),	mutex,		prop))
- 
- #define seqprop_ptr(s)			__seqprop(s, ptr)(s)
-+#define seqprop_const_ptr(s)		__seqprop(s, const_ptr)(s)
- #define seqprop_sequence(s)		__seqprop(s, sequence)(s)
- #define seqprop_preemptible(s)		__seqprop(s, preemptible)(s)
- #define seqprop_assert(s)		__seqprop(s, assert)(s)
-@@ -353,7 +365,7 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
-  */
- #define read_seqcount_begin(s)						\
- ({									\
--	seqcount_lockdep_reader_access(seqprop_ptr(s));			\
-+	seqcount_lockdep_reader_access(seqprop_const_ptr(s));		\
- 	raw_read_seqcount_begin(s);					\
- })
- 
-@@ -419,7 +431,7 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
-  * Return: true if a read section retry is required, else false
-  */
- #define __read_seqcount_retry(s, start)					\
--	do___read_seqcount_retry(seqprop_ptr(s), start)
-+	do___read_seqcount_retry(seqprop_const_ptr(s), start)
- 
- static inline int do___read_seqcount_retry(const seqcount_t *s, unsigned start)
- {
-@@ -439,7 +451,7 @@ static inline int do___read_seqcount_retry(const seqcount_t *s, unsigned start)
-  * Return: true if a read section retry is required, else false
-  */
- #define read_seqcount_retry(s, start)					\
--	do_read_seqcount_retry(seqprop_ptr(s), start)
-+	do_read_seqcount_retry(seqprop_const_ptr(s), start)
- 
- static inline int do_read_seqcount_retry(const seqcount_t *s, unsigned start)
- {
+> ---
+>  sound/soc/sof/core.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+> index 2d1616b81485c..0938b259f7034 100644
+> --- a/sound/soc/sof/core.c
+> +++ b/sound/soc/sof/core.c
+> @@ -459,9 +459,10 @@ int snd_sof_device_remove(struct device *dev)
+>  	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
+>  	struct snd_sof_pdata *pdata = sdev->pdata;
+>  	int ret;
+> +	bool aborted = false;
+>  
+>  	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
+> -		cancel_work_sync(&sdev->probe_work);
+> +		aborted = cancel_work_sync(&sdev->probe_work);
+>  
+>  	/*
+>  	 * Unregister any registered client device first before IPC and debugfs
+> @@ -487,6 +488,9 @@ int snd_sof_device_remove(struct device *dev)
+>  		snd_sof_free_debug(sdev);
+>  		snd_sof_remove(sdev);
+>  		sof_ops_free(sdev);
+> +	} else if (aborted) {
+> +		/* probe_work never ran */
+> +		sof_ops_free(sdev);
+>  	}
+>  
+>  	/* release firmware */
+> -- 
+> 2.39.2
+> 
