@@ -2,51 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A047C884F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FD17C8855
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232281AbjJMPIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
+        id S232256AbjJMPKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 11:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232260AbjJMPH7 (ORCPT
+        with ESMTP id S232226AbjJMPKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:07:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7C5CA
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:07:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 603ACC433C7;
-        Fri, 13 Oct 2023 15:07:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697209677;
-        bh=dhX9Cz4CPdlTS15c30PJqSWT8Hhp5TTCXVK+ytwsF+k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LdS4R5qu/2CmE/A/7LWDaTOjVXe9stnWCGRS3hmJXHIOGqjNXPJ1Auge+RaBdJPf+
-         QjAJye2oMUHKRQwNdCtGqE0d6/Qwc0iGVzvHu/dnUOImiA4Z3lXSd19b5OEZzWxvSO
-         uQLTYYA//2o9MjVMkK6HYwiJRxCUdZ4zePrq4D5cE8dwdupPAOPOeXJdrPyguxQe7a
-         xdxCSs57gRfobdSGacBkWhFZlcZk+rV9lXiB70tk/NZfp8TcMqEccyrl+zBVOmgG02
-         lAY5Z4okTJCIzcxOeE1RT6M5Z3EfslthRBSub9lD2fzuxH6vz3N99oSrZKr/Igu257
-         nfBdmpb69SSpA==
-Date:   Fri, 13 Oct 2023 16:07:53 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Kris Chaplin <kris.chaplin@amd.com>, thomas.delev@amd.com,
-        michal.simek@amd.com, robh+dt@kernel.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        git@amd.com
-Subject: Re: [PATCH 1/2] dt-bindings: w1: Add YAML DT Schema for AMD w1
- master and MAINTAINERS entry
-Message-ID: <20231013-january-caliber-2e7acbee15ec@spud>
-References: <20231013093109.37165-1-kris.chaplin@amd.com>
- <20231013093109.37165-2-kris.chaplin@amd.com>
- <f864dd17-7848-4a83-bd8b-2093d11a153a@linaro.org>
+        Fri, 13 Oct 2023 11:10:53 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CD6BD
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:10:51 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E5BF6219F8;
+        Fri, 13 Oct 2023 15:10:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1697209849; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=aHYz4048WX7TYJHllpaABibD+YxoKxgBeceFZOwIOGw=;
+        b=x0FUDMWHUbf60VvpQj+5PNK3DnEzXWR9Rflz1g+NjX0gg4svDd/RICe7WKSfIeg1+Wmjsg
+        iLajxOWSI+T7fdnKy4xqey+Ix9oVKiZjJCfqlQvI+K+Rhnn1ihdLiOpGGv7/iIfHGm8+7Z
+        IqzTDDjedqOtKH8lIzpOSSwq5jU3uO0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1697209849;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=aHYz4048WX7TYJHllpaABibD+YxoKxgBeceFZOwIOGw=;
+        b=w57Le/5yXFeyZmuRWHw+T3W1mbglHCwc/ePsGJzu6luTE8ODO/xULf8VJq/QUz5k5zFI9g
+        mt78F5vykfbjsmCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BD7D6138EF;
+        Fri, 13 Oct 2023 15:10:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ApJGLfldKWVWRgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Fri, 13 Oct 2023 15:10:49 +0000
+Message-ID: <21ed30ec-506d-4a4b-b787-37b054285914@suse.de>
+Date:   Fri, 13 Oct 2023 17:10:48 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/6] drm/ssd130x: Add support for the SSD132x OLED
+ controller family
+Content-Language: en-US
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        dri-devel@lists.freedesktop.org, Conor Dooley <conor@kernel.org>,
+        Peter Robinson <pbrobinson@gmail.com>
+References: <20231012213843.1151060-1-javierm@redhat.com>
+ <20231012213843.1151060-5-javierm@redhat.com>
+ <6740c736-ba5f-4df2-ba2b-da0902f51f6d@suse.de>
+ <87bkd2sh77.fsf@minerva.mail-host-address-is-not-set>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <87bkd2sh77.fsf@minerva.mail-host-address-is-not-set>
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="D0eSubfO6C5kvNYG"
-Content-Disposition: inline
-In-Reply-To: <f864dd17-7848-4a83-bd8b-2093d11a153a@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+ protocol="application/pgp-signature";
+ boundary="------------Nrl1LKdn7yLUJ8KHILkPQr8y"
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -12.09
+X-Spamd-Result: default: False [-12.09 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         XM_UA_NO_VERSION(0.01)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+         HAS_ATTACHMENT(0.00)[];
+         REPLY(-4.00)[];
+         MIME_BASE64_TEXT_BOGUS(1.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         MIME_BASE64_TEXT(0.10)[];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         SIGNED_PGP(-2.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FREEMAIL_CC(0.00)[kernel.org,linux-m68k.org,lists.freedesktop.org,gmail.com]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,73 +131,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------Nrl1LKdn7yLUJ8KHILkPQr8y
+Content-Type: multipart/mixed; boundary="------------h5f0bauPC7zT0maCC0KN7NsE";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ linux-kernel@vger.kernel.org
+Cc: Maxime Ripard <mripard@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, dri-devel@lists.freedesktop.org,
+ Conor Dooley <conor@kernel.org>, Peter Robinson <pbrobinson@gmail.com>
+Message-ID: <21ed30ec-506d-4a4b-b787-37b054285914@suse.de>
+Subject: Re: [PATCH v3 4/6] drm/ssd130x: Add support for the SSD132x OLED
+ controller family
+References: <20231012213843.1151060-1-javierm@redhat.com>
+ <20231012213843.1151060-5-javierm@redhat.com>
+ <6740c736-ba5f-4df2-ba2b-da0902f51f6d@suse.de>
+ <87bkd2sh77.fsf@minerva.mail-host-address-is-not-set>
+In-Reply-To: <87bkd2sh77.fsf@minerva.mail-host-address-is-not-set>
 
---D0eSubfO6C5kvNYG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--------------h5f0bauPC7zT0maCC0KN7NsE
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-On Fri, Oct 13, 2023 at 05:04:32PM +0200, Krzysztof Kozlowski wrote:
-> On 13/10/2023 11:30, Kris Chaplin wrote:
-> > Add YAML DT Schema for the AMD w1 master IP.
-> >=20
-> > This hardware guarantees protocol timing for driving off-board devices =
-such
-> > as thermal sensors, proms, etc using the 1wire protocol.
-> >=20
-> > Add MAINTAINERS entry for DT Schema.
-> >=20
-> > Co-developed-by: Thomas Delev <thomas.delev@amd.com>
-> > Signed-off-by: Thomas Delev <thomas.delev@amd.com>
-> > Signed-off-by: Kris Chaplin <kris.chaplin@amd.com>
-> > ---
-> >  .../bindings/w1/amd,axi-1wire-master.yaml     | 44 +++++++++++++++++++
-> >  MAINTAINERS                                   |  7 +++
-> >  2 files changed, 51 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/w1/amd,axi-1wire-=
-master.yaml
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/w1/amd,axi-1wire-master.=
-yaml b/Documentation/devicetree/bindings/w1/amd,axi-1wire-master.yaml
-> > new file mode 100644
-> > index 000000000000..41f7294a84a3
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/w1/amd,axi-1wire-master.yaml
-> > @@ -0,0 +1,44 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/w1/amd,axi-1wire-master.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: AMD AXI 1-wire bus master for Programmable Logic
-> > +
-> > +maintainers:
-> > +  - Kris Chaplin <kris.chaplin@amd.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: amd,axi-1wire-master
->=20
-> That's a quite generic compatible. axi is ARM term, 1-wire is the name
-> of the bus and master is the role. Concatenating three common words does
-> not create unique device name. Compatibles are supposed to be specific
-> and this is really relaxed. Anything can be over AXI, everything in
-> 1wire is 1wire and every master device is a master.
+SGkNCg0KQW0gMTMuMTAuMjMgdW0gMTY6NTcgc2NocmllYiBKYXZpZXIgTWFydGluZXogQ2Fu
+aWxsYXM6DQo+IFRob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPiB3cml0
+ZXM6DQo+IA0KPiBIZWxsbyBUaG9tYXMsDQo+IA0KPiBUaGFua3MgYSBsb3QgZm9yIHlvdXIg
+ZmVlZGJhY2suDQo+IA0KPj4gSGkgSmF2aWVyLA0KPj4NCj4+IHRoYW5rcyBmb3IgdGhpcyBw
+YXRjaC4NCj4+DQo+PiBBbSAxMi4xMC4yMyB1bSAyMzozOCBzY2hyaWViIEphdmllciBNYXJ0
+aW5leiBDYW5pbGxhczoNCj4+IFsuLi5dDQo+Pj4gICAgDQo+Pj4gK3N0YXRpYyBpbnQgc3Nk
+MTMyeF9mYl9ibGl0X3JlY3Qoc3RydWN0IGRybV9mcmFtZWJ1ZmZlciAqZmIsDQo+Pj4gKwkJ
+CQljb25zdCBzdHJ1Y3QgaW9zeXNfbWFwICp2bWFwLA0KPj4+ICsJCQkJc3RydWN0IGRybV9y
+ZWN0ICpyZWN0LCB1OCAqYnVmLA0KPj4+ICsJCQkJdTggKmRhdGFfYXJyYXkpDQo+Pj4gK3sN
+Cj4+PiArCXN0cnVjdCBzc2QxMzB4X2RldmljZSAqc3NkMTMweCA9IGRybV90b19zc2QxMzB4
+KGZiLT5kZXYpOw0KPj4+ICsJdW5zaWduZWQgaW50IGRzdF9waXRjaCA9IGRybV9yZWN0X3dp
+ZHRoKHJlY3QpOw0KPj4+ICsJc3RydWN0IGlvc3lzX21hcCBkc3Q7DQo+Pj4gKwlpbnQgcmV0
+ID0gMDsNCj4+PiArDQo+Pj4gKwkvKiBBbGlnbiB4IHRvIGRpc3BsYXkgc2VnbWVudCBib3Vu
+ZGFyaWVzICovDQo+Pj4gKwlyZWN0LT54MSA9IHJvdW5kX2Rvd24ocmVjdC0+eDEsIFNTRDEz
+MlhfU0VHTUVOVF9XSURUSCk7DQo+Pj4gKwlyZWN0LT54MiA9IG1pbl90KHVuc2lnbmVkIGlu
+dCwgcm91bmRfdXAocmVjdC0+eDIsIFNTRDEzMlhfU0VHTUVOVF9XSURUSCksDQo+Pj4gKwkJ
+CSBzc2QxMzB4LT53aWR0aCk7DQo+Pj4gKw0KPj4+ICsJcmV0ID0gZHJtX2dlbV9mYl9iZWdp
+bl9jcHVfYWNjZXNzKGZiLCBETUFfRlJPTV9ERVZJQ0UpOw0KPj4+ICsJaWYgKHJldCkNCj4+
+PiArCQlyZXR1cm4gcmV0Ow0KPj4+ICsNCj4+PiArCWlvc3lzX21hcF9zZXRfdmFkZHIoJmRz
+dCwgYnVmKTsNCj4+PiArCWRybV9mYl94cmdiODg4OF90b19ncmF5OCgmZHN0LCAmZHN0X3Bp
+dGNoLCB2bWFwLCBmYiwgcmVjdCk7DQo+Pg0KPj4gSGVyZSdzIGFuIGlkZWEgZm9yIGEgZm9s
+bG93LXVwIHBhdGNoc2V0Lg0KPj4NCj4+IFlvdSBjb3VsZCBhdHRlbXB0IHRvIGludGVncmF0
+ZSB0aGUgZ3JheTggYW5kIG1vbm8gY29udmVyc2lvbnMgaW50bw0KPj4gZHJtX2ZiX2JsaXQo
+KS4gV2l0aCBzb21lIHRoZSByaWdodCBwYXJhbWV0ZXJzLCBib3RoLCBzc2QxMzB4IGFuZCBz
+c2QxMzJ4DQo+PiBjb3VsZCB1c2UgdGhlIHNhbWUgYmxpdHRpbmcgY29kZSBmcm9tIEJPIHRv
+IGJ1ZmZlci4NCj4+DQo+IA0KPiBZZWFoLCBJIGNvbnNpZGVyZWQgdGhhdCBidXQgYXMgbWVu
+dGlvbmVkIGluIHRoZSBjb21taXQgbWVzc2FnZSB3YW50IHRvIHNlZQ0KPiB3aGF0IGFyZSB0
+aGUgbmVlZHMgb2YgdGhlIFNTRDEzM3ggY29udHJvbGxlciBmYW1pbHkgKEkgYm91Z2h0IGEg
+U1NEMTMzMQ0KPiBkaXNwbGF5IGJ1dCBoYXZlbid0IGhhZCB0aW1lIHRvIHBsYXkgd2l0aCBp
+dCB5ZXQpIGJlZm9yZSB0cnlpbmcgdG8gZmFjdG9yDQo+IG91dCB0aGUgY29tbW9uIGJpdHMg
+aW4gaGVscGVyIGZ1bmN0aW9ucy4NCj4gDQo+IFsuLi5dDQo+IA0KPj4+ICsNCj4+PiArCXNz
+ZDEzMHhfc3RhdGUtPmJ1ZmZlciA9IGtjYWxsb2MocGl0Y2gsIHNzZDEzMHgtPmhlaWdodCwg
+R0ZQX0tFUk5FTCk7DQo+Pj4gKwlpZiAoIXNzZDEzMHhfc3RhdGUtPmJ1ZmZlcikNCj4+PiAr
+CQlyZXR1cm4gLUVOT01FTTsNCj4+DQo+PiBJdCdzIHVucmVsYXRlZCB0byB0aGVzZSBwYXRj
+aGVzIGFuZCBJIGtub3cgaXQncyBiZWVuIGRpc2N1c3NlZA0KPj4gZW5kbGVzc2x5LCBidXQg
+SSBoYXZlIGEgcXVlc3Rpb25zIGFib3V0IGJ1ZmZlciBhbGxvY2F0aW9uLiBUaGF0IG1lbW9y
+eQ0KPj4gYWN0cyBhcyBhbm90aGVyIHNoYWRvdyBidWZmZXIgZm9yIHRoZSBkZXZpY2UncyBt
+ZW1vcnksIHN1Y2ggdGhhdCBmb3JtYXQNCj4+IGNvbnZlcnNpb24gYmVjb21lcyBlYXNpZXIu
+DQo+Pg0KPiANCj4gQ29ycmVjdC4NCj4gDQo+PiBCdXQgdGhlbiwgd2h5IGlzIC0+YnVmZmVy
+IHBhcnQgb2YgdGhlIHBsYW5lX3N0YXRlPyBTaG91bGRuJ3QgaXQgYmUgcGFydA0KPj4gb2Yg
+dGhlIHBsYW5lIGFuZCBuZXZlciBiZSByZS1hbGxvY2F0ZWQ/IFRoZSByZWFsIHNpemUgb2Yg
+dGhhdCBidWZmZXIgaXMNCj4+IDx3aWR0aD4gdGltZXMgPGhlaWdodD4gKG5vdCA8cGl0Y2g+
+KS4gVGhhdCBzaXplIGlzIHN0YXRpYyBvdmVyIHRoZQ0KPj4gbGlmZXRpbWUgb2YgdGhlIGRl
+dmljZS4gVGhhdCB3b3VsZCByZXByZXNlbnQgdGhlIHNlbWFudGljcyBtdWNoIGJldHRlci4N
+Cj4+DQo+PiBUaGlzIHdvdWxkIGFsbG93IGZvciBhZGRpdGlvbmFsIGNoYW5nZXM6IGJsaXRf
+cmVjdCBhbmQgdXBkYXRlX3JlY3Qgd291bGQNCj4+IGJlIG11Y2ggZWFzaWVyIHRvIHNlcGFy
+YXRlOiBubyBtb3JlIHNlZ21lbnQgYWRqdXN0bWVudHMgZm9yIHRoZSBibGl0DQo+PiBjb2Rl
+OyBvbmx5IGZvciB1cGRhdGVzLiBJZiB0aGUgdXBkYXRlIGNvZGUgaGFzIGhpZ2ggbGF0ZW5j
+eSAoSURLKSwgeW91DQo+PiBjb3VsZCBwdXNoIGl0IGludG8gYSB3b3JrZXIgdGhyZWFkIHRv
+IHJ1biBiZXNpZGVzIHRoZSBEUk0gbG9naWMuIFRoZSBndWQNCj4+IGFuZCByZXBhcGVyIGRy
+aXZlcnMgZG8gc29tZXRoaW5nIHRvIHRoaXMgZWZmZWN0Lg0KPj4NCj4+DQo+IA0KPiBUaGUg
+aWRlYSBvZiBtYWtpbmcgaXQgcGFydCBvZiB0aGUgcGxhbmUgc3RhdGUgaXMgdGhhdCB0aGlz
+IGJ1ZmZlciBjb3VsZCBiZQ0KPiBvcHRpb25hbCwgZm9yIGV4YW1wbGUgaW4gdGhlIGNhc2Ug
+b2YgdXNlci1zcGFjZSB1c2luZyB0aGUgbmF0aXZlIGRpc3BsYXkNCj4gZm9ybWF0IGluc3Rl
+YWQgb2YgdGhlIGVtdWxhdGVkIFhSR0I4ODg4Lg0KPiANCj4gSW4gdGhhdCBjYXNlLCBhbiBp
+bnRlcm1lZGlhdGUgYnVmZmVyIHdvbid0IGJlIHVzZWQgYmVjYXVzZSB0aGUgc2hhZG93LXBs
+YW5lDQo+IGZvcm1hdCB3aWxsIGFscmVhZHkgYmUgdGhlIG5hdGl2ZSBvbmUgKGUuZzogUjEp
+IGFuZCB0aGVyZSB3b24ndCBiZSBhIG5lZWQNCj4gdG8gZG8gYW55IGZvcm1hdCBjb252ZXJz
+aW9uIChvbmx5IHRoZSBjb252ZXJzaW9uIHRvIHRoZSBkYXRhIGZvcm1hdCBhcyBpcw0KPiBl
+eHBlY3RlZCBieSB0aGUgY29udHJvbGxlcikuDQo+IA0KPiBUYWtlIGEgbG9vayB0byBHZWVy
+dCdzIHBhdGNoIGFkZGluZyBSMSBzdXBwb3J0IHRvIHNzZDEzMHggZm9yIGFuIGV4YW1wbGU6
+DQo+IA0KPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvNzI3NDZmNmQ5YzQ3ZjA5ZmMw
+NTdhZDdhNGJiYjNiN2Y0MjNhZjgwMy4xNjg5MjUyNzQ2LmdpdC5nZWVydEBsaW51eC1tNjhr
+Lm9yZy8NCj4gDQo+IFRoYXQncyB3aHkgaXQgd2FzIGRlY2lkZWQgdGhhdCBtYWtpbmcgaXQg
+cGFydCBvZiB0aGUgcGxhbmUgc3RhdGUgZm9sbG93cw0KPiBiZXR0ZXIgdGhlIEtNUyBtb2Rl
+bCwgYmVjYXVzZSB3aGVuIHVzaW5nIFIxIHRoaXMgYnVmZmVyIHdvbid0IGV2ZW4gYmUNCj4g
+YWxsb2NhdGVkIGluIHRoZSBwcmltYXJ5IHBsYW5lIC5hdG9taWNfY2hlY2sgaGFuZGxlci4N
+Cj4gDQo+IFsuLi5dDQo+IA0KPj4+ICsJZHJtX2F0b21pY19oZWxwZXJfZGFtYWdlX2l0ZXJf
+aW5pdCgmaXRlciwgb2xkX3BsYW5lX3N0YXRlLCBwbGFuZV9zdGF0ZSk7DQo+Pj4gKwlkcm1f
+YXRvbWljX2Zvcl9lYWNoX3BsYW5lX2RhbWFnZSgmaXRlciwgJmRhbWFnZSkgew0KPj4+ICsJ
+CWRzdF9jbGlwID0gcGxhbmVfc3RhdGUtPmRzdDsNCj4+PiArDQo+Pj4gKwkJaWYgKCFkcm1f
+cmVjdF9pbnRlcnNlY3QoJmRzdF9jbGlwLCAmZGFtYWdlKSkNCj4+PiArCQkJY29udGludWU7
+DQo+Pj4gKw0KPj4+ICsJCXNzZDEzMnhfZmJfYmxpdF9yZWN0KGZiLCAmc2hhZG93X3BsYW5l
+X3N0YXRlLT5kYXRhWzBdLCAmZHN0X2NsaXAsDQo+Pj4gKwkJCQkgICAgIHNzZDEzMHhfcGxh
+bmVfc3RhdGUtPmJ1ZmZlciwNCj4+PiArCQkJCSAgICAgc3NkMTMweF9jcnRjX3N0YXRlLT5k
+YXRhX2FycmF5KTsNCj4+PiArCX0NCj4+DQo+PiBIZXJlJ3MgYW5vdGhlciBpZGVhIGZvciBh
+IGFub3RoZXIgZm9sbG93LXVwIHBhdGNoc2V0Og0KPj4NCj4+IFlvdSBhcmUgYWxsb2NhdGlu
+ZyBzdGF0ZS0+YnVmZmVyIHRvIGNvdmVyIHRoZSB3aG9sZSBkaXNwbGF5LCByaWdodD8gSXQn
+cw0KPj4gPHBpdGNoPiB0aW1lcyA8aGVpZ2h0PiBJSVJDLiAgTWF5YmUgaXQgd291bGQgbWFr
+ZSBzZW5zZSB0byBzcGxpdCB0aGUNCj4+IGRhbWFnZSBsb29wIGludG8gdHdvIGxvb3BzIGFu
+ZCBpbmxpbmUgdGhlIGRyaXZlcidzIGJsaXRfcmVjdCgpIGZ1bmN0aW9uLg0KPj4gU29tZXRo
+aW5nIGxpa2UgdGhhdA0KPj4NCj4+ICAgICBiZWdpbl9jcHVfYWNjZXNzKCkNCj4+DQo+PiAg
+ICAgZm9yX2VhY2goZGFtYWdlKSB7DQo+PiAgICAgICBkcm1fZmJfYmxpdCggImZyb20gR0VN
+IEJPIHRvIGJ1ZmZlciIgKQ0KPj4gICAgIH0NCj4+DQo+PiAgICAgZW5kX2NwdV9hY2Nlc3Mo
+KQ0KPj4NCj4+ICAgICBmb3JfZWFjaChkYW1nZSkgew0KPj4gICAgICAgdXBkYXRlX3JlY3Qo
+ICJmcm9tIGJ1ZmZlciB0byBkZXZpY2UiICkNCj4+ICAgICB9DQo+Pg0KPj4gV2l0aCB0aGUg
+Y2hhbmdlcyBmcm9tIHRoZSBvdGhlciBjb21tZW50cywgdGhlIGZpcnN0IGxvb3AgY291bGQg
+YmVjb21lDQo+PiBlbnRpcmVseSBkZXZpY2UtbmV1dHJhbCBBRkFJQ1QuDQo+Pg0KPiANCj4g
+UmVnYXJkbGVzcywgc3BsaXR0aW5nIHRoZSBibGl0IGFuZCB1cGRhdGUgcmVjdCBtaWdodCBt
+YWtlIHNlbnNlIGFuZCBpcyBhbg0KPiBpbnRlcnNlc3RpbmcgaWRlYS4gSSBuZWVkIHRvIGV4
+cGxvcmUgdGhpcywgdGhhbmtzIGZvciB0aGUgc3VnZ2VzdGlvbi4NCj4gDQo+IEFzIHlvdSBt
+ZW50aW9uIHRoYXQgdGhlc2UgY291bGQgYmUgZm9sbG93LXVwIGNoYW5nZXMsIEkgYXNzdW1l
+IHRoYXQgeW91DQo+IGFncmVlIHdpdGggdGhlIGN1cnJlbnQgYXBwcm9hY2guIFNob3VsZCBJ
+IGV4cGVjdCB5b3VyIHJldmlldyAvIGFjayBmb3INCj4gdGhpcyBwYXRjaC1zZXQ/DQoNClBs
+ZWFzZSB0YWtlIG15IGFjayBmb3IgdGhpcyBwYXRjaHNldA0KDQpBY2tlZC1ieTogVGhvbWFz
+IFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+DQoNCkJlc3QgcmVnYXJkcw0KVGhv
+bWFzDQoNCj4gDQo+PiBCZXN0IHJlZ2FyZHMNCj4+IFRob21hcw0KPj4NCj4gDQoNCi0tIA0K
+VGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29m
+dHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5MDQ2
+MSBOdWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVycywgQW5k
+cmV3IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5iZXJn
+KQ0K
 
-Given the vendor (and the title of the binding) this is almost certainly
-an FPGA IP core, so the generic name is understandable. Using the exact
-name of the IP in the AMD/Xilinx catalog probably is the best choice?
+--------------h5f0bauPC7zT0maCC0KN7NsE--
 
---D0eSubfO6C5kvNYG
-Content-Type: application/pgp-signature; name="signature.asc"
+--------------Nrl1LKdn7yLUJ8KHILkPQr8y
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSldSAAKCRB4tDGHoIJi
-0sBKAP93WwQ4YTKSu7mJymnqveBhEtNSTuCJf8KJYNoJgZVzfAD9F0MIZhF1dKAC
-2RQaPgWN8gVOs/24ipBDUWeEca2vAwY=
-=VLV0
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUpXfkFAwAAAAAACgkQlh/E3EQov+Af
+zxAAjmB43G9J41DehTIMIUOwKbWKxJSamWQ7mUnkm5VlJeWIjErtAbpnNMGMfEE0KTEGGpYdhidU
+4CnaeGgyZRaVu7UADYJi0dXYvrYuNNrlsI2dWvDqhj4vpHCANf8JbvQAv3qb+7Al/y+wb2usuIg2
+lpS7IOpSeojQJwoD1BYYntwYk1LL66glKIcy1IE49S1YcvumBI5o5I6eXjODTOFBJl6J8g5uhz9s
+TuVqH9kXtUlzIkOxFSxg8JxOwD3LSBlVpj+erJ7hM0+ezb3eK7u54AlZqvbWyHseAk0I6UrEGESq
+/d3wJPt+mmqUeMGdqtwX/hah41BB5IOPsVOd/K44+SKwFdk9czl3aTvOo88gECVwuKtK2j8ENv1+
+7vl+ggNNJDaI8cbSKoZp2MkD3PCT12xps3LWSTW2+fyLkJN1Y7JW4AvGLcZh7/2ni23GTBXjlugj
+cIhfqWafX+SMf6RKs7TOR3Lf59rGDO62x5nLj6//7gW+H8/7dLqkA0g1oHwBVEVaJuGh/5YmI3EU
+UZPHjPAWldQPU6zdRXqHHbSGbJkrY62XsqzKwIJBPEgvLhC9IPmCPJj10Lia/WK3y2X7ibGbRZ6G
+0MFbRlwWeeFXd1gduXp6b+alEV7D4pmpqqOvI2TPj9kSTIwFBOo1CUSPW+rX225uB1v+XCSYdQHL
+Vsg=
+=c0Mh
 -----END PGP SIGNATURE-----
 
---D0eSubfO6C5kvNYG--
+--------------Nrl1LKdn7yLUJ8KHILkPQr8y--
