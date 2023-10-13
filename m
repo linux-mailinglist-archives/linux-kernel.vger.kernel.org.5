@@ -2,47 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1003E7C8E6C
+	by mail.lfdr.de (Postfix) with ESMTP id 68AFE7C8E6D
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 22:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbjJMUnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 16:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44336 "EHLO
+        id S231829AbjJMUnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 16:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJMUns (ORCPT
+        with ESMTP id S229632AbjJMUns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Oct 2023 16:43:48 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6E783
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F27CB7
         for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 13:43:47 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697229825;
+        s=2020; t=1697229826;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mjf99a2paGdAGR0nlWpBb0LYsPYobGyOkvbTMY/UwZM=;
-        b=YMywW7TmjqDxavYWyw8AOZBs3cMopz62odfIRtnDbqMMHgqe5SwGEhQFK7fORUctliDI2j
-        Yk4Ei3icCjqpZjYcOgImo1TpNAgKjlVT7H7OjzoGUedNUVRCLp8tRqx51lS9t7CE1UUmsl
-        xESJtHsXUT2cBeFgA/yfCku1AOG02cTRbdOI0HlZFHaltUOqBLmBMTAKctjMcS/UFuNgrh
-        BdS9movtKRwMP6YZA8VzElDlXl6FpmfsEggjSdBizJ6UdIydyXJvp8tb/PFxaXkqX9lSCk
-        ozeUfRXXPvg46WEUcuhFJCOL3KtA2e+KewUW7nxFSlLjmN6uPKtjy1hHtSrn8w==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wWIIv+mLjlrT3V2Ul9kxF8dv9mzOp3dRSypIrr6l33g=;
+        b=iQ9j/OaO0KmRmMgeb3zvonpmkyX4c5ltMPzzabjnEv9LTH/KM0QA/3FCN0HC2sEOYEczlk
+        dDEeZAht2XukYEi2tuCNweaYqJ/CDzmOTDqW3c6AKtg8jsLkfYyAWmBs9GaR+8e3pFNBpr
+        9k80QK/8KqpEMxcge+27crw/oBWDh2aw0+pEIY65FLYPz+v8M1Y/D66qmR46egXRRV9KGe
+        NAU13R6AZcjdYaKy9ESM8N2bT1uulWXGJkYtwR2FPftHjrXHmPHsh2liL3AkL1gq9k3uK3
+        8yIA0bTXL30BGh8qV8zx5QpI76nfTi0Rk/u4nkG/sez+mpfc6SqT4GI8ekxEYA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697229825;
+        s=2020e; t=1697229826;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mjf99a2paGdAGR0nlWpBb0LYsPYobGyOkvbTMY/UwZM=;
-        b=gEzn5Z4VmNV46vMxbBhP5FsiEarSACMcAKzr7jBeM5v5tFTXunwo+NfIu3WKIodEYlVy+o
-        HkCHJrsbiGoGaDCg==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wWIIv+mLjlrT3V2Ul9kxF8dv9mzOp3dRSypIrr6l33g=;
+        b=XY1qhTh8fG/ononxo4SHAtdSqaxOydbsd2QVPEdbzEnvTF5wBVq1jJ2ulbRVTT2/GzIoUU
+        bCfKAVtH5BYIrpBg==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH printk v2 0/4] fix console flushing on panic
-Date:   Fri, 13 Oct 2023 22:49:36 +0206
-Message-Id: <20231013204340.1112036-1-john.ogness@linutronix.de>
+Subject: [PATCH printk v2 1/4] printk: For @suppress_panic_printk check other panic
+Date:   Fri, 13 Oct 2023 22:49:37 +0206
+Message-Id: <20231013204340.1112036-2-john.ogness@linutronix.de>
+In-Reply-To: <20231013204340.1112036-1-john.ogness@linutronix.de>
+References: <20231013204340.1112036-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -55,42 +59,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Currently @suppress_panic_printk is checked along with
+non-matching @panic_cpu and current CPU. This works
+because @suppress_panic_printk is only set when
+panic_in_progress() is true.
 
-While testing various panic scenarios using legacy consoles, I
-stumbled on a couple issues that cause the panic backtrace not
-to be printed:
+Rather than relying on the @suppress_panic_printk semantics,
+use the concise helper function other_cpu_in_progress(). The
+helper function exists to avoid open coding such tests.
 
-1. In panic, an unfinalized record blocks printing of finalized
-   records that may follow.
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+ kernel/printk/printk.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-2. It is possible (and easy to reproduce) a scenario where the
-   console on the panic CPU hands over to a waiter of a stopped
-   CPU.
-
-This series addresses these 2 issues while also performing some
-minor cleanups to remove open coded checks about the panic
-context.
-
-Because of multiple refactoring done in recent history, it
-would be helpful to provide the LTS maintainers with the proper
-backported patches. I am happy to do this.
-
-John Ogness
-
-John Ogness (4):
-  printk: For @suppress_panic_printk check other panic
-  printk: Add this_cpu_in_panic()
-  printk: Skip unfinalized records in panic
-  printk: Ignore waiter on panic
-
- kernel/printk/internal.h          |  1 +
- kernel/printk/printk.c            | 64 +++++++++++++++++++------------
- kernel/printk/printk_ringbuffer.c |  9 +++--
- 3 files changed, 45 insertions(+), 29 deletions(-)
-
-
-base-commit: 29fda1ad2a64a62e1c51d61207396e2de1c67362
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 80eb79177bab..abb6a50ee26f 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2272,8 +2272,7 @@ asmlinkage int vprintk_emit(int facility, int level,
+ 	if (unlikely(suppress_printk))
+ 		return 0;
+ 
+-	if (unlikely(suppress_panic_printk) &&
+-	    atomic_read(&panic_cpu) != raw_smp_processor_id())
++	if (unlikely(suppress_panic_printk) && other_cpu_in_panic())
+ 		return 0;
+ 
+ 	if (level == LOGLEVEL_SCHED) {
 -- 
 2.39.2
 
