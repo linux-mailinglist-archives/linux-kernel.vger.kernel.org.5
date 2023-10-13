@@ -2,110 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7417C80B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DD17C80B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbjJMItS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35104 "EHLO
+        id S230273AbjJMItw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbjJMItM (ORCPT
+        with ESMTP id S230224AbjJMItr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:49:12 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDF9FA
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:49:06 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5859a7d6556so1390216a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:49:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697186945; x=1697791745; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x9got1lZdwQorf5bG+rweB7SynI8yY1C0vhKZAmzQ80=;
-        b=ITqoL4tejHHpgZHgD17QhB1xcEKmaQd4HB2FolgB5dTOnahgzgpBEiTaupow0WEenR
-         yM6myTuRSOCKYV4eWjCxdnGfPp0FnklpgFKVmKjIldbk8uPWeGh8Qq3ucE4Qn5KWej4D
-         XSJsraA8bZmEFyMMGkAY+f0nC/1B/y7kkj9Nw8sK6TZCyYqoDenQmw9DWUyMvjbr97h5
-         dgsyB6A2VW1PW+2RGg/F/hkMIlg6AwOr/Ev8U6iPOdQclQzm/XL1Z7JUp6TcvoHEq7Nn
-         rT2+jyxZFUxCUpvBXBjtalXnzrYIGUt0kGkUla8zdNPi4QjB70fLKojKedlnTmZFn/r3
-         USaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697186945; x=1697791745;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x9got1lZdwQorf5bG+rweB7SynI8yY1C0vhKZAmzQ80=;
-        b=dWA85QJmPjFTaGsyiK9K95H7tag8DV9w8QssSSfCS9tS+MhAhJDoKjpFROLy2JK2Tt
-         hOzL8W7aoB1IQV/vrZzeVrK1rD/FVtAIOtXkF5go0/i7lB1qEW5Kq1W62fPe3M3numkr
-         U1euTQQG/6eMD7M3o9cWOP4C/rvzMX05gufJd3incJ+Y2jXg889Cpx3rHfnlZ0a5Ua1B
-         6HbJfhWF8VZR6JIDrriu+JQJAE92BVW1qfl/aFUwR2bw0PcfoS0VU1xe/P+A5wGYmCM0
-         klCqii+a5KQ8OIkvItcosyvdTYA65lrZ4pAXD+sOKeh6jq4nZwLczjtLp2UFNhm5QuDn
-         +DuA==
-X-Gm-Message-State: AOJu0YyzdP7JxpDvE+0zoh3lV6Hb4qPP4KET1bSyJLMmdnTXiuNngytJ
-        +XdbIx6JdUK9B+5LYid1ZyYIHg==
-X-Google-Smtp-Source: AGHT+IHR1Di5iTPJd4PZUXhJsWb4CbLa2qxXMmaVLrmyC8aci7p8IM2IzqlTvIcoLKJ+eTLd5hjsqg==
-X-Received: by 2002:a17:90a:195e:b0:27d:1cf4:500e with SMTP id 30-20020a17090a195e00b0027d1cf4500emr4491505pjh.7.1697186945589;
-        Fri, 13 Oct 2023 01:49:05 -0700 (PDT)
-Received: from localhost ([122.172.80.14])
-        by smtp.gmail.com with ESMTPSA id nr20-20020a17090b241400b0027d1366d113sm3127687pjb.43.2023.10.13.01.49.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 01:49:05 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] OPP: No need to defer probe from _opp_attach_genpd()
-Date:   Fri, 13 Oct 2023 14:18:41 +0530
-Message-Id: <4cd8fe2135128168c1cd80482359dc7a46550085.1697186772.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
-In-Reply-To: <cover.1697186772.git.viresh.kumar@linaro.org>
-References: <cover.1697186772.git.viresh.kumar@linaro.org>
+        Fri, 13 Oct 2023 04:49:47 -0400
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C247CA
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:49:44 -0700 (PDT)
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-388-sTSYr53zPc6DLKLlrA2nDg-1; Fri, 13 Oct 2023 04:49:37 -0400
+X-MC-Unique: sTSYr53zPc6DLKLlrA2nDg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D00F8185A7B3;
+        Fri, 13 Oct 2023 08:49:36 +0000 (UTC)
+Received: from hog (unknown [10.45.224.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 21D5540C6F79;
+        Fri, 13 Oct 2023 08:49:32 +0000 (UTC)
+Date:   Fri, 13 Oct 2023 10:49:31 +0200
+From:   Sabrina Dubroca <sd@queasysnail.net>
+To:     syzbot <syzbot+66e3ea42c4b176748b9c@syzkaller.appspotmail.com>
+Cc:     aviadye@mellanox.com, borisp@mellanox.com, bp@alien8.de,
+        daniel@iogearbox.net, davem@davemloft.net, ebiggers@kernel.org,
+        herbert@gondor.apana.org.au, hpa@zytor.com,
+        john.fastabend@gmail.com, kuba@kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liujian56@huawei.com, mingo@redhat.com, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vfedorenko@novek.ru, x86@kernel.org
+Subject: Re: [syzbot] [net] [crypto] general protection fault in
+ scatterwalk_copychunks (4)
+Message-ID: <ZSkEm99MvaKOc_Ju@hog>
+References: <00000000000006e7be05bda1c084@google.com>
+ <0000000000004b2b3d06078b94b0@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0000000000004b2b3d06078b94b0@google.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
         version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the new interface for attaching genpd's via the OPP core was added,
-it was possible for required_opp_count to be zero, but not anymore.
+2023-10-12, 14:25:30 -0700, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit cfaa80c91f6f99b9342b6557f0f0e1143e434066
+> Author: Liu Jian <liujian56@huawei.com>
+> Date:   Sat Sep 9 08:14:34 2023 +0000
+> 
+>     net/tls: do not free tls_rec on async operation in bpf_exec_tx_verdict()
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17338965680000
+> start commit:   bd6c11bc43c4 Merge tag 'net-next-6.6' of git://git.kernel...
+> git tree:       net-next
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=634e05b4025da9da
+> dashboard link: https://syzkaller.appspot.com/bug?extid=66e3ea42c4b176748b9c
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10160198680000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15feabc0680000
 
-Remove the unused check.
+Yes, looks like it.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/opp/core.c | 8 --------
- 1 file changed, 8 deletions(-)
+> If the result looks correct, please mark the issue as fixed by replying with:
 
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index befe46036ad5..c069aabefa00 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -2430,14 +2430,6 @@ static int _opp_attach_genpd(struct opp_table *opp_table, struct device *dev,
- 	if (opp_table->genpd_virt_devs)
- 		return 0;
- 
--	/*
--	 * If the genpd's OPP table isn't already initialized, parsing of the
--	 * required-opps fail for dev. We should retry this after genpd's OPP
--	 * table is added.
--	 */
--	if (!opp_table->required_opp_count)
--		return -EPROBE_DEFER;
--
- 	opp_table->genpd_virt_devs = kcalloc(opp_table->required_opp_count,
- 					     sizeof(*opp_table->genpd_virt_devs),
- 					     GFP_KERNEL);
+#syz fix: net/tls: do not free tls_rec on async operation in bpf_exec_tx_verdict()
+
 -- 
-2.31.1.272.g89b43f80a514
+Sabrina
 
