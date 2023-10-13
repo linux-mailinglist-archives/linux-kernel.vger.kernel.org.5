@@ -2,149 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 440807C84B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DD77C84C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbjJMLnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
+        id S231248AbjJMLoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230357AbjJMLnR (ORCPT
+        with ESMTP id S230357AbjJMLoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:43:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66064BD
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:43:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697197396; x=1728733396;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=cjQSuHkESKDK2+Dz14D9uSHBfQx2LBLIX5g/nIepDKI=;
-  b=QCRC5ouxSvDWXGZBcRGmv1rRu0ifCDAw+Hv23USJ72WI7yODCQFFiTs0
-   LOpNAy+o+aTbjxTbKJwyTTgT1QflxADA6bhn4hHcb6bW/zO719xnYRuK3
-   jP6gIBIfI4vKCYEE1RhljXd3GeBah5QaPaCRXJPCu7959f3MRSBToD/Qf
-   i+3gj5pJevv3Qwng1Q4DohEXToYaVOJOmHXOWNw7Z+FT+MXMR+hgolmYV
-   DqsOsG/XdLr1W3vrXKwrAQskDDc3ML9lmd+LZbkaV5ADPSDRcEn3SF9N3
-   sw0iJJwKZiFCHQ4YT0UNRCMWxYOo0giYWyxWfq0XNbmQQa7WUqjaOdBSU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="375511978"
-X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
-   d="scan'208";a="375511978"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 04:43:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="784127858"
-X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
-   d="scan'208";a="784127858"
-Received: from dstacken-mobl1.ger.corp.intel.com (HELO [10.249.254.172]) ([10.249.254.172])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 04:43:12 -0700
-Message-ID: <6876d2cddd0a32bb77f2bc5ef206f06107cef8e3.camel@linux.intel.com>
-Subject: Re: [PATCH drm-misc-next v6 2/6] drm/gpuvm: add drm_gpuvm_flags to
- drm_gpuvm
-From:   Thomas =?ISO-8859-1?Q?Hellstr=F6m?= 
-        <thomas.hellstrom@linux.intel.com>
-To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        christian.koenig@amd.com, faith@gfxstrand.net
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 13 Oct 2023 13:43:09 +0200
-In-Reply-To: <20231008233212.13815-3-dakr@redhat.com>
-References: <20231008233212.13815-1-dakr@redhat.com>
-         <20231008233212.13815-3-dakr@redhat.com>
-Organization: Intel Sweden AB, Registration Number: 556189-6027
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Fri, 13 Oct 2023 07:44:16 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE0CA9;
+        Fri, 13 Oct 2023 04:44:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net; s=s31663417;
+ t=1697197444; x=1697802244; i=wahrenst@gmx.net;
+ bh=E4sw15hwyU1NoY3bpxUcoqkpulP82Jyjh/33cePxKVY=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=dCbnNtRufzgrj4khU2quh8TeUnw+qAOaaJnlXwUUZOysUCuQwU9JG/Sl868B8cyelaj+nBqAp8u
+ +R5Mq9NiOoz8FwdUX0c5IYPbcnTKhbml9fiWVPtlzrpvUwcMM9fN75Sm5nJcv/LN0E31SrbpV1fTi
+ 8wzEdUCIMLoS416avfYkz1PBoD/i6se/u5oh1UfuIVnlzyC1pPqfpuwRMCJAGJ84YTeY22XTvSLbW
+ 0piPY46oKlctDmQ4n8ZQdyu6p0AmgUKt+l8SNN3I7DU8yITWv08d67LnMXUBE30PvLmcANEPkQIx4
+ 4pWztymLA6T2XzLzf3Y3irrwnbPwqMKFgztg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.129] ([37.4.248.43]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MmlXA-1rJPoA0R54-00jpYz; Fri, 13
+ Oct 2023 13:44:04 +0200
+Message-ID: <cc563313-32d7-4098-b93a-1fa06b8afb02@gmx.net>
+Date:   Fri, 13 Oct 2023 13:44:03 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_FILL_THIS_FORM_SHORT autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/3] pwm: bcm2835: allow pwm driver to be used in
+ atomic context
+Content-Language: en-US
+To:     Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>
+Cc:     linux-pwm@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <cover.1697193646.git.sean@mess.org>
+ <6ce73b2688f059e7169935699044104cf37b2425.1697193646.git.sean@mess.org>
+ <84429d39-aa54-462d-85cd-c5d06a614a0e@gmx.net> <5203415.ElGaqSPkdT@steina-w>
+From:   Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <5203415.ElGaqSPkdT@steina-w>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:qh12HCIU2Roj9OjwMebuwIGpz/NlTN7LEbnAxJqOjHR2EIEGyAj
+ HTfwTsTqzi++7mMrYcLBVLAdNFmf1Isrx4WjIUkoZtA3C4NT4cm6vMVPWaRDoT2ul89Ax3M
+ YD+wae6bJEZb6tnqpt/XZVCj6vdDCiISxGRwduACeeXAIi00OpWLtEzItfR3Cm+y3Ov76Cj
+ SM56uGMzw2UKTKDF9BDVQ==
+UI-OutboundReport: notjunk:1;M01:P0:FMHCN7HlECo=;hI+W6/zWR3y5IrZq8KhsuQJi658
+ bxReskx8vfTv7lsAbSuBftqGLAzaa6RsqLBpqkcSUJODyaT6xDDv2GLRJCugC2reftQy4j3c5
+ /gly1mBONRbocjeOOPWeziFdph2DxKD99QXhXHQNDTMnP8nypGHWq7kw5LqDRroRuKFpFglsH
+ a+Gn4Sweg80Vlu8eO5qaovkr4Y5YPE/FzBq25hXjXD6EBMguEXWRQPS3d+7FbgFg7yTPYX4lS
+ 4rztiYRUtZ2HLc3pRp1MiWtWs6Z11oFZZ7U/lTH2GWzrkW5TcUwbx7YnDCEdKqiOdhLq5qDpm
+ /vmgGX0y8Ue1BiUjXsYjJdu8TcIOaaYyzOAOnrk24pBC6htTvHcFXGBga/dckw6TDYYiK8Pva
+ ouB7hFsQoH1P876TkwIZ+rY+lRKS2Ap+HZOCbB0pBDJ5EcxT3y59vYBMbs4Nf/2ir/Cpcb2LE
+ dOdTtzSYMq6JitSAtcRfExv71WzGE4Gx4eZ9E62Iv0LzSnPmGQB5oTuMMjNmctf4Amwwq+5f8
+ WIUBbQDQhTWd6aTrxR9DDN1wdkjnCqdlU1M5A35JOUI+ixxsjvXeUY/g80r550dcJZY7Ababm
+ 8CUzjVhoWQlMaxLh7cpra/+m00OO/JHiQ5MPQzwION3yUwmWa4KBOfMtaOK7ZfwiF+Yhhs4ad
+ bHspF0tYHDW4OjN+zSt+XcIm1h1shvdUFb70Sz/kVhUzvUhukR2EexQDJbJnHBwwwbLglG3zM
+ /V/Fx0Jalo0hZEZQ73pUtiLf9nIbgqyA3xVcjWUaAAA8cjms7y+4wAuOgd0PYdY2yd/urS09S
+ LnTyZTAVVJNb+lywykng1u3cvQvoe517pJ2OkQ/kwsODJSxCcHGyScA5xbJWInSvJ4DPll/Sz
+ t/kxVLAsPZGmG7jZFVOHnKlIWDm4xkHVRsFoMbIlKWM8a4Llf/xQXO3XfzcRC5lsvDo4Z8yw8
+ ZdQ//jrvO9HiqPJwWLUguU0mfSs=
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIzLTEwLTA5IGF0IDAxOjMyICswMjAwLCBEYW5pbG8gS3J1bW1yaWNoIHdyb3Rl
-Ogo+IEludHJvZHVjZSBmbGFncyBmb3Igc3RydWN0IGRybV9ncHV2bSwgdGhpcyByZXF1aXJlZCBi
-eSBzdWJzZXF1ZW50Cj4gY29tbWl0cy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBEYW5pbG8gS3J1bW1y
-aWNoIDxkYWtyQHJlZGhhdC5jb20+Cj4gLS0tCj4gwqBkcml2ZXJzL2dwdS9kcm0vZHJtX2dwdXZt
-LmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoCA0ICsrKy0KPiDCoGRyaXZlcnMvZ3B1L2RybS9u
-b3V2ZWF1L25vdXZlYXVfdXZtbS5jIHzCoCAyICstCj4gwqBpbmNsdWRlL2RybS9kcm1fZ3B1dm0u
-aMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8IDE3ICsrKysrKysrKysrKysrKystCj4g
-wqAzIGZpbGVzIGNoYW5nZWQsIDIwIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4gCj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9kcm1fZ3B1dm0uYwo+IGIvZHJpdmVycy9ncHUv
-ZHJtL2RybV9ncHV2bS5jCj4gaW5kZXggZWJkYTlkNTk0MTY1Li42MzY4ZGZkYmU5ZGQgMTAwNjQ0
-Cj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2RybV9ncHV2bS5jCj4gKysrIGIvZHJpdmVycy9ncHUv
-ZHJtL2RybV9ncHV2bS5jCj4gQEAgLTcwMyw2ICs3MDMsNyBAQCBFWFBPUlRfU1lNQk9MX0dQTChk
-cm1fZ3B1dm1fcm9vdF9vYmplY3RfYWxsb2MpOwo+IMKgICogQGdwdXZtOiBwb2ludGVyIHRvIHRo
-ZSAmZHJtX2dwdXZtIHRvIGluaXRpYWxpemUKPiDCoCAqIEByX29iajogdGhlIHJvb3QgJmRybV9n
-ZW1fb2JqZWN0IHByb3ZpZGluZyB0aGUgR1BVVk0ncyBjb21tb24KPiAmZG1hX3Jlc3YKPiDCoCAq
-IEBuYW1lOiB0aGUgbmFtZSBvZiB0aGUgR1BVIFZBIHNwYWNlCj4gKyAqIEBmbGFnczogdGhlICZk
-cm1fZ3B1dm1fZmxhZ3MgZm9yIHRoaXMgR1BVVk0KCk5JVDogSXQgbG9va3MgbGlrZSBrZXJuZWxk
-b2MgZ3VpZGVsaW5lcyByZWNvbW1lbmRzIHVzaW5nICZlbnVtCmRybV9ncHV2bV9mbGFncyBpbiBu
-ZXcgIGNvZGUKCj4gwqAgKiBAc3RhcnRfb2Zmc2V0OiB0aGUgc3RhcnQgb2Zmc2V0IG9mIHRoZSBH
-UFUgVkEgc3BhY2UKPiDCoCAqIEByYW5nZTogdGhlIHNpemUgb2YgdGhlIEdQVSBWQSBzcGFjZQo+
-IMKgICogQHJlc2VydmVfb2Zmc2V0OiB0aGUgc3RhcnQgb2YgdGhlIGtlcm5lbCByZXNlcnZlZCBH
-UFUgVkEgYXJlYQo+IEBAIC03MTYsNyArNzE3LDcgQEAgRVhQT1JUX1NZTUJPTF9HUEwoZHJtX2dw
-dXZtX3Jvb3Rfb2JqZWN0X2FsbG9jKTsKPiDCoCAqLwo+IMKgdm9pZAo+IMKgZHJtX2dwdXZtX2lu
-aXQoc3RydWN0IGRybV9ncHV2bSAqZ3B1dm0sIHN0cnVjdCBkcm1fZ2VtX29iamVjdAo+ICpyX29i
-aiwKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29uc3QgY2hhciAqbmFtZSwKPiArwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29uc3QgY2hhciAqbmFtZSwgZW51bSBkcm1fZ3B1dm1f
-ZmxhZ3MgZmxhZ3MsCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB1NjQgc3RhcnRfb2Zm
-c2V0LCB1NjQgcmFuZ2UsCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB1NjQgcmVzZXJ2
-ZV9vZmZzZXQsIHU2NCByZXNlcnZlX3JhbmdlLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgY29uc3Qgc3RydWN0IGRybV9ncHV2bV9vcHMgKm9wcykKPiBAQCAtNzI5LDYgKzczMCw3IEBA
-IGRybV9ncHV2bV9pbml0KHN0cnVjdCBkcm1fZ3B1dm0gKmdwdXZtLCBzdHJ1Y3QKPiBkcm1fZ2Vt
-X29iamVjdCAqcl9vYmosCj4gwqDCoMKgwqDCoMKgwqDCoGdwdXZtLT5tbV9yYW5nZSA9IHJhbmdl
-Owo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoGdwdXZtLT5uYW1lID0gbmFtZSA/IG5hbWUgOiAidW5r
-bm93biI7Cj4gK8KgwqDCoMKgwqDCoMKgZ3B1dm0tPmZsYWdzID0gZmxhZ3M7Cj4gwqDCoMKgwqDC
-oMKgwqDCoGdwdXZtLT5vcHMgPSBvcHM7Cj4gwqDCoMKgwqDCoMKgwqDCoGdwdXZtLT5yX29iaiA9
-IHJfb2JqOwo+IMKgCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9ub3V2ZWF1L25vdXZl
-YXVfdXZtbS5jCj4gYi9kcml2ZXJzL2dwdS9kcm0vbm91dmVhdS9ub3V2ZWF1X3V2bW0uYwo+IGlu
-ZGV4IDRkZWE4NDdlZjk4OS4uOTNhZDJiYTdlYzhiIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvZ3B1
-L2RybS9ub3V2ZWF1L25vdXZlYXVfdXZtbS5jCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL25vdXZl
-YXUvbm91dmVhdV91dm1tLmMKPiBAQCAtMTg0Myw3ICsxODQzLDcgQEAgbm91dmVhdV91dm1tX2lu
-aXQoc3RydWN0IG5vdXZlYXVfdXZtbSAqdXZtbSwKPiBzdHJ1Y3Qgbm91dmVhdV9jbGkgKmNsaSwK
-PiDCoMKgwqDCoMKgwqDCoMKgdXZtbS0+a2VybmVsX21hbmFnZWRfYWRkciA9IGtlcm5lbF9tYW5h
-Z2VkX2FkZHI7Cj4gwqDCoMKgwqDCoMKgwqDCoHV2bW0tPmtlcm5lbF9tYW5hZ2VkX3NpemUgPSBr
-ZXJuZWxfbWFuYWdlZF9zaXplOwo+IMKgCj4gLcKgwqDCoMKgwqDCoMKgZHJtX2dwdXZtX2luaXQo
-JnV2bW0tPmJhc2UsIHJfb2JqLCBjbGktPm5hbWUsCj4gK8KgwqDCoMKgwqDCoMKgZHJtX2dwdXZt
-X2luaXQoJnV2bW0tPmJhc2UsIHJfb2JqLCBjbGktPm5hbWUsIDAsCj4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgTk9VVkVBVV9WQV9TUEFDRV9TVEFSVCwKPiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBOT1VWRUFVX1ZBX1NQ
-QUNFX0VORCwKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBr
-ZXJuZWxfbWFuYWdlZF9hZGRyLCBrZXJuZWxfbWFuYWdlZF9zaXplLAo+IGRpZmYgLS1naXQgYS9p
-bmNsdWRlL2RybS9kcm1fZ3B1dm0uaCBiL2luY2x1ZGUvZHJtL2RybV9ncHV2bS5oCj4gaW5kZXgg
-MGFlYzE0ZDhiMjU5Li4xMzUzOWYzMmMyZTIgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9kcm0vZHJt
-X2dwdXZtLmgKPiArKysgYi9pbmNsdWRlL2RybS9kcm1fZ3B1dm0uaAo+IEBAIC0xODMsNiArMTgz
-LDE2IEBAIHN0YXRpYyBpbmxpbmUgYm9vbCBkcm1fZ3B1dmFfaW52YWxpZGF0ZWQoc3RydWN0Cj4g
-ZHJtX2dwdXZhICp2YSkKPiDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIHZhLT5mbGFncyAmIERSTV9H
-UFVWQV9JTlZBTElEQVRFRDsKPiDCoH0KPiDCoAo+ICsvKioKPiArICogZW51bSBkcm1fZ3B1dm1f
-ZmxhZ3MgLSBmbGFncyBmb3Igc3RydWN0IGRybV9ncHV2bQo+ICsgKi8KPiArZW51bSBkcm1fZ3B1
-dm1fZmxhZ3Mgewo+ICvCoMKgwqDCoMKgwqDCoC8qKgo+ICvCoMKgwqDCoMKgwqDCoCAqIEBEUk1f
-R1BVVk1fVVNFUkJJVFM6IHVzZXIgZGVmaW5lZCBiaXRzCj4gK8KgwqDCoMKgwqDCoMKgICovCj4g
-K8KgwqDCoMKgwqDCoMKgRFJNX0dQVVZNX1VTRVJCSVRTID0gKDEgPDwgMCksCgpCSVQoMCkKCj4g
-K307Cj4gKwo+IMKgLyoqCj4gwqAgKiBzdHJ1Y3QgZHJtX2dwdXZtIC0gRFJNIEdQVSBWQSBNYW5h
-Z2VyCj4gwqAgKgo+IEBAIC0yMDEsNiArMjExLDExIEBAIHN0cnVjdCBkcm1fZ3B1dm0gewo+IMKg
-wqDCoMKgwqDCoMKgwqAgKi8KPiDCoMKgwqDCoMKgwqDCoMKgY29uc3QgY2hhciAqbmFtZTsKPiDC
-oAo+ICvCoMKgwqDCoMKgwqDCoC8qKgo+ICvCoMKgwqDCoMKgwqDCoCAqIEBmbGFnczogdGhlICZk
-cm1fZ3B1dm1fZmxhZ3Mgb2YgdGhpcyBHUFVWTQplbnVtPwo+ICvCoMKgwqDCoMKgwqDCoCAqLwo+
-ICvCoMKgwqDCoMKgwqDCoGVudW0gZHJtX2dwdXZtX2ZsYWdzIGZsYWdzOwo+ICsKPiDCoMKgwqDC
-oMKgwqDCoMKgLyoqCj4gwqDCoMKgwqDCoMKgwqDCoCAqIEBtbV9zdGFydDogc3RhcnQgb2YgdGhl
-IFZBIHNwYWNlCj4gwqDCoMKgwqDCoMKgwqDCoCAqLwo+IEBAIC0yNDYsNyArMjYxLDcgQEAgc3Ry
-dWN0IGRybV9ncHV2bSB7Cj4gwqB9Owo+IMKgCj4gwqB2b2lkIGRybV9ncHV2bV9pbml0KHN0cnVj
-dCBkcm1fZ3B1dm0gKmdwdXZtLCBzdHJ1Y3QgZHJtX2dlbV9vYmplY3QKPiAqcl9vYmosCj4gLcKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb25zdCBjaGFyICpuYW1lLAo+ICvC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29uc3QgY2hhciAqbmFtZSwgZW51
-bSBkcm1fZ3B1dm1fZmxhZ3MgZmxhZ3MsCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgdTY0IHN0YXJ0X29mZnNldCwgdTY0IHJhbmdlLAo+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHU2NCByZXNlcnZlX29mZnNldCwgdTY0IHJlc2VydmVfcmFu
-Z2UsCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29uc3Qgc3RydWN0
-IGRybV9ncHV2bV9vcHMgKm9wcyk7CgpSZXZpZXdlZC1ieTogVGhvbWFzIEhlbGxzdHLDtm0gPHRo
-b21hcy5oZWxsc3Ryb21AbGludXguaW50ZWwuY29tPgoK
+Hi Alexander,
+
+Am 13.10.23 um 13:13 schrieb Alexander Stein:
+> Hi,
+>
+> Am Freitag, 13. Oktober 2023, 13:04:48 CEST schrieb Stefan Wahren:
+>> Hi Sean,
+>>
+>> Am 13.10.23 um 12:46 schrieb Sean Young:
+>>> clk_get_rate() may do a mutex lock. Since the clock rate cannot change=
+ on
+>>> an rpi, simply fetch it once.
+>> does it mean you checked all possible SoCs (BCM2835, BCM2836, BCM2837,
+>> BCM2711, BCM2712) for this change?
+>>
+>> Is it impossible that the real clock can never be influenced by turbo
+>> mode like SPI?
+> Assuming the clock can change, which I would, then a clock notifier seem=
+s
+> appropriate. See [1] for an example.
+i remember a similiar approach for the CPU frequency for the RPi. At end
+the we decided to let the firmware handle it and don't use clock
+notifier, see [2] and the related links for more background. The fact
+that the VideoCore has the real control makes it hard.
+
+I don't want to say that's impossible.
+
+[2] -
+https://patchwork.kernel.org/project/linux-arm-kernel/cover/20190520104708=
+.11980-1-nsaenzjulienne@suse.de/
+>
+> Best regards,
+> Alexander
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/
+> commit/?id=3D90ad2cbe88c22d0215225ab9594eeead0eb24fde
+>
+>> Best regards
+>>
+>>> Signed-off-by: Sean Young <sean@mess.org>
+>>> ---
+>>>
+>>>    drivers/pwm/pwm-bcm2835.c | 21 ++++++++++++---------
+>>>    1 file changed, 12 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/drivers/pwm/pwm-bcm2835.c b/drivers/pwm/pwm-bcm2835.c
+>>> index bdfc2a5ec0d6..59ea154dd657 100644
+>>> --- a/drivers/pwm/pwm-bcm2835.c
+>>> +++ b/drivers/pwm/pwm-bcm2835.c
+>>> @@ -28,6 +28,7 @@ struct bcm2835_pwm {
+>>>
+>>>    	struct device *dev;
+>>>    	void __iomem *base;
+>>>    	struct clk *clk;
+>>>
+>>> +	unsigned long rate;
+>>>
+>>>    };
+>>>
+>>>    static inline struct bcm2835_pwm *to_bcm2835_pwm(struct pwm_chip *c=
+hip)
+>>>
+>>> @@ -63,17 +64,11 @@ static int bcm2835_pwm_apply(struct pwm_chip *chip=
+,
+>>> struct pwm_device *pwm,>
+>>>    {
+>>>
+>>>    	struct bcm2835_pwm *pc =3D to_bcm2835_pwm(chip);
+>>>
+>>> -	unsigned long rate =3D clk_get_rate(pc->clk);
+>>>
+>>>    	unsigned long long period_cycles;
+>>>    	u64 max_period;
+>>>
+>>>    	u32 val;
+>>>
+>>> -	if (!rate) {
+>>> -		dev_err(pc->dev, "failed to get clock rate\n");
+>>> -		return -EINVAL;
+>>> -	}
+>>> -
+>>>
+>>>    	/*
+>>>
+>>>    	 * period_cycles must be a 32 bit value, so period * rate /
+>>>    	 NSEC_PER_SEC
+>>>    	 * must be <=3D U32_MAX. As U32_MAX * NSEC_PER_SEC < U64_MAX the
+>>>
+>>> @@ -88,13 +83,13 @@ static int bcm2835_pwm_apply(struct pwm_chip *chip=
+,
+>>> struct pwm_device *pwm,>
+>>>    	 * <=3D> period < ((U32_MAX * NSEC_PER_SEC + NSEC_PER_SEC/2) / rat=
+e
+>>>    	 * <=3D> period <=3D ceil((U32_MAX * NSEC_PER_SEC + NSEC_PER_SEC/2=
+) /
+> rate)
+>>>    	 - 1
+>>>    	 */
+>>>
+>>> -	max_period =3D DIV_ROUND_UP_ULL((u64)U32_MAX * NSEC_PER_SEC +
+> NSEC_PER_SEC
+>>> / 2, rate) - 1; +	max_period =3D DIV_ROUND_UP_ULL((u64)U32_MAX *
+>>> NSEC_PER_SEC + NSEC_PER_SEC / 2, pc->rate) - 1;>
+>>>    	if (state->period > max_period)
+>>>
+>>>    		return -EINVAL;
+>>>
+>>>    	/* set period */
+>>>
+>>> -	period_cycles =3D DIV_ROUND_CLOSEST_ULL(state->period * rate,
+>>> NSEC_PER_SEC); +	period_cycles =3D DIV_ROUND_CLOSEST_ULL(state->period=
+ *
+>>> pc->rate, NSEC_PER_SEC);>
+>>>    	/* don't accept a period that is too small */
+>>>    	if (period_cycles < PERIOD_MIN)
+>>>
+>>> @@ -103,7 +98,7 @@ static int bcm2835_pwm_apply(struct pwm_chip *chip,
+>>> struct pwm_device *pwm,>
+>>>    	writel(period_cycles, pc->base + PERIOD(pwm->hwpwm));
+>>>
+>>>    	/* set duty cycle */
+>>>
+>>> -	val =3D DIV_ROUND_CLOSEST_ULL(state->duty_cycle * rate, NSEC_PER_SEC=
+);
+>>> +	val =3D DIV_ROUND_CLOSEST_ULL(state->duty_cycle * pc->rate,
+> NSEC_PER_SEC);
+>>>    	writel(val, pc->base + DUTY(pwm->hwpwm));
+>>>
+>>>    	/* set polarity */
+>>>
+>>> @@ -129,6 +124,7 @@ static const struct pwm_ops bcm2835_pwm_ops =3D {
+>>>
+>>>    	.request =3D bcm2835_pwm_request,
+>>>    	.free =3D bcm2835_pwm_free,
+>>>    	.apply =3D bcm2835_pwm_apply,
+>>>
+>>> +	.atomic =3D true,
+>>>
+>>>    	.owner =3D THIS_MODULE,
+>>>
+>>>    };
+>>>
+>>> @@ -156,6 +152,13 @@ static int bcm2835_pwm_probe(struct platform_devi=
+ce
+>>> *pdev)>
+>>>    	if (ret)
+>>>
+>>>    		return ret;
+>>>
+>>> +	pc->rate =3D clk_get_rate(pc->clk);
+>>> +	if (!pc->rate) {
+>>> +		dev_err(pc->dev, "failed to get clock rate\n");
+>>> +		ret =3D -EINVAL;
+>>> +		goto add_fail;
+>>> +	}
+>>> +
+>>>
+>>>    	pc->chip.dev =3D &pdev->dev;
+>>>    	pc->chip.ops =3D &bcm2835_pwm_ops;
+>>>    	pc->chip.npwm =3D 2;
+>
 
