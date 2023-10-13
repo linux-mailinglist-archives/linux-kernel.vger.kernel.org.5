@@ -2,114 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 724FF7C84D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 532DE7C84DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbjJMLr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44808 "EHLO
+        id S231450AbjJMLtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbjJMLrv (ORCPT
+        with ESMTP id S231410AbjJMLs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:47:51 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821FFBF;
-        Fri, 13 Oct 2023 04:47:49 -0700 (PDT)
-Received: from obbardc-t14.home (unknown [IPv6:2a00:23c8:b70a:ae01:c2e1:3bb7:ed5c:6a0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: obbardc)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 24893660735E;
-        Fri, 13 Oct 2023 12:47:48 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697197668;
-        bh=CCYO2Nxk6wHQeFOamNkL/4O7unR6kwkhjTCQuRoEydY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XN2hI3fYED/cM0FKRFyzVDLMLuOThRPGfqH52Baig1uVi93sCyF8orvE3K3/wyciY
-         aTS3P6U34nJKMd4bIw94gbKZ3tS6O/3CXTLqLqH8RreEWYVVUzk4/PjRvWZ9V4LMle
-         BCmwQY8zEhnTacnUQd0jkK9iIjgaoRskGmDNUl81/Gp24lVEBIWVgqTfu2OD+Wki63
-         5TmLyj6gQTDowHkDOuj5S7eD8+/R0xsViFXcCp6ZRRar37ixnfPBUSDsyJjwgrhsMh
-         UyiMdWzRBVN4zmyrYH+TtYadA5v0mcApRkiLgQdEdrh46GXHfmFhbOpW8Sy6+KiOyy
-         BsCRc9JizbPvg==
-From:   Christopher Obbard <chris.obbard@collabora.com>
-To:     linux-rockchip@lists.infradead.org
-Cc:     kernel@collabora.com,
-        Christopher Obbard <chris.obbard@collabora.com>,
-        Brian Norris <briannorris@chromium.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        FUKAUMI Naoki <naoki@radxa.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Judy Hsiao <judyhsiao@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yogesh Hegde <yogi.kernel@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] arm64: dts: rockchip: Fix i2s0 pin conflict on ROCK Pi 4 boards
-Date:   Fri, 13 Oct 2023 12:47:27 +0100
-Message-ID: <20231013114737.494410-3-chris.obbard@collabora.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231013114737.494410-1-chris.obbard@collabora.com>
-References: <20231013114737.494410-1-chris.obbard@collabora.com>
+        Fri, 13 Oct 2023 07:48:56 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD95B7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:48:54 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31f71b25a99so1881428f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:48:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697197733; x=1697802533; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2gi1dKzgbLyY2SGQKC/6ay+pgQCsg2LD4vhB0IMddqs=;
+        b=Df+x9qIrKOtgMBqVwf8EslOGU+zId7IHjzs4pYWovq3Q1n8gohvzjJuFyEOJNNL0VQ
+         G9xymbxKoiLlOJwwjN3EJ5is5Mha6/b9JkXxm7kKD1fJ08BAaQqmU9Tvxeyp47DrT+2T
+         Tn+rKI5zQIsf5bnLulL2/qgr5KshrP3uyr53uDZcej3yDPNJ+i4xerYZgCq/z4zhbbIs
+         A/bVsSUEZkk/6ZN16TAPotudhvEg4pkHxaSegP7X/SwHrOSzJVnoF4k0Fgo7ezOLJdGe
+         P6eq9vIEWCpxszVx/XSB2/HGeT0O84BaYwFKQDTF0o34TzVma8Py1Zd11EAyw83DPDOh
+         bMCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697197733; x=1697802533;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2gi1dKzgbLyY2SGQKC/6ay+pgQCsg2LD4vhB0IMddqs=;
+        b=uqKjzSOhFNbC5J0bKQsUmj4mBuIaceYBjtkGdSZ8uv+91+uYy06R8Ih04YGW3upgUS
+         zQa/K6jUYrEVg55LhOtGtWbjuXHHUMuwqEEn7KfyTvcFmJeniEFRvjBYxrmHZq4lYona
+         M0QqP3SsslMcv3++EOjC7VkhBzBS4tgxwR9tH5gdFNrylUDGA/9c60/wbp4EJrfHFvwq
+         oOb4wJPHF+y1365KeLaLYzBklgR3xQKJEJ0mijQS8QApja6UNjUYuZPA1RwEgh0umP2N
+         8KgzqC02XWQV0R7eR2S5Q3gGln4vyXZFWlM1/fbkdZkr14zuzPEiKePx9HyhyzgU4qow
+         NfWQ==
+X-Gm-Message-State: AOJu0Yzi1rmXE0vcC/nJ2axzlqhWINrPOOZeoY3Am9CnS8+nIkUI4KMA
+        rwaF/H1Cf7Htx/hDxxSYiB453Q==
+X-Google-Smtp-Source: AGHT+IFWbMSJLaS2e62akmpbNVQl02Sa0VSNKRFr/iE/hQFrd9xJFWfWuGkaE7IwS+onu+pa4TFjGg==
+X-Received: by 2002:adf:f28b:0:b0:321:67f4:8bd7 with SMTP id k11-20020adff28b000000b0032167f48bd7mr22133317wro.32.1697197732611;
+        Fri, 13 Oct 2023 04:48:52 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:4209:13a:988d:80be])
+        by smtp.gmail.com with ESMTPSA id j23-20020a05600c1c1700b00407754b998dsm974509wms.27.2023.10.13.04.48.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 04:48:52 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v4 00/15] arm64: qcom: add and enable SHM Bridge support
+Date:   Fri, 13 Oct 2023 13:48:28 +0200
+Message-Id: <20231013114843.63205-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 91419ae0420f ("arm64: dts: rockchip: use BCLK to GPIO switch on
-rk3399") modified i2s0 to switch the corresponding pins off when idle.
-For the ROCK Pi 4 boards, this means that i2s0 has the following pinctrl
-setting:
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-    pinctrl-names = "bclk_on", "bclk_off";
-    pinctrl-0 = <&i2s0_2ch_bus>;
-    pinctrl-1 = <&i2s0_8ch_bus_bclk_off>;
+This is pretty much another full rewrite of the SHM Bridge support
+series. After more on- and off-list discussions I think this time it
+will be close to the final thing though.
 
-Due to this change, i2s0 fails to probe on my Radxa ROCK 4SE and ROCK Pi
-4B boards:
+We've established the need for using separate pools for SCM and QSEECOM
+as well as the upcoming scminvoke driver.
 
-    rockchip-pinctrl pinctrl: pin gpio3-29 already requested by leds; cannot claim for ff880000.i2s
-    rockchip-pinctrl pinctrl: pin-125 (ff880000.i2s) status -22
-    rockchip-pinctrl pinctrl: could not request pin 125 (gpio3-29) from group i2s0-8ch-bus-bclk-off  on device rockchip-pinctrl
-    rockchip-i2s ff880000.i2s: Error applying setting, reverse things back
-    rockchip-i2s ff880000.i2s: bclk disable failed -22
+It's also become clear that in order to be future-proof, the new
+allocator must be an abstraction layer of a higher level as the SHM
+Bridge will not be the only memory protection mechanism that we'll see
+upstream. Hence the rename to TrustZone Memory rather than SCM Memory
+allocator.
 
-A pin requested for i2s0_8ch_bus_bclk_off has already been requested by
-user_led2, so whichever driver probes first will have the pin allocated.
+Also to that end: the new allocator is its own module now and provides a
+Kconfig choice menu for selecting the mode of operation (currently
+default and SHM Bridge).
 
-The hardware uses 2-channel i2s so fix this error by setting pinctl-1 to
-i2s0_2ch_bus_bclk_off which doesn't contain the pin allocated to user_led2.
+Due to a high divergence from v2, I dropped all tags except for
+patch 1/15 which didn't change.
 
-I checked the schematics for all Radxa boards based on ROCK Pi 4 and this
-change is compatible with all boards.
+Tested on sm8550 and sa8775p with the Inline Crypto Engine and
+remoteproc.
 
-Fixes: 91419ae0420f ("arm64: dts: rockchip: use BCLK to GPIO switch on rk3399")
-Signed-off-by: Christopher Obbard <chris.obbard@collabora.com>
----
+v3 -> v4:
+- include linux/sizes.h for SZ_X macros
+- use dedicated RCU APIs to dereference radix tree slots
+- fix kerneldocs
+- fix the comment in patch 14/15: it's the hypervisor, not the TrustZone
+  that creates the SHM bridge
 
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+v2 -> v3:
+- restore pool management and use separate pools for different users
+- don't use the new allocator in qcom_scm_pas_init_image() as the
+  TrustZone will create an SHM bridge for us here
+- rewrite the entire series again for most part
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-index 7dccbe8a93930..f2279aa6ca9e1 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-@@ -492,6 +492,7 @@ &i2c4 {
- 
- &i2s0 {
- 	pinctrl-0 = <&i2s0_2ch_bus>;
-+	pinctrl-1 = <&i2s0_2ch_bus_bclk_off>;
- 	rockchip,capture-channels = <2>;
- 	rockchip,playback-channels = <2>;
- 	status = "okay";
+v1 -> v2:
+- too many changes to list, it's a complete rewrite as explained above
+
+Bartosz Golaszewski (15):
+  firmware: qcom: move Qualcomm code into its own directory
+  firmware: qcom: scm: add a missing forward declaration for struct
+    device
+  firmware: qcom: scm: remove unneeded 'extern' specifiers
+  firmware: qcom: add a dedicated TrustZone buffer allocator
+  firmware: qcom: scm: enable the TZ mem allocator
+  firmware: qcom: scm: smc: switch to using the SCM allocator
+  firmware: qcom: scm: make qcom_scm_assign_mem() use the TZ allocator
+  firmware: qcom: scm: make qcom_scm_ice_set_key() use the TZ allocator
+  firmware: qcom: scm: make qcom_scm_lmh_dcvsh() use the TZ allocator
+  firmware: qcom: scm: make qcom_scm_qseecom_app_get_id() use the TZ
+    allocator
+  firmware: qcom: qseecom: convert to using the TZ allocator
+  firmware: qcom: scm: add support for SHM bridge operations
+  firmware: qcom: tzmem: enable SHM Bridge support
+  firmware: qcom: scm: clarify the comment in qcom_scm_pas_init_image()
+  arm64: defconfig: enable SHM Bridge support for the TZ memory
+    allocator
+
+ MAINTAINERS                                   |   4 +-
+ arch/arm64/configs/defconfig                  |   1 +
+ drivers/firmware/Kconfig                      |  48 +--
+ drivers/firmware/Makefile                     |   5 +-
+ drivers/firmware/qcom/Kconfig                 |  86 +++++
+ drivers/firmware/qcom/Makefile                |  10 +
+ drivers/firmware/{ => qcom}/qcom_qseecom.c    |   0
+ .../{ => qcom}/qcom_qseecom_uefisecapp.c      | 261 +++++--------
+ drivers/firmware/{ => qcom}/qcom_scm-legacy.c |   0
+ drivers/firmware/{ => qcom}/qcom_scm-smc.c    |  28 +-
+ drivers/firmware/{ => qcom}/qcom_scm.c        | 179 +++++----
+ drivers/firmware/{ => qcom}/qcom_scm.h        |  21 +-
+ drivers/firmware/qcom/qcom_tzmem.c            | 365 ++++++++++++++++++
+ drivers/firmware/qcom/qcom_tzmem.h            |  13 +
+ include/linux/firmware/qcom/qcom_qseecom.h    |   4 +-
+ include/linux/firmware/qcom/qcom_scm.h        |   6 +
+ include/linux/firmware/qcom/qcom_tzmem.h      |  28 ++
+ 17 files changed, 746 insertions(+), 313 deletions(-)
+ create mode 100644 drivers/firmware/qcom/Kconfig
+ create mode 100644 drivers/firmware/qcom/Makefile
+ rename drivers/firmware/{ => qcom}/qcom_qseecom.c (100%)
+ rename drivers/firmware/{ => qcom}/qcom_qseecom_uefisecapp.c (84%)
+ rename drivers/firmware/{ => qcom}/qcom_scm-legacy.c (100%)
+ rename drivers/firmware/{ => qcom}/qcom_scm-smc.c (91%)
+ rename drivers/firmware/{ => qcom}/qcom_scm.c (93%)
+ rename drivers/firmware/{ => qcom}/qcom_scm.h (88%)
+ create mode 100644 drivers/firmware/qcom/qcom_tzmem.c
+ create mode 100644 drivers/firmware/qcom/qcom_tzmem.h
+ create mode 100644 include/linux/firmware/qcom/qcom_tzmem.h
+
 -- 
-2.42.0
+2.39.2
 
