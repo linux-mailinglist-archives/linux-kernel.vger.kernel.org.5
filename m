@@ -2,173 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A0F7C88F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816347C88F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbjJMPn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41190 "EHLO
+        id S232493AbjJMPoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 11:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232486AbjJMPny (ORCPT
+        with ESMTP id S232486AbjJMPoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:43:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B27B7;
-        Fri, 13 Oct 2023 08:43:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697211832; x=1728747832;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=29s3G1E9QTs2ByafqFzcoETkhW2Zmk6RFxqLUJpfMg4=;
-  b=nSXee22DwG/hXZS82mu2mR2s8jD5nVzDLGztMHa2GzkciKIglmh/arQh
-   DAdVqHowsUq5zd2kELZe2yvLQMk2xMV0VCUxvG/MJFMWdfDofqODmxzvh
-   mT/acw52XYjYh7gpF6GCoiIY2mP0Xw0S1sWqWp54Dqrx6w8bLh5hIrB3W
-   poMXMP8iZsFtS7AR5VjwCYrfEO+kYoRGSs1H4IQPYbXnuW5L1lrXdqgux
-   M+0Vi44CXsY51PDbNxV/+xTwQtEbDgNI5GVAOgpvpNWNwISTqrTT44xXk
-   uo2Hq5qB7qju8hjGMyanEenMsomL8dsYDg0DegguCUswfH2bA/pwOGp+L
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="370274666"
-X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
-   d="scan'208";a="370274666"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 08:43:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="928461808"
-X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
-   d="scan'208";a="928461808"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 13 Oct 2023 08:43:44 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qrKKE-00052P-0v;
-        Fri, 13 Oct 2023 15:43:42 +0000
-Date:   Fri, 13 Oct 2023 23:43:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Alexander Graf <graf@amazon.com>, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-crypto@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Olivia Mackall <olivia@selenic.com>,
-        Petre Eftime <petre.eftime@gmail.com>,
-        Erdem Meydanlli <meydanli@amazon.nl>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Kyunghwan Kwon <k@mononn.com>
-Subject: Re: [PATCH v4 2/2] misc: Add Nitro Secure Module driver
-Message-ID: <202310132329.UIMS3J8a-lkp@intel.com>
-References: <20231009212053.2007-3-graf@amazon.com>
+        Fri, 13 Oct 2023 11:44:07 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73DBD6
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:44:05 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d9a58f5f33dso2460429276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1697211845; x=1697816645; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AJ1u8W8nJDs/3hnqsTsgMgJtZzTYy7L696nS2k9TLM0=;
+        b=PgRFFLumPxwbWIaZ0cZ+u7f93r8cyEdMFKCcFKZ7XK/Gq4tVNjJzskfSkQhPN2oho0
+         rBNu7fBjesogSt6MK0eb9w4UXSx+NRSqDQK2SkgA6/cgX9VR+4auv02Kwyrh2OiumqBG
+         f/WHeGK+ac1EgukUq9rXSDKa6pU/L0H9BzQnhZeFFDwygcGKvr9SQW4+cJJMl681sUjf
+         LaQmZ4Or5oMXc5b8c33oymRSACXwyZjAw7sRQ1HyrWnOsPpB/rbBGY8ZGQK07Dm4FiJh
+         +nAkhUix0eEv0PmL/X8xnG6bdRMFcO2T+KS2DR13oN20Y6VpRq7xCnjoNI3/3QmR89Bf
+         rD4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697211845; x=1697816645;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AJ1u8W8nJDs/3hnqsTsgMgJtZzTYy7L696nS2k9TLM0=;
+        b=viL19p6x1lCk2a1UHzgTDLJR/KXH/AVMQkZtn8aEXkqxujQBzhexltBdi9bk7mWTnv
+         bffywCAZbilESclIWa2r/zqQUSii8jNjF8y9yngSrkpP4rocXHjYoClIZXPVWNKFCOKy
+         DR4Y5hbysbu+2X7lUnFQ0tM4JlscjSc1eiBFv/gYhownihaaFSCavZJboN22srxGATgm
+         ldawurQ0MRIbWicLROPokYnd/Yi7AZ6flPYTA3f2wBfHI8vNayoiNugIBRvqMGJiA2JM
+         nitRpqLHJrgVx6yg4MqOHjAix0qaSXB8a8AauCD86xMZwianc6fVngHY/8b3+y/6ddwq
+         UsXw==
+X-Gm-Message-State: AOJu0YyUQ8fLEq4Z0TrLRaUbpXxiDKcA4ayyzXVkH27VwRMtT/QJ7A6z
+        du2Yq5vukm1hYl2N38UDfY5WoTJtCtwaB8Q94kav
+X-Google-Smtp-Source: AGHT+IFwQ7EtyACxdJUfqpyZF/wUto1XaZssDLi7J8PLVjO2u/pmkdEdsxLsosxCWq/+ScwyHDhej2pl2Yir1JvfipA=
+X-Received: by 2002:a25:26c6:0:b0:d9a:c827:28f with SMTP id
+ m189-20020a2526c6000000b00d9ac827028fmr5191441ybm.62.1697211844952; Fri, 13
+ Oct 2023 08:44:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009212053.2007-3-graf@amazon.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231012215518.GA4048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20231013-insofern-gegolten-75ca48b24cf5@brauner> <672d257e-e28f-42bc-8ac7-253d20fe187c@kernel.dk>
+In-Reply-To: <672d257e-e28f-42bc-8ac7-253d20fe187c@kernel.dk>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 13 Oct 2023 11:43:54 -0400
+Message-ID: <CAHC9VhQcSY9q=wVT7hOz9y=o3a67BVUnVGNotgAvE6vK7WAkBw@mail.gmail.com>
+Subject: Re: [PATCH] audit,io_uring: io_uring openat triggers audit reference
+ count underflow
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Dan Clash <daclash@linux.microsoft.com>, audit@vger.kernel.org,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, dan.clash@microsoft.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
+On Fri, Oct 13, 2023 at 10:21=E2=80=AFAM Jens Axboe <axboe@kernel.dk> wrote=
+:
+> On 10/13/23 2:24 AM, Christian Brauner wrote:
+> > On Thu, Oct 12, 2023 at 02:55:18PM -0700, Dan Clash wrote:
+> >> An io_uring openat operation can update an audit reference count
+> >> from multiple threads resulting in the call trace below.
+> >>
+> >> A call to io_uring_submit() with a single openat op with a flag of
+> >> IOSQE_ASYNC results in the following reference count updates.
+> >>
+> >> These first part of the system call performs two increments that do no=
+t race.
+> >>
+> >> do_syscall_64()
+> >>   __do_sys_io_uring_enter()
+> >>     io_submit_sqes()
+> >>       io_openat_prep()
+> >>         __io_openat_prep()
+> >>           getname()
+> >>             getname_flags()       /* update 1 (increment) */
+> >>               __audit_getname()   /* update 2 (increment) */
+> >>
+> >> The openat op is queued to an io_uring worker thread which starts the
+> >> opportunity for a race.  The system call exit performs one decrement.
+> >>
+> >> do_syscall_64()
+> >>   syscall_exit_to_user_mode()
+> >>     syscall_exit_to_user_mode_prepare()
+> >>       __audit_syscall_exit()
+> >>         audit_reset_context()
+> >>            putname()              /* update 3 (decrement) */
+> >>
+> >> The io_uring worker thread performs one increment and two decrements.
+> >> These updates can race with the system call decrement.
+> >>
+> >> io_wqe_worker()
+> >>   io_worker_handle_work()
+> >>     io_wq_submit_work()
+> >>       io_issue_sqe()
+> >>         io_openat()
+> >>           io_openat2()
+> >>             do_filp_open()
+> >>               path_openat()
+> >>                 __audit_inode()   /* update 4 (increment) */
+> >>             putname()             /* update 5 (decrement) */
+> >>         __audit_uring_exit()
+> >>           audit_reset_context()
+> >>             putname()             /* update 6 (decrement) */
+> >>
+> >> The fix is to change the refcnt member of struct audit_names
+> >> from int to atomic_t.
+> >>
+> >> kernel BUG at fs/namei.c:262!
+> >> Call Trace:
+> >> ...
+> >>  ? putname+0x68/0x70
+> >>  audit_reset_context.part.0.constprop.0+0xe1/0x300
+> >>  __audit_uring_exit+0xda/0x1c0
+> >>  io_issue_sqe+0x1f3/0x450
+> >>  ? lock_timer_base+0x3b/0xd0
+> >>  io_wq_submit_work+0x8d/0x2b0
+> >>  ? __try_to_del_timer_sync+0x67/0xa0
+> >>  io_worker_handle_work+0x17c/0x2b0
+> >>  io_wqe_worker+0x10a/0x350
+> >>
+> >> Cc: <stable@vger.kernel.org>
+> >> Link: https://lore.kernel.org/lkml/MW2PR2101MB1033FFF044A258F84AEAA584=
+F1C9A@MW2PR2101MB1033.namprd21.prod.outlook.com/
+> >> Fixes: 5bd2182d58e9 ("audit,io_uring,io-wq: add some basic audit suppo=
+rt to io_uring")
+> >> Signed-off-by: Dan Clash <daclash@linux.microsoft.com>
+> >> ---
+> >>  fs/namei.c         | 9 +++++----
+> >>  include/linux/fs.h | 2 +-
+> >>  kernel/auditsc.c   | 8 ++++----
+> >>  3 files changed, 10 insertions(+), 9 deletions(-)
+> >>
+> >> diff --git a/fs/namei.c b/fs/namei.c
+> >> index 567ee547492b..94565bd7e73f 100644
+> >> --- a/fs/namei.c
+> >> +++ b/fs/namei.c
+> >> @@ -188,7 +188,7 @@ getname_flags(const char __user *filename, int fla=
+gs, int *empty)
+> >>              }
+> >>      }
+> >>
+> >> -    result->refcnt =3D 1;
+> >> +    atomic_set(&result->refcnt, 1);
+> >>      /* The empty path is special. */
+> >>      if (unlikely(!len)) {
+> >>              if (empty)
+> >> @@ -249,7 +249,7 @@ getname_kernel(const char * filename)
+> >>      memcpy((char *)result->name, filename, len);
+> >>      result->uptr =3D NULL;
+> >>      result->aname =3D NULL;
+> >> -    result->refcnt =3D 1;
+> >> +    atomic_set(&result->refcnt, 1);
+> >>      audit_getname(result);
+> >>
+> >>      return result;
+> >> @@ -261,9 +261,10 @@ void putname(struct filename *name)
+> >>      if (IS_ERR(name))
+> >>              return;
+> >>
+> >> -    BUG_ON(name->refcnt <=3D 0);
+> >> +    if (WARN_ON_ONCE(!atomic_read(&name->refcnt)))
+> >> +            return;
+> >>
+> >> -    if (--name->refcnt > 0)
+> >> +    if (!atomic_dec_and_test(&name->refcnt))
+> >>              return;
+> >
+> > Fine by me. I'd write this as:
+> >
+> > count =3D atomic_dec_if_positive(&name->refcnt);
+> > if (WARN_ON_ONCE(unlikely(count < 0))
+> >       return;
+> > if (count > 0)
+> >       return;
+>
+> Would be fine too, my suspicion was that most archs don't implement a
+> primitive for that, and hence it might be more expensive than
+> atomic_read()/atomic_dec_and_test() which do. But I haven't looked at
+> the code generation. The dec_if_positive degenerates to a atomic cmpxchg
+> for most cases.
 
-kernel test robot noticed the following build errors:
+I'm not too concerned, either approach works for me, the important bit
+is moving to an atomic_t/refcount_t so we can protect ourselves
+against the race.  The patch looks good to me and I'd like to get this
+fix merged.
 
-[auto build test ERROR on char-misc/char-misc-testing]
-[also build test ERROR on char-misc/char-misc-next char-misc/char-misc-linus soc/for-next linus/master v6.6-rc5 next-20231012]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Dan, barring any further back-and-forth on the putname() change, I
+would say to go ahead and make the change Christian suggested and
+repost the patch.  Based on Jens comment above it seems safe to
+preserve his 'Reviewed-by:' tag on the next revision.  Assuming there
+are no objections posted in the meantime, I'll plan to merge the next
+revision into the audit/stable-6.6 branch and get that up to Linus
+(likely next week since it's Friday).
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Alexander-Graf/Import-CBOR-library/20231010-052529
-base:   char-misc/char-misc-testing
-patch link:    https://lore.kernel.org/r/20231009212053.2007-3-graf%40amazon.com
-patch subject: [PATCH v4 2/2] misc: Add Nitro Secure Module driver
-config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20231013/202310132329.UIMS3J8a-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231013/202310132329.UIMS3J8a-lkp@intel.com/reproduce)
+Thanks everyone!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310132329.UIMS3J8a-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/asm-generic/ioctl.h:5,
-                    from arch/powerpc/include/uapi/asm/ioctl.h:12,
-                    from include/uapi/linux/ioctl.h:5,
-                    from include/uapi/linux/random.h:12,
-                    from include/linux/random.h:10,
-                    from include/linux/nodemask.h:97,
-                    from include/linux/list_lru.h:12,
-                    from include/linux/fs.h:13,
-                    from drivers/misc/nsm.c:23:
->> include/uapi/asm-generic/ioctl.h:70:9: error: initializer element is not constant
-      70 |         (((dir)  << _IOC_DIRSHIFT) | \
-         |         ^
-   include/uapi/asm-generic/ioctl.h:88:33: note: in expansion of macro '_IOC'
-      88 | #define _IOWR(type,nr,size)     _IOC(_IOC_READ|_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
-         |                                 ^~~~
-   include/uapi/linux/nsm.h:172:33: note: in expansion of macro '_IOWR'
-     172 | #define NSM_IOCTL_ATTESTATION   _IOWR(NSM_MAGIC, 0x6, union nsm_attestation)
-         |                                 ^~~~~
-   drivers/misc/nsm.c:1209:11: note: in expansion of macro 'NSM_IOCTL_ATTESTATION'
-    1209 |         { NSM_IOCTL_ATTESTATION, _fill_req_attestation, _parse_resp_attestation },
-         |           ^~~~~~~~~~~~~~~~~~~~~
-   include/uapi/asm-generic/ioctl.h:70:9: note: (near initialization for 'nsm_ioctls[6].cmd')
-      70 |         (((dir)  << _IOC_DIRSHIFT) | \
-         |         ^
-   include/uapi/asm-generic/ioctl.h:88:33: note: in expansion of macro '_IOC'
-      88 | #define _IOWR(type,nr,size)     _IOC(_IOC_READ|_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
-         |                                 ^~~~
-   include/uapi/linux/nsm.h:172:33: note: in expansion of macro '_IOWR'
-     172 | #define NSM_IOCTL_ATTESTATION   _IOWR(NSM_MAGIC, 0x6, union nsm_attestation)
-         |                                 ^~~~~
-   drivers/misc/nsm.c:1209:11: note: in expansion of macro 'NSM_IOCTL_ATTESTATION'
-    1209 |         { NSM_IOCTL_ATTESTATION, _fill_req_attestation, _parse_resp_attestation },
-         |           ^~~~~~~~~~~~~~~~~~~~~
->> include/uapi/asm-generic/ioctl.h:70:9: error: initializer element is not constant
-      70 |         (((dir)  << _IOC_DIRSHIFT) | \
-         |         ^
-   include/uapi/asm-generic/ioctl.h:88:33: note: in expansion of macro '_IOC'
-      88 | #define _IOWR(type,nr,size)     _IOC(_IOC_READ|_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
-         |                                 ^~~~
-   include/uapi/linux/nsm.h:186:33: note: in expansion of macro '_IOWR'
-     186 | #define NSM_IOCTL_RANDOM        _IOWR(NSM_MAGIC, 0x7, union nsm_get_random)
-         |                                 ^~~~~
-   drivers/misc/nsm.c:1210:11: note: in expansion of macro 'NSM_IOCTL_RANDOM'
-    1210 |         { NSM_IOCTL_RANDOM, _fill_req_get_random, _parse_resp_get_random },
-         |           ^~~~~~~~~~~~~~~~
-   include/uapi/asm-generic/ioctl.h:70:9: note: (near initialization for 'nsm_ioctls[7].cmd')
-      70 |         (((dir)  << _IOC_DIRSHIFT) | \
-         |         ^
-   include/uapi/asm-generic/ioctl.h:88:33: note: in expansion of macro '_IOC'
-      88 | #define _IOWR(type,nr,size)     _IOC(_IOC_READ|_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
-         |                                 ^~~~
-   include/uapi/linux/nsm.h:186:33: note: in expansion of macro '_IOWR'
-     186 | #define NSM_IOCTL_RANDOM        _IOWR(NSM_MAGIC, 0x7, union nsm_get_random)
-         |                                 ^~~~~
-   drivers/misc/nsm.c:1210:11: note: in expansion of macro 'NSM_IOCTL_RANDOM'
-    1210 |         { NSM_IOCTL_RANDOM, _fill_req_get_random, _parse_resp_get_random },
-         |           ^~~~~~~~~~~~~~~~
-
-
-vim +70 include/uapi/asm-generic/ioctl.h
-
-8a1ab3155c2ac7 David Howells 2012-10-04  68  
-8a1ab3155c2ac7 David Howells 2012-10-04  69  #define _IOC(dir,type,nr,size) \
-8a1ab3155c2ac7 David Howells 2012-10-04 @70  	(((dir)  << _IOC_DIRSHIFT) | \
-8a1ab3155c2ac7 David Howells 2012-10-04  71  	 ((type) << _IOC_TYPESHIFT) | \
-8a1ab3155c2ac7 David Howells 2012-10-04  72  	 ((nr)   << _IOC_NRSHIFT) | \
-8a1ab3155c2ac7 David Howells 2012-10-04  73  	 ((size) << _IOC_SIZESHIFT))
-8a1ab3155c2ac7 David Howells 2012-10-04  74  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+paul-moore.com
