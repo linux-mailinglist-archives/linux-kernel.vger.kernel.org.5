@@ -2,140 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE677C8115
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3A97C8117
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbjJMI5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
+        id S230160AbjJMI5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbjJMI5p (ORCPT
+        with ESMTP id S230292AbjJMI5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:57:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE25B8;
+        Fri, 13 Oct 2023 04:57:51 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF355BF
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:57:45 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4066241289bso19555995e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:57:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697187464; x=1697792264; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BAC5kzitTDQn20v79RDexnUptsmfPFexGphHJBvI8cw=;
+        b=S8pAfi5VlcIvjmTMY+aKsVcwgVLJCYszVHxCYAsEAhT2bEpJFejtBXxDahMYemy6Xa
+         YddQ78nG1+DinVIjPPwZ7Jtbm7do/2LJDIAsmyrufZS7O/vrk5er84wy5y1Z1iFJspr7
+         nTg55bD1caOVFi01QFGXqLPIDj2aTNxnjk5WUX/b5KYoHuJ9xHSl2gh+tT6+LvsnMRh9
+         43J3p5MdpBtigPp/Yea8RoFQ5Te6C5w8ZJLlJXE+aHOTpAlL1tXpqhWnYcxgEOqvvaWo
+         BO4+ex8QxJ6UrOz+zUQmyF42BJfrmytmmDxqhHfGa9AWuX0nT3Osso7zyP8hyqi9+x73
+         1+Lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697187464; x=1697792264;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BAC5kzitTDQn20v79RDexnUptsmfPFexGphHJBvI8cw=;
+        b=Tr1raSM3AVY9chYVa/PU7+kc5MHiJByung1ekYG+fQipYsdN8wZR4OEPdH0GwC/AQ2
+         kDm6qEKkVUs8Eidf5Lklp2F0Sma2Mhq1j+8QCwUzPkvjKvdrEnbG7K23JYPEnYxPzk8+
+         1V07llcEYc2Xt9ceFbTJu/F08KZndBLbr4lIH235z+MxgY3SN34BszonMOOCej63Or9l
+         O9zs/OxmgNNyPqWi10LfE8jx4ya4vq+IWXsOjRFr1M5UbZGRAbs+Duo9kG6ieVp2Namk
+         OcxhZlVdGxrUdfLjwuhnILYx90B+YIcgGq1QQVrFZvqoFgxHW493L5NmsaP0d+NXYLeE
+         XDHw==
+X-Gm-Message-State: AOJu0Yy2tMfE+ZzFNJJjtbNsYK4Gea3Q/WQWgYJL9hKAzjgcZVhGWkCH
+        aI3z+RrWUNUrTK89HH1wx6gcTw==
+X-Google-Smtp-Source: AGHT+IHFQ1Q33o5z565Sh4eE318TfBuHLEcrvdnZ/WFi/WGhfesLfCmWVGxQvtq7daaoXgXbidNCxg==
+X-Received: by 2002:a05:600c:3786:b0:405:359a:c965 with SMTP id o6-20020a05600c378600b00405359ac965mr24219595wmr.4.1697187464002;
         Fri, 13 Oct 2023 01:57:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697187464; x=1728723464;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=h5m5ctsCvAex9DpLpCjOPM49S/+k402kl9JdKLI4A4U=;
-  b=QA/UUN8S5wYH08BJHW7psYmhtmWTTFNVg3SjGdVRFyct1H2lVh22yl9Y
-   jUvfAsbhdfizBYxZ8pnETztC1vVX9hk1GCvNBau+6PeIsn5FD7EVxvGax
-   j1z+JUuPD8m6OW33CfYFlVGTiBq/vhqeiDoJhqKUMQlVE9OIVvQ8cRPlP
-   /CVJaHP4MFWJBquYfDFcR4XqE9PV58yqrx99n0gx2891VOtIYmDvZcK9G
-   xKWDTBc4x3e6TptaKGefrm9TQPCQFB6ct9+QdMEze+Atckc5M2L3a65E3
-   WZ6+zABeSq4kY9a5EtJVYB9P8C3gCycywxTerChiq5IbUesP19n+VKIxS
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="365397256"
-X-IronPort-AV: E=Sophos;i="6.03,221,1694761200"; 
-   d="scan'208";a="365397256"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 01:57:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="1086060791"
-X-IronPort-AV: E=Sophos;i="6.03,221,1694761200"; 
-   d="scan'208";a="1086060791"
-Received: from powerlab.fi.intel.com ([10.237.71.25])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 01:57:41 -0700
-From:   Michal Wilczynski <michal.wilczynski@intel.com>
-To:     nvdimm@lists.linux.dev, linux-acpi@vger.kernel.org,
-        dan.j.williams@intel.com
-Cc:     rafael@kernel.org, vishal.l.verma@intel.com, lenb@kernel.org,
-        dave.jiang@intel.com, ira.weiny@intel.com,
-        linux-kernel@vger.kernel.org,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v2] ACPI: NFIT: Fix local use of devm_*()
-Date:   Fri, 13 Oct 2023 11:57:22 +0300
-Message-ID: <20231013085722.3031537-1-michal.wilczynski@intel.com>
-X-Mailer: git-send-email 2.41.0
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id u8-20020a05600c00c800b004068495910csm1975273wmm.23.2023.10.13.01.57.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 01:57:43 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 11:57:40 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Soumya Negi <soumya.negi97@gmail.com>
+Cc:     Jonathan Kim <jonathankim@gctsemi.com>,
+        Dean ahn <deanahn@gctsemi.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        outreachy@lists.linux.dev, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] tty: gdm724x: Match alignment with open parenthesis
+Message-ID: <a0a7274f-eba6-4f72-9569-ec4c4fff3a1a@kadam.mountain>
+References: <cover.1697184167.git.soumya.negi97@gmail.com>
+ <ff627fcbc9e450c2e8f4aa5810b94e56151efa2a.1697184167.git.soumya.negi97@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ff627fcbc9e450c2e8f4aa5810b94e56151efa2a.1697184167.git.soumya.negi97@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_*() family of functions purpose is managing memory attached to a
-device. So in general it should only be used for allocations that should
-last for the whole lifecycle of the device. This is not the case for
-acpi_nfit_init_interleave_set(). There are two allocations that are only
-used locally in this function.
+On Fri, Oct 13, 2023 at 01:26:34AM -0700, Soumya Negi wrote:
+> Fix CHECK: Alignment should match open parenthesis
+> Issue found by checkpatch.pl
+> 
+> Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
+> ---
+>  drivers/staging/gdm724x/gdm_tty.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
+> index 32b2e817ff04..4e5cac76db58 100644
+> --- a/drivers/staging/gdm724x/gdm_tty.c
+> +++ b/drivers/staging/gdm724x/gdm_tty.c
+> @@ -271,8 +271,8 @@ int register_lte_tty_driver(void)
+>  	int ret;
+>  
+>  	for (i = 0; i < TTY_MAX_COUNT; i++) {
+> -		tty_driver = tty_alloc_driver(GDM_TTY_MINOR,
+> -				TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV);
+> +		tty_driver = tty_alloc_driver(GDM_TTY_MINOR, TTY_DRIVER_REAL_RAW |
+> +					      TTY_DRIVER_DYNAMIC_DEV);
 
-Fix this by switching from devm_kcalloc() to kcalloc(), and adding
-modern scope based rollback. This is similar to C++ RAII and is
-preferred way for handling local memory allocations.
+I prefered the original code.  It was more readable.
 
-Reported-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Suggested-by: Dave Jiang <dave.jiang@intel.com>
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
----
-v2:
- - removed first commit from the patchset, as the commit couldn't
-   be marked as a fix
- - squashed those commits together, since the second one were
-   mostly overwriting the previous one
-
- drivers/acpi/nfit/core.c | 21 ++++++++-------------
- 1 file changed, 8 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
-index 3826f49d481b..67a844a705c4 100644
---- a/drivers/acpi/nfit/core.c
-+++ b/drivers/acpi/nfit/core.c
-@@ -2257,26 +2257,23 @@ static int acpi_nfit_init_interleave_set(struct acpi_nfit_desc *acpi_desc,
- 		struct nd_region_desc *ndr_desc,
- 		struct acpi_nfit_system_address *spa)
- {
-+	u16 nr = ndr_desc->num_mappings;
-+	struct nfit_set_info2 *info2 __free(kfree) =
-+		kcalloc(nr, sizeof(*info2), GFP_KERNEL);
-+	struct nfit_set_info *info __free(kfree) =
-+		kcalloc(nr, sizeof(*info), GFP_KERNEL);
- 	struct device *dev = acpi_desc->dev;
- 	struct nd_interleave_set *nd_set;
--	u16 nr = ndr_desc->num_mappings;
--	struct nfit_set_info2 *info2;
--	struct nfit_set_info *info;
- 	int i;
- 
-+	if (!info || !info2)
-+		return -ENOMEM;
-+
- 	nd_set = devm_kzalloc(dev, sizeof(*nd_set), GFP_KERNEL);
- 	if (!nd_set)
- 		return -ENOMEM;
- 	import_guid(&nd_set->type_guid, spa->range_guid);
- 
--	info = devm_kcalloc(dev, nr, sizeof(*info), GFP_KERNEL);
--	if (!info)
--		return -ENOMEM;
--
--	info2 = devm_kcalloc(dev, nr, sizeof(*info2), GFP_KERNEL);
--	if (!info2)
--		return -ENOMEM;
--
- 	for (i = 0; i < nr; i++) {
- 		struct nd_mapping_desc *mapping = &ndr_desc->mapping[i];
- 		struct nvdimm *nvdimm = mapping->nvdimm;
-@@ -2337,8 +2334,6 @@ static int acpi_nfit_init_interleave_set(struct acpi_nfit_desc *acpi_desc,
- 	}
- 
- 	ndr_desc->nd_set = nd_set;
--	devm_kfree(dev, info);
--	devm_kfree(dev, info2);
- 
- 	return 0;
- }
--- 
-2.41.0
+regards,
+dan carpenter
 
