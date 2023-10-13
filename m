@@ -2,159 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 171217C8E9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 22:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F877C8EA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 23:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbjJMU7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 16:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37604 "EHLO
+        id S231858AbjJMVCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 17:02:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjJMU7Q (ORCPT
+        with ESMTP id S229679AbjJMVCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 16:59:16 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2073.outbound.protection.outlook.com [40.107.92.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7F5A9;
-        Fri, 13 Oct 2023 13:59:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VSW16efbNKfcqHZDom2jrALPrpCPdy/i2Bkda5GXx3U1VpJy/Nx6rHiDaAse01TtF4C6Ld9o7C9oxybWMDWj2rcyb+TUDUQRRHWxIDyyXBRo93Q/EI81i5QqgH8C7auxi5mB87H6TW30BUHzEv/9bkiu99m+IHgnKxNz2iK3CSaBfOGzXXe+SBsJFD2FD+2btA8DStlN39EVip6VJO3Ta6kq0nZttYNAwHMU1s/RPCl1BcHCpSWcsHDI/e/OejhMTiA+SkeoF9IHnul3xM8O+t3sW8rrHxj5mmC2E+UwORUnXucndDH/vbpLmllxWprs3hOkPqKLPatgOET4g98Osg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6rfAL6oYREFS0Ss+aUkpKV17zcwZiI6CzUxBUOBDqkw=;
- b=ljGCzLp59STA642HnI2gPgXmXgJtWmPZHqz+pN2XlzBAvIz942M/3VCSCsVdndliC/C+gw1dokeRGWLaBNPG/K6XTQQ5DNgsXIrLTxlW4woRGcMTLMT+hYXPpBrW2PisxPbf4L1+cqcAf5nqgNO7IRscR4VsakyrIfMMqvUiQLjpFZyJpqY86YCinWtDXW/RmQ6SnF41pSPWW1QW8SYO4RhhG/YLpGsV9hLFT1BWaZ0yyydauoBNep9bJm4L4ZSm/TbJtp25th2q6kFL++fFfXZcAFTKbVfX5myMpjllWurunH+VCZGUf3vPg09It0eKeLLHFSdeqbBt1p5yXqk3Gg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6rfAL6oYREFS0Ss+aUkpKV17zcwZiI6CzUxBUOBDqkw=;
- b=cZpPGOk6L7JAPwCYBSTSU9zoC53Ye1spePOtVVm1EqFMa84s5nOJoaxGLyNRn8CAZcUMoVO560WOlHo/o8Gvdw/O3DmdNWpBVwzOE9zReKD9qgyrGmP84wfq9WdSy3Q5EJvG7llnRiqNiz766Dl60auyoxqCw/WmU0hKi85+LcdqC220UPtubiCb3CehWSYsG8hJ+4GY5xpGkaODMWwHR+PFi1c6lQcy3Eds/Tch/7LBxClyEmDx1Ko04eqEVw76QRmr84CM4pIRmqB0FbXVMlo1yttHNXoyECJLSGVM2aj0K5rb3HcKDssl7FRMFJ0nAKy14rqcabvoDKXLGSWsag==
-Received: from CY5P221CA0078.NAMP221.PROD.OUTLOOK.COM (2603:10b6:930:9::13) by
- LV2PR12MB5872.namprd12.prod.outlook.com (2603:10b6:408:173::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Fri, 13 Oct
- 2023 20:59:13 +0000
-Received: from CY4PEPF0000FCBF.namprd03.prod.outlook.com
- (2603:10b6:930:9:cafe::33) by CY5P221CA0078.outlook.office365.com
- (2603:10b6:930:9::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.30 via Frontend
- Transport; Fri, 13 Oct 2023 20:59:12 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CY4PEPF0000FCBF.mail.protection.outlook.com (10.167.242.101) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.22 via Frontend Transport; Fri, 13 Oct 2023 20:59:12 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 13 Oct
- 2023 13:59:03 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 13 Oct
- 2023 13:59:03 -0700
-Received: from Asurada-Nvidia (10.127.8.11) by mail.nvidia.com (10.129.68.6)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Fri, 13 Oct 2023 13:59:01 -0700
-Date:   Fri, 13 Oct 2023 13:58:59 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Yi Liu <yi.l.liu@intel.com>, <joro@8bytes.org>,
-        <alex.williamson@redhat.com>, <kevin.tian@intel.com>,
-        <robin.murphy@arm.com>, <baolu.lu@linux.intel.com>,
-        <cohuck@redhat.com>, <eric.auger@redhat.com>,
-        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
-        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
-        <peterx@redhat.com>, <jasowang@redhat.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
-        <suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <zhenzhong.duan@intel.com>, <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v4 10/17] iommufd: Support IOMMU_HWPT_ALLOC allocation
- with user data
-Message-ID: <ZSmvkxuEq7M13KYE@Asurada-Nvidia>
-References: <20230921075138.124099-1-yi.l.liu@intel.com>
- <20230921075138.124099-11-yi.l.liu@intel.com>
- <20231013151923.GV3952@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231013151923.GV3952@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000FCBF:EE_|LV2PR12MB5872:EE_
-X-MS-Office365-Filtering-Correlation-Id: c4df8eb2-6f30-44bc-0a84-08dbcc2f4092
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lyJJwDsF783DXqEn/V/XRdE4TaN4CwX2Eq7jDLC5OWD96WfRhej1WwGsXUktXZLnv7IWlq+RX1ZQgw0aw0DiJ7WLnoDJjzTEzR/J1fIF5h/8lcRf41ojbnxHCtPBN2Do0x5dIsco62zdKtYCvVSL/YAb/aAvdmPjWILA4Y91sISO+LaWIfsE9tjvjOeXKFP9qAoyhdpgVCA8wfnLazKCuvxZvuFIxiya1XY5hnutM1wGHMcR/hFzv1/wOgWsFFva9RlNWrIL5ouSzWS+Ej5VjW8l5NUtnUbLzfRx+04KRAYuduj2yP6BauJyuIlKstdA0bz6IxEB4I04XeSOaTuBqMqygpMQ9Pu9OdM+rWERAQjUs8hsJJvGPq42ev+zqHJGaViEVh3oFoouoTDXeSKf6YEmQM9YbBGXJMOhpT/6GaVePwJKP6qCCYBCaKWyVp85W5iy28A8JXhWAOYLD3m05Sxk6yjODDw5/WCHT04fI65XEATcRs38OO3cM49LKzZ/stVG0Hm7sCBW5wH0rFQ30syEro9qFWJ3+kotyT9Yk7+134B9mLUW18sCfHxFgoFed3ElcCsF3CdT/qgKZ5eeNCRh84SMN/m+a4b+v77v6nRQ7THy6KIEBDKDMPU/BQ8hgExI1PKGJI8GPUiNGPSDMRfgL+RpsNfoq2iF217sednOWR9D7Nz1xHdNH1LAmzJuuT4VNl1uPzDOB4kYYCG9oW4iAIsVq1rghH7ppgLBkTs=
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(39860400002)(346002)(376002)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(82310400011)(36840700001)(40470700004)(46966006)(33716001)(86362001)(55016003)(7416002)(40480700001)(9686003)(316002)(54906003)(2906002)(6636002)(5660300002)(41300700001)(70206006)(478600001)(70586007)(26005)(336012)(47076005)(7636003)(426003)(36860700001)(40460700003)(8936002)(356005)(8676002)(6862004)(4326008)(82740400003)(83380400001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 20:59:12.0649
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4df8eb2-6f30-44bc-0a84-08dbcc2f4092
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000FCBF.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5872
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+        Fri, 13 Oct 2023 17:02:30 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0C9B7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:02:29 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c9d140fcddso21882845ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:02:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697230948; x=1697835748; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EDt833gpv5jt5jkNaSbrafWuiiiwZtQQlsR8tC9fqjo=;
+        b=w79PfHsmD/oNNMTQk6CvI2yncyQuOAkM+kTJAnI76uvrlVFTErkvPD0truC9xflJuN
+         6bxaj/699MjixR/yFhie2z7X8xW8AFhjcMJWY9N4BrDRJ+V7i69ykrSLFWq0FWya6zFA
+         VGx2Ye1L4o1ASquB9pXVworLMw245qyveGWwCYhqKYidlCzNH7Qeol38lI89qhn1OOiG
+         dVz3+7Aw7NPuoVQOEW6YvATELlhXlSBx7raMfL5961Pjr0zK7QuXXO50ORNi3a3avy3S
+         uWMRPmCg0172KE99H320QFTHTlaVsSe3/sTIy5MQqGgofKaQcau+LkuYVtJS5gudjS6D
+         ++2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697230948; x=1697835748;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=EDt833gpv5jt5jkNaSbrafWuiiiwZtQQlsR8tC9fqjo=;
+        b=hm5/WqYQ/T6XGzyqLH4g3AXpX/Igjzq8XcPrdCqXiVvnvy2ktF8UmQFyadqBcp+jRk
+         lba9U3hWIY3/KRTA70QrEfbcdIglbJNBP0jFT1En77XWRM+R7p58a9jIK1W3UDMER0IH
+         Wi0mnhauF4yb3JuMwAqhv1KalGZckDuAqMCgXz4DoyZEIJxHGR03dO+bjXOMd9/JBNU2
+         fXSVFtnx+xoSvKF+pBvn7UZFosUDj4gA3VIbQi7rNuTD+knP+Lf3i0/d5aYKo11h6MEJ
+         zkM/J9BTdfngjLoqTheuSUnBUVBPwRHVZnLpCSnh7v7ysHGIS/8CXkIAEsVxoMlwhQX9
+         ZGTw==
+X-Gm-Message-State: AOJu0YzD03zadVogulyCgAzpBk3df7IVZkj4afyo1xLjr3ZfYCaiPCIE
+        9R9g6cPQPZFyhwkrO10fOVr5irABYQM=
+X-Google-Smtp-Source: AGHT+IE8M4iiJrgQN6iyv9nl15swMUQzSfqTaE3mB2MjuslIriTKpPjacBrAYJL6ktH+O4aNjrY3ojTPoS0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:a387:b0:1ca:1e12:7c85 with SMTP id
+ x7-20020a170902a38700b001ca1e127c85mr23522pla.3.1697230948465; Fri, 13 Oct
+ 2023 14:02:28 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 14:02:26 -0700
+In-Reply-To: <CAFULd4bTyKKw+=SuTVbFXzgqqV+XU-kGaO5eBcXck5BUpvoUJg@mail.gmail.com>
+Mime-Version: 1.0
+References: <20231011204150.51166-1-ubizjak@gmail.com> <ZSlqo-k2htjN1gPh@google.com>
+ <CAFULd4bTyKKw+=SuTVbFXzgqqV+XU-kGaO5eBcXck5BUpvoUJg@mail.gmail.com>
+Message-ID: <ZSmwYmxjgC0p0wdr@google.com>
+Subject: Re: [PATCH tip] x86/percpu: Rewrite arch_raw_cpu_ptr()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nadav Amit <namit@vmware.com>, Ingo Molnar <mingo@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 12:19:23PM -0300, Jason Gunthorpe wrote:
-> On Thu, Sep 21, 2023 at 12:51:31AM -0700, Yi Liu wrote:
-> > IOMMU_HWPT_ALLOC already supports iommu_domain allocation for usersapce.
-> > But it can only allocate a hw_pagetable that associates to a given IOAS,
-> > i.e. only a kernel-managed hw_pagetable of IOMMU_HWPT_TYPE_DEFAULT type.
-> > 
-> > IOMMU drivers can now support user-managed hw_pagetables, for two-stage
-> > translation use cases, that require user data input from the user space.
-> > 
-> > Extend the IOMMU_HWPT_ALLOC ioctl to accept non-default hwpt_type with a
-> > type specified user data. Also, update the @pt_id to accept hwpt_id too
-> > besides an ioas_id. Then, pass them to the downstream alloc_fn().
-> > 
-> > Co-developed-by: Nicolin Chen <nicolinc@nvidia.com>
-> > Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
-> > Signed-off-by: Yi Liu <yi.l.liu@intel.com>
-> > ---
-> >  drivers/iommu/iommufd/hw_pagetable.c | 19 ++++++++++++++++++-
-> >  include/uapi/linux/iommufd.h         | 23 +++++++++++++++++++++--
-> >  2 files changed, 39 insertions(+), 3 deletions(-)
-> 
-> Can we also come with a small vt-d patch that does implement an op for
-> this? Or is it too big?
-> 
-> It would be nice if we could wrap IOMMU_HWPT_ALLOC into one
-> self-contained series and another series for invalidate.
+On Fri, Oct 13, 2023, Uros Bizjak wrote:
+> On Fri, Oct 13, 2023 at 6:04=E2=80=AFPM Sean Christopherson <seanjc@googl=
+e.com> wrote:
+> >
+> > On Wed, Oct 11, 2023, Uros Bizjak wrote:
+> > > Additionaly, the patch introduces 'rdgsbase' alternative for CPUs wit=
+h
+> > > X86_FEATURE_FSGSBASE. The rdgsbase instruction *probably* will end up
+> > > only decoding in the first decoder etc. But we're talking single-cycl=
+e
+> > > kind of effects, and the rdgsbase case should be much better from
+> > > a cache perspective and might use fewer memory pipeline resources to
+> > > offset the fact that it uses an unusual front end decoder resource...
+> >
+> > The switch to RDGSBASE should be a separate patch, and should come with=
+ actual
+> > performance numbers.
+>=20
+> This *is* the patch to switch to RDGSBASE. The propagation of
+> arguments is a nice side-effect of the patch. due to the explicit
+> addition of the offset addend to the %gs base. This patch is
+> alternative implementation of [1]
+>=20
+> [1] x86/percpu: Use C for arch_raw_cpu_ptr(),
+> https://lore.kernel.org/lkml/20231010164234.140750-1-ubizjak@gmail.com/
 
-We now only use IOMMU_HWPT_ALLOC for nested domain allocations,
-which won't be supported until the cache_invalidate_user ops is
-preset?
+Me confused, can't you first switch to MOV with tcp_ptr__ +=3D (unsigned lo=
+ng)(ptr),
+and then introduce the RDGSBASE alternative?
 
-/* e.g. the following piece is in iommufd_user_managed_hwpt_alloc */
+> Unfortunately, I have no idea on how to measure the impact of such a
+> low-level feature, so I'll at least need some guidance. The "gut
+> feeling" says that special instruction, intended to support the
+> feature, is always better than emulating said feature with a memory
+> access.
 
-+       /* Driver is buggy by missing cache_invalidate_user in domain_ops */
-+       if (WARN_ON_ONCE(!hwpt->domain->ops->cache_invalidate_user)) {
-+               rc = -EINVAL;
-+               goto out_abort;
-+       }
+AIUI, {RD,WR}{FS,GS}BASE were added as faster alternatives to {RD,WR}MSR, n=
+ot to
+accelerate actual accesses to per-CPU data, TLS, etc.  E.g. loading a 64-bi=
+t base
+via a MOV to FS/GS is impossible.  And presumably saving a userspace contro=
+lled
+by actually accessing FS/GS is dangerous for one reason or another.
 
-Thanks
-Nic
+The instructions are guarded by a CR4 bit, the ucode cost just to check CR4=
+.FSGSBASE
+is probably non-trivial.
