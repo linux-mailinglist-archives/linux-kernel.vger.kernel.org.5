@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A517C8FA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 23:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E097C8FAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 23:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbjJMVzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 17:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
+        id S231500AbjJMV7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 17:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231469AbjJMVzS (ORCPT
+        with ESMTP id S229632AbjJMV7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 17:55:18 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11D9B7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:55:16 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9a58aa4983so3034108276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:55:16 -0700 (PDT)
+        Fri, 13 Oct 2023 17:59:46 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2AB4B7;
+        Fri, 13 Oct 2023 14:59:44 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c735473d1aso19990255ad.1;
+        Fri, 13 Oct 2023 14:59:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1697234116; x=1697838916; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LKGSCOVLbkYhGYoq+rtlt3uTKCf4verh3lWQ8sV6E5A=;
-        b=P1WAcFezEm1NvXvZtbYJCwmZeudvXGnk1C4nrNAWPQcchDGRu8o60gX93BCGMUyyDr
-         2Ond7dftnmvBmmi/F9j7w3wldMUXfyfTgCEPQQynYKtGlUgXjfddnSJZ5Ljqp6NMXf5T
-         aM2WULrobajmf22xevmho4VZMv4M8CKUkmaMqqKbrO9TJ5rCvQ8xnM7hPg8aRdRZsR9r
-         si4OMsMCJqZxkKQj89zQwXwK3Z/sRmnU/MYMJv8/BnvznnU5WX3Q9VO1+rd1McsJawQ9
-         52HjduOd1/tKPfr+cO9bQ0L8UO2Tml/spW6B51s/nqVsgctgqPtYwPs8nW5Q8znIv154
-         lJlg==
+        d=gmail.com; s=20230601; t=1697234384; x=1697839184; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2E01oW9FArDha6b2WRAcTTSaAEu+o4wpih5oGTOjVp8=;
+        b=FZzxN8EKy7ME8WncsBbp5KDNPiV6tNArijuyaWzLMiMnjIoJFoGSKKjtcOaOgzxuV4
+         91En0BfFtmV88ISMh04EajSHhCkmMOPb8J59gTN5L0TL+SUoO6M681aEji22HhW61XtX
+         uN2DxhTEfjOUYT5H4wZhaBFFCNK90ip1Z3AOLXeSY7Z2zgLzguEzo5ss0hRbTMgLyLal
+         /DoIuyFSBEUl+FswNEq1SfpdhJSwzoWb0u2A3OlffBABPs2EC/63mfdMovp0NYIaD/ih
+         yPq23xpMTTSRJ0gp+r0OCMSOXAWyfFh9VFkQ494PDmAXuEYeWfHVydaV502TmSYuTv/H
+         xPNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697234116; x=1697838916;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LKGSCOVLbkYhGYoq+rtlt3uTKCf4verh3lWQ8sV6E5A=;
-        b=Kljf9zIqn050d2Odk7nQy1XYUz9vIWLCxk13KArmUtndc7KGIeZTrtj08tRo2Pgw0A
-         rw/SW1BtK9Mt21wDT514BTEjfbGraPK3OzLo4Fe9xduZBFoKlSZkSwjjK9sZ2TLWKsyp
-         wpgbloRRMwDXq2AWJBXL53ad02I9kSkFDA8noO3EAcXuZBKkG8Wr8v2heiFoQrq6N9bo
-         Z3saLw6gSokthiN4zofRnUlnOfblW2vfIfe9pwe0iejsVj7vwZbIDGJL9qrcmZJbn4qW
-         pkU12lMCpSztIxHN+/RZcEwpaDCxnbFd7Bqgcb8sZ9+S5MFxhhtF+ivqWtWprPloLU83
-         UZIw==
-X-Gm-Message-State: AOJu0Yx41RUFc3ZQJbzEl2hK2WOdgtMmX9U+2niPS/st1lzvK4xVB49r
-        502yD184gHikpLsV5QFqnKEQt0Sk3u4C+du3yldK5rj20LabLws=
-X-Google-Smtp-Source: AGHT+IG7mv21RwUbd4s8yApgHo1oFDE2XPy+OCLcTrQN0/TOGlzUdlKn7So/TOy+xlC76NBVGDCjNC3AbSNbPwuT8pc=
-X-Received: by 2002:a25:ae8b:0:b0:d9a:d20d:7d5a with SMTP id
- b11-20020a25ae8b000000b00d9ad20d7d5amr6426451ybj.1.1697234115842; Fri, 13 Oct
- 2023 14:55:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697234384; x=1697839184;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2E01oW9FArDha6b2WRAcTTSaAEu+o4wpih5oGTOjVp8=;
+        b=lQNCJ/lYMfpC5I4dk/6ZQWZP489+shD0qjUaZiAxUFBLYh9tKjJkqf11CA0EyH3ljF
+         apUHUxJipRPwHNa1w5czf6baPXsS1zkewi3l4hzx1knVn6fmQ5IQClmucNkk6xY9BXYO
+         wu+hnifwkhBHyu8E8huny6BJfsM6xgx3Yfb3u6WyP1tIiLqMr7OHYWwvx2y68rg+ay8M
+         7nbSqN7TtFakqjtd7yZc7wcnuE1vU05JNCqAn0hYzoKSHVaIw3KGpqPi6B2SEAJyHH37
+         3HePtGX+tDle6NCXxTh2jgnCkYd26nDmZvkXReLG/xILVlTMnHPNkz7RV3TUzyb65EU7
+         rc1Q==
+X-Gm-Message-State: AOJu0YyTtwBmtIhy/MOXcF52N31FHr2miB+hmekh+deKZwf19LbEvm66
+        tPLhRRxzNyAsngAr+ie/GJbUwi0NLuc=
+X-Google-Smtp-Source: AGHT+IHdd1fwx8ZoF6+US/sd1Hx80a8l9d6ZplVxf2Cs50Y1gb7N8WW19H5nI7NYiWJdjOx9Hnbv1A==
+X-Received: by 2002:a17:902:e5cc:b0:1ca:2a58:7ef9 with SMTP id u12-20020a170902e5cc00b001ca2a587ef9mr251184plf.67.1697234383942;
+        Fri, 13 Oct 2023 14:59:43 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:469c:3411:2771:1b7f])
+        by smtp.gmail.com with ESMTPSA id iw7-20020a170903044700b001b895336435sm4379605plb.21.2023.10.13.14.59.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 14:59:43 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 14:59:41 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     John Salamon <salamonj9@gmail.com>
+Cc:     rydberg@bitmath.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: uinput: waiting for UI_FF_UPLOAD events will not inform user
+ when allocation is required
+Message-ID: <ZSm9zeepuZ94A-ZI@google.com>
+References: <CA+fyA4RABYNPZZSk9+9U51u53kbSzqgwdi1KDDGRxXi8q5TtxQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230912205658.3432-1-casey.ref@schaufler-ca.com>
- <20230912205658.3432-1-casey@schaufler-ca.com> <CAHC9VhRcbp3iWQwL7FTUrcU1C3OsZ413Nbq+17oTwW7hZ7XvBw@mail.gmail.com>
-In-Reply-To: <CAHC9VhRcbp3iWQwL7FTUrcU1C3OsZ413Nbq+17oTwW7hZ7XvBw@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 13 Oct 2023 17:55:04 -0400
-Message-ID: <CAHC9VhSqY5+DR-jXprrftb1=CzDvhTh0Ep66A16RMd4L7W7TYw@mail.gmail.com>
-Subject: Re: [PATCH v15 00/11] LSM: Three basic syscalls
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     linux-security-module@vger.kernel.org, jmorris@namei.org,
-        serge@hallyn.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, mic@digikod.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+fyA4RABYNPZZSk9+9U51u53kbSzqgwdi1KDDGRxXi8q5TtxQ@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 6:07=E2=80=AFPM Paul Moore <paul@paul-moore.com> wr=
-ote:
->
-> On Tue, Sep 12, 2023 at 4:57=E2=80=AFPM Casey Schaufler <casey@schaufler-=
-ca.com> wrote:
-> >
-> > Add three system calls for the Linux Security Module ABI ...
->
-> First off, a big thank you to Casey who took it upon himself to turn
-> my pseudo-code syscall suggestion into a proper patchset and saw it
-> through 15 revisions.  Thanks also go out to everyone that has helped
-> review and comment on this effort; I know everyone is busy, but these
-> reviews are important.
->
-> I'm happy to say that I think we're in a good place with this revision
-> of the LSM syscall patchset.  I only see two outstanding issues, and
-> neither of those are bugs/showstoppers that affect the API, they are
-> simply areas where the implementation could be improved.  With the
-> understanding that Casey is busy for the rest of the month, and my
-> desire to make sure this patchset gets a full dev cycle in linux-next,
-> I'm going to suggest merging this into the lsm/next-queue branch soon
-> (likely tomorrow) in preparation for merging it into lsm/next once the
-> upcoming merge window closes.  Those who want to help improve the
-> implementation, as suggested in the feedback on this revision or
-> otherwise, are welcome to submit patches against the lsm/next-queue
-> branch and I will merge them into that branch once they pass review.
->
-> If I don't hear any objections I'll plan on merging this patchset
-> tomorrow, I'll send a follow-up reply to this email when it's done.
+Hi John,
 
-Since it's been *almost* a full 24 hours and no objections I went
-ahead and merged this patchset into lsm/next-queue with the intention
-of bringing them into lsm/next after the upcoming merge window closes.
-For those of you who have suggested changes, please feel free to
-submit patches against the lsm/next-queue branch and we can get them
-queued up along with these patches.
+On Tue, Oct 10, 2023 at 05:38:27PM +1030, John Salamon wrote:
+> Currently the "fake" input events generated by uinput in response to
+> effect uploads will return an effect with an id that has already been
+> handled by input_ff_upload in ff-core.c, which can modify the effect
+> id. This causes a problem specifically when the effect originally
+> uploaded via the EVIOCSFF ioctl contained an effect with -1, as the
+> userspace code handling UI_FF_UPLOAD receives an effect with an id
+> other than -1, and therefore will not know an allocation was
+> requested.
 
-Thanks everyone!
+The kernel never changes ID of an existing effect, the only time ID is
+changed is when userspace indicates that a new effect should be created
+by setting effect ID to -1.
 
---=20
-paul-moore.com
+The handler of force feedback effects should know what effects (with
+what IDs) have been uploaded to the device so far, so whenever it sees a
+request for an effect with previously unseen effect_id it should
+recognize this as a signal that a new effect/id has been allocated by
+the kernel.
+
+> 
+> I notice that the "old" field on the ff_effect struct is set to NULL
+> when the -1 id is changed (in input_ff_upload), which can serve as a
+> flag that an allocation was requested. If it is the intention is that
+> uinput users check if old == NULL to know when allocations are needed
+> I think uinput documentation should describe this.
+
+No, not really, as explained above.
+
+> 
+> I first noticed this using python-evdev, see my issue report here:
+> https://github.com/gvalkov/python-evdev/issues/199
+
+Thanks.
+
+-- 
+Dmitry
