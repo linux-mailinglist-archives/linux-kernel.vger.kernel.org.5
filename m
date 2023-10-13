@@ -2,91 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 972617C8E3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 22:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DECF67C8E3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 22:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232041AbjJMUVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 16:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39334 "EHLO
+        id S232034AbjJMUZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 16:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230469AbjJMUVT (ORCPT
+        with ESMTP id S230469AbjJMUZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 16:21:19 -0400
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BC5B7;
-        Fri, 13 Oct 2023 13:21:18 -0700 (PDT)
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1c9e06f058bso16034995ad.0;
-        Fri, 13 Oct 2023 13:21:18 -0700 (PDT)
+        Fri, 13 Oct 2023 16:25:07 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BB5B7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 13:25:05 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-3529f5f5dadso8965ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 13:25:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697228705; x=1697833505; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pqAeTW3JeHR2NgxF+OPMVJ48NQjtKJfCWCw4Wwse+lk=;
+        b=YUvVFEkCKzorMIna/Vc6KCU1QJlmsb7SiSv2V9G9SWvpzhnR/IrMOhSjhHBRsMDO4T
+         1EzbPu3QmL9V6WIHayTOH4DvQkeSmH+zJRsBu5OzLQv3GYOmaQkzS585lLVrSKGdBrZN
+         1i4CAAdU2EicMjBaIcKI/AbvaGEmNU2326XqCqaxUkUSrXA8HYF7Owgd54BvMUE2Ra1m
+         7J27Y1nZosMp2ppZwFvwN5218AV1EKzzYfmnNTrbUTSMpUknXtcbfC1uVTsyoSd8G8NK
+         PE60CABFa1cuBuNR1tIA6vstyrVCFz+qWr2LaLphMPktm6V0V5+3EGhgCwFQyY9BS0BO
+         O9aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697228478; x=1697833278;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ForsDPB0jZ2ImnQnOXHUTEo6P3ZZphz8F61hZrwbJRA=;
-        b=Syg5dJ5nOsicTEJ3KSBeUkqacIW+Lrs4kxcgjmp8ho0pLZoD5wWL3bIdCgn+umh8T9
-         bLkLuz1FBsT0JG44/c0jJDpGqMGnxXG2tQxzcRFwQAyEb4zcQxHz2xY6qk8sdSiENdrm
-         5TPpL6VoSjfFPvW1SB8QuBydrsz7fNnSTSH0V2UjQTwpPZ5/mkr9gkIaqWj5VgtWhHo3
-         Eud6/9lTFnbQaPERaozEpXLf6wybYrTCUQTgRsYGF26ytBs2lrxQJU9DLvIh2eyV0G0v
-         GRj78eDIBIvoA0pRPGcfWY1/95VJVIRyxz+KXXPeNXer9OMsimmXDrn+dy1zRnSknKtu
-         mwHA==
-X-Gm-Message-State: AOJu0YwZZbq13pLIyix9EgR93mcW/1RiFENUfhNemFnNhYz4BG+tnhYL
-        K2Dl67rnbuLN0kR0sNW/v88=
-X-Google-Smtp-Source: AGHT+IHK6Vdj3neWysihmjr6VT1kW5IXWWGbJ0lQ9gb9c+jVMTQ/Rh06taVZ8L/Iz6CXpCcTy5jQHw==
-X-Received: by 2002:a17:902:ea02:b0:1c1:fc5c:b31b with SMTP id s2-20020a170902ea0200b001c1fc5cb31bmr1705325plg.9.1697228477673;
-        Fri, 13 Oct 2023 13:21:17 -0700 (PDT)
-Received: from [192.168.51.14] (c-73-231-117-72.hsd1.ca.comcast.net. [73.231.117.72])
-        by smtp.gmail.com with ESMTPSA id ik26-20020a170902ab1a00b001bdc3768ca5sm4363921plb.254.2023.10.13.13.21.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Oct 2023 13:21:17 -0700 (PDT)
-Message-ID: <2f4eb591-b275-42fd-900e-292d0f87dd9e@acm.org>
-Date:   Fri, 13 Oct 2023 13:21:15 -0700
+        d=1e100.net; s=20230601; t=1697228705; x=1697833505;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pqAeTW3JeHR2NgxF+OPMVJ48NQjtKJfCWCw4Wwse+lk=;
+        b=Aa6LCIfuM/aP0xrYRckNHcabecvlg1R9TQCEcp+Ayygug4FdYTVT8Ej/BS1EnG1svN
+         eiMTHsa/mQRzw3Rjf1pPkPxWbTT+DKOZhh8PHwbttcK5qftLm8qeVJWBInHNufka3bnS
+         vP0umaLfqJoqAwDWIkEMj56kf55cGrp3RAk+kzrM0cWObEAZGgAmMeJUtuhTT10BvL56
+         Cy5ae37IYPY9PdgbV4CRnAK0QwxEFQEWHNGgOwhBsfdMFsNgqDYEd5x6ugDousdafQRr
+         PjHHNQvfzKILOSH43rur0BV4vMpaDY1kUfJeT29t/HlCNq8hxrnHkMrS/Gy6141bur2I
+         0rbg==
+X-Gm-Message-State: AOJu0YyM8JBaMjdnDxq+zf/QX3ytvFFtpu7WzZ5i3Otea0eq8SypLciE
+        m1lSrnHjTCFeRJR95FOGXDkWvJ9wq0MK1ZDLh61svw==
+X-Google-Smtp-Source: AGHT+IH3FYJ8icPieu2/ai2TXNcA8zCg7+rWyoOf+Iq4ZbCOKrHHuD6XmPVTgbe/B7M4h1eHHImeEnUWJbuZ8PtUB1c=
+X-Received: by 2002:a05:6e02:220e:b0:351:efb:143d with SMTP id
+ j14-20020a056e02220e00b003510efb143dmr29195ilf.22.1697228704929; Fri, 13 Oct
+ 2023 13:25:04 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] doc: blk-ioprio: Bring the doc in line with the
- implementation
-Content-Language: en-US
-To:     Tang Yizhou <yizhou.tang@shopee.com>, houtao1@huawei.com,
-        jack@suse.cz, kch@nvidia.com
-Cc:     axboe@kernel.dk, tj@kernel.org, corbet@lwn.net,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yingfu.zhou@shopee.com,
-        chunguang.xu@shopee.com
-References: <20231012024228.2161283-1-yizhou.tang@shopee.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20231012024228.2161283-1-yizhou.tang@shopee.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-7-rananta@google.com>
+ <ZSXQh2P_l5xcj7zS@linux.dev> <ZSjY5XCCoji6MjqC@linux.dev>
+In-Reply-To: <ZSjY5XCCoji6MjqC@linux.dev>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Fri, 13 Oct 2023 13:24:52 -0700
+Message-ID: <CAJHc60yjiuyacbKytTx_ry8=_574CqwzoWdMH7ehBYswCpk5ig@mail.gmail.com>
+Subject: Re: [PATCH v7 06/12] KVM: arm64: PMU: Add a helper to read the number
+ of counters
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/23 19:42, Tang Yizhou wrote:
-> From: Tang Yizhou <yizhou.tang@shopee.com>
-> 
-> Our system administrator have noted that the names 'rt-to-be' and
-> 'all-to-idle' in the I/O priority policies table appeared without
-> explanations, leading to confusion. Let's bring these names in line
-> with the naming in the 'attribute' section.
-> 
-> Additionally,
-> 1. Correct the interface name to 'io.prio.class'.
-> 2. Add a table entry of 'promote-to-rt' for consistency.
-> 3. Fix a typo of 'priority'.
-> 
-> Suggested-by: Yingfu Zhou <yingfu.zhou@shopee.com>
-> Reviewed-by: Hou Tao <houtao1@huawei.com>
-> Signed-off-by: Tang Yizhou <yizhou.tang@shopee.com>
-> ---
-> v2:
-> Accept Bart's suggestion and rename the title of the patch.
-> Pick up Tao's Reviewed-by tag.
+Hi Oliver,
 
-Thank you for having changed the patch subject.
+On Thu, Oct 12, 2023 at 10:43=E2=80=AFPM Oliver Upton <oliver.upton@linux.d=
+ev> wrote:
+>
+> On Tue, Oct 10, 2023 at 10:30:31PM +0000, Oliver Upton wrote:
+> > On Mon, Oct 09, 2023 at 11:08:52PM +0000, Raghavendra Rao Ananta wrote:
+> > > Add a helper, kvm_arm_get_num_counters(), to read the number
+> > > of counters from the arm_pmu associated to the VM. Make the
+> > > function global as upcoming patches will be interested to
+> > > know the value while setting the PMCR.N of the guest from
+> > > userspace.
+> > >
+> > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > > ---
+> > >  arch/arm64/kvm/pmu-emul.c | 17 +++++++++++++++++
+> > >  include/kvm/arm_pmu.h     |  6 ++++++
+> > >  2 files changed, 23 insertions(+)
+> > >
+> > > diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
+> > > index a161d6266a5c..84aa8efd9163 100644
+> > > --- a/arch/arm64/kvm/pmu-emul.c
+> > > +++ b/arch/arm64/kvm/pmu-emul.c
+> > > @@ -873,6 +873,23 @@ static bool pmu_irq_is_valid(struct kvm *kvm, in=
+t irq)
+> > >     return true;
+> > >  }
+> > >
+> > > +/**
+> > > + * kvm_arm_get_num_counters - Get the number of general-purpose PMU =
+counters.
+> > > + * @kvm: The kvm pointer
+> > > + */
+> > > +int kvm_arm_get_num_counters(struct kvm *kvm)
+> >
+> > nit: the naming suggests this returns the configured number of PMCs, no=
+t
+> > the limit.
+> >
+> > Maybe kvm_arm_pmu_get_max_counters()?
+>
+Sure, kvm_arm_pmu_get_max_counters() it is!
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> Following up on the matter -- please try to avoid sending patches that
+> add helpers without any users. Lifting *existing* logic into a helper
+> and updating the callsites is itself worthy of a separate patch. But
+> adding a new function called by nobody doesn't do much, and can easily
+> be squashed into the patch that consumes the new logic.
+>
+Sounds good. I'll squash patches of this type into the caller patches.
+
+Thank you.
+Raghavendra
+> --
+> Thanks,
+> Oliver
