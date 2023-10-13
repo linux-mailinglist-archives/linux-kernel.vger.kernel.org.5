@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A07B7C82DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C227C82E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbjJMKRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 06:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60792 "EHLO
+        id S229946AbjJMKRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 06:17:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjJMKRR (ORCPT
+        with ESMTP id S229923AbjJMKRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 06:17:17 -0400
+        Fri, 13 Oct 2023 06:17:41 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFDFA9;
-        Fri, 13 Oct 2023 03:17:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4353AC433CB;
-        Fri, 13 Oct 2023 10:17:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A23EBB7;
+        Fri, 13 Oct 2023 03:17:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E6D5C433C8;
+        Fri, 13 Oct 2023 10:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697192235;
-        bh=mPFeZ8RjEU6Rg0Kw8zpK+bhI7pcnvmwvlGnsqY5/x/U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=T4U/Odt37qLzJFSj3l28BaHjCh6mgXTYum8VyQLGb0FIxmpbqPmVaAPhuU/EqfA0q
-         fU3biO2bbNVSAaW/rH6CE/fbN/RYXhcHlTPCJH2ZZmMlp9fY3sbY6ORruceDTXNXVF
-         xvqQQ9tzLr+1yVb0SKMYanHZThl0w2WVDG/2Y05HBRoeLdpDqzWGL7rVbkW9Ud3hWs
-         Ci/jPUFGAuZwvniw62CT4AL0tPNT994IP8ab3qp8y4Rpzoawj7HlO/chkfMESfyeKm
-         0ha2CEOW2Y6VDMgVfHsY1rC5IFmmko3EU35n4CIaKzFBX3jEEzqtcyJiJbx2x9+oBa
-         wvYRD2u2S+2PQ==
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2c504a5e1deso9714401fa.2;
-        Fri, 13 Oct 2023 03:17:15 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxNJoE41d56WKE1P65qqLhWUoGrm1ajmQwJhfsiXKUmDVU+JbJG
-        eSc1HJ2b+22PRNuEfKsjIx88TdKHoXsYcd1+rGI=
-X-Google-Smtp-Source: AGHT+IHYXxzqEB2qSq1EYrSAFBl5lsbcnzHkUHFlEA8RsMn1h/PY3fiPCpjdfBgz84HZF8gZEW6w0uqXz9ebzyBTjqk=
-X-Received: by 2002:a2e:8488:0:b0:2b6:cff1:cd1c with SMTP id
- b8-20020a2e8488000000b002b6cff1cd1cmr21104672ljh.34.1697192233474; Fri, 13
- Oct 2023 03:17:13 -0700 (PDT)
+        s=k20201202; t=1697192260;
+        bh=PduGR+0ma56Dbfse5BIk5TN6YS6QXizfqz1tDhApY7g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Bkg3xrihknM18esv2S5ictlU/E6O8sPBZkndKX1ui9Rle2CkAXmzAny1XTM1yU//L
+         pqJ9Ic1RrhpUsjiQG58pYWejXDqCswK5hCUVtxv1jx5c+JKIMgR3hCPXIEyMTxR46A
+         iIhamaJQyvtcWKHaJ4RjXJtFFGJoeDOFDDmu/23UGcAPtWOdZQa4XV/4HGp/0XsrhG
+         0Eo8eqCfM6jObqs7s+1+LuVf0h5og7oUYNnOmN+vBoNZtZD0AdMPFFnrZLG48Gc7qC
+         qI58C/oHrOJQHK0qugR5YPr0HyPSytgwoNpjriIDkSAUmOkhnX2jFUf6JLYxNaHItp
+         3iZbS/e317RMg==
+Date:   Fri, 13 Oct 2023 11:17:34 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Chen-Yu Tsai <wens@csie.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH] mfd: Use device_get_match_data()
+Message-ID: <20231013101734.GJ8314@google.com>
+References: <20231009211356.3242037-3-robh@kernel.org>
+ <CAGb2v66ZHD8mMMNVwp+sTYT6DAFDUrP8ydeTo7KW+uUtBRM3bQ@mail.gmail.com>
+ <20231012092618.GF8314@google.com>
+ <CAL_JsqK22vWx1VPnrwEh+N-6vy5a7npFSW-=gp1uabTPSG2PpA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231011192528.262425-1-nik.borisov@suse.com> <20231012101456.goamenepqlte65jv@box.shutemov.name>
- <9346655c-df15-498b-a6e3-f6dd918c663a@suse.com>
-In-Reply-To: <9346655c-df15-498b-a6e3-f6dd918c663a@suse.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 13 Oct 2023 12:17:02 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE0zyzU9=cCk6HynfvPJGmzJvRDyjvmpNTsDNeEQTwz8A@mail.gmail.com>
-Message-ID: <CAMj1kXE0zyzU9=cCk6HynfvPJGmzJvRDyjvmpNTsDNeEQTwz8A@mail.gmail.com>
-Subject: Re: [PATCH] x86/efistub: Don't try to print after ExitBootService()
-To:     Nikolay Borisov <nik.borisov@suse.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_JsqK22vWx1VPnrwEh+N-6vy5a7npFSW-=gp1uabTPSG2PpA@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -60,52 +63,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(cc Matthew)
+On Thu, 12 Oct 2023, Rob Herring wrote:
 
-On Thu, 12 Oct 2023 at 13:28, Nikolay Borisov <nik.borisov@suse.com> wrote:
->
->
->
-> On 12.10.23 =D0=B3. 13:14 =D1=87., kirill.shutemov@linux.intel.com wrote:
-> > On Wed, Oct 11, 2023 at 10:25:28PM +0300, Nikolay Borisov wrote:
-> >> setup_e820() is executed after UEFI's ExitBootService has been called.
-> >> This causes the firmware to throw an exception because Console IO
-> >> protocol handler is supposed to work only during boot service
-> >> environment. As per UEFI 2.9, section 12.1:
-> >>
-> >>   "This protocol isused to handle input and output of text-based
-> >>   information intended for the system user during the operation of cod=
-e
-> >>   in the boot services environment."
-> >>
-> >> Running a TDX guest with TDVF with unaccepted memory disabled results =
-in
-> >> the following output:
+> On Thu, Oct 12, 2023 at 4:26 AM Lee Jones <lee@kernel.org> wrote:
 > >
-> > Oh. My bad.
+> > On Tue, 10 Oct 2023, Chen-Yu Tsai wrote:
 > >
-> > But there's other codepath that does the same. If setup_e820() fails wi=
-th
-> > EFI_BUFFER_TOO_SMALL, efi_stub_entry() would try to print "exit_boot()
-> > failed\n".
+> > > On Tue, Oct 10, 2023 at 5:14 AM Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > Use preferred device_get_match_data() instead of of_match_device() to
+> > > > get the driver match data. With this, adjust the includes to explicitly
+> > > > include the correct headers.
+> > > >
+> > > > Signed-off-by: Rob Herring <robh@kernel.org>
+> > > > ---
+> > > >  drivers/mfd/axp20x.c           | 22 +++-------------------
+> > >
+> > > I'd keep the error message, but otherwise for axp20x,
+> > >
+> > > Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+> > >
+> > > >  drivers/mfd/hi6421-pmic-core.c |  9 +++------
+> > > >  drivers/mfd/mxs-lradc.c        |  9 ++-------
+> > > >  drivers/mfd/qcom-spmi-pmic.c   |  6 ++++--
+> > > >  drivers/mfd/qcom_rpm.c         |  8 ++++----
+> > > >  drivers/mfd/tps65910.c         | 11 ++---------
+> > > >  drivers/mfd/twl4030-power.c    |  9 +++------
+> > > >  drivers/mfd/twl6030-irq.c      | 10 +++++-----
+> > > >  8 files changed, 26 insertions(+), 58 deletions(-)
 > >
-> > I wouldner if it is feasible to hook up earlyprintk console into
-> > efi_printk() machinery for after ExitBootService() case? Silent boot
-> > failure is not the best UX.
-> >
->
-> So looking at the code the only thing which would prevent refactoring to
-> exit logic to directly call exit_boot_func etc and setup_e820 before
-> calling efi_exit_boot_services is if the memory map changes. The current
-> code ensures that we really have the latest memory map version and so
-> setup_e820 is called with the latest version.
->
-> Ard, how likely it is that the memory map can indeed change between the
-> calls to getmemorymap and exitbootservice?
+> > FYI, this patch is not in my inbox.
+> 
+> There seems to be some issue with kernel.org delivering my mails. You
+> are not the only one. I thought it was just ones with large numbers of
+> recipients, but seems to be something else. Konstantin has been
+> looking into it. Do you see any pattern of mails you do receive from
+> me? Sent via google vs. kernel.org?
 
-Very likely. Matthew mentioned this to me not too long ago, i.e., that
-on real-world platforms, ExitBootServices() typically fails the first
-time because of this, and only succeeds the second time (note that the
-first call disables async event delivery so the second call is
-guaranteed to succeed unless the caller modifies the memory map
-themselves)
+How would I know which emails I haven't received from you? :)
+
+This is the only one that I'm aware of.
+
+-- 
+Lee Jones [李琼斯]
