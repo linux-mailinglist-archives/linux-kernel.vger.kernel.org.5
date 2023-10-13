@@ -2,94 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D0F7C8D58
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91FF7C8D60
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbjJMSzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 14:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
+        id S231421AbjJMS6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 14:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJMSzH (ORCPT
+        with ESMTP id S229518AbjJMS6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 14:55:07 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E650BB
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:55:05 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9be3b66f254so34305666b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:55:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697223304; x=1697828104; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vTnCuQhHu4vMJ5ozMAEPYZByiFfPswag7KkaGVloQKk=;
-        b=bqDpJuarTe0xYUp8E2Z8K31fSWhh6FFn+zDQZbfbeCNjT8ztCg7jUYLlZelh1MOYs2
-         fZFfNifMRfUL/ZFcdJ7yxHzbvacHBmn/vVPEsgl3NyCogHTh2bIUl7HE0mImJ2Z033r4
-         7sGm1pIlttsm+tunGIRtoAhPelsRlZ1oE+65U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697223304; x=1697828104;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vTnCuQhHu4vMJ5ozMAEPYZByiFfPswag7KkaGVloQKk=;
-        b=h+KlB7JkAvvY1tAMpeXwiR8TbMlFYyYmGSpPBbiTmkwj9iC4dm63iA/77BSthK3RSt
-         VbsHL/imM12wINUJCuxx77PpDpvGySe+Ogbje7bjw8AoYmPmJfzcWkJ2nzIbiPNFRTJh
-         lOhfgRStGhzDRbntThUoYPuETdPxk1We4tsoG9xA0ZDW7WmTPBPMTw8ddmjygl1oyM62
-         CJ5/7YQANQ63p0s1JzLRSAo4nQiCXzKRpoUtICmo26nreS1ZRjYIdYkTB9oow/uUiUla
-         T4wLhkoAKup79ZwnHPguBljFldwxBWgo8N28Fa32TBtvFahsec7YR1U9iICvAwOgToA5
-         WzfQ==
-X-Gm-Message-State: AOJu0YzS9sKSe5z61AommyBAl38eTv59ZRTRHC3v9JJQs8Kj58zJt6Ng
-        C8L+iqthS2h0rsHFcrVWcoZqBX3wKflDYdoBLF122w==
-X-Google-Smtp-Source: AGHT+IHjl/UtDt96Jwf7Uc8dOBIYYS72HR7IpJxWDb/qTMlELBZd0NYaryEu21KpK/elbm2rb6lMKw==
-X-Received: by 2002:a17:907:778e:b0:9a1:bd82:de24 with SMTP id ky14-20020a170907778e00b009a1bd82de24mr24120517ejc.12.1697223304048;
-        Fri, 13 Oct 2023 11:55:04 -0700 (PDT)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
-        by smtp.gmail.com with ESMTPSA id rn4-20020a170906d92400b0099bc038eb2bsm12651044ejb.58.2023.10.13.11.55.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Oct 2023 11:55:03 -0700 (PDT)
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-99c3c8adb27so382521266b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:55:03 -0700 (PDT)
-X-Received: by 2002:a17:906:2189:b0:9ae:6ad0:f6db with SMTP id
- 9-20020a170906218900b009ae6ad0f6dbmr23995223eju.71.1697223303355; Fri, 13 Oct
- 2023 11:55:03 -0700 (PDT)
+        Fri, 13 Oct 2023 14:58:05 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9778983;
+        Fri, 13 Oct 2023 11:58:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BX46dNDWacbTLnmiaLVn5n52llMO/qsVCUFz6T6ofcM=; b=GHy2B436bq7f/+P60+nkE0cQOh
+        29Qe3rqIM5Q5KtjRNqFXM+U7iE7WHDENeWxQJQYCmz+MjCGoxM9qqhNitOFrdRYLUEPh6K32vAEyr
+        +G7EzaQOMWL64UtUzpyb72hbqAd7N42EwSiXLY0tfJdctbvgzSUAmAm+3TvBRgQOPAe1BoNWoSLZE
+        WwTrEmHfEEJ5CA+Rm097ca3TlxEmzV/LEnkbhPb6YgzbTgwWWYU+h3tmAtMrLw2WebWgi2FVMfFkU
+        V6DxdCcZrsUrrezsydsLD6htyflcW0j4KDK5PRv4xHL+dJ3RdVMfkg3Xmr5MesRiOFX6qj1kclEbk
+        U69u8slA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qrNMI-0045wN-1R;
+        Fri, 13 Oct 2023 18:58:02 +0000
+Date:   Fri, 13 Oct 2023 11:58:02 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Joey Jiao <quic_jiangenj@quicinc.com>,
+        linux-hardening@vger.kernel.org, syzkaller@googlegroups.com
+Cc:     linux-modules@vger.kernel.org, quic_likaid@quicinc.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] module: Add CONFIG_MODULE_DISABLE_INIT_FREE option
+Message-ID: <ZSmTOtp8mKfBSSkD@bombadil.infradead.org>
+References: <20231013062711.28852-1-quic_jiangenj@quicinc.com>
 MIME-Version: 1.0
-References: <20220927131518.30000-1-ojeda@kernel.org> <20220927131518.30000-26-ojeda@kernel.org>
- <Y0BfN1BdVCWssvEu@hirez.programming.kicks-ass.net> <CABCJKuenkHXtbWOLZ0_isGewxd19qkM7OcLeE2NzM6dSkXS4mQ@mail.gmail.com>
- <CANiq72k6s4=0E_AHv7FPsCQhkyxf7c-b+wUtzfjf+Spehe9Fmg@mail.gmail.com>
- <CABCJKuca0fOAs=E6LeHJiT2LOXEoPvLVKztA=u+ARcw=tbT=tw@mail.gmail.com>
- <20231012104741.GN6307@noisy.programming.kicks-ass.net> <CABCJKufEagwJ=TQnmVSK07RDjsPUt=3JGtwnK9ASmFqb7Vx8JQ@mail.gmail.com>
- <202310121130.256F581823@keescook> <CAOcBZOTed1a1yOimdUN9yuuysZ1h6VXa57+5fLAE99SZxCwBMQ@mail.gmail.com>
- <20231013075005.GB12118@noisy.programming.kicks-ass.net> <CAOcBZOTP_vQuFaqREqy-hkG69aBvJ+xrhEQi_EFKvtsNjne1dw@mail.gmail.com>
-In-Reply-To: <CAOcBZOTP_vQuFaqREqy-hkG69aBvJ+xrhEQi_EFKvtsNjne1dw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 13 Oct 2023 11:54:46 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjLUit_gae7anFNz4sV0o2Uc=TD_9P8sYeqMSeW_UG2Rg@mail.gmail.com>
-Message-ID: <CAHk-=wjLUit_gae7anFNz4sV0o2Uc=TD_9P8sYeqMSeW_UG2Rg@mail.gmail.com>
-Subject: Re: [PATCH v10 25/27] x86: enable initial Rust support
-To:     Ramon de C Valle <rcvalle@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, patches@lists.linux.dev,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        David Gow <davidgow@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231013062711.28852-1-quic_jiangenj@quicinc.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,47 +52,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 at 05:18, Ramon de C Valle <rcvalle@google.com> wrote:
->
-> Both C and repr(C) Rust structs have this encoding, but I understand
-> the problems with doing this in C since it doesn't have
-> repr(transparent) structs so there would be a lot of casting back and
-> forth. Maybe there is an alternative or this could be done for less
-> used function pairs?
+Joey,
 
-We actually have some C variations of what I think people want to use
-"repr(transparent) struct" for in Rust.
+Thanks for working hard on expanding on the commit log to try to
+describe the rationale for this. I'd like review from the linux-hardening
+folks and at least one syzkaller developer.
 
-Of course, that is depending on what kind of context you want to use
-it for, and I might have lost some background. But I'm assuming you're
-talking about the situation where you want to treat two or more types
-as being "compatible" within certain contexts.
+On Fri, Oct 13, 2023 at 11:57:11AM +0530, Joey Jiao wrote:
+> Syzkaller uses the _RET_IP_ (also known as pc) to decode covered
+> file/function/line,
 
-There's the actual standard C "_Generic()" alternative, which allows
-you to make macros etc that use different types transparently.
+OK but that seems immediately limited as your Kconfig confirms to
+!CONFIG_RANDOMIZE_BASE and even for things like kaslr.
 
-It's not very widely used in the kernel, because we only fairly
-recently moved to require recent enough compiler versions, but we do
-use it now in a couple of places.
+> and it employs pc ^ hash(prev_pc) (referred to as
+> signal) to indicate covered edge. If the pc for the same file/line
+> keeps changing across reboots, syzkaller will report incorrect coverage
+> data.
 
-And there's the much more traditional gcc extension in the form of the
-__attribute__((__transparent_union__)) thing. In the kernel, that one
-is even less used, and that one use is likely going away since the
-need for it is going away.
+Yeah that seems pretty limiting. Why not use something like the
+effort being put forward to map symbols a bit more accurately to
+file / lines as with what Alessandro Carminati is doing for
+scripts/link-vmlinux.sh to kallsyms. Although that effort helps
+tracers differentiate duplicate symbols it would seem to also help
+fuzzers too even if CONFIG_RANDOMIZE_BASE or kaslr are enabled.
 
-But while it's not standard C, it's actually been supported by
-relevant compilers for much longer than "_Generic" has, and is
-designed exactly for the "I have a function that can take arguments of
-different types", either because the types are bitwise identical (even
-if _conceptually_ not the same), or simply because you have a
-different argument that describes the type (the traditional C union
-model).
+[0] https://lore.kernel.org/all/ZSVkRkf3DNyxb7Vw@oracle.com/T/#m465130eb6cdd16a4c187206c69cf6a17960f90a9
 
-I suspect, for example, that we *should* have used those transparent
-unions for the "this function can take either a folio or a page" case,
-instead of duplicating functions for the two uses.
+> Additionally, even if kaslr can be disabled, we cannot get the
+> same covered edge for module because both pc and prev_pc have changed,
+> thus altering pc ^ hash(prev_pc).
+> 
+> To facilitate syzkaller coverage, it is crucial for both the core kernel
+> and modules to maintain at the same addresses across reboots.
 
-But probably because few people aren familiar with the syntax, that's
-not what happened.
+The problem I see with this, is that, even if it does help, the argument
+being put forward here is that the below recipe is completley
+deterministic and it's not obviously clear to me that it truly is.
 
-             Linus
+> So, the following steps are necessary:
+> - In userspace:
+>   1) To maintain an uninterrupted loading sequence, it is recommended to
+> execute modprobe commands by loading one module at a time, to avoid any
+> interference from the scheduler.
+>   2) Avoid unloading any module during fuzzing.
+> - In kernel:
+>   1) Disable CONFIG_RANDOMIZE_BASE to load the core kernel at the same
+> address consistently.
+>   2) To ensure deterministic module loading at the same address, enabling
+> CONFIG_MODULE_DISABLE_INIT_FREE prevents the asynchronous freeing of init
+> sections. Without this option, there is a possibility that the next module
+> could be loaded into previous freed init pages of a previous loaded module.
+
+Is this well documented somewhere as a requirement for kernels running
+syzkaller?
+
+Because clearly CONFIG_MODULE_DISABLE_INIT_FREE is showing that the
+above recipe was *not* deterministic and that there were holes in it.
+Who's to say this completes the determinism?
+
+Now, if the justificaiton is that it helps current *state of the art*
+fuzzing mapping... that's different and then this could just be
+temporary until a more accurate deterministic mechanism is considered.
+
+> It is important to note that this option is intended for fuzzing tests only
+> and should not be set as the default configuration in production builds.
+
+  Luis
+
+> 
+> Signed-off-by: Joey Jiao <quic_jiangenj@quicinc.com>
+> ---
+>  kernel/module/Kconfig | 13 +++++++++++++
+>  kernel/module/main.c  |  3 ++-
+>  2 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/module/Kconfig b/kernel/module/Kconfig
+> index 33a2e991f608..d0df0b5997b0 100644
+> --- a/kernel/module/Kconfig
+> +++ b/kernel/module/Kconfig
+> @@ -389,4 +389,17 @@ config MODULES_TREE_LOOKUP
+>  	def_bool y
+>  	depends on PERF_EVENTS || TRACING || CFI_CLANG
+>  
+> +config MODULE_DISABLE_INIT_FREE
+> +	bool "Disable freeing of init sections"
+> +	default n
+> +	depends on !RANDOMIZE_BASE
+> +	help
+> +	  By default, the kernel frees init sections after module is fully
+> +	  loaded.
+> +
+> +	  Enabling MODULE_DISABLE_INIT_FREE allows users to prevent the freeing
+> +	  of init sections. It is particularly helpful for syzkaller fuzzing,
+> +	  ensuring that the module consistently loads at the same address
+> +	  across reboots.
+
+But that seems false, I don't see proof to that yet. Helping it be more
+acurrate, maybe. If the docs for syzkaller clearly spell these
+requirements out then maybe this is valuable upstream for now, but
+in the meantime the assumption above is just a bit too large for me
+to accept to be true.
+
+> +
+>  endif # MODULES
+> diff --git a/kernel/module/main.c b/kernel/module/main.c
+> index 98fedfdb8db5..d226df3a6cf6 100644
+> --- a/kernel/module/main.c
+> +++ b/kernel/module/main.c
+> @@ -2593,7 +2593,8 @@ static noinline int do_init_module(struct module *mod)
+>  	 * be cleaned up needs to sync with the queued work - ie
+>  	 * rcu_barrier()
+>  	 */
+> -	if (llist_add(&freeinit->node, &init_free_list))
+> +	if (!IS_ENABLED(CONFIG_MODULE_DISABLE_INIT_FREE) &&
+> +	    llist_add(&freeinit->node, &init_free_list))
+>  		schedule_work(&init_free_wq);
+>  
+>  	mutex_unlock(&module_mutex);
+> -- 
+> 2.42.0
+> 
