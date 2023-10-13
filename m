@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CF17C812F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 953787C8135
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbjJMI7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
+        id S230374AbjJMI7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbjJMI6b (ORCPT
+        with ESMTP id S230357AbjJMI6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:58:31 -0400
+        Fri, 13 Oct 2023 04:58:33 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA64D6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:58:30 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S6Kzx5LBgzvQ3X;
-        Fri, 13 Oct 2023 16:53:49 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0438AD8
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:58:31 -0700 (PDT)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S6L2J4jVLzrTR9;
+        Fri, 13 Oct 2023 16:55:52 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -32,9 +32,9 @@ CC:     <willy@infradead.org>, <linux-mm@kvack.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH -next v2 13/19] sched/fair: use folio_xchg_last_cpupid() in should_numa_migrate_memory()
-Date:   Fri, 13 Oct 2023 16:55:57 +0800
-Message-ID: <20231013085603.1227349-14-wangkefeng.wang@huawei.com>
+Subject: [PATCH -next v2 14/19] mm: migrate: use folio_xchg_last_cpupid() in folio_migrate_flags()
+Date:   Fri, 13 Oct 2023 16:55:58 +0800
+Message-ID: <20231013085603.1227349-15-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20231013085603.1227349-1-wangkefeng.wang@huawei.com>
 References: <20231013085603.1227349-1-wangkefeng.wang@huawei.com>
@@ -54,26 +54,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert to use folio_xchg_last_cpupid() in should_numa_migrate_memory().
+Convert to use folio_xchg_last_cpupid() in folio_migrate_flags(), also
+directly use folio_nid() instead of page_to_nid(&folio->page).
 
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/migrate.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index bc07f29a4a42..f3cb4c8974c5 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1862,7 +1862,7 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 5348827bd958..821c42d61ed0 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -588,20 +588,20 @@ void folio_migrate_flags(struct folio *newfolio, struct folio *folio)
+ 	 * Copy NUMA information to the new page, to prevent over-eager
+ 	 * future migrations of this same page.
+ 	 */
+-	cpupid = page_cpupid_xchg_last(&folio->page, -1);
++	cpupid = folio_xchg_last_cpupid(folio, -1);
+ 	/*
+ 	 * For memory tiering mode, when migrate between slow and fast
+ 	 * memory node, reset cpupid, because that is used to record
+ 	 * page access time in slow memory node.
+ 	 */
+ 	if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING) {
+-		bool f_toptier = node_is_toptier(page_to_nid(&folio->page));
+-		bool t_toptier = node_is_toptier(page_to_nid(&newfolio->page));
++		bool f_toptier = node_is_toptier(folio_nid(folio));
++		bool t_toptier = node_is_toptier(folio_nid(newfolio));
+ 
+ 		if (f_toptier != t_toptier)
+ 			cpupid = -1;
  	}
+-	page_cpupid_xchg_last(&newfolio->page, cpupid);
++	folio_xchg_last_cpupid(newfolio, cpupid);
  
- 	this_cpupid = cpu_pid_to_cpupid(dst_cpu, current->pid);
--	last_cpupid = page_cpupid_xchg_last(&folio->page, this_cpupid);
-+	last_cpupid = folio_xchg_last_cpupid(folio, this_cpupid);
- 
- 	if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING) &&
- 	    !node_is_toptier(src_nid) && !cpupid_valid(last_cpupid))
+ 	folio_migrate_ksm(newfolio, folio);
+ 	/*
 -- 
 2.27.0
 
