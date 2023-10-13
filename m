@@ -2,185 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E377C7FAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6197C7FB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbjJMILb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
+        id S230094AbjJMIMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbjJMILD (ORCPT
+        with ESMTP id S230055AbjJMIMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:11:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F2A12A;
-        Fri, 13 Oct 2023 01:10:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697184657; x=1728720657;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=fQhfRWQWQh0Rxebe12MGYwRTy/eosW/S1RAiMRPHyW4=;
-  b=G9wchZzuLvG4fSoPtgijSvaUgnH4vxyPG7iCWHP6pr1j2Ipv7P1dgIXY
-   ru/QlDEyYZ2S/2/ixl9f/bvi1YuPkkOCBilZyuizC6+pGD370TS8wKny7
-   F1k6OhvV7rpPLpQdI4DfUGSFBo+lScPidoJ17xHvh6qgm9w9JqmDV+lvw
-   UygYFo43YhVVuLXJ9vDNcTEaBs1/0rpMjFqf7Vna5q/dY9EOycRwBeZzX
-   TbVU1qLi53fjC4gUNcmaAykf+/Dqyndt7dn0MdUa0pKthaRJc3eXgc61C
-   PL1mpOREnUnrTNNmSGq4vc/Ot+rS9l38lnaOgIrRvG4AP0GWoj2tlDD5n
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="370195198"
-X-IronPort-AV: E=Sophos;i="6.03,221,1694761200"; 
-   d="scan'208";a="370195198"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 01:10:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="784056923"
-X-IronPort-AV: E=Sophos;i="6.03,221,1694761200"; 
-   d="scan'208";a="784056923"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Oct 2023 01:10:56 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 13 Oct 2023 01:10:56 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Fri, 13 Oct 2023 01:10:56 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Fri, 13 Oct 2023 01:10:55 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ahO6bDrWybrU2++4KvgoyLIVBsBlbddLQwxGk7GhBfd1bJCtaqtxG+wx/cHfJbfoZId2ARhMpwMgh5Vazu528ccvJ4SdDqk10MKCa7WM1NiASDuz30RSeuPJ0bDik/2+pzrLzIntZllxRN9Yi8dJk11sB4aHk6uFPKVGUUrs5JxEjt0Cg3ZvbEu1hG9+zB/EMwk/oW5VgKpS8rb6D1lUuLQ/4bcXcu+MndYCMf3U5h88f0hbMRIITvL91PNTP3H2KRW/ZCNR7F9FvsywrHdz8tS6Y51O/f/Zj+dVXY0AVwbwbUM0pq6tAenOvyBn3+gVQeXI1Wg32CZ6y7wZWoOO8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fQhfRWQWQh0Rxebe12MGYwRTy/eosW/S1RAiMRPHyW4=;
- b=JUNW6OISxpOsUPgtN85E5jcjFTH4tV2xcId/9UEkAVd4hQ6vtRt5Cg4BNanSAPHl0/eTZqRBDqNmhkdgKsSh+aILe1dvxRDxoaCqdGLb3WXkv6QaToYtSmMcNoH3bwQipGViMdC3nrUcZSbqfSRhzqwy9m+pSFsPdlr9X34sLzsCLdAkgkrp0zZ1lmKeSRRBIKu4GwmUoT7UzPO3dR+hrXxM+yX8+KSlzY26B320PBa+LV0hVfOqVZHKzSNLjgdoeCpCnupkYk/5/tIMlbW/ogWePt9hQh0FZOjduox85+XUP571VTRapsnydf6/ltV8SXNo93G8hnzo744/BT9PcQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by IA0PR11MB7813.namprd11.prod.outlook.com (2603:10b6:208:402::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Fri, 13 Oct
- 2023 08:10:48 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::7116:9866:8367:95b4]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::7116:9866:8367:95b4%3]) with mapi id 15.20.6863.043; Fri, 13 Oct 2023
- 08:10:48 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     "Chatre, Reinette" <reinette.chatre@intel.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "yishaih@nvidia.com" <yishaih@nvidia.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "tom.zanussi@linux.intel.com" <tom.zanussi@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>
-Subject: RE: [RFC PATCH V2 14/18] vfio/pci: Add core IMS support
-Thread-Topic: [RFC PATCH V2 14/18] vfio/pci: Add core IMS support
-Thread-Index: AQHZ+HP7H8n8M1qsCESF8QGnzw9E4rBHZG0A
-Date:   Fri, 13 Oct 2023 08:10:48 +0000
-Message-ID: <BN9PR11MB5276891129DCF849D9E6375D8CD2A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <cover.1696609476.git.reinette.chatre@intel.com>
- <0f8fb7122814c5c5083799e935d5bd3d27d38aef.1696609476.git.reinette.chatre@intel.com>
-In-Reply-To: <0f8fb7122814c5c5083799e935d5bd3d27d38aef.1696609476.git.reinette.chatre@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|IA0PR11MB7813:EE_
-x-ms-office365-filtering-correlation-id: ed91ffa8-202e-4123-280c-08dbcbc3e878
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: LazSgzwxLrGWmCnY2ZUIM52MX4VoAKawP2+stOj3f1IubR9q+xhPnUEa88m00C7B6BCAQu7S/oaCR8uTl69xxctocQaCZs8PhsMOz8SEAQhgeBzU25X9A7zNL4fH9v0Qj09Cqc5zivbKax76yv1w9CwrmhKfwyoQ6vVqpAYpe+TrhLolHQmO/vNit5VEfQBaVoB44hA/Oz3amMMs7mWcA+zr6ZVujlwrthg0wVD7FmQ5Z6whHLQotipTehbbEYaERdciwluTo+7RJNVoRJztqF1zY3cd1sbdavJJdJtupU8RPXKj4eaQycr/rwCJK/U80Io1WZpHIEGjt3hONlN86j/pNuGqekWjzOTWJGzFtnrHRUP2gDuGqjsLf6fFVc1QiohlqL0sTTGLzZp27ZCZOfnlxKnnnJcPeNuZSlpxChvcyCJ5OTDvrzd6ANdCrphQdxb69rbb4BjfP9tUo3KRN2ImwIdZu76m+WfBk5NMQ3S/o8aznMZCj5+CL0kZXElWymYyqWDRpmqGS8rh8+J5D2c9YiNVynGOmMKur3usxK3wzY6yrhDqzwplOeAb1QeUXEYxlqgy0PdRk42J+HSYz8FSE3Ita7YeA1pmhsYKtOX+z1/SSAw+zaRWhQmwdhfO
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(136003)(376002)(366004)(346002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(4326008)(55016003)(8936002)(26005)(8676002)(52536014)(33656002)(38100700002)(82960400001)(38070700005)(2906002)(122000001)(41300700001)(5660300002)(83380400001)(86362001)(9686003)(7696005)(6506007)(478600001)(71200400001)(316002)(54906003)(66556008)(66946007)(76116006)(66476007)(110136005)(64756008)(66446008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?PNahvoXb58E1IfBLFSKJwC1pI3cGql4wKMy7yMEhM5Ak1TaKMjOGBs4g7ObB?=
- =?us-ascii?Q?VBI4AmUzAE8TyB2wCEAF8ATeaq/C9CciejYAVhNitDe760iJ/+0VaXcBpcNO?=
- =?us-ascii?Q?6nUVbJVVLAGAF8JpbiyvX9aMDsGMl9/6lIyX+Z7yXllRbEzmID7yLMK5i/PA?=
- =?us-ascii?Q?XIM0cNsPk0yrjp6l1qw2o51SodrH9M+Pmu4WNi4PDdnCq9CjeZIpr2S0NSHY?=
- =?us-ascii?Q?LmKsImjpftmb5+EgLHSd87Dv4ZWLDDO3iJrKwXJ+F1Lajm7AazEt5PfThDLH?=
- =?us-ascii?Q?j0ldvpiWVfwFc+wG5nt1nd/O3djBn/Pd72bMy65DfrjW7Eu3VuzSrfenJ5AE?=
- =?us-ascii?Q?D7TQXNg9aMew/U+qPkSfXoqGw9FOGF+7ftUAEvy5TlsfIaKXOhvUs0rtFzJN?=
- =?us-ascii?Q?Bd0aW1Bjs8EKdIJrH1/x5j0g1OzhqmtcePU5nvphzcR8BUlsv90qFYLQOBw9?=
- =?us-ascii?Q?vKGSDVlEBc7awqbcBqBHBc16CRodvgVQnh1J3xMB50GNZPH3teHzUJLoaiep?=
- =?us-ascii?Q?aEyRm0zGlWcnezvPj8VmHNujighNwIQ4kKOtGNK8bE5aAjKiugwKqgcNl3Fk?=
- =?us-ascii?Q?GAkD4Kyec20ZnHkMGWSkUucWGRfsu0QmNEW8XYE7cg+zr7XjChP6TAjr0Dkn?=
- =?us-ascii?Q?Yjbvg7XobiPZSgzJC6VwDhh/2q5qNihbBYUWoTEdIza09q5Gp9hKl9AXTDzB?=
- =?us-ascii?Q?A7VjB0oJPBBxa4YNxOuI+NuuNsSTVgszBtT56eBMvckGcTYWCd7ZGmQM2Q0s?=
- =?us-ascii?Q?ulIxoNO1uA5KvKxlp1EnnzmWkVsk4zbcF8PHj8hBC2FbtNho8YUrC7NyeySm?=
- =?us-ascii?Q?QIFdIL28RDaux2TEJOZmk2TlSFNdSzOJSG+l0P3eF55qo3Rl+8hTm7KjI8Wq?=
- =?us-ascii?Q?qv8KUItRiYY03tHxdVW3BaGBQixjIwqqVgnWe5iEdop8BqfbWZ08NhLh/v/x?=
- =?us-ascii?Q?IvR2WzoIssSORaPXCRzsWQoZWfHhl+67WguzOqRB+zHrXwXOfAuA2N12z+UU?=
- =?us-ascii?Q?fNZCXcI91xYDMKdzQw60yUtBElfBnxe3ZAgrfnLpKSRQqOZgGsQht8bu6kcl?=
- =?us-ascii?Q?bXVuBoKsdjmUY2s2LRAq1no6bnlsne2IDJVx6hjyJd2E3nx/gvIvcGn2Hw1Q?=
- =?us-ascii?Q?70HmrtFz2mzWLE1xTMOkkY5qB9fNWugUxkx5TeoYoiiLBOyQmOS+dzbAPxGj?=
- =?us-ascii?Q?ntGqT773mUuEKJ0GPEOLmAhpz6Dm8Z+WHvhbvBbUjWKxuaZ5CBRBzkE0rXqF?=
- =?us-ascii?Q?8lHydKpk4JKYw9JJEwHY7S2ozn/lpSw0xgK4TE/NGwTNcBgHrrBdqAk77k31?=
- =?us-ascii?Q?mRVFGDTvxmqEbjX3IkJWN1/KqiKbMavZPzxxhNrflJz1NmYnxBFcN5AfCXzx?=
- =?us-ascii?Q?QWeYctvC7DiofNw0OaPFrCzJ+/aLv0P3k2pET9rOG03Lue2dQhgVZE52GUtm?=
- =?us-ascii?Q?8hvt/hNaalMGLDPI4JO1DjgYsPz/nazgaF5Ts4BTBPNznMX2ikKe+kbEayLK?=
- =?us-ascii?Q?kNd1QHJn22iO5D9o0hw2javsVUdfmhcwtrh2aTf0FUgOOK4i6Wtq2lyzVgV3?=
- =?us-ascii?Q?BKHHpO5qu4JRQTKFb35uALseD/yvhFTD/raJGLVi?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 13 Oct 2023 04:12:14 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3FFCE
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:12:11 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3247cefa13aso1655985f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:12:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697184730; x=1697789530; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SGC52X+6EfdOM44b7esjFLrzvMzDKL2p4mgyAiVtcQk=;
+        b=erGPeaKd63nm7hBvQllthRPPjZtjjs5Q8i/uQX8KVRUBp8ShKblK6Ie9HkYbfDL2Zj
+         3eunWTOMPs1Uy71MgzpYm5qbwxz2F4Fn6IiGZvFNjSPdNqKDS75f8RoAiQ0mqiK9Xvko
+         9SqWgT9dgzm7x+Gd2qU+v0j43QccVHZXmV536A9rnb9q8tlcEbmry9SKlbTeB4CJhxNB
+         nIeilfgWnhAq8W+g5fz7rjuCS5rfhk4nMHL6NhZSTDBKgtYb6o1t3E4iw/lwg77+N7EN
+         aA2BqX/gmkhLtETUT2+8KQTHdvGO/S9TPKe9QnvuypxewJ1uk0YBDLKk2bHu0AgBMW4V
+         1DAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697184730; x=1697789530;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SGC52X+6EfdOM44b7esjFLrzvMzDKL2p4mgyAiVtcQk=;
+        b=OqwkHHDPHCpiWgDKTBEfucOdM0sqCw2Dtfc2iaOn691cSFQZrDBe6NxG9aVtzlJ9k6
+         AebRfF2NW+G3GFICHvJGOM85HkNUYo70vbJBE21oHKw0dSavVTOR4H4g2JZotstrNH6Z
+         bGy0kFk0ExPywhaojOnQRBvrCvHmUGwFJhQ6JpZ0iYjLIDbAV/obDiBVBKwotUZMuCyq
+         I7YEGlQTAYj6Kxjib0uBSkKGO5MCNzvukpjVUO3uAQ2toYsgTr1OPmFgobinEnzB9Vxx
+         J06mNLm4sR83FpBsQJRqYmQ93oRxUt6pA+iuoohKXCCxIMkhRMF2KIVxDU6CR43o3KBo
+         veyw==
+X-Gm-Message-State: AOJu0YyRTIry798y1S+d1PChm27SyhYusv1KrnlHbwuWo4ESb5g5sqvC
+        RG8hxD4rHm8bjoRWfXWGFvYyTg==
+X-Google-Smtp-Source: AGHT+IGXwzt6GufVlnOjsPlfsRIPzlaGtVvngq610MlsMUP7gghxkfnbbfFsixU3uwFuXhpwNvI7nA==
+X-Received: by 2002:a5d:58ca:0:b0:31f:f65f:74ac with SMTP id o10-20020a5d58ca000000b0031ff65f74acmr21004242wrf.70.1697184730218;
+        Fri, 13 Oct 2023 01:12:10 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id w14-20020adfee4e000000b0032d2489a399sm2745645wro.49.2023.10.13.01.12.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 01:12:09 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 11:12:07 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Sandipan Das <sandipan.das@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Uros Bizjak <ubizjak@gmail.com>
+Subject: Re: [PATCH] perf/x86/amd/uncore: fix error codes in amd_uncore_init()
+Message-ID: <0c973a20-e10c-4989-b7d9-86cb0f522718@kadam.mountain>
+References: <cec62eba-c4b8-4cb7-9671-58894dd4b974@moroto.mountain>
+ <ZSjyJuqk3z0RyKP2@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed91ffa8-202e-4123-280c-08dbcbc3e878
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2023 08:10:48.2184
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZxDQIbVeCp5sSTxLMUaxTX0wOUudV4YINIFsAVRTCWyomkvIxHwXQknzU6Pj06XN7kXtCmUtFwlrg5XdwI5CWw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7813
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSjyJuqk3z0RyKP2@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Chatre, Reinette <reinette.chatre@intel.com>
-> Sent: Saturday, October 7, 2023 12:41 AM
->=20
-> A virtual device driver starts by initializing the backend
-> using new vfio_pci_ims_init_intr_ctx(), cleanup using new
-> vfio_pci_ims_release_intr_ctx(). Once initialized the virtual
-> device driver can call vfio_pci_set_irqs_ioctl() to handle the
-> VFIO_DEVICE_SET_IRQS ioctl() after it has validated the parameters
-> to be appropriate for the particular device.
+On Fri, Oct 13, 2023 at 09:30:46AM +0200, Ingo Molnar wrote:
+> Ugh, why on Earth didn't GCC warn about this? The bad pattern is pretty 
+> simple & obvious once pointed out ... compilers should have no trouble 
+> realizing that 'ret' is returned uninitialized in some of these control 
+> paths. Yet not a peep from the compiler ...
 
-I wonder whether the code sharing can go deeper from
-vfio_pci_set_irqs_ioctl() all the way down to set_vector_signal()
-with proper abstraction. Then handle emulated interrupt in the
-common code instead of ims specific path. intel gvt also uses
-emulated interrupt, which could be converted to use this library
-too.
+We disabled that warning years ago (5?) because GCC had too many false
+positives.
 
-There is some subtle difference between pci/ims backends
-regarding to how set_vector_signal() is coded in this series. But
-it is not intuitive to me whether such a difference is conceptual
-or simply from a coding preference.
+regards,
+dan carpenter
 
-Would you mind doing an exercise whether that is achievable?
-
-Thanks
-Kevin
