@@ -2,95 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C58EC7C8783
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E85CA7C8786
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232041AbjJMOJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 10:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43630 "EHLO
+        id S232043AbjJMOLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 10:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbjJMOJ2 (ORCPT
+        with ESMTP id S231194AbjJMOLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 10:09:28 -0400
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406D2BD;
-        Fri, 13 Oct 2023 07:09:26 -0700 (PDT)
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3b2b1a6fd5eso321281b6e.0;
-        Fri, 13 Oct 2023 07:09:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697206165; x=1697810965;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=32q64sOF2d1XvMlGkpm0O35o7axtMas1mV8rP6bTVn8=;
-        b=iw2k+HAuEPDhkAuHndh1Z9Uj5WBQ4OongTYhFJlddtTIlntpd+2nxt/bBcndzM82MR
-         VTrOHtGmcxV9KUrOVmnAFAeepuDiPnFS0appF0iNbIHu5mcfGP64LlPPUTuzLkmUskF5
-         KwZH+EK6+uUEgPKPtiOeVQ6qlct/rPglDWQPoCvTVyNoAocojp08PMA5JVht/WhwaR1W
-         otdiT2nrzxScEjEGR6dPcNJBJIRGGsZl26GkdoaXN/DN/tx4BWVAps4/ryv5JV1rKMhu
-         0k7MApEkDjDn8vrroPkJ92oNYonBZ2Fm0z3f2PkwaglhH5Pcu/b5sKwTKnfTdhPjkc0Z
-         qeXg==
-X-Gm-Message-State: AOJu0YzAnYZ6Y6n4qTVouyd3WVgau7WAAn4yxCgs518j+Wp0L/ibo54j
-        SH4gvBBQId7I2TaLkB82kAhmGElLHg==
-X-Google-Smtp-Source: AGHT+IE3WfnWPCV4ZgQOO+7n+hC2sS/a0WY7WfHDYyEnWNzabar4DxPdMiXBJQCW6Gy4BMVdliteAg==
-X-Received: by 2002:a05:6808:1302:b0:3a9:9bb4:485c with SMTP id y2-20020a056808130200b003a99bb4485cmr37530634oiv.8.1697206165505;
-        Fri, 13 Oct 2023 07:09:25 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id o15-20020a0568080f8f00b003a747ea96a8sm747696oiw.43.2023.10.13.07.09.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 07:09:23 -0700 (PDT)
-Received: (nullmailer pid 3793059 invoked by uid 1000);
-        Fri, 13 Oct 2023 14:09:21 -0000
-Date:   Fri, 13 Oct 2023 09:09:21 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc:     andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        dmitry.baryshkov@linaro.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jonathan@marek.ca, quic_tdas@quicinc.com,
-        vladimir.zapolskiy@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v4 3/4] media: dt-bindings: media: camss: Add
- qcom,sc8280xp-camss binding
-Message-ID: <20231013140921.GA3773179-robh@kernel.org>
-References: <20231012113100.3656480-1-bryan.odonoghue@linaro.org>
- <20231012113100.3656480-4-bryan.odonoghue@linaro.org>
+        Fri, 13 Oct 2023 10:11:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F07595
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:11:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76931C433C7;
+        Fri, 13 Oct 2023 14:10:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697206260;
+        bh=yblgfOK1RNan7Z74qeOHcSvb7Lln2WHm9wFm6gXbhf8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BDgw2I9RUVi8FmfXMdDwfGWWNWixrlRokLda/7jno+fJ0koZRbGXp4dIOEsmtjntk
+         6fTddidzhz/mBuaPzrgogyNNdQ4S/lmQAX+MOzr6brBSVnw8KeMcPv8anPgzJdIlKd
+         4trW7twlDDnTL7za8haPzW56eNNAUr/sVEvMqRvex2XCQQRRqBNKLpBFiZJEMthMLz
+         0RKpWnMpUztZPjibvq/g53a3cHwBso92RdxE1Hu11O9jXTAoWHQ+EnBQkRbto/DNjS
+         qQ8ECY/K6f3DxAk2jfce54Obn1QWtZMLUuYoodqBF+OM0hH1f5lS2YGjeCbn5ELlkc
+         kJow/8QLddtPw==
+Date:   Fri, 13 Oct 2023 15:10:56 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     wangweidong.a@awinic.com
+Cc:     lgirdwood@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        perex@perex.cz, tiwai@suse.com, herve.codina@bootlin.com,
+        shumingf@realtek.com, rf@opensource.cirrus.com, arnd@arndb.de,
+        13916275206@139.com, ryans.lee@analog.com,
+        linus.walleij@linaro.org, ckeepax@opensource.cirrus.com,
+        fido_max@inbox.ru, sebastian.reichel@collabora.com,
+        colin.i.king@gmail.com, liweilei@awinic.com, trix@redhat.com,
+        dan.carpenter@linaro.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V1 3/3] ASoC: codecs: Add aw88399 amplifier driver
+Message-ID: <ZSlP8GvTAOe35peC@finisterre.sirena.org.uk>
+References: <20231013104220.279953-1-wangweidong.a@awinic.com>
+ <20231013104220.279953-4-wangweidong.a@awinic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ralK2eSCf+ixFXP0"
 Content-Disposition: inline
-In-Reply-To: <20231012113100.3656480-4-bryan.odonoghue@linaro.org>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231013104220.279953-4-wangweidong.a@awinic.com>
+X-Cookie: Save energy:  Drive a smaller shell.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 12:30:59PM +0100, Bryan O'Donoghue wrote:
-> Add bindings for qcom,sc8280xp-camss in order to support the camera
-> subsystem for sc8280xp as found in the Lenovo x13s Laptop.
 
-You don't need 2 'media' in the subject.
+--ralK2eSCf+ixFXP0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
-> This patch depends-on:
-> https://lore.kernel.org/lkml/20231004161853.86382-2-bryan.odonoghue@linaro.org/T
+On Fri, Oct 13, 2023 at 06:42:20PM +0800, wangweidong.a@awinic.com wrote:
 
-Who is supposed to apply the above and this patch? Normally, this would 
-go thru the media tree, but you didn't send it to them or the media 
-list. You did Cc the clock maintainers which seems weird on its own, but 
-I suppose based on the bot error that's because the above patch is a 
-clock patch. But why would the clock maintainers care about this one. I 
-can only guess your intent is for all of this to be merged thru the QCom 
-tree. We shouldn't have to sort thru these series and guess though. You 
-should state that unless you really don't know, but I'd expect you've 
-been around long enough to know.
+This looks good - some *very* minor comments below.
 
-Rob
+> +static const struct regmap_config aw88399_remap_config = {
+> +	.val_bits = 16,
+> +	.reg_bits = 8,
+> +	.max_register = AW88399_REG_MAX - 1,
+
+I see this is already the case for the aw88261 driver but it is a bit
+weird that _REG_MAX isn't the maximum register - it looks like it should
+probably be _NUM_REG.  Not the end of the world though.
+
+> +static int aw_dev_dsp_update_container(struct aw_device *aw_dev,
+> +			unsigned char *data, unsigned int len, unsigned short base)
+> +{
+> +	int i, ret;
+> +
+> +#ifdef AW88399_DSP_I2C_WRITES
+> +	u32 tmp_len;
+
+This looks like debug code which can hopefully be removed in favour of
+the regmap implementation?
+
+> +static int aw88399_codec_probe(struct snd_soc_component *component)
+> +{
+> +	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+> +	struct aw88399 *aw88399 = snd_soc_component_get_drvdata(component);
+> +	int ret;
+> +
+> +	ret = aw88399_request_firmware_file(aw88399);
+> +	if (ret < 0) {
+> +		dev_err(aw88399->aw_pa->dev, "%s failed\n", __func__);
+> +		return ret;
+> +	}
+> +
+> +	INIT_DELAYED_WORK(&aw88399->start_work, aw88399_startup_work);
+> +
+> +	/* add widgets */
+> +	ret = snd_soc_dapm_new_controls(dapm, aw88399_dapm_widgets,
+> +							ARRAY_SIZE(aw88399_dapm_widgets));
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* add route */
+> +	ret = snd_soc_dapm_add_routes(dapm, aw88399_audio_map,
+> +							ARRAY_SIZE(aw88399_audio_map));
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = snd_soc_add_component_controls(component, aw88399_controls,
+> +							ARRAY_SIZE(aw88399_controls));
+
+You should just be able to pass these arrays in the component strucutre?
+
+--ralK2eSCf+ixFXP0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUpT+8ACgkQJNaLcl1U
+h9CaAggAgc0J/p2bTSZNLjaIAKHFr9ldNYbl+3tMxNJwBnPfL3p07scPxSt/foY8
+rLrtsYpfxKahAjbKlN1R9JtZVYuMyUfO33ed2Ww093sWB513nZMd31yCzh1+sY1g
+DlRT6ezLSe2XTkGTt2mFyzJcqLZOIrIzfOndism4/Esuk872ziqlaMTjq/2GBLVb
+WNY4D5bUcRxlFl1jphCDCSsJYCy9lpZMLaHPWrlbJh0tq1k5r7WvJ/rG0vOhGQTN
+GT5x1j0CifyeA5x5TjI/wWuJhAVRjHxc4NYaI8806i34cybrI8JUIf98JYyD/M7+
+7xDFdzxO/GXPZzSRctMol3uf+grzhQ==
+=22g1
+-----END PGP SIGNATURE-----
+
+--ralK2eSCf+ixFXP0--
