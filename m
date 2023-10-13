@@ -2,166 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9127B7C845E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CB17C8466
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230441AbjJML0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
+        id S230175AbjJMLat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:30:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbjJML0i (ORCPT
+        with ESMTP id S230039AbjJMLar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:26:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DFCBF
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:25:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697196352;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oETjfSu3gjSmeaayJgiKomX22px4/QpcSAQkJsgT+CY=;
-        b=NN+T16qH+yaof9hpSNhxHJtqysNKwszrtydRNXD9LwcIlrrNfFpBe0pjnPzAG6XVM+sDYL
-        miD9dRLWrA+81df5sYzXrJlEfSu/jABqWMKf+xGaM6S3qzUcDWJSFAKbEEJJ0duDCNplcV
-        WWmpBTBaYynFFTFTN0b8VM9ZIKWyOCU=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-625-a7AJG1EQMXm551XXQpkAYw-1; Fri, 13 Oct 2023 07:25:49 -0400
-X-MC-Unique: a7AJG1EQMXm551XXQpkAYw-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-66d1e755077so13075406d6.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:25:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697196348; x=1697801148;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oETjfSu3gjSmeaayJgiKomX22px4/QpcSAQkJsgT+CY=;
-        b=uW3VYqCzm8bPv2g/3cvTAlJy7uHE/ch3Tk9l08zuAReCHonx1QZvdbxCiAj3oGk/8p
-         1RRcdgyPG9dcaP48f7w4hbwg9QZqpm+VLMrsFh50U3H811Ybtd4wKO8WEN4UoDmKVrgZ
-         scRHU7Vg4WX9Sghbn75HQ/BmdDsBC2DLHrJ+FobIaYNbuk5XTGljamIgKf9awgUc2Epx
-         kMrv2U6Kc6ianz4GJ2qz6oWXTWNlmktihzvne2Y/+lzrHweCY1gYe1WXStt/1fmCF7ae
-         rhkHjUHVdLEaqkwq+qz7t1nL8VhlzPHgeINoEhH8TJunDyvN0G06rz489E18j74Crcel
-         r9KA==
-X-Gm-Message-State: AOJu0YyWNDU6C6WLFEq8kACd5uEK8Frlo4UApHfraZY6YNdSyMJ473sT
-        vH0S34xNnF4bXuWzdx6zVXDycD69XsL3M1gzLXWIBiF1Leye2Ws0GKRZ2GOKk9Ws+4oDZsbQ5KO
-        2aF2O5Mn8AbTzEx8FYGuPOTWE
-X-Received: by 2002:a05:6214:2e49:b0:656:3407:f45a with SMTP id my9-20020a0562142e4900b006563407f45amr28545146qvb.43.1697196348757;
-        Fri, 13 Oct 2023 04:25:48 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGLmRjrd0qLWu+HtByfYjY1jQcjwD2r7wPgexHNnbw6khk2VZUqmKPEM7i/QmQo0hoPHeXwIA==
-X-Received: by 2002:a05:6214:2e49:b0:656:3407:f45a with SMTP id my9-20020a0562142e4900b006563407f45amr28545142qvb.43.1697196348558;
-        Fri, 13 Oct 2023 04:25:48 -0700 (PDT)
-Received: from bfoster (c-24-60-61-41.hsd1.ma.comcast.net. [24.60.61.41])
-        by smtp.gmail.com with ESMTPSA id v20-20020a05620a123400b0076f1d8b1c2dsm544841qkj.12.2023.10.13.04.25.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 04:25:47 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 07:26:11 -0400
-From:   Brian Foster <bfoster@redhat.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-bcachefs@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: Refactor bkey_i to use a flexible array
-Message-ID: <ZSkpU0vdrCTfTxuZ@bfoster>
-References: <20231010235609.work.594-kees@kernel.org>
+        Fri, 13 Oct 2023 07:30:47 -0400
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F21BF
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:30:42 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 39DBUXrv083164;
+        Fri, 13 Oct 2023 19:30:33 +0800 (+08)
+        (envelope-from zhaoyang.huang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4S6PN53R5wz2KWZZn;
+        Fri, 13 Oct 2023 19:26:29 +0800 (CST)
+Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
+ BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Fri, 13 Oct 2023 19:30:31 +0800
+From:   "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Michal Hocko <mhocko@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Zhaoyang Huang <huangzhaoyang@gmail.com>,
+        <steve.kang@unisoc.com>
+Subject: [RFC PATCH 1/1] mm: only use old generation and stable tier for madv_pageout
+Date:   Fri, 13 Oct 2023 19:30:28 +0800
+Message-ID: <20231013113028.2720996-1-zhaoyang.huang@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010235609.work.594-kees@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.0.73.40]
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ BJMBX01.spreadtrum.com (10.0.64.7)
+X-MAIL: SHSQR01.spreadtrum.com 39DBUXrv083164
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 04:56:12PM -0700, Kees Cook wrote:
-> The memcpy() in bch2_bkey_append_ptr() is operating on an embedded
-> fake flexible array. Instead, make it explicit, and convert the memcpy
-> to target the flexible array instead. Fixes the W=1 warning seen for
-> -Wstringop-overflow:
-> 
->    In file included from include/linux/string.h:254,
->                     from include/linux/bitmap.h:11,
->                     from include/linux/cpumask.h:12,
->                     from include/linux/smp.h:13,
->                     from include/linux/lockdep.h:14,
->                     from include/linux/radix-tree.h:14,
->                     from include/linux/backing-dev-defs.h:6,
->                     from fs/bcachefs/bcachefs.h:182:
->    fs/bcachefs/extents.c: In function 'bch2_bkey_append_ptr':
->    include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
->       57 | #define __underlying_memcpy     __builtin_memcpy
->          |                                 ^
->    include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
->      648 |         __underlying_##op(p, q, __fortify_size);                        \
->          |         ^~~~~~~~~~~~~
->    include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
->      693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
->          |                          ^~~~~~~~~~~~~~~~~~~~
->    fs/bcachefs/extents.c:235:17: note: in expansion of macro 'memcpy'
->      235 |                 memcpy((void *) &k->v + bkey_val_bytes(&k->k),
->          |                 ^~~~~~
->    fs/bcachefs/bcachefs_format.h:287:33: note: destination object 'v' of size 0
->      287 |                 struct bch_val  v;
->          |                                 ^
-> 
-> Cc: Kent Overstreet <kent.overstreet@linux.dev>
-> Cc: Brian Foster <bfoster@redhat.com>
-> Cc: linux-bcachefs@vger.kernel.org
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309192314.VBsjiIm5-lkp@intel.com/
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  fs/bcachefs/bcachefs_format.h | 5 ++++-
->  fs/bcachefs/extents.h         | 2 +-
->  2 files changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-> index f0d130440baa..f5e8cb43697b 100644
-> --- a/fs/bcachefs/bcachefs_format.h
-> +++ b/fs/bcachefs/bcachefs_format.h
-> @@ -300,7 +300,10 @@ struct bkey_i {
->  	__u64			_data[0];
->  
->  	struct bkey	k;
-> -	struct bch_val	v;
-> +	union {
-> +		struct bch_val	v;
-> +		DECLARE_FLEX_ARRAY(__u8, bytes);
-> +	};
->  };
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-Hi Kees,
+Dropping pages of young generation or unstable tier via madvise could
+make the system experience heavy page thrashing and IO pressure.
+Furthermore, it could lead to failure of tier's PID controller which
+affect normal reclaiming. I would like suggest skipping this pages in
+madv_pageout.
 
-I'm curious if this is something that could be buried in bch_val given
-it's already kind of a fake structure..? If not, my only nitty comment
-is that memcpy(k->bytes[], ...) makes it kind of read like we're copying
-in opaque key data rather than value data, so perhaps a slightly more
-descriptive field name would be helpful. But regardless I'd wait until
-Kent has a chance to comment before changing anything..
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+ include/linux/swap.h |  1 +
+ mm/madvise.c         | 12 ++++++++++++
+ mm/vmscan.c          |  3 ++-
+ 3 files changed, 15 insertions(+), 1 deletion(-)
 
-Brian
-
->  
->  #define KEY(_inode, _offset, _size)					\
-> diff --git a/fs/bcachefs/extents.h b/fs/bcachefs/extents.h
-> index 7ee8d031bb6c..6248e17bbac5 100644
-> --- a/fs/bcachefs/extents.h
-> +++ b/fs/bcachefs/extents.h
-> @@ -642,7 +642,7 @@ static inline void bch2_bkey_append_ptr(struct bkey_i *k, struct bch_extent_ptr
->  
->  		ptr.type = 1 << BCH_EXTENT_ENTRY_ptr;
->  
-> -		memcpy((void *) &k->v + bkey_val_bytes(&k->k),
-> +		memcpy(&k->bytes[bkey_val_bytes(&k->k)],
->  		       &ptr,
->  		       sizeof(ptr));
->  		k->k.u64s++;
-> -- 
-> 2.34.1
-> 
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 493487ed7c38..d09c859ccc45 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -496,6 +496,7 @@ extern int init_swap_address_space(unsigned int type, unsigned long nr_pages);
+ extern void exit_swap_address_space(unsigned int type);
+ extern struct swap_info_struct *get_swap_device(swp_entry_t entry);
+ sector_t swap_page_sector(struct page *page);
++extern int get_tier_idx(struct lruvec *lruvec, int type);
+ 
+ static inline void put_swap_device(struct swap_info_struct *si)
+ {
+diff --git a/mm/madvise.c b/mm/madvise.c
+index 4dded5d27e7e..324d76096ca5 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -452,6 +452,18 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+ 		if (!folio || folio_is_zone_device(folio))
+ 			continue;
+ 
++		if (lru_gen_enabled() && pageout) {
++			int gen = folio_lru_gen(folio);
++			struct lruvec *lruvec = folio_lruvec(folio);
++			int type = folio_is_file_lru(folio);
++			int refs = folio_lru_refs(folio);
++			int tier = lru_tier_from_refs(refs);
++			int tier_st = get_tier_idx(lruvec, type);
++
++			if (gen > lru_gen_from_seq(lruvec->lrugen.min_seq[type]) + 1
++				|| tier > tier_st)
++				continue;
++		}
+ 		/*
+ 		 * Creating a THP page is expensive so split it only if we
+ 		 * are sure it's worth. Split it if we are only owner.
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 6f13394b112e..16900a8c13e0 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -5072,7 +5072,7 @@ static int scan_folios(struct lruvec *lruvec, struct scan_control *sc,
+ 	return isolated || !remaining ? scanned : 0;
+ }
+ 
+-static int get_tier_idx(struct lruvec *lruvec, int type)
++int get_tier_idx(struct lruvec *lruvec, int type)
+ {
+ 	int tier;
+ 	struct ctrl_pos sp, pv;
+@@ -5091,6 +5091,7 @@ static int get_tier_idx(struct lruvec *lruvec, int type)
+ 
+ 	return tier - 1;
+ }
++EXPORT_SYMBOL_GPL(get_tier_idx);
+ 
+ static int get_type_to_scan(struct lruvec *lruvec, int swappiness, int *tier_idx)
+ {
+-- 
+2.25.1
 
