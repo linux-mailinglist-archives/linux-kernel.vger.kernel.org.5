@@ -2,82 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1441A7C7B98
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 04:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362607C7B99
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 04:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjJMC1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 22:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47240 "EHLO
+        id S229524AbjJMC2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 22:28:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjJMC1n (ORCPT
+        with ESMTP id S229461AbjJMC2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 22:27:43 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84800D8
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 19:27:41 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-27d2b814912so580170a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 19:27:41 -0700 (PDT)
+        Thu, 12 Oct 2023 22:28:30 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E501FB7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 19:28:28 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-405459d9a96so39715e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 19:28:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1697164061; x=1697768861; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1697164107; x=1697768907; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Hzd1ftMQtB2BTCy0YmK46EH/0A56hMuJ7a7pVN/TrKs=;
-        b=QjsGWQkDqh7XeOimt5zyJjEd94HQyoG6is2+nk1cAN8zf+4HpRZsQ5VhniDLgbEULE
-         8577dWPvUCsyaeWahFMqgRwCauU6HBnTCKpp853yHFwVbFV/aZ+yR6sWX69SxO9R8HJW
-         0HN60lNPJq/5ACEcF7mEcpzeCUFiFJoX3Q7Vi6tEisdaPYew73iJkccEBn6TTBPxgXl3
-         DqmqYflIOQreHHBRjBOLSItjTznWDpeLHZQKzkcXuKF7ojAK+1SPrNxqE2paExIqfXa8
-         idmNp5X0EmOtNA/wZxlctZG8a3v6UBGqRY1ymp9c54XnqRj9C9YMDusHVFOVbNXScFnY
-         hP6A==
+        bh=R9/YuC6y9eUihKpZ8jmF6NlsO7n14+K0koQ+noy1ggQ=;
+        b=OmWoC3nd59yaNI16Fbi2/oU1YekFIfue7+44AXYOFFyYyQIQJAKgmDAP/CcYnpixXu
+         nIIRlrh59ifFabgPugRGFzKAVLEVZg6MVez/4U4AB+1Bw3qUBeVqdUeLK0rnjud1B7rs
+         4Z5EGXReX7CGbEa8dNfxTUy18ypEwuWixrMujAIZzoKM/t6zAEPgIe52yWLqaCZaHFgR
+         Dwc3VhtdIH7vptrxSWvmlzXPkpI9KNk5CH4DnHuTVOlRSWX3cVzbj+kLrOxYsNHxHD7M
+         Afj8YEOVRFEx/DWp4ExFO/6wumotSu6+7eiB38TLll2+i+iwhH6NmL/vbKjeBAgqXEjY
+         VxrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697164061; x=1697768861;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697164107; x=1697768907;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Hzd1ftMQtB2BTCy0YmK46EH/0A56hMuJ7a7pVN/TrKs=;
-        b=X1lJZeL0/DSvSkK/jFr6noiY+b/16/XR1nKIjq57huyCM46MlU7U+snJF1kc71ACOk
-         LbD5S+XX+uBVLVyqYiRWQFQCDCdkZ1/KEvcethss+0pdvwTCybVTXuCPZq7qIkQPd/B7
-         7fJH7Cr0xHVYvQmq8Sb7XXtG6mA9TeRHMd5CZPaHZnvAZzKs4uj1KYcGlTFKEqZpqEne
-         MO+xhUHcIjuqvPo8FHlHq2453/12J+zxtmOnkPWa0pYS8pK49WfynAa4cl0gP5/szcW6
-         Ue/+EgJY1yoD42qXQzGtqGD9rSG2/a+3j+g0zazrnB0Di1zkvEW3drRoKDodntLWcglQ
-         NaMw==
-X-Gm-Message-State: AOJu0YxDIUDdL9r0YkNj7yl6tizDDKingUiamxuJUz+T70dm4ZAifP7s
-        wddJwgLasuZ0yUHYyMsAZYyhHg==
-X-Google-Smtp-Source: AGHT+IGoTN2C4roNtrSYRKYUnUYawQW/M1P5VhRIdVvftnv9XfoPjBlGSftc3z1ZNzMixxESHb0DkQ==
-X-Received: by 2002:a17:90a:fb83:b0:27d:4129:ecd9 with SMTP id cp3-20020a17090afb8300b0027d4129ecd9mr2595pjb.26.1697164060876;
-        Thu, 12 Oct 2023 19:27:40 -0700 (PDT)
-Received: from hermes.local (204-195-126-68.wavecable.com. [204.195.126.68])
-        by smtp.gmail.com with ESMTPSA id gm14-20020a17090b100e00b0027d06ddc06bsm2490510pjb.33.2023.10.12.19.27.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 19:27:40 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 19:27:38 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "open list:ARM/Mediatek SoC support" <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH net-next v2 1/2] net: dsa: Use conduit and user terms
-Message-ID: <20231012192738.34ed1f19@hermes.local>
-In-Reply-To: <20231012231029.tqz3e5dnlvbmcmja@skbuf>
-References: <20231011222026.4181654-1-florian.fainelli@broadcom.com>
-        <20231011222026.4181654-1-florian.fainelli@broadcom.com>
-        <20231011222026.4181654-2-florian.fainelli@broadcom.com>
-        <20231011222026.4181654-2-florian.fainelli@broadcom.com>
-        <20231012231029.tqz3e5dnlvbmcmja@skbuf>
+        bh=R9/YuC6y9eUihKpZ8jmF6NlsO7n14+K0koQ+noy1ggQ=;
+        b=knLXT37wnbadqfow6xu9LKXKC5cXY+ff8LTDJJCXkWY2CcZVgmH+wkqZUuZliZU3w4
+         INVRhgVGtkh4lFEUe8Ki17yAkS29F1/e2lyNlS3q7ngRzywmdTxg6DzjrX1YWrBJq6UT
+         C6bz94hffUQ2c5EP4Ufk3YEnUhnpfG9GkGwk5AaDa5f0nqmbw/veRlo+9WxIJKZUxZrM
+         1KSqT4C68M2CsvFHf4fjolmZAGRQeL1OUxZkc6B3mxceHYX08XqTfLQjNE5Q1C2Lg8AT
+         BmXFreop619xsdEEiua9tvNSDTjIYBaqP/ZLjLE6g9LDhrrUOMJIlLP0JKkjywdKOWOC
+         AMUw==
+X-Gm-Message-State: AOJu0Ywbkh84dWYTts3wFmB70HScwN7GUhRmTHVmjw271Le/I+iAkaCy
+        O5+oxJV3z85wPQhJX8BuYXeUuVen8XME+x81OzZd6A==
+X-Google-Smtp-Source: AGHT+IEu3bheZn/kvrw6MTnB9tzASaTpUw4xRezBw/4fkpa7r55AH2ohLLQYSj1JU+sur8lRAt/zUYM8E4TeV6/Dtk0=
+X-Received: by 2002:a05:600c:2102:b0:405:38d1:e146 with SMTP id
+ u2-20020a05600c210200b0040538d1e146mr63274wml.4.1697164107120; Thu, 12 Oct
+ 2023 19:28:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231012121004.2127918-1-yangcong5@huaqin.corp-partner.google.com>
+ <20231012121004.2127918-3-yangcong5@huaqin.corp-partner.google.com>
+ <CAD=FV=VwUHctAQXGr_6FZfTS3r0-MZaSiB8+YkfJJzrJsnZDLw@mail.gmail.com> <CAHwB_NKSL8vHdN8TnQY2Z04E4rDRLK5BHoryZCi2kNAwQEjisQ@mail.gmail.com>
+In-Reply-To: <CAHwB_NKSL8vHdN8TnQY2Z04E4rDRLK5BHoryZCi2kNAwQEjisQ@mail.gmail.com>
+From:   Doug Anderson <dianders@google.com>
+Date:   Thu, 12 Oct 2023 19:28:11 -0700
+Message-ID: <CAD=FV=VmiS6G25JyAj4UGjU5Q9f80GcjLq1xwU4gdVyzDdk8LQ@mail.gmail.com>
+Subject: Re: [v3 2/3] drm/panel: ili9882t: Avoid blurred screen from fast sleep
+To:     cong yang <yangcong5@huaqin.corp-partner.google.com>
+Cc:     sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch,
+        hsinyi@google.com, linus.walleij@linaro.org, swboyd@chromium.org,
+        airlied@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,19 +75,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 02:10:29 +0300
-Vladimir Oltean <olteanv@gmail.com> wrote:
+Hi,
 
-> >  Secondly, it is possible to perform load balancing between CPU ports on a per
-> >  packet basis, rather than statically assigning user ports to CPU ports.
-> > -This can be achieved by placing the DSA masters under a LAG interface (bonding
-> > +This can be achieved by placing the DSA conduits under a LAG interface (bonding
-> >  or team). DSA monitors this operation and creates a mirror of this software LAG
-> > -on the CPU ports facing the physical DSA masters that constitute the LAG slave
-> > +on the CPU ports facing the physical DSA conduits that constitute the LAG user  
-> 
-> Replacing "LAG slave devices" with "LAG user devices" wasn't warranted,
-> and it alters the meaning.
+On Thu, Oct 12, 2023 at 6:12=E2=80=AFPM cong yang
+<yangcong5@huaqin.corp-partner.google.com> wrote:
+>
+> Hi,
+>
+> On Thu, Oct 12, 2023 at 11:15=E2=80=AFPM Doug Anderson <dianders@google.c=
+om> wrote:
+> >
+> > Hi,
+> >
+> > On Thu, Oct 12, 2023 at 5:10=E2=80=AFAM Cong Yang
+> > <yangcong5@huaqin.corp-partner.google.com> wrote:
+> > >
+> > > At present, we have found that there may be a problem of blurred
+> > > screen during fast sleep/resume. The direct cause of the blurred
+> > > screen is that the IC does not receive 0x28/0x10. Because of the
+> > > particularity of the IC, before the panel enters sleep hid must
+> > > stop scanning, as i2c_hid_core_suspend before ili9882t_disable.
+> > > If move the ili9882t_enter_sleep_mode function to ili9882t_unprepare,
+> > > touch reset will pull low before panel entersleep, which does not mee=
+t
+> > > the timing requirements..
+> >
+> > The above makes me believe that the reset GPIO should be moved out of
+> > the input driver and into the panel driver. I could just imagine that
+> > the kernel might have some reason it wants to suspend the i2c hid
+> > device. If that causes the panel to suddenly start failing then that
+> > would be bad... I think we should fix this.
+>
+> Thanks, I will confirm with ilitek in further analysis and use "move
+> the ili9882t_enter_sleep_mode
+> function to ili9882t_unprepare".  Is the test failure really because
+> the touch reset timing
+> does not match? There is also a separate reset GPIO on the panel.
+> Shouldn't touch reset not
+> affect the panel?
+>
+> If we find a better solution I will continue upstream,=E3=80=82 So is it
+> possible to apply this plan now?
 
-The term slave is not in the IEEE 802 standard.
-Most other implementations use member instead of slave.
+I wouldn't be too upset at applying the current code as long as you're
+going to continue to investigate. We can always continue to iterate on
+it and having something working reasonably well is better than nothing
+at all. However, I probably would wait at least 1 week before applying
+any patch from you just simply out of courtesy to give others on the
+mailing list time to express their comments. ...presumably we could
+get to the bottom of the problem in that 1 week time anyway...
+
+I'm not trying to be an obstinate pain here--I'm merely trying to make
+sure that whatever we land will continue to work across kernel uprevs,
+even if driver probe order / timing changes in the kernel. If the
+panel is really so tied to the touchscreen device's reset GPIO timing
+then it worries me. What happens, for instance, if you disable the
+touchscreen CONFIG in the kernel? Does the panel still work, or is
+that extra reset GPIO totally critical to the functioning of the
+panel. If it's totally critical then it probably makes sense to move
+to the panel driver given that the touchscreen is a panel follower
+anyway...
+
+
+> > > So in order to solve this problem, the IC
+> > > can handle it through the exception mechanism when it cannot receive
+> > > 0x28/0x10 command. Handling exceptions requires a reset 50ms delay.
+> > > Refer to vendor detailed analysis [1].
+> > >
+> > > Ilitek vendor also suggested switching the page before entering sleep=
+ to
+> > > avoid panel IC not receiving 0x28/0x10 command.
+> > >
+> > > Note: 0x28 is display off, 0x10 is sleep in.
+> > >
+> > > [1]: https://github.com/ILITEK-LoganLin/Document/tree/main/ILITEK_Pow=
+er_Sequence
+> > >
+> > > Signed-off-by: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
+> > > ---
+> > >  drivers/gpu/drm/panel/panel-ilitek-ili9882t.c | 22 +++++++++++++++++=
++-
+> > >  1 file changed, 21 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9882t.c b/drivers/=
+gpu/drm/panel/panel-ilitek-ili9882t.c
+> > > index 93a40c2f1483..54ff1efb94aa 100644
+> > > --- a/drivers/gpu/drm/panel/panel-ilitek-ili9882t.c
+> > > +++ b/drivers/gpu/drm/panel/panel-ilitek-ili9882t.c
+> > > @@ -463,6 +463,24 @@ static int ili9882t_init_dcs_cmd(struct ili9882t=
+ *ili)
+> > >         return 0;
+> > >  }
+> > >
+> > > +static int ili9882t_switch_page(struct mipi_dsi_device *dsi, u8 page=
+)
+> > > +{
+> > > +       int ret;
+> > > +       const struct panel_init_cmd cmd =3D _INIT_SWITCH_PAGE_CMD(pag=
+e);
+> > > +
+> > > +       ret =3D mipi_dsi_dcs_write(dsi, cmd.data[0],
+> > > +                                cmd.len <=3D 1 ? NULL :
+> > > +                                &cmd.data[1],
+> > > +                                cmd.len - 1);
+> > > +       if (ret) {
+> > > +               dev_err(&dsi->dev,
+> > > +                       "error switching panel controller page (%d)\n=
+", ret);
+> > > +               return ret;
+> > > +       }
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > >  static int ili9882t_enter_sleep_mode(struct ili9882t *ili)
+> > >  {
+> > >         struct mipi_dsi_device *dsi =3D ili->dsi;
+> > > @@ -484,8 +502,10 @@ static int ili9882t_enter_sleep_mode(struct ili9=
+882t *ili)
+> > >  static int ili9882t_disable(struct drm_panel *panel)
+> > >  {
+> > >         struct ili9882t *ili =3D to_ili9882t(panel);
+> > > +       struct mipi_dsi_device *dsi =3D ili->dsi;
+> > >         int ret;
+> > >
+> > > +       ili9882t_switch_page(dsi, 0x00);
+> > >         ret =3D ili9882t_enter_sleep_mode(ili);
+> > >         if (ret < 0) {
+> > >                 dev_err(panel->dev, "failed to set panel off: %d\n", =
+ret);
+> > > @@ -546,7 +566,7 @@ static int ili9882t_prepare(struct drm_panel *pan=
+el)
+> > >         gpiod_set_value(ili->enable_gpio, 1);
+> > >         usleep_range(1000, 2000);
+> > >         gpiod_set_value(ili->enable_gpio, 0);
+> > > -       usleep_range(1000, 2000);
+> > > +       usleep_range(50000, 51000);
+> >
+> > From my previous response, I think the above is better as msleep(50).
+>
+> Sorry. Will be corrected in V4.
+
+Thanks! It's not a huge deal, but it's nice to fix.
+
+-Doug
