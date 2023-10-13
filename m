@@ -2,100 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD417C9162
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3481B7C9166
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232332AbjJMXkT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Oct 2023 19:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51610 "EHLO
+        id S231924AbjJMXmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 19:42:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjJMXkR (ORCPT
+        with ESMTP id S229830AbjJMXmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 19:40:17 -0400
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4DFB7;
-        Fri, 13 Oct 2023 16:40:16 -0700 (PDT)
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-27d4b280e4eso598460a91.1;
-        Fri, 13 Oct 2023 16:40:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697240415; x=1697845215;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NVNwQqiVkrXjE6Ai1N/131eZHMwXAneNV9c8J7fw4cE=;
-        b=P+f/IVMG0eCNDesMou5YKY6mjKPFjHy6liEHqMjKD4ZX6+/00rxMkaJ7W//fbwlKHk
-         vH/9sSrcSXw5o/k4r2VnI6hstgZVoTnKdVvhKwJ0pAQ6VqgmlK+17sH0ucDB27robipU
-         Ahq/0lcXw/B6hRPT8oTedSLBrdVK3J6aS2RJ57xAXHTrjdB/pvpKQ238iBSUAY2bpDFQ
-         0L+qdpmWf0GlPACYThlqlVjYlAt894nVnXtfppaTsSU7AqEXVGpNWjhjeY5yKzhpt7Ep
-         QwCpoUDVArKaGOTsKGvl7OclX+O6NbDoOVENkQJ5fP8bZ93oJTqSnw+0/f1gMfqCkhYd
-         eWuw==
-X-Gm-Message-State: AOJu0Yxx9lLpefY88PGNtHckYvS7NUgyshOqVX/ZRuJ9LUh6/HT7dQH/
-        tydbsmLC6Krhsv4W7kHnPvLLHBcX8TWrU5UECP4=
-X-Google-Smtp-Source: AGHT+IG52rm3IVfLMN35j2TYSaIhI/qMeORhDVxK7PIltzo83RAIDMe7x9kH6keiuKXKVTyBhVxASEmRPyHTSwHgGxA=
-X-Received: by 2002:a17:90a:5ac6:b0:27d:2db5:62c9 with SMTP id
- n64-20020a17090a5ac600b0027d2db562c9mr2324253pji.0.1697240415439; Fri, 13 Oct
- 2023 16:40:15 -0700 (PDT)
+        Fri, 13 Oct 2023 19:42:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F160B7;
+        Fri, 13 Oct 2023 16:42:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B281C433C8;
+        Fri, 13 Oct 2023 23:42:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697240560;
+        bh=r4IUZNE379YWHqCHxAQm/TihzJtfE6ZEd/gZZS7lJS4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bLjWxlj+Lc/b7dcG5rH3Gu4xfd6S8jL04AX81iJfqafgkHvZGp9pA/cf9DWs/48pE
+         i9o6zpaBGtfArJvY5plwB2EcprvBeyZralvRuGguiTsQC9cTeZsdqhWcz5df+6k16r
+         mmWkVo+n0nJv9ZV0d05MDUwqG5YynWRNSVcK6GO3XAFr/Ojd44GoXME8bsOz5E9Gey
+         uBcpEbxlOhk0wMo5pt9jfo3GyA+R3gch8+cT5IYJo0JlumgDnqAnS9GR5uQcaX+X47
+         OSy9epstWDE1TVLo5Ct0W4ceqSYMJV4pEOINs8mtu1VQV8yyscUPhmeKUxV75ZL7nf
+         NI4IWA8Ci0Tag==
+Date:   Fri, 13 Oct 2023 16:42:38 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Simon Horman <horms@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v8 10/30] net: wan: Add support for QMC HDLC
+Message-ID: <20231013164238.4984b39e@kernel.org>
+In-Reply-To: <20231011061437.64213-11-herve.codina@bootlin.com>
+References: <20231011061437.64213-1-herve.codina@bootlin.com>
+        <20231011061437.64213-11-herve.codina@bootlin.com>
 MIME-Version: 1.0
-References: <20230928235018.2136-1-namhyung@kernel.org> <ZSnMGwlppacZGaXf@kernel.org>
-In-Reply-To: <ZSnMGwlppacZGaXf@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 13 Oct 2023 16:40:04 -0700
-Message-ID: <CAM9d7cg7NgDZz_QAa8=rVp7B2AOPzWkLgTZyxndTgfDVbYL-BQ@mail.gmail.com>
-Subject: Re: [PATCH] perf lock contention: Clear lock addr after use
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 4:00 PM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Thu, Sep 28, 2023 at 04:50:18PM -0700, Namhyung Kim escreveu:
-> > It checks the current lock to calculated the delta of contention time.
->
-> > The address is saved in the tstamp map which is allocated at begining of
-> > contention and released at end of contention.
-> >
-> > But it's possible for bpf_map_delete_elem() to fail.  In that case, the
->
-> How can it fail?
->
-> You do:
->
->         pelem = bpf_map_lookup_elem(&tstamp, &pid);
->         if (!pelem || pelem->lock != ctx[0])
->                 return 0;
->
-> So it is there, why would the removal using the same key fail?
+On Wed, 11 Oct 2023 08:14:14 +0200 Herve Codina wrote:
+> The QMC HDLC driver provides support for HDLC using the QMC (QUICC
+> Multichannel Controller) to transfer the HDLC data.
+> 
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-It can fail when it doesn't get a lock for the internal bucket.
-See kernel/bpf/hashtab.c::htab_map_delete_elem().
-
-But I'm not sure whether that's actually possible in this case.
-
->
-> The patch should work as-is, I'm just curious about what would make
-> there removal of a map entry that was successfully looked up on the same
-> contention_end prog to fail when being removed...
-
-Now I'm seeing some rare error cases like a spinlock wait
-is longer than a minute.  I suspect a bug in this code and
-try to be more defensive.
-
-Thanks,
-Namhyung
+Acked-by: Jakub Kicinski <kuba@kernel.org>
