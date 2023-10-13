@@ -2,87 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB307C8510
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4777C8514
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbjJMLwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41524 "EHLO
+        id S231316AbjJMLxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231417AbjJMLwl (ORCPT
+        with ESMTP id S230469AbjJMLxp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:52:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2E21B9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:51:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697197912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k15a/eSEnRUDzX9VIx45t87KeriXMFMcLVUO1ZQ/290=;
-        b=K4BO9mG6NxGDOcBy0mmu7LsrlhbUwU8fH6X42DIw70JPF0ggSp73WhkxuwfaYhwRicyESI
-        TQWrWK6gMccxli9QOgkuUONAKZySQVEjnqm5ses/NxW5JZaUzmUcnWs+8XIcd13N0RtztH
-        xqwq38RkDxReaktWVS9wrq5KC5ShxgQ=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-685-sDJwYIvSMReacdHt4ipJWA-1; Fri, 13 Oct 2023 07:51:51 -0400
-X-MC-Unique: sDJwYIvSMReacdHt4ipJWA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9ae42088b4bso141001666b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:51:51 -0700 (PDT)
+        Fri, 13 Oct 2023 07:53:45 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BB5BF
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:53:43 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53d9b94731aso3756463a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697198022; x=1697802822; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=D5wBQDCPhCWlWzMxSldR9pNHTZGfP5MCipasrlMdn8s=;
+        b=WmgDiWTHm0HI7ulXprXIHWb7GNlKrsRONGYtMbGSL+HIDcqVpWqx0mD5sCi5L54EpW
+         VcZ7hVG9zR25qnymWxhTJyyK/3/yYJYFDox6K/2G5MfFo+CWpx5LQ6NdmvSDnin9sXAL
+         /SN4WCFU/Up4InF3mYGjs7Q74yEkx4gNbF446A7Wf7yb9EEawO/8d+3WBs3lIM/kNFFC
+         QtqrHEdvVTjFX2hBZD47L1HqPMj5L9k+0jbEBNo1dKsW9D9qMGvsf2mAY80y7vvhWdMA
+         l00qTgJe1o6VKaZSghJcILSSCbZ4JgAQ3nwyOlTezIOo4BgkfatS1tIbo0HHnrkniq5u
+         eGbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697197910; x=1697802710;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1697198022; x=1697802822;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=k15a/eSEnRUDzX9VIx45t87KeriXMFMcLVUO1ZQ/290=;
-        b=n1cuTj3dcTfUVuByqfplijoK3fpZOpT3QYU9QQm05W4gywyn3kKBpZ2r16jOG+EqEp
-         CBBf7CAiUyfka2kg6LE4kqhNnhqRBXhMsJF70/tUQ4JghcylMhp4FKpQ2Xyn7uK52l3+
-         4t0S57nt5SLyw/ic8wD6FOdWaOXPBmE2mg2pUPUFzthMZUFhyMZby4rjoJQ2LVMTQcTR
-         kevMmAk2JlswCTP6lmJ8nJ6YVFEt/TRs1v6Vf0GfGL/Xg1A7hUhFJaxUpReSbGBKOw3s
-         lQVRc9V+XSoWh1AGzWuW5kZxCJ5jcTzypewSsXDCDy3E+R5gvGb82F3SuVEL2R6zFs6O
-         BC0A==
-X-Gm-Message-State: AOJu0YzcxORogCukbnCU+rQ8qE453MNJr6KzepFVJRx+lc00QY0Kdak1
-        9LemwzxhxRMxx0bNKGF4lnB5IWt5/7fNIGqRW1xzvtd5Hv4UYvUhC3Ipa8efCzOUmhE771PO6IZ
-        +WW61DlAzp3bTop716fFNuaka
-X-Received: by 2002:a17:906:5357:b0:9ae:7681:f62a with SMTP id j23-20020a170906535700b009ae7681f62amr24867548ejo.44.1697197910154;
-        Fri, 13 Oct 2023 04:51:50 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEE3saJaTvY6itOl/Nh8bKAbn8xVDSiFBGs8ZjQ0IKGJpUxvodSPdOw8siiENqh5aCZbIj1+w==
-X-Received: by 2002:a17:906:5357:b0:9ae:7681:f62a with SMTP id j23-20020a170906535700b009ae7681f62amr24867527ejo.44.1697197909757;
-        Fri, 13 Oct 2023 04:51:49 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id bd19-20020a056402207300b0053e31113ff7sm1169253edb.94.2023.10.13.04.51.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Oct 2023 04:51:49 -0700 (PDT)
-Message-ID: <d3409417-444b-4a7a-adde-8d6fab8f1e77@redhat.com>
-Date:   Fri, 13 Oct 2023 13:51:47 +0200
+        bh=D5wBQDCPhCWlWzMxSldR9pNHTZGfP5MCipasrlMdn8s=;
+        b=usANt4GFlpcuENNaYY/b/NtQBJ/hPl+mycYuEk56xk0pIGygMneM6hLorRu5AHJzjC
+         YvyR81T+vPzq6Mui5Eykq/f6yi8c8Vr+ll0NWTjiKSdjXSosrQRz2lNfmhLMAiVINAUi
+         59zXYIFoKqUBFl94hEaBi/Gh3q04HegbYNlqkc6qjOFn9IHzT1b3/TFlTfnZ9/lrHSzB
+         P+CljvjmZvmpivXHsOFKAV9grpeOYGiaIfMam7KyhzNlJVuPfMDwzPUHPrnkAcyS/OgM
+         NHRcTCjNf7bRfi3W1BFdEf/dYaGqt8abgW5ZZvZs+jBJzpAKOmS35GvC2e8uC2NF0zNw
+         ulXQ==
+X-Gm-Message-State: AOJu0YyIPE4+kuwQ/q0KUVxkLldCUwVzr5HMjmipuKfI5LPK3XVLNLsA
+        EZQnCe/tXYdwGJcMERixGFRr16xxnCx70haF1LY=
+X-Google-Smtp-Source: AGHT+IHb2pf+k0xAu2OvrRj07ctQjh/+hl3g0aurPnzxfeVQ1ZmvI2bxZZgR34qNJW2aqFRzJMcDaF1InY6arf+aRXc=
+X-Received: by 2002:a05:6402:3228:b0:53d:b7e7:301b with SMTP id
+ g40-20020a056402322800b0053db7e7301bmr7470667eda.24.1697198022179; Fri, 13
+ Oct 2023 04:53:42 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH drm-misc-next v6 1/6] drm/gpuvm: add common dma-resv per
- struct drm_gpuvm
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        christian.koenig@amd.com, faith@gfxstrand.net
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231008233212.13815-1-dakr@redhat.com>
- <20231008233212.13815-2-dakr@redhat.com>
- <65e96c3465a47440ca44b3182e257cb40e745f8b.camel@linux.intel.com>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <65e96c3465a47440ca44b3182e257cb40e745f8b.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_FILL_THIS_FORM_SHORT autolearn=ham
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zp-eDsxpStBznMHUE3OcHZ97NAZrZEjJW63oEFWtM3OQ@mail.gmail.com>
+ <CAFULd4bBeMCBf5_VKWA8Ui=rhQtXf03zFUioq1DeQaYCfP8v=A@mail.gmail.com>
+ <CAHk-=wgUwPruc3MP6=vode2SawVpNgb8-szV1HYoc6E1wAaw=w@mail.gmail.com>
+ <CAHk-=whzhXdRz1UNaQWTSY2ue8biGqfS18VXcEQasQNCyg_AwQ@mail.gmail.com>
+ <CAFULd4ZdfUQszrp6hKzKXosj0-yzizx+-4BZG7SzEpZPCdUFuA@mail.gmail.com> <CAFULd4Y5JocT9yRwS0Zkro-pAHihmOHP2D8fMLR29j8_Gy_nNA@mail.gmail.com>
+In-Reply-To: <CAFULd4Y5JocT9yRwS0Zkro-pAHihmOHP2D8fMLR29j8_Gy_nNA@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Fri, 13 Oct 2023 13:53:29 +0200
+Message-ID: <CAFULd4ZfdWchq9nAQ-YGoaS9OjM-=4Lnd5YbDmrUipbtRgDdTg@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nadav Amit <namit@vmware.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: multipart/mixed; boundary="00000000000039dbe6060797b562"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,262 +86,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/23 13:38, Thomas Hellström wrote:
-> On Mon, 2023-10-09 at 01:32 +0200, Danilo Krummrich wrote:
->> Provide a common dma-resv for GEM objects not being used outside of
->> this
->> GPU-VM. This is used in a subsequent patch to generalize dma-resv,
->> external and evicted object handling and GEM validation.
->>
->> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
->> ---
->>   drivers/gpu/drm/drm_gpuvm.c            | 56
->> +++++++++++++++++++++++++-
->>   drivers/gpu/drm/nouveau/nouveau_uvmm.c | 13 +++++-
->>   include/drm/drm_gpuvm.h                | 35 +++++++++++++++-
->>   3 files changed, 99 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_gpuvm.c
->> b/drivers/gpu/drm/drm_gpuvm.c
->> index 02ecb45a2544..ebda9d594165 100644
->> --- a/drivers/gpu/drm/drm_gpuvm.c
->> +++ b/drivers/gpu/drm/drm_gpuvm.c
->> @@ -61,6 +61,15 @@
->>    * contained within struct drm_gpuva already. Hence, for inserting
->> &drm_gpuva
->>    * entries from within dma-fence signalling critical sections it is
->> enough to
->>    * pre-allocate the &drm_gpuva structures.
->> + *
->> + * &drm_gem_objects which are private to a single VM can share a
->> common
->> + * &dma_resv in order to improve locking efficiency (e.g. with
->> &drm_exec).
->> + * For this purpose drivers must pass a &drm_gem_object to
->> drm_gpuvm_init(), in
->> + * the following called 'root object', which serves as the container
-> 
-> Nit: Perhaps resv object altough it might typically be the root page-
-> table object, that doesn't have any meaning to drm_gpuvm, which uses it
-> solely as a container for the resv?
+--00000000000039dbe6060797b562
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-With "root" I didn't want to refer to the object representing the root
-page-table object, but being *the* object every other (internal) object
-needs to keep a reference to. Maybe I should be more explicit here and say
-that drivers need to make sure every internal object requires a reference
-to take a reference to this root object.
+On Fri, Oct 13, 2023 at 11:38=E2=80=AFAM Uros Bizjak <ubizjak@gmail.com> wr=
+ote:
+>
+> On Thu, Oct 12, 2023 at 8:01=E2=80=AFPM Uros Bizjak <ubizjak@gmail.com> w=
+rote:
+> >
+> > On Thu, Oct 12, 2023 at 7:47=E2=80=AFPM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > On Thu, 12 Oct 2023 at 10:10, Linus Torvalds
+> > > <torvalds@linux-foundation.org> wrote:
+> > > >
+> > > > The fix seems to be a simple one-liner, ie just
+> > > >
+> > > > -       asm(__pcpu_op2_##size(op, __percpu_arg(P[var]), "%[val]")  =
+     \
+> > > > +       asm(__pcpu_op2_##size(op, __percpu_arg(a[var]), "%[val]")  =
+     \
+> > >
+> > > Nope. That doesn't work at all.
+> > >
+> > > It turns out that we're not the only ones that didn't know about the
+> > > 'a' modifier.
+> > >
+> > > clang has also never heard of it in this context, and the above
+> > > one-liner results in an endless sea of errors, with
+> > >
+> > >      error: invalid operand in inline asm: 'movq %gs:${1:a}, $0'
+> > >
+> > > Looking around, I think it's X86AsmPrinter::PrintAsmOperand() that is
+> > > supposed to handle these things, and while it does have some handling
+> > > for 'a', the comment around it says
+> > >
+> > >     case 'a': // This is an address.  Currently only 'i' and 'r' are =
+expected.
+> > >
+> > > and I think our use ends up just confusing the heck out of clang. Of
+> > > course, clang also does this:
+> > >
+> > >     case 'P': // This is the operand of a call, treat specially.
+> > >         PrintPCRelImm(MI, OpNo, O);
+> > >         return false;
+> > >
+> > > so clang *already* generates those 'current' accesses as PCrelative, =
+and I see
+> > >
+> > >         movq    %gs:pcpu_hot(%rip), %r13
+> > >
+> > > in the generated code.
+> > >
+> > > End result: clang actually generates what we want just using 'P', and
+> > > the whole "P vs a" is only a gcc thing.
 
-> 
->> of the
->> + * GPUVM's shared &dma_resv. This root object can be a driver
->> specific
->> + * &drm_gem_object, such as the &drm_gem_object containing the root
->> page table,
->> + * but it can also be a 'dummy' object, which can be allocated with
->> + * drm_gpuvm_root_object_alloc().
->>    */
->>   
->>   /**
->> @@ -652,9 +661,47 @@ drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm,
->>                 !drm_gpuvm_in_kernel_node(gpuvm, addr, range);
->>   }
->>   
->> +static void
->> +drm_gpuvm_gem_object_free(struct drm_gem_object *obj)
->> +{
->> +       drm_gem_object_release(obj);
->> +       kfree(obj);
->> +}
->> +
->> +static const struct drm_gem_object_funcs drm_gpuvm_object_funcs = {
->> +       .free = drm_gpuvm_gem_object_free,
->> +};
->> +
->> +/**
->> + * drm_gpuvm_root_object_alloc() - allocate a dummy &drm_gem_object
->> + * @drm: the drivers &drm_device
->> + *
->> + * Allocates a dummy &drm_gem_object which can be passed to
->> drm_gpuvm_init() in
->> + * order to serve as root GEM object providing the &drm_resv shared
->> across
->> + * &drm_gem_objects local to a single GPUVM.
->> + *
->> + * Returns: the &drm_gem_object on success, NULL on failure
->> + */
->> +struct drm_gem_object *
->> +drm_gpuvm_root_object_alloc(struct drm_device *drm)
->> +{
->> +       struct drm_gem_object *obj;
->> +
->> +       obj = kzalloc(sizeof(*obj), GFP_KERNEL);
->> +       if (!obj)
->> +               return NULL;
->> +
->> +       obj->funcs = &drm_gpuvm_object_funcs;
->> +       drm_gem_private_object_init(drm, obj, 0);
->> +
->> +       return obj;
->> +}
->> +EXPORT_SYMBOL_GPL(drm_gpuvm_root_object_alloc);
->> +
->>   /**
->>    * drm_gpuvm_init() - initialize a &drm_gpuvm
->>    * @gpuvm: pointer to the &drm_gpuvm to initialize
->> + * @r_obj: the root &drm_gem_object providing the GPUVM's common
->> &dma_resv
->>    * @name: the name of the GPU VA space
->>    * @start_offset: the start offset of the GPU VA space
->>    * @range: the size of the GPU VA space
->> @@ -668,7 +715,7 @@ drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm,
->>    * &name is expected to be managed by the surrounding driver
->> structures.
->>    */
->>   void
->> -drm_gpuvm_init(struct drm_gpuvm *gpuvm,
->> +drm_gpuvm_init(struct drm_gpuvm *gpuvm, struct drm_gem_object
->> *r_obj,
->>                 const char *name,
->>                 u64 start_offset, u64 range,
->>                 u64 reserve_offset, u64 reserve_range,
->> @@ -683,6 +730,9 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm,
->>   
->>          gpuvm->name = name ? name : "unknown";
->>          gpuvm->ops = ops;
->> +       gpuvm->r_obj = r_obj;
->> +
->> +       drm_gem_object_get(r_obj);
->>   
->>          memset(&gpuvm->kernel_alloc_node, 0, sizeof(struct
->> drm_gpuva));
->>   
->> @@ -713,7 +763,9 @@ drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
->>                  __drm_gpuva_remove(&gpuvm->kernel_alloc_node);
->>   
->>          WARN(!RB_EMPTY_ROOT(&gpuvm->rb.tree.rb_root),
->> -            "GPUVA tree is not empty, potentially leaking memory.");
->> +            "GPUVA tree is not empty, potentially leaking
->> memory.\n");
-> 
-> Should we cache the drm device in struct drm_gpuvm and use drm_warn()
-> here instead of WARN?
+Maybe we should go with what Clang expects. %a with "i" constraint is
+also what GCC handles, because
 
-I'd guess the additional backtrace of WARN() isn't overly useful in this
-case. However, it might be a bit more obvious in dmesg due to its
-verboseness. Not a strong opinion on that, though.
+=E2=80=98i=E2=80=99: An immediate integer operand (one with constant value)=
+ is
+allowed. This includes symbolic constants whose values will be known
+only at assembly time or later.
 
-> 
->> +
->> +       drm_gem_object_put(gpuvm->r_obj);
->>   }
->>   EXPORT_SYMBOL_GPL(drm_gpuvm_destroy);
->>   
->> diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
->> b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
->> index 5cf892c50f43..4dea847ef989 100644
->> --- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
->> +++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
->> @@ -1808,8 +1808,9 @@ int
->>   nouveau_uvmm_init(struct nouveau_uvmm *uvmm, struct nouveau_cli
->> *cli,
->>                    u64 kernel_managed_addr, u64 kernel_managed_size)
->>   {
->> -       int ret;
->> +       struct drm_gem_object *r_obj;
->>          u64 kernel_managed_end = kernel_managed_addr +
->> kernel_managed_size;
->> +       int ret;
->>   
->>          mutex_init(&uvmm->mutex);
->>          dma_resv_init(&uvmm->resv);
->> @@ -1833,14 +1834,22 @@ nouveau_uvmm_init(struct nouveau_uvmm *uvmm,
->> struct nouveau_cli *cli,
->>                  goto out_unlock;
->>          }
->>   
->> +       r_obj = drm_gpuvm_root_object_alloc(cli->drm->dev);
->> +       if (!r_obj) {
->> +               ret = -ENOMEM;
->> +               goto out_unlock;
->> +       }
->> +
->>          uvmm->kernel_managed_addr = kernel_managed_addr;
->>          uvmm->kernel_managed_size = kernel_managed_size;
->>   
->> -       drm_gpuvm_init(&uvmm->base, cli->name,
->> +       drm_gpuvm_init(&uvmm->base, r_obj, cli->name,
->>                         NOUVEAU_VA_SPACE_START,
->>                         NOUVEAU_VA_SPACE_END,
->>                         kernel_managed_addr, kernel_managed_size,
->>                         NULL);
->> +       /* GPUVM takes care from here on. */
->> +       drm_gem_object_put(r_obj);
->>   
->>          ret = nvif_vmm_ctor(&cli->mmu, "uvmm",
->>                              cli->vmm.vmm.object.oclass, RAW,
->> diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
->> index c7ed6bf441d4..0aec14d8b259 100644
->> --- a/include/drm/drm_gpuvm.h
->> +++ b/include/drm/drm_gpuvm.h
->> @@ -238,9 +238,15 @@ struct drm_gpuvm {
->>           * @ops: &drm_gpuvm_ops providing the split/merge steps to
->> drivers
->>           */
->>          const struct drm_gpuvm_ops *ops;
->> +
->> +       /**
->> +        * @r_obj: Root GEM object; representing the GPUVM's common
->> &dma_resv.
->> +        */
->> +       struct drm_gem_object *r_obj;
->>   };
->>   
->> -void drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
->> +void drm_gpuvm_init(struct drm_gpuvm *gpuvm, struct drm_gem_object
->> *r_obj,
->> +                   const char *name,
->>                      u64 start_offset, u64 range,
->>                      u64 reserve_offset, u64 reserve_range,
->>                      const struct drm_gpuvm_ops *ops);
->> @@ -248,6 +254,33 @@ void drm_gpuvm_destroy(struct drm_gpuvm *gpuvm);
->>   
->>   bool drm_gpuvm_interval_empty(struct drm_gpuvm *gpuvm, u64 addr, u64
->> range);
->>   
->> +struct drm_gem_object *
->> +drm_gpuvm_root_object_alloc(struct drm_device *drm);
->> +
->> +/**
->> + * drm_gpuvm_resv() - returns the &drm_gpuvm's &dma_resv
->> + * @gpuvm__: the &drm_gpuvm
->> + *
->> + * Returns: a pointer to the &drm_gpuvm's shared &dma_resv
->> + */
->> +#define drm_gpuvm_resv(gpuvm__) ((gpuvm__)->r_obj->resv)
->> +
->> +/**
->> + * drm_gpuvm_resv_obj() - returns the &drm_gem_object holding the
->> &drm_gpuvm's
->> + * &dma_resv
->> + * @gpuvm__: the &drm_gpuvm
->> + *
->> + * Returns: a pointer to the &drm_gem_object holding the
->> &drm_gpuvm's shared
->> + * &dma_resv
->> + */
->> +#define drm_gpuvm_resv_obj(gpuvm__) ((gpuvm__)->r_obj)
->> +
->> +#define drm_gpuvm_resv_held(gpuvm__) \
->> +       dma_resv_held(drm_gpuvm_resv(gpuvm__))
->> +
->> +#define drm_gpuvm_resv_assert_held(gpuvm__) \
->> +       dma_resv_assert_held(drm_gpuvm_resv(gpuvm__))
->> +
->>   static inline struct drm_gpuva *
->>   __drm_gpuva_next(struct drm_gpuva *va)
->>   {
-> 
-> Reviewed-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
-> 
-> 
+Attached patch patches both cases: the generated code for
+mem_encrypt_identity.c does not change while the change in
+percpu.h brings expected 4kB code size reduction. I think this is the
+correct solution that will work for both compilers.
 
+Uros.
+
+--00000000000039dbe6060797b562
+Content-Type: text/plain; charset="US-ASCII"; name="memref-2.diff.txt"
+Content-Disposition: attachment; filename="memref-2.diff.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lnojvewg0>
+X-Attachment-Id: f_lnojvewg0
+
+ZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3BlcmNwdS5oIGIvYXJjaC94ODYvaW5j
+bHVkZS9hc20vcGVyY3B1LmgKaW5kZXggNjBlYTc3NTVjMGZlLi4xMmYzN2I5NTFmYTcgMTAwNjQ0
+Ci0tLSBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3BlcmNwdS5oCisrKyBiL2FyY2gveDg2L2luY2x1
+ZGUvYXNtL3BlcmNwdS5oCkBAIC0xNzUsOSArMTc1LDkgQEAgZG8gewkJCQkJCQkJCVwKICNkZWZp
+bmUgcGVyY3B1X3N0YWJsZV9vcChzaXplLCBvcCwgX3ZhcikJCQkJXAogKHsJCQkJCQkJCQlcCiAJ
+X19wY3B1X3R5cGVfIyNzaXplIHBmb192YWxfXzsJCQkJCVwKLQlhc20oX19wY3B1X29wMl8jI3Np
+emUob3AsIF9fZm9yY2VfcGVyY3B1X2FyZyhQW3Zhcl0pLCAiJVt2YWxdIikJXAorCWFzbShfX3Bj
+cHVfb3AyXyMjc2l6ZShvcCwgX19mb3JjZV9wZXJjcHVfYXJnKGFbdmFyXSksICIlW3ZhbF0iKSBc
+CiAJICAgIDogW3ZhbF0gX19wY3B1X3JlZ18jI3NpemUoIj0iLCBwZm9fdmFsX18pCQkJXAotCSAg
+ICA6IFt2YXJdICJwIiAoJihfdmFyKSkpOwkJCQkJXAorCSAgICA6IFt2YXJdICJpIiAoJihfdmFy
+KSkpOwkJCQkJXAogCSh0eXBlb2YoX3ZhcikpKHVuc2lnbmVkIGxvbmcpIHBmb192YWxfXzsJCQlc
+CiB9KQogCmRpZmYgLS1naXQgYS9hcmNoL3g4Ni9tbS9tZW1fZW5jcnlwdF9pZGVudGl0eS5jIGIv
+YXJjaC94ODYvbW0vbWVtX2VuY3J5cHRfaWRlbnRpdHkuYwppbmRleCBkNzNhZWIxNjQxN2YuLjJi
+MWUwZTc4MWY5ZCAxMDA2NDQKLS0tIGEvYXJjaC94ODYvbW0vbWVtX2VuY3J5cHRfaWRlbnRpdHku
+YworKysgYi9hcmNoL3g4Ni9tbS9tZW1fZW5jcnlwdF9pZGVudGl0eS5jCkBAIC0zNDYsOSArMzQ2
+LDkgQEAgdm9pZCBfX2luaXQgc21lX2VuY3J5cHRfa2VybmVsKHN0cnVjdCBib290X3BhcmFtcyAq
+YnApCiAJICogV2UncmUgcnVubmluZyBpZGVudGl0eSBtYXBwZWQsIHNvIHdlIG11c3Qgb2J0YWlu
+IHRoZSBhZGRyZXNzIHRvIHRoZQogCSAqIFNNRSBlbmNyeXB0aW9uIHdvcmthcmVhIHVzaW5nIHJp
+cC1yZWxhdGl2ZSBhZGRyZXNzaW5nLgogCSAqLwotCWFzbSAoImxlYSBzbWVfd29ya2FyZWEoJSVy
+aXApLCAlMCIKKwlhc20gKCJsZWEgJWExLCAlMCIKIAkgICAgIDogIj1yIiAod29ya2FyZWFfc3Rh
+cnQpCi0JICAgICA6ICJwIiAoc21lX3dvcmthcmVhKSk7CisJICAgICA6ICJpIiAoc21lX3dvcmth
+cmVhKSk7CiAKIAkvKgogCSAqIENhbGN1bGF0ZSByZXF1aXJlZCBudW1iZXIgb2Ygd29ya2FyZWEg
+Ynl0ZXMgbmVlZGVkOgpAQCAtNTgyLDE1ICs1ODIsMTUgQEAgdm9pZCBfX2luaXQgc21lX2VuYWJs
+ZShzdHJ1Y3QgYm9vdF9wYXJhbXMgKmJwKQogCSAqIGlkZW50aXR5IG1hcHBlZCwgc28gd2UgbXVz
+dCBvYnRhaW4gdGhlIGFkZHJlc3MgdG8gdGhlIFNNRSBjb21tYW5kCiAJICogbGluZSBhcmd1bWVu
+dCBkYXRhIHVzaW5nIHJpcC1yZWxhdGl2ZSBhZGRyZXNzaW5nLgogCSAqLwotCWFzbSAoImxlYSBz
+bWVfY21kbGluZV9hcmcoJSVyaXApLCAlMCIKKwlhc20gKCJsZWEgJWExLCAlMCIKIAkgICAgIDog
+Ij1yIiAoY21kbGluZV9hcmcpCi0JICAgICA6ICJwIiAoc21lX2NtZGxpbmVfYXJnKSk7Ci0JYXNt
+ICgibGVhIHNtZV9jbWRsaW5lX29uKCUlcmlwKSwgJTAiCisJICAgICA6ICJpIiAoc21lX2NtZGxp
+bmVfYXJnKSk7CisJYXNtICgibGVhICVhMSwgJTAiCiAJICAgICA6ICI9ciIgKGNtZGxpbmVfb24p
+Ci0JICAgICA6ICJwIiAoc21lX2NtZGxpbmVfb24pKTsKLQlhc20gKCJsZWEgc21lX2NtZGxpbmVf
+b2ZmKCUlcmlwKSwgJTAiCisJICAgICA6ICJpIiAoc21lX2NtZGxpbmVfb24pKTsKKwlhc20gKCJs
+ZWEgJWExLCAlMCIKIAkgICAgIDogIj1yIiAoY21kbGluZV9vZmYpCi0JICAgICA6ICJwIiAoc21l
+X2NtZGxpbmVfb2ZmKSk7CisJICAgICA6ICJpIiAoc21lX2NtZGxpbmVfb2ZmKSk7CiAKIAlpZiAo
+SVNfRU5BQkxFRChDT05GSUdfQU1EX01FTV9FTkNSWVBUX0FDVElWRV9CWV9ERUZBVUxUKSkKIAkJ
+YWN0aXZlX2J5X2RlZmF1bHQgPSB0cnVlOwo=
+--00000000000039dbe6060797b562--
