@@ -2,152 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE687C85A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B15027C85BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbjJMMY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
+        id S231772AbjJMMZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 08:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231682AbjJMMY2 (ORCPT
+        with ESMTP id S231736AbjJMMZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 08:24:28 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDA4BE
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:24:26 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qrHD6-00016J-4U; Fri, 13 Oct 2023 14:24:08 +0200
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qrHD5-001OKr-3q; Fri, 13 Oct 2023 14:24:07 +0200
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qrHD5-00FiOb-03;
-        Fri, 13 Oct 2023 14:24:07 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: [PATCH net-next v3 7/7] net: dsa: microchip: do not shut down the switch if WoL is active
-Date:   Fri, 13 Oct 2023 14:24:05 +0200
-Message-Id: <20231013122405.3745475-8-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231013122405.3745475-1-o.rempel@pengutronix.de>
-References: <20231013122405.3745475-1-o.rempel@pengutronix.de>
+        Fri, 13 Oct 2023 08:25:37 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC07DDE;
+        Fri, 13 Oct 2023 05:25:16 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-405361bba99so20403425e9.2;
+        Fri, 13 Oct 2023 05:25:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697199915; x=1697804715; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/CKZgUBJGWMajbilOFgGQRLxqanUY/9c6S2xkAT6//E=;
+        b=aLqEwbMBI2G7QB9UdrT0dQSPZwETTQRae0YKIbIFg6Pd1qqInfbGPJJpay0ejX9Rz9
+         GiOGxpn8s47HtJpGmoj210ggnzrDUxzdRtRMS/Xe5bSyyXJWnDVyqyAcsbCwkCdGFs0c
+         Qd9N9uQFuuV23D50wCKSVzFM9MPSeg/zKJp2DMMTn7qa6De+agfVpNdk8NT7xWiqmYwU
+         4zXUh0VZlg/HkUjkRkPMWeBPTYX69qeSq37Khc6ZhpHVW6/vxJjLgwxH30J46rx9+xde
+         oeSYK43zAIFYguymNgkXxCls2Py8jEFp2PPPZFJmJhsN1k7p+FfmIgssqRfhIqKPsvIv
+         IlJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697199915; x=1697804715;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/CKZgUBJGWMajbilOFgGQRLxqanUY/9c6S2xkAT6//E=;
+        b=Hgcj6mtzXRqfiRco7zoB41QTu/gKAXKekv2EmhZslapxw/roJuGPBhyoQDJLAXMJsx
+         coSu3BcQza2fIDxJM2tBWKJMp0nATVpAe1rW8RB3RDrke3qoAmAQS1StWJQvepjBKvje
+         6uUdwX3r4PaveAm2fds3GPb5SeMsK6+4pU7Gnf8wQNRNOxhWKiM30Ijl2jgggpdbaZHS
+         3oWKkz4Lnrmxh7nWqb4H+7g0SWDGzpgbZ3tjUuwxL0P0GxP7VkX0l6nN71KFB19x6EQc
+         aKG6kZc1qvY748o0psQrbWgmcEmPZCt8mnec+Scc7Yd2gbLicMge9PIopA8xeBNxAzTr
+         upbA==
+X-Gm-Message-State: AOJu0Yy+WUZ97Tvfm4EwgWNwGFwP9OTlAtJJ4AI3Zrld9/mXzDhBVFzO
+        YsxULrLU3O6foRHuHQuJ6Sw=
+X-Google-Smtp-Source: AGHT+IFW0BAz1KE2TBSE/stD6qY/zQ48xnUqepGAqzzL7WODejJrsoSYGevMUD6mGnM2HNqNVX1GcA==
+X-Received: by 2002:a05:600c:2284:b0:401:b493:f7c1 with SMTP id 4-20020a05600c228400b00401b493f7c1mr25124421wmf.35.1697199914681;
+        Fri, 13 Oct 2023 05:25:14 -0700 (PDT)
+Received: from localhost (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id 20-20020a05600c021400b003fe2b081661sm2410086wmi.30.2023.10.13.05.25.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 05:25:14 -0700 (PDT)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     jonathanh@nvidia.com, krzysztof.kozlowski@linaro.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sumit Gupta <sumitg@nvidia.com>
+Cc:     bbasu@nvidia.com
+Subject: Re: (subset) [Patch v2 0/2] Fix hang due to CPU BW request as BPMP suspended
+Date:   Fri, 13 Oct 2023 14:25:12 +0200
+Message-ID: <169719989291.3880029.32092032379655248.b4-ty@nvidia.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231009100557.18224-1-sumitg@nvidia.com>
+References: <20231009100557.18224-1-sumitg@nvidia.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For Wake on Lan we should not reconfigure, reset or power down the
-switch on shut down sequence.
+From: Thierry Reding <treding@nvidia.com>
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/dsa/microchip/ksz9477_i2c.c |  3 +++
- drivers/net/dsa/microchip/ksz_common.c  | 18 ++++++++++++++++++
- drivers/net/dsa/microchip/ksz_common.h  |  2 ++
- drivers/net/dsa/microchip/ksz_spi.c     |  3 +++
- 4 files changed, 26 insertions(+)
 
-diff --git a/drivers/net/dsa/microchip/ksz9477_i2c.c b/drivers/net/dsa/microchip/ksz9477_i2c.c
-index 2710afad4f3a..fe818742051c 100644
---- a/drivers/net/dsa/microchip/ksz9477_i2c.c
-+++ b/drivers/net/dsa/microchip/ksz9477_i2c.c
-@@ -66,6 +66,9 @@ static void ksz9477_i2c_shutdown(struct i2c_client *i2c)
- 	if (!dev)
- 		return;
- 
-+	if (ksz_wol_is_active(dev))
-+		return;
-+
- 	if (dev->dev_ops->reset)
- 		dev->dev_ops->reset(dev);
- 
-diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index 820edda82cea..c3669b9cc6ce 100644
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -2959,6 +2959,24 @@ static int ksz_set_wol(struct dsa_switch *ds, int port,
- 	return -EOPNOTSUPP;
- }
- 
-+bool ksz_wol_is_active(struct ksz_device *dev)
-+{
-+	struct dsa_port *dp;
-+
-+	if (!dev->wakeup_source)
-+		return false;
-+
-+	dsa_switch_for_each_user_port(dp, dev->ds) {
-+		struct ethtool_wolinfo wol;
-+
-+		ksz_get_wol(dev->ds, dp->index, &wol);
-+		if (wol.wolopts)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- static void ksz_set_xmii(struct ksz_device *dev, int port,
- 			 phy_interface_t interface)
- {
-diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-index 80679f38ee12..84b1eed8cd2a 100644
---- a/drivers/net/dsa/microchip/ksz_common.h
-+++ b/drivers/net/dsa/microchip/ksz_common.h
-@@ -397,6 +397,8 @@ bool ksz_get_gbit(struct ksz_device *dev, int port);
- phy_interface_t ksz_get_xmii(struct ksz_device *dev, int port, bool gbit);
- extern const struct ksz_chip_data ksz_switch_chips[];
- 
-+bool ksz_wol_is_active(struct ksz_device *dev);
-+
- /* Common register access functions */
- static inline struct regmap *ksz_regmap_8(struct ksz_device *dev)
- {
-diff --git a/drivers/net/dsa/microchip/ksz_spi.c b/drivers/net/dsa/microchip/ksz_spi.c
-index 279338451621..c5d9c3d86ddb 100644
---- a/drivers/net/dsa/microchip/ksz_spi.c
-+++ b/drivers/net/dsa/microchip/ksz_spi.c
-@@ -114,6 +114,9 @@ static void ksz_spi_shutdown(struct spi_device *spi)
- 	if (!dev)
- 		return;
- 
-+	if (ksz_wol_is_active(dev))
-+		return;
-+
- 	if (dev->dev_ops->reset)
- 		dev->dev_ops->reset(dev);
- 
+On Mon, 09 Oct 2023 15:35:55 +0530, Sumit Gupta wrote:
+> This patch set fixes hang during system resume which started coming
+> after adding Memory Interconnect and OPP support to the Tegra194 CPUFREQ
+> in below change:
+>  f41e1442ac5b ("cpufreq: tegra194: add OPP support and set bandwidth").
+> 
+> Tegra194 CPUFREQ driver uses 'CPUFREQ_NEED_INITIAL_FREQ_CHECK' flag
+> which causes a CPU frequency set request from the 'cpuhp_cpufreq_online'
+> hotplug notifier during resume. The CPU frequency set call also triggers
+> a DRAM bandwidth set request but the BPMP driver hasn't resumed yet
+> which results in hang during resume.
+> 
+> [...]
+
+Applied, thanks!
+
+[2/2] memory: tegra: set BPMP msg flags to reset IPC channels
+      (no commit info)
+
+Best regards,
 -- 
-2.39.2
-
+Thierry Reding <treding@nvidia.com>
