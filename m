@@ -2,146 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB69F7C80D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2FA7C80E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbjJMIxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57754 "EHLO
+        id S230193AbjJMIxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbjJMIxM (ORCPT
+        with ESMTP id S230125AbjJMIxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:53:12 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8BABE
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:53:07 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-53d9f001b35so3177942a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:53:07 -0700 (PDT)
+        Fri, 13 Oct 2023 04:53:42 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99CDB7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:53:40 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4066692ad35so19391245e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:53:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=wkennington-com.20230601.gappssmtp.com; s=20230601; t=1697187186; x=1697791986; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OMsxy+WRFTvVWQUjTpH47x0e7OESMLVwCdR526kLjyM=;
-        b=TlwNs/vAUP69k89accyituAFuPK4PIma+nurmzMZPAPL9zP89CP18V3VC+SsXvU3sH
-         rcF50lwuaduezrurDZgewrlQ4WTH+TGjoIT5YdyMr0czmZw8v2zbBnKkN41ckLahBZ4y
-         Jy+N+NMIWzFl+Y+TvWOZy3w6Pywx3sk29CDTFVder87jCaK4fq2BVz7/TuH0I0z6z3yq
-         8BySJl0a1T4pZpLHr2z7FKuiCTXCVUleydSzV+qPUz7cc++TLPjHEvN+Iw5in77nKAUa
-         +bWUDvNahhDl8RqXH3mlYsZgpnjkHuUAhjuTcsF7Xa3ZYdbjKQzmb7KJSLEUa8DmWxN9
-         MXEQ==
+        d=linaro.org; s=google; t=1697187219; x=1697792019; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9ei3TFmaOXq0JADSQLlmEKSbGLvw708qlaZ+x/9kH7o=;
+        b=NizVOLAPXroEvmC4Z5dos9IDMYeHc0pV9F9J4foWsB5B7YhtN+s5WNXJmJzeoW43rK
+         ntND51Ey2bREBeM4L3ZSLHr45JRTcS0uLIm9NLJsScVn0nP6z91d7/v8PxM52+uKeead
+         OlERpZR/aNzVk30BPNrbiTQgsQ6ZRWc8ntLCi4zExhn4uHVDOiXI+RtzqMmhRkiLJByt
+         YoCUrb3iNSHsSz8fQlLSEd9FF0+TxINJSoPv3an2D0eIpU3e/A6lPUqQeGmcsav3JJ7H
+         OVD3g//cpWKXrcl9o/JXWpd4nx5oQJrr6GuHw2V8f5Tz178DQBkaADOgW6020FFWRDMM
+         3YOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697187186; x=1697791986;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OMsxy+WRFTvVWQUjTpH47x0e7OESMLVwCdR526kLjyM=;
-        b=GkLejYH/xaPKCBstZFtTtl3nMw6U2KnZgF8pgtqQu7gi8pWASlVkfE8F5/LoTdtjdj
-         pZjAWeBa6hHfEdLQJqRhgkr8GTUAjrJFTfz1ja1gmgwYkeAEpthvOgHW0e6eQxP5g9Iu
-         f/WJj9glY0RmAnehNdtaeXmI+ya4MT9j2kJK8QN6s4lDpsRIv3TS6K/XoDW7A1gSO81z
-         a2iOcRs6Ip/IHb6hsKRno/3OQUGuGQJLNpEsU16f0I0XnOUu4h95LhdM/oWWK/QmOVOL
-         HVq6nUswnK6vzcs0B23oXrg/5HDwHW9blgWg6+KsDdtVXkYdJFDZhuMoNRXw+cH/G7Kh
-         bqPw==
-X-Gm-Message-State: AOJu0Yw5ZHRqP6HPC0lw66LP3l2xnraV+yw0S4uKSDagEvghFHtS8N9h
-        18ENqqg9YxWDfkfNf+NxyrguSTRDUo4h2XYBm07j23YmlDMAjQOg6fI=
-X-Google-Smtp-Source: AGHT+IFzZ3t4iS3SNjrv9IvNOzD3bkfOgp0PSof2UEVaezZvcDRgTHOxenIrXXymRL2XU4OeO6Oo5BuOgumTEkNgoLU=
-X-Received: by 2002:a05:6402:1219:b0:530:77e6:849f with SMTP id
- c25-20020a056402121900b0053077e6849fmr23219312edw.27.1697187186325; Fri, 13
- Oct 2023 01:53:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697187219; x=1697792019;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9ei3TFmaOXq0JADSQLlmEKSbGLvw708qlaZ+x/9kH7o=;
+        b=I7uu4gBE8ELi8w2N4WeJbtHgN8l6d/B9FIBhSJUJzjMMEpfJnLyNHQoMmnZFfLN/lD
+         UtHL1AuvOnDkLFaBFlvjB6HMe4sNorTADYnhOQ6RRrUBQaQBqmXzgDvmbBt2Z6qJrG7c
+         yahaAsRu3cm14bwR45veMJtRRRHmiyZdqQDMcruUSwm9DCjNbw8usT4jfIuDlwZwhoYf
+         5WD92hmaC4zIl2fwDH1a0R1jWRoiSecRhKWn7A9wTxMtEA5GnKFxg/A71rYWXh/zuYfz
+         aPWOInuH0bgnbfg0F3xlZeiOib6h+Bb4o1arg0c4uHbNIryECfZbKfXCaMlF4kIAYNj2
+         BGrg==
+X-Gm-Message-State: AOJu0YwkUmJq4ipIZ7iMhkrb0+NCGj3NQlY3O0m+8oyt4+JdGaLpAhAN
+        xyUN9/9CThkMJUNSzR2lLK0PHg==
+X-Google-Smtp-Source: AGHT+IFRJCBZHGcCmfNxL8440E22YumxfhNrSwE+nFVTUb5Jr2JGzm/PdKtsNhGsIufNU8lCz718lw==
+X-Received: by 2002:a1c:4c10:0:b0:402:f8eb:28d8 with SMTP id z16-20020a1c4c10000000b00402f8eb28d8mr22460284wmf.6.1697187219235;
+        Fri, 13 Oct 2023 01:53:39 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id n14-20020adfe78e000000b0032196c508e3sm20215454wrm.53.2023.10.13.01.53.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 01:53:38 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 11:53:36 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Soumya Negi <soumya.negi97@gmail.com>
+Cc:     Jonathan Kim <jonathankim@gctsemi.com>,
+        Dean ahn <deanahn@gctsemi.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        outreachy@lists.linux.dev, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tty: gdm724x: Fix coding style checkpatch warnings
+Message-ID: <663c85bb-90c3-4ae1-ab0b-5ab1a8abd2a7@kadam.mountain>
+References: <20231013051502.9578-1-soumya.negi97@gmail.com>
 MIME-Version: 1.0
-References: <20230926230712.516709-1-william@wkennington.com>
- <aa4591dd-b558-3401-4a19-362780ec321f@axentia.se> <CAD_4BXhWbUxuidM47poTKFYYruL5jdJyPUfoZvXnqwDNNLd98w@mail.gmail.com>
- <ba8d31bf-28f5-d8a1-adff-1b9ea7c3a578@axentia.se>
-In-Reply-To: <ba8d31bf-28f5-d8a1-adff-1b9ea7c3a578@axentia.se>
-From:   William Kennington <william@wkennington.com>
-Date:   Fri, 13 Oct 2023 04:52:54 -0400
-Message-ID: <CAD_4BXgY0uJU1-TRdqOMXZGyEy_mx7LOui_y_+OFJm8OrOJytQ@mail.gmail.com>
-Subject: Re: [PATCH] mux: Make it possible to select MULTIPLEXER if EXPERT
-To:     Peter Rosin <peda@axentia.se>
-Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231013051502.9578-1-soumya.negi97@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 4:36=E2=80=AFAM Peter Rosin <peda@axentia.se> wrote=
-:
->
-> Hi!
->
-> 2023-10-12 at 23:52, William Kennington wrote:
-> > On Wed, Sep 27, 2023 at 16:08 Peter Rosin <peda@axentia.se <mailto:peda=
-@axentia.se>> wrote:
-> >
-> >     Hi!
-> >
-> >     2023-09-27 at 01:07, William A. Kennington III wrote:
-> >     > Right now, there is no way to enable multiplexer support unless a=
-nother
-> >     > config option selects it. When using `allnoconfig` with CONFIG_EX=
-PERT,
-> >     > this is deselected with no way to enable it.
-> >
-> >     I fail to see how that would be useful? Why would you want the mux
-> >     core if there are no users?
-> >
-> >
-> > In this case the user is a custom configuration that is added per board=
- following
-> > Documentation/devicetree/bindings/arm/npcm/nuvoton,gcr.yaml
->
-> (That binding has recently been moved:
-> Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-gcr.yaml)
->
-> >
-> > I suppose the problem is that ARCH_NPCM7XX doesn=E2=80=99t select MULTI=
-PLEXER and MUX_MMIO. Maybe that=E2=80=99s the patch you are looking for? No=
-thing else that we use has a dt compatible string with mmio-mux or uses the=
- functionality under the covers. This leads to our board config selecting i=
-t manually.
->
-> Perhaps? I think that's one way to do it.
->
-> I'm not sure about what exactly should select MULTIPLEXER in your case,
-> but the thinking is that whatever driver wants to use a mux controller
-> should be responsible for selecting the mux core.
->
-> Maybe that thinking needs revisiting?
+On Thu, Oct 12, 2023 at 10:14:58PM -0700, Soumya Negi wrote:
+> @@ -271,8 +272,8 @@ int register_lte_tty_driver(void)
+>  	int ret;
+>  
+>  	for (i = 0; i < TTY_MAX_COUNT; i++) {
+> -		tty_driver = tty_alloc_driver(GDM_TTY_MINOR,
+> -				TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV);
+> +		tty_driver = tty_alloc_driver(GDM_TTY_MINOR, TTY_DRIVER_REAL_RAW |
+> +					      TTY_DRIVER_DYNAMIC_DEV);
 
-It looks like for many of our boards, we are basically relying on
-mmio-mux to be able to set the initial state for some of the registers
-in the SoC. In our usecase we want the serial port mux registers to be
-set to an idle value that never gets updated by any driver, so we have
-these dangling mmio-mux entries.
+Don't do this.  The code was better before. The parameter
+"TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV" is one thing and
+splitting it up like that makes the code less readable.  And I bet they
+had to indent it like that to get under the 80 character limit.
 
->
-> When digging I'm finding nodes that wants to add mux controllers to the
-> npcm "gcr" syscon node in:
->
-> arch/arm/boot/dts/nuvoton/nuvoton-npcm730-gbs.dts
-> arch/arm/boot/dts/nuvoton/nuvoton-npcm730-kudo.dts
-> arch/arm/boot/dts/nuvoton/nuvoton-npcm750-runbmc-olympus.dts
->
-> But I then find no mention of any nodes wanting make use of those mux
-> controllers. My thinking is that whomever comes up with a dts that
-> actually has such nodes will also want to select drivers for those nodes.
-> And those drivers in turn should select MULTIPLEXER.
+This is an example of checkpatch giving bad advice.
 
-It seems like there are no consuming drivers, we just want a global
-initial state set for SoC registers when the kernel starts. There is
-probably a better way to do this. I think the intention was to be able
-to expose the mmio-mux functionality to userspace but obvious the
-mmio-mux in itself doesn't support that.
+regards,
+dan carpenter
 
->
-> (The above olympus case is a bit suspect since the mux controller has no
-> label, and it is therefore needlessly difficult to reference the node
-> from a node that needs a mux controller)
->
-> Cheers,
-> Peter
