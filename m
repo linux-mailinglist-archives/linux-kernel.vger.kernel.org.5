@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6507C858B
+	by mail.lfdr.de (Postfix) with ESMTP id EBB1F7C858C
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbjJMMUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58034 "EHLO
+        id S231586AbjJMMU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 08:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231349AbjJMMUZ (ORCPT
+        with ESMTP id S231316AbjJMMUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Oct 2023 08:20:25 -0400
 Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8A7D6
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:20:21 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4064876e8b8so23621795e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:20:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D767FA9
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:20:22 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4056ce55e7eso20835855e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:20:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697199620; x=1697804420; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YaxTvrExcsJYfT+rRhpPKDHnyWyB5m+MM5ymcNTcTkc=;
-        b=K8VlhwJ5OrBGtFlhwwvctgXD6o9hLGL5s+Z5S9U3PFuyklCK80gaGIr+urxsVJWYbH
-         WUfLzSxjJePYfGshrnNYWHnWxLMsYVC/UOH8cwuvCYLtIIXSl7h3O9He8lZBkqyF3k56
-         S93d8tqTt6HG9Jqy/GL4Exnscvan9PZNcPgjInegsFlhpl0l0jocZxCHE6xGO+5sqzWL
-         nSuT1ZtjSaGfrkMTBQduaoI8yhQE21Av/0EIq0uENu59m1zbSHXhPeJIQOhpCkBOFayF
-         lyG/ZtcVCU5lxhSKjU+5ksi0EUbRY1XnBdUzwqd0k8Ag+D6ka7AImenrYnMHY6rQd+u5
-         bgRA==
+        d=linaro.org; s=google; t=1697199621; x=1697804421; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XiIL1G6bCBYYSUmLIMeOuFSL+jkm0ieM2MaGuJYDdP4=;
+        b=UbzrCa4uWotcVVOxHsyQ6xG7iSoVxcmNrVbzYaaK/iji1IhTmdWLN5/AEplTGgeOYy
+         XET9g1u1QLcZSqpcFlTYyeUvMddXHWg4F1yoAw7FH4FsnPBTbgxgyZ+jhJawYEuDwO/f
+         G1GtPZNJBEKhdz0eRdkmBlQ3GvbIRvvsXK+U+saNTnkjcE3pYnM8bjEmuQYExgUObrho
+         lvJIbVE7U92ZQaStwnagllYGFRq+Zac/GCkmrefbDAgJUPI7TR4H44YD2tvnuZvxwNTq
+         0TFGbava8tgJIRLoVcBL5AswzCnjaHPMwoyLi6If5XXdZmJVd3lEEvsQbcngrZNXLcDL
+         cqEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697199620; x=1697804420;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YaxTvrExcsJYfT+rRhpPKDHnyWyB5m+MM5ymcNTcTkc=;
-        b=uiAa79++a3g0g36KyvGHa7ggfxS1xl8gNUo+esHu0exNh/Xknc5BFoJ/wsPTnieNZR
-         qOc7OusjxDV+skKPnAz52jHQeNbysHzQfE8+rKwaS7JQ/vM75Zh7PvEi8ujCpBNr49Yb
-         wpxT12qHYHBz8Dz2k8FUUMjpehw0LhTb0Wb3EckKJqbY/FsbOWFlV3ckFhW2v+32SO7E
-         bIcYAGjkRpv30TtUBzXcpi1DGiDBlrem3+jFURxRe++E1gFyRRq6lX1BI+5l93yFjOqM
-         GMWl2kBj0/h7EFpDf5/WGbEEEZHLuLr9uwoXGFWRBEEhVGXDWQ3d4ZgIRxNNGdP2gSzG
-         fP9w==
-X-Gm-Message-State: AOJu0YwRM9sDhTdyXhFxsaHcsORSuAqFddBwIiGlX3nZ1Nw54p85X8iX
-        dbnapWM4IwjU0xP9I5WwdRUKHg==
-X-Google-Smtp-Source: AGHT+IG8Ma27UizRE7lPhtIw1KXwnZXD3W9qhYX9/vV6AFzUf2064VtOq9WW94oBhJT5obNe1kCj7w==
-X-Received: by 2002:a05:600c:c10:b0:407:536d:2e93 with SMTP id fm16-20020a05600c0c1000b00407536d2e93mr9746754wmb.8.1697199619820;
-        Fri, 13 Oct 2023 05:20:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697199621; x=1697804421;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XiIL1G6bCBYYSUmLIMeOuFSL+jkm0ieM2MaGuJYDdP4=;
+        b=EaC3pQZEnWELeiGOvMJg8eeT2jwRqyf54QQMLSq6/9y7xy850QqAGlGHrDl3dOGJS9
+         NK0wS4sGGmWsRbKxKfA6AIl8DwsX3APKd205lH5wziWYtzTAL2FBTShpg9BaOHfubGYo
+         gvC/KfiBjSPq0lA2MwBih8LOL1XQ6D7fcvZ5nPBILxOylZvfT71wxB10gulZ0SH51xOj
+         69fIMcvGaPOHz/9xGYHVALuRCmoZrh0B8ZOX+XngCixhNP2rWCMX1yUcPm5X4Po9DTMK
+         3mWeXk/qQAQJiNd71A+67JhzH0HoiN/LPpkBzwY+C8tTNiDIODXx0gK6rUxeSQ7b1Vb1
+         hBZw==
+X-Gm-Message-State: AOJu0Yx/OMNo4XemzGbpFcWPFYSiZe5KVMMqqqldaJVhiin2kkVQP9cs
+        W3KOg31NNZYvb3nFuBrQDlP6dw==
+X-Google-Smtp-Source: AGHT+IEgyDgb676i06I00jxxGCn5xBZM3lEX//EpitjZq22dHFoGDOmJP0jLEwSMDaZAs13pnZqBWQ==
+X-Received: by 2002:a1c:7711:0:b0:405:959e:dc7c with SMTP id t17-20020a1c7711000000b00405959edc7cmr23674425wmi.30.1697199621165;
+        Fri, 13 Oct 2023 05:20:21 -0700 (PDT)
 Received: from srini-hackbase.lan ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id o41-20020a05600c512900b0040772934b12sm1806751wms.7.2023.10.13.05.20.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 05:20:19 -0700 (PDT)
+        Fri, 13 Oct 2023 05:20:20 -0700 (PDT)
 From:   srinivas.kandagatla@linaro.org
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org,
+        Ekansh Gupta <quic_ekangupt@quicinc.com>,
+        stable <stable@kernel.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 0/4]  misc: fastrpc: fixes for v6.6
-Date:   Fri, 13 Oct 2023 13:20:03 +0100
-Message-Id: <20231013122007.174464-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/4] misc: fastrpc: Reset metadata buffer to avoid incorrect free
+Date:   Fri, 13 Oct 2023 13:20:04 +0100
+Message-Id: <20231013122007.174464-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231013122007.174464-1-srinivas.kandagatla@linaro.org>
+References: <20231013122007.174464-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=564; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=joj5ZcY29jdrBWbjLChNWIZTXbdZ+p/OJQ6RKbc/PE4=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBlKTXviI441xkeZ2cgc/HBeI0wfBpqXcb/4Tkk4 LY9B3hvZzqJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZSk17wAKCRB6of1ZxzRV N/H2CAC28Y/vr0Mu1w5/VOlrqtu4h/Tbiydq7evt+ENoe9CqNzlnzTtdfWdv0iJ+DSrm1+z3mnu EXLDe7yJhs2UfnDC9oE1lMkCGNgXE0ZMMiZ918b/fHCFT2yOiErAeyc5OzK2CnpuAcjwOGMNVr5 gD33PdToYOstAMXr1bV6/sb5TvgB73E+Vdt4v8FULtvno395OyH7IZtLJ3WWY89gVk6kY2wE6+o B0ONbzuKxAhvwWmBsjVv2RgF/vvx2HD8nefA4uKiUi8q525O4uLP5OaeYB2i5IxJ1AIYC27Vyu8 /dY/RKRUXkthIudQ+cWnUW7uon3yzLD54LlJN1YKEtdDbM11
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1209; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=nJ/oryflpci9PJcvqUQBAXxU2BVP7k1zJ7Aal1R8mSE=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBlKTX3iRAaMZ60lsLn0tsq6vc/LFoauUQ1ehboD xjtxW0r4TOJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZSk19wAKCRB6of1ZxzRV NxGtCAC7/tomZz8lvSY1M/90T2UueEJFViy+O7F8wEvTZXvJUJwBOZnJ52PAXlwkxakbvF7CVOE m4BhmTM9aE75NpZcjRUcZeELy1tq85z1dzLx6w7U9BPrxoewjAoDQcOOzS67H/hF6F2fYhQN+ZZ M1B9EkkgQUkK3LtY2dPFf2AHYbZGwpaK1vzTCxKE87JiTo/gJy4EMsK9rnah7DsD74SkBewVahD xfnnBLfSkKA64BeZLG6mG9vzLbok7spDPSAKClDUz4cxstZqsYSuSER4+MaEF1zuto2MGqwtj9S Vg/t0XMEeiKxosLMv1wlkfLJ9Fi1uZs83Q8Od3Gr2eNgSq1w
 X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,27 +77,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Ekansh Gupta <quic_ekangupt@quicinc.com>
 
-Hi Greg,
+Metadata buffer is allocated during get_args for any remote call.
+This buffer carries buffers, fdlists and other payload information
+for the call. If the buffer is not reset, put_args might find some
+garbage FDs in the fdlist which might have an existing mapping in
+the list. This could result in improper freeing of FD map when DSP
+might still be using the buffer. Added change to reset the metadata
+buffer after allocation.
 
-Here are some fixes in fastrpc driver mostly around cleanup path after
-remote invoke.
+Fixes: 8f6c1d8c4f0c ("misc: fastrpc: Add fdlist implementation")
+Cc: stable <stable@kernel.org>
+Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/misc/fastrpc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Can you please apply them for v6.6
-
-thanks,
-Srini
-
-Ekansh Gupta (4):
-  misc: fastrpc: Reset metadata buffer to avoid incorrect free
-  misc: fastrpc: Free DMA handles for RPC calls with no arguments
-  misc: fastrpc: Clean buffers on remote invocation failures
-  misc: fastrpc: Unmap only if buffer is unmapped from DSP
-
- drivers/misc/fastrpc.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
-
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index a66b7c111cd5..fb921975b56d 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -958,6 +958,7 @@ static int fastrpc_get_args(u32 kernel, struct fastrpc_invoke_ctx *ctx)
+ 	if (err)
+ 		return err;
+ 
++	memset(ctx->buf->virt, 0, pkt_size);
+ 	rpra = ctx->buf->virt;
+ 	list = fastrpc_invoke_buf_start(rpra, ctx->nscalars);
+ 	pages = fastrpc_phy_page_start(list, ctx->nscalars);
 -- 
 2.25.1
 
