@@ -2,105 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8979A7C85D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350BD7C85D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbjJMMc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:32:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52396 "EHLO
+        id S231557AbjJMMdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 08:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231241AbjJMMcz (ORCPT
+        with ESMTP id S230223AbjJMMdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 08:32:55 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012FEBD;
-        Fri, 13 Oct 2023 05:32:53 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53de8fc1ad8so3563884a12.0;
-        Fri, 13 Oct 2023 05:32:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697200372; x=1697805172; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vyT3QmhAn6GJqY6054QmJlw/CJpCAFNbS1sbCVTYiog=;
-        b=MarvLHahQ9YWJ+u28/n8ycyPyxiHM/qMIh95s5VomL6QE6vPybGfU+ifE/ARDMK32p
-         aFK19qsbCz+9IYyArpD/wXjbCOLZGGIs1HgARFxouVhgE+immpoPCKrdkpWFahUPsG51
-         ysi7zbD4OpjWto3fESpHX0ydYAr3Mnnxg6e7DAvCYN2EW3rM04yVwnIavHsNVKNiU0q8
-         2fi9ISAuJohPQaNh6gqSm6Cn52wLWjXzEMQa4PgYKOKFyC3KEZEu2j/oL/kWPZrbu1v5
-         O8D+XoVYwINmtTJcd/sZnhlS+4w6lu7t2XJXwjKXqQA71OmJY7aaq4qMg90rTJ5+axK2
-         i/fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697200372; x=1697805172;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vyT3QmhAn6GJqY6054QmJlw/CJpCAFNbS1sbCVTYiog=;
-        b=U41J0biBaKZ/Rjxs6Cmaq37F+6mzwOq+vAJ4/tshiO7fuzDKjp2a8f+fq27OE0PR4J
-         2q9GP+VoC3KmTYIRlNjiMiyA5spMOxw7fS3/fmtPDcUY0PuqihAtb3kyG9KdI3km+8El
-         Oq01wnlDHOaHe8pEzLZl4/j3R4WnMajvdGh4GFY1N7SFDgVfjm5PR9SZQekMIj1ljexN
-         nO0BaijJH90QMb699V/GNP2jZeq5+yNwQP/HxlhVsbHOvxwV7q+ZcClTCqDqXEv9UvxL
-         sZfD/JeJ2YmOJzODAnzKioSktHT/KHheBrEQLyc3wHItJsViFcA2e+RWWInIlh2Fh3Xh
-         +7ZA==
-X-Gm-Message-State: AOJu0YzPXRskactDMLkrHPwB4lW4kiDi3g5T0YAkMD/3Cjm7W6eZgq+2
-        ZjdXTVo/jqtZAYzU8tmZnzo=
-X-Google-Smtp-Source: AGHT+IGFkKZRQGK0puL+I4DnaFn3Vbu9t+Fk0zHGGFiTgn7HLoYZ0PsuTdt4+GPp7G/hK+RrGBQfIA==
-X-Received: by 2002:a05:6402:4023:b0:53d:b2a5:465d with SMTP id d35-20020a056402402300b0053db2a5465dmr8584164eda.9.1697200372305;
-        Fri, 13 Oct 2023 05:32:52 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id b6-20020a056402138600b00536031525e5sm11380109edv.91.2023.10.13.05.32.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 05:32:52 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 15:32:49 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v3 2/7] net: dsa: microchip: Set unique MAC at
- startup for WoL support
-Message-ID: <20231013123249.bhigwsezy6afb5qt@skbuf>
-References: <20231013122405.3745475-1-o.rempel@pengutronix.de>
- <20231013122405.3745475-3-o.rempel@pengutronix.de>
+        Fri, 13 Oct 2023 08:33:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03D2A9
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:33:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697200409; x=1728736409;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=k/rvVq8q+IqqsoyhqIOvlrS0FNUPIZSTYcQ/RlXyHLA=;
+  b=SnIAzZ53GJ7WfWF/3ECUsrEYsbcpdM4RV90fhadDSpgVQiYijJzJs6qa
+   e0Yrrjea1rueWBivq5WlOuOEnTQBkOkQHPkHZm3L9jHhUalSEbwD5qgnu
+   qZbDrV/ZfdQIP7rMQq2PD7qLlNOUBjDLVED4rekrfKQPeynwVa8hEjNBm
+   /slWffgcgkQFsbDkjVILvgrJzTmL7HSfU0Yj++0m4A7vP+glIWh61jIct
+   90yi41q1p8HU55MClLaLOs6Dvf6ItgqlTNIC4o8+9spgGoAyRHzBzUdsy
+   B0uekjjHxHtBGkP7kWBQkIukjxauj/CRfp0ULsB8yApfZ2ZUGlkxQy0to
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="370235109"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="370235109"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 05:33:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="871064746"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="871064746"
+Received: from dstacken-mobl1.ger.corp.intel.com (HELO [10.249.254.172]) ([10.249.254.172])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 05:33:25 -0700
+Message-ID: <612d1b7e7ebb01cb8a975d68a8f9b763187610eb.camel@linux.intel.com>
+Subject: Re: [PATCH drm-misc-next v6 3/6] drm/gpuvm: add an abstraction for
+ a VM / BO combination
+From:   Thomas =?ISO-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, faith@gfxstrand.net
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 13 Oct 2023 14:33:23 +0200
+In-Reply-To: <20231008233212.13815-4-dakr@redhat.com>
+References: <20231008233212.13815-1-dakr@redhat.com>
+         <20231008233212.13815-4-dakr@redhat.com>
+Organization: Intel Sweden AB, Registration Number: 556189-6027
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231013122405.3745475-3-o.rempel@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 02:24:00PM +0200, Oleksij Rempel wrote:
-> Set a unique global MAC address for each switch on the network at system
-> startup by syncing the switch's global MAC address with the Ethernet
-> address of the DSA master interface. This is crucial for supporting
-> Wake-on-LAN (WoL) functionality, as it requires a unique address for
-> each switch.
-> 
-> Although the operation is performed only at system start and won't sync
-> if the master Ethernet address changes dynamically, it lays the
-> groundwork for WoL support by ensuring a unique MAC address for each
-> switch.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+On Mon, 2023-10-09 at 01:32 +0200, Danilo Krummrich wrote:
+> Add an abstraction layer between the drm_gpuva mappings of a
+> particular
+> drm_gem_object and this GEM object itself. The abstraction represents
+> a
+> combination of a drm_gem_object and drm_gpuvm. The drm_gem_object
+> holds
+> a list of drm_gpuvm_bo structures (the structure representing this
+> abstraction), while each drm_gpuvm_bo contains list of mappings of
+> this
+> GEM object.
+>=20
+> This has multiple advantages:
+>=20
+> 1) We can use the drm_gpuvm_bo structure to attach it to various
+> lists
+> =C2=A0=C2=A0 of the drm_gpuvm. This is useful for tracking external and e=
+victed
+> =C2=A0=C2=A0 objects per VM, which is introduced in subsequent patches.
+>=20
+> 2) Finding mappings of a certain drm_gem_object mapped in a certain
+> =C2=A0=C2=A0 drm_gpuvm becomes much cheaper.
+>=20
+> 3) Drivers can derive and extend the structure to easily represent
+> =C2=A0=C2=A0 driver specific states of a BO for a certain GPUVM.
+>=20
+> The idea of this abstraction was taken from amdgpu, hence the credit
+> for
+> this idea goes to the developers of amdgpu.
+>=20
+> Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
+> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
 > ---
+> =C2=A0drivers/gpu/drm/drm_gpuvm.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 332 +++++++++++++++++++++--
+> --
+> =C2=A0drivers/gpu/drm/nouveau/nouveau_uvmm.c |=C2=A0 64 +++--
+> =C2=A0include/drm/drm_gem.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 32 +--
+> =C2=A0include/drm/drm_gpuvm.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 177 ++++++++++++-
+> =C2=A04 files changed, 521 insertions(+), 84 deletions(-)
 
-Why not take the MAC address of the user port at ksz9477_set_wol() time,
-and use the existing ksz_switch_macaddr_get() API that was just added so
-that this use case could work?
+Forgot to mention, there are a couple of checkpatch.pl --strict issues
+with this patch that might need looking at.
+
+Thanks,
+Thomas
+
