@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2BA47C8053
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414417C805A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbjJMIdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:33:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53108 "EHLO
+        id S230141AbjJMIdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbjJMIdQ (ORCPT
+        with ESMTP id S230123AbjJMIdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:33:16 -0400
+        Fri, 13 Oct 2023 04:33:39 -0400
 Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D6738B8;
-        Fri, 13 Oct 2023 01:33:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E4A17DC;
+        Fri, 13 Oct 2023 01:33:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=gLlXF
-        jKTiiIs5lXq19j2GudYTxs8nyTJiUwjN1lbkPE=; b=QTicBGFrsAwwaMl9UXZ5M
-        XaRi1FjW71Fp5fIuJJupS6LLbb3qZc4fGCm5VygD5SA0ff8onxyMWOLMP8l6c7kP
-        4ZMXDKFgqY7Muk3O25Anc2bcATKQOUBvvL4Viqw3HEGv8BbYRulUKTiRGKMcoPZs
-        NN4wsOM1iSayqvUdSvVS+0=
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=LaDzO
+        7P/7Bxrgwx4S6QAlzMcetmHukoMgGfY234HCi0=; b=jP33fvREKFdmWo5NUpGKh
+        5OffJgzMmeE4DxNokLA8KxfwgoFyRWRSM0M8o+3uRercJi0r54ABXI1fVfhBwzBN
+        YPCW7NSkZDlAeoo4xCZzWKeVNbptrmJRjTw5juKjpsPbGoVWlLRQoBFkCU4CypoR
+        sz+VE38nlgCKf47qDJFUyQ=
 Received: from test-Z390-GAMING-X.bayhubtech.com (unknown [58.48.115.170])
-        by zwqz-smtp-mta-g0-1 (Coremail) with SMTP id _____wDX3425ACll2Aa7AQ--.10191S2;
-        Fri, 13 Oct 2023 16:32:58 +0800 (CST)
+        by zwqz-smtp-mta-g1-1 (Coremail) with SMTP id _____wD3f2vGACll9T+0AQ--.19521S2;
+        Fri, 13 Oct 2023 16:33:11 +0800 (CST)
 From:   liuchang_125125@163.com
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
         linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     mark.tao@bayhubtech.com, shaper.liu@bayhubtech.com,
         thomas.hu@bayhubtech.com, chevron.li@bayhubtech.com,
         charl.liu@bayhubtech.com, Charl Liu <liuchang_125125@163.com>
-Subject: [PATCH 1/9] scsi: Update Kconfig and Makefile for supporting Bayhub's SD/MMC Card interface driver
-Date:   Fri, 13 Oct 2023 16:32:54 +0800
-Message-Id: <20231013083254.10244-1-liuchang_125125@163.com>
+Subject: [PATCH 2/9] scsi: bht: Add Bayhub module's Kconfig and Makefile for compiling Bayhub's SD/MMC Card interface driver
+Date:   Fri, 13 Oct 2023 16:33:06 +0800
+Message-Id: <20231013083306.10261-1-liuchang_125125@163.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wDX3425ACll2Aa7AQ--.10191S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Zr4xWr48Ww1fAFyxAFykAFb_yoW8GF15pF
-        Z5J34DA3yDXayFkrZrG3yUWFy5ta97t34Y9ayUX3s8WFy8CFyYvrnrtFy7JFWkGr4kJry3
-        tFnxGa42ga4UJrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0p_-eOUUUUUU=
+X-CM-TRANSID: _____wD3f2vGACll9T+0AQ--.19521S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7KFyUZF4xtF4fWryUAF15twb_yoW8tF47pF
+        W8Ar13Ca18ta1Sg3s7uF12vFy3Kas2vFyjkay2q34UXFykCFyagF9FqFy5CrykXF4kXFWD
+        CF9xWFykK3Z8JaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0p_9NVUUUUUU=
 X-Originating-IP: [58.48.115.170]
-X-CM-SenderInfo: polxux5dqjsiqsvrjki6rwjhhfrp/xtbB0BsIWWEssysXgQAAsZ
+X-CM-SenderInfo: polxux5dqjsiqsvrjki6rwjhhfrp/1tbiNwcIWVWBqsRVmAAAsW
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
@@ -55,44 +55,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Charl Liu <liuchang_125125@163.com>
 
-1.update Kconfig for loading Bayhub's Kconfig
-2.update Makefile for compiling Bayhub's module
+1.Add Bayhub module's config "SCSI_BHT"
+2.Add Bayhub module's Makefile
 
 Signed-off-by: Charl Liu <liuchang_125125@163.com>
 ---
 Change in V1:
-Update Kconfig and Makefile for supporting Bayhub's SD/MMC Card
-interface driver.
+Add Bayhub module's Kconfig and Makefile for compiling Bayhub's
+SD/MMC Card interface driver.
 ---
- drivers/scsi/Kconfig  | 1 +
- drivers/scsi/Makefile | 2 ++
- 2 files changed, 3 insertions(+)
+ drivers/scsi/bht/Kconfig  | 10 ++++++++++
+ drivers/scsi/bht/Makefile | 18 ++++++++++++++++++
+ 2 files changed, 28 insertions(+)
+ create mode 100644 drivers/scsi/bht/Kconfig
+ create mode 100644 drivers/scsi/bht/Makefile
 
-diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
-index 695a57d894cd..15e94b5fdb25 100644
---- a/drivers/scsi/Kconfig
-+++ b/drivers/scsi/Kconfig
-@@ -490,6 +490,7 @@ source "drivers/scsi/megaraid/Kconfig.megaraid"
- source "drivers/scsi/mpt3sas/Kconfig"
- source "drivers/scsi/mpi3mr/Kconfig"
- source "drivers/scsi/smartpqi/Kconfig"
-+source "drivers/scsi/bht/Kconfig"
- 
- config SCSI_HPTIOP
- 	tristate "HighPoint RocketRAID 3xxx/4xxx Controller support"
-diff --git a/drivers/scsi/Makefile b/drivers/scsi/Makefile
-index f055bfd54a68..80f1987a9770 100644
---- a/drivers/scsi/Makefile
-+++ b/drivers/scsi/Makefile
-@@ -152,6 +152,8 @@ obj-$(CONFIG_SCSI_ENCLOSURE)	+= ses.o
- 
- obj-$(CONFIG_SCSI_HISI_SAS) += hisi_sas/
- 
-+obj-$(CONFIG_SCSI_BHT)	+= bht/
+diff --git a/drivers/scsi/bht/Kconfig b/drivers/scsi/bht/Kconfig
+new file mode 100644
+index 000000000000..f6d224799885
+--- /dev/null
++++ b/drivers/scsi/bht/Kconfig
+@@ -0,0 +1,10 @@
++# SPDX-License-Identifier: GPL-2.0-only
++config SCSI_BHT
++	tristate "Bayhub's SD/MMC Card Interface Driver"
++	depends on PCI && SCSI
++	help
++	  This driver supports the Bayhub's SD/MMC host controllers.
 +
- # This goes last, so that "real" scsi devices probe earlier
- obj-$(CONFIG_SCSI_DEBUG)	+= scsi_debug.o
- scsi_mod-y			+= scsi.o hosts.o scsi_ioctl.o \
++	  If you have the Bayhub's SD/MMC host controllers, say Y or M here.
++
++	  If unsure, say N.
+diff --git a/drivers/scsi/bht/Makefile b/drivers/scsi/bht/Makefile
+new file mode 100644
+index 000000000000..65fa352c51b2
+--- /dev/null
++++ b/drivers/scsi/bht/Makefile
+@@ -0,0 +1,18 @@
++# SPDX-License-Identifier: GPL-2.0-only
++INCLUDE = -I$(KERNEL_SOURCE)/include	\
++	-I$(KERNEL_SOURCE)/drivers/scsi	\
++	-I$(PWD)
++
++ccflags-y += -g $(INCLUDE)
++
++OBJ = linux_os/linux_base.o linux_os/linux_api.o linux_os/linux_scsi.o
++CARD_OBJ = card/cardcommon.o card/cardinterface.o card/mmc.o card/sd.o card/thermal.o card/uhs2.o card/card_ddr200_support.o card/output_tuning.o
++HOST_OBJ = host/host.o host/hostven.o host/cmdhandler.o host/irqhandler.o host/transhandler.o
++MAIN_OBJ = main/cfgmng.o main/thread.o main/autotimerfunc.o main/geniofunc.o main/pmfunc.o main/reqmng.o main/testcase.o
++TQ_OBJ = tagqueue/tagqueue.o  tagqueue/tqadma2.o tagqueue/tqadma3.o tagqueue/tqadma_sdma_like.o tagqueue/tqpolicy.o tagqueue/tqsdma.o tagqueue/tq_merge.o
++UTIL_OBJ = util/util.o util/debug.o
++
++obj-$(CONFIG_SCSI_BHT) := bht-sd.o
++bht-sd-objs := $(OBJ) $(CARD_OBJ) $(HOST_OBJ) $(MAIN_OBJ) $(TQ_OBJ) $(UTIL_OBJ)
++
++
 -- 
 2.34.1
 
