@@ -2,94 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C14747C814B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67EE87C814E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbjJMJCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 05:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55828 "EHLO
+        id S230310AbjJMJDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 05:03:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbjJMJCg (ORCPT
+        with ESMTP id S230160AbjJMJDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 05:02:36 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B13095
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:02:34 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-405361bb9f7so19778875e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:02:34 -0700 (PDT)
+        Fri, 13 Oct 2023 05:03:46 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AF895;
+        Fri, 13 Oct 2023 02:03:44 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-32d849cc152so1781575f8f.1;
+        Fri, 13 Oct 2023 02:03:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697187753; x=1697792553; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697187823; x=1697792623; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EitIIr0VXZPrROTEdWmf6yr6Gf534q1TtiPqr2MAdms=;
-        b=P5gw1lSxFWqDyqqsOzqXu9gaomefAWdo5mUlMrLj2pQ2jmG6A+HQKfB4Id0IJ12VO5
-         LIiVRngEJrISpWdpPeabqviPQU+LBO53+Ku8uPAza0aNmarC51L6mxOFHs1lfkU092tJ
-         3K4eHNVCk5tiWi+o9jneQq4CZ9gPXxwipr7xY91SkRuDrabklVO/qkh9BFsi06XHIYqR
-         cGz3FebA+KjdSgHHmNA2a6O6/Ig0/ajL9tNY2OOF9++TpNcDUVXD/ZrVs4b/qzg3GZ2g
-         yh5qZUS7kv1aB37ZgWyrzKVJhoKYTvAttQjek9JP8evkyTIvm/uT8zXB1cKU0V7mw7dw
-         trgg==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mVXzaNCQ+HvBISgUOUJ4L9y3uEa9RCaldYHVY2YAQiM=;
+        b=k20zYg/bYmrGUQvX3T6N+NxkeIHyufUrLU5ZOQVuAabVIfSdj7TrxFmZHV+6WtrP3/
+         Zy1xv6NBHQPClOOAojsgsR7hWTKviJIySdikbDsIo/cURoj9JHDuQ8CBGycei2BM03eq
+         CiK4aLPw9OalKAYeTXbsnazt6K6bIYwCKayuI4HcGwxO8yKC9sc+A1J2qlqnDJgWFQH0
+         hyccD4l4GBLVTt1RMt/IokssGQDBpCmd/1AoWNL1cM9g1i2XHdb7l/3xc89Msn2lSOhG
+         3I/dU53e8OxIP26/vfHgWczsnDWP9x/hGtwa2+o67eCAlaDlRDzYU9bBnSaAQRYNxYjA
+         Yc9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697187753; x=1697792553;
+        d=1e100.net; s=20230601; t=1697187823; x=1697792623;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EitIIr0VXZPrROTEdWmf6yr6Gf534q1TtiPqr2MAdms=;
-        b=eZmsE/HdB7/chVO8BeydCgYOgFkgzi4s+8+kZ2Grda90LdLGh78AgwUOrUP4yIp5nm
-         ZK/KJkrHKIJcf3l/cneGEF3ZtReadKLs3XjqKcLRbHP5JDooFx94BqSCcP1DJMQ3iFYz
-         K2jcblX0lBPnn/1KUJJipbdKCpIWGR8Z4qxCczQojIlWb0eJavH4V/5BNAboJ7Vt2oXm
-         7T+UXeBv2kSSGQ6vEeBMyAPkcdT6N1iQtJ98tnl5hyGhTsirOMnwhLQukmTWW/iLw1et
-         Jwbv1zN0Zb2svynvqbEdb/OZp9azfKwd6TeKo6ucPPwnvOklHM1asod5yb1/s2232Onk
-         EEMA==
-X-Gm-Message-State: AOJu0Yz+D4tdNPswc479zjJLv1J/KZwSpmX6h1No5Rd8xdNdSa5HsxIn
-        MA+9kBejbnfiVJOgj0IM81dIFg==
-X-Google-Smtp-Source: AGHT+IFxQE0qP/giysqEOTM31qj+xVscrqwLDA5oxLN8m7e4fQRA0KQWqxJw1XjX9TXSjwe3miKOlA==
-X-Received: by 2002:a7b:c394:0:b0:406:51a0:17fd with SMTP id s20-20020a7bc394000000b0040651a017fdmr21825469wmj.18.1697187752956;
-        Fri, 13 Oct 2023 02:02:32 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id p16-20020a1c7410000000b0040586360a36sm1943484wmc.17.2023.10.13.02.02.32
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mVXzaNCQ+HvBISgUOUJ4L9y3uEa9RCaldYHVY2YAQiM=;
+        b=gXcA7pygHWZzakysZjvuEmhaQec5MqCOtdLC1TaqyitYKLCL5ewZg7E4o6oYCBcjeg
+         k0wc+6j87VTOpeH6JGH3WPWCl55bEIL2kktPMjLANURcMWohSpCMNXGwZTTN6rsWstqs
+         96LUhHV8X+pc2gt3G2OE8qAio1kT0W4hCsqfC769z0jEAvw8oZtYJjxcCQozps0pDxle
+         wCfqp/eAvRiX9ClFTher29aTHNg2gMF8+IbuE/g0VhSrYbbmPS6hr9wjjz42t6yEYe2Q
+         IL3jCw0K8qFWL2Eqjls4VHSOds5g0quuLCjt2Q/cBo5qzV3XppjObNAvOj0hE//lSLNa
+         rKgQ==
+X-Gm-Message-State: AOJu0YwAVz5TpUYa248SCTE3CtZ4JDhDdgllohohIA41EZNpWoCtl1aV
+        hJHrDUiWoRdLLaFVvR+hZZ8=
+X-Google-Smtp-Source: AGHT+IGBJbJOOMt2ygR5MBho8elPwZ41u1q9oxDLqPoxSsf1UOx0K63NlPMgoUjBfzna0nS+3W/5dA==
+X-Received: by 2002:a5d:5a86:0:b0:32d:260b:5b7b with SMTP id bp6-20020a5d5a86000000b0032d260b5b7bmr9876635wrb.11.1697187822845;
+        Fri, 13 Oct 2023 02:03:42 -0700 (PDT)
+Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
+        by smtp.gmail.com with ESMTPSA id m8-20020adfa3c8000000b0032d7fde2d3csm8136690wrb.79.2023.10.13.02.03.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 02:02:32 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 12:02:30 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Calvince Otieno <calvncce@gmail.com>
-Cc:     outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Luke Koch <lu.ale.koch@gmail.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Simon Horman <horms@kernel.org>, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] staging: wlan-ng: remove unused functions
-Message-ID: <62778e4d-cc2e-4310-b334-52b54cfe7e79@kadam.mountain>
-References: <ZSjpQlUcyOoYv4Yh@lab-ubuntu>
+        Fri, 13 Oct 2023 02:03:42 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 13 Oct 2023 11:03:39 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Sandipan Das <sandipan.das@amd.com>
+Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] perf/x86/amd/uncore: fix error codes in amd_uncore_init()
+Message-ID: <ZSkH64SpvOTOJSpE@gmail.com>
+References: <cec62eba-c4b8-4cb7-9671-58894dd4b974@moroto.mountain>
+ <fbc90ef0-1418-4c7b-8f3e-7dd1a0d7499e@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZSjpQlUcyOoYv4Yh@lab-ubuntu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <fbc90ef0-1418-4c7b-8f3e-7dd1a0d7499e@amd.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 09:52:50AM +0300, Calvince Otieno wrote:
-> The following functions were defined in the prism2mgmt.h file but neither
-> declared nor used anywhere. It is recommended that they be removed.
+
+* Sandipan Das <sandipan.das@amd.com> wrote:
+
+> On 10/13/2023 12:48 PM, Dan Carpenter wrote:
+> > Some of the error paths in this function return don't initialize the
+> > error code.  Return -ENODEV.
+> > 
+> > Fixes: d6389d3ccc13 ("perf/x86/amd/uncore: Refactor uncore management")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > ---
+> >  arch/x86/events/amd/uncore.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/events/amd/uncore.c b/arch/x86/events/amd/uncore.c
+> > index 9b444ce24108..a389828f378c 100644
+> > --- a/arch/x86/events/amd/uncore.c
+> > +++ b/arch/x86/events/amd/uncore.c
+> > @@ -1009,7 +1009,8 @@ static struct amd_uncore uncores[UNCORE_TYPE_MAX] = {
+> >  static int __init amd_uncore_init(void)
+> >  {
+> >  	struct amd_uncore *uncore;
+> > -	int ret, i;
+> > +	int ret = -ENODEV;
+> > +	int i;
+> >  
+> >  	if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD &&
+> >  	    boot_cpu_data.x86_vendor != X86_VENDOR_HYGON)
 > 
-> 	- void prism2mgmt_get_grpaddr(u32 did, struct p80211pstrd *pstr,
-> 				      struct hfa384x *priv);
-> 	- int prism2mgmt_set_grpaddr(u32 did,
-> 		                   u8 *prism2buf, struct p80211pstrd *pstr,
-> 	                           struct hfa384x *priv);
-> 	- int prism2mgmt_get_grpaddr_index(u32 did);
 > 
+> Thanks for catching this. I see that 'ret' remains uninitialized for cases
+> where the hotplug callback registration fails and was thinking if the
+> following is a better fix for this as the reason might not be ENODEV.
 
-Could you look up when the functions were deleted and add that
-information to the commit message?
+Yeah, passing through the real error codes is usually better.
 
-    These functions were removed five years ago in commit 123412341234
-    ("delete functions").
+Here's it's probably a bit academic, as I don't think we are even using the 
+init return code in the init sequence iterator, see how the return code by 
+do_one_initcall() gets ignored by do_initcall_level() & do_pre_smp_initcalls() ...
 
-regards,
-dan carpenter
+Nevertheless, mind submitting this as a separate patch?
+
+Thanks,
+
+	Ingo
