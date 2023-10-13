@@ -2,159 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C647C8613
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D927C8619
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231705AbjJMMsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38764 "EHLO
+        id S231753AbjJMMtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 08:49:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjJMMsd (ORCPT
+        with ESMTP id S231664AbjJMMtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 08:48:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4403EBD;
-        Fri, 13 Oct 2023 05:48:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697201312; x=1728737312;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6iMpv2UTySZaEAYqtKN2xhPIH1oWxAEbKNCY7/VQAbU=;
-  b=WNQi1vR6MPq/QtYAWVbC4+8731puk+NTl5hPI30g6DfjuvPCAu6Ypn6+
-   363rKuN2iHMAOjcYFvm/aL6h3Z3UEWqmgjXLZVY55H1eF5ejf6KabQitr
-   36J+tMIYdmwjVo+lEPksZINurU9LDHRUcJWmhf2MeX7KT4XsxIXeIRhNe
-   mDY0WOV+5jLM8MvXL+5KPDPUY+Cf0EtVcoYavbhcdZRsK8/jzAyuBFTsM
-   RH0EMSz8W1IX/tei86EQ4igzwv/JPC0lcp6gc3EYHpNh1Agn+dfZiLX9c
-   lUB0z/B/I21pwUgRiteTigcmKP0Ms4lYnEPHow6915ZIYE68W1qSQtIsn
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="385012422"
-X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
-   d="scan'208";a="385012422"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 05:48:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="820620478"
-X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
-   d="scan'208";a="820620478"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.170.232]) ([10.249.170.232])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 05:48:22 -0700
-Message-ID: <a4c2402f-fc81-ff54-7c5b-606fa14405e2@linux.intel.com>
-Date:   Fri, 13 Oct 2023 20:48:19 +0800
+        Fri, 13 Oct 2023 08:49:10 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A261CA
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:49:08 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40651a72807so21269895e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:49:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697201346; x=1697806146; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RD1+psGJavjlbvAsvM/ymtJYhrE+StFSszclFnViCqk=;
+        b=A0lTc6X1zdpf939x/P3h4BE9SaArVD/bTAUKke+cAAcynWryplCSSWGbTs8ozq0LbJ
+         jwC0KF3H1fd/gwCZLm+r5hLheL6MeoGv9i2mG27LhPP3AOb5HVDuD8kHLeW+KsKwXMSb
+         ir/Q9GFA6p8ThhOq2R2jZO8qfpTHAPzZINSEOJ0b6gOOwbuH35n/ACehlOdGmy5QIpCU
+         ubECQlW9CdZJAU1fmkIxjkgCCS+RmDugfJEP4Hu/UlzL+qdSGGFHL34B5amb2e7YeIAT
+         cSDXVGnXHT706ErEYWA43LHfVUUX2TzBAOjcRG0NH9ynRodawGMaAtpBEeqq2okakoqV
+         hrgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697201346; x=1697806146;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RD1+psGJavjlbvAsvM/ymtJYhrE+StFSszclFnViCqk=;
+        b=R3W2Qh2Gd7ms9c9krGfN+qz537T7LvYLyLX+pSo2IUWOn4j3kgJdj7ZIBMXnWEWlFb
+         y1ObIYtctEFWBpKPvE72TcGF8wmwENgvA4PSOiFE3n6FBbRFSSkBw3tRsivrpBa0tiz7
+         hQNaPeYfGPEkx1T1Rs80MW2l4DSrR6aks/zmGgdhIUkXs+JGBK2ZI5plU/pmqIp3Ef2/
+         GSemL4MCga8IZ39gAwJ0QCzEpnNdn4zsBp3G3SVpYwaNdQbO4970u3BtC/FAYeMeNJ8/
+         94DdSYfj78PesFmGARV3dUw1/lBasT6fk59Vk6W1n/7eE/ubF6agrMWx+lAQHanH1Hw+
+         BKDA==
+X-Gm-Message-State: AOJu0YxQ7oheAXp1YDPC57OxWsNZqLjmUyOOZBJrHxGW9fxEsDh45hK2
+        GXIIn7AWiOsdbUHMUXZ7sN5CWg==
+X-Google-Smtp-Source: AGHT+IF54huxf7dde1KWHvmsDTifccuSHzOgUltiB3F36VOxPTTRYtt0svyxtS6VLHP7t+EUZnxZIA==
+X-Received: by 2002:a1c:7917:0:b0:405:3d27:70e8 with SMTP id l23-20020a1c7917000000b004053d2770e8mr22824382wme.36.1697201346509;
+        Fri, 13 Oct 2023 05:49:06 -0700 (PDT)
+Received: from srini-hackbase.lan ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id w16-20020adf8bd0000000b0032d81837433sm8035438wra.30.2023.10.13.05.49.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 05:49:06 -0700 (PDT)
+From:   srinivas.kandagatla@linaro.org
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/3] nvmem: fixes for v6.6 
+Date:   Fri, 13 Oct 2023 13:49:01 +0100
+Message-Id: <20231013124904.175782-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Cc:     baolu.lu@linux.intel.com, "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "Martins, Joao" <joao.m.martins@oracle.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: Re: [PATCH v5 04/11] iommu/vt-d: Add helper to setup pasid nested
- translation
-To:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>
-References: <20230921075431.125239-1-yi.l.liu@intel.com>
- <20230921075431.125239-5-yi.l.liu@intel.com>
- <BN9PR11MB5276DD2D6E5690F8FC7B18378CC2A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <8974035d-9f9c-e209-79d6-8e3c6402e516@intel.com>
-Content-Language: en-US
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <8974035d-9f9c-e209-79d6-8e3c6402e516@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-Developer-Signature: v=1; a=openpgp-sha256; l=384; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=1qG0LL0y3gK0QzWh3m0hRU9MU2RIU+zUuB+xUWXv6dk=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBlKTzAPsWHD1xL+nswNdK23vtW+tPBaH4MPpU74 f8KI7D10JeJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZSk8wAAKCRB6of1ZxzRV N9jMB/0cxNVmcj9RRTfBywV56wmUV65uYxkb2Hsm+ci2hNLgBvfuDg6VqECPCXdl+wOmXSex3Yg 2yrROORYqk6VP9JLeQ00yKOCjtxjJYwjhxeUrZYFkd1FRM2orneazau/dxIv8Iq/ozZS31DFQ3K 5Cv5LWDGlEvrpDZzwx8seVCj/9u/uF56gecm4sGUAt73zoxBu1/SwqMOacc6BFpzN1tbGccj3pI eWrsdm3VaES0XLP92L9lS9ZQzU/H2j606lJX4pB1VDTXc8hQUy+5YPD4PCUNz2aJf3NMDpj8JNX bvB4aHR0tX+RrTQ18W4NoS+aRsKrJriqz3mlzjgasyaWTakO
+X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/13 20:40, Yi Liu wrote:
->>
->>> +        return -EINVAL;
->>> +    }
->>> +
->>> +    if ((s1_cfg->flags & IOMMU_VTD_S1_SRE) && !ecap_srs(iommu-
->>>> ecap)) {
->>> +        pr_err_ratelimited("No supervisor request support on %s\n",
->>> +                   iommu->name);
->>> +        return -EINVAL;
->>> +    }
->>> +
->>> +    if ((s1_cfg->flags & IOMMU_VTD_S1_EAFE) && !ecap_eafs(iommu-
->>>> ecap)) {
->>> +        pr_err_ratelimited("No extended access flag support
->>> on %s\n",
->>> +                   iommu->name);
->>> +        return -EINVAL;
->>> +    }
->>> +
->>> +    spin_lock(&iommu->lock);
->>> +    pte = intel_pasid_get_entry(dev, pasid);
->>> +    if (!pte) {
->>> +        spin_unlock(&iommu->lock);
->>> +        return -ENODEV;
->>> +    }
->>> +    if (pasid_pte_is_present(pte)) {
->>> +        spin_unlock(&iommu->lock);
->>> +        return -EBUSY;
->>> +    }
->>> +
->>> +    pasid_clear_entry(pte);
->>> +
->>> +    if (s1_cfg->addr_width == ADDR_WIDTH_5LEVEL)
->>> +        pasid_set_flpm(pte, 1);
->>> +
->>> +    pasid_set_flptr(pte, (uintptr_t)s1_gpgd);
->>> +
->>> +    if (s1_cfg->flags & IOMMU_VTD_S1_SRE) {
->>> +        pasid_set_sre(pte);
->>> +        if (s1_cfg->flags & IOMMU_VTD_S1_WPE)
->>> +            pasid_set_wpe(pte);
->>> +    }
->>> +
->>> +    if (s1_cfg->flags & IOMMU_VTD_S1_EAFE)
->>> +        pasid_set_eafe(pte);
->>> +
->>> +    if (s2_domain->force_snooping)
->>> +        pasid_set_pgsnp(pte);
->>> +
->>> +    pasid_set_slptr(pte, virt_to_phys(pgd));
->>> +    pasid_set_fault_enable(pte);
->>> +    pasid_set_domain_id(pte, did);
->>> +    pasid_set_address_width(pte, s2_domain->agaw);
->>> +    pasid_set_page_snoop(pte, !!ecap_smpwc(iommu->ecap));
->>> +    pasid_set_translation_type(pte, PASID_ENTRY_PGTT_NESTED);
->>> +    pasid_set_present(pte);
->>> +    spin_unlock(&iommu->lock);
->>
->> All changes within iommu->lock are specific to the device specific
->> PASID entry. Probably this is one potential cleanup TODO to
->> use a per-device lock instead.
-> 
-> yeah, a separate cleanup. is it, @Baolu?
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Sure. I'd like to take some time to consider this further. Please keep
-it as-is for the time being.
+Hi Greg,
 
-Best regards,
-baolu
+Here are some fixes in nvmem mostly around imx register count.
+
+Can you please apply them for v6.6
+
+thanks,
+Srini
+
+
+
+Peng Fan (3):
+  nvmem: imx: correct nregs for i.MX6SLL
+  nvmem: imx: correct nregs for i.MX6UL
+  nvmem: imx: correct nregs for i.MX6ULL
+
+ drivers/nvmem/imx-ocotp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+-- 
+2.25.1
+
