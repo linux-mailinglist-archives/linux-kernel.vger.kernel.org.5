@@ -2,123 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 990447C8C8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 19:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2EA7C8C92
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 19:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbjJMRqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 13:46:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45360 "EHLO
+        id S230133AbjJMRsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 13:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJMRqK (ORCPT
+        with ESMTP id S229518AbjJMRsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 13:46:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FED83
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:46:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58DDFC433C9;
-        Fri, 13 Oct 2023 17:46:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697219168;
-        bh=LnnOZq9IcCexCgRtAyz56/PMKVOuCg7VAzCjooDMXH8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=j4wUI0Iz9/RmzVEvQtad7WVexCb03+TqC9xzaQ3JNoXL+VhSRjEFe7yiqD1HUxyW5
-         txuxZ9F3GR08ik6Yt7z1gESAPpXwZ9080tI5Ch1KjdWoZvZQ3lpkcgjocqoM+6OJ3L
-         rufidlqsYGr7RQnIJUBL+6RzxcV3XY9cfOd6KTj2qksXlY90kyd8X0A+/vpf6+T9rL
-         OaWxf/c0BPtMAeioRjxzrDyvFo5Q/ovpCQdupU5IEg8U3iGt2P1fTWKDQm2scvy3ry
-         rRWhQK3NfK9jGCJ2xBFYgqyKtDKRY6dNYiY6//UuLzeYDdUc7M+N7HOY1bGu0ZSqVc
-         mKuFoK0FdG2Hw==
-Date:   Fri, 13 Oct 2023 10:46:06 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v5 08/16] net: ethtool: Add a command to expose
- current time stamping layer
-Message-ID: <20231013104606.174664a2@kernel.org>
-In-Reply-To: <20231013170903.p3ycicebnfrsmoks@skbuf>
-References: <20231009155138.86458-1-kory.maincent@bootlin.com>
-        <20231009155138.86458-9-kory.maincent@bootlin.com>
-        <2fbde275-e60b-473d-8488-8f0aa637c294@broadcom.com>
-        <20231010102343.3529e4a7@kmaincent-XPS-13-7390>
-        <20231013090020.34e9f125@kernel.org>
-        <20231013161446.st7tlemyaj3ggkgk@skbuf>
-        <20231013093056.4f915df1@kernel.org>
-        <20231013170903.p3ycicebnfrsmoks@skbuf>
+        Fri, 13 Oct 2023 13:48:41 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF266BB
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:48:39 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9936b3d0286so396160766b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:48:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697219318; x=1697824118; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xDPc1YioSb3KUnMIDBSq84//2Atay2Wv50Tb3yT+Q0Q=;
+        b=IAbL9s0oSv63uxy7HvVk3Km1zT9yzKFxA0KQ7u+5D03v0pmqDREYJkThecWgqY3Zgl
+         x2yqhITBSI9ZPs9KddFdnh/25aA+KwrGugwWGpeFV89iDtRGiJtNo06G87MT8FJjxRcI
+         4hRXDu2psyCmGUXRZr2x0l3K7Suz6Me7Z0hJ4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697219318; x=1697824118;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xDPc1YioSb3KUnMIDBSq84//2Atay2Wv50Tb3yT+Q0Q=;
+        b=FjbzUXZTs+XZ71ud+4q+EuORK3swjYjb+KRyD18vNxl4ICy2fIX1mMxTVqeDGcwFVh
+         WAfAtVzKxBZueha1awvGD5wJ0Bm3BWFkWjisvw8epdKEqpbMxOHB/UWXmxYY8/cJzLJm
+         CHa9Jp0sILMgBu1UZSaEGoladm77dyCkbv94Ra0InRTbbsADA1sC4hdNbiGuYiXdYWw+
+         991x+aWqlpxaBZJC7iCrnBZpBcaMfur/wY1vPxvNpgAPGyx2NXxgViGiB+guSSJRKxbj
+         ++tVYP4o6srNqs3Ijmyp7ht+XteyiSXJVCvI7ndZva8GTtle8IrEsMS9GWicyV0fVzJt
+         PiaA==
+X-Gm-Message-State: AOJu0YySGlXGqbvx9g4G/McMugr16pq7WfC2C+vf6/3G/aFjeQE2QSa/
+        nSl/mbgfvp3q9C17MD48voeQmlbVq9NVVS9Y/cuBaQ==
+X-Google-Smtp-Source: AGHT+IEp1diNMol+ba2NN4E/d68ZcALq7aK1xCDYre4/Ya5RZYugzBxxhYEBOKFbm8OC0fG9HWEFSA==
+X-Received: by 2002:a17:906:10a:b0:9a1:cbe4:d029 with SMTP id 10-20020a170906010a00b009a1cbe4d029mr28246808eje.74.1697219317955;
+        Fri, 13 Oct 2023 10:48:37 -0700 (PDT)
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
+        by smtp.gmail.com with ESMTPSA id si5-20020a170906cec500b009b97d9ae329sm12656675ejb.198.2023.10.13.10.48.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Oct 2023 10:48:37 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-536b39daec1so3989864a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:48:37 -0700 (PDT)
+X-Received: by 2002:a17:907:7702:b0:9ae:5523:3f84 with SMTP id
+ kw2-20020a170907770200b009ae55233f84mr22085726ejc.72.1697219316989; Fri, 13
+ Oct 2023 10:48:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <e6d1dae8-e28a-455a-a851-661c825fbdcf@gmail.com> <9787bd09-91b3-4a79-9ca9-e7199c925f36@leemhuis.info>
+In-Reply-To: <9787bd09-91b3-4a79-9ca9-e7199c925f36@leemhuis.info>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 13 Oct 2023 10:48:19 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj99i00K5ZD_OJj3d8rLG07bnTH=0_GxpzxrSzNF-WYQQ@mail.gmail.com>
+Message-ID: <CAHk-=wj99i00K5ZD_OJj3d8rLG07bnTH=0_GxpzxrSzNF-WYQQ@mail.gmail.com>
+Subject: Re: [regression] some Dell systems hang at shutdown due to "x86/smp:
+ Put CPUs into INIT on shutdown if possible" (was Fwd: Kernel 6.5 hangs on shutdown)
+To:     Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Yanjun Yang <yangyj.ee@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 20:09:03 +0300 Vladimir Oltean wrote:
-> > > Translation between the UAPI-visible PHC index and MAC, DMA, phylib
-> > > PHY, other PHY etc can then be done by the kernel as needed.  
-> > 
-> > Translation by the kernel at which point?  
-> 
-> The gist of what I'm proposing is for the core ethtool netlink message
-> handler to get just the phc_index as an attribute. No other information
-> as to what it represents. Not that it's netdev, DMA, phylib PHY or whatnot.
-> 
-> The ethtool kernel code would iterate through the stuff registered in
-> the system for the netdev, calling get_ts_info() or phy_ts_info() on it,
-> until it finds something which populates struct ethtool_ts_info ::
-> phc_index with the phc_index retrieved from netlink.
-> 
-> Then, ethtool just talks with the timestamper that matched that phc_index.
-> 
-> Same idea would be applied for the command that lists all timestamping
-> layers for a netdev. Check get_ts_info(), phy_ts_info(dev->phydev), and
-> can be extended in the future.
+On Fri, 13 Oct 2023 at 05:05, Linux regression tracking (Thorsten
+Leemhuis) <regressions@leemhuis.info> wrote:
+>
+> Thomas, turns out that bisection result was slightly wrong: a recheck
+> confirmed that the regression is actually caused by 45e34c8af58f23
+> ("x86/smp: Put CPUs into INIT on shutdown if possible") [v6.5-rc1] of
+> yours. See https://bugzilla.kernel.org/show_bug.cgi?id=217995 for details.
 
-I see, that could work. The user would then dig around sysfs to figure
-out which PHC has what characteristics?
+That commit does look pretty dangerous.
 
-> > IMHO it'd indeed be clearer for the user to have an ability to read 
-> > the PHC for SOF_..._DMA via ETHTOOL_MSG_TS_LIST_GET_REPLY as a separate
-> > entry, rather than e.g. assume that DMA uses the same PHC as MAC.  
-> 
-> I'm not really sure what you're referring to, with SOF_..._DMA.
-> The DMA, if presented as a PHC as I am proposing, would play the role of
-> the hardware timestamp provider (think SOF_TIMESTAMPING_TX_HARDWARE |
-> SOF_TIMESTAMPING_RX_HARDWARE), so there will be no driver-visible
-> special socket option flags for DMA timestamping.
+If *anything* is done through SMI after the code does that
+smp_park_other_cpus_in_init() sequence, I wouldn't be surprised in the
+least if the machine is hung.
 
-Each packet may want different timestamp tho, especially on Tx it
-should be fairly easy for socket to request to get "real" MAC stamps,
-while most get cheaper DMA stamps. Currently some drivers run flow
-matching to find PTP packets and automatically give them better quality
-timestamps :(
+That's made worse since it looks like the shutdown sequence isn't
+necessarily run on the boot CPU, so the boot CPU itself may be in
+INIT, and any SMI quite possibly ends up treating that CPU specially.
 
-Even if at the config level we use PHCs we need to translate that into
-some SKBTX_* bit, don't we?
+Who knows what SMI does, but the fact that the affected machines seem
+to be mainly from one particular manufacturer does tend to imply it's
+something like that.
+
+And the code does do a fair amount *after* shutting down cpu's. Not
+just things like calling x86_platform.iommu_shutdown(), but also
+things like possibly the tboot shutdown sequence (which almost
+*certainly* is some SMI thing).
+
+I dunno. Thomas - I htink the argument for that commit was fairly
+theoretical, and reverting it seems the obvious thing, unless you have
+some idea of what might be wrong.
+
+               Linus
