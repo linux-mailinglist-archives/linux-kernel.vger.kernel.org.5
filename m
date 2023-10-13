@@ -2,100 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 143A87C7DAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A5B7C7DB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbjJMG3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 02:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46944 "EHLO
+        id S229761AbjJMGaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 02:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbjJMG3n (ORCPT
+        with ESMTP id S229441AbjJMGaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 02:29:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C70FB7;
-        Thu, 12 Oct 2023 23:29:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6601CC433C7;
-        Fri, 13 Oct 2023 06:29:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697178581;
-        bh=ddmv6NZdkEiu+CdZIPIU1a/xmALRcZOj0furUIUeAtI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dUEg6HzJB8gzh3s708jayGqSozY/KG1LzQ9mnvWr8yBF9K8fUtcrxGsycwQWCeq8h
-         ZzAQbC6dT6hyrdiy6kar2gNi/DkUTxsB4HzmhijWrgg/gRaujwnhZeKw1IlcD4UIEf
-         1k/Q6i7+NiSDut8cWvCpbWAJsZkKZ85HhEQk3Kpc=
-Date:   Fri, 13 Oct 2023 08:29:37 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     chenguohua@jari.cn
-Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH] vt: Clean up errors in selection.h
-Message-ID: <2023101313-aftermost-skydiver-c587@gregkh>
-References: <4545cc2c.940.18b26f571fe.Coremail.chenguohua@jari.cn>
+        Fri, 13 Oct 2023 02:30:09 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A975B7
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:30:07 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99c1c66876aso280253866b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1697178606; x=1697783406; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=VlsSN+I3I9LHiPwm/QKJMqlA+Ye2MfSqfYL2XdtaW2Y=;
+        b=kmk531rilXQUitnIFp9+oUDcWEIFn3EkAiUTqjilzD+6skqrDBAFIkzuF2vbhRV3IY
+         dYz+U3lQMXAuZN3p51mn8zPfmAd92XKcnORcVfDe21cOWVlUXYOQ80WTqEHG74OP38Er
+         pXzeFsMe8OCfrK/mJrxfDA+65C18JRFAxbCeRFVvakpoiv9GGND+FfGAi16Gsv2Rlzb0
+         N8eNHMLj/Si1tYc7na9bsT4TapSI01jelyL0ciajLXTmusQWqjdwrg/xS3cOND335CeJ
+         qbhpC5hh1BgXn5H7KKp1KXSROC3Yo22l8SDGSZFXyx/QBWJCh5z0a7c2XacBYdpWlAdb
+         Sj+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697178606; x=1697783406;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VlsSN+I3I9LHiPwm/QKJMqlA+Ye2MfSqfYL2XdtaW2Y=;
+        b=SE0Ddnz7Jy1KmZocVK31jj9WeqHfZpVZf3xfCUzFo6dyq0mCL4DYlec0PVRvVgFT4D
+         z1y+80GG5OWpJjUI40wdQkfdectIuz51n/naRE+MT43D+aiNmHoXkwewDMzZo/JoBNaY
+         ypn/w5AtvxGvYxwHiesqQPMJKe9UM1m89GQrh6EVhFXWBCzKXUlrB1Kk54eWV7Yl/jTX
+         rEn7wZy1K2COMzAp9iL/zeK20XPO70xUAHkNtfvXtFxEPsEX+9plH92xRQPe7nJuy1ha
+         E6zXTXitIu1+uA6JAjGbbSylMlvgEI6UR3br1kzAcmXaBHMyLuAI0JlX3NeeQWi/Aiof
+         lKTw==
+X-Gm-Message-State: AOJu0YzIuult8g31HHu1EhRRo7DeCIBhzFQj7piREpwrNebOVxWCv3PV
+        qzNUqkz3ZURSJEVC5U/FYOEOCw==
+X-Google-Smtp-Source: AGHT+IGNOnSs8xzdJgEFPUtBqJj/23r2Laz3t651Htk71AKDs3MXt3CmE6/6M6hLxyJLTO+zXBbR+Q==
+X-Received: by 2002:a17:907:8b8c:b0:9a2:28dc:4166 with SMTP id tb12-20020a1709078b8c00b009a228dc4166mr24507418ejc.75.1697178605714;
+        Thu, 12 Oct 2023 23:30:05 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id kf24-20020a17090776d800b009b95787eb6dsm11882433ejc.48.2023.10.12.23.30.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 23:30:05 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 08:30:04 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Haibo Xu <haibo1.xu@intel.com>,
+        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: selftests: Initialise dynamically allocated
+ configuration names
+Message-ID: <20231013-0fb230037c78d2c397e691c7@orel>
+References: <20231013-kvm-get-reg-list-str-init-v1-1-034f370ff8ab@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <4545cc2c.940.18b26f571fe.Coremail.chenguohua@jari.cn>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231013-kvm-get-reg-list-str-init-v1-1-034f370ff8ab@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 10:55:01AM +0800, chenguohua@jari.cn wrote:
-> Fix the following errors reported by checkpatch:
+On Fri, Oct 13, 2023 at 12:19:30AM +0100, Mark Brown wrote:
+> When we dynamically generate a name for a configuration in get-reg-list
+> we use strcat() to append to a buffer allocated using malloc() but we
+> never initialise that buffer. Since malloc() offers no guarantees
+> regarding the contents of the memory it returns this can lead to us
+> corrupting, and likely overflowing, the buffer:
 > 
-> ERROR: "foo * bar" should be "foo *bar"
+>   vregs: PASS
+>   vregs+pmu: PASS
+>   sve: PASS
+>   sve+pmu: PASS
+>   vregs+pauth_address+pauth_generic: PASS
+>   X�vr+gspauth_addre+spauth_generi+pmu: PASS
 > 
-> Signed-off-by: GuoHua Cheng <chenguohua@jari.cn>
+> Initialise the buffer to an empty string to avoid this.
+> 
+> Fixes: 17da79e009c37 ("KVM: arm64: selftests: Split get-reg-list test code")
+
+Doh, this is an embarrassing bug. But the patch above just moves the buggy
+code. I'm still guilty for the bug, but the fixes tag should be
+
+Fixes: 2f9ace5d4557 ("KVM: arm64: selftests: get-reg-list: Introduce vcpu configs")
+
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 > ---
->  include/linux/selection.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  tools/testing/selftests/kvm/get-reg-list.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/include/linux/selection.h b/include/linux/selection.h
-> index 170ef28ff26b..3bff95699083 100644
-> --- a/include/linux/selection.h
-> +++ b/include/linux/selection.h
-> @@ -22,7 +22,7 @@ extern int set_selection_kernel(struct tiocl_selection *v,
->  extern int paste_selection(struct tty_struct *tty);
->  extern int sel_loadlut(char __user *p);
->  extern int mouse_reporting(void);
-> -extern void mouse_report(struct tty_struct * tty, int butt, int mrx, int mry);
-> +extern void mouse_report(struct tty_struct *tty, int butt, int mrx, int mry);
+> diff --git a/tools/testing/selftests/kvm/get-reg-list.c b/tools/testing/selftests/kvm/get-reg-list.c
+> index be7bf5224434..dd62a6976c0d 100644
+> --- a/tools/testing/selftests/kvm/get-reg-list.c
+> +++ b/tools/testing/selftests/kvm/get-reg-list.c
+> @@ -67,6 +67,7 @@ static const char *config_name(struct vcpu_reg_list *c)
 >  
->  bool vc_is_sel(struct vc_data *vc);
+>  	c->name = malloc(len);
 >  
-> -- 
-> 2.17.1
+> +	c->name[0] = '\0';
+>  	len = 0;
+>  	for_each_sublist(c, s) {
+>  		if (!strcmp(s->name, "base"))
+> 
+> ---
+> base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+> change-id: 20231012-kvm-get-reg-list-str-init-76c8ed4e19d6
+>
 
-Hi,
+Other than the tag,
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- It looks like you did not use your name for the patch on either
-  the Signed-off-by: line, or the From: line (both of which have to
-  match).  Please read the kernel file,
-  Documentation/process/submitting-patches.rst for how to do this
-  correctly.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+Thanks,
+drew
