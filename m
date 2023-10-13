@@ -2,51 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6147B7C7F94
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 835147C7F95
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbjJMIJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59788 "EHLO
+        id S230019AbjJMIKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjJMIJx (ORCPT
+        with ESMTP id S229743AbjJMIKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:09:53 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12B9BE;
-        Fri, 13 Oct 2023 01:09:50 -0700 (PDT)
-Received: from kwepemm000005.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S6Jx40TlWzVjqg;
-        Fri, 13 Oct 2023 16:06:16 +0800 (CST)
-Received: from [10.67.121.110] (10.67.121.110) by
- kwepemm000005.china.huawei.com (7.193.23.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 13 Oct 2023 16:09:48 +0800
-Subject: Re: [PATCH v16 1/2] vfio/migration: Add debugfs to live migration
- driver
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
-        <jonathan.cameron@huawei.com>, <bcreeley@amd.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-References: <20230926093356.56014-1-liulongfang@huawei.com>
- <20230926093356.56014-2-liulongfang@huawei.com>
- <20231003132630.764d9488.alex.williamson@redhat.com>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <8a25fd59-0690-cef0-95e2-cdc1a8b54955@huawei.com>
-Date:   Fri, 13 Oct 2023 16:09:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Fri, 13 Oct 2023 04:10:17 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8309CC9
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:10:15 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99357737980so297990666b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:10:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1697184614; x=1697789414; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tpzwZ+RNeBqt/RBUQJuOWXGZTsvoBXF446IDuijvCXI=;
+        b=kJ9EkaoogYB8jyX6l1iFyAJ3s7hSB02WpYBbOOVQodugp1bR8SG1UF51YbKsnJvX7b
+         DxcGX0qjJBxYr1s5M2tB50SFxwAso4qUntOoQ4/27Qs8Gjqq6346K/VhrPTR9SB3jzsB
+         qFASt53uqQZJPw4GUjVDwYUU5U0OIkUeMHZz3OSj/C02vDesb/TDcJ7Z7wJaaCinTOAe
+         DfX8tf2ff/GTDiTMrAdO2eBazQ0D1ovW2LBZds9d+fTV0Z9zm7AQc6CuRFJDQbmtwxFv
+         IBtYDfNCzZfEsICROYZ2YW9Mg+8psjR5hn7I8UUgZShJImyA1OS4wehql9Te77ttTBGL
+         kAAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697184614; x=1697789414;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tpzwZ+RNeBqt/RBUQJuOWXGZTsvoBXF446IDuijvCXI=;
+        b=FZHoqmjKaGbSRIj/7e3lnoQqo4SYzMkQZgawV8g+KLPiWt46/49YbRBK0ZYJ+zmxei
+         FgyGa/p2W/I5vtLz/ctuqmnrOUtR5EK53it08qkW5iO3R5ewK9cLCQAZ14FXuR3O8gXw
+         ouQ0RGrk/jvWCjDLiZgDloiBUWmz5DmXFK0N+GIjwOyunf/uaMeAJQ1xLTCfT5sX5cMf
+         pzlwz6NBpldSJxCcN13KY1uhe5eZfA2yPAHcQIaoJIFXbO2tCMJoKcVSFHA5QdlUzAmJ
+         pxSeng3F7nT+89d7E1y9xBC2YfT1s0A0GjPau+Rg3ZqN65Xd8PkvxfQCJD7vqhhVeQOd
+         Ef0Q==
+X-Gm-Message-State: AOJu0YzQ9UizG809UFC6eFdEnOcptBjIA9299VMH3tmgE+5LGMjkEB/X
+        Yob4urM8n/c9Iiv34w39ku8HSQ==
+X-Google-Smtp-Source: AGHT+IElyBa/M08l1OcsNaeLT3o4FcMgzP19oxx4R3SJSqBBmUcsZEoHvdxs+bocsEUyU4kW0WXBxA==
+X-Received: by 2002:a17:906:311b:b0:9b0:169b:eedf with SMTP id 27-20020a170906311b00b009b0169beedfmr24945565ejx.7.1697184613862;
+        Fri, 13 Oct 2023 01:10:13 -0700 (PDT)
+Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id q14-20020a170906360e00b009a5f1d1564dsm11910761ejb.126.2023.10.13.01.10.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 01:10:13 -0700 (PDT)
+From:   Luca Weiss <luca.weiss@fairphone.com>
+Subject: [PATCH 0/4] Add Fairphone 5 thermals (PMK7325, PM7250B, PM7325)
+Date:   Fri, 13 Oct 2023 10:09:52 +0200
+Message-Id: <20231013-fp5-thermals-v1-0-f14df01922e6@fairphone.com>
 MIME-Version: 1.0
-In-Reply-To: <20231003132630.764d9488.alex.williamson@redhat.com>
-Content-Type: text/plain; charset="gbk"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.121.110]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm000005.china.huawei.com (7.193.23.27)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+X-B4-Tracking: v=1; b=H4sIAFD7KGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDA0Nj3bQCU92SjNSi3MScYl2jJGNDi2QLU8uUFBMloJaCotS0zAqwcdG
+ xtbUA2B40Pl4AAAA=
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,346 +81,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/4 3:26, Alex Williamson wrote:
-> On Tue, 26 Sep 2023 17:33:55 +0800
-> liulongfang <liulongfang@huawei.com> wrote:
-> 
->> From: Longfang Liu <liulongfang@huawei.com>
->>
->> There are multiple devices, software and operational steps involved
->> in the process of live migration. An error occurred on any node may
->> cause the live migration operation to fail.
->> This complex process makes it very difficult to locate and analyze
->> the cause when the function fails.
->>
->> In order to quickly locate the cause of the problem when the
->> live migration fails, I added a set of debugfs to the vfio
->> live migration driver.
->>
->>     +-------------------------------------------+
->>     |                                           |
->>     |                                           |
->>     |                  QEMU                     |
->>     |                                           |
->>     |                                           |
->>     +---+----------------------------+----------+
->>         |      ^                     |      ^
->>         |      |                     |      |
->>         |      |                     |      |
->>         v      |                     v      |
->>      +---------+--+               +---------+--+
->>      |src vfio_dev|               |dst vfio_dev|
->>      +--+---------+               +--+---------+
->>         |      ^                     |      ^
->>         |      |                     |      |
->>         v      |                     |      |
->>    +-----------+----+           +-----------+----+
->>    |src dev debugfs |           |dst dev debugfs |
->>    +----------------+           +----------------+
->>
->> The entire debugfs directory will be based on the definition of
->> the CONFIG_DEBUG_FS macro. If this macro is not enabled, the
->> interfaces in vfio.h will be empty definitions, and the creation
->> and initialization of the debugfs directory will not be executed.
->>
->>    vfio
->>     |
->>     +---<dev_name1>
->>     |    +---migration
->>     |        +--state
->>     |
->>     +---<dev_name2>
->>          +---migration
->>              +--state
->>
->> debugfs will create a public root directory "vfio" file.
->> then create a dev_name() file for each live migration device.
->> First, create a unified state acquisition file of "migration"
->> in this device directory.
->> Then, create a public live migration state lookup file "state"
->> Finally, create a directory file based on the device type,
->> and then create the device's own debugging files under
->> this directory file.
-> 
-> We don't actually do the thing claimed in this last statement.
->  
+Configure the necessary components to register some thermal zones in
+Linux for the different thermistors found on the Fairphone 5.
 
-OK, I will modify it in the next version.
+The names for the thermal zones and ADCs were taken from the downstream
+kernel but double checked against hardware schematics.
 
->> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
->> ---
->>  drivers/vfio/Makefile       |  1 +
->>  drivers/vfio/vfio.h         | 14 ++++++
->>  drivers/vfio/vfio_debugfs.c | 87 +++++++++++++++++++++++++++++++++++++
->>  drivers/vfio/vfio_main.c    | 14 +++++-
->>  include/linux/vfio.h        |  7 +++
->>  5 files changed, 121 insertions(+), 2 deletions(-)
->>  create mode 100644 drivers/vfio/vfio_debugfs.c
->>
->> diff --git a/drivers/vfio/Makefile b/drivers/vfio/Makefile
->> index c82ea032d352..7934ac829989 100644
->> --- a/drivers/vfio/Makefile
->> +++ b/drivers/vfio/Makefile
->> @@ -8,6 +8,7 @@ vfio-$(CONFIG_VFIO_GROUP) += group.o
->>  vfio-$(CONFIG_IOMMUFD) += iommufd.o
->>  vfio-$(CONFIG_VFIO_CONTAINER) += container.o
->>  vfio-$(CONFIG_VFIO_VIRQFD) += virqfd.o
->> +vfio-$(CONFIG_DEBUG_FS) += vfio_debugfs.o
-> 
-> I see that other subsystems create Kconfig entries allowing more fine
-> grained control of DEBUGFS support.  Wouldn't it make sense to have a
-> VFIO_DEBUGFS config option, similar to IOMMU_DEBUGFS?
->
-OK, I create a version with VFIO_DEBUGFS
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+Luca Weiss (4):
+      iio: adc: Add PM7325 PMIC7 ADC bindings
+      arm64: dts: qcom: qcm6490-fairphone-fp5: Add PM7250B thermals
+      arm64: dts: qcom: qcm6490-fairphone-fp5: Add PMK7325 thermals
+      arm64: dts: qcom: qcm6490-fairphone-fp5: Add PM7325 thermals
 
-> Also, with our trend towards less redundant file naming, this could
-> just be debugfs.[co].
->
+ arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts | 221 +++++++++++++++++++++
+ include/dt-bindings/iio/qcom,spmi-adc7-pm7325.h    |  69 +++++++
+ 2 files changed, 290 insertions(+)
+---
+base-commit: 7c0d0c1272e82888aa01017818d00245d452b895
+change-id: 20231013-fp5-thermals-2b318c859dd4
 
-OK.
+Best regards,
+-- 
+Luca Weiss <luca.weiss@fairphone.com>
 
->>  obj-$(CONFIG_VFIO_IOMMU_TYPE1) += vfio_iommu_type1.o
->>  obj-$(CONFIG_VFIO_IOMMU_SPAPR_TCE) += vfio_iommu_spapr_tce.o
->> diff --git a/drivers/vfio/vfio.h b/drivers/vfio/vfio.h
->> index 307e3f29b527..09b00757d0bb 100644
->> --- a/drivers/vfio/vfio.h
->> +++ b/drivers/vfio/vfio.h
->> @@ -448,4 +448,18 @@ static inline void vfio_device_put_kvm(struct vfio_device *device)
->>  }
->>  #endif
->>  
->> +#ifdef CONFIG_DEBUG_FS
->> +void vfio_debugfs_create_root(void);
->> +void vfio_debugfs_remove_root(void);
->> +
->> +void vfio_device_debugfs_init(struct vfio_device *vdev);
->> +void vfio_device_debugfs_exit(struct vfio_device *vdev);
->> +#else
->> +static inline void vfio_debugfs_create_root(void) { }
->> +static inline void vfio_debugfs_remove_root(void) { }
->> +
->> +static inline void vfio_device_debugfs_init(struct vfio_device *vdev) { }
->> +static inline void vfio_device_debugfs_exit(struct vfio_device *vdev) { }
->> +#endif /* CONFIG_DEBUG_FS */
->> +
->>  #endif
->> diff --git a/drivers/vfio/vfio_debugfs.c b/drivers/vfio/vfio_debugfs.c
->> new file mode 100644
->> index 000000000000..b79bdef08357
->> --- /dev/null
->> +++ b/drivers/vfio/vfio_debugfs.c
->> @@ -0,0 +1,87 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Copyright (c) 2023, HiSilicon Ltd.
->> + */
->> +
->> +#include <linux/device.h>
->> +#include <linux/debugfs.h>
->> +#include <linux/seq_file.h>
->> +#include <linux/vfio.h>
->> +#include "vfio.h"
->> +
->> +static struct dentry *vfio_debugfs_root;
->> +
->> +static int vfio_device_state_read(struct seq_file *seq, void *data)
->> +{
->> +	struct device *vf_dev = seq->private;
->> +	struct vfio_device *vdev = container_of(vf_dev, struct vfio_device, device);
->> +	enum vfio_device_mig_state state;
->> +	int ret;
->> +
->> +	ret = vdev->mig_ops->migration_get_state(vdev, &state);
->> +	if (ret)
->> +		return -EINVAL;
->> +
->> +	switch (state) {
->> +	case VFIO_DEVICE_STATE_STOP:
->> +		seq_printf(seq, "%s\n", "STOP");
->> +		break;
->> +	case VFIO_DEVICE_STATE_RUNNING:
->> +		seq_printf(seq, "%s\n", "RUNNING");
->> +		break;
->> +	case VFIO_DEVICE_STATE_STOP_COPY:
->> +		seq_printf(seq, "%s\n", "STOP_COPY");
->> +		break;
->> +	case VFIO_DEVICE_STATE_RESUMING:
->> +		seq_printf(seq, "%s\n", "RESUMING");
->> +		break;
->> +	case VFIO_DEVICE_STATE_RUNNING_P2P:
->> +		seq_printf(seq, "%s\n", "RUNNING_P2P");
->> +		break;
->> +	case VFIO_DEVICE_STATE_PRE_COPY:
->> +		seq_printf(seq, "%s\n", "PRE_COPY");
->> +		break;
->> +	case VFIO_DEVICE_STATE_PRE_COPY_P2P:
->> +		seq_printf(seq, "%s\n", "PRE_COPY_P2P");
->> +		break;
->> +	case VFIO_DEVICE_STATE_ERROR:
->              ^^^^^^^^^^^^^^^^^^^^^^^
-> 
->> +		seq_printf(seq, "%s\n", "ERROR");
->> +		break;
->> +	default:
->> +		seq_printf(seq, "%s\n", "Invalid");
->> +	}
-> 
-> Not exactly in the order they're defined:
-> 
-> enum vfio_device_mig_state {
->         VFIO_DEVICE_STATE_ERROR = 0,
->         ^^^^^^^^^^^^^^^^^^^^^^^
->         VFIO_DEVICE_STATE_STOP = 1,
->         VFIO_DEVICE_STATE_RUNNING = 2,
-> 	...
-> 
-> I also suggested last time some means to keep this in sync with the set
-> of states defined.  Maybe there are better suggestions, but one way to
-> do that could be:
-> 
-> diff --git a/drivers/vfio/vfio_debugfs.c b/drivers/vfio/vfio_debugfs.c
-> index ee6b1831b3e5..1ec90b90d150 100644
-> --- a/drivers/vfio/vfio_debugfs.c
-> +++ b/drivers/vfio/vfio_debugfs.c
-> @@ -18,6 +18,9 @@ static int vfio_device_state_read(struct seq_file *seq, void *data)
->         enum vfio_device_mig_state state;
->         int ret;
->  
-> +       BUILD_BUG_ON(VFIO_DEVICE_STATE_NR !=
-> +                    VFIO_DEVICE_STATE_PRE_COPY_P2P + 1);
-> +
->         ret = vdev->mig_ops->migration_get_state(vdev, &state);
->         if (ret)
->                 return -EINVAL;
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index 7f5fb010226d..2b68e6cdf190 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -1219,6 +1219,7 @@ enum vfio_device_mig_state {
->         VFIO_DEVICE_STATE_RUNNING_P2P = 5,
->         VFIO_DEVICE_STATE_PRE_COPY = 6,
->         VFIO_DEVICE_STATE_PRE_COPY_P2P = 7,
-> +       VFIO_DEVICE_STATE_NR,
->  };
->  
->  /**
-> 
-> Thanks,
-> Alex
->
-
-OK, I will modify it in the next version
-
-Thanks,
-Longfang
-
-> 
->> +
->> +	return 0;
->> +}
->> +
->> +void vfio_device_debugfs_init(struct vfio_device *vdev)
->> +{
->> +	struct device *dev = &vdev->device;
->> +
->> +	vdev->debug_root = debugfs_create_dir(dev_name(vdev->dev), vfio_debugfs_root);
->> +
->> +	if (vdev->mig_ops) {
->> +		struct dentry *vfio_dev_migration = NULL;
->> +
->> +		vfio_dev_migration = debugfs_create_dir("migration", vdev->debug_root);
->> +		debugfs_create_devm_seqfile(dev, "state", vfio_dev_migration,
->> +					  vfio_device_state_read);
->> +	}
->> +}
->> +
->> +void vfio_device_debugfs_exit(struct vfio_device *vdev)
->> +{
->> +	debugfs_remove_recursive(vdev->debug_root);
->> +}
->> +
->> +void vfio_debugfs_create_root(void)
->> +{
->> +	vfio_debugfs_root = debugfs_create_dir("vfio", NULL);
->> +}
->> +
->> +void vfio_debugfs_remove_root(void)
->> +{
->> +	debugfs_remove_recursive(vfio_debugfs_root);
->> +	vfio_debugfs_root = NULL;
->> +}
->> +
->> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
->> index cfad824d9aa2..4e3ced20d2d1 100644
->> --- a/drivers/vfio/vfio_main.c
->> +++ b/drivers/vfio/vfio_main.c
->> @@ -309,7 +309,6 @@ static int __vfio_register_dev(struct vfio_device *device,
->>  
->>  	/* Refcounting can't start until the driver calls register */
->>  	refcount_set(&device->refcount, 1);
->> -
->>  	vfio_device_group_register(device);
->>  
->>  	return 0;
->> @@ -320,7 +319,15 @@ static int __vfio_register_dev(struct vfio_device *device,
->>  
->>  int vfio_register_group_dev(struct vfio_device *device)
->>  {
->> -	return __vfio_register_dev(device, VFIO_IOMMU);
->> +	int ret;
->> +
->> +	ret = __vfio_register_dev(device, VFIO_IOMMU);
->> +	if (ret)
->> +		return ret;
->> +
->> +	vfio_device_debugfs_init(device);
->> +
->> +	return 0;
->>  }
->>  EXPORT_SYMBOL_GPL(vfio_register_group_dev);
->>  
->> @@ -378,6 +385,7 @@ void vfio_unregister_group_dev(struct vfio_device *device)
->>  		}
->>  	}
->>  
->> +	vfio_device_debugfs_exit(device);
->>  	/* Balances vfio_device_set_group in register path */
->>  	vfio_device_remove_group(device);
->>  }
->> @@ -1662,6 +1670,7 @@ static int __init vfio_init(void)
->>  	if (ret)
->>  		goto err_alloc_dev_chrdev;
->>  
->> +	vfio_debugfs_create_root();
->>  	pr_info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
->>  	return 0;
->>  
->> @@ -1677,6 +1686,7 @@ static int __init vfio_init(void)
->>  
->>  static void __exit vfio_cleanup(void)
->>  {
->> +	vfio_debugfs_remove_root();
->>  	ida_destroy(&vfio.device_ida);
->>  	vfio_cdev_cleanup();
->>  	class_destroy(vfio.device_class);
->> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
->> index 454e9295970c..769d7af86225 100644
->> --- a/include/linux/vfio.h
->> +++ b/include/linux/vfio.h
->> @@ -69,6 +69,13 @@ struct vfio_device {
->>  	u8 iommufd_attached:1;
->>  #endif
->>  	u8 cdev_opened:1;
->> +#ifdef CONFIG_DEBUG_FS
->> +	/*
->> +	 * debug_root is a static property of the vfio_device
->> +	 * which must be set prior to registering the vfio_device.
->> +	 */
->> +	struct dentry *debug_root;
->> +#endif
->>  };
->>  
->>  /**
-> 
-> .
-> 
