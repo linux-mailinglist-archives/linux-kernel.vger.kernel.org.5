@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C2C7C8A61
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F50A7C8A81
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232760AbjJMQLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:11:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45310 "EHLO
+        id S231828AbjJMQMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232689AbjJMQLe (ORCPT
+        with ESMTP id S232597AbjJMQMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:11:34 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5564A4EFD
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:09:20 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7d261a84bso35917607b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697213330; x=1697818130; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5jpQKDWlX2FMxNrIBcRrOyniIIs22PEbqHRQyt5DVnY=;
-        b=OS/P6lnipweaR9lkIl2sv/lVVCO/HW8DzlkJurqfmlsTCcRwOC7G1FacUVRXdk7EFC
-         fWi4MxicySmAkNK850XetT65hgXDWKOJdPFZNxzuovKPPOxtkoBmQKD3PZ8GSNsQ6n50
-         J1YMOyxUSd5vBeCYl1Zpgsmp300vexSETUGu2nE/LOdn/QEelN7bSetYElcdua4S8EMG
-         e2HpmgCkxSnEtKr0zYQ0G/9Vrkq7gFLwpMu0/z6t8v83lZ2g82r+I2+5fUVe4+bG2rYQ
-         NQV9ByJmvYLCxq8GGzbgJPSNl2Ce/oMfgbIh5/42kMnhUuMV960Ka3wWvDYtX1pHRKJf
-         Tj7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697213330; x=1697818130;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5jpQKDWlX2FMxNrIBcRrOyniIIs22PEbqHRQyt5DVnY=;
-        b=kCLs8XDXCE2DKm6fQxv6am7b6l7S9rY2kUksYhgdue+UzpPb+XbfyvKMnFgizbEzab
-         RMcYadLKMz1y7upALGlBxGGopwWcWKMKE2DoUEz+y6O0BJpz4REnMqOCbzYm4xKrIc5z
-         bxvsbspwDrQHtBnul1y/R6lFci3GIvzIfZ12UWIoXns5O1+eLDRx/YvOggGeYWOVheOE
-         9Umm+EhcQ8o2+V+6MaVHFdjDI/vpSkp3f27xAKjt/Bs5CA0kVIIUS/Gbh6Q7VqGo3RXU
-         bP+Y8BqWCo2SZiCFScHVErvNCEPi6D+4QSVx1R0y4GF6gaq3sEBMSj/4Awvn1V9q4y5O
-         E+GQ==
-X-Gm-Message-State: AOJu0Yw4w1HGv+g7Klgz6CoZ+PZkcFdYC1uPrTQ5cvPgAkbl27dZO1vZ
-        qweq9Ik59hrpmJ8xRj5FzvEyp9nmXKk=
-X-Google-Smtp-Source: AGHT+IGr+qhBt8pjxzcVd1SRmV9WwBcC/LddWp+eOz/KUseqJ6SHMrtLAjMeiKp99TKb7WRh7jqSjWC2AUY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:138d:b0:d9a:4e29:6353 with SMTP id
- x13-20020a056902138d00b00d9a4e296353mr268090ybu.0.1697213330411; Fri, 13 Oct
- 2023 09:08:50 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 09:08:48 -0700
-In-Reply-To: <20231012152542.1355621-1-pbonzini@redhat.com>
-Mime-Version: 1.0
-References: <20231012152542.1355621-1-pbonzini@redhat.com>
-Message-ID: <ZSlrkKHT_U64raV4@google.com>
-Subject: Re: [PATCH] KVM: MIPS: fix -Wunused-but-set-variable warning
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?=" <philmd@linaro.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        Fri, 13 Oct 2023 12:12:21 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF63E103;
+        Fri, 13 Oct 2023 09:11:38 -0700 (PDT)
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D81AD6607362;
+        Fri, 13 Oct 2023 17:10:58 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697213460;
+        bh=N/d1KDLrzpfGVy44YM7QBFJuquGjOyuZ7mvw9nlm5es=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZDoLUXrJPDPTLoIC0bPU+SJr0nXDOHnvQPidfcqohWOCw914G/zt8Ur6OFDaukEQq
+         IScJENZPA12se6YQJfEYozCixgkw84pjcJ9Z5O7gc36OVYEETNOLO+6Ok6ZPTMfkRk
+         bWy+Rz+RW498IOpP9cE+HXic7gUQ3N0AdpTAyEESyaXKXnZVHCVcS64KccFIsqPAuW
+         inIEN1zZUVY7q5IuxGVXpi3GodZ3m7pdKO2bYi0JLFrZ20stAQek/gt264xJHSJ/mi
+         3KY5L8Ax0UpuQjDrf+el6qwpmklmCprPxLeyVfqXV5uaw8bo65YIGDh5jq9/X6hHsO
+         01nEhLn7Lls9g==
+Date:   Fri, 13 Oct 2023 12:10:54 -0400
+From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
+        <nfraprado@collabora.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        kernel@collabora.com, Amit Kucheria <amitk@kernel.org>,
+        Caesar Wang <wxt@rock-chips.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Zhang Rui <rui.zhang@intel.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2] thermal/core: Don't update trip points inside the
+ hysteresis range
+Message-ID: <f33a5cb1-7ec3-429e-a162-fb5dcbcdd664@notapiano>
+References: <20230922184425.290894-1-nfraprado@collabora.com>
+ <6627b83b-bee7-a123-d845-cad8523ffb30@collabora.com>
+ <CAJZ5v0hU9E10BeEjF-PZ8Yx9NZO1YimitockY3Hsobha7dARDQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0hU9E10BeEjF-PZ8Yx9NZO1YimitockY3Hsobha7dARDQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,34 +66,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023, Paolo Bonzini wrote:
-> The variable is completely unused, remove it.
+On Fri, Oct 13, 2023 at 05:27:08PM +0200, Rafael J. Wysocki wrote:
+> On Mon, Sep 25, 2023 at 9:29 AM AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@collabora.com> wrote:
+> >
+> > Il 22/09/23 20:44, Nícolas F. R. A. Prado ha scritto:
+> > > When searching for the trip points that need to be set, the nearest
+> > > higher trip point's temperature is used for the high trip, while the
+> > > nearest lower trip point's temperature minus the hysteresis is used for
+> > > the low trip. The issue with this logic is that when the current
+> > > temperature is inside a trip point's hysteresis range, both high and low
+> > > trips will come from the same trip point. As a consequence instability
+> > > can still occur like this:
+> > > * the temperature rises slightly and enters the hysteresis range of a
+> > >    trip point
+> > > * polling happens and updates the trip points to the hysteresis range
+> > > * the temperature falls slightly, exiting the hysteresis range, crossing
+> > >    the trip point and triggering an IRQ, the trip points are updated
+> > > * repeat
+> > >
+> > > So even though the current hysteresis implementation prevents
+> > > instability from happening due to IRQs triggering on the same
+> > > temperature value, both ways, it doesn't prevent it from happening due
+> > > to an IRQ on one way and polling on the other.
+> > >
+> > > To properly implement a hysteresis behavior, when inside the hysteresis
+> > > range, don't update the trip points. This way, the previously set trip
+> > > points will stay in effect, which will in a way remember the previous
+> > > state (if the temperature signal came from above or below the range) and
+> > > therefore have the right trip point already set. The exception is if
+> > > there was no previous trip point set, in which case a previous state
+> > > doesn't exist, and so it's sensible to allow the hysteresis range as
+> > > trip points.
+> > >
+> > > The following logs show the current behavior when running on a real
+> > > machine:
+> > >
+> > > [  202.524658] thermal thermal_zone0: new temperature boundaries: -2147483647 < x < 40000
+> > >     203.562817: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=36986 temp=37979
+> > > [  203.562845] thermal thermal_zone0: new temperature boundaries: 37000 < x < 40000
+> > >     204.176059: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=37979 temp=40028
+> > > [  204.176089] thermal thermal_zone0: new temperature boundaries: 37000 < x < 100000
+> > >     205.226813: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=40028 temp=38652
+> > > [  205.226842] thermal thermal_zone0: new temperature boundaries: 37000 < x < 40000
+> > >
+> > > And with this patch applied:
+> > >
+> > > [  184.933415] thermal thermal_zone0: new temperature boundaries: -2147483647 < x < 40000
+> > >     185.981182: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=36986 temp=37872
+> > >     186.744685: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=37872 temp=40058
+> > > [  186.744716] thermal thermal_zone0: new temperature boundaries: 37000 < x < 100000
+> > >     187.773284: thermal_temperature: thermal_zone=vpu0-thermal id=0 temp_prev=40058 temp=38698
+> > >
+> > > Fixes: 060c034a9741 ("thermal: Add support for hardware-tracked trip points")
+> > > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> >
+> > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> >
+> > >
+> > > ---
+> > >
+> > > Changes in v2:
+> > > - Changed logic as suggested by Rafael
+> > > - Added log example to commit message
+> > > - Added fixes tag
+> > >
+> > >   drivers/thermal/thermal_trip.c | 19 +++++++++++++++++--
+> > >   1 file changed, 17 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/thermal/thermal_trip.c b/drivers/thermal/thermal_trip.c
+> > > index 024e2e365a26..597ac4144e33 100644
+> > > --- a/drivers/thermal/thermal_trip.c
+> > > +++ b/drivers/thermal/thermal_trip.c
+> > > @@ -55,6 +55,7 @@ void __thermal_zone_set_trips(struct thermal_zone_device *tz)
+> > >   {
+> > >       struct thermal_trip trip;
+> > >       int low = -INT_MAX, high = INT_MAX;
+> > > +     bool same_trip = false;
+> > >       int i, ret;
+> > >
+> > >       lockdep_assert_held(&tz->lock);
+> > > @@ -63,6 +64,7 @@ void __thermal_zone_set_trips(struct thermal_zone_device *tz)
+> > >               return;
+> > >
+> > >       for (i = 0; i < tz->num_trips; i++) {
+> > > +             bool low_set = false;
+> > >               int trip_low;
+> > >
+> > >               ret = __thermal_zone_get_trip(tz, i , &trip);
+> > > @@ -71,18 +73,31 @@ void __thermal_zone_set_trips(struct thermal_zone_device *tz)
+> > >
+> > >               trip_low = trip.temperature - trip.hysteresis;
+> > >
+> > > -             if (trip_low < tz->temperature && trip_low > low)
+> > > +             if (trip_low < tz->temperature && trip_low > low) {
+> > >                       low = trip_low;
+> > > +                     low_set = true;
+> > > +                     same_trip = false;
+> > > +             }
+> > >
+> > >               if (trip.temperature > tz->temperature &&
+> > > -                 trip.temperature < high)
+> > > +                 trip.temperature < high) {
+> > >                       high = trip.temperature;
+> > > +                     same_trip = low_set;
+> > > +             }
+> > >       }
+> > >
+> > >       /* No need to change trip points */
+> > >       if (tz->prev_low_trip == low && tz->prev_high_trip == high)
+> > >               return;
+> > >
+> > > +     /*
+> > > +      * If "high" and "low" are the same, skip the change unless this is the
+> > > +      * first time.
+> > > +      */
+> > > +     if (same_trip && (tz->prev_low_trip != -INT_MAX ||
+> > > +         tz->prev_high_trip != INT_MAX))
+> > > +             return;
+> > > +
+> > >       tz->prev_low_trip = low;
+> > >       tz->prev_high_trip = high;
+> > >
 > 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/mips/kvm/mmu.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-> index 7b2ac1319d70..467ee6b95ae1 100644
-> --- a/arch/mips/kvm/mmu.c
-> +++ b/arch/mips/kvm/mmu.c
-> @@ -592,7 +592,7 @@ static int kvm_mips_map_page(struct kvm_vcpu *vcpu, unsigned long gpa,
->  	gfn_t gfn = gpa >> PAGE_SHIFT;
->  	int srcu_idx, err;
->  	kvm_pfn_t pfn;
-> -	pte_t *ptep, entry, old_pte;
-> +	pte_t *ptep, entry;
->  	bool writeable;
->  	unsigned long prot_bits;
->  	unsigned long mmu_seq;
-> @@ -664,7 +664,6 @@ static int kvm_mips_map_page(struct kvm_vcpu *vcpu, unsigned long gpa,
->  	entry = pfn_pte(pfn, __pgprot(prot_bits));
->  
->  	/* Write the PTE */
-> -	old_pte = *ptep;
->  	set_pte(ptep, entry);
+> Applied as 6.7 material, but I added a Co-developed-by tag for myself,
+> because it has been based on my patch.
 
-Heh, 7 year old bug gets two fixes within a few days :-)
+Sounds good, thanks! I'll add it myself in situations like this in the future.
 
-https://lore.kernel.org/all/20231010085434.2678144-1-chenhuacai@loongson.cn
+Thanks,
+Nícolas
