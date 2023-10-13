@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A8F7C839E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15CFE7C83B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbjJMKsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 06:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
+        id S230103AbjJMKuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 06:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230429AbjJMKsO (ORCPT
+        with ESMTP id S229903AbjJMKuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 06:48:14 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147B6C9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 03:48:13 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32d834ec222so1855106f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 03:48:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697194091; x=1697798891; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HLLFkGf7Achrz0z+pSaE//aRnm/rW1Ix0xcw7kiGLrg=;
-        b=YMBZzBsvWrXzr+2Lui3vC3LGzmnhKWRPLcnD4DAH2B9gmTZ5mUfChkGGZg6KPRV1xG
-         QSixK2jNL/qY7uGbPDRtSsFncVVHCwVLbynkm/PfgWaembmTl4WmDR++KAsJftCXUOzy
-         MhaeA3fOQoTLLd/2vul/otNAluMEVvTA4oplvHiCIhblBcwV909SZW6LKEWSfRH0DIrc
-         aAFIcgfBJOEgjerNi4qtt7Kd+7+6lfboEBDw9xgK/ngYtAHBHdksxBNv0cXKxtxSR8/A
-         ORiSSzXHjjQEKuX231JVpptaBd+owl43k1XgCDvk5foZO3S5i5kUINDU7rfandIqRZRE
-         kBLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697194091; x=1697798891;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HLLFkGf7Achrz0z+pSaE//aRnm/rW1Ix0xcw7kiGLrg=;
-        b=wVr8lCu3+hLKdU9T92XEPVQIUxLX51acB09O9C0d8sryXqVOKfWCk4bZ4TF38DuXeM
-         Um1vNLwE/TOuKr+UcKrLmTI4/vXnHj6d9WzR51TT/HvDgonrg5rBkc75haUC1FV91Kz0
-         Tuy8cM4VLVy3DYVlA2kGKE3aS2Bqz9R8HuhKnPxeT1JULPom8sxvglUJyzHmL/P/3kJR
-         u0rzNMO6wVL0GdWKgbO5zB3Z5ym4Nco9eGrMrIygvGJwmckSvfi8pzfhvsPw8/cAOQ4K
-         h3xvgw4+R+rJwZTJTIyOndsZ6OMT2S7YM7u3/JuKxTgu8wCtFV8C9/S+mS/+OkXtAK0n
-         KzjA==
-X-Gm-Message-State: AOJu0Ywb3KOKGvKxjJg42ybgPL7pfvgRKHuo0nOYqHYRZBfyafFsSCSW
-        ljPbxKSwRD9NYxtWOUbB8BAxBA==
-X-Google-Smtp-Source: AGHT+IER8Qmwq0wdK9VvhE99s0OeRpYmMCCnwuM07qasuEB0UUtmtrLXlArFm5b/BD98dc49TPg9zw==
-X-Received: by 2002:a5d:4b48:0:b0:319:7a91:7107 with SMTP id w8-20020a5d4b48000000b003197a917107mr21319385wrs.48.1697194091127;
-        Fri, 13 Oct 2023 03:48:11 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id d7-20020adfa347000000b0032d72f48555sm5239011wrb.36.2023.10.13.03.48.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 03:48:10 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 13:48:08 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Dorcas AnonoLitunya <anonolitunya@gmail.com>
-Cc:     outreachy@lists.linux.dev,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Teddy Wang <teddy.wang@siliconmotion.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [PATCH]Staging: sm750fb:Add snakecase naming style
-Message-ID: <efcb4734-0349-493e-be93-b95381eb6c78@kadam.mountain>
-References: <20231013104220.7527-1-anonolitunya@gmail.com>
+        Fri, 13 Oct 2023 06:50:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808F983;
+        Fri, 13 Oct 2023 03:50:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27083C433C7;
+        Fri, 13 Oct 2023 10:50:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697194219;
+        bh=DzSNKGUIOplO8sJNh8KxYOTCM0wZruRzV+sDINeuiuw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=WIYBIrWqt+1m2hEQ5p/ex1u9HHp76dZN75gyHctuMJR7bTbhuf8TE1VZ2NNjFfI+1
+         Zh5eSQTkzmuyrjYpqM/M+qk4pxyMfqcq/VyjFQNH7VYBV6b37wHHx7yzqZBqf30v5C
+         H2I9Ce0dt6YYxOl4xxQgsg5DRpewUn+WW309WOB3fZUeYaeTWYh0M8WO2FrQ7fjoqT
+         7vxps82CdzE4DmbAX+jsYUQwL4j20dXnD2YLHBj/d5QXDZcfWkVf6us/i8XW4Hm02N
+         /5m+YEW6b92BiF8WkYl7mUPPznNw+md4+VO7lEh1broEBkSJehnKGCawgFqp4pu2h6
+         SyevNkm15J2JQ==
+Message-ID: <5258379d69957db51c5db6f3175898f41be67fc5.camel@kernel.org>
+Subject: Re: [PATCH] NFS: Clean up errors in nfs_page.h
+From:   Jeff Layton <jlayton@kernel.org>
+To:     chenguohua@jari.cn, trond.myklebust@hammerspace.com,
+        anna@kernel.org
+Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 13 Oct 2023 06:50:16 -0400
+In-Reply-To: <2f52e71b.943.18b2705b8cb.Coremail.chenguohua@jari.cn>
+References: <2f52e71b.943.18b2705b8cb.Coremail.chenguohua@jari.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.module_f38+17164+63eeee4a) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231013104220.7527-1-anonolitunya@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 01:42:15PM +0300, Dorcas AnonoLitunya wrote:
-> From: Dorcas Anono Litunya <anonolitunya@gmail.com>
-> 
-> Change camelCase variables in file to snake_case for consistent naming
-> practices. Issue found by checkpatch.
-> 
-> Signed-off-by: Dorcas Anono Litunya <anonolitunya@gmail.com>
+On Fri, 2023-10-13 at 11:12 +0800, chenguohua@jari.cn wrote:
+> Fix the following errors reported by checkpatch:
+>=20
+> ERROR: space required after that ',' (ctx:VxO)
+>=20
+> Signed-off-by: JiangHui Xu <xujianghui@cdjrlc.com>
 > ---
->  drivers/staging/sm750fb/ddk750_mode.c | 86 +++++++++++++--------------
->  drivers/staging/sm750fb/ddk750_mode.h |  2 +-
->  drivers/staging/sm750fb/sm750_hw.c    |  2 +-
->  3 files changed, 45 insertions(+), 45 deletions(-)
-> 
-> diff --git a/drivers/staging/sm750fb/ddk750_mode.c b/drivers/staging/sm750fb/ddk750_mode.c
-> index e00a6cb31947..f08dcab29172 100644
-> --- a/drivers/staging/sm750fb/ddk750_mode.c
-> +++ b/drivers/staging/sm750fb/ddk750_mode.c
-> @@ -14,13 +14,13 @@
->   * in bit 29:27 of Display Control register.
->   */
->  static unsigned long
-> -displayControlAdjust_SM750LE(struct mode_parameter *pModeParam,
-> -			     unsigned long dispControl)
-> +display_control_adjust_SM750LE(struct mode_parameter *p_mode_param,
+>  include/linux/nfs_page.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/include/linux/nfs_page.h b/include/linux/nfs_page.h
+> index 1c315f854ea8..6a3c54bd2c40 100644
+> --- a/include/linux/nfs_page.h
+> +++ b/include/linux/nfs_page.h
+> @@ -122,7 +122,7 @@ struct nfs_pageio_descriptor {
+>  /* arbitrarily selected limit to number of mirrors */
+>  #define NFS_PAGEIO_DESCRIPTOR_MIRROR_MAX 16
+> =20
+> -#define NFS_WBACK_BUSY(req)	(test_bit(PG_BUSY,&(req)->wb_flags))
+> +#define NFS_WBACK_BUSY(req)	(test_bit(PG_BUSY, &(req)->wb_flags))
+> =20
+>  extern struct nfs_page *nfs_page_create_from_page(struct nfs_open_contex=
+t *ctx,
+>  						  struct page *page,
 
-The p stands for pointer.  We don't like that naming style.  Just call
-it mode_param.
+In general, we don't usually take patches that just clean up whitespace
+damage or stylistic problems. Doing so makes backporting harder as you
+end up having to pull in extra patches to fix up minor differences
+before bringing in substantive patches.
 
-Thes are the renamed things.
-
-displayControlAdjust_SM750LE => display_control_adjust_SM750LE
-pModeParam => p_mode_param
-dispControl => disp_control
-programModeRegisters => program_mode_registers
-ddk750_setModeTiming => ddk750_set_mode_timing
-
-I feel like this would be better broken up probably into one variable
-per patch.  It's jumping around between files.  These variables are not
-closely related.
-
-regards,
-dan carpenter
-
+If you're fixing a real bug in the same area, then sure, go ahead and
+fix up the style in the surrounding code, but if these patches don't
+fix real bugs then I'd suggest not taking them.
+--=20
+Jeff Layton <jlayton@kernel.org>
