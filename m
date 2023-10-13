@@ -2,102 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E827C7B50
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 03:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC43C7C7B54
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 03:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbjJMBpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 21:45:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43698 "EHLO
+        id S229485AbjJMBtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 21:49:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJMBpM (ORCPT
+        with ESMTP id S229437AbjJMBtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 21:45:12 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3C4C9
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 18:45:10 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-690d935dbc2so328234b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 18:45:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697161510; x=1697766310; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NkKDwESUMv6DmJniI4kRJ0Fze3BlCpWsKbtTeuEzRoQ=;
-        b=wctTAqWM+C+AavijPGVNcXf4bwP+E/t8KAOEKi+zZG4WomkiYnQOuVGojNwl+bo1Fy
-         kfVb9Y0l2NAq0k2sjYQSOnJdfEbR134ajyLXqORuY+Qph83AwRWE/6T3z7aTb1ubtMtQ
-         xKOQ2jc67GIJXMkuJliRocizaVmoAx2MyjAfUzU4XvUrgvEAaSHQ/2qOqXxJEJF+abvJ
-         sfERUcLnEhb6LnDv0ya5fLIlGmUwirNgqnIlxI7WdWz5s5xnwAmlnkvHmHGb4SqYVjul
-         y5u9bI9EGvU8QWeR6dqxsq6h04/a32jq64ZNoIeYqn9uj1ezriMuQoRbHEs3K8KIZNSE
-         pbUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697161510; x=1697766310;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NkKDwESUMv6DmJniI4kRJ0Fze3BlCpWsKbtTeuEzRoQ=;
-        b=HxZ62kjFMb5HP7tX1RWTKzrt36AYQkt2aysJ1Bw/aXlu4khvVZQLVEOC64/G8eNNt6
-         Ftd0QpxhhDQmhv2O18dX7RgV2F+AyWPC7Uw97s7hpw3mIOFAQ2BNalWJcrQAdye7g2q5
-         +8SYtZR+kY7O1sPv6N/Q6BRRJU2zYd545+YmtQ3Nw20SiysSmh6RfK3epaw/sXaEuFUZ
-         uy7E00z64O5DbE0qeUTwMg8CscKUchsGvTbE2FH2SC9H62jeBRW6p5HPWI5m0NqUhUYl
-         IrX0IaCbfdjLS+U/ixqTMBL0Fo6HoEehpqegzWDzViweb99LUz5XazCniu/z/r1LkJ8y
-         cOuw==
-X-Gm-Message-State: AOJu0YwvVPuZDaOc0PRVmeNLnt4DI6CWctQlevUOF7uLwOBwm0YS3dCV
-        5fomDYfB6lKZ7lsJ0OAh/j0/xA==
-X-Google-Smtp-Source: AGHT+IFOeU/L1UU0SiBejqeHPkF2yLffG9fB6o7ii0U1VZbx4ZnCvJrB7MjXM1YaKAbTSIdFVKU0ZQ==
-X-Received: by 2002:a05:6a20:7da2:b0:15d:6fd3:8e74 with SMTP id v34-20020a056a207da200b0015d6fd38e74mr31715422pzj.3.1697161509881;
-        Thu, 12 Oct 2023 18:45:09 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id l21-20020a170902d35500b001c737950e4dsm2659672plk.2.2023.10.12.18.45.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 18:45:09 -0700 (PDT)
-Message-ID: <f39ef992-4789-4c30-92ef-e3114a31d5c7@kernel.dk>
-Date:   Thu, 12 Oct 2023 19:45:07 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Problem with io_uring splice and KTLS
-Content-Language: en-US
-To:     Sascha Hauer <sha@pengutronix.de>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        Boris Pismenny <borisp@nvidia.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-References: <20231010141932.GD3114228@pengutronix.de>
- <d729781a-3d12-423b-973e-c16fdbcbb60b@kernel.dk>
- <20231012133407.GA3359458@pengutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20231012133407.GA3359458@pengutronix.de>
+        Thu, 12 Oct 2023 21:49:12 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E1953C0;
+        Thu, 12 Oct 2023 18:49:10 -0700 (PDT)
+Received: from chenguohua$jari.cn ( [182.148.14.172] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Fri, 13 Oct 2023 09:47:22
+ +0800 (GMT+08:00)
+X-Originating-IP: [182.148.14.172]
+Date:   Fri, 13 Oct 2023 09:47:22 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   chenguohua@jari.cn
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] etherdevice: Clean up errors in etherdevice.h
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+MIME-Version: 1.0
+Message-ID: <22a751c6.93b.18b26b780d4.Coremail.chenguohua@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwDnhD+qoShlS9bBAA--.643W
+X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAAEWUjyrIAGQAQsn
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_00,RCVD_IN_PBL,RDNS_NONE,
+        T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/23 7:34 AM, Sascha Hauer wrote:
-> In case you don't have encryption hardware you can create an
-> asynchronous encryption module using cryptd. Compile a kernel with
-> CONFIG_CRYPTO_USER_API_AEAD and CONFIG_CRYPTO_CRYPTD and start the
-> webserver with the '-c' option. /proc/crypto should then contain an
-> entry with:
-> 
->  name         : gcm(aes)
->  driver       : cryptd(gcm_base(ctr(aes-generic),ghash-generic))
->  module       : kernel
->  priority     : 150
-
-I did a bit of prep work to ensure I had everything working for when
-there's time to dive into it, but starting it with -c doesn't register
-this entry. Turns out the bind() in there returns -1/ENOENT. For the
-life of me I can't figure out what I'm missing. I tried this with both
-arm64 and x86-64. On the latter there's some native AES that is higher
-priority, but I added a small hack in cryptd to ensure it's the highest
-one. But I don't even get that far...
-
--- 
-Jens Axboe
-
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+dGhhdCBvcGVuIGJyYWNlIHsgc2hvdWxkIGJlIG9uIHRoZSBwcmV2aW91cyBsaW5lCgpTaWduZWQt
+b2ZmLWJ5OiBHdW9IdWEgQ2hlbmcgPGNoZW5ndW9odWFAamFyaS5jbj4KLS0tCiBpbmNsdWRlL2xp
+bnV4L2V0aGVyZGV2aWNlLmggfCAzICstLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCsp
+LCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvZXRoZXJkZXZpY2Uu
+aCBiL2luY2x1ZGUvbGludXgvZXRoZXJkZXZpY2UuaAppbmRleCAyMjQ2NDVmMTdjMzMuLjMwZmMz
+YmMwZWIwOSAxMDA2NDQKLS0tIGEvaW5jbHVkZS9saW51eC9ldGhlcmRldmljZS5oCisrKyBiL2lu
+Y2x1ZGUvbGludXgvZXRoZXJkZXZpY2UuaApAQCAtNjcsOCArNjcsNyBAQCBzdHJ1Y3Qgc2tfYnVm
+ZiAqZXRoX2dyb19yZWNlaXZlKHN0cnVjdCBsaXN0X2hlYWQgKmhlYWQsIHN0cnVjdCBza19idWZm
+ICpza2IpOwogaW50IGV0aF9ncm9fY29tcGxldGUoc3RydWN0IHNrX2J1ZmYgKnNrYiwgaW50IG5o
+b2ZmKTsKIAogLyogUmVzZXJ2ZWQgRXRoZXJuZXQgQWRkcmVzc2VzIHBlciBJRUVFIDgwMi4xUSAq
+Lwotc3RhdGljIGNvbnN0IHU4IGV0aF9yZXNlcnZlZF9hZGRyX2Jhc2VbRVRIX0FMRU5dIF9fYWxp
+Z25lZCgyKSA9Ci17IDB4MDEsIDB4ODAsIDB4YzIsIDB4MDAsIDB4MDAsIDB4MDAgfTsKK3N0YXRp
+YyBjb25zdCB1OCBldGhfcmVzZXJ2ZWRfYWRkcl9iYXNlW0VUSF9BTEVOXSBfX2FsaWduZWQoMikg
+PSB7IDB4MDEsIDB4ODAsIDB4YzIsIDB4MDAsIDB4MDAsIDB4MDAgfTsKICNkZWZpbmUgZXRoX3N0
+cF9hZGRyIGV0aF9yZXNlcnZlZF9hZGRyX2Jhc2UKIAogLyoqCi0tIAoyLjE3LjEK
