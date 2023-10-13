@@ -2,210 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D42927C88D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2387D7C88D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232431AbjJMPhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
+        id S232439AbjJMPhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 11:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232356AbjJMPhM (ORCPT
+        with ESMTP id S232270AbjJMPhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:37:12 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FBFCBE
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:37:09 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4066692ad35so23400655e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:37:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697211428; x=1697816228; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=G5oyTNCPKWdkGABnn1l8QHV8SiFeKXaFhQsDAfS3/jU=;
-        b=aym9Nv+PadcwpIrIfwgOZy/3JnjwJl9QdWW8TPf4G1C18L2WdOZOLrFRNGtquy7Mqz
-         IoNI4PX0P1WvAX1mCmqQd0N25STgMkpL/5vVrnH8hm12THKmh39MLJ78kYUSo5eNiSpo
-         NBKv5R16X4YelqdaompdFyZ+hHZDn2tk/3QHgxXP1pJN6eI5e0XlaR6hGcV1HsatyxWr
-         2isteUhGzgBwTg02ciaBtLpDGxiBZDxkoNbS2S5mlpSAU0XJL+3ocghLl3Q8CRPzn71l
-         ucOaDVcwWHLdoZsU9Pk5aBdR3zUN7rT1hFeRwtEmkHl0HXtw5gm8ENQiLcbe7eBwpFAF
-         C2ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697211428; x=1697816228;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=G5oyTNCPKWdkGABnn1l8QHV8SiFeKXaFhQsDAfS3/jU=;
-        b=kZwgzCAxhAkBZMW0sy0KoA7/z/ShxYr7rzqDt0SJR+7zBZ/KpsgpnfH0sFRX7KmB3X
-         GvUm/qreWjDVVmbW2eUP11vYxEbnAhjXueU40CrOKOwsxjK+CVxMRG797/WExRgx9rru
-         jFzi2vuE6DBd1BUs0FnS3zYD3Anx+tral35JEWisdbgW9l2JmhOG3st2TSWsq0OdIDC/
-         9EUfncv0cFomqhW5MVBViGP88z8CHbuNnGxhxRlxA3jMiFkArrd40f73SY+q8pkRwsnt
-         Z3QyAA8zb5PcOcSd61NoVzRe1+AKT84yal9eQzbKrp00m6Zcn53b5mlzyUv2a3Kj1gjb
-         oERg==
-X-Gm-Message-State: AOJu0YwiEiL65FEUp7l58l3jqGPLouGuR5m2pJ86IqvvyGKk6cGQo3r+
-        nZlU8TNDbtkNUtBfjg5qqiWcXg==
-X-Google-Smtp-Source: AGHT+IFI4ILutivv2eLxcQlHbN7zkoPuh7ogi1AL06gLefp4u5sMqFPNWTdX3w2XIt20z9wTmiFJGQ==
-X-Received: by 2002:adf:f005:0:b0:321:52fb:5703 with SMTP id j5-20020adff005000000b0032152fb5703mr24943473wro.13.1697211427824;
-        Fri, 13 Oct 2023 08:37:07 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:535e:33c9:c7dd:4940? ([2a01:e0a:982:cbb0:535e:33c9:c7dd:4940])
-        by smtp.gmail.com with ESMTPSA id bw14-20020a0560001f8e00b0032d886039easm6912044wrb.14.2023.10.13.08.37.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Oct 2023 08:37:07 -0700 (PDT)
-Message-ID: <5765a10c-8f75-4bf4-830b-b5fba501d164@linaro.org>
-Date:   Fri, 13 Oct 2023 17:37:06 +0200
+        Fri, 13 Oct 2023 11:37:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE36BB
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:37:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697211458; x=1728747458;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=uqf5AOtrz0Hp1RUPVFbRhHcoEG3PBh3hr/05bijzzVg=;
+  b=drA1OtMP3XwPZ4aic7XKtf9HgmxTT6KAC6HrxWUcqqB0z+OE3BvoaZLk
+   5hL45K/upKur0ctZlqtyekRFbW9BnUrWDwZai4a/GcxabzEuTMi5eC9EP
+   46KTNCDSVdfx8Gi+pN04VkZiFFZggK2hbMPeiPaOZU8a4x/rOX232ikFR
+   63UCg6yQCoZwc1Ip+vFEPmIdMr+RBYNqZ1jfJVCbqOmwwR4/XMa5VSTJc
+   F57Rympp/wmZ1UCfQYk5QGJINbEfSv5aKxqSVVlXThRzSFj6/UxgkveMC
+   TRUbT6xwIBO2kNLmnSQAm99FFMF/pPY8+2Nnc26rHIWY1OIaKdsZ7faQp
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="370273489"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="370273489"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 08:37:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="784206964"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="784206964"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Oct 2023 08:37:36 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 13 Oct 2023 08:37:36 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Fri, 13 Oct 2023 08:37:36 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.40) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Fri, 13 Oct 2023 08:37:35 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HIKK0Gj0p7ThUwyqjx9ER7pD+TUeu1PqFnGnDScoIRndoJlrLbdCdjPJjB3LKLRkPjWul0tjMAbd4aFqP0EwTfQ1LD+PghiJWyMxWpTGnmXv5obF5VhXmJurBk/ZzXBR+ldVXV5rdJgCq7WYiwBRDql/up9DtYVKwY4HnL/ziwdWJCzMMc41N3SAAng+8WYZN0KmhCzkvuYiWoKvjtUuISnbp/kaYMlxstYFABWK9PFKFBLXX3WuhtLHvrl8UYT2mJCeOCxC0a8mrz17UA+Lw0HoZC6pWKONFA/0ajF2nsewHdsNOazcK5Zp+8ktsnMGzU7xj9KF/O3IHtgtQb5DAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5G5SRfc+8qsu16KhGTZBNJ1No2Mokuj8MSfVnCyLLkg=;
+ b=fVqxOMR/dLiG23Lct+OSR74UXApgqirxIPYsT0uCLVQIGHQCj5DCiFjbUJ/FGDI11BWaAMRS/AJpjEomg7KxMB2BTSVpYNiOaXQeaFJ9Rpmilzwx59Kp50Dd0qFUIWDLGP489VBDbhnLDX3TnfUm6nONhmIKJRjE6pkX7xHUcarJ+fO/TNDgpJAjzRFWZDmXYynxnKwf9jAd5XIB/CaUk/zKhuf3EY4AZk73GMeOCJf2eHSStgqOrrWbsfd7W8Nb65x1ucKsYnL7p53RK8y4KEm1gV3hgrGCJhGTqXodPZoCQDNVltFcTYHYZw0cC9/Y+gkia/KkvhRYjwU/iRza/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6206.namprd11.prod.outlook.com (2603:10b6:208:3c6::8)
+ by MN2PR11MB4581.namprd11.prod.outlook.com (2603:10b6:208:26c::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Fri, 13 Oct
+ 2023 15:37:34 +0000
+Received: from MN0PR11MB6206.namprd11.prod.outlook.com
+ ([fe80::9474:7e9c:c157:4ee9]) by MN0PR11MB6206.namprd11.prod.outlook.com
+ ([fe80::9474:7e9c:c157:4ee9%5]) with mapi id 15.20.6863.046; Fri, 13 Oct 2023
+ 15:37:34 +0000
+Date:   Fri, 13 Oct 2023 23:37:18 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+CC:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Juri Lelli" <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        "Aaron Lu" <aaron.lu@intel.com>, Tim Chen <tim.c.chen@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, <x86@kernel.org>
+Subject: Re: [RFC PATCH] sched/fair: Bias runqueue selection towards almost
+ idle prev CPU
+Message-ID: <ZSlkLqa55j4C2rDl@chenyu5-mobl2.ccr.corp.intel.com>
+References: <20230929183350.239721-1-mathieu.desnoyers@efficios.com>
+ <ZRfKKxBzfu+kf0tM@chenyu5-mobl2.ccr.corp.intel.com>
+ <0f3cfff3-0df4-3cb7-95cb-ea378517e13b@efficios.com>
+ <ZSOMOhhkPIFmvz97@chenyu5-mobl2.ccr.corp.intel.com>
+ <ebe4e40f-37df-40a9-9dfc-7f2a458151bd@efficios.com>
+ <ZSZ2ERMysY7iEo+x@chenyu5-mobl2.ccr.corp.intel.com>
+ <CAKfTPtCpMx9mHrWko6_hgbw+8HObcJJNkj3A6ZEP4C1PekcxMQ@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtCpMx9mHrWko6_hgbw+8HObcJJNkj3A6ZEP4C1PekcxMQ@mail.gmail.com>
+X-ClientProxiedBy: SG2PR03CA0094.apcprd03.prod.outlook.com
+ (2603:1096:4:7c::22) To MN0PR11MB6206.namprd11.prod.outlook.com
+ (2603:10b6:208:3c6::8)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v4] tty: serial: meson: fix hard LOCKUP on crtscts mode
-Content-Language: en-US, fr
-To:     Dmitry Rokosov <ddrokosov@salutedevices.com>,
-        Pavel Krasavin <pkrasavin@imaqliq.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-References: <OF55521400.7512350F-ON00258A47.003F7254-00258A47.0040E15C@gdc.ru>
- <20231013141818.adq6eujrx2wueobp@CAB-WSD-L081021>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20231013141818.adq6eujrx2wueobp@CAB-WSD-L081021>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6206:EE_|MN2PR11MB4581:EE_
+X-MS-Office365-Filtering-Correlation-Id: 683ac26a-7e57-484d-1fec-08dbcc0251dd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: boAvbw5fu1rVlrP8Ax0KOfHFmW6Ezj0ArotidPgj/rlNNQPTd+X+39NAl+6g3CjywL2YZVahZlfIxJQbkWDBha5YapSp9cH+uRlMsdZYX8DTQWb5ttlOwsPYlJv7iUPgmaDjM+BrzRqwMHcd5Xm993i3pY7ymGaQdbN00c9w/IxkLb8FqU+2WDoSOEbKUjM85QCHHFEMDR3XQ+KjPPslIBpkyBlctdu4A09FA8cVJstkTYovePD01/YyNrRpVYqKb5RnJT0ECWSL1odm5HlZSpEfys0elZ5E6hHqrXMMlmiHRbJcRC1fDScVWhEoe3JTr8p0N1v40lCXCdl74Ve3ZR8KariMBIHcUEt6Mr8J6LeAWHivYowosYzQf9LuyLoZLkRGdiL3ys/APke9mHoembwQqvy7YYfHKBFNBV3A2z6BzeycnVs63+TW3+KXrGJlsM5/k6+kIRjhUQFVsw1AF8SbnlvKZZxTE4uHF81i9ch3Ecxo0VBsUMmvI8XVbfnpjR3u46gEASa8jZdn7/7c8YoTHTQYl5pqYkA50tXl91eEyTtpmlv23qMsBPF1dN/A
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6206.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(376002)(136003)(39860400002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(7416002)(53546011)(6506007)(6666004)(2906002)(41300700001)(66556008)(66476007)(66946007)(4326008)(478600001)(26005)(5660300002)(6486002)(4001150100001)(6512007)(83380400001)(316002)(6916009)(54906003)(38100700002)(8676002)(82960400001)(86362001)(40140700001)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZN8GvuspeAUHtAxhlpQTO8w80DQKdaZNIm8K/zoHQorJ4KZvTWBPT7sDA8A5?=
+ =?us-ascii?Q?CT5B8eOaDyIiHjZjQp8k9mDdBn+2bjilKnnF4dIysoRMcFuCrozyGhqh7nfR?=
+ =?us-ascii?Q?s1a+hybK8Nc1VMrPpQyKWu34N3HsuNGKVgc7a903d7r1uAvGgBWCFmjvoU6a?=
+ =?us-ascii?Q?KQFYl+iASyC4/v50Yli/Uyg6zLU019NhAxGa0hZTDa2jtNajK7inpSnHsfR5?=
+ =?us-ascii?Q?bWocTTxiIlKgN4RNnHcwIXND93K0gZOPh9IwJhR6H95M0zSvWqcB6fWyMXOj?=
+ =?us-ascii?Q?3mFyxL0mqhF/hGfixld/tNyjrggJo9n6goFnFK5ySzZDFItDuv7iirHQDn81?=
+ =?us-ascii?Q?Q7ygdl4lFkIC5yqB5khPkHiUn2yQjP6SLCF2KwZrpusK+2AtgK2sHqv60a0t?=
+ =?us-ascii?Q?k6IHFhWTUK592nagyrn9vIA8mYndONO1kPFjz6Xp3DLY1ENBb7FIM09brcue?=
+ =?us-ascii?Q?vZSfAAhP8XvcSHKUf4W+wIhqmkFLLcL1A9q5Cx2de9tG8J7FsR5XS7Dffopo?=
+ =?us-ascii?Q?2IRpCZLPVTIxXNmcG9NBKeKFw2hJJaEGvKePeHB25wJzVS4+rhe3MbjWl1v/?=
+ =?us-ascii?Q?LHnzyS+QEHYTwENfOX043ckr7l5cIAvOJF8z6tFCJZZ4iirlfG7Ru1MkEBVY?=
+ =?us-ascii?Q?hgC7Vq9Uj1E5zKXQP06fQSoEgcHD8ZUNUGb1NGSduGpBZmvOXyk+NClAEOBu?=
+ =?us-ascii?Q?PNnSXPjddHhqvRklHyhrmJE32JKTyrsBTOn2csJNhpqqUeDep8hQkXgzGiLh?=
+ =?us-ascii?Q?n+pP+oMYnOechLAzYl9GyrvImwdAvlyD5tkNR3Us3GR1W2U9uqrFR7/R9fmK?=
+ =?us-ascii?Q?/Vk9bugDVpiY+jno1Ro2U0agISI1b2NAw9e0Tr/SZzwD94YrxW6q+5B3gg8Q?=
+ =?us-ascii?Q?mbjuW5eUNFVFLOPm1CWK0gAki6IFF8ythzD0aYHs7DrlkWuNwyUhHf5DUtXQ?=
+ =?us-ascii?Q?OoRDAfDN5lDn0LxS3GgyJHtExoSeYuQILK76hNDtziaohMB5QD7+P6dm0Mp8?=
+ =?us-ascii?Q?IjB/6BbrXuxEBoDjp55x9cbSJLge9Ug25MdhGpbFJkerzoUeF6SVOQ3I2JNb?=
+ =?us-ascii?Q?BDuU3FtpY0SlLSeH4C7cK54oG9eEjz5IMA9SxEtxmapVsG9M0Kx5TJoffxtq?=
+ =?us-ascii?Q?Yx8aDCBs44JEPEEAsh+OFsjGn20VRBDq0d0qfcg1CTkvBVAWt4ClUMVoG/sX?=
+ =?us-ascii?Q?rrChFNTGN5+nMP/B+eXVQyfYI+PUJedOISs5G2V9qh2IuLgb1XBz9Fx9XdNa?=
+ =?us-ascii?Q?WwmoyrsYW+JqT/10GeQPbFufKS6/S1Gm8xCszNPsVUDLqiQhcRVr743FQutS?=
+ =?us-ascii?Q?OuRvN9oEWhLdPXZfuH5+bLbrj/7V38cyCSggBYG4MTcWLdoJ5MKzmzyXrspl?=
+ =?us-ascii?Q?yZTU3SV2DcGxm7tHzROGIC+t52mk2Q9GL65tqJGh94Bkk8EmbFFm+c24kYtf?=
+ =?us-ascii?Q?kyq866kb72YS+X2ix4HCkhLcr/TE2hJ5B+4Nd0lhcy/a7yMiE9AvR5zmKji1?=
+ =?us-ascii?Q?OL40IKIUgl0LD8iKO4Rgb6drglNGdns3IOcGyEhGDUCG3K1sfuEXiR5uDzLe?=
+ =?us-ascii?Q?Av651im1cp6u/+ss5Qr03uNBP4v4zM8nu0hD0WGF?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 683ac26a-7e57-484d-1fec-08dbcc0251dd
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6206.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 15:37:34.1300
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Yn8KZjDjSGh5HJcbObfZdUXApQcETq3Diu5b2suc249p2E6f33AFw35CgGZpeuA7s/kqJGvEhMiRWbR51T+haw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4581
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2023 16:18, Dmitry Rokosov wrote:
-> I believe it would be necessary to include a 'Fixes' tag for that. Neil,
-> what do you think?
-> Since a HARDLOCKUP is an undesirable situation, I don't think we want to
-> have it in the LTS kernels either.
-
-Yes, and please keep the previous Reviewed-by Dmitry and I added on v3 and send a v5 with the Fixes added.
-
-It should be:
-Fixes: ff7693d079e5 ("ARM: meson: serial: add MesonX SoC on-chip uart driver")
-
-Hopefully it will be the last iteration.
-
-Thanks,
-Neil
+On 2023-10-12 at 17:26:36 +0200, Vincent Guittot wrote:
+> On Wed, 11 Oct 2023 at 12:17, Chen Yu <yu.c.chen@intel.com> wrote:
+> >
+> > On 2023-10-10 at 09:49:54 -0400, Mathieu Desnoyers wrote:
+> > > On 2023-10-09 01:14, Chen Yu wrote:
+> > > > On 2023-09-30 at 07:45:38 -0400, Mathieu Desnoyers wrote:
+> > > > > On 9/30/23 03:11, Chen Yu wrote:
+> > > > > > Hi Mathieu,
+> > > > > >
+> > > > > > On 2023-09-29 at 14:33:50 -0400, Mathieu Desnoyers wrote:
+> > > > > > > Introduce the WAKEUP_BIAS_PREV_IDLE scheduler feature. It biases
+> > > > > > > select_task_rq towards the previous CPU if it was almost idle
+> > > > > > > (avg_load <= 0.1%).
+> > > > > >
+> > > > > > Yes, this is a promising direction IMO. One question is that,
+> > > > > > can cfs_rq->avg.load_avg be used for percentage comparison?
+> > > > > > If I understand correctly, load_avg reflects that more than
+> > > > > > 1 tasks could have been running this runqueue, and the
+> > > > > > load_avg is the direct proportion to the load_weight of that
+> > > > > > cfs_rq. Besides, LOAD_AVG_MAX seems to not be the max value
+> > > > > > that load_avg can reach, it is the sum of
+> > > > > > 1024 * (y + y^1 + y^2 ... )
+> > > > > >
+> > > > > > For example,
+> > > > > > taskset -c 1 nice -n -20 stress -c 1
+> > > > > > cat /sys/kernel/debug/sched/debug | grep 'cfs_rq\[1\]' -A 12 | grep "\.load_avg"
+> > > > > >     .load_avg                      : 88763
+> > > > > >     .load_avg                      : 1024
+> > > > > >
+> > > > > > 88763 is higher than LOAD_AVG_MAX=47742
+> > > > >
+> > > > > I would have expected the load_avg to be limited to LOAD_AVG_MAX somehow,
+> > > > > but it appears that it does not happen in practice.
+> > > > >
+> > > > > That being said, if the cutoff is really at 0.1% or 0.2% of the real max,
+> > > > > does it really matter ?
+> > > > >
+> > > > > > Maybe the util_avg can be used for precentage comparison I suppose?
+> > > > > [...]
+> > > > > > Or
+> > > > > > return cpu_util_without(cpu_rq(cpu), p) * 1000 <= capacity_orig_of(cpu) ?
+> > > > >
+> > > > > Unfortunately using util_avg does not seem to work based on my testing.
+> > > > > Even at utilization thresholds at 0.1%, 1% and 10%.
+> > > > >
+> > > > > Based on comments in fair.c:
+> > > > >
+> > > > >   * CPU utilization is the sum of running time of runnable tasks plus the
+> > > > >   * recent utilization of currently non-runnable tasks on that CPU.
+> > > > >
+> > > > > I think we don't want to include currently non-runnable tasks in the
+> > > > > statistics we use, because we are trying to figure out if the cpu is a
+> > > > > idle-enough target based on the tasks which are currently running, for the
+> > > > > purpose of runqueue selection when waking up a task which is considered at
+> > > > > that point in time a non-runnable task on that cpu, and which is about to
+> > > > > become runnable again.
+> > > > >
+> > > >
+> > > > Although LOAD_AVG_MAX is not the max possible load_avg, we still want to find
+> > > > a proper threshold to decide if the CPU is almost idle. The LOAD_AVG_MAX
+> > > > based threshold is modified a little bit:
+> > > >
+> > > > The theory is, if there is only 1 task on the CPU, and that task has a nice
+> > > > of 0, the task runs 50 us every 1000 us, then this CPU is regarded as almost
+> > > > idle.
+> > > >
+> > > > The load_sum of the task is:
+> > > > 50 * (1 + y + y^2 + ... + y^n)
+> > > > The corresponding avg_load of the task is approximately
+> > > > NICE_0_WEIGHT * load_sum / LOAD_AVG_MAX = 50.
+> > > > So:
+> > > >
+> > > > /* which is close to LOAD_AVG_MAX/1000 = 47 */
+> > > > #define ALMOST_IDLE_CPU_LOAD   50
+> > >
+> > > Sorry to be slow at understanding this concept, but this whole "load" value
+> > > is still somewhat magic to me.
+> > >
+> > > Should it vary based on CONFIG_HZ_{100,250,300,1000}, or is it independent ?
+> > > Where is it documented that the load is a value in "us" out of a window of
+> > > 1000 us ?
+> > >
+> >
+> > My understanding is that, the load_sum of a single task is a value in "us" out
+> > of a window of 1000 us, while the load_avg of the task will multiply the weight
 > 
-> On Fri, Oct 13, 2023 at 11:48:39AM +0000, Pavel Krasavin wrote:
->> From: Pavel Krasavin <pkrasavin@imaqliq.com>
->>
->> There might be hard lockup if we set crtscts mode on port without RTS/CTS configured:
->>
->> # stty -F /dev/ttyAML6 crtscts; echo 1 > /dev/ttyAML6; echo 2 > /dev/ttyAML6
->> [   95.890386] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
->> [   95.890857] rcu:     3-...0: (201 ticks this GP) idle=e33c/1/0x4000000000000000 softirq=5844/5846 fqs=4984
->> [   95.900212] rcu:     (detected by 2, t=21016 jiffies, g=7753, q=296 ncpus=4)
->> [   95.906972] Task dump for CPU 3:
->> [   95.910178] task:bash            state:R  running task     stack:0     pid:205   ppid:1      flags:0x00000202
->> [   95.920059] Call trace:
->> [   95.922485]  __switch_to+0xe4/0x168
->> [   95.925951]  0xffffff8003477508
->> [   95.974379] watchdog: Watchdog detected hard LOCKUP on cpu 3
->> [   95.974424] Modules linked in: 88x2cs(O) rtc_meson_vrtc
->>
->> Possible solution would be to not allow to setup crtscts on such port.
->>
->> Tested on S905X3 based board.
->>
->> Signed-off-by: Pavel Krasavin <pkrasavin@imaqliq.com>
->> ---
->> v4: More correct patch subject according to Jiri's note
->> v3: https://lore.kernel.org/lkml/OF6CF5FFA0.CCFD0E8E-ON00258A46.00549EDF-00258A46.0054BB62@gdc.ru/
->> "From:" line added to the mail
->> v2: https://lore.kernel.org/lkml/OF950BEF72.7F425944-ON00258A46.00488A76-00258A46.00497D44@gdc.ru/
->> braces for single statement removed according to Dmitry's note
->> v1: https://lore.kernel.org/lkml/OF28B2B8C9.5BC0CD28-ON00258A46.0037688F-00258A46.0039155B@gdc.ru/
->> ---
->>
->> --- a/drivers/tty/serial/meson_uart.c	2023-10-12 15:44:02.410538523 +0300
->> +++ b/drivers/tty/serial/meson_uart.c	2023-10-12 15:58:06.242395253 +0300
->> @@ -380,10 +380,14 @@ static void meson_uart_set_termios(struc
->>   	else
->>   		val |= AML_UART_STOP_BIT_1SB;
->>   
->> -	if (cflags & CRTSCTS)
->> -		val &= ~AML_UART_TWO_WIRE_EN;
->> -	else
->> +	if (cflags & CRTSCTS) {
->> +		if (port->flags & UPF_HARD_FLOW)
->> +			val &= ~AML_UART_TWO_WIRE_EN;
->> +		else
->> +			termios->c_cflag &= ~CRTSCTS;
->> +	} else {
->>   		val |= AML_UART_TWO_WIRE_EN;
->> +	}
->>   
->>   	writel(val, port->membase + AML_UART_CONTROL);
->>   
->> @@ -705,6 +709,7 @@ static int meson_uart_probe(struct platf
->>   	u32 fifosize = 64; /* Default is 64, 128 for EE UART_0 */
->>   	int ret = 0;
->>   	int irq;
->> +	bool has_rtscts;
->>   
->>   	if (pdev->dev.of_node)
->>   		pdev->id = of_alias_get_id(pdev->dev.of_node, "serial");
->> @@ -732,6 +737,7 @@ static int meson_uart_probe(struct platf
->>   		return irq;
->>   
->>   	of_property_read_u32(pdev->dev.of_node, "fifo-size", &fifosize);
->> +	has_rtscts = of_property_read_bool(pdev->dev.of_node, "uart-has-rtscts");
->>   
->>   	if (meson_ports[pdev->id]) {
->>   		return dev_err_probe(&pdev->dev, -EBUSY,
->> @@ -762,6 +768,8 @@ static int meson_uart_probe(struct platf
->>   	port->mapsize = resource_size(res_mem);
->>   	port->irq = irq;
->>   	port->flags = UPF_BOOT_AUTOCONF | UPF_LOW_LATENCY;
->> +	if (has_rtscts)
->> +		port->flags |= UPF_HARD_FLOW;
->>   	port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MESON_CONSOLE);
->>   	port->dev = &pdev->dev;
->>   	port->line = pdev->id;
->>
->> _______________________________________________
->> linux-amlogic mailing list
->> linux-amlogic@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-amlogic
+> I'm not sure we can say this. We use a 1024us sampling rate for
+> calculating weighted average but load_sum is in the range [0:47742]
+> so what does it mean 47742us out of a window of 1000us ?
 > 
+> Beside this we have util_avg in the range [0:cpu capacity] which gives
+> you the average running time of the cpu
+>
 
+Sorry I did not describe it accurately. Yes, it should be 1024us instead of 1000us.
+And the load_sum is the decayed accumulated duration. util_avg was once used
+previously and Mathieu found that it did not work. But in the latest version
+it works again, I'll have a test on that version.
+
+thanks,
+Chenyu
