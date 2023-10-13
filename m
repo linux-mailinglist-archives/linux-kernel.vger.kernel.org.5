@@ -2,164 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7E77C7F60
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A7F7C7F63
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbjJMIFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:05:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37690 "EHLO
+        id S230014AbjJMIFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjJMIFD (ORCPT
+        with ESMTP id S229986AbjJMIFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:05:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77B6BE
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697184258;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jnw6CV1in12hPMuWpKYAfFREANvgubRLaHRIuqtezJI=;
-        b=MMAb/LPYjNSLIkM2RDgXyaGsae9bF2uIZ9WmTojalLO8CFb6SHmcbqiP5/C094IATsmO8+
-        D3wqUDApM8JiM1bio/9ude+YIA3lxXrvs9IJtU0aOqgA9jnUlbAOzIBlWRSPLVPGJwc6ko
-        ISs8PHrEKMiG4IOo6loqRJPCiqv+IZU=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-625-xZTlsuG6PXKc7rHTi42WPg-1; Fri, 13 Oct 2023 04:04:16 -0400
-X-MC-Unique: xZTlsuG6PXKc7rHTi42WPg-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-32d9602824dso688055f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:04:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697184255; x=1697789055;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Jnw6CV1in12hPMuWpKYAfFREANvgubRLaHRIuqtezJI=;
-        b=YdEcRGxkjFdfdIjSX7tpafzneTlegTNltlFbiGd/3o1IDsuDrxhnun6LatBuQKLHHk
-         T231Hup9SzLtQ/bxILvfd+8Kaw9NBWYzZd5TKz+j2kPPcTCJHgJsQ5AShrQMEE/5EyNw
-         pmHSn1o3gb+WwulsWYbJZXWz8M8OWimC90eJZv6lElplXKsy8HMTpFz2eamj29sRdt93
-         YDcd2edGGbl5zQKQFUmGGNuGbdGJaGJi0PfxycRFkT4Z/NtFrAKR9/2Jfr/NaqbB4yPH
-         BKJrlNWYOojzhpoVqEeKkxbHch5l4cLrMnSGdy2q92BQo8RBgOoGWSZlT4AvqFoeQtFZ
-         CjdQ==
-X-Gm-Message-State: AOJu0YwpHCzq33fLFc7VWApQwI6csWOsQGpKr8pPaX4+0vNMGRCRhmy1
-        MAAG9S1W77LDIOxViW/tT8Up8YugeABc8eBcWuKgZnmNE3WGx8qRYFaLyAym0NRxAF1A4PVW+b4
-        NK+g4MUdm6kIw1Zv+BFXle/SR
-X-Received: by 2002:a05:6000:68d:b0:32d:88fd:5c65 with SMTP id bo13-20020a056000068d00b0032d88fd5c65mr7476698wrb.1.1697184255432;
-        Fri, 13 Oct 2023 01:04:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFD0RaO/ot8dyeG7Uo8SggGQU+QRrkA+qeVDmJJk2llvQffd95k8QMI2UC91Kh+CNR4GjHY2g==
-X-Received: by 2002:a05:6000:68d:b0:32d:88fd:5c65 with SMTP id bo13-20020a056000068d00b0032d88fd5c65mr7476648wrb.1.1697184254961;
-        Fri, 13 Oct 2023 01:04:14 -0700 (PDT)
-Received: from [192.168.3.108] (p5b0c6028.dip0.t-ipconnect.de. [91.12.96.40])
-        by smtp.gmail.com with ESMTPSA id g7-20020adfe407000000b003232d122dbfsm20377154wrm.66.2023.10.13.01.04.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Oct 2023 01:04:14 -0700 (PDT)
-Message-ID: <7495754c-9267-74af-b943-9b0f86619b5d@redhat.com>
-Date:   Fri, 13 Oct 2023 10:04:12 +0200
+        Fri, 13 Oct 2023 04:05:06 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC097D7;
+        Fri, 13 Oct 2023 01:05:04 -0700 (PDT)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39D7vKuu032262;
+        Fri, 13 Oct 2023 08:04:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=Jo2kbatEc8e17LpJGwnshQZMW5QQTjZ8AbyJriWjS7Y=;
+ b=cLnT3ZVyHxhFtwMyHy7DxD6CmqCO9vhl1uMlDZlyG65DN2FbKHMtErMzNCQ4hkaZfLLT
+ BsBg1FS92H8IHkMB6TcZKpOjj/s6PBDGLFxvXA/f8VJWr8zcsSZhCRSHtfFJV8dQxTeo
+ CNL09YOa1uGyR+Y2VhzWdy9hHRjOyjbA7ZwVPfJiwUPvgRsmFYesSxIPXjfqTgmFq28G
+ 5umX/f0CtjKCs/0sdsmk6mLcNl+WhczPtp/F26Jb8+TjLSHT5cs5Ugp01KbR5dSaQe+I
+ 4YSZDYd9Qr7YVpfgkHhp9NGzuHD1t8YcnMR9nfAW2OkgJShIPUK8w6KuDRWUc376nrFO bQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tq1y2g7yg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 08:04:44 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39D7vH0w032208;
+        Fri, 13 Oct 2023 08:04:43 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tq1y2g7xy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 08:04:43 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39D5KxqN007546;
+        Fri, 13 Oct 2023 08:04:42 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tpt5aagr2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 08:04:42 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39D84dHi21299776
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Oct 2023 08:04:39 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B477A2008C;
+        Fri, 13 Oct 2023 08:04:39 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A47542008A;
+        Fri, 13 Oct 2023 08:04:38 +0000 (GMT)
+Received: from [9.171.68.183] (unknown [9.171.68.183])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 13 Oct 2023 08:04:38 +0000 (GMT)
+Message-ID: <afea5e9952a8a23a28748539cc65b508d1a0f68b.camel@linux.ibm.com>
+Subject: Re: [PATCH net-next] net/smc: add support for netdevice in
+ containers.
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     dust.li@linux.alibaba.com,
+        Albert Huang <huangjie.albert@bytedance.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>
+Cc:     "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 13 Oct 2023 10:04:38 +0200
+In-Reply-To: <20231012121740.GR92403@linux.alibaba.com>
+References: <20230925023546.9964-1-huangjie.albert@bytedance.com>
+         <00bbbf48440c1889ecd16a590ebb746b820a4f48.camel@linux.ibm.com>
+         <20231011144816.GO92403@linux.alibaba.com>
+         <20231012121740.GR92403@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: B_bOycrT2FIOG-exXqbQRxoowDCJxqfS
+X-Proofpoint-ORIG-GUID: 5kdMwzotgXDwC0JEd7MlNEPX-acneogf
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 1/3] mm/rmap: support move to different root anon_vma
- in folio_move_anon_rmap()
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, hughd@google.com, mhocko@suse.com,
-        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
-        Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com,
-        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
-        jdduke@google.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
-References: <20231009064230.2952396-1-surenb@google.com>
- <20231009064230.2952396-2-surenb@google.com> <ZShswW2rkKTwnrV3@x1n>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZShswW2rkKTwnrV3@x1n>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-13_03,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 suspectscore=0 mlxscore=0 lowpriorityscore=0
+ priorityscore=1501 bulkscore=0 impostorscore=0 clxscore=1015 phishscore=0
+ adultscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310130065
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.10.23 00:01, Peter Xu wrote:
-> On Sun, Oct 08, 2023 at 11:42:26PM -0700, Suren Baghdasaryan wrote:
->> From: Andrea Arcangeli <aarcange@redhat.com>
->>
->> For now, folio_move_anon_rmap() was only used to move a folio to a
->> different anon_vma after fork(), whereby the root anon_vma stayed
->> unchanged. For that, it was sufficient to hold the folio lock when
->> calling folio_move_anon_rmap().
->>
->> However, we want to make use of folio_move_anon_rmap() to move folios
->> between VMAs that have a different root anon_vma. As folio_referenced()
->> performs an RMAP walk without holding the folio lock but only holding the
->> anon_vma in read mode, holding the folio lock is insufficient.
->>
->> When moving to an anon_vma with a different root anon_vma, we'll have to
->> hold both, the folio lock and the anon_vma lock in write mode.
->> Consequently, whenever we succeeded in folio_lock_anon_vma_read() to
->> read-lock the anon_vma, we have to re-check if the mapping was changed
->> in the meantime. If that was the case, we have to retry.
->>
->> Note that folio_move_anon_rmap() must only be called if the anon page is
->> exclusive to a process, and must not be called on KSM folios.
->>
->> This is a preparation for UFFDIO_MOVE, which will hold the folio lock,
->> the anon_vma lock in write mode, and the mmap_lock in read mode.
->>
->> Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
->> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->> ---
->>   mm/rmap.c | 24 ++++++++++++++++++++++++
->>   1 file changed, 24 insertions(+)
->>
->> diff --git a/mm/rmap.c b/mm/rmap.c
->> index c1f11c9dbe61..f9ddc50269d2 100644
->> --- a/mm/rmap.c
->> +++ b/mm/rmap.c
->> @@ -542,7 +542,9 @@ struct anon_vma *folio_lock_anon_vma_read(struct folio *folio,
->>   	struct anon_vma *root_anon_vma;
->>   	unsigned long anon_mapping;
->>   
->> +retry:
->>   	rcu_read_lock();
->> +retry_under_rcu:
->>   	anon_mapping = (unsigned long)READ_ONCE(folio->mapping);
->>   	if ((anon_mapping & PAGE_MAPPING_FLAGS) != PAGE_MAPPING_ANON)
->>   		goto out;
->> @@ -552,6 +554,16 @@ struct anon_vma *folio_lock_anon_vma_read(struct folio *folio,
->>   	anon_vma = (struct anon_vma *) (anon_mapping - PAGE_MAPPING_ANON);
->>   	root_anon_vma = READ_ONCE(anon_vma->root);
->>   	if (down_read_trylock(&root_anon_vma->rwsem)) {
->> +		/*
->> +		 * folio_move_anon_rmap() might have changed the anon_vma as we
->> +		 * might not hold the folio lock here.
->> +		 */
->> +		if (unlikely((unsigned long)READ_ONCE(folio->mapping) !=
->> +			     anon_mapping)) {
->> +			up_read(&root_anon_vma->rwsem);
->> +			goto retry_under_rcu;
-> 
-> Is adding this specific label worthwhile?  How about rcu unlock and goto
-> retry (then it'll also be clear that we won't hold rcu read lock for
-> unpredictable time)?
+On Thu, 2023-10-12 at 20:17 +0800, Dust Li wrote:
+> On Wed, Oct 11, 2023 at 10:48:16PM +0800, Dust Li wrote:
+> > On Thu, Sep 28, 2023 at 05:04:21PM +0200, Niklas Schnelle wrote:
+> > > On Mon, 2023-09-25 at 10:35 +0800, Albert Huang wrote:
+> > > > If the netdevice is within a container and communicates externally
+> > > > through network technologies like VXLAN, we won't be able to find
+> > > > routing information in the init_net namespace. To address this issu=
+e,
+> > > > we need to add a struct net parameter to the smc_ib_find_route func=
+tion.
+> > > > This allow us to locate the routing information within the correspo=
+nding
+> > > > net namespace, ensuring the correct completion of the SMC CLC inter=
+action.
+> > > >=20
+> > > > Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
+> > > > ---
+> > > >  net/smc/af_smc.c | 3 ++-
+> > > >  net/smc/smc_ib.c | 7 ++++---
+> > > >  net/smc/smc_ib.h | 2 +-
+> > > >  3 files changed, 7 insertions(+), 5 deletions(-)
+> > > >=20
+> > >=20
+> > > I'm trying to test this patch on s390x but I'm running into the same
+> > > issue I ran into with the original SMC namespace
+> > > support:https://lore.kernel.org/netdev/8701fa4557026983a9ec687cfdd7ac=
+5b3b85fd39.camel@linux.ibm.com/
+> > >=20
+> > > Just like back then I'm using a server and a client network namespace
+> > > on the same system with two ConnectX-4 VFs from the same card and por=
+t.
+> > > Both TCP/IP traffic as well as user-space RDMA via "qperf =E2=80=A6 r=
+c_bw" and
+> > > `qperf =E2=80=A6 rc_lat` work between namespaces and definitely go vi=
+a the
+> > > card.
+> > >=20
+> > > I did use "rdma system set netns exclusive" then moved the RDMA devic=
+es
+> > > into the namespaces with "rdma dev set <rdma_dev> netns <namespace>".=
+ I
+> > > also verified with "ip netns exec <namespace> rdma dev"
+> > > that the RDMA devices are in the network namespace and as seen by the
+> > > qperf runs normal RDMA does work.
+> > >=20
+> > > For reference the smc_chck tool gives me the following output:
+> > >=20
+> > > Server started on port 37373
+> > > [DEBUG] Interfaces to check: eno4378
+> > > Test with target IP 10.10.93.12 and port 37373
+> > >  Live test (SMC-D and SMC-R)
+> > > [DEBUG] Running client: smc_run /tmp/echo-clt.x0q8iO 10.10.93.12 -p
+> > > 37373
+> > > [DEBUG] Client result: TCP 0x05000000/0x03030000
+> > >     Failed  (TCP fallback), reasons:
+> > >          Client:        0x05000000   Peer declined during handshake
+> > >          Server:        0x03030000   No SMC devices found (R and D)
+> > >=20
+> > > I also checked that SMC is generally working, once I add an ISM device
+> > > I do get SMC-D between the namespaces. Any ideas what could break SMC=
+-R
+> > > here?
+> >=20
+> > I missed the email :(
+> >=20
+> > Are you running SMC-Rv2 or v1 ?
+>=20
+> Hi Niklas,
+>=20
+> I tried your test today, and I encounter the same issue.
+> But I found it's because my 2 VFs are in difference subnets,
+> SMC-Rv2 work fine, SMC-Rv1 won't work, which is expected.
+> When I set the 2 VFs in the same subnet, SMC-Rv1 also works.
+>=20
+> So I'm not sure it's the same for you. Can you check it out ?
+>=20
+> BTW, the fallback reason(SMC_CLC_DECL_NOSMCDEV) in this case
+> is really not friendly, it's better to return SMC_CLC_DECL_DIFFPREFIX.
+>=20
+> Best regards,
+> Dust
 
-+1, sounds good to me
+I think you are right. I did use two consecutive private IPs but I had
+set the subnet mask to /32. Setting that to /16 the SMC-R connection is
+established. I'll work with Wenjia and Jan on why my system is
+defaulting to SMC-Rv1 I would have hoped to get SMC-Rv2.
 
--- 
-Cheers,
-
-David / dhildenb
-
+Thanks for your insights!
+Niklas
