@@ -2,203 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EAF7C8271
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938AE7C8273
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbjJMJsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 05:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47386 "EHLO
+        id S231202AbjJMJtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 05:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbjJMJsW (ORCPT
+        with ESMTP id S230120AbjJMJtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 05:48:22 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4107195;
-        Fri, 13 Oct 2023 02:48:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7116A21891;
-        Fri, 13 Oct 2023 09:48:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697190498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8s6/qratdWv8O4Dy4/uS58AK1dKHHaBtdVRKEao/M/Q=;
-        b=j/BTLnCFHL9z6kFmgeEostX33PfEmBYauE4OtLEa0pMvrKCpcJRfGXqxW+JqEzIA9aG5Pu
-        w28jbZKnzjoYldDLJqxjij9ZOVLZaod7Kk0WEexLIqVgrWsoLPz9aZ98HVokb5nSmZF7v3
-        jxs1M3TZkPPpk52IlLfmOvt65fUeMko=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697190498;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8s6/qratdWv8O4Dy4/uS58AK1dKHHaBtdVRKEao/M/Q=;
-        b=2VrbrE3DFeg1UP5e3JDjUDtEvgs6W1Vm0mwJ1ZOHBV8/8TfWSUOQYobJIz/sr1DQ0FBB1h
-        k6wpcTURLt1lFkDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 53DE71358F;
-        Fri, 13 Oct 2023 09:48:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id vq0oFGISKWXzHQAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 13 Oct 2023 09:48:18 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id D75C9A05C4; Fri, 13 Oct 2023 11:48:17 +0200 (CEST)
-Date:   Fri, 13 Oct 2023 11:48:17 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jingbo Xu <jefflexu@linux.alibaba.com>
-Cc:     tj@kernel.org, guro@fb.com, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, cgroups@vger.kernel.org, jack@suse.cz,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, willy@infradead.org,
-        joseph.qi@linux.alibaba.com
-Subject: Re: [PATCH v2] writeback, cgroup: switch inodes with dirty
- timestamps to release dying cgwbs
-Message-ID: <20231013094817.bm62tq3cjjtgobto@quack3>
-References: <20231013055208.15457-1-jefflexu@linux.alibaba.com>
+        Fri, 13 Oct 2023 05:49:14 -0400
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479FE95
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:49:12 -0700 (PDT)
+Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39D9SVN8004572;
+        Fri, 13 Oct 2023 11:49:03 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:references:in-reply-to
+        :content-type:content-transfer-encoding:mime-version; s=
+        selector1; bh=XIJllFa3lyrGANH10umtce4GqB7bYAU7W5gGSo/oanM=; b=kS
+        EbrAdoW/ajKQZOaFa4aEjskTCZc6GkQfC2kOo7Xob43CKKQIrimm+u6yM2y7Rd73
+        irTAv5M8hH47Uv0klQ2wj7dBndp8C0UlVIfb0FFqoSHQ1u13c5NVQVoEvFRCfczY
+        w8Le1kmRkmLVLLEhWma4n9f7HPNIXs8+XDF0G6jRE3ujlvalWYRv6BEXqFBuPDcE
+        /CSpeuzJ7D8xULXZd4zAC55iCPcZi2Ua/U4h7WsuMK7lWOSwWH+BEBeZMQz5XXHR
+        tHv+ReAxX0+EEZAIuU6MGhpsk7FVuhNZh3q+myy6O1Lm2ZfEkvDctNvvjllbs/0A
+        9elVHDYzbcmiSEboBuLw==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkj9h89np-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 11:49:02 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0F269100056;
+        Fri, 13 Oct 2023 11:49:01 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E732121A208;
+        Fri, 13 Oct 2023 11:49:01 +0200 (CEST)
+Received: from SHFDAG1NODE1.st.com (10.75.129.69) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 13 Oct
+ 2023 11:48:59 +0200
+Received: from SHFDAG1NODE1.st.com ([fe80::117e:c4ab:ed81:6cb1]) by
+ SHFDAG1NODE1.st.com ([fe80::117e:c4ab:ed81:6cb1%14]) with mapi id
+ 15.01.2507.027; Fri, 13 Oct 2023 11:48:59 +0200
+From:   Etienne CARRIERE - foss <etienne.carriere@foss.st.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Jens Wiklander" <jens.wiklander@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>,
+        Jerome Forissier <jerome.forissier@linaro.org>
+Subject: Re: [PATCH v10 3/4] tee: optee: support tracking system threads
+Thread-Topic: [PATCH v10 3/4] tee: optee: support tracking system threads
+Thread-Index: AQHZ9gLa0eDXIY4qt063d7Hb9IRsn7A8YsSAgAfLecSAAxABgIAANORE///qbICAACKwav//45oAgAAkeqw=
+Date:   Fri, 13 Oct 2023 09:48:59 +0000
+Message-ID: <62e525fefd934329822a16edd9b6b5ab@foss.st.com>
+References: <20231003140637.31346-1-etienne.carriere@foss.st.com>
+ <20231003140637.31346-4-etienne.carriere@foss.st.com>
+ <CAFA6WYOMHWFytm4cYy3kQf4E3qiytrnOTVY1gb2rzTDece490w@mail.gmail.com>
+ <bbb5ca0809954bee94c5f2886427f886@foss.st.com>
+ <CAFA6WYMKrB7xkOaef41LyVKHGAt8Dk0hbFUkiqubeZbJVY=9kw@mail.gmail.com>
+ <5ba5ab8d2cc7477588dd0f6c7531cf16@foss.st.com>
+ <CAFA6WYPRgAnq_WZGbqvrn4de9Gk9fzTDs+NmcWyFn-QAC2+c8w@mail.gmail.com>
+ <adb7df76eb8f4a7399b89f681383df84@foss.st.com>,<CAFA6WYMK2nM+uhtNPJH2bdtXpi=5SZdsxv5P5NSzOp1k4Ty+zg@mail.gmail.com>
+In-Reply-To: <CAFA6WYMK2nM+uhtNPJH2bdtXpi=5SZdsxv5P5NSzOp1k4Ty+zg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.201.20.20]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231013055208.15457-1-jefflexu@linux.alibaba.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -2.50
-X-Spamd-Result: default: False [-2.50 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_SPAM(5.10)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[13];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-13_03,2023-10-12_01,2023-05-22_02
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 13-10-23 13:52:08, Jingbo Xu wrote:
-> The cgwb cleanup routine will try to release the dying cgwb by switching
-> the attached inodes.  It fetches the attached inodes from wb->b_attached
-> list, omitting the fact that inodes only with dirty timestamps reside in
-> wb->b_dirty_time list, which is the case when lazytime is enabled.  This
-> causes enormous zombie memory cgroup when lazytime is enabled, as inodes
-> with dirty timestamps can not be switched to a live cgwb for a long time.
-> 
-> It is reasonable not to switch cgwb for inodes with dirty data, as
-> otherwise it may break the bandwidth restrictions.  However since the
-> writeback of inode metadata is not accounted for, let's also switch
-> inodes with dirty timestamps to avoid zombie memory and block cgroups
-> when laztytime is enabled.
-> 
-> Fixs: c22d70a162d3 ("writeback, cgroup: release dying cgwbs by switching attached inodes")
-  ^^^ Fixes
+> From: Sumit Garg <sumit.garg@linaro.org>
+> Sent: Friday, October 13, 2023 11:36 AM
+>=20
+> On Fri, 13 Oct 2023 at 14:53, Etienne CARRIERE - foss
+> <etienne.carriere@foss.st.com> wrote:
+> >
+> > > From: Sumit Garg <sumit.garg@linaro.org>
+> > > Sent: Friday, October 13, 2023 11:13 AM
+> > >
+> > > On Fri, 13 Oct 2023 at 14:09, Etienne CARRIERE - foss
+> > > <etienne.carriere@foss.st.com> wrote:
+> > > >
+> > > > > From: Sumit Garg <sumit.garg@linaro.org>
+> > > > > Sent: Friday, October 13, 2023 9:21 AM
+> > > > >
+> > > > > On Wed, 11 Oct 2023 at 12:41, Etienne CARRIERE - foss
+> > > > > <etienne.carriere@foss.st.com> wrote:
+> > > > > >
+> > > > > > > From: Sumit Garg <sumit.garg@linaro.org>
+> > > > > > > Sent: Friday, October 6, 2023 11:33 AM
+> > > > > > >
+> > > > > > > On Tue, 3 Oct 2023 at 19:36, Etienne Carriere
+> > > > > > > <etienne.carriere@foss.st.com> wrote:
+> > > > > > > >
+> > > > > > > > Adds support in the OP-TEE driver to keep track of reserved=
+ system
+> > > > > > > > threads. The logic allows one OP-TEE thread to be reserved =
+to TEE system
+> > > > > > > > sessions.
+> > > > > > > >
+> > > > > > > > The optee_cq_*() functions are updated to handle this if en=
+abled,
+> > > > > > > > that is when TEE describes how many thread context it suppo=
+rts
+> > > > > > > > and when at least 1 session has registered as a system sess=
+ion
+> > > > > > > > (using tee_client_system_session()).
+> > > > > > > >
+> > > > > > > > For sake of simplicity, initialization of call queue manage=
+ment
+> > > > > > > > is factorized into new helper function optee_cq_init().
+> > > > > > > >
+> > > > > > > > The SMC ABI part of the driver enables this tracking, but t=
+he
+> > > > > > > > FF-A ABI part does not.
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > Co-developed-by: Jens Wiklander <jens.wiklander@linaro.org>
+> > > > > > > > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> > > > > > > > Co-developed-by: Sumit Garg <sumit.garg@linaro.org>
+> > > > > > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > > > > > > Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.c=
+om>
+> > > > > > > > ---
+> > > > > > > > Changes since v9:
+> > > > > > > > - Add a reference counter for TEE system thread provisionin=
+g. We reserve
+> > > > > > > >   a TEE thread context for system session only when there i=
+s at least
+> > > > > > > >   1 opened system session.
+> > > > > > > > - Use 2 wait queue lists, normal_waiters and sys_waiter, as=
+ proposed in
+> > > > > > > >   patch v8. Using a single list can prevent a waiting syste=
+m thread from
+> > > > > > > >   being resumed if the executing system thread wakes a norm=
+al waiter in
+> > > > > > > >   the list.
+> > > > > > >
+> > > > > > > How would that be possible? The system thread wakeup
+> > > > > > > (free_thread_threshold =3D 0) is given priority over normal t=
+hread
+> > > > > > > wakeup (free_thread_threshold =3D 1). I think a single queue =
+list would
+> > > > > > > be sufficient as demonstrated in v9.
+> > > > > > >
+> > > > > >
+> > > > > > Hello Sumit,
+> > > > > >
+> > > > > > I think a system session can be trapped waiting when using a si=
+ngle queue list.
+> > > > > > To have a chance to reach the TEE, a waiting thread must wait t=
+hat a TEE thread comes out of the TEE and calls complete() on the waitqueue=
+ to wake next waiter.
+> > > > > >
+> > > > > > To illustrate, consider a 10 TEE threads configuration on TEE s=
+ide (::total_thread_count=3D10 at init),
+> > > > > > and several TEE clients in Linux OS, including 2 system session=
+s, from 2 consumer drivers (::sys_thread_req_count=3D2).
+> > > > > >
+> > > > > > Imagine the 9 normal threads and the 1 system thread are in use=
+. (::free_thread_count=3D0),
+> > > > > > Now comes the other system session: it goes to the waitqueue li=
+st.
+> > > > > > Now comes a normal session invocation: it goes to the waitqueue=
+ list, 1st position.
+> > > > > >
+> > > > > > Now, TEE system thread returns to Linux:
+> > > > > > It increments the counter, ::free_thread_count=3D1, and calls c=
+omplete() for the waitequeue.
+> > > > > > The 1st element in the waitqueue list is the last entered norma=
+l session invocation.
+> > > > > > However, that waiter won't switch local boolean 'need_wait'  to=
+ false because ::free_thread_count=3D1 and ::sys_thread_req_count!=3D0.
+> > > > > > So no attempt to reach TEE and wake another waiter on return.
+> > > > > > At that point there is a system session in the waitqueue list t=
+hat could enter TEE (::free_thread_count=3D1) but is waiting someone return=
+s from the TEE.
+> > > > >
+> > > > > I suppose the following loop tries to wake-up every waiter to giv=
+e
+> > > > > them a chance to enter OP-TEE. So with that system session would
+> > > > > always be prefered over normal session, right?
+> > > >
+> > > > No, the below loop will wake only the 1st waiter it finds in the li=
+st that is
+> > > > current waiting (completion_done() returns false). So if it finds a=
+ normal
+> > > > session, it will only wake this one which, in turn, will not try to=
+ reach the
+> > > > TEE from the while(need_wiat) loop in optee_cq_wait_init(), because=
+ there is
+> > > > not enough free threads. Because it does not reach the TEE, it will=
+ not
+> > > > it wake another waiter.
+> > > >
+> > >
+> > > Okay I see your point, so how about the following change on top of v9=
+.
+> > > I still think having 2 queues is an overkill here.
+> > >
+> > > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
+> > > index df5fb5410b72..47f57054d9b7 100644
+> > > --- a/drivers/tee/optee/call.c
+> > > +++ b/drivers/tee/optee/call.c
+> > > @@ -60,6 +60,7 @@ void optee_cq_wait_init(struct optee_call_queue *cq=
+,
+> > >          */
+> > >         init_completion(&w->c);
+> > >         list_add_tail(&w->list_node, &cq->waiters);
+> > > +       w->sys_thread =3D sys_thread;
+> > >
+> > > ...
+> > >
+> > > @@ -83,6 +84,14 @@ static void optee_cq_complete_one(struct
+> > > optee_call_queue *cq)
+> > >  {
+> > >         struct optee_call_waiter *w;
+> > >
+> > > +       /* Try to wakeup system session capable threads first */
+> > > +       list_for_each_entry(w, &cq->waiters, list_node) {
+> > > +               if (!completion_done(&w->c) && w->sys_thread) {
+> > > +                       complete(&w->c);
+> > > +                       return;
+> > > +               }
+> > > +       }
+> > > +
+> >
+> > Indeed, looking for system sessions first in the list would address the=
+ issue.
+> > I would test sys_thread firs: if (w->sys_thread && !completion_done(&w-=
+>c))
+>=20
+> Ack.
+>=20
+> >
+> > That said, is it better to have 2 lists or to have 1 list possibly scan=
+ned twice?
+>=20
+> I would prefer to reuse the existing queue.
 
-> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+Ok, I'll do.
 
-Otherwise looks good. Feel free to add:
+BR,
+Etienne
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
-> v2: add comment explaining why switching for inodes with dirty
-> timestamps is needed
-> 
-> v1: https://lore.kernel.org/all/20231011084228.77615-1-jefflexu@linux.alibaba.com/
-> ---
->  fs/fs-writeback.c | 41 +++++++++++++++++++++++++++++------------
->  1 file changed, 29 insertions(+), 12 deletions(-)
-> 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index c1af01b2c42d..1767493dffda 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -613,6 +613,24 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
->  	kfree(isw);
->  }
->  
-> +static bool isw_prepare_wbs_switch(struct inode_switch_wbs_context *isw,
-> +				   struct list_head *list, int *nr)
-> +{
-> +	struct inode *inode;
-> +
-> +	list_for_each_entry(inode, list, i_io_list) {
-> +		if (!inode_prepare_wbs_switch(inode, isw->new_wb))
-> +			continue;
-> +
-> +		isw->inodes[*nr] = inode;
-> +		(*nr)++;
-> +
-> +		if (*nr >= WB_MAX_INODES_PER_ISW - 1)
-> +			return true;
-> +	}
-> +	return false;
-> +}
-> +
->  /**
->   * cleanup_offline_cgwb - detach associated inodes
->   * @wb: target wb
-> @@ -625,7 +643,6 @@ bool cleanup_offline_cgwb(struct bdi_writeback *wb)
->  {
->  	struct cgroup_subsys_state *memcg_css;
->  	struct inode_switch_wbs_context *isw;
-> -	struct inode *inode;
->  	int nr;
->  	bool restart = false;
->  
-> @@ -647,17 +664,17 @@ bool cleanup_offline_cgwb(struct bdi_writeback *wb)
->  
->  	nr = 0;
->  	spin_lock(&wb->list_lock);
-> -	list_for_each_entry(inode, &wb->b_attached, i_io_list) {
-> -		if (!inode_prepare_wbs_switch(inode, isw->new_wb))
-> -			continue;
-> -
-> -		isw->inodes[nr++] = inode;
-> -
-> -		if (nr >= WB_MAX_INODES_PER_ISW - 1) {
-> -			restart = true;
-> -			break;
-> -		}
-> -	}
-> +	/*
-> +	 * In addition to the inodes that have completed writeback, also switch
-> +	 * cgwbs for those inodes only with dirty timestamps. Otherwise, those
-> +	 * inodes won't be written back for a long time when lazytime is
-> +	 * enabled, and thus pinning the dying cgwbs. It won't break the
-> +	 * bandwidth restrictions, as writeback of inode metadata is not
-> +	 * accounted for.
-> +	 */
-> +	restart = isw_prepare_wbs_switch(isw, &wb->b_attached, &nr);
-> +	if (!restart)
-> +		restart = isw_prepare_wbs_switch(isw, &wb->b_dirty_time, &nr);
->  	spin_unlock(&wb->list_lock);
->  
->  	/* no attached inodes? bail out */
-> -- 
-> 2.19.1.6.gb485710b
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>=20
+> -Sumit
+>=20
+> > I'm fine with both ways.
+> >
+> > etienne
+> >
+> >
+> > >         list_for_each_entry(w, &cq->waiters, list_node) {
+> > >                 if (!completion_done(&w->c)) {
+> > >                         complete(&w->c);
+> > > diff --git a/drivers/tee/optee/optee_private.h
+> > > b/drivers/tee/optee/optee_private.h
+> > > index 6bb5cae09688..a7817ce9f90f 100644
+> > > --- a/drivers/tee/optee/optee_private.h
+> > > +++ b/drivers/tee/optee/optee_private.h
+> > > @@ -43,6 +43,7 @@ typedef void (optee_invoke_fn)(unsigned long,
+> > > unsigned long, unsigned long,
+> > >  struct optee_call_waiter {
+> > >         struct list_head list_node;
+> > >         struct completion c;
+> > > +       bool sys_thread;
+> > >  };
+> > >
+> > >  struct optee_call_queue {
+> > >
+> > > -Sumit
+> > >
+> > > > >
+> > > > > static void optee_cq_complete_one(struct optee_call_queue *cq)
+> > > > > {
+> > > > >         struct optee_call_waiter *w;
+> > > > >
+> > > > >         list_for_each_entry(w, &cq->waiters, list_node) {
+> > > > >                 if (!completion_done(&w->c)) {
+> > > > >                         complete(&w->c);
+> > > > >                         break;
+> > > > >                 }
+> > > > >         }
+> > > > > }
+> > > > >
+> > > > > -Sumit
+> > > > >
+> > > >
+> > > > Note I've found a error in this patch v10, see below.
+> > > >
+> > > > BR,
+> > > > Etienne
+> > > >
+> > > >
+> > > > > >
+> > > > > > With 2 lists, we first treat system sessions to overcome that.
+> > > > > > Am I missing something?
+> > > > > >
+> > > > > > Best regards,
+> > > > > > Etienne
+> > > > > >
+> > > > > > > -Sumit
+> > > > > > >
+> > (snip)
+>=20
