@@ -2,75 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 580CD7C82A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3A67C82A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbjJMJ6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 05:58:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43214 "EHLO
+        id S231374AbjJMJ6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 05:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbjJMJ55 (ORCPT
+        with ESMTP id S231189AbjJMJ6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 05:57:57 -0400
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B515CCA;
-        Fri, 13 Oct 2023 02:57:52 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qrEvK-006ijp-3e; Fri, 13 Oct 2023 17:57:39 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 13 Oct 2023 17:57:42 +0800
-Date:   Fri, 13 Oct 2023 17:57:42 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Wang Jinchao <wangjinchao@xfusion.com>
-Cc:     steffen.klassert@secunet.com, daniel.m.jordan@oracle.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stone.xulei@xfusion.com
-Subject: Re: [PATCH v3] Fixes: 07928d9bfc81 ("padata: Remove broken queue
- flushing")
-Message-ID: <ZSkUlkp214AROxpG@gondor.apana.org.au>
+        Fri, 13 Oct 2023 05:58:19 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DD6C2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:58:17 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53d9b94731aso3554796a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:58:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1697191096; x=1697795896; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nlysa/0HAt7XwTL7Sd4FpaqX2JsJYLCn7DORbQofqo8=;
+        b=oOMpA4RXR0o11JOgKrZ9y5tA2Q/b42jxUUNbnlqH1R4WkXfQWqlGzTMZiESAveKcvw
+         wcvS+CIGmAIOmFrdXOXJL1eRd8TlwOk/nPyISBVDYKHw1A26stgOveoXVl18dh0B5hTu
+         uw+dix3PkS+ZW5Dfw+C/L4poA2Tl+afXpXxno+JcFEx6iqm7RmnvZWKq4JRgxJHvVsJx
+         d+ov7ljdPoly132MDMEuB36JKFNCmm+IYrl/5AFC8NAKte7GjQnVU5GN9482hK1mjSkz
+         eFQykZuMndnbMusmbVVjso8TrGDzdIdezM3BITYytwVre8MyuAurMuP50t+y5MUY3xuc
+         wLbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697191096; x=1697795896;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nlysa/0HAt7XwTL7Sd4FpaqX2JsJYLCn7DORbQofqo8=;
+        b=pF9ifLYqGeIKynGFVdSMrGdsx6hJefkFfFUJEs8+eZ7Vf908AMYtdxogUL8/hkbeR1
+         WyHRYuAdu64lmTflv0JENGOjTjNwwllKrNOQen6cbDAYN9MwM8rzKkngMQ3K2SXujVYB
+         l2DKips+GORuw0OL3FDB3R1Py9loSa7hHzMDVUp3yJ4/ymqRFXkEsavSqmNV6xWH7h0N
+         hzFCNIaxHITR8klijSQLustpIX/JLmc7LIUNeg/cN5YsOfk5BAVt+3nWHPOSFInGIFsh
+         nOIwumx7WAvohVxsKiNX6h47niURGvcCUnvrIoFmxSfm2PofpxLhTeX7u5CvwhGg6U9o
+         iTVQ==
+X-Gm-Message-State: AOJu0Yw4ONCNNFgXTB6XEUjO7sKgI/9uRyWKGh5EVf5Zv/ZZ1T9RNk3I
+        HIpiSi7ACvhzi8bSw1jJtoPN0w==
+X-Google-Smtp-Source: AGHT+IEguRhdGJwf0aIebN3fBCeHhRTYBl34+o54X7nhqZBgpclVfefxrGnH7qQH1m05Yq6L5Ya53A==
+X-Received: by 2002:aa7:c998:0:b0:530:a226:1f25 with SMTP id c24-20020aa7c998000000b00530a2261f25mr21443281edt.17.1697191096257;
+        Fri, 13 Oct 2023 02:58:16 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id u19-20020a50d513000000b0053e408aec8bsm650498edi.6.2023.10.13.02.58.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 02:58:15 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 11:58:14 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-efi@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 4/5] riscv: Suffix all page table entry pointers with 'p'
+Message-ID: <20231013-19d487ddc6b6efd6d6f62f88@orel>
+References: <20231002151031.110551-1-alexghiti@rivosinc.com>
+ <20231002151031.110551-5-alexghiti@rivosinc.com>
+ <20231012-envision-grooving-e6e0461099f1@spud>
+ <20231012-exclusion-moaner-d26780f9eb00@spud>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZSDWAcUxXcwD4YUZ@fedora>
-X-Newsgroups: apana.lists.os.linux.cryptoapi,apana.lists.os.linux.kernel
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231012-exclusion-moaner-d26780f9eb00@spud>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wang Jinchao <wangjinchao@xfusion.com> wrote:
->
-> diff --git a/kernel/padata.c b/kernel/padata.c
-> index 222d60195de6..79d04a97ded6 100644
-> --- a/kernel/padata.c
-> +++ b/kernel/padata.c
-> @@ -1102,12 +1102,16 @@ EXPORT_SYMBOL(padata_alloc_shell);
->  */
-> void padata_free_shell(struct padata_shell *ps)
-> {
-> +       struct parallel_data *pd;
-> +
->        if (!ps)
->                return;
+On Thu, Oct 12, 2023 at 12:35:00PM +0100, Conor Dooley wrote:
+> On Thu, Oct 12, 2023 at 12:33:15PM +0100, Conor Dooley wrote:
+> > Hey Alex,
+> > 
+> > On Mon, Oct 02, 2023 at 05:10:30PM +0200, Alexandre Ghiti wrote:
+> > > That makes it more clear what the underlying type is, no functional
+> > > changes intended.
+> > 
+> > Scanning through stuff on patchwork, this really doesn't seem worth the
+> > churn. I thought this sort of Hungarian notation-esque stuff was a
+> > relic of a time before I could read & our docs even go as far as to
 > 
->        mutex_lock(&ps->pinst->lock);
->        list_del(&ps->list);
-> -       padata_free_pd(rcu_dereference_protected(ps->pd, 1));
-> +       pd = rcu_dereference_protected(ps->pd, 1);
-> +       if (refcount_dec_and_test(&pd->refcnt))
-> +               padata_free_pd(rcu_dereference_protected(ps->pd, 1));
+> s/go/went/, I see the language got changed in more recent releases of
+> the kernel!
 
-Why is this dereferencing ps->pd again after the refcount_dec_and_test?
+The documentation seems to still be against it, but, despite that and
+the two very valid points raised by Marco (backporting and git-blame),
+I think ptep is special and I'm mostly in favor of this change. We may
+not need to s/r every instance, but certainly functions which need to
+refer to both the pte and the ptep representations of entries becomes
+more clear when using the 'p' convention (and then it's nice to have
+ptep used everywhere else too for consistency...)
 
-If this is necessary please explain it in the code because it is not
-at all obvious.
+Anyway, just my 2 cents.
 
 Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+drew
