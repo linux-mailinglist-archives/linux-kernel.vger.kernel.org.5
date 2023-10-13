@@ -2,129 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD667C80B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECB27C80A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbjJMIti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60016 "EHLO
+        id S230245AbjJMIsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230334AbjJMIta (ORCPT
+        with ESMTP id S230125AbjJMIsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:49:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D77136
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:49:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F714C433C7;
-        Fri, 13 Oct 2023 08:49:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697186967;
-        bh=HgjG8dXJseeEMaKwgvPf4GwIryB+0yn5uNjJ0rz99XA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WjGAhUltjuJA2XNhwyr0qRX/QPcKHGR+xBp7blnN3CuekjNPJ10dK91M1VFr5rrsF
-         f72hv/KgddY+FYgM1hwIMzc7xFAFjz445ykEmp9+VOxwaSoaKkWENedQOn53yRgXU8
-         Zka5wtoybkbuDL02DBSwi7IyJM/ki5Ole9zKoOngTXaEGBX140BMqYhDtTx0DaIvV/
-         QCgGQzK7ppL+F+60BNLBXWGDHUJH36P6h+9VfFS9wMINIvdDfxBHplPXaNJ6VijI7g
-         jF02GmDzScVqJzyzOAmfx+stRpltbFk+6aoa7A6Ak2WR1T9n536wb0EY/xPelkej7a
-         Wqop4NhhKsy/Q==
-Date:   Fri, 13 Oct 2023 11:48:27 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        mike.kravetz@oracle.com, muchun.song@linux.dev,
-        willy@infradead.org, linux-mm@kvack.org,
+        Fri, 13 Oct 2023 04:48:51 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C235CA
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:48:50 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c9daca2b85so13926435ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:48:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697186929; x=1697791729; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cuwfdf7uPcP2Q86zjEqOgU6r207CIqSR0RYNAvAzT7M=;
+        b=lF7CSnLK5WTJrDgdFGC6nm+su+9NGII7+2Qw1owjlacqVhY6ExjSaGGIHZnOy7Sw2X
+         diwvuEylJS5pdgBffnDg18Q+rCmG4x47ANE+Mj0JrTOJo2jM4LgIW7Wb5FOmKHXItqbc
+         x9Wwa0YkJyZZYFCE4yfDborl4uNkpIF0AgE1/NNqyVss5y33hsBls6wR1Mu0kJKkRKBI
+         EQZzNyrtupd5d2eLLKYcE25fB1987u9KcmfK4X9KoVeN+OxK7sWGZGloMWj9yOXFkNd5
+         IBBL6z8LlFYc4KXIjvCBuJmS6aEf19XF6cgFl7LoRCiev5osXdGYsxdNMHYAuneaE4Zp
+         uboA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697186929; x=1697791729;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cuwfdf7uPcP2Q86zjEqOgU6r207CIqSR0RYNAvAzT7M=;
+        b=Rcn0WK1vLiUmexZzdN8b8xIijhU7tHsj1DMqo2AQouxtIjFtddaJZcIpwWI2IEkygV
+         J0tqNsT5rFCQFLW8QQi4HyiiVHPp4nzYTqn2AqyFOoT9fOB+DdbQHAnMtLcJdGApT/kh
+         bzBi96FSUO1Za/EYM00fwzRxnJH904JVHyBNOcKw6zUORkk1j/x25vxA+lk/zpPmv0ua
+         2F6r9WXQJHtpwLrrFkEGEM+gYLesvEpj62d2jQwvLMLQypTtXDt7vqavlUJ5leZUuSuq
+         Hom1geZrA64NK/Rhiq09NgBbaHBAqt0msstxKbbyk826lnFkwo/9V3U7Kr9Jc4ZIwQQD
+         AHXw==
+X-Gm-Message-State: AOJu0Yx2l8GayRZO6QAiG3yknjNAxkFX7RdZCoZd57tGf8XLdMYF2P42
+        NeDcG04D7qsqOXdK2mjKWBDR5A==
+X-Google-Smtp-Source: AGHT+IH3f9cU14JXh2Hb6LKulH+gV6yDSQRozneYBR6cD7b82auAI9dBvLy+LU+tw3KaW/zbYV36RA==
+X-Received: by 2002:a17:902:d2ca:b0:1c3:76c4:7242 with SMTP id n10-20020a170902d2ca00b001c376c47242mr39359589plc.22.1697186929320;
+        Fri, 13 Oct 2023 01:48:49 -0700 (PDT)
+Received: from localhost ([122.172.80.14])
+        by smtp.gmail.com with ESMTPSA id ij25-20020a170902ab5900b001c755810f89sm3399949plb.181.2023.10.13.01.48.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 01:48:48 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] mm: Init page count in reserve_bootmem_region
- when MEMINIT_EARLY
-Message-ID: <20231013084827.GT3303@kernel.org>
-References: <20230928083302.386202-1-yajun.deng@linux.dev>
- <20230928083302.386202-3-yajun.deng@linux.dev>
- <20230929083018.GU3303@kernel.org>
- <f144b910-cd9f-a571-ce9b-a0a8b509c28a@redhat.com>
- <2f8c4741-5c7f-272d-9cef-9fda9fbc7ca6@linux.dev>
- <5382bf2d-5aa0-1498-8169-3248be4b5af3@linux.dev>
- <bf7143f4-9d50-cfc4-0ef6-d312a2cc896b@redhat.com>
- <38cd0cb9-efe9-b98a-2768-ccb48da8b812@linux.dev>
+Subject: [PATCH 0/5] OPP: Minor cleanups
+Date:   Fri, 13 Oct 2023 14:18:36 +0530
+Message-Id: <cover.1697186772.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <38cd0cb9-efe9-b98a-2768-ccb48da8b812@linux.dev>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 05:53:22PM +0800, Yajun Deng wrote:
-> 
-> On 2023/10/12 17:23, David Hildenbrand wrote:
-> > On 10.10.23 04:31, Yajun Deng wrote:
-> > > 
-> > > On 2023/10/8 16:57, Yajun Deng wrote:
-> > > > > 
-> > > > > That looks wrong. if the page count would by pure luck be 0
-> > > > > already for hotplugged memory, you wouldn't clear the reserved
-> > > > > flag.
-> > > > > 
-> > > > > These changes make me a bit nervous.
-> > > > 
-> > > > Is 'if (page_count(page) || PageReserved(page))' be safer? Or do I
-> > > > need to do something else?
-> > > > 
-> > > 
-> > > How about the following if statement? But it needs to add more patch
-> > > like v1 ([PATCH 2/4] mm: Introduce MEMINIT_LATE context).
-> > > 
-> > > It'll be safer, but more complex. Please comment...
-> > > 
-> > >     if (context != MEMINIT_EARLY || (page_count(page) ||
-> > > PageReserved(page)) {
-> > > 
-> > 
-> > Ideally we could make initialization only depend on the context, and not
-> > check for count or the reserved flag.
-> > 
-> 
-> This link is v1,
-> https://lore.kernel.org/all/20230922070923.355656-1-yajun.deng@linux.dev/
-> 
-> If we could make initialization only depend on the context, I'll modify it
-> based on v1.
+Hi,
 
-Although ~20% improvement looks impressive, this is only optimization of a
-fraction of the boot time, and realistically, how much 56 msec saves from
-the total boot time when you boot a machine with 190G of RAM?
+While working on solving a bigger problem (which I will post separately), found
+these minor issues which can be applied right away. Please let me know if
+something breaks because of them.
 
-I still think the improvement does not justify the churn, added complexity
-and special casing of different code paths of initialization of struct pages.
- 
-> @Mike,  By the way,  this code will cost more time:
-> 
->                 if (context == MEMINIT_HOTPLUG)
->                         flags = INIT_PAGE_COUNT | INIT_PAGE_RESERVED;
->                 __init_single_page(page, pfn, zone, nid, flags);
-> 
-> 
-> [    0.014999] On node 0, zone DMA32: 31679 pages in unavailable ranges
-> [    0.311560] ACPI: PM-Timer IO Port: 0x508
-> 
-> 
-> This code will cost less time:
-> 
->                 __init_single_page(page, pfn, zone, nid, 0);
->                 if (context == MEMINIT_HOTPLUG) {
->                         init_page_count(page);
->                         __SetPageReserved(page);
-> 
-> [    0.014299] On node 0, zone DMA32: 31679 pages in unavailable ranges
-> [    0.250223] ACPI: PM-Timer IO Port: 0x508
-> 
+--
+Viresh
+
+Viresh Kumar (5):
+  OPP: Fix formatting of if/else block
+  OPP: Add _link_required_opps() to avoid code duplication
+  OPP: Reorder code in _opp_set_required_opps_genpd()
+  OPP: Remove genpd_virt_dev_lock
+  OPP: No need to defer probe from _opp_attach_genpd()
+
+ drivers/opp/core.c | 67 +++++++++++++---------------------------------
+ drivers/opp/of.c   | 66 +++++++++++++++++++++------------------------
+ drivers/opp/opp.h  |  2 --
+ 3 files changed, 49 insertions(+), 86 deletions(-)
 
 -- 
-Sincerely yours,
-Mike.
+2.31.1.272.g89b43f80a514
+
