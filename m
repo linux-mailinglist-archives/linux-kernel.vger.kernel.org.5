@@ -2,158 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D78B7C8775
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F91F7C8779
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbjJMOFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 10:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36692 "EHLO
+        id S232049AbjJMOGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 10:06:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232017AbjJMOFn (ORCPT
+        with ESMTP id S231963AbjJMOGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 10:05:43 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF2CD6;
-        Fri, 13 Oct 2023 07:05:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MlnjfqxhPFtDakbUW/LpLCLjtd/etr7hAq+Zz9ey26YNcjjtnbag9YNzFBwO8ILf4yeHyZrz6SJNvbdqQK2B4G1oDAFRA0OrcVEU/DB+Eb2O22uRH1EdNrVLbcTM7kpAtqocfNyx9rBxJe4+BPGFrG3e96bVlHF+pESGXnl8E7wLPLzf5cJ6ijaokO2i3CUc9+QeOtnfpnl9tJIUdVfptfjWECHjPbLWVVKi6nOrepZJFv913H+YgaFs2MTS1FeZ7mCnOkIqqRB46bQo8KBsVv+dBLvvMepIYmDEAxH3t9SKfXqToz8BOGuDZX/DQCJ2PCmhy3xgrgHdFq2k9Q++5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RxdeAnXwdJ9Ow7zvNKdWFzKTYHy13VNdgWCSKcXrewY=;
- b=EG0TME2SX2r5Kg6STiMgndxQDE+4kG/SH04tNCqz+7LgVbZ5HR1MqYO/DzHiyKJZtGQ9q6T3dHYjETSa1+1KpvzD4wMqmqQ/gncp7nr61a4LAZn/nNIRkjelYXVPChQI4Y68UhZVC2CupcLOV5riyCwSKEyLqVb/5PJOkaKYSMdrCRYNsZLufbxsKhYjrcCanmZACXqdbj3Cl1qd5P3qf8wCuAkJh1vuQydtGOpB342DV4FJUJ7o31wXIv7JfG1mj6udKWtqOojyEVZfzkcC2EFWn/qzzd0afuLkzFvrY1+xBWTC2s0TEcTqLaOissrga909zJcsWYVXdyIllCaY0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RxdeAnXwdJ9Ow7zvNKdWFzKTYHy13VNdgWCSKcXrewY=;
- b=PoxmVP97pE7mZVozwFvPdhwO3XYqESZEeTwgBjhqVfzRrO0oJCf6imE1YsVrXmsD4Ax/ZN97W1w03agDgyiV7PdDIHGGi8vt6WrIOn8LiaT6XtWy4m490sP9icOOBlIcrVMv7rujlQe7Prium4XL4aCWbviMGG6OmWwU+04t4iRHmpqHSszNaPNc83CaJCYnA3i2VveeY7BuNIkFZ7l5gT/s4DevbMgzuWp7cq/8i5qRuv/99H7YZKv0J42CL5MwWYgMcIIo51Wz7kEALxDEc/XpVcx8YtCRslTs3I9uSmFMuPOUYTMfAYrHaFLtYmngGLinp+SzHKK4sXaogyWA2g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by MW3PR12MB4538.namprd12.prod.outlook.com (2603:10b6:303:55::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Fri, 13 Oct
- 2023 14:05:39 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6863.046; Fri, 13 Oct 2023
- 14:05:39 +0000
-Date:   Fri, 13 Oct 2023 11:05:38 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "Martins, Joao" <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v4 05/17] iommufd: Separate kernel-managed HWPT
- alloc/destroy/abort functions
-Message-ID: <20231013140538.GS3952@nvidia.com>
-References: <20230921075138.124099-1-yi.l.liu@intel.com>
- <20230921075138.124099-6-yi.l.liu@intel.com>
- <20231010184932.GT3952@nvidia.com>
- <20231012190931.GO3952@nvidia.com>
- <BN9PR11MB5276A55B59EAE44DE058DDF58CD2A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB5276A55B59EAE44DE058DDF58CD2A@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-ClientProxiedBy: MN2PR01CA0057.prod.exchangelabs.com (2603:10b6:208:23f::26)
- To LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+        Fri, 13 Oct 2023 10:06:48 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A874BE
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:06:46 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-7b6043d0bbeso852058241.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:06:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697206005; x=1697810805; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kt0fl4zmpVCDg/iIyheiKGniBaGSQD47C4wQ8/liHAY=;
+        b=Q2HyXIlPZa0CssQLmgX2KN80scdTeB9cb/+f/2BMuztDjyARTtuvGACXkb1aJgkgIq
+         Pv5dY6Whysr2x5JO7mO1EMet5//mSxIgGRMW0DrUi1/38Vjqy7UQyLqlEGGcj1U7whJa
+         cq2cjKECHvK19PJfYxikkCRDdj4HhyHJt4X5l03vkHYCiO3ymPfeWX39W+OHMqvxbbEV
+         797xFE8KVsTjzsrTqFm2jg+uDjdw0LhldZFHx08tv8oAkQhNeOb0UhI0UIlecL15loyn
+         L34/pBXuq6kwdpo4uj/mip4WGHcujWHHwbRlgt6yovYKaM2VsQfLostLuD2GX5yADO0X
+         N+zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697206005; x=1697810805;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kt0fl4zmpVCDg/iIyheiKGniBaGSQD47C4wQ8/liHAY=;
+        b=OfDihgLtJCVVnthJbnas5Ykx+FsFPRM1edBNO1o4yBfRPP3ey3VHSMlZ3NsE9imD1w
+         wPfeML+xPEpYathQj5HM24Ne4bEtd4iylNGhv9peRXZN3+CQlqwlsgCDvWta3Q0GB/q6
+         loSDPKHKqvivj2NvMIHY0vVolNr0xpDo3M58MEADpPVxSVAwwuUz44efJV1Wc86P4A5y
+         0OxCZzMtxn40MRsUwcQ00asrYFWkCmzI3vAyjLVURN7aV7qfSogI9n0fCIwvRaJpSLS8
+         905HabFFq/UQL7N/EBfFhIYRWyWyZJjrclqTTmZDEU4z9z+BIkLaQ8LUVB9D/okPKf7M
+         jUuw==
+X-Gm-Message-State: AOJu0YwF6MxnCNZM8zj+MDtS7cl51AO8oEmcipoW7OfJr2eoXhVabwzZ
+        o2H2i2yzFe3KaYmzRHANEpeOsiSFm9eO4c2OrsSWww==
+X-Google-Smtp-Source: AGHT+IHHW8Cvi6xw76wjQvt7zAWuReiRAvKLMZtlUVHDQhJIZCO7syVhni+4FjqpV0pR1q0gxReM64HGLnzc7atULVU=
+X-Received: by 2002:a05:6122:ca8:b0:49d:120c:3c2a with SMTP id
+ ba40-20020a0561220ca800b0049d120c3c2amr24587056vkb.11.1697206004911; Fri, 13
+ Oct 2023 07:06:44 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MW3PR12MB4538:EE_
-X-MS-Office365-Filtering-Correlation-Id: ee892394-a32e-42f9-e59a-08dbcbf57ac5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eNVeq2ocIAVGfhrEakHVrQtK+NqkSJLxkMU1vq7tpeQ3ht7eE3Cd4ZkFJWlz7eYhdHJ7FJOgJZGI+4qBGzfRbVKa1ztdHla17iBYEbXbbLqSKBjX9PA/MtiE+w+sTBw7J4LS8YJb2O5uysi1KZZdqgw23ORo+PWEAswRIYOHfU26FV2Z2y72rK2fdYSwb4U0ffSS+3X8P5CZfoMdR6WdlBTBOcc6nn3JPXUW5uJhOw66qjdUUEyqYzHra7DNcYJMwnv3wfrPCTV88qjHtz5g6EO7ThV9+MKRgU720q0cj+fct3dZ/Ux1apZHAjhiZz0jm6WVPBDFAd2RQHZOsI0yc9i6xheL2Ugc43F/z6FJMv+toHpUSydYrNVqFpjSv7936mNm3bKdBYgDk5435nHJspibc45IvYSn9uKvcNcpoo7Ajz/GmSsIfski/KQhBXub+HJBtkfMzcrI3tm6jZFJErqn4Xztkq7Zs59tg4bvkpy+/v3ZfTS3w6eoPH027EuSlUjx1chpuxHhrfPRwog/b/szYswTCkq0ZO1EZ6KP0xQTwdEte3fYU7o5/F/EtVEn
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(366004)(136003)(396003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(7416002)(2906002)(478600001)(6486002)(4744005)(41300700001)(4326008)(8676002)(8936002)(5660300002)(66899024)(6916009)(36756003)(66946007)(66556008)(66476007)(83380400001)(54906003)(316002)(33656002)(6506007)(26005)(6512007)(2616005)(86362001)(38100700002)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?oAIX0muRG2e0f+NsnZ6Oe2P7HENXzxBiU6DR2phlZQNvGMqR2MDTrZxaW0lD?=
- =?us-ascii?Q?w87tVjnhcxduWjKD7eaTlC0i0sWQZpQA5NqBoEl1EeNLtgwJ52O7kODpJV9a?=
- =?us-ascii?Q?t8d2Bh9oPmlGmosOWfb/RYQ/nNmIpg6z3Snf37/fQKnSwQgr385cdZSQoghb?=
- =?us-ascii?Q?rciON1Imb8u41+V0mcIYS3j2PN8q/UQqEWt1LMr87mttMzpTDAHKx4wS4RGh?=
- =?us-ascii?Q?XWFiIwLA4nCDwnhaOXFrBHqIRwAdEWC9L2ctoQn0DqKmVZD9NhGIf5QqS5FG?=
- =?us-ascii?Q?6HCMPmwiK1DNL3ARXurgVaTAZua1orNsee7Aw2Gv2Hdb/a1egq7ok0Mrrpr3?=
- =?us-ascii?Q?9pwJavuTCWgyd+5E4d65/mgrKPhvx78EKWuV+kH/y3vSQTA1F9lxuLA3EURo?=
- =?us-ascii?Q?21Ql60TF/Kc9DVdbYYupkZZt/JOkzcPF6eQsmEoGF8ZZbpiHhlM/GExNl7Xz?=
- =?us-ascii?Q?pqYBn7MXz7DfeDPdNoM61diYRf8blHzP+60tcYN3GGNwStVZfPi4ri07BNc9?=
- =?us-ascii?Q?tvFzv8tmQ7uce1ufxvZJcOBvm7rU3SvWb99BBJFstjgHWKn9WQyQo7wpU7w/?=
- =?us-ascii?Q?uNOFF0EXrtbD/rbi+lWYs9crYnsduYmt41KfHRIoDYRjSUi2Ir3tAnaZFEBs?=
- =?us-ascii?Q?7nxriH6M6PAlQlZlrLPUENCljVG1+ksZs/MLkQiLhjUjdsN7EY2Uyo9BjVmT?=
- =?us-ascii?Q?7TWIhEZJmtals/tUk4DzqN5W51/MnZYIBk22MFIUmMtg1ib3SU3sOsENm9iJ?=
- =?us-ascii?Q?xyCfnq9YR8PQSNBJX7J9cMEO6pSEDzSuum9sFsCVChZ4KN5tNqwIiTFPT8HK?=
- =?us-ascii?Q?za+hBry7Bx8bF2MPxaPjmNtDTnIj0ZVSKLRRe8MPvPbiD+mKjQMTevhBvd1Z?=
- =?us-ascii?Q?BzUfAf2a1N7YqbvySBZBxVYMvC1iVYzuuAhYo8JXQANOIw8Zxvi3B+dnAivu?=
- =?us-ascii?Q?KpfZRRWPSA7+TcxoYO12kx2+T+D3NERRStO8A4jwWt+kwad/qV9K+q4P4VlI?=
- =?us-ascii?Q?r7f6l8sy+lUXzJe/cCwJgA5PLVYkhT7YuKMyx3R2k6aurLT3DkmHO1L1xzrW?=
- =?us-ascii?Q?MuCuPYsnuBtDGUwFbT+2b0fcva97IQ3LU2EmfmrIswXjqvD5Dx2xmO9DpCuQ?=
- =?us-ascii?Q?BWj6utWqQ5ZbPT56Nd1REpa1XLyV/8Gnf6l7iYzwWZPJlzjVYbFO5gI2G0cB?=
- =?us-ascii?Q?KzvQR1OrZhACosLj1WoMEQbuSr5fhFMwYgZsBtIG8868rgAmx5GV8r+lxBWk?=
- =?us-ascii?Q?LK2kKQ4BnAcIXstKRX21FJCGD0qd8EMwGyriYvwWm+l+sAAdl7oyp5KzYgqM?=
- =?us-ascii?Q?gVsPRQMSD+U4J2mNNJBmI4SLTb0M58HihdpvSkuZ1ppWRE99Q3igVMudtR5N?=
- =?us-ascii?Q?E+j8cBYENfeytMzfa6ej7TxN3a2bmUugEznRr6a/EyUyAghj36qU5ElPlwHk?=
- =?us-ascii?Q?auAdUQcOQhHaaJ3rtdJ0i4sGSgnbHNAzNRSKgHvPSJ4NCm38JSH9wojuLFKY?=
- =?us-ascii?Q?MPEyddRc9lxu6K+yAXKIfEqWuC78oAA+eRH5gtLMZAnV2MRo3khon9l8ypNE?=
- =?us-ascii?Q?ReIOrgvwk31TODIZNQMKAdinVbxaYizEAi52g8Ir?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee892394-a32e-42f9-e59a-08dbcbf57ac5
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 14:05:39.1505
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iA4NSsTEnRDVwmPRUNwSx3CJPlziRDc1UDuVy74PFlNWstZnkMWx02p1Izm2Tvml
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4538
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231009153427.20951-1-brgl@bgdev.pl> <20231009153427.20951-14-brgl@bgdev.pl>
+ <fr4jwbacvcheqtxy6php2u6wr72mqm5hgat6xwmxhijee7j6sk@azlu42eod6b4>
+ <j543teo2apaugbq25to3un7f7iyh45tfxenmhj7vb3vwqd52i3@434do3lfdzq4>
+ <CAMRc=Mcyp7GQ9Hb2crASW_Y_Q84tn977BXfrKDrM1N8ihdrvRQ@mail.gmail.com> <km6pp6ctzclrgrvfgpbhoykngcnyoqerjnng65x3mox7dzdwwt@nnvxbwqbygrw>
+In-Reply-To: <km6pp6ctzclrgrvfgpbhoykngcnyoqerjnng65x3mox7dzdwwt@nnvxbwqbygrw>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 13 Oct 2023 16:06:33 +0200
+Message-ID: <CAMRc=MenB-41Gf8hDQ-eO6V2CFCEqe-8uOMJ6FMneeb8xCmu-w@mail.gmail.com>
+Subject: Re: [PATCH v3 13/15] firmware: qcom: tzmem: enable SHM Bridge support
+To:     Andrew Halaney <ahalaney@redhat.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 07:13:34AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Friday, October 13, 2023 3:10 AM
-> > 
-> > Also, we probably should feed enforce_cache_coherency through the
-> > alloc_hwpt uapi and not try to autodetect it..
-> > 
-> 
-> In the past we had a long discussion about this with the conclusion
-> that user opt is the ideal model but it's fine to stay with autodetect
-> and existing vfio/kvm contract for coherency detection until we
-> see a real demand for user opt.
-> 
-> Is there anything new which changes your mind to have user opt now?
+On Fri, Oct 13, 2023 at 3:31=E2=80=AFPM Andrew Halaney <ahalaney@redhat.com=
+> wrote:
+>
+> On Fri, Oct 13, 2023 at 10:32:00AM +0200, Bartosz Golaszewski wrote:
+> > On Thu, Oct 12, 2023 at 12:17=E2=80=AFAM Andrew Halaney <ahalaney@redha=
+t.com> wrote:
+> > >
+> > > On Wed, Oct 11, 2023 at 04:14:32PM -0500, Andrew Halaney wrote:
+> > > > On Mon, Oct 09, 2023 at 05:34:25PM +0200, Bartosz Golaszewski wrote=
+:
+> > > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > > > >
+> > > > > Add a new Kconfig option for selecting the SHM Bridge mode of ope=
+ration
+> > > > > for the TrustZone memory allocator.
+> > > > >
+> > > > > If enabled at build-time, it will still be checked for availabili=
+ty at
+> > > > > run-time. If the architecture doesn't support SHM Bridge, the all=
+ocator
+> > > > > will work just like in the default mode.
+> > > > >
+> > > > > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.or=
+g>
+> > > > > ---
+> > > > >  drivers/firmware/qcom/Kconfig      | 10 +++++
+> > > > >  drivers/firmware/qcom/qcom_tzmem.c | 67 ++++++++++++++++++++++++=
++++++-
+> > > > >  2 files changed, 76 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/drivers/firmware/qcom/Kconfig b/drivers/firmware/qco=
+m/Kconfig
+> > > > > index 237da40de832..e01407e31ae4 100644
+> > > > > --- a/drivers/firmware/qcom/Kconfig
+> > > > > +++ b/drivers/firmware/qcom/Kconfig
+> > > > > @@ -27,6 +27,16 @@ config QCOM_TZMEM_MODE_DEFAULT
+> > > > >       Use the default allocator mode. The memory is page-aligned,=
+ non-cachable
+> > > > >       and contiguous.
+> > > > >
+> > > > > +config QCOM_TZMEM_MODE_SHMBRIDGE
+> > > > > +   bool "SHM Bridge"
+> > > > > +   help
+> > > > > +     Use Qualcomm Shared Memory Bridge. The memory has the same =
+alignment as
+> > > > > +     in the 'Default' allocator but is also explicitly marked as=
+ an SHM Bridge
+> > > > > +     buffer.
+> > > > > +
+> > > > > +     With this selected, all buffers passed to the TrustZone mus=
+t be allocated
+> > > > > +     using the TZMem allocator or else the TrustZone will refuse=
+ to use them.
+> > > > > +
+> > > > >  endchoice
+> > > > >
+> > > > >  config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
+> > > > > diff --git a/drivers/firmware/qcom/qcom_tzmem.c b/drivers/firmwar=
+e/qcom/qcom_tzmem.c
+> > > > > index eee51fed756e..b3137844fe43 100644
+> > > > > --- a/drivers/firmware/qcom/qcom_tzmem.c
+> > > > > +++ b/drivers/firmware/qcom/qcom_tzmem.c
+> > > > > @@ -55,7 +55,72 @@ static void qcom_tzmem_cleanup_pool(struct qco=
+m_tzmem_pool *pool)
+> > > > >
+> > > > >  }
+> > > > >
+> > > > > -#endif /* CONFIG_QCOM_TZMEM_MODE_DEFAULT */
+> > > > > +#elif IS_ENABLED(CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE)
+> > > > > +
+> > > > > +#include <linux/firmware/qcom/qcom_scm.h>
+> > > > > +
+> > > > > +#define QCOM_SHM_BRIDGE_NUM_VM_SHIFT 9
+> > > > > +
+> > > > > +static bool qcom_tzmem_using_shm_bridge;
+> > > > > +
+> > > > > +static int qcom_tzmem_init(void)
+> > > > > +{
+> > > > > +   int ret;
+> > > > > +
+> > > > > +   ret =3D qcom_scm_shm_bridge_enable();
+> > > > > +   if (ret =3D=3D -EOPNOTSUPP) {
+> > > > > +           dev_info(qcom_tzmem_dev, "SHM Bridge not supported\n"=
+);
+> > > > > +           ret =3D 0;
+> > > > > +   }
+> > > > > +
+> > > > > +   if (!ret)
+> > > > > +           qcom_tzmem_using_shm_bridge =3D true;
+> > > >
+> > > > Does the qcom_scm_shm_bridge_enable() returning -EOPNOTSUPP case ma=
+ke
+> > > > sense? Setting ret to 0 and then claiming we're using shm_bridge se=
+ems
+> > > > wrong to me.
+> > > >
+> >
+> > You answered yourself in the previous email. The size cannot be less
+> > than 4096 bytes. There's no need to check it anymore than that IMO.
+> >
+>
+> Ok, I still think that would be nice but your call.
+>
+> But this comment was about the above ret =3D 0 assignment. I am thinking
+> that's incorrect, because you fail to enable SHM bridge with
+> -EOPNOTSUPP, then you go ahead and tell the code to claim it is
+> supported with the if (!ret) conditional. This results in SHM bridge
+> trying to be used when its really not supported right?
+>
+> Looks to me that you're really trying to return 0, not ret =3D 0.
+>
 
-I guess, I was just looking at the complexity it brings to keep that
-working.
+Gah! You're right, I should have waited with v4. Oh well, I'll respin
+it next week.
 
-Jason
+Bart
+
+> > Bart
+> >
+> > > > > +
+> > > > > +   return ret;
+> > > > > +}
+> > > > > +
+> > > > > +static int qcom_tzmem_init_pool(struct qcom_tzmem_pool *pool)
+> > > > > +{
+> > > > > +   u64 pfn_and_ns_perm, ipfn_and_s_perm, size_and_flags, ns_perm=
+s, *handle;
+> > > > > +   int ret;
+> > > > > +
+> > > > > +   if (!qcom_tzmem_using_shm_bridge)
+> > > > > +           return 0;
+> > > > > +
+> > > > > +   ns_perms =3D (QCOM_SCM_PERM_WRITE | QCOM_SCM_PERM_READ);
+> > > > > +   pfn_and_ns_perm =3D (u64)pool->pbase | ns_perms;
+> > > > > +   ipfn_and_s_perm =3D (u64)pool->pbase | ns_perms;
+> > > > > +   size_and_flags =3D pool->size | (1 << QCOM_SHM_BRIDGE_NUM_VM_=
+SHIFT);
+> > > >
+> > > > Is there any sanity checking that can be done here? I assume bits 0=
+-11 are all
+> > > > flag fields (or at least unrelated to size which I assume at a mini=
+mum
+> > > > must be 4k aka bit 12).
+> > >
+> > > I guess qcom_tzmem_pool_new's PAGE_ALIGN would make sure this is
+> > > probably ok for all future users, but I do think some sanity would be
+> > > nice to indicate the size's allowed for SHM bridge.
+> > >
+> > > >
+> > > > > +
+> > > > > +   handle =3D kzalloc(sizeof(*handle), GFP_KERNEL);
+> > > >
+> > > > Consider __free(kfree) + return_ptr() usage?
+> > > >
+> > > > > +   if (!handle)
+> > > > > +           return -ENOMEM;
+> > > > > +
+> > > > > +   ret =3D qcom_scm_shm_bridge_create(qcom_tzmem_dev, pfn_and_ns=
+_perm,
+> > > > > +                                    ipfn_and_s_perm, size_and_fl=
+ags,
+> > > > > +                                    QCOM_SCM_VMID_HLOS, handle);
+> > > > > +   if (ret) {
+> > > > > +           kfree(handle);
+> > > > > +           return ret;
+> > > > > +   }
+> > > > > +
+> > > > > +   pool->priv =3D handle;
+> > > > > +
+> > > > > +   return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static void qcom_tzmem_cleanup_pool(struct qcom_tzmem_pool *pool=
+)
+> > > > > +{
+> > > > > +   u64 *handle =3D pool->priv;
+> > > > > +
+> > > > > +   if (!qcom_tzmem_using_shm_bridge)
+> > > > > +           return;
+> > > > > +
+> > > > > +   qcom_scm_shm_bridge_delete(qcom_tzmem_dev, *handle);
+> > > > > +   kfree(handle);
+> > > > > +}
+> > > > > +
+> > > > > +#endif /* CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE */
+> > > > >
+> > > > >  /**
+> > > > >   * qcom_tzmem_pool_new() - Create a new TZ memory pool.
+> > > > > --
+> > > > > 2.39.2
+> > > > >
+> > >
+> >
+>
