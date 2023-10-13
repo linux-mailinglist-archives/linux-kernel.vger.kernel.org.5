@@ -2,147 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3BE7C847E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28AD7C847B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbjJMLgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:36:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
+        id S231137AbjJMLg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231130AbjJMLg2 (ORCPT
+        with ESMTP id S229721AbjJMLgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:36:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EBBB7;
-        Fri, 13 Oct 2023 04:36:26 -0700 (PDT)
+        Fri, 13 Oct 2023 07:36:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3136FB7;
+        Fri, 13 Oct 2023 04:36:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697196987; x=1728732987;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3kHNtyQVnjAw9mhsimssz82xFGGV/T8R0wPGXi0ez5k=;
-  b=NjBiBEMjrjd9NqR/lCsxi6uvfS1Ow24iEwNCPXEYcqHAUIkQx65P1el8
-   Yjhrb+ziNL8TuY4gTIZMtztbD2UHeuf4F1Y8giic4pLWYnyul9PZIBpQ2
-   XzLor/tkzlxHWaEwqoDulElMRj9UPqoyONH0sF5DV5qWxjq8gFL1c6nPB
-   56noZfTuyR07pvX3jOiGx+/4eTu1xLw9tM01XAJYF+u3rPQystJENdtC9
-   NETmV8FgV9t8gqVTUp2fsZPxBbFDnKd6IL8qr+pBS0efR9IlSTDTodPhP
-   Dqd72Q5ncfO8bed88pOptbmBQHfd/jP8/Jt4yA/Y3Zj8YX5an1Is9omER
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="382391386"
+  t=1697196984; x=1728732984;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=Vxe8rTuXOh+Ra8l89LvKXu5K+G+sM1HLDgzbp0QfsI0=;
+  b=Z+t2bYUknDe3kxiQBvBDqzsklR/8xzZ8wNwIkEluUA124+cI4fdPPtma
+   2yB3ks2a3IqXNEMOPfMf2lDxL5k29ysqZvw5ISibhgsJ2P2wwCa5Am2vv
+   xesA7RKW9pXoOipsLpjHamUJPF6Y6Kopt1WaKh3wonMsS3lUb2c7pEyrT
+   zs0bmknMkjBsp1WhQpTUfjMLeR6bNS3ZbqYroLI33nSKEJWZxqpyDYc/a
+   ItfKumqi27kp1QmkwSuBjEXu04cv8N+74eH5AwdpYpiXrz8NGw4yT+Mvd
+   ukoW8vMgIUgQhh8QkPiz/8MeXR1/nm/zfOws+Fgj1cd6uPmTsKXwu27g1
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="416216396"
 X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
-   d="scan'208";a="382391386"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 04:36:25 -0700
+   d="scan'208";a="416216396"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 04:36:23 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="1001916985"
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="820590424"
 X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
-   d="scan'208";a="1001916985"
-Received: from bsankiew-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.0.114])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 04:36:18 -0700
-From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To:     akpm@linux-foundation.org, christian@kellner.me,
-        fenghua.yu@intel.com, keescook@chromium.org,
-        ndesaulniers@google.com, coltonlewis@google.com,
-        dmatlack@google.com, vipinsh@google.com, seanjc@google.com,
-        brauner@kernel.org, pbonzini@redhat.com, shuah@kernel.org,
-        hannes@cmpxchg.org, nphamcs@gmail.com, reinette.chatre@intel.com
-Cc:     ilpo.jarvinen@linux.intel.com, linux-kselftest@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v6 0/8] Add printf attribute to kselftest functions
-Date:   Fri, 13 Oct 2023 13:36:04 +0200
-Message-ID: <cover.1697196663.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.42.0
+   d="scan'208";a="820590424"
+Received: from ttmerile-mobl1.ger.corp.intel.com (HELO rploss-MOBL.ger.corp.intel.com) ([10.249.37.202])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 04:36:21 -0700
+Date:   Fri, 13 Oct 2023 14:36:19 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+cc:     =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
+Subject: Re: [PATCH V3 09/16] platform/x86/intel/pmc: Allow pmc_core_ssram_init
+ to fail
+In-Reply-To: <7f2fd7a054912960c6599e4a62e2095d1567aab8.camel@linux.intel.com>
+Message-ID: <92594f48-fa9-59d4-e2b7-f5f83ded0ea@linux.intel.com>
+References: <20231012023840.3845703-1-david.e.box@linux.intel.com>  <20231012023840.3845703-10-david.e.box@linux.intel.com>  <ac7be397-bc9-a135-9498-72dfa1fe456d@linux.intel.com> <7f2fd7a054912960c6599e4a62e2095d1567aab8.camel@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="8323329-729097219-1697196785=:2026"
+Content-ID: <940e91-6884-23c1-d36b-d17dc5a55f7c@linux.intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kselftest.h declares many variadic functions that can print some
-formatted message while also executing selftest logic. These
-declarations don't have any compiler mechanism to verify if passed
-arguments are valid in comparison with format specifiers used in
-printf() calls.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Attribute addition can make debugging easier, the code more consistent
-and prevent mismatched or missing variables.
+--8323329-729097219-1697196785=:2026
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <9a57b987-57a3-2aa9-d42d-c48449944d9@linux.intel.com>
 
-The first patch adds __printf() macro and applies it to all functions
-in kselftest.h that use printf format specifiers. After compiling all
-selftests using:
-	make -C tools/testing/selftests
-many instances of format specifier mismatching are exposed in the form
-of -Wformat warnings.
+On Thu, 12 Oct 2023, David E. Box wrote:
 
-Fix the mismatched format specifiers caught by __printf() attribute in
-multiple tests.
+> On Thu, 2023-10-12 at 18:01 +0300, Ilpo Järvinen wrote:
+> > On Wed, 11 Oct 2023, David E. Box wrote:
+> > 
+> > > Currently, if the PMC SSRAM initialization fails, no error is returned and
+> > > the only indication is that a PMC device has not been created.  Instead,
+> > > allow an error to be returned and handled directly by the caller.
+> > 
+> > You might have a good reason for it but why isn't the call into 
+> > pmc_core_pmc_add() changed in this patch to take the error value into 
+> > account?
+> 
+> Good catch. The return value of pmc_core_pmc_add() is first used in the next
+> patch but should be used here.
+> 
+> > 
+> > (I vaguely remember this was probably discussed in the context of some 
+> > earlier patch touching this area that it was about the other code dealing 
+> > with NULLs or something like that).
 
-Series is based on kselftests next branch.
+Okay but please also take into consideration what I tried to imply above:
 
-Changelog v6:
-- Add methodology notes to all patches.
-- No functional changes in the patches.
-
-Changelog v5:
-- Mention in the cover letter what methodology was used to find the
-  mismatched format specifiers.
-- No functional changes in the patches.
-
-Changelog v4:
-- Fix patch 1/8 subject typo.
-- Add Reinette's reviewed-by tags.
-- Rebase onto new kselftest/next patches.
-
-Changelog v3:
-- Changed git signature from Wieczor-Retman Maciej to Maciej
-  Wieczor-Retman.
-- Added one review tag.
-- Rebased onto updated kselftests next branch.
-
-Changelog v2:
-- Add review and fixes tags to patches.
-- Add two patches with mismatch fixes.
-- Fix missed attribute in selftests/kvm. (Andrew)
-- Fix previously missed issues in selftests/mm (Ilpo)
-
-[v5] https://lore.kernel.org/all/cover.1697012398.git.maciej.wieczor-retman@intel.com/
-[v4] https://lore.kernel.org/all/cover.1696846568.git.maciej.wieczor-retman@intel.com/
-[v3] https://lore.kernel.org/all/cover.1695373131.git.maciej.wieczor-retman@intel.com/
-[v2] https://lore.kernel.org/all/cover.1693829810.git.maciej.wieczor-retman@intel.com/
-[v1] https://lore.kernel.org/all/cover.1693216959.git.maciej.wieczor-retman@intel.com/
-
-Maciej Wieczor-Retman (8):
-  selftests: Add printf attribute to kselftest prints
-  selftests/cachestat: Fix print_cachestat format
-  selftests/openat2: Fix wrong format specifier
-  selftests/pidfd: Fix ksft print formats
-  selftests/sigaltstack: Fix wrong format specifier
-  selftests/kvm: Replace attribute with macro
-  selftests/mm: Substitute attribute with a macro
-  selftests/resctrl: Fix wrong format specifier
-
- .../selftests/cachestat/test_cachestat.c       |  2 +-
- tools/testing/selftests/kselftest.h            | 18 ++++++++++--------
- .../testing/selftests/kvm/include/test_util.h  |  8 ++++----
- tools/testing/selftests/mm/mremap_test.c       |  2 +-
- tools/testing/selftests/mm/pkey-helpers.h      |  2 +-
- tools/testing/selftests/openat2/openat2_test.c |  2 +-
- .../selftests/pidfd/pidfd_fdinfo_test.c        |  2 +-
- tools/testing/selftests/pidfd/pidfd_test.c     | 12 ++++++------
- tools/testing/selftests/resctrl/cache.c        |  2 +-
- tools/testing/selftests/sigaltstack/sas.c      |  2 +-
- 10 files changed, 27 insertions(+), 25 deletions(-)
+Since you are doing what looks a major logic change in the next patch, it 
+might be okay to _not use_ that return value until then if you e.g., need 
+to add lots of rollback that isn't there already to the code that is going 
+away anyway in the next patch. (After all, returning an error code from a 
+function that was void previously isn't going to magically break the old
+calling code).
 
 
-base-commit: 2531f374f922e77ba51f24d1aa6fa11c7f4c36b8
 -- 
-2.42.0
-
+ i.
+--8323329-729097219-1697196785=:2026--
