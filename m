@@ -2,50 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7577C8BAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E272B7C8BA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbjJMQkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59340 "EHLO
+        id S231588AbjJMQme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231706AbjJMQj6 (ORCPT
+        with ESMTP id S229518AbjJMQmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:39:58 -0400
+        Fri, 13 Oct 2023 12:42:32 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5673BE
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:39:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6F5C4C433D9;
-        Fri, 13 Oct 2023 16:39:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD657B7;
+        Fri, 13 Oct 2023 09:42:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C518C433C8;
+        Fri, 13 Oct 2023 16:42:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697215196;
-        bh=Sv6lsoYwtFe0Y+SPz02c6oHW/S3tjRNc+gCICBeMoAQ=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=baXEoQK3Ro78LA1IYq3JIVkMfGh1HS1d/nodq6QWaTbQEmlIrfSqUk0If2wbBxWxJ
-         Q0gQVbAEznbD6jiXTusbtcEoUZWbnoXeQtUAyCABeJVcXi48IKa3qasusri2yA8uq8
-         T3OXSAMUrJbaIeWUXAhfF5QRVkpmz9CpttLfW+THvF5YmVQnzd3Oz00odqrUTqOm2B
-         rJ4WGApqAZbVl3LsVpSAuI5dNTFT3URvS6k2S9KqCXzzc5MMt4zS+Xjiib+O87YVqh
-         CMcXuWFM3+JtMMjUs5dnSpPYFWFEZfMYmj5Q6ddCpGo9DMGGk++BQgYFdkR+GlGUiT
-         8hP1wZp0a2yBA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5C597C691EF;
-        Fri, 13 Oct 2023 16:39:56 +0000 (UTC)
-Subject: Re: [GIT PULL] RISC-V Fixes for 6.6-rc6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <mhng-429a0f54-5269-417c-af90-7edef235cd7d@palmer-ri-x1c9>
-References: <mhng-429a0f54-5269-417c-af90-7edef235cd7d@palmer-ri-x1c9>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <mhng-429a0f54-5269-417c-af90-7edef235cd7d@palmer-ri-x1c9>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.6-rc6
-X-PR-Tracked-Commit-Id: 3fec323339a4a9801a54e8b282eb571965b67b23
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b82fbd8f39e2d3f2f6860f80bb888c5dbc3ce607
-Message-Id: <169721519636.5219.12460477859107804908.pr-tracker-bot@kernel.org>
-Date:   Fri, 13 Oct 2023 16:39:56 +0000
-To:     Palmer Dabbelt <palmer@rivosinc.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+        s=k20201202; t=1697215350;
+        bh=MqC3yrRRj3UMGOPti8ERknVNqGEUu0oFiV03E0Vidv0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=b86OTm7/vWPz1lXdWBiZn7RcGveX1aFsvL5jmXTq2YbcyNGIbGhWA6q1/AnMGbd1N
+         IFYYegR+vc8lMskeUk8lajThoc+bo1PlPWPhNqD2fwOG3AfKYpg90Eza/kNH0uSNPW
+         Jky7Vj9783vlIkTQS3O7jJucPYVzjXAq/DJZUjUVY+A/BEROWzFLMN0GpWgbN/I8Vu
+         ImQsRWZuesvRBHjxd0H3/8ZdxSWJjJnhbYb4F5CAQ1P15D5R2lTSA+hkWwJq0LpHAe
+         Bn/6fD9G+fr9mHm/5sCM1EEe3TdFQCGEcv6U3ysqKGhpLI6CBcvRuzJ9zOUE+g+0U1
+         YdquVEXDnza8g==
+Date:   Fri, 13 Oct 2023 11:42:28 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-pci@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+        ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-bluetooth@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
+        linux-wireless@vger.kernel.org, Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH v2 03/13] PCI/ASPM: Disable ASPM when driver requests it
+Message-ID: <20231013164228.GA1117889@bhelgaas>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aa3386a4-c22d-6d5d-112d-f36b22cda6d3@linux.intel.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -55,15 +62,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 13 Oct 2023 07:12:59 -0700 (PDT):
+On Thu, Oct 12, 2023 at 01:56:16PM +0300, Ilpo Järvinen wrote:
+> On Wed, 11 Oct 2023, Bjorn Helgaas wrote:
+> > On Mon, Sep 18, 2023 at 04:10:53PM +0300, Ilpo Järvinen wrote:
+> > > PCI core/ASPM service driver allows controlling ASPM state through
+> > > pci_disable_link_state() and pci_enable_link_state() API. It was
+> > > decided earlier (see the Link below), to not allow ASPM changes when OS
+> > > does not have control over it but only log a warning about the problem
+> > > (commit 2add0ec14c25 ("PCI/ASPM: Warn when driver asks to disable ASPM,
+> > > but we can't do it")). Similarly, if ASPM is not enabled through
+> > > config, ASPM cannot be disabled.
+> ...
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.6-rc6
+> > This disables *all* ASPM states, unlike the version when
+> > CONFIG_PCIEASPM is enabled.  I suppose there's a reason, and maybe a
+> > comment could elaborate on it?
+> >
+> > When CONFIG_PCIEASPM is not enabled, I don't think we actively
+> > *disable* ASPM in the hardware; we just leave it as-is, so firmware
+> > might have left it enabled.
+> 
+> This whole trickery is intended for drivers that do not want to have ASPM 
+> because the devices are broken with it. So leaving it as-is is not really 
+> an option (as demonstrated by the custom workarounds).
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b82fbd8f39e2d3f2f6860f80bb888c5dbc3ce607
+Right.
 
-Thank you!
+> > Conceptually it seems like the LNKCTL updates here should be the same
+> > whether CONFIG_PCIEASPM is enabled or not (subject to the question
+> > above).
+> > 
+> > When CONFIG_PCIEASPM is enabled, we might need to do more stuff, but
+> > it seems like the core should be the same.
+> 
+> So you think it's safer to partially disable ASPM (as per driver's 
+> request) rather than disable it completely? I got the impression that the 
+> latter might be safer from what Rafael said earlier but I suppose I might 
+> have misinterpreted him since he didn't exactly say that it might be safer 
+> to _completely_ disable it.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+My question is whether the state of the device should depend on
+CONFIG_PCIEASPM.  If the driver does this:
+
+  pci_disable_link_state(PCIE_LINK_STATE_L0S)
+
+do we want to leave L1 enabled when CONFIG_PCIEASPM=y but disable L1
+when CONFIG_PCIEASPM is unset?
+
+I can see arguments both ways.  My thought was that it would be nice
+to end up with a single implementation of pci_disable_link_state()
+with an #ifdef around the CONFIG_PCIEASPM-enabled stuff because it
+makes the code easier to read.
+
+Bjorn
