@@ -2,77 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4337C7D38
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D377C7D3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbjJMFve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 01:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53066 "EHLO
+        id S229679AbjJMFwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 01:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbjJMFvd (ORCPT
+        with ESMTP id S229671AbjJMFwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 01:51:33 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2902EC0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 22:51:30 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9b974955474so264158466b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 22:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1697176288; x=1697781088; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UAXPkFEVO9NEy1CgnJcKxdErF48Wzyp1pIE8KdvUE5o=;
-        b=fDJq079Qcm6+VouFFteEdR81wVhKmMYv+DwLQVlUh/PIuuQ+5lsG68xiay0vQ9yGxC
-         hu3eYKfrEgy+FafaqyS3II5Kql0PhwBcoJF2YWXAekviRo9C0qHckPA7aTLMIbzeIHlE
-         1fsg/TwYjYDWLFq4wMvkhBy/P0C3oDA3azTYHSryWnpd4RACUUWVMAqiaSP5lkTl8nNJ
-         sa0QgOsjrGy0TfFOInvBeLiJ6+tyoQ071WuzoFd2BpTVPoo6ZUZeFvs59WFl908XLlDt
-         8aqPqfSwrFYtp7hJEsec9m1N7rNyw4aaPYdu/jMxMo3RsAYf6Unic8ppYu/HuYRM0Nc+
-         t+Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697176288; x=1697781088;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UAXPkFEVO9NEy1CgnJcKxdErF48Wzyp1pIE8KdvUE5o=;
-        b=OWEzAqmFJ7tJtU1w3JY0HndR1YXVY0Ldq73wp75fpOReaXNJtxu+tnwXVFLC5nCaEF
-         fngBcuVZMJ8ybbHPKs4VpJvZ0f00v0kkUfQdWXpZZEgNwh5qHK9z9Bh/n0rp9y9Sh5Uo
-         CLhXq97RnrM5mSJ50PsvAnCp+aRsfHY2iwOWlBuucmbl9u/PXpf2uWncf3XLj+PO4QBx
-         xNQIJ45+omSkYNd/8EVpD3RuKK3kI1U60wflMVpHZVSk8EYC/c5Hw+xL2ATJnptJRHrU
-         14LPLlZjmFpuu97rTB+LCuTdsbzTSH5rcXSEBxCfyQXLOLXdAgAYvOIsODKZQE39H6yD
-         uPzA==
-X-Gm-Message-State: AOJu0Yw34hhnmThr9jS28yZ7vb69Zu2LEoYbj/xKfVf+qBvTMBbY77RS
-        DEsHJDzNi3N9knTuavdqK/2f5A==
-X-Google-Smtp-Source: AGHT+IHmc9LtDuylGDF0Uig4QbannJCtiHcJ/b42Sf8kD1VjI0wEyeEWOKYrTIT/FTWC9eedWAgM5A==
-X-Received: by 2002:a17:906:3156:b0:9b2:b71f:83be with SMTP id e22-20020a170906315600b009b2b71f83bemr22216827eje.1.1697176288653;
-        Thu, 12 Oct 2023 22:51:28 -0700 (PDT)
-Received: from [192.168.50.4] ([82.78.167.133])
-        by smtp.gmail.com with ESMTPSA id w13-20020a170906480d00b0098d2d219649sm12086328ejq.174.2023.10.12.22.51.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 22:51:28 -0700 (PDT)
-Message-ID: <e678ef3a-0f84-4ea2-9116-a661b91b2e32@tuxon.dev>
-Date:   Fri, 13 Oct 2023 08:51:25 +0300
+        Fri, 13 Oct 2023 01:52:16 -0400
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50500B8;
+        Thu, 12 Oct 2023 22:52:13 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Vu15FF8_1697176328;
+Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0Vu15FF8_1697176328)
+          by smtp.aliyun-inc.com;
+          Fri, 13 Oct 2023 13:52:09 +0800
+From:   Jingbo Xu <jefflexu@linux.alibaba.com>
+To:     tj@kernel.org, guro@fb.com
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, jack@suse.cz,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, willy@infradead.org,
+        joseph.qi@linux.alibaba.com
+Subject: [PATCH v2] writeback, cgroup: switch inodes with dirty timestamps to release dying cgwbs
+Date:   Fri, 13 Oct 2023 13:52:08 +0800
+Message-Id: <20231013055208.15457-1-jefflexu@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/6] arm64: dts: renesas: rzg3s-smarc: Enable SDHI1
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     magnus.damm@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231010132701.1658737-1-claudiu.beznea.uj@bp.renesas.com>
- <20231010132701.1658737-6-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdW+5MZXRbDtZtmrMkrCtwqqKUcW_W1_5U_2yO6w6aCa_w@mail.gmail.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <CAMuHMdW+5MZXRbDtZtmrMkrCtwqqKUcW_W1_5U_2yO6w6aCa_w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,48 +42,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The cgwb cleanup routine will try to release the dying cgwb by switching
+the attached inodes.  It fetches the attached inodes from wb->b_attached
+list, omitting the fact that inodes only with dirty timestamps reside in
+wb->b_dirty_time list, which is the case when lazytime is enabled.  This
+causes enormous zombie memory cgroup when lazytime is enabled, as inodes
+with dirty timestamps can not be switched to a live cgwb for a long time.
 
+It is reasonable not to switch cgwb for inodes with dirty data, as
+otherwise it may break the bandwidth restrictions.  However since the
+writeback of inode metadata is not accounted for, let's also switch
+inodes with dirty timestamps to avoid zombie memory and block cgroups
+when laztytime is enabled.
 
-On 12.10.2023 17:44, Geert Uytterhoeven wrote:
-> Hi Claudiu,
-> 
-> On Tue, Oct 10, 2023 at 3:27 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> Add SDHI1 to RZ/G3S Smarc Carrier-II board. This is connected to a uSD
->> interface. Although Vccq doesn't cross the boundary of SoM it has
->> been added to RZ/G3S Smarc Carrier-II dtsi to have all the bits related to
->> SDHI1 in a single place. At the moment SoM is used only with RZ/G3S Smarc
->> Carrier-II board.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> Thanks for your patch!
-> 
->> --- a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
->> +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
->> @@ -11,6 +11,27 @@
->>  / {
->>         aliases {
->>                 serial0 = &scif0;
->> +               mmc1 = &sdhi1;
->> +       };
->> +
->> +       /* Reserved regulators 0-9 for SoM. */
->> +       vcc_sdhi1: regulator10 {
-> 
-> You can use sensible names for the regulators to avoid conflicts.
-> E.g. "regulator-vcc-sdhi1".
+Fixs: c22d70a162d3 ("writeback, cgroup: release dying cgwbs by switching attached inodes")
+Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+---
+v2: add comment explaining why switching for inodes with dirty
+timestamps is needed
 
-OK, I'm aware of that, I'll use it like this in the next version.
+v1: https://lore.kernel.org/all/20231011084228.77615-1-jefflexu@linux.alibaba.com/
+---
+ fs/fs-writeback.c | 41 +++++++++++++++++++++++++++++------------
+ 1 file changed, 29 insertions(+), 12 deletions(-)
 
-Thank you,
-Claudiu Beznea
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index c1af01b2c42d..1767493dffda 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -613,6 +613,24 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
+ 	kfree(isw);
+ }
+ 
++static bool isw_prepare_wbs_switch(struct inode_switch_wbs_context *isw,
++				   struct list_head *list, int *nr)
++{
++	struct inode *inode;
++
++	list_for_each_entry(inode, list, i_io_list) {
++		if (!inode_prepare_wbs_switch(inode, isw->new_wb))
++			continue;
++
++		isw->inodes[*nr] = inode;
++		(*nr)++;
++
++		if (*nr >= WB_MAX_INODES_PER_ISW - 1)
++			return true;
++	}
++	return false;
++}
++
+ /**
+  * cleanup_offline_cgwb - detach associated inodes
+  * @wb: target wb
+@@ -625,7 +643,6 @@ bool cleanup_offline_cgwb(struct bdi_writeback *wb)
+ {
+ 	struct cgroup_subsys_state *memcg_css;
+ 	struct inode_switch_wbs_context *isw;
+-	struct inode *inode;
+ 	int nr;
+ 	bool restart = false;
+ 
+@@ -647,17 +664,17 @@ bool cleanup_offline_cgwb(struct bdi_writeback *wb)
+ 
+ 	nr = 0;
+ 	spin_lock(&wb->list_lock);
+-	list_for_each_entry(inode, &wb->b_attached, i_io_list) {
+-		if (!inode_prepare_wbs_switch(inode, isw->new_wb))
+-			continue;
+-
+-		isw->inodes[nr++] = inode;
+-
+-		if (nr >= WB_MAX_INODES_PER_ISW - 1) {
+-			restart = true;
+-			break;
+-		}
+-	}
++	/*
++	 * In addition to the inodes that have completed writeback, also switch
++	 * cgwbs for those inodes only with dirty timestamps. Otherwise, those
++	 * inodes won't be written back for a long time when lazytime is
++	 * enabled, and thus pinning the dying cgwbs. It won't break the
++	 * bandwidth restrictions, as writeback of inode metadata is not
++	 * accounted for.
++	 */
++	restart = isw_prepare_wbs_switch(isw, &wb->b_attached, &nr);
++	if (!restart)
++		restart = isw_prepare_wbs_switch(isw, &wb->b_dirty_time, &nr);
+ 	spin_unlock(&wb->list_lock);
+ 
+ 	/* no attached inodes? bail out */
+-- 
+2.19.1.6.gb485710b
 
-> 
-> The rest LGTM.
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
