@@ -2,59 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 321867C8251
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEED7C8254
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbjJMJjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 05:39:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
+        id S231417AbjJMJjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 05:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbjJMJiR (ORCPT
+        with ESMTP id S231285AbjJMJiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Oct 2023 05:38:17 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5985EBE;
-        Fri, 13 Oct 2023 02:38:15 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 09:38:13 -0000
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313F3DA;
+        Fri, 13 Oct 2023 02:38:16 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 09:38:14 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697189893;
+        s=2020; t=1697189894;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rCTCPgo8jeqYDUyGPCO49XEL+tzO99RT05N9qxWKWRc=;
-        b=mm5BdMEVZPLvrOLrHF03QnQw5cfeUH3j/SaZoXapSbD4RDOOarP3e7DxQakQMpKzllDbw2
-        Y1BRiOkPiiRqpmwr3OAmns2GEwg7dsGzdNuDgnNX3FxB7zRV22948SbPG0Pli/5dFdGigV
-        hKrNoQwX/J6Nf7f3/qgLwCCisG9RS6oRYGng6/Vh7ezfgIJz3khBPoosEclrPcJ1E1wSC0
-        uey8bGa4oCOpfAy3pMFkzWkdxWszb9qzozpKWRE5vrwRxhk5iDNNJxs3kfZg47F6T5bDHn
-        Dcq+XmAvO4ebYJbeI5+b0bWvPUnOFA/J/WgTlNmkUyQgWV/ws81JdCGsb9HL7A==
+        bh=2Tdn9YzZqvXLzEj18H/HtmAGqNqRPcJ+Ga59SnQmz6o=;
+        b=BXbdsGSowodu3hAWxSP8kCy0/apsBjQKrYaIxUEge1PHG58p+zEHDMR8qrabG/jS1r3uNn
+        /XY2+l3hOFVR+ghivBFFAAiHiULTJX4Dl/r8MNE13pUzWuj+oZ9zpxwU/LJueJqTzdzb8r
+        1bMr6ApVcLVd2ZPTmuce/+5FOF4/VI4XudSaJX3dyYOO229YGdzBJ48HRGoQa9SZwQgbmH
+        esN2ffsJj1mPARiVYN/Ra0bzWJTcveM6JzFAEdkNVitl4hYJrnfuNE/HGE2uSV0hQc40im
+        Bce96eb5x9JphOaUlOpZb2+dTYroigO79zYWStQX8JXAee0qmyY/SaSv5bfXQA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697189893;
+        s=2020e; t=1697189894;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rCTCPgo8jeqYDUyGPCO49XEL+tzO99RT05N9qxWKWRc=;
-        b=DvcCmy6XUtOkXfbQxEn+2tr3mWOOVAf6mBm3vFU2LUg0vNGSxIVAIi5nH14Hyy3dMSEZF3
-        xlYIScSP+qSbZsBw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+        bh=2Tdn9YzZqvXLzEj18H/HtmAGqNqRPcJ+Ga59SnQmz6o=;
+        b=PwP3o0WEqKmuLbJWVEmMYTMg39RMPKFOhpuMya5GATkLVwdGAk782BRfMoeWBsTo6yQM1Z
+        ktkJ6ufKsk2HH/Cg==
+From:   "tip-bot2 for Pu Wen" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86/apic: Fake primary thread mask for XEN/PV
-Cc:     Juergen Gross <jgross@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Michael Kelley <mikelley@microsoft.com>,
+Subject: [tip: x86/core] x86/cpu/hygon: Fix the CPU topology evaluation for real
+Cc:     Pu Wen <puwen@hygon.cn>, Thomas Gleixner <tglx@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Zhang Rui <rui.zhang@intel.com>, x86@kernel.org,
+        <stable@vger.kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230814085112.210011520@linutronix.de>
-References: <20230814085112.210011520@linutronix.de>
+In-Reply-To: <tencent_594804A808BD93A4EBF50A994F228E3A7F07@qq.com>
+References: <tencent_594804A808BD93A4EBF50A994F228E3A7F07@qq.com>
 MIME-Version: 1.0
-Message-ID: <169718989311.3135.5099682715244955511.tip-bot2@tip-bot2>
+Message-ID: <169718989416.3135.5181697052679641742.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -70,86 +67,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/core branch of tip:
 
-Commit-ID:     965e05ff8af98c44f9937366715c512000373164
-Gitweb:        https://git.kernel.org/tip/965e05ff8af98c44f9937366715c512000373164
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 14 Aug 2023 10:18:28 +02:00
+Commit-ID:     ee545b94d39a00c93dc98b1dbcbcf731d2eadeb4
+Gitweb:        https://git.kernel.org/tip/ee545b94d39a00c93dc98b1dbcbcf731d2eadeb4
+Author:        Pu Wen <puwen@hygon.cn>
+AuthorDate:    Mon, 14 Aug 2023 10:18:26 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 10 Oct 2023 14:38:17 +02:00
+CommitterDate: Tue, 10 Oct 2023 14:38:16 +02:00
 
-x86/apic: Fake primary thread mask for XEN/PV
+x86/cpu/hygon: Fix the CPU topology evaluation for real
 
-The SMT control mechanism got added as speculation attack vector
-mitigation. The implemented logic relies on the primary thread mask to
-be set up properly.
+Hygon processors with a model ID > 3 have CPUID leaf 0xB correctly
+populated and don't need the fixed package ID shift workaround. The fixup
+is also incorrect when running in a guest.
 
-This turns out to be an issue with XEN/PV guests because their CPU hotplug
-mechanics do not enumerate APICs and therefore the mask is never correctly
-populated.
-
-This went unnoticed so far because by chance XEN/PV ends up with
-smp_num_siblings == 2. So cpu_smt_control stays at its default value
-CPU_SMT_ENABLED and the primary thread mask is never evaluated in the
-context of CPU hotplug.
-
-This stopped "working" with the upcoming overhaul of the topology
-evaluation which legitimately provides a fake topology for XEN/PV. That
-sets smp_num_siblings to 1, which causes the core CPU hot-plug core to
-refuse to bring up the APs.
-
-This happens because cpu_smt_control is set to CPU_SMT_NOT_SUPPORTED which
-causes cpu_bootable() to evaluate the unpopulated primary thread mask with
-the conclusion that all non-boot CPUs are not valid to be plugged.
-
-The core code has already been made more robust against this kind of fail,
-but the primary thread mask really wants to be populated to avoid other
-issues all over the place.
-
-Just fake the mask by pretending that all XEN/PV vCPUs are primary threads,
-which is consistent because all of XEN/PVs topology is fake or non-existent.
-
-Fixes: 6a4d2657e048 ("x86/smp: Provide topology_is_primary_thread()")
-Fixes: f54d4434c281 ("x86/apic: Provide cpu_primary_thread mask")
-Reported-by: Juergen Gross <jgross@suse.com>
+Fixes: e0ceeae708ce ("x86/CPU/hygon: Fix phys_proc_id calculation logic for multi-die processors")
+Signed-off-by: Pu Wen <puwen@hygon.cn>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Juergen Gross <jgross@suse.com>
-Tested-by: Sohil Mehta <sohil.mehta@intel.com>
-Tested-by: Michael Kelley <mikelley@microsoft.com>
-Tested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Zhang Rui <rui.zhang@intel.com>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20230814085112.210011520@linutronix.de
-
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/tencent_594804A808BD93A4EBF50A994F228E3A7F07@qq.com
+Link: https://lore.kernel.org/r/20230814085112.089607918@linutronix.de
 ---
- arch/x86/kernel/apic/apic.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/x86/kernel/cpu/hygon.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 760adac..3cdf484 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -36,6 +36,8 @@
- #include <linux/smp.h>
- #include <linux/mm.h>
+diff --git a/arch/x86/kernel/cpu/hygon.c b/arch/x86/kernel/cpu/hygon.c
+index defdc59..a7b3ef4 100644
+--- a/arch/x86/kernel/cpu/hygon.c
++++ b/arch/x86/kernel/cpu/hygon.c
+@@ -87,8 +87,12 @@ static void hygon_get_topology(struct cpuinfo_x86 *c)
+ 		if (!err)
+ 			c->x86_coreid_bits = get_count_order(c->x86_max_cores);
  
-+#include <xen/xen.h>
-+
- #include <asm/trace/irq_vectors.h>
- #include <asm/irq_remapping.h>
- #include <asm/pc-conf-reg.h>
-@@ -2344,6 +2346,15 @@ static int __init smp_init_primary_thread_mask(void)
- {
- 	unsigned int cpu;
+-		/* Socket ID is ApicId[6] for these processors. */
+-		c->phys_proc_id = c->apicid >> APICID_SOCKET_ID_BIT;
++		/*
++		 * Socket ID is ApicId[6] for the processors with model <= 0x3
++		 * when running on host.
++		 */
++		if (!boot_cpu_has(X86_FEATURE_HYPERVISOR) && c->x86_model <= 0x3)
++			c->phys_proc_id = c->apicid >> APICID_SOCKET_ID_BIT;
  
-+	/*
-+	 * XEN/PV provides either none or useless topology information.
-+	 * Pretend that all vCPUs are primary threads.
-+	 */
-+	if (xen_pv_domain()) {
-+		cpumask_copy(&__cpu_primary_thread_mask, cpu_possible_mask);
-+		return 0;
-+	}
-+
- 	for (cpu = 0; cpu < nr_logical_cpuids; cpu++)
- 		cpu_mark_primary_thread(cpu, cpuid_to_apicid[cpu]);
- 	return 0;
+ 		cacheinfo_hygon_init_llc_id(c, cpu);
+ 	} else if (cpu_has(c, X86_FEATURE_NODEID_MSR)) {
