@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA1A7C891F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A227C8928
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbjJMPvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:51:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48202 "EHLO
+        id S232502AbjJMPxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 11:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232041AbjJMPvI (ORCPT
+        with ESMTP id S232041AbjJMPxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:51:08 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA2BBB;
-        Fri, 13 Oct 2023 08:51:07 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40651a72807so23084165e9.1;
-        Fri, 13 Oct 2023 08:51:07 -0700 (PDT)
+        Fri, 13 Oct 2023 11:53:37 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92112B7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:53:34 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7a29359c80bso20138339f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:53:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697212266; x=1697817066; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8RhLoqrItwtCxMOzJhwgADMg5oDWC1ONfcjuGejQ/NE=;
-        b=g3FUgl0ZTlnW2/ebtKRR28TuAZiEFZVvAShMO2lqIg+F6lwI3BnEPWSqRcLGIMM1GS
-         2gjN6ErQMMJIAcdWKLz+xctxO7xAZJlVdqRCPK+g7pkbfL8FZaSbCeK4f8jQLHxpx0Ed
-         NVBTOBfTxiwyn2V8/V1OdXAC/V2SDTEoxYeXX3fMGsSNQkj9mqsOC/lRUGcmNsb5Uwcm
-         BUx/fClCoY00XDvvm0Mx21e50wP/jYMc7eAuuWEt5lSH8o2eg19Ot7bkoU/2RhGwu9c3
-         8W/PGxEnH16GHoYUWcIrVJBe298yJUEBfGz0BePpMOkMcrpevl8TbaRx6EoPma/mAQQw
-         G0FQ==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697212414; x=1697817214; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=a1ab2WuFIKFA3ma0ZjQfVChX06Ccj0lK7DdwFjTIGBA=;
+        b=bMCaOVPLmjdUUJk41icyyKvHf1jHZrvZQoTWQ4b1Ya5gbBeRrnMoRTgUwfP4imhfvI
+         MbwEz9u096CsLR/j76Wn9e4rzzt2v0fbiJcIlhO9U/HgNNJqagGnkqiwz+Fek/TbMqOK
+         bKacmQD095tA5wDxDPeRrSLk3sKybZsOg5nkSr6h/4iOJtyLmMTLuz5SYx2q/TzJwGNK
+         CVJ+PJI9v1mR2ssV4Uevdktyw6xc0zV+lAlK1mAYCMVGg5kMegq4I4FLcxjuodOGLjoN
+         Iqwv4QtiuCX8wLvZAXStKGMyR8tfCvh6yjsBKuQLf/flv/DozNgCZU2PRevqWvUWp14H
+         ADLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697212266; x=1697817066;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8RhLoqrItwtCxMOzJhwgADMg5oDWC1ONfcjuGejQ/NE=;
-        b=i5+N9nm9e7VQeUSqHo6DA1AEjc0BEXQtNpzyF09ktNtboXtHVftZFKYU7GFSlxITzD
-         a4xvwOz+bTPwpejkQ+TGXYIu7PIauTbWKr2tkA+3/5N0YraWuWSz6mI0sKpbuaqQiH6I
-         et3PWYlbejVs+X6L/TOX3luRL8mZl4vP9ZY3s0NI6CKK1zJEeg1rdCrkEFXmwLUn1QPI
-         ArUFj989090FDccxMRqm9Vo3ZNdb5UzYe4jo1rCi+GP1koOVgJlVArhYKdgxcXzel7qe
-         E9Jg2VrCfPdzcIFDgOn8RqvfI99pS4rEGbg0HmUXrJhzBPkfUPi0XF1mZidQFRllBOGW
-         e78Q==
-X-Gm-Message-State: AOJu0YxKznuXd+48PW7OxGvylVQ6qxGgyXb1KdDNhkk1zbyOWGSndHL/
-        W8+zxZIvQnnxH7NrYPMx7NE=
-X-Google-Smtp-Source: AGHT+IG3kMFrRsMFJPLDfxnJyruCfzfhEuyok9xizDfq18YdXoGo6Sp6pkVxSyYPAWWFX9eLwr227Q==
-X-Received: by 2002:a05:600c:2113:b0:401:73b2:f043 with SMTP id u19-20020a05600c211300b0040173b2f043mr25230019wml.1.1697212265734;
-        Fri, 13 Oct 2023 08:51:05 -0700 (PDT)
-Received: from localhost (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id fc14-20020a05600c524e00b004063c9f68f2sm488649wmb.26.2023.10.13.08.51.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 08:51:05 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nicolas Chauvet <kwizart@gmail.com>
-Subject: [PATCH] thermal: max77620: Remove duplicate error message
-Date:   Fri, 13 Oct 2023 17:51:04 +0200
-Message-ID: <20231013155104.1781197-1-thierry.reding@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        d=1e100.net; s=20230601; t=1697212414; x=1697817214;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a1ab2WuFIKFA3ma0ZjQfVChX06Ccj0lK7DdwFjTIGBA=;
+        b=dZw29/XeRLULbdpxEISLf7EnLXEiLTSyrx57o4Ww/Ikg59j1WzedhGVGgWkIBl11Og
+         fmWHrSh4HSnmQ0WXP+YdcPjVUzBB6sqZIb8Pps/chJHmvki6dmtLMnmwD1elzxcas8Sz
+         jjq7wNauW66sZSBMlfoiNFTtF07W0SkMoae0tJKlb/I19z0RRcTtQ9UwVonhDkRvlqUx
+         MXq+gGFifieBQV1dr0CspB2E/MaAPYymTBK1dDsWc9Hn6ViQiRdVzy1MAD6jNI50lhMO
+         u/K1WD9hlXQLct7Jo/Fsf7IcgXgmJehLdgJf49vBu3omB57lW6Oh11Nn8pFdL5wj7Zpk
+         B1Jg==
+X-Gm-Message-State: AOJu0YwHADAM+XMxOVuPFgiBkTdbLJ7wpPLA3WwGCNZNh56UPANrMMv9
+        dPRZBIu7bb7/MXeJLafnnHWecA==
+X-Google-Smtp-Source: AGHT+IGD+Y6udldFEfNzSbeSH4ZSFKpxb16IumSgm5Ax2wKNRo/VZ1i60Er7mUo8Y6PAYB6BQM7MWg==
+X-Received: by 2002:a05:6602:368c:b0:792:7c78:55be with SMTP id bf12-20020a056602368c00b007927c7855bemr26797941iob.0.1697212413928;
+        Fri, 13 Oct 2023 08:53:33 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id d24-20020a6b6818000000b007911db1e6f4sm4935706ioc.44.2023.10.13.08.53.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Oct 2023 08:53:33 -0700 (PDT)
+Message-ID: <f1a37128-004b-4605-81a5-11f778cd5498@kernel.dk>
+Date:   Fri, 13 Oct 2023 09:53:32 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] audit,io_uring: io_uring openat triggers audit reference
+ count underflow
+Content-Language: en-US
+To:     Christian Brauner <brauner@kernel.org>,
+        Dan Clash <daclash@linux.microsoft.com>
+Cc:     linux-kernel@vger.kernel.org, paul@paul-moore.com,
+        linux-fsdevel@vger.kernel.org, dan.clash@microsoft.com,
+        audit@vger.kernel.org, io-uring@vger.kernel.org
+References: <20231012215518.GA4048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20231013-karierte-mehrzahl-6a938035609e@brauner>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20231013-karierte-mehrzahl-6a938035609e@brauner>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+On 10/13/23 9:44 AM, Christian Brauner wrote:
+> On Thu, 12 Oct 2023 14:55:18 -0700, Dan Clash wrote:
+>> An io_uring openat operation can update an audit reference count
+>> from multiple threads resulting in the call trace below.
+>>
+>> A call to io_uring_submit() with a single openat op with a flag of
+>> IOSQE_ASYNC results in the following reference count updates.
+>>
+>> These first part of the system call performs two increments that do not race.
+>>
+>> [...]
+> 
+> Picking this up as is. Let me know if this needs another tree.
 
-The thermal_of_zone_register() function already prints an error message
-when appropriate, so remove the extra one from the MAX77620 thermal
-driver.
+Since it's really vfs related, your tree is fine.
 
-This fixes a spurious error message when no thermal zone was defined
-for the MAX77620 in device tree.
+> Applied to the vfs.misc branch of the vfs/vfs.git tree.
+> Patches in the vfs.misc branch should appear in linux-next soon.
 
-Reported-by: Nicolas Chauvet <kwizart@gmail.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
----
- drivers/thermal/max77620_thermal.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+You'll send it in for 6.6, right?
 
-diff --git a/drivers/thermal/max77620_thermal.c b/drivers/thermal/max77620_thermal.c
-index 919b6ee208d8..85a12e98d6dc 100644
---- a/drivers/thermal/max77620_thermal.c
-+++ b/drivers/thermal/max77620_thermal.c
-@@ -114,12 +114,8 @@ static int max77620_thermal_probe(struct platform_device *pdev)
- 
- 	mtherm->tz_device = devm_thermal_of_zone_register(&pdev->dev, 0,
- 				mtherm, &max77620_thermal_ops);
--	if (IS_ERR(mtherm->tz_device)) {
--		ret = PTR_ERR(mtherm->tz_device);
--		dev_err(&pdev->dev, "Failed to register thermal zone: %d\n",
--			ret);
--		return ret;
--	}
-+	if (IS_ERR(mtherm->tz_device))
-+		return PTR_ERR(mtherm->tz_device);
- 
- 	ret = devm_request_threaded_irq(&pdev->dev, mtherm->irq_tjalarm1, NULL,
- 					max77620_thermal_irq,
 -- 
-2.42.0
+Jens Axboe
 
