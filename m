@@ -2,190 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F917C8DF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 21:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16517C8DF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 21:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbjJMTxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 15:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33246 "EHLO
+        id S231718AbjJMTyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 15:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjJMTxM (ORCPT
+        with ESMTP id S229830AbjJMTyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 15:53:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899BB95;
-        Fri, 13 Oct 2023 12:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697226791; x=1728762791;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=WUbXHiuNIDBF/soxOsDV9IEi1qCavQt59cgdlaj68XY=;
-  b=jH4lUspTRSDdzttfvvTqiZBHgejAgiaG+cQW8MeeRtMs3CoPJbodEm9p
-   qFXDD0i8FFjxonxw/wjq+olUPBABxbY1DW1jC0aWrRIci7vDTRMf2FK41
-   dRLlo9BXMxrTmEp9bqFUoV1jKZeTtVILvalOj6I4QZ/9UPJ33SXpF2afj
-   hW8sPUvIr+uRfYa48rXX9KXUTqC+U0nPK0+K23WSHHlQo931hzsbhVsrS
-   O5dG+I6znLcsMYQfAIWV6+/swu5GdDvlYiFtK3CoOub0oNgNV5H7eQEBP
-   aqZp8Pdg3Kj4QztLIUGYIjOdxLENhh3AiNl5zWmHdu4yByqh7X4ED5KaT
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="365518464"
-X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="365518464"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 12:53:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="878632703"
-X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="878632703"
-Received: from bgras-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.59.145])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 12:53:02 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 21E7A104A05; Fri, 13 Oct 2023 22:53:00 +0300 (+03)
-Date:   Fri, 13 Oct 2023 22:53:00 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Michael Roth <michael.roth@amd.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
-        khalid.elmously@canonical.com, philip.cox@canonical.com,
-        aarcange@redhat.com, peterx@redhat.com, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv14 5/9] efi: Add unaccepted memory support
-Message-ID: <20231013195300.cqv6dfdprr3givdr@box>
-References: <20230606142637.5171-1-kirill.shutemov@linux.intel.com>
- <20230606142637.5171-6-kirill.shutemov@linux.intel.com>
- <20231010210518.jguawj7bscwgvszv@amd.com>
- <20231013123358.y4pcdp5fgtt4ax6g@box.shutemov.name>
- <20231013162210.bqepgz6wnh7uohqq@box>
- <3577c8a5-3f88-45b8-9b41-2fb5cb6dc53a@amd.com>
+        Fri, 13 Oct 2023 15:54:08 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1BBBE
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:54:07 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53e08e439c7so3863752a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697226846; x=1697831646; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/nr5rTcvx3Bqes76zmwwUrfRUqUSHDocyP1SazHWr+w=;
+        b=djcfVWzgXcmHpwjkTng5NwzHLhHeTcuTOg1UE7SXquOkVesAbN5DsrQrmETYpVO2YV
+         /ctBV5PnIvsdRvRIZQ+A/1fVqDDaJMc0lzQjazR8+jZ+CDNtV+yuXsyu7D9G1U9YHmyA
+         kt8orGquHe2FZ7kRPACc9elns1cBPpIsTlYoVWIMgkyHcM57GNmzXjDoXcG5pWzjWixA
+         siIMHUvWpcw3KvXjXsR68OgtTW5QJsm0pdjPA891TmLajS+fOYVT5M5Bz7DdbcLJux9G
+         1pNfngINuldZ08In7wISM0WVReHGRnrUUBkGlRQ0WbIzV0E1wYWia1Q+y8kbKpnrCfQV
+         vWbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697226846; x=1697831646;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/nr5rTcvx3Bqes76zmwwUrfRUqUSHDocyP1SazHWr+w=;
+        b=XGpO8ii54qg2UuAB7z/JDH3ljPta6FtqJadbenIjC8zKMa3jq/SejTgiXIo7TbV9Nm
+         3TqTAXF3izPQGA6S/oakN5xtu1zAwlIWE/lzNRFA9Qr4ZrGdDVVGsVb+vdbTaGZzhloz
+         giyS/EB5xU0ItZ4bDCkwUa1nSSmb9IbWS+X8LDnZXVe2j+SeSPBdXKcRYmOC3kjHDOa4
+         gJD8+Jb2I1/UzFEm28Gv78eJ4bZ73vXS0YIPLiTij4lq5ss91JzczotLpqLUg6Lj3Jc/
+         EgLNEl05mXCsyR2txv5aEK912IsqIw4gW7JFXFy/fo4ZWTnH7Ta0Dz/r1WZu693hj2LN
+         ar3Q==
+X-Gm-Message-State: AOJu0YyHU3N0EGf9pkdLzTZCJBRaM3ObYtFgldz79PLprhcfIXr2kQIb
+        OBH+wJUcMOPs1FQEw7bMgtx2ukgyXnmmLG3ddumoig==
+X-Google-Smtp-Source: AGHT+IEmQdB6jTOkef10X9umxYczo2MAno9vooZhhnlm41Ql4LMTSfvVX0/maWT0UikblvZ6Cn/oh+PSpaj7EXAV2fs=
+X-Received: by 2002:a50:c8cd:0:b0:53e:21f6:d784 with SMTP id
+ k13-20020a50c8cd000000b0053e21f6d784mr4099063edh.8.1697226845814; Fri, 13 Oct
+ 2023 12:54:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3577c8a5-3f88-45b8-9b41-2fb5cb6dc53a@amd.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231012-strncpy-drivers-net-phy-nxp-tja11xx-c-v1-1-5ad6c9dff5c4@google.com>
+ <15af4bc4-2066-44bc-8d2e-839ff3945663@lunn.ch>
+In-Reply-To: <15af4bc4-2066-44bc-8d2e-839ff3945663@lunn.ch>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Fri, 13 Oct 2023 12:53:53 -0700
+Message-ID: <CAFhGd8pmq3UKBE_6ZbLyvRRhXJzaWMQ2GfosvcEEeAS-n7M4aQ@mail.gmail.com>
+Subject: Re: [PATCH] net: phy: tja11xx: replace deprecated strncpy with ethtool_sprintf
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 12:45:20PM -0500, Tom Lendacky wrote:
-> On 10/13/23 11:22, Kirill A. Shutemov wrote:
-> > On Fri, Oct 13, 2023 at 03:33:58PM +0300, Kirill A. Shutemov wrote:
-> > > > While testing SNP guests running today's tip/master (ef19bc9dddc3) I ran
-> > > > into what seems to be fairly significant lock contention due to the
-> > > > unaccepted_memory_lock spinlock above, which results in a constant stream
-> > > > of soft-lockups until the workload gets all its memory accepted/faulted
-> > > > in if the guest has around 16+ vCPUs.
-> > > > 
-> > > > I've included the guest dmesg traces I was seeing below.
-> > > > 
-> > > > In this case I was running a 32 vCPU guest with 200GB of memory running on
-> > > > a 256 thread EPYC (Milan) system, and can trigger the above situation fairly
-> > > > reliably by running the following workload in a freshly-booted guests:
-> > > > 
-> > > >    stress --vm 32 --vm-bytes 5G --vm-keep
-> > > > 
-> > > > Scaling up the number of stress threads and vCPUs should make it easier
-> > > > to reproduce.
-> > > > 
-> > > > Other than unresponsiveness/lockup messages until the memory is accepted,
-> > > > the guest seems to continue running fine, but for large guests where
-> > > > unaccepted memory is more likely to be useful, it seems like it could be
-> > > > an issue, especially when consider 100+ vCPU guests.
-> > > 
-> > > Okay, sorry for delay. It took time to reproduce it with TDX.
-> > > 
-> > > I will look what can be done.
-> > 
-> > Could you check if the patch below helps?
-> > 
-> > diff --git a/drivers/firmware/efi/unaccepted_memory.c b/drivers/firmware/efi/unaccepted_memory.c
-> > index 853f7dc3c21d..591da3f368fa 100644
-> > --- a/drivers/firmware/efi/unaccepted_memory.c
-> > +++ b/drivers/firmware/efi/unaccepted_memory.c
-> > @@ -8,6 +8,14 @@
-> >   /* Protects unaccepted memory bitmap */
-> >   static DEFINE_SPINLOCK(unaccepted_memory_lock);
-> > +struct accept_range {
-> > +	struct list_head list;
-> > +	unsigned long start;
-> > +	unsigned long end;
-> > +};
-> > +
-> > +static LIST_HEAD(accepting_list);
-> > +
-> >   /*
-> >    * accept_memory() -- Consult bitmap and accept the memory if needed.
-> >    *
-> > @@ -24,6 +32,7 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
-> >   {
-> >   	struct efi_unaccepted_memory *unaccepted;
-> >   	unsigned long range_start, range_end;
-> > +	struct accept_range range, *entry;
-> >   	unsigned long flags;
-> >   	u64 unit_size;
-> > @@ -80,7 +89,25 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
-> >   	range_start = start / unit_size;
-> > +	range.start = start;
-> > +	range.end = end;
-> > +retry:
-> >   	spin_lock_irqsave(&unaccepted_memory_lock, flags);
-> > +
-> > +	list_for_each_entry(entry, &accepting_list, list) {
-> > +		if (entry->end < start)
-> > +			continue;
-> > +		if (entry->start > end)
-> 
-> Should this be a >= check since start and end are page aligned values?
+On Fri, Oct 13, 2023 at 5:22=E2=80=AFAM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> > -     for (i =3D 0; i < ARRAY_SIZE(tja11xx_hw_stats); i++) {
+> > -             strncpy(data + i * ETH_GSTRING_LEN,
+> > -                     tja11xx_hw_stats[i].string, ETH_GSTRING_LEN);
+> > -     }
+> > +     for (i =3D 0; i < ARRAY_SIZE(tja11xx_hw_stats); i++)
+> > +             ethtool_sprintf(&data, "%s", tja11xx_hw_stats[i].string);
+> >  }
+>
+> I assume you are using "%s" because tja11xx_hw_stats[i].string cannot
+> be trusted as a format string? Is this indicating we need an
+> ethtool_puts() ?
 
-Right. Good catch.
+Indeed, it would trigger a -Wformat-security warning.
 
-> > +			continue;
-> > +		spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
-> > +
-> > +		/* Somebody else accepting the range */
-> > +		cpu_relax();
-> > +		goto retry;
-> 
-> Could you set some kind of flag here so that ...
-> 
-> > +	}
-> > +
-> 
-> ... once you get here, that means that area was accepted and removed from
-> the list, so I think you could just drop the lock and exit now, right?
-> Because at that point the bitmap will have been updated and you wouldn't be
-> accepting any memory anyway?
+An ethtool_puts() would be useful for this situation.
 
-No. Consider the case if someone else accept part of the range you are
-accepting.
-
-I guess we can check if the range on the list covers what we are accepting
-fully, but it complication. Checking bitmap at this point is cheap enough:
-we already hold the lock.
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+>
+>         Andrew
