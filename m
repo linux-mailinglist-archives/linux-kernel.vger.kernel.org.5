@@ -2,76 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9237C87E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4B77C8787
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbjJMOdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 10:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49440 "EHLO
+        id S232054AbjJMOLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 10:11:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbjJMOdn (ORCPT
+        with ESMTP id S231194AbjJMOLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 10:33:43 -0400
-X-Greylist: delayed 1331 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 13 Oct 2023 07:33:39 PDT
-Received: from www522.your-server.de (www522.your-server.de [195.201.215.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75AABD;
-        Fri, 13 Oct 2023 07:33:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=folker-schwesinger.de; s=default2212; h=In-Reply-To:References:
-        Content-Transfer-Encoding:To:From:Cc:Subject:Message-Id:Date:Content-Type:
-        Sender:Reply-To:MIME-Version:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=TxwwokEAbgE2tWmv/Wot1RPxsCzOem/ELZjKvvjAb+M=; b=TY0kQ4rYjnJByIpl42J3+RKmun
-        F+N+FRYTXPViiQDUgf3Sw+XssHSi1xvG7DzyPVg24tCIgxIoTBWg2Dy6/X657L5BFsLgp2g67H4/t
-        34dJbD1ViiCT+8j62dj/nzVi+QuXrWGANBDQ0Xkr23NORANlk/edKrUf/6n/jIKA8z61KAqvkwmYT
-        KAi3gS5dJAp3J9Z+sVR3dgutoNvFI3XGTA/YBQEn2k/CeD27ajKDvpTGG2TjWvO9GNBeUZcMvJ/93
-        IS2t0WgXks0Q6J4Ye3oJ3TT0rhI8/Ry7EHJwUCEZjGqMchg+3oPIrrSTQUYv8AggXpkUBtJefvNVP
-        5iOT6+KA==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www522.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <dev@folker-schwesinger.de>)
-        id 1qrIsv-000HXg-MS; Fri, 13 Oct 2023 16:11:25 +0200
-Received: from [80.88.27.155] (helo=localhost)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <dev@folker-schwesinger.de>)
-        id 1qrIsk-000T92-MZ; Fri, 13 Oct 2023 16:11:24 +0200
-Content-Type: multipart/signed;
- boundary=0377e7501be3d79d6faabf808a2de3b62744369f17e3be7eb4f7324fb286;
- micalg=pgp-sha256; protocol="application/pgp-signature"
-Date:   Fri, 13 Oct 2023 14:11:13 +0000
-Message-Id: <CW7DEUEAKEXO.KE3YKH135Y3C@folker-schwesinger.de>
-Subject: Re: [PATCH v1 0/2] Fix i2s0 pin conflict on ROCK Pi 4 RK3399 boards
-Cc:     <kernel@collabora.com>,
-        "Arnaud Ferraris" <arnaud.ferraris@collabora.com>,
-        "Brian Norris" <briannorris@chromium.org>,
-        "Caleb Connolly" <kc@postmarketos.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Corentin Labbe" <clabbe@baylibre.com>,
-        "FUKAUMI Naoki" <naoki@radxa.com>,
-        "Heiko Stuebner" <heiko@sntech.de>,
-        "Jagan Teki" <jagan@amarulasolutions.com>,
-        "Johan Jonker" <jbx6244@gmail.com>,
-        "Judy Hsiao" <judyhsiao@chromium.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Rick Wertenbroek" <rick.wertenbroek@gmail.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Yogesh Hegde" <yogi.kernel@gmail.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-From:   "Folker Schwesinger" <dev@folker-schwesinger.de>
-To:     "Christopher Obbard" <chris.obbard@collabora.com>,
-        <linux-rockchip@lists.infradead.org>
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: aerc 0.16.0-6-gd179485eefe5
-References: <20231013114737.494410-1-chris.obbard@collabora.com>
-In-Reply-To: <20231013114737.494410-1-chris.obbard@collabora.com>
-X-Authenticated-Sender: dev@folker-schwesinger.de
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27060/Fri Oct 13 09:41:49 2023)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        Fri, 13 Oct 2023 10:11:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC68B95;
+        Fri, 13 Oct 2023 07:11:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB5DAC433C7;
+        Fri, 13 Oct 2023 14:11:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697206295;
+        bh=+PECLI9eBN9g/xFj5AEB+74Ye35V4f2WaKGkW1ZEKKQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BnsSZunhbumt27t6QNpFdC+OC2qbIq/aHnuBErdQSipTrEhM3wnp5vEEH8dW4vjhy
+         Mf/rU6G+T9Pxcq65tlehM4fmxOjG5p2QiDsiXecCwrjSCpEgZwYglQcZSWcKOXT+NP
+         vimcoNn8kNsT+3FeIcBpN7xtFOotJ8QKOuKFxLf//xeG/y4WaiB5gSHuL1bn2uuUac
+         JjQAkE5vX5FTTtyFGZf1XqKayxWYbrDyG/iYD9xGJ9GyORi3IIuJQKff8zDj1uhv86
+         zcsmrRjH+8W7NFWJTX2NI5u+ZV7ddg2A5VSN/wfwjlrV/OsvnfFdvnAO2fyooD23f/
+         VMqnihC89mqFQ==
+Date:   Fri, 13 Oct 2023 16:11:32 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Denis Arefev <arefev@swemel.ru>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 09/18] srcu: Fix srcu_struct node grpmask overflow on
+ 64-bit systems
+Message-ID: <ZSlQFGIyQGoYETzV@lothringen>
+References: <20231013115902.1059735-1-frederic@kernel.org>
+ <20231013115902.1059735-10-frederic@kernel.org>
+ <f6cc79b13ccf471aa275bee88559b6bd@AcuMS.aculab.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f6cc79b13ccf471aa275bee88559b6bd@AcuMS.aculab.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,61 +59,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0377e7501be3d79d6faabf808a2de3b62744369f17e3be7eb4f7324fb286
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+On Fri, Oct 13, 2023 at 12:54:32PM +0000, David Laight wrote:
+> From: Frederic Weisbecker
+> > Sent: 13 October 2023 12:59
+> > 
+> > The value of a bitwise expression 1 << (cpu - sdp->mynode->grplo)
+> > is subject to overflow due to a failure to cast operands to a larger
+> > data type before performing the bitwise operation.
+> > 
+> > The maximum result of this subtraction is defined by the RCU_FANOUT_LEAF
+> > Kconfig option, which on 64-bit systems defaults to 16 (resulting in a
+> > maximum shift of 15), but which can be set up as high as 64 (resulting
+> > in a maximum shift of 63).  A value of 31 can result in sign extension,
+> > resulting in 0xffffffff80000000 instead of the desired 0x80000000.
+> > A value of 32 or greater triggers undefined behavior per the C standard.
+> > 
+> > This bug has not been known to cause issues because almost all kernels
+> > take the default CONFIG_RCU_FANOUT_LEAF=16.  Furthermore, as long as a
+> > given compiler gives a deterministic non-zero result for 1<<N for N>=32,
+> > the code correctly invokes all SRCU callbacks, albeit wasting CPU time
+> > along the way.
+> > 
+> > This commit therefore substitutes the correct 1UL for the buggy 1.
+> > 
+> > Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> > 
+> > Signed-off-by: Denis Arefev <arefev@swemel.ru>
+> > Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Cc: David Laight <David.Laight@aculab.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > ---
+> >  kernel/rcu/srcutree.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index 833a8f848a90..5602042856b1 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
+> >  				snp->grplo = cpu;
+> >  			snp->grphi = cpu;
+> >  		}
+> > -		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+> > +		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
+> >  	}
+> >  	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
+> >  	return true;
+> > @@ -835,7 +835,7 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
+> >  	int cpu;
+> > 
+> >  	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
+> > -		if (!(mask & (1 << (cpu - snp->grplo))))
+> > +		if (!(mask & (1UL << (cpu - snp->grplo))))
+> >  			continue;
+> >  		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
+> >  	}
+> 
+> That loop is entirely horrid.
+> The compiler almost certainly has to reload snp->grphi every iteration.
+> Also it looks as though the bottom bit of mask is checked first.
+> So how about:
+> 	grphi = snp->grphi;
+> 	for (cpu = snp->grplo; cpu <= grphi; cpu++, mask >>= 1) {
+> 		if (!(mask & 1))
+> 			continue;
+> 		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
+> 	}
 
+Well, it's cache-hot and RCU update side is not really a fast-path.
+Not sure it's worth optimizing...
 
-On Fri Oct 13, 2023 at 1:47 PM CEST, Christopher Obbard wrote:
-> i2s0 fails to probe on my Radxa ROCK 4SE and ROCK Pi 4B boards with:
->
->     rockchip-pinctrl pinctrl: pin gpio3-29 already requested by leds; can=
-not claim for ff880000.i2s
->     rockchip-pinctrl pinctrl: pin-125 (ff880000.i2s) status -22
->     rockchip-pinctrl pinctrl: could not request pin 125 (gpio3-29) from g=
-roup i2s0-8ch-bus-bclk-off  on device rockchip-pinctrl
->     rockchip-i2s ff880000.i2s: Error applying setting, reverse things bac=
-k
->     rockchip-i2s ff880000.i2s: bclk disable failed -22
->
-> This is due to the pinctl attempting to request a GPIO which the boards
-> use for a different function.
->
-> The first patch adds a missing pinctl node i2s0_2ch_bus_bclk_off to the
-> RK3399 devicetree.
->
-> The second patch sets the i2s0 pinctrl to use the new node when idle and
-> fixes the issue.
->
->
-> Christopher Obbard (2):
->   arm64: dts: rockchip: Add i2s0-2ch-bus-bclk-off pins to RK3399
->   arm64: dts: rockchip: Fix i2s0 pin conflict on ROCK Pi 4 boards
->
->  arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi |  1 +
->  arch/arm64/boot/dts/rockchip/rk3399.dtsi           | 10 ++++++++++
->  2 files changed, 11 insertions(+)
+Thanks.
 
-Thanks, works as advertised on my Rock 4SE!
-
-So for the entire series:
-
-Tested-By: Folker Schwesinger <dev@folker-schwesinger.de>
-
-Kind regards,
-Folker
-
---0377e7501be3d79d6faabf808a2de3b62744369f17e3be7eb4f7324fb286
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJAEABYIADgWIQQFbmi0A2l3pTuK+esCQHEyPYq7fQUCZSlQAhocZGV2QGZvbGtl
-ci1zY2h3ZXNpbmdlci5kZQAKCRACQHEyPYq7fcaaAPsFBvjaD6faGXW/mZLedAE8
-Oio8383iwlnrrWOmoshgcAEAxShIZ4xIjPkCTtOnd8Z/OI4flfytkRBns2asy9ei
-9AE=
-=n0fE
------END PGP SIGNATURE-----
-
---0377e7501be3d79d6faabf808a2de3b62744369f17e3be7eb4f7324fb286--
+> 
+> 	David		
+> 
+> > --
+> > 2.34.1
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+> 
