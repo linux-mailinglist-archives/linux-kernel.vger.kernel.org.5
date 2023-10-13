@@ -2,94 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B7B7C9130
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D78DB7C9132
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232579AbjJMXIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 19:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39932 "EHLO
+        id S232528AbjJMXKw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Oct 2023 19:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232558AbjJMXIF (ORCPT
+        with ESMTP id S229830AbjJMXKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 19:08:05 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92AAC2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:07:59 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a7af20c488so31443327b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:07:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697238479; x=1697843279; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GTZAp68ttuyTxKkLmjiKDcnt+ot03nWQqCAoiuWLPj4=;
-        b=XgUYQp9VvazENLlju8K1vLaG5E6Pd4U/7P1yfNrguASJ4IjSLNW+Hvyj/EQeuzTQBM
-         9NqGuyf45rliaT/JBLcg0mPLyWaIgTS9uP661Zpsr/3vCJTo9x1uyYb6zP4vUR0IlmZN
-         ITAxnHSYq0say4s8Zmgq4PIMtF6w0gac3OiJCf/Pg0fgf3v6DACvPZF46l+B4WBZAq0P
-         g9QmcmYIRS274JsmVP3iRM0L3mcOGLD5p62algh+RIgnlFAcKrB8vsa9AnLNQfrFGRX5
-         ZihNikwH2Eh2mPi2J+nh/Jiit5c1kmXBuZOBVwD6PES2G8VPMLja1tg4W7fccJoUHSUS
-         Ym/Q==
+        Fri, 13 Oct 2023 19:10:51 -0400
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0F5B7;
+        Fri, 13 Oct 2023 16:10:47 -0700 (PDT)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5aaebfac4b0so811097a12.2;
+        Fri, 13 Oct 2023 16:10:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697238479; x=1697843279;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GTZAp68ttuyTxKkLmjiKDcnt+ot03nWQqCAoiuWLPj4=;
-        b=NuSIlsQK+iJaYDLFq5/QW1pjD6aEd5w+Xe8ooZjHn8diiOqoCwIV3mDfdEF6v72ULM
-         om6JP94PMOgi802BmiBvJpL/WwI6nXWWZAcDqJea+DnAEBdF8ecEbZ6R13WaiiQnWQPD
-         lFLBJ0IiE6hS+VztO0gWGeTJQoE3oofSXX1QjnCV/O21lebXHnDioHeVBrRVVNbHKArQ
-         zO2sF94k/txq5FPI1VbhPr4VgJwtf77F/uA618FNGzSbDc3WfrxpsloMawHxkshoGQWv
-         2rxxYpHSFBUfMlXPu0UZqE3Wxk/CjTrXcODDuTzkI6iCJQuJmSdgbKgBR4/Pw3KIr9hn
-         jYDw==
-X-Gm-Message-State: AOJu0YzToWHg/Kir/e9uvhQ2AsUy97flzMhepGQb4rNZ2CZ1ByVv7eyT
-        PKSKBr9n+8L9Mb5lBuU8QrS7tqnT7UPYO14bnaAlCQ==
-X-Google-Smtp-Source: AGHT+IEV/6cjtm5aswWQE7+Xj1dG/j34dWuGSndGd1o4xDdSx/J/e4MW+VMXlArDM1lZpgch8aAfkjCvTI8QUarCcvU=
-X-Received: by 2002:a0d:d796:0:b0:5a8:2b82:a031 with SMTP id
- z144-20020a0dd796000000b005a82b82a031mr2481006ywd.26.1697238478953; Fri, 13
- Oct 2023 16:07:58 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697238647; x=1697843447;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Jq9pAKpCKsuW4M2aVm6h0RSLxNTvAXPcyrENZdgKoqs=;
+        b=FLbHlM+CsBJ1q47Hkw7tR76MR8JZFIFLdspOuZXXKY3TZRKhgR1znJVNuN5lfOxBRa
+         MXGX021UqhZYrnHPIYseFgpoH/0x4HH7hVB+JclKdNHOb2k6SMjjribeHW+vRyieApz4
+         S7Q5mZ8pXrUmH4wcf8+v9+fgvQNJ7BoYsJxXtGRfm6T8JSWhPfQBlvA7dgGJm4XCEfDM
+         9kbaVcbMQAa2xNrbqMBnKCnRlWMChCPoM6igRwfwjPoPbm2GtsQcr9rcrvTwAJRV4dzq
+         Ok+dgXPMCqwJh2eryd3C/P6E4XC5Ra86r94qHASgcLj43rQ3HI3PL5hjwkw2+G/v0GZJ
+         RKCA==
+X-Gm-Message-State: AOJu0Yy5+mxUrgjh7GGMu1oTHcLCAQlrRL+YtrY239W3nbE6bXTl/4EK
+        go4JtluQ9irS9RuWJrDjA55eUVF6w3aFpBUlYbI=
+X-Google-Smtp-Source: AGHT+IHDM6Zprp24HuVjm/VUZDe7ubNTycIxI/bJLO0R9kpM/9xOBcfm4CfYf+9QwsazMBT1ncN8EY2QEFZc66A0/Lc=
+X-Received: by 2002:a05:6a20:3c90:b0:171:75ef:d636 with SMTP id
+ b16-20020a056a203c9000b0017175efd636mr14759284pzj.21.1697238646628; Fri, 13
+ Oct 2023 16:10:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231013164025.3541606-1-robimarko@gmail.com> <20231013164025.3541606-2-robimarko@gmail.com>
-In-Reply-To: <20231013164025.3541606-2-robimarko@gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Sat, 14 Oct 2023 02:07:47 +0300
-Message-ID: <CAA8EJpqG0fL2j-+4qN9kw8fDdGmE7LpRYdJtqEPsGFScwRz4AQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: ipq8074: pass QMP PCI PHY PIPE
- clocks to GCC
-To:     Robert Marko <robimarko@gmail.com>
-Cc:     andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231004204741.985422-1-namhyung@kernel.org> <ZSnHek1HlQTkfjhG@kernel.org>
+ <CAM9d7cip5qmPRhWF37JH_21Q8SjKQCTBVyF_PLE-ytTFOwpasg@mail.gmail.com> <ZSnMxtnt7o5mLj+w@kernel.org>
+In-Reply-To: <ZSnMxtnt7o5mLj+w@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 13 Oct 2023 16:10:35 -0700
+Message-ID: <CAM9d7cg75rnPpOUB4wUqUPCbsEZucOyu0sB1UwF3kk-4E8q2SA@mail.gmail.com>
+Subject: Re: [PATCH] perf bench sched pipe: Add -G/--cgroups option
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 at 19:41, Robert Marko <robimarko@gmail.com> wrote:
+On Fri, Oct 13, 2023 at 4:03 PM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> Pass QMP PCI PHY PIPE clocks to the GCC controller so it does not have to
-> find them by matching globaly by name.
+> Em Fri, Oct 13, 2023 at 03:57:27PM -0700, Namhyung Kim escreveu:
+> > Hi Arnaldo,
+> >
+> > On Fri, Oct 13, 2023 at 3:41 PM Arnaldo Carvalho de Melo
+> > <acme@kernel.org> wrote:
+> > > -rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/AAA/cgroup.procs
+> > > [root@quaco ~]# ls -la /sys/fs/cgroup/AAA/cgroup.threads
+> > > -rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/AAA/cgroup.threads
+> > > [root@quaco ~]# ls -la /sys/fs/cgroup/BBB/cgroup.threads
+> > > -rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/BBB/cgroup.threads
+> > > [root@quaco ~]# ls -la /sys/fs/cgroup/BBB/cgroup.procs
+> > > -rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/BBB/cgroup.procs
+> > > [root@quaco ~]#
+> > >
+> > > [root@quaco ~]# perf bench sched pipe -G AAA,BBB
+> > > # Running 'sched/pipe' benchmark:
+> > > cannot enter to cgroup: AAA (written=-1, len=6, errno=Operation not supported)
+> > > cannot enter to cgroup: BBB (written=-1, len=6, errno=Operation not supported)
+> > > # Executed 1000000 pipe operations between two processes
+> > >
+> > >      Total time: 6.303 [sec]
+> > >
+> > >        6.303221 usecs/op
+> > >          158649 ops/sec
+> > > [root@quaco ~]#
+> > >
+> > > I'm certainly missing something here :-\
+> >
+> > Try to enable some cgroup controllers first.  Like
+> >
+> >   # echo +cpu > /sys/fs/cgroup/AAA/cgroup.subtree_control
+> >   # echo +cpu > /sys/fs/cgroup/BBB/cgroup.subtree_control
 >
-> If not passed directly, driver maintains backwards compatibility by then
-> falling back to global lookup.
+> [root@quaco cgroup]# echo +cpu > /sys/fs/cgroup/AAA/cgroup.subtree_control
+> [root@quaco cgroup]# echo +cpu > /sys/fs/cgroup/BBB/cgroup.subtree_control
+> [root@quaco cgroup]# perf bench sched pipe -G AAA,BBB
+> # Running 'sched/pipe' benchmark:
+> cannot enter to cgroup: AAA (written=-1, len=6, errno=Operation not supported)
+> cannot enter to cgroup: BBB (written=-1, len=6, errno=Operation not supported)
+> # Executed 1000000 pipe operations between two processes
 >
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> ---
-> Changes in v2:
-> * Make clocks and clock-names one-per-line
+>      Total time: 6.267 [sec]
 >
->  arch/arm64/boot/dts/qcom/ipq8074.dtsi | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
+>        6.267680 usecs/op
+>          159548 ops/sec
+> [root@quaco cgroup]# cat /sys/fs/cgroup/AAA/cgroup.subtree_control
+> cpu
+> [root@quaco cgroup]# cat /sys/fs/cgroup/BBB/cgroup.subtree_control
+> cpu
+> [root@quaco cgroup]# uname -a
+> Linux quaco 6.5.6-200.fc38.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Oct  6 19:02:35 UTC 2023 x86_64 GNU/Linux
+> [root@quaco cgroup]#
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Hmm... I don't know, I've tested it on v1 only ;-p  I'll take a look.
+
+Also I found a bug, will fix too.
+
+Thanks,
+Namhyung
 
 
--- 
-With best wishes
-Dmitry
+diff --git a/tools/perf/bench/sched-pipe.c b/tools/perf/bench/sched-pipe.c
+index 1103fd658d5d..25236f339b90 100644
+--- a/tools/perf/bench/sched-pipe.c
++++ b/tools/perf/bench/sched-pipe.c
+@@ -118,9 +118,9 @@ static void enter_cgroup(struct cgroup *cgrp)
+
+        /* try cgroup v2 interface first */
+        if (threaded)
+-               fd = openat(cgrp->fd, "cgroup.procs", O_WRONLY);
+-       else
+                fd = openat(cgrp->fd, "cgroup.threads", O_WRONLY);
++       else
++               fd = openat(cgrp->fd, "cgroup.progs", O_WRONLY);
+
+        /* try cgroup v1 if failed */
+        if (fd < 0)
