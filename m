@@ -2,92 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9651B7C8CD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE69B7C8CD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbjJMSLv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Oct 2023 14:11:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
+        id S230469AbjJMSMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 14:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJMSLt (ORCPT
+        with ESMTP id S229958AbjJMSMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 14:11:49 -0400
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2194891
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:11:48 -0700 (PDT)
-Received: from omf15.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay05.hostedemail.com (Postfix) with ESMTP id 00A2F4046A;
-        Fri, 13 Oct 2023 18:11:46 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 87C551A;
-        Fri, 13 Oct 2023 18:11:43 +0000 (UTC)
-Message-ID: <00c37fe04a2910345e71afbfc087f7bcdfe0ca80.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: avoid warning about Possible repeated word:
- 'Google'
-From:   Joe Perches <joe@perches.com>
-To:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     apw@canonical.com, dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com
-Date:   Fri, 13 Oct 2023 11:11:42 -0700
-In-Reply-To: <20231013172739.1113964-1-kuba@kernel.org>
-References: <20231013172739.1113964-1-kuba@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Fri, 13 Oct 2023 14:12:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9855E6;
+        Fri, 13 Oct 2023 11:12:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8423FC433C7;
+        Fri, 13 Oct 2023 18:12:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697220724;
+        bh=GEg5YuIE8UF4NZRdoKQgB/R137hqA2LKlhnXmjOkreI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bpe0KFYD/DtoQg62xNTpUaMVBbmI9Mayf6s+q6MsC9a9V94yYmRGN1QCeYkxtQLid
+         gNCIrFGjMnlaKnosvA8QmBmrPjzft3qEyCRefCksLkMFqVw7aZQbCOz+X0Gnb5wfjE
+         Ejc4q+8iBdLA281w/cxT4b1G9izV1vQDQXnUefjvrLx8MT062EcVsXxYDrZEtDe6ED
+         zekBpXCt8pV64AyVgPjuKbIU4ZnJtJjuZDgeo4uBEvK/7fIIq3qFre9lKRuQ41i4eX
+         amEgkzk+4nKklKstVQidFKkkdBEdJ0GpPJdHfRFh3ZsylaQ/p7zbSkxqXqhFlb0ukO
+         JaMLSOFc/+zFQ==
+Date:   Fri, 13 Oct 2023 19:12:18 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Ivan Mikhaylov <fr0st61te@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] dt-bindings: adc: provide max34408/9 device tree
+ binding document
+Message-ID: <20231013191218.26cbe06a@jic23-huawei>
+In-Reply-To: <9996a912-7b4e-4247-bb8a-716782fbcc2a@linaro.org>
+References: <20231007234838.8748-1-fr0st61te@gmail.com>
+        <20231007234838.8748-2-fr0st61te@gmail.com>
+        <20231010154042.2ef667b2@jic23-huawei>
+        <383064a5b0863a4a616cd60cff8d4bc18e397fd7.camel@gmail.com>
+        <20231012084052.504ac930@jic23-huawei>
+        <e7b74daa9d0131246fd10f47aa4128bc8f8f3177.camel@gmail.com>
+        <20231013091952.00002573@Huawei.com>
+        <2eafa89c-7c95-4bc1-85cb-a6d7417dcea8@linaro.org>
+        <20231013100930.000043b2@Huawei.com>
+        <9996a912-7b4e-4247-bb8a-716782fbcc2a@linaro.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 87C551A
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Stat-Signature: jkszg1qij6axn6grepn69m3g1s6r9t74
-X-Rspamd-Server: rspamout08
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19ewI6DaQcHPUjvYOX3U1PnH6KZG/xgAcQ=
-X-HE-Tag: 1697220703-11687
-X-HE-Meta: U2FsdGVkX19PdlakIHTQy/LKyk02GMKgIKZhpsAE+Q4BYV9CBbYlSHXpy/YAfR1SmVxtJoI2myoJBznJvg/i11rP8Q8C1XtxFz2nG86pw10K/hPgx//wBxcNOOV/RWzXiE8PCedP1nUNdC7YDz9CIYiNzO0atX2+FnEiO3C/EchkIuH+zH7Pq5jFHvBRzHhRUN6VD6zHUEqGieagZruWm1PrExv4VAVJyfunFeEqniEo7qOXfje6pz8GBL9Z61NJB3vpeawYIPi3L1nl3XJbPaSmiG8zxomO1mowJogmnNKXQEBfxzVyw+jHV8jfNj3gdrgjfeVYKHPiDrVKLM2zVaVyqGN4NptZgkEW6j7Wqf+55dfCS45xiehMHW4rd8V2FWTINO8yOdv9ayWGj/eJYwqaHyIFN0QE9YodBm0f7UZwg5lG9+R5b2KRaHn5ZIRdGCWBfmMszD8AsUXqnqdFr9Nszx5lc+nkq+j/5LobOVracNbZ0zZ4r5WDW4egKGfEA6LY8Pw72zA=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-13 at 10:27 -0700, Jakub Kicinski wrote:
-> syzbot stack traces often come with the following line:
-> 
->  Hardware name: Google Google Compute Engine/Google Compute Engine...
+On Fri, 13 Oct 2023 11:53:33 +0200
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-If you must, you must, but I wonder if code to ignore
-syzbot blocks might be more sensible.  I don't see
-obvious syzbot start/end block markers though.
+> On 13/10/2023 11:09, Jonathan Cameron wrote:
+> >>>>>>>> +=C2=A0 shtdn-enable-gpios:=C2=A0      =20
+> >>>>>>>
+> >>>>>>> I guess the review crossed with you sending v5.=C2=A0 There is so=
+me
+> >>>>>>> feedback on v4 you need
+> >>>>>>> to address here.=C2=A0      =20
+> >>>>>>
+> >>>>>> Jonathan, I thought I did, I've changed ena to powerdown-gpios from
+> >>>>>> Krzysztof's comments but about this one pin I'm still not sure, it
+> >>>>>> looks like *-enable-gpios (like in *-enable-gpios pins in
+> >>>>>> iio/frequency/adi,adf4377.yaml) pin or is it not? Or maybe any
+> >>>>>> other
+> >>>>>> suggestions about naming of this one?
+> >>>>>>
+> >>>>>> Thanks.     =20
+> >>>>>
+> >>>>> shutdown-gpios and make the sense (active high / low) such that
+> >>>>> setting
+> >>>>> it results in teh device being shut down.
+> >>>>> Or treat it as an enable and enable-gpios
+> >>>>>
+> >>>>> Something that indicates both shutdown and enable is confusing ;)
+> >>>>>
+> >>>>> Jonathan     =20
+> >>>>
+> >>>>
+> >>>> Jonathan, then I make these changes:
+> >>>>
+> >>>> powerdown-gpios: -> output-enable:   =20
+> >>> Needs to retain the gpios bit as we want the standard gpio stuff to p=
+ick
+> >>> them up. I'm not that keen on output-enable-gpios though.  The activi=
+ty
+> >>> here is very much 'shutdown because of error or not enabled' I think.
+> >>> So perhaps we flip the sense and document that it needs to be active =
+low?
+> >>>    =20
+> >>>> shtdn-enable-gpios: -> enable-gpios:
+> >>>>
+> >>>> Is it ok?   =20
+> >>>
+> >>> Conor, Rob, Krzysztof - you probably have a better insight into this =
+than
+> >>> I do.
+> >>>    =20
+> >>
+> >> "enable-gpios" are for turning on a specific feature, not powering
+> >> on/off entire device. For example to enable regulator output.
+> >>
+> >> "powerdown-gpios" are for turning device on/off.
+> >>
+> >> I don't know what do you have in your device. =20
+> > Ok. Sounds like that what is enable-gpios above should be shutdown-gpio=
+s. =20
+>=20
+> shutdown-gpios sounds exactly the same as powerdown-gpios and it is
+> already used in exactly same context.
+Oops. Yup. powerdown-gpios seems appropriate.
+>=20
+> > The other case is a device output indicating whether the device is
+> > shutdown.  That can happen because it was told to do so (via the other =
+gpio),
+> > or because it is in an error state. What's a good naming convention for=
+ that? =20
+>=20
+> There is no convention and I did not see such case so far.
+> powerdown-status-gpios? powerdown-state-gpios?
+Either seems reasonable.
 
+Thanks,
 
-> This generates the repeated word warning from checkpatch.
-> It hit 49 times in the last 6 months in networking
-> (false-positive rate of 0.34%). Mute the warning for "Google",
-> there's no other word which comes close to being this clear
-> cut false-positive in our traffic.
-> 
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
-> CC: apw@canonical.com
-> CC: joe@perches.com
-> CC: dwaipayanray1@gmail.com
-> CC: lukas.bulwahn@gmail.com
-> ---
->  scripts/checkpatch.pl | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 7d16f863edf1..c99f8f93cb4c 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -3524,6 +3524,8 @@ sub process {
->  
->  				next if (lc($first) ne lc($second));
->  				next if ($first eq 'long');
-> +				# syzbot reports contain "Hardware name: Google Google Compute Engine"
-> +				next if ($first eq 'Google');
->  
->  				# check for character before and after the word matches
->  				my $start_char = '';
+J
+>=20
+>=20
+>=20
+> Best regards,
+> Krzysztof
+>=20
 
