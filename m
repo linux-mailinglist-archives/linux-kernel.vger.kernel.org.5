@@ -2,194 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 196437C90B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE14B7C910C
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbjJMWtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 18:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42664 "EHLO
+        id S232569AbjJMWxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 18:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232326AbjJMWs4 (ORCPT
+        with ESMTP id S232645AbjJMWxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 18:48:56 -0400
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350B2F5
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 15:48:43 -0700 (PDT)
-Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7b61de8e456so950400241.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 15:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697237322; x=1697842122; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=M7+2V0YlS8ZDKtKvIbNHqNSalMBU1GrhT1IpSjeCQTw=;
-        b=UNQVJSsxI8ctH20b3lEKDbATUeA6G5VtwrsLCnQVx2NVrdkKw0Zx+CWWg+v6UP+4VY
-         fUrK6LhAKnWHZi0ONqbG1+3AGe66E6ppdjCNS1DKeNOhF3ory8yj1P9iNCFAEYHk8yaL
-         bzPHw+3fYwOIrTEQLfoWeCIclS0hvdzr9dvRi6EZA24CuxseF9MbmkxGgsKtMJzGJr8O
-         vF/GWU65CN/VDVDWZ6nThLaBnqnW2Wp7EuP28hOV41eU4GJiDkc/Ls0uGdp7WFk56yxi
-         9L02ByyyEuicIdAD1do/aRhd1Km6Rrr1/m3MaN/1UYg9tsig6CwZ/LCzDRC/IP9SXV5f
-         n5Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697237322; x=1697842122;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M7+2V0YlS8ZDKtKvIbNHqNSalMBU1GrhT1IpSjeCQTw=;
-        b=e36nCuML9qKRwa6lLVZT6soACDQj9hCHQMU/o4HR2ijY8Cnf2et3orrxzQ21OPQbNJ
-         ei6gxOqyTkaDfyCqD/pGs38zPSSz6EYReAqpn3L50ryw8r/hGN6PW9OFBMRUSdsE3Tkx
-         heFEjDBHcHuEo+zZbXS3F+emvZc22qjEtNdwnsYBWAIzZ9DsTTYbiwLbquzLByuzhXAn
-         NRR6MhFFYG2SuFOD5s1nerh0Q0ahIvRMP1QagNVX3IRZ94eTdixgv2BP3+niLEWcwXet
-         1HzNsR59PAo02Ll4WFsru6ylwkIRlNykQZXI/zA93WaDGs6NbGh2I+JkrhMQE8+HZrgk
-         qRDA==
-X-Gm-Message-State: AOJu0YyXSHgReVBtIQ2ZUhSzko8q61ltqORxIPaZdIOD/FTZq0JyCt1q
-        8LlG7YTmBxXzFpRqFlEB+k3CYQ==
-X-Google-Smtp-Source: AGHT+IF7jx2I05oes/GMbZo7J3cDYSck7gV+oLZiWc5TQCd+sjI62q0d0Zzk234dBluUdpibqgZoIA==
-X-Received: by 2002:a67:f4d3:0:b0:452:66a7:1ac with SMTP id s19-20020a67f4d3000000b0045266a701acmr27391344vsn.6.1697237322128;
-        Fri, 13 Oct 2023 15:48:42 -0700 (PDT)
-Received: from fedora (072-189-067-006.res.spectrum.com. [72.189.67.6])
-        by smtp.gmail.com with ESMTPSA id bi6-20020a05610234e600b0045255981807sm551389vsb.0.2023.10.13.15.48.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 15:48:41 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 18:48:39 -0400
-From:   William Breathitt Gray <william.gray@linaro.org>
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc:     lee@kernel.org, alexandre.torgue@foss.st.com,
-        linux-iio@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] counter: stm32-timer-cnt: populate capture
- channels and check encoder
-Message-ID: <ZSnJR2yfYsBNHu/4@fedora>
-References: <20230922143920.3144249-1-fabrice.gasnier@foss.st.com>
- <20230922143920.3144249-6-fabrice.gasnier@foss.st.com>
+        Fri, 13 Oct 2023 18:53:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CDACF;
+        Fri, 13 Oct 2023 15:53:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697237585; x=1728773585;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=2C5UrgkdXJHfjfoqNAM4SPZu5C0wbXCYHnYx7Cjk8OU=;
+  b=QIobGk0vrvjP9DUEc4lMNykP6fid709P0alhU4tlHcI+dizFmSG6/TOr
+   PkffopnbUHRqtiiIxazBHBOpB5o9XGJhkQhER3v/IZ3trJ8ObDZwGWU7R
+   ZcP4sGFk3mnnKyslB7pu3NJBBKeJrj7EDKmpt0B2zPMy9rMZCAGRsySL8
+   NlpTbpkoMoevRDn15r1Gktx2zR6GShKzFeNZrVk7SVg08ugjLYs80E2P8
+   igujlAk7rNMGsm/uf69M2l+B6H/MSjcI5jWvGZO/wHOVxN5adbrvWoG3p
+   8pdu886R4eDkVi5yQLRTMo3PtMfaQSVjE6+wyTQi8p4NVgT4qxYLhmIB3
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="388134476"
+X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
+   d="scan'208";a="388134476"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 15:53:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="871267063"
+X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
+   d="scan'208";a="871267063"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 13 Oct 2023 15:52:57 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qrR1b-0005US-1U;
+        Fri, 13 Oct 2023 22:52:55 +0000
+Date:   Sat, 14 Oct 2023 06:52:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Kory Maincent <kory.maincent@bootlin.com>
+Subject: Re: [PATCH net-next v5 10/16] net: ethtool: Add a command to list
+ available time stamping layers
+Message-ID: <202310140615.H4ByVgnr-lkp@intel.com>
+References: <20231009155138.86458-11-kory.maincent@bootlin.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="DOR58DHOIf3n8XuL"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230922143920.3144249-6-fabrice.gasnier@foss.st.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231009155138.86458-11-kory.maincent@bootlin.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Köry,
 
---DOR58DHOIf3n8XuL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+kernel test robot noticed the following build warnings:
 
-On Fri, Sep 22, 2023 at 04:39:19PM +0200, Fabrice Gasnier wrote:
-> This is a precursor patch to support capture channels on all possible
-> channels and stm32 timer types. Original driver was intended to be used
-> only as quadrature encoder and simple counter on internal clock.
->=20
-> So, add ch3 and ch4 definition. Also add a check on encoder capability,
-> so the driver may be probed for timer instances without encoder feature.
-> This way, all timers may be used as simple counter on internal clock,
-> starting from here.
+[auto build test WARNING on net-next/main]
 
-Hi Fabrice,
+url:    https://github.com/intel-lab-lkp/linux/commits/K-ry-Maincent/net-Convert-PHYs-hwtstamp-callback-to-use-kernel_hwtstamp_config/20231009-235451
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20231009155138.86458-11-kory.maincent%40bootlin.com
+patch subject: [PATCH net-next v5 10/16] net: ethtool: Add a command to list available time stamping layers
+reproduce: (https://download.01.org/0day-ci/archive/20231014/202310140615.H4ByVgnr-lkp@intel.com/reproduce)
 
-Let's split the encoder capability probing code, detect number of
-channels code, and channel introduction code to their own patches in
-order to simplify things.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310140615.H4ByVgnr-lkp@intel.com/
 
-> Encoder capability is retrieved by using the timer index (originally in
-> stm32-timer-trigger driver and dt-bindings). The need to keep backward
-> compatibility with existing device tree lead to parse aside trigger node.
-> Add diversity as STM32 timers with capture feature may have either 4, 2,
-> 1 or no cc (capture/compare) channels.
->=20
-> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+All warnings (new ones prefixed by >>):
 
-I think this patch is more complicated than it needs to be.
+>> Documentation/networking/ethtool-netlink.rst:2022: WARNING: Title underline too short.
 
-> @@ -400,13 +558,47 @@ static int stm32_timer_cnt_probe(struct platform_de=
-vice *pdev)
->  	priv->clk =3D ddata->clk;
->  	priv->max_arr =3D ddata->max_arr;
-> =20
-> +	ret =3D stm32_timer_cnt_probe_encoder(pdev, priv);
-> +	if (ret)
-> +		return ret;
-> +
-> +	stm32_timer_cnt_detect_channels(pdev, priv);
-> +
->  	counter->name =3D dev_name(dev);
->  	counter->parent =3D dev;
->  	counter->ops =3D &stm32_timer_cnt_ops;
-> -	counter->counts =3D &stm32_counts;
->  	counter->num_counts =3D 1;
-> -	counter->signals =3D stm32_signals;
-> -	counter->num_signals =3D ARRAY_SIZE(stm32_signals);
+vim +2022 Documentation/networking/ethtool-netlink.rst
 
-Keep this the same.
+  2020	
+  2021	TS_LIST_GET
+> 2022	==========
+  2023	
 
-> +
-> +	/*
-> +	 * Handle diversity for stm32 timers features. For now encoder is found=
- with
-> +	 * advanced timers or gp timers with 4 channels. Timers with less chann=
-els
-> +	 * doesn't support encoder.
-> +	 */
-> +	switch (priv->nchannels) {
-> +	case 4:
-> +		if (priv->has_encoder)
-> +			counter->counts =3D &stm32_counts_enc_4ch;
-> +		else
-> +			counter->counts =3D &stm32_counts_4ch;
-> +		counter->signals =3D stm32_signals;
-> +		counter->num_signals =3D ARRAY_SIZE(stm32_signals);
-> +		break;
-> +	case 2:
-> +		counter->counts =3D &stm32_counts_2ch;
-> +		counter->signals =3D stm32_signals;
-> +		counter->num_signals =3D 3; /* clock, ch1 and ch2 */
-> +		break;
-> +	case 1:
-> +		counter->counts =3D &stm32_counts_1ch;
-> +		counter->signals =3D stm32_signals;
-> +		counter->num_signals =3D 2; /* clock, ch1 */
-> +		break;
-> +	default:
-> +		counter->counts =3D &stm32_counts;
-> +		counter->signals =3D stm32_signals;
-> +		counter->num_signals =3D 1; /* clock */
-> +		break;
-> +	}
-
-Rather than adjusting the number of counts and signals, keep the
-configuration static and use a single stm32_counts array. The reason is
-that in the Counter subsystem paradigm Signals do not necessary
-correlate to specific hardware signals but are rather an abstract
-representation of the device behavior at a high level. In other words, a
-Synapse with an action mode set to COUNTER_SYNAPSE_ACTION_NONE can be
-viewed as representing a Signal that does not affect the Count (i.e. in
-this case equivalent to an unconnected line).
-
-What you'll need to do instead is check priv->nchannels during
-stm32_action_read and stm32_count_function_read calls in order to return
-the correct synapse action and count function for the particular
-channels configuration you have. In stm32_count_function_write you would
-return an -EINVAL (maybe -EOPNOTSUPP would be better?) when the channels
-configuration does not support a particular count function.
-
-William Breathitt Gray
-
---DOR58DHOIf3n8XuL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZSnJRwAKCRC1SFbKvhIj
-K0moAQD7wGvZVP3oXlqW7ObHpexVDKnM0MGwBchWQQSXSCVj9QEApHtanCqbJLLZ
-mWbFf52y1xmscsdAdL7XhWiNLieTCQM=
-=2nuH
------END PGP SIGNATURE-----
-
---DOR58DHOIf3n8XuL--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
