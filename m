@@ -2,204 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 136757C8CF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D547C8CFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbjJMSQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 14:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43594 "EHLO
+        id S231447AbjJMSRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 14:17:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231320AbjJMSQF (ORCPT
+        with ESMTP id S229988AbjJMSRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 14:16:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0291291
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:16:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697220963; x=1728756963;
-  h=date:from:to:cc:subject:message-id;
-  bh=fQ1GjWBgoqfGu+/7vmQIUs4LsK5hgL5LNW77/ALFAiM=;
-  b=aOUnBpptKNn6h6M1gBXD4HKQ7MgFaV5chrvzx7zH+nyzxh1ul3drkp+8
-   wnCpdZyCbTG5wLKfvpOwRJP+XNP0ocivmttzvsjo1K5mxRBCJX2pkAeQE
-   Zz4x2qcq1k9fnXscHfW7mc0gCbgwHxtwlCAa9gJcKX9hnK5uprKmGaLY3
-   TEfUYARdD89DGV+edsIBZVvKKnD7Ir1lyW/JErzcd34tXW5iN8ImLim9U
-   aymJARKlYR26dyKl2PoSKWIvZj+BEyJMT7ilyrCHIdhwrKbY5P9B23tVN
-   E+cQap5erXYMgK5qZb7bPEapv0nm8p4cSnVc/Jo9kbnbkuVRQ8F3DFByd
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="416288611"
-X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
-   d="scan'208";a="416288611"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 11:16:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="789951413"
-X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
-   d="scan'208";a="789951413"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 13 Oct 2023 11:16:02 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qrMhc-0005F3-04;
-        Fri, 13 Oct 2023 18:16:00 +0000
-Date:   Sat, 14 Oct 2023 02:15:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cache] BUILD SUCCESS
- aaa5fa35743ab9f0726568611a85e3e15349b9bf
-Message-ID: <202310140218.eTizQ6RL-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 13 Oct 2023 14:17:33 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9AFF83;
+        Fri, 13 Oct 2023 11:17:31 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4054496bde3so24506175e9.1;
+        Fri, 13 Oct 2023 11:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697221050; x=1697825850; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U9nTHaFndFfh4gMEpmSZ2pg3B4FHQG8rnUIGTQ2gc1Q=;
+        b=eaDVRIETxZjuepcdt4NyIkGX8DjgfMPiCg3UZ1SI3ZOGen8Qv32+NEXu2P1cnpqsG2
+         nJHMcLpQaUqjzF/lzsl4Dj9JhAilk2YoZMIxQ+tbGdaW2kKDbenYi68D+sO+XmTDJZmt
+         3EUibuAhdxtAsDT28rUIO/7F9UThZPmnYAAwG5XVHBSb2DIn1retqsc7mypS2gJdOYbK
+         nWP7Tqw7NhBpynaxFctiU59FDP9PNhJQUx3j5Um0xpfFjlpYu4ownkDH/yib/HPkGPzk
+         9+EAW7l8C6pZ6+TAgr40tu4ODCVdw4GW33bDd8dsoNKp5/s+FXKPJRbmiNnJ5i3E5bZj
+         ii2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697221050; x=1697825850;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U9nTHaFndFfh4gMEpmSZ2pg3B4FHQG8rnUIGTQ2gc1Q=;
+        b=Cwl5xPcL+6x35yFvRgcpZNnTeaLtbzvjWShhdbZQsVZ295ZHAlE2LcbvGQEeychZVI
+         vmknV7SZVR14aImVWsdQpw8V6Fti4OL0XEJztmGcDh1C5qpPQ08kMYfVf1QmLrgZlaMM
+         ekd2DemolqVX41rw23evxOxtQrgUQaqWIJ5ZlqImxr90WtBQyZ7tid3FncgmXDQUH4sB
+         D7ymG5PuyZAAuXfevcymuHLvqhSUaCQqI3dwlokV5ebBEBUydAYJZxA2ZCZeivfdH7lg
+         xXJ99rmefvALx0+MszNptdzwWxZAbLvFQx7k2B+pEarsnAmfpG2+6EvZxNS5AjIq6hCG
+         az8Q==
+X-Gm-Message-State: AOJu0Yz6n0TiNK5j2VfO5+I2hH8mVQ+64QresdplR1LmaRCw0nzN5ppg
+        bpoZ8h9L9/r7fEydVjBvn3E=
+X-Google-Smtp-Source: AGHT+IEMQY+8CQG2bWBaKCxftHAZJe3ebRiK21zhKCFBNlUyZOjkFnTF7uZ1aniwLQKOsBk9CH5xOA==
+X-Received: by 2002:a05:600c:3586:b0:406:849c:52c3 with SMTP id p6-20020a05600c358600b00406849c52c3mr23139477wmq.22.1697221049878;
+        Fri, 13 Oct 2023 11:17:29 -0700 (PDT)
+Received: from localhost.localdomain ([188.159.248.16])
+        by smtp.gmail.com with ESMTPSA id r8-20020a05600c458800b004064cd71aa8sm800127wmo.34.2023.10.13.11.17.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 11:17:29 -0700 (PDT)
+From:   Jernej Skrabec <jernej.skrabec@gmail.com>
+To:     wens@csie.org, samuel@sholland.org
+Cc:     sboyd@kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Chad Wagner <wagnerch42@gmail.com>
+Subject: [PATCH] clk: sunxi-ng: h6: Reparent CPUX during PLL CPUX rate change
+Date:   Fri, 13 Oct 2023 20:17:12 +0200
+Message-ID: <20231013181712.2128037-1-jernej.skrabec@gmail.com>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cache
-branch HEAD: aaa5fa35743ab9f0726568611a85e3e15349b9bf  Documentation/x86: Document resctrl's new sparse_masks
+While PLL CPUX clock rate change when CPU is running from it works in
+vast majority of cases, now and then it causes instability. This leads
+to system crashes and other undefined behaviour. After a lot of testing
+(30+ hours) while also doing a lot of frequency switches, we can't
+observe any instability issues anymore when doing reparenting to stable
+clock like 24 MHz oscillator.
 
-elapsed time: 2744m
+Fixes: 524353ea480b ("clk: sunxi-ng: add support for the Allwinner H6 CCU")
+Reported-by: Chad Wagner <wagnerch42@gmail.com>
+Link: https://forum.libreelec.tv/thread/27295-orange-pi-3-lts-freezes/
+Tested-by: Chad Wagner <wagnerch42@gmail.com>
+Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+---
+ drivers/clk/sunxi-ng/ccu-sun50i-h6.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-configs tested: 127
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                      axs103_smp_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231012   gcc  
-arc                   randconfig-001-20231013   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                         orion5x_defconfig   clang
-arm                         wpcm450_defconfig   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386         buildonly-randconfig-001-20231012   gcc  
-i386         buildonly-randconfig-002-20231012   gcc  
-i386         buildonly-randconfig-003-20231012   gcc  
-i386         buildonly-randconfig-004-20231012   gcc  
-i386         buildonly-randconfig-005-20231012   gcc  
-i386         buildonly-randconfig-006-20231012   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231012   gcc  
-i386                  randconfig-002-20231012   gcc  
-i386                  randconfig-003-20231012   gcc  
-i386                  randconfig-004-20231012   gcc  
-i386                  randconfig-005-20231012   gcc  
-i386                  randconfig-006-20231012   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231012   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                      loongson3_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                         alldefconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                      pcm030_defconfig   gcc  
-powerpc                     tqm8560_defconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231012   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231012   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                         apsh4a3a_defconfig   gcc  
-sh                                  defconfig   gcc  
-sh                ecovec24-romimage_defconfig   gcc  
-sh                        edosk7705_defconfig   gcc  
-sh                           se7750_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231012   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231012   gcc  
-x86_64       buildonly-randconfig-002-20231012   gcc  
-x86_64       buildonly-randconfig-003-20231012   gcc  
-x86_64       buildonly-randconfig-004-20231012   gcc  
-x86_64       buildonly-randconfig-005-20231012   gcc  
-x86_64       buildonly-randconfig-006-20231012   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20231012   gcc  
-x86_64                randconfig-002-20231012   gcc  
-x86_64                randconfig-002-20231013   gcc  
-x86_64                randconfig-006-20231013   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                  cadence_csp_defconfig   gcc  
-
+diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h6.c b/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
+index 42568c616181..892df807275c 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
++++ b/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
+@@ -1181,11 +1181,18 @@ static const u32 usb2_clk_regs[] = {
+ 	SUN50I_H6_USB3_CLK_REG,
+ };
+ 
++static struct ccu_mux_nb sun50i_h6_cpu_nb = {
++	.common		= &cpux_clk.common,
++	.cm		= &cpux_clk.mux,
++	.delay_us       = 1,
++	.bypass_index   = 0, /* index of 24 MHz oscillator */
++};
++
+ static int sun50i_h6_ccu_probe(struct platform_device *pdev)
+ {
+ 	void __iomem *reg;
++	int i, ret;
+ 	u32 val;
+-	int i;
+ 
+ 	reg = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(reg))
+@@ -1252,7 +1259,15 @@ static int sun50i_h6_ccu_probe(struct platform_device *pdev)
+ 	val |= BIT(24);
+ 	writel(val, reg + SUN50I_H6_HDMI_CEC_CLK_REG);
+ 
+-	return devm_sunxi_ccu_probe(&pdev->dev, reg, &sun50i_h6_ccu_desc);
++	ret = devm_sunxi_ccu_probe(&pdev->dev, reg, &sun50i_h6_ccu_desc);
++	if (ret)
++		return ret;
++
++	/* Reparent CPU during PLL CPUX rate changes */
++	ccu_mux_notifier_register(pll_cpux_clk.common.hw.clk,
++				  &sun50i_h6_cpu_nb);
++
++	return 0;
+ }
+ 
+ static const struct of_device_id sun50i_h6_ccu_ids[] = {
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0
+
