@@ -2,162 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 917947C9122
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBE47C9125
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232540AbjJMXDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 19:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
+        id S232435AbjJMXDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 19:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232384AbjJMXDG (ORCPT
+        with ESMTP id S232384AbjJMXDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 19:03:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EADCCB7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:03:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697238184; x=1728774184;
-  h=from:to:cc:subject:references:date:message-id:
-   mime-version;
-  bh=4tg2hRkVnC558rPe0omEPqwmSytOElR8PBs/m6fdwIs=;
-  b=ZrpCuh+E+cS+kc1pQyZKE2D80rlTrD4oc8UeCiQSvqInEUgxFYKGod4S
-   ZDvIpI/ByizyUOqcnybqeRTMrpTgnNMYRNd0paOwBkxyjr3EwL7FiPknj
-   2Hra+3kPbT6d+OPU09MnhkhDY5olA3/dJrAvofTBb86n76SffifVrL5V3
-   0V/8kBa8XIe53++WPGh84KEFkqQoeKws3jsjDl3T7o4Jk6Zq6w2OWYxBS
-   9SATqCYcYrP3gOsHjnXwwWRqDrBvEVebiNEjsWSnn8sk1hdmTGFCwQiH0
-   yDM/TlJEwHZ/2MZtO3AtNHIGxO256XTXJQIEb5sCwgEUpo86Kf9I1aZ+n
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="389142664"
-X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="389142664"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 16:03:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="704828913"
-X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="704828913"
-Received: from sridharg-mobl2.amr.corp.intel.com (HELO jcompost-mobl.amr.corp.intel.com) ([10.212.73.167])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 16:03:03 -0700
-From:   "Compostella, Jeremy" <jeremy.compostella@intel.com>
-To:     kirill.shutemov@linux.intel.com, "Huang, Kai" <kai.huang@intel.com>
-Cc:     "mingo@kernel.org" <mingo@kernel.org>,
-        "Li, Xin3" <xin3.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>
-Subject: Re: [PATCH v3 1/2] x86/cpu/intel: Fix MTRR verification for TME
- enabled platforms
-References: <87a5t6ylpc.fsf@jcompost-mobl.amr.corp.intel.com>
-        <00392c722e65c8d0da40384eecf8955be4875969.camel@intel.com>
-        <20231002224752.33qa2lq7q2w4nqws@box>
-        <65d26d679843e26fd5e6252a08391f87243a49c9.camel@intel.com>
-        <20231003070659.hsjvnoc53agvms6c@box.shutemov.name>
-Date:   Fri, 13 Oct 2023 16:03:02 -0700
-Message-ID: <87edhyyvkp.fsf@jcompost-mobl.amr.corp.intel.com>
-Organization: Intel Corporation - 2200 Mission College Blvd. Santa Clara,
-        CA 95052. USA
+        Fri, 13 Oct 2023 19:03:33 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6D4B7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:03:31 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-4576946ce96so1172542137.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:03:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697238210; x=1697843010; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rcn85z62MW6ga0naGLzuTjsyYsLiQwr0ThT4Anw3LQg=;
+        b=BQsNjhkMDfJskhnmNfWzaus27gbDoaDZ9uSIIYaJCGO0RXPm3WooZ5HgabWmNIbOAK
+         Mmkm/AbDjQVee3KVfu3/KBVYcimxsAJ2ZquZU4fwOFAPb+CUpX6Woxyofv0K1M8XmpVQ
+         q7r+YLMa2d1KfTq9PKUoS/stmKNgPMLz0KX99i5N9u1twYjPQMzrznAVuOeRwVZiPB8I
+         XbefDsEZYUOV9Zcgbx01MeO8LQRmiDI/6lngutx3wvWWgj+Sjx0CnHPsrnmrjbzhcnft
+         Xop1tArTQHBIUoddJd/RiGT2VVK81Ad8BXc2yUzp1RDvYf/VNKSUo/EcTBrF08z6bqTY
+         P3+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697238210; x=1697843010;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rcn85z62MW6ga0naGLzuTjsyYsLiQwr0ThT4Anw3LQg=;
+        b=OhHRsk+isEYvtQURyDKUjNPEd1R9LpCUU4SVyq2uHrQsdPFLRWYJiw7/5HBliHzxiG
+         +t0jXriHvsk4+Jz+1qYMWlOdm5NQ2L5gdwTos2BfprwJsb4LqFbX4ychOQm19odyz2TU
+         xeMErg7Z9ZZ1RHFC9MGkNLjz90XTzNSGglXRlC2aGnMPr+AiGmwmipLupp/JXAaQHLfw
+         1LSCfewtin2C27v6jrIvggFK8xVJkpToYYTws/PGGmLS8hmUS8FBzh6tPYzynq4lqivE
+         iAWjSvy8+VXT/g6YLlx2VYPXqX80VE715t72LPlXOxxoOZIOYZTlkwh/qrkEF/Ki6ijc
+         RFuQ==
+X-Gm-Message-State: AOJu0YwRNVTRCdtAbc37wVOA/VB5CYdGtX1RY2n+JfHxJcH+F2Urr8DQ
+        qDGWoY7tfLlajQqfmmmA9dHbtCQF4KWlMvnmg6s=
+X-Google-Smtp-Source: AGHT+IESShPQpD+fP8oD44dOFdRAXvUyePnVcWCuKhsxWqQa7Q51s71AiV0cNscNwQFJMSB6GIsyvA==
+X-Received: by 2002:a67:ec53:0:b0:452:7617:a757 with SMTP id z19-20020a67ec53000000b004527617a757mr27797924vso.26.1697238210704;
+        Fri, 13 Oct 2023 16:03:30 -0700 (PDT)
+Received: from fedora (072-189-067-006.res.spectrum.com. [72.189.67.6])
+        by smtp.gmail.com with ESMTPSA id c12-20020ab0694c000000b0078cc4e0d7e3sm551678uas.27.2023.10.13.16.03.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 16:03:30 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 19:03:06 -0400
+From:   William Breathitt Gray <william.gray@linaro.org>
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc:     lee@kernel.org, alexandre.torgue@foss.st.com,
+        linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/6] counter: stm32-timer-cnt: add support for events
+Message-ID: <ZSnMqienA28Phx6b@fedora>
+References: <20230922143920.3144249-1-fabrice.gasnier@foss.st.com>
+ <20230922143920.3144249-7-fabrice.gasnier@foss.st.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pxeJ7ygJWhyBF1Hz"
+Content-Disposition: inline
+In-Reply-To: <20230922143920.3144249-7-fabrice.gasnier@foss.st.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+
+--pxeJ7ygJWhyBF1Hz
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com> writes:
-> On Tue, Oct 03, 2023 at 02:06:52AM +0000, Huang, Kai wrote:
->> On Tue, 2023-10-03 at 01:47 +0300, kirill.shutemov@linux.intel.com wrote:
->> > On Fri, Sep 29, 2023 at 09:14:00AM +0000, Huang, Kai wrote:
->> > > On Thu, 2023-09-28 at 15:30 -0700, Compostella, Jeremy wrote:
->> > > > On TME enabled platform, BIOS publishes MTRR taking into account Total
->> > > > Memory Encryption (TME) reserved bits.
->> > > > 
->> > > > generic_get_mtrr() performs a sanity check of the MTRRs relying on the
->> > > > `phys_hi_rsvd' variable which is set using the cpuinfo_x86 structure
->> > > > `x86_phys_bits' field.  But at the time the generic_get_mtrr()
->> > > > function is ran the `x86_phys_bits' has not been updated by
->> > > > detect_tme() when TME is enabled.
->> > > > 
->> > > > Since the x86_phys_bits does not reflect yet the real maximal physical
->> > > > address size yet generic_get_mtrr() complains by logging the following
->> > > > messages.
->> > > > 
->> > > >     mtrr: your BIOS has configured an incorrect mask, fixing it.
->> > > >     mtrr: your BIOS has configured an incorrect mask, fixing it.
->> > > >     [...]
->> > > > 
->> > > > In such a situation, generic_get_mtrr() returns an incorrect size but
->> > > > no side effect were observed during our testing.
->> > > > 
->> > > > For `x86_phys_bits' to be updated before generic_get_mtrr() runs,
->> > > > move the detect_tme() call from init_intel() to early_init_intel().
->> > > 
->> > > Hi,
->> > > 
->> > > This move looks good to me, but +Kirill who is the author of detect_tme() for
->> > > further comments.
->> > > 
->> > > Also I am not sure whether it's worth to consider to move this to
->> > > get_cpu_address_sizes(), which calculates the virtual/physical address sizes. 
->> > > Thus it seems anything that can impact physical address size could be put there.
->> > 
->> > Actually, I am not sure how this patch works. AFAICS after the patch we
->> > have the following callchain:
->> > 
->> > early_identify_cpu()
->> >   this_cpu->c_early_init() (which is early_init_init())
->> >     detect_tme()
->> >       c->x86_phys_bits -= keyid_bits;
->> >   get_cpu_address_sizes(c);
->> >     c->x86_phys_bits = eax & 0xff;
->> > 
->> > Looks like get_cpu_address_sizes() would override what detect_tme() does.
->> 
->> After this patch, early_identify_cpu() calls get_cpu_address_sizes() first and
->> then calls c_early_init(), which calls detect_tme().
->> 
->> So looks no override.  No?
+On Fri, Sep 22, 2023 at 04:39:20PM +0200, Fabrice Gasnier wrote:
+> Add support for capture and overflow events. Also add the related
+> validation and configuration. Captured counter value can be retrieved
+> through CCRx register. Register and enable interrupts to push events.
+>=20
+> Acked-by: Lee Jones <lee@kernel.org>
+> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 
-No override indeed as get_cpu_address_sizes() is always called before
-early_init_intel or init_intel().
+Hi Fabrice,
 
-- init/main.c::start_kernel()
-  - arch/x86/kernel/setup.c::setup_arch()
-    - arch/x86/kernel/cpu/common.c::early_cpu_init()
-      - early_identify_cpu()
-        - get_cpu_address_sizes(c)
-          c->x86_phys_bits = eax & 0xff;
-        - arch/x86/kernel/cpu/intel.c::early_init_intel()
-          - detect_tme()
-            c->x86_phys_bits -= keyid_bits;
-  - arch/x86/kernel/cpu/common.c::arch_cpu_finalize_init()
-    - identify_boot_cpu()
-      - identify_cpu()
-        - get_cpu_address_sizes(c)
-          c->x86_phys_bits = eax & 0xff;
-        - arch/x86/kernel/cpu/intel.c::init_intel()
-          - early_init_intel()
-            - detect_tme()
-              c->x86_phys_bits -= keyid_bits;
+Please split the capture and overflow events code to their own patches.
 
-> We identify CPU twice: once via early_cpu_init() and the second time via
-> identify_boot_cpu()/identify_secondary_cpu(). I am talking about
-> early_cpu_init() codepath.
->
-> It might not matter in practice as of now, because it will get straight
-> later, but CPU ident code is mess as it is. Let's not make it even worse.
+I think there will be some changes to this patch anyway due to the
+changes you'll make in the precursor patches, so I'll hold off until v3
+to review.
 
-This change is not modifying the CPU indent code, this is just
-re-ordering detect_tme() call in the intel specifics hook so that the
-information is available earlier as it is needed by
-generic_get_mtrr(). This is similar to what is done in
-arch/x86/kernel/cpu/amd.c.
+William Breathitt Gray
 
---=-=-=--
+--pxeJ7ygJWhyBF1Hz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZSnMqgAKCRC1SFbKvhIj
+K6CGAP9OtP4qcJ/aIPKgrEecjHFXVX6zX1mOr8ftEiECf8/tVAD/cjbV86RlHwaQ
+f/v03XJrz5ibiBFz53tKPk1+KnZ76AQ=
+=cWtK
+-----END PGP SIGNATURE-----
+
+--pxeJ7ygJWhyBF1Hz--
