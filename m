@@ -2,78 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D88027C83B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10BB7C83BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbjJMKvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 06:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
+        id S230391AbjJMKwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 06:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbjJMKvF (ORCPT
+        with ESMTP id S230079AbjJMKwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 06:51:05 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F478CF
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 03:51:03 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3231df054c4so1621211f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 03:51:03 -0700 (PDT)
+        Fri, 13 Oct 2023 06:52:15 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234DC83
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 03:52:12 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4064876e8b8so22666395e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 03:52:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697194262; x=1697799062; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697194330; x=1697799130; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=6kip9DJFTL9bMNWFq3/LHE2ELIE/tSjyhKv8w3kgG/c=;
-        b=J6qkJJf4V/KMSQSOgW14oB3AWsJldtN+hCDJwxVH6/nO2O2YhXpIcqaBukFYWNKoj0
-         MQK/Z7N/TnnSkJZ5EW+O8Jf07ghJi5in6vDfHXYQmY96waMMJvivwMNJLRbFqN0GUwiw
-         hg/g2PYzny+kD0iIOMIbTmdV8VvK/RWtEmD4mMctJSEnLLcw/nPRM1wzaKyQYGw4ztsA
-         WV8gJ58LMAFgbr4iI+JNQWtvMUzPOmWA0NlDYOSROGXurluN9fFnUpo0j8iG8QCIU9n3
-         JAZj3UcAhgC7snnivCOsi7qFZ+DgsYDCqIktNVd9NRn+U1ZhX1qZ7LgAMYQHfvUeFC/b
-         7p6g==
+        bh=wQlLAZN0159rZz2dBKBST54MAz5ZF7KDyTuMyKf/LPQ=;
+        b=bDXxbNv0xJvQY6z9JXwmZ8jIn2ZJikRLKYSj+9AiInQokleP9LqS1oI3NLerDaO6Zr
+         jOVWFvu8o6pd2RtENXzgkbGpJ0GS5099Gu5aU1VXP9eqIyeT8b1DofwYaXqePXbuj96R
+         zKu8taNIPRhv/1GKkVZSrI4ze0zoR5S/DGvBOx0ieWBSoOIIsQO7yF/lwqoN0gtACT6N
+         clO7iCjanja0uMbhhcPqv2PGINq8JrnQaZekduce2T2KlwdgpWAU0i0ivjRpUTeoiQLY
+         sa2hb4A4qJVsKyJyjqFuxMjOwzgUdQ0cnM84NdwxC9PcC6B5KQAo+um15MMFW6+OpVBm
+         u3YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697194262; x=1697799062;
+        d=1e100.net; s=20230601; t=1697194330; x=1697799130;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6kip9DJFTL9bMNWFq3/LHE2ELIE/tSjyhKv8w3kgG/c=;
-        b=rMimJdGiBVsjSWvV2drH+lUMZ1lJSt/kSgXXggqOBTyD1uMN5/gEDcgKaUT3bf5x5Y
-         35JqSFiFybNgFKc/Vs+3Q1tjFvdYWthDkB51NAcb9z0Dw85LAhUXpAgYckxjFI0aG+wU
-         inkrR+Vfbuotos828L5z6VG0x+E7Jf7fcQ63LjGdx5fE59uH0Ac/MgsIcfkUPakx5cSc
-         tMjRaDB34FbndMJaWp1DVhLoMmvCP6ysFwdxP2q3bEuT+rPnEbYcaCSe8mJaUrAOZQkv
-         n+iExVSnWrQOgXHR+JOXzZ8seDYM1VP+iEf1pPerboKXOO6bVWgmr7B+cTu3RHYOgrSa
-         CGZQ==
-X-Gm-Message-State: AOJu0YxxwA9Q2WbnHvDPctO1xDca7wDv4/vxkLEOjR/FcrfRBp6QKRXY
-        JlxwpP+b0dRA+uHeqkeKzQuZYgUXHXg=
-X-Google-Smtp-Source: AGHT+IGwmsRc/kDf+3BN9NYhw05llJFc0XiGxKJpQwxg47nl/l58DOVPH822iLYK28kHm5qvj0rNFw==
-X-Received: by 2002:adf:fb0b:0:b0:31f:c1b5:d4c1 with SMTP id c11-20020adffb0b000000b0031fc1b5d4c1mr21424542wrr.35.1697194261742;
-        Fri, 13 Oct 2023 03:51:01 -0700 (PDT)
+        bh=wQlLAZN0159rZz2dBKBST54MAz5ZF7KDyTuMyKf/LPQ=;
+        b=HW/cMhrZxg5rSyauZpm6oZE00xLKsDCp+9HwF67ZeoiFSRe6OPq9nz80tW04a0B7X2
+         5BY0whPa6KkLX81mWvFcH1n8mEOd1An+oNKa4F2cpjKG7y+9alThGSsnrxvA9NfgEoi2
+         Fs474jxprkxi5EQXBLLeQDS6MvM2iXZLoH+g6aj5+ppxL06LIQCJ0lpmxwN3Z4q1cvU+
+         6/RF80YUUnKNf0lZAQFCCcmwEKumtpHDKd+DGGmA18/Dxk8NPz7I3WEKgIETKMFH8gwa
+         M5b4aVNUkjAtBbx9Z2ltBidFrmNBiuP+N2DOlVCemzs2Q4uWKabCjuI79Vk8lwl+LFJ8
+         Lmyw==
+X-Gm-Message-State: AOJu0YwcVCJvRtl7SVCvx0NBWI9T6oDtv2ymQFwywvmCls3HCKV3LtiR
+        mwRQ88MWL8Cuz3qBx2lyulAniPA0Bkw=
+X-Google-Smtp-Source: AGHT+IFyVPLURo6YHHwxcHWr5K6awgnvCVByk7EMfPcv1tNmijWLy51nhQTKhZTn7YHKXKUlxEyPYw==
+X-Received: by 2002:a7b:ce98:0:b0:3fc:dd9:91fd with SMTP id q24-20020a7bce98000000b003fc0dd991fdmr22678767wmj.40.1697194330349;
+        Fri, 13 Oct 2023 03:52:10 -0700 (PDT)
 Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
-        by smtp.gmail.com with ESMTPSA id v9-20020a5d6109000000b0031f3ad17b2csm1522231wrt.52.2023.10.13.03.51.00
+        by smtp.gmail.com with ESMTPSA id t4-20020a0560001a4400b0032763287473sm20811007wry.75.2023.10.13.03.52.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 03:51:01 -0700 (PDT)
+        Fri, 13 Oct 2023 03:52:09 -0700 (PDT)
 Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 13 Oct 2023 12:50:59 +0200
+Date:   Fri, 13 Oct 2023 12:52:07 +0200
 From:   Ingo Molnar <mingo@kernel.org>
 To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Breno Leitao <leitao@debian.org>, tglx@linutronix.de, bp@alien8.de,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] x86/bugs: Add a separate config for each mitigation
-Message-ID: <ZSkhE2GWfGRW+9Hh@gmail.com>
-References: <20231010103028.4192223-1-leitao@debian.org>
- <ZSca08rnmZfkONEH@gmail.com>
- <ZSfucR6docdnLznb@gmail.com>
- <20231012170548.o5vi4kgpvpjyld7s@treble>
- <ZShALJDaxJ9VJvek@gmail.com>
- <20231012204347.4aei5jr64fsv2iv5@treble>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+Message-ID: <ZSkhV/mwN9psjt/X@gmail.com>
+References: <CAHk-=whMr8V_q3dq4iS0dpx4Nssu+aYWz+mA36p2ykA+OXTjXA@mail.gmail.com>
+ <CAFULd4afyYK0-wAOo3oJDapX0iyu86m5+vVn9c35gk8fd6iwRQ@mail.gmail.com>
+ <CAHk-=wiLyA0g3BvQ_nsF2PWi-FDtcNS5+4-ai1FX-xFzTBeTzg@mail.gmail.com>
+ <ZScjptMn3fDmMFdg@gmail.com>
+ <9b71932a-d410-4b92-b605-d6acc5d35069@zytor.com>
+ <20231012013507.jrqnm35p7az6atov@treble>
+ <ZSeP4vwQ9k/v63Cy@gmail.com>
+ <20231012160801.blc2t37gfqhlah5h@treble>
+ <ZSg0D0bRlzXdqZRS@gmail.com>
+ <20231012213038.pnq6eds53dbqxstj@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231012204347.4aei5jr64fsv2iv5@treble>
+In-Reply-To: <20231012213038.pnq6eds53dbqxstj@treble>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
@@ -87,25 +93,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 * Josh Poimboeuf <jpoimboe@kernel.org> wrote:
 
-> On Thu, Oct 12, 2023 at 08:51:24PM +0200, Ingo Molnar wrote:
-> > > Another way to avoid ifdeffery:
-> > > 
-> > > static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init =
-> > > 	IS_ENABLED(CONFIG_MITIGATION_RETBLEED) ? RETBLEED_CMD_AUTO : RETBLEED_CMD_OFF;
-> > 
-> > I think we could make it a simple:
-> > 
-> > 	static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init = IS_ENABLED(CONFIG_MITIGATION_RETBLEED);
-> > 
-> > Because RETBLEED_CMD_AUTO && RETBLEED_CMD_OFF maps naturally to 1 and 0. 
-> > Maybe add a comment to the enum to maintain this property in the future 
-> > too.
+> Right now my preference would be to leave the existing interface as-is,
+> and then graft optional subcommands on top.  If no subcommand is
+> specified then it would default to the "run" subcommand.  It's a little
+> funky, but it would work well for the common case, where ~99% of the
+> functionality lives.  And it doesn't break existing setups and
+> backports.
 > 
-> Hm, that both obfuscates the default and makes it fragile.  The fact
-> that it would need a comment to try to prevent breaking it in the future
-> is a clue that maybe we shouldn't do it ;-)
+> For example:
+> 
+>   # current interface (no changes)
+>   objtool --mcount --orc --retpoline --uaccess vmlinux.o
+> 
+>   # same, with optional explicit "run" subcommand
+>   objtool run --mcount --orc --retpoline --uaccess vmlinux.o
+> 
+>   # new "size" subcommand
+>   obtool size [options] vmlinux.o.before vmlinux.o.after
 
-Can be enforced with BUILD_BUG_ON().
+Yeah, sounds good!
 
 Thanks,
 
