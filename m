@@ -2,202 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EFAB7C8CA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 19:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B027C8CA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 19:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbjJMR5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 13:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
+        id S231145AbjJMR5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 13:57:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJMR5L (ORCPT
+        with ESMTP id S230006AbjJMR51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 13:57:11 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2084.outbound.protection.outlook.com [40.107.102.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C25783;
-        Fri, 13 Oct 2023 10:57:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jg4oczWE+X5MQZMB9UtVYOQOzWNQvNnq+GM7CkRcScDIpLhkbCUqHSlbQ8qYxdfBku5AZrALuj8Gu+SL904AOlZ9S5U66MG5FdrvabSQ2zgNwH9AptSC0WDyx2FOzpXdTj9jx+R42tOP4j0qRWG6QCg5hb8uMS1/FqWC9gmvrh2VrDqx1FsLDqRIXSHBytyxAv9h2YMwZgqz0KRFIXDGBW/LjX3eP0wziMKebWSkOnC+5y3BFKUiF57/Fb5cnvjWM/ggAgJ6jwcfHTJ3HT+t9blfNpXYOAB4qL2XvlqwvPZ+fKNUB6nloToJusKMhOesvt1qfehnjuMkZilqeWSbDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IU7v3bKAag+fXwMeLevyenwh9wI3QSilzimF+wgn0oA=;
- b=ZHh8QPkW4dF1LpeQ2ViOb3kg8wqfsmTVR70VdwjC5JOzb3Q9pegJQ3Kw1BaQ7USbQPF+CD6LCSYAQvv9ddxQJ9bqgVjzWoRwnaCyC1pPG2OqdJublyfjjhPjq4RdBmrOAgAsYcaFkB4+VLqAVJsUN0uet+MZQTfV1/AMqVzI19O/KtCgJluBtIwecYkB6DH26NGzUYXyFF10e4tGSEIAnZHuvB+UhOnjF+jdgTw5FmJkuYnos1PJaH/yyKoagpCT1A9QoGaqrXWObuGcQcUAVwJWh64WkXxUKStlE4z50pmAfnY1jrsn3KmVSb5SsBQPEQxgJaUqPjaPWEF0VnoGjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IU7v3bKAag+fXwMeLevyenwh9wI3QSilzimF+wgn0oA=;
- b=kLDpSAtuVL6WO9B+oTSPT1342xJXgqJuM8MwJ9OHIEey9HG3T5hEO9oZMHDqlFwvoU9V86/hZciwImxYt82+xFJi0MBTKOYAFDTdHf9Y549EiozmkXKxZiuvNaHbRg4L5X9JBIlWtEiPCS3NcRniAI9RQWwjobtgmjbHTWFUlMzQFo4iZOwAUjCsusFGZjDZt9VWVMNzSSRlCE6UvGyNUEk7i+Rr+h0VMzYNv1O6ADp3jaqCpibP1HwlMCP0nJAk62IaZ54CoF1AndBAmsJJxX3Dpuy/uF68rTFN8mxMILvXpD/46GR+hz5PkMIZrELoay2FOUaqSaTijJNUb5TLBA==
-Received: from DS7PR03CA0010.namprd03.prod.outlook.com (2603:10b6:5:3b8::15)
- by SA1PR12MB7150.namprd12.prod.outlook.com (2603:10b6:806:2b4::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Fri, 13 Oct
- 2023 17:57:08 +0000
-Received: from DS1PEPF0001708E.namprd03.prod.outlook.com
- (2603:10b6:5:3b8:cafe::a4) by DS7PR03CA0010.outlook.office365.com
- (2603:10b6:5:3b8::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.30 via Frontend
- Transport; Fri, 13 Oct 2023 17:57:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- DS1PEPF0001708E.mail.protection.outlook.com (10.167.17.134) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.22 via Frontend Transport; Fri, 13 Oct 2023 17:57:07 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 13 Oct
- 2023 10:57:01 -0700
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Fri, 13 Oct 2023 10:57:01 -0700
-Received: from Asurada-Nvidia (10.127.8.11) by mail.nvidia.com
- (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Fri, 13 Oct 2023 10:57:00 -0700
-Date:   Fri, 13 Oct 2023 10:56:58 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Yi Liu <yi.l.liu@intel.com>, <joro@8bytes.org>,
-        <alex.williamson@redhat.com>, <kevin.tian@intel.com>,
-        <robin.murphy@arm.com>, <baolu.lu@linux.intel.com>,
-        <cohuck@redhat.com>, <eric.auger@redhat.com>,
-        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
-        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
-        <peterx@redhat.com>, <jasowang@redhat.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
-        <suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <zhenzhong.duan@intel.com>, <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v4 01/17] iommu: Add hwpt_type with user_data for
- domain_alloc_user op
-Message-ID: <ZSmE6unIukqJ3GKu@Asurada-Nvidia>
-References: <20230921075138.124099-1-yi.l.liu@intel.com>
- <20230921075138.124099-2-yi.l.liu@intel.com>
- <20231010165844.GQ3952@nvidia.com>
- <03ba68e9-33ef-35c1-5720-8f559f94f8a1@intel.com>
- <20231012133917.GL3952@nvidia.com>
- <3659d9a7-d9e9-bb73-daf5-41c765e99c8c@intel.com>
- <20231013140456.GR3952@nvidia.com>
+        Fri, 13 Oct 2023 13:57:27 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6C8CA
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:57:26 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c9d132d92cso6324895ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697219845; x=1697824645; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fonQwXfCN69NQb+A4dqVyCysjcLISiFg18CBwAvV4OA=;
+        b=CZJApRO+NjbZQ8Ta/q/KApTywRWp5kVIT1WTRxMy9y/QDKvJHP7FtIb/KhEfO/L5LZ
+         n2qs+Ju8IvvMTtz2qkca2wdyCtUY1xm0zpyC1MOhmSRIhaeZwXvS8dNl2SVoKmmPnKA3
+         uB0xsCSHNjuDXNhvRuoBH3fgBZImYmTol4Q+qfx+F80He9KNoGP7uwcDOn6cjJ8iRl2l
+         Vh9nM33hRqYz+xz2X21eLAjkfRFxn2VC1d71OkSw0oQqBvz/PRypxxuXCDpD6sKcwMTf
+         weCJZcsbkAiXtPOtbBx8qlt0C/CgyhPaYTPESnN6Go5W1cDGMXjdjn46Mju39lmbHwKP
+         jIOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697219845; x=1697824645;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fonQwXfCN69NQb+A4dqVyCysjcLISiFg18CBwAvV4OA=;
+        b=iaxc+03NiDO66+Hrr4A3MjSOMmYaIuG4cqiLixI+HejcLFtjZqMkjTk6600DTi/tKB
+         Gz1RzTZXWQz4versI/0CuzYgximHvyrUZIYs4cOdgZ8zjlcXH/P6CnBqVtXBJ8YYRB6t
+         zQKhEtcA8NaYkrJ0/X0wfB3VmukZwr55LV5sWs5zE139s8IvmUqg5wBOrxyB/J8dpaZ+
+         oqVmEUNz6THt1AOUpzPqppCl2J67F8qoWidXQL2fzmE6D7fWBR14g9DXNwUrINYJrrCZ
+         rP2y+9UxRir5/LMwwuy8d83NYZqIcnWlBgfC18vaujODcyMTHslxwSSlDU03bcfFcWtr
+         Lz/g==
+X-Gm-Message-State: AOJu0Ywdij2m4MO/fwLra0UTtiez4T0s1el81cW1XM+KI2VX+j6NCLoN
+        VsrZCtSn7TragG+SuT+BIU4JNewbMaQxw3Ug
+X-Google-Smtp-Source: AGHT+IFhoOHVOaGD9kq5X81RwxEZLP3PqLvj1FxrxbU49r5DYy2eSGLjob+eRv+TUFObOX1sv5UuTA==
+X-Received: by 2002:a17:902:f686:b0:1c7:5581:f9c with SMTP id l6-20020a170902f68600b001c755810f9cmr29945485plg.0.1697219845416;
+        Fri, 13 Oct 2023 10:57:25 -0700 (PDT)
+Received: from localhost.localdomain ([140.116.154.65])
+        by smtp.gmail.com with ESMTPSA id d10-20020a170902654a00b001c63429fa89sm4232472pln.247.2023.10.13.10.57.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 10:57:24 -0700 (PDT)
+From:   Kuan-Wei Chiu <visitorckw@gmail.com>
+To:     mpe@ellerman.id.au
+Cc:     npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH] powerpc/perf: Optimize find_alternatives_list() using binary search
+Date:   Sat, 14 Oct 2023 01:57:14 +0800
+Message-Id: <20231013175714.2142775-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231013140456.GR3952@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF0001708E:EE_|SA1PR12MB7150:EE_
-X-MS-Office365-Filtering-Correlation-Id: 386e13bd-37df-4f3f-19ce-08dbcc15d144
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5B+cdDL5Xes3XYaArUtr2me7OKXjwxXEsEycebXJge/1cTEsE6c7+akRVxr299qrPlq1d7UAaW2shDxHOjx4y5rfWY/5HoAbjGD0uR+5qFt4U0eIVU05xmRhD8zEsaCzUUFYItN6Z/Lyztrg3Nco9XlHZtnZ+TC00PnNaTWo1CSdZhDz6pYi++z5b7BlGp5S+IfAK+bya4Hf0HA6m2QIlJcWuXdnCkEranVlFKSgMYYf60b8YXsQIVudfYaAGwt9LvIcHsOzcAkJP4H4Yn+0huJAS5UQnhlXp/kmTRPzEFf7t4GuPDmubRIzvsjsrGWKl0TgEW2C0YE4JeEBAyqsxSs7gllVUIRGJuIJi0ECrilfPgtVdR1416gNHX4oHw/M7HtMknTmSsP5n8mFUBTJr/5zO3fVA8b2X2QLm3Xy8xCDLRxnfTlWBVAT5coU3K5O6ni4oCkTmmFALdaszeUduFk9/NCNZ5meNFBfdPwe59y0cHRzhsJWssKuxMBMSMmFPxcPs1bRzcGxoyzVw8QfyI9Al27Zpm/+IGE3I3ChUNvBjBWvGywYvQVZDffDf3wXIH4+YuLvnJ+y2/cifEAU7IUaIlxmPJBGMVi9KNweGzdUvuYn0AXgxVC8ryWDKtnSDWOatLfBDwdVSEwQBW3VRH/UaqMQX2WnIU6+U2vSWLfFQyET8QO5XXc54a9AHqgQfF0bEMMXU6uBxBCOPlfEjxRuDL2B3WSEMspJZo1aQHvQrQN/XjN+MNr1Jt6SQD+f
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(136003)(346002)(396003)(230922051799003)(451199024)(186009)(1800799009)(82310400011)(64100799003)(40470700004)(46966006)(36840700001)(55016003)(8676002)(8936002)(4326008)(6862004)(41300700001)(40460700003)(5660300002)(7416002)(2906002)(47076005)(86362001)(83380400001)(33716001)(356005)(7636003)(36860700001)(336012)(426003)(26005)(40480700001)(6636002)(82740400003)(316002)(478600001)(70206006)(70586007)(54906003)(9686003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 17:57:07.8931
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 386e13bd-37df-4f3f-19ce-08dbcc15d144
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF0001708E.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7150
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 11:04:56AM -0300, Jason Gunthorpe wrote:
-> On Fri, Oct 13, 2023 at 12:33:13PM +0800, Yi Liu wrote:
-> 
-> > not really. Below the users of the struct iommu_user_data in my current
-> > iommufd_nesting branch. Only the domain_alloc_user op has type as there
-> > can be multiple vendor specific alloc data types. Basically, I'm ok to
-> > make the change you suggested, just not sure if it is good to add type
-> > as it is only needed by one path.
-> 
-> I don't think we should ever have an opaque data blob without a type
-> tag..
+This patch improves the performance of event alternative lookup by
+replacing the previous linear search with a more efficient binary
+search. This change reduces the time complexity for the search process
+from O(n) to O(log(n)). A pre-sorted table of event values and their
+corresponding indices has been introduced to expedite the search
+process.
 
-I can add those "missing" data types, and then a driver will be
-responsible for sanitizing the type along with the data_len.
+Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+---
+ arch/powerpc/perf/power6-pmu.c | 43 ++++++++++++++++++++--------------
+ 1 file changed, 26 insertions(+), 17 deletions(-)
 
-I notice that the enum iommu_hwpt_data_type in the posted patch
-is confined to the alloc_user uAPI. Perhaps we should share it
-with invalidate too:
+diff --git a/arch/powerpc/perf/power6-pmu.c b/arch/powerpc/perf/power6-pmu.c
+index 5729b6e059de..b6030ea130eb 100644
+--- a/arch/powerpc/perf/power6-pmu.c
++++ b/arch/powerpc/perf/power6-pmu.c
+@@ -335,25 +335,34 @@ static const unsigned int event_alternatives[][MAX_ALT] = {
+ 	{ 0x3000fe, 0x400056 },			/* PM_DATA_FROM_L3MISS */
+ };
+ 
+-/*
+- * This could be made more efficient with a binary search on
+- * a presorted list, if necessary
+- */
+ static int find_alternatives_list(u64 event)
+ {
+-	int i, j;
+-	unsigned int alt;
+-
+-	for (i = 0; i < ARRAY_SIZE(event_alternatives); ++i) {
+-		if (event < event_alternatives[i][0])
+-			return -1;
+-		for (j = 0; j < MAX_ALT; ++j) {
+-			alt = event_alternatives[i][j];
+-			if (!alt || event < alt)
+-				break;
+-			if (event == alt)
+-				return i;
+-		}
++	const unsigned int presort_event_table[] = {
++		0x0130e8, 0x080080, 0x080088, 0x10000a, 0x10000b, 0x10000d, 0x10000e,
++		0x100010, 0x10001a, 0x100026, 0x100054, 0x100056, 0x1000f0, 0x1000f8,
++		0x1000fc, 0x200008, 0x20000e, 0x200010, 0x200012, 0x200054, 0x2000f0,
++		0x2000f2, 0x2000f4, 0x2000f5, 0x2000f6, 0x2000f8, 0x2000fc, 0x2000fe,
++		0x2d0030, 0x30000a, 0x30000c, 0x300010, 0x300012, 0x30001a, 0x300056,
++		0x3000f0, 0x3000f2, 0x3000f6, 0x3000f8, 0x3000fc, 0x3000fe, 0x400006,
++		0x400007, 0x40000a, 0x40000e, 0x400010, 0x400018, 0x400056, 0x4000f0,
++		0x4000f8, 0x600005};
++	const unsigned int event_index_table[] = {
++		0,  1,  2,  3,  4,  1, 5,  6,  7,  8,  9,  10, 11, 12, 13, 12, 14,
++		7,  15, 2,  9,  16, 3, 4,  0,  17, 10, 18, 19, 20, 1,  17, 15, 19,
++		18, 2,  16, 21, 8,  0, 22, 13, 14, 11, 21, 5,  20, 22, 1,  6,  3};
++	int lo = 0;
++	int hi = ARRAY_SIZE(presort_event_table) - 1;
++
++	while (lo <= hi) {
++		int mid = lo + (hi - lo) / 2;
++		unsigned int alt = presort_event_table[mid];
++
++		if (alt < event)
++			lo = mid + 1;
++		else if (alt > event)
++			hi = mid - 1;
++		else
++			return event_index_table[mid];
+ 	}
+ 	return -1;
+ }
+-- 
+2.25.1
 
-/**
- * enum iommu_hwpt_data_type - IOMMU HWPT Data Type
- * @IOMMU_HWPT_DATA_NONE: no data
- * @IOMMU_HWPT_DATA_VTD_S1: Intel VT-d stage-1 page table
- * @IOMMU_HWPT_DATA_ARM_SMMUV3: ARM SMMUv3 Context Descriptor Table
- */
-enum iommu_hwpt_data_type {
-	IOMMU_HWPT_DATA_NONE,
-	IOMMU_HWPT_DATA_VTD_S1,
-	IOMMU_HWPT_DATA_ARM_SMMUV3,
-};
-
-Though inevitably we'd have to define a separate data group for
-things like set_dev_data that is related to idev v.s. hwpt:
-
-// IOMMU_DEV_DATA_TYPE sounds like an IOMMU device, other than a
-// passthrough device, so renaming to "_IDEV_" here. And perhaps
-// "set_dev_data" could be "set_idev_data" too? Any better name?
-
-/**
- * enum iommu_idev_data_type - Data Type for a Device behind an IOMMU
- * @IOMMU_IDEV_DATA_NONE: no data
- * @IOMMU_IDEV_DATA_ARM_SMMUV3: ARM SMMUv3 specific device data
- */
-enum iommu_idev_data_type {
-	IOMMU_IDEV_DATA_NONE,
-	IOMMU_IDEV_DATA_ARM_SMMUV3,
-};
-
-/**
- * struct iommu_idev_data_arm_smmuv3 - ARM SMMUv3 specific device data
- * @sid: The Stream ID that is assigned in the user space
- *
- * The SMMUv3 specific user space data for a device that is behind an SMMU HW.
- * The guest-level user data should be linked to the host-level kernel data,
- * which will be used by user space cache invalidation commands.
- */
-struct iommu_idev_data_arm_smmuv3 {
-	__u32 sid;
-};
-
-/**
- * struct iommu_set_idev_data - ioctl(IOMMU_SET_IDEV_DATA)
- * @size: sizeof(struct iommu_set_idev_data)
- * @dev_id: The device to set an iommu specific device data
- * @data_uptr: User pointer of the device user data
- * @data_len: Length of the device user data
- *
- * The device data must be unset using ioctl(IOMMU_UNSET_IDEV_DATA), before
- * another ioctl(IOMMU_SET_IDEV_DATA) call or before the device itself gets
- * unbind'd from the iommufd context.
- */
-struct iommu_set_idev_data {
-	__u32 size;
-	__u32 dev_id;
-	__aligned_u64 data_uptr;
-	__u32 data_len;
-};
-
-Thanks
-Nic
