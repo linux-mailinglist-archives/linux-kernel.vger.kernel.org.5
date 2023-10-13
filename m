@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D457C8535
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7AA7C8531
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbjJMMAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52098 "EHLO
+        id S231814AbjJMMAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 08:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231522AbjJML7s (ORCPT
+        with ESMTP id S231808AbjJML7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:59:48 -0400
+        Fri, 13 Oct 2023 07:59:52 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7104F10D8;
-        Fri, 13 Oct 2023 04:59:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 281D9C433CB;
-        Fri, 13 Oct 2023 11:59:34 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E28010F5;
+        Fri, 13 Oct 2023 04:59:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F9AAC433C7;
+        Fri, 13 Oct 2023 11:59:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697198378;
-        bh=rCN4+iCoVX4jAGs7s+XIp9Rriuj5msPrP6NA95JLYbU=;
+        s=k20201202; t=1697198380;
+        bh=9eKXMVkzj30bJjMYB0HS6GlgZmQ+aae2FrSYU4LFmqA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ovliKqTXYm9ZYVDaU9YCJen8c0uPB5I5KkvcUh/pIuFXCeqwgg0J9HJoZqsXWgoZT
-         RKOrBm+E/4wowCXIiQA9tImmtOtIThJHQVRpdXzcHG2aFHZEHMl9I4cdixYdhZp+ha
-         r3y2S2qPXMXFG3RYOPUEWfjb1P+OZGnxQQWX1p7C+2Q5V8yfAjIQNYU9g9Ti5OKjhO
-         BZXFXH2jN1uME3IdN+JHHE8EXjk1JCkYI+vS1NsiVa/wrGUA70vjCm+/WvNM6+oPSy
-         yJ/C+1ku0C1YknO82v7AzPqK41BYopgsZ3QFQ3KXIH1rg9WCF6L+4W6OfS/WKU8gAY
-         bwtQM7d7Nq/zw==
+        b=Lc6G8raIpvm9yT+YjPvUXfqlCcBSGvsvCO41iqsHlWYs4HoQlQBrbHeBxldNK5ZS3
+         pONJYQJQN8KuhB5BjprBpq9wf/9T9SvMRBG39QxxHXQ1rPgL1L80QL2KM2Hrx+aklz
+         VKsa6uz21SOzhNNhM6Hq/Rb5xNiB08jMy8WbNKBCHz6AL97J0u12oBp63SDRdoOUq1
+         oRWY9+04XjJdF+ONPBtdBPLScLHxAB26DrcYD0AxeKLVNuuYdMOuxkOcszopNNoTeT
+         hVSoEl1CZ5KCLZpPXkhjcr8tS+BpK++87WcEIiVWxi/QTe9H8Uj42fxnsq8L+LRdC9
+         osyzbuL8PBVqQ==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -38,11 +38,10 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
-        Christoph Paasch <cpaasch@apple.com>, stable@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 10/18] rcu: kmemleak: Ignore kmemleak false positives when RCU-freeing objects
-Date:   Fri, 13 Oct 2023 13:58:54 +0200
-Message-Id: <20231013115902.1059735-11-frederic@kernel.org>
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Subject: [PATCH 11/18] rcu: Use rcu_segcblist_segempty() instead of open coding it
+Date:   Fri, 13 Oct 2023 13:58:55 +0200
+Message-Id: <20231013115902.1059735-12-frederic@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231013115902.1059735-1-frederic@kernel.org>
 References: <20231013115902.1059735-1-frederic@kernel.org>
@@ -58,58 +57,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Catalin Marinas <catalin.marinas@arm.com>
+This makes the code more readable.
 
-Since the actual slab freeing is deferred when calling kvfree_rcu(), so
-is the kmemleak_free() callback informing kmemleak of the object
-deletion. From the perspective of the kvfree_rcu() caller, the object is
-freed and it may remove any references to it. Since kmemleak does not
-scan RCU internal data storing the pointer, it will report such objects
-as leaks during the grace period.
-
-Tell kmemleak to ignore such objects on the kvfree_call_rcu() path. Note
-that the tiny RCU implementation does not have such issue since the
-objects can be tracked from the rcu_ctrlblk structure.
-
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Reported-by: Christoph Paasch <cpaasch@apple.com>
-Closes: https://lore.kernel.org/all/F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com/
-Cc: <stable@vger.kernel.org>
-Tested-by: Christoph Paasch <cpaasch@apple.com>
+Reviewed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/rcu/tree.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ kernel/rcu/rcu_segcblist.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index a83ecab77917..4dd7df30df31 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -31,6 +31,7 @@
- #include <linux/bitops.h>
- #include <linux/export.h>
- #include <linux/completion.h>
-+#include <linux/kmemleak.h>
- #include <linux/moduleparam.h>
- #include <linux/panic.h>
- #include <linux/panic_notifier.h>
-@@ -3389,6 +3390,14 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
- 		success = true;
- 	}
+diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+index f71fac422c8f..1693ea22ef1b 100644
+--- a/kernel/rcu/rcu_segcblist.c
++++ b/kernel/rcu/rcu_segcblist.c
+@@ -368,7 +368,7 @@ bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
+ 	smp_mb(); /* Ensure counts are updated before callback is entrained. */
+ 	rhp->next = NULL;
+ 	for (i = RCU_NEXT_TAIL; i > RCU_DONE_TAIL; i--)
+-		if (rsclp->tails[i] != rsclp->tails[i - 1])
++		if (!rcu_segcblist_segempty(rsclp, i))
+ 			break;
+ 	rcu_segcblist_inc_seglen(rsclp, i);
+ 	WRITE_ONCE(*rsclp->tails[i], rhp);
+@@ -551,7 +551,7 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
+ 	 * as their ->gp_seq[] grace-period completion sequence number.
+ 	 */
+ 	for (i = RCU_NEXT_READY_TAIL; i > RCU_DONE_TAIL; i--)
+-		if (rsclp->tails[i] != rsclp->tails[i - 1] &&
++		if (!rcu_segcblist_segempty(rsclp, i) &&
+ 		    ULONG_CMP_LT(rsclp->gp_seq[i], seq))
+ 			break;
  
-+	/*
-+	 * The kvfree_rcu() caller considers the pointer freed at this point
-+	 * and likely removes any references to it. Since the actual slab
-+	 * freeing (and kmemleak_free()) is deferred, tell kmemleak to ignore
-+	 * this object (no scanning or false positives reporting).
-+	 */
-+	kmemleak_ignore(ptr);
-+
- 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
- 		schedule_delayed_monitor_work(krcp);
 -- 
 2.34.1
 
