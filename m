@@ -2,142 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C717C905B
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E097C906A
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232021AbjJMWlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 18:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38358 "EHLO
+        id S230469AbjJMWn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 18:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJMWlE (ORCPT
+        with ESMTP id S229518AbjJMWn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 18:41:04 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE41AB7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 15:41:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30DC1C433C7;
-        Fri, 13 Oct 2023 22:41:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697236862;
-        bh=w5/NPLmu7MtZsZVVLte85Zwy4WqEOc54OWUu9qmyrvk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hG4W2RMUHsaEqwOCNz9stfK3ICMpL0xfiA9ZCgXuk8FIXM3kbo5nGojmEyK9sl0Ve
-         TnUhs/Zc+bCg+zc7bDqgcRs5td6gA73tzZ1yK3AadQFKGiP/uA3Xk7gp01CDs9bKwM
-         6oHEF/nSrFGVz62YyXvkJCLGVpUr2nBcpGFvw5x2mRnSkwsGy2W9R9a27LHau64i7m
-         6qQ8INPJ4lRW/o3NljNqUV735NSWWnuVj0rDHyjMsONa0Y0QOcDCFLa5zHuLS/8XZN
-         fjLbN9+pIftaXA0nFJXkELV7wfRw4l+TBJn1qQ8EMoWY4LCl5ypmYRfSQ5aUVF2sko
-         hbkgbJUskQRKw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7A01A40016; Fri, 13 Oct 2023 19:40:58 -0300 (-03)
-Date:   Fri, 13 Oct 2023 19:40:58 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
+        Fri, 13 Oct 2023 18:43:57 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCB7B7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 15:43:56 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a507eb61a6so38758757b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 15:43:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697237035; x=1697841835; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qxipDt6TGihxODuhMyyTMhWX2f2ccAuzIUgR7BlbguE=;
+        b=oKhJpFAnEuKwHemVtQ+xiSksKNnvB1DTjooOIceS66JjykDm4mWOQ9mA8on6kQrXZc
+         sPk6BvrLg/qdKgOtLvUG3eLfCTSOcaClHhaIzDDaVBBkp8mMF3XNTi9LVX916Fj4Bn1D
+         ej+Q6zXPHsO/gbfFXUzZ9tvwPHlpkNKFITY64Op8QCSMFzjAqTuIbHXp+oCcM6WTjHZJ
+         8GKoMlLIE6PlOquHF1BYS/8A57wnWBS4yAy1GSErI4/sG2lBhmXTmQ93eacjNSI0I0Yd
+         1fHQHsb7YlGY56ZMPFRXKZ4M1Gov0+1Q+5mw4oCzd8Jb4mEaGMOQ0RFjWSw4xwbsvHGG
+         Pj/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697237035; x=1697841835;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qxipDt6TGihxODuhMyyTMhWX2f2ccAuzIUgR7BlbguE=;
+        b=PBxa7sEzC5Oi8eUgdBS5iX034jqKujO/zYrpetD2CFRTfxjLk9AXU5AjMwt6RpX6oE
+         GBzEvS0ffyQol+uE0mZZ84vcX16xwhyKzCHJOfX86moOYRMLu/fXbSS9XI5QS5IIXOeo
+         BwFTzPk8T3yTYaUf5mNHTNC0J16xGYqxkFI9XzXLgAbUiVKSvHzVbEwVbFd2wcEKIGGA
+         CU4vfm/3rNk5ENIVJpmA24BFezqPzTbb/4eJlRCqVsz+hRdd6HPuwTnzhfP1E+QhQTkb
+         MTJv1eUkdN0G932DnTZ4SM/ZgNU6nqYV/4nsfD3h4j8zjBhwBFzpS/flYGOVGLG+pRgw
+         YSuQ==
+X-Gm-Message-State: AOJu0YwklX6xLAqoCwCJLike4qZlGTOfGXV4KKvkW4IKXOYNOQMQBhyr
+        cs4FGcej+/1bGZsUOT018+QWxqTs2HU=
+X-Google-Smtp-Source: AGHT+IE50jTlBFUYBMxQb+IStziCIDH4NSypI7Q2BF1zoaIsj3ggX3HEdFKv0JtOdtm/P1+O2GETQhCUR8g=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:838b:0:b0:5a8:170d:45a9 with SMTP id
+ t133-20020a81838b000000b005a8170d45a9mr120408ywf.8.1697237035509; Fri, 13 Oct
+ 2023 15:43:55 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 15:43:53 -0700
+In-Reply-To: <20231006011255.4163884-1-vannapurve@google.com>
+Mime-Version: 1.0
+References: <20231006011255.4163884-1-vannapurve@google.com>
+Message-ID: <ZSnIKQ4bUavAtBz6@google.com>
+Subject: Re: [PATCH] x86/tdx: Override the tsc calibration for TDX VMs
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vishal Annapurve <vannapurve@google.com>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] perf bench sched pipe: Add -G/--cgroups option
-Message-ID: <ZSnHek1HlQTkfjhG@kernel.org>
-References: <20231004204741.985422-1-namhyung@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231004204741.985422-1-namhyung@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Oct 04, 2023 at 01:47:41PM -0700, Namhyung Kim escreveu:
-> The -G/--cgroups option is to put sender and receiver in different
-> cgroups in order to measure cgroup context switch overheads.
-> 
-> Users need to make sure the cgroups exist and accessible.
-> 
->   # perf stat -e context-switches,cgroup-switches \
->   > taskset -c 0 perf bench sched pipe -l 10000 > /dev/null
-> 
->    Performance counter stats for 'taskset -c 0 perf bench sched pipe -l 10000':
-> 
->               20,001      context-switches
->                    2      cgroup-switches
-> 
->          0.053449651 seconds time elapsed
-> 
->          0.011286000 seconds user
->          0.041869000 seconds sys
-> 
->   # perf stat -e context-switches,cgroup-switches \
->   > taskset -c 0 perf bench sched pipe -l 10000 -G AAA,BBB > /dev/null
-> 
->    Performance counter stats for 'taskset -c 0 perf bench sched pipe -l 10000 -G AAA,BBB':
-> 
->               20,001      context-switches
->               20,001      cgroup-switches
-> 
->          0.052768627 seconds time elapsed
+On Fri, Oct 06, 2023, Vishal Annapurve wrote:
+> TSC calibration for native execution gets the TSC frequency from CPUID,
+> but also ends up setting lapic_timer_period. When using oneshot mode
+> with lapic timer, predefined value of lapic_timer_period causes lapic
+> timer calibration to be skipped with wrong multipliers set for lapic
+> timer.
+>=20
+> To avoid this issue, override the TSC calibration step for TDX VMs to
+> just calculate the TSC frequency using cpuid values.
 
-So I tried with:
+This is a hack to workaround a KVM TDX bug.  Per Intel's SDM:
 
-[root@quaco ~]# perf bench sched pipe -G system.slice,user.slice
-# Running 'sched/pipe' benchmark:
-cannot enter to cgroup: system.slice
-cannot enter to cgroup: user.slice
-# Executed 1000000 pipe operations between two processes
+  The APIC timer frequency will be the processor=E2=80=99s bus clock or cor=
+e crystal
+  clock frequency (when TSC/core crystal clock ratio is enumerated in CPUID
+  leaf 0x15) divided by the value specified in the divide configuration reg=
+ister.
 
-     Total time: 6.301 [sec]
+TDX hardcodes the core crystal frequency to 25Mhz, whereas KVM hardcodes th=
+e APIC
+bus frequency to 1Ghz.  Upstream KVM's *current* behavior is fine, because =
+KVM
+doesn't advertise support for CPUID 0x15, i.e. doesn't announce to host use=
+rspace
+that it's safe to expose CPUID 0x15 to the guest.  Because TDX makes exposi=
+ng
+CPUID 0x15 mandatory, KVM needs to be taught to correctly emulate the guest=
+'s
+APIC bus frequency, a.k.a. the TDX guest core crystal frequency of 25Mhz.
 
-       6.301478 usecs/op
-         158692 ops/sec
-[root@quaco ~]#
+I.e. tmict_to_ns() needs to replace APIC_BUS_CYCLE_NS with some math that m=
+akes
+the guest's APIC timer actually run at 25Mhz given whatever the host APIC b=
+us
+runs at.
 
-Should't it bail out when not managing to enter the cgroups?
+  static inline u64 tmict_to_ns(struct kvm_lapic *apic, u32 tmict)
+  {
+	return (u64)tmict * APIC_BUS_CYCLE_NS * (u64)apic->divide_count;
+  }
 
-Also:
+The existing guest code "works" because the calibration code effectively di=
+scovers
+the host APIC bus frequency.  If we really want to force calibration, then =
+the
+best way to do that would be to add a command line option to do exactly tha=
+t, not
+hack around a KVM TDX bug.
 
-[root@quaco ~]# mkdir /sys/fs/cgroup/AAA
-[root@quaco ~]# mkdir /sys/fs/cgroup/BBB
-[root@quaco ~]#
-[root@quaco ~]# perf bench sched pipe -G AAA,BBB
-# Running 'sched/pipe' benchmark:
-cannot enter to cgroup: AAA
-cannot enter to cgroup: BBB
-# Executed 1000000 pipe operations between two processes
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index 15f97c0abc9d..ce1cec6b3c18 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -723,7 +723,8 @@ unsigned long native_calibrate_tsc(void)
+         * lapic_timer_period here to avoid having to calibrate the APIC
+         * timer later.
+         */
+-       lapic_timer_period =3D crystal_khz * 1000 / HZ;
++       if (!force_lapic_timer_calibration)
++               lapic_timer_period =3D crystal_khz * 1000 / HZ;
+ #endif
+=20
+        return crystal_khz * ebx_numerator / eax_denominator;
 
-     Total time: 6.397 [sec]
+But I would be very leery of forcing calibration, as effectively calibratin=
+g to
+the *host* core crystal frequency will cause the guest APIC timer to be wro=
+ng if
+the VM is migrated to a host with a different core crystal frequency.  Rely=
+ing
+on CPUID 0x15, if it's available, avoids that problem because it puts the o=
+nus on
+the hypervisor to account for the new host's frequency when emulating the A=
+PIC
+timer.  That mess exists today, but deliberate ignoring the mechanism that =
+allows
+the host to fix the mess would be asinine IMO.
 
-       6.397830 usecs/op
-         156302 ops/sec
-[root@quaco ~]#
-
--rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/AAA/cgroup.procs
-[root@quaco ~]# ls -la /sys/fs/cgroup/AAA/cgroup.threads
--rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/AAA/cgroup.threads
-[root@quaco ~]# ls -la /sys/fs/cgroup/BBB/cgroup.threads
--rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/BBB/cgroup.threads
-[root@quaco ~]# ls -la /sys/fs/cgroup/BBB/cgroup.procs
--rw-r--r--. 1 root root 0 Oct 13 19:22 /sys/fs/cgroup/BBB/cgroup.procs
-[root@quaco ~]#
-
-[root@quaco ~]# perf bench sched pipe -G AAA,BBB
-# Running 'sched/pipe' benchmark:
-cannot enter to cgroup: AAA (written=-1, len=6, errno=Operation not supported)
-cannot enter to cgroup: BBB (written=-1, len=6, errno=Operation not supported)
-# Executed 1000000 pipe operations between two processes
-
-     Total time: 6.303 [sec]
-
-       6.303221 usecs/op
-         158649 ops/sec
-[root@quaco ~]#
-
-I'm certainly missing something here :-\
-
-- Arnaldo
+Even better would be for GCE to just enumerate support for TSC deadline alr=
+eady,
+because KVM already does the right thing to convert guest TSC frequency to =
+host
+TSC frequency.  KVM TDX would still need to add full support for CPUID 0x15=
+, but
+at least any problems with using one-shot mode will unlikely to impact real=
+ guests.
