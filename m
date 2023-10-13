@@ -2,255 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3427C7FAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E377C7FAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbjJMIKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47552 "EHLO
+        id S230187AbjJMILb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbjJMIKV (ORCPT
+        with ESMTP id S230289AbjJMILD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:10:21 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393CDFA
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:10:19 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53d9b94731aso3370859a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:10:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1697184617; x=1697789417; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dT253bU1TN+2VYGYyTK7tnK4dl9BBDdqFWVEHyQXP0Q=;
-        b=2nqsGwrRpvwg6YT0WPFGKfZl4mqK7tdOps0qTh8CCjsDTt1DJzlcUp1i28Ktc2oKnZ
-         bKCwiIBekakHVfrgr6XaJIy4/3l6pYYTSOdaRh6vLgJSHUk03WSHsYmH4CmO4U7N75VF
-         xWa+Rt3GqKoI0sLcpu2rvTRuB7L7OJRpNDnMVitQB4Fg8SghCOUKxnMOm5oLM4gzgMj9
-         o2yjA7kNylHnfk35yAZXYJraIWlZbufXXWqvt7ol+gmAV71g4mvfQ7xDDqVK1GSM8ovj
-         dz8r2BZbx/MeGkJQnxb4Cul4ZvSlSjDYQ0ycU4co/Ph3FVFv3e6eX5RhDn0DZEVaEFlz
-         Uu6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697184617; x=1697789417;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dT253bU1TN+2VYGYyTK7tnK4dl9BBDdqFWVEHyQXP0Q=;
-        b=V3YYbY8x4aZnU9JzQKtT/ShxekWEaeEzzxg+Jp2y2VWHnGtVs6XRQfHKBoU3UetNIn
-         ysZI92GQmCNTMDbW6mGS3722RI2oE6s8PB7SGEOBja33RjHGF+t64iEpz2dDJ9JYZaWt
-         HKHS7CXoBGi8ZAb6cnfvw5Zj7qgQISb1TjYig7VNHQC3im4uFD1Miey5yGLMMfkGz2ww
-         zk9tPh2x1sH0Zg8pHCr+HdA9ThoKGNUuoLN94DnSD8xRWw335p5APepDGpTeSKa0Fiy0
-         tZH62DhUF2KYW+i1uTYfWdK410IDQZKZl//hI+vF3+OAzbCwW7IkCmtjuqc6PPy5bT3O
-         bSGA==
-X-Gm-Message-State: AOJu0YwXCIgpNMsrY/2Sl61mVfDjHOcGTbHabho5s0Y+E/QBKaCv4ZYb
-        U2L3Rf7IgFqaXpA7Srf8YPKn+g==
-X-Google-Smtp-Source: AGHT+IGPXVTWcKw9dwcC63fjjdOYNbEqaNkFCBQ0Y8FaQfhMMN2PFBzCRziai2IqwqfPGZjkOtmpKQ==
-X-Received: by 2002:a17:907:75da:b0:9ad:cf30:10c with SMTP id jl26-20020a17090775da00b009adcf30010cmr25008658ejc.46.1697184616863;
-        Fri, 13 Oct 2023 01:10:16 -0700 (PDT)
-Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id q14-20020a170906360e00b009a5f1d1564dsm11910761ejb.126.2023.10.13.01.10.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 01:10:16 -0700 (PDT)
-From:   Luca Weiss <luca.weiss@fairphone.com>
-Date:   Fri, 13 Oct 2023 10:09:56 +0200
-Subject: [PATCH 4/4] arm64: dts: qcom: qcm6490-fairphone-fp5: Add PM7325
- thermals
+        Fri, 13 Oct 2023 04:11:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F2A12A;
+        Fri, 13 Oct 2023 01:10:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697184657; x=1728720657;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=fQhfRWQWQh0Rxebe12MGYwRTy/eosW/S1RAiMRPHyW4=;
+  b=G9wchZzuLvG4fSoPtgijSvaUgnH4vxyPG7iCWHP6pr1j2Ipv7P1dgIXY
+   ru/QlDEyYZ2S/2/ixl9f/bvi1YuPkkOCBilZyuizC6+pGD370TS8wKny7
+   F1k6OhvV7rpPLpQdI4DfUGSFBo+lScPidoJ17xHvh6qgm9w9JqmDV+lvw
+   UygYFo43YhVVuLXJ9vDNcTEaBs1/0rpMjFqf7Vna5q/dY9EOycRwBeZzX
+   TbVU1qLi53fjC4gUNcmaAykf+/Dqyndt7dn0MdUa0pKthaRJc3eXgc61C
+   PL1mpOREnUnrTNNmSGq4vc/Ot+rS9l38lnaOgIrRvG4AP0GWoj2tlDD5n
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="370195198"
+X-IronPort-AV: E=Sophos;i="6.03,221,1694761200"; 
+   d="scan'208";a="370195198"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 01:10:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="784056923"
+X-IronPort-AV: E=Sophos;i="6.03,221,1694761200"; 
+   d="scan'208";a="784056923"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Oct 2023 01:10:56 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 13 Oct 2023 01:10:56 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Fri, 13 Oct 2023 01:10:56 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Fri, 13 Oct 2023 01:10:55 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ahO6bDrWybrU2++4KvgoyLIVBsBlbddLQwxGk7GhBfd1bJCtaqtxG+wx/cHfJbfoZId2ARhMpwMgh5Vazu528ccvJ4SdDqk10MKCa7WM1NiASDuz30RSeuPJ0bDik/2+pzrLzIntZllxRN9Yi8dJk11sB4aHk6uFPKVGUUrs5JxEjt0Cg3ZvbEu1hG9+zB/EMwk/oW5VgKpS8rb6D1lUuLQ/4bcXcu+MndYCMf3U5h88f0hbMRIITvL91PNTP3H2KRW/ZCNR7F9FvsywrHdz8tS6Y51O/f/Zj+dVXY0AVwbwbUM0pq6tAenOvyBn3+gVQeXI1Wg32CZ6y7wZWoOO8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fQhfRWQWQh0Rxebe12MGYwRTy/eosW/S1RAiMRPHyW4=;
+ b=JUNW6OISxpOsUPgtN85E5jcjFTH4tV2xcId/9UEkAVd4hQ6vtRt5Cg4BNanSAPHl0/eTZqRBDqNmhkdgKsSh+aILe1dvxRDxoaCqdGLb3WXkv6QaToYtSmMcNoH3bwQipGViMdC3nrUcZSbqfSRhzqwy9m+pSFsPdlr9X34sLzsCLdAkgkrp0zZ1lmKeSRRBIKu4GwmUoT7UzPO3dR+hrXxM+yX8+KSlzY26B320PBa+LV0hVfOqVZHKzSNLjgdoeCpCnupkYk/5/tIMlbW/ogWePt9hQh0FZOjduox85+XUP571VTRapsnydf6/ltV8SXNo93G8hnzo744/BT9PcQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by IA0PR11MB7813.namprd11.prod.outlook.com (2603:10b6:208:402::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Fri, 13 Oct
+ 2023 08:10:48 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::7116:9866:8367:95b4]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::7116:9866:8367:95b4%3]) with mapi id 15.20.6863.043; Fri, 13 Oct 2023
+ 08:10:48 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     "Chatre, Reinette" <reinette.chatre@intel.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "yishaih@nvidia.com" <yishaih@nvidia.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "tom.zanussi@linux.intel.com" <tom.zanussi@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "patches@lists.linux.dev" <patches@lists.linux.dev>
+Subject: RE: [RFC PATCH V2 14/18] vfio/pci: Add core IMS support
+Thread-Topic: [RFC PATCH V2 14/18] vfio/pci: Add core IMS support
+Thread-Index: AQHZ+HP7H8n8M1qsCESF8QGnzw9E4rBHZG0A
+Date:   Fri, 13 Oct 2023 08:10:48 +0000
+Message-ID: <BN9PR11MB5276891129DCF849D9E6375D8CD2A@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <cover.1696609476.git.reinette.chatre@intel.com>
+ <0f8fb7122814c5c5083799e935d5bd3d27d38aef.1696609476.git.reinette.chatre@intel.com>
+In-Reply-To: <0f8fb7122814c5c5083799e935d5bd3d27d38aef.1696609476.git.reinette.chatre@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|IA0PR11MB7813:EE_
+x-ms-office365-filtering-correlation-id: ed91ffa8-202e-4123-280c-08dbcbc3e878
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: LazSgzwxLrGWmCnY2ZUIM52MX4VoAKawP2+stOj3f1IubR9q+xhPnUEa88m00C7B6BCAQu7S/oaCR8uTl69xxctocQaCZs8PhsMOz8SEAQhgeBzU25X9A7zNL4fH9v0Qj09Cqc5zivbKax76yv1w9CwrmhKfwyoQ6vVqpAYpe+TrhLolHQmO/vNit5VEfQBaVoB44hA/Oz3amMMs7mWcA+zr6ZVujlwrthg0wVD7FmQ5Z6whHLQotipTehbbEYaERdciwluTo+7RJNVoRJztqF1zY3cd1sbdavJJdJtupU8RPXKj4eaQycr/rwCJK/U80Io1WZpHIEGjt3hONlN86j/pNuGqekWjzOTWJGzFtnrHRUP2gDuGqjsLf6fFVc1QiohlqL0sTTGLzZp27ZCZOfnlxKnnnJcPeNuZSlpxChvcyCJ5OTDvrzd6ANdCrphQdxb69rbb4BjfP9tUo3KRN2ImwIdZu76m+WfBk5NMQ3S/o8aznMZCj5+CL0kZXElWymYyqWDRpmqGS8rh8+J5D2c9YiNVynGOmMKur3usxK3wzY6yrhDqzwplOeAb1QeUXEYxlqgy0PdRk42J+HSYz8FSE3Ita7YeA1pmhsYKtOX+z1/SSAw+zaRWhQmwdhfO
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(136003)(376002)(366004)(346002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(4326008)(55016003)(8936002)(26005)(8676002)(52536014)(33656002)(38100700002)(82960400001)(38070700005)(2906002)(122000001)(41300700001)(5660300002)(83380400001)(86362001)(9686003)(7696005)(6506007)(478600001)(71200400001)(316002)(54906003)(66556008)(66946007)(76116006)(66476007)(110136005)(64756008)(66446008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?PNahvoXb58E1IfBLFSKJwC1pI3cGql4wKMy7yMEhM5Ak1TaKMjOGBs4g7ObB?=
+ =?us-ascii?Q?VBI4AmUzAE8TyB2wCEAF8ATeaq/C9CciejYAVhNitDe760iJ/+0VaXcBpcNO?=
+ =?us-ascii?Q?6nUVbJVVLAGAF8JpbiyvX9aMDsGMl9/6lIyX+Z7yXllRbEzmID7yLMK5i/PA?=
+ =?us-ascii?Q?XIM0cNsPk0yrjp6l1qw2o51SodrH9M+Pmu4WNi4PDdnCq9CjeZIpr2S0NSHY?=
+ =?us-ascii?Q?LmKsImjpftmb5+EgLHSd87Dv4ZWLDDO3iJrKwXJ+F1Lajm7AazEt5PfThDLH?=
+ =?us-ascii?Q?j0ldvpiWVfwFc+wG5nt1nd/O3djBn/Pd72bMy65DfrjW7Eu3VuzSrfenJ5AE?=
+ =?us-ascii?Q?D7TQXNg9aMew/U+qPkSfXoqGw9FOGF+7ftUAEvy5TlsfIaKXOhvUs0rtFzJN?=
+ =?us-ascii?Q?Bd0aW1Bjs8EKdIJrH1/x5j0g1OzhqmtcePU5nvphzcR8BUlsv90qFYLQOBw9?=
+ =?us-ascii?Q?vKGSDVlEBc7awqbcBqBHBc16CRodvgVQnh1J3xMB50GNZPH3teHzUJLoaiep?=
+ =?us-ascii?Q?aEyRm0zGlWcnezvPj8VmHNujighNwIQ4kKOtGNK8bE5aAjKiugwKqgcNl3Fk?=
+ =?us-ascii?Q?GAkD4Kyec20ZnHkMGWSkUucWGRfsu0QmNEW8XYE7cg+zr7XjChP6TAjr0Dkn?=
+ =?us-ascii?Q?Yjbvg7XobiPZSgzJC6VwDhh/2q5qNihbBYUWoTEdIza09q5Gp9hKl9AXTDzB?=
+ =?us-ascii?Q?A7VjB0oJPBBxa4YNxOuI+NuuNsSTVgszBtT56eBMvckGcTYWCd7ZGmQM2Q0s?=
+ =?us-ascii?Q?ulIxoNO1uA5KvKxlp1EnnzmWkVsk4zbcF8PHj8hBC2FbtNho8YUrC7NyeySm?=
+ =?us-ascii?Q?QIFdIL28RDaux2TEJOZmk2TlSFNdSzOJSG+l0P3eF55qo3Rl+8hTm7KjI8Wq?=
+ =?us-ascii?Q?qv8KUItRiYY03tHxdVW3BaGBQixjIwqqVgnWe5iEdop8BqfbWZ08NhLh/v/x?=
+ =?us-ascii?Q?IvR2WzoIssSORaPXCRzsWQoZWfHhl+67WguzOqRB+zHrXwXOfAuA2N12z+UU?=
+ =?us-ascii?Q?fNZCXcI91xYDMKdzQw60yUtBElfBnxe3ZAgrfnLpKSRQqOZgGsQht8bu6kcl?=
+ =?us-ascii?Q?bXVuBoKsdjmUY2s2LRAq1no6bnlsne2IDJVx6hjyJd2E3nx/gvIvcGn2Hw1Q?=
+ =?us-ascii?Q?70HmrtFz2mzWLE1xTMOkkY5qB9fNWugUxkx5TeoYoiiLBOyQmOS+dzbAPxGj?=
+ =?us-ascii?Q?ntGqT773mUuEKJ0GPEOLmAhpz6Dm8Z+WHvhbvBbUjWKxuaZ5CBRBzkE0rXqF?=
+ =?us-ascii?Q?8lHydKpk4JKYw9JJEwHY7S2ozn/lpSw0xgK4TE/NGwTNcBgHrrBdqAk77k31?=
+ =?us-ascii?Q?mRVFGDTvxmqEbjX3IkJWN1/KqiKbMavZPzxxhNrflJz1NmYnxBFcN5AfCXzx?=
+ =?us-ascii?Q?QWeYctvC7DiofNw0OaPFrCzJ+/aLv0P3k2pET9rOG03Lue2dQhgVZE52GUtm?=
+ =?us-ascii?Q?8hvt/hNaalMGLDPI4JO1DjgYsPz/nazgaF5Ts4BTBPNznMX2ikKe+kbEayLK?=
+ =?us-ascii?Q?kNd1QHJn22iO5D9o0hw2javsVUdfmhcwtrh2aTf0FUgOOK4i6Wtq2lyzVgV3?=
+ =?us-ascii?Q?BKHHpO5qu4JRQTKFb35uALseD/yvhFTD/raJGLVi?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231013-fp5-thermals-v1-4-f14df01922e6@fairphone.com>
-References: <20231013-fp5-thermals-v1-0-f14df01922e6@fairphone.com>
-In-Reply-To: <20231013-fp5-thermals-v1-0-f14df01922e6@fairphone.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ed91ffa8-202e-4123-280c-08dbcbc3e878
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2023 08:10:48.2184
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZxDQIbVeCp5sSTxLMUaxTX0wOUudV4YINIFsAVRTCWyomkvIxHwXQknzU6Pj06XN7kXtCmUtFwlrg5XdwI5CWw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7813
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Configure the thermals for the QUIET_THERM, CAM_FLASH_THERM, MSM_THERM
-and RFC_CAM_THERM thermistors connected to PM7325.
+> From: Chatre, Reinette <reinette.chatre@intel.com>
+> Sent: Saturday, October 7, 2023 12:41 AM
+>=20
+> A virtual device driver starts by initializing the backend
+> using new vfio_pci_ims_init_intr_ctx(), cleanup using new
+> vfio_pci_ims_release_intr_ctx(). Once initialized the virtual
+> device driver can call vfio_pci_set_irqs_ioctl() to handle the
+> VFIO_DEVICE_SET_IRQS ioctl() after it has validated the parameters
+> to be appropriate for the particular device.
 
-With this PMIC the software communication to the ADC is going through
-PMK7325 (= PMK8350).
+I wonder whether the code sharing can go deeper from
+vfio_pci_set_irqs_ioctl() all the way down to set_vector_signal()
+with proper abstraction. Then handle emulated interrupt in the
+common code instead of ims specific path. intel gvt also uses
+emulated interrupt, which could be converted to use this library
+too.
 
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
- arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts | 117 +++++++++++++++++++++
- 1 file changed, 117 insertions(+)
+There is some subtle difference between pci/ims backends
+regarding to how set_vector_signal() is coded in this series. But
+it is not intuitive to me whether such a difference is conceptual
+or simply from a coding preference.
 
-diff --git a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-index 2c01f799a6b2..d0b1e4e507ff 100644
---- a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-+++ b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-@@ -9,6 +9,7 @@
- #define PM7250B_SID 8
- #define PM7250B_SID1 9
- 
-+#include <dt-bindings/iio/qcom,spmi-adc7-pm7325.h>
- #include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
- #include <dt-bindings/leds/common.h>
- #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
-@@ -137,6 +138,20 @@ afvdd_2p8: regulator-afvdd-2p8 {
- 	};
- 
- 	thermal-zones {
-+		camera-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&pmk8350_adc_tm 2>;
-+
-+			trips {
-+				active-config0 {
-+					temperature = <125000>;
-+					hysteresis = <1000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
- 		chg-skin-thermal {
- 			polling-delay-passive = <0>;
- 			polling-delay = <0>;
-@@ -165,6 +180,48 @@ active-config0 {
- 			};
- 		};
- 
-+		quiet-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&pmk8350_adc_tm 1>;
-+
-+			trips {
-+				active-config0 {
-+					temperature = <125000>;
-+					hysteresis = <1000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		rear-cam-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&pmk8350_adc_tm 4>;
-+
-+			trips {
-+				active-config0 {
-+					temperature = <125000>;
-+					hysteresis = <1000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		sdm-skin-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&pmk8350_adc_tm 3>;
-+
-+			trips {
-+				active-config0 {
-+					temperature = <125000>;
-+					hysteresis = <1000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
- 		xo-thermal {
- 			polling-delay-passive = <0>;
- 			polling-delay = <0>;
-@@ -538,6 +595,34 @@ xo-therm@0 {
- 		qcom,ratiometric;
- 		qcom,hw-settle-time-us = <200>;
- 	};
-+
-+	quiet-therm@1 {
-+		reg = <1>;
-+		io-channels = <&pmk8350_vadc PM7325_ADC7_AMUX_THM1_100K_PU>;
-+		qcom,ratiometric;
-+		qcom,hw-settle-time-us = <200>;
-+	};
-+
-+	cam-flash-therm@2 {
-+		reg = <2>;
-+		io-channels = <&pmk8350_vadc PM7325_ADC7_AMUX_THM2_100K_PU>;
-+		qcom,ratiometric;
-+		qcom,hw-settle-time-us = <200>;
-+	};
-+
-+	sdm-skin-therm@3 {
-+		reg = <3>;
-+		io-channels = <&pmk8350_vadc PM7325_ADC7_AMUX_THM3_100K_PU>;
-+		qcom,ratiometric;
-+		qcom,hw-settle-time-us = <200>;
-+	};
-+
-+	wide-rfc-therm@4 {
-+		reg = <4>;
-+		io-channels = <&pmk8350_vadc PM7325_ADC7_AMUX_THM4_100K_PU>;
-+		qcom,ratiometric;
-+		qcom,hw-settle-time-us = <200>;
-+	};
- };
- 
- &pmk8350_rtc {
-@@ -554,6 +639,38 @@ channel@44 {
- 		qcom,pre-scaling = <1 1>;
- 		label = "pmk8350_xo_therm";
- 	};
-+
-+	channel@144 {
-+		reg = <PM7325_ADC7_AMUX_THM1_100K_PU>;
-+		qcom,ratiometric;
-+		qcom,hw-settle-time = <200>;
-+		qcom,pre-scaling = <1 1>;
-+		label = "pm7325_quiet_therm";
-+	};
-+
-+	channel@145 {
-+		reg = <PM7325_ADC7_AMUX_THM2_100K_PU>;
-+		qcom,ratiometric;
-+		qcom,hw-settle-time = <200>;
-+		qcom,pre-scaling = <1 1>;
-+		label = "pm7325_cam_flash_therm";
-+	};
-+
-+	channel@146 {
-+		reg = <PM7325_ADC7_AMUX_THM3_100K_PU>;
-+		qcom,ratiometric;
-+		qcom,hw-settle-time = <200>;
-+		qcom,pre-scaling = <1 1>;
-+		label = "pm7325_sdm_skin_therm";
-+	};
-+
-+	channel@147 {
-+		reg = <PM7325_ADC7_AMUX_THM4_100K_PU>;
-+		qcom,ratiometric;
-+		qcom,hw-settle-time = <200>;
-+		qcom,pre-scaling = <1 1>;
-+		label = "pm7325_wide_rfc_therm";
-+	};
- };
- 
- &pon_pwrkey {
+Would you mind doing an exercise whether that is achievable?
 
--- 
-2.42.0
-
+Thanks
+Kevin
