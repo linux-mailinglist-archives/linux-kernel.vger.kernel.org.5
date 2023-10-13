@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AFF7C8122
+	by mail.lfdr.de (Postfix) with ESMTP id BF04D7C8123
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbjJMI6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
+        id S230344AbjJMI6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230273AbjJMI60 (ORCPT
+        with ESMTP id S230258AbjJMI60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Oct 2023 04:58:26 -0400
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFDFC0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:58:24 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S6L163Z56zVlTh;
-        Fri, 13 Oct 2023 16:54:50 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA7A95
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:58:25 -0700 (PDT)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S6L0f4bp5zLqP4;
+        Fri, 13 Oct 2023 16:54:26 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 13 Oct 2023 16:58:22 +0800
+ 15.1.2507.31; Fri, 13 Oct 2023 16:58:23 +0800
 From:   Kefeng Wang <wangkefeng.wang@huawei.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 CC:     <willy@infradead.org>, <linux-mm@kvack.org>,
@@ -32,9 +32,9 @@ CC:     <willy@infradead.org>, <linux-mm@kvack.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH -next v2 03/19] mm: memory: use folio_last_cpupid() in do_numa_page()
-Date:   Fri, 13 Oct 2023 16:55:47 +0800
-Message-ID: <20231013085603.1227349-4-wangkefeng.wang@huawei.com>
+Subject: [PATCH -next v2 04/19] mm: huge_memory: use folio_last_cpupid() in do_huge_pmd_numa_page()
+Date:   Fri, 13 Oct 2023 16:55:48 +0800
+Message-ID: <20231013085603.1227349-5-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20231013085603.1227349-1-wangkefeng.wang@huawei.com>
 References: <20231013085603.1227349-1-wangkefeng.wang@huawei.com>
@@ -54,24 +54,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert to use folio_last_cpupid() in do_numa_page().
+Convert to use folio_last_cpupid() in do_huge_pmd_numa_page().
 
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- mm/memory.c | 2 +-
+ mm/huge_memory.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index c4b4aa4c1180..a1cf25a3ff16 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4861,7 +4861,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
- 	    !node_is_toptier(nid))
- 		last_cpupid = (-1 & LAST_CPUPID_MASK);
- 	else
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index c9cbcbf6697e..f9571bf92603 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -1562,7 +1562,7 @@ vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf)
+ 	 * to record page access time.  So use default value.
+ 	 */
+ 	if (node_is_toptier(nid))
 -		last_cpupid = page_cpupid_last(&folio->page);
 +		last_cpupid = folio_last_cpupid(folio);
- 	target_nid = numa_migrate_prep(folio, vma, vmf->address, nid, &flags);
+ 	target_nid = numa_migrate_prep(folio, vma, haddr, nid, &flags);
  	if (target_nid == NUMA_NO_NODE) {
  		folio_put(folio);
 -- 
