@@ -2,285 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6527B7C806D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7A17C806F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbjJMIf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56042 "EHLO
+        id S230075AbjJMIg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbjJMIf4 (ORCPT
+        with ESMTP id S230123AbjJMIg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:35:56 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DA5D8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:35:52 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9ae75ece209so296984866b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:35:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697186151; x=1697790951; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=grAXNyzj17V163hszU2PuUkW35ZyN7Jv6aHwdCjJTRE=;
-        b=wc4zvkFtVEemWaccUpPqFi69q1NX5e8bcw2kpjxxpuw7Rk0+EufAOO7mjSWH0I3uvO
-         i8cn+5vNuOkObisSTOYfF+lmICd5UEfTqJFJbrTMKeECs5ah6aj2EDgb7JcXbn7GyM1K
-         ENy2aS2OFlq3/M7+AYGuwyW1n99+tPGWF7JhomEZtpDz8nScH6Ti34ASaFojb46Kf5ep
-         HGnHfhr3nb58ZJNvXgOBlrvZF7oe8PR+tqUKB1qAKwkGUqq/pAjibg75V9vf0hX3ElGz
-         Hi0WrBKYeZ+WGy+xFAlgQdyIBqZTvc8vSxN12JV9aLm5mOx9YqVakEUxOJVUkai8nQcX
-         aSUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697186151; x=1697790951;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=grAXNyzj17V163hszU2PuUkW35ZyN7Jv6aHwdCjJTRE=;
-        b=AMPnhO1V1nG/c/meOC3LxbVH8PbjDWMPluXN/X4uCvH6nWJ0SngyFFWL2UyzAktNtu
-         Y6ry0ZDu6OIyOwmyp3DJOkO0wb6OFy2Rj7xY+o99cqTMgmBq2l5vfvc1SuCoeZg7oTo6
-         bpCc2aMLqrMiwAnFdtnVG84YcDnGlw1JEgtH3Qgfb5dK/BVnysJ2dOcHRfXo900jBh4F
-         j6/WCElf934r+0WW92HyCWkulkja2ek22fsi1AOZEoua1HMPTpJSB55fJ1WzIOuCN40z
-         wuCeikDg1s1hjOpVleDfKQ9+cT0r4mN/nvtCXb8RxldhnOsfPpNQP4IvLegG9HOhYLAi
-         HCvg==
-X-Gm-Message-State: AOJu0YzBg11RWtxQP1UXtgNJr/y9Or4nT+ex+vS5o36/52TYBeb9kvdY
-        izZOtME/xlwJ/Nt//hCtpdgdxA==
-X-Google-Smtp-Source: AGHT+IGg28eJurm7V7gHx4DA0SLNZUEN0KN94ZRpgP3IJpAj3xNkaHLTKmv/yJpZLEohRje77iNvwA==
-X-Received: by 2002:a17:907:75f7:b0:9a1:c9c5:5fa1 with SMTP id jz23-20020a17090775f700b009a1c9c55fa1mr23611892ejc.4.1697186150802;
-        Fri, 13 Oct 2023 01:35:50 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id i11-20020a170906a28b00b009737b8d47b6sm12010902ejz.203.2023.10.13.01.35.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Oct 2023 01:35:50 -0700 (PDT)
-Message-ID: <2eafa89c-7c95-4bc1-85cb-a6d7417dcea8@linaro.org>
-Date:   Fri, 13 Oct 2023 10:35:49 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/2] dt-bindings: adc: provide max34408/9 device tree
- binding document
-Content-Language: en-US
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Ivan Mikhaylov <fr0st61te@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20231007234838.8748-1-fr0st61te@gmail.com>
- <20231007234838.8748-2-fr0st61te@gmail.com>
- <20231010154042.2ef667b2@jic23-huawei>
- <383064a5b0863a4a616cd60cff8d4bc18e397fd7.camel@gmail.com>
- <20231012084052.504ac930@jic23-huawei>
- <e7b74daa9d0131246fd10f47aa4128bc8f8f3177.camel@gmail.com>
- <20231013091952.00002573@Huawei.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231013091952.00002573@Huawei.com>
+        Fri, 13 Oct 2023 04:36:26 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2099.outbound.protection.outlook.com [40.107.20.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260ECA9
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 01:36:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Jxl3l3DSDfpNlLUscIOwiA+BelMLKGGhPiMi08NBwJdpEqhsQqEIHvdLMIOIP79QhQgJ1ZVukiN1AwZ464BB8zn/NIwH+s8G6tRnOezZAPE3p/5/PZBgRanlGtIBjeg7/AamnBwLSvT0o7IYyiw7gcbLdULy4Yn4onZLoNfNzQji18gbmX6PJzsDnV9XgW5L+yykoap92v2WndNBsGFOSjrSwjkfMAeVbGzGXWUNtjhaznFaLT3h0hg+vwIas1bLViLRCa7Bpn2fHHEsGuqpMZ2w/uwr3807P5Fi+yunX4+pQXM32aYywkgQQJWGMZk4p2ub0YrCC7Kw3nxmpZPZ/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wXDgKuc5gSwGS/J3ku41MRiw0eIi2ol+VfI8tTSFKeo=;
+ b=AVFQK3Tuzqww0H3nieXCh/11LuArlEKXaeZ1480BV1PVg0QusumweWeUL5qXKFq63ihqI9fnlTiShR5ImsFxMGk5XyWtTibZZZnIj8THkQ1Ljwp3qHSPcD3xkNEsSCHn6uq1epUF6SS/TMLJXCeOXuxgMyd6kSZNxHzIiIzm55UGxm+Syfkmcyvmz7e+qK1LntaN4t7TB5imlrg3/EHq4zfIYs32uFZQuBZDPOu4GTNGh4ZxNz9gFArvDcij+wLVGKbNNX734isalYL0AI2g9YAtXNebqsVkpJNfwihd9A8Qj31eQ4g0b/PyQ8phynkiCKP+8ap24JHf4Qu29NRDhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wXDgKuc5gSwGS/J3ku41MRiw0eIi2ol+VfI8tTSFKeo=;
+ b=IY+xoAOF32fId+AsEOPXZ0MlOAPRq5D86TvIZ344GM/R53V/vqXVylnB03FdakGFoxIqcZmvX9SGaCgG+hQNmzrvd8G6uV7uTmSZQDnsMfzVOpACwMd7tgrLgmJG8bEXVUqBoMQnt9KEM7Acv9rwx2S5WVp+89UEs8M9FsSSt3g=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=axentia.se;
+Received: from AM0PR02MB4436.eurprd02.prod.outlook.com (2603:10a6:208:ed::15)
+ by DB9PR02MB6858.eurprd02.prod.outlook.com (2603:10a6:10:21c::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.46; Fri, 13 Oct
+ 2023 08:36:21 +0000
+Received: from AM0PR02MB4436.eurprd02.prod.outlook.com
+ ([fe80::4ba4:83a5:e60c:3a5d]) by AM0PR02MB4436.eurprd02.prod.outlook.com
+ ([fe80::4ba4:83a5:e60c:3a5d%7]) with mapi id 15.20.6863.043; Fri, 13 Oct 2023
+ 08:36:21 +0000
+Message-ID: <ba8d31bf-28f5-d8a1-adff-1b9ea7c3a578@axentia.se>
+Date:   Fri, 13 Oct 2023 10:36:19 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] mux: Make it possible to select MULTIPLEXER if EXPERT
+Content-Language: sv-SE, en-US
+To:     William Kennington <william@wkennington.com>
+Cc:     linux-kernel@vger.kernel.org
+References: <20230926230712.516709-1-william@wkennington.com>
+ <aa4591dd-b558-3401-4a19-362780ec321f@axentia.se>
+ <CAD_4BXhWbUxuidM47poTKFYYruL5jdJyPUfoZvXnqwDNNLd98w@mail.gmail.com>
+From:   Peter Rosin <peda@axentia.se>
+In-Reply-To: <CAD_4BXhWbUxuidM47poTKFYYruL5jdJyPUfoZvXnqwDNNLd98w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-ClientProxiedBy: MM0P280CA0113.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:190:9::19) To AM0PR02MB4436.eurprd02.prod.outlook.com
+ (2603:10a6:208:ed::15)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR02MB4436:EE_|DB9PR02MB6858:EE_
+X-MS-Office365-Filtering-Correlation-Id: 43916d77-7492-4321-09c8-08dbcbc77a07
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wob2WQUoR35LlwRQXveHOqI/dmX6Q1Xb/UxLm2D/qweJaDKQhu86yYJbVPag1LZ4wS/+7nZVaRHxoZTOz1/qikmsMFjbuC7SThY6Dn3Jp8m1VbQ/jmrOTRiW7RR0Vqr53DFQ+xf1hZZDg26jDPCtGjl2myv9t0voedTGgfO12mmJB1KcQ5FxTc2XLQNogw4CPlnoTc+N4ASdAxdmsoKaju8Y4JhTPyvX2+hiR7s3dMiDPRPjDBjSyq79ZCkAbpv5yadBd75wqx4KzU2toPfbb00eEP4MUjU8WyVp8wU+AaM4Q1359si1uFKVjVQ7Xs6dcWHFPGzNqmsOUj0er7vOKxP0q9mKtckMx7Iv8RSOQDMHO//0TOSD+V0a0BiCVfwcPPDm/NF+izxXZaOdU8JVT9h1yaT68CeGyCkUfO7zgjCIFTCSRSdTg93Xviw74QUJBs77mtU63vdUrogIrsUPMRMwSLOYeVq1OdCBeRsm+F2iL2aXAwwWcCEZ83/X2UEEk2NGJ6s8FJ8sJw9831yzROynKbG8+26M3G7PfGxAJtuOsdf67vF7Ns7f6h8f5FzPgbDjkkxs2tCWVOzN6OzjRxs9HT05SpexKC/XHQrjxzpykDIUHmbK4TP/RWLzJxVL/J9BtOv/vNAoWp8MjO3tZw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB4436.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(366004)(136003)(376002)(39840400004)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(31686004)(6506007)(83380400001)(26005)(38100700002)(6512007)(86362001)(4326008)(4001150100001)(2906002)(31696002)(6486002)(5660300002)(8936002)(8676002)(66476007)(6916009)(316002)(66946007)(66556008)(41300700001)(36756003)(2616005)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VkRpSkZmNjJtamlOMUFjTzlMdk85Nml0aTRCYzlVczRtbU9YWHloOXpCN3g0?=
+ =?utf-8?B?NFhCRnFhUXV5OTdHN21WZklwNWlhaFhoNHg5YzRVR2Z4R2s5MElrSTBtbVQ3?=
+ =?utf-8?B?RDFMSzF1ck93ZVp0WEFidFhUblJEaDliZTVNTHkwWnpueU12S0ZzbWlGV3U2?=
+ =?utf-8?B?YVY3aW1JUm9pcWpIMXhkRlpvVklSRlJxYkNWdXh2c250QnVIbllJQTgxb053?=
+ =?utf-8?B?eW44TmxoMEpRQ0ZhNWJCYzFwdDBITHMvcXFxWHErbVdrdFNkcG9GS0huR1Vh?=
+ =?utf-8?B?R00rUlQyeVhENCt0VU1qNlF5andNbGJaTXVWWmMzRTV5T2tFb1dOeTZVMTZO?=
+ =?utf-8?B?UlQrdnN0WDFjcWFURGRCTjg4REFmcndYUTRwWFdoeWs5OU9JTW9yMUpXejJz?=
+ =?utf-8?B?RUxsSWFCRVdJbGFwODNkRGdFU2M3QUxTdnR5SHNuRVl1cVo1ZnVZa0FwUG5B?=
+ =?utf-8?B?bU5uSnRoMzgwRDVPRytxREhlWHdLSldiaVVPcFppMWJoSHB3Z292ZWU0RzNT?=
+ =?utf-8?B?b3hqdWg5cDN0NzRMcmp1RTcweEs0cFFUbmFsaTdzWFFzRTRtcWdRdFl6bitF?=
+ =?utf-8?B?RThndC82ZlV0dXROYWEvaW1WNG0rS1dnc0JWSEsvQ3JsdnFiSkE5UGRBU21J?=
+ =?utf-8?B?L2xEN21QamNwMnRjY21zcGJlSHNoUmlyaWlldUE0TEwwV2hNaW9Mc0dtSitr?=
+ =?utf-8?B?K3BpVlEzV3FSZzMwMXNiZXRNNGVKMjRrZ2JyY3R0dkpIUDlkRDZYZXMwbFgy?=
+ =?utf-8?B?OENJOWlRN3ozN1hQN2NsdXZJNFVBMERydDJPbWxjMCtsdndGMm4zNFZleXhL?=
+ =?utf-8?B?R0xyTWpSMWNOL1IzcUIxZ0FvelJJRENra3lGMENMelhWNXBMZVpvYXcyZWpz?=
+ =?utf-8?B?U296Z0ltYW1TbW5odStWWVQ1VWl3K3Q2R3NWU3dnMEZaWHRza2dpc2JRRkto?=
+ =?utf-8?B?b3ZWTUM1VHZrdmpRUWdiMWREbW11Y081bk52Ujl5UTIvOUZ6WENxWEF4TzZ2?=
+ =?utf-8?B?UExMMVdWT3VSbU5sSlRESlVibm8rSGJPWEZ1a3NSck93SkRUYmpJNEJOQmFk?=
+ =?utf-8?B?Y0ZsMGl6UnRUdG1nTUF1YnJuRHgvbktiSGFyWU5Cc2plNlUxNGgzOHVVS014?=
+ =?utf-8?B?dTgvWnQ5VDdGTDdmNnVZSURVNXVXRlNYeHJvcDJDN043Rm40ZzF3ZVBMV2lB?=
+ =?utf-8?B?VDZFREl5R1FJdXVJakNEY1RValVoY0Y4QjRmU1pnWmpZdFhIKzl5Mmh5MmdF?=
+ =?utf-8?B?RE5WQ01DcnAxZ2tJS3pESnVRUTIweU1lNzFlT1Iwak82Um84bHdBRDFCaTUx?=
+ =?utf-8?B?UG9lcGlMWktmQklPR2t0azBRSHVudW9hNTc0ai9DN0NPZmdxSmk0NWNqM1p1?=
+ =?utf-8?B?U0lZNkRXc2pnVmVHQmU4c2MrNTVvTElBUVh6YXhXSzZBS1dZYi9nVld4bGJs?=
+ =?utf-8?B?QzZUTlQvdEJKN0M2RThUSHB0RlpQSVlDdkpMSVd5a3h0cXpjaTRFcVpRbFE3?=
+ =?utf-8?B?enpRcmRhZ0hYcG1yTFR3bVhSNnZXOEZ3dE1ZdFBTVWloQXBQSVpjRmkrbHZP?=
+ =?utf-8?B?dDVUZjZ4QWxjUVhZQmxtYWp5RnRjcXZRU2FjUTNNNkRTSG9WRkwwWVEzNDhk?=
+ =?utf-8?B?T2F6aG9qZG9IQzlDc2xiL25jTlZTSTZncFd5bWszaWczY2l6emN1RHpIOGxK?=
+ =?utf-8?B?T2dsSDQ4akdUSmZVdmc5YW9JdEwrWFV5NE1ieFAzUFAzVzY2NkZpc2VBTG9Q?=
+ =?utf-8?B?VDdzU0M3Q1hrK2VnWW1CNStKQUt2UDVnbUZOMk53VGp5NG9vN1FMQVBkb0tH?=
+ =?utf-8?B?UEZzT3E0eGM0K0NmcithTll1VmViaG14K2twclZacFNhZjkrN1RSczdRK0Iz?=
+ =?utf-8?B?eFAvK1pXMW5EY2gzSmNxcVRBMURFeEpkYTViZ0JITmVwZWxhNkxzeWpUQjZ3?=
+ =?utf-8?B?K3B1c2hJL2pWYlEwVnA5djVNOG9hZWxyWHYrbG5NbWFUeUFldmpVUmNyWUhl?=
+ =?utf-8?B?WFdKZ1E5TjZmS3hkbkpDRU5SSlpIbDNGQW9rODhONEJ1WWtJY2pjSm9qbHpK?=
+ =?utf-8?B?dGRSZFgxWTJWcXRaVENndHI4UmVFVmxvNkRvbGRLRGFTQ2R4Q0tGclkrQ1Bz?=
+ =?utf-8?Q?qVndz1c3Igly8R2pkmlugjA4s?=
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: 43916d77-7492-4321-09c8-08dbcbc77a07
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR02MB4436.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 08:36:21.1102
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +e45zfCMvfiBPaJEeubotC4UX7oUxk7PfWpt0fzWbVJm+s504X9epzZ72vnZ2dup
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR02MB6858
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2023 10:19, Jonathan Cameron wrote:
-> On Thu, 12 Oct 2023 19:27:33 +0300
-> Ivan Mikhaylov <fr0st61te@gmail.com> wrote:
+Hi!
+
+2023-10-12 at 23:52, William Kennington wrote:
+> On Wed, Sep 27, 2023 at 16:08 Peter Rosin <peda@axentia.se <mailto:peda@axentia.se>> wrote:
 > 
->> On Thu, 2023-10-12 at 08:40 +0100, Jonathan Cameron wrote:
->>> On Tue, 10 Oct 2023 23:22:48 +0300
->>> Ivan Mikhaylov <fr0st61te@gmail.com> wrote:
->>>   
->>>> On Tue, 2023-10-10 at 15:40 +0100, Jonathan Cameron wrote:  
->>>>> On Sun,  8 Oct 2023 02:48:37 +0300
->>>>> Ivan Mikhaylov <fr0st61te@gmail.com> wrote:
->>>>>     
->>>>>> The hardware binding for i2c current monitoring device with
->>>>>> overcurrent
->>>>>> control.
->>>>>>
->>>>>> Signed-off-by: Ivan Mikhaylov <fr0st61te@gmail.com>
->>>>>> ---
->>>>>>  .../bindings/iio/adc/maxim,max34408.yaml      | 141
->>>>>> ++++++++++++++++++
->>>>>>  1 file changed, 141 insertions(+)
->>>>>>  create mode 100644
->>>>>> Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
->>>>>>
->>>>>> diff --git
->>>>>> a/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
->>>>>> b/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
->>>>>> new file mode 100644
->>>>>> index 000000000000..9749f1fd1802
->>>>>> --- /dev/null
->>>>>> +++
->>>>>> b/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
->>>>>> @@ -0,0 +1,141 @@
->>>>>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->>>>>> +%YAML 1.2
->>>>>> +---
->>>>>> +$id:
->>>>>> http://devicetree.org/schemas/iio/adc/maxim,max34408.yaml#
->>>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>>>> +
->>>>>> +title: Two- and four-channel current monitors with overcurrent
->>>>>> control
->>>>>> +
->>>>>> +maintainers:
->>>>>> +  - Ivan Mikhaylov <fr0st61te@gmail.com>
->>>>>> +
->>>>>> +description: |
->>>>>> +  The MAX34408/MAX34409 are two- and four-channel current
->>>>>> monitors
->>>>>> that are
->>>>>> +  configured and monitored with a standard I2C/SMBus serial
->>>>>> interface. Each
->>>>>> +  unidirectional current sensor offers precision high-side
->>>>>> operation with a
->>>>>> +  low full-scale sense voltage. The devices automatically
->>>>>> sequence
->>>>>> through
->>>>>> +  two or four channels and collect the current-sense samples
->>>>>> and
->>>>>> average them
->>>>>> +  to reduce the effect of impulse noise. The raw ADC samples
->>>>>> are
->>>>>> compared to
->>>>>> +  user-programmable digital thresholds to indicate overcurrent
->>>>>> conditions.
->>>>>> +  Overcurrent conditions trigger a hardware output to provide
->>>>>> an
->>>>>> immediate
->>>>>> +  indication to shut down any necessary external circuitry.
->>>>>> +
->>>>>> +  Specifications about the devices can be found at:
->>>>>> + 
->>>>>> https://www.analog.com/media/en/technical-documentation/data-sheets/MAX34408-MAX34409.pdf
->>>>>> +
->>>>>> +properties:
->>>>>> +  compatible:
->>>>>> +    enum:
->>>>>> +      - maxim,max34408
->>>>>> +      - maxim,max34409
->>>>>> +
->>>>>> +  "#address-cells":
->>>>>> +    const: 1
->>>>>> +
->>>>>> +  "#size-cells":
->>>>>> +    const: 0
->>>>>> +
->>>>>> +  reg:
->>>>>> +    maxItems: 1
->>>>>> +
->>>>>> +  interrupts:
->>>>>> +    maxItems: 1
->>>>>> +
->>>>>> +  powerdown-gpios:
->>>>>> +    description:
->>>>>> +      Shutdown Output. Open-drain output. This output
->>>>>> transitions
->>>>>> to high impedance
->>>>>> +      when any of the digital comparator thresholds are
->>>>>> exceeded
->>>>>> as long as the ENA
->>>>>> +      pin is high.
->>>>>> +    maxItems: 1
->>>>>> +
->>>>>> +  shtdn-enable-gpios:    
->>>>>
->>>>> I guess the review crossed with you sending v5.  There is some
->>>>> feedback on v4 you need
->>>>> to address here.    
->>>>
->>>> Jonathan, I thought I did, I've changed ena to powerdown-gpios from
->>>> Krzysztof's comments but about this one pin I'm still not sure, it
->>>> looks like *-enable-gpios (like in *-enable-gpios pins in
->>>> iio/frequency/adi,adf4377.yaml) pin or is it not? Or maybe any
->>>> other
->>>> suggestions about naming of this one?
->>>>
->>>> Thanks.  
->>>
->>> shutdown-gpios and make the sense (active high / low) such that
->>> setting
->>> it results in teh device being shut down.
->>> Or treat it as an enable and enable-gpios
->>>
->>> Something that indicates both shutdown and enable is confusing ;)
->>>
->>> Jonathan  
->>
->>
->> Jonathan, then I make these changes:
->>
->> powerdown-gpios: -> output-enable:
-> Needs to retain the gpios bit as we want the standard gpio stuff to pick
-> them up. I'm not that keen on output-enable-gpios though.  The activity
-> here is very much 'shutdown because of error or not enabled' I think.
-> So perhaps we flip the sense and document that it needs to be active low?
+>     Hi!
 > 
->> shtdn-enable-gpios: -> enable-gpios:
->>
->> Is it ok?
+>     2023-09-27 at 01:07, William A. Kennington III wrote:
+>     > Right now, there is no way to enable multiplexer support unless another
+>     > config option selects it. When using `allnoconfig` with CONFIG_EXPERT,
+>     > this is deselected with no way to enable it.
 > 
-> Conor, Rob, Krzysztof - you probably have a better insight into this than
-> I do.
+>     I fail to see how that would be useful? Why would you want the mux
+>     core if there are no users?
 > 
+> 
+> In this case the user is a custom configuration that is added per board following 
+> Documentation/devicetree/bindings/arm/npcm/nuvoton,gcr.yaml
 
-"enable-gpios" are for turning on a specific feature, not powering
-on/off entire device. For example to enable regulator output.
+(That binding has recently been moved:
+Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-gcr.yaml)
 
-"powerdown-gpios" are for turning device on/off.
+> 
+> I suppose the problem is that ARCH_NPCM7XX doesn’t select MULTIPLEXER and MUX_MMIO. Maybe that’s the patch you are looking for? Nothing else that we use has a dt compatible string with mmio-mux or uses the functionality under the covers. This leads to our board config selecting it manually.
 
-I don't know what do you have in your device.
+Perhaps? I think that's one way to do it.
 
-Best regards,
-Krzysztof
+I'm not sure about what exactly should select MULTIPLEXER in your case,
+but the thinking is that whatever driver wants to use a mux controller
+should be responsible for selecting the mux core.
 
+Maybe that thinking needs revisiting?
+
+When digging I'm finding nodes that wants to add mux controllers to the
+npcm "gcr" syscon node in:
+
+arch/arm/boot/dts/nuvoton/nuvoton-npcm730-gbs.dts
+arch/arm/boot/dts/nuvoton/nuvoton-npcm730-kudo.dts
+arch/arm/boot/dts/nuvoton/nuvoton-npcm750-runbmc-olympus.dts
+
+But I then find no mention of any nodes wanting make use of those mux
+controllers. My thinking is that whomever comes up with a dts that
+actually has such nodes will also want to select drivers for those nodes.
+And those drivers in turn should select MULTIPLEXER.
+
+(The above olympus case is a bit suspect since the mux controller has no
+label, and it is therefore needlessly difficult to reference the node
+from a node that needs a mux controller)
+
+Cheers,
+Peter
