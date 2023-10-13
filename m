@@ -2,82 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DCD7C8BD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4F87C8BDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229518AbjJMQzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51120 "EHLO
+        id S230477AbjJMQ4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbjJMQzi (ORCPT
+        with ESMTP id S229683AbjJMQ4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:55:38 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8E695
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:55:35 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-6b697b7f753so316056b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:55:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697216135; x=1697820935; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SqpC3O39vWA5duvUzqUKP8E1siQNepZhPn4u3Os8+q4=;
-        b=RU7X/bN2TE0sR2S0pHwbe+KI1fUlsj4j9qUV5hwQXLYLGibXDJ0Z0J/Q6/a8WfFcCM
-         fExWeAqmNIAeDGO8q7GOrxOPd/uO72AUz/SQBP4Gh6ZqPpxzDjLyevO/FVaxfs5atX2U
-         lV+MZGKEvs6tkcW+kotZhOh8zvbU8JsTCQrPd8J+7j51MMQAqMn7+yN+Nz/VN0GOKuLk
-         lQoxUyg2pIhgGyqHva4FLAo6q4MU+jH3537wG6TheF6PdgYGKN46nE+d8VBMWQzd19yx
-         Xx74ONT+lhQYu1d9vyTtP/nzw9HWaXKbFtrtnP3HzLgN1WMXUGgYbRMAZ5pZ78ffTt0o
-         54gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697216135; x=1697820935;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SqpC3O39vWA5duvUzqUKP8E1siQNepZhPn4u3Os8+q4=;
-        b=W+fowZ4L2sBcEAmB9pBrf/1B667dc3KMoW4g7nke/Dak5AwzBtwiHkZCqUr9Jto8s4
-         gV9QDG0fE0IFNMN9HQTDmfIjegPJkdV4ClDgTxjcFbrUSPehXLm6v/NRR3wpXi1VRi5X
-         qWx69Ayq1BYffM2+MT4BgvQ1fRIonQeCcM8t+xNPJ0PVN0/vXXh1ps8NFDG4aT1tJL48
-         1MvF9jS8d8FpFZ6FyFUSlhZMTBNdnQtjp2sIGSTVpa6j0szpwRtkvudWLqRCcNrEAAhP
-         gCvaewnZQZdF+1kYQ3T2nZFGMdwO62L5LIamCIkbsbvj7PyBR0ewKmXgX9E2UEGGDepU
-         NB+Q==
-X-Gm-Message-State: AOJu0Ywvz3Zff7T19F07f8nffaVnTgWNRZvf0JvgMRFGYdslFbp6Tqa2
-        HQd/vzrNr8fYl5NFoyTrxP4YOavrMNA=
-X-Google-Smtp-Source: AGHT+IGj5xI/++tlsxAohTj1c+Qq338n1HPZhLbwf3cqW8PuGxWCGz5IRSyv9cGVcgL/NLV+GP5fOnU9smg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:2e05:b0:68f:cb69:8e76 with SMTP id
- fc5-20020a056a002e0500b0068fcb698e76mr640155pfb.2.1697216134809; Fri, 13 Oct
- 2023 09:55:34 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 09:55:33 -0700
-In-Reply-To: <7c4b1c78-de74-5fff-7327-0863f403eb7e@redhat.com>
+        Fri, 13 Oct 2023 12:56:39 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBB8A9;
+        Fri, 13 Oct 2023 09:56:36 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39DGqKOC024192;
+        Fri, 13 Oct 2023 16:55:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=KvcxPRXQT8z860vA5hg/tsLyh50B3/HpjRrU1QQJ8xI=;
+ b=aRyGFJSh+SLsZmP2gF94tKa+RhNvw2DTpxNxbMGzS0lqn4KBjf7ffTdilYFucYAho2GY
+ y2MfrPXmrUgUw0H2fyveW8E/KbTUhz/YXPMZ2nukxK2KSemKk0DnEltEAXVgzzD2c1sR
+ 4d1KjYgcwqEvkRT9AGVCgOm5Jkore8dupnBAfgxzS+kIvgR7SNksDajKAvs6zbq3n0Zk
+ a/qNrZ5gL1EQi11bRSrNQkLrASX6svl2HNHIaeq4ix7xMlelG4M57KFdYEJBulpy+LyW
+ Mm5bIqZM8i/2SGuRdZVxv2dirghpgbJn6DVpXgdnCY5R+xA3jFcAENW2/DWQ0R4WQCAP jA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tq9sx05et-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 16:55:52 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39DGqTfr024518;
+        Fri, 13 Oct 2023 16:55:51 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tq9sx05du-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 16:55:51 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39DGmj3S008868;
+        Fri, 13 Oct 2023 16:55:49 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tpt57nb08-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 16:55:49 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39DGtnoB27656848
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Oct 2023 16:55:49 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 397F158060;
+        Fri, 13 Oct 2023 16:55:49 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E158B5805E;
+        Fri, 13 Oct 2023 16:55:47 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.129.99])
+        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 13 Oct 2023 16:55:47 +0000 (GMT)
+Message-ID: <d24bfa5752f751cbd36070838508fde26a4e0625.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 21/25] ima: Move to LSM infrastructure
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Fri, 13 Oct 2023 12:55:47 -0400
+In-Reply-To: <20230904134049.1802006-2-roberto.sassu@huaweicloud.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904134049.1802006-2-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
 Mime-Version: 1.0
-References: <ZSQO4fHaAxDkbGyz@google.com> <20231009200608.GJ800259@ZenIV>
- <ZSRgdgQe3fseEQpf@google.com> <20231009204037.GK800259@ZenIV>
- <ZSRwDItBbsn2IfWl@google.com> <20231010000910.GM800259@ZenIV>
- <ZSSaWPc5wjU9k1Kw@google.com> <20231010003746.GN800259@ZenIV>
- <ZSXeipdJcWZjLx8k@google.com> <7c4b1c78-de74-5fff-7327-0863f403eb7e@redhat.com>
-Message-ID: <ZSl2hdfF8XSXss3h@google.com>
-Subject: Re: [PATCH gmem FIXUP] kvm: guestmem: do not use a file system
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 0Yl2JA_HcM8CzbBM_Hj9g2VYlGlJP-Cj
+X-Proofpoint-ORIG-GUID: BrWDdS3j3a8JQM-mkSYfvS6gTLhas4ap
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-13_08,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=999 phishscore=0 clxscore=1015
+ malwarescore=0 priorityscore=1501 lowpriorityscore=0 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310130144
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023, Paolo Bonzini wrote:
-> Your patch 2 looks good, but perhaps instead of setting the owner we could
-> stash the struct module* in a global, and try_get/put it from open and
-> release respectively?  That is, .owner keeps the kvm module alive and the
-> kvm module keeps kvm-intel/kvm-amd alive.  That would subsume patches 1 and 3.
+On Mon, 2023-09-04 at 15:40 +0200, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> Remove hardcoded IMA function calls (not for appraisal) from the LSM
+> infrastructure, the VFS, NFS and the key subsystem.
+> 
+> Make those functions as static (except for ima_file_check() which is
+> exported, and ima_post_key_create_or_update(), which is not in ima_main.c),
+> and register them as implementation of the respective hooks in the new
+> function init_ima_lsm().
 
-I don't think that would be a net positive.  We'd have to implement .open() for
-several file types just to get a reference to the sub-module.  At that point, the
-odds of forgetting to implement .open() are about the same as forgetting to set
-.owner when adding a new file type, e.g. guest_memfd.
+ima_post_path_mknod() is currently enabled whether or not
+CONFIG_SECURITY_PATH is enabled.  Now it will only be enabled when
+CONFIG_SECURITY_PATH is confiured.  Changes like this need to be
+mentioned.
+
+> Call init_ima_lsm() from integrity_lsm_init() (renamed from
+> integrity_iintcache_init()), to make sure that the integrity subsystem is
+> ready at the time IMA hooks are registered. The same will be done for EVM,
+> by calling init_evm_lsm() just after init_ima_lsm().
+
+Instead of creating separate IMA and EVM LSMs, the hooks are being
+added to "integrity".  Some sort of (brief) explanation should be
+provided.
+
+    security_add_hooks(ima_hooks, ARRAY_SIZE(ima_hooks), "integrity");
+
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Acked-by: Chuck Lever <chuck.lever@oracle.com>
+> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+
+-- 
+thanks,
+
+Mimi
+
