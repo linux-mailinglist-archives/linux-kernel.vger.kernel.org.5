@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC8F7C8503
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B9A7C8504
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbjJMLvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42242 "EHLO
+        id S231628AbjJMLvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231639AbjJMLv3 (ORCPT
+        with ESMTP id S231608AbjJMLvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:51:29 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CE1103
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:50:45 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5347e657a11so3251628a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:50:45 -0700 (PDT)
+        Fri, 13 Oct 2023 07:51:31 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27019113
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:50:50 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53d9b94731aso3750353a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:50:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697197844; x=1697802644; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697197849; x=1697802649; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=RlWyBAlnNkL97B9uFnxIPAxyiYY6f2FScf2sGwpC230=;
-        b=OsH95pprrsqU4C8RXoUQRJ1+XyAquUsbz60I+uQx3Rtcc7ICAozUquV+OsAOoh4IvN
-         3JOT4lHgPkW7wB/xMowAc9AK3hBlVOYdIlG7zXelaHCQJCIV5EInneFXFVDqG6LqMN+b
-         TfwYO1tacqgIRRYW1IHA6gpm0hENk/Vn9II9q5Ab8998GH+yQ/34LMShyUXeQo134W0f
-         ZbgUgw8aNR6BfWLyq/+JCuaNwALD1DxQ5plpUSRuh5c0vTYZtPDLiowWXmYbWyL+253o
-         mJfSiP5qIM7s76xWV4rY8GiA0U/sH4lmyLXi/zL/c35TWbabGC55ghloH1MRJTMn/xBU
-         0Whg==
+        bh=z3BO0VVLWDHFHATfvCSsr9DiN7Fn+JNql4oHTTNemgg=;
+        b=DhxtNYXFk03/51OxLB6cqhzs6M5rJTvzkbr8Hk27mFwWu0pgi/BwEhVs4yUQcMzBH3
+         BynemxE6TVADuHYQIh0RBwh9npmOFfGJFwp1lZoLiCI3Hmrn7LZP9WZvBp9t+TP1Ehng
+         IPZ0SaiK22tvQZqN9w+mJNDQ7Y1ADIh4IubR6aVhfj0GJIYIECG+7xNunVWZjgYP8LZl
+         F25fluOmaYJcL8hEe9R0IeCNSmlPsdfiPqdYrR65Sw20Ybx6MDkLvYZ8hgwNc19oq99+
+         nFCM89eh4Mb+bBtqOw6fIISDddzoHV7k0CGC4j/DNTS5aNO01MCw37plnCmadzWqKsJq
+         l2vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697197844; x=1697802644;
+        d=1e100.net; s=20230601; t=1697197849; x=1697802649;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RlWyBAlnNkL97B9uFnxIPAxyiYY6f2FScf2sGwpC230=;
-        b=BlRJ0z+c4a66Tt5fW+eUWTXCG5gv1CwyPXbHlaypDHLxXwjQLeE+nqFNsx3HPheyrp
-         WpwhUmMxKwDIbCN2fnMmqFH4vV4I4fENJRhQWGjTkTXUVfFchD20gyR/qJJIwceQ6mYK
-         ap21KqRXrCW1eaUDcCEqh9BjWqFlFQgFseJEh/Fwi1uwo4ygz3HHzpEbweyN/g1inlqB
-         CpoV4ecLcCDtwZiibk5qqOfBcLH0IgmYMkchxqSQscBjBh5bsT+7v5UNjbVKz2YPqup4
-         LxuHiz8EcHaQ0w/BhkHM1StRKN8LhAogXH1mHVvxmftyy2DhSfFCSfYZS2rtGw+1/qj5
-         LP/Q==
-X-Gm-Message-State: AOJu0Yxo15eMCpnLP8+Wq5Wcwqmra9iRFCtzGW81p0JNwAUe+tqMyhrE
-        HdIx9w48pXA9AIP9OwGt0x5l0g==
-X-Google-Smtp-Source: AGHT+IEJoR/VHdNl6bTvYFWkcLiHNQWLAQ7VtYXGcdP3RwVtf2/2Lviium2SclwNgNdjYoI6hEGR6w==
-X-Received: by 2002:a05:6402:951:b0:53d:a4a3:e5c4 with SMTP id h17-20020a056402095100b0053da4a3e5c4mr8086654edz.1.1697197844035;
-        Fri, 13 Oct 2023 04:50:44 -0700 (PDT)
+        bh=z3BO0VVLWDHFHATfvCSsr9DiN7Fn+JNql4oHTTNemgg=;
+        b=o54e1hVxlIp5eqY/yGfjTuqmbUq77my2IDckEDjofKIHcq3qR/oAA1ciPQzKKcMWgA
+         gdFNNF1g309s4HlKCxfeP8VbVS5RNlRM20bEWZfmZb9gHD58FB9U2opQeYwBXJJJMKtP
+         COfpz1CzKW+I2+GmlYf6TPjtotdQX1jGi8XiAgvnf1gVht3O/Rl7lkFd5o9TOxXjdki4
+         LPPjw0k8fNzQaXjZlMJ/UrDxV71SFgN1h1LUfwgSrLrQS9RJQIJ+T4U3lF772cJXyir1
+         dwiI/GynkdOLcl3kNzBJoa5rQza5BVVQnIiJAgczYHlcVhMvs2lrjLDuHnEelViGLQl9
+         ydVA==
+X-Gm-Message-State: AOJu0Yyhzr0K4J6H2zShlGw3og1qyFm5B5oG1Xj2DRh6/S1vW/cB+R0W
+        8wZ26Xyxr+MNtWb3DMnNRwZ+GA==
+X-Google-Smtp-Source: AGHT+IGQ0iiDgCWZuqpVaPxu1Z546G/+Ht3rIcrQalIcIkQW9qEIoMM3WAYxOYTIocZ7wwtz65znug==
+X-Received: by 2002:aa7:d791:0:b0:530:9e59:5795 with SMTP id s17-20020aa7d791000000b005309e595795mr23876011edq.4.1697197849202;
+        Fri, 13 Oct 2023 04:50:49 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id er24-20020a056402449800b0052febc781bfsm4218376edb.36.2023.10.13.04.50.42
+        by smtp.gmail.com with ESMTPSA id er24-20020a056402449800b0052febc781bfsm4218376edb.36.2023.10.13.04.50.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Oct 2023 04:50:43 -0700 (PDT)
-Message-ID: <37a2d2d1-5ede-4f88-b4e7-d9750336465d@linaro.org>
-Date:   Fri, 13 Oct 2023 13:50:41 +0200
+        Fri, 13 Oct 2023 04:50:48 -0700 (PDT)
+Message-ID: <31c6c37b-cf9e-438b-8142-90489293fae0@linaro.org>
+Date:   Fri, 13 Oct 2023 13:50:46 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V1 3/3] ASoC: codecs: Add aw88399 amplifier driver
+Subject: Re: [PATCH V1 1/3] ASoC: dt-bindings: Add schema for "awinic,aw88399"
 Content-Language: en-US
 To:     wangweidong.a@awinic.com, lgirdwood@gmail.com, broonie@kernel.org,
         robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
@@ -68,7 +68,7 @@ To:     wangweidong.a@awinic.com, lgirdwood@gmail.com, broonie@kernel.org,
         alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20231013104220.279953-1-wangweidong.a@awinic.com>
- <20231013104220.279953-4-wangweidong.a@awinic.com>
+ <20231013104220.279953-2-wangweidong.a@awinic.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -114,12 +114,13 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231013104220.279953-4-wangweidong.a@awinic.com>
+In-Reply-To: <20231013104220.279953-2-wangweidong.a@awinic.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -129,21 +130,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 13/10/2023 12:42, wangweidong.a@awinic.com wrote:
 > From: Weidong Wang <wangweidong.a@awinic.com>
 > 
-> Add i2c and amplifier registration for
-> aw88399 and their associated operation functions.
+> Add the awinic,aw88399 property to the awinic,aw88395.yaml file.
 > 
+> Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
+> ---
 
-
-> +
-> +static void aw88399_hw_reset(struct aw88399 *aw88399)
-> +{
-> +	if (aw88399->reset_gpio) {
-> +		gpiod_set_value_cansleep(aw88399->reset_gpio, 0);
-> +		usleep_range(AW88399_1000_US, AW88399_1000_US + 10);
-> +		gpiod_set_value_cansleep(aw88399->reset_gpio, 1);
-
-Why do you leave the device in reset state? I think you wanted these
-reverted.
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
