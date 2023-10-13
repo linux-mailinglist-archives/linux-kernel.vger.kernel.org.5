@@ -2,108 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4711E7C83B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B197C83BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbjJMKu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 06:50:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35726 "EHLO
+        id S230380AbjJMKvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 06:51:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbjJMKux (ORCPT
+        with ESMTP id S230323AbjJMKv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 06:50:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9376EDA;
-        Fri, 13 Oct 2023 03:50:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73864C433C7;
-        Fri, 13 Oct 2023 10:50:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697194250;
-        bh=G0w/pjBqGRKdZRG8VaIdtW8Ioqlty+xWHEkwpiG8Pcs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Er9v7lTfNlC1TycUGJ4Naag7upz4ME9td+nOkzR8zjwvT5Y9sQWHi/IllzVOaNBOo
-         1bLoSL6tVyjBJCd+0FrwoOHQQOV8qh9UJFEkDayXYRCxuVrdmfZKApgos7GGISXDkU
-         546vqYCSbUQNUX8q64RBMhvspIEdLfWwWWAZcXtZlIbBzDrbBHimwU1jrp0c7LeKCv
-         q906FSS0ZFo4BvLIPckc3d5i/QCioMewkn7PiHBRU7Jhis7k5UBeiaGVNzJITb42bi
-         G+WMk+b6GCfwKXVRr4BukntC/wh/oGF5P70vbUVjcjPeIN7NVGEuQiu+B72jZZ+DFH
-         PMfc9gXnB4JNw==
-Message-ID: <ae78fe72c2ea0bc631d50ef33313b3913d48f396.camel@kernel.org>
-Subject: Re: [PATCH] NFSD: Clean up errors in nfs4xdr.c
-From:   Jeff Layton <jlayton@kernel.org>
-To:     KaiLong Wang <wangkailong@jari.cn>, chuck.lever@oracle.com,
-        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 13 Oct 2023 06:50:48 -0400
-In-Reply-To: <116353ed.95a.18b27c347d9.Coremail.wangkailong@jari.cn>
-References: <116353ed.95a.18b27c347d9.Coremail.wangkailong@jari.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.module_f38+17164+63eeee4a) 
+        Fri, 13 Oct 2023 06:51:27 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43EFBBE;
+        Fri, 13 Oct 2023 03:51:26 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39DABwJJ032430;
+        Fri, 13 Oct 2023 10:51:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=XRv42xHAis5Fhtay5EJ5egtLIimhKpgjtjPqQOtZ6xM=;
+ b=YxLE+hSoD2NiLJO9/ar/jt11EKRwEnGlJw9GJh7YveraBISOw5q98lPWH68BEWnFRKwf
+ ddpAkp8/9yY3lqnGUHJVO07A78GuWkY7Drt16SOxQke5MYIyb+aipNfnJTl/w73K1mR+
+ tdpA6S2B7HgMjGZQSLp9wrYNQeSWtL6FvWb0WCsPenMu4hVt4EH8uHS1VIxHAK6HRQ0n
+ rPmrk4nexCLaDVM9KGeRv1Zrepr8JrHB9B6WDIqS8CBtQFM8wZBXEjrd4BvP9/50z6Zy
+ yzp5ytO4anntSD54qwwHZ5+6QenSIEXWWCBrDj4OaDwv8QZA+sbNQuiNmQXi8HSLwTjV cA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tpt1u9fxh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 10:51:10 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39DAp0eT014032
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 10:51:00 GMT
+Received: from [10.214.66.58] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 13 Oct
+ 2023 03:50:55 -0700
+Message-ID: <eabe2aea-7d21-4dfa-a1cc-1267ec31c5d9@quicinc.com>
+Date:   Fri, 13 Oct 2023 16:20:52 +0530
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/5] Add devicetree support for SDX75 Modem and IDP
+Content-Language: en-US
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <rafael@kernel.org>, <viresh.kumar@linaro.org>,
+        <tglx@linutronix.de>, <maz@kernel.org>, <mani@kernel.org>,
+        <robimarko@gmail.com>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+References: <1686311438-24177-1-git-send-email-quic_rohiagar@quicinc.com>
+From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
+In-Reply-To: <1686311438-24177-1-git-send-email-quic_rohiagar@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: an_5d6ILC_lZxz9Z4aroIVhfcpcVYArK
+X-Proofpoint-ORIG-GUID: an_5d6ILC_lZxz9Z4aroIVhfcpcVYArK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-13_03,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 phishscore=0 mlxlogscore=688 clxscore=1011 adultscore=0
+ malwarescore=0 bulkscore=0 impostorscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310130089
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-13 at 14:39 +0800, KaiLong Wang wrote:
-> Fix the following errors reported by checkpatch:
->=20
-> ERROR: spaces required around that '=3D' (ctx:VxV)
-> ERROR: else should follow close brace '}'
->=20
-> Signed-off-by: KaiLong Wang <wangkailong@jari.cn>
-> ---
->  fs/nfsd/nfs4xdr.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
->=20
-> diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
-> index 1cbd2a392302..8b9707957649 100644
-> --- a/fs/nfsd/nfs4xdr.c
-> +++ b/fs/nfsd/nfs4xdr.c
-> @@ -2432,7 +2432,7 @@ nfsd4_decode_compound(struct nfsd4_compoundargs *ar=
-gp)
->  {
->  	struct nfsd4_op *op;
->  	bool cachethis =3D false;
-> -	int auth_slack=3D argp->rqstp->rq_auth_slack;
-> +	int auth_slack =3D argp->rqstp->rq_auth_slack;
->  	int max_reply =3D auth_slack + 8; /* opcnt, status */
->  	int readcount =3D 0;
->  	int readbytes =3D 0;
-> @@ -2585,7 +2585,7 @@ static __be32 nfsd4_encode_components_esc(struct xd=
-r_stream *xdr, char sep,
->  	__be32 *p;
->  	__be32 pathlen;
->  	int pathlen_offset;
-> -	int strlen, count=3D0;
-> +	int strlen, count =3D 0;
->  	char *str, *end, *next;
-> =20
->  	dprintk("nfsd4_encode_components(%s)\n", components);
-> @@ -2622,8 +2622,7 @@ static __be32 nfsd4_encode_components_esc(struct xd=
-r_stream *xdr, char sep,
->  				return nfserr_resource;
->  			p =3D xdr_encode_opaque(p, str, strlen);
->  			count++;
-> -		}
-> -		else
-> +		} else
->  			end++;
->  		if (found_esc)
->  			end =3D next;
 
-In general, we don't usually take patches that just clean up whitespace
-damage or stylistic problems. Doing so makes backporting harder as you
-end up having to pull in extra patches to fix up minor differences
-before bringing in substantive patches.
+On 6/9/2023 5:20 PM, Rohit Agarwal wrote:
+> Hi,
+>
+> Changes in v4:
+>   - Addressed some of the dt bindings check mentioned by Krzysztof.
+>
+> Changes in v3:
+>   - Clubbed all the dt node into a single patch as suggested by Krzysztof.
+>   - Removed the applied patch.
+>   - Addressed some comments from Konrad and Dmitry.
+>
+> Changes in v2:
+>   - Added the CPUFreq support patch.
+>   - Collected the Acked by tags.
+>   - Addressed some minor comments from Konrad.
+>
+> This series adds devicetree support for Qualcomm SDX75 platform and IDP
+> board. This series functionally depends on GCC and RPMh Clock support
+> series [1], and pinctrl support for SDX75 [2] which are under review.
+>
+> With this current devicetree support, the IDP can boot into initramfsshell.
+>
+Can the patch 3/5 and 4/5 be picked of this series? All changes apart 
+from these are picked.
+Somehow these patches got missed.
 
-If you're fixing a real bug in the same area, then sure, go ahead and
-fix up the style in the surrounding code, but if these patches don't
-fix real bugs then I'd suggest not taking them.
---=20
-Jeff Layton <jlayton@kernel.org>
+Thanks,
+Rohit.
+>
+>
