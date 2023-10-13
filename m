@@ -2,123 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AEB57C7E95
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB2F7C7E9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbjJMHaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50768 "EHLO
+        id S229744AbjJMHdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 03:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjJMHax (ORCPT
+        with ESMTP id S229441AbjJMHc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:30:53 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F27B8;
-        Fri, 13 Oct 2023 00:30:51 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40537481094so19401545e9.0;
-        Fri, 13 Oct 2023 00:30:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697182250; x=1697787050; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vzVL5vVmRYO7lL+aDIjM1G9uTaxxQRQWQ2vKxVi0PEE=;
-        b=aVDSiankkK8vXZeHSgWVWxEcPu7tkybVPvPmusHLHOfPoTKLWS+pUCSuROzuDaeHgL
-         oZG5iXUrw+gTe9m8hHLTdalAP6mw7KDu1e+W+mJ47g1cKVC8VNAqT4CrqSf1yzG6Xb1Q
-         +bsW5AdSNdxOrm2ySJHxb4Q5DOIbqbdwich18k3bI/d9LAaR8gBh/s8FYkR9AX93B3u8
-         hL0U0btNw2R3zpdqk5wMNCoyLt6MrbjPiq5y0dknbcYzFtepDLbJvY4AH+30iOuApnVo
-         6BDN/ocz7yOrnXyBSjlfSdIo+/fWZeL2/xDz85/AvaJ4opKDKjVDFjbW8ZElWoHnt55t
-         D6Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697182250; x=1697787050;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vzVL5vVmRYO7lL+aDIjM1G9uTaxxQRQWQ2vKxVi0PEE=;
-        b=jFnm6lS5b4f/28OmjPS1AxQEmmnYqqLp8xiXAW0j1MRYql4cW/b6ohVi9cWG6q2N9e
-         NQAGNrV1Lix2ynn2GyOeCTQ0v2ko+Tt1d6manfLe2oy66S+RudyPkgu7zyIxlXMAWtx8
-         jKAmJ3ju0Si4HKGVySUmUEmoulw+IQJZc4+CPp3KtYFIYrsbqGAXjym+2qTY5UIm2vT/
-         FJz+8X77XqTLLcP2zEyuhQjtn74UOExMVtP+8bYwj+jR79ncHS+2ch7tVgbTQHllyD5n
-         XVFu8Bn9866AxKANlvOebwzO1NyNvODMPiNlHW+zrAws1xH7QbyDpAF0JTAZp5Vnls0B
-         yOVg==
-X-Gm-Message-State: AOJu0YzcgWCCZi2fyWHmZtXeuvzWYiI6Pk0Wjz+RUiIFVipxOmZc5Gab
-        mjZzhDahXQJzsMva6m+yJ5k=
-X-Google-Smtp-Source: AGHT+IGQSk4HywK3W12gZApu9SDZ1U/7aZSF8TJnTms0OUo172gVR9nFhI8WW/HWhSIhw74vG/hXEw==
-X-Received: by 2002:adf:a31e:0:b0:32d:888a:c2cf with SMTP id c30-20020adfa31e000000b0032d888ac2cfmr6034412wrb.7.1697182249845;
-        Fri, 13 Oct 2023 00:30:49 -0700 (PDT)
-Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
-        by smtp.gmail.com with ESMTPSA id h15-20020a05600016cf00b0032cc35c2ef7sm9889328wrf.29.2023.10.13.00.30.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 00:30:48 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 13 Oct 2023 09:30:46 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Sandipan Das <sandipan.das@amd.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Uros Bizjak <ubizjak@gmail.com>
-Subject: Re: [PATCH] perf/x86/amd/uncore: fix error codes in amd_uncore_init()
-Message-ID: <ZSjyJuqk3z0RyKP2@gmail.com>
-References: <cec62eba-c4b8-4cb7-9671-58894dd4b974@moroto.mountain>
+        Fri, 13 Oct 2023 03:32:59 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 292B4AD
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:32:58 -0700 (PDT)
+Received: from wangkailong$jari.cn ( [182.148.14.172] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Fri, 13 Oct 2023 15:30:59
+ +0800 (GMT+08:00)
+X-Originating-IP: [182.148.14.172]
+Date:   Fri, 13 Oct 2023 15:30:59 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "KaiLong Wang" <wangkailong@jari.cn>
+To:     mark@fasheh.com, jlbec@evilplan.org, akpm@linux-foundation.org
+Cc:     ocfs2-devel@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] ocfs2/dlm: Clean up errors in dlmmaster.c
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cec62eba-c4b8-4cb7-9671-58894dd4b974@moroto.mountain>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Message-ID: <7a92ebb0.967.18b27f217c1.Coremail.wangkailong@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwD3lD8z8ihl+t7BAA--.754W
+X-CM-SenderInfo: 5zdqwypdlo00nj6mt2flof0/1tbiAQADB2UnvzMAKgAHsm
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_00,RCVD_IN_PBL,RDNS_NONE,
+        T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Dan Carpenter <dan.carpenter@linaro.org> wrote:
-
-> Some of the error paths in this function return don't initialize the
-> error code.  Return -ENODEV.
-> 
-> Fixes: d6389d3ccc13 ("perf/x86/amd/uncore: Refactor uncore management")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
->  arch/x86/events/amd/uncore.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/events/amd/uncore.c b/arch/x86/events/amd/uncore.c
-> index 9b444ce24108..a389828f378c 100644
-> --- a/arch/x86/events/amd/uncore.c
-> +++ b/arch/x86/events/amd/uncore.c
-> @@ -1009,7 +1009,8 @@ static struct amd_uncore uncores[UNCORE_TYPE_MAX] = {
->  static int __init amd_uncore_init(void)
->  {
->  	struct amd_uncore *uncore;
-> -	int ret, i;
-> +	int ret = -ENODEV;
-> +	int i;
->  
->  	if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD &&
->  	    boot_cpu_data.x86_vendor != X86_VENDOR_HYGON)
-
-Ugh, why on Earth didn't GCC warn about this? The bad pattern is pretty 
-simple & obvious once pointed out ... compilers should have no trouble 
-realizing that 'ret' is returned uninitialized in some of these control 
-paths. Yet not a peep from the compiler ...
-
-Thanks for the fix!
-
-	Ingo
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+c3dpdGNoIGFuZCBjYXNlIHNob3VsZCBiZSBhdCB0aGUgc2FtZSBpbmRlbnQKRVJST1I6ICJmb28g
+KiBiYXIiIHNob3VsZCBiZSAiZm9vICpiYXIiCkVSUk9SOiBzcGFjZXMgcmVxdWlyZWQgYXJvdW5k
+IHRoYXQgJz0nIChjdHg6VnhWKQpFUlJPUjogb3BlbiBicmFjZSAneycgZm9sbG93aW5nIHN0cnVj
+dCBnbyBvbiB0aGUgc2FtZSBsaW5lCkVSUk9SOiBzcGFjZSByZXF1aXJlZCBhZnRlciB0aGF0ICcs
+JyAoY3R4OlZ4VikKRVJST1I6IHNwYWNlcyByZXF1aXJlZCBhcm91bmQgdGhhdCAnPCcgKGN0eDpW
+eFYpCgpTaWduZWQtb2ZmLWJ5OiBLYWlMb25nIFdhbmcgPHdhbmdrYWlsb25nQGphcmkuY24+Ci0t
+LQogZnMvb2NmczIvZGxtL2RsbW1hc3Rlci5jIHwgOTggKysrKysrKysrKysrKysrKysrKystLS0t
+LS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDQ4IGluc2VydGlvbnMoKyksIDUwIGRl
+bGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2ZzL29jZnMyL2RsbS9kbG1tYXN0ZXIuYyBiL2ZzL29j
+ZnMyL2RsbS9kbG1tYXN0ZXIuYwppbmRleCBkNjEwZGE4ZTJmMjQuLmQyOTA3MTVhMGEzZCAxMDA2
+NDQKLS0tIGEvZnMvb2NmczIvZGxtL2RsbW1hc3Rlci5jCisrKyBiL2ZzL29jZnMyL2RsbS9kbG1t
+YXN0ZXIuYwpAQCAtMTE1LDIzICsxMTUsMjMgQEAgc3RhdGljIGludCBkbG1fcHJlX21hc3Rlcl9y
+ZWNvX2xvY2tyZXMoc3RydWN0IGRsbV9jdHh0ICpkbG0sCiBpbnQgZGxtX2lzX2hvc3RfZG93bihp
+bnQgZXJybm8pCiB7CiAJc3dpdGNoIChlcnJubykgewotCQljYXNlIC1FQkFERjoKLQkJY2FzZSAt
+RUNPTk5SRUZVU0VEOgotCQljYXNlIC1FTk9UQ09OTjoKLQkJY2FzZSAtRUNPTk5SRVNFVDoKLQkJ
+Y2FzZSAtRVBJUEU6Ci0JCWNhc2UgLUVIT1NURE9XTjoKLQkJY2FzZSAtRUhPU1RVTlJFQUNIOgot
+CQljYXNlIC1FVElNRURPVVQ6Ci0JCWNhc2UgLUVDT05OQUJPUlRFRDoKLQkJY2FzZSAtRU5FVERP
+V046Ci0JCWNhc2UgLUVORVRVTlJFQUNIOgotCQljYXNlIC1FTkVUUkVTRVQ6Ci0JCWNhc2UgLUVT
+SFVURE9XTjoKLQkJY2FzZSAtRU5PUFJPVE9PUFQ6Ci0JCWNhc2UgLUVJTlZBTDogICAvKiBpZiBy
+ZXR1cm5lZCBmcm9tIG91ciB0Y3AgY29kZSwKKwljYXNlIC1FQkFERjoKKwljYXNlIC1FQ09OTlJF
+RlVTRUQ6CisJY2FzZSAtRU5PVENPTk46CisJY2FzZSAtRUNPTk5SRVNFVDoKKwljYXNlIC1FUElQ
+RToKKwljYXNlIC1FSE9TVERPV046CisJY2FzZSAtRUhPU1RVTlJFQUNIOgorCWNhc2UgLUVUSU1F
+RE9VVDoKKwljYXNlIC1FQ09OTkFCT1JURUQ6CisJY2FzZSAtRU5FVERPV046CisJY2FzZSAtRU5F
+VFVOUkVBQ0g6CisJY2FzZSAtRU5FVFJFU0VUOgorCWNhc2UgLUVTSFVURE9XTjoKKwljYXNlIC1F
+Tk9QUk9UT09QVDoKKwljYXNlIC1FSU5WQUw6ICAgLyogaWYgcmV0dXJuZWQgZnJvbSBvdXIgdGNw
+IGNvZGUsCiAJCQkJICAgdGhpcyBtZWFucyB0aGVyZSBpcyBubyBzb2NrZXQgKi8KLQkJCXJldHVy
+biAxOworCQlyZXR1cm4gMTsKIAl9CiAJcmV0dXJuIDA7CiB9CkBAIC02OTgsMTIgKzY5OCwxMiBA
+QCBzdGF0aWMgdm9pZCBkbG1fbG9ja3Jlc19kcm9wX2luZmxpZ2h0X3dvcmtlcihzdHJ1Y3QgZGxt
+X2N0eHQgKmRsbSwKICAqIHRvIGFzc2VydF9tYXN0ZXIgKG9yIGRpZSkuCiAgKgogICovCi1zdHJ1
+Y3QgZGxtX2xvY2tfcmVzb3VyY2UgKiBkbG1fZ2V0X2xvY2tfcmVzb3VyY2Uoc3RydWN0IGRsbV9j
+dHh0ICpkbG0sCitzdHJ1Y3QgZGxtX2xvY2tfcmVzb3VyY2UgKmRsbV9nZXRfbG9ja19yZXNvdXJj
+ZShzdHJ1Y3QgZGxtX2N0eHQgKmRsbSwKIAkJCQkJICBjb25zdCBjaGFyICpsb2NraWQsCiAJCQkJ
+CSAgaW50IG5hbWVsZW4sCiAJCQkJCSAgaW50IGZsYWdzKQogewotCXN0cnVjdCBkbG1fbG9ja19y
+ZXNvdXJjZSAqdG1wcmVzPU5VTEwsICpyZXM9TlVMTDsKKwlzdHJ1Y3QgZGxtX2xvY2tfcmVzb3Vy
+Y2UgKnRtcHJlcyA9IE5VTEwsICpyZXMgPSBOVUxMOwogCXN0cnVjdCBkbG1fbWFzdGVyX2xpc3Rf
+ZW50cnkgKm1sZSA9IE5VTEw7CiAJc3RydWN0IGRsbV9tYXN0ZXJfbGlzdF9lbnRyeSAqYWxsb2Nf
+bWxlID0gTlVMTDsKIAlpbnQgYmxvY2tlZCA9IDA7CkBAIC0xMTQ0LDE2ICsxMTQ0LDE0IEBAIHN0
+YXRpYyBpbnQgZGxtX3dhaXRfZm9yX2xvY2tfbWFzdGVyeShzdHJ1Y3QgZGxtX2N0eHQgKmRsbSwK
+IAlyZXR1cm4gcmV0OwogfQogCi1zdHJ1Y3QgZGxtX2JpdG1hcF9kaWZmX2l0ZXIKLXsKK3N0cnVj
+dCBkbG1fYml0bWFwX2RpZmZfaXRlciB7CiAJaW50IGN1cm5vZGU7CiAJdW5zaWduZWQgbG9uZyAq
+b3JpZ19ibTsKIAl1bnNpZ25lZCBsb25nICpjdXJfYm07CiAJdW5zaWduZWQgbG9uZyBkaWZmX2Jt
+W0JJVFNfVE9fTE9OR1MoTzJOTV9NQVhfTk9ERVMpXTsKIH07CiAKLWVudW0gZGxtX25vZGVfc3Rh
+dGVfY2hhbmdlCi17CitlbnVtIGRsbV9ub2RlX3N0YXRlX2NoYW5nZSB7CiAJTk9ERV9ET1dOID0g
+LTEsCiAJTk9ERV9OT19DSEFOR0UgPSAwLAogCU5PREVfVVAKQEAgLTEzMDgsNyArMTMwNiw3IEBA
+IHN0YXRpYyBpbnQgZGxtX2RvX21hc3Rlcl9yZXF1ZXN0KHN0cnVjdCBkbG1fbG9ja19yZXNvdXJj
+ZSAqcmVzLAogewogCXN0cnVjdCBkbG1fY3R4dCAqZGxtID0gbWxlLT5kbG07CiAJc3RydWN0IGRs
+bV9tYXN0ZXJfcmVxdWVzdCByZXF1ZXN0OwotCWludCByZXQsIHJlc3BvbnNlPTAsIHJlc2VuZDsK
+KwlpbnQgcmV0LCByZXNwb25zZSA9IDAsIHJlc2VuZDsKIAogCW1lbXNldCgmcmVxdWVzdCwgMCwg
+c2l6ZW9mKHJlcXVlc3QpKTsKIAlyZXF1ZXN0Lm5vZGVfaWR4ID0gZGxtLT5ub2RlX251bTsKQEAg
+LTEzNTEsMzEgKzEzNDksMzEgQEAgc3RhdGljIGludCBkbG1fZG9fbWFzdGVyX3JlcXVlc3Qoc3Ry
+dWN0IGRsbV9sb2NrX3Jlc291cmNlICpyZXMsCiAJcmVzZW5kID0gMDsKIAlzcGluX2xvY2soJm1s
+ZS0+c3BpbmxvY2spOwogCXN3aXRjaCAocmVzcG9uc2UpIHsKLQkJY2FzZSBETE1fTUFTVEVSX1JF
+U1BfWUVTOgotCQkJc2V0X2JpdCh0bywgbWxlLT5yZXNwb25zZV9tYXApOwotCQkJbWxvZygwLCAi
+bm9kZSAldSBpcyB0aGUgbWFzdGVyLCByZXNwb25zZT1ZRVNcbiIsIHRvKTsKLQkJCW1sb2coMCwg
+IiVzOiUuKnM6IG1hc3RlciBub2RlICV1IG5vdyBrbm93cyBJIGhhdmUgYSAiCi0JCQkgICAgICJy
+ZWZlcmVuY2VcbiIsIGRsbS0+bmFtZSwgcmVzLT5sb2NrbmFtZS5sZW4sCi0JCQkgICAgIHJlcy0+
+bG9ja25hbWUubmFtZSwgdG8pOwotCQkJbWxlLT5tYXN0ZXIgPSB0bzsKLQkJCWJyZWFrOwotCQlj
+YXNlIERMTV9NQVNURVJfUkVTUF9OTzoKLQkJCW1sb2coMCwgIm5vZGUgJXUgbm90IG1hc3Rlciwg
+cmVzcG9uc2U9Tk9cbiIsIHRvKTsKLQkJCXNldF9iaXQodG8sIG1sZS0+cmVzcG9uc2VfbWFwKTsK
+LQkJCWJyZWFrOwotCQljYXNlIERMTV9NQVNURVJfUkVTUF9NQVlCRToKLQkJCW1sb2coMCwgIm5v
+ZGUgJXUgbm90IG1hc3RlciwgcmVzcG9uc2U9TUFZQkVcbiIsIHRvKTsKLQkJCXNldF9iaXQodG8s
+IG1sZS0+cmVzcG9uc2VfbWFwKTsKLQkJCXNldF9iaXQodG8sIG1sZS0+bWF5YmVfbWFwKTsKLQkJ
+CWJyZWFrOwotCQljYXNlIERMTV9NQVNURVJfUkVTUF9FUlJPUjoKLQkJCW1sb2coMCwgIm5vZGUg
+JXUgaGl0IGFuIGVycm9yLCByZXNlbmRpbmdcbiIsIHRvKTsKLQkJCXJlc2VuZCA9IDE7Ci0JCQly
+ZXNwb25zZSA9IDA7Ci0JCQlicmVhazsKLQkJZGVmYXVsdDoKLQkJCW1sb2coTUxfRVJST1IsICJi
+YWQgcmVzcG9uc2UhICV1XG4iLCByZXNwb25zZSk7Ci0JCQlCVUcoKTsKKwljYXNlIERMTV9NQVNU
+RVJfUkVTUF9ZRVM6CisJCXNldF9iaXQodG8sIG1sZS0+cmVzcG9uc2VfbWFwKTsKKwkJbWxvZygw
+LCAibm9kZSAldSBpcyB0aGUgbWFzdGVyLCByZXNwb25zZT1ZRVNcbiIsIHRvKTsKKwkJbWxvZygw
+LCAiJXM6JS4qczogbWFzdGVyIG5vZGUgJXUgbm93IGtub3dzIEkgaGF2ZSBhICIKKwkJCSJyZWZl
+cmVuY2VcbiIsIGRsbS0+bmFtZSwgcmVzLT5sb2NrbmFtZS5sZW4sCisJCQlyZXMtPmxvY2tuYW1l
+Lm5hbWUsIHRvKTsKKwkJbWxlLT5tYXN0ZXIgPSB0bzsKKwkJYnJlYWs7CisJY2FzZSBETE1fTUFT
+VEVSX1JFU1BfTk86CisJCW1sb2coMCwgIm5vZGUgJXUgbm90IG1hc3RlciwgcmVzcG9uc2U9Tk9c
+biIsIHRvKTsKKwkJc2V0X2JpdCh0bywgbWxlLT5yZXNwb25zZV9tYXApOworCQlicmVhazsKKwlj
+YXNlIERMTV9NQVNURVJfUkVTUF9NQVlCRToKKwkJbWxvZygwLCAibm9kZSAldSBub3QgbWFzdGVy
+LCByZXNwb25zZT1NQVlCRVxuIiwgdG8pOworCQlzZXRfYml0KHRvLCBtbGUtPnJlc3BvbnNlX21h
+cCk7CisJCXNldF9iaXQodG8sIG1sZS0+bWF5YmVfbWFwKTsKKwkJYnJlYWs7CisJY2FzZSBETE1f
+TUFTVEVSX1JFU1BfRVJST1I6CisJCW1sb2coMCwgIm5vZGUgJXUgaGl0IGFuIGVycm9yLCByZXNl
+bmRpbmdcbiIsIHRvKTsKKwkJcmVzZW5kID0gMTsKKwkJcmVzcG9uc2UgPSAwOworCQlicmVhazsK
+KwlkZWZhdWx0OgorCQltbG9nKE1MX0VSUk9SLCAiYmFkIHJlc3BvbnNlISAldVxuIiwgcmVzcG9u
+c2UpOworCQlCVUcoKTsKIAl9CiAJc3Bpbl91bmxvY2soJm1sZS0+c3BpbmxvY2spOwogCWlmIChy
+ZXNlbmQpIHsKQEAgLTE2OTksNyArMTY5Nyw3IEBAIHN0YXRpYyBpbnQgZGxtX2RvX2Fzc2VydF9t
+YXN0ZXIoc3RydWN0IGRsbV9jdHh0ICpkbG0sCiAJCQlyID0gMDsKIAkJfSBlbHNlIGlmIChyIDwg
+MCkgewogCQkJLyogb2ssIHNvbWV0aGluZyBob3JyaWJseSBtZXNzZWQuICBraWxsIHRoeXNlbGYu
+ICovCi0JCQltbG9nKE1MX0VSUk9SLCJkdXJpbmcgYXNzZXJ0IG1hc3RlciBvZiAlLipzIHRvICV1
+LCAiCisJCQltbG9nKE1MX0VSUk9SLCAiZHVyaW5nIGFzc2VydCBtYXN0ZXIgb2YgJS4qcyB0byAl
+dSwgIgogCQkJICAgICAiZ290ICVkLlxuIiwgbmFtZWxlbiwgbG9ja25hbWUsIHRvLCByKTsKIAkJ
+CXNwaW5fbG9jaygmZGxtLT5zcGlubG9jayk7CiAJCQlzcGluX2xvY2soJmRsbS0+bWFzdGVyX2xv
+Y2spOwpAQCAtMjkzMCw3ICsyOTI4LDcgQEAgc3RhdGljIHZvaWQgZGxtX3JlbW92ZV9ub25sb2Nh
+bF9sb2NrcyhzdHJ1Y3QgZGxtX2N0eHQgKmRsbSwKIAogCUJVR19PTihyZXMtPm93bmVyID09IGRs
+bS0+bm9kZV9udW0pOwogCi0JZm9yIChpPTA7IGk8MzsgaSsrKSB7CisJZm9yIChpID0gMDsgaSA8
+IDM7IGkrKykgewogCQlsaXN0X2Zvcl9lYWNoX2VudHJ5X3NhZmUobG9jaywgbmV4dCwgcXVldWUs
+IGxpc3QpIHsKIAkJCWlmIChsb2NrLT5tbC5ub2RlICE9IGRsbS0+bm9kZV9udW0pIHsKIAkJCQlt
+bG9nKDAsICJwdXR0aW5nIGxvY2sgZm9yIG5vZGUgJXVcbiIsCi0tIAoyLjE3LjEK
