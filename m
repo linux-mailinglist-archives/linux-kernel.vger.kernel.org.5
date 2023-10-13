@@ -2,112 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B55657C7ED3
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABDC7C7EB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbjJMHqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
+        id S229908AbjJMHjH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Oct 2023 03:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbjJMHqb (ORCPT
+        with ESMTP id S229688AbjJMHjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:46:31 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C72FD8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:46:28 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-505a62d24b9so2290998e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:46:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1697183187; x=1697787987; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=wP8hZWh4qXyybXYLkSLcCZu/0fSSL+752WobzxTNboE=;
-        b=2PvP0qX1Kb/XjDabWI/PzKNPTRta7BnboXvRCqD9rHVAAgruwu4lsxR7lOFyvR2ez1
-         JE4wfU3K8lotvUF2dG88RTSTt6B7rivBrW39Fq49PqL9xUSD4ycIZKR8Qf13bmkVqWQR
-         kxFGMGMnxH0ug9B+JLi/JXqcDYTJyhTvZ0Tzd0kneivrFCUjc+t7gKj6NP+CcWgLWBWA
-         ZVrqX+cIQC49b3zgjKB8VfsDgr9YHsju9ODo5bCy0QP68GJ4eGCtaJWsHHSjoCjr46XV
-         egfobmFMV1y3ngEnwQY+75aYdvBxPA3JHsLca8PHCBOcJe9R+VraEaOErKLPzdBWwF3/
-         anYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697183187; x=1697787987;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wP8hZWh4qXyybXYLkSLcCZu/0fSSL+752WobzxTNboE=;
-        b=uvWAy+lTlXyiE+1M9gmpiWEPFctqHCoMQTTnA4S+BfDjOSe2IffPvLUg5PL3gHBvpC
-         XcRU9S1S3wMgaFlW98RWN/DfOrpnkm9dwEkp2jNeG/ukur0meEjkEPyWRX45qvvo5WZC
-         ovzyhc5DtjRXrKj+B3vKWoQj0fvieIgb1F+E+JRYjgSt04htwEsMiVD/46/oI5AYBSdO
-         yBfCLKGlT0ugdvSFvE7XIr86eGCNYCH4xcgB2ZE9EJuJgfBlMMIelX1rbuegofQ/YLoE
-         BnD1WOlYMqfBdZTi0+gcjJSOqMgfRnP7HRajnLSLh8XPeEqyrj1feR7ZzW0krGJ5k27C
-         xnYQ==
-X-Gm-Message-State: AOJu0Ywdh4C7pKD++a+oMfNxPwj3WVvQJGXVQq/AR6vIQEPdHnhTtA4W
-        BxypP9bb+L293iEfGvxyKj8YmA==
-X-Google-Smtp-Source: AGHT+IEkyEN8zAQ5/dhZe4B9ajTP0EDEK/rSt7LjwGLHX2RHEZPT+iFlTiLC7YassaX2zhaMHUp92A==
-X-Received: by 2002:a19:5f04:0:b0:4fb:94c6:fd63 with SMTP id t4-20020a195f04000000b004fb94c6fd63mr16394959lfb.17.1697183186650;
-        Fri, 13 Oct 2023 00:46:26 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:b50c:c5d5:8b1b:e06d])
-        by smtp.gmail.com with ESMTPSA id r6-20020a5d4946000000b0032da022855fsm252248wrs.111.2023.10.13.00.46.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 00:46:26 -0700 (PDT)
-References: <20231010062917.3624223-1-xianwei.zhao@amlogic.com>
- <20231010062917.3624223-5-xianwei.zhao@amlogic.com>
- <5e0bd4bba88701dd1a7a3e89d18412f0.sboyd@kernel.org>
-User-agent: mu4e 1.8.13; emacs 29.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Xianwei Zhao <xianwei.zhao@amlogic.com>,
-        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Chuan Liu <chuan.liu@amlogic.com>
-Subject: Re: [PATCH V2 4/4] clk: meson: c3: add c3 clock peripherals
- controller driver
-Date:   Fri, 13 Oct 2023 09:38:14 +0200
-In-reply-to: <5e0bd4bba88701dd1a7a3e89d18412f0.sboyd@kernel.org>
-Message-ID: <1jmswnvub2.fsf@starbuckisacylon.baylibre.com>
+        Fri, 13 Oct 2023 03:39:05 -0400
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F2EB8;
+        Fri, 13 Oct 2023 00:39:01 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4S6J2l2TKpz9xrtb;
+        Fri, 13 Oct 2023 15:26:07 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwA3Q5Tr8yhlfkQgAg--.14800S2;
+        Fri, 13 Oct 2023 08:38:32 +0100 (CET)
+Message-ID: <893bc5837fea4395bfb19e35097810ec7e425917.camel@huaweicloud.com>
+Subject: Re: [PATCH v3 02/25] ima: Align ima_post_path_mknod() definition
+ with LSM infrastructure
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
+        tom@talpey.com, dmitry.kasatkin@gmail.com, paul@paul-moore.com,
+        jmorris@namei.org, serge@hallyn.com, dhowells@redhat.com,
+        jarkko@kernel.org, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Fri, 13 Oct 2023 09:38:16 +0200
+In-Reply-To: <102b06b30518ac6595022e079de92717c92f3b8e.camel@linux.ibm.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904133415.1799503-3-roberto.sassu@huaweicloud.com>
+         <a733fe780a3197150067ad35ed280bf85e11fa97.camel@linux.ibm.com>
+         <b51baf7741de1fdee8b36a87bd2dde71184d47a8.camel@huaweicloud.com>
+         <8646e30b0074a2932076b5a0a792b14be034de98.camel@linux.ibm.com>
+         <16c8c95f2e63ab9a2fba8cba919bf129d0541b61.camel@huaweicloud.com>
+         <c16551704db68c6e0ba89c729c892e9401f05dfc.camel@linux.ibm.com>
+         <2336abd6ae195eda221d54e3c2349a4760afaff2.camel@huaweicloud.com>
+         <84cfe4d93cb5b02591f4bd921b828eb6f3e95faa.camel@linux.ibm.com>
+         <4866a6ef46deebf9a9afdeb7efd600edb589da93.camel@huaweicloud.com>
+         <102b06b30518ac6595022e079de92717c92f3b8e.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-CM-TRANSID: LxC2BwA3Q5Tr8yhlfkQgAg--.14800S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJr45AFW8ZFyDGF45GrWxZwb_yoW8GF4kpr
+        W09a47KwsrJr15ur10va1Fqr4Fka13JFW5XrWrtr17A34qkryFqF4jkr1Yka1kGrW8G3Wa
+        vF4UJ3s7Wr15ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAJBF1jj5D5TgABsY
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2023-10-12 at 13:10 -0400, Mimi Zohar wrote:
+> > > > > > We need to make sure that ima_post_path_mknod() has the
+> > > > > > same parameters
+> > > > > > as the LSM hook at the time we register it to the LSM
+> > > > > > infrastructure.
+> > > > > 
+> > > > > I'm trying to understand why the pre hook parameters and the
+> > > > > missing
+> > > > > IMA parameter are used, as opposed to just defining the new
+> > > > > post_path_mknod hook like IMA.
+> > > > 
+> > > > As an empyrical rule, I pass the same parameters as the
+> > > > corresponding
+> > > > pre hook (plus idmap, in this case). This is similar to the
+> > > > inode_setxattr hook. But I can be wrong, if desired I can
+> > > > reduce.
+> > > 
+> > > The inode_setxattr hook change example is legitimate, as EVM
+> > > includes
+> > > idmap, while IMA doesn't. 
+> > > 
+> > > Unless there is a good reason for the additional parameters, I'm
+> > > not
+> > > sure that adding them makes sense.  Not modifying the parameter
+> > > list
+> > > will reduce the size of this patch set.
+> > 
+> > The hook is going to be used by any LSM. Without knowing all the
+> > possible use cases, maybe it is better to include more information
+> > now,
+> > than modifying the hook and respective implementations later.
+> > 
+> > (again, no problem to reduce)
+> 
+> Unless there is a known use case for a specific parameter, please
+> minimize them.   Additional parameters can be added later as needed. 
 
-On Thu 12 Oct 2023 at 16:51, Stephen Boyd <sboyd@kernel.org> wrote:
+Ok. I did the same for inode_post_create_tmpfile.
 
-> Quoting Xianwei Zhao (2023-10-09 23:29:17)
->> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
->> index 76be4bbd2afb..c8d59d28c8ff 100644
->> --- a/drivers/clk/meson/Kconfig
->> +++ b/drivers/clk/meson/Kconfig
->> @@ -140,6 +140,19 @@ config COMMON_CLK_C3_PLL
->>           Say Y if you want the board to work, because PLLs are the parent of most
->>           peripherals.
->>  
->> +config COMMON_CLK_C3_PERIPHERALS
->> +       tristate "Amlogic C3 peripherals clock controller"
->> +       default y
->
-> Why are these default y? They should depend on something like ARM64 and
-> even then I don't see why we want to enable them by default if we're
-> building the ARM64 kernel.
+Thanks
 
-Should indeed depend on ARM64.
+Roberto
 
-Those are the main clock controllers. Like for other AML SoC families,
-they are necessary to boot the device which is why they use 'default y'
-
-Is it a problem ?
-
-The whole meson directory depends on ARCH_MESON, so the drivers will go
-away if Amlogic support is removed on ARM64.
