@@ -2,191 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 389AB7C8401
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1536F7C8405
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbjJMLFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38080 "EHLO
+        id S230081AbjJMLFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbjJMLFH (ORCPT
+        with ESMTP id S229886AbjJMLFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:05:07 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E3591;
-        Fri, 13 Oct 2023 04:05:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net; s=s31663417;
- t=1697195089; x=1697799889; i=wahrenst@gmx.net;
- bh=BGxj+BwMX9nFZ+QPVqdfKu6nxPXMvN1ZFDE1ETwj/UU=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=mGNc8fGN5CFeBrf3cMJZzlYQTA4Pi2mSo0gw/iPmCtfXr13qfASRS4IcyOxuNakIa5kV4RVK0Mp
- G0e1h5eMPzqnZijHg3SpSNI+R+YVeHL91NiR75L8J+KxwdLSVVfO4Mj11g/BlNV4/kHxhAyFjrLYq
- 2ljqwHW0Xgem/klc/7OEOkS/fWrptAthLoR1A+Zepvyo4ZqGpMgFhwJUoU2l2nwNjYa/zYDS/fGN/
- 4dJ5qQurQ9LCfmgjyWpiyuH4X/aLppXxVIUUkIbhw5FLIU+RNPa6ExnQKvLsi4nk7ah5zMW/h1sSE
- wqoRZXI0ADrjt59UoXIL59vQQJAATnYzqSlA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.129] ([37.4.248.43]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MMofW-1rA1HJ33Q4-00Imbj; Fri, 13
- Oct 2023 13:04:49 +0200
-Message-ID: <84429d39-aa54-462d-85cd-c5d06a614a0e@gmx.net>
-Date:   Fri, 13 Oct 2023 13:04:48 +0200
+        Fri, 13 Oct 2023 07:05:52 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B926BB7;
+        Fri, 13 Oct 2023 04:05:49 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-538e8eca9c1so3380165a12.3;
+        Fri, 13 Oct 2023 04:05:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697195148; x=1697799948; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=a7L8MMvBwWWMkmtOWzuzh7LjBvyg7mEIleh0lWEV/ZQ=;
+        b=I4yh/ItL2K9wUsVYFaRiUXuEI6WV8osmJuQ43cttsap+2wlHeXnOP24enX+hPqp5YE
+         fc0isGniDN/hZrHFvhdow16SVtKPwCtJoKbKBt2+dyG81u+EjV3i9M6FodK71Q0/vAIW
+         JrLFjWx3dEirWJndIgTqko+CE9GzS0svg04NltAKdOUVBf7dMdTCd3Vk1rVhGGG13LR+
+         kC23ClGRpHl7Gv155v6+7VMcElB+bBqdlUnv8WlaraCoEPHHqBuYhgO/fhjlKl2m7NYj
+         kM8Dijw2CDfJJzwiY5FfcY+xCvCCJUxKyJymAAi1VjSBerednI139xQLHOamfdRjNzpg
+         BTgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697195148; x=1697799948;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a7L8MMvBwWWMkmtOWzuzh7LjBvyg7mEIleh0lWEV/ZQ=;
+        b=XHWIcm7kjhTOVBnDtgyPrFyvZ4hDSPGf2z03p2c5RsCO8+wR4x/M6ROSdcRLdCbGFr
+         eYHu8O4A7Rr1Kr76PDkkg6tynock/WzS6UW4Up4obrFT5N7/Vbm/J8azzwXwMjchtZk2
+         SQpb3bMl2XiO/wxrf69cudGULDJ3N2THe0V8597ol2mz7ocJRs5AHZtr4kVSQTiZ2eWd
+         OVOvXoVEqvSn+aWqDeZfHz3QxWVzDrrXLDU75sBXHaPJuqs8p27i4kOXZAfNnK/eMUlS
+         NQKDPK8Ey9OehLRw1HHHeq21jLUwwrfkqU5nskzTHmxT8QU1oxDN1jQYaaJfUKUQhE9t
+         Er3Q==
+X-Gm-Message-State: AOJu0YzY/+EaUyiFUaW+05HEO/xKzIzelG+gr3UrijJrmYDDPe0ZAwSZ
+        en6wJw247VbRJ0lFXlv5FC64L6TsL3nGsQLU
+X-Google-Smtp-Source: AGHT+IHwESd3l/McN4iPb389kXzHruwSvPA8HvNROND749BipMU3/E/9clSdEVl6bvdo4P6a/9jgrw==
+X-Received: by 2002:aa7:cfd2:0:b0:534:6668:605b with SMTP id r18-20020aa7cfd2000000b005346668605bmr22340713edy.22.1697195147884;
+        Fri, 13 Oct 2023 04:05:47 -0700 (PDT)
+Received: from arch-laptop.tail46804.ts.net (net-93-65-126-31.cust.vodafonedsl.it. [93.65.126.31])
+        by smtp.googlemail.com with ESMTPSA id i34-20020a0564020f2200b0053dec545c8fsm2884566eda.3.2023.10.13.04.05.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 04:05:47 -0700 (PDT)
+From:   Gianluca Boiano <morf3089@gmail.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     morf3089@gmail.com
+Subject: [PATCH] arm64: dts: qcom: msm8953: add SPI interfaces
+Date:   Fri, 13 Oct 2023 13:05:31 +0200
+Message-ID: <20231013110531.84140-1-morf3089@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] pwm: bcm2835: allow pwm driver to be used in
- atomic context
-To:     Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>
-Cc:     linux-pwm@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <cover.1697193646.git.sean@mess.org>
- <6ce73b2688f059e7169935699044104cf37b2425.1697193646.git.sean@mess.org>
-Content-Language: en-US
-From:   Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <6ce73b2688f059e7169935699044104cf37b2425.1697193646.git.sean@mess.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:qLjsyI169mT2Sk8ihgWYDKWaaLC2Zmt0vdXtIJHfIiv4kXkywJG
- syJfFn2v0iHRui5dbQGZHr479RFRHmsOWrv6Qd0i4Xh08z+s+T6A9bXTQaEBb1YZEpS5sTg
- 53qpWTB2FkzxVvcyYflc05Bx3IRo2ILYbTKUmNNIdCLNYSHg7699SOyMoJonAn/f/P16fHL
- AVTsmZY9YBgyemHPMcxRA==
-UI-OutboundReport: notjunk:1;M01:P0:6u7BShyK3YU=;XcAGJXx8/appX345MJkquVx85SW
- HszGBOWCfqRjahvehWV1nhDEvcrLrc1/YG/HOe71Q1Gn7dSvC569fWzY4ol4q5TQ4v+2bEERA
- OVfPBle8rf/6tAb3gmR6Cw1rguSgRJ92QXQna4wTfWK1DkZ1Q8pclm2EZsfuWs+1biLTnMQsD
- pP0uXKAIgLBkwGlkyzLGU9CXGCLtWl/3WNgwRjGp8rZgVNqYQMcD9Jem6YWmxjnu3QqqsvpuI
- fccTftjU2yyVjoLg3FxMb9ZQEmjr45AJTyURsx5iJhtNgJpi/4xjw7zBmISGzHXU+EKp1I2Mm
- TtNhPIuMrzUwkAPlhunGcKKy1Ob5NGYCY/V0m5Qj+WumyAARE4bzuCzBByI8Bj1gbinFAsX+U
- 9fFL2iNgcvclQi24ExAul5abBK9AeIaEshHP1dxUjJhFz8o/RkRS7RpwIK4SmJw5+77OQ0Q4a
- P7/IdEobmDlIKspP0WofOgpSHjP0JOIF6wWyzhVuUFRYk9QyhT3vqTYYGxJiWtuHmDyTzKphm
- rHH2+cYfd2JMlI6BVjZbOeHdtyJHX/2462KpoHvFjmJTZFpHvVBWsKZdPUyJmscJ9r3lIGW9+
- 8RiBkfQeKz4j0JPxESVe40ZIC6VTJKXQ4RzRlC+Ik9W6V4eSMOfavX1OdrAYNSSPJCWc2tcSA
- ObIn0sBhspd8EBYzzjwsvfNMR8nLOK+CBwe6QXu2FsUtYYNaHTQlBNmWjHtlNtGAH6epFVbcg
- oniqfApzCsdRoPvIKWaw5QmSw10Xo++iPjGP7ghVqC/9JplFKD782E+Veqe4U22S5Oq3vZwCd
- 5OAI5TBxS/lQZF51K/GbP4zaL47UU9X786Qq/Q9vCO5eNziIWLv/j7QmnDK04PMSx/vUSOAij
- MXuSO2GlVSvI1msf4R0BSFCAo1dtAMB+w/Gv9q+sBE3lXp6N1vVF0QpQvfvtjYbJsptGUsAhn
- 5Ikx846gpTBCmw1JMRWcBrtygvs=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
+This change add spi_3, spi_5 and spi_6 interfaces to
+MSM8953 devices.
 
-Am 13.10.23 um 12:46 schrieb Sean Young:
-> clk_get_rate() may do a mutex lock. Since the clock rate cannot change o=
-n
-> an rpi, simply fetch it once.
-does it mean you checked all possible SoCs (BCM2835, BCM2836, BCM2837,
-BCM2711, BCM2712) for this change?
+Signed-off-by: Gianluca Boiano <morf3089@gmail.com>
+---
+ arch/arm64/boot/dts/qcom/msm8953.dtsi | 102 ++++++++++++++++++++++++++
+ 1 file changed, 102 insertions(+)
 
-Is it impossible that the real clock can never be influenced by turbo
-mode like SPI?
-
-Best regards
->
-> Signed-off-by: Sean Young <sean@mess.org>
-> ---
->   drivers/pwm/pwm-bcm2835.c | 21 ++++++++++++---------
->   1 file changed, 12 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/pwm/pwm-bcm2835.c b/drivers/pwm/pwm-bcm2835.c
-> index bdfc2a5ec0d6..59ea154dd657 100644
-> --- a/drivers/pwm/pwm-bcm2835.c
-> +++ b/drivers/pwm/pwm-bcm2835.c
-> @@ -28,6 +28,7 @@ struct bcm2835_pwm {
->   	struct device *dev;
->   	void __iomem *base;
->   	struct clk *clk;
-> +	unsigned long rate;
->   };
->
->   static inline struct bcm2835_pwm *to_bcm2835_pwm(struct pwm_chip *chip=
-)
-> @@ -63,17 +64,11 @@ static int bcm2835_pwm_apply(struct pwm_chip *chip, =
-struct pwm_device *pwm,
->   {
->
->   	struct bcm2835_pwm *pc =3D to_bcm2835_pwm(chip);
-> -	unsigned long rate =3D clk_get_rate(pc->clk);
->   	unsigned long long period_cycles;
->   	u64 max_period;
->
->   	u32 val;
->
-> -	if (!rate) {
-> -		dev_err(pc->dev, "failed to get clock rate\n");
-> -		return -EINVAL;
-> -	}
-> -
->   	/*
->   	 * period_cycles must be a 32 bit value, so period * rate / NSEC_PER_=
-SEC
->   	 * must be <=3D U32_MAX. As U32_MAX * NSEC_PER_SEC < U64_MAX the
-> @@ -88,13 +83,13 @@ static int bcm2835_pwm_apply(struct pwm_chip *chip, =
-struct pwm_device *pwm,
->   	 * <=3D> period < ((U32_MAX * NSEC_PER_SEC + NSEC_PER_SEC/2) / rate
->   	 * <=3D> period <=3D ceil((U32_MAX * NSEC_PER_SEC + NSEC_PER_SEC/2) /=
- rate) - 1
->   	 */
-> -	max_period =3D DIV_ROUND_UP_ULL((u64)U32_MAX * NSEC_PER_SEC + NSEC_PER=
-_SEC / 2, rate) - 1;
-> +	max_period =3D DIV_ROUND_UP_ULL((u64)U32_MAX * NSEC_PER_SEC + NSEC_PER=
-_SEC / 2, pc->rate) - 1;
->
->   	if (state->period > max_period)
->   		return -EINVAL;
->
->   	/* set period */
-> -	period_cycles =3D DIV_ROUND_CLOSEST_ULL(state->period * rate, NSEC_PER=
-_SEC);
-> +	period_cycles =3D DIV_ROUND_CLOSEST_ULL(state->period * pc->rate, NSEC=
-_PER_SEC);
->
->   	/* don't accept a period that is too small */
->   	if (period_cycles < PERIOD_MIN)
-> @@ -103,7 +98,7 @@ static int bcm2835_pwm_apply(struct pwm_chip *chip, s=
-truct pwm_device *pwm,
->   	writel(period_cycles, pc->base + PERIOD(pwm->hwpwm));
->
->   	/* set duty cycle */
-> -	val =3D DIV_ROUND_CLOSEST_ULL(state->duty_cycle * rate, NSEC_PER_SEC);
-> +	val =3D DIV_ROUND_CLOSEST_ULL(state->duty_cycle * pc->rate, NSEC_PER_S=
-EC);
->   	writel(val, pc->base + DUTY(pwm->hwpwm));
->
->   	/* set polarity */
-> @@ -129,6 +124,7 @@ static const struct pwm_ops bcm2835_pwm_ops =3D {
->   	.request =3D bcm2835_pwm_request,
->   	.free =3D bcm2835_pwm_free,
->   	.apply =3D bcm2835_pwm_apply,
-> +	.atomic =3D true,
->   	.owner =3D THIS_MODULE,
->   };
->
-> @@ -156,6 +152,13 @@ static int bcm2835_pwm_probe(struct platform_device=
- *pdev)
->   	if (ret)
->   		return ret;
->
-> +	pc->rate =3D clk_get_rate(pc->clk);
-> +	if (!pc->rate) {
-> +		dev_err(pc->dev, "failed to get clock rate\n");
-> +		ret =3D -EINVAL;
-> +		goto add_fail;
-> +	}
-> +
->   	pc->chip.dev =3D &pdev->dev;
->   	pc->chip.ops =3D &bcm2835_pwm_ops;
->   	pc->chip.npwm =3D 2;
+diff --git a/arch/arm64/boot/dts/qcom/msm8953.dtsi b/arch/arm64/boot/dts/qcom/msm8953.dtsi
+index e7de7632669a..cdfc38e562b6 100644
+--- a/arch/arm64/boot/dts/qcom/msm8953.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8953.dtsi
+@@ -726,6 +726,48 @@ i2c_8_sleep: i2c-8-sleep-state {
+ 				bias-disable;
+ 			};
+ 
++			spi_3_default: spi-3-default-state {
++				pins = "gpio10", "gpio11";
++				function = "blsp_spi3";
++				drive-strength = <2>;
++				bias-disable;
++			};
++
++			spi_3_sleep: spi-3-sleep-state {
++				pins = "gpio10", "gpio11";
++				function = "gpio";
++				drive-strength = <2>;
++				bias-disable;
++			};
++
++			spi_5_default: spi-5-default-state {
++				pins = "gpio18", "gpio19";
++				function = "blsp_spi5";
++				drive-strength = <2>;
++				bias-disable;
++			};
++
++			spi_5_sleep: spi-5-sleep-state {
++				pins = "gpio18", "gpio19";
++				function = "gpio";
++				drive-strength = <2>;
++				bias-disable;
++			};
++
++			spi_6_default: spi-6-default-state {
++				pins = "gpio22", "gpio23";
++				function = "blsp_spi6";
++				drive-strength = <2>;
++				bias-disable;
++			};
++
++			spi_6_sleep: spi-6-sleep-state {
++				pins = "gpio22", "gpio23";
++				function = "gpio";
++				drive-strength = <2>;
++				bias-disable;
++			};
++
+ 			wcnss_pin_a: wcnss-active-state {
+ 
+ 				wcss-wlan2-pins {
+@@ -1360,6 +1402,26 @@ i2c_3: i2c@78b7000 {
+ 			status = "disabled";
+ 		};
+ 
++		spi_3: spi@78b7000 {
++			compatible = "qcom,spi-qup-v2.2.1";
++			reg = <0x078b7000 0x600>;
++			interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
++			clock-names = "core", "iface";
++			clocks = <&gcc GCC_BLSP1_QUP3_I2C_APPS_CLK>,
++				 <&gcc GCC_BLSP1_AHB_CLK>;
++			dmas = <&blsp1_dma 8>, <&blsp1_dma 9>;
++			dma-names = "tx", "rx";
++
++			pinctrl-names = "default", "sleep";
++			pinctrl-0 = <&spi_3_default>;
++			pinctrl-1 = <&spi_3_sleep>;
++
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			status = "disabled";
++		};
++
+ 		i2c_4: i2c@78b8000 {
+ 			compatible = "qcom,i2c-qup-v2.2.1";
+ 			reg = <0x078b8000 0x600>;
+@@ -1413,6 +1475,26 @@ i2c_5: i2c@7af5000 {
+ 			status = "disabled";
+ 		};
+ 
++		spi_5: spi@7af5000 {
++			compatible = "qcom,spi-qup-v2.2.1";
++			reg = <0x07af5000 0x600>;
++			interrupts = <GIC_SPI 299 IRQ_TYPE_LEVEL_HIGH>;
++			clock-names = "core", "iface";
++			clocks = <&gcc GCC_BLSP2_QUP1_I2C_APPS_CLK>,
++				<&gcc GCC_BLSP2_AHB_CLK>;
++			dmas = <&blsp2_dma 4>, <&blsp2_dma 5>;
++			dma-names = "tx", "rx";
++
++			pinctrl-names = "default", "sleep";
++			pinctrl-0 = <&spi_5_default>;
++			pinctrl-1 = <&spi_5_sleep>;
++
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			status = "disabled";
++		};
++
+ 		i2c_6: i2c@7af6000 {
+ 			compatible = "qcom,i2c-qup-v2.2.1";
+ 			reg = <0x07af6000 0x600>;
+@@ -1433,6 +1515,26 @@ i2c_6: i2c@7af6000 {
+ 			status = "disabled";
+ 		};
+ 
++		spi_6: spi@7af6000 {
++			compatible = "qcom,spi-qup-v2.2.1";
++			reg = <0x07af6000 0x600>;
++			interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
++			clock-names = "core", "iface";
++			clocks = <&gcc GCC_BLSP2_QUP2_I2C_APPS_CLK>,
++				 <&gcc GCC_BLSP2_AHB_CLK>;
++			dmas = <&blsp2_dma 6>, <&blsp2_dma 7>;
++			dma-names = "tx", "rx";
++
++			pinctrl-names = "default", "sleep";
++			pinctrl-0 = <&spi_6_default>;
++			pinctrl-1 = <&spi_6_sleep>;
++
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			status = "disabled";
++		};
++
+ 		i2c_7: i2c@7af7000 {
+ 			compatible = "qcom,i2c-qup-v2.2.1";
+ 			reg = <0x07af7000 0x600>;
+-- 
+2.42.0
 
