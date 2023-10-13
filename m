@@ -2,146 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB157C833B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18BD7C8348
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbjJMKgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 06:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36330 "EHLO
+        id S230147AbjJMKiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 06:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbjJMKgn (ORCPT
+        with ESMTP id S230120AbjJMKis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 06:36:43 -0400
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57EBCC;
-        Fri, 13 Oct 2023 03:36:40 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qrFWw-006jYO-4P; Fri, 13 Oct 2023 18:36:31 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 13 Oct 2023 18:36:34 +0800
-Date:   Fri, 13 Oct 2023 18:36:34 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Om Prakash Singh <quic_omprsing@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>
-Subject: Re: [PATCH v4 0/5] arm64: qcom: sm8x50: enable RNG
-Message-ID: <ZSkdsqw+W44K0G22@gondor.apana.org.au>
-References: <20231003-topic-sm8550-rng-v4-0-255e4d0ba08e@linaro.org>
+        Fri, 13 Oct 2023 06:38:48 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B22AC0;
+        Fri, 13 Oct 2023 03:38:46 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 50A7E3200A86;
+        Fri, 13 Oct 2023 06:38:39 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 13 Oct 2023 06:38:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1697193518; x=1697279918; bh=uQ
+        ONiwQaIF/sUvhTpH5QtV/9W9EUUvHLTz8ZcxZqN78=; b=PzdqkqKheJs2lGFvXF
+        92FwJxgJcR25WRALDHRIqO2qOIcndbt9h94qL92ewEeTVvx97qcCbXouIaO2BIvl
+        bCKvlk9G0QbzCdMM+QFbTMrZojNd5+w244We7mYkSlGb1CEmarRRuGUoFQJzoz+A
+        ue+Mj6YK3fLgbYdbmg6j/MyIneWYG+YVd6z/nHe6T441KKDd4TEBws6804sr9ueD
+        p5P3PjIik4EYhzSdcLVNgAnWenXDMjjaqvRPV4zTh7BhcpqJrHUIWF3wjkt8Oo9U
+        4GYTVD7DbA84raZB6C2jPWJPDoWzxW90/ZPL7on7VXP/Ld8nFDQdNaphgS/oVUO8
+        FPHA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1697193518; x=1697279918; bh=uQONiwQaIF/sU
+        vhTpH5QtV/9W9EUUvHLTz8ZcxZqN78=; b=FMXHgJoyJ2eE3dgfDYk4A0cdOf640
+        HhqDawZtyhTe8sjz3+TYj1vZOpjMCRWqERcixTXIPTVLpDgS/hnPepA6hoegSu2s
+        UZabIbKe6SAIpR33StB1F/zMK8rCE6qlG3I8j0p2g3DO9mtJJu6UapGR5Uv4WeZI
+        0770ipQDCfFkyhnqRHIN1pkIdFM/p1GbHmx67iYFwft2gpcAoRIZtqGPi++soWD/
+        6q2YntB+8gSDXkMNQ6aWX6TQl4pP92Nm+KPndKKdaZGYyYRvnMl27JoinpF3h+2+
+        D7K7TreWvJTFbGDQRDDQxoAltoLzm+fqXf5n6497fzXTRppysOoQyiY/w==
+X-ME-Sender: <xms:LR4pZV4gzFlRYc-UReteXwH6GoAOIMy6_Bu3f91zd93vDh9Q69A9AA>
+    <xme:LR4pZS5YnEPdIJ3f2eksMXTvsy86uIxZ5PWjA-Wz7L1L8XGO_O4VrYy4M6_YjAm8t
+    G1EQnB2ZQpBpCaHuDs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrieefgddtkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeufeeh
+    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:LR4pZcc3k2a_658Fu8YHSK1-ME80R1YPj5DZt7U78-yoMDhAeK7bRA>
+    <xmx:LR4pZeL1IjNL_1tGFYTjQTKmJCwmx61Ty2-IrkoGfdyA-JQIsS93cg>
+    <xmx:LR4pZZKBZxNU8s2zjzbLq5MJaUSH2bzH-msJdV2KC_UtSiZH_WWHTg>
+    <xmx:Lh4pZTCeI4p6X3G4EUfdPUDe3_PiS1S3EAwO_A78vbrjLsk9qufC4g>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id B992EB6008D; Fri, 13 Oct 2023 06:38:37 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003-topic-sm8550-rng-v4-0-255e4d0ba08e@linaro.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <4a53722d-e31d-4598-a4a9-cf374c84bc44@app.fastmail.com>
+In-Reply-To: <20231013100549.3198564-1-danishanwar@ti.com>
+References: <20231013100549.3198564-1-danishanwar@ti.com>
+Date:   Fri, 13 Oct 2023 12:38:17 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "MD Danish Anwar" <danishanwar@ti.com>,
+        "Andrew Lunn" <andrew@lunn.ch>,
+        "Wolfram Sang" <wsa+renesas@sang-engineering.com>,
+        "Simon Horman" <horms@kernel.org>, "Roger Quadros" <rogerq@ti.com>,
+        "Vignesh Raghavendra" <vigneshr@ti.com>,
+        "Paolo Abeni" <pabeni@redhat.com>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "Eric Dumazet" <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        srk@ti.com, r-gunasekaran@ti.com,
+        "Roger Quadros" <rogerq@kernel.org>
+Subject: Re: [PATCH net] net: ethernet: ti: Fix mixed module-builtin object
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 09:10:18AM +0200, Neil Armstrong wrote:
-> Enable RNG on SM8550 & SM8450 by reverting the PRNG bindings & DT
-> for SM8450 and correctly document it as a True Random Number Generator.
-> 
-> - SM8550 QRD test run:
-> 
-> smccc_trng qcom_hwrng 
-> 
-> qcom_hwrng
-> 
-> rngtest 6.15
-> Copyright (c) 2004 by Henrique de Moraes Holschuh
-> This is free software; see the source for copying conditions.  There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> 
-> rngtest: starting FIPS tests...
-> rngtest: bits received from input: 209420032
-> rngtest: FIPS 140-2 successes: 10461
-> rngtest: FIPS 140-2 failures: 10
-> rngtest: FIPS 140-2(2001-10-10) Monobit: 1
-> rngtest: FIPS 140-2(2001-10-10) Poker: 2
-> rngtest: FIPS 140-2(2001-10-10) Runs: 3
-> rngtest: FIPS 140-2(2001-10-10) Long run: 4
-> rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
-> rngtest: input channel speed: (min=9.219; avg=63.879; max=19073.486)Mibits/s
-> rngtest: FIPS tests speed: (min=24.965; avg=29.093; max=118.469)Mibits/s
-> rngtest: Program run time: 10002827 microseconds
-> 
-> - SM8450 HDK test run:
-> 
-> qcom_hwrng
-> 
-> rngtest 6.15
-> Copyright (c) 2004 by Henrique de Moraes Holschuh
-> This is free software; see the source for copying conditions.  There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> 
-> rngtest: starting FIPS tests...
-> rngtest: bits received from input: 420580032
-> rngtest: FIPS 140-2 successes: 21014
-> rngtest: FIPS 140-2 failures: 15
-> rngtest: FIPS 140-2(2001-10-10) Monobit: 2
-> rngtest: FIPS 140-2(2001-10-10) Poker: 0
-> rngtest: FIPS 140-2(2001-10-10) Runs: 7
-> rngtest: FIPS 140-2(2001-10-10) Long run: 6
-> rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
-> rngtest: input channel speed: (min=15.711; avg=50.033; max=32.493)Mibits/s
-> rngtest: FIPS tests speed: (min=136.239; avg=203.833; max=227.065)Mibits/s
-> rngtest: Program run time: 10000978 microseconds
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
-> Changes in v4:
-> - changed to an enum in first bindings patch to simplify sm8550 change
-> - integrate Om's patch from (https://lore.kernel.org/all/20230926102005.3277045-1-quic_omprsing@quicinc.com)
->   to simplify maintainer's life
-> - rebased on next-20230929
-> - dropped already applied revert
-> - Link to v3: https://lore.kernel.org/r/20230828-topic-sm8550-rng-v3-0-7a0678ca7988@linaro.org
-> 
-> Changes in v3:
-> - Removed invalid character in commit msg
-> - Added review tags
-> - Removed applied patch 1
-> - Link to v2: https://lore.kernel.org/r/20230824-topic-sm8550-rng-v2-0-dfcafbb16a3e@linaro.org
-> 
-> Changes in v2:
-> - Revert SM8450 DT & bindings
-> - Add new qcom,trng compatible and use it for SM8450 & SM8550
-> - Explicitly didn't collect the Reviewed-by tags due to the compatible change
-> - Link to v1: https://lore.kernel.org/r/20230822-topic-sm8550-rng-v1-0-8e10055165d1@linaro.org
-> 
-> ---
-> Neil Armstrong (4):
->       dt-bindings: crypto: qcom,prng: document that RNG on SM8450 is a TRNG
->       dt-bindings: crypto: qcom,prng: document SM8550
->       arm64: dts: qcom: sm8550: add TRNG node
->       arm64: dts: qcom: sm8450: add TRNG node
-> 
-> Om Prakash Singh (1):
->       crypto: qcom-rng - Add hw_random interface support
-> 
->  .../devicetree/bindings/crypto/qcom,prng.yaml      | 26 +++++++--
->  arch/arm64/boot/dts/qcom/sm8450.dtsi               |  5 ++
->  arch/arm64/boot/dts/qcom/sm8550.dtsi               |  5 ++
->  drivers/crypto/qcom-rng.c                          | 65 +++++++++++++++++++---
->  4 files changed, 89 insertions(+), 12 deletions(-)
-> ---
-> base-commit: df964ce9ef9fea10cf131bf6bad8658fde7956f6
-> change-id: 20230822-topic-sm8550-rng-c83142783e20
+On Fri, Oct 13, 2023, at 12:05, MD Danish Anwar wrote:
+> With CONFIG_TI_K3_AM65_CPSW_NUSS=y and CONFIG_TI_ICSSG_PRUETH=m,
+> k3-cppi-desc-pool.o is linked to a module and also to vmlinux even though
+> the expected CFLAGS are different between builtins and modules.
+>
+> The build system is complaining about the following:
+>
+> k3-cppi-desc-pool.o is added to multiple modules: icssg-prueth
+> ti-am65-cpsw-nuss
+>
+> Introduce the new module, k3-cppi-desc-pool, to provide the common
+> functions to ti-am65-cpsw-nuss and icssg-prueth.
+>
+> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
 
-Patches 1-3 applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+I submitted a different patch for this a while ago:
+https://lore.kernel.org/lkml/20230612124024.520720-3-arnd@kernel.org/
+
+I think I never sent a v2 of that, but I still have a
+working version in my local tree. I've replaced my version
+with yours for testing now, to see if you still need something
+beyond that.
+
+    Arnd
