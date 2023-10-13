@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF797C805D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1347C8061
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 10:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbjJMId7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 04:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
+        id S230192AbjJMIeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 04:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230183AbjJMIdy (ORCPT
+        with ESMTP id S230123AbjJMIeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 04:33:54 -0400
+        Fri, 13 Oct 2023 04:34:18 -0400
 Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C1F75E9;
-        Fri, 13 Oct 2023 01:33:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E9752A9;
+        Fri, 13 Oct 2023 01:34:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
         s=s110527; h=From:Subject:Date:Message-Id:MIME-Version:
-        Content-Type; bh=B/gZ6CUbOy0gqeNEewZojJb7oy2xS5MEdNX36nA6BqE=;
-        b=A9wOleUpjKhnpl/K4V64cwYdSmrzRb6lXadhxy9/YdGt/nJ8+34B9bGNVS1SM/
-        OpmFEZEIL0uhxO3tLAzfE8njYnQ645Tbj54/Xc2jHEAayCSQ887hfosoYcqRNA+Q
-        ASIP8pp4lj6u/5L8Q1DmeeWkThGE72N4cWhNsyypz/yQw=
+        Content-Type; bh=pX+JgnUBFn1ssbGQ55Jcu7IclPIYsehX4jjd64+1eGM=;
+        b=EIdwsBvcXS1SQ9Mm49kA9VagkAq1Eu2A3hOAQRbActoNPd5p0W4HOSPqKfA7ZI
+        AV3k811wB9SFy86dD73TtNNFxFSR+Hahn4CcZYd6jc3pYxU8NQhQArOvzB1DFV7t
+        s1g+UeyleRtbmihPqzXL5b/mT94LU/apcKbdQZI34GIFA=
 Received: from test-Z390-GAMING-X.bayhubtech.com (unknown [58.48.115.170])
-        by zwqz-smtp-mta-g0-3 (Coremail) with SMTP id _____wD3P5bSACllusG7AQ--.23061S2;
-        Fri, 13 Oct 2023 16:33:23 +0800 (CST)
+        by zwqz-smtp-mta-g2-3 (Coremail) with SMTP id _____wDXXyfqACllFbzAAQ--.32507S2;
+        Fri, 13 Oct 2023 16:33:46 +0800 (CST)
 From:   liuchang_125125@163.com
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
         linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     mark.tao@bayhubtech.com, shaper.liu@bayhubtech.com,
         thomas.hu@bayhubtech.com, chevron.li@bayhubtech.com,
         charl.liu@bayhubtech.com, Charl Liu <liuchang_125125@163.com>
-Subject: [PATCH 3/9] scsi: bht: card: Add the source files related to card initialization
-Date:   Fri, 13 Oct 2023 16:33:20 +0800
-Message-Id: <20231013083320.10279-1-liuchang_125125@163.com>
+Subject: [PATCH 4/9] scsi: bht: host: Add the source files related to host initialization, command handler, interrupt handler and transfer handler
+Date:   Fri, 13 Oct 2023 16:33:43 +0800
+Message-Id: <20231013083343.10296-1-liuchang_125125@163.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wD3P5bSACllusG7AQ--.23061S2
-X-Coremail-Antispam: 1Uf129KBjvtXoWkZr48Zr1DZw4fCF13Wr43trb_yoW5XFy7uF
-        g_AFyaq3ZrXwn8CrWjkws0ga13Cr15KF4kZw1kKF48Za9rKrn7A3y3Kwn3AF4avry7Aryr
-        tr9rCF1S93sFvw1DGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-
-        sFnT9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRMfHUJUUUUU==
+X-CM-TRANSID: _____wDXXyfqACllFbzAAQ--.32507S2
+X-Coremail-Antispam: 1Uf129KBjvtXoWktw45tr1rAw15Ar4kWw18uFg_yoW5Xw13WF
+        c_XFWUZ3s0qrn8KrW3Ka1DKw13Ary8Krs7Xw4kWa18G39Fkw1kt3y5tws7ZFWYvr17Cw4r
+        tr109rsIkrn3Xw1UKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-
+        sFnT9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRRHGQDUUUUU==
 X-Originating-IP: [58.48.115.170]
-X-CM-SenderInfo: polxux5dqjsiqsvrjki6rwjhhfrp/xtbBnwcIWVetlJKn4gABsx
+X-CM-SenderInfo: polxux5dqjsiqsvrjki6rwjhhfrp/xtbB0BgIWWEssysZwgABsW
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
@@ -56,9320 +56,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Charl Liu <liuchang_125125@163.com>
 
-1.card_ddr200_support: check whether the card supports DDR200/DDR225 mode
-2.cardcommon: define common functions related to card initialization
-3.cardinterface: implement card initialization main flow and define
-the functions related to card operations
-4.mmc: define the functions related to MMC/eMMC card initialization
-5.output_tuning: implement card tuning flow and related functions
-6.sd: implement SD legacy card initialization flow and related functions
-7.thermal: define the functions related to thermal control
-8.uhs2: implement SD UHS2 card initialization flow and related functions
+1.cmdhandler: define the functions related to command handler
+2.host: implement host initialization flow and related functions
+3.hostven: define the specific functions related to host vendor
+4.irqhandler: define the functions related to interrupt handler
+5.transhandler: define the functions related to transfer handler
 
 Signed-off-by: Charl Liu <liuchang_125125@163.com>
 ---
 Change in V1:
-Add the source files related to card initialization.
+Add the source files related to host initialization, command handler,
+interrupt handler and transfer handler.
 ---
- drivers/scsi/bht/card/card_ddr200_support.c |  195 ++
- drivers/scsi/bht/card/card_ddr200_support.h |   38 +
- drivers/scsi/bht/card/cardcommon.c          |  961 ++++++
- drivers/scsi/bht/card/cardcommon.h          |  123 +
- drivers/scsi/bht/card/cardinterface.c       | 2448 +++++++++++++++
- drivers/scsi/bht/card/mmc.c                 | 1666 ++++++++++
- drivers/scsi/bht/card/output_tuning.c       |  756 +++++
- drivers/scsi/bht/card/sd.c                  | 3029 +++++++++++++++++++
- drivers/scsi/bht/card/thermal.c             |  348 +++
- drivers/scsi/bht/card/uhs2.c                | 1228 ++++++++
- 10 files changed, 10792 insertions(+)
- create mode 100644 drivers/scsi/bht/card/card_ddr200_support.c
- create mode 100644 drivers/scsi/bht/card/card_ddr200_support.h
- create mode 100644 drivers/scsi/bht/card/cardcommon.c
- create mode 100644 drivers/scsi/bht/card/cardcommon.h
- create mode 100644 drivers/scsi/bht/card/cardinterface.c
- create mode 100644 drivers/scsi/bht/card/mmc.c
- create mode 100644 drivers/scsi/bht/card/output_tuning.c
- create mode 100644 drivers/scsi/bht/card/sd.c
- create mode 100644 drivers/scsi/bht/card/thermal.c
- create mode 100644 drivers/scsi/bht/card/uhs2.c
+ drivers/scsi/bht/host/cmdhandler.c   | 1686 +++++++++++++++
+ drivers/scsi/bht/host/handler.h      |   36 +
+ drivers/scsi/bht/host/host.c         | 2947 ++++++++++++++++++++++++++
+ drivers/scsi/bht/host/hostreg.h      |  478 +++++
+ drivers/scsi/bht/host/hostven.c      | 2774 ++++++++++++++++++++++++
+ drivers/scsi/bht/host/hostven.h      |   31 +
+ drivers/scsi/bht/host/irqhandler.c   |  742 +++++++
+ drivers/scsi/bht/host/transhandler.c | 1730 +++++++++++++++
+ 8 files changed, 10424 insertions(+)
+ create mode 100644 drivers/scsi/bht/host/cmdhandler.c
+ create mode 100644 drivers/scsi/bht/host/handler.h
+ create mode 100644 drivers/scsi/bht/host/host.c
+ create mode 100644 drivers/scsi/bht/host/hostreg.h
+ create mode 100644 drivers/scsi/bht/host/hostven.c
+ create mode 100644 drivers/scsi/bht/host/hostven.h
+ create mode 100644 drivers/scsi/bht/host/irqhandler.c
+ create mode 100644 drivers/scsi/bht/host/transhandler.c
 
-diff --git a/drivers/scsi/bht/card/card_ddr200_support.c b/drivers/scsi/bht/card/card_ddr200_support.c
+diff --git a/drivers/scsi/bht/host/cmdhandler.c b/drivers/scsi/bht/host/cmdhandler.c
 new file mode 100644
-index 000000000000..b7fb935d700c
+index 000000000000..bc7a47453daa
 --- /dev/null
-+++ b/drivers/scsi/bht/card/card_ddr200_support.c
-@@ -0,0 +1,195 @@
++++ b/drivers/scsi/bht/host/cmdhandler.c
+@@ -0,0 +1,1686 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
 + * Copyright (c) 2014 BHT Inc.
 + *
-+ * File Name: card_ddr200_support.c
++ * File Name: cmdhandler.c
 + *
-+ * Abstract: check whether the card supports DDR200/DDR225 mode
-+ *
-+ * Version: 1.00
-+ *
-+ * Author: Fred
-+ *
-+ * Environment:	OS Independent
-+ *
-+ * History:
-+ *
-+ * 12/17/2021   Creation    Fred
-+ */
-+
-+#include "../include/basic.h"
-+#include "../include/hostapi.h"
-+#include "../include/debug.h"
-+#include "card_ddr200_support.h"
-+
-+bool sandisk_ddr_support(sd_card_t *card, bool ddr_mode)
-+{
-+	bool ret = FALSE;
-+	u32 prv_tmp;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"oemid is 0x%04x,\n"
-+		"prod_name[0] is %x,\n"
-+		"prod_name[1] is %x,\n"
-+		"prod_name[2] is %x,\n"
-+		"prod_name[3] is %x,\n"
-+		"prod_name[4] is %x,\n"
-+		"prv is 0x%x\n", card->info.cid.oemid,
-+		card->info.cid.prod_name[0], card->info.cid.prod_name[1],
-+		card->info.cid.prod_name[2], card->info.cid.prod_name[3],
-+		card->info.cid.prod_name[4], card->info.cid.prv);
-+
-+	/*
-+	 * check whether support DDR200 or DDR225
-+	 * support DDR200 mode if prv is 0x85
-+	 * support DDR225 mode if prv is 0x86
-+	 */
-+	if (ddr_mode)
-+		prv_tmp = 0x85;
-+	else
-+		prv_tmp = 0x86;
-+
-+	if (card->info.cid.oemid == 0x4453
-+	    && card->info.cid.prod_name[0] == 0x53
-+	    && (card->info.cid.prod_name[1] == 0x4E
-+		|| card->info.cid.prod_name[1] == 0x46
-+		|| card->info.cid.prod_name[1] == 0x52))
-+		ret = TRUE;
-+	else if ((card->info.cid.oemid == 0x4453
-+		  || card->info.cid.oemid == 0x5744)
-+		 && card->info.cid.prv == prv_tmp)
-+		ret = TRUE;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+bool lexar_transend_ddr200_support(sd_card_t *card)
-+{
-+	bool ret = FALSE;
-+	card_info_t *card_info = &(card->info);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"reserved is 0x%x, Group 2 vendor spcific is 0x%x\n",
-+		card->info.cid.reserved,
-+		card_info->sw_func_cap.sd_command_system);
-+
-+	if ((card->info.cid.reserved == 0xA)
-+	    && ((card_info->sw_func_cap.sd_command_system) & (1 << 6)))
-+		ret = TRUE;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+bool phison_kingston_ddr200_support(sd_card_t *card)
-+{
-+	bool ret = FALSE;
-+	card_info_t *card_info = &(card->info);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"sd_specx is 0x%04x, reserved_B0 is 0x%04x, reserved_B1 is 0x%04x\n",
-+		card_info->scr.sd_specx, card_info->scr.reserved_B0,
-+		card_info->scr.reserved_B1);
-+
-+	if ((card_info->scr.sd_specx >= 2)
-+	    && (card_info->scr.reserved_B0 == 0x32)
-+	    && (card_info->scr.reserved_B1 == 0x64))
-+		ret = TRUE;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+bool manuefecture_ddr200_support(sd_card_t *card, u32 check_methood)
-+{
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	card->ddr225_card_flag = FALSE;
-+
-+	if (card->info.cid.prv == 0x86) {
-+		ret = sandisk_ddr_support(card, FALSE);
-+		if (ret) {
-+			card->ddr225_card_flag = TRUE;
-+			DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"DDR225 Check Stag: host support DDR225 mode\n");
-+		} else {
-+			DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"DDR225 Check Stag: host not support DDR225 mode\n");
-+		}
-+
-+		goto exit;
-+	}
-+
-+	switch (check_methood) {
-+	case SANDISK:
-+		ret = sandisk_ddr_support(card, TRUE);
-+		break;
-+	case LEXAR:
-+	case TRANSEND:
-+		ret = lexar_transend_ddr200_support(card);
-+		break;
-+	case PHISON:
-+	case KINGSTON:
-+		ret = phison_kingston_ddr200_support(card);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+exit:
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+bool sd_ddr_support(sd_card_t *card)
-+{
-+	byte i = 0;
-+	bool ret = FALSE;
-+	sd_host_t *host = card->host;
-+	card_info_t *card_info = &(card->info);
-+	cfg_item_t *cfg = card->host->cfg;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if ((sdhci_readl(host, 0x110) & (1 << 16)) &&
-+	    (sdhci_readl(host, 0x3e) & (1 << 3))) {
-+		if ((card_info->sw_func_cap.sd_access_mode & (1 << 3)) &&
-+		    (card_info->sw_func_cap.sd_command_system) & (1 << 6)) {
-+			while (i <= MAX_DDR200_CHECK_METHOD) {
-+				ret = manuefecture_ddr200_support(card, i);
-+				if (ret)
-+					break;
-+
-+				i++;
-+			}
-+		}
-+	}
-+
-+	/*
-+	 * 1.card support DDR200
-+	 * 2.driver registry control
-+	 */
-+	if (ret && (cfg->card_item.test_max_access_mode.value == 0x5))
-+		ret = TRUE;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+
-+	return ret;
-+}
-diff --git a/drivers/scsi/bht/card/card_ddr200_support.h b/drivers/scsi/bht/card/card_ddr200_support.h
-new file mode 100644
-index 000000000000..a984a0dc01b4
---- /dev/null
-+++ b/drivers/scsi/bht/card/card_ddr200_support.h
-@@ -0,0 +1,38 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2014 BHT Inc.
-+ *
-+ * File Name: card_ddr200_support.h
-+ *
-+ * Abstract: the functon declaration about checking whether the card supports DDR200/DDR225 mode
-+ *
-+ * Version: 1.00
-+ *
-+ * Author: Fred
-+ *
-+ * Environment:	OS Independent
-+ *
-+ * History:
-+ *
-+ * 12/17/2021   Creation    Fred
-+ */
-+
-+#ifndef _CARD_DDR200_SUPPORT_H
-+#define _CARD_DDR200_SUPPORT_H
-+
-+#include "../include/card.h"
-+
-+#define MAX_DDR200_CHECK_METHOD 0x4
-+#define SANDISK		0x0
-+#define LEXAR		0x1
-+#define TRANSEND	0x2
-+#define PHISON		0x3
-+#define KINGSTON	0x4
-+
-+bool sandisk_ddr_support(sd_card_t *card, bool ddr_mode);
-+bool lexar_transend_ddr200_support(sd_card_t *card);
-+bool phison_kingston_ddr200_support(sd_card_t *card);
-+bool sd_ddr_support(sd_card_t *card);
-+bool manuefecture_ddr200_support(sd_card_t *card, u32 check_methood);
-+
-+#endif
-diff --git a/drivers/scsi/bht/card/cardcommon.c b/drivers/scsi/bht/card/cardcommon.c
-new file mode 100644
-index 000000000000..7a5d4a444b0c
---- /dev/null
-+++ b/drivers/scsi/bht/card/cardcommon.c
-@@ -0,0 +1,961 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2014 BHT Inc.
-+ *
-+ * File Name: cardcommon.c
-+ *
-+ * Abstract: define card related common functions
-+ *
-+ * Version: 1.00
-+ *
-+ * Author: Samuel
-+ *
-+ * Environment:	OS Independent
-+ *
-+ * History:
-+ *
-+ * 9/2/2014   Creation    Samuel
-+ */
-+
-+#include "../include/basic.h"
-+#include "../include/hostapi.h"
-+#include "../include/cmdhandler.h"
-+#include "../include/debug.h"
-+#include "../include/util.h"
-+#include "../include/tqapi.h"
-+#include "../include/transhapi.h"
-+#include "cardcommon.h"
-+
-+bool card_need_get_info(sd_card_t *card)
-+{
-+	if ((card->quick_init) && (card->initialized_once))
-+		return FALSE;
-+	else
-+		return TRUE;
-+}
-+
-+bool card_send_command12(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	bool ret = FALSE;
-+	u32 status = 0;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_OPS, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	ret = card_send_sdcmd(card, sd_cmd, SD_CMD12, 0,
-+			      CMD_FLG_R1B | CMD_FLG_RESCHK, DATA_DIR_NONE, NULL,
-+			      0);
-+
-+	if (ret == FALSE) {
-+		if ((sd_cmd->err.resp_err & RESP_ERR_TYPE_OUT_OF_RANGE) ==
-+		    RESP_ERR_TYPE_OUT_OF_RANGE) {
-+			ret = card_get_card_status(card, sd_cmd, &status);
-+		}
-+	}
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_OPS, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+bool card_send_sdcmd_timeout(sd_card_t *card,
-+			     sd_command_t *sd_cmd,
-+			     byte cmd_index,
-+			     u32 argument,
-+			     u32 cmdflag,
-+			     e_data_dir dir,
-+			     byte *data, u32 datalen, u32 timeout)
-+{
-+
-+	sd_data_t sd_data;
-+	bool ret;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARDCMD_TRACE, NOT_TO_RAM,
-+		"Enter %s cmd=0x%02X arg=0x%08X\n", __func__, cmd_index,
-+		argument);
-+
-+	/* Avoid  recursion call */
-+	if (card->has_built_inf && cmd_index != SD_CMD12) {
-+		ret = card_send_command12(card, sd_cmd);
-+		if (ret == FALSE)
-+			goto exit;
-+	}
-+
-+	os_memset(sd_cmd, 0, sizeof(sd_command_t));
-+
-+	sd_cmd->cmd_flag = cmdflag;
-+	sd_cmd->cmd_index = cmd_index;
-+	sd_cmd->argument = argument;
-+	sd_cmd->sd_cmd = 1;
-+	sd_cmd->timeout = timeout;
-+
-+	if (dir == DATA_DIR_NONE)
-+		sd_cmd->data = NULL;
-+	else {
-+		os_memset(&sd_data, 0, sizeof(sd_data_t));
-+		sd_cmd->data = &sd_data;
-+		sd_data.dir = dir;
-+		sd_data.data_mng.driver_buff = data;
-+		sd_data.data_mng.total_bytess = datalen;
-+		if (cmdflag & CMD_FLG_ADMA_SDMA) {
-+			ret =
-+			    build_dma_ctx(card->host->pdx, &sd_data, cmdflag,
-+					  dir, data, datalen, 0, 0);
-+			if (ret == FALSE) {
-+				DbgErr("build adma io error\n");
-+				ret = FALSE;
-+				goto exit;
-+			}
-+		}
-+
-+		if (sd_cmd->cmd_flag & CMD_FLG_DDR200_WORK_AROUND)
-+			sd_cmd->gg8_ddr200_workaround = 1;
-+	}
-+
-+	ret = cmd_generate_reg(card, sd_cmd);
-+	if (ret == FALSE)
-+		goto exit;
-+
-+	ret = cmd_execute_sync(card, sd_cmd, NULL);
-+
-+exit:
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARDCMD_TRACE, NOT_TO_RAM,
-+		"Exit(%d) %s\n", ret, __func__);
-+	return ret;
-+
-+}
-+
-+bool card_send_sdcmd_dma_timeout(sd_card_t *card,
-+				 sd_command_t *sd_cmd,
-+				 sd_data_t *sd_data,
-+				 byte cmd_index,
-+				 u32 argument,
-+				 u32 cmdflag,
-+				 e_data_dir dir,
-+				 byte *data, u32 datalen, u32 timeout)
-+{
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARDCMD_TRACE, NOT_TO_RAM,
-+		"Enter %s cmd=0x%02X arg=0x%08X\n", __func__, cmd_index,
-+		argument);
-+
-+	/* Avoid recursion call */
-+	if (card->has_built_inf && cmd_index != SD_CMD12) {
-+		ret = card_send_command12(card, sd_cmd);
-+		if (ret == FALSE)
-+			goto exit;
-+	}
-+
-+	os_memset(sd_cmd, 0, sizeof(sd_command_t));
-+
-+	sd_cmd->cmd_flag = cmdflag;
-+	sd_cmd->cmd_index = cmd_index;
-+	sd_cmd->argument = argument;
-+	sd_cmd->sd_cmd = 1;
-+	sd_cmd->timeout = timeout;
-+
-+	if (dir == DATA_DIR_NONE)
-+		sd_cmd->data = NULL;
-+	else {
-+		sd_cmd->data = sd_data;
-+		sd_data->dir = dir;
-+		/* sd_data->data_mng.driver_buff = data; */
-+		sd_data->data_mng.total_bytess = datalen;
-+	}
-+
-+	ret = cmd_generate_reg(card, sd_cmd);
-+	if (ret == FALSE)
-+		goto exit;
-+
-+	ret = cmd_execute_sync(card, sd_cmd, NULL);
-+
-+exit:
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARDCMD_TRACE, NOT_TO_RAM,
-+		"Exit(%d) %s\n", ret, __func__);
-+	return ret;
-+
-+}
-+
-+/*
-+ * Function Name: card_send_sdcmd
-+ *
-+ * Abstract: Issue command
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * sd_command_t *sd_cmd: Pointer to the sd command structure. the caller need to check it's status.
-+ * byte cmd_index: Command Index
-+ * u32 argument: Command argument
-+ * u32 cmdflag: Command flags, like response tpye, DMA or PIO
-+ * e_data_dir dir: data direction: NONE/IN/OUT
-+ * byte *data: Pointer to the data buffer for data command
-+ * u32 datalen: Data length for transfer.
-+ *
-+ * Output: None
-+ *
-+ * Return value: Return TRUE if command successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ * Caller:
-+ *
-+ */
-+
-+bool card_send_sdcmd(sd_card_t *card,
-+		     sd_command_t *sd_cmd,
-+		     byte cmd_index,
-+		     u32 argument,
-+		     u32 cmdflag, e_data_dir dir, byte *data, u32 datalen)
-+{
-+	return card_send_sdcmd_timeout(card, sd_cmd, cmd_index, argument,
-+				       cmdflag, dir, data, datalen, 0);
-+}
-+
-+bool card_wr_protect(sd_card_t *card)
-+{
-+	bool ret = FALSE;
-+	card_info_t *card_info = &(card->info);
-+
-+	if (card_info->csd.temp_protect || card_info->csd.parm_protect)
-+		ret = TRUE;
-+
-+	return ret;
-+}
-+
-+bool card_reset_card(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	byte cmd_index = (byte) (SD_CMD0);
-+	u32 argument = 0;
-+	u32 cmdflag = 0;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+bool card_all_send_cid(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+
-+	byte cmd_index = SD_CMD2;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R2;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+	card_info_t *card_info = &(card->info);
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* Issue CMD2 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+	if (ret) {
-+		os_memcpy(&(card_info->raw_cid[0]), &(sd_cmd->response[0]), 16);
-+		card_info->cid.manfid = card_info->raw_cid[0];
-+		card_info->cid.oemid =
-+		    card_info->raw_cid[1] | (card_info->raw_cid[2] << 8);
-+		os_memcpy(card_info->cid.prod_name, &(card_info->raw_cid[3]), 5);
-+		card_info->cid.prv = card_info->raw_cid[8];
-+		card_info->cid.serial =
-+		    card_info->raw_cid[9] |
-+			(card_info->raw_cid[10] << 8) |
-+		    (card_info->raw_cid[11] << 16) |
-+			(card_info->raw_cid[12] << 24);
-+		card_info->cid.reserved = card_info->raw_cid[13] >> 4;
-+	}
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ * Function Name: card_get_rca
-+ *
-+ * Abstract: Ask the card to publish a new relative address RCA (CMD3)
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output: None
-+ *
-+ * Return value: Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ * Caller: sd_card_identify
-+ *
-+ */
-+
-+bool card_get_rca(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+
-+	byte cmd_index = SD_CMD3;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R6 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+
-+	bool ret = FALSE;
-+
-+	card_info_t *card_info = &(card->info);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* Issue CMD3 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+	if (ret) {
-+		/* Update the card RCA */
-+		card_info->rca = (sd_cmd->response[0] & 0xFFFF0000) >> 16;
-+	}
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ * Function Name: card_select_card
-+ *
-+ * Abstract: Select card (CMD7)
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output: None
-+ *
-+ * Return value: Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ * Caller: sd_card_select
-+ *
-+ */
-+
-+bool card_select_card(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+
-+	byte cmd_index = SD_CMD7;
-+	u32 argument = 0;
-+	u32 cmdflag = 0;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+
-+	bool ret = FALSE;
-+	card_info_t *card_info = &(card->info);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (card->card_type == CARD_UHS2)
-+		cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	else
-+		cmdflag = CMD_FLG_R1B | CMD_FLG_RESCHK;
-+	argument = (card_info->rca) << 16;
-+
-+	/* Issue CMD7 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+	if (ret == TRUE) {
-+		/* Get Lock/Unlock status, CMD7 Response [25].
-+		 * Check bit 25 of CMD7 response.
-+		 */
-+		if (sd_cmd->response[0] & BIT25)
-+			card->locked = TRUE;
-+		else
-+			card->locked = FALSE;
-+	}
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Exit(%d) %s locked=%d\n", ret, __func__, card->locked);
-+	return ret;
-+}
-+
-+/*
-+ * Function Name: card_deselect_card
-+ *
-+ * Abstract: De-Select card (CMD7)
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output: None
-+ *
-+ * Return value: Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ * Caller: sd_read_csd
-+ *
-+ */
-+
-+bool card_deselect_card(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+
-+	byte cmd_index = SD_CMD7;
-+	u32 argument = 0;
-+	u32 cmdflag = 0;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	cmdflag = 0;
-+	argument = 0;
-+
-+	/* Issue CMD7 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Exit(%d) %s locked=%d\n", ret, __func__, card->locked);
-+	return ret;
-+}
-+
-+/*
-+ * Function Name: card_set_csd_info
-+ *
-+ * Abstract: Acquired CSD Data, to be stored into Struct of CSD and Card.
-+ *			Save some contents of CSD Register into Struct of CSD,
-+ *			and generate(calcurate) necessary Data to save into Struct of Card.
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * unsigned char  *csdbuff: CSD Buffer Pointer
-+ * csd_t *csd_info: CSD information Pointer
-+ *
-+ * Output: None
-+ *
-+ * Return value: None
-+ *
-+ * Notes:
-+ *
-+ * Caller: card_get_csd
-+ *
-+ */
-+
-+static void card_set_csd_info(sd_card_t *card, unsigned char *csdbuff,
-+csd_t *csd_info)
-+{
-+	u32 blocknr, mult, block_len, dummy1, dummy2;
-+	byte i;
-+	u32 value, unit;
-+	byte taac_value, taac_unit;
-+	u64 tmpsize;
-+
-+	card_info_t *card_info = &(card->info);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	value = unit = taac_value = taac_unit = 0;
-+	mult = block_len = 1;
-+	blocknr = dummy1 = dummy2 = 0;
-+
-+	/* Store the CSD information to Struct of CSD */
-+
-+	/* Get "CSD Structure" */
-+	csd_info->csd_structure = ((csdbuff[0] & 0xC0) >> 6);
-+
-+	/* Get MMC "Spec_Vers" ( = System Specification version ) */
-+	csd_info->mmc_spec_vers = ((csdbuff[0] & 0x3C) >> 2);
-+
-+	/* Get "TRAN SPEED" */
-+	csd_info->tran_speed = csdbuff[3];
-+
-+	/* Get "TAAC" */
-+	csd_info->taac = csdbuff[1];
-+
-+	/* Get "NSAC" */
-+	csd_info->nsac = csdbuff[2];
-+
-+	/* Get "read_bl_len" */
-+	csd_info->read_bl_len = (csdbuff[5] & 0x0F);
-+
-+	/* Get "PERM_WRITE_PROTECT" */
-+	csd_info->parm_protect = (csdbuff[14] & 0x20) >> 5;
-+
-+	/* Get "TMP_WRITE_PROTECT" */
-+	csd_info->temp_protect = (csdbuff[14] & 0x10) >> 4;
-+
-+	/* Get "c_size" */
-+	csd_info->c_size = 0;
-+
-+	if (card->card_type == CARD_SD || card->card_type == CARD_UHS2) {
-+		if (csd_info->csd_structure == 0) {
-+			/* CSD Version 1.0 (Standard Capacity) */
-+			dummy1 = (csdbuff[6] & 0x03);
-+			dummy1 = (dummy1 << 10);
-+			dummy2 = csdbuff[7];
-+			dummy2 = (dummy2 << 2);
-+			dummy2 = (dummy1 | dummy2);
-+			csd_info->c_size =
-+			    (dummy2 | ((csdbuff[8] & 0xC0) >> 6));
-+		} else {
-+			/* CSD Version 2.0 (High Capacity and Extended Capacity) */
-+			dummy1 = (csdbuff[7] & 0x3F);
-+			dummy1 = (dummy1 << 16);
-+			dummy2 = csdbuff[8];
-+			dummy2 = (dummy2 << 8);
-+			dummy2 = (dummy1 | dummy2);
-+			csd_info->c_size = (dummy2 | (csdbuff[9] & 0xFF));
-+		}
-+	} else if ((card->card_type == CARD_MMC) ||
-+		   (card->card_type == CARD_EMMC)
-+	    ) {
-+		if (card_info->card_ccs == 0) {
-+			/* (Standard Capacity) */
-+			dummy1 = (csdbuff[6] & 0x03);
-+			dummy1 = (dummy1 << 10);
-+			dummy2 = csdbuff[7];
-+			dummy2 = (dummy2 << 2);
-+			dummy2 = (dummy1 | dummy2);
-+			csd_info->c_size =
-+			    (dummy2 | ((csdbuff[8] & 0xC0) >> 6));
-+		} else {
-+			/* (High Capacity and Extended Capacity) */
-+			dummy1 = (csdbuff[7] & 0x3F);
-+			dummy1 = (dummy1 << 16);
-+			dummy2 = csdbuff[8];
-+			dummy2 = (dummy2 << 8);
-+			dummy2 = (dummy1 | dummy2);
-+			csd_info->c_size = (dummy2 | (csdbuff[9] & 0xFF));
-+		}
-+
-+	}
-+
-+	/* Get "sect_size" */
-+	if ((card->card_type == CARD_MMC) || (card->card_type == CARD_EMMC)
-+	    ) {
-+		/* MMC */
-+		csd_info->sector_size = ((csdbuff[10] & 0x7C) >> 2);
-+	} else {
-+		/* SD Memory Card */
-+		csd_info->sector_size = (((csdbuff[10] & 0x3f) << 1) |
-+					 ((csdbuff[11] & 0x80) >> 7));
-+	}
-+
-+	/* Get "c_size_mult" */
-+	if (card->card_type == CARD_SD || card->card_type == CARD_UHS2) {
-+		if (csd_info->csd_structure == 0) {
-+			/* CSD Version 1.0 (Standard Capacity) */
-+			csd_info->c_size_mult = (((csdbuff[9] & 0x03) << 1) |
-+						 ((csdbuff[10] & 0x80) >> 7));
-+		} else {
-+			/* CSD Version 2.0 (High Capacity and Extended Capacity) */
-+			/* not exist */
-+			;
-+		}
-+	} else if ((card->card_type == CARD_MMC) ||
-+		   (card->card_type == CARD_EMMC)
-+	    ) {
-+
-+		if (card_info->card_ccs == 0) {
-+			/* CSD Version 1.0 (Standard Capacity) */
-+			csd_info->c_size_mult = (((csdbuff[9] & 0x03) << 1) |
-+						 ((csdbuff[10] & 0x80) >> 7));
-+		} else {
-+			/* CSD Version 2.0 (High Capacity and Extended Capacity) */
-+			/* not exist */
-+			;
-+		}
-+	}
-+
-+	/*
-+	 * Acquired CSD Data, to be stored into Struct of CSD and Card
-+	 * Save some contents of CSD Register into Struct of CSD, and
-+	 * generate(calcurate) necessary Data to save into Struct of Card
-+	 */
-+
-+	/* Calcuration of Total Sector count & Card Size */
-+	if (card->card_type == CARD_SD || card->card_type == CARD_UHS2) {
-+		if (csd_info->csd_structure == 0) {
-+			/* CSD Version 1.0 (Standard Capacity) */
-+			for (i = 0; i < (csd_info->c_size_mult + 2); i++)
-+				mult = mult * 2;
-+			for (i = 0; i < csd_info->read_bl_len; i++)
-+				block_len = block_len * 2;
-+			blocknr = (csd_info->c_size + 1) * mult;
-+			/* Card Size (Byte) */
-+
-+			card->sec_count = ((u64) (blocknr) * (u64) (block_len));
-+		} else {
-+			/* CSD Version 2.0 (High Capacity and Extended Capacity) */
-+
-+			/* Card Size (Byte) */
-+
-+			/* (c_size + 1) * 512K */
-+			tmpsize = ((u64) csd_info->c_size) + 1;
-+			card->sec_count = tmpsize * 524288;
-+		}
-+	} else if ((card->card_type == CARD_MMC) ||
-+		   (card->card_type == CARD_EMMC)
-+	    ) {
-+		if (card_info->card_ccs == 0) {
-+			/* CSD Version 1.0 (Standard Capacity) */
-+			for (i = 0; i < (csd_info->c_size_mult + 2); i++)
-+				mult = mult * 2;
-+			for (i = 0; i < csd_info->read_bl_len; i++)
-+				block_len = block_len * 2;
-+			blocknr = (csd_info->c_size + 1) * mult;
-+
-+			/* Card Size (Byte) */
-+
-+			card->sec_count = ((u64) (blocknr) * (u64) (block_len));
-+		} else {
-+			/* sector size will calculate at MMC_Set_CSDEXT() */
-+			;
-+		}
-+	}
-+
-+	/* Total sector count of Card */
-+	card->sec_count = ((card->sec_count) / (SD_BLOCK_LEN));
-+	/* SD_INFO_PRINTF("Card_Info.sect_num = %x\n", Card_Info.sect_num); */
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Exit %s CardSectors: %d, %dGB\n", __func__,
-+		card->sec_count, card->sec_count / 2 / 1024 / 1024);
-+
-+}
-+
-+/*
-+ * Function Name: card_get_csd
-+ *
-+ * Abstract: Addressed card sends its card-specific data (CSD) on the CMD line (CMD9)
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output: None
-+ *
-+ * Return value: Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ * Caller: sd_read_csd
-+ *
-+ */
-+
-+bool card_get_csd(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+
-+	byte cmd_index = SD_CMD9;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R2;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+
-+	bool ret = FALSE;
-+	card_info_t *card_info = &(card->info);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	argument = card_info->rca << 16;
-+
-+	/* Issue CMD9 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+	if (ret) {
-+		/* Set the card CSD info */
-+		os_memcpy(&(card_info->raw_csd[0]), &(sd_cmd->response[0]), 16);
-+		/* Parse the CSD info */
-+		card_set_csd_info(card, card_info->raw_csd, &(card_info->csd));
-+	}
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ * Function Name: card_get_card_status
-+ *
-+ * Abstract: Read the SD Status Register (SSR) (ACMD13)
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output: None
-+ *
-+ * Return value: Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ * Caller: card_check_rw_ready
-+ *
-+ */
-+
-+bool card_get_card_status(sd_card_t *card,
-+			  sd_command_t *sd_cmd, u32 *card_status)
-+{
-+
-+	byte cmd_index = SD_CMD13;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+
-+	bool ret = FALSE;
-+	card_info_t *card_info = &(card->info);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_OPS, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* Issue CMD13 */
-+	argument = (card_info->rca << 16);
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+	if (ret) {
-+		/* Send the card status */
-+		os_memcpy(card_status, &(sd_cmd->response[0]), 4);
-+	}
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_OPS, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+bool card_check_rw_ready(sd_card_t *card, sd_command_t *sd_cmd,
-+			 int timeout_ms)
-+{
-+	bool result = FALSE;
-+	u32 card_status = 0;
-+	loop_wait_t wait;
-+	u32 delay_us = 10;
-+
-+	util_init_waitloop(card->host->pdx, timeout_ms, delay_us, &wait);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_OPS, NOT_TO_RAM,
-+		"Enter %s, timeout_ms=%d\n", __func__, timeout_ms);
-+
-+	do {
-+		result = card_get_card_status(card, sd_cmd, &card_status);
-+		if (result == FALSE)
-+			goto exit;
-+
-+		os_udelay(delay_us);
-+	} while (((card_status & 0x900) != 0x900) && (!util_is_timeout(&wait)));
-+
-+	if ((card_status & 0x900) != 0x900)
-+		result = FALSE;
-+
-+exit:
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_OPS, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+/*
-+ * Function Name: card_set_block_len
-+ *
-+ * Abstract: Set the block length for all following block commands (ACMD6, block length = 5126)
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * sd_command_t *sd_cmd: Pointer to sd command structure
-+ * u32 arg: SD_BLOCK_LEN
-+ *
-+ * Output: None
-+ *
-+ * Return value: Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ * Caller: sd_init_get_info
-+ *
-+ */
-+
-+bool card_set_block_len(sd_card_t *card, sd_command_t *sd_cmd, u32 arg)
-+{
-+	byte cmd_index = SD_CMD16;
-+	u32 argument = arg;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Enter %s, arg=0x%x\n", __func__, arg);
-+
-+	/* Issue CMD16 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+	if (!ret)
-+		DbgErr("Set Block Length(CMD6) %d Error!!", argument);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ * Function Name: card_get_legacy_freq
-+ *
-+ * Abstract:
-+ *           1. Set the specific clock frequency
-+ *           2. Set DM/DN and Clock Divider
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card: Pointer to the card structure
-+ * u32 clk_freq_khz: clock frequency to be set (KHz)
-+ * bool ddr_mode: if it is DDR50 mode (100MHz same as SDR50), need to check max frequency for DDR50
-+ *
-+ * Output: DMDN Values
-+ *
-+ * Return value: BIT[31:16]:dmdn BIT[14:0] basediv
-+ *
-+ * Notes:
-+ *
-+ * Caller: card_legacy_change_clock
-+ *
-+ */
-+
-+static u32 card_get_legacy_freq(sd_card_t *card, u32 clk_freq_khz,
-+				bool ddr_mode)
-+{
-+	u32 value = 0;
-+	u16 index = 0;
-+	sd_host_t *host = card->host;
-+	u16 freq_level = card->degrade_freq_level;
-+	/* cfg_max_freq_item_t  * freq = &(host->cfg->host_item.max_freq_item); */
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Enter %s, Clock frequency %d KHz, ddr50_mode=%\n",
-+		__func__, clk_freq_khz, ddr_mode);
-+	if (host->cfg == NULL || host->cfg->dmdn_tbl == NULL) {
-+		DbgErr("host cfg is null\n");
-+		return 0;
-+	}
-+
-+	/* Set DM/DN according to the clock frequency */
-+	switch (clk_freq_khz) {
-+	case SD_CLK_ID_400K:
-+		value = host->cfg->dmdn_tbl[FREQ_400K_START_INDEX];
-+		break;
-+	case SD_CLK_50M:
-+		if (ddr_mode)
-+			value = host->cfg->dmdn_tbl[FREQ_DDR50M_START_INDEX];
-+		else
-+			value = host->cfg->dmdn_tbl[FREQ_50M_START_INDEX];
-+		break;
-+
-+	case SD_CLK_100M:
-+		index = (u16) FREQ_100M_START_INDEX + freq_level;
-+		if (index > (u16) FREQ_100M_DEGRE_INDEX)
-+			index = (u16) FREQ_100M_DEGRE_INDEX;
-+		value = host->cfg->dmdn_tbl[index];
-+		break;
-+
-+	case SD_CLK_200M:
-+		if (ddr_mode) {
-+			index = (u16) FREQ_DDR200M_START_INDEX + freq_level;
-+			if (index > (u16) FREQ_DDR200M_DEGRE_INDEX)
-+				index = (u16) FREQ_DDR200M_DEGRE_INDEX;
-+			value = host->cfg->dmdn_tbl[index];
-+		} else {
-+			index = (u16) FREQ_200M_START_INDEX + freq_level;
-+			if (index > (u16) FREQ_200M_DEGRE_INDEX)
-+				index = (u16) FREQ_200M_DEGRE_INDEX;
-+			value = host->cfg->dmdn_tbl[index];
-+		}
-+		break;
-+	case SD_CLK_225M:
-+		index = (u16) FREQ_DDR225M_START_INDEX + freq_level;
-+		if (index > (u16) FREQ_DDR225M_DEGRE_INDEX)
-+			index = (u16) FREQ_DDR225M_DEGRE_INDEX;
-+		value = host->cfg->dmdn_tbl[index];
-+		break;
-+
-+	case SD_CLK_75M:
-+		value = host->cfg->dmdn_tbl[FREQ_75M_START_INDEX];
-+		break;
-+
-+	default:
-+		value = host->cfg->dmdn_tbl[FREQ_25M_START_INDEX];
-+		break;
-+	}
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, TO_RAM,
-+		"%s Exit  Clock=%d (KHz): value=0x%08X\n", __func__,
-+		clk_freq_khz, value);
-+
-+	return value;
-+
-+}
-+
-+/*
-+ * Function Name: card_legacy_change_clock
-+ *
-+ * Abstract:
-+ *           1. Stop clock
-+ *           2. Set the clock frequency (DM/DN, clk divider)
-+ *           3. Start the clock
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card: Pointer to the card structure
-+ * u32 clk_freq_khz: clock frequency to be set (KHz)
-+ * bool ddr_mode: if it is DDR200/DDR50 mode (100MHz same as SDR50),
-+ *					need to check max frequency for DDR200/DDR50
-+ *
-+ * Output: None
-+ *
-+ * Return value: None
-+ *
-+ * Notes:
-+ *
-+ * Caller: sd_init_stage2
-+ *
-+ */
-+
-+void card_legacy_change_clock(sd_card_t *card, u32 clk_freq_khz, bool ddr_mode)
-+{
-+	u32 value;
-+	sd_host_t *host = card->host;
-+
-+	value = card_get_legacy_freq(card, clk_freq_khz, ddr_mode);
-+	host_change_clock(host, value);
-+
-+}
-diff --git a/drivers/scsi/bht/card/cardcommon.h b/drivers/scsi/bht/card/cardcommon.h
-new file mode 100644
-index 000000000000..985411bb0802
---- /dev/null
-+++ b/drivers/scsi/bht/card/cardcommon.h
-@@ -0,0 +1,123 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2014 BHT Inc.
-+ *
-+ * File Name: cardcommon.h
-+ *
-+ * Abstract: Include card related common functions.
-+ *
-+ * Version: 1.00
-+ *
-+ * Author: Samuel
-+ *
-+ * Environment:	OS Independent
-+ *
-+ * History:
-+ *
-+ * 9/2/2014   Creation    Samuel
-+ */
-+
-+#ifndef _CARDCOMMON_H
-+#define _CARDCOMMON_H
-+
-+#include "../include/card.h"
-+
-+/* SD Legacy (UHSI, HS, DS) card initialization */
-+bool sd_legacy_init(sd_card_t *card);
-+
-+/* MMC or eMMC card initialization */
-+bool emmc_init(sd_card_t *card, bool bemmc);
-+bool emmc_init_stage2(sd_card_t *card);
-+bool emmc_tuning(sd_card_t *card, sd_command_t *sd_cmd);
-+
-+bool sd_tuning(sd_card_t *card, sd_command_t *sd_cmd, u32 timeout);
-+
-+bool card_get_card_status(sd_card_t *card,
-+			  sd_command_t *sd_cmd, u32 *card_status);
-+
-+bool card_reset_card(sd_card_t *card, sd_command_t *sd_cmd);
-+
-+bool card_all_send_cid(sd_card_t *card, sd_command_t *sd_cmd);
-+
-+bool card_get_rca(sd_card_t *card, sd_command_t *sd_cmd);
-+
-+bool card_select_card(sd_card_t *card, sd_command_t *sd_cmd);
-+
-+bool card_get_csd(sd_card_t *card, sd_command_t *sd_cmd);
-+
-+bool card_send_command12(sd_card_t *card, sd_command_t *sd_cmd);
-+
-+bool card_set_block_len(sd_card_t *card, sd_command_t *sd_cmd, u32 arg);
-+
-+bool uhs2_card_init(sd_card_t *card);
-+void card_power_on(sd_card_t *card);
-+
-+/*
-+ * (1) If uhs2 call uhs2 cmd handler
-+ * (2) generate sd_cmd_t structure and sd_data structure(pio only)
-+ * (3) call cmd_generate_reg(sd_cmd)
-+ * (4) call cmd_execute
-+ * (5) do error recover if necessary
-+ * (6) return result
-+ */
-+
-+bool card_send_sdcmd(sd_card_t *card,
-+		     sd_command_t *sd_cmd,
-+		     byte cmd_index,
-+		     u32 argument,
-+		     u32 cmdflag, e_data_dir dir, byte *data, u32 datalen);
-+
-+bool uhs2_native_ccmd(sd_card_t *card, sd_command_t *sd_cmd,
-+		      u16 ioaddr, bool broadcast, bool rwcmd, byte payload_num,
-+		      u32 *payload);
-+
-+bool card_send_sdcmd_dma_timeout(sd_card_t *card,
-+				 sd_command_t *sd_cmd,
-+				 sd_data_t *sd_data,
-+				 byte cmd_index,
-+				 u32 argument,
-+				 u32 cmdflag,
-+				 e_data_dir dir,
-+				 byte *data, u32 datalen, u32 timeout);
-+
-+bool card_select_card(sd_card_t *card, sd_command_t *sd_cmd);
-+
-+bool sd_switch_function_check(sd_card_t *card, sd_command_t *sd_cmd);
-+
-+bool sd_switch_function_set_pl(sd_card_t *card,
-+			       sd_command_t *sd_cmd, byte power_limit);
-+
-+bool card_wr_protect(sd_card_t *card);
-+
-+bool sd_card_identify(sd_card_t *card);
-+
-+bool sd_init_get_info(sd_card_t *card);
-+
-+bool sd_init_stage2(sd_card_t *card);
-+
-+bool uhs2_enter_dmt(sd_card_t *card, sd_command_t *sd_cmd, sd_host_t *host,
-+		    bool hbr);
-+bool uhs2_resume_dmt(sd_card_t *card, sd_command_t *sd_cmd, sd_host_t *host,
-+		     bool hbr);
-+
-+bool sd_card_select(sd_card_t *card);
-+bool uhs2_init_stage2(sd_card_t *card);
-+bool uhs2_full_reset_card(sd_card_t *card);
-+
-+bool sd_switch_power_limit(sd_card_t *card, sd_command_t *sd_cmd, bool *bchg);
-+
-+bool card_check_rw_ready(sd_card_t *card, sd_command_t *sd_cmd,
-+			 int timeout_ms);
-+
-+void card_legacy_change_clock(sd_card_t *card, u32 clk_freq_khz,
-+			      bool ddr50_mode);
-+
-+bool card_need_get_info(sd_card_t *card);
-+
-+bool card_deselect_card(sd_card_t *card, sd_command_t *sd_cmd);
-+
-+bool sd_program_csd(sd_card_t *card, sd_command_t *sd_cmd, byte *data);
-+
-+bool sd_read_csd(sd_card_t *card, sd_command_t *sd_cmd, byte *data);
-+
-+#endif
-diff --git a/drivers/scsi/bht/card/cardinterface.c b/drivers/scsi/bht/card/cardinterface.c
-new file mode 100644
-index 000000000000..6c8ee43f2e11
---- /dev/null
-+++ b/drivers/scsi/bht/card/cardinterface.c
-@@ -0,0 +1,2448 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2014 BHT Inc.
-+ *
-+ * File Name: cardinterface.c
-+ *
-+ * Abstract:
-+ *           1. Card initialization main entry
-+ *           2. Interface for card operations
-+ *
-+ * Version: 1.00
-+ *
-+ * Author: Samuel
-+ *
-+ * Environment:	OS Independent
-+ *
-+ * History:
-+ *
-+ * 9/3/2014   Creation    Samuel
-+ */
-+
-+#include "../include/basic.h"
-+#include "../include/card.h"
-+#include "../include/cardapi.h"
-+#include "../include/hostapi.h"
-+#include "../include/transhapi.h"
-+#include "../include/hostvenapi.h"
-+#include "../include/util.h"
-+#include "../include/debug.h"
-+#include "../include/cmdhandler.h"
-+#include "../host/hostven.h"
-+#include "../include/card.h"
-+#include "../host/hostreg.h"
-+#include "../include/funcapi.h"
-+#include "../tagqueue/tq_trans_api.h"
-+#include "../include/cmdhandler.h"
-+#include "cardcommon.h"
-+
-+/* Thomas add for direct remove 7.0 */
-+extern void bht_sd_remove(struct pci_dev *pdev);
-+
-+bool sd_thermal_control(sd_card_t *card);
-+void uhs2_degrade_policy(sd_card_t *card, sd_command_t *sd_cmd);
-+bool uhs2_sd_error_recovery(sd_card_t *card, sd_command_t *sd_cmd);
-+void sd_degrade_policy(sd_card_t *card);
-+void mmc_degrade_policy(sd_card_t *card);
-+u32 card_get_uhs2_freq(sd_card_t *card);
-+u32 sdr104_sdr50_output_tuning(sd_card_t *card, u32 address);
-+u32 ddr200_output_tuning(sd_card_t *card, u32 address);
-+
-+bool sd_dll_divider(sd_card_t *card, sd_command_t *pcmd);
-+
-+byte tuning_address_content_buf[512] = { 0 };
-+
-+bool store_tuning_address_content(sd_card_t *card, u64 tuning_address)
-+{
-+	bool ret = 0;
-+	sd_command_t sd_cmd;
-+	u32 cmdflag;
-+	sd_host_t *host = card->host;
-+
-+	card->read_signal_block_flag = TRUE;
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+	/* Save Current DMA mode */
-+	host_transfer_init(card->host, FALSE, TRUE);
-+	cmdflag = CMD_FLG_RESCHK | CMD_FLG_R1 | CMD_FLG_ADMA_SDMA;
-+
-+	ret =
-+	    card_send_sdcmd_timeout(card, &sd_cmd, SD_CMD17,
-+				    (u32) tuning_address, (cmdflag),
-+				    DATA_DIR_IN, tuning_address_content_buf,
-+				    512, 500);
-+	if (ret == FALSE) {
-+		host_reset(host, SDHCI_RESET_CMD);
-+		host_reset(host, SDHCI_RESET_DATA);
-+		card->read_signal_block_flag = FALSE;
-+		DbgErr("Read data FAILED when store tuning address content\n");
-+	}
-+
-+	/* Resorte current DMA mode */
-+	host_transfer_init(card->host, card->inf_trans_enable, FALSE);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+	return ret;
-+}
-+
-+bool restore_tuning_address_content(sd_card_t *card, u64 tuning_address)
-+{
-+	bool ret = 0;
-+	int i = 0;
-+	sd_command_t sd_cmd;
-+	u32 cmdflag;
-+	byte tuning_temp_buf[512];
-+	bool gg8_ddr200 = 0;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (card->host->chip_type == CHIP_GG8
-+	    && card->info.sw_cur_setting.sd_access_mode == SD_FNC_AM_DDR200) {
-+		/* Save Current DMA mode */
-+		host_transfer_init(card->host, TRUE, FALSE);
-+		gg8_ddr200 = 1;
-+		cmdflag =
-+		    CMD_FLG_RESCHK | CMD_FLG_R1 | CMD_FLG_ADMA_SDMA |
-+		    CMD_FLG_DDR200_WORK_AROUND | CMD_FLG_INF_BUILD;
-+	} else {
-+		/* Save Current DMA mode */
-+		host_transfer_init(card->host, FALSE, TRUE);
-+		cmdflag = CMD_FLG_RESCHK | CMD_FLG_R1 | CMD_FLG_ADMA_SDMA;
-+	}
-+
-+	ret =
-+	    card_send_sdcmd_timeout(card, &sd_cmd,
-+				    gg8_ddr200 ? SD_CMD25 : SD_CMD24,
-+				    (u32) tuning_address, (cmdflag),
-+				    DATA_DIR_OUT, tuning_address_content_buf,
-+				    512, 500);
-+	if (ret == FALSE) {
-+		DbgErr
-+		    ("Write data FAILED when restore tuning address content\n");
-+		goto exit;
-+	}
-+
-+	ret =
-+	    card_send_sdcmd_timeout(card, &sd_cmd,
-+				    gg8_ddr200 ? SD_CMD18 : SD_CMD17,
-+				    (u32) tuning_address,
-+				    (cmdflag | CMD_FLG_ADMA_SDMA), DATA_DIR_IN,
-+				    tuning_temp_buf, 512, 500);
-+	if (ret == FALSE) {
-+		DbgErr("Read data FAILED when store tuning address content\n");
-+		goto exit;
-+	}
-+
-+	for (i = 0; i < 512; i++) {
-+		if (tuning_temp_buf[i] != tuning_address_content_buf[i]) {
-+			DbgErr("Tuning address compare err!!!Write data 0x%x, Read out data 0x%x, Offset %d\n",
-+			tuning_address_content_buf[i], tuning_temp_buf[i], i);
-+			ret = FALSE;
-+			break;
-+		}
-+		DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+			"Write data 0x%x, Read out data 0x%x, Offset %d\n",
-+			tuning_address_content_buf[i], tuning_temp_buf[i], i);
-+	}
-+
-+exit:
-+	/* Resorte current DMA mode */
-+	host_transfer_init(card->host, card->inf_trans_enable, FALSE);
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+	return ret;
-+}
-+
-+bool card_output_tuning(sd_card_t *card, u64 tuning_address)
-+{
-+	sd_host_t *host = card->host;
-+	int ii, jj, pattern_i, first_0, dll_i_mod;
-+	int dat_cmp, dll_result[16];
-+	byte test_patern[6] = { 0x55, 0xaa, 0x00, 0xff, 0xf0, 0x0f };
-+	u32 dll_i, window_pass_number[16],
-+	    window_start_adr[16], window_pass_number_max, dll_mod;
-+	u32 ret = FALSE;
-+	bool result = FALSE;
-+	sd_command_t sd_cmd;
-+	u32 cmdflag;
-+	u8 phase_count = 11;
-+
-+	byte *test_buf = kcalloc(512, sizeof(unsigned char), GFP_KERNEL);
-+	byte *test_buf_read = kcalloc(512, sizeof(unsigned char), GFP_KERNEL);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (test_buf == NULL || test_buf_read == NULL) {
-+		DbgErr("kcalloc buffer failed\n");
-+		if (test_buf != NULL)
-+			kfree(test_buf);
-+		if (test_buf_read != NULL)
-+			kfree(test_buf_read);
-+		return FALSE;
-+	}
-+
-+	host->output_tuning.start_block = (u32) tuning_address;
-+	host->output_tuning.auto_phase_flag = FALSE;
-+
-+	/* Save Current DMA mode */
-+	if (card->host->chip_type == CHIP_GG8
-+	    && card->info.sw_cur_setting.sd_access_mode != SD_FNC_AM_DDR200)
-+		host_transfer_init(host, FALSE, TRUE);
-+	else
-+		host_transfer_init(host, TRUE, FALSE);
-+
-+	if (host->chip_type == CHIP_GG8 || host->chip_type == CHIP_ALBATROSS) {
-+		if (card->info.sw_cur_setting.sd_access_mode ==
-+		    SD_FNC_AM_DDR200)
-+			ret = ddr200_output_tuning(card, (u32) tuning_address);
-+		else
-+			ret =
-+			    sdr104_sdr50_output_tuning(card,
-+						       (u32) tuning_address);
-+
-+		if (ret == 0)
-+			result = TRUE;
-+	} else {
-+		cmdflag = CMD_FLG_RESCHK | CMD_FLG_R1 | CMD_FLG_ADMA_SDMA;
-+		window_pass_number_max = 0;
-+		for (dll_i = 0; dll_i < phase_count; dll_i++)
-+			dll_result[dll_i] = TRUE;
-+
-+		for (dll_i = 0; dll_i < 512; dll_i++)
-+			test_buf[dll_i] = test_patern[dll_i % 6];
-+
-+		host_cmddat_line_reset(host);
-+
-+		if (host->chip_type != CHIP_GG8
-+		    || host->chip_type == CHIP_ALBATROSS) {
-+			if (card_check_rw_ready(card, &sd_cmd, 600) != TRUE) {
-+				DbgErr
-+				    ("Error when output_tuning,  card_check_rw_ready fail\n");
-+				goto exit;
-+			}
-+		}
-+
-+		for (dll_i = 0; dll_i < phase_count; dll_i++) {
-+			DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER,
-+				NOT_TO_RAM, " - DLL Adjust Test %d\n", dll_i);
-+
-+			if (card->card_present == FALSE) {
-+				DbgErr
-+				    ("Error when output_tuning,  card is removed\n");
-+				goto exit;
-+			}
-+			host_cmddat_line_reset(host);
-+			host_set_output_tuning_phase(host, dll_i);
-+
-+			if (card->info.sw_cur_setting.sd_access_mode ==
-+			    SD_FNC_AM_SDR104
-+			    || card->info.sw_cur_setting.sd_access_mode ==
-+			    SD_FNC_AM_SDR50
-+			    || card->info.sw_cur_setting.sd_access_mode ==
-+			    SD_FNC_AM_DDR200) {
-+
-+				ret = sd_tuning(card, &sd_cmd, 150);
-+				if (ret == FALSE) {
-+					DbgErr("Error when output_tuning, sd_tuning fail at phase %d\n", dll_i);
-+					dll_result[dll_i] = FALSE;
-+					continue;
-+				}
-+			}
-+
-+			for (pattern_i = 0; pattern_i < 1; pattern_i++) {
-+
-+				ret = card_send_sdcmd_timeout(card, &sd_cmd,
-+							    SD_CMD24,
-+							    host->output_tuning.start_block,
-+							    (cmdflag),
-+							    DATA_DIR_OUT,
-+							    test_buf, 512, 500);
-+				if (ret == FALSE) {
-+					DbgErr("Write data FAILED when output_tuning\n");
-+					dll_result[dll_i] = FALSE;
-+					host_cmddat_line_reset(host);
-+					card_send_command12(card, &sd_cmd);
-+					if (card_check_rw_ready
-+					    (card, &sd_cmd, 600) != TRUE) {
-+						DbgErr("Error when output_tuning write CMD, card_check_rw_ready fail\n");
-+						goto exit;
-+					}
-+					break;
-+				}
-+
-+				ret = card_send_sdcmd_timeout(card, &sd_cmd,
-+							    SD_CMD17,
-+							    host->output_tuning.start_block,
-+							    (cmdflag),
-+							    DATA_DIR_IN,
-+							    test_buf_read, 512,
-+							    500);
-+				if (ret == FALSE) {
-+					DbgErr("Read data FAILED when output_tuning\n");
-+					dll_result[dll_i] = FALSE;
-+					host_cmddat_line_reset(host);
-+					card_send_command12(card, &sd_cmd);
-+					if (card_check_rw_ready(card, &sd_cmd, 600) != TRUE) {
-+						DbgErr("Error when output_tuning read CMD, card_check_rw_ready fail\n");
-+						goto exit;
-+					}
-+					break;
-+				}
-+
-+				dat_cmp = TRUE;
-+				for (ii = 0; ii < (1 * 512); ii++) {
-+					if (*(test_buf + ii) !=
-+					    *(test_buf_read + ii)) {
-+						dat_cmp = FALSE;
-+						dll_result[dll_i] = FALSE;
-+						break;
-+					}
-+				}
-+				if (dat_cmp == FALSE)
-+					DbgErr("Compare data FAILED at index %d!!!\n", ii);
-+
-+			}
-+		}
-+
-+		for (ii = 0; ii < 16; ii++) {
-+			window_pass_number[ii] = 0;
-+			window_start_adr[ii] = 0;
-+		}
-+
-+		first_0 = 0;
-+		for (dll_i = 0; dll_i < phase_count; dll_i++) {
-+			if (dll_result[dll_i] != TRUE) {
-+				first_0 = dll_i;
-+				break;
-+			}
-+		}
-+
-+		jj = 0;
-+		for (dll_i = 0; dll_i < phase_count; dll_i++) {
-+			dll_i_mod = (first_0 + dll_i) % phase_count;
-+			DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER,
-+				NOT_TO_RAM, "DLL phase [%x] result %d.\n",
-+				dll_i_mod, dll_result[dll_i_mod]);
-+			if (dll_result[dll_i_mod] == TRUE)
-+				window_pass_number[jj]++;
-+			else {
-+				if (window_pass_number[jj] > 0)
-+					jj++;
-+			}
-+			if (window_pass_number[jj] == 1)
-+				window_start_adr[jj] = dll_i_mod;
-+		}
-+
-+		for (ii = 0; ii < phase_count; ii++) {
-+			if (window_pass_number_max < window_pass_number[ii]) {
-+				window_pass_number_max = window_pass_number[ii];
-+				jj = ii;
-+			}
-+		}
-+
-+		if (window_pass_number_max == 0)
-+			DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER,
-+				NOT_TO_RAM,
-+				"DLL test result: All DLL test FAIL\n");
-+		else {
-+			DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER,
-+				NOT_TO_RAM,
-+				"DLL test result: Total	%d DLL test PASS\n",
-+				window_pass_number_max);
-+			window_pass_number_max = window_pass_number_max >> 1;
-+			dll_mod = window_start_adr[jj] + window_pass_number_max;
-+			dll_mod = dll_mod % phase_count;
-+
-+			DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER,
-+				NOT_TO_RAM, "select DLL phase Number %d\n",
-+				dll_mod);
-+			host->output_tuning.auto_phase = dll_mod;
-+			host->output_tuning.auto_phase_flag = TRUE;
-+			result = TRUE;
-+			host_set_output_tuning_phase(host,
-+				host->output_tuning.auto_phase);
-+			if (card->info.sw_cur_setting.sd_access_mode ==
-+			    SD_FNC_AM_SDR104
-+			    || card->info.sw_cur_setting.sd_access_mode ==
-+			    SD_FNC_AM_SDR50
-+			    || card->info.sw_cur_setting.sd_access_mode ==
-+			    SD_FNC_AM_DDR200) {
-+				ret = sd_tuning(card, &sd_cmd, 150);
-+				if (ret == FALSE) {
-+					DbgErr
-+					    ("Error when output_tuning,  sd_tuning fail\n");
-+					result = FALSE;
-+					goto exit;
-+				}
-+			}
-+
-+		}
-+
-+	}
-+exit:
-+
-+	/* Resorte current DMA mode */
-+	host_transfer_init(host, card->inf_trans_enable, FALSE);
-+	if (result == FALSE)
-+		hostven_set_output_tuning_phase(host, 0, TRUE);
-+	host_cmddat_line_reset(host);
-+	host->output_tuning.auto_flag = FALSE;
-+
-+	kfree(test_buf);
-+	kfree(test_buf_read);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Exit %s result is %d\n", __func__, result);
-+
-+	return result;
-+}
-+
-+static bool legacy_error_recovery(sd_card_t *card, sd_command_t *pcmd)
-+{
-+	bool ret;
-+	sd_command_t sd_cmd;
-+	card_info_t *card_info = &(card->info);
-+	sd_host_t *host = card->host;
-+	bht_dev_ext_t *pdx = host->pdx;
-+	cfg_output_tuning_item_t *cfg =
-+	    &pdx->cfg->feature_item.output_tuning_item;
-+
-+	DbgInfo(MODULE_LEGACY_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Enter %s\n", __func__);
-+
-+	/* Follow SD Host Spec V4.10 Section 3.10.1 Error Interrupt Recovery flow (Page 179) */
-+	card_send_command12(card, &sd_cmd);
-+
-+	/* Call host api to do host related recovery stage2 */
-+	ret =
-+	    host_error_int_recovery_stage2(card->host,
-+					   sd_cmd.err.legacy_err_reg);
-+
-+	if (ret == FALSE)
-+		goto exit;
-+
-+	ret = card_check_rw_ready(card, &sd_cmd, 150);
-+
-+	if (ret == FALSE) {
-+		DbgErr("Card status is not ready after error recovery");
-+		goto exit;
-+	}
-+
-+	if (pcmd != NULL) {
-+		/* Crc error */
-+		if (pcmd->err.legacy_err_reg & (BIT1 | BIT5)) {
-+			if (host->cfg->feature_item.output_tuning_item.enable_dll
-+				== 0) {
-+				if (card->card_type == CARD_SD)
-+					ret = sd_tuning(card, &sd_cmd, 0);
-+				else if (card->card_type == CARD_EMMC)
-+					ret = emmc_tuning(card, &sd_cmd);
-+			} else {
-+
-+				if (card->card_type == CARD_SD &&
-+				    pcmd->data &&
-+				    pcmd->data->dir == DATA_DIR_OUT &&
-+				    ((cfg->enable_dll == 1)
-+				     && (cfg->enable_dll_divider == 1))
-+				    && (card_info->sw_cur_setting.sd_access_mode ==
-+					SD_FNC_AM_DDR50)) {
-+					ret = sd_dll_divider(card, pcmd);
-+					if (ret)
-+						goto exit;
-+				} else if (pcmd->data
-+					   && pcmd->data->dir == DATA_DIR_OUT) {
-+					if (card->card_type == CARD_SD
-+					    || card->card_type == CARD_EMMC) {
-+						if (hostven_fix_output_tuning(card->host,
-+							card_info->sw_cur_setting.sd_access_mode)
-+						    == FALSE) {
-+							ret = card_output_tuning(card,
-+								pcmd->argument);
-+							if (ret)
-+								goto exit;
-+						}
-+					}
-+				} else if (pcmd->data
-+					   && pcmd->data->dir == DATA_DIR_IN) {
-+					if (card->card_type == CARD_SD) {
-+						ret =
-+						    sd_tuning(card, &sd_cmd, 0);
-+					} else if (card->card_type == CARD_EMMC) {
-+						ret =
-+						    emmc_tuning(card, &sd_cmd);
-+					}
-+				}
-+			}
-+		}
-+
-+	}
-+
-+exit:
-+	DbgInfo(MODULE_LEGACY_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Exit %s\n", __func__);
-+	return ret;
-+}
-+
-+/*
-+ * Function Name: card_degrade_policy
-+ *
-+ * Abstract: This Function is used set card degrade flag
-+ *           if blightway is set, this function can also do card operation which don't need reinit
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card : The Command will send to which  Card
-+ * sd_command_t *sd_cmd: if the init occurred at init stage this parameter will be null
-+ *
-+ * Output: None
-+ *
-+ * Return value: None
-+ *
-+ * Notes:
-+ *
-+ * Caller: card_init
-+ *
-+ */
-+
-+void card_degrade_policy(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Enter %s\n", __func__);
-+	switch (card->card_type) {
-+	case CARD_SD:
-+		sd_degrade_policy(card);
-+		break;
-+	case CARD_UHS2:
-+		uhs2_degrade_policy(card, sd_cmd);
-+		break;
-+	case CARD_EMMC:
-+	case CARD_MMC:
-+		mmc_degrade_policy(card);
-+		break;
-+	default:
-+		break;
-+
-+	}
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+}
-+
-+/*
-+ * Function Name: card_rw_recovery
-+ *
-+ * Abstract: This Function is used to do card rw error recovery
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card : The Command will send to which  Card
-+ * sd_command_t *sd_cmd: if the init occurred at init stage this parameter will be null
-+ *
-+ * Output: None
-+ *
-+ * Return value: If the routine succeeds, it must return TRUE,
-+ *               and fill trans_reg_t  part. otherwize reutrn FALSE
-+ *
-+ * Notes:
-+ *
-+ * Caller: card_recovery_flow
-+ *
-+ */
-+
-+static bool card_rw_recovery(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+
-+	if (sd_cmd == NULL)
-+		return FALSE;
-+
-+	switch (card->card_type) {
-+	case CARD_EMMC:
-+	case CARD_MMC:
-+	case CARD_SD:
-+		return legacy_error_recovery(card, sd_cmd);
-+	case CARD_UHS2:
-+		return uhs2_sd_error_recovery(card, sd_cmd);
-+	default:
-+		DbgErr("Error Card no RW error recovery\n");
-+		break;
-+
-+	}
-+
-+	return FALSE;
-+}
-+
-+/*
-+ * Function Name: card_init_infinite
-+ *
-+ * Abstract: This Function is used to determine whehter use infinte or not according to card type
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card : The Command will send to which  Card
-+ * sd_host_t *host: Pointer to the host structure
-+ *
-+ * Output: None
-+ *
-+ * Return value: None
-+ *
-+ * Notes:
-+ *
-+ * Caller: card_init
-+ *
-+ */
-+
-+static void card_init_transfer(sd_card_t *card, sd_host_t *host)
-+{
-+	bool autocmd23 = FALSE;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	card->has_built_inf = FALSE;
-+	card->last_dir = DATA_DIR_NONE;
-+	card->last_sect = 0;
-+
-+	if (host->cfg->host_item.test_infinite_transfer_mode.enable_inf ==
-+	    FALSE) {
-+		card->inf_trans_enable = FALSE;
-+		goto next;
-+	}
-+
-+	switch (card->card_type) {
-+	case CARD_UHS2:
-+		card->inf_trans_enable =
-+		    (byte) host->cfg->host_item.test_infinite_transfer_mode.enable_sd40_inf;
-+		break;
-+	case CARD_SD:
-+		card->inf_trans_enable =
-+		    (byte) host->cfg->host_item.test_infinite_transfer_mode.enable_legacy_inf;
-+		break;
-+	case CARD_MMC:
-+		card->inf_trans_enable =
-+		    (byte) host->cfg->host_item.test_infinite_transfer_mode.enable_mmc_inf;
-+		break;
-+	case CARD_EMMC:
-+		card->inf_trans_enable =
-+		    (byte) host->cfg->host_item.test_infinite_transfer_mode.enable_emmc_inf;
-+		break;
-+	default:
-+		card->inf_trans_enable = FALSE;
-+		break;
-+	}
-+
-+next:
-+	if ((card->card_type == CARD_SD) && (card->info.scr.cmd_support & 0x2))
-+		autocmd23 = TRUE;
-+
-+	host_transfer_init(host, card->inf_trans_enable, FALSE);
-+	host_enable_cmd23(host, autocmd23);
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+}
-+
-+/*
-+ * Function Name: card_switch2_adma
-+ *
-+ * Abstract: call this function to switch to adma2 mode, caller must restore.
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card : The Command will send to which  Card
-+ * sd_command_t *sd_cmd: if the init occurred at init stage this parameter will be null
-+ *
-+ * Output: None
-+ *
-+ * Return value: If the routine succeeds, it must return TRUE, otherwize reutrn FALSE
-+ *
-+ * Notes:
-+ *
-+ * Caller:
-+ *
-+ */
-+
-+bool card_switch2_adma(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_ERROR_RECOVER | FEATURE_IOCTL_TRACE,
-+		NOT_TO_RAM, "Enter %s\n", __func__);
-+	/* stop inf */
-+	if (card->has_built_inf) {
-+		/* need stop first */
-+		ret = card_stop_infinite(card, FALSE, sd_cmd);
-+		if (ret == FALSE) {
-+			DbgErr("Stop Inf error for swithc2_adma\n");
-+			goto exit;
-+		}
-+	}
-+
-+	host_transfer_init(card->host, FALSE, TRUE);
-+	ret = TRUE;
-+exit:
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_ERROR_RECOVER | FEATURE_IOCTL_TRACE,
-+		NOT_TO_RAM, "Enter %s ret=%d\n", __func__, ret);
-+	return ret;
-+}
-+
-+/*
-+ * Function Name: card_degrade_info_init
-+ *
-+ * Abstract: init card degrade info
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card : The Command will send to which  Card
-+ * sd_host_t *host: Pointer to the host structure
-+ *
-+ * Output: None
-+ *
-+ * Return value: None
-+ *
-+ * Notes:
-+ *
-+ * Caller: card_stuct_init
-+ *
-+ */
-+
-+static void card_degrade_info_init(sd_card_t *card, sd_host_t *host)
-+{
-+	/* 1. Init the target access mode (Legacy mode) to the maximum access mode. */
-+	card->sw_target_setting.sd_access_mode =
-+	    (byte) host->cfg->card_item.test_max_access_mode.value;
-+
-+	/* 2. Init the target drive strength */
-+	card->sw_target_setting.sd_drv_type =
-+	    (byte) host->cfg->card_item.test_driver_strength_sel.value;
-+
-+	/* 3. Init the target power limit */
-+	card->sw_target_setting.sd_power_limit =
-+	    (byte) host->cfg->card_item.test_max_power_limit.value;
-+
-+	card->degrade_uhs2_range = 0;
-+	card->degrade_uhs2_half = 0;
-+	card->degrade_uhs2_legacy = 0;
-+	card->degrade_final = 0;
-+	card->degrade_freq_level = 0;
-+
-+	/* below item is used for thremal control */
-+	card->thermal_enable = 0;
-+	card->thermal_uhs2_range = 0;
-+	card->thermal_uhs2_half_dis = 0;
-+	card->thermal_uhs2_lpm = 0;
-+	card->thermal_access_mode = 0;
-+	card->thermal_power_limit = 0;
-+
-+	card->continue_init_fail_cnt = 0;
-+	card->continue_rw_err_cnt = 0;
-+	card->adma_err_cnt = 0;
-+
-+}
-+
-+/*
-+ * Function Name: card_stuct_init
-+ *
-+ * Abstract:
-+ *
-+ *          1. init card control info, such as degrade info
-+ *          2. bind card to host and memset function
-+ *
-+ * Input:
-+ *
-+ * bht_dev_ext_t*	pdev_ext: Pointer to the device structure
-+ *
-+ * Output: None
-+ *
-+ * Return value: None
-+ *
-+ * Notes:
-+ *
-+ * Caller: req_global_init
-+ *
-+ */
-+
-+void card_stuct_init(bht_dev_ext_t *pdev_ext)
-+{
-+	sd_card_t *card;
-+	sd_host_t *host;
-+
-+	/* Support 1 virtual card so far. */
-+	card = &(pdev_ext->card);
-+
-+	/* 1. Zero the card structure */
-+	os_memset(card, 0, sizeof(sd_card_t));
-+
-+	/* 2. set the host point of card */
-+	card->host = &(pdev_ext->host);
-+	host = card->host;
-+
-+	/* 3. Error Count clear */
-+	card->adma_err_cnt = 0;
-+	card->continue_init_fail_cnt = 0;
-+	card->continue_rw_err_cnt = 0;
-+	card->restore_tuning_content_fail = 0;
-+	card->read_signal_block_flag = 0;
-+
-+	card_degrade_info_init(card, host);
-+	card->host->output_tuning.auto_phase_flag = FALSE;
-+	card->retry_output_fail_phase = 0xFF;
-+}
-+
-+/*
-+ * Function Name: card_stuct_uinit
-+ *
-+ * Abstract:
-+ *
-+ *          1. this function is called by card remvoe and enter pm
-+ *          2. this function will only clear software  flag
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card : Pointer to the card structure
-+ *
-+ * Output: None
-+ *
-+ * Return value: None
-+ *
-+ * Notes:
-+ *
-+ * Caller: remove_card_handle
-+ *
-+ */
-+
-+void card_stuct_uinit(sd_card_t *card)
-+{
-+	card->initialized_once = FALSE;
-+	card->card_type = CARD_NONE;
-+	os_memset(&card->info, 0, sizeof(card->info));
-+	card->has_built_inf = FALSE;
-+	card->inf_trans_enable = FALSE;
-+	card->last_dir = DATA_DIR_NONE;
-+	card->last_sect = 0;
-+	os_memset(&card->mmc, 0, sizeof(card->mmc));
-+	os_memset(&card->uhs2_info, 0, sizeof(card->uhs2_info));
-+	card->quirk = 0;
-+	card->quick_init = 0;
-+
-+	card->adma_err_cnt = 0;
-+	card->continue_init_fail_cnt = 0;
-+	card->continue_rw_err_cnt = 0;
-+	card->restore_tuning_content_fail = 0;
-+	card->read_signal_block_flag = 0;
-+
-+	card->state = CARD_STATE_POWEROFF;
-+	card->write_protected = FALSE;
-+	card_degrade_info_init(card, card->host);
-+	card->host->output_tuning.auto_phase_flag = FALSE;
-+	card->thread_init_card_flag = 0;
-+	card->retry_output_fail_phase = 0xFF;
-+}
-+
-+static inline bool uhs2_support(sd_host_t *host)
-+{
-+	bool ret = TRUE;
-+	/* 1. Host do not support UHSII */
-+	if (!host->uhs2_supp)
-+		ret = FALSE;
-+
-+	/* 1 TODO. correct the check condition */
-+	/* 2. Configuration settings to disable UHSII function */
-+	if (host->cfg->card_item.sd_card_mode_dis.dis_sd40_card)
-+		ret = FALSE;
-+	return ret;
-+
-+}
-+
-+static inline bool emmc_enabled(sd_host_t *host)
-+{
-+	/* 1. Configuration settings to disable eMMC function */
-+	bool ret = FALSE;
-+
-+	if (host->cfg->card_item.emmc_mode.emmc_enable)
-+		ret = TRUE;
-+
-+	return ret;
-+}
-+
-+inline bool mmc_disabled(sd_host_t *host)
-+{
-+	/* 1. Configuration settings to disable eMMC function */
-+	bool ret = FALSE;
-+
-+	if (host->cfg->card_item.mmc_mode_dis.dis_mmc_func)
-+		ret = TRUE;
-+	return ret;
-+}
-+
-+static void card_variable_init(sd_card_t *card)
-+{
-+	card->info.card_ccs = 0;
-+	card->info.card_s18a = 0;
-+	card->info.rca = 0;
-+	card->info.ddr_flag = 0;
-+	card->info.io_signal_vol = 0;
-+	os_memset(&card->info.sw_cur_setting, 0, sizeof(sd_sw_func_t));
-+
-+	card->uhs2_info.dev_id = 0;
-+	os_memset(&card->uhs2_info.uhs2_setting, 0, sizeof(uhs2_info_t));
-+	card->mmc.cur_buswidth = EMMC_1Bit_BUSWIDTH;
-+	card->mmc.cur_hs_type = 0;
-+}
-+
-+/*
-+ * Related register setting and Driver behavior description
-+ * 1). SD7.0 Card capacibility detection register
-+ * 0x1e0[29:28] = 2’b11: Enable hardware capability detection interrupt;
-+ * 0x1e0[25:24] = 2’b11: enable hardware capability detection interrupt status.
-+ * 0x1e0[17:16]: write 1 to this bit to clear interrupt status.
-+ *
-+ */
-+static bool check_express_card_clkreqn_status(sd_card_t *card)
-+{
-+	u32 delay_us = 1;
-+	u32 delay_ms;
-+	loop_wait_t wait;
-+	u32 regval;
-+	bool ret = FALSE;
-+	sd_host_t *host = card->host;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	switch (host->cfg->card_item.sd7_sdmode_switch_control.switch_method_ctrl) {
-+	case HW_DETEC_HW_SWITCH:
-+		/* hardware interrupt control */
-+		DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE, NOT_TO_RAM,
-+			"before clkreqn_status : %d\n", host->clkreqn_status);
-+		while (1) {
-+			if (os_atomic_read(&host->clkreqn_status) == 1) {
-+				ret = TRUE;
-+				DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE,
-+					NOT_TO_RAM,
-+					"Wait express clkreqn complete status ok\n");
-+				break;
-+			} else if (os_atomic_read(&host->clkreqn_status) == 2) {
-+				ret = FALSE;
-+				DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE,
-+					NOT_TO_RAM,
-+					"Wait express clkreqn timeout\n");
-+				break;
-+			}
-+
-+			if (card->card_present == FALSE) {
-+				ret = FALSE;
-+				DbgErr("card is removed\n");
-+				break;
-+			}
-+		}
-+		DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE, NOT_TO_RAM,
-+			"after clkreqn_status : %d\n", host->clkreqn_status);
-+		break;
-+
-+	case SW_POLL_SW_SWITCH:
-+	case SW_POLL_SWCTRL_SWITCH:
-+		/* software control */
-+
-+		/* set polling tmie fix value 30ms */
-+		delay_ms = 30;
-+		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"software control\n");
-+
-+		util_init_waitloop(host->pdx, delay_ms, delay_us, &wait);
-+		while (!util_is_timeout(&wait)) {
-+			if (host_check_lost(host)) {
-+				ret = TRUE;
-+				break;
-+			}
-+
-+			if (((sdhci_readl(host, 0x1e0) & (0x1)) == 0)) {
-+				ret = TRUE;
-+				break;
-+			}
-+
-+			if (card->card_present == FALSE) {
-+				ret = FALSE;
-+				DbgErr("card is removed\n");
-+				break;
-+			}
-+		}
-+
-+		break;
-+
-+	case SW_POLL_INTER_SW_SWITCH:
-+	case SW_POLL_INTER_SWCRTL_SWITCH:
-+		/* hardware polling control */
-+		DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE, NOT_TO_RAM,
-+			"software polling control\n");
-+		while (1) {
-+			if (host_check_lost(host)) {
-+				ret = TRUE;
-+				DbgErr("chip lost, already switch to sd7.0\n");
-+				break;
-+			}
-+
-+			regval = sdhci_readl(host, 0x1e0);
-+			if (regval & (1 << 16)) {
-+
-+				DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE,
-+					NOT_TO_RAM,
-+					"Wait express clkreqn complete status ok\n");
-+				ret = TRUE;
-+				sdhci_or16(host, 0x1e2, 0x01);
-+				break;
-+			} else if (regval & (1 << 17)) {
-+				DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE,
-+					NOT_TO_RAM,
-+					"Wait express clkreqn timeout\n");
-+				ret = FALSE;
-+				sdhci_or16(host, 0x1e2, 0x02);
-+				break;
-+			}
-+
-+			if (card->card_present == FALSE) {
-+				ret = FALSE;
-+				break;
-+				DbgErr("card is removed\n");
-+			}
-+		}
-+		break;
-+
-+	default:
-+		DbgErr("no such value!\n");
-+		break;
-+	}
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Exit %s (%d)\n", __func__, ret);
-+
-+	return ret;
-+}
-+
-+static bool Turn_on_vdd2_or_vdd3(sd_card_t *card, bool flag)
-+{
-+	sd_host_t *host = card->host;
-+	u32 regval;
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	regval = sdhci_readl(host, 0x1e0);
-+	switch (host->cfg->card_item.sd7_sdmode_switch_control.switch_method_ctrl) {
-+	case HW_DETEC_HW_SWITCH:
-+		/* set 0x1e0[29:28] = 2’b11, set 0x1e0[25:24] = 2’b11 */
-+		regval |= (0x33 << 24);
-+		break;
-+
-+	case SW_POLL_SW_SWITCH:
-+	case SW_POLL_SWCTRL_SWITCH:
-+		/* set 0x1e0[29:28] = 2’b00, set 0x1e0[25:24] = 2’b00 */
-+		regval &= 0xccffffff;
-+		break;
-+
-+	case SW_POLL_INTER_SW_SWITCH:
-+	case SW_POLL_INTER_SWCRTL_SWITCH:
-+		/* set 0x1e0[29:28] = 2’b00, set 0x1e0[25:24] = 2’b11 */
-+		regval |= (0x3 << 24);
-+		break;
-+
-+	default:
-+		DbgErr("Error:no such value in registry sd7_sdmode_switch_control, use default value\n");
-+		regval |= (0x33 << 24);
-+		break;
-+	}
-+	sdhci_writel(host, 0x1e0, regval);
-+
-+	/* 1:VDD3 0:VDD2 */
-+	if ((flag)
-+	    && (host->cfg->card_item.sd7_sdmode_switch_control.vdd3_control)) {
-+
-+		/* Turn on vdd3 */
-+		os_atomic_set(&host->clkreqn_status, 0);
-+		host_set_vddx_power(host, VDD3, POWER_ON);
-+		ret = check_express_card_clkreqn_status(card);
-+		if (!ret) {
-+			DbgErr("check clkreq failed fater turn on vdd3\n");
-+			/* Turn off vdd3 */
-+			host_set_vddx_power(host, VDD3, POWER_OFF);
-+
-+			/* Turn on vdd2 */
-+			os_atomic_set(&host->clkreqn_status, 0);
-+			host_set_vddx_power(host, VDD2, POWER_ON);
-+			ret = check_express_card_clkreqn_status(card);
-+			if (!ret) {
-+				DbgErr("check clkreq failed fater turn on vdd2\n");
-+				host_set_vddx_power(host, VDD2, POWER_OFF);
-+			}
-+		}
-+	} else {
-+		/* Turn on vdd2 */
-+		os_atomic_set(&host->clkreqn_status, 0);
-+		host_set_vddx_power(host, VDD2, POWER_ON);
-+
-+		ret = check_express_card_clkreqn_status(card);
-+		if (!ret) {
-+			DbgErr("check clkreq failed fater turn on vdd2 derectily\n");
-+			host_set_vddx_power(host, VDD2, POWER_OFF);
-+		}
-+	}
-+	return ret;
-+}
-+
-+bool pcie_mode_init(sd_card_t *card, bool code_flag)
-+{
-+	sd_host_t *host = card->host;
-+	u32 regval;
-+	bool ret;
-+	bool host_support_vdd3;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* set flag that driver in sd_express mode */
-+	host->sd_express_flag = TRUE;
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Set sd_express_flag\n");
-+
-+	regval = sdhci_readl(host, 0x44);
-+	if (!(regval & (1 << 29)))
-+		host_support_vdd3 = FALSE;
-+	else
-+		host_support_vdd3 = TRUE;
-+
-+	/* flag 1:for sd cmd code */
-+	if (code_flag) {
-+
-+		host_enable_clock(host, FALSE);
-+
-+		/* stop clk */
-+		if (shift_bit_func_enable(host)) {
-+			set_pattern_value(host, 0x34);
-+			return TRUE;
-+		}
-+
-+		if (card->card_support_vdd3 && host_support_vdd3)
-+			ret = Turn_on_vdd2_or_vdd3(card, TRUE);
-+		else
-+			ret = Turn_on_vdd2_or_vdd3(card, FALSE);
-+
-+	} else {
-+		/* flag 0 ：for trail run code */
-+		if (shift_bit_func_enable(host)) {
-+			set_pattern_value(host, 0x34);
-+			return TRUE;
-+		}
-+		ret = Turn_on_vdd2_or_vdd3(card, host_support_vdd3);
-+	}
-+
-+	if (ret) {
-+		/*
-+		 * Software: if pcr 0x444[9]=1,
-+		 * set sd host register 054h[8]=1 to assert express_card_mode
-+		 */
-+		regval = pci_readl(host, 0x444);
-+		if (regval & (1 << 9)) {
-+			regval = sdhci_readl(host, 0x54);
-+			regval |= (1 << 8);
-+			sdhci_writel(host, 0x54, regval);
-+		}
-+		return TRUE;
-+
-+	}
-+
-+	DbgErr("Exit pcie mode init with FALSE\n");
-+	host->sd_express_flag = FALSE;
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Clear sd_express_flag\n");
-+	return FALSE;
-+}
-+
-+bool gg8_get_card_capability_flag(sd_card_t *card, bool check_uhs2_flag)
-+{
-+	bool ret;
-+	bool flag_f8 = FALSE;
-+	sd_command_t sd_cmd;
-+	sd_host_t *host = card->host;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (check_uhs2_flag) {
-+		host_init(host);
-+		card_variable_init(card);
-+		host_init_400k_clock(host);
-+		host_internal_clk_setup(host, TRUE);
-+
-+		/* 1. Power on card */
-+		if (host_get_vdd1_state(host) == FALSE) {
-+			os_mdelay(10);
-+			/* host_set_vdd1_power(host, TRUE, SDHCI_POWER_VDD1_330); */
-+			if (shift_bit_func_enable(host))
-+				set_pattern_value(host, 0x11);
-+
-+			host_set_vddx_power(host, VDD1, POWER_ON);
-+		}
-+	}
-+	/* 1 SD CLK Start */
-+	host_enable_clock(host, TRUE);
-+
-+	/* 2 CMD0 */
-+	ret = card_reset_card(card, &sd_cmd);
-+	if (!ret) {
-+		/* Go Idle State command failed. exit directly. */
-+		DbgErr("Reset Card (CMD0) Failed.\n");
-+		return FALSE;
-+
-+	}
-+	/* 3. Issue send IF condition command (CMD8) */
-+	if (check_uhs2_flag)
-+		ret = sd_send_if_cond(card, &sd_cmd, 0x000001AA);
-+	else
-+		ret = sd_send_if_cond(card, &sd_cmd, 0x000031AA);
-+
-+
-+	if (!ret) {
-+		/* 3.1 Error response */
-+		if (sd_cmd.err.error_code == ERR_CODE_RESP_ERR ||
-+		    sd_cmd.err.error_code == ERR_CODE_NO_CARD) {
-+			DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"CMD8 Response Error or no card.\n");
-+		} else {
-+			/* 5.2 No Response  (Standard Capacity Card) */
-+			DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"CMD8 No Responser.\n");
-+		}
-+
-+		return FALSE;
-+
-+	} else {
-+		/* 5.3 Good Response  (High Capacity card) */
-+		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"CMD8 Good Responser\n");
-+		flag_f8 = TRUE;
-+	}
-+
-+	/* 5.4.1 read R7 */
-+
-+	/* sd_send_if_cond argument = 0x000031AA check card support pcie */
-+	if (check_uhs2_flag == FALSE) {
-+		/* host ask card's PCIe availability */
-+		if (!(sd_cmd.response[0] & 0x1000))
-+			card->card_support_pcie = FALSE;
-+		else
-+			card->card_support_pcie = TRUE;
-+
-+		if (sd_cmd.response[0] & 0x2000) {
-+			/* host ask whether card support VDD3 */
-+			card->card_support_vdd3 = TRUE;
-+		} else
-+			card->card_support_vdd3 = FALSE;
-+
-+	}
-+
-+	/* if check_uhs2_flag == true, send ACMD41 to check response bit 29  */
-+	if (check_uhs2_flag) {
-+		ret = card_init_ready(card, &sd_cmd, flag_f8);
-+
-+		if (!ret) {
-+			DbgErr("Wait for card ready (ACMD41) Failed.\n");
-+			return FALSE;
-+		}
-+	}
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+	return TRUE;
-+}
-+
-+bool gg8_sd70_card_init(sd_card_t *card)
-+{
-+	bool ret;
-+	u32 regval;
-+	sd_host_t *host = card->host;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	card->pcie_init_flag = TRUE;
-+
-+	/* update card status */
-+	card->card_present = hostven_chk_card_present(host);
-+
-+	/* check card exist? */
-+	if (card->card_present == FALSE || card->card_chg)
-+		return FALSE;
-+
-+
-+	if (INIT_DELAY & INIT_DELAY_EN_MASK) {
-+		os_mdelay(INIT_DELAY & INIT_DELAY_CFG_MASK);
-+		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"%s init delay %d ms\n", __func__,
-+			(INIT_DELAY & INIT_DELAY_CFG_MASK));
-+	} else {
-+		os_mdelay(200);
-+		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"%s init delay %d ms\n", __func__, 200);
-+	}
-+
-+	/* 0 host side init */
-+	host_init(host);
-+	card_variable_init(card);
-+	host_init_400k_clock(host);
-+	host_internal_clk_setup(host, TRUE);
-+
-+	/* 1. Power on card */
-+	if (shift_bit_func_enable(host) &&
-+		(host->cfg->card_item.sd7_sdmode_switch_control.card_init_flow_select)) {
-+		os_mdelay(10);
-+
-+		if (shift_bit_func_enable(host))
-+			set_pattern_value(host, 0x10);
-+
-+		host_set_vddx_power(host, VDD1, POWER_ON);
-+	} else {
-+		if (host_get_vdd1_state(host) == FALSE) {
-+			os_mdelay(10);
-+
-+			if (shift_bit_func_enable(host))
-+				set_pattern_value(host, 0x10);
-+
-+			host_set_vddx_power(host, VDD1, POWER_ON);
-+		}
-+	}
-+
-+	regval = pci_readl(host, 0x444);
-+	if (!(regval & (0x1 << 11))) {
-+		/* CMD8 */
-+
-+		/* FALSE no need to send ACMD41 */
-+		ret = gg8_get_card_capability_flag(card, FALSE);
-+		if (!ret) {
-+			DbgErr
-+			    ("gg8_get_card_capability_flag exit with faile\n");
-+		}
-+
-+		regval = pci_readl(host, 0x444);
-+		if (!(regval & (0x7 << 8))) {
-+			DbgErr("host not support to switch to sd7.0\n");
-+			card->pcie_init_flag = FALSE;
-+			return FALSE;
-+		}
-+
-+		if (card->card_support_pcie) {
-+			ret = pcie_mode_init(card, TRUE);
-+			if (!ret) {
-+				DbgErr("pci cmd mode init failed\n");
-+				card->pcie_init_flag = FALSE;
-+			} else {
-+				card->pcie_init_flag = TRUE;
-+			}
-+		} else {
-+			DbgErr("card not support pcie\n");
-+			card->pcie_init_flag = FALSE;
-+			return FALSE;
-+		}
-+	} else {
-+
-+		/* trail run */
-+		ret = pcie_mode_init(card, FALSE);
-+		if (!ret) {
-+			DbgErr("pci trail run mode init failed\n");
-+			card->pcie_init_flag = FALSE;
-+		} else {
-+			card->pcie_init_flag = TRUE;
-+		}
-+	}
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+	/* Thomas test: call remove here. */
-+	if (card->pcie_init_flag == TRUE) {
-+		bht_sd_remove(host->pci_dev.pci_dev);
-+
-+		return TRUE;
-+	}
-+
-+	if (ret) {
-+		card_init_transfer(card, host);
-+		card->initialized_once = TRUE;
-+		card->state = CARD_STATE_WORKING;
-+		card->continue_init_fail_cnt = 0;
-+		if (host_wr_protect_pin(host) || card_wr_protect(card))
-+			card->write_protected = TRUE;
-+		else
-+			card->write_protected = FALSE;
-+
-+		return TRUE;
-+	} else {
-+		return FALSE;
-+	}
-+}
-+
-+/*
-+ * Function Name: card_pcie_support
-+ *
-+ * Abstract: check whether the card supports SD7.0 mode
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output: None
-+ *
-+ * Return value: return TRUE if the card supports SD7.0 mode, otherwise return FALSE
-+ *
-+ * Notes:
-+ *
-+ * Caller: card_init
-+ *
-+ */
-+
-+bool card_pcie_support(sd_card_t *card)
-+{
-+	bool ret = FALSE;
-+	u32 regval = 0;
-+	bool host_support_sd70 = FALSE;
-+	bool sd_cmd_low = FALSE;
-+	bool registry_support_sd70 = TRUE;
-+	bool any_switch_case_enable = FALSE;
-+	sd_host_t *host = card->host;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if ((sdhci_readl(host, 0x40) & (1 << 20)))
-+		host_support_sd70 = TRUE;
-+
-+	if ((pci_readl(host, 0x444) & 0x700))
-+		any_switch_case_enable = TRUE;
-+
-+	/* polling PCR 0x448[31]  */
-+	if ((pci_readl(host, 0x448) & (1 << 31))) {
-+		regval = pci_readl(host, 0x448);
-+		regval |= (1 << 31);
-+		pci_writel(host, 0x448, regval);
-+		card->cmd_low_reset_flag = TRUE;
-+	} else {
-+		sd_cmd_low = TRUE;
-+	}
-+
-+	if (host->cfg->card_item.sd_card_mode_dis.dis_sd70_card)
-+		registry_support_sd70 = FALSE;
-+
-+	if (host_support_sd70 && sd_cmd_low && registry_support_sd70
-+	    && any_switch_case_enable && (card->cmd_low_reset_flag == FALSE)) {
-+		if ((pci_readl(host, 0x444) & (1 << 10))) {
-+			if ((pci_readl(host, 0x444) & (1 << 15))) {
-+				if ((pci_readl(host, 0x50c) & (1 << 6)))
-+					ret = FALSE;
-+				else
-+					ret = TRUE;
-+			} else {
-+				if ((pci_readl(host, 0x50c) & (1 << 6)))
-+					ret = TRUE;
-+				else
-+					ret = FALSE;
-+			}
-+		} else {
-+			ret = TRUE;
-+		}
-+	} else {
-+		ret = FALSE;
-+	}
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Exit %s with(%d)\n", __func__, ret);
-+	return ret;
-+}
-+
-+/*
-+ * Function Name: card_init
-+ *
-+ * Abstract: Main card initialize entry.
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * int retry_num [in]: Retry number if card init failed.
-+ * bool bfullreset: full reset flag
-+ *
-+ * Output: None
-+ *
-+ * Return value: Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ * Caller: thread_init_card
-+ *
-+ */
-+
-+bool card_init(sd_card_t *card, int retry_num, bool bfullreset)
-+{
-+	bool ret = FALSE;
-+	bool stbl = FALSE;
-+	sd_host_t *host = card->host;
-+	bool first_init = TRUE;
-+	u32 regval;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (host->pdx == NULL) {
-+		DbgErr("host->pdx should not be NULL\n");
-+		return FALSE;
-+	}
-+	if (host_check_lost(host)) {
-+		DbgErr("Host lost at card init start\n");
-+		return FALSE;
-+	}
-+
-+	if (shift_bit_func_enable(host) &&
-+		(host->cfg->card_item.sd7_sdmode_switch_control.card_init_flow_select))
-+		goto retry;
-+	else
-+		goto express_flow;
-+
-+express_flow:
-+	/* SD7.0 card mode init flow */
-+	if (host->chip_type == CHIP_GG8) {
-+		if (card_pcie_support(card)) {
-+			ret = gg8_sd70_card_init(card);
-+
-+			if (!ret) {
-+				regval = pci_readl(host, 0x444);
-+				regval &= (~(1 << 11));
-+				pci_writel(host, 0x444, regval);
-+			}
-+
-+			if (card->pcie_init_flag == FALSE) {
-+				if (card->card_present == TRUE) {
-+					if (shift_bit_func_enable(host)
-+					    && (host->cfg->card_item.sd7_sdmode_switch_control.card_init_flow_select))
-+						goto legacy;
-+					else
-+						goto retry;
-+				} else
-+					return FALSE;
-+			} else {
-+				card->card_type = CARD_SD70;
-+				card->card_present = FALSE;
-+				return ret;
-+			}
-+		} else if (card->card_present == TRUE) {
-+			if (shift_bit_func_enable(host)
-+			    && (host->cfg->card_item.sd7_sdmode_switch_control.card_init_flow_select))
-+				goto legacy;
-+			else
-+				goto retry;
-+		} else {
-+			return FALSE;
-+		}
-+	}
-+
-+retry:
-+
-+	/* update card status */
-+	card->card_present = hostven_chk_card_present(host);
-+	if (first_init == TRUE) {
-+		first_init = FALSE;
-+	} else {
-+
-+		/* check card exist? */
-+		if (card->card_present == FALSE || card->card_chg) {
-+			ret = FALSE;
-+			goto end;
-+		}
-+
-+		if (INIT_DELAY & INIT_DELAY_EN_MASK) {
-+			os_mdelay(INIT_DELAY & INIT_DELAY_CFG_MASK);
-+			DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"%s init delay %d ms\n", __func__,
-+				(INIT_DELAY & INIT_DELAY_CFG_MASK));
-+		} else {
-+			os_mdelay(200);
-+			DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"%s init delay %d ms\n", __func__, 200);
-+		}
-+
-+	}
-+
-+	/* Do some Host side initialization */
-+	if (bfullreset == FALSE)
-+		host_init(host);
-+	card_variable_init(card);
-+
-+	/* Check eMMC function enabled or not */
-+	if (emmc_enabled(host)) {
-+		hostven_set_pml0_requrest(host, FALSE);
-+		ret = emmc_init(card, TRUE);
-+		goto exit;
-+	}
-+
-+	if (card_need_get_info(card) == FALSE) {
-+		switch (card->card_type) {
-+		case CARD_EMMC:
-+		case CARD_MMC:
-+			goto mmc;
-+		case CARD_SD:
-+			goto legacy;
-+		default:
-+			break;
-+		}
-+	}
-+
-+	/* Check host and configuration support UHSII or not */
-+	if ((uhs2_support(host))
-+	    && (card->degrade_uhs2_legacy == 0)
-+	    && (card->card_type != CARD_MMC && card->card_type != CARD_SD)) {
-+		u32 clk_value = card_get_uhs2_freq(card);
-+
-+		DbgErr("host support uhs2\n");
-+		DbgErr("uhs2 trail run mode\n");
-+
-+		hostven_set_pml0_requrest(host, TRUE);
-+		host_uhs2_init(host, clk_value, bfullreset);
-+		ret = host_uhs2_phychk(host, FALSE, &stbl);
-+
-+		/* phy init ok */
-+		if (ret) {
-+			ret = uhs2_card_init(card);
-+			if (ret) {
-+				if (shift_bit_func_enable(host))
-+					set_pattern_value(host, 0x32);
-+
-+				goto exit;
-+			} else if (card->card_type == CARD_SDIO) {
-+				ret = FALSE;
-+				goto end;
-+			}
-+		}
-+		/* stbl check failed */
-+		else if (stbl == FALSE) {
-+			if (shift_bit_func_enable(host)
-+			    && (host->cfg->card_item.sd7_sdmode_switch_control.card_init_flow_select)) {
-+				host_uhs2_clear(host,
-+					(bool)host->cfg->card_item.test_uhs2_setting2.enable_power_off_vdd1);
-+				regval = pci_readl(host, 0x444);
-+				if (regval & (1 << 11)) {
-+					regval &= (~(1 << 11));
-+					pci_writel(host, 0x444, regval);
-+				}
-+				card_variable_init(card);
-+				hostven_set_pml0_requrest(host, FALSE);
-+				goto express_flow;
-+			}
-+
-+			if (card->card_type == CARD_UHS2
-+			    && card->degrade_uhs2_legacy) {
-+				card->card_type = CARD_NONE;
-+				card->quick_init = 0;
-+				card->degrade_freq_level = 0;
-+
-+				/* If card last stb.l is ok we continue try as UHS2 */
-+				goto exit;
-+			}
-+
-+			host_uhs2_clear(host,
-+				(bool)host->cfg->card_item.test_uhs2_setting2.enable_power_off_vdd1);
-+			goto legacy;
-+		}
-+
-+		DbgErr("UHS2 init failed\n");
-+		/* UHS2 init failed case, try again */
-+		goto exit;
-+	}
-+
-+legacy:
-+
-+	regval = pci_readl(host, 0x444);
-+	if (regval & (1 << 11)) {
-+		regval &= (~(1 << 11));
-+		pci_writel(host, 0x444, regval);
-+	}
-+
-+	card_variable_init(card);
-+	/* Do SD Legacy card initialization */
-+	if (card->card_type != CARD_MMC) {
-+		hostven_set_pml0_requrest(host, FALSE);
-+		ret = sd_legacy_init(card);
-+		if (card->card_type == CARD_SDIO) {
-+			ret = FALSE;
-+			goto end;
-+		}
-+
-+		if ((ret == FALSE)
-+		    && (card->sw_ctrl_swicth_to_express == FALSE)) {
-+			DbgErr("Legacy SD Init failed\n");
-+			goto mmc;
-+		} else
-+			goto exit;
-+	}
-+
-+mmc:
-+	if ((card->card_type != CARD_SD) && (card->card_type != CARD_UHS2)) {
-+		if (mmc_disabled(host)) {
-+			DbgErr("Registry disable MMC card function!!\n");
-+			goto exit;
-+		}
-+		host_poweroff(host, card->card_type);
-+		host_init(host);
-+		card_variable_init(card);
-+		hostven_set_pml0_requrest(host, FALSE);
-+		ret = emmc_init(card, FALSE);
-+	}
-+
-+exit:
-+	if (ret == TRUE) {
-+		card_init_transfer(card, host);
-+		card->initialized_once = TRUE;
-+		card->state = CARD_STATE_WORKING;
-+		card->continue_init_fail_cnt = 0;
-+		if (host_wr_protect_pin(host) || card_wr_protect(card))
-+			card->write_protected = TRUE;
-+		else
-+			card->write_protected = FALSE;
-+
-+	} else {
-+		if (card->sw_ctrl_swicth_to_express == TRUE)
-+			goto end;
-+
-+		card->continue_init_fail_cnt++;
-+		retry_num--;
-+		if ((retry_num == 0) ||
-+		    (card->card_present == FALSE) ||
-+		    (card->card_type == CARD_ERROR) || host_check_lost(host)) {
-+			goto end;
-+		}
-+
-+		/* Call degarde policy if try_times >= 4 */
-+		if (card->continue_init_fail_cnt >= CARD_INIT_DEGARDE_TIME)
-+			card_degrade_policy(card, NULL);
-+
-+		/* Need power cycle for retry, etc. */
-+		if (card->card_type == CARD_UHS2) {
-+			if (host->cfg->card_item.test_uhs2_setting2.enable_full_reset_reinit) {
-+				/* If last time not use fullreset, then use fullreset */
-+				bfullreset = bfullreset ? FALSE : TRUE;
-+				if (bfullreset) {
-+					uhs2_full_reset_card(card);
-+					DbgErr
-+					    ("Card Init failed do fullreset retry\n");
-+					goto retry;
-+				}
-+			}
-+		}
-+
-+		host_poweroff(host, CARD_NONE);
-+		card->state = CARD_STATE_POWEROFF;
-+		DbgErr("Card Init failed do poweroff retry\n");
-+		goto retry;
-+	}
-+
-+end:
-+	if (ret == FALSE) {
-+		host_poweroff(host, CARD_NONE);
-+		card->state = CARD_STATE_POWEROFF;
-+		if ((card->degrade_final) ||
-+		    (card->card_type == CARD_NONE
-+		     && card->continue_init_fail_cnt >= 5)) {
-+			DbgErr("Card finally Init failed\n");
-+			card->card_type = CARD_ERROR;
-+		}
-+		card->quick_init = 0;
-+	}
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, ret);
-+	return ret;
-+}
-+
-+bool card_init_stage2(sd_card_t *card)
-+{
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	switch (card->card_type) {
-+	case CARD_SD:
-+		ret = sd_init_stage2(card);
-+		break;
-+	case CARD_UHS2:
-+		ret = uhs2_init_stage2(card);
-+		break;
-+	case CARD_MMC:
-+	case CARD_EMMC:
-+		ret = emmc_init_stage2(card);
-+		break;
-+	default:
-+
-+		break;
-+	}
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, ret);
-+	return ret;
-+}
-+
-+/*
-+ * Function Name: card_power_off
-+ *
-+ * Abstract: This function is used to set card to power off status
-+ *           1. Resume from Sleep mode if necessary
-+ *           2. Stop Infintie transfer if necessary
-+ *           3. Poweroff Card
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * bool	directly: If true means do card poweroff directly(often use at error case)
-+ *
-+ * Output: None
-+ *
-+ * Return value: None
-+ *
-+ * Notes:
-+ *
-+ * Caller: card_enter_sleep
-+ *
-+ */
-+
-+void card_power_off(sd_card_t *card, bool directly)
-+{
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_OPS, NOT_TO_RAM,
-+		"Enter %s directy=%d\n", __func__, directly);
-+
-+	if (directly)
-+		goto next;
-+
-+	/* If wake up failed than goto poweroff directly */
-+	if (card_resume_sleep(card, FALSE) == FALSE)
-+		goto next;
-+
-+	if (card_stop_infinite(card, FALSE, NULL) == FALSE)
-+		goto next;
-+	else {
-+		/* go dormant for UHSII D3-hot */
-+		card_enter_sleep(card, FALSE, TRUE);
-+	}
-+
-+next:
-+	if (card->state != CARD_STATE_POWEROFF)
-+		host_poweroff(card->host, card->card_type);
-+	card->state = CARD_STATE_POWEROFF;
-+	card->thread_init_card_flag = 0;
-+	card->has_built_inf = FALSE;
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_OPS, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+}
-+
-+/*
-+ * Function Name: card_thermal_control
-+ *
-+ * Abstract: This Function is used to do card thremal control, only for SD
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output: None
-+ *
-+ * Return value: TRUE means ok, others means error, caller need do error recovery
-+ *
-+ * Notes: run in thread context
-+ *
-+ * Caller: func_thermal_control
-+ *
-+ */
-+
-+bool card_thermal_control(sd_card_t *card)
-+{
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_FUNC_THERMAL, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (card->card_present == FALSE)
-+		goto exit;
-+
-+	if (card->card_type == CARD_SD)
-+		ret = sd_thermal_control(card);
-+
-+exit:
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_FUNC_THERMAL, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+	return ret;
-+}
-+
-+bool card_stop_infinite(sd_card_t *card, bool recover, sd_command_t *pcmd)
-+{
-+	bool ret = TRUE;
-+	sd_command_t sd_cmd;
-+	sd_command_t *cmd = (pcmd == NULL) ? &sd_cmd : pcmd;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_OPS, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (card->card_present == FALSE || card->has_built_inf == FALSE)
-+		goto exit;
-+
-+	ret = card_send_command12(card, cmd);
-+	if (ret == FALSE && recover) {
-+		DbgErr("Stop Inf failed for cmd12\n");
-+		ret = card_rw_recovery(card, cmd);
-+		if (ret == FALSE)
-+			goto exit;
-+	}
-+
-+	if (ret == TRUE)
-+		ret = card_check_rw_ready(card, cmd, 150);
-+
-+exit:
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_OPS, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, ret);
-+	return ret;
-+
-+}
-+
-+bool card_enter_sleep(sd_card_t *card, bool recover, bool deepslp)
-+{
-+	bool ret = TRUE;
-+	sd_command_t sd_cmd;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_OPS, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (card->card_type == CARD_UHS2) {
-+		if (deepslp && card->uhs2_info.uhs2_cap.hibernate == 0)
-+			deepslp = FALSE;
-+		ret = card_stop_infinite(card, recover, &sd_cmd);
-+		if (ret == FALSE)
-+			goto exit;
-+
-+		ret = uhs2_enter_dmt(card, &sd_cmd, card->host, deepslp);
-+
-+		if (ret == TRUE) {
-+			card->state =
-+			    deepslp ? CARD_STATE_DEEP_SLEEP : CARD_STATE_SLEEP;
-+		}
-+	}
-+
-+exit:
-+	if (ret == FALSE) {
-+		DbgErr("enter sleep failed\n");
-+		card_power_off(card, TRUE);
-+	}
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_OPS, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, ret);
-+	return ret;
-+
-+}
-+
-+bool card_resume_sleep(sd_card_t *card, bool recover)
-+{
-+	bool ret = TRUE;
-+	bool deepslp = FALSE;
-+	sd_command_t sd_cmd;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_OPS, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (card->state != CARD_STATE_DEEP_SLEEP
-+	    && card->state != CARD_STATE_SLEEP)
-+		goto exit;
-+
-+	if (card->card_type == CARD_UHS2) {
-+		deepslp = (card->state == CARD_STATE_DEEP_SLEEP) ? TRUE : FALSE;
-+		ret = uhs2_resume_dmt(card, &sd_cmd, card->host, deepslp);
-+
-+		if (ret == TRUE)
-+			card->state = CARD_STATE_WORKING;
-+	}
-+
-+exit:
-+	if (ret == FALSE) {
-+		DbgErr("resume sleep failed\n");
-+		if (recover)
-+			card_power_off(card, TRUE);
-+	}
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_OPS, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, ret);
-+	return ret;
-+}
-+
-+bool card_piorw_data(sd_card_t *card, u32 sec_addr, u32 sec_cnt,
-+		     e_data_dir dir, byte *data)
-+{
-+	bool ret = FALSE;
-+
-+	sd_command_t sd_cmd;
-+	sd_host_t *host = card->host;
-+	u8 cmd_index = 0;
-+	u32 cmd_flag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	cfg_item_t *cfg = NULL;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_RW_TRACE, NOT_TO_RAM,
-+		"Enter %s dir=%d seccnt=0x%08X secaddr=0x%08X\n", __func__,
-+		dir, sec_cnt, sec_addr);
-+
-+	X_ASSERT(host != NULL);
-+
-+	cfg = host->cfg;
-+	X_ASSERT(cfg != NULL);
-+
-+	if (data == NULL)
-+		goto exit;
-+
-+	if (sec_cnt > 1)
-+		cmd_flag |= CMD_FLG_MULDATA;
-+
-+	if (cmd_flag & CMD_FLG_MULDATA) {
-+		if (dir == DATA_DIR_OUT)
-+			cmd_index = SD_CMD25;
-+		else
-+			cmd_index = SD_CMD18;
-+	} else {
-+		if (dir == DATA_DIR_OUT)
-+			cmd_index = SD_CMD24;
-+		else
-+			cmd_index = SD_CMD17;
-+	}
-+
-+	cmd_set_auto_cmd_flag(card, &cmd_flag);
-+	ret =
-+	    card_send_sdcmd(card, &sd_cmd, cmd_index, sec_addr, cmd_flag, dir,
-+			    data, sec_cnt * 512);
-+	/* todo error recovery and cmd13 */
-+
-+exit:
-+	if (ret == FALSE)
-+		DbgErr("Card Pio dir=%d seccnt=0x%08X secaddr=0x%08X failed\n",
-+		       dir, sec_cnt, sec_addr);
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_RW_TRACE, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, ret);
-+	return ret;
-+}
-+
-+static void card_cmd_copy(sd_command_t *dst, sd_command_t *src)
-+{
-+	sd_data_t *data = dst->data;
-+
-+	os_memcpy(dst, src, sizeof(sd_command_t));
-+	dst->data = data;
-+
-+	if (data && src->data)
-+		os_memcpy(dst->data, src->data, sizeof(sd_data_t));
-+	else
-+		src->data = NULL;
-+}
-+
-+bool card_dma_rw_data(sd_card_t *card, u32 dma_mode, u32 sec_addr, u32 sec_cnt,
-+		      e_data_dir dir, byte *data, sg_list_t *sglist,
-+		      u32 sg_len, sd_command_t *cmd_err)
-+{
-+	bool ret = FALSE;
-+
-+	sd_command_t sd_cmd;
-+	sd_data_t sd_data;
-+	sd_host_t *host = card->host;
-+	u8 cmd_index = 0;
-+	u32 cmd_flag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	cfg_item_t *cfg = NULL;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_RW_TRACE, NOT_TO_RAM,
-+		"Enter %s dir=%d seccnt=0x%08X secaddr=0x%08X\n", __func__,
-+		dir, sec_cnt, sec_addr);
-+
-+	cfg = host->cfg;
-+
-+	if (data == NULL && dma_mode != CFG_TRANS_MODE_ADMA2) {
-+		DbgErr("%s argument wrong\n", __func__);
-+		goto end;
-+	}
-+
-+	if (sec_cnt > 1)
-+		cmd_flag |= CMD_FLG_MULDATA;
-+
-+	if (cmd_flag & CMD_FLG_MULDATA) {
-+		if (dir == DATA_DIR_OUT)
-+			cmd_index = SD_CMD25;
-+		else
-+			cmd_index = SD_CMD18;
-+	} else {
-+		if (dir == DATA_DIR_OUT)
-+			cmd_index = SD_CMD24;
-+		else
-+			cmd_index = SD_CMD17;
-+	}
-+
-+	cmd_set_auto_cmd_flag(card, &cmd_flag);
-+	/* set dma mode */
-+	if (dma_mode == CFG_TRANS_MODE_SDMA) {
-+		/* host_dma_select(card->host, TRANS_SDMA); */
-+		cmd_flag |= CMD_FLG_SDMA;
-+		if ((card->card_type != CARD_UHS2) &&
-+		    (cmd_flag & CMD_FLG_AUTO23)) {
-+			/* SDMA don't use auto CMD23 */
-+			cmd_flag &= ~CMD_FLG_AUTO23;
-+			cmd_flag |= CMD_FLG_AUTO12;
-+		}
-+	} else if (dma_mode == CFG_TRANS_MODE_ADMA2) {
-+		cmd_flag |= CMD_FLG_ADMA2;
-+	} else {
-+		/* host_dma_select(card->host, TRANS_ADMA2); */
-+		cmd_flag |= CMD_FLG_ADMA_SDMA;
-+	}
-+
-+	os_memset(&sd_data, 0, sizeof(sd_data_t));
-+	ret =
-+	    build_dma_ctx(card->host->pdx, &sd_data, cmd_flag, dir, data,
-+			  sec_cnt * 512, sglist, sg_len);
-+	if (ret == FALSE) {
-+		DbgErr("build dma ctx failed\n");
-+		goto end;
-+	}
-+
-+	ret =
-+	    card_send_sdcmd_dma_timeout(card, &sd_cmd, &sd_data, cmd_index,
-+					sec_addr, cmd_flag, dir, data,
-+					sec_cnt * 512, 0);
-+
-+	if (ret == FALSE && cmd_err != NULL)
-+		card_cmd_copy(cmd_err, &sd_cmd);
-+
-+end:
-+	if (ret == FALSE) {
-+		DbgErr("Card dma dir=%d seccnt=0x%08X secaddr=0x%08X failed\n",
-+		       dir, sec_cnt, sec_addr);
-+	}
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_RW_TRACE, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, ret);
-+	return ret;
-+}
-+
-+/*
-+ * Currently this function is used for dump mode only,
-+ * todo to let it support normal case(Add node2 init code for normal case)
-+ */
-+bool card_adma2_rw_inf(sd_card_t *card, u32 sec_addr, u32 sec_cnt,
-+		       e_data_dir dir, sg_list_t *sglist, u32 sg_len,
-+		       sd_command_t *cmd_err)
-+{
-+	u32 flg = 0;
-+	bool ret = FALSE;
-+	sd_command_t sd_cmd;
-+	dma_desc_buf_t *pdma = 0;
-+	bht_dev_ext_t *pdx = card->host->pdx;
-+	node_t *node = NULL;
-+	sd_data_t sd_data;
-+	bool data_26bit_len =
-+		pdx->cfg->host_item.test_dma_mode_setting.enable_dma_26bit_len ?
-+		TRUE : FALSE;
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_RW_TRACE, NOT_TO_RAM,
-+		"Enter %s dir=%d seccnt=0x%08X secaddr=0x%08X\n", __func__,
-+		dir, sec_cnt, sec_addr);
-+
-+	/* Step1 Check can use Infinte or not */
-+	flg = cmd_can_use_inf(card, dir, sec_addr, sec_cnt);
-+
-+	/* not continue case stop infinite first */
-+	if (card->has_built_inf && (flg != CMD_FLG_INF_CON)) {
-+		ret = card_stop_infinite(card, FALSE, &sd_cmd);
-+		if (ret == FALSE) {
-+			DbgErr("%s stop infinite failed\n", __func__);
-+			goto exit;
-+		}
-+	}
-+
-+	/* Non Infinte Case */
-+	if (flg == 0) {
-+		ret =
-+		    card_dma_rw_data(card, CFG_TRANS_MODE_ADMA2, sec_addr,
-+				     sec_cnt, dir, NULL, sglist, sg_len,
-+				     cmd_err);
-+		goto end;
-+	}
-+
-+	/* Step2 Build Infinte sd_cmd */
-+	node =
-+	    (pdx->dma_api.cur_node !=
-+	    &pdx->dma_api.dma_node) ? &pdx->dma_api.dma_node :
-+		&pdx->dma_api.dma_node2;
-+	os_memset(&sd_cmd, 0, sizeof(sd_command_t));
-+	pdx->dma_api.cur_node = node;
-+	if (dir == DATA_DIR_IN)
-+		sd_cmd.cmd_index = SD_CMD18;
-+	else
-+		sd_cmd.cmd_index = SD_CMD25;
-+
-+	sd_cmd.argument = sec_addr;
-+	sd_cmd.cmd_flag |=
-+	    CMD_FLG_R1 | CMD_FLG_RESCHK | CMD_FLG_MULDATA | CMD_FLG_ADMA2 | flg;
-+	sd_cmd.sd_cmd = 1;
-+
-+	/* Step3 alloc dma desc buf */
-+	pdma = node_get_desc_res(node, MAX_ADMA2_TABLE_LEN);
-+	if (pdma == NULL) {
-+		DbgErr("%s get desc res failed\n", __func__);
-+		ret = FALSE;
-+		goto exit;
-+	}
-+
-+	node->phy_node_buffer.head = *pdma;
-+	node->phy_node_buffer.end =
-+	    build_adma2_desc(sglist, sg_len, (byte *) pdma->va, pdma->len,
-+			     card->host->bit64_enable, data_26bit_len);
-+
-+	if (node->phy_node_buffer.end.va == NULL) {
-+		DbgErr("%s prepare dma buffer failed\n", __func__);
-+		ret = FALSE;
-+		goto exit;
-+	}
-+
-+	if (flg & CMD_FLG_INF_CON)
-+		update_adma2_inf_tb(node->phy_node_buffer.end.va,
-+				    &(pdx->dma_api.adma2_inf_link_addr),
-+				    &node->phy_node_buffer.head.pa,
-+				    card->host->bit64_enable);
-+	else
-+		update_adma2_inf_tb(node->phy_node_buffer.end.va,
-+				    &(pdx->dma_api.adma2_inf_link_addr), NULL,
-+				    card->host->bit64_enable);
-+
-+	/* Step4 Send Command12 */
-+	sd_cmd.data = &sd_data;
-+	sd_cmd.data->data_mng.driver_buff = NULL;
-+	sd_cmd.data->data_mng.offset = sd_cmd.data->data_mng.srb_cnt = 0;
-+	sd_cmd.data->dir = dir;
-+	sd_cmd.data->data_mng.total_bytess = sec_cnt * SD_BLOCK_LEN;
-+	sd_cmd.data->data_mng.sys_addr = node->general_desc_tbl.pa;
-+
-+	cmd_generate_reg(card, &sd_cmd);
-+	/* 4.issue cmd */
-+	ret = cmd_execute_sync(card, &sd_cmd, NULL);
-+
-+exit:
-+	if (ret == FALSE && cmd_err != NULL)
-+		card_cmd_copy(cmd_err, &sd_cmd);
-+
-+end:
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_RW_TRACE, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, ret);
-+	return ret;
-+
-+}
-+
-+/*
-+ * Function Name: card_recovery_flow
-+ *
-+ * Abstract: This Function is used to do card rw error recovery flow
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card: The Command will send to which Card
-+ * sd_command_t *sd_cmd: if the init occurred at init stage this parameter will be null
-+ *
-+ * Output: None
-+ *
-+ * Return value:
-+ *              REQ_RESULT_NO_CARD: card not exist or not card
-+ *              REQ_RESULT_ACCESS_ERR: card rw recovery failed
-+ *              REQ_RESULT_OK: no error
-+ *
-+ * Notes: This function is called in thread context to do RW Error Recovery
-+ *
-+ * Caller: tag_queue_rw_data_issue_stage
-+ *
-+ */
-+
-+e_req_result card_recovery_flow(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	e_req_result result = REQ_RESULT_ACCESS_ERR;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Enter %s\n", __func__);
-+
-+	os_mdelay(50);
-+	if (card->card_present == FALSE || card->card_chg
-+	    || host_check_lost(card->host) || card->sw_ctrl_swicth_to_express) {
-+		DbgErr("Error Recover for no card\n");
-+		result = REQ_RESULT_NO_CARD;
-+		goto exit;
-+	}
-+
-+	card->continue_rw_err_cnt++;
-+
-+	/* If Adma Error */
-+	if (cmd_is_adma_error(sd_cmd)) {
-+		DbgInfo(MODULE_ALL_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+			"Adma error\n", __func__);
-+		card->adma_err_cnt++;
-+		if (card->adma_err_cnt >= 3) {
-+			DbgInfo(MODULE_ALL_CARD, FEATURE_ERROR_RECOVER,
-+				NOT_TO_RAM, "continue adma err>=3\n",
-+				__func__);
-+			card_degrade_policy(card, sd_cmd);
-+			card->continue_rw_err_cnt = 0;
-+			card->adma_err_cnt = 0;
-+			/* card->thread_init_card_flag = 0; */
-+			card_power_off(card, TRUE);
-+			if (card_init(card, 1, FALSE) == FALSE) {
-+				if (card->card_type == CARD_ERROR) {
-+					DbgErr("Adma error recover fatal\n");
-+					result = REQ_RESULT_NO_CARD;
-+				} else {
-+					DbgErr("Adma error recover failed\n");
-+					result = REQ_RESULT_ACCESS_ERR;
-+				}
-+			} else
-+				result = REQ_RESULT_OK;
-+			goto exit;
-+		}
-+	}
-+
-+	if (card_rw_recovery(card, sd_cmd) == FALSE) {
-+		card->continue_rw_err_cnt++;
-+		if (card->continue_rw_err_cnt >= 3) {
-+			DbgInfo(MODULE_ALL_CARD, FEATURE_ERROR_RECOVER,
-+				NOT_TO_RAM, "continue rw err>=3\n",
-+				__func__);
-+			card_degrade_policy(card, sd_cmd);
-+			card->continue_rw_err_cnt = 0;
-+			card->adma_err_cnt = 0;
-+		}
-+
-+		card_power_off(card, TRUE);
-+		if (card_init(card, 1, FALSE) == FALSE) {
-+			if (card->card_type == CARD_ERROR) {
-+				DbgErr(" error recover fatal\n");
-+				result = REQ_RESULT_NO_CARD;
-+			} else {
-+				DbgErr("error recover failed\n");
-+				result = REQ_RESULT_ACCESS_ERR;
-+			}
-+		} else
-+			result = REQ_RESULT_OK;
-+	} else
-+		result = REQ_RESULT_OK;
-+exit:
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "EXIT %s\n",
-+		__func__);
-+	return result;
-+}
-+
-+bool card_set_blkcnt(sd_card_t *card, sd_command_t *sd_cmd, u32 blkcnt)
-+{
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_LEGACY_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Enter %s blkcnt=%d\n", __func__, blkcnt);
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, SD_CMD23, blkcnt,
-+			    CMD_FLG_R1 | CMD_FLG_RESCHK, DATA_DIR_NONE, NULL,
-+			    0);
-+	if (ret == FALSE)
-+		DbgErr("issue cmd23 failed\n");
-+
-+	DbgInfo(MODULE_LEGACY_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, ret);
-+
-+	return ret;
-+}
-+
-+/*
-+ * Function Name: card_is_poweroff
-+ *
-+ * Abstract: This Function is used to get card power state
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card : The target Card
-+ *
-+ * Output: None
-+ *
-+ * Return value:
-+ *              TRUE: card poweroff
-+ *              FALSE: card doesn't poweroff
-+ *
-+ * Notes:
-+ *
-+ * Caller: tag_queue_rw_data_issue_stage
-+ *
-+ */
-+
-+bool card_is_poweroff(sd_card_t *card)
-+{
-+	if (card->state == CARD_STATE_POWEROFF)
-+		return TRUE;
-+	else
-+		return FALSE;
-+}
-+
-+/*
-+ * Function Name: card_read_csd
-+ *
-+ * Abstract: De-select the card and send CMD9, and then select the card.
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output:
-+ *
-+ * byte *data: used for storing CSD data
-+ *
-+ * Return value:
-+ *              TRUE: read CSD successfully
-+ *              FALSE: occur error when read CSD
-+ *
-+ * Notes:
-+ *
-+ * Caller: thread_gen_io
-+ *
-+ */
-+
-+bool card_read_csd(sd_card_t *card, byte *data)
-+{
-+
-+	sd_command_t sd_cmd;
-+
-+	os_memset(&sd_cmd, 0, sizeof(sd_command_t));
-+
-+	return sd_read_csd(card, &sd_cmd, data);
-+
-+}
-+
-+/*
-+ * Function Name: card_program_csd
-+ *
-+ * Abstract: Program CSD by CMD27
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output:
-+ *
-+ * byte *data: used for storing CSD data
-+ *
-+ * Return value: return TRUE if program CSD successfully, else return FALSE
-+ *
-+ * Notes:
-+ *
-+ * Caller: thread_gen_io
-+ *
-+ */
-+
-+bool card_program_csd(sd_card_t *card, byte *data)
-+{
-+
-+	sd_command_t sd_cmd;
-+
-+	os_memset(&sd_cmd, 0, sizeof(sd_command_t));
-+	return sd_program_csd(card, &sd_cmd, data);
-+
-+}
-diff --git a/drivers/scsi/bht/card/mmc.c b/drivers/scsi/bht/card/mmc.c
-new file mode 100644
-index 000000000000..449307972400
---- /dev/null
-+++ b/drivers/scsi/bht/card/mmc.c
-@@ -0,0 +1,1666 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2014 BHT Inc.
-+ *
-+ * File Name: mmc.c
-+ *
-+ * Abstract: mmc/emmc card initialization
-+ *
-+ * Version: 1.00
-+ *
-+ * Author: Amma.Li
-+ *
-+ * Environment:	OS Independent
-+ *
-+ * History:
-+ *
-+ * 9/23/2014   Creation    Amma.Li
-+ */
-+#include "../include/basic.h"
-+#include "../include/cardapi.h"
-+#include "../include/hostapi.h"
-+#include "../host/hostven.h"
-+#include "../host/hostreg.h"
-+#include "cardcommon.h"
-+#include "../include/cmdhandler.h"
-+#include "../include/debug.h"
-+#include "../include/util.h"
-+#define  MMC_SPEC_VERS	0x04U
-+/* ------------------emmc setting-------------------- */
-+/* ext_csd[196]: card type */
-+#define	MMC_CARD_TYPE_H200		  0x30U
-+#define	MMC_CARD_TYPE_H400		  0xC0U
-+#define	MMC_CARD_TYPE_HS		  0x0FU
-+#define	MMC_CARD_DDR_SUPP		  0x0CU
-+#define   MMC_CARD_TYPE_HS_DDR_12   0x8
-+#define   MMC_CARD_TYPE_HS_DDR_18   0x4
-+#define   MMC_CARD_TYPE_HS_52M      0x2
-+#define   MMC_CARD_TYPE_HS_26M      0x1
-+/* ext_csd[183]: Bus Width */
-+#define   MMC_EXTCSD_BUS_WIDTH     (0x00B70000)
-+#define   MMC_BUSW_1BIT                0
-+#define   MMC_BUSW_SDR_4BIT           (1 << 8)
-+#define   MMC_BUSW_SDR_8BIT           (2 << 8)
-+#define   MMC_BUSW_DDR_4BIT           (5 << 8)
-+#define   MMC_BUSW_DDR_8BIT           (6 << 8)
-+/* ext_csd[185]: HS_TIMING */
-+#define  MMC_EXTCSD_HS_TIMING       (0x00B90000)
-+#define  MMC_TIMING_BACKWARDS       0
-+#define  MMC_TIMING_HIGH_SPEED      (1 << 8)
-+#define  MMC_TIMING_HS200           (2 << 8)
-+#define  MMC_TIMING_HS400           (3 << 8)
-+#define  MMC_DRIVER_TYPE            0
-+/* emmc CMD6 setting */
-+#define   MMC_EXTCSD_WRITE           (3 << 24)
-+#define   MMC_EXTCSD_SET             (1 << 24)
-+#define   MMC_EXTCSD_CLEAN           (2 < 24)
-+/* emmc/mmc RCA */
-+#define   MMC_RCA                    (1 << 16)
-+/* -------------emmc setting end------------------ */
-+static void emmc_get_ext_csd_info(sd_card_t *card);
-+static bool emmc_switch_buswidth(sd_card_t *card, sd_command_t *sd_cmd);
-+static void emmc_set_freq(sd_card_t *card, u32 clock_freq, bool bddr50);
-+
-+/* -------------emmc / mmc card CMD setting------------- */
-+
-+/*
-+ * Function Name: emmc_card_init_ready
-+ *
-+ * Abstract:
-+ *           1. Issue CMD1 to Get OCR
-+ *           2. Set the card ocr variable
-+ *           3. Wait for card ready
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output: None
-+ *
-+ * Return value: Return TRUE if card ready, else return FALSE
-+ *
-+ * Notes:
-+ *
-+ * Caller: emmc_init
-+ *
-+ */
-+
-+static bool emmc_card_init_ready(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	byte cmd_index = SD_CMD1;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R3;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+	bool ret = FALSE;
-+	loop_wait_t wait;
-+	u32 delay_us = 20;
-+
-+	sd_host_t *host = card->host;
-+	card_info_t *card_info = &(card->info);
-+	cfg_emmc_mode_t *emmc_mode = &(host->cfg->card_item.emmc_mode);
-+
-+	if (emmc_mode->enable_18_vcc)
-+		argument |= EMMC_OCR_LOW;
-+	else
-+		argument |= EMMC_OCR_HI;
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Enter %s arg 0x%08x\n", __func__, argument);
-+
-+	/* Wait for card ready */
-+	util_init_waitloop(card->host->pdx,
-+			   host->cfg->timeout_item.test_card_init_timeout.value,
-+			   delay_us, &wait);
-+
-+	do {
-+		ret =
-+		    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag,
-+				    dir, data, datalen);
-+		if (ret == FALSE) {
-+			DbgErr("Issue CMD1 to get eMMC card OCR Fail.\n");
-+			break;
-+		}
-+
-+		/* Check Busy status. 0b: On initialization; 1b: Initialization Complete. */
-+		if ((sd_cmd->response[0] & 0x80000000) == 0) {
-+			os_udelay(delay_us);
-+			continue;
-+		} else {
-+			break;
-+		}
-+	} while (!util_is_timeout(&wait));
-+
-+	/* If card ready, set related software flags */
-+	if (ret) {
-+		/* check card ready or not */
-+		if (sd_cmd->response[0] & 0x80000000) {
-+			if (sd_cmd->response[0] & 0x40000000)
-+				/* the capability > 2GB */
-+				card_info->card_ccs = 1;
-+			else
-+				/* the capability < 2GB */
-+				card_info->card_ccs = 0;
-+		} else
-+			ret = FALSE;
-+	}
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ * Function Name: emmc_set_rca
-+ *
-+ * Abstract: Set a new relative address RCA for MMC/eMMC card(CMD3)
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output: None
-+ *
-+ * Return value: Return TRUE if issue CMD3 successfully, else return FALSE
-+ *
-+ * Notes:
-+ *
-+ * Caller: emmc_init
-+ *
-+ */
-+
-+bool emmc_set_rca(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	bool ret = FALSE;
-+	byte cmd_index = SD_CMD3;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+	card_info_t *card_info = &(card->info);
-+
-+	argument = MMC_RCA;
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Enter %s arg 0x%08x\n", __func__, argument);
-+
-+	/* Issue CMD3 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+	if (ret) {
-+		/* Update the card RCA */
-+		card_info->rca = (argument & 0xffff0000) >> 16;
-+	}
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ * Function Name: emmc_get_ext_csd
-+ *
-+ * Abstract: Read the MMC/EMMC card Ext_Csd Data
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output: None
-+ *
-+ * Return value: Return TRUE if issue eMMC CMD8 successfully, else return FALSE
-+ *
-+ * Notes:
-+ *
-+ * Caller: emmc_init
-+ *
-+ */
-+
-+static bool emmc_get_ext_csd(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	byte cmd_index = SD_CMD8;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1;
-+	e_data_dir dir = DATA_DIR_IN;
-+	byte data[512];
-+	u32 datalen = 512;
-+
-+	bool ret = FALSE;
-+	mmc_card_info_t *mmc_info = &(card->mmc);
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* Issue eMMC CMD8 to get Ext_Csd */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+	if (ret) {
-+		/* Get the Ext_Csd */
-+		os_memcpy(&(mmc_info->raw_extcsd[0]), data, 512);
-+		emmc_get_ext_csd_info(card);
-+	}
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ * Function Name: emmc_send_cmd6
-+ *
-+ * Abstract:
-+ *           1. Issue CMD6 to switch mode to modify the Ext_Csd register
-+ *           2. Set the emmc card hs_timing & bus width
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * sd_command_t *sd_cmd: Pointer to sd command structure
-+ * argument: [31:26] set to 0
-+ *           [25:24]: Access    1: set     2: clean     3: write
-+ *           [23:16]: Index    the ext_csd index
-+ *           [15:8]: value
-+ *           [7:3]: set to 0
-+ *           [2:0]: cmd set
-+ *
-+ * Output: None
-+ *
-+ * Return value: Return TRUE if issue CMD6 successfully, else return FALSE
-+ *
-+ * Notes:
-+ *
-+ * Caller: emmc_switch_buswidth
-+ *
-+ */
-+
-+static bool emmc_send_cmd6(sd_card_t *card,
-+			   sd_command_t *sd_cmd, u32 argument)
-+{
-+	bool result = FALSE;
-+	byte cmd_index = SD_CMD6;
-+	u32 cmdflag = CMD_FLG_R1B;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Enter %s arg = 0x%08x\n", __func__, argument);
-+	result =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: emmc_bustest_r
-+ *
-+ * Abstract:
-+ *			1. MMC/eMMC card bus width test read (CMD14)
-+ *          2. A host reads the reversed bus testing data pattern from a Device.
-+ *          3. Used after CMD19 (bus width test write CMD),
-+ *				need to check the cmd and data transfer error
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * sd_command_t *sd_cmd: Pointer to sd command structure
-+ * u8 *buf : read data pattern buffer
-+ * u32 data_len : read data length
-+ *
-+ * Output: None
-+ *
-+ * Return value: Return TRUE if issue CMD14 successfully, else return FALSE
-+ *
-+ * Notes:
-+ *
-+ * Caller: emmc_bus_width_test
-+ */
-+static bool emmc_bustest_r(sd_card_t *card,
-+			   sd_command_t *sd_cmd, u8 *buf, u32 data_len)
-+{
-+	bool result = FALSE;
-+	byte cmd_index = SD_CMD14;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_IN;
-+	byte *data = buf;
-+	u32 datalen = data_len;
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+	result =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: emmc_bustest_w
-+ *
-+ * Abstract:
-+ *
-+ * 1. MMC/eMMC card bus width test write (CMD19)
-+ * 2. A host send the reversed bus testing data pattern from a Device.
-+ * 3. Do not need to check the cmd and data transfer error
-+ *
-+ * Input:
-+ *
-+ * sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ * sd_command_t *sd_cmd: Pointer to sd command structure
-+ * u8 *buf : write data pattern buffer
-+ * u32 data_len : write data length
-+ *
-+ * Output:
-+ * None
-+ *
-+ * Return value:
-+ *
-+ * Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ * Caller: card_init
-+ */
-+static bool emmc_bustest_w(sd_card_t *card,
-+			   sd_command_t *sd_cmd, u8 *buf, u32 data_len)
-+{
-+	bool result = FALSE;
-+	byte cmd_index = SD_CMD19;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK | CMD_FLG_NO_TRANS;
-+	e_data_dir dir = DATA_DIR_OUT;
-+	byte *data = buf;
-+	u32 datalen = data_len;
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+	result =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: emmc_tuning_hw
-+ *
-+ * Abstract:
-+ *
-+ *			1.  Hardware Tuning Procedure (CMD21)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *			sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: sd_tuning
-+ */
-+
-+static bool emmc_tuning_hw(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	bool result = FALSE;
-+	byte cmd_index = SD_CMD21;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_TUNE;
-+	e_data_dir dir = DATA_DIR_IN;
-+	byte data[64];
-+	sd_host_t *host = card->host;
-+	u32 datalen = 0x40;
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* set hardware tuning */
-+	host_set_tuning_mode(host, TRUE);
-+
-+	if ((host->chip_type == CHIP_SDS0) ||
-+	    (host->chip_type == CHIP_SDS1) || (host->chip_type == CHIP_FUJIN2)
-+	    ) {
-+		/* add 200us delay before CMD19 to fix FJ2 ASIC issue 14# */
-+		os_udelay(200);
-+	}
-+
-+	/* send emmc tuning CMD21 */
-+	result =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+	if (result == FALSE) {
-+		DbgErr("eMMC card send hardware tuning CMD failed!!\n");
-+		goto exit;
-+	}
-+
-+	/* check tuning success or not */
-+	result = host_chk_tuning_comp(host, TRUE);
-+	if (!result)
-+		DbgErr("Check eMMC tuning failed!\n");
-+
-+exit:
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_tuning_sw
-+ *
-+ * Abstract:
-+ *
-+ *			1.  Software Tuning Procedure (CMD21)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *			sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: sd_tuning
-+ */
-+static bool emmc_tuning_sw(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	bool result = FALSE;
-+	byte cmd_index = SD_CMD21;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_TUNE;
-+	e_data_dir dir = DATA_DIR_IN;
-+	byte data[64];
-+	u16 i = 0;
-+	sd_host_t *host = card->host;
-+	u32 datalen = 0x40;
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	for (i = 0; i < 100; i++) {
-+		/* set software tuning */
-+		host_set_tuning_mode(host, FALSE);
-+
-+		if ((host->chip_type == CHIP_SDS0) ||
-+		    (host->chip_type == CHIP_SDS1) ||
-+		    (host->chip_type == CHIP_FUJIN2)
-+		    ) {
-+			/* add 200us delay before CMD19 to fix FJ2 ASIC issue 14# */
-+			os_udelay(200);
-+		}
-+
-+		/* send emmc tuning CMD21 */
-+		result =
-+		    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag,
-+				    dir, data, datalen);
-+		if (result == FALSE) {
-+			DbgErr("eMMC card hardware tuning failed!!\n");
-+			goto exit;
-+		}
-+
-+		/* check tuning success or not */
-+		result = host_chk_tuning_comp(host, FALSE);
-+		if (result)
-+			break;
-+	}
-+
-+exit:
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: emmc_tuning
-+ *
-+ * Abstract:
-+ *
-+ *			 1. Send Hw tuning or Sw tuning by the registry setting
-+ *             2. tuning mode: 1 = CFG_TUNING_MODE_HW     0 = CFG_TUNING_MODE_SW
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+bool emmc_tuning(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	bool result = FALSE;
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (card->mmc.cur_hs_type != EMMC_MODE_HS200
-+	    && card->mmc.cur_hs_type != EMMC_MODE_HS400) {
-+		result = TRUE;
-+		goto exit;
-+	}
-+
-+	if (TUNING_MODE)
-+		result = emmc_tuning_hw(card, sd_cmd);
-+	else
-+		result = emmc_tuning_sw(card, sd_cmd);
-+
-+exit:
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: emmc_bus_width_test
-+ *
-+ * Abstract:
-+ *			 1. MMC/eMMC card bus width test by CMD14 (read) and CMD19(write)
-+ *            2. The data pattern decided by the bus width (8-bit\4-bit)
-+ *            3. Do not need to check the CMD19 any cmd and data transfer error
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *           u32 data_len : data pattern length
-+ *
-+ * Output:
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+static bool emmc_bus_width_test(sd_card_t *card,
-+				sd_command_t *sd_cmd, u32 data_len)
-+{
-+	bool result = FALSE;
-+	u8 buf[8] = { 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa };
-+	u8 patten[8] = { 0 };
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Enter %s datlen %d\n", __func__, data_len);
-+
-+	if (card->card_present == FALSE)
-+		goto exit;
-+
-+	if (data_len == 4) {
-+		os_memset(buf, 0, 8);
-+		os_memset(buf, 0x5a, 4);
-+
-+	}
-+
-+	/* send CMD19 (eMMC bus write) */
-+	result = emmc_bustest_w(card, sd_cmd, buf, data_len);
-+
-+	/* delay NCR clock */
-+	os_udelay(20);
-+
-+	/* send CMD14 (eMMC bus read) */
-+	result = emmc_bustest_r(card, sd_cmd, patten, data_len);
-+	if (!result) {
-+		DbgErr("eMMC card CMD14 Receive bus width data Failed.\n");
-+	} else {
-+		result = FALSE;
-+
-+		/* check patten */
-+		if (data_len == 8) {
-+			if ((patten[0] == 0xaa) || (patten[1] == 0x55)) {
-+				result = TRUE;
-+				DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT,
-+					NOT_TO_RAM,
-+					"8-bit bus width test OK!!\n");
-+			}
-+		} else if (data_len == 4) {
-+			if (patten[0] == 0xa5) {
-+				result = TRUE;
-+				DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT,
-+					NOT_TO_RAM,
-+					"4-bit bus width test OK!!\n");
-+			}
-+		}
-+	}
-+
-+exit:
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: emmc_get_ext_csd_info
-+ *
-+ * Abstract:
-+ *
-+ *			 1. Get the Ext_Csd structure
-+ *				(card_type, power class for 52M 26M 1.8V 3.3V voltage)
-+ *				from the Ext_Csd raw
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output:
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			None
-+ *
-+ * Notes:
-+ *
-+ *           Caller: emmc_get_ext_csd
-+ */
-+static void emmc_get_ext_csd_info(sd_card_t *card)
-+{
-+	mmc_card_info_t *mmc_info = &(card->mmc);
-+	extcsd_t *ext_csd = &(mmc_info->ext_csd);
-+	u8 *raw_ext_csd = &(mmc_info->raw_extcsd[0]);
-+
-+	ext_csd->card_type = *(raw_ext_csd + 196);
-+	ext_csd->driver_strength_type = *(raw_ext_csd + 197);
-+	ext_csd->pwr_cl_52_195 = *(raw_ext_csd + 200);
-+	ext_csd->pwr_cl_26_195 = *(raw_ext_csd + 201);
-+	ext_csd->pwr_cl_52_360 = *(raw_ext_csd + 202);
-+	ext_csd->pwr_cl_26_360 = *(raw_ext_csd + 203);
-+	ext_csd->pwr_cl_ddr_52_195 = *(raw_ext_csd + 238);
-+	ext_csd->pwr_cl_ddr_52_360 = *(raw_ext_csd + 239);
-+	ext_csd->sec_cnt =
-+	    (*(raw_ext_csd + 215) << 24) + (*(raw_ext_csd + 214) << 16) +
-+	    (*(raw_ext_csd + 213) << 8) + *(raw_ext_csd + 212);
-+}
-+
-+/*
-+ *
-+ * Function Name: emmc_switch_hs400
-+ *
-+ * Abstract:
-+ *			 1. eMMC card switch HS400 mode
-+ *
-+ * Input:
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output:
-+ *			None
-+ *
-+ * Return value:
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *           Caller: emmc_init_stage2
-+ */
-+static bool emmc_switch_hs400(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	bool result = FALSE;
-+	u32 argument = 0;
-+	sd_host_t *host = card->host;
-+
-+	mmc_card_info_t *mmc_info = &(card->mmc);
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+#if (0)
-+	/* 1. Check card support hs400 */
-+	if ((mmc_info->ext_csd.card_type & MMC_CARD_TYPE_H400) == 0) {
-+		DbgErr("eMMC card don't support HS400 mode!!\n");
-+		goto exit;
-+	}
-+
-+	/* 2. check card support 8-bit bus width */
-+	if ((mmc_info->cur_buswidth != EMMC_8Bit_BUSWIDTH) ||
-+	    (host->bus_8bit_supp == FALSE)
-+	    ) {
-+		DbgErr("The card or host don't support 8bit bus width!!\n");
-+		goto exit;
-+	}
-+#endif
-+
-+	/* 3. clear UHSI mode select */
-+	host_set_uhs_mode(host, 0);
-+
-+	/* 4.set card mode to DDR50 mode (eMMC: CMD6) */
-+	argument =
-+	    (MMC_EXTCSD_WRITE | MMC_EXTCSD_HS_TIMING | MMC_TIMING_HIGH_SPEED |
-+	     (mmc_info->drv_strength << 12));
-+	result = emmc_send_cmd6(card, sd_cmd, argument);
-+	if (!result) {
-+		DbgErr("Switch DDR50 mode Failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 5. change clock to 50M Hz for DDR50 mode */
-+	emmc_set_freq(card, SD_CLK_50M, TRUE);
-+
-+	/* 6.change to 8-bit DDR mode (eMMC: CMD6) */
-+	argument =
-+	    (MMC_EXTCSD_WRITE | MMC_EXTCSD_BUS_WIDTH | MMC_BUSW_DDR_8BIT);
-+	result = emmc_send_cmd6(card, sd_cmd, argument);
-+	if (!result) {
-+		DbgErr("Change to 8-bit DDR mode Failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 7.switch to hs400 */
-+	argument =
-+	    (MMC_EXTCSD_WRITE | MMC_EXTCSD_HS_TIMING | MMC_TIMING_HS400 |
-+	     (mmc_info->drv_strength << 12));
-+	result = emmc_send_cmd6(card, sd_cmd, argument);
-+	if (!result) {
-+		DbgErr("Switch hs400 mode Failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 8.if switch hs400 ok, set PCI Register */
-+	host_emmc_hs400_set(host, TRUE);
-+
-+	/* 9.change SDCLK frequency to 200M Hz */
-+	emmc_set_freq(card, SD_CLK_BASE, FALSE);
-+
-+exit:
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: emmc_switch_hs200
-+ *
-+ * Abstract:
-+ *			 1. eMMC card switch HS200 mode
-+ *
-+ * Input:
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output:
-+ *			None
-+ *
-+ * Return value:
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *           Caller: emmc_init_stage2
-+ */
-+static bool emmc_switch_hs200(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	bool result = FALSE;
-+	u32 argument = 0;
-+	u32 card_status = 0;
-+	sd_host_t *host = card->host;
-+	mmc_card_info_t *mmc_info = &(card->mmc);
-+	cfg_emmc_mode_t *emmc_mode = &(host->cfg->card_item.emmc_mode);
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* 1. switch signal Data Rate mode bus width (4-bit or 8-bit: eMMC CMD6) */
-+	mmc_info->cur_hs_type = EMMC_MODE_HS200;
-+	result = emmc_switch_buswidth(card, sd_cmd);
-+	if (!result) {
-+		DbgErr("Set signal Data Rate 8/4-bit Bus Width Failed.\n");
-+		goto exit;
-+	}
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Card support driver type %x\n",
-+		mmc_info->ext_csd.driver_strength_type);
-+	if ((2 << (emmc_mode->drv_strength)) &
-+	    (mmc_info->ext_csd.driver_strength_type)
-+	    )
-+		mmc_info->drv_strength = (byte) emmc_mode->drv_strength;
-+	else
-+		mmc_info->drv_strength = 0;
-+	/* 2.switch card support driver type & hs200 mode (eMMC: CMD6) */
-+	argument =
-+	    (MMC_EXTCSD_WRITE | MMC_EXTCSD_HS_TIMING | MMC_TIMING_HS200 |
-+	     (mmc_info->drv_strength << 12));
-+	result = emmc_send_cmd6(card, sd_cmd, argument);
-+	if (!result) {
-+		DbgErr("Switch HS200 mode Failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 3.check card status (Issue CMD13) */
-+	result = card_get_card_status(card, sd_cmd, &card_status);
-+	if ((result == FALSE) || (card_status & 0x80)
-+	    ) {
-+		DbgErr("Card Status failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 4.change clock to 200M Hz */
-+	emmc_set_freq(card, SD_CLK_BASE, FALSE);
-+
-+	/* 5.switch mode (hs200 == SDR104) */
-+	host_set_uhs_mode(host, SDHCI_CTRL_UHS_HS200);
-+
-+	if (((host->chip_type < CHIP_SEAEAGLE2) || (host->chip_type == CHIP_GG8)
-+	     || (host->chip_type == CHIP_ALBATROSS))
-+	    && (mmc_info->cur_buswidth == EMMC_8Bit_BUSWIDTH)) {
-+		host_set_buswidth(host, BUS_WIDTH4);
-+	}
-+
-+	result = emmc_tuning(card, sd_cmd);
-+	if (!result)
-+		goto exit;
-+
-+	if (mmc_info->cur_buswidth == EMMC_8Bit_BUSWIDTH)
-+		host_set_buswidth(host, BUS_WIDTH8);
-+
-+	/* 7.if tuning ok, set PCI & Host Register */
-+	host_emmc_hs400_set(host, FALSE);
-+
-+exit:
-+	if (result == FALSE)
-+		mmc_info->cur_hs_type = 0;
-+	else
-+		emmc_mode->enable_ddr_mode = 0;
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: emmc_switch_hs
-+ *
-+ * Abstract:
-+ *			 1. eMMC card switch High Speed mode
-+ *
-+ * Input:
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output:
-+ *			None
-+ *
-+ * Return value:
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *           Caller: emmc_init_stage2
-+ */
-+static bool emmc_switch_hs(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	bool result = FALSE;
-+	u32 argument = 0;
-+	u32 clk = 0;
-+	bool bddr50 = FALSE;
-+	sd_host_t *host = card->host;
-+	u32 b_dis_hs = host->cfg->card_item.emmc_mode.dis_hs;
-+	u8 device_type = card->mmc.ext_csd.card_type;
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/*
-+	 * if registry set disable hs mode or host don't support high speed,
-+	 * check card type, and set the clk
-+	 */
-+	if (b_dis_hs || (host->hs_supp == 0)) {
-+		DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"User disable high speed, select 25M timing!!\n");
-+		if (device_type & MMC_CARD_TYPE_HS_26M) {
-+			DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"select 25M timing!!\n");
-+			clk = SD_CLK_25M;
-+		}
-+	} else {
-+		if (device_type &
-+		    (MMC_CARD_TYPE_HS_52M | MMC_CARD_TYPE_HS_DDR_12 |
-+		     MMC_CARD_TYPE_HS_DDR_18)) {
-+			DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"select 52M timing!!\n");
-+			clk = SD_CLK_50M;
-+			if ((host->cfg->card_item.emmc_mode.enable_ddr_mode) &&
-+			    (device_type & MMC_CARD_DDR_SUPP)
-+			    ) {
-+				bddr50 = TRUE;
-+			}
-+		} else if (device_type & MMC_CARD_TYPE_HS_26M) {
-+			DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"select 25M timing!!\n");
-+			clk = SD_CLK_25M;
-+		}
-+	}
-+
-+	/* dump power size */
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"PMclass- 52M, DDR, 3.3v: 0x%xh 1.8v: 0x%xh\n",
-+		card->mmc.ext_csd.pwr_cl_ddr_52_360,
-+		card->mmc.ext_csd.pwr_cl_ddr_52_195);
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"PMclass- 26M, SDR, 3.3v: 0x%xh 1.8v: 0x%xh\n",
-+		card->mmc.ext_csd.pwr_cl_26_360,
-+		card->mmc.ext_csd.pwr_cl_26_195);
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"PMclass- 52M, SDR, 1.8v: 0x%xh 3.3v: 0x%xh\n",
-+		card->mmc.ext_csd.pwr_cl_52_195,
-+		card->mmc.ext_csd.pwr_cl_52_360);
-+
-+	/* if host & card all support high speed, then set the hs_timing */
-+	if (clk) {
-+		argument =
-+		    (MMC_EXTCSD_WRITE | MMC_EXTCSD_HS_TIMING |
-+		     MMC_TIMING_HIGH_SPEED);
-+		result = emmc_send_cmd6(card, sd_cmd, argument);
-+		if (!result) {
-+			DbgErr("Switch High Speed mode Failed.\n");
-+			goto exit;
-+		}
-+	}
-+
-+	/* change clock */
-+	if (clk)
-+		emmc_set_freq(card, clk, bddr50);
-+
-+	/* if clock > 50M hz, set 0x28[2]: high speed enable */
-+	if (clk == SD_CLK_50M)
-+		host_set_highspeed(host, TRUE);
-+
-+exit:
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: emmc_ddr_mode_set
-+ *
-+ * Abstract:
-+ *			 1. set eMMC card DDR50 mode
-+ *
-+ * Input:
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output:
-+ *			None
-+ *
-+ * Return value:
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *           Caller: emmc_init_stage2
-+ */
-+static void emmc_ddr_mode_set(sd_card_t *card)
-+{
-+	sd_host_t *host = card->host;
-+	u32 b_dis_hs = host->cfg->card_item.emmc_mode.dis_hs;
-+	u8 device_type = card->mmc.ext_csd.card_type;
-+	u32 enable_ddr = host->cfg->card_item.emmc_mode.enable_ddr_mode;
-+
-+	if ((b_dis_hs == FALSE) &&
-+	    (enable_ddr) && (device_type & MMC_CARD_DDR_SUPP)
-+	    ) {
-+		DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"Set host DDR50 mode!!\n");
-+		host_set_uhs_mode(host, SDHCI_CTRL_UHS_DDR50);
-+		host_emmc_ddr_set(host, TRUE);
-+	} else {
-+		host->cfg->card_item.emmc_mode.enable_ddr_mode = 0;
-+		host_emmc_ddr_set(host, FALSE);
-+	}
-+
-+}
-+
-+/*
-+ *
-+ * Function Name: emmc_switch_buswidth
-+ *
-+ * Abstract:
-+ *			 1. set eMMC card bus width
-+ *
-+ * Input:
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output:
-+ *			None
-+ *
-+ * Return value:
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *           Caller: emmc_init_stage2
-+ */
-+static bool emmc_switch_buswidth(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	bool result = FALSE;
-+	u32 argument = 0;
-+	u32 data_len = 0;
-+	sd_host_t *host = card->host;
-+	mmc_card_info_t *mmc_info = &(card->mmc);
-+	u32 dis_8_bit = host->cfg->card_item.emmc_mode.dis_8bit_bus_width;
-+	u32 dis_4_bit = host->cfg->card_item.emmc_mode.dis_4bit_bus_width;
-+	u32 enable_ddr = host->cfg->card_item.emmc_mode.enable_ddr_mode;
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (card->card_present == FALSE)
-+		goto exit;
-+
-+	/* check host & user support 8-bit bus width */
-+	if ((dis_8_bit == 0) && (host->bus_8bit_supp)
-+	    ) {
-+		mmc_info->cur_buswidth = EMMC_8Bit_BUSWIDTH;
-+		data_len = 8;
-+
-+		/* host set 8-bit bus width */
-+		host_set_buswidth(host, BUS_WIDTH8);
-+
-+		/* delay 100us */
-+		os_udelay(100);
-+
-+		result = emmc_bus_width_test(card, sd_cmd, data_len);
-+		if (result == TRUE) {
-+			if (enable_ddr &&
-+			    (card->mmc.ext_csd.card_type & MMC_CARD_DDR_SUPP) &&
-+			    (mmc_info->cur_hs_type != EMMC_MODE_HS200)
-+			    ) {
-+				argument =
-+				    (MMC_EXTCSD_WRITE | MMC_EXTCSD_BUS_WIDTH |
-+				     MMC_BUSW_DDR_8BIT);
-+			} else {
-+				argument =
-+				    (MMC_EXTCSD_WRITE | MMC_EXTCSD_BUS_WIDTH |
-+				     MMC_BUSW_SDR_8BIT);
-+			}
-+			result = emmc_send_cmd6(card, sd_cmd, argument);
-+			if (!result)
-+				DbgErr("Set 8-bit bus width Failed.\n");
-+			else
-+				goto exit;
-+		}
-+		DbgErr("Set 8-bit bus width Failed.\n");
-+
-+	}
-+
-+	/* check user support 4-bit bus width */
-+	if (dis_4_bit == FALSE) {
-+		mmc_info->cur_buswidth = EMMC_4Bit_BUSWIDTH;
-+		/* host set 4-bit bus width */
-+		host_set_buswidth(host, BUS_WIDTH4);
-+		data_len = 4;
-+
-+		/* Test 4-bit patten, set block size to 4 bytes */
-+		result = emmc_bus_width_test(card, sd_cmd, data_len);
-+		if (!result)
-+			goto exit;
-+
-+		if (enable_ddr &&
-+		    (card->mmc.ext_csd.card_type & MMC_CARD_DDR_SUPP) &&
-+		    (mmc_info->cur_hs_type != EMMC_MODE_HS200)
-+		    ) {
-+			argument =
-+			    (MMC_EXTCSD_WRITE | MMC_EXTCSD_BUS_WIDTH |
-+			     MMC_BUSW_DDR_4BIT);
-+		} else {
-+			argument =
-+			    (MMC_EXTCSD_WRITE | MMC_EXTCSD_BUS_WIDTH |
-+			     MMC_BUSW_SDR_4BIT);
-+		}
-+
-+		result = emmc_send_cmd6(card, sd_cmd, argument);
-+		if (!result)
-+			DbgErr("Set 4-bit bus width Failed.\n");
-+		else
-+			goto exit;
-+
-+		DbgErr("Set 4-bit bus width Failed.\n");
-+
-+	}
-+
-+	/* default 1-bit bus width */
-+	mmc_info->cur_buswidth = EMMC_1Bit_BUSWIDTH;
-+	host_set_buswidth(host, BUS_WIDTH1);
-+
-+exit:
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: emmc_set_trans_clk
-+ *
-+ * Abstract:
-+ *			 1. set MMC/eMMC card(Not support HS) transfer clock
-+ *
-+ * Input:
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output:
-+ *			None
-+ *
-+ * Return value:
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *           Caller: emmc_init_stage2
-+ */
-+static bool emmc_set_trans_clk(sd_card_t *card)
-+{
-+	bool result = FALSE;
-+	u32 freq_unit = 0;
-+	u32 multip_factor = 0;
-+	u32 trans_clk;
-+	card_info_t *card_info = &(card->info);
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+	/* get the frequency unit    0: 1KHz     1: 10KHz     2: 100KHz       3: 1000KHZ */
-+	switch ((card_info->csd.tran_speed) & 0x7) {
-+	case 0:
-+		freq_unit = 1;
-+		break;
-+	case 1:
-+		freq_unit = 10;
-+		break;
-+	case 2:
-+		freq_unit = 100;
-+		break;
-+	case 3:
-+		freq_unit = 1000;
-+		break;
-+	default:
-+		return result;
-+	}
-+
-+	switch (((card_info->csd.tran_speed) & 0x78) >> 3) {
-+	case 1:
-+		multip_factor = 100;
-+		break;
-+	case 2:
-+		multip_factor = 120;
-+		break;
-+	case 3:
-+		multip_factor = 130;
-+		break;
-+	case 4:
-+		multip_factor = 150;
-+		break;
-+	case 5:
-+		multip_factor = 200;
-+		break;
-+	case 6:
-+		multip_factor = 260;
-+		break;
-+	case 7:
-+		multip_factor = 300;
-+		break;
-+	case 8:
-+		multip_factor = 350;
-+		break;
-+	case 9:
-+		multip_factor = 400;
-+		break;
-+	case 10:
-+		multip_factor = 450;
-+		break;
-+	case 11:
-+		multip_factor = 520;
-+		break;
-+	case 12:
-+		multip_factor = 550;
-+		break;
-+	case 13:
-+		multip_factor = 600;
-+		break;
-+	case 14:
-+		multip_factor = 700;
-+		break;
-+	case 15:
-+		multip_factor = 800;
-+		break;
-+	default:
-+		goto exit;
-+	}
-+
-+	trans_clk = freq_unit * multip_factor;
-+	if (trans_clk >= SD_CLK_BASE) {
-+		/* 200M Hz */
-+		trans_clk = SD_CLK_BASE;
-+	}
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"MMC support trans clk=%d\n", trans_clk);
-+	/* change transfer clock */
-+	emmc_set_freq(card, trans_clk, FALSE);
-+	result = TRUE;
-+
-+exit:
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+static u64 get_emmc_sec_count(sd_card_t *card)
-+{
-+	u64 capability = 0;
-+
-+	card_info_t *card_info = &(card->info);
-+	mmc_card_info_t *mmc_info = &(card->mmc);
-+
-+	/* <2G capability / SD_BLOCK_LEN */
-+	if (card_info->card_ccs == 0)
-+		capability = card->sec_count;
-+	else {
-+		/* > 2G sector count */
-+		capability = mmc_info->ext_csd.sec_cnt;
-+	}
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"MMC * EMMC sector count = 0x%x!!\n", capability);
-+	return capability;
-+}
-+
-+/*
-+ *
-+ * Function Name: set_emmc_block_len
-+ *
-+ * Abstract:
-+ *			 1. set MMC/eMMC card block length
-+ *
-+ * Input:
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *            bool b_hs400: if DDR mode, can't set CMD16 to set block length
-+ *
-+ * Output:
-+ *			None
-+ *
-+ * Return value:
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *           Caller: emmc_init_stage2
-+ */
-+static bool set_emmc_block_len(sd_card_t *card, bool b_hs400)
-+{
-+	bool result = FALSE;
-+	u32 block_len = 0;
-+	card_info_t *card_info = &(card->info);
-+	sd_host_t *host = card->host;
-+	cfg_emmc_mode_t *cfg_emmc_mode = &(host->cfg->card_item.emmc_mode);
-+	sd_command_t sd_cmd;
-+
-+	os_memset(&sd_cmd, 0, sizeof(sd_command_t));
-+
-+	block_len = (2 << (card_info->csd.read_bl_len));
-+
-+	if (block_len > host->max_block_len) {
-+		DbgWarn(MODULE_MMC_CARD, NOT_TO_RAM,
-+			"Device block length > HW Init max block length!!\n");
-+	}
-+
-+	if ((cfg_emmc_mode->enable_ddr_mode) || b_hs400) {
-+		/* todo: if DDR mode, */
-+		result = TRUE;
-+	} else {
-+		result = card_set_block_len(card, &sd_cmd, SD_BLOCK_LEN);
-+	}
-+
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: emmc_init_stage2
-+ *
-+ * Abstract:
-+ *			 1. emmc card initialize main function.
-+ *            2. Fill virtual card structure, like cid, csd, ext_csd etc.
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init_stage2
-+ */
-+bool emmc_init_stage2(sd_card_t *card)
-+{
-+	bool result = FALSE;
-+	sd_host_t *host = card->host;
-+	mmc_card_info_t *mmc_info = &card->mmc;
-+	cfg_emmc_mode_t *cfg_emmc_mode = &(host->cfg->card_item.emmc_mode);
-+	sd_command_t sd_cmd;
-+
-+	os_memset(&sd_cmd, 0, sizeof(sd_command_t));
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* set card work clock to 25M */
-+	if (mmc_info->ext_csd.card_type) {
-+		emmc_set_freq(card, SD_CLK_25M, FALSE);
-+		DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"Set eMMC Card Host Clock to 25MHz.\n");
-+	}
-+
-+	/* check emmc card HS200 mode */
-+	if ((mmc_info->ext_csd.card_type & MMC_CARD_TYPE_H200) &&
-+	    (cfg_emmc_mode->enable_force_hs != 1)
-+	    ) {
-+		result = emmc_switch_hs200(card, &sd_cmd);
-+		if (result == FALSE) {
-+			DbgErr("Switch hs200 mode failed!!\n");
-+			goto exit;
-+		}
-+
-+		if ((cfg_emmc_mode->enable_force_hs200) ||
-+		    (mmc_info->cur_buswidth != EMMC_8Bit_BUSWIDTH) ||
-+		    (host->bus_8bit_supp == FALSE)
-+		    )
-+			goto exit;
-+
-+		/* check emmc card HS400 mode */
-+		if ((host->chip_type == CHIP_SEAEAGLE2
-+		     || cfg_emmc_mode->enable_force_hs400
-+		     || host->chip_type == CHIP_GG8
-+		     || host->chip_type == CHIP_ALBATROSS)
-+		    && (mmc_info->ext_csd.card_type & MMC_CARD_TYPE_H400)
-+		    ) {
-+			/* choose the eMMC hs400 mode */
-+			result = emmc_switch_hs400(card, &sd_cmd);
-+			if (result == FALSE)
-+				DbgErr("Switch hs400 mode failed!!\n");
-+			else
-+				mmc_info->cur_hs_type = EMMC_MODE_HS400;
-+		}
-+
-+		goto exit;
-+	}
-+
-+	/* check emmc card HS mode */
-+	if ((mmc_info->ext_csd.card_type) & MMC_CARD_TYPE_HS) {
-+		result = emmc_switch_hs(card, &sd_cmd);
-+		if (result == FALSE)
-+			DbgErr("Switch hs mode failed!!\n");
-+
-+	} else {
-+		/* set transfer clock */
-+		result = emmc_set_trans_clk(card);
-+		if (!result) {
-+			DbgErr("Set Basic transfer clock failed.\n");
-+			goto exit;
-+		}
-+	}
-+
-+	/* set MMC/eMMC card bus width & DDR mode */
-+	if (emmc_switch_buswidth(card, &sd_cmd) == TRUE) {
-+		/* DDR mode not support 1-bit */
-+		emmc_ddr_mode_set(card);
-+	}
-+
-+exit:
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: emmc_init
-+ *
-+ * Abstract:
-+ *			 1. emmc card initialize main function.
-+ *            2. Fill virtual card structure, like cid, csd, ext_csd etc.
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+bool emmc_init(sd_card_t *card, bool bemmc)
-+{
-+	bool result = FALSE;
-+	sd_host_t *host = card->host;
-+	card_info_t *card_info = &(card->info);
-+	sd_command_t sd_cmd;
-+	cfg_emmc_mode_t *cfg_emmc_mode = &(host->cfg->card_item.emmc_mode);
-+	mmc_card_info_t *mmc_info = &(card->mmc);
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Enter %s bemmc = %d\n", __func__, bemmc);
-+	os_memset(&sd_cmd, 0, sizeof(sd_command_t));
-+	os_memset(mmc_info, 0, sizeof(mmc_card_info_t));
-+
-+	/* 1. emmc host init */
-+	result = host_emmc_init(host, cfg_emmc_mode);
-+	if (result == FALSE) {
-+		DbgErr("Emmc Host Init Failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 2. Issue reset command (CMD0) */
-+	result = card_reset_card(card, &sd_cmd);
-+	result = card_reset_card(card, &sd_cmd);
-+	if (!result) {
-+		/* Go Idle State command failed. exit directly. */
-+		DbgErr("Reset Card (CMD0) Failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 2. Wait for card ready (CMD01) */
-+	result = emmc_card_init_ready(card, &sd_cmd);
-+	if (!result) {
-+		DbgErr("Wait for card ready CMD1 Failed.\n");
-+		goto exit;
-+	}
-+
-+	if (bemmc)
-+		card->card_type = CARD_EMMC;
-+	else
-+		card->card_type = CARD_MMC;
-+
-+	/* Get card CID(CMD2) */
-+	result = card_all_send_cid(card, &sd_cmd);
-+	if (!result) {
-+		DbgErr("Get card CID(CMD2) failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 4. Set card relative address (CMD3) */
-+	result = emmc_set_rca(card, &sd_cmd);
-+	if (!result) {
-+		DbgErr
-+		    ("MMC/eMMC card set card relative address (CMD3) failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 5. Get CSD (CMD9) */
-+	result = card_get_csd(card, &sd_cmd);
-+	if (!result) {
-+		DbgErr("Get CSD (CMD9) failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 6. Select the card (CMD7) */
-+	result = card_select_card(card, &sd_cmd);
-+	if (!result) {
-+		DbgErr("Select card (CMD7) failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 7. Check card lock */
-+	if (card->locked == TRUE) {
-+		DbgErr("Card is locked!!\n");
-+		goto exit;
-+	}
-+
-+	/* 8. Check card SPEC version */
-+	if (card_info->csd.mmc_spec_vers < MMC_SPEC_VERS) {
-+		DbgWarn(MODULE_MMC_CARD, NOT_TO_RAM,
-+			"Spec version < 4: it's old MMC Device!!\n");
-+		/* set transfer clock */
-+		result = emmc_set_trans_clk(card);
-+		if (!result) {
-+			DbgErr("Set Basic transfer clock failed.\n");
-+			goto exit;
-+		}
-+		goto exit;
-+	}
-+
-+	/* 9. Get Ext_Csd */
-+	result = emmc_get_ext_csd(card, &sd_cmd);
-+	if (!result) {
-+		DbgErr("Get mmc Ext_Csd failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 10. Switch Card mode */
-+	result = card_init_stage2(card);
-+
-+exit:
-+	if (result) {
-+		/* max LBA */
-+		card->sec_count = get_emmc_sec_count(card);
-+		result =
-+		    set_emmc_block_len(card,
-+				       (mmc_info->cur_hs_type ==
-+					EMMC_MODE_HS400) ? TRUE : FALSE);
-+		if (!result)
-+			DbgErr("Set block length failed.\n");
-+	}
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+/*
-+ * Function Name: mmc_degrade_policy
-+ * Abstract: This Function is used set sd degrade flag
-+ *
-+ * Input:
-+ * sd_card_t *card : The Command will send to which  Card
-+ *
-+ * Return value:
-+ *
-+ */
-+void mmc_degrade_policy(sd_card_t *card)
-+{
-+
-+	/* check if at hs200 or hs400 then can degrade freq */
-+	/* else set degrade_all flag */
-+
-+	cfg_emmc_mode_t *cfg_emmc_mode =
-+	    &(card->host->cfg->card_item.emmc_mode);
-+
-+	if (cfg_emmc_mode->enable_force_hs400
-+	    || cfg_emmc_mode->enable_force_hs200
-+	    || (card->mmc.ext_csd.card_type & MMC_CARD_TYPE_H400)
-+	    || (card->mmc.ext_csd.card_type & MMC_CARD_TYPE_H200)) {
-+		if (card->degrade_freq_level < CARD_DEGRADE_FREQ_TIMES)
-+			card->degrade_freq_level++;
-+		else
-+			card->degrade_final = 1;
-+	} else
-+		card->degrade_final = 1;
-+
-+	DbgErr("EMMC degrade final=%d freq_level=%d\n", card->degrade_final,
-+	       card->degrade_freq_level);
-+
-+}
-+
-+static void emmc_set_freq(sd_card_t *card, u32 clock_freq, bool bddr50)
-+{
-+	sd_host_t *host = card->host;
-+	u32 value = 0;
-+	u16 index = card->degrade_freq_level;
-+
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Enter %s, clk_freq_khz=%dkhz, ddr50_mode=%d\n", __func__,
-+		clock_freq, bddr50);
-+	switch (clock_freq) {
-+	case SD_CLK_ID_400K:
-+		value = host->cfg->dmdn_tbl[FREQ_EMMC_400K_START_INDEX];
-+		break;
-+	case SD_CLK_50M:
-+		if (bddr50)
-+			value =
-+			    host->cfg->dmdn_tbl[FREQ_EMMC_DDR50M_START_INDEX];
-+		else
-+			value = host->cfg->dmdn_tbl[FREQ_EMMC_50M_START_INDEX];
-+		break;
-+	case SD_CLK_200M:
-+		value = host->cfg->dmdn_tbl[FREQ_EMMC_200M_START_INDEX + index];
-+		break;
-+	default:
-+		value = host->cfg->dmdn_tbl[FREQ_EMMC_25M_START_INDEX];
-+		break;
-+	}
-+	host_change_clock(host, value);
-+	DbgInfo(MODULE_MMC_CARD, FEATURE_CARD_INIT, TO_RAM,
-+		"Enter %s, clk_freq_khz=%dkhz, ddr50_mode=%d\n", __func__,
-+		clock_freq, bddr50);
-+}
-diff --git a/drivers/scsi/bht/card/output_tuning.c b/drivers/scsi/bht/card/output_tuning.c
-new file mode 100644
-index 000000000000..de1ae5e4f388
---- /dev/null
-+++ b/drivers/scsi/bht/card/output_tuning.c
-@@ -0,0 +1,756 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2022 BHT Inc.
-+ *
-+ * File Name: output_tuning.c
-+ *
-+ * Abstract:
-+ *      1. Card tuning main entry
-+ *      2. Interface for card tuning
-+ *
-+ * Version: 1.00
-+ *
-+ * Author: Chevron
-+ *
-+ * Environment:	OS Independent
-+ *
-+ * History:
-+ *
-+ * 3/8/2022		Creation	Chevron
-+ */
-+
-+#include "../include/basic.h"
-+#include "../include/card.h"
-+#include "../include/cardapi.h"
-+#include "cardcommon.h"
-+#include "../include/hostapi.h"
-+#include "../include/transhapi.h"
-+#include "../include/hostvenapi.h"
-+#include "../include/util.h"
-+#include "../include/debug.h"
-+#include "../include/cmdhandler.h"
-+#include "../host/hostven.h"
-+#include  "../include/card.h"
-+#include "../host/hostreg.h"
-+
-+/* None Device error */
-+#define		SD_SUCCESS				0x00000000
-+/* Device error */
-+#define		SD_ERR_DEVICE			0x00000001
-+/*mmio value set timeout */
-+#define		SD_ERR_MMIO_SET_TIMEOUT	0x00000002
-+#define		SD_ERR_ALL_PHASE_PASS	0x00000003
-+#define		SD_ERR_FATAL			0x00000004
-+/* Device error need degrade */
-+#define		SD_ERR_DEVICE_DEGRADE	0x00000005
-+/* Device error need retry */
-+#define		SD_ERR_DEVICE_RETRY		0x00000006
-+/* Device error need increase drive strength */
-+#define		SD_ERR_DEVICE_DS_INS	0x00000007
-+/* Retry Over */
-+#define    SD_ERR_RETRY_OVER        0x80000000
-+/* CRC Error */
-+#define    SD_ERR_CRC_MISSMACH      0x40000000
-+/* No Response */
-+#define    SD_ERR_NO_RESPONSE       0x20000000
-+/* No Response */
-+#define    SD_ERR_NO_RESPONSE       0x20000000
-+
-+u16 tuning_phase_result(sd_card_t *card)
-+{
-+	u16 result[4] = { 0 };
-+	u8 phase_count = 11;
-+	u16 phase_mask = 0x7FF;
-+	/* u32 device_status; */
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+	/* Only GG8 support 14 phase tuning */
-+	if (card->host->chip_type == CHIP_GG8
-+	    || card->host->chip_type == CHIP_ALBATROSS) {
-+		phase_count = 14;
-+		phase_mask = 0x3FFF;
-+	}
-+
-+	/* get tuning result of 3 cycle */
-+	result[0] =
-+	    sdhci_readl(card->host, SDHCI_SAMPLE_CLK_RESULT_LOW) & phase_mask;
-+	result[1] =
-+	    (sdhci_readl(card->host, SDHCI_SAMPLE_CLK_RESULT_LOW) >>
-+	     phase_count) & phase_mask;
-+
-+	/* Low bits result */
-+	result[2] =
-+	    ((sdhci_readl(card->host, SDHCI_SAMPLE_CLK_RESULT_LOW) >>
-+	      (phase_count << 1) & phase_mask));
-+
-+	/* Result of full bits */
-+	if (card->host->chip_type == CHIP_GG8
-+	    || card->host->chip_type == CHIP_ALBATROSS)
-+		result[2] |=
-+		    (sdhci_readl(card->host, SDHCI_SAMPLE_CLK_RESULT_UP) &
-+		     0x3FF) << 4;
-+	else
-+		result[2] |=
-+		    (sdhci_readl(card->host, SDHCI_SAMPLE_CLK_RESULT_UP) &
-+		     0x3FF) << 1;
-+
-+	result[3] = result[0] & result[1] & result[2];
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Exit %s, result 0x%x, phase count %d\n", __func__,
-+		result[3], phase_count);
-+	return result[3];
-+}
-+
-+u8 select_tuning_phase(u16 tuning_phase, u8 phase_cnt)
-+{
-+	u8 temp[14] = { 0 };
-+	u8 cnt[14] = { 0 };
-+	u8 sel_phase, val, pos, start_phase;
-+	u8 i, j;
-+
-+	i = j = val = pos = sel_phase = 0;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+	for (i = 0; i < phase_cnt; i++)
-+		temp[i] = (tuning_phase >> i) & 0x01;
-+
-+	for (i = 0; i < phase_cnt; i++) {
-+		for (j = 0; j < phase_cnt; j++) {
-+			if (temp[(i + j) % phase_cnt])
-+				cnt[i]++;
-+			else
-+				break;
-+		}
-+	}
-+
-+	val = cnt[0];
-+	for (i = 0; i < phase_cnt - 1; i++) {
-+		if (cnt[i + 1] > val) {
-+			val = cnt[i + 1];
-+			pos = i + 1;
-+		}
-+	}
-+
-+	start_phase = (phase_cnt == 14 ? 9 : 8);
-+	sel_phase = ((start_phase + pos + cnt[pos] / 2) % phase_cnt);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Exit %s select phase %d\n", __func__, sel_phase);
-+	return sel_phase;
-+}
-+
-+void set_input_tuning_phase(sd_card_t *card, u8 sel_phase)
-+{
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	host_enable_clock(card->host, FALSE);
-+
-+	/* Clear origin phase */
-+	sdhci_and32(card->host, SDHCI_DLL_PHASE_CFG, ~0x1F000000);
-+	/* select the 1B0h[27:24] to config the phase selection */
-+	sdhci_or32(card->host, SDHCI_DLL_PHASE_CFG, BIT28);
-+	/* set new phase */
-+	sdhci_or32(card->host, SDHCI_DLL_PHASE_CFG, sel_phase << 24);
-+
-+	host_enable_clock(card->host, TRUE);
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Exit %s select phase %d\n", __func__, sel_phase);
-+}
-+
-+void generate_traverse_range(sd_card_t *card, u8 center_point, u8 offset,
-+			     u8 *start_point, u8 *end_point)
-+{
-+	u16 phase_mask_all_pass = 0;
-+	u8 phase_cnt = 11;
-+
-+	if (card->host->chip_type == CHIP_GG8
-+	    || card->host->chip_type == CHIP_ALBATROSS)
-+		phase_cnt = 14;
-+
-+	if (phase_cnt == 14)
-+		phase_mask_all_pass = 0x3FFF;
-+	else
-+		phase_mask_all_pass = 0x7FF;
-+
-+	if (center_point < offset) {
-+		*start_point = phase_cnt + center_point - offset;
-+		*end_point = phase_cnt + center_point + offset;
-+	} else {
-+		*start_point = center_point - offset;
-+		*end_point = center_point + offset;
-+	}
-+}
-+
-+u8 get_output_fix_phase(sd_card_t *card)
-+{
-+	cfg_output_tuning_item_t *output_tuning =
-+	    &card->host->cfg->feature_item.output_tuning_item;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (card->info.sw_cur_setting.sd_access_mode == SD_FNC_AM_DDR200) {
-+		DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+			"output_tuning_item DDR200\n");
-+		return (u8) output_tuning->fixed_value_ddr200;
-+	} else if (card->info.sw_cur_setting.sd_access_mode == SD_FNC_AM_SDR104) {
-+		DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+			"output_tuning_item SDR104\n");
-+		return (u8) output_tuning->fixed_value_sdr104;
-+	} else if (card->info.sw_cur_setting.sd_access_mode == SD_FNC_AM_SDR50) {
-+		DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+			"output_tuning_item SDR50\n");
-+		return (u8) output_tuning->fixed_value_sdr50;
-+	} else {
-+		/* Not support this mode at Bayhub Driver */
-+		DbgErr("sd_access_mode %d isn't supported !!!",
-+		       card->info.sw_cur_setting.sd_access_mode);
-+		return 0;
-+	}
-+
-+}
-+
-+/* Use to find a output phase in which input tuning result is not all pass */
-+u32 find_input_phase_fail_point(sd_card_t *card, u8 *output_phase,
-+				u16 *input_tuning_result)
-+{
-+	u32 result = 0;
-+	u8 start_phase, end_phase, index_phase;
-+	u8 output_fix_phase = 0;
-+	u8 i = 0;
-+	u16 phase_mask_all_pass = 0;
-+	int ret = 0;
-+	sd_command_t sd_cmd;
-+	u8 phase_cnt = 11;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+	if (card->host->chip_type == CHIP_GG8
-+	    || card->host->chip_type == CHIP_ALBATROSS)
-+		phase_cnt = 14;
-+
-+	output_fix_phase = get_output_fix_phase(card);
-+
-+	if (phase_cnt == 14)
-+		phase_mask_all_pass = 0x3FFF;
-+	else
-+		phase_mask_all_pass = 0x7FF;
-+	generate_traverse_range(card, output_fix_phase, 3, &start_phase,
-+				&end_phase);
-+
-+	for (i = start_phase; i <= end_phase; i++) {
-+		index_phase = i % phase_cnt;
-+
-+		host_set_output_tuning_phase(card->host, index_phase);
-+
-+		ret = sd_tuning(card, &sd_cmd, 150);
-+		if (!ret && sd_cmd.err.error_code) {
-+			DbgErr("Uncorrect fix output phase!!!\n");
-+			result = SD_ERR_FATAL;
-+			break;
-+		} else if (!ret) {
-+			result = SD_ERR_DEVICE_DEGRADE;
-+			break;
-+		}
-+
-+		*input_tuning_result = tuning_phase_result(card);
-+
-+		DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+			"output phase is %d, input result is 0x%x\n",
-+			index_phase, *input_tuning_result);
-+		if (*input_tuning_result == phase_mask_all_pass) {
-+			result = SD_ERR_ALL_PHASE_PASS;
-+			continue;
-+		} else {
-+			*output_phase = index_phase;
-+			result = SD_SUCCESS;
-+			break;
-+		}
-+	}
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+	return result;
-+}
-+
-+u32 generate_output_input_phase_pair(sd_card_t *card, u8 input_fix_phase,
-+				     u8 ddr200)
-+{
-+	u32 result = 0;
-+	u8 output_phase = 0;
-+	u8 input_phase = 0;
-+	u16 input_tuning_result = 0;
-+	u8 output_fix_phase = 0;
-+	u8 start_phase, end_phase, index_phase, offset;
-+	u8 i = 0;
-+	u8 phase_cnt = 11;
-+	u16 phase_mask_all_pass = 0x7FF;
-+	sd_command_t sd_cmd;
-+	int ret = 0;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+	if (card->host->chip_type == CHIP_GG8
-+	    || card->host->chip_type == CHIP_ALBATROSS) {
-+		phase_cnt = 14;
-+		phase_mask_all_pass = 0x3FFF;
-+	}
-+	if (ddr200) {
-+		output_fix_phase =
-+		(u8) card->host->cfg->feature_item.output_tuning_item.fixed_value_sdr104;
-+		offset = 2;
-+	} else {
-+		output_fix_phase = get_output_fix_phase(card);
-+		offset = 3;
-+	}
-+	generate_traverse_range(card, output_fix_phase, offset, &start_phase,
-+				&end_phase);
-+
-+	for (i = start_phase; i <= end_phase; i++) {
-+		index_phase = i % phase_cnt;
-+
-+		host_set_output_tuning_phase(card->host, index_phase);
-+
-+		ret = sd_tuning(card, &sd_cmd, 150);
-+		if (!ret && sd_cmd.err.error_code) {
-+			DbgErr("Uncorrect fix output phase!!!\n");
-+			result = SD_ERR_FATAL;
-+			break;
-+		} else if (!ret) {
-+			result = SD_ERR_DEVICE_DEGRADE;
-+			break;
-+		}
-+
-+		input_tuning_result = tuning_phase_result(card);
-+
-+		DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+			"output phase is %d, input result is 0x%x\n",
-+			index_phase, input_tuning_result);
-+		if (ddr200) {
-+			card->output_input_phase_pair[index_phase] =
-+			    select_tuning_phase(input_tuning_result,
-+						phase_cnt);
-+			continue;
-+		}
-+
-+		if (input_tuning_result == phase_mask_all_pass) {
-+			result = SD_ERR_ALL_PHASE_PASS;
-+			continue;
-+		} else {
-+			output_phase = index_phase;
-+			result = SD_SUCCESS;
-+			break;
-+		}
-+	}
-+
-+	/* result = find_input_phase_fail_point(card, &output_phase, &input_tuning_result); */
-+	if (ret && ddr200) {
-+		u8 temp_phase_pair[14] = { 0 };
-+		u8 j;
-+
-+		/* add all input phase */
-+		for (i = start_phase; i <= end_phase; i++) {
-+
-+			input_phase =
-+			    card->output_input_phase_pair[i % phase_cnt];
-+			/* caclute the <output,input> phase pair */
-+			for (j = i; j < (i + phase_cnt); j++) {
-+				index_phase = j % phase_cnt;
-+				temp_phase_pair[index_phase] += input_phase;
-+				DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER,
-+					NOT_TO_RAM,
-+					"caclute ddr output-input pair:0x%x-0x%x\n",
-+					index_phase, input_phase);
-+				input_phase = (input_phase + 1) % phase_cnt;
-+			}
-+		}
-+
-+		/* caclute the avargae value for other <output,input> phase pair */
-+		for (i = end_phase + 1; i < (start_phase + phase_cnt); i++) {
-+			index_phase = i % phase_cnt;
-+			card->output_input_phase_pair[index_phase] =
-+			    temp_phase_pair[index_phase] / (1 + (offset << 1));
-+			DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER,
-+				NOT_TO_RAM,
-+				"###caclute ddr output-input pair:0x%x-0x%x\n",
-+				index_phase,
-+				card->output_input_phase_pair[index_phase]);
-+		}
-+
-+	} else if ((result == SD_SUCCESS) || (result == SD_ERR_ALL_PHASE_PASS)) {
-+		if (result == SD_SUCCESS) {
-+			start_phase = output_phase;
-+			end_phase = output_phase + phase_cnt;
-+			input_phase =
-+			    select_tuning_phase(input_tuning_result, phase_cnt);
-+		} else {
-+			start_phase = output_fix_phase;
-+			end_phase = output_fix_phase + phase_cnt;
-+			input_phase = input_fix_phase;
-+			card->input_phase_all_pass = 1;
-+			result = SD_SUCCESS;
-+		}
-+		DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+			"output-input result:0x%x-0x%x\n", output_phase,
-+			input_tuning_result);
-+
-+		for (i = start_phase; i < end_phase; i++) {
-+			index_phase = i % phase_cnt;
-+			card->output_input_phase_pair[index_phase] =
-+			    input_phase;
-+			DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER,
-+				NOT_TO_RAM, "output-input pair:0x%x-0x%x\n",
-+				index_phase, input_phase);
-+			input_phase = (input_phase + 1) % phase_cnt;
-+		}
-+	}
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+	return result;
-+}
-+
-+int output_tuning(sd_card_t *card, u32 address, bool ddr200)
-+{
-+	int ret = 0;
-+	u8 test_patern[6] = { 0x55, 0xaa, 0x00, 0xff, 0xf0, 0x0f };
-+	u8 input_tuning_pattern[64] = {
-+		0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0xcc,
-+		0xcc, 0xcc, 0x33, 0xcc, 0xcc,
-+		0xcc, 0x33, 0x33, 0xcc, 0xcc, 0xcc, 0xff, 0xff, 0xff, 0xee,
-+		0xff, 0xff, 0xff, 0xee, 0xee, 0xff,
-+		0xff, 0xff, 0xdd, 0xff, 0xff, 0xff, 0xdd, 0xdd, 0xff, 0xff,
-+		0xff, 0xbb, 0xff, 0xff, 0xff, 0xbb,
-+		0xbb, 0xff, 0xff, 0xff, 0x77, 0xff, 0xff, 0xff, 0x77, 0x77,
-+		0xff, 0x77, 0xbb, 0xdd, 0xee, 0xff
-+	};
-+	int j, k, pattern_i;
-+	u32 result = 0;
-+	sd_command_t sd_cmd;
-+	u32 cmdflag;
-+
-+	u8 *test_buf = kcalloc(512, sizeof(unsigned char), GFP_KERNEL);
-+	u8 *test_buf_read = kcalloc(512, sizeof(unsigned char), GFP_KERNEL);
-+
-+	if (test_buf == NULL || test_buf_read == NULL) {
-+		DbgErr("kcalloc buffer failed\n");
-+		if (test_buf != NULL)
-+			kfree(test_buf);
-+		if (test_buf_read != NULL)
-+			kfree(test_buf_read);
-+		return SD_ERR_FATAL;
-+	}
-+
-+	if (ddr200)
-+		cmdflag =
-+		    CMD_FLG_RESCHK | CMD_FLG_R1 | CMD_FLG_ADMA_SDMA |
-+		    CMD_FLG_DDR200_WORK_AROUND | CMD_FLG_INF_BUILD;
-+	else
-+		cmdflag = CMD_FLG_RESCHK | CMD_FLG_R1 | CMD_FLG_ADMA_SDMA;
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* the output tuning pattern make up by four part */
-+	for (pattern_i = 0; pattern_i < 4; pattern_i++) {
-+		if (pattern_i < 3) {
-+			for (k = 0; k < 512; k++) {
-+				test_buf[k] =
-+				    test_patern[(k % 2) + 2 * pattern_i];
-+			}
-+		} else {
-+			for (j = 0; j < 8; j++) {
-+				for (k = 0; k < 64; k++) {
-+					if (j % 2) {
-+						test_buf[k + 64 * j] =
-+						    input_tuning_pattern[k];
-+					} else {
-+						test_buf[k + 64 * j] =
-+						    input_tuning_pattern[(k +
-+									  63) %
-+									 64];
-+					}
-+				}
-+			}
-+		}
-+
-+		ret =
-+		    card_send_sdcmd_timeout(card, &sd_cmd,
-+					    ddr200 ? SD_CMD25 : SD_CMD24,
-+					    address, cmdflag, DATA_DIR_OUT,
-+					    test_buf, 512, 500);
-+		if (ret == FALSE) {
-+			if (card->input_phase_all_pass) {
-+				if (sd_cmd.err.legacy_err_reg & 0x0E) {
-+					DbgErr
-+					    ("Uncorrect fix input phase!!!\n");
-+					result = SD_ERR_FATAL;
-+					goto end;
-+				}
-+			}
-+
-+			if ((sd_cmd.err.legacy_err_reg & 0x80F)
-+			    && (card->info.sw_cur_setting.sd_access_mode ==
-+				SD_FNC_AM_DDR200)) {
-+				DbgErr("Uncorrect fix output phase!!!\n");
-+				result = SD_ERR_FATAL;
-+				goto end;
-+			}
-+
-+			if (card->info.sw_cur_setting.sd_access_mode !=
-+			    SD_FNC_AM_DDR200) {
-+				DbgErr
-+				    ("Recovery fail at tuning stage, need re-init!!!\n");
-+				result = SD_ERR_DEVICE_RETRY;
-+			} else {
-+				host_cmddat_line_reset(card->host);
-+				card_send_command12(card, &sd_cmd);
-+				if (card_check_rw_ready(card, &sd_cmd, 600) !=
-+				    TRUE) {
-+					DbgErr
-+					    ("Uncorrect fix output phase for DDR200!!!\n");
-+					result = SD_ERR_FATAL;
-+				} else
-+					result = SD_ERR_CRC_MISSMACH;
-+			}
-+			goto end;
-+		}
-+
-+		ret =
-+		    card_send_sdcmd_timeout(card, &sd_cmd,
-+					    ddr200 ? SD_CMD18 : SD_CMD17,
-+					    address, (cmdflag), DATA_DIR_IN,
-+					    test_buf_read, 512, 500);
-+		if (ret == FALSE) {
-+			if (card->input_phase_all_pass) {
-+				if (sd_cmd.err.legacy_err_reg & 0x6E) {
-+					DbgErr
-+					    ("Uncorrect fix input phase!!!\n");
-+					result = SD_ERR_FATAL;
-+					goto end;
-+				}
-+			}
-+
-+			if ((sd_cmd.err.legacy_err_reg & 0x80F)
-+			    && (card->info.sw_cur_setting.sd_access_mode ==
-+				SD_FNC_AM_DDR200)) {
-+				DbgErr("Uncorrect fix output phase!!!\n");
-+				result = SD_ERR_FATAL;
-+				goto end;
-+			}
-+
-+			if (card->info.sw_cur_setting.sd_access_mode !=
-+			    SD_FNC_AM_DDR200) {
-+				DbgErr
-+				    ("Recovery fail at tuning stage, need re-init!!!\n");
-+				result = SD_ERR_DEVICE_RETRY;
-+			} else {
-+				host_cmddat_line_reset(card->host);
-+				card_send_command12(card, &sd_cmd);
-+				if (card_check_rw_ready(card, &sd_cmd, 600) !=
-+				    TRUE) {
-+					DbgErr
-+					    ("Uncorrect fix output phase for DDR200!!!\n");
-+					result = SD_ERR_FATAL;
-+				} else
-+					result = SD_ERR_CRC_MISSMACH;
-+			}
-+			goto end;
-+		}
-+
-+		for (j = 0; j < (1 * 512); j++) {
-+			if (*(test_buf + j) != *(test_buf_read + j)) {
-+				result = SD_ERR_CRC_MISSMACH;
-+				DbgErr("Compare failed!!!\n");
-+				goto end;
-+			}
-+		}
-+	}
-+	result = SD_SUCCESS;
-+end:
-+
-+	kfree(test_buf);
-+	kfree(test_buf_read);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Exit %s(%d)\n", __func__, result);
-+	return result;
-+}
-+
-+u32 sdr104_sdr50_output_tuning(sd_card_t *card, u32 address)
-+{
-+	u8 start_phase, end_phase, index_phase;
-+	u8 best_output_phase = 0, best_input_phase = 0;
-+	u8 i = 0;
-+	u8 output_fix_phase = 0;
-+	u8 input_fix_phase = 0;
-+	u8 output_fail_phase = 0x0;
-+	u32 result = 0;
-+	u8 phase_cnt = 11;
-+	sd_command_t sd_cmd;
-+
-+	output_fix_phase = get_output_fix_phase(card);
-+
-+	if (card->info.sw_cur_setting.sd_access_mode == SD_FNC_AM_SDR104)
-+		input_fix_phase =
-+		    (u8) card->host->cfg->feature_item.output_tuning_item.sdr104_input_fix_phase_value;
-+	else
-+		input_fix_phase =
-+		    (u8) card->host->cfg->feature_item.output_tuning_item.sdr50_input_fix_phase_value;
-+
-+	if (card->host->chip_type == CHIP_GG8
-+	    || card->host->chip_type == CHIP_ALBATROSS)
-+		phase_cnt = 14;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Enter %s, retry_output_fail_phase is 0x%x\n", __func__,
-+		card->retry_output_fail_phase);
-+
-+	if (card->retry_output_fail_phase != 0xFF) {
-+		best_output_phase =
-+		    (card->retry_output_fail_phase +
-+		     (phase_cnt >> 1)) % (phase_cnt);
-+		best_input_phase =
-+		    card->output_input_phase_pair[best_output_phase];
-+		goto phase_set;
-+	}
-+
-+	result = generate_output_input_phase_pair(card, input_fix_phase, 0);
-+	if (result == SD_ERR_DEVICE_DEGRADE || result == SD_ERR_FATAL)
-+		goto exit;
-+	else if (result == SD_SUCCESS) {
-+		start_phase = output_fix_phase + 4;
-+		end_phase = start_phase + phase_cnt;
-+		for (i = start_phase; i < end_phase; i++) {
-+			index_phase = i % phase_cnt;
-+			DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER,
-+				NOT_TO_RAM,
-+				"output phase is %d, input phase is %d\n",
-+				index_phase,
-+				card->output_input_phase_pair[index_phase]);
-+
-+			host_set_output_tuning_phase(card->host, index_phase);
-+			set_input_tuning_phase(card,
-+					       card->output_input_phase_pair
-+					       [index_phase]);
-+			result = output_tuning(card, address, 0);
-+			if (result == SD_SUCCESS)
-+				continue;
-+			else if (result == SD_ERR_FATAL)
-+				goto exit;
-+			else {
-+				card->retry_output_fail_phase = index_phase;
-+				goto exit;
-+			}
-+		}
-+
-+		if (i == end_phase)
-+			best_output_phase = output_fix_phase;
-+		else
-+			best_output_phase =
-+			    (output_fail_phase + (phase_cnt >> 1)) % phase_cnt;
-+
-+		best_input_phase =
-+		    card->output_input_phase_pair[best_output_phase];
-+	}
-+
-+phase_set:
-+	host_set_output_tuning_phase(card->host, best_output_phase);
-+
-+	if (sd_tuning(card, &sd_cmd, 150) == FALSE)
-+		result = SD_ERR_FATAL;
-+	else
-+		result = SD_SUCCESS;
-+
-+exit:
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Exit %s result %d,best_output_phase 0x%x, best_input_phase  0x%x\n",
-+		__func__, result, best_output_phase, best_input_phase);
-+
-+	return result;
-+}
-+
-+u32 ddr200_output_tuning(sd_card_t *card, u32 address)
-+{
-+	u32 result = 0;
-+	u8 start_phase, end_phase, index_phase;
-+	u8 best_output_phase = 0;
-+	u8 output_fix_phase = 0;
-+	u8 i = 0;
-+	u8 cnt = 0;
-+	int pos = -1;
-+	u8 phase_cnt = 11;
-+	sd_host_t *host = card->host;
-+	u16 output_tuning_result = 0;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+	if (card->host->chip_type == CHIP_GG8
-+	    || card->host->chip_type == CHIP_ALBATROSS)
-+		phase_cnt = 14;
-+
-+	/* get output-input pair at DDR200 mode for DDR200_workaround */
-+	result =
-+	    generate_output_input_phase_pair(card,
-+					     (u8) card->host->cfg->feature_item.output_tuning_item.sdr104_input_fix_phase_value,
-+					     1);
-+	if (result == SD_ERR_DEVICE_DEGRADE || result == SD_ERR_FATAL)
-+		goto exit;
-+
-+	output_fix_phase = get_output_fix_phase(card);
-+
-+	generate_traverse_range(card, output_fix_phase, 4, &start_phase,
-+				&end_phase);
-+
-+	for (i = start_phase; i <= end_phase; i++) {
-+		index_phase = i % phase_cnt;
-+		DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+			"output phase is %d\n", index_phase);
-+
-+		/* Used to update input/output phase before write command */
-+		host->cur_output_phase = index_phase;
-+		result = output_tuning(card, address, 1);
-+
-+		if (result == SD_SUCCESS) {
-+			output_tuning_result |= 1 << index_phase;
-+			if (pos == -1)
-+				pos = index_phase;
-+			cnt++;
-+		} else if (result == SD_ERR_FATAL)
-+			goto exit;
-+		else {
-+			/* Find the bad phase after good phase */
-+			if (pos != -1) {
-+				DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER,
-+					NOT_TO_RAM,
-+					"break output phase is %d\n",
-+					index_phase);
-+				break;
-+			}
-+		}
-+	}
-+
-+	if (!cnt) {
-+		DbgErr("All phase failed when output_tuning!!!\n");
-+		result = SD_ERR_DEVICE_DEGRADE;
-+	} else {
-+		best_output_phase = (pos + (cnt >> 1)) % phase_cnt;
-+		host->cur_output_phase = best_output_phase;
-+		host_set_output_tuning_phase(card->host, best_output_phase);
-+		set_input_tuning_phase(card,
-+				       card->output_input_phase_pair
-+				       [best_output_phase]);
-+
-+		result = SD_SUCCESS;
-+	}
-+
-+exit:
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"best_output_phase 0x%x, output_tuning_result  0x%x\n",
-+		best_output_phase, output_tuning_result);
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Exit %s, result %d\n", __func__, result);
-+	return result;
-+}
-diff --git a/drivers/scsi/bht/card/sd.c b/drivers/scsi/bht/card/sd.c
-new file mode 100644
-index 000000000000..6a21d76945a7
---- /dev/null
-+++ b/drivers/scsi/bht/card/sd.c
-@@ -0,0 +1,3029 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2014 BHT Inc.
-+ *
-+ * File Name: sd.c
-+ *
-+ * Abstract: SD Legacy card initialization
-+ *
-+ * Version: 1.00
-+ *
-+ * Author: Samuel
-+ *
-+ * Environment:	OS Independent
-+ *
-+ * History:
-+ *
-+ * 9/2/2014   Creation    Samuel
-+ */
-+#include "../include/basic.h"
-+#include "../include/cardapi.h"
-+#include "../include/hostapi.h"
-+#include "cardcommon.h"
-+#include "../include/debug.h"
-+#include "../include/cmdhandler.h"
-+#include "../include/host.h"
-+#include "../include/util.h"
-+#include "../include/hostvenapi.h"
-+#include "../host/hostven.h"
-+#include "card_ddr200_support.h"
-+#include "../include/funcapi.h"
-+/* 0: card not support ddr200 mode, 1: support  */
-+u32 sd_card_ddr200_flag;
-+extern bool card_output_tuning(sd_card_t *card, u64 tuning_address);
-+extern bool store_tuning_address_content(sd_card_t *card, u64 tuning_address);
-+extern bool restore_tuning_address_content(sd_card_t *card,
-+					   u64 tuning_address);
-+extern u32 generate_output_input_phase_pair(sd_card_t *card,
-+					    u8 input_fix_phase, u8 ddr200);
-+
-+inline bool uhs1_support(sd_host_t *host)
-+{
-+	bool ret = TRUE;
-+
-+	/* 2. Configuration settings to disable UHSI function */
-+	if (host->cfg->card_item.sd_card_mode_dis.dis_sd30_card)
-+		ret = FALSE;
-+
-+	return ret;
-+
-+}
-+
-+static inline bool need_switch_sig_voltage(sd_card_t *card)
-+{
-+	bool ret = FALSE;
-+	card_info_t *card_info = &(card->info);
-+
-+	if (card->card_type == CARD_UHS2)
-+		goto exit;
-+
-+	/* 1. Check configuration settings
-+	 * BH722SE2LN-A UHS1 issue#3  Sharkbay QS ULT #6 platform, BH driver 10024,
-+	 * set card mode to be SDR25 or SDR12 by registry, but the card is SD2.0 mode.
-+	 * Change to switch voltage when s18a is true.
-+	 */
-+
-+	if (card_info->card_s18a)
-+		ret = TRUE;
-+
-+exit:
-+	return ret;
-+}
-+
-+static inline bool card_support_cmd6(sd_card_t *card)
-+{
-+	bool ret = TRUE;
-+	card_info_t *card_info = &(card->info);
-+	/* 1. SD Memory Card - Spec. Version 1.0 and 1.01 do not support CMD6 */
-+	if (card_info->scr.sd_spec < SCR_SPEC_VER_1)
-+		ret = FALSE;
-+
-+	return ret;
-+}
-+
-+#define  SDHCI_POWER_VDD1_330	0x0E00
-+#define POWER_ON     TRUE
-+#define POWER_OFF    FALSE
-+
-+bool sd_send_if_cond(sd_card_t *card, sd_command_t *sd_cmd, u32 argument)
-+{
-+	byte cmd_index = SD_CMD8;
-+	/* u32 argument = 0x000001AA;   *  VHS set.  2.7-3.6V Check Pattern : 0xAA */
-+	u32 cmdflag = CMD_FLG_R7 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+
-+	if (ret) {
-+		/* Pattern Check */
-+		if ((sd_cmd->response[0] & 0xFF) != 0xAA) {
-+			sd_cmd->err.error_code = ERR_CODE_RESP_ERR;
-+			ret = FALSE;
-+			DbgErr("CMD8 response pattern check failed.");
-+		}
-+	}
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *	static bool sdio_check(sd_card_t *card, sd_command_t *sd_cmd)
-+ *	{
-+ *		byte cmd_index = SD_CMD5;
-+ *		u32 argument = 0;
-+ *		u32 cmdflag = CMD_FLG_R4 | CMD_FLG_RESCHK;
-+ *		e_data_dir dir = DATA_DIR_NONE;
-+ *		byte *data = NULL;
-+ *		u32 datalen = 0;
-+ *		bool ret = FALSE;
-+ *
-+ *		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+ *			__func__);
-+ *
-+ *		ret =
-+ *			card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+ *			data, datalen);
-+ *
-+ *		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+ *			ret, __func__);
-+ *		return ret;
-+ *	}
-+ */
-+
-+/*
-+ *
-+ * Function Name: card_init_ready
-+ *
-+ * Abstract:
-+ *
-+ *			 1. Issue ACMD41 to Get OCR
-+ *            2. Set the card ocr variable
-+ *            3. Wait for card ready.
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *           bool flag_f8: Command 8 is executed correctly.
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+
-+bool card_init_ready(sd_card_t *card, sd_command_t *sd_cmd, bool flag_f8)
-+{
-+	byte cmd_index = SD_CMD41 | SD_APPCMD;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R3;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+	bool ret = FALSE;
-+	loop_wait_t wait;
-+	u32 delay_us = 20;
-+
-+	sd_host_t *host = card->host;
-+	card_info_t *card_info = &(card->info);
-+
-+	/* default is 0 */
-+	card->uhs2_card = FALSE;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Enter %s, flag_f8=%d\n", __func__, flag_f8);
-+
-+	if (flag_f8)
-+		os_udelay(20);
-+
-+	/* 3. Start the card initialization */
-+	/* 3.1 Set argument according to the flag F8 (command 8 executed correctly) */
-+	argument = (1 << fls32(host->ocr_avail));
-+
-+	if (card->card_type != CARD_UHS2) {
-+		if (flag_f8) {
-+			if (uhs1_support(host)) {
-+				/*
-+				 * BH722SE2LN-A UHS1 issue#3  Sharkbay QS ULT #6 platform,
-+				 * BH driver 10024,
-+				 * set card mode to be SDR25 or SDR12 by registry,
-+				 * but the card is SD2.0 mode.
-+				 * Change to send s18R for SDR12/SDR25/SDR50/SDR104.
-+				 */
-+
-+				/* Try to set the HCS/XPC/S18R */
-+				argument |= 0x51000000;
-+			} else {
-+				/* Try to set the HCS */
-+				argument |= 0x40000000;
-+
-+				/* Set XPC */
-+				argument |= BIT28;
-+			}
-+		}
-+	} else {
-+		/* UHS2 case */
-+		/* Set HCS  bit only */
-+		argument |= BIT30;
-+
-+		/* Set XPC */
-+		argument |= BIT28;
-+	}
-+
-+	/* 3.2 Wait for card ready */
-+	util_init_waitloop(card->host->pdx,
-+			   host->cfg->timeout_item.test_card_init_timeout.value,
-+			   delay_us, &wait);
-+
-+	do {
-+		ret =
-+		    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag,
-+				    dir, data, datalen);
-+		if (!ret)
-+			break;
-+
-+		if (flag_f8)
-+			os_udelay(delay_us);
-+
-+		/* Check Busy status. 0b: On initialization; 1b: Initialization Complete. */
-+		if ((sd_cmd->response[0] & 0x80000000) == 0) {
-+			ret = FALSE;
-+			continue;
-+		} else {
-+			/* card is ready */
-+			ret = TRUE;
-+			/* check uhs2 or not */
-+			if ((sd_cmd->response[0] & (1 << 29)) != 0)
-+				card->uhs2_card = TRUE;
-+			break;
-+		}
-+	} while (!util_is_timeout(&wait));
-+
-+	/* 3.3 If card ready, set related software flags */
-+	if (ret) {
-+		/* 3.3.1. Set sd_virt_card OCR */
-+		card_info->card_ccs = (sd_cmd->response[0] & BIT30) >> 30;
-+		if (uhs1_support(host))
-+			card_info->card_s18a =
-+			    (sd_cmd->response[0] & BIT24) >> 24;
-+		else
-+			card_info->card_s18a = 0;
-+
-+	}
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: signal_voltage_switch
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Do Signal Voltage Switch Procedure (UHSI, CMD11)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+
-+static bool signal_voltage_switch(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	byte cmd_index = SD_CMD11;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+	bool ret = FALSE;
-+	sd_host_t *host = card->host;
-+	card_info_t *card_info = &(card->info);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/*
-+	 * 1. If S18A of ACMD41 is se to 0, do not need to switch signal voltage,
-+	 * Exit from this procedure
-+	 */
-+	if (card_info->card_s18a == 0) {
-+		ret = TRUE;
-+		DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"Do not need to switch signal voltage.\n");
-+
-+		goto EXIT;
-+	}
-+
-+	/* 2. Issue CMD11 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+	if (!ret) {
-+		DbgErr("Issue CMD11 failed.\n");
-+		goto EXIT;
-+	}
-+
-+	ret = host_enable_sd_signal18v(host);
-+
-+	/* 3.3V->1.8V OK */
-+	if (ret == FALSE)
-+		goto ERROR;
-+	goto EXIT;
-+
-+ERROR:
-+
-+	/* return to previous status */
-+
-+	host_1_8v_sig_set(host, FALSE);
-+
-+EXIT:
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_get_sdstatus
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Read the SD Status Register (SSR) (ACMD13)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+
-+static bool sd_get_sdstatus(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+
-+	byte cmd_index = SD_CMD13 | SD_APPCMD;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_IN;
-+	u32 datalen = 64;
-+
-+	bool ret = FALSE;
-+	card_info_t *card_info = &(card->info);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* Issue ACMD13 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    &(card_info->raw_ssr[0]), datalen);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_send_cmd35
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Read the SD Status Register (SSR) (CMD13)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+
-+static bool sd_send_cmd35(sd_card_t *card)
-+{
-+
-+	byte cmd_index = SD_CMD35;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_OUT;
-+	sd_command_t sd_cmd;
-+	byte buffer[512] = {
-+		0x10, 0x03,
-+		0x27, 0x86, 0x45, 0xA5, 0x19, 0x40, 0xF2, 0x25,
-+		0x20, 0x47, 0xDF, 0x94, 0xB8, 0x16, 0x13, 0x00,
-+		0x11, 0xF2, 0x1B, 0x4F, 0x23, 0x08, 0x2B, 0x33,
-+		0x21, 0x8C, 0x16, 0x52, 0x6A, 0x1D, 0x89, 0xE3,
-+		0x14, 0x09, 0x53, 0x84, 0x09, 0x47, 0x59, 0x50,
-+		0x57, 0xBB, 0x71, 0x3C, 0x47, 0xA7, 0x2A, 0x46,
-+		0xE2, 0xAF, 0x43, 0x10, 0x44, 0x05, 0x53, 0x7A,
-+		0x79, 0xC3, 0x29, 0xF3, 0x83, 0x45, 0x22, 0x1B,
-+	};
-+	u32 datalen = 512;
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* Issue CMD35 */
-+	ret =
-+	    card_send_sdcmd(card, &sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    buffer, datalen);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_send_cmd34
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Read the SD Status Register (SSR) (CMD13)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+
-+static bool sd_send_cmd34(sd_card_t *card)
-+{
-+
-+	byte cmd_index = SD_CMD34;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_IN;
-+	sd_command_t sd_cmd;
-+	byte buffer[512] = { 0x00, 0x00, };
-+	u32 datalen = 512;
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* Issue CMD34 */
-+	ret =
-+	    card_send_sdcmd(card, &sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    buffer, datalen);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_set_bus_width
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Set Bus Width to 4bit (ACMD6)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+
-+static bool sd_set_bus_width(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+
-+	byte cmd_index = SD_CMD6 | SD_APPCMD;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	argument = BUS_WIDTH_4BIT;
-+
-+	/* Issue ACMD6 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_get_cid
-+ *
-+ * Abstract:
-+ *
-+ *			1.  Addressed card sends its card identification data (CID)
-+ *			on the CMD line (CMD10)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *			sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *			Caller: card_init
-+ */
-+
-+static bool sd_get_cid(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+
-+	byte cmd_index = SD_CMD10;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R2;
-+	e_data_dir dir = DATA_DIR_NONE;
-+	byte *data = NULL;
-+	u32 datalen = 0;
-+	bool ret = FALSE;
-+	card_info_t *card_info = &(card->info);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	argument = card_info->rca << 16;
-+
-+	/* Issue CMD10 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+	if (ret) {
-+		/* Set the card CID info */
-+		os_memcpy(&(card_info->raw_cid[0]), &(sd_cmd->response[0]), 16);
-+		/* Parse the CID info */
-+		card_info->cid.manfid = card_info->raw_cid[0];
-+		card_info->cid.oemid =
-+		    card_info->raw_cid[1] | (card_info->raw_cid[2] << 8);
-+		os_memcpy(card_info->cid.prod_name, &(card_info->raw_cid[3]),
-+			  5);
-+		card_info->cid.prv = card_info->raw_cid[8];
-+		card_info->cid.serial =
-+		    card_info->raw_cid[9] | (card_info->raw_cid[10] << 8) |
-+		    (card_info->raw_cid[11] << 16) | (card_info->raw_cid[12] << 24);
-+	}
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_get_scr
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Read the SD Configuration Register (SCR) (ACMD51)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+
-+static bool sd_get_scr(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+
-+	byte cmd_index = SD_CMD51 | SD_APPCMD;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_IN;
-+	u32 datalen = 8;
-+	bool ret = FALSE;
-+	card_info_t *card_info = &(card->info);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* Issue ACMD51 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    &(card_info->raw_scr[0]), datalen);
-+	if (ret) {
-+		/* Parse the CSD info */
-+		card_info->scr.sd_spec = card_info->raw_scr[0] & 0xF;
-+		card_info->scr.cmd_support = card_info->raw_scr[3] & 0xF;
-+		card_info->scr.sd_spec3 = card_info->raw_scr[2] & 0x80;
-+		card_info->scr.sd_specx =
-+		    (card_info->raw_scr[2] & 0x3) << 2 |
-+			(card_info->raw_scr[3] & 0xc0) >> 6;
-+		card_info->scr.reserved_B0 = card_info->raw_scr[7] & 0xFF;
-+		card_info->scr.reserved_B1 = card_info->raw_scr[6] & 0xFF;
-+	}
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_get_scr
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Read the SD Configuration Register (SCR) (ACMD51)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+
-+/*
-+ *	static bool sd_clear_card_detect(sd_card_t *card)
-+ *	{
-+ *
-+ *		sd_command_t sd_cmd;
-+ *		byte cmd_index = SD_CMD42 | SD_APPCMD;
-+ *		u32 argument = 0;
-+ *		u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+ *		e_data_dir dir = DATA_DIR_NONE;
-+ *		bool ret = FALSE;
-+ *
-+ *		DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+ *			__func__);
-+ *
-+ *		ret =
-+ *			card_send_sdcmd(card, &sd_cmd, cmd_index, argument, cmdflag, dir,
-+ *			NULL, 0);
-+ *		DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+ *			ret, __func__);
-+ *		return ret;
-+ *	}
-+ */
-+
-+/*
-+ *
-+ * Function Name: sd_switch_function_set_am
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Set SD switch function status (Access Mode) (CMD6)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *           byte access_mode: access mode which want be set.
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: sd_switch_function_set
-+ */
-+
-+bool sd_switch_function_set_am(sd_card_t *card,
-+			       sd_command_t *sd_cmd, byte access_mode)
-+{
-+
-+	byte cmd_index = SD_CMD6;
-+	u32 argument = SD_FNC_SW | SD_FNC_G1_INFL;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_IN;
-+	byte data[64];
-+	u32 datalen = 64;
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Enter %s, access_mode=0x%x\n", __func__, access_mode);
-+
-+	if (access_mode == SD_FNC_AM_DDR200)
-+		argument = 0x80FFFFEF;
-+	else
-+		argument |= access_mode;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Set AM to %x, argument=%08X\n", access_mode, argument);
-+
-+	/* Issue CMD6 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_switch_function_set_ds
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Set SD switch function status (Driver Strength) (CMD6)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *           byte driver_strength: driver strength which want be set.
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: sd_switch_function_set
-+ */
-+
-+bool sd_switch_function_set_ds(sd_card_t *card,
-+			       sd_command_t *sd_cmd, byte driver_strength)
-+{
-+
-+	byte cmd_index = SD_CMD6;
-+	u32 argument = SD_FNC_SW | SD_FNC_G3_INFL;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_IN;
-+	byte data[64];
-+	u32 datalen = 64;
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Enter %s, driver_strength=0x%x\n", __func__,
-+		driver_strength);
-+
-+	argument |= driver_strength << 8;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Set Driver Strength to %x, argument=%08X\n", driver_strength,
-+		argument);
-+
-+	/* Issue CMD6 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+static byte card_get_max_am_cap(sd_card_t *card)
-+{
-+	byte max_am_cap = 0;
-+
-+	if (sd_ddr_support(card))
-+		max_am_cap = SD_FNC_AM_DDR200;
-+	else if (card->info.sw_func_cap.sd_access_mode & (1 << SD_FNC_AM_SDR104))
-+		max_am_cap = SD_FNC_AM_SDR104;
-+	else if (card->info.sw_func_cap.sd_access_mode & (1 << SD_FNC_AM_SDR50))
-+		max_am_cap = SD_FNC_AM_SDR50;
-+	else if (card->info.sw_func_cap.sd_access_mode & (1 << SD_FNC_AM_DDR50))
-+		max_am_cap = SD_FNC_AM_DDR50;
-+	else if (card->info.sw_func_cap.sd_access_mode & (1 << SD_FNC_AM_HS))
-+		max_am_cap = SD_FNC_AM_HS;
-+	else if (card->info.sw_func_cap.sd_access_mode & (1 << SD_FNC_AM_DS))
-+		max_am_cap = SD_FNC_AM_DS;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "(%x) %s\n",
-+		max_am_cap, __func__);
-+	return max_am_cap;
-+}
-+
-+static byte card_get_min_am(byte am1, byte am2)
-+{
-+	byte am = 0;
-+
-+	switch (am1) {
-+	case SD_FNC_AM_DDR200:
-+		am = am2;
-+		break;
-+	case SD_FNC_AM_SDR104:
-+		if (am2 == SD_FNC_AM_DDR200)
-+			am = am1;
-+		else
-+			am = am2;
-+		break;
-+	case SD_FNC_AM_SDR50:
-+		if (am2 == SD_FNC_AM_SDR104 || am2 == SD_FNC_AM_DDR200)
-+			am = am1;
-+		else
-+			am = am2;
-+		break;
-+	case SD_FNC_AM_DDR50:
-+		if (am2 == SD_FNC_AM_SDR50 || am2 == SD_FNC_AM_SDR104
-+		    || am2 == SD_FNC_AM_DDR200) {
-+			am = am1;
-+		} else {
-+			am = am2;
-+		}
-+		break;
-+	case SD_FNC_AM_HS:
-+		if (am2 == SD_FNC_AM_DS)
-+			am = am2;
-+		else
-+			am = am1;
-+		break;
-+	case SD_FNC_AM_DS:
-+		am = am1;
-+		break;
-+	default:
-+		break;
-+	}
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "(%x) %s\n", am,
-+		__func__);
-+	return am;
-+}
-+
-+static byte card_power_limit_to_index(u8 pmlimit)
-+{
-+	byte i = 0;
-+	byte power_limit[5] = {
-+		SD_FNC_PL_072W,
-+		SD_FNC_PL_144W,
-+		SD_FNC_PL_180W,
-+		SD_FNC_PL_216W,
-+		SD_FNC_PL_288W
-+	};
-+
-+	for (i = 0; i < 5; i++)
-+		if (power_limit[i] == pmlimit)
-+			return i;
-+
-+	return 0;
-+}
-+
-+bool sd_switch_power_limit(sd_card_t *card, sd_command_t *sd_cmd, bool *bchg)
-+{
-+	bool ret = FALSE;
-+	card_info_t *card_info = &(card->info);
-+	bool high_to_low = TRUE;
-+	byte start;
-+
-+	byte power_limit[5] = {
-+		SD_FNC_PL_072W,
-+		SD_FNC_PL_144W,
-+		SD_FNC_PL_180W,
-+		SD_FNC_PL_216W,
-+		SD_FNC_PL_288W
-+	};
-+	int i;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Enter %s, *bchg= %d\n", __func__, *bchg);
-+
-+	/*
-+	 * 3.1 Get Max Power Limit, default: 2.88W
-+	 * 3.2 check the Max power limit that card support
-+	 * Check order: 2.88W -> 2.16W -> 1.8W -> 1.44W -> 0,72W
-+	 */
-+
-+	start =
-+	    card_power_limit_to_index(card->sw_target_setting.sd_power_limit);
-+	if (start > 4) {
-+		DbgErr("Power Limit settings invalid!");
-+		start = 4;
-+	}
-+
-+	/* start  = i; */
-+	if (card->thermal_enable)
-+		if (card->thermal_heat == 0)
-+			high_to_low = FALSE;
-+
-+	if (high_to_low) {
-+		for (i = start; i >= 0; i--) {
-+			if (card_info->sw_cur_setting.sd_power_limit ==
-+			    power_limit[i] && *bchg == FALSE) {
-+				ret = TRUE;
-+				*bchg = FALSE;
-+				break;
-+			}
-+			/* Check card support or not */
-+			if (card_info->sw_func_cap.sd_power_limit &
-+				(1 << (power_limit[i]))) {
-+				ret =
-+				    sd_switch_function_set_pl(card, sd_cmd,
-+							      power_limit[i]);
-+				if (!ret) {
-+					DbgErr
-+					    ("Set Power Limit to %X Failed.\n",
-+					     power_limit[i]);
-+					goto exit;
-+				}
-+				/* Update the current settings */
-+				card_info->sw_cur_setting.sd_power_limit =
-+				    power_limit[i];
-+				DbgInfo(MODULE_ALL_CARD,
-+					FEATURE_FUNC_THERMAL |
-+					FEATURE_CARD_INIT, NOT_TO_RAM,
-+					"Powerlimit1 index=%d\n", i);
-+				*bchg = TRUE;
-+				break;
-+			}
-+		}
-+	} else {
-+		for (i = 0; i <= start; i++) {
-+			if (card_info->sw_cur_setting.sd_power_limit ==
-+			    power_limit[i] && *bchg == FALSE) {
-+				ret = TRUE;
-+				*bchg = FALSE;
-+				break;
-+			}
-+			/* Check card support or not */
-+			if (card_info->sw_func_cap.sd_power_limit &
-+				(1 << (power_limit[i]))) {
-+				ret =
-+				    sd_switch_function_set_pl(card, sd_cmd,
-+							      power_limit[i]);
-+				if (!ret) {
-+					DbgErr
-+					    ("Set Power Limit to %X Failed.\n",
-+					     power_limit[i]);
-+					goto exit;
-+				}
-+				/* Update the current settings */
-+				card_info->sw_cur_setting.sd_power_limit =
-+				    power_limit[i];
-+				DbgInfo(MODULE_ALL_CARD,
-+					FEATURE_FUNC_THERMAL |
-+					FEATURE_CARD_INIT, NOT_TO_RAM,
-+					"Powerlimit2 index=%d\n", i);
-+				*bchg = TRUE;
-+				break;
-+			}
-+		}
-+	}
-+exit:
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+bool sd_switch_access_mode(sd_card_t *card, sd_command_t *sd_cmd, bool *bchg)
-+{
-+	bool ret = FALSE;
-+	card_info_t *card_info = &(card->info);
-+	byte i;
-+	u32 clock_freq;
-+	u32 regval;
-+
-+	sd_host_t *host = card->host;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Enter %s, *bchg= %d\n", __func__, *bchg);
-+
-+	/* 4.1 Get Max Access Mode of UHSI */
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"card->sw_target_setting.sd_access_mode %d\n",
-+		card->sw_target_setting.sd_access_mode);
-+	card->sw_target_setting.sd_access_mode =
-+	    card_get_min_am(card->sw_target_setting.sd_access_mode,
-+			    (byte) card_get_max_am_cap(card));
-+	i = card->sw_target_setting.sd_access_mode;
-+
-+	while (i >= 0) {
-+		/* Check card support or not */
-+		if (i == SD_FNC_AM_DDR200) {
-+			ret = sd_switch_function_set_am(card, sd_cmd, i);
-+			if (!ret) {
-+				DbgErr("Set Access Mode to %X Failed.\n", i);
-+				i = SD_FNC_AM_SDR104;
-+				continue;
-+			}
-+
-+			/* Update the current settings */
-+			card_info->sw_cur_setting.sd_access_mode = i;
-+			DbgInfo(MODULE_ALL_CARD,
-+				FEATURE_FUNC_THERMAL | FEATURE_CARD_INIT,
-+				NOT_TO_RAM, "Access Mode=%d\n", i);
-+			*bchg = TRUE;
-+			break;
-+		}
-+
-+		if (card_info->sw_func_cap.sd_access_mode & (1 << i)) {
-+			if (card_info->sw_cur_setting.sd_access_mode == i
-+			    && *bchg == FALSE) {
-+				ret = TRUE;
-+				*bchg = FALSE;
-+				goto exit;
-+			}
-+			ret = sd_switch_function_set_am(card, sd_cmd, i);
-+			if (!ret) {
-+				DbgErr("Set Access Mode to %X Failed.\n", i);
-+				goto exit;
-+			}
-+			/* Update the current settings */
-+			card_info->sw_cur_setting.sd_access_mode = i;
-+			DbgInfo(MODULE_ALL_CARD,
-+				FEATURE_FUNC_THERMAL | FEATURE_CARD_INIT,
-+				NOT_TO_RAM, "Access Mode=%d\n", i);
-+			*bchg = TRUE;
-+			break;
-+		}
-+
-+		/* If DDR50 is the target access mode,
-+		 * then the next access mode should be High Speed (1),
-+		 * instead of SDR104 (3)
-+		 */
-+		if (i == SD_FNC_AM_DDR50) {
-+			i = SD_FNC_AM_HS;
-+			continue;
-+		}
-+
-+		i--;
-+	}
-+
-+	/* 5 Set timing accrodingly */
-+	switch (card_info->sw_cur_setting.sd_access_mode) {
-+	case SD_FNC_AM_DDR200:
-+		{
-+			if (card->ddr225_card_flag)
-+				clock_freq = SD_CLK_225M;
-+			else
-+				clock_freq = SD_CLK_200M;
-+
-+			break;
-+		}
-+	case SD_FNC_AM_SDR104:
-+		{
-+			clock_freq = SD_CLK_200M;
-+			break;
-+		}
-+	case SD_FNC_AM_SDR50:
-+		{
-+			clock_freq = SD_CLK_100M;
-+			break;
-+		}
-+	case SD_FNC_AM_SDR25:
-+		{
-+			clock_freq = SD_CLK_50M;
-+			break;
-+		}
-+	case SD_FNC_AM_SDR12:
-+		{
-+			clock_freq = SD_CLK_25M;
-+			break;
-+		}
-+	case SD_FNC_AM_DDR50:
-+		{
-+			clock_freq = SD_CLK_50M;
-+			break;
-+		}
-+	default:
-+		{
-+			clock_freq = SD_CLK_25M;
-+			break;
-+		}
-+	}
-+
-+	if (card_info->sw_cur_setting.sd_access_mode == SD_FNC_AM_DDR50
-+	    || card_info->sw_cur_setting.sd_access_mode == SD_FNC_AM_DDR200) {
-+		card_legacy_change_clock(card, clock_freq, TRUE);
-+	} else {
-+		card_legacy_change_clock(card, clock_freq, FALSE);
-+	}
-+
-+	/*
-+	 * if the switch is successful,set host mode to DDR200
-+	 * host 0x110[17]=1
-+	 */
-+	if (card_info->sw_cur_setting.sd_access_mode == SD_FNC_AM_DDR200) {
-+		regval = sdhci_readl(host, 0x110);
-+		regval |= (1 << 17);
-+		sdhci_writel(host, 0x110, regval);
-+	}
-+
-+	host_set_uhs_mode(host, card_info->sw_cur_setting.sd_access_mode);
-+
-+exit:
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_switch_function_set
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Set SD switch function status
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+
-+bool sd_switch_function_set(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+
-+	bool ret = FALSE;
-+	sd_host_t *host = card->host;
-+	card_info_t *card_info = &(card->info);
-+	bool bchg = TRUE;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* 1. Check the function card supported */
-+
-+	/*
-+	 * 2. Set Driver Strength
-+	 * As default, driver do not set driver strength
-+	 * Only set it when configure driver_strength enabled
-+	 */
-+
-+	if (host->cfg->card_item.test_driver_strength_sel.enable_set) {
-+		byte driver_strength = card->sw_target_setting.sd_drv_type;
-+		/* Do function switch when card support this function */
-+		if ((1 << driver_strength) &
-+		    (card_info->sw_func_cap.sd_drv_type)) {
-+			ret =
-+			    sd_switch_function_set_ds(card, sd_cmd,
-+						      driver_strength);
-+			if (!ret) {
-+				DbgErr("Set driver strength to %X Failed.\n",
-+				       driver_strength);
-+				goto exit;
-+			}
-+			/* Update the current settings */
-+			card_info->sw_cur_setting.sd_drv_type = driver_strength;
-+		}
-+	} else if ((card_info->cid.manfid == 0x1b) && sd_ddr_support(card)) {
-+		/* Driver strength select 3h: Type D */
-+		byte driver_strength = 0x3;
-+
-+		PrintMsg("Samsung DDR200 card need switch DS to type D\n");
-+
-+		ret = sd_switch_function_set_ds(card, sd_cmd, driver_strength);
-+		if (!ret) {
-+			DbgErr("Set driver strength to %X Failed.\n",
-+			       driver_strength);
-+			goto exit;
-+		}
-+		/* Update the current settings */
-+		card_info->sw_cur_setting.sd_drv_type = driver_strength;
-+	} else {
-+		/* do nothing */
-+	}
-+
-+	/* 3. Set Power Limit. */
-+	/* Init case we always do pm setting */
-+	bchg = TRUE;
-+	ret = sd_switch_power_limit(card, sd_cmd, &bchg);
-+	if (!ret) {
-+		DbgErr("Set Power Limit Failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 4. Set Access mode */
-+	/* Init case we always do am setting */
-+	bchg = TRUE;
-+	ret = sd_switch_access_mode(card, sd_cmd, &bchg);
-+	if (!ret) {
-+		DbgErr("Set Access Mode Failed.\n");
-+		goto exit;
-+	}
-+exit:
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_tuning_hw
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Hardware Tuning Procedure (CMD19)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: sd_tuning
-+ */
-+
-+bool sd_tuning_hw(sd_card_t *card, sd_command_t *sd_cmd, u32 timeout)
-+{
-+
-+	byte cmd_index = SD_CMD19;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_TUNE;
-+	e_data_dir dir = DATA_DIR_IN;
-+	byte data[64];
-+	u32 datalen = 64;
-+
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* 1. Set driver HW mode here */
-+	host_set_tuning_mode(card->host, TRUE);
-+	/* add 200us delay before CMD19 to fix FJ2 ASIC issue 14 */
-+	if (card->host->chip_type == CHIP_FUJIN2)
-+		os_udelay(200);
-+
-+	/* 2. Tuning now */
-+	ret =
-+	    card_send_sdcmd_timeout(card, sd_cmd, cmd_index, argument, cmdflag,
-+				    dir, data, datalen, timeout);
-+	if (!ret)
-+		DbgErr(" - SendCommand19 failed during tuning!\n");
-+	else
-+		ret = host_chk_tuning_comp(card->host, TRUE);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_tuning_sw
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Software Tuning Procedure (CMD19)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: sd_tuning
-+ */
-+
-+bool sd_tuning_sw(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	byte cmd_index = SD_CMD19;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_TUNE;
-+	e_data_dir dir = DATA_DIR_IN;
-+	byte data[64];
-+	u32 datalen = 64;
-+	u16 i;
-+
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* Try 100 SW tuning */
-+	for (i = 0; i < 100; i++) {
-+		/* 1. Set driver SW mode here */
-+		host_set_tuning_mode(card->host, FALSE);
-+		/* add 200us delay before CMD19 to fix FJ2 ASIC issue 14 */
-+		if (card->host->chip_type == CHIP_FUJIN2)
-+			os_udelay(200);
-+
-+		/* 2. Tuning now */
-+		ret =
-+		    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag,
-+				    dir, data, datalen);
-+		if (!ret) {
-+			DbgErr("SendCommand19 failed during tuning!\n");
-+			break;
-+		}
-+
-+		ret = host_chk_tuning_comp(card->host, TRUE);
-+		if (ret)
-+			break;
-+
-+	}
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_tuning
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Tuning Procedure (CMD19)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+
-+bool sd_tuning(sd_card_t *card, sd_command_t *sd_cmd, u32 timeout)
-+{
-+	bool ret = FALSE;
-+	card_info_t *card_info = &(card->info);
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (card_info->sw_cur_setting.sd_access_mode < SD_FNC_AM_SDR50) {
-+		/* Only do tuning procedure for DDR50, SDR104, SDR50,DDR200 */
-+		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"No need to do tuning for access mode %d\n",
-+			card_info->sw_cur_setting.sd_access_mode);
-+		ret = TRUE;
-+	} else {
-+		if (TUNING_MODE) {
-+			/* HW tuning */
-+			ret = sd_tuning_hw(card, sd_cmd, timeout);
-+		} else {
-+			ret = sd_tuning_sw(card, sd_cmd);
-+		}
-+
-+	}
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_switch_function_check
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Get SD switch function status (CMD6)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+
-+bool sd_switch_function_check(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+
-+	byte cmd_index = SD_CMD6;
-+	u32 argument = SD_FNC_NOINFL;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_IN;
-+	byte data[64];
-+	u32 datalen = 64;
-+	bool ret = FALSE;
-+	card_info_t *card_info = &(card->info);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* Issue CMD6 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+	if (ret) {
-+		/* Set the card swich function status info */
-+		card_info->sw_func_cap.sd_access_mode = data[13];
-+		card_info->sw_func_cap.sd_command_system = data[10];
-+		card_info->sw_func_cap.sd_drv_type = data[9];
-+		card_info->sw_func_cap.sd_power_limit = data[7];
-+		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"Card Sup AM:%X\n",
-+			card_info->sw_func_cap.sd_access_mode);
-+		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"Card Sup CS:%X\n",
-+			card_info->sw_func_cap.sd_command_system);
-+		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"Card Sup DS:%X\n", card_info->sw_func_cap.sd_drv_type);
-+		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"Card Sup PL:%X\n",
-+			card_info->sw_func_cap.sd_power_limit);
-+	}
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_switch_function_set_pl
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Set SD switch function status (Power Limit) (CMD6)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *           byte driver_strength: driver strength which want be set.
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: sd_switch_function_set
-+ */
-+
-+bool sd_switch_function_set_pl(sd_card_t *card,
-+			       sd_command_t *sd_cmd, byte power_limit)
-+{
-+
-+	byte cmd_index = SD_CMD6;
-+	u32 argument = SD_FNC_SW | SD_FNC_G4_INFL;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_IN;
-+	byte data[64];
-+	u32 datalen = 64;
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Enter %s, power_limit=%d\n", __func__, power_limit);
-+
-+	argument |= (power_limit) << 12;
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Set Power Limit to %x, argument=%08X\n", power_limit,
-+		argument);
-+
-+	/* Issue CMD6 */
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_switch_function_set_pl
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Set SD switch function status (Power Limit) (CMD6)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *           sd_command_t *sd_cmd: Pointer to sd command structure
-+ *           byte driver_strength: driver strength which want be set.
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: sd_switch_function_set
-+ */
-+
-+bool sd_lightning_mode_sw(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+
-+	byte cmd_index = SD_CMD6;
-+	u32 argument = SD_FNC_SW | SD_FNC_G4_INFL;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_IN;
-+	byte data[64];
-+	u32 datalen = 64;
-+	u32 card_status = 0;
-+	bool ret = FALSE;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* 1. Check if lightning mode is enabled or not */
-+	/* Host was set to do not support lightning mode */
-+	goto EXIT;
-+
-+	if (card->info.cid.manfid != MID_SANDISK) {
-+		/* Card is not SanDisk Card */
-+		goto EXIT;
-+	}
-+
-+	/* 2. Set card to vendor specific mode */
-+	{
-+		cmd_index = SD_CMD6;
-+		argument = SD_FNC_SW | SD_FNC_G2_VEN;
-+		cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+		dir = DATA_DIR_IN;
-+		datalen = 64;
-+		/* Issue CMD6 */
-+		ret =
-+		    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag,
-+				    dir, data, datalen);
-+		if (ret == FALSE) {
-+			DbgErr(("Set Vendor Specific mode failed!\n"));
-+
-+			goto EXIT;
-+		}
-+	}
-+
-+	/* 3. Send CMD13 */
-+	ret = card_get_card_status(card, sd_cmd, &card_status);
-+	if (ret == FALSE) {
-+		DbgErr(("Send Status error(CMD13)\n"));
-+
-+		goto EXIT;
-+	}
-+
-+	/* 4. Send CMD35 */
-+	ret = sd_send_cmd35(card);
-+	if (ret == FALSE) {
-+		DbgErr(("Send Status error(CMD13)\n"));
-+
-+		goto EXIT;
-+	}
-+
-+	/* Send CMD34 */
-+	ret = sd_send_cmd34(card);
-+	if (ret == FALSE) {
-+		DbgErr(("Send Status error(CMD13)\n"));
-+
-+		goto EXIT;
-+	}
-+
-+	/* Delay */
-+	os_mdelay(1);
-+
-+EXIT:
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		ret, __func__);
-+	return ret;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_card_identify
-+ *
-+ * Abstract:
-+ *
-+ *			 1. Issue reset command (CMD0)
-+ *            2. Issue send IF condition command (CMD8)
-+ *            3. SDIO swithch function supportted?
-+ *            4. Wait for card ready (ACMD41)
-+ *            5. Signal voltage switch prucedure (CMD11)
-+ *            6. Get card CID(CMD2)
-+ *            7. Get card relative address (CMD3)
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: sd_legacy_init, ush2_card_init
-+ */
-+
-+bool sd_card_identify(sd_card_t *card)
-+{
-+	bool result = FALSE;
-+	bool flag_f8 = FALSE;
-+	sd_command_t sd_cmd;
-+	u32 argument = 0x000001AA;
-+
-+	card->uhs2_card = FALSE;
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	os_memset(&sd_cmd, 0, sizeof(sd_command_t));
-+
-+	if (card->card_type != CARD_UHS2)
-+		os_udelay(200);
-+
-+	/* 1. Issue reset command (CMD0) */
-+
-+	result = card_reset_card(card, &sd_cmd);
-+	if (!result) {
-+		/* Go Idle State command failed. exit directly. */
-+		DbgErr("Reset Card (CMD0) Failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 2. Issue send IF condition command (CMD8) */
-+	result = sd_send_if_cond(card, &sd_cmd, argument);
-+	if (!result) {
-+
-+		/* 2.1 Error response */
-+		if (sd_cmd.err.error_code == ERR_CODE_RESP_ERR ||
-+		    sd_cmd.err.error_code == ERR_CODE_NO_CARD) {
-+			DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"CMD8 Response Error or no card.\n");
-+			goto exit;
-+		}
-+
-+		/* 2.2 No Response  (Standard Capacity Card) */
-+		{
-+			DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"CMD8 No Responser.\n");
-+
-+			/* 2.2.1 Set flag F8 = 0 */
-+			flag_f8 = FALSE;
-+#if (0)
-+			card->card_cap_type = CARD_SDSC_V1;
-+#endif
-+			/* 2.2.2 Reset card (CMD0) again. */
-+			result = card_reset_card(card, &sd_cmd);
-+			if (!result) {
-+				/* Go Idle State command failed. exit directly. */
-+				DbgErr("Reset Card Again (CMD0) Failed.\n");
-+				goto exit;
-+			}
-+		}
-+	} else {
-+		/* 2.3 Good Response  (High Capacity card) */
-+		/* 2.3.1 Set flag F8 = 1 */
-+		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"CMD8 Good Responser (High Capacity Card).\n");
-+
-+		flag_f8 = TRUE;
-+	}
-+
-+	/* 3. SDIO swithch function supportted? */
-+#if (0)
-+	/* RTU_OK */
-+	if ((card->card_type != CARD_SD) && (card->card_type != CARD_UHS2)) {
-+		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"SDIO swithch function supportted.\n");
-+
-+		/* 3.1 issue CMD5 to check card is SDIO card or not */
-+		result = sdio_check(card, &sd_cmd);
-+		if (result == TRUE) {
-+			/* 3.1.1 set card type to SDIO_CARD */
-+			card->card_type = CARD_SDIO;
-+			DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"SDIO card.\n");
-+			/* 3.1.3 Return failed */
-+			result = FALSE;
-+			goto exit;
-+		}
-+	}
-+#endif
-+
-+	/* 4. Wait for card ready (ACMD41) */
-+	result = card_init_ready(card, &sd_cmd, flag_f8);
-+	if (!result) {
-+		/*
-+		 * 4.1 Return failed for following cases:
-+		 * - OCR check fail,
-+		 * - or command timeout,
-+		 * - or command55 fail,
-+		 * - or ACMD41 response error
-+		 */
-+		DbgErr("Wait for card ready (ACMD41) Failed.\n");
-+		goto exit;
-+	}
-+
-+	/* Try to init as SD Legacy card */
-+	if (card->card_type != CARD_UHS2)
-+		card->card_type = CARD_SD;
-+
-+	/* 5. Signal voltage switch prucedure (CMD11) */
-+	if (need_switch_sig_voltage(card)) {
-+		DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"Need to do signal voltage switch.\n");
-+
-+		result = signal_voltage_switch(card, &sd_cmd);
-+		if (!result) {
-+			/*
-+			 * 5.1 If signal voltage switch failed,
-+			 * need return failed for power cycle.
-+			 */
-+			DbgErr("Signal voltage switch failed.\n");
-+			goto exit;
-+		}
-+	}
-+
-+	/* 6. Get card CID(CMD2) */
-+	result = card_all_send_cid(card, &sd_cmd);
-+	if (!result) {
-+		/* 6.1 If failed, need return failed for power cycle. */
-+		DbgErr("Get card CID(CMD2) failed.\n");
-+		goto exit;
-+	}
-+
-+	/* 7. Get card relative address (CMD3) */
-+	result = card_get_rca(card, &sd_cmd);
-+	if (!result) {
-+		/* 7.1 If failed, need return failed for power cycle. */
-+		DbgErr("Get card relative address (CMD3) failed.\n");
-+		goto exit;
-+	}
-+
-+exit:
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_card_select
-+ *
-+ * Abstract:
-+ *
-+ *           1. Get CID (CMD10)
-+ *           2. Get CSD (CMD9)
-+ *           3. Select the card (CMD7)
-+ *           4. Get Lock/Unlock status, CMD7 Response [25].
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: sd_legacy_init, ush2_card_init
-+ */
-+
-+bool sd_card_select(sd_card_t *card)
-+{
-+	bool result = FALSE;
-+	sd_command_t sd_cmd;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	os_memset(&sd_cmd, 0, sizeof(sd_command_t));
-+
-+	if (card_need_get_info(card)) {
-+		/* 1.1 Get CID (CMD10) */
-+		result = sd_get_cid(card, &sd_cmd);
-+		if (!result) {
-+			DbgErr("Get CID (CMD10) failed.\n");
-+			goto exit;
-+		}
-+
-+		/* 1.2 Get CSD (CMD9) */
-+		result = card_get_csd(card, &sd_cmd);
-+		if (!result) {
-+			DbgErr("Get CSD (CMD9) failed.\n");
-+			goto exit;
-+		}
-+	} else {
-+		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"Already get card info, skip getting CID,CSD.\n");
-+	}
-+
-+	/* 2. Select the card (CMD7) */
-+	result = card_select_card(card, &sd_cmd);
-+	if (!result) {
-+		/* 2.1 If failed, need return failed for power cycle. */
-+		DbgErr("Select card (CMD7) failed.\n");
-+		goto exit;
-+	}
-+
-+exit:
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+
-+}
-+
-+bool sd_init_get_info(sd_card_t *card)
-+{
-+	bool result = TRUE;
-+	sd_command_t sd_cmd;
-+	sd_host_t *host = card->host;
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	os_memset(&sd_cmd, 0, sizeof(sd_command_t));
-+
-+	/* 11. Set bus width */
-+	/* uhs2 card don't need this flow */
-+	if (card->card_type == CARD_SD) {
-+		/* 11.1 Set card bus width (ACMD6) */
-+		result = sd_set_bus_width(card, &sd_cmd);
-+		if (!result) {
-+			/* 11.1 If failed, need return failed for power cycle. */
-+			DbgErr("Set card bus width (ACMD6) failed.\n");
-+			goto exit;
-+		}
-+
-+		/* 11.2 Set Host bus width */
-+		host_set_buswidth(host, BUS_WIDTH4);
-+
-+		/* 12. Set block length (CMD16) */
-+		result = card_set_block_len(card, &sd_cmd, SD_BLOCK_LEN);
-+		if (!result) {
-+			/* 12.1 If failed, need return failed for power cycle. */
-+			DbgErr("Set block length (CMD16) failed.\n");
-+			goto exit;
-+		}
-+	}
-+
-+	/* 13. Get card related info, like CID,CSD, SCR, SD_Status */
-+	if (card_need_get_info(card)) {
-+		/* 13.3 Get SCR (ACMD51) */
-+		result = sd_get_scr(card, &sd_cmd);
-+		if (!result) {
-+			DbgErr("Get SCR (ACMD51) failed.\n");
-+			goto exit;
-+		}
-+		/* 13.4 Get SD Status (ACMD13) */
-+		result = sd_get_sdstatus(card, &sd_cmd);
-+		if (!result) {
-+			DbgErr("Get SD Status (ACMD13) failed.\n");
-+			goto exit;
-+		}
-+	} else {
-+		DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"Already get card info, skip getting SCR, SD_Status.\n");
-+	}
-+
-+exit:
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+bool sd_init_stage2(sd_card_t *card)
-+{
-+	bool result = FALSE;
-+	sd_host_t *host = card->host;
-+	cfg_item_t *cfg_item = card->host->cfg;
-+	card_info_t *card_info = &(card->info);
-+	sd_command_t sd_cmd;
-+	u8 tuning_type = 0;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	os_memset(&sd_cmd, 0, sizeof(sd_command_t));
-+
-+	if (host->chip_type != CHIP_GG8) {
-+		/* 1. Set SD Host Clock to 25MHz */
-+		card_legacy_change_clock(card, SD_CLK_25M, FALSE);
-+		DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"Set SD Host Clock to 25MHz.\n");
-+	} else
-+		os_mdelay(15);
-+
-+	result = sd_init_get_info(card);
-+	if (!result) {
-+		DbgErr("SD Card get info failed\n");
-+		goto exit;
-+	}
-+#if (0)
-+	/* Turns Off the Pull-up resistor of the SD Card */
-+	result = sd_clear_card_detect(card);
-+	if (!result) {
-+		DbgErr
-+		    ("Turns Off the Pull-up resistor of the SD Card failed\n");
-+		goto exit;
-+	}
-+#endif
-+
-+	if (card->restore_tuning_content_fail) {
-+		result =
-+		    restore_tuning_address_content(card,
-+						   card->sec_count -
-+						   TUNING_ADDRESS_OFFSET);
-+		if (!result) {
-+			DbgErr("restore_tuning_address_content failed\n");
-+			card->restore_tuning_content_fail = 1;
-+			goto exit;
-+		}
-+	}
-+
-+	/* 2. Need to clear High Speed Enable */
-+	host_set_highspeed(host, FALSE);
-+
-+	/* 3. Swich function check/set */
-+	if (card_info->scr.sd_spec < SCR_SPEC_VER_1) {
-+		result = TRUE;
-+		card->sw_target_setting.sd_access_mode = SD_FNC_AM_DS;
-+		if (host->chip_type == CHIP_GG8) {
-+			/* 1. Set SD Host Clock to 25MHz */
-+			card_legacy_change_clock(card, SD_CLK_25M, FALSE);
-+			DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"Set SD Host Clock to 25MHz.\n");
-+		}
-+		goto exit;
-+	} else if (!(card_info->card_s18a)) {
-+		card->sw_target_setting.sd_access_mode =
-+		    os_min(card->sw_target_setting.sd_access_mode,
-+			   SD_FNC_AM_HS);
-+		if (card_need_get_info(card)) {
-+			/* 3.1. Check if card support Hight Speed. */
-+			result = sd_switch_function_check(card, &sd_cmd);
-+			if (!result) {
-+				DbgErr("Swich function check (CMD6) failed.\n");
-+				goto exit;
-+			}
-+		} else {
-+			DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"Card function check skipped.\n");
-+		}
-+
-+		DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"Card support High Speed.\n");
-+
-+		if ((card->info.sw_func_cap.sd_access_mode & (1 << SD_FNC_AM_HS))
-+		    && (card->sw_target_setting.sd_access_mode >= SD_FNC_AM_HS)) {
-+			result =
-+			    sd_switch_function_set_am(card, &sd_cmd,
-+						      SD_FNC_AM_HS);
-+			if (!result) {
-+				DbgErr
-+				    ("Set Access Mode to High Speed Failed.\n");
-+				goto exit;
-+			}
-+			DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"Switch to High Speed OK.\n");
-+			if (host->chip_type == CHIP_GG8) {
-+				/* 1. Set SD Host Clock to 25MHz */
-+				card_legacy_change_clock(card, SD_CLK_25M,
-+							 FALSE);
-+				DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT,
-+					NOT_TO_RAM,
-+					"Set SD Host Clock to 25MHz.\n");
-+			}
-+
-+			/* 3.2. Update the current settings */
-+			card_info->sw_cur_setting.sd_access_mode = SD_FNC_AM_HS;
-+			/* 3.3. Need to set High Speed Enable */
-+			host_set_highspeed(host, TRUE);
-+
-+			/* 4. Check Lighting card support */
-+			result = sd_lightning_mode_sw(card, &sd_cmd);
-+			if (result == TRUE) {
-+				DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT,
-+					NOT_TO_RAM,
-+					"Card support Lighting mode, change clock to 75MHz.\n");
-+				/* 4.1. Change the clock to 75MHz */
-+				card_legacy_change_clock(card, SD_CLK_75M,
-+							 FALSE);
-+			} else {
-+				DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT,
-+					NOT_TO_RAM, "Change clock to 50MHz.\n");
-+				/* 4.2. Change the clock to 50MHz */
-+				card_legacy_change_clock(card, SD_CLK_50M,
-+							 FALSE);
-+			}
-+			result = TRUE;
-+		} else {
-+			/*
-+			 * Degrade access mode to Default Speed case.
-+			 * Need to switch access mode to Default Speed
-+			 * as card default AM is High Speed.
-+			 */
-+			result =
-+			    sd_switch_function_set_am(card, &sd_cmd,
-+						      SD_FNC_AM_DS);
-+			if (!result) {
-+				DbgErr
-+				    ("Set Access Mode to Default Speed Failed.\n");
-+				goto exit;
-+			}
-+			DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"Switch to Default Speed OK.\n");
-+
-+		}
-+
-+	} else {
-+
-+		if (card_need_get_info(card)) {
-+
-+			/* 5.1 Swich function check first to get card function capabilities */
-+			result = sd_switch_function_check(card, &sd_cmd);
-+			if (!result) {
-+				DbgErr("Swich function check (CMD6) failed.\n");
-+				goto exit;
-+			}
-+		} else {
-+			DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"Card function check skipped.\n");
-+		}
-+
-+		if ((card_get_max_am_cap(card) >= SD_FNC_AM_SDR50)
-+		    && (cfg_item->card_item.test_max_access_mode.value >= 0x2))
-+			result =
-+			    store_tuning_address_content(card,
-+							 card->sec_count -
-+							 TUNING_ADDRESS_OFFSET);
-+		else
-+			/* SD2.0 card shall not store tuning  */
-+			result = FALSE;
-+
-+		if (!result) {
-+			DbgErr("store_tuning_address_contento failed\n");
-+			/* goto exit; */
-+		}
-+
-+		/*
-+		 * 5.2 Swich function check set.
-+		 * - Driver Strength,
-+		 * - Access Mode,
-+		 * - Power Limit
-+		 * - Change clock freq
-+		 */
-+
-+		result = sd_switch_function_set(card, &sd_cmd);
-+		if (!result) {
-+			DbgErr("Swich function set (CMD6) failed.\n");
-+			goto exit;
-+		}
-+
-+		tuning_type =
-+		    hostven_tuning_type_selection(host,
-+						  card_info->sw_cur_setting.sd_access_mode);
-+
-+		/* 5.3 Tuning Procedure (for DDR200, SDR104 and SDR50 Only) */
-+		if (card->info.sw_cur_setting.sd_access_mode == SD_FNC_AM_SDR104
-+		    || card->info.sw_cur_setting.sd_access_mode ==
-+		    SD_FNC_AM_SDR50
-+		    || card->info.sw_cur_setting.sd_access_mode ==
-+		    SD_FNC_AM_DDR200) {
-+			switch (tuning_type) {
-+			case 0:
-+				hostven_fix_output_tuning(host,
-+							  card_info->sw_cur_setting.sd_access_mode);
-+				break;
-+			case 1:
-+				hostven_fix_output_tuning(host,
-+							  card_info->sw_cur_setting.sd_access_mode);
-+				result = sd_tuning(card, &sd_cmd, 0);
-+				if (!result) {
-+					DbgErr("Tuning (CMD19) failed.\n");
-+					goto exit;
-+				}
-+				break;
-+			case 2:
-+				result =
-+				    card_output_tuning(card,
-+						       card->sec_count -
-+						       TUNING_ADDRESS_OFFSET);
-+				if (!result) {
-+					DbgErr("card_output_tuning failed.\n");
-+					card->restore_tuning_content_fail = 1;
-+					goto exit;
-+				}
-+
-+				if (card->read_signal_block_flag) {
-+					result =
-+					    restore_tuning_address_content(card,
-+									   card->sec_count
-+									   -
-+									   TUNING_ADDRESS_OFFSET);
-+					if (!result) {
-+						DbgErr
-+						    ("restore_tuning_address_content failed\n");
-+						card->restore_tuning_content_fail
-+						    = 1;
-+						goto exit;
-+					}
-+				} else {
-+					erase_rw_blk_start_set(card, &sd_cmd,
-+							       (u32)
-+							       (card->sec_count)
-+							       -
-+							       TUNING_ADDRESS_OFFSET);
-+					erase_rw_blk_end_set(card, &sd_cmd,
-+							     ((u32)
-+							      (card->sec_count)
-+							      -
-+							      TUNING_ADDRESS_OFFSET)
-+							     + 1);
-+					func_erase(card, &sd_cmd);
-+				}
-+
-+				break;
-+			default:
-+				break;
-+			}
-+
-+			DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+				"Tuning Procedure Done. Access Mode=%d.\n",
-+				card_info->sw_cur_setting.sd_access_mode);
-+		}
-+
-+	}
-+exit:
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
-+		result, __func__);
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_legacy_init
-+ *
-+ * Abstract:
-+ *
-+ *			 1. sd legacy card (uhs1, legacy) initialize main function.
-+ *            2. Fill virtual card structure, like cid, csd, etc.
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *           Caller: card_init
-+ */
-+
-+bool sd_legacy_init(sd_card_t *card)
-+{
-+	bool result = FALSE;
-+	sd_host_t *host = card->host;
-+
-+	card->uhs2_card = FALSE;
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (shift_bit_func_enable(host))
-+		set_pattern_value(host, 0x10);
-+
-+	host_sd_init(host);
-+
-+	/* SD Card Identification */
-+	result = sd_card_identify(card);
-+	if (!result) {
-+		DbgErr("SD Card Identification Stage failed.\n");
-+		goto error_exit;
-+	}
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Card Identification Stage OK.\n");
-+
-+	/* SD Card Select and lock/unlock check */
-+	result = sd_card_select(card);
-+	if (!result) {
-+		DbgErr("SD Card Select failed.\n");
-+		goto error_exit;
-+	}
-+
-+	if (card->locked == TRUE) {
-+		DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+			"Card is Locked.\n");
-+		goto next;
-+	}
-+
-+	result = card_init_stage2(card);
-+	if (!result) {
-+		DbgErr("SD init stage 2 failed.\n");
-+		goto error_exit;
-+	}
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Card Init Stage 2 OK.\n");
-+
-+next:
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(OK) %s\n",
-+		__func__);
-+	return result;
-+
-+error_exit:
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Exit(FAIL) %s\n", __func__);
-+	return result;
-+}
-+
-+static byte sd_get_lower_am(sd_card_t *card, byte access_mode)
-+{
-+	cfg_item_t *cfg = card->host->cfg;
-+	byte lower_am = 0;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT | FEATURE_ERROR_RECOVER,
-+		NOT_TO_RAM, "Enter %s, access_mode=%d\n", __func__,
-+		access_mode);
-+
-+	/* Degrade access mode according to current access mode. */
-+	switch (access_mode) {
-+	case SD_FNC_AM_DDR200:
-+		lower_am =
-+		    card_get_min_am((byte) cfg->card_item.test_max_access_mode.value,
-+				    (byte) card_get_max_am_cap(card));
-+		break;
-+	case SD_FNC_AM_SDR104:
-+		/* Degrade to SDR50 directly */
-+		lower_am = SD_FNC_AM_SDR50;
-+		break;
-+	case SD_FNC_AM_SDR50:
-+		if ((cfg->card_item.test_max_access_mode.value == SD_FNC_AM_DDR50)
-+		    && (card->info.sw_func_cap.sd_access_mode &
-+			(1 << SD_FNC_AM_DDR50))) {
-+			/*
-+			 * Max Access mode is DDR50 and card support DD50,
-+			 * then can be degrade to DDR50
-+			 */
-+			lower_am = SD_FNC_AM_DDR50;
-+		} else {
-+			/* Degrade to High Speed */
-+			lower_am = SD_FNC_AM_HS;
-+		}
-+		break;
-+	case SD_FNC_AM_DDR50:
-+		/* Degrade to High Speed directly */
-+		lower_am = SD_FNC_AM_HS;
-+		break;
-+	case SD_FNC_AM_HS:
-+		/* Degrade to Default Speed directly */
-+		lower_am = SD_FNC_AM_DS;
-+		break;
-+	default:
-+		lower_am = SD_FNC_AM_DS;
-+		break;
-+	}
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT | FEATURE_ERROR_RECOVER,
-+		NOT_TO_RAM, "Exit(%d) %s\n", lower_am, __func__);
-+	return lower_am;
-+}
-+
-+static byte sd_get_higher_am(sd_card_t *card, byte access_mode)
-+{
-+	cfg_item_t *cfg = card->host->cfg;
-+	byte higher_am = 0;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT | FEATURE_ERROR_RECOVER,
-+		NOT_TO_RAM, "Enter %s, access_mode=%d\n", __func__,
-+		access_mode);
-+
-+	/* get higher access mode. */
-+	switch (access_mode) {
-+	case SD_FNC_AM_DDR200:
-+		higher_am = SD_FNC_AM_DDR200;
-+		break;
-+	case SD_FNC_AM_SDR104:
-+		/* Keep SDR104 */
-+		if (sd_ddr_support(card)
-+		    && (cfg->card_item.test_max_access_mode.value ==
-+			SD_FNC_AM_SDR104))
-+			higher_am = SD_FNC_AM_DDR200;
-+		else
-+			higher_am = SD_FNC_AM_SDR104;
-+
-+		break;
-+	case SD_FNC_AM_SDR50:
-+		if ((cfg->card_item.test_max_access_mode.value ==
-+		     SD_FNC_AM_SDR104)
-+		    && card->info.sw_func_cap.sd_access_mode &
-+			(1 << SD_FNC_AM_SDR104)) {
-+			/* SDR104 */
-+			higher_am = SD_FNC_AM_SDR104;
-+		} else {
-+			/* SDR50 */
-+			higher_am = SD_FNC_AM_SDR50;
-+		}
-+		break;
-+	case SD_FNC_AM_DDR50:
-+		/* Degrade to High Speed directly */
-+		if ((cfg->card_item.test_max_access_mode.value ==
-+		     SD_FNC_AM_SDR50)
-+		    && card->info.sw_func_cap.sd_access_mode &
-+			(1 << SD_FNC_AM_SDR50)) {
-+			/* SDR50 is higher level access mode of DDR50 */
-+			higher_am = SD_FNC_AM_SDR50;
-+		} else {
-+			/* No change */
-+			higher_am = SD_FNC_AM_DDR50;
-+		}
-+		break;
-+	case SD_FNC_AM_HS:
-+		/* Degrade to Default Speed directly */
-+		if ((cfg->card_item.test_max_access_mode.value ==
-+		     SD_FNC_AM_DDR50)
-+		    && card->info.sw_func_cap.sd_access_mode &
-+			(1 << SD_FNC_AM_DDR50)) {
-+			/* DDR50 supported, then it is higher level access mode of High Speed. */
-+			higher_am = SD_FNC_AM_DDR50;
-+		} else if ((cfg->card_item.test_max_access_mode.value ==
-+			 SD_FNC_AM_SDR50)
-+			&& card->info.sw_func_cap.sd_access_mode &
-+			(1 << SD_FNC_AM_SDR50)) {
-+			/*
-+			 * DDR50 do not supported,
-+			 * then SDR50 is the higher level access mode of High Speed.
-+			 */
-+			higher_am = SD_FNC_AM_SDR50;
-+		} else {
-+			/* No change */
-+			higher_am = SD_FNC_AM_HS;
-+		}
-+		break;
-+	case SD_FNC_AM_DS:
-+		if ((cfg->card_item.test_max_access_mode.value == SD_FNC_AM_HS)
-+		    && card->info.sw_func_cap.sd_access_mode &
-+			(1 << SD_FNC_AM_HS)) {
-+			/* High Speed is the higher level access mode of Default Speed. */
-+			higher_am = SD_FNC_AM_HS;
-+		} else {
-+			/* No change */
-+			higher_am = SD_FNC_AM_DS;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_CARD_INIT | FEATURE_ERROR_RECOVER,
-+		NOT_TO_RAM, "Exit(%d) %s\n", higher_am, __func__);
-+	return higher_am;
-+}
-+
-+/*
-+ * Function Name: sd_degrade_policy
-+ *
-+ * Abstract: This Function is used set sd degrade flag
-+ *
-+ * Input:
-+ * sd_card_t *card : The Command will send to which  Card
-+
-+ * Return value:
-+ */
-+void sd_degrade_policy(sd_card_t *card)
-+{
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	if (card->info.sw_cur_setting.sd_access_mode == SD_FNC_AM_SDR50 ||
-+	    card->info.sw_cur_setting.sd_access_mode == SD_FNC_AM_SDR104 ||
-+	    card->info.sw_cur_setting.sd_access_mode == SD_FNC_AM_DDR200) {
-+		/* If Access Mode >= SDR50, then try to degrade freq first */
-+		if (card->degrade_freq_level < CARD_DEGRADE_FREQ_TIMES) {
-+			/* Degrade freq less than 3 times, continue to degrade freq */
-+			card->degrade_freq_level++;
-+		} else {
-+			/* As degrade mode is needed, clear the degrade freq level. */
-+			card->degrade_freq_level = 0;
-+
-+			/* Degrade freq larger than 3 times, then degrade accessmode */
-+			card->sw_target_setting.sd_access_mode =
-+			    sd_get_lower_am(card,
-+					    card->sw_target_setting.sd_access_mode);
-+			/* If Degrade to Default Speed already. Mark as degrade final */
-+			if (card->sw_target_setting.sd_access_mode ==
-+			    SD_FNC_AM_DS) {
-+				card->degrade_final = 1;
-+			}
-+		}
-+	} else {
-+		/* As degrade mode is needed, clear the degrade freq level. */
-+		card->degrade_freq_level = 0;
-+
-+		/* If Access Mode < SDR50, then degrade access mode directly */
-+		card->sw_target_setting.sd_access_mode =
-+		    sd_get_lower_am(card,
-+				    card->sw_target_setting.sd_access_mode);
-+		/* If Degrade to Default Speed already. Mark as degrade final */
-+		if (card->sw_target_setting.sd_access_mode == SD_FNC_AM_DS)
-+			card->degrade_final = 1;
-+
-+	}
-+
-+	DbgErr("Legacy SD degrade target=%d freq_level=%d final=%d\n",
-+	       card->sw_target_setting.sd_access_mode, card->degrade_freq_level,
-+	       card->degrade_final);
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+}
-+
-+/*
-+ * Function Name: uhs2_thermal_control
-+ * Abstract: This Function is used to do card thremal control, only for SD and UHS2 card
-+ *
-+ * Input:
-+ *			sd_card_t *card
-+ *
-+ * Return value:
-+ *			TRUE: means ok
-+ *			others means error occur, caller need do error recovery
-+ *
-+ * Notes:
-+ *			run in thread context
-+ */
-+
-+bool sd_thermal_control(sd_card_t *card)
-+{
-+	bool bheat = (bool)card->thermal_heat;
-+	sd_command_t sd_cmd;
-+	bool result = TRUE;
-+	bool change_am = FALSE;
-+	byte am = 0;
-+	bool bchg = FALSE;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_FUNC_THERMAL, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* 2.0 Card don't do thermal control */
-+	if (card->info.card_s18a == 0
-+	    || card->host->cfg->card_item.sd_card_mode_dis.dis_sd30_card)
-+		goto exit;
-+
-+	if (bheat) {
-+		am = sd_get_higher_am(card,
-+				      card->info.sw_cur_setting.sd_access_mode);
-+	} else {
-+		am = sd_get_lower_am(card,
-+				     card->info.sw_cur_setting.sd_access_mode);
-+	}
-+
-+	/* If one access mode need tuning and another don't need we can't change */
-+	if (am == card->info.sw_cur_setting.sd_access_mode) {
-+		change_am = FALSE;
-+	} else if (am == SD_FNC_AM_SDR50 || am == SD_FNC_AM_SDR104
-+		   || am == SD_FNC_AM_DDR200) {
-+		if (card->info.sw_cur_setting.sd_access_mode == SD_FNC_AM_SDR50
-+		    || card->info.sw_cur_setting.sd_access_mode ==
-+		    SD_FNC_AM_DDR200
-+		    || card->info.sw_cur_setting.sd_access_mode ==
-+		    SD_FNC_AM_SDR104)
-+			change_am = TRUE;
-+		else if (am != SD_FNC_AM_SDR50 && am != SD_FNC_AM_SDR104
-+			 && am != SD_FNC_AM_DDR200)
-+			if (card->info.sw_cur_setting.sd_access_mode !=
-+			    SD_FNC_AM_SDR50
-+			    && card->info.sw_cur_setting.sd_access_mode !=
-+			    SD_FNC_AM_SDR104
-+			    && card->info.sw_cur_setting.sd_access_mode !=
-+			    SD_FNC_AM_DDR200)
-+				change_am = TRUE;
-+	}
-+/* next: */
-+	if (change_am) {
-+		card->thermal_access_mode = am;
-+		DbgInfo(MODULE_SD_CARD, FEATURE_FUNC_THERMAL, NOT_TO_RAM,
-+			"thermal switch  am = %d\n", am);
-+		result = card_stop_infinite(card, TRUE, NULL);
-+		if (result == FALSE) {
-+			DbgErr("uhs2 Thermal Stop Infinite failed1\n");
-+			goto exit;
-+		}
-+
-+		result = sd_switch_access_mode(card, &sd_cmd, &bchg);
-+		if (result == FALSE)
-+			goto exit;
-+
-+		if (card->info.sw_cur_setting.sd_access_mode == SD_FNC_AM_SDR104
-+		    || card->info.sw_cur_setting.sd_access_mode ==
-+		    SD_FNC_AM_SDR50
-+		    || card->info.sw_cur_setting.sd_access_mode ==
-+		    SD_FNC_AM_DDR200) {
-+
-+			if (bchg)
-+				result = sd_tuning(card, &sd_cmd, 0);
-+			if (!result) {
-+				DbgErr("Tuning failed for thermal control.\n");
-+				goto exit;
-+			}
-+		}
-+	}
-+
-+	if (bchg == FALSE) {
-+		DbgInfo(MODULE_SD_CARD, FEATURE_FUNC_THERMAL, NOT_TO_RAM,
-+			"thermal switch pm heatup = %d\n", card->thermal_heat);
-+		result = card_stop_infinite(card, TRUE, NULL);
-+		if (result == FALSE) {
-+			DbgErr("uhs2 Thermal Stop Infinite failed1\n");
-+			goto exit;
-+		}
-+		result = sd_switch_power_limit(card, &sd_cmd, &bchg);
-+	}
-+
-+	if (result == TRUE && bchg)
-+		host_cmddat_line_reset(card->host);
-+
-+exit:
-+	DbgInfo(MODULE_SD_CARD, FEATURE_FUNC_THERMAL, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+	return result;
-+
-+}
-+
-+static u8 sd_adjust_tuning(sd_card_t *card, u32 input_n1, u32 output_n1)
-+{
-+	u8 result = TRUE;
-+	sd_command_t sd_cmd;
-+	sd_host_t *host = card->host;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	hostven_set_tuning_phase(host, input_n1, output_n1, FALSE);
-+
-+	if (card->info.sw_cur_setting.sd_access_mode == SD_FNC_AM_SDR104 ||
-+	    card->info.sw_cur_setting.sd_access_mode == SD_FNC_AM_SDR50 ||
-+	    card->info.sw_cur_setting.sd_access_mode == SD_FNC_AM_DDR200) {
-+
-+		result = sd_tuning(card, &sd_cmd, 150);
-+		if (result == FALSE) {
-+			DbgErr("sd adjust tuning: sd_tuning fail\n");
-+			result = FALSE;
-+			goto exit;
-+		}
-+	}
-+
-+exit:
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+	return result;
-+}
-+
-+static void sd_calc_max_passrange(u8 *pdata, u32 *ret, u32 *sum)
-+{
-+	u32 window_pass_number[22], window_start_adr[22],
-+	    window_pass_number_max;
-+	int ii, jj, first_0, dll_i_mod, dll_i, dll_mod;
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	for (ii = 0; ii < 22; ii++) {
-+		window_pass_number[ii] = 0;
-+		window_start_adr[ii] = 0;
-+	}
-+
-+	first_0 = 0;
-+	window_pass_number_max = 0;
-+	for (dll_i = 0; dll_i < 22; dll_i++) {
-+		if (pdata[dll_i] == 0) {
-+			first_0 = dll_i;
-+			break;
-+		}
-+	}
-+	jj = 0;
-+	for (dll_i = 0; dll_i < 22; dll_i++) {
-+		dll_i_mod = (first_0 + dll_i) % 22;
-+		DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+			"DLL phase [%x] result %d.\n", dll_i_mod,
-+			pdata[dll_i_mod]);
-+		if (pdata[dll_i_mod] != 0)
-+			window_pass_number[jj]++;
-+		else {
-+			if (window_pass_number[jj] > 0)
-+				jj++;
-+
-+		}
-+		if ((window_pass_number[jj] == 1) && (jj > 0)) {
-+			DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER,
-+				NOT_TO_RAM, "Error! there are %d DLL window\n",
-+				(jj + 1));
-+		}
-+		if (window_pass_number[jj] == 1)
-+			window_start_adr[jj] = dll_i_mod;
-+	}
-+
-+	for (ii = 0; ii < 22; ii++) {
-+		if (window_pass_number_max < window_pass_number[ii]) {
-+			window_pass_number_max = window_pass_number[ii];
-+			jj = ii;
-+		}
-+	}
-+	if (window_pass_number_max == 0)
-+		DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+			"DLL test result: All DLL test FAIL\n");
-+	else {
-+		DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+			"DLL test result: Total  %d DLL test PASS\n",
-+			window_pass_number_max);
-+		window_pass_number_max = window_pass_number_max >> 1;
-+		dll_mod = window_start_adr[jj] + window_pass_number_max;
-+		dll_mod = dll_mod % 22;
-+
-+		DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+			"select DLL phase Number %d\n", dll_mod);
-+	}
-+	*ret = dll_mod;
-+	*sum = window_pass_number_max;
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+}
-+
-+/* The caller check */
-+u8 testbuf_write[512];
-+u8 testbuf_read[512];
-+
-+bool sd_dll_divider(sd_card_t *card, sd_command_t *pcmd)
-+{
-+
-+	u32 ii, jj, pattern_i;
-+	bool ret = FALSE, result = FALSE, datcmp;
-+
-+	u32 window_pass_sum, dll_i, input_n1, output_n1, input_n, output_n,
-+	    DLL_input_Phase = 0, DLL_output_Phase = 0;
-+	sd_command_t sd_cmd;
-+	byte test_patern[6] = { 0x55, 0xaa, 0x00, 0xff, 0xf0, 0x0f };
-+	u32 cmdflag;
-+	sd_host_t *host = card->host;
-+	u8 phasecheck[22][22], phasepass[22];
-+
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	host->output_tuning.start_block = pcmd->argument;
-+
-+	/* If use read write, Save Current DMA mode */
-+	host_transfer_init(host, FALSE, TRUE);
-+	cmdflag = CMD_FLG_RESCHK | CMD_FLG_R1 | CMD_FLG_ADMA_SDMA;
-+	jj = 0;
-+	host_cmddat_line_reset(host);
-+	for (dll_i = 0; dll_i < 512; dll_i++)
-+		testbuf_write[dll_i] = test_patern[dll_i % 6];
-+	if (card_check_rw_ready(card, &sd_cmd, 600) != TRUE) {
-+		DbgErr
-+		    ("Error when sd dll divider,  card_check_rw_ready fail\n");
-+		result = FALSE;
-+		goto exit;
-+	}
-+
-+	if (hostven_dll_input_tuning_init(host) == FALSE) {
-+		DbgErr
-+		    ("Error when sd dll divider,  hostven_dll_input_tuning_init  fail\n");
-+		result = FALSE;
-+		goto exit;
-+	}
-+
-+	for (output_n1 = 0; output_n1 < 22; output_n1++)
-+		for (input_n1 = 0; input_n1 < 22; input_n1++) {
-+
-+			DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER,
-+				NOT_TO_RAM,
-+				" - DLL input tuning  Test %d , %d\n", input_n1,
-+				output_n1);
-+			phasecheck[output_n1][input_n1] = 0;
-+			phasepass[output_n1] = 0;
-+			host_cmddat_line_reset(host);
-+
-+			if (sd_adjust_tuning(card, input_n1, output_n1) ==
-+			    FALSE) {
-+				DbgErr
-+				    (" -adjust Output Tuning phase FAILED!!!\n");
-+
-+				continue;
-+			}
-+			for (pattern_i = 0; pattern_i < 1; pattern_i++) {
-+				for (ii = 0; ii < (1 * 512); ii++)
-+					(*(testbuf_read + ii)) = 0x96;
-+
-+				ret =
-+				    card_send_sdcmd_timeout(card, &sd_cmd,
-+							    SD_CMD24,
-+							    host->output_tuning.start_block,
-+							    (cmdflag),
-+							    DATA_DIR_OUT,
-+							    testbuf_write, 512,
-+							    50);
-+				if (ret == FALSE)
-+					break;
-+				ret =
-+				    card_send_sdcmd_timeout(card, &sd_cmd,
-+							    SD_CMD17,
-+							    host->output_tuning.start_block,
-+							    (cmdflag),
-+							    DATA_DIR_IN,
-+							    testbuf_read, 512,
-+							    50);
-+				if (ret == FALSE) {
-+					DbgErr
-+					    ("Read data FAILED when output_tuning\n");
-+
-+					break;
-+				}
-+
-+				datcmp = TRUE;
-+				for (ii = 0; ii < (1 * 512); ii++) {
-+					if (*(testbuf_write + ii) !=
-+					    *(testbuf_read + ii)) {
-+						datcmp = FALSE;
-+						phasecheck[output_n1][input_n1]
-+						    = 0;
-+						break;
-+					}
-+				}
-+				if (datcmp == FALSE) {
-+					DbgInfo(MODULE_SD_CARD,
-+						FEATURE_ERROR_RECOVER,
-+						NOT_TO_RAM,
-+						"Compare data FAILED at index %d!!!\n",
-+						ii);
-+				} else {
-+					DbgInfo(MODULE_SD_CARD,
-+						FEATURE_ERROR_RECOVER,
-+						NOT_TO_RAM,
-+						"Compare data OK.\n");
-+					phasecheck[output_n1][input_n1] = 1;
-+				}
-+			}
-+		}
-+
-+	for (output_n = 0; output_n < 22; output_n++) {
-+		DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+			" ## The output tuning %d:  ", output_n);
-+		for (input_n = 0; input_n < 22; input_n++)
-+			DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER,
-+				NOT_TO_RAM, "  %d:   %d   ", input_n,
-+				phasecheck[output_n][input_n]);
-+	}
-+
-+	for (output_n = 0; output_n < 22; output_n++) {
-+		for (input_n = 0; input_n < 22; input_n++)
-+			phasepass[output_n] += phasecheck[output_n][input_n];
-+	}
-+
-+	/* check for the max pass range */
-+	sd_calc_max_passrange(phasepass, &DLL_output_Phase, &window_pass_sum);
-+	sd_calc_max_passrange(phasecheck[DLL_output_Phase], &DLL_input_Phase,
-+			      &window_pass_sum);
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"The best input tuning phase is %d\n", DLL_input_Phase);
-+	/* Get the optimized clock phase to do read/write test */
-+	hostven_set_tuning_phase(host, DLL_input_Phase, DLL_output_Phase,
-+				 FALSE);
-+	result = TRUE;
-+
-+exit:
-+	/* Resorte current DMA mode */
-+	host_transfer_init(host, card->inf_trans_enable, FALSE);
-+	if (result == FALSE)
-+		hostven_set_tuning_phase(host, 0, 0, TRUE);
-+	host_cmddat_line_reset(host);
-+	DbgInfo(MODULE_SD_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+	return result;
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_read_csd
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  De-select the card and send CMD9, and then select the card.
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *			sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *			Caller:
-+ */
-+bool sd_read_csd(sd_card_t *card, sd_command_t *sd_cmd, byte *data)
-+{
-+	card_info_t *card_info = &(card->info);
-+	bool ret = FALSE, ret1 = FALSE, ret2 = FALSE;
-+
-+	ret = card_deselect_card(card, sd_cmd);
-+	if (!ret)
-+		goto exit_select_card;
-+
-+	ret1 = card_get_csd(card, sd_cmd);
-+
-+exit_select_card:
-+	ret2 = card_select_card(card, sd_cmd);
-+
-+	if ((ret == FALSE) || (ret1 == FALSE) || (ret2 == FALSE))
-+		return FALSE;
-+	else {
-+		os_memcpy(data, &(card_info->raw_csd[0]), 0x10);
-+		return TRUE;
-+	}
-+}
-+
-+/*
-+ *
-+ * Function Name: sd_program_csd
-+ *
-+ * Abstract:
-+ *
-+ *			 1.  Program CSD by CMD27.
-+ *
-+ * Input:
-+ *
-+ *			sd_card_t *card [in] [out]: Pointer to the virtual card structure
-+ *			sd_command_t *sd_cmd: Pointer to sd command structure
-+ *
-+ * Output:
-+ *
-+ *			None
-+ *
-+ * Return value:
-+ *
-+ *			Return TRUE if card init successfully, else return FALSE.
-+ *
-+ * Notes:
-+ *
-+ *			Caller:
-+ */
-+bool sd_program_csd(sd_card_t *card, sd_command_t *sd_cmd, byte *data)
-+{
-+
-+	byte cmd_index = SD_CMD27;
-+	u32 argument = 0;
-+	u32 cmdflag = CMD_FLG_R1 | CMD_FLG_RESCHK;
-+	e_data_dir dir = DATA_DIR_OUT;
-+	u32 datalen = 0x10;
-+	sd_host_t *host = card->host;
-+	bool ret = FALSE;
-+
-+	ret =
-+	    card_send_sdcmd(card, sd_cmd, cmd_index, argument, cmdflag, dir,
-+			    data, datalen);
-+	if (ret == FALSE)
-+		DbgErr("CMD27 failed\n");
-+
-+	host_cmddat_line_reset(host);
-+
-+	DbgInfo(MODULE_ALL_CARD, FEATURE_RW_TRACE, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, ret);
-+	return ret;
-+
-+}
-diff --git a/drivers/scsi/bht/card/thermal.c b/drivers/scsi/bht/card/thermal.c
-new file mode 100644
-index 000000000000..bda251476944
---- /dev/null
-+++ b/drivers/scsi/bht/card/thermal.c
-@@ -0,0 +1,348 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2014 BHT Inc.
-+ *
-+ * File Name: thermal.c
-+ *
-+ * Abstract: This File is used to handle thread event
++ * Abstract: Include card command handler
 + *
 + * Version: 1.00
 + *
@@ -9379,1571 +108,10455 @@ index 000000000000..bda251476944
 + *
 + * History:
 + *
-+ * 11/05/2014		Creation	Peter.Guo
++ * 9/2/2014		Creation	Peter.guo
 + */
 +
 +#include "../include/basic.h"
-+#include "../include/card.h"
-+#include "../include/function.h"
-+#include "../include/cardapi.h"
-+#include "cardcommon.h"
-+#include "../include/hostapi.h"
-+#include "../include/util.h"
 +#include "../include/debug.h"
++#include "../include/hostapi.h"
++#include "../include/cmdhandler.h"
++#include "hostven.h"
++#include "../host/handler.h"
++#include "../host/hostreg.h"
++#include "../include/util.h"
 +
-+/*
-+ * Function Name: thermal_gpio_sensor
-+ * Abstract: This Function is used to do get sensor result for thermal control
-+ *
-+ * Input:
-+ *			sd_host_t *host
-+ *
-+ * Return value:
-+ *			NORMAL
-+ *			COOL
-+ *			HOT
-+ *
-+ * Notes:
-+ *			run in thread context
-+ */
++void irq_disable_sdcmd_int(sd_host_t *host);
 +
-+static e_thermal_val thermal_gpio_sensor(sd_host_t *host)
++#if DBG || _DEBUG
++void host_dump_reg(sd_host_t *host)
 +{
-+	e_thermal_val result = THERMAL_NORMAL;
-+	u32 value = 0;
++	u16 i = 0;
 +
-+	DbgInfo(MODULE_THERMAL, FEATURE_FUNC_THERMAL, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
++	if ((g_dbg_ctrl & DBG_CTRL_DUMP_HOST) == 0)
++		return;
 +
-+	switch (host->chip_type) {
-+	case CHIP_SEAEAGLE:
-+		ven_and32(host, 0x22c, ~0x7);
-+		ven_or32(host, 0x22c, 0x13);
-+		value = ven_readl(host, 0x22c);
-+		value = (value & 0x40) >> 6;
-+		break;
-+	case CHIP_SEAEAGLE2:
-+	case CHIP_GG8:
-+	case CHIP_ALBATROSS:
-+		ven_and32(host, 0x50c, ~0x7);
-+		ven_or32(host, 0x50c, 0x13);
-+		value = ven_readl(host, 0x50c);
-+		value = (value & 0x40) >> 6;
-+		break;
-+	default:
-+		value = pci_readl(host, 0xD4);
-+		value = (value & 0x80) >> 7;
-+		break;
++	for (i = 0; i < 0x120; i += 4) {
++		DbgErr("reg offset=0x%04X value=0x%08X\n", i,
++		       sdhci_readl(host, i));
++
++		if (sdhci_readl(host, i) == 0xffffffff)
++			return;
++	}
++}
++#else
++#define host_dump_reg(x)
++#endif
++
++void host_error_int_recovery_stage1(sd_host_t *host, u16 error_int_state,
++				    bool check);
++
++bool card_is_low_capacity(sd_card_t *card)
++{
++	if (card->card_type == CARD_SD) {
++		if (card->info.csd.csd_structure == 0)
++			return TRUE;
++	} else if (card->card_type == CARD_EMMC || card->card_type == CARD_MMC) {
++		if (card->info.card_ccs == 0)
++			return TRUE;
 +	}
 +
-+	result = (e_thermal_val) value;
-+
-+	DbgInfo(MODULE_THERMAL, FEATURE_FUNC_THERMAL, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, value);
-+	return result;
-+
++	return FALSE;
 +}
 +
 +/*
-+ * Function Name: thermal_i2c_sensor
-+ * Abstract: This Function is used to do get sensor result for thermal control
++ * Function Name: cmd_test_fill_err
++ *
++ * Abstract: This Function is to test error interrupt handler
 + *
 + * Input:
-+ *			sd_host_t *host
++ * sd_card_t *card,
++ * u32 percent: percent of error occur rate
++ * u32 fix: 0 means random generate error; other means the error reg setting
++ *
++ * Output: None
 + *
 + * Return value:
-+ *			NORMAL
-+ *			COOL
-+ *			HOT
++ * True: If no error generate
 + *
-+ * Notes:
-+ *			run in thread context
 + */
 +
-+static e_thermal_val thermal_i2c_sensor(sd_host_t *host)
++/*
++ *	static bool cmd_test_fill_err(sd_card_t *card, u32 percent, u32 fix)
++ *	{
++ *		bool generate = FALSE;
++ *		sd_host_t *host = card->host;
++ *		u32 reg;
++ *
++ *		generate = random_percent_check(percent);
++ *
++ *		if (generate == FALSE)
++ *			goto exit;
++ *
++ *		if (host->uhs2_flag) {
++ *			if (fix == 0)
++ *				reg = (1 << os_random_get(32));
++ *			else
++ *				reg = fix;
++ *
++ *			sdhci_writel(host, host->uhs2_cap.tst_base, reg);
++ *
++ *		} else {
++ *			if (fix == 0)
++ *				reg = (1 << os_random_get(16));
++ *			else
++ *				reg = fix;
++ *
++ *			sdhci_writew(host, SDHCI_ERROR_INTR_EVENT, (u16) reg);
++ *		}
++ *
++ *	exit:
++ *		return generate;
++ *	}
++ */
++
++/*
++ * Function Name: cmd_check_card_exist
++ *
++ * Abstract: This Function is to check whether card is present or not
++ *
++ * Input:
++ * sd_card_t *card : The Command will send to which  Card
++ * sd_command_t *sd_cmd: This parameter will contail card command info and reg info
++ * for adma3 case this reg don't need conatin reg info
++ *
++ * Output: None
++ *
++ * Return value:
++ * If the routine succeeds, it must return TRUE
++ * otherwize reutrn FALSE
++ */
++static bool cmd_check_card_exist(sd_card_t *card, sd_command_t *sd_cmd)
 +{
-+	u32 temp_val = 0, count = 0;
-+	u32 upper_limit = 0, lower_limit = 0;
-+	e_thermal_val result = THERMAL_NORMAL;
++	bool ret = FALSE;
 +
-+	DbgInfo(MODULE_THERMAL, FEATURE_FUNC_THERMAL, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	/* Enable I2C I/F */
-+	ven_and32(host, 0x228, ~0x7);
-+	ven_or32(host, 0x228, 0x1);
-+	ven_and32(host, 0x230, ~0x7);
-+	ven_or32(host, 0x230, 0x1);
-+	os_mdelay(1);
-+
-+	/* Reset I2C function */
-+	ven_writel(host, 0x220, 0x80000000);
-+
-+	os_mdelay(1);
-+
-+	/* Set FLTR and One short bit */
-+	ven_writel(host, 0x220, 0x440000);
-+	ven_writel(host, 0x220, 0x20009401);
-+
-+	while ((ven_readl(host, 0x220) & 0x20000000)) {
-+		/* Timeout 5ms */
-+		if (count == 5) {
-+			DbgErr(" - Wait I2C write operation timeout!\n");
-+			break;
-+		}
-+		/* else if (device_status == DEVICE_STATUS_CHIPLOST) */
-+		else if (ven_readl(host, 0x220) == 0xffffffff) {
-+			DbgErr("break loop because chip lost!\n");
-+			break;
-+		}
-+
-+		os_mdelay(1);
-+		count += 1;
-+	}
-+
-+	/* Read the temperature value */
-+	ven_writel(host, 0x220, 0x50009400);
-+
-+	while ((ven_readl(host, 0x220) & 0x10000000)) {
-+		/* Timeout 5ms */
-+		if (count == 5) {
-+			DbgErr(" - Wait I2C read operation timeout!\n");
-+			break;
-+		}
-+		/* else if (device_status == DEVICE_STATUS_CHIPLOST) */
-+		else if (ven_readl(host, 0x220) == 0xffffffff) {
-+			DbgErr("break loop because chip lost!!\n");
-+			break;
-+		}
-+		os_mdelay(1);
-+		count += 1;
-+	}
-+
-+	temp_val = (ven_readl(host, 0x224) & 0xffff) >> 6;
-+	/* upper_limit = (tmp_high & 0xffff0000) >> 16; */
-+	/* lower_limit = tmp_low & 0xffff; */
-+
-+	if ((temp_val & 0x200) && (upper_limit & 0x8000)) {
-+		if ((temp_val & 0x1ff) < ((upper_limit & 0x1ff) << 2)) {
-+			result = THERMAL_HOT;
-+			goto exit;
-+		}
-+	}
-+
-+	if ((0 == (temp_val & 0x200)) && (upper_limit & 0x8000)) {
-+		result = THERMAL_HOT;
++	if (card->card_present == FALSE || card->card_chg) {
++		sd_cmd->err.error_code = ERR_CODE_NO_CARD;
 +		goto exit;
 +	}
 +
-+	if ((0 == (temp_val & 0x200)) && (0 == (upper_limit & 0x8000))) {
-+		if ((temp_val & 0x1ff) > ((upper_limit & 0x1ff) << 2)) {
-+			result = THERMAL_HOT;
-+			goto exit;
-+		}
-+	}
-+
-+	if ((temp_val & 0x200) && (lower_limit & 0x8000)) {
-+		if ((temp_val & 0x1ff) > ((lower_limit & 0x1ff) << 2)) {
-+			result = THERMAL_COOL;
-+			goto exit;
-+		}
-+	}
-+
-+	if ((temp_val & 0x200) && (0 == (lower_limit & 0x8000))) {
-+		result = THERMAL_COOL;
-+		goto exit;
-+	}
-+
-+	if ((0 == (temp_val & 0x200)) && (0 == (lower_limit & 0x8000))) {
-+		if ((temp_val & 0x1ff) < ((lower_limit & 0x1ff) << 2)) {
-+			result = THERMAL_COOL;
-+			goto exit;
-+		}
-+	}
++	ret = TRUE;
 +
 +exit:
-+	DbgInfo(MODULE_THERMAL, FEATURE_FUNC_THERMAL, NOT_TO_RAM,
-+		"Exit %s result=%d\n", __func__, result);
-+	return result;
-+
++	return ret;
 +}
 +
 +/*
-+ * Function Name: func_thermal_control
-+ * Abstract: This Function is used to do thremal control
-+ *			  This function should be called before send card Read Write
++ * Function Name: sdcmd_response_chk
++ * Abstract: This Function is used to verify the response for sd-tran command
 + *
 + * Input:
-+ *			sd_card_t *card
++ *			e_card_type type: card type
++ *			sd_command_t *sd_cmd:
++ *			u32 response: response value
++ *
 + *
 + * Return value:
 + *			TRUE: means ok
-+ *			others means error occur, caller need do error recovery
++ *			others error
 + *
 + * Notes:
-+ *			run in thread context
++ *
++ *        so giving the routine another name requires you to modify the build tools.
 + */
 +
-+bool func_thermal_control(sd_card_t *card)
++static bool sdcmd_response_chk(e_card_type type, sd_command_t *sd_cmd,
++			       u32 response)
 +{
++	bool ret = TRUE;
++	u32 flag = (sd_cmd->cmd_flag & CMD_FLG_RESP_MASK);
++
++	sd_cmd->err.resp_err = 0;
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Enter %s\n",
++		__func__);
++
++	/* don't check resopnse case */
++	if (!(sd_cmd->cmd_flag & CMD_FLG_RESCHK))
++		goto exit;
++
++	switch (flag) {
++	case CMD_FLG_R1:
++	case CMD_FLG_R1B:
++
++		/*
++		 * Card status Check
++		 * OUT_OF_RANGE
++		 * ADDRESS_ERROR
++		 * BLOCK_LEN_ERROR
++		 * ERASE_SEQ_ERROR
++		 * ERASE_PARAM
++		 * WP_VIOLATION
++		 * LOCK_UNLOCK_FAILED
++		 * COM_CRC_ERROR
++		 * ILLEGAL_COMMAND
++		 * CARD_ECC_FAILED
++		 * CC_ERROR
++		 * ERROR
++		 * UNDERRUN
++		 * OVERRUN
++		 * CID/CSD_OVERWRITE
++		 */
++
++		if (response & 0xFDF90000) {
++			sd_cmd->err.error_code = ERR_CODE_RESP_ERR;
++			sd_cmd->err.resp_err = (response & 0xFDF90000);
++			ret = FALSE;
++		}
++		break;
++	case CMD_FLG_R6:
++		if (response & 0x0000E000) {
++			sd_cmd->err.error_code = ERR_CODE_RESP_ERR;
++
++			if (response & 0x00000800)
++				sd_cmd->err.resp_err |= RESP_ERR_TYPE_ERROR;
++			if (response & 0x00004000)
++				sd_cmd->err.resp_err |=
++				    RESP_ERR_TYPE_ILLEGAL_CMD;
++			if (response & 0x00002000)
++				sd_cmd->err.resp_err |=
++				    RESP_ERR_TYPE_COM_CRC_ERROR;
++			ret = FALSE;
++		}
++		break;
++
++		/* Response = R5 */
++	case CMD_FLG_R5:
++		if ((response & 0x0000CB00) && type == CARD_SDIO) {
++			sd_cmd->err.error_code = ERR_CODE_RESP_ERR;
++			if (response & 0x00000800)
++				sd_cmd->err.resp_err |= RESP_ERR_TYPE_ERROR;
++			if (response & 0x00000100)
++				sd_cmd->err.resp_err |=
++				    RESP_ERR_TYPE_OUT_OF_RANGE;
++			if (response & 0x00000200)
++				sd_cmd->err.resp_err |= RESP_ERR_TYPE_FUNC_NUM;
++			if (response & 0x00004000)
++				sd_cmd->err.resp_err |=
++				    RESP_ERR_TYPE_ILLEGAL_CMD;
++			if (response & 0x00008000)
++				sd_cmd->err.resp_err |=
++				    RESP_ERR_TYPE_COM_CRC_ERROR;
++			ret = FALSE;
++		}
++		break;
++	default:
++		break;
++	}
++exit:
++	if (ret == FALSE)
++		DbgErr("resp err=0x%08X,response=%x\n", sd_cmd->err.resp_err,
++		       response);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Exit %s ret=%d\n",
++		__func__, ret);
++	return ret;
++}
++
++/*
++ * Function Name: cmd_legacy_response
++ * Abstract: This Function is used to get response of legacy command
++ *
++ * Input:
++ *			void *card : pointer to card
++ *			void *host_request poineter to host_cmd_req_t
++ *
++ *
++ * Return value:
++ *			0: means ok
++ *			others error
++ *
++ * Notes:
++ *
++ *        so giving the routine another name requires you to modify the build tools.
++ */
++u32 cmd_legacy_response(void *pcard, void *host_request)
++{
++	u32 ret = INTR_CB_OK;
++	sd_card_t *card = pcard;
 +	sd_host_t *host = card->host;
-+	bht_dev_ext_t *pdx = host->pdx;
-+	bool result = TRUE;
-+	e_thermal_val thermal = THERMAL_NORMAL;
++	host_cmd_req_t *req = host_request;
++	sd_command_t *sd_cmd = req->private;
++	byte *buff = NULL;
++	u32 val;
 +
-+	DbgInfo(MODULE_THERMAL, FEATURE_FUNC_THERMAL, NOT_TO_RAM, "Enter %s\n",
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Enter %s\n",
 +		__func__);
 +
-+	/* If Thermal Control is disabled then do nothing */
-+	if (pdx->thermal.enable == 0)
++	if (req->trans_type == TRANS_ADMA3 || req->inf_mode != INF_NONE)
 +		goto exit;
 +
-+	/* If Thermal timeout is not occur then do nothing */
-+	if (pdx->thermal.enable_timer_chk == 1 && pdx->thermal.timeout == 0)
-+		goto exit;
++	if (sd_cmd->cmd_flag & CMD_FLG_R2) {
++		val = sdhci_readl(host, SDHCI_RESPONSE);
++		buff = (byte *) sd_cmd->response;
++		buff[14] = (byte) (val & 0x000000ff);
++		buff[13] = (byte) ((val & 0x0000ff00) >> 8);
++		buff[12] = (byte) ((val & 0x00ff0000) >> 16);
++		buff[11] = (byte) ((val & 0xff000000) >> 24);
 +
-+	pdx->thermal.timeout = 0;
-+	pdx->thermal.last_check_ms = os_get_cur_tick();
++		val = sdhci_readl(host, SDHCI_RESPONSE + 4);
++		buff[10] = (byte) (val & 0x000000ff);
++		buff[9] = (byte) ((val & 0x0000ff00) >> 8);
++		buff[8] = (byte) ((val & 0x00ff0000) >> 16);
++		buff[7] = (byte) ((val & 0xff000000) >> 24);
 +
-+	/* If card not working do nothing */
-+	if (card->state != CARD_STATE_WORKING || card->card_present == FALSE)
-+		goto exit;
++		val = sdhci_readl(host, SDHCI_RESPONSE + 8);
++		buff[6] = (byte) (val & 0x000000ff);
++		buff[5] = (byte) ((val & 0x0000ff00) >> 8);
++		buff[4] = (byte) ((val & 0x00ff0000) >> 16);
++		buff[3] = (byte) ((val & 0xff000000) >> 24);
 +
-+	if (card->initialized_once == FALSE)
-+		goto exit;
-+
-+	/* Currently only uhs2 and SD support thermal control */
-+	switch (card->card_type) {
-+	case CARD_SD:
-+	case CARD_UHS2:
-+		break;
-+	default:
-+		goto exit;
-+	}
-+
-+	if (pdx->thermal.use_i2c)
-+		thermal = thermal_i2c_sensor(host);
-+	else
-+		thermal = thermal_gpio_sensor(host);
-+
-+	DbgInfo(MODULE_THERMAL, FEATURE_FUNC_THERMAL, NOT_TO_RAM,
-+		"Start do Thermal control sensor=%d\n", thermal);
-+
-+	if (thermal == THERMAL_NORMAL) {
-+		/* nothing to do for no thermal change */
-+		goto exit;
-+	} else if (thermal == THERMAL_COOL) {
-+		/* NEED change to higher mode */
-+		pdx->card.thermal_enable = 1;
-+		pdx->card.thermal_heat = 1;
-+		result = card_thermal_control(card);
++		val = sdhci_readl(host, SDHCI_RESPONSE + 12);
++		buff[2] = (byte) (val & 0x000000ff);
++		buff[1] = (byte) ((val & 0x0000ff00) >> 8);
++		buff[0] = (byte) ((val & 0x00ff0000) >> 16);
 +	} else {
-+		/* change to lower mode */
-+		pdx->card.thermal_enable = 1;
-+		pdx->card.thermal_heat = 0;
-+		result = card_thermal_control(card);
++		sd_cmd->response[0] = sdhci_readl(host, SDHCI_RESPONSE);
++		if (sdcmd_response_chk
++		    (card->card_type, sd_cmd, sd_cmd->response[0]) == FALSE)
++			ret = INTR_CB_ERR;
 +	}
 +
-+	pdx->card.thermal_enable = 0;
++	if (sd_cmd->cmd_flag & CMD_FLG_DDR200_WORK_AROUND
++	    && sd_cmd->data->dir == DATA_DIR_OUT) {
++		DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM,
++			"update output phase for write case\n");
++		/* Disable SD clock */
++		sdhci_and32(host, SDHCI_CLOCK_CONTROL, ~(SDHCI_CLOCK_CARD_EN));
++
++		/* update output phase */
++		pci_andl(host, 0x354, 0xFFFFFF0F);
++		pci_orl(host, 0x354, (host->cur_output_phase << 4));
++
++		/* update input phase */
++		sdhci_and32(card->host, SDHCI_DLL_PHASE_CFG, ~0x1F000000);
++		sdhci_or32(card->host, SDHCI_DLL_PHASE_CFG,
++			   (BIT28) |
++			   (card->output_input_phase_pair
++			    [host->cur_output_phase]
++			    << 24));
++
++		/* Enable SD clock */
++		sdhci_or32(host, SDHCI_CLOCK_CONTROL, (SDHCI_CLOCK_CARD_EN));
++
++		/* Continue transfer */
++		sdhci_or32(host, SDHCI_DRIVER_CTRL_REG,
++			   SDHCI_DRIVER_CTRL_ADMA2_START_INF);
++		/* sd_cmd->gg8_ddr200_workaround = 0; */
++	}
 +
 +exit:
-+	DbgInfo(MODULE_THERMAL, FEATURE_FUNC_THERMAL, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, result);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0,
++		"Exit %s ret=0x%08X\n", __func__, ret);
++	return ret;
++}
++
++/*
++ * Function Name: cmd_uhs2_response
++ * Abstract: This Function is used to get response of UHS2 command
++ *
++ * Input:
++ *			void *card : pointer to card
++ *			void *host_request poineter to host_cmd_req_t
++ *
++ *
++ * Return value:
++ *			0: means ok
++ *			others error
++ *
++ * Notes:
++ *
++ *        so giving the routine another name requires you to modify the build tools.
++ */
++u32 cmd_uhs2_response(void *pcard, void *host_request)
++{
++	u32 ret = INTR_CB_OK;
++	sd_card_t *card = pcard;
++	sd_host_t *host = card->host;
++	host_cmd_req_t *req = host_request;
++	sd_command_t *sd_cmd = req->private;
++	u32 resp0 = 0;
++	int i;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Enter %s\n",
++		__func__);
++
++	if (req->trans_type == TRANS_ADMA3 || req->inf_mode != INF_NONE)
++		goto exit;
++
++	if (sd_cmd->cmd_flag & CMD_FLG_RESCHK) {
++		resp0 = sdhci_readl(host, SDHCI_UHS2_RESPONSE);
++		if (resp0 & UHS2_RESP_NACK)
++			sd_cmd->uhs2_nack = 1;
++	}
++
++	if (sd_cmd->sd_cmd) {
++		if (sd_cmd->cmd_flag & CMD_FLG_R2) {
++			for (i = 0; i < 4; i++)
++				sd_cmd->response[i] =
++				    sdhci_readl(host,
++						SDHCI_UHS2_RESPONSE4 + i * 4);
++
++		} else if (sd_cmd->cmd_index == SD_CMD12) {
++			sd_cmd->response[0] =
++			    swapu32(sdhci_readl(host, SDHCI_UHS2_CMD12_RES));
++			if (sdcmd_response_chk
++			    (card->card_type, sd_cmd,
++			     sd_cmd->response[0]) == FALSE)
++				ret = INTR_CB_ERR;
++			sdhci_writel(host, SDHCI_ADMA_ADDRESS, 0);
++		} else {
++			sd_cmd->response[0] =
++			    swapu32(sdhci_readl(host, SDHCI_UHS2_RESPONSE4));
++			if (sdcmd_response_chk
++			    (card->card_type, sd_cmd,
++			     sd_cmd->response[0]) == FALSE)
++				ret = INTR_CB_ERR;
++		}
++	} else {
++		if (UHS2_GET_NATIVE_IOADDR(sd_cmd->uhs2_header) ==
++		    UHS2_IOADDR_ABORT)
++			sd_cmd->response[0] =
++			    sdhci_readl(host, SDHCI_RESPONSE + 4);
++		else {
++			for (i = 0; i < 4; i++)
++				sd_cmd->response[i] =
++				    sdhci_readl(host,
++						SDHCI_UHS2_RESPONSE4 + i * 4);
++		}
++	}
++
++exit:
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0,
++		"Exit %s return=0x%08X\n", __func__, ret);
++	return ret;
++
++}
++
++/*
++ * Function Name: cmd_piobuff_ready
++ * Abstract: This Function is used to handle pio data buffer ready
++ *
++ * Input:
++ *			void *card : pointer to card
++ *			void *host_request poineter to host_cmd_req_t
++ *
++ *
++ * Return value:
++ *			0: means ok
++ *			others error
++ *
++ * Notes:
++ *
++ *        so giving the routine another name requires you to modify the build tools.
++ */
++u32 cmd_piobuff_ready(void *pcard, void *host_request)
++{
++	u32 ret = INTR_CB_OK;
++	sd_card_t *card = pcard;
++	sd_host_t *host = card->host;
++	host_cmd_req_t *req = host_request;
++	sd_command_t *sd_cmd = req->private;
++	sd_data_t *data = sd_cmd->data;
++	u32 i;
++	u32 trans_len = 0;
++	u32 *buffer = NULL;
++	u32 left = 0;
++
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, 0, "Enter %s\n", __func__);
++	if (data == NULL) {
++		ret = INTR_CB_ERR;
++		goto exit;
++	}
++
++	buffer = (u32 *) data->data_mng.driver_buff;
++	if (buffer == NULL) {
++		ret = INTR_CB_ERR;
++		goto exit;
++	}
++
++	/* get transfer start position and */
++	buffer += data->data_mng.offset / 4;
++	left = data->data_mng.total_bytess - data->data_mng.offset;
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, 0,
++		"pio dir=%d left=%d offset=%d\n", data->dir, left,
++		data->data_mng.offset);
++
++	/* Caculete the data transfer length for this time */
++	trans_len = data->block_size;
++	if (sd_cmd->uhs2_cmd) {
++		u32 n_fcu = card->uhs2_info.uhs2_setting.n_fcu;
++
++		if (n_fcu == 0)
++			n_fcu = 256;
++		trans_len = os_min(left, n_fcu * trans_len);
++	} else {
++		trans_len = os_min(left, trans_len);
++	}
++
++	trans_len /= 4;
++	if (sd_cmd->cmd_index == SD_CMD17) {
++		ven_or16(host, 0x510, 0x2000);
++		os_udelay(1);
++		ven_and16(host, 0x510, ~0x2000);
++	}
++
++	/* transfer data */
++	for (i = 0; i < trans_len; i++) {
++		if (data->dir == DATA_DIR_IN)
++			buffer[i] = sdhci_readl(host, SDHCI_BUFFER);
++		else
++			sdhci_writel(host, SDHCI_BUFFER, buffer[i]);
++
++		data->data_mng.offset += 4;
++		left -= 4;
++	}
++
++	if (left > 0)
++		ret = INTR_CB_NOEND;
++exit:
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, 0, "Exit %s return=0x%08X\n",
++		__func__, ret);
++	return ret;
++}
++
++/*
++ * Function Name: uhs2_sdcmd_generate
++ * Abstract: This Function is used to generate UHS2 SDCmd registers
++ *
++ * Input:
++ *			sd_card_t *card : The Command will send to which  Card
++ *			sd_command_t *sd_cmd: This parameter will contail card command info
++ * Output:
++ *			sd_command_t *sd_cmd to store register values
++ *
++ * Return value:
++ *
++ *			If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
++ *			otherwize reutrn FALSE
++ * Notes:
++ *
++ *        so giving the routine another name requires you to modify the build tools.
++ */
++static bool uhs2_sdcmd_generate(sd_card_t *pcard, sd_command_t *sd_cmd)
++{
++	sd_data_t *data = sd_cmd->data;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Enter %s\n",
++		__func__);
++
++	/* Step1: Generate header */
++	sd_cmd->hw_resp_chk = 0;
++	sd_cmd->uhs2_header = 0;
++	sd_cmd->payload_cnt = 1;
++	sd_cmd->trans_reg_cnt = 1;
++	sd_cmd->uhs2_set_pld = 1;
++	sd_cmd->uhs2_header |= pcard->uhs2_info.dev_id;
++	if (data != NULL)
++		sd_cmd->uhs2_header |= UHS2_CMD_HEADER_DCMD;
++
++	if (sd_cmd->app_cmd)
++		sd_cmd->uhs2_header |= UHS2_CMD_HEADER_APPCMD;
++
++	sd_cmd->uhs2_header |= ((sd_cmd->cmd_index & 0x3f) << 24);
++	sd_cmd->trans_reg[0].payload[2] = 0;
++	if (sd_cmd->muldat_cmd) {
++		if (!(sd_cmd->cmd_flag & CMD_FLG_INF) && (data != NULL)) {
++			sd_cmd->uhs2_header |= UHS2_CMD_TMODE_LM;
++			sd_cmd->trans_reg[0].payload[2] =
++			    swapu32(data->block_cnt);
++			/* for muldata command we need geneate paylaod2     */
++			sd_cmd->payload_cnt++;
++		}
++
++		if (pcard->uhs2_info.uhs2_setting.half_supp
++		    && (pcard->degrade_uhs2_half == 0)
++		    && (pcard->thermal_uhs2_half_dis == 0))
++			sd_cmd->uhs2_header |= UHS2_CMD_TMODE_DM;
++	}
++
++	/* step2: paylaod */
++	sd_cmd->trans_reg[0].payload[0] = sd_cmd->uhs2_header;
++	sd_cmd->trans_reg[0].payload[1] = swapu32(sd_cmd->argument);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0,
++		"uhs2_sdcmd:header%08X Arg%08X\n", sd_cmd->uhs2_header,
++		sd_cmd->argument);
++
++	/* step3: generate transfer mode reg */
++	sd_cmd->trans_reg[0].trans_mode = 0;
++
++	if (data) {
++		sd_cmd->trans_reg[0].block_size = data->block_size;
++
++		if (sd_cmd->uhs2_header & UHS2_CMD_TMODE_DM)
++			sd_cmd->trans_reg[0].trans_mode |=
++			    SDHCI_UHS2_TRAN_HALF_DUPLEX;
++		if (data->dir == DATA_DIR_OUT)
++			sd_cmd->trans_reg[0].trans_mode |=
++			    SDHCI_UHS2_TRAN_WRITE;
++
++		if (sd_cmd->cmd_flag & CMD_FLG_DMA)
++			sd_cmd->trans_reg[0].trans_mode |=
++			    SDHCI_UHS2_TRAN_DMA_EN;
++
++		if (!(sd_cmd->cmd_flag & CMD_FLG_INF)) {
++			sd_cmd->trans_reg[0].trans_mode |=
++			    SDHCI_UHS2_TRAN_EBSY_WAIT | SDHCI_UHS2_TRAN_BLK_EN;
++			sd_cmd->trans_reg[0].block_cnt = data->block_cnt;
++		} else
++			sd_cmd->trans_reg[0].block_cnt = 0;
++
++		sd_cmd->trans_reg[0].trans_mode |= SDHCI_UHS2_CMD_DATA_PRESENT;
++
++		if (pcard->host->feature.hw_resp_chk
++		    && (sd_cmd->cmd_flag & CMD_FLG_RESCHK)
++		    && (sd_cmd->cmd_flag & (CMD_FLG_R5 | CMD_FLG_R1))
++		    && (!(sd_cmd->cmd_flag & CMD_FLG_INF_CON))) {
++			sd_cmd->hw_resp_chk = 1;
++			if (sd_cmd->cmd_flag & CMD_FLG_R5)
++				sd_cmd->trans_reg[0].trans_mode |=
++				    SDHCI_UHS2_RESP_TYPE_R5;
++			sd_cmd->trans_reg[0].trans_mode |=
++			    SDHCI_UHS2_RESP_CHK | SDHCI_UHS2_RESP_INTR_DIS;
++		}
++	} else {
++		if (sd_cmd->cmd_flag & CMD_FLG_R1B)
++			sd_cmd->trans_reg[0].trans_mode |=
++			    SDHCI_UHS2_TRAN_EBSY_WAIT;
++
++		if (sd_cmd->cmd_index == SD_CMD12)
++			sd_cmd->trans_reg[0].trans_mode |=
++			    SDHCI_UHS2_CMD_TYPE_CMD12;
++	}
++	sd_cmd->trans_reg[0].trans_mode |= ((sd_cmd->payload_cnt + 1) << 26);
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0,
++		"uhs2_sdcmd:trans_mode=%08X\n",
++		sd_cmd->trans_reg[0].trans_mode);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Exit %s\n",
++		__func__);
++	return TRUE;
++
++}
++
++/*
++ * Function Name: uhs2_native_generate
++ * Abstract: This Function is used to generate legacy SDCmd registers
++ *
++ * Input:
++ *			sd_card_t *card : The Command will send to which  Card
++ *			sd_command_t *sd_cmd: This parameter will contail card command info with
++ *				uhs2_head and payload_cnt set
++ * Output:
++ *			sd_command_t *sd_cmd to store register values
++ *
++ * Return value:
++ *
++ *			If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
++ *			otherwize reutrn FALSE
++ * Notes:
++ *
++ *        so giving the routine another name requires you to modify the build tools.
++ */
++
++static bool uhs2_native_generate(sd_card_t *pcard, sd_command_t *sd_cmd)
++{
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Enter %s\n",
++		__func__);
++
++	sd_cmd->trans_reg_cnt = 1;
++	sd_cmd->hw_resp_chk = 0;
++	sd_cmd->trans_reg[0].block_cnt = 0;
++	sd_cmd->trans_reg[0].trans_mode = 0;
++	sd_cmd->trans_reg[0].payload[0] = sd_cmd->uhs2_header;
++	if (sd_cmd->uhs2_set_pld == 0)
++		sd_cmd->payload_cnt = 0;
++	sd_cmd->trans_reg[0].trans_mode |= ((sd_cmd->payload_cnt + 1) << 26);
++	if (UHS2_GET_NATIVE_IOADDR(sd_cmd->uhs2_header) == UHS2_IOADDR_ABORT)
++		sd_cmd->trans_reg[0].trans_mode |= SDHCI_UHS2_CMD_TYPE_ABORT;
++	else if (UHS2_GET_NATIVE_IOADDR(sd_cmd->uhs2_header) ==
++		 UHS2_IOADDR_GODMT)
++		sd_cmd->trans_reg[0].trans_mode |=
++		    SDHCI_UHS2_CMD_TYPE_GODORMANT;
++	else if (UHS2_GET_NATIVE_IOADDR(sd_cmd->uhs2_header) ==
++		 UHS2_IOADDR_FULLRESET)
++		sd_cmd->trans_reg[0].trans_mode |=
++		    SDHCI_UHS2_CMD_TYPE_GODORMANT;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0,
++		"uhs2_native:trans_mode=%08X\n",
++		sd_cmd->trans_reg[0].trans_mode);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Exit %s\n",
++		__func__);
++	return TRUE;
++}
++
++/*
++ * Function Name: uhs2_sdcmd_generate
++ * Abstract: This Function is used to generate legacy SDCmd registers
++ *
++ * Input:
++ *			sd_card_t *pcard : The Command will send to which  Card
++ *			sd_command_t *sd_cmd: This parameter will contail card command info
++ * Output:
++ *			sd_command_t *sd_cmd to store register values
++ *
++ * Return value:
++ *
++ *			If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
++ *			otherwize reutrn FALSE
++ * Notes:
++ *
++ *        so giving the routine another name requires you to modify the build tools.
++ */
++static bool legacy_sdcmd_generate(sd_card_t *pcard, sd_command_t *sd_cmd)
++{
++	int i = 0;
++	sd_host_t *host = pcard->host;
++	sd_data_t *data = sd_cmd->data;
++	u32 flgs = sd_cmd->cmd_flag;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Enter %s\n",
++		__func__);
++
++	sd_cmd->trans_reg_cnt = 1;
++	sd_cmd->hw_resp_chk = 0;
++
++	/* step 1 generate cmd55 registers */
++	if (sd_cmd->app_cmd) {
++		sd_cmd->trans_reg_cnt++;
++
++		sd_cmd->trans_reg[i].block_cnt = 0;
++		sd_cmd->trans_reg[i].block_size = 0;
++		sd_cmd->trans_reg[i].payload[0] = (pcard->info.rca << 16);
++		sd_cmd->trans_reg[i].trans_mode = (SD_CMD55 << 24);
++		sd_cmd->trans_reg[i].trans_mode |= SDHCI_RSP_TYPE_R1;
++		i++;
++	}
++
++	/* step2 generate transmode reg */
++	sd_cmd->trans_reg[i].trans_mode = ((sd_cmd->cmd_index & 0x3f) << 24);
++	sd_cmd->trans_reg[i].payload[0] = sd_cmd->argument;
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0,
++		"legacycmd:cmdidx%08X Arg%08X\n", sd_cmd->cmd_index,
++		sd_cmd->argument);
++
++	if (data) {
++		/* generate block_size and block_cnt and argument register */
++		sd_cmd->trans_reg[i].block_size = data->block_size;
++		if (!(flgs & CMD_FLG_INF))
++			sd_cmd->trans_reg[i].block_cnt = data->block_cnt;
++		else
++			sd_cmd->trans_reg[i].block_cnt = 0;
++
++		sd_cmd->trans_reg[i].trans_mode |= SDCHI_CMD_DATA_PRESENT;
++
++		if (data->dir == DATA_DIR_IN)
++			sd_cmd->trans_reg[i].trans_mode |= SDHCI_TRNS_READ;
++
++		if (sd_cmd->cmd_flag & CMD_FLG_DMA)
++			sd_cmd->trans_reg[i].trans_mode |= SDHCI_TRNS_DMA;
++
++		if (sd_cmd->muldat_cmd) {
++			sd_cmd->trans_reg[i].trans_mode |= SDHCI_TRNS_MULTI;
++
++			if (!(flgs & CMD_FLG_INF)) {
++				sd_cmd->trans_reg[i].trans_mode |=
++				    SDHCI_TRNS_BLK_CNT_EN;
++				if (sd_cmd->cmd_flag & (CMD_FLG_AUTO12 |
++							CMD_FLG_AUTO23)) {
++					if (host->feature.hw_autocmd)
++						sd_cmd->trans_reg[i].trans_mode |=
++						    SDHCI_TRNS_AUTO_CMD12 |
++						    SDHCI_TRNS_AUTO_CMD23;
++					else if (sd_cmd->cmd_flag &
++						 CMD_FLG_AUTO12)
++						sd_cmd->trans_reg[i].trans_mode |=
++						    SDHCI_TRNS_AUTO_CMD12;
++					else
++						sd_cmd->trans_reg[i].trans_mode |=
++						    SDHCI_TRNS_AUTO_CMD23;
++				}
++			}
++		}
++
++		if (host->feature.hw_resp_chk
++		    && (sd_cmd->cmd_flag & CMD_FLG_RESCHK)
++		    && (0 == (sd_cmd->cmd_flag & CMD_FLG_DDR200_WORK_AROUND))
++		    && (sd_cmd->cmd_flag & (CMD_FLG_R5 | CMD_FLG_R1))
++		    && (!(flgs & CMD_FLG_INF_CON))) {
++			sd_cmd->hw_resp_chk = 1;
++			if (sd_cmd->cmd_flag & CMD_FLG_R5)
++				sd_cmd->trans_reg[i].trans_mode |=
++				    SDHCI_TRNS_RESP_R5;
++			sd_cmd->trans_reg[i].trans_mode |=
++			    SDHCI_TRNS_RESP_CHK | SDHCI_TRNS_RESP_INTR_DIS;
++		}
++	} else {
++		if (sd_cmd->cmd_index == SD_CMD12)
++			sd_cmd->trans_reg[i].trans_mode |=
++			    SDHCI_CMD_TYPE_12_OR_52;
++
++	}
++
++	/* generate respone related register */
++	if ((flgs & CMD_FLG_R1) || (flgs & CMD_FLG_R5) || (flgs & CMD_FLG_R6)
++	    || (flgs & CMD_FLG_R7)) {
++		sd_cmd->trans_reg[i].trans_mode |= SDHCI_RSP_TYPE_R1;
++	} else if (flgs & CMD_FLG_R2) {
++		sd_cmd->trans_reg[i].trans_mode |= SDHCI_RSP_TYPE_R2;
++	} else if ((flgs & CMD_FLG_R3) || (flgs & CMD_FLG_R4)) {
++		sd_cmd->trans_reg[i].trans_mode |= SDHCI_RSP_TYPE_R3;
++	} else if (flgs & CMD_FLG_R1B) {
++		sd_cmd->trans_reg[i].trans_mode |= SDHCI_RSP_TYPE_R1B;
++	} else {
++		sd_cmd->trans_reg[i].trans_mode |= SDHCI_RSP_NONE;
++	}
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0,
++		"legacy_sdcmd:trans_mode=%08X\n",
++		sd_cmd->trans_reg[0].trans_mode);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Exit %s\n",
++		__func__);
++
++	return TRUE;
++}
++
++/*
++ * Function Name: cmd_generate_reg
++ * Abstract: This Function is used to generate host register according to Card command
++ *
++ * Input:
++ *			sd_card_t *card : The Command will send to which  Card
++ *			sd_command_t *sd_cmd: This parameter will contail card command info
++ * Output:
++ *			sd_command_t *sd_cmd to store register values
++ *
++ * Return value:
++ *
++ *			If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
++ *			otherwize reutrn FALSE
++ * Notes:
++ *
++ *        so giving the routine another name requires you to modify the build tools.
++ */
++
++bool cmd_generate_reg(sd_card_t *card, sd_command_t *sd_cmd)
++{
++	bool result = FALSE;
++	sd_data_t *data = sd_cmd->data;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Enter %s\n",
++		__func__);
++	X_ASSERT(card != NULL);
++
++	if ((sd_cmd->cmd_flag & CMD_FLG_DMA) == 0)
++		host_chk_ocb_occur(card->host);
++
++	if (cmd_check_card_exist(card, sd_cmd) == FALSE) {
++		DbgErr("Card not exist in %s\n", __func__);
++		goto exit;
++	}
++
++	/* Step1 Generate sd_data according to cmd_flag */
++
++	if (data == NULL)
++		goto step2;
++	if (data->dir == DATA_DIR_NONE)
++		goto exit;
++	if (data->data_mng.total_bytess > SD_BLOCK_LEN) {
++		data->block_size = SD_BLOCK_LEN;
++		data->block_cnt = data->data_mng.total_bytess / SD_BLOCK_LEN;
++	} else {
++		data->block_size = data->data_mng.total_bytess;
++		data->block_cnt = 1;
++	}
++	DbgInfo(MODULE_SD_HOST, FEATURE_RW_TRACE, 0,
++		"block_size=%d block_cnt=%d\n", data->block_size,
++		data->block_cnt);
++
++	/* Step 2, prepare handle sd_cmd to generate uhs2_cmd and cmd_index */
++step2:
++	if (card->host->uhs2_flag)
++		sd_cmd->uhs2_cmd = 1;
++	else
++		sd_cmd->uhs2_cmd = 0;
++
++	if (sd_cmd->cmd_flag & CMD_FLG_MULDATA)
++		sd_cmd->muldat_cmd = 1;
++
++	if (sd_cmd->cmd_index & SD_APPCMD) {
++		sd_cmd->app_cmd = 1;
++		/* Legacy AppCmd case */
++		if (sd_cmd->uhs2_cmd == 0)
++			sd_cmd->trans_reg_cnt = 2;
++	}
++
++	/* Infinite transfer case don't have register setting */
++	if (sd_cmd->cmd_flag & CMD_FLG_INF_CON) {
++		sd_cmd->trans_reg_cnt = 0;
++		result = TRUE;
++		goto exit;
++	}
++
++	/*
++	 * Step3 Generate register for 3 case.
++	 *  (1) UHS2 SD cmd
++	 *  (2) UHS2 Native Cmd
++	 *  (3) Legacy SD cmd
++	 */
++
++	if (sd_cmd->uhs2_cmd && sd_cmd->sd_cmd)
++		result = uhs2_sdcmd_generate(card, sd_cmd);
++	else if (sd_cmd->uhs2_cmd)
++		result = uhs2_native_generate(card, sd_cmd);
++	else
++		result = legacy_sdcmd_generate(card, sd_cmd);
++
++exit:
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Exit %s ret=%d\n",
++		__func__, result);
 +	return result;
 +}
 +
 +/*
-+ * Function Name: func_thermal_control
-+ * Abstract: This Function is used to update thermal control time
-+ *			  This function should be called before send card Read Write
++ * Function Name: wait_fifo_empty
++ * Abstract: This Function is used to wait host fifo empty for write case
 + *
 + * Input:
-+ *			sd_card_t *card
++ *			sd_host_t *host : the host
++ * Output:
 + *
-+ * Return value:
-+ *			TRUE: means ok
-+ *			others means error occur, caller need do error recovery
++ * Return value: None
 + *
 + * Notes:
++ *			this function only use for infinite mode
 + */
-+
-+void func_thermal_update_time(bht_dev_ext_t *pdx)
++static void wait_fifo_empty(sd_host_t *host)
 +{
-+	/* If time check for thermal contorl is not enable do nothing */
-+	if (pdx->thermal.enable == 0 || pdx->thermal.enable_timer_chk == 0)
-+		return;
++	int i = 0;
 +
-+	if (pdx->card.state != CARD_STATE_WORKING
-+	    || pdx->card.card_present == FALSE)
-+		return;
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Enter %s\n",
++		__func__);
 +
-+	if (pdx->card.initialized_once == FALSE)
-+		return;
++#define MAX_FIFO_TIMEOUT 400000
 +
-+	if (pdx->thermal.timeout == 0) {
-+		pdx->thermal.timeout =
-+		    (os_get_cur_tick() >
-+		     (pdx->thermal.last_check_ms +
-+		      pdx->thermal.check_period_ms)) ? 1 : 0;
++	for (i = 0; i < MAX_FIFO_TIMEOUT; i++) {
++		if (sdhci_readl(host, SDHCI_DRIVER_CTRL_REG) &
++		    SDHCI_DRIVER_CTRL_FIFO_EMPTY) {
++			/* 5us */
++			os_udelay(5);
++		} else {
++			break;
++		}
++	}
++
++	if (i == MAX_FIFO_TIMEOUT)
++		DbgErr("Wait FiFo empty failed\n");
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Exit %s\n",
++		__func__);
++}
++
++/*
++ * Function Name: cmd_final_execute
++ * Abstract: This Function is used to Send SD command to host and wait
++ *
++ * Input:
++ *			sd_card_t *card : The Command will send to which  Card
++ *			host_cmd_req_t  *req; Caller need to allocate mem for this
++ *			host_trans_reg_t *reg register value to be set
++ *			sd_command_t *sd_cmd: This parameter will
++ *			contail card command info and reg info
++ *			for adma3 case this reg don't need conatin reg info
++ *         bool bsync:	Last command execute sync or async
++ * Output:
++ *			Whether
++ *
++ * Return value:
++ *
++ *			If the routine succeeds, it must return TRUE
++ *			otherwize reutrn FALSE
++ *
++ */
++static bool cmd_final_execute(sd_card_t *card, sd_command_t *sd_cmd,
++			      host_cmd_req_t *req, host_trans_reg_t *reg)
++{
++	byte buhs2 = sd_cmd->uhs2_cmd;
++	int i = 0;
++	sd_host_t *host = card->host;
++	sd_data_t *data = sd_cmd->data;
++	cfg_item_t *cfg = host->cfg;
++	bool result = FALSE;
++	u32 timeout;
++	bool autocmd23 = FALSE;
++
++	if ((reg->trans_mode & SDHCI_TRNS_AUTO_CMD23)
++	    && (sd_cmd->cmd_flag & CMD_FLG_AUTO23))
++		autocmd23 = TRUE;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Enter %s\n",
++		__func__);
++
++	/* step1 get timeout from configuration */
++	if (data) {
++		if (data->dir == DATA_DIR_IN) {
++			if (sd_cmd->cmd_flag & CMD_FLG_TUNE)
++				timeout = (u32) (TUNING_TIMEOUT & 0x0000ffff);
++			else
++				timeout =
++				    (u32) cfg->timeout_item.test_read_data_timeout.value;
++		} else
++			timeout =
++			    (u32) cfg->timeout_item.test_write_data_timeout.value;
++	} else {
++		if (sd_cmd->sd_cmd == 0)
++			timeout = UHS2_NATIVE_DATA_TIMEOUT;
++		/* timeout = (u32)cfg->timeout_item.uhs2_native_data_timeout.value; */
++		else if (sd_cmd->cmd_flag & CMD_FLG_R1B)
++			timeout =
++			    (u32) cfg->timeout_item.test_r1b_data_timeout.value;
++		else if (sd_cmd->cmd_flag & CMD_FLG_TUNE)
++			timeout = (u32) (TUNING_TIMEOUT & 0x0000ffff);
++		else
++			timeout =
++			    (u32) cfg->timeout_item.test_non_data_timeout.value;
++	}
++
++	if (sd_cmd->timeout != 0)
++		timeout = sd_cmd->timeout;
++
++	/* adma3 don't have argument */
++	if (req->trans_type == TRANS_ADMA3)
++		goto next;
++
++	/* step 2  Set argument register and block register, infinite transfer don't set */
++	if (req->inf_mode != INF_CONTINUE) {
++		if (buhs2) {
++			for (i = 0; i <= sd_cmd->payload_cnt; i++) {
++				sdhci_writel(host, SDHCI_UHS2_CMD_PKG(i * 4),
++					     reg->payload[i]);
++			}
++		} else {
++			sdhci_writel(host, SDHCI_ARGUMENT, reg->payload[0]);
++		}
++
++		if (sd_cmd->data) {
++			if (buhs2) {
++				sdhci_writel(host, SDHCI_UHS2_BLOCK_SIZE,
++					     reg->block_size |
++					     (host->sdma_boundary_val << 12));
++				sdhci_writel(host, SDHCI_UHS2_BLOCK_COUNT,
++					     reg->block_cnt);
++			} else {
++				if (host->sd_host4_enable) {
++					sdhci_writew(host, SDHCI_BLOCK_SIZE,
++						     (host->sdma_boundary_val <<
++						      12) | reg->block_size);
++					sdhci_writel(host, SDHCI_ARGUMENT2,
++						     reg->block_cnt);
++				} else {
++					sdhci_writel(host, SDHCI_BLOCK_SIZE,
++						     (reg->block_cnt << 16) |
++						     (host->sdma_boundary_val <<
++						      12)
++						     | reg->block_size);
++				}
++			}
++
++			/* Host need to set dma mode at init stage */
++		}
++	}
++
++	/* step3 set software structure ready and enable signale intr */
++next:
++	host->cmd_req = req;
++	req->private = sd_cmd;
++	req->card = card;
++	host_led_ctl(host, TRUE);
++	os_init_completion(host->pdx, &req->done);
++
++	/* Clear Status Register */
++	sdhci_writel(host, SDHCI_INT_STATUS,
++		     ~SDHCI_INT_INSERT_REMOVE_CARD_BITS);
++	if (sd_cmd->uhs2_cmd)
++		sdhci_writel(host, SDHCI_UHS2_ERRINT_STS, 0xFFFFFFFF);
++
++	/* step4 update sys addr */
++	if (data) {
++		phy_addr_t sys_addr = data->data_mng.sys_addr;
++
++		switch (req->trans_type) {
++		case TRANS_SDMA:
++			if (buhs2 || host->sd_host4_enable) {
++				sdhci_writel(host, SDHCI_ADMA_ADDRESS,
++					     os_get_phy_addr32l(sys_addr));
++				if (host->bit64_enable)
++					sdhci_writel(host, SDHCI_ADMA_ADDRESSH,
++						     os_get_phy_addr32h
++						     (sys_addr));
++			} else {
++				/* This case only support 32bit */
++				if (autocmd23) {
++					DbgErr
++					    ("SDMA without SD4 enable can't use AutoCmd23\n");
++					sd_cmd->err.error_code =
++					    ERR_CODE_SOFTARE_ARG;
++					goto exit;
++				}
++				sdhci_writel(host, SDHCI_DMA_ADDRESS,
++					     os_get_phy_addr32l(sys_addr));
++			}
++
++			break;
++		case TRANS_ADMA2:
++		case TRANS_ADMA2_SDMA_LIKE:
++			if (req->inf_mode == INF_CONTINUE) {
++				sdhci_or32(host, SDHCI_DRIVER_CTRL_REG,
++					   SDHCI_DRIVER_CTRL_ADMA2_START_INF);
++			} else {
++				sdhci_writel(host, SDHCI_ADMA_ADDRESS,
++					     os_get_phy_addr32l(sys_addr));
++				if (host->bit64_enable)
++					sdhci_writel(host, SDHCI_ADMA_ADDRESSH,
++						     os_get_phy_addr32h
++						     (sys_addr));
++			}
++			break;
++		case TRANS_ADMA3:
++			sdhci_writel(host, SDHCI_ADMA3_ADDRESS,
++				     os_get_phy_addr32l(sys_addr));
++			if (host->bit64_enable)
++				sdhci_writel(host, SDHCI_ADMA3_ADDRESSH,
++					     os_get_phy_addr32h(sys_addr));
++			break;
++		default:
++			break;
++		}
++
++		if (autocmd23 && req->trans_type != TRANS_ADMA3)
++			sdhci_writel(host, SDHCI_DMA_ADDRESS, data->block_cnt);
++	}
++
++	/* cmd12 to stop infinite case */
++	if (sd_cmd->cmd_index == SD_CMD12 && card->has_built_inf) {
++		if (card->last_dir == DATA_DIR_OUT)
++			wait_fifo_empty(host);
++	}
++
++	/* step5 set transfer mode */
++	if (req->inf_mode != INF_CONTINUE && req->trans_type != TRANS_ADMA3) {
++		if (buhs2)
++			sdhci_writel(host, SDHCI_UHS2_TRAN_MODE,
++				     reg->trans_mode);
++		else {
++			/* GPIO2 Trigger for GG8 chip DDR200 write operation: timing issue */
++			if (host->chip_type == CHIP_GG8
++			    && card->info.sw_cur_setting.sd_access_mode ==
++			    SD_FNC_AM_DDR200) {
++				if (card->state == CARD_STATE_WORKING
++				    || sd_cmd->cmd_flag &
++				    CMD_FLG_DDR200_WORK_AROUND
++				    || sd_cmd->cmd_index == SD_CMD12) {
++
++					if ((pci_readl(host, 0x354) & 0xF0) !=
++					    (host->cfg->feature_item.output_tuning_item.fixed_value_sdr104
++					     << 4)) {
++						/* Disable SD clock */
++						sdhci_and32(host,
++							    SDHCI_CLOCK_CONTROL,
++							    ~
++							    (SDHCI_CLOCK_CARD_EN));
++						/* update output phase */
++						pci_andl(host, 0x354,
++							 0xFFFFFF0F);
++						pci_orl(host, 0x354,
++							(host->cfg->feature_item.output_tuning_item.fixed_value_sdr104
++							 << 4));
++
++						/* update input phase */
++						sdhci_and32(host,
++							    SDHCI_DLL_PHASE_CFG,
++							    ~0x1F000000);
++						sdhci_or32(host,
++							   SDHCI_DLL_PHASE_CFG,
++							   (BIT28) |
++							   (card->output_input_phase_pair
++							    [host->cfg->feature_item.output_tuning_item.fixed_value_sdr104]
++							    << 24));
++
++						/* Enable SD clock */
++						sdhci_or32(host,
++							   SDHCI_CLOCK_CONTROL,
++							   (SDHCI_CLOCK_CARD_EN));
++					}
++				}
++
++			}
++			sdhci_writel(host, SDHCI_TRANSFER_MODE,
++				     reg->trans_mode);
++		}
++	}
++
++	/* step6 enable intr        */
++	host_int_sig_update(host,
++			    SDHCI_INT_INSERT_REMOVE_CARD_BITS |
++			    SDHCI_INT_ERROR_MASK | req->int_flag_wait);
++	if (buhs2)
++		host_uhs2_err_sig_update(host, req->int_flag_uhs2_err);
++
++	/* step7 update card command related info   */
++	if (req->inf_mode == INF_BUILT)
++		card->has_built_inf = 1;
++	if (req->inf_mode != INF_NONE && data) {
++		card->last_dir = data->dir;
++		if (card_is_low_capacity(card))
++			card->last_sect =
++			    (sd_cmd->argument / SD_BLOCK_LEN) + data->block_cnt;
++		else
++			card->last_sect = sd_cmd->argument + data->block_cnt;
++	} else if (sd_cmd->cmd_index == SD_CMD12)
++		card->has_built_inf = 0;
++
++	/* step8 wait transfer done */
++	if (host->dump_mode == FALSE && host->poll_mode == FALSE) {
++#if (GBL_ASYNC_PERFEATCH_IO)
++		if (req->issue_post_cb)
++			req->issue_post_cb(host->pdx);
++#endif
++		result = os_wait_for_completion(host->pdx, &req->done, timeout);
++	} else {
++		result = irq_poll_cmd_done(host->pdx, &req->done, timeout);
++	}
++
++	/* timeout */
++	if (result == FALSE) {
++		DbgErr("wait cmd software timeout\n");
++		host_dump_reg(host);
++		irq_disable_sdcmd_int(host);
++		sd_cmd->err.error_code = ERR_CODE_TIMEOUT;
++		host_error_int_recovery_stage1(host, SDHCI_INT_DATCMD_ERR_MASK,
++					       TRUE);
++		goto exit;
++	} else {
++		if (sd_cmd->err.error_code != 0) {
++			result = FALSE;
++			host_dump_reg(host);
++			host_error_int_recovery_stage1(host,
++						       sd_cmd->err.legacy_err_reg,
++						       TRUE);
++		} else {
++			if (sd_cmd->cmd_index == SD_CMD12) {
++				if (sd_cmd->uhs2_cmd == 0)
++					host_cmddat_line_reset(host);
++				/*
++				 * Add 120us delay after send CMD12 to stop infinite transfer to
++				 * fix "FJ2 Customer platform issue #2 ,
++				 * Gloria VAUAO LA-9591P platform ,win8x64,
++				 * SD driver O2FJ2w7 1.2.2.1011,
++				 * emmc card NTFS file can't format".
++				 */
++
++				os_udelay(120);
++			}
++			result = TRUE;
++		}
++	}
++
++exit:
++	host->cmd_req = NULL;
++	if (result == FALSE) {
++		if (buhs2)
++			DbgErr
++			    ("UHS2cmd inf_info=%d cmd=0x%08X transmode=0x%08X err=%08X\n",
++			     req->inf_mode, reg->payload[0], reg->trans_mode,
++			     sd_cmd->err.error_code);
++		else
++			DbgErr
++			    ("Legacycmd inf_info=%d transmode=0x%08X err=%08X, err_reg=%08X\n",
++			     req->inf_mode, reg->trans_mode,
++			     sd_cmd->err.error_code,
++			     sd_cmd->err.legacy_err_reg);
++	}
++
++	if (host->feature.hw_led_fix == 0)
++		host_led_ctl(host, FALSE);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Exit %s result=%d\n",
++		__func__, result);
++	return result;
++}
++
++/*
++ * Function Name: cmd_execute_sync_inner
++ * Abstract: This Function is used to generate host register according to Card command
++ *
++ * Input:
++ *			sd_card_t *card : The Command will send to which  Card
++ *			host_cmd_req_t  *req; Caller need to allocate mem for this
++ *			sd_command_t *sd_cmd: This parameter will
++ *			contail card command info and reg info.
++ *			for adma3 case this reg don't need conatin reg info
++ *         req_callback func_done : call back function to end Srb if necessary
++ *         bool bsync:	Last command execute sync or async
++ * Output:
++ *			Whether
++ *
++ * Return value:
++ *
++ *			If the routine succeeds, it must return TRUE
++ *			otherwize reutrn FALSE
++ *
++ */
++static bool cmd_execute_sync_inner(sd_card_t *card, host_cmd_req_t *req,
++				   sd_command_t *sd_cmd,
++				   req_callback func_done,
++				   issue_post_callback post_cb)
++{
++	int i = 0;
++	bool res = FALSE;
++	sd_data_t *data = sd_cmd->data;
++	u32 timeout = 1000;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Enter %s\n",
++		__func__);
++	if (cmd_check_card_exist(card, sd_cmd) == FALSE) {
++		DbgErr("Card not exist in exec_inner\n");
++		goto end;
++	}
++
++	if (sd_cmd->uhs2_cmd == 0 && !(sd_cmd->cmd_flag & CMD_FLG_INF_CON)) {
++		while (timeout) {
++			if (cmd_dat_line_chk(card, sd_cmd))
++				break;
++			else {
++				os_udelay(10);
++				timeout--;
++			}
++		}
++		if (timeout <= 0) {
++			DbgErr("Check CMD/DAT line inhabit failed\n");
++			goto end;
++		}
++
++	}
++
++	/* Handle Legacy SD Cmd 55 first */
++	if (sd_cmd->app_cmd && sd_cmd->uhs2_cmd == 0) {
++		sd_command_t cmd;
++
++		os_memset(&cmd, 0, sizeof(sd_command_t));
++		os_memset(req, 0, sizeof(host_cmd_req_t));
++
++		req->cb_response = cmd_legacy_response;
++		req->issue_post_cb = NULL;
++		req->inf_mode = INF_NONE;
++		req->card_type = card->card_type;
++		req->trans_type = TRANS_NONDATA;
++		req->int_flag_err = SDHCI_INT_ERR_NON_DATA;
++		req->int_flag_wait = SDHCI_INT_CMD_COMP;
++		cmd.cmd_index = SD_CMD55;
++		cmd.data = NULL;
++		cmd.cmd_flag = CMD_FLG_R1;
++		cmd.uhs2_cmd = sd_cmd->uhs2_cmd;
++		res = cmd_final_execute(card, &cmd, req, &sd_cmd->trans_reg[0]);
++
++		if (res == FALSE) {
++			memcpy(&sd_cmd->err, &cmd.err, sizeof(cmd_err_t));
++			sd_cmd->err.app_stage = 1;
++			goto end;
++		}
++		i++;
++	}
++
++	/* generate host_cmd_req_t */
++	os_memset(req, 0, sizeof(host_cmd_req_t));
++	req->card_type = card->card_type;
++	req->cb_req_complete = func_done;
++	req->issue_post_cb = post_cb;
++
++	if (sd_cmd->cmd_flag & CMD_FLG_INF_BUILD)
++		req->inf_mode = INF_BUILT;
++	else if (sd_cmd->cmd_flag & CMD_FLG_INF_CON)
++		req->inf_mode = INF_CONTINUE;
++	else
++		req->inf_mode = INF_NONE;
++
++	if (sd_cmd->cmd_flag & CMD_FLG_ADMA2)
++		req->trans_type = TRANS_ADMA2;
++	else if (sd_cmd->cmd_flag & CMD_FLG_ADMA_SDMA)
++		req->trans_type = TRANS_ADMA2_SDMA_LIKE;
++	else if (sd_cmd->cmd_flag & CMD_FLG_ADMA3)
++		req->trans_type = TRANS_ADMA3;
++	else if (sd_cmd->cmd_flag & CMD_FLG_SDMA)
++		req->trans_type = TRANS_SDMA;
++	else if (sd_cmd->data)
++		req->trans_type = TRANS_PIO;
++	else
++		req->trans_type = TRANS_NONDATA;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0,
++		"cmd_exec_inner:cmdflag=%08X transtype=%d infmode=%d\n",
++		sd_cmd->cmd_flag, req->trans_type, req->inf_mode);
++
++	req->cb_response =
++	    sd_cmd->uhs2_cmd ? cmd_uhs2_response : cmd_legacy_response;
++
++	/* generate intr flag according to  transfer type */
++	switch (req->trans_type) {
++	case TRANS_PIO:
++		if (sd_cmd->cmd_flag & CMD_FLG_TUNE) {
++			req->int_flag_wait = SDHCI_INT_DATA_AVAIL;
++			req->int_flag_err = SDHCI_INT_ERR_TUNING_CMD;
++		} else {
++			req->int_flag_err = SDHCI_INT_ERR_DATA_CMD;
++			req->int_flag_wait =
++			    SDHCI_INT_CMD_COMP | SDHCI_INT_TRANSFER_COMP;
++			req->int_flag_wait |=
++			    (data->dir ==
++			     DATA_DIR_IN) ? SDHCI_INT_DATA_AVAIL :
++			    SDHCI_INT_SPACE_AVAIL;
++			req->cb_buffer_ready = cmd_piobuff_ready;
++		}
++		break;
++	case TRANS_SDMA:
++		req->int_flag_err = SDHCI_INT_ERR_DATA_CMD;
++		req->int_flag_wait = SDHCI_INT_SDMA_BITS;
++		req->cb_boundary = cmd_sdma_boundary;
++		req->cb_trans_complete = cmd_sdma_trans_done;
++		break;
++	case TRANS_ADMA2:
++	case TRANS_ADMA2_SDMA_LIKE:
++		req->int_flag_err = SDHCI_INT_ERR_ADMA_CMD;
++		req->int_flag_wait = SDHCI_INT_ADMA_BITS;
++		if (req->inf_mode != INF_NONE) {
++			req->int_flag_wait |= SDHCI_INT_DMA_END;
++			req->cb_boundary = cmd_adma2_inf_boundary;
++		} else {
++			if (req->trans_type == TRANS_ADMA2_SDMA_LIKE)
++				req->cb_trans_complete =
++				    cmd_adma2_sdma_like_trans_done;
++		}
++		break;
++	case TRANS_ADMA3:
++		req->int_flag_wait = SDHCI_INT_TRANSFER_COMP;
++		req->int_flag_err = SDHCI_INT_ERR_ADMA_CMD;
++		req->cb_trans_complete = cmd_adma3_trans_done;
++		break;
++
++	default:
++		{
++			req->int_flag_err = SDHCI_INT_ERR_NON_DATA;
++			req->int_flag_wait = SDHCI_INT_CMD_COMP;
++			if (sd_cmd->cmd_flag & CMD_FLG_R1B)
++				req->int_flag_wait |= SDHCI_INT_TRANSFER_COMP;
++		}
++		break;
++	}
++
++	if (req->inf_mode != INF_NONE) {
++		/* Infinte case don't have transfer complete and command complete */
++		req->int_flag_wait &= ~(SDHCI_INT_TRANSFER_COMP);
++		if (req->inf_mode == INF_CONTINUE)
++			req->int_flag_wait &= ~SDHCI_INT_CMD_COMP;
++	}
++	if (sd_cmd->cmd_flag & CMD_FLG_NO_TRANS)
++		req->int_flag_wait &= ~SDHCI_INT_TRANSFER_COMP;
++
++	/* If hardware response check enabled */
++	if (sd_cmd->hw_resp_chk) {
++		req->int_flag_wait &= ~(SDHCI_INT_CMD_COMP);
++		if (sd_cmd->uhs2_cmd == 0)
++			req->int_flag_err |= SDHCI_INT_RESP_ERROR;
++	}
++
++	if (sd_cmd->uhs2_cmd)
++		req->int_flag_uhs2_err = SDHCI_UHS2_INT_ERR_ALL;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0,
++		"cmd_exec_inner:flag_wait=%08X err_wait=%08X uhs2_errwait=%08X\n",
++		req->int_flag_wait, req->int_flag_err, req->int_flag_uhs2_err);
++
++	res = cmd_final_execute(card, sd_cmd, req, &sd_cmd->trans_reg[i]);
++
++end:
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARDCMD_TRACE, 0, "Exit %s ret=%d\n",
++		__func__, res);
++	return res;
++
++}
++
++/*
++ * Function Name: cmd_execute_sync
++ * Abstract: This Function is used to issue sd command and wati sync
++ *
++ * Input:
++ *			sd_card_t *card : The Command will send to which  Card
++ *			sd_command_t *sd_cmd: This parameter will
++ *			contail card command info and reg info
++ *			for adma3 case this reg don't need conatin reg info
++ *			req_callback func_done : call back function to end Srb if necessary
++ * Output:
++ *			Whether
++ *
++ * Return value:
++ *
++ *			If the routine succeeds, it must return TRUE
++ *			otherwize reutrn FALSE
++ *
++ */
++bool cmd_execute_sync(sd_card_t *card, sd_command_t *sd_cmd,
++		      req_callback func_done)
++{
++	return cmd_execute_sync_inner(card, &card->cmd_req, sd_cmd, func_done,
++				      NULL);
++}
++
++/*
++ * Function Name: cmd_execute_sync2
++ * Abstract: This Function is used to issue sd command and wait sync2
++ * Input:
++ *			sd_card_t *card : The Command will send to which  Card
++ *			sd_command_t *sd_cmd: This parameter will
++ *			contail card command info and reg info
++ *			for adma3 case this reg don't need conatin reg info
++ *			host_cmd_req_t  *req: Caller need to allocate mem for this pointer
++ *			req_callback func_done : call back function to end Srb if necessary
++ * Output:
++ *			Whether
++ *
++ * Return value:
++ *
++ *			If the routine succeeds, it must return TRUE
++ *			otherwize reutrn FALSE
++ *
++ */
++bool cmd_execute_sync2(sd_card_t *card, sd_command_t *sd_cmd,
++		       host_cmd_req_t *req, req_callback func_done)
++{
++	return cmd_execute_sync_inner(card, req, sd_cmd, func_done, NULL);
++}
++
++/*
++ * Function Name: cmd_execute_async3
++ * Abstract: This Function is used to issue sd command and
++ *			assign a callback immediately follow issue CMD
++ * Input:
++ *			sd_card_t *card : The Command will send to which  Card
++ *			sd_command_t *sd_cmd: This parameter will
++ *			contail card command info and reg info
++ *			for adma3 case this reg don't need conatin reg info
++ *			host_cmd_req_t  *req: Caller need to allocate mem for this pointer
++ *			req_callback func_done : call back function to end Srb if necessary
++ *			issue_post_callback post_cb: call back function for async operator
++ * Output:
++ *			Whether
++ *
++ * Return value:
++ *
++ *			If the routine succeeds, it must return TRUE
++ *			otherwize reutrn FALSE
++ *
++ */
++bool cmd_execute_sync3(sd_card_t *card, sd_command_t *sd_cmd,
++		       host_cmd_req_t *req, req_callback func_done,
++		       issue_post_callback post_cb)
++{
++#if (GBL_ASYNC_PERFEATCH_IO)
++	return cmd_execute_sync_inner(card, req, sd_cmd, func_done, post_cb);
++#else
++	return cmd_execute_sync_inner(card, req, sd_cmd, func_done, NULL);
++#endif
++}
++
++/*
++ * Function Name: cmd_dat_line_chk
++ * Abstract: This Function is to check whether card is present or not
++ *
++ * Input:
++ *			sd_card_t *card: The Command will send to which  Card
++ *			sd_command_t *sd_cmd: This parameter will
++ *			contail card command info and reg info
++ *			for adma3 case this reg don't need conatin reg info
++ * Output:
++ *
++ * Return value:
++ *
++ *			If the routine succeeds, it must return TRUE
++ *			otherwize reutrn FALSE
++ *
++ */
++bool cmd_dat_line_chk(sd_card_t *card, sd_command_t *sd_cmd)
++{
++	u32 reg = sdhci_readl(card->host, SDHCI_PRESENT_STATE);
++
++	if (reg & SDHCI_CMD_INHIBIT)
++		return FALSE;
++	if (sd_cmd->data && (reg & SDHCI_DATA_INHIBIT))
++		return FALSE;
++	return TRUE;
++}
++
++/*
++ * Function Name: cmd_can_use_inf
++ * Abstract: This Function is to check whether next transfer use infinite or not
++ *
++ * Input:
++ *			sd_card_t *card,
++ *			u32 sec_addr: the start address want to transfer
++ *			u32 sec_cnt: the sector count want to transfer
++ *
++ * Output:
++ *
++ * Return value:
++ *
++ *			If the routine succeeds, it must return TRUE
++ *			otherwize reutrn FALSE
++ *
++ */
++u32 cmd_can_use_inf(sd_card_t *card, e_data_dir dir, u32 sec_addr, u32 sec_cnt)
++{
++	u32 n_fcu = 1;
++	u32 flg = 0;
++	bool buhs2 = card->card_type == CARD_UHS2 ? TRUE : FALSE;
++
++	if (card->inf_trans_enable == 0)
++		goto exit;
++
++	if (buhs2) {
++		n_fcu = card->uhs2_info.uhs2_setting.n_fcu;
++		if (n_fcu == 0)
++			n_fcu = 256;
++		if ((sec_cnt % n_fcu) != 0)
++			goto exit;
++	}
++
++	if (sec_addr != card->last_sect || dir != card->last_dir) {
++		flg = CMD_FLG_INF_BUILD;
++		goto exit;
++	}
++
++	if (card->has_built_inf)
++		flg = CMD_FLG_INF_CON;
++	else
++		flg = CMD_FLG_INF_BUILD;
++
++exit:
++	return flg;
++}
++
++void cmd_set_auto_cmd_flag(sd_card_t *card, u32 *cmd_flag)
++{
++	if (card->card_type != CARD_UHS2 && (*cmd_flag & CMD_FLG_MULDATA)) {
++		/* sd card if support cmd23 */
++		if ((card->card_type == CARD_SD
++		     && card->info.scr.cmd_support & 0x2)) {
++			*cmd_flag |= CMD_FLG_AUTO23;
++		} else
++			*cmd_flag |= CMD_FLG_AUTO12;
 +	}
 +
 +}
 +
-+void thermal_init(bht_dev_ext_t *pdx)
++/*
++ * Function Name: cmd_is_adma_error
++ * Abstract: This Function is to test error interrupt handler
++ *
++ * Input:
++ * sd_command_t *sd_cmd
++ *
++ * Output:
++ *
++ * Return value:
++ *
++ * True: Adma error occur
++ *
++ */
++bool cmd_is_adma_error(sd_command_t *sd_cmd)
 +{
-+	pdx->thermal.enable = 0;
-+	if (pdx->thermal.enable == 0)
-+		return;
-+	pdx->thermal.use_i2c = 0;
-+	pdx->thermal.last_check_ms = os_get_cur_tick();
-+	pdx->thermal.enable_timer_chk = 0;
-+	pdx->thermal.check_period_ms = 0;
-+	DbgInfo(MODULE_THERMAL, FEATURE_DRIVER_INIT, NOT_TO_RAM,
-+		"thermal enable=%d i2c=%d timechk=%dms chkperiod=%dms\n",
-+		pdx->thermal.enable, pdx->thermal.use_i2c,
-+		pdx->thermal.enable_timer_chk, pdx->thermal.check_period_ms);
++	if (sd_cmd == NULL)
++		return FALSE;
 +
++	if ((sd_cmd->err.legacy_err_reg & SDHCI_INT_ADMA_ERROR) ||
++	    (sd_cmd->uhs2_cmd
++	     && (sd_cmd->err.uhs2_err_reg & SDHCI_UHS2_INT_ADMA)))
++		return TRUE;
++	return FALSE;
 +}
-+
-+void thermal_uninit(bht_dev_ext_t *pdx)
-+{
-+	if (pdx->thermal.enable == 0)
-+		return;
-+	pdx->thermal.last_check_ms = os_get_cur_tick();
-+}
-diff --git a/drivers/scsi/bht/card/uhs2.c b/drivers/scsi/bht/card/uhs2.c
+diff --git a/drivers/scsi/bht/host/handler.h b/drivers/scsi/bht/host/handler.h
 new file mode 100644
-index 000000000000..6f9511b5d33d
+index 000000000000..743a4065564b
 --- /dev/null
-+++ b/drivers/scsi/bht/card/uhs2.c
-@@ -0,0 +1,1228 @@
-+// SPDX-License-Identifier: GPL-2.0-only
++++ b/drivers/scsi/bht/host/handler.h
+@@ -0,0 +1,36 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
 + * Copyright (c) 2014 BHT Inc.
 + *
-+ * File Name: uhs2.c
++ * File Name: handler.h
 + *
-+ * Abstract: SD UHS2 card initialization
++ * Abstract: Handler for interrupt and dma buffer manager apis
 + *
 + * Version: 1.00
 + *
-+ * Author: peter.guo
++ * Author: Peter.Guo
 + *
 + * Environment:	OS Independent
 + *
 + * History:
 + *
-+ * 10/10/2014		Creation	Peter.Guo
++ * 9/5/2014		Creation	Peter.guo
 + */
 +
++u32 cmd_legacy_response(void *card, void *host_request);
++
++u32 cmd_uhs2_response(void *card, void *host_request);
++
++u32 cmd_piobuff_ready(void *card, void *host_request);
++
++u32 cmd_sdma_boundary(void *card, void *host_request);
++
++u32 cmd_adma2_inf_boundary(void *card, void *host_request);
++
++u32 cmd_adma2_sdma_like_trans_done(void *card, void *host_request);
++
++u32 cmd_adma3_trans_done(void *card, void *host_request);
++
++u32 cmd_sdma_trans_done(void *card, void *host_request);
++
++bool irq_poll_cmd_done(bht_dev_ext_t *pdx, completion_t *p, s32 timeout_ms);
+diff --git a/drivers/scsi/bht/host/host.c b/drivers/scsi/bht/host/host.c
+new file mode 100644
+index 000000000000..aefb3680637d
+--- /dev/null
++++ b/drivers/scsi/bht/host/host.c
+@@ -0,0 +1,2947 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2014 BHT Inc.
++ *
++ * File Name: host.c
++ *
++ * Abstract: Include host related common functions.
++ *
++ * Version: 1.00
++ *
++ * Author: Samuel
++ *
++ * Environment:	OS Independent
++ *
++ * History:
++ *
++ * 9/2/2014		Creation	Samuel
++ */
 +#include "../include/basic.h"
-+#include "../include/cmdhandler.h"
-+#include "../include/cardapi.h"
++#include "../include/host.h"
++#include "hostreg.h"
 +#include "../include/hostapi.h"
-+#include "cardcommon.h"
-+#include "../include/util.h"
 +#include "../include/debug.h"
++#include "hostven.h"
++#include "../include/util.h"
++#include "../include/hostvenapi.h"
++#define UHS2_VENCNT_OFFSET		0x10
++#define UHS2_DAT3MD_OFFSET		0x14
++#define UHS2_EXTCNT_OFFSET		0x18
++#define UHS2_VENGIO_OFFSET		0x20
++#define GPIO2 0
++#define GPIO3 1
++#define GPIO_HIGHT 1
++#define GPIO_LOW 0
++#define START_BIT 0
++#define END_BIT 1
++#define SPECIAL_PATTERN 2
++#define UHS1_BIT_EN (1 << 0)
++#define UHS2_BIT_EN (1 << 1)
++#define SD70_BIT_EN (1 << 2)
++#define VDD1_BIT_EN (1 << 4)
++#define VDD2_BIT_EN (1 << 5)
++static void host_uhs2_init_capability(sd_host_t *host);
++static void host_pll_enable(sd_host_t *host, bool enable);
++static void host_uhs2_reg_clean(sd_host_t *host);
++static byte host_get_datline_state(sd_host_t *host);
++/* static byte host_get_cmdline_state(sd_host_t *host); */
++static u16 host_check_1_8v_signal(sd_host_t *host);
++void host_enable_clock(sd_host_t *host, bool on);
++static bool host_uhs2_wait_dmt(sd_host_t *host);
 +
-+#define UHS2_DEVINIT_CF			0x00000800
-+#define UHS2_DEVINIT_GAP		0x0000000F
-+#define UHS2_ENUM_PLD			0x00000000
-+#define UHS2_GODRM_HBNEN		0x00000080
-+#define UHS2_ENMR_IDF			0x000000F0
-+#define UHS2_ENMR_IDL			0x0000000F
-+
-+#define	UHS2_LANES_2L_HD	0x00
-+#define	UHS2_LANES_2D1UFD	0x02
-+#define	UHS2_LANES_1D2UFD	0x03
-+#define	UHS2_LANES_2D2UFD	0x04
-+
-+#define UHS2_UNRECOVER_ERROR	(BIT0 | BIT2 | BIT7)
-+
-+static inline bool uhs2_is_uncoverable(sd_command_t *sd_cmd)
++static void host_update_clock(sd_host_t *host, u32 basediv)
 +{
-+	if ((sd_cmd->err.error_code == ERR_CODE_TIMEOUT) ||
-+	    (sd_cmd->err.uhs2_err_reg & UHS2_UNRECOVER_ERROR))
++
++	/* 1. Clear Divider */
++	u32 reg;
++
++	sdhci_and32(host, SDHCI_CLOCK_CONTROL, SDHCI_DIVIDER_CLEAR);
++	reg = (((basediv << 8) & 0xff00) | ((basediv & 0x300) >> 2));
++	sdhci_or32(host, SDHCI_CLOCK_CONTROL, reg);
++}
++
++/*
++ *
++ * Function Name: host_set_highspeed
++ *
++ * Abstract:
++ *
++ *			 1. Set Host to Highspeed or clear Highspeed
++ *
++ * Input:
++ *
++ *			sd_host_t *host: Pointer to the host structure
++ *           bool on: Highspeed on
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			None.
++ *
++ * Notes:
++ *
++ *           Caller: sd_switch_function_set, sd_legacy_init
++ */
++void host_set_highspeed(sd_host_t *host, bool on)
++{
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, on=%d\n", __func__, on);
++
++	if (on)
++		sdhci_or32(host, SDHCI_HOST_CONTROL, SDHCI_CTRL_HISPD);
++	else
++		sdhci_and32(host, SDHCI_HOST_CONTROL, ~(SDHCI_CTRL_HISPD));
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++
++}
++
++void host_set_tuning_mode(sd_host_t *host, bool hw_mode)
++{
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, hw_mode=%d\n", __func__, hw_mode);
++
++	/* 1. Set the HW/SW tuning mode */
++	if (hw_mode) {
++		/* Set driver HW mode here, 0x110[4] set 1'b0 to enable HW mode */
++		sdhci_and16(host, SDHCI_VEN_SPEC_CTRL, ~(SDHCI_HW_TUNING));
++	} else {
++		/* Set driver SW mode here, 0x110[4] set 1'b1 to enable SW mode */
++		sdhci_or16(host, SDHCI_VEN_SPEC_CTRL, (SDHCI_HW_TUNING));
++	}
++
++	/* 2. Trigger tuning phase */
++	sdhci_or16(host, SDHCI_HOST_CONTROL2, SDHCI_CTRL_EXEC_TUNING);
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++
++}
++
++bool host_chk_tuning_comp(sd_host_t *host, bool hwtuning)
++{
++	u16 regval;
++	u32 delay_ms = 1;
++	loop_wait_t wait;
++	bool ret = FALSE;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, hwtuning=%d\n", __func__, hwtuning);
++
++	if (hwtuning) {
++		/* Check HW tuning complete */
++		util_init_waitloop(host->pdx, 100, delay_ms * 1000, &wait);
++		do {
++			/* Check tuning complete */
++			regval = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++			if ((regval & SDHCI_CTRL_EXEC_TUNING) == 0) {
++				regval = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++				if ((regval & SDHCI_CTRL_TUNED_CLK)) {
++					DbgInfo(MODULE_SD_HOST,
++						FEATURE_CARD_INIT, NOT_TO_RAM,
++						"Tuning function %d OK!\n");
++					ret = TRUE;
++				} else {
++					DbgErr(" - Tuning failed.\n");
++				}
++				break;
++			}
++			/* Delay 1ms */
++			os_mdelay(delay_ms);
++		} while (!util_is_timeout(&wait));
++	} else {
++		regval = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++		if ((regval & SDHCI_CTRL_EXEC_TUNING) == 0) {
++			DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++				"Tuning function %d OK!\n");
++			ret = TRUE;
++		}
++	}
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++	return ret;
++}
++
++void host_enable_pll_software_reset(sd_host_t *host, bool on)
++{
++	loop_wait_t wait;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s on=%d\n", __func__, on);
++
++	/* Force L0 before PLL reset:0x3E4[23] = 1 */
++	pci_orl(host, 0x3e4, BIT23);
++	if (on) {
++		sdhci_or32(host, SDHCI_DLL_WATCH_DOG, (SDHCI_PLL_RESET));
++		util_init_waitloop(host->pdx, 5000, 10, &wait);
++		while (!util_is_timeout(&wait)) {
++			if ((sdhci_readl(host, SDHCI_DLL_WATCH_DOG) &
++			     SDHCI_PLL_UNLOCKBIT) == 0) {
++				break;
++			}
++		}
++	} else {
++		sdhci_and32(host, SDHCI_DLL_WATCH_DOG, ~(SDHCI_PLL_RESET));
++		util_init_waitloop(host->pdx, 5000, 10, &wait);
++		while (!util_is_timeout(&wait)) {
++			if (sdhci_readl(host, SDHCI_DLL_WATCH_DOG) &
++			    SDHCI_PLL_UNLOCKBIT) {
++				break;
++			}
++		}
++	}
++	/* Cancel force L0 before PLL reset */
++	pci_andl(host, 0x3e4, ~BIT23);
++	os_mdelay(10);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++
++}
++
++void host_change_clock(sd_host_t *host, u32 value)
++{
++	u32 dmdn, basediv;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, value=0x%x\n", __func__, value);
++	basediv = value & 0x7FFF;
++	dmdn = ((value & 0xFFFF0000) >> 16);
++
++	host_enable_clock(host, FALSE);
++	host_enable_pll_software_reset(host, TRUE);
++	hostven_update_dmdn(host, dmdn);
++	host_update_clock(host, basediv);
++	host_enable_pll_software_reset(host, FALSE);
++	host_enable_clock(host, TRUE);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++void host_init_clock(sd_host_t *host, u32 value)
++{
++	u32 dmdn, basediv;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, value=0x%x\n", __func__, value);
++	basediv = value & 0x7FFF;
++	dmdn = ((value & 0xFFFF0000) >> 16);
++
++	hostven_update_dmdn(host, dmdn);
++	host_update_clock(host, basediv);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++void host_init_400k_clock(sd_host_t *host)
++{
++	if (host->cfg == NULL || host->cfg->dmdn_tbl == NULL) {
++		DbgErr("Host cfg is null\n");
++		return;
++	}
++
++	host_init_clock(host, host->cfg->dmdn_tbl[FREQ_400K_START_INDEX]);
++}
++
++static void host_enable_clock_nodelay(sd_host_t *host, bool on)
++{
++	loop_wait_t wait;
++	u32 delay_us = 1;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_OPS | FEATURE_CARD_INIT,
++		NOT_TO_RAM, "Enter %s on=%d\n", __func__, on);
++	if (on == FALSE) {
++		util_init_waitloop(host->pdx, 5000, delay_us, &wait);
++		while (!util_is_timeout(&wait)) {
++			if ((sdhci_readl(host, SDHCI_PRESENT_STATE) &
++			     (SDHCI_CMD_INHIBIT | SDHCI_DATA_INHIBIT)) == 0)
++				break;
++			/* avoid long wait for 7.0 SD driver switch to NVMe */
++			else if (host->sd_express_flag == TRUE)
++				break;
++			else if (sdhci_readl(host, SDHCI_PRESENT_STATE) ==
++				 0xffffffff)
++				break;
++
++			os_udelay(delay_us);
++		}
++		sdhci_and16(host, SDHCI_CLOCK_CONTROL, ~(SDHCI_CLOCK_CARD_EN));
++	} else {
++		/* enable SD clock */
++		sdhci_or32(host, SDHCI_CLOCK_CONTROL, (SDHCI_CLOCK_CARD_EN));
++	}
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_OPS | FEATURE_CARD_INIT,
++		NOT_TO_RAM, "Exit %s\n", __func__);
++}
++
++void host_enable_clock(sd_host_t *host, bool on)
++{
++	u16 reg = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s on=%d\n", __func__, on);
++
++	if (on && (reg & SDHCI_CLOCK_CARD_EN))
++		goto exit;
++	else if ((on == 0) && (!(reg & SDHCI_CLOCK_CARD_EN)))
++		goto exit;
++
++	host_enable_clock_nodelay(host, on);
++
++exit:
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++/*
++ *
++ * Function Name: host_dma_select
++ *
++ * Abstract:
++ *
++ *			 1. select HOST dma mode
++ *
++ * Input:
++ *
++ *			sd_host_t *host: Pointer to the host structure
++ *           e_trans_type mode
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			None.
++ *
++ * Notes:
++ *
++ *           Caller: sd_legacy_init
++ */
++
++void host_dma_select(sd_host_t *host, e_trans_type mode)
++{
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	sdhci_and32(host, SDHCI_HOST_CONTROL, ~(SDHCI_CTRL_DMA_MASK));
++	switch (mode) {
++	case TRANS_SDMA:
++		sdhci_or32(host, SDHCI_HOST_CONTROL, SDHCI_CTRL_SDMA);
++		break;
++	case TRANS_ADMA2:
++		sdhci_or32(host, SDHCI_HOST_CONTROL, SDHCI_CTRL_ADMA32);
++		break;
++	case TRANS_ADMA3:
++		sdhci_or32(host, SDHCI_HOST_CONTROL, SDHCI_CTRL_ADMA64);
++		break;
++	default:
++		sdhci_or32(host, SDHCI_HOST_CONTROL, SDHCI_CTRL_ADMA32);
++		break;
++	}
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++
++}
++
++void host_set_uhs_mode(sd_host_t *host, byte uhs_mode)
++{
++	u16 reg = 0;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, access_mode=%d\n", __func__, uhs_mode);
++
++	reg = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++	reg &= ~SDHCI_CTRL_UHS_MASK;
++	reg |= uhs_mode;
++	sdhci_writew(host, SDHCI_HOST_CONTROL2, reg);
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++
++}
++
++/*
++ *
++ * Function Name: host_set_buswidth
++ *
++ * Abstract:
++ *
++ *			 1. Set BUS WIDTH(4bit or 1bit) Function
++ *
++ * Input:
++ *
++ *			sd_host_t *host: Pointer to the host structure
++ *           bool bus_width_4: 4Bit or not.
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			None.
++ *
++ * Notes:
++ *
++ *           Caller: sd_legacy_init
++ */
++void host_set_buswidth(sd_host_t *host, e_bus_width width)
++{
++	u16 reg;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, width=%d\n", __func__, width);
++
++	reg = sdhci_readw(host, SDHCI_HOST_CONTROL);
++	reg &= ~(SDHCI_CTRL_4BITBUS | SDHCI_CTRL_8BITBUS);
++	switch (width) {
++	case BUS_WIDTH4:
++		reg |= SDHCI_CTRL_4BITBUS;
++		break;
++	case BUS_WIDTH8:
++		reg |= SDHCI_CTRL_8BITBUS;
++		break;
++	default:
++		break;
++	}
++
++	sdhci_writew(host, SDHCI_HOST_CONTROL, reg);
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++
++}
++
++static byte host_get_datline_state(sd_host_t *host)
++{
++	u32 data_line_state = 0;
++
++	data_line_state = sdhci_readl(host, SDHCI_PRESENT_STATE);
++	data_line_state &= SDHCI_DATA_LVL_MASK;
++	data_line_state = data_line_state >> SDHCI_DATA_LVL_SHIFT;
++
++	return (byte) data_line_state;
++}
++
++/*
++ *	static byte host_get_cmdline_state(sd_host_t *host)
++ *	{
++ *		u32 regval = 0;
++ *
++ *		regval = sdhci_readl(host, SDHCI_PRESENT_STATE);
++ *		regval &= SDHCI_CMD_LVL_MASK;
++ *		regval = regval >> SDHCI_CMD_LVL_SHIFT;
++ *
++ *		return (byte) regval;
++ *	}
++ */
++
++void host_1_8v_sig_set(sd_host_t *host, bool enable)
++{
++	u16 regval;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, enable=%d\n", __func__, enable);
++
++	if (enable) {
++		regval = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++		regval |= SDHCI_CTRL_VDD_180;
++		sdhci_writew(host, SDHCI_HOST_CONTROL2, regval);
++	} else {
++		regval = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++		regval &= ~(SDHCI_CTRL_VDD_180);
++		sdhci_writew(host, SDHCI_HOST_CONTROL2, regval);
++	}
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++void host_sig_vol_set(sd_host_t *host, e_sig_vol sig_vol)
++{
++	u16 regval;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, sig_vol=%d\n", __func__, sig_vol);
++
++	/* 0x3e[3], clear 1.8V Signal Voltage */
++	regval = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++	regval &= ~(SDHCI_CTRL_VDD_180);
++	sdhci_writew(host, SDHCI_HOST_CONTROL2, regval);
++
++	/* 0x1cc[31], clear 1.2V Signal Voltage */
++	sdhci_and32(host, SDHCI_DLL_WATCH_DOG, ~(SDHCI_CTRL_VDD2_120));
++
++	if (sig_vol == SIG_VOL_18) {
++		regval = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++		regval |= SDHCI_CTRL_VDD_180;
++		sdhci_writew(host, SDHCI_HOST_CONTROL2, regval);
++	} else if (sig_vol == SIG_VOL_12) {
++		regval = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++		regval |= SDHCI_CTRL_VDD_180;
++		sdhci_writew(host, SDHCI_HOST_CONTROL2, regval);
++
++		sdhci_or32(host, SDHCI_DLL_WATCH_DOG, SDHCI_CTRL_VDD2_120);
++	}
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++static u16 host_check_1_8v_signal(sd_host_t *host)
++{
++	u16 regval;
++
++	regval = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++	regval &= SDHCI_CTRL_VDD_180;
++	return regval;
++}
++
++/*
++ *	static bool host_check_voltage_stable(sd_host_t *host)
++ *	{
++ *		bool ret = FALSE;
++ *		u32 delay_ms = 1;
++ *		loop_wait_t wait;
++ *
++ *		if (host->feature.hw_41_supp == 0) {
++ *			ret = TRUE;
++ *			goto exit;
++ *		}
++ *
++ *		util_init_waitloop(host->pdx, 50, delay_ms * 1000, &wait);
++ *		while (!util_is_timeout(&wait)) {
++ *			if ((sdhci_readl(host, SDHCI_PRESENT_STATE) & (1 << 25)) != 0) {
++ *				DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++ *					"check voltage stable!\n");
++ *				ret = TRUE;
++ *				break;
++ *			}
++ *			os_mdelay(delay_ms);
++ *		}
++ *	exit:
++ *		return ret;
++ *	}
++ */
++
++void host_led_ctl(sd_host_t *host, bool on)
++{
++	if (on) {
++		host->led_on = TRUE;
++		sdhci_or16(host, SDHCI_HOST_CONTROL, SDHCI_CTRL_LED);
++		if (host->chip_type == CHIP_SEABIRD)
++			pci_orl(host, 0xd4, 0x40);
++	} else {
++		host->led_on = FALSE;
++		sdhci_and16(host, SDHCI_HOST_CONTROL, ~SDHCI_CTRL_LED);
++		if (host->chip_type == CHIP_SEABIRD)
++			pci_andl(host, 0xd4, ~0x40);
++	}
++}
++
++/*
++ *
++ * Function Name: host_set_vdd1_power
++ *
++ * Abstract:
++ *
++ *            1. Set SD Bus Voltage Select for VDD1
++ *			 2. VDD1 power on/off
++ *
++ * Input:
++ *
++ *			sd_host_t *host: Pointer to the host structure
++ *           bool on_off: power On or Off.
++ *           u32 vol_sel:
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			None.
++ *
++ * Notes:
++ *
++ *           Caller: sd_legacy_init
++ */
++void host_set_vdd1_power_nodelay(sd_host_t *host, bool on, u32 vol_sel)
++{
++	u16 regval;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT | FEATURE_CARD_OPS,
++		NOT_TO_RAM, "Enter %s, on=%d, vol_sel=0x%x\n", __func__, on,
++		vol_sel);
++
++	regval = sdhci_readw(host, SDHCI_HOST_CONTROL);
++
++	if (on) {
++		/* Clear the SD Bus Voltage Select for VDD1 */
++		regval &= ~(SDHCI_POWER_VDD1_MASK);
++
++		/* Select VDD1 voltage */
++		if (vol_sel == SDHCI_POWER_VDD1_180) {
++			regval |= SDHCI_POWER_VDD1_180;
++			DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++				"Set VDD1 Voltage Select to 1.8V\n");
++
++		} else if (vol_sel == SDHCI_POWER_VDD1_300) {
++			regval |= SDHCI_POWER_VDD1_300;
++			DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++				"Set VDD1 Voltage Select to 3.0V\n");
++		} else if (vol_sel == SDHCI_POWER_VDD1_330) {
++			regval |= SDHCI_POWER_VDD1_330;
++			DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++				"Set VDD1 Voltage Select to 3.3V\n");
++		}
++		/* Set SD Bus Power Select for VDD1 and Power ON VDD1. */
++		DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++			"Set VDD1 Power ON\n");
++		sdhci_writew(host, SDHCI_HOST_CONTROL,
++			     regval | SDHCI_POWER_VDD1_ON);
++
++	} else {
++		/* Power off the VDD1 */
++		regval &= ~(SDHCI_POWER_VDD1_ON | SDHCI_POWER_VDD1_MASK);
++		sdhci_writew(host, SDHCI_HOST_CONTROL, regval);
++		DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++			"Set VDD1 Power OFF\n");
++
++	}
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT | FEATURE_CARD_OPS,
++		NOT_TO_RAM, "Exit %s\n", __func__);
++}
++
++void host_set_vdd1_power(sd_host_t *host, bool on, u32 vol_sel)
++{
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, on=%d, vol_sel=0x%x\n", __func__, on, vol_sel);
++
++	host_set_vdd1_power_nodelay(host, on, vol_sel);
++	if (on) {
++		os_mdelay(host->cfg->timeout_item.power_wait_time.power_on_wait_ms);
++		host_chk_ocb_occur(host);
++	} else {
++		os_mdelay(host->cfg->timeout_item.power_wait_time.power_off_wait_ms);
++	}
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++/*
++ *
++ * Function Name: host_set_vdd2_power
++ *
++ * Abstract:
++ *
++ *            1. Set SD Bus Voltage Select for VDD2
++ *			 2. VDD2 power on/off
++ *
++ * Input:
++ *
++ *			sd_host_t *host: Pointer to the host structure
++ *           bool on_off: power On or Off.
++ *           u32 vol_sel:
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			None.
++ *
++ * Notes:
++ *
++ *           Caller: sd_legacy_init
++ */
++
++void host_set_vdd2_power(sd_host_t *host, bool on, u32 vol_sel)
++{
++	u16 regval;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, on=%d, vol_sel=0x%x\n", __func__, on, vol_sel);
++
++	regval = sdhci_readw(host, SDHCI_HOST_CONTROL);
++	if (on) {
++		/* Clear the SD Bus Voltage Select for VDD2 */
++		regval &= ~(SDHCI_POWER_VDD2_MASK);
++
++		/* Select VDD2 voltage */
++		if (vol_sel == SDHCI_POWER_VDD2_180) {
++			regval |= SDHCI_POWER_VDD2_180;
++			DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++				"Set VDD2 Voltage Select to 1.8V\n");
++
++		} else if (vol_sel == SDHCI_POWER_VDD2_120) {
++			regval |= SDHCI_POWER_VDD2_120;
++			DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++				"Set VDD2 Voltage Select to 1.2V\n");
++
++		}
++		/* Set SD Bus Power Select for VDD1 and Power ON VDD1. */
++		sdhci_writew(host, SDHCI_HOST_CONTROL,
++			     regval | SDHCI_POWER_VDD2_ON);
++		DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++			"Set VDD2 Power ON\n");
++
++		host_chk_ocb_occur(host);
++	} else {
++		/* Power off the VDD2 */
++		regval &= ~(SDHCI_POWER_VDD2_ON | SDHCI_POWER_VDD2_MASK);
++		sdhci_writew(host, SDHCI_HOST_CONTROL, regval);
++		DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++			"Set VDD2 Power OFF\n");
++	}
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++void host_set_vddx_power(sd_host_t *host, u8 vddx, bool on)
++{
++	cfg_vdd_power_source_item_t *cfg =
++		&host->cfg->host_item.vdd_power_source_item;
++	u16 regval;
++	u32 regval32;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	if (host->cfg->driver_item.camera_mode_ctrl_vdd1_vdd2_cd == 1)
++		goto camera_mode;
++	else
++		goto pc_mode;
++
++pc_mode:
++
++	switch (vddx) {
++	case VDD1:
++		{
++			/*
++			 * power source internal/external and polarity refer to:
++			 * hosteven.c: hostven_bios_cfg()
++			 */
++
++			if (on) {
++
++				/* set power voltage */
++				if (cfg->vdd1_voltage == VDDX_PWR_VOLTAGE_3V3) {
++					/* set vdd1 3.3V and power on it */
++					regval =
++					    sdhci_readw(host,
++							SDHCI_POWER_CONTROL);
++					regval |= (0xF << 0);
++					sdhci_writew(host, SDHCI_POWER_CONTROL,
++						     regval);
++					DbgInfo(MODULE_SD_HOST,
++						FEATURE_CARD_INIT, NOT_TO_RAM,
++						"Set VDD1 Power On\n");
++
++				} else {
++					DbgErr("VDD1 only support 3.3V!\n");
++				}
++
++				/*
++				 * delay to avoid 3.3V power switch signal level issue.
++				 * no need this delay for VDD2, VDD3
++				 */
++				os_mdelay(host->cfg->timeout_item.power_wait_time.power_on_wait_ms);
++			} else {
++				/* set vdd1 power off */
++				regval = sdhci_readw(host, SDHCI_POWER_CONTROL);
++				regval &= ~(0xF << 0);
++				sdhci_writew(host, SDHCI_POWER_CONTROL, regval);
++				DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT,
++					NOT_TO_RAM, "Set VDD1 Power Off\n");
++
++				os_mdelay(host->cfg->timeout_item.power_wait_time.power_off_wait_ms);
++			}
++
++		}
++		break;
++
++	case VDD2:
++		{
++			/*
++			 * power source internal/external and polarity refer to:
++			 * hosteven.c: hostven_bios_cfg()
++			 */
++
++			if (on) {
++				/* set power voltage */
++				regval = sdhci_readw(host, SDHCI_POWER_CONTROL);
++				if (cfg->vdd2_voltage == VDDX_PWR_VOLTAGE_1V8) {
++					/* VDD2 1.8V and power on. */
++					regval &= ~(0xF << 4);
++					regval |= (0xB << 4);
++					DbgInfo(MODULE_SD_HOST,
++						FEATURE_CARD_INIT, NOT_TO_RAM,
++						"Set VDD2 Power On 1.8V\n");
++				} else if (cfg->vdd2_voltage ==
++					   VDDX_PWR_VOLTAGE_1V2) {
++					/* VDD2 1.2V and power on. */
++					regval &= ~(0xF << 4);
++					regval |= (0x9 << 4);
++					DbgInfo(MODULE_SD_HOST,
++						FEATURE_CARD_INIT, NOT_TO_RAM,
++						"Set VDD2 Power On 1.2V\n");
++				} else {
++					DbgErr
++					    ("VDD2 only support 1.8V or 1.2V!\n");
++				}
++				sdhci_writew(host, SDHCI_POWER_CONTROL, regval);
++
++				/* set on-off control by gpio */
++				if (cfg->vdd2_use_gpio1) {
++					/* use gpio1 as on-off control */
++					regval =
++					    ven_readw(host,
++						      SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++
++					/* active high */
++					if (cfg->vdd2_onoff_polarity ==
++					    VDDX_POLARITY_ACTIVE_HIGH) {
++						/* enable gpio1 && output high. */
++						regval |= (1 << 3) | (1 << 5);
++					} else {
++						/* enable gpio1 && output low. */
++						regval |= (1 << 3);
++						regval &= ~(1 << 5);
++					}
++					ven_writew(host,
++						   SDBAR1_GPIO_FUNC_GPIOCTRL_510,
++						   regval);
++
++					if (host->sd_express_flag == TRUE) {
++						/*
++						 * VDD2 set GPIO power control inverter for
++						 * SD7.0 switch to SD driver
++						 * hardware auto power-off.
++						 */
++						regval =
++						    ven_readw(host,
++							      SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++						regval |= (1 << 7);
++						ven_writew(host,
++							   SDBAR1_GPIO_FUNC_GPIOCTRL_510,
++							   regval);
++					}
++
++				}
++
++			}
++			/* power off */
++			else {
++
++				/* common part for all power source cases */
++				regval = sdhci_readw(host, SDHCI_POWER_CONTROL);
++				/* set vdd2 power off */
++				regval &= ~(0xF << 4);
++				sdhci_writew(host, SDHCI_POWER_CONTROL, regval);
++				DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT,
++					NOT_TO_RAM, "Set VDD2 Power Off\n");
++
++				/* use gpio1 as on-off control */
++				if (cfg->vdd2_use_gpio1) {
++					regval =
++					    ven_readw(host,
++						      SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++					/* active high */
++					if (cfg->vdd2_onoff_polarity ==
++					    VDDX_POLARITY_ACTIVE_HIGH) {
++						/* gpio1 output low to set power off. */
++						regval &= ~(1 << 5);
++					} else {
++						/* gpio1 output high to set power off. */
++						regval |= (1 << 5);
++					}
++					ven_writew(host,
++						   SDBAR1_GPIO_FUNC_GPIOCTRL_510,
++						   regval);
++
++					if (host->sd_express_flag == TRUE) {
++						/* VDD2 clear GPIO power control */
++						regval =
++						    ven_readw(host,
++							      SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++						regval &= ~(1 << 7);
++						ven_writew(host,
++							   SDBAR1_GPIO_FUNC_GPIOCTRL_510,
++							   regval);
++					}
++
++				}
++
++			}
++
++		}
++		break;
++
++	case VDD3:
++		{
++			/*
++			 * power source internal/external and polarity refer to:
++			 * hosteven.c: hostven_bios_cfg()
++			 */
++			if (on) {
++
++				/* set power enable, Enable VDD3 */
++				regval32 =
++				    sdhci_readl(host, SDHCI_DRIVER_CTRL_REG);
++				regval32 |= (1 << 30);
++				sdhci_writel(host, SDHCI_DRIVER_CTRL_REG,
++					     regval32);
++
++				/* set on-off control by gpio */
++				regval =
++				    ven_readw(host,
++					      SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++				/* active high */
++				if (cfg->vdd3_onoff_polarity ==
++				    VDDX_POLARITY_ACTIVE_HIGH) {
++					/* Set GPIO2 high. */
++					regval |= (1 << 13);
++				} else {
++					/* Set GPIO2 low. */
++					regval &= ~(1 << 13);
++				}
++				ven_writew(host, SDBAR1_GPIO_FUNC_GPIOCTRL_510,
++					   regval);
++
++				if (host->sd_express_flag == TRUE) {
++					/* VDD3 set GPIO power control inverter. */
++					regval =
++					    ven_readw(host,
++						      SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++					regval |= (1 << 15);
++					ven_writew(host,
++						   SDBAR1_GPIO_FUNC_GPIOCTRL_510,
++						   regval);
++				}
++			}
++			/* power off */
++			else {
++
++				/* set power disable */
++				regval32 =
++				    sdhci_readl(host, SDHCI_DRIVER_CTRL_REG);
++				/* disable VDD3 */
++				regval32 &= ~(1 << 30);
++				sdhci_writel(host, SDHCI_DRIVER_CTRL_REG,
++					     regval32);
++
++				/* set on-off control by gpio */
++				regval =
++				    ven_readw(host,
++					      SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++				/* active high */
++				if (cfg->vdd3_onoff_polarity ==
++				    VDDX_POLARITY_ACTIVE_HIGH) {
++					/* Set GPIO2 low. */
++					regval &= ~(1 << 13);
++				} else {
++					/* Set GPIO2 high. */
++					regval |= (1 << 13);
++				}
++				ven_writew(host, SDBAR1_GPIO_FUNC_GPIOCTRL_510,
++					   regval);
++
++				if (host->sd_express_flag == TRUE) {
++					/* VDD3 clear GPIO power control inverter. */
++					regval =
++					    ven_readw(host,
++						      SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++					regval &= ~(1 << 15);
++					ven_writew(host,
++						   SDBAR1_GPIO_FUNC_GPIOCTRL_510,
++						   regval);
++				}
++			}
++
++		}
++		break;
++
++	default:
++		break;
++	}
++	/* pc_mode exit */
++	goto exit;
++
++camera_mode:
++
++	switch (vddx) {
++	case VDD1:
++		{
++
++			if (on) {
++				ven_or16(host, SDBAR1_GPIO_FUNC_GPIOCTRL_510,
++					 (1 << 13));
++
++				/* set power voltage */
++				if (cfg->vdd1_voltage == VDDX_PWR_VOLTAGE_3V3) {
++					regval =
++					    sdhci_readw(host,
++							SDHCI_POWER_CONTROL);
++					/* set vdd1 3.3V and power on it */
++					regval |= (0xF << 0);
++					sdhci_writew(host, SDHCI_POWER_CONTROL,
++						     regval);
++					DbgInfo(MODULE_SD_HOST,
++						FEATURE_CARD_INIT, NOT_TO_RAM,
++						"Set VDD1 Power On\n");
++
++				} else {
++					DbgErr("VDD1 only support 3.3V!\n");
++				}
++				/*
++				 * delay to avoid 3.3V power switch signal level issue.
++				 * no need this delay for VDD2, VDD3
++				 */
++				os_mdelay(host->cfg->timeout_item.power_wait_time.power_on_wait_ms);
++
++			} else {
++				ven_and16(host, SDBAR1_GPIO_FUNC_GPIOCTRL_510,
++					  ~(1 << 13));
++
++				regval = sdhci_readw(host, SDHCI_POWER_CONTROL);
++				/* set vdd1 power off */
++				regval &= ~(0xF << 0);
++				sdhci_writew(host, SDHCI_POWER_CONTROL, regval);
++				DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT,
++					NOT_TO_RAM, "Set VDD1 Power Off\n");
++				os_mdelay(host->cfg->timeout_item.power_wait_time.power_off_wait_ms);
++			}
++
++		}
++		break;
++
++	case VDD2:
++		{
++			if (on) {
++				ven_or16(host, SDBAR1_GPIO_1_2_CTRL_REG_510,
++					 (1 << 5));
++
++				/* set power voltage */
++				regval = sdhci_readw(host, SDHCI_POWER_CONTROL);
++				if (cfg->vdd2_voltage == VDDX_PWR_VOLTAGE_1V8) {
++					/* VDD2 1.8V and power on. */
++					regval &= ~(0xF << 4);
++					regval |= (0xB << 4);
++					DbgInfo(MODULE_SD_HOST,
++						FEATURE_CARD_INIT, NOT_TO_RAM,
++						"Set VDD2 Power On 1.8V\n");
++				} else if (cfg->vdd2_voltage ==
++					   VDDX_PWR_VOLTAGE_1V2) {
++					/* VDD2 1.2V and power on. */
++					regval &= ~(0xF << 4);
++					regval |= (0x9 << 4);
++					DbgInfo(MODULE_SD_HOST,
++						FEATURE_CARD_INIT, NOT_TO_RAM,
++						"Set VDD2 Power On 1.2V\n");
++				} else {
++					DbgErr
++					    ("VDD2 only support 1.8V or 1.2V!\n");
++				}
++				sdhci_writew(host, SDHCI_POWER_CONTROL, regval);
++
++				/* use gpio1 as on-off control */
++				if (cfg->vdd2_use_gpio1) {
++					regval =
++					    ven_readw(host,
++						      SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++					/* active high */
++					if (cfg->vdd2_onoff_polarity ==
++					    VDDX_POLARITY_ACTIVE_HIGH) {
++						/* enable gpio1 && output high. */
++						regval |= (1 << 3) | (1 << 5);
++					} else {
++						/* enable gpio1 && output low. */
++						regval |= (1 << 3);
++						regval &= ~(1 << 5);
++					}
++					ven_writew(host,
++						   SDBAR1_GPIO_FUNC_GPIOCTRL_510,
++						   regval);
++
++					if (host->sd_express_flag == TRUE) {
++						/*
++						 * VDD2 set GPIO power control inverter for
++						 * SD7.0 switch to SD driver
++						 * hardware auto power-off.
++						 */
++						regval =
++						    ven_readw(host,
++							      SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++						regval |= (1 << 7);
++						ven_writew(host,
++							   SDBAR1_GPIO_FUNC_GPIOCTRL_510,
++							   regval);
++					}
++
++				}
++
++			} else {
++				ven_and16(host, SDBAR1_GPIO_1_2_CTRL_REG_510,
++					  ~(1 << 5));
++
++				regval = sdhci_readw(host, SDHCI_POWER_CONTROL);
++				/* set vdd2 power off */
++				regval &= ~(0xF << 4);
++				sdhci_writew(host, SDHCI_POWER_CONTROL, regval);
++				DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT,
++					NOT_TO_RAM, "Set VDD2 Power Off\n");
++
++				/* use gpio1 as on-off control */
++				if (cfg->vdd2_use_gpio1) {
++					regval =
++					    ven_readw(host,
++						      SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++					/* active high */
++					if (cfg->vdd2_onoff_polarity ==
++					    VDDX_POLARITY_ACTIVE_HIGH) {
++						/* gpio1 output low to set power off. */
++						regval &= ~(1 << 5);
++					} else {
++						/* gpio1 output high to set power off. */
++						regval |= (1 << 5);
++					}
++					ven_writew(host,
++						   SDBAR1_GPIO_FUNC_GPIOCTRL_510,
++						   regval);
++
++					if (host->sd_express_flag == TRUE) {
++						/* VDD2 clear GPIO power control */
++						regval =
++						    ven_readw(host,
++							      SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++						regval &= ~(1 << 7);
++						ven_writew(host,
++							   SDBAR1_GPIO_FUNC_GPIOCTRL_510,
++							   regval);
++					}
++				}
++			}
++		}
++		break;
++		/* No VDD3 case for camera mode */
++	default:
++		break;
++	}
++	/* camera_mode exit */
++	goto exit;
++
++exit:
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++/*
++ *
++ * Function Name: host_get_vdd1_state
++ *
++ * Abstract:
++ *
++ *            1. Get VDD1 power on/off state
++ *
++ * Input:
++ *
++ *			sd_host_t *host: Pointer to the host structure
++ *
++ * Output:
++ *
++ *			TRUE: VDD1 power is ON.
++ *           FALSE: VDD1 power is OFF.
++ *
++ * Return value:
++ *
++ *			None.
++ *
++ * Notes:
++ *
++ *           Caller: sd_legacy_init
++ */
++
++bool host_get_vdd1_state(sd_host_t *host)
++{
++	u16 regval;
++	u16 vdd1_voltage_sel;
++	bool ret = FALSE;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	regval = sdhci_readw(host, SDHCI_HOST_CONTROL);
++	vdd1_voltage_sel = regval & 0xE;
++
++	if (shift_bit_func_enable(host))
++		goto camera_mode;
++
++	/* pc_mode: */
++	if (regval & SDHCI_POWER_VDD1_ON)
++		ret = TRUE;
++	else
++		ret = FALSE;
++
++camera_mode:
++	if ((regval & SDHCI_POWER_VDD1_ON) && (vdd1_voltage_sel != 0))
++		ret = TRUE;
++	else
++		ret = FALSE;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"host get vdd1 state: Vdd1 is %s\n", ret ? "ON" : "OFF");
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++	return ret;
++}
++
++void host_reset(sd_host_t *host, u32 resetmode)
++{
++	u32 delay_us = 1;
++	loop_wait_t wait;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, resetmode=0x%x\n", __func__, resetmode);
++
++	sdhci_or32(host, SDHCI_CLOCK_CONTROL, resetmode);
++	util_init_waitloop(host->pdx, RESET_FOR_ALL_ABRT_TM, delay_us, &wait);
++	while (!util_is_timeout(&wait)) {
++		if ((sdhci_readl(host, SDHCI_CLOCK_CONTROL) & resetmode) == 0)
++			break;
++		else if (sdhci_readl(host, SDHCI_CLOCK_CONTROL) == 0xffffffff)
++			break;
++
++		os_udelay(delay_us);
++	}
++
++	/* SetSlowLTRRequire(host); */
++
++	/*
++	 * host reset will clear host registers, include host power register 0x29
++	 * need to clear gpio registers if vdd is external power source.
++	 */
++	host_set_vddx_power(host, VDD2, POWER_OFF);
++	/* host_set_vddx_power(host, VDD3, POWER_OFF); */
++	os_mdelay(50);
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++void host_cmddat_line_reset(sd_host_t *host)
++{
++	host_reset(host, SDHCI_RESET_CMD | SDHCI_RESET_DATA);
++}
++
++void host_int_sig_update(sd_host_t *host, u32 int_val)
++{
++	if (host->dump_mode == FALSE && host->poll_mode == FALSE)
++		sdhci_writel(host, SDHCI_SIGNAL_ENABLE, int_val);
++	else
++		sdhci_writel(host, SDHCI_SIGNAL_ENABLE, 0);
++}
++
++void host_uhs2_err_sig_update(sd_host_t *host, u32 int_val)
++{
++	if (host->dump_mode == FALSE && host->poll_mode == FALSE)
++		sdhci_writel(host, SDHCI_UHS2_ERRINT_SIG_EN, int_val);
++	else
++		sdhci_writel(host, SDHCI_UHS2_ERRINT_SIG_EN, 0);
++}
++
++static void host_int_sig_en(sd_host_t *host, u32 int_val)
++{
++
++	u32 reg = sdhci_readl(host, SDHCI_SIGNAL_ENABLE);
++
++	host_int_sig_update(host, reg | int_val);
++}
++
++void host_int_sig_dis(sd_host_t *host, u32 int_val)
++{
++	u32 reg = sdhci_readl(host, SDHCI_SIGNAL_ENABLE);
++
++	host_int_sig_update(host, reg & (~int_val));
++}
++
++void host_int_clr_status(sd_host_t *host)
++{
++	sdhci_writel(host, SDHCI_INT_STATUS, 0xffffffff);
++}
++
++void host_int_dis_sig_all(sd_host_t *host, bool all)
++{
++	/* Disable all interrupts except card insert/remove */
++	host_int_sig_dis(host, SDHCI_INT_ALL_MASK);
++	host_int_sig_en(host, SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE);
++
++}
++
++void host_internal_clk_setup(sd_host_t *host, bool on)
++{
++	u32 timeout = 10000;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, on=%d\n", __func__, on);
++
++	if (on) {
++		/* 1. Set Internal Clock Enable */
++		sdhci_or32(host, SDHCI_CLOCK_CONTROL, SDHCI_CLOCK_INT_EN);
++		while (timeout) {
++			if (sdhci_readl(host, SDHCI_CLOCK_CONTROL) &
++			    SDHCI_CLOCK_INT_STABLE)
++				goto exit;
++			else if (sdhci_readl(host, SDHCI_CLOCK_CONTROL) ==
++				 0xffffffff)
++				goto exit;
++
++			os_udelay(1);
++			timeout--;
++		}
++
++	} else {
++		sdhci_and32(host, SDHCI_CLOCK_CONTROL, ~(SDHCI_CLOCK_INT_EN));
++	}
++
++exit:
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++/* this function called to stop host power */
++void host_uninit(sd_host_t *host, bool disable_all_int)
++{
++	if (host_check_lost(host))
++		return;
++
++	host_poweroff(host, CARD_NONE);
++
++	host_int_dis_sig_all(host, disable_all_int);
++}
++
++void host_poweroff(sd_host_t *host, e_card_type type)
++{
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, type=%d\n", __func__, type);
++
++	hostven_set_tuning_phase(host, 0, 0, TRUE);
++	host_enable_clock(host, FALSE);
++
++	if (shift_bit_func_enable(host))
++		set_pattern_value(host, 0x00);
++
++	host_set_vddx_power(host, VDD2, POWER_OFF);
++
++	if (host_get_vdd1_state(host))
++		host_set_vddx_power(host, VDD1, POWER_OFF);
++
++	if (type == CARD_UHS2 || host->uhs2_flag) {
++		host_uhs2_reg_clean(host);
++	} else if (type == CARD_SD) {
++		host_set_highspeed(host, FALSE);
++		host_set_uhs_mode(host, 0);
++	} else if (type == CARD_NONE || type == CARD_ERROR) {
++		host_uhs2_reg_clean(host);
++		host_set_highspeed(host, FALSE);
++		host_set_uhs_mode(host, 0);
++	} else {
++		/* MMC and EMMC case */
++		host_set_highspeed(host, FALSE);
++		host_set_uhs_mode(host, 0);
++	}
++
++	host_pll_enable(host, FALSE);
++	host_internal_clk_setup(host, FALSE);
++	host_led_ctl(host, FALSE);
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++void host_init_capbility(sd_host_t *host)
++{
++	u32 regval;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	host->ocr_avail = 0;
++
++	/* 1. Init ocr host supported */
++	regval = sdhci_readl(host, SDHCI_CAPABILITIES);
++	if (regval & SDHCI_CAN_VDD_330) {
++		host->ocr_avail |= BIT19 | BIT20;
++		host->mmc_ocr_avail |= (0x1ff << 15);
++	}
++	if (regval & SDHCI_CAN_VDD_300)
++		host->ocr_avail |= BIT17 | BIT18;
++	if (regval & SDHCI_CAN_VDD_180) {
++		host->ocr_avail |= BIT7;
++		host->mmc_ocr_avail |= BIT7;
++
++	}
++
++	if (regval & SDHCI_CAN_DO_SDMA)
++		host->sdma_supp = 1;
++	if (regval & SDHCI_CAN_DO_ADMA2)
++		host->adma2_supp = 1;
++	if (regval & SDHCI_CAN_64BIT_V3)
++		host->bit64_v3_supp = 1;
++	if (regval & SDHCI_CAN_64BIT_V4)
++		host->bit64_v4_supp = 1;
++	if (regval & SDHCI_CAN_DO_HISPD)
++		host->hs_supp = 1;
++	if (regval & SDHCI_CAN_DO_8BIT)
++		host->bus_8bit_supp = 1;
++
++	host->max_block_len = (u8) ((regval & SDHCI_MAX_BLOCK_MASK) >> 16);
++	host->max_block_len = (2 << (9 + host->max_block_len));
++
++	regval = sdhci_readl(host, SDHCI_CAPABILITIES_1);
++	if (regval & SDHCI_CAP1_ADMA3_SUPP)
++		host->adma3_supp = 1;
++	if (regval & SDHCI_CAN_VDD2_18V)
++		host->vdd2_18v_supp = 1;
++	if (regval & SDHCI_CAN_VDD2_12V)
++		host->vdd2_12v_supp = 1;
++
++	regval = sdhci_readl(host, SDHCI_MAX_CURRENT);
++	host->max_18vdd1_current =
++	    4 *
++	    ((regval & SDHCI_MAX_CURRENT_180_MASK) >>
++	     SDHCI_MAX_CURRENT_180_SHIFT);
++	host->max_33vdd1_current =
++	    4 *
++	    ((regval & SDHCI_MAX_CURRENT_330_MASK) >>
++	     SDHCI_MAX_CURRENT_330_SHIFT);
++	host->max_30vdd1_current =
++	    4 *
++	    ((regval & SDHCI_MAX_CURRENT_300_MASK) >>
++	     SDHCI_MAX_CURRENT_300_SHIFT);
++
++	regval = sdhci_readl(host, SDHCI_MAX_CURRENT_2);
++	host->max_vdd2_current =
++	    4 *
++	    ((regval & SDHCI_MAX_CUR_VDD2_180_MASK) >>
++	     SDHCI_MAX_CUR_VDD2_180_SHIFT);
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"ocr_avail=%d\n", host->ocr_avail);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"mmc_ocr_avail=%d\n", host->mmc_ocr_avail);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"sdma_supp=%d\n", host->sdma_supp);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"adma2_supp=%d\n", host->adma2_supp);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"bit64_v3_supp=%d\n", host->bit64_v3_supp);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"bit64_v4_supp=%d\n", host->bit64_v4_supp);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM, "hs_supp=%d\n",
++		host->hs_supp);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"bus_8bit_supp=%d\n", host->bus_8bit_supp);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"max_block_len=%d\n", host->max_block_len);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"adma3_supp=%d\n", host->adma3_supp);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"vdd2_18v_supp=%d\n", host->vdd2_18v_supp);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"vdd2_12v_supp=%d\n", host->vdd2_12v_supp);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"max_18vdd1_current=%d\n", host->max_18vdd1_current);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"max_33vdd1_current=%d\n", host->max_33vdd1_current);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"max_30vdd1_current=%d\n", host->max_30vdd1_current);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"max_vdd2_current=%d\n", host->max_vdd2_current);
++
++	host_uhs2_init_capability(host);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++
++}
++
++static u16 host_get_boundary_value(u32 nkb)
++{
++	switch (nkb) {
++	case 4:
++		return 0;
++	case 8:
++		return 1;
++	case 16:
++		return 2;
++	case 32:
++		return 3;
++	case 64:
++		return 4;
++	case 128:
++		return 5;
++	case 256:
++		return 6;
++	case 512:
++		return 7;
++	default:
++		DbgErr("Error Sdma boundary size\n");
++		break;
++	}
++
++	return 0;
++}
++
++/*
++ * Function Name: host_init_internal
++ *
++ * Abstract: This Function is used to init host setting registers and variables
++ *
++ * Input:
++ *			sd_host_t *host,
++ *
++ */
++
++static void host_init_internal(sd_host_t *host)
++{
++	u16 w;
++	u32 dma_mode = 0;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	dma_mode = host->cfg->host_item.test_dma_mode_setting.dma_mode;
++	host->uhs2_flag = FALSE;
++
++	/* 2. Interrupt enable */
++
++	host_int_clr_status(host);
++	host_int_dis_sig_all(host, FALSE);
++	sdhci_writel(host, SDHCI_INT_ENABLE, 0xffffffff);
++
++	hostven_ocb_cfg(host);
++	hostven_set_output_tuning_phase(host, 0, TRUE);
++	hostven_set_tuning_phase(host, 0, 0, TRUE);
++	hostven_detect_refclk_count_range_init(host);
++	hostven_refclk_stable_detection_circuit(host);
++	hostven_pcie_phy_tx_amplitude_adjustment(host);
++
++	if (host->cfg->host_item.test_dma_mode_setting.dma_mode != 0xF) {
++		/* 3. After host reset , reset related software variable */
++
++		/* default is 4kb, set according to cfg */
++		host->sdma_boundary_val = 0x00;
++		host->bit64_enable =
++		    (byte) host->cfg->host_item.test_dma_mode_setting.enable_dma_64bit_address;
++		if (host->bit64_v3_supp == 0 && host->bit64_v4_supp == 0)
++			host->bit64_enable = 0;
++
++		w = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++
++		if (host->cfg->host_item.test_dma_mode_setting.enable_dma_26bit_len
++		    || host->cfg->host_item.test_dma_mode_setting.enable_dma_32bit_blkcount
++		    || (host->adma3_supp
++			&& (2 == dma_mode || 4 == dma_mode || 5 == dma_mode
++			    || 6 == dma_mode))
++		    || host->bit64_enable)
++			host->sd_host4_enable = 1;
++
++		if (host->cfg->host_item.test_dma_mode_setting.enable_dma_26bit_len)
++			w |= SDHCI_CTRL_ADMA2_26BIT_EN;
++
++		if (host->bit64_enable)
++			w |= SDHCI_CTRL_64BIT_EN;
++
++		if (host->sd_host4_enable) {
++			w |= SDHCI_CTRL_VER4_EN;
++			sdhci_writew(host, SDHCI_HOST_CONTROL2, w);
++		}
++	} else {
++		host->sd_host4_enable = 0;
++		host->bit64_enable = 0;
++	}
++
++	host->led_on = FALSE;
++
++	host->sdma_boundary_kb = host->cfg->host_item.test_sdma_boundary.value;
++	host->sdma_boundary_val =
++	    host_get_boundary_value(host->sdma_boundary_kb);
++
++	/* 4. set timeout */
++	w = sdhci_readw(host, SDHCI_TIMEOUT_CONTROL);
++	w &= SDHCI_DAT_TIMEOUT_MASK;
++	w |= SDHCI_DAT_TIMEOUT_VAL;
++	sdhci_writew(host, SDHCI_TIMEOUT_CONTROL, w);
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "uhs2_flag=%d\n",
++		host->uhs2_flag);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"sdma_boundary_val=%d\n", host->sdma_boundary_val);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"bit64_enable=%d\n", host->bit64_enable);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"sd_host4_enable=%d\n", host->sd_host4_enable);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "led_on=%d\n",
++		host->led_on);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"sdma_boundary_kb=%d\n", host->sdma_boundary_kb);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"sdma_boundary_val=%d\n", host->sdma_boundary_val);
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++void host_init(sd_host_t *host)
++{
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	/* Host soft reset for all registers! */
++	if (shift_bit_func_enable(host))
++		set_pattern_value(host, 0x00);
++
++	host_reset(host, SDHCI_RESET_ALL);
++
++	/*
++	 * if (host->chip_type == CHIP_SEABIRD)
++	 * host_pll_enable(host, TRUE);
++	 */
++	host_init_internal(host);
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++/*
++ * Function Name: host_uhs2_reset
++ * Abstract: This Function is used to do host uhs2 full reset
++ *
++ * Input:
++ *			sd_host_t *host,
++ *			bool fullreset: True means do UHS2 Host Full Reset;
++ *			False means do host SD_Tran Reset
++ *
++ *			FullReset will clear all host setting except card power
++ *			SD-Tran Reset only clear transfer buffer and interrupt
++ *
++ */
++void host_uhs2_reset(sd_host_t *host, bool fullreset)
++{
++
++	u16 reg;
++	u32 delay_us = 1;
++	loop_wait_t wait;
++
++	u16 set = (fullreset) ? SDHCI_UHS2_FULL_RESET : SDHCI_UHS2_SDTRAN_RESET;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, fullreset=%d\n", __func__, fullreset);
++
++	/* For Full Reset case is called by uhs2_full_reset only we need to wait for dmt bit set */
++	if (set == SDHCI_UHS2_FULL_RESET) {
++		if (host_uhs2_wait_dmt(host) == FALSE)
++			DbgErr("Wait Host Dm set before fullreset failed\n");
++	}
++
++	sdhci_or16(host, SDHCI_UHS2_SOFT_RST, set);
++	util_init_waitloop(host->pdx, RESET_FOR_ALL_ABRT_TM, delay_us, &wait);
++	while (!util_is_timeout(&wait)) {
++		reg = sdhci_readw(host, SDHCI_UHS2_SOFT_RST);
++		if (!(reg & set))
++			break;
++		else if (reg == 0xffffffff)
++			break;
++
++		os_udelay(delay_us);
++	}
++
++	if (fullreset) {
++		host_pll_enable(host, FALSE);
++		host_init_internal(host);
++	} else {
++		/* Enable Host interrupt again, Enable UHS2 Err Status */
++		host_int_clr_status(host);
++		host_int_dis_sig_all(host, FALSE);
++		sdhci_writel(host, SDHCI_INT_ENABLE, 0xffffffff);
++		sdhci_writel(host, SDHCI_UHS2_ERRINT_STS_EN, 0xFFFFFFFF);
++	}
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++bool host_wr_protect_pin(sd_host_t *host)
++{
++	u32 regval;
++	bool ret = TRUE;
++
++	regval = sdhci_readl(host, SDHCI_PRESENT_STATE);
++	if (regval & SDHCI_WRITE_PROTECT)
++		ret = FALSE;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s,regval:%x,ret:%x\n", __func__, regval, ret);
++	return ret;
++}
++
++static void host_emmc_power_supply(sd_host_t *host,
++				   cfg_emmc_mode_t *emmc_mode, u32 *power_vdd)
++{
++	u32 power_vdd1, power_vdd2;
++
++	power_vdd1 = power_vdd2 = 0;
++	power_vdd1 |= SDHCI_POWER_VDD1_330;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	/* SE2 chip support two combination mode */
++	if ((host->chip_type != CHIP_SEAEAGLE2) && (host->chip_type != CHIP_GG8)
++	    && (host->chip_type != CHIP_ALBATROSS)) {
++		emmc_mode->enable_18_vcc = 0;
++		*power_vdd = power_vdd1;
++		*(power_vdd + 1) = power_vdd2;
++		goto exit;
++	}
++
++	/* 3.3v Vcc + 3.3v Vccq mode: */
++	if (((emmc_mode->enable_18_vccq) == (emmc_mode->enable_12_vccq)) ||
++	    ((host->vdd2_12v_supp == FALSE) && (host->vdd2_18v_supp == FALSE))
++	    ) {
++		emmc_mode->enable_18_vccq = emmc_mode->enable_12_vccq = 0;
++		*power_vdd = power_vdd1;
++		*(power_vdd + 1) = power_vdd2;
++		goto exit;
++	}
++
++	/* 1.8v Vcc */
++	if (emmc_mode->enable_18_vcc)
++		power_vdd1 = SDHCI_POWER_VDD1_180;
++	else
++		power_vdd1 = SDHCI_POWER_VDD1_330;
++
++	/* 1.2v Vccq */
++	if ((host->vdd2_12v_supp) && (emmc_mode->enable_12_vccq)
++	    ) {
++		power_vdd2 = SDHCI_POWER_VDD2_120;
++	}
++	/* 1.8v Vccq */
++	else if ((host->vdd2_18v_supp) && (emmc_mode->enable_18_vccq)
++	    ) {
++		power_vdd2 = SDHCI_POWER_VDD2_180;
++	}
++
++	*power_vdd = power_vdd1;
++	*(power_vdd + 1) = power_vdd2;
++
++exit:
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++bool host_emmc_init(sd_host_t *host, cfg_emmc_mode_t *emmc_mode)
++{
++	bool ret = FALSE;
++	u32 power_vdd[2] = { 0 };
++	u32 enable_1_8v_sig;
++	u32 enable_1_2v_sig;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	host_emmc_power_supply(host, emmc_mode, power_vdd);
++
++	host_internal_clk_setup(host, TRUE);
++
++	/* 1. clear VDD1 */
++	if (host_get_vdd1_state(host) == TRUE)
++		host_set_vddx_power(host, VDD1, POWER_OFF);
++
++	/* 2. set bus power VDD1 + VDD2 */
++	if (power_vdd[1])
++		host_set_vddx_power(host, VDD2, POWER_ON);
++
++	host_set_vddx_power(host, VDD1, POWER_ON);
++
++	/* 4. set 1.8V/1.2V IO voltage */
++	enable_1_8v_sig = emmc_mode->enable_18_vccq;
++	enable_1_2v_sig = emmc_mode->enable_12_vccq;
++	if (enable_1_8v_sig)
++		host_sig_vol_set(host, SIG_VOL_18);
++	else if (enable_1_2v_sig)
++		host_sig_vol_set(host, SIG_VOL_12);
++	else
++		host_sig_vol_set(host, SIG_VOL_33);
++
++	/* start clock to 400KHz */
++	host_enable_clock(host, TRUE);
++	/* 6. clear bus width (4bit & 8bit) */
++	host_set_buswidth(host, BUS_WIDTH1);
++	/* 7. clear ddr mode */
++	host_emmc_ddr_set(host, FALSE);
++
++	ret = TRUE;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
++		ret, __func__);
++	return ret;
++}
++
++void host_emmc_hs400_set(sd_host_t *host, bool b_hs400)
++{
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, b_hs400=%d\n", __func__, b_hs400);
++
++	if (b_hs400) {
++		if (hostven_hs400_host_chk(host) == TRUE) {
++			/* 0x110[17] set to 1 */
++			sdhci_or32(host, SDHCI_VEN_SPEC_CTRL,
++				   SDHCI_ENABLE_HS400);
++		} else {
++			/* set host to HS400 mode */
++			host_set_uhs_mode(host, SDHCI_CTRL_UHS_HS400);
++		}
++	} else {
++		/* hs200 set 0x110[17] to 0 */
++		sdhci_and32(host, SDHCI_VEN_SPEC_CTRL, ~(SDHCI_ENABLE_HS400));
++	}
++
++	/* 0x28[2] set to 1 */
++	host_set_highspeed(host, TRUE);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++void host_emmc_ddr_set(sd_host_t *host, bool b_ddr)
++{
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, b_ddr=%d\n", __func__, b_ddr);
++
++	if (b_ddr) {
++		if ((host->chip_type == CHIP_SDS0)
++		    || (host->chip_type == CHIP_SDS1)
++		    || (host->chip_type == CHIP_FUJIN2)
++		    || (host->chip_type == CHIP_SEABIRD)
++		    || (host->chip_type == CHIP_SEAEAGLE)
++		    ) {
++			/* For SDS|SB|FJ2|SE chip:Set eMMC DDR mode 0x110[5] = 1'b1 */
++			sdhci_or32(host, SDHCI_VEN_SPEC_CTRL,
++				   SDHCI_EMMC_HS_DDR);
++		}
++	} else {
++		/* clear eMMC DDR mode: set 0x110[15] to 0 */
++		sdhci_and32(host, SDHCI_VEN_SPEC_CTRL, ~(SDHCI_EMMC_HS_DDR));
++	}
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++/*
++ * Function Name: host_pll_enable
++ * Abstract: This Function is used to do uhs2 phy init
++ *
++ *
++ * Input:
++ *			sd_host_t *host,
++ */
++static void host_pll_enable(sd_host_t *host, bool enable)
++{
++
++	if (!host->feature.hw_pll_enable)
++		return;
++
++	if (host->sd_host4_enable == FALSE && host->uhs2_flag == FALSE)
++		return;
++
++	if (enable) {
++		u32 timeout = 5000;
++
++		DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++			"Host Pll Enable\n");
++		sdhci_or16(host, SDHCI_CLOCK_CONTROL, SDHCI_HOST_PLL_EN);
++		while (timeout) {
++			if (sdhci_readl(host, SDHCI_CLOCK_CONTROL) &
++			    SDHCI_CLOCK_INT_STABLE)
++				break;
++			else if (sdhci_readl(host, SDHCI_CLOCK_CONTROL) ==
++				 0xffffffff)
++				break;
++
++			os_udelay(1);
++			timeout--;
++		}
++		DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++			"Real Enable pll 0x%04X\n", sdhci_readw(host,
++								SDHCI_CLOCK_CONTROL));
++	} else
++		sdhci_and16(host, SDHCI_CLOCK_CONTROL, ~SDHCI_HOST_PLL_EN);
++}
++
++void host_uhs2_init(sd_host_t *host, u32 clk_value, bool bfullreset)
++{
++	u16 reg;
++	u32 reg32;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, clk_value=0x%x\n", __func__, clk_value);
++
++	host->uhs2_flag = TRUE;
++	reg = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++
++	/* Enable UHS2 function */
++	reg |= SDHCI_CTRL_UHS2IF_EN | SDHCI_CTRL_VER4_EN;
++	sdhci_writew(host, SDHCI_HOST_CONTROL2, reg);
++	reg = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++	reg |= SDHCI_CTRL_UHS2;
++	sdhci_writew(host, SDHCI_HOST_CONTROL2, reg);
++	if (bfullreset == 0) {
++		host_init_clock(host, clk_value);
++		host_internal_clk_setup(host, TRUE);
++	}
++
++	/* Set UHS2 Timeout */
++	reg = sdhci_readw(host, SDHCI_UHS2_TIMER_CTRL);
++	reg |= 0xFF;
++	sdhci_writew(host, SDHCI_UHS2_TIMER_CTRL, reg);
++
++	/* Enable UHS2 Err Status */
++	sdhci_writel(host, SDHCI_UHS2_ERRINT_STS_EN, 0xFFFFFFFF);
++
++	/* Set  Scrambling according to vender cfg */
++	reg32 = sdhci_readl(host, host->uhs2_cap.vnd_base + UHS2_EXTCNT_OFFSET);
++	if (host->cfg->card_item.test_uhs2_setting2.disable_scramb_mode == 0)
++		reg32 |= BIT0;
++	else
++		reg32 &= ~BIT0;
++	sdhci_writel(host, host->uhs2_cap.vnd_base + UHS2_EXTCNT_OFFSET, reg32);
++
++	if (shift_bit_func_enable(host))
++		set_pattern_value(host, 0x00);
++
++	host_set_vddx_power(host, VDD1, POWER_OFF);
++	os_mdelay(36);
++	host_set_vddx_power(host, VDD1, POWER_ON);
++
++	if (shift_bit_func_enable(host))
++		set_pattern_value(host, 0x30);
++
++	host_set_vddx_power(host, VDD1, POWER_ON);
++	host_set_vddx_power(host, VDD2, POWER_ON);
++
++	if (host_get_vdd1_state(host) == FALSE)
++		host_set_vddx_power(host, VDD1, POWER_ON);
++
++	os_mdelay(36);
++
++	host_pll_enable(host, TRUE);
++
++	host_enable_clock(host, TRUE);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++static void host_uhs2_reg_clean(sd_host_t *host)
++{
++	u16 reg;
++
++	reg = SDHCI_CTRL_UHS2IF_EN;
++	if (host->sd_host4_enable == 0)
++		reg |= SDHCI_CTRL_VER4_EN;
++	sdhci_and16(host, SDHCI_HOST_CONTROL2, ~reg);
++	sdhci_writel(host, SDHCI_UHS2_ERRINT_STS_EN, 0);
++	sdhci_and16(host, SDHCI_UHS2_TIMER_CTRL, ~0xFF);
++	host_set_uhs_mode(host, 0);
++	host->uhs2_flag = FALSE;
++}
++
++/*
++ * Function Name: host_uhs2_clear
++ * Abstract: This Function is used to check clear uhs2 related register
++ *
++ * Input:
++ *			sd_host_t *host,
++ *			bool breset: do host softreset for all to clear uhs2 status or not
++ *
++ */
++void host_uhs2_clear(sd_host_t *host, bool breset)
++{
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, breset=%d\n", __func__, breset);
++
++	/* clear uhs2 related reg */
++	if (breset) {
++		host_enable_clock(host, FALSE);
++		if (shift_bit_func_enable(host))
++			set_pattern_value(host, 0x10);
++
++		host_set_vddx_power(host, VDD2, POWER_OFF);
++		if (host_get_vdd1_state(host))
++			host_set_vddx_power(host, VDD1, POWER_OFF);
++
++		host_init(host);
++	} else {
++		host_enable_clock(host, FALSE);
++
++		if (shift_bit_func_enable(host))
++			set_pattern_value(host, 0x10);
++
++		host_set_vddx_power(host, VDD2, POWER_OFF);
++		host_uhs2_reg_clean(host);
++		host_pll_enable(host, FALSE);
++		host_internal_clk_setup(host, FALSE);
++		host_init_internal(host);
++	}
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++/*
++ * Function Name: host_uhs2_phychk
++ * Abstract: This Function is used to check uhs2 phy init ok or not
++ *
++ * Input:
++ *			sd_host_t *host,
++ *			bool fromslp: whether call this in uhs2 resume  context
++ * Output:
++ *			bool *stbl : STBL check is ok or not
++ *
++ * Return value:
++ *			phy init ok or not
++ */
++bool host_uhs2_phychk(sd_host_t *host, bool fromslp, bool *stbl)
++{
++	u32 timeout = 0;
++	u32 reg;
++	bool result = FALSE;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, *stbl=%d\n", __func__, *stbl);
++
++	*stbl = FALSE;
++
++	if (fromslp)
++		timeout = 6000;
++	timeout = 250;
++
++	do {
++		reg = sdhci_readl(host, SDHCI_PRESENT_STATE);
++		if (reg == 0xFFFFFFFF) {
++			DbgErr("Present All FF in STBL check\n");
++			goto exit;
++		}
++
++		if (!(reg & SDHCI_CARD_PRESENT))
++			goto exit;
++
++		if (reg & SDHCI_UHS2_IF_DETECT)
++			break;
++
++		timeout -= 1;
++		os_udelay(1);
++
++	} while (timeout > 0);
++
++	if (!timeout) {
++		DbgWarn(MODULE_SD_HOST, NOT_TO_RAM, "uhs2 STBL timeout\n");
++		goto exit;
++	}
++
++	*stbl = TRUE;
++	timeout = 1500 * 100;
++
++	do {
++		reg = sdhci_readl(host, SDHCI_PRESENT_STATE);
++		if (!(reg & SDHCI_CARD_PRESENT))
++			goto exit;
++
++		if (reg & SDHCI_UHS2_LANE_SYNC)
++			break;
++
++		reg = sdhci_readl(host, SDHCI_UHS2_ERRINT_STS);
++		if (reg & SDHCI_UHS2_INT_TO_DEADLOCK) {
++			DbgErr("UHS2 Wait for Sync deadlock occur\n");
++			goto exit;
++		}
++
++		timeout -= 10;
++		os_udelay(10);
++	} while (timeout > 0);
++
++	if (timeout <= 0) {
++		DbgErr("UHS2 Wait for Sync timeout\n");
++		goto exit;
++	}
++
++	result = TRUE;
++exit:
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++	return result;
++}
++
++/*
++ * Function Name: host_uhs2_cfg_set
++ * Abstract: This Function is used to update uhs2 host setting registers
++ *
++ * Input:
++ *			sd_host_t *host,
++ *			uhs2_info_t *setting: The setting values
++ *			bool stage2; State 2 is update for RangeB and lanes,
++ *			      it is called after resume from dmt in uhs2 cfg flow
++ *
++ */
++void host_uhs2_cfg_set(sd_host_t *host, uhs2_info_t *setting, bool stage2)
++{
++	u32 reg;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, stage2=%d\n", __func__, stage2);
++
++	if (stage2) {
++		/* update lanes and function */
++		reg =
++		    sdhci_readl(host,
++				host->uhs2_cap.set_base +
++				SDHCI_UHS2_IDX_GENERAL);
++		reg &= ~(SDHCI_UHS2_LANE_FUNC_MASK);
++		reg |= (setting->lanes << SDHCI_UHS2_LANE_FUNC_SHIFT);
++		sdhci_writel(host,
++			     host->uhs2_cap.set_base + SDHCI_UHS2_IDX_GENERAL,
++			     reg);
++
++		/* update speed range */
++		reg =
++		    sdhci_readl(host,
++				host->uhs2_cap.set_base +
++				SDHCI_UHS2_IDX_PHYSICAL);
++		reg &= ~(SDHCI_UHS2_SPEED_MASK);
++		reg |= (setting->speed_range << SDHCI_UHS2_SPEED_SHIFT);
++		sdhci_writel(host,
++			     host->uhs2_cap.set_base + SDHCI_UHS2_IDX_PHYSICAL,
++			     reg);
++		goto exit;
++	}
++
++	/* General Setting reg */
++	reg =
++	    sdhci_readl(host, host->uhs2_cap.set_base + SDHCI_UHS2_IDX_GENERAL);
++	reg &= ~(SDHCI_UHS2_LANE_FUNC_MASK | SDHCI_UHS2_POWER_MODE_MASK);
++	reg |= setting->pwr_mode;
++	sdhci_writel(host, host->uhs2_cap.set_base + SDHCI_UHS2_IDX_GENERAL,
++		     reg);
++
++	/* Phy setting reg */
++	reg =
++	    sdhci_readl(host,
++			host->uhs2_cap.set_base + SDHCI_UHS2_IDX_PHYSICAL);
++	reg &=
++	    ~(SDHCI_UHS2_SPEED_MASK | SDHCI_UHS2_HIBERNATE_MASK |
++	      SDHCI_UHS2_LSS_DIR_MASK | SDHCI_UHS2_LSS_SYN_MASK);
++	reg |= (setting->n_lss_dir << SDHCI_UHS2_LSS_DIR_SHIFT);
++	reg |= (setting->n_lss_syn << SDHCI_UHS2_LSS_SYN_SHIFT);
++	reg |= (setting->hibernate << SDHCI_UHS2_HIBERNATE_SHIFT);
++	sdhci_writel(host, host->uhs2_cap.set_base + SDHCI_UHS2_IDX_PHYSICAL,
++		     reg);
++
++	/* Link and Tran regs */
++	reg =
++	    sdhci_readl(host, host->uhs2_cap.set_base + SDHCI_UHS2_IDX_LNKTRH);
++	reg &= ~(SDHCI_UHS2_DATE_GAP_MASK);
++	reg |= (setting->n_data_gap);
++	sdhci_writel(host, host->uhs2_cap.set_base + SDHCI_UHS2_IDX_LNKTRH,
++		     reg);
++
++	reg =
++	    sdhci_readl(host, host->uhs2_cap.set_base + SDHCI_UHS2_IDX_LNKTRL);
++	reg &= ~(SDHCI_UHS2_RETRY_CNT_MASK | SDHCI_UHS2_NFCU_MASK);
++	reg |= (setting->retry_cnt << SDHCI_UHS2_RETRY_CNT_SHIFT);
++	reg |= (setting->n_fcu << SDHCI_UHS2_NFCU_SHIFT);
++	sdhci_writel(host, host->uhs2_cap.set_base + SDHCI_UHS2_IDX_LNKTRL,
++		     reg);
++
++exit:
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++	return;
++
++}
++
++/*
++ * Function Name: host_uhs2_init_capability
++ * Abstract: This Function is used to get host uhs2 related capbility
++ *
++ * Input:
++ *			sd_host_t *host,
++ *
++ */
++static void host_uhs2_init_capability(sd_host_t *host)
++{
++	u32 reg;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	/*
++	 * below code is used for chip lost detection test
++	 * sdhci_readl_test(host, SDHCI_CAPABILITIES_1);
++	 * sdhci_readw_test(host, SDHCI_CAPABILITIES_1);
++	 */
++
++	reg = sdhci_readl(host, SDHCI_CAPABILITIES_1);
++	if (!(reg & SDHCI_CAP1_UHS2_SUPP)) {
++		DbgWarn(MODULE_SD_HOST, TO_RAM, "host don't support uhs2\n");
++		goto no_uhs2;
++	}
++
++	host->uhs2_cap.vdd2_ocr = ((reg & SDHCI_CAP1_UHS2_VDD2_MASK) >>
++				   SDHCI_CAP1_UHS2_VDD2_SHIFT);
++
++	reg = sdhci_readl(host, SDHCI_MAX_CURRENT_2);
++	host->uhs2_cap.vdd2_18_maxpower = ((reg & SDHCI_MAX_CUR_VDD2_180_MASK)
++					   * SDHCI_MAX_CURRENT_MULTIPLIER);
++
++	/* Get uhs2 host reallocate register base */
++	host->uhs2_cap.set_base = (sdhci_readw(host, SDHCI_UHS2_SETTING_BASE) &
++				   SDHCI_MAX_LOCATABLE_REG);
++	host->uhs2_cap.cap_base =
++	    (sdhci_readw(host, SDHCI_UHS2_CAPABILITY_BASE) &
++	     SDHCI_MAX_LOCATABLE_REG);
++	host->uhs2_cap.tst_base =
++	    (sdhci_readw(host, SDHCI_UHS2_TEST_BASE) & SDHCI_MAX_LOCATABLE_REG);
++	host->uhs2_cap.vnd_base =
++	    (sdhci_readw(host, SDCHI_UHS2_VENDOR_BASE) &
++	     SDHCI_MAX_LOCATABLE_REG);
++
++	/* Get Host caps from General Capability reg */
++	reg =
++	    sdhci_readl(host, host->uhs2_cap.cap_base + SDHCI_UHS2_IDX_GENERAL);
++	host->uhs2_cap.max_devices =
++	    ((reg & SDHCI_UHS2_DEVICE_NUM_MASK) >> SDHCI_UHS2_DEVICE_NUM_SHIFT);
++
++	if (!(reg & SDHCI_UHS2_BUS_TOP_MASK))
++		host->uhs2_cap.max_devices = 1;
++	else if (host->uhs2_cap.max_devices == 0) {
++		DbgErr("Host support zero uhs2 devices\n");
++		goto no_uhs2;
++	}
++
++	host->uhs2_cap.dap = (reg & SDHCI_UHS2_DAP_MASK);
++	host->uhs2_cap.gap = ((reg & SDHCI_UHS2_GAP_MASK) >>
++			      SDHCI_UHS2_GAP_SHIFT);
++	host->uhs2_cap.num_of_lane = ((reg & SDHCI_UHS2_LANE_MASK) >>
++				      SDHCI_UHS2_LANE_SHIFT);
++
++	/* Get Host caps from Phy Capability reg */
++	reg =
++	    sdhci_readl(host,
++			host->uhs2_cap.cap_base + SDHCI_UHS2_IDX_PHYSICAL);
++	host->uhs2_cap.n_lss_dir =
++	    ((reg & SDHCI_UHS2_LSS_DIR_MASK) >> SDHCI_UHS2_LSS_DIR_SHIFT);
++	host->uhs2_cap.n_lss_syn =
++	    ((reg & SDHCI_UHS2_LSS_SYN_MASK) >> SDHCI_UHS2_LSS_SYN_SHIFT);
++	host->uhs2_cap.speed_range =
++	    ((reg & SDHCI_UHS2_SPEED_MASK) >> SDHCI_UHS2_SPEED_SHIFT);
++
++	/* Get Host caps from LinkTran Capability reg */
++	reg =
++	    sdhci_readl(host, host->uhs2_cap.cap_base + SDHCI_UHS2_IDX_LNKTRL);
++	host->uhs2_cap.n_fcu =
++	    ((reg & SDHCI_UHS2_NFCU_MASK) >> SDHCI_UHS2_NFCU_SHIFT);
++	host->uhs2_cap.max_blk_len =
++	    ((reg & SDHCI_UHS2_MAX_BLK_MASK) >> SDHCI_UHS2_MAX_BLK_SHIFT);
++
++	reg =
++	    sdhci_readl(host, host->uhs2_cap.cap_base + SDHCI_UHS2_IDX_LNKTRH);
++	host->uhs2_cap.n_data_gap = (reg & SDHCI_UHS2_DATE_GAP_MASK);
++	host->uhs2_cap.retry_cnt = 3;
++
++	/* Set host support uhs2 */
++	host->uhs2_supp = 1;
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host uhs2_flag=%d\n", host->uhs2_flag);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host uhs2_flag=%d\n", host->uhs2_cap.vdd2_ocr);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host vdd2_18_maxpower=%d\n", host->uhs2_cap.vdd2_18_maxpower);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host set_base=%d\n", host->uhs2_cap.set_base);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host cap_base=%d\n", host->uhs2_cap.cap_base);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host tst_base=%d\n", host->uhs2_cap.tst_base);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host vnd_base=%d\n", host->uhs2_cap.vnd_base);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host max_devices=%d\n", host->uhs2_cap.max_devices);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host dap=%d\n", host->uhs2_cap.dap);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host gap=%d\n", host->uhs2_cap.gap);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host num_of_lane=%d\n", host->uhs2_cap.num_of_lane);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host n_lss_dir=%d\n", host->uhs2_cap.n_lss_dir);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host n_lss_syn=%d\n", host->uhs2_cap.n_lss_syn);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host speed_range=%d\n", host->uhs2_cap.speed_range);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host n_fcu=%d\n", host->uhs2_cap.n_fcu);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host max_blk_len=%d\n", host->uhs2_cap.max_blk_len);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host n_data_gap=%d\n", host->uhs2_cap.n_data_gap);
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Host retry_cnt=%d\n", host->uhs2_cap.retry_cnt);
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++	return;
++no_uhs2:
++	host->uhs2_supp = 0;
++	DbgInfo(MODULE_SD_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++static bool host_uhs2_wait_dmt(sd_host_t *host)
++{
++	u32 reg = 0;
++	u32 delay_us = 1;
++	loop_wait_t wait;
++
++	util_init_waitloop(host->pdx, 1500, delay_us, &wait);
++	while (!util_is_timeout(&wait)) {
++		reg = sdhci_readl(host, SDHCI_PRESENT_STATE);
++		if (!(reg & SDHCI_CARD_PRESENT))
++			return FALSE;
++
++		if (reg == 0xffffffff) {
++			DbgErr("chip lost when go dmt\n");
++			return FALSE;
++		}
++
++		if (reg & SDHCI_UHS2_DMT_STATUS)
++			break;
++
++		os_udelay(delay_us);
++	}
++
++	if (!(reg & SDHCI_UHS2_DMT_STATUS)) {
++		DbgErr("wait host dmt timeout.\n");
++		return FALSE;
++	}
++
++	return TRUE;
++}
++
++/*
++ * Function Name: host_uhs2_go_dmt
++ * Abstract: This Function is used to set uhs2 card to dormant status
++ *
++ *
++ * Input:
++ *			sd_host_t *host,
++ *			bool hbr: enter hibernate status or not
++ */
++bool host_uhs2_go_dmt(sd_host_t *host, bool hbr)
++{
++	bool result = TRUE;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s hbr=%d\n", __func__, hbr);
++
++	result = host_uhs2_wait_dmt(host);
++	if (result == FALSE) {
++		DbgErr("Uhs2 Go Dormant wait for Host Dmt failed\n");
++		goto exit;
++	}
++
++	if (DMT_DELAY_BEF_STOP_CLK_US)
++		os_udelay(DMT_DELAY_BEF_STOP_CLK_US);
++
++	host_enable_clock_nodelay(host, FALSE);
++
++	if (DMT_DEALY_AFT_STOP_CLK_US)
++		os_udelay(DMT_DEALY_AFT_STOP_CLK_US);
++
++	host_pll_enable(host, FALSE);
++	if (host->cfg->card_item.test_uhs2_setting2.enable_internal_clk_dormant
++		== 0) {
++		host_internal_clk_setup(host, FALSE);
++		if (DMT_DELAY_AFT_ST_REFCLK_US)
++			os_udelay(DMT_DELAY_AFT_ST_REFCLK_US);
++	}
++
++	if (hbr) {
++		/* host_set_vdd1_power_nodelay(host, FALSE, 0); */
++		host_set_vddx_power(host, VDD1, POWER_OFF);
++		if (DMT_DELAY_AFT_PWROFF_MS)
++			os_mdelay(DMT_DELAY_AFT_PWROFF_MS);
++
++	}
++exit:
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++	return result;
++}
++
++/*
++ * Function Name: host_uhs2_resume_dmt
++ * Abstract: This Function is used to resume from dormant
++ *
++ *
++ * Input:
++ *			sd_host_t *host,
++ *			bool hbr: resume hibernate status or not
++ */
++bool host_uhs2_resume_dmt(sd_host_t *host, bool hbr)
++{
++	bool stbl;
++	bool result = FALSE;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT | FEATURE_CARD_OPS,
++		NOT_TO_RAM, "Enter %s hbr=%d\n", __func__, hbr);
++
++	if (host->cfg->card_item.test_uhs2_setting2.enable_internal_clk_dormant
++		== 0) {
++		host_internal_clk_setup(host, TRUE);
++	}
++
++	if (hbr) {
++		host_set_vddx_power(host, VDD1, POWER_ON);
++		if (RESUME_POWER_ON_DELAY_MS)
++			os_mdelay(RESUME_POWER_ON_DELAY_MS);
++		host_chk_ocb_occur(host);
++	}
++
++	host_pll_enable(host, TRUE);
++	host_enable_clock_nodelay(host, TRUE);
++
++	result = host_uhs2_phychk(host, TRUE, &stbl);
++	if (stbl == FALSE)
++		DbgErr("STBL failed for wakeup");
++
++	if (RESUME_DALAY_US)
++		os_udelay(RESUME_DALAY_US);
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++	return result;
++}
++
++/*
++ * Function Name: host_uhs2_resume_dmt
++ * Abstract: This Function is used for sd legacy host init operation
++ *
++ * Input:
++ *			sd_host_t *host,
++ */
++void host_sd_init(sd_host_t *host)
++{
++
++	host_init_400k_clock(host);
++	host_internal_clk_setup(host, TRUE);
++	/* 1. Power on card */
++	if (host_get_vdd1_state(host) == FALSE) {
++		os_mdelay(10);
++		host_set_vddx_power(host, VDD1, POWER_ON);
++
++	}
++
++	if (shift_bit_func_enable(host))
++		set_pattern_value(host, 0x11);
++
++	host_enable_clock(host, TRUE);
++
++}
++
++bool host_enable_sd_signal18v(sd_host_t *host)
++{
++	bool result = FALSE;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	/* 2.1. Stop SD CLK after SD transfer. */
++
++	/*   If it is not stopping, it shall be stopped */
++	host_enable_clock(host, FALSE);
++	/*
++	 * 1'. Wait 1ms for clock off. Issue #12074:
++	 * [UHS1] SD_CLK voltage is wrong during Signal voltage switch sequence.
++	 * Samuel 2011-09-06
++	 */
++	os_mdelay(1);
++
++	/* 2. Check DAT[3:0]line signal =0000b or not in the Present State (0x24:D23-D20) */
++	if (host_get_datline_state(host) != 0) {
++		DbgErr("Check DAT[3:0]line signal =0000b Failed.\n");
++		goto exit;
++	}
++
++	/* 3. Set Host Control2 (0x3e:D03) .8V Signaling Enable=1b */
++	host_1_8v_sig_set(host, TRUE);
++
++	/* 4. Minimum Wait 5ms */
++	/* os_mdelay(10); */
++
++	/* 5. Check Host Control2 (0x3e:D03) 1.8V Signaling Enable=1b or not */
++	if (host_check_1_8v_signal(host) == 0x0) {
++		DbgErr
++		    ("Check Host Control2 (0x3e:D03) 1.8V Signaling Enable=1b Failed.\n");
++		goto exit;
++	}
++#if (0)
++	/* voltage_switch_method_choose 1:hardware control 0:sofaware control */
++	if (host->cfg->host_item.test_voltage_switch_method_choose.voltage_switch_method) {
++		/* hardware control */
++		if (host_check_voltage_stable(host) == FALSE)
++			DbgErr("Check voltage stable Failed.\n");
++	} else {
++		/* software control */
++		DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++			"Software Method to Switch Voltage, Delay 10ms\n");
++		os_mdelay(10);
++	}
++
++#else
++	/* software control */
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Software Method to Switch Voltage, Delay 10ms\n");
++	os_mdelay(10);
++
++#endif
++
++	/*
++	 * Add voltage stable check for voltage switch failed issue
++	 * BH722SE2LN-A UHS1 issue#6  GIGABYTE D3V #6 platform, BH driver 10024,
++	 * the Host regulator voltage switch de-bounce time setting did not
++	 * meets design, so some SD3.0 card would switch to 1.8V fail.
++	 */
++
++	/* 6. Clock On */
++	host_enable_clock(host, TRUE);
++	/*  Signal Voltage Switch procedure need 1ms wait */
++	os_mdelay(1);
++
++	/* 9. Check DAT[3:0]line signal =1111b or not in the Present State (0x24:D23-D20) */
++	if (host_get_datline_state(host) != 0xF) {
++		DbgErr("Check DAT[3:0]line signal =1111b Failed.\n");
++		goto exit;
++	}
++
++	result = TRUE;
++exit:
++	if (result == FALSE)
++		DbgErr("host set sd 18v signal failed\n");
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit(%d) %s\n",
++		result, __func__);
++	return result;
++}
++
++void host_enable_cmd23(sd_host_t *host, bool enable)
++{
++	if (host->feature.hw_autocmd) {
++		if (enable == 0)
++			sdhci_and16(host, SDHCI_HOST_CONTROL2,
++				    ~SDHCI_CTRL_CMD23_EN);
++		else
++			sdhci_or16(host, SDHCI_HOST_CONTROL2,
++				   SDHCI_CTRL_CMD23_EN);
++	}
++}
++
++void host_transfer_init(sd_host_t *host, bool enable_infinite, bool force_adma)
++{
++	u32 dma_mode = 0;
++
++	DbgInfo(MODULE_SD_HOST,
++		FEATURE_IOCTL_TRACE | FEATURE_CARD_INIT | FEATURE_ERROR_RECOVER,
++		NOT_TO_RAM, "Enter %s, enable_infinite=%d, force_adma=%d\n",
++		__func__, enable_infinite, force_adma);
++
++	if (force_adma == TRUE) {
++		/* todo according to registery */
++		host_dma_select(host, TRANS_ADMA2);
++		hostven_transfer_init(host, FALSE);
++	} else {
++		dma_mode = host->cfg->host_item.test_dma_mode_setting.dma_mode;
++		switch (dma_mode) {
++		case CFG_TRANS_MODE_SDMA:
++			host_dma_select(host, TRANS_SDMA);
++			break;
++		case CFG_TRANS_MODE_ADMA2:
++		case CFG_TRANS_MODE_ADMA2_SDMA_LIKE:
++			host_dma_select(host, TRANS_ADMA2);
++			break;
++		case CFG_TRANS_MODE_ADMA3:
++		case CFG_TRANS_MODE_ADMA3_SDMA_LIKE:
++			host_dma_select(host, TRANS_ADMA3);
++			break;
++		case CFG_TRANS_MODE_ADMA_MIX:
++		case CFG_TRANS_MODE_ADMA_MIX_SDMA_LIKE:
++			if ((host->chip_type == CHIP_SEAEAGLE2)
++			    || (host->chip_type == CHIP_GG8)
++			    || (host->chip_type == CHIP_ALBATROSS))
++				/* ADMA2 or ADMA3 if SD4.0 */
++				host_dma_select(host, TRANS_ADMA3);
++			else
++				/* ADMA2 or ADMA3 if SD4.0 */
++				host_dma_select(host, TRANS_ADMA2);
++			break;
++		default:
++			DbgErr("%s dma mode %d no define\n", __func__,
++			       dma_mode);
++			host_dma_select(host, TRANS_ADMA2);
++			break;
++		}
++		hostven_transfer_init(host, enable_infinite);
++	}
++	DbgInfo(MODULE_SD_HOST,
++		FEATURE_IOCTL_TRACE | FEATURE_CARD_INIT | FEATURE_ERROR_RECOVER,
++		NOT_TO_RAM, "Exit %s\n", __func__);
++}
++
++void host_error_int_recovery_stage1(sd_host_t *host, u16 error_int_state,
++				    bool check)
++{
++	/*
++	 * Follow SD Host Spec V4.10 Section 3.10.1 Error Interrupt Recovery flow (Page 178)
++	 *
++	 * (3). Set Software Reset for CMD Line to 1 in the Software
++	 *      Reset register for software reset the CMD line.
++	 * (4). Check Software Reset For CMD Line in the Software
++	 *      Reset register. If Software Reset For CMD Line is 0, go to (5)
++	 *      If it is 1, go to step (4)
++	 * (5) Check bits D06-04 in the Error Interrupt Status register.
++	 *     If one of these bits (D06-04) is set to 1, goto (6).
++	 *     If none are set to 1 (all are 0), goto step (8)
++	 * (6) Set Software Reset for DAT Line in the Software Reset
++	 *     register for software reset for DAT line.
++	 * (7) Check Software Reset For DAT Line in the Software Reset register.
++	 *     If Software Reset For DAT Line is 0, go to (8)
++	 *     If it is 1, goto (7)
++	 */
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Enter %s, error_int_state=%d, check=%d\n", __func__,
++		error_int_state, check);
++
++	/* If chip lost, do nothing. */
++	if (host_check_lost(host))
++		return;
++
++	host_chk_ocb_occur(host);
++
++	/* uhs2 case don't need this flow */
++	if (host->uhs2_flag)
++		return;
++
++	if (check) {
++		if (error_int_state & SDHCI_INT_CMD_ERROR_MASK)
++			host_reset(host, SDHCI_RESET_CMD);
++		if (error_int_state & SDHCI_INT_DAT_ERROR_MASK)
++			host_reset(host, SDHCI_RESET_DATA);
++	} else {
++		if (error_int_state & SDHCI_INT_CMD_ERROR_MASK)
++			sdhci_or32(host, SDHCI_CLOCK_CONTROL, SDHCI_RESET_CMD);
++		if (error_int_state & SDHCI_INT_DAT_ERROR_MASK)
++			sdhci_or32(host, SDHCI_CLOCK_CONTROL, SDHCI_RESET_DATA);
++	}
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++bool host_error_int_recovery_stage2(sd_host_t *host, u16 error_int_state)
++{
++	bool ret = FALSE;
++	u32 delay_us = 1;
++	loop_wait_t wait;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Enter %s, error_int_state=%d\n", __func__,
++		error_int_state);
++	/*
++	 * 11 Check Command Inhibit (DAT) and Command Inhibit(CMD) in the Present State register.
++	 * Repeat this step until both Command Inhibit (DAT) and Command Inhibit(CMD) are set to 0
++	 */
++
++	/* Command Inhibit (DAT) and (CMD) Check */
++	sdhci_or32(host, SDHCI_CLOCK_CONTROL, SDHCI_RESET_CMD);
++	util_init_waitloop(host->pdx, RESET_FOR_ALL_ABRT_TM, delay_us, &wait);
++	while (!util_is_timeout(&wait)) {
++		if ((sdhci_readl(host, SDHCI_PRESENT_STATE) &
++		     (SDHCI_CMD_INHIBIT | SDHCI_DATA_INHIBIT)) == 0) {
++			goto next;
++		} else if (sdhci_readl(host, SDHCI_PRESENT_STATE) == 0xffffffff) {
++			break;
++		}
++		os_udelay(delay_us);
++	}
++	/* Command Inhibit (DAT) and Command Inhibit(CMD) timeout, treat as Non-recoverable Error */
++	goto exit;
++
++next:
++	/*
++	 * 12  Check bits D03-00 in the Error Interrupt Status register for Aboot Command.
++	 * If one of these bits is set to 1, goto 16. if none of these bits are set to 1, go to 13
++	 */
++	if (error_int_state & SDHCI_INT_CMD_ERROR_MASK)
++		goto exit;
++
++	/*
++	 * 13 Check Data Timeout Error in the Error interrupt Status register.
++	 * If this bit is set to 1, go to step 16, If it is 0, goto 14
++	 */
++	if (error_int_state & SDHCI_INT_DATA_TIMEOUT)
++		goto exit;
++
++	/* 14 Wait for more than 40us */
++	os_udelay(40);
++
++	/*
++	 * 15 By monitoring the DAT[3:0] Line Signal Level in the Present State register,
++	 * judge whether the level of DAT line is low or not.
++	 */
++	if (host_get_datline_state(host) != 0xF)
++		ret = FALSE;
++	else
++		ret = TRUE;
++
++exit:
++	DbgInfo(MODULE_SD_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Exit(%d) %s\n", ret, __func__);
++	return ret;
++}
++
++bool host_check_lost(sd_host_t *host)
++{
++	u32 reg = sdhci_readl(host, SDHCI_PRESENT_STATE);
++
++	if (reg == 0xffffffff)
 +		return TRUE;
 +	else
 +		return FALSE;
 +}
 +
-+/*
-+ * Function Name: uhs2_access_reg
-+ *
-+ * Abstract: This Function is used to send uhs2 ccmd
-+ *
-+ * Input:
-+ *	sd_card_t *card : The Command will send to which  Card
-+ *	sd_command_t *sd_cmd: This parameter will contail card command info
-+ *	byte ioaddr: ioaddr for uhs2 ccmd
-+ *	bool broadcast: use broadcast or not
-+ *	bool rwcmd: Set RW flag in uhs2 header or not
-+ *	byte payload_num: payload count
-+ *
-+ * Input & Output:
-+ *			u32 *payload: contain the register want to setting,
-+ *			and store return  regs value
-+ *
-+ * Return value:
-+ *	If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *			otherwize reutrn FALSE
-+ *
-+ * Notes:
-+ *  so giving the routine another name requires you to modify the build tools.
-+ */
-+
-+static bool uhs2_native_ccmd_internal(sd_card_t *card, sd_command_t *sd_cmd,
-+				      u16 ioaddr, bool broadcast, bool rwcmd,
-+				      byte payload_num, u32 *payload)
++void host_set_output_tuning_phase(sd_host_t *host, u32 phase)
 +{
-+	bool result = FALSE;
-+	u32 headarg = UHS2_CMD_HEADER_NP;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Enter %s, phase=0x%x\n", __func__, phase);
++
++	host_enable_clock(host, FALSE);
++
++	hostven_set_output_tuning_phase(host, phase, FALSE);
++
++	host_enable_clock(host, TRUE);
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++/*
++ * only used for camera mode, polling in thread daemon.
++ * for PC mode, sdhci_irq do card in/dessert check by INTR
++ */
++extern void remove_card_handle(bht_dev_ext_t *pdx);
++extern void insert_card_handle(bht_dev_ext_t *pdx);
++void host_check_card_insert_desert(sd_host_t *host)
++{
++	u16 regval;
++
++	if (host->cfg->driver_item.camera_mode_ctrl_vdd1_vdd2_cd == 1) {
++		regval = ven_readw(host, SDBAR1_WP_GPIO3_CTRL_REG_514);
++		if ((regval & (1 << 6))
++		    && (host->camera_mode_card_state == CARD_INSERTED)) {
++			DbgInfo(MODULE_SD_HOST,
++				FEATURE_CARD_INIT | FEATURE_INTR_TRACE, TO_RAM,
++				"CARD_DESERTED %s\n", __func__);
++			host->camera_mode_card_state = CARD_DESERTED;
++			remove_card_handle(host->pdx);
++		} else if (!(regval & (1 << 6))
++			   && (host->camera_mode_card_state == CARD_DESERTED)) {
++			DbgInfo(MODULE_SD_HOST,
++				FEATURE_CARD_INIT | FEATURE_INTR_TRACE, TO_RAM,
++				"CARD_DESERTED %s\n", __func__);
++			host->camera_mode_card_state = CARD_INSERTED;
++			insert_card_handle(host->pdx);
++		} else {
++			/* nothing */
++		}
++	}
++}
++
++void set_gpio_levels(sd_host_t *host, bool gpio_num, bool signal_level)
++{
++	u8 gpio_setting_case;
++	u32 regval;
++
++	gpio_setting_case = ((gpio_num << 1) | signal_level);
++
++	switch (gpio_setting_case) {
++	case 0:
++		/* GPIO2 Low */
++		DbgInfo(MODULE_SD_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++			"Set GPIO2 Low\n");
++		regval = ven_readl(host, 0x510);
++		regval &= ~(1 << 13);
++		ven_writel(host, 0x510, regval);
++
++		break;
++
++	case 1:
++		/* GPIO2 High */
++		DbgInfo(MODULE_SD_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++			"Set GPIO2 High\n");
++		regval = ven_readl(host, 0x510);
++		regval |= (1 << 13);
++		ven_writel(host, 0x510, regval);
++
++		break;
++
++	case 2:
++		/* GPIO3 Low */
++		DbgInfo(MODULE_SD_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++			"Set GPIO3 Low\n");
++		regval = ven_readl(host, 0x514);
++		regval &= ~(1 << 5);
++		ven_writel(host, 0x514, regval);
++
++		break;
++
++	case 3:
++		/* GPIO3 High */
++		DbgInfo(MODULE_SD_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++			"Set GPIO3 High\n");
++		regval = ven_readl(host, 0x514);
++
++		if (regval == 0xffffffff)
++			DbgInfo(MODULE_SD_HOST, FEATURE_ERROR_RECOVER,
++				NOT_TO_RAM, "Chip lost when Set GPIO3 High\n");
++		else {
++			regval |= (1 << 5);
++			ven_writel(host, 0x514, regval);
++		}
++		break;
++	}
++
++}
++
++void shif_byte_pattern_bit_set(sd_host_t *host, bool bit_en, u8 pattern_case)
++{
++	switch (pattern_case) {
++	case SPECIAL_PATTERN:
++		if (bit_en) {
++			set_gpio_levels(host, GPIO2, GPIO_LOW);
++			set_gpio_levels(host, GPIO3, GPIO_HIGHT);
++			set_gpio_levels(host, GPIO2, GPIO_HIGHT);
++			set_gpio_levels(host, GPIO2, GPIO_LOW);
++		} else {
++			set_gpio_levels(host, GPIO2, GPIO_LOW);
++			set_gpio_levels(host, GPIO3, GPIO_LOW);
++			set_gpio_levels(host, GPIO2, GPIO_HIGHT);
++			set_gpio_levels(host, GPIO2, GPIO_LOW);
++		}
++		break;
++
++	case START_BIT:
++		set_gpio_levels(host, GPIO2, GPIO_HIGHT);
++		set_gpio_levels(host, GPIO3, GPIO_LOW);
++		set_gpio_levels(host, GPIO2, GPIO_LOW);
++		break;
++
++	case END_BIT:
++		set_gpio_levels(host, GPIO2, GPIO_HIGHT);
++		set_gpio_levels(host, GPIO3, GPIO_LOW);
++		set_gpio_levels(host, GPIO3, GPIO_HIGHT);
++		break;
++	}
++}
++
++void set_pattern_value(sd_host_t *host, u8 value)
++{
 +	int i;
 +
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARDCMD_TRACE, NOT_TO_RAM,
-+		"Enter %s ioaddr=0x%04X\n", __func__, ioaddr);
++	DbgInfo(MODULE_SD_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Enter %s with 0x%x\n", __func__, value);
 +
-+	/* step1 prepare header for uhs2 ccmd       */
-+	headarg |= UHS2_NATIVE_CCMD_IOADDR(ioaddr);
++	shif_byte_pattern_bit_set(host, 0, START_BIT);
 +
-+	if (broadcast == FALSE)
-+		headarg |= UHS2_HEADER_DID(card->uhs2_info.dev_id);
-+
-+	if (rwcmd)
-+		headarg |= UHS2_NATIVE_HEADER_RW;
-+
-+	switch (payload_num) {
-+	case 0:
-+		break;
-+	case 1:
-+		headarg |= UHS2_NATIVE_CCMD_PLEN4;
-+		break;
-+	case 2:
-+		headarg |= UHS2_NATIVE_CCMD_PLEN8;
-+		break;
-+	case 4:
-+		headarg |= UHS2_NATIVE_CCMD_PLEN16;
-+		break;
-+	default:
-+		DbgErr("uhs2 ccmd payload number is wrong\n");
-+		goto exit;
++	for (i = 5; i >= 0; i--) {
++		PrintMsg("#i = %d\n", i);
++		if (value & (1 << i))
++			shif_byte_pattern_bit_set(host, 1, SPECIAL_PATTERN);
++		else
++			shif_byte_pattern_bit_set(host, 0, SPECIAL_PATTERN);
 +	}
 +
-+	sd_cmd->uhs2_header = headarg;
-+	if (rwcmd)
-+		sd_cmd->uhs2_set_pld = 1;
-+
-+	/* step 2 set payload       */
-+	sd_cmd->payload_cnt = payload_num;
-+	for (i = 1; i <= payload_num; i++)
-+		sd_cmd->trans_reg[0].payload[i] = payload[i - 1];
-+
-+	result = cmd_generate_reg(card, sd_cmd);
-+	if (result == FALSE)
-+		goto exit;
-+
-+	result = cmd_execute_sync(card, sd_cmd, NULL);
-+exit:
-+	if (result == FALSE)
-+		DbgErr("UHS2 Native cmd failed ioaddr=0x%02X errcode=0x%08X\n",
-+		       UHS2_GET_NATIVE_IOADDR(sd_cmd->uhs2_header),
-+		       sd_cmd->err.error_code);
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARDCMD_TRACE, NOT_TO_RAM,
-+		"Exit %s result=%d\n", __func__, result);
-+	return result;
++	shif_byte_pattern_bit_set(host, 0, END_BIT);
 +}
 +
-+bool uhs2_native_ccmd(sd_card_t *card, sd_command_t *sd_cmd,
-+		      u16 ioaddr, bool broadcast, bool rwcmd, byte payload_num,
-+		      u32 *payload)
++void power_control_with_card_type(sd_host_t *host, u8 vddx, bool power_en)
 +{
-+	os_memset(sd_cmd, 0, sizeof(sd_command_t));
-+	return uhs2_native_ccmd_internal(card, sd_cmd, ioaddr, broadcast, rwcmd,
-+					 payload_num, payload);
-+}
++	u8 value = 0x0;
++	bht_dev_ext_t *pdx = host->pdx;
++	sd_card_t *card = &pdx->card;
 +
-+/*
-+ * Function Name: uhs2_access_reg
-+ *
-+ * Abstract: This Function is used to read or inquiry or set uhs2 card registers
-+ *
-+ * Input:
-+ *	sd_card_t *card : The Command will send to which  Card
-+ *			sd_command_t *sd_cmd: This parameter will contail card command info
-+ *			byte ioaddr: reg addr
-+ *	bool broadcast: use broadcast or not
-+ *	bool setcfg: set reg or read reg
-+ *	byte payload_num: reg count
-+ *
-+ * Input & Output:
-+ *	u32 *payload: contain the register want to setting, and store return  regs value
-+ *
-+ * Return value:
-+ *	If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *	otherwize reutrn FALSE
-+ *
-+ * Notes:
-+ *  so giving the routine another name requires you to modify the build tools.
-+ */
-+static bool uhs2_access_reg(sd_card_t *card, sd_command_t *sd_cmd,
-+			    u16 ioaddr, bool broadcast, bool setcfg,
-+			    byte payload_num, u32 *payload)
-+{
-+	u32 i;
-+	bool result = FALSE;
++	DbgInfo(MODULE_SD_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Enter %s Card type-%d, VDD-%d, Power-%d\n", __func__,
++		card->card_type, vddx, power_en);
 +
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARDCMD_TRACE, NOT_TO_RAM,
-+		"Enter %s ioaddr=0x%04X\n", __func__, ioaddr);
-+	os_memset(sd_cmd, 0, sizeof(sd_command_t));
-+	if (payload_num > 4) {
-+		DbgErr("payload_num is large than 4\n");
-+		goto exit;
-+	}
-+
-+	/* set reg case and broadcast inquiry need input value */
-+	if (setcfg || broadcast) {
-+		for (i = 0; i < payload_num; i++)
-+			payload[i] = swapu32(payload[i]);
-+		sd_cmd->uhs2_set_pld = 1;
++	if (card->card_type == CARD_SD) {
++		if (power_en && vddx == VDD1)
++			value = (UHS1_BIT_EN | VDD1_BIT_EN);
++		else if (!power_en && vddx == VDD1)
++			value = (UHS1_BIT_EN);
++	} else if (card->card_type == CARD_UHS2) {
++		if (power_en && vddx == VDD1)
++			value = (UHS2_BIT_EN | VDD1_BIT_EN);
++		else if (power_en && vddx == VDD2)
++			value = (UHS2_BIT_EN | VDD2_BIT_EN);
++		else if (!power_en)
++			value = (UHS2_BIT_EN);
++	} else if (card->card_type == CARD_SD70) {
++		if (power_en && vddx == VDD1)
++			value = (SD70_BIT_EN | VDD1_BIT_EN);
++		else if (power_en && vddx == VDD2)
++			value = (SD70_BIT_EN | VDD2_BIT_EN);
++		else if (!power_en)
++			value = (SD70_BIT_EN);
 +	} else {
-+		for (i = 0; i < payload_num; i++)
-+			payload[i] = 0;
++		if (power_en && vddx == VDD1)
++			value = (VDD1_BIT_EN);
++		if (power_en && vddx == VDD2)
++			value = (VDD2_BIT_EN);
++		else if (!power_en)
++			value = 0x00;
 +	}
 +
-+	result =
-+	    uhs2_native_ccmd_internal(card, sd_cmd, ioaddr, broadcast, setcfg,
-+				      payload_num, payload);
-+	if (result == FALSE) {
-+		DbgErr
-+		    ("uhs2 access reg failed ioaddr=0x%02X broadcast=%d setcfg=%d\n",
-+		     ioaddr, broadcast, setcfg);
-+		goto exit;
-+	}
++	set_pattern_value(host, value);
 +
-+	/* set reg case don't need get register value */
-+	if (setcfg == 0) {
-+		for (i = 0; i < payload_num; i++)
-+			payload[i] = swapu32(sd_cmd->response[i]);
-+	}
-+
-+exit:
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARDCMD_TRACE, NOT_TO_RAM,
-+		"Exit %s result=%d\n", __func__, result);
-+	return result;
-+}
-+
-+/*
-+ * Function Name: uhs2_send_fullreset
-+ *
-+ * Abstract: This Function is used init Send UHS2 full reset ccmd
-+ *
-+ * Input:
-+ *	sd_card_t *card : The Command will send to which  Card
-+ *	sd_command_t *sd_cmd,
-+ *
-+ * Return value:
-+ *	If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *			otherwize reutrn FALSE
-+ */
-+bool uhs2_send_fullreset(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	bool result = FALSE;
-+	u32 payload = 0;
-+
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Enter %s\n", __func__);
-+
-+	result =
-+	    uhs2_native_ccmd(card, sd_cmd, UHS2_IOADDR_FULLRESET, TRUE, TRUE, 0,
-+			     &payload);
-+
-+	if (result == FALSE)
-+		DbgErr("uhs2 fullreset failed\n");
-+
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Exit %s\n", __func__);
-+	return result;
-+}
-+
-+/*
-+ * Function Name: uhs2_trans_abort
-+ *
-+ * Abstract: This Function is used init Send UHS2 transfer abort command
-+ *
-+ * Input:
-+ *	sd_card_t *card : The Command will send to which  Card
-+ *	sd_command_t *sd_cmd,
-+ *
-+ * Return value:
-+ *	If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *	otherwize reutrn FALSE
-+ */
-+bool uhs2_trans_abort(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	bool result = FALSE;
-+	u32 payload = 0;
-+
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Enter %s\n", __func__);
-+
-+	result =
-+	    uhs2_native_ccmd(card, sd_cmd, UHS2_IOADDR_ABORT, FALSE, TRUE, 0,
-+			     &payload);
-+
-+	if (result == FALSE)
-+		DbgErr("uhs2 trans_abort failed\n");
-+
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, result);
-+	return result;
-+}
-+
-+/*
-+ * Function Name: uhs2_full_reset_card
-+ *
-+ * Abstract: This Function is used to send full reset command, if failed do host reset for all
-+ *
-+ * Input:
-+ *	sd_card_t *card : The Command will send to which  Card
-+ *
-+ * Return value:
-+ *	If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *	otherwize reutrn FALSE
-+ */
-+
-+bool uhs2_full_reset_card(sd_card_t *card)
-+{
-+	sd_command_t sd_cmd;
-+	bool result = FALSE;
-+
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_ERROR_RECOVER | FEATURE_CARD_OPS,
-+		NOT_TO_RAM, "Enter %s\n", __func__);
-+
-+	result = uhs2_send_fullreset(card, &sd_cmd);
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_ERROR_RECOVER | FEATURE_CARD_OPS,
-+		NOT_TO_RAM, "uhs2 full rest ret=%d\n", result);
-+	if (result) {
-+		os_udelay(200);
-+		host_uhs2_reset(card->host, TRUE);
-+	} else {
-+		/* failed do reset for all */
-+		host_uhs2_clear(card->host, TRUE);
-+	}
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_ERROR_RECOVER | FEATURE_CARD_OPS,
-+		NOT_TO_RAM, "Exit %s ret=%d\n", __func__, result);
-+
-+	return result;
-+}
-+
-+/*
-+ * Function Name: uhs2_send_devinit
-+ *
-+ * Abstract: This Function is used init send uhs2 dev_enum ccmd and get card deviceid
-+ *
-+ * Input:
-+ *			sd_card_t *card : The Command will send to which  Card
-+ *			sd_command_t *sd_cmd,
-+ *
-+ * Return value:
-+ *	If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *	otherwize reutrn FALSE
-+ */
-+
-+bool uhs2_dev_enumeration(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	bool result = FALSE;
-+	u32 payload = 0;
-+	u8 firstid, lastid;
-+	u32 resp;
-+	u8 devcnt = 0;
-+
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
++	DbgInfo(MODULE_SD_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
 +		__func__);
-+
-+	firstid = lastid = 0;
-+	payload = UHS2_ENUM_PLD;
-+
-+	result =
-+	    uhs2_native_ccmd(card, sd_cmd, UHS2_IOADDR_ENUM, TRUE, TRUE, 1,
-+			     &payload);
-+	if (result == FALSE)
-+		goto exit;
-+
-+	resp = sd_cmd->response[0];
-+	firstid = (u8) ((resp & UHS2_ENMR_IDF) >> 4);
-+	lastid = (u8) (resp & UHS2_ENMR_IDL);
-+
-+	if (firstid > lastid)
-+		devcnt = (lastid + 0x10) - firstid;
-+	else
-+		devcnt = lastid - firstid + 1;
-+
-+	card->uhs2_info.dev_id = firstid;
-+
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, TO_RAM,
-+		"firstid=0x%02X lastid=0x%02X\n", firstid, lastid);
-+
-+exit:
-+	if (result == FALSE)
-+		DbgErr("uhs2 enumeration failed\n");
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, result);
-+	return result;
-+
 +}
 +
++bool shift_bit_func_enable(sd_host_t *host)
++{
++	if (host->cfg != NULL) {
++		if ((host->cfg->card_item.sd7_sdmode_switch_control.shift_byte_en)
++		    && (host->chip_type == CHIP_GG8))
++			return TRUE;
++		else
++			return FALSE;
++	} else
++		return FALSE;
++}
+diff --git a/drivers/scsi/bht/host/hostreg.h b/drivers/scsi/bht/host/hostreg.h
+new file mode 100644
+index 000000000000..1629e18140e0
+--- /dev/null
++++ b/drivers/scsi/bht/host/hostreg.h
+@@ -0,0 +1,478 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
-+ * Function Name: uhs2_send_devinit
++ * Copyright (c) 2014 BHT Inc.
 + *
-+ * Abstract: This Function is used init send uhs2 dev_init cmd
++ * File Name: hostreg.h
 + *
-+ * Input:
-+ *			sd_card_t *card : The Command will send to which  Card
-+ *			sd_command_t *sd_cmd,
-+ *			u8 gap,
-+ *			u8 dap,
++ * Environment:	OS Independent
 + *
-+ * Iput & Output:
-+ *			u8 *gd,
-+ *			u8 *cf
-+ *
-+ * Return value:
-+ *	If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *	otherwize reutrn FALSE
 + */
 +
-+static bool uhs2_send_devinit(sd_card_t *card, sd_command_t *sd_cmd, u8 *gd,
-+			      u8 gap, u8 dap, u8 *cf)
-+{
-+	bool result = FALSE;
-+	u32 payload;
-+	u32 resp;
++#define SDHCI_DMA_ADDRESS	0x00
++#define SDHCI_ARGUMENT2		SDHCI_DMA_ADDRESS
 +
-+	payload =
-+	    UHS2_DEVINIT_CF | (((*gd) & 0xf) << 4) | (gap & 0xf) | ((dap & 0xf)
-+								    << 12);
-+	result =
-+	    uhs2_native_ccmd(card, sd_cmd, UHS2_IOADDR_DEVINIT, TRUE, TRUE, 1,
-+			     &payload);
-+	if (result == FALSE)
-+		goto exit;
++#define SDHCI_BLOCK_SIZE	0x04
++#define  SDHCI_MAKE_BLKSZ(dma, blksz) (((dma & 0x7) << 12) | (blksz & 0xFFF))
 +
-+	resp = sd_cmd->response[0];
-+	if (resp & UHS2_DEVINIT_CF)
-+		*cf = 1;
-+	else
-+		*cf = 0;
++#define SDHCI_BLOCK_COUNT	0x06
 +
-+	if (gap == (resp & UHS2_DEVINIT_GAP))
-+		(*gd)++;
++#define SDHCI_ARGUMENT		0x08
 +
-+exit:
-+	return result;
-+}
++#define SDHCI_TRANSFER_MODE	0x0C
++#define  SDHCI_TRNS_DMA		0x01
++#define  SDHCI_TRNS_BLK_CNT_EN	0x02
++#define  SDHCI_TRNS_AUTO_CMD12	0x04
++#define  SDHCI_TRNS_AUTO_CMD23	0x08
++#define  SDHCI_TRNS_READ	0x10
++#define  SDHCI_TRNS_MULTI	0x20
++#define SDHCI_TRNS_RESP_R5	0x40
++#define SDHCI_TRNS_RESP_CHK	0x80
++#define SDHCI_TRNS_RESP_INTR_DIS	0x100
 +
-+/*
-+ * Function Name: uhs2_devinit_flow
-+ *
-+ * Abstract: This Function is used do device_init flow
-+ *
-+ * Input:
-+ *	sd_card_t *card : The Command will send to which  Card
-+ *			sd_command_t *sd_cmd,
-+ *	sd_host_t *host
-+ *
-+ * Return value:
-+ *	If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *	otherwize reutrn FALSE
-+ */
-+static bool uhs2_devinit_flow(sd_card_t *card, sd_command_t *sd_cmd,
-+			      sd_host_t *host)
-+{
-+	bool result = FALSE;
-+	u8 gd, dap, gap, cf;
++#define SDHCI_RSP_NONE				0x00000000
++#define SDHCI_RSP_TYPE_R1				0x001A0000
++#define SDHCI_RSP_TYPE_R2				0x00090000
++#define SDHCI_RSP_TYPE_R3				0x00020000
++#define SDHCI_RSP_TYPE_R1B			0x001B0000
++#define SDHCI_CMD_TYPE_12_OR_52			0x00C00000
++#define SDCHI_CMD_DATA_PRESENT			0x00200000
 +
-+	/* max 1200ms delay */
-+	u32 timeout = 1200;
-+	loop_wait_t wait;
-+	u32 delay_us = 20;
++#define SDHCI_COMMAND		0x0E
 +
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+	cf = 0;
-+	gd = 0;
-+	dap = host->uhs2_cap.dap;
-+	gap = host->uhs2_cap.gap;
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"devinit dap=0x%02X gap=0x%02X\n", dap, gap);
++/* add for VDD2 GPIO */
++#define  SDBAR1_GPIO_FUNC_SEL_508	0x508
++#define  SDBAR1_GPIO_FUNC_GPIOCTRL_510	0x510
 +
-+	util_init_waitloop(card->host->pdx, timeout, delay_us, &wait);
++#define SDHCI_MAKE_CMD(c, f) (((c & 0xff) << 8) | (f & 0xff))
++#define SDHCI_GET_CMD(c) ((c>>8) & 0x3f)
 +
-+	do {
-+		result = uhs2_send_devinit(card, sd_cmd, &gd, gap, dap, &cf);
-+		os_udelay(delay_us);
++#define SDHCI_RESPONSE		0x10
 +
-+		if (result == FALSE) {
-+			DbgErr("Device Init cmd error\n");
-+			goto exit;
-+		}
-+	} while ((util_is_timeout(&wait) == FALSE) && (cf == 0));
++#define SDHCI_UHS2_CMD12_RES	0x1C
 +
-+	if (cf == 0)
-+		result = FALSE;
++#define SDHCI_BUFFER		0x20
 +
-+exit:
-+	if (result == FALSE)
-+		DbgErr("host:%p devinit failed cf=%d\n", host, cf);
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
-+		__func__);
-+	return result;
++#define SDHCI_PRESENT_STATE	0x24
++#define  SDHCI_CMD_INHIBIT	0x00000001
++#define  SDHCI_DATA_INHIBIT	0x00000002
++#define  SDHCI_DOING_WRITE	0x00000100
++#define  SDHCI_DOING_READ	0x00000200
++#define  SDHCI_SPACE_AVAILABLE	0x00000400
++#define  SDHCI_DATA_AVAILABLE	0x00000800
++#define  SDHCI_CARD_PRESENT	0x00010000
++#define	 SDHCI_CARD_PRESENT_QUIRK	0x00050000
++#define  SDHCI_WRITE_PROTECT	0x00080000
++#define  SDHCI_DATA_LVL_MASK	0x00F00000
++#define  SDHCI_CMD_LVL_MASK	0x01000000
++#define	 SDHCI_UHS2_IF_DETECT	0x80000000
++#define  SDHCI_UHS2_LANE_SYNC	0x40000000
++#define	 SDHCI_UHS2_DMT_STATUS	0x20000000
++#define   SDHCI_DATA_LVL_SHIFT	20
++#define   SDHCI_CMD_LVL_SHIFT	24
 +
-+}
++#define SDHCI_HOST_CONTROL	0x28
++#define  SDHCI_CTRL_LED		0x01
++#define  SDHCI_CTRL_4BITBUS	0x02
++#define  SDHCI_CTRL_HISPD	0x04
++#define  SDHCI_CTRL_DMA_MASK	0x18
++#define   SDHCI_CTRL_SDMA	0x00
++#define   SDHCI_CTRL_ADMA1	0x08
++#define   SDHCI_CTRL_ADMA32	0x10
++#define   SDHCI_CTRL_ADMA64	0x18
++#define	  SDHCI_CTRL_DMA_MASK 0x18
++#define   SDHCI_CTRL_8BITBUS	0x20
 +
-+/*
-+ * Function Name: uhs2_send_devinit
-+ *
-+ * Abstract: This Function is used init send uhs2 dev_enum ccmd and get card deviceid
-+ *
-+ * Input:
-+ *	sd_card_t *card : The Command will send to which  Card
-+ *	sd_command_t *sd_cmd,
-+ *
-+ * Return value:
-+ *			If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *	otherwize reutrn FALSE
-+ */
++#define SDHCI_POWER_CONTROL	0x29
++#define  SDHCI_POWER_VDD1_ON		0x0100
++#define  SDHCI_POWER_VDD1_180	0x0A00
++#define  SDHCI_POWER_VDD1_300	0x0C00
++#define  SDHCI_POWER_VDD1_330	0x0E00
++#define  SDHCI_POWER_VDD1_MASK 0x0F00
++#define  SDHCI_POWER_VDD2_180	0xA000
++#define  SDHCI_POWER_VDD2_120 0x9000
++#define  SDHCI_POWER_VDD2_ON	0x1000
++#define	 SDHCI_POWER_VDD2_MASK	0xF000
 +
-+static bool uhs2_card_get_caps(sd_card_t *card, sd_command_t *sd_cmd,
-+			       sd_host_t *host)
-+{
-+	u32 payload[2];
-+	bool result = FALSE;
++#define  SDBAR1_GPIO_FUNC_SEL_508	0x508
++#define  SDBAR1_GPIO_FUNC_GPIOCTRL_510	0x510
++#define  VDDX_PWR_SOURCE_EXTERNAL 1
++#define  VDDX_PWR_SOURCE_INTERNAL 0
++#define  VDDX_POLARITY_ACTIVE_HIGH 1
++#define  VDDX_POLARITY_ACTIVE_LOW 0
++#define  VDDX_PWR_VOLTAGE_1V2 0
++#define  VDDX_PWR_VOLTAGE_1V8 1
++#define  VDDX_PWR_VOLTAGE_3V3 2
++#define  VDD1 1
++#define  VDD2 2
++#define  VDD3 3
++#define POWER_ON    1
++#define POWER_OFF   0
 +
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
++#define  SDBAR1_SW_CTL_LED_GPIO0_50C	    0x50C
++#define  SDBAR1_GPIO_1_2_CTRL_REG_510	    0x510
++#define  SDBAR1_WP_GPIO3_CTRL_REG_514	    0x514
++#define  SDBAR1_Ext_INT_MASK_REG_518	    0x518
++#define  SDBAR1_Ext_INT_STATUS_REG_51C	    0x51C
++#define  SDBAR1_Ext_INT_SIGNAL_MASK_REG_520	0x520
 +
-+	/*
-+	 * Get  phy capbality for both host and card support
-+	 * 1. Hibernate;  2. Lss_Dir; 3. Lss_Syn
-+	 */
-+	os_memset(payload, 0, sizeof(payload));
-+	result =
-+	    uhs2_access_reg(card, sd_cmd, UHS2_IOADDR_PHY_CAPL, FALSE, FALSE, 2,
-+			    payload);
-+	if (result == FALSE) {
-+		DbgErr("Inquiry card phy cap failed\n");
-+		goto exit;
-+	}
++#define ADJUST_EXPEXTED_RANGE_TIMEOUT_COUNT 10
 +
-+	card->uhs2_info.uhs2_cap.hibernate = (payload[0] & BIT15) ? 1 : 0;
-+	card->uhs2_info.uhs2_cap.n_lss_dir = ((payload[1] & 0xF0) >> 4);
-+	card->uhs2_info.uhs2_cap.n_lss_syn = ((payload[1] & 0x0F));
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"card hbr=%d lssdir=%d lsssyn=%d\n",
-+		card->uhs2_info.uhs2_cap.hibernate,
-+		card->uhs2_info.uhs2_cap.n_lss_dir,
-+		card->uhs2_info.uhs2_cap.n_lss_syn);
++#define SDHCI_BLOCK_GAP_CONTROL	0x2A
 +
-+	/*
-+	 * Get  Link/Tran capbality for both host and card support
-+	 * 1. nfcu;  2. datagap; 3. max block length
-+	 */
-+	os_memset(payload, 0, sizeof(payload));
-+	result =
-+	    uhs2_access_reg(card, sd_cmd, UHS2_IOADDR_LINKT_CAPL, FALSE, FALSE,
-+			    2, payload);
-+	if (result == FALSE) {
-+		DbgErr("Inquiry card link cap failed\n");
-+		goto exit;
-+	}
++#define SDHCI_WAKE_UP_CONTROL	0x2B
++#define  SDHCI_WAKE_ON_INT	0x01
++#define  SDHCI_WAKE_ON_INSERT	0x02
++#define  SDHCI_WAKE_ON_REMOVE	0x04
 +
-+	card->uhs2_info.uhs2_cap.n_fcu = ((payload[0] & 0xFF00) >> 8);
-+	card->uhs2_info.uhs2_cap.n_data_gap = ((payload[1] & 0x00FF));
-+	card->uhs2_info.uhs2_cap.max_blk_len =
-+	    ((payload[0] & 0xFFF00000) >> 20);
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"card nfcu=%d datagap=%d blklen=%d\n",
-+		card->uhs2_info.uhs2_cap.n_fcu,
-+		card->uhs2_info.uhs2_cap.n_data_gap,
-+		card->uhs2_info.uhs2_cap.max_blk_len);
++#define SDHCI_CLOCK_CONTROL	0x2C
++#define  SDHCI_DIVIDER_SHIFT	8
++#define  SDHCI_DIVIDER_HI_SHIFT	6
++#define  SDHCI_DIV_MASK	0xFF
++#define  SDHCI_DIV_MASK_LEN	8
++#define  SDHCI_DIV_HI_MASK	0x300
++#define  SDHCI_PROG_CLOCK_MODE	0x0020
++#define  SDHCI_HOST_PLL_EN	0x0008
++#define  SDHCI_CLOCK_CARD_EN	0x0004
++#define  SDHCI_CLOCK_INT_STABLE	0x0002
++#define  SDHCI_CLOCK_INT_EN	0x0001
++#define  SDHCI_DIVIDER_CLEAR      0xffff003f
 +
-+	/* Below capabliies only decide host */
-+	card->uhs2_info.uhs2_cap.speed_range = host->uhs2_cap.speed_range;
-+	/* default we use Fast Mode */
++#define SDHCI_TIMEOUT_CONTROL	0x2E
++#define	 SDHCI_DAT_TIMEOUT_MASK		0xF0
++#define	 SDHCI_DAT_TIMEOUT_VAL		0x0E
 +
-+	/* card support low power mode */
-+	card->uhs2_info.uhs2_cap.pwr_mode = 1;
-+	card->uhs2_info.uhs2_cap.retry_cnt = host->uhs2_cap.retry_cnt;
++#define  SDHCI_RESET_ALL	0x01000000
++#define  SDHCI_RESET_CMD	0x02000000
++#define  SDHCI_RESET_DATA	0x04000000
 +
-+	os_memset(payload, 0, sizeof(payload));
-+	result =
-+	    uhs2_access_reg(card, sd_cmd, UHS2_IOADDR_GEN_CAPL, FALSE, FALSE, 1,
-+			    payload);
-+	if (result == FALSE) {
-+		DbgErr("Inquiry card gen cap failed\n");
-+		goto exit;
-+	}
++#define SDHCI_INT_STATUS	0x30
++#define SDHCI_INT_ENABLE	0x34
++#define SDHCI_SIGNAL_ENABLE	0x38
++#define  SDHCI_INT_CMD_COMP	0x00000001
++#define  SDHCI_INT_TRANSFER_COMP	0x00000002
++#define  SDHCI_INT_BLK_GAP	0x00000004
++#define  SDHCI_INT_DMA_END	0x00000008
++#define  SDHCI_INT_SPACE_AVAIL	0x00000010
++#define  SDHCI_INT_DATA_AVAIL	0x00000020
++#define  SDHCI_INT_CARD_INSERT	0x00000040
++#define  SDHCI_INT_CARD_REMOVE	0x00000080
++#define  SDHCI_INT_CARD_INT	0x00000100
++#define SDHCI_INT_ROC_BITS	0x00007F00
++#define  SDHCI_INT_ERROR	0x00008000
 +
-+	card->uhs2_info.uhs2_cap.half_supp = (payload[0] & BIT8) ? TRUE : FALSE;
-+	card->uhs2_info.uhs2_cap.lanes = ((payload[0] & 0x0E00) >> 8);
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"card halfsupp=%d lanes=%d\n",
-+		card->uhs2_info.uhs2_cap.half_supp,
-+		card->uhs2_info.uhs2_cap.lanes);
++#define SDHCI_INT_ERR_STATUS	0x32
++/* 16bit define for error */
++#define  SDHCI_INT_TIMEOUT	(1<<0)
++#define  SDHCI_INT_CRC		(1<<1)
++#define  SDHCI_INT_END_BIT	(1<<2)
++#define  SDHCI_INT_INDEX	(1<<3)
++#define  SDHCI_INT_DATA_TIMEOUT	(1<<4)
++#define  SDHCI_INT_DATA_CRC	(1<<5)
++#define  SDHCI_INT_DATA_END_BIT	(1<<6)
++#define  SDHCI_INT_BUS_POWER	(1<<7)
++#define  SDHCI_INT_ACMD12ERR	(1<<8)
++#define  SDHCI_INT_ADMA_ERROR	(1<<9)
++#define  SDHCI_INT_TUNING_ERROR	(1<<10)
++#define  SDHCI_INT_RESP_ERROR	(1<<11)
 +
-+exit:
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Exit %s result=%d\n", __func__, result);
-+	return result;
++#define  SDHCI_INT_NORMAL_MASK	0x00007FFF
++#define  SDHCI_INT_ERROR_MASK	0xFFFF8000
 +
-+}
++#define  SDHCI_INT_CMD_ERROR_MASK	0x000F
++#define  SDHCI_INT_DAT_ERROR_MASK	0x0070
++#define  SDHCI_INT_DATCMD_ERR_MASK  0x007F
 +
-+static byte uhs2_get_large_lss(u32 val1, u32 val2)
-+{
-+	u32 v1, v2;
-+	u32 v = 0;
++#define SDHCI_INT_ALL_MASK	((unsigned int)-1)
 +
-+	v1 = val1;
-+	v2 = val2;
++#define SDHCI_INT_BUFFER_READY_BITS	(SDHCI_INT_SPACE_AVAIL|SDHCI_INT_DATA_AVAIL)
++#define SDHCI_INT_INSERT_REMOVE_CARD_BITS	(SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)
++#define SDHCI_INT_NORMAL_BITS	(SDHCI_INT_CMD_COMP | SDHCI_INT_TRANSFER_COMP | \
++	SDHCI_INT_SPACE_AVAIL | SDHCI_INT_DATA_AVAIL | SDHCI_INT_DMA_END)
++#define SDHCI_INT_SDMA_BITS		(SDHCI_INT_CMD_COMP | \
++	SDHCI_INT_TRANSFER_COMP | SDHCI_INT_DMA_END)
++#define SDHCI_INT_ADMA_BITS		(SDHCI_INT_CMD_COMP | SDHCI_INT_TRANSFER_COMP)
 +
-+	if (v1 == 0)
-+		v1 = 16;
-+	if (v2 == 0)
-+		v2 = 16;
++#define SDHCI_INT_ERR_NON_DATA	  0x0F
++#define SDHCI_INT_ERR_TUNING_CMD	  (SDHCI_INT_ERR_NON_DATA | SDHCI_INT_TUNING_ERROR)
++#define SDHCI_INT_ERR_DATA_CMD		(SDHCI_INT_ERR_NON_DATA | 0x70)
++#define SDHCI_INT_ERR_ADMA_CMD		(SDHCI_INT_ERR_NON_DATA | 0x70 | SDHCI_INT_ADMA_ERROR)
 +
-+	v = os_max(v1, v2);
-+	if (v == 16)
-+		v = 0;
++#define SDHCI_ACMD12_ERR	0x3C
 +
-+	return (byte) v;
-+}
++#define SDHCI_HOST_CONTROL2		0x3E
++#define  SDHCI_CTRL_UHS_MASK		0x0007
++#define   SDHCI_CTRL_UHS_SDR12		0x0000
++#define   SDHCI_CTRL_UHS_HS400		0x0005
++#define   SDHCI_CTRL_UHS_HS200		0x0003
++#define   SDHCI_CTRL_UHS_SDR25		0x0001
++#define   SDHCI_CTRL_UHS_SDR50		0x0002
++#define   SDHCI_CTRL_UHS_SDR104		0x0003
++#define   SDHCI_CTRL_UHS_DDR50		0x0004
 +
-+/*
-+ * Function Name: uhs2_get_card_setting_host
-+ *
-+ * Abstract: This Function is used generate uhs2 card setting by card caps and host caps
-+ *
-+ * Input:
-+ *	sd_card_t *card :
-+ *			sd_host_t *host
-+ *
-+ */
-+static void uhs2_get_card_setting_host(sd_card_t *card, sd_host_t *host)
-+{
-+	u16 nfcu1, nfcu2;
-+	byte lanes;
++/* reserved value in SDIO spec */
++#define   SDHCI_CTRL_HS_SDR200		0x0005
++#define   SDHCI_CTRL_UHS2		0x0007
 +
-+	card->uhs2_info.uhs2_setting.hibernate =
-+	    card->uhs2_info.uhs2_cap.hibernate;
-+	card->uhs2_info.uhs2_setting.n_lss_dir =
-+	    uhs2_get_large_lss(card->uhs2_info.uhs2_cap.n_lss_dir,
-+			       host->uhs2_cap.n_lss_dir);
-+	card->uhs2_info.uhs2_setting.n_lss_syn =
-+	    uhs2_get_large_lss(card->uhs2_info.uhs2_cap.n_lss_syn,
-+			       host->uhs2_cap.n_lss_syn);
++#define  SDHCI_CTRL_VDD_180		0x0008
++#define  SDHCI_CTRL_DRV_TYPE_MASK	0x0030
++#define   SDHCI_CTRL_DRV_TYPE_B		0x0000
++#define   SDHCI_CTRL_DRV_TYPE_A		0x0010
++#define   SDHCI_CTRL_DRV_TYPE_C		0x0020
++#define   SDHCI_CTRL_DRV_TYPE_D		0x0030
++#define  SDHCI_CTRL_EXEC_TUNING		0x0040
++#define  SDHCI_CTRL_TUNED_CLK		0x0080
++#define  SDHCI_CTRL_UHS2IF_EN		0x0100
++#define  SDHCI_CTRL_ADMA2_26BIT_EN	0x0400
++#define  SDHCI_CTRL_CMD23_EN		0x0800
++#define  SDHCI_CTRL_VER4_EN		0x1000
++#define  SDHCI_CTRL_64BIT_EN		0x2000
++#define  SDHCI_CTRL_PRESET_VAL_ENABLE	0x8000
 +
-+	card->uhs2_info.uhs2_setting.n_data_gap =
-+	    os_max(card->uhs2_info.uhs2_cap.n_data_gap,
-+		   host->uhs2_cap.n_data_gap);
-+	card->uhs2_info.uhs2_setting.max_blk_len = 0x200;
++#define SDHCI_CAPABILITIES	0x40
++#define  SDHCI_TIMEOUT_CLK_MASK	0x0000003F
++#define  SDHCI_TIMEOUT_CLK_SHIFT 0
++#define  SDHCI_TIMEOUT_CLK_UNIT	0x00000080
++#define  SDHCI_CLOCK_BASE_MASK	0x00003F00
++#define  SDHCI_CLOCK_V3_BASE_MASK	0x0000FF00
++#define  SDHCI_CLOCK_BASE_SHIFT	8
++#define  SDHCI_MAX_BLOCK_MASK	0x00030000
++#define  SDHCI_MAX_BLOCK_SHIFT  16
++#define  SDHCI_CAN_DO_8BIT	0x00040000
++#define  SDHCI_CAN_DO_ADMA2	0x00080000
++#define  SDHCI_CAN_DO_ADMA1	0x00100000
++#define  SDHCI_CAN_DO_HISPD	0x00200000
++#define  SDHCI_CAN_DO_SDMA	0x00400000
++#define  SDHCI_CAN_VDD_330	0x01000000
++#define  SDHCI_CAN_VDD_300	0x02000000
++#define  SDHCI_CAN_VDD_180	0x04000000
++#define  SDHCI_CAN_64BIT_V4	0x08000000
++#define  SDHCI_CAN_64BIT_V3	0x10000000
 +
-+	nfcu1 = card->uhs2_info.uhs2_cap.n_fcu;
-+	nfcu2 = host->uhs2_cap.n_fcu;
-+	if (nfcu1 == 0)
-+		nfcu1 = 256;
-+	if (nfcu2 == 0)
-+		nfcu2 = 256;
-+	card->uhs2_info.uhs2_setting.n_fcu =
-+	    (nfcu1 >
-+	     nfcu2) ? host->uhs2_cap.n_fcu : card->uhs2_info.uhs2_cap.n_fcu;
++#define  SDHCI_SUPPORT_SDR50	0x00000001
++#define  SDHCI_SUPPORT_SDR104	0x00000002
++#define  SDHCI_SUPPORT_DDR50	0x00000004
++#define  SDHCI_DRIVER_TYPE_A	0x00000010
++#define  SDHCI_DRIVER_TYPE_C	0x00000020
++#define  SDHCI_DRIVER_TYPE_D	0x00000040
++#define  SDHCI_RETUNING_TIMER_COUNT_MASK	0x00000F00
++#define  SDHCI_RETUNING_TIMER_COUNT_SHIFT	8
++#define  SDHCI_USE_SDR50_TUNING			0x00002000
++#define  SDHCI_RETUNING_MODE_MASK		0x0000C000
++#define  SDHCI_RETUNING_MODE_SHIFT		14
++#define  SDHCI_CLOCK_MUL_MASK	0x00FF0000
 +
-+	card->uhs2_info.uhs2_setting.speed_range =
-+	    card->uhs2_info.uhs2_cap.speed_range;
-+	card->uhs2_info.uhs2_setting.pwr_mode = 0;
-+	card->uhs2_info.uhs2_setting.retry_cnt = host->uhs2_cap.retry_cnt;
++#define  SDHCI_CLOCK_MUL_SHIFT	16
 +
-+	card->uhs2_info.uhs2_setting.half_supp =
-+	    os_min(card->uhs2_info.uhs2_cap.half_supp,
-+		   (host->uhs2_cap.num_of_lane & 0x1));
-+	card->uhs2_info.uhs2_setting.lanes =
-+	    card->uhs2_info.uhs2_cap.lanes & host->uhs2_cap.num_of_lane;
++#define SDHCI_CAPABILITIES_1	0x44
++#define SDHCI_CAP1_ADMA3_SUPP	(BIT27)
++#define	SDHCI_CAP1_UHS2_SUPP	0x00000008
++#define	SDHCI_CAP1_UHS2_VDD2_MASK 0x30000000
++#define  SDHCI_CAN_VDD2_18V      0x10000000
++#define  SDHCI_CAN_VDD2_12V      0x20000000
++#define	SDHCI_CAP1_UHS2_VDD2_SHIFT 28
 +
-+	lanes = card->uhs2_info.uhs2_setting.lanes;
++#define SDHCI_MAX_CURRENT		0x48
++#define  SDHCI_MAX_CURRENT_LIMIT	0xFF
++#define  SDHCI_MAX_CURRENT_330_MASK	0x0000FF
++#define  SDHCI_MAX_CURRENT_330_SHIFT	0
++#define  SDHCI_MAX_CURRENT_300_MASK	0x00FF00
++#define  SDHCI_MAX_CURRENT_300_SHIFT	8
++#define  SDHCI_MAX_CURRENT_180_MASK	0xFF0000
++#define  SDHCI_MAX_CURRENT_180_SHIFT	16
 +
-+	if (lanes & UHS2_LANES_2D2UFD)
-+		lanes = UHS2_LANES_2D2UFD;
-+	else if (lanes & UHS2_LANES_1D2UFD)
-+		lanes = UHS2_LANES_1D2UFD;
-+	else if (lanes & UHS2_LANES_2D1UFD)
-+		lanes = UHS2_LANES_2D1UFD;
-+	else
-+		lanes = UHS2_LANES_2L_HD;
-+	card->uhs2_info.uhs2_setting.lanes = lanes;
-+}
++#define SDHCI_MAX_CURRENT_2		0x4C
++#define  SDHCI_MAX_CUR_VDD2_180_MASK	0x000000FF
++#define  SDHCI_MAX_CUR_VDD2_180_SHIFT	0
 +
-+/*
-+ * Function Name: uhs2_get_card_setting_host
-+ *
-+ * Abstract: This Function is used generate uhs2 card setting by vendor setting
-+ *
-+ * Input:
-+ *			sd_card_t *card :
-+ *	sd_host_t *host
-+ *
-+ */
-+static void uhs2_update_card_setting_vendor(sd_card_t *card, sd_host_t *host)
-+{
-+	u16 nfcu1, nfcu2;
-+	cfg_uhs2_setting_t *cfg = &host->cfg->card_item.uhs2_setting;
++#define SDHCI_ERROR_INTR_EVENT		0x52
 +
-+	card->uhs2_info.uhs2_setting.n_lss_dir =
-+	    uhs2_get_large_lss(card->uhs2_info.uhs2_setting.n_lss_dir,
-+			       cfg->min_lss_dir);
-+	card->uhs2_info.uhs2_setting.n_lss_syn =
-+	    uhs2_get_large_lss(card->uhs2_info.uhs2_setting.n_lss_syn,
-+			       cfg->min_lss_syn);
++#define   SDHCI_MAX_CURRENT_MULTIPLIER	4
 +
-+	card->uhs2_info.uhs2_setting.n_data_gap =
-+	    os_max(card->uhs2_info.uhs2_setting.n_data_gap,
-+		   cfg->min_data_gap_sel);
++/* 4C-4F reserved for more max current */
 +
-+	nfcu1 = (u16) card->uhs2_info.uhs2_setting.n_fcu;
-+	nfcu2 = (u16) cfg->max_nfcn_sel;
-+	if (nfcu1 == 0)
-+		nfcu1 = 256;
-+	if (nfcu2 == 0)
-+		nfcu2 = 256;
-+	card->uhs2_info.uhs2_setting.n_fcu =
-+	    (nfcu1 >
-+	     nfcu2) ? cfg->max_nfcn_sel : card->uhs2_info.uhs2_setting.n_fcu;
++#define SDHCI_SET_ACMD12_ERROR	0x50
++#define SDHCI_SET_INT_ERROR	0x52
 +
-+	card->uhs2_info.uhs2_setting.speed_range =
-+	    os_min(card->uhs2_info.uhs2_setting.speed_range,
-+		   cfg->max_speed_range_sel);
-+	card->uhs2_info.uhs2_setting.pwr_mode = (byte) cfg->fast_low_pwr_sel;
++#define SDHCI_ADMA_ERROR	0x54
 +
-+	card->uhs2_info.uhs2_setting.half_supp =
-+	    os_min(card->uhs2_info.uhs2_cap.half_supp, cfg->half_full_sel);
++/* 55-57 reserved */
 +
-+}
++#define SDHCI_ADMA_ADDRESS	0x58
++#define SDHCI_ADMA_ADDRESSH	0x5C
 +
-+/*
-+ * Function Name: uhs2_update_card_setting_degrade
-+ *
-+ * Abstract: This Function is used generate uhs2 card setting by degrade info
-+ *
-+ * Input:
-+ *			sd_card_t *card :
-+ *			sd_host_t *host
-+ *
-+ */
-+static void uhs2_update_card_setting_degrade(sd_card_t *card)
-+{
-+	if (card->degrade_uhs2_range)
-+		card->uhs2_info.uhs2_setting.speed_range = 0;
-+}
++/* 60-FB reserved */
++#define SDHCI_ADMA3_ADDRESS	0x78
++#define SDHCI_ADMA3_ADDRESSH	0x7C
 +
-+/*
-+ * Function Name: uhs2_update_card_setting_thermal
-+ *
-+ * Abstract: This Function is used generate uhs2 card setting by degrade info
-+ *
-+ * Input:
-+ *			sd_card_t *card :
-+ *			sd_host_t *host
-+ *
-+ */
-+static void uhs2_update_card_setting_thermal(sd_card_t *card)
-+{
++#define SDHCI_PRESET_FOR_SDR12 0x66
++#define SDHCI_PRESET_FOR_SDR25 0x68
++#define SDHCI_PRESET_FOR_SDR50 0x6A
++#define SDHCI_PRESET_FOR_SDR104        0x6C
++#define SDHCI_PRESET_FOR_DDR50 0x6E
++#define SDHCI_PRESET_DRV_MASK  0xC000
++#define SDHCI_PRESET_DRV_SHIFT  14
++#define SDHCI_PRESET_CLKGEN_SEL_MASK   0x400
++#define SDHCI_PRESET_CLKGEN_SEL_SHIFT	10
++#define SDHCI_PRESET_SDCLK_FREQ_MASK   0x3FF
++#define SDHCI_PRESET_SDCLK_FREQ_SHIFT	0
 +
-+	if (card->thermal_enable == 0)
-+		return;
-+}
++/* 80-FB UHS-II Regsiters */
++#define SDHCI_UHS2_BLOCK_SIZE	0x80
++#define SDHCI_UHS2_BLOCK_COUNT	0x84
++#define SDHCI_UHS2_CMD_PKG(offset)	(0x88 + (offset))
++#define SDHCI_UHS2_PLD_PKG(offset)	(0x8C + (offset))
 +
-+/*
-+ * Function Name: uhs2_cfg_set_card
-+ *
-+ * Abstract: This Function is used to set card's configuration
-+ *
-+ * Input:
-+ *	sd_card_t *card : The Command will send to which  Card
-+ *			sd_command_t *sd_cmd,
-+ *
-+ * Return value:
-+ *			If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *			otherwize reutrn FALSE
-+ */
-+static bool uhs2_cfg_set_card(sd_card_t *card, sd_command_t *sd_cmd,
-+			      sd_host_t *host)
-+{
-+	u32 payload[2];
-+	bool result = FALSE;
++#define SDHCI_UHS2_TRAN_MODE	0x9C
++#define SDHCI_UHS2_TRAN_HALF_DUPLEX	0x8000
++#define SDHCI_UHS2_TRAN_EBSY_WAIT	0x4000
++#define SDHCI_UHS2_RESP_INTR_DIS	0x0100
++#define SDHCI_UHS2_RESP_CHK		0x0080
++#define SDHCI_UHS2_RESP_TYPE_R5		0x0040
 +
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
++#define SDHCI_UHS2_TRAN_WRITE	0x10
++#define SDHCI_UHS2_TRAN_BLK_EN	0x02
++#define SDHCI_UHS2_TRAN_DMA_EN	0x01
 +
-+	/* Set device Phy Setting register */
-+	os_memset(payload, 0, sizeof(payload));
-+	payload[0] = (card->uhs2_info.uhs2_setting.speed_range << 6);
-+	payload[1] = (card->uhs2_info.uhs2_setting.n_lss_syn) |
-+	    (card->uhs2_info.uhs2_setting.n_lss_dir << 4);
-+	result =
-+	    uhs2_access_reg(card, sd_cmd, UHS2_IOADDR_PHY_SETL, FALSE, TRUE, 2,
-+			    payload);
-+	if (result == FALSE) {
-+		DbgErr("set uhs2 cfg phy setting failed ret\n");
-+		goto exit;
-+	}
++#define SDHCI_UHS2_CMD_DATA_PRESENT	0x200000
++#define SDHCI_UHS2_CMD_TYPE_NORMAL	0x000000
++#define SDHCI_UHS2_CMD_TYPE_ABORT	0x400000
++#define SDHCI_UHS2_CMD_TYPE_CMD12	0x800000
++#define SDHCI_UHS2_CMD_TYPE_GODORMANT	0xC00000
 +
-+	/* Set device Link and trans registers */
-+	os_memset(payload, 0, sizeof(payload));
-+	payload[0] = (card->uhs2_info.uhs2_setting.n_fcu << 8) |
-+	    (card->uhs2_info.uhs2_setting.retry_cnt << 16) |
-+	    (card->uhs2_info.uhs2_setting.max_blk_len << 20);
-+	payload[1] = (card->uhs2_info.uhs2_setting.n_data_gap);
-+	result =
-+	    uhs2_access_reg(card, sd_cmd, UHS2_IOADDR_LINKT_SETL, FALSE, TRUE,
-+			    2, payload);
-+	if (result == FALSE) {
-+		DbgErr("set uhs2 cfg linktran setting failed\n");
-+		goto exit;
-+	}
++#define SDHCI_UHS2_RESPONSE	0xA0
++#define SDHCI_UHS2_RESPONSE4	0xA4
 +
-+	/* Set device general setting registers */
-+	os_memset(payload, 0, sizeof(payload));
-+	payload[0] = (card->uhs2_info.uhs2_setting.pwr_mode) |
-+	    (card->uhs2_info.uhs2_setting.lanes << 8);
-+	result =
-+	    uhs2_access_reg(card, sd_cmd, UHS2_IOADDR_GEN_SETL, FALSE, TRUE, 1,
-+			    payload);
-+	if (result == FALSE) {
-+		DbgErr("set uhs2 cfg gen setting failed ret\n");
-+		goto exit;
-+	}
++#define SDHCI_UHS2_SOFT_RST	0xC0
++#define	SDHCI_UHS2_SDTRAN_RESET	0x02
++#define	SDHCI_UHS2_FULL_RESET	0x01
 +
-+	/* Set device to active status */
-+	os_memset(payload, 0, sizeof(payload));
-+	/* Set config complete      */
-+	payload[0] = BIT31;
-+	result =
-+	    uhs2_access_reg(card, sd_cmd, UHS2_IOADDR_GEN_SETH, FALSE, TRUE, 1,
-+			    payload);
-+	if (result == FALSE) {
-+		DbgErr("set uhs2 cfg set active failed\n");
-+		return result;
-+	}
++#define SDHCI_UHS2_TIMER_CTRL	0xC2
++#define SDHCI_UHS2_ERRINT_STS	0xC4
++#define SDHCI_UHS2_ERR_RESP		BIT1
++#define SDHCI_UHS2_ERRINT_STS_EN	0xC8
++#define SDHCI_UHS2_ERRINT_SIG_EN	0xCC
 +
-+exit:
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, result);
-+	return result;
-+}
++#define	SDHCI_UHS2_SETTING_BASE		0xE0
++#define	SDHCI_UHS2_CAPABILITY_BASE	0xE2
++#define	SDHCI_UHS2_TEST_BASE		0xE4
++#define	SDCHI_UHS2_VENDOR_BASE		0xE8
++
++#define SDHCI_UHS2_BUS_TOP_MASK		0x00C00000
++#define	SDHCI_UHS2_BUS_TOP_SHIFT	22
++
++#define	SDHCI_UHS2_DEVICE_NUM_MASK	0x003C0000
++#define	SDHCI_UHS2_DEVICE_NUM_SHIFT	18
++
++#define SDHCI_UHS2_LANE_MASK		0x00003F00
++#define	SDHCI_UHS2_LANE_SHIFT		8
++
++#define	SDHCI_UHS2_GAP_MASK		0x000000F0
++#define	SDHCI_UHS2_GAP_SHIFT		4
++
++#define	SDHCI_UHS2_DAP_MASK		0x0000000F
++
++#define	SDHCI_UHS2_LSS_DIR_MASK		0x00F00000
++#define SDHCI_UHS2_LSS_DIR_SHIFT	20
++
++#define	SDHCI_UHS2_LSS_SYN_MASK		0x000F0000
++#define SDHCI_UHS2_LSS_SYN_SHIFT	16
++
++#define	SDHCI_UHS2_SPEED_MASK		0x000000C0
++#define	SDHCI_UHS2_SPEED_SHIFT		6
++
++#define	SDHCI_UHS2_NFCU_MASK		0x0000FF00
++#define	SDHCI_UHS2_NFCU_SHIFT		8
++
++#define	SDHCI_UHS2_MAX_BLK_MASK		0xFFF00000
++#define	SDHCI_UHS2_MAX_BLK_SHIFT	20
++
++#define	SDHCI_UHS2_DATE_GAP_MASK	0x000000FF
++
++#define	SDHCI_UHS2_LANE_FUNC_MASK	0x00000F00
++#define	SDHCI_UHS2_LANE_FUNC_SHIFT	8
++
++#define	SDHCI_UHS2_POWER_MODE_MASK	0x00000001
++#define	SDHCI_UHS2_POWER_MODE_SHIFT	0
++
++#define	SDHCI_UHS2_HIBERNATE_MASK	0x00008000
++#define	SDHCI_UHS2_HIBERNATE_SHIFT	15
++
++#define	SDHCI_UHS2_RETRY_CNT_MASK	0x00030000
++#define	SDHCI_UHS2_RETRY_CNT_SHIFT	16
++
++#define	SDHCI_MAX_LOCATABLE_REG		0x1FF
++#define	SDHCI_UHS2_IDX_GENERAL		0
++#define	SDHCI_UHS2_IDX_PHYSICAL		4
++#define SDHCI_UHS2_IDX_LNKTRL		8
++#define SDHCI_UHS2_IDX_LNKTRH		12
++
++#define  SDHCI_UHS2_INT_HEADER		0x00000001
++#define  SDHCI_UHS2_INT_RES_PKT		0x00000002
++#define  SDHCI_UHS2_INT_RETRY_EXP	0x00000004
++#define  SDHCI_UHS2_INT_CRC		0x00000008
++#define  SDHCI_UHS2_INT_FRAMING		0x00000010
++#define  SDHCI_UHS2_INT_TID		0x00000020
++#define  SDHCI_UHS2_INT_UNRECOVER	0x00000080
++#define  SDHCI_UHS2_INT_EBSY		0x00000100
++#define  SDHCI_UHS2_INT_ADMA		0x00008000
++#define  SDHCI_UHS2_INT_TO_CMD_RES	0x00010000
++#define  SDHCI_UHS2_INT_TO_DEADLOCK	0x00020000
++#define  SDHCI_UHS2_INT_VEN		0xF8000000
++#define SDHCI_UHS2_INT_ERR_ALL		0xFFFFFFFF
++
++#define SDHCI_SLOT_INT_STATUS	0xFC
++
++#define SDHCI_HOST_VERSION	0xFE
++#define  SDHCI_VENDOR_VER_MASK	0xFF00
++#define  SDHCI_VENDOR_VER_SHIFT	8
++#define  SDHCI_SPEC_VER_MASK	0x00FF
++#define  SDHCI_SPEC_VER_SHIFT	0
++#define   SDHCI_SPEC_100	0
++#define   SDHCI_SPEC_200	1
++#define   SDHCI_SPEC_300	2
++#define   SDHCI_SPEC_400	3
 +
 +/*
-+ * Function Name: uhs2_enter_dmt
-+ *
-+ * Abstract: This Function is used to
-+ *
-+ * Input:
-+ *	sd_card_t *card : The Command will send to which  Card
-+ *
-+ * Return value:
-+ *	If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *			otherwize reutrn FALSE
++ * below is the vendor regisrer
 + */
-+bool uhs2_enter_dmt(sd_card_t *card, sd_command_t *sd_cmd, sd_host_t *host,
-+		    bool hbr)
-+{
-+	bool result = FALSE;
-+	u32 payload = hbr ? UHS2_GODRM_HBNEN : 0;
-+	byte retry_cnt = 2;
 +
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT | FEATURE_CARD_OPS,
-+		NOT_TO_RAM, "Enter %s\n", __func__);
-+retry:
-+	retry_cnt--;
-+	result =
-+	    uhs2_native_ccmd(card, sd_cmd, UHS2_IOADDR_GODMT, FALSE, TRUE, 1,
-+			     &payload);
-+	if (result == FALSE) {
-+		if (retry_cnt > 0) {
-+			if (uhs2_is_uncoverable(sd_cmd))
-+				goto exit;
++#define SDHCI_VEN_SPEC_CTRL  0x110
++#define SDHCI_HW_TUNING      (BIT4)
++#define SDHCI_EMMC_HS_DDR    (BIT5)
++#define SDHCI_ENABLE_HS400       (1 << 17)
 +
-+			result = uhs2_trans_abort(card, sd_cmd);
-+			if (result == FALSE)
-+				goto exit;
-+			goto retry;
-+		}
-+		goto exit;
-+	}
-+	result = host_uhs2_go_dmt(host, hbr);
++#define SDHCI_SAMPLE_CLK_RESULT_LOW 0x1A8
++#define SDHCI_SAMPLE_CLK_RESULT_UP 0x1AC
++#define SDHCI_DLL_PHASE_CFG 0x1B0
 +
-+exit:
-+	if (result == FALSE)
-+		DbgErr("UHS2 go dmt failed hbr=%d\n", hbr);
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT | FEATURE_CARD_OPS,
-+		NOT_TO_RAM, "Exit %s ret=%d\n", __func__, result);
-+	return result;
-+}
++#define SDHCI_DRIVER_CTRL_REG	0x1c0
++#define SDHCI_OCB_INT_MASK  (1 << 5)
++#define SDHCI_VENDOR_SW_INT_BIT (1<<8)
++#define SDHCI_DRIVER_CTRL_ADMA2_ENABLE_INF (1<<18)
++#define SDHCI_DRIVER_CTRL_ADMA2_START_INF (1<<19)
++#define SDHCI_OCB_FET_INT_DENOUNCE    (1 << 22)
++#define SDHCI_OCB_FET_INT_ACTIVE          (1 << 23)
++#define SDHCI_DRIVER_CTRL_FIFO_EMPTY 0x800
++
++#define SDHCI_DLL_WATCH_DOG    0x1cc
++#define SDHCI_CTRL_VDD2_120      0x80000000
++#define SDHCI_PLL_RESET		0x00001000
++#define SDHCI_PLL_UNLOCKBIT   0x00004000
++#define SDHCI_UHS2_PHY_SETTING	0x1D0
 +
 +/*
-+ * Function Name: uhs2_resume_dmt
-+ * Abstract: This Function is used to
-+ *
-+ * Input:
-+ *	sd_card_t *card : The Command will send to which  Card
-+ *
-+ * Return value:
-+ *			If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *	otherwize reutrn FALSE
++ * O2/BHT add BAR1 for PCIR mapping registers
++ * These registers is defined by O2/BHT, but we may follow name definition rule.
 + */
-+bool uhs2_resume_dmt(sd_card_t *card, sd_command_t *sd_cmd, sd_host_t *host,
-+		     bool hbr)
-+{
-+	return host_uhs2_resume_dmt(host, hbr);
-+}
 +
++/* PCI CFG Space Register Mapping Value Register */
++#define	VEN_PCIRMappingVal	        (0x200)
++
++/* PCI CFG Space Register Mapping Control Register */
++#define	VEN_PCIRMappingCtl	        (0x204)
++
++/* PCI CFG Space Register Mapping Enable Register */
++#define	VEN_PCIRMappingEn		  (0x208)
++
++/* GPIO control register*/
++#define	VEN_GPIOCTL			  (0x210)
+diff --git a/drivers/scsi/bht/host/hostven.c b/drivers/scsi/bht/host/hostven.c
+new file mode 100644
+index 000000000000..2434439856ba
+--- /dev/null
++++ b/drivers/scsi/bht/host/hostven.c
+@@ -0,0 +1,2774 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * Function Name: uhs2_card_configuration
++ * Copyright (c) 2014 BHT Inc.
 + *
-+ * Abstract: This Function is used to
++ * File Name: hostven.c
 + *
-+ * Input:
-+ *	sd_card_t *card : The Command will send to which  Card
++ * Abstract: Include host vendor defined operations
 + *
-+ * Return value:
-+ *	If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *	otherwize reutrn FALSE
++ * Version: 1.00
++ *
++ * Author: Samuel
++ *
++ * Environment:	OS Independent
++ *
++ * History:
++ *
++ * 9/2/2014   Creation    Samuel
 + */
-+bool uhs2_card_configuration(sd_card_t *card, sd_command_t *sd_cmd,
-+			     sd_host_t *host)
++
++#include "../include/basic.h"
++#include "hostreg.h"
++#include "../include/hostapi.h"
++#include "../include/debug.h"
++#include "../include/hostvenapi.h"
++#include "../include/cfgmng.h"
++#include "../include/reqapi.h"
++
++void host_enable_clock(sd_host_t *host, bool on);
++void host_internal_clk_setup(sd_host_t *host, bool on);
++void host_init_clock(sd_host_t *host, u32 value);
++void host_init_400k_clock(sd_host_t *host);
++
++/* PCI 16bit access */
++u16 pci_readw(sd_host_t *host, u16 offset)
 +{
-+	bool result = FALSE;
-+	uhs2_info_t info;
++	u32 i = 0;
++	u32 tmp[3] = { 0 };
++	u16 reg_val = 0;
 +
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+
-+	result = uhs2_cfg_set_card(card, sd_cmd, host);
-+	if (result == FALSE)
-+		goto exit;
-+
-+	os_memcpy(&info, &card->uhs2_info.uhs2_setting, sizeof(uhs2_info_t));
-+	info.speed_range = 0;
-+	info.lanes = 0;
-+
-+	host_uhs2_cfg_set(host, &info, FALSE);
-+
-+	if (card->uhs2_info.uhs2_setting.lanes == 0
-+	    && card->uhs2_info.uhs2_setting.speed_range == 0)
-+		goto exit;
-+
-+	result = uhs2_enter_dmt(card, sd_cmd, host, FALSE);
-+	if (result == FALSE)
-+		goto exit;
-+
-+	info.speed_range = card->uhs2_info.uhs2_setting.speed_range;
-+	info.lanes = card->uhs2_info.uhs2_setting.lanes;
-+	host_uhs2_cfg_set(host, &info, TRUE);
-+
-+	result = uhs2_resume_dmt(card, sd_cmd, host, FALSE);
-+	if (result == FALSE)
-+		goto exit;
-+
-+exit:
-+	if (result == FALSE)
-+		DbgErr("UHS2 card configuration failed\n");
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, result);
-+	return result;
-+}
-+
-+bool uhs2_init_stage2(sd_card_t *card)
-+{
-+
-+	bool result = FALSE;
-+	sd_command_t sd_cmd;
-+
-+	/* Init stage always do pm setting */
-+	bool bchg = TRUE;
-+
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
-+		__func__);
-+	os_memset(&sd_cmd, 0, sizeof(sd_command_t));
-+
-+	result = sd_init_get_info(card);
-+	if (result == FALSE) {
-+		DbgErr("SD Card get info failed\n");
-+		goto exit;
-+	}
-+
-+	if (card_need_get_info(card)) {
-+		result = sd_switch_function_check(card, &sd_cmd);
-+		if (!result) {
-+			DbgErr("uhs2 swich function check failed.\n");
-+			goto exit;
-+		}
-+	}
-+
-+	/* 14. Swich function check/set */
-+
-+	{
++	if ((host->chip_type == CHIP_SDS0) ||
++	    (host->chip_type == CHIP_SDS1) ||
++	    (host->chip_type == CHIP_FUJIN2) ||
++	    (host->chip_type == CHIP_SEABIRD) ||
++	    (host->chip_type == CHIP_SEAEAGLE)) {
 +		/*
-+		 * 14.2 Swich function check set.
-+		 * - Driver Strength,
-+		 * - Access Mode,
-+		 * - Power Limit
-+		 * - Change clock freq
++		 * For Sandstorm, HW implement a mapping method by
++		 * memory space reg to access PCI reg.
 +		 */
-+		result = sd_switch_power_limit(card, &sd_cmd, &bchg);
-+		if (result == FALSE) {
-+			DbgErr("uhs2 switch power limit failed\n");
-+			goto exit;
++
++		/* Enable mapping */
++
++		/* Check function conflict */
++		if ((host->chip_type == CHIP_SDS0) ||
++		    (host->chip_type == CHIP_FUJIN2) ||
++		    (host->chip_type == CHIP_SEABIRD) ||
++		    (host->chip_type == CHIP_SEAEAGLE)) {
++			i = 0;
++			ven_writel(host, VEN_PCIRMappingEn, 0x40000000);
++			while ((ven_readl(host, VEN_PCIRMappingEn) & 0x40000000)
++			       == 0) {
++				if (i == 5)
++					goto RD_DIS_MAPPING;
++
++				os_mdelay(1);
++				i++;
++				ven_writel(host, VEN_PCIRMappingEn, 0x40000000);
++
++			}
++		} else if (host->chip_type == CHIP_SDS1) {
++			i = 0;
++
++			ven_writel(host, VEN_PCIRMappingEn, 0x20000000);
++			while ((ven_readl(host, VEN_PCIRMappingEn) & 0x20000000)
++			       == 0) {
++				if (i == 5)
++					goto RD_DIS_MAPPING;
++
++				os_mdelay(1);
++				i++;
++				ven_writel(host, VEN_PCIRMappingEn, 0x20000000);
++			}
 +		}
 +
++		/* Check last operation is complete */
++		i = 0;
++		while (ven_readl(host, VEN_PCIRMappingCtl) & 0xc0000000) {
++			if ((i == 5)
++			    || ven_readl(host,
++					 VEN_PCIRMappingCtl) == 0xffffffff) {
++				goto RD_DIS_MAPPING;
++			}
++
++			os_mdelay(1);
++			i += 1;
++		}
++
++		/* Set register address due to hardware constraint */
++
++		tmp[0] |= 0x40000000;
++		tmp[0] |= offset & 0xfffc;
++		ven_writel(host, VEN_PCIRMappingCtl, tmp[0]);
++
++		/* Check read is complete */
++		i = 0;
++		while (ven_readl(host, VEN_PCIRMappingCtl) & 0x40000000) {
++			if ((i == 5)
++			    || ven_readl(host,
++					 VEN_PCIRMappingCtl) == 0xffffffff) {
++				goto RD_DIS_MAPPING;
++			}
++
++			os_mdelay(1);
++			i += 1;
++		}
++
++		/* Get PCIR value */
++		tmp[1] = ven_readl(host, VEN_PCIRMappingVal);
++
++		if (offset & 0x2)
++			tmp[1] >>= 16;
++
++RD_DIS_MAPPING:
++		/* Disable mapping */
++		ven_writel(host, VEN_PCIRMappingEn, 0x80000000);
++
++		DbgInfo(MODULE_VEN_HOST, FEATURE_PCIREG_TRACER, NOT_TO_RAM,
++			"%s offset=%x Value:%x\n", __func__, offset,
++			(u16) tmp[1]);
++		return (u16) tmp[1];
++	} else if (host->chip_type == CHIP_SEAEAGLE2) {
++		reg_val = ven_readw(host, offset);
++		DbgInfo(MODULE_VEN_HOST, FEATURE_PCIREG_TRACER, NOT_TO_RAM,
++			"%s offset=%x Value:%x\n", __func__, offset,
++			reg_val);
++		return reg_val;
++	} else if (host->chip_type == CHIP_GG8
++		   || host->chip_type == CHIP_ALBATROSS) {
++		reg_val = ven_readw(host, offset);
++		DbgInfo(MODULE_VEN_HOST, FEATURE_PCIREG_TRACER, NOT_TO_RAM,
++			"%s offset=%x Value:%x\n", __func__, offset,
++			reg_val);
++		return reg_val;
 +	}
-+exit:
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, result);
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PCIREG_TRACER, NOT_TO_RAM,
++		"%s offset=%x Value:%x\n", __func__, offset, (u16) tmp[0]);
++	return (u16) tmp[0];
++
++}
++
++void pci_writew(sd_host_t *host, u16 offset, u16 value)
++{
++	u32 tmp = 0;
++	u32 i = 0;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PCIREG_TRACEW, NOT_TO_RAM,
++		"%s, Addr:%x, Value: %x\n", __func__, offset, value);
++
++	if ((host->chip_type == CHIP_SDS0) ||
++	    (host->chip_type == CHIP_SDS1) ||
++	    (host->chip_type == CHIP_FUJIN2) ||
++	    (host->chip_type == CHIP_SEABIRD) ||
++	    (host->chip_type == CHIP_SEAEAGLE)) {
++		/*
++		 * For Sandstorm, HW implement a mapping method by
++		 * memory space reg to access PCI reg.
++		 * Upper caller doesn't need to set 0xD0.
++		 */
++
++		/* Enable mapping */
++
++		/* Check function conflict */
++		if ((host->chip_type == CHIP_SDS0) ||
++		    (host->chip_type == CHIP_FUJIN2) ||
++		    (host->chip_type == CHIP_SEABIRD) ||
++		    (host->chip_type == CHIP_SEAEAGLE)) {
++			i = 0;
++			ven_writel(host, VEN_PCIRMappingEn, 0x40000000);
++			while ((ven_readl(host, VEN_PCIRMappingEn) & 0x40000000)
++			       == 0) {
++				if (i == 5)
++					goto WR_DIS_MAPPING;
++
++				os_mdelay(1);
++				i++;
++				ven_writel(host, VEN_PCIRMappingEn, 0x40000000);
++			}
++		} else if (host->chip_type == CHIP_SDS1) {
++			i = 0;
++			ven_writel(host, VEN_PCIRMappingEn, 0x20000000);
++
++			while ((ven_readl(host, VEN_PCIRMappingEn) & 0x20000000)
++			       == 0) {
++				if (i == 5)
++					goto WR_DIS_MAPPING;
++
++				os_mdelay(1);
++				i++;
++				ven_writel(host, VEN_PCIRMappingEn, 0x20000000);
++			}
++		}
++
++		/* Enable MEM access */
++		ven_writel(host, VEN_PCIRMappingVal, 0x80000000);
++		ven_writel(host, VEN_PCIRMappingCtl, 0x800000D0);
++
++		/* Check last operation is complete */
++		i = 0;
++		while (ven_readl(host, VEN_PCIRMappingCtl) & 0xc0000000) {
++			if ((i == 5)
++			    || ven_readl(host,
++					 VEN_PCIRMappingCtl) == 0xffffffff) {
++				goto WR_DIS_MAPPING;
++			}
++
++			os_mdelay(1);
++			i += 1;
++		}
++
++		/* Set write value */
++		if (offset & 0x2) {
++			u32 val32 = value;
++
++			val32 <<= 16;
++			offset = offset & 0xfffc;
++			ven_writel(host, VEN_PCIRMappingVal, val32);
++			/* Set register address */
++			tmp |= 0x80030000;
++			tmp |= offset;
++		} else {
++			ven_writel(host, VEN_PCIRMappingVal, value);
++			/* Set register address */
++			tmp |= 0x800c0000;
++			tmp |= offset;
++		}
++		ven_writel(host, VEN_PCIRMappingCtl, tmp);
++
++		/* Check write is complete */
++		i = 0;
++		while (ven_readl(host, VEN_PCIRMappingCtl) & 0x80000000) {
++			if ((i == 5)
++			    || ven_readl(host,
++					 VEN_PCIRMappingCtl) == 0xffffffff) {
++				goto WR_DIS_MAPPING;
++			}
++
++			os_mdelay(1);
++			i += 1;
++		}
++
++WR_DIS_MAPPING:
++		/* Disable MEM access */
++		ven_writel(host, VEN_PCIRMappingVal, 0x80000001);
++		ven_writel(host, VEN_PCIRMappingCtl, 0x800000D0);
++
++		/* Check last operation is complete */
++		i = 0;
++		while (ven_readl(host, VEN_PCIRMappingCtl) & 0xc0000000) {
++			if ((i == 5)
++			    || ven_readl(host,
++					 VEN_PCIRMappingCtl) == 0xffffffff) {
++				break;
++			}
++
++			os_mdelay(1);
++			i += 1;
++		}
++
++		/* Disable function conflict */
++
++		/* Disable mapping */
++		ven_writel(host, VEN_PCIRMappingEn, 0x80000000);
++	} else if (host->chip_type == CHIP_SEAEAGLE2) {
++		ven_writew(host, offset, value);
++	} else if (host->chip_type == CHIP_GG8
++		   || host->chip_type == CHIP_ALBATROSS) {
++		ven_writew(host, offset, value);
++	}
++}
++
++void pci_orw(sd_host_t *host, u16 offset, u16 value)
++{
++	u16 reg_val = 0;
++
++	reg_val = pci_readw(host, offset);
++	reg_val |= value;
++	pci_writew(host, offset, reg_val);
++	DbgInfo(MODULE_SD_HOST, FEATURE_VENREG_TRACER, NOT_TO_RAM,
++		"[PCI] pci orw(0x%08X): 0x%08X\n", offset, reg_val);
++}
++
++void pci_andw(sd_host_t *host, u16 offset, u16 value)
++{
++	u16 reg_val = 0;
++
++	reg_val = pci_readw(host, offset);
++	reg_val &= value;
++	pci_writew(host, offset, reg_val);
++	DbgInfo(MODULE_SD_HOST, FEATURE_VENREG_TRACER, NOT_TO_RAM,
++		"[PCI] pci andw(0x%08X): 0x%08X\n", offset, reg_val);
++}
++
++/* PCI 32bit access */
++u32 pci_readl(sd_host_t *host, u16 offset)
++{
++	u32 result = 0;
++	u32 i = 0;
++	u32 tmp[3] = { 0 };
++	u32 reg_val = 0;
++
++	if ((host->chip_type == CHIP_SDS0) ||
++	    (host->chip_type == CHIP_SDS1) ||
++	    (host->chip_type == CHIP_FUJIN2) ||
++	    (host->chip_type == CHIP_SEABIRD) ||
++	    (host->chip_type == CHIP_SEAEAGLE)) {
++		/*
++		 * For Sandstorm, HW implement a mapping method by
++		 * memory space reg to access PCI reg.
++		 */
++
++		/* Enable mapping */
++
++		/* Check function conflict */
++		if ((host->chip_type == CHIP_SDS0) ||
++		    (host->chip_type == CHIP_FUJIN2) ||
++		    (host->chip_type == CHIP_SEABIRD) ||
++		    (host->chip_type == CHIP_SEAEAGLE)) {
++			i = 0;
++			ven_writel(host, VEN_PCIRMappingEn, 0x40000000);
++			while ((ven_readl(host, VEN_PCIRMappingEn) & 0x40000000)
++			       == 0) {
++				if (i == 5)
++					goto RD_DIS_MAPPING;
++
++				os_mdelay(1);
++				i++;
++				ven_writel(host, VEN_PCIRMappingEn, 0x40000000);
++
++			}
++		} else if (host->chip_type == CHIP_SDS1) {
++			i = 0;
++
++			ven_writel(host, VEN_PCIRMappingEn, 0x20000000);
++			while ((ven_readl(host, VEN_PCIRMappingEn) & 0x20000000)
++			       == 0) {
++				if (i == 5)
++					goto RD_DIS_MAPPING;
++
++				os_mdelay(1);
++				i++;
++				ven_writel(host, VEN_PCIRMappingEn, 0x20000000);
++			}
++		}
++
++		/* Check last operation is complete */
++		i = 0;
++		while (ven_readl(host, VEN_PCIRMappingCtl) & 0xc0000000) {
++			if ((i == 5)
++			    || ven_readl(host,
++					 VEN_PCIRMappingCtl) == 0xffffffff) {
++				goto RD_DIS_MAPPING;
++			}
++
++			os_mdelay(1);
++			i += 1;
++		}
++
++		/* Set register address */
++		tmp[0] |= 0x40000000;
++		tmp[0] |= offset;
++		ven_writel(host, VEN_PCIRMappingCtl, tmp[0]);
++
++		/* Check read is complete */
++		i = 0;
++		while (ven_readl(host, VEN_PCIRMappingCtl) & 0x40000000) {
++			if ((i == 5)
++			    || ven_readl(host,
++					 VEN_PCIRMappingCtl) == 0xffffffff) {
++				goto RD_DIS_MAPPING;
++			}
++
++			os_mdelay(1);
++			i += 1;
++		}
++
++		/* Get PCIR value */
++		tmp[1] = ven_readl(host, VEN_PCIRMappingVal);
++
++RD_DIS_MAPPING:
++		/* Disable mapping */
++		ven_writel(host, VEN_PCIRMappingEn, 0x80000000);
++
++		DbgInfo(MODULE_VEN_HOST, FEATURE_PCIREG_TRACER, NOT_TO_RAM,
++			"%s offset=%x Value:%x\n", __func__, offset,
++			tmp[1]);
++		result = tmp[1];
++	} else if (host->chip_type == CHIP_SEAEAGLE2) {
++		reg_val = ven_readl(host, offset);
++		DbgInfo(MODULE_VEN_HOST, FEATURE_PCIREG_TRACER, NOT_TO_RAM,
++			"%s offset=%x Value:%x\n", __func__, offset,
++			reg_val);
++		result = reg_val;
++	} else if (host->chip_type == CHIP_GG8
++		   || host->chip_type == CHIP_ALBATROSS) {
++		reg_val = ven_readl(host, offset);
++		DbgInfo(MODULE_VEN_HOST, FEATURE_PCIREG_TRACER, NOT_TO_RAM,
++			"%s offset=%x Value:%x\n", __func__, offset,
++			reg_val);
++		result = reg_val;
++	} else {
++
++		DbgInfo(MODULE_VEN_HOST, FEATURE_PCIREG_TRACER, NOT_TO_RAM,
++			"%s offset=%x Value:%x\n", __func__, offset,
++			tmp[0]);
++		result = tmp[0];
++	}
++
 +	return result;
 +}
 +
-+/*
-+ * Function Name: uhs2_card_init
-+ *
-+ * Abstract: This Function is used init uhs2 card
-+ *
-+ * Input:
-+ *	sd_card_t *card : The Command will send to which  Card
-+ *
-+ * Return value:
-+ *	If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *			otherwize reutrn FALSE
-+ */
-+bool uhs2_card_init(sd_card_t *card)
++void pci_writel(sd_host_t *host, u16 offset, u32 value)
 +{
-+	bool result = FALSE;
-+	sd_command_t sd_cmd;
-+	sd_host_t *host = card->host;
++	u32 tmp = 0;
++	u32 i = 0;
 +
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PCIREG_TRACEW, NOT_TO_RAM,
++		"%s, Addr:%x, Value:%x\n", __func__, offset, value);
++	if ((host->chip_type == CHIP_SDS0) || (host->chip_type == CHIP_SDS1)
++	    || (host->chip_type == CHIP_FUJIN2)
++	    || (host->chip_type == CHIP_SEABIRD)
++	    || (host->chip_type == CHIP_SEAEAGLE)) {
++		/*
++		 * For Sandstorm, HW implement a mapping method by
++		 * memory space reg to access PCI reg.
++		 * Upper caller doesn't need to set 0xD0.
++		 */
++
++		/* Enable mapping */
++
++		/* Check function conflict */
++		if ((host->chip_type == CHIP_SDS0) ||
++		    (host->chip_type == CHIP_FUJIN2) ||
++		    (host->chip_type == CHIP_SEABIRD) ||
++		    (host->chip_type == CHIP_SEAEAGLE)) {
++			i = 0;
++			ven_writel(host, VEN_PCIRMappingEn, 0x40000000);
++			while ((ven_readl(host, VEN_PCIRMappingEn) & 0x40000000)
++			       == 0) {
++				if (i == 5)
++					goto WR_DIS_MAPPING;
++
++				os_mdelay(1);
++				i++;
++				ven_writel(host, VEN_PCIRMappingEn, 0x40000000);
++			}
++		} else if (host->chip_type == CHIP_SDS1) {
++			i = 0;
++			ven_writel(host, VEN_PCIRMappingEn, 0x20000000);
++
++			while ((ven_readl(host, VEN_PCIRMappingEn) & 0x20000000)
++			       == 0) {
++				if (i == 5)
++					goto WR_DIS_MAPPING;
++
++				os_mdelay(1);
++				i++;
++				ven_writel(host, VEN_PCIRMappingEn, 0x20000000);
++			}
++		}
++
++		/* Enable MEM access */
++		ven_writel(host, VEN_PCIRMappingVal, 0x80000000);
++		ven_writel(host, VEN_PCIRMappingCtl, 0x800000D0);
++
++		/* Check last operation is complete */
++		i = 0;
++		while (ven_readl(host, VEN_PCIRMappingCtl) & 0xc0000000) {
++			if ((i == 5)
++			    || ven_readl(host,
++					 VEN_PCIRMappingCtl) == 0xffffffff) {
++				goto WR_DIS_MAPPING;
++			}
++
++			os_mdelay(1);
++			i += 1;
++		}
++
++		/* Set write value */
++		ven_writel(host, VEN_PCIRMappingVal, value);
++		/* Set register address */
++		tmp |= 0x80000000;
++		tmp |= offset;
++		ven_writel(host, VEN_PCIRMappingCtl, tmp);
++
++		/* Check write is complete */
++		i = 0;
++		while (ven_readl(host, VEN_PCIRMappingCtl) & 0x80000000) {
++			if ((i == 5)
++			    || ven_readl(host,
++					 VEN_PCIRMappingCtl) == 0xffffffff) {
++				goto WR_DIS_MAPPING;
++			}
++
++			os_mdelay(1);
++			i += 1;
++		}
++
++WR_DIS_MAPPING:
++		/* Disable MEM access */
++		ven_writel(host, VEN_PCIRMappingVal, 0x80000001);
++		ven_writel(host, VEN_PCIRMappingCtl, 0x800000D0);
++
++		/* Check last operation is complete */
++		i = 0;
++		while (ven_readl(host, VEN_PCIRMappingCtl) & 0xc0000000) {
++			if ((i == 5)
++			    || ven_readl(host,
++					 VEN_PCIRMappingCtl) == 0xffffffff) {
++				break;
++			}
++
++			os_mdelay(1);
++			i += 1;
++		}
++
++		/* Disable function conflict */
++
++		/* Disable mapping */
++		ven_writel(host, VEN_PCIRMappingEn, 0x80000000);
++	} else if (host->chip_type == CHIP_SEAEAGLE2) {
++		ven_writel(host, offset, value);
++	} else if (host->chip_type == CHIP_GG8
++		   || host->chip_type == CHIP_ALBATROSS) {
++		ven_writel(host, offset, value);
++	}
++
++}
++
++void pci_orl(sd_host_t *host, u16 offset, u32 value)
++{
++	u32 reg_val = 0;
++
++	reg_val = pci_readl(host, offset);
++	reg_val |= value;
++	pci_writel(host, offset, reg_val);
++}
++
++void pci_andl(sd_host_t *host, u16 offset, u32 value)
++{
++	u32 reg_val = 0;
++
++	reg_val = pci_readl(host, offset);
++	reg_val &= value;
++	pci_writel(host, offset, reg_val);
++
++}
++
++void hostven_update_dmdn(sd_host_t *host, u32 dmdn)
++{
++	u32 regval;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Enter %s, dmdn = %x\n", __func__, dmdn);
++	if ((host->chip_type == CHIP_SDS0) || (host->chip_type == CHIP_FUJIN2)
++	    || (host->chip_type == CHIP_SEABIRD)
++	    || (host->chip_type == CHIP_SEAEAGLE)
++	    || (host->chip_type == CHIP_SEAEAGLE2)
++	    || (host->chip_type == CHIP_GG8)
++	    || (host->chip_type == CHIP_ALBATROSS)) {
++		/* 0x304[28:16] */
++		regval = pci_readl(host, 0x304);
++		regval &= 0x0000ffff;
++		regval |= (dmdn << 16);
++		pci_writel(host, 0x304, regval);
++	} else if (host->chip_type == CHIP_SDS1) {
++		/* 0x384[28:16] */
++		regval = pci_readl(host, 0x384);
++		regval &= 0x0000ffff;
++		regval |= (dmdn << 16);
++		pci_writel(host, 0x384, regval);
++	}
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Exit %s\n",
 +		__func__);
 +
-+	/* Try to init as UHS2 card */
-+	card->card_type = CARD_UHS2;
-+	result = uhs2_devinit_flow(card, &sd_cmd, host);
-+	if (result == FALSE)
-+		goto exit;
++}
 +
-+	/* do enumeration */
-+	result = uhs2_dev_enumeration(card, &sd_cmd);
-+	if (result == FALSE)
-+		goto exit;
++static bool dma_need_host_infinite_support(u32 dma_mode)
++{
++	if ((dma_mode == CFG_TRANS_MODE_ADMA2) ||
++	    (dma_mode == CFG_TRANS_MODE_ADMA2_SDMA_LIKE) ||
++	    (dma_mode == CFG_TRANS_MODE_ADMA_MIX_SDMA_LIKE) ||
++	    (dma_mode == CFG_TRANS_MODE_ADMA_MIX))
++		return TRUE;
++	else
++		return FALSE;
++}
 +
-+	if (card_need_get_info(card)) {
-+		/* Get card capabilities */
-+		result = uhs2_card_get_caps(card, &sd_cmd, host);
-+		if (result == FALSE)
++void hostven_drive_strength_cfg(sd_host_t *host)
++{
++	u32 regval;
++	u32 i;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_RW_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	for (i = 0; i < MAX_PCR_SETTING_SIZE; i++) {
++		if ((host->cfg->pcr_item.pcr_tb[i].valid_flg == 0)
++		    && (host->cfg->pcr_item.pcr_tb[i].addr == 0x304)) {
++			DbgInfo(MODULE_VEN_HOST, FEATURE_RW_TRACE, NOT_TO_RAM,
++				"PCR 0x304 set is invalid.\n");
 +			goto exit;
-+
++		}
 +	}
 +
-+	uhs2_get_card_setting_host(card, host);
-+	uhs2_update_card_setting_vendor(card, host);
-+	uhs2_update_card_setting_degrade(card);
-+	uhs2_update_card_setting_thermal(card);
++	regval = pci_readl(host, 0x304);
 +
-+	result = uhs2_card_configuration(card, &sd_cmd, host);
-+	if (result == FALSE)
-+		goto exit;
++	if (regval & BIT7) {
++		DbgInfo(MODULE_VEN_HOST, FEATURE_RW_TRACE, NOT_TO_RAM,
++			"BIOS setting enable.\n");
++	} else if (host->cfg->host_item.host_drive_strength.ds_selection_enable) {
++		DbgInfo(MODULE_VEN_HOST, FEATURE_RW_TRACE, NOT_TO_RAM,
++			"Host's SD IO drive setting enable.\n");
 +
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, TO_RAM,
-+		"uhs2 setting n_fcu=%d lss_dir=%d lss_syn=%d datagap=%d\n",
-+		card->uhs2_info.uhs2_setting.n_fcu,
-+		card->uhs2_info.uhs2_setting.n_lss_dir,
-+		card->uhs2_info.uhs2_setting.n_lss_syn,
-+		card->uhs2_info.uhs2_setting.n_data_gap);
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, TO_RAM,
-+		"uhs2 Setting range=%d half=%d lpm=%d\n",
-+		card->uhs2_info.uhs2_setting.speed_range,
-+		card->uhs2_info.uhs2_setting.half_supp,
-+		card->uhs2_info.uhs2_setting.pwr_mode);
++		/* Unlock write protect */
++		pci_andl(host, 0xd0, ~BIT31);
 +
-+	result = sd_card_identify(card);
-+	if (result == FALSE)
-+		goto exit;
++		/*
++		 * If detect PCR 0x304[7] = 0,
++		 * please set host_drive_strength[14:12, 10:8, 6:4, 3:1] value
++		 * to PCR 0x304[14:12, 10, 8, 6 : 4, 3 : 1] when driver loading
++		 */
 +
-+	result = sd_card_select(card);
-+	if (result == FALSE)
-+		goto exit;
++		regval &= ~0x0000777E;
++		regval |=
++		    (host->cfg->host_item.host_drive_strength.clk_driver_strength_3_3v << 12 |
++			host->cfg->host_item.host_drive_strength.data_cmd_driver_strength_3_3v << 8 |
++			host->cfg->host_item.host_drive_strength.clk_driver_strength_1_8v << 4 |
++			host->cfg->host_item.host_drive_strength.cmd_driver_strength_1_8v << 1);
 +
-+	if (card->locked == TRUE) {
-+		DbgWarn(MODULE_UHS2_CARD, NOT_TO_RAM, "uhs2 card is locked\n");
-+		goto exit;
-+	}
++		pci_writel(host, 0x304, regval);
 +
-+	result = card_init_stage2(card);
-+	if (result == FALSE) {
-+		DbgErr("SD init stage 2 failed.\n");
-+		goto exit;
++		/* Lock write protect  */
++		pci_orl(host, 0xd0, BIT31);
++	} else {
++		DbgInfo(MODULE_VEN_HOST, FEATURE_RW_TRACE, NOT_TO_RAM,
++			"Host's SD IO drive setting disable.\n");
 +	}
 +
 +exit:
-+	if (result == FALSE)
-+		DbgErr("UHS2 card init failed\n");
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, result);
-+	return result;
++	DbgInfo(MODULE_VEN_HOST, FEATURE_RW_TRACE, NOT_TO_RAM, "Exit %s\n",
++		__func__);
 +}
 +
-+/*
-+ * Function Name: uhs2_degrade_policy
-+ *
-+ * Abstract: This Function is used set uhs2 degrade flag
-+ *
-+ * Input:
-+ *	sd_card_t *card : The Command will send to which  Card
-+ *  sd_command_t *sd_cmd
-+ *
-+ * Return value:
-+ *  If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *			otherwize reutrn FALSE
-+ */
-+void uhs2_degrade_policy(sd_card_t *card, sd_command_t *sd_cmd)
++void hostven_transfer_init(sd_host_t *host, bool enable)
 +{
-+	if (card->degrade_freq_level < CARD_DEGRADE_FREQ_TIMES) {
-+		card->degrade_freq_level++;
-+		goto exit;
++	DbgInfo(MODULE_VEN_HOST, FEATURE_RW_TRACE, NOT_TO_RAM,
++		"Enter %s, enable = %x\n", __func__, enable);
++
++	/* If not ADMA2 infinite transfer return */
++	if (FALSE ==
++	    dma_need_host_infinite_support(
++			host->cfg->host_item.test_dma_mode_setting.dma_mode))
++		return;
++
++	/* when don't use inf while inifinte is enable */
++	if (enable) {
++		sdhci_or32(host, SDHCI_DRIVER_CTRL_REG,
++			   SDHCI_DRIVER_CTRL_ADMA2_ENABLE_INF);
++	} else {
++		sdhci_and32(host, SDHCI_DRIVER_CTRL_REG,
++			    ~(SDHCI_DRIVER_CTRL_ADMA2_ENABLE_INF));
 +	}
 +
-+	if (sd_cmd != NULL && card->uhs2_info.uhs2_setting.half_supp
-+	    && (card->degrade_uhs2_half == 0)) {
-+		card->degrade_uhs2_half = 1;
-+		goto exit;
-+	}
++	DbgInfo(MODULE_VEN_HOST, FEATURE_RW_TRACE, NOT_TO_RAM, "Exit %s\n",
++		__func__);
 +
-+	if (card->degrade_uhs2_range == 0
-+	    && card->uhs2_info.uhs2_setting.speed_range) {
-+		card->degrade_uhs2_range = 1;
-+		goto exit;
-+	}
-+
-+	card->degrade_uhs2_legacy = 1;
-+	card->quick_init = 0;
-+	card->card_type = CARD_NONE;
-+	card->degrade_freq_level = 0;
-+
-+exit:
-+	DbgErr("UHS2 degrade range=%d freq_level=%d half=%d legacy=%d\n",
-+	       card->degrade_uhs2_range, card->degrade_freq_level,
-+	       card->degrade_uhs2_half, card->degrade_uhs2_legacy);
 +}
 +
-+static bool uhs2_read_status_reg(sd_card_t *card, sd_command_t *sd_cmd)
++static void hostven_bios_cfg(sd_host_t *host)
 +{
-+	bool result = FALSE;
-+	u32 payload = 0;
++	bht_dev_ext_t *pdx = host->pdx;
++	u16 regval;
++	u32 pcr_item_index = 0;
 +
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Enter %s\n", __func__);
++	cfg_vdd_power_source_item_t *cfg =
++		&host->cfg->host_item.vdd_power_source_item;
 +
-+	result =
-+	    uhs2_access_reg(card, sd_cmd, UHS2_IOADDR_ST_REG, FALSE, FALSE, 1,
-+			    &payload);
++	/* initial setting for hsmux_vcme  */
++	cfg_hsmux_vcme_enable_item_t *cfg_hsmux_vcme =
++		&host->cfg->feature_item.hsmux_vcme_enable;
 +
-+	if (result == FALSE)
-+		DbgErr("uhs2 read status reg failed\n");
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
 +
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, result);
-+	return result;
-+}
++	/*
++	 * Stop the soft L0 request for d3silence sub mode 2 because
++	 * the sub mode 2 will open the soft L0 request at the card removal handle
++	 */
++	if (pdx->pm_state.d3_silc_en && pdx->pm_state.d3_silc_submode2_en)
++		pci_andl(host, 0x3e4, ~(1 << 23));
 +
-+/*
-+ * Function Name: uhs2_sd_error_recovery
-+ *
-+ * Abstract: This Function is used do error recovery for uhs2
-+ *
-+ * Input:
-+ *			sd_card_t *card : The Command will send to which  Card
-+ *  sd_command_t *sd_cmd
-+ *
-+ * Return value:
-+ *	If the routine succeeds, it must return TRUE, and fill trans_reg_t  part.
-+ *	otherwize reutrn FALSE
-+ */
++	if (host->cfg->driver_item.camera_mode_ctrl_vdd1_vdd2_cd == 1)
++		goto camera_mode;
++	else
++		goto pc_mode;
 +
-+bool uhs2_sd_error_recovery(sd_card_t *card, sd_command_t *sd_cmd)
-+{
-+	bool result = FALSE;
-+	sd_command_t recover_cmd;
++pc_mode:
++	/* for GG8: thomas.hu add for VDD 1,2,3 power source default setting. */
 +
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Enter %s\n", __func__);
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"vdd_power_source_item: 0x%08X\n", *(u32 *) cfg);
 +
-+	if (sd_cmd == NULL)
-+		goto exit;
++	/* set vdd1 power source select internal/external and polarity  */
++	regval = ven_readw(host, SDBAR1_GPIO_FUNC_SEL_508);
 +
-+	/* If uncoverable do fullreset recover directly */
-+	if (uhs2_is_uncoverable(sd_cmd))
-+		goto full_reset;
++	/* clear field for vdd1 power source select internal/external and polarity */
++	regval &= ~(7 << 2);
 +
-+	host_uhs2_reset(card->host, FALSE);
++	/* bit4: external, bit3: internal */
++	regval |=
++	    (cfg->vdd1_power_source ==
++	     VDDX_PWR_SOURCE_EXTERNAL) ? (1 << 4) : (1 << 3);
++	/* bit2: polarity: 1 for active high, 0 for low */
++	regval |=
++	    (cfg->vdd1_onoff_polarity ==
++	     VDDX_POLARITY_ACTIVE_HIGH) ? (1 << 2) : (0 << 2);
++	ven_writew(host, SDBAR1_GPIO_FUNC_SEL_508, regval);
 +
-+	/* do sd-tran */
-+	result = uhs2_trans_abort(card, &recover_cmd);
-+	if (result == FALSE)
-+		goto full_reset;
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"cfg->vdd1_power_source: 0x%X\n", cfg->vdd1_power_source);
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"cfg->vdd1_onoff_polarity: 0x%X\n", cfg->vdd1_onoff_polarity);
 +
-+	result = uhs2_read_status_reg(card, &recover_cmd);
-+	if (result == FALSE)
-+		goto full_reset;
++	/* set Vdd2 power source */
++	regval = ven_readw(host, SDBAR1_GPIO_FUNC_SEL_508);
++	/* use internal LDO */
++	if (cfg->vdd2_power_source == VDDX_PWR_SOURCE_INTERNAL) {
++		/* enable vdd2 internal powersource */
++		regval &= ~(1 << 9);
++	}
++	/* use external power source. */
++	else {
++		/* enable vdd2 external powersource */
++		regval |= (1 << 9);
++	}
++	ven_writew(host, SDBAR1_GPIO_FUNC_SEL_508, regval);
 +
-+	/* send cmd12 and check whether */
-+	card_send_command12(card, &recover_cmd);
-+	if (recover_cmd.uhs2_nack != 0)
-+		goto full_reset;
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"cfg->vdd2_power_source: 0x%X\n", cfg->vdd2_power_source);
 +
-+	result = card_check_rw_ready(card, &recover_cmd, 150);
-+	if (result == FALSE)
-+		goto full_reset;
++	/* set Vdd3 power source */
++	regval = ven_readw(host, SDBAR1_GPIO_FUNC_SEL_508);
++
++	/* use internal LDO */
++	if (cfg->vdd3_power_source == VDDX_PWR_SOURCE_INTERNAL) {
++		/* enable vdd3 internal powersource */
++		regval &= ~(1 << 13);
++	}
++	/* use external power source. */
++	else {
++		/* enable vdd3 external powersource */
++		regval |= (1 << 13);
++	}
++	ven_writew(host, SDBAR1_GPIO_FUNC_SEL_508, regval);
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"cfg->vdd3_power_source: 0x%X\n", cfg->vdd3_power_source);
++
++	/* set vdd2/3's control signal: GPIO 1/2 default value */
++	if (!(shift_bit_func_enable(host))) {
++		regval = ven_readw(host, SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++		regval &= (u16)(~(0xFFFF));
++		regval |= (0x0808);
++		ven_writew(host, SDBAR1_GPIO_FUNC_GPIOCTRL_510, regval);
++	}
++	/* set vdd2/3's GPIO power control inverter  */
++	regval = ven_readw(host, SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++	regval &= ~(1 << 7 | 1 << 15);
++	ven_writew(host, SDBAR1_GPIO_FUNC_GPIOCTRL_510, regval);
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"cfg_hsmux_vcme: 0x%X\n", *cfg_hsmux_vcme);
++	if (cfg_hsmux_vcme->enable) {
++		regval =
++		    (cfg_hsmux_vcme->rc_rx_vcme << 3) |
++			(cfg_hsmux_vcme->sd_tx_vcme << 2) |
++		    (cfg_hsmux_vcme->sd_rx_vcme << 1) |
++			(cfg_hsmux_vcme->rc_tx_vcme << 0);
++		/* clear 440 bit[31:28] and set 440 bit[31:28] */
++		pci_andw(host, 0x442, (u16)(~(0xF << 12)));
++		pci_orw(host, 0x442, (regval << 12));
++	}
++
++	/*
++	 * set host IO drive strength, PCR 0x304 bit7 is control switch.
++	 * 0: set host IO drive strength by driver;
++	 * 1: set host IO drive strength by BIOS
++	 */
++	if ((pci_readw(host, 0x304) & BIT7)) {
++		for (pcr_item_index = 0;
++		     pcr_item_index < host->cfg->pcr_item.cnt;
++		     pcr_item_index++) {
++			if ((host->cfg->pcr_item.pcr_tb[pcr_item_index].type == 0)
++				&& (host->cfg->pcr_item.pcr_tb[pcr_item_index].addr == 0x304)) {
++				host->cfg->pcr_item.pcr_tb[pcr_item_index].valid_flg = 0;
++				DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT,
++					NOT_TO_RAM,
++					"disabled PCR 0x304 pcr config valid_flg\n");
++			}
++		}
++	}
++
++	/* set Uhs2 L0 clock request mode control in non-dormant state */
++	if (host->chip_type == CHIP_SEAEAGLE) {
++		pci_andl(host, 0x35C, 0xFFFFFFFC);
++		DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++			"uhs2_setting.l1_requirement_source: 0x%X\n",
++			host->cfg->card_item.uhs2_setting.l1_requirement_source);
++		pci_orl(host, 0x35C,
++			host->cfg->card_item.uhs2_setting.l1_requirement_source);
++	}
 +
 +	goto exit;
 +
-+full_reset:
-+	DbgErr("Do Full reset uhs2 recovery\n");
-+	host_uhs2_reset(card->host, FALSE);
-+	result = uhs2_full_reset_card(card);
-+	if (result)
-+		result = card_init(card, 1, TRUE);
++camera_mode:
++
++	/* enable GPIO3 input, polling solution */
++	regval = ven_readw(host, SDBAR1_WP_GPIO3_CTRL_REG_514);
++	/* clear bit [4:0] */
++	regval &= ~0x1f;
++	regval |= (1 << 1 | 1 << 4);
++	ven_writew(host, SDBAR1_WP_GPIO3_CTRL_REG_514, regval);
++
++	/* set VDD1 controlled by GPIO 2, and default value */
++	regval = ven_readw(host, SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++	/* clear bit [13:8] */
++	regval &= ~(0x3f << 8);
++	/* set bit [11], GPIO2 output, default vdd1 off */
++	regval |= (1 << 11);
++	ven_writew(host, SDBAR1_GPIO_FUNC_GPIOCTRL_510, regval);
++
++	/* set VDD2 controlled by GPIO 1, and default value */
++	/* select vdd2_en_pol =1 */
++	pci_andl(host, 0x444, ~(1 << 17));
++
++	/* nothing, SDPWR_EXT_SEL(CDN) is fixed to 0 */
++
++	regval = ven_readw(host, SDBAR1_GPIO_1_2_CTRL_REG_510);
++	/* clear bit [5:0] */
++	regval &= ~(0x3f);
++	/* GPIO4 output & input, default vdd2 off */
++	regval |= (1 << 3);
++	ven_writew(host, SDBAR1_GPIO_1_2_CTRL_REG_510, regval);
++
++	goto exit;
 +
 +exit:
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
-+		"Exit %s ret=%d\n", __func__, result);
-+	return result;
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++
 +}
 +
-+u32 card_get_uhs2_freq(sd_card_t *card)
++/*
++ *
++ * Function Name: hostven_ltr_issue
++ *
++ * Abstract:
++ *
++ *			The issue fix for Seabird PM issue 15#.
++ *			The issue is the hardware LTR state machine issue.
++ *
++ * Input:
++ *
++ *			host [in]: A pointer to the host structure.
++ *
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			NULL.
++ *
++ * Notes:
++ *
++ *
++ *
++ */
++static void hostven_ltr_issue(sd_host_t *host)
 +{
-+	sd_host_t *host = card->host;
-+	/* cfg_max_freq_item_t  *freq = &(host->cfg->host_item.max_freq_item); */
-+	u16 index = 0;
-+	u32 value;
++	u32 reg_val = 0;
 +
-+	if (host->cfg == NULL || host->cfg->dmdn_tbl == NULL) {
-+		DbgErr("host cfg is null\n");
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Enter %s\n", __func__);
++
++	if ((host->chip_type == CHIP_FUJIN2) ||
++	    (host->chip_type == CHIP_SEABIRD)) {
++		reg_val = pci_readl(host, 0xa8);
++		if (reg_val & (1 << 10)) {
++			pci_writel(host, 0xa8, (reg_val & (~(1 << 10))));
++			pci_writel(host, 0xa8, (reg_val | (1 << 10)));
++		}
++	}
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Exit %s\n", __func__);
++}
++
++/*
++ *
++ * Function Name: hostven_dma_engine_issue
++ *
++ * Abstract:
++ *
++ *			DMA engine is not reset and DMA registers is reset to default value
++ *			(default value is MWr) when remove SD card.
++ *
++ * Input:
++ *
++ *			host [in]: A pointer to the host structure.
++ *
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			NULL.
++ *
++ * Notes:
++ *
++ * disable DMA reset
++ *
++ */
++static void hostven_dma_engine_issue(sd_host_t *host)
++{
++	u32 reg_val = 0;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Enter %s\n", __func__);
++	reg_val = pci_readl(host, 0x308);
++	DbgErr("old PCR Register 0x308: 0x%x\n", reg_val);
++	reg_val |= 0xC00000;
++	pci_writel(host, 0x308, reg_val);
++	DbgErr("new PCR Register 0x308: 0x%x\n", pci_readl(host, 0x308));
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Exit %s\n", __func__);
++}
++
++/*
++ *
++ * Function Name: hostven_ms_sd30_dis
++ *
++ * Abstract:
++ *
++ *			Disable the SD 3.0 function for the Microsoft win7 driver
++ *
++ * Input:
++ *
++ *			host [in]: A pointer to the host structure.
++ *
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			NULL.
++ *
++ * Notes:
++ *
++ *			Add SD 3.0 enable bit for Microsoft driver:
++ *			pcr 0x3E4[22] : MS SD driver disable.
++ *			0-- enable; 1-- disable. Default 0.
++ *			Pcr3e4[22] :MS SD driver disable.
++ *			0: enable;
++ *			1: disable.
++ *			Default 0.
++ *
++ *			Add sd3.0 enable for MS driver.
++ *			Pcr f8[31]:
++ *			0: sd2.0;
++ *			1: sd3.0.
++ *			Default 0.
++ *
++ *			Set pcr {3e4[22] ,f8[31]}=2'b00
++ *			Use Microsoft dirver sd2.0 driver,
++ *			base clock is 50M and base frequency capability is 8'h32;
++ *
++ *			Set pcr {3e4[22] ,f8[31]}=2'b01
++ *			Use Microsoft dirver sd3.0 driver,
++ *			base clock is 200M and base frequency capability is 8'hc8;
++ *
++ *			Set pcr 3e4[22]=1'b1
++ *			Use O2 driver, base clock is set by pcr 304
++ *			and base frequency capability is set by pcr328[15:8];
++ *
++ */
++static void hostven_ms_sd30_dis(sd_host_t *host)
++{
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Enter %s\n", __func__);
++
++	if ((host->chip_type == CHIP_SEABIRD) ||
++	    (host->chip_type == CHIP_SEAEAGLE) ||
++	    (host->chip_type == CHIP_SEAEAGLE2) ||
++	    (host->chip_type == CHIP_GG8) ||
++	    (host->chip_type == CHIP_ALBATROSS)) {
++		pci_orl(host, 0x3e4, 1 << 22);
++	}
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Exit %s\n", __func__);
++}
++
++void hostven_ocb_cfg(sd_host_t *host)
++{
++	cfg_ocb_ctrl_t *test_ocb_ctrl = &(host->cfg->host_item.test_ocb_ctrl);
++
++	/*
++	 * if software to set the power off and clear the OCB status,
++	 * need to disable hw power off function
++	 */
++	if (test_ocb_ctrl->sw_pwroff_en) {
++		/* unlock write protect bit */
++		pci_andl(host, 0xd0, 0x7fffffff);
++		pci_andl(host, 0xd4, ~0x10);
++		/* restore write protect bit */
++		pci_orl(host, 0xd0, (1 << 31));
++	} else {
++		pci_andl(host, 0xd0, 0x7fffffff);
++		pci_orl(host, 0xd4, 0x10);
++		pci_orl(host, 0xd0, (1 << 31));
++	}
++
++	if ((host->chip_type == CHIP_FUJIN2) ||
++	    (host->chip_type == CHIP_SEABIRD)
++	    ) {
++		/* host 0x1c0 [22][5] */
++		sdhci_or32(host, SDHCI_DRIVER_CTRL_REG,
++			   (SDHCI_OCB_FET_INT_DENOUNCE | SDHCI_OCB_INT_MASK));
++	}
++
++	if (test_ocb_ctrl->int_check_en == 0) {
++		/* clear 0x1c0 [5] */
++		sdhci_and32(host, SDHCI_DRIVER_CTRL_REG, ~SDHCI_OCB_INT_MASK);
++	}
++
++}
++
++void hostven_switch_flow_cfg(sd_host_t *host)
++{
++	u32 regval = 0;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Enter %s\n", __func__);
++
++	pci_andw(host, 0x444, 0xF8FF);
++	switch (host->cfg->card_item.sd7_sdmode_switch_control.switch_method_ctrl) {
++	case HW_DETEC_HW_SWITCH:
++		pci_orw(host, 0x444, BIT8);
++		break;
++
++	case SW_POLL_SW_SWITCH:
++	case SW_POLL_INTER_SW_SWITCH:
++		pci_orw(host, 0x444, BIT9);
++		break;
++
++	case SW_POLL_SWCTRL_SWITCH:
++	case SW_POLL_INTER_SWCRTL_SWITCH:
++		pci_orw(host, 0x444, BIT10);
++		if (host->cfg->card_item.sd7_sdmode_switch_control.sw_ctrl_polarit)
++			pci_orw(host, 0x444, BIT15);
++		else
++			pci_andw(host, 0x444, (u16)(~BIT15));
++
++		break;
++
++	default:
++		DbgErr
++		    ("Error:no such value in registry sd7_sdmode_switch_control, use default value\n");
++		pci_orw(host, 0x444, BIT8);
++		break;
++	}
++
++	regval = pci_readl(host, 0x444);
++
++	regval = pci_readl(host, 0x328);
++	if (host->cfg->card_item.sd7_sdmode_switch_control.vdd3_control)
++		regval |= (1 << 5);
++	else
++		regval &= ~(1 << 5);
++
++	pci_writel(host, 0x328, regval);
++
++	if (host->cfg->card_item.sd7_sdmode_switch_control.sd70_trail_run) {
++		/* sd7.0 trail run case */
++		/* set pcr 0x444[11] = 1, default 0 */
++		regval = pci_readl(host, 0x444);
++		regval |= (1 << 11);
++		pci_writel(host, 0x444, regval);
++
++	} else {
++		/* sd7.0 cdm switch case */
++		regval = pci_readl(host, 0x444);
++		regval &= (~(1 << 11));
++		pci_writel(host, 0x444, regval);
++	}
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Exit %s,0x444 = 0x%x\n", __func__, regval);
++}
++
++void hostven_cmd_low_cfg(sd_host_t *host)
++{
++
++	u32 regval = 0;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Enter %s\n", __func__);
++
++	if (host->cfg->card_item.sd7_sdmode_switch_control.sd_cmd_low_function_en) {
++		/* enable source */
++		regval = pci_readl(host, 0x444);
++		regval |= (1 << 13);
++		pci_writel(host, 0x444, regval);
++
++		/* enable event status interrupt */
++		regval = pci_readl(host, 0x448);
++		regval |= (0x3 << 29);
++		regval &= ~(1 << 31);
++		pci_writel(host, 0x448, regval);
++	} else {
++		/* disable source */
++		regval = pci_readl(host, 0x444);
++		regval &= ~(1 << 13);
++		pci_writel(host, 0x444, regval);
++
++		/* disable event status interrupt */
++		regval = pci_readl(host, 0x448);
++		regval &= ~(0x3 << 29);
++		pci_writel(host, 0x448, regval);
++	}
++
++	regval = pci_readl(host, 0x444);
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Exit %s,0x444 = 0x%x\n", __func__, regval);
++}
++
++void hostven_pinshare_cfg(sd_host_t *host)
++{
++	cfg_driver_item_t *driver_item = &(host->cfg->driver_item);
++	u32 temp_value;
++	u32 switch_method =
++	    host->cfg->card_item.sd7_sdmode_switch_control.switch_method_ctrl;
++	/* clear GPIOs setting to 0 */
++	ven_and16(host, 0x510, 0xF8F8);
++
++	if (!shift_bit_func_enable(host))
++		ven_and16(host, 0x514, 0xFFF8);
++
++	/*
++	 * SD7.0 card remove interrupt status bit can't be cleanned by BHT driver,
++	 * Add below part to clean 0x51c bit 2 when driver loading
++	 */
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Enter %s\n", __func__);
++
++	if (switch_method == SW_POLL_SWCTRL_SWITCH
++	    || switch_method == SW_POLL_INTER_SWCRTL_SWITCH) {
++		temp_value = pci_readl(host, 0x51C);
++		temp_value |= 0x2;
++		pci_writel(host, 0x51C, temp_value);
++	}
++
++	if (host->device_id != 0x9862) {
++		if (host->cfg->card_item.sd7_sdmode_switch_control.camera_mode_enable) {
++			/* set PCR 0x444[14]=1 to enable camera mode */
++			temp_value = pci_readl(host, 0x444);
++			temp_value |= (1 << 14);
++			pci_writel(host, 0x444, temp_value);
++		} else {
++			/* set PCR 0x444[14]=0 to disable camera mode */
++			temp_value = pci_readl(host, 0x444);
++			temp_value &= ~(1 << 14);
++			pci_writel(host, 0x444, temp_value);
++		}
++
++		ven_and16(host, 0x50C, 0xFF78);
++
++		/* set led polarity */
++		if (driver_item->led_polarity)
++			ven_or16(host, 0x50C, 0x80);
++
++		if ((switch_method == SW_POLL_SWCTRL_SWITCH
++		     || switch_method == SW_POLL_INTER_SWCRTL_SWITCH)
++		    && driver_item->sw_ctl_led_gpio0 == 0) {
++			ven_and16(host, 0x518, 0xFFF3);
++			ven_and16(host, 0x520, 0xFFF3);
++
++			/* set BAR1 0x50c[2:0] = 000. */
++			ven_or16(host, 0x50C, 0x10);
++
++			ven_or16(host, 0x518, 0x0c);
++			ven_or16(host, 0x520, 0x0c);
++
++		} else {
++			switch (driver_item->sw_ctl_led_gpio0) {
++			case 1:
++				ven_or16(host, 0x50C, 0x01);
++
++				break;
++			case 2:
++				ven_or16(host, 0x50C, 0x02);
++
++				break;
++
++			default:
++				ven_or16(host, 0x50C, 0x03);
++				break;
++			}
++		}
++
++	}
++
++	if (shift_bit_func_enable(host)) {
++		/* gpio1 */
++		/* GPIO1 input enable for GPIO and external interrupt. */
++		ven_or32(host, 0x510, 0x00000010);
++		/* 000h: Register-controlled GPIO and external interrupt. */
++		ven_and32(host, 0x510, 0xFFFFFFF0);
++		/* GPIO1 negedge/posedge interrupt enable bit */
++		ven_or32(host, 0x518, 0x00000030);
++		/* GPIO1 negedge/posedge interrupt signal enable bit */
++		ven_or32(host, 0x520, 0x00000030);
++
++		/* gpio2 */
++		/* GPIO2 output enable for GPIO only. */
++		ven_or32(host, 0x510, 0x00000800);
++		/* 000h: Register-controlled GPIO. */
++		ven_and32(host, 0x510, 0xFFFFF8FF);
++		/* Default status: GPIO2 output low, */
++		set_gpio_levels(host, 0, 0);
++
++		/* gpio3 */
++		/* GPIO3 output enable for GPIO only. */
++		ven_or32(host, 0x514, 0x00000008);
++		/* 010h: Register-controlled GPIO  */
++		ven_or32(host, 0x514, 0x00000002);
++		/* Default status: GPIO3 output high. */
++		set_gpio_levels(host, 1, 1);
++
++		temp_value = pci_readl(host, 0x51C);
++		if (temp_value & 0x4) {
++			temp_value |= 0x4;
++			pci_writel(host, 0x51C, temp_value);
++		}
++
++	}
++
++	switch (driver_item->led_gpio1) {
++		/* use as GPIO */
++	case 0:
++		break;
++		/* use as led */
++	case 1:
++		ven_or16(host, 0x510, 0x30);
++		break;
++	default:
++		ven_or16(host, 0x510, 0x30);
++		break;
++	}
++
++	switch (driver_item->led_gpio2) {
++		/* use as GPIO */
++	case 0:
++		break;
++		/* use as led */
++	case 1:
++		ven_or16(host, 0x510, 0x0100);
++		break;
++	case 2:
++	default:
++		ven_or16(host, 0x510, 0x0300);
++		break;
++	}
++
++	switch (driver_item->wp_led_gpio3) {
++		/* use as sd_wp */
++	case 0:
++		break;
++		/* use as led */
++	case 1:
++		ven_or16(host, 0x514, 0x01);
++		break;
++		/* use as gpio */
++	case 2:
++		break;
++		/* use as RTD3 function test */
++	case 3:
++		ven_or16(host, 0x514, 0x2A);
++		break;
++	default:
++		ven_or16(host, 0x514, 0x03);
++		break;
++	}
++}
++
++/*
++ *
++ * Function Name: hostven_dll_watchdog_timer
++ *
++ * Abstract:
++ *
++ *			Set the DLL watch dog timer register value.
++ *
++ * Input:
++ *
++ *			host [in]: A pointer to the host structure.
++ *
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			NULL.
++ *
++ * Notes:
++ *
++ *
++ *
++ *
++ */
++static void hostven_dll_watchdog_timer(sd_host_t *host)
++{
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Enter %s\n", __func__);
++	if (host->chip_type == CHIP_FUJIN2)
++		sdhci_writew(host, 0x1c8, 0x1280);
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Exit %s\n", __func__);
++
++}
++
++static void hostven_socket_pow_en(sd_host_t *host)
++{
++	u32 reg_val = 0;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Enter %s\n", __func__);
++	if ((host->chip_type == CHIP_SDS0) || (host->chip_type == CHIP_SDS1)
++	    || (host->chip_type == CHIP_FUJIN2)) {
++		reg_val = pci_readl(host, 0xec);
++		reg_val |= 0x3;
++		pci_writel(host, 0xec, reg_val);
++	}
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE | FEATURE_DRIVER_INIT,
++		NOT_TO_RAM, "Exit %s\n", __func__);
++}
++
++static bool seabird_pcr_check(u16 addr)
++{
++	if (addr < 0x100) {
++		if (((addr >= 0x64) && (addr < 0x6b))
++		    || ((addr >= 0x74) && (addr < 0x7f)) || ((addr >= 0xd0)
++							     && (addr < 0xff)))
++			return FALSE;
++		else
++			return TRUE;
++	} else if ((addr >= 0x300) && (addr < 0xfff)) {
++		return FALSE;
++	} else {
++		return TRUE;
++	}
++}
++
++static bool seaeagle_pcr_check(u16 addr)
++{
++	if (addr < 0x100) {
++		if (((addr >= 0x64) && (addr < 0x6b))
++		    || ((addr >= 0x74) && (addr < 0x7f)) || ((addr >= 0xd0)
++							     && (addr < 0xff)))
++			return FALSE;
++		else
++			return TRUE;
++	} else if ((addr >= 0x300) && (addr < 0xfff)) {
++		return FALSE;
++	} else {
++		return TRUE;
++	}
++}
++
++#if (1)
++static bool hostven_pcr_need_direct_access(sd_host_t *host, u16 addr)
++{
++	if (host->chip_type == CHIP_SEABIRD)
++		return seabird_pcr_check(addr);
++	else
++		return seaeagle_pcr_check(addr);
++}
++#else
++static bool hostven_pcr_need_direct_access(u16 addr)
++{
++
++	if (addr < 0x100) {
++		switch (addr & 0xfffc) {
++		case 0x64:
++		case 0x68:
++		case 0x74:
++		case 0x78:
++		case 0x7c:
++		case 0xd0:
++		case 0xd4:
++		case 0xd8:
++		case 0xdc:
++		case 0xe0:
++		case 0xe8:
++		case 0xec:
++		case 0xf0:
++		case 0xf4:
++		case 0xfc:
++			return FALSE;
++		default:
++			return TRUE;
++		}
++	} else if (addr <= 0xfff && addr >= 0x300) {
++		return FALSE;
++	} else
++		return TRUE;
++}
++#endif
++
++static void hostven_load_pcr_cfg(sd_host_t *host)
++{
++
++	cfg_item_t *cfg = host->cfg;
++	u32 i = 0;
++	cfg_pcr_t *pcr = 0;
++
++	for (i = 0; i < MAX_PCR_SETTING_SIZE; i++) {
++		u16 val = 0;
++
++		pcr = &cfg->pcr_item.pcr_tb[i];
++		if (pcr->valid_flg == 0)
++			continue;
++		switch (pcr->type) {
++		case 0:
++			val = pcr->mask;
++			PrintMsg
++			    ("PCR Setting: Addr=0x%04X, Mask=0x%04X, Val==0x%04X\n",
++			     pcr->addr, pcr->mask, pcr->val);
++			if (TRUE ==
++			    hostven_pcr_need_direct_access(host, pcr->addr)) {
++				u32 reg_val = 0;
++				u32 mask = pcr->mask;
++				u32 val32 = pcr->val;
++
++				reg_val = pci_readl(host, pcr->addr & 0xfffc);
++				if (pcr->addr & 2) {
++					mask <<= 16;
++					val32 <<= 16;
++				}
++				reg_val &= ~mask;
++				reg_val |= (val32 & mask);
++				pci_cfgio_writel(host, pcr->addr & 0xfffc,
++						 reg_val);
++			} else {
++				u16 reg_val16 = 0;
++				u32 reg_val = 0;
++
++				reg_val16 = pci_readw(host, pcr->addr);
++				reg_val16 &= (~val);
++				reg_val16 |= (pcr->val & pcr->mask);
++				pci_writew(host, pcr->addr, reg_val16);
++				reg_val = pci_readw(host, pcr->addr);
++
++			}
++			break;
++		case 1:
++			val = pcr->mask;
++			PrintMsg
++			    ("MEM Setting: Addr=0x%04X, Mask=0x%04X, Val==0x%04X\n",
++			     pcr->addr, pcr->mask, pcr->val);
++			sdhci_and16(host, pcr->addr, ~val);
++			val = (pcr->val & pcr->mask);
++			sdhci_or16(host, pcr->addr, val);
++			break;
++		default:
++			break;
++		}
++	}
++
++}
++
++void hostven_set_tuning_phase(sd_host_t *host, u32 input_n1, u32 output_n1,
++			      bool off)
++{
++	u32 val32;
++	bht_dev_ext_t *pdx = host->pdx;
++	cfg_output_tuning_item_t *cfg =
++	    &pdx->cfg->feature_item.output_tuning_item;
++
++	if ((cfg->enable_dll == 0) || (cfg->enable_dll_divider == 0))
++		return;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Enter %s\n", __func__);
++
++	if (off == TRUE) {
++		pci_andl(host, 0x354, 0xFE0EFFFF);
++		val32 = 1;
++		pci_andl(host, 0x354, (~(val32 << 25)));
++		pci_andl(host, 0x354, (~(val32 << 26)));
++		sdhci_and32(host, 0x1b0, (~(val32 << 28)));
++		sdhci_and32(host, 0x1b0, 0xC0FFFFFF);
++	} else {
++		host_enable_clock(host, FALSE);
++
++		pci_orl(host, 0x354, (1 << 25));
++
++		/* choose output tuning */
++		pci_andl(host, 0x354, 0xFE0EFFFF);
++		pci_orl(host, 0x354, (output_n1 << 20));
++		pci_orl(host, 0x354, (1 << 16));
++
++		/* choose input tuning */
++		val32 = (sdhci_readl(host, 0x1b0) & 0xC0FFFFFF);
++		val32 |= (1 << 28);
++		val32 |= ((input_n1 % 16) << 24);
++		val32 |= (input_n1 >> 4) << 29;
++		sdhci_writel(host, 0x1b0, val32);
++		pci_orl(host, 0x354, (1 << 26));
++		host_enable_clock(host, TRUE);
++	}
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++bool hostven_dll_input_tuning_init(sd_host_t *host)
++{
++	u8 i;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Enter %s\n", __func__);
++
++	host_enable_clock(host, FALSE);
++
++	host_internal_clk_setup(host, FALSE);
++
++	host_init_clock(host,
++			host->cfg->dmdn_tbl[FREQ_DDR50_INPUT_TUNIN_START_INDEX]);
++
++	host_internal_clk_setup(host, TRUE);
++	host_enable_clock(host, TRUE);
++
++	i = 0;
++	while (!((sdhci_readl(host, 0x1cc) & 0x4000)
++		 && (sdhci_readl(host, 0x1cc) & 0x800))) {
++		if (i > 50)
++			return FALSE;
++		os_mdelay(1);
++		i++;
++	}
++
++	host_enable_clock(host, FALSE);
++	host_internal_clk_setup(host, FALSE);
++	pci_orl(host, 0x354, 0x6010000);
++	sdhci_or32(host, 0x1b0, 0x10000000);
++	host_internal_clk_setup(host, TRUE);
++
++	i = 0;
++	while (!((sdhci_readl(host, 0x1cc) & 0x4000))) {
++		if (i > 50)
++			return FALSE;
++		os_mdelay(1);
++		i++;
++	}
++
++	if ((host->chip_type == CHIP_SEAEAGLE2) || (host->chip_type == CHIP_GG8)
++	    || (host->chip_type == CHIP_ALBATROSS))
++		host_enable_clock(host, TRUE);
++
++	sdhci_or32(host, 0x1cc, (1 << 17));
++	sdhci_or32(host, 0x1cc, (1 << 16));
++
++	i = 0;
++	while (!((sdhci_readl(host, 0x1cc) & 0x800))) {
++		if (i > 50)
++			return FALSE;
++		os_mdelay(1);
++		i++;
++	}
++
++	sdhci_and32(host, 0x1cc, 0xFFFCFFFF);
++
++	i = 0;
++	while (!((sdhci_readl(host, 0x1cc) & 0x4000)
++		 && (sdhci_readl(host, 0x1cc) & 0x800))) {
++		if (i > 50)
++			return FALSE;
++		os_mdelay(1);
++		i++;
++	}
++
++	if (host->chip_type == CHIP_SEAEAGLE)
++		host_enable_clock(host, TRUE);
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++	return TRUE;
++}
++
++static void hostven_output_tuning_init(sd_host_t *host)
++{
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	host->output_tuning.auto_flag = FALSE;
++
++}
++
++void hostven_detect_refclk_count_range_init(sd_host_t *host)
++{
++	u16 expected_range = 0;
++	cfg_item_t *cfg = host->cfg;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	if ((pci_readl(host, 0x460) & BIT31)) {
++		expected_range = pci_readw(host, 0x460);
++		DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++			"Hardware invoked auto-adjust refclk counter range done, range min %#x , max %#x\n",
++			(expected_range >> 8), (expected_range & 0xFF));
++	}
++
++	/*
++	 * Enable PCIe reference clock detection timeout status and
++	 * PCIe reference clock detection timeout interrupt signal
++	 */
++	sdhci_or32(host, 0x1E0, (BIT23 | BIT27));
++
++	if (cfg->feature_item.auto_detect_refclk_counter_range_ctl.enable) {
++		DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++			"set refclk_range_detect_cnt: 0x%X\n",
++			cfg->feature_item.auto_detect_refclk_counter_range_ctl.refclk_range_detect_cnt);
++
++		/* reference clock stable counter register set disable */
++		pci_andw(host, 0x456, (u16)(~BIT15));
++
++		/* set cycles_of_detection_period */
++		pci_andw(host, 0x462, 0xFF00);
++		pci_orw(host, 0x462,
++			(u16) cfg->feature_item.auto_detect_refclk_counter_range_ctl.refclk_range_detect_cnt);
++
++		/* reference clock stable counter register set enable */
++		pci_orw(host, 0x456, BIT15);
++		os_udelay(10);
++
++		/* reference clock stable counter register set disable */
++		pci_andw(host, 0x456, (u16)(~BIT15));
++
++		if (cfg->feature_item.auto_detect_refclk_counter_range_ctl.req_refclkcnt_minmax_source_sel) {
++			DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT,
++				NOT_TO_RAM,
++				"set required_refclk_count_value, min: 0x%X, max: 0x%X\n",
++				cfg->feature_item.auto_detect_refclk_counter_range_ctl.req_refclkcnt_min,
++				cfg->feature_item.auto_detect_refclk_counter_range_ctl.req_refclkcnt_max);
++
++			/* select from register configure 0x460[15:0] */
++			pci_orw(host, 0x462, BIT13);
++
++			/* set required_refclk_count_value */
++			pci_writew(host, 0x460, (((u16)
++						  (cfg->feature_item.auto_detect_refclk_counter_range_ctl.req_refclkcnt_min)
++						  << 8) |
++						 cfg->feature_item.auto_detect_refclk_counter_range_ctl.req_refclkcnt_max));
++
++			DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT,
++				NOT_TO_RAM, "PCR 0x460: 0x%X\n", pci_readw(host,
++									   0x460));
++		}
++
++		if (cfg->feature_item.auto_detect_refclk_counter_range_ctl.refclkcnt_range_detect_softreset) {
++			/* set refclk_cnt_range_detect_soft_reset */
++			pci_orw(host, 0x462, BIT14);
++		}
++	}
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++ /*
++  * Below function designe please refers to GG8 architecture
++  * chapter12.3: Refclk stable detection circuit
++  */
++void hostven_refclk_stable_detection_circuit(sd_host_t *host)
++{
++	cfg_item_t *cfg = host->cfg;
++	u32 regval;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Enter %s\n", __func__);
++	/*
++	 * Step0: Set PCR 0xD0[31] = 0 – disable ‘write protect’ for
++	 * BHT defined config space registers;
++	 */
++	pci_andl(host, 0xd0, ~BIT31);
++
++	/* Step1: Set PCR 0x454[31] = 0 – disable the setting; */
++	pci_andl(host, 0x454, ~BIT31);
++
++	/* Step2: Set SD host register 1C0[1] = 1 to force L0 request; */
++	sdhci_or16(host, 0x1c0, BIT1);
++
++	/* Step3 : Set target registry with the expected parameter value; */
++
++	/* Step3.1  L1_ENTER_EXIT_LOGIC_CTL setting */
++	if (cfg->feature_item.l1_enter_exit_logic_ctl.enable) {
++		/*PCR 0x444[26] */
++		if (cfg->feature_item.l1_enter_exit_logic_ctl.disable_tx_command_mode)
++			/* disable */
++			pci_orl(host, 0x444, BIT26);
++		else
++			/* enable (default) */
++			pci_andl(host, 0x444, ~BIT26);
++
++		/*PCR 0x444[28], disable “PCIe Phy Reference clock active detection logic */
++		if (cfg->feature_item.l1_enter_exit_logic_ctl.disable_pcie_phy_clk)
++			/* disable */
++			pci_orl(host, 0x444, BIT28);
++		else
++			/* enable (default) */
++			pci_andl(host, 0x444, ~BIT28);
++	}
++
++	/* Step3.2  REFCLK_STABLE_DETECTION_COUNTER1 */
++	if (cfg->feature_item.refclk_stable_detection_counter1.enable) {
++
++		/* PCR 0x454[15:0] */
++		regval = pci_readl(host, 0x454);
++		regval &= 0xffff0000;
++		regval |=
++		    cfg->feature_item.refclk_stable_detection_counter1.required_refclk_compare_count;
++		pci_writel(host, 0x454, regval);
++
++		/*
++		 * REFCLK_STABLE_DETECTION_COUNTER2
++		 * required_refclk_compare_timeout_d0l10, it is controlled by PCR 0x458[31:16]
++		 * The detection timeout counter in d0 L1.0.
++		 * The timeout time is required_refclk_compare_timeout_d0l10 * Tclk_2m.
++		 * Default: ‘h001E (15us).
++		 *
++		 * REFCLK_STABLE_DETECTION_COUNTER2
++		 * required_refclk_compare_timeout_d0l11, it is controlled by PCR 0x458[15:0]
++		 * The detection timeout counter in d0 L1.1.
++		 * The timeout time is required_refclk_compare_timeout_d0l11 * Tclk_2m.
++		 * Default: ‘h044C  (550us).
++		 */
++		regval = pci_readl(host, 0x458);
++		regval &= 0x0;
++		regval |=
++		    (cfg->feature_item.refclk_stable_detection_counter2.required_refclk_compare_timeout_d0l10
++		     << 16) |
++		    (cfg->feature_item.refclk_stable_detection_counter2.required_refclk_compare_timeout_d0l11);
++		pci_writel(host, 0x458, regval);
++
++		/*
++		 * REFCLK_STABLE_DETECTION_COUNTER3
++		 * required_refclk_compare_timeout_d0l12, it is controlled by PCR 0x45C[31:16]
++		 * The detection timeout counter in d0 L1.2.
++		 * The timeout time is required_refclk_compare_timeout_d0l12 * Tclk_2m.
++		 * Default: ‘h04B0  (600us).
++		 *
++		 * required_refclk_compare_timeout_d3l12, it is controlled by PCR 0x458C[15:0]
++		 * The detection timeout counter in d3 L1.2 and
++		 * “switch back from PCIe SD mode to Legacy SD mode”.
++		 * The timeout time is required_refclk_compare_timeout_d3l12 * Tclk_2m.
++		 * Default: ‘h24B0 (4.7ms).
++		 */
++		regval = pci_readl(host, 0x45c);
++		regval &= 0x0;
++		regval |=
++		    (cfg->feature_item.refclk_stable_detection_counter3.required_refclk_compare_timeout_d0l12
++		     << 16) |
++		    (cfg->feature_item.refclk_stable_detection_counter3.required_refclk_compare_timeout_d3l12);
++		pci_writel(host, 0x45c, regval);
++
++		/* PCR 0x454[31] = 1 – enable the setting; */
++		if (cfg->feature_item.refclk_stable_detection_counter1.chk_refclk_parameter_en)
++			pci_orl(host, 0x454, BIT31);
++	}
++
++	/* Step4: Read back target registers to make sure previous accessing is OK; */
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Check START------------------\n");
++	pci_readl(host, 0x444);
++	pci_readl(host, 0x454);
++	pci_readl(host, 0x458);
++	pci_readl(host, 0x45c);
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Check END--------------------\n");
++
++	/* Step5: Set SD host register 1C0[1] = 0 clear force L0 request; */
++	sdhci_and16(host, 0x1c0, ~BIT1);
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++ /* Below function designe please refers to GG8 architecture chapter12.4 */
++void hostven_pcie_phy_tx_amplitude_adjustment(sd_host_t *host)
++{
++	cfg_item_t *cfg = host->cfg;
++	u32 regval_1 =
++	    cfg->feature_item.pcie_phy_amplitude_adjust.pcietx_amplitude_setting;
++	u32 regval_2;
++	u16 i;
++	u32 regval;
++
++	struct amplitude_configuration amplitude_configuration_arr[5] = {
++		{ 0x6a, "1.0V" },
++		{ 0x6f, "1.05V" },
++		{ 0x75, "1.1V" },
++		{ 0x7a, "1.15V" },
++		{ 0x7f, "1.2V" }
++	};
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Enter %s\n", __func__);
++
++	if (cfg->feature_item.pcie_phy_amplitude_adjust.pcietx_amplitude_chg_en) {
++		/*Step of CR write */
++
++		/*
++		 * Step0: Set PCR 0xD0[31]=0 – disable ‘write protect’ for
++		 * BHT defined config space registers;
++		 */
++		pci_andl(host, 0xd0, ~BIT31);
++
++		/*
++		 * Step1: Write CR address 16’h1002 to reg 0x78 [15:0];
++		 *
++		 * Step2: Write updated CR data to reg 0x78[31:16],
++		 * default value is 7b’1101010;
++		 */
++		regval = pci_readl(host, 0x78);
++		regval &= 0x0;
++		regval |= (0x1002 | (regval_1 << 16));
++		pci_writel(host, 0x78, regval);
++
++		/*
++		 * Step3: Write 1’b1 to reg 0x78[30],
++		 * to enable override CR data that write to CR address 16’h1002;
++		 */
++		pci_orl(host, 0x78, BIT30);
++
++		/* Step4: Config reg 0x7C[0] to 1’b1 (Config CR direction to “write”); */
++		pci_orl(host, 0x7C, BIT0);
++
++		/*
++		 * Step5: Config reg 0x7C[16] to 1’b1 to Initiate the CR access,
++		 * and the CR write will be operated automatically;
++		 */
++		pci_orl(host, 0x7C, BIT16);
++
++		/*Step of CR read */
++
++		/* Step1: Write CR address 16’h1009 to reg 0x78[15:0]; */
++		regval = pci_readl(host, 0x78);
++		regval &= 0xffff0000;
++		regval |= 0x1009;
++		pci_writel(host, 0x78, regval);
++
++		/* Step2: Config reg 0x7C[0] to 1’b0(Config CR direction to “read”); */
++		pci_andl(host, 0x7C, ~BIT0);
++
++		/*
++		 * Step3: Config reg 0x7C[16] to 1’b1 to Initiate the CR access,
++		 * and the CR read will be operated automatically;
++		 */
++		pci_orl(host, 0x7C, BIT16);
++
++		/*
++		 * Step4: Read reg 0x78[31：16] to get the CR read data,
++		 * to confirm pcs_tx_swing_full[6:0] value is updated successfully;
++		 */
++		regval_2 = ((pci_readl(host, 0x78) & (0x00FF0000)) >> 16);
++
++		/*
++		 * Step5: Set PCR 0xD0[31]=1 – enable ‘write protect’ for
++		 * BHT defined config space registers.
++		 */
++		pci_orl(host, 0xD0, BIT31);
++
++		/*
++		 * Debug driver should compare the CR write and CR read data,
++		 * to confirm the CR write data is correct,
++		 * then driver print “PCIe PHY TX Amplitude is xxV.”.
++		 */
++
++		if (regval_1 == regval_2) {
++			for (i = 0; i < 5; i++) {
++				if (regval_1 ==
++				    amplitude_configuration_arr
++				    [i].pcietx_amplitude)
++					DbgInfo(MODULE_VEN_HOST,
++						FEATURE_ERROR_RECOVER,
++						NOT_TO_RAM,
++						"PCIe PHY TX Amplitude is %s\n",
++						amplitude_configuration_arr
++						[i].amplitude);
++			}
++		} else {
++			DbgErr
++			    ("Warning: write CR data is 0x%x, read CR data is 0x%x!\n",
++			     regval_1, regval_2);
++		}
++	}
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++void hostven_set_output_tuning_phase(sd_host_t *host, u32 value, bool off)
++{
++	bht_dev_ext_t *pdx = host->pdx;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Enter %s, Value:%x, Off:%x\n", __func__, value, off);
++	if (off == TRUE) {
++		/* select opclk */
++		pci_andl(host, 0x354, 0xFFFEFFFF);
++	} else {
++		switch (host->chip_type) {
++			/* dll clock is selected according to UHS work mode */
++		case CHIP_GG8:
++		case CHIP_ALBATROSS:
++			if (pdx->card.info.sw_cur_setting.sd_access_mode ==
++			    SD_FNC_AM_DDR200) {
++				pci_andl(host, 0x354, 0xFFFFFF0F);
++				pci_orl(host, 0x354, (value << 4));
++			} else if (pdx->card.info.sw_cur_setting.sd_access_mode ==
++				   SD_FNC_AM_DDR50) {
++				/* Not support this mode at Bayhub Driver */
++				DbgErr("DDR50 mode isn't supported !!!");
++			} else if (pdx->card.info.sw_cur_setting.sd_access_mode ==
++				   SD_FNC_AM_SDR104) {
++				pci_andl(host, 0x354, 0xFF0FFFFF);
++				pci_orl(host, 0x354, (value << 20));
++			} else if (pdx->card.info.sw_cur_setting.sd_access_mode ==
++				   SD_FNC_AM_SDR50) {
++				pci_andl(host, 0x354, 0xFFFFFFF0);
++				pci_orl(host, 0x354, value);
++			}
++			break;
++		default:
++			/* select dll clock */
++			pci_andl(host, 0x354, 0xFF0EFFFF);
++			pci_orl(host, 0x354, ((value << 20) | BIT16));
++			break;
++		}
++	}
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++bool hostven_fix_output_tuning(sd_host_t *host, byte sd_access_mode)
++{
++	bht_dev_ext_t *pdx = host->pdx;
++	cfg_output_tuning_item_t *cfg =
++	    &pdx->cfg->feature_item.output_tuning_item;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Enter %s, Access mode:%x\n", __func__, sd_access_mode);
++
++	host->output_tuning.auto_flag = FALSE;
++	if (cfg->enable_dll == 0)
++		goto exit;
++
++	if (host->output_tuning.auto_phase_flag == TRUE) {
++		host_set_output_tuning_phase(host,
++					     host->output_tuning.auto_phase);
++		goto exit;
++	}
++
++	/*
++	 * check whether need do output tuning or not:
++	 * featre.output_tuning enable or not
++	 * only SD_CARD
++	 */
++
++	if (cfg->enable_emmc_hs400 == 1) {
++		host->output_tuning.auto_flag = TRUE;
++		host_set_output_tuning_phase(host, cfg->fixed_value_emmc_hs400);
++	}
++
++	switch (sd_access_mode) {
++	case SD_FNC_AM_DDR200:
++		if (cfg->enable_ddr200 == 0) {
++			host->output_tuning.auto_flag = TRUE;
++			host_set_output_tuning_phase(host,
++						     cfg->fixed_value_ddr200);
++		}
++		break;
++	case SD_FNC_AM_SDR104:
++		if (cfg->enable_sdr104 == 0) {
++			host->output_tuning.auto_flag = TRUE;
++			host_set_output_tuning_phase(host,
++						     cfg->fixed_value_sdr104);
++		}
++		break;
++	case SD_FNC_AM_SDR50:
++		if (cfg->enable_sdr50 == 0) {
++			host->output_tuning.auto_flag = TRUE;
++			host_set_output_tuning_phase(host,
++						     cfg->fixed_value_sdr50);
++		}
++		break;
++	case SD_FNC_AM_DDR50:
++		DbgErr("DDR50 isn't supported\n");
++		break;
++	default:
++		break;
++	}
++
++exit:
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++	return host->output_tuning.auto_flag;
++}
++
++u8 hostven_tuning_type_selection(sd_host_t *host, byte sd_access_mode)
++{
++	/* this function only SD_CARD */
++	bht_dev_ext_t *pdx = host->pdx;
++	cfg_output_tuning_item_t *cfg =
++	    &pdx->cfg->feature_item.output_tuning_item;
++	u8 tuning_type = 0;
++	u8 output_clock_source = 0;
++	u8 input_clock_source = 0;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Enter %s, Access mode:%x\n", __func__, sd_access_mode);
++
++	/* select output clock source by mode */
++	switch (sd_access_mode) {
++	case SD_FNC_AM_DDR200:
++		/* DLL clock is used for output */
++		if (cfg->enable_ddr200 == 1)
++			output_clock_source = 1;
++		break;
++	case SD_FNC_AM_SDR104:
++		/* DLL clock is used for output */
++		if (cfg->enable_sdr104 == 1)
++			output_clock_source = 1;
++		break;
++	case SD_FNC_AM_SDR50:
++		/* DLL clock is used for output */
++		if (cfg->enable_sdr50 == 1)
++			output_clock_source = 1;
++		break;
++	case SD_FNC_AM_DDR50:
++		/* if (cfg->enable_ddr50 == 1) // DLL clock is used for output */
++		/* output_clock_source = 1; */
++		DbgErr("DDR50 isn't supported\n");
++		break;
++	default:
++		break;
++	}
++
++/* input_clock: */
++
++	input_clock_source = 1;
++
++	/* opclk used for input clock, Only SDR50 use it */
++	if (input_clock_source == 0) {
++		/* no need input tuning, and use fix output phase */
++		tuning_type = 0;
++	} else {
++		if (output_clock_source == 0)
++			/* use fix output phase and do input tuning */
++			tuning_type = 1;
++		else
++			/* do input tuning and auto output tuning */
++			tuning_type = 2;
++	}
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_ERROR_RECOVER, NOT_TO_RAM,
++		"Exit %s with tuning type %d\n", __func__, tuning_type);
++	return tuning_type;
++}
++
++/* init host feature */
++void host_vendor_feature_init(sd_host_t *host)
++{
++	bht_dev_ext_t *pdx = host->pdx;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	os_memset(&host->feature, 0, sizeof(host->feature));
++
++	hostven_bios_cfg(host);
++	hostven_load_pcr_cfg(host);
++	hostven_ltr_issue(host);
++	hostven_dma_engine_issue(host);
++	hostven_ms_sd30_dis(host);
++
++	hostven_dll_watchdog_timer(host);
++	hostven_socket_pow_en(host);
++	hostven_output_tuning_init(host);
++	hostven_drive_strength_cfg(host);
++
++	switch (host->chip_type) {
++	case CHIP_SEABIRD:
++		pci_orl(host, 0xd4, BIT6);
++		/* can't use timer for dump mode */
++		if (host->dump_mode == FALSE)
++			host->feature.hw_led_fix = 1;
++		break;
++	case CHIP_SEAEAGLE:
++		/* can't use timer for dump mode */
++		if (host->dump_mode == FALSE)
++			host->feature.hw_led_fix = 1;
++		/* Failsafe disable */
++		pci_andl(host, 0x3E0, ~BIT6);
++		/* add for fail safe delay */
++		os_mdelay(3 +
++			  pdx->cfg->driver_item.delay_for_failsafe_s3resume);
++		break;
++	case CHIP_SEAEAGLE2:
++	case CHIP_GG8:
++	case CHIP_ALBATROSS:
++		host->feature.hw_pll_enable = 1;
++		host->feature.hw_resp_chk = 1;
++		host->feature.hw_autocmd = 1;
++		host->feature.hw_41_supp = 1;
++		host->camera_mode_card_state = CARD_DESERTED;
++		pci_andl(host, 0x3E0, ~BIT6);
++		/* can't use timer for dump mode */
++		if (host->dump_mode == FALSE)
++			host->feature.hw_led_fix = 1;
++
++		hostven_cmd_low_cfg(host);
++		hostven_switch_flow_cfg(host);
++		hostven_pinshare_cfg(host);
++		pcie_weakup(host->pdx, 0, TRUE);
++		break;
++	case CHIP_FUJIN2:
++		/* Default Enable fujin2 led */
++		pci_andl(host, 0xdc, ~BIT13);
++		pci_orl(host, 0xd4, BIT6);
++		break;
++	default:
++		break;
++	}
++
++	/* fail safe issue fix */
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++void host_force_pll_enable(sd_host_t *host, bool force)
++{
++	if (force)
++		sdhci_or32(host, 0x1cc, BIT18);
++	else
++		sdhci_and32(host, 0x1cc, ~BIT18);
++}
++
++bool hostven_chk_card_present(sd_host_t *host)
++{
++
++	u32 reg_val;
++
++	if (shift_bit_func_enable(host)) {
++		reg_val = ven_readl(host, 0x510);
++		if (!(reg_val & 0x00000040)) {
++			DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT,
++				NOT_TO_RAM, "gpio check card present\n");
++			return TRUE;
++		} else {
++			DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT,
++				NOT_TO_RAM, "gpio check card not present\n");
++			return FALSE;
++		}
++	} else {
++		reg_val = sdhci_readl(host, SDHCI_PRESENT_STATE);
++		if ((reg_val & SDHCI_CARD_PRESENT_QUIRK)
++		    && (reg_val != REGL_INVALID_VAL))
++			return TRUE;
++		else
++			return FALSE;
++	}
++
++#if (0)
++	bool result;
++	u32 reg_val = 0;
++	int debounceTimeMax = 50;
++
++#if GLOBAL_ENABLE_BOOT
++	return TRUE;
++#else
++
++	reg_val = sdhci_readl(host, SDHCI_PRESENT_STATE);
++	if (reg_val == REGL_INVALID_VAL)
++		return FALSE;
++
++	if (host->chip_type == CHIP_SEABIRD || host->chip_type == CHIP_SEAEAGLE) {
++		/* check if PLL is locked or not, if not, setup pll and enable pll first */
++		if (!(sdhci_readl(host, 0x1cc) & BIT14)) {
++			/* host_init_emmc_400k_clock(host); */
++			host_internal_clk_setup(host, TRUE);
++		}
++	}
++	/* wait for CD# debounce finished */
++	while (1) {
++		reg_val = sdhci_readl(host, SDHCI_PRESENT_STATE);
++		if (((reg_val >> 18) & 0x01) == ((reg_val >> 16) & 0x01))
++			break;
++		os_mdelay(1);
++		--debounceTimeMax;
++		if (debounceTimeMax <= 0 && (debounceTimeMax % 1000) == 0)
++			DbgErr("%s timeout\n", __func__);
++	}
++
++	result = ((reg_val & SDHCI_CARD_PRESENT) == 0) ? FALSE : TRUE;
++	/* DbgErr("Card present status is %d\n", result); */
++#endif
++	return result;
++#endif
++}
++
++/*
++ *
++ * Function Name: check_chip_type
++ *
++ * Abstract:
++ *
++ *			Acquire the chip type according to the vendor ID and the device ID.
++ *
++ * Input:
++ *
++ *			pdev_ext [in]: Points to the device extension.
++ *			ConfigInfo [in]: configuration information for a host bus adapter (HBA).
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			If the driver found the chip type,
++ *			it will return TRUE. Or it will return FALSE.
++ *
++ * Notes:
++ *
++ */
++bool hostven_chip_type_check(sd_host_t *host)
++{
++
++	bool b_find = FALSE;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	host->sub_version = (u16) ((pci_readl(host, 0xdc) >> 24) & 0xff);
++
++	if ((host->vendor_id == 0x1217) && (host->device_id == 0x8420)) {
++
++		host->chip_type = CHIP_SDS0;
++		b_find = TRUE;
++		goto AssignFlag;
++	}
++	if ((host->vendor_id == 0x1217) && (host->device_id == 0x8421)) {
++		host->chip_type = CHIP_SDS1;
++		b_find = TRUE;
++		goto AssignFlag;
++	}
++
++	if ((host->vendor_id == 0x1217) && (host->device_id == 0x8520)) {
++		if (0x12 == host->sub_version || 0x11 == host->sub_version) {
++			host->chip_type = CHIP_SEAEAGLE;
++			b_find = TRUE;
++			goto AssignFlag;
++		} else {
++			host->chip_type = CHIP_FUJIN2;
++			b_find = TRUE;
++			goto AssignFlag;
++		}
++	}
++
++	if ((host->vendor_id == 0x1217) && (host->device_id == 0x8621)) {
++		host->chip_type = CHIP_SEABIRD;
++		b_find = TRUE;
++		goto AssignFlag;
++	}
++
++	if ((host->vendor_id == 0x1217) && (host->device_id == 0x8620)) {
++		if (host->sub_version == 0x1) {
++			host->chip_type = CHIP_FUJIN2;
++			b_find = TRUE;
++			goto AssignFlag;
++		} else {
++			host->chip_type = CHIP_SEABIRD;
++			b_find = TRUE;
++			goto AssignFlag;
++		}
++	}
++
++	if (((host->vendor_id == 0x1217) && (host->device_id == 0x8720))
++	    || ((host->vendor_id == 0x1217) && (host->device_id == 0x8721))
++	    || ((host->vendor_id == 0x1217) && (host->device_id == 0x8722))
++	    || ((host->vendor_id == 0x1217) && (host->device_id == 0x8723))) {
++		host->chip_type = CHIP_SEAEAGLE2;
++		b_find = TRUE;
++		goto AssignFlag;
++
++	}
++
++	if (((host->vendor_id == 0x1217) && (host->device_id == 0x9860))
++	    || ((host->vendor_id == 0x1217) && (host->device_id == 0x9861))
++	    || ((host->vendor_id == 0x1217) && (host->device_id == 0x9862))
++	    || ((host->vendor_id == 0x1217) && (host->device_id == 0x9863))) {
++		host->chip_type = CHIP_GG8;
++		b_find = TRUE;
++		goto AssignFlag;
++
++	}
++
++	if (((host->vendor_id == 0x1217) && (host->device_id == 0x9960))
++	    || ((host->vendor_id == 0x1217) && (host->device_id == 0x9961))
++	    || ((host->vendor_id == 0x1217) && (host->device_id == 0x9962))
++	    || ((host->vendor_id == 0x1217) && (host->device_id == 0x9963))) {
++		host->chip_type = CHIP_ALBATROSS;
++		b_find = TRUE;
++		goto AssignFlag;
++
++	}
++
++	DbgErr("venid=0x%04X devid=0x%04X\n", host->vendor_id, host->device_id);
++
++AssignFlag:
++
++	if (b_find == TRUE) {
++
++	} else {
++		DbgErr(" Chip not found!ven_id = 0x%08x, device_id = 0x%08x\n",
++		       host->vendor_id, host->device_id);
++		DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++			"Exit %s, Find:%x\n", __func__, FALSE);
++		return FALSE;
++	}
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"Exit %s, Find:%x\n", __func__, TRUE);
++	return TRUE;
++
++}
++
++/*
++ *
++ * Function Name: hostven_rtd3_check
++ *
++ * Abstract:
++ *
++ *			Check the runtime D3 enable or not.
++ *
++ * Input:
++ *
++ *			host [in]: Points to the host structure.
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			If RTD3 is enabled the value is TRUE. Or it is FALSE.
++ *
++ * Notes:
++ *
++ */
++bool hostven_rtd3_check(sd_host_t *host)
++{
++	bool rtd3_en = FALSE;
++	cfg_psd_mode_t rtd3_setting = host->cfg->feature_item.psd_mode;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++	if ((host->chip_type == CHIP_FUJIN2)
++	    || (host->chip_type == CHIP_SEABIRD)
++	    || (host->chip_type == CHIP_SEAEAGLE)
++	    || (host->chip_type == CHIP_SEAEAGLE2)
++	    || (host->chip_type == CHIP_GG8)
++	    || (host->chip_type == CHIP_ALBATROSS)) {
++
++		if (rtd3_setting.enable_rtd3) {
++			rtd3_en = TRUE;
++			pci_andl(host, 0x3e0, ~(1 << 29));
++
++			if (host->chip_type == CHIP_FUJIN2) {
++
++				if (!(pci_readl(host, 0x3e0) & (1 << 29))) {
++					/* external enable polarity control pin */
++					pci_andl(host, 0xd8, ~(1 << 9));
++					/* 1.2v main LDO power control source selection */
++					pci_andl(host, 0x3e0, ~(1 << 30));
++					/* AOSC off support */
++					pci_orl(host, 0x3f0, 1 << 31);
++				}
++			}
++		} else {
++			rtd3_en = FALSE;
++			pci_orl(host, 0x3e0, 1 << 29);
++			if (host->chip_type == CHIP_FUJIN2) {
++				pci_andl(host, 0xd8, ~(1 << 9));
++				/* 1.2v main LDO power control source selection */
++				pci_orl(host, 0x3e0, (1 << 30));
++				/* AOSC off support */
++				pci_andl(host, 0x3f0, ~(1 << 31));
++
++			}
++		}
++	}
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE, NOT_TO_RAM,
++		"Exit %s, RTD3 enable:%x\n", __func__, rtd3_en);
++	return rtd3_en;
++
++}
++
++/*
++ *
++ * Function Name: hostven_d3_mode_sel
++ *
++ * Abstract:
++ *
++ *			Select the D3 work mode. D3 work mode: start-up mode(2'b11),
++ *			RTD3 cold with external FET (2'b00),
++ *			RTD3 cold with internal FET (2'b01), D3 silence (2'b10).
++ *
++ *
++ *
++ * Input:
++ *
++ *			host [in]: Points to the host structure.
++ *       d3_submode [out]: the d3 silence sub mode.
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			The D3 work mode value.
++ *
++ * Notes:
++ *
++ */
++u32 hostven_d3_mode_sel(sd_host_t *host, u32 *d3_submode)
++{
++	u32 d3_mode = 0;
++	cfg_psd_mode_t rtd3_setting = host->cfg->feature_item.psd_mode;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++	if ((host->chip_type == CHIP_SEAEAGLE2) || (host->chip_type == CHIP_GG8)
++	    || (host->chip_type == CHIP_ALBATROSS)) {
++		if (rtd3_setting.rtd3_ctrl_mode) {
++			/* d3_mode = rtd3_setting.d3_work_mode_sel; */
++			pci_andl(host, 0x3f0, ~(3 << 28));
++			pci_orl(host, 0x3f0, (d3_mode & 3) << 28);
++			pci_andl(host, 0x3f0, ~(1 << 26));
++			pci_orl(host, 0x3f0,
++				(rtd3_setting.d3silence_submode_sel << 26));
++			*d3_submode = rtd3_setting.d3silence_submode_sel;
++
++		} else {
++			d3_mode = (pci_readl(host, 0x3f0) >> 28) & 3;
++			*d3_submode = (pci_readl(host, 0x3f0) >> 26) & 1;
++		}
++	}
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE, NOT_TO_RAM,
++		"Exit %s, D3 mode:%x\n", __func__, d3_mode);
++	return d3_mode;
++}
++
++/*
++ *
++ * Function Name: hostven_pm_mode_cfg
++ *
++ * Abstract:
++ *
++ *			host vendor pm mode configure feature
++ *
++ *
++ *
++ * Input:
++ *
++ *			host [in]: Points to the host structure.
++ *			pm_state_t *pm [in/out]: update pm state config.
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			null
++ *
++ * Notes:
++ *
++ */
++
++void hostven_pm_mode_cfg(sd_host_t *host, pm_state_t *pm)
++{
++
++	switch (host->chip_type) {
++
++	case CHIP_SEAEAGLE2:
++	case CHIP_GG8:
++	case CHIP_ALBATROSS:
++		{
++#define D3_SILENCE_WORK_MODE	2
++#define D3_SILENCE_SUB_MODE2_EN	1
++			u32 d3_silc_sub = 0;
++
++			pm->d3_silc_en =
++				hostven_d3_mode_sel(host, &d3_silc_sub) == D3_SILENCE_WORK_MODE
++				? TRUE : FALSE;
++			pm->d3_silc_submode2_en =
++			    D3_SILENCE_SUB_MODE2_EN ==
++			    d3_silc_sub ? TRUE : FALSE;
++			if (pm->d3_silc_en && pm->d3_silc_submode2_en)
++				pm->rtd3_en = FALSE;
++		}
++		break;
++	case CHIP_SEABIRD:
++		{
++			u32 sub_chip_id;
++
++			sub_chip_id =
++			    ((host->device_id & 0x1) << 2) +
++			    ((pci_readl(host, 0x3e4) & 0xC0000000) >> 30);
++
++			switch (sub_chip_id) {
++			case 0x5:
++				host->ven_cap.pm.rtd3_hot = 1;
++				host->ven_cap.pm.rtd3_cold = 0;
++				host->ven_cap.pm.d3_silence = 1;
++				host->ven_cap.pm.l1_substate = 1;
++				host->ven_cap.pm.ltr = 1;
++				break;
++			case 0x3:
++				host->ven_cap.pm.rtd3_hot = 0;
++				host->ven_cap.pm.rtd3_cold = 0;
++				host->ven_cap.pm.d3_silence = 1;
++				host->ven_cap.pm.l1_substate = 0;
++				host->ven_cap.pm.ltr = 0;
++				break;
++			case 0x2:
++				host->ven_cap.pm.rtd3_hot = 0;
++				host->ven_cap.pm.rtd3_cold = 0;
++				host->ven_cap.pm.d3_silence = 0;
++				host->ven_cap.pm.l1_substate = 0;
++				host->ven_cap.pm.ltr = 0;
++				break;
++			case 0x000:
++			case 0x001:
++			case 0x4:
++			case 0x6:
++			case 0x7:
++			default:
++				host->ven_cap.pm.rtd3_hot = 1;
++				host->ven_cap.pm.rtd3_cold = 1;
++				host->ven_cap.pm.d3_silence = 1;
++				host->ven_cap.pm.l1_substate = 1;
++				host->ven_cap.pm.ltr = 1;
++			}
++			DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE, NOT_TO_RAM,
++				"subchipid is %x pm(%xh)\n", sub_chip_id,
++				host->ven_cap.pm);
++		}
++		{
++
++		}
++		break;
++	default:
++		break;
++	}
++
++}
++
++/*
++ *
++ * Function Name: hostven_main_power_ctrl
++ *
++ * Abstract:
++ *
++ *       Set the main power control for D3 silence sub mode 2.
++ *
++ *       D3Silence submode2 main power control source:
++ *       1'b0: Main power will be kept on.
++ *       1'b1: Main power control derives from D3Silence logic according to
++ *       entry and exit conditions.
++ *       Driver configures this bit when SeaEagle2 is idle and can be auto-power-off.
++ *       Default value is 1'b0.
++ *
++ *
++ *
++ * Input:
++ *
++ *			host [in]: Points to the host structure.
++ *       is_keep_on [in]: The main power is kept on or not.
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			The D3 work mode value.
++ *
++ * Notes:
++ *
++ */
++void hostven_main_power_ctrl(sd_host_t *host, bool is_keep_on)
++{
++	bht_dev_ext_t *pdev_ext = (bht_dev_ext_t *) host->pdx;
++	u16 regval;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE, NOT_TO_RAM,
++		"Enter %s is_keep_on:%xh\n", __func__, is_keep_on);
++
++	switch (host->chip_type) {
++	case CHIP_SEAEAGLE2:
++	case CHIP_GG8:
++	case CHIP_ALBATROSS:
++		{
++			if (pdev_ext->pm_state.d3_silc_en
++			    && pdev_ext->pm_state.d3_silc_submode2_en) {
++				if (is_keep_on)
++					pci_andl(host, 0x3f0, ~(1 << 25));
++				else {
++					/* open the soft L0 request */
++					pci_orl(host, 0x3e4, 1 << 23);
++					/* Power off the chip */
++					pci_andl(host, 0x3f0, ~(1 << 25));
++					pci_orl(host, 0x3f0, 1 << 25);
++
++				}
++			}
++
++			/* clear VDD2/3 GPIO power control inverter setting */
++			regval = ven_readw(host, SDBAR1_GPIO_FUNC_GPIOCTRL_510);
++			regval &= ~(1 << 7 | 1 << 15);
++			ven_writew(host, SDBAR1_GPIO_FUNC_GPIOCTRL_510, regval);
++		}
++		break;
++	case CHIP_SEABIRD:
++		{
++			if (pdev_ext->pm_state.d3_silc_en) {
++				if (is_keep_on) {
++					pci_orl(host, 0x3e4, 0x40000);
++					pci_orl(host, 0x3e0, 0x80000000);
++					pci_orl(host, 0x3e0, 0x40000000);
++					pci_orl(host, 0xD8, 0x240);
++
++				} else {
++					/* power off chip */
++					pci_orl(host, 0x3e4, 0x40000);
++					pci_orl(host, 0x3e0, 0x80000000);
++					pci_andl(host, 0xD8, (~0x240));
++					pci_andl(host, 0x3e0, (~0x40000000));
++				}
++			}
++		}
++		break;
++	default:
++		break;
++	}
++	DbgInfo(MODULE_VEN_HOST, FEATURE_PM_TRACE, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++/*
++ * Function Name: hostven_d3_mode_sel_se2
++ *
++ * Abstract:
++ *
++ *			Select the D3 work mode. D3 work mode: start-up mode(2'b11),
++ *			RTD3 cold with external FET (2'b00),
++ *			RTD3 cold with internal FET (2'b01), D3 silence (2'b10).
++ *
++ * Input:
++ *
++ *			host [in]: Points to the host structure.
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			The D3 work mode value.
++ *
++ * Notes:
++ *
++ */
++bool hostven_hs400_host_chk(sd_host_t *host)
++{
++	u32 hs400_sel_mode = 0;
++	bool ted_ip_en = FALSE;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_CARD_INIT, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++	hs400_sel_mode = pci_readl(host, 0x320);
++	if (hs400_sel_mode & (1 << 5))
++		ted_ip_en = TRUE;
++
++	DbgInfo(MODULE_VEN_HOST, FEATURE_CARD_INIT, NOT_TO_RAM,
++		"Exit %s,TED IP enable:%x\n", __func__, ted_ip_en);
++	return ted_ip_en;
++}
++
++void hostven_hw_timer_start(sd_host_t *host, u32 time_ms)
++{
++	DbgInfo(MODULE_VEN_HOST, FEATURE_TIMER_TRACE, NOT_TO_RAM,
++		"Timer: %s time_ms=%d\n", __func__, time_ms);
++	time_ms *= 2000;
++	pci_orl(host, 0x3f0, (3 << 30));
++	ven_or32(host, 0x518, BIT7);
++
++	pci_andl(host, 0x414, 0xfc000000);
++	pci_orl(host, 0x414, time_ms);
++	pci_orl(host, 0x414, BIT26);
++	pci_orl(host, 0x520, BIT7);
++}
++
++void hostven_hw_timer_stop(sd_host_t *host)
++{
++	DbgInfo(MODULE_VEN_HOST, FEATURE_TIMER_TRACE, NOT_TO_RAM, "Timer: %s\n",
++		__func__);
++	pci_andl(host, 0x414, ~(BIT26));
++	ven_and32(host, 0x518, ~(BIT7));
++	pci_andl(host, 0x3f0, ~(3 << 30));
++	pci_andl(host, 0x520, ~(BIT7));
++}
++
++void hostven_set_pml0_requrest(sd_host_t *host, bool enable)
++{
++	DbgInfo(MODULE_VEN_HOST, FEATURE_TIMER_TRACE, NOT_TO_RAM, "%s %xh\n",
++		__func__, enable);
++	if (host->chip_type == CHIP_SEAEAGLE) {
++		if (enable == TRUE)
++			pci_andl(host, 0x3e0, ~(BIT19));
++		else
++			pci_orl(host, 0x3e0, (BIT19));
++	}
++}
+diff --git a/drivers/scsi/bht/host/hostven.h b/drivers/scsi/bht/host/hostven.h
+new file mode 100644
+index 000000000000..a0a72c27228c
+--- /dev/null
++++ b/drivers/scsi/bht/host/hostven.h
+@@ -0,0 +1,31 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (c) 2014 BHT Inc.
++ *
++ * File Name: hostven.h
++ *
++ * Abstract: Delcare for the host vendor APIs
++ *
++ * Version: 1.00
++ *
++ * Author: Yuxiang
++ *
++ * Environment:	OS Independent
++ *
++ * History:
++ *
++ * 9/16/2014		Creation	Yuxiang
++ */
++
++void hostven_transfer_init(sd_host_t *host, bool enable);
++void hostven_update_dmdn(sd_host_t *host, u32 dmdn);
++
++bool hostven_hs400_host_chk(sd_host_t *host);
++
++void hostven_drive_strength_cfg(sd_host_t *host);
++
++bool host_chk_ocb_occur(sd_host_t *host);
++void hostven_ocb_cfg(sd_host_t *host);
++void hostven_pinshare_cfg(sd_host_t *host);
++void hostven_cmd_low_cfg(sd_host_t *host);
++void hostven_switch_flow_cfg(sd_host_t *host);
+diff --git a/drivers/scsi/bht/host/irqhandler.c b/drivers/scsi/bht/host/irqhandler.c
+new file mode 100644
+index 000000000000..6a4aa0458b39
+--- /dev/null
++++ b/drivers/scsi/bht/host/irqhandler.c
+@@ -0,0 +1,742 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2014 BHT Inc.
++ *
++ * File Name: irqhandler.c
++ *
++ * Abstract: handle IRQ
++ *
++ * Version: 1.00
++ *
++ * Author: Chuanjin
++ *
++ * Environment:	OS Independent
++ *
++ * History:
++ *
++ * 9/2/2014		Creation	Chuanjin
++ */
++
++#include "../include/basic.h"
++#include "../include/hostapi.h"
++#include "../include/funcapi.h"
++#include "../include/cardapi.h"
++#include "hostreg.h"
++#include "../include/debug.h"
++#include "../include/hostvenapi.h"
++#include "../include/cmdhandler.h"
++
++void host_error_int_recovery_stage1(sd_host_t *host, u16 error_int_state,
++				    bool check);
++
++#define SDHCI_MAX_INT_RETRY 16
++
++/*
++ *	static void sw_int_issue(sd_host_t *host)
++ *	{
++ *		u32 reg = sdhci_readl(host, SDHCI_DRIVER_CTRL_REG);
++ *
++ *		reg = reg | (SDHCI_VENDOR_SW_INT_BIT);
++ *		sdhci_writel(host, SDHCI_DRIVER_CTRL_REG, reg);
++ *	}
++ */
++
++bool thread_exec_high_prio_job(bht_dev_ext_t *pdx, cb_soft_intr_t func,
++			       void *data)
++{
++	bool result = TRUE;
++#ifndef CFG_SCSIPORT_DRIVER
++	if (func)
++		func(data);
++	return result;
++#else
++	os_init_completion(pdx, &pdx->soft_irq.completion);
++	pdx->soft_irq.data = data;
++	pdx->soft_irq.cb_func = func;
++	pdx->soft_irq.enable = 1;
++	sw_int_issue(&pdx->host);
++	result =
++	    os_wait_for_completion(pdx, &pdx->soft_irq.completion,
++				   SOFT_INTR_TIMEOUT);
++	pdx->soft_irq.cb_func = NULL;
++	pdx->soft_irq.data = NULL;
++	pdx->soft_irq.enable = 0;
++	if (result == FALSE)
++		DbgErr("Software Intr is not ocurr\n");
++	return result;
++#endif
++
++}
++
++void irq_disable_sdcmd_int(sd_host_t *host)
++{
++	host_int_sig_update(host, SDHCI_INT_INSERT_REMOVE_CARD_BITS);
++	if (host->uhs2_flag)
++		host_uhs2_err_sig_update(host, 0);
++}
++
++void send_req_complete_evt(sd_host_t *host, void *pdx)
++{
++	host_cmd_req_t *req = host->cmd_req;
++	sd_command_t *sd_cmd = NULL;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	if (req != NULL)
++		sd_cmd = req->private;
++	if (sd_cmd == NULL) {
++		DbgErr("sd_cmd is NULL at send req complete evt!\n");
++		goto exit;
++	}
++
++	if (sd_cmd->err.error_code == 0) {
++		if (req->cb_req_complete)
++			req->cb_req_complete(pdx, &sd_cmd->err);
++	}
++	irq_disable_sdcmd_int(host);
++	os_finish_completion(pdx, &req->done);
++exit:
++	DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++
++}
++
++void insert_card_handle(bht_dev_ext_t *pdx)
++{
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT | FEATURE_INTR_TRACE, TO_RAM,
++		"Enter %s\n", __func__);
++
++	pdx->card.card_present = TRUE;
++	pdx->card.card_chg = TRUE;
++	pdx->scsi.scsi_eject = FALSE;
++
++	/* Keep chip power on. */
++	hostven_main_power_ctrl(&pdx->host, TRUE);
++
++#if CFG_OS_LINUX
++	os_set_event(&pdx->os, EVENT_CARD_CHG);
++#endif
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT | FEATURE_INTR_TRACE, TO_RAM,
++		"Exit %s\n", __func__);
++}
++
++void remove_card_handle(bht_dev_ext_t *pdx)
++{
++
++	u32 regval;
++	sd_host_t *host = &pdx->host;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT | FEATURE_INTR_TRACE, TO_RAM,
++		"Enter %s\n", __func__);
++
++	if (shift_bit_func_enable(&pdx->host))
++		set_pattern_value(&pdx->host, 0x00);
++	if (host->cfg->card_item.sd7_sdmode_switch_control.sd70_trail_run) {
++		regval = pci_readl(host, 0x444);
++		regval |= (1 << 11);
++		pci_writel(host, 0x444, regval);
++	} else {
++		regval = pci_readl(host, 0x444);
++		regval &= (~(1 << 11));
++		pci_writel(host, 0x444, regval);
++	}
++
++	pdx->card.card_present = FALSE;
++	pdx->scsi.scsi_eject = FALSE;
++	card_stuct_uinit(&pdx->card);
++
++#if CFG_OS_LINUX
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT | FEATURE_INTR_TRACE, TO_RAM,
++		"set event\n");
++
++	os_set_event(&pdx->os, EVENT_CARD_CHG);
++#else
++	os_set_event(pdx, &pdx->os, EVENT_TASK_OCCUR, TASK_CARD_CHG);
++#endif
++	/* add for driver controlled UHS2 VDD2 power off when card remove */
++	host_uhs2_clear(&pdx->host, TRUE);
++	hostven_main_power_ctrl(&pdx->host, FALSE);
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_CARD_INIT | FEATURE_INTR_TRACE, TO_RAM,
++		"Exit %s\n", __func__);
++}
++
++void sw_int_clear(sd_host_t *host)
++{
++	u32 reg = sdhci_readl(host, SDHCI_DRIVER_CTRL_REG);
++
++	reg = reg & (~SDHCI_VENDOR_SW_INT_BIT);
++	sdhci_writel(host, SDHCI_DRIVER_CTRL_REG, reg);
++}
++
++bool sw_int_occur(sd_host_t *host)
++{
++	u32 reg = sdhci_readl(host, SDHCI_DRIVER_CTRL_REG);
++
++	if (reg & SDHCI_VENDOR_SW_INT_BIT)
++		return TRUE;
++	else
++		return FALSE;
++}
++
++void host_chk_ocb_occur(sd_host_t *host)
++{
++	u32 ocb_status = 0;
++
++	bht_dev_ext_t *pdx = (bht_dev_ext_t *) (host->pdx);
++
++	if (host->chip_type == CHIP_ALBATROSS)
++		return;
++
++	ocb_status = sdhci_readl(host, SDHCI_DRIVER_CTRL_REG);
++	DbgInfo(MODULE_SD_HOST, FEATURE_FUNC_TRACE, NOT_TO_RAM,
++		"Enter %s, ocb status =0x%08x\n", __func__, ocb_status);
++	if (ocb_status & SDHCI_OCB_FET_INT_ACTIVE) {
++		DbgErr("OCB FET is active!\n");
++
++		host_cmddat_line_reset(host);
++		host_int_dis_sig_all(host, FALSE);
++		host_poweroff(host, CARD_ERROR);
++
++		pdx->card.card_present = FALSE;
++		card_stuct_uinit(&pdx->card);
++
++		/* host 0x1c0 [22] */
++		if ((ocb_status & SDHCI_OCB_FET_INT_DENOUNCE) !=
++		    SDHCI_OCB_FET_INT_DENOUNCE) {
++			ocb_status &= ~SDHCI_OCB_FET_INT_ACTIVE;
++			ocb_status |= SDHCI_OCB_FET_INT_DENOUNCE;
++			sdhci_writel(host, SDHCI_DRIVER_CTRL_REG, ocb_status);
++		}
++
++		/* clear 0x1c0 [5] */
++		if (host->cfg->host_item.test_ocb_ctrl.int_check_en == 0) {
++			ocb_status &= ~SDHCI_OCB_FET_INT_ACTIVE;
++			ocb_status &= ~SDHCI_OCB_INT_MASK;
++			sdhci_writel(host, SDHCI_DRIVER_CTRL_REG, ocb_status);
++		} else {
++			ocb_status &= ~SDHCI_OCB_FET_INT_ACTIVE;
++			ocb_status |= SDHCI_OCB_INT_MASK;
++			sdhci_writel(host, SDHCI_DRIVER_CTRL_REG, ocb_status);
++		}
++
++	}
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_FUNC_TRACE, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++}
++
++/*
++ * model:
++ * 1. support async mode or sync with binding different evt(last one for ADMA3).
++ * 2. list all need complete SRB.
++ */
++
++void sw_int_handle(bht_dev_ext_t *pdx)
++{
++	cb_soft_intr_t func = pdx->soft_irq.cb_func;
++	void *data = pdx->soft_irq.data;
++
++	if (pdx->soft_irq.enable) {
++		if (func)
++			func(data);
++	}
++}
++
++void cb_handle(u16 *wait_flag, u16 clr_bit, s32 cb_ret, bool *hascmd,
++	       bht_dev_ext_t *pdx)
++{
++	sd_host_t *host = &pdx->host;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE, NOT_TO_RAM,
++		"Enter %s wait_flag=%xh,clr_bit=%xh,cb_ret=%xh,hascmd=%x\n",
++		__func__, wait_flag, clr_bit, cb_ret, *hascmd);
++	switch (cb_ret) {
++	case INTR_CB_ERR:
++		/* callback must set error condition flag */
++		*wait_flag = 0;
++		break;
++	case INTR_CB_OK:
++		(*wait_flag) &= clr_bit;
++		break;
++	case INTR_CB_NOEND:
++	default:
++		break;
++	}
++	if (*wait_flag == 0) {
++		send_req_complete_evt(host, pdx);
++		*hascmd = FALSE;
++	}
++	DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE, NOT_TO_RAM,
++		"Exit %s hascmd=%x\n", __func__, *hascmd);
++}
++
++bool device_power_enter_non_D0(void *param)
++{
++	bht_dev_ext_t *pdx = (bht_dev_ext_t *) param;
++
++	if (pdx->pm_state.rtd3_entered ||
++	    pdx->pm_state.s3s4_entered ||
++	    pdx->pm_state.s5_entered || pdx->pm_state.warm_boot_entered)
++		return TRUE;
++	else
++		return FALSE;
++}
++
++bool sdhci_irq(void *param)
++{
++	bht_dev_ext_t *pdx = (bht_dev_ext_t *) param;
++	u32 int_status = 0;
++	bool ret = TRUE;
++	sd_host_t *host = &pdx->host;
++	sd_card_t *card = &pdx->card;
++	host_cmd_req_t *req = host->cmd_req;
++	cfg_item_t *cfg = host->cfg;
++	sd_command_t *sd_cmd = NULL;
++	bool hascmd = TRUE;
++	s32 cb_ret = 0;
++	u32 out_of_range = 0;
++	u16 max_loops = SDHCI_MAX_INT_RETRY;
++	u32 hw_timer_intr = 0;
++	u32 regval;
++	u16 expected_range = 0;
++	u32 time_cnt_100us = 0;
++	bool card_insert_flag = 0;
++	bool gpio_interrupt = 0;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	if (host->chip_type == CHIP_GG8) {
++		if (host->cfg->card_item.sd7_sdmode_switch_control.switch_method_ctrl ==
++		    HW_DETEC_HW_SWITCH) {
++			DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE, NOT_TO_RAM,
++				"Hardware\n");
++
++			regval = sdhci_readl(host, 0x1e0);
++			if (regval & (1 << 16)) {
++				os_atomic_set(&host->clkreqn_status, 1);
++				sdhci_or16(host, 0x1e2, 0x01);
++				return TRUE;
++			} else if (regval & (1 << 17)) {
++				os_atomic_set(&host->clkreqn_status, 2);
++				sdhci_or16(host, 0x1e2, 0x02);
++				return TRUE;
++			}
++		}
++
++		regval = pci_readl(host, 0x51C);
++		if (regval & 0x2) {
++			regval |= 0x2;
++			pci_writel(host, 0x51C, regval);
++
++			regval = sdhci_readl(host, 0x3E);
++			if (regval & (1 << 8)) {
++				regval &= ~(1 << 8);
++				sdhci_writel(host, 0x3E, regval);
++			}
++			card->sw_ctrl_swicth_to_express = TRUE;
++
++			/* turn off VDD2/VDD1 */
++			host_set_vddx_power(host, VDD2, POWER_OFF);
++			host_set_vddx_power(host, VDD1, POWER_OFF);
++
++			card_stuct_uinit(&pdx->card);
++
++#if CFG_OS_LINUX
++			os_set_event(&pdx->os, EVENT_CARD_CHG);
++#endif
++
++			card->state = CARD_STATE_POWEROFF;
++			return TRUE;
++		}
++
++		/* check PCIe reference clock detection timeout status */
++		if (sdhci_readl(host, 0x1E0) & BIT15) {
++			DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT,
++				NOT_TO_RAM,
++				"PCIe reference clock detection timeout\n");
++
++			/* Clear interrupt */
++			sdhci_or16(host, 0x1E0, BIT15);
++
++			if ((cfg->feature_item.auto_detect_refclk_counter_range_ctl.enable
++				== 0) ||
++			    ((cfg->feature_item.auto_detect_refclk_counter_range_ctl.enable
++				== 1) &&
++				(cfg->feature_item.auto_detect_refclk_counter_range_ctl.req_refclkcnt_minmax_source_sel
++				== 0))) {
++				/* set refclk_cnt_range_detect_soft_reset */
++				pci_orw(host, 0x462, BIT14);
++				DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT,
++					NOT_TO_RAM,
++					"Start auto detect refclk counter range\n");
++
++				/* Polling refclk_cnt_range_detect_done */
++				time_cnt_100us = 0;
++				while (0 == (pci_readl(host, 0x460) & BIT31)) {
++					if (time_cnt_100us >=
++					    ADJUST_EXPEXTED_RANGE_TIMEOUT_COUNT) {
++						DbgInfo(MODULE_VEN_HOST,
++							FEATURE_DRIVER_INIT,
++							NOT_TO_RAM,
++							"Auto detect expected range timeout\n");
++						return ret;
++					}
++					os_udelay(100);
++					time_cnt_100us++;
++				}
++
++				expected_range = pci_readw(host, 0x460);
++				DbgInfo(MODULE_VEN_HOST, FEATURE_DRIVER_INIT,
++					NOT_TO_RAM,
++					"Software invoked Auto detect refclk counter range done, range min %#x , max %#x\n",
++					(expected_range >> 8),
++					(expected_range & 0xFF));
++			}
++		}
++	}
++
++	if (HW_TIMER_CFG == TRUE) {
++		hw_timer_intr = pci_readl(host, 0x51c) & BIT7;
++		if (hw_timer_intr & BIT7)
++			ven_writel(host, 0x51c, BIT7);
++	}
++
++	int_status = sdhci_readl(host, SDHCI_INT_STATUS);
++
++	if (shift_bit_func_enable(host)) {
++		if (ven_readl(host, 0x51c) & (1 << 2))
++			gpio_interrupt = TRUE;
++	}
++
++int_again:
++	if (((!int_status) || (int_status == 0xffffffff))
++	    && (hw_timer_intr == 0) && (gpio_interrupt == FALSE)) {
++		if (int_status == 0xFFFFFFFF)
++			DbgErr("%s !!!int %x\n", __func__, int_status);
++		ret = FALSE;
++		goto out;
++	}
++	req = host->cmd_req;
++
++	if (req == NULL)
++		sd_cmd = NULL;
++	else
++		sd_cmd = (sd_command_t *) req->private;
++
++	if (req == NULL || sd_cmd == NULL)
++		hascmd = FALSE;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE, NOT_TO_RAM,
++		"%s int_status=0x%08X\n", __func__, int_status);
++	/* error int handle */
++	if (int_status & SDHCI_INT_ERROR) {
++		u16 error_status = (int_status >> 16);
++
++		/* clear error interrupt */
++		sdhci_writel(host, SDHCI_INT_STATUS, (int_status & 0xFFFF8000));
++
++		DbgErr("error intr=0x%04X hascmd=%d\n", error_status, hascmd);
++		switch (hascmd) {
++		case TRUE:
++			if ((sd_cmd->cmd_index == SD_CMD17 ||
++			     sd_cmd->cmd_index == SD_CMD18 ||
++			     sd_cmd->cmd_index == SD_CMD24 ||
++			     sd_cmd->cmd_index == SD_CMD25) &&
++			    (((error_status & SDHCI_INT_ACMD12ERR)
++			      && (RESP_ERR_TYPE_OUT_OF_RANGE &
++				  sdhci_readl(host, SDHCI_RESPONSE + 12)))
++			     || (!(error_status & SDHCI_INT_ACMD12ERR)
++				 && (RESP_ERR_TYPE_OUT_OF_RANGE &
++				     sdhci_readl(host, SDHCI_RESPONSE))))
++			    ) {
++				PrintMsg
++				    ("ignore out of range when use SD_CMD18 read %d sector, int_status=0x%08x\n",
++				     sd_cmd->argument, int_status);
++				int_status |=
++				    (SDHCI_INT_TRANSFER_COMP |
++				     SDHCI_INT_NORMAL_BITS);
++				int_status &= ~SDHCI_INT_ERROR;
++				int_status &=
++				    ~((SDHCI_INT_ADMA_ERROR |
++				       SDHCI_INT_ACMD12ERR |
++				       SDHCI_INT_RESP_ERROR) >> 16);
++				out_of_range = 1;
++				break;
++			}
++			fallthrough;
++		default:
++			if (host->uhs2_flag == TRUE) {
++				u32 uhs2_err_int_status = 0;
++
++				uhs2_err_int_status =
++				    sdhci_readl(host, SDHCI_UHS2_ERRINT_STS);
++				sdhci_writel(host, SDHCI_UHS2_ERRINT_STS,
++					     uhs2_err_int_status);
++				DbgErr
++				    ("error=0x%08x,UHS2 Error intr occur=0x%08X hascmd=%d\n",
++				     int_status, uhs2_err_int_status, hascmd);
++				if (hascmd) {
++					if (uhs2_err_int_status &
++					    req->int_flag_uhs2_err) {
++						sd_cmd->err.uhs2_err_reg =
++						    uhs2_err_int_status &
++						    req->int_flag_uhs2_err;
++						sd_cmd->err.error_code |=
++						    ERR_CODE_INTR_ERR;
++						if ((uhs2_err_int_status &
++						     SDHCI_UHS2_ERR_RESP)
++						    && sd_cmd->hw_resp_chk
++						    && req->cb_response) {
++							req->cb_response(card,
++									 req);
++						}
++						cb_handle(&(req->int_flag_wait),
++							  0, INTR_CB_ERR,
++							  &hascmd, pdx);
++					}
++				}
++			} else {
++				u16 err_status = (u16) (int_status >> 16);
++
++				DbgErr("error intr=0x%04X hascmd=%d\n",
++				       err_status, hascmd);
++				if (hascmd) {
++					if (err_status & req->int_flag_err) {
++						sd_cmd->err.legacy_err_reg =
++						    err_status &
++						    req->int_flag_err;
++						sd_cmd->err.error_code |=
++						    ERR_CODE_INTR_ERR;
++						if ((err_status &
++						     SDHCI_INT_RESP_ERROR)
++						    && req->cb_response
++						    && sd_cmd->hw_resp_chk) {
++							req->cb_response(card,
++									 req);
++						}
++						cb_handle(&(req->int_flag_wait),
++							  0, INTR_CB_ERR,
++							  &hascmd, pdx);
++					}
++				}
++				host_error_int_recovery_stage1(host, err_status,
++							       FALSE);
++			}
++			break;
++		}
++	}
++
++	/* If not in a SD command execute context, don't call sd cmd call back */
++	if (hascmd == FALSE)
++		goto next;
++
++	/* normal interrupt handle */
++	if (int_status & SDHCI_INT_NORMAL_BITS) {
++
++		if (int_status & req->int_flag_wait) {
++			u16 irq_wait = (u16) (int_status & req->int_flag_wait);
++
++			if (irq_wait & SDHCI_INT_CMD_COMP) {
++				/* clear interrupt status */
++				sdhci_writel(host, SDHCI_INT_STATUS,
++					     SDHCI_INT_CMD_COMP);
++				if (req->cb_response)
++					cb_ret = req->cb_response(card, req);
++				else
++					cb_ret = INTR_CB_OK;
++				sd_cmd->cmd_done = 1;
++				cb_handle(&(req->int_flag_wait),
++					  ~SDHCI_INT_CMD_COMP, cb_ret, &hascmd,
++					  pdx);
++			}
++			if (irq_wait & SDHCI_INT_TRANSFER_COMP) {
++				/* clear interrupt status */
++				sdhci_writel(host, SDHCI_INT_STATUS,
++					     SDHCI_INT_TRANSFER_COMP);
++				if (req->cb_trans_complete)
++					cb_ret = req->cb_trans_complete(card, req);
++				else
++					cb_ret = INTR_CB_OK;
++				cb_handle(&(req->int_flag_wait),
++					  ~SDHCI_INT_TRANSFER_COMP, cb_ret,
++					  &hascmd, pdx);
++
++			}
++			if (irq_wait & SDHCI_INT_BUFFER_READY_BITS) {
++				/* clear interrupt status */
++				sdhci_writel(host, SDHCI_INT_STATUS,
++					     SDHCI_INT_BUFFER_READY_BITS);
++				if (req->cb_buffer_ready)
++					cb_ret = req->cb_buffer_ready(card, req);
++				else
++					cb_ret = INTR_CB_OK;
++				cb_handle(&(req->int_flag_wait),
++					  ~SDHCI_INT_BUFFER_READY_BITS, cb_ret,
++					  &hascmd, pdx);
++			}
++			if (irq_wait & SDHCI_INT_DMA_END) {
++				/* clear interrupt status */
++				sdhci_writel(host, SDHCI_INT_STATUS,
++					     SDHCI_INT_DMA_END);
++				if (req->cb_boundary)
++					cb_ret = req->cb_boundary(card, req);
++				else
++					cb_ret = INTR_CB_OK;
++
++				/* avoid wrongly clear DMA int wait flag for ddr200 workaround  */
++				if (sd_cmd != NULL
++				    && sd_cmd->gg8_ddr200_workaround == 0)
++					cb_handle(&(req->int_flag_wait),
++						  ~SDHCI_INT_DMA_END, cb_ret,
++						  &hascmd, pdx);
++				else if (sd_cmd != NULL)
++					sd_cmd->gg8_ddr200_workaround = 0;
++			}
++
++		}
++
++	}
++
++next:
++	/* insert or remove card handle */
++	if (device_power_enter_non_D0(param) == FALSE) {
++
++		if (shift_bit_func_enable(host)) {
++			/* if (ven_readl(host, 0x51c) & (1 << 2)) */
++			if (gpio_interrupt == TRUE) {
++				/* clear interrupt status */
++				ven_or16(host, 0x51c, (1 << 2));
++
++				regval = ven_readl(host, 0x510);
++
++				if (!(regval & (1 << 6)))
++					card_insert_flag = TRUE;
++				else if (regval & (1 << 6))
++					card_insert_flag = FALSE;
++			}
++
++		} else {
++			if (int_status & SDHCI_INT_CARD_INSERT) {
++				card_insert_flag = TRUE;
++				/* clear interrupt status */
++				sdhci_writel(host, SDHCI_INT_STATUS,
++					     SDHCI_INT_CARD_INSERT);
++			} else if (int_status & SDHCI_INT_CARD_REMOVE) {
++				card_insert_flag = FALSE;
++				/* clear interrupt status */
++				sdhci_writel(host, SDHCI_INT_STATUS,
++					     SDHCI_INT_CARD_REMOVE);
++			}
++
++		}
++
++		if ((gpio_interrupt && shift_bit_func_enable(host))
++		    || (!shift_bit_func_enable(host)
++			&& (int_status & SDHCI_INT_CARD_INSERT))
++		    || (!shift_bit_func_enable(host)
++			&& (int_status & SDHCI_INT_CARD_REMOVE))) {
++			if (card_insert_flag) {
++				pdx->scsi_init_flag = 0;
++				insert_card_handle(pdx);
++				/* fixed uhs1 issue#120 */
++				pdx->card.cmd_low_reset_flag = FALSE;
++			} else {
++				if (hascmd) {
++					if (req->int_flag_wait) {
++						sd_cmd->err.error_code |=
++						    ERR_CODE_NO_CARD;
++						cb_handle(&(req->int_flag_wait),
++							  0, INTR_CB_ERR,
++							  &hascmd, pdx);
++					}
++				}
++				remove_card_handle(pdx);
++			}
++		}
++
++	}
++#if (0)
++	/* ptest */
++	if (hascmd && req) {
++		if (req->int_flag_wait == 0)
++			goto out;
++	}
++#endif
++	int_status = sdhci_readl(host, SDHCI_INT_STATUS);
++
++	if (device_power_enter_non_D0(param))
++		int_status &=
++		    ~(SDHCI_INT_ROC_BITS | SDHCI_INT_CARD_INSERT |
++		      SDHCI_INT_CARD_REMOVE);
++	else
++		int_status &= ~(SDHCI_INT_ROC_BITS);
++	if (HW_TIMER_CFG == TRUE) {
++		if (hw_timer_intr & BIT7)
++			func_timer_callback(pdx);
++
++		hw_timer_intr = pci_readl(host, 0x51c) & BIT7;
++
++		if (hw_timer_intr & BIT7)
++			ven_writel(host, 0x51c, BIT7);
++	}
++
++	if (host->dump_mode)
++		goto out;
++
++	if ((int_status || hw_timer_intr) && --max_loops)
++		goto int_again;
++
++out:
++
++	if (host->cfg->host_item.test_ocb_ctrl.int_check_en)
++		host_chk_ocb_occur(host);
++	DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE, NOT_TO_RAM,
++		"Exit %s ret=%x\n", __func__, ret);
++	return ret;
++}
++
++bool irq_poll_cmd_done(bht_dev_ext_t *pdx, completion_t *p, s32 timeout_ms)
++{
++	bool ret = FALSE;
++	sd_host_t *host = &pdx->host;
++	sd_card_t *card = &pdx->card;
++	host_cmd_req_t *req = host->cmd_req;
++	sd_command_t *sd_cmd = NULL;
++	/* in order sdhci_irq need some time so just multiple 400 */
++	u32 timeout = timeout_ms * 400;
++
++	DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	if (req == NULL)
++		sd_cmd = NULL;
++	else
++		sd_cmd = (sd_command_t *) req->private;
++
++	if (req == NULL || sd_cmd == NULL) {
++		DbgErr("no command need do poll wait\n");
++		goto exit;
++	}
++
++	while (timeout > 0) {
++		ret = sdhci_irq(pdx);
++		if (ret == FALSE || card->card_present == FALSE)
++			goto exit;
++
++		if (req->int_flag_wait == 0) {
++			ret = TRUE;
++			break;
++		}
++		timeout--;
++		os_udelay(1);
++	}
++
++exit:
++	DbgInfo(MODULE_SD_HOST, FEATURE_INTR_TRACE, NOT_TO_RAM,
++		"Exit %s ret=%x\n", __func__, ret);
++	return ret;
++}
+diff --git a/drivers/scsi/bht/host/transhandler.c b/drivers/scsi/bht/host/transhandler.c
+new file mode 100644
+index 000000000000..7f26b7607128
+--- /dev/null
++++ b/drivers/scsi/bht/host/transhandler.c
+@@ -0,0 +1,1730 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2014 BHT Inc.
++ *
++ * File Name: transhandler.c
++ *
++ * Abstract: Handler for interrupt and dma buffer manager apis
++ *
++ * Version: 1.00
++ *
++ * Author: Peter.Guo
++ *
++ * Environment:	OS Independent
++ *
++ * History:
++ *
++ * 9/5/2014		Creation	Peter.guo
++ */
++
++#include "../include/basic.h"
++#include "../include/debug.h"
++#include "../include/hostapi.h"
++#include "../include/cmdhandler.h"
++#include "../host/hostreg.h"
++#include "../include/util.h"
++
++/*
++ *
++ * Function Name: gen_adma2_desc_low_32bit
++ *
++ * Abstract:
++ *
++ *			generate adma2 descriptor table low 32bit(data length & attribution)
++ *
++ * Input:
++ *
++ *			u32 len [in]: data length value
++ *			u32 attr[in]: descriptor attribution value
++ *
++ * Output:
++ *
++ *			u32 [out]: the composite value for ADMA2 descriptor low 32bit value
++ *
++ * Return value:
++ *
++ *			None
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++#define ADMA2_16BIT_MASK 0x0ffff
++#define ADMA2_10BIT_MASK 0x003ff
++
++#define  gen_adma2_desc_low_32bit(len, attr) (((len & ADMA2_16BIT_MASK) << 16) | \
++	(((len >> 16) & ADMA2_10BIT_MASK) << 6) | attr)
++
++bool dma_api_build_adma_io_add_nop(bht_dev_ext_t *pdx, sd_data_t *sd_data,
++				   sg_list_t *sg, u32 sg_len);
++bool dma_api_build_adma_sdma_io_add_nop(bht_dev_ext_t *pdx,
++					sd_data_t *sd_data);
++
++/*
++ *
++ * Function Name: end_adma2_desc_line
++ *
++ * Abstract:
++ *
++ *			end 32bit DAM address adma2 descriptor table
++ *
++ * Input:
++ *
++ *			u32 *pTable [in]: Pointer to the descriptor table
++ *
++ * Output:
++ *
++ *			None.
++ *
++ * Return value:
++ *
++ *			None
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++static void adma2_end_desc_line(u8 *ptb, bool dma_64bit)
++{
++	if (dma_64bit == TRUE)
++		ptb = ptb - ADMA2_128BIT_ITEM_LEN;
++	else
++		ptb = ptb - ADMA2_ITEM_LEN;
++
++	*ptb |= ADMA2_DESC_END_BIT;
++}
++
++/*
++ *
++ * Function Name: adma2_clear_end_flag
++ *
++ * Abstract:
++ *
++ *			clear DAM address adma2 descriptor end flag table for link ADMA2 table
++ *
++ * Input:
++ *
++ *			u32 *pTable [in]: Pointer to the descriptor table
++ *
++ * Output:
++ *
++ *			None.
++ *
++ * Return value:
++ *
++ *			None
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++static void adma2_clear_end_flag(u8 *ptb, bool dma_64bit)
++{
++	if (dma_64bit == TRUE)
++		ptb = ptb - ADMA2_128BIT_ITEM_LEN;
++	else
++		ptb = ptb - ADMA2_ITEM_LEN;
++
++	*ptb &= ~(ADMA2_DESC_END_BIT);
++
++}
++
++bool link_adma2_desc(u8 *pdesc, phy_addr_t *pa, bool dma_64bit)
++{
++
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++	adma2_clear_end_flag(pdesc, dma_64bit);
++
++	*((u32 *) (pdesc)) = gen_adma2_desc_low_32bit(0, ADMA2_DESC_LINK_VALID);
++	pdesc += 4;
++	*((u32 *) (pdesc)) = os_get_phy_addr32l(*pa);
++	if (dma_64bit == TRUE)
++		*((u32 *) (pdesc + 4)) = os_get_phy_addr32h(*pa);
++	return TRUE;
++}
++
++/*
++ *
++ * Function Name: build_adma2_desc_line
++ *
++ * Abstract:
++ *
++ *			build 32bit address adma2 descriptor lines for one SGlist item.
++ *
++ * Input:
++ *
++ *			u32 *pTable [in]: descripter table pointer
++ *			u32  len_limit [in]: data  length limitation
++ *			u32 itemTotalLen [in]: one SGlist item total length
++ *			u32 itemAddrHdr [in]: one SGlist item physical address
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			the adma2 descriptor line number for one SGlist item.
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++static int build_adma2_desc_line(u32 *pTable, u32 len_limit, u32 itemTotalLen,
++				 u64 itemAddrHdr, bool dma_64bit)
++{
++	int adma2_line_number = 0;
++	u64 *p64 = 0;
++
++	if (itemTotalLen == 0) {
++		DbgErr("%s sg len 0\n", __func__);
 +		return 0;
 +	}
 +
-+	index = (u16) FREQ_UHS2M_START_INDEX + card->degrade_freq_level;
-+	if (index > (u16) FREQ_UHS2M_DEGRE_INDEX)
-+		index = (u16) FREQ_UHS2M_DEGRE_INDEX;
-+	value = host->cfg->dmdn_tbl[index];
-+	DbgInfo(MODULE_UHS2_CARD, FEATURE_CARD_INIT, NOT_TO_RAM,
-+		"Get Uhs2 Dmdn=0x%08X\n", value);
++	if (itemTotalLen > ADMA2_16BIT_LEN_SIZE) {
++		DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM,
++			"SGlist item pa over 64KB\n");
++	}
 +
-+	return value;
++	if (itemTotalLen < len_limit) {
++		*(pTable++) =
++		    gen_adma2_desc_low_32bit(itemTotalLen,
++					     ADMA2_DESC_TRAN_VALID);
++		if (dma_64bit == TRUE) {
++			p64 = (u64 *) pTable;
++			*p64 = itemAddrHdr;
++		} else
++			*(pTable++) = (u32) itemAddrHdr;
++		adma2_line_number++;
++	} else {
++		u32 j = 0;
++
++		do {
++			itemTotalLen -= len_limit;
++			*(pTable++) =
++			    gen_adma2_desc_low_32bit(0, ADMA2_DESC_TRAN_VALID);
++			if (dma_64bit == TRUE) {
++				p64 = (u64 *) pTable;
++				*p64 =
++				    itemAddrHdr + ((u64) j * (u64) (len_limit));
++				pTable += 3;
++			} else
++				*(pTable++) =
++				    (u32) itemAddrHdr + (j) * (len_limit);
++
++			adma2_line_number++;
++			j++;
++		} while (itemTotalLen >= len_limit);
++
++		/* left small segment desc line */
++		if (itemTotalLen) {
++			*(pTable++) =
++			    gen_adma2_desc_low_32bit(itemTotalLen,
++						     ADMA2_DESC_TRAN_VALID);
++
++			if (dma_64bit == TRUE) {
++				p64 = (u64 *) pTable;
++				*p64 =
++				    itemAddrHdr + ((u64) j * (u64) (len_limit));
++			} else
++				*(pTable++) =
++				    (u32) itemAddrHdr + (j) * (len_limit);
++
++			adma2_line_number++;
++		}
++	}
++
++	return adma2_line_number;
++}
++
++dma_desc_buf_t build_adma2_desc_nop(sg_list_t *sg, u32 sg_len, byte *desc_buf,
++				    u32 desc_len, bool dma_64bit,
++				    bool data_26bit)
++{
++	dma_desc_buf_t dma = { 0 };
++	sg_list_t *pAddList = 0;
++	u32 *pTable = 0;
++	u32 i = 0;
++	/* counter for ADMA2 line number */
++	int adma2_line_number = 0;
++	u32 adma2_data_length = 0;
++	u32 max_adma2_tb_len = 0;
++	u32 adma2_item_len = 0;
++	u64 *p64 = 0;
++
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM,
++		"Enter %s sglen=%xh 64dma=%x, 26dat=%x\n", __func__, sg_len,
++		dma_64bit, data_26bit);
++	/* 1. Init variables */
++	pAddList = sg;
++	pTable = (u32 *) (desc_buf);
++
++	/* 2. check parameters */
++	if (sg_len == 0 || desc_buf == NULL || sg == NULL) {
++		DbgErr("%s invalid %d %p %p\n", __func__, sg_len, desc_buf,
++		       sg);
++		dma.va = 0;
++		return dma;
++	}
++	/* 3. config dma 64bit */
++	if (dma_64bit == TRUE) {
++		adma2_item_len = ADMA2_128BIT_ITEM_LEN;
++		max_adma2_tb_len = MAX_ADMA2_128BIT_TABLE_LEN;
++	} else {
++		adma2_item_len = ADMA2_ITEM_LEN;
++		max_adma2_tb_len = MAX_ADMA2_TABLE_LEN;
++	}
++
++	if (desc_len < max_adma2_tb_len) {
++		DbgErr("%s no enough desc_len(%d)%d\n", __func__, desc_len,
++		       max_adma2_tb_len);
++		dma.va = 0;
++		return dma;
++	}
++
++	/* 3. clear buffer */
++	os_memset(pTable, 0, max_adma2_tb_len);
++
++	/* 4. select data length limit */
++	if (data_26bit == TRUE)
++		adma2_data_length = ADMA2_26BIT_LEN_SIZE;
++	else
++		adma2_data_length = ADMA2_16BIT_LEN_SIZE;
++	/* 5.1. generate adma2 descriptor NOP lines */
++	{
++		*(pTable++) = gen_adma2_desc_low_32bit(0, ADMA2_DESC_INT_VALID);
++		if (dma_64bit == TRUE) {
++			p64 = (u64 *) pTable;
++			*p64 = 0;
++			pTable += 3;
++		} else
++			*(pTable++) = 0;
++		adma2_line_number++;
++	}
++
++	/* 5.2. generate adma2 descriptor lines */
++	for (i = 0; i < sg_len; i++) {
++		int line_cnt = 0;
++
++		line_cnt =
++		    build_adma2_desc_line(pTable, adma2_data_length,
++					  pAddList[i].Length,
++					  pAddList[i].Address, dma_64bit);
++		pTable += (u32) ((u64) (adma2_item_len / 4) * (u64) line_cnt);
++		adma2_line_number += line_cnt;
++	}
++
++	/* 6. end table */
++	adma2_end_desc_line((u8 *) pTable, dma_64bit);
++
++	/* 7. update */
++	dma.va =
++	    desc_buf + (u32) ((u64) (adma2_line_number) * (u64) adma2_item_len);
++
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++
++	return dma;
++}
++
++/*
++ *
++ * Function Name: build_adma2_desc
++ *
++ * Abstract:
++ *
++ *			build 32bit address adma2 descriptor table for SGlist.
++ *
++ * Input:
++ *
++ *			sg_list_t *sg [in]: pointer the SGlist
++ *			u32 sg_len [in]: the item number of  the SGlist
++ *			byte *desc_buf [in]: the buffer for ADMA2 descriptor generate
++ *			u32 desc_len [in]: the buffer length
++ *
++ * Output:
++ *
++ *			None
++ *
++ * Return value:
++ *
++ *			the adma2 descriptor line number for one SGlist item.
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++dma_desc_buf_t build_adma2_desc(sg_list_t *sg, u32 sg_len, byte *desc_buf,
++				u32 desc_len, bool dma_64bit, bool data_26bit)
++{
++	dma_desc_buf_t dma = { 0 };
++	sg_list_t *pAddList = 0;
++	u32 *pTable = 0;
++	u32 i = 0;
++	/* counter for ADMA2 line number */
++	int adma2_line_number = 0;
++	u32 adma2_data_length = 0;
++	u32 max_adma2_tb_len = 0;
++	u32 adma2_item_len = 0;
++
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM,
++		"Enter %s sglen=%xh 64dma=%x, 26dat=%x\n", __func__, sg_len,
++		dma_64bit, data_26bit);
++	/* 1. Init variables */
++	pAddList = sg;
++	pTable = (u32 *) (desc_buf);
++
++	/* 2. check parameters */
++	if (sg_len == 0 || desc_buf == NULL || sg == NULL) {
++		DbgErr("%s invalid %d %p %p\n", __func__, sg_len, desc_buf,
++		       sg);
++		dma.va = 0;
++		return dma;
++	}
++	/* 3. config dma 64bit */
++	if (dma_64bit == TRUE) {
++		adma2_item_len = ADMA2_128BIT_ITEM_LEN;
++		max_adma2_tb_len = MAX_ADMA2_128BIT_TABLE_LEN;
++	} else {
++		adma2_item_len = ADMA2_ITEM_LEN;
++		max_adma2_tb_len = MAX_ADMA2_TABLE_LEN;
++	}
++
++	if (desc_len < max_adma2_tb_len) {
++		DbgErr("%s no enough desc_len(%d)%d\n", __func__, desc_len,
++		       max_adma2_tb_len);
++		dma.va = 0;
++		return dma;
++	}
++
++	/* 3. clear buffer */
++	os_memset(pTable, 0, max_adma2_tb_len);
++	/* 4. select data length limit */
++	if (data_26bit == TRUE)
++		adma2_data_length = ADMA2_26BIT_LEN_SIZE;
++	else
++		adma2_data_length = ADMA2_16BIT_LEN_SIZE;
++	/* 5. generate adma2 descriptor lines */
++	for (i = 0; i < sg_len; i++) {
++		int line_cnt = 0;
++
++		line_cnt =
++		    build_adma2_desc_line(pTable, adma2_data_length,
++					  pAddList[i].Length,
++					  pAddList[i].Address, dma_64bit);
++		pTable += (u32) ((u64) (adma2_item_len / 4) * (u64) line_cnt);
++		adma2_line_number += line_cnt;
++	}
++
++	/* 6. end table */
++	adma2_end_desc_line((u8 *) pTable, dma_64bit);
++
++	/* 7. update */
++	dma.va =
++	    desc_buf + (u32) ((u64) (adma2_line_number) * (u64) adma2_item_len);
++
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++
++	return dma;
++}
++
++/*
++ *
++ * Function Name: update_adma2_inf_tb
++ *
++ * Abstract:
++ *
++ *			update  adma2 descriptor  table for infinite mode
++ *
++ * Input:
++ *
++ *			u8 *pdesc [in]: Pointer to the descriptor table
++ *			u8 **link_addr [in]: the previous adma2 table link address
++ *			phy_addr_t *pa [in]: the current adma2 table address
++ *
++ * Output:
++ *
++ *			u8 **link_addr [out]: the new adma2 table link address for
++ *			next infinite transfer.
++ *
++ * Return value:
++ *
++ *			None
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++bool update_adma2_inf_tb(u8 *pdesc, u8 **link_addr, phy_addr_t *pa,
++			 bool dma_64bit)
++{
++	u32 *ptb = 0;
++
++	/* 1.update link addr */
++	if (pa != NULL) {
++		*((u32 *) (*link_addr)) = os_get_phy_addr32l(*pa);
++		if (dma_64bit == TRUE)
++			*((u32 *) (*link_addr + 4)) = os_get_phy_addr32h(*pa);
++	}
++
++	adma2_clear_end_flag(pdesc, dma_64bit);
++	ptb = (u32 *) pdesc;
++	*(ptb++) = ADMA2_DESC_INT_VALID;
++	*(ptb++) = 0;
++	if (dma_64bit == TRUE) {
++		*(ptb++) = 0;
++		*(ptb++) = 0;
++	}
++	*(ptb++) = ADMA2_DESC_LINK_VALID;
++	/* 2. save new link addr */
++	(*link_addr) = (u8 *) ptb;
++	*(ptb++) = 0;
++	if (dma_64bit == TRUE) {
++		*(ptb++) = 0;
++		*(ptb++) = 0;
++	}
++	return TRUE;
++}
++
++/*
++ *
++ * Function Name: build_uhs1_cmd_desc
++ *
++ * Abstract:
++ *
++ *			build uhs1 card command descriptor table for ADMA3
++ *
++ * Input:
++ *
++ *			u8 *pdesc [in]: Pointer to the descriptor table
++ *			host_trans_reg_t *regs [in] : pointer to regs for build
++ *
++ * Output:
++ *
++ *
++ *
++ * Return value:
++ *
++ *			size of usage for build
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++static u32 build_uhs1_cmd_desc(u8 *pdesc, host_trans_reg_t *regs)
++{
++	u32 *ptb = (u32 *) pdesc;
++
++	*(ptb) = ADMA3_DESC_SD_VALID;
++	*(ptb + 1) = regs->block_cnt;
++	*(ptb + 2) = ADMA3_DESC_SD_VALID;
++	*(ptb + 3) = regs->block_size;
++
++	/* Set argument */
++	*(ptb + 4) = ADMA3_DESC_SD_VALID;
++	/* uhs1 use playload[0] for argument */
++	*(ptb + 5) = regs->payload[0];
++
++	/* data cmd */
++	*(ptb + 6) = ADMA3_DESC_SD_VALID;
++	*(ptb + 7) = regs->trans_mode;
++
++	return ADMA3_CMDDESC_ITEM_LENGTH * ADMA3_CMDDESC_ITEM_NUM_UHSI;
++}
++
++/*
++ *
++ * Function Name: build_uhs2_cmd_desc
++ *
++ * Abstract:
++ *
++ *			build uhs2 card command descriptor table for ADMA3
++ *
++ * Input:
++ *
++ *			u8 *pdesc [in]: Pointer to the descriptor table
++ *			host_trans_reg_t *regs [in] : pointer to regs for build
++ *
++ * Output:
++ *
++ *
++ *
++ * Return value:
++ *
++ *			size of usage for build
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++static u32 build_uhs2_cmd_desc(u8 *pdesc, host_trans_reg_t *regs)
++{
++	u32 *ptb = (u32 *) pdesc;
++
++	*ptb = ADMA3_DESC_UHS2_VALID;
++	*(ptb + 1) = regs->block_size;
++	*(ptb + 2) = ADMA3_DESC_UHS2_VALID;
++	*(ptb + 3) = regs->block_cnt;
++
++	*(ptb + 4) = ADMA3_DESC_UHS2_VALID;
++	/* header */
++	*(ptb + 5) = regs->payload[0];
++
++	*(ptb + 6) = ADMA3_DESC_UHS2_VALID;
++	/* argument */
++	*(ptb + 7) = regs->payload[1];
++
++	*(ptb + 8) = ADMA3_DESC_UHS2_VALID;
++	/* block cnt */
++	*(ptb + 9) = regs->payload[2];
++
++	*(ptb + 10) = ADMA3_DESC_UHS2_VALID;
++	*(ptb + 11) = regs->payload[3];
++	*(ptb + 12) = ADMA3_DESC_UHS2_VALID;
++	*(ptb + 13) = regs->payload[4];
++	*(ptb + 14) = ADMA3_DESC_UHS2_VALID;
++	*(ptb + 15) = regs->trans_mode;
++
++	return ADMA3_CMDDESC_ITEM_LENGTH * ADMA3_CMDDESC_ITEM_NUM_UHSII;
++}
++
++u32 build_card_cmd_desc(sd_card_t *card, u8 *desc, sd_command_t *cmd)
++{
++	u32 size = 0;
++
++	if (card->card_type == CARD_UHS2) {
++		byte i = 0;
++
++		for (i = 0; i < cmd->trans_reg_cnt; i++)
++			size += build_uhs2_cmd_desc(desc, &cmd->trans_reg[i]);
++
++		return size;
++	} else {
++		byte i = 0;
++
++		for (i = 0; i < cmd->trans_reg_cnt; i++)
++			size += build_uhs1_cmd_desc(desc, &cmd->trans_reg[i]);
++
++		return size;
++	}
++
++}
++
++/*
++ *
++ * Function Name: build_integrated_desc
++ *
++ * Abstract:
++ *
++ *			build integrated descriptor table for ADMA3
++ *
++ * Input:
++ *
++ *			u8 *desc [in]: Pointer to descriptor buffer
++ *			phy_addr_t *pa [in] : the physical address
++ *			bool dma_64bit [in] : 64bit dma address
++ *
++ * Output:
++ *
++ *			None.
++ *
++ * Return value:
++ *
++ *			TRUE: build ok
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++byte *build_integrated_desc(u8 *desc, phy_addr_t *pa, bool dma_64bit)
++{
++	u32 *ptb = (u32 *) desc;
++
++	*ptb = ADMA3_INTEGRATE_DESC_VALID;
++	*(ptb + 1) = os_get_phy_addr32l(*pa);
++	if (dma_64bit) {
++		*(ptb + 2) = os_get_phy_addr32h(*pa);
++		*(ptb + 3) = 0;
++		return (desc + ADMA3_INTEGRATEDDESC_128BIT_ITEM_LEN);
++	} else
++		return (desc + ADMA3_INTEGRATEDDESC_ITEM_LEN);
++}
++
++/*
++ *
++ * Function Name: adma3_end_integrated_tb
++ *
++ * Abstract:
++ *
++ *			end integrated descriptor table for ADMA3
++ *
++ * Input:
++ *
++ *			u8 *desc [in]: Pointer to descriptor buffer
++ *			bool dma_64bit [in] : 64bit dma address
++ *
++ * Output:
++ *
++ *			None.
++ *
++ * Return value:
++ *
++ *			TRUE: build ok
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++bool adma3_end_integrated_tb(u8 *desc, bool dma_64bit)
++{
++	u32 *ptb = 0;
++
++	if (dma_64bit)
++		desc = desc - ADMA3_INTEGRATEDDESC_128BIT_ITEM_LEN;
++	else
++		desc = desc - ADMA3_INTEGRATEDDESC_ITEM_LEN;
++	ptb = (u32 *) desc;
++	*ptb = (*ptb) | GENERAL_DESC_END_BIT;
++	return TRUE;
++}
++
++/*
++ *
++ * Function Name: get_sdma_boudary_size
++ *
++ * Abstract:
++ *
++ *			get sdma boundary size from config
++ *
++ * Input:
++ *
++ *			cfg_item_t *cfg [in]: Pointer to config
++ *
++ *
++ * Output:
++ *
++ *			None.
++ *
++ * Return value:
++ *
++ *			TRUE: byte size
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++u32 get_sdma_boudary_size(cfg_item_t *cfg)
++{
++	u32 len = 0;
++
++	len = cfg->host_item.test_sdma_boundary.value;
++	len = len * 1024;
++	return len;
++}
++
++/*
++ *
++ * Function Name: dma_align
++ *
++ * Abstract:
++ *
++ *			set dma buffer alignment
++ *
++ * Input:
++ *
++ *			dma_desc_buf_t *pdma [in]: Pointer to DMA buffer which for align
++ *			u32 align_size [in]: align byte size
++ *
++ * Output:
++ *
++ *			None.
++ *
++ * Return value:
++ *
++ *			TRUE: align ok
++ *			FALSE: align failed due to buffer to small to align
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++bool dma_align(dma_desc_buf_t *pdma, u32 align_size)
++{
++	u32 dmaAlignOffset = 0;
++	bool ret = FALSE;
++	/* align dma buffer */
++	dmaAlignOffset = os_get_phy_addr32l(pdma->pa) % align_size;
++	if (dmaAlignOffset) {
++		dmaAlignOffset = align_size - dmaAlignOffset;
++		if (resize_dma_buf(pdma, dmaAlignOffset) == FALSE) {
++			DbgErr("align DMA buf resize failed\n");
++			ret = FALSE;
++			goto exit;
++		}
++	}
++	ret = TRUE;
++exit:
++	return ret;
++}
++
++/*
++ *
++ * Function Name:  cmd_sdma_boundary
++ *
++ * Abstract:
++ *
++ *			This Function is used to handle sdma boundary interrupt callback
++ *
++ * Input:
++ *
++ *			void *card : pointer to card
++ *			void *host_request poineter to host_cmd_req_t
++ *
++ * Output:
++ *
++ *			None.
++ *
++ * Return value:
++ *
++ *			INTR_CB_OK: final DMA int for sdma
++ *			INTR_CB_NOEND: will get new DMA int
++ * Notes:
++ *			 so giving the routine another name requires you to modify the build tools.
++ * Caller:
++ *
++ *			test case:
++ *			1.user data 512B, DMA boundary size 4KB.
++ *			[no DMA int occur, so need transfer complete cb do copy]
++ *			2.user data 4KB, DMA boundary size 4KB.
++ *			[both DMA int & transfer complete occur]
++ *			3.user data 5KB, DMA boundary size 4KB.
++ *			[first DMA int occur, then transfer complete occur secondly.]
++ *			4.user data 12KB, DMA boundary size 4KB.
++ *			[first, second DMA int occur, then both DMA int &transfer cpl ocuur]
++ *			5.user data 13KB, DMA boundary size 4KB.
++ */
++u32 cmd_sdma_boundary(void *pcard, void *host_request)
++{
++	u32 ret = INTR_CB_OK;
++	sd_card_t *card = pcard;
++	sd_host_t *host = card->host;
++	host_cmd_req_t *req = host_request;
++	sd_command_t *sd_cmd = req->private;
++	sd_data_t *data = sd_cmd->data;
++	data_dma_mng_t *mgr = &data->data_mng;
++	u32 sdma_bd_len = get_sdma_boudary_size(host->cfg);
++	bool dma_64bit = host->bit64_enable ? TRUE : FALSE;
++	u32 min_size = 0;
++	u32 left = 0;
++	byte buhs2 = sd_cmd->uhs2_cmd;
++	/* u32 device_status; */
++
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++	if (mgr->offset >= mgr->total_bytess)
++		return INTR_CB_OK;
++
++	/* copy data */
++	left = mgr->total_bytess - mgr->offset;
++	min_size = os_min(sdma_bd_len, left);
++
++	if (data->dir == DATA_DIR_IN) {
++		os_memcpy(mgr->srb_buffer[0].buff + mgr->offset,
++			  mgr->driver_buff, min_size);
++		mgr->offset += min_size;
++		left = mgr->total_bytess - mgr->offset;
++	} else {
++		/* write case */
++		os_memcpy(mgr->driver_buff,
++			  mgr->srb_buffer[0].buff + mgr->offset, min_size);
++		left = mgr->total_bytess - mgr->offset;
++		mgr->offset += min_size;
++	}
++
++	/* update return value */
++	if (left >= sdma_bd_len) {
++		/* will get new DMA int */
++		ret = INTR_CB_NOEND;
++	} else
++		/* it's the last one DMA int */
++		ret = INTR_CB_OK;
++	/* update SDMA system address : for reuse same sdma buffer, so no need update sys_addr */
++	if (left > 0) {
++		if (buhs2 || host->sd_host4_enable) {
++			sdhci_writel(host, SDHCI_ADMA_ADDRESS,
++				     os_get_phy_addr32l(mgr->sys_addr));
++			if (dma_64bit)
++				sdhci_writel(host, SDHCI_ADMA_ADDRESSH,
++					     os_get_phy_addr32h(mgr->sys_addr));
++		} else
++			sdhci_writel(host, SDHCI_DMA_ADDRESS,
++				     os_get_phy_addr32l(mgr->sys_addr));
++	}
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM,
++		"Enter %s ret=%x ofs=%xh,tot=%xh\n", __func__, ret,
++		mgr->offset, mgr->total_bytess);
++	return ret;
++}
++
++/*
++ *
++ * Function Name: cmd_sdma_trans_done
++ *
++ * Abstract:
++ *
++ *			handle sdma transfer done.
++ *
++ * Input:
++ *
++ *			void *card : pointer to card
++ *			void *host_request poineter to host_cmd_req_t
++ *
++ * Output:
++ *
++ *			None.
++ *
++ * Return value:
++ *
++ *			INTR_CB_OK: align ok
++ *
++ * Notes:
++ *			clear DMA if transfer complete & data reach the size
++ * Caller:
++ *
++ */
++u32 cmd_sdma_trans_done(void *pcard, void *host_request)
++{
++	sd_card_t *card = pcard;
++	host_cmd_req_t *req = (host_cmd_req_t *) host_request;
++	sd_command_t *cmd = (sd_command_t *) req->private;
++	sd_data_t *data = cmd->data;
++	data_dma_mng_t *mgr = &data->data_mng;
++	u32 sdma_bd_len = get_sdma_boudary_size(card->host->cfg);
++	u32 left = 0;
++
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++	left = mgr->total_bytess - mgr->offset;
++	if (left > sdma_bd_len)
++		DbgErr("left data over boundary size\n");
++	if (left) {
++		if (data->dir == DATA_DIR_IN) {
++			/* copy last data */
++			os_memcpy(mgr->srb_buffer[0].buff + mgr->offset,
++				  mgr->driver_buff, left);
++		} else {
++			/* write case */
++			DbgErr("sdma trans done, but need copy\n");
++			os_memcpy(mgr->driver_buff,
++				  mgr->srb_buffer[0].buff + mgr->offset, left);
++		}
++	}
++	mgr->offset += left;
++	/* clear DMA if transfer complete & data reach size */
++	if (mgr->total_bytess <= mgr->offset) {
++		if (req->int_flag_wait & SDHCI_INT_DMA_END)
++			req->int_flag_wait &= ~SDHCI_INT_DMA_END;
++	}
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++
++	return INTR_CB_OK;
++}
++
++/*
++ * Function Name: cmd_adma2_inf_boundary
++ * Abstract: This Function is used to handle adma2 and adma2_sdma infinite boundary intr
++ *
++ * Input:
++ *			void *card : pointer to pcard
++ *			void *host_request poineter to host_cmd_req_t
++ *
++ *
++ * Return value:
++ *			0: means ok
++ *			others error
++ *
++ * Notes:
++ *
++ *        so giving the routine another name requires you to modify the build tools.
++ */
++u32 cmd_adma2_inf_boundary(void *pcard, void *host_request)
++{
++	sd_card_t *card = pcard;
++	sd_host_t *host = card->host;
++	host_cmd_req_t *req = host_request;
++	sd_command_t *sd_cmd = req->private;
++	sd_data_t *data = sd_cmd->data;
++	data_dma_mng_t *mgr = &data->data_mng;
++	u32 i = 0;
++
++	/* adma2 inf case no need do any action here */
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	if (sd_cmd->gg8_ddr200_workaround) {
++
++		if (data->dir == DATA_DIR_OUT) {
++			DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM,
++				"update output phase for write case\n");
++			/* Disable SD clock */
++			sdhci_and32(host, SDHCI_CLOCK_CONTROL,
++				    ~(SDHCI_CLOCK_CARD_EN));
++
++			/* update output phase */
++			pci_andl(host, 0x354, 0xFFFFFF0F);
++			pci_orl(host, 0x354, (host->cur_output_phase << 4));
++
++			/* update input phase */
++			sdhci_and32(card->host, SDHCI_DLL_PHASE_CFG,
++				    ~0x1F000000);
++			sdhci_or32(card->host, SDHCI_DLL_PHASE_CFG,
++				   (BIT28) |
++				   (card->output_input_phase_pair
++				    [host->cur_output_phase]
++				    << 24));
++
++			/* Enable SD clock */
++			sdhci_or32(host, SDHCI_CLOCK_CONTROL,
++				   (SDHCI_CLOCK_CARD_EN));
++		}
++
++		/* Continue transfer */
++		sdhci_or32(host, SDHCI_DRIVER_CTRL_REG,
++			   SDHCI_DRIVER_CTRL_ADMA2_START_INF);
++		/* sd_cmd->gg8_ddr200_workaround = 0; */
++	}
++
++	/* adma2 sdma-like inf case */
++	if (data->dir == DATA_DIR_IN) {
++		for (i = 0; i < mgr->srb_cnt; i++) {
++			os_memcpy(mgr->srb_buffer[i].buff,
++				  mgr->driver_buff + mgr->srb_buffer[i].ofs,
++				  mgr->srb_buffer[i].len);
++		}
++	}
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++	return INTR_CB_OK;
++}
++
++/*
++ * Function Name: cmd_adma2_sdma_like_trans_done
++ * Abstract: This Function is used to handle adma2_sdma non-inf transfer complete
++ *
++ * Input:
++ *			void *card : pointer to vpcard
++ *			void *host_request poineter to host_cmd_req_t
++ *
++ *
++ * Return value:
++ *			0: means ok
++ *			others error
++ *
++ * Notes:
++ *
++ *        so giving the routine another name requires you to modify the build tools.
++ */
++u32 cmd_adma2_sdma_like_trans_done(void *pcard, void *host_request)
++{
++	host_cmd_req_t *req = (host_cmd_req_t *) host_request;
++	sd_command_t *cmd = (sd_command_t *) req->private;
++	sd_data_t *data = cmd->data;
++	data_dma_mng_t *mgr = &data->data_mng;
++	u32 i = 0;
++
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++	if (data->dir == DATA_DIR_IN) {
++		for (i = 0; i < mgr->srb_cnt; i++) {
++			os_memcpy(mgr->srb_buffer[i].buff,
++				  mgr->driver_buff + mgr->srb_buffer[i].ofs,
++				  mgr->srb_buffer[i].len);
++		}
++	}
++	DbgInfo(MODULE_TRANS, FEATURE_RW_TRACE, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++	return INTR_CB_OK;
++}
++
++/*
++ * Function Name: cmd_adma3_trans_done
++ * Abstract: This Function is used to handle adma3 transfer complete
++ *
++ * Input:
++ *			void *card : pointer to pcard
++ *			void *host_request poineter to host_cmd_req_t
++ *
++ *
++ * Return value:
++ *			0: means ok
++ *			others error
++ *
++ * Notes:
++ *
++ *        so giving the routine another name requires you to modify the build tools.
++ */
++u32 cmd_adma3_trans_done(void *pcard, void *host_request)
++{
++	/*
++	 * for adma3 no need do anything
++	 * for adma3 sdma-like, do memory copy for SRB buffer.
++	 */
++	return INTR_CB_OK;
++}
++
++bool dma_api_build_sdma_io(bht_dev_ext_t *pdx, sd_data_t *sd_data);
++bool dma_api_build_adma_sdma_io(bht_dev_ext_t *pdx, sd_data_t *sd_data);
++bool dma_api_build_adma_io(bht_dev_ext_t *pdx, sd_data_t *sd_data,
++			   sg_list_t *sg, u32 sg_len);
++
++bool build_dma_ctx(void *pdx, sd_data_t *sd_data,
++		   u32 cmdflag,
++		   e_data_dir dir,
++		   byte *data, u32 datalen, sg_list_t *sglist, u32 sg_len)
++{
++
++	bool ret = TRUE;
++
++	sd_data->dir = dir;
++	sd_data->data_mng.driver_buff = data;
++	sd_data->data_mng.total_bytess = datalen;
++
++#if (1)
++	if (cmdflag & CMD_FLG_ADMA_SDMA) {
++		if (cmdflag & CMD_FLG_DDR200_WORK_AROUND)
++			ret = dma_api_build_adma_sdma_io_add_nop(pdx, sd_data);
++		else
++			ret = dma_api_build_adma_sdma_io(pdx, sd_data);
++
++		if (ret == FALSE) {
++			DbgErr("build adma io error\n");
++			ret = FALSE;
++			goto exit;
++		}
++	}
++	if (cmdflag & CMD_FLG_ADMA2) {
++		if (cmdflag & CMD_FLG_DDR200_WORK_AROUND)
++			ret =
++			    dma_api_build_adma_io_add_nop(pdx, sd_data, sglist,
++							  sg_len);
++		else
++			ret =
++			    dma_api_build_adma_io(pdx, sd_data, sglist, sg_len);
++
++		if (ret == FALSE) {
++			DbgErr("build adma io error\n");
++			ret = FALSE;
++			goto exit;
++		}
++	}
++#endif
++	if (cmdflag & CMD_FLG_SDMA) {
++		ret = dma_api_build_sdma_io(pdx, sd_data);
++		if (ret == FALSE) {
++			DbgErr("build sdma io error\n");
++			ret = FALSE;
++			goto exit;
++		}
++	}
++exit:
++	return ret;
++
++}
++
++bool dma_api_io_init(bht_dev_ext_t *pdx, dma_desc_buf_t *desc_buf)
++{
++	node_t *node = &pdx->dma_api.dma_node;
++	node_t *node2 = &pdx->dma_api.dma_node2;
++	bool ret = FALSE;
++	/* 1. check size */
++	if (pdx->dump_mode == FALSE) {
++		if (desc_buf->len < (MIN_DMA_API_BUF_SIZE)) {
++			ret = FALSE;
++			DbgErr("dma buf too small 0x%x <=(%x)\n", desc_buf->len,
++			       (MIN_DMA_API_BUF_SIZE));
++			goto exit;
++		}
++	}
++	/* 2. assign buf */
++	node->general_desc_tbl = *desc_buf;
++	node->general_desc_tbl.len = MAX_GENERAL_DESC_TABLE_LEN;
++	node->general_desc_tbl_img = node->general_desc_tbl;
++	ret = resize_dma_buf(desc_buf, MAX_GENERAL_DESC_TABLE_LEN);
++	if (ret == FALSE) {
++		ret = FALSE;
++		goto exit;
++	}
++
++	pdx->dma_api.cur_node = NULL;
++	/* for dump mode we only use adma2 mode */
++	if (pdx->dump_mode == TRUE) {
++		node2->general_desc_tbl = *desc_buf;
++		node2->general_desc_tbl.len = MAX_GENERAL_DESC_TABLE_LEN;
++		node2->general_desc_tbl_img = node2->general_desc_tbl;
++		ret = resize_dma_buf(desc_buf, MAX_GENERAL_DESC_TABLE_LEN);
++		if (ret == FALSE) {
++			DbgErr("Allocate node2 for dump mode failed\n");
++			ret = FALSE;
++			goto exit;
++		}
++
++		ret = TRUE;
++		goto exit;
++	}
++
++	/* 3. align dma buffer for adma2 API buffer */
++	if (dma_align(desc_buf, DMA_BUF_ALIGN_SIZE) == FALSE) {
++		DbgErr("tq adma2 API buffer align failed\n");
++		ret = FALSE;
++		goto exit;
++	}
++	/* 4. allocate adma2 API buffer resource */
++	node->data_tbl = *desc_buf;
++	node->data_tbl.len = DMA_API_BUF_SIZE;
++	node->data_tbl_img = node->data_tbl;
++	DbgInfo(MODULE_TQ_DMA, FEATURE_DRIVER_INIT, NOT_TO_RAM,
++		"adma2 api buf len %x pa(%x)\n", node->data_tbl.len,
++		os_get_phy_addr32l(node->data_tbl.pa));
++	/* update for dma buf usage */
++	if (resize_dma_buf(desc_buf, DMA_API_BUF_SIZE) == FALSE) {
++		ret = FALSE;
++		DbgErr("%s adm2 API buf resize failed\n", __func__);
++		goto exit;
++	}
++	ret = TRUE;
++	/* DbgErr("DMA API desc %x , data %x\n",node->general_desc_tbl.pa,node->data_tbl.pa); */
++exit:
++
++	return ret;
++}
++
++/*
++ *
++ * Function Name:node_get_desc_res
++ *
++ * Abstract:
++ *
++ *			get node descriptor resource
++ *
++ * Input:
++ *
++ *			node_t *node [in]: Pointer to node
++ *			u32 max_use_size [in]: the max maybe use size for descriptor table
++ *
++ * Output:
++ *
++ *
++ *
++ * Return value:
++ *
++ *			dma_desc_buf_t *: NULL means failed to get the descriptor resource.
++ *			other means get ok.
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++
++dma_desc_buf_t *node_get_desc_res(node_t *node, u32 max_use_size)
++{
++	dma_desc_buf_t *p = &node->general_desc_tbl;
++
++	if (max_use_size > p->len) {
++		DbgErr("%s no enough buf for desc\n", __func__);
++		return NULL;
++	}
++	return &node->general_desc_tbl;
++}
++
++bool _adma_only_build_io(sg_list_t *sg, u32 sg_len, bool dma_64bit,
++			 bool data_26bit_len, dma_desc_buf_t *end_dma,
++			 data_dma_mng_t *mgr, dma_desc_buf_t *dma)
++{
++	bool ret = FALSE;
++
++	*end_dma =
++	    build_adma2_desc(sg, sg_len, (byte *) dma->va, dma->len, dma_64bit,
++			     data_26bit_len);
++	if (end_dma->va == NULL) {
++		DbgErr("%s build adma2 desc failed\n", __func__);
++		ret = FALSE;
++		goto exit;
++	}
++
++	mgr->sys_addr = dma->pa;
++	ret = TRUE;
++exit:
++	return ret;
++
++}
++
++void dbg_dump_general_desc_tb(u8 *desc, u32 size)
++{
++	u32 i = 0;
++	u32 *pTable = (u32 *) desc;
++
++	size = size / (sizeof(u32) * 2);
++	/*
++	 * for some case, need dump more
++	 * dump more for 128bit infinite int + link case
++	 */
++	size += 4;
++
++#define MAX_DUMP_DESC_SIZE (1024 * 16)
++	if (size > MAX_DUMP_DESC_SIZE) {
++		DbgInfo(MODULE_TQ_DMA, FEATURE_FUNC_DESC, NOT_TO_RAM,
++			"%s over limit %x\n", __func__, size);
++		size = MAX_DUMP_DESC_SIZE;
++	}
++
++	for (i = 0; i < size; i++) {
++		DbgErr(" [0x%0.8Xh], [0x%0.8x]\n",
++		       pTable[(i * 2) + 1], pTable[i * 2]);
++	}
++}
++
++u32 pp_ofs(byte *ph, byte *pl)
++{
++	u64 ofs = 0;
++
++	ofs = ph - pl;
++	if (ofs >= 0xffffffff) {
++		DbgErr("%s:(%x)maybe over 32bit size\n", __func__, ofs);
++		return 0;
++	}
++	return (u32) ofs;
++}
++
++void dump_adma2_desc(u8 *desc, u8 *desc_end)
++{
++	u32 size = 0;
++
++	size = pp_ofs(desc_end, desc);
++	dbg_dump_general_desc_tb(desc, size);
++}
++
++/*
++ *
++ * Function Name:dump_node_adma2_desc
++ *
++ * Abstract:
++ *
++ *			dump node adma2 desc
++ *
++ * Input:
++ *
++ *
++ * Output:
++ *
++ *
++ *
++ * Return value:
++ *
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++bool dump_node_adma2_desc(node_t *node, void *ctx)
++{
++	phy_addr_t sys_addr;
++	u8 *desc = node->phy_node_buffer.head.va;
++	u8 *desc_end = node->phy_node_buffer.end.va;
++
++	sys_addr = node->phy_node_buffer.head.pa;
++	DbgErr("sys addrl %x addrh %x\n", os_get_phy_addr32l(sys_addr),
++	       os_get_phy_addr32h(sys_addr));
++	dump_adma2_desc(desc, desc_end);
++	return TRUE;
++}
++
++bool _dma_api_build_adma_io(node_t *node, sg_list_t *sg, u32 sg_len,
++			    bool dma_64bit, bool data_26bit_len,
++			    sd_data_t *sd_data)
++{
++	bool ret = FALSE;
++	dma_desc_buf_t *pdma = 0;
++	u32 adma2_size = 0;
++
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	/* 1. get ADMA2 desc buffer */
++	adma2_size =
++	    (TRUE ==
++	     dma_64bit) ? MAX_ADMA2_128BIT_TABLE_LEN : MAX_ADMA2_TABLE_LEN;
++	pdma = node_get_desc_res(node, adma2_size);
++	if (pdma == NULL) {
++		DbgErr("%s node get desc failed\n", __func__);
++		ret = FALSE;
++		goto exit;
++	}
++	node->phy_node_buffer.head = *pdma;
++	/* 2. build ADMA2 Desc */
++	ret =
++	    _adma_only_build_io(sg, sg_len, dma_64bit, data_26bit_len,
++				&node->phy_node_buffer.end, &sd_data->data_mng,
++				pdma);
++exit:
++	/* dump_node_adma2_desc(node,NULL); */
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM,
++		"Enter %s ret=%d\n", __func__, ret);
++	return ret;
++
++}
++
++bool _dma_api_build_adma_io_add_nop(node_t *node, sg_list_t *sg, u32 sg_len,
++				    bool dma_64bit, bool data_26bit_len,
++				    sd_data_t *sd_data)
++{
++	bool ret = FALSE;
++	dma_desc_buf_t *pdma = 0;
++	u32 adma2_size = 0;
++
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	/* 1. get ADMA2 desc buffer */
++	adma2_size =
++	    (TRUE ==
++	     dma_64bit) ? MAX_ADMA2_128BIT_TABLE_LEN : MAX_ADMA2_TABLE_LEN;
++	pdma = node_get_desc_res(node, adma2_size);
++	if (pdma == NULL) {
++		DbgErr("%s node get desc failed\n", __func__);
++		ret = FALSE;
++		goto exit;
++	}
++	node->phy_node_buffer.head = *pdma;
++
++	node->phy_node_buffer.end =
++	    build_adma2_desc_nop(sg, sg_len, (byte *) pdma->va, pdma->len,
++				 dma_64bit, data_26bit_len);
++	if (node->phy_node_buffer.end.va == NULL) {
++		DbgErr("%s build adma2 desc failed\n", __func__);
++		ret = FALSE;
++		goto exit;
++	}
++
++	/* generate DMA INT at end */
++	{
++		u32 *ptb = 0;
++
++		adma2_clear_end_flag(node->phy_node_buffer.end.va, dma_64bit);
++		ptb = (u32 *) node->phy_node_buffer.end.va;
++		*(ptb++) = ADMA2_DESC_INT_VALID;
++		*(ptb++) = 0;
++		if (dma_64bit == TRUE) {
++			*(ptb++) = 0;
++			*(ptb++) = 0;
++		}
++	}
++
++	sd_data->data_mng.sys_addr = pdma->pa;
++	ret = TRUE;
++
++exit:
++	dump_node_adma2_desc(node, NULL);
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM,
++		"Enter %s ret=%d\n", __func__, ret);
++	return ret;
++
++}
++
++void adma_sdma_post_io(data_dma_mng_t *mgr, e_data_dir dir, byte *data_buf)
++{
++	if (dir == DATA_DIR_OUT)
++		os_memcpy(data_buf, mgr->driver_buff, mgr->total_bytess);
++	if (dir == DATA_DIR_IN) {
++		mgr->srb_cnt = 1;
++		mgr->srb_buffer[0].buff = mgr->driver_buff;
++		mgr->srb_buffer[0].len = mgr->total_bytess;
++		mgr->srb_buffer[0].ofs = 0;
++		mgr->driver_buff = data_buf;
++	}
++}
++
++/*
++ *
++ * Function Name: gen_sdma_like_sgl
++ *
++ * Abstract:
++ *
++ *			generate sdma-like SGlist table
++ *
++ * Input:
++ *
++ *			request_t *req [in]: Pointer to the request for build
++ *			dma_desc_buf_t *pdma [in]:pointer to sdma-like buffer
++ *
++ *
++ * Output:
++ *
++ *			None.
++ *
++ * Return value:
++ *
++ *			TRUE: build ok
++ * Notes:
++ *
++ * Caller:
++ *
++ */
++bool gen_sdma_like_sgl(request_t *req, dma_desc_buf_t *pdma)
++{
++	sg_list_t *sg;
++
++	sg = req->srb_sg_list;
++	DbgInfo(MODULE_TQ_DMA, FEATURE_RW_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++	if ((pdma->va == 0) && (pdma->len == 0)) {
++		DbgErr("%s null va\n", __func__);
++		return FALSE;
++	}
++
++	/* for 64bit case */
++	sg[0].Address = os_get_phy_addr64(pdma->pa);
++	sg[0].Length = req->tag_req_t.sec_cnt * SD_BLOCK_LEN;
++	req->srb_sg_len = 1;
++
++	if (pdma->len < sg[0].Length) {
++		DbgErr("%s dma buf too small\n", __func__);
++		return FALSE;
++	}
++
++	DbgInfo(MODULE_TQ_DMA, FEATURE_RW_TRACE, NOT_TO_RAM, "Exit %s\n",
++		__func__);
++	return TRUE;
++}
++
++bool adma_sdma_gen_sglist(node_t *node, data_dma_mng_t *mgr, request_t *req)
++{
++	bool ret = FALSE;
++
++	dma_desc_buf_t *pdma = 0;
++
++	if (mgr->total_bytess > DMA_API_BUF_SIZE) {
++		DbgErr("%s data total bytes too large(%x)>(%x)\n", __func__,
++		       mgr->total_bytess, DMA_API_BUF_SIZE);
++		ret = FALSE;
++		goto exit;
++	}
++
++	/* build srb_ext */
++	req->tag_req_t.sec_cnt = mgr->total_bytess / SD_BLOCK_LEN;
++
++	/* 1. get sdma like buf address */
++	pdma = &node->data_tbl;
++
++	/* 2. generate sdma like sglist table */
++	if (gen_sdma_like_sgl(req, pdma) == FALSE) {
++		DbgErr("%s gen sdma-like sgl failed\n", __func__);
++		ret = FALSE;
++		goto exit;
++	}
++
++	ret = TRUE;
++exit:
++
++	return ret;
++}
++
++bool dma_api_build_adma_io(bht_dev_ext_t *pdx, sd_data_t *sd_data,
++			   sg_list_t *sg, u32 sg_len)
++{
++	node_t *node = &pdx->dma_api.dma_node;
++
++	bool ret = FALSE;
++
++	bool dma_64bit = pdx->card.host->bit64_enable ? TRUE : FALSE;
++	bool data_26bit_len =
++	    pdx->cfg->host_item.test_dma_mode_setting.enable_dma_26bit_len
++		? TRUE : FALSE;
++
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	/* 3. get ADMA2 desc buffer */
++	ret =
++	    _dma_api_build_adma_io(node, sg, sg_len, dma_64bit, data_26bit_len,
++				   sd_data);
++
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM,
++		"Enter %s ret=%d\n", __func__, ret);
++	return ret;
++
++}
++
++bool dma_api_build_adma_io_add_nop(bht_dev_ext_t *pdx, sd_data_t *sd_data,
++				   sg_list_t *sg, u32 sg_len)
++{
++	node_t *node = &pdx->dma_api.dma_node;
++
++	bool ret = FALSE;
++	bool dma_64bit = pdx->card.host->bit64_enable ? TRUE : FALSE;
++	bool data_26bit_len =
++	    pdx->cfg->host_item.test_dma_mode_setting.enable_dma_26bit_len
++		? TRUE : FALSE;
++
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++
++	ret =
++	    _dma_api_build_adma_io_add_nop(node, sg, sg_len, dma_64bit,
++					   data_26bit_len, sd_data);
++
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM,
++		"Enter %s ret=%d\n", __func__, ret);
++	return ret;
++
++}
++
++request_t req;
++
++bool dma_api_build_adma_sdma_io(bht_dev_ext_t *pdx, sd_data_t *sd_data)
++{
++	node_t *node = &pdx->dma_api.dma_node;
++	/* request_t  req ; */
++	bool ret = FALSE;
++
++	bool dma_64bit = pdx->card.host->bit64_enable ? TRUE : FALSE;
++	bool data_26bit_len =
++	    pdx->cfg->host_item.test_dma_mode_setting.enable_dma_26bit_len
++		? TRUE : FALSE;
++
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++	/* check buf size */
++	ret = adma_sdma_gen_sglist(node, &sd_data->data_mng, &req);
++	if (ret == FALSE)
++		goto exit;
++	/* dump */
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM,
++		"dump sg %llx,%x\n", req.srb_sg_list[0].Address,
++		req.srb_sg_len);
++
++	/* 3. get ADMA2 desc buffer */
++	ret =
++	    _dma_api_build_adma_io(node, req.srb_sg_list, req.srb_sg_len,
++				   dma_64bit, data_26bit_len, sd_data);
++	/* 4. */
++	adma_sdma_post_io(&sd_data->data_mng, sd_data->dir, node->data_tbl.va);
++
++exit:
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM,
++		"Enter %s ret=%d\n", __func__, ret);
++	return ret;
++
++}
++
++bool dma_api_build_adma_sdma_io_add_nop(bht_dev_ext_t *pdx,
++					sd_data_t *sd_data)
++{
++	node_t *node = &pdx->dma_api.dma_node;
++	/* request_t  req ; */
++	bool ret = FALSE;
++
++	bool dma_64bit = pdx->card.host->bit64_enable ? TRUE : FALSE;
++	bool data_26bit_len =
++	    pdx->cfg->host_item.test_dma_mode_setting.enable_dma_26bit_len
++		? TRUE : FALSE;
++
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++	/* check buf size */
++	ret = adma_sdma_gen_sglist(node, &sd_data->data_mng, &req);
++	if (ret == FALSE)
++		goto exit;
++	/* dump */
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM,
++		"dump sg %llx,%x\n", req.srb_sg_list[0].Address,
++		req.srb_sg_len);
++
++	/* 3. get ADMA2 desc buffer */
++	ret =
++	    _dma_api_build_adma_io_add_nop(node, req.srb_sg_list,
++					   req.srb_sg_len, dma_64bit,
++					   data_26bit_len, sd_data);
++	/* 4. */
++	adma_sdma_post_io(&sd_data->data_mng, sd_data->dir, node->data_tbl.va);
++
++exit:
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM,
++		"Enter %s ret=%d\n", __func__, ret);
++	return ret;
++
++}
++
++/*
++ * only support one data buffer SDMA transfer, PIO like .
++ */
++bool _sdma_build_io(data_dma_mng_t *mgr, dma_desc_buf_t *dma, u32 sdma_bd_len,
++		    e_data_dir dir, byte *data_buf)
++{
++	u32 min_size = 0;
++
++	mgr->srb_buffer[0].buff = data_buf;
++	mgr->offset = 0;
++	/* fix to 1 */
++	mgr->srb_cnt = 1;
++
++	/* system addr */
++	mgr->sys_addr = dma->pa;
++	mgr->driver_buff = (byte *) dma->va;
++	/* for write data to card,need fill data first before transfer */
++	if (dir == DATA_DIR_OUT) {
++		min_size = os_min(sdma_bd_len, mgr->total_bytess);
++		os_memcpy(mgr->driver_buff,
++			  mgr->srb_buffer[0].buff + mgr->offset, min_size);
++
++		mgr->offset += min_size;
++	}
++	return TRUE;
++
++}
++
++bool dma_api_build_sdma_io(bht_dev_ext_t *pdx, sd_data_t *sd_data)
++{
++	node_t *node = &pdx->dma_api.dma_node;
++	bool ret = FALSE;
++	dma_desc_buf_t dma;
++	data_dma_mng_t *mgr = &sd_data->data_mng;
++	u32 sdma_bd_len = get_sdma_boudary_size(pdx->cfg);
++
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM, "Enter %s\n",
++		__func__);
++	/* check buf size */
++	if (sd_data->data_mng.total_bytess > DMA_API_BUF_SIZE) {
++		DbgErr("%s data total bytes too large(%x)>(%x)\n", __func__,
++		       sd_data->data_mng.total_bytess, DMA_API_BUF_SIZE);
++		ret = FALSE;
++		goto exit;
++	}
++
++	/* align dma buffer */
++#define SDMA_BOUNDARY_MAX_SIZE (512*1024)
++	if (sdma_bd_len > SDMA_BOUNDARY_MAX_SIZE) {
++		DbgErr("%s boundary over max %x\n", __func__, sdma_bd_len);
++		ret = FALSE;
++		goto exit;
++	} else {
++		dma = node->data_tbl;
++		if (dma_align(&dma, sdma_bd_len) == FALSE) {
++			DbgErr("%s align failed\n", __func__);
++			ret = FALSE;
++			goto exit;
++		}
++	}
++
++	ret =
++	    _sdma_build_io(mgr, &dma, sdma_bd_len, sd_data->dir,
++			   sd_data->data_mng.driver_buff);
++
++exit:
++	DbgInfo(MODULE_TQ_FLOW, FEATURE_RW_TRACE, NOT_TO_RAM,
++		"Enter %s ret=%d\n", __func__, ret);
++	return ret;
++
 +}
 -- 
 2.34.1
