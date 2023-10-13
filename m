@@ -2,63 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA17C7C7E69
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2FA7C7E67
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbjJMHMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:12:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32870 "EHLO
+        id S229781AbjJMHLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 03:11:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjJMHMW (ORCPT
+        with ESMTP id S229688AbjJMHLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:12:22 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 79A7BA9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:12:20 -0700 (PDT)
-Received: from wangkailong$jari.cn ( [182.148.14.172] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Fri, 13 Oct 2023 15:10:38
- +0800 (GMT+08:00)
-X-Originating-IP: [182.148.14.172]
-Date:   Fri, 13 Oct 2023 15:10:38 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "KaiLong Wang" <wangkailong@jari.cn>
-To:     willy@infradead.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] fs: Clean up errors in file.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Fri, 13 Oct 2023 03:11:41 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC7AB7;
+        Fri, 13 Oct 2023 00:11:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F918C433C8;
+        Fri, 13 Oct 2023 07:11:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697181099;
+        bh=MwaYf7/fVl29eeEa1PR2hVMy/u8Gb+fyB79xZCGocz0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RfYM7HrzJUY5Keay15CPDjBgu3kJqSs4/uctlZq02hUWkzSFnBUwa7Majwvh6VX2p
+         0ZBL0bktqn5BBgFIl7ftJX3PG1DEkjPYrfp6a6HumjgQsAG+G7IAWlCH+iKifcBb+0
+         kChUKP6avE+fRfeXCm+klY//emkEkQJsdidHVzDIbNyfvEh+Rsl0vtDv5JtZb6QGx2
+         Z182q/w8OSKAec67XDmfG79oWqxLb4SXeEyG0HOWxYcf4ch5gJ2tHE68G6UJ95tDS1
+         LuW3P/uWPKhDVgwV46vuLv55AHM8kF7LXOvuS3+jafcmIg4XeEJenh3HqwXW3Gskfh
+         8lR4tEGPPRK6g==
+Date:   Fri, 13 Oct 2023 09:11:33 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andi Shyti <andi.shyti@kernel.org>
+Cc:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        gregory.clement@bootlin.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        pierre.gondois@arm.com, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] i2c: mv64xxx: add support for FSM based recovery
+Message-ID: <ZSjtpWukWHeZp///@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        gregory.clement@bootlin.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        pierre.gondois@arm.com, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231006003321.2100016-1-chris.packham@alliedtelesis.co.nz>
+ <20231006003321.2100016-4-chris.packham@alliedtelesis.co.nz>
+ <20231012201541.nzlxyjngm3d5asir@zenone.zhora.eu>
 MIME-Version: 1.0
-Message-ID: <d79d057.965.18b27df7693.Coremail.wangkailong@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwDHZD9u7Shlqt7BAA--.689W
-X-CM-SenderInfo: 5zdqwypdlo00nj6mt2flof0/1tbiAQADB2UnvzMAKgAEsl
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_PBL,RDNS_NONE,
-        T_SPF_HELO_PERMERROR,T_SPF_PERMERROR autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yUuHd2/0fA2YiRP9"
+Content-Disposition: inline
+In-Reply-To: <20231012201541.nzlxyjngm3d5asir@zenone.zhora.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-c3BhY2UgcmVxdWlyZWQgYmVmb3JlIHRoZSBvcGVuIHBhcmVudGhlc2lzICcoJwoKU2lnbmVkLW9m
-Zi1ieTogS2FpTG9uZyBXYW5nIDx3YW5na2FpbG9uZ0BqYXJpLmNuPgotLS0KIGZzL2Jmcy9maWxl
-LmMgfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkK
-CmRpZmYgLS1naXQgYS9mcy9iZnMvZmlsZS5jIGIvZnMvYmZzL2ZpbGUuYwppbmRleCBhZGMyMjMw
-MDc5YzYuLmYyYjIxZDE3ZGE0OSAxMDA2NDQKLS0tIGEvZnMvYmZzL2ZpbGUuYworKysgYi9mcy9i
-ZnMvZmlsZS5jCkBAIC01Myw3ICs1Myw3IEBAIHN0YXRpYyBpbnQgYmZzX21vdmVfYmxvY2tzKHN0
-cnVjdCBzdXBlcl9ibG9jayAqc2IsIHVuc2lnbmVkIGxvbmcgc3RhcnQsCiAKIAlkcHJpbnRmKCIl
-MDhseC0lMDhseC0+JTA4bHhcbiIsIHN0YXJ0LCBlbmQsIHdoZXJlKTsKIAlmb3IgKGkgPSBzdGFy
-dDsgaSA8PSBlbmQ7IGkrKykKLQkJaWYoYmZzX21vdmVfYmxvY2soaSwgd2hlcmUgKyBpLCBzYikp
-IHsKKwkJaWYgKGJmc19tb3ZlX2Jsb2NrKGksIHdoZXJlICsgaSwgc2IpKSB7CiAJCQlkcHJpbnRm
-KCJmYWlsZWQgdG8gbW92ZSBibG9jayAlMDhseCAtPiAlMDhseFxuIiwgaSwKIAkJCQkJCQkJd2hl
-cmUgKyBpKTsKIAkJCXJldHVybiAtRUlPOwotLSAKMi4xNy4xCg==
+
+--yUuHd2/0fA2YiRP9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+
+> mmmhhh... still a bit skeptical about waiting 100 times 10us in
+> atomic.
+
+Has it been discussed already why the non-atomic version of
+read_poll_timeout is not enough?
+
+
+--yUuHd2/0fA2YiRP9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUo7aIACgkQFA3kzBSg
+Kbal9A//YfTs2FwExG43E0KNO0IIjqQIEObxAQBXKGd7PJyY7JKWbqrlYbskfRS8
+7U6e9oMkpWvT91CgcgOwgF30VqDe59rdo/amSGdBmeopShnHZdc63sVEkTTFkAeI
+l76gwWGx6oip5WZvVFMp67GC/Fd0CZILgh1JURVL0Ijoyd7XdLo8NCZRNBBoA0SV
+HGhfZW4xmLHT02stokWcfUrmWDbYj5WvG7HbgwgPaFVK67ny4vfR1cbZJMXBG5LQ
+Lj80y6mHVCRJUacAoL78GK9yK+JrRZQ5dgaETCoYzDL/FXvGlUsPw6HQmh67pMTX
+JnVo1jhVqrkn/SIhXDfubk3zphgOFMEsr3ketN7OGDDTl/huux3ySu3R4wM9KQBL
+3lFQrMXrsEbLMMd34z84ZRzeYn/KXk7AJp6gc2yPfHYaNN23KV6WCyKDtJfMA90S
+EONP5VmsvS39VxkAJUXWIVBiL9zV1EAo3rYLIXe8AE5T66lC+ioVacM+/VoUi8ba
+K8WwlM2uElr/TNI8sPyGyCNb+DK6/dRXVV0szakGB+D31+a+z3fMLI5dqoU4C+Dp
+HpI18NOzvVVVTY7Jdb8ZKDKQS0BU/XNe8Ld7IFRjOuliwHq5k//qccEF6yQbs01M
+cLTIGfrFIc9wNvqn3I9Dijea1VEAxbjiDKpa1QVbEq98mqGL/2Y=
+=QbRi
+-----END PGP SIGNATURE-----
+
+--yUuHd2/0fA2YiRP9--
