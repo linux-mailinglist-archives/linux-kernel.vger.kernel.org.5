@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9772D7C8D74
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 21:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EAA67C8D76
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 21:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbjJMTFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 15:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40408 "EHLO
+        id S231768AbjJMTFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 15:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbjJMTFD (ORCPT
+        with ESMTP id S231728AbjJMTFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 15:05:03 -0400
+        Fri, 13 Oct 2023 15:05:18 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CF5BF
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:04:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A37FC0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:04:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697223854;
+        s=mimecast20190719; t=1697223871;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zR5p3ioGj44ReczmQkXwckrYVMKEAFkp4XWCVgfnl84=;
-        b=S7vm8MUJfBKHRToOJzXWHYHQK8xMj4nepiIWZ5dxKGCwpk6GsPU+6CJjr5YcJ1ECEL0n4G
-        vEX0bn2lBWsN8S4QnxJDA9tVe8Rd4yLqv00uFv11Wu77atiE6vCAUVl/NYdkX8Z0k9pYP2
-        VSH7yZgnGmdrUDr0pXg7IR1Mfo8y+Os=
+        bh=mbcGDdPDyjQuCaqCE5MIIL6VIXi6uhOqjz8GCAoYgAs=;
+        b=QEJ7308yCLN7gdXapeovVij1isOyneLaHBywaDGmaGzM/QiG7Qsudtsb2XZx3KM48Hee7h
+        B1D9ASSM+Gcxpw0YOUoz1lx+zMC1M9uqyOdaJqOdwGxMcM/C+eHk/7a+z0D35rCXWWmgvy
+        3fF1fXzTmg6Gy7njbh4xMxEBO+0WzQw=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-275-TnrzPz-tMWW8slqjaMdDHg-1; Fri, 13 Oct 2023 15:04:10 -0400
-X-MC-Unique: TnrzPz-tMWW8slqjaMdDHg-1
+ us-mta-283-jTkVSu38NWqJ-9Hlh8G7xw-1; Fri, 13 Oct 2023 15:04:07 -0400
+X-MC-Unique: jTkVSu38NWqJ-9Hlh8G7xw-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 82CEF185A795;
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C9D661029F40;
         Fri, 13 Oct 2023 19:04:06 +0000 (UTC)
 Received: from fedora.redhat.com (unknown [10.22.33.110])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 482022157F5A;
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8F2432157F5A;
         Fri, 13 Oct 2023 19:04:06 +0000 (UTC)
 From:   Audra Mitchell <audra@redhat.com>
 To:     linux-mm@kvack.org
 Cc:     raquini@redhat.com, akpm@linux-foundation.org, djakov@kernel.org,
         vbabka@suse.cz, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/5] tools/mm: Filter out timestamps for correct collation
-Date:   Fri, 13 Oct 2023 15:03:47 -0400
-Message-ID: <20231013190350.579407-4-audra@redhat.com>
+Subject: [PATCH 4/5] tools/mm: Fix the default case for page_owner_sort
+Date:   Fri, 13 Oct 2023 15:03:48 -0400
+Message-ID: <20231013190350.579407-5-audra@redhat.com>
 In-Reply-To: <20231013190350.579407-1-audra@redhat.com>
 References: <20231013190350.579407-1-audra@redhat.com>
 MIME-Version: 1.0
@@ -60,71 +60,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the introduction of allocation timestamps being included in page_owner
-output, each record becomes unique due to the timestamp nanosecond
-granularity. Remove the check in add_list that tries to collate each record
-during processing as the memcmp() is just additional overhead at this
-point.
-
-Also keep the allocation timestamps, but allow collation to occur without
-consideration of the allocation timestamp except in the case were
-allocation timestamps are requested by the user (the -a option).
+With the additional commands and timestamps added to the tool, the default
+case (-t) has been broken. Now that the allocation timestamps are saved
+outside of the txt field, allow us to properly sort the data by number of
+times the record has been seen. Furthermore prevent the misuse of the
+commandline arguments so only one compare option can be used.
 
 Signed-off-by: Audra Mitchell <audra@redhat.com>
 ---
- tools/mm/page_owner_sort.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+ tools/mm/page_owner_sort.c | 61 +++++++++++++++++++++++++++++++++-----
+ 1 file changed, 53 insertions(+), 8 deletions(-)
 
 diff --git a/tools/mm/page_owner_sort.c b/tools/mm/page_owner_sort.c
-index 9c93f3f4514f..7ddabcb3a073 100644
+index 7ddabcb3a073..5a260096ebaa 100644
 --- a/tools/mm/page_owner_sort.c
 +++ b/tools/mm/page_owner_sort.c
-@@ -203,6 +203,21 @@ static int compare_sort_condition(const void *p1, const void *p2)
- 	return cmp;
- }
- 
-+static int remove_pattern(regex_t *pattern, char *buf, int len)
-+{
-+	regmatch_t pmatch[2];
-+	int err;
-+
-+	err = regexec(pattern, buf, 2, pmatch, REG_NOTBOL);
-+	if (err != 0 || pmatch[1].rm_so == -1)
-+		return len;
-+
-+	memcpy(buf + pmatch[1].rm_so,
-+		buf + pmatch[1].rm_eo, len - pmatch[1].rm_eo);
-+
-+	return len - (pmatch[1].rm_eo - pmatch[1].rm_so);
-+}
-+
- static int search_pattern(regex_t *pattern, char *pattern_str, char *buf)
+@@ -66,6 +66,16 @@ enum SORT_ORDER {
+ 	SORT_ASC = 1,
+ 	SORT_DESC = -1,
+ };
++enum COMP_FLAG {
++	COMP_NO_FLAG = 0,
++	COMP_ALLOC = 1<<0,
++	COMP_PAGE_NUM = 1<<1,
++	COMP_PID = 1<<2,
++	COMP_STACK = 1<<3,
++	COMP_NUM = 1<<4,
++	COMP_TGID = 1<<5,
++	COMP_COMM = 1<<6
++};
+ struct filter_condition {
+ 	pid_t *pids;
+ 	pid_t *tgids;
+@@ -644,7 +654,7 @@ int main(int argc, char **argv)
  {
- 	int err, val_len;
-@@ -443,13 +458,6 @@ static bool is_need(char *buf)
+ 	FILE *fin, *fout;
+ 	char *buf, *ext_buf;
+-	int i, count;
++	int i, count, compare_flag;
+ 	struct stat st;
+ 	int opt;
+ 	struct option longopts[] = {
+@@ -656,31 +666,33 @@ int main(int argc, char **argv)
+ 		{ 0, 0, 0, 0},
+ 	};
  
- static bool add_list(char *buf, int len, char *ext_buf)
- {
--	if (list_size != 0 &&
--		len == list[list_size-1].len &&
--		memcmp(buf, list[list_size-1].txt, len) == 0) {
--		list[list_size-1].num++;
--		list[list_size-1].page_num += get_page_num(buf);
--		return true;
--	}
- 	if (list_size == max_size) {
- 		fprintf(stderr, "max_size too small??\n");
- 		return false;
-@@ -465,6 +473,9 @@ static bool add_list(char *buf, int len, char *ext_buf)
- 		return false;
++	compare_flag = COMP_NO_FLAG;
++
+ 	while ((opt = getopt_long(argc, argv, "admnpstP", longopts, NULL)) != -1)
+ 		switch (opt) {
+ 		case 'a':
+-			set_single_cmp(compare_ts, SORT_ASC);
++			compare_flag |= COMP_ALLOC;
+ 			break;
+ 		case 'd':
+ 			debug_on = true;
+ 			break;
+ 		case 'm':
+-			set_single_cmp(compare_page_num, SORT_DESC);
++			compare_flag |= COMP_PAGE_NUM;
+ 			break;
+ 		case 'p':
+-			set_single_cmp(compare_pid, SORT_ASC);
++			compare_flag |= COMP_PID;
+ 			break;
+ 		case 's':
+-			set_single_cmp(compare_stacktrace, SORT_ASC);
++			compare_flag |= COMP_STACK;
+ 			break;
+ 		case 't':
+-			set_single_cmp(compare_num, SORT_DESC);
++			compare_flag |= COMP_NUM;
+ 			break;
+ 		case 'P':
+-			set_single_cmp(compare_tgid, SORT_ASC);
++			compare_flag |= COMP_TGID;
+ 			break;
+ 		case 'n':
+-			set_single_cmp(compare_comm, SORT_ASC);
++			compare_flag |= COMP_COMM;
+ 			break;
+ 		case 1:
+ 			filter = filter | FILTER_PID;
+@@ -728,6 +740,39 @@ int main(int argc, char **argv)
+ 		exit(1);
  	}
- 	memcpy(list[list_size].txt, buf, len);
-+	if (sc.cmps[0] != compare_ts) {
-+		len = remove_pattern(&ts_nsec_pattern, list[list_size].txt, len);
+ 
++	/* Only one compare option is allowed, yet we also want handle the
++	 * default case were no option is provided, but we still want to
++	 * match the behavior of the -t option (compare by number of times
++	 * a record is seen
++	 */
++	switch (compare_flag) {
++	case COMP_ALLOC:
++		set_single_cmp(compare_ts, SORT_ASC);
++		break;
++	case COMP_PAGE_NUM:
++		set_single_cmp(compare_page_num, SORT_DESC);
++		break;
++	case COMP_PID:
++		set_single_cmp(compare_pid, SORT_ASC);
++		break;
++	case COMP_STACK:
++		set_single_cmp(compare_stacktrace, SORT_ASC);
++		break;
++	case COMP_NO_FLAG:
++	case COMP_NUM:
++		set_single_cmp(compare_num, SORT_DESC);
++		break;
++	case COMP_TGID:
++		set_single_cmp(compare_tgid, SORT_ASC);
++		break;
++	case COMP_COMM:
++		set_single_cmp(compare_comm, SORT_ASC);
++		break;
++	default:
++		usage();
++		exit(1);
 +	}
- 	list[list_size].txt[len] = 0;
- 	list[list_size].len = len;
- 	list[list_size].num = 1;
++
+ 	fin = fopen(argv[optind], "r");
+ 	fout = fopen(argv[optind + 1], "w");
+ 	if (!fin || !fout) {
 -- 
 2.41.0
 
