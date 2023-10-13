@@ -2,196 +2,477 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 935B77C8D32
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53BA97C8D36
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbjJMSlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 14:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55704 "EHLO
+        id S231447AbjJMSl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 14:41:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJMSk7 (ORCPT
+        with ESMTP id S229518AbjJMSl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 14:40:59 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0ED95
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:40:57 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4063bfc6c03so11665e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:40:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697222455; x=1697827255; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DZVpY21cwcAndxPn7pzCSjYxGXGWx8Hqaw1X1tXYIQU=;
-        b=q/vc+ogZ+B5EtNLKdU707XhriCbzKWIUdNBo7W98lOtogu+I0Yyvc27CjXu98n8cDc
-         F5GQQcB1NkoRbaTb769mbmtRLHnmb3m04imEbQHa4vIIUCN0IWaYgQy8lHf/CEQ2r06y
-         kud6QsCdt3dZO7lb6e53XSR1cwssRG2V19hiZEGlzSfFabG7M9dovlA/6xvXSHUASobL
-         GgcbJOBiWkc6e0tu52GyO41mfZr89E5xL5uipmWYi9oQUaKmxLf53fbrnyOAKy696ASM
-         dEHkV9PNrQGtXjxSsb4yoqHYEZriGExfUt0zqybXe5WluIQomddL3eO2YTm7GJS7fXrP
-         39sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697222455; x=1697827255;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DZVpY21cwcAndxPn7pzCSjYxGXGWx8Hqaw1X1tXYIQU=;
-        b=U9ykBUMMfrowIoKFU0UHyUzesEf55QLHvj5OvmfJXj7xWFNHXjrgcmNVhSctDGY5sk
-         yHlGf3YfC1seed4siHq1qfeAuK64x+lDJ/rxlf90dvPxhzCEFZgoi4RdBI2kq2AqevOZ
-         W0RRq0hVakAez5JFeO5xi3oLuAR3G29Qn7STsbTHJzZKPr8dDt/FJgacSTIgd7dij9PO
-         T8qzyoTseyQ4XaQXn6ZFJFZL2zetJEGqz9zx87tn86B2Xuzkv9EmTvJG4wlDylPcYjrW
-         67ePM4NFGwNOZR+RS2+94TShKWh+2bia6o97264ZOdwVg7dc5DQNkmPaFLhQyz2mfsyM
-         pXAQ==
-X-Gm-Message-State: AOJu0YwTFcuqv4XJehFXhOS6IK5TcFd+qGyeD80sEL6xOd/DtXfjJWD/
-        YmCx5OyUjFJMx05Rvoxg4EMU+2lzmOoIGrQ4K4ZT1Q==
-X-Google-Smtp-Source: AGHT+IFij3kUIEY1BA2tygafsY+JsIAU1kQX7FEzzpuiNxVWSLwUvRtg15t59Kf03RgWZZ5plcxH5PrA7Icv7vV7DWE=
-X-Received: by 2002:a7b:cb54:0:b0:406:4e80:b8ef with SMTP id
- v20-20020a7bcb54000000b004064e80b8efmr3512wmj.6.1697222455333; Fri, 13 Oct
- 2023 11:40:55 -0700 (PDT)
+        Fri, 13 Oct 2023 14:41:27 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD0BC0;
+        Fri, 13 Oct 2023 11:41:23 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id D549A100006;
+        Fri, 13 Oct 2023 21:41:19 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D549A100006
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1697222479;
+        bh=8QIY7MI/xX/BChuarEslhWbVX0P4jo1X9m5opcLx4p8=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=GXX7Q0O4xMMBb+EwhZVsQvtUewh+HJUSqjR9DdHt4eNLdwS8iPF2d7EkiH1eH1S3Q
+         XOB4yAQqlPWmBV4ZmJ6doZGh+ZDR9Rk4ooH1GJ4LpVq0qwkbmVCn1nwL/WapRlqob+
+         62JMxW2z6d5n4zoZTNBu750rtaJdJLQy4J02qLjnm2nHWzBo75vD1SyEGVz31z4G4m
+         I8dfnoznp8JmX2IUVGlEEzjlwhb3fc7VPtkYXSgRvoIn9cfPj5yGTC8DUChXN6ySvi
+         vi/xGSTWmbyyT0izXDPIfup/WoTDWDF/5DJ67MbdGnDmdjHgv37GhoHaA98PIIImvu
+         gEVPuhaf3jbaA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Fri, 13 Oct 2023 21:41:18 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 13 Oct 2023 21:41:17 +0300
+From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
+To:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <roman.gushchin@linux.dev>, <shakeelb@google.com>,
+        <muchun.song@linux.dev>, <akpm@linux-foundation.org>
+CC:     <kernel@sberdevices.ru>, <rockosov@gmail.com>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Dmitry Rokosov <ddrokosov@salutedevices.com>
+Subject: [PATCH v1] tools/cgroup: introduce cgroup v2 memory.events listener
+Date:   Fri, 13 Oct 2023 21:41:07 +0300
+Message-ID: <20231013184107.28734-1-ddrokosov@salutedevices.com>
+X-Mailer: git-send-email 2.36.0
 MIME-Version: 1.0
-References: <20231009142005.21338-1-quic_kriskura@quicinc.com>
- <20231009142005.21338-2-quic_kriskura@quicinc.com> <CANP3RGfEk2DqZ3biyN78ycQYbDxCEG+H1me2vnEYuwXkNdXnTA@mail.gmail.com>
- <CANP3RGcCpNOuVpdV9n0AFxZo-wsfwi8OfYgBk1WHNHaEd-4V-Q@mail.gmail.com>
- <CANP3RGdY4LsOA6U5kuccApHCzL0_jBnY=pLOYrUuYtMZFTvnbw@mail.gmail.com>
- <d19d9d08-c119-4991-b460-49925f601d15@quicinc.com> <fad5a7fb-cce1-46bc-a0af-72405c76d107@quicinc.com>
- <CANP3RGcqWBYd9FqAX47rE9pFgBTB8=0CGdwkScm-OH1epHcVWQ@mail.gmail.com>
- <8ff92053-52ff-4950-95c8-0e986f6a028a@quicinc.com> <CANP3RGd4G4dkMOyg6wSX29NYP2mp=LhMhmZpoG=rgoCz=bh1=w@mail.gmail.com>
-In-Reply-To: <CANP3RGd4G4dkMOyg6wSX29NYP2mp=LhMhmZpoG=rgoCz=bh1=w@mail.gmail.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date:   Fri, 13 Oct 2023 11:40:43 -0700
-Message-ID: <CANP3RGfDf4mUR4UAMF8283vPZBxYmGxe0D_02NhWDR2JjHCtmg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] usb: gadget: ncm: Add support to update
- wMaxSegmentSize via configfs
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        onathan Corbet <corbet@lwn.net>,
-        Linyu Yuan <quic_linyyuan@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
-        quic_wcheng@quicinc.com, quic_jackp@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 180616 [Oct 13 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 539 539 807534d9021bfe9ca369c363d15ac993cd93d4d9, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/13 17:38:00 #22183193
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 11:39=E2=80=AFAM Maciej =C5=BBenczykowski <maze@goo=
-gle.com> wrote:
->
-> On Thu, Oct 12, 2023 at 8:40=E2=80=AFAM Krishna Kurapati PSSNV
-> <quic_kriskura@quicinc.com> wrote:
-> >
-> >
-> >
-> > On 10/12/2023 6:02 PM, Maciej =C5=BBenczykowski wrote:
-> > > On Thu, Oct 12, 2023 at 1:48=E2=80=AFAM Krishna Kurapati PSSNV
-> > >
-> > > Could you paste the full patch?
-> > > This is hard to review without looking at much more context then emai=
-l
-> > > is providing
-> > > (or, even better, send me a link to a CL in gerrit somewhere - for
-> > > example aosp ACK mainline tree)
-> >
-> > Sure. Will provide a gerrit on ACK for review before posting v2.
-> >
-> > The intent of posting the diff was two fold:
-> >
-> > 1. The question Greg asked regarding why the max segment size was
-> > limited to 15014 was valid. When I thought about it, I actually wanted
-> > to limit the max MTU to 15000, so the max segment size automatically
-> > needs to be limited to 15014.
->
-> Note that this is a *very* abstract value.
-> I get you want L3 MTU of 10 * 1500, but this value is not actually meanin=
-gful.
->
-> IPv4/IPv6 fragmentation and IPv4/IPv6 TCP segmentation
-> do not result in a trivial multiplication of the standard 1500 byte
-> ethernet L3 MTU.
-> Indeed aggregating 2 1500 L3 mtu frames results in *different* sized
-> frames depending on which type of aggregation you do.
-> (and for tcp it even depends on the number and size of tcp options,
-> though it is often assumed that those take up 12 bytes, since that's the
-> normal for Linux-to-Linux tcp connections)
->
-> For example if you aggregate N standard Linux ipv6/tcp L3 1500 mtu frames=
-,
-> this means you have
-> N frames: ethernet (14) + ipv6 (40) + tcp (20) + tcp options (12) +
-> payload (1500-12-20-40=3D1500-72=3D1428)
-> post aggregation:
-> 1 frame: ethernet (14) + ipv6 (40) + tcp (20) + tcp options (12) +
-> payload (N*1428)
->
-> so N * 1500 =3D=3D N * (72 + 1428) --> 1 * (72 + N * 1428)
+This is a simple listener for memory events that handles counter
+changes in runtime. It can be set up for a specific memory cgroup v2.
 
-As you can see, for N=3D10, this isn't 15000, it's 72+10*1428 =3D 14352
+The output example:
+=====
+$ /tmp/cgroup_v2_event_listener test
+Initialized MEMCG events with counters:
+MEMCG events:
+	low: 0
+	high: 0
+	max: 0
+	oom: 0
+	oom_kill: 0
+	oom_group_kill: 0
+Started monitoring memory events from '/sys/fs/cgroup/test/memory.events'...
+Received event in /sys/fs/cgroup/test/memory.events:
+*** 1 MEMCG oom_kill event, change counter 0 => 1
+Received event in /sys/fs/cgroup/test/memory.events:
+*** 1 MEMCG oom_kill event, change counter 1 => 2
+Received event in /sys/fs/cgroup/test/memory.events:
+*** 1 MEMCG oom_kill event, change counter 2 => 3
+Received event in /sys/fs/cgroup/test/memory.events:
+*** 1 MEMCG oom_kill event, change counter 3 => 4
+Received event in /sys/fs/cgroup/test/memory.events:
+*** 2 MEMCG max events, change counter 0 => 2
+Received event in /sys/fs/cgroup/test/memory.events:
+*** 8 MEMCG max events, change counter 2 => 10
+*** 1 MEMCG oom event, change counter 0 => 1
+Received event in /sys/fs/cgroup/test/memory.events:
+*** 1 MEMCG oom_kill event, change counter 4 => 5
+^CExiting cgroup v2 event listener...
+=====
 
->
-> That value of 72 is instead 52 for 'standard Linux ipv4/tcp),
-> it's 40/60 if there's no tcp options (which I think happens when
-> talking to windows)
-> it's different still with ipv4 fragmentation... and again different
-> with ipv6 fragmentation...
-> etc.
->
-> ie. 15000 L3 mtu is exactly as meaningless as 14000 L3 mtu.
-> Either way you don't get full frames.
->
-> As such I'd recommend going with whatever is the largest mtu that can
-> be meaningfully made to fit in 16K with all the NCM header overhead.
-> That's likely closer to 15500-16000 (though I have *not* checked).
->
-> > But my commit text didn't mention this
-> > properly which was a mistake on my behalf. But when I looked at the
-> > code, limiting the max segment size 15014 would force the practical
-> > max_mtu to not cross 15000 although theoretical max_mtu was set to:
-> > (GETHER_MAX_MTU_SIZE - 15412) during registration of net device.
-> >
-> > So my assumption of limiting it to 15000 was wrong. It must be limited
-> > to 15412 as mentioned in u_ether.c  This inturn means we must limit
-> > max_segment_size to:
-> > GETHER_MAX_ETH_FRAME_LEN (GETHER_MAX_MTU_SIZE + ETH_HLEN)
-> > as mentioned in u_ether.c.
-> >
-> > I wanted to confirm that setting MAX_DATAGRAM_SIZE to
-> > GETHER_MAX_ETH_FRAME_LEN was correct.
-> >
-> > 2. I am not actually able to test with MTU beyond 15000. When my host
-> > device is a linux machine, the cdc_ncm.c limits max_segment_size to:
-> > CDC_NCM_MAX_DATAGRAM_SIZE               8192    /* bytes */
->
-> In practice you get 50% of the benefits of infinitely large mtu by
-> going from 1500 to ~2980.
-> you get 75% of the benefits by going to ~6K
-> you get 87.5% of the benefits by going to ~12K
-> the benefits of going even higher are smaller and smaller...
->
-> If the host side is limited to 8192, maybe we should match that here too?
->
-> But the host side limitation of 8192 doesn't seem particularly sane eithe=
-r...
-> Maybe we should relax that instead?
->
-> (especially since for things like tcp zero copy you want an mtu which
-> is slighly more then N * 4096,
-> ie. around 4.5KB, 8.5KB, 12.5KB or something like that)
->
-> > When connected to windows machine, I am able to set the mtu to a max
-> > value of 15000. So not sure how to test the patch if I set the
-> > max_segment_size to GETHER_MAX_ETH_FRAME_LEN.
-> >
-> > By pasting the diff, I wanted to confirm both the above queries.
-> >
-> > And you are right, while assigning value to ecm.wMaxSegmentSize, we mus=
-t
-> > use cpu_to_le16(...). Will ensure to make this change in v2. It worked
-> > without that too, not sure how.Maciej =C5=BBenczykowski, Kernel Network=
-ing Developer @ Google
+Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+---
+ tools/cgroup/Makefile                   |   4 +-
+ tools/cgroup/cgroup_v2_event_listener.c | 330 ++++++++++++++++++++++++
+ 2 files changed, 332 insertions(+), 2 deletions(-)
+ create mode 100644 tools/cgroup/cgroup_v2_event_listener.c
+
+diff --git a/tools/cgroup/Makefile b/tools/cgroup/Makefile
+index ffca068e4a76..86bd357a8f54 100644
+--- a/tools/cgroup/Makefile
++++ b/tools/cgroup/Makefile
+@@ -3,9 +3,9 @@
+ 
+ CFLAGS = -Wall -Wextra
+ 
+-all: cgroup_event_listener
++all: cgroup_event_listener cgroup_v2_event_listener
+ %: %.c
+ 	$(CC) $(CFLAGS) -o $@ $^
+ 
+ clean:
+-	$(RM) cgroup_event_listener
++	$(RM) cgroup_event_listener cgroup_v2_event_listener
+diff --git a/tools/cgroup/cgroup_v2_event_listener.c b/tools/cgroup/cgroup_v2_event_listener.c
+new file mode 100644
+index 000000000000..987261db5369
+--- /dev/null
++++ b/tools/cgroup/cgroup_v2_event_listener.c
+@@ -0,0 +1,330 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * cgroup_v2_event_listener.c - Simple listener of cgroup v2 memory.events
++ *
++ * Copyright (c) 2023, SaluteDevices. All Rights Reserved.
++ *
++ * Author: Dmitry Rokosov <ddrokosov@salutedevices.com>
++ */
++
++#include <err.h>
++#include <errno.h>
++#include <limits.h>
++#include <poll.h>
++#include <stdbool.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/inotify.h>
++#include <unistd.h>
++
++#define MEMCG_EVENTS "memory.events"
++
++/* Size of buffer to use when reading inotify events */
++#define INOTIFY_BUFFER_SIZE 8192
++
++#define INOTIFY_EVENT_NEXT(event, length) ({         \
++	(length) -= sizeof(*(event)) + (event)->len; \
++	(event)++;                                   \
++})
++
++#define INOTIFY_EVENT_OK(event, length) ((length) >= (ssize_t)sizeof(*(event)))
++
++#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
++
++struct memcg_counters {
++	long low;
++	long high;
++	long max;
++	long oom;
++	long oom_kill;
++	long oom_group_kill;
++};
++
++struct memcg_events {
++	struct memcg_counters counters;
++	char path[PATH_MAX];
++	int inotify_fd;
++	int inotify_wd;
++};
++
++static void print_memcg_counters(const struct memcg_counters *counters)
++{
++	printf("MEMCG events:\n");
++	printf("\tlow: %ld\n", counters->low);
++	printf("\thigh: %ld\n", counters->high);
++	printf("\tmax: %ld\n", counters->max);
++	printf("\toom: %ld\n", counters->oom);
++	printf("\toom_kill: %ld\n", counters->oom_kill);
++	printf("\toom_group_kill: %ld\n", counters->oom_group_kill);
++}
++
++static int get_memcg_counter(char *line, const char *name, long *counter)
++{
++	size_t len = strlen(name);
++	char *endptr;
++	long tmp;
++
++	if (memcmp(line, name, len)) {
++		warnx("Counter line %s has wrong name, %s is expected",
++		      line, name);
++		return -EINVAL;
++	}
++
++	/* skip the whitespace delimiter */
++	len += 1;
++
++	errno = 0;
++	tmp = strtol(&line[len], &endptr, 10);
++	if (((tmp == LONG_MAX || tmp == LONG_MIN) && errno == ERANGE) ||
++	    (errno && !tmp)) {
++		warnx("Failed to parse: %s", &line[len]);
++		return -ERANGE;
++	}
++
++	if (endptr == &line[len]) {
++		warnx("Not digits were found in line %s", &line[len]);
++		return -EINVAL;
++	}
++
++	if (!(*endptr == '\0' || (*endptr == '\n' && *++endptr == '\0'))) {
++		warnx("Further characters after number: %s", endptr);
++		return -EINVAL;
++	}
++
++	*counter = tmp;
++
++	return 0;
++}
++
++static int read_memcg_events(struct memcg_events *events, bool show_diff)
++{
++	FILE *fp = fopen(events->path, "re");
++	size_t i;
++	int ret = 0;
++	bool any_new_events = false;
++	char *line = NULL;
++	size_t len = 0;
++	struct memcg_counters new_counters;
++	struct memcg_counters *counters = &events->counters;
++	struct {
++		const char *name;
++		long *new;
++		long *old;
++	} map[] = {
++		{
++			.name = "low",
++			.new = &new_counters.low,
++			.old = &counters->low,
++		},
++		{
++			.name = "high",
++			.new = &new_counters.high,
++			.old = &counters->high,
++		},
++		{
++			.name = "max",
++			.new = &new_counters.max,
++			.old = &counters->max,
++		},
++		{
++			.name = "oom",
++			.new = &new_counters.oom,
++			.old = &counters->oom,
++		},
++		{
++			.name = "oom_kill",
++			.new = &new_counters.oom_kill,
++			.old = &counters->oom_kill,
++		},
++		{
++			.name = "oom_group_kill",
++			.new = &new_counters.oom_group_kill,
++			.old = &counters->oom_group_kill,
++		},
++	};
++
++	if (!fp) {
++		warn("Failed to open memcg events file %s", events->path);
++		return -EBADF;
++	}
++
++	/* Read new values for memcg counters */
++	for (i = 0; i < ARRAY_SIZE(map); ++i) {
++		ssize_t nread;
++
++		errno = 0;
++		nread = getline(&line, &len, fp);
++		if (nread == -1) {
++			if (errno) {
++				warn("Failed to read line for counter %s",
++				     map[i].name);
++				ret = -EIO;
++				goto exit;
++			}
++
++			break;
++		}
++
++		ret = get_memcg_counter(line, map[i].name, map[i].new);
++		if (ret) {
++			warnx("Failed to get counter value from line %s", line);
++			goto exit;
++		}
++	}
++
++	for (i = 0; i < ARRAY_SIZE(map); ++i) {
++		long diff;
++
++		if (*map[i].new > *map[i].old) {
++			diff = *map[i].new - *map[i].old;
++
++			if (show_diff)
++				printf("*** %ld MEMCG %s event%s, "
++				       "change counter %ld => %ld\n",
++				       diff, map[i].name,
++				       (diff == 1) ? "" : "s",
++				       *map[i].old, *map[i].new);
++
++			*map[i].old += diff;
++			any_new_events = true;
++		}
++	}
++
++	if (show_diff && !any_new_events)
++		printf("*** No new untracked memcg events available\n");
++
++exit:
++	free(line);
++	fclose(fp);
++
++	return ret;
++}
++
++static void process_memcg_events(struct memcg_events *events,
++				 struct inotify_event *event)
++{
++	int ret;
++
++	if (events->inotify_wd != event->wd) {
++		warnx("Unknown inotify event %d, should be %d", event->wd,
++		      events->inotify_wd);
++		return;
++	}
++
++	printf("Received event in %s:\n", events->path);
++
++	if (!(event->mask & IN_MODIFY)) {
++		warnx("No IN_MODIFY event, skip it");
++		return;
++	}
++
++	ret = read_memcg_events(events, /* show_diff = */true);
++	if (ret)
++		warnx("Can't read memcg events");
++}
++
++static void monitor_events(struct memcg_events *events)
++{
++	struct pollfd fds[1];
++	int ret;
++
++	printf("Started monitoring memory events from '%s'...\n", events->path);
++
++	fds[0].fd = events->inotify_fd;
++	fds[0].events = POLLIN;
++
++	for (;;) {
++		ret = poll(fds, ARRAY_SIZE(fds), -1);
++		if (ret < 0 && errno != EAGAIN)
++			err(EXIT_FAILURE, "Can't poll memcg events (%d)", ret);
++
++		if (fds[0].revents & POLLERR)
++			err(EXIT_FAILURE, "Got POLLERR during monitor events");
++
++		if (fds[0].revents & POLLIN) {
++			struct inotify_event *event;
++			char buffer[INOTIFY_BUFFER_SIZE];
++			ssize_t length;
++
++			length = read(fds[0].fd, buffer, INOTIFY_BUFFER_SIZE);
++			if (length <= 0)
++				continue;
++
++			event = (struct inotify_event *)buffer;
++			while (INOTIFY_EVENT_OK(event, length)) {
++				process_memcg_events(events, event);
++				event = INOTIFY_EVENT_NEXT(event, length);
++			}
++		}
++	}
++}
++
++static int initialize_memcg_events(struct memcg_events *events,
++				   const char *cgroup)
++{
++	int ret;
++
++	memset(events, 0, sizeof(struct memcg_events));
++
++	ret = snprintf(events->path, PATH_MAX,
++		       "/sys/fs/cgroup/%s/memory.events", cgroup);
++	if (ret >= PATH_MAX) {
++		warnx("Path to cgroup memory.events is too long");
++		return -EMSGSIZE;
++	} else if (ret < 0) {
++		warn("Can't generate cgroup event full name");
++		return ret;
++	}
++
++	ret = read_memcg_events(events, /* show_diff = */false);
++	if (ret) {
++		warnx("Failed to read initial memcg events state (%d)", ret);
++		return ret;
++	}
++
++	events->inotify_fd = inotify_init();
++	if (events->inotify_fd < 0) {
++		warn("Failed to setup new inotify device");
++		return -EMFILE;
++	}
++
++	events->inotify_wd = inotify_add_watch(events->inotify_fd,
++					       events->path, IN_MODIFY);
++	if (events->inotify_wd < 0) {
++		warn("Couldn't add monitor in dir %s", events->path);
++		return -EIO;
++	}
++
++	printf("Initialized MEMCG events with counters:\n");
++	print_memcg_counters(&events->counters);
++
++	return 0;
++}
++
++static void cleanup_memcg_events(struct memcg_events *events)
++{
++	inotify_rm_watch(events->inotify_fd, events->inotify_wd);
++	close(events->inotify_fd);
++}
++
++int main(int argc, const char **argv)
++{
++	struct memcg_events events;
++	ssize_t ret;
++
++	if (argc != 2)
++		errx(EXIT_FAILURE, "Usage: %s <cgroup>", argv[0]);
++
++	ret = initialize_memcg_events(&events, argv[1]);
++	if (ret)
++		errx(EXIT_FAILURE, "Can't initialize memcg events (%zd)", ret);
++
++	monitor_events(&events);
++
++	cleanup_memcg_events(&events);
++
++	printf("Exiting cgroup v2 event listener...\n");
++
++	return EXIT_SUCCESS;
++}
+-- 
+2.36.0
+
