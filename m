@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E87987C8243
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1BB7C8248
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231373AbjJMJiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 05:38:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52832 "EHLO
+        id S231409AbjJMJiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 05:38:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbjJMJiK (ORCPT
+        with ESMTP id S231237AbjJMJiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 05:38:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEF3CE;
-        Fri, 13 Oct 2023 02:38:09 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 09:38:07 -0000
+        Fri, 13 Oct 2023 05:38:13 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A1ABE;
+        Fri, 13 Oct 2023 02:38:10 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 09:38:08 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697189887;
+        s=2020; t=1697189889;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8OpENGFnxAaYj7M8fE6cKf/8eE2Iu8UMtWVNtT2iVz0=;
-        b=yoeWq9p2InyIMquxtDF7i8qBK/m0CcHMoZsxmQ6+QMb4fFffshiQWxNyOS6bvxauJZ+uw4
-        Ec8uQsLzXoBPqbUYvqSmO0CXrji5wCuVHV6NVIBpHX+k9hkgLYJ4g1e/zwHsz/kzS7FWzg
-        AhEEyKIUx9iowJ1msmhVnPEspEUP/xsMNs4E2Skb64Rq5aApJqGbFpo8FeGFzfw4VBNTRN
-        iZWu+DX10s40/d77C25wSSJK+fXmEABkTRetBYofjV7TGGtzGLXR3tcP5AdCT6X4C+hwyO
-        pVBm74QqK8dCNxOsBV3IVsbFNVaemg18Zb3RIzr3Gi9+HZxdBdJb1irgiH0fyg==
+        bh=yiCRTOM5demFgKTmq9X6OyvEhW+xoW8NeDS5lAX1ZC8=;
+        b=B4TxUZhFgn3d8R9v0n23nZkl2xHSOF4MBY0JDIerWiZIqfkPoIrgVYgV56REH7dneMb9nD
+        H0K3p/aO41YStXqJJlrWgOTovaPh9e0EMkM/elL9Ho9ATmLxPr0L7BpHQu3Uw7cf6ME/Kq
+        TqqPcDA4FXZ0ibfT5LD0PayJkIEEFuY0+epISPiaOV/Lt0F1oHal/Ymjpt2OMB/wxJtM5F
+        q6KaWQ4qKEGxwBZ+d8a9qLtkPunw3jJgOQyF4RNrc1QYtCYfWmvJ9We9LiSsyJZAe1z8NA
+        FDL9zb2wgccAHzBw+qF+xxaMsoFznrorM4rWFUaJjTs4kNkOX8zDfahNkuDEfQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697189887;
+        s=2020e; t=1697189889;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8OpENGFnxAaYj7M8fE6cKf/8eE2Iu8UMtWVNtT2iVz0=;
-        b=Cxq2aRwKhCEI/Ury96a1CxlDfRvewV0ySg6E0XN4vEZk1OwSNQ4yLXzGui1wW5+NIdHoWt
-        2lr1KcTd1gBgulDA==
+        bh=yiCRTOM5demFgKTmq9X6OyvEhW+xoW8NeDS5lAX1ZC8=;
+        b=Ftvag4werfWiJJYLXBUwH2mwr88lQ2ZBPXtZElVVY0w8/yWDu9KT4OoMvdq7iLo1XNhvtM
+        tXGr6You9+UQ2DBw==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86/apic: Use BAD_APICID consistently
+Subject: [tip: x86/core] x86/cpu: Remove pointless evaluation of x86_coreid_bits
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Juergen Gross <jgross@suse.com>,
         Sohil Mehta <sohil.mehta@intel.com>,
         Michael Kelley <mikelley@microsoft.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Zhang Rui <rui.zhang@intel.com>, x86@kernel.org,
+        Zhang Rui <rui.zhang@intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230814085112.862835121@linutronix.de>
-References: <20230814085112.862835121@linutronix.de>
+In-Reply-To: <20230814085112.687588373@linutronix.de>
+References: <20230814085112.687588373@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <169718988727.3135.6720592549471092966.tip-bot2@tip-bot2>
+Message-ID: <169718988888.3135.7116915738142139742.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -70,20 +71,19 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/core branch of tip:
 
-Commit-ID:     9ff4275bc8fd7bd5ac4677e2724397f8db3209bf
-Gitweb:        https://git.kernel.org/tip/9ff4275bc8fd7bd5ac4677e2724397f8db3209bf
+Commit-ID:     594957d723a0674ca15bfefb755b3403624b8239
+Gitweb:        https://git.kernel.org/tip/594957d723a0674ca15bfefb755b3403624b8239
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 14 Aug 2023 10:18:39 +02:00
+AuthorDate:    Mon, 14 Aug 2023 10:18:36 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Tue, 10 Oct 2023 14:38:18 +02:00
 
-x86/apic: Use BAD_APICID consistently
+x86/cpu: Remove pointless evaluation of x86_coreid_bits
 
-APIC ID checks compare with BAD_APICID all over the place, but some
-initializers and some code which fiddles with global data structure use
--1[U] instead. That simply cannot work at all.
+cpuinfo_x86::x86_coreid_bits is only used by the AMD numa topology code. No
+point in evaluating it on non AMD systems.
 
-Fix it up and use BAD_APICID consistently all over the place.
+No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Juergen Gross <jgross@suse.com>
@@ -91,48 +91,61 @@ Tested-by: Sohil Mehta <sohil.mehta@intel.com>
 Tested-by: Michael Kelley <mikelley@microsoft.com>
 Tested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Tested-by: Zhang Rui <rui.zhang@intel.com>
+Reviewed-by: Arjan van de Ven <arjan@linux.intel.com>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20230814085112.862835121@linutronix.de
+Link: https://lore.kernel.org/r/20230814085112.687588373@linutronix.de
 
 ---
- arch/x86/kernel/acpi/boot.c | 2 +-
- arch/x86/kernel/apic/apic.c | 6 ++----
- 2 files changed, 3 insertions(+), 5 deletions(-)
+ arch/x86/kernel/cpu/intel.c   | 13 -------------
+ arch/x86/kernel/cpu/zhaoxin.c | 14 --------------
+ 2 files changed, 27 deletions(-)
 
-diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
-index 2a0ea38..f3e4d35 100644
---- a/arch/x86/kernel/acpi/boot.c
-+++ b/arch/x86/kernel/acpi/boot.c
-@@ -856,7 +856,7 @@ int acpi_unmap_cpu(int cpu)
- 	set_apicid_to_node(per_cpu(x86_cpu_to_apicid, cpu), NUMA_NO_NODE);
- #endif
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index be40456..55efadb 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -314,19 +314,6 @@ static void early_init_intel(struct cpuinfo_x86 *c)
+ 		setup_clear_cpu_cap(X86_FEATURE_PGE);
+ 	}
  
--	per_cpu(x86_cpu_to_apicid, cpu) = -1;
-+	per_cpu(x86_cpu_to_apicid, cpu) = BAD_APICID;
- 	set_cpu_present(cpu, false);
- 	num_processors--;
+-	if (c->cpuid_level >= 0x00000001) {
+-		u32 eax, ebx, ecx, edx;
+-
+-		cpuid(0x00000001, &eax, &ebx, &ecx, &edx);
+-		/*
+-		 * If HTT (EDX[28]) is set EBX[16:23] contain the number of
+-		 * apicids which are reserved per package. Store the resulting
+-		 * shift value for the package management code.
+-		 */
+-		if (edx & (1U << 28))
+-			c->x86_coreid_bits = get_count_order((ebx >> 16) & 0xff);
+-	}
+-
+ 	check_memory_type_self_snoop_errata(c);
  
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 3cdf484..d2b1d60 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -72,7 +72,7 @@ unsigned int num_processors;
- unsigned disabled_cpus;
+ 	/*
+diff --git a/arch/x86/kernel/cpu/zhaoxin.c b/arch/x86/kernel/cpu/zhaoxin.c
+index 05fa4ef..415564a 100644
+--- a/arch/x86/kernel/cpu/zhaoxin.c
++++ b/arch/x86/kernel/cpu/zhaoxin.c
+@@ -65,20 +65,6 @@ static void early_init_zhaoxin(struct cpuinfo_x86 *c)
+ 		set_cpu_cap(c, X86_FEATURE_CONSTANT_TSC);
+ 		set_cpu_cap(c, X86_FEATURE_NONSTOP_TSC);
+ 	}
+-
+-	if (c->cpuid_level >= 0x00000001) {
+-		u32 eax, ebx, ecx, edx;
+-
+-		cpuid(0x00000001, &eax, &ebx, &ecx, &edx);
+-		/*
+-		 * If HTT (EDX[28]) is set EBX[16:23] contain the number of
+-		 * apicids which are reserved per package. Store the resulting
+-		 * shift value for the package management code.
+-		 */
+-		if (edx & (1U << 28))
+-			c->x86_coreid_bits = get_count_order((ebx >> 16) & 0xff);
+-	}
+-
+ }
  
- /* Processor that is doing the boot up */
--unsigned int boot_cpu_physical_apicid __ro_after_init = -1U;
-+unsigned int boot_cpu_physical_apicid __ro_after_init = BAD_APICID;
- EXPORT_SYMBOL_GPL(boot_cpu_physical_apicid);
- 
- u8 boot_cpu_apic_version __ro_after_init;
-@@ -2318,9 +2318,7 @@ static int nr_logical_cpuids = 1;
- /*
-  * Used to store mapping between logical CPU IDs and APIC IDs.
-  */
--int cpuid_to_apicid[] = {
--	[0 ... NR_CPUS - 1] = -1,
--};
-+int cpuid_to_apicid[] = { [0 ... NR_CPUS - 1] = BAD_APICID, };
- 
- bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
- {
+ static void init_zhaoxin(struct cpuinfo_x86 *c)
