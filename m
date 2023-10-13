@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE0D7C8253
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321867C8251
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbjJMJj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 05:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57458 "EHLO
+        id S231159AbjJMJjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 05:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbjJMJiR (ORCPT
+        with ESMTP id S231284AbjJMJiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 13 Oct 2023 05:38:17 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DA4D9;
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5985EBE;
         Fri, 13 Oct 2023 02:38:15 -0700 (PDT)
 Date:   Fri, 13 Oct 2023 09:38:13 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697189894;
+        s=2020; t=1697189893;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=c6wa9XjmLkCQ3qyO7ju+/JngPbdKYlTfNmaJ+JxwaHM=;
-        b=UDonnchuUez1ppBxaRt/5mymEc+wfrxX6KJ0Q21Nj7HP5pKalEQjLnROlq8VHk2UCQjUck
-        oGknHOi/kPoLig/ztjobo0iaYwCNcABn1wx/el3yt9I9ziMzuCjylHwf1ohm621J6uhlq+
-        /oT8eNwUTP+gJXekZ05dQ6FaR8UGKz7ty0vaNDK8sVwGRBV5f0ul+CJICvN69cZ675SsD4
-        tA8g/Yh1Cy1uZQ+kec0LdT9DHYUy2+EChbpC0GxjF/v84FtHP87ExFf4CB609b7kIRZA69
-        /NcaK1zduPB/4lT/IVtujvXmgAAtCfELMelA5tIJazb80p/uXT2wZorYMC32Qg==
+        bh=rCTCPgo8jeqYDUyGPCO49XEL+tzO99RT05N9qxWKWRc=;
+        b=mm5BdMEVZPLvrOLrHF03QnQw5cfeUH3j/SaZoXapSbD4RDOOarP3e7DxQakQMpKzllDbw2
+        Y1BRiOkPiiRqpmwr3OAmns2GEwg7dsGzdNuDgnNX3FxB7zRV22948SbPG0Pli/5dFdGigV
+        hKrNoQwX/J6Nf7f3/qgLwCCisG9RS6oRYGng6/Vh7ezfgIJz3khBPoosEclrPcJ1E1wSC0
+        uey8bGa4oCOpfAy3pMFkzWkdxWszb9qzozpKWRE5vrwRxhk5iDNNJxs3kfZg47F6T5bDHn
+        Dcq+XmAvO4ebYJbeI5+b0bWvPUnOFA/J/WgTlNmkUyQgWV/ws81JdCGsb9HL7A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697189894;
+        s=2020e; t=1697189893;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=c6wa9XjmLkCQ3qyO7ju+/JngPbdKYlTfNmaJ+JxwaHM=;
-        b=VmysQOnQWHeAUR2dahw4nL40brr8rLfW5s7ZYp37Z2W8sopcB3SUs3yqPKu2GTC0U4bHJw
-        caq12SzT3GT73ZDA==
+        bh=rCTCPgo8jeqYDUyGPCO49XEL+tzO99RT05N9qxWKWRc=;
+        b=DvcCmy6XUtOkXfbQxEn+2tr3mWOOVAf6mBm3vFU2LUg0vNGSxIVAIi5nH14Hyy3dMSEZF3
+        xlYIScSP+qSbZsBw==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] cpu/SMT: Make SMT control more robust against
- enumeration failures
+Subject: [tip: x86/core] x86/apic: Fake primary thread mask for XEN/PV
 Cc:     Juergen Gross <jgross@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Sohil Mehta <sohil.mehta@intel.com>,
@@ -52,10 +51,10 @@ Cc:     Juergen Gross <jgross@suse.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Zhang Rui <rui.zhang@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230814085112.149440843@linutronix.de>
-References: <20230814085112.149440843@linutronix.de>
+In-Reply-To: <20230814085112.210011520@linutronix.de>
+References: <20230814085112.210011520@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <169718989362.3135.9943655328316153268.tip-bot2@tip-bot2>
+Message-ID: <169718989311.3135.5099682715244955511.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -71,14 +70,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/core branch of tip:
 
-Commit-ID:     d91bdd96b55cc3ce98d883a60f133713821b80a6
-Gitweb:        https://git.kernel.org/tip/d91bdd96b55cc3ce98d883a60f133713821b80a6
+Commit-ID:     965e05ff8af98c44f9937366715c512000373164
+Gitweb:        https://git.kernel.org/tip/965e05ff8af98c44f9937366715c512000373164
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 14 Aug 2023 10:18:27 +02:00
+AuthorDate:    Mon, 14 Aug 2023 10:18:28 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Tue, 10 Oct 2023 14:38:17 +02:00
 
-cpu/SMT: Make SMT control more robust against enumeration failures
+x86/apic: Fake primary thread mask for XEN/PV
 
 The SMT control mechanism got added as speculation attack vector
 mitigation. The implemented logic relies on the primary thread mask to
@@ -89,7 +88,7 @@ mechanics do not enumerate APICs and therefore the mask is never correctly
 populated.
 
 This went unnoticed so far because by chance XEN/PV ends up with
-smp_num_siblings == 2. So smt_hotplug_control stays at its default value
+smp_num_siblings == 2. So cpu_smt_control stays at its default value
 CPU_SMT_ENABLED and the primary thread mask is never evaluated in the
 context of CPU hotplug.
 
@@ -98,19 +97,19 @@ evaluation which legitimately provides a fake topology for XEN/PV. That
 sets smp_num_siblings to 1, which causes the core CPU hot-plug core to
 refuse to bring up the APs.
 
-This happens because smt_hotplug_control is set to CPU_SMT_NOT_SUPPORTED
-which causes cpu_smt_allowed() to evaluate the unpopulated primary thread
-mask with the conclusion that all non-boot CPUs are not valid to be
-plugged.
+This happens because cpu_smt_control is set to CPU_SMT_NOT_SUPPORTED which
+causes cpu_bootable() to evaluate the unpopulated primary thread mask with
+the conclusion that all non-boot CPUs are not valid to be plugged.
 
-Make cpu_smt_allowed() more robust and take CPU_SMT_NOT_SUPPORTED and
-CPU_SMT_NOT_IMPLEMENTED into account. Rename it to cpu_bootable() while at
-it as that makes it more clear what the function is about.
+The core code has already been made more robust against this kind of fail,
+but the primary thread mask really wants to be populated to avoid other
+issues all over the place.
 
-The primary mask issue on x86 XEN/PV needs to be addressed separately as
-there are users outside of the CPU hotplug code too.
+Just fake the mask by pretending that all XEN/PV vCPUs are primary threads,
+which is consistent because all of XEN/PVs topology is fake or non-existent.
 
-Fixes: 05736e4ac13c ("cpu/hotplug: Provide knobs to control SMT")
+Fixes: 6a4d2657e048 ("x86/smp: Provide topology_is_primary_thread()")
+Fixes: f54d4434c281 ("x86/apic: Provide cpu_primary_thread mask")
 Reported-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Juergen Gross <jgross@suse.com>
@@ -119,65 +118,38 @@ Tested-by: Michael Kelley <mikelley@microsoft.com>
 Tested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Tested-by: Zhang Rui <rui.zhang@intel.com>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20230814085112.149440843@linutronix.de
+Link: https://lore.kernel.org/r/20230814085112.210011520@linutronix.de
 
 ---
- kernel/cpu.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ arch/x86/kernel/apic/apic.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 6de7c6b..1a189da 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -659,11 +659,19 @@ static inline bool cpu_smt_thread_allowed(unsigned int cpu)
- #endif
- }
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index 760adac..3cdf484 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -36,6 +36,8 @@
+ #include <linux/smp.h>
+ #include <linux/mm.h>
  
--static inline bool cpu_smt_allowed(unsigned int cpu)
-+static inline bool cpu_bootable(unsigned int cpu)
++#include <xen/xen.h>
++
+ #include <asm/trace/irq_vectors.h>
+ #include <asm/irq_remapping.h>
+ #include <asm/pc-conf-reg.h>
+@@ -2344,6 +2346,15 @@ static int __init smp_init_primary_thread_mask(void)
  {
- 	if (cpu_smt_control == CPU_SMT_ENABLED && cpu_smt_thread_allowed(cpu))
- 		return true;
+ 	unsigned int cpu;
  
-+	/* All CPUs are bootable if controls are not configured */
-+	if (cpu_smt_control == CPU_SMT_NOT_IMPLEMENTED)
-+		return true;
++	/*
++	 * XEN/PV provides either none or useless topology information.
++	 * Pretend that all vCPUs are primary threads.
++	 */
++	if (xen_pv_domain()) {
++		cpumask_copy(&__cpu_primary_thread_mask, cpu_possible_mask);
++		return 0;
++	}
 +
-+	/* All CPUs are bootable if CPU is not SMT capable */
-+	if (cpu_smt_control == CPU_SMT_NOT_SUPPORTED)
-+		return true;
-+
- 	if (topology_is_primary_thread(cpu))
- 		return true;
- 
-@@ -685,7 +693,7 @@ bool cpu_smt_possible(void)
- EXPORT_SYMBOL_GPL(cpu_smt_possible);
- 
- #else
--static inline bool cpu_smt_allowed(unsigned int cpu) { return true; }
-+static inline bool cpu_bootable(unsigned int cpu) { return true; }
- #endif
- 
- static inline enum cpuhp_state
-@@ -788,10 +796,10 @@ static int bringup_wait_for_ap_online(unsigned int cpu)
- 	 * SMT soft disabling on X86 requires to bring the CPU out of the
- 	 * BIOS 'wait for SIPI' state in order to set the CR4.MCE bit.  The
- 	 * CPU marked itself as booted_once in notify_cpu_starting() so the
--	 * cpu_smt_allowed() check will now return false if this is not the
-+	 * cpu_bootable() check will now return false if this is not the
- 	 * primary sibling.
- 	 */
--	if (!cpu_smt_allowed(cpu))
-+	if (!cpu_bootable(cpu))
- 		return -ECANCELED;
+ 	for (cpu = 0; cpu < nr_logical_cpuids; cpu++)
+ 		cpu_mark_primary_thread(cpu, cpuid_to_apicid[cpu]);
  	return 0;
- }
-@@ -1741,7 +1749,7 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
- 		err = -EBUSY;
- 		goto out;
- 	}
--	if (!cpu_smt_allowed(cpu)) {
-+	if (!cpu_bootable(cpu)) {
- 		err = -EPERM;
- 		goto out;
- 	}
