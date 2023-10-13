@@ -2,93 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E53D7C8825
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B952C7C8832
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbjJMO6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 10:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
+        id S232294AbjJMO75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 10:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbjJMO6e (ORCPT
+        with ESMTP id S232271AbjJMO7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 10:58:34 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC68D95;
-        Fri, 13 Oct 2023 07:58:32 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 8D93A1000C4; Fri, 13 Oct 2023 15:58:30 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1697209110; bh=1WNpZCcvkShVfOmoZ1FtkNn5Y5oSEIRDiZYxsfcBt/A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G10jsopKsKYCgKCiyQthEgGH54hFDWr5Q5RLcir9PVaDE7NOSoHx4FBmloL3nGwy5
-         NKyDncoxuFMMPyn2BfFHBiHFyng7pVG+ya4mRky75SmUFlznpoKznyUhc4zhm9YHNQ
-         /CvBnQXxK6srhJLUyj13EUm9CdyfrJ0bnsDeKHZ6qj3SSQDekNpL5rcFxRPkqHHpCr
-         PLQF95mHK66Zm6zMn/gKl/nu8svw8kFRGujcV9A34R1J80Z4d0PRiliX3xeK4bVxL4
-         NxXsr7z7OZ2gLundHYyTQy0iyibFWpy0yQ3sTopVU1XpIxMTWs//geZSR4kPp5o5QT
-         Wj8tay2uNQ7nA==
-Date:   Fri, 13 Oct 2023 15:58:30 +0100
-From:   Sean Young <sean@mess.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     linux-media@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] pwm: make it possible to apply pwm changes in
- atomic context
-Message-ID: <ZSlbFukZKGNpR5PM@gofer.mess.org>
-References: <cover.1697193646.git.sean@mess.org>
- <9c0f1616fca5b218336b9321bfefe7abb7e1749f.1697193646.git.sean@mess.org>
- <ZSkvTKr42sUZImiM@orome.fritz.box>
+        Fri, 13 Oct 2023 10:59:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B4FBB
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:59:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697209148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YUSH8CafSPbzOw/nGHPE51+m/9D7hUPeYFksiadbyFk=;
+        b=D+eNUQIol6oIBxfQIPtawZjQ4I76OtlqbaNRjOLJm/kJtGBovLS+zJ+O9j9u5pKSEUrWdM
+        kv0aClBCJPyP59WYCzbZ0gLBJY1AUEhddlY+JEWe3H4BM4O89sn6o/z6kMSAfm/IhMjsnL
+        M4VIQZybYzWLvnHOsVBb8XoIdDRblGY=
+Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
+ [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-88-HmuQq8nuPx-HljtsTZC_SQ-1; Fri, 13 Oct 2023 10:59:06 -0400
+X-MC-Unique: HmuQq8nuPx-HljtsTZC_SQ-1
+Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-5a7a6fd18abso34393627b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:59:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697209146; x=1697813946;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YUSH8CafSPbzOw/nGHPE51+m/9D7hUPeYFksiadbyFk=;
+        b=KZaGWqZEgyE66JBoSBtvi8dR7blw8ddzbCD1cOVgDK1gIQPnfHDtOeS3dIqFHHWSO9
+         7abrPigLlof/e/YcgXynJH6wREElv2Q+2SRQhpU+7LDP2ysXDtAO72gxtZj/us/jxAb2
+         XrHz37qRP+2+1p87QoplcRDjbJAWR85Fe8nVq7rQnD/53vnVS09yafbugQK67/ES6EnB
+         eCgVGRFZdoPqcbWmXwHs56/1+7i2usL8d4DLDAMkMfJM+ozCNAzR1wyS58zpoNiuxNH/
+         sFM1DEvZY6YY9CHD4J7t6zzEK4uxj3Jf49uYmPL39AxXaB1cXElCRWVW033BKjlJcm4W
+         Yt2w==
+X-Gm-Message-State: AOJu0YyKQQgNtuNKM9BzkrX4IugJmNiQO+CL+Hb4EVdr2ggYsW9P+o/m
+        ELR8VYeSfdUxMA2FtORdsaGKwRi/ZMH8BsEdYDzO0SYxcVv/9L28f8tg0rUVYbSiQXaIcd1WZyg
+        u2JUE71ZEmM0BB31ACBZ9O+1x
+X-Received: by 2002:a81:73c1:0:b0:59b:5d6b:5110 with SMTP id o184-20020a8173c1000000b0059b5d6b5110mr29589081ywc.21.1697209146125;
+        Fri, 13 Oct 2023 07:59:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFOAY2Ojc8sODi/GaaDPUOuJ94od6+1qOrI8dlEtJE221nSYH7lO6L2TjoeLIX4Mthhi2LgqA==
+X-Received: by 2002:a81:73c1:0:b0:59b:5d6b:5110 with SMTP id o184-20020a8173c1000000b0059b5d6b5110mr29589063ywc.21.1697209145870;
+        Fri, 13 Oct 2023 07:59:05 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id k12-20020ae9f10c000000b007742c2ad7dfsm684159qkg.73.2023.10.13.07.59.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 07:59:05 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 09:59:03 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v4 04/15] firmware: qcom: add a dedicated TrustZone
+ buffer allocator
+Message-ID: <uvfqkpusd26asckyeeixfntsvqfe2vrk27lcmafrt6r26qil7n@ea5jfns346ix>
+References: <20231013114843.63205-1-brgl@bgdev.pl>
+ <20231013114843.63205-5-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZSkvTKr42sUZImiM@orome.fritz.box>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231013114843.63205-5-brgl@bgdev.pl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 01:51:40PM +0200, Thierry Reding wrote:
-> On Fri, Oct 13, 2023 at 11:46:14AM +0100, Sean Young wrote:
-> [...]
-> > diff --git a/include/linux/pwm.h b/include/linux/pwm.h
-> > index d2f9f690a9c1..93f166ab03c1 100644
-> > --- a/include/linux/pwm.h
-> > +++ b/include/linux/pwm.h
-> > @@ -267,6 +267,7 @@ struct pwm_capture {
-> >   * @get_state: get the current PWM state. This function is only
-> >   *	       called once per PWM device when the PWM chip is
-> >   *	       registered.
-> > + * @atomic: can the driver execute pwm_apply_state in atomic context
-> >   * @owner: helps prevent removal of modules exporting active PWMs
-> >   */
-> >  struct pwm_ops {
-> > @@ -278,6 +279,7 @@ struct pwm_ops {
-> >  		     const struct pwm_state *state);
-> >  	int (*get_state)(struct pwm_chip *chip, struct pwm_device *pwm,
-> >  			 struct pwm_state *state);
-> > +	bool atomic;
-> >  	struct module *owner;
-> >  };
+On Fri, Oct 13, 2023 at 01:48:32PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> As I mentioned earlier, this really belongs in struct pwm_chip rather
-> than struct pwm_ops. I know that Uwe said this is unlikely to happen,
-> and that may be true, but at the same time it's not like I'm asking
-> much. Whether you put this in struct pwm_ops or struct pwm_chip is
-> about the same amount of code, and putting it into pwm_chip is much
-> more flexible, so it's really a no-brainer.
+> We have several SCM calls that require passing buffers to the TrustZone
+> on top of the SMC core which allocates memory for calls that require
+> more than 4 arguments.
+> 
+> Currently every user does their own thing which leads to code
+> duplication. Many users call dma_alloc_coherent() for every call which
+> is terribly unperformant (speed- and size-wise).
+> 
+> Provide a set of library functions for creating and managing pool of
+> memory which is suitable for sharing with the TrustZone, that is:
+> page-aligned, contiguous and non-cachable as well as provides a way of
+> mapping of kernel virtual addresses to physical space.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Happy to change this of course. I changed it and then changed it back after
-Uwe's comment, I'll fix this in the next version.
+I'm still on the fence about introducing the Kconfig for the "just
+in case the hypervisor is bad on some boards", but I spent a
+while looking at this and it all looks good to me, so that opinion
+aside...
 
-One tiny advantage is that pwm_ops is static const while pwm_chip is
-allocated per-pwm, so will need instructions for setting the value. Having
-said that, the difference is tiny, it's a single bool.
+Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
 
-
-Sean
