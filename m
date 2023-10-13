@@ -2,144 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB2F7C7E9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7FB7C7EAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbjJMHdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55574 "EHLO
+        id S229870AbjJMHhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 03:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJMHc7 (ORCPT
+        with ESMTP id S229743AbjJMHhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:32:59 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 292B4AD
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:32:58 -0700 (PDT)
-Received: from wangkailong$jari.cn ( [182.148.14.172] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Fri, 13 Oct 2023 15:30:59
- +0800 (GMT+08:00)
-X-Originating-IP: [182.148.14.172]
-Date:   Fri, 13 Oct 2023 15:30:59 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "KaiLong Wang" <wangkailong@jari.cn>
-To:     mark@fasheh.com, jlbec@evilplan.org, akpm@linux-foundation.org
-Cc:     ocfs2-devel@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] ocfs2/dlm: Clean up errors in dlmmaster.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Fri, 13 Oct 2023 03:37:12 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E323BD
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:37:09 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3296b49c546so1507814f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:37:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1697182628; x=1697787428; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=QwkBCdmPcWNU+7PsxxS80Z7HY5APZAn6IaUDRF9z/7g=;
+        b=afrbKrDIKG/tg4AdpJONU+1GImk7PLAJzJpO+ZX8JRaBXM4M+Busu6qDuqN2+B/sSg
+         3IYcuGFpvGtnCpGtZ7C/KA4RxgCG9YEzaxtYklQMKHWE7ft/+ds7f7jm3K4WWTkYSX16
+         gHlFMpPCJP5WRjbvJ6+mzx7m9Eqfa+lheP0FNno7j97JJ7aCu8CSe4feI+wIunYjU+mx
+         p2175nWu+jM2X/XQ/nm57blM7RQ5LhlZLvh+VwWNkEybViALHHEDV3rUS6TVbRSFlgRb
+         S0B755R4uxKlK/VmgVwk1r7ftbIWm7cyc9Xy8l/s7KKipc4A3re3PVAICWi7nxk5voq6
+         g9ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697182628; x=1697787428;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QwkBCdmPcWNU+7PsxxS80Z7HY5APZAn6IaUDRF9z/7g=;
+        b=sUARidRELownnZwXlVOtGUXOpyRMgLhraFkNd+3Z6SQy0rvVs9qO4gPoDbKnTPDc5L
+         Mj2Xg2asCxNiaV14g4p6aNJpsAWPCcswfLkezYcmtueeRVWP0f4jpgVDpLa+QqoQmojI
+         uOHKhfi8xzep6bapgZPGJ3rjJllFHfuqChBg5gRv/uq8mvMP6T820T3e4J6iS8i8FkhJ
+         3brMuOrmz42RP59xoBdyC/mTMeK4O5dwRnZ//u4Ru8bcUpikskqkZuUsqLeDf21I/gSf
+         kE/nfgT/QWPedrMhM4Rp420ypOwNG+cTO5mMeleXLgIOEnRj7Nli9TOT/fuaDll2DLgF
+         ha7w==
+X-Gm-Message-State: AOJu0YxOPr9eBbjHrdlUJ5SNQH/LXwdTkNxBewEmbSV5qVUKf0R0t7iD
+        4qjW+SHjTfRjK+X2kL64SennrQ==
+X-Google-Smtp-Source: AGHT+IF47D5nfuOO1fNDgKrLpZfZIR3LU3/kd21Io+xC0N4oet37n+Sg+1yz+OLQlDvBMZndbRb35Q==
+X-Received: by 2002:a05:6000:5c6:b0:32d:5870:8b8a with SMTP id bh6-20020a05600005c600b0032d58708b8amr9030172wrb.56.1697182627837;
+        Fri, 13 Oct 2023 00:37:07 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:b50c:c5d5:8b1b:e06d])
+        by smtp.gmail.com with ESMTPSA id r6-20020a5d4946000000b0032da022855fsm235205wrs.111.2023.10.13.00.37.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 00:37:07 -0700 (PDT)
+References: <20231010062917.3624223-1-xianwei.zhao@amlogic.com>
+ <20231010062917.3624223-2-xianwei.zhao@amlogic.com>
+ <20231010132151.GA557938-robh@kernel.org>
+ <291f03f9-72aa-2842-b44a-c88c812df4f1@amlogic.com>
+User-agent: mu4e 1.8.13; emacs 29.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Xianwei Zhao <xianwei.zhao@amlogic.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Chuan Liu <chuan.liu@amlogic.com>
+Subject: Re: [PATCH V2 1/4] dt-bindings: clock: add Amlogic C3 PLL clock
+ controller bindings
+Date:   Fri, 13 Oct 2023 09:35:26 +0200
+In-reply-to: <291f03f9-72aa-2842-b44a-c88c812df4f1@amlogic.com>
+Message-ID: <1jr0lzvuql.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Message-ID: <7a92ebb0.967.18b27f217c1.Coremail.wangkailong@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwD3lD8z8ihl+t7BAA--.754W
-X-CM-SenderInfo: 5zdqwypdlo00nj6mt2flof0/1tbiAQADB2UnvzMAKgAHsm
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_00,RCVD_IN_PBL,RDNS_NONE,
-        T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-c3dpdGNoIGFuZCBjYXNlIHNob3VsZCBiZSBhdCB0aGUgc2FtZSBpbmRlbnQKRVJST1I6ICJmb28g
-KiBiYXIiIHNob3VsZCBiZSAiZm9vICpiYXIiCkVSUk9SOiBzcGFjZXMgcmVxdWlyZWQgYXJvdW5k
-IHRoYXQgJz0nIChjdHg6VnhWKQpFUlJPUjogb3BlbiBicmFjZSAneycgZm9sbG93aW5nIHN0cnVj
-dCBnbyBvbiB0aGUgc2FtZSBsaW5lCkVSUk9SOiBzcGFjZSByZXF1aXJlZCBhZnRlciB0aGF0ICcs
-JyAoY3R4OlZ4VikKRVJST1I6IHNwYWNlcyByZXF1aXJlZCBhcm91bmQgdGhhdCAnPCcgKGN0eDpW
-eFYpCgpTaWduZWQtb2ZmLWJ5OiBLYWlMb25nIFdhbmcgPHdhbmdrYWlsb25nQGphcmkuY24+Ci0t
-LQogZnMvb2NmczIvZGxtL2RsbW1hc3Rlci5jIHwgOTggKysrKysrKysrKysrKysrKysrKystLS0t
-LS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDQ4IGluc2VydGlvbnMoKyksIDUwIGRl
-bGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2ZzL29jZnMyL2RsbS9kbG1tYXN0ZXIuYyBiL2ZzL29j
-ZnMyL2RsbS9kbG1tYXN0ZXIuYwppbmRleCBkNjEwZGE4ZTJmMjQuLmQyOTA3MTVhMGEzZCAxMDA2
-NDQKLS0tIGEvZnMvb2NmczIvZGxtL2RsbW1hc3Rlci5jCisrKyBiL2ZzL29jZnMyL2RsbS9kbG1t
-YXN0ZXIuYwpAQCAtMTE1LDIzICsxMTUsMjMgQEAgc3RhdGljIGludCBkbG1fcHJlX21hc3Rlcl9y
-ZWNvX2xvY2tyZXMoc3RydWN0IGRsbV9jdHh0ICpkbG0sCiBpbnQgZGxtX2lzX2hvc3RfZG93bihp
-bnQgZXJybm8pCiB7CiAJc3dpdGNoIChlcnJubykgewotCQljYXNlIC1FQkFERjoKLQkJY2FzZSAt
-RUNPTk5SRUZVU0VEOgotCQljYXNlIC1FTk9UQ09OTjoKLQkJY2FzZSAtRUNPTk5SRVNFVDoKLQkJ
-Y2FzZSAtRVBJUEU6Ci0JCWNhc2UgLUVIT1NURE9XTjoKLQkJY2FzZSAtRUhPU1RVTlJFQUNIOgot
-CQljYXNlIC1FVElNRURPVVQ6Ci0JCWNhc2UgLUVDT05OQUJPUlRFRDoKLQkJY2FzZSAtRU5FVERP
-V046Ci0JCWNhc2UgLUVORVRVTlJFQUNIOgotCQljYXNlIC1FTkVUUkVTRVQ6Ci0JCWNhc2UgLUVT
-SFVURE9XTjoKLQkJY2FzZSAtRU5PUFJPVE9PUFQ6Ci0JCWNhc2UgLUVJTlZBTDogICAvKiBpZiBy
-ZXR1cm5lZCBmcm9tIG91ciB0Y3AgY29kZSwKKwljYXNlIC1FQkFERjoKKwljYXNlIC1FQ09OTlJF
-RlVTRUQ6CisJY2FzZSAtRU5PVENPTk46CisJY2FzZSAtRUNPTk5SRVNFVDoKKwljYXNlIC1FUElQ
-RToKKwljYXNlIC1FSE9TVERPV046CisJY2FzZSAtRUhPU1RVTlJFQUNIOgorCWNhc2UgLUVUSU1F
-RE9VVDoKKwljYXNlIC1FQ09OTkFCT1JURUQ6CisJY2FzZSAtRU5FVERPV046CisJY2FzZSAtRU5F
-VFVOUkVBQ0g6CisJY2FzZSAtRU5FVFJFU0VUOgorCWNhc2UgLUVTSFVURE9XTjoKKwljYXNlIC1F
-Tk9QUk9UT09QVDoKKwljYXNlIC1FSU5WQUw6ICAgLyogaWYgcmV0dXJuZWQgZnJvbSBvdXIgdGNw
-IGNvZGUsCiAJCQkJICAgdGhpcyBtZWFucyB0aGVyZSBpcyBubyBzb2NrZXQgKi8KLQkJCXJldHVy
-biAxOworCQlyZXR1cm4gMTsKIAl9CiAJcmV0dXJuIDA7CiB9CkBAIC02OTgsMTIgKzY5OCwxMiBA
-QCBzdGF0aWMgdm9pZCBkbG1fbG9ja3Jlc19kcm9wX2luZmxpZ2h0X3dvcmtlcihzdHJ1Y3QgZGxt
-X2N0eHQgKmRsbSwKICAqIHRvIGFzc2VydF9tYXN0ZXIgKG9yIGRpZSkuCiAgKgogICovCi1zdHJ1
-Y3QgZGxtX2xvY2tfcmVzb3VyY2UgKiBkbG1fZ2V0X2xvY2tfcmVzb3VyY2Uoc3RydWN0IGRsbV9j
-dHh0ICpkbG0sCitzdHJ1Y3QgZGxtX2xvY2tfcmVzb3VyY2UgKmRsbV9nZXRfbG9ja19yZXNvdXJj
-ZShzdHJ1Y3QgZGxtX2N0eHQgKmRsbSwKIAkJCQkJICBjb25zdCBjaGFyICpsb2NraWQsCiAJCQkJ
-CSAgaW50IG5hbWVsZW4sCiAJCQkJCSAgaW50IGZsYWdzKQogewotCXN0cnVjdCBkbG1fbG9ja19y
-ZXNvdXJjZSAqdG1wcmVzPU5VTEwsICpyZXM9TlVMTDsKKwlzdHJ1Y3QgZGxtX2xvY2tfcmVzb3Vy
-Y2UgKnRtcHJlcyA9IE5VTEwsICpyZXMgPSBOVUxMOwogCXN0cnVjdCBkbG1fbWFzdGVyX2xpc3Rf
-ZW50cnkgKm1sZSA9IE5VTEw7CiAJc3RydWN0IGRsbV9tYXN0ZXJfbGlzdF9lbnRyeSAqYWxsb2Nf
-bWxlID0gTlVMTDsKIAlpbnQgYmxvY2tlZCA9IDA7CkBAIC0xMTQ0LDE2ICsxMTQ0LDE0IEBAIHN0
-YXRpYyBpbnQgZGxtX3dhaXRfZm9yX2xvY2tfbWFzdGVyeShzdHJ1Y3QgZGxtX2N0eHQgKmRsbSwK
-IAlyZXR1cm4gcmV0OwogfQogCi1zdHJ1Y3QgZGxtX2JpdG1hcF9kaWZmX2l0ZXIKLXsKK3N0cnVj
-dCBkbG1fYml0bWFwX2RpZmZfaXRlciB7CiAJaW50IGN1cm5vZGU7CiAJdW5zaWduZWQgbG9uZyAq
-b3JpZ19ibTsKIAl1bnNpZ25lZCBsb25nICpjdXJfYm07CiAJdW5zaWduZWQgbG9uZyBkaWZmX2Jt
-W0JJVFNfVE9fTE9OR1MoTzJOTV9NQVhfTk9ERVMpXTsKIH07CiAKLWVudW0gZGxtX25vZGVfc3Rh
-dGVfY2hhbmdlCi17CitlbnVtIGRsbV9ub2RlX3N0YXRlX2NoYW5nZSB7CiAJTk9ERV9ET1dOID0g
-LTEsCiAJTk9ERV9OT19DSEFOR0UgPSAwLAogCU5PREVfVVAKQEAgLTEzMDgsNyArMTMwNiw3IEBA
-IHN0YXRpYyBpbnQgZGxtX2RvX21hc3Rlcl9yZXF1ZXN0KHN0cnVjdCBkbG1fbG9ja19yZXNvdXJj
-ZSAqcmVzLAogewogCXN0cnVjdCBkbG1fY3R4dCAqZGxtID0gbWxlLT5kbG07CiAJc3RydWN0IGRs
-bV9tYXN0ZXJfcmVxdWVzdCByZXF1ZXN0OwotCWludCByZXQsIHJlc3BvbnNlPTAsIHJlc2VuZDsK
-KwlpbnQgcmV0LCByZXNwb25zZSA9IDAsIHJlc2VuZDsKIAogCW1lbXNldCgmcmVxdWVzdCwgMCwg
-c2l6ZW9mKHJlcXVlc3QpKTsKIAlyZXF1ZXN0Lm5vZGVfaWR4ID0gZGxtLT5ub2RlX251bTsKQEAg
-LTEzNTEsMzEgKzEzNDksMzEgQEAgc3RhdGljIGludCBkbG1fZG9fbWFzdGVyX3JlcXVlc3Qoc3Ry
-dWN0IGRsbV9sb2NrX3Jlc291cmNlICpyZXMsCiAJcmVzZW5kID0gMDsKIAlzcGluX2xvY2soJm1s
-ZS0+c3BpbmxvY2spOwogCXN3aXRjaCAocmVzcG9uc2UpIHsKLQkJY2FzZSBETE1fTUFTVEVSX1JF
-U1BfWUVTOgotCQkJc2V0X2JpdCh0bywgbWxlLT5yZXNwb25zZV9tYXApOwotCQkJbWxvZygwLCAi
-bm9kZSAldSBpcyB0aGUgbWFzdGVyLCByZXNwb25zZT1ZRVNcbiIsIHRvKTsKLQkJCW1sb2coMCwg
-IiVzOiUuKnM6IG1hc3RlciBub2RlICV1IG5vdyBrbm93cyBJIGhhdmUgYSAiCi0JCQkgICAgICJy
-ZWZlcmVuY2VcbiIsIGRsbS0+bmFtZSwgcmVzLT5sb2NrbmFtZS5sZW4sCi0JCQkgICAgIHJlcy0+
-bG9ja25hbWUubmFtZSwgdG8pOwotCQkJbWxlLT5tYXN0ZXIgPSB0bzsKLQkJCWJyZWFrOwotCQlj
-YXNlIERMTV9NQVNURVJfUkVTUF9OTzoKLQkJCW1sb2coMCwgIm5vZGUgJXUgbm90IG1hc3Rlciwg
-cmVzcG9uc2U9Tk9cbiIsIHRvKTsKLQkJCXNldF9iaXQodG8sIG1sZS0+cmVzcG9uc2VfbWFwKTsK
-LQkJCWJyZWFrOwotCQljYXNlIERMTV9NQVNURVJfUkVTUF9NQVlCRToKLQkJCW1sb2coMCwgIm5v
-ZGUgJXUgbm90IG1hc3RlciwgcmVzcG9uc2U9TUFZQkVcbiIsIHRvKTsKLQkJCXNldF9iaXQodG8s
-IG1sZS0+cmVzcG9uc2VfbWFwKTsKLQkJCXNldF9iaXQodG8sIG1sZS0+bWF5YmVfbWFwKTsKLQkJ
-CWJyZWFrOwotCQljYXNlIERMTV9NQVNURVJfUkVTUF9FUlJPUjoKLQkJCW1sb2coMCwgIm5vZGUg
-JXUgaGl0IGFuIGVycm9yLCByZXNlbmRpbmdcbiIsIHRvKTsKLQkJCXJlc2VuZCA9IDE7Ci0JCQly
-ZXNwb25zZSA9IDA7Ci0JCQlicmVhazsKLQkJZGVmYXVsdDoKLQkJCW1sb2coTUxfRVJST1IsICJi
-YWQgcmVzcG9uc2UhICV1XG4iLCByZXNwb25zZSk7Ci0JCQlCVUcoKTsKKwljYXNlIERMTV9NQVNU
-RVJfUkVTUF9ZRVM6CisJCXNldF9iaXQodG8sIG1sZS0+cmVzcG9uc2VfbWFwKTsKKwkJbWxvZygw
-LCAibm9kZSAldSBpcyB0aGUgbWFzdGVyLCByZXNwb25zZT1ZRVNcbiIsIHRvKTsKKwkJbWxvZygw
-LCAiJXM6JS4qczogbWFzdGVyIG5vZGUgJXUgbm93IGtub3dzIEkgaGF2ZSBhICIKKwkJCSJyZWZl
-cmVuY2VcbiIsIGRsbS0+bmFtZSwgcmVzLT5sb2NrbmFtZS5sZW4sCisJCQlyZXMtPmxvY2tuYW1l
-Lm5hbWUsIHRvKTsKKwkJbWxlLT5tYXN0ZXIgPSB0bzsKKwkJYnJlYWs7CisJY2FzZSBETE1fTUFT
-VEVSX1JFU1BfTk86CisJCW1sb2coMCwgIm5vZGUgJXUgbm90IG1hc3RlciwgcmVzcG9uc2U9Tk9c
-biIsIHRvKTsKKwkJc2V0X2JpdCh0bywgbWxlLT5yZXNwb25zZV9tYXApOworCQlicmVhazsKKwlj
-YXNlIERMTV9NQVNURVJfUkVTUF9NQVlCRToKKwkJbWxvZygwLCAibm9kZSAldSBub3QgbWFzdGVy
-LCByZXNwb25zZT1NQVlCRVxuIiwgdG8pOworCQlzZXRfYml0KHRvLCBtbGUtPnJlc3BvbnNlX21h
-cCk7CisJCXNldF9iaXQodG8sIG1sZS0+bWF5YmVfbWFwKTsKKwkJYnJlYWs7CisJY2FzZSBETE1f
-TUFTVEVSX1JFU1BfRVJST1I6CisJCW1sb2coMCwgIm5vZGUgJXUgaGl0IGFuIGVycm9yLCByZXNl
-bmRpbmdcbiIsIHRvKTsKKwkJcmVzZW5kID0gMTsKKwkJcmVzcG9uc2UgPSAwOworCQlicmVhazsK
-KwlkZWZhdWx0OgorCQltbG9nKE1MX0VSUk9SLCAiYmFkIHJlc3BvbnNlISAldVxuIiwgcmVzcG9u
-c2UpOworCQlCVUcoKTsKIAl9CiAJc3Bpbl91bmxvY2soJm1sZS0+c3BpbmxvY2spOwogCWlmIChy
-ZXNlbmQpIHsKQEAgLTE2OTksNyArMTY5Nyw3IEBAIHN0YXRpYyBpbnQgZGxtX2RvX2Fzc2VydF9t
-YXN0ZXIoc3RydWN0IGRsbV9jdHh0ICpkbG0sCiAJCQlyID0gMDsKIAkJfSBlbHNlIGlmIChyIDwg
-MCkgewogCQkJLyogb2ssIHNvbWV0aGluZyBob3JyaWJseSBtZXNzZWQuICBraWxsIHRoeXNlbGYu
-ICovCi0JCQltbG9nKE1MX0VSUk9SLCJkdXJpbmcgYXNzZXJ0IG1hc3RlciBvZiAlLipzIHRvICV1
-LCAiCisJCQltbG9nKE1MX0VSUk9SLCAiZHVyaW5nIGFzc2VydCBtYXN0ZXIgb2YgJS4qcyB0byAl
-dSwgIgogCQkJICAgICAiZ290ICVkLlxuIiwgbmFtZWxlbiwgbG9ja25hbWUsIHRvLCByKTsKIAkJ
-CXNwaW5fbG9jaygmZGxtLT5zcGlubG9jayk7CiAJCQlzcGluX2xvY2soJmRsbS0+bWFzdGVyX2xv
-Y2spOwpAQCAtMjkzMCw3ICsyOTI4LDcgQEAgc3RhdGljIHZvaWQgZGxtX3JlbW92ZV9ub25sb2Nh
-bF9sb2NrcyhzdHJ1Y3QgZGxtX2N0eHQgKmRsbSwKIAogCUJVR19PTihyZXMtPm93bmVyID09IGRs
-bS0+bm9kZV9udW0pOwogCi0JZm9yIChpPTA7IGk8MzsgaSsrKSB7CisJZm9yIChpID0gMDsgaSA8
-IDM7IGkrKykgewogCQlsaXN0X2Zvcl9lYWNoX2VudHJ5X3NhZmUobG9jaywgbmV4dCwgcXVldWUs
-IGxpc3QpIHsKIAkJCWlmIChsb2NrLT5tbC5ub2RlICE9IGRsbS0+bm9kZV9udW0pIHsKIAkJCQlt
-bG9nKDAsICJwdXR0aW5nIGxvY2sgZm9yIG5vZGUgJXVcbiIsCi0tIAoyLjE3LjEK
+
+On Wed 11 Oct 2023 at 10:50, Xianwei Zhao <xianwei.zhao@amlogic.com> wrote:
+
+> Hi Rob,
+>     Thanks for your advise.
+>
+> On 2023/10/10 21:21, Rob Herring wrote:
+>> [ EXTERNAL EMAIL ]
+>> On Tue, Oct 10, 2023 at 02:29:14PM +0800, Xianwei Zhao wrote:
+>>> Add the C3 PLL clock controller dt-bindings for Amlogic C3 SoC family
+>>>
+>>> Signed-off-by: Xianwei Zhao <xianwei.zhao@amlogic.com>
+>>> ---
+>>> V1 -> V2: Fix errors when check dtbinding use "make dt_binding_check"
+>> Your patches aren't bisectable. It's fine if you want to combine patch 1
+>> and 2 into 1 patch. Or just use the raw numbers here instead of the
+>> header.
+>> 
+> I will combine patch 1 and 2 into 1 patch in V3.
+
+I'd prefer if you used raw ids or even fake node for the example, like
+<&pll_in> and <&mpll_in> for readability, rather than combining the patches
+
+>>> ---
+>>>   .../bindings/clock/amlogic,c3-pll-clkc.yaml   | 59 +++++++++++++++++++
+>>>   .../dt-bindings/clock/amlogic,c3-pll-clkc.h   | 42 +++++++++++++
+>>>   2 files changed, 101 insertions(+)
+>>>   create mode 100644 Documentation/devicetree/bindings/clock/amlogic,c3-pll-clkc.yaml
+>>>   create mode 100644 include/dt-bindings/clock/amlogic,c3-pll-clkc.h
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/clock/amlogic,c3-pll-clkc.yaml b/Documentation/devicetree/bindings/clock/amlogic,c3-pll-clkc.yaml
+>>> new file mode 100644
+>>> index 000000000000..a646992917b7
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/clock/amlogic,c3-pll-clkc.yaml
+>>> @@ -0,0 +1,59 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +# Copyright (C) 2022-2023 Amlogic, Inc. All rights reserved
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/clock/amlogic,c3-pll-clkc.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Amlogic C3 serials PLL Clock Controller
+>> s/serials/Serials/
+>> 
+> Will fix
+>>> +
+>>> +maintainers:
+>>> +  - Chuan Liu <chuan.liu@amlogic.com>
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    const: amlogic,c3-pll-clkc
+>>> +
+>>> +  reg:
+>>> +    maxItems: 1
+>>> +
+>>> +  clocks:
+>>> +    minItems: 1
+>>> +    items:
+>>> +      - description: input pll_in
+>>> +      - description: input mclk_pll_in
+>>> +
+>>> +  clock-names:
+>>> +    minItems: 1
+>>> +    items:
+>>> +      - const: pll_in
+>>> +      - const: mclk_pll_in
+>>> +
+>>> +  "#clock-cells":
+>>> +    const: 1
+>>> +
+>>> +required:
+>>> +  - compatible
+>>> +  - reg
+>>> +  - clocks
+>>> +  - clock-names
+>>> +  - "#clock-cells"
+>>> +
+>>> +additionalProperties: false
+>>> +
+>>> +examples:
+>>> +  - |
+>>> +    #include <dt-bindings/clock/amlogic,c3-peripherals-clkc.h>
+>>> +    apb {
+>>> +        #address-cells = <2>;
+>>> +        #size-cells = <2>;
+>>> +
+>>> +        clkc_pll: clock-controller@8000 {
+>> Drop unused labels.
+>> 
+> Will delete clkc_pll.
+>>> +          compatible = "amlogic,c3-pll-clkc";
+>> Your indentation is not consistent.
+>> 
+> Will fix it in V3.
+>>> +          reg = <0x0 0x8000 0x0 0x1a4>;
+>>> +          clocks = <&clkc_periphs CLKID_PLL_IN>,
+>>> +                   <&clkc_periphs CLKID_MCLK_PLL_IN>;
+>>> +          clock-names = "pll_in", "mclk_pll_in";
+>>> +          #clock-cells = <1>;
+>>> +        };
+>>> +    };
+>>> diff --git a/include/dt-bindings/clock/amlogic,c3-pll-clkc.h b/include/dt-bindings/clock/amlogic,c3-pll-clkc.h
+>>> new file mode 100644
+>>> index 000000000000..aa731e8fae29
+>>> --- /dev/null
+>>> +++ b/include/dt-bindings/clock/amlogic,c3-pll-clkc.h
+>>> @@ -0,0 +1,42 @@
+>>> +/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
+>>> +/*
+>>> + * Copyright (c) 2023 Amlogic, Inc. All rights reserved.
+>>> + * Author: Chuan Liu <chuan.liu@amlogic.com>
+>>> + */
+>>> +
+>>> +#ifndef _DT_BINDINGS_CLOCK_AMLOGIC_C3_PLL_CLKC_H
+>>> +#define _DT_BINDINGS_CLOCK_AMLOGIC_C3_PLL_CLKC_H
+>>> +
+>>> +#define CLKID_FIXED_PLL_DCO                  0
+>>> +#define CLKID_FIXED_PLL                              1
+>>> +#define CLKID_FCLK_DIV40_DIV                 2
+>>> +#define CLKID_FCLK_DIV40                     3
+>>> +#define CLKID_FCLK_DIV2_DIV                  4
+>>> +#define CLKID_FCLK_DIV2                              5
+>>> +#define CLKID_FCLK_DIV2P5_DIV                        6
+>>> +#define CLKID_FCLK_DIV2P5                    7
+>>> +#define CLKID_FCLK_DIV3_DIV                  8
+>>> +#define CLKID_FCLK_DIV3                              9
+>>> +#define CLKID_FCLK_DIV4_DIV                  10
+>>> +#define CLKID_FCLK_DIV4                              11
+>>> +#define CLKID_FCLK_DIV5_DIV                  12
+>>> +#define CLKID_FCLK_DIV5                              13
+>>> +#define CLKID_FCLK_DIV7_DIV                  14
+>>> +#define CLKID_FCLK_DIV7                              15
+>>> +#define CLKID_GP0_PLL_DCO                    16
+>>> +#define CLKID_GP0_PLL                                17
+>>> +#define CLKID_HIFI_PLL_DCO                   18
+>>> +#define CLKID_HIFI_PLL                               19
+>>> +#define CLKID_MCLK_PLL_DCO                   20
+>>> +#define CLKID_MCLK_PLL                               21
+>>> +#define CLKID_MCLK_PLL_CLK                   22
+>>> +#define CLKID_MCLK0_SEL                              23
+>>> +#define CLKID_MCLK0_SEL_OUT                  24
+>>> +#define CLKID_MCLK0_DIV                              25
+>>> +#define CLKID_MCLK0                          26
+>>> +#define CLKID_MCLK1_SEL                              27
+>>> +#define CLKID_MCLK1_SEL_OUT                  28
+>>> +#define CLKID_MCLK1_DIV                              29
+>>> +#define CLKID_MCLK1                          30
+>>> +
+>>> +#endif  /* _DT_BINDINGS_CLOCK_AMLOGIC_C3_PLL_CLKC_H */
+>>>
+>>> base-commit: 57b55c76aaf1ba50ecc6dcee5cd6843dc4d85239
+>>> --
+>>> 2.37.1
+>>>
+
