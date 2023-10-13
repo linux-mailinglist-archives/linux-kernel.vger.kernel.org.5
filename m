@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A43257C7E70
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6746A7C7E78
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbjJMHOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
+        id S229903AbjJMHRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 03:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbjJMHOx (ORCPT
+        with ESMTP id S229843AbjJMHR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:14:53 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B203A9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:14:52 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a2536adaf3so23966797b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697181291; x=1697786091; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7FDl3hcA4Kpjn0WDz3Qx+R+wRCdAyRoZ2EDAKSDTUus=;
-        b=FnxoMLhWoUG/mMX5W8wBiCYQU11JcSCoEFHXZbtrYCtsoSS90nD4smlku+jtgi3FTw
-         DTxnDGwd0hSbT7z059bb2QsZQwmSvl1z9/l/0cSPveHidB7Rh5eo7rzg20Rdjf1gjPmx
-         LdY3dImeniHb9eFDSjwWJ6YghAC4xbJkB9Jjsfa9e3PBR8FdtMfrfg/uZZ3rFvoAU+yM
-         Rmzb6W2JeQuLiCWi+4cRd3eXL/y9lYCCJUpVNGdAE36QPwA5zO1REEDgNdcqz7IPt74J
-         XjZGaU16nVUzpRDrVBGxBy67l8yJm760yxLPZB0ZRfy1onKfK80zuLOscEfku3lavQk2
-         YFwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697181291; x=1697786091;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7FDl3hcA4Kpjn0WDz3Qx+R+wRCdAyRoZ2EDAKSDTUus=;
-        b=rOyn/vZJfKjVuALDnfi6kKrwD6i52/lSn9ZcGWvp1njnZF+7p49RwO8pq0H8zxszgF
-         Rc46lm1K0EwJkH6vPsQlCeTIBMeIdGJad8bpdV0f3XPE6fIRR2OvrLrpqEOP4SXzdll9
-         meFcVMEsWB85xy+Ldr3pL0pIUDhDnA4LRTAQszj3rygH5uQeaxqz9W2YxcKPXC4Bs7dR
-         g7cIcoe0Lm6GGhkIjveFj2GuqECUmoMHaoOHqNs5W0ixDAlP3dydNJlUXAQuOLch/hn6
-         BrAymPN/gFi+qoTQ3+OCKuQub5LIn00CwAg2PYTAopFMtEr/cONKt/dnX4b1XXiM3HEc
-         LxLg==
-X-Gm-Message-State: AOJu0Yyp1J6qUaX8LuudqWSOfOGItUn0HPoaf6LUgzGoflYuLyXw852C
-        YuEwV/5P4M6/3xvzsjsC/91fdZOXNMTWooDpJrZwnQ==
-X-Google-Smtp-Source: AGHT+IE733mw1TRoz7bn6IyqWjJR2AUmVHKbaLWKeU9ZAQgJOheExDrPdtR4nozBVlPlF7/mWMIisXj3teTO0r84B4A=
-X-Received: by 2002:a81:a542:0:b0:5a1:d4f7:8b65 with SMTP id
- v2-20020a81a542000000b005a1d4f78b65mr26403317ywg.27.1697181291569; Fri, 13
- Oct 2023 00:14:51 -0700 (PDT)
+        Fri, 13 Oct 2023 03:17:28 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9DDBC;
+        Fri, 13 Oct 2023 00:17:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0115FC433CB;
+        Fri, 13 Oct 2023 07:17:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697181446;
+        bh=mZzYynmfJ2/pdsSnnLB7cuavYnApPnZfzHGYj9nCAeA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IVoeRbExMYaVYqOlZ0E8lBzZCXXY1JbAget/P8s277Z4fb0gx7WIb1qebIwGCY1IJ
+         h9+RlBxTjpMHU+QGDK+xK0cIE4HpVPEjn3DX8RpRLBXFLTD9DmNZ8Y2xHQAVYmMjxV
+         zytHQGwaKWn4P5a2325k49h7ZiBI2s+N2XYzMt6wM/rVgKre84QrYF0DViIU1ytMd7
+         VfArELQIqtToaHjPtoTAvY8n3GcR/eoFQMbjTHu1l699yX99pLwFNg9UhFxkHIysst
+         0uOq71xzAiyIVBIG853S3Os9ftzvPGv/woCU5U6WfkrFesxc9ATonOrZGcWYEdd4GO
+         aK2T7umF31aTQ==
+Date:   Fri, 13 Oct 2023 09:17:23 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Stefan Lengfeld <stefan@lengfeld.xyz>
+Cc:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>,
+        linux-media <linux-media@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>, linux-i2c@vger.kernel.org
+Subject: Re: Sony IMX290/462 image sensors I2C xfer peculiarity
+Message-ID: <ZSjvA3QpY1T9McjN@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Stefan Lengfeld <stefan@lengfeld.xyz>,
+        Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>,
+        linux-media <linux-media@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>, linux-i2c@vger.kernel.org
+References: <m3y1gpw8ri.fsf@t19.piap.pl>
+ <CAPY8ntASwh3AcRqE+2zF4Df=u+=wJ5K9icAeOrXTMJGDd1+caw@mail.gmail.com>
+ <m3o7hfx3ob.fsf@t19.piap.pl>
+ <m37cnuvmhn.fsf@t19.piap.pl>
+ <m3o7h5tthf.fsf@t19.piap.pl>
+ <m3jzrttrmz.fsf@t19.piap.pl>
+ <20231011101553.we3r73xejvqdql5j@porty>
+ <m3fs2htn7g.fsf@t19.piap.pl>
+ <20231012220127.GB27838@stcim.de>
 MIME-Version: 1.0
-References: <20231013091831.60a032c2@canb.auug.org.au> <CACRpkdaEVUfFg-O53NBiyWPsjx0VZVMKK7o2ikUMSCy0_AJUGQ@mail.gmail.com>
- <CAMuHMdX3LXZiRRAHSb1FU6nrgtPnyewbUwp7R9Rw2zbxziYz7w@mail.gmail.com>
-In-Reply-To: <CAMuHMdX3LXZiRRAHSb1FU6nrgtPnyewbUwp7R9Rw2zbxziYz7w@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 13 Oct 2023 09:14:40 +0200
-Message-ID: <CACRpkdYNRyL-hywayP97PsLvhEk_Dm4HdnYHHo9N50GXMuxWCg@mail.gmail.com>
-Subject: Re: linux-next: duplicate patch in the pinctrl tree
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Ralph Siemsen <ralph.siemsen@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="u/l8M5o0YMZg682I"
+Content-Disposition: inline
+In-Reply-To: <20231012220127.GB27838@stcim.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 9:10=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
-> On Fri, Oct 13, 2023 at 12:44=E2=80=AFAM Linus Walleij <linus.walleij@lin=
-aro.org> wrote:
-> > On Fri, Oct 13, 2023 at 12:18=E2=80=AFAM Stephen Rothwell <sfr@canb.auu=
-g.org.au> wrote:
-> > > The following commit is also in Linus Torvalds' tree as a different c=
-ommit
-> > > (but the same patch):
-> > >
-> > >   73394a1b2194 ("pinctrl: renesas: rzn1: Enable missing PINMUX")
-> > >
-> > > This is commit
-> > >
-> > >   f055ff23c331 ("pinctrl: renesas: rzn1: Enable missing PINMUX")
-> > >
-> > > in Linus' tree.
-> >
-> > I had to fix up the commit message, sorry,
->
-> The only difference is your added SoB?
 
-No, I'm not that vain...
+--u/l8M5o0YMZg682I
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The merge commit got screwed up (random characters I don't know why).
 
-So since it's just one patch I simply rebased the one patch to the top.
+> Do you know the I2C repeated start feature [1]? This allows to batch together
+> multiple I2C read/writes in a single transfer. And in the best case, this
+> transfer is executed in one go without a delay in between. At least in the
+> kernel it's guaranteed that no other driver can go in between with another
+> transfer.
 
-But if I do that, the tools will complain about "non-author signoff".
-So I had to sign it off.
+If the HW does rep_start properly, it is even guaranteed on the bus
+because the bus is never seen as free by other participants. Check
+"START and STOP" conditions in the I2C specs.
 
-> > I'll rebuild my branch for -next.
->
-> I'm afraid that won't help, as the original one (from
-> renesas-pinctrl-fixes-for-v6.6) is also part of
-> renesas-pinctrl-for-v6.7, which I'm gonna send you a PR for later today.
->
-> I guess we'll just have to live with it?
 
-It's fine if you drop it and rebase from my side, I understand the
-hashes will be different but the content is the same so it is the
-same tested.
+--u/l8M5o0YMZg682I
+Content-Type: application/pgp-signature; name="signature.asc"
 
-But I guess there could be reasons for not to, so then we can
-live with it I guess.
+-----BEGIN PGP SIGNATURE-----
 
-Yours,
-Linus Walleij
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUo7wMACgkQFA3kzBSg
+KbZs4xAAiGla3VYW4LK+tWuDufXr/zrNHbwb0pU1zty0q+93Yp9riCln24vQ8VdN
+QbtOpwcHb+aZOh5wfz8IqL8DTgAtC1Z5h2qxUXv2vYA/V6t5jirybkOg/iR+moG4
+61V8ov437G4iAaL4xcObmtW6F6Gse/dlm8Q2JGg2eVIZqNr7mgcgJeyPTR38pWjS
+1FjP9NYoY1Xu/JhFEwar2LbLLYQqNtrT1AuPXAll2GlfDrBtfxSWZAG6ywDIXU34
+oEaMuAZDVIzhltMLgXzBQhMgef9l0naVuo/myB+htVwA7oAn45ImyDc1fGyAUMlC
+x2E7zL54CYGpon4FclA74Sgp0AjlWa3RWCkPZ+oQzL7HyjKYwM62cb3aPWkMCaV7
+57KkLtKwUb5SmTRGryNYivEXta7adBo7HvIrYeuO0paGDw65NpzeKP4rMSQHo+XX
+LWTirx18kOKA4T+r9xKvIdKiDly+R26dBln6nK5cbM2bkmIn6TIo7i2fITPbTInA
+Y94MFb/0Ifa97tNRD0VQbv89dnzogx0HP8BkVqwdpshIoIifmYSm9X33n5Nb0cT1
+YifunACQYgdt3vxnJjFPiUB3KE8Px/Wp/vvkWEacvbgnxfrID8zVMAhhsvinCrhQ
+hHh/id1kvsXrsrs8POeU0KrsQDarFZUAf42lJtPcXoY2rd9FoBU=
+=pVqj
+-----END PGP SIGNATURE-----
+
+--u/l8M5o0YMZg682I--
