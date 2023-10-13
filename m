@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA84D7C7D52
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7961C7C7D4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbjJMF5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 01:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
+        id S229703AbjJMFz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 01:55:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbjJMF5o (ORCPT
+        with ESMTP id S229707AbjJMFzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 01:57:44 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A43ECB7;
-        Thu, 12 Oct 2023 22:57:40 -0700 (PDT)
-Received: from chenguohua$jari.cn ( [182.148.14.172] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Fri, 13 Oct 2023 13:55:42
- +0800 (GMT+08:00)
-X-Originating-IP: [182.148.14.172]
-Date:   Fri, 13 Oct 2023 13:55:42 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   chenguohua@jari.cn
-To:     chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com
-Cc:     linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: [PATCH] NFSD: Clean up errors in lockd.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Fri, 13 Oct 2023 01:55:50 -0400
+Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EBFB8;
+        Thu, 12 Oct 2023 22:55:49 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 67CE8207FD;
+        Fri, 13 Oct 2023 07:55:48 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id eJaMq-f9eqNF; Fri, 13 Oct 2023 07:55:48 +0200 (CEST)
+Received: from mailout1.secunet.com (mailout1.secunet.com [62.96.220.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 080B7207C6;
+        Fri, 13 Oct 2023 07:55:48 +0200 (CEST)
+Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
+        by mailout1.secunet.com (Postfix) with ESMTP id F054780004A;
+        Fri, 13 Oct 2023 07:55:47 +0200 (CEST)
+Received: from mbx-essen-02.secunet.de (10.53.40.198) by
+ cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 13 Oct 2023 07:55:47 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
+ (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Fri, 13 Oct
+ 2023 07:55:47 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id C9A633182B10; Fri, 13 Oct 2023 07:55:46 +0200 (CEST)
+Date:   Fri, 13 Oct 2023 07:55:46 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Ma Ke <make_ruc2021@163.com>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <dsahern@kernel.org>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: ipv6: fix return value check in esp_remove_trailer
+Message-ID: <ZSjb4p+6sZ3kRcw0@gauss3.secunet.de>
+References: <20231007005953.3994960-1-make_ruc2021@163.com>
 MIME-Version: 1.0
-Message-ID: <96b90fc.952.18b279add15.Coremail.chenguohua@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwBn+D3e2yhlSdvBAA--.687W
-X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQADEWUnvzMAGQAfsb
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_00,RCVD_IN_PBL,RDNS_NONE,
-        T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231007005953.3994960-1-make_ruc2021@163.com>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-02.secunet.de (10.53.40.198)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-c3BhY2UgcmVxdWlyZWQgYWZ0ZXIgdGhhdCAnLCcgKGN0eDpWeFYpCkVSUk9SOiBjb2RlIGluZGVu
-dCBzaG91bGQgdXNlIHRhYnMgd2hlcmUgcG9zc2libGUKClNpZ25lZC1vZmYtYnk6IEd1b0h1YSBD
-aGVuZyA8Y2hlbmd1b2h1YUBqYXJpLmNuPgotLS0KIGZzL25mc2QvbG9ja2QuYyB8IDQgKystLQog
-MSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1n
-aXQgYS9mcy9uZnNkL2xvY2tkLmMgYi9mcy9uZnNkL2xvY2tkLmMKaW5kZXggNDZhN2Y5YjgxM2U1
-Li5hY2ZlZDIyODIyZmEgMTAwNjQ0Ci0tLSBhL2ZzL25mc2QvbG9ja2QuYworKysgYi9mcy9uZnNk
-L2xvY2tkLmMKQEAgLTMzLDcgKzMzLDcgQEAgbmxtX2ZvcGVuKHN0cnVjdCBzdmNfcnFzdCAqcnFz
-dHAsIHN0cnVjdCBuZnNfZmggKmYsIHN0cnVjdCBmaWxlICoqZmlscCwKIAlzdHJ1Y3Qgc3ZjX2Zo
-CWZoOwogCiAJLyogbXVzdCBpbml0aWFsaXplIGJlZm9yZSB1c2luZyEgYnV0IG1heHNpemUgZG9l
-c24ndCBtYXR0ZXIgKi8KLQlmaF9pbml0KCZmaCwwKTsKKwlmaF9pbml0KCZmaCwgMCk7CiAJZmgu
-ZmhfaGFuZGxlLmZoX3NpemUgPSBmLT5zaXplOwogCW1lbWNweSgmZmguZmhfaGFuZGxlLmZoX3Jh
-dywgZi0+ZGF0YSwgZi0+c2l6ZSk7CiAJZmguZmhfZXhwb3J0ID0gTlVMTDsKQEAgLTQyLDcgKzQy
-LDcgQEAgbmxtX2ZvcGVuKHN0cnVjdCBzdmNfcnFzdCAqcnFzdHAsIHN0cnVjdCBuZnNfZmggKmYs
-IHN0cnVjdCBmaWxlICoqZmlscCwKIAlhY2Nlc3MgfD0gTkZTRF9NQVlfTE9DSzsKIAluZnNlcnIg
-PSBuZnNkX29wZW4ocnFzdHAsICZmaCwgU19JRlJFRywgYWNjZXNzLCBmaWxwKTsKIAlmaF9wdXQo
-JmZoKTsKLSAJLyogV2UgcmV0dXJuIG5sbSBlcnJvciBjb2RlcyBhcyBubG0gZG9lc24ndCBrbm93
-CisJLyogV2UgcmV0dXJuIG5sbSBlcnJvciBjb2RlcyBhcyBubG0gZG9lc24ndCBrbm93CiAJICog
-YWJvdXQgbmZzZCwgYnV0IG5mc2QgZG9lcyBrbm93IGFib3V0IG5sbS4uCiAJICovCiAJc3dpdGNo
-IChuZnNlcnIpIHsKLS0gCjIuMTcuMQo=
+On Sat, Oct 07, 2023 at 08:59:53AM +0800, Ma Ke wrote:
+> In esp_remove_trailer(), to avoid an unexpected result returned by
+> pskb_trim, we should check the return value of pskb_trim().
+> 
+> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+
+Applied, thanks a lot!
