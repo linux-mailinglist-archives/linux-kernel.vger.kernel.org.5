@@ -2,59 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3164E7C868D
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 15:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E6D7C869B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 15:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbjJMNQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 09:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
+        id S231901AbjJMNTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 09:19:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231590AbjJMNQH (ORCPT
+        with ESMTP id S231590AbjJMNS6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 09:16:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC49B91;
-        Fri, 13 Oct 2023 06:16:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52048C433C9;
-        Fri, 13 Oct 2023 13:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697202966;
-        bh=AeyLxzVXp4snQoUowgdXYGOaSazywtRR9uBrWP/FXDg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FbFN9cK7+7/w/muL8+KXexz1HLGb3n6ZTN9qmc/GyDP6LNOA50t0/CsYdbXZtt6ao
-         8PjCBQobr+sYezwCxR77wktQt2zJruVXxS/Kid27wolCLAlsVeYPgRW8qkv/4G6sNU
-         OXygYsgXKGQGH6Ycf+DbdZOUnsO+KUlxibmP38KCYz6KEtVZdCxsREn/Z4QfkzuUqs
-         Uc/v8bkDRpA/qEiOPfyTswyPHld5ZyK80iYD/xA41tU9iy5ac3/yetBzo+RJozY4V5
-         XYeTWLg9qEsjyhkTv+BgLpG9WWT+yqw+tx7rhty1xtKfSvIuST22+X6NSrZx2vm/8q
-         cGSu9brb7srPg==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5041d6d8b10so2814546e87.2;
-        Fri, 13 Oct 2023 06:16:06 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwaoOVgLnYvvsLhUKIWZ+TavAbXigZRsbvnUX3MrB4yOrk9kzLp
-        vUtb2E0+wI5+GRqzYEs9BCSKdRhKG+MOQJUemA==
-X-Google-Smtp-Source: AGHT+IF5wN1WRycCZTTLhq1TMC9nlzoXrbnKcsIup2bCQrX2FztreQWlk5fXuvhjl7rkoOJE0TWx+nh4lFUZa/AtE0k=
-X-Received: by 2002:a05:6512:3f4:b0:504:7dc9:671a with SMTP id
- n20-20020a05651203f400b005047dc9671amr18824302lfq.69.1697202964533; Fri, 13
- Oct 2023 06:16:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231012192149.1546368-1-robh@kernel.org> <ZSkPjRp/xPfVQ/NB@yilunxu-OptiPlex-7050>
-In-Reply-To: <ZSkPjRp/xPfVQ/NB@yilunxu-OptiPlex-7050>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 13 Oct 2023 08:15:51 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLHKTQi0i-V4C5UA6WJjnMeen0WR4jjcA4YSRXOYZOrZA@mail.gmail.com>
-Message-ID: <CAL_JsqLHKTQi0i-V4C5UA6WJjnMeen0WR4jjcA4YSRXOYZOrZA@mail.gmail.com>
-Subject: Re: [PATCH] fpga: xilinx-pr-decoupler: Fix unused xlnx_pr_decoupler_of_match
- warning for !CONFIG_OF
-To:     Xu Yilun <yilun.xu@linux.intel.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-        Michal Simek <michal.simek@amd.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-fpga@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        Fri, 13 Oct 2023 09:18:58 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C35ABF;
+        Fri, 13 Oct 2023 06:18:57 -0700 (PDT)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39DDI009014110;
+        Fri, 13 Oct 2023 13:18:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=OipLsM9Ay1YZlFLfXCD8/SUSKEY3RW42dMk8BIaPPts=;
+ b=MeH97IcpVUTWK5zOaa4xHlyvBMAMEl8kkfEa4K+/4YjctVeRrd4AqsJzPmG3KdwWbM8A
+ CAg0oxn/LjjdZhMS8rz05qsB+WijCPAbGkB0HmBeNOCC+DJdcFq5q//7ZTxJSRBxiCxU
+ IrvZzT64ZiLz1mGfnD8sCA+sv3wVdvAXEEJyo3vwCBRJLJCe8EPdlkeD6Cc0jQpLxtFL
+ bZXZqsP9bLe/2dOV/xPoQ7gbFnwUeHVFN8a5F9H9WC99FK0g3e8UCrBLdH1KMx2/dN/Y
+ 49bBgR4ZkBbX2P0LTNiXvBMFSQx87WPkPcvnZNPmnw+DDDaJOLReeCicfcr6WjSPp41I Mg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tq6n680sk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 13:18:18 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39DDI7td014828;
+        Fri, 13 Oct 2023 13:18:17 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tq6n680r9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 13:18:17 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39DBLMcn007530;
+        Fri, 13 Oct 2023 13:18:16 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tpt5ac32g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 13 Oct 2023 13:18:16 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39DDIFEl57868690
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Oct 2023 13:18:16 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C58C658054;
+        Fri, 13 Oct 2023 13:18:15 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 19C235805D;
+        Fri, 13 Oct 2023 13:18:13 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.129.99])
+        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 13 Oct 2023 13:18:12 +0000 (GMT)
+Message-ID: <a3ce31b0890c9633e498222351ffc2bc1fcbf973.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 17/25] security: Introduce inode_post_create_tmpfile
+ hook
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Fri, 13 Oct 2023 09:18:12 -0400
+In-Reply-To: <20230904133415.1799503-18-roberto.sassu@huaweicloud.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904133415.1799503-18-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: iR2zFBc3Xz0Ij_GmqvRjQyUDVntg8yNH
+X-Proofpoint-ORIG-GUID: iRLTBHwzP0f1ormTaYY3SHqNpdveXyPm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-13_04,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=862
+ priorityscore=1501 clxscore=1015 impostorscore=0 lowpriorityscore=0
+ phishscore=0 mlxscore=0 spamscore=0 adultscore=0 suspectscore=0
+ bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310130111
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,61 +102,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 4:37=E2=80=AFAM Xu Yilun <yilun.xu@linux.intel.com>=
- wrote:
->
-> On Thu, Oct 12, 2023 at 02:21:48PM -0500, Rob Herring wrote:
-> > Commit 8c966aadcc02 ("fpga: Use device_get_match_data()") dropped the
->
-> Hi rob:
->
-> Unfortunately I re-applied Commit 8c966aadcc02 and the previous commit
-> id is lost.
->
-> Since the 2 patches are not upstreamed yet, could I just merge them into
-> one?
+On Mon, 2023-09-04 at 15:34 +0200, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+> the inode_post_create_tmpfile hook.
+> 
+> It is useful for IMA to mark new temp files as successfully appraised and
+> let them be subsequently opened for further modification.
 
-Yes, that's fine.
+As tmp files can be made persistent, treat new tmp files like other new
+files, so that the file hash is calculated and stored in the security
+xattr.
 
-Rob
+-- 
+thanks,
 
->
-> Thanks,
-> Yilun
->
-> > unconditional use of xlnx_pr_decoupler_of_match resulting in this
-> > warning:
-> >
-> > drivers/fpga/xilinx-pr-decoupler.c:94:34: warning: unused variable 'xln=
-x_pr_decoupler_of_match' [-Wunused-const-variable]
-> >
-> > The fix is to drop of_match_ptr() which is not necessary because DT is
-> > always used for this driver.
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202310100247.Y7BFcalX-lkp=
-@intel.com/
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  drivers/fpga/xilinx-pr-decoupler.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/fpga/xilinx-pr-decoupler.c b/drivers/fpga/xilinx-p=
-r-decoupler.c
-> > index 0c012d0f616d..68835896f180 100644
-> > --- a/drivers/fpga/xilinx-pr-decoupler.c
-> > +++ b/drivers/fpga/xilinx-pr-decoupler.c
-> > @@ -167,7 +167,7 @@ static struct platform_driver xlnx_pr_decoupler_dri=
-ver =3D {
-> >       .remove =3D xlnx_pr_decoupler_remove,
-> >       .driver =3D {
-> >               .name =3D "xlnx_pr_decoupler",
-> > -             .of_match_table =3D of_match_ptr(xlnx_pr_decoupler_of_mat=
-ch),
-> > +             .of_match_table =3D xlnx_pr_decoupler_of_match,
-> >       },
-> >  };
-> >
-> > --
-> > 2.42.0
-> >
+Mimi
+
