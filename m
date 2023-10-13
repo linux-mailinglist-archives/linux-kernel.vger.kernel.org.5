@@ -2,96 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3B57C915E
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD417C9162
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 01:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232431AbjJMXgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 19:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45078 "EHLO
+        id S232332AbjJMXkT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Oct 2023 19:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjJMXgW (ORCPT
+        with ESMTP id S229830AbjJMXkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 19:36:22 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B75BE
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:36:19 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6b1d1099a84so1183207b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 16:36:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697240179; x=1697844979; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eU5US6Z43Fpk15t1FRvCwKJCGNcrOXN88pFkszR8ZSo=;
-        b=TjXqErfq6q2N0enCv5Lu7dIUMAIQGbdT0wTQCbpdLMDX+tA4kYQulyyek4VJWEOK0Q
-         caQs1giAWkKS281vJIlbtvmb1GIu8N4f/Ho0GFTxpZeXiTf7Xc5kgs/Krb2kWDMa76Ms
-         ylENQwASk+3fc1jdkOJVhvntIAFcFKIQ8IIy0=
+        Fri, 13 Oct 2023 19:40:17 -0400
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4DFB7;
+        Fri, 13 Oct 2023 16:40:16 -0700 (PDT)
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-27d4b280e4eso598460a91.1;
+        Fri, 13 Oct 2023 16:40:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697240179; x=1697844979;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eU5US6Z43Fpk15t1FRvCwKJCGNcrOXN88pFkszR8ZSo=;
-        b=dPhGYWBHfXTapRdjYl22kZHWwRdMDrBDXxsQihER0qJAn70ajhR9wdolaPtgcqx9Fa
-         lg3NsBLKqJJVcaxMSoSKv6jHpFwsX/pjKnwaN9ek+vH+M7mMdYSSD1AWmcKMqL5qmq9X
-         +MAMlOXHo6MONoZhbUFL8ZnIeDzo17Tzhp1jePkKmUlDAyk+ZDh5tgZ+xIqeexXaKth5
-         +atiw8OWF4CfILk3F539HwlCHNgNiRHdgLxc9g1nDcQav/Udi3Z7feDe+D6JrGMyZ1eQ
-         Vv30U5LsqXy4NqzbpurQdsarUum2wnnve+PxGTIzZh8x0E3MqQDosFerYLkOmjvlrQvg
-         dkxA==
-X-Gm-Message-State: AOJu0YyJbzWMDTE8q8JgwmkQDEHHCzrCEcPV/AJMHXbRhzPBsY1P/lNv
-        dKtDj9BkQU8Ght0YEwq08uHNTA==
-X-Google-Smtp-Source: AGHT+IFrZlHZduKxMXjAv6EpezsvycC+MNFw6aPwzsg/Lk+kbNoyNy4OSDWARcNuO0IvhrlmdM40Vw==
-X-Received: by 2002:a05:6a20:1596:b0:137:74f8:62ee with SMTP id h22-20020a056a20159600b0013774f862eemr34789684pzj.18.1697240179386;
-        Fri, 13 Oct 2023 16:36:19 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 9-20020a17090a190900b0027d05817fcdsm730180pjg.0.2023.10.13.16.36.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 16:36:18 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 16:36:18 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] net: phy: tja11xx: replace deprecated strncpy with
- ethtool_sprintf
-Message-ID: <202310131636.535E720383@keescook>
-References: <20231012-strncpy-drivers-net-phy-nxp-tja11xx-c-v1-1-5ad6c9dff5c4@google.com>
+        d=1e100.net; s=20230601; t=1697240415; x=1697845215;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NVNwQqiVkrXjE6Ai1N/131eZHMwXAneNV9c8J7fw4cE=;
+        b=P+f/IVMG0eCNDesMou5YKY6mjKPFjHy6liEHqMjKD4ZX6+/00rxMkaJ7W//fbwlKHk
+         vH/9sSrcSXw5o/k4r2VnI6hstgZVoTnKdVvhKwJ0pAQ6VqgmlK+17sH0ucDB27robipU
+         Ahq/0lcXw/B6hRPT8oTedSLBrdVK3J6aS2RJ57xAXHTrjdB/pvpKQ238iBSUAY2bpDFQ
+         0L+qdpmWf0GlPACYThlqlVjYlAt894nVnXtfppaTsSU7AqEXVGpNWjhjeY5yKzhpt7Ep
+         QwCpoUDVArKaGOTsKGvl7OclX+O6NbDoOVENkQJ5fP8bZ93oJTqSnw+0/f1gMfqCkhYd
+         eWuw==
+X-Gm-Message-State: AOJu0Yxx9lLpefY88PGNtHckYvS7NUgyshOqVX/ZRuJ9LUh6/HT7dQH/
+        tydbsmLC6Krhsv4W7kHnPvLLHBcX8TWrU5UECP4=
+X-Google-Smtp-Source: AGHT+IG52rm3IVfLMN35j2TYSaIhI/qMeORhDVxK7PIltzo83RAIDMe7x9kH6keiuKXKVTyBhVxASEmRPyHTSwHgGxA=
+X-Received: by 2002:a17:90a:5ac6:b0:27d:2db5:62c9 with SMTP id
+ n64-20020a17090a5ac600b0027d2db562c9mr2324253pji.0.1697240415439; Fri, 13 Oct
+ 2023 16:40:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012-strncpy-drivers-net-phy-nxp-tja11xx-c-v1-1-5ad6c9dff5c4@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230928235018.2136-1-namhyung@kernel.org> <ZSnMGwlppacZGaXf@kernel.org>
+In-Reply-To: <ZSnMGwlppacZGaXf@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 13 Oct 2023 16:40:04 -0700
+Message-ID: <CAM9d7cg7NgDZz_QAa8=rVp7B2AOPzWkLgTZyxndTgfDVbYL-BQ@mail.gmail.com>
+Subject: Re: [PATCH] perf lock contention: Clear lock addr after use
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 10:25:12PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> ethtool_sprintf() is designed specifically for get_strings() usage.
-> Let's replace strncpy in favor of this dedicated helper function.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+On Fri, Oct 13, 2023 at 4:00 PM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Thu, Sep 28, 2023 at 04:50:18PM -0700, Namhyung Kim escreveu:
+> > It checks the current lock to calculated the delta of contention time.
+>
+> > The address is saved in the tstamp map which is allocated at begining of
+> > contention and released at end of contention.
+> >
+> > But it's possible for bpf_map_delete_elem() to fail.  In that case, the
+>
+> How can it fail?
+>
+> You do:
+>
+>         pelem = bpf_map_lookup_elem(&tstamp, &pid);
+>         if (!pelem || pelem->lock != ctx[0])
+>                 return 0;
+>
+> So it is there, why would the removal using the same key fail?
 
-Yay for readability. :)
+It can fail when it doesn't get a lock for the internal bucket.
+See kernel/bpf/hashtab.c::htab_map_delete_elem().
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+But I'm not sure whether that's actually possible in this case.
 
--- 
-Kees Cook
+>
+> The patch should work as-is, I'm just curious about what would make
+> there removal of a map entry that was successfully looked up on the same
+> contention_end prog to fail when being removed...
+
+Now I'm seeing some rare error cases like a spinlock wait
+is longer than a minute.  I suspect a bug in this code and
+try to be more defensive.
+
+Thanks,
+Namhyung
