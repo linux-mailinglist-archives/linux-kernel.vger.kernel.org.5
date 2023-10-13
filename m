@@ -2,80 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBF57C84FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B657C84F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbjJMLuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40608 "EHLO
+        id S231784AbjJMLur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbjJMLth (ORCPT
+        with ESMTP id S231772AbjJMLu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:49:37 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF82128
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:49:09 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-405524e6769so12850415e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:49:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697197748; x=1697802548; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PE/p2CAXymaVYCSJyW/v/kTP5stsCvV8KjJ1np5Cumk=;
-        b=Be4Ywpk2wBnM9Llf72gBNK9yeikzw3ibCxGTVUaNkJefkYLZOect5uTT8HlhvzL18C
-         MQZ1YT+pDkhVD4Je0e66cN2f2L+dZHfW+ArNcK0IKGLlqd4mZW0v4fL+LyPCdVYlI4cN
-         gMjVvVbItaSDLThKd9Ly69ZeE8O2AfEC7Mgy4/JF5nB/z8DA71WAdoAl/BH+DI1t4BXz
-         JgdTwyC11gvRFuWq3AchwQjICN8Ozp0SeZl4gTFaXw7d4xFhAD6QENLtPbWUpg923QEK
-         ixKyoAaCcHbq7VNLztyo5cYHkGGi5JVJQbgZGDhmCtd2cf4f3+65+pIW9JBedYxW16y8
-         fhXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697197748; x=1697802548;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PE/p2CAXymaVYCSJyW/v/kTP5stsCvV8KjJ1np5Cumk=;
-        b=kJOqoK1cdP9AnptsMxsuKe56B9XuXgLFGTz4gYtwuoGWb7CDmgkQm8mfCVCbnJvFeq
-         FhXkEw5uB+HPuNpOT5m0ctJ20gaNb/7AF8G33GBALfcrFtFuX9uaxFHgM3XwRiXkby8e
-         8e7WOxp4pJxsf1nJvJBV5Cu82hgFmcOTFxw5ExvoHYnjDtM9aPo1g1UCz2potT0QJuMD
-         r03hN+2Naikb5Y7Gki05v+GC4Qkls7XZBLUKaw4Ysuv5wnAU8tCKkJdKCpAJ8PfAVVYr
-         gRue6MQV+sFkHmrf4ncmXc1py5xmBfHB4ldkfetiafaM3msVTvNp6BNrwhO0p7KiB6V0
-         y9Aw==
-X-Gm-Message-State: AOJu0YwwP3OeOolPdyYVkRK1NK4rop8uBuhLAPwNnpqsIFzKFoqEK5xa
-        Krk9v1FZMYU0jZbzZqcf8Nk7PA==
-X-Google-Smtp-Source: AGHT+IE3EPZwdcV6+9c0MT7noLRZ3EscIaBUOrxg76lWbF2gmzuNksXZSHu188cOIVvgnjobPtdBNg==
-X-Received: by 2002:a05:600c:3659:b0:401:b425:2414 with SMTP id y25-20020a05600c365900b00401b4252414mr21070016wmq.18.1697197748446;
-        Fri, 13 Oct 2023 04:49:08 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:4209:13a:988d:80be])
-        by smtp.gmail.com with ESMTPSA id j23-20020a05600c1c1700b00407754b998dsm974509wms.27.2023.10.13.04.49.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 04:49:08 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v4 15/15] arm64: defconfig: enable SHM Bridge support for the TZ memory allocator
-Date:   Fri, 13 Oct 2023 13:48:43 +0200
-Message-Id: <20231013114843.63205-16-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231013114843.63205-1-brgl@bgdev.pl>
-References: <20231013114843.63205-1-brgl@bgdev.pl>
+        Fri, 13 Oct 2023 07:50:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8368210EA
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:49:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97ADFC433C8;
+        Fri, 13 Oct 2023 11:49:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697197771;
+        bh=FAf5EiXXb5Wmb5h1gd5Xs1vnFUH9ldUU6jHtIweUS5E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lmlbOtJMwaqFYjnRt66RYiZKr+Nx0ePC34i5op1RKBaesI4Vc6b1dLrHu+0HMyWfU
+         9ZOVxe4xNBlmWPz8BGzhSshvQVzPvPqY1qQubcFOJ/ZU7jGYbkB8F+t3RPRlqFblPo
+         tQxlsaSkrdZ6TtKS+DWTA0EAApkQCTVEht8BwccWcrB2RvjwoDRBYzjxVjOdRIq017
+         HuOQcKIrXQbgiqCKM4pofKr6HDgdDIXRWIxfUqXjdFq7bIjkfepH76FAtqdDQ8vHdz
+         9lDKHpFu9UXWbP802zG7Tx7Tdhq+1P76HJRZEPXk4Pe78x/rg3Tp1ZQ52v7pr+jtwm
+         ELaGQPgxH5IbA==
+Date:   Fri, 13 Oct 2023 13:49:28 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH] workqueue: Provide one lock class key per work_on_cpu()
+ callsite
+Message-ID: <ZSkuyCHacEgquz2T@lothringen>
+References: <20230924150702.9588-1-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230924150702.9588-1-frederic@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,29 +50,296 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Ping?
 
-Enable SHM Bridge support in the Qualcomm TrustZone allocator by default
-as even on architectures that don't support it, we automatically fall
-back to the default behavior.
+Thanks.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index b4220fff2b44..8cca74242cf6 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -255,6 +255,7 @@ CONFIG_INTEL_STRATIX10_RSU=m
- CONFIG_EFI_CAPSULE_LOADER=y
- CONFIG_IMX_SCU=y
- CONFIG_IMX_SCU_PD=y
-+CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE=y
- CONFIG_GNSS=m
- CONFIG_GNSS_MTK_SERIAL=m
- CONFIG_MTD=y
--- 
-2.39.2
-
+On Sun, Sep 24, 2023 at 05:07:02PM +0200, Frederic Weisbecker wrote:
+> All callers of work_on_cpu() share the same lock class key for all the
+> functions queued. As a result the workqueue related locking scenario for
+> a function A may be spuriously accounted as an inversion against the
+> locking scenario of function B such as in the following model:
+> 
+> 	long A(void *arg)
+> 	{
+> 		mutex_lock(&mutex);
+> 		mutex_unlock(&mutex);
+> 	}
+> 
+> 	long B(void *arg)
+> 	{
+> 	}
+> 
+> 	void launchA(void)
+> 	{
+> 		work_on_cpu(0, A, NULL);
+> 	}
+> 
+> 	void launchB(void)
+> 	{
+> 		mutex_lock(&mutex);
+> 		work_on_cpu(1, B, NULL);
+> 		mutex_unlock(&mutex);
+> 	}
+> 
+> launchA and launchB running concurrently have no chance to deadlock.
+> However the above can be reported by lockdep as a possible locking
+> inversion because the works containing A() and B() are treated as
+> belonging to the same locking class.
+> 
+> The following shows an existing example of such a spurious lockdep splat:
+> 
+> 	 ======================================================
+> 	 WARNING: possible circular locking dependency detected
+> 	 6.6.0-rc1-00065-g934ebd6e5359 #35409 Not tainted
+> 	 ------------------------------------------------------
+> 	 kworker/0:1/9 is trying to acquire lock:
+> 	 ffffffff9bc72f30 (cpu_hotplug_lock){++++}-{0:0}, at: _cpu_down+0x57/0x2b0
+> 
+> 	 but task is already holding lock:
+> 	 ffff9e3bc0057e60 ((work_completion)(&wfc.work)){+.+.}-{0:0}, at: process_scheduled_works+0x216/0x500
+> 
+> 	 which lock already depends on the new lock.
+> 
+> 	 the existing dependency chain (in reverse order) is:
+> 
+> 	 -> #2 ((work_completion)(&wfc.work)){+.+.}-{0:0}:
+> 			__flush_work+0x83/0x4e0
+> 			work_on_cpu+0x97/0xc0
+> 			rcu_nocb_cpu_offload+0x62/0xb0
+> 			rcu_nocb_toggle+0xd0/0x1d0
+> 			kthread+0xe6/0x120
+> 			ret_from_fork+0x2f/0x40
+> 			ret_from_fork_asm+0x1b/0x30
+> 
+> 	 -> #1 (rcu_state.barrier_mutex){+.+.}-{3:3}:
+> 			__mutex_lock+0x81/0xc80
+> 			rcu_nocb_cpu_deoffload+0x38/0xb0
+> 			rcu_nocb_toggle+0x144/0x1d0
+> 			kthread+0xe6/0x120
+> 			ret_from_fork+0x2f/0x40
+> 			ret_from_fork_asm+0x1b/0x30
+> 
+> 	 -> #0 (cpu_hotplug_lock){++++}-{0:0}:
+> 			__lock_acquire+0x1538/0x2500
+> 			lock_acquire+0xbf/0x2a0
+> 			percpu_down_write+0x31/0x200
+> 			_cpu_down+0x57/0x2b0
+> 			__cpu_down_maps_locked+0x10/0x20
+> 			work_for_cpu_fn+0x15/0x20
+> 			process_scheduled_works+0x2a7/0x500
+> 			worker_thread+0x173/0x330
+> 			kthread+0xe6/0x120
+> 			ret_from_fork+0x2f/0x40
+> 			ret_from_fork_asm+0x1b/0x30
+> 
+> 	 other info that might help us debug this:
+> 
+> 	 Chain exists of:
+> 	   cpu_hotplug_lock --> rcu_state.barrier_mutex --> (work_completion)(&wfc.work)
+> 
+> 	  Possible unsafe locking scenario:
+> 
+> 			CPU0                    CPU1
+> 			----                    ----
+> 	   lock((work_completion)(&wfc.work));
+> 									lock(rcu_state.barrier_mutex);
+> 									lock((work_completion)(&wfc.work));
+> 	   lock(cpu_hotplug_lock);
+> 
+> 	  *** DEADLOCK ***
+> 
+> 	 2 locks held by kworker/0:1/9:
+> 	  #0: ffff900481068b38 ((wq_completion)events){+.+.}-{0:0}, at: process_scheduled_works+0x212/0x500
+> 	  #1: ffff9e3bc0057e60 ((work_completion)(&wfc.work)){+.+.}-{0:0}, at: process_scheduled_works+0x216/0x500
+> 
+> 	 stack backtrace:
+> 	 CPU: 0 PID: 9 Comm: kworker/0:1 Not tainted 6.6.0-rc1-00065-g934ebd6e5359 #35409
+> 	 Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> 	 Workqueue: events work_for_cpu_fn
+> 	 Call Trace:
+> 	 rcu-torture: rcu_torture_read_exit: Start of episode
+> 	  <TASK>
+> 	  dump_stack_lvl+0x4a/0x80
+> 	  check_noncircular+0x132/0x150
+> 	  __lock_acquire+0x1538/0x2500
+> 	  lock_acquire+0xbf/0x2a0
+> 	  ? _cpu_down+0x57/0x2b0
+> 	  percpu_down_write+0x31/0x200
+> 	  ? _cpu_down+0x57/0x2b0
+> 	  _cpu_down+0x57/0x2b0
+> 	  __cpu_down_maps_locked+0x10/0x20
+> 	  work_for_cpu_fn+0x15/0x20
+> 	  process_scheduled_works+0x2a7/0x500
+> 	  worker_thread+0x173/0x330
+> 	  ? __pfx_worker_thread+0x10/0x10
+> 	  kthread+0xe6/0x120
+> 	  ? __pfx_kthread+0x10/0x10
+> 	  ret_from_fork+0x2f/0x40
+> 	  ? __pfx_kthread+0x10/0x10
+> 	  ret_from_fork_asm+0x1b/0x30
+> 	  </TASK
+> 
+> Fix this with providing one lock class key per work_on_cpu() caller.
+> 
+> Reported-and-tested-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  include/linux/workqueue.h | 46 +++++++++++++++++++++++++++++++++------
+>  kernel/workqueue.c        | 20 ++++++++++-------
+>  2 files changed, 51 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
+> index 1c1d06804d45..24b1e5070f4d 100644
+> --- a/include/linux/workqueue.h
+> +++ b/include/linux/workqueue.h
+> @@ -274,18 +274,16 @@ static inline unsigned int work_static(struct work_struct *work) { return 0; }
+>   * to generate better code.
+>   */
+>  #ifdef CONFIG_LOCKDEP
+> -#define __INIT_WORK(_work, _func, _onstack)				\
+> +#define __INIT_WORK_KEY(_work, _func, _onstack, _key)			\
+>  	do {								\
+> -		static struct lock_class_key __key;			\
+> -									\
+>  		__init_work((_work), _onstack);				\
+>  		(_work)->data = (atomic_long_t) WORK_DATA_INIT();	\
+> -		lockdep_init_map(&(_work)->lockdep_map, "(work_completion)"#_work, &__key, 0); \
+> +		lockdep_init_map(&(_work)->lockdep_map, "(work_completion)"#_work, (_key), 0); \
+>  		INIT_LIST_HEAD(&(_work)->entry);			\
+>  		(_work)->func = (_func);				\
+>  	} while (0)
+>  #else
+> -#define __INIT_WORK(_work, _func, _onstack)				\
+> +#define __INIT_WORK_KEY(_work, _func, _onstack, _key)			\
+>  	do {								\
+>  		__init_work((_work), _onstack);				\
+>  		(_work)->data = (atomic_long_t) WORK_DATA_INIT();	\
+> @@ -294,12 +292,22 @@ static inline unsigned int work_static(struct work_struct *work) { return 0; }
+>  	} while (0)
+>  #endif
+>  
+> +#define __INIT_WORK(_work, _func, _onstack)				\
+> +	do {								\
+> +		static __maybe_unused struct lock_class_key __key;	\
+> +									\
+> +		__INIT_WORK_KEY(_work, _func, _onstack, &__key);	\
+> +	} while (0)
+> +
+>  #define INIT_WORK(_work, _func)						\
+>  	__INIT_WORK((_work), (_func), 0)
+>  
+>  #define INIT_WORK_ONSTACK(_work, _func)					\
+>  	__INIT_WORK((_work), (_func), 1)
+>  
+> +#define INIT_WORK_ONSTACK_KEY(_work, _func, _key)			\
+> +	__INIT_WORK_KEY((_work), (_func), 1, _key)
+> +
+>  #define __INIT_DELAYED_WORK(_work, _func, _tflags)			\
+>  	do {								\
+>  		INIT_WORK(&(_work)->work, (_func));			\
+> @@ -693,8 +701,32 @@ static inline long work_on_cpu_safe(int cpu, long (*fn)(void *), void *arg)
+>  	return fn(arg);
+>  }
+>  #else
+> -long work_on_cpu(int cpu, long (*fn)(void *), void *arg);
+> -long work_on_cpu_safe(int cpu, long (*fn)(void *), void *arg);
+> +long work_on_cpu_key(int cpu, long (*fn)(void *),
+> +		     void *arg, struct lock_class_key *key);
+> +/*
+> + * A new key is defined for each caller to make sure the work
+> + * associated with the function doesn't share its locking class.
+> + */
+> +#define work_on_cpu(_cpu, _fn, _arg)			\
+> +({							\
+> +	static struct lock_class_key __key;		\
+> +							\
+> +	work_on_cpu_key(_cpu, _fn, _arg, &__key);	\
+> +})
+> +
+> +long work_on_cpu_safe_key(int cpu, long (*fn)(void *),
+> +			  void *arg, struct lock_class_key *key);
+> +
+> +/*
+> + * A new key is defined for each caller to make sure the work
+> + * associated with the function doesn't share its locking class.
+> + */
+> +#define work_on_cpu_safe(_cpu, _fn, _arg)		\
+> +({							\
+> +	static struct lock_class_key __key;		\
+> +							\
+> +	work_on_cpu_safe_key(_cpu, _fn, _arg, &__key);	\
+> +})
+>  #endif /* CONFIG_SMP */
+>  
+>  #ifdef CONFIG_FREEZER
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index c85825e17df8..4374239c68f3 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -5612,50 +5612,54 @@ static void work_for_cpu_fn(struct work_struct *work)
+>  }
+>  
+>  /**
+> - * work_on_cpu - run a function in thread context on a particular cpu
+> + * work_on_cpu_key - run a function in thread context on a particular cpu
+>   * @cpu: the cpu to run on
+>   * @fn: the function to run
+>   * @arg: the function arg
+> + * @key: The lock class key for lock debugging purposes
+>   *
+>   * It is up to the caller to ensure that the cpu doesn't go offline.
+>   * The caller must not hold any locks which would prevent @fn from completing.
+>   *
+>   * Return: The value @fn returns.
+>   */
+> -long work_on_cpu(int cpu, long (*fn)(void *), void *arg)
+> +long work_on_cpu_key(int cpu, long (*fn)(void *),
+> +		     void *arg, struct lock_class_key *key)
+>  {
+>  	struct work_for_cpu wfc = { .fn = fn, .arg = arg };
+>  
+> -	INIT_WORK_ONSTACK(&wfc.work, work_for_cpu_fn);
+> +	INIT_WORK_ONSTACK_KEY(&wfc.work, work_for_cpu_fn, key);
+>  	schedule_work_on(cpu, &wfc.work);
+>  	flush_work(&wfc.work);
+>  	destroy_work_on_stack(&wfc.work);
+>  	return wfc.ret;
+>  }
+> -EXPORT_SYMBOL_GPL(work_on_cpu);
+> +EXPORT_SYMBOL_GPL(work_on_cpu_key);
+>  
+>  /**
+> - * work_on_cpu_safe - run a function in thread context on a particular cpu
+> + * work_on_cpu_safe_key - run a function in thread context on a particular cpu
+>   * @cpu: the cpu to run on
+>   * @fn:  the function to run
+>   * @arg: the function argument
+> + * @key: The lock class key for lock debugging purposes
+>   *
+>   * Disables CPU hotplug and calls work_on_cpu(). The caller must not hold
+>   * any locks which would prevent @fn from completing.
+>   *
+>   * Return: The value @fn returns.
+>   */
+> -long work_on_cpu_safe(int cpu, long (*fn)(void *), void *arg)
+> +long work_on_cpu_safe_key(int cpu, long (*fn)(void *),
+> +			  void *arg, struct lock_class_key *key)
+>  {
+>  	long ret = -ENODEV;
+>  
+>  	cpus_read_lock();
+>  	if (cpu_online(cpu))
+> -		ret = work_on_cpu(cpu, fn, arg);
+> +		ret = work_on_cpu_key(cpu, fn, arg, key);
+>  	cpus_read_unlock();
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL_GPL(work_on_cpu_safe);
+> +EXPORT_SYMBOL_GPL(work_on_cpu_safe_key);
+>  #endif /* CONFIG_SMP */
+>  
+>  #ifdef CONFIG_FREEZER
+> -- 
+> 2.41.0
+> 
