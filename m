@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 537217C81D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7038A7C81D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 11:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbjJMJUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 05:20:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57676 "EHLO
+        id S230469AbjJMJUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 05:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230255AbjJMJU3 (ORCPT
+        with ESMTP id S230334AbjJMJUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 05:20:29 -0400
+        Fri, 13 Oct 2023 05:20:30 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F428B7
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27AF1B8
         for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 02:20:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 92DCBC433CA;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A6489C433CC;
         Fri, 13 Oct 2023 09:20:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1697188827;
-        bh=UgvGFrvWG4EJprTnN8d19E/uI6Vkq4RefazGkehLIWU=;
+        bh=mWSyMxKE2quLVklS4mF6hrQjoWiFg+m/8c7WZjyz05c=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=q2W9lLMVtOVcqbMsbF8jk+vr25MO3lrqlXEeuMhX7bFiI7WxK2wMAavUHE23J3JVO
-         zbKObods08x3lK9+A+UjZujicpGh+HdJsPK95ZvMrvCX1PcFAmE/eYvq9HRRETIc7l
-         oAPabgG+0+2hvCnUPVPdTDTAkMblxYhcyLbyDvHk0eB/9P2cyGuGvgv5Mfsy1kBMkb
-         6a2Rt4b8U1Oej+p9UXAOnNBXlOU0cYdQNAxi9NLvx3AMqDDZ5TRtFzy7dKDP4Gi2bD
-         5sKBo1kEqbmy7To8L6jCIpQonfO5LJHHhP6zcDdAzFbTyyJvD0e/xnZqX9d/Pl54qM
-         RE1ZiIW/upcJw==
+        b=ZBMsi6z5ugLc/m4ZfrcPjuRlAq/WDH8OHESEVG/keyMetuwRPb4Y25hoGULUtP24q
+         U0RkDrzqWj9J5BEqVL1ShLw59PZH8CxAil/T5xNXPD7diLv61HKomoDYvMZIUz/n82
+         7m4XeP0r09bfnJ5LwELHQPTAL15J2twGrmmrNo2uDomaPmzr6yaIswIbA9xBIllUkK
+         e5gbOw8wyIHCbZsJMefXtbfWNcn4iyC38P0ZUs1rUMbjfhEgJLIhqoORG72Jrh5uOm
+         l7D/J2apOnFQHBs6HdAB6xnskaoi4Tow01Qhb6IcVhKvP92MYSfEl2ya+bHK+nJe89
+         Mq1Gybze/rekA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 79990E1F669;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8B497E1F66C;
         Fri, 13 Oct 2023 09:20:27 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: mdio: xgene: Use device_get_match_data()
+Subject: Re: [PATCH] ibmvnic: replace deprecated strncpy with strscpy
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169718882749.6212.17155020342550479874.git-patchwork-notify@kernel.org>
+Message-Id: <169718882756.6212.2338041860471845995.git-patchwork-notify@kernel.org>
 Date:   Fri, 13 Oct 2023 09:20:27 +0000
-References: <20231009172923.2457844-9-robh@kernel.org>
-In-Reply-To: <20231009172923.2457844-9-robh@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     iyappan@os.amperecomputing.com, keyur@os.amperecomputing.com,
-        quan@os.amperecomputing.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20231009-strncpy-drivers-net-ethernet-ibm-ibmvnic-c-v1-1-712866f16754@google.com>
+In-Reply-To: <20231009-strncpy-drivers-net-ethernet-ibm-ibmvnic-c-v1-1-712866f16754@google.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        haren@linux.ibm.com, ricklind@linux.ibm.com, nnac123@linux.ibm.com,
+        danymadden@us.ibm.com, tlfalcon@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -60,19 +61,19 @@ Hello:
 This patch was applied to netdev/net-next.git (main)
 by David S. Miller <davem@davemloft.net>:
 
-On Mon,  9 Oct 2023 12:29:04 -0500 you wrote:
-> Use preferred device_get_match_data() instead of of_match_device() and
-> acpi_match_device() to get the driver match data. With this, adjust the
-> includes to explicitly include the correct headers.
+On Mon, 09 Oct 2023 23:19:57 +0000 you wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/net/mdio/mdio-xgene.c | 19 ++++---------------
->  1 file changed, 4 insertions(+), 15 deletions(-)
+> NUL-padding is not required as the buffer is already memset to 0:
+> |       memset(adapter->fw_version, 0, 32);
+> 
+> [...]
 
 Here is the summary with links:
-  - [net-next] net: mdio: xgene: Use device_get_match_data()
-    https://git.kernel.org/netdev/net-next/c/a243ecc323b9
+  - ibmvnic: replace deprecated strncpy with strscpy
+    https://git.kernel.org/netdev/net-next/c/431acee06923
 
 You are awesome, thank you!
 -- 
