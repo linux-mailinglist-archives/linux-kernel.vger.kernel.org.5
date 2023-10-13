@@ -2,91 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 774FB7C8BF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 19:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C357C8C06
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 19:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbjJMRHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 13:07:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
+        id S231274AbjJMRI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 13:08:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjJMRHB (ORCPT
+        with ESMTP id S229726AbjJMRIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 13:07:01 -0400
+        Fri, 13 Oct 2023 13:08:49 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5886895
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:06:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCD7C0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:08:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697216775;
+        s=mimecast20190719; t=1697216882;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4anTAcj47QphqCTa0VlpuuQqLbvMYpkABh/3zdt7Xbg=;
-        b=Z6oSv9P3o5Oee75w7hX5bn2m5Sfj8fnZBEDmzpAxGiZZTElzBQs6wCdSs+sX83i8sbDMTw
-        3yZ48/uauzLyWob2ztGvedIn4O1FNWICGzvCQACcmrr/xC5qzYSPhv26a7ITMWM8JD3bCz
-        1vRhzpW8gC3f+OGPO00fkMWYDKs+c24=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-177-l4Q5cX1COY23wnVDvMKrXA-1; Fri, 13 Oct 2023 13:06:14 -0400
-X-MC-Unique: l4Q5cX1COY23wnVDvMKrXA-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-637948b24bdso4253746d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:06:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697216774; x=1697821574;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4anTAcj47QphqCTa0VlpuuQqLbvMYpkABh/3zdt7Xbg=;
-        b=GGDSyW1s0EeJy+qnILFy2NoHdIDAcQcmtZ1nWsNZWg46I00IxdMuFjqKrY27dg1vPO
-         DWNtCg3emEl5hbxEobTUG84E+PlAbkPb+ed8/KBDC3F8C+fBmx+WsHria0dtF/mQ6cfE
-         UHjvu118EAW+hy8KQdT2haLfoag5a5JGJNbwjkWI3yChjY5YOjDZbEAtqBywpnnUousz
-         XYsXRtt7rLcYqKh95Jm30fvVv6O4Aa+xs8F2FrQFPIdbbzi5FIx3kpF2rb5uvhjBOFU9
-         xW6fo5Hl63XaT3taHjNBUwg5TJBH4mqV+zoHDO+Y1reO51+R1TFmbVYBo7tRA66wEfmW
-         degw==
-X-Gm-Message-State: AOJu0Yyh4EqaXwnXT4U3R/puDYSeY39lKxDFcrz7P9/hRJpOfeMkYnc4
-        FeS/fdqJWmFj6k144oO+n8LRGjsbZmBptMTxN1Lq/efw8QXdpxAUEfC3KYuvpkABS8m9HiDkTjE
-        6BCSpDsuo+fyeEgMirLgescgl
-X-Received: by 2002:a05:6214:519b:b0:65d:482:9989 with SMTP id kl27-20020a056214519b00b0065d04829989mr29618058qvb.5.1697216773814;
-        Fri, 13 Oct 2023 10:06:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFRH784LNJizEjykvGovSKOhkhcLbazKwKyVKKk+ujLDPqfsEAe8jFxGjwEXZeiVmuU0mCpCg==
-X-Received: by 2002:a05:6214:519b:b0:65d:482:9989 with SMTP id kl27-20020a056214519b00b0065d04829989mr29618034qvb.5.1697216773382;
-        Fri, 13 Oct 2023 10:06:13 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id j12-20020a0ce00c000000b0065b1f90ff8csm812307qvk.40.2023.10.13.10.06.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 10:06:13 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 13:05:55 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-Message-ID: <ZSl488I/W4mz4gnM@x1n>
-References: <20231009064230.2952396-1-surenb@google.com>
- <20231009064230.2952396-3-surenb@google.com>
- <214b78ed-3842-5ba1-fa9c-9fa719fca129@redhat.com>
- <CAJuCfpHzSm+z9b6uxyYFeqr5b5=6LehE9O0g192DZdJnZqmQEw@mail.gmail.com>
- <478697aa-f55c-375a-6888-3abb343c6d9d@redhat.com>
- <CA+EESO5nvzka0KzFGzdGgiCWPLg7XD-8jA9=NTUOKFy-56orUg@mail.gmail.com>
- <ZShS3UT+cjJFmtEy@x1n>
- <205abf01-9699-ff1c-3e4e-621913ada64e@redhat.com>
- <ZSlragGjFEw9QS1Y@x1n>
- <CA+EESO5ESxxricWx2EFneizLGj2Cb5tuM3kbAicc0ggA4Wh2oQ@mail.gmail.com>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TksTCekXADksDkw6zz27tOiFc5jOxJuDTlx+GNP+MB4=;
+        b=c+U17X3YHzp6ibhVUeXfN1wAHcdb4ovH1Q1Ayyo8iRLW2FjsWEAvJMqyfGuNBXqdGyMsBP
+        s+UYszHEhhKOZD7rOf84GJg6cfxMfqaHZrXjP3ADq8eDzvLvITgtyUXEFmZ/SoOIgGOlNc
+        FnHlEvjjvpyg03Gctkp76hwhIuKalI4=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-449-p1fc9ffLPHa4J1LrbnZu_A-1; Fri, 13 Oct 2023 13:07:58 -0400
+X-MC-Unique: p1fc9ffLPHa4J1LrbnZu_A-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 24E832800E84;
+        Fri, 13 Oct 2023 17:07:58 +0000 (UTC)
+Received: from p1.luc.cera.cz (unknown [10.45.225.161])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 907BA1C060DF;
+        Fri, 13 Oct 2023 17:07:56 +0000 (UTC)
+From:   Ivan Vecera <ivecera@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org
+Subject: [PATCH net-next 0/5] i40e: Add basic devlink support
+Date:   Fri, 13 Oct 2023 19:07:50 +0200
+Message-ID: <20231013170755.2367410-1-ivecera@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+EESO5ESxxricWx2EFneizLGj2Cb5tuM3kbAicc0ggA4Wh2oQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
@@ -97,174 +62,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 09:49:10AM -0700, Lokesh Gidra wrote:
-> On Fri, Oct 13, 2023 at 9:08 AM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > On Fri, Oct 13, 2023 at 11:56:31AM +0200, David Hildenbrand wrote:
-> > > Hi Peter,
-> >
-> > Hi, David,
-> >
-> > >
-> > > > I used to have the same thought with David on whether we can simplify the
-> > > > design to e.g. limit it to single mm.  Then I found that the trickiest is
-> > > > actually patch 1 together with the anon_vma manipulations, and the problem
-> > > > is that's not avoidable even if we restrict the api to apply on single mm.
-> > > >
-> > > > What else we can benefit from single mm?  One less mmap read lock, but
-> > > > probably that's all we can get; IIUC we need to keep most of the rest of
-> > > > the code, e.g. pgtable walks, double pgtable lockings, etc.
-> > >
-> > > No existing mechanisms move anon pages between unrelated processes, that
-> > > naturally makes me nervous if we're doing it "just because we can".
-> >
-> > IMHO that's also the potential, when guarded with userfaultfd descriptor
-> > being shared between two processes.
-> >
-> > See below with more comment on the raised concerns.
-> >
-> > >
-> > > >
-> > > > Actually, even though I have no solid clue, but I had a feeling that there
-> > > > can be some interesting way to leverage this across-mm movement, while
-> > > > keeping things all safe (by e.g. elaborately requiring other proc to create
-> > > > uffd and deliver to this proc).
-> > >
-> > > Okay, but no real use cases yet.
-> >
-> > I can provide a "not solid" example.  I didn't mention it because it's
-> > really something that just popped into my mind when thinking cross-mm, so I
-> > never discussed with anyone yet nor shared it anywhere.
-> >
-> > Consider VM live upgrade in a generic form (e.g., no VFIO), we can do that
-> > very efficiently with shmem or hugetlbfs, but not yet anonymous.  We can do
-> > extremely efficient postcopy live upgrade now with anonymous if with REMAP.
-> >
-> > Basically I see it a potential way of moving memory efficiently especially
-> > with thp.
-> >
-> > >
-> > > >
-> > > > Considering Andrea's original version already contains those bits and all
-> > > > above, I'd vote that we go ahead with supporting two MMs.
-> > >
-> > > You can do nasty things with that, as it stands, on the upstream codebase.
-> > >
-> > > If you pin the page in src_mm and move it to dst_mm, you successfully broke
-> > > an invariant that "exclusive" means "no other references from other
-> > > processes". That page is marked exclusive but it is, in fact, not exclusive.
-> >
-> > It is still exclusive to the dst mm?  I see your point, but I think you're
-> > taking exclusiveness altogether with pinning, and IMHO that may not be
-> > always necessary?
-> >
-> > >
-> > > Once you achieved that, you can easily have src_mm not have MMF_HAS_PINNED,
-> >
-> > (I suppose you meant dst_mm here)
-> >
-> > > so you can just COW-share that page. Now you successfully broke the
-> > > invariant that COW-shared pages must not be pinned. And you can even trigger
-> > > VM_BUG_ONs, like in sanity_check_pinned_pages().
-> >
-> > Yeah, that's really unfortunate.  But frankly, I don't think it's the fault
-> > of this new feature, but the rest.
-> >
-> > Let's imagine if the MMF_HAS_PINNED wasn't proposed as a per-mm flag, but
-> > per-vma, which I don't see why we can't because it's simply a hint so far.
-> > Then if we apply the same rule here, UFFDIO_REMAP won't even work for
-> > single-mm as long as cross-vma. Then UFFDIO_REMAP as a whole feature will
-> > be NACKed simply because of this..
-> >
-> > And I don't think anyone can guarantee a per-vma MMF_HAS_PINNED can never
-> > happen, or any further change to pinning solution that may affect this.  So
-> > far it just looks unsafe to remap a pin page to me.
-> >
-> > I don't have a good suggestion here if this is a risk.. I'd think it risky
-> > then to do REMAP over pinned pages no matter cross-mm or single-mm.  It
-> > means probably we just rule them out: folio_maybe_dma_pinned() may not even
-> > be enough to be safe with fast-gup.  We may need page_needs_cow_for_dma()
-> > with proper write_protect_seq no matter cross-mm or single-mm?
-> >
-> > >
-> > > Can it all be fixed? Sure, with more complexity. For something without clear
-> > > motivation, I'll have to pass.
-> >
-> > I think what you raised is a valid concern, but IMHO it's better fixed no
-> > matter cross-mm or single-mm.  What do you think?
-> >
-> > In general, pinning lose its whole point here to me for an userspace either
-> > if it DONTNEEDs it or REMAP it.  What would be great to do here is we unpin
-> > it upon DONTNEED/REMAP/whatever drops the page, because it loses its
-> > coherency anyway, IMHO.
-> >
-> > >
-> > > Once there is real demand, we can revisit it and explore what else we would
-> > > have to take care of (I don't know how memcg behaves when moving between
-> > > completely unrelated processes, maybe that works as expected, I don't know
-> > > and I have no time to spare on reviewing features with no real use cases)
-> > > and announce it as a new feature.
-> >
-> > Good point.  memcg is probably needed..
-> >
-> > So you reminded me to do a more thorough review against zap/fault paths, I
-> > think what's missing are (besides page pinning):
-> >
-> >   - mem_cgroup_charge()/mem_cgroup_uncharge():
-> >
-> >     (side note: I think folio_throttle_swaprate() is only for when
-> >      allocating new pages, so not needed here)
-> >
-> >   - check_stable_address_space() (under pgtable lock)
-> >
-> >   - tlb flush
-> >
-> >     Hmm???????????????? I can't see anywhere we did tlb flush, batched or
-> >     not, either single-mm or cross-mm should need it.  Is this missing?
-> >
-> IIUC, ptep_clear_flush() flushes tlb entry. So I think we are doing
-> unbatched flushing. Possibly a nice performance improvement later on
-> would be to try doing it batched. Suren can throw more light on it.
+The series adds initial support for devlink to i40e driver.
 
-Oh yeah.. thanks.
+Patch-set overview:
+Patch 1: Adds initial devlink support (devlink and port registration)
+Patch 2: Refactors and split i40e_nvm_version_str()
+Patch 3: Adds support for 'devlink dev info'
+Patch 4: Refactors existing helper function to read PBA ID
+Patch 5: Adds 'board.id' to 'devlink dev info' using PBA ID
 
-> 
-> One thing I was wondering is don't we need cache flush for the src
-> pages? mremap's move_page_tables() does it. IMHO, it's required here
-> as well.
+Ivan Vecera (5):
+  i40e: Add initial devlink support
+  i40e: Split and refactor i40e_nvm_version_str()
+  i40e: Add handler for devlink .info_get
+  i40e: Refactor and rename i40e_read_pba_string()
+  i40e: Add PBA as board id info to devlink .info_get
 
-I commented in my reply, I also think it's needed.  Otherwise for some
-arches I think we can have page containing stall data if not fully flushed
-before the movement.  x86 is probably fine, though.
-
-> 
-> > >
-> > >
-> > > Note: that (with only reading the documentation) it also kept me wondering
-> > > how the MMs are even implied from
-> > >
-> > >        struct uffdio_move {
-> > >            __u64 dst;    /* Destination of move */
-> > >            __u64 src;    /* Source of move */
-> > >            __u64 len;    /* Number of bytes to move */
-> > >            __u64 mode;   /* Flags controlling behavior of move */
-> > >            __s64 move;   /* Number of bytes moved, or negated error */
-> > >        };
-> > >
-> > > That probably has to be documented as well, in which address space dst and
-> > > src reside.
-> >
-> > Agreed, some better documentation will never hurt.  Dst should be in the mm
-> > address space that was bound to the userfault descriptor.  Src should be in
-> > the current mm address space.
-> >
-> > Thanks,
-> >
-> > --
-> > Peter Xu
-> >
-> 
+ drivers/net/ethernet/intel/Kconfig            |   1 +
+ drivers/net/ethernet/intel/i40e/Makefile      |   3 +-
+ drivers/net/ethernet/intel/i40e/i40e.h        | 136 ++++++++---
+ drivers/net/ethernet/intel/i40e/i40e_common.c |  58 +++--
+ .../net/ethernet/intel/i40e/i40e_devlink.c    | 224 ++++++++++++++++++
+ .../net/ethernet/intel/i40e/i40e_devlink.h    |  18 ++
+ .../net/ethernet/intel/i40e/i40e_ethtool.c    |   4 +-
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |  40 +++-
+ .../net/ethernet/intel/i40e/i40e_prototype.h  |   3 +-
+ drivers/net/ethernet/intel/i40e/i40e_type.h   |   3 +
+ 10 files changed, 414 insertions(+), 76 deletions(-)
+ create mode 100644 drivers/net/ethernet/intel/i40e/i40e_devlink.c
+ create mode 100644 drivers/net/ethernet/intel/i40e/i40e_devlink.h
 
 -- 
-Peter Xu
+2.41.0
 
